@@ -294,17 +294,7 @@ function LIS:GetUpgradedItemLevel()
 		return nil;
 	end
 
-	-- obtain the itemString upgrade and bonusValue
-	local timewarp = self.bonusID1;
-	local warforged = self.bonusID2;
-	local upgradeValue = self.upgradeValue;
-
-	-- Return the actual itemLevel based on the itemString properties
-	if (itemLevel >= 450) and (LIS.UPGRADED_LEVEL_ADJUST[upgradeValue]) then
-		return itemLevel + LIS.UPGRADED_LEVEL_ADJUST[upgradeValue];
-	else
-		return LIS.TIMEWARPED_WARFORGED_LEVEL_ADJUST[warforged] or LIS.TIMEWARPED_LEVEL_ADJUST[timewarp] or itemLevel;
-	end
+	return itemLevel;
 end
 
 -- Scans the tooltip for the proper itemLevel as we cannot get it consistently any other way
