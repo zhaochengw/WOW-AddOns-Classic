@@ -3,9 +3,10 @@
 #### 介绍
 怀旧服TBC插件仓库，仿Isler插件整合包，暴雪风格界面。
 
+### 界面截图（不开Dominos）
+![输入图片说明](https://images.gitee.com/uploads/images/2021/0528/222104_205c8c23_142422.jpeg "2.jpg")
+
 ### 插件列表
-
-
 > !!icenter
 > !buggrabber
 > !moncaicompare
