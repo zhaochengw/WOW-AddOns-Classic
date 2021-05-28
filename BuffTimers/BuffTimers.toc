@@ -1,0 +1,19 @@
+## Interface: 20501
+## Title: BuffTimers
+## Author: mdhippie
+## Notes: v1.5.0 -- Buff time options
+## Version: v1.5.0
+## DefaultState: enabled
+## SavedVariables: BuffTimersOptions
+
+## X-Category: Buffs & Debuffs
+## X-Credits: mdhippie
+## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
+## X-Website: https://github.com/sandervspl/BuffTimers
+## X-Curse-Project-ID: 352620
+## X-Wago-ID: XrNkde6a
+
+Locales.lua
+Events.lua
+Options.lua
+BuffTimers.lua

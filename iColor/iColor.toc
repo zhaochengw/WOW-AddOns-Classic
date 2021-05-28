@@ -1,0 +1,11 @@
+## Interface: 20501
+## Title: |cFF0099FFiColor_classic|r v1.13a
+## Notes: 系统界面信息按职业染色
+## Title-zhCN: |CFFFF8000辅助|R 职业染色
+## Notes-zhCN: 系统界面信息按职业染色
+## Title-zhTW: |CFFFF8000輔助|R 職業染色
+## Notes-zhTW: 系統介面資訊按職業染色
+## X-Repple: 辅助
+## Author: nj55top @ 2019-08-31
+
+iColor.lua

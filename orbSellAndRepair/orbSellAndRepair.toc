@@ -1,0 +1,16 @@
+## Interface: 20501
+## Title: orbSellAndRepair
+## Notes: Automatically sell your gray items and repair your equipment when you visit a merchant.
+## Title-zhCN: |CFFFF8000辅助|R 自动贩卖修理
+## Notes-zhCN: 与商人交易时自动贩卖灰色垃圾物品，修理装备
+## Title-zhTW: |CFFFF8000輔助|R 自動販賣修理
+## Notes-zhTW: 與商人交易時自動販賣灰色垃圾物品，修理裝備
+## X-Repple: 辅助
+## Author: sugatasei
+## Version: 1.0.1
+## SavedVariablesPerCharacter: orbSellAndRepair_settings
+
+locales/en.lua
+locales/cn.lua
+locales/tw.lua
+main.lua

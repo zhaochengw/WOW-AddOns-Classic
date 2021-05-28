@@ -1,0 +1,24 @@
+﻿## Interface: 20501
+## Title: DamageEx
+## Notes: Shows the damage,target heal and the spell name.
+## Title-zhCN: |CFFFF8000战斗|R 增强伤害显示器(Dex)
+## Notes-zhCN: 显示你对敌人的伤害，对目标的治疗量，并可显示技能名字 NGA 荻野千寻の修复怀旧服使用|n命令/dex
+## Title-zhTW: |CFFFF8000戰鬥|R 增強傷害顯示器(Dex)
+## Notes-zhTW: 顯示你對敵人的傷害，對目標的治療量，並可顯示技能名字 NGA 荻野千寻の修复怀旧服使用|n命令/dex
+## X-Repple: 战斗
+
+## Version: 4.0
+## Author: Dennie
+## SavedVariablesPerCharacter: DEX_SAVE
+## OptionalDeps: myAddOns
+## Dependencies:
+
+localization.lua
+localization_zhCN.lua
+
+DamageEx.Lua
+DEXoptions.lua
+DEX_ui_path.lua
+
+DamageEx.xml
+DEXoptions.xml

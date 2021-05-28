@@ -1,0 +1,14 @@
+## Interface: 20501
+
+## Title: Leatrix Maps
+## Notes: Enhancements for your maps.
+
+## Version: 2.5.37
+## Author: Leatrix
+## SavedVariables: LeaMapsDB
+
+Leatrix_Maps_Library.lua
+Leatrix_Maps_Locale.lua
+Leatrix_Maps.xml
+Leatrix_Maps_Reveal.lua
+Leatrix_Maps.lua

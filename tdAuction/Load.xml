@@ -1,0 +1,24 @@
+<Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Include file="Libs\Libs.xml"/>
+    <Include file="Localization\Localization.xml"/>
+    <Script file="Addon.lua"/>
+    <Script file="API.lua"/>
+    <Script file="Data.lua"/>
+
+    <Script file="Query\Querier.lua"/>
+    <Script file="Query\Scaner.lua"/>
+    <Script file="Query\FullScaner.lua"/>
+    <Script file="Query\BrowseScaner.lua"/>
+    <Script file="Query\PriceScaner.lua"/>
+
+    <Include file="UI\Template.xml"/>
+    <Script file="UI\ComboBox.lua"/>
+    <Script file="UI\FullScan.lua"/>
+    <Script file="UI\BrowseItem.lua"/>
+    <Script file="UI\Browse.lua"/>
+    <Script file="UI\Sell.lua"/>
+    <Script file="UI\Tooltip.lua"/>
+    <Script file="UI\SellOutput.lua"/>
+    <Script file="UI\Option.lua"/>
+</Ui>

@@ -1,0 +1,21 @@
+## Interface: 20501
+## Title: ala's Auction
+## Title-zhCN: ala's Auction
+## Title-zhTW: ala's Auction
+## SavedVariablesPerCharacter: 
+## SavedVariables: alaTradeSV
+## Notes: ala's Auction
+## Dependencies: 
+## OptionalDependencies: 
+## LoadOnDemand: 0
+## DefaultState: enabled
+## Author: |cff00ff00ALA|r @ |cffff0000163UI|r, Baudzilla(BaudAuction)
+## Author-zhCN: |cff00ff00ALA|r @ |cffff0000网易有爱|r, Baudzilla(BaudAuction)
+## Author-zhTW: |cff00ff00ALA|r @ |cffff0000网易有爱|r, Baudzilla(BaudAuction)
+## Version: 205r.210521
+
+alaTrade.xml
+
+## Title-zhCN: |cff880303[有爱]|r ala 拍卖增强
+## X-Vendor: NetEase
+## X-163UI-Version: 20210524145422

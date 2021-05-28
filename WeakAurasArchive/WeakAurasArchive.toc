@@ -1,0 +1,9 @@
+## Interface: 20501
+## Title: WeakAuras Archive
+## Author: The WeakAuras Team
+## Version: 3.4.1
+## LoadOnDemand: 1
+## SavedVariables: WeakAurasArchive
+## Dependencies: WeakAuras
+
+WeakAurasArchive.lua

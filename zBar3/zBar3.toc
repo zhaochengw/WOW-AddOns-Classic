@@ -1,0 +1,36 @@
+﻿## Interface: 20501
+
+## Title: zBar3
+## Notes: ZeroFire's ActionBar Mod. |n Third Edition.
+## Author: Zero Fire
+
+## Title-zhCN: |CFFFF8000辅助|R 炽火动作条
+## Notes-zhCN: 使用方式简单明了的动作条插件|n命令/zbar
+## Title-zhTW: |CFFFF8000輔助|R 熾火動作條
+## Notes-zhTW: 使用方式簡單明瞭的動作條插件|n命令/zbar
+## X-Repple: 辅助
+## Author-zhCN: 炽火 Zero ℃
+
+## Version: 3.2.7
+## eMail: zero.flamy@gmail.com
+## Url: http://groups.google.com/group/zbar
+
+## SavedVariablesPerCharacter: zBar3Data
+
+Templates.xml
+zBarT.lua
+zTab.lua
+
+zBar.lua
+layout.lua
+defaults.lua
+
+locale\cn.lua
+locale\tw.lua
+locale\en.lua
+
+bars\zExBars.lua
+
+bars\zCastBar.lua
+
+skin\zButtonFacade.lua

@@ -1,0 +1,13 @@
+﻿## Interface: 20501
+## Title: UnitFramesPlus Options
+## Title-zhCN: 系统头像增强 设置
+## Title-zhTW: 系統頭像增強 設置
+## X-Repple: 界面
+## Version: 1.36.2
+## Author: Isler
+## LoadOnDemand: 1
+## RequiredDeps: UnitFramesPlus
+
+## 设置
+Localization.lua
+Options.lua

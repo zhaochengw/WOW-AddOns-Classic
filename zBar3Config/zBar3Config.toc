@@ -1,0 +1,18 @@
+﻿## Interface: 20501
+## Title: zBar3Config
+## Notes: Load the config panel dynamically for zBar3.
+## Title-zhCN: |CFFFF8000辅助|R 炽火动作条 设置模块
+## Notes-zhCN: 动态加载的设置面板
+## Title-zhTW: |CFFFF8000輔助|R 熾火動作條 設置模組
+## Notes-zhTW: 動態載入的設置面板
+## X-Repple: 辅助
+## RequiredDeps: zBar3
+## LoadOnDemand: 1
+
+locale\cn.lua
+locale\tw.lua
+locale\en.lua
+
+Templates.xml
+zBarConfig.lua
+zBarConfigData.lua

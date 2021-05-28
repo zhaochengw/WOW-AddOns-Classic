@@ -1,0 +1,41 @@
+## Interface: 20501
+## Title: oGlow
+## Author: Haste
+## Version: 2.2.8
+## SavedVariables: oGlowDB
+## X-eMail: troeks@gmail.com
+## Notes: Make your shiny items... glow in the dark!
+## Title-zhCN: |CFFFF8000辅助|R 物品品质及耐久
+## Notes-zhCN: 显示物品品质与耐久度。
+## Title-zhTW: |CFFFF8000輔助|R 物品品質及耐久
+## Notes-zhTW: 顯示物品品質與耐久度。
+## X-Repple: 辅助
+
+init.lua
+event.lua
+pipe.lua
+filter.lua
+display.lua
+colors.lua
+oglow.lua
+
+ui\helpers.lua
+ui\pipes.lua
+ui\quality.lua
+ui\colors.lua
+
+pipes\bags.lua
+pipes\char.lua
+pipes\inspect.lua
+pipes\bank.lua
+
+pipes\trade.lua
+pipes\tradeskill.lua
+pipes\merchant.lua
+pipes\mail.lua
+
+pipes\loot.lua
+
+displays\border.lua
+
+filters\quality.lua

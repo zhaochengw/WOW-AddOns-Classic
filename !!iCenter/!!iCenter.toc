@@ -1,0 +1,75 @@
+## Interface: 20501
+## Title: Isler's WoWUI
+## Notes: The console of Isler's WoWUI, includes some useful addons.
+## Title-zhCN: |cff7fff7fIsler's WoWUI|R
+## Notes-zhCN: 插件控制面板|N|CFF0099FFwow.isler.me|R|N|N|CFFFF0000必须加载|R
+## Title-zhTW: |cff7fff7fIsler's WoWUI|R
+## Notes-zhTW: 插件控制台|N|CFF0099FFwow.isler.me|R|N|N|CFFFF0000必須載入|R
+## X-Repple: 函数库
+## Author: Isler
+## Version: 1.13.4.1
+## Website: http://wow.isler.me/
+## SavedVariables: ACP_Data, ErrorMonsterDB, ExtraConfiguration, cfilter, cfilterall, cfilters, cfilterlist
+## SavedVariablesPerCharacter: MBB_Exclude, MBB_Options, FeatureFrameMinimapButton_OffsetX, FeatureFrameMinimapButton_OffsetY, aienable, aikeyword, aichannel, aitextleft, aitextright
+
+Libs\LibStub\LibStub.lua
+Libs\LibChatAnims\LibChatAnims.xml
+
+Libs\Ace3\LibStub\LibStub.lua
+Libs\Ace3\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\Ace3\AceAddon-3.0\AceAddon-3.0.xml
+Libs\Ace3\AceEvent-3.0\AceEvent-3.0.xml
+Libs\Ace3\AceTimer-3.0\AceTimer-3.0.xml
+Libs\Ace3\AceBucket-3.0\AceBucket-3.0.xml
+Libs\Ace3\AceHook-3.0\AceHook-3.0.xml
+Libs\Ace3\AceDB-3.0\AceDB-3.0.xml
+Libs\Ace3\AceDBOptions-3.0\AceDBOptions-3.0.xml
+Libs\Ace3\AceLocale-3.0\AceLocale-3.0.xml
+Libs\Ace3\AceConsole-3.0\AceConsole-3.0.xml
+Libs\Ace3\AceGUI-3.0\AceGUI-3.0.xml
+Libs\Ace3\AceConfig-3.0\AceConfig-3.0.xml
+Libs\Ace3\AceComm-3.0\AceComm-3.0.xml
+Libs\Ace3\AceTab-3.0\AceTab-3.0.xml
+Libs\Ace3\AceSerializer-3.0\AceSerializer-3.0.xml
+Libs\Ace3\Ace3.lua
+
+Libs\LibSHA1\LibSHA1-1.0.xml
+
+BlizzardRaidFramesFix.lua
+
+# GConfirm.lua
+
+# BlizzBugsSuck.lua
+# NoTaint.lua
+
+# InspectFix.lua
+# YouArentInAPartyFix.lua
+
+FeatureFrame\FeatureFrame.xml
+
+AltClickToAddItem.lua
+
+IsPatch.lua
+
+Donation\Donation.lua
+
+ControlPanel.lua
+
+Autoload.lua
+
+AutoInvite.lua
+
+ChannelFilters.lua
+
+MBB\localization-enGB.lua
+MBB\localization-zhCN.lua
+MBB\localization-zhTW.lua
+MBB\MBB.xml
+
+ACP\ACP.lua
+ACP\localization-enUS.lua
+ACP\localization-zhCN.lua
+ACP\localization-zhTW.lua
+ACP\ACP.xml
+
+iwowui.lua

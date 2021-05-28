@@ -1,0 +1,658 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/"> 
+	<Script file="DEXoptions.lua"/>
+	
+	<!-- CHECKBUTTON TEMPLATE -->
+	<CheckButton name="DEXCheckTemplate" inherits="UICheckButtonTemplate" virtual="true">
+		<HitRectInsets>
+			<AbsInset left="0" right="0" top="0" bottom="0"/>
+		</HitRectInsets>
+		<Scripts>
+			<OnClick>				
+				DEX_OptionsCheckButtonOnClick(self, self:GetName());
+				DEX_OnOptionCheck(self:GetName(), self:GetChecked())
+			</OnClick>
+			<OnEnter>
+				if ( self.tooltipText ) then
+					GameTooltip_AddNewbieTip(self, self.tooltipText, 1.0, 1.0, 1.0);
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
+	</CheckButton>
+	
+	<!-- SLIDER TEMPLATE -->
+	<Slider name="DEXSliderTemplate" inherits="OptionsSliderTemplate" virtual="true">
+		<Scripts>
+			<OnEnter>
+				if ( self.tooltipText ) then
+					GameTooltip_AddNewbieTip(self,self.tooltipText, 1.0, 1.0, 1.0);
+				end
+			</OnEnter>
+			<OnValueChanged>
+				DEX_OptionsSliderOnValueChanged(self, self:GetName());
+			</OnValueChanged>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
+	</Slider >
+	
+	<Frame name="DEXColorPickerTemplate" virtual="true">		
+		<Frames>
+			<Button name="$parent_ColorSwatch">
+				<Size>
+					<AbsDimension x="16" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parent_SwatchBg">
+							<Size>
+								<AbsDimension x="14" y="14"/>
+							</Size>
+							<Anchors>
+								<Anchor point="CENTER">
+									<Offset>
+										<AbsDimension x="0" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<Color r="1.0" g="1.0" b="1.0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>
+						DEX_OpenColorPicker(self, self:GetParent());
+					</OnClick>
+					<OnEnter>
+						getglobal(self:GetName().."_SwatchBg"):SetVertexColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+					</OnEnter>
+					<OnLeave>
+						getglobal(self:GetName().."_SwatchBg"):SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+					</OnLeave>
+				</Scripts>
+				<NormalTexture name="$parentNormalTexture" file="Interface\ChatFrame\ChatFrameColorSwatch"/>
+			</Button>			
+		</Frames>
+	</Frame>
+	
+	<Frame name="DEXColorPickerExTemplate" inherits="DEXColorPickerTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="160" y="22"/>
+		</Size>		
+		<Layers>
+			<Layer level="ARTWORK">				
+				<FontString name="$parent_Text" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parent">
+							<Offset>
+								<AbsDimension x="40" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>			
+		</Layers>
+	</Frame>
+	
+	<!-- Drag-able frame template -->
+	<Frame name="DEXDragableFrameTemplate" movable="true" enableMouse="true" virtual="true">
+		<Scripts>
+			<OnLoad>
+				self:SetUserPlaced(true)
+				self:RegisterForDrag("LeftButton")
+			</OnLoad>
+			<OnDragStart> 
+				self:StartMoving()
+			</OnDragStart>
+			<OnDragStop>
+				self:StopMovingOrSizing()
+			</OnDragStop>			
+		</Scripts>
+	</Frame>
+	
+	<!-- MAIN OPTION FRAME -->
+	<Frame name="DEXOptions" toplevel="true" frameStrata="LOW" hidden="true" parent="UIParent" inherits="DEXDragableFrameTemplate">
+		<Size>
+			<AbsDimension x="560" y="450"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER" />
+		</Anchors>
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border"
+			tile="true">
+			<BackgroundInsets>
+				<AbsInset left="11" right="12" top="12" bottom="11" />	
+				<Size>
+					<AbsDimension x="128" y="17" />
+				</Size>
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="32" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="32" />
+			</EdgeSize>
+		</Backdrop>
+		
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="DEXFrameTitle" file="Interface\DialogFrame\UI-DialogBox-Header">
+					<Size>
+						<AbsDimension x="360" y="64" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="0" y="12" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString inherits="GameFontNormal" text="DEX_MAIN_OPTION">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="DEXOptions">
+							<Offset>
+								<AbsDimension x="0" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+			
+		</Layers>
+		
+		<Frames>			
+			<CheckButton name="DEX_Enable" inherits="DEXCheckTemplate">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="DEXOptions" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="20" y="-28" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+			</CheckButton>
+			<CheckButton name="DEX_ShowWithMess" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_EnableText" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="16" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="DEX_ShowDamageWoW" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowWithMessText" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="16" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="DEX_NumberFormat" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowWithMessText" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="150" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="DEX_ShowSpellName" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_Enable" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-36" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="DEX_ShowNameOnCrit" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowSpellName" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="20" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="DEX_ShowNameOnMiss" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowNameOnCrit" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>			
+			<CheckButton name="DEX_ShowDamagePeriodic" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowNameOnMiss" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="-20" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="DEX_ShowDamageShield" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowDamagePeriodic" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="DEX_ShowDamageHealth" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowDamageShield" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="DEX_ShowDamagePet" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowDamageHealth" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="DEX_ShowBlockNumber" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowDamagePet" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>		
+			<CheckButton name="DEX_ShowOwnHealth" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowBlockNumber" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="DEX_ShowInterruptCrit" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowOwnHealth" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>		
+			<CheckButton name="DEX_ShowInterrupt" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowInterruptCrit" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="180" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>		
+			<CheckButton name="DEX_ShowSpellIcon" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowInterrupt" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>		
+			<CheckButton name="DEX_ShowOverHeal" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowInterrupt" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-60" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>		
+			<CheckButton name="DEX_ShowCurrentOnly" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowInterruptCrit" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>				
+			<CheckButton name="DEX_UniteSpell" inherits="DEXCheckTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowCurrentOnly" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			
+			<Frame name="DEX_ColorNormal" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ShowSpellName" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="185" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorNormalSe" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorNormal" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="20" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorSkill" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorNormal" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorSkillSe" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorSkill" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="20" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorPeriodic" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorSkill" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorPeriodicSe" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorPeriodic" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="20" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorHealth" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorPeriodic" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorHealthSe" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorHealth" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="20" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorPet" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorHealth" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorMana" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorPet" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorManaSe" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorMana" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="20" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorSpec" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorMana" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-30" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="DEX_ColorSpecSe" inherits="DEXColorPickerExTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorSpec" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="20" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Button name="$ParentDropDownCats" inherits="UIDropDownMenuTemplate">
+				<Layers>
+					<Layer level="BACKGROUND">
+						<FontString name="$parentLabel" inherits="GameFontNormalSmall" text="DEXColorMode_T">
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
+									<Offset>
+										<AbsDimension x="21" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorSpec" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="-20" y="-45"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						DEXOptionsFrameDropDownCats_OnShow(self);
+					</OnShow>
+				</Scripts>
+			</Button>
+			
+			<Slider name="DEX_Font" inherits="DEXSliderTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_ColorNormal" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="180" y="-10" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Slider>
+			<Slider name="DEX_FontSize" inherits="DEXSliderTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_Font" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-50" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Slider>
+			<Slider name="DEX_OutLine" inherits="DEXSliderTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_FontSize" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-50" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Slider>
+			<Slider name="DEX_Speed" inherits="DEXSliderTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_OutLine" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-50" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Slider>
+			<Slider name="DEX_LOGLINE" inherits="DEXSliderTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_Speed" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-50" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Slider>
+			<Slider name="DEX_LOGTIME" inherits="DEXSliderTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="DEX_LOGLINE" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="-50" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Slider>
+			
+			<Button name="DEXOptionsSave" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relitiveTo="DEXOptions">
+						<Offset>
+							<AbsDimension x="-5" y="-5" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="24" y="24"/>
+				</Size>
+				<Scripts>
+					<OnClick>
+						DEX_CloseOptions()
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Button name="DEXOptionsClose" inherits="OptionsButtonTemplate" text="CLOSE">
+				<Anchors>					
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-24" y="24"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="90" y="24"/>
+				</Size>
+				<Scripts>
+					<OnClick>
+						DEX_CloseOptions()
+					</OnClick>					
+				</Scripts>
+			</Button>		
+			
+			<Button name="DEXOptionsReset" inherits="OptionsButtonTemplate" text="RESET">
+				<Anchors>					
+					<Anchor point="RIGHT" relativeTo="DEXOptionsClose" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Size>
+					<AbsDimension x="90" y="24"/>
+				</Size>
+				<Scripts>
+					<OnClick>
+						PlaySound("igMainMenuOptionCheckBoxOn");
+						DEX_Reset();
+					</OnClick>
+					<OnEnter>
+						GameTooltip_AddNewbieTip(self,DEX_BUTTON_RESET_TIP, 1.0, 1.0, 1.0);
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Button>	
+
+			
+			<Button name="DEX_PreBox" parent="UIParent" movable="true" hidden="true" inherits="DEXDragableFrameTemplate">
+				<Size>
+					<AbsDimension x="200" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER" />
+				</Anchors>
+				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+					<EdgeSize>
+						<AbsValue val="8"/>
+					</EdgeSize>
+					<TileSize>
+						<AbsValue val="8"/>
+					</TileSize>
+					<BackgroundInsets>
+						<AbsInset left="2" right="2" top="2" bottom="2"/>
+					</BackgroundInsets>
+				</Backdrop>
+				<Layers>
+					<Layer level="OVERLAY">			
+						<FontString name="DEX_PreBox_Title" inherits="GameFontNormal" text="DEX_PREVIEW_LABEL">	
+							<Anchors>
+								<Anchor point="CENTER" relitiveTo="$parent"/>							
+							</Anchors>							
+							<FontHeight>
+								<AbsValue val="14"/>
+							</FontHeight>
+							<Color r="1" g="1" b="0"/>
+						</FontString>
+					</Layer>					
+				</Layers>
+				<Scripts>					
+					<OnDragStop>
+						self:StopMovingOrSizing()
+						DEX_preSavePosition(self)
+					</OnDragStop>
+				</Scripts>
+			</Button>
+		</Frames>
+
+		<Scripts>			
+			<OnShow>
+				DEXOptionsFrame_OnShow();
+			</OnShow>
+			<OnHide>
+				DEX_hideMenu();
+			</OnHide>
+		</Scripts>
+	</Frame>	
+</Ui>

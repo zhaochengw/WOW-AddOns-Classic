@@ -1,0 +1,11 @@
+## Interface: 20501
+## Title: ShowActionCount
+## Version: 1.00
+## Author: prozhong
+## Notes: Monitor material count on action bar.
+## Title-zhCN: |CFFFF8000辅助|R 施法材料数量
+## Notes-zhCN: 技能上显示材料数量。
+## Title-zhTW: |CFFFF8000輔助|R 施法材料數量
+## Notes-zhTW: 技能上顯示材料數量。
+## X-Repple: 辅助
+ShowActionCount.lua

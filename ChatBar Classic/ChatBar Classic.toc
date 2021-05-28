@@ -1,0 +1,16 @@
+## Interface: 20501
+## Title: ChatBar Classic
+## Notes: Button Bar for openning chat messages of each type.
+## Title-zhCN: |CFFFF8000辅助|R 聊天条
+## Notes-zhCN: 提供按钮来快速使用频道等功能
+## Title-zhTW: |CFFFF8000輔助|R 聊天條
+## Notes-zhTW: 提供按鈕來快速使用頻道等功能
+## X-Repple: 辅助
+## OptionalDeps: Chronos
+## RequiredDeps:
+## SavedVariablesPerCharacter: ChatBar_VerticalDisplay, ChatBar_AlternateOrientation, ChatBar_HideSpecialChannels, ChatBar_TextOnButtonDisplay, ChatBar_ButtonFlashing, ChatBar_BarBorder, ChatBar_ButtonText, ChatBar_StoredStickies, ChatBar_HiddenButtons, ChatBar_TextChannelNumbers, ChatBar_HideAllButtons, ChatBar_AltArt, ChatBar_ChannelBindings, ChatBar_ButtonScale, ChatBar_isLock
+## Author: AnduinLothar, Foxylittlething, aNNiPAk, Yarko
+## Version: 3.16.1a
+## X-Category: Chat
+## X-Website: https://www.curseforge.com/wow/addons/chatbar-classic
+ChatBar Classic.xml

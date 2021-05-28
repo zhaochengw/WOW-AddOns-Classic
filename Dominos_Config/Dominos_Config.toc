@@ -1,0 +1,18 @@
+## Interface: 20501
+## Title: Dominos Config
+## Title-zhCN: |cFF0099FFDominos|r 设置
+## Title-zhTW: |cFF0099FFDominos|r 設置
+## Notes: GUI based configuration for Dominos
+## Notes-zhCN: Dominos 图形设置界面
+## Author: Tuller
+## Dependencies: Dominos
+## LoadOnDemand: 1
+embeds.xml
+localization.xml
+main.lua
+widgets\include.xml
+options\general.lua
+options\profiles.lua
+overlay\ui.lua
+overlay\dragFrame.lua
+overlay\help.lua

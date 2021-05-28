@@ -1,0 +1,7 @@
+## Interface: 90002
+## Title: AceGUI-3.0-Search-EditBox
+## Author: Michael
+## X-Curse-Project-ID: 37696
+## OptionalDeps: Ace3
+
+AceGUI-3.0-Search-EditBox.xml

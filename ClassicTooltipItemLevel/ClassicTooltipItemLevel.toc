@@ -1,0 +1,11 @@
+## Interface: 20501
+## Version: 1.0.0
+## Title: ClassicTooltipItemLevel
+## Notes: Displays the item level in the tooltip
+## Title-zhCN: |CFFFF8000辅助|R 物品等级
+## Title-zhTW: |CFFFF8000輔助|R 物品等級
+## X-Repple: 辅助
+## Author: Fenix-LoD
+## SavedVariables: ClassicTooltipItemLevelConfig
+
+ClassicTooltipItemLevel.lua

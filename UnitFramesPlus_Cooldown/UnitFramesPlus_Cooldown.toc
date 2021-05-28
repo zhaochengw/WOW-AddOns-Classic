@@ -1,0 +1,16 @@
+## Interface: 20501
+## Title: UnitFramesPlus Cooldown
+## Title-zhCN: |CFF7FFF7F界面|R 系统头像增强 冷却计时
+## Title-zhTW: |CFF7FFF7F介面|R 系統頭像增強 冷卻計時
+## X-Repple: 界面
+## Version: 1.36.5
+## Author: Isler
+## Author-LibClassicDurations: ullosu
+## RequiredDeps: UnitFramesPlus
+
+#Library
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\LibClassicDurations\LibClassicDurations.xml
+
+UnitFramesPlus_Cooldown.lua

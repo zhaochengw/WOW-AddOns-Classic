@@ -1,0 +1,7 @@
+## Interface: 20501
+## Title: tdAuction
+## Author: Dencer
+## Version: 1.0.2
+## SavedVariables: TDDB_AUCTION
+
+Load.xml

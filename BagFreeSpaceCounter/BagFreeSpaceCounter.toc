@@ -1,0 +1,12 @@
+## Interface: 20501
+## Version: 1.0.4
+## Title: BagFreeSpaceCounter
+## Notes: Displays the amount of unused inventory space
+## Title-zhCN: |CFFFF8000辅助|R 背包空位
+## Notes-zhCN: 显示背包的可用空间
+## Title-zhTW: |CFFFF8000輔助|R 背包空位
+## Notes-zhTW: 顯示背包的可用空間
+## X-Repple: 辅助
+## Author: Bytespire
+
+BagFreeSpaceCounter.lua
