@@ -4,144 +4,146 @@
 怀旧服TBC插件仓库，仿Isler插件整合包，暴雪风格界面。
 
 ### 插件列表
-!!icenter
-!buggrabber
-!moncaicompare
-acamar
-accountant_classic
-advancedinterfaceoptions
-alatalentemu
-alatrade
-alatradeskill
-atlas
-atlaslootclassic
-atlaslootclassic_collections
-atlaslootclassic_crafting
-atlaslootclassic_data
-atlaslootclassic_dungeonsandraids
-atlaslootclassic_factions
-atlaslootclassic_options
-atlaslootclassic_pvp
-atlas_classicwow
-bagfreespacecounter
-blizzmove
-blizzmove_debug
-bufftimers
-bugsack
-buyemall
-chatbar classic
-chatplus
-chatplus_options
-classicauradurations
-classiccastbars
-classiccastbars_options
-classichealprediction
-classicspellactivations
-classictooltipitemlevel
-clearfont
-critsound
-critsound_options
-damageex
-dbm-aq20
-dbm-aq40
-dbm-azeroth
-dbm-blacktemple
-dbm-bwl
-dbm-core
-dbm-gui
-dbm-hyjal
-dbm-karazhan
-dbm-mc
-dbm-naxx
-dbm-onyxia
-dbm-outlands
-dbm-party-bc
-dbm-party-classic
-dbm-pvp
-dbm-serpentshrine
-dbm-statusbartimers
-dbm-sunwell
-dbm-theeye
-dbm-zg
-dct
-dct_damage
-dct_options
-dct_spellalert
-decursive
-dominos
-dominos_cast
-dominos_config
-dominos_encounter
-dominos_progress
-dominos_roll
-ex_autoequip
-gathermate2
-gathermate2_data
-grid2
-grid2ldb
-grid2options
-grid2raiddebuffs
-grid2raiddebuffsoptions
-handynotes
-handynotes_travelguide (bcc)
-icolor
-improvedlootframe
-itemrack
-itemrackoptions
-itemtooltipprofessionicons
-killtrack
-leatrix_maps
-leatrix_plus
-lowhppulser
-manyitemtooltips
-masque
-meetinghorn
-merinspect
-minimapping
-novaworldbuffs
-nugrunning
-nugrunningoptions
-oglow
-omnicc
-omnicc_config
-orbsellandrepair
-pawn
-pixelperfectalign
-plater
-postal
-powerspark
-questie
-rangedisplay
-rangedisplay_options
-showactioncount
-skada
-soulsort
-speedyautoloot
-spy
-tdauction
-tdbag2
-tdpack2
-threatclassic2
-tiptac
-tiptacitemref
-tiptacoptions
-tomtom
-totemtimers
-tradelog
-trinketmenu
-tullarange
-tullarange_config
-unitframesplus
-unitframesplus_cooldown
-unitframesplus_mobhealth
-unitframesplus_options
-vendorprice
-weakauras
-weakaurasarchive
-weakaurasmodelpaths
-weakaurasoptions
-weakaurastemplates
-whatstraining
-whisperpop
-zbar3
-zbar3config
+
+
+> !!icenter
+> !buggrabber
+> !moncaicompare
+> acamar
+> accountant_classic
+> advancedinterfaceoptions
+> alatalentemu
+> alatrade
+> alatradeskill
+> atlas
+> atlaslootclassic
+> atlaslootclassic_collections
+> atlaslootclassic_crafting
+> atlaslootclassic_data
+> atlaslootclassic_dungeonsandraids
+> atlaslootclassic_factions
+> atlaslootclassic_options
+> atlaslootclassic_pvp
+> atlas_classicwow
+> bagfreespacecounter
+> blizzmove
+> blizzmove_debug
+> bufftimers
+> bugsack
+> buyemall
+> chatbar classic
+> chatplus
+> chatplus_options
+> classicauradurations
+> classiccastbars
+> classiccastbars_options
+> classichealprediction
+> classicspellactivations
+> classictooltipitemlevel
+> clearfont
+> critsound
+> critsound_options
+> damageex
+> dbm-aq20
+> dbm-aq40
+> dbm-azeroth
+> dbm-blacktemple
+> dbm-bwl
+> dbm-core
+> dbm-gui
+> dbm-hyjal
+> dbm-karazhan
+> dbm-mc
+> dbm-naxx
+> dbm-onyxia
+> dbm-outlands
+> dbm-party-bc
+> dbm-party-classic
+> dbm-pvp
+> dbm-serpentshrine
+> dbm-statusbartimers
+> dbm-sunwell
+> dbm-theeye
+> dbm-zg
+> dct
+> dct_damage
+> dct_options
+> dct_spellalert
+> decursive
+> dominos
+> dominos_cast
+> dominos_config
+> dominos_encounter
+> dominos_progress
+> dominos_roll
+> ex_autoequip
+> gathermate2
+> gathermate2_data
+> grid2
+> grid2ldb
+> grid2options
+> grid2raiddebuffs
+> grid2raiddebuffsoptions
+> handynotes
+> handynotes_travelguide (bcc)
+> icolor
+> improvedlootframe
+> itemrack
+> itemrackoptions
+> itemtooltipprofessionicons
+> killtrack
+> leatrix_maps
+> leatrix_plus
+> lowhppulser
+> manyitemtooltips
+> masque
+> meetinghorn
+> merinspect
+> minimapping
+> novaworldbuffs
+> nugrunning
+> nugrunningoptions
+> oglow
+> omnicc
+> omnicc_config
+> orbsellandrepair
+> pawn
+> pixelperfectalign
+> plater
+> postal
+> powerspark
+> questie
+> rangedisplay
+> rangedisplay_options
+> showactioncount
+> skada
+> soulsort
+> speedyautoloot
+> spy
+> tdauction
+> tdbag2
+> tdpack2
+> threatclassic2
+> tiptac
+> tiptacitemref
+> tiptacoptions
+> tomtom
+> totemtimers
+> tradelog
+> trinketmenu
+> tullarange
+> tullarange_config
+> unitframesplus
+> unitframesplus_cooldown
+> unitframesplus_mobhealth
+> unitframesplus_options
+> vendorprice
+> weakauras
+> weakaurasarchive
+> weakaurasmodelpaths
+> weakaurasoptions
+> weakaurastemplates
+> whatstraining
+> whisperpop
+> zbar3
+> zbar3config
