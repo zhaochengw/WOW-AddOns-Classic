@@ -1,4 +1,6 @@
-## Interface: 20501
+## Interface: 90005
+## Interface-Classic: 11307
+## Interface-BC: 20501
 ## Title: Archivist
 ## Author: emptyrivers
 ## Version: v1.0.8

@@ -2698,8 +2698,10 @@ local function pAdd(data, simpleChange)
   if simpleChange then
     db.displays[id] = data
     WeakAuras.SetRegion(data)
-    for cloneId, region in pairs(clones[id]) do
-      WeakAuras.SetRegion(data, cloneId)
+    if clones[id] then
+      for cloneId, region in pairs(clones[id]) do
+        WeakAuras.SetRegion(data, cloneId)
+      end
     end
     Private.UpdatedTriggerState(id)
   else
@@ -2811,6 +2813,15 @@ function WeakAuras.Add(data, takeSnapshot, simpleChange)
   local ok = xpcall(WeakAuras.PreAdd, geterrorhandler(), data)
   if ok then
     pAdd(data, simpleChange)
+  end
+end
+
+function Private.AddParents(data)
+  local parent = data.parent
+  if (parent) then
+    local parentData = WeakAuras.GetData(parent)
+    WeakAuras.Add(parentData)
+    Private.AddParents(parentData)
   end
 end
 
@@ -3374,9 +3385,8 @@ function Private.GetOverlayInfo(data, triggernum)
   local overlayInfo;
   if (data.controlledChildren) then
     overlayInfo = {};
-    for index, childId in pairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId);
-      local tmp = wrappedGetOverlayInfo(childData, triggernum);
+    for child in Private.TraverseLeafs(data) do
+      local tmp = wrappedGetOverlayInfo(child, triggernum);
       if (tmp) then
         for k, v in pairs(tmp) do
           overlayInfo[k] = v;
@@ -3602,10 +3612,12 @@ local function SetFrameLevel(id, frameLevel)
 end
 
 function Private.FixGroupChildrenOrderForGroup(data)
-  local frameLevel = 5;
-  for i=1, #data.controlledChildren do
-    SetFrameLevel(data.controlledChildren[i], frameLevel);
-    frameLevel = frameLevel + 4;
+  local frameLevel = 1;
+  if data.parent == nil then
+    for child in Private.TraverseAll(data) do
+      SetFrameLevel(child.id, frameLevel);
+      frameLevel = frameLevel + 4;
+    end
   end
 end
 

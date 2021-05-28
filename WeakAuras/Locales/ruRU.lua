@@ -23,6 +23,12 @@ L["%s - %i. Trigger"] = "%s - %i. Триггер"
 L["%s - Alpha Animation"] = "%s - Анимация прозрачности"
 L["%s - Color Animation"] = "%s - Анимация цвета"
 L["%s - Condition Custom Chat"] = "%s - Пользовательский код / сообщение в условии"
+--[[Translation missing --]]
+L["%s - Custom Anchor"] = "%s - Custom Anchor"
+--[[Translation missing --]]
+L["%s - Custom Grow"] = "%s - Custom Grow"
+--[[Translation missing --]]
+L["%s - Custom Sort"] = "%s - Custom Sort"
 L["%s - Custom Text"] = "%s - Пользовательский текст"
 L["%s - Finish"] = "%s - Конечная"
 L["%s - Finish Action"] = "%s - Действие при скрытии"
@@ -36,10 +42,14 @@ L["%s - Start Action"] = "%s - Действие при появлении"
 L["%s - Start Custom Text"] = "%s - Пользовательское сообщение при появлении"
 L["%s - Translate Animation"] = "%s - Анимация перемещения"
 L["%s - Trigger Logic"] = "%s - Комбинация триггеров"
+--[[Translation missing --]]
+L["%s Custom Variables"] = "%s Custom Variables"
 L["%s Duration Function"] = "%s - Функция длительности"
 L["%s Icon Function"] = "%s - Функция иконки"
 L["%s Name Function"] = "%s - Функция названия"
 L["%s Overlay Color"] = "%s (цвет наложения)"
+--[[Translation missing --]]
+L["%s Overlay Function"] = "%s Overlay Function"
 L["%s Stacks Function"] = "%s - Функция стаков"
 L["%s Texture Function"] = "%s - Функция текстуры"
 L["%s total auras"] = "Всего %s |4индикация:индикации:индикаций;"
@@ -547,6 +557,8 @@ L["Legacy Aura (disabled):"] = "Аура (устаревший; отключен
 L["Legacy Looking for Raid"] = "Поиск рейда (до патча 5.4)"
 L["Legacy RGB Gradient"] = "Градиент RGB"
 L["Legacy RGB Gradient Pulse"] = "Градиентная пульсация RGB"
+--[[Translation missing --]]
+L["Legacy Spellname"] = "Legacy Spellname"
 L["Length"] = "Длина"
 L["Level"] = "Уровень"
 L["Limited"] = "Ограниченное"
