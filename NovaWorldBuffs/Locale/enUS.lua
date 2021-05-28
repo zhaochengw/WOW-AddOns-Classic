@@ -792,3 +792,6 @@ L["none"] = "None.";
 
 L["dmfDamagePercent"] = "This new DMF buff is at %s%% damage.";
 L["dmfDamagePercentTooltip"] = "NWB detected this as %s damage.";
+
+L["guildLTitle"] = "Guild Layer Sharing";
+L["guildLDesc"] = "Share what layer you are on with your guild? You can see your guilds layer list with /wb guild";

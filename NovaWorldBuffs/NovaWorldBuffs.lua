@@ -26,6 +26,7 @@ NWB.dragonLibPins = LibStub("HereBeDragons-Pins-2.0");
 NWB.candyBar = LibStub("LibCandyBar-3.0");
 NWB.commPrefix = "NWB";
 NWB.hasAddon = {};
+NWB.hasL = {};
 NWB.realm = GetRealmName();
 NWB.faction = UnitFactionGroup("player");
 NWB.maxBuffLevel = 63;
@@ -73,6 +74,7 @@ function NWB:OnInitialize()
 	self:fixAllLayers();
 	self:checkLayers();
 	self:timerCleanup();
+	self:cleanupSettingsData();
 	self:setSongFlowers();
 	self:createSongflowerMarkers();
 	self:createTuberMarkers();
@@ -659,7 +661,7 @@ function NWB:ticker()
 			lastDmfTick = NWB.data.myChars[UnitName("player")].dmfCooldown;
 		end
 	end
-	--_G["\78\87\66"] = {};
+	_G["\78\87\66"] = {};
 	NWB.db.global.lo = GetServerTime();
 	C_Timer.After(1, function()
 		NWB:ticker();
@@ -806,7 +808,7 @@ function NWB:doWarning(type, num, secondsLeft, layer)
 	if (inInstance and instanceType == "raid" and NWB.db.global.middleHideRaid) then
 		return;
 	end
-	if (UnitInBattleground("player") and NWB.db.global.middleHideBattlegrounds) then
+	if ((UnitInBattleground("player") or NWB:isInArena()) and NWB.db.global.middleHideBattlegrounds) then
 		return;
 	end
 	if (NWB.db.global.middle30 and num == 30 and send) then
@@ -1844,7 +1846,7 @@ function NWB:combatLogEventUnfiltered(...)
 		--if (auraType == "BUFF") then
 			--NWB:debug(CombatLogGetCurrentEventInfo());
 		--end
-		if (not string.match(destGUID, "Player") or UnitInBattleground("player")
+		if (not string.match(destGUID, "Player") or UnitInBattleground("player") or NWB:isInArena()
 				or (not string.match(sourceGUID, "Player") and not string.match(sourceGUID, "Pet"))) then
 			return;
 		end
@@ -1980,7 +1982,7 @@ function NWB:acceptSummon(count, delay)
 	end)
 end
 
-function NWB:enteredBattleground(zone)
+function NWB:enteredBattleground()
 	if (NWB.db.global.dmfLeaveBG and (GetServerTime() - lastDmfBuffGained) <= NWB.db.global.buffHelperDelay) then
 		SendChatMessage("", "AFK");
 	end
@@ -2351,9 +2353,9 @@ function NWB:validateTimestamp(timestamp, type, layer)
 	if (timestamp > (currentTime + 30000)) then
 		return;
 	end
-	if (type == "nefNpcDied" and NWB.faction == "Horde") then
-		return;
-	end
+	--if (type == "nefNpcDied" and NWB.faction == "Horde") then
+	--	return;
+	--end
 	if (NWB.db.global.noOverwrite and type and (type == "rendTimer" or type == "onyTimer" or type == "nefTimer"
 			or string.match(type, "^flower"))) then
 		if (NWB:isTimerCurrent(type, layer, timestamp)) then
@@ -3369,6 +3371,7 @@ local doLogon = true;
 local mc = "myChars";
 local storeBuffsTimer;
 local skipBagThroddle;
+local logonYell = 0;
 f:SetScript("OnEvent", function(self, event, ...)
 	if (event == "PLAYER_LOGIN") then
 		--Testing this here instead of PLAYER_ENTERING_WORLD, maybe it fires slightly faster enough to stop duplicate msgs.
@@ -3407,19 +3410,33 @@ f:SetScript("OnEvent", function(self, event, ...)
 					RequestTimePlayed();
 				end
 			end)
+			C_Timer.After(30, function()
+				if (GetTime() - logonYell > 30) then
+					--Ghost check, no need to spam addon comms when a 40 man raid wipes.
+					if (not UnitIsGhost("player") and GetTime() - logonYell > 30) then
+						NWB:sendData("YELL");
+					end
+					if (logonYell == 0) then
+						logonYell = GetTime();
+					end
+				end
+			end)
 			doLogon = nil;
 		else
 			local _, _, _, _, _, _, _, instanceID = GetInstanceInfo();
-			if (instanceID == 489 or instanceID == 529 or instanceID == 30) then
-				NWB:enteredBattleground(zone);
+			if (instanceID == 489 or instanceID == 529 or instanceID == 30 or instanceID == 566) then
+				NWB:enteredBattleground();
 			end
+			C_Timer.After(2, function()
+				--Ghost check, no need to spam addon comms when a 40 man raid wipes.
+				if (not UnitIsGhost("player") and GetTime() - logonYell > 30) then
+					NWB:sendData("YELL");
+				end
+				if (logonYell == 0) then
+					logonYell = GetTime();
+				end
+			end)
 		end
-		C_Timer.After(2, function()
-			--Ghost check, no need to spam addon comms when a 40 man raid wipes.
-			if (not UnitIsGhost("player")) then
-				NWB:sendData("YELL");
-			end
-		end);
 	elseif (event == "COMBAT_LOG_EVENT_UNFILTERED") then
 		NWB:combatLogEventUnfiltered(...);
 	elseif (event == "CHAT_MSG_MONSTER_YELL") then
@@ -3431,7 +3448,7 @@ f:SetScript("OnEvent", function(self, event, ...)
 		--This event fires at logon if grouped already.
 		if (GetServerTime() - NWB.loadTime > 60) then
 			C_Timer.After(5, function()
-				if (UnitInBattleground("player")) then
+				if (UnitInBattleground("player") or NWB:isInArena()) then
 					return;
 				end
 				if (IsInRaid()) then
@@ -4009,7 +4026,7 @@ function NWB:playSound(sound, type)
 	if (IsInInstance() and NWB.db.global.soundsDisableInInstances) then
 		return;
 	end
-	if (UnitInBattleground("player") and NWB.db.global.soundsDisableInBattlegrounds) then
+	if ((UnitInBattleground("player") or NWB:isInArena()) and NWB.db.global.soundsDisableInBattlegrounds) then
 		return;
 	end
 	if (NWB.db.global.soundOnlyInCity and (type == "rend" or type == "ony" or type == "nef" or type == "zan" or type == "timer")) then
@@ -4249,6 +4266,13 @@ function NWB:GetLayerNum(zoneID)
 	end
 end
 
+function NWB:isInArena()
+	--Check if the func exists for classic.
+	if (IsActiveBattlefieldArena and IsActiveBattlefieldArena()) then
+		return true;
+	end
+end
+
 function NWB:debug(...)
 	local data = ...;
 	if (data and NWB.isDebug) then
@@ -4288,6 +4312,10 @@ function SlashCmdList.NWBCMD(msg, editBox)
 				arg = nil;
 			end
 		end
+	end
+	if (msg == "guild" or msg == "layer" or msg == "layers") then
+		NWB:openLFrame();
+		return;
 	end
 	if (msg == "resetold" or msg == "removeold") then
 		NWB:removeOldLayersNoTimer();
@@ -4400,6 +4428,8 @@ function NWB:createBroker()
 					WorldMapFrame:Show();
 					WorldMapFrame:SetMapID(1448);
 				end
+			elseif (NWB.isLayered and button == "LeftButton" and IsControlKeyDown()) then
+				NWB:openLFrame();
 			elseif (button == "LeftButton") then
 				NWB:openLayerFrame();
 			elseif (button == "RightButton" and IsShiftKeyDown()) then
@@ -4597,6 +4627,9 @@ function NWB:updateMinimapButton(tooltip, usingPanel)
 		tooltip:AddLine("|cFF9CD6DERight-Click|r Buffs");
 		tooltip:AddLine("|cFF9CD6DEShift Left-Click|r Felwood Map");
 		tooltip:AddLine("|cFF9CD6DEShift Right-Click|r Config");
+		if (NWB.isLayered) then
+			tooltip:AddLine("|cFF9CD6DEControl Left-Click|r Guild Layers");
+		end
 		C_Timer.After(0.1, function()
 			NWB:updateMinimapButton(tooltip, usingPanel);
 		end)
@@ -8310,6 +8343,36 @@ NWBlayerFrameMapButton:SetScript("OnHide", function(self)
 	end
 end)
 
+--Guild layers button.
+local NWBGuildLayersButton = CreateFrame("Button", "NWBGuildLayersButton", NWBlayerFrameClose, "UIPanelButtonTemplate");
+NWBGuildLayersButton:SetPoint("CENTER", -58, -57);
+NWBGuildLayersButton:SetWidth(90);
+NWBGuildLayersButton:SetHeight(17);
+NWBGuildLayersButton:SetText("Guild Layers");
+NWBGuildLayersButton:SetNormalFontObject("GameFontNormalSmall");
+NWBGuildLayersButton:SetScript("OnClick", function(self, arg)
+	NWB:openLFrame();
+end)
+NWBGuildLayersButton:SetScript("OnMouseDown", function(self, button)
+	if (button == "LeftButton" and not self:GetParent():GetParent().isMoving) then
+		self:GetParent():GetParent().EditBox:ClearFocus();
+		self:GetParent():GetParent():StartMoving();
+		self:GetParent():GetParent().isMoving = true;
+	end
+end)
+NWBGuildLayersButton:SetScript("OnMouseUp", function(self, button)
+	if (button == "LeftButton" and self:GetParent():GetParent().isMoving) then
+		self:GetParent():GetParent():StopMovingOrSizing();
+		self:GetParent():GetParent().isMoving = false;
+	end
+end)
+NWBGuildLayersButton:SetScript("OnHide", function(self)
+	if (self:GetParent():GetParent().isMoving) then
+		self:GetParent():GetParent():StopMovingOrSizing();
+		self:GetParent():GetParent().isMoving = false;
+	end
+end)
+
 --Copy Paste.
 local NWBCopyFrame = CreateFrame("ScrollFrame", "NWBCopyFrame", UIParent, NWB:addBackdrop("InputScrollFrameTemplate"));
 NWBCopyFrame:Hide();
@@ -8490,6 +8553,7 @@ function NWB:openLayerFrame()
 	NWBlayerFrame.fs3:SetFont(NWB.regionFont, 14);
 	if (not NWB.isLayered) then
 		NWBlayerFrameMapButton:Hide();
+		NWBGuildLayersButton:Hide();
 		NWBlayerFrame.fs2:Hide();
 		NWBlayerFrame.fs3:SetText("");
 		--On non-layered realms move the button on the main frame up to where layermap button would usually be.
@@ -9272,8 +9336,8 @@ f:SetScript('OnEvent', function(self, event, ...)
 		if ((GetServerTime() - logonEnteringWorld) > 5) then
 			--NWB.lastKnownLayerMapIDBackup is used for songflowers only.
 			--It's a way to attach SF timers to a layer even if you logon in a group or join a group right after logon.
-			--NWB.lastKnownLayerMapID is wiped on joining group for layer changinging reasons so that's why this backup exists only for songflowers.
-			--Here we allow NWB.lastKnownLayerMapIDBackup to be valid for 3 minutes after logging in if al;ready in a group.
+			--NWB.lastKnownLayerMapID is wiped on joining group for layer changing reasons so that's why this backup exists only for songflowers.
+			--Here we allow NWB.lastKnownLayerMapIDBackup to be valid for 3 minutes after logging in if already in a group.
 			--Or valid for up to 1 minute after logon if you join a group after logon.
 			local sinceLogon = GetServerTime() - logonEnteringWorld;
 			local buffer = 60 - sinceLogon;
@@ -9321,6 +9385,10 @@ f:SetScript('OnEvent', function(self, event, ...)
 		--But seems ok way to find if you join a team to phase.
 		--Seems to fire even when you are in the same phase, guess it will still do for now to reset the phase frame and make user retarget a npc.
 		if (UnitIsGroupLeader(unit)) then
+			if (NWB.currentLayerShared ~= 0) then
+				NWB:sendL(0);
+				NWB.currentLayerShared = 0;
+			end
 			NWB.currentLayer = 0;
 			NWB_CurrentLayer =  0;
 			NWB.currentZoneID = 0;
@@ -9340,6 +9408,9 @@ function NWB:guidFromClosestNameplate()
 end
 
 --There are a few different types here because they set/reset on different things for different functions.
+--Some things need to be more accurate for actual layer creating data than others.
+--Some layer data variables won't be recorded for minutes after joining a group to give player time to change layer.
+--But there are still backup variables just for displaying current layer text during this team joined period.
 NWB.lastKnownLayer = 0;
 NWB.lastKnownLayerID = 0;
 NWB.lastKnownLayerMapID = 0;
@@ -9351,6 +9422,7 @@ NWB.validZoneIDTimer = nil;
 NWB.AllowCurrentZoneID = true;
 --Enable some globals that other addons/weakauras can use.
 NWB_CurrentLayer = 0;
+NWB.currentLayerShared = 0;
 function NWB:setCurrentLayerText(unit)
 	if (not NWB.isLayered or not unit) then
 		return;
@@ -9387,6 +9459,10 @@ function NWB:setCurrentLayerText(unit)
 		count = count + 1;
 		if (k == tonumber(zoneID)) then
 			NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. L["You are currently on"] .. " |cff00ff00[Layer " .. count .. "]|cFF9CD6DE.|r");
+			if (NWB.currentLayerShared ~= count) then
+				NWB:sendL(count);
+				NWB.currentLayerShared = count;
+			end
 			NWB.currentLayer = count;
 			NWB_CurrentLayer = count;
 			NWB.lastKnownLayer = count;
@@ -9445,8 +9521,8 @@ NWB.layerMapWhitelist = {
 	[1411] = "Durotar",
 	[1412] = "Mulgore",
 	[1413] = "The Barrens",
-	--[1414] = "Kalimdor 	Continent 	Azeroth
-	--[1415] = "Eastern Kingdoms 	Continent 	Azeroth
+	--[1414] = "Kalimdor",
+	--[1415] = "Eastern Kingdoms",
 	[1416] = "Alterac Mountains",
 	[1417] = "Arathi Highlands",
 	[1418] = "Badlands",
@@ -9490,9 +9566,27 @@ NWB.layerMapWhitelist = {
 	[1456] = "Thunder Bluff",
 	[1457] = "Darnassus",
 	[1458] = "Undercity",
-	--[1459] = "Alterac Valley 	Zone 	Azeroth
-	--[1460] = "Warsong Gulch 	Zone 	Azeroth
-	--[1461] = "Arathi Basin 	Zone 	Azeroth
+	--[1459] = "Alterac Valley",
+	--[1460] = "Warsong Gulch",
+	--[1461] = "Arathi Basin",
+	
+	--TBC.
+	[1941] = "Eversong Woods",
+	[1942] = "Ghostlands",
+	[1943] = "Azuremyst Isle",
+	[1944] = "Hellfire Peninsula",
+	--[1945] = "Outland",
+	[1946] = "Zangarmarsh",
+	[1947] = "The Exodar",
+	[1948] = "Shadowmoon Valley",
+	[1949] = "Blade's Edge Mountains",
+	[1950] = "Bloodmyst Isle",
+	[1951] = "Nagrand",
+	[1952] = "Terokkar Forest",
+	[1953] = "Netherstorm",
+	[1954] = "Silvermoon City",
+	[1955] = "Shattrath City",
+	[1957] = "Isle of Quel'Danas",
 };
 
 function NWB.k()
@@ -9510,7 +9604,7 @@ end
 	get mapped one time by a few early players and shared around, so the chances of this bug happening is pretty low.]]
 	
 function NWB:mapCurrentLayer(unit)
-	if (not NWB.isLayered or not unit or UnitOnTaxi("player") or IsInInstance() or UnitInBattleground("player")) then
+	if (not NWB.isLayered or not unit or UnitOnTaxi("player") or IsInInstance() or UnitInBattleground("player") or NWB:isInArena()) then
 		return;
 	end
 	local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
@@ -10157,6 +10251,10 @@ function NWB:recalcMinimapLayerFrame(zoneID)
 			count = count + 1;
 			if (k == NWB.lastKnownLayerMapID) then
 				NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. L["You are currently on"] .. " |cff00ff00[Layer " .. count .. "]|cFF9CD6DE.|r");
+				if (NWB.currentLayerShared ~= count) then
+					NWB:sendL(count);
+					NWB.currentLayerShared = count;
+				end
 				NWB.currentLayer = count;
 				NWB_CurrentLayer = count;
 				NWB.lastKnownLayer = count;
@@ -10172,12 +10270,15 @@ function NWB:recalcMinimapLayerFrame(zoneID)
 		if (NWB.currentLayer > 0) then
 			MinimapLayerFrame.fs:SetText(NWB.mmColor .. "Layer " .. NWB.lastKnownLayer);
 			MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 12);
+			NWB_CurrentLayer = NWB.lastKnownLayer;
 		elseif (layerNum > 0) then
 			MinimapLayerFrame.fs:SetText(NWB.mmColor .. "Layer " .. layerNum);
 			MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 12);
+			NWB_CurrentLayer = layerNum;
 		else
 			MinimapLayerFrame.fs:SetText(NWB.mmColor .. "No Layer");
 			MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 10);
+			NWB_CurrentLayer = 0;
 		end
 		--MinimapLayerFrame:SetWidth(MinimapLayerFrame.fs:GetStringWidth() + 12);
 		--MinimapLayerFrame:SetHeight(MinimapLayerFrame.fs:GetStringHeight() + 12);
@@ -10187,6 +10288,7 @@ function NWB:recalcMinimapLayerFrame(zoneID)
 		--All this does is change the minimap layer frame text, this doesn't effect anything else or change any of the mapping variables.
 		--This is a bit of a hacky fix to just tag a recalc on the end of the layer mapping system when on team join cooldown.
 		--But layer mapping is working basically perfect right now and I don't want to rewrite it quite yet.
+		--Edit: Now also effects shared guild layer data.
 		local foundBackup;
 		if (zoneID) then
 			local backupCount = 0;
@@ -10198,13 +10300,23 @@ function NWB:recalcMinimapLayerFrame(zoneID)
 							MinimapLayerFrame.fs:SetText("Layer " .. backupCount);
 							MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 12);
 							foundBackup = true;
+							NWB_CurrentLayer = backupCount;
+							if (NWB.currentLayerShared ~= backupCount) then
+								NWB:sendL(backupCount);
+								NWB.currentLayerShared = backupCount;
+							end
 						end
 					end
 				end
 			end
+		else
+			if (NWB.currentLayerShared ~= 0) then
+				NWB:sendL(0);
+				NWB.currentLayerShared = 0;
+			end
+			NWB_CurrentLayer = 0;
 		end
 		NWB.currentLayer = 0;
-		NWB_CurrentLayer = 0;
 		if (foundBackup) then
 			NWB:toggleMinimapLayerFrame("show");
 		else
@@ -10381,7 +10493,7 @@ end
 function NWB:recalcVersionFrame()
 	NWBVersionFrame.EditBox:SetText("\n\n");
 	if (not IsInGuild()) then
-		NWBVersionFrame.EditBox:Insert("|cffFFFF00You have no guild, this command shows guild members only.\n");
+		NWBVersionFrame.EditBox:Insert("|cffFFFF00You have no guild, this command shows guild members only.|r\n");
 	else
 		GuildRoster();
 		local numTotalMembers = GetNumGuildMembers();
@@ -10406,7 +10518,7 @@ function NWB:recalcVersionFrame()
 		for k, v in NWB:pairsByKeys(sorted) do
 			for kk, vv in NWB:pairsByKeys(v) do
 				if (tonumber(k) > 0 or NWB.isDebug) then
-					NWBVersionFrame.EditBox:Insert("|cffFFFF00" .. k .. " |cff9CD6DE" .. kk .. "\n");
+					NWBVersionFrame.EditBox:Insert("|cffFFFF00" .. k .. "|r |cff9CD6DE" .. kk .. "|r\n");
 				end
 			end
 		end
