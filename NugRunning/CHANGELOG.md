@@ -1,9 +1,12 @@
 # NugRunning
 
-## [9.1-bcc4](https://github.com/rgd87/NugRunning/tree/9.1-bcc4) (2021-05-15)
-[Full Changelog](https://github.com/rgd87/NugRunning/compare/PreBCC...9.1-bcc4) [Previous Releases](https://github.com/rgd87/NugRunning/releases)
+## [9.1-bcc5](https://github.com/rgd87/NugRunning/tree/9.1-bcc5) (2021-05-15)
+[Full Changelog](https://github.com/rgd87/NugRunning/compare/PreBCC...9.1-bcc5) [Previous Releases](https://github.com/rgd87/NugRunning/releases)
 
 - BCC fallback toc  
+- Option to show target names  
+- Font outline settings  
+- Added Blizzard Slow, limited Frostbite timers  
 - Fixed original spell ID being put as clone ID  
 - Fixed preghost cancelling active timers on BCC  
 - Fixed preghost timer activation with non-numeric durations (#42)  
