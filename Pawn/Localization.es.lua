@@ -433,10 +433,12 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		["SpellDamage3"] = "^UNUSED$",
 		["SpellDamage4"] = "^UNUSED$",
 		["SpellDamageAndHealing"] = "^Equipar: Aumenta hasta # p%. la sanación realizada y hasta # p%. todo el daño infligido con todos los hechizos y efectos mágicos%.$",
+		["SpellDamageAndHealingShort"] = "^UNUSED$",
 		["SpellHasteRating"] = "^Equipar: Aumenta el índice de celeridad con hechizos e?n? ?# p%.$",
 		["SpellHasteRatingShort"] = "^%+?# índice de celeridad con hechizos$",
 		["SpellHit"] = "^Equipar: Mejora un #%% tu probabilidad de golpear con hechizos%.$",
 		["SpellHitRating"] = "^Equipar: Aumenta tu índice de golpe con hechizos e?n? ?# p%.$",
+		["SpellHitRating2"] = "^Equipar: Mejora # p%. el golpe con hechizos%.$",
 		["SpellHitRatingShort"] = "^%+?# índice de golpe con hechizos$",
 		["SpellPenetration"] = "^Equipar: Aumenta la penetración de tus hechizos e?n? ?# p%.$",
 		["SpellPenetrationShort"] = "^%+?# penetración de hechizos$",
@@ -795,6 +797,7 @@ if GetLocale() == "esES" then
 	PawnLocal.TooltipParsing.SpellCritRating2 = "^Equipar: Mejora el índice de golpe crítico con hechizos en # p%.$"
 	PawnLocal.TooltipParsing.SpellDamageAndHealing = "^Equipar: Aumenta la sanación que haces hasta # p%. y el daño que infliges hasta # p%. con todos los hechizos mágicos y efectos%.$"
 	PawnLocal.TooltipParsing.SpellHasteRating = "^Equipar: Mejora el índice de celeridad con hechizos en # p%.$"
+	PawnLocal.TooltipParsing.SpellHitRating = "^Equipar: Mejora el índice de golpe con hechizos en # p%.$"
 
 	if VgerCore.IsClassic then
 
@@ -807,15 +810,11 @@ if GetLocale() == "esES" then
 			["NatureResist"] = "^%+?# Naturaleza Resistencia$",
 			["ShadowResist"] = "^%+?# Sombras Resistencia$",
 			["SpellDamage2"] = "^Equipar: Aumenta el daño y la curación de los hechizos mágicos y los efectos hasta en # p%.$",
+			["ArcaneSpellDamage"] = "^%+?# de daño de Hechizos Arcanos$",
 			["FireSpellDamage"] = "^%+?# de daño de Hechizos de Fuego$",
-			["FireSpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos de Fuego y los efectos hasta en # p%.$",
 			["FrostSpellDamage"] = "^%+?# de daño de Hechizos de Escarcha$",
-			["FrostSpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos de Escarcha y los efectos hasta en # p%.$",
-			["HolySpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos Sagrados y los efectos hasta en # p%.$",
 			["NatureSpellDamage"] = "^%+?# de daño de Hechizos de Naturaleza$",
-			["NatureSpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos de Naturaleza y los efectos hasta en # p%.$",
 			["ShadowSpellDamage"] = "^%+?# de daño de Hechizos de Sombras$",
-			["ShadowSpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos de Sombras y los efectos hasta en # p%.$",
 		}
 
 		local Key, NewString
@@ -829,7 +828,6 @@ if GetLocale() == "esES" then
 		local TooltipParsing_Classic =
 		{
 			["Ap"] = "^%+?# de poder de ataque$",
-			["ArcaneSpellDamage"] = "^%+?# de daño de Hechizos Arcanos$",
 			["ArcaneSpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos Arcanos y los efectos hasta en # p%.$",
 			["Armor"] = "^%+?# armadura$",
 			["Block"] = "^%+?# bloquear$",
@@ -861,6 +859,11 @@ if GetLocale() == "esES" then
 			["WeaponDamageNatureExact"] = "^%+?# Naturaleza Daño$",
 			["WeaponDamageShadow"] = "^%+?# %- # Sombras Daño$",
 			["WeaponDamageShadowExact"] = "^%+?# Sombras Daño$",
+			["FireSpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos de Fuego y los efectos hasta en # p%.$",
+			["FrostSpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos de Escarcha y los efectos hasta en # p%.$",
+			["HolySpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos Sagrados y los efectos hasta en # p%.$",
+			["NatureSpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos de Naturaleza y los efectos hasta en # p%.$",
+			["ShadowSpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos de Sombras y los efectos hasta en # p%.$",
 		}
 
 		local Key, NewString
@@ -870,8 +873,24 @@ if GetLocale() == "esES" then
 	end
 
 	if VgerCore.IsBurningCrusade then
-		PawnLocal.TooltipParsing.Ap2 = "^Equipar: Aumenta el poder de ataque en # p%.$"
-		PawnLocal.TooltipParsing.SpellDamage2 = "^Equipar: Aumenta el daño y la sanación de los hechizos mágicos y los efectos hasta en # p%.$"
+		
+		local TooltipParsing_BurningCrusade =
+		{
+			["Ap2"] = "^Equipar: Aumenta el poder de ataque en # p%.$",
+			["SpellDamage2"] = "^Equipar: Aumenta el daño y la sanación de los hechizos mágicos y los efectos hasta en # p%.$",
+			["ArcaneSpellDamage"] = "^%+?# daño con hechizos Arcano$",
+			["FireSpellDamage"] = "^%+?# daño con hechizos de Fuego$",
+			["FrostSpellDamage"] = "^%+?# daño con hechizos de Escarcha$",
+			["NatureSpellDamage"] = "^%+?# daño con hechizos de Naturaleza$",
+			["ShadowSpellDamage"] = "^%+?# daño con hechizos de Sombras$",
+			["ShadowSpellDamage"] = "^%+?# daño con hechizos de las Sombras$",
+			["ShadowSpellDamage2"] = "^Equipar: Aumenta el daño causado por los hechizos de las Sombras y los efectos hasta en # p%.$",
+		}
+
+		local Key, NewString
+		for Key, NewString in pairs(TooltipParsing_BurningCrusade) do
+			PawnLocal.TooltipParsing[Key] = NewString
+		end
 	end
 
 	if VgerCore.IsShadowlands or VgerCore.IsBurningCrusade then

@@ -394,11 +394,13 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		["SpellDamage3"] = "^Если на персонаже: Увеличивает урон и объем исцеления от магических заклинаний и эффектов максимум на # ед%.$",
 		["SpellDamage4"] = "^UNUSED$",
 		["SpellDamageAndHealing"] = "^Если на персонаже: Усиливает исходящее исцеление максимум на # ед%., а урон от магических эффектов и заклинаний – максимум на # ед%.$",
+		["SpellDamageAndHealingShort"] = "^UNUSED$",
 		["SpellHasteRating"] = "^Если на персонаже: Повышает рейтинг скорости заклинаний на #%.$",
 		["SpellHasteRatingShort"] = "^%+?# к рейтингу скорости заклинаний$",
 		["SpellHit"] = "^Если на персонаже: Повышение на #%% рейтинга меткости заклинаний%.$",
 		--[[Translation missing --]]
 		["SpellHitRating"] = "^Equip: Increases your spell hit rating by #%.$",
+		["SpellHitRating2"] = "^Если на персонаже: Меткость %(заклинания%) %+#%.$",
 		["SpellHitRatingShort"] = "^%+?# к рейтингу меткости заклинаний$",
 		["SpellPenetration"] = "^Если на персонаже: Увеличивает проникающую способность заклинаний на #%.$",
 		["SpellPenetrationShort"] = "^%+?# к проникающей способности заклинаний$",

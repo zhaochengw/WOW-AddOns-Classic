@@ -7,7 +7,7 @@
 -- Main non-UI code
 ------------------------------------------------------------
 
-PawnVersion = 2.0505
+PawnVersion = 2.0508
 
 -- Pawn requires this version of VgerCore:
 local PawnVgerCoreVersionRequired = 1.13
@@ -36,7 +36,9 @@ local PawnScaleTotals = { }
 --	Best gem data is broken down first by scale name, then by socket, then by minimum item level.  "Gem info" is yet another table.
 -- PawnScaleBestGems["Scale name"] = {
 --	["PrismaticSocket"] = { [0] = { gem info }, },
---	["PrismaticSocketValue"] = { [0] = 234.56, } }
+--	["PrismaticSocketValue"] = { [0] = 234.56, }
+--  ...and also Red, Yellow, Blue in place of Prismatic
+-- }
 PawnScaleBestGems = { }
 
 PawnPlayerFullName = nil
@@ -997,11 +999,11 @@ function PawnClearCacheValuesOnly()
 		end
 	end
 	-- Then, the gem caches.  For each gem meta-table, look at the gem table (which is in
-	-- column 3) and then clear out the contents of column 9 of that table.
-	local GemTable
-	for _, GemTable in pairs(PawnGemQualityLevels) do
-		for _, CachedItem in pairs(GemTable[2]) do
-			CachedItem[9] = nil
+	-- column 3) and then clear out that table's item data cache.
+	local GemQualityData, GemData
+	for _, GemQualityData in pairs(PawnGemQualityLevels) do
+		for _, GemData in pairs(GemQualityData[2]) do
+			GemData.Item = nil
 		end
 	end
 	-- Then, the Compare tab's cache.
@@ -1075,6 +1077,12 @@ function PawnRecalculateScaleTotal(ScaleName)
 		{
 			["PrismaticSocket"] = { },
 			["PrismaticSocketValue"] = { },
+			["RedSocket"] = { },
+			["RedSocketValue"] = { },
+			["YellowSocket"] = { },
+			["YellowSocketValue"] = { },
+			["BlueSocket"] = { },
+			["BlueSocketValue"] = { },
 		}
 	end
 	local ThisScaleBestGems = PawnScaleBestGems[ScaleName]
@@ -1091,8 +1099,23 @@ function PawnRecalculateScaleTotal(ScaleName)
 		end
 
 		local BestPrismatic
-		BestPrismatic, ThisScaleBestGems.PrismaticSocket[ItemLevel] = PawnFindBestGems(ScaleName, GemData, true, true, true)
+		BestPrismatic, ThisScaleBestGems.PrismaticSocket[ItemLevel] = PawnFindBestGems(ScaleName, GemData)
 		ThisScaleBestGems.PrismaticSocketValue[ItemLevel] = BestPrismatic
+
+		-- Classic Era and the retail realms don't have colored sockets anymore, so don't bother trying to calculate for those.
+		if not VgerCore.IsClassic and not VgerCore.IsShadowlands then
+			local BestRed
+			BestRed, ThisScaleBestGems.RedSocket[ItemLevel] = PawnFindBestGems(ScaleName, GemData, true, false, false)
+			ThisScaleBestGems.RedSocketValue[ItemLevel] = BestRed
+
+			local BestYellow
+			BestYellow, ThisScaleBestGems.YellowSocket[ItemLevel] = PawnFindBestGems(ScaleName, GemData, false, true, false)
+			ThisScaleBestGems.YellowSocketValue[ItemLevel] = BestYellow
+
+			local BestBlue
+			BestBlue, ThisScaleBestGems.BlueSocket[ItemLevel] = PawnFindBestGems(ScaleName, GemData, false, false, true)
+			ThisScaleBestGems.BlueSocketValue[ItemLevel] = BestBlue
+		end
 	end
 
 end
@@ -1300,9 +1323,9 @@ end
 -- Return value type is the same as PawnGetCachedItem.
 function PawnGetGemData(GemData)
 	-- If we've already called this function for this gem, keep the stored data.
-	if GemData[6] then return GemData[6] end
+	if GemData.Item then return GemData.Item end
 	
-	local ItemID = GemData[1]
+	local ItemID = GemData.ID
 	local ItemName, ItemLink, ItemRarity, ItemLevel, _, _, _, _, _, ItemTexture = GetItemInfo(ItemID)
 	if ItemLink == nil or ItemName == nil then
 		-- If the gem doesn't exist in the user's local cache, we'll have to fake up some info for it.
@@ -1314,17 +1337,11 @@ function PawnGetGemData(GemData)
 	Item.Rarity = ItemRarity
 	Item.Level = GetDetailedItemLevelInfo(ItemLink) or ItemLevel
 	Item.Texture = ItemTexture
-	Item.UnenchantedStats = { }
-	if GemData[2] then
-		Item.UnenchantedStats[GemData[2]] = GemData[3]
-	end
-	if GemData[4] then
-		Item.UnenchantedStats[GemData[4]] = GemData[5]
-	end
+	Item.UnenchantedStats = GemData.Stats or { }
 	PawnRecalculateItemValuesIfNecessary(Item, true) -- Ignore the user's normalization factor when determining these gem values.
 	
 	-- Save this value for next time.
-	GemData[6] = Item
+	GemData.Item = Item
 	return Item
 end
 
@@ -2466,7 +2483,13 @@ function PawnGetItemValue(Item, ItemLevel, SocketBonus, ScaleName, DebugMessages
 			break
 		end
 		-- Sockets need to be considered separately since their value depends on the item's level.
-		if Stat ~= "PrismaticSocket" then
+		if
+			Stat ~= "PrismaticSocket" and
+			Stat ~= "RedSocket" and
+			Stat ~= "YellowSocket" and
+			Stat ~= "BlueSocket" and
+			Stat ~= "MetaSocket"
+		then
 			if ThisValue then
 				-- This stat has a value; add it to the running total.
 				if ScaleValues.SpeedBaseline and (
@@ -2496,18 +2519,27 @@ function PawnGetItemValue(Item, ItemLevel, SocketBonus, ScaleName, DebugMessages
 
 			-- Decide what to do with sockets.
 			if ShouldIncludeSockets then
-				Stat = "PrismaticSocket" Quantity = Item[Stat]
-				if Quantity then
-					GemQualityLevel = PawnGetGemQualityForItem(PawnGemQualityLevels, ItemLevel)
-					ThisValue = ThisScaleBestGems[Stat .. "Value"][GemQualityLevel]
-					if ThisValue then
-						TotalSocketValue = TotalSocketValue + Quantity * ThisValue
-						Total = Total + Quantity * ThisValue
-						if DebugMessages then PawnDebugMessage(format(PawnLocal.ValueCalculationMessage, Quantity, Stat, ThisValue, Quantity * ThisValue)) end
+
+				local ProcessSockets = function(Stat)
+					Quantity = Item[Stat]
+					if Quantity then
+						GemQualityLevel = PawnGetGemQualityForItem(PawnGemQualityLevels, ItemLevel)
+						ThisValue = ThisScaleBestGems[Stat .. "Value"][GemQualityLevel]
+						if ThisValue then
+							TotalSocketValue = TotalSocketValue + Quantity * ThisValue
+							Total = Total + Quantity * ThisValue
+							if DebugMessages then PawnDebugMessage(format(PawnLocal.ValueCalculationMessage, Quantity, Stat, ThisValue, Quantity * ThisValue)) end
+						end
 					end
 				end
+				ProcessSockets("PrismaticSocket")
+				ProcessSockets("RedSocket")
+				ProcessSockets("YellowSocket")
+				ProcessSockets("BlueSocket")
+
+				-- TODO: Handle meta sockets ***
 			end
-			
+
 			-- Decide what to do with socket bonuses.
 			if SocketBonus then
 				local SocketBonusValue = 0
@@ -2525,6 +2557,8 @@ function PawnGetItemValue(Item, ItemLevel, SocketBonus, ScaleName, DebugMessages
 					Total = Total + SocketBonusValue
 					TotalSocketValue = TotalSocketValue + SocketBonusValue
 				end
+
+				-- TODO: Handle breaking socket bonuses ***
 			end
 
 		else
@@ -2703,9 +2737,21 @@ end
 function PawnGetItemIDsForDisplay(ItemLink, Formatted)
 	local Pos, _, ItemID, MoreInfo = strfind(ItemLink, "^|%x+|Hitem:(%-?%d+)([^|]+)|")
 	if not Pos then
-		Pos, _, ItemID, MoreInfo = strfind(ItemLink, "^item:(%-?%d+)([%d%-:]+)")
+		Pos, _, ItemID, MoreInfo = strfind(ItemLink, "^item:(%-?%d+):?(.*)")
 		if not Pos then return end
 	end
+
+	if MoreInfo then
+		-- Strip off stray colons.
+		Pos = strlen(MoreInfo)
+		while Pos > 1 and strsub(MoreInfo, Pos, Pos) == ":" do Pos = Pos - 1 end
+		MoreInfo = strsub(MoreInfo, 1, Pos)
+		-- Strip off the character level if that's the only thing after the ID.
+		local ColonsAndLevel = "::::::::" .. UnitLevel("player")
+		Pos = strlen(MoreInfo) - strlen(ColonsAndLevel)
+		if strsub(MoreInfo, Pos) == ColonsAndLevel then MoreInfo = strsub(MoreInfo, 1, Pos) end
+	end
+
 	if Formatted == nil then Formatted = true end
 
 	if MoreInfo and MoreInfo ~= "" then
@@ -3068,9 +3114,9 @@ end
 function PawnGetGemQualityForItem(GemQualityLevels, ItemLevel)
 	if not ItemLevel then return GemQualityLevels[1][1] end
 
-	local _, GemData, GemLevel
-	for _, GemData in pairs(GemQualityLevels) do
-		GemLevel = GemData[1]
+	local _, GemQualityData, GemLevel
+	for _, GemQualityData in pairs(GemQualityLevels) do
+		GemLevel = GemQualityData[1]
 		if ItemLevel >= GemLevel then return GemLevel end
 	end
 	VgerCore.Fail("Couldn't find an appropriate gem quality level for an item of level " .. tostring(ItemLevel) .. " in the specified item table.")
@@ -3081,11 +3127,12 @@ end
 -- 	Parameters: ScaleName, GemTable
 --		ScaleName: The name of the scale for which to find gems.
 --		GemTable: The gem table to search through.
+--		RedOnly, YellowOnly, BlueOnly: Filters the results to only gems of a certain color.
 --	Return value: Value, GemList
 --		Value: The value of the best gem or gems for the chosen colors.
 --		GemList: A table of gems of that value.  Each item in the list is in the standard Pawn item table format, and
 --			the list is sorted alphabetically by name.
-function PawnFindBestGems(ScaleName, GemTable)
+function PawnFindBestGems(ScaleName, GemTable, RedOnly, YellowOnly, BlueOnly)
 	local BestScore = 0
 	local BestItems = { }
 
@@ -3094,18 +3141,20 @@ function PawnFindBestGems(ScaleName, GemTable)
 	for _, GemData in pairs(GemTable) do
 		ThisGem = PawnGetGemData(GemData)
 		if ThisGem then
-			local ThisValue = PawnGetItemValue(ThisGem.UnenchantedStats, ThisGem.Level, nil, ScaleName, false, true)
-			if ThisValue and ThisValue > BestScore then
-				-- This gem is better than any we've found so far.
-				BestScore = ThisValue
-				wipe(BestItems)
-				tinsert(BestItems, ThisGem)
-			elseif ThisValue and ThisValue == BestScore then
-				-- This gem is tied with the best gems we've found so far.
-				tinsert(BestItems, ThisGem)
+			if ((not RedOnly) or GemData.R) and ((not YellowOnly) or GemData.Y) and ((not BlueOnly) or GemData.B) then
+				local ThisValue = PawnGetItemValue(ThisGem.UnenchantedStats, ThisGem.Level, nil, ScaleName, false, true)
+				if ThisValue and ThisValue > BestScore then
+					-- This gem is better than any we've found so far.
+					BestScore = ThisValue
+					wipe(BestItems)
+					tinsert(BestItems, ThisGem)
+				elseif ThisValue and ThisValue == BestScore then
+					-- This gem is tied with the best gems we've found so far.
+					tinsert(BestItems, ThisGem)
+				end
 			end
 		else
-			VgerCore.Fail("Failed to get information about gem " .. GemData[1])
+			VgerCore.Fail("Failed to get information about gem " .. GemData.ID)
 		end
 	end
 	

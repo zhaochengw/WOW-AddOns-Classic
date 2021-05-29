@@ -307,6 +307,45 @@ indeterminate or an upgrade. This can be used for auto-sell rules, such as <code
 </ul>
 
 <h2>Updates</h2>
+<h3>Version 2.5.8</h3>
+<ul>
+	<li>Pawn now includes colored sockets in the value of an item like it does 
+	for prismatic sockets. Colored sockets are assigned a value automatically 
+	based on the best gems that fit that socket's color of an appropriate 
+	quality level for the item. Like prismatic sockets, there's no way to 
+	manually override the value of a colored socket or to fine-tune the quality 
+	level of the gem used in the calculation.<ul>
+		<li>Socket bonuses (including breaking the socket bonus when applicable) 
+		and meta gems are not yet supported.</li>
+	</ul>
+	</li>
+	<li>Colored and meta sockets are now shown on Pawn's Compare tab.</li>
+	<li>The socketing advisor will now appear for socketed items in Burning 
+	Crusade Classic.</li>
+	<li>Added support for more items with spell hit rating on Burning Crusade 
+	Classic.</li>
+</ul>
+<h3>Version 2.5.7</h3>
+<ul>
+	<li>Added the Gems tab in Burning Crusade Classic.<ul>
+		<li>Gems with Haste are not currently visible, since they won't appear 
+		until Black Temple opens.</li>
+	</ul>
+	</li>
+	<li>The value of stamina in the Classic and Burning Crusade Classic default 
+	scales for DPS specs was too high and has been reduced to a more reasonable 
+	level.</li>
+	<li>Added support for some additional caster enchantments on English Classic 
+	and Burning Crusade Classic. (This was accidentally listed in the notes for 
+	2.5.6 in some places, but it's not fixed until 2.5.7.)</li>
+	<li>Simplified the look of some item IDs when the Show Item IDs option is 
+	enabled.</li>
+</ul>
+<h3>Version 2.5.6</h3>
+<ul>
+	<li>Fixed a few problems with items that give bonuses to a single type of 
+	magic damage in European Spanish Burning Crusade Classic.</li>
+</ul>
 <h3>Version 2.5.5</h3>
 <ul>
 	<li>Added support for items with feral attack power on Burning Crusade 
@@ -355,10 +394,8 @@ indeterminate or an upgrade. This can be used for auto-sell rules, such as <code
 	<li>Minor updates to the German translation.</li>
 </ul>
 <h3>Version 2.5</h3>
-<p><strong>Introducing: Pawn for the Burning Crusade 
-	Classic pre-patch.</strong> It works on the Burning Crusade Classic beta as well, 
-but gem-related features are not supported yet. This version also works on 
-Shadowlands and Classic Era servers, but doesn't have any new features.</p>
+<p>Introducing: Pawn for the Burning Crusade 
+	Classic pre-patch.</p>
 <p><strong>Important:</strong> If you imported custom scales on Classic and are continuing 
 to Burning Crusade Classic, you'll need to update your 
 weights for all of the percentage-based stats when you get the pre-patch. If, for example, your value for 
@@ -386,20 +423,7 @@ that come with Pawn, you don't need to do anything.</p>
 	<li>Added support for items that give different amounts of spell damage and 
 	healing on the same line (Amulet of Flowing Life, etc.).</li>
 	<li>The default stat weights on Burning Crusade Classic have been updated to 
-	accomodate the combat ratings change.</li>
-</ul>
-<p>This was a lot of work over a short period of time in a lot of languages I 
-can't read, so chances that something isn't working properly are pretty 
-high—please let me know if you find items that Pawn can't understand. The 
-Compare tab is helpful for this: if you put an item into the Compare tab and 
-it's missing a stat and Pawn says it has "special effects," but it's really just 
-regular stats, that's a good indicator that there might be a translation 
-problem.</p>
-<h4>Not yet implemented: Outland-specific features</h4>
-<ul>
-	<li>Burning Crusade gem database</li>
-	<li>Colored gem support</li>
-	<li>Socket bonus support</li>
+	accommodate the combat ratings change.</li>
 </ul>
 <h3>Older versions</h3>
 <p>See the <a href="Version%20history.htm">version history</a> document for 

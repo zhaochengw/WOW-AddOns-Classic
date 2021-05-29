@@ -1291,17 +1291,25 @@ function PawnUI_CompareItems(IsAutomatedRefresh)
 	-- Add gem and socket information.
 	LastFoundHeader = PawnLocal.UI.CompareSocketsHeader
 
-	local HasSockets1 = Item1.UnenchantedStats.PrismaticSocket
-	local HasSockets2 = Item2.UnenchantedStats.PrismaticSocket
-	if not HasSockets1 or HasSockets1 <= 0 then HasSockets1 = nil end
-	if not HasSockets2 or HasSockets2 <= 0 then HasSockets2 = nil end
-	if HasSockets1 or HasSockets2 then
-		if LastFoundHeader then
-			PawnUI_AddComparisonHeaderLine(LastFoundHeader)
-			LastFoundHeader = nil
+	local AddSockets = function(Stat, FriendlyName)
+		local HasSockets1 = Item1.UnenchantedStats[Stat]
+		local HasSockets2 = Item2.UnenchantedStats[Stat]
+		if not HasSockets1 or HasSockets1 <= 0 then HasSockets1 = nil end
+		if not HasSockets2 or HasSockets2 <= 0 then HasSockets2 = nil end
+		if HasSockets1 or HasSockets2 then
+			if LastFoundHeader then
+				PawnUI_AddComparisonHeaderLine(LastFoundHeader)
+				LastFoundHeader = nil
+			end
+			PawnUI_AddComparisonStatLineNumbers(FriendlyName, HasSockets1, HasSockets2, false) -- hide differential
 		end
-		PawnUI_AddComparisonStatLineNumbers(PawnLocal.UI.CompareColoredSockets, HasSockets1, HasSockets2, false) -- hide differential
 	end
+
+	AddSockets("PrismaticSocket", PawnLocal.UI.CompareColoredSockets)
+	AddSockets("RedSocket", RED_GEM)
+	AddSockets("YellowSocket", YELLOW_GEM)
+	AddSockets("BlueSocket", BLUE_GEM)
+	AddSockets("MetaSocket", META_GEM)
 
 	local _, TotalSocketValue1 = PawnGetItemValue(ItemStats1, Item1.Level, ItemSocketBonusStats1, PawnUICurrentScale, false, true)
 	local _, TotalSocketValue2 = PawnGetItemValue(ItemStats2, Item2.Level, ItemSocketBonusStats2, PawnUICurrentScale, false, true)
@@ -1314,6 +1322,8 @@ function PawnUI_CompareItems(IsAutomatedRefresh)
 		end
 		PawnUI_AddComparisonStatLineNumbers(PawnLocal.UI.CompareGemTotalValue, TotalSocketValue1, TotalSocketValue2, false) -- hide differential
 	end
+
+	-- TODO: Show socket bonuses ***
 
 	-- Everything else below this point goes under an "Other" header.
 	LastFoundHeader = PawnLocal.UI.CompareOtherHeader
@@ -1401,7 +1411,6 @@ function PawnUI_CompareItems(IsAutomatedRefresh)
 
 	-- Hack for WoW Classic: after a moment, refresh the whole thing, because we might have gotten
 	-- incomplete data from the tooltip the first time.
-	-- TODO: See if this is still necessary for Burning Crusade Classic.
 	if not IsAutomatedRefresh and (VgerCore.IsClassic or VgerCore.IsBurningCrusade) then
 		local AutomatedRefresh = function()
 			if PawnUIComparisonItems[1] then PawnUIComparisonItems[1] = PawnGetItemData(PawnUIComparisonItems[1].Link) end
@@ -1524,6 +1533,7 @@ function PawnUIGetAllTextForItem(Item)
 		end
 	elseif type(Item) == "string" then
 		ItemLink = Item
+		PawnGetItemData(ItemLink) -- Not actually used, but call this here so we can use /pawn debug.
 		Item = nil
 	end
 	local Tooltip = _G[PawnPrivateTooltipName]
@@ -1670,11 +1680,10 @@ end
 function PawnUI_ShowBestGems()
 	-- Always clear out the existing gems, no matter what happens next.
 	PawnUI_DeleteGemLines()
+	-- If no scale is selected, we can't show a gem list.  (This is a valid case!)
 	if not PawnUICurrentScale or PawnUICurrentScale == PawnLocal.NoScale then return end
 	
 	-- Update the gem list for this scale.
-	
-	-- If no scale is selected, we can't show a gem list.  (This is a valid case!)
 	if not PawnScaleBestGems[PawnUICurrentScale] then
 		VgerCore.Fail("Failed to build a gem list because no best-gem data was available for this scale.")
 		return
@@ -1685,11 +1694,37 @@ function PawnUI_ShowBestGems()
 
 	local GemQualityLevel = PawnGetGemQualityForItem(PawnGemQualityLevels, PawnUIGemQualityLevel)
 
-	if #(PawnScaleBestGems[PawnUICurrentScale].PrismaticSocket[GemQualityLevel]) > 0 then
-		for _, GemData in pairs(PawnScaleBestGems[PawnUICurrentScale].PrismaticSocket[GemQualityLevel]) do
-			PawnUI_AddGemLine(GemData.Name, GemData.Texture, GemData.ID)
+	if not VgerCore.IsClassic and not VgerCore.IsShadowlands then
+		-- Burning Crusade Classic: Divide by color
+		if #(PawnScaleBestGems[PawnUICurrentScale].RedSocket[GemQualityLevel]) > 0 then
+			PawnUI_AddGemHeaderLine(format(PawnLocal.UI.GemsColorHeader, RED_GEM))
+			for _, GemData in pairs(PawnScaleBestGems[PawnUICurrentScale].RedSocket[GemQualityLevel]) do
+				PawnUI_AddGemLine(GemData.Name, GemData.Texture, GemData.ID)
+			end
+			ShownGems = true
 		end
-		ShownGems = true
+		if #(PawnScaleBestGems[PawnUICurrentScale].YellowSocket[GemQualityLevel]) > 0 then
+			PawnUI_AddGemHeaderLine(format(PawnLocal.UI.GemsColorHeader, YELLOW_GEM))
+			for _, GemData in pairs(PawnScaleBestGems[PawnUICurrentScale].YellowSocket[GemQualityLevel]) do
+				PawnUI_AddGemLine(GemData.Name, GemData.Texture, GemData.ID)
+			end
+			ShownGems = true
+		end
+		if #(PawnScaleBestGems[PawnUICurrentScale].BlueSocket[GemQualityLevel]) > 0 then
+			PawnUI_AddGemHeaderLine(format(PawnLocal.UI.GemsColorHeader, BLUE_GEM))
+			for _, GemData in pairs(PawnScaleBestGems[PawnUICurrentScale].BlueSocket[GemQualityLevel]) do
+				PawnUI_AddGemLine(GemData.Name, GemData.Texture, GemData.ID)
+			end
+			ShownGems = true
+		end
+	else
+		-- Non-Classic WoW: All sockets are prismatic
+		if #(PawnScaleBestGems[PawnUICurrentScale].PrismaticSocket[GemQualityLevel]) > 0 then
+			for _, GemData in pairs(PawnScaleBestGems[PawnUICurrentScale].PrismaticSocket[GemQualityLevel]) do
+				PawnUI_AddGemLine(GemData.Name, GemData.Texture, GemData.ID)
+			end
+			ShownGems = true
+		end
 	end
 
 	if not ShownGems then
@@ -2032,9 +2067,13 @@ function PawnUI_OnSocketUpdate()
 			local TextColor = VgerCore.Color.Blue
 			if Scale.Color and strlen(Scale.Color) == 6 then TextColor = "|cff" .. Scale.Color end
 			
-			local SocketCount = GetNumSockets()
-			local PrismaticSockets = ItemStats.PrismaticSocket
-			if PrismaticSockets and PrismaticSockets > 0 then
+			local SocketCount = 0
+				+ (ItemStats.PrismaticSocket or 0)
+				+ (ItemStats.RedSocket or 0)
+				+ (ItemStats.YellowSocket or 0)
+				+ (ItemStats.BlueSocket or 0)
+
+			if SocketCount > 0 then
 				local BestGems = PawnGetGemListString(ScaleName, PawnOptions.AutoSelectScales, Item.Level)
 				if BestGems then
 					if PawnOptions.AutoSelectScales then
@@ -2046,6 +2085,7 @@ function PawnUI_OnSocketUpdate()
 					end
 				end
 			end
+
 		end
 	end
 	
@@ -2448,9 +2488,8 @@ function PawnUI_EnsureLoaded()
 		PawnUIOpenedYet = true
 		PawnUIFrame_ScaleSelector_Refresh()
 		PawnUIFrame_ShowScaleCheck_Label:SetText(format(PawnUIFrame_ShowScaleCheck_Label_Text, UnitName("player")))
-		if VgerCore.IsClassic or VgerCore.IsBurningCrusade then
-			-- WoW Classic doesn't have gems.
-			-- TODO: Show this tab once gems are working on Burning Crusade Classic.
+		if VgerCore.IsClassic then
+			-- WoW Classic Era doesn't have gems.
 			PawnUIFrameTab4:Hide()
 			PawnUIFrame_IgnoreGemsWhileLevelingCheck:Hide()
 			PawnUIFrame_ShowSocketingAdvisorCheck:Hide()
