@@ -1,43 +1,44 @@
 local class = select(2, UnitClass('player'))
 local frame = CreateFrame('Frame')
-for _, v in pairs({'PLAYER_ENTERING_WORLD','PLAYER_LEAVING_WORLD', 'UNIT_SPELLCAST_SUCCEEDED', 'UNIT_MAXPOWER', 'UNIT_POWER_FREQUENT'}) do
-	frame:RegisterEvent(v, 'player')
+for _, item in pairs({
+	'PLAYER_ENTERING_WORLD',
+	'UNIT_AURA',
+	'UPDATE_SHAPESHIFT_FORM',
+	'UNIT_SPELLCAST_SUCCEEDED',
+	'UNIT_POWER_FREQUENT',
+}) do
+	frame:RegisterEvent(item, 'player')
 end
-if class == 'ROGUE' then frame:RegisterEvent('UNIT_AURA') end
 frame:SetScript('OnEvent', function(self, event, ...)
 	if event == 'PLAYER_ENTERING_WORLD' then
 		function self.cure(key)
 			local type = UnitPowerType('player')
-			local cure = UnitPower('player', type)
-			if key == 'druid' then
-				type = 0
-				cure = DruidBarKey.currentmana
-			end
-			return cure, type
+			if key == 'druid' then type = 0 end
+			return UnitPower('player', type), type
 		end
-		function self.cast(key)
+		function self.rest(key, event, unit, powerType)
 			local cure, type = self.cure(key)
-			if cure < self[key].cure then
-				if type == 0 then self[key].wait = GetTime() + 5 end
+			if event == 'UPDATE_SHAPESHIFT_FORM' and class == 'DRUID' then --小德变身
 				self[key].cure = cure
-			end
-		end
-		function self.rest(key)
-			local cure, type = self.cure(key)
-			if type == 3 then self[key].wait = nil end
-			if cure > self[key].cure then
 				self[key].timer = GetTime()
+			elseif event == 'UNIT_POWER_FREQUENT' and unit == 'player' then -- 能量/法力更新
+				if cure > self[key].cure then
+					-- if key == 'default' then print('更新', mod(GetTime() - self[key].timer, self[key].interval)) end
+					self[key].cure = cure
+					self[key].timer = GetTime()
+					PowerSparkDB[key].timer = self[key].timer
+				end
+			elseif event == 'UNIT_SPELLCAST_SUCCEEDED' and unit == 'player' then -- 施法成功
+				if cure < self[key].cure and type == 0 then self[key].wait = GetTime() + 5 end -- 5秒回蓝
 				self[key].cure = cure
 			end
 		end
 		function self.init(parent, key) --初始化
 			if not parent or self[key] then return end
-			if not PowerSparkDB then PowerSparkDB = {[key] = {}} end
+			if not PowerSparkDB then PowerSparkDB = {} end
 			if not PowerSparkDB[key] then PowerSparkDB[key] = {} end
 			local power = CreateFrame('StatusBar', nil, parent)
-			local now = GetTime()
-			local type = UnitPowerType('player')
-			power:SetWidth(PlayerFrameManaBar:GetWidth())
+			power:SetWidth(parent:GetWidth())
 			power:SetHeight(parent:GetHeight())
 			power:SetPoint('CENTER')
 			power.spark = power:CreateTexture(nil, 'OVERLAY')
@@ -46,12 +47,12 @@ frame:SetScript('OnEvent', function(self, event, ...)
 			power.spark:SetHeight(32)
 			power.spark:SetBlendMode('ADD')
 			power.spark:SetAlpha(0)
-			power.rate = now
-			power.cure = UnitPower('player', type)
-			power.timer = PowerSparkDB[key].timer
-			if key == 'DRUID' then power.cure = DruidBarKey.currentmana end
+			power.cure = self.cure(key)
+			power.rate = GetTime()
+			power.timer = PowerSparkDB[key].timer or GetTime()
 			power.interval = 2
 			power.key = key
+			power.parent = parent
 			function power.hide(key)
 				local cure, type = self.cure(key)
 				return UnitIsDeadOrGhost('player') or key == 'default' and type == 1 or type == 0 and cure >= UnitPowerMax('player', 0) or type == 3 and cure >= UnitPowerMax('player') and not IsStealthed() and (not UnitCanAttack('player', 'target') or UnitIsDeadOrGhost('target')) --角色死亡/怒气/满蓝/满能量且不潜行且目标不可攻击
@@ -59,40 +60,42 @@ frame:SetScript('OnEvent', function(self, event, ...)
 			power:HookScript('OnUpdate', function(self)
 				local now = GetTime()
 				if now < self.rate then return end
-				self.rate = now + 0.03 --刷新率
+				self.rate = now + 0.02 --刷新率
 				if self.hide(self.key) then
 					self.spark:SetAlpha(0)
-					return
-				end
-				self.spark:SetAlpha(1)
-				if self.wait and self.wait > now then --5秒等待回蓝
+				elseif self.wait and self.wait > now and (UnitPowerType('player') == 0 or self.key == 'druid') then --5秒等待回蓝
+					self.spark:SetAlpha(1)
 					self.spark:SetPoint('CENTER', self, 'LEFT', self:GetWidth() * (self.wait - now) / 5, 0)
 				elseif self.timer then
+					self.spark:SetAlpha(1)
 					self.spark:SetPoint('CENTER', self, 'LEFT', self:GetWidth() * (mod(now - self.timer, self.interval) / self.interval), 0)
 				end
 			end)
 			self[key] = power
 		end
-		self.init(PlayerFrameManaBar, 'default')
-		if class == 'DRUID' and DruidBarFrame and DruidBarKey then self.init(DruidBarFrame, 'druid') end
-	elseif event == 'PLAYER_LEAVING_WORLD' then
-		PowerSparkDB.default.timer = self.default.timer
-		if self.druid then PowerSparkDB.druid.timer = self.druid.timer end
-	elseif event == 'UNIT_SPELLCAST_SUCCEEDED' then
-		self.cast('default')
-		if self.druid then self.cast('druid') end
-	elseif event =='UNIT_MAXPOWER' or event == 'UNIT_POWER_FREQUENT' then
-		self.rest('default')
-		if self.druid then self.rest('druid') end
-	elseif event == 'UNIT_AURA' then
+		if SUFUnitplayer and SUFUnitplayer.powerBar then -- 兼容 SUF
+			self.init(SUFUnitplayer.powerBar, 'default')
+			if class == 'DRUID' and SUFUnitplayer.druidBar then self.init(SUFUnitplayer.druidBar, 'druid') end
+		elseif ElvUF_Player and ElvUF_Player.Power then	-- 兼容 ElvUI
+			self.init(ElvUF_Player.Power, 'default')
+		elseif StatusBars2_playerPowerBar then	-- 兼容 Statusbars2
+			self.init(StatusBars2_playerPowerBar, 'default')
+		else
+			self.init(PlayerFrameManaBar, 'default')
+		end
+		if class == 'DRUID' and DruidBarFrame then self.init(DruidBarFrame, 'druid') end
+	elseif event == 'UNIT_AURA' and class == 'ROGUE' and unit == 'player' then
 		self.interval = 2
 		local i = 1
 		while UnitBuff('player', i) do
-			if select(10,UnitBuff('player', i)) == 13750 then --开了冲动
+			if select(10, UnitBuff('player', i)) == 13750 then --开了冲动
 				self.interval = 1
 				break
 			end
 			i = i + 1
 		end
+	elseif self.rest then
+			self.rest('default', event, ...)
+			if self.druid then self.rest('druid', event, ...) end
 	end
 end)

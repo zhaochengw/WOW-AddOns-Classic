@@ -1,16 +1,10 @@
 ## Interface: 20501
-## Title: PowerSpark
+## Title: 能量和法力恢复提示
 ## Notes: PowerSpark
-## Title-zhCN: |CFF8000FF职业|R 能量法力恢复提示
-## Notes-zhCN: 能量和法力恢复提示
-## Title-zhTW: |CFF8000FF職業|R 能量法力恢復提示
-## Notes-zhTW: 能量和法力恢復提示
-## X-Repple: 职业
-## LoadOnDemand: 0
-## Version: 1.2.9
+## Version: 2.0.6
 ## Author: 星沉海底
-## X-Website: https://github.com/starpt
-## X-eMail: starpt@gmail.com
+## X-Website: https://www.biechu.com/
+## X-eMail: star@biechu.com
 ## SavedVariablesPerCharacter: PowerSparkDB
 
 PowerSpark.lua
