@@ -2,7 +2,7 @@
 ## Title: SoulSort
 ## Notes: Easy Soul Shard Management
 ## Author: Anilusion
-## Version: 1.0 TBC
+## Version: 1.1 TBC
 ## SavedVariablesPerCharacter: SoulSortOptions
 ## OptionalDeps: LibDataBroker-1.1
 

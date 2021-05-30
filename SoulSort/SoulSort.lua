@@ -17,6 +17,7 @@ f:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 			SoulSortOptions.ShowCounterPerBag = true
 			SoulSortOptions.SortReverse = false
 			SoulSortOptions.ShowSortInfo = false
+			SoulSortOptions.ShowCombatWarning = true
 			if SS_IsClassicVersion() then
 				SoulSortOptions.AutoSort = true
 			end
@@ -49,7 +50,7 @@ SlashCmdList["SOULSORT"] = function(msg)
 		if strlower(tokens[1]) == "sort" then
 			if not InCombatLockdown() then
 				SS_SortShards()
-			else
+			elseif SoulSortOptions.ShowCombatWarning then
 				print("SoulSort: Cannot sort shards while in combat!")
 			end
 		elseif strlower(tokens[1]) == "max" then
@@ -135,6 +136,20 @@ SlashCmdList["SOULSORT"] = function(msg)
 				end
 			else
 				print("SoulSort: No option provided. Use \"/ss reverse [on/off]\"")
+			end		
+		elseif strlower(tokens[1]) == "combatwarning" then
+			if table.getn(tokens) > 1 then
+				if tokens[2] == "on" or  tokens[2] == "true" then
+					SoulSortOptions.ShowCombatWarning = true
+					print("SoulSort: Combat Warning Enabled")
+				elseif tokens[2] == "off" or  tokens[2] == "false" then
+					SoulSortOptions.ShowCombatWarning = false
+					print("SoulSort: Combat Warning Disabled")
+				else
+					print("SoulSort: No option provided. Use \"/ss combatwarning [on/off]\"")
+				end
+			else
+				print("SoulSort: No option provided. Use \"/ss combatwarning [on/off]\"")
 			end
 		elseif strlower(tokens[1]) == "showinfo" then
 			if table.getn(tokens) > 1 then
@@ -165,6 +180,7 @@ SlashCmdList["SOULSORT"] = function(msg)
 		print("    /ss counter [on/off] - Toggles the Soul Shard counter on your bag bar.")
 		print("    /ss reverse [on/off] - Toggles sorting Soul Shards to fill the end of your bags first.")
 		print("    /ss showinfo [on/off] - Toggles showing information about your Soul Shards in chat when sorting.")
+		print("    /ss combatwarning [on/off] - Toggles showing a warning when you try to sort shards in combat.")
 		print("    /ss sort - Sorts your Soul Shards to the back of your inventory.")
 	end
 end

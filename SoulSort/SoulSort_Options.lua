@@ -112,6 +112,7 @@ local optCounter = CreateCheckbox("optCounter", "Show Total Soul Shard count on 
 local optCounterPerBag = CreateCheckbox("optCounterPerBag", "Show Soul Shard count for non-Soul Bags", 32, 32, "TOPLEFT", lastItem, "BOTTOMLEFT", 0, 0)
 local optSortReverse = CreateCheckbox("optSortReverse", "Fill bags from bottom to top", 32, 32, "TOPLEFT", lastItem, "BOTTOMLEFT", 0, 0)
 local optShowSortInfo = CreateCheckbox("optSortInfo", "Show information about your Soul Shards in chat when sorting", 32, 32, "TOPLEFT", lastItem, "BOTTOMLEFT", 0, 0)
+local optDisableCombatWarning = CreateCheckbox("optDisableCombatWarning", "Disable warning when trying to sort Soul Shards in combat", 32, 32, "TOPLEFT", lastItem, "BOTTOMLEFT", 0, 0)
 local optSortButton = CreateButton("optSortButton", "Sort Now", 100, 32, "TOPLEFT", lastItem, "BOTTOMLEFT", 0, -30)
 
 optAutoMax.tooltipText = "Fills your Soul Bag(s) or your last bag."
@@ -177,6 +178,7 @@ function Options.refresh()
 	optCounterPerBag:SetChecked(SoulSortOptions.ShowCounterPerBag)
 	optSortReverse:SetChecked(SoulSortOptions.SortReverse)
 	optShowSortInfo:SetChecked(SoulSortOptions.ShowSortInfo)
+	optDisableCombatWarning:SetChecked(not SoulSortOptions.ShowCombatWarning);
 
 	if SoulSortOptions.AutoMax == true then
 		optMaxShards:Disable()
@@ -197,6 +199,7 @@ function Options.okay()
 	SoulSortOptions.ShowCounter = optCounter:GetChecked()
 	SoulSortOptions.SortReverse = optSortReverse:GetChecked()
 	SoulSortOptions.ShowSortInfo = optShowSortInfo:GetChecked()
+	SoulSortOptions.ShowCombatWarning = not optDisableCombatWarning:GetChecked()
 end
 
 -- Add the options panel to the Blizzard list
