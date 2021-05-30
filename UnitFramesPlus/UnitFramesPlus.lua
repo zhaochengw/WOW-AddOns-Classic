@@ -28,9 +28,9 @@ UnitFramesPlusDefaultDB = {
         colorhp = 1,        --生命条染色
         colortype = 2,      --生命条染色类型：1职业，2生命值百分比
         -- textunit = 1,    --状态条数值显示为万亿
-        builtincd = 1,      --内置冷却计时
-        cdtext = 1,         --内置冷却计时数字
-        exacthp = 1,        --内置敌人精确生命值
+        builtincd = 0,      --内置冷却计时
+        cdtext = 0,         --内置冷却计时数字
+        exacthp = 0,        --内置敌人精确生命值
     },
 
     player = {
