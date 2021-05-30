@@ -10,7 +10,10 @@
 
 #Library
 Libs\LibStub\LibStub.lua
-Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\LibSharedMedia-3.0\lib.xml
 Libs\LibClassicDurations\LibClassicDurations.xml
+Libs\LibAuraTypes\LibAuraTypes.lua
+Libs\LibSpellLocks\LibSpellLocks.lua
 
 UnitFramesPlus_Cooldown.lua
