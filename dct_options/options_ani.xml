@@ -33,7 +33,9 @@
 			</Layer>					
 		</Layers>
 		<Scripts>
-                    <OnMouseDown function="DCTFrameBoxMouseDown" />
+			<OnMouseDown>
+				DCTFrameBoxMouseDown(self, arg1);
+			</OnMouseDown>								
 		</Scripts>
 	</Button>
 
@@ -67,10 +69,10 @@
 				self.OnValueChangedFunc = DCT_Opani_SliderValueChange
 			</OnLoad>
 		</Scripts>
-	</Slider>
+	</Slider >
 	
 	<!-- MAIN OPTION FRAME -->
-	<Frame name="DCTAniOption" hidden="true" frameStrata="MEDIUM" parent="DCT_Options"> 
+	<Frame name="DCTAniOption" hidden="true" frameStrata="MEDIUM" parent="DCT_Options" inherits="BackdropTemplate"> 
 		<Size>
 			<AbsDimension x="490" y="360"/>
 		</Size>
@@ -91,7 +93,9 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-                                    <OnShow function="DCT_Opani_FrameDDC_OnShow" />
+					<OnShow>
+						DCT_Opani_FrameDDC_OnShow(self)
+					</OnShow>
 				</Scripts>
 			</Button>
 			
@@ -104,7 +108,9 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-                                    <OnShow function="DCT_Opani_FontEnDDC_OnShow" />
+					<OnShow>
+						DCT_Opani_FontEnDDC_OnShow(self)
+					</OnShow>
 				</Scripts>
 			</Button>
 			
@@ -117,7 +123,9 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-                                    <OnShow function="DCT_Opani_FontChDDC_OnShow" />
+					<OnShow>
+						DCT_Opani_FontChDDC_OnShow(self)
+					</OnShow>
 				</Scripts>
 			</Button>			
 			
@@ -130,7 +138,9 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-                                    <OnShow function="DCT_Opani_FontEffDDC_OnShow" />
+					<OnShow>
+						DCT_Opani_FontEffDDC_OnShow(self)
+					</OnShow>
 				</Scripts>
 			</Button>
 			
@@ -143,7 +153,9 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-                                    <OnShow function="DCT_Opani_AnchorDDC_OnShow" />
+					<OnShow>
+						DCT_Opani_AnchorDDC_OnShow(self)
+					</OnShow>
 				</Scripts>
 			</Button>
 			
@@ -220,19 +232,25 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-                                    <OnShow function="DCT_Opani_AniTypeDDC_OnShow" />
+					<OnShow>
+						DCT_Opani_AniTypeDDC_OnShow(self)
+					</OnShow>
 				</Scripts>
 			</Button>
 			
 			
 			<Button name="$Parentparam1DDC" hidden="true" inherits="DCTUIDropDownMenuTemplate2">				
 				<Scripts>
-                                    <OnShow function="DCT_Opani_param1DDC_OnShow" />
+					<OnShow>
+						DCT_Opani_param1DDC_OnShow(self)
+					</OnShow>
 				</Scripts>
 			</Button>
 			<Button name="$Parentparam2DDC" hidden="true" inherits="DCTUIDropDownMenuTemplate2">				
 				<Scripts>
-                                    <OnShow function="DCT_Opani_param2DDC_OnShow" />
+					<OnShow>
+						DCT_Opani_param2DDC_OnShow(self)
+					</OnShow>
 				</Scripts>
 			</Button>
 			

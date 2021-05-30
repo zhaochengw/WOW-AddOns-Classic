@@ -8,7 +8,7 @@ local mask = FRMAE:CreateTexture("YOURNAME")
 	mask:SetGradientAlpha("VERTICAL", 0, 0, 0, 0, 1, 1, 1, 0.76)]]
 
 DCT_aniText = {}
-DCT_ANI_MAX_TEXT = 120
+DCT_ANI_MAX_TEXT = 90
 DCT_aniTextFlag = DCT_ANI_MAX_TEXT
 
 DCT_aniTexture = {}
@@ -30,7 +30,7 @@ DCT_UID = 0
 
 DCT_FONT_EFFECT = {
 		{"",1},
-		{"OUTLINE",0},
+		{"OUTLINE",0},		
 		{"THICKOUTLINE",0},
 		{"OUTLINE",1},
 		{"OUTLINE",2},
@@ -49,7 +49,7 @@ function DCT_Ani_TextureCreate()
 	for i = 1 ,DCT_ANI_MAX_TEXTURE do
 		DCT_aniTexture[i] = getglobal("DCT_TEXT"):CreateTexture("DCT_aniTexture"..i,"ARTWORK")
 		p = DCT_aniTexture[i]
-		p:ClearAllPoints()
+		p:ClearAllPoints()		
 		p:SetAlpha(1)
 		p.isTexture = true
 		p.isWorking = false
@@ -112,7 +112,7 @@ function DCT_Ani_CastbarCreate()
 end
 --获得一个可用的FontString
 function DCT_Ani_CastbarGet()
-	--if table.getn(DCT_aniCastbar) <
+	--if table.getn(DCT_aniCastbar) < 
 	local p = DCT_aniCastbar[DCT_aniCastbarFlag]
 	p:Show()
 	p.isWorking = true
@@ -134,7 +134,7 @@ function DCT_Ani_ObjCreate()
 	local i
 	for i = 1 ,DCT_ANI_MAX_OBJECT do
 		--atTypeArr  1:en 2:ch
-		DCT_Ani_Object[i] = {atP = {},atTypeArr = {},anchor = 1}
+		DCT_Ani_Object[i] = {atP = {},atTypeArr = {},anchor = 1}		
 		DCT_Ani_Object[i].ad = getglobal("DCT_TEXT"):CreateFontString("OBJECT"..i,"ARTWORK")
 		DCT_Ani_Object[i].ad:SetPoint("CENTER", "UIParent", "CENTER", 0 ,0 );
 		DCT_Ani_Object[i].ad:Hide()
@@ -181,7 +181,7 @@ end
 
 --从屏幕上删除
 function DCT_Ani_ObjClear(obj)
-	local c = table.getn(obj.atP)
+	local c = table.getn(obj.atP)	
 	obj.active = false
 	obj.x = -4000
 	obj.y = -4000
@@ -208,7 +208,7 @@ function DCT_Ani_ObjClear(obj)
 	end
 	obj.atPC = 0
 	DCT_Ani_ObjPos(obj,obj.x,obj.y)
-
+	
 	DCT_Ani_ObjFree(obj)
 end
 
@@ -223,17 +223,17 @@ end
 
 function DCT_Ani_ObjGet()
 	DCT_UID = DCT_UID + 1
-
+	
 	local p = DCT_Ani_Object[DCT_objFlag]
-
+	
 	if p.active or (p.atPC and p.atPC > 0) then
 		DCT_Ani_ObjClear(p)
 	end
-
+	
 	--p.ad:Show()
 	p.isWorking = true
 	p.uid = DCT_UID
-
+	
 	DCT_Ani_ObjReset(p)
 	if DCT_objFlag > 1 then DCT_objFlag = DCT_objFlag - 1;end
 	return p
@@ -246,15 +246,15 @@ function DCT_Ani_ObjScale(obj,scale)
 	for i = 1,obj.atPC do
 		if obj.atTypeArr[i] == 1 then
 			obj.atP[i]:SetTextHeight(scale * obj.fontSizeEn)
-		elseif obj.atTypeArr[i] == 2 then
+		elseif obj.atTypeArr[i] == 2 then		
 			obj.atP[i]:SetTextHeight(scale * obj.fontSizeCh)
 		elseif obj.atTypeArr[i] == 3 then
 			obj.atP[i]:SetHeight(scale * obj.fontSizeMax)
 			obj.atP[i]:SetWidth(scale * obj.fontSizeMax)
-		end
+		end		
 		w = w + obj.atP[i]:GetWidth()
 	end
-
+	
 	--重新刷新坐标
 	if obj.atPC > 1 then
 		if obj.anchor == 1 then
@@ -263,17 +263,17 @@ function DCT_Ani_ObjScale(obj,scale)
 			w = 0
 		else
 			w = -w
-		end
+		end		
 		for i = 1,obj.atPC do
 			if obj.anchor == 1 then
-				w = w + obj.atP[i]:GetWidth()
+				w = w + obj.atP[i]:GetWidth()						
 				obj.atP[i]:SetPoint("CENTER", obj.ad, "CENTER", w - obj.atP[i]:GetWidth() / 2, 0)
-			elseif obj.anchor == 2 then
+			elseif obj.anchor == 2 then								
 				obj.atP[i]:SetPoint("LEFT", obj.ad, "CENTER", w, 0)
 				w = w + obj.atP[i]:GetWidth()
 			else
-				w = w + obj.atP[i]:GetWidth()
-				obj.atP[i]:SetPoint("RIGHT", obj.ad, "CENTER", w, 0)
+				w = w + obj.atP[i]:GetWidth()	
+				obj.atP[i]:SetPoint("RIGHT", obj.ad, "CENTER", w, 0)				
 			end
 		end
 	end
@@ -287,7 +287,7 @@ function DCT_Ani_ObjScale(obj,scale)
 end
 
 
-function DCT_Ani_ObjAlpha(obj,a)
+function DCT_Ani_ObjAlpha(obj,a)	
 	local i
 	if obj.atPC > 0 then
 		for i = 1,obj.atPC do
@@ -298,8 +298,8 @@ function DCT_Ani_ObjAlpha(obj,a)
 	end
 end
 
-function DCT_Ani_ObjPos(obj,x,y)
-	local i
+function DCT_Ani_ObjPos(obj,x,y)	
+	local i	
 	obj.ad:SetPoint("CENTER", "UIParent", "CENTER", x, y)
 end
 
@@ -309,19 +309,19 @@ end
 function DCT_Ani_ObjSetText(obj,txt,fontEn,fontCh,fontSizeEn,fontSizeCh,fontEffect,color,anchor)
 	if not txt then return;end
 	if anchor then obj.anchor = anchor;end
-
+	
 	local atCount = obj.atPC
 	obj.atPC = 0
-
+	
 	if not DCT_Font[fontEn].active then fontEn = 1;end
-	if not DCT_Font[fontCh].active then fontCh = 1;end
+	if not DCT_Font[fontCh].active then fontCh = 1;end	
 
 	if fontSizeEn > fontSizeCh then
 		obj.fontSizeMax = fontSizeEn
 	else
 		obj.fontSizeMax = fontSizeCh
-	end
-
+	end	
+	
 	local tmpTexureList = {}
 	local tmpTextureC = 0
 	local tmpTextureN = 0
@@ -340,7 +340,7 @@ function DCT_Ani_ObjSetText(obj,txt,fontEn,fontCh,fontSizeEn,fontSizeCh,fontEffe
 			end
 		end
 	end
-
+	
 	if false--[[fontEn == fontCh and fontSizeEn == fontSizeCh]] then
 		--[[obj.atP[1] = DCT_Ani_TextGet()
 		obj.atP[1]:SetFont(DCT_Font[fontEn].path, fontSizeEn,DCT_FONT_EFFECT[fontEffect][1])
@@ -351,7 +351,7 @@ function DCT_Ani_ObjSetText(obj,txt,fontEn,fontCh,fontSizeEn,fontSizeCh,fontEffe
 			obj.atP[1]:SetTextColor(color[1], color[2], color[3])
 		end
 		obj.atTypeArr[1] = 2
-		obj.atPC = 1	]]
+		obj.atPC = 1	]]	
 	else
 		local s = 0
 		local e = 0
@@ -364,7 +364,7 @@ function DCT_Ani_ObjSetText(obj,txt,fontEn,fontCh,fontSizeEn,fontSizeCh,fontEffe
 		local incolor = false
 		local splitString = nil
 		local step = 1
-		while i + step <= c do
+		while i + step <= c do				
 			i = i + step
 			b = string.byte(txt,i)
 			if b >= 128 then
@@ -372,45 +372,45 @@ function DCT_Ani_ObjSetText(obj,txt,fontEn,fontCh,fontSizeEn,fontSizeCh,fontEffe
 			else
 				step = 1
 			end
-			if b == 124 then--124 == '|'
+			if b == 124 then--124 == '|'	
 				if i < c then
-					if string.byte(txt,i + 1) == 99 then--99: 'c'
-						if s == 0 then s = i;end
+					if string.byte(txt,i + 1) == 99 then--99: 'c'	
+						if s == 0 then s = i;end	
 						colorStr = string.sub(txt,i,i + 9)
 						i = i + 9
 						incolor = true
 					else
-						i = i + 1
+						i = i + 1	
 						incolor = false
 					end
 				end
 			else
-				if s == 0 then s = i;end
+				if s == 0 then s = i;end				
 				if b ~= 32 then
 					if b < 128--[[(b >= 48 and b <= 57) or b == 43 or b == 45]] then
 						if t == 0 then t = 1;end
-						if t == 2 then
+						if t == 2 then	
 							e = i - 1
-						end
+						end					
 					else
 						if t == 0 then t = 2;end
-						if t == 1 then
+						if t == 1 then	
 							e = i - 1
-						end
+						end	
 					end
 				end
-
+				
 				--如果遇到icon则先结束当前的文字
 				if b == 35 then
 					if i < c - 1 and string.sub(txt,i + 1,i + 2) == "ic" then
 						if dct_icon then
 							e = i - 1
 						end
-					end
+					end					
 				end
-			end
+			end			
 			if i == c or (b >= 128 and i >= c - 2) then
-				if e == 0 and t ~= 0 then e = c;end
+				if e == 0 then e = c;end
 			end
 			while e ~= 0 do
 				obj.atPC = obj.atPC + 1
@@ -420,39 +420,39 @@ function DCT_Ani_ObjSetText(obj,txt,fontEn,fontCh,fontSizeEn,fontSizeCh,fontEffe
 				else
 					obj.atP[obj.atPC]:Show()
 				end
-
-
-				obj.atTypeArr[obj.atPC] = t
+				
+				
+				obj.atTypeArr[obj.atPC] = t				
 
 				if obj.atTypeArr[obj.atPC] == 1 then
 					obj.atP[obj.atPC]:SetFont(DCT_Font[fontEn].path, fontSizeEn,DCT_FONT_EFFECT[fontEffect][1])
 				elseif obj.atTypeArr[obj.atPC] == 2 then
-					obj.atP[obj.atPC]:SetFont(DCT_Font[fontCh].path, fontSizeCh,DCT_FONT_EFFECT[fontEffect][1])
+					obj.atP[obj.atPC]:SetFont(DCT_Font[fontCh].path, fontSizeCh,DCT_FONT_EFFECT[fontEffect][1])			
 				end
 				obj.atP[obj.atPC]:SetShadowOffset(DCT_FONT_EFFECT[fontEffect][2],-DCT_FONT_EFFECT[fontEffect][2])
-
+				
 				if splitString then
 					splitString = splitString..string.sub(txt,s,e)
 				else
 					splitString = string.sub(txt,s,e)
 				end
-				if incolor then splitString = splitString.."|r";end
-
+				if incolor then splitString = splitString.."|r";end		
+				
 				obj.atP[obj.atPC]:SetText(splitString)
 				if t == 1 then t = 2;else t = 1;end
 
-
+				
 				w = w + obj.atP[obj.atPC]:GetWidth()
-				s = i
+				s = i		
 				if incolor then
 					splitString = colorStr
 				else
 					splitString = nil
 				end
-
+				
 				if i == c or (b >= 128 and i >= c - 2) then
 					if e < i then
-						e = c
+						e = c		
 					else
 						e = 0
 					end
@@ -460,7 +460,7 @@ function DCT_Ani_ObjSetText(obj,txt,fontEn,fontCh,fontSizeEn,fontSizeCh,fontEffe
 					e = 0
 				end
 			end
-			--如果遇到icon
+			--如果遇到icon 
 			if b == 35 then
 				if i < c - 1 and string.sub(txt,i + 1,i + 2) == "ic" then
 					if dct_icon then
@@ -485,23 +485,23 @@ function DCT_Ani_ObjSetText(obj,txt,fontEn,fontCh,fontSizeEn,fontSizeCh,fontEffe
 								tx:SetTexture(t)
 							end
 						end
-
+						
 						obj.atPC = obj.atPC + 1
 						if obj.atP[obj.atPC] then
-							table.insert(obj.atP,obj.atPC,tx)
+							table.insert(obj.atP,obj.atPC,tx)							
 						else
 							obj.atP[obj.atPC] = tx
 						end
 						atCount = table.getn(obj.atP)
 						obj.atTypeArr[obj.atPC] = 3
 						w = w + obj.fontSizeMax
-
+						
 						t = 0
 						step = 0
 						i = i + 3
 						s = i
 					end
-				end
+				end					
 			end
 		end
 		if obj.anchor == 1 then
@@ -513,14 +513,14 @@ function DCT_Ani_ObjSetText(obj,txt,fontEn,fontCh,fontSizeEn,fontSizeCh,fontEffe
 		end
 		for i = 1,obj.atPC do
 			if obj.anchor == 1 then
-				w = w + obj.atP[i]:GetWidth()
+				w = w + obj.atP[i]:GetWidth()						
 				obj.atP[i]:SetPoint("CENTER", obj.ad, "CENTER", w - obj.atP[i]:GetWidth() / 2, 0)
-			elseif obj.anchor == 2 then
+			elseif obj.anchor == 2 then								
 				obj.atP[i]:SetPoint("LEFT", obj.ad, "CENTER", w, 0)
 				w = w + obj.atP[i]:GetWidth()
 			else
-				w = w + obj.atP[i]:GetWidth()
-				obj.atP[i]:SetPoint("RIGHT", obj.ad, "CENTER", w, 0)
+				w = w + obj.atP[i]:GetWidth()	
+				obj.atP[i]:SetPoint("RIGHT", obj.ad, "CENTER", w, 0)				
 			end
 			if color and obj.atTypeArr[i] < 3 then
 				obj.atP[i]:SetTextColor(color[1], color[2], color[3])
@@ -533,12 +533,12 @@ function DCT_Ani_ObjSetText(obj,txt,fontEn,fontCh,fontSizeEn,fontSizeCh,fontEffe
 			obj.atP[i]:Hide()
 		end
 	end
-	--如果指定的字体不可用
+	--如果指定的字体不可用	
 	obj.fontSizeEn = fontSizeEn
-	obj.fontSizeCh = fontSizeCh
+	obj.fontSizeCh = fontSizeCh	
 	obj.fontEn = fontEn
 	obj.fontCh = fontCh
-	obj.fEff = fontEffect
+	obj.fEff = fontEffect	
 end
 
 local DCT_eboxBuffer = {}
@@ -554,7 +554,7 @@ function DCT_EBox_AddEvent(showType,text,crit,saveP,icon,delay)
 		i = i - 1
 	end
 	local p
-	if i == DCT_eboxC then
+	if i == DCT_eboxC then	
 		table.insert(DCT_eboxBuffer,{dl = delay,st = ctime,cr = crit,sp = saveP,ty = showType,tx = text,ic = icon,uid = DCT_UID})
 		p = DCT_eboxBuffer[DCT_eboxC]
 		DCT_eboxC = DCT_eboxC + 1
@@ -563,20 +563,20 @@ function DCT_EBox_AddEvent(showType,text,crit,saveP,icon,delay)
 		p = DCT_eboxBuffer[i + 1]
 		DCT_eboxC = DCT_eboxC + 1
 	end
-
+	
 	return (i + 1),DCT_UID
 end
 
 function DCT_EBox_UpdataEvent()
 	--return;
 	if DCT_eboxC == 0 then return;end
-
+	
 	if DCT_eboxLock then return;end
 	if (DCT_eboxBuffer[DCT_eboxC].dl - GetTime() + DCT_eboxBuffer[DCT_eboxC].st) <= 0 then
 		local p = DCT_eboxBuffer[DCT_eboxC]
 		dct_icon = p.ic
 		DCT_AddTextNoFormat(p.ty,p.tx,p.cr,p.sp)
-
+		
 		table.remove(DCT_eboxBuffer,DCT_eboxC)
 		DCT_eboxC = DCT_eboxC - 1
 	end

@@ -84,7 +84,9 @@
 			</Frame>	
 		</Frames>
 		<Scripts>
-                    <OnMouseDown function="DCT_Opfont_Frame_OnMouseDown" />
+			<OnMouseDown>
+				DCT_Opfont_Frame_OnMouseDown(self, button);				
+			</OnMouseDown>
 			<OnEnter>
 				local objname = self:GetName()
 				local c = string.len(objname)
@@ -105,7 +107,7 @@
 	</Frame>
 
 	<!-- MAIN OPTION FRAME -->
-	<Frame name="DCTFontOption" hidden="true" frameStrata="MEDIUM" parent="DCT_Options"> 
+	<Frame name="DCTFontOption" hidden="true" frameStrata="MEDIUM" parent="DCT_Options" inherits="BackdropTemplate"> 
 		<Size>
 			<AbsDimension x="490" y="360"/>
 		</Size>
@@ -175,7 +177,9 @@
 				self:SetBackdropColor(0.15, 0.15, 0.15);
 				DCT_OptionsRegisterButton(DCT_FONT_OPTION,DCTFontOption,nil,6);
 			</OnLoad>
-                        <OnShow function="DCT_Opfont_OnShow" />
+			<OnShow>
+				DCT_Opfont_OnShow(self)
+			</OnShow>
 			<OnHide>
 				
 			</OnHide>

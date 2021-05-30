@@ -1,6 +1,6 @@
 <Ui>
 	<!-- Template: CastBar -->
-	<Frame name="DCTCastBarTemplate" hidden="true" parent="UIParent" virtual="true">
+	<Frame name="DCTCastBarTemplate" hidden="true" parent="UIParent" virtual="true" inherits="BackdropTemplate">
 		<Size x="320" y="20"/>
 		<Anchors>
 			<Anchor point="CENTER"/>
@@ -27,7 +27,7 @@
 							</Anchors>
 						</Texture>
 					</Layer>
-					<!--
+					<!-- 
 					<Layer level="OVERLAY">
 						<Texture name="$parentSpark" file="Interface\CastingBar\UI-CastingBar-Spark" alphaMode="ADD">
 							<Size>
@@ -44,7 +44,7 @@
 		</Frames>
 		<Scripts>
 			<OnUpdate>
-				--DCTCastBar_OnUpdate(self,elapsed);
+				--DCTCastBar_OnUpdate(self,elapsed);				
 			</OnUpdate>
 		</Scripts>
 	</Frame>
