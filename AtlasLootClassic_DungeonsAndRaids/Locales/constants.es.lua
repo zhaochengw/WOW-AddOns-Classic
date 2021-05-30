@@ -7,7 +7,7 @@ if not AL then return end
 AL["%s killed last"] = "%s matado el último"
 AL["20 Raid"] = "20 Banda"
 AL["20 Raids"] = "Bandas de 20"
-AL["40 Raid"] = "40 Banda"
+AL["40 Raid"] = "Banda de 40"
 AL["40 Raids"] = "Bandas de 40"
 AL["Agathelos the Raging"] = "Agathelos el Furioso"
 AL["Aggem Thorncurse"] = "Aggem Malaespina"
@@ -90,8 +90,7 @@ AL["Dire Maul West"] = "La Masacre Oeste"
 AL["Doan's Strongbox"] = "Caja fuerte de Doan"
 AL["Doctor Theolen Krastinov"] = "Doctor Theolen Krastinov"
 AL["Dreamscythe"] = "Guadañasueños"
---[[Translation missing --]]
---[[ AL["Dungeons"] = "Dungeons"--]] 
+AL["Dungeons"] = "Mazmorras"
 AL["Dustwraith"] = "Suciespectro"
 AL["Earthcaller Halmgar"] = "Clamor de Tierra Halmgar"
 AL["Ebonroc"] = "Ebanorroca"
@@ -362,3 +361,9 @@ AL["Zevrim Thornhoof"] = "Zevrim Pezuñahendida"
 
 if _G.AtlasLoot:GetGameVersion() < 2 then return end
 -- DungeonsAndRaidsTBC
+AL["10 Raid"] = "Banda de 10"
+AL["10 Raids"] = "Bandas de 10"
+AL["25 Raid"] = "Banda de 25"
+AL["25 Raids"] = "Bandas de 25"
+AL["Patterns"] = "Patrones"
+AL["Raid"] = "Banda"

@@ -12,8 +12,7 @@ AL["Axes"] = "Hachas"
 AL["Class Professions"] = "Profesiones de clase"
 --[[Translation missing --]]
 --[[ AL["Drums"] = "Drums"--]] 
---[[Translation missing --]]
---[[ AL["Elixirs"] = "Elixirs"--]] 
+AL["Elixirs"] = "Elixires"
 AL["Enhancements"] = "Mejoras"
 AL["Expert"] = "Experto"
 AL["Fireworks"] = "Fuegos artificiales"
@@ -27,19 +26,15 @@ AL["Maces"] = "Mazas"
 --[[ AL["Master"] = "Master"--]] 
 AL["Misc Elixirs"] = "Elixires varios"
 AL["Oil"] = "Aceite"
---[[Translation missing --]]
---[[ AL["Pet"] = "Pet"--]] 
+AL["Pet"] = "Mascota"
 AL["Pets"] = "Mascotas"
 AL["Protection Potions"] = "Pociones de protección"
---[[Translation missing --]]
---[[ AL["Resistance"] = "Resistance"--]] 
---[[Translation missing --]]
---[[ AL["Ring"] = "Ring"--]] 
+AL["Resistance"] = "Resistencia"
+AL["Ring"] = "Anillo"
 AL["Secondary Professions"] = "Habilidades secundarias"
 AL["Smelting"] = "Fundir"
 AL["Special Elixirs"] = "Elixires especiales"
---[[Translation missing --]]
---[[ AL["Spell Damage"] = "Spell Damage"--]] 
+AL["Spell Damage"] = "Daño de hechizos mágicos"
 AL["Stat Elixirs"] = "Elixires de estadísticas"
 --[[Translation missing --]]
 --[[ AL["Stones"] = "Stones"--]] 

@@ -5,8 +5,7 @@ if not AL then return end
 -- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic/localization
 AL["--- or ---"] = "--- o ---"
 AL["%s will finish loading after combat."] = "%s terminará cargando después de combate."
---[[Translation missing --]]
---[[ AL["(%d) Set:"] = "(%d) Set:"--]] 
+AL["(%d) Set:"] = "(%d) Conjunto:"
 AL["/al - Open the AtlasLoot window."] = "/al - Abre la ventana AtlasLoot."
 AL["/al mmb - Toggle MiniMapButton"] = "/al mmb -  Alternar MiniMapaBotón"
 AL["/al options - Open AtlasLoot Options window."] = "/al options - Abre ventana de Opciones de AtlasLoot"
@@ -15,8 +14,7 @@ AL["/al togglebg - Toggle the background image on loottables."] = "/al togglebg 
 AL["|cff00ff00L-Click:|r %s"] = "|cff00ff00Clic-Izquierdo:|r %s"
 AL["|cff00ff00Left-Click:|r %s"] = "|cff00ff00Clic Izquierdo:|r %s"
 AL["|cff00ff00Left-Click:|r Show reagents."] = "|cff00ff00Clic Izquierdo:|r Zeige Reagenzien."
---[[Translation missing --]]
---[[ AL["|cff00ff00Right-Click:|r Change Class"] = "|cff00ff00Right-Click:|r Change Class"--]] 
+AL["|cff00ff00Right-Click:|r Change Class"] = "|cff00ff00Clic-Derecho:|r Cambiar Clase"
 AL["|cff00ff00Set item:|r "] = "|cff00ff00Equipo de conjunto:|r"
 AL["Active list"] = "Lista Activa"
 AL["Add item into chat"] = "Añade objeto al chat"
@@ -95,8 +93,7 @@ AL["PvP"] = "JcJ"
 AL["Quest"] = "Misión"
 AL["Quest objective."] = "Objetivo de misión."
 AL["Reagent for..."] = "Componente para..."
---[[Translation missing --]]
---[[ AL["Regen"] = "Regen"--]] 
+AL["Regen"] = "Regeneración"
 AL["Remove item from list"] = "Quitar objeto de la lista"
 AL["Required module %s is currently disabled."] = "Módulo requerido %s es desactivado."
 AL["Required module %s is not installed."] = "Módulo requerido %s no es instalado."
@@ -107,8 +104,7 @@ AL["Select Subcategory"] = "Seleccionar subcategoría"
 AL["Set Favourite"] = "Seleccionar favorito"
 AL["Set item"] = "Asigna objeto"
 AL["Set/Remove the item as favourite"] = "Asigna/Quita el objeto como favorito"
---[[Translation missing --]]
---[[ AL["Sets"] = "Sets"--]] 
+AL["Sets"] = "Conjuntos"
 AL["Settings"] = "Configuración"
 AL["Sever"] = "Cercenador"
 AL["Shield"] = "Escudo"
@@ -128,8 +124,7 @@ AL["Shows the item in the Dressing room"] = "Muestra el objeto en el probador."
 AL["Shows the sound in the copy box"] = "Muestra el sonido en la caja de copiar."
 AL["Slash commands:"] = "Comandos Slash:"
 AL["Sounds"] = "Sonidos"
---[[Translation missing --]]
---[[ AL["Special"] = "Special"--]] 
+AL["Special"] = "Especial"
 AL["Staff"] = "Bastón"
 --[[Translation missing --]]
 --[[ AL["The Mag'har"] = "The Mag'har"--]] 
