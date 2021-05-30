@@ -68,7 +68,6 @@ function Browse:LayoutBlizzard()
     hide(BrowseScrollFrame)
     hide(BrowseIsUsableText)
     hide(BrowseShowOnCharacterText)
-    hide(BrowseTabText)
     hide(BrowseNoResultsText)
 
     text(ShowOnPlayerCheckButtonText, DISPLAY_ON_CHARACTER)
