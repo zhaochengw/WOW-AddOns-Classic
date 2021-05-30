@@ -1,0 +1,10 @@
+## Interface: 11302
+## Title: ClassicAutoDismount
+## Version: 1.01
+## Author: Es (EsreverWoW)
+## Notes: Auto Dismount for WoW Classic.
+
+## X-License: MIT
+## X-Website: https://github.com/EsreverWoW/ClassicAutoDismount
+
+ClassicAutoDismount.lua
