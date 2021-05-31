@@ -1,9 +1,10 @@
 ## Interface: 20501
 ## Title: MerInspect
-## Version: 1.0.1
+## Version: 1.0.2a
 ## Notes: Inspect Assiest
 ## Notes-zhCN: 观察助手
-## Notes-zhTW: 觀察助手
+## Title-zhTW: |cffB973FF[裝備]|r 觀察
+## Notes-zhTW: MerInspect |n觀察其他玩家和自己時會在角色資訊視窗右方列出裝備清單和物品等級，方便查看和比較裝備。|n|cffffd200使用方法：|r從Esc>介面>插件>裝備-觀察，進行設定。
 ## Author: M(Mermaid)
 ## Thanks: Mermaid, 独孤傲雪, xLoki
 ## SavedVariables: MerInspectDB
@@ -19,9 +20,3 @@ InspectUnit.lua
 InspectUnitGemAndEnchant.lua
 InspectUnitSpecialization.lua
 InspectUnitStats.lua
-
-
-
-## Title-zhCN: |cff880303[有爱]|r MerInspect 观察助手
-## X-Vendor: NetEase
-## X-163UI-Version: 20210519103056

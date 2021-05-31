@@ -17,11 +17,11 @@ end})
 
 local DefaultDB = {
     version = VERSION,
-    ShowItemSlotString = true,              --物品部位文字
-    ShowItemBorder = false,                  --物品直角邊框
+    ShowItemSlotString = false,             --物品部位文字
+    ShowItemBorder = true,                  --物品直角邊框
     ShowCharacterItemSheet = true,          --玩家自己裝備列表
     ShowCharacterItemStats = true,          --玩家自己屬性統計
-    ShowInspectAngularBorder = true,       --觀察面板直角邊框
+    ShowInspectAngularBorder = false,       --觀察面板直角邊框
     ShowInspectColoredLabel = true,         --觀察面板顔色隨物品品質
     ShowInspectItemSheet = true,            --顯示观察对象装备列表
         ShowOwnFrameWhenInspecting = false,  --觀察同時顯示自己裝備列表
@@ -191,8 +191,8 @@ end
 local frame = CreateFrame("Frame", nil, UIParent)
 frame.title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 frame.title:SetPoint("TOPLEFT", 18, -16)
-frame.title:SetText(addon)
-frame.name = addon
+frame.title:SetText(L.Title)
+frame.name = L.OptionName
 
 CreateCheckbox(options, frame, frame.title, 18, 9)
 

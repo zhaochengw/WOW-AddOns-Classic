@@ -142,6 +142,7 @@ LibItemStatsPatterns = {
 			{ from = "点和", to = "点," },
 		},		
 		{ key = "Armor", pattern = "护甲值提高(%d+)",},
+        { key = "Armor", pattern = "护甲提高(%d+)",},
 		{ key = "Stamina", pattern = "耐力提高(%d+)",},
 		{ key = "Spirit", pattern = "提高精神(%d+)",},
 		{ key = "ResistanceShadow", pattern = "暗影抗性提高(%d+)",},
