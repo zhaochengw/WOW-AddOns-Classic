@@ -1,0 +1,10 @@
+lightweight tag af3c9839e6061566488b053df8194faa578b0613 v2.4.1-tbc
+Author:	Boshi Lian <farmer1992@gmail.com>
+Date:	Tue May 25 03:25:25 2021 -0700
+
+commit af3c9839e6061566488b053df8194faa578b0613
+Author: Boshi Lian <farmer1992@gmail.com>
+Date:   Tue May 25 03:25:25 2021 -0700
+
+    support font size
+

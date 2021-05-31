@@ -1,0 +1,22 @@
+## Interface: 20501
+## Title: Battle Info
+## Title-zhCN: BattleInfo 战场助手
+## Title-zhTW: 戰場資訊增強
+## Notes: Enrich your battleground information. Feedback: farmer1992@gmail.com
+## Notes-zhCN: 战场信息增强. 反馈: farmer1992@gmail.com
+## Notes-zhTW: 提供更多實用的戰場資訊。問題與建議: farmer1992@gmail.com
+## Author: Boshi Lian(farmer1992@gmail.com)
+## Version: @project-version
+## SavedVariablesPerCharacter: BatteInfoSettings, BatteInfoStat
+
+locales.lua
+event.lua
+options.lua
+utils.lua
+quickjoin.lua
+newbattle.lua
+widgetbar.lua
+auto.lua
+map.lua
+stat.lua
+cli.lua
