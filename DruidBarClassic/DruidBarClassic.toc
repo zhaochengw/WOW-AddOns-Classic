@@ -1,0 +1,16 @@
+## Interface: 20501
+## Title: Druid Bar Classic
+## Notes: Shows mana in bear/cat form.
+## Current Author: Tek (port to WoW Classic)
+## Original Authors: SkaDemon (GUI: DiabloHu)
+## SavedVariables: DruidBarKey
+## Version: 0.7.11
+## X-Curse-Project-ID: 334762
+## X-WoWI-ID: 25036
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
+
+DruidBar.xml

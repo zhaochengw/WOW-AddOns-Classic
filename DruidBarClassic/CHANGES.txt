@@ -1,0 +1,46 @@
+lightweight tag fd855b791878be18bca9e718aa7ec9b2ffc672c0 0.7.11
+Author:	Tek Hudson <tek.hudson@gmail.com>
+Date:	Thu May 20 10:38:21 2021 -0700
+
+commit fd855b791878be18bca9e718aa7ec9b2ffc672c0
+Author: Tek Hudson <tek.hudson@gmail.com>
+Date:   Thu May 20 10:38:21 2021 -0700
+
+    Quickfix for missing closing slash
+
+commit 991582fc1828a2be1fef356f5f963f434bf6be9e
+Author: Tek Hudson <tek.hudson@gmail.com>
+Date:   Wed May 19 16:42:28 2021 -0700
+
+    Fix options bg and hopefully publish to bcc
+
+commit 6f2aaeb3f4455753128a00fd8dffe63f93b4a65f
+Author: Tek Hudson <tek.hudson@gmail.com>
+Date:   Wed May 19 09:49:36 2021 -0700
+
+    Update Changelog
+
+commit 72b1df3ab67879fba235459521df8fbc71a36129
+Author: Tek Hudson <tek.hudson@gmail.com>
+Date:   Wed May 19 09:45:01 2021 -0700
+
+    Bump version
+
+commit 81de421bb8b818bf39bb984bc95c98b096562ad2
+Author: Tek Hudson <tek.hudson@gmail.com>
+Date:   Wed May 19 09:43:14 2021 -0700
+
+    Remove erroring code
+
+commit 720484cd941c4b5fa4221594517a6652371d9aa7
+Author: Tek Hudson <tek.hudson@gmail.com>
+Date:   Tue May 18 19:34:14 2021 -0700
+
+    Update game version for BC
+
+commit 2980eaeb0a5e0cb5781c9e766b61bd65b0da039a
+Author: Tek Hudson <tek.hudson@gmail.com>
+Date:   Mon Jun 29 10:15:16 2020 -0700
+
+    Spellimg correction
+
