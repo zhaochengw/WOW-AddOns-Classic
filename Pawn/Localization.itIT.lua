@@ -24,7 +24,7 @@ PawnLocal =
 	["FailedToGetUnenchantedItemMessage"] = "   Errore nel prendere il valore base dell'oggetto. Questo potrebbe essere per un conflitto di addon.",
 	["FoundStatMessage"] = "   %d %s",
 	["GemList2"] = "%s o %s",
-	["GemListMany"] = "%d possibilità (clicca il bottone Pawn per dettagli)",
+	["GemListMany"] = "(clicca il bottone Pawn per dettagli)",
 	["GenericGemLink"] = "|Hitem:%d|h[Gemma %d]|h",
 	["GenericGemName"] = "(Gemma %d)",
 	["HiddenScalesHeader"] = "Altri bilanciamenti",
@@ -119,6 +119,7 @@ Per maggiori informazioni su come personalizzare Pawn, per favore leggere il fil
 		["Mail"] = "Maglia",
 		["MailInfo"] = "Punti da assegnare se l'oggetto è in maglia",
 		["MasteryInfo"] = "Maestria. Aumenta l'abilità unica della tua specializzazione di classe",
+		["MetaSocketEffectInfo"] = "Effetti speciali con meta gemma. Punti da assegnare per la parte non statistica di una meta gemma (ad esempio, un aumento minore della velocità di corsa o un riflesso dell'incantesimo dell'1%).",
 		["MinorStats"] = "Attributi minori",
 		["MovementSpeedInfo"] = "Velocità di movimento. Fà si che il tuo personaggio corra più veloce.",
 		["Mp5"] = "Mana per 5",
@@ -310,6 +311,8 @@ Per maggiori informazioni su come personalizzare Pawn, per favore leggere il fil
 		--[[Translation missing --]]
 		["ExpertiseRating"] = "^Equip: Increases your expertise rating by #%.$",
 		["FeralAp"] = "^Equip: %+# Attack Power in Cat, Bear, and Dire Bear forms only%.$",
+		--[[Translation missing --]]
+		["FeralApMoonkin"] = "^Equip: %+# Attack Power in Cat, Bear, Dire Bear, and Moonkin forms only%.$",
 		["FireResist"] = "^%+?# Fire Resistance$",
 		["FireSpellDamage"] = "^%+# Fire Spell Damage$",
 		["FireSpellDamage2"] = "^Equip: Increases damage done by Fire spells and effects by up to #%.$",

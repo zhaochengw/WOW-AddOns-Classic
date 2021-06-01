@@ -307,6 +307,34 @@ indeterminate or an upgrade. This can be used for auto-sell rules, such as <code
 </ul>
 
 <h2>Updates</h2>
+<h3>Version 2.5.10</h3>
+<ul>
+	<li>Meta gems are now supported. You can manually assign a weight per scale 
+	to the special meta gem effects such as 
+	"Minor&nbsp;Run&nbsp;Speed&nbsp;Increase"&nbsp;or&nbsp;"1%&nbsp;Spell&nbsp;Reflect"; the stat portion of a meta 
+	gem will be calculated for you. (A good starting point is 36× the value of 
+	your primary stat.)</li>
+	<li>Fixed a problem where Pawn wouldn't work at all on Italian Shadowlands.</li>
+	<li>Fixed a problem where feral attack power wasn't working on English 
+	Burning Crusade Classic.</li>
+</ul>
+<h3>Version 2.5.9</h3>
+<ul>
+	<li>On Burning Crusade Classic, when determining a socketed item's value, 
+	Pawn will now decide whether the item's value would be maximized by 
+	following the socket bonus, or ignoring the bonus and using all of the same 
+	type of gem.<ul>
+		<li>The socket bonus will also be taken into account for the advice 
+		given in the socketing advisor popup.</li>
+		<li>The socket bonus will also be shown on Pawn's Compare tab whenever 
+		the item's value would be maximized by following the socket bonus.</li>
+	</ul>
+	</li>
+	<li>Fixed a problem with wands that deal holy damage on all Russian versions 
+	of WoW.</li>
+	<li>Fixed a problem with some items that grant mana-per-5 on Russian Burning 
+	Crusade Classic.</li>
+</ul>
 <h3>Version 2.5.8</h3>
 <ul>
 	<li>Pawn now includes colored sockets in the value of an item like it does 
@@ -314,11 +342,7 @@ indeterminate or an upgrade. This can be used for auto-sell rules, such as <code
 	based on the best gems that fit that socket's color of an appropriate 
 	quality level for the item. Like prismatic sockets, there's no way to 
 	manually override the value of a colored socket or to fine-tune the quality 
-	level of the gem used in the calculation.<ul>
-		<li>Socket bonuses (including breaking the socket bonus when applicable) 
-		and meta gems are not yet supported.</li>
-	</ul>
-	</li>
+	level of the gem used in the calculation.</li>
 	<li>Colored and meta sockets are now shown on Pawn's Compare tab.</li>
 	<li>The socketing advisor will now appear for socketed items in Burning 
 	Crusade Classic.</li>

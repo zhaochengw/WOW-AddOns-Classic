@@ -25,7 +25,7 @@ PawnLocal =
 	["FailedToGetUnenchantedItemMessage"] = "   No se han podido obtener los valores base del objeto. Esto puede ser debido a un conflicto entre accesorios.",
 	["FoundStatMessage"] = "   %d %s",
 	["GemList2"] = "%s o %s",
-	["GemListMany"] = "%d posibilidades (haz click al boton Pawn para ver mas detalles)",
+	["GemListMany"] = "(haz click al boton Pawn para ver mas detalles)",
 	["GenericGemLink"] = "|Hitem:%d|h[Gema %d]|h",
 	["GenericGemName"] = "(Gema %d)",
 	["HiddenScalesHeader"] = "Otras escalas",
@@ -144,6 +144,7 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		["Mail"] = "Malla",
 		["MailInfo"] = "Puntos que asignar si el objeto es de malla.",
 		["MasteryInfo"] = "Maestría.  Mejora un bonus único para tu especialización.",
+		["MetaSocketEffectInfo"] = "Efectos especiales de la meta gema. Puntos que se asignarán a la parte no estadística de una meta gema (por ejemplo, \"Aumento menor de velocidad de carrera\" o \"1% Reflejo de hechizo\").",
 		["MinorStats"] = "Estadísticas menores",
 		["MovementSpeedInfo"] = "Velocidad de movimiento.  Hace que tu personaje corra más rápido.",
 		--[[Translation missing --]]
