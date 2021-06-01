@@ -23,7 +23,6 @@ frame:SetScript('OnEvent', function(self, event, ...)
 				self[key].timer = GetTime()
 			elseif event == 'UNIT_POWER_FREQUENT' and unit == 'player' then -- 能量/法力更新
 				if cure > self[key].cure then
-					-- if key == 'default' then print('更新', mod(GetTime() - self[key].timer, self[key].interval)) end
 					self[key].cure = cure
 					self[key].timer = GetTime()
 					PowerSparkDB[key].timer = self[key].timer
@@ -38,8 +37,8 @@ frame:SetScript('OnEvent', function(self, event, ...)
 			if not PowerSparkDB then PowerSparkDB = {} end
 			if not PowerSparkDB[key] then PowerSparkDB[key] = {} end
 			local power = CreateFrame('StatusBar', nil, parent)
-			power:SetWidth(parent:GetWidth())
-			power:SetHeight(parent:GetHeight())
+			power:SetWidth(parent.width or parent:GetWidth())
+			power:SetHeight(parent.height or parent:GetHeight())
 			power:SetPoint('CENTER')
 			power.spark = power:CreateTexture(nil, 'OVERLAY')
 			power.spark:SetTexture('Interface\\CastingBar\\UI-CastingBar-Spark')
@@ -83,7 +82,16 @@ frame:SetScript('OnEvent', function(self, event, ...)
 		else
 			self.init(PlayerFrameManaBar, 'default')
 		end
-		if class == 'DRUID' and DruidBarFrame then self.init(DruidBarFrame, 'druid') end
+		if class == 'DRUID' and DruidBarFrame then
+			DruidBarFrame.width = DruidBarKey.width - 4
+			DruidBarFrame.health = DruidBarKey.height - 4
+			self.init(DruidBarFrame, 'druid')
+		end
+		if class == 'DRUID' and BC_DruidBar then
+			BC_DruidBar.width = BC_DruidBar.Mana:GetWidth() - 4
+			BC_DruidBar.health = BC_DruidBar.Mana:GetHeight() - 4
+			self.init(BC_DruidBar, 'druid')
+		end
 	elseif event == 'UNIT_AURA' and class == 'ROGUE' and unit == 'player' then
 		self.interval = 2
 		local i = 1
@@ -95,7 +103,7 @@ frame:SetScript('OnEvent', function(self, event, ...)
 			i = i + 1
 		end
 	elseif self.rest then
-			self.rest('default', event, ...)
-			if self.druid then self.rest('druid', event, ...) end
+		self.rest('default', event, ...)
+		if self.druid then self.rest('druid', event, ...) end
 	end
 end)
