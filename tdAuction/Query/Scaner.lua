@@ -16,17 +16,18 @@ local GetAuctionItemInfo = GetAuctionItemInfo
 
 local ITEM_QUALITY_POOR = Enum.ItemQuality.Poor
 
-local profilereset = (function()
-    local debugprofilestop = debugprofilestop
-
+local profilestart, profilestop
+do
     local tick = 0
-    return function()
-        local t = debugprofilestop()
-        local diff = t - tick
-        tick = t
-        return diff
+    function profilestart()
+        tick = debugprofilestop()
     end
-end)()
+
+    function profilestop()
+        local t = debugprofilestop()
+        return t - tick
+    end
+end
 
 ---@type Scaner
 local Scaner = ns.Addon:NewClass('Scaner')
@@ -42,13 +43,16 @@ function Scaner:Cancel()
 end
 
 function Scaner:Threshold()
-    if profilereset() > 16 then
+    if self.pendingCount > 5 then
+        return true
+    end
+    if profilestop() > 16 then
         return true
     end
 end
 
 function Scaner:Continue()
-    profilereset()
+    profilestart()
     return self:OnContinue()
 end
 
@@ -68,13 +72,15 @@ function Scaner:PreQuery()
 end
 
 function Scaner:OnStart()
-    self.pendings = {}
+    self.pending = ns.Pending:New()
     self.db = {}
 end
 
 function Scaner:OnContinue()
+    self.pendingCount = 0
+
     while true do
-        local index = tremove(self.pendings)
+        local index = self.pending:Pick()
         if not index then
             break
         end
@@ -98,7 +104,8 @@ function Scaner:OnContinue()
             return
         end
     end
-    return #self.pendings == 0
+
+    return self.pending:IsEmpty() and self.index == 0
 end
 
 function Scaner:OnResponse()
@@ -119,18 +126,23 @@ function Scaner:SavePrices(db)
 end
 
 function Scaner:ProcessAuction(index)
-    local link = GetAuctionItemLink('list', index)
-    local name, texture, count, quality, canUse, level, levelColHeader, minBid, minIncrement, buyoutPrice, bidAmount,
-          highBidder, bidderFullName, owner, ownerFullName, saleStatus, itemId, hasAllInfo =
+    local _, _, count, quality, _, _, _, _, _, buyoutPrice, _, _, _, owner, _, _, itemId, hasAllInfo =
         GetAuctionItemInfo('list', index)
 
-    if not link then
+    if not itemId then
+        return
+    end
+
+    local name = GetItemInfo(itemId)
+    if not name then
         if itemId then
-            tinsert(self.pendings, index)
+            self.pendingCount = self.pendingCount + 1
+            self.pending:Add(itemId, index)
         end
         return
     end
 
+    local link = GetAuctionItemLink('list', index)
     local db = self:GetDB()
 
     if buyoutPrice and buyoutPrice > 0 then
@@ -144,6 +156,7 @@ function Scaner:ProcessAuction(index)
                 db[itemKey] = min(db[itemKey], unitPrice)
             end
         end
-        return itemKey, count, unitPrice, quality, owner
+        return true, itemKey, count, unitPrice, quality, owner
     end
+    return true
 end

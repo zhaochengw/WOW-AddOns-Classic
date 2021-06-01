@@ -57,6 +57,8 @@ if not L then return end
 --[[Translation missing --]]
 --[[ L["Price"] = ""--]] 
 --[[Translation missing --]]
+--[[ L["Processing data, elapsed time: %s"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Scan all"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Scan one page"] = ""--]] 

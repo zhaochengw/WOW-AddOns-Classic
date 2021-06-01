@@ -32,7 +32,7 @@ function BrowseScaner:OnResponse()
 end
 
 function BrowseScaner:OnStart()
-    self.pendings = {}
+    self.pending = ns.Pending:New()
 end
 
 function BrowseScaner:OnDone()

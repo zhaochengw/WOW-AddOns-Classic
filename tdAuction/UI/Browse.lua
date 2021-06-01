@@ -45,6 +45,14 @@ function Browse:LayoutBlizzard()
     self.ResetButton = self.BuyFrame.ResetButton
     self.SortButtonFrame = self.BuyFrame.SortButtonFrame
 
+    if not self.ResetButton then
+        self.ResetButton = BrowseResetButton
+        self.ResetButton:SetParent(self.BuyFrame)
+        self.ResetButton:ClearAllPoints()
+        self.ResetButton:SetPoint('TOPRIGHT', 67, -35)
+        self.ResetButton:SetSize(80, 22)
+    end
+
     local hide = ns.hide
     local point = ns.point
     local function text(obj, text)
@@ -68,6 +76,9 @@ function Browse:LayoutBlizzard()
     hide(BrowseScrollFrame)
     hide(BrowseIsUsableText)
     hide(BrowseShowOnCharacterText)
+    --[[@classic@
+    hide(BrowseTabText)
+    --@end-classic@]]
     hide(BrowseNoResultsText)
 
     text(ShowOnPlayerCheckButtonText, DISPLAY_ON_CHARACTER)
@@ -338,8 +349,8 @@ function Browse:UpdateSelected()
 
     local money = GetMoney()
     local name, texture, count, quality, canUse, level, levelColHeader, minBid, minIncrement, buyoutPrice, bidAmount,
-          highBidder, bidderFullName, owner, ownerFullName, saleStatus, itemId, hasAllInfo =
-        GetAuctionItemInfo('list', id)
+          highBidder, bidderFullName, owner, ownerFullName, saleStatus, itemId, hasAllInfo = GetAuctionItemInfo('list',
+                                                                                                                id)
     local ownerName = ownerFullName or owner
     local isMine = UnitName('player') == ownerName
 

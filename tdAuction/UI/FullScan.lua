@@ -10,7 +10,8 @@ local L = ns.L
 
 local STATUS_IDLE = 1
 local STATUS_QUERY = 2
-local STATUS_DONE = 3
+local STATUS_SCAN = 3
+local STATUS_DONE = 4
 
 ---@type FullScan
 local FullScan = ns.Addon:NewClass('UI.FullScan', 'Frame')
@@ -20,6 +21,15 @@ function FullScan:Constructor()
     self.scaner:SetCallback('OnDone', function()
         return self:OnDone()
     end)
+    self.scaner:SetCallback('OnResponse', function()
+        self.status = STATUS_SCAN
+        self.ProgressBar:SetMinMaxValues(0, self.scaner.total)
+        self.ProgressBar:Show()
+    end)
+    self.scaner:SetCallback('OnProgress', function()
+        self.ProgressBar:SetValue(self.scaner.progress)
+        self.ProgressBar.Text:SetFormattedText('%d%%', self.scaner.progress / self.scaner.total * 100)
+    end)
 
     self.HeaderText:SetText(L['Full scan'])
     self.ExecButton:SetText(L['Start scan'])
@@ -27,6 +37,7 @@ function FullScan:Constructor()
     self.statusUpdates = { --
         [STATUS_IDLE] = self.UpdateIdle,
         [STATUS_QUERY] = self.UpdateQuering,
+        [STATUS_SCAN] = self.UpdateScanning,
     }
 
     self:HookScript('OnShow', self.OnShow)
@@ -35,6 +46,7 @@ end
 
 function FullScan:OnShow()
     self.status = STATUS_IDLE
+    self.ProgressBar:Hide()
 end
 
 function FullScan:OnHide()
@@ -61,6 +73,7 @@ function FullScan:OnDone()
     self.status = STATUS_DONE
     self:UpdateReport()
     self.CloseButton:Enable()
+    self.ProgressBar:Hide()
 end
 
 function FullScan:UpdateReport()
@@ -80,6 +93,10 @@ end
 
 function FullScan:UpdateQuering()
     self.Text:SetFormattedText(L['Full scaning, elapsed time: %s'], SecondsToTime(GetTime() - self.startTick))
+end
+
+function FullScan:UpdateScanning()
+    self.Text:SetFormattedText(L['Processing data, elapsed time: %s'], SecondsToTime(GetTime() - self.startTick))
 end
 
 function FullScan:CanQuery()

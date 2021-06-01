@@ -107,6 +107,18 @@ local VALID_NPCS = {
     [8669] = true,
     [15678] = true,
     [15679] = true,
+    -- 埃索达
+    [16707] = true,
+    [18348] = true,
+    [18349] = true,
+    -- 银月城
+    [16627] = true,
+    [16628] = true,
+    [16629] = true,
+    [17627] = true,
+    [17628] = true,
+    [17629] = true,
+    [18761] = true,
 }
 
 local function NpcId()

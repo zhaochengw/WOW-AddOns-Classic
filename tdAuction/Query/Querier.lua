@@ -46,6 +46,12 @@ function Querier:AUCTION_HOUSE_CLOSED()
     self:Cancel()
 end
 
+function Querier:GET_ITEM_INFO_RECEIVED(_, itemId)
+    if self.scaner then
+        self.scaner.pending:Ready(itemId)
+    end
+end
+
 function Querier:OnIdle()
     if not self.scaner or self.scaner.canceled then
         self:Cancel()
@@ -124,6 +130,7 @@ function Querier:Pending()
 
     self.status = STATUS_WAITRESP
     self:RegisterEvent('AUCTION_ITEM_LIST_UPDATE', 'OnResponse')
+    self:RegisterEvent('GET_ITEM_INFO_RECEIVED')
 
     self.scaner:PreQuery()
 
@@ -148,6 +155,7 @@ function Querier:Running()
         return
     end
 
+    self:UnregisterEvent('GET_ITEM_INFO_RECEIVED')
     self.scaner:Done()
     self.updater:Hide()
 end

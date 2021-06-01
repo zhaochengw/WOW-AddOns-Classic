@@ -3,6 +3,7 @@ if not L then
     return
 end
 
+-- @import@
 L['Enable ALT-CTRL click to buyout'] = '开启ALT-CTRL点击一口价购买'
 L['Auto open price list'] = '自动打开价格列表'
 L['Scan price mode'] = '扫描价格模式'
@@ -40,6 +41,7 @@ L['Start scan'] = '开始扫描'
 L['Next available time:'] = '下次可用时间：'
 L['in about %s'] = '大约%s之后'
 L['Full scaning, elapsed time: %s'] = '正在完整扫描，已用时间：%s'
+L['Processing data, elapsed time: %s'] = '正在处理数据，已用时间：%s'
 L['Now'] = '现在'
 L['Unknown'] = '未知'
 L['New'] = '新增'
@@ -57,3 +59,4 @@ L['Start auction:'] = '开始拍卖：'
 L.TOOLTIP_PREFIX_VENDO = '售价'
 L.TOOLTIP_PREFIX_AUCTION = '拍卖'
 L.TOOLTIP_PREFIX_DISENCHANT = '分解'
+-- @end-import@

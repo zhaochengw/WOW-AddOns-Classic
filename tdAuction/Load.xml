@@ -7,6 +7,7 @@
     <Script file="Data.lua"/>
 
     <Script file="Query\Querier.lua"/>
+    <Script file="Query\Pending.lua"/>
     <Script file="Query\Scaner.lua"/>
     <Script file="Query\FullScaner.lua"/>
     <Script file="Query\BrowseScaner.lua"/>

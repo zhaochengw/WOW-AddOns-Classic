@@ -74,8 +74,20 @@ function FullScaner:OnDone()
 end
 
 function FullScaner:ProcessAuction(index)
-    local itemKey, count, price, quality = Scaner.ProcessAuction(self, index)
+    local ok, itemKey, count, price, quality = Scaner.ProcessAuction(self, index)
     if itemKey and quality > ITEM_QUALITY_POOR then
         self.cache[itemKey] = quality
     end
+
+    if ok then
+        self.progress = self.progress + 1
+        self:Fire('OnProgress')
+    end
+end
+
+function FullScaner:OnResponse()
+    Scaner.OnResponse(self)
+    self.progress = 0
+    self.total = self.index
+    self:Fire('OnResponse')
 end

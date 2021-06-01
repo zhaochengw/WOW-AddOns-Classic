@@ -68,6 +68,34 @@
                     </OnClick>
                 </Scripts>
             </Button>
+            <StatusBar parentKey="ProgressBar" hidden="true">
+                <Size x="260" y="12"/>
+                <Anchors>
+                    <Anchor point="TOP" relativeKey="$parent.ExecButton" relativePoint="BOTTOM" x="0" y="-100"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture file="Interface\PaperDollInfoFrame\UI-Character-Skills-BarBorder">
+                            <Size x="270" y="31"/>
+                            <Anchors>
+                                <Anchor point="LEFT" x="-5" y="0"/>
+                            </Anchors>
+                        </Texture>
+                        <FontString parentKey="Text" inherits="GameFontHighlightSmall">
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                    <Layer level="BACKGROUND">
+                        <Texture>
+                            <Color r="0" g="0" b="0" a="0.7"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <BarTexture file="Interface\PaperDollInfoFrame\UI-Character-Skills-Bar"/>
+                <BarColor r="0.0" g="1.0" b="0.3"/>
+            </StatusBar>
         </Frames>
         <Layers>
             <Layer level="ARTWORK">
@@ -263,16 +291,7 @@
     <Frame name="tdAuctionBrowseBuyFrameTemplate" setAllPoints="true" virtual="true">
         <Size y="19"/>
         <Frames>
-            <Button parentKey="ResetButton" inherits="UIPanelButtonTemplate" text="RESET">
-                <Size x="80" y="22"/>
-                <Anchors>
-                    <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="67" y="-35"/>
-                </Anchors>
-                <Scripts>
-                    <OnClick function="AuctionFrameBrowse_Reset"/>
-                    <OnUpdate function="BrowseResetButton_OnUpdate"/>
-                </Scripts>
-            </Button>
+            
             <ScrollFrame parentKey="ScrollFrame" inherits="HybridScrollFrameTemplate" virtual="true">
                 <Size x="612" y="304"/>
                 <Anchors>

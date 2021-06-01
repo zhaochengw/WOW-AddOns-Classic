@@ -60,7 +60,7 @@ function PriceScaner:OnDone()
 end
 
 function PriceScaner:ProcessAuction(index)
-    local itemKey, stackSize, price, _, owner = Scaner.ProcessAuction(self, index)
+    local _, itemKey, stackSize, price, _, owner = Scaner.ProcessAuction(self, index)
     if itemKey == self.itemKey then
         local key = format('%d.%d', price, stackSize)
 
