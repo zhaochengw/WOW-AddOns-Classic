@@ -522,18 +522,15 @@ do	--	LOCALE
 				[LE_ITEM_WEAPON_FISHINGPOLE] = "钓鱼竿",	--	20	--	Fishing Poles
 			},
 			[LE_ITEM_CLASS_GEM] = {					--	3	Gem
-				[LE_ITEM_GEM_INTELLECT] = "智力",			--	0	--	Intellect
-				[LE_ITEM_GEM_AGILITY] = "敏捷",				--	1	--	Agility
-				[LE_ITEM_GEM_STRENGTH] = "力量",			--	2	--	Strength
-				[LE_ITEM_GEM_STAMINA] = "耐力",				--	3	--	Stamina
-				[LE_ITEM_GEM_SPIRIT] = "精神",				--	4	--	Spirit
-				[LE_ITEM_GEM_CRITICALSTRIKE] = "爆击",		--	5	--	Critical Strike
-				[LE_ITEM_GEM_MASTERY] = "精通",				--	6	--	Mastery
-				[LE_ITEM_GEM_HASTE] = "急速",				--	7	--	Haste
-				[LE_ITEM_GEM_VERSATILITY] = "全能",			--	8	--	Versatility
-				[9] = "Other",								--	9	--	Other
-				[LE_ITEM_GEM_MULTIPLESTATS] = "多属性",		--	10	--	Multiple Stats
-				[LE_ITEM_GEM_ARTIFACTRELIC] = "神器圣物",	--	11	--	Artifact Relic
+				[LE_ITEM_GEM_RED] = "红色宝石",					--	0	--	Intellect
+				[LE_ITEM_GEM_BLUE] = "蓝色宝石",				--	1	--	Agility
+				[LE_ITEM_GEM_YELLOW] = "黄色宝石",				--	2	--	Strength
+				[LE_ITEM_GEM_PURPLE] = "紫色宝石",				--	3	--	Stamina
+				[LE_ITEM_GEM_GREEN] = "绿色宝石",				--	4	--	Spirit
+				[LE_ITEM_GEM_ORANGE] = "橙色宝石",				--	5	--	Critical Strike
+				[LE_ITEM_GEM_META] = "多彩宝石",				--	6	--	Mastery
+				[LE_ITEM_GEM_SIMPLE] = "简单宝石",				--	7	--	Haste
+				[LE_ITEM_GEM_PRISMATIC] = "棱彩宝石",			--	8	--	Versatility
 			},
 			[LE_ITEM_CLASS_ARMOR] = {				--	4	Armor
 				[LE_ITEM_ARMOR_GENERIC] = "其它",		--	0	--	Miscellaneous	Includes Spellstones, Firestones, Trinkets, Rings and Necks
@@ -883,18 +880,15 @@ do	--	LOCALE
 				[LE_ITEM_WEAPON_FISHINGPOLE] = "낚시대", 	--	20
 			},
 			[LE_ITEM_CLASS_GEM] = {					--	3	Gem
-				[LE_ITEM_GEM_INTELLECT] = "지능", 				--	0
-				[LE_ITEM_GEM_AGILITY] = "민첩", 					--	1
-				[LE_ITEM_GEM_STRENGTH] = "힘", 				--	2
-				[LE_ITEM_GEM_STAMINA] = "체력", 					--	3
-				[LE_ITEM_GEM_SPIRIT] = "정신력", 					--	4
-				[LE_ITEM_GEM_CRITICALSTRIKE] = "크리티컬", 	--	5
-				[LE_ITEM_GEM_MASTERY] = "숙련", 					--	6
-				[LE_ITEM_GEM_HASTE] = "가속", 						--	7
-				[LE_ITEM_GEM_VERSATILITY] = "유연성", 			--	8
-				[9] = "Other", 										--	9
-				[LE_ITEM_GEM_MULTIPLESTATS] = "다속성", 	--	10
-				[LE_ITEM_GEM_ARTIFACTRELIC] = "유물", 	--	11
+				[LE_ITEM_GEM_RED] = "Red Gem",					--	0	--	Intellect
+				[LE_ITEM_GEM_BLUE] = "Blue Gem",				--	1	--	Agility
+				[LE_ITEM_GEM_YELLOW] = "Yellow Gem",				--	2	--	Strength
+				[LE_ITEM_GEM_PURPLE] = "Purple Gem",				--	3	--	Stamina
+				[LE_ITEM_GEM_GREEN] = "Green Gem",				--	4	--	Spirit
+				[LE_ITEM_GEM_ORANGE] = "Orange Gem",				--	5	--	Critical Strike
+				[LE_ITEM_GEM_META] = "Meta Gem",				--	6	--	Mastery
+				[LE_ITEM_GEM_SIMPLE] = "Simple Gem",				--	7	--	Haste
+				[LE_ITEM_GEM_PRISMATIC] = "Prismatic Gem",			--	8	--	Versatility
 			},
 			[LE_ITEM_CLASS_ARMOR] = {						--	4	Armor
 				[LE_ITEM_ARMOR_GENERIC] = "기타", 	--	0	Includes Spellstones, Firestones, Trinkets, Rings and Necks
@@ -1243,18 +1237,15 @@ do	--	LOCALE
 				[LE_ITEM_WEAPON_FISHINGPOLE] = "Fishing Poles", 	--	20
 			},
 			[LE_ITEM_CLASS_GEM] = {					--	3	Gem
-				[LE_ITEM_GEM_INTELLECT] = "Intellect", 				--	0
-				[LE_ITEM_GEM_AGILITY] = "Agility", 					--	1
-				[LE_ITEM_GEM_STRENGTH] = "Strength", 				--	2
-				[LE_ITEM_GEM_STAMINA] = "Stamina", 					--	3
-				[LE_ITEM_GEM_SPIRIT] = "Spirit", 					--	4
-				[LE_ITEM_GEM_CRITICALSTRIKE] = "Critical Strike", 	--	5
-				[LE_ITEM_GEM_MASTERY] = "Mastery", 					--	6
-				[LE_ITEM_GEM_HASTE] = "Haste", 						--	7
-				[LE_ITEM_GEM_VERSATILITY] = "Versatility", 			--	8
-				[9] = "Other", 										--	9
-				[LE_ITEM_GEM_MULTIPLESTATS] = "Multiple Stats", 	--	10
-				[LE_ITEM_GEM_ARTIFACTRELIC] = "Artifact Relic", 	--	11
+				[LE_ITEM_GEM_RED] = "Red Gem",					--	0	--	Intellect
+				[LE_ITEM_GEM_BLUE] = "Blue Gem",				--	1	--	Agility
+				[LE_ITEM_GEM_YELLOW] = "Yellow Gem",				--	2	--	Strength
+				[LE_ITEM_GEM_PURPLE] = "Purple Gem",				--	3	--	Stamina
+				[LE_ITEM_GEM_GREEN] = "Green Gem",				--	4	--	Spirit
+				[LE_ITEM_GEM_ORANGE] = "Orange Gem",				--	5	--	Critical Strike
+				[LE_ITEM_GEM_META] = "Meta Gem",				--	6	--	Mastery
+				[LE_ITEM_GEM_SIMPLE] = "Simple Gem",				--	7	--	Haste
+				[LE_ITEM_GEM_PRISMATIC] = "Prismatic Gem",			--	8	--	Versatility
 			},
 			[LE_ITEM_CLASS_ARMOR] = {						--	4	Armor
 				[LE_ITEM_ARMOR_GENERIC] = "Miscellaneous", 	--	0	Includes Spellstones, Firestones, Trinkets, Rings and Necks
@@ -4765,6 +4756,7 @@ do	--	MAIN
 			end
 			local function preload_check_spell()
 				local completed = true;
+				local maxonce = IsInRaid() and 500 or (IsInGroup() and 1000 or 10000);
 				for pid = NS.db_min_pid(), NS.db_max_pid() do
 					local sid = tradeskill_id[pid];
 					if not tradeskill_name[pid] then
@@ -4776,12 +4768,20 @@ do	--	MAIN
 							tradeskill_hash[csid] = pid;
 						end
 						completed = false;
+						maxonce = maxonce - 1;
+						if maxonce <= 0 then
+							return false;
+						end
 					end
 				end
 				for sid, info in next, recipe_info do
 					if not spell_info[sid] then
 						RequestLoadSpellData(sid);
 						completed = false;
+						maxonce = maxonce - 1;
+						if maxonce <= 0 then
+							return false;
+						end
 					end
 				end
 				return completed;
@@ -4799,6 +4799,7 @@ do	--	MAIN
 			end
 			local function preload_check_item()
 				local completed = true;
+				local maxonce = IsInRaid() and 500 or (IsInGroup() and 1000 or 10000);
 				for sid, info in next, recipe_info do
 					local cid = info[index_cid];
 					if cid then
@@ -4806,6 +4807,10 @@ do	--	MAIN
 							RequestLoadItemDataByID(cid);
 							temp_iid_list[cid] = 1;
 							completed = false;
+							maxonce = maxonce - 1;
+							if maxonce <= 0 then
+								return false;
+							end
 						end
 					end
 					local rid = info[index_rid]
@@ -4814,6 +4819,10 @@ do	--	MAIN
 							RequestLoadItemDataByID(rid);
 							temp_iid_list[rid] = 1;
 							completed = false;
+							maxonce = maxonce - 1;
+							if maxonce <= 0 then
+								return false;
+							end
 						end
 					end
 					local reagent_ids = info[index_reagents_id];
@@ -4824,6 +4833,10 @@ do	--	MAIN
 								RequestLoadItemDataByID(rid);
 								temp_iid_list[rid] = 1;
 								completed = false;
+								maxonce = maxonce - 1;
+								if maxonce <= 0 then
+									return false;
+								end
 							end
 						end
 					end
@@ -4930,7 +4943,13 @@ do	--	MAIN
 					recipe_info[sid] = nil;
 				end
 			end
-			NS.db_preload();
+			if IsInRaid() then
+				C_Timer.After(4, NS.db_preload);
+			elseif IsInGroup() then
+				C_Timer.After(2, NS.db_preload);
+			else
+				NS.db_preload();
+			end
 		end
 		--	GET TABLE
 			--	| tradeskill_check_id{ [pid] = p_check_sid }
@@ -11932,12 +11951,12 @@ do	--	MAIN
 					if body == "" then
 						return;
 					end
-					if control_code == ADDON_MSG_QUERY_SKILL then
+					--[[if control_code == ADDON_MSG_QUERY_SKILL then
 						local valid, msg = skill_msg(ADDON_MSG_REPLY_SKILL);
 						if valid then
 							SendAddonMessage(ADDON_PREFIX, msg, "WHISPER", sender);
 						end
-					elseif control_code == ADDON_MSG_SKILL_BROADCAST or control_code == ADDON_MSG_REPLY_SKILL then
+					else--]]if control_code == ADDON_MSG_SKILL_BROADCAST or control_code == ADDON_MSG_REPLY_SKILL then
 						local _, _, GUID, val = strfind(body, "^([^#^:]+)#(.+)$");
 						if GUID then
 							local cmm = CMM[GUID];
@@ -12044,23 +12063,23 @@ do	--	MAIN
 				_EventHandler:RegEvent("CHAT_MSG_ADDON");
 				_EventHandler:RegEvent("CHAT_MSG_ADDON_LOGGED");
 				do
-					C_Timer.NewTicker(0.1, function()
-						if IsInGuild() then
-							local work = tremove(queue_guild_msg, 1);
-							if work then
-								SendAddonMessage(ADDON_PREFIX, work, "GUILD");
-							end
-						end
-					end);
-					C_Timer.NewTicker(0.02, function()
-						if IsInGuild() then
-							local work = tremove(queue_whisper_msg, 1);
-							if work then
-								SendAddonMessage(ADDON_PREFIX, work[1], "GUILD", work[2]);
-							end
-						end
-					end);
-					C_Timer.NewTicker(8.0, skill_broadcast);
+					-- C_Timer.NewTicker(0.1, function()
+					-- 	if IsInGuild() then
+					-- 		local work = tremove(queue_guild_msg, 1);
+					-- 		if work then
+					-- 			SendAddonMessage(ADDON_PREFIX, work, "GUILD");
+					-- 		end
+					-- 	end
+					-- end);
+					-- C_Timer.NewTicker(0.02, function()
+					-- 	if IsInGuild() then
+					-- 		local work = tremove(queue_whisper_msg, 1);
+					-- 		if work then
+					-- 			SendAddonMessage(ADDON_PREFIX, work[1], "GUILD", work[2]);
+					-- 		end
+					-- 	end
+					-- end);
+					C_Timer.NewTicker(60.0, skill_broadcast);
 				end
 			else
 				_error_("RegisterAddonMessagePrefix", ADDON_PREFIX);
