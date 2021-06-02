@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------
--- 	Leatrix Plus 2.5.37 (26th May 2021)
+-- 	Leatrix Plus 2.5.38 (2nd June 2021)
 ----------------------------------------------------------------------
 
 --	01:Functions	20:Live			50:RunOnce		70:Logout			
@@ -20,7 +20,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "2.5.37"
+	LeaPlusLC["AddonVer"] = "2.5.38"
 	LeaPlusLC["RestartReq"] = nil
 
 	-- Get locale table
@@ -383,6 +383,7 @@
 		LeaPlusLC:LockOption("SetWeatherDensity", "SetWeatherDensityBtn", false)	-- Set weather density
 		LeaPlusLC:LockOption("ViewPortEnable", "ModViewportBtn", true)				-- Enable viewport
 		LeaPlusLC:LockOption("MuteGameSounds", "MuteGameSoundsBtn", false)			-- Mute game sounds
+		LeaPlusLC:LockOption("StandAndDismount", "DismountBtn", false)				-- Dismount me
 	end
 
 ----------------------------------------------------------------------
@@ -448,7 +449,7 @@
 		or	(LeaPlusLC["CharAddonList"]			~= LeaPlusDB["CharAddonList"])			-- Show character addons
 		or	(LeaPlusLC["FasterLooting"]			~= LeaPlusDB["FasterLooting"])			-- Faster auto loot
 		or	(LeaPlusLC["FasterMovieSkip"]		~= LeaPlusDB["FasterMovieSkip"])		-- Faster movie skip
-		or	(LeaPlusLC["StandAndDismount"]		~= LeaPlusDB["StandAndDismount"])		-- Dismount automatically
+		or	(LeaPlusLC["StandAndDismount"]		~= LeaPlusDB["StandAndDismount"])		-- Dismount me
 		or	(LeaPlusLC["ShowVendorPrice"]		~= LeaPlusDB["ShowVendorPrice"])		-- Show vendor price
 		or	(LeaPlusLC["CombatPlates"]			~= LeaPlusDB["CombatPlates"])			-- Combat plates
 		or	(LeaPlusLC["EasyItemDestroy"]		~= LeaPlusDB["EasyItemDestroy"])		-- Easy item destroy
@@ -1108,7 +1109,7 @@
 						end
 						-- Ignore specific NPCs for accepting quests only
 						if actionType == "Accept" then
-							-- Escort quests
+							-- Classic escort quests
 							if npcID == "467" -- The Defias Traitor (The Defias Brotherhood)
 							or npcID == "349" -- Corporal Keeshan (Missing In Action)
 							or npcID == "1379" -- Miran (Protecting the Shipment)
@@ -1164,6 +1165,25 @@
 							or npcID == "13716" -- Celebras the Redeemed (The Scepter of Celebras)
 							or npcID == "19401" -- Wing Commander Brack (Return to the Abyssal Shelf) (Horde)
 							or npcID == "20235" -- Gryphoneer Windbellow (Return to the Abyssal Shelf) (Alliance)
+							-- BCC escort quests
+							or npcID == "16295" -- Ranger Lilatha (Escape from the Catacombs)
+							or npcID == "17238" -- Anchorite Truuen (Tomb of the Lightbringer)
+							or npcID == "17312" -- Magwin (A Cry For Help)
+							or npcID == "17877" -- Fhwoor (Fhwoor Smash!)
+							or npcID == "17969" -- Kayra Longmane (Escape from Umbrafen)
+							or npcID == "18210" -- Mag'har Captive (The Totem of Kar'dash, Horde)
+							or npcID == "18209" -- Kurenai Captive (The Totem of Kar'dash, Alliance)
+							or npcID == "18760" -- Isla Starmane (Escape from Firewing Point!)
+							or npcID == "19589" -- Maxx A. Million Mk. V (Mark V is Alive!)
+							or npcID == "19671" -- Cryo-Engineer Sha'heen (Someone Else's Hard Work Pays Off)
+							or npcID == "20281" -- Drijya (Sabotage the Warp-Gate!)
+							or npcID == "20415" -- Bessy (When the Cows Come Home)
+							or npcID == "20482" -- Image of Commander Ameer (Delivering the Message)
+							or npcID == "20763" -- Captured Protectorate Vanguard (Escape from the Staging Grounds)
+							or npcID == "21027" -- Earthmender Wilda (Escape from Coilskar Cistern)
+							or npcID == "22424" -- Skywing (Skywing)
+							or npcID == "22458" -- Chief Archaeologist Letoll (Digging Through Bones)
+							or npcID == "23383" -- Skyguard Prisoner (Escape from Skettis)
 							then
 								return true
 							end
@@ -3940,7 +3960,7 @@
 		end
 
 		----------------------------------------------------------------------
-		--	Dismount automatically
+		--	Dismount me
 		----------------------------------------------------------------------
 
 		if LeaPlusLC["StandAndDismount"] == "On" then
@@ -3949,16 +3969,82 @@
 			eFrame:RegisterEvent("UI_ERROR_MESSAGE")
 			eFrame:SetScript("OnEvent", function(self, event, messageType, msg)
 				-- Auto dismount
-				if msg == ERR_OUT_OF_RAGE
-				or msg == ERR_OUT_OF_MANA
-				or msg == ERR_OUT_OF_ENERGY
-				or msg == SPELL_FAILED_MOVING
-				or msg == ERR_TAXIPLAYERALREADYMOUNTED
+				if msg == ERR_OUT_OF_RAGE and LeaPlusLC["DismountNoResource"] == "On"
+				or msg == ERR_OUT_OF_MANA and LeaPlusLC["DismountNoResource"] == "On"
+				or msg == ERR_OUT_OF_ENERGY and LeaPlusLC["DismountNoResource"] == "On"
+				or msg == SPELL_FAILED_MOVING and LeaPlusLC["DismountNoMoving"] == "On"
+				or msg == ERR_TAXIPLAYERALREADYMOUNTED and LeaPlusLC["DismountFlightDest"] == "On"
 				then
 					if IsMounted() then
 						Dismount()
 						UIErrorsFrame:Clear()
 					end
+				end
+			end)
+
+			-- Dismount when flight point map is opened
+			local taxiFrame = CreateFrame("FRAME")
+			taxiFrame:RegisterEvent("TAXIMAP_OPENED")
+			taxiFrame:SetScript("OnEvent", function() if IsMounted() then Dismount() end end)
+
+			-- Create configuration panel
+			local DismountFrame = LeaPlusLC:CreatePanel("Dismount me", "DismountFrame")
+
+			LeaPlusLC:MakeTx(DismountFrame, "Settings", 16, -72)
+			LeaPlusLC:MakeCB(DismountFrame, "DismountNoResource", "Dismount when not enough rage, mana or energy", 16, -92, false, "If checked, you will be dismounted when you attempt to cast a spell but don't have the rage, mana or energy to cast it.")
+			LeaPlusLC:MakeCB(DismountFrame, "DismountNoMoving", "Dismount when casting a spell while moving", 16, -112, false, "If checked, you will be dismounted when you attempt to cast a non-instant cast spell while moving.")
+			LeaPlusLC:MakeCB(DismountFrame, "DismountNoTaxi", "Dismount when the flight map opens", 16, -132, false, "If checked, you will be dismounted when you instruct a flight master to open the flight map.")
+			LeaPlusLC:MakeCB(DismountFrame, "DismountFlightDest", "Dismount when clicking a flight destination", 16, -152, false, "If checked, you will be dismounted when you click a flight destination.")
+
+			-- Help button hidden
+			DismountFrame.h.tiptext = L["The game will dismount you if you successfully cast a spell without addons.  These settings let you set some additional dismount rules."]
+
+			-- Back button handler
+			DismountFrame.b:SetScript("OnClick", function() 
+				DismountFrame:Hide(); LeaPlusLC["PageF"]:Show(); LeaPlusLC["Page7"]:Show()
+				return
+			end)
+
+			-- Function to set dismount options
+			local function SetDismount()
+				if LeaPlusLC["DismountNoTaxi"] == "On" then
+					taxiFrame:RegisterEvent("TAXIMAP_OPENED")
+				else
+					taxiFrame:UnregisterEvent("TAXIMAP_OPENED")
+				end
+			end
+
+			-- Run function when certain options are clicked and on startup
+			LeaPlusCB["DismountNoTaxi"]:HookScript("OnClick", SetDismount)
+			SetDismount()
+
+			-- Reset button handler
+			DismountFrame.r:SetScript("OnClick", function()
+
+				-- Reset checkboxes
+				LeaPlusLC["DismountNoResource"] = "On"
+				LeaPlusLC["DismountNoMoving"] = "On"
+				LeaPlusLC["DismountNoTaxi"] = "On"
+				LeaPlusLC["DismountFlightDest"] = "On"
+
+				-- Update settings and configuration panel
+				SetDismount()
+				DismountFrame:Hide(); DismountFrame:Show()
+
+			end)
+
+			-- Show configuration panal when options panel button is clicked
+			LeaPlusCB["DismountBtn"]:SetScript("OnClick", function()
+				if IsShiftKeyDown() and IsControlKeyDown() then
+					-- Preset profile
+					LeaPlusLC["DismountNoResource"] = "On"
+					LeaPlusLC["DismountNoMoving"] = "On"
+					LeaPlusLC["DismountNoTaxi"] = "On"
+					LeaPlusLC["DismountFlightDest"] = "On"
+					SetDismount()
+				else
+					DismountFrame:Show()
+					LeaPlusLC:HideFrames()
 				end
 			end)
 
@@ -4658,20 +4744,6 @@
 			-- Create configuration panel
 			local SideFrames = LeaPlusLC:CreatePanel("Manage frames", "SideFrames")
 
-			-- Create Titan Panel screen adjust warning
-			local titanFrame = CreateFrame("FRAME", nil, SideFrames)
-			titanFrame:SetAllPoints()
-			titanFrame:Hide()
-			LeaPlusLC:MakeTx(titanFrame, "Warning", 16, -172)
-			titanFrame.txt = LeaPlusLC:MakeWD(titanFrame, "Titan Panel screen adjust needs to be disabled for frames to be saved correctly.", 16, -192, 500)
-			titanFrame.txt:SetWordWrap(false)
-			titanFrame.txt:SetWidth(520)
-			titanFrame.btn = LeaPlusLC:CreateButton("fixTitanBtn", titanFrame, "Okay, disable screen adjust for me", "TOPLEFT", 16, -212, 0, 25, true, "Click to disable Titan Panel screen adjust.  Your UI will be reloaded.")
-			titanFrame.btn:SetScript("OnClick", function()
-				TitanPanelSetVar("ScreenAdjust", 1)
-				ReloadUI()
-			end)
-
 			-- Variable used to store currently selected frame
 			local currentframe
 
@@ -4910,17 +4982,6 @@
 							LeaPlusDB["Frames"][vf]["Point"], void, LeaPlusDB["Frames"][vf]["Relative"], LeaPlusDB["Frames"][vf]["XOffset"], LeaPlusDB["Frames"][vf]["YOffset"] = _G[vf]:GetPoint()
 						end
 					else
-						-- Show Titan Panel screen adjust warning if Titan Panel is installed with screen adjust enabled
-						if select(2, GetAddOnInfo("TitanClassic")) then
-							if IsAddOnLoaded("TitanClassic") then
-								if TitanPanelSetVar and TitanPanelGetVar then
-									if not TitanPanelGetVar("ScreenAdjust") then
-										titanFrame:Show()
-									end
-								end
-							end
-						end
-
 						-- Show mover frame
 						SideFrames:Show()
 						LeaPlusLC:HideFrames()
@@ -5020,6 +5081,20 @@
 			-- Create configuration panel
 			local WidgetPanel = LeaPlusLC:CreatePanel("Manage widget", "WidgetPanel")
 
+			-- Create Titan Panel screen adjust warning
+			local titanFrame = CreateFrame("FRAME", nil, WidgetPanel)
+			titanFrame:SetAllPoints()
+			titanFrame:Hide()
+			LeaPlusLC:MakeTx(titanFrame, "Warning", 16, -172)
+			titanFrame.txt = LeaPlusLC:MakeWD(titanFrame, "Titan Panel screen adjust needs to be disabled for the frame to be saved correctly.", 16, -192, 500)
+			titanFrame.txt:SetWordWrap(false)
+			titanFrame.txt:SetWidth(520)
+			titanFrame.btn = LeaPlusLC:CreateButton("fixTitanBtn", titanFrame, "Okay, disable screen adjust for me", "TOPLEFT", 16, -212, 0, 25, true, "Click to disable Titan Panel screen adjust.  Your UI will be reloaded.")
+			titanFrame.btn:SetScript("OnClick", function()
+				TitanPanelSetVar("ScreenAdjust", 1)
+				ReloadUI()
+			end)
+
 			LeaPlusLC:MakeTx(WidgetPanel, "Scale", 16, -72)
 			LeaPlusLC:MakeSL(WidgetPanel, "WidgetScale", "Drag to set the widget scale.", 0.5, 2, 0.05, 16, -92, "%.2f")
 
@@ -5073,6 +5148,17 @@
 					topCenterHolder:SetScale(LeaPlusLC["WidgetScale"])
 					UIWidgetTopCenterContainerFrame:SetScale(LeaPlusLC["WidgetScale"])
 				else
+					-- Show Titan Panel screen adjust warning if Titan Panel is installed with screen adjust enabled
+					if select(2, GetAddOnInfo("TitanClassic")) then
+						if IsAddOnLoaded("TitanClassic") then
+							if TitanPanelSetVar and TitanPanelGetVar then
+								if not TitanPanelGetVar("ScreenAdjust") then
+									titanFrame:Show()
+								end
+							end
+						end
+					end
+
 					-- Find out if the UI has a non-standard scale
 					if GetCVar("useuiscale") == "1" then
 						LeaPlusLC["gscale"] = GetCVar("uiscale")
@@ -8292,7 +8378,11 @@
 				LeaPlusLC:LoadVarChk("NoConfirmLoot", "Off")				-- Disable loot warnings
 				LeaPlusLC:LoadVarChk("FasterLooting", "Off")				-- Faster auto loot
 				LeaPlusLC:LoadVarChk("FasterMovieSkip", "Off")				-- Faster movie skip
-				LeaPlusLC:LoadVarChk("StandAndDismount", "Off")				-- Dismount automatically
+				LeaPlusLC:LoadVarChk("StandAndDismount", "Off")				-- Dismount me
+				LeaPlusLC:LoadVarChk("DismountNoResource", "On")			-- Dismount on resource error
+				LeaPlusLC:LoadVarChk("DismountNoMoving", "On")				-- Dismount on moving
+				LeaPlusLC:LoadVarChk("DismountNoTaxi", "On")				-- Dismount on flight map open
+				LeaPlusLC:LoadVarChk("DismountFlightDest", "On")			-- Dismount on flight destination
 				LeaPlusLC:LoadVarChk("ShowVendorPrice", "Off")				-- Show vendor price
 				LeaPlusLC:LoadVarChk("CombatPlates", "Off")					-- Combat plates
 				LeaPlusLC:LoadVarChk("EasyItemDestroy", "Off")				-- Easy item destroy
@@ -8493,6 +8583,10 @@
 			LeaPlusDB["FasterLooting"] 			= LeaPlusLC["FasterLooting"]
 			LeaPlusDB["FasterMovieSkip"] 		= LeaPlusLC["FasterMovieSkip"]
 			LeaPlusDB["StandAndDismount"] 		= LeaPlusLC["StandAndDismount"]
+			LeaPlusDB["DismountNoResource"] 	= LeaPlusLC["DismountNoResource"]
+			LeaPlusDB["DismountNoMoving"] 		= LeaPlusLC["DismountNoMoving"]
+			LeaPlusDB["DismountNoTaxi"] 		= LeaPlusLC["DismountNoTaxi"]
+			LeaPlusDB["DismountFlightDest"] 	= LeaPlusLC["DismountFlightDest"]
 			LeaPlusDB["ShowVendorPrice"] 		= LeaPlusLC["ShowVendorPrice"]
 			LeaPlusDB["CombatPlates"]			= LeaPlusLC["CombatPlates"]
 			LeaPlusDB["EasyItemDestroy"]		= LeaPlusLC["EasyItemDestroy"]
@@ -10032,7 +10126,7 @@
 				LeaPlusDB["NoConfirmLoot"] = "On"				-- Disable loot warnings
 				LeaPlusDB["FasterLooting"] = "On"				-- Faster auto loot
 				LeaPlusDB["FasterMovieSkip"] = "On"				-- Faster movie skip
-				LeaPlusDB["StandAndDismount"] = "On"			-- Dismount automatically
+				LeaPlusDB["StandAndDismount"] = "On"			-- Dismount me
 				LeaPlusDB["ShowVendorPrice"] = "On"				-- Show vendor price
 				LeaPlusDB["CombatPlates"] = "On"				-- Combat plates
 				LeaPlusDB["EasyItemDestroy"] = "On"				-- Easy item destroy
@@ -10381,7 +10475,7 @@
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "NoConfirmLoot"				, 	"Disable loot warnings"			,	340, -132, 	false,	"If checked, confirmations will no longer appear when you choose a loot roll option or attempt to sell or mail a tradable item.")
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "FasterLooting"				, 	"Faster auto loot"				,	340, -152, 	true,	"If checked, the amount of time it takes to auto loot creatures will be significantly reduced.")
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "FasterMovieSkip"			, 	"Faster movie skip"				,	340, -172, 	true,	"If checked, you will be able to cancel cinematics without being prompted for confirmation.")
-	LeaPlusLC:MakeCB(LeaPlusLC[pg], "StandAndDismount"			, 	"Dismount automatically"		,	340, -192, 	true,	"If checked, your character will dismount when you select a flight location or attempt to cast a spell regardless of whether you have enough resource to cast it.")
+	LeaPlusLC:MakeCB(LeaPlusLC[pg], "StandAndDismount"			, 	"Dismount me"					,	340, -192, 	true,	"If checked, you will be able to set some additional rules for when your character is automatically dismounted.")
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "ShowVendorPrice"			, 	"Show vendor price"				,	340, -212, 	true,	"If checked, the vendor price will be shown in item tooltips.")
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "CombatPlates"				, 	"Combat plates"					,	340, -232, 	true,	"If checked, enemy nameplates will be shown during combat and hidden when combat ends.")
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "EasyItemDestroy"			, 	"Easy item destroy"				,	340, -252, 	true,	"If checked, you will no longer need to type delete when destroying a superior quality item.|n|nIn addition, item links will be shown in all item destroy confirmation windows.")
@@ -10389,6 +10483,7 @@
 	LeaPlusLC:CfgBtn("SetWeatherDensityBtn", LeaPlusCB["SetWeatherDensity"])
 	LeaPlusLC:CfgBtn("ModViewportBtn", LeaPlusCB["ViewPortEnable"])
 	LeaPlusLC:CfgBtn("MuteGameSoundsBtn", LeaPlusCB["MuteGameSounds"])
+	LeaPlusLC:CfgBtn("DismountBtn", LeaPlusCB["StandAndDismount"])
 
 ----------------------------------------------------------------------
 -- 	LC8: Settings

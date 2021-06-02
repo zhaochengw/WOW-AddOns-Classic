@@ -843,7 +843,7 @@ L["If checked, you will need to hold the shift key down for quests to be automat
 L["If checked, you will no longer need to type delete when destroying a superior quality item.|n|nIn addition, item links will be shown in all item destroy confirmation windows."] = "勾選後，您在摧毀優良物品時無須再輸入delete。|n|n此外，物品連結將顯示在所有物品摧毀確認視窗中。"
 L["If checked, you will release automatically after you die in a battleground.|n|nYou will not release automatically if you have the ability to self-resurrect."] = "勾選後，您在戰場死亡時將會自動釋放。|n|n如果您具有自我復活的技能，則不會自動釋放。"
 L["If checked, your bags will not be opened or closed automatically when you interact with a merchant, bank or mailbox."] = "勾選後，當你打開商店、銀行或者郵箱時，背包不會自動開啟或者關閉。"
-L["If checked, your character will dismount when you select a flight location or attempt to cast a spell regardless of whether you have enough resource to cast it."] = "勾選後，當您選擇飛行鳥點或嘗試施放法術時，無論您是否有足夠的資源施放法術，角色都會下坐騎。"
+L["If checked, your character will dismount when you talk to a flight master or attempt to cast a spell regardless of whether you have enough resource to cast it."] = "勾選後，則無論您是否有足夠的資源來施放法術，當您與飛行管理員交談或嘗試施放法術時，角色都會下坐騎。"
 L["If checked, your chat history will increase to 4096 lines.  If unchecked, the default will be used (128 lines).|n|nEnabling this option may prevent some chat text from showing during login."] = "勾選後，你的聊天歷史記錄會增漲至4096行。如果未被勾選，會保持在預設的128行。|n|n啟用這個設置可能會在登錄時會隱藏一些聊天訊息。"
 L["If checked, your gear will be repaired automatically when you visit a suitable merchant.|n|nYou can hold the shift key down when you talk to a merchant to override this setting."] = "勾選後，當你訪問適用的商店時，裝備將自動修理。|n|n當你開啟商店時可以按下Shift鍵以無視此設置。"
 L["If checked, zone text will not be shown (eg. 'Ironforge')."] = "勾選後，區域文字不再顯示。"
