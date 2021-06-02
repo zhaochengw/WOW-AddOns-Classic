@@ -99,4 +99,16 @@ L["Portal to Silvermoon"] = "Portal nach Silbermond"
 L["Portal to Undercity"] = "Portal nach Unterstadt"
 L["Orb of translocation"] = "Translokationskugel"
 
+L["Shattrath Portal to Thunder Bluff"] = "Shattrathportal nach Donnerfels"
+L["Shattrath Portal to Orgrimmar"] = "Shattrathportal nach Orgrimmar"
+L["Shattrath Portal to Undercity"] = "Shattrathportal nach Unterstadt"
+L["Shattrath Portal to Silvermoon"] = "Shattrathportal nach Silbermond"
+
+L["Boat to Exodar"] = "Schiff zur Exodar"
+L["Shattrath Portal to Exodar"] = "Shattrathportal zur Exodar"
+L["Shattrath Portal to Darnassus"] = "Shattrathportal nach Darnassus"
+L["Shattrath Portal to Stormwind"] = "Shattrathportal nach Sturmwind"
+L["Shattrath Portal to Ironforge"] = "Shattrathportal nach Eisenschmiede"
+
+L["Shattrath Portal to Isle of Quel'Danas"] = "Shattrathportal zur Insel von Quel'Danas"
 end
