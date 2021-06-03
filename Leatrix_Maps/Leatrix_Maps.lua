@@ -1,6 +1,6 @@
 
 	----------------------------------------------------------------------
-	-- 	Leatrix Maps 2.5.37 (26th May 2021)
+	-- 	Leatrix Maps 2.5.38 (2nd June 2021)
 	----------------------------------------------------------------------
 
 	-- 10:Func, 20:Comm, 30:Evnt, 40:Panl
@@ -12,7 +12,7 @@
 	local LeaMapsLC, LeaMapsCB, LeaConfigList = {}, {}, {}
 
 	-- Version
-	LeaMapsLC["AddonVer"] = "2.5.37"
+	LeaMapsLC["AddonVer"] = "2.5.38"
 	LeaMapsLC["RestartReq"] = nil
 
 	-- Get locale table
@@ -793,7 +793,7 @@
 
 			-- Create cursor coordinates frame
 			local cCursor = CreateFrame("Frame", nil, WorldMapFrame)
-			cCursor:SetPoint("BOTTOMLEFT", 73, 7)
+			cCursor:SetPoint("BOTTOMLEFT", 73, 8)
 			cCursor:SetSize(200, 16)
 			cCursor.x = cCursor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge") 
 			cCursor.x:SetJustifyH"LEFT"
@@ -803,7 +803,7 @@
 
 			-- Create player coordinates frame
 			local cPlayer = CreateFrame("Frame", nil, WorldMapFrame)
-			cPlayer:SetPoint("BOTTOMRIGHT", -46, 7)
+			cPlayer:SetPoint("BOTTOMRIGHT", -46, 8)
 			cPlayer:SetSize(200, 16)
 			cPlayer.x = cPlayer:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge") 
 			cPlayer.x:SetJustifyH"LEFT"
@@ -1137,6 +1137,7 @@
 				},
 				--[[Azuremyst Isle]] [1943] = {
 					{"FlightA", 31.9, 46.4, L["The Exodar"] .. ", " .. L["Azuremyst Isle"], nil, tATex, nil, nil},
+					{"TravelA", 20.3, 54.2, L["Boat to"] .. " " .. L["Auberdine"] .. ", " .. L["Darkshore"], nil, fATex, nil, nil},
 				},
 				--[[Bloodmyst Isle]] [1950] = {
 					{"FlightA", 57.7, 53.9, L["Blood Watch"] .. ", " .. L["Bloodmyst Isle"], nil, tATex, nil, nil},
@@ -1262,6 +1263,7 @@
 					{"FlightA", 36.3, 45.6, L["Auberdine"] .. ", " .. L["Darkshore"], nil, tATex, nil, nil},
 					{"TravelA", 32.4, 43.8, L["Boat to"] .. " " .. L["Menethil Harbor"] .. ", " .. L["Wetlands"], nil, fATex, nil, nil, nil, nil},
 					{"TravelA", 33.2, 40.1, L["Boat to"] .. " " .. L["Rut'theran Village"] .. ", " .. L["Teldrassil"], nil, fATex, nil, nil, nil, nil},
+					{"TravelA", 30.7, 41.0, L["Boat to"] .. " " .. L["Valaar's Berth"] .. ", " .. L["Azuremyst Isle"], nil, fATex, nil, nil},
 				},
 				--[[Ashenvale]] [1440] = {
 					{"Dungeon", 14.5, 14.2, L["Blackfathom Deeps"], L["Dungeon"], dnTex, 22, 24, 19, 20, 28},
