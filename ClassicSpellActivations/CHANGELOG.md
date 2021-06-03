@@ -1,9 +1,11 @@
 # ClassicSpellActivations
 
-## [2.5.6](https://github.com/rgd87/ClassicSpellActivations/tree/2.5.6) (2021-05-17)
-[Full Changelog](https://github.com/rgd87/ClassicSpellActivations/compare/1.13.16...2.5.6) [Previous Releases](https://github.com/rgd87/ClassicSpellActivations/releases)
+## [2.5.8](https://github.com/rgd87/ClassicSpellActivations/tree/2.5.8) (2021-05-17)
+[Full Changelog](https://github.com/rgd87/ClassicSpellActivations/compare/1.13.16...2.5.8) [Previous Releases](https://github.com/rgd87/ClassicSpellActivations/releases)
 
 - BCC fallback toc  
+- Activating Incinerate on Backlash  
+- Fixed Revenge Rank 7  
 - Added Backlash  
 - Dominos presence check  
 - Fix indentation  
