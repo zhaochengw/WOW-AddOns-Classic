@@ -312,9 +312,9 @@ Plater.OpenCopyUrlDialog = openURL
 --return a unique string ID to identify each script
 --return a string containing time() and GetTime() merged into a string which is converted to hexadecimal
 --examples: 0x60abce782cb0df 0x60abce7847845 0x60abce782cb3cd 0x60abce782cb485 0x60abce792cb51b 0x60abce792cb58f 0x60abce792cb625
-local createUniqueIdentifier = function()
+local createUniqueIdentifier = function(seed)
 	--transform time() into a hex
-    local hexTime =  format("%8x", time())
+    local hexTime =  format("%8x", tonumber(seed) or time())
 
 	--take the GetTime() and remove the dot
     local getTime = tostring(GetTime()) --convert to string
@@ -330,8 +330,8 @@ local createUniqueIdentifier = function()
 	return finalHex
 end
 
-function Plater.CreateUniqueIdentifier()
-	return createUniqueIdentifier()
+function Plater.CreateUniqueIdentifier(seed)
+	return createUniqueIdentifier(seed)
 end
 
 --initialize the options panel for a script object
@@ -2107,9 +2107,23 @@ function Plater.CreateHookingPanel()
 		end
 	]=]
 
-	hookFrame.DefaultCommScript = [=[
-		function (self, unitId, unitFrame, envTable, modTable, source, ...)
+	hookFrame.DefaultPayloadScript = [=[
+		function (self, unitId, unitFrame, envTable, modTable, ...)
+			--vararg is the payload of the event, e.g. 'powerType' for power updates
+			
+		end
+	]=]
+
+	hookFrame.DefaultReceiveCommScript = [=[
+		function (modTable, source, ...)
 			--source is the player who sent the comm, vararg is the payload
+			
+		end
+	]=]
+	
+	hookFrame.DefaultSendCommScript = [=[
+		function (modTable)
+			--called on a timer internally. use 'Plater.SendComm(payload)' to send comm-data if needed.
 			
 		end
 	]=]
@@ -2193,8 +2207,14 @@ function Plater.CreateHookingPanel()
 			if (hookName == "Load Screen" or hookName == "Player Logon" or hookName == "Initialization") then
 				defaultScript = hookFrame.DefaultScriptNoNameplate
 
-			elseif (hookName == "Comm Message") then
-				defaultScript = hookFrame.DefaultCommScript
+			elseif (hookName == "Player Power Update") then
+				defaultScript = hookFrame.DefaultPayloadScript
+
+			elseif (hookName == "Receive Comm Message") then
+				defaultScript = hookFrame.DefaultReceiveCommScript
+			
+			elseif (hookName == "Send Comm Message") then
+				defaultScript = hookFrame.DefaultSendCommScript
 
 			else
 				defaultScript = hookFrame.DefaultScript

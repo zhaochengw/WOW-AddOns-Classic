@@ -8,6 +8,17 @@ function Plater.GetChangelogTable()
 	if (not Plater.ChangeLogTable) then
 		Plater.ChangeLogTable = {
 		
+			{1621935367,  "New Feature", "June 3rd, 2021", "New function 'Plater.SetNameplateScale(unitFrame, scale)' to a custom nameplate scale factor.", "cont1nuity"},
+			{1621935367,  "New Feature", "May 30th, 2021", "Mod 'Send Comm Message' hook to periodically send comms via 'Plater.SendComm(...)' calls to the exact same mod of another user in party or raid.", "cont1nuity"},
+			{1621935367,  "New Feature", "May 25th, 2021", "Mod 'Receive Comm Message' hook to react to 'Plater.SendComm(...)' calls from the exact same mod of another user in party or raid.", "Terciob"},
+			{1621935367,  "Backend Change", "May 28th, 2021", "Enhancements on mod/script code limitations and security.", "cont1nuity"},
+			{1621935367,  "Backend Change", "May 26th, 2021", "'Quick Hide on Death' now uses the corresponding CVar setting to disable the hide animation in TBC.", "cont1nuity"},
+			{1621935367,  "Backend Change", "May 26th, 2021", "Adding x-offset options for cast-bars.", "cont1nuity"},
+			{1621935367,  "Backend Change", "May 25th, 2021", "Mod hook 'Player Power Update' now provides the energy type as additional payload in the vararg parameter.", "cont1nuity"},
+			{1621935367,  "Bug Fix", "May 25th, 2021", "Alpha of non-targets should now work correctly again.", "cont1nuity"},
+			{1621935367,  "Backend Change", "May 25th, 2021", "Enabling execute range indicator for warriors in TBC.", "cont1nuity"},
+			{1621935367,  "Bug Fix", "May 25th, 2021", "'Combo Points' mod now handles targeted combo points correctly in TBC.", "cont1nuity"},
+			
 			{1621880868,  "Bug Fix", "May 24th, 2021", "Hiding unavailable options on TBC client.", "Terciob"},
 			{1621880868,  "Backend Change", "May 23rd, 2021", "'Target always on screen' will now keep it on screen on top side as well.", "cont1nuity"},
 			{1621880868,  "New Feature", "May 20th, 2021", "Adding option to show healthbars for not attackable units (npcs and players).", "cont1nuity"},

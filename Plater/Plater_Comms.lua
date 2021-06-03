@@ -1,16 +1,26 @@
 local Plater = _G.Plater
-local DF = DetailsFramework
+local C_Timer = C_Timer
 local COMM_PLATER_PREFIX = "PLT"
 local COMM_SCRIPT_GROUP_EXPORTED = "GE"
 
 local LibAceSerializer = LibStub:GetLibrary ("AceSerializer-3.0")
 
+local CONST_THROTTLE_HOOK_COMMS = 0.500 --2 comms per second per mod
 
 function Plater.CreateCommHeader(prefix, encodedString)
     return LibAceSerializer:Serialize(prefix, UnitName("player"), GetRealmName(), UnitGUID("player"), encodedString)
 end
 
-function Plater.SendComm(uniqueId, ...)
+function dispatchSendCommEvents()
+	Plater.DispatchCommSendMessageHookEvents()
+	C_Timer.After(CONST_THROTTLE_HOOK_COMMS, dispatchSendCommEvents)
+end
+dispatchSendCommEvents() -- can be done immediately
+
+function Plater.SendComm(scriptIndex, scriptId, uniqueId, ...)
+	
+	if not Plater.VerifyScriptIdForComm(scriptIndex, scriptId, uniqueId) then return end -- block execution if verification fails
+	
     --create the payload, the first index is always the hook id
     local arguments = {uniqueId, ...}
 
@@ -46,21 +56,15 @@ function Plater.MessageReceivedFromScript(prefix, source, playerRealm, playerGUI
     local scriptUID = tostring(data[1])
     tremove(data, 1)
 
-    --get the script that matches the unique id
-    local scriptObject = Plater.GetScriptFromUID(scriptUID)
-    if (not scriptObject) then
-        return
-    end
-
     --trigger the event 'Comm Received'
-    Plater.DispatchCommMessageHookEvent(scriptObject, source, unpack(data))
+    Plater.DispatchCommReceivedMessageHookEvent(scriptUID, source, unpack(data))
 end
 
 
 --> Plater comm handler
     Plater.CommHandler = {
         [COMM_SCRIPT_GROUP_EXPORTED] = Plater.ScriptReceivedFromGroup,
-        [Plater.COMM_SCRIPT_MSG] = Plater.ScriptReceivedMessage,
+        [Plater.COMM_SCRIPT_MSG] = Plater.MessageReceivedFromScript,
     }
 
     function Plater:CommReceived(commPrefix, dataReceived, channel, source)
