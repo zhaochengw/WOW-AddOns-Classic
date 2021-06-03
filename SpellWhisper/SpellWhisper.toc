@@ -1,0 +1,15 @@
+## Interface: 20501
+## Version: 2.2.1
+## Title: SpellWhisper
+## Author: Aoikaze
+## SavedVariables: SpellWhisperDB
+## Notes-zhCN: 法术技能自动通告
+## Notes: Automatic Spell Announcer.
+
+Locale.lua
+Core.lua
+Events.lua
+Config.lua
+GUI.lua
+MinimapIcon.lua
+Command.lua
