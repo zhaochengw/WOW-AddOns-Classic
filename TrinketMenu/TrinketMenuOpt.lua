@@ -3,43 +3,43 @@
 local _G, math, string, table = _G, math, string, table
 
 TrinketMenu.CheckOptInfo = {
-	{"ShowIcon", "ON", "Minimap Button", "Show or hide minimap button."},
-	{"SquareMinimap", "OFF", "Square Minimap", "Move minimap button as if around a square minimap.", "ShowIcon"},
-	{"CooldownCount", "OFF", "Cooldown Numbers", "Display time remaining on cooldowns ontop of the button."},
-	{"TooltipFollow", "OFF", "At Mouse", "Display all tooltips near the mouse.", "ShowTooltips"},
-	{"KeepOpen", "OFF", "Keep Menu Open", "Keep menu open at all times."},
-	{"KeepDocked", "ON", "Keep Menu Docked", "Keep menu docked at all times."},
-	{"Notify", "OFF", "Notify When Ready", "Sends an overhead notification when a trinket's cooldown is complete."},
-	{"DisableToggle", "OFF", "Disable Toggle", "Disables the minimap button's ability to toggle the trinket frame.", "ShowIcon"},
-	{"NotifyChatAlso", "OFF", "Notify Chat Also", "Sends notifications through chat also."},
-	{"Locked", "OFF", "Lock Windows", "Prevents the windows from being moved, resized or rotated."},
-	{"ShowTooltips", "ON", "Show Tooltips", "Shows tooltips."},
-	{"NotifyThirty", "ON", "Notify At 30 sec", "Sends an overhead notification when a trinket has 30 seconds left on cooldown."},
-	{"MenuOnShift", "OFF", "Menu On Shift", "Check this to prevent the menu appearing unless Shift is held."},
-	{"TinyTooltips", "OFF", "Tiny Tooltips", "Shrink trinket tooltips to only their name, charges and cooldown.", "ShowTooltips"},
-	{"SetColumns", "OFF", "Wrap at: ", "Define how many trinkets before the menu will wrap to the next row.\n\nUncheck to let TrinketMenu choose how to wrap the menu."},
-	{"LargeCooldown", "ON", "Large Numbers", "Display the cooldown time in a larger font.", "CooldownCount"},
-	{"ShowHotKeys", "ON", "Show Key Bindings", "Display the key bindings over the equipped trinkets."},
-	{"StopOnSwap", "OFF", "Stop Queue On Swap", "Swapping a passive trinket stops an auto queue.  Check this to also stop the auto queue when a clickable trinket is manually swapped in via TrinketMenu.  This will have the most use to those with frequent trinkets marked Priority."},
-	{"HideOnLoad", "OFF", "Close On Profile Load", "Check this to dismiss this window when you load a profile."},
-	{"RedRange", "OFF", "Red Out of Range", "Check this to red out worn trinkets that are out of range to a valid target.  ie, Gnomish Death Ray and Gnomish Net-O-Matic."},
-	{"HidePetBattle", "ON", "Hide in Pet Battles", "Check this auto hide the frame while in a pet battle."},
-	{"MenuOnRight", "OFF", "Menu On Right-Click", "Check this to prevent the menu from appearing until either worn trinket is right-clicked.\n\nNOTE: This setting CANNOT be changed while in combat."}
+	{"ShowIcon", "ON", "小地图按钮", "Show or hide minimap button."},
+	{"SquareMinimap", "OFF", "方形小地图", "Move minimap button as if around a square minimap.", "ShowIcon"},
+	{"CooldownCount", "OFF", "冷却时间计数", "Display time remaining on cooldowns ontop of the button."},
+	{"TooltipFollow", "OFF", "鼠标提示", "Display all tooltips near the mouse.", "ShowTooltips"},
+	{"KeepOpen", "OFF", "总是打开菜单", "Keep menu open at all times."},
+	{"KeepDocked", "ON", "总是停靠菜单", "Keep menu docked at all times."},
+	{"Notify", "OFF", "CD好时通告", "Sends an overhead notification when a trinket's cooldown is complete."},
+	{"DisableToggle", "OFF", "禁用切换", "Disables the minimap button's ability to toggle the trinket frame.", "ShowIcon"},
+	{"NotifyChatAlso", "OFF", "通告聊天框", "Sends notifications through chat also."},
+	{"Locked", "OFF", "锁定框架", "Prevents the windows from being moved, resized or rotated."},
+	{"ShowTooltips", "ON", "显示鼠标提示", "Shows tooltips."},
+	{"NotifyThirty", "ON", "30秒时通告", "Sends an overhead notification when a trinket has 30 seconds left on cooldown."},
+	{"MenuOnShift", "OFF", "Shift键菜单", "Check this to prevent the menu appearing unless Shift is held."},
+	{"TinyTooltips", "OFF", "迷你鼠标提示", "Shrink trinket tooltips to only their name, charges and cooldown.", "ShowTooltips"},
+	{"SetColumns", "OFF", "自动换行: ", "Define how many trinkets before the menu will wrap to the next row.\n\nUncheck to let TrinketMenu choose how to wrap the menu."},
+	{"LargeCooldown", "ON", "大字体", "Display the cooldown time in a larger font.", "CooldownCount"},
+	{"ShowHotKeys", "ON", "显示按键绑定", "Display the key bindings over the equipped trinkets."},
+	{"StopOnSwap", "OFF", "交换时停止队列", "Swapping a passive trinket stops an auto queue.  Check this to also stop the auto queue when a clickable trinket is manually swapped in via TrinketMenu.  This will have the most use to those with frequent trinkets marked Priority."},
+	{"HideOnLoad", "OFF", "配置加载时关闭", "Check this to dismiss this window when you load a profile."},
+	{"RedRange", "OFF", "超出范围显示红色", "Check this to red out worn trinkets that are out of range to a valid target.  ie, Gnomish Death Ray and Gnomish Net-O-Matic."},
+	{"HidePetBattle", "ON", "宠物战斗时隐藏", "Check this auto hide the frame while in a pet battle."},
+	{"MenuOnRight", "OFF", "右键菜单", "Check this to prevent the menu from appearing until either worn trinket is right-clicked.\n\nNOTE: This setting CANNOT be changed while in combat."}
 }
 
 TrinketMenu.TooltipInfo = {
-	{"TrinketMenu_LockButton", "Lock Windows", "Prevents the windows from being moved, resized or rotated."},
-	{"TrinketMenu_Trinket0Check", "Top Trinket Auto Queue", "Check this to enable auto queue for this trinket slot.  You can also Alt+Click the trinket slot to toggle Auto Queue."},
-	{"TrinketMenu_Trinket1Check", "Bottom Trinket Auto Queue", "Check this to enable auto queue for this trinket slot.  You can also Alt+Click the trinket slot to toggle Auto Queue."},
-	{"TrinketMenu_SortPriority", "High Priority", "When checked, this trinket will be swapped in as soon as possible, whether the equipped trinket is on cooldown or not.\n\nWhen unchecked, this trinket will not equip over one already worn that's not on cooldown."},
-	{"TrinketMenu_SortDelay", "Swap Delay", "This is the time (in seconds) before a trinket will be swapped out.  ie, for Earthstrike you want 20 seconds to get the full 20 second effect of the buff."},
-	{"TrinketMenu_SortKeepEquipped", "Pause Queue", "Check this to suspend the auto queue while this trinket is equipped. ie, for Carrot on a Stick if you have a mod to auto-equip it to a slot with Auto Queue active."},
-	{"TrinketMenu_Profiles", "Profiles", "Here you can load or save auto queue profiles."},
-	{"TrinketMenu_Delete", "Delete", "Remove this trinket from the list.  Trinkets further down the list don't affect performance at all.  This option is merely to keep the list managable. Note: Trinkets in your bags will return to end of the list."},
-	{"TrinketMenu_ProfilesDelete", "Delete Profile", "Remove this profile."},
-	{"TrinketMenu_ProfilesLoad", "Load Profile", "Load a queue order for the selected trinket slot.  You can double-click a profile to load it also."},
-	{"TrinketMenu_ProfilesSave", "Save Profile", "Save the queue order from the selected trinket slot.  Either trinket slot can use saved profiles."},
-	{"TrinketMenu_ProfileName", "Profile Name", "Enter a name to call the profile.  When saved, you can load this profile to either trinket slot."}
+	{"TrinketMenu_LockButton", "锁定框架", "Prevents the windows from being moved, resized or rotated."},
+	{"TrinketMenu_Trinket0Check", "饰品1自动队列", "Check this to enable auto queue for this trinket slot.  You can also Alt+Click the trinket slot to toggle Auto Queue."},
+	{"TrinketMenu_Trinket1Check", "饰品2自动队列", "Check this to enable auto queue for this trinket slot.  You can also Alt+Click the trinket slot to toggle Auto Queue."},
+	{"TrinketMenu_SortPriority", "高优先级", "When checked, this trinket will be swapped in as soon as possible, whether the equipped trinket is on cooldown or not.\n\nWhen unchecked, this trinket will not equip over one already worn that's not on cooldown."},
+	{"TrinketMenu_SortDelay", "交换延迟", "This is the time (in seconds) before a trinket will be swapped out.  ie, for Earthstrike you want 20 seconds to get the full 20 second effect of the buff."},
+	{"TrinketMenu_SortKeepEquipped", "暂停队列", "Check this to suspend the auto queue while this trinket is equipped. ie, for Carrot on a Stick if you have a mod to auto-equip it to a slot with Auto Queue active."},
+	{"TrinketMenu_Profiles", "配置", "Here you can load or save auto queue profiles."},
+	{"TrinketMenu_Delete", "删除", "Remove this trinket from the list.  Trinkets further down the list don't affect performance at all.  This option is merely to keep the list managable. Note: Trinkets in your bags will return to end of the list."},
+	{"TrinketMenu_ProfilesDelete", "删除配置", "Remove this profile."},
+	{"TrinketMenu_ProfilesLoad", "加载配置", "Load a queue order for the selected trinket slot.  You can double-click a profile to load it also."},
+	{"TrinketMenu_ProfilesSave", "保存配置", "Save the queue order from the selected trinket slot.  Either trinket slot can use saved profiles."},
+	{"TrinketMenu_ProfileName", "配置文件名", "Enter a name to call the profile.  When saved, you can load this profile to either trinket slot."}
 }
 
 function TrinketMenu.InitOptions()
@@ -70,7 +70,7 @@ function TrinketMenu.InitOptions()
 		TrinketMenu_SubOptFrame:SetPoint("TOPLEFT", TrinketMenu_OptFrame, "TOPLEFT", 8, - 24)
 	end
 	TrinketMenu_OptColumnsSlider:SetValue(TrinketMenuOptions.Columns)
-	TrinketMenu_OptColumnsSliderText:SetText(TrinketMenuOptions.Columns.." trinkets")
+	TrinketMenu_OptColumnsSliderText:SetText(TrinketMenuOptions.Columns.." 饰品")
 	TrinketMenu_OptMainScaleSlider:SetValue(TrinketMenuPerOptions.MainScale)
 	TrinketMenu_OptMenuScaleSlider:SetValue(TrinketMenuPerOptions.MenuScale)
 	TrinketMenu.ReflectLock()
@@ -199,7 +199,7 @@ function TrinketMenu.OptMainScaleSlider_OnValueChanged(self, value)
 	end
 	if TrinketMenuPerOptions then
 		TrinketMenuPerOptions.MainScale = self:GetValue()
-		TrinketMenu_OptMainScaleSliderText:SetText(format("Main Scale: %.2f", TrinketMenuPerOptions.MainScale))
+		TrinketMenu_OptMainScaleSliderText:SetText(format("整体缩放: %.2f", TrinketMenuPerOptions.MainScale))
 		TrinketMenu_MainFrame:SetScale(TrinketMenuPerOptions.MainScale)
 	end
 end
@@ -215,7 +215,7 @@ function TrinketMenu.OptMenuScaleSlider_OnValueChanged(self, value)
 	end
 	if TrinketMenuPerOptions then
 		TrinketMenuPerOptions.MenuScale = self:GetValue()
-		TrinketMenu_OptMenuScaleSliderText:SetText(format("Menu Scale: %.2f", TrinketMenuPerOptions.MenuScale))
+		TrinketMenu_OptMenuScaleSliderText:SetText(format("菜单缩放: %.2f", TrinketMenuPerOptions.MenuScale))
 		TrinketMenu_MenuFrame:SetScale(TrinketMenuPerOptions.MenuScale)
 	end
 end
