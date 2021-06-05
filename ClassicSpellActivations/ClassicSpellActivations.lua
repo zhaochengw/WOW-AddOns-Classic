@@ -45,6 +45,8 @@ local spellNamesByID = {
     [30030] = "Rampage",
     [30033] = "Rampage",
 
+    [34428] = "VictoryRush",
+
     [14251] = "Riposte",
 
     [19306] = "Counterattack",
@@ -176,6 +178,7 @@ function f:SPELLS_CHANGED()
         local hasOverpower = ns.findHighestRank("Overpower")
         local hasRevenge = ns.findHighestRank("Revenge")
         local hasRampage = ns.findHighestRank("Rampage")
+        local hasVictoryRush = ns.findHighestRank("VictoryRush")
 
         local CheckOverpower = ns.CheckOverpower
         local CheckRevenge = ns.CheckRevenge
@@ -195,6 +198,22 @@ function f:SPELLS_CHANGED()
         if not hasOverpower and not hasRevenge and not hasRampage then
             self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             self:SetScript("OnUpdate", nil)
+        end
+
+        if hasVictoryRush then
+            self:RegisterEvent("SPELL_UPDATE_USABLE")
+            local wasUsable = IsUsableSpell(34428)
+            self.SPELL_UPDATE_USABLE = function()
+                local isUsable = IsUsableSpell(34428)
+                if wasUsable ~= isUsable then
+                    if isUsable then
+                        f:Activate("VictoryRush", 20, true)
+                    else
+                        f:Deactivate("VictoryRush")
+                    end
+                    wasUsable = isUsable
+                end
+            end
         end
 
         if ns.findHighestRank("Execute") then
@@ -355,6 +374,7 @@ local reverseSpellRanks = {
     MongooseBite = { 36916, 14271, 14270, 14269, 1495 },
     Exorcism = { 27138, 10314, 10313, 10312, 5615, 5614, 879 },
     HammerOfWrath = { 27180, 24239, 24274, 24275 },
+    VictoryRush = { 34428 },
 }
 function ns.findHighestRank(spellName)
     for _, spellID in ipairs(reverseSpellRanks[spellName]) do
