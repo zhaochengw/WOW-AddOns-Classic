@@ -1,14 +1,14 @@
 ## Interface: 20501
-## Title: TrinketMenu |cFF99CC01rev|r |cFFFF00001.13.4|r
+## Title: TrinketMenu 9.0.3
+## Version: 9.0.3
+## Author: Gello, Resike
 ## Notes: Addon to manage trinkets.
-## Title-zhCN: |CFFFF8000辅助|R 饰品管理器
-## Title-zhTW: |CFFFF8000輔助|R 飾品管理器
-## X-Repple: 辅助
-## Version: 1.13.4.2
-## Author: Gello, Resike, Nixxen
 ## SavedVariables: TrinketMenuOptions
 ## SavedVariablesPerCharacter: TrinketMenuPerOptions, TrinketMenuQueue
 
+Libs\LibStub\LibStub.lua
+
+TrinketMenuGlobals.lua
 TrinketMenu.lua
 TrinketMenu.xml
 TrinketMenuOpt.lua

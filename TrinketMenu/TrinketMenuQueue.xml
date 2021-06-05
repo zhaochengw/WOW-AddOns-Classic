@@ -147,7 +147,7 @@
 		</HighlightTexture>
 	</Button>
 
-	<Button name = "TrinketMenu_Tab2" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "饰品2" id = "2">
+	<Button name = "TrinketMenu_Tab2" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "Bottom" id = "2">
 		<Anchors>
 			<Anchor point = "TOPRIGHT" relativeTo = "TrinketMenu_Tab1" relativePoint = "TOPLEFT"/>
 		</Anchors>
@@ -161,7 +161,7 @@
 			</Anchor>
 		</Anchors>
 	</CheckButton>
-	<Button name = "TrinketMenu_Tab3" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "饰品1" id = "3">
+	<Button name = "TrinketMenu_Tab3" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "Top" id = "3">
 		<Anchors>
 			<Anchor point = "TOPRIGHT" relativeTo = "TrinketMenu_Tab2" relativePoint = "TOPLEFT"/>
 		</Anchors>
@@ -176,7 +176,7 @@
 		</Anchors>
 	</CheckButton>
 
-	<Frame name = "TrinketMenu_SubQueueFrame" parent = "TrinketMenu_OptFrame" hidden = "true">
+	<Frame name = "TrinketMenu_SubQueueFrame" parent = "TrinketMenu_OptFrame" hidden = "true" inherits = "TrinketMenuBackdropTemplate">
 		<Anchors>
 			<Anchor point = "TOPLEFT">
 				<Offset>
@@ -189,11 +189,9 @@
 				</Offset>
 			</Anchor>
 		</Anchors>
-		<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
-			<EdgeSize>
-				<AbsValue val = "16" />
-			</EdgeSize>
-		</Backdrop>
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="TRINKETMENU_BACKDROP_16" type="global"/>
+		</KeyValues>
 		<Layers>
 			<Layer level = "BACKGROUND">
 				<Texture file = "Interface\ChatFrame\ChatFrameBackground">
@@ -439,7 +437,7 @@
 				</Scripts>
 			</CheckButton>
 
-			<Frame name = "TrinketMenu_SortListFrame">
+			<Frame name = "TrinketMenu_SortListFrame" inherits = "TrinketMenuBackdropTemplate">
 				<Anchors>
 					<Anchor point = "TOPLEFT">
 						<Offset>
@@ -452,11 +450,9 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
-					<EdgeSize>
-						<AbsValue val = "16" />
-					</EdgeSize>
-				</Backdrop>
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRINKETMENU_BACKDROP_16" type="global"/>
+				</KeyValues>
 				<Layers>
 					<Layer level = "BACKGROUND">
 						<Texture file = "Interface\ChatFrame\ChatFrameBackground">
@@ -567,9 +563,14 @@
 						</Scripts>
 					</ScrollFrame>
 				</Frames>
+				<Scripts>
+					<OnLoad>
+						self:OnBackdropLoaded()
+					</OnLoad>
+				</Scripts>
 			</Frame>
 
-			<Frame name = "TrinketMenu_ProfilesFrame" hidden = "true">
+			<Frame name = "TrinketMenu_ProfilesFrame" hidden = "true" inherits = "TrinketMenuBackdropTemplate">
 				<Anchors>
 					<Anchor point = "TOPLEFT">
 						<Offset>
@@ -582,11 +583,9 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
-					<EdgeSize>
-						<AbsValue val = "16" />
-					</EdgeSize>
-				</Backdrop>
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRINKETMENU_BACKDROP_16" type="global"/>
+				</KeyValues>
 				<Layers>
 					<Layer level = "BACKGROUND">
 						<Texture file = "Interface\ChatFrame\ChatFrameBackground">
@@ -722,7 +721,7 @@
 							</Anchor>
 						</Anchors>
 					</Button>
-					<Frame name = "TrinketMenu_ProfilesListFrame">
+					<Frame name = "TrinketMenu_ProfilesListFrame" inherits = "TrinketMenuBackdropTemplate">
 						<Anchors>
 							<Anchor point = "TOPLEFT">
 								<Offset>
@@ -735,11 +734,9 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-						<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
-							<EdgeSize>
-								<AbsValue val = "16" />
-							</EdgeSize>
-						</Backdrop>
+						<KeyValues>
+							<KeyValue key="backdropInfo" value="TRINKETMENU_BACKDROP_16" type="global"/>
+						</KeyValues>
 						<Layers>
 							<Layer level = "BACKGROUND">
 								<Texture file = "Interface\ChatFrame\ChatFrameBackground">
@@ -839,6 +836,11 @@
 								</Scripts>
 							</ScrollFrame>
 						</Frames>
+						<Scripts>
+							<OnLoad>
+								self:OnBackdropLoaded()
+							</OnLoad>
+						</Scripts>
 					</Frame>
 					<CheckButton name = "TrinketMenu_OptHideOnLoad" inherits = "TrinketMenu_CheckButtonTemplate">
 						<Anchors>
@@ -851,6 +853,9 @@
 					</CheckButton>
 				</Frames>
 				<Scripts>
+					<OnLoad>
+						self:OnBackdropLoaded()
+					</OnLoad>
 					<OnHide>
 						TrinketMenu.ProfilesFrame_OnHide()
 					</OnHide>
@@ -859,6 +864,11 @@
 					</OnShow>
 				</Scripts>
 			</Frame>
+			<Scripts>
+				<OnLoad>
+					self:OnBackdropLoaded()
+				</OnLoad>
+			</Scripts>
 		</Frames>
 	</Frame>
 </Ui>

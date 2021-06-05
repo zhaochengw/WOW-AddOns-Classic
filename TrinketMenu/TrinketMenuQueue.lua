@@ -1,6 +1,8 @@
-﻿--[[ TrinketMenuQueue : auto queue system ]]
+--[[ TrinketMenuQueue : auto queue system ]]
 
 local _G, type, string, tonumber, table, pairs, select = _G, type, string, tonumber, table, pairs, select
+
+local IsClassic = WOW_PROJECT_ID >= WOW_PROJECT_CLASSIC
 
 TrinketMenu.PausedQueue = { } -- 0 or 1 whether queue is paused
 
@@ -54,7 +56,7 @@ end
 
 function TrinketMenu.GetNameByID(id)
 	if id == 0 then
-		return "-- 到这停止队列 --", "Interface\\Buttons\\UI-GroupLoot-Pass-Up", 1
+		return "-- stop queue here --", "Interface\\Buttons\\UI-GroupLoot-Pass-Up", 1
 	else
 		local name, _, quality, _, _, _, _, _, _, texture = GetItemInfo(id or "")
 		return name, texture, quality
@@ -99,7 +101,7 @@ function TrinketMenu.SortScrollFrameUpdate()
 	FauxScrollFrame_Update(TrinketMenu_SortScroll, list and #list or 0, 9, 24)
 	if list and list[1] then
 		local r, g, b, found
-		local texture, name, quality
+		local texture, name, quality, idx
 		local item, itemName, itemIcon
 		for i = 1, 9 do
 			item = _G["TrinketMenu_Sort"..i]
@@ -302,6 +304,11 @@ end
 
 -- this function quickly checks if conditions are right for a possible ProcessAutoQueue
 function TrinketMenu.PeriodicQueueCheck()
+	if not TrinketMenuQueue.Enabled[0] and not TrinketMenuQueue.Enabled[1] then
+		TrinketMenu.StopTimer("QueueUpdate")
+		return
+	end
+	TrinketMenu.StartTimer("QueueUpdate")
 	for i = 0, 1 do
 		if TrinketMenuQueue.Enabled[i] then
 			TrinketMenu.ProcessAutoQueue(i)
@@ -321,18 +328,37 @@ function TrinketMenu.ProcessAutoQueue(which)
 	if IsInventoryItemLocked(13 + which) then
 		return
 	end -- leave if slot being swapped
-	if CastingInfo() or ChannelInfo() then
+	if (IsClassic and (CastingInfo() or ChannelInfo())) or (not IsClassic and (UnitCastingInfo("player") or UnitChannelInfo("player"))) then
 		return
-	end -- leave if player is casting
+	end -- leave if player is casting/channeling
 	if TrinketMenu.PausedQueue[which] then
 		icon:SetVertexColor(1, .5, .5) -- leave if SetQueue(which, "PAUSE")
 		return
 	end
-	local buff = GetItemSpell(id)
-	if buff then
-		if AuraUtil.FindAuraByName(buff,"player") or (start > 0 and (duration - timeLeft) > 30 and timeLeft < 1) then
-			icon:SetDesaturated(true)
-			return
+	local buffName
+	if IsClassic then
+		local _
+		_, buffName = GetItemSpell(id)
+	else
+		buffName = GetItemSpell(id)
+	end
+	if buffName then
+		if IsClassic then
+			local i = 1
+			local buff
+			while UnitAura("player", i, "HELPFUL") do
+				buff = UnitAura("player", i, "HELPFUL")
+				if buffName == buff or (start > 0 and (duration - timeLeft) > 30 and timeLeft < 1) then
+					icon:SetDesaturated(true)
+					return
+				end
+				i = i + 1
+			end
+		else
+			if AuraUtil.FindAuraByName(buffName, "player", "HELPFUL") or (start > 0 and (duration - timeLeft) > 30 and timeLeft < 1) then
+				icon:SetDesaturated(true)
+				return
+			end
 		end
 	end
 	if TrinketMenuQueue.Stats[id] then
@@ -521,7 +547,7 @@ function TrinketMenu.ProfileScrollFrameUpdate()
 	local offset = FauxScrollFrame_GetOffset(TrinketMenu_ProfileScroll)
 	local list = TrinketMenuQueue.Profiles
 	FauxScrollFrame_Update(TrinketMenu_ProfileScroll, #(list) or 0, 7, 20)
-	local item
+	local item, idx
 	for i = 1, 7 do
 		idx = offset + i
 		item = _G["TrinketMenu_Profile"..i]
