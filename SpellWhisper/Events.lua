@@ -3,6 +3,7 @@
 local AddonName, Addon = ...
 
 local Frame = Addon.Frame --Frame
+local Warning = Addon.Warning -- WarningFrame
 local L = Addon.L --Localization
 
 --Config Setting
@@ -53,7 +54,6 @@ local t_insert = table.insert
 local t_remove = table.remove
 local ChatEdit_SendText = ChatEdit_SendText
 local ChatFrame10 = ChatFrame10
-local UIErrorsFrame = UIErrorsFrame
 --Addon_MSG方法
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local IsAddonMessagePrefixRegistered = C_ChatInfo.IsAddonMessagePrefixRegistered
@@ -562,7 +562,7 @@ function Addon:SendThreatAnnounce(MobName, MobIconIndex, TargetName, TargetIconI
 	)
 	if msg ~= L["NONE"] then
 		if channel == "hud" then
-			UIErrorsFrame:AddMessage("|cFFFF143C"..msg.."|r")
+			Warning:AddMessage("|cFFFF143C"..msg.."|r")
 		elseif channel == "self" then
 			print("|cFFFF143C"..msg.."|r")
 		elseif not Addon:IsPlayerMuted() then
@@ -636,7 +636,7 @@ function Addon:SendWarningMessage(WarningType, CasterName, SpellName, TargetName
 	end
 	if not Addon:CompareOutputCache(msg) and msg ~= L["NONE"] then
 		if channel == "hud" then
-			UIErrorsFrame:AddMessage("|cFFFF143C"..msg.."|r")
+			Warning:AddMessage("|cFFFF143C"..msg.."|r")
 		elseif channel == "self" then
 			print("|cFFFF143C"..msg.."|r")
 		elseif not Addon:IsPlayerMuted() then
@@ -669,7 +669,7 @@ function Addon:SendAnnounceMessage(AnnounceChannel, AnnounceReason, AnnounceType
 			if channel == "off" then
 				return
 			elseif channel == "hud" then
-				UIErrorsFrame:AddMessage("|cFFFF143C"..msg.."|r")
+				Addon.Warning:AddMessage("|cFFFF143C"..msg.."|r")
 			elseif channel == "self" then
 				print("|cFFFF143C"..msg.."|r")
 			else
@@ -691,7 +691,7 @@ function Addon:SendAnnounceMessage(AnnounceChannel, AnnounceReason, AnnounceType
 			if channel == "off" then
 				return
 			elseif channel == "hud" then
-				UIErrorsFrame:AddMessage("|cFFFF143C"..msg.."|r")
+				Warning:AddMessage("|cFFFF143C"..msg.."|r")
 			elseif channel == "self" then
 				print("|cFFFF143C"..msg.."|r")
 			else
@@ -926,11 +926,20 @@ function Frame:PLAYER_ENTERING_WORLD()
 		end
 	end
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	Addon.Warning:SetPoint(Addon.Config.HUDPos[1], nil,  Addon.Config.HUDPos[3], Addon.Config.HUDPos[4], Addon.Config.HUDPos[5])
+	if Config.OutputChannel == "hud" then
+		Addon.Warning:Show()
+		Addon.Warning.Text:Show()
+	else
+		Addon.Warning:Hide()
+		Addon.Warning.Text:Hide()
+	end
 end
 
 -- 退出游戏
 function Frame:PLAYER_LOGOUT()
 	-- 将数据存入SpellWhisperDB（保存文件）
+	Config.HUDPos[1], _, Config.HUDPos[3], Config.HUDPos[4], Config.HUDPos[5] = Addon.Warning:GetPoint()
 	SpellWhisperDB = {
 		["Config"] = {},
 		["SpellList"] = {},

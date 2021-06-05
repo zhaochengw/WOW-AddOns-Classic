@@ -323,6 +323,10 @@ elseif locale == "zhCN" then
 	L["|cFFBA55D3SpellWhisper|r Delay Command Tips:Use |cFF00BFFF/spellwhisper|r |cFFFF0000in|r |cFFCCA4E3[Seconds] [Task]|r or |cFF00BFFF/sw|r |cFFCCA4E3in [Seconds] [Task]|r create a Delay Task."] = "|cFFBA55D3SpellWhisper|r使用说明：使用|cFF00BFFF/spellwhisper|r |cFFFF0000in|r |cFFCCA4E3[Seconds] [Task]|r或者|cFF00BFFF/sw|r |cFFCCA4E3in [Seconds] [Task]|r新建延时任务。"
 	L["|cFFBA55D3SpellWhisper|r Delay Command: |cFFCCA4E3%d|r [seconds] later do |cFFCCA4E3[%s]|r Task."] = "|cFFBA55D3SpellWhisper|r：|cFFCCA4E3[%d]|r秒后执行|cFFCCA4E3[%s]|r任务。"
 	L["|cFFBA55D3SpellWhisper|r Delay Command Tips: Please Input |cFF00E09EValid|r |cFFCCA4E3[Seconds]|r and |cFF00E09ELegal|r |cFFCCA4E3[Command]|r!"] = "|cFFBA55D3SpellWhisper|r使用说明：请输入|cFF00E09E有效|r的|cFFCCA4E3[Seconds]|r和|cFF00E09E合法|r的|cFFCCA4E3[Command]！"
+	L["Use Mouse Middle Button to Move"] =  "使用鼠标中键移动"
+	L["<|cFFBA55D3SW|r>The HUD Frame is Unlocked!"] = "<|cFFBA55D3SW|r>HUD信息窗口已解锁！"
+	L["<|cFFBA55D3SW|r>The HUD Frame is Locked!"] = "<|cFFBA55D3SW|r>HUD信息窗口已锁定！"
+	L["<|cFFBA55D3SW|r>The HUD Frame Position is Reset!"] = "<|cFFBA55D3SW|r>HUD信息窗口位置已重置！"
 	--Config界面文字
 	L["|cFFFFC040By:|r |cFF9382C9Aoikaze|r-|cFFFF66FFZeroZone|r-|cFFDE2910CN|r"] = "|cFFFFC040By:|r |cFF9382C9Aoikaze|r-|cFFFF66FF零界|r-|cFFDE2910CN|r"
 	L["|cFFFF33CCFeedback & Update: |r"] = "|cFFFF33CC反馈与更新：|r"
@@ -374,6 +378,8 @@ elseif locale == "zhCN" then
 	L["|cFF00FF00Shift+Left|r to Check SW Version of Group"] = "|cFF00FF00Shift+左键|r发起版本检查"
 	L["|cFF00FF00Right Click|r to Open Config Frame"] = "|cFF00FF00右键|r打开设置窗口"
 	L["|cFF00FF00Shift+Right|r to Restore Minimap Icon Position"] = "|cFF00FF00Shift+右键|r重置小地图按钮位置"
+	L["|cFF00FF00Left Click|r to Unlock/Lock HUD Frame"] = "|cFF00FF00左键|r解锁/锁定HUD信息窗口"
+	L["|cFF00FF00Ctrl+Left|r to Rest HUD Frame Pos"] = "|cFF00FF00Ctrl+左键|r重置HUD信息窗口位置"
 elseif locale == "zhTW" then --Taiwan is a part of China forever
     --頻道名稱
     L["off"] = "關閉"
@@ -530,6 +536,10 @@ elseif locale == "zhTW" then --Taiwan is a part of China forever
     L["|cFFBA55D3SpellWhisper|r Delay Command Tips:Use |cFF00BFFF/spellwhisper|r |cFFFF0000in|r |cFFCCA4E3[Seconds] [Task]|r or |cFF00BFFF/sw|r |cFFCCA4E3in [Seconds] [Task]|r create a Delay Task."] = "|cFFBA55D3SpellWhisper|r使用說明：使用|cFF00BFFF/spellwhisper|r |cFFFF0000in|r |cFFCCA4E3[Seconds] [Task]|r或者|cFF00BFFF/sw|r |cFFCCA4E3in [Seconds] [Task]|r新建延時任務。"
     L["|cFFBA55D3SpellWhisper|r Delay Command: |cFFCCA4E3%d|r [seconds] later do |cFFCCA4E3[%s]|r Task."] = "|cFFBA55D3SpellWhisper|r：|cFFCCA4E3[%d]|r秒後執行|cFFCCA4E3[%s]|r任務。"
     L["|cFFBA55D3SpellWhisper|r Delay Command Tips: Please Input |cFF00E09EValid|r |cFFCCA4E3[Seconds]|r and |cFF00E09ELegal|r |cFFCCA4E3[Command]|r!"] = "|cFFBA55D3SpellWhisper|r使用說明：請輸入|cFF00E09E有效|r的|cFFCCA4E3[Seconds]|r和|cFF00E09E合法|r的|cFFCCA4E3[Command]！"
+	L["Use Mouse Middle Button to Move"] =  "使用鼠標中間鍵移動"
+	L["<|cFFBA55D3SW|r>The HUD Frame is Unlocked!"] = "<|cFFBA55D3SW|r>HUD信息窗口已解鎖！"
+	L["<|cFFBA55D3SW|r>The HUD Frame is Locked!"] = "<|cFFBA55D3SW|r>HUD信息窗口已鎖定！"
+	L["<|cFFBA55D3SW|r>The HUD Frame Position is Reset!"] = "<|cFFBA55D3SW|r>HUD信息窗口位置已重置！"
     --Config介面文字
     L["|cFFFFC040By:|r |cFF9382C9Aoikaze|r-|cFFFF66FFZeroZone|r-|cFFDE2910CN|r"] = "|cFFFFC040By:|r |cFF9382C9Aoikaze|r-|cFFFF66FF零界|r-|cFFDE2910CN|r"
     L["|cFFFF33CCFeedback & Update: |r"] = "|cFFFF33CC回饋與更新：|r"
@@ -581,4 +591,6 @@ elseif locale == "zhTW" then --Taiwan is a part of China forever
     L["|cFF00FF00Shift+Left|r to Check SW Version of Group"] = "|cFF00FF00Shift+左鍵|r發起版本檢查"
     L["|cFF00FF00Right Click|r to Open Config Frame"] = "|cFF00FF00右鍵|r打開設置窗口"
     L["|cFF00FF00Shift+Right|r to Restore Minimap Icon Position"] = "|cFF00FF00Shift+右鍵|r重置小地圖按鈕位置"
+	L["|cFF00FF00Left Click|r to Unlock/Lock HUD Frame"] = "|cFF00FF00左鍵|r解鎖/鎖定HUD信息窗口"
+	L["|cFF00FF00Ctrl+Left|r to Rest HUD Frame Pos"] = "|cFF00FF00Ctrl+左鍵|r重置HUD信息窗口位置"
 end

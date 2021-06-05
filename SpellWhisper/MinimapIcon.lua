@@ -41,7 +41,7 @@ if LDB and LDBIcon then
 	end
 
 	function MinimapIcon:MinimapOnClick(button)
-		if IsShiftKeyDown()  then
+		if IsShiftKeyDown() then
 			if button == "LeftButton" then
 				if Output.background:IsShown() and Output.export:GetParent():IsShown() then
 					Output.export:GetParent():Hide()
@@ -51,8 +51,35 @@ if LDB and LDBIcon then
 					C_Timer.After(1, function() Addon:DisplayVersion() end)
 				end
 			end
+		elseif IsControlKeyDown() then
+			if button == "LeftButton" then
+				Addon.Warning:SetPoint("CENTER", nil, "CENTER", 0, 240)
+				print(L["<|cFFBA55D3SW|r>The HUD Frame Position is Reset!"])
+			end
 		else
-			if button == "RightButton" then
+			if button == "LeftButton" then
+				if Addon.Warning:IsMovable() then
+					if Addon.Config.OutputChannel ~= "hud" then
+						Addon.Warning:Hide()
+						Addon.Warning.Text:Hide()
+					elseif Addon.Warning:IsShown() then
+						Addon.Warning:Show()
+						Addon.Warning.Text:Show()
+					end
+					Addon.Warning:SetMovable(false)
+					Addon.Warning:EnableMouse(false)
+					Addon.Warning.Text:SetText("")
+					print(L["<|cFFBA55D3SW|r>The HUD Frame is Locked!"])
+					Addon.Config.HUDPos[1], _, Addon.Config.HUDPos[3], Addon.Config.HUDPos[4], Addon.Config.HUDPos[5] = Addon.Warning:GetPoint()
+				else
+					Addon.Warning:Show()
+					Addon.Warning.Text:Show()
+					Addon.Warning:SetMovable(true)
+					Addon.Warning:EnableMouse(true)
+					Addon.Warning.Text:SetText(L["Use Mouse Middle Button to Move"])
+					print(L["<|cFFBA55D3SW|r>The HUD Frame is Unlocked!"])
+				end
+			elseif button == "RightButton" then
 				InterfaceOptionsFrame_OpenToCategory("SpellWhisper")
 				InterfaceOptionsFrame_OpenToCategory("SpellWhisper")
 			end
@@ -61,11 +88,12 @@ if LDB and LDBIcon then
 
 	function MinimapIcon:MinimapOnEnter(self)
 		GameTooltip:AddLine("SpellWhisper:")
+		GameTooltip:AddLine(L["|cFF00FF00Left Click|r to Unlock/Lock HUD Frame"])
 		GameTooltip:AddLine(L["|cFF00FF00Shift+Left|r to Check SW Version of Group"])
+		GameTooltip:AddLine(L["|cFF00FF00Ctrl+Left|r to Rest HUD Frame Pos"])
 		GameTooltip:AddLine(L["|cFF00FF00Right Click|r to Open Config Frame"])
-		GameTooltip:AddLine(L["|cFF00FF00Shift+Right|r to Restore Minimap Icon Position"])
-	GameTooltip:Show()
-	end	
+		GameTooltip:Show()
+	end
 	-- LDB END ]]--
 end
 
@@ -158,8 +186,10 @@ function MinimapIcon:Initialize()
 				GameTooltip:SetOwner(b,"ANCHOR_LEFT")
 			end
 			GameTooltip:AddLine("SpellWhisper:")
+			GameTooltip:AddLine(L["|cFF00FF00Left Click|r to Unlock/Lock HUD Frame"])
 			GameTooltip:AddLine(L["|cFF00FF00Shift+Left|r to Check SW Version of Group"])
 			GameTooltip:AddLine(L["|cFF00FF00Right Click|r to Open Config Frame"])
+			GameTooltip:AddLine(L["|cFF00FF00Ctrl+Left|r to Rest HUD Frame Pos"])
 			GameTooltip:AddLine(L["|cFF00FF00Shift+Right|r to Restore Minimap Icon Position"])
 			GameTooltip:Show()
 		end
@@ -169,7 +199,7 @@ function MinimapIcon:Initialize()
 		GameTooltip:Hide()
 	end)
 	b:SetScript("OnClick", function(self, button)
-		if IsShiftKeyDown()  then
+		if IsShiftKeyDown() then
 			if button == "LeftButton" then
 				if Output.background:IsShown() and Output.export:GetParent():IsShown() then
 					Output.export:GetParent():Hide()
@@ -182,8 +212,35 @@ function MinimapIcon:Initialize()
 				Addon.Config.MinimapIconAngle = 180
 				Addon:UpdatePosition(Addon.Config.MinimapIconAngle)
 			end
+		elseif IsControlKeyDown() then
+			if button == "LeftButton" then
+				Addon.Warning:SetPoint("CENTER", nil, "CENTER", 0, 240)
+				print(L["<|cFFBA55D3SW|r>The HUD Frame Position is Reset!"])
+			end
 		else
-			if button == "RightButton" then
+			if button == "LeftButton" then
+				if Addon.Warning:IsMovable() then
+					if Addon.Config.OutputChannel ~= "hud" then
+						Addon.Warning:Hide()
+						Addon.Warning.Text:Hide()
+					elseif Addon.Warning:IsShown() then
+						Addon.Warning:Show()
+						Addon.Warning.Text:Show()
+					end
+					Addon.Warning:SetMovable(false)
+					Addon.Warning:EnableMouse(false)
+					Addon.Warning.Text:SetText("")
+					print(L["<|cFFBA55D3SW|r>The HUD Frame is Locked!"])
+					Addon.Config.HUDPos[1], _, Addon.Config.HUDPos[3], Addon.Config.HUDPos[4], Addon.Config.HUDPos[5] = Addon.Warning:GetPoint()
+				else
+					Addon.Warning:Show()
+					Addon.Warning.Text:Show()
+					Addon.Warning:SetMovable(true)
+					Addon.Warning:EnableMouse(true)
+					Addon.Warning.Text:SetText(L["Use Mouse Middle Button to Move"])
+					print(L["<|cFFBA55D3SW|r>The HUD Frame is Unlocked!"])
+				end
+			elseif button == "RightButton" then
 				InterfaceOptionsFrame_OpenToCategory("SpellWhisper")
 				InterfaceOptionsFrame_OpenToCategory("SpellWhisper")
 			end

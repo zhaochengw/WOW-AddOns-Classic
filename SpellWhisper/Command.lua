@@ -15,6 +15,26 @@ SlashCmdList["SWC"] = function(Input)
 		else
 			print(L["<|cFFBA55D3SW|r>Can NOT Open |cFFBA55D3SpellWhisper|r GUI when you in COMBAT."])
 		end
+	elseif Command:lower() == "unlock" then
+		Addon.Warning:Show()
+		Addon.Warning.Text:Show()
+		Addon.Warning:SetMovable(true)
+		Addon.Warning:EnableMouse(true)
+		Addon.Warning.Text:SetText(L["Use Mouse Middle Button to Move"])
+		print(L["<|cFFBA55D3SW|r>The HUD Frame is Unlocked!"])
+	elseif Command:lower() == "lock" then
+		if Addon.Config.OutputChannel ~= "hud" then
+			Addon.Warning:Hide()
+			Addon.Warning.Text:Hide()
+		end
+		Addon.Warning:SetMovable(false)
+		Addon.Warning:EnableMouse(false)
+		Addon.Warning.Text:SetText("")
+		print(L["<|cFFBA55D3SW|r>The HUD Frame is Locked!"])
+		Addon.Config.HUDPos[1], _, Addon.Config.HUDPos[3], Addon.Config.HUDPos[4], Addon.Config.HUDPos[5] = Addon.Warning:GetPoint()
+	elseif Command:lower() == "reset" then
+		Addon.Warning:SetPoint("CENTER", nil, "CENTER", 0, 240)
+		print(L["<|cFFBA55D3SW|r>The HUD Frame Position is Reset!"])
 	elseif Command:lower() == "in" then
 		if Rest then
 			local Delay, Task = Rest:match("([%d.]+)%s*(.+)")

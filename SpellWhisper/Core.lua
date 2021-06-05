@@ -71,6 +71,7 @@ Addon.Config = { --默认config
 	["SpellOutput"] = {},
 	["ShowMinimapIcon"] = true,
 	["MinimapIconAngle"] = 180,
+	["HUDPos"] = {[1] = "CENTER", [2] = true, [3] = "CENTER", [4] = 0, [5] = 240,},
 }
 --运行监控法术表
 Addon.RunTime = {
@@ -180,7 +181,28 @@ Addon.Default = {
 --注册Frames
 Addon.Frame = CreateFrame("Frame", AddonName .. "Frame")
 Addon.Frame:Hide()
+Addon.Warning = CreateFrame("Frame", AddonName .. "Warning")
+Addon.Warning:SetSize(400, 50)
+Addon.Warning:SetMovable(false)
+Addon.Warning:RegisterForDrag("MiddleButton")
+Addon.Warning:EnableMouse(false)
+Addon.Warning:SetScript("OnDragStart", Addon.Warning.StartMoving)
+Addon.Warning:SetScript("OnDragStop", Addon.Warning.StopMovingOrSizing)
+Addon.Warning.Text = Addon.Warning:CreateFontString(nil, "ARTWORK", "GameFontNormalLargeLeft")
+Addon.Warning.Text:SetPoint("CENTER", 0, 0)
+Addon.Warning.Text:SetTextHeight(30)
+Addon.Warning.Text:Hide()
 Addon.Panel = CreateFrame("Frame", AddonName .. "Panel")
 Addon.Panel:Hide()
 Addon.ScrollFrame = CreateFrame("ScrollFrame", nil, UIParent, "UIPanelScrollFrameTemplate")
 Addon.ScrollFrame:Hide()
+
+--Frame方法
+function Addon.Warning:AddMessage(msg)
+	Addon.Warning.Text:SetText(msg)
+	C_Timer.After(3, function()
+		if Addon.Warning.Text:GetText() == msg then
+			Addon.Warning.Text:SetText("")
+		end
+	end)
+end
