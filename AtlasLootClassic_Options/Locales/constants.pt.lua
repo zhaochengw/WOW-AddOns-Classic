@@ -12,6 +12,7 @@ AL["Always marks items as favourite for every profile if enabled."] = "Sempre ma
 AL["Always marks items as favourite for profile |cff00ff00%s|r if enabled."] = "Sempre marca itens como favoritos para o perfil |cff00ff00%s|r, se ativado."
 AL["Background"] = "Fundo"
 AL["Background color/alpha"] = "Cor de fundo/alfa"
+AL["Class Filter"] = "Filtro de Classe"
 AL["Clear list"] = "Limpar lista"
 AL["Content"] = "Conteúdo"
 AL["Content bottom bar"] = "Barra inferior do conteúdo"

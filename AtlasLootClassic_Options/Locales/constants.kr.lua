@@ -12,6 +12,7 @@ AL["Always marks items as favourite for every profile if enabled."] = "활성화
 AL["Always marks items as favourite for profile |cff00ff00%s|r if enabled."] = "활성화하면 |cff00ff00%s|r 프로필에서 항상 즐겨찾는 아이템을 표시합니다."
 AL["Background"] = "배경"
 AL["Background color/alpha"] = "배경 색상/투명도"
+AL["Class Filter"] = "직업 분류"
 AL["Clear list"] = "목록 지우기"
 AL["Content"] = "내용"
 AL["Content bottom bar"] = "내용 하단 바"

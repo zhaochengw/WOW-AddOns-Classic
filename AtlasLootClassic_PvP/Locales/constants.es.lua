@@ -8,10 +8,8 @@ AL["|cff33ff99Rank:|r %s"] = "|cff33ff99Rango:|r %s"
 AL["Arena"] = "Arena"
 AL["Battlegrounds"] = "Campos de batalla"
 AL["Class Sets"] = "Conjuntos de Clase"
---[[Translation missing --]]
---[[ AL["Gladiator Mount"] = "Gladiator Mount"--]] 
---[[Translation missing --]]
---[[ AL["Honor"] = "Honor"--]] 
+AL["Gladiator Mount"] = "Montura de Gladiador"
+AL["Honor"] = "Honor"
 AL["Insignia"] = "Insignia"
 AL["Non Set '%s'"] = "No Conjunto '%s'"
 AL["One-Handed"] = "Una mano"

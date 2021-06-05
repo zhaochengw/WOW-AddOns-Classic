@@ -12,6 +12,7 @@ AL["Always marks items as favourite for every profile if enabled."] = "啟用時
 AL["Always marks items as favourite for profile |cff00ff00%s|r if enabled."] = "啟用時，設定檔 |cff00ff00%s|r 永遠都會將物品設為最愛。"
 AL["Background"] = "背景"
 AL["Background color/alpha"] = "背景顏色/透明度"
+AL["Class Filter"] = "職業過濾"
 AL["Clear list"] = "清空清單"
 AL["Content"] = "內容"
 AL["Content bottom bar"] = "內容底部區塊"
