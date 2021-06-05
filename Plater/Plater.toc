@@ -3,7 +3,7 @@
 ## Notes: Nameplate addon designed for advanced users.
 ## SavedVariables: PlaterDB
 ## SavedVariablesPerCharacter: PlaterDBChr
-## Version: Plater-v331-BCC
+## Version: Plater-v331.1-BCC
 ## X-Curse-Project-ID: 100547
 ## X-Wago-ID: kRNLep6o
 
