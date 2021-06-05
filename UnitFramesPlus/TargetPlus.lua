@@ -733,7 +733,7 @@ end
 
 --Target buff/debuff
 local UFP_MAX_TARGET_BUFFS = 32;
-local UFP_MAX_TARGET_DEBUFFS = 16;
+local UFP_MAX_TARGET_DEBUFFS = 25;
 function UFP_TargetFrame_UpdateAuras(self)
     if not IsAddOnLoaded("ClassicAuraDurations") then
         local frame, frameName;

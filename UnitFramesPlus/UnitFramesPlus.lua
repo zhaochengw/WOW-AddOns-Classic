@@ -92,8 +92,8 @@ UnitFramesPlusDefaultDB = {
         hpmpparttwo = 5,    --生命值和法力值第二部分：1当前值，2最大值，3損失值，4百分比，5不显示
         hpmpunit = 1,       --生命值和法力值进位
         unittype = 2,       --1为千进制(k/m)，2为万进位(万/亿)
-        threat = 1,         --仇恨高亮
-        threattext = 1,     --仇恨百分比
+        threat = 0,         --仇恨高亮
+        threattext = 0,     --仇恨百分比
         fontsize = 12,      --扩展显示的数字大小
     },
 
@@ -116,7 +116,7 @@ UnitFramesPlusDefaultDB = {
 
     party = {
         origin = 1,         --关闭团队风格小队界面
-        always = 0,         --团队中显示小队
+        always = 1,         --团队中显示小队
         level = 1,          --队友等级
         colorname = 1,      --队友名字染色
         shortname = 1,      --队友名字服务器显示为(*)
