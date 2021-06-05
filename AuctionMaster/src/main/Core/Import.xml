@@ -1,0 +1,16 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+    <Script file="Core.lua" />
+	<Script file="Debug.lua" />
+	<Script file="AceDb20.lua" />
+	<Script file="Math.lua" />
+	<Script file="Format.lua" />
+	<Script file="Deque.lua" />
+	<Script file="LruCache.lua" />
+	<Script file="Vendor.lua" />
+	<Script file="Config.lua" />
+	<Script file="Tables.lua" />
+	<Script file="Strings.lua" />
+</Ui>

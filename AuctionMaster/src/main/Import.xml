@@ -1,0 +1,17 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Include file="Core\Import.xml"/>
+    <Include file="Gui\Import.xml"/>
+    <Include file="TaskQueue\Import.xml"/>
+	<Include file="Help\Import.xml"/>
+	<Include file="AuctionHouse\Import.xml"/>
+	<Include file="TooltipHook\Import.xml"/>
+	<Include file="OwnAuctions\Import.xml"/>
+	<Include file="Seller\Import.xml"/>
+	<Include file="Items\Import.xml"/>
+	<Include file="Scanner\Import.xml"/>
+	<Include file="Sniper\Import.xml"/>
+	<Include file="Statistic\Import.xml"/>
+    <Include file="Search\Import.xml"/>
+    <Include file="Disenchant\Import.xml"/>
+</Ui>

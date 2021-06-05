@@ -1,0 +1,11 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="InventoryHandle.lua"/>
+	<Script file="AutomaticPriceModel.lua"/>
+	<Script file="BuyoutModifier.lua"/>
+	<Script file="SellingPrice.lua"/>
+	<Script file="SellInfo.lua"/>
+	<Script file="Seller.lua"/>
+	<Script file="InventoryItemModel.lua"/>
+	<Script file="InventorySeller.lua"/>
+</Ui>

@@ -1,0 +1,59 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Frame name="ItemSettingsFrameTemplate" virtual="true">
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border">
+			<BackgroundInsets>
+				<AbsInset left="2" right="2" top="2" bottom="2"/>
+			</BackgroundInsets>
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<BorderColor r="1" g="0.675" b="0.125"/>
+		</Backdrop>
+		
+		<Layers>
+			<Layer level ="BACKGROUND">
+				<Texture file="Interface\ChatFrame\ChatFrameBackground">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="4" y="-4"/>
+						</Anchor>
+						<Anchor point="BOTTOMRIGHT">
+							<Offset x="-4" y="4"/>
+						</Anchor>
+					</Anchors>
+				    <Color r="0.05" g="0.05" b="0.05"/>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+	
+	<Frame name="ItemSettingsTypesTemplate" virtual="true">
+        <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border">
+            <BackgroundInsets>
+                <AbsInset left="2" right="2" top="2" bottom="2"/>
+            </BackgroundInsets>
+            <EdgeSize>
+                <AbsValue val="16"/>
+            </EdgeSize>
+            <BorderColor r="1" g="0.675" b="0.125"/>
+        </Backdrop>
+        
+        <Layers>
+            <Layer level ="BACKGROUND">
+                <Texture file="Interface\ChatFrame\ChatFrameBackground">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset x="4" y="-4"/>
+                        </Anchor>
+                        <Anchor point="BOTTOMRIGHT">
+                            <Offset x="-4" y="4"/>
+                        </Anchor>
+                    </Anchors>
+                    <Color r="0" g="0" b="0"/>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
+	
+</Ui>

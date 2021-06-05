@@ -1,0 +1,18 @@
+## Interface: 20501
+## Title: AuctionMaster
+## Notes: Auction house selling and statistic tool.
+## Author: Udorn
+## RequiredDeps:
+## SavedVariables: VendorDb, AuctionMasterMiscDb
+## DefaultState: enabled
+## Dependancies:
+## Version: 9.0.0
+## X-Category: Auction
+## X-Feedback: http://www.curse.com/addons/wow/vendor
+
+libs\Import.xml
+src\xml\Import.xml
+src\locale\Import.xml
+src\main\Import.xml
+src\api\Import.xml
+src\test\Import.xml

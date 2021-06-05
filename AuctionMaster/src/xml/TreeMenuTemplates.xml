@@ -1,0 +1,89 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+    <Button name="TreeMenuButtonTemplate" virtual="true">
+        <Size>
+            <AbsDimension x="175" y="18"/>
+        </Size>
+        <!--
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentHighlight" file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD" setAllPoints="true" hidden="true"/>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture name="$parentCheck" file="Interface\Buttons\UI-CheckBox-Check">
+                    <Size x="18" y="18"/>
+                    <Anchors>
+                        <Anchor point="LEFT">
+                            <Offset x="0" y="0"/>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        -->
+        <Frames>
+            <Button name="$parentToggle" hidden="true">
+                <Size>
+                    <AbsDimension x="14" y="14"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-6" y="-1"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self:GetParent().toggle = self;
+                        self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+                    </OnLoad>
+                    <OnClick>
+                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+                        OptionsListButtonToggle_OnClick(self);
+                    </OnClick>
+                </Scripts>
+                <NormalTexture name="$parentNormalTexture" file="Interface\Buttons\UI-MinusButton-UP"/>
+                <PushedTexture name="$parentPushedTexture" file="Interface\Buttons\UI-MinusButton-DOWN"/>
+                <HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD"/>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                OptionsListButton_OnLoad(self);
+            </OnLoad>
+            <OnClick>
+                PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+                OptionsListButton_OnClick(self, button);
+            </OnClick>
+        </Scripts>
+        <ButtonText name="$parentText" justifyH="LEFT">
+            <Anchors>
+                <Anchor point="RIGHT" relativeTo="$parentCheck" relativePoint="LEFT">
+                    <Offset>
+                        <AbsDimension x="-2" y="0"/>
+                    </Offset>
+                </Anchor>
+            </Anchors>
+        </ButtonText>
+        <NormalFont style="GameFontHighlightSmallLeft"/>
+        <HighlightFont style="GameFontHighlightSmallLeft"/>
+        <DisabledFont style="GameFontDisableSmallLeft"/>
+        <HighlightTexture file="Interface\QuestFrame\UI-QuestLogTitleHighlight" alphaMode="ADD">
+            <Anchors>
+                <Anchor point="TOPLEFT">    
+                    <Offset>
+                        <AbsDimension x="0" y="1"/>
+                    </Offset>
+                </Anchor>
+                <Anchor point="BOTTOMRIGHT">    
+                    <Offset>
+                        <AbsDimension x="0" y="1"/>
+                    </Offset>
+                </Anchor>
+            </Anchors>
+        </HighlightTexture>
+    </Button>
+
+</Ui>

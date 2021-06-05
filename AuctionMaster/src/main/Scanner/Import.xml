@@ -1,0 +1,16 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Script file="ScanResults.lua"/>
+    <Script file="ScanSet.lua"/>
+    <Script file="ScanSetItemModel.lua"/>
+    <Script file="ScanTask.lua"/>
+    <Script file="ScanDialog.lua"/>
+    <Script file="BuyDialog.lua"/>
+    <Script file="BuyScanModule.lua"/>
+    <Script file="ScannerItemModel.lua"/>
+    <Script file="GatherScanModule.lua"/>
+    <Script file="SniperScanModule.lua"/>
+    <Script file="SearchScanModule.lua"/>
+    <Script file="GetAllPlaceAuctionTask.lua"/>
+	<Script file="Scanner.lua"/>
+</Ui>

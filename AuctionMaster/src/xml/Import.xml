@@ -1,0 +1,12 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+	<Include file="InventoryButtonTemplate.xml"/>
+	<Include file="DepositFrameTemplate.xml"/>
+	<Include file="VendorDialogTemplate.xml"/>
+	<Include file="CompactScanResultTemplate.xml"/>
+	<Include file="VendorRadioButtonTemplate.xml"/>
+	<Include file="TreeMenuTemplates.xml"/>
+	<Include file="ItemSettingsTemplates.xml"/>
+	
+</Ui>
