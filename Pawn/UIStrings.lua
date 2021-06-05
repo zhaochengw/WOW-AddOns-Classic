@@ -50,9 +50,9 @@ local PawnStatsUnfiltered =
 	{ITEM_MOD_CRIT_SPELL_RATING_SHORT, "SpellCritRating", L.SpellCritInfo, PawnStatNormal, nil, { PawnStatClassic = true, PawnStatBurningCrusade = true }},
 	{STAT_HASTE, "HasteRating", L.HasteInfo, PawnStatNormal, nil, { PawnStatBurningCrusade = true, PawnStatLive = true }},
 	{ITEM_MOD_HASTE_SPELL_RATING_SHORT or (STAT_HASTE .. " (" .. PLAYERSTAT_SPELL_COMBAT .. ")"), "SpellHasteRating", L.HasteInfo, PawnStatNormal, nil, { PawnStatBurningCrusade = true }},
-	-- {ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT, "ArmorPenetration", L.ArmorPenetrationInfo, PawnStatNormal, nil, { }}, -- Wrath only
+	{ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT, "ArmorPenetration", L.ArmorPenetrationInfo, PawnStatNormal, nil, { PawnStatBurningCrusade = true }},
 	{ITEM_MOD_EXPERTISE_RATING_SHORT, "ExpertiseRating", L.ExpertiseInfo, PawnStatNormal, nil, { PawnStatBurningCrusade = true }},
-	{ITEM_MOD_SPELL_PENETRATION_SHORT, "SpellPenetration", L.SpellPenetrationInfo, PawnStatNormal, nil, { PawnStatBurningCrusade = true }},
+	{ITEM_MOD_SPELL_PENETRATION_SHORT, "SpellPenetration", L.SpellPenetrationInfo, PawnStatNormal, nil, { PawnStatClassic = true, PawnStatBurningCrusade = true }},
 	{STAT_MASTERY, "MasteryRating", L.MasteryInfo, PawnStatNormal, nil, { PawnStatLive = true }},
 	{STAT_VERSATILITY, "Versatility", L.VersatilityInfo, PawnStatNormal, nil, { PawnStatLive = true }},
 	{ITEM_MOD_ATTACK_POWER_SHORT, "Ap", L.ApInfo, PawnStatNormal, nil, { PawnStatClassic = true, PawnStatBurningCrusade = true }},

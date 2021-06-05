@@ -7,7 +7,7 @@
 -- Main non-UI code
 ------------------------------------------------------------
 
-PawnVersion = 2.0511
+PawnVersion = 2.0512
 
 -- Pawn requires this version of VgerCore:
 local PawnVgerCoreVersionRequired = 1.13
@@ -3006,7 +3006,6 @@ function PawnCorrectScaleErrors(ScaleName)
 	ThisScale.MetaSocket = nil
 
 	-- These stats aren't used in the live OR classic realms.
-	ThisScale.ArmorPenetration = nil
 	ThisScale.Mana = nil
 	ThisScale.Health = nil
 	ThisScale.BaseArmor = nil
@@ -3015,11 +3014,13 @@ function PawnCorrectScaleErrors(ScaleName)
 	ThisScale.Multistrike = nil
 	ThisScale.SpellPower = nil
 
-	-- These were introduced in Burning Crusade Classic.
+	-- These were introduced in Classic versions.
+	if not (VgerCore.IsClassic or VgerCore.IsBurningCrusade) then
+		ThisScale.SpellPenetration = nil
+	end
 	if not VgerCore.IsBurningCrusade then
 		ThisScale.ExpertiseRating = nil
 		ThisScale.ResilienceRating = nil
-		ThisScale.SpellPenetration = nil
 	end
 
 	-- Pawn 1.9.7 makes it impossible to ignore primary stats, since they're on all armor now.

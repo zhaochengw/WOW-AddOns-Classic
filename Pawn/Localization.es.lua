@@ -89,6 +89,7 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		--[[Translation missing --]]
 		["ArcaneSpellDamageInfo"] = "Arcane damage.  Increases the damage dealt by your arcane spells.",
 		["ArmorInfo"] = "Armadura base.  No incluye la armadura extra recibida de los objetos especificos de tanque.",
+		["ArmorPenetrationInfo"] = "Penetración de armadura. Hace que parte de tu daño de ataque físico ignore la armadura.",
 		["ArmorTypes"] = "Tipos de armadura",
 		["AvoidanceInfo"] = "Eludir.  Reduce el daño que recibes de ataques de área de efecto.",
 		--[[Translation missing --]]
@@ -293,6 +294,7 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		["ArcaneSpellDamage2"] = "^Equipar: Aumenta hasta # p%. el daño que infligen los hechizos y efectos Arcanos%.$",
 		["Armor"] = "^%+?# p%. de armadura$",
 		["Armor2"] = "^UNUSED$",
+		["ArmorPenetration"] = "^Equipar: Tus ataques ignoran # p%. de la armadura de tu oponente%.$",
 		["Avoidance"] = "^%+# eludir$",
 		["Axe"] = "^Hacha$",
 		["BagSlots"] = "^%d+ casillas .+$",
@@ -433,8 +435,8 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		["SpellDamage3"] = "^UNUSED$",
 		["SpellDamage4"] = "^UNUSED$",
 		["SpellDamageAndHealing"] = "^Equipar: Aumenta hasta # p%. la sanación realizada y hasta # p%. todo el daño infligido con todos los hechizos y efectos mágicos%.$",
-		["SpellDamageAndHealingEnchant"] = "^Hechizos de sanación %+#$",
-		["SpellDamageAndHealingShort"] = "^%+# de hechizos de sanación$",
+		["SpellDamageAndHealingEnchant"] = "^BUG IN GAME$",
+		["SpellDamageAndHealingShort"] = "^BUG IN GAME$",
 		["SpellHasteRating"] = "^Equipar: Aumenta el índice de celeridad con hechizos e?n? ?# p%.$",
 		["SpellHasteRatingShort"] = "^%+?# índice de celeridad con hechizos$",
 		["SpellHit"] = "^Equipar: Mejora un #%% tu probabilidad de golpear con hechizos%.$",
@@ -442,6 +444,7 @@ Para más información sobre como personalizar Pawn, por favor lee el archivo (R
 		["SpellHitRating2"] = "^Equipar: Mejora # p%. el golpe con hechizos%.$",
 		["SpellHitRatingShort"] = "^%+?# índice de golpe con hechizos$",
 		["SpellPenetration"] = "^Equipar: Aumenta la penetración de tus hechizos e?n? ?# p%.$",
+		["SpellPenetrationClassic"] = "^Equipar: Las resistencias mágicas de los objetivos de tus hechizos se reducen # p%.$",
 		["SpellPenetrationShort"] = "^%+?# penetración de hechizos$",
 		["SpellPower"] = "^%+?# poder con hechizos$",
 		["Spirit"] = "^%+?# d?e? ?[Ee]spíritu$",
@@ -801,6 +804,7 @@ if GetLocale() == "esES" then
 	PawnLocal.TooltipParsing.SpellDamageAndHealingShort = "^%+# hechizos de sanación y %+# hechizos de daño$"
 	PawnLocal.TooltipParsing.SpellHasteRating = "^Equipar: Mejora el índice de celeridad con hechizos en # p%.$"
 	PawnLocal.TooltipParsing.SpellHitRating = "^Equipar: Mejora el índice de golpe con hechizos en # p%.$"
+	PawnLocal.TooltipParsing.SpellPenetrationClassic = "^Equipar: Reduce las resistencias mágicas de los objetivos de tus hechizos en # p%.$"
 
 	if VgerCore.IsClassic then
 
