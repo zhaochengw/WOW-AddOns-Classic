@@ -1,0 +1,12 @@
+## Interface: 11305
+## Title: UnitFramesPlus MobHealth
+## Title-zhCN: |CFF7FFF7F界面|R 系统头像增强 目标血量
+## Title-zhTW: |CFF7FFF7F介面|R 系統頭像增強 目標血量
+## X-Repple: 界面
+## Version: 1.36.5
+## Author: Isler
+## Author-LibClassicMobHealth: Pneumatus
+## RequiredDeps: UnitFramesPlus
+## SavedVariables: UnitFramesPlusMobHealthDB, UnitFramesPlusMobHealthOpt
+
+UnitFramesPlus_MobHealth.lua
