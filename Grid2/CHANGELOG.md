@@ -1,6 +1,9 @@
 # Grid2
 
-## [2.0.12](https://github.com/michaelnpsp/Grid2/tree/2.0.12) (2021-05-20)
-[Full Changelog](https://github.com/michaelnpsp/Grid2/compare/2.0.11...2.0.12) 
+## [2.0.14](https://github.com/michaelnpsp/Grid2/tree/2.0.14) (2021-06-04)
+[Full Changelog](https://github.com/michaelnpsp/Grid2/compare/2.0.12...2.0.14) 
 
-- Fixing incorrect main window background/border size when scale<>100% (ticket #972)  
+- Merge pull request #21 from T3rdW/patch-1  
+    Update zhCN.lua  
+- Update zhCN.lua  
+- Updated libhealcom library to fix a bug in burning crusade arenas.  
