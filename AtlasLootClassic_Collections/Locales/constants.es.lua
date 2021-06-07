@@ -17,6 +17,8 @@ AL["Box of Chocolates"] = "Caja de bombones"
 AL["Brightly Colored Egg"] = "Huevo de colores vivos"
 AL["Childrens Week"] = "Semana de los Niños"
 AL["Crimson Templar"] = "Templario Carmesí"
+--[[Translation missing --]]
+--[[ AL["Drops"] = "Drops"--]] 
 AL["Dungeon Set %s"] = "Conjunto de mazmorra %s"
 AL["Dungeon Sets"] = "Conjuntos de mazmorra"
 AL["Earthen Templar"] = "Templario terráneo"

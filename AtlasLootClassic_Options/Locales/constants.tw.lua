@@ -4,6 +4,7 @@ if not AL then return end
 
 -- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic/localization
 -- Options
+AL["Add line break before source."] = "在來源之前添加空行。"
 AL["Add new list"] = "新增清單"
 AL["Added |cff00ff00%d|r items into list |cff00ff00%s|r."] = "新增 |cff00ff00%d|r 項物品到清單 |cff00ff00%s|r。"
 AL["Always active for all Profiles."] = "總是對所有設定檔都有效。"
@@ -19,6 +20,7 @@ AL["Content bottom bar"] = "內容底部區塊"
 AL["Content phase settings"] = "內容設定"
 AL["Content top bar"] = "內容頂部區塊"
 AL["Delete list"] = "刪除清單"
+AL["Enable Atlas map integration if available."] = "如果可用，啟用Atlas地圖整合。"
 AL["Enable auto selection of bosses if available."] = "啟用自動選擇首領 (如果有的話)。"
 AL["Enable auto selection of instances if available."] = "啟用自動選擇副本 (如果有的話)。"
 AL["Enable WoWHead links."] = "啟用 WoWHead 連結。"

@@ -5,7 +5,7 @@ if not AL then return end
 -- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic/localization
 -- Collections
 AL["%s Sets"] = "%s 세트"
-AL["'%s' Vendor"] = "무적의 오모르"
+AL["'%s' Vendor"] = "정의의 휘장 아이템"
 AL["Abyssal Dukes"] = "심연의 군주들"
 AL["Abyssal Lords"] = "심연의 군주"
 AL["Abyssal Templars"] = "심연의 기사단"
