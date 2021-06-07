@@ -789,7 +789,7 @@ function PawnUIFrame_StatsList_SelectStat(Index)
 		else
 			PawnUIFrame_NoUpgradesCheck:Show()
 		end
-		if (PawnArmorSpecializationLevel > 0) and (ThisStat == "IsCloth" or ThisStat == "IsLeather" or ThisStat == "IsMail" or ThisStat == "IsPlate") then
+		if (PawnArmorSpecializationLevel ~= nil) and (ThisStat == "IsCloth" or ThisStat == "IsLeather" or ThisStat == "IsMail" or ThisStat == "IsPlate") then
 			PawnUIFrame_FollowSpecializationCheck:Show()
 		else
 			PawnUIFrame_FollowSpecializationCheck:Hide()
@@ -2630,11 +2630,12 @@ end
 
 -- Cancels the string dialog if it's open.
 function PawnUIGetStringCancel()
-	if not PawnUIStringDialog:IsVisible() then return end
+	if not PawnUIStringDialog or not PawnUIStringDialog:IsVisible() then return end
 	PawnUIStringDialog_CancelButton_OnClick()
 end
 
 function PawnUIStringDialog_OKButton_OnClick()
+	if not PawnUIStringDialog.OKButton:IsVisible() or not PawnUIStringDialog.OKButton:IsEnabled() then return end
 	PawnUIStringDialog:Hide()
 	if PawnUIStringDialog.OKCallbackFunction then PawnUIStringDialog.OKCallbackFunction(PawnUIStringDialog.TextBox:GetText()) end
 end
