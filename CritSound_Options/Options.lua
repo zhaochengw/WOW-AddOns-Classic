@@ -35,17 +35,14 @@ do
 	local critsoundtitletext, critsoundmodetext, critsoundmoduletext, critsoundblacklisttext;
 
 	critsoundtitletext = CritSound_OptionsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-	critsoundtitletext:ClearAllPoints();
 	critsoundtitletext:SetPoint("TOPLEFT", 16, -16);
 	critsoundtitletext:SetText(CRITSOUND_TITLE);
 
 	critsoundmodetext = CritSound_OptionsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-	critsoundmodetext:ClearAllPoints();
 	critsoundmodetext:SetPoint("TOPLEFT", critsoundtitletext, "TOPLEFT", 0, -40);
 	critsoundmodetext:SetText(CRITSOUND_MODE);
 
 	CreateFrame("CheckButton", "CritSound_CritSoundModeDropDown", CritSound_OptionsFrame, "UIDropDownMenuTemplate");
-	CritSound_CritSoundModeDropDown:ClearAllPoints();
 	CritSound_CritSoundModeDropDown:SetPoint("TOPLEFT", critsoundmodetext, "TOPLEFT", 0, -30);
 	CritSound_CritSoundModeDropDown:SetHitRectInsets(0, 0, 0, 0);
 	UIDropDownMenu_SetWidth(CritSound_CritSoundModeDropDown, 100);
@@ -55,7 +52,6 @@ do
 	CreateFrame("Slider", "CritSound_AgingTimeSlider", CritSound_OptionsFrame, "OptionsSliderTemplate");
 	CritSound_AgingTimeSlider:SetWidth(120);
 	CritSound_AgingTimeSlider:SetHeight(16);
-	CritSound_AgingTimeSlider:ClearAllPoints();
 	CritSound_AgingTimeSlider:SetPoint("TOPLEFT", CritSound_CritSoundModeDropDown, "TOPLEFT", 170, -6);
 	CritSound_AgingTimeSliderText:SetText(CRITSOUND_AGING..CritSoundAgingTime);
 	CritSound_AgingTimeSliderLow:SetText("1");
@@ -68,12 +64,10 @@ do
 	end)
 
 	critsoundmoduletext = CritSound_OptionsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-	critsoundmoduletext:ClearAllPoints();
 	critsoundmoduletext:SetPoint("TOPLEFT", CritSound_CritSoundModeDropDown, "TOPLEFT", 0, -50);
 	critsoundmoduletext:SetText(CRITSOUND_ACTIVE);
 
 	CreateFrame("CheckButton", "CritSound_Spell", CritSound_OptionsFrame, "InterfaceOptionsCheckButtonTemplate");
-	CritSound_Spell:ClearAllPoints();
 	CritSound_Spell:SetPoint("TOPLEFT", critsoundmoduletext, "TOPLEFT", 16, -30);
 	CritSound_Spell:SetHitRectInsets(0, -100, 0, 0);
 	CritSound_SpellText:SetText(CRITSOUND_SPELL);
@@ -83,7 +77,6 @@ do
 	end)
 
 	CreateFrame("CheckButton", "CritSound_Shield", CritSound_OptionsFrame, "InterfaceOptionsCheckButtonTemplate");
-	CritSound_Shield:ClearAllPoints();
 	CritSound_Shield:SetPoint("TOPLEFT", CritSound_Spell, "TOPLEFT", 0, -30);
 	CritSound_Shield:SetHitRectInsets(0, -100, 0, 0);
 	CritSound_ShieldText:SetText(CRITSOUND_SHIELD);
@@ -93,7 +86,6 @@ do
 	end)
 
 	CreateFrame("CheckButton", "CritSound_Swing", CritSound_OptionsFrame, "InterfaceOptionsCheckButtonTemplate");
-	CritSound_Swing:ClearAllPoints();
 	CritSound_Swing:SetPoint("TOPLEFT", CritSound_Shield, "TOPLEFT", 0, -30);
 	CritSound_Swing:SetHitRectInsets(0, -100, 0, 0);
 	CritSound_SwingText:SetText(CRITSOUND_SWING);
@@ -103,7 +95,6 @@ do
 	end)
 
 	CreateFrame("CheckButton", "CritSound_Range", CritSound_OptionsFrame, "InterfaceOptionsCheckButtonTemplate");
-	CritSound_Range:ClearAllPoints();
 	CritSound_Range:SetPoint("TOPLEFT", CritSound_Swing, "TOPLEFT", 0, -30);
 	CritSound_Range:SetHitRectInsets(0, -100, 0, 0);
 	CritSound_RangeText:SetText(CRITSOUND_RANGE);
@@ -113,7 +104,6 @@ do
 	end)
 
 	CreateFrame("CheckButton", "CritSound_Heal", CritSound_OptionsFrame, "InterfaceOptionsCheckButtonTemplate");
-	CritSound_Heal:ClearAllPoints();
 	CritSound_Heal:SetPoint("TOPLEFT", CritSound_Range, "TOPLEFT", 0, -30);
 	CritSound_Heal:SetHitRectInsets(0, -100, 0, 0);
 	CritSound_HealText:SetText(CRITSOUND_HEAL);
@@ -123,17 +113,14 @@ do
 	end)
 
 	critsoundblacklisttext = CritSound_OptionsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-	critsoundblacklisttext:ClearAllPoints();
 	critsoundblacklisttext:SetPoint("TOPLEFT", CritSound_Heal, "TOPLEFT", -16, -50);
 	critsoundblacklisttext:SetText(CRITSOUND_BLACKLIST);
 
 	critsoundblacklistaddtext = CritSound_OptionsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-	critsoundblacklistaddtext:ClearAllPoints();
 	critsoundblacklistaddtext:SetPoint("TOPLEFT", critsoundblacklisttext, "TOPLEFT", 16, -30);
 	critsoundblacklistaddtext:SetText(CRITSOUND_ADDSPELL);
 
 	CreateFrame("EditBox", "CritSound_BlacklistAdd", CritSound_OptionsFrame, "InputBoxTemplate");
-	CritSound_BlacklistAdd:ClearAllPoints();
 	CritSound_BlacklistAdd:SetPoint("TOPLEFT", critsoundblacklistaddtext, "TOPLEFT", 0, -16);
 	CritSound_BlacklistAdd:SetWidth(150);
 	CritSound_BlacklistAdd:SetHeight(25);
@@ -174,7 +161,6 @@ do
 	end);
 
 	CreateFrame("Button", "CritSound_BlacklistShow", CritSound_OptionsFrame, "OptionsButtonTemplate");
-	CritSound_BlacklistShow:ClearAllPoints();
 	CritSound_BlacklistShow:SetPoint("TOPLEFT", CritSound_BlacklistAdd, "TOPLEFT", 160, 0);
 	CritSound_BlacklistShow:SetWidth(100)
 	CritSound_BlacklistShow:SetHeight(25)
@@ -188,12 +174,10 @@ do
 	end)
 
 	critsoundblacklistremtext = CritSound_OptionsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge");
-	critsoundblacklistremtext:ClearAllPoints();
 	critsoundblacklistremtext:SetPoint("TOPLEFT", CritSound_BlacklistAdd, "TOPLEFT", 0, -35);
 	critsoundblacklistremtext:SetText(CRITSOUND_REMSPELL);
 
 	CreateFrame("EditBox", "CritSound_BlacklistRem", CritSound_OptionsFrame, "InputBoxTemplate");
-	CritSound_BlacklistRem:ClearAllPoints();
 	CritSound_BlacklistRem:SetPoint("TOPLEFT", critsoundblacklistremtext, "TOPLEFT", 0, -16);
 	CritSound_BlacklistRem:SetWidth(150);
 	CritSound_BlacklistRem:SetHeight(25);
@@ -252,7 +236,6 @@ do
 	end);
 
 	CreateFrame("Button", "CritSound_BlacklistClear", CritSound_OptionsFrame, "OptionsButtonTemplate");
-	CritSound_BlacklistClear:ClearAllPoints();
 	CritSound_BlacklistClear:SetPoint("TOPLEFT", CritSound_BlacklistRem, "TOPLEFT", 160, 0);
 	CritSound_BlacklistClear:SetWidth(100)
 	CritSound_BlacklistClear:SetHeight(25)

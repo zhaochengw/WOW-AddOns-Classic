@@ -1,14 +1,18 @@
 ﻿## Interface: 20501
 ## Title: CritSound Options
-## Title-zhCN: |CFFFF8000辅助|R 爆击音效 设置
-## Title-zhTW: |CFFFF8000輔助|R 爆擊音效 設置
+## Title-zhTW: 爆擊音效 設置
 ## X-Repple: 辅助
 ## RequiredDeps: CritSound
 ## LoadOnDemand: 1
 ## Version: 2.5.4
 ## Author: Isler
 ## E-mail: isler@live.com
-## X-Website: http://wow.isler.me
+## X-Website: http://isler-wowui.googlecode.com
 
 Localization.lua
 Options.lua
+
+
+## Title-zhCN: |cff0055FF小I插件|r CritSound Options 爆击音效设置
+## provider: 小I插件1.2.2
+## Update time: 20210528

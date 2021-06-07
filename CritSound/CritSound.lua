@@ -179,6 +179,24 @@ cs:SetScript("OnEvent", function(self, event)
 	end
 end)
 
+--option panel fix
+local function CritSound_OpenInterfacePanel(panel)
+	-- if not fixed then
+		local panelName = panel.name;
+		if not panelName then return end
+		local t = {};
+		for i, p in pairs(INTERFACEOPTIONS_ADDONCATEGORIES) do
+			if p.name == panelName then
+				p.collapsed = true;
+				t.element = p;
+				InterfaceOptionsListButton_ToggleSubCategories(t);
+			end
+		end
+		-- fixed = true;
+	-- end
+	InterfaceOptionsFrame_OpenToCategory(panel);
+end
+
 function CritSound_LoadOptionPanel()
 	if not IsAddOnLoaded("CritSound_Options") then
 		local playerName = UnitName("player");
@@ -195,12 +213,10 @@ function CritSound_LoadOptionPanel()
 end
 
 --slash command
-function CritSound_SlashHandler(arg)
+SlashCmdList["CritSound"] = function()
 	local result = CritSound_LoadOptionPanel();
 	if result == false then return end;
-	InterfaceOptionsFrame_OpenToCategory(CritSound_OptionsFrame);
-	InterfaceOptionsFrame_OpenToCategory(CritSound_OptionsFrame);
-end
-SlashCmdList["CritSound"] = CritSound_SlashHandler;
+	CritSound_OpenInterfacePanel(CritSound_OptionsFrame);
+end;
 SLASH_CritSound1 = "/critsound";
 SLASH_CritSound2 = "/cs";

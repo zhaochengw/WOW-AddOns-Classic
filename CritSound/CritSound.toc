@@ -1,9 +1,8 @@
-﻿## Interface: 20501
+## Interface: 20501
 ## Title: CritSound
 ## Notes: Plays a sound when you perform a critical hit or healing.
-## Title-zhCN: |CFFFF8000辅助|R 爆击音效
 ## Notes-zhCN: 当你的近战、远程攻击以及伤害、治疗技能等爆击时播放预设音效
-## Title-zhTW: |CFFFF8000輔助|R 爆擊音效
+## Title-zhTW: 爆擊音效
 ## Notes-zhTW: 當你的近戰、遠端攻擊以及傷害、治療技能等爆擊時播放預設音效
 ## X-Repple: 辅助
 ## Version: 2.5.4
@@ -13,3 +12,9 @@
 ## SavedVariablesPerCharacter: CritSoundSwitch, CritSoundMode, CritSoundAgingTime, CritSoundBlackList
 
 CritSound.lua
+
+
+## Title-zhCN: |cff0055FF小I插件|r CritSound 爆击音效
+## provider: 小I插件1.2.2
+## Update time: 20210528
+## DefaultState: Disabled
