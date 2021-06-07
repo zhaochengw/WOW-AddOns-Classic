@@ -5,6 +5,7 @@ With other useful functions.
 Before the version 2.1.1, I split the function of Trades/Mails Logger to independent Addon which named MailLogger, if you still need this function, please go to curse and download it.
 http://https://www.curseforge.com/wow/addons/maillogger
 
+2.2.4 Fix the error that interrupt/broken/dispel can't work in party.
 2.2.3 Use Spell Link replace Spell Name.
 2.2.2 Add moveable HUD info frame. Slash command: /sw unlock /sw lock /sw reset or see Minimap button tips.
 2.1.9 Fix the error when you do not installed the Titan panel addon.

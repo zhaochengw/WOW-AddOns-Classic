@@ -97,6 +97,7 @@ Addon.Default = {
 		[L["Sap"]] = L["Sap"],
 		[L["Death Coil"]] = L["Death Coil"],
 		[L["Intimidating Shout"]] = L["Intimidating Shout"],
+		[L["Psychic Scream"]] = L["Psychic Scream"],
 	},
 	InstantHelp = {
 		--瞬发增益

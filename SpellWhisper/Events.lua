@@ -210,18 +210,19 @@ end
 --获取不含服务器名称的角色名
 function Addon:GetShortName(SourceName)
 	if SourceName then
-		return --[[SourceName:match("^(%S*)%-") or]] SourceName
+		return SourceName:match("^(%S*)%-") or SourceName
 	else
 		return nil
 	end
 end
 --更新发言顺位
 function Addon:SendAnnounceRank(Seed) --发送自身Rank
-	if UnitInBattleground("player") then
-		return
-	end
 	if UnitIsGroupLeader("player") then
-		SendAddonMessage(Addon.PrefixSW, "80000", "raid")
+		if IsInRaid() then
+			SendAddonMessage(Addon.PrefixSW, "80000", "raid")
+		elseif IsInGroup() then
+			SendAddonMessage(Addon.PrefixSW, "80000", "party")
+		end
 	elseif IsInRaid() and UnitIsGroupAssistant("player") then
 		SendAddonMessage(Addon.PrefixSW, tostring(40000 + Seed * 1000), "raid")
 	elseif IsInRaid() then
@@ -273,9 +274,6 @@ function Addon:DeleteVanishMember()
 end
 --比较发言顺序，返回是否允许发言bool值
 function Addon:IsPlayerMuted()
-	if UnitInBattleground("player") then
-		return true
-	end
 	local Max = 0
 	if IsInRaid() then
 		for k in pairs(AnnounceTable) do
@@ -315,15 +313,15 @@ function Addon:SendVerCheck()
 		return
 	end
 	VersionTable = {}
-	if UnitInBattleground("player") then -- 战场禁用
-		print(L["<|cFFBA55D3SW|r>Can't Check |cFFBA55D3SpellWhisper|r Version In Battleground."])
-        return
-    end
+	-- if UnitInBattleground("player") then -- 战场禁用
+	-- 	print(L["<|cFFBA55D3SW|r>Can't Check |cFFBA55D3SpellWhisper|r Version In Battleground."])
+    --     return
+    -- end
 	if IsInRaid() then
 		SendAddonMessage(Addon.PrefixSW, "99999", "raid")
 		print(L["<|cFFBA55D3SW|r>Start Check Team Member's |cFFBA55D3SpellWhisper|r Version."])
 	elseif IsInGroup() then
-		SendAddonMessage(Addon.PrefixSW, "99999", "raid")
+		SendAddonMessage(Addon.PrefixSW, "99999", "party")
 		print(L["<|cFFBA55D3SW|r>Start Check Team Member's |cFFBA55D3SpellWhisper|r Version."])
 	else
 		print(L["<|cFFBA55D3SW|r>Don't Have Any Team Member(s)."])
@@ -508,7 +506,7 @@ function Addon:SendHealingMessage(SpellName, TargetName, FailedReason)
 	if not Config.IsWhisperEnable or UnitInBattleground("player") then
 		return
 	end
-	TargetName = Addon:GetShortName(TargetName)
+	-- TargetName = Addon:GetShortName(TargetName)
 	local msg = Addon:FormatMessage(
 		Config["SpellOutput"]["SPELLWHISPER_TEXT_HEALINGFAILED"] and Config["SpellOutput"]["SPELLWHISPER_TEXT_HEALINGFAILED"] or L["SPELLWHISPER_TEXT_HEALINGFAILED"],
 		{
@@ -526,8 +524,6 @@ function Addon:SendBGMessage(SpellName, CasterName, TargetName)
 	if not Config.IsBGWarningEnable or Config.OutputChannel == "off" then
 		return
 	end
-	CasterName = Addon:GetShortName(CasterName)
-	TargetName = Addon:GetShortName(TargetName)
 	local SubZoneName = GetMinimapZoneText()
 	local msg = Addon:FormatMessage(
 		Config["SpellOutput"]["SPELLWHISPER_TEXT_BGWARNING"] and Config["SpellOutput"]["SPELLWHISPER_TEXT_BGWARNING"] or L["SPELLWHISPER_TEXT_BGWARNING"],
@@ -580,8 +576,8 @@ function Addon:SendWarningMessage(WarningType, CasterName, SpellName, TargetName
 		return
 	end
 	local channel = Config.OutputChannel
-	CasterName = Addon:GetShortName(CasterName)
-	TargetName = Addon:GetShortName(TargetName)
+	-- CasterName = Addon:GetShortName(CasterName)
+	-- TargetName = Addon:GetShortName(TargetName)
 	if IsInRaid() and not (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) and channel == "raid_warning" then
 		channel = "raid"
 	elseif IsInGroup() and not IsInRaid() and (channel == "raid" or channel == "raid_warning") then
@@ -985,6 +981,7 @@ function Frame:CHAT_MSG_ADDON(...) -- 同步Rank，决定谁能发言，提示�
 
 	local arg = {...}
 
+
 	if arg[1] == Addon.PrefixSW then
 		local AddonChannelMsg = tonumber(arg[2])
 		if AddonChannelMsg >= 1000 and AddonChannelMsg <= 80000 and (arg[3]:lower() == "party" or arg[3]:lower() == "raid") then
@@ -1007,8 +1004,10 @@ function Frame:CHAT_MSG_ADDON(...) -- 同步Rank，决定谁能发言，提示�
 		elseif AddonChannelMsg == 99999 and not UnitInBattleground("player") then
 			if IsInRaid() then
 				SendAddonMessage(Addon.PrefixSW, tostring(Addon.VerNum), "raid")
+				Addon:SendAnnounceRank(41 - UnitInRaid("player"))
 			elseif IsInGroup() then
 				SendAddonMessage(Addon.PrefixSW, tostring(Addon.VerNum), "party")
+				Addon:SendAnnounceRank(0)
 			end
 		end
 	end
@@ -1054,7 +1053,7 @@ function Frame:CHAT_MSG_WHISPER_INFORM(NewMessage, TargetName) --发送密语--a
 	if not Config.IsEnable or Config.WaitTime == 0 then
 		return
 	end
-	Addon:AddOutputCache(NewMessage, Addon:GetShortName(TargetName))
+	Addon:AddOutputCache(NewMessage, TargetName)
 end
 
 function Frame:CHAT_MSG_SAY(NewMessage) --接收说话频道信息
@@ -1149,17 +1148,11 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 
 	local arg = { CombatLogGetCurrentEventInfo() } --COMBAT_LOG_EVENT_UNFILTERED 事件参数Payload
 
-	-- if arg[4] == UnitGUID("player") then
-	-- 	for i = 1, #arg do
-	-- 		print("["..i.."] = "..tostring(arg[i]))
-	-- 	end
-	-- end
-
 	local SpellName = nil
 	local TypeHelpHarm = nil
-	local InInstance = IsInInstance()
+	local InstanceType = select(2, IsInInstance())
 
-	if arg[2] == "SPELL_CAST_FAILED" and arg[4] == PlayerGUID and InInstance then --治疗法术失败提示
+	if arg[2] == "SPELL_CAST_FAILED" and arg[4] == PlayerGUID and (InstanceType == "party" or InstanceType == "raid") then --治疗法术失败提示
 		local FailedReason = nil
 		for k in pairs(FailReason) do
 			if arg[15] == FailReason[k] then
@@ -1188,10 +1181,10 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 				if WhisperTargetServer then
 					WhisperTargetName = WhisperTargetName .. "-" .. WhisperTargetServer
 				end
-				Addon:SendHealingMessage(GetSpellLink(SpellName), WhisperTargetName, FailedReason)
+				Addon:SendHealingMessage(GetSpellLink(arg[12]), WhisperTargetName, FailedReason)
 			end
 		end
-	elseif arg[2] == "SPELL_MISSED" and InInstance then --法术未成功通告
+	elseif arg[2] == "SPELL_MISSED" and (InstanceType == "party" or InstanceType == "raid") then --法术未成功通告
 		local CasterType = Addon:GetTargetUnit(arg[4])
 		if CasterType == "group" or CasterType == "pet" or arg[4] == PlayerGUID then
 			local MissedReason = nil
@@ -1229,31 +1222,31 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 				if SpellName then
 					local t, u = Addon:GetTargetUnit(arg[8]) --获取miss对象的Unit代码
 					if t == "target" and u then
-						local RaidTargeIcon = GetRaidTargetIndex(u) or 0
-						Addon:SendWarningMessage("MISSED", arg[5], GetSpellLink(SpellName), arg[9], MissedReason, RaidTargeIcon, nil) --arg[5]施法者名字，arg[9]目标名字
+						local RaidTargetIcon = GetRaidTargetIndex(u) or 0
+						Addon:SendWarningMessage("MISSED", arg[5], GetSpellLink(arg[12]), arg[9], MissedReason, RaidTargetIcon, nil) --arg[5]施法者名字，arg[9]目标名字
 					end
 				end
 			end
 		end
-	elseif arg[2] == "SPELL_INTERRUPT" and InInstance then --打断通告
+	elseif arg[2] == "SPELL_INTERRUPT" then --打断通告
 		local CasterType = Addon:GetTargetUnit(arg[4])
 		if CasterType == "group" or CasterType == "pet" or arg[4] == PlayerGUID then
 			local t, u = Addon:GetTargetUnit(arg[8]) --获取miss对象的Unit代码
 			if t == "target" and u and not UnitIsFriend("player", u) then
-				local RaidTargeIcon = GetRaidTargetIndex(u) or 0
-				Addon:SendWarningMessage("INTERRUPT", arg[5], GetSpellLink(arg[13]), arg[9], GetSpellLink(arg[16]), RaidTargeIcon, nil) --arg[5]打断者名字，arg[13]打断技能，arg[9]被打断者名字，arg[16]被打断的技能
+				local RaidTargetIcon = GetRaidTargetIndex(u) or 0
+				Addon:SendWarningMessage("INTERRUPT", arg[5], GetSpellLink(arg[12]), arg[9], GetSpellLink(arg[15]), RaidTargetIcon, nil) --arg[5]打断者名字，arg[13]打断技能，arg[9]被打断者名字，arg[16]被打断的技能
 			end
 		end
-	elseif arg[2] == "SPELL_DISPEL" then --进攻驱散提示
+	elseif arg[2] == "SPELL_DISPEL" and (InstanceType == "party" or InstanceType == "raid") then --进攻驱散提示
 		local CasterType = Addon:GetTargetUnit(arg[4])
 		if CasterType == "group" or CasterType == "pet" or arg[4] == PlayerGUID then
 			local t, u = Addon:GetTargetUnit(arg[8]) --被驱散对象的Unit代码
 			if t == "target" and u and not UnitIsFriend("player", u) then
-				local RaidTargeIcon = GetRaidTargetIndex(u) or 0
-				Addon:SendWarningMessage("DISPEL", arg[5], GetSpellLink(arg[13]), arg[9], GetSpellLink(arg[16]), RaidTargeIcon, nil)
+				local RaidTargetIcon = GetRaidTargetIndex(u) or 0
+				Addon:SendWarningMessage("DISPEL", arg[5], GetSpellLink(arg[12]), arg[9], GetSpellLink(arg[15]), RaidTargetIcon, nil)
 			end
 		end
-	elseif (arg[2] == "SPELL_AURA_BROKEN_SPELL" or arg[2] == "SPELL_AURA_BROKEN") and InInstance then --破控警告
+	elseif (arg[2] == "SPELL_AURA_BROKEN_SPELL" or arg[2] == "SPELL_AURA_BROKEN") and (InstanceType == "party" or InstanceType == "raid") then --破控警告
 		local CasterType = Addon:GetTargetUnit(arg[4])
 		if CasterType == "group" or CasterType == "pet" or arg[4] == PlayerGUID then
 			if not arg[16] then --SWING模式下arg补全
@@ -1261,8 +1254,8 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 			end
 			local t, u = Addon:GetTargetUnit(arg[8]) --获取破除控制对象的Unit代码
 			if t == "target" and u and not UnitIsFriend("player", u) then --arg[5]破控者名字，arg[16]破控技能, arg[9]失去控制对象名字，arg[13]被打破的控制技能
-				local RaidTargeIcon = GetRaidTargetIndex(u) or 0
-				Addon:SendWarningMessage("BROKEN", arg[5], GetSpellLink(arg[16]), arg[9], GetSpellLink(arg[13]), RaidTargeIcon, arg[8])
+				local RaidTargetIcon = GetRaidTargetIndex(u) or 0
+				Addon:SendWarningMessage("BROKEN", arg[5], GetSpellLink(arg[15]), arg[9], GetSpellLink(arg[12]), RaidTargetIcon, arg[8])
 			end
 		end
 	elseif arg[2] == "SPELL_CAST_START" and arg[4] == PlayerGUID then
@@ -1316,13 +1309,15 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 						return
 					end
 				end
-				local RaidTargeIcon = GetRaidTargetIndex(CurrentTarget) or 0
-				Addon:SendAnnounceMessage("group", "start", TypeHelpHarm, GetSpellLink(SpellName), GetUnitName(CurrentTarget, true), RaidTargeIcon)
+				local RaidTargetIcon = GetRaidTargetIndex(CurrentTarget) or 0
+				if TypeHelpHarm == "harm" and (InstanceType == "party" or InstanceType == "raid") or TypeHelpHarm == "help" then
+					Addon:SendAnnounceMessage("group", "start", TypeHelpHarm, GetSpellLink(arg[12]), GetUnitName(CurrentTarget, true), RaidTargetIcon)
+				end
 				if CurrentTarget and not IsIgnoreSpell then
 					if TypeHelpHarm == "help" and UnitIsPlayer(CurrentTarget) then
-						-- Addon:SendAnnounceMessage("whisper", "start", TypeHelpHarm, SpellName, GetUnitName(CurrentTarget, true), RaidTargeIcon)
-					elseif TypeHelpHarm == "harm" then
-						Addon:SendAnnounceMessage("whisper", "start", TypeHelpHarm, GetSpellLink(SpellName), GetUnitName(CurrentTarget, true), RaidTargeIcon)
+						-- Addon:SendAnnounceMessage("whisper", "start", TypeHelpHarm, SpellName, GetUnitName(CurrentTarget, true), RaidTargetIcon)
+					elseif TypeHelpHarm == "harm" and (InstanceType == "party" or InstanceType == "raid") then
+						Addon:SendAnnounceMessage("whisper", "start", TypeHelpHarm, GetSpellLink(arg[12]), GetUnitName(CurrentTarget, true), RaidTargetIcon)
 					end
 				end
 			end
@@ -1353,16 +1348,14 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 			else
 				NowGUID = TargetGUID and TargetGUID or PlayerGUID
 			end
-			local _, u = Addon:GetTargetUnit(NowGUID)
-			if UnitIsPlayer(u) then
-				local RaidTargeIcon = GetRaidTargetIndex(u) or 0
-				Addon:SendAnnounceMessage("group", "done", TypeHelpHarm, GetSpellLink(SpellName), GetUnitName(u, true), RaidTargeIcon)
-				Addon:SendAnnounceMessage("whisper", "done", TypeHelpHarm, GetSpellLink(SpellName), GetUnitName(u, true), RaidTargeIcon)
+			local u = select(2, Addon:GetTargetUnit(NowGUID))
+			if UnitIsPlayer(u) and UnitIsFriend(u, "player") then
+				local RaidTargetIcon = GetRaidTargetIndex(u) or 0
+				Addon:SendAnnounceMessage("group", "done", TypeHelpHarm, GetSpellLink(arg[12]), GetUnitName(u, true), RaidTargetIcon)
+				Addon:SendAnnounceMessage("whisper", "done", TypeHelpHarm, GetSpellLink(arg[12]), GetUnitName(u, true), RaidTargetIcon)
 			end
 		end
-	elseif
-		arg[2] == "SPELL_AURA_APPLIED" and (arg[4] == PlayerGUID or (arg[8] == PlayerGUID and UnitInBattleground("player")))
-	 then
+	elseif arg[2] == "SPELL_AURA_APPLIED" and (arg[4] == PlayerGUID and not InstanceType == "scenario" or arg[8] == PlayerGUID and (InstanceType == "pvp" or InstanceType == "arena")) then
 		if not SpellName then
 			for k in pairs(RunTime.InstantHarm) do
 				if arg[13] == RunTime.InstantHarm[k] then
@@ -1393,18 +1386,18 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 		if SpellName then
 			local t, u = Addon:GetTargetUnit(arg[8]) --arg[8] 受影响对象的GUID
 			if arg[4] == PlayerGUID and t and u then
-				local RaidTargeIcon = GetRaidTargetIndex(u) or 0
+				local RaidTargetIcon = GetRaidTargetIndex(u) or 0
 				if t == "target" and not UnitIsFriend("player", u) or t == "player" then
-					Addon:SendAnnounceMessage("group", "done", TypeHelpHarm, GetSpellLink(SpellName), arg[9], RaidTargeIcon)
+					Addon:SendAnnounceMessage("group", "done", TypeHelpHarm, GetSpellLink(arg[12]), arg[9], RaidTargetIcon)
 				end
 			elseif UnitInBattleground("player") and t == "player" then
 				if not arg[5] then
 					arg[5] = L["SPELLWHISPER_TEXT_UNKNOWN"]
 				end
-				Addon:SendBGMessage(GetSpellLink(SpellName), arg[5], arg[9])
+				Addon:SendBGMessage(GetSpellLink(arg[12]), arg[5], arg[9])
 			end
 		end
-	elseif arg[2] == "UNIT_DIED" and InInstance then
+	elseif arg[2] == "UNIT_DIED" and (InstanceType == "party" or InstanceType == "raid") then
 		local Type = strsplit("-", arg[8] or "")
 		if Type == "Creature" then
 			if #ThreatList > 0 then

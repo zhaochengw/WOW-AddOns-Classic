@@ -273,7 +273,7 @@ function Panel:Initialize()
 		L["Feedback & Update Link"])
 	FeedbackLink:SetMultiLine(true)
 	FeedbackLink:SetHeight(30)
-	FeedbackLink:SetWidth(410)
+	FeedbackLink:SetWidth(430)
 
 	--启用插件选择框
 	local AddonSwitch = self:CreateCheckBox(L["Enable |cFFBA55D3SpellWhisper|r"],
@@ -285,10 +285,12 @@ function Panel:Initialize()
 		function(self) return Config.ShowMinimapIcon end,
 		function(self, v)
 			Config.ShowMinimapIcon = v
-			if Config.ShowMinimapIcon then
-				MinimapIcon.Minimap:Show()
-			elseif not Config.ShowMinimapIcon and MinimapIcon.Minimap:IsShown() then
-				MinimapIcon.Minimap:Hide()
+			if not (Addon.LDB and Addon.LDBIcon and ((IsAddOnLoaded("TitanClassic")) or (IsAddOnLoaded("Titan")))) then
+				if Config.ShowMinimapIcon and not MinimapIcon.Minimap:IsShown() then
+					MinimapIcon.Minimap:Show()
+				elseif not Config.ShowMinimapIcon and MinimapIcon.Minimap:IsShown() then
+					MinimapIcon.Minimap:Hide()
+				end
 			end
 		end,
 		false)
