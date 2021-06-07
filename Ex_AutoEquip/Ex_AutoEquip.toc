@@ -1,15 +1,14 @@
 ﻿## Interface: 20501
 ## Title: Enigma Auto Equip
-## Title-zhCN: |CFFFF8000辅助|R 一键换装Ex_AutoEquip
-## Title-zhTW: |CFFFF8000輔助|R 一鍵換裝Ex_AutoEquip
-## Notes: Swap your suites with one click.
-## Notes-zhCN: 快速装备,更换或脱掉你身上的装备
-## Notes-zhTW: 快速裝備,更換或脫掉你身上的裝備
-## X-Repple: 辅助
+## Title-zhCN: [大脚][集]装备管理
+## Title-zhTW: [大腳][集]裝備管理
+## Notes: |cffbc8f8fConvenient implementation of equipment management settings.|r
+## Notes-zhCN: |cff00ff00Ex_AutoEquip|r|n|cffbc8f8f方便快捷的实现装备管理设置。|r
+## Notes-zhTW: |cff00ff00Ex_AutoEquip|r|n|cffbc8f8f方便快捷的實現裝備管理設置。|r
 ## Author: Enigma @ http://luodan.com
-## Dependencies: 
-## LoadOnDemand: 0
 ## SavedVariablesPerCharacter: ExAE_Config
-## X-Revision: 
+## X-Revision: BigFoot
+
 Ex_AutoEquip.xml
+
 Ex_Naked.xml

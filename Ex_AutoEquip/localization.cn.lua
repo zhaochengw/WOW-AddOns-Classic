@@ -26,17 +26,15 @@ ExAE_MSG_LOAD_SET = "切换到套装%s";
 ExAE_MSG_ITEM_NOTEXISTS = "物品|cffffffff[%s]|r不存在或已更新，建议您重新设定并保存。";
 ExAE_MSG_BAG_FULL = "背包已满，装备未能全部卸下。";
 
-ExAE_MSG_COMBAT = "请战斗结束后重试";
-
 ExAE_NAKED_TITLE = "快速脱衣";
 
 ExAE_HELP_NAKED_BTN_TITLE = "快速脱衣";
 ExAE_HELP_NAKED_BTN_DESC = "快速脱光或穿上身上拥有\n耐久度的装备。";
 
 ExAE_HELP_MSG1 = "|c003060FFExtend Auto Equip|r |c00FFFFFF命令列表：|r";
-ExAE_HELP_MSG2 = "|c009090FF/eae SetToolbar X Y|r    |c00FFFFFF设置工具条相对于玩家头像窗口左上角的位置偏移为(X, Y)。默认偏移为(98, 0)。|r";
-ExAE_HELP_MSG3 = "|c009090FF/eae ResetToolbar|r    |c00FFFFFF重置工具条位置。|r";
-ExAE_HELP_MSG4 = "|c009090FF/eae SetGroupIndicator X Y|r    |c00FFFFFF设置小队标签相对于玩家头像窗口左上角的位置偏移为(X, Y)。默认偏移为(36, -100)。|r";
-ExAE_HELP_MSG5 = "|c009090FF/eae ResetGroupIndicator|r    |c00FFFFFF重置小队标签位置。|r";
+ExAE_HELP_MSG2 = "|c009090FF/exae SetToolbar X Y|r    |c00FFFFFF设置工具条相对于玩家头像窗口左上角的位置偏移为(X, Y)。默认偏移为(98, 0)。|r";
+ExAE_HELP_MSG3 = "|c009090FF/exae ResetToolbar|r    |c00FFFFFF重置工具条位置。|r";
+ExAE_HELP_MSG4 = "|c009090FF/exae SetGroupIndicator X Y|r    |c00FFFFFF设置小队标签相对于玩家头像窗口左上角的位置偏移为(X, Y)。默认偏移为(36, -100)。|r";
+ExAE_HELP_MSG5 = "|c009090FF/exae ResetGroupIndicator|r    |c00FFFFFF重置小队标签位置。|r";
 
 end

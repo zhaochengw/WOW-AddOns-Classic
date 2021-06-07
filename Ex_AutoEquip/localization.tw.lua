@@ -9,7 +9,7 @@ BINDING_NAME_ExAE_SET1 = "套裝 1";
 BINDING_NAME_ExAE_SET2 = "套裝 2";
 BINDING_NAME_ExAE_SET3 = "套裝 3";
 BINDING_NAME_ExAE_SET4 = "套裝 4";
-BINDING_NAME_NAKED = "換衣達人"
+BINDING_NAME_RENAKED = "換衣達人"
 
 ExAE_HELP_SAVE_BTN_TITLE = "保存套裝配置";
 ExAE_HELP_SAVE_BTN_DESC = "|cff0099ff左鍵|r將當前的裝備配置保存到目前\n選擇的套裝裡。\n|cffcccccc此操作會覆蓋原有套裝設置。|r\n|cff0099ff右鍵|r將清除所有套裝設置";
@@ -25,10 +25,6 @@ ExAE_MSG_ITEM_LOCKED = "無法更換到此套裝，請稍後再嘗試。";
 ExAE_MSG_LOAD_SET = "切換到套裝%s";
 ExAE_MSG_ITEM_NOTEXISTS = "物品|cffffffff[%s]|r不存在或已更新，建議您重新設定並保存。";
 ExAE_MSG_BAG_FULL = "背包已滿，裝備未能全部卸下。";
-
-ExAE_MSG_COMBAT = "請戰鬥結束後重試";
-
-ExAE_NAKED_TITLE = "換裝達人";
 
 ExAE_HELP_NAKED_BTN_TITLE = "換裝達人";
 ExAE_HELP_NAKED_BTN_DESC = "迅速脫光或穿上身上擁有\n耐久度的裝備。";

@@ -3,17 +3,20 @@
 	<Frame name="NakedObj" hidden="true">
 		<Scripts>
 			<OnLoad>
-				SLASH_NAKED1="/Naked";
-				SLASH_DRESSED1="/Dressed";
-				SLASH_NAKEDTOGGLE1 = "/Nakedtoggle";
+
+
+	SLASH_NAKED1="/Naked";
+	SLASH_DRESSED1="/Dressed";
+	SLASH_NAKEDTOGGLE1 = "/Nakedtoggle";
+
 
 				NakedObj.NoDur = {[2] = true, [4] = true, [11] = true, [12] = true, [13] = true, [14] = true, [15] = true, [19] = true}
-				<!--
+<!--
 				BINDING_HEADER_NAKED= "Naked";
 				BINDING_NAME_NAKED= "Naked";
 				BINDING_NAME_DRESSED= "Dressed";
 				BINDING_NAME_RENAKED = "Toggle Naked";
-				-->
+-->
 				NakedObj.Nakie = false;
 				SlashCmdList["NAKED"] = function()
 					NakedObj.Nakie = true;
@@ -27,8 +30,8 @@
 							end; 
 						end;
 					end;
-					for i=1,18 do
-						if (not NakedObj.NoDur[i]) and (not InCombatLockdown() or i>15) then
+					for i=1,19 do
+						if (not NakedObj.NoDur[i]) then
 							PickupInventoryItem(i);
 							if (CursorHasItem()) then
 								d = false;

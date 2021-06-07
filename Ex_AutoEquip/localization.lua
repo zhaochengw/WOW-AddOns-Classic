@@ -7,7 +7,7 @@ BINDING_NAME_ExAE_SET1 = "Set 1";
 BINDING_NAME_ExAE_SET2 = "Set 2";
 BINDING_NAME_ExAE_SET3 = "Set 3";
 BINDING_NAME_ExAE_SET4 = "Set 4";
-BINDING_NAME_NAKED = "Renaed"
+BINDING_NAME_RENAKED = "Renaed"
 
 ExAE_HELP_SAVE_BTN_TITLE = "Save current set";
 ExAE_HELP_SAVE_BTN_DESC = "|cff0099ffLeftButton|r Save current item settings\nto the selected set.\n|cff0099ffRightButton|r Clean the settings";
@@ -23,10 +23,6 @@ ExAE_MSG_ITEM_LOCKED = "Failed to switch to the new set. Please retry later.";
 ExAE_MSG_LOAD_SET = "Switch to set %s";
 ExAE_MSG_ITEM_NOTEXISTS = "Item |cffffffff[%s]|r does not exist or had been changed. Please reconfigure your set and save it again.";
 ExAE_MSG_BAG_FULL = "Failed to unload all your items due to bags full.";
-
-ExAE_MSG_COMBAT = "Please retry after combat.";
-
-ExAE_NAKED_TITLE = "Naked";
 
 ExAE_HELP_NAKED_BTN_TITLE = "Toggle Naked";
 ExAE_HELP_NAKED_BTN_DESC = "As quickly toggle naked\nor equip status";
