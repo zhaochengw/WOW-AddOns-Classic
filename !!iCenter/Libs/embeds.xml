@@ -1,0 +1,9 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<!-- GoodLeader，MeetingHorn ，Wargame ~begin~ -->
+    <Script file="LibClass-2.0\Class-2.0.lua"/>
+    <Script file="LibLog-1.0\LibLog-1.0.lua"/>
+    <Script file="LibCommSocket-3.0\Socket.lua"/>
+    <Include file="tdGUI\Load.xml"/>
+	<!-- GoodLeader，MeetingHorn，Wargame  ~end~ -->
+</Ui>

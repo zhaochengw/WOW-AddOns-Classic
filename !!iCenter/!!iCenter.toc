@@ -12,6 +12,8 @@
 ## SavedVariables: ACP_Data, ErrorMonsterDB, ExtraConfiguration, cfilter, cfilterall, cfilters, cfilterlist
 ## SavedVariablesPerCharacter: MBB_Exclude, MBB_Options, FeatureFrameMinimapButton_OffsetX, FeatureFrameMinimapButton_OffsetY, aienable, aikeyword, aichannel, aitextleft, aitextright
 
+Libs\embeds.xml
+
 Libs\LibStub\LibStub.lua
 Libs\LibChatAnims\LibChatAnims.xml
 
