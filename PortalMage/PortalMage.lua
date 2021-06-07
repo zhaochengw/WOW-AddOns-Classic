@@ -210,6 +210,7 @@ function PortalMage:OnInitialize()
 				handler = PortalMage,
 				type = "group",
 				args = {
+					movable = {
 						name = "解锁插件条",
 						type = "toggle",
 						desc = "使插件条可移动",
