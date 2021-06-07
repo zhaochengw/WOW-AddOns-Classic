@@ -1,0 +1,28 @@
+lightweight tag c58649092fb1ae5a7f89043ccec0a73bf703128a v3.0.0
+Author:	Linden Ryuujin <Linden.Ryuujin@gmail.com>
+Date:	Fri Jun 4 00:56:24 2021 +0100
+
+commit de23a5dec701aff7fa5561c5be1264e12686d1bc
+Author: Linden Ryuujin <Linden.Ryuujin@gmail.com>
+Date:   Fri Jun 4 00:55:26 2021 +0100
+
+    Fixes for TBC: Moved away from custom button as getting the tracking icon no longer seems to work. Added the original TrackingEye menu to rightclick on the button and restored target selection (when out of combat).
+
+commit de23a5dec701aff7fa5561c5be1264e12686d1bc
+Author: Linden Ryuujin <Linden.Ryuujin@gmail.com>
+Date:   Fri Jun 4 00:55:26 2021 +0100
+
+    Fixes for TBC: Moved away from custom button as getting the tracking icon no longer seems to work. Added the original TrackingEye menu to rightclick on the button and restored target selection (when out of combat).
+
+commit f2ed59472b9480520d4c2138ce4dfa90851fa570
+Author: Linden Ryuujin <Linden.Ryuujin@gmail.com>
+Date:   Fri Jun 4 00:50:43 2021 +0100
+
+    Added custom secure buttons back into DropDown menu.
+
+commit 301a12d2329c9ac53f6278966d9456713342ee4a
+Author: Linden Ryuujin <Linden.Ryuujin@gmail.com>
+Date:   Fri Jun 4 00:47:23 2021 +0100
+
+    Update libs for TBC
+

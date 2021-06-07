@@ -1,0 +1,29 @@
+## Interface: 20501
+## Title: Tracking Eye
+## Author: Linden Ryuujin
+## Version: 2.0.1
+
+## SavedVariables: TrackingEyeDB
+## OptionalDeps: Ace3, Masque, LibButtonGlow-1.0, LibActionButton-1.0, LibKeyBound-1.0, LibDBIcon-1.0, LibWindow-1.1, LibDualSpec-1.0
+
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+
+libs\LibDataBroker-1.1.lua
+
+libs\AceAddon-3.0\AceAddon-3.0.xml
+libs\AceDB-3.0\AceDB-3.0.xml
+libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+libs\AceEvent-3.0\AceEvent-3.0.xml
+libs\AceConsole-3.0\AceConsole-3.0.xml
+libs\AceHook-3.0\AceHook-3.0.xml
+libs\AceLocale-3.0\AceLocale-3.0.xml
+libs\AceGUI-3.0\AceGUI-3.0.xml
+libs\AceConfig-3.0\AceConfig-3.0.xml
+
+libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
+libs\LibWindow-1.1\LibWindow-1.1.lua
+
+Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml
+
+TrackingEye.lua
