@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------
--- 	Leatrix Plus 2.5.38 (2nd June 2021)
+-- 	Leatrix Plus 2.5.39 (6th June 2021)
 ----------------------------------------------------------------------
 
 --	01:Functions	20:Live			50:RunOnce		70:Logout			
@@ -20,7 +20,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "2.5.38"
+	LeaPlusLC["AddonVer"] = "2.5.39"
 	LeaPlusLC["RestartReq"] = nil
 
 	-- Get locale table
@@ -1104,6 +1104,7 @@
 						or npcID == "14828" -- Gelvas Grimegate (Darkmoon Faire Ticket Redemption, Elwynn Forest and Mulgore)
 						or npcID == "14921" -- Rin'wosho the Trader (Zul'Gurub Isle, Stranglethorn Vale)
 						or npcID == "18166" -- Khadgar (Allegiance to Aldor/Scryer, Shattrath)
+						or npcID == "18253" -- Archmage Leryda (Violet Signet, Karazhan)
 						then
 							return true
 						end
