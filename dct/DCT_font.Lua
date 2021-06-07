@@ -2,7 +2,7 @@ DCT_FONT_DEFAULT = {
 		{name = "GameTooltipText",path = "",active = true,},
 		{name = "TextStatusBarText",path = "",active = true},
 		{name = "GameFontNormal",path = "",active = true},
-		{name = "DIY剪纸体",path = "Fonts\\Fight.TTF",active = true},
+		{name = "",path = "",active = false},
 		{name = "",path = "",active = false},
 		{name = "",path = "",active = false},
 		{name = "",path = "",active = false},

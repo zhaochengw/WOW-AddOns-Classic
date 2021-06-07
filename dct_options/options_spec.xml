@@ -42,9 +42,7 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-					<OnShow>
-						DCT_Opspec_SpecBuffListDDC_OnShow(self)
-					</OnShow>
+                                    <OnShow function="DCT_Opspec_SpecBuffListDDC_OnShow" />
 				</Scripts>
 			</Button>
 			
@@ -104,9 +102,7 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-					<OnShow>
-						DCT_Opspec_BuffFadeListDDC_OnShow(self)
-					</OnShow>
+                                    <OnShow function="DCT_Opspec_BuffFadeListDDC_OnShow" />
 				</Scripts>
 			</Button>
 			
@@ -166,9 +162,7 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-					<OnShow>
-						DCT_Opspec_SpellSuccessListDDC_OnShow(self)
-					</OnShow>
+                                    <OnShow function="DCT_Opspec_SpellSuccessListDDC_OnShow" />
 				</Scripts>
 			</Button>
 			
@@ -228,9 +222,7 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-					<OnShow>
-						DCT_Opspec_SpellFailedListDDC_OnShow(self)
-					</OnShow>
+                                    <OnShow function="DCT_Opspec_SpellFailedListDDC_OnShow" />
 				</Scripts>
 			</Button>
 			
@@ -290,9 +282,7 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-					<OnShow>
-						DCT_Opspec_CoolDownListDDC_OnShow(self)
-					</OnShow>
+                                    <OnShow function="DCT_Opspec_CoolDownListDDC_OnShow" />
 				</Scripts>
 			</Button>
 			
@@ -351,9 +341,7 @@
 				DCT_OptionsRegisterButton(DCT_SPEC_OPTION,DCTSpecOption,nil,2,535,85);
 				DCT_OptionsRegisterButtonExBG(DCT_SPEC_OPTION,0,-90,535,85, 0,-180,535,85, 0,-270,535,85, 0,-360,535,85);
 			</OnLoad>
-			<OnShow>
-				DCT_Opspec_OnShow(self)
-			</OnShow>
+                        <OnShow function="DCT_Opspec_OnShow" />
 			<OnHide>
 				
 			</OnHide>

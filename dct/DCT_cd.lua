@@ -1,7 +1,7 @@
 local ActiveCD = {}
 local ActiveC = 0
 
-function DCT_ProcCooldown(self, event, arg1, arg2)	
+function DCT_ProcCooldown(self, event, arg1, arg2)
 	if DCT_Player["DCT_SHOWCOOLDOWN"].frame == 0 then return;end
 	local cdp = DCT_Player["DCT_SPECCOOLDOWN"]
 
@@ -15,16 +15,16 @@ function DCT_ProcCooldown(self, event, arg1, arg2)
 				if not ActiveCD[spellName] then
 					ActiveCD[spellName] = {duration = duration,stime = ctime}
 					ActiveC = ActiveC + 1
-				end				
+				end
 			end
 		end
-	end	
+	end
 end
 
 function DCT_CooldownOnUpdata()
 	if ActiveC <= 0 then return;end
 	if DCT_Player["DCT_SHOWCOOLDOWN"].frame == 0 then return;end
-	
+
 	local ctime = GetTime()
 	local k,v
 	for k,v in pairs(ActiveCD) do

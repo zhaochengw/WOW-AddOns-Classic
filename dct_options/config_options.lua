@@ -1,4 +1,4 @@
-DCT_MAIN_OPTION = "DCTU v2.75"
+DCT_MAIN_OPTION = "DCT v2.46"
 
 DCT_CHECK_ENABLE_LABEL = ""
 
@@ -26,7 +26,7 @@ DCT_EVENTTYPE = {
 }
 
 DCT_OptionCfg_Base = {
-	["DCT_ENABLED"] = {x = 20,y = -10, title = "", tooltipText = ""},
+["DCT_ENABLED"] = {x = 20,y = -10, title = "", tooltipText = ""},
 };
 
 DCT_OptionCfg_Event = {
@@ -34,36 +34,36 @@ DCT_OptionCfg_Event = {
 	EventFrames = {
 		["DCT_SHOWHIT"] = {x = 200,y = -65, title = "", tooltipText = ""},
 		["DCT_SHOWHITCRIT"] = {x = 200,y = -95, title = "", tooltipText = ""},
-		["DCT_SHOWHEAL"] = {x = 200,y = -125, title = "", tooltipText = ""},		
+		["DCT_SHOWHEAL"] = {x = 200,y = -125, title = "", tooltipText = ""},
 		["DCT_SHOWPERIODICHEAL"] = {x = 200,y = -155, title = "", tooltipText = ""},
 		["DCT_SHOWSHIELD"] = {x = 200,y = -185, title = "", tooltipText = ""},
 		["DCT_SHOWKILLBLOW"] = {x = 200,y = -215, title = "", tooltipText = ""},
 		["DCT_SHOWCOMBAT"] = {x = 200,y = -245, title = "", tooltipText = ""},
-		["DCT_SHOWHONOR"] = {x = 200,y = -275, title = "", tooltipText = ""},		
+		["DCT_SHOWHONOR"] = {x = 200,y = -275, title = "", tooltipText = ""},
 		["DCT_SHOWBUFF"] = {x = 200,y = -305, title = "", tooltipText = ""},
-		["DCT_SHOWBUFFFADE"] = {x = 200,y = -335, title = "", tooltipText = ""},	
-		["DCT_SHOWBUFFDOSE"] = {x = 200,y = -365, title = "", tooltipText = ""},		
+		["DCT_SHOWBUFFFADE"] = {x = 200,y = -335, title = "", tooltipText = ""},
+		["DCT_SHOWBUFFDOSE"] = {x = 200,y = -365, title = "", tooltipText = ""},
 		["DCT_SHOWENVIRONMENTAL"] = {x = 200,y = -395, title = "", tooltipText = ""},
 		["DCT_SHOWDISPELLED"] = {x = 200,y = -425, title = "","", tooltipText = ""},
-		["DCT_SHOWLOWHEALTH"] = {x = 200,y = -455, title = "", tooltipText = ""},		
-		
-		
-		
+		["DCT_SHOWLOWHEALTH"] = {x = 200,y = -455, title = "", tooltipText = ""},
+
+
+
 		["DCT_SHOWSPELL"] = {x = 440,y = -65, title = "", tooltipText = ""},
 		["DCT_SHOWSPELLCRIT"] = {x = 440,y = -95, title = "", tooltipText = ""},
 		["DCT_SHOWPERIODIC"] = {x = 440,y = -125, title = "", tooltipText = ""},
-		["DCT_SHOWACTIVE"] = {x = 440,y = -155, title = "", tooltipText = ""},		
-		["DCT_SHOWPOWER"] = {x = 440,y = -185, title = "", tooltipText = ""},		
+		["DCT_SHOWACTIVE"] = {x = 440,y = -155, title = "", tooltipText = ""},
+		["DCT_SHOWPOWER"] = {x = 440,y = -185, title = "", tooltipText = ""},
 		["DCT_SHOWCP"] = {x = 440,y = -215, title = "", tooltipText = ""},
 		["DCT_SHOWCOMBATLEAVE"] = {x = 440,y = -245, title = "", tooltipText = ""},
-		["DCT_SHOWDRAIN"] = {x = 440,y = -275, title = "", tooltipText = ""},		
+		["DCT_SHOWDRAIN"] = {x = 440,y = -275, title = "", tooltipText = ""},
 		["DCT_SHOWDEBUFF"] = {x = 440,y = -305, title = "", tooltipText = ""},
 		["DCT_SHOWDEBUFFFADE"] = {x = 440,y = -335, title = "", tooltipText = ""},
 		["DCT_SHOWDEBUFFDOSE"] = {x = 440,y = -365, title = "", tooltipText = ""},
-		["DCT_SHOWFACTION"] = {x = 440,y = -395, title = "", tooltipText = ""},		
+		["DCT_SHOWFACTION"] = {x = 440,y = -395, title = "", tooltipText = ""},
 		["DCT_SHOWEXTRAATTACKS"] = {x = 440,y = -425, title = "", tooltipText = ""},
 		["DCT_SHOWLOWMANA"] = {x = 440,y = -455, title = "", tooltipText = ""},
-		
+
 	},
 };
 
@@ -76,12 +76,12 @@ DCT_OptionCfg_Event2 = {
 		["DCT_SHOWRESIST"] = {x = 200,y = -155, title = RESIST, tooltipText = ""},
 		["DCT_SHOWPARRY"] = {x = 200,y = -185, title = PARRY, tooltipText = ""},
 
-		
+
 		["DCT_SHOWMISS"] = {x = 440,y = -65, title = MISS, tooltipText = ""},
 		["DCT_SHOWREFLECT"] = {x = 440,y = -95, title = REFLECT, tooltipText = ""},
 		["DCT_SHOWDEFLECT"] = {x = 440,y = -125, title = DEFLECT, tooltipText = ""},
-		["DCT_SHOWIMMUNE"] = {x = 440,y = -155, title = IMMUNE, tooltipText = ""},	
-		["DCT_SHOWEVADE"] = {x = 440,y = -185, title = EVADE, tooltipText = ""},	
+		["DCT_SHOWIMMUNE"] = {x = 440,y = -155, title = IMMUNE, tooltipText = ""},
+		["DCT_SHOWEVADE"] = {x = 440,y = -185, title = EVADE, tooltipText = ""},
 	},
 };
 
@@ -206,7 +206,7 @@ DCT_Opani_Config = {
 		["speed"] = { title = "", minValue = 40, maxValue = 200, valueStep = 5, minText="40%", maxText="200%",tooltipText = ""},
 		["x"] = { title = "", minValue = -800, maxValue = 800, valueStep = 20, minText="-800", maxText="800"},
 		["y"] = { title = "", minValue = -800, maxValue = 800, valueStep = 20, minText="-800", maxText="800"},
-		
+
 	}
 }
 
@@ -336,7 +336,7 @@ DCT_MiscCfg_Event = {
 		["DCT_ScaleOnCrit"] = {x = 185,y = -180, title = "", tooltipText = ""},
 		["DCT_UseCastBar"] = {x = 185,y = -210, title = "", tooltipText = ""},
 	},
-	
+
 	ColorPickerExs = {
 		["DCT_SSColor1"] = { x = 440,y = -155,title = STRING_SCHOOL_PHYSICAL},--支持size字段来定义大小
 		["DCT_SSColor2"] = { x = 440,y = -185,title = STRING_SCHOOL_HOLY},
@@ -345,7 +345,7 @@ DCT_MiscCfg_Event = {
 		["DCT_SSColor16"] = { x = 555,y = -155,title = STRING_SCHOOL_FROST},
 		["DCT_SSColor32"] = { x = 555,y = -185,title = STRING_SCHOOL_SHADOW},
 		["DCT_SSColor64"] = { x = 555,y = -215,title = STRING_SCHOOL_ARCANE},
-	},	
+	},
 }
 
 --options_spec********************************************************************************************************
@@ -361,23 +361,23 @@ DCT_TEXT_OPSPEC_SPELLLISTDDC = ""
 DCT_SpecCfg_Event = {
 	EventFrames = {
 		["DCT_SHOWSPECBUFF"] = {x = 200,y = -65, title = "", tooltipText = ""},
-		
+
 		["DCT_SHOWSPECBUFFFADE"] = {x = 200,y = -155, title = "", tooltipText = ""},
 		["DCT_SHOWSPECDEBUFFFADE"] = {x = 200,y = -185, title = "", tooltipText = ""},
-		
+
 		["DCT_SHOWSPELLSUCCESS"] = {x = 200,y = -245, title = "", tooltipText = ""},
 		["DCT_SHOWSPELLFAILED"] = {x = 200,y = -335, title = "", tooltipText = ""},
-		
-		["DCT_SHOWCOOLDOWN"] = {x = 200,y = -425, title = "", tooltipText = ""},		
-	},	
+
+		["DCT_SHOWCOOLDOWN"] = {x = 200,y = -425, title = "", tooltipText = ""},
+	},
 }
 
 DCT_SpecCfg_Event2 = {
 	EventFrames = {
 		["DCT_SHOWSPECTARGETBUFF"] = {x = 200,y = -65, title = "", tooltipText = ""},
 		["DCT_SHOWSPECTARGETDEBUFF"] = {x = 200,y = -95, title = "", tooltipText = ""},
-		
+
 		["DCT_SHOWSPECTARGETBUFFFADE"] = {x = 200,y = -155, title = "", tooltipText = ""},
 		["DCT_SHOWSPECTARGETDEBUFFFADE"] = {x = 200,y = -185, title = "", tooltipText = ""},
-	},	
+	},
 }

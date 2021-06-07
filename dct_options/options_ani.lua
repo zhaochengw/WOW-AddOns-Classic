@@ -364,7 +364,7 @@ end
 
 --Sets the silder values in the config
 
-function DCT_Opani_SliderValueChange(objname,val)
+function DCT_Opani_SliderValueChange(self,objname,val)
 	local c = string.len(objname)
 	local f = string.find(objname,"_")
 	local key = string.sub(objname,f + 1,c)

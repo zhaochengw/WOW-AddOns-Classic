@@ -43,9 +43,9 @@ DCT_OptionCfg_Event.EventFrames["DCT_SHOWHONOR"].tooltipText = "显示你的荣�
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWBUFF"].title = "有益效果获得"
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWBUFF"].tooltipText = "显示你获得的有益效果"
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWBUFFFADE"].title = "有益效果消失"
-DCT_OptionCfg_Event.EventFrames["DCT_SHOWBUFFFADE"].tooltipText = "显示你消失的有益效果"	
+DCT_OptionCfg_Event.EventFrames["DCT_SHOWBUFFFADE"].tooltipText = "显示你消失的有益效果"
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWBUFFDOSE"].title = "有益效果叠加"
-DCT_OptionCfg_Event.EventFrames["DCT_SHOWBUFFDOSE"].tooltipText = "显示你的有益效果叠加及减少"		
+DCT_OptionCfg_Event.EventFrames["DCT_SHOWBUFFDOSE"].tooltipText = "显示你的有益效果叠加及减少"
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWENVIRONMENTAL"].title = "环境伤害"
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWENVIRONMENTAL"].tooltipText = "比如溺水掉落等"
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWDISPELLED"].title = "被驱散,偷取"
@@ -57,7 +57,7 @@ DCT_OptionCfg_Event.EventFrames["DCT_SHOWSHIELD"].tooltipText = "反射伤害"
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWKILLBLOW"].title = "击杀"
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWKILLBLOW"].tooltipText = "如果因为你的攻击杀死了目标，则显示击杀字样"
 
-		
+
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWSPELL"].title = "技能伤害"
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWSPELL"].tooltipText = "显示你受到的技能伤害"
 DCT_OptionCfg_Event.EventFrames["DCT_SHOWSPELLCRIT"].title = "技能伤害(爆击)"

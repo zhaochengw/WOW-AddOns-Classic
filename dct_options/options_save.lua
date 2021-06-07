@@ -192,7 +192,7 @@ end
 function DCT_Opsave_PreSetAniListDDC_OnClick(self)
 	local thisID = self:GetID()	
 	UIDropDownMenu_SetSelectedID(DCTSaveOptionPreSetAniListDDC, thisID)
-	--local thisText = this:GetText()
+	--local thisText = self:GetText()
 	--UIDropDownMenu_SetSelectedName(DCTSaveOptionPreSetAniListDDC, thisText)
 end
 
@@ -237,7 +237,7 @@ end
 function DCT_Opsave_PreSetTextListDDC_OnClick(self)
 	local thisID = self:GetID()	
 	UIDropDownMenu_SetSelectedID(DCTSaveOptionPreSetTextListDDC, thisID)
-	--local thisText = this:GetText()
+	--local thisText = self:GetText()
 	--UIDropDownMenu_SetSelectedName(DCTSaveOptionPreSetTextListDDC, thisText)
 end
 

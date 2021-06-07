@@ -366,7 +366,7 @@ function DCT_Opex_FontEnDDC_OnShow(self)
 	UIDropDownMenu_SetWidth(self,150)
 	getglobal(self:GetName().."Label"):SetText(DCT_TEXT_OPEX_FONTENDDC)
 end
-function DCT_Opex_FontEnDDC_OnClick()
+function DCT_Opex_FontEnDDC_OnClick(self)
 	local thisID = self:GetID()
 	UIDropDownMenu_SetSelectedID(DCTEventOptionsExtraFontEnDDC, thisID)
 	DCT_opex_saveP[DCT_CurrentEditEventName].fEn = thisID
@@ -393,7 +393,7 @@ function DCT_Opex_FontChDDC_OnShow(self)
 	UIDropDownMenu_SetWidth(self,150)
 	getglobal(self:GetName().."Label"):SetText(DCT_TEXT_OPEX_FONTCHDDC)
 end
-function DCT_Opex_FontChDDC_OnClick()
+function DCT_Opex_FontChDDC_OnClick(self)
 	local thisID = self:GetID()
 	UIDropDownMenu_SetSelectedID(DCTEventOptionsExtraFontChDDC, thisID)
 	DCT_opex_saveP[DCT_CurrentEditEventName].fCh = thisID
@@ -423,9 +423,9 @@ function DCT_Opex_FontEffDDC_OnClick(self)
 	DCT_PreviewUpdata()
 end
 
-function DCT_Opex_SliderOnValue(objname, value)
-	local c = string.len(objname)
-	local f = string.find(objname,"_")
+function DCT_Opex_SliderOnValue(self,objname,value)	
+	local c = string.len(self:GetName())
+	local f = string.find(self:GetName(),"_")
 	local key = string.sub(objname,f + 1,c)
 	if DCT_opex_saveP[DCT_CurrentEditEventName][key] then
 		DCT_opex_saveP[DCT_CurrentEditEventName][key] = value

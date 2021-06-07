@@ -1,10 +1,10 @@
 ﻿<!-- MikeyHealthBar V0.1 -->
 <!-- Options Pane Definition -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/"> 
-	
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+
 	<Slider name="DCTSliderTemplateExtra" frameStrata="MEDIUM" inherits="DCTSliderIncludeEditBoxTemplate" virtual="true">
-		<Scripts>			
+		<Scripts>
 			<OnEnter>
 				if ( self.tooltipText ) then
 					GameTooltip_AddNewbieTip(self,self.tooltipText, 1.0, 1.0, 1.0);
@@ -17,13 +17,11 @@
 				self.OnValueChangedFunc = DCT_Opex_SliderOnValue
 			</OnLoad>
 		</Scripts>
-	</Slider >
-	
+	</Slider>
+
 	<CheckButton name="DCT_OPEX_InheritsCheckBox" inherits="UICheckButtonTemplate" virtual="true">
 		<Scripts>
-			<OnClick>
-				DCT_Opex_InheritsCheckBoxClick(self)
-			</OnClick>
+                    <OnClick function="DCT_Opex_InheritsCheckBoxClick" />
 			<OnEnter>
 				GameTooltip_AddNewbieTip(self,DCT_TEXT_OPEX_CHECK_TIP, 1.0, 1.0, 1.0);
 			</OnEnter>
@@ -33,7 +31,7 @@
 		</Scripts>
 	</CheckButton>
 
-	<EditBox name="DCTEditBoxTemplate" autoFocus ="false" frameStrata="HIGH" historyLines="0" inherits="InputBoxTemplate" virtual="true" bytes="256">
+	<EditBox name="DCTEditBoxTemplate" autoFocus ="false" frameStrata="HIGH" historyLines="0" inherits="InputBoxTemplate" virtual="true">
 		<Size>
 			<AbsDimension x="270" y="30"/>
 		</Size>
@@ -54,8 +52,8 @@
 							</Offset>
 						</Anchor>
 					</Anchors>
-				</FontString>	
-			</Layer>			
+				</FontString>
+			</Layer>
 		</Layers>
 		<Scripts>
 			<OnShow>
@@ -63,22 +61,22 @@
 			</OnShow>
 			<OnEnterPressed>
 				if self.EnterPressFunc then
-					self:EnterPressFunc(self:GetText())
+					self.EnterPressFunc(self)
 				end
 				self:ClearFocus();
 			</OnEnterPressed>
 			<OnTextChanged>
 				if self.TextChangedFunc then
-					self.TextChangedFunc(self:GetText());
+					self.TextChangedFunc(self);
 				end
-			</OnTextChanged >
+			</OnTextChanged>
 			<OnEscapePressed>
 				self:ClearFocus();
 			</OnEscapePressed>
 		</Scripts>
-		<!-- <FontString inherits="GameFontHighlight" bytes="256"/> -->
+		<FontString inherits="GameFontHighlight"/>
 	</EditBox>
-	
+
 	<Button name="DCTUIDropDownMenuTemplate" inherits="UIDropDownMenuTemplate" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -92,10 +90,10 @@
 					</Anchors>
 				</FontString>
 			</Layer>
-		</Layers>			
+		</Layers>
 	</Button>
-	
-	
+
+
 	<!-- MAIN OPTION FRAME -->
 	<Frame name="DCTEventOptionsExtra" toplevel="true" frameStrata="MEDIUM" enableMouse="true" hidden="true" parent="UIParent" inherits="DCT_OptionFrameBoxTemplate">
 		<Size>
@@ -126,9 +124,9 @@
 				<FontString name="$parentHelp8" inherits="GameFontNormal"/>
 				<FontString name="$parentHelp9" inherits="GameFontNormal"/>
 				<FontString name="$parentHelp10" inherits="GameFontNormal"/>
-			</Layer>			
+			</Layer>
 		</Layers>
-		
+
 		<Frames>
 			<Frame name="DCTPreviewBG" inherits="DCT_OptionFrameBoxTemplate">
 				<Size>
@@ -175,7 +173,7 @@
 					</Anchor>
 				</Anchors>
 			</EditBox>
-			
+
 			<Frame name="$parent_ColorPickerEx1" inherits="DCT_ColorPickerExTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
@@ -201,21 +199,19 @@
 							<AbsDimension x="15" y="-255"/>
 						</Offset>
 					</Anchor>
-				</Anchors>	
+				</Anchors>
 			</Slider>
-			
-			<Button name="$ParentFontEnDDC" inherits="DCTUIDropDownMenuTemplate">				
+
+			<Button name="$ParentFontEnDDC" inherits="DCTUIDropDownMenuTemplate">
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$ParentSlider_per" relativePoint="LEFT">
 						<Offset>
 							<AbsDimension x="45" y="-45"/>
 						</Offset>
 					</Anchor>
-				</Anchors>	
+				</Anchors>
 				<Scripts>
-					<OnShow>
-						DCT_Opex_FontEnDDC_OnShow(self);
-					</OnShow>
+                                    <OnShow function="DCT_Opex_FontEnDDC_OnShow" />
 				</Scripts>
 			</Button>
 			<Button name="$ParentFontChDDC" inherits="DCTUIDropDownMenuTemplate">
@@ -225,11 +221,9 @@
 							<AbsDimension x="0" y="-30"/>
 						</Offset>
 					</Anchor>
-				</Anchors>	
+				</Anchors>
 				<Scripts>
-					<OnShow>
-						DCT_Opex_FontChDDC_OnShow(self);
-					</OnShow>
+                                    <OnShow function="DCT_Opex_FontChDDC_OnShow" />
 				</Scripts>
 			</Button>
 			<Button name="$ParentFontEffDDC" inherits="DCTUIDropDownMenuTemplate">
@@ -239,11 +233,9 @@
 							<AbsDimension x="0" y="-30"/>
 						</Offset>
 					</Anchor>
-				</Anchors>	
+				</Anchors>
 				<Scripts>
-					<OnShow>
-						DCT_Opex_FontEffDDC_OnShow(self);
-					</OnShow>
+                                    <OnShow function="DCT_Opex_FontEffDDC_OnShow" />
 				</Scripts>
 			</Button>
 			<Slider name="$ParentSlider_fSizeEn" inherits="DCTSliderTemplateExtra">
@@ -253,7 +245,7 @@
 							<AbsDimension x="-50" y="-45"/>
 						</Offset>
 					</Anchor>
-				</Anchors>	
+				</Anchors>
 			</Slider>
 			<Slider name="$ParentSlider_fSizeCh" inherits="DCTSliderTemplateExtra">
 				<Anchors>
@@ -262,7 +254,7 @@
 							<AbsDimension x="0" y="-45"/>
 						</Offset>
 					</Anchor>
-				</Anchors>	
+				</Anchors>
 			</Slider>
 			<CheckButton name="DCTOPEXICB_fEn" inherits="DCT_OPEX_InheritsCheckBox">
 				<Anchors>
@@ -271,7 +263,7 @@
 							<AbsDimension x="0" y="0"/>
 						</Offset>
 					</Anchor>
-				</Anchors>	
+				</Anchors>
 			</CheckButton>
 			<CheckButton name="DCTOPEXICB_fCh" inherits="DCT_OPEX_InheritsCheckBox">
 				<Anchors>
@@ -280,7 +272,7 @@
 							<AbsDimension x="0" y="0"/>
 						</Offset>
 					</Anchor>
-				</Anchors>	
+				</Anchors>
 			</CheckButton>
 			<CheckButton name="DCTOPEXICB_fEff" inherits="DCT_OPEX_InheritsCheckBox">
 				<Anchors>
@@ -289,7 +281,7 @@
 							<AbsDimension x="0" y="0"/>
 						</Offset>
 					</Anchor>
-				</Anchors>	
+				</Anchors>
 			</CheckButton>
 			<CheckButton name="DCTOPEXICB_fSizeEn" inherits="DCT_OPEX_InheritsCheckBox">
 				<Anchors>
@@ -298,7 +290,7 @@
 							<AbsDimension x="160" y="0"/>
 						</Offset>
 					</Anchor>
-				</Anchors>	
+				</Anchors>
 			</CheckButton>
 			<CheckButton name="DCTOPEXICB_fSizeCh" inherits="DCT_OPEX_InheritsCheckBox">
 				<Anchors>
@@ -307,9 +299,9 @@
 							<AbsDimension x="160" y="0"/>
 						</Offset>
 					</Anchor>
-				</Anchors>	
+				</Anchors>
 			</CheckButton>
-	
+
 			<Button name="$parent_Close" inherits="GameMenuButtonTemplate" text="CLOSE">
 				<Size>
 					<AbsDimension x="50" y="22"/>
@@ -323,13 +315,13 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						HideUIPanel(DCTEventOptionsExtra)
+						DCTEventOptionsExtra:Hide();
 						if dct_opex_preview1 then DCT_Ani_ObjClear(dct_opex_preview1);end
 						if dct_opex_preview2 then DCT_Ani_ObjClear(dct_opex_preview2);end
 					</OnClick>
 				</Scripts>
 			</Button>
-			
+
 		</Frames>
 
 		<Scripts>

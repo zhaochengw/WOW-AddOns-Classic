@@ -27,9 +27,7 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-					<OnShow>
-						DCT_Opsave_PreSetAniListDDC_OnShow(self)
-					</OnShow>
+                                    <OnShow function="DCT_Opsave_PreSetAniListDDC_OnShow" />
 				</Scripts>
 			</Button>
 			<Button name="$ParentPreSetAniLoad" inherits="GameMenuButtonTemplate" text="DCT_TEXT_OPSAVE_PRESETLOAD">
@@ -59,9 +57,7 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-					<OnShow>
-						DCT_Opsave_PreSetTextListDDC_OnShow(self)
-					</OnShow>
+                                    <OnShow function="DCT_Opsave_PreSetTextListDDC_OnShow" />
 				</Scripts>
 			</Button>
 			
@@ -92,9 +88,7 @@
 					</Anchor>
 				</Anchors>	
 				<Scripts>
-					<OnShow>
-						DCT_Opsave_SaveListDDC_OnShow(self)
-					</OnShow>
+                                    <OnShow function="DCT_Opsave_SaveListDDC_OnShow" />
 				</Scripts>
 			</Button>
 			<Button name="$ParentLoad" inherits="GameMenuButtonTemplate" text="DCT_TEXT_OPSAVE_LOAD">
@@ -181,9 +175,7 @@
 				self:SetBackdropColor(0.15, 0.15, 0.15);
 				DCT_OptionsRegisterButton(DCT_SAVE_OPTION,DCTSaveOption,nil,4);
 			</OnLoad>
-			<OnShow>
-				DCT_Opsave_OnShow(self)
-			</OnShow>
+                        <OnShow function="DCT_Opsave_OnShow" />
 			<OnHide>
 				
 			</OnHide>

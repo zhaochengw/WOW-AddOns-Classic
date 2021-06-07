@@ -22,7 +22,7 @@ function DCT_Opfont_FontRefresh()
 	DCTFontOption:Show()
 end
 
-function DCT_Opfont_OnShow()
+function DCT_Opfont_OnShow(self)
 	local obj
 	for i = 1,12 do
 		getglobal("DCTFontOptionFontFrame"..i):SetPoint("TOPLEFT", "DCTFontOption", "TOPLEFT", 35, 20 - 30 * i )

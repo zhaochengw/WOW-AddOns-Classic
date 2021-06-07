@@ -1,9 +1,7 @@
-DCT_Ani_MaxFrame = 15
+﻿DCT_Ani_MaxFrame = 15
 
 
-DCT_Ani_frameList = {	
-	
-}
+DCT_Ani_frameList = {}
 
 --获得第一个未激活Frame的ID，返回0为失败
 function DCT_Ani_FrameGetFreeFID()
@@ -56,7 +54,7 @@ function DCT_Ani_FrameInit()
 	end
 end
 
-function DCT_Ani_FrameActive(fId)	
+function DCT_Ani_FrameActive(fId)
 	local fp = DCT_Ani_frameList[fId]
 	DCT_Ani_FrameSetAngle(fId,0)
 	fp.active = true
@@ -68,7 +66,7 @@ function DCT_Ani_FrameDisable(fId)
 	local s,framep,objp
 	framep = DCT_Ani_frameList[fId]
 	framep.active = false
-	s = table.getn(framep.objL)	
+	s = table.getn(framep.objL)
 	while s > 0 do
 		objp = framep.objL[s]
 		if objp.active then
@@ -100,20 +98,20 @@ function DCT_Ani_FrameAddObject(fId,text,exParam,crit,saveP,obj)
 	local fp = DCT_Ani_frameList[fId]
 	local fParam = DCT_Get("DCT_FRAME_CONFIG")[fId]
 	local fEn,fCh,fSizeEn,fSizeCh,fEff
-	
+
 	if exParam.fEn then	fEn = exParam.fEn; else fEn = fParam.fEn;end
 	if exParam.fCh then	fCh = exParam.fCh; else fCh = fParam.fCh;end
 	if exParam.fSizeEn then	fSizeEn = fParam.fSizeEn + exParam.fSizeEn; else fSizeEn = fParam.fSizeEn;end
 	if exParam.fSizeCh then	fSizeCh = fParam.fSizeCh + exParam.fSizeCh; else fSizeCh = fParam.fSizeCh;end
 	if exParam.fEff then fEff = exParam.fEff; else fEff = fParam.fEff;end
-	
-	if obj == nil then		
+
+	if obj == nil then
 		obj = DCT_Ani_ObjGet();
 	end
-	
+
 	if not fParam.anchor then fParam.anchor = 1;end
 	DCT_Ani_ObjSetText(obj,text,fEn,fCh,fSizeEn,fSizeCh,fEff,exParam.color,fParam.anchor)
-	
+
 	obj.startTime = GetTime()
 	obj.frmId = fId --obj所在FrameId
 	if fp.alpha == 100 then
@@ -129,8 +127,8 @@ function DCT_Ani_FrameAddObject(fId,text,exParam,crit,saveP,obj)
 	--DCT_Ani_ObjScale(obj,1)
 	table.insert(DCT_Ani_frameList[fId].objL,obj)
 	fp.addLast = obj.startTime
-	
-	
+
+
 	return obj
 end--
 
@@ -140,7 +138,7 @@ end
 function DCT_Ani_FrameUpdata()
 	local i,s,objC,objp,framep,theTime
 	local drawX,drawY
-	for i = 1,DCT_Ani_MaxFrame do		
+	for i = 1,DCT_Ani_MaxFrame do
 		framep = DCT_Ani_frameList[i]
 		if framep.active then
 			objC = table.getn(framep.objL)
@@ -164,7 +162,7 @@ function DCT_Ani_FrameUpdata()
 				end
 				if objp.funcOther then objp.funcOther(objp);end
 				if objp.active then
-					DCT_Ani_AniUpdata(objp,drawX + framep.x,drawY + framep.y)				
+					DCT_Ani_AniUpdata(objp,drawX + framep.x,drawY + framep.y)
 				else
 					DCT_Ani_ObjClear(objp)
 					table.remove(framep.objL,s)
@@ -175,11 +173,11 @@ function DCT_Ani_FrameUpdata()
 	end
 end
 
-function DCT_Ani_AniInit(obj,frameP)	
+function DCT_Ani_AniInit(obj,frameP)
 	obj.alpha = 1
 	obj.scale = 1
 	obj.crit = false
-	obj.lastscale = 1	
+	obj.lastscale = 1
 	local aniParam = DCT_Get("DCT_FRAME_CONFIG")[frameP.fId]
 	local aniType = aniParam.aniType
 	--弹出
@@ -196,7 +194,7 @@ function DCT_Ani_AniInit(obj,frameP)
 		end
 
 		obj.funcAni = DCT_Ani_AniProc1
-		
+
 		if obj.startTime - frameP.addLast < 0.8 then
 			frameP.addFlag = frameP.addFlag + 1
 			if frameP.addFlag >= 3 then frameP.addFlag = 0;end
@@ -216,7 +214,7 @@ function DCT_Ani_AniInit(obj,frameP)
 		if obj.startTime - frameP.addLast < ftime then
 			local oc = table.getn(frameP.objL)
 			frameP.objL[oc].startTime = obj.startTime - ftime
-			
+
 			local i = oc - 1
 			while i > 0 do
 				if frameP.objL[i + 1].startTime - frameP.objL[i].startTime < ftime then
@@ -235,10 +233,10 @@ function DCT_Ani_AniInit(obj,frameP)
 		obj.p5 = 0--抖动用的计时
 		obj.xbak = 0 --x轴坐标备份
 		obj.ybak = 0 --y轴坐标备份
-		
+
 		obj.x = 0
 		obj.y = 0
-		local fc = table.getn(frameP.objL)		
+		local fc = table.getn(frameP.objL)
 		if fc > 0 then
 			local fixH = (frameP.objL[fc].fontSizeMax + obj.fontSizeMax) / 2 + 2
 			local i
@@ -251,7 +249,7 @@ function DCT_Ani_AniInit(obj,frameP)
 					frameP.objL[i].active = false
 				end
 			end
-		end	
+		end
 	--抛物线
 	elseif aniType == 4 then
 		if obj.startTime - frameP.addLast < 0.5 then
@@ -303,14 +301,14 @@ function DCT_Ani_AniInit(obj,frameP)
 		obj.y = 0
 		obj.ybak = 0
 		obj.alpha = 0
-		local fc = table.getn(frameP.objL)		
+		local fc = table.getn(frameP.objL)
 		while fc > 10 do
 			DCT_Ani_ObjClear(frameP.objL[1])
 			table.remove(frameP.objL,1)
 			fc = fc - 1
 		end
 		if fc > 0 then
-			local fixH = (frameP.objL[fc].fontSizeMax + obj.fontSizeMax) / 2	
+			local fixH = (frameP.objL[fc].fontSizeMax + obj.fontSizeMax) / 2
 			local fixT = obj.p2 / obj.p1 * fixH / (aniParam.speed / 100)
 			if obj.startTime - frameP.objL[fc].startTime < fixT then
 				frameP.objL[fc].startTime = obj.startTime - fixT
@@ -321,7 +319,7 @@ function DCT_Ani_AniInit(obj,frameP)
 					fixT = obj.p2 / obj.p1 * fixH / (aniParam.speed / 100)
 					if frameP.objL[i + 1].startTime - frameP.objL[i].startTime < fixT then
 						frameP.objL[i].startTime = frameP.objL[i + 1].startTime - fixT
-					end					
+					end
 					i = i - 1
 				end
 			end
@@ -341,7 +339,7 @@ function DCT_Ani_AniInit(obj,frameP)
 			f = f + fParam.fSizeCh
 		end
 		local i,j
-		for i = 1,2 do			
+		for i = 1,2 do
 			if i == 1 then j = 2;else j = 1;end
 			if fixP[i].op and fixP[i].op.active and fixP[i].uid == fixP[i].op.uid then
 				if math.abs(obj.y - fixP[i].op.y) < 20 then
@@ -357,7 +355,7 @@ function DCT_Ani_AniInit(obj,frameP)
 						else
 							obj.y = fixP[i].op.y + f;
 						end
-					end					
+					end
 				end
 			end
 		end
@@ -368,12 +366,12 @@ function DCT_Ani_AniInit(obj,frameP)
 		fixP[1].y = obj.y
 		fixP[1].op = obj
 		fixP[1].uid = obj.uid
-		
+
 		obj.ybak = obj.x --x轴坐标备份
 		obj.ybak = obj.y --y轴坐标备份
 		obj.p1 = aniParam.param1 --时间
-		obj.p5 = aniParam.param5 --缩放 1:普通  2:缩放		
-		if obj.p5 == 1 then obj.alpha = 0;end		
+		obj.p5 = aniParam.param5 --缩放 1:普通  2:缩放
+		if obj.p5 == 1 then obj.alpha = 0;end
 	end
 end
 
@@ -396,10 +394,10 @@ function DCT_Ani_AniProc7(obj,theTime)
 			obj.scale = 1
 		end
 	elseif obj.p5 == 3 then
-		if theTime < 0.1 then 
+		if theTime < 0.1 then
 			obj.scale = theTime / 0.1 * 0.7 + 1
 		elseif theTime < 0.35 then
-			obj.scale = (1 - (theTime - 0.1) / 0.25) * 0.7 + 1		
+			obj.scale = (1 - (theTime - 0.1) / 0.25) * 0.7 + 1
 		elseif obj.scale ~= 1 then
 			obj.scale = 1
 		end
@@ -411,7 +409,7 @@ function DCT_Ani_AniProc7(obj,theTime)
 		end]]
 		obj.y = obj.ybak + obj.fontSizeMax * (obj.scale + 0.5) / 2
 	end
-	
+
 	if theTime > obj.p1 - 0.3 then
 		obj.alpha = 1 - (theTime - obj.p1 + 0.3) / 0.3
 	if theTime > obj.p1 then obj.active = false;end
@@ -425,9 +423,9 @@ function DCT_Ani_AniProc6(obj,theTime)
 		obj.x = obj.p4 * (theTime / obj.p2)
 	else
 		obj.active = false
-	end	
+	end
 	if theTime < 0.2 then
-		obj.alpha = theTime / 0.2	
+		obj.alpha = theTime / 0.2
 	elseif theTime < obj.p2 - 0.3 then
 		obj.alpha = 1
 	else
@@ -443,7 +441,7 @@ function DCT_Ani_AniProc5(obj,theTime)
 		obj.active = false
 	end
 	if theTime < 0.2 then
-		obj.alpha = theTime / 0.2	
+		obj.alpha = theTime / 0.2
 	elseif theTime < obj.p2 - 0.3 then
 		obj.alpha = 1
 	else
@@ -470,7 +468,7 @@ function DCT_Ani_AniProc4(obj,theTime)
 end
 
 --静态
-function DCT_Ani_AniProc3(obj,theTime)		
+function DCT_Ani_AniProc3(obj,theTime)
 	if theTime < 0.2 then
 		obj.alpha = theTime / 0.2
 	elseif theTime < obj.p2 then
@@ -490,7 +488,7 @@ function DCT_Ani_AniProc3(obj,theTime)
 			obj.scale = 1
 		end
 	end
-	
+
 	if obj.p4 == 2 or (obj.p4 == 3 and obj.scale == 1) then
 		if theTime - obj.p5 > 0.05 then
 			obj.x = obj.xbak + math.ceil(math.random(-1, 1))
@@ -509,7 +507,7 @@ function DCT_Ani_AniProc2(obj,theTime)
 	else
 		obj.alpha = 1 - (theTime - 2.0) / 0.5
 	end
-	if theTime < 2.5 then		
+	if theTime < 2.5 then
 		obj.x = -obj.p2 + cos(obj.p1 / 2 - obj.p1 * theTime / 2.5) * obj.p2
 		obj.y = sin(obj.p1 / 2 - obj.p1 * theTime / 2.5) * obj.p2
 		if obj.p3 == 2 then	obj.x = -obj.x;end
@@ -535,7 +533,7 @@ function DCT_Ani_AniProc1(obj,theTime)
 				obj.p3 = obj.y + sin(ra) * 2.5
 				obj.xbak = obj.x
 				obj.ybak = obj.y
-			else			
+			else
 				obj.x = obj.xbak + (obj.p2 - obj.xbak) * (theTime - obj.p1) * 12.5
 				obj.y = obj.ybak + (obj.p3 - obj.ybak) * (theTime - obj.p1) * 12.5
 			end
@@ -557,7 +555,7 @@ end
 function DCT_Ani_AniRotate(x,y,s,c)
 	local rex,rey
 	rex = x * c - y * s
-	rey = x * s + y * c	
+	rey = x * s + y * c
 	return rex,rey
 end
 

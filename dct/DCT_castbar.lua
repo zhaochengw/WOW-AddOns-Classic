@@ -23,5 +23,5 @@ function DCT_CastBar_Setup(barp,per,color)
 			end
 		end
 	end]]
-	
+
 end
