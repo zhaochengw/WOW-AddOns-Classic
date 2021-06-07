@@ -1,7 +1,7 @@
 # ClassicSpellActivations
 
-## [2.5.10](https://github.com/rgd87/ClassicSpellActivations/tree/2.5.10) (2021-05-17)
-[Full Changelog](https://github.com/rgd87/ClassicSpellActivations/compare/1.13.16...2.5.10) [Previous Releases](https://github.com/rgd87/ClassicSpellActivations/releases)
+## [2.5.11](https://github.com/rgd87/ClassicSpellActivations/tree/2.5.11) (2021-05-17)
+[Full Changelog](https://github.com/rgd87/ClassicSpellActivations/compare/1.13.16...2.5.11) [Previous Releases](https://github.com/rgd87/ClassicSpellActivations/releases)
 
 - BCC fallback toc  
 - Added Kill Command  
