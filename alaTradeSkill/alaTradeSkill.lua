@@ -233,7 +233,7 @@ local curPhase = NS.curPhase;
 					--
 					costOnly = false,
 					--
-				 },
+				},
 				board = {
 					shown = true,
 					locked = true,
@@ -1265,7 +1265,7 @@ do	--	MAIN
 					wipe(list);
 				end
 				for pid = NS.db_min_pid(), NS.db_max_pid() do
-					 if recipe_sid_list_by_pid[pid] then
+					if recipe_sid_list_by_pid[pid] then
 						NS.db_get_ordered_list(pid, list, check_hash, phase, rank, rankReversed, showKnown, showUnkown, showHighRank, true);
 					end
 				end
@@ -6836,38 +6836,8 @@ do	--	MAIN
 	end
 
 	do	-- 	tooltip
-		local recipe_black_list_sid = {
-			--	元素精华
-			[17559] = 1,	--	7078
-			[17560] = 1,	--	7076
-			[17561] = 1,	--	7080
-			[17562] = 1,	--	7082
-			[17563] = 1,	--	7080
-			[17564] = 1,	--	12808
-			[17565] = 1,	--	7076
-			[17566] = 1,	--	12803
-			--	奥金锭
-			[17187] = 1,	--	12360
-			--	月布
-			[18560] = 1,	--	14342
-			--	熟化毛皮
-			[19047] = 1,	--	15407
-		};
-		local recipe_black_list_cid = {
-			--	元素精华
-			[7078] = 1,
-			[7076] = 1,
-			[7082] = 1,
-			[7080] = 1,
-			[12808] = 1,
-			[12803] = 1,
-			--	奥金锭
-			[12360] = 1,
-			--	月布
-			[14342] = 1,
-			--	熟化毛皮
-			[15407] = 1,
-		};
+		local recipe_black_list_sid = NS.recipe_black_list_sid;
+		local recipe_black_list_cid = NS.recipe_black_list_cid;
 		local space_table = setmetatable({}, {
 			__index = function(t, k)
 				local str = "\124cff000000" .. strrep("*", 2 * k) .. "\124r";

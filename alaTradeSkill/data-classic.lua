@@ -3,7 +3,7 @@
 --]]--
 
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
-    return;
+	return;
 end
 
 
@@ -78,72 +78,72 @@ NS.maxPhase = 6;
 --]]--
 
 NS.tradeskill_id = {
-    [1] = 3273,		--	FirstAid
-    [2] = 2018,		--	Blacksmithing
-    [3] = 2108,		--	Leatherworking
-    [4] = 2259,		--	Alchemy
-    [5] = 2383,		--	Herbalism		--	UNUSED
-    [6] = 2550,		--	Cooking
-    [7] = 2575,		--	Mining
-    [8] = 3908,		--	Tailoring
-    [9] = 4036,		--	Engineering
-    [10] = 7411,	--	Enchanting
-    [11] = 7620,	--	Fishing			--	UNUSED
-    [12] = 8613,	--	Skinning		--	UNUSED
-    [13] = 2842,	--	Poisons			--	Rogue
-    [14] = 5149,	--	Beast Training	--	UNUSED	--	Hunter
-    -- [15] = 25229,	--	Jewelcrafting
+	[1] = 3273,		--	FirstAid
+	[2] = 2018,		--	Blacksmithing
+	[3] = 2108,		--	Leatherworking
+	[4] = 2259,		--	Alchemy
+	[5] = 2383,		--	Herbalism		--	UNUSED
+	[6] = 2550,		--	Cooking
+	[7] = 2575,		--	Mining
+	[8] = 3908,		--	Tailoring
+	[9] = 4036,		--	Engineering
+	[10] = 7411,	--	Enchanting
+	[11] = 7620,	--	Fishing			--	UNUSED
+	[12] = 8613,	--	Skinning		--	UNUSED
+	[13] = 2842,	--	Poisons			--	Rogue
+	[14] = 5149,	--	Beast Training	--	UNUSED	--	Hunter
+	-- [15] = 25229,	--	Jewelcrafting
 };
 NS.tradeskill_texture = {
-    [1] = "Interface\\Icons\\spell_holy_sealofsacrifice",
-    [2] = "Interface\\Icons\\trade_blacksmithing",
-    [3] = "Interface\\Icons\\trade_leatherworking",
-    [4] = "Interface\\Icons\\trade_alchemy",
-    [5] = "Interface\\Icons\\trade_herbalism",
-    [6] = "Interface\\Icons\\inv_misc_food_15",
-    [7] = "Interface\\Icons\\trade_mining",
-    [8] = "Interface\\Icons\\trade_tailoring",
-    [9] = "Interface\\Icons\\trade_engineering",
-    [10] = "Interface\\Icons\\trade_engraving",
-    [11] = "Interface\\Icons\\trade_fishing",
-    [12] = "Interface\\Icons\\inv_misc_pelt_wolf_01",
-    [13] = "Interface\\Icons\\trade_brewpoison",
-    [14] = 132162,
-    -- [15] = 134071,
+	[1] = "Interface\\Icons\\spell_holy_sealofsacrifice",
+	[2] = "Interface\\Icons\\trade_blacksmithing",
+	[3] = "Interface\\Icons\\trade_leatherworking",
+	[4] = "Interface\\Icons\\trade_alchemy",
+	[5] = "Interface\\Icons\\trade_herbalism",
+	[6] = "Interface\\Icons\\inv_misc_food_15",
+	[7] = "Interface\\Icons\\trade_mining",
+	[8] = "Interface\\Icons\\trade_tailoring",
+	[9] = "Interface\\Icons\\trade_engineering",
+	[10] = "Interface\\Icons\\trade_engraving",
+	[11] = "Interface\\Icons\\trade_fishing",
+	[12] = "Interface\\Icons\\inv_misc_pelt_wolf_01",
+	[13] = "Interface\\Icons\\trade_brewpoison",
+	[14] = 132162,
+	-- [15] = 134071,
 };
 NS.tradeskill_check_id = {		--	[pid] = p_check_sid
-    [1] = 3273,		--	FirstAid
-    [2] = 2018,		--	Blacksmithing
-    [3] = 2108,		--	Leatherworking
-    [4] = 2259,		--	Alchemy
-    [5] = 2383,		--	Herbalism		--	UNUSED
-    [6] = 2550,		--	Cooking
-    [7] = 2656,		--	Mining
-    [8] = 3908,		--	Tailoring
-    [9] = 4036,		--	Engineering
-    [10] = 7411,	--	Enchanting
-    [11] = 7620,	--	Fishing			--	UNUSED
-    [12] = 8613,	--	Skinning		--	UNUSED
-    [13] = 2842,	--	Poisons			--	Rogue
-    [14] = 5149,	--	Beast Training	--	UNUSED	--	Hunter
-    -- [15] = 25229,	--	Jewelcrafting
+	[1] = 3273,		--	FirstAid
+	[2] = 2018,		--	Blacksmithing
+	[3] = 2108,		--	Leatherworking
+	[4] = 2259,		--	Alchemy
+	[5] = 2383,		--	Herbalism		--	UNUSED
+	[6] = 2550,		--	Cooking
+	[7] = 2656,		--	Mining
+	[8] = 3908,		--	Tailoring
+	[9] = 4036,		--	Engineering
+	[10] = 7411,	--	Enchanting
+	[11] = 7620,	--	Fishing			--	UNUSED
+	[12] = 8613,	--	Skinning		--	UNUSED
+	[13] = 2842,	--	Poisons			--	Rogue
+	[14] = 5149,	--	Beast Training	--	UNUSED	--	Hunter
+	-- [15] = 25229,	--	Jewelcrafting
 };
 NS.tradeskill_has_win = {		--	[pid] = bool
-    [1] = true,		--	FirstAid
-    [2] = true,		--	Blacksmithing
-    [3] = true,		--	Leatherworking
-    [4] = true,		--	Alchemy
-    [5] = false,	--	Herbalism		--	UNUSED
-    [6] = true,		--	Cooking
-    [7] = true,		--	Mining
-    [8] = true,		--	Tailoring
-    [9] = true,		--	Engineering
-    [10] = true,	--	Enchanting
-    [11] = false,	--	Fishing			--	UNUSED
-    [12] = false,	--	Skinning		--	UNUSED
-    [13] = true,	--	Poisons			--	Rogue
-    [14] = true,	--	Beast Training	--	UNUSED	--	Hunter
-    -- [15] = true,	--	Jewelcrafting
+	[1] = true,		--	FirstAid
+	[2] = true,		--	Blacksmithing
+	[3] = true,		--	Leatherworking
+	[4] = true,		--	Alchemy
+	[5] = false,	--	Herbalism		--	UNUSED
+	[6] = true,		--	Cooking
+	[7] = true,		--	Mining
+	[8] = true,		--	Tailoring
+	[9] = true,		--	Engineering
+	[10] = true,	--	Enchanting
+	[11] = false,	--	Fishing			--	UNUSED
+	[12] = false,	--	Skinning		--	UNUSED
+	[13] = true,	--	Poisons			--	Rogue
+	[14] = true,	--	Beast Training	--	UNUSED	--	Hunter
+	-- [15] = true,	--	Jewelcrafting
 };
 
 local index_validated = 1;
@@ -2992,6 +2992,39 @@ NS.cooldown_list = {
 	[8] = {
 		{ 18560, },	--	月布
 	},
+};
+
+NS.recipe_black_list_sid = {
+	--	元素精华
+	[17559] = 1,	--	7078
+	[17560] = 1,	--	7076
+	[17561] = 1,	--	7080
+	[17562] = 1,	--	7082
+	[17563] = 1,	--	7080
+	[17564] = 1,	--	12808
+	[17565] = 1,	--	7076
+	[17566] = 1,	--	12803
+	--	奥金锭
+	[17187] = 1,	--	12360
+	--	月布
+	[18560] = 1,	--	14342
+	--	熟化毛皮
+	[19047] = 1,	--	15407
+};
+NS.recipe_black_list_cid = {
+	--	元素精华
+	[7078] = 1,
+	[7076] = 1,
+	[7082] = 1,
+	[7080] = 1,
+	[12808] = 1,
+	[12803] = 1,
+	--	奥金锭
+	[12360] = 1,
+	--	月布
+	[14342] = 1,
+	--	熟化毛皮
+	[15407] = 1,
 };
 
 NS.recipe_info = recipe_info;
