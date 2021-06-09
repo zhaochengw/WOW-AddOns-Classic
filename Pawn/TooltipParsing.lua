@@ -274,10 +274,12 @@ PawnRegexes =
 	{L.Mp5, "Mp5"}, -- /pawn compare 22988
 	{L.Mp52, "Mp5"}, -- /pawn compare item:789::::::2074
 	{L.Mp53, "Mp5"}, -- Burning Crusade Classic, socket bonus on /pawn compare 34360
+	{L.Mp54, "Mp5"}, -- Burning Crusade Classic, /script PawnUIGetAllTextForItem("item:24057")
 	{L.Hp5, "Hp5"}, -- (on live, we used to count 1 HP5 = 3 Stamina)
 	{L.Hp52, "Hp5"}, -- Demon's Blood
 	{L.Hp53, "Hp5"}, -- Aquamarine Signet of Regeneration or /pawn compare item:789::::::2110
 	{L.Hp54, "Hp5"}, -- Lifestone
+	{L.Hp55, "Hp5"}, -- /pawn compare item:789::::::-28
 	{L.EnchantmentHealth, "Stamina", 1/12.5, PawnSingleStatMultiplier}, -- +100 health head/leg enchantment (counting 1 HP = 1/12.5 Stamina)
 	{L.EnchantmentHealth2, "Stamina", 1/12.5, PawnSingleStatMultiplier}, -- +150 health enchantment (counting 1 HP = 1/12.5 Stamina)
 	{L.Armor, "Armor"}, -- normal armor and cloak armor enchantments
@@ -293,24 +295,30 @@ PawnRegexes =
 	{L.SpellDamage3, "SpellDamage", 1, PawnMultipleStatsExtract, "Healing", 1, PawnMultipleStatsExtract}, -- French on Classic uses two different wordings:  /pawn compare 20641 vs. /pawn compare 10041
 	{L.SpellDamage4, "SpellDamage", 1, PawnMultipleStatsExtract, "Healing", 1, PawnMultipleStatsExtract}, -- Simplified Chinese on Classic uses many different wordings:  /pawn compare 16923 vs. /pawn compare 18608
 	{L.SpellDamageAndHealing, "Healing", 1, PawnMultipleStatsExtract, "SpellDamage", 2, PawnMultipleStatsExtract}, -- Burning Crusade, /pawn compare 34360
-	{L.SpellDamageAndHealingShort, "Healing", 1, PawnMultipleStatsExtract, "SpellDamage", 2, PawnMultipleStatsExtract}, -- Burning Crusade, /pawn compare item:789::::::2041
 	{L.SpellDamageAndHealingEnchant, "Healing", 1, PawnMultipleStatsExtract, "SpellDamage", 2, PawnMultipleStatsExtract}, -- Burning Crusade, /script PawnUIGetAllTextForItem("item:16943:2566") (matches Short in some locales; don't double-dip)
+	{L.SpellDamageAndHealingShort, "Healing", 1, PawnMultipleStatsExtract, "SpellDamage", 2, PawnMultipleStatsExtract}, -- Burning Crusade, /pawn compare item:789::::::2041
+	{L.SpellDamageAndHealingShort2, "Healing", 1, PawnMultipleStatsExtract, "SpellDamage", 2, PawnMultipleStatsExtract}, -- Burning Crusade, /script PawnUIGetAllTextForItem("item:24060")
 	{L.FireSpellDamage, "FireSpellDamage"}, -- /pawn compare item:789::::::1878
 	{L.FireSpellDamage2, "FireSpellDamage"}, -- /pawn compare 944
+	{L.FireSpellDamage3, "FireSpellDamage"}, -- /pawn compare item:789::::::-22
 	{L.ShadowSpellDamage, "ShadowSpellDamage"}, -- /pawn compare item:789::::::1841
 	{L.ShadowSpellDamage2, "ShadowSpellDamage"}, -- /pawn compare 1980
 	{L.ShadowSpellDamage3, "ShadowSpellDamage"}, -- /pawn compare 19133, zhCN Classic only
+	{L.ShadowSpellDamage4, "ShadowSpellDamage"}, -- /pawn compare item:789::::::-25
 	{L.NatureSpellDamage, "NatureSpellDamage"}, -- /pawn compare item:789::::::1997
 	{L.NatureSpellDamage2, "NatureSpellDamage"}, -- /pawn compare 18829
+	{L.NatureSpellDamage3, "NatureSpellDamage"}, -- /pawn compare item:789::::::-24
 	{L.ArcaneSpellDamage, "ArcaneSpellDamage"}, -- /pawn compare item:789::::::1801
 	{L.ArcaneSpellDamage2, "ArcaneSpellDamage"}, -- /pawn compare 19308
+	{L.ArcaneSpellDamage3, "ArcaneSpellDamage"}, -- /pawn compare item:789::::::-21
 	{L.FrostSpellDamage, "FrostSpellDamage"}, -- /pawn compare item:789::::::1954
 	{L.FrostSpellDamage2, "FrostSpellDamage"}, -- /pawn compare 944
+	{L.FrostSpellDamage3, "FrostSpellDamage"}, -- /pawn compare item:789::::::-23
 	{L.HolySpellDamage, "HolySpellDamage"},
 	{L.HolySpellDamage2, "HolySpellDamage"}, -- /pawn compare 20504
 	{L.Healing, "Healing"}, -- /pawn compare item:789::::::2028
 	{L.Healing2, "Healing"}, -- /pawn compare 16947
-	{L.Healing3, "Healing"}, -- Burning Crusade, /pawn compare item:24593::::::-38
+	{L.Healing3, "Healing"}, -- Burning Crusade, /pawn compare item:789::::::-38
 	{L.SpellPower, "SpellDamage", 1, PawnMultipleStatsExtract, "Healing", 1, PawnMultipleStatsExtract}, -- enchantments
 	{PawnGameConstant(EMPTY_SOCKET_RED), "RedSocket", 1, PawnMultipleStatsFixed},
 	{PawnGameConstant(EMPTY_SOCKET_YELLOW), "YellowSocket", 1, PawnMultipleStatsFixed},
