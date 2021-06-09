@@ -14,7 +14,7 @@ local BlizzMoveAPI = _G.BlizzMoveAPI;
 function BlizzMoveAPI:GetVersion()
 	local rawVersion = BlizzMove.Config.version;
 
-	if(rawVersion == 'v3.0.19') then
+	if(rawVersion == 'v3.0.19a') then
 		return rawVersion, nil, nil, nil, nil;
 	end
 
