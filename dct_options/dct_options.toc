@@ -1,24 +1,23 @@
-﻿## Interface: 20501
-## Title: <DCT> Options
-## Title-zhCN: |cffffe00a<|r|cffff7d0aDCT|r|cffffe00a>|r 菜单模块
-## Title-zhTW: |cffffe00a<|r|cffff7d0aDCT|r|cffffe00a>|r 功能表模組
-## Notes: |cffbc8f8fProvide graphical interface for DCT.|r 
-## Notes-zhCN: |cff00ff00dct_options|r|n|cffbc8f8f为战斗指示器提供图形化设置界面。|r 
-## Notes-zhTW: |cff00ff00dct_options|r|n|cffbc8f8f為戰鬥指示器提供圖形化設置介面。|r 
+## Interface: 20501
+## Title: [Combat] DCTU [|cffff8080Options|r] Classic Edition
+## Notes: Dennis's Combat Text Options
+## Title-zhCN: [战斗] |cffffe00a<|r|cffff7d0aDCTU|r|cffffe00a>|r 战斗指示器设置模块 经典怀旧服
+## Notes-zhCN: |cffbc8f8f为战斗指示器提供图形设置界面|r
+## Title-zhTW: [戰鬥] |cffffe00a<|r|cffff7d0aDCTU|r|cffffe00a>|r 戰鬥指示器設置模組 經典懷舊服
+## Notes-zhTW: |cffbc8f8f為戰鬥指示器提供圖形設置介面|r
 ## Author: Dennie
 ## Dependencies: dct
-## X-Revision: BigFoot
 ## SavedVariables: DCTOP_SAVE
 ## LoadOnDemand: 1
 
 pre_set.lua
 config_options.lua
-
 locals\cn_pre_set.lua
 locals\cn_loc_options.lua
 locals\tw_pre_set.lua
 locals\tw_loc_options.lua
-
+#@locals\en_pre_set.lua
+#@locals\en_loc_options.lua
 options.lua
 options.xml
 options_ex.lua

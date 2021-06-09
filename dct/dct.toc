@@ -1,23 +1,20 @@
-﻿## Interface: 20501
-## Title: dct
-## Title-zhCN: |cffffe00a<|r|cffff7d0aDCT|r|cffffe00a>|r |cff0055FF核心|r
-## Title-zhTW: |cffffe00a<|r|cffff7d0aDCT|r|cffffe00a>|r |cff0055FF核心|r
-## Notes: |cffbc8f8fAdds Combat Text above you character.|r
-## Notes-zhCN: |cff00ff00dct|r|n|cffbc8f8f战斗指示器核心模块，提供受到的伤害效果显示。|r
-## Notes-zhTW: |cff00ff00dct|r|n|cffbc8f8f戰鬥指示器核心模組，提供受到的傷害效果顯示。|r
+## Interface: 20501
+## Title: [Combat] Dennis's Combat Text Unofficial Classic Edition
+## Notes: Thanks for: MagicDragoon, Dove, 水沐森林, 神恋歌(繁体化), Karlock
+## Title-zhCN: [战斗] |cffffe00a<|r|cffff7d0aDCTU|r|cffffe00a>|r 战斗指示器 经典怀旧服
+## Notes-zhCN: |cffbc8f8f显示你战斗中受到的各种信息|n命令:/dct|r
+## Title-zhTW: [戰鬥] |cffffe00a<|r|cffff7d0aDCTU|r|cffffe00a>|r 戰鬥指示器 經典懷舊服
+## Notes-zhTW: |cffbc8f8f顯示你戰鬥中受到的各種資訊|n命令:/dct|r
 ## Author: Dennie
-## X-Revision: BigFoot
-## X-Alias: 战斗指示器
-## LoadOnDemand: 1
-## SavedVariables: DCT_SAVE,DCT_FONT_SAVE
+## SavedVariables: DCT_SAVE, DCT_FONT_SAVE
 ## SavedVariablesPerCharacter: DCT_SAVE_PERCHAR
 
 DCT_ui_patch.lua
 DCT_font.lua
 DCT_default_config.Lua
-
 locals\cn_DCT_default_config.Lua
 locals\tw_DCT_default_config.Lua
+#@locals\en_DCT_default_config.Lua
 
 DCT_anibase.lua
 DCT_aniframe.lua

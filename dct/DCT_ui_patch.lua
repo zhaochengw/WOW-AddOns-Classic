@@ -1,10 +1,12 @@
-
 local GameTooltip_AddNewbieTip_org = GameTooltip_AddNewbieTip
-local UIDropDownMenu_SetWidth_org = UIDropDownMenu_SetWidth
+local Lib_UIDropDownMenu_SetWidth_org = Lib_UIDropDownMenu_SetWidth
+
+local version, build, date, tocversion = GetBuildInfo()
+
 
 function GetPlayerBuff(buffId, buffFilter)
 	local buffIndex, untilCancelled
-	local name, icon, count, debuffType, duration, expirationTime, isMine, isStealable = UnitAura("player", buffId, buffFilter)
+	local name, rank, icon, count, debuffType, duration, expirationTime, isMine, isStealable = UnitAura("player", buffId, buffFilter)
 	if(duration == nil) then
 		untilCancelled = 1
 	end
@@ -18,13 +20,13 @@ end
 
 function GetPlayerBuffName(buffIndex)
 
-	local name, icon, count, debuffType, duration, expirationTime, isMine, isStealable = UnitAura("player", buffIndex,"HELPFUL")
+	local name, rank, icon, count, debuffType, duration, expirationTime, isMine, isStealable = UnitAura("player", buffIndex,"HELPFUL")
 	return name
 
 end
 
 function GetPlayerBuffTimeLeft(buffIndex)
-	local name, icon, count, debuffType, duration, expirationTime, isMine, isStealable = UnitAura("player", buffIndex,"HELPFUL")
+	local name, rank, icon, count, debuffType, duration, expirationTime, isMine, isStealable = UnitAura("player", buffIndex,"HELPFUL")
 	if expirationTime then
 		return expirationTime - GetTime()
 	else
@@ -49,7 +51,7 @@ function OptionsFrame_EnableCheckBox(checkBox, setChecked, checked, isWhite)
 	else
 		getglobal(checkBox:GetName().."Text"):SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
 	end
-
+	
 end
 
 function OptionsFrame_DisableSlider(slider)

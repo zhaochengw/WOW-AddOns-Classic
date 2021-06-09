@@ -29,9 +29,9 @@ DCT_PRESET_TEXT = {
 		["DCT_SHOWDISPELLED"] = {show = {"被驱散: #sn","被偷取: #sn"}},
 		["DCT_SHOWEXTRAATTACKS"] = {show = {"#sn x#am"}},
 		["DCT_SHOWSPECBUFF"] = {show = {"获得: #sn","#c1获得: #sn#ce"}},
-		["DCT_SHOWSPELLSUCCESS"] = {show = {"#sn! 命中!"}},
+		["DCT_SHOWSPELLSUCCESS"] = {show = {"#sn! 命中!"}},		
 		["DCT_SHOWSPELLFAILED"] = {show = {"#sn 未命中!"}},
-
+		
 		["DCT_SHOWDODGE"] = {show = {"#ms","#ms #c1(#sn)#ce"}},
 		["DCT_SHOWABSORB"] = {show = {"#ms","#ms #c1(#sn)#ce"}},
 		["DCT_SHOWRESIST"] = {show = {"#ms","#ms #c1(#sn)#ce"}},
@@ -59,9 +59,9 @@ DCT_PRESET_TEXT = {
 		["DCT_SHOWDEBUFFDOSE"] = {show = {"#ic不良叠加: #sn<#am>","#ic不良减少: #sn<#am>"}},
 		["DCT_SHOWDISPELLED"] = {show = {"#ic被驱散: #sn","#ic被偷取: #sn"}},
 		["DCT_SHOWSPECBUFF"] = {show = {"#ic获得: #sn","#ic#c1获得: #sn#ce"}},
-		["DCT_SHOWSPELLSUCCESS"] = {show = {"#ic#sn! 命中!"}},
+		["DCT_SHOWSPELLSUCCESS"] = {show = {"#ic#sn! 命中!"}},		
 		["DCT_SHOWSPELLFAILED"] = {show = {"#ic#sn 未命中!"}},
-
+		
 		["DCT_SHOWDODGE"] = {show = {"#ms","#ic#ms #c1(#sn)#ce"}},
 		["DCT_SHOWABSORB"] = {show = {"#ms","#ic#ms #c1(#sn)#ce"}},
 		["DCT_SHOWRESIST"] = {show = {"#ms","#ic#ms #c1(#sn)#ce"}},
@@ -90,9 +90,9 @@ DCT_PRESET_TEXT = {
 		["DCT_SHOWDEBUFFDOSE"] = {show = {"不良叠加: #ic#sn<#am>","不良减少: #ic#sn<#am>"}},
 		["DCT_SHOWDISPELLED"] = {show = {"被驱散: #ic#sn","被偷取: #ic#sn"}},
 		["DCT_SHOWSPECBUFF"] = {show = {"获得: #ic#sn","#c1获得: #ic#sn#ce"}},
-		["DCT_SHOWSPELLSUCCESS"] = {show = {"#ic#sn! 命中!"}},
+		["DCT_SHOWSPELLSUCCESS"] = {show = {"#ic#sn! 命中!"}},		
 		["DCT_SHOWSPELLFAILED"] = {show = {"#ic#sn 未命中!"}},
-
+		
 		["DCT_SHOWDODGE"] = {show = {"#ms","#ms #ic#c1(#sn)#ce"}},
 		["DCT_SHOWABSORB"] = {show = {"#ms","#ms #ic#c1(#sn)#ce"}},
 		["DCT_SHOWRESIST"] = {show = {"#ms","#ms #ic#c1(#sn)#ce"}},
@@ -120,9 +120,9 @@ DCT_PRESET_TEXT = {
 		["DCT_SHOWDEBUFFDOSE"] = {show = {"不良叠加: #sn<#am>#ic","不良减少: #sn<#am>#ic"}},
 		["DCT_SHOWDISPELLED"] = {show = {"被驱散: #sn#ic","被偷取: #sn#ic"}},
 		["DCT_SHOWSPECBUFF"] = {show = {"获得: #sn#ic","#c1获得: #sn#ic#ce"}},
-		["DCT_SHOWSPELLSUCCESS"] = {show = {"#sn! 命中!#ic"}},
+		["DCT_SHOWSPELLSUCCESS"] = {show = {"#sn! 命中!#ic"}},		
 		["DCT_SHOWSPELLFAILED"] = {show = {"#sn 未命中!#ic"}},
-
+		
 		["DCT_SHOWDODGE"] = {show = {"#ms","#ms #c1(#sn)#ce#ic"}},
 		["DCT_SHOWABSORB"] = {show = {"#ms","#ms #c1(#sn)#ce#ic"}},
 		["DCT_SHOWRESIST"] = {show = {"#ms","#ms #c1(#sn)#ce#ic"}},
@@ -133,7 +133,7 @@ DCT_PRESET_TEXT = {
 		["DCT_SHOWDEFLECT"] = {show = {"#ms","#ms #c1(#sn)#ce#ic"}},
 		["DCT_SHOWIMMUNE"] = {show = {"#ms","#ms #c1(#sn)#ce#ic"}},
 	},
-
+	
 	[5] = {
 		["DCT_PRETEXTNAME"] = "简洁(无图标)-预设",
 		["DCT_SHOWHIT"] = {show = {"-#am","-#am"}},
@@ -152,9 +152,9 @@ DCT_PRESET_TEXT = {
 		["DCT_SHOWDEBUFFDOSE"] = {show = {"+#sn<#am>","-#sn<#am>"}},
 		["DCT_SHOWDISPELLED"] = {show = {"被驱散: #sn","被偷取: #sn"}},
 		["DCT_SHOWSPECBUFF"] = {show = {"#sn!","#c1#sn!#ce"}},
-		["DCT_SHOWSPELLSUCCESS"] = {show = {"#sn! 命中"}},
+		["DCT_SHOWSPELLSUCCESS"] = {show = {"#sn! 命中"}},		
 		["DCT_SHOWSPELLFAILED"] = {show = {"#sn 未命中!"}},
-
+		
 		["DCT_SHOWDODGE"] = {show = {"#ms","#ms #c1(#sn)#ce"}},
 		["DCT_SHOWABSORB"] = {show = {"#ms","#ms #c1(#sn)#ce"}},
 		["DCT_SHOWRESIST"] = {show = {"#ms","#ms #c1(#sn)#ce"}},
@@ -165,7 +165,7 @@ DCT_PRESET_TEXT = {
 		["DCT_SHOWDEFLECT"] = {show = {"#ms","#ms #c1(#sn)#ce"}},
 		["DCT_SHOWIMMUNE"] = {show = {"#ms","#ms #c1(#sn)#ce"}},
 	},
-
+	
 	[6] = {
 		["DCT_PRETEXTNAME"] = "简洁(含图标)-预设",
 		["DCT_SHOWHIT"] = {show = {"-#am","-#am"}},
@@ -185,9 +185,9 @@ DCT_PRESET_TEXT = {
 		["DCT_SHOWMISS"] = {show = {"#ms","#ms #ic"}},
 		["DCT_SHOWDISPELLED"] = {show = {"被驱散: #ic","被偷取: #ic"}},
 		["DCT_SHOWSPECBUFF"] = {show = {"#ic#sn","#ic#sn"}},
-		["DCT_SHOWSPELLSUCCESS"] = {show = {"#ic#sn! 命中!"}},
+		["DCT_SHOWSPELLSUCCESS"] = {show = {"#ic#sn! 命中!"}},		
 		["DCT_SHOWSPELLFAILED"] = {show = {"#ic#sn 未命中!"}},
-
+		
 		["DCT_SHOWDODGE"] = {show = {"#ms","#ms #ic"}},
 		["DCT_SHOWABSORB"] = {show = {"#ms","#ms #ic"}},
 		["DCT_SHOWRESIST"] = {show = {"#ms","#ms #ic"}},
