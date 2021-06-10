@@ -74,7 +74,7 @@ switch:SetScript("OnEvent", function(self, event, ...)
         if name == "!!iCenter" then
             if not ExtraConfiguration then ExtraConfiguration = {}; end
             if not ExtraConfiguration["anticrab"] then ExtraConfiguration["anticrab"] = 1; end
-            if not ExtraConfiguration["blueshaman"] then ExtraConfiguration["blueshaman"] = 0; end
+            if not ExtraConfiguration["blueshaman"] then ExtraConfiguration["blueshaman"] = 1; end
             if not ExtraConfiguration["maxcamera"] then ExtraConfiguration["maxcamera"] = 1; end
             if not ExtraConfiguration["antiafk"] then ExtraConfiguration["antiafk"] = 0; end
             if not ExtraConfiguration["antilogout"] then ExtraConfiguration["antilogout"] = 0; end

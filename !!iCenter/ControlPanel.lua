@@ -2441,36 +2441,33 @@ if title ~= nil then
 	end
 end
 
-local _, title = GetAddOnInfo("EN_UnitFrames");
+local _, title = GetAddOnInfo("EasyFrames");
 if title ~= nil then
 	if GetLocale() == "zhCN" then
-		FF_NameEUF	= "头像增强";
-		FF_DescEUF	= "增强显示头像，显示目标的目标的目标，并显示破甲值等信息，小队头像显示队员职业等级，并显示生命值及法力值";
-	elseif GetLocale() == "zhTW" then
-		FF_NameEUF	= "頭像增強";
-		FF_DescEUF	= "增強顯示頭像，顯示目標的目標的目標，並顯示破甲值等資訊，小隊頭像顯示隊員職業等級，並顯示生命值及法力值";
+		FF_NameEUF	= "Easy Frames";
+		FF_DescEUF	= "简单增强显示头像";
 	else
-		FF_NameEUF	= "Enigma Unit Frames";
-		FF_DescEUF	= "Enhanced Unit Frames including HP/MP values, class, race, level tag, and more ...";
+		FF_NameEUF	= "Easy Frames";
+		FF_DescEUF	= "Make your unit frames colored and glorious.";
 	end
 	if ( EarthFeature_AddButton ) then
 		EarthFeature_AddButton(
 			{
-				id= "EN_UnitFrames";
+				id= "EasyFrames";
 				tab= "ui";
 				name= FF_NameEUF;
-				subtext= "Enigma Unit Frames";
+				subtext= "Easy Frames";
 				tooltip = FF_DescEUF;
 				icon= "Interface\\AddOns\\!!iCenter\\Icon\\UFP";
 				callback= function(button)
-					if not IsAddOnLoaded("EN_UnitFrames") then
-						LoadAddOn("EN_UnitFrames");
+					if not IsAddOnLoaded("EasyFrames") then
+						LoadAddOn("EasyFrames");
 					end
-					InterfaceOptionsFrame_OpenToCategory("EN_UnitFrames");
-					InterfaceOptionsFrame_OpenToCategory("EN_UnitFrames");
+					InterfaceOptionsFrame_OpenToCategory("Easy Frames");
+					InterfaceOptionsFrame_OpenToCategory("Easy Frames");
 				end;
 				test = function()
-					if not IsAddOnLoaded("EN_UnitFrames") and not IsAddOnLoadOnDemand("EN_UnitFrames") then
+					if not IsAddOnLoaded("EasyFrames") and not IsAddOnLoadOnDemand("EasyFrames") then
 						return false;
 					else
 						return true;
