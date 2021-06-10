@@ -1413,7 +1413,7 @@ do
         local targetGUID = UnitGUID("target")
         for timer in pairs(active) do
             local custom_group = timer.opts.group
-            if custom_group then
+            if custom_group and custom_group ~= "default" then
                 groups[custom_group] = groups[custom_group] or {}
                 table.insert(groups[custom_group],timer)
             elseif timer.dstGUID == playerGUID then table.insert(playerTimers,timer)
@@ -2216,7 +2216,7 @@ do
                     if opts and UnitAffiliationCheck(caster, opts.affiliation) then--and (unit ~= "mouseover" or not opts.singleTarget) then
 
                             local timer
-                            timer = gettimer(active, aura_spellID, unitGUID, timerType)
+                            timer = gettimer(active, opts, unitGUID, timerType)
                             if duration == 0 then duration = -1 end
                             if timer then
                                 NugRunning:SetUnitAuraValues(timer, timer.spellID, name, icon, count, dispelType, duration, expirationTime, caster, isStealable, shouldConsolidate, aura_spellID)

@@ -1,9 +1,12 @@
 # NugRunning
 
-## [9.1-bcc5](https://github.com/rgd87/NugRunning/tree/9.1-bcc5) (2021-05-15)
-[Full Changelog](https://github.com/rgd87/NugRunning/compare/PreBCC...9.1-bcc5) [Previous Releases](https://github.com/rgd87/NugRunning/releases)
+## [9.1-bcc6](https://github.com/rgd87/NugRunning/tree/9.1-bcc6) (2021-05-15)
+[Full Changelog](https://github.com/rgd87/NugRunning/compare/PreBCC...9.1-bcc6) [Previous Releases](https://github.com/rgd87/NugRunning/releases)
 
 - BCC fallback toc  
+- Fixed weird resets on mouseover  
+- koKR localization  
+- Fixed 'default' group bug  
 - Option to show target names  
 - Font outline settings  
 - Added Blizzard Slow, limited Frostbite timers  
