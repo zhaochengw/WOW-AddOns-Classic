@@ -1,0 +1,43 @@
+## Title: Easy Frames
+## Interface: 20501
+## Notes: Make your unit frames colored and glorious.
+## Author: Usoltsev
+## SavedVariables: EasyFramesDB
+## OptionalDeps: Ace3, LibSharedMedia-3.0
+
+#@no-lib-strip@
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\AceHook-3.0\AceHook-3.0.xml
+
+Libs\LibSharedMedia-3.0\lib.xml
+Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
+#@end-no-lib-strip@
+
+Localization\enUS.lua
+Localization\ruRU.lua
+Localization\deDE.lua
+Localization\koKR.lua
+Localization\zhTW.lua
+Localization\zhCN.lua
+
+
+EasyFrames.lua
+
+Config.lua
+
+Modules\Core.lua
+Modules\General.lua
+Modules\Player.lua
+Modules\Target.lua
+Modules\Focus.lua
+Modules\Pet.lua
+Modules\Party.lua
