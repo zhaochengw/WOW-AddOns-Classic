@@ -71,9 +71,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210527040033"),
-	DisplayVersion = "2.5.4", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2021, 5, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20210609223504"),
+	DisplayVersion = "2.5.5", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2021, 6, 9) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -780,7 +780,7 @@ do
 	local args = setmetatable({}, argsMT)
 
 	function argsMT.__index:IsSpellID(...)
-		return tIndexOf({...}, self.spellId) ~= nil
+		return tIndexOf({...}, args.spellId) ~= nil
 	end
 
 	function argsMT.__index:IsPlayer()
@@ -1617,7 +1617,7 @@ do
 				"BOSS_KILL",
 				"UNIT_DIED",
 				"UNIT_DESTROYED",
-				"UNIT_HEALTH mouseover target player",--focus
+				"UNIT_HEALTH",
 				"CHAT_MSG_WHISPER",
 				"CHAT_MSG_BN_WHISPER",
 				"CHAT_MSG_MONSTER_YELL",
@@ -11811,7 +11811,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20210527040033" then
+	if not revision or revision == "20210609223504" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

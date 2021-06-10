@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Magtheridon", "DBM-Outlands")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210417153241")
+mod:SetRevision("20210607125505")
 mod:SetCreatureID(17257)
 mod:SetEncounterID(651, 2457)
 mod:SetModelID(18527)
@@ -65,6 +65,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	elseif msg == L.DBM_MAG_YELL_PHASE3 or msg:find(L.DBM_MAG_YELL_PHASE3) then
 		self.vb.phase = 3
 		warnPhase3:Show()
+		timerBlastNovaCD:Stop()
+		timerBlastNovaCD:Start(20)--NOT VERIFIED
 		timerDebris:Start()
 	end
 end

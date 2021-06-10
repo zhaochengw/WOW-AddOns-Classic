@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(554, "DBM-Party-BC", 12, 255)
 local L		= mod:GetLocalizedStrings()
 
-
-mod:SetRevision("20210401043939")
+mod:SetRevision("20210605024644")
 mod:SetCreatureID(17881)
 mod:SetEncounterID(1919)
-
+mod:SetModelID(20510)
+mod:SetModelScale(0.2)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -14,7 +14,7 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, actual CD timers
-local warnFrenzy		= mod:NewSpellAnnounce("ej5348", 3)
+local warnFrenzy		= mod:NewAnnounce("warnEnrage", 3)
 local warnTimeStop		= mod:NewSpellAnnounce(31422, 3)
 
 local timerTimeStop		= mod:NewBuffActiveTimer(4, 31422, nil, nil, nil, 3)

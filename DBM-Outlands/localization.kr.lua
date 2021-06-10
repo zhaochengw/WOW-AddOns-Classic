@@ -8,7 +8,6 @@ L:SetGeneralLocalization{
 	name = "왕중왕 마울가르"
 }
 
-
 --Gruul the Dragonkiller
 L = DBM:GetModLocalization("Gruul")
 
@@ -17,9 +16,11 @@ L:SetGeneralLocalization{
 }
 
 L:SetOptionLocalization{
-	WarnGrowth	= "$spell:36300 알림 보기"
+	WarnGrowth	= "$spell:36300 알림 보기",
+	RangeDistance	= "|cff71d5ff|Hspell:33654|h산산조각|h|r 거리 창 범위 설정",
+	Smaller			= "좁은 범위 (11m)",
+	Safe			= "안전 범위 (18m)"
 }
-
 
 -- Magtheridon
 L = DBM:GetModLocalization("Magtheridon")
@@ -39,7 +40,7 @@ L:SetOptionLocalization{
 L:SetMiscLocalization{
 	DBM_MAG_EMOTE_PULL		= "%s의 속박이 약해지기 시작합니다!",
 	DBM_MAG_YELL_PHASE2		= "내가... 풀려났도다!",
-	DBM_MAG_YELL_PHASE3		= "그렇게 쉽게"
+	DBM_MAG_YELL_PHASE3		= "그렇게 쉽게 당할 내가 아니다! 이 감옥의 벽이 흔들리고... 무너지리라!"
 }
 
 -- Doom Lord Kazzak

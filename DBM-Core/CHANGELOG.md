@@ -1,41 +1,66 @@
 # Deadly Boss Mods Core
 
-## [2.5.4](https://github.com/DeadlyBossMods/DBM-TBC-Classic/tree/2.5.4) (2021-05-27)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-TBC-Classic/compare/2.5.3...2.5.4) [Previous Releases](https://github.com/DeadlyBossMods/DBM-TBC-Classic/releases)
+## [2.5.5](https://github.com/DeadlyBossMods/DBM-TBC-Classic/tree/2.5.5) (2021-06-09)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-TBC-Classic/compare/2.5.4...2.5.5) [Previous Releases](https://github.com/DeadlyBossMods/DBM-TBC-Classic/releases)
 
-- prep tag  
-- Sync profile fixes.  
-- All Rights Reserved license  
-- Actually fix Loathab properly  
-- fix onyxia auto logging  
-- Fix Frost Breath spellID. Closes #13  
-- Update koKR (BCC) (#14)  
-    * Update koKR (TBCC)  
-    * Update koKR (BCC)  
-- Fix Corrupted Mind. Closes #12  
-- Update localization.en.lua  
-- Fix CLASSIC\_ONLY message  
-    It was referencing to install retail ??  
-- BCC terminology.  
-- Make the message more clear about Classic Era on TBC  
-- it's 2021, not 2020  
-- Fix Skeram kill detection to ignore CID going forward do to changes in BCC  
-- Made guild boss engage/defeat/wipe more robust against seeing multiple messages  
-- Update koKR (TBCC) (#10)  
-- Niche bugs.  
-- Separate huge and small bar height option.  
-    - While I was at it, renamed Bar Alpha to Alpha, as it was too long.  
-- Fixed a bug where a nil error could be thrown by hudmap on hearthing. Seems new to BCC client as this wasn't happening on Classic vanilla client, so data probably returns slower now on loading screen.  
-    Fixed a bug where Fel crystal warning/timer was not localized on BCC client in Magisters terrace  
-- Update ci.yml  
-    update  build for packager  
-- Merge pull request #8 from venuatu/escorttimers  
-    add quest escort timers (shattrath and caverns of time)  
-- add quest escort timers (shattrath and caverns of time)  
-- Merge pull request #7 from venuatu/attumen  
-    kara/attumen: update curse timers from logs  
-- kara/attumen: update curse timers from logs  
-- kara/moroes: add gouge cd timer for tanks and update vanish cd (#6)  
-- kara/attumen: switch monster yell to spell summon event (#5)  
-- update luacheck  
-- GetDungeonInfo Forward compat  
+- prep release  
+- kara/prince: fixup spell id of enfeeble spec warning (#26)  
+- Sync blade dance  
+- Update koKR (BCC) (#25)  
+- tweak prison object type  
+- Fix potential issue with IsSpellID  
+- Revert "Fix issue with IsSpellID"  
+- Fix issue with IsSpellID  
+- CoT\_OldHillsbrad complete.  
+- Fix locale text showing 15 instead of 18  
+- Add gruul dropdown option for range.  
+- change the default range for mag. options will come later  
+- Compact down this code... Why duplicate it?  
+- Fix these portal timers too.  
+- Re-enable portal timers no it's been verified to be 122  
+- Magtheridon timer updates and ZN locale  
+- Forgot to enable these range checks.  
+- Fixes to Mennu based on feedback  
+- Update Magtheridon. Closes #22  
+- Enable range check items for BCC  
+- Fix other Hyjal wave numbers.  
+- Fix mount hyjal: wave 3, 4 gouls -> 6 ghouls.  
+- Update koKR (BCC) (#20)  
+- Started on model work.  
+    - Readded a bunch of models  
+    - Started properly scaling and positioning models  
+- Fix some more load dungeon errors. :)  
+- Fix localization.  
+- Bit of cleanup with some dungeons  
+- Mana Tombs done;  
+    Last 2 drycodes didn't really have many mechanics, so added what I could see.  
+- Verifyied encounterID for Yor  
+- minsync  
+- Disable EE  
+- Update koKR (BCC) (#18)  
+- too many nil  
+- Fix timer object types.  
+- Fix all ej warnings  
+- Add warning on Focus Fire to other members.  
+- This should be 1.  
+- Move -> Dodge  
+- Fix SpellID  
+- Derpz  
+- Auct\_Crypts warnings.  
+- Underbog basic warnings.  
+- Add mana tombs trash:  
+    - Warns on curse of impotence, this is a strong enough mechanic that it needs to be dealt with.  
+- don't filter UNIT\_HEALTH, it's a lot more spammy since we'll be running processing on everything, but registering 40 nameplates would be even slower with limited unit Ids per frame.  
+- Delete license.txt  
+- Delete license.txt  
+- Improve weird delta code.  
+- Fixed a bug that caused ground slam and growth to have same spell text  
+- Define message to "Classic Era", to be more exact in issue templates.  
+- Fix #16 : ZulAman not being packaged.  
+- Not needed here, derpz x3  
+- Derpz x2  
+- Derpz  
+- Sync more DBT tweaks  
+- Sync fix  
+- Update koKR (BCC) (#15)  
+- prep alpha cycle  

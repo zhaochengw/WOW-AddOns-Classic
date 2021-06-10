@@ -1,11 +1,11 @@
 local mod = DBM:NewMod(551, "DBM-Party-BC", 15, 254)
 local L = mod:GetLocalizedStrings()
 
-
-mod:SetRevision("20210422205657")
-
+mod:SetRevision("20210605024644")
 mod:SetCreatureID(20912)
 mod:SetEncounterID(1914)
+mod:SetModelID(19943)
+mod:SetModelScale(0.4)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -15,8 +15,8 @@ mod:RegisterEventsInCombat(
 	"UNIT_HEALTH"
 )
 
-local warnSplitSoon     = mod:NewSoonAnnounce("ej5335", 2)
-local warnSplit         = mod:NewSpellAnnounce("ej5335", 3)
+local warnSplitSoon     = mod:NewAnnounce("warnSplitSoon", 2)
+local warnSplit         = mod:NewAnnounce("warnSplit", 3)
 local warnMindControl   = mod:NewTargetNoFilterAnnounce(39019, 4)
 local warnMindRend      = mod:NewTargetAnnounce(39017, 2)
 

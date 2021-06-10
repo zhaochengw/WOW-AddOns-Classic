@@ -97,6 +97,27 @@ L:SetGeneralLocalization{
 	name 		= "대족장 카르가스 블레이드피스트"
 }
 
+L:SetWarningLocalization({
+	warnHeathen			= "이교도 경비병",
+	warnReaver			= "학살자 경비병",
+	warnSharpShooter	= "명사수 경비병"
+})
+
+L:SetTimerLocalization({
+	timerHeathen		= "이교도 경비병: %s",
+	timerReaver			= "학살자 경비병: %s",
+	timerSharpShooter	= "명사수 경비병: %s"
+})
+
+L:SetOptionLocalization({
+	warnHeathen			= "이교도 경비병 경고 보기",
+	timerHeathen		= "이교도 경비병 타이머 바 보기",
+	warnReaver			= "학살자 경비병 경고 보기",
+	timerReaver			= "학살자 경비병 타이머 바 보기",
+	warnSharpShooter	= "명사수 경비병 경고 보기",
+	timerSharpShooter	= "명사수 경비병 타이머 바 보기"
+})
+
 ------------------
 --  Slave Pens  --
 --------------------------
@@ -184,6 +205,14 @@ L:SetGeneralLocalization{
 	name 		= "기계박사 스팀리거"
 }
 
+L:SetWarningLocalization({
+	warnSummon	= "스팀리거 정비사 - 대상 변경"
+})
+
+L:SetOptionLocalization({
+	warnSummon	= "스팀리거 정비사 경고 보기"
+})
+
 L:SetMiscLocalization({
 	Mechs	= "얘들아, 쟤네들을 부드럽게 만져줘라!"
 })
@@ -219,6 +248,15 @@ L:SetGeneralLocalization{
 
 ------------------
 --  Mana-Tombs  --
+------------------
+--    Trash     --
+------------------
+L = DBM:GetModLocalization("AuctTombsTrash")
+
+L:SetGeneralLocalization{
+	name 		= "일반몹"
+}
+
 -------------------
 --  Pandemonius  --
 -------------------
@@ -266,6 +304,14 @@ L:SetGeneralLocalization{
 	name 		= "흑마술사 시스"
 }
 
+L:SetWarningLocalization({
+	warnSummon	= "정령 소환"
+})
+
+L:SetOptionLocalization({
+	warnSummon	= "소환된 정령 경고 보기"
+})
+
 ------------
 --  Anzu  --
 ------------
@@ -276,15 +322,17 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization({
-	warnStoned	= "%s|1;이;가; 돌로 돌아감"
+	warnBrood	= "안주의 혈족",
+	warnStoned	= "%s|1;이;가; 돌로 돌아갔음"
 })
 
 L:SetOptionLocalization({
+	warnBrood	= "안주의 혈족 경고 보기",
 	warnStoned	= "영혼이 돌로 되돌아가면 경고 보기"
 })
 
 L:SetMiscLocalization({
-    BirdStone	= "돌아"--확인필요
+    BirdStone	= "%s|1;이;가; 돌로 돌아감"--확인필요
 })
 
 ------------------------
@@ -392,8 +440,16 @@ L:SetGeneralLocalization{
 	name 		= "아에누스"
 }
 
+L:SetWarningLocalization({
+	warnEnrage	= "격노"
+})
+
+L:SetOptionLocalization({
+	warnEnrage	= "격노 경고 보기"
+})
+
 L:SetMiscLocalization({
-    AeonusFrenzy	= "%s|1이;가; 광란의 상태에 빠집니다!"--확인필요
+    AeonusFrenzy	= "%s|1이;가; 분노합니다!"
 })
 
 ---------------------
@@ -498,6 +554,14 @@ L:SetGeneralLocalization{
 	name 		= "고위 식물학자 프레이윈"
 }
 
+L:SetWarningLocalization({
+	warnTranq	= "껍질덩굴손 파수꾼 - 대상 변경"
+})
+
+L:SetOptionLocalization({
+	warnTranq	= "껍질덩굴손 파수꾼 경고 보기"
+})
+
 -----------------------------
 --  Thorngrin the Tender  --
 -----------------------------
@@ -563,6 +627,16 @@ L:SetGeneralLocalization{
 	name 		= "선구자 스키리스"
 }
 
+L:SetWarningLocalization({
+	warnSplitSoon	= "곧 선구자의 환영",
+	warnSplit	= "선구자의 환영"
+})
+
+L:SetOptionLocalization({
+	warnSplitSoon	= "곧 선구자의 환영 경고 보기",
+	warnSplit	= "선구자의 환영 경고 보기"
+})
+
 L:SetMiscLocalization({
 	Split			= "밤하늘의 무한한 별처럼 온 우주를 덮으리라!"
 })
@@ -579,7 +653,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization({
-    warningFelCrystal	= "지옥 수정 - 점사"
+    warningFelCrystal	= "지옥 수정 - 대상 변경"
 })
 
 L:SetTimerLocalization({
@@ -587,8 +661,8 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	warningFelCrystal	= "지옥 수정 점사 특수 경고 보기",
-    timerFelCrystal		= "지옥 수정 타이머 바 보기"
+	warningFelCrystal	= "지옥 수정 대상 변경 특수 경고 보기",
+	timerFelCrystal		= "지옥 수정 타이머 바 보기"
 })
 
 ----------------
@@ -599,6 +673,14 @@ L = DBM:GetModLocalization(531)
 L:SetGeneralLocalization{
 	name 		= "벡살루스"
 }
+
+L:SetWarningLocalization({
+	warnEnergy	= "순수한 에너지 - 대상 변경"
+})
+
+L:SetOptionLocalization({
+	warnEnergy	= "순수한 에너지 경고 보기"
+})
 
 --------------------------
 --  Priestess Delrissa  --
