@@ -1,0 +1,18 @@
+## Interface: 20501
+## Title: Target Health
+## Title-deDE: Leben des Ziels
+## Title-ruRU: Здоровье цели
+## Title-zhTW: 目標健血量
+## Notes: Show health and mana on the default Blizzard UI target frame
+## Notes-deDE: Zeige das Leben und Mana in dem Zielfenster des Standart Blizzard UI
+## Notes-ruRU: Показывает здоровье и ману цели на стандартной панели интерфейса Blizzard.
+## Notes-zhTW: 在默認的Blizzard UI目標框架上顯示生命值和法力值
+## Version: 1.0.5
+## Author: Slainsvirtue-Mankrik
+## X-Curse-Project-ID: 364951
+##
+## LoadOnDemand: 0
+## SavedVariablesPerCharacter: TargetHealthDB
+##
+
+TargetStatusText_BCC.lua
