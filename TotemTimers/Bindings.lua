@@ -99,7 +99,7 @@ local TotemTimers_Bindings = {
 	["TOTEMTIMERSTOTEMICCALL"] = function(key)
 		SetOverrideBindingSpell(TotemTimersFrame, false, key, SpellNames[SpellIDs.TotemicCall])
 	end,
-	--[[ ["TOTEMTIMERSEARTHSHIELDLEFT"] = function(key)
+	["TOTEMTIMERSEARTHSHIELDLEFT"] = function(key)
 		SetOverrideBindingClick(TotemTimersFrame, false, key, buttonnames["es"])
 	end,
 	["TOTEMTIMERSEARTHSHIELDRIGHT"] = function(key)
@@ -107,7 +107,10 @@ local TotemTimers_Bindings = {
 	end,
 	["TOTEMTIMERSEARTHSHIELDMIDDLE"] = function(key)
 		SetOverrideBindingClick(TotemTimersFrame, false, key, buttonnames["es"], "MiddleButton")
-	end, ]]
+	end,
+	["TOTEMTIMERSEARTHSHIELDBUTTON4"] = function(key)
+		SetOverrideBindingClick(TotemTimersFrame, false, key, buttonnames["es"], "Button4")
+	end,
 	["TOTEMTIMERSWEAPONBUFF1"] = function(key)
 		SetOverrideBindingClick(TotemTimersFrame, false, key, buttonnames["wp"])
 	end,
@@ -189,8 +192,10 @@ function TotemTimers.InitializeBindings()
 		if key2 then TotemTimers_Bindings[binding](key2) end
 		if key1 then TotemTimers_Bindings[binding](key1) end
 	end
+
+	local TotemCount = TotemTimers.TotemCount
     for i=1,4 do
-        for j=1,8 do
+        for j=1,TotemCount[i] do
             key1, key2 = GetBindingKey("TOTEMTIMERSCAST"..i..j)
             if key2 then SetOverrideBindingClick(TotemTimersFrame, false, key2, "TT_ActionButton"..i..j) end
             if key1 then SetOverrideBindingClick(TotemTimersFrame, false, key1, "TT_ActionButton"..i..j) end
