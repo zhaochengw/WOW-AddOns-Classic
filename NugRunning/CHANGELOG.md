@@ -1,9 +1,15 @@
 # NugRunning
 
-## [9.1-bcc6](https://github.com/rgd87/NugRunning/tree/9.1-bcc6) (2021-05-15)
-[Full Changelog](https://github.com/rgd87/NugRunning/compare/PreBCC...9.1-bcc6) [Previous Releases](https://github.com/rgd87/NugRunning/releases)
+## [9.1-bcc7](https://github.com/rgd87/NugRunning/tree/9.1-bcc7) (2021-05-15)
+[Full Changelog](https://github.com/rgd87/NugRunning/compare/PreBCC...9.1-bcc7) [Previous Releases](https://github.com/rgd87/NugRunning/releases)
 
 - BCC fallback toc  
+- Marking extracted timers as external  
+- Fixed single target timer flag in BCC  
+- Bugfix  
+- Better way to pass active timers to nameplates  
+- Refactored metatables out  
+- gettimer searches base spell ID  
 - Fixed weird resets on mouseover  
 - koKR localization  
 - Fixed 'default' group bug  
