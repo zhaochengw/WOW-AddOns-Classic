@@ -7,7 +7,6 @@
 ## Notes-zhTW: |cff00ff00Ex_AutoEquip|r|n|cffbc8f8f方便快捷的實現裝備管理設置。|r
 ## Author: Enigma @ http://luodan.com
 ## SavedVariablesPerCharacter: ExAE_Config
-## X-Revision: BigFoot
 
 Ex_AutoEquip.xml
 
