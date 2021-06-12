@@ -1,22 +1,18 @@
+local _;
+local _G = _G
 local myName = UnitName("player")
 local myRace = UnitRace("player")
 local normal = NORMAL_FONT_COLOR
 local green = GREEN_FONT_COLOR
 local white = HIGHLIGHT_FONT_COLOR
 local defColor = FRIENDS_WOW_NAME_COLOR_CODE
-local _G = _G
 local MAX_SCORE_BUTTONS = MAX_SCORE_BUTTONS or 22
 
 local BC = {}
 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do BC[v] = k end
-for k, v in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do BC[v] = k end
-
-BC["NEW"] = "NEW"
-RAID_CLASS_COLORS["NEW"] = CreateColor(0, 1, 0.9647, 1)
--- RAID_CLASS_COLORS["NEW"].colorStr = RAID_CLASS_COLORS["NEW"]:GenerateHexColor()
 
 local function colorString(string, class)
-	local color = class and RAID_CLASS_COLORS[class] or GetQuestDifficultyColor(string)
+	local color = class and RAID_CLASS_COLORS[class] or GetQuestDifficultyColor(tonumber(string) or 1)
 	return ("%s%s|r"):format(ConvertRGBtoColorString(color), string)
 end
 
@@ -64,64 +60,37 @@ hooksecurefunc("GuildStatus_Update", function()
 	end
 end)
 
-local function updateFriends()
-	local buttons = FriendsFrameFriendsScrollFrame.buttons
-	local myZone = GetRealZoneText()
-	local myRealm = GetRealmID()
-
-	for i = 1, #buttons do
-		local nameText, infoText
-		local button = buttons[i]
-		if button:IsShown() then
-			if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
-				local info = C_FriendList.GetFriendInfoByIndex(button.id)
-				if info and info.connected then
-					if info.name and info.name ~= "" and info.level and info.level ~= "" then
-						local name = colorString(info.name, BC[info.className])
-						local level = colorString(info.level)
-						-- local class = colorString(info.className, BC[info.className])
-						nameText = name .. " (" .. level .. ")"
-					end
-					if info.area and info.area == myZone then infoText = format("|cff00ff00%s|r", info.area) end
+local function updateFriends(button)
+	local nameText,infoText
+	if button:IsShown() then
+		local myZone = GetRealZoneText()
+		-- print(button.index,button.id,button.buttonType)
+		if button.buttonType == FRIENDS_BUTTON_TYPE_BNET then	-- ’ΩÕ¯
+			local _, presenceName, _, _, _, toonID, client, isOnline = BNGetFriendInfo(button.id)
+			if isOnline and client == BNET_CLIENT_WOW then
+				local _, toonName, _, _, _, _, _, class, _, zoneName, level = BNGetGameAccountInfo(toonID)
+				if presenceName and toonName then
+					level = colorString(level)
+					toonName = colorString(toonName, BC[class])
+					nameText = presenceName .. " " .. defColor .. "(Lv" .. level .. " " .. toonName .. defColor .. ")"
 				end
-			elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
-				local _, presenceName, _, _, _, toonID, client, isOnline = BNGetFriendInfo(button.id)
-				if isOnline and client == BNET_CLIENT_WOW then
-					local _, toonName, _, realm, realmID, faction, race, class, _, zoneName, level, gameText = BNGetGameAccountInfo(toonID)
-					if presenceName and presenceName ~= "" and toonName and toonName ~= "" and level and level ~= "" and class and class ~= "" then
-						level = colorString(level)
-						if BC[class] then
-							toonName = colorString(toonName, BC[class])
-						else
-							toonName = colorString(toonName, BC["NEW"])
-						end
-						nameText = presenceName .. defColor .. " (" .. toonName .. defColor .. " " .. level .. defColor .. ")"
-					end
-					if gameText and gameText == BNET_FRIEND_TOOLTIP_WOW_CLASSIC then
-						if zoneName and zoneName == myZone and realmID and myRealm == realmID then
-							infoText = "\124Tinterface\\worldstateframe\\" .. strlower(faction) .. "icon:20\124t" .. string.gsub(EXPANSION_NAME0, "\n", "") .. " " .. format("|cff00ff00%s|r", zoneName) .. " - " .. (format("|cff00ff00%s|r", realm) or UNKNOWN)
-						elseif realmID and myRealm == realmID then
-							infoText = "\124Tinterface\\worldstateframe\\" .. strlower(faction) .. "icon:20\124t" .. string.gsub(EXPANSION_NAME0, "\n", "") .. " " .. (zoneName or UNKNOWN) .. " - " .. (format("|cff00ff00%s|r", realm) or UNKNOWN)
-						else
-							infoText = "\124Tinterface\\worldstateframe\\" .. strlower(faction) .. "icon:20\124t" .. string.gsub(EXPANSION_NAME0, "\n", "") .. " " .. (zoneName or UNKNOWN) .. " - " .. (realm or UNKNOWN)
-						end
-					else
-						if faction and faction ~= "" then
-							infoText = "\124Tinterface\\worldstateframe\\" .. strlower(faction) .. "icon:20\124t" .. (gameText or UNKNOWN)
-						else
-							infoText = (gameText or UNKNOWN)
-						end
-					end
-				end
+				if zoneName and zoneName == myZone then infoText = format("|cff00ff00%s|r", zoneName) end
+			end
+		elseif button.buttonType == FRIENDS_BUTTON_TYPE_WOW then		-- ”Œœ∑∫√”—
+			local info = C_FriendList.GetFriendInfoByIndex(button.id)
+			if info and info.connected then
+				local name = colorString(info.name, BC[info.className])
+				local level = colorString(info.level)
+				local class = colorString(info.className, BC[info.className])
+				nameText = name .. ", Lv" .. level .. "  " .. class
+				if info.area and info.area == myZone then infoText = format("|cff00ff00%s|r", info.area) end
 			end
 		end
-		if nameText then button.name:SetText(nameText) end
-		if infoText then button.info:SetText(infoText) end
 	end
+	if nameText then button.name:SetText(nameText) end
+	if infoText then button.info:SetText(infoText) end
 end
-
-hooksecurefunc(FriendsFrameFriendsScrollFrame, "update", updateFriends)
-hooksecurefunc("FriendsFrame_UpdateFriends", updateFriends)
+hooksecurefunc("FriendsFrame_UpdateFriendButton", updateFriends)
 
 hooksecurefunc("WhoList_Update", function()
 	local whoOffset = FauxScrollFrame_GetOffset(WhoListScrollFrame)
@@ -151,7 +120,7 @@ hooksecurefunc("WorldStateScoreFrame_Update", function()
 
 	for i = 1, MAX_SCORE_BUTTONS do
 		local scoreButton = _G["WorldStateScoreButton"..i]
-		local name, _, _, _, _, faction, _, _, _, classToken = GetBattlefieldScore(scrollOffset + i)
+		local name, _, _, _, _, faction, _, _, classToken = GetBattlefieldScore(scrollOffset + i)
 		if name and faction and classToken then
 			local n, s = strsplit("-", name, 2)
 			n = colorString(n, classToken)
@@ -160,11 +129,10 @@ hooksecurefunc("WorldStateScoreFrame_Update", function()
 			end
 			if s then
 				-- if isArena then
-				-- 	n = n.."|cffffffff - |r"..(faction==0 and "|cff20ff20" or "|cffffd200")..s.."|r"
+					-- n = n.."|cffffffff - |r"..(faction==0 and "|cff20ff20" or "|cffffd200")..s.."|r"
 				-- else
-				-- 	n = n.."|cffffffff - |r"..(faction==0 and "|cffff2020" or "|cff00aef0")..s.."|r"
+					n = n.."|cffffffff - |r"..(faction==0 and "|cffff2020" or "|cff00aef0")..s.."|r"
 				-- end
-				n = n.."|cffffffff - |r"..(faction==0 and "|cffff2020" or "|cff00aef0")..s.."|r"
 			end
 			scoreButton.name.text:SetText(n)
 		end
