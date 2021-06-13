@@ -34,7 +34,7 @@ local slots = {
 local function GetInspectItemListFrame(parent)
     if (not parent.inspectFrame) then
         local itemfont = "ChatFontNormal"
-        local frame = CreateFrame("Frame", nil, parent, BackdropTemplateMixin and "BackdropTemplate")
+        local frame = CreateFrame("Frame", nil, parent)
         frame.backdrop = {
             bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
             edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
@@ -45,7 +45,7 @@ local function GetInspectItemListFrame(parent)
         }
         local height = 424
         frame:SetSize(160, height)
-        --frame:SetFrameLevel(0)
+        frame:SetFrameLevel(0)
         frame:SetPoint("TOPLEFT", parent, "TOPRIGHT", 0, 0)
         frame:SetBackdrop(frame.backdrop)
         frame:SetBackdropColor(0, 0, 0, 0.8)
@@ -79,7 +79,7 @@ local function GetInspectItemListFrame(parent)
             else
                 itemframe:SetPoint("TOPLEFT", frame["item"..(i-1)], "BOTTOMLEFT")
             end
-            itemframe.label = CreateFrame("Frame", nil, itemframe, BackdropTemplateMixin and "BackdropTemplate")
+            itemframe.label = CreateFrame("Frame", nil, itemframe)
             itemframe.label:SetSize(38, 16)
             itemframe.label:SetPoint("LEFT")
             itemframe.label:SetBackdrop(backdrop)
@@ -137,7 +137,7 @@ local function GetInspectItemListFrame(parent)
         LibEvent:trigger("INSPECT_FRAME_CREATED", frame, parent)
     end
 
-	return parent.inspectFrame
+    return parent.inspectFrame
 end
 
 --等級字符
@@ -201,12 +201,6 @@ function ShowInspectItemListFrame(unit, parent, ilevel, maxLevel)
     frame:SetBackdrop(frame.backdrop)
     frame:SetBackdropColor(0, 0, 0, 0.9)
     frame:SetBackdropBorderColor(color.r, color.g, color.b)
-	
-	-- 修正與 Details 的相容性
-    local DetailsTalentFrame = _G["DetailsTalentFrame"]
-	if DetailsTalentFrame then
-		DetailsTalentFrame:SetPoint("TOPLEFT", frame, "TOPRIGHT", 362, 0)
-	end
 
     return frame
 end
@@ -351,11 +345,11 @@ PaperDollFrame:HookScript("OnHide", function(self)
 end)
 
 LibEvent:attachEvent("PLAYER_EQUIPMENT_CHANGED", function(self)
-    if (CharacterFrame:IsShown() and PaperDollFrame:IsShown() and MerInspectDB and MerInspectDB.ShowCharacterItemSheet) then
+    if (CharacterFrame:IsShown() and MerInspectDB and MerInspectDB.ShowCharacterItemSheet) then
         local ilevel, _, maxLevel = LibItemInfo:GetUnitItemLevel("player")
         ShowInspectItemListFrame("player", PaperDollFrame, ilevel, maxLevel)
     end
-    if (CharacterFrame:IsShown() and PaperDollFrame:IsShown()) then
+    if (CharacterFrame:IsShown()) then
         LibEvent:trigger("TogglePlayerStatsFrame", PaperDollFrame, false)
         LibEvent:trigger("TogglePlayerStatsFrame", PaperDollFrame, true)
     end

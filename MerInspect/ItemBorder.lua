@@ -2,6 +2,7 @@
 -------------------------------------
 -- 物品邊框 Author: M
 -------------------------------------
+do return end           -->>>>          wtf
 
 local LibEvent = LibStub:GetLibrary("LibEvent.7000")
 
@@ -22,12 +23,12 @@ local function SetItemAngularBorder(self, quality, itemIDOrLink)
         self.angularFrame:SetSize(w, h)
         self.angularFrame:SetPoint("CENTER", anchor, "CENTER", 0, 0)
         self.angularFrame:Hide()
-        self.angularFrame.mask = CreateFrame("Frame", nil, self.angularFrame, BackdropTemplateMixin and "BackdropTemplate")
+        self.angularFrame.mask = CreateFrame("Frame", nil, self.angularFrame)
         self.angularFrame.mask:SetSize(w-2, h-2)
         self.angularFrame.mask:SetPoint("CENTER")
         self.angularFrame.mask:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", edgeSize = 2})
         self.angularFrame.mask:SetBackdropBorderColor(0, 0, 0)
-        self.angularFrame.border = CreateFrame("Frame", nil, self.angularFrame, BackdropTemplateMixin and "BackdropTemplate")
+        self.angularFrame.border = CreateFrame("Frame", nil, self.angularFrame)
         self.angularFrame.border:SetSize(w, h)
         self.angularFrame.border:SetPoint("CENTER")
         self.angularFrame.border:SetBackdrop({edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1})

@@ -36,6 +36,10 @@ ns.L = {
     PaperDoll                   = "人物面板",
     Chat                        = "聊天",
     Loot                        = "拾取",
-	Title						= "装备观察",
-	OptionName					= "装备观察",
+    --
+    Red = "红色插槽",
+    Yellow = "黄色插槽",
+    Blue = "蓝色插槽",
+    Meta = "多彩插槽",
+    UnkGem = "未知插槽",
 }
