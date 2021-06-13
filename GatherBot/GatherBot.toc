@@ -1,0 +1,10 @@
+## Interface: 20501
+## Version: 1.13
+## Title: GatherBot
+## Author: Aoikaze
+## SavedVariables: GatherBotDB
+## Notes: Gather ALL
+## Notes-zhCN: 双采助手
+
+Locale.lua
+GatherBot.lua
