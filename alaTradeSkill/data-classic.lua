@@ -12,10 +12,8 @@ NS.curPhase = 6;
 NS.maxPhase = 6;
 --[[--
 	by ALA @ 163UI
-	复用代码请在显著位置标注来源【ALA@网易有爱】
 	RECIPES DATA CREDITS ATLASLOOT & MTSL. DATA QUERIED FROM 'db.nfuwow.com'. API QUERIED FROM 'wow.gamepedia.com/World_of_Warcraft_API'
 	配方数据来源于AtlasLoot和MissingTradeSkillList, 修改数据来源于nfu数据库, API查询自gamepedia
-	Please Keep WOW Addon open-source & Reduce barriers for others.
 	请勿加密、乱码、删除空格tab换行符、设置加载依赖
 	##	2019-11-27
 		Initial release
@@ -3029,3 +3027,10 @@ NS.recipe_black_list_cid = {
 
 NS.recipe_info = recipe_info;
 NS.recipe_sid_list_by_pid = recipe_sid_list_by_pid;
+
+function NS.db_min_pid()
+	return 1;
+end
+function NS.db_max_pid()
+	return 14;
+end

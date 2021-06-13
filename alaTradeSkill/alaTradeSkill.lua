@@ -864,12 +864,6 @@ do	--	MAIN
 				return tradeskill_check_name;
 			end
 		--	QUERY RECIPE DB
-			function NS.db_min_pid()
-				return 1;
-			end
-			function NS.db_max_pid()
-				return 14;
-			end
 			--	pid | is_tradeskill
 			function NS.db_is_pid(pid)
 				return pid ~= nil and tradeskill_id[pid] ~= nil;
