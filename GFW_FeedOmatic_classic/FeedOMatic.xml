@@ -1,0 +1,248 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ C:ProjectsWoWBinInterfaceFrameXMLUI.xsd">
+
+	<Frame name="FOM_FoodListCreatedItemTemplate" enableMouse="true" virtual="true">
+		<Size>
+			<AbsDimension x="18" y="18"/>
+		</Size>
+		<Scripts>
+			<OnEnter>
+				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT");
+				FOM_FoodListShowTooltip(self);
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>		
+	</Frame>
+	<Button name="FOM_FoodListItemTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="350" y="24"/>
+		</Size>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentIcon" file="Interface\Icons\INV_Misc_QuestionMark">
+					<Size>
+						<AbsDimension x="18" y="18"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" >
+							<Offset x="24" y="0"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentName" inherits="GameFontHighlightLeft" text="Name">
+					<Size>
+						<AbsDimension x="210" y="11"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset x="48" y="0"/>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<Texture name="$parentCreatedIcon6">
+					<Size>
+						<AbsDimension x="18" y="18"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT" >
+							<Offset x="-92" y="0"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentCreatedIcon5">
+					<Size>
+						<AbsDimension x="18" y="18"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT" >
+							<Offset x="-74" y="0"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentCreatedIcon4">
+					<Size>
+						<AbsDimension x="18" y="18"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT" >
+							<Offset x="-56" y="0"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentCreatedIcon3">
+					<Size>
+						<AbsDimension x="18" y="18"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT" >
+							<Offset x="-38" y="0"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentCreatedIcon2">
+					<Size>
+						<AbsDimension x="18" y="18"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT" >
+							<Offset x="-20" y="0"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentCreatedIcon1">
+					<Size>
+						<AbsDimension x="18" y="18"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT" >
+							<Offset x="-2" y="0"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentCategoryRight" file="Interface\TokenFrame\UI-TokenFrame-CategoryButton">
+					<Size>
+						<AbsDimension x="37" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT">
+							<Offset x="0" y="0"/>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0" right="0.14453125" top="0.296875" bottom="0.578125"/>
+				</Texture>
+				<Texture name="$parentCategoryLeft" file="Interface\TokenFrame\UI-TokenFrame-CategoryButton">
+					<Size>
+						<AbsDimension x="313" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset x="0" y="0"/>
+						</Anchor>
+						<Anchor point="RIGHT" relativeTo="$parentCategoryRight" relativePoint="LEFT">
+							<Offset x="0" y="0"/>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0" bottom="0.28125"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentCheck" file="Interface\Buttons\UI-CheckBox-Check">
+					<Size>
+						<AbsDimension x="18" y="18"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset x="2" y="0"/>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>	
+		<Frames>
+			<Frame name="$parentCreatedItem6" inherits="FOM_FoodListCreatedItemTemplate">
+				<Anchors>                                                               
+					<Anchor point="RIGHT" >                                             
+						<Offset x="-92" y="0"/>                                         
+					</Anchor>                                                           
+				</Anchors>                                                              
+			</Frame>                                                                    
+			<Frame name="$parentCreatedItem5" inherits="FOM_FoodListCreatedItemTemplate">
+				<Anchors>                                                               
+					<Anchor point="RIGHT" >                                             
+						<Offset x="-74" y="0"/>                                         
+					</Anchor>                                                           
+				</Anchors>                                                              
+			</Frame>                                                                    
+			<Frame name="$parentCreatedItem4" inherits="FOM_FoodListCreatedItemTemplate">
+				<Anchors>                                                               
+					<Anchor point="RIGHT" >                                             
+						<Offset x="-56" y="0"/>                                         
+					</Anchor>                                                           
+				</Anchors>                                                              
+			</Frame>                                                                    
+			<Frame name="$parentCreatedItem3" inherits="FOM_FoodListCreatedItemTemplate">
+				<Anchors>                                                               
+					<Anchor point="RIGHT" >                                             
+						<Offset x="-38" y="0"/>                                         
+					</Anchor>                                                           
+				</Anchors>                                                              
+			</Frame>                                                                    
+			<Frame name="$parentCreatedItem2" inherits="FOM_FoodListCreatedItemTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" >
+						<Offset x="-20" y="0"/>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentCreatedItem1" inherits="FOM_FoodListCreatedItemTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" >
+						<Offset x="-2" y="0"/>
+					</Anchor>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<ButtonText>
+			<Anchors>
+				<Anchor point="CENTER">
+					<Offset>
+						<AbsDimension x="0" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GameFontNormal"/>
+		<Scripts>
+			<OnLoad>
+				FOM_FoodListButton_OnLoad(self);
+			</OnLoad>
+			<OnClick>
+				FOM_FoodListButton_OnClick(self);
+			</OnClick>
+			<OnEnter>
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+				FOM_FoodListShowTooltip(self);
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
+	</Button>
+	
+	<Frame name="Frame_GFW_FeedOMatic">
+		<Scripts>
+			<OnLoad>
+				FOM_OnLoad(self);
+			</OnLoad>
+			<OnEvent>
+				FOM_OnEvent(self, event, ...);
+			</OnEvent>
+		</Scripts>
+	</Frame>
+
+	<GameTooltip name="FOMTooltip" frameStrata="TOOLTIP" hidden="true" parent="UIParent" inherits="GameTooltipTemplate">
+		<Scripts>
+			<OnLoad>
+				self:SetOwner(UIParent, "ANCHOR_NONE");
+			</OnLoad>
+		</Scripts>
+	</GameTooltip>
+	
+	<GameTooltip name="FOM_FeedTooltip" clampedToScreen="true" frameStrata="TOOLTIP" hidden="true" parent="UIParent" inherits="ShoppingTooltipTemplate">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentHeader" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="10" y="-10"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</GameTooltip>
+	
+</Ui>
