@@ -35,6 +35,10 @@ SlashCmdList["SWC"] = function(Input)
 	elseif Command:lower() == "reset" then
 		Addon.Warning:SetPoint("CENTER", nil, "CENTER", 0, 240)
 		print(L["<|cFFBA55D3SW|r>The HUD Frame Position is Reset!"])
+	elseif Command:lower() == "f" or Command:lower() == "follow" then
+		Addon.Followed.FromWhisper = false
+		Addon:FollowTargetUnit(UnitGUID("target"), Addon.Config.StartFollow)
+		print(string.format(L["<|cFFBA55D3SW|r>Start Super Follow <%s>!"], GetUnitName("target", true)))
 	elseif Command:lower() == "in" then
 		if Rest then
 			local Delay, Task = Rest:match("([%d.]+)%s*(.+)")

@@ -15,6 +15,7 @@ Addon.Followed = {
 	["UnitIndex"] = "player",
 	["GUID"] = "",
 	["StartTime"] = 0,
+	["FromWhisper"] = false,
 }
 
 Addon.Output = {} -- 交易记录输出窗口
@@ -200,6 +201,7 @@ Addon.ScrollFrame:Hide()
 
 --Frame方法
 function Addon.Warning:AddMessage(msg)
+	-- msg = string.gsub(msg, "[%[%]]", "|cFFFF143C[%[%]]|r")
 	Addon.Warning.Text:SetText(msg)
 	C_Timer.After(3, function()
 		if Addon.Warning.Text:GetText() == msg then

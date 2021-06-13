@@ -306,6 +306,42 @@ function Addon:IsPlayerMuted()
 	return true
 end
 
+--跟随函数
+function Addon:FollowTargetUnit(FollowUnitGUID, WhisperText)
+	local t, u = Addon:GetTargetUnit(FollowUnitGUID) -- 根据密语对象GUID判断是否为团队/小队成员
+	if t == "group" then
+		if Config.StartFollow ~= "" and WhisperText == Config.StartFollow then --跟随
+			if not CheckInteractDistance(u, 4) then
+				if Addon.Followed.FromWhisper then
+					SendChatMessage(L["SPELLWHISPER_TEXT_FOLLOWFAILED_OUTOFRANGE"], "whisper", nil, GetUnitName(u, true))
+				end
+			else
+				FollowUnit(u)
+				Addon.Followed.UnitIndex = u
+				Addon.Followed.GUID = FollowUnitGUID
+				Addon.Followed.StartTime = GetTime()
+				if Addon.Followed.FromWhisper then
+					SendChatMessage(L["SPELLWHISPER_TEXT_FOLLOWREPLY"], "whisper", nil, GetUnitName(u, true))
+				end
+			end
+		elseif Config.StopFollow ~= "" and WhisperText == Config.StopFollow then --停止跟随
+			FollowUnit("player")
+			Addon.Followed.UnitIndex = "player"
+			Addon.Followed.GUID = ""
+			SendChatMessage(L["SPELLWHISPER_TEXT_STOPFOLLOWREPLY"], "whisper", nil, GetUnitName(u, true))
+		elseif Config.CombatFollowSwitchKey ~= "" and WhisperText == Config.CombatFollowSwitchKey then
+			if Config.CombatFollow then
+				Config.CombatFollow = false
+				SendChatMessage(L["SPELLWHISPER_TEXT_CHANGEFOLLOWMODEOFF"], "whisper", nil, GetUnitName(u, true))
+			else
+				Config.CombatFollow = true
+				SendChatMessage(L["SPELLWHISPER_TEXT_CHANGEFOLLOWMODEON"], "whisper", nil, GetUnitName(u, true))
+			end
+			Addon.ScrollFrame:ConfigRefresh()
+		end
+	end
+end
+
 --发送版本检查通知
 function Addon:SendVerCheck()
 	if not Config.IsEnable then
@@ -559,7 +595,7 @@ function Addon:SendThreatAnnounce(MobName, MobIconIndex, TargetName, TargetIconI
 	)
 	if msg ~= L["NONE"] then
 		if channel == "hud" then
-			Warning:AddMessage("|cFFFF143C"..msg.."|r")
+			Warning:AddMessage(msg)
 		elseif channel == "self" then
 			print("|cFFFF143C"..msg.."|r")
 		elseif not Addon:IsPlayerMuted() then
@@ -576,8 +612,6 @@ function Addon:SendWarningMessage(WarningType, CasterName, SpellName, TargetName
 		return
 	end
 	local channel = Config.OutputChannel
-	-- CasterName = Addon:GetShortName(CasterName)
-	-- TargetName = Addon:GetShortName(TargetName)
 	if IsInRaid() and not (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) and channel == "raid_warning" then
 		channel = "raid"
 	elseif IsInGroup() and not IsInRaid() and (channel == "raid" or channel == "raid_warning") then
@@ -610,6 +644,15 @@ function Addon:SendWarningMessage(WarningType, CasterName, SpellName, TargetName
 				["#spell_2#"] = OtherInfo
 			}
 		)
+	elseif WarningType == "STOLEN" then --打断
+		msg = Addon:FormatMessage(
+			Config["SpellOutput"]["SPELLWHISPER_TEXT_STOLEN"] and Config["SpellOutput"]["SPELLWHISPER_TEXT_STOLEN"] or L["SPELLWHISPER_TEXT_STOLEN"],
+			{
+				["#caster#"] = CasterName,
+				["#spell#"] = SpellName,
+				["#target#"] = (TargetIconIndex ~= 0 and RaidIconList[TargetIconIndex] or "") .. TargetName,
+			}
+		)
 	elseif WarningType == "MISSED" then --抵抗/失误
 		msg = Addon:FormatMessage(
 			Config["SpellOutput"]["SPELLWHISPER_TEXT_MISSED"] and Config["SpellOutput"]["SPELLWHISPER_TEXT_MISSED"] or L["SPELLWHISPER_TEXT_MISSED"],
@@ -633,7 +676,7 @@ function Addon:SendWarningMessage(WarningType, CasterName, SpellName, TargetName
 	end
 	if not Addon:CompareOutputCache(msg) and msg ~= L["NONE"] then
 		if channel == "hud" then
-			Warning:AddMessage("|cFFFF143C"..msg.."|r")
+			Warning:AddMessage(msg)
 		elseif channel == "self" then
 			print("|cFFFF143C"..msg.."|r")
 		elseif not Addon:IsPlayerMuted() then
@@ -666,7 +709,7 @@ function Addon:SendAnnounceMessage(AnnounceChannel, AnnounceReason, AnnounceType
 			if channel == "off" then
 				return
 			elseif channel == "hud" then
-				Addon.Warning:AddMessage("|cFFFF143C"..msg.."|r")
+				Addon.Warning:AddMessage(msg)
 			elseif channel == "self" then
 				print("|cFFFF143C"..msg.."|r")
 			else
@@ -688,7 +731,7 @@ function Addon:SendAnnounceMessage(AnnounceChannel, AnnounceReason, AnnounceType
 			if channel == "off" then
 				return
 			elseif channel == "hud" then
-				Warning:AddMessage("|cFFFF143C"..msg.."|r")
+				Warning:AddMessage(msg)
 			elseif channel == "self" then
 				print("|cFFFF143C"..msg.."|r")
 			else
@@ -1018,35 +1061,8 @@ function Frame:CHAT_MSG_WHISPER(...) --接收密语--arg[1]对话内容，arg[12
 		return
 	end
 	local arg = {...}
-
-	local t, u = Addon:GetTargetUnit(arg[12]) -- 根据密语对象GUID判断是否为团队/小队成员
-	if t == "group" then
-		if Config.StartFollow ~= "" and arg[1] == Config.StartFollow then --跟随
-			if not CheckInteractDistance(u, 4) then
-				SendChatMessage(L["SPELLWHISPER_TEXT_FOLLOWFAILED_OUTOFRANGE"], "whisper", nil, GetUnitName(u, true))
-			else
-				FollowUnit(u)
-				Addon.Followed.UnitIndex = u
-				Addon.Followed.GUID = arg[12]
-				Addon.Followed.StartTime = GetTime()
-				SendChatMessage(L["SPELLWHISPER_TEXT_FOLLOWREPLY"], "whisper", nil, GetUnitName(u, true))
-			end
-		elseif Config.StopFollow ~= "" and arg[1] == Config.StopFollow then --停止跟随
-			FollowUnit("player")
-			Addon.Followed.UnitIndex = "player"
-			Addon.Followed.GUID = ""
-			SendChatMessage(L["SPELLWHISPER_TEXT_STOPFOLLOWREPLY"], "whisper", nil, GetUnitName(u, true))
-		elseif Config.CombatFollowSwitchKey ~= "" and arg[1] == Config.CombatFollowSwitchKey then
-			if Config.CombatFollow then
-				Config.CombatFollow = false
-				SendChatMessage(L["SPELLWHISPER_TEXT_CHANGEFOLLOWMODEOFF"], "whisper", nil, GetUnitName(u, true))
-			else
-				Config.CombatFollow = true
-				SendChatMessage(L["SPELLWHISPER_TEXT_CHANGEFOLLOWMODEON"], "whisper", nil, GetUnitName(u, true))
-			end
-			Addon.ScrollFrame:ConfigRefresh()
-		end
-	end
+	Addon.Followed.FromWhisper = true
+	Addon:FollowTargetUnit(arg[12], arg[1])
 end
 
 function Frame:CHAT_MSG_WHISPER_INFORM(NewMessage, TargetName) --发送密语--arg[1]对话内容，arg[2]发送对象
@@ -1237,6 +1253,15 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 				Addon:SendWarningMessage("INTERRUPT", arg[5], GetSpellLink(arg[12]), arg[9], GetSpellLink(arg[15]), RaidTargetIcon, nil) --arg[5]打断者名字，arg[13]打断技能，arg[9]被打断者名字，arg[16]被打断的技能
 			end
 		end
+	elseif arg[2] == "SPELL_STOLEN" then --偷取通告
+		local CasterType = Addon:GetTargetUnit(arg[4])
+		if CasterType == "group" or CasterType == "pet" or arg[4] == PlayerGUID then
+			local t, u = Addon:GetTargetUnit(arg[8]) --获取miss对象的Unit代码
+			if t == "target" and u and not UnitIsFriend("player", u) then
+				local RaidTargetIcon = GetRaidTargetIndex(u) or 0
+				Addon:SendWarningMessage("STOLEN", arg[5], GetSpellLink(arg[15]), arg[9], nil, RaidTargetIcon, nil) --arg[5]打断者名字，arg[13]打断技能，arg[9]被打断者名字，arg[16]被打断的技能
+			end
+		end
 	elseif arg[2] == "SPELL_DISPEL" and (InstanceType == "party" or InstanceType == "raid") then --进攻驱散提示
 		local CasterType = Addon:GetTargetUnit(arg[4])
 		if CasterType == "group" or CasterType == "pet" or arg[4] == PlayerGUID then
@@ -1415,7 +1440,7 @@ end
 function Frame:AUTOFOLLOW_END()
 	if Addon.Followed.UnitIndex ~= "player" then
 		if CheckInteractDistance(Addon.Followed.UnitIndex, 4) then
-			if math.floor(GetTime() * 10) / 10 - Addon.Followed.StartTime > 0.1 then
+			if math.floor(GetTime() * 100) / 100 - Addon.Followed.StartTime > 0.15 then
 				SendChatMessage(L["SPELLWHISPER_TEXT_STOPFOLLOW_MANUALLY"], "whisper", nil, GetUnitName(Addon.Followed.UnitIndex, true))
 				Addon.Followed.UnitIndex = "player"
 				Addon.Followed.GUID = ""

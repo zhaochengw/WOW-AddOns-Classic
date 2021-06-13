@@ -318,7 +318,7 @@ function Panel:Initialize()
 
 	--通告输出模式
 	local OutputChannelList = self:CreateDropDown(L["Channel: "],
-		{"off", L["off"], "say", L["say"], "yell", L["yell"], "party", L["party"], "raid", L["raid"], "Raid_Warning", L["Raid_Warning"], "self", L["self"], "hud", L["hud"],},
+		{"off", L["off"],--[[ "say", L["say"], "yell", L["yell"],]] "party", L["party"], "raid", L["raid"], "Raid_Warning", L["Raid_Warning"], "self", L["self"], "hud", L["hud"],},
 		function(self) return Config.OutputChannel end,
 		function(self, v) Config.OutputChannel = v end,
 		"raid")
@@ -494,6 +494,8 @@ function Panel:Initialize()
 			L["Announce CC Spell Broken"],
 			"SPELLWHISPER_TEXT_INTERRUPT",
 			L["Announce Enemy's Spell Interrupted"],
+			"SPELLWHISPER_TEXT_STOLEN",
+			L["Announce Spell Stolen"],
 			"SPELLWHISPER_TEXT_MISSED",
 			L["Announce Spell/Skill Missed"],
 			"SPELLWHISPER_TEXT_DISPEL",
