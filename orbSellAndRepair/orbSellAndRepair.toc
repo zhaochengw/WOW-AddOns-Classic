@@ -11,6 +11,6 @@
 ## SavedVariablesPerCharacter: orbSellAndRepair_settings
 
 locales/en.lua
-locales/cn.lua
-locales/tw.lua
+locales/fr.lua
+locales/zhCN.lua
 main.lua

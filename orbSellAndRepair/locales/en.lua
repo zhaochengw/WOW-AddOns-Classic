@@ -5,6 +5,8 @@ L.SELL_GREY = "Sale: "
 L.REPAIR_REPUT = "Repair: insufficient reputation"
 L.REPAIR_MONEY = "Repair: not enough gold"
 L.REPAIR_OK = "Repair: "
+L.BALANCE_P = "|cff00ff00SUM:|r "
+L.BALANCE_N = "|cffff0000SUM:|r "
 
 L.URL_TEXT = "Press Ctrl-C to copy the URI"
 L.URL_BTN1 =  "Done"
@@ -36,6 +38,10 @@ L.ReputSlider = {
 
 L.VendorGreysBtn = {
     text = "Sell gray objects"
+}
+
+L.VendorWhitesBtn = {
+    text = "Sell white weapon and armor"
 }
 
 L.NameplateColorBtn = {
