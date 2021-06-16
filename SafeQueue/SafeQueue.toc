@@ -1,0 +1,12 @@
+## Interface: 20501
+## Title: SafeQueue
+## Notes: Fixes the Enter Battle button for classic battlegrounds
+## Version: v5.1
+## Author: Jordon
+## DefaultState: Enabled
+## X-Curse-Project-ID: 29171
+## X-Wago-ID: 0mKOq1Nx
+## X-WoWI-ID: 19494
+
+SafeQueue.xml
+SafeQueue.lua
