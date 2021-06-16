@@ -26,6 +26,7 @@ local UnitIsGroupLeader = UnitIsGroupLeader
 local UnitIsGroupAssistant = UnitIsGroupAssistant
 local UnitIsPlayer = UnitIsPlayer
 local UnitIsFriend = UnitIsFriend
+local UnitIsEnemy = UnitIsEnemy
 local UnitIsUnit = UnitIsUnit
 local UnitInBattleground = UnitInBattleground
 local UnitName = UnitName
@@ -630,7 +631,7 @@ function Addon:SendWarningMessage(WarningType, CasterName, SpellName, TargetName
 				["#caster#"] = CasterName,
 				["#spell#"] = SpellName,
 				["#target#"] = (TargetIconIndex ~= 0 and RaidIconList[TargetIconIndex] or "") .. TargetName,
-				["#spell_2#"] = OtherInfo
+				["#spell_2#"] = OtherInfo,
 			}
 		)
 		BreakTable[TargetUnitGUID] = math.floor(GetTime()*10)/10
@@ -641,7 +642,7 @@ function Addon:SendWarningMessage(WarningType, CasterName, SpellName, TargetName
 				["#caster#"] = CasterName,
 				["#spell#"] = SpellName,
 				["#target#"] = (TargetIconIndex ~= 0 and RaidIconList[TargetIconIndex] or "") .. TargetName,
-				["#spell_2#"] = OtherInfo
+				["#spell_2#"] = OtherInfo,
 			}
 		)
 	elseif WarningType == "STOLEN" then --打断
@@ -660,7 +661,7 @@ function Addon:SendWarningMessage(WarningType, CasterName, SpellName, TargetName
 				["#caster#"] = CasterName,
 				["#spell#"] = SpellName,
 				["#target#"] = (TargetIconIndex ~= 0 and RaidIconList[TargetIconIndex] or "") .. TargetName,
-				["#reason#"] = OtherInfo
+				["#reason#"] = OtherInfo,
 			}
 		)
 	elseif WarningType == "DISPEL" then --驱散
@@ -670,7 +671,16 @@ function Addon:SendWarningMessage(WarningType, CasterName, SpellName, TargetName
 				["#caster#"] = CasterName,
 				["#spell#"] = SpellName,
 				["#target#"] = (TargetIconIndex ~= 0 and RaidIconList[TargetIconIndex] or "") .. TargetName,
-				["#spell_2#"] = OtherInfo
+				["#spell_2#"] = OtherInfo,
+			}
+		)
+	elseif WarningType == "REFLECT" then --反射
+		msg = Addon:FormatMessage(
+			Config["SpellOutput"]["SPELLWHISPER_TEXT_REFLECT"] and Config["SpellOutput"]["SPELLWHISPER_TEXT_REFLECT"] or L["SPELLWHISPER_TEXT_REFLECT"],
+			{
+				["#caster#"] = CasterName,
+				["#spell#"] = SpellName,
+				["#target"] = (TargetIconIndex ~= 0 and RaidIconList[TargetIconIndex] or "") .. TargetName,
 			}
 		)
 	end
@@ -1200,7 +1210,7 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 				Addon:SendHealingMessage(GetSpellLink(arg[12]), WhisperTargetName, FailedReason)
 			end
 		end
-	elseif arg[2] == "SPELL_MISSED" and (InstanceType == "party" or InstanceType == "raid") then --法术未成功通告
+	elseif arg[2] == "SPELL_MISSED" and (InstanceType == "party" or InstanceType == "raid") and not arg[15] == "REFLECT" then --法术未成功通告
 		local CasterType = Addon:GetTargetUnit(arg[4])
 		if CasterType == "group" or CasterType == "pet" or arg[4] == PlayerGUID then
 			local MissedReason = nil
@@ -1243,6 +1253,12 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 					end
 				end
 			end
+		end
+	elseif arg[2] == "SPELL_MISSED" and arg[15] == "REFLECT" then -- 反射提示
+		local t, u = Addon:GetTargetUnit(arg[4])
+		if t == "target" and UnitIsEnemy("player", u) then
+			local RaidTargetIcon = GetRaidTargetIndex(u) or 0
+			Addon:SendWarningMessage("REFLECT", arg[5], GetSpellLink(arg[12]), arg[9], nil, RaidTargetIcon, nil) -- arg[5]施法者，arg[13]被反射技能，arg[9]目標
 		end
 	elseif arg[2] == "SPELL_INTERRUPT" then --打断通告
 		local CasterType = Addon:GetTargetUnit(arg[4])
