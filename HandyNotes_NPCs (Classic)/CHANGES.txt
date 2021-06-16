@@ -1,10 +1,9 @@
 ------------------------------------------------------------------------
-r86 | Caliaha | 2021-06-06 22:40:20 +0000 (Sun, 06 Jun 2021) | 2 lines
+r89 | Caliaha | 2021-06-14 13:59:28 +0000 (Mon, 14 Jun 2021) | 2 lines
 Changed paths:
    M /trunk/bcc/data.lua
    M /trunk/bcc/itemData.lua
    M /trunk/bcc/vendorData.lua
-   M /trunk/bcc/weaponskills.lua
    M /trunk/locales/bcc/deDE.lua
    M /trunk/locales/bcc/enUS.lua
    M /trunk/locales/bcc/esES.lua
@@ -14,7 +13,7 @@ Changed paths:
    M /trunk/locales/bcc/ruRU.lua
    M /trunk/locales/bcc/zhCN.lua
 
-Updated data
+More data
 
 ------------------------------------------------------------------------
 
