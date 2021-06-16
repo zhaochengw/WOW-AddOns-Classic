@@ -1270,6 +1270,42 @@ if title ~= nil then
 	end
 end
 
+local _, title = GetAddOnInfo("MikScrollingBattleText");
+if title ~= nil then
+	if GetLocale() == "zhCN" then
+		FF_NameMSBT	= "MikScrollingBattleText";
+		FF_DescMSBT	= "人物模型周围滚动显示战斗信息(MSBT)";
+	else
+		FF_NameMSBT	= "MikScrollingBattleText";
+		FF_DescMSBT	= "Scrolls battle information around the character model";
+	end
+	if ( EarthFeature_AddButton ) then
+		EarthFeature_AddButton(
+			{
+				id= "MikScrollingBattleText";
+				tab= "combat";
+				name= FF_NameMSBT;
+				subtext= "MSBTOptions";
+				tooltip = FF_DescMSBT;
+				icon= "Interface\\Icons\\Ability_Gouge";
+				callback= function(button)
+					if not IsAddOnLoaded("MSBTOptions") then
+						LoadAddOn("MSBTOptions");
+					end
+					SlashCmdList["MSBT"]("");
+				end;
+				test = function()
+					if not IsAddOnLoaded("MSBTOptions") and not IsAddOnLoadOnDemand("MSBTOptions") then
+						return false;
+					else
+						return true;
+					end
+				end;
+			}
+		);
+	end
+end
+
 local _, title = GetAddOnInfo("DamageEx");
 if title ~= nil then
 	if GetLocale() == "zhCN" then
