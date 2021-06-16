@@ -1,4 +1,3 @@
-
 ---@class L
 local L = LibStub('AceLocale-3.0'):NewLocale(..., 'zhCN')
 if not L then
@@ -115,6 +114,10 @@ L['Soul Color'] = '灵魂袋颜色'
 L['Enchanting Color'] = '附魔材料袋颜色'
 L['Herbalism Color'] = '草药袋颜色'
 L['Keyring Color'] = '钥匙链颜色'
+L['Leatherworking Color'] = '制皮袋颜色'
+L['Engineering Color'] = '工程学材料袋颜色'
+L['Gems Color'] = '宝石袋颜色'
+L['Mining Color'] = '矿石袋颜色'
 L['Empty Slot Brightness'] = '空格亮度'
 
 L['Plugin Buttons'] = '扩展按钮'

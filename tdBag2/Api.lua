@@ -57,7 +57,12 @@ ns.ITEM_SPACING = 2
 
 ns.SECONDS_OF_DAY = 24 * 60 * 60
 
+--[=[@classic@
 ns.KEYRING_FAMILY = 9
+--@end-classic@]=]
+--@non-classic@
+ns.KEYRING_FAMILY = 256
+--@end-non-classic@
 
 ns.LEFT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:228:283|t]]
 ns.RIGHT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385|t]]
@@ -85,7 +90,6 @@ ns.RACE_ICON_TCOORDS = {
     ['ORC_FEMALE'] = {0.75, 1.0, 0.75, 1.0},
 }
 --@end-classic@]=]
-
 -- @bcc@
 ns.RACE_ICON_TCOORDS = {
     ['HUMAN_MALE'] = {0, 0.125, 0, 0.25},
@@ -211,16 +215,6 @@ ns.DEFAULT_WATCHES = { --
     PALADIN = {21177, 17033},
     ROGUE = {5140, 5530},
     SHAMAN = {17057, 17058},
-}
-
-ns.BAG_FAMILY_KEYS = { --
-    [1] = 'colorQuiver',
-    [2] = 'colorQuiver',
-    [3] = 'colorSoul',
-    [4] = 'colorSoul',
-    [6] = 'colorHerb',
-    [7] = 'colorEnchant',
-    [9] = 'colorKeyring',
 }
 
 ns.TRADE_BAG_ORDER = { --
@@ -373,12 +367,7 @@ ns.PROFILE = {
         remainLimit = 0,
 
         colorSlots = true,
-        colorNormal = {r = 1, g = 1, b = 1},
-        colorQuiver = {r = 1, g = 0.87, b = 0.68},
-        colorSoul = {r = 0.64, g = 0.39, b = 1},
-        colorEnchant = {r = 0.64, g = 0.83, b = 1},
-        colorHerb = {r = 0.5, g = 1, b = 0.5},
-        colorKeyring = {r = 1, g = 0.67, b = 0.95},
+
         emptyAlpha = 0.9,
 
         searches = {first = true},
@@ -387,16 +376,40 @@ ns.PROFILE = {
     },
 }
 
-local function riter(t, i)
-    i = i - 1
-    if i > 0 then
-        return i, t[i]
+ns.BAG_FAMILIES = {}
+ns.BAG_FAMILY_KEYS = {}
+
+local function familyColor(families, key, name, profile)
+    local t = type(families)
+    if t == 'table' then
+        for _, family in ipairs(families) do
+            ns.BAG_FAMILY_KEYS[family] = key
+        end
+    elseif t == 'number' then
+        ns.BAG_FAMILY_KEYS[families] = key
     end
+    ns.PROFILE.profile[key] = profile
+    tinsert(ns.BAG_FAMILIES, {key = key, name = name})
 end
 
-function ns.ripairs(t)
-    return riter, t, #t + 1
-end
+familyColor(nil, 'colorNormal', L['Normal Color'], {r = 1, g = 1, b = 1})
+familyColor({1, 2}, 'colorQuiver', L['Quiver Color'], {r = 1, g = 0.87, b = 0.68})
+--[=[@classic@
+familyColor({3, 4}, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
+familyColor(6, 'colorHerb', L['Herbalism Color'], {r = 0.5, g = 1, b = 0.5})
+familyColor(7, 'colorEnchant', L['Enchanting Color'], {r = 0.64, g = 0.83, b = 1})
+familyColor(9, 'colorKeyring', L['Keyring Color'], {r = 1, g = 0.67, b = 0.95})
+--@end-classic@]=]
+--@non-classic@
+familyColor(4, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
+familyColor(8, 'colorLeather', L['Leatherworking Color'], {r = 0.98, g = 0.44, b = 0.44})
+familyColor(32, 'colorHerb', L['Herbalism Color'], {r = 0.5, g = 1, b = 0.5})
+familyColor(64, 'colorEnchant', L['Enchanting Color'], {r = 0.64, g = 0.83, b = 1})
+familyColor(128, 'colorEngineer', L['Engineering Color'], {r = 0.96, g = 1, b = 0})
+familyColor(512, 'colorGems', L['Gems Color'], {r = 0.32, g = 0.61, b = 1})
+familyColor(512, 'colorMine', L['Mining Color'], {r = 0.96, g = 0.27, b = 0.90})
+familyColor(256, 'colorKeyring', L['Keyring Color'], {r = 1, g = 0.67, b = 0.95})
+--@end-non-classic@
 
 function ns.GetBags(bagId)
     return BAGS[bagId]

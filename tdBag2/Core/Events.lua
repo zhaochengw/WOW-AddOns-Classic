@@ -58,6 +58,7 @@ function Events:OnEnable()
     self:RegisterEvent('SEND_MAIL_COD_CHANGED', 'Fire')
     self:RegisterEvent('SEND_MAIL_MONEY_CHANGED', 'Fire')
     self:RegisterEvent('PLAYERBANKBAGSLOTS_CHANGED', 'Fire')
+    self:RegisterEvent('UNIT_PORTRAIT_UPDATE', 'Fire')
 end
 
 local function RegisterFrameEvent(self, event, callback)

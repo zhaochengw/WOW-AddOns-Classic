@@ -2,13 +2,14 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/17/2019, 10:17:19 AM
-
+--
 ---- LUA
 local ipairs, pairs = ipairs, pairs
 local max = math.max
 local select = select
 local tinsert, tremove = table.insert, table.remove
 local wipe = table.wipe or wipe
+local ripairs = ipairs_reverse or ripairs
 
 ---- WOW
 local CreateFrame = CreateFrame
@@ -17,7 +18,6 @@ local GetItemFamily = GetItemFamily
 
 ---@type ns
 local ns = select(2, ...)
-local ripairs = ns.ripairs
 local Addon = ns.Addon
 local Cache = ns.Cache
 local TRADE_BAG_ORDER = ns.TRADE_BAG_ORDER

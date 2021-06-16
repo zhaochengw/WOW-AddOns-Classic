@@ -300,6 +300,7 @@ function Addon:SetupOptionFrame()
                 separator1 = separator(),
                 colorHeader = header(L['Slot Colors']),
                 colorSlots = fullToggle(L['Color Empty Slots by Bag Type']),
+                emptyAlpha = fullRange(L['Empty Slot Brightness'], 0, 1),
                 colors = {
                     type = 'group',
                     inline = true,
@@ -318,16 +319,28 @@ function Addon:SetupOptionFrame()
                         color.r, color.g, color.b = ...
                         fireGlobalKey(key)
                     end,
-                    args = {
-                        colorNormal = color(L['Normal Color']),
-                        colorQuiver = color(L['Quiver Color']),
-                        colorSoul = color(L['Soul Color']),
-                        colorEnchant = color(L['Enchanting Color']),
-                        colorHerb = color(L['Herbalism Color']),
-                        colorKeyring = color(L['Keyring Color']),
-                    },
+                    -- args = {
+                    --     colorNormal = color(L['Normal Color']),
+                    --     colorQuiver = color(L['Quiver Color']),
+                    --     colorSoul = color(L['Soul Color']),
+                    --     colorEnchant = color(L['Enchanting Color']),
+                    --     colorHerb = color(L['Herbalism Color']),
+                    --     --@non-classic@
+                    --     colorLeather = color(L['Leatherworking Color']),
+                    --     colorEngineer = color(L['Engineering Color']),
+                    --     colorGems = color(L['Gems Color']),
+                    --     colorMine = color(L['Mining Color']),
+                    --     --@end-non-classic@
+                    --     colorKeyring = color(L['Keyring Color']),
+                    -- },
+                    args = (function()
+                        local args = {}
+                        for _, v in ipairs(ns.BAG_FAMILIES) do
+                            args[v.key] = color(v.name)
+                        end
+                        return args
+                    end)(),
                 },
-                emptyAlpha = fullRange(L['Empty Slot Brightness'], 0, 1),
             }),
             display = treeItem(L['Auto Display'], {
                 desc = desc(L.DESC_DISPLAY),

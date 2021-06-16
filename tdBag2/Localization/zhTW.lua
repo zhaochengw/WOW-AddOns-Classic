@@ -30,12 +30,16 @@ L["DESC_FRAMES"] = "%s偏好設置"
 L["DESC_GENERAL"] = "通用偏好設置"
 L["Empty Slot Brightness"] = "空格亮度"
 L["Enchanting Color"] = "附魔材料袋顏色"
+--[[Translation missing --]]
+--[[ L["Engineering Color"] = ""--]] 
 L["Entering Combat"] = "進入戰鬥時"
 L["Equip"] = "裝備"
 L["Equipped"] = "裝備時"
 L["Expired"] = "過期"
 L["Features"] = "功能"
 L["Frame Settings"] = "背包設置"
+--[[Translation missing --]]
+--[[ L["Gems Color"] = ""--]] 
 L["Global search"] = "全局搜索"
 L["Global Settings"] = "全局設置"
 L["Herbalism Color"] = "草藥袋顏色"
@@ -51,6 +55,8 @@ L["HOTKEY_CTRL_RIGHT"] = "Ctrl-右鍵"
 L["Inventory"] = "背包"
 L["Item Scale"] = "物品縮放"
 L["Keyring Color"] = "鑰匙鏈顏色"
+--[[Translation missing --]]
+--[[ L["Leatherworking Color"] = ""--]] 
 L["Leaving a Vendor"] = "關閉商人時"
 L["Leaving the Auction House"] = "關閉拍賣行時"
 L["Leaving the Bank"] = "關閉銀行時"
@@ -59,6 +65,8 @@ L["Less than %s days"] = "低於%s天"
 L["Less than one day"] = "低於1天"
 L["Lock Frames"] = "鎖定位置"
 L["Mail"] = "郵箱"
+--[[Translation missing --]]
+--[[ L["Mining Color"] = ""--]] 
 L["Move down"] = "下移"
 L["Move up"] = "上移"
 L["Need to reload UI to make some settings take effect"] = "需要重新載入UI後，使部分設置生效"

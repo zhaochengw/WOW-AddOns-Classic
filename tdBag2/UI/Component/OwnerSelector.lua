@@ -40,11 +40,23 @@ function OwnerSelector:Constructor(_, meta)
 end
 
 function OwnerSelector:OnShow()
-    self:RegisterFrameEvent('OWNER_CHANGED', 'UpdateIcon')
+    self:UnregisterAllEvents()
+    self:RegisterFrameEvent('OWNER_CHANGED', 'OnShow')
     self:RegisterFrameEvent('ICON_CHARACTER_TOGGLED', 'UpdateIcon')
     self:RegisterEvent('OWNER_REMOVED', 'UpdateEnable')
     self:RegisterEvent('UPDATE_ALL', 'Update')
+
+    if self.meta.profile.iconCharacter and self.meta:IsSelf() then
+        self:RegisterEvent('UNIT_PORTRAIT_UPDATE')
+    end
+
     self:Update()
+end
+
+function OwnerSelector:UNIT_PORTRAIT_UPDATE(_, unit)
+    if unit == 'player' then
+        self:UpdateIcon()
+    end
 end
 
 function OwnerSelector:OnClick(button)

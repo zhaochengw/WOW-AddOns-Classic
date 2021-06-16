@@ -30,12 +30,16 @@ L["DESC_FRAMES"] = "가방 기본 설정입니다."
 L["DESC_GENERAL"] = "일반 환경 설정입니다."
 L["Empty Slot Brightness"] = "빈 칸 밝기"
 L["Enchanting Color"] = "마법부여 색상"
+--[[Translation missing --]]
+--[[ L["Engineering Color"] = ""--]] 
 L["Entering Combat"] = "전투 진입"
 L["Equip"] = "장비"
 L["Equipped"] = "착용"
 L["Expired"] = "만료됨"
 L["Features"] = "기능"
 L["Frame Settings"] = "프레임 설정"
+--[[Translation missing --]]
+--[[ L["Gems Color"] = ""--]] 
 L["Global search"] = "전역 검색"
 L["Global Settings"] = "전역 설정"
 L["Herbalism Color"] = "약초 색상"
@@ -51,6 +55,8 @@ L["HOTKEY_CTRL_RIGHT"] = "컨트롤-우클릭"
 L["Inventory"] = "가방"
 L["Item Scale"] = "아이템 크기"
 L["Keyring Color"] = "열쇠고리 색상"
+--[[Translation missing --]]
+--[[ L["Leatherworking Color"] = ""--]] 
 L["Leaving a Vendor"] = "상점 떠날 때"
 L["Leaving the Auction House"] = "경매장 떠날 때"
 L["Leaving the Bank"] = "은행 떠날 때"
@@ -59,6 +65,8 @@ L["Less than %s days"] = "%s일 미만"
 L["Less than one day"] = "1일 미만"
 L["Lock Frames"] = "프레임 고정"
 L["Mail"] = "우편"
+--[[Translation missing --]]
+--[[ L["Mining Color"] = ""--]] 
 L["Move down"] = "아래로 이동"
 L["Move up"] = "위로 이동"
 L["Need to reload UI to make some settings take effect"] = "일부 설정을 적용하려면 UI를 다시 재시작(reload)해야합니다."

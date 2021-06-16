@@ -36,6 +36,8 @@ L["DESC_FRAMES"] = "Настройки предпочтений сумки"
 L["DESC_GENERAL"] = "Общие настройки предпочтений"
 L["Empty Slot Brightness"] = "Яркость пустого слота"
 L["Enchanting Color"] = "Цвет чар"
+--[[Translation missing --]]
+--[[ L["Engineering Color"] = ""--]] 
 L["Entering Combat"] = "Вход в бой"
 --[[Translation missing --]]
 --[[ L["Equip"] = ""--]] 
@@ -45,6 +47,8 @@ L["Equipped"] = "Оборудованный"
 --[[Translation missing --]]
 --[[ L["Features"] = ""--]] 
 L["Frame Settings"] = "Параметры рамки"
+--[[Translation missing --]]
+--[[ L["Gems Color"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Global search"] = ""--]] 
 --[[Translation missing --]]
@@ -65,6 +69,8 @@ L["Inventory"] = "Инвентарь"
 L["Item Scale"] = "Шкала предметов"
 --[[Translation missing --]]
 --[[ L["Keyring Color"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Leatherworking Color"] = ""--]] 
 L["Leaving a Vendor"] = "Оставленно у торговца"
 L["Leaving the Auction House"] = "Оставленно на аукционе"
 L["Leaving the Bank"] = "Оставленно в банке"
@@ -76,6 +82,8 @@ L["Leaving the Mail Box"] = "Оставленно на почте"
 L["Lock Frames"] = "Закрепить рамку"
 --[[Translation missing --]]
 --[[ L["Mail"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Mining Color"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Move down"] = ""--]] 
 --[[Translation missing --]]

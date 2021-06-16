@@ -1,4 +1,3 @@
-
 local L = LibStub('AceLocale-3.0'):NewLocale(..., 'enUS', true)
 if not L then
     return
@@ -32,12 +31,14 @@ L["DESC_FRAMES"] = "%s preference Settings."
 L["DESC_GENERAL"] = "General preference Settings."
 L["Empty Slot Brightness"] = true
 L["Enchanting Color"] = true
+L["Engineering Color"] = true
 L["Entering Combat"] = true
 L["Equip"] = true
 L["Equipped"] = true
 L["Expired"] = true
 L["Features"] = true
 L["Frame Settings"] = true
+L["Gems Color"] = true
 L["Global search"] = true
 L["Global Settings"] = true
 L["Herbalism Color"] = true
@@ -53,6 +54,7 @@ L["HOTKEY_CTRL_RIGHT"] = "Ctrl-RightClick"
 L["Inventory"] = true
 L["Item Scale"] = true
 L["Keyring Color"] = true
+L["Leatherworking Color"] = true
 L["Leaving a Vendor"] = true
 L["Leaving the Auction House"] = true
 L["Leaving the Bank"] = true
@@ -61,6 +63,7 @@ L["Less than %s days"] = true
 L["Less than one day"] = true
 L["Lock Frames"] = true
 L["Mail"] = true
+L["Mining Color"] = true
 L["Move down"] = true
 L["Move up"] = true
 L["Need to reload UI to make some settings take effect"] = true
@@ -229,6 +232,10 @@ L['Soul Color'] = true
 L['Enchanting Color'] = true
 L['Herbalism Color'] = true
 L['Keyring Color'] = true
+L['Leatherworking Color'] = true
+L['Engineering Color'] = true
+L['Gems Color'] = true
+L['Mining Color'] = true
 L['Empty Slot Brightness'] = true
 
 L['Plugin Buttons'] = true
