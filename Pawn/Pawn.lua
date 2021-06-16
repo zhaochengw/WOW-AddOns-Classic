@@ -7,7 +7,7 @@
 -- Main non-UI code
 ------------------------------------------------------------
 
-PawnVersion = 2.0517
+PawnVersion = 2.0519
 
 -- Pawn requires this version of VgerCore:
 local PawnVgerCoreVersionRequired = 1.13
@@ -1615,7 +1615,7 @@ function PawnUpdateTooltip(TooltipName, MethodName, Param1, ...)
 		
 	-- If necessary, add a blank line to the tooltip.
 	if
-		(Item and not PawnCommon.ShowValuesForUpgradesOnly and #Item.Values > 0) or
+		(Item and not PawnCommon.ShowValuesForUpgradesOnly and Item.Values and #Item.Values > 0) or
 		(Item and PawnCommon.ShowUpgradesOnTooltips and (UpgradeInfo or BestItemFor or SecondBestItemFor))
 	then
 		Tooltip:AddLine(" ")
@@ -1628,7 +1628,7 @@ function PawnUpdateTooltip(TooltipName, MethodName, Param1, ...)
 		PawnAddValuesToTooltip(Tooltip, Item.Values, UpgradeInfo, BestItemFor, SecondBestItemFor, NeedsEnhancements, Item.InvType)
 
 		local Annotated
-		if Item.UnknownLines and #Item.Values > 0 then
+		if Item.UnknownLines and Item.Values and #Item.Values > 0 then
 			Annotated = PawnAnnotateTooltipLines(TooltipName, Item.UnknownLines)
 		end
 
@@ -1648,7 +1648,7 @@ function PawnUpdateTooltip(TooltipName, MethodName, Param1, ...)
 				end
 			end
 			if not AnnotatedItemLevel then
-				--VgerCore.Assert(AnnotatedItemLevel, "This is an item level upgrade, but we didn't find it in the tooltip.")
+				-- If it wasn't in the tooltip (for example, on Classic), just add it to the bottom.
 				PawnAddTooltipLine(Tooltip, PawnLocal.ItemLevelTooltipLine .. ":  |TInterface\\AddOns\\Pawn\\Textures\\UpgradeArrow:0|t|cff00ff00+" .. ItemLevelIncrease, VgerCore.Color.OrangeR, VgerCore.Color.OrangeG, VgerCore.Color.OrangeB)
 			end
 			TooltipWasUpdated = true
@@ -4127,9 +4127,10 @@ function PawnGetMaxLevelItemIsUsefulHeirloom(Item)
 	if Item.Rarity == 6 then
 		-- This is an artifact, so the player won't get anything better until level 50.
 		return 49
-	elseif Item.UnenchantedStats and Item.UnenchantedStats.MaxScalingLevel then
-		-- This item scales until you reach MaxScalingLevel.
-		return Item.UnenchantedStats.MaxScalingLevel - 1
+	-- (In Shadowlands, heirloom XP scaling was removed. But it might come back in a future Classic version.)
+	-- elseif Item.UnenchantedStats and Item.UnenchantedStats.MaxScalingLevel then
+	-- 	-- This item scales until you reach MaxScalingLevel.
+	-- 	return Item.UnenchantedStats.MaxScalingLevel - 1
 	else
 		-- This item doesn't scale.
 		return 0
