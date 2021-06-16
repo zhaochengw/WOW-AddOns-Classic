@@ -2,7 +2,7 @@ local mod	= DBM:NewMod("PT", "DBM-Party-BC", 12)
 local L		= mod:GetLocalizedStrings()
 
 
-mod:SetRevision("20210607161153")
+mod:SetRevision("20210610002638")
 
 mod:RegisterEvents(
 	"UPDATE_UI_WIDGET",
@@ -12,11 +12,11 @@ mod:RegisterEvents(
 mod.noStatistics = true
 
 -- Portals
-local warnWavePortalSoon	= mod:NewAnnounce("WarnWavePortalSoon", 2, 57687)
-local warnWavePortal		= mod:NewAnnounce("WarnWavePortal", 3, 57687)
+local warnWavePortalSoon	= mod:NewAnnounce("WarnWavePortalSoon", 2, 33404)
+local warnWavePortal		= mod:NewAnnounce("WarnWavePortal", 3, 33404)
 local warnBossPortal		= mod:NewAnnounce("WarnBossPortal", 4, 33341)
 
-local timerNextPortal		= mod:NewTimer(120, "TimerNextPortal", 57687, nil, nil, 6)
+local timerNextPortal		= mod:NewTimer(120, "TimerNextPortal", 33404, nil, nil, 6)
 
 mod:AddBoolOption("ShowAllPortalTimers", false, "timer")
 

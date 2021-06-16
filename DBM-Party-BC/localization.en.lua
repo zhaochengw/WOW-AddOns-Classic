@@ -439,18 +439,6 @@ L:SetGeneralLocalization{
 	name 		= "Aeonus"
 }
 
-L:SetWarningLocalization({
-	warnEnrage	= "Enrage"
-})
-
-L:SetOptionLocalization({
-	warnEnrage	= "Show enrage warning"
-})
-
-L:SetMiscLocalization({
-    AeonusFrenzy	= "%s goes into a frenzy!"
-})
-
 ---------------------
 --  Portal Timers  --
 ---------------------
@@ -552,14 +540,6 @@ L = DBM:GetModLocalization(559)
 L:SetGeneralLocalization{
 	name 		= "High Botanist Freywinn"
 }
-
-L:SetWarningLocalization({
-	warnTranq	= "Frayer Protector - Switch Targets"
-})
-
-L:SetOptionLocalization({
-	warnTranq	= "Show warning for Frayer Protector"
-})
 
 -----------------------------
 --  Thorngrin the Tender  --

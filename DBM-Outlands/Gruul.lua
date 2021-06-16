@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Gruul", "DBM-Outlands")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210608044039")
+mod:SetRevision("20210610023400")
 mod:SetCreatureID(19044)
 mod:SetEncounterID(650, 2456)
 mod:SetModelID(18698)
@@ -73,7 +73,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerSilenceCD:Start(15)
 		end
 	elseif args.spellId == 36240 and args:IsPlayer() and not self:IsTrivial() then--Cave In
-		specWarnCaveIn:Show()
+		specWarnCaveIn:Show(args.spellName)
 		specWarnCaveIn:Play("watchfeet")
 	end
 end

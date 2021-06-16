@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ZulJin", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404052635")
+mod:SetRevision("20210614184914")
 mod:SetCreatureID(23863)
 mod:SetEncounterID(2487)--Data says Daakara, but it's not daakara in TBC it's Zul'jin
 mod:SetZone()
@@ -25,10 +25,8 @@ local specWarnParalyze	= mod:NewSpecialWarningDispel(43095, "RemoveMagic", nil, 
 
 local timerParalyzeCD	= mod:NewCDTimer(27, 43095, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
 
-mod.vb.phase = 1
-
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -58,20 +56,20 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.YellPhase2 or msg:find(L.YellPhase2) then
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
 		warnPhase:Play("ptwo")
-		self.vb.phase = 2
+		self:SetStage(2)
 	elseif msg == L.YellPhase3 or msg:find(L.YellPhase3) then
 		warnParalyzeSoon:Cancel()
 		timerParalyzeCD:Cancel()
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
 		warnPhase:Play("pthree")
-		self.vb.phase = 3
+		self:SetStage(3)
 	elseif msg == L.YellPhase4 or msg:find(L.YellPhase4) then
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(4))
 		warnPhase:Play("pfour")
-		self.vb.phase = 4
+		self:SetStage(4)
 	elseif msg == L.YellPhase5 or msg:find(L.YellPhase5) then
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(5))
 		warnPhase:Play("pfive")
-		self.vb.phase = 5
+		self:SetStage(5)
 	end
 end

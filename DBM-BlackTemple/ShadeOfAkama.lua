@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Akama", "DBM-BlackTemple")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210604040525")
+mod:SetRevision("20210614184914")
 mod:SetCreatureID(22841)
 mod:SetEncounterID(603, 2475)
 mod:SetModelID(21357)
@@ -28,7 +28,6 @@ local timerAddsCD		= mod:NewAddsCustomTimer(25, 216726)--NewAddsCustomTimer
 local timerDefenderCD	= mod:NewTimer(25, "timerAshtongueDefender", 41180, nil, nil, 1)
 local timerSorcCD		= mod:NewTimer(25, "timerAshtongueSorcerer", 40520, nil, nil, 1)
 
-mod.vb.phase = 1
 mod.vb.AddsWestCount = 0
 
 local function addsWestLoop(self)
@@ -66,7 +65,7 @@ local function defenderLoop(self)
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.AddsWestCount = 0
 	self:RegisterShortTermEvents(
 		"SWING_DAMAGE",
@@ -95,7 +94,7 @@ end
 function mod:SWING_DAMAGE(_, sourceName)
 	if sourceName == L.name and self.vb.phase == 1 then
 		self:UnregisterShortTermEvents()
-		self.vb.phase = 2
+		self:SetStage(2)
 		warnPhase2:Show()
 		timerAddsCD:Stop()
 		timerDefenderCD:Stop()
@@ -111,7 +110,7 @@ mod.SWING_MISSED = mod.SWING_DAMAGE
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if (spellId == 40607 or spellId == 40955) and self.vb.phase == 1 and self:AntiSpam(3, 1) then--Fixate/Summon Shade of Akama Trigger
 		self:UnregisterShortTermEvents()
-		self.vb.phase = 2
+		self:SetStage(2)
 		warnPhase2:Show()
 		timerAddsCD:Stop()
 		timerDefenderCD:Stop()
