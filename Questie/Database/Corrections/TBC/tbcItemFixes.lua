@@ -100,6 +100,12 @@ function QuestieTBCItemFixes:Load()
         [24226] = {
             [itemKeys.npcDrops] = {17832},
         },
+        [25461] = {
+            [itemKeys.npcDrops] = {18472},
+        },
+        [25462] = {
+            [itemKeys.npcDrops] = {16807},
+        },
         [25807] = {
             [itemKeys.npcDrops] = {18476,18477,},
         },
@@ -148,6 +154,12 @@ function QuestieTBCItemFixes:Load()
         [31530] = {
             [itemKeys.objectDrops] = {177281},
         },
+        [31941] = {
+            [itemKeys.objectDrops] = {185460},
+        },
+        [31957] = {
+            [itemKeys.npcDrops] = {20520},
+        },
         [32380] = {
             [itemKeys.npcDrops] = {20600},
         },
@@ -174,6 +186,12 @@ function QuestieTBCItemFixes:Load()
         },
         [33175] = {
             [itemKeys.npcDrops] = {},
+        },
+        [34864] = {
+            [itemKeys.objectDrops] = {500004,500005,500006},
+        },
+        [34865] = {
+            [itemKeys.objectDrops] = {182956},
         },
 
         -- Below are fake items which can be used to show special quest "objectives" as requiredSourceItem.

@@ -357,6 +357,7 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.extraObjectives] = {{nil, ICON_TYPE_LOOT, "Use the Sanctified Crystal against a wounded Uncontrolled Voidwalker", 0, {{"monster", 16975}}}},
         },
         [9400] = {
+            [questKeys.preQuestSingle] = {10124},
             [questKeys.triggerEnd] = {"Find Krun Spinebreaker", {[zoneIDs.HELLFIRE_PENINSULA]={{33.59,43.62},},}},
         },
         [9410] = {
@@ -808,6 +809,8 @@ function QuestieTBCQuestFixes:Load()
         },
         [10044] = {
             [questKeys.triggerEnd] = {"Listen to Greatmother Geyah", {[zoneIDs.NAGRAND]={{56.66,34.31},},}},
+            [questKeys.preQuestGroup] = {9934,9868,10011},
+            [questKeys.preQuestSingle] = {},
         },
         [10047] = {
             [questKeys.preQuestSingle] = {10143,10483,},
@@ -947,6 +950,9 @@ function QuestieTBCQuestFixes:Load()
         },
         [10166] = {
             [questKeys.extraObjectives] = {{nil, ICON_TYPE_EVENT, "Place Old Whitebark's Pendant by the runestone at the Scorched Grove.", 0, {{"object", 181260}}}},
+        },
+        [10168] = {
+            [questKeys.extraObjectives] = {{nil, ICON_TYPE_EVENT, "Use the Soul Mirror near Ancient Orc Ancestors to summon Darkened Spirits.", 0, {{"monster", 18688}}}},
         },
         [10222] = {
             [questKeys.preQuestSingle] = {10188},
@@ -1283,6 +1289,9 @@ function QuestieTBCQuestFixes:Load()
         [10687] = {
             [questKeys.preQuestSingle] = {10552},
         },
+        [10708] = {
+            [questKeys.exclusiveTo] = {11052},
+        },
         [10710] = {
             -- Since you don't just have to reach the position this triggerEnd does not make much sense as is empty on purpose!
             [questKeys.triggerEnd] = {"Throw caution to the wind.", {}},
@@ -1411,6 +1420,9 @@ function QuestieTBCQuestFixes:Load()
         [10867] = {
             [questKeys.extraObjectives] = {{nil, ICON_TYPE_SLAY, "Kill Razaani ethereals to lure Nexus-Prince Razaan out", 0, {{"monster", 20601}, {"monster", 20609}, {"monster", 20614}}}},
         },
+        [10872] = {
+            [questKeys.finishedBy] = {{22112},nil,nil},
+        },
         [10873] = {
             [questKeys.objectives] = {nil,nil,nil,nil,{{22459,22355},22459,"Sha'tar Warrior Freed"}},
         },
@@ -1510,8 +1522,18 @@ function QuestieTBCQuestFixes:Load()
         [10968] = {
             [questKeys.triggerEnd] = {"Dornaa taken to Farseer Nobundo", {[zoneIDs.THE_EXODAR]={{30.8,29.88},},}},
         },
+        [10974] = {
+            [questKeys.requiredMinRep] = {933,21000},
+        },
+        [10975] = {
+            [questKeys.requiredMinRep] = {933,21000},
+        },
+        [10976] = {
+            [questKeys.requiredMinRep] = {933,21000},
+        },
         [10977] = {
             [questKeys.triggerEnd] = {"Mana-Tombs Stasis Chamber Investigated", {[zoneIDs.TEROKKAR_FOREST]={{39.63,57.54},},}},
+            [questKeys.requiredMinRep] = {933,21000},
         },
         [10984] = {
             [questKeys.exclusiveTo] = {10983,10989,11057,},
@@ -1527,6 +1549,9 @@ function QuestieTBCQuestFixes:Load()
         },
         [10998] = {
             [questKeys.extraObjectives] = {{nil, ICON_TYPE_LOOT, "Vim'gol must be summoned by yourself, and four others, each standing within a different fire ring at his circle.", 0, {{"monster", 22911}}}},
+        },
+        [11000] = {
+            [questKeys.extraObjectives] = {{nil, ICON_TYPE_EVENT, "Use Vim'gol's Grimoire at Soulgrinder's Altar", 0, {{"object", 185880}}}},
         },
         [11023] = {
             [questKeys.requiredLevel] = 70,
@@ -1571,6 +1596,10 @@ function QuestieTBCQuestFixes:Load()
         },
         [11047] = {
             [questKeys.exclusiveTo] = {11048},
+        },
+        [11052] = {
+            [questKeys.exclusiveTo] = {10708},
+            [questKeys.finishedBy] = {{18481},nil,nil},
         },
         [11056] = {
             [questKeys.preQuestSingle] = {11028},
@@ -1764,6 +1793,9 @@ function QuestieTBCQuestFixes:Load()
                 [zoneIDs.ORGRIMMAR]={{79.03,30.65},},
                 [zoneIDs.IRONFORGE]={{70.5,89.56},},
             }},
+        },
+        [11379] = {
+            [questKeys.extraObjectives] = {{nil, ICON_TYPE_EVENT, "Cook Demon Broiled Surprise in the remains of a Abyssal Flamebringer in Blade's Edge Mountains", 0, {{"monster", 19973}}}},
         },
         [11381] = {
             [questKeys.extraObjectives] = {{nil, ICON_TYPE_EVENT, "Cook Spiritual Soup at the Ancestral Grounds in Nagrand", 0, {{"object", 184317}}}},

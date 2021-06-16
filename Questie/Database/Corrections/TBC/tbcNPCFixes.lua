@@ -346,6 +346,9 @@ function QuestieTBCNpcFixes:Load()
         [22059] = {
             [npcKeys.spawns] = {[zoneIDs.SHADOWMOON_VALLEY] = {{51.23,62.75},{52.45,59.19},},},
         },
+        [22374] = {
+            [npcKeys.spawns] = {[zoneIDs.HELLFIRE_PENINSULA] = {{47.31,49.66},},},
+        },
         [22408] = {
             [npcKeys.spawns] = {[zoneIDs.NETHERSTORM] = {{35.6,66.6},},},
         },
@@ -365,6 +368,9 @@ function QuestieTBCNpcFixes:Load()
         [22911] = {
             [npcKeys.spawns] = {[zoneIDs.BLADES_EDGE_MOUNTAINS] = {{77.5,31.1},},},
         },
+        [22920] = {
+            [npcKeys.spawns] = {[zoneIDs.BLADES_EDGE_MOUNTAINS] = {{51.1,11.6},},},
+        },
         [23786] = {
             [npcKeys.spawns] = {[zoneIDs.DUSTWALLOW_MARSH] = {{40.6,68.0},{41.4,67.0},{42.2,65.8},{42.2,67.8},{42.4,67.2},{42.6,67.8},{43.0,65.4},{43.0,65.6},{43.4,67.0},{43.6,66.8},{43.8,67.6},{44.0,63.6},{44.0,65.2},{44.2,66.2},{44.6,65.6},{44.8,65.4},{44.8,66.6},{45.2,63.6},{45.6,68.4},{45.8,64.8},{46.0,66.2},{46.0,67.2},{46.2,69.0},{46.6,65.8},},},
         },
@@ -379,6 +385,9 @@ function QuestieTBCNpcFixes:Load()
         },
         [24885] = {
             [npcKeys.spawns] = {[zoneIDs.TEROKKAR_FOREST] = {{55.8,53.8},},},
+        },
+        [25580] = {
+            [npcKeys.spawns] = {[zoneIDs.TEROKKAR_FOREST] = {{38.73,12.8},},},
         },
         [26760] = {
             [npcKeys.npcFlags] = npcFlags.NONE,

@@ -283,8 +283,8 @@ function QuestieMenu:Show()
     EasyMenu(menuTable, QuestieMenu.menu, "cursor", -80, 0, "MENU")
 end
 
-local function _reformatVendors(lst)
-    local newList = {}
+local function _reformatVendors(lst, existingTable)
+    local newList = existingTable or {}
     for k in pairs(lst) do
         tinsert(newList, k)
     end
@@ -311,13 +311,14 @@ end
 function QuestieMenu:PopulateTownsfolk()
     Questie.db.global.townsfolk = {
         ["Repair"] = QuestieMenu:PopulateTownsfolkType(QuestieDB.npcFlags.REPAIR, true), 
-        ["Auctioneer"] = QuestieMenu:PopulateTownsfolkType(QuestieDB.npcFlags.AUCTIONEER, true),
+        ["Auctioneer"] = QuestieMenu:PopulateTownsfolkType(QuestieDB.npcFlags.AUCTIONEER, false),
         ["Banker"] = QuestieMenu:PopulateTownsfolkType(QuestieDB.npcFlags.BANKER, true),
         ["Battlemaster"] = QuestieMenu:PopulateTownsfolkType(QuestieDB.npcFlags.BATTLEMASTER, true),
         ["Flight Master"] = QuestieMenu:PopulateTownsfolkType(QuestieDB.npcFlags.FLIGHT_MASTER),
         ["Innkeeper"] = QuestieMenu:PopulateTownsfolkType(QuestieDB.npcFlags.INNKEEPER, true),
         ["Weapon Master"] = {}, -- populated below
     }
+    Questie.db.global.townsfolkNeedsUpdatedGlobalVendors = true
     local classTrainers = Questie.IsTBC and {
         ["MAGE"] = {198, 313, 328, 331, 944, 1228, 2124, 2128, 3047, 3048, 3049, 4566, 4567, 4568, 4987, 5144, 5145, 5146, 5497, 5498, 5880, 5882, 5883, 5884, 5885, 7311, 7312, 15279, 16269, 16500, 16651, 16652, 16653, 16749, 17481, 17513, 17514, 26326, 27704},
         ["SHAMAN"] = {986, 3030, 3031, 3032, 3062, 3066, 3157, 3173, 3344, 3403, 4991, 13417, 17089, 17204, 17212, 17219, 17519, 17520, 20407, 23127, 26330},
@@ -462,9 +463,15 @@ function QuestieMenu:PopulateTownsfolk()
             if factionID == 0 then
                 tinsert(Questie.db.global.factionSpecificTownsfolk["Horde"]["Mailbox"], id)
                 tinsert(Questie.db.global.factionSpecificTownsfolk["Alliance"]["Mailbox"], id)
-            elseif bit.band(QuestieDB.factionTemplate[factionID], 12) == 0 then
+            elseif QuestieDB.factionTemplate[factionID] and bit.band(QuestieDB.factionTemplate[factionID], 12) == 0 and bit.band(QuestieDB.factionTemplate[factionID], 10) == 0 then
                 tinsert(Questie.db.global.factionSpecificTownsfolk["Horde"]["Mailbox"], id)
-            elseif bit.band(QuestieDB.factionTemplate[factionID], 10) == 0 then
+                tinsert(Questie.db.global.factionSpecificTownsfolk["Alliance"]["Mailbox"], id)
+            elseif QuestieDB.factionTemplate[factionID] and bit.band(QuestieDB.factionTemplate[factionID], 12) == 0 then
+                tinsert(Questie.db.global.factionSpecificTownsfolk["Horde"]["Mailbox"], id)
+            elseif QuestieDB.factionTemplate[factionID] and bit.band(QuestieDB.factionTemplate[factionID], 10) == 0 then
+                tinsert(Questie.db.global.factionSpecificTownsfolk["Alliance"]["Mailbox"], id)
+            else
+                tinsert(Questie.db.global.factionSpecificTownsfolk["Horde"]["Mailbox"], id)
                 tinsert(Questie.db.global.factionSpecificTownsfolk["Alliance"]["Mailbox"], id)
             end
         else
@@ -484,6 +491,15 @@ function QuestieMenu:PopulateTownsfolk()
 end
 
 function QuestieMenu:PopulateTownsfolkPostBoot() -- post DB boot (use queries here)
+
+    if Questie.db.global.townsfolkNeedsUpdatedGlobalVendors then
+        Questie.db.global.townsfolkNeedsUpdatedGlobalVendors = nil
+        -- insert item-based profession vendors
+        _reformatVendors(QuestieMenu:PopulateVendors({22012, 21992, 21993, 16084, 16112, 16113, 16085, 19442, 6454, 8547, 23689}), Questie.db.global.professionTrainers[QuestieProfessions.professionKeys.FIRST_AID])
+        _reformatVendors(QuestieMenu:PopulateVendors({27532, 16082, 16083}), Questie.db.global.professionTrainers[QuestieProfessions.professionKeys.FISHING])
+        _reformatVendors(QuestieMenu:PopulateVendors({27736, 16072, 16073}), Questie.db.global.professionTrainers[QuestieProfessions.professionKeys.COOKING])
+    end
+
     -- item ids for class-specific reagents
     local reagents = {
         ["MAGE"] = {17031, 17032, 17020},
