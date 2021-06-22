@@ -1,14 +1,10 @@
-@Terciob:
-- Mod 'Receive Comm Message' hook to react to 'Plater.SendComm(...)' calls from the exact same mod of another user in party or raid.
-
 @cont1nuity:
-- New function 'Plater.SetNameplateScale(unitFrame, scale)' to a custom nameplate scale factor.
-- Mod 'Send Comm Message' hook to periodically send comms via 'Plater.SendComm(...)' calls to the exact same mod of another user in party or raid.
-- Enhancements on mod/script code limitations and security.
-- 'Quick Hide on Death' now uses the corresponding CVar setting to disable the hide animation in TBC.
-- Adding x-offset options for cast-bars.
-- Mod hook 'Player Power Update' now provides the energy type as additional payload in the vararg parameter.
-- Alpha of non-targets should now work correctly again.
-- Enabling execute range indicator for warriors in TBC.
-- 'Combo Points' mod now handles targeted combo points correctly in TBC.
+- Profiling now logs FPS.
+- Switching back to official LibRangeCheck.
+- Enabling execute range indicator for paladins in TBC.
+- Correctly reset namepalte scale.
+- Removing redundant calls.
+- Nameplate update ticks are now spread across multiple frames for smother update cycles.
+- Performance logging now captures unit aura updates and quest checks.
+- Fixing an issue with unit name updates.
 
