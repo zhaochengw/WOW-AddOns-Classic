@@ -112,35 +112,50 @@ TotemTimers.SpellIDs = {
 	
 }
 
-local SpellIDs = TotemTimers.SpellIDs
 
 TotemTimers.SpellTextures = {}
 TotemTimers.SpellNames = {}
 TotemTimers.NameToSpellID = {}
 TotemTimers.TextureToSpellID = {}
 
-for k,v in pairs(SpellIDs) do
-    local n,_,t = GetSpellInfo(v)
-    TotemTimers.SpellTextures[v] = t
-    TotemTimers.SpellNames[v] = n
-    if n then
-        TotemTimers.NameToSpellID[n] = v
-    end
-    if t then
-        TotemTimers.TextureToSpellID[t] = v
-    end
+local SpellIDs = TotemTimers.SpellIDs
+local AvailableSpells = TotemTimers.AvailableSpells
+local SpellNames = TotemTimers.SpellNames
+local SpellTextures = TotemTimers.SpellTextures
+local NameToSpellID = TotemTimers.NameToSpellID
+local TextureToSpellID = TotemTimers.TextureToSpellID
+
+local gsub = gsub
+function TotemTimers.StripRank(spell)
+    local stripped = gsub(spell, "%(.*%)", "")
+    return stripped
 end
 
-
-
---[[
-1 - Melee
-2 - Ranged
-3 - Caster
-4 - Healer
-5 - Hybrid (mostly Enh. Shaman)
-]]
-
+function TotemTimers.GetSpells()
+    wipe(AvailableSpells)
+    for _, spellID in pairs(SpellIDs) do
+        local name,_,texture = GetSpellInfo(spellID)
+        local maxID = select(7, GetSpellInfo(name))
+        SpellTextures[spellID] = texture
+        SpellNames[spellID] = name
+        if name then
+            NameToSpellID[name] = spellID
+            local rank = GetSpellSubtext(name)
+            if rank and string.find(rank, "%d") then
+                local rankedName = name.."("..rank..")"
+                NameToSpellID[rankedName] = spellID
+                TotemTimers.SpellNames[spellID] = rankedName
+            else
+                TotemTimers.SpellNames[spellID] = name
+            end
+        end
+        if texture then
+            TextureToSpellID[texture] = spellID
+        end
+        AvailableSpells[spellID] = IsPlayerSpell(maxID or spellID)
+    end
+end
+TotemTimers.GetSpells()
 
 TotemData = {
 	[SpellIDs.Tremor] = {
@@ -227,7 +242,7 @@ TotemData = {
 		element = AIR_TOTEM_SLOT,
         range = 100,
 		warningPoint = 5,
-		flashInterval = 10,
+		--flashInterval = 10,
         buff = 8178,
 	},
     [SpellIDs.NatureResistance] = {
@@ -309,6 +324,17 @@ TotemTimers.WeaponEnchants = {
     [3782] = SpellIDs.FrostbrandWeapon,
     [3783] = SpellIDs.FrostbrandWeapon,
     [3784] = SpellIDs.FrostbrandWeapon,
+    [563] = SpellIDs.Windfury,
+    [564] = SpellIDs.Windfury,
+    [1783] = SpellIDs.Windfury,
+    [2638] = SpellIDs.Windfury,
+    [2639] = SpellIDs.Windfury,
+    [3014] = SpellIDs.Windfury,
+    [124] = SpellIDs.Flametongue,
+    [285] = SpellIDs.Flametongue,
+    [543] = SpellIDs.Flametongue,
+    [1683] = SpellIDs.Flametongue,
+    [2637] = SpellIDs.Flametongue,
 }
 
 for i = 3018, 3044 do TotemTimers.WeaponEnchants[i] = SpellIDs.RockbiterWeapon end

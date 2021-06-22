@@ -1,3 +1,25 @@
+1.18.7
+    - Fixed totem timers changing when switching main hand weapons
+1.18.6
+    - Fixed missing textures on game start
+1.18.5
+    - Fixed Water Shield
+1.18.4
+    - Fixed Shield trackers not working after relog/reload
+1.18.3
+    - Fixed wrong totems loaded at first login
+1.18.2
+    - Fixed weapon tracker double spells
+    - Possible fix for downranked spells for boosted characters
+1.18.1
+    - Fix error message when totem player range is enabled and player is in instance
+1.18
+    - Weapon buff tracker recognizes Windfury Totem and Flametongue Totem
+    - Added Windfury Totem twisting timer (disabled by default, can be enabled in Options -> Timers)
+    - Fixed time text color on buttons
+    - Time text color transparency can be set
+    - Timer bar color transparency can be set
+    - Removed "Show Timer Bars" setting, to hide timerbars set their color to transparent
 1.17.3
     - Fixed tooltip bug
 1.17.2
