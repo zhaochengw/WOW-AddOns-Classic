@@ -7371,7 +7371,7 @@ do	--	MAIN
 										line = line .. L["elite"];
 									end
 								end
-								line = line .. " [" .. C_Map.GetAreaInfo(nv.zone_id);
+								line = line .. " [" .. C_Map.GetAreaInfo(nv.zone_id) or L["unknown area"];
 								local location = nv.location;
 								if location and location.x ~= "-" and location.y ~= "-" then
 									line = line .. " " .. location.x .. ", " .. location.y .. "]";

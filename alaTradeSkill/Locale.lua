@@ -45,6 +45,7 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 	L["non_tradable"] = "不可交易";
 	L["elite"] = "精英";
 	L["phase"] = "阶段";
+	L["unknown area"] = "未知区域";
 	L["not_available_for_player's_faction"] = "不适用于当前角色阵营";
 	L["available_in_phase_"] = "开放于阶段: ";
 	L["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00帐号角色状态: \124r";
@@ -403,6 +404,7 @@ elseif LOCALE == "koKR" then
 	L["non_tradable"] = "거래 불가능";
 	L["elite"] = "정예";
 	L["phase"] = "페이즈";
+	L["unknown area"] = "Unknown area";
 	L["not_available_for_player's_faction"] = "플레이어 진영에는 사용할 수 없습니다";
 	L["available_in_phase_"] = "페이즈에 이용 가능 → ";
 	L["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00Status of characters:\124r";
@@ -760,6 +762,7 @@ else
 	L["non_tradable"] = "Non-tradable";
 	L["elite"] = "Elite";
 	L["phase"] = "Phase";
+	L["unknown area"] = "Unknown area";
 	L["not_available_for_player's_faction"] = "Not available for player's faction";
 	L["available_in_phase_"] = "Available in phase ";
 	L["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00Status of characters:\124r";
