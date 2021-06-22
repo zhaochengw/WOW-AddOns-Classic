@@ -1,10 +1,10 @@
-lightweight tag 86fb517ac47a495d880ee11c399bba06a2cc6ce4 v1.7.0
+lightweight tag 542aa7b55d8cdab307adaae9c7c59f1b4401762b v1.7.1
 Author:	dev7355608 <dev7355608@gmail.com>
-Date:	Thu May 27 01:11:11 2021 +0200
+Date:	Sun Jun 20 16:02:33 2021 +0200
 
-commit 86fb517ac47a495d880ee11c399bba06a2cc6ce4
+commit 542aa7b55d8cdab307adaae9c7c59f1b4401762b
 Author: dev7355608 <dev7355608@gmail.com>
-Date:   Thu May 27 01:11:11 2021 +0200
+Date:   Sun Jun 20 16:02:33 2021 +0200
 
-    Add heal prediction to focus frame
+    Update dependency
 
