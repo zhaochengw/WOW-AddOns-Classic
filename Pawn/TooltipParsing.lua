@@ -221,6 +221,7 @@ PawnRegexes =
 	{L.CritPercent, "CritRating"}, -- Classic, /pawn compare 15062
 	{L.CritRating, "CritRating"}, -- Burning Crusade, /pawn compare 15062
 	{L.CritRating2, "CritRating"}, -- Burning Crusade, /pawn compare 30710
+	{L.CritRating3, "CritRating"}, -- Burning Crusade, /pawn compare 28796
 	{L.CritRatingShort, "CritRating"}, -- Burning Crusade, /pawn compare item:789::::::78
 	{L.ScopeCrit, "CritRating"},
 	{L.ScopeRangedCrit, "CritRating"}, -- Heartseeker Scope
@@ -371,3 +372,22 @@ PawnRightHandRegexes =
 	{L.Plate, "IsPlate", 1, PawnMultipleStatsFixed},
 	{L.Shield, "IsShield", 1, PawnMultipleStatsFixed},
 }
+
+-- Each language has some regexes that aren't necessary for that particular language. For performance, let's remove those from the table right now.
+-- TODO: For even more of a performance boost, filter out every regex that produces a stat that doesn't exist on the current version of the game.
+local FilteredRegexes = {}
+local _, Regex, LastRegex
+local KeptCount, RemovedCount = 0, 0
+for _, Regex in pairs(PawnRegexes) do
+	if Regex[1] == "" or Regex[1] == "^UNUSED$" then
+		RemovedCount = RemovedCount + 1
+	elseif Regex[1] == nil then
+		VgerCore.Fail("Localization error in regex table for " .. tostring(Regex[2]) .. " AFTER \"" .. VgerCore.Color.Blue .. PawnEscapeString(tostring(LastRegex)) .. "|r\".")
+	else
+		tinsert(FilteredRegexes, Regex)
+		KeptCount = KeptCount + 1
+		LastRegex = Regex[1]
+	end
+end
+PawnRegexes = FilteredRegexes
+--VgerCore.Message("Performance boost: removed " .. RemovedCount .. " regexes (" .. floor(100 * RemovedCount / (RemovedCount + KeptCount)) .. "%)")
