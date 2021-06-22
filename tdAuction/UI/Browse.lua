@@ -45,6 +45,14 @@ function Browse:LayoutBlizzard()
     self.ResetButton = self.BuyFrame.ResetButton
     self.SortButtonFrame = self.BuyFrame.SortButtonFrame
 
+    self.ExactCheckButton = CreateFrame('CheckButton', nil, self, 'UICheckButtonTemplate')
+    self.ExactCheckButton:SetSize(24, 24)
+    self.ExactCheckButton:SetPoint('TOPLEFT', self.Name, 'BOTTOMLEFT', -10, -1)
+    self.ExactCheckButton:SetScript('OnClick', function()
+        ns.profile.buy.exact = self.ExactCheckButton:GetChecked() or nil
+    end)
+    self.ExactCheckButton:SetChecked(ns.profile.buy.exact)
+
     if not self.ResetButton then
         self.ResetButton = BrowseResetButton
         self.ResetButton:SetParent(self.BuyFrame)
@@ -83,6 +91,7 @@ function Browse:LayoutBlizzard()
 
     text(ShowOnPlayerCheckButtonText, DISPLAY_ON_CHARACTER)
     text(IsUsableCheckButtonText, USABLE_ITEMS)
+    text(self.ExactCheckButton.text, AH_EXACT_MATCH)
 
     local labels = {BrowseLevelText, BrowseNameText, BrowseDropDownName}
     local height = 0
@@ -428,6 +437,7 @@ function Browse:BuildSearchParams()
         filters = self:GetFilters(),
         usable = self.IsUsableCheckButton:GetChecked(),
         quality = UIDropDownMenu_GetSelectedValue(self.QualityDropDown),
+        exact = self.ExactCheckButton:GetChecked(),
     }
 
     if not ns.ParamsEqual(params, self.searchParams) then

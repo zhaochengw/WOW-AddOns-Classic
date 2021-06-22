@@ -137,7 +137,7 @@ function ns.ParamsEqual(a, b)
     end
 
     return a.text == b.text and a.minLevel == b.minLevel and a.maxLevel == b.maxLevel and a.filters == b.filters and
-               a.usable == b.usable and a.quality == b.quality
+               a.usable == b.usable and a.quality == b.quality and a.exact == b.exact
 end
 
 ns.ITEM_QUALITY_DESCS = {}

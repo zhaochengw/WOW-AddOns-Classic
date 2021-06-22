@@ -101,7 +101,7 @@ function Addon:SetupOptionFrame()
 
     local options = {
         type = 'group',
-        name = 'tdAuction',
+        name = 'tdAuction ' .. GetAddOnMetadata('tdAuction', 'Version'),
         get = function(paths)
             return getConfig(paths)
         end,

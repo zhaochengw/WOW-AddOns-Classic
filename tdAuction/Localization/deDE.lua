@@ -3,101 +3,54 @@ local L = LibStub('AceLocale-3.0'):NewLocale('tdAuction', 'deDE')
 if not L then return end
 
 L["Always"] = "Immer"
---[[Translation missing --]]
---[[ L["Auction price"] = ""--]] 
---[[Translation missing --]]
---[[ L["Auto open price list"] = ""--]] 
+L["Auction price"] = "Auktionspreis"
+L["Auto open price list"] = "Preisliste automatisch öffnen"
 L["Bid price"] = "Gebot"
---[[Translation missing --]]
---[[ L["Choose other price"] = ""--]] 
---[[Translation missing --]]
---[[ L["Clear database"] = ""--]] 
---[[Translation missing --]]
---[[ L["Count"] = ""--]] 
---[[Translation missing --]]
---[[ L["Database"] = ""--]] 
---[[Translation missing --]]
---[[ L["Default auction duration"] = ""--]] 
---[[Translation missing --]]
---[[ L["Default stack size"] = ""--]] 
---[[Translation missing --]]
---[[ L["Disenchant price"] = ""--]] 
+L["Choose other price"] = "Anderen Preis wählen"
+L["Clear database"] = "Datenbank leeren"
+L["Count"] = "Anzahl"
+L["Database"] = "Datenbank"
+L["Default auction duration"] = "Standardwert für Auktionslänge"
+L["Default stack size"] = "Standardtwert für Stapelgröße"
+L["Disenchant price"] = "Entzauberungspreis"
 --[[Translation missing --]]
 --[[ L["Duration no deposit"] = ""--]] 
---[[Translation missing --]]
---[[ L["Enable ALT to sell"] = ""--]] 
---[[Translation missing --]]
---[[ L["Enable ALT-CTRL click to buyout"] = ""--]] 
---[[Translation missing --]]
---[[ L["Full"] = ""--]] 
---[[Translation missing --]]
---[[ L["Full scan"] = ""--]] 
---[[Translation missing --]]
---[[ L["Full scaning, elapsed time: %s"] = ""--]] 
---[[Translation missing --]]
---[[ L["Ignore"] = ""--]] 
---[[Translation missing --]]
---[[ L["in about %s"] = ""--]] 
---[[Translation missing --]]
---[[ L["Merchant price"] = ""--]] 
---[[Translation missing --]]
---[[ L["Nerver"] = ""--]] 
---[[Translation missing --]]
---[[ L["New"] = ""--]] 
---[[Translation missing --]]
---[[ L["Next available time:"] = ""--]] 
---[[Translation missing --]]
---[[ L["No price"] = ""--]] 
---[[Translation missing --]]
---[[ L["Now"] = ""--]] 
---[[Translation missing --]]
---[[ L["Pressed SHIFT"] = ""--]] 
---[[Translation missing --]]
---[[ L["Price"] = ""--]] 
---[[Translation missing --]]
---[[ L["Processing data, elapsed time: %s"] = ""--]] 
---[[Translation missing --]]
---[[ L["Scan all"] = ""--]] 
---[[Translation missing --]]
---[[ L["Scan one page"] = ""--]] 
---[[Translation missing --]]
---[[ L["Scan price mode"] = ""--]] 
---[[Translation missing --]]
---[[ L["Show disenchant info"] = ""--]] 
---[[Translation missing --]]
---[[ L["Single price"] = ""--]] 
---[[Translation missing --]]
---[[ L["Start auction:"] = ""--]] 
---[[Translation missing --]]
---[[ L["Start price discount"] = ""--]] 
---[[Translation missing --]]
---[[ L["Start scan"] = ""--]] 
---[[Translation missing --]]
---[[ L["Time"] = ""--]] 
---[[Translation missing --]]
---[[ L["Tooltip"] = ""--]] 
---[[Translation missing --]]
---[[ L["TOOLTIP_PREFIX_AUCTION"] = ""--]] 
---[[Translation missing --]]
---[[ L["TOOLTIP_PREFIX_DISENCHANT"] = ""--]] 
---[[Translation missing --]]
---[[ L["TOOLTIP_PREFIX_VENDO"] = ""--]] 
---[[Translation missing --]]
---[[ L["Total price"] = ""--]] 
---[[Translation missing --]]
---[[ L["Unit price"] = ""--]] 
---[[Translation missing --]]
---[[ L["Unknown"] = ""--]] 
---[[Translation missing --]]
---[[ L["Update"] = ""--]] 
---[[Translation missing --]]
---[[ L["Use history price"] = ""--]] 
---[[Translation missing --]]
---[[ L["Use merchant price x%d"] = ""--]] 
---[[Translation missing --]]
---[[ L["When no price, use merchant price multiply by"] = ""--]] 
---[[Translation missing --]]
---[[ L["When pressed SHIFT, to dislay ..."] = ""--]] 
---[[Translation missing --]]
---[[ L["You are sure to clear the database"] = ""--]] 
+L["Enable ALT to sell"] = "Aktiviere ALT zum verkaufen"
+L["Enable ALT-CTRL click to buyout"] = "Aktiviere ALT-STRG zum kaufen"
+L["Full"] = "Voll"
+L["Full scan"] = "Vollständiger Scan"
+L["Full scaning, elapsed time: %s"] = "Vollständiger Scan, verstrichene Zeit: %s"
+L["Ignore"] = "Ignorieren"
+L["in about %s"] = "in etwa %s"
+L["Merchant price"] = "Händlerpreis"
+L["Nerver"] = "Niemals"
+L["New"] = "Neu"
+L["Next available time:"] = "Nächste verfügbare Zeit:"
+L["No price"] = "Kein Preis"
+L["Now"] = "Jetzt"
+L["Pressed SHIFT"] = "Wenn SHIFT gedrückt"
+L["Price"] = "Preis"
+L["Processing data, elapsed time: %s"] = "Verarbeite Daten, verstrichene Zeit: %s"
+L["Scan all"] = "Alles scannen"
+L["Scan one page"] = "Eine Seite scannen"
+L["Scan price mode"] = "Preisscan Modus"
+L["Show disenchant info"] = "Zeige Entzauberungsinfo"
+L["Single price"] = "Einzelpreis"
+L["Start auction:"] = "Auktion starten:"
+L["Start price discount"] = "Startpreis Rabatt"
+L["Start scan"] = "Scan starten"
+L["Time"] = "Zeit"
+L["Tooltip"] = true
+L["TOOLTIP_PREFIX_AUCTION"] = "Auktion"
+L["TOOLTIP_PREFIX_DISENCHANT"] = "Entzaubern"
+L["TOOLTIP_PREFIX_VENDO"] = "Händler"
+L["Total price"] = "Gesamtpreis"
+L["Unit price"] = "Stückpreis"
+L["Unknown"] = "Unbekannt"
+L["Update"] = "Aktualisieren"
+L["Use history price"] = "Verwende historischen Preis"
+L["Use merchant price x%d"] = "Verwende Händlerpreis x%d"
+L["When no price, use merchant price multiply by"] = "Falls kein Preis verfügbar, verwende Händlerpreis multipliziert mit"
+L["When pressed SHIFT, to dislay ..."] = "Wenn SHIFT gedrückt, zeige..."
+L["You are sure to clear the database"] = "Bist du sicher, dass du die Datenbank leeren willst?"
 

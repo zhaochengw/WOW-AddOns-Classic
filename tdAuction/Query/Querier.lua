@@ -136,7 +136,7 @@ function Querier:Pending()
 
     self.ourQuery = true
     QueryAuctionItems(text, params.minLevel, params.maxLevel, self.page, params.usable, params.quality, params.queryAll,
-                      exact, params.filters)
+                      exact or params.exact, params.filters)
     self.ourQuery = nil
 
     if params.queryAll then
