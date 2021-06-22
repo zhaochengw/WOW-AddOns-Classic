@@ -5,6 +5,7 @@ With other useful functions.
 Before the version 2.1.1, I split the function of Trades/Mails Logger to independent Addon which named MailLogger, if you still need this function, please go to curse and download it.
 http://https://www.curseforge.com/wow/addons/maillogger
 
+2.2.7 Modify the "Reflect" Announce Codes.
 2.2.6 Add Reflect Annouce.
 2.2.5 Add Stolen Announce, Add Super Follow from slash command. Casued by the API limit, remove 'say' and 'yell' channel.
 2.2.4 Fix the error that interrupt/broken/dispel can't work in party.

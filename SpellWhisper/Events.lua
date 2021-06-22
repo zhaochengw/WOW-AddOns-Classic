@@ -27,6 +27,7 @@ local UnitIsGroupAssistant = UnitIsGroupAssistant
 local UnitIsPlayer = UnitIsPlayer
 local UnitIsFriend = UnitIsFriend
 local UnitIsEnemy = UnitIsEnemy
+local UnitExists = UnitExists
 local UnitIsUnit = UnitIsUnit
 local UnitInBattleground = UnitInBattleground
 local UnitName = UnitName
@@ -1194,25 +1195,21 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 				end
 			end
 			local CurrentTarget = nil
-			if SpellName and (UnitName("mouseover")) and UnitIsPlayer("mouseover") and UnitIsFriend("player", "mouseover") then
+			if SpellName and UnitExists("mouseover") and UnitIsPlayer("mouseover") and UnitIsFriend("player", "mouseover") then
 				CurrentTarget = "mouseover"
-			elseif SpellName and (UnitName("target")) and UnitIsPlayer("target") and UnitIsFriend("player", "target") then
+			elseif SpellName and UnitExists("target") and UnitIsPlayer("target") and UnitIsFriend("player", "target") then
 				CurrentTarget = "target"
 			elseif
-				SpellName and (UnitName("targettarget")) and UnitIsPlayer("targettarget") and not UnitIsFriend("player", "target") and UnitIsFriend("player", "targettarget") then
+				SpellName and UnitExists("targettarget") and UnitIsPlayer("targettarget") and UnitIsEnemy("player", "target") and UnitIsFriend("player", "targettarget") then
 				CurrentTarget = "targettarget"
 			end
 			if CurrentTarget then
-				local WhisperTargetName, WhisperTargetServer = UnitName(CurrentTarget)
-				if WhisperTargetServer then
-					WhisperTargetName = WhisperTargetName .. "-" .. WhisperTargetServer
-				end
-				Addon:SendHealingMessage(GetSpellLink(arg[12]), WhisperTargetName, FailedReason)
+				Addon:SendHealingMessage(GetSpellLink(arg[12]), GetUnitName(CurrentTarget, true), FailedReason)
 			end
 		end
-	elseif arg[2] == "SPELL_MISSED" and (InstanceType == "party" or InstanceType == "raid") and not arg[15] == "REFLECT" then --法术未成功通告
-		local CasterType = Addon:GetTargetUnit(arg[4])
-		if CasterType == "group" or CasterType == "pet" or arg[4] == PlayerGUID then
+	elseif arg[2] == "SPELL_MISSED" then --法术未成功通告
+		local CasterType, CasterUnit = Addon:GetTargetUnit(arg[4])
+		if CasterType and (CasterType == "group" or CasterType == "pet" or arg[4] == PlayerGUID) and (InstanceType == "party" or InstanceType == "raid") then
 			local MissedReason = nil
 			for k in pairs(MissReason) do
 				if arg[15] == k then
@@ -1253,11 +1250,8 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 					end
 				end
 			end
-		end
-	elseif arg[2] == "SPELL_MISSED" and arg[15] == "REFLECT" then -- 反射提示
-		local t, u = Addon:GetTargetUnit(arg[4])
-		if t == "target" and UnitIsEnemy("player", u) then
-			local RaidTargetIcon = GetRaidTargetIndex(u) or 0
+		elseif CasterType == "target" and UnitIsEnemy("player", CasterUnit) and arg[15] == "REFLECT" then -- 反射提示
+			local RaidTargetIcon = GetRaidTargetIndex(CasterUnit) or 0
 			Addon:SendWarningMessage("REFLECT", arg[5], GetSpellLink(arg[12]), arg[9], nil, RaidTargetIcon, nil) -- arg[5]施法者，arg[13]被反射技能，arg[9]目標
 		end
 	elseif arg[2] == "SPELL_INTERRUPT" then --打断通告

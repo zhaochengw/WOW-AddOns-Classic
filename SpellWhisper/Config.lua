@@ -496,6 +496,8 @@ function Panel:Initialize()
 			L["Announce Enemy's Spell Interrupted"],
 			"SPELLWHISPER_TEXT_STOLEN",
 			L["Announce Spell Stolen"],
+			"SPELLWHISPER_TEXT_REFLECT",
+			L["Announce Spell Reflect"],
 			"SPELLWHISPER_TEXT_MISSED",
 			L["Announce Spell/Skill Missed"],
 			"SPELLWHISPER_TEXT_DISPEL",
