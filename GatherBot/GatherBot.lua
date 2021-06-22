@@ -1,89 +1,164 @@
+--[[
+    GatherBot v2.00:
+    Add GUI Config
+    Add MinimapButton
+    Add custom Tracking Spell Setting
+]]
+
 local AddonName, Addon = ...
 
 local L = Addon.L --Localization
 
-local Frame = CreateFrame("Frame", nil, UIParent)
+Addon.Frame = CreateFrame("Frame", nil, UIParent)
+local Frame = Addon.Frame
 Frame:Hide()
 
+-- Version String
+Addon.Version = GetAddOnMetadata(AddonName, "Version")
+
+-- GUI and MinimapButton
+Addon.SetWindow = {}
+Addon.MinimapIcon = {}
+
+local SetWindow = Addon.SetWindow
+local MinimapIcon = Addon.MinimapIcon
+
+-- Config Setting
+local Default = {
+    ["Enabled"] = false,
+    ["MountSwitch"] = true,
+    ["SwitchTime"] = 5,
+    ["Standby"] = false,
+    ["MountedCombat"] = true,
+    ["MinimapIconAngle"] = 355,
+    ["SwitchSpells"] = {
+        [2580] = true, -- Miner
+        [2383] = true, -- Herb
+    },
+    ["ShowMinimapIcon"] = true,
+    ["CurrentStatus"] = false,
+}
+Addon.Config = {}
+local Config = Addon.Config
+
+-- API localization (Improve API running efficiency)
 local CastSpellByID = CastSpellByID
 local UnitAffectingCombat = UnitAffectingCombat
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitClass = UnitClass
+local UnitBuff = UnitBuff
 local CastingInfo = CastingInfo
 local ChannelInfo = ChannelInfo
 local GetTime = GetTime
 local IsMounted = IsMounted
+local IsInInstance = IsInInstance
 
-local AddonEnable = 0
-local AddonSwitch = false
--- local Tracking = {
---     [(GetSpellInfo(2580))] = true,
---     [(GetSpellInfo(2383))] = true,
--- }
-local Miner = 2580
-local Herb = 2383
-local Switch = "Miner"
-local Mounted = false
+-- Variables
+local TrackingSpellsInTable = {}
+Addon.TrackingSpellsNum = 0
+
 local IsMoving = false
-local IsInTravelMode = false
+Addon.IsInTravelMode = false
+local IsInTravelMode = Addon.IsInTravelMode
 
-local LastScan = 0
-
-local function OnUpdate(self, lastupdate)
-    if AddonEnable ~= 3 then
-        Frame:Hide()
-        return
+-- Merge(update) Table
+function Addon:UpdateTable(Target, Source)
+    for k, v in pairs(Source) do
+        if type(v) == "table" then
+            if type(Target[k]) == "table" then
+                self:UpdateTable(Target[k], v)
+            else
+                Target[k] = self:UpdateTable({}, v)
+            end
+        elseif type(Target[k]) ~= "table" then
+            Target[k] = v
+        end
     end
-    local NowScan = math.floor(GetTime()*10)/10
-    if NowScan - LastScan <= GatherBotDB.Time then
-        return
+    return Target
+end
+-- Get Tracking Spells
+function Addon:GetCurrentSpells()
+    TrackingSpellsInTable = {}
+    local i = 1
+    if next(Config.SwitchSpells) then
+        for k in pairs(Config.SwitchSpells) do
+            TrackingSpellsInTable[i] = k
+            i = i + 1
+        end
+        Addon.TrackingSpellsNum = i - 1
     end
-    LastScan = NowScan
-    if not IsMoving  then
-        return
+end
+-- Show Spell Table
+function Addon:ShowSpellInfo()
+    for k in pairs(Config.SwitchSpells) do
+        if not IsPlayerSpell(k) then
+            Config.SwitchSpells[k] = nil
+        end
     end
-    if not UnitAffectingCombat("player") and not UnitIsDeadOrGhost("player") and not (CastingInfo()) and not (ChannelInfo()) then
-        if Switch == "Miner" then
-            CastSpellByID(Herb)
-            Switch = "Herb"
-        elseif Switch == "Herb" then
-            CastSpellByID(Miner)
-            Switch = "Miner"
+    Addon:GetCurrentSpells()
+    do
+        local i = 1
+        for k in pairs(Config.SwitchSpells) do
+            local msg = " " .. (GetSpellLink(k)) .. " (ID = " .. tostring(k) .. ")"
+            SetWindow.DisplayGroup[i]:SetText(msg)
+            i = i + 1
+        end
+        if i > 10 then
+            return
+        end
+        for j = i, 10 do
+            SetWindow.DisplayGroup[j]:SetText("")
         end
     end
 end
 
-local function OnEnterGame()
-    local HaveMiner, HaveHerb = IsPlayerSpell(Miner), IsPlayerSpell(Herb)
-    if HaveMiner or HaveHerb then
-        local find = false
-        for i = 1, GetNumTrackingTypes() do
-            local _, _, active, type = GetTrackingInfo(i)
-            if active and type == "spell" then
-                find = true
-                break
-            end
-        end
-        if not find then
-            if HaveMiner and HaveHerb then
-                Switch = "Miner"
-                CastSpellByID(Miner)
-                AddonEnable = 3
-            elseif HaveMiner and not HaveHerb then
-                Switch = "Miner"
-                CastSpellByID(Miner)
-                AddonEnable = 2
-            elseif not HaveMiner and HaveHerb then
-                Switch = "Herb"
-                CastSpellByID(Herb)
-                AddonEnable = 1
-            end
-        end
-    end
-end
+-- OnUpdate
+do
+    local LastScan = 0
+    local Tracking = 1
 
-Frame:SetScript("OnUpdate", OnUpdate)
+    local function OnUpdate(self, lastupdate)
+        if Addon.TrackingSpellsNum <= 1 then
+            Frame:Hide()
+            return
+        end
+        if not Config.CurrentStatus then
+            Frame:Hide()
+            return
+        end
+        local NowScan = math.floor(GetTime()*10)/10
+        if NowScan - LastScan <= Config.SwitchTime then
+            return
+        end
+        LastScan = NowScan
+        if not Config.Standby then
+            if not IsMoving  then
+                return
+            end
+        end
+        if UnitAffectingCombat("player") then
+            if not Config.MountedCombat then
+                return
+            else
+                if not (IsMounted() or IsInTravelMode) then
+                    return
+                end
+            end
+        end
+        if Tracking > Addon.TrackingSpellsNum then
+            Tracking = 1
+        end
+        if not UnitIsDeadOrGhost("player") and not (CastingInfo()) and not (ChannelInfo()) then
+            CastSpellByID(TrackingSpellsInTable[Tracking])
+        end
+        Tracking = Tracking + 1
+    end
+
+    Frame:SetScript("OnUpdate", OnUpdate)
+end
 
 Frame:RegisterEvent("ADDON_LOADED")
+Frame:RegisterEvent("PLAYER_LOGOUT")
 Frame:RegisterEvent("UNIT_AURA")
 Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 Frame:RegisterEvent("PLAYER_ALIVE")
@@ -101,21 +176,67 @@ Frame:SetScript(
 	end
 )
 
-function Frame:PLAYER_ENTERING_WORLD()
-    OnEnterGame()
-end
-
 function Frame:ADDON_LOADED(Name)
     if Name ~= AddonName then
         return
     end
     if not GatherBotDB then
-        GatherBotDB = {
-            ["Time"] = 5,
-        }
+        GatherBotDB = {}
+        Addon:UpdateTable(Config, Default)
+    else
+        Addon:UpdateTable(Config, GatherBotDB)
     end
-    OnEnterGame()
+    if Addon.TrackingSpellsNum >= 1 then
+        local find = false
+        for i = 1, GetNumTrackingTypes() do
+            local _, _, active, type = GetTrackingInfo(i)
+            if active and type == "spell" then
+                find = true
+                break
+            end
+        end
+        if not find then
+            CastSpellByID(TrackingSpellsInTable[1])
+        end
+        if Addon.TrackingSpellsNum == 1 then
+            Frame:Hide()
+        end
+    else
+        Frame:Hide()
+    end
+    -- Initialize Setting Window
+    SetWindow:Initialize()
+    -- UnregisterEvent
     self:UnregisterEvent("ADDON_LOADED")
+    if Config.CurrentStatus then
+        Frame:Show()
+    else
+        Frame:Hide()
+    end
+end
+
+function Frame:PLAYER_LOGOUT()
+    -- Save Config Variables
+    GatherBotDB = {}
+    Addon:UpdateTable(GatherBotDB, Config)
+end
+
+function Frame:PLAYER_ENTERING_WORLD()
+    -- Initialize MinimapButton
+	if Addon.LDB and Addon.LDBIcon and ((IsAddOnLoaded("TitanClassic")) or (IsAddOnLoaded("Titan"))) then
+		MinimapIcon:InitBroker()
+	else
+        -- 初始化小地图按钮
+        MinimapIcon:Initialize()
+        -- 小地图按钮
+        if Config.ShowMinimapIcon then
+            Addon:UpdatePosition(Config.MinimapIconAngle)
+            MinimapIcon.Minimap:Show()
+        else
+            MinimapIcon.Minimap:Hide()
+        end
+	end
+	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 function Frame:PLAYER_STARTED_MOVING()
@@ -127,59 +248,59 @@ function Frame:PLAYER_STOPPED_MOVING()
 end
 
 function Frame:PLAYER_ALIVE()
-    if select(4, GetBuildInfo()) > 20000 then return end
+    if select(4, GetBuildInfo()) > 20000 then
+        Frame:UnregisterEvent("PLAYER_ALIVE")
+        return
+    end
     if UnitIsDeadOrGhost("player") then return end
     if select(2, IsInInstance()) ~= "none" then return end
-    if AddonEnable == 0 then
-        return
-    elseif AddonEnable == 1 then
-        CastSpellByID(Herb)
-    elseif AddonEnable == 2 then
-        CastSpellByID(Miner)
-    elseif AddonEnable == 3 then
-        CastSpellByID(Miner)
+    Addon:GetCurrentSpells()
+    if Addon.TrackingSpellsNum > 0 then
+        CastSpellByID(TrackingSpellsInTable[1])
     end
 end
 
 function Frame:PLAYER_UNGHOST()
-    if select(4, GetBuildInfo()) > 20000 then return end
+    if select(4, GetBuildInfo()) > 20000 then
+        Frame:UnregisterEvent("PLAYER_ALIVE")
+        return
+    end
     if UnitIsDeadOrGhost("player") then return end
     if select(2, IsInInstance()) ~= "none" then return end
-    if AddonEnable == 0 then
-        return
-    elseif AddonEnable == 1 then
-        CastSpellByID(Herb)
-    elseif AddonEnable == 2 then
-        CastSpellByID(Miner)
-    elseif AddonEnable == 3 then
-        CastSpellByID(Miner)
+    Addon:GetCurrentSpells()
+    if Addon.TrackingSpellsNum > 0 then
+        CastSpellByID(TrackingSpellsInTable[1])
     end
 end
 
 function Frame:UNIT_AURA(unit)
-    if AddonEnable ~= 3 then return end
-    if unit ~= "player" then return end
-    if select(2, IsInInstance()) ~= "none" then return end
-    if UnitIsDeadOrGhost("player") then return end
+    if not Config.MountSwitch then
+        return
+    end
+    if unit ~= "player" or select(2, IsInInstance()) ~= "none" or UnitIsDeadOrGhost("player") then
+        if Frame:IsShown() then
+            Frame:Hide()
+        end
+        return
+    end
     if (select(2, UnitClass("player"))) == "DRUID" or (select(2, UnitClass("player"))) == "SHAMAN" then
         IsInTravelMode  = false
         for i = 1, 40 do
-            local SpellID = (select(10, UnitAura("player", i, "HELPFUL")))
-            if SpellID == 2645 or SpellID == 783 then
+            local SpellID = (select(10, UnitBuff("player", i)))
+            if SpellID == 2645 or SpellID == 783 or SpellID == 33943 or SpellID == 40120 then
                 IsInTravelMode = true
                 break
             end
         end
     end
-
-    if (IsMounted() or IsInTravelMode) and not Mounted and not Frame:IsShown() and select(2, IsInInstance()) == "none" then
-        Mounted = true
-        print(L["<|cFFBA55D3GB|r>Switch the Resource Tracking when you Mounted."])
+    if (IsMounted() or IsInTravelMode) and not Config.CurrentStatus and not Frame:IsShown() and select(2, IsInInstance()) == "none" then
+        Config.CurrentStatus = true
+        UIErrorsFrame:AddMessage(L["<|cFFBA55D3GB|r>Auto Switch the Tracking when you Mounted."])
         Frame:Show()
-    elseif not (IsMounted() or IsInTravelMode) and Mounted then
-        Mounted = false
-        if not AddonSwitch then
-            print(L["<|cFFBA55D3GB|r>Switch the Resource Tracking when you Dismounted."])
+    elseif not (IsMounted() or IsInTravelMode) and Frame:IsShown() then
+        if not Config.Enabled then
+            Config.CurrentStatus = false
+            UIErrorsFrame:AddMessage(L["<|cFFBA55D3GB|r>Stop Switch the Tracking when you Dismounted."])
             Frame:Hide()
         end
     end
@@ -189,29 +310,6 @@ SLASH_GBC1 = "/gatherbot"
 SLASH_GBC2 = "/gb"
 
 SlashCmdList["GBC"] = function(Input)
-    if Input ~= "" then
-        if Input:lower() == "default" then
-            GatherBotDB.Time = 5
-            print(string.format(L["<|cFFBA55D3GB|r>Set Switch Time to every [%s] seconds."], GatherBotDB.Time))
-        elseif tonumber(Input) and tonumber(Input) <= 20 and tonumber(Input) >= 3 then
-            GatherBotDB.Time = tonumber(Input)
-            print(string.format(L["<|cFFBA55D3GB|r>Set Switch Time to every [%s] seconds."], GatherBotDB.Time))
-        else
-            print(L["<|cFFBA55D3GB|r>Wrong Input: Please use |cFF00FF00/gb default|r or |cFF00FF00/gb number|r |cFFBEBEBE(3 to 20)|r."])
-        end
-    else
-        if AddonEnable == 3 then
-            if AddonSwitch then
-                AddonSwitch = false
-                print(L["<|cFFBA55D3GB|r>Truned the Resource Tracking Auto Switch to OFF."])
-                Frame:Hide()
-            else
-                AddonSwitch = true
-                print(L["<|cFFBA55D3GB|r>Truned the Resource Tracking Auto Switch to ON."])
-                Frame:Show()
-            end
-        else
-            print(L["<|cFFBA55D3GB|r>No Resource Tracking Spell."])
-        end
-    end
+    Addon:ShowSpellInfo()
+    SetWindow.background:Show()
 end

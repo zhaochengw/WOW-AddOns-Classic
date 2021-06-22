@@ -1,10 +1,12 @@
 ## Interface: 20501
-## Version: 1.13
+## Version: 2.03
 ## Title: GatherBot
 ## Author: Aoikaze
-## SavedVariables: GatherBotDB
+## SavedVariablesPerCharacter: GatherBotDB
 ## Notes: Gather ALL
 ## Notes-zhCN: 双采助手
 
 Locale.lua
 GatherBot.lua
+GUI.lua
+MinimapIcon.lua
