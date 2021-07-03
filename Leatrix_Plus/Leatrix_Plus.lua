@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------
--- 	Leatrix Plus 2.5.42 (16th June 2021)
+-- 	Leatrix Plus 2.5.44 (30th June 2021)
 ----------------------------------------------------------------------
 
 --	01:Functions	20:Live			50:RunOnce		70:Logout			
@@ -20,7 +20,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "2.5.42"
+	LeaPlusLC["AddonVer"] = "2.5.44"
 
 	-- Get locale table
 	local void, Leatrix_Plus = ...
@@ -995,7 +995,8 @@
 				if GetTime() - tDelay >= 0.3 then
 					tDelay = GetTime()
  					if GetCVarBool("autoLootDefault") ~= IsModifiedClick("AUTOLOOTTOGGLE") then
-						if GetLootMethod() == "master" then
+						local lootMethod = GetLootMethod()
+						if lootMethod == "master" then
 							-- Master loot is enabled so fast loot if item should be auto looted
 							local lootThreshold = GetLootThreshold()
 							for i = GetNumLootItems(), 1, -1 do
@@ -1006,8 +1007,23 @@
 							end
 						else
 							-- Master loot is disabled so fast loot regardless
+							local grouped = IsInGroup()
 							for i = GetNumLootItems(), 1, -1 do
-								LootSlot(i)
+								local lootIcon, lootName, lootQuantity, currencyID, lootQuality, locked = GetLootSlotInfo(i)
+								local slotType = GetLootSlotType(i)
+								if lootName and not locked then
+									if not grouped then 
+										LootSlot(i)
+									else
+										if lootMethod == "freeforall" then
+											if slotType == LOOT_SLOT_ITEM then
+												LootSlot(i)
+											end
+										else
+											LootSlot(i)
+										end
+									end					
+								end
 							end
 						end
 						tDelay = GetTime()
@@ -3465,13 +3481,31 @@
 				end
 
 				-- Classic Profession Filter addon fixes
-				if IsAddOnLoaded("ClassicProfessionFilter") and TradeSkillFrame.SearchBox and TradeSkillFrame.HaveMats and TradeSkillFrame.HaveMats.text then
+				if IsAddOnLoaded("ClassicProfessionFilter") and TradeSkillFrame.SearchBox and TradeSkillFrame.HaveMats and TradeSkillFrame.HaveMats.text and TradeSkillFrame.SearchMats and TradeSkillFrame.SearchMats.text then
 					TradeSkillFrame.SearchBox:ClearAllPoints()
-					TradeSkillFrame.SearchBox:SetPoint("LEFT", TradeSkillRankFrame, "RIGHT", 20, -12)
+					TradeSkillFrame.SearchBox:SetPoint("LEFT", TradeSkillRankFrame, "RIGHT", 20, -10)
+
 					TradeSkillFrame.HaveMats:ClearAllPoints()
-					TradeSkillFrame.HaveMats:SetPoint("LEFT", TradeSkillFrame.SearchBox, "RIGHT", 10, 0)
-					TradeSkillFrame.HaveMats.text:SetText("Have Mats?")
+					TradeSkillFrame.HaveMats:SetPoint("LEFT", TradeSkillFrame.SearchBox, "RIGHT", 10, 8)
+					TradeSkillFrame.HaveMats.text:SetText(L["Have mats?"])
 					TradeSkillFrame.HaveMats:SetHitRectInsets(0, -TradeSkillFrame.HaveMats.text:GetStringWidth() + 4, 0, 0)
+					TradeSkillFrame.HaveMats.text:SetJustifyH("LEFT")
+					TradeSkillFrame.HaveMats.text:SetWordWrap(false)
+					if TradeSkillFrame.HaveMats.text:GetWidth() > 80 then
+						TradeSkillFrame.HaveMats.text:SetWidth(80)
+						TradeSkillFrame.HaveMats:SetHitRectInsets(0, -80 + 4, 0, 0)
+					end
+
+					TradeSkillFrame.SearchMats:ClearAllPoints()
+					TradeSkillFrame.SearchMats:SetPoint("BOTTOMLEFT", TradeSkillFrame.HaveMats, "BOTTOMLEFT", 0, -16)
+					TradeSkillFrame.SearchMats.text:SetText(L["Search mats?"])
+					TradeSkillFrame.SearchMats:SetHitRectInsets(0, -TradeSkillFrame.SearchMats.text:GetStringWidth() + 2, 0, 0)
+					TradeSkillFrame.SearchMats.text:SetJustifyH("LEFT")
+					TradeSkillFrame.SearchMats.text:SetWordWrap(false)
+					if TradeSkillFrame.SearchMats.text:GetWidth() > 80 then
+						TradeSkillFrame.SearchMats.text:SetWidth(80)
+						TradeSkillFrame.SearchMats:SetHitRectInsets(0, -80 + 4, 0, 0)
+					end
 				end
 
 			end
@@ -3645,13 +3679,31 @@
 				end)
 
 				-- Classic Profession Filter addon fixes
-				if IsAddOnLoaded("ClassicProfessionFilter") and CraftFrame.SearchBox and CraftFrame.HaveMats and CraftFrame.HaveMats.text then
+				if IsAddOnLoaded("ClassicProfessionFilter") and CraftFrame.SearchBox and CraftFrame.HaveMats and CraftFrame.HaveMats.text and CraftFrame.SearchMats and CraftFrame.SearchMats.text then
 					CraftFrame.SearchBox:ClearAllPoints()
-					CraftFrame.SearchBox:SetPoint("LEFT", CraftRankFrame, "RIGHT", 20, -12)
+					CraftFrame.SearchBox:SetPoint("LEFT", CraftRankFrame, "RIGHT", 20, -10)
+
 					CraftFrame.HaveMats:ClearAllPoints()
-					CraftFrame.HaveMats:SetPoint("LEFT", CraftFrame.SearchBox, "RIGHT", 10, 0)
-					CraftFrame.HaveMats.text:SetText("Have Mats?")
+					CraftFrame.HaveMats:SetPoint("LEFT", CraftFrame.SearchBox, "RIGHT", 10, 8)
+					CraftFrame.HaveMats.text:SetText(L["Have mats?"])
 					CraftFrame.HaveMats:SetHitRectInsets(0, -CraftFrame.HaveMats.text:GetStringWidth() + 4, 0, 0)
+					CraftFrame.HaveMats.text:SetJustifyH("LEFT")
+					CraftFrame.HaveMats.text:SetWordWrap(false)
+					if CraftFrame.HaveMats.text:GetWidth() > 80 then
+						CraftFrame.HaveMats.text:SetWidth(80)
+						CraftFrame.HaveMats:SetHitRectInsets(0, -80 + 4, 0, 0)
+					end
+
+					CraftFrame.SearchMats:ClearAllPoints()
+					CraftFrame.SearchMats:SetPoint("BOTTOMLEFT", CraftFrame.HaveMats, "BOTTOMLEFT", 0, -16)
+					CraftFrame.SearchMats.text:SetText(L["Search mats?"])
+					CraftFrame.SearchMats:SetHitRectInsets(0, -CraftFrame.SearchMats.text:GetStringWidth() + 2, 0, 0)
+					CraftFrame.SearchMats.text:SetJustifyH("LEFT")
+					CraftFrame.SearchMats.text:SetWordWrap(false)
+					if CraftFrame.SearchMats.text:GetWidth() > 80 then
+						CraftFrame.SearchMats.text:SetWidth(80)
+						CraftFrame.SearchMats:SetHitRectInsets(0, -80 + 4, 0, 0)
+					end
 				end
 
 			end
@@ -10343,7 +10395,7 @@
 
 	LeaPlusLC:MakeTx(LeaPlusLC[pg], "Groups"					, 	340, -72);
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "AcceptPartyFriends"		, 	"Party from friends"			, 	340, -92, 	false,	"If checked, party invitations from friends or guild members will be automatically accepted unless you are queued for a battleground.")
-	LeaPlusLC:MakeCB(LeaPlusLC[pg], "InviteFromWhisper"			,   "Invite from whispers"			,	340, -112,	false,	L["If checked, a group invite will be sent to anyone who whispers you with a set keyword as long as you are ungrouped, group leader or raid assistant and not queued for a battleground."] .. "|n|n" .. L["Keyword"] .. ": |cffffffff" .. "dummy" .. "|r")
+	LeaPlusLC:MakeCB(LeaPlusLC[pg], "InviteFromWhisper"			,   "Invite from whispers"			,	340, -112,	false,	L["If checked, a group invite will be sent to anyone who whispers you with a set keyword as long as you are ungrouped, group leader or raid assistant and not queued for a battleground.|n|nFriends who message the keyword using Battle.net will not be sent a group invite if they are appearing offline.  They need to either change their online status or use character whispers."] .. "|n|n" .. L["Keyword"] .. ": |cffffffff" .. "dummy" .. "|r")
 
  	LeaPlusLC:CfgBtn("InvWhisperBtn", LeaPlusCB["InviteFromWhisper"])
 
