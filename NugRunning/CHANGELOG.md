@@ -1,41 +1,8 @@
 # NugRunning
 
-## [9.1-bcc9](https://github.com/rgd87/NugRunning/tree/9.1-bcc9) (2021-05-15)
-[Full Changelog](https://github.com/rgd87/NugRunning/compare/PreBCC...9.1-bcc9) [Previous Releases](https://github.com/rgd87/NugRunning/releases)
+## [9.1-bcc11](https://github.com/rgd87/NugRunning/tree/9.1-bcc11) (2021-05-15)
+[Full Changelog](https://github.com/rgd87/NugRunning/compare/9.1.0...9.1-bcc11) [Previous Releases](https://github.com/rgd87/NugRunning/releases)
 
 - BCC fallback toc  
-- Fixed missing Rake Rank 5 in BCC  
-- Marking extracted timers as external  
-- Fixed single target timer flag in BCC  
-- Bugfix  
-- Better way to pass active timers to nameplates  
-- Refactored metatables out  
-- gettimer searches base spell ID  
-- Fixed weird resets on mouseover  
-- koKR localization  
-- Fixed 'default' group bug  
-- Option to show target names  
-- Font outline settings  
-- Added Blizzard Slow, limited Frostbite timers  
-- Fixed original spell ID being put as clone ID  
-- Fixed preghost cancelling active timers on BCC  
-- Fixed preghost timer activation with non-numeric durations (#42)  
-- Removed Blood Fury from BCC  
-- Separate toc files for Retail and BCC  
-- Copied classic overpower activation timer to TBC  
-- Fixed CP spender timers  
-- Fixed missing spell haste on BCC  
-- Paladin TBC update  
-- Shaman TBC update  
-- Mage TBC update  
-- Hunter TBC update  
-- Fixed GCD duration on classic  
-- Updated TOC for 2.5.1  
-- Disabled special timers from live  
-- Warrior TBC update  
-- Rogue TBC update  
-- Priest TBC update  
-- DR update for Warlock and Druid  
-- Warlock TBC update  
-- Druid TBC update  
-- Burning Crusade config setup based on SL version  
+- Added 'Show Charges' toggle to GUI  
+- Added Deadly Poison timer  
