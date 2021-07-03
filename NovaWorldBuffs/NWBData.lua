@@ -308,7 +308,7 @@ end
 --I've tried my best to keep the data short and only send the first few log entries at a time.
 --I will remove this log system if the rend drop is ever fixed so it can work like ony/nef and not send the yell msgs on every layer.
 function NWB:sendTimerLogData(distribution, entries)
-	if (not enableLogging) then
+	if (not enableLogging or NWB.isTBC) then
 		return;
 	end
 	if (logLayeredServersOnly and not NWB.isLayered) then
@@ -604,13 +604,22 @@ function NWB:createData(distribution, noLogs)
 			data[k] = NWB.data[k];
 		end
 	end
+	if (NWB.isTBC and NWB.data.terokFaction and NWB.data.terokTowers and NWB.data.terokTowers > GetServerTime()
+			and NWB.data.terokTowers < GetServerTime() + 23400) then
+		data.terokTowers = NWB.data.terokTowers;
+		data.terokFaction = NWB.data.terokFaction;
+	end
+	if (NWB.isTBC and NWB.data.hellfireRep and NWB.data.hellfireRep > GetServerTime()
+			and NWB.data.hellfireRep < GetServerTime() + 23400) then
+		data.hellfireRep = NWB.data.hellfireRep;
+	end
 	if (distribution == "GUILD") then
 		--Include settings with timer data for guild.
 		local settings = NWB:createSettings(distribution);
 		local me = UnitName("player") .. "-" .. GetNormalizedRealmName();
 		data[me] = settings[me];
 	end
-	if (enableLogging and not noLogs and includeTimerLog and (not logLayeredServersOnly or NWB.isLayered)) then
+	if (enableLogging and not NWB.isTBC and not noLogs and includeTimerLog and (not logLayeredServersOnly or NWB.isLayered)) then
 		local timerLog = NWB:createTimerLogData(distribution);
 		if (next(timerLog)) then
 			data.timerLog = timerLog;
@@ -759,6 +768,29 @@ function NWB:createDataLayered(distribution, noLayerMap, noLogs)
 				end
 			end
 		end
+		if (NWB.isTBC and v.terokFaction and v.terokTowers and v.terokTowers > GetServerTime()
+				and v.terokTowers < GetServerTime() + 23400) then
+			if (not data.layers) then
+				data.layers = {};
+			end
+			if (not data.layers[layer]) then
+				data.layers[layer] = {};
+			end
+			data.layers[layer].terokTowers = v.terokTowers;
+			data.layers[layer].terokFaction = v.terokFaction;
+			foundTimer = true;
+		end
+		if (NWB.isTBC and v.hellfireRep and v.hellfireRep < GetServerTime()
+				and v.hellfireRep > GetServerTime() - 23400) then
+			if (not data.layers) then
+				data.layers = {};
+			end
+			if (not data.layers[layer]) then
+				data.layers[layer] = {};
+			end
+			data.layers[layer].hellfireRep = v.hellfireRep;
+			foundTimer = true;
+		end
 		if ((sendLayerMap and foundTimer) or not lastSendLayerMapID[layer]
 				or (lastSendLayerMapID[layer] and GetServerTime() - lastSendLayerMapID[layer] > 3600)) then
 			if (NWB.data.layers[layer].layerMap and next(NWB.data.layers[layer].layerMap)) then
@@ -829,7 +861,7 @@ function NWB:createDataLayered(distribution, noLayerMap, noLogs)
 		local me = UnitName("player") .. "-" .. GetNormalizedRealmName();
 		data[me] = settings[me];
 	end
-	if (enableLogging and not noLogs and includeTimerLog and (not logLayeredServersOnly or NWB.isLayered)) then
+	if (enableLogging and not NWB.isTBC and not noLogs and includeTimerLog and (not logLayeredServersOnly or NWB.isLayered)) then
 		local timerLog = NWB:createTimerLogData(distribution);
 		if (next(timerLog)) then
 			data.timerLog = timerLog;
@@ -914,12 +946,12 @@ end
 --Until I find why I'm going to check for this happening before sending and accepting data.
 --This is not an ideal solution because maybe on rare occasions the same buff may drop on more than 1 layer at the same time.
 function NWB:validateCloseTimestamps(layer, key, timestamp)
-	if (NWB.sharedLayerBuffs and key == "rendTimer") then
+	if (NWB.sharedLayerBuffs and (key == "rendTimer" or key == "terokTowers" or key == "terokFaction")) then
 		--If buffs are syncing on both layers then skip this check for rend (Blizzard hotfix enabled 23/7/2020).
 		return true;
 	end
 	local offset = 30;
-	if (string.match(key, "flower")) then
+	if (string.match(key, "flower") or key == "hellfireRep") then
 		offset = 10;
 	end
 	if (not timestamp) then
@@ -945,10 +977,12 @@ function NWB:validateCloseTimestamps(layer, key, timestamp)
 		--If there is a timestamp then we're checking against the time we received from another player.
 		for k, v in pairs(NWB.data.layers) do
 			--Unlike above we have to check all layers here.
-			local diff = v[key] - timestamp;
-			if (diff < offset and diff > -offset) then
-				--NWB:debug("Found matching timestamp2", key, k, v[key], layer, timestamp);
-				return;
+			if (v[key] and timestamp) then
+				local diff = v[key] - timestamp;
+				if (diff < offset and diff > -offset) then
+					--NWB:debug("Found matching timestamp2", key, k, v[key], layer, timestamp);
+					return;
+				end
 			end
 		end
 	end
@@ -1026,6 +1060,9 @@ NWB.validKeys = {
 	["dragon2"] = true,
 	["dragon3"] = true,
 	["dragon4"] = true,
+	["terokTowers"] = true,
+	["terokFaction"] = true,
+	["hellfireRep"] = true,
 	["faction"] = true,
 	["GUID"] = true,
 	["lastSeenNPC"] = true,
@@ -1133,7 +1170,8 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 			--Temp fix, this can be removed soon.
 			if (type(vv) ~= "table" or (((not vv.rendTimer or vv.rendTimer == 0) and (not vv.onyTimer or vv.onyTimer == 0)
 					 and (not vv.nefTimer or vv.nefTimer == 0) and (not vv.onyNpcDied or vv.onyNpcDied == 0)
-					  and (not vv.nefNpcDied or vv.nefNpcDied == 0) and (not vv.lastSeenNPC or vv.lastSeenNPC == 0))
+					  and (not vv.nefNpcDied or vv.nefNpcDied == 0) and (not vv.lastSeenNPC or vv.lastSeenNPC == 0)
+					  and (not vv.terokTowers or vv.terokTowers == 0) and (not vv.hellfireRep or vv.hellfireRep == 0))
 					  or NWB.data.layersDisabled[layer])) then
 				--Do nothing if all timers are 0, this is to fix a bug in last version with layerMaps causing old layer data
 				--to bounce back and forth between users, making it so layers with no timers keep being created after server
@@ -1373,7 +1411,9 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 			end
 		end
 	end
-	NWB:timerCleanup();
+	if (hasNewData) then
+		NWB:timerCleanup();
+	end
 	--If we get newer data from someone outside the guild then share it with the guild.
 	if (hasNewData and not NWB.cnRealms[NWB.realm] and not NWB.twRealms[NWB.realm] and not NWB.krRealms[NWB.realm]) then
 		NWB.data.lastSyncBy = sender;
@@ -1584,6 +1624,9 @@ local shortKeys = {
 	["I"] = "layerID",
 	["J"] = "who",
 	["K"] = "guildNpcWalking",
+	["L"] = "terokTowers",
+	["M"] = "terokFaction",
+	["N"] = "hellfireRep",
 	["f1"] = "flower1",
 	["f2"] = "flower2",
 	["f3"] = "flower3",
@@ -2988,6 +3031,357 @@ function NWB:recalcLFrame()
 			NWBLFrame.EditBox:Insert(text);
 		else
 			NWBLFrame.EditBox:Insert("|cffFFFF00No guild members online sharing layer data found.");
+		end
+	end
+end
+
+local lastTerokkarUpdate = 0;
+local lastZoneChange = 0;
+local lastPew = 0;
+local f = CreateFrame("Frame");
+f:RegisterEvent("PLAYER_ENTERING_WORLD");
+f:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+f:RegisterEvent("UPDATE_UI_WIDGET");
+f:RegisterEvent("UPDATE_UI_WIDGET");
+f:SetScript('OnEvent', function(self, event, ...)
+	if (event == "PLAYER_ENTERING_WORLD" ) then
+		lastPew = GetServerTime();
+	elseif (event == "ZONE_CHANGED_NEW_AREA" ) then
+		lastZoneChange = GetServerTime();
+	elseif (event == "UPDATE_UI_WIDGET" ) then
+		local data = ...;
+		--All 3 widgets are sent at same time, all 3 contain same timer data.
+		--Just check for one.
+		if (data and data.widgetID == 3097) then
+			if ((GetServerTime() - NWB.lastJoinedGroup) > 600 and (GetServerTime() - lastZoneChange) > 60
+					and (GetServerTime() - lastPew) > 120) then
+				NWB:getTerokkarData();
+			end
+		end
+	end
+end)
+
+--If within last 20 minutes, and close to another layers timestamp, don't record.
+function NWB:validateTerokkarData(old, new, layer)
+	local found;
+	for k, v in pairs(NWB.data.layers) do
+		if (k ~= layer and v.terokTowers and (new - v.terokTowers > 120 or v.terokTowers - new > 120)) then
+			found = true;
+		end
+	end
+	if (found and (GetServerTime() - lastTerokkarUpdate) < 1200) then
+		return;
+	end
+	return true;
+end
+
+function NWB:getTerokkarData()
+	if (not NWB.isTBC) then
+		return;
+	end
+	local neutral = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(3097);
+	local alliance = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(3118);
+	local horde = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(3119);
+	if (not neutral or not alliance or not horde) then
+		return;
+	end
+	local controlType, timestamp = 0, 0;
+	if (neutral.state == 1) then
+		--Alliance controlled.
+		controlType = 1;
+	elseif (alliance.state == 1) then
+		--Alliance controlled.
+		controlType = 2;
+	elseif (horde.state == 1) then
+		--Horde controlled.
+		controlType = 3;
+	end
+	if (controlType > 0) then
+		if (controlType == 1) then
+			local hours, minutes = string.match(neutral.text, "(%d+):(%d+)");
+			timestamp = GetServerTime() + (hours * 3600) + (minutes * 60);
+		elseif (controlType == 2) then
+			local hours, minutes = string.match(alliance.text, "(%d+):(%d+)"); --/tinspect string.match("2:30", "(%d+):(%d+)")
+			timestamp = GetServerTime() + (hours * 3600) + (minutes * 60);
+		elseif (controlType == 3) then
+			local hours, minutes = string.match(horde.text, "(%d+):(%d+)");
+			timestamp = GetServerTime() + (hours * 3600) + (minutes * 60);
+		end
+	end
+	if (timestamp > 0) then
+		local layer, layerNum;
+		if (NWB.isLayered and NWB.lastKnownLayerMapID and NWB.lastKnownLayerMapID > 0
+				and NWB.lastKnownLayer and NWB.lastKnownLayer > 0) then
+			layer = NWB.lastKnownLayerMapID;
+			layerNum = NWB.lastKnownLayer;
+		end
+		if (not layer or layer == 0) then
+			layer = NWB.lastKnownLayerMapIDBackup;
+		end
+		if (NWB.isLayered) then
+			if (layer and layer > 0) then
+				if (not layer or layer < 1) then
+					NWB:debug("no known terokkar layer");
+					return;
+				end
+				if (not NWB.data.layers[layer]) then
+					NWB:debug("terokkar layer table is missing");
+					return;
+				end
+				if (not NWB.data.layers[layer]["terokTowers"]) then
+					NWB.data.layers[layer]["terokTowers"] = 0;
+				end
+				--local diff = timestamp - NWB.data.layers[layer]["terokTowers"];
+				--if (diff >= 0) then
+				--	diff = "+" .. diff;
+				--end
+				if (timestamp - NWB.data.layers[layer]["terokTowers"] > 0) then
+					if (NWB:validateTerokkarData(NWB.data.layers[layer]["terokTowers"], timestamp, layer)) then
+						--NWB:debug("set terokkar timer layered", timestamp, diff);
+						NWB.data.layers[layer]["terokTowers"] = timestamp;
+						NWB.data.layers[layer]["terokFaction"] = controlType;
+						lastTerokkarUpdate = GetServerTime();
+						if (timestamp - GetServerTime() > 900) then
+							NWB.data.layers[layer]["terokTowers10"] = true;
+						end
+					end
+				end
+			end
+		else
+			--NWB:debug("set terokkar timer", timestamp);
+			NWB.data["terokTowers"] = timestamp;
+			NWB.data["terokFaction"] = controlType;
+			lastTerokkarUpdate = GetServerTime();
+			if (timestamp - GetServerTime() > 900) then
+				NWB.data["terokTowers10"] = true;
+			end
+		end
+	end
+end
+
+---===================---
+---Terokkar Map Frames---
+---===================---
+--Adapted from the org/stormwind markers so things might look a bit strange here.
+
+local terokkarMapMarkerTypes = {
+	["towers"] = {x = 87, y = 82, mapID = 1952, icon = "Interface\\worldstateframe\\neutraltower.blp", name = L["rend"]},
+};
+
+--Update timers for worldmap when the map is open.
+function NWB:updateTerokkarMarkers(type, layer)
+	--Seconds left.
+	local time = 0;
+	if (NWB.isLayered and layer) then
+		local count = 0;
+		local layerZoneID = 0;
+		for k, v in NWB:pairsByKeys(NWB.data.layers) do
+			count = count + 1;
+			if (k == tonumber(layer)) then
+				layerZoneID = k;
+				break;
+			end
+		end
+		_G[type .. layer .. "NWBTerokkarMap"].fsLayer:SetText("|cff00ff00[Layer " .. count.. "] |cFFB5E0E6(" .. layerZoneID .. ")");
+		if (NWB.data.layers[layer] and NWB.data.layers[layer]["terokTowers"]) then
+			time = NWB.data.layers[layer]["terokTowers"] - GetServerTime() or 0;
+		else
+			time = 0;
+		end
+		local timeString = L["noTimer"];
+		if (NWB.data.layers[layer] and _G[type .. layer .. "NWBTerokkarMap"] and time > 0) then
+	    	timeString = NWB:getTimeString(time, true, "short") .. " (" .. NWB:getTimeFormat(NWB.data.layers[layer]["terokTowers"]) .. ")";
+	    	local timeStamp = NWB:getTimeFormat(NWB.data.layers[layer]["terokTowers"]);
+	    	if (NWB.data.layers[layer]["terokFaction"] == 2) then
+	    		_G[type .. layer .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\alliancetower.blp");
+	    	elseif (NWB.data.layers[layer]["terokFaction"] == 3) then
+	    		_G[type .. layer .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\hordetower.blp");
+	    	else
+	    		_G[type .. layer .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\neutraltower.blp");
+	    	end
+	    else
+	    	_G[type .. layer .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\neutraltower.blp");
+	    end
+		return timeString;
+	else
+		local timeString = L["noTimer"];
+		if (NWB.data["terokTowers"] and NWB.data["terokTowers"] - GetServerTime() > 0) then
+			time = NWB.data["terokTowers"] - GetServerTime() or 0;
+		else
+			time = 0;
+		end
+		if (NWB.data["terokTowers"] and _G[type .. "NWBTerokkarMap"] and time > 0) then
+	    	timeString = NWB:getTimeString(time, true, "short") .. " (" .. NWB:getTimeFormat(NWB.data["terokTowers"]) .. ")";
+	    	local timeStamp = NWB:getTimeFormat(NWB.data["terokTowers"]);
+	    	if (NWB.data.layers[layer]["terokFaction"] == 2) then
+	    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\alliancetower.blp");
+	    	elseif (NWB.data.layers[layer]["terokFaction"] == 3) then
+	    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\hordetower.blp");
+	    	else
+	    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\neutraltower.blp");
+	    	end
+	    else
+	    	_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\neutraltower.blp");
+	    end
+		return timeString;
+	end
+end
+
+function NWB:createTerokkarMarkers()
+	if (NWB.isLayered) then
+		local count = 0;
+		for layer, data in NWB:pairsByKeys(NWB.data.layers) do
+			count = count + 1;
+			for k, v in pairs(terokkarMapMarkerTypes) do
+				if (not _G[k .. layer .. "NWBTerokkarMap"]) then
+					NWB:createTerokkarMarker(k, v, layer, count);
+				end
+			end
+		end
+	end
+	--Create non layered icons also on layered realms, they are shown when no layers found.
+	for k, v in pairs(terokkarMapMarkerTypes) do
+		NWB:createTerokkarMarker(k, v);
+	end
+	NWB:refreshTerokkarMarkers();
+end
+
+local mapMarkers = {};
+function NWB:createTerokkarMarker(type, data, layer, count)
+	if (layer) then
+		if (not _G[type .. layer .. "NWBTerokkarMap"]) then
+			--Worldmap marker.
+			local obj = CreateFrame("Frame", type .. layer .. "NWBTerokkarMap", WorldMapFrame);
+			obj.name = data.name;
+			local bg = obj:CreateTexture(nil, "MEDIUM");
+			bg:SetTexture(data.icon);
+			bg:SetTexCoord(0.1, 0.6, 0.1, 0.6);
+			bg:SetAllPoints(obj);
+			obj.texture = bg;
+			obj:SetSize(20, 20);
+			--Timer frame that sits above the icon when an active timer is found.
+			obj.timerFrame = CreateFrame("Frame", type .. layer .. "TerokkarMapTimerFrame", WorldMapFrame, "TooltipBorderedFrameTemplate");
+			obj.timerFrame:SetPoint("CENTER", obj, "CENTER",  0, 22);
+			obj.timerFrame:SetFrameStrata("FULLSCREEN");
+			obj.timerFrame:SetFrameLevel(9);
+			obj.timerFrame.fs = obj.timerFrame:CreateFontString(type .. layer .. "NWBTerokkarMapTimerFrameFS", "ARTWORK");
+			obj.timerFrame.fs:SetPoint("CENTER", 0, 0);
+			obj.timerFrame.fs:SetFont(NWB.regionFont, 13);
+			obj.timerFrame:SetWidth(54);
+			obj.timerFrame:SetHeight(24);
+			obj.lastUpdate = 0;
+			obj:SetScript("OnUpdate", function(self)
+				--Update timer when map is open.
+				if (GetServerTime() - obj.lastUpdate > 0) then
+					obj.lastUpdate = GetServerTime();
+					obj.timerFrame.fs:SetText(NWB:updateTerokkarMarkers(type, layer));
+					obj.timerFrame:SetWidth(obj.timerFrame.fs:GetStringWidth() + 18);
+					obj.timerFrame:SetHeight(obj.timerFrame.fs:GetStringHeight() + 12);
+				end
+			end)
+			--Make it act like pin is the parent and not WorldMapFrame.
+			obj:SetScript("OnHide", function(self)
+				obj.timerFrame:Hide();
+			end)
+			obj:SetScript("OnShow", function(self)
+				obj.timerFrame:Show();
+			end)
+			obj.fsLayer = obj:CreateFontString(type .. layer .. "NWBTerokkarMapBuffCmdFS", "ARTWORK");
+			obj.fsLayer:SetPoint("TOP", 0, 38);
+			obj.fsLayer:SetFont(NWB.regionFont, 14);
+			--[[obj:SetScript("OnMouseDown", function(self)
+				NWB:openBuffListFrame();
+			end)]]
+			mapMarkers[type .. layer .. "NWBTerokkarMap"] = true;
+		end
+	else
+		if (not _G[type .. "NWBTerokkarMap"]) then
+			--Worldmap marker.
+			local obj = CreateFrame("Frame", type .. "NWBTerokkarMap", WorldMapFrame);
+			obj.name = data.name;
+			local bg = obj:CreateTexture(nil, "MEDIUM");
+			bg:SetTexture(data.icon);
+			bg:SetTexCoord(0.1, 0.6, 0.1, 0.6);
+			bg:SetAllPoints(obj);
+			obj.texture = bg;
+			obj:SetSize(20, 20);
+			--Timer frame that sits above the icon when an active timer is found.
+			obj.timerFrame = CreateFrame("Frame", type .. "TerokkarMapTimerFrame", WorldMapFrame, "TooltipBorderedFrameTemplate");
+			obj.timerFrame:SetPoint("CENTER", obj, "CENTER",  0, 22);
+			obj.timerFrame:SetFrameStrata("FULLSCREEN");
+			obj.timerFrame:SetFrameLevel(9);
+			obj.timerFrame.fs = obj.timerFrame:CreateFontString(type .. "NWBTerokkarMapTimerFrameFS", "ARTWORK");
+			obj.timerFrame.fs:SetPoint("CENTER", 0, 0);
+			obj.timerFrame.fs:SetFont(NWB.regionFont, 13);
+			obj.timerFrame:SetWidth(54);
+			obj.timerFrame:SetHeight(24);
+			obj.lastUpdate = 0;
+			obj:SetScript("OnUpdate", function(self)
+				--Update timer when map is open.
+				if (GetServerTime() - obj.lastUpdate > 0) then
+					obj.lastUpdate = GetServerTime();
+					obj.timerFrame.fs:SetText(NWB:updateTerokkarMarkers(type, layer));
+					obj.timerFrame:SetWidth(obj.timerFrame.fs:GetStringWidth() + 18);
+					obj.timerFrame:SetHeight(obj.timerFrame.fs:GetStringHeight() + 12);
+				end
+			end)
+			--Make it act like pin is the parent and not WorldMapFrame.
+			obj:SetScript("OnHide", function(self)
+				obj.timerFrame:Hide();
+			end)
+			obj:SetScript("OnShow", function(self)
+				obj.timerFrame:Show();
+			end)
+			mapMarkers[type .. "NWBTerokkarMap"] = true;
+		end
+	end
+end
+
+function NWB:refreshTerokkarMarkers()
+	if (NWB.isLayered) then
+		local count = 0;
+		local offset = 0;
+		local foundLayers;
+		for layer, data in NWB:pairsByKeys(NWB.data.layers) do
+			for k, v in pairs(mapMarkers) do
+				--Remove all icons first so it fixes any layer changes or data reset after server restart etc.
+				NWB.dragonLibPins:RemoveWorldMapIcon(k, _G[k]);
+			end
+		end
+		for layer, data in NWB:pairsByKeys(NWB.data.layers) do
+			foundLayers = true;
+			count = count + 1;
+			for k, v in pairs(terokkarMapMarkerTypes) do
+				--Change position to bottom corner of map so they can be stacked on top of each other for layered realms.
+				NWB.dragonLibPins:RemoveWorldMapIcon(k .. layer .. "NWBTerokkarMap", _G[k .. "NWBTerokkarMap"]);
+				if (NWB.db.global.showWorldMapMarkers and _G[k .. layer .. "NWBTerokkarMap"]) then
+					NWB.dragonLibPins:AddWorldMapIconMap(k .. layer .. "NWBTerokkarMap", _G[k .. layer .. "NWBTerokkarMap"], 
+							v.mapID, v.x / 100, (v.y + 9 + offset) / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
+				end
+			end
+			offset = offset - 10;
+		end
+		--This will add layer icons and remove default non-layer icons when we go from having no timer info to got new layers timer info.
+		if (not foundLayers) then
+			for k, v in pairs(terokkarMapMarkerTypes) do
+				NWB.dragonLibPins:RemoveWorldMapIcon(k .. "NWBTerokkarMap", _G[k .. "NWBTerokkarMap"]);
+				if (NWB.db.global.showWorldMapMarkers and _G[k .. "NWBTerokkarMap"]) then
+					NWB.dragonLibPins:AddWorldMapIconMap(k .. "NWBTerokkarMap", _G[k .. "NWBTerokkarMap"], v.mapID,
+							v.x / 100, v.y / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
+				end
+			end
+		else
+			for k, v in pairs(terokkarMapMarkerTypes) do
+				NWB.dragonLibPins:RemoveWorldMapIcon(k .. "NWBTerokkarMap", _G[k .. "NWBTerokkarMap"]);
+			end
+		end
+	else
+		for k, v in pairs(terokkarMapMarkerTypes) do
+			NWB.dragonLibPins:RemoveWorldMapIcon(k .. "NWBTerokkarMap", _G[k .. "NWBTerokkarMap"]);
+			if (NWB.db.global.showWorldMapMarkers and _G[k .. "NWBTerokkarMap"]) then
+				NWB.dragonLibPins:AddWorldMapIconMap(k .. "NWBTerokkarMap", _G[k .. "NWBTerokkarMap"], v.mapID,
+						v.x / 100, v.y / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
+			end
 		end
 	end
 end
