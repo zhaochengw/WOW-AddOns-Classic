@@ -12,9 +12,3 @@
 ## SavedVariablesPerCharacter: CritSoundSwitch, CritSoundMode, CritSoundAgingTime, CritSoundBlackList
 
 CritSound.lua
-
-
-## Title-zhCN: |cff0055FF小I插件|r CritSound 爆击音效
-## provider: 小I插件1.2.2
-## Update time: 20210528
-## DefaultState: Disabled

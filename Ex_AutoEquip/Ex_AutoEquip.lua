@@ -51,7 +51,6 @@ ExAE_Slots = {
 ExAE_Lock = true;
 
 StaticPopupDialogs["ExAE_SAVE"] = {
-	preferredIndex = STATICPOPUP_NUMDIALOGS,
 	text = ExAE_SAVE_CONFIRM,
 	button1 = YES,
 	button2 = NO,
@@ -62,7 +61,6 @@ StaticPopupDialogs["ExAE_SAVE"] = {
 }
 
 StaticPopupDialogs["ExAE_NULL"] = {
-	preferredIndex = STATICPOPUP_NUMDIALOGS,
 	text = ExAE_NULL_CONFIRM,
 	button1 = YES,
 	button2 = NO,

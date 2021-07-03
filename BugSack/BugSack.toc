@@ -1,5 +1,5 @@
 ## Interface: 20501
-## Version: v9.0.3
+## Version: v9.1.0
 ## Title: BugSack
 ## Notes: Toss those bugs inna sack.
 ## Notes-deDE: Werft den Fehler in einen Sack.
