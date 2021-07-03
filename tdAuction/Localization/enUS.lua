@@ -23,7 +23,7 @@ L["Full scaning, elapsed time: %s"] = true
 L["Ignore"] = true
 L["in about %s"] = true
 L["Merchant price"] = true
-L["Nerver"] = true
+L["Nerver"] = "Never"
 L["New"] = true
 L["Next available time:"] = true
 L["No price"] = true
@@ -43,7 +43,7 @@ L["Time"] = true
 L["Tooltip"] = true
 L["TOOLTIP_PREFIX_AUCTION"] = "Auction"
 L["TOOLTIP_PREFIX_DISENCHANT"] = "Disenchant"
-L["TOOLTIP_PREFIX_VENDO"] = "Vendo"
+L["TOOLTIP_PREFIX_VENDO"] = "Vendor"
 L["Total price"] = true
 L["Unit price"] = true
 L["Unknown"] = true
@@ -86,7 +86,7 @@ L['Bid price'] = true
 L['Unit price'] = true
 
 L['Show disenchant info'] = true
-L['Nerver'] = true
+L['Nerver'] = 'Never'
 L['Pressed SHIFT'] = true
 L['Always'] = true
 
@@ -110,7 +110,7 @@ L['Choose other price'] = true
 
 L['Start auction:'] = true
 
-L.TOOLTIP_PREFIX_VENDO = 'Vendo'
+L.TOOLTIP_PREFIX_VENDO = 'Vendor'
 L.TOOLTIP_PREFIX_AUCTION = 'Auction'
 L.TOOLTIP_PREFIX_DISENCHANT = 'Disenchant'
 -- @end-import@

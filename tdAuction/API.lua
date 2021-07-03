@@ -62,7 +62,7 @@ function ns.ParseItemLink(link)
     if not link then
         return
     end
-    local itemId, enchantId, suffixId, uniqueId = link:match('item:(%d*):(%d*):::::(%d*):(%d*)')
+    local itemId, enchantId, suffixId, uniqueId = link:match('item:(%d*):([-%d]*):::::([-%d]*):([-%d]*)')
     if not itemId then
         return
     end
