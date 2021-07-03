@@ -6,7 +6,3 @@
 ## SavedVariablesPerCharacter: QXPdb
 
 QuestXP.lua
-
-## Title-zhCN: |cff0055FF小I插件|r QuestXP 任务经验显示
-## provider: 小I插件1.2.2
-## Update time: 20210528

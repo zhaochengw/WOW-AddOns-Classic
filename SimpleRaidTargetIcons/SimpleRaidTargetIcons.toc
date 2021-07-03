@@ -14,9 +14,3 @@ locales/localization-base.lua
 locales/localization-zhTW.lua
 locales/localization-zhCN.lua
 SimpleRaidTargetIcons.lua
-
-## Title-zhCN: |cff0055FF小I插件|r SimpleRaidT 标记助手
-## Notes-zhCN: Shift、Ctrl（默认）或Alt+鼠标左键单击,或双击鼠标左键快速标记目标
-## Notes-zhTW: Shift、Ctrl（預設）或Alt+滑鼠左鍵按一下,或按兩下滑鼠左鍵快速標記目標
-## provider: 小I插件1.2.2
-## Update time: 20210528
