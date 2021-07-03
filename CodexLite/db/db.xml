@@ -1,0 +1,97 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+    <script file = "init.lua" />
+
+    <script file = "items.lua" />
+    <!-- <script file = "meta.lua" /> -->
+    <script file = "objects.lua" />
+    <script file = "quests.lua" />
+    <script file = "refloot.lua" />
+    <script file = "units.lua" />
+    <script file = "event.lua" />
+
+    <script file = "deDE\items.lua" />
+    <script file = "deDE\maps.lua" />
+    <script file = "deDE\objects.lua" />
+    <script file = "deDE\professions.lua" />
+    <script file = "deDE\quests.lua" />
+    <script file = "deDE\units.lua" />
+    <!-- <script file = "deDE\zones.lua" /> -->
+
+    <script file = "enUS\items.lua" />
+    <script file = "enUS\maps.lua" />
+    <script file = "enUS\objects.lua" />
+    <script file = "enUS\professions.lua" />
+    <script file = "enUS\quests.lua" />
+    <script file = "enUS\units.lua" />
+    <!-- <script file = "enUS\zones.lua" /> -->
+
+    <script file = "esES\items.lua" />
+    <script file = "esES\maps.lua" />
+    <script file = "esES\objects.lua" />
+    <script file = "esES\professions.lua" />
+    <script file = "esES\quests.lua" />
+    <script file = "esES\units.lua" />
+    <!-- <script file = "esES\zones.lua" /> -->
+
+    <script file = "esMX\items.lua" />
+    <script file = "esMX\maps.lua" />
+    <script file = "esMX\objects.lua" />
+    <script file = "esMX\professions.lua" />
+    <script file = "esMX\quests.lua" />
+    <script file = "esMX\units.lua" />
+    <!-- <script file = "esMX\zones.lua" /> -->
+
+    <script file = "frFR\items.lua" />
+    <script file = "frFR\maps.lua" />
+    <script file = "frFR\objects.lua" />
+    <script file = "frFR\professions.lua" />
+    <script file = "frFR\quests.lua" />
+    <script file = "frFR\units.lua" />
+    <!-- <script file = "frFR\zones.lua" /> -->
+
+    <script file = "koKR\items.lua" />
+    <script file = "koKR\maps.lua" />
+    <script file = "koKR\objects.lua" />
+    <script file = "koKR\professions.lua" />
+    <script file = "koKR\quests.lua" />
+    <script file = "koKR\units.lua" />
+    <!-- <script file = "koKR\zones.lua" /> -->
+
+    <script file = "ptBR\items.lua" />
+    <script file = "ptBR\maps.lua" />
+    <script file = "ptBR\objects.lua" />
+    <script file = "ptBR\professions.lua" />
+    <script file = "ptBR\quests.lua" />
+    <script file = "ptBR\units.lua" />
+    <!-- <script file = "ptBR\zones.lua" /> -->
+
+    <script file = "ruRU\items.lua" />
+    <script file = "ruRU\maps.lua" />
+    <script file = "ruRU\objects.lua" />
+    <script file = "ruRU\professions.lua" />
+    <script file = "ruRU\quests.lua" />
+    <script file = "ruRU\units.lua" />
+    <!-- <script file = "ruRU\zones.lua" /> -->
+
+    <script file = "zhCN\items.lua" />
+    <script file = "zhCN\maps.lua" />
+    <script file = "zhCN\objects.lua" />
+    <script file = "zhCN\professions.lua" />
+    <script file = "zhCN\quests.lua" />
+    <script file = "zhCN\units.lua" />
+    <!-- <script file = "zhCN\zones.lua" /> -->
+
+    <script file = "zhTW\items.lua" />
+    <script file = "zhTW\maps.lua" />
+    <script file = "zhTW\objects.lua" />
+    <script file = "zhTW\professions.lua" />
+    <script file = "zhTW\quests.lua" />
+    <script file = "zhTW\units.lua" />
+    <!-- <script file = "zhTW\zones.lua" /> -->
+
+    <script file = "_extra.lua" />
+
+</Ui>
+
