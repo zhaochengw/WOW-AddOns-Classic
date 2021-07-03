@@ -1,7 +1,7 @@
 ## Interface: 20501
 ## Title: ClassicHealPrediction
 ## Notes: Adds heal prediction to the Blizzard unit/raid frames and nameplates
-## Version: v1.7.1
+## Version: v1.7.2
 ## Author: dev7355608
 ## SavedVariablesPerCharacter: ClassicHealPredictionSettings
 ## OptionalDeps: ClassicInstantHealth

@@ -1,10 +1,10 @@
-lightweight tag 542aa7b55d8cdab307adaae9c7c59f1b4401762b v1.7.1
+lightweight tag a69b6f1c040e77d97f7650b478eba249e71904f3 v1.7.2
 Author:	dev7355608 <dev7355608@gmail.com>
-Date:	Sun Jun 20 16:02:33 2021 +0200
+Date:	Sun Jun 27 03:11:47 2021 +0200
 
-commit 542aa7b55d8cdab307adaae9c7c59f1b4401762b
+commit a69b6f1c040e77d97f7650b478eba249e71904f3
 Author: dev7355608 <dev7355608@gmail.com>
-Date:   Sun Jun 20 16:02:33 2021 +0200
+Date:   Sun Jun 27 03:11:47 2021 +0200
 
     Update dependency
 
