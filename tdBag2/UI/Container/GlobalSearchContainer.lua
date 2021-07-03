@@ -2,14 +2,11 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 2/11/2020, 2:54:54 PM
+--
 ---@type ns
 local ns = select(2, ...)
 
 local TitleContainer = ns.UI.TitleContainer
-
-local coroutine = coroutine
-local debugprofilestart = debugprofilestart
-local debugprofilestop = debugprofilestop
 
 ---@type tdBag2GlobalSearchContainer
 local GlobalSearchContainer = ns.Addon:NewClass('UI.GlobalSearchContainer', TitleContainer)

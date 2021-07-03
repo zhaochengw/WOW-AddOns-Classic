@@ -6,8 +6,18 @@
 local ns = select(2, ...)
 
 local coroutine = coroutine
-local debugprofilestart = debugprofilestart
-local debugprofilestop = debugprofilestop
+local profilestart, profilestop
+do
+    local tick = 0
+    function profilestart()
+        tick = debugprofilestop()
+    end
+
+    function profilestop()
+        local t = debugprofilestop()
+        return t - tick
+    end
+end
 
 ---@type tdBag2Thread
 local Thread = ns.Addon:NewClass('Thread')
@@ -16,7 +26,7 @@ local KILLED = newproxy()
 
 function Thread:Start(func, ...)
     self.co = coroutine.create(func)
-    debugprofilestart()
+    profilestart()
     coroutine.resume(self.co, ...)
 end
 
@@ -31,8 +41,8 @@ function Thread:Threshold()
         return true
     end
 
-    if debugprofilestop() > 16 then
-        debugprofilestart()
+    if profilestop() > 16 then
+        profilestart()
 
         local killed = coroutine.yield()
         if killed == KILLED then

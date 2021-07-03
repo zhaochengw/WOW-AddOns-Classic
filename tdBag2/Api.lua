@@ -601,49 +601,6 @@ function ns.memorize(func)
     end
 end
 
---[=[@classic@
-ns.ShowUIPanel = ShowUIPanel
-ns.HideUIPanel = HideUIPanel
---@end-classic@]=]
-
---@non-classic@
-local Delegate = (function()
-    local frame = EnumerateFrames()
-    while frame do
-        if frame.SetUIPanel and issecurevariable(frame, 'SetUIPanel') then
-            return frame
-        end
-        frame = EnumerateFrames(frame)
-    end
-end)()
-
-function ns.ShowUIPanel(frame)
-    if not frame or frame:IsShown() then
-        return
-    end
-
-    if not frame:GetAttribute('UIPanelLayout-defined') or not frame:GetAttribute('UIPanelLayout-area') then
-        frame:Show()
-        return
-    end
-
-    Delegate:SetAttribute('panel-force', nil)
-    Delegate:SetAttribute('panel-frame', frame)
-    Delegate:SetAttribute('panel-show', true)
-end
-
-function ns.HideUIPanel(frame)
-    if not frame or not frame:IsShown() then
-        return
-    end
-
-    if not frame:GetAttribute('UIPanelLayout-defined') or not frame:GetAttribute('UIPanelLayout-area') then
-        frame:Hide()
-        return
-    end
-
-    Delegate:SetAttribute('panel-frame', frame)
-    Delegate:SetAttribute('panel-skipSetPoint', nil)
-    Delegate:SetAttribute('panel-hide', true)
-end
---@end-non-classic@
+local LibShowUIPanel = LibStub('LibShowUIPanel-1.0')
+ns.ShowUIPanel = LibShowUIPanel.ShowUIPanel
+ns.HideUIPanel = LibShowUIPanel.HideUIPanel

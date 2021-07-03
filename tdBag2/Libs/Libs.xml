@@ -14,6 +14,7 @@
 
     <Include file="LibClass-2.0\LibClass-2.0.xml"/>
     <Include file="LibJunk-1.0\LibJunk-1.0.xml"/>
+    <Include file="LibShowUIPanel-1.0\LibShowUIPanel-1.0.xml"/>
 
     <Script file="LibWindow-1.1\LibWindow-1.1.lua"/>
     <Script file="Unfit-1.0\Unfit-1.0.lua"/>

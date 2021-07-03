@@ -1,5 +1,5 @@
 ## Interface: 20501
-## Version: 2.0.5
+## Version: 2.0.7
 ## Title: tdBag2
 ## Author: Dencer
 ## OptionalDeps: tdPack2
