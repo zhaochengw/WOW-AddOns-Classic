@@ -1,0 +1,14 @@
+## Interface: 20501
+## Author: Warbaby
+## Title: FriendsMenuXP
+## Notes: Greatly extends the player drop down menu without secure taint.
+## Title-zhCN: |c0066ffff好友_FriendsMenuXP玩家菜单增强|r
+## Notes-zhCN: |cFF34A2F7玩家超链接、查询列表、好友列表、工会列表中点击玩家名字增加更多选择。此外，按住alt点玩家链接可以邀请，按住ctrl点玩家链接选定目标。
+## http://nga.178.com/read.php?tid=14556138&_ff=200
+## http://nga.178.com/read.php?tid=14571485
+## http://nga.178.com/read.php?tid=9726737&forder_by=postdatedesc
+
+localization.enUS.lua
+localization.zhCN.lua
+localization.zhTW.lua
+FriendsMenuXP.xml
