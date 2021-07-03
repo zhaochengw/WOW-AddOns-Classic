@@ -657,19 +657,15 @@ function Atlas_Toggle()
 	if ATLAS_MODULE_MENUS == 0 and #ATLAS_PLUGIN_DATA == 0 then return end
 	if (ATLAS_SMALLFRAME_SELECTED) then
 		if (AtlasFrameSmall:IsVisible()) then
-			-- HideUIPanel(AtlasFrameSmall)
-			AtlasFrameSmall:Hide();
+			HideUIPanel(AtlasFrameSmall)
 		else
-			-- ShowUIPanel(AtlasFrameSmall)
-			AtlasFrameSmall:Show();
+			ShowUIPanel(AtlasFrameSmall)
 		end
 	else
 		if (AtlasFrame:IsVisible()) then
-			-- HideUIPanel(AtlasFrame)
-			AtlasFrame:Hide();
+			HideUIPanel(AtlasFrame)
 		else
-			-- ShowUIPanel(AtlasFrame)
-			AtlasFrame:Show();
+			ShowUIPanel(AtlasFrame)
 		end
 	end
 end
