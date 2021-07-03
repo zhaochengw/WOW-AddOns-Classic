@@ -11,6 +11,12 @@ Edited: Foxylittlething, aNNiPAk, Yarko
 -Button Bar for openning chat messages of each type.
 
 Change Log:
+v 3.17.3a (Foxylittlething)
+- fixed 1.13.6 version compatibility
+v 3.17.2a (Foxylittlething)
+- fixed errors, caused by my fault. Thanks to dartraiden
+v 3.17.1a (Foxylittlething)
+- fixed errors, caused by new LUA. Thanks to aNNiPAk and dartraiden
 v 3.16.1a (Foxylittlething)
 - merged with Yarko's version. now button flashing feature must work correctly
 - some change of skin's feature
@@ -29,7 +35,6 @@ v 3.14.2a (Foxylittlething)
 - update ruRU localization
 v 3.14.1a (Foxylittlething)
 - little fix to ruRU localization
-- update to BfA compatibility
 v 3.14 (Foxylittlething)
 - update to 1.13.2 release
 - update to ruRU localization
