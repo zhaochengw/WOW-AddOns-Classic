@@ -7,7 +7,7 @@
 -- Main non-UI code
 ------------------------------------------------------------
 
-PawnVersion = 2.0520
+PawnVersion = 2.0521
 
 -- Pawn requires this version of VgerCore:
 local PawnVgerCoreVersionRequired = 1.13
@@ -2671,6 +2671,7 @@ function PawnGetItemValue(Item, ItemLevel, SocketBonus, ScaleName, DebugMessages
 				if MissocketedValue > ProperSocketValue then
 					if DebugMessages then PawnDebugMessage(string.format(PawnLocal.MissocketWorthwhileMessage, BestGemName)) end
 					TotalSocketValue = MissocketedValue
+					SocketBonusValue = 0
 				else
 					TotalSocketValue = ProperSocketValue
 				end
