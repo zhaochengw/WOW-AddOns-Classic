@@ -2,6 +2,11 @@
 	by ALA @ 163UI
 --]]--
 
+if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+	return;
+end
+
+
 local ADDON, NS = ...;
 
 local LOCALE = GetLocale();
@@ -177,15 +182,18 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 			[LE_ITEM_WEAPON_FISHINGPOLE] = "钓鱼竿",	--	20	--	Fishing Poles
 		},
 		[LE_ITEM_CLASS_GEM] = {					--	3	Gem
-			[LE_ITEM_GEM_RED] = "红色宝石",					--	0	--	Intellect
-			[LE_ITEM_GEM_BLUE] = "蓝色宝石",				--	1	--	Agility
-			[LE_ITEM_GEM_YELLOW] = "黄色宝石",				--	2	--	Strength
-			[LE_ITEM_GEM_PURPLE] = "紫色宝石",				--	3	--	Stamina
-			[LE_ITEM_GEM_GREEN] = "绿色宝石",				--	4	--	Spirit
-			[LE_ITEM_GEM_ORANGE] = "橙色宝石",				--	5	--	Critical Strike
-			[LE_ITEM_GEM_META] = "多彩宝石",				--	6	--	Mastery
-			[LE_ITEM_GEM_SIMPLE] = "简单宝石",				--	7	--	Haste
-			[LE_ITEM_GEM_PRISMATIC] = "棱彩宝石",			--	8	--	Versatility
+			[LE_ITEM_GEM_INTELLECT] = "智力",			--	0	--	Intellect
+			[LE_ITEM_GEM_AGILITY] = "敏捷",				--	1	--	Agility
+			[LE_ITEM_GEM_STRENGTH] = "力量",			--	2	--	Strength
+			[LE_ITEM_GEM_STAMINA] = "耐力",				--	3	--	Stamina
+			[LE_ITEM_GEM_SPIRIT] = "精神",				--	4	--	Spirit
+			[LE_ITEM_GEM_CRITICALSTRIKE] = "爆击",		--	5	--	Critical Strike
+			[LE_ITEM_GEM_MASTERY] = "精通",				--	6	--	Mastery
+			[LE_ITEM_GEM_HASTE] = "急速",				--	7	--	Haste
+			[LE_ITEM_GEM_VERSATILITY] = "全能",			--	8	--	Versatility
+			[9] = "Other",								--	9	--	Other
+			[LE_ITEM_GEM_MULTIPLESTATS] = "多属性",		--	10	--	Multiple Stats
+			[LE_ITEM_GEM_ARTIFACTRELIC] = "神器圣物",	--	11	--	Artifact Relic
 		},
 		[LE_ITEM_CLASS_ARMOR] = {				--	4	Armor
 			[LE_ITEM_ARMOR_GENERIC] = "其它",		--	0	--	Miscellaneous	Includes Spellstones, Firestones, Trinkets, Rings and Necks
@@ -536,15 +544,18 @@ elseif LOCALE == "koKR" then
 			[LE_ITEM_WEAPON_FISHINGPOLE] = "낚시대", 	--	20
 		},
 		[LE_ITEM_CLASS_GEM] = {					--	3	Gem
-			[LE_ITEM_GEM_RED] = "Red Gem",					--	0	--	Intellect
-			[LE_ITEM_GEM_BLUE] = "Blue Gem",				--	1	--	Agility
-			[LE_ITEM_GEM_YELLOW] = "Yellow Gem",				--	2	--	Strength
-			[LE_ITEM_GEM_PURPLE] = "Purple Gem",				--	3	--	Stamina
-			[LE_ITEM_GEM_GREEN] = "Green Gem",				--	4	--	Spirit
-			[LE_ITEM_GEM_ORANGE] = "Orange Gem",				--	5	--	Critical Strike
-			[LE_ITEM_GEM_META] = "Meta Gem",				--	6	--	Mastery
-			[LE_ITEM_GEM_SIMPLE] = "Simple Gem",				--	7	--	Haste
-			[LE_ITEM_GEM_PRISMATIC] = "Prismatic Gem",			--	8	--	Versatility
+			[LE_ITEM_GEM_INTELLECT] = "지능", 				--	0
+			[LE_ITEM_GEM_AGILITY] = "민첩", 					--	1
+			[LE_ITEM_GEM_STRENGTH] = "힘", 				--	2
+			[LE_ITEM_GEM_STAMINA] = "체력", 					--	3
+			[LE_ITEM_GEM_SPIRIT] = "정신력", 					--	4
+			[LE_ITEM_GEM_CRITICALSTRIKE] = "크리티컬", 	--	5
+			[LE_ITEM_GEM_MASTERY] = "숙련", 					--	6
+			[LE_ITEM_GEM_HASTE] = "가속", 						--	7
+			[LE_ITEM_GEM_VERSATILITY] = "유연성", 			--	8
+			[9] = "Other", 										--	9
+			[LE_ITEM_GEM_MULTIPLESTATS] = "다속성", 	--	10
+			[LE_ITEM_GEM_ARTIFACTRELIC] = "유물", 	--	11
 		},
 		[LE_ITEM_CLASS_ARMOR] = {						--	4	Armor
 			[LE_ITEM_ARMOR_GENERIC] = "기타", 	--	0	Includes Spellstones, Firestones, Trinkets, Rings and Necks
@@ -894,15 +905,18 @@ else
 			[LE_ITEM_WEAPON_FISHINGPOLE] = "Fishing Poles", 	--	20
 		},
 		[LE_ITEM_CLASS_GEM] = {					--	3	Gem
-			[LE_ITEM_GEM_RED] = "Red Gem",					--	0	--	Intellect
-			[LE_ITEM_GEM_BLUE] = "Blue Gem",				--	1	--	Agility
-			[LE_ITEM_GEM_YELLOW] = "Yellow Gem",				--	2	--	Strength
-			[LE_ITEM_GEM_PURPLE] = "Purple Gem",				--	3	--	Stamina
-			[LE_ITEM_GEM_GREEN] = "Green Gem",				--	4	--	Spirit
-			[LE_ITEM_GEM_ORANGE] = "Orange Gem",				--	5	--	Critical Strike
-			[LE_ITEM_GEM_META] = "Meta Gem",				--	6	--	Mastery
-			[LE_ITEM_GEM_SIMPLE] = "Simple Gem",				--	7	--	Haste
-			[LE_ITEM_GEM_PRISMATIC] = "Prismatic Gem",			--	8	--	Versatility
+			[LE_ITEM_GEM_INTELLECT] = "Intellect", 				--	0
+			[LE_ITEM_GEM_AGILITY] = "Agility", 					--	1
+			[LE_ITEM_GEM_STRENGTH] = "Strength", 				--	2
+			[LE_ITEM_GEM_STAMINA] = "Stamina", 					--	3
+			[LE_ITEM_GEM_SPIRIT] = "Spirit", 					--	4
+			[LE_ITEM_GEM_CRITICALSTRIKE] = "Critical Strike", 	--	5
+			[LE_ITEM_GEM_MASTERY] = "Mastery", 					--	6
+			[LE_ITEM_GEM_HASTE] = "Haste", 						--	7
+			[LE_ITEM_GEM_VERSATILITY] = "Versatility", 			--	8
+			[9] = "Other", 										--	9
+			[LE_ITEM_GEM_MULTIPLESTATS] = "Multiple Stats", 	--	10
+			[LE_ITEM_GEM_ARTIFACTRELIC] = "Artifact Relic", 	--	11
 		},
 		[LE_ITEM_CLASS_ARMOR] = {						--	4	Armor
 			[LE_ITEM_ARMOR_GENERIC] = "Miscellaneous", 	--	0	Includes Spellstones, Firestones, Trinkets, Rings and Necks
