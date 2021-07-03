@@ -1,9 +1,9 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: Pixel Perfect Align
 ## Notes: Pixel Perfect Alignment Grid and Measuring Tape using MoLib (|cFF99E5FF/ppa|r)
-## Notes: Shadowlands edition
+## Notes: Shadowlands Chains of Domination edition
 ## Author: MooreaTV moorea@ymail.com
-## Version: v1.11.00
+## Version: v1.11.01
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: pixelPerfectAlignSaved
