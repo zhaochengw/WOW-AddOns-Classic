@@ -7482,6 +7482,7 @@ end
 		
 		if (not thisIndicator) then
 			local newIndicator = plateFrame.unitFrame.healthBar:CreateTexture (nil, "overlay")
+			newIndicator:SetDrawLayer("OVERLAY", 7)
 			newIndicator:SetSize (10, 10)
 			tinsert (plateFrame.IconIndicators, newIndicator)
 			thisIndicator = newIndicator
@@ -9524,6 +9525,9 @@ end
 		unitFrame.ExtraIconFrame:Hide()
 		unitFrame.healthBar.unitName:Hide()
 		
+		showPlayerName = showPlayerName and (unitFrame.ActorType == ACTORTYPE_FRIENDLY_PLAYER or unitFrame.ActorType == ACTORTYPE_ENEMY_PLAYER)
+		showNameNpc = showNameNpc and (unitFrame.ActorType == ACTORTYPE_FRIENDLY_NPC or unitFrame.ActorType == ACTORTYPE_ENEMY_NPC)
+		
 		unitFrame.PlateFrame.IsFriendlyPlayerWithoutHealthBar = showPlayerName
 		unitFrame.PlateFrame.IsNpcWithoutHealthBar = showNameNpc
 		
@@ -11273,6 +11277,11 @@ end
 	function Plater.BuildScriptObjectFromIndexTable (indexTable, scriptType)
 		
 		if (scriptType == "hook") then
+			-- check integrity: name and hooks
+			if not indexTable ["1"] or not indexTable ["9"] then
+				return nil
+			end
+		
 			local scriptObject = {}
 			scriptObject.Enabled 		= true --imported scripts are always enabled
 			scriptObject.Name		= indexTable ["1"]
@@ -11303,6 +11312,12 @@ end
 			return scriptObject
 			
 		elseif (scriptType == "script") then
+			-- check integrity: type, name, triggers and hooks
+			if not indexTable ["1"] or not indexTable ["2"] or not indexTable ["3"] or not indexTable ["4"]
+				or not indexTable ["11"] or not indexTable ["12"] or not indexTable ["13"] or not indexTable ["14"] or not indexTable ["15"] then
+				return nil
+			end
+		
 			local scriptObject = {}
 			
 			scriptObject.Enabled 		= true --imported scripts are always enabled
@@ -11736,7 +11751,7 @@ function SlashCmdList.PLATER (msg, editbox)
 		if (plateFrame) then
 			local npcId = plateFrame [MEMBER_NPCID]
 			if (npcId) then
-				local colorDB = Plater.db.profile.npc_colors
+				local colorDB = Plater.db.profile.npc_cache
 				if (not colorDB [npcId]) then
 					Plater.db.profile.npc_cache [npcId] = {plateFrame [MEMBER_NAME], Plater.ZoneName}
 					Plater:Msg ("Unit added.")

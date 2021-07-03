@@ -8,6 +8,13 @@ function Plater.GetChangelogTable()
 	if (not Plater.ChangeLogTable) then
 		Plater.ChangeLogTable = {
 		
+			{1625133487,  "Bug Fix", "July 1st, 2021", "Adding consistency checks for broken mod / script imports.", "cont1nuity"},
+			
+			{1624829303,  "Bug Fix", "June 30th, 2021", "Draw indicators above healthbar borders.", "cont1nuity"},
+			{1624829303,  "Backend Change", "June 29th, 2021", "Failsafe checks for 'Plater.HideHealthBar' when selecting to show name-only mode.", "cont1nuity"},
+			{1624829303,  "Backend Change", "June 29th, 2021", "ToC update for 9.1.0 retail client.", "cont1nuity"},
+			{1624829303,  "Bug Fix", "June 27th, 2021", "Fixing an issue with the NPC Color Picker and '/plater addnpc' not working properly.", "cont1nuity"},
+			
 			{1624299952,  "Backend Change", "June 21st, 2021", "Profiling now logs FPS.", "cont1nuity"},
 			{1624299952,  "Backend Change", "June 21st, 2021", "Switching back to official LibRangeCheck.", "cont1nuity"},
 			{1624299952,  "Backend Change", "June 16th, 2021", "Enabling execute range indicator for paladins in TBC.", "cont1nuity"},
