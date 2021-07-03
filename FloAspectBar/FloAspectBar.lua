@@ -12,7 +12,7 @@ if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 elseif WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
 	VERSION = "1.13.27"
 elseif WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
-	VERSION = "2.5.1"
+	VERSION = "2.5.27"
 end
 
 -------------------------------------------------------------------------------

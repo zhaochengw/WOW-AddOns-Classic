@@ -87,12 +87,12 @@ end
 if (GetLocale() == "zhCN") then
 
 FLOLIB_POSITION = "位置";
-FLOLIB_POSITIONS.unlock = "解锁";
-FLOLIB_POSITIONS.lock = "锁定";
+FLOLIB_POSITIONS.unlock = "开锁";
+FLOLIB_POSITIONS.lock = "锁着";
 FLOLIB_POSITIONS.auto = "自动";
-FLOLIB_SHOWBORDERS = "显示边框";
-FLOLIB_LAYOUT = "布局";
-FLOLIB_CONFIRM_RESET = "您确认想要重新设置 '%s' 吗? 界面将被重新载入。";
+FLOLIB_SHOWBORDERS = "显示疆界";
+FLOLIB_LAYOUT = "格式";
+FLOLIB_CONFIRM_RESET = "您真正地想要重新设置 '%s' 吗? 界面将被重新载入。";
 
 end
 
