@@ -1,5 +1,5 @@
 ## Interface: 20501
-## Version: 2.03
+## Version: 2.04
 ## Title: GatherBot
 ## Author: Aoikaze
 ## SavedVariablesPerCharacter: GatherBotDB

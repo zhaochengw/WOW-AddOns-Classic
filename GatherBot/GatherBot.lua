@@ -126,6 +126,9 @@ do
             Frame:Hide()
             return
         end
+        if UnitIsDeadOrGhost("player") then
+            return
+        end
         local NowScan = math.floor(GetTime()*10)/10
         if NowScan - LastScan <= Config.SwitchTime then
             return
@@ -221,22 +224,35 @@ function Frame:PLAYER_LOGOUT()
     Addon:UpdateTable(GatherBotDB, Config)
 end
 
-function Frame:PLAYER_ENTERING_WORLD()
+function Frame:PLAYER_ENTERING_WORLD(isLogin, isReload)
     -- Initialize MinimapButton
-	if Addon.LDB and Addon.LDBIcon and ((IsAddOnLoaded("TitanClassic")) or (IsAddOnLoaded("Titan"))) then
-		MinimapIcon:InitBroker()
-	else
-        -- 初始化小地图按钮
-        MinimapIcon:Initialize()
-        -- 小地图按钮
-        if Config.ShowMinimapIcon then
-            Addon:UpdatePosition(Config.MinimapIconAngle)
-            MinimapIcon.Minimap:Show()
+    if isLogin or isReload then
+        if Addon.LDB and Addon.LDBIcon and ((IsAddOnLoaded("TitanClassic")) or (IsAddOnLoaded("Titan"))) then
+            MinimapIcon:InitBroker()
         else
-            MinimapIcon.Minimap:Hide()
+            -- 初始化小地图按钮
+            MinimapIcon:Initialize()
+            -- 小地图按钮
+            if Config.ShowMinimapIcon then
+                Addon:UpdatePosition(Config.MinimapIconAngle)
+                MinimapIcon.Minimap:Show()
+            else
+                MinimapIcon.Minimap:Hide()
+            end
         end
-	end
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+    else
+        if select(2, IsInInstance()) ~= "none" then
+            if Config.CurrentStatus then
+                Config.CurrentStatus = false
+                Addon.Frame:Hide()
+            end
+        else
+            if Config.Enabled and not Config.CurrentStatus then
+                Config.CurrentStatus = true
+                Addon.Frame:Show()
+            end
+        end
+    end
 end
 
 function Frame:PLAYER_STARTED_MOVING()
@@ -262,7 +278,7 @@ end
 
 function Frame:PLAYER_UNGHOST()
     if select(4, GetBuildInfo()) > 20000 then
-        Frame:UnregisterEvent("PLAYER_ALIVE")
+        Frame:UnregisterEvent("PLAYER_UNGHOST")
         return
     end
     if UnitIsDeadOrGhost("player") then return end
@@ -277,10 +293,7 @@ function Frame:UNIT_AURA(unit)
     if not Config.MountSwitch then
         return
     end
-    if unit ~= "player" or select(2, IsInInstance()) ~= "none" or UnitIsDeadOrGhost("player") then
-        if Frame:IsShown() then
-            Frame:Hide()
-        end
+    if unit ~= "player" then
         return
     end
     if (select(2, UnitClass("player"))) == "DRUID" or (select(2, UnitClass("player"))) == "SHAMAN" then
