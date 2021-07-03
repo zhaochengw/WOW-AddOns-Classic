@@ -1,0 +1,28 @@
+<Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Include file="Libs\Libs.xml"/>
+    <Include file="Localization\Localization.xml"/>
+    <Script file="Api.lua"/>
+    <Script file="Addon.lua"/>
+
+    <Script file="Data\Data.lua"/>
+    
+    <Script file="Data\Talents.BCC.lua"/>
+    
+    <Script file="Data\ItemSet.BCC.lua"/>
+
+    <Script file="Core\Inspect.lua"/>
+    <Script file="Core\Hook.lua"/>
+    <Script file="Core\Talent.lua"/>
+    <Script file="Core\Ala.lua"/>
+
+    <Script file="UI\BaseItem.lua"/>
+    <Script file="UI\SlotItem.lua"/>
+    <Script file="UI\EquipItem.lua"/>
+    <Script file="UI\EquipFrame.lua"/>
+    <Script file="UI\ModelFrame.lua"/>
+    <Script file="UI\PaperDoll.lua"/>
+    <Script file="UI\InspectFrame.lua"/>
+    <Script file="UI\TalentFrame.lua"/>
+    <Script file="UI\InspectTalent.lua"/>
+</Ui>
