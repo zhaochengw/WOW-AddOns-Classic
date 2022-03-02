@@ -1,14 +1,11 @@
 # KillTrack
 
-## [v2.29.0](https://github.com/SharpWoW/KillTrack/tree/v2.29.0) (2021-05-20)
-[Full Changelog](https://github.com/SharpWoW/KillTrack/compare/v2.17.1...v2.29.0) [Previous Releases](https://github.com/SharpWoW/KillTrack/releases)
+## [v2.30.0](https://github.com/SharpWoW/KillTrack/tree/v2.30.0) (2021-11-20)
+[Full Changelog](https://github.com/SharpWoW/KillTrack/compare/v2.29.0...v2.30.0) [Previous Releases](https://github.com/SharpWoW/KillTrack/releases)
 
-- Enable BCC builds for WoWI  
-- Bump interface version for classic  
-- Update BCC tags  
-- Enable publishing to Wago  
-- Disable BC packages for WoWInterface  
-- Update author name  
-- Add support for Burning Crusade Classic  
-     * Add interface version for BC Classic.  
-     * Enable packaging for BC Classic.  
+- Update interface versions  
+- Disable printing load message by default  
+    Users can re-enable it with the command  
+        /kt loadmessage  
+    (The command toggles showing/not showing message on load)  
+    Fixes #18  

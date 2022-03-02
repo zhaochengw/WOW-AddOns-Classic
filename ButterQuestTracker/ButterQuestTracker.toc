@@ -1,0 +1,27 @@
+## Interface: 20503
+## Title: Butter Quest Tracker |cFFFFFFFFv1.9.27|r
+## Author: Butter Cookie Kitkat
+## Notes: A butter smooth quest tracker with the Classic Feel!
+## Version: 1.9.27
+## RequiredDeps:
+## OptionalDeps: Ace3
+## SavedVariables: ButterQuestTrackerConfig
+## SavedVariablesPerCharacter: ButterQuestTrackerCharacterConfig, ButterQuestTrackerConfigCharacter
+## X-License: MIT
+## X-Curse-Project-ID: 342456
+
+embeds.xml
+
+# Localization
+Locale\ButterQuestTrackerLocale.lua
+Locale\enUS\locale.xml
+Locale\ruRU\locale.xml
+Locale\zhCN\locale.xml
+
+utilities\constants.lua
+
+ButterQuestTracker.lua
+Options.lua
+## Title-zhCN: |cff880303[有爱]|r ButterQuestTracker 奶油任务增强
+## X-Vendor: NetEase
+## X-163UI-Version: 20211021160153

@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Author: karlsnyder, vallantv
 ## Version: 1.2.0
 ## Title: MinimapButtonBag

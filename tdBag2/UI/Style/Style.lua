@@ -2,10 +2,11 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 4/24/2020, 4:21:46 PM
-
+--
 ---@type ns
 local ns = select(2, ...)
 
+---@class Addon
 local Addon = ns.Addon
 
 function Addon:SetupDefaultStyles()

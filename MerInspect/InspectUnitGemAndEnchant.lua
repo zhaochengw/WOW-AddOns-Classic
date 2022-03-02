@@ -205,11 +205,24 @@ end
 local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
     if (not ItemLink) then return 0 end
     local num = 0
-    local _, qty, quality, texture, icon, r, g, b
+    local _, link, quality, texture, icon, r, g, b
     local enchantItemID, enchantID = LibItemEnchant:GetEnchantItemID(ItemLink)
     local enchantSpellID = LibItemEnchant:GetEnchantSpellID(ItemLink)
-    local enchantID, enchantSpellID, enchantItemID = LibItemEnchant:GetEnchant(ItemLink)
-    if (enchantSpellID) then
+    -- local enchantID, enchantSpellID, enchantItemID = LibItemEnchant:GetEnchant(ItemLink)
+	if (enchantItemID) then
+        num = num + 1
+        icon = GetIconFrame(frame)
+        _, link, quality, _, _, _, _, _, _, texture = GetItemInfo(enchantItemID)
+        r, g, b = GetItemQualityColor(quality or 0)
+        icon.bg:SetVertexColor(r, g, b)
+        icon.texture:SetTexture(texture)
+        UpdateIconTexture(icon, texture, enchantItemID, "item")
+        icon.itemLink = link
+        icon:ClearAllPoints()
+        icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
+        icon:Show()
+        anchorFrame = icon
+	elseif (enchantSpellID) then
         num = num + 1
         icon = GetIconFrame(frame)
         _, _, texture = GetSpellInfo(enchantSpellID)
@@ -217,19 +230,6 @@ local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
         icon.texture:SetTexture(texture)
         UpdateIconTexture(icon, texture, enchantSpellID, "spell")
         icon.spellID = enchantSpellID
-        icon:ClearAllPoints()
-        icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
-        icon:Show()
-        anchorFrame = icon
-    elseif (enchantItemID) then
-        num = num + 1
-        icon = GetIconFrame(frame)
-        _, ItemLink, quality, _, _, _, _, _, _, texture = GetItemInfo(enchantItemID)
-        r, g, b = GetItemQualityColor(quality or 0)
-        icon.bg:SetVertexColor(r, g, b)
-        icon.texture:SetTexture(texture)
-        UpdateIconTexture(icon, texture, enchantItemID, "item")
-        icon.itemLink = ItemLink
         icon:ClearAllPoints()
         icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
         icon:Show()

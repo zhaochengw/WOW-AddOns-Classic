@@ -1,0 +1,122 @@
+-------------------------------------------------------
+-- All levels (First Aid)
+-------------------------------------------------------
+MTSL_DATA["levels"]["First Aid"] = 
+{
+	{
+		["expansion"] = 1,
+		["id"] = 3273,
+		["max_skill"] = 75,
+		["min_skill"] = 0,
+		["min_xp_level"] = 1,
+		["name"] = {
+			["Chinese"] = "急救 (初级)",
+			["English"] = "First Aid (Apprentice)",
+			["Taiwanese"] = "急救 (學徒)",
+		},
+		["phase"] = 1,
+		["rank"] = 1,
+		["trainers"] = {
+			["price"] = 100,
+			["sources"] = {
+				2326,
+				2327,
+				2329,
+				2798,
+				3181,
+				3373,
+				4211,
+				4591,
+				5150,
+				5759,
+				5939,
+				5943,
+				6094,
+			},
+		},
+	},
+	{
+		["expansion"] = 1,
+		["id"] = 3274,
+		["max_skill"] = 150,
+		["min_skill"] = 50,
+		["min_xp_level"] = 1,
+		["name"] = {
+			["Chinese"] = "急救 (中级)",
+			["English"] = "First Aid (Journeyman)",
+			["Taiwanese"] = "急救 (熟練工)",
+		},
+		["phase"] = 1,
+		["rank"] = 2,
+		["trainers"] = {
+			["price"] = 500,
+			["sources"] = {
+				2326,
+				2327,
+				2329,
+				2798,
+				3181,
+				3373,
+				4211,
+				4591,
+				5150,
+				5759,
+				5939,
+				5943,
+				6094,
+			},
+		},
+	},
+	{
+		["expansion"] = 1,
+		["id"] = 7924,
+		["items"] = {
+			16084,
+		},
+		["max_skill"] = 225,
+		["min_skill"] = 125,
+		["min_xp_level"] = 1,
+		["name"] = {
+			["Chinese"] = "急救 (高级)",
+			["English"] = "First Aid (Expert)",
+			["Taiwanese"] = "急救 (專家)",
+		},
+		["phase"] = 1,
+		["rank"] = 3,
+	},
+	{
+		["expansion"] = 1,
+		["id"] = 10846,
+		["max_skill"] = 300,
+		["min_skill"] = 225,
+		["min_xp_level"] = 35,
+		["name"] = {
+			["Chinese"] = "急救 (大师级)",
+			["English"] = "First Aid (Artisan)",
+			["Taiwanese"] = "急救 (大工匠)",
+		},
+		["phase"] = 1,
+		["quests"] = {
+			6622,
+			6624,
+		},
+		["rank"] = 4,
+	},
+	{
+		["expansion"] = 2,
+		["id"] = 27028,
+		["items"] = {
+			22012,
+		},
+		["max_skill"] = 375,
+		["min_skill"] = 300,
+		["min_xp_level"] = 35,
+		["name"] = {
+			["Chinese"] = "急救 (大师级)",
+			["English"] = "First Aid (Master)",
+			["Taiwanese"] = "急救 (大师级)",
+		},
+		["phase"] = 1,
+		["rank"] = 5,
+	},
+}

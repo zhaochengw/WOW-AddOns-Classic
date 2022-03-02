@@ -1,0 +1,20 @@
+<Bindings>
+	<Binding name="MAGEBUTTONS_BUTTON1" header="MAGEBUTTONS" category="ADDONS">
+		
+	</Binding>
+	<Binding name="MAGEBUTTONS_BUTTON2" category="ADDONS">
+		
+	</Binding>
+	<Binding name="MAGEBUTTONS_BUTTON3" category="ADDONS">
+		
+	</Binding>
+	<Binding name="MAGEBUTTONS_BUTTON4" category="ADDONS">
+		
+	</Binding>
+	<Binding name="MAGEBUTTONS_BUTTON5" category="ADDONS">
+		
+	</Binding>
+	<Binding name="MAGEBUTTONS_BUTTON6" category="ADDONS">
+		
+	</Binding>
+</Bindings>

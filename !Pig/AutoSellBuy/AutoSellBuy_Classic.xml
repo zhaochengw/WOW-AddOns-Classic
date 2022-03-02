@@ -1,0 +1,7 @@
+<Ui>
+	<Script file="UI.lua" />
+	<Script file="AutoRepair.lua" />
+	<Script file="AutoSell.lua" />
+	<Script file="AutoBuy.lua" />
+	<Script file="FastDiuqi.lua" />
+</Ui>

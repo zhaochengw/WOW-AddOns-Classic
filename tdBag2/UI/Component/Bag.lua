@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https:\dengsir.github.io
 -- @Date   : 10\17\2019, 3:23:57 PM
-
+--
 ---- WOW
 local CursorCanGoInSlot = CursorCanGoInSlot
 local CursorHasItem = CursorHasItem
@@ -36,10 +36,11 @@ local L = ns.L
 local Addon = ns.Addon
 local Cache = ns.Cache
 
----@type tdBag2Bag
+---@class UI.Bag: EventsMixin, Object, Button, tdBag2BagTemplate
 local Bag = ns.Addon:NewClass('UI.Bag', 'Button')
 
 function Bag:Constructor(_, meta, bag)
+    ---@type FrameMeta
     self.meta = meta
     self.bag = bag
 

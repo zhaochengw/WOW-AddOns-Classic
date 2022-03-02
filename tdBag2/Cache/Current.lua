@@ -29,17 +29,17 @@ local UnitSex = UnitSex
 local INVSLOT_LAST_EQUIPPED = INVSLOT_LAST_EQUIPPED
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
 
----@type ns
+---@class ns
 local ns = select(2, ...)
 
 local KEYRING_FAMILY = ns.KEYRING_FAMILY
 
----@type tdBag2Current
+---@class Current
 local Current = {}
 ns.Current = Current
 
 function Current:GetOwnerInfo()
-    ---@type tdBag2CacheOwnerData
+
     local data = {}
     data.name, data.realm = ns.PLAYER, ns.REALM
     data.class = UnitClassBase('player')
@@ -51,7 +51,7 @@ function Current:GetOwnerInfo()
 end
 
 function Current:GetBagInfo(bag)
-    ---@type tdBag2CacheBagData
+
     local data = {}
 
     if ns.IsContainerBag(bag) then
@@ -85,12 +85,12 @@ function Current:GetBagInfo(bag)
 end
 
 function Current:GetItemInfo(bag, slot)
-    ---@type tdBag2CacheItemData
+
     local data = {}
     if ns.IsContainerBag(bag) then
-        local _
-        data.icon, data.count, data.locked, data.quality, data.readable, _, data.link, _, _, data.id =
-            GetContainerItemInfo(bag, slot)
+        data.id = GetContainerItemID(bag, slot)
+        data.link = GetContainerItemLink(bag, slot)
+        data.icon, data.count, data.locked, data.quality, data.readable = GetContainerItemInfo(bag, slot)
     elseif ns.IsEquip(bag) then
         data.link = GetInventoryItemLink('player', slot)
         data.icon = GetInventoryItemTexture('player', slot)

@@ -9,7 +9,7 @@ local ipairs = ipairs
 local ns = select(2, ...)
 local ContainerFrame = ns.UI.ContainerFrame
 
----@type tdBag2Inventory
+---@class UI.InventoryFrame: UI.ContainerFrame
 local InventoryFrame = ns.Addon:NewClass('UI.InventoryFrame', ContainerFrame)
 
 local MAIN_MENU_BUTTONS = {

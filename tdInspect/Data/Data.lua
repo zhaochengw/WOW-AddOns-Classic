@@ -2,16 +2,21 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/25/2020, 4:43:38 PM
----@type ns
+--
+---@class ns
 local ns = select(2, ...)
 
 ns.Talents = {}
 ns.ItemSets = {}
 
-local T = ns.memorize(function(v)
-    local t = {strsplit('/', v)}
+local strsplittable = strsplittable or function(delimiter, str, pieces)
+    return {strsplit(delimiter, str, pieces)}
+end
+
+local T = ns.memorize(function(val)
+    local t = strsplittable('/', val)
     for i, v in ipairs(t) do
-        t[i] = tonumber(v)
+        t[i] = tonumber(v) or v
     end
     return t
 end)
@@ -20,6 +25,13 @@ function ns.TalentMake()
     ns.TalentMake = nil
 
     local CURRENT
+    local LOCAL_INDEX = {}
+
+    local function DefineLocalIndexs(val)
+        for i, locale in ipairs(strsplittable('/', val)) do
+            LOCAL_INDEX[locale] = i
+        end
+    end
 
     local function CreateClass(classFileName)
         CURRENT = {}
@@ -30,9 +42,9 @@ function ns.TalentMake()
         tinsert(CURRENT, {background = background, numTalents = numTalents, talents = {}})
     end
 
-    local function CreateTalentInfo(row, column, maxRank)
+    local function CreateTalentInfo(row, column, maxRank, id)
         local tab = CURRENT[#CURRENT]
-        tinsert(tab.talents, {row = row, column = column, maxRank = maxRank})
+        tinsert(tab.talents, {row = row, column = column, maxRank = maxRank, id = id})
     end
 
     local function FillTalentRanks(ranks)
@@ -50,15 +62,15 @@ function ns.TalentMake()
         tinsert(talent.prereqs, {row = row, column = column, reqIndex = reqIndex})
     end
 
-    local function SetTabName(locale, name)
+    local function SetTabName(names)
         local tab = CURRENT[#CURRENT]
-        if tab.name and locale ~= GetLocale() then
-            return
-        end
-        tab.name = name
+        local locale = GetLocale()
+        local index = LOCAL_INDEX[locale] or LOCAL_INDEX.enUS
+        tab.name = strsplittable('/', names)[index]
     end
 
     setfenv(2, {
+        D = DefineLocalIndexs,
         C = CreateClass,
         T = CreateTab,
         I = CreateTalentInfo,

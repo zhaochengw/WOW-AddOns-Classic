@@ -1,9 +1,9 @@
 local mod	= DBM:NewMod("Archimonde", "DBM-Hyjal")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210623162544")
+mod:SetRevision("20220211113248")
 mod:SetCreatureID(17968)
-mod:SetEncounterID(WOW_PROJECT_ID ~= (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5) and 622 or 2472)
+mod:SetEncounterID(622, 2472)
 mod:SetModelID(20939)
 mod:SetUsedIcons(8)
 
@@ -14,6 +14,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 31970 32014"
 )
 
+--(ability.id = 31970 or ability.id = 32014) and type = "begincast"
 local warnGrip			= mod:NewTargetNoFilterAnnounce(31972, 3, nil, "RemoveMagic")--Magic on retail, but I think a curse in TBC
 local warnBurst			= mod:NewTargetNoFilterAnnounce(32014, 3)
 local warnFear			= mod:NewSpellAnnounce(31970, 3)
@@ -21,12 +22,13 @@ local warnFear			= mod:NewSpellAnnounce(31970, 3)
 local specWarnBurst		= mod:NewSpecialWarningYou(32014, nil, nil, nil, 3, 2)
 local yellBurst			= mod:NewYell(32014)
 
-local timerFearCD		= mod:NewCDTimer(41, 31970, nil, nil, nil, 2)
---local timerGripCD		= mod:NewCDTimer(6, 31972, nil, "RemoveMagic", nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
+local timerFearCD		= mod:NewCDTimer(41, 31970, nil, nil, nil, 2)--40-55
+--local timerGripCD		= mod:NewCDTimer(6, 31972, nil, "RemoveMagic", nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
 
 local berserkTimer		= mod:NewBerserkTimer(600)
 
 mod:AddSetIconOption("BurstIcon", 32014, true, false, {8})
+mod:AddRangeFrameOption(13, 32014)
 
 function mod:BurstTarget(targetname, uId)
 	if not targetname then return end
@@ -34,6 +36,9 @@ function mod:BurstTarget(targetname, uId)
 		specWarnBurst:Show()
 		specWarnBurst:Play("targetyou")
 		yellBurst:Yell()
+		if self.Options.RangeFrame then
+			DBM.RangeCheck:Show(13, nil, nil, nil, 5)
+		end
 	else
 		warnBurst:Show(targetname)
 	end
@@ -43,8 +48,14 @@ function mod:BurstTarget(targetname, uId)
 end
 
 function mod:OnCombatStart(delay)
-	timerFearCD:Start(40-delay)
+	timerFearCD:Start(40-delay)--40-55?
 	berserkTimer:Start(-delay)
+end
+
+function mod:OnCombatEnd()
+	if self.Options.RangeFrame then
+		DBM.RangeCheck:Hide()
+	end
 end
 
 
@@ -59,6 +70,7 @@ function mod:SPELL_CAST_START(args)
 		warnFear:Show()
 		timerFearCD:Start()
 	elseif args.spellId == 32014 then
-		self:BossTargetScanner(17968, "BurstTarget", 0.05, 10)
+		self:BossTargetScanner(17968, "BurstTarget", 0.05, 16)
+		self:ScheduleMethod(0.1, "BossTargetScanner", 17968, "BurstTarget", 0.05, 14)
 	end
 end

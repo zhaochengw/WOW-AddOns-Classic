@@ -1,0 +1,14 @@
+------------------------------------------------------------------------
+r42 | greltok | 2010-10-06 00:43:59 -0500 (Wed, 06 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/LibGratuity-3.0.lua
+   M /trunk/LibGratuity-3.0.toc
+
+Fix for 4.0.
+------------------------------------------------------------------------
+r41 | nevcairiel | 2009-03-06 04:12:57 -0600 (Fri, 06 Mar 2009) | 1 line
+Changed paths:
+   M /trunk/LibGratuity-3.0.toc
+
+Restore LoD to Libraries, as 3.0.8 fixed all bugs that blocked LoD OptionalDeps to load properly.
+------------------------------------------------------------------------

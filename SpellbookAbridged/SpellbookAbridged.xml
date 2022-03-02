@@ -1,0 +1,386 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<!-- Template for a SecureActionButton to perform actions replacing SpellButton actions that broke -->
+	<CheckButton name="SBA_SpellButtonTemplate" inherits="SecureActionButtonTemplate" virtual="true">
+		<Scripts>
+			<OnLoad>
+				SBA_SpellButton_OnLoad(self);
+			</OnLoad>
+			<PreClick>
+				SBA_SpellButton_PreClick(self);
+			</PreClick>
+			<PostClick>
+				SBA_SpellButton_PostClick(self);
+			</PostClick>
+			<OnDragStart>
+				SBA_SpellButton_OnDragStart(self, button);
+			</OnDragStart>
+			<OnReceiveDrag>
+				SBA_SpellButton_OnReceiveDrag(self);
+			</OnReceiveDrag>
+			<OnEnter>
+				SBA_SpellButton_OnEnter(self, motion);
+			</OnEnter>
+			<OnLeave function="SpellButton_OnLeave"/>
+		</Scripts>
+		<PushedTexture file="Interface\Buttons\UI-Quickslot-Depress"/>
+		<HighlightTexture name="$parentHighlight" file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+		<CheckedTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
+	</CheckButton>
+
+	<Script file="SpellBookAbridged.lua"/>
+	
+	<!-- The check button for activating and deactivating the Rank Filter /!-->
+	<CheckButton name="RankFilterButton" inherits="OptionsCheckButtonTemplate" parent="SpellBookFrame" checked="true" movable="true" enableMouse="true" >
+		<Scripts>
+			<OnLoad function="SBA_OptionButton_OnLoad" />
+			<OnClick function="RankFilterButton_OnClick" />
+			<OnDragStart function="SBA_OptionButton_OnDragStart"/>
+			<OnDragStop function="SBA_OptionButton_OnDragStop"/>
+		</Scripts>
+		<Anchors>
+			<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" >
+				<Offset>
+					<AbsDimension x="-130" y="-35" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+	</CheckButton>
+	
+	<CheckButton name="AutoUpRankButton" inherits="OptionsCheckButtonTemplate" parent="SpellBookFrame" checked="true" movable="true" enableMouse="true" >
+		<Scripts>
+			<OnLoad function="SBA_OptionButton_OnLoad" />
+			<OnClick function="AutoUpRankButton_OnClick" />
+			<OnDragStart function="SBA_OptionButton_OnDragStart"/>
+			<OnDragStop function="SBA_OptionButton_OnDragStop"/>
+		</Scripts>
+		<Anchors>
+			<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" >
+				<Offset>
+					<AbsDimension x="-130" y="-55" />
+				</Offset>
+			</Anchor>
+		</Anchors>
+	</CheckButton>
+	
+
+	<!-- Configuration Frame inside SpellBook, accessed from Tab 3 -->
+	<Frame name="SBA_ConfigFrame" parent="SpellBookFrame" hidden="true">
+		<Anchors>
+			<Anchor point="TOPLEFT" relativeTo="SpellBookFrame" relativePoint="TOPLEFT"/>
+			<Anchor point="BOTTOMRIGHT" relativeTo="SpellBookFrame" relativePoint="BOTTOMRIGHT"/>
+		</Anchors>
+		<Scripts>
+			<OnLoad>
+
+			</OnLoad>
+		</Scripts>
+		<Frames>
+			<CheckButton name="NormalExampleButton" inherits="SpellButtonTemplate" id="1"  >
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="30" y="-120" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						SBA_ExampleButton_OnLoad(self);
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<Button name="NormalSubtextColorSelectButton" inherits="UIPanelButtonTemplate" id="12" text="Subtext Color">
+				<Size>
+					<AbsDimension x="100" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="NormalExampleButton" >
+						<Offset>
+							<AbsDimension x="160" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_ColorSelectButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="NormalTextColorSelectButton" inherits="UIPanelButtonTemplate" id="11" text="Text Color">
+				<Size>
+					<AbsDimension x="100" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" relativePoint="TOP" relativeTo="NormalSubtextColorSelectButton">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_ColorSelectButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="NormalIconColorSelectButton" inherits="UIPanelButtonTemplate" id="13" text="Icon Color">
+				<Size>
+					<AbsDimension x="100" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="NormalSubtextColorSelectButton" >
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_ColorSelectButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="NormalDefaultButton" inherits="UIPanelButtonTemplate" id="1" text="Reset Colors">
+				<Size>
+					<AbsDimension x="100" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeTo="NormalTextColorSelectButton">
+						<Offset>
+							<AbsDimension x="0" y="5" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_DefaultButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<CheckButton name="NormalCheckButton" inherits="OptionsCheckButtonTemplate" id="1" >
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName() .. "Text"]:SetText("Enable Custom Normal Colors");
+					</OnLoad>
+					<OnClick>
+						SBA_ExampleCheckButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" relativeTo="NormalExampleButton" >
+						<Offset>
+							<AbsDimension x="-5" y="13" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="InFormExampleButton" inherits="SpellButtonTemplate" id="2" >
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="30" y="-230" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						SBA_ExampleButton_OnLoad(self);
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<Button name="InFormSubtextColorSelectButton" inherits="UIPanelButtonTemplate" id="22" text="Subtext Color">
+				<Size>
+					<AbsDimension x="100" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="InFormExampleButton" >
+						<Offset>
+							<AbsDimension x="160" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_ColorSelectButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="InFormTextColorSelectButton" inherits="UIPanelButtonTemplate" id="21" text="Text Color">
+				<Size>
+					<AbsDimension x="100" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" relativePoint="TOP" relativeTo="InFormSubtextColorSelectButton">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_ColorSelectButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="InFormIconColorSelectButton" inherits="UIPanelButtonTemplate" id="23" text="Icon Color">
+				<Size>
+					<AbsDimension x="100" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="InFormSubtextColorSelectButton" >
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_ColorSelectButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="InFormDefaultButton" inherits="UIPanelButtonTemplate" id="2" text="Reset Colors">
+				<Size>
+					<AbsDimension x="100" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeTo="InFormTextColorSelectButton">
+						<Offset>
+							<AbsDimension x="0" y="5" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_DefaultButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<CheckButton name="InFormCheckButton" inherits="OptionsCheckButtonTemplate" id="2" >
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName() .. "Text"]:SetText("Enable In-Form Highlight");
+					</OnLoad>
+					<OnClick>
+						SBA_ExampleCheckButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" relativeTo="InFormExampleButton" >
+						<Offset>
+							<AbsDimension x="-5" y="13" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<CheckButton name="OutFormExampleButton" inherits="SpellButtonTemplate" id="3" >
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="30" y="-340" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						SBA_ExampleButton_OnLoad(self);
+					</OnLoad>
+				</Scripts>
+			</CheckButton>
+			<Button name="OutFormSubtextColorSelectButton" inherits="UIPanelButtonTemplate" id="32" text="Subtext Color">
+				<Size>
+					<AbsDimension x="100" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="OutFormExampleButton" >
+						<Offset>
+							<AbsDimension x="160" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_ColorSelectButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="OutFormTextColorSelectButton" inherits="UIPanelButtonTemplate" id="31" text="Text Color">
+				<Size>
+					<AbsDimension x="100" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" relativePoint="TOP" relativeTo="OutFormSubtextColorSelectButton">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_ColorSelectButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="OutFormIconColorSelectButton" inherits="UIPanelButtonTemplate" id="33" text="Icon Color">
+				<Size>
+					<AbsDimension x="100" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" relativeTo="OutFormSubtextColorSelectButton" >
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_ColorSelectButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="OutFormDefaultButton" inherits="UIPanelButtonTemplate" id="3" text="Reset Colors">
+				<Size>
+					<AbsDimension x="100" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeTo="OutFormTextColorSelectButton">
+						<Offset>
+							<AbsDimension x="0" y="5" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						SBA_DefaultButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<CheckButton name="OutFormCheckButton" inherits="OptionsCheckButtonTemplate" id="3" >
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName() .. "Text"]:SetText("Enable Out-of-Form Highlight");
+					</OnLoad>
+					<OnClick>
+						SBA_ExampleCheckButton_OnClick(self);
+					</OnClick>
+				</Scripts>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" relativeTo="OutFormExampleButton" >
+						<Offset>
+							<AbsDimension x="-5" y="13" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+		</Frames>
+	</Frame>
+	
+	<!-- Parent Frame for Addon.  This frame will always remain hidden, used to keep some frames hidden while in combat. -->
+	<Frame name="SpellBookFrameAbridged" movable="false" parent="UIParent" hidden="true">
+		<Scripts>
+			<OnLoad function="SpellBookAbridged_OnLoad"/>
+			<OnEvent function="SpellBookAbridged_OnEvent"/>
+		</Scripts>
+	</Frame>
+</Ui>

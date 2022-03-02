@@ -22,9 +22,11 @@ L:SetWarningLocalization{
 }
 
 L:SetOptionLocalization{
-	WarnGrowth	= "Show warning for $spell:36300"
+	WarnGrowth		= "Показывать предупреждение для $spell:36300",
+	RangeDistance	= "Фрейм дистанции для |cff71d5ff|Hspell:33654|hДробление|h|r",
+	Smaller			= "Маленькая дистанция (11)",
+	Safe			= "Безопасная дистанция (18)"
 }
-
 
 -- Magtheridon
 L = DBM:GetModLocalization("Magtheridon")
@@ -34,28 +36,28 @@ L:SetGeneralLocalization{
 }
 
 L:SetTimerLocalization{
-	timerP2	= "Phase 2"
+	timerP2	= "Фаза 2"
 }
 
 L:SetOptionLocalization{
-	timerP2	= "Show timer for start of phase 2"
+	timerP2	= "Показывать таймер начала Фазы 2"
 }
 
 L:SetMiscLocalization{
-	DBM_MAG_EMOTE_PULL		= "начинает ослабевать!",
-	DBM_MAG_YELL_PHASE2		= "Я… освобожден!",
-	DBM_MAG_YELL_PHASE3		= "I will not be taken so easily! Let the walls of this prison tremble... and fall!"
+	DBM_MAG_EMOTE_PULL		= "Сдерживающая сила %sа начинает ослабевать!",
+	DBM_MAG_YELL_PHASE2		= "Я... свободен!",
+	DBM_MAG_YELL_PHASE3		= "Пусть стены темницы содрогнутся... и падут!"
 }
 
 -- Doom Lord Kazzak
 L = DBM:GetModLocalization("Kazzak")
 
 L:SetGeneralLocalization{
-	name = "Владыка Судеб Каззак"
+	name = "Владыка судеб Каззак"
 }
 
 L:SetMiscLocalization{
-	DBM_KAZZAK_EMOTE_ENRAGE		= "%s becomes enraged!"--Probalby won't be used, at least not long. Once spellid replaces it
+	DBM_KAZZAK_EMOTE_ENRAGE		= "%s впадает в бешенство!"--Probalby won't be used, at least not long. Once spellid replaces it
 }
 
 -- Doomwalker
@@ -66,5 +68,16 @@ L:SetGeneralLocalization{
 }
 
 L:SetMiscLocalization{
-	DBM_DOOMW_EMOTE_ENRAGE	= "%s becomes enraged!"--Probalby won't be used, at least not long. Once spellid replaces it
+	DBM_DOOMW_EMOTE_ENRAGE	= "%s впадает в бешенство!"--Probalby won't be used, at least not long. Once spellid replaces it
+}
+
+-- Quest
+L = DBM:GetModLocalization("Quest")
+
+L:SetGeneralLocalization{
+	name = "Квест",
+}
+
+L:SetOptionLocalization{
+	Timers = "Показывать таймеры для некоторых квестов сопровождений"
 }

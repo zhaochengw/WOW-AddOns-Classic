@@ -1,0 +1,12 @@
+## Interface: 20503
+## Title: Method Raid Tools [Storage]
+## SavedVariables: VExRT
+## Notes: Required for data migration
+## Version: 4610
+
+# deprecated after addon rebranding
+# used for variables migration
+
+## Title-zhCN: |cff880303[有爱]|r ExRT/MRT 团长工具旧版本兼容
+## X-Vendor: NetEase
+## X-163UI-Version: 20220217141808

@@ -10,7 +10,7 @@ local Addon = ns.Addon
 local Cache = ns.Cache
 local BAG_ID = ns.BAG_ID
 
----@type tdBag2FrameMeta
+---@class FrameMeta: Object
 local FrameMeta = Addon:NewClass('FrameMeta')
 
 function FrameMeta:Constructor(bagId)

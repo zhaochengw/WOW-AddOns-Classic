@@ -5,34 +5,42 @@
 ----------------------------------------------------------------------------------------------------
 local __addon, __ns = ...;
 
-if __ns.__dev then
-	setfenv(1, __ns.__fenv);
-end
 local _G = _G;
 local _ = nil;
 ----------------------------------------------------------------------------------------------------
---[=[dev]=]	if __ns.__dev then __ns._F_devDebugProfileStart('module.util'); end
+--[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart('module.util'); end
 
 -->		variables
 	local type = type;
+	local select = select;
 	local next = next;
+	local strsplit, strmatch, gsub, format = string.split, string.match, string.gsub, string.format;
 	local tonumber = tonumber;
-	local strsplit, strmatch, gsub = strsplit, strmatch, gsub;
 	local GetItemInfoInstant = GetItemInfoInstant;
 	local UnitGUID = UnitGUID;
 	local UnitIsPlayer = UnitIsPlayer;
-	local IsAltKeyDown = IsAltKeyDown;
-	local IsControlKeyDown = IsControlKeyDown;
-	local IsShiftKeyDown = IsShiftKeyDown;
+	local GetFactionInfoByID = GetFactionInfoByID;
+	local IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown = IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown;
 	local GetQuestLogTitle = GetQuestLogTitle;
 	local GetItemCount = GetItemCount;
 	local GetMouseFocus = GetMouseFocus;
 	local IsModifiedClick = IsModifiedClick;
+	local Ambiguate = Ambiguate;
+	local CreateFrame = CreateFrame;
 	local ChatEdit_GetActiveWindow = ChatEdit_GetActiveWindow;
 	local ChatEdit_InsertLink = ChatEdit_InsertLink;
+	local ChatFrame_AddMessageEventFilter = ChatFrame_AddMessageEventFilter;
+	local UIParent = UIParent;
 	local GameTooltip = GameTooltip;
+	local GameTooltipTextLeft1 = GameTooltipTextLeft1;
+	local ItemRefTooltip = ItemRefTooltip;
 	local ChatFrame2 = ChatFrame2;
 	local FauxScrollFrame_GetOffset = FauxScrollFrame_GetOffset;
+	local QuestLogFrame = QuestLogFrame;
+	local QuestLogDetailScrollChildFrame = QuestLogDetailScrollChildFrame;
+	local QuestLogDescriptionTitle = QuestLogDescriptionTitle;
+	local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
+	local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS;
 
 	local __db = __ns.db;
 	local __db_quest = __db.quest;
@@ -55,13 +63,14 @@ local _ = nil;
 	local __loc_profession = __loc.profession;
 	local __UILOC = __ns.UILOC;
 
-	local _F_SafeCall = __ns.core._F_SafeCall;
-	local __eventHandler = __ns.core.__eventHandler;
-	local __const = __ns.core.__const;
-	local IMG_INDEX = __ns.core.IMG_INDEX;
-	local IMG_LIST = __ns.core.IMG_LIST;
-	local TIP_IMG_LIST = __ns.core.TIP_IMG_LIST;
-	local GetQuestStartTexture = __ns.core.GetQuestStartTexture;
+	local __core = __ns.core;
+	local _F_SafeCall = __core._F_SafeCall;
+	local __eventHandler = __core.__eventHandler;
+	local __const = __core.__const;
+	local IMG_INDEX = __core.IMG_INDEX;
+	local IMG_LIST = __core.IMG_LIST;
+	local TIP_IMG_LIST = __core.TIP_IMG_LIST;
+	local GetQuestStartTexture = __core.GetQuestStartTexture;
 
 	local __core_meta = __ns.__core_meta;
 	local __obj_lookup = __ns.__obj_lookup;
@@ -70,15 +79,19 @@ local _ = nil;
 	local __comm_meta = __ns.__comm_meta;
 	local __comm_obj_lookup = __ns.__comm_obj_lookup;
 
-	local UnitHelpFac = __ns.core.UnitHelpFac;
+	local UnitHelpFac = __core.UnitHelpFac;
 	local _log_ = __ns._log_;
 
 	local TIP_IMG_S_NORMAL = TIP_IMG_LIST[IMG_INDEX.IMG_S_NORMAL];
-	local IMG_TAG_CPL = "\124T" .. __ns.core.IMG_PATH .. "TAG_CPL" .. ":0\124t";
-	local IMG_TAG_PRG = "\124T" .. __ns.core.IMG_PATH .. "TAG_PRG" .. ":0\124t";
-	local IMG_TAG_UNCPL = "\124T" .. __ns.core.IMG_PATH .. "TAG_UNCPL" .. ":0\124t";
+	local IMG_TAG_CPL = "|T" .. __core.IMG_PATH .. "TAG_CPL" .. ":0|t";
+	local IMG_TAG_PRG = "|T" .. __core.IMG_PATH .. "TAG_PRG" .. ":0|t";
+	local IMG_TAG_UNCPL = "|T" .. __core.IMG_PATH .. "TAG_UNCPL" .. ":0|t";
 
 	local SET = nil;
+-->
+if __ns.__is_dev then
+	__ns:BuildEnv("util");
+end
 -->		MAIN
 	-->		methods
 		local function GetLevelTag(quest, info, modifier, colored)
@@ -94,36 +107,36 @@ local _ = nil;
 				end
 				if colored ~= false then
 					if lvl >= SET.quest_lvl_red then
-						lvl_str = lvl_str .. "\124cffff0000" .. (tag ~= nil and (lvl .. tag) or lvl) .. "\124r";
+						lvl_str = lvl_str .. "|cffff0000" .. (tag ~= nil and (lvl .. tag) or lvl) .. "|r";
 					elseif lvl >= SET.quest_lvl_orange then
-						lvl_str = lvl_str .. "\124cffff7f7f" .. (tag ~= nil and (lvl .. tag) or lvl) .. "\124r";
+						lvl_str = lvl_str .. "|cffff7f7f" .. (tag ~= nil and (lvl .. tag) or lvl) .. "|r";
 					elseif lvl >= SET.quest_lvl_yellow then
-						lvl_str = lvl_str .. "\124cffffff00" .. (tag ~= nil and (lvl .. tag) or lvl) .. "\124r";
+						lvl_str = lvl_str .. "|cffffff00" .. (tag ~= nil and (lvl .. tag) or lvl) .. "|r";
 					elseif lvl >= SET.quest_lvl_green then
-						lvl_str = lvl_str .. "\124cff7fbf3f" .. (tag ~= nil and (lvl .. tag) or lvl) .. "\124r";
+						lvl_str = lvl_str .. "|cff7fbf3f" .. (tag ~= nil and (lvl .. tag) or lvl) .. "|r";
 					else
-						lvl_str = lvl_str .. "\124cff7f7f7f" .. (tag ~= nil and (lvl .. tag) or lvl) .. "\124r";
+						lvl_str = lvl_str .. "|cff7f7f7f" .. (tag ~= nil and (lvl .. tag) or lvl) .. "|r";
 					end
 					if modifier then
 						lvl_str = lvl_str .. "/";
 						local diff = min - __ns.__player_level;
 						if diff > 0 then
 							if diff > 1 then
-								lvl_str = lvl_str .. "\124cffff3f3f" .. min .. "\124r";
+								lvl_str = lvl_str .. "|cffff3f3f" .. min .. "|r";
 							else
-								lvl_str = lvl_str .. "\124cffff0f0f" .. min .. "\124r";
+								lvl_str = lvl_str .. "|cffff0f0f" .. min .. "|r";
 							end
 						else
 							if min >= SET.quest_lvl_red then
-								lvl_str = lvl_str .. "\124cffff0000" .. min .. "\124r";
+								lvl_str = lvl_str .. "|cffff0000" .. min .. "|r";
 							elseif min >= SET.quest_lvl_orange then
-								lvl_str = lvl_str .. "\124cffff7f7f" .. min .. "\124r";
+								lvl_str = lvl_str .. "|cffff7f7f" .. min .. "|r";
 							elseif min >= SET.quest_lvl_yellow then
-								lvl_str = lvl_str .. "\124cffffff00" .. min .. "\124r";
+								lvl_str = lvl_str .. "|cffffff00" .. min .. "|r";
 							elseif min >= SET.quest_lvl_green then
-								lvl_str = lvl_str .. "\124cff7fbf3f" .. min .. "\124r";
+								lvl_str = lvl_str .. "|cff7fbf3f" .. min .. "|r";
 							else
-								lvl_str = lvl_str .. "\124cff7f7f7f" .. min .. "\124r";
+								lvl_str = lvl_str .. "|cff7f7f7f" .. min .. "|r";
 							end
 						end
 					end
@@ -166,16 +179,14 @@ local _ = nil;
 				lvl_str = lvl_str .. "]";
 			return lvl_str;
 		end
-		local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
-		local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS;
 		local function GetPlayerTag(name, class)
 			if class == nil then
 				return " > " .. name;
 			else
 				local color = RAID_CLASS_COLORS[class];
 				local coord = CLASS_ICON_TCOORDS[class];
-				return format(" > \124TInterface\\TargetingFrame\\UI-Classes-Circles:0:0:0:0:256:256:%d:%d:%d:%d\124t \124cff%.2x%.2x%.2x%s\124r",
-							coord[1] * 256, coord[2] * 256, coord[3] * 256, coord[4] * 256,
+				return format(" > |TInterface\\TargetingFrame\\UI-Classes-Circles:0:0:0:0:256:256:%d:%d:%d:%d|t |cff%.2x%.2x%.2x%s|r",
+							coord[1] * 255, coord[2] * 255, coord[3] * 255, coord[4] * 255,
 							color.r * 255, color.g * 255, color.b * 255, name
 						);
 			end
@@ -194,40 +205,38 @@ local _ = nil;
 			local modifier = IsShiftKeyDown();
 			local refs = uuid[4];
 			if next(refs) ~= nil then
+				META = META or __core_meta;
 				for quest, ref in next, refs do
-					if META == nil then
-						META = __core_meta;
-					end
 					local meta = META[quest];
 					local info = __db_quest[quest];
 					local color = IMG_LIST[GetQuestStartTexture(info)];
 					--[[
-						local lvl_str = "\124cff000000**\124r[ ";
+						local lvl_str = "|cff000000**|r[ ";
 							local lvl = info.lvl;
 							local min = info.min;
 							lvl_str = lvl_str .. __UILOC.TIP_QUEST_LVL;
 							if lvl >= SET.quest_lvl_red then
-								lvl_str = lvl_str .. "\124cffff0000" .. lvl .. "\124r ";
+								lvl_str = lvl_str .. "|cffff0000" .. lvl .. "|r ";
 							elseif lvl >= SET.quest_lvl_orange then
-								lvl_str = lvl_str .. "\124cffff7f7f" .. lvl .. "\124r ";
+								lvl_str = lvl_str .. "|cffff7f7f" .. lvl .. "|r ";
 							elseif lvl >= SET.quest_lvl_yellow then
-								lvl_str = lvl_str .. "\124cffffff00" .. lvl .. "\124r ";
+								lvl_str = lvl_str .. "|cffffff00" .. lvl .. "|r ";
 							elseif lvl >= SET.quest_lvl_green then
-								lvl_str = lvl_str .. "\124cff7fbf3f" .. lvl .. "\124r ";
+								lvl_str = lvl_str .. "|cff7fbf3f" .. lvl .. "|r ";
 							else
-								lvl_str = lvl_str .. "\124cff7f7f7f" .. lvl .. "\124r ";
+								lvl_str = lvl_str .. "|cff7f7f7f" .. lvl .. "|r ";
 							end
 							lvl_str = lvl_str .. __UILOC.TIP_QUEST_MIN;
 							if min >= SET.quest_lvl_red then
-								lvl_str = lvl_str .. "\124cffff0000" .. min .. "\124r ]\124cff000000**\124r";
+								lvl_str = lvl_str .. "|cffff0000" .. min .. "|r ]|cff000000**|r";
 							elseif min >= SET.quest_lvl_orange then
-								lvl_str = lvl_str .. "\124cffff7f7f" .. min .. "\124r ]\124cff000000**\124r";
+								lvl_str = lvl_str .. "|cffff7f7f" .. min .. "|r ]|cff000000**|r";
 							elseif min >= SET.quest_lvl_yellow then
-								lvl_str = lvl_str .. "\124cffffff00" .. min .. "\124r ]\124cff000000**\124r";
+								lvl_str = lvl_str .. "|cffffff00" .. min .. "|r ]|cff000000**|r";
 							elseif min >= SET.quest_lvl_green then
-								lvl_str = lvl_str .. "\124cff7fbf3f" .. min .. "\124r ]\124cff000000**\124r";
+								lvl_str = lvl_str .. "|cff7fbf3f" .. min .. "|r ]|cff000000**|r";
 							else
-								lvl_str = lvl_str .. "\124cff7f7f7f" .. min .. "\124r ]\124cff000000**\124r";
+								lvl_str = lvl_str .. "|cff7f7f7f" .. min .. "|r ]|cff000000**|r";
 							end
 						if meta ~= nil then
 							if line == 'start' then
@@ -237,7 +246,7 @@ local _ = nil;
 									local loc = __loc_quest[quest];
 									if loc ~= nil and loc[3] ~= nil then
 										for _, text in next, loc[3] do
-											tip:AddLine("\124cff000000**\124r" .. text, 1.0, 0.75, 0.0);
+											tip:AddLine("|cff000000**|r" .. text, 1.0, 0.75, 0.0);
 										end
 									end
 								end
@@ -253,7 +262,7 @@ local _ = nil;
 									local loc = __loc_quest[quest];
 									if loc ~= nil and loc[3] ~= nil then
 										for _, text in next, loc[3] do
-											tip:AddLine("\124cff000000**\124r" .. text, 1.0, 0.75, 0.0);
+											tip:AddLine("|cff000000**|r" .. text, 1.0, 0.75, 0.0);
 										end
 									end
 								end
@@ -263,7 +272,7 @@ local _ = nil;
 								for index = 1, #meta do
 									local meta_line = meta[index];
 									if meta_line[2] == 'event' or meta_line[2] == 'log' then
-										tip:AddLine("\124cff000000**\124r" .. meta_line[4], 1.0, 0.5, 0.0);
+										tip:AddLine("|cff000000**|r" .. meta_line[4], 1.0, 0.5, 0.0);
 									end
 								end
 							else
@@ -273,9 +282,9 @@ local _ = nil;
 									local meta_line = meta[line];
 									if meta_line ~= nil then
 										if meta_line[5] then
-											tip:AddLine("\124cff000000**\124r" .. meta_line[4], 0.5, 1.0, 0.0);
+											tip:AddLine("|cff000000**|r" .. meta_line[4], 0.5, 1.0, 0.0);
 										else
-											tip:AddLine("\124cff000000**\124r" .. meta_line[4], 1.0, 0.5, 0.0);
+											tip:AddLine("|cff000000**|r" .. meta_line[4], 1.0, 0.5, 0.0);
 										end
 									end
 								else
@@ -283,9 +292,9 @@ local _ = nil;
 									local meta_line = meta[line];
 									if meta_line ~= nil then
 										if meta_line[5] then
-											tip:AddLine("\124cff000000**\124r" .. meta_line[4], 0.5, 1.0, 0.0);
+											tip:AddLine("|cff000000**|r" .. meta_line[4], 0.5, 1.0, 0.0);
 										else
-											tip:AddLine("\124cff000000**\124r" .. meta_line[4], 1.0, 0.5, 0.0);
+											tip:AddLine("|cff000000**|r" .. meta_line[4], 1.0, 0.5, 0.0);
 										end
 									end
 								end
@@ -296,7 +305,7 @@ local _ = nil;
 								tip:AddLine(TIP_IMG_S_NORMAL .. loc[1] .. "(" .. quest .. ")", color[2], color[3], color[4]);
 								if modifier and loc[3] then
 									for _, text in next, loc[3] do
-										tip:AddLine("\124cff000000**\124r" .. text, 1.0, 0.75, 0.0);
+										tip:AddLine("|cff000000**|r" .. text, 1.0, 0.75, 0.0);
 									end
 								end
 							else
@@ -334,7 +343,7 @@ local _ = nil;
 									local loc = __loc_quest[quest];
 									if loc ~= nil and loc[3] ~= nil then
 										for _, text in next, loc[3] do
-											tip:AddLine("\124cff000000**\124r" .. text, 1.0, 0.75, 0.0);
+											tip:AddLine("|cff000000**|r" .. text, 1.0, 0.75, 0.0);
 										end
 									end
 								end
@@ -342,7 +351,11 @@ local _ = nil;
 								for index = 1, #meta do
 									local meta_line = meta[index];
 									if meta_line[2] == 'event' or meta_line[2] == 'log' then
-										tip:AddLine("\124cff000000**\124r" .. meta_line[4], 1.0, 0.5, 0.0);
+										if meta_line[5] then
+											tip:AddLine("|cff000000**|r" .. meta_line[4], 0.5, 1.0, 0.0);
+										else
+											tip:AddLine("|cff000000**|r" .. meta_line[4], 1.0, 0.5, 0.0);
+										end
 									end
 								end
 							else
@@ -350,9 +363,9 @@ local _ = nil;
 									local meta_line = meta[line];
 									if meta_line ~= nil then
 										if meta_line[5] then
-											tip:AddLine("\124cff000000**\124r" .. meta_line[4], 0.5, 1.0, 0.0);
+											tip:AddLine("|cff000000**|r" .. meta_line[4], 0.5, 1.0, 0.0);
 										else
-											tip:AddLine("\124cff000000**\124r" .. meta_line[4], 1.0, 0.5, 0.0);
+											tip:AddLine("|cff000000**|r" .. meta_line[4], 1.0, 0.5, 0.0);
 										end
 									end
 								else
@@ -360,9 +373,9 @@ local _ = nil;
 									local meta_line = meta[line];
 									if meta_line ~= nil then
 										if meta_line[5] then
-											tip:AddLine("\124cff000000**\124r" .. meta_line[4], 0.5, 1.0, 0.0);
+											tip:AddLine("|cff000000**|r" .. meta_line[4], 0.5, 1.0, 0.0);
 										else
-											tip:AddLine("\124cff000000**\124r" .. meta_line[4], 1.0, 0.5, 0.0);
+											tip:AddLine("|cff000000**|r" .. meta_line[4], 1.0, 0.5, 0.0);
 										end
 									end
 								end
@@ -378,7 +391,7 @@ local _ = nil;
 							end
 							if modifier and loc[3] then
 								for _, text in next, loc[3] do
-									tip:AddLine("\124cff000000**\124r" .. text, 1.0, 0.75, 0.0);
+									tip:AddLine("|cff000000**|r" .. text, 1.0, 0.75, 0.0);
 								end
 							end
 						else
@@ -453,9 +466,9 @@ local _ = nil;
 										local meta_line = meta[index];
 										if meta_line[2] == 'item' and meta_line[3] == id then
 											if meta_line[5] then
-												tip:AddLine("\124cff000000**\124r" .. meta_line[4], 0.5, 1.0, 0.0);
+												tip:AddLine("|cff000000**|r" .. meta_line[4], 0.5, 1.0, 0.0);
 											else
-												tip:AddLine("\124cff000000**\124r" .. meta_line[4], 1.0, 0.5, 0.0);
+												tip:AddLine("|cff000000**|r" .. meta_line[4], 1.0, 0.5, 0.0);
 											end
 											break;
 										end
@@ -519,9 +532,9 @@ local _ = nil;
 												local meta_line = meta[index];
 												if meta_line[2] == 'item' and meta_line[3] == id then
 													if meta_line[5] then
-														tip:AddLine("\124cff000000**\124r" .. meta_line[4], 0.5, 1.0, 0.0);
+														tip:AddLine("|cff000000**|r" .. meta_line[4], 0.5, 1.0, 0.0);
 													else
-														tip:AddLine("\124cff000000**\124r" .. meta_line[4], 1.0, 0.5, 0.0);
+														tip:AddLine("|cff000000**|r" .. meta_line[4], 1.0, 0.5, 0.0);
 													end
 													break;
 												end
@@ -541,12 +554,10 @@ local _ = nil;
 		local GameTooltipTextLeft1Text = nil;
 		local updateTimer = 0.0;
 		local function GameTooltipOnUpdate(self, elasped)
-			if SET.objective_tooltip_info then
+			if SET.objective_tooltip_info and self:GetOwner() == UIParent then
 				if updateTimer <= 0.0 then
 					updateTimer = 0.1;
-					local uname, unit = self:GetUnit();
-					local iname, link = self:GetItem();
-					if uname == nil and unit == nil and iname == nil and link == nil then
+					if self:GetUnit() == nil and self:GetItem() == nil then
 						local text = GameTooltipTextLeft1:GetText();
 						if text ~= nil and text ~= GameTooltipTextLeft1Text then
 							GameTooltipTextLeft1Text = text;
@@ -653,6 +664,17 @@ local _ = nil;
 			if uuid ~= nil then
 				__ns.GameTooltipSetQuestTip(GameTooltip, uuid);
 			end
+			for name, val in next, __ns.__comm_group_members do
+				local meta_table = __comm_meta[name];
+				if meta_table ~= nil then
+					local uuid = __ns.CommGetUUID(name, type, id);
+					if uuid ~= nil and next(uuid[4]) ~= nil then
+						local info = __ns.__comm_group_members_info[name];
+						GameTooltip:AddLine(GetPlayerTag(name, info ~= nil and info[4]));
+						GameTooltipSetQuestTip(GameTooltip, uuid, meta_table);
+					end
+				end
+			end
 		end
 		function __ns.button_info_OnEnter(self)
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -733,44 +755,109 @@ local _ = nil;
 		end
 	-->		DBIcon
 		local function CreateDBIcon()
-			local LDI = LibStub("LibDBIcon-1.0", true);
-			if LDI then
-				LDI:Register(
-					"CodexLite",
-					{
-						icon = [[interface\icons\inv_misc_book_09]],
-						OnClick = function(self, button)
-							if __ns.__ui_setting:IsShown() then
-								__ns.__ui_setting:Hide();
-							else
-								__ns.__ui_setting:Show();
-							end
-						end,
-						text = "CodexLite",
-						OnTooltipShow = function(tt)
-							tt:AddLine("CodexLite");
-							tt:Show();
-						end,
-					},
-					__ns.__svar.minimap
-				);
-				LDI:Show(__addon);
-				if SET.show_db_icon then
-					LibStub("LibDBIcon-1.0", true):Show(__addon);
-				else
-					LibStub("LibDBIcon-1.0", true):Hide(__addon);
+			local LibStub = _G.LibStub;
+			if LibStub ~= nil then
+				local LDI = LibStub("LibDBIcon-1.0", true);
+				if LDI then
+					local D = nil;
+					LDI:Register(
+						"CodexLite",
+						{
+							icon = [[interface\icons\inv_misc_book_09]],
+							OnClick = function(self, button)
+								if button == "LeftButton" then
+									if __ns.__ui_setting:IsShown() then
+										__ns.__ui_setting:Hide();
+									else
+										__ns.__ui_setting:Show();
+									end
+								else
+									SET.show_minimappin = not SET.show_minimappin;
+									__ns.map_ToggleMinimapPin(SET.show_minimappin);
+									D:SetShown(not SET.show_minimappin);
+								end
+							end,
+							text = "CodexLite",
+							OnTooltipShow = function(tt)
+								tt:AddLine("CodexLite");
+								tt:Show();
+							end,
+						},
+						__ns.__svar.minimap
+					);
+					LDI:Show(__addon);
+					if SET.show_db_icon then
+						LDI:Show(__addon);
+					else
+						LDI:Hide(__addon);
+					end
+					local Icon = LDI:GetMinimapButton(__addon);
+					if Icon ~= nil then
+						D = Icon:CreateTexture(nil, "OVERLAY");
+						D:SetAllPoints(Icon.icon);
+						D:SetTexture(__core.IMG_PATH .. "close");
+						D:SetShown(not SET.show_minimappin);
+					end
 				end
 			end
 		end
+	-->		WorldMapPin Toggle
+		local function CreateWorldMapPinSwitch()
+			local Switch = CreateFrame('BUTTON', nil, WorldMapFrame, "UIPanelButtonTemplate");
+			Switch:SetSize(30, 30);
+			Switch:SetText("CL");
+			Switch:SetPoint("TOPRIGHT", WorldMapFrame, "TOPRIGHT", -100, -30);
+			Switch:RegisterForClicks("AnyUp");
+			Switch:SetScript("OnClick", function(self, button)
+				if button == "LeftButton" then
+					if __ns.__ui_setting:IsShown() then
+						__ns.__ui_setting:Hide();
+					else
+						__ns.__ui_setting:Show();
+					end
+				else
+					SET.show_worldmappin = not SET.show_worldmappin;
+					__ns.map_ToggleWorldMapPin(SET.show_worldmappin);
+					Switch.D:SetShown(not SET.show_worldmappin);
+				end
+			end);
+			local D = Switch:CreateTexture(nil, "OVERLAY");
+			D:SetSize(20, 20);
+			D:SetPoint("CENTER");
+			D:SetTexture(__core.IMG_PATH .. "close");
+			D:SetShown(not SET.show_worldmappin);
+			Switch.D = D;
+		end
 	-->
 	-->		Chat
+		--
+		local function SendFilterRep(id, level, title)
+			return "[[" .. gsub(level, "[^0-9]", "") .. "] " .. title .. " (" .. id .. ")]";
+		end
+		local function SendFilter(msg)
+			--"|Hcdxl:([0-9]+)|h|c[0-9a-f]+%[%[(.+)%](.+)%]|r|h"
+			return gsub(msg, "|Hcdxl:([0-9]+)|h|c[0-9a-f]+%[%[(.-)%](.-)%(.-%)%]|r|h", SendFilterRep);
+		end
+	
+		local __SendChatMessage = nil;
+		local function CdxlSendChatMessage(text, ...)
+			__SendChatMessage(SendFilter(text), ...);
+		end
+		local __BNSendWhisper = nil;
+		local function CdxlBNSendWhisper(presenceID, text, ...)
+			__BNSendWhisper(presenceID, SendFilter(text), ...);
+		end
+		local __BNSendConversationMessage = nil;
+		local function CdxlBNSendConversationMessage(target, text, ...)
+			__BNSendConversationMessage(target, SendFilter(text), ...);
+		end
 		local function ChatFilterReplacer(body, id)
 			local quest = tonumber(id);
 			local info = __db_quest[quest];
 			local loc = __loc_quest[quest];
 			if info ~= nil and loc ~= nil then
 				local color = IMG_LIST[GetQuestStartTexture(info)];
-				return "|Hcdxl:" .. id .. "|h|c" .. color[5] .. "[" .. GetLevelTag(quest, info, false, false) .. (loc ~= nil and loc[1] or "Quest: " .. id) .. "]|r|h";
+				return "|Hcdxl:" .. id .. "|h|c" .. color[5] .. "[" .. GetLevelTag(quest, info, false, false) .. (loc ~= nil and loc[1] .. "(" .. id .. ")" or "Quest: " .. id) .. "]|r|h";
 			end
 			return body;
 		end
@@ -852,6 +939,12 @@ local _ = nil;
 							local activeWindow = ChatEdit_GetActiveWindow();
 							if activeWindow ~= nil then
 								activeWindow:Insert("[[" .. level .. "] " .. title .. " (" .. quest_id .. ")]");
+								-- local info = __db_quest[quest_id];
+								-- if info ~= nil then
+								-- 	activeWindow:Insert("|Hcdxl:" .. quest_id .. "|h|c" .. IMG_LIST[GetQuestStartTexture(info)][5] .. "[" .. GetLevelTag(quest_id, info, false, false) .. title .. "(" .. quest_id .. ")]|r|h");
+								-- else
+								-- 	activeWindow:Insert("[[" .. level .. "] " .. title .. " (" .. quest_id .. ")]");
+								-- end
 							end
 							-- ChatEdit_InsertLink("[[" .. level .. "] " .. title .. " (" .. quest_id .. ")]");
 							return;
@@ -863,6 +956,12 @@ local _ = nil;
 			end
 		end
 		local function InitMessageFactory()
+			__SendChatMessage = _G.SendChatMessage;
+			_G.SendChatMessage = CdxlSendChatMessage;
+			__BNSendWhisper = _G.BNSendWhisper;
+			_G.BNSendWhisper = CdxlBNSendWhisper;
+			__BNSendConversationMessage = _G.BNSendConversationMessage;
+			_G.BNSendConversationMessage = CdxlBNSendConversationMessage;
 			QuestLogFrame:HookScript("OnShow", HookQuestLogTitle);
 			ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", ChatFilter);
 			ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", ChatFilter);
@@ -885,8 +984,6 @@ local _ = nil;
 		end
 	-->		QuestLogFrame
 		local function CreateQuestLogFrameButton()
-			local QuestLogDetailScrollChildFrame = QuestLogDetailScrollChildFrame;
-			local QuestLogDescriptionTitle = QuestLogDescriptionTitle;
 			local _ShowQuest = CreateFrame('BUTTON', nil, QuestLogDetailScrollChildFrame, "UIPanelButtonTemplate");
 			_ShowQuest:SetSize(85, 21);
 			_ShowQuest:SetPoint("TOPLEFT", QuestLogDescriptionTitle, "TOPLEFT", 0, 0);
@@ -959,70 +1056,16 @@ local _ = nil;
 		GameTooltip:HookScript("OnUpdate", GameTooltipOnUpdate);
 		__eventHandler:RegEvent("MODIFIER_STATE_CHANGED");
 		--
-		if LibStub ~= nil then
-			CreateDBIcon();
-		end
+		CreateDBIcon();
+		CreateWorldMapPinSwitch();
 		CreateQuestLogFrameButton();
 		InitMessageFactory();
 		--
+		__ns.map_ToggleWorldMapPin(SET.show_worldmappin);
+		__ns.map_ToggleMinimapPin(SET.show_minimappin);
+		--
 		_F_SafeCall(__ns._checkConflicts);
 	end
--->
-
--->		Position Share
-	function __ala_meta__.____OnMapPositionReceived(sender, map, x, y)
-		if map > 0 then
-			map, x, y = __ns.core.GetZonePositionFromWorldPosition(map, x, y);
-		end
-		if map ~= nil then
-			if map > 0 then
-				x = x - x % 0.0001;
-				y = y - y % 0.0001;
-				print(Ambiguate(sender, 'none'), __ns.L.map[map], x * 100, y * 100);
-			else
-				print(Ambiguate(sender, 'none'), "副本中");
-			end
-		end
-	end
-	local __pull_position_ticker = nil;
-	local __listen_name = nil;
-	local function __ticker_func_listen_position()
-		__ala_meta__.__mapshare.PullPosition(__listen_name);
-	end
-	local function ListenPosition(name, period)
-		__listen_name = Ambiguate(name, 'none');print('ListenPosition', name, __listen_name)
-		if __pull_position_ticker == nil then
-			__pull_position_ticker = C_Timer.NewTicker(period or 0.5, __ticker_func_listen_position);
-		end
-	end
-	local function StopListeningPosition()
-		if __pull_position_ticker ~= nil then
-			__pull_position_ticker:Cancel();
-			__pull_position_ticker = nil;
-		end
-	end
-	__ala_meta__.____ListenPosition = ListenPosition;
-	__ala_meta__.____StopListeningPosition = StopListeningPosition;
-	local B_ERR_CHAT_PLAYER_NOT_FOUND_S = ERR_CHAT_PLAYER_NOT_FOUND_S;
-	local P_ERR_CHAT_PLAYER_NOT_FOUND_S = gsub(B_ERR_CHAT_PLAYER_NOT_FOUND_S, "%%s", "(.+)");
-	local function __listen_position_filter(self, event, msg, ...)
-		if __pull_position_ticker ~= nil then
-			if B_ERR_CHAT_PLAYER_NOT_FOUND_S ~= ERR_CHAT_PLAYER_NOT_FOUND_S then
-				B_ERR_CHAT_PLAYER_NOT_FOUND_S = ERR_CHAT_PLAYER_NOT_FOUND_S;
-				P_ERR_CHAT_PLAYER_NOT_FOUND_S = gsub(B_ERR_CHAT_PLAYER_NOT_FOUND_S, "%%s", "(.+)");
-			end
-			local _, _, name = strfind(msg, P_ERR_CHAT_PLAYER_NOT_FOUND_S);
-			if name ~= nil then
-				if name == __listen_name or Ambiguate(name, 'none') == __listen_name then
-					StopListeningPosition();
-					print("Cancel tracking ", __listen_name, "[\124cffff0000OFFLINE\124r]");
-					return true, msg, ...;
-				end
-			end
-		end
-		return false, msg, ...;
-	end
-	ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", __listen_position_filter);
 -->
 
 -->		CONFLICTS
@@ -1030,12 +1073,12 @@ local _ = nil;
 		if SET ~= nil and SET._checkedConflicts then
 			return;
 		end
-		C_Timer.After(4.0, function()
+		__ns.After(4.0, function()
 			local _conflicts = false;
-			if GetAddOnEnableState(UnitName('player'), "Questie") > 0 then
+			if GetAddOnEnableState(__core._PLAYER_NAME, "Questie") > 0 then
 				_conflicts = true;
 			end
-			if GetAddOnEnableState(UnitName('player'), "ClassicCodex") > 0 then
+			if GetAddOnEnableState(__core._PLAYER_NAME, "ClassicCodex") > 0 then
 				_conflicts = true;
 			end
 			if _conflicts then
@@ -1064,4 +1107,4 @@ local _ = nil;
 	end
 -->
 
---[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.util'); end
+--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.util'); end

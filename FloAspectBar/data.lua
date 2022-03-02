@@ -20,7 +20,7 @@ elseif WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
 			{ id = 5118 }, -- cheetah
 			{ id = 13161 }, -- beast
 			{ id = 13159 }, -- pack
-			{ id = 20043 }, -- nature
+			{ id = 20043 } -- nature
 		}
 	};
 elseif WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
@@ -32,7 +32,7 @@ elseif WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			{ id = 13161 }, -- beast
 			{ id = 13159 }, -- pack
 			{ id = 20043 }, -- nature
-			{ id = 34074 },	--	蝰蛇
+			{ id = 34074 }, -- viper
 		}
 	};
 end

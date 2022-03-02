@@ -2,13 +2,13 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/18/2020, 3:25:21 PM
-
+--
 ---@type ns
 local ns = select(2, ...)
 
 local tonumber = tonumber
 
----@type tdInspectBaseItem
+---@class UI.BaseItem: Object, Button, AceEvent-3.0
 local BaseItem = ns.Addon:NewClass('UI.BaseItem', 'Button')
 
 function BaseItem:Constructor()
@@ -34,3 +34,8 @@ function BaseItem:WaitItem(item)
     self.itemId = ns.ItemLinkToId(item)
     self:RegisterEvent('GET_ITEM_INFO_RECEIVED')
 end
+
+--[[@debug@
+function BaseItem:Update()
+end
+--@end-debug@]]

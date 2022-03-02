@@ -1,0 +1,15 @@
+1.0
+    Initial Release
+1.1
+    Added in an icon for your next shot. This can be toggled on/off using /shotassist icon
+    Added in the ability to toggle the auto shot bar with /shotassist autoBar
+    Fixed how color pickers weren't properly saving
+    Added in the ability to customize all the colors associated with the auto shot bar
+    Added in the ability to change the font using /shotassist font name <fontName>
+    Added in the ability to change the height of the auto shot bar with /shotassist autoHeight
+1.2
+    Added Chinese translation thanks to emiko
+1.3
+    Removed frFR and koKR translations that were breaking the addon for users of those clients thanks to Lochnar_TV.
+1.4
+    Fix for WoW 2.5.3 throwing errors dividing by zero (Thanks to Dollard for reporting)

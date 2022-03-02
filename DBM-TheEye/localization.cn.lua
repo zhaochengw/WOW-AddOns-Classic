@@ -16,7 +16,7 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	NextPlatform	= "Show timer for when Al'ar changes platforms"
+	NextPlatform	= "显示奥更换平台的时间"
 }
 
 ------------------
@@ -52,21 +52,21 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	WarnSplit		= "Show warning for Split",
-	WarnSplitSoon	= "Show pre-warning for Split",
-	WarnAgent		= "Show warning for Agents spawn",
-	WarnPriest		= "Show warning for Priests and Solarian spawn",
-	TimerSplit		= "Show timer for Split",
-	TimerAgent		= "Show timer for Agents spawn",
-	TimerPriest		= "Show timer for Priests and Solarian spawn",
+	WarnSplit		= "显示分裂警报",
+	WarnSplitSoon	= "显示分裂预警",
+	WarnAgent		= "显示密探出现的警报",
+	WarnPriest		= "显示密探出现的预警",
+	TimerSplit		= "显示分裂出现的时间",
+	TimerAgent		= "显示密探出现的时间",
+	TimerPriest		= "显示祭司与索兰莉安出现的时间",
 	WrathWhisper	= "向受到星术师之怒效果的目标发送密语"
 }
 
 L:SetMiscLocalization{
 	WrathWhisper	= "星术师之怒！",
-	YellSplit1		= "I will crush your delusions of grandeur!",--Translate
-	YellSplit2		= "You are hopelessly outmatched!",--Translate
-	YellPhase2		= "I become"--Translate
+	YellSplit1		= "我要让你们自以为是的错觉荡然无存！",
+	YellSplit2		= "你们势单力薄！",
+	YellPhase2		= "我受够了！"
 }
 
 ---------------------------
@@ -79,30 +79,30 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	WarnGaze		= "*** 萨拉德雷注视着>%s< ***",
-	WarnMobDead		= "%s down",--Translate
+	WarnGaze		= "*** 萨拉德雷凝视着>%s< ***",
+	WarnMobDead		= "%s 倒下",
 	WarnEgg			= "*** 凤凰倒下 - 卵出现 ***",
-	SpecWarnGaze	= "快跑！",
+	SpecWarnGaze	= "快跑！凝视你了！",
 	SpecWarnEgg		= "*** 凤凰倒下 - 卵出现 ***"
 }
 
 L:SetTimerLocalization{
-	TimerPhase		= "Next Phase",--Translate
+	TimerPhase		= "下一阶段",
 	TimerPhase1mob	= "%s",
 	TimerNextGaze	= "凝视冷却",
-	TimerRebirth	= "复生"
+	TimerRebirth	= "重生"
 }
 
 L:SetOptionLocalization{
-	WarnGaze		= "Show warning for Thaladred's Gaze target",--Translate
-	WarnMobDead		= "Show warning for Phase 2 mob down",--Translate
-	WarnEgg			= "Show warning when Phoenix Egg spawn",--Translate
-	SpecWarnGaze	= "Show special warning when Gaze on you",--Translate
-	SpecWarnEgg		= "Show special warning when Phoenix Egg spawn",--Translate
-	TimerPhase		= "Show time for next phase",--Translate
-	TimerPhase1mob	= "Show time for Phase 1 mob active",--Translate
-	TimerNextGaze	= "Show timer for Thaladred's Gaze target changes",--Translate
-	TimerRebirth	= "Show timer for Phoenix Egg rebirth remaining",--Translate
+	WarnGaze		= "显示萨拉德雷凝视玩家时发出警报",
+	WarnMobDead		= "显示第二阶段的警报",
+	WarnEgg			= "显示凤凰卵重生的警报",
+	SpecWarnGaze	= "显示特别警报：凝视你",
+	SpecWarnEgg		= "显示特殊警告：凤凰卵重生时",
+	TimerPhase		= "显示下一阶段的时间",
+	TimerPhase1mob	= "显示第一阶段首领的时间",
+	TimerNextGaze	= "显示萨拉德雷凝视玩家的时间",
+	TimerRebirth	= "显示剩余凤凰卵重生的时间",
 	GazeWhisper		= "对萨拉德雷的目标发送密语",
 	GazeIcon		= "对萨拉德雷的目标添加标注"
 }
@@ -116,7 +116,7 @@ L:SetMiscLocalization{
 	YellCaper	= "卡波妮娅会很快解决你们的。",
 	YellTelo	= "干得不错。看来你们有能力挑战我的首席技师，塔隆尼库斯。",
 	EmoteGaze	= "凝视着([^%s]+)！",
-	GazeWhisper	= "萨拉德雷注视着你！快跑！",
+	GazeWhisper	= "萨拉德雷凝视着你！快跑！",
 	Thaladred	= "萨拉德雷",
 	Sanguinar	= "萨古纳尔",
 	Capernian	= "卡波妮娅",

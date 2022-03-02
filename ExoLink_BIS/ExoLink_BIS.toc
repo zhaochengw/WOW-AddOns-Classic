@@ -1,0 +1,14 @@
+## Interface: 20503
+## Title: ExoLink BestInSlot
+## Notes: 俏俏制作
+## OptionalDeps: LibExtraTip
+## Version: TBC-2.1beta
+
+libs\LibExtraTip\Load.xml
+
+ExoLink_BIS.lua
+Data\BIS.xml
+
+## Title-zhCN: |cff880303[有爱]|r ExoLink BIS提示
+## X-Vendor: NetEase
+## X-163UI-Version: 20220120164410

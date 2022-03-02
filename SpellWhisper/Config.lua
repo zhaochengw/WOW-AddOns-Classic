@@ -42,11 +42,11 @@ function ScrollFrame:ConfigOkay()
 		Control:SaveValue(Control.CurrentValue)
 	end
 	local msg = ""
-	for k, v in pairs(Addon.RunTime[Config.SelectedSpellType]) do
+	for k in pairs(Addon.RunTime[Config.SelectedSpellType]) do
 		if msg == "" then
-			msg = Addon.RunTime[Config.SelectedSpellType][k]
+			msg = k
 		else
-			msg = msg .. "\n" .. Addon.RunTime[Config.SelectedSpellType][k]
+			msg = msg .. "\n" .. k
 		end
 	end
 	Addon.CurrentSpellListText = msg
@@ -425,7 +425,7 @@ function Panel:Initialize()
 
 	--添加/删除监控列表类型下拉菜单框
 	local DisplaySpellType = self:CreateDropDown(L["Spell Monitor: "],
-		{"InstantHarm", L["Instant Harm"], "InstantHelp", L["Instant Help"], "CastHarm", L["Cast Harm"], "CastHelp", L["Cast Help"], "SelfBuff", L["Self Buff"], "Healing", L["Healing"], "Other", L["Other"],},
+		{"InstantHarm", L["Instant Harm"], "InstantHelp", L["Instant Help"], "CastHarm", L["Cast Harm"], "CastHelp", L["Cast Help"], "SelfBuff", L["Self Buff"], "Healing", L["Healing"], "Other", L["Other"], "Notips", L["Ignore"],},
 		function(self) return Config.SelectedSpellType end,
 		function(self, v) Config.SelectedSpellType = v end,
 		"Other")
@@ -461,7 +461,7 @@ function Panel:Initialize()
 	local AddSpellButton = self:CreateButton(L["Add"],
 		function(self)
 			if SpellEditBox:GetText() ~= "" then
-				Addon.RunTime[Config.SelectedSpellType][SpellEditBox:GetText()] = SpellEditBox:GetText()
+				Addon.RunTime[Config.SelectedSpellType][SpellEditBox:GetText()] = true
 			end
 			ScrollFrame:ConfigOkay()
 			SpellListBox:SetText(Addon.CurrentSpellListText)

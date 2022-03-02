@@ -17,6 +17,8 @@
     <script file = "util.lua" />
     <script file = "setting.lua" />
 
+    <script file = "external-Questie.lua" />
+
     <include file = "dev\dev.xml" />
 
     <!-- <include file = "Bindings.xml" /> -->

@@ -5,15 +5,15 @@
 ----------------------------------------------------------------------------------------------------
 local __addon, __ns = ...;
 
-if __ns.__dev then
-	setfenv(1, __ns.__fenv);
-end
 local _G = _G;
 local _ = nil;
 --------------------------------------------------
---[=[dev]=]	if __ns.__dev then __ns._F_devDebugProfileStart('module.patch'); end
+--[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart('module.patch'); end
 
-local tremove = tremove;
+-->		variables
+local next = next;
+local tremove = table.remove;
+
 local __db = __ns.db;
 local __db_quest = __db.quest;
 local __db_unit = __db.unit;
@@ -21,6 +21,11 @@ local __db_item = __db.item;
 local __db_object = __db.object;
 local __db_refloot = __db.refloot;
 local __db_event = __db.event;
+local __core = __ns.core;
+
+if __ns.__is_dev then
+	__ns:BuildEnv("patch");
+end
 
 -->		patch
 	local function patchDB(fix)
@@ -46,7 +51,7 @@ local __db_event = __db.event;
 	end
 	local function apply_patch()
 		patchDB(__db.fix);
-		if UnitFactionGroup('player') == "Alliance" then
+		if __core._PLAYER_FACTIONGROUP == "Alliance" then
 			patchDB(__db.fix_alliance);
 		else
 			patchDB(__db.fix_horde);
@@ -65,7 +70,7 @@ local __db_event = __db.event;
 -->
 
 -->
-	local PreloadCoords = __ns.core.PreloadCoords;
+	local PreloadCoords = __core.PreloadCoords;
 	local function PreloadAllCoords()
 		local DB = { obj = __db_object, unit = __db_unit, };
 		for key, db in next, DB do
@@ -74,9 +79,9 @@ local __db_event = __db.event;
 			end
 		end
 	end
-	__ns.core.PreloadAllCoords = PreloadAllCoords;
+	__core.PreloadAllCoords = PreloadAllCoords;
 -->
 
 __ns.apply_patch = apply_patch;
 
---[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.patch'); end
+--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.patch'); end

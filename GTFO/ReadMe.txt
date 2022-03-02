@@ -1621,3 +1621,45 @@ Change Log:
 * Updated ToC for WoW Classic 1.13.7
 * Added support and updated ToC for WoW TBC 2.5.1
 * Added SL spells for Sanctum of Domination
+
+4.63.1
+* Updated for patch 9.1
+* Added Shadowlands spells (world)
+* Added SL spells for Sanctum of Domination
+* Added SL spells for Tazavesh, the Veiled Market
+
+4.63.2
+* Added Shadowlands spells (world)
+* Added SL spells for Sanctum of Domination
+
+4.63.3
+* Added Shadowlands spells (world)
+* Added SL spells for Sanctum of Domination
+
+4.63.4
+* Added Shadowlands spells (world)
+* Added SL spells for Sanctum of Domination
+* Added Burning Crusade spells for Hellfire Ramparts
+* Added Burning Crusade spells for Arcatraz
+
+4.63.5
+* Added SL spells for Tazavesh, the Veiled Market
+
+4.63.6
+* Fixed SL spells for Tazavesh, the Veiled Market
+* Added SL spells for Tazavesh, the Veiled Market
+
+4.63.7
+* Added Shadowlands spells (world)
+* Added SL spells for Torghast
+* Added SL spells for Sanctum of Domination
+
+4.64
+* Don't alert when the player is mind-controlled
+* Fixed SL spells for Sanctum of Domination
+* Added Shadowlands spells (world)
+* Added SL spells for Sanctum of Domination
+* Added SL spells for Torghast
+
+4.64.1
+* Added SL spells for Sanctum of Domination

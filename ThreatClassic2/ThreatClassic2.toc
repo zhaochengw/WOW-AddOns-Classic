@@ -1,11 +1,11 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: ThreatClassic2
 ## Notes: Simple threat meter for WoW Classic and TBCC.
 ## Author: Dennis-Florian Herr (dfherr)
 ## X-Curse-Project-ID: 355497
 ## X-WoWI-ID: 25966
 ## X-Wago-ID: pkNM1ONz
-## Version: 2.36
+## Version: 2.42
 ## SavedVariables: ThreatClassic2DB
 ## SavedVariablesPerCharacter: TC2_Options
 
@@ -18,3 +18,7 @@
 ## X-Website: https://github.com/dfherr/ThreatClassic2
 
 ThreatClassic2.xml
+
+## Title-zhCN: |cff880303[有爱]|r ThreatClassic2 仇恨监控插件v2
+## X-Vendor: NetEase
+## X-163UI-Version: 20220211134516

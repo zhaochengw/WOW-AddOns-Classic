@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: OmniCC Config
 ## Notes: OmniCC's configuration menu
 ## Notes-koKR: OmniCC의 설정 메뉴
@@ -11,3 +11,8 @@ preview.lua
 themes.lua
 rules.lua
 options.lua
+
+## Title-zhCN: |cff880303[有爱]|r OmniCC 配置界面
+## Notes-zhCN: 技能冷却计时-配置界面模块
+## X-Vendor: NetEase
+## X-163UI-Version: 20211231144448

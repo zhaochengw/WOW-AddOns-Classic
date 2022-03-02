@@ -1,8 +1,12 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: |cffEEE4AESpeedy AutoLoot|r
 ## Notes: |cff58C6FALoot at ludicrous speed!|r|n|n|cffFFC700Slash command: /sal, /speedyautoloot|r
 ## Author: Yuyuli
-## Version: 2.1.1
+## Version: 2.1.7
 ## SavedVariables: SpeedyAutoLootDB
 
 SpeedyAutoLoot.lua
+
+## Title-zhCN: |cff880303[有爱]|r SpeedyAutoLoot 快速拾取
+## X-Vendor: NetEase
+## X-163UI-Version: 20220211134516

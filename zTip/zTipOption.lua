@@ -8,7 +8,7 @@ L = addon.loc
 local _, i
 local _G = getfenv(0)
 
-local zTipOption = CreateFrame("Frame","zTipOption",UIParent,"BackdropTemplate")
+local zTipOption = CreateFrame("Frame","zTipOption",UIParent, BackdropTemplateMixin and "BackdropTemplate")
 zTipOption:Hide()
 tinsert(UISpecialFrames, "zTipOption")
 
@@ -127,8 +127,11 @@ function zTipOption:InitButtons()
 		{name="ShowTalent",type="CheckButton",var="ShowTalent",
 			point="LEFT",relative="ItemLevel",rpoint="RIGHT",x=ox,},
 
+		{name="ShowDungeons",type="CheckButton",var="ShowDungeons",
+			point="TOP",relative="ItemLevel",rpoint="BOTTOM",y=-10,},
+
 		{name="ManaBAR",type="CheckButton",var="ManaBAR",
-			point="TOP",relative="ItemLevel",rpoint="BOTTOM",y=-10,
+			point="TOP",relative="ShowDungeons",rpoint="BOTTOM",y=-10,
 			func = zTipOption.OnManaBARClicked},
 		{name="HealthBAR",type="CheckButton",var="HealthBAR",
 			point="TOP",relative="ManaBAR",rpoint="BOTTOM"},

@@ -482,7 +482,7 @@ local methods = {
           end
           editbox:Insert("[WeakAuras: "..fullName.." - "..data.id.."]");
           OptionsPrivate.Private.linked = OptionsPrivate.Private.linked or {}
-          OptionsPrivate.Private.linked[data.id] = true
+          OptionsPrivate.Private.linked[data.id] = GetTime()
         elseif not data.controlledChildren then
           -- select all buttons between 1st select and current
           OptionsPrivate.PickDisplayMultipleShift(data.id)
@@ -531,6 +531,10 @@ local methods = {
           childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
           childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
           childData.parent = data.id;
+          if (data.regionType == "dynamicgroup") then
+            childData.xOffset = 0
+            childData.yOffset = 0
+          end
           WeakAuras.Add(childData);
           WeakAuras.ClearAndUpdateOptions(childData.id)
         end
@@ -540,12 +544,12 @@ local methods = {
         childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
         childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
         self.grouping.parent = data.id;
+        if (data.regionType == "dynamicgroup") then
+          self.grouping.xOffset = 0
+          self.grouping.yOffset = 0
+        end
         WeakAuras.Add(self.grouping);
         WeakAuras.ClearAndUpdateOptions(self.grouping.id);
-      end
-      if (data.regionType == "dynamicgroup") then
-        self.grouping.xOffset = 0;
-        self.grouping.yOffset = 0;
       end
       WeakAuras.Add(data);
       WeakAuras.ClearAndUpdateOptions(data.id)
@@ -650,10 +654,6 @@ local methods = {
       local toDelete = {}
       if(data.controlledChildren) then
         local region = WeakAuras.regions[data.id];
-        if (region.Suspend) then
-          region:Suspend();
-        end
-
         for child in OptionsPrivate.Private.TraverseAllChildren(data) do
           tinsert(toDelete, child);
         end
@@ -808,9 +808,7 @@ local methods = {
 
     function self.callbacks.OnDragStart()
       if WeakAuras.IsImporting() then return end;
-      if #OptionsPrivate.tempGroup.controlledChildren == 0 then
-        WeakAuras.PickDisplay(data.id);
-      end
+      OptionsPrivate.PickDisplayMultiple(data.id)
       OptionsPrivate.StartDrag(data);
     end
 
@@ -871,7 +869,7 @@ local methods = {
     if (not data.controlledChildren) then
       local convertMenu = {};
       for regionType, regionData in pairs(WeakAuras.regionOptions) do
-        if(regionType ~= "group" and regionType ~= "dynamicgroup" and regionType ~= "timer" and regionType ~= data.regionType) then
+        if(regionType ~= "group" and regionType ~= "dynamicgroup" and regionType ~= data.regionType) then
           tinsert(convertMenu, {
             text = regionData.displayName,
             notCheckable = true,
@@ -1021,10 +1019,6 @@ local methods = {
     end
     if(OptionsPrivate.Private.CanHaveClones(data)) then
       tinsert(namestable, {" ", "|cFF00FF00"..L["Auto-cloning enabled"]})
-    end
-    if(OptionsPrivate.Private.IsDefinedByAddon(data.id)) then
-      tinsert(namestable, " ");
-      tinsert(namestable, {" ", "|cFF00FFFF"..L["Addon"]..": "..OptionsPrivate.Private.IsDefinedByAddon(data.id)});
     end
 
     local hasDescription = data.desc and data.desc ~= "";
@@ -1461,12 +1455,11 @@ local methods = {
       self:PriorityHide(1);
     end
   end,
-  ["PriorityShow"] = function(self, priority)
+  ["SyncVisibility"] = function(self)
     if (not WeakAuras.IsOptionsOpen()) then
       return;
     end
-    if(priority >= self.view.visibility and self.view.visibility ~= priority) then
-      self.view.visibility = priority;
+    if self.view.visibility >= 1 then
       if(self.view.region and self.view.region.Expand) then
         OptionsPrivate.Private.FakeStatesFor(self.view.region.id, true)
         if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
@@ -1476,6 +1469,25 @@ local methods = {
           OptionsPrivate.Private.mouseFrame:expand(self.view.region.id);
         end
       end
+    else
+      if(self.view.region and self.view.region.Collapse) then
+        OptionsPrivate.Private.FakeStatesFor(self.view.region.id, false)
+        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
+          OptionsPrivate.Private.personalRessourceDisplayFrame:collapse(self.view.region.id);
+        end
+        if (OptionsPrivate.Private.mouseFrame) then
+          OptionsPrivate.Private.mouseFrame:collapse(self.view.region.id);
+        end
+      end
+    end
+  end,
+  ["PriorityShow"] = function(self, priority)
+    if (not WeakAuras.IsOptionsOpen()) then
+      return;
+    end
+    if(priority >= self.view.visibility and self.view.visibility ~= priority) then
+      self.view.visibility = priority;
+      self:SyncVisibility()
       self:UpdateViewTexture()
     end
     if self.view.region and self.view.region.ClickToPick then
@@ -1488,15 +1500,7 @@ local methods = {
     end
     if(priority >= self.view.visibility and self.view.visibility ~= 0) then
       self.view.visibility = 0;
-      if(self.view.region and self.view.region.Collapse) then
-        OptionsPrivate.Private.FakeStatesFor(self.view.region.id, false)
-        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
-          OptionsPrivate.Private.personalRessourceDisplayFrame:collapse(self.view.region.id);
-        end
-        if (OptionsPrivate.Private.mouseFrame) then
-          OptionsPrivate.Private.mouseFrame:collapse(self.view.region.id);
-        end
-      end
+      self:SyncVisibility()
       self:UpdateViewTexture()
     end
   end,
@@ -1698,7 +1702,7 @@ local function Constructor()
   view:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 0);
   local viewTexture = view:CreateTexture()
   view.texture = viewTexture;
-  viewTexture:SetTexture("Interface\\LFGFrame\\BattlenetWorking1.blp");
+  viewTexture:SetTexture("Interface\\LFGFrame\\BattlenetWorking4.blp");
   viewTexture:SetTexCoord(0.1, 0.9, 0.1, 0.9);
   viewTexture:SetAllPoints(view);
   view:SetNormalTexture(viewTexture);

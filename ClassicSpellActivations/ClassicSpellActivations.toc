@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: ClassicSpellActivations
 ## Notes: Shows you the shiny
 ## Author: d87
@@ -8,3 +8,7 @@
 ## X-Curse-Project-ID: 323802
 
 ClassicSpellActivations.lua
+
+## Title-zhCN: |cff880303[有爱]|r ClassicSpellActivations 职业技能高亮
+## X-Vendor: NetEase
+## X-163UI-Version: 20220224141126

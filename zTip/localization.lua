@@ -129,6 +129,10 @@ else
 	}
 end
 
+if DUNGEON_SCORE then
+	L["ShowDungeons"] = DUNGEON_SCORE
+end
+
 local Imp = {"ManaBAR","MiniNum","ShowBarNum"}
 local id,value;
 for id,value in pairs(Imp) do

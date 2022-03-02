@@ -5,18 +5,25 @@
 ----------------------------------------------------------------------------------------------------
 local __addon, __ns = ...;
 
-if __ns.__dev then
-	setfenv(1, __ns.__fenv);
-end
 local _G = _G;
 local _ = nil;
 ----------------------------------------------------------------------------------------------------
---[=[dev]=]	if __ns.__dev then __ns._F_devDebugProfileStart('module.setting'); end
+--[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart('module.setting'); end
 
 -->		variables
+	local setmetatable = setmetatable;
+	local type = type;
+	local select = select;
 	local next = next;
+	local tinsert = table.insert;
+	local strlower, strfind, gsub = string.lower, string.find, string.gsub;
+	local min, max = math.min, math.max;
 	local tonumber = tonumber;
+	local CreateFrame = CreateFrame;
 	local GameTooltip = GameTooltip;
+	local UIParent = UIParent;
+	local UISpecialFrames = UISpecialFrames;
+	local SlashCmdList = SlashCmdList;
 
 	local __db = __ns.db;
 	local __db_quest = __db.quest;
@@ -24,18 +31,24 @@ local _ = nil;
 	local __loc_quest = __loc.quest;
 	local __UILOC = __ns.UILOC;
 
-	local _F_SafeCall = __ns.core._F_SafeCall;
-	local __eventHandler = __ns.core.__eventHandler;
-	local IMG_LIST = __ns.core.IMG_LIST;
-	local GetQuestStartTexture = __ns.core.GetQuestStartTexture;
+	local __core = __ns.core;
+	local _F_SafeCall = __core._F_SafeCall;
+	local __eventHandler = __core.__eventHandler;
+	local IMG_LIST = __core.IMG_LIST;
+	local GetQuestStartTexture = __core.GetQuestStartTexture;
 
 	local _log_ = __ns._log_;
 
-	local IMG_CLOSE = __ns.core.IMG_PATH .. "close";
+	local IMG_CLOSE = __core.IMG_PATH .. "close";
+	local _font, _fontsize = SystemFont_Shadow_Med1:GetFont(), min(select(2, SystemFont_Shadow_Med1:GetFont()) + 1, 15);
 
 	local SET = nil;
+-->
+if __ns.__is_dev then
+	__ns:BuildEnv("setting");
+end
 -->		MAIN
-	local SettingUI = CreateFrame("FRAME", "CODEX_LITE_SETTING_UI", UIParent, BackdropTemplateMixin ~= nil and "BackdropTemplate" or nil);
+	local SettingUI = CreateFrame('FRAME', "CODEX_LITE_SETTING_UI", UIParent);
 	__ns.__ui_setting = SettingUI;
 	local tab_entries = { };
 	local set_entries = { };
@@ -112,6 +125,18 @@ local _ = nil;
 					'tab.general',
 				},
 			--	tab.map
+				show_in_continent = {
+					'boolean',
+					function(val)
+						SET['show_in_continent'] = val;
+						__ns.SetShowPinInContinent();
+						RefreshSettingWidget('show_in_continent');
+						return true;
+					end,
+					nil,
+					boolean_func,
+					'tab.map',
+				},
 				show_quest_starter = {
 					'boolean',
 					function(val)
@@ -236,7 +261,7 @@ local _ = nil;
 							return true;
 						end
 					end,
-					{ -__ns.__maxLevel, 0, 1, },
+					{ -__ns.__maxLevel - 10, 0, 1, },
 					round_func_table[0],
 					'tab.map',
 				},
@@ -251,7 +276,7 @@ local _ = nil;
 							return true;
 						end
 					end,
-					{ 0, __ns.__maxLevel, 1, },
+					{ 0, __ns.__maxLevel + 10, 1, },
 					round_func_table[0],
 					'tab.map',
 				},
@@ -385,6 +410,7 @@ local _ = nil;
 			show_buttons_in_log = true,
 			show_id_in_tooltip = true,
 		--	map
+			show_in_continent = false,
 			show_quest_starter = true,
 			show_quest_ender = true,
 			min_rate = 1.0,
@@ -405,6 +431,8 @@ local _ = nil;
 			quest_auto_inverse_modifier = "SHIFT",
 			objective_tooltip_info = true,
 		--	misc
+			show_minimappin = true,
+			show_worldmappin = true,
 	};
 	local setting_keys = {
 		--	general
@@ -412,6 +440,7 @@ local _ = nil;
 			"show_buttons_in_log",
 			"show_id_in_tooltip",
 		--	map
+			"show_in_continent",
 			"show_quest_starter",
 			"show_quest_ender",
 			-- "min_rate",
@@ -520,16 +549,16 @@ local _ = nil;
 				local head = Panel:CreateTexture(nil, "ARTWORK");
 				head:SetSize(24, 24);
 				local label = Panel:CreateFontString(nil, "ARTWORK");
-				label:SetFont(SystemFont_Shadow_Med1:GetFont(), min(select(2, SystemFont_Shadow_Med1:GetFont()) + 1, 15), "NORMAL");
+				label:SetFont(_font, _fontsize, "NORMAL");
 				label:SetText(gsub(__UILOC[key], "%%[a-z]", ""));
 				label:SetPoint("LEFT", head, "RIGHT", 2, 0);
-				local slider = CreateFrame("SLIDER", nil, Panel, "OptionsSliderTemplate");
+				local slider = CreateFrame('SLIDER', nil, Panel, "OptionsSliderTemplate");
 				slider:SetWidth(240);
 				slider:SetHeight(15);
 				slider:SetMinMaxValues(bound[1], bound[2])
 				slider:SetValueStep(bound[3]);
 				slider:SetObeyStepOnDrag(true);
-				slider:SetPoint("TOPLEFT", head, "TOPLEFT", 10, -LineHeight - 2);
+				slider:SetPoint("LEFT", head, "CENTER", 10, -LineHeight - 2);
 				slider.Text:ClearAllPoints();
 				slider.Text:SetPoint("TOP", slider, "BOTTOM", 0, 3);
 				slider.Low:ClearAllPoints();
@@ -580,7 +609,7 @@ local _ = nil;
 					self:SetChecked(val);
 				end
 				local label = Panel:CreateFontString(nil, "ARTWORK");
-				label:SetFont(SystemFont_Shadow_Med1:GetFont(), min(select(2, SystemFont_Shadow_Med1:GetFont()) + 1, 15), "NORMAL");
+				label:SetFont(_font, _fontsize, "NORMAL");
 				label:SetText(gsub(__UILOC[key], "%%[a-z]", ""));
 				label:SetPoint("LEFT", check, "RIGHT", 2, 0);
 				set_entries[key] = check;
@@ -590,7 +619,7 @@ local _ = nil;
 				local head = Panel:CreateTexture(nil, "ARTWORK");
 				head:SetSize(24, 24);
 				local label = Panel:CreateFontString(nil, "ARTWORK");
-				label:SetFont(SystemFont_Shadow_Med1:GetFont(), min(select(2, SystemFont_Shadow_Med1:GetFont()) + 1, 15), "NORMAL");
+				label:SetFont(_font, _fontsize, "NORMAL");
 				label:SetText(gsub(__UILOC[key], "%%[a-z]", ""));
 				label:SetPoint("LEFT", head, "RIGHT", 2, 0);
 				local list = {  };
@@ -598,7 +627,7 @@ local _ = nil;
 				for index, val in next, vals do
 					local check = CreateFrame('CHECKBUTTON', nil, Panel, "OptionsBaseCheckButtonTemplate");
 					check:SetSize(24, 24);
-					check:SetPoint("TOPLEFT", head, "TOPLEFT", 36 + (index - 1) * 80, -LineHeight * 1.5);
+					check:SetPoint("LEFT", head, "CENTER", 18 + (index - 1) * 80, -LineHeight * 1.5);
 					check:SetHitRectInsets(0, 0, 0, 0);
 					check:Show();
 					check.func = meta[2];
@@ -609,7 +638,7 @@ local _ = nil;
 					check.val = val;
 					list[index] = check;
 					local text = Panel:CreateFontString(nil, "ARTWORK");
-					text:SetFont(SystemFont_Shadow_Med1:GetFont(), min(select(2, SystemFont_Shadow_Med1:GetFont()) + 1, 15), "NORMAL");
+					text:SetFont(_font, _fontsize, "NORMAL");
 					text:SetText(val);
 					text:SetPoint("LEFT", check, "RIGHT", 2, 0);
 					check.text = text;
@@ -673,16 +702,6 @@ local _ = nil;
 			SettingUI:SetSize(320, 360);
 			SettingUI:SetFrameStrata("DIALOG");
 			SettingUI:SetPoint("CENTER");
-			SettingUI:SetBackdrop({
-				bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
-				edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-				tile = false,
-				tileSize = 16,
-				edgeSize = 1,
-				insets = { left = 0, right = 0, top = 0, bottom = 0, }
-			});
-			SettingUI:SetBackdropColor(0.15, 0.15, 0.15, 0.9);
-			SettingUI:SetBackdropBorderColor(0.0, 0.0, 0.0, 1.0);
 			SettingUI:EnableMouse(true);
 			SettingUI:SetMovable(true);
 			SettingUI:RegisterForDrag("LeftButton");
@@ -694,11 +713,16 @@ local _ = nil;
 			end);
 			SettingUI:Hide();
 			--
+			local BG = SettingUI:CreateTexture(nil, "BACKGROUND");
+			BG:SetAllPoints();
+			BG:SetColorTexture(0.0, 0.0, 0.0, 0.9);
+			SettingUI.BG = BG;
+			--
 			local Title = SettingUI:CreateFontString(nil, "ARTWORK", "GameFontNormal");
 			Title:SetPoint("CENTER", SettingUI, "TOP", 0, -16);
 			Title:SetText(__UILOC.TAG_SETTING or __addon);
 			--
-			local close = CreateFrame("BUTTON", nil, SettingUI);
+			local close = CreateFrame('BUTTON', nil, SettingUI);
 			close:SetSize(16, 16);
 			close:SetNormalTexture(IMG_CLOSE);
 			-- close:GetNormalTexture():SetTexCoord(4 / 32, 28 / 32, 4 / 32, 28 / 32);
@@ -734,7 +758,7 @@ local _ = nil;
 		end
 	-->
 	function __ns.setting_setup()
-		local GUID = UnitGUID('player');
+		local GUID = __core._PLAYER_GUID;
 		local SV = _G.CodexLiteSV;
 		if SV == nil or SV.__version == nil or SV.__version < 20210529.0 then
 			SV = {
@@ -776,6 +800,9 @@ local _ = nil;
 			SV.quest_temporarily_blocked[GUID] = SV.quest_temporarily_blocked[GUID] or {  };
 			SV.quest_permanently_blocked[GUID] = SV.quest_permanently_blocked[GUID] or {  };
 			SV.quest_permanently_bl_list[GUID] = SV.quest_permanently_bl_list[GUID] or {  };
+		end
+		if SV.__overridedev == false then
+			__ns.__is_dev = false;
 		end
 		SET.quest_lvl_green = -1;
 		SET.quest_lvl_yellow = -1;
@@ -820,4 +847,4 @@ local _ = nil;
 -->
 
 
---[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.setting'); end
+--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.setting'); end

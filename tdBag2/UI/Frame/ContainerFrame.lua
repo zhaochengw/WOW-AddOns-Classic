@@ -16,7 +16,7 @@ local SimpleFrame = ns.UI.SimpleFrame
 
 local LibWindow = LibStub('LibWindow-1.1')
 
----@type tdBag2ContainerFrame
+---@class UI.ContainerFrame: UI.SimpleFrame, tdBag2FrameTemplate
 local ContainerFrame = Addon:NewClass('UI.ContainerFrame', SimpleFrame)
 ContainerFrame.TEMPLATE = 'tdBag2FrameTemplate'
 

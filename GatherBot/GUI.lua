@@ -105,9 +105,9 @@ function SetWindow:Initialize()
         t:SetPoint("LEFT", c, "RIGHT", 5, 0)
         c:SetScript("OnShow", function(self)
             self:SetChecked(Config.MountSwitch)
-            if Config.MountSwitch and not (IsMounted() or Addon.IsInTravelMode) and not Addon.Frame:IsShow() then
+            if Config.MountSwitch and not (IsMounted() or Addon.IsInTravelMode) and not Addon.Frame:IsShown() then
                 Addon.Frame:Show()
-            elseif not Config.MountSwitch and (IsMounted() or Addon.IsInTravelMode) and Addon.Frame:IsShow() then
+            elseif not Config.MountSwitch and (IsMounted() or Addon.IsInTravelMode) and Addon.Frame:IsShown() then
                 Addon.Frame:Hide()
             end
         end)

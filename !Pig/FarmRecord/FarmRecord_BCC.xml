@@ -1,0 +1,4 @@
+<Ui>
+	<Script file="FarmRecord.lua" />
+	<Script file="Rsetting.lua" />
+</Ui>

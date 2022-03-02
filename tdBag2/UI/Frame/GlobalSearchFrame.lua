@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 2/9/2020, 1:14:38 AM
-
+--
 local setmetatable = setmetatable
 
 ---@type ns
@@ -10,7 +10,7 @@ local ns = select(2, ...)
 
 local Frame = ns.UI.Frame
 
----@type tdBag2GlobalSearchFrame
+---@class GlobalSearchFrame: UI.Frame
 local GlobalSearchFrame = ns.Addon:NewClass('UI.GlobalSearchFrame', Frame)
 
 function GlobalSearchFrame:Constructor()

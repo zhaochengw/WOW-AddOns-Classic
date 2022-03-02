@@ -37,7 +37,7 @@ local COD_CONTAINER = 'cod'
 
 local GLOBAL_SEARCH_OWNER = '$search'
 
----@type ns
+---@class ns
 local ns = select(2, ...)
 
 ns.VERSION = tonumber((GetAddOnMetadata('tdBag2', 'Version'):gsub('(%d+)%.?', function(x)
@@ -123,7 +123,7 @@ ns.RACE_ICON_TCOORDS = {
 ns.TOKENS = {20560, 20559, 20558}
 
 --[=[@debug@
----@type L
+
 local L = LibStub('AceLocale-3.0'):GetLocale('tdBag2')
 --@end-debug@]=]
 --@non-debug@
@@ -137,6 +137,9 @@ local BAG_ID = { --
     MAIL = 'mail',
     EQUIP = 'equip',
     SEARCH = 'global-search',
+    -- @bcc@
+    GUILDBANK = 'guild',
+    -- @end-bcc@
 }
 
 local BAG_ICONS = { --
@@ -161,6 +164,9 @@ local BAGS = { --
     [BAG_ID.MAIL] = {MAIL_CONTAINER, COD_CONTAINER},
     [BAG_ID.EQUIP] = {EQUIP_CONTAINER},
     [BAG_ID.SEARCH] = {},
+    -- @bcc@
+    [BAG_ID.GUILDBANK] = {},
+    -- @end-bcc@
 }
 
 local BAG_CLASSES = {
@@ -197,6 +203,12 @@ do
             BAG_SETS[bag] = bagId
         end
     end
+
+    -- @bcc@
+    for i = 1, MAX_GUILDBANK_TABS do
+        tinsert(BAGS[BAG_ID.GUILDBANK], 50 + i)
+    end
+    -- @end-bcc@
 end
 
 ns.BAG_ID = BAG_ID
@@ -364,6 +376,7 @@ ns.PROFILE = {
         iconQuestStarter = true,
         textOffline = true,
         tipCount = true,
+        tipCountGuild = true,
         remainLimit = 0,
 
         colorSlots = true,
@@ -410,6 +423,18 @@ familyColor(512, 'colorGems', L['Gems Color'], {r = 0.32, g = 0.61, b = 1})
 familyColor(512, 'colorMine', L['Mining Color'], {r = 0.96, g = 0.27, b = 0.90})
 familyColor(256, 'colorKeyring', L['Keyring Color'], {r = 1, g = 0.67, b = 0.95})
 --@end-non-classic@
+
+function ns.memorize(func)
+    local cache = {}
+    return function(arg1, ...)
+        local value = cache[arg1]
+        if value == nil then
+            value = func(arg1, ...)
+            cache[arg1] = value
+        end
+        return value
+    end
+end
 
 function ns.GetBags(bagId)
     return BAGS[bagId]
@@ -479,8 +504,8 @@ function ns.AnchorTooltip(frame)
     end
 end
 
-function ns.AnchorTooltip2(frame, anchor, x, y)
-    GameTooltip:SetOwner(frame, 'ANCHOR_NONE')
+function ns.AnchorTooltip2(frame, anchor, x, y, owner)
+    GameTooltip:SetOwner(owner or frame, 'ANCHOR_NONE')
     if frame:GetTop() > (GetScreenHeight() / 2) then
         GameTooltip:SetPoint('TOP' .. anchor, frame, 'BOTTOM' .. anchor, x, y)
     else
@@ -491,6 +516,22 @@ end
 function ns.GetOwnerAddress(owner)
     return ns.REALM, owner or ns.PLAYER, owner == GLOBAL_SEARCH_OWNER
 end
+
+function ns.GetCurrentGuildOwner()
+    local name, _, _, realm = GetGuildInfo('player')
+    if not name then
+        return
+    end
+    if not realm then
+        realm = GetRealmName()
+    end
+    return format('@%s-%s', name, realm)
+end
+
+function ns.IsGuildOwner(key)
+    return key and key:find('^@')
+end
+ns.IsGuildOwner = ns.memorize(ns.IsGuildOwner)
 
 function ns.GetCharacterProfileKey(name, realm)
     if name:find('-') then
@@ -586,18 +627,6 @@ function ns.safeipairs(t)
         return ipairs(t)
     else
         return nop
-    end
-end
-
-function ns.memorize(func)
-    local cache = {}
-    return function(arg1, ...)
-        local value = cache[arg1]
-        if value == nil then
-            value = func(arg1, ...)
-            cache[arg1] = value
-        end
-        return value
     end
 end
 

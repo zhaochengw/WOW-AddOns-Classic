@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/20/2019, 3:32:48 AM
-
+--
 ---- LUA
 local ipairs = ipairs
 local select = select
@@ -13,14 +13,14 @@ local CreateFrame = CreateFrame
 ---@type ns
 local ns = select(2, ...)
 
----@type tdBag2BagFrame
+---@class UI.BagFrame: EventsMixin, Object, Frame
 local BagFrame = ns.Addon:NewClass('UI.BagFrame', 'Frame')
 BagFrame.SPACING = 3
 BagFrame.BAG_TEMPLATE = 'tdBag2BagTemplate'
 BagFrame.KEYRING_TEMPLATE = 'tdBag2KeyringTemplate'
 
----@param meta tdBag2FrameMeta
 function BagFrame:Constructor(_, meta)
+    ---@type FrameMeta
     self.meta = meta
     self:SetScript('OnShow', self.OnShow)
 end

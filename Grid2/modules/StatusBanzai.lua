@@ -5,10 +5,12 @@ local BanzaiThreat
 
 local Grid2 = Grid2
 local next = next
+local type = type
 local GetTime = GetTime
 local UnitName = UnitName
 local UnitGUID = UnitGUID
 local UnitExists = UnitExists
+local GetSpellInfo = GetSpellInfo
 local UnitCanAttack = UnitCanAttack
 local roster_units = Grid2.roster_units
 
@@ -73,19 +75,29 @@ local function TimerEvent()
 	wipe(tguids)
 end
 
+local function TimerEnable()
+	timer = timer or Grid2:CreateTimer( TimerEvent, BanzaiThreat.dbx.updateRate or 0.2 )
+end
+
+local function TimerDisable()
+	timer = Grid2:CancelTimer(timer)
+end
+
 local function CombatEnterEvent()
 	if Banzai and Banzai.enabled then
 		RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Banzai.CombatLogEvent)
 	end
-	timer = timer or Grid2:CreateTimer( TimerEvent, BanzaiThreat.dbx.updateRate or 0.2 )
+	TimerEnable()
 end
 
 local function CombatExitEvent()
-	if Banzai and Banzai.enabled then UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED") end
-	timer = Grid2:CancelTimer(timer)
+	if Banzai and Banzai.enabled then
+		UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	end
 	for status in next,statuses do
 		status:ClearIndicators()
 	end
+	TimerDisable()
 end
 
 local function PlateAddedEvent(unit)
@@ -100,10 +112,17 @@ end
 
 local function status_OnEnable(self)
 	if not next(statuses) then
-		RegisterEvent("PLAYER_REGEN_ENABLED" , CombatExitEvent)
-		RegisterEvent("PLAYER_REGEN_DISABLED", CombatEnterEvent)
 		RegisterEvent("NAME_PLATE_UNIT_ADDED", PlateAddedEvent)
 		RegisterEvent("NAME_PLATE_UNIT_REMOVED", PlateRemovedEvent)
+		if Grid2.isClassic and BanzaiThreat.dbx.alwaysActive then
+			TimerEnable()
+		else
+			RegisterEvent("PLAYER_REGEN_ENABLED" , CombatExitEvent)
+			RegisterEvent("PLAYER_REGEN_DISABLED", CombatEnterEvent)
+		end
+	end
+	if self.UpdateDB then
+		self:UpdateDB()
 	end
 	statuses[self] = true
 end
@@ -111,10 +130,14 @@ end
 local function status_OnDisable(self)
 	statuses[self] = nil
 	if not next(statuses) then
-		UnregisterEvent("PLAYER_REGEN_ENABLED")
-		UnregisterEvent("PLAYER_REGEN_DISABLED")
 		UnregisterEvent("NAME_PLATE_UNIT_ADDED")
 		UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
+		if Grid2.isClassic and BanzaiThreat.dbx.alwaysActive then
+			TimerDisable()
+		else
+			UnregisterEvent("PLAYER_REGEN_ENABLED")
+			UnregisterEvent("PLAYER_REGEN_DISABLED")
+		end
 	end
 end
 
@@ -209,11 +232,12 @@ function Banzai:Update()
 			self:UpdateIndicators(unit)
 		end
 	end
+	local spells = self.spells
 	for g,func in next, bsrc do	-- Search new banzais
 		local unit = tguids[g]
 		if unit then
 			local name,_,ico,_,et,_,_,spellId2,spellId1 = func(sguids[g], g) -- Casting spellId1=9th, Channeling spellId2=8th
-			if name then
+			if name and (spells==nil or spells[name]) then
 				et         = et and et/1000 or ct+0.25
 				bgid[g]    = unit
 				bfun[g]    = func
@@ -275,13 +299,29 @@ function Banzai:GetIcon(unit)
 	return bico[unit]
 end
 
+function Banzai:GetText(unit)
+	local spell = bspl[unit]
+	return type(spell)=='number' and GetSpellInfo(spell) or spell
+end
+
+function Banzai:UpdateDB()
+	local spells
+	if self.dbx.spells then
+		spells = {}
+		for _,name in ipairs(self.dbx.spells) do
+			spells[name] = true
+		end
+	end
+	self.spells = spells
+end
+
 Banzai.SetUpdateRate = status_SetUpdateRate
 Banzai.GetColor      = Grid2.statusLibrary.GetColor
 Banzai.OnDisable     = status_OnDisable
 Banzai.OnEnable      = status_OnEnable
 
 Grid2.setupFunc["banzai"] = function(baseKey, dbx)
-	Grid2:RegisterStatus(Banzai, {"color", "percent", "icon", "tooltip" }, baseKey, dbx)
+	Grid2:RegisterStatus(Banzai, {"color", "text", "percent", "icon", "tooltip" }, baseKey, dbx)
 	return Banzai
 end
 

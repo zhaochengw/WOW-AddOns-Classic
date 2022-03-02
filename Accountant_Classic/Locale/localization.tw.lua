@@ -46,8 +46,8 @@ L["Incomings"] = "收入"
 L["LDB Display Settings"] = "LDB 顯示設定"
 L["LDB Display Type"] = "LDB 顯示類型"
 L[ [=[Left-click and drag to move this button.
-Right-Click to open Accountant Classic.]=] ] = [=[左鍵並拖曳以移動圖示按鈕位置
-右鍵開啟個人會計]=]
+Right-Click to open Accountant Classic.]=] ] = [=[左鍵: 拖曳移動按鈕
+右鍵: 開啟個人會計]=]
 L[ [=[Left-Click to open Accountant Classic.
 Right-Click for Accountant Classic options.
 Left-click and drag to move this button.]=] ] = [=[左鍵開啟個人會計

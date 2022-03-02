@@ -1,0 +1,17 @@
+## Interface: 20503
+## Author: pjp (Pixel-Draka (US) / Moxie-WoW Class Beta PvP)
+## Version: 0.99
+## Title: MageButtons
+## Notes: Combines mutliple ranks/types of spells into a single button
+## SavedVariablesPerCharacter: MageButtonsDB
+## OptionalDeps: 
+## DefaultState: enabled
+embeds.xml
+MageButtons.lua
+config.lua
+## X-Vendor: NetEase
+## X-163UI-Version: 20210901171348
+
+## Title-zhCN: |cff880303[有爱]|r MageButtons 法师按钮
+## X-Vendor: NetEase
+## X-163UI-Version: 20210901171348

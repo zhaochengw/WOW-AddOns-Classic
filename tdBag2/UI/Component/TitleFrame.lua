@@ -13,7 +13,7 @@ local ns = select(2, ...)
 local L = ns.L
 local Cache = ns.Cache
 
----@type tdBag2TitleFrame
+---@class UI.TitleFrame: EventsMixin, Object, Button
 local TitleFrame = ns.Addon:NewClass('UI.TitleFrame', 'Button')
 
 function TitleFrame:Constructor(_, meta)

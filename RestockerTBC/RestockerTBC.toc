@@ -1,0 +1,40 @@
+#
+# Do not edit - this file is generated from TOC_TEMPLATE.TOC
+#
+## Interface: 20503
+## Title: Restocker TBC
+## Author: kvakvs; original author RainForDays
+## Notes: Restock items automatically
+## Version: 2021.10.1-57695f1a
+## DefaultState: enabled
+## SavedVariablesPerCharacter: Restocker
+
+locale.lua
+
+Classes\RestockerClass.lua
+Classes\Item.lua
+Classes\BuyItem.lua
+Classes\RestockerConf.lua
+Classes\Recipe.lua
+
+Src\BuyIngredients.lua
+Src\Events.lua
+
+Frames\MainFrame.lua
+Frames\ListFrame.lua
+Frames\OptionsPanel.lua
+
+Helpers\Bank.lua
+Helpers\Cache.lua
+Helpers\Inspect.lua
+Helpers\Merchant.lua
+
+Src\Restocker.lua
+
+#
+# Do not edit - this file is generated from TOC_TEMPLATE.TOC
+#
+
+## Title-zhCN: |cff880303[有爱]|r RestockerTBC 自动购买物品
+## X-Vendor: NetEase
+## X-163UI-Version: 20211014140755

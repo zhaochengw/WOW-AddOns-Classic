@@ -1,4 +1,4 @@
-﻿## Interface: 20501
+## Interface: 20503
 ## Title: ClearFont
 ## Notes: Modify Game Fonts and Size, Color, Shadow Of Them.
 ## Title-zhCN: |CFF7FFF7F界面|R 游戏字体

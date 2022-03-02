@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 20503
 ## LoadOnDemand: 1
 ## Title: Lib: LibCandyBar-3.0
 ## Notes: Timer bars with that extra sweetness.

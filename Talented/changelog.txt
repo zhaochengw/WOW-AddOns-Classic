@@ -1,0 +1,97 @@
+v210718
+    - Add korean localisation (thank you Jinny2305 on Curseforge)
+    - Add ability to link talents if viewing current talents (does not work from templates!)
+    
+v210618b
+    - Fix localisation of export URL for wowhead
+    
+v210618
+    - Don't confirm learning of each talent when applying a template
+    - Fix export URL for wowhead
+    - Fix a mis-labelled hunter talent
+    Known issues:
+        - Cannot link talents by shift-clicking
+        - Talented UI does not appear when inspecting other players
+    
+v210518
+    - Fix other cases where frame tries to open or close (e.g. resetting talents in combat!)
+    - Fix a bug where template menu would not open if any class has no templates saved.
+    
+v210517
+    - Fix inability to open/close frame in combat
+    
+v210509
+    - Updated talents to TBC.
+    - Note, old Vanilla templates will not be deleted. Wipe your settings or delete them manually.
+    
+v201014
+    - Add (actually reinstate) option to load Talented_Data if it is out of date
+    - Prevent crash when the target template is invalid and cannot be shown
+    - Warn user when data cannot be loaded; tell them to updated Talented_Data or allow it to load when out of date (see new option!)
+    - Update expected build to 24th Sep 2020
+    
+v200804
+    - Reinstate option to not always allow editing of current talents (thanks @praxxis)
+    - Set esMX to take esES localisation -- I hope there're no differences in the text (thanks @anon1231823)
+    - Version update
+    
+v191215
+    - Version update
+    
+v191206
+    - Minor update to korean localisation - thanks to @chkmyid
+    - Templates from other classes may now share a name.
+    WARNING: The above change requires migration of old data to the new format. If something goes wrong, some templates may be erased. To be sure/safe, back up your Talented.lua file in the WTF folder.
+    
+v191112
+    - Another month, another fix to WoWHead importing: can now once again deal with trailing "/"s in the URL
+    - Minor fix to German localisation (@deathcore01)
+    
+v191026
+    - Found yet another exception for WoWHead importing, now fixed
+    
+v191014
+    - Upgrade Talented_Data to Ace3 (because why not, apparently) - thanks to @deathcore01
+    - Add German localisation to talent tooltips - thanks to @deathcore01
+    - Update to korean localisation - thanks to @chkmyid
+    - Update to russian localisation
+ 
+v191011
+    - Potential stop to LibGratuity interacting with other addons, by disabling AceAddon 2 support. But maybe it doesn't work - we'll see!
+    - Minor update to localisation, so that errors don't fire in other clients when Talented_Data is missing (though sometimes English text is shown)
+ 
+v191010
+    - Add Taiwanese (i.e. traditional Chinese script) localisation to tooltips, with thanks to @Class2u
+    - Add Chinese (i.e. simplified Chinese script) localisation to tooltips, with thanks to @rainyr
+ 
+v191007
+    - Untested fix to learning talents when "Confirm learn" is on (why did no-one mention this bug before?)
+    
+v191004
+    - Fix Wowhead importing again (now accepts URLs with a talent input order in)
+    - Fix "apply" button; now uses old algorithm of applying a talent point after CHARACTER_POINTS_CHANGED fires, as apparently the vanilla API doesn't return quick enough
+    - Add notes about localisation for those languages that are missing it
+    - Remove code and references to inspecting characters
+    - Fix validation checks - no longer can one remove the entire top row of talents because they're bad (hi Disc Priests)
+    - Fix name of Arcane Power in korean localisation
+    
+v190928
+    - Fix Wowhead importing
+    - Add Russian localisation to tooltips (thanks to @tierggg)
+ 
+v190927
+    - Fixed reaction to resetting talents (thanks to @deathcore01)
+    - Made Talented_Data depend on Talented
+ 
+v190926
+    - Fixed/added the ability to show a target template when choosing talents
+    - Add korean localisation to tooltips (with thanks to @chkmyid)
+    
+v190924
+    - Removed references to "Glyph" in code (and options menu!)
+    - Removed mmochamp.lua and spellData.lua from Talented.toc
+    - Fixed tooltips to show ranks>1
+    - Fixed detection of when Talented_Data is disabled
+    - Removed debug printing from Wowhead export
+    - Fixed display of talent prerequisites
+    - Prevent blocking of talent reset -- this issue is not yet fixed, as Talented will not respond to reset talents without a reload

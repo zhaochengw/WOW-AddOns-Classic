@@ -24,7 +24,8 @@ local TRADE_BAG_ORDER = ns.TRADE_BAG_ORDER
 
 local KEYRING_CONTAINER = KEYRING_CONTAINER
 
----@type tdBag2Container
+---@class UI.Container: EventsMixin, Object, Frame
+---@field ContentParent Frame
 local Container = ns.Addon:NewClass('UI.Container', 'Frame')
 
 Container.GetRealWidth = Container.GetWidth
@@ -390,3 +391,9 @@ end
 function Container:NumSlots(bag)
     return Cache:GetBagInfo(self.meta.owner, bag).count or 0
 end
+
+--[[@debug@
+function Container:Threshold()
+    error('Not implement')
+end
+--@end-debug@]]

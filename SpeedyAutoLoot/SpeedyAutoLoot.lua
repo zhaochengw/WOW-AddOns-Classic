@@ -250,7 +250,7 @@ function AutoLoot:OnInit()
     self:RegisterEvent("LOOT_CLOSED", self.OnLootClosed);
     self:RegisterEvent("UI_ERROR_MESSAGE", self.OnErrorMessage);
 
-    if self.isClassic then
+    if internal.isClassic then
         self:RegisterEvent("LOOT_BIND_CONFIRM", self.OnBindConfirm);
     end
 

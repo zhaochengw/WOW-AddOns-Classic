@@ -176,9 +176,7 @@ L:SetOptionLocalization{
 	TimerStrider		= "Mostrar temporizador para el siguiente Zancudo Colmillo Torcido",
 	TimerNaga			= "Mostrar temporizador para el siguiente Élite Colmillo Torcido",
 	SpecWarnElemental	= "Mostrar aviso previo especial para cuando aparezca un Elemental corrupto",
-	RangeFrame			= "Mostrar marco de distancia (10 m)",
-	ChargeIcon			= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(38280),
-	AutoChangeLootToFFA	= "Cambiar modo de botín a libre en Fase 2"
+	RangeFrame			= "Mostrar marco de distancia (10 m)"
 }
 
 L:SetMiscLocalization{

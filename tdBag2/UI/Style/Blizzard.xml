@@ -191,12 +191,12 @@
                 <Texture parentKey="Icon">
                     <Size x="14" y="14"/>
                     <Anchors>
-                        <Anchor point="RIGHT"/>
+                        <Anchor point="RIGHT" x="-4" y="0"/>
                     </Anchors>
                 </Texture>
                 <FontString parentKey="Count" inherits="NumberFontNormalRight">
                     <Anchors>
-                        <Anchor point="RIGHT" relativeKey="$parent.Icon" relativePoint="Left"/>
+                        <Anchor point="RIGHT" relativeKey="$parent.Icon" relativePoint="LEFT"/>
                     </Anchors>
                 </FontString>
             </Layer>

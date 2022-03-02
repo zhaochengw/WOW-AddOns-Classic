@@ -488,7 +488,7 @@ local ufpmh = CreateFrame("Frame");
 ufpmh:RegisterEvent("ADDON_LOADED");
 ufpmh:RegisterEvent("PLAYER_LOGOUT")
 ufpmh:RegisterEvent("PLAYER_TARGET_CHANGED");
-ufpmh:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "target");
+ufpmh:RegisterUnitEvent("UNIT_HEALTH", "target");
 ufpmh:RegisterUnitEvent("UNIT_COMBAT", "target");
 ufpmh:SetScript("OnEvent", function(self, event, ...)
     if event == "ADDON_LOADED" then
@@ -501,7 +501,7 @@ ufpmh:SetScript("OnEvent", function(self, event, ...)
         UnitFramesPlus_PruneData();
     elseif event == "PLAYER_TARGET_CHANGED" then
         UnitFramesPlus_PLAYER_TARGET_CHANGED();
-    elseif event == "UNIT_HEALTH_FREQUENT" then
+    elseif event == "UNIT_HEALTH" then
         UnitFramesPlus_UNIT_HEALTH("target");
     elseif event == "UNIT_COMBAT" then
         local _, _, _, damage = ...;

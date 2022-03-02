@@ -78,8 +78,10 @@ function FOM_GetColoredDiet()
 	local coloredDiets = {};
 	for _, dietName in pairs(dietList) do 
 		local color = FOM_DietColors[dietName];
-		local coloredText = CreateColor(color.r, color.g, color.b):WrapTextInColorCode(dietName);
-		table.insert(coloredDiets, coloredText);
+		if color ~= nil then
+			local coloredText = CreateColor(color.r, color.g, color.b):WrapTextInColorCode(dietName);
+			table.insert(coloredDiets, coloredText);
+		end
 	end
 	return table.concat(coloredDiets, ", ");
 end

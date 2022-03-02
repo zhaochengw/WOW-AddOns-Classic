@@ -8,6 +8,7 @@ local ipairs = ipairs
 local tostring = tostring
 local fmt = string.format
 local GetSpecialization = GetSpecialization or function() end
+local UnitGroupRolesAssigned = UnitGroupRolesAssigned or function() end
 
 -- Initialization
 Grid2 = LibStub("AceAddon-3.0"):NewAddon("Grid2", "AceEvent-3.0", "AceConsole-3.0")
@@ -19,14 +20,14 @@ Grid2.isClassic = versionCli<30000 -- vanilla or tbc
 Grid2.isVanilla = versionCli<20000
 Grid2.isTBC     = versionCli>=20000 and versionCli<30000
 Grid2.isWoW90   = versionCli>=90000
-Grid2.versionstring = "Grid2 v"..versionToc
+Grid2.versionstring = "Grid2 v"..(versionToc=='2.0.33' and 'Dev' or versionToc)
 
 -- build error check
 local isRetailBuild = true
 --@non-retail@
 isRetailBuild = false
 --@end-non-retail@
-if isRetailBuild~=(WOW_PROJECT_ID==WOW_PROJECT_MAINLINE) and versionToc~='2.0.14' then
+if isRetailBuild~=(WOW_PROJECT_ID==WOW_PROJECT_MAINLINE) and versionToc~='2.0.33' then
 	C_Timer.After(3, function() Grid2:Print(string.format("Error, this version of Grid2 was packaged for World of Warcraft %s. Please install the correct version !!!", isRetailBuild and 'Retail' or 'Classic')) end)
 end
 
@@ -156,6 +157,7 @@ function Grid2:OnEnable()
 	end
 	if not self.isClassic then
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+		self:RegisterEvent("PLAYER_ROLES_ASSIGNED")
 	end
 
 	self.db.RegisterCallback(self, "OnProfileShutdown", "ProfileShutdown")
@@ -216,6 +218,10 @@ function Grid2:PLAYER_SPECIALIZATION_CHANGED(_,unit)
 	end
 end
 
+function Grid2:PLAYER_ROLES_ASSIGNED()
+	self:ReloadTheme()
+end
+
 -- Themes
 function Grid2:GetCurrentTheme()
 	local index  = self.currentTheme or 0
@@ -233,6 +239,7 @@ function Grid2:CheckTheme()
 	local enabled = themes.enabled
 	local theme   = enabled.default or 0
 	local spec    = GetSpecialization() or 0
+	local role    = UnitGroupRolesAssigned('player') or 0
 	local groupType, instType, maxPlayers = self:GetGroupType()
 	local kM   = tostring(maxPlayers)
 	local kC   = fmt("%s@0",     self.playerClass)
@@ -241,7 +248,7 @@ function Grid2:CheckTheme()
 	local kSGI = fmt("%s@%s@%s", kS, groupType, instType)
 	local kSG  = fmt("%s@%s",    kS, groupType)
 	local kGI  = fmt("%s@%s",    groupType, instType)
-	theme = self.testThemeIndex or enabled[kSM] or enabled[kSGI] or enabled[kSG] or enabled[kS] or enabled[kC] or enabled[kM] or enabled[kGI] or enabled[groupType] or theme
+	theme = self.testThemeIndex or enabled[kSM] or enabled[kSGI] or enabled[kSG] or enabled[kS] or enabled[kC] or enabled[kM] or enabled[kGI] or enabled[groupType] or enabled[role] or theme
 	theme = themes.names[theme] and theme or 0
 	return theme, themes.indicators[theme] or {}
 end

@@ -56,7 +56,8 @@ local EXPIRED = GRAY_FONT_COLOR:WrapTextInColorCode(ns.L['Expired'])
 local MINUTE, HOUR, DAY = 60, 3600, ns.SECONDS_OF_DAY
 local KEYRING_FAMILY = ns.KEYRING_FAMILY
 
----@type tdBag2ItemBase
+---@class UI.ItemBase: Object, ItemButtonTemplate
+---@field EMPTY_SLOT_TEXTURE string
 local ItemBase = ns.Addon:NewClass('UI.ItemBase', 'Button')
 ItemBase.pool = {}
 ItemBase.GenerateName = ns.NameGenerator('tdBag2ItemBase')
@@ -66,6 +67,7 @@ function ItemBase:Constructor()
 
     local name = self:GetName()
     self.QuestBorder = _G[name .. 'IconQuestTexture'] or self.IconOverlay
+    ---@type FontString
     self.Timeout = _G[name .. 'Stock']
 
     self.QuestBorder:SetTexture(TEXTURE_ITEM_QUEST_BANG)
@@ -140,6 +142,11 @@ function ItemBase:OnShow()
     self:Update()
 end
 
+--[=[@debug@
+function ItemBase:OnHide()
+end
+--@end-debug@]=]
+
 function ItemBase:OnEnter()
     if self:IsCached() then
         local Overlay = self.Overlay or self:CreateOverlay()
@@ -178,7 +185,7 @@ function ItemBase:CreateOverlay()
     Overlay:Hide()
 
     local function OverlayOnEnter(self)
-        ---@type tdBag2Item
+
         local parent = self:GetParent()
         local item = parent:IsCached() and parent.info.link
         if item then

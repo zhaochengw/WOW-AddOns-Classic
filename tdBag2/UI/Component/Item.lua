@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 9/17/2019, 12:05:58 AM
-
+--
 ---- LUA
 local _G = _G
 local select = select
@@ -36,7 +36,8 @@ local DEFAULT_SLOT_COLOR = {r = 1, g = 1, b = 1}
 local ns = select(2, ...)
 local ItemBase = ns.UI.ItemBase
 
----@type tdBag2Item
+---@class UI.Item: UI.ItemBase, ContainerFrameItemButtonTemplate
+---@field hasStackSplit boolean
 local Item = ns.Addon:NewClass('UI.Item', ItemBase)
 Item.pool = {}
 Item.GenerateName = ns.NameGenerator('tdBag2Item')

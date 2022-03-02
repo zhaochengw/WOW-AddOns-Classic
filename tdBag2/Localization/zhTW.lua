@@ -42,6 +42,8 @@ L["Frame Settings"] = "背包設置"
 --[[ L["Gems Color"] = ""--]] 
 L["Global search"] = "全局搜索"
 L["Global Settings"] = "全局設置"
+--[[Translation missing --]]
+--[[ L["Guild bank"] = ""--]] 
 L["Herbalism Color"] = "草藥袋顏色"
 L["Highlight Border"] = "邊框著色"
 L["Highlight Brightness"] = "邊框著色亮度"
@@ -81,6 +83,8 @@ L["Restore default Settings"] = "恢復默認設置"
 L["Reverse Bag Order"] = "反向背包排列"
 L["Reverse Slot Order"] = "反向物品排列"
 L["Show Character Portrait"] = "顯示角色頭像"
+--[[Translation missing --]]
+--[[ L["Show Guild Bank Count in Tooltip"] = ""--]] 
 L["Show Item Count in Tooltip"] = "鼠標提示物品統計"
 L["Show Junk Icon"] = "顯示垃圾圖標"
 L["Show Offline Text in Bag's Title"] = "在背包標題上顯示離線"
@@ -113,6 +117,8 @@ L["TOOLTIP_WATCHED_TOKENS"] = "切換展示的代幣"
 L["TOOLTIP_WATCHED_TOKENS_LEFTTIP"] = "拖動物品到這裡以添加監控"
 L["TOOLTIP_WATCHED_TOKENS_ONLY_IN_BAG"] = "僅統計背包內數量"
 L["TOOLTIP_WATCHED_TOKENS_RIGHTTIP"] = "管理物品監控"
+--[[Translation missing --]]
+--[[ L["TOOLTIP_WATCHED_TOKENS_SHIFT"] = ""--]] 
 L["Top"] = "頂部"
 L["Total"] = "總共"
 L["Trade Containers Location"] = "特殊容器位置"

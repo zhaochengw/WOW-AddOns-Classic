@@ -7,10 +7,10 @@ if select(2,UnitClass("player")) ~= "SHAMAN" then return end
 
 local SpellIDs = TotemTimers.SpellIDs
 local SpellNames = TotemTimers.SpellNames
-local Version = 11.0
+local Version = 11.2
 
 TotemTimers.DefaultGlobalSettings = {
-	Version = 11.0,
+	Version = 11.2,
     Profiles = {},
     Sink = {}
 }
@@ -35,7 +35,9 @@ TotemTimers.DefaultProfile = {
         TimerBarColor = {r=0.5,g=0.5,b=1.0,a=1.0},
         ShowKeybinds = true,
         HideInVehicle = true,
-        StopPulse = true,
+        StopPulse = false,
+        TrackerStopPulse = false,
+        EnhanceCDsStopPulse = false,
         TimersOnButtons = false,
         LavaSurgeAura = true,
         LavaSurgeGlow = true,
@@ -266,6 +268,9 @@ TotemTimers.DefaultProfile = {
                 [9] = 9, -- Wind Shear
                 [10] = 10, -- Unleash Elements
                 [11] = 11, -- Spiritwalker's Grace
+                [10] = 10,
+                [11] = 11,
+                [12] = 12,
             },
             [3] = {
                 [1] = 1, 
@@ -277,9 +282,12 @@ TotemTimers.DefaultProfile = {
                 [7] = 7,
 				[8] = 8,
 				[9] = 9,
+                [10] = 10,
+                [11] = 11,
+                [12] = 12,
             },
         },
-        EnhanceCDs = true,
+        EnhanceCDs = false,
         EnhanceCDsSize = 30,
         EnhanceCDsTimeHeight = 12,
         EnhanceCDsMaelstromHeight = 14,
@@ -287,7 +295,9 @@ TotemTimers.DefaultProfile = {
         EnhanceCDsOOCAlpha = 0.4,
         CDTimersOnButtons = true,
         FlameShockDurationOnTop = false,
-        EnhanceCDs_Clickthrough = false,
+        EnhanceCDsClickthrough = false,
+        EnhanceCDsFlameShockDuration = true,
+        EnhanceCDsTotemTwisting = true,
 		
 		
 		-- LongCooldowns = true,
@@ -307,8 +317,8 @@ TotemTimers.DefaultProfile = {
 		CooldownSpacing = 5,
     
         FramePositions = {
-            TotemTimersFrame = {"CENTER", nil, "CENTER", -200,0},
-            TotemTimers_TrackerFrame = {"CENTER", nil, "CENTER", 50,0},
+            TotemTimersFrame = { "LEFT", "UIParent", "BOTTOM", -218, 150, },--{"CENTER", nil, "CENTER", -200,0},
+            TotemTimers_TrackerFrame = { "LEFT", "UIParent", "BOTTOM", 218-118, 150, },--{"CENTER", nil, "CENTER", 50,0},
             TotemTimers_EnhanceCDsFrame = {"CENTER", nil, "CENTER", 0, -170},
             TotemTimers_CastBar1 = {"CENTER", nil, "CENTER", -200,-190},
             TotemTimers_CastBar2  = {"CENTER", nil, "CENTER", -200,-225},
@@ -407,6 +417,12 @@ function TotemTimers.ExecuteProfile()
 end
 
 local SettingsConverters = {
+    [11.1] = function()
+        for k,profile in pairs(TotemTimers_Profiles) do
+            profile.TrackerStopPulse = profile.StopPulse
+        end
+        TotemTimers_GlobalSettings.Version = 11.2
+    end,
 }
 
 	
@@ -533,7 +549,7 @@ local GeneralList = {
     HideBlizzTimers, Tooltips, TooltipsAtButtons,
     TimeFont, TimeColor, TimerBarTexture,
     TimerBarColor, ShowKeybinds, HideInVehicle,
-    StopPulse, TimersOnButtons, LavaSurgeAura,
+    TimersOnButtons, LavaSurgeAura,
     LavaSurgeGlow, FulminationAura, FulminationGlow,
 }
 

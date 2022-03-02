@@ -2,6 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/17/2020, 11:08:38 PM
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -20,7 +21,6 @@ local GetNumTalents = GetNumTalents
 local GetNumTalentTabs = GetNumTalentTabs
 local GetPlayerInfoByGUID = GetPlayerInfoByGUID
 local GetTalentInfo = GetTalentInfo
-local LoadAddOn = LoadAddOn
 local NotifyInspect = NotifyInspect
 local UnitClass = UnitClass
 local UnitClassBase = UnitClassBase
@@ -28,7 +28,7 @@ local UnitGUID = UnitGUID
 local UnitLevel = UnitLevel
 local UnitRace = UnitRace
 
-local HideUIPanel = HideUIPanel
+local HideUIPanel = LibStub('LibShowUIPanel-1.0').HideUIPanel
 
 local ALA_PREFIX = 'ATEADD'
 local ALA_CMD_LEN = 6
@@ -36,12 +36,13 @@ local PROTO_PREFIX = 'tdInspect'
 
 local Serializer = LibStub('AceSerializer-3.0')
 
----@type tdInspectInspect
+---@class Inspect: AceAddon-3.0, AceEvent-3.0, AceComm-3.0
 local Inspect = ns.Addon:NewModule('Inspect', 'AceEvent-3.0', 'AceComm-3.0')
 
 function Inspect:OnInitialize()
     self.unitName = nil
     self.db = ns.Addon.db.global.userCache
+    self.waitingItems = {}
 end
 
 function Inspect:OnEnable()
@@ -55,6 +56,7 @@ function Inspect:OnEnable()
         return Deal(sender, Serializer:Deserialize(msg))
     end
 
+    self:RegisterEvent('GET_ITEM_INFO_RECEIVED')
     self:RegisterEvent('INSPECT_READY')
     self:RegisterComm(ALA_PREFIX, 'OnAlaCommand')
     self:RegisterComm(PROTO_PREFIX, OnComm)
@@ -63,6 +65,7 @@ end
 function Inspect:SetUnit(unit, name)
     self.unit = unit
     self.unitName = unit and ns.UnitName(unit) or ns.GetFullName(name)
+    wipe(self.waitingItems)
 
     INSPECTED_UNIT = unit
     if InspectFrame then
@@ -94,7 +97,6 @@ function Inspect:GetItemLink(slot)
     local link
     if self.unit then
         link = GetInventoryItemLink(self.unit, slot)
-
     end
     if not link and self.unitName then
         local db = self.db[self.unitName]
@@ -136,13 +138,13 @@ function Inspect:GetEquippedSetItems(id)
                 end
 
                 local isBaseItem = slotItems[equipLoc][itemId]
-
                 if not isBaseItem then
                     local baseItemId = next(slotItems[equipLoc])
                     baseName = GetItemInfo(baseItemId)
                     if baseName then
                         overrideNames[baseName] = name
                     end
+                    items[name] = (items[name] or 0) + 1
                 end
 
                 count = count + 1
@@ -275,7 +277,7 @@ local function PackEquip()
     for i = 1, 18 do
         local link = GetInventoryItemLink('player', i)
         if link then
-            equips[i] = link:match('item:([%d:]+)'):gsub(':+$', '')
+            equips[i] = link:match('item:([%-%d:]+)'):gsub(':+$', '')
         end
     end
     return equips
@@ -302,6 +304,9 @@ function Inspect:INSPECT_READY(_, guid)
                 local id = GetInventoryItemID(self.unit, slot)
                 if id then
                     link = 'item:' .. id
+
+                    self.waitingItems[id] = self.waitingItems[id] or {}
+                    tinsert(self.waitingItems[id], slot)
                 end
             end
 
@@ -403,4 +408,33 @@ function Inspect:GROUP_ROSTER_UPDATE()
         self:SetUnit(nil, self.unitName)
         self:SendMessage('INSPECT_TARGET_CHANGED')
     end
+end
+
+function Inspect:GET_ITEM_INFO_RECEIVED(_, id, ok)
+    if not ok then
+        return
+    end
+
+    if not self.unit then
+        return
+    end
+
+    if not self.waitingItems[id] then
+        return
+    end
+
+    local guid = UnitGUID(self.unit)
+    local name = ns.GetFullName(select(6, GetPlayerInfoByGUID(guid)))
+    local db = self:BuildCharacterDb(name)
+
+    for _, slot in ipairs(self.waitingItems[id]) do
+        local link = GetInventoryItemLink(self.unit, slot)
+        if link then
+            link = link:match('(item:[%-0-9:]+)')
+        end
+
+        db[slot] = link
+    end
+
+    self:SendMessage('INSPECT_READY', self.unit, name)
 end

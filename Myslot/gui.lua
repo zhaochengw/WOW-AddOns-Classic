@@ -5,7 +5,7 @@ local RegEvent = MySlot.regevent
 local MAX_PROFILES_COUNT = 50
 
 
-local f = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+local f = CreateFrame("Frame", "MYSLOT_ReportFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 f:SetWidth(650)
 f:SetHeight(600)
 f:SetBackdrop({
@@ -73,11 +73,16 @@ do
     forceImportCheckbox = b
 end
 
-local ignoreActionCheckbox
-local ignoreBindingCheckbox
-local ignoreMacroCheckbox
+local gatherCheckboxOptions
 
 do
+    local ignoreActionCheckbox
+    local ignoreBindingCheckbox
+    local ignoreMacroCheckbox
+    local clearActionCheckbox
+    local clearBindingCheckbox
+    local clearMacroCheckbox
+
     do
         local b = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
         b.text = b:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -122,6 +127,67 @@ do
         -- b:SetScript("OnLeave", GameTooltip_Hide)
         ignoreMacroCheckbox = b
     end
+
+    do
+        local b = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+        b.text = b:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        b.text:SetPoint("LEFT", b, "RIGHT", 0, 1)
+        b:SetPoint("BOTTOMLEFT", 340, 95)
+        b.text:SetText(L["Clear Action before applying"])
+        -- b:SetScript("OnEnter", function(self)
+        --     GameTooltip:SetOwner(self, "ANCHOR_TOP");
+        --     GameTooltip:SetText(L[""], nil, nil, nil, nil, true);
+        --     GameTooltip:Show();
+        -- end)
+        -- b:SetScript("OnLeave", GameTooltip_Hide)
+        clearActionCheckbox = b
+    end
+
+    do
+        local b = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+        b.text = b:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        b.text:SetPoint("LEFT", b, "RIGHT", 0, 1)
+        b:SetPoint("BOTTOMLEFT", 340, 70)
+        b.text:SetText(L["Clear Binding before applying"])
+        -- b:SetScript("OnEnter", function(self)
+        --     GameTooltip:SetOwner(self, "ANCHOR_TOP");
+        --     GameTooltip:SetText(L[""], nil, nil, nil, nil, true);
+        --     GameTooltip:Show();
+        -- end)
+        -- b:SetScript("OnLeave", GameTooltip_Hide)
+        clearBindingCheckbox = b
+    end
+
+    do
+        local b = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate")
+        b.text = b:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        b.text:SetPoint("LEFT", b, "RIGHT", 0, 1)
+        b:SetPoint("BOTTOMLEFT", 340, 45)
+        b.text:SetText(L["Clear Macro before applying"])
+        -- b:SetScript("OnEnter", function(self)
+        --     GameTooltip:SetOwner(self, "ANCHOR_TOP");
+        --     GameTooltip:SetText(L[""], nil, nil, nil, nil, true);
+        --     GameTooltip:Show();
+        -- end)
+        -- b:SetScript("OnLeave", GameTooltip_Hide)
+        clearMacroCheckbox = b
+    end
+
+    -- Gather options
+    do
+        local f = function()
+            return  {
+                ignoreAction = ignoreActionCheckbox:GetChecked(),
+                ignoreBinding = ignoreBindingCheckbox:GetChecked(),
+                ignoreMacro = ignoreMacroCheckbox:GetChecked(),
+                clearAction = clearActionCheckbox:GetChecked(),
+                clearBinding = clearBindingCheckbox:GetChecked(),
+                clearMacro = clearMacroCheckbox:GetChecked(),
+            }
+        end
+        gatherCheckboxOptions = f
+    end
+
 end
 
 -- import
@@ -142,11 +208,7 @@ do
 
         StaticPopupDialogs["MYSLOT_MSGBOX"].OnAccept = function()
             StaticPopup_Hide("MYSLOT_MSGBOX")
-            MySlot:RecoverData(msg, {
-                ignoreAction = ignoreActionCheckbox:GetChecked(),
-                ignoreBinding = ignoreBindingCheckbox:GetChecked(),
-                ignoreMacro = ignoreMacroCheckbox:GetChecked(),
-            })
+            MySlot:RecoverData(msg, gatherCheckboxOptions())
         end
         StaticPopup_Show("MYSLOT_MSGBOX")
     end)
@@ -162,11 +224,7 @@ do
     b:SetPoint("BOTTOMLEFT", 40, 15)
     b:SetText(L["Export"])
     b:SetScript("OnClick", function()
-        local s = MySlot:Export({
-            ignoreAction = ignoreActionCheckbox:GetChecked(),
-            ignoreBinding = ignoreBindingCheckbox:GetChecked(),
-            ignoreMacro = ignoreMacroCheckbox:GetChecked(),
-        })
+        local s = MySlot:Export(gatherCheckboxOptions())
         exportEditbox:SetText(s)
         infolabel.ShowUnsaved()
     end)
@@ -189,13 +247,13 @@ RegEvent("ADDON_LOADED", function()
         })
         t:SetBackdropColor(0, 0, 0, 0)
     
-        local s = CreateFrame("ScrollFrame", nil, t, "UIPanelScrollFrameTemplate")
+        local s = CreateFrame("ScrollFrame", "MYSLOT_ScrollFrame", t, "UIPanelScrollFrameTemplate")
         s:SetWidth(560)
         s:SetHeight(375)
         s:SetPoint("TOPLEFT", 10, -10)
 
 
-        local edit = CreateFrame("EditBox", nil, s)
+        local edit = CreateFrame("EditBox", "MYSLOT_ReportFrame_EditBox", s)
         s.cursorOffset = 0
         edit:SetWidth(550)
         s:SetScrollChild(edit)
@@ -262,9 +320,8 @@ RegEvent("ADDON_LOADED", function()
         end
 
         local create = function(name)
-            if #exports >= MAX_PROFILES_COUNT then
-                MySlot:Print(L["Too many saved profiles, please use '/myslot trim' to clean up"])
-                return
+            while #exports > MAX_PROFILES_COUNT do
+                table.remove(exports, 1)
             end
 
             local txt = {

@@ -62,12 +62,15 @@ TotemTimers.SpellIDs = {
     FlameShock = 8050,
     StormStrike = 17364,
 
+    LightningBolt = 403,
+    ChainLightning = 421,
+
     --EnamoredWaterSpirit = 24854 -- Water Totem trinket
     --[[
     PrimalStrike = 73899,
     LavaLash = 60103,
     LightningBolt = 403,
-    ChainLightning = 421,
+
     LavaBurst = 51505,
     Maelstrom = 51530,
     WindShear = 57994,
@@ -170,8 +173,8 @@ end
 TotemData = {
 	[SpellIDs.Tremor] = {
         element = EARTH_TOTEM_SLOT,
-        flashInterval = 4,
-        warningPoint = 2,
+        flashInterval = 3,
+        warningPoint = 0,
         rangeCheck = 30,
     },
     [SpellIDs.Stoneskin] = {
@@ -189,7 +192,7 @@ TotemData = {
     [SpellIDs.EarthBind] = {
         element = EARTH_TOTEM_SLOT,
         flashInterval = 3,
-        flashDelay = 1,
+        flashDelay = 0,
         warningPoint = 5,
     },
     [SpellIDs.EarthElemental] = {

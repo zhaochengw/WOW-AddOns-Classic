@@ -18,7 +18,8 @@ local L = ns.L
 
 local Container = ns.UI.Container
 
----@type tdBag2TitleContainer
+---@class UI.TitleContainer: UI.Container
+---@field alwaysShowTitle boolean
 local TitleContainer = ns.Addon:NewClass('UI.TitleContainer', ns.UI.Container)
 TitleContainer.TEMPLATE = 'tdBag2ContainerTitleTemplate'
 TitleContainer.SCROLL_TEMPLATE = 'tdBag2ScrollFrameTemplate'
@@ -64,6 +65,7 @@ function TitleContainer:OnSizeChanged()
     Container.OnSizeChanged(self)
 end
 
+---@return tdBag2ContainerTitleTemplate
 function TitleContainer:GetTitleLabel(bag)
     if not self.titleLabels[bag] then
         local frame = CreateFrame('Frame', nil, self.ContentParent or self, self.TEMPLATE)

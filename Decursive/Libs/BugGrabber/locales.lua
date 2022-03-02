@@ -861,6 +861,7 @@ L["NEW_VERSION_ALERT"] = [=[Se ha detectado una nueva versión de Decursive: |cF
 ¡Vaya a |cFFFF0000WoWAce.com|r para conseguirla! --------]=]
 L["NORMAL"] = "Normal"
 L["NOSPELL"] = "No hay hechizo disponible"
+L["NOTICE_FRAME_TEMPLATE"] = "|cFFFF0000Decursive - Aviso|r %s"
 L["OPT_ABOLISHCHECK_DESC"] = "seleccionar si las unidades con un hechizo 'Suprimir' activo se muestran y curan"
 L["OPT_ABOUT"] = "Acerca de"
 L["OPT_ADD_A_CUSTOM_SPELL"] = "Agregar un hechizo / objeto personalizado"
@@ -2808,6 +2809,7 @@ L["NEW_VERSION_ALERT"] = [=[Se ha detectado una nueva versión de Decursive: |cF
 ¡Vaya a |cFFFF0000WoWAce.com|r para conseguirla! --------]=]
 L["NORMAL"] = "Normal"
 L["NOSPELL"] = "No hay hechizo disponible"
+L["NOTICE_FRAME_TEMPLATE"] = "|cFFFF0000Decursive - Aviso|r %s"
 L["OPT_ABOLISHCHECK_DESC"] = "seleccionar si las unidades con un hechizo 'Suprimir' activo se muestran y curan"
 L["OPT_ABOUT"] = "Acerca de"
 L["OPT_ADD_A_CUSTOM_SPELL"] = "Agregar un hechizo / objeto personalizado"
@@ -3137,6 +3139,7 @@ L["MISSINGUNIT"] = "Unidade ausente"
 L["NEW_VERSION_ALERT"] = "Uma nova versão do Decursive foi detectada: |cFFEE7722%q|r lançada em |cFFEE7722%s|r! Vá para |cFFFF0000WoWAce.com|r para obtê-la! --------"
 L["NORMAL"] = "Normal"
 L["NOSPELL"] = "Nenhum feitiço disponível"
+L["NOTICE_FRAME_TEMPLATE"] = "|cFFFF0000Decursive - Aviso|r %s"
 L["OPT_ABOLISHCHECK_DESC"] = "seleciona se as unidades com um feitiço 'Abolir' ativo são mostradas e curadas"
 L["OPT_ABOUT"] = "Sobre"
 L["OPT_ADD_A_CUSTOM_SPELL"] = "Adicionar feitiço/item personalizado"

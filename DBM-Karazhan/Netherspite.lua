@@ -1,9 +1,9 @@
 local mod	= DBM:NewMod("Netherspite", "DBM-Karazhan")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210623160950")
+mod:SetRevision("20220202210525")
 mod:SetCreatureID(15689)
-mod:SetEncounterID(WOW_PROJECT_ID ~= (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5) and 659 or 2451)
+mod:SetEncounterID(659, 2451)
 mod:SetModelID(15363)
 mod:RegisterCombat("combat")
 
@@ -18,10 +18,10 @@ local warningBanish			= mod:NewAnnounce("warningBanish", 1, "136135")
 local warningBreathCast		= mod:NewCastAnnounce(38523, 2)
 local warningVoid			= mod:NewSpellAnnounce(37063, 4)
 
-local specWarnVoid			= mod:NewSpecialWarningGTFO(30533, nil, nil, nil, 1, 6)
+local specWarnVoid			= mod:NewSpecialWarningGTFO(37063, nil, nil, nil, 1, 6)
 
 local timerPortalPhase		= mod:NewTimer(61.5, "timerPortalPhase", "135743", nil, nil, 6)
-local timerBanishPhase		= mod:NewTimer(40, "timerBanishPhase", "136135", nil, nil, 6)
+local timerBanishPhase		= mod:NewTimer(30, "timerBanishPhase", "136135", nil, nil, 6)
 local timerBreathCast		= mod:NewCastTimer(2.5, 38523, nil, nil, nil, 3)
 
 local berserkTimer			= mod:NewBerserkTimer(540)
@@ -31,8 +31,8 @@ function mod:OnCombatStart(delay)
 	timerPortalPhase:Start(63.5-delay)
 	if not self:IsTrivial() then
 		self:RegisterShortTermEvents(
-			"SPELL_PERIODIC_DAMAGE 30533",
-			"SPELL_PERIODIC_MISSED 30533"
+			"SPELL_PERIODIC_DAMAGE 28865",
+			"SPELL_PERIODIC_MISSED 28865"
 		)
 	end
 end
@@ -55,7 +55,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if spellId == 30533 and destGUID == UnitGUID("player") and self:AntiSpam() then
+	if spellId == 28865 and destGUID == UnitGUID("player") and self:AntiSpam() then
 		specWarnVoid:Show(spellName)
 		specWarnVoid:Play("watchfeet")
 	end

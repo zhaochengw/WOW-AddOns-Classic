@@ -1,3 +1,71 @@
+local _
+if(GetLocale() == "enUS" or true) then
+
+-- ===================== Part for TradeFrameEnchanced ==================
+TBT_SPELL_RANK_PATTERN = "Rank (%d)";
+TBT_SPELL_PORTAL = "Portal"
+TBT_UNLOCK_SKILL_NAME="Pick Lock";
+_,_,TBT_GAMETOOLTIP_MADE_BY=string.find(string.gsub(ITEM_CREATED_BY,"%%s","(.+)"),"(<.+>)"); --TBT_GAMETOOLTIP_MADE_BY="<Made by (.+)>"
+TBT_SPELL_TABLE = {
+	water = {
+		{ name="Conjure Water", rank=1, level=0,  item="Conjured Water" },
+		{ name="Conjure Water", rank=2, level=5,  item="Conjured Fresh Water" },
+		{ name="Conjure Water", rank=3, level=15, item="Conjured Purified Water" },
+		{ name="Conjure Water", rank=4, level=25, item="Conjured Spring Water" },
+		{ name="Conjure Water", rank=5, level=35, item="Conjured Mineral Water" },
+		{ name="Conjure Water", rank=6, level=45, item="Conjured Sparkling Water" },
+		{ name="Conjure Water", rank=7, level=55, item="Conjured Crystal Water" },
+		{ name="Conjure Water", rank=8, level=60, item="Conjured Glacier Water" },
+		{ name="Conjure Water", rank=9, level=65, item="Conjured Glacier Water" },
+	},
+
+	food = {
+		{ name="Conjure Food", rank=1, level=0,  item="Conjured Muffin" },
+		{ name="Conjure Food", rank=2, level=5,  item="Conjured Bread" },
+		{ name="Conjure Food", rank=3, level=15, item="Conjured Rye" },
+		{ name="Conjure Food", rank=4, level=25, item="Conjured Pumpernickel" },
+		{ name="Conjure Food", rank=5, level=35, item="Conjured Sourdough" },
+		{ name="Conjure Food", rank=6, level=45, item="Conjured Sweet Roll" },
+		{ name="Conjure Food", rank=7, level=55, item="Conjured Cinnamon Roll" },
+		{ name="Conjure Food", rank=8, level=65, item="Conjured Croissant" },
+	},
+
+	stone = {
+		{ name="Create Healthstone", level=0,  item="Minor Healthstone" },
+		{ name="Create Healthstone", level=12, item="Lesser Healthstone" },
+		{ name="Create Healthstone", level=24, item="Healthstone" },
+		{ name="Create Healthstone", level=36, item="Greater Healthstone" },
+		{ name="Create Healthstone", level=48, item="Major Healthstone" },
+		{ name="Create Healthstone", level=60, item="Master Healthstone" },
+	}
+}
+-- =============== just localizate the above, the addon will function ok ========================= 
+
+TBT_PORTAL_1 = "Portal: Stonard"
+TBT_PORTAL_2 = "Portal: Theramore"
+TBT_PORTAL_3 = "Portal: Exodar"
+TBT_PORTAL_4 = "Portal: Ironforge"
+TBT_PORTAL_5 = "Portal: Orgrimmar"
+TBT_PORTAL_6 = "Portal: Silvermoon"
+TBT_PORTAL_7 = "Portal: Stormwind"
+TBT_PORTAL_8 = "Portal: Undercity"
+TBT_PORTAL_9 = "Portal: Darnassus"
+TBT_PORTAL_10 = "Portal: Thunder Bluff"
+TBT_PORTAL_11 = "Portal: Shattrath"
+TBT_PORTAL_12 = "Portal: Dalaran"
+
+TBT_LEFT_BUTTON = {
+	water		= "Water",
+	food		= "Food",
+	stone		= "Stone",
+	unlock		= "Lock",
+}
+
+TBT_RIGHT_BUTTON = {
+	whisper		= "tel",
+	ask		= "ask",
+	thank		= "thx",
+}
 -- ===================== Part for TradeLog ==================
 TRADE_LOG_MONEY_NAME = {
 	gold = "g",
@@ -6,8 +74,17 @@ TRADE_LOG_MONEY_NAME = {
 }
 
 CANCEL_REASON_TEXT = {
+	self = "you cancelled",
+	other = "recipient cancelled",
+	toofar = "too faraway",
+	selfrunaway = "you moved away",
+	selfhideui = "you hid ui",
+	unknown = "unknown reason",
+}
+
+CANCEL_REASON_TEXT_ANNOUNCE = {
 	self = "I cancelled it",
-	other = "target cancelled it",
+	other = "(s)he cancelled it",
 	toofar = "we are too faraway",
 	selfrunaway = "I moved away",
 	selfhideui = "I hid ui",
@@ -34,20 +111,34 @@ TRADE_LOG_CHANNELS = {
 TRADE_LOG_ANNOUNCE = "NOTIFY";
 TRADE_LOG_ANNOUNCE_TIP = "Check this to automatically announce after trading."
 
-TRADE_LOG_RESULT_TEXT_SHORT = { 
+-- ===================== Part for TradeList ==================
+TRADE_LIST_CLEAR_HISTORY = "CLEAR"
+TRADE_LIST_SCALE = "Detail Scale"
+TRADE_LIST_FILTER = "Completed Only"
+
+TRADE_LIST_HEADER_WHEN = "Time"
+TRADE_LIST_HEADER_WHO = "Recipent"
+TRADE_LIST_HEADER_WHERE = "Location"
+TRADE_LIST_HEADER_SEND = "Lost"
+TRADE_LIST_HEADER_RECEIVE = "Got"
+TRADE_LIST_HEADER_RESULT = "Result"
+
+TRADE_LIST_RESULT_TEXT_SHORT = { 
 	cancelled = "cancel", 
 	complete = "ok", 
 	error = "failed", 
 }
 
-TRADE_LOG_RESULT_TEXT = {
+TRADE_LIST_RESULT_TEXT = {
 	cancelled = "Trade Cancelled", 
 	complete = "Trade Completed", 
 	error = "Trade Failed", 
 }
 
-TRADE_LOG_MONTH_SUFFIX = "-"
-TRADE_LOG_DAY_SUFFIX = ""
+TRADE_LIST_MONTH_SUFFIX = "-"
+TRADE_LIST_DAY_SUFFIX = ""
+
+TRADE_LIST_COMPLETE_TOOLTIP = "Click to show detail";
 
 TRADE_LOG_COMPLETE_TOOLTIP = "Click to show detail";
 
@@ -69,5 +160,7 @@ TRADE_LIST_HEADER_RESULT = "Result"
 
 TRADE_LIST_CLEAR_CONFIRM = "Records before today will be totally cleared!";
 
-TRADE_LIST_TITLE = "TradeLog"
-TRADE_LIST_DESC = "Show recent trade logs, or the reasons of failed trades."
+TBT_MINIMAP_TOOLTIP1 = "TradeLog"
+TBT_MINIMAP_TOOLTIP2 ="Click to Show Trade Log Panel"
+
+end

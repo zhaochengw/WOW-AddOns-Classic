@@ -2,13 +2,11 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/18/2020, 1:28:20 AM
-
+--
 ---@type ns
 local ns = select(2, ...)
 
 local pairs, ipairs = pairs, ipairs
-
-local Inspect = ns.Inspect
 
 local EQUIP_SLOTS = {
     {id = 1, name = HEADSLOT}, --
@@ -30,7 +28,7 @@ local EQUIP_SLOTS = {
     {id = 18, name = RANGEDSLOT}, --
 }
 
----@type tdInspectEquipFrame
+---@class UI.EquipFrame: Object, Frame, AceEvent-3.0
 local EquipFrame = ns.Addon:NewClass('UI.EquipFrame', 'Frame')
 
 function EquipFrame:Constructor()

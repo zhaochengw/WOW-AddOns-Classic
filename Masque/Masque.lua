@@ -177,3 +177,6 @@ function Core:UpdateProfile()
 		LDBI:Refresh(MASQUE, Core.db.profile.LDB)
 	end
 end
+
+Masque.Core = Core
+

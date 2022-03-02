@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## X-Min-Interface: 20501
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Naxxramas|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Naxxramas|r
@@ -58,3 +58,6 @@ MilitaryQuarter\Gothik.lua
 MilitaryQuarter\Horsemen.lua
 FrostwyrmLair\Sapphiron.lua
 FrostwyrmLair\Kel'Thuzad.lua
+
+## X-Vendor: NetEase
+## X-163UI-Version: 20220224141126

@@ -15,7 +15,7 @@ local Search = ns.Search
 local BAG_ID = ns.BAG_ID
 local GLOBAL_SEARCH_OWNER = ns.GLOBAL_SEARCH_OWNER
 
----@type tdBag2GlobalSearchBagItem[]
+
 local BAGS = {
     {title = L.TITLE_BAG, bags = ns.GetBags(BAG_ID.BAG)}, --
     {title = L.TITLE_BANK, bags = ns.GetBags(BAG_ID.BANK)}, --
@@ -24,7 +24,7 @@ local BAGS = {
     {title = L.TITLE_COD, bags = {ns.COD_CONTAINER}}, --
 }
 
----@type tdBag2GlobalSearch
+---@class GlobalSearch: AceAddon-3.0
 local GlobalSearch = ns.Addon:NewModule('GlobalSearch')
 
 function GlobalSearch:OnInitialize()
@@ -92,9 +92,9 @@ function GlobalSearch:DoSearch()
 
         for _, owner in ipairs(Cache:GetOwners()) do
             for i, v in ipairs(BAGS) do
-                ---@type tdBag2CacheBagData
+
                 local bagInfo = {}
-                ---@type tdBag2CacheItemData[]
+
                 local items = {}
 
                 for _, bag in ipairs(v.bags) do

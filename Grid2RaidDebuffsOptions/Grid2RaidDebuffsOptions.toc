@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: Grid2 |cd2ff7d0aRaidDebuffs Options|r
 ## Title-esES: Grid2 |cd2ff7d0aRaidDebuffs Opciones|r
 ## Notes: Load on demand Options for Grid2RaidDebuffs.
@@ -6,14 +6,15 @@
 ## Author: Michael
 ## Dependencies: Grid2, Grid2RaidDebuffs
 ## LoadOnDemand: 1
-## Version: 2.0.14
-
+## Version: 2.0.33
 Grid2RaidDebuffsOptions.lua
 OptionsGeneral.lua
 OptionsAdvanced.lua
 OptionsLuaCode.lua
-
-
 RaidDebuffsClassic.lua
 RaidDebuffsBC.lua
 
+
+## Title-zhCN: |cff880303[有爱]|r Grid2 首领减益效果数据界面
+## X-Vendor: NetEase
+## X-163UI-Version: 20220211134516

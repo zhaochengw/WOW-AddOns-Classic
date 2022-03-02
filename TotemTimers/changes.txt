@@ -1,3 +1,21 @@
+2.0.3
+    - Fixed Chain Lightning Button for Elemental Shamans
+2.0.2
+    - Fixed Earth Shield only casting rank 1
+2.0.1
+    - Added option to hide Flame Shock duration in combat cooldowns
+2.0
+    - Readded Combat Cooldowns/Buttons
+    - Fixed saving frame positions
+    - Stop Pulse animation can be enabled separately for totem timers, trackers and combat cooldowns
+    - Added #showtooltips to macro
+1.19.1
+    - Changed Erthbind and Tremor Totems to pulse every 3 seconds
+    - Changed "Stop Pulse" option to be off by default
+1.19
+    - Fixed red flash for expiring timers
+    - Fixed big pulse animations for expired timers
+    - Readded debug window for copying addon settings, if you create an issue/post a comment
 1.18.10
     - Fixed shield charges
 1.18.9

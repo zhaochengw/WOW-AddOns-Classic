@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/18/2020, 11:26:46 AM
-
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -13,7 +13,7 @@ local GameTooltip = GameTooltip
 
 local Inspect = ns.Inspect
 
----@type tdInspectEquipItem
+---@class UI.EquipItem: UI.BaseItem
 local EquipItem = ns.Addon:NewClass('UI.EquipItem', ns.UI.BaseItem)
 
 function EquipItem:Constructor(_, id, slotName, hasBg)

@@ -1,4 +1,4 @@
-﻿## Interface: 20501
+## Interface: 20503
 ## Title: zBar3Config
 ## Notes: Load the config panel dynamically for zBar3.
 ## Title-zhCN: |CFFFF8000辅助|R 炽火动作条 设置模块

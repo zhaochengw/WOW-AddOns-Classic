@@ -11,7 +11,6 @@ local L = Addon.L --Localization
 
 Addon.Frame = CreateFrame("Frame", nil, UIParent)
 local Frame = Addon.Frame
-Frame:Hide()
 
 -- Version String
 Addon.Version = GetAddOnMetadata(AddonName, "Version")
@@ -211,11 +210,6 @@ function Frame:ADDON_LOADED(Name)
     SetWindow:Initialize()
     -- UnregisterEvent
     self:UnregisterEvent("ADDON_LOADED")
-    if Config.CurrentStatus then
-        Frame:Show()
-    else
-        Frame:Hide()
-    end
 end
 
 function Frame:PLAYER_LOGOUT()
@@ -240,17 +234,22 @@ function Frame:PLAYER_ENTERING_WORLD(isLogin, isReload)
                 MinimapIcon.Minimap:Hide()
             end
         end
-    else
-        if select(2, IsInInstance()) ~= "none" then
-            if Config.CurrentStatus then
-                Config.CurrentStatus = false
-                Addon.Frame:Hide()
-            end
+        Addon:ShowSpellInfo()
+        if Config.CurrentStatus then
+            Frame:Show()
         else
-            if Config.Enabled and not Config.CurrentStatus then
-                Config.CurrentStatus = true
-                Addon.Frame:Show()
-            end
+            Frame:Hide()
+        end
+    end
+    if select(2, IsInInstance()) ~= "none" then
+        if Config.CurrentStatus then
+            Config.CurrentStatus = false
+            Frame:Hide()
+        end
+    else
+        if Config.Enabled and not Config.CurrentStatus then
+            Config.CurrentStatus = true
+            Frame:Show()
         end
     end
 end
@@ -294,6 +293,10 @@ function Frame:UNIT_AURA(unit)
         return
     end
     if unit ~= "player" then
+        return
+    end
+    Addon:GetCurrentSpells()
+    if Addon.TrackingSpellsNum <= 1 then
         return
     end
     if (select(2, UnitClass("player"))) == "DRUID" or (select(2, UnitClass("player"))) == "SHAMAN" then

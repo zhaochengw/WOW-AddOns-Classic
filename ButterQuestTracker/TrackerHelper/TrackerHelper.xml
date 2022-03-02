@@ -1,0 +1,11 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Script file="Modules/Base.lua"/>
+    <Script file="Modules/BaseElement.lua"/>
+    <Script file="Modules/Container.lua"/>
+    <Script file="Modules/Font.lua"/>
+    <Script file="Modules/BackgroundFrame.lua"/>
+    <Script file="Modules/TrackerFrame.lua"/>
+
+    <Script file="TrackerHelper.lua"/>
+</Ui>

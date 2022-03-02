@@ -1,20 +1,11 @@
-## Interface: 20501
-## Title: BlizzMove
-## Notes: Makes blizzard frames movable
-## Author: Kiatra - github.com/Kiatra/BlizzMove/
+## Interface: 20503
+## Title: Blizzmove
+## Notes: Move those blizzard windows
+## Author: yess
 ## X-WoWI-ID: 23875
-## X-Curse-Project-ID: 17809
-## Version: v3.1.2
-## OptionalDeps: Ace3
-## X-Embeds: Ace3
-## SavedVariables: BlizzMoveDB
-
-# Libraries
-Libs\Libs.xml
-TaintLess.xml
-
-# Add-On
+## Version: 1.9
+Handle.lua
 BlizzMove.lua
-BlizzMoveAPI.lua
-BlizzMoveConfig.lua
-Frames.lua
+## Title-zhCN: |cff880303[有爱]|r BlizzMove 框架移动
+## X-Vendor: NetEase
+## X-163UI-Version: 20220120164410

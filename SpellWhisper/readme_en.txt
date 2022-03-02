@@ -5,6 +5,8 @@ With other useful functions.
 Before the version 2.1.1, I split the function of Trades/Mails Logger to independent Addon which named MailLogger, if you still need this function, please go to curse and download it.
 http://https://www.curseforge.com/wow/addons/maillogger
 
+2.2.9 Smooth the codes.
+2.2.8 Rebuild Spell Codes, Rebuild progress codes.
 2.2.7 Modify the "Reflect" Announce Codes.
 2.2.6 Add Reflect Annouce.
 2.2.5 Add Stolen Announce, Add Super Follow from slash command. Casued by the API limit, remove 'say' and 'yell' channel.
@@ -16,3 +18,16 @@ http://https://www.curseforge.com/wow/addons/maillogger
 2.1.7 You can use "Escape" key to close Version Check window.
 2.1.4 Add Minimap button.
 2.1.2 Remove Trades/Mails Log Function, this function now has an indepentent Addon named "MailLogger", please use that. http://https://www.curseforge.com/wow/addons/maillogger
+
+
+## Templates you can use in Spellwhisper
+
+`#caster#` the player who cast the spell
+
+`#spell#` the spell who casting
+
+`#target#` the target affected by spell
+
+`#spell_2#` the another spell in combat log.
+
+`#pos#` the minimap position of battle ground.

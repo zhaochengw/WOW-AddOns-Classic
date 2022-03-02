@@ -1,0 +1,91 @@
+## Interface: 20503
+## Title: Missing TradeSkills List (TBC)
+## Author: Thumbkin
+## Notes: Shows missing skills & recipes for a profession and where to get them.
+## SavedVariables: MTSL_PLAYERS, MTSLUI_PLAYER, MTSL_MISSING_DATA
+## Version: 2.5.1
+## LoadOnDemand: 1
+
+#
+# Load all global variables, saved variables & locale
+#
+
+data\global_variables.lua
+
+
+# Shared data
+data\continents.lua
+data\currencies.lua
+data\expansions.lua
+data\factions.lua
+data\holidays.lua
+data\npcs.lua
+data\objects.lua
+data\profession_ranks.lua
+data\professions.lua
+data\quests.lua
+data\reputation_levels.lua
+data\special_actions.lua
+data\zones.lua
+# profession specific data
+data\Alchemy\items.lua
+data\Alchemy\levels.lua
+data\Alchemy\skills.lua
+data\Alchemy\specialisations.lua
+
+data\Blacksmithing\items.lua
+data\Blacksmithing\levels.lua
+data\Blacksmithing\skills.lua
+data\Blacksmithing\specialisations.lua
+
+data\Cooking\items.lua
+data\Cooking\levels.lua
+data\Cooking\skills.lua
+
+data\Enchanting\items.lua
+data\Enchanting\levels.lua
+data\Enchanting\skills.lua
+
+data\Engineering\items.lua
+data\Engineering\levels.lua
+data\Engineering\skills.lua
+data\Engineering\specialisations.lua
+
+data\FirstAid\items.lua
+data\FirstAid\levels.lua
+data\FirstAid\skills.lua
+
+data\Fishing\levels.lua
+data\Fishing\items.lua
+data\Fishing\skills.lua
+
+data\Herbalism\levels.lua
+
+data\Jewelcrafting\items.lua
+data\Jewelcrafting\levels.lua
+data\Jewelcrafting\skills.lua
+
+data\Leatherworking\items.lua
+data\Leatherworking\levels.lua
+data\Leatherworking\skills.lua
+data\Leatherworking\specialisations.lua
+
+data\Mining\items.lua
+data\Mining\levels.lua
+data\Mining\skills.lua
+
+data\Poisons\items.lua
+data\Poisons\levels.lua
+data\Poisons\skills.lua
+
+data\Skinning\levels.lua
+
+data\Tailoring\items.lua
+data\Tailoring\levels.lua
+data\Tailoring\skills.lua
+data\Tailoring\specialisations.lua
+
+
+## Title-zhCN: |cff880303[有爱]|r MTSLDO 商业技能缺失配方查询数据
+## X-Vendor: NetEase
+## X-163UI-Version: 20220120164410

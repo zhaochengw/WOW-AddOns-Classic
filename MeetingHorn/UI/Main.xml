@@ -1,7 +1,7 @@
 <Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
     <Button name="MeetingHornMainPanelTemplate" toplevel="true" parent="UIParent" movable="true" clampedToScreen="true" enableMouse="true" hidden="true" inherits="PortraitFrameTemplate" virtual="true">
-        <Size x="818" y="424"/>
+        <Size x="838" y="424"/>
         <Layers>
             <Layer level="BORDER" textureSubLevel="1">
                 <Texture name="$parentBtnCornerLeft" inherits="UI-Frame-BtnCornerLeft">
@@ -98,32 +98,49 @@
                             </Layer>
                         </Layers>
                     </Frame>
-                    <Button parentKey="Header1" inherits="ColumnDisplayButtonTemplate" id="1">
-                        <Size x="145" y="24"/>
+                    <Button parentKey="Header7" inherits="ColumnDisplayButtonTemplate" id="6">
+                        <Size x="60" y="24"/>
                         <Anchors>
                             <Anchor point="BOTTOMLEFT" relativeKey="$parent.ActivityList" relativePoint="TOPLEFT" x="2" y="5"/>
                         </Anchors>
+                        <ButtonText>
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                            </Anchors>
+                        </ButtonText>
+                    </Button>
+                    <Button parentKey="Header1" inherits="ColumnDisplayButtonTemplate" id="1">
+                        <Size x="145" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.Header7" relativePoint="RIGHT"/>
+                        </Anchors>
                     </Button>
                     <Button parentKey="Header2" inherits="ColumnDisplayButtonTemplate" id="2">
-                        <Size x="60" y="24"/>
+                        <Size x="50" y="24"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Header1" relativePoint="RIGHT"/>
                         </Anchors>
                     </Button>
                     <Button parentKey="Header3" inherits="ColumnDisplayButtonTemplate" id="3">
-                        <Size x="110" y="24"/>
+                        <Size x="80" y="24"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Header2" relativePoint="RIGHT"/>
                         </Anchors>
                     </Button>
-                    <Button parentKey="Header4" inherits="ColumnDisplayButtonTemplate" id="4">
-                        <Size x="110" y="24"/>
+                    <Button parentKey="Header8" inherits="ColumnDisplayButtonTemplate" id="3">
+                        <Size x="60" y="24"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Header3" relativePoint="RIGHT"/>
                         </Anchors>
                     </Button>
+                    <Button parentKey="Header4" inherits="ColumnDisplayButtonTemplate" id="4">
+                        <Size x="90" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.Header8" relativePoint="RIGHT"/>
+                        </Anchors>
+                    </Button>
                     <Button parentKey="Header5" inherits="ColumnDisplayButtonTemplate" id="5">
-                        <Size x="290" y="24"/>
+                        <Size x="250" y="24"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Header4" relativePoint="RIGHT"/>
                         </Anchors>
@@ -153,10 +170,22 @@
                             <Anchor point="TOPLEFT" relativeKey="$parent.SearchLabel" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
                         </Anchors>
                     </EditBox>
-                    <Button parentKey="Quick1" inherits="MeetingHornQuickTemplate">
+                    <Button parentKey="Quick7" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
-                            <Anchor point="LEFT" relativeKey="$parent.Input" relativePoint="RIGHT" x="5" y="-5"/>
+                            <Anchor point="LEFT" relativeKey="$parent.Input" relativePoint="RIGHT" x="2" y="-10"/>
+                        </Anchors>
+                    </Button>
+                    <Button parentKey="Quick8" inherits="MeetingHornQuickTemplate">
+                        <Size x="35" y="22"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick7" relativePoint="RIGHT" x="5" y="0"/>
+                        </Anchors>
+                    </Button>
+                   <Button parentKey="Quick1" inherits="MeetingHornQuickTemplate">
+                        <Size x="35" y="22"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick7" relativePoint="TOPLEFT" x="2" y="10"/>
                         </Anchors>
                     </Button>
                     <Button parentKey="Quick2" inherits="MeetingHornQuickTemplate">
@@ -174,22 +203,22 @@
                     <Button parentKey="Quick4" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
-                            <Anchor point="BOTTOMLEFT" relativeKey="$parent.Quick1" relativePoint="TOPLEFT" x="0" y="0"/>
+                            <Anchor point="BOTTOMLEFT" relativeKey="$parent.Quick1" relativePoint="TOPLEFT" x="0" y="-2"/>
                         </Anchors>
                     </Button>
                     <Button parentKey="Quick5" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
-                            <Anchor point="BOTTOM" relativeKey="$parent.Quick2" relativePoint="TOP" x="5" y="0"/>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick4" relativePoint="RIGHT" x="5" y="0"/>
                         </Anchors>
-                    </Button>
+                    </Button>d
                     <Button parentKey="Quick6" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
-                            <Anchor point="BOTTOM" relativeKey="$parent.Quick3" relativePoint="TOP" x="5" y="0"/>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick5" relativePoint="RIGHT" x="5" y="0"/>
                         </Anchors>
                     </Button>
-                    <Button parentKey="Refresh" inherits="UIPanelButtonTemplate" text="REFRESH">
+                     <Button parentKey="Refresh" inherits="UIPanelButtonTemplate" text="REFRESH">
                         <Size x="60" y="22"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Quick6" relativePoint="RIGHT" x="10" y="-1"/>
@@ -223,7 +252,7 @@
                             <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" />
                         </Anchors>
                     </Button> -->
-                    <StatusBar parentKey="ProgressBar">
+                    <StatusBar parentKey="ProgressBar" frameLevel="100">
                         <Size x="260" y="17"/>
                         <Anchors>
                             <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="0" y="-3"/>
@@ -257,6 +286,36 @@
                             <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="-22" />
                         </Anchors>
                     </Button> -->
+                    <Button parentKey="IconTip" hidden="true">
+                        <Anchors>
+                            <Anchor point="BOTTOMLEFT" x="10" y="-20"/>
+                        </Anchors>
+                        <Size x="50" y="20"/>
+                        <NormalTexture parentKey="Icon" file="Interface\AddOns\MeetingHorn\Media\Icons">
+                            <Anchors>
+                                <Anchor point="LEFT"/>
+                            </Anchors>
+                            <Size x="20" y="20"/>
+                            <TexCoords left="0" right="0.125" x="0" y="1"/>
+                        </NormalTexture>
+                        <ButtonText parentKey="text">
+                            <Anchors>
+                                <Anchor relativeKey="$parent.Icon" relativePoint="RIGHT" point="LEFT"/>
+                            </Anchors>
+                        </ButtonText>
+                    </Button>
+                    <Button parentKey="ApplyLeaderBtn" inherits="UIPanelButtonTemplate">
+                        <Size x="120" y="22"/>
+                        <Anchors>
+                            <Anchor point="BOTTOMRIGHT" x="-20" y="-22"/>
+                        </Anchors>
+                    </Button>
+                    <Button parentKey="RechargeBtn" inherits="UIPanelButtonTemplate">
+                        <Size x="120" y="22"/>
+                        <Anchors>
+                            <Anchor relativeKey="$parent.ApplyLeaderBtn" relativePoint="LEFT" point="RIGHT"/>
+                        </Anchors>
+                    </Button>
                 </Frames>
             </Frame>
             <Frame parentKey="Manage">
@@ -297,6 +356,12 @@
                                 <Size x="120" y="22"/>
                                 <Anchors>
                                     <Anchor point="BOTTOMLEFT" relativeKey="$parent.$parent" x="0" y="-22"/>
+                                </Anchors>
+                            </Button>
+                            <Button parentKey="RecruitButton" inherits="MagicButtonTemplate">
+                                <Size x="120" y="22"/>
+                                <Anchors>
+                                    <Anchor point="LEFT" relativeKey="$parent.CreateButton" relativePoint="Right" x="0" y="0"/>
                                 </Anchors>
                             </Button>
                             <Button parentKey="CloseButton" inherits="MagicButtonTemplate">
@@ -504,6 +569,18 @@
                     <Anchor point="BOTTOMRIGHT" x="-6" y="6"/>
                 </Anchors>
             </Frame>
+            <Frame parentKey="Announcement" hidden="true" inherits="AnnouncementTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="2" y="-25"/>
+                    <Anchor point="BOTTOMRIGHT" x="-6" y="6"/>
+                </Anchors>
+            </Frame>
+            <Frame parentKey="MissionGuidance" hidden="true" inherits="MissionGuidanceTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="4" y="-65"/>
+                    <Anchor point="BOTTOMRIGHT" x="-6" y="6"/>
+                </Anchors>
+            </Frame>
             <Frame parentKey="Help" inherits="InsetFrameTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" x="4" y="-70"/>
@@ -593,6 +670,25 @@
                         <Anchors>
                             <Anchor point="TOPLEFT" x="60" y="28"/>
                         </Anchors>
+                    </Button>
+                    <Button parentKey="LookFall">
+                        <Size x="160" y="16"/>
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" x="-60" y="25"/>
+                        </Anchors>
+                        <NormalTexture parentKey="Icon" alphaMode="ADD" file="Interface\AddOns\MeetingHorn\Media\QRIcon">
+                            <Anchors>
+                                <Anchor point="LEFT"/>
+                            </Anchors>
+                            <Size x="14" y="14"/>
+                            <TexCoords left="0.390625" right="0.8" top="0" bottom="0.78125"/>
+                        </NormalTexture>
+                        
+                        <ButtonText inherits="GameFontNormalLeft">
+                            <Anchors>
+                                <Anchor relativeKey="$parent.Icon" relativePoint="RIGHT" point="LEFT" x="8"/>
+                            </Anchors>
+                        </ButtonText>
                     </Button>
                     <Button parentKey="ZoneButton" inherits="MeetingHornEncounterDifficultyTemplate">
                         <Anchors>
@@ -834,21 +930,24 @@
                                     </Anchors>
                                     <TexCoords left="0.26171875" right="0.51171875" top="0.00097656" bottom="0.06347656"/>
                                 </Texture>
-                                <Texture parentKey="LLVert" file="Interface\Common\bluemenu-vert" vertTile="true">                                    <!-- left line -->
+                                <Texture parentKey="LLVert" file="Interface\Common\bluemenu-vert" vertTile="true">
+                                    <!-- left line -->
                                     <Size x="43" y="270"/>
                                     <Anchors>
                                         <Anchor point="TOPLEFT" x="7" y="-87"/>
                                     </Anchors>
                                     <TexCoords left="0.06250000" right="0.39843750" top="0" bottom="1"/>
                                 </Texture>
-                                <Texture parentKey="RLVert" file="Interface\Common\bluemenu-vert" vertTile="true">                                    <!-- right line -->
+                                <Texture parentKey="RLVert" file="Interface\Common\bluemenu-vert" vertTile="true">
+                                    <!-- right line -->
                                     <Size x="43" y="270"/>
                                     <Anchors>
                                         <Anchor point="TOPLEFT" x="172" y="-87"/>
                                     </Anchors>
                                     <TexCoords left="0.41406250" right="0.75000000" top="0" bottom="1"/>
                                 </Texture>
-                                <Texture parentKey="BottomLine" file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">                                    <!-- bottom line -->
+                                <Texture parentKey="BottomLine" file="Interface\Common\bluemenu-goldborder-horiz" horizTile="true">
+                                    <!-- bottom line -->
                                     <Size x="80" y="43"/>
                                     <Anchors>
                                         <Anchor point="BOTTOMLEFT" relativeKey="$parent.BLCorner" relativePoint="BOTTOMRIGHT"/>
@@ -864,14 +963,16 @@
                                 </Texture>
                             </Layer>
                             <Layer level="BORDER">
-                                <Texture parentKey="TopFiligree" file="Interface\Common\bluemenu-main">                                    <!-- top filigree -->
+                                <Texture parentKey="TopFiligree" file="Interface\Common\bluemenu-main">
+                                    <!-- top filigree -->
                                     <Size x="185" y="55"/>
                                     <Anchors>
                                         <Anchor point="TOPLEFT" relativeKey="$parent.BlueBg" x="12" y="-6"/>
                                     </Anchors>
                                     <TexCoords left="0.00390625" right="0.72656250" top="0.12988281" bottom="0.18359375"/>
                                 </Texture>
-                                <Texture parentKey="BottomFiligree" file="Interface\Common\bluemenu-main">                                    <!-- bottom filigree -->
+                                <Texture parentKey="BottomFiligree" file="Interface\Common\bluemenu-main">
+                                    <!-- bottom filigree -->
                                     <Size x="185" y="55"/>
                                     <Anchors>
                                         <Anchor point="BOTTOMLEFT" relativeKey="$parent.BlueBg" x="12" y="4"/>

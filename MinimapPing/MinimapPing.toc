@@ -1,4 +1,4 @@
-﻿## Interface: 20501
+## Interface: 20503
 ## Title: MinimapPing
 ## Notes: Display players' name who have pinged the minimap
 ## Title-zhCN: |CFFFF8000辅助|R 小地图点击者

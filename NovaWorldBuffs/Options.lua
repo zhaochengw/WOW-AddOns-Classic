@@ -279,11 +279,12 @@ NWB.options = {
 			get = "getShowNaxxMinimapMarkers",
 			set = "setShowNaxxMinimapMarkers",
 		},
+		--Shat world markers TBC order = 133.
 		bigWigsSupport = {
 			type = "toggle",
 			name = L["bigWigsSupportTitle"],
 			desc = L["bigWigsSupportDesc"],
-			order = 133,
+			order = 134,
 			get = "getBigWigsSupport",
 			set = "setBigWigsSupport",
 		},
@@ -1407,11 +1408,37 @@ function NWB:loadSpecificOptions()
 			set = "setDisableLogonAllLevels",
 			width = 1.5,
 		};
+		NWB.options.args["hideMinimapBuffTimers"] = {
+			type = "toggle",
+			name = L["hideMinimapBuffTimersTitle"],
+			desc = L["hideMinimapBuffTimersDesc"],
+			order = 25,
+			width = 1.5,
+			get = "getHideMinimapBuffTimers",
+			set = "setHideMinimapBuffTimers",
+		};
+		--[[NWB.options.args["guildTerok10"] = {
+			type = "toggle",
+			name = L["guildTerok10Title"],
+			desc = L["guildTerok10Desc"],
+			order = 26,
+			width = 1.5,
+			get = "getGuildTerok10",
+			set = "setGuildTerok10",
+		};]]
 		NWB.options.args["tbcNote"] = {
 			type = "description",
 			name = "|cFF50D050" .. L["tbcNoteText"],
 			fontSize = "medium",
-			order = 25,
+			order = 27,
+		};
+		NWB.options.args["showShatWorldmapMarkers"] = {
+			type = "toggle",
+			name = L["showShatWorldmapMarkersTitle"],
+			desc = L["showShatWorldmapMarkersDesc"],
+			order = 133,
+			get = "getShowShatWorldmapMarkers",
+			set = "setShowShatWorldmapMarkers",
 		};
 	end
 	if (NWB.isTBC or NWB.realmsTBC) then
@@ -1630,8 +1657,9 @@ NWB.optionDefaults = {
 		dmfAutoResTime = 3,
 		dmfChatCountdown = true,
 		resetLayers5 = true, --Reset layers one time (sometimes needed when upgrading from old version.
+		resetDailyData = true;
 		resetSongflowers = true, --Reset songflowers one time.
-		experimental = false, --Enable features being tested on occasion.
+		beta = false, --Enable features being tested on occasion.
 		resetTimerData1 = true,
 		resetLayerMaps = true,
 		convertSettings = true,
@@ -1639,6 +1667,9 @@ NWB.optionDefaults = {
 		guildL = true,
 		terokkarChat10 = true,
 		terokkarMiddle10 = false,
+		wipeTerokkarData3 = true,
+		showShatWorldmapMarkers = true,
+		hideMinimapBuffTimers = false,
 		
 		--TBC options
 		disableSoundsAboveMaxBuffLevel = true,
@@ -1651,6 +1682,7 @@ NWB.optionDefaults = {
 		disableFlashAllLevels = false,
 		disableLogonAboveMaxBuffLevel = true,
 		disableLogonAllLevels = false,
+		guildTerok10 = 1,
 	},
 };
 
@@ -1694,6 +1726,9 @@ function NWB:buildRealmFactionData()
 		dragon3 = 0,
 		dragon4 = 0,
 	};
+	--if (NWB.isTBC) then
+	--	defaults.terokTowersTime = 0;
+	--end
 	--Create realm and faction tables if they don't exist.
 	if (not self.db.global[NWB.realm]) then
 		self.db.global[NWB.realm] = {};
@@ -2320,6 +2355,24 @@ end
 
 function NWB:getDisableAllGuildMsgs(info)
 	if (self.db.global.disableAllGuildMsgs == 1) then
+		return true;
+	else
+		return false;
+	end
+end
+
+--Guild 10 minute Terokarr Towers warning.
+function NWB:setGuildTerok10(info, value)
+	if (value) then
+		self.db.global.guildTerok10 = 1;
+	else
+		self.db.global.guildTerok10 = 0;
+	end
+	NWB:sendSettings("GUILD");
+end
+
+function NWB:getGuildTerok10(info)
+	if (self.db.global.guildTerok10 == 1) then
 		return true;
 	else
 		return false;
@@ -3183,6 +3236,17 @@ function NWBToggleHandIn(value)
 	end
 end
 
+--In testing.
+function NWBToggleBeta(value)
+	if (value == true) then
+		NWB.db.global.guildNpcWalking = true;
+		print("NWB in testing features enabled.");
+	else
+		NWB.db.global.guildNpcWalking = true;
+		print("NWB in testing features disabled.");
+	end
+end
+
 --DMF vanish summon.
 function NWB:setDmfVanishSummon(info, value)
 	self.db.global.dmfVanishSummon = value;
@@ -3285,7 +3349,7 @@ function NWB:config(i)
 	local f = {};
 	for k, v in pairs(i) do
 		local g = nil;
-		if (tonumber(v) and v ~= 0 and v ~= 1 and tostring(k) and not string.match(k, "Yell")) then
+		if (tonumber(v) and v ~= 0 and v > 50 and tostring(k) and not string.match(k, "Yell")) then
 			for l, w in pairs(e) do
 				if (v == w) then
 					g = true;
@@ -3349,6 +3413,24 @@ function NWB:getShowNaxxMinimapMarkers(info)
 	return self.db.global.showNaxxMinimapMarkers;
 end
 
+--Show world map Shat dailies marker.
+function NWB:setShowShatWorldmapMarkers(info, value)
+	self.db.global.showShatWorldmapMarkers = value;
+	NWB:updateShatDailyMarkers();
+end
+
+function NWB:getShowShatWorldmapMarkers(info)
+	return self.db.global.showShatWorldmapMarkers;
+end
+
+--Hide minimap buff timers.
+function NWB:setHideMinimapBuffTimers(info, value)
+	self.db.global.hideMinimapBuffTimers = value;
+end
+
+function NWB:getHideMinimapBuffTimers(info)
+	return self.db.global.hideMinimapBuffTimers;
+end
 --Bigwigs support.
 function NWB:setBigWigsSupport(info, value)
 	self.db.global.bigWigsSupport = value;

@@ -2,12 +2,12 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/22/2019, 4:02:14 PM
-
+--
 ---@type ns
 local ns = select(2, ...)
 local Addon = ns.Addon
 
----@class tdBag2SearchBox
+---@class UI.SearchBox: EventsMixin, Object, SearchBoxTemplate
 local SearchBox = Addon:NewClass('UI.SearchBox', 'EditBox')
 
 function SearchBox:Constructor(_, meta)

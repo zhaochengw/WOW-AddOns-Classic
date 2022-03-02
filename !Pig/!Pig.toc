@@ -1,0 +1,34 @@
+## Interface: 20503
+## Title: !Pig-|cffFF00FF[pig]|r
+## Title-zhCN: !Pig-|cffFF00FF[猪猪加油]|r
+## Notes: Some tools
+## Notes-zhCN: |cffFF8C00一些小工具|r  |cffFF00FF[猪猪加油]|r
+## Author: geligasi
+## Version: 4.2.3
+## SavedVariables: PIG
+## SavedVariablesPerCharacter: PIG_Per
+Error.lua
+Options.lua
+Config\Config.xml
+Feedback\Feedback.xml
+CVars\CVars.xml
+RaidFrame\RaidFrame.xml
+About\About.xml
+Other\Other.xml
+FramePlus\FramePlus.xml
+UnitFrame\UnitFrame.xml
+Interaction\Interaction.xml
+ShowPlus\ShowPlus.xml
+PigUI\PigUI.xml
+BagBank\BagBank.xml
+CombatPlus\CombatPlus.xml
+ChatFrame\ChatFrame.xml
+ActionBar\ActionBar.xml
+Classes\Classes.xml
+PlaneInvite\PlaneInvite.xml
+AutoSellBuy\AutoSellBuy.xml
+SkillCD\SkillCD.xml
+SpellCD\SpellCD.xml
+FarmRecord\FarmRecord.xml
+RaidRecord\RaidRecord.xml
+!Pig.lua

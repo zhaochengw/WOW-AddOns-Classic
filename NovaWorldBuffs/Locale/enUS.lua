@@ -66,6 +66,7 @@ L["Onyxia, hangs from the arches"] = true;
 
 --Alliance Nefarian buff NPC.
 L["Field Marshal Afrasiabi"] = true;
+L["Field Marshal Stonebridge"] = true;
 --Alliance Nefarian buff NPC first yell string (part of his first yell msg before before buff).
 L["the Lord of Blackrock is slain"] = true;
 --Alliance Nefarian buff NPC second yell string (part of his second yell msg before before buff).
@@ -258,7 +259,7 @@ L["showAllAltsTitle"] = "Show All Buff Stats";
 L["showAllAltsDesc"] = "Show all alts with buff stats in the buffs window even if they don't have an active buff?";
 
 L["minimapButtonTitle"] = "Show Minimap Button";
-L["minimapButtonDesc"] = "Show the NWB button the minimap?";
+L["minimapButtonDesc"] = "Show NWB button on the minimap?";
 
 ---Logon Messages---
 L["logonHeaderDesc"] = "Logon Messages";
@@ -819,3 +820,12 @@ L["terokkarChat10Desc"] = "Print a msg in chat when 10 minutes left on terokkar 
 
 L["terokkarMiddle10Title"] = "Terokkar 10 Minutes";
 L["terokkarMiddle10Desc"] = "Show a raid warning style msg in the middle of the screen when 10 minutes left on terokkar spirit towers.";
+
+L["showShatWorldmapMarkersTitle"] = "Shattrath Worldmap";
+L["showShatWorldmapMarkersDesc"] = "Show dungeon daily markers on the Shattrath world map?";
+
+L["hideMinimapBuffTimersTitle"] = "Hide Minimap World Buff Timers";
+L["hideMinimapBuffTimersDesc"] = "Hide the world buffs when you hover over the minimap icon? You will only see the terokkar tower timers and dailies etc.";
+
+L["guildTerok10Title"] = "Guild Chat Terokkar 10 Minutes";
+L["guildTerok10Desc"] = "Send a message to guild chat when there's 10 minutes left on terokkar towers?";

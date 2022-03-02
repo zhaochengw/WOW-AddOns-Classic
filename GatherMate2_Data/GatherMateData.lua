@@ -1,7 +1,7 @@
 -- nearby check yes/no? slowdown may be an isue if someone leaves the mod enabled and always replace node
 local GatherMateData = LibStub("AceAddon-3.0"):NewAddon("GatherMate2_Data")
 local GatherMate = LibStub("AceAddon-3.0"):GetAddon("GatherMate2")
-GatherMateData.generatedVersion = "504"
+GatherMateData.generatedVersion = "514"
 
 function GatherMateData:PerformMerge(dbs,style, zoneFilter)
 	local filter = nil -- Removed expansion filters
@@ -9,6 +9,7 @@ function GatherMateData:PerformMerge(dbs,style, zoneFilter)
 	if dbs["Herbs"]    then self:MergeHerbs(style ~= "Merge",filter) end
 	if dbs["Fish"]     then self:MergeFish(style ~= "Merge",filter) end
 	if dbs["Treasure"] then self:MergeTreasure(style ~= "Merge",filter) end
+	if dbs["Gases"]    then self:MergeGas(style ~= "Merge",filter) end
 	self:CleanupImportData()
 	GatherMate:SendMessage("GatherMateData2Import")
 	--GatherMate:CleanupDB()
@@ -58,9 +59,21 @@ function GatherMateData:MergeTreasure(clear,zoneFilter)
 	end
 end
 
+function GatherMateData:MergeGas(clear,zoneFilter)
+	if clear then GatherMate:ClearDB("Extract Gas") end
+	for zoneID, node_table in pairs(GatherMateData2GasDB) do
+		if not zoneFilter or zoneFilter[zoneID] then
+			for coord, nodeID in pairs(node_table) do
+				GatherMate:InjectNode2(zoneID,coord,"Extract Gas", nodeID)
+			end
+		end
+	end
+end
+
 function GatherMateData:CleanupImportData()
 	GatherMateData2HerbDB = nil
 	GatherMateData2MineDB = nil
 	GatherMateData2FishDB = nil
 	GatherMateData2TreasureDB = nil
+	GatherMateData2GasDB = nil
 end

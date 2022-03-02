@@ -24,6 +24,7 @@ local Player = Quartz3:NewModule(MODNAME, "AceEvent-3.0")
 
 local UnitCastingInfo, UnitChannelInfo = UnitCastingInfo, UnitChannelInfo
 
+local WoWRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
 local WoWBC = (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
 
 ----------------------------
@@ -95,7 +96,7 @@ end
 
 
 function Player:OnEnable()
-	if not WoWBC then
+	if WoWRetail then
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "UpdateChannelingTicks")
 	end
 
@@ -196,8 +197,16 @@ local function setBarTicks(ticknum, duration, ticks)
 	end
 end
 
-local channelingTicks = WoWBC and {} or
-{
+local channelingTicks = WoWBC and {
+	--- BCC
+	-- mage
+	[GetSpellInfo(5143)] = 5,  -- Arcane Missiles
+	[GetSpellInfo(12051)] = 4, -- Evocation
+	[GetSpellInfo(10)] = 8,    -- Blizzard
+	-- priest
+	[GetSpellInfo(15407)] = 3, -- Mind Flay
+} or WoWRetail and {
+	--- Retail
 	-- warlock
 	[GetSpellInfo(234153)] = 5, -- drain life
 	[GetSpellInfo(198590)] = 5, -- drain soul
@@ -216,7 +225,7 @@ local channelingTicks = WoWBC and {} or
 	[GetSpellInfo(117952)] = 4, -- crackling jade lightning
 	[GetSpellInfo(191837)] = 3, -- essence font
 	[GetSpellInfo(115175)] = 8, -- soothing mist
-}
+} or {}
 
 local function getChannelingTicks(spell)
 	if not db.showticks then
@@ -232,9 +241,11 @@ end
 
 function Player:UpdateChannelingTicks()
 	local playerClass = select(2, UnitClass("player"))
-	if playerClass == "PRIEST" then
-		-- Castigation talent adds a tick to penance
-		channelingTicks[GetSpellInfo(47540)] = isTalentKnown(19752) and 4 or 3
+	if WoWRetail then
+		if playerClass == "PRIEST" then
+			-- Castigation talent adds a tick to penance
+			channelingTicks[GetSpellInfo(47540)] = isTalentKnown(19752) and 4 or 3
+		end
 	end
 end
 

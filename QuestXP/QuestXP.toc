@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: QuestXP Tracker
 ## Author: Calista
 ## Version: 0.6

@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/18/2020, 1:28:25 PM
-
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -23,7 +23,7 @@ local GameTooltip = GameTooltip
 
 local Inspect = ns.Inspect
 
----@type tdInspectSlotItem
+---@class UI.SlotItem: UI.BaseItem
 local SlotItem = ns.Addon:NewClass('UI.SlotItem', ns.UI.BaseItem)
 
 function SlotItem:Constructor()
@@ -65,18 +65,25 @@ function SlotItem:Update()
         end
 
         if quality and quality > 1 then
-            local r, g, b = GetItemQualityColor(quality)
-            self.IconBorder:SetVertexColor(r, g, b, 0.5)
-            self.IconBorder:Show()
+            self:UpdateBorder(GetItemQualityColor(quality))
         else
-            self.IconBorder:Hide()
+            self:UpdateBorder()
         end
     else
         SetItemButtonTexture(self, self:GetEmptyIcon())
-        self.IconBorder:Hide()
+        self:UpdateBorder()
     end
 
     self.hasItem = item
+end
+
+function SlotItem:UpdateBorder(r, g, b)
+    if r then
+        self.IconBorder:SetVertexColor(r, g, b, 0.5)
+        self.IconBorder:Show()
+    else
+        self.IconBorder:Hide()
+    end
 end
 
 function SlotItem:GetEmptyIcon()

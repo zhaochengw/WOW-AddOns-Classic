@@ -3,24 +3,40 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/7/2021, 12:16:52 AM
 --
-local MAJOR, MINOR = 'LibTooltipExtra-1.0', 1
+local MAJOR, MINOR = 'LibTooltipExtra-1.0', 6
 
 ---@class LibTooltipExtra-1.0
-local Lib = LibStub:NewLibrary(MAJOR, MINOR)
+local Lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not Lib then
     return
 end
 
 ---@class LibGameTooltip: GameTooltip
-local Tip = Lib.Tip or {}
-local TipMeta = Lib.TipMeta or {__index = Tip}
+local Tip = wipe(Lib.Tip or {})
+
+local function new(rawTip, obj)
+    obj = setmetatable(Mixin(obj or {}, Tip), {__index = rawTip})
+    obj:OnLoad(rawTip)
+    return obj
+end
+
+local TipCache = Lib.TipCache or setmetatable({}, {
+    __mode = 'k',
+    __index = function(t, k)
+        t[k] = new(k)
+        return t[k]
+    end,
+})
 
 Lib.Tip = Tip
-Lib.TipMeta = TipMeta
+Lib.TipCache = TipCache
+
+if oldminor and oldminor < 5 then
+    Lib.TipMeta = nil
+    setmetatable(Tip, nil)
+end
 
 _G.GameTooltipText:SetSpacing(2)
-
-setmetatable(Tip, getmetatable(GameTooltip))
 
 local cacheMeta = {
     __index = function(t, num)
@@ -51,24 +67,27 @@ function Lib.SetTooltipMoney(tip)
     moneyFrame:SetPoint('BOTTOMLEFT', r, 'BOTTOMLEFT', x, 0)
 end
 
----@return LibGameTooltip
-function Tip:New(tip)
-    local obj = {}
-    obj[0] = tip[0]
-    obj.tip = tip
-    obj.l = generateCache(tip:GetName(), 'TextLeft')
-    obj.r = generateCache(tip:GetName(), 'TextRight')
-    return setmetatable(obj, TipMeta)
+---- Tip
+
+function Tip:OnLoad(rawTip)
+    self[0] = rawTip[0]
+    self.tip = rawTip
+    self.l = self.l or generateCache(rawTip:GetName(), 'TextLeft')
+    self.r = self.r or generateCache(rawTip:GetName(), 'TextRight')
+    self.minor = MINOR
 end
 
+---@return FontString
 function Tip:GetFontStringLeft(n)
     return self.l[n]
 end
 
+---@return FontString
 function Tip:GetFontStringRight(n)
     return self.r[n]
 end
 
+---@return FontString, FontString
 function Tip:GetFontStrings(n)
     return self.l[n], self.r[n]
 end
@@ -81,6 +100,9 @@ local function AddFront(object, text)
     end
 end
 
+---@param toLine integer
+---@param textLeft string
+---@param textRight string
 function Tip:AppendLineFront(toLine, textLeft, textRight)
     if self:NumLines() >= toLine then
         local fontLeft, fontRight = self:GetFontStrings(toLine)
@@ -93,13 +115,35 @@ function Tip:AppendLineFront(toLine, textLeft, textRight)
     end
 end
 
+---@param toLine integer
+---@param text string
 function Tip:AppendLineFrontLeft(toLine, text)
     return self:AppendLineFront(toLine, text)
 end
 
+---@param toLine integer
+---@param text string
 function Tip:AppendLineFrontRight(toLine, text)
     return self:AppendLineFront(toLine, nil, text)
 end
 
----@type LibGameTooltip
-Lib.GameTooltip = Tip:New(GameTooltip)
+---- Lib
+---@param tip GameTooltip
+---@return LibGameTooltip
+function Lib:New(tip)
+    return TipCache[tip]
+end
+
+do
+    -- upgrade
+    for rawTip, obj in pairs(TipCache) do
+        new(rawTip, obj)
+    end
+end
+
+if Lib.GameTooltip then
+    new(GameTooltip, Lib.GameTooltip)
+else
+    ---@type LibGameTooltip
+    Lib.GameTooltip = Lib:New(GameTooltip)
+end

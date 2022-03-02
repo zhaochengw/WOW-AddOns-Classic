@@ -37,7 +37,7 @@ local NUM_BAG_SLOTS = NUM_BAG_SLOTS
 local INVSLOT_LAST_EQUIPPED = INVSLOT_LAST_EQUIPPED
 local ATTACHMENTS_MAX_RECEIVE = ATTACHMENTS_MAX_RECEIVE
 
----@type ns
+---@class ns
 local ns = select(2, ...)
 
 local L = ns.L
@@ -52,7 +52,7 @@ local KEYRING_FAMILY = ns.KEYRING_FAMILY
 
 local NO_RESULT = {cached = true}
 
----@type tdBag2Forever
+---@class Forever: AceAddon-3.0, AceEvent-3.0
 local Forever = ns.Addon:NewModule('Forever', 'AceEvent-3.0')
 
 function Forever:OnInitialize()
@@ -114,18 +114,45 @@ function Forever:SetupCache()
     self.player.race = select(2, UnitRace('player'))
     self.player.gender = UnitSex('player')
 
+    self:RefreshOwners()
+end
+
+function Forever:RefreshOwners()
     local owners = {}
+    local guilds = {}
+
     for k in pairs(self.realm) do
         if k ~= ns.PLAYER then
-            tinsert(owners, k)
+            if not ns.IsGuildOwner(k) then
+                tinsert(owners, k)
+            else
+                tinsert(guilds, k)
+            end
         end
     end
     sort(owners, function(a, b)
-        return self.realm[a].money > self.realm[b].money
+        return (self.realm[a].money or 0) > (self.realm[b].money or 0)
     end)
     tinsert(owners, 1, ns.PLAYER)
 
+    for _, k in ipairs(guilds) do
+        tinsert(owners, k)
+    end
+
     self.owners = owners
+end
+
+function Forever:GetGuildCache()
+    local key = ns.GetCurrentGuildOwner()
+    if not key then
+        return
+    end
+
+    if not self.realm[key] then
+        self.realm[key] = {guild = true, faction = UnitFactionGroup('player')}
+        self:RefreshOwners()
+    end
+    return self.realm[key]
 end
 
 function Forever:SetupEvents()
@@ -137,6 +164,8 @@ function Forever:SetupEvents()
     self:RegisterEvent('MAIL_SHOW')
     self:RegisterEvent('MAIL_CLOSED')
     self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+    self:RegisterEvent('GUILDBANKFRAME_CLOSED')
+    self:RegisterEvent('GUILDBANKFRAME_OPENED')
 end
 
 function Forever:UpdateData()
@@ -168,6 +197,21 @@ function Forever:BANKFRAME_CLOSED()
         self.atBank = nil
     end
     self:SendMessage('BANK_CLOSED')
+end
+
+function Forever:GUILDBANKFRAME_OPENED()
+    self.atGuildBank = true
+    self.Cacher:RemoveCache(ns.REALM, ns.GetCurrentGuildOwner())
+    self:SendMessage('GUILDBANK_OPENED')
+end
+
+function Forever:GUILDBANKFRAME_CLOSED()
+    if self.atGuildBank then
+        self:SaveGuild()
+        self.Cacher:RemoveCache(ns.REALM, ns.GetCurrentGuildOwner())
+        self.atGuildBank = nil
+    end
+    self:SendMessage('GUILDBANK_CLOSED')
 end
 
 function Forever:MAIL_SHOW()
@@ -202,10 +246,10 @@ end
 
 function Forever:ParseItem(link, count, timeout)
     if link then
-        if link:find('0:0:0:0:0:%d+:%d+:%d+:0:0') then
-            link = link:match('|H%l+:(%d+)')
+        if link:find('0:0:0:0:0:-?%d+:-?%d+:-?%d+:0:0') then
+            link = link:match('|H%l+:(-?%d+)')
         else
-            link = link:match('|H%l+:([%d:]+)')
+            link = link:match('|H%l+:([%d:-]+)')
         end
 
         local count = count and count > 1 and count or nil
@@ -228,7 +272,8 @@ function Forever:SaveBag(bag)
         items.family = not ns.IsBaseBag(bag) and select(2, GetContainerNumFreeSlots(bag)) or nil
 
         for slot = 1, size do
-            local _, count, _, _, _, _, link = GetContainerItemInfo(bag, slot)
+            local link = GetContainerItemLink(bag, slot)
+            local _, count = GetContainerItemInfo(bag, slot)
             items[slot] = self:ParseItem(link, count)
         end
     end
@@ -278,6 +323,22 @@ function Forever:SaveMail()
     self.Cacher:RemoveCache(ns.REALM, ns.PLAYER, COD_CONTAINER)
 end
 
+function Forever:SaveGuild()
+    local guild = self:GetGuildCache()
+    for i = 1, GetNumGuildBankTabs() do
+        local items = {}
+        items.size = 98
+
+        for j = 1, 98 do
+            local link = GetGuildBankItemLink(i, j)
+            local _, count = GetGuildBankItemInfo(i, j)
+            items[j] = self:ParseItem(link, count)
+        end
+
+        guild[i + 50] = items
+    end
+end
+
 function Forever:FindData(...)
     local db = self.db
     for i = 1, select('#', ...) do
@@ -295,7 +356,7 @@ end
 function Forever:GetOwnerInfo(realm, name)
     local ownerData = self:FindData(realm, name)
     if ownerData then
-        ---@type tdBag2CacheOwnerData
+
         local data = {}
         data.cached = true
         data.name = name
@@ -305,13 +366,14 @@ function Forever:GetOwnerInfo(realm, name)
         data.race = ownerData.race
         data.gender = ownerData.gender
         data.money = ownerData.money
+        data.guild = ownerData.guild
         return data
     end
     return NO_RESULT
 end
 
 function Forever:GetBagInfo(realm, name, bag)
-    ---@type tdBag2CacheBagData
+
     local data = {}
     local bagData = self:FindData(realm, name, bag)
 
@@ -362,7 +424,7 @@ end
 function Forever:GetItemInfo(realm, name, bag, slot)
     local itemData = self:FindData(realm, name, bag, slot)
     if itemData then
-        ---@type tdBag2CacheItemData
+
         local data = {}
         local link, count, timeout = strsplit(';', itemData)
 

@@ -25,4 +25,5 @@
     <Script file="UI\InspectFrame.lua"/>
     <Script file="UI\TalentFrame.lua"/>
     <Script file="UI\InspectTalent.lua"/>
+    <Script file="UI\ElvUI.lua"/>
 </Ui>

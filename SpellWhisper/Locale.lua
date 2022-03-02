@@ -17,13 +17,13 @@ L["Feedback & Update Link"] = "https://www.curseforge.com/wow/addons/spellwhispe
 
 local locale = GetLocale()
 
-if locale == "enUs" then
-	--频道名称
+if locale == "enUS" then
+	--[[频道名称
     L["off"] = true
     L["say"] = true
     L["party"] = true
     L["raid"] = true
-	L["self"] = true
+	L["self"] = true]]
 	--Tips
 	L["SPELLWHISPER TIPS"] = "|cFFBA55D3SpellWhisper|r Tips:Use |cFF00BFFF/spellwhisper|r |cFFFF4500gui|r or |cFF00BFFF/sw|r |cFFFF4500gui|r open Option Interface, Use |cFF00BFFF/spellwhisper|r |cFFFF0000in|r or |cFF00BFFF/sw|r |cFFFF0000in|r for Delay Task."
 	--输出格式化字符串
@@ -41,14 +41,14 @@ if locale == "enUs" then
 	L["SPELLWHISPER_TEXT_HEALINGFAILED"] = "<Attention>#spell# to you was failed cause by #spell_2#"
 	L["SPELLWHISPER_TEXT_BGWARNING"] = "<Controlled>[#caster#]#spell#->[#target#], Pos:[#pos#]"
 	L["SPELLWHISPER_TEXT_THREAT"] = "<Threat>[%s]->[%s]"
-	--Trades
+	--[[Trades
 	L["SPELLWHISPER_TEXT_TRADE_ERROR"] = "Trade with %s was failed, caused by %s."
 	L["SPELLWHISPER_TEXT_TRADE_SUCCEED"] = "Trade with %s was succeed."
 	L["SPELLWHISPER_TEXT_TRADE_ITEMS_RECEIVE"] = " Received #num# item(s), included #item# (#quantity#)."
 	L["SPELLWHISPER_TEXT_TRADE_ITEMS_GIVE"] = " Gave #num# item(s), included #item# (#quantity#)."
 	L["SPELLWHISPER_TEXT_TRADE_MONEY_RECEIVE"] = " Received %s."
 	L["SPELLWHISPER_TEXT_TRADE_MONEY_GIVE"] = " Gave %s."
-	L["SPELLWHISPER_TEXT_TRADE_ENCHANTMENT"] = " Item %s got Enchantment %s."
+	L["SPELLWHISPER_TEXT_TRADE_ENCHANTMENT"] = " Item %s got Enchantment %s."]]
 	--补全
 	L["SPELLWHISPER_TEXT_SWINGATTACK"] = "Swing"
 	L["SPELLWHISPER_TEXT_UNKNOWN"] = "Unknown"
@@ -193,6 +193,7 @@ elseif locale == "zhCN" then
 	L["Cast Help"] = "复活/召唤"
 	L["Self Buff"] = "自体增益"
 	L["Other"] = "失误通报"
+	L["Ignore"] = "忽略列表"
 	--输出格式化字符串
 	L["SPELLWHISPER_TEXT_THREAT"] = "<仇恨>[#mob#]->[#target#]"
     L["SPELLWHISPER_TEXT_SENTTOGROUPSTART"] = "<开始>#spell#->[#target#]"
@@ -209,14 +210,14 @@ elseif locale == "zhCN" then
 	L["SPELLWHISPER_TEXT_HEALINGFAILED"] = "<注意>对你的#spell#因[#reason#]<失败>"
 	L["SPELLWHISPER_TEXT_BGWARNING"] = "<被控>[#caster#]的#spell#->[#target#]，地点[#pos#]"
 	L["NONE"] = "不提示"
-	--交易
+	--[[交易
 	L["SPELLWHISPER_TEXT_TRADE_ERROR"] = "与<%s>的交易失败了，因为<%s>。"
 	L["SPELLWHISPER_TEXT_TRADE_SUCCEED"] = "与<%s>的交易成功了。"
 	L["SPELLWHISPER_TEXT_TRADE_MONEY_RECEIVE"] = "收入%s。"
 	L["SPELLWHISPER_TEXT_TRADE_MONEY_GIVE"] = "付出%s。"
 	L["SPELLWHISPER_TEXT_TRADE_ITEMS_RECEIVE"] = "获得#item#(#quantity#)等#num#件物品。"
 	L["SPELLWHISPER_TEXT_TRADE_ITEMS_GIVE"] = "给予#item#(#quantity#)等#num#件物品。"
-	L["SPELLWHISPER_TEXT_TRADE_ENCHANTMENT"] = "物品%s获得了附魔<%s>。"
+	L["SPELLWHISPER_TEXT_TRADE_ENCHANTMENT"] = "物品%s获得了附魔<%s>。"]]
 	--补全
 	L["SPELLWHISPER_TEXT_SWINGATTACK"] = "普通攻击"
 	L["SPELLWHISPER_TEXT_UNKNOWN"] = "未知目标"
@@ -250,7 +251,7 @@ elseif locale == "zhCN" then
 	L["Square"] = "{方块}"
 	L["Cross"] = "{十字}"
 	L["Skull"] = "{骷髅}"
-	--法术技能
+	--[[法术技能
 	L["Repentance"] = "忏悔"
 	L["Wyvern Sting"] = "翼龙钉刺"
 	L["Gouge"] = "凿击"
@@ -271,7 +272,7 @@ elseif locale == "zhCN" then
 	L["Hibernate"] = "休眠"
 	L["Shackle Undead"] = "束缚亡灵"
 	L["Banish"] = "放逐术"
-	L["Fear"] = "恐惧术"
+	L["Fear"] = "恐惧"
 	L["Howl of Terror"] = "恐惧嚎叫"
 	L["Entangling Roots"] = "纠缠根须"
 	L["Turn Undead"] = "超度亡灵"
@@ -313,7 +314,7 @@ elseif locale == "zhCN" then
 	L["Tranquilizing Shot"] = "宁神射击"
 	L["Shield Wall"] = "盾墙"
 	L["Last Stand"] = "破釜沉舟"
-	L["Gift of Life"] = "生命赐福"
+	L["Gift of Life"] = "生命赐福"]]
 	--载入提示文字
 	L["|cFFBA55D3SpellWhisper|r v%s|cFFB0C4DE is Loaded.|r"] = "|cFFBA55D3SpellWhisper|r v%s已|cFFB0C4DE成功|r加载！"
     L["Now is |cFF00FFFFEnabled|r."] = "当前已|cFF00FFFF启用|r。"
@@ -412,6 +413,7 @@ elseif locale == "zhTW" then --Taiwan is a part of China forever
     L["Cast Help"] = "復活/召喚"
     L["Self Buff"] = "自體增益"
     L["Other"] = "失誤通報"
+	L["Ignore"] = "忽略列表"
     --輸出格式化字串
     L["SPELLWHISPER_TEXT_THREAT"] = "<仇恨>[#mob#]->[#target#]"
     L["SPELLWHISPER_TEXT_SENTTOGROUPSTART"] = "<開始>#spell#->[#target#]"
@@ -469,70 +471,6 @@ elseif locale == "zhTW" then --Taiwan is a part of China forever
     L["Square"] = "{方塊}"
     L["Cross"] = "{十字}"
     L["Skull"] = "{骷髏}"
-    --法術技能
-    L["Repentance"] = "懺悔"
-    L["Wyvern Sting"] = "翼龍釘刺"
-    L["Gouge"] = "鑿擊"
-    L["Hammer of Justice"] = "制裁之錘"
-    L["Scatter Shot"] = "驅散射擊"
-    L["Blind"] = "致盲"
-    L["Sap"] = "悶棍"
-    L["Death Coil"] = "死亡纏繞"
-    L["Intimidating Shout"] = "破膽怒吼"
-	L["Psychic Scream"] = "心靈尖嘯"
-    L["Innervate"] = "啟動"
-    L["Power Infusion"] = "能量灌注"
-    L["Fear Ward"] = "防護恐懼結界"
-    L["Divine Intervention"] = "神聖干涉"
-    L["Blessing of Protection"] = "保護祝福"
-    L["Blessing of Freedom"] = "自由祝福"
-    L["Polymorph"] = "變形術"
-    L["Hibernate"] = "休眠"
-    L["Shackle Undead"] = "束縛亡靈"
-    L["Banish"] = "放逐術"
-    L["Fear"] = "恐懼術"
-    L["Howl of Terror"] = "恐懼嚎叫"
-    L["Entangling Roots"] = "糾纏根須"
-    L["Turn Undead"] = "超度亡靈"
-    L["Enslave Demon"] = "奴役惡魔"
-    L["Scare Beast"] = "恐嚇野獸"
-    L["Rebirth"] = "複生"
-    L["Resurrection"] = "復活術"
-    L["Redemption"] = "救贖"
-    L["Ancestral Spirit"] = "先祖之魂"
-    L["Ritual of Summoning"] = "召喚儀式"
-    L["Soulstone Resurrection"] = "靈魂石復活"
-    L["Holy Light"] = "聖光術"
-    L["Flash of Light"] = "聖光閃現"
-    L["Lay on Hands"] = "聖療術"
-    L["Holy Shock"] = "神聖震擊"
-    L["Lesser Healing Wave"] = "次級治療波"
-    L["Healing Wave"] = "治療波"
-    L["Chain Heal"] = "治療鏈"
-    L["Healing Touch"] = "治療之觸"
-    L["Regrowth"] = "癒合"
-    L["Rejuvenation"] = "回春術"
-    L["Swiftmend"] = "迅捷治癒"
-    L["Power Word: Shield"] = "真言術：盾"
-    L["Heal"] = "治療術"
-    L["Lesser Heal"] = "次級治療術"
-    L["Renew"] = "恢復"
-    L["Flash Heal"] = "快速治療"
-    L["Greater Heal"] = "強效治療術"
-    L["Taunt"] = "嘲諷"
-    L["Mocking Blow"] = "懲戒痛擊"
-    L["Challenging Shout"] = "挑戰怒吼"
-    L["Shield Slam"] = "盾牌猛擊"
-    L["Growl"] = "低吼"
-    L["Challenging Roar"] = "挑戰咆哮"
-    L["Kidney Shot"] = "腎擊"
-    L["Feign Death"] = "假死"
-    L["Dispel Magic"] = "驅散魔法"
-    L["Purge"] = "淨化術"
-    L["Tranquilizing Shot"] = "寧神射擊"
-    L["Shield Wall"] = "盾牆"
-    L["Last Stand"] = "破釜沉舟"
-    L["Gift of Life"] = "生命賜福"
     --載入提示文字
     L["|cFFBA55D3SpellWhisper|r v%s|cFFB0C4DE is Loaded.|r"] = "|cFFBA55D3SpellWhisper|r v%s已|cFFB0C4DE成功|r載入！"
     L["Now is |cFF00FFFFEnabled|r."] = "當前已|cFF00FFFF啟用|r。"

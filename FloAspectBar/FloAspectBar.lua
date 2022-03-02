@@ -9,10 +9,8 @@
 local VERSION
 if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 	VERSION = "8.3.27"
-elseif WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+elseif WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 	VERSION = "1.13.27"
-elseif WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
-	VERSION = "2.5.27"
 end
 
 -------------------------------------------------------------------------------
@@ -264,7 +262,7 @@ function FloAspectBar_UpdatePosition()
 		return;
 	end
 
-	local yOffset = 80;
+	local yOffset = 0;
 	local anchorFrame;
 
 	if not MainMenuBar:IsShown() and not (VehicleMenuBar and VehicleMenuBar:IsShown()) then

@@ -375,7 +375,7 @@ function XiTimers:Start(timer, time, duration)
     if self.reverseAlpha then self:SetIconAlpha(self.button.icons[timer], 0.4) end
 
     self.isAnimating = false
-    self.flashRed = TotemTimers.ActiveProfile.flashRed
+    --self.flashRed = TotemTimers.ActiveProfile.FlashRed
     --self.button.bar:SetValue(0)
     self:SetTimerBarPos(self.timerBarPos, true)
     if timer == 1 and self.hideInactive then
@@ -739,6 +739,7 @@ function XiTimers:SetBarTexture(texture)
 end
 
 function XiTimers:SetBarColor(r,g,b,a)
+    if not a then a = 1 end
     local backgroundAlpha = math.max(0, a - 0.6)
     for _,bar in pairs(self.timerBars) do 
 		bar:SetStatusBarColor(r,g,b,a)
@@ -891,9 +892,6 @@ oocframe:SetScript("OnEvent", XiTimers.OOCFaderEvent)
 local rangeManaFrame = CreateFrame("Frame")
 local lastRangeUpdate = 0
 local rangeManaCheckFrames = {}
-
-local SpellRange = LibStub("SpellRange-1.0")
-local IsSpellInRange = SpellRange.IsSpellInRange
 
 
 local function rangeManaUpdate(self, elapsed)

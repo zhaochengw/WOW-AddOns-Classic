@@ -1,0 +1,2469 @@
+<?xml version="1.0"?>
+<log>
+<logentry
+   revision="25921">
+<author>kergoth</author>
+<date>2007-01-23T21:50:43.516580Z</date>
+<paths>
+<path
+   action="M">/trunk/Acolyte/Modules/NightFall.lua</path>
+<path
+   action="M">/trunk/Chronometer/readme.txt</path>
+<path
+   action="M">/trunk/FuBar_ExperienceFu/ExperienceFu.lua</path>
+<path
+   action="M">/trunk/!!!StandaloneLibraries/README.txt</path>
+<path
+   action="M">/trunk/Cancellation/Localization.lua</path>
+<path
+   action="M">/trunk/DrDamage/Data/Shaman.lua</path>
+<path
+   action="M">/trunk/FuBar_DakSmak/Readme.txt</path>
+<path
+   action="M">/trunk/FreeRefills/Core.lua</path>
+<path
+   action="M">/trunk/Bidder/Localization/enUS.lua</path>
+<path
+   action="M">/trunk/Ace2/AceDebug-2.0/AceDebug-2.0.lua</path>
+<path
+   action="M">/trunk/BA3_SpellAbilities/SpellData.lua</path>
+<path
+   action="M">/trunk/AceBuffGroups/paladin.lua</path>
+<path
+   action="M">/trunk/BigTrouble/BigTrouble-enUS.lua</path>
+<path
+   action="M">/trunk/AEmotes_DrWho/gpl-v2.txt</path>
+<path
+   action="M">/trunk/FuBar_PetInFu/PetInFuLocals.koKR.lua</path>
+<path
+   action="M">/trunk/BulkMail/BulkMail-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_DurabilityFu/DurabilityFuLocale-koKR.lua</path>
+<path
+   action="M">/trunk/EnhancedColourPicker/EnhancedColourPicker.lua</path>
+<path
+   action="M">/trunk/Diplomat/Libs/AceLocale-2.1/AceLocale-2.1.lua</path>
+<path
+   action="M">/trunk/BabbleLib/Race/BabbleLib-Race.lua</path>
+<path
+   action="M">/trunk/Chronometer/Data/Rogue.lua</path>
+<path
+   action="M">/trunk/ChatLog/Locale-deDE.lua</path>
+<path
+   action="M">/trunk/Angler/AnglerFastSwitch.lua</path>
+<path
+   action="M">/trunk/Cosplay/Cosplay.lua</path>
+<path
+   action="M">/trunk/FuBar_PerformanceFu/PerformanceFuLocale-esES.lua</path>
+<path
+   action="M">/trunk/!!!StandaloneLibraries/makefilelist.bat</path>
+<path
+   action="M">/trunk/AutoBarConfig/AutoBarConfigSlot.xml</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/PetHealth.lua</path>
+<path
+   action="M">/trunk/FuBar_GuildFu/FuBar_GuildFuLocals.esES.lua</path>
+<path
+   action="M">/trunk/CC_Roll/CC_Roll.lua</path>
+<path
+   action="M">/trunk/FuBar_FactionsFu/Locales/FuBar_FactionsFu.enUS.lua</path>
+<path
+   action="M">/trunk/Bidder/Looting/lootframe.lua</path>
+<path
+   action="M">/trunk/Cellular/frame.lua</path>
+<path
+   action="M">/trunk/AutoBarConfig/AutoBarChooseCategory.xml</path>
+<path
+   action="M">/trunk/FuBar_DurabilityFu/DurabilityFuLocale-zhTW.lua</path>
+<path
+   action="M">/trunk/DKPmon/Logging/log.lua</path>
+<path
+   action="M">/trunk/DKPmon_ZSumAuction/custom.lua</path>
+<path
+   action="M">/trunk/BlackSheeps/BlackSheeps.lua</path>
+<path
+   action="M">/trunk/Baddiel/Baddiel.lua</path>
+<path
+   action="M">/trunk/FuBar_DebuggerFu/Bindings.xml</path>
+<path
+   action="M">/trunk/Click2Cast/Click2Cast-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar/FuBar_Panel.lua</path>
+<path
+   action="M">/trunk/AceTimer/Data/AceTimerWarlock.lua</path>
+<path
+   action="M">/trunk/ClassColors/ClassColors.lua</path>
+<path
+   action="M">/trunk/DKPmonInit/PHP/README</path>
+<path
+   action="M">/trunk/Decursive/Decursive.lua</path>
+<path
+   action="M">/trunk/Antagonist/Locals/esES.lua</path>
+<path
+   action="M">/trunk/CC_Target/CC_Target.lua</path>
+<path
+   action="M">/trunk/Fence/modules/Fence_Browse.lua</path>
+<path
+   action="M">/trunk/AceUnitFrames/AceUnitFrames.xml</path>
+<path
+   action="M">/trunk/BidHelper/BidHelper.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUIFrame-2.0.lua</path>
+<path
+   action="M">/trunk/Ace/AceLocals_deDE.lua</path>
+<path
+   action="M">/trunk/DrDamage/ReadMe.txt</path>
+<path
+   action="M">/trunk/AceFry/AceFry.xml</path>
+<path
+   action="M">/trunk/FuBarPlugin-2.0/FuBarPlugin-2.0/FuBarPlugin-2.0.lua</path>
+<path
+   action="M">/trunk/Chronometer/Core/Chronometer.lua</path>
+<path
+   action="M">/trunk/Assister/modules/Invite.lua</path>
+<path
+   action="M">/trunk/FuBar_BagFu/BagFuLocale-esES.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/Modules/Druid.lua</path>
+<path
+   action="M">/trunk/FuBar-compat-1.2/FuBarLocals-frFR.lua</path>
+<path
+   action="M">/trunk/Acolyte/Localizations/deDE.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Zone/ClosetGnome_ZoneLocale-enUS.lua</path>
+<path
+   action="M">/trunk/CC_RangeCheck/CC_RangeCheck.xml</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/DruidMana.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUICheckButton-2.0.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUIBase-2.0.lua</path>
+<path
+   action="M">/trunk/FuBar_NetStatsFu/NetStatsFu.lua</path>
+<path
+   action="M">/trunk/FuBar_PerformanceFu/PerformanceFuLocale-frFR.lua</path>
+<path
+   action="M">/trunk/Detox/locals_koKR.lua</path>
+<path
+   action="M">/trunk/Angler/AnglerModule.lua</path>
+<path
+   action="M">/trunk/AutoBar/Readme.txt</path>
+<path
+   action="M">/trunk/FuBar_GuildFu/FuBar_GuildFuLocals.frFR.lua</path>
+<path
+   action="M">/trunk/ClearFont/ClearFont.lua</path>
+<path
+   action="M">/trunk/FuBar_MageFu/Locale-enUS.lua</path>
+<path
+   action="M">/trunk/ColaLight/Core.lua</path>
+<path
+   action="M">/trunk/CC_ToolTip/CC_ToolTip.lua</path>
+<path
+   action="M">/trunk/BananaBar2/BananaBar2Locale-zhCN.lua</path>
+<path
+   action="M">/trunk/FuBar_HonorFu/HonorFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/FuBar_PetitionFu/petition.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/ClassHunter.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIFontstring.xml</path>
+<path
+   action="M">/trunk/BiGOpt/BiGOpt-frFR.lua</path>
+<path
+   action="M">/trunk/AHFavorites/README.txt</path>
+<path
+   action="M">/trunk/FuBar_HeartFu/Locale-deDE.lua</path>
+<path
+   action="M">/trunk/Detox/locals_zhTW.lua</path>
+<path
+   action="M">/trunk/Denial2/Denial2Locale-zhCN.lua</path>
+<path
+   action="M">/trunk/AceItemBid/AceItemBid.lua</path>
+<path
+   action="M">/trunk/DKPmon_CSV/importmod.lua</path>
+<path
+   action="M">/trunk/FryListDKP/Hooks.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIScrollFrame.xml</path>
+<path
+   action="M">/trunk/FuBar_NanoStatsFu/readme.txt</path>
+<path
+   action="M">/trunk/AceTimer/Data/AceTimerHunter.lua</path>
+<path
+   action="M">/trunk/FuBar_MCPFu/FuBar_MCPFu.lua</path>
+<path
+   action="M">/trunk/Antagonist/Locals/frFR.lua</path>
+<path
+   action="M">/trunk/AceWardrobe_UI/AceWardrobe_UI.lua</path>
+<path
+   action="M">/trunk/BabbleLib/BabbleLib-2.1/Babble-Zone-2.1/Babble-Zone-2.1.lua</path>
+<path
+   action="M">/trunk/BabbleLib/SpellTree/BabbleLib-SpellTree.lua</path>
+<path
+   action="M">/trunk/CooldownCount/CooldownCount.lua</path>
+<path
+   action="M">/trunk/Bidder_ZSumAuction/localization.enUS.lua</path>
+<path
+   action="M">/trunk/Decursive/localization.kr.lua</path>
+<path
+   action="M">/trunk/FuBar_MoneyFu/README.txt</path>
+<path
+   action="M">/trunk/ColdFusionShell/ColdFusionShellEditor.lua</path>
+<path
+   action="M">/trunk/ABInfo Visor/ABInfo Visor.lua</path>
+<path
+   action="M">/trunk/BigWigs_KLHTMTarget/BigWigs_KLHTMTarget.lua</path>
+<path
+   action="M">/trunk/ConsoleMage/Locale-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/ClassPriest.lua</path>
+<path
+   action="M">/trunk/FuBar_BagFu/BagFuLocale-frFR.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUICustomClass-2.0.lua</path>
+<path
+   action="M">/trunk/DrDamage/BuffScanning.lua</path>
+<path
+   action="M">/trunk/Chronometer/Data/Mage.lua</path>
+<path
+   action="M">/trunk/ArkInventory/Bindings.xml</path>
+<path
+   action="M">/trunk/DKPmon/Custom/registry.lua</path>
+<path
+   action="M">/trunk/!SurfaceControl/gpl.txt</path>
+<path
+   action="M">/trunk/FruityLoots/FruityLoots-enUS.lua</path>
+<path
+   action="M">/trunk/AH_MailCollect/AH_MailCollectLocals_deDE.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/ClassWarlockSoulLink.lua</path>
+<path
+   action="M">/trunk/AceTimer/Data/AceTimerPriest.lua</path>
+<path
+   action="M">/trunk/FuBar_BattlegroundFu/BattlegroundFu.lua</path>
+<path
+   action="M">/trunk/Combine/locals.lua</path>
+<path
+   action="M">/trunk/AceUnitFrames/MetrognomeLib.lua</path>
+<path
+   action="M">/trunk/BagSlots/BagSlots.lua</path>
+<path
+   action="M">/trunk/Antagonist/Data/Casts.lua</path>
+<path
+   action="M">/trunk/ClosetGnome/ClosetGnome.lua</path>
+<path
+   action="M">/trunk/Cartographer_Stats/Cartographer_Stats.lua</path>
+<path
+   action="M">/trunk/DKPmonInit/main.lua</path>
+<path
+   action="M">/trunk/Bidder/Looting/lootitem.lua</path>
+<path
+   action="M">/trunk/BulkMail/gui.xml</path>
+<path
+   action="M">/trunk/Cartographer/Modules/GuildPositions.lua</path>
+<path
+   action="M">/trunk/ClosetGnome/locales/koKR.lua</path>
+<path
+   action="M">/trunk/Cartographer_Fishing/LICENSE.txt</path>
+<path
+   action="M">/trunk/EasyVisor/EasyVisor.lua</path>
+<path
+   action="M">/trunk/AceUnitFrames/AceUnitFramesLocals.lua</path>
+<path
+   action="M">/trunk/Decursive/localization.tw.lua</path>
+<path
+   action="M">/trunk/Buffalo/Buffalo.xml</path>
+<path
+   action="M">/trunk/CBRipoff/core/frame.lua</path>
+<path
+   action="M">/trunk/FuBar_OutfitterFu/OutfitterFu.lua</path>
+<path
+   action="M">/trunk/AceTimer/Data/AceTimerPaladin.lua</path>
+<path
+   action="M">/trunk/FlexBar2/ButtonController.lua</path>
+<path
+   action="M">/trunk/CC_Note/Bindings.xml</path>
+<path
+   action="M">/trunk/BuffProtectorGnome/gpl.txt</path>
+<path
+   action="M">/trunk/Borked_Monitor/Borked_Monitor.lua</path>
+<path
+   action="M">/trunk/ColaMachine/Core.lua</path>
+<path
+   action="M">/trunk/FuBar_DebuggerFu/FuBar_DebuggerFu.lua</path>
+<path
+   action="M">/trunk/Assister/modules/options.lua</path>
+<path
+   action="M">/trunk/FuBar_ClockFu/README.txt</path>
+<path
+   action="M">/trunk/ElkBuffBars/EBB_Bar.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/FuBarPlugin.lua</path>
+<path
+   action="M">/trunk/Capping/localization-frFR.lua</path>
+<path
+   action="M">/trunk/DrDamage/DrDamage.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/Repairs.lua</path>
+<path
+   action="M">/trunk/BigWigs/bigwigslod.sh</path>
+<path
+   action="M">/trunk/BigWigs_TabletBars/TabletBars.lua</path>
+<path
+   action="M">/trunk/AceTimer/Mode/AceTimerKill.lua</path>
+<path
+   action="M">/trunk/FuBar_FromAViewToAKillFu/readme.txt</path>
+<path
+   action="M">/trunk/Ace/AceAddon.lua</path>
+<path
+   action="M">/trunk/Ace2/AceHook-2.0/AceHook-2.0.lua</path>
+<path
+   action="M">/trunk/BabbleLib/Babble-Zone-2.0/Babble-Zone-2.0.lua</path>
+<path
+   action="M">/trunk/CooldownTimers2/Locale-deDE.lua</path>
+<path
+   action="M">/trunk/FuBar_NanoStatsFu/NanoStatsFu.lua</path>
+<path
+   action="M">/trunk/FuBar_DebuggerFu/README.txt</path>
+<path
+   action="M">/trunk/BigWigs_LoathebTactical/readme.txt</path>
+<path
+   action="M">/trunk/DKPmon/ImpExpModules/registry.lua</path>
+<path
+   action="M">/trunk/AceTimer/Locale/AceTimerLocals_frFR.lua</path>
+<path
+   action="M">/trunk/FuBar_ModMenu/Editbox.xml</path>
+<path
+   action="M">/trunk/Decursive/Dcr_Raid.lua</path>
+<path
+   action="M">/trunk/FuBar_AEmotesFU/ReadMe.txt</path>
+<path
+   action="M">/trunk/FuBar_DurabilityFu/DurabilityFuLocale-zhCN.lua</path>
+<path
+   action="M">/trunk/FuBar-compat-1.2/FuBarLocals-deDE.lua</path>
+<path
+   action="M">/trunk/BigWigs_HealbotAssist/readme.txt</path>
+<path
+   action="M">/trunk/Bidder_ZSumAuction/zsumauction.lua</path>
+<path
+   action="M">/trunk/BiGOpt/subgroups.lua</path>
+<path
+   action="M">/trunk/FuBar_DebugFu/DebugFu.lua</path>
+<path
+   action="M">/trunk/BigWigs_Debugger/Debugger.lua</path>
+<path
+   action="M">/trunk/!!!StandaloneLibraries/install.bat</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIEditBox.lua</path>
+<path
+   action="M">/trunk/FuBar_PerformanceFu/PerformanceFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/FuBar_GarbageFu/GarbageFu_Type.lua</path>
+<path
+   action="M">/trunk/Cartographer_Treasure/Cartographer_Treasure.lua</path>
+<path
+   action="M">/trunk/BanzaiAlert/BanzaiAlert.lua</path>
+<path
+   action="M">/trunk/FuBar_GuildFu/FuBar_GuildFuLocals.deDE.lua</path>
+<path
+   action="M">/trunk/CBRipoff/locale/deDE.lua</path>
+<path
+   action="M">/trunk/CryptoLib/Crypto-1.0/Crypto-1.0.lua</path>
+<path
+   action="M">/trunk/Fence/modules/Fence_Clicks.lua</path>
+<path
+   action="M">/trunk/FuBar_ExpRepGlueFu/ExpRepGlueFu.lua</path>
+<path
+   action="M">/trunk/Cartographer_Vendors/addon.lua</path>
+<path
+   action="M">/trunk/Fence/modules/Fence_AutoFill.lua</path>
+<path
+   action="M">/trunk/ClearFont/Fonts/Calibri_v1/Info.txt</path>
+<path
+   action="M">/trunk/ClosetGnome/readme.txt</path>
+<path
+   action="M">/trunk/ElkBuffBars/EBB_BarGroup.lua</path>
+<path
+   action="M">/trunk/Fence/modules/Fence_Sort.lua</path>
+<path
+   action="M">/trunk/AutoTurnin/AutoTurnin.lua</path>
+<path
+   action="M">/trunk/ErrorMonster/license.txt</path>
+<path
+   action="M">/trunk/CC_Note/CC_Note.lua</path>
+<path
+   action="M">/trunk/AuctionSort/AuctionSort.lua</path>
+<path
+   action="M">/trunk/Ace2/AceLocale-2.0/AceLocale-2.0.lua</path>
+<path
+   action="M">/trunk/DKPmon/PointsDB/syncing.lua</path>
+<path
+   action="M">/trunk/FuBar_HerbTrackerFu/HerbTrackerFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/Antagonist/Locals/deDE.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Gossip/Locale-koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_NanoStatsFu/NanoStatsFuLocals.lua</path>
+<path
+   action="M">/trunk/EasyVisor/EasyVisorLocale.lua</path>
+<path
+   action="M">/trunk/AceUnitFrames/AceUnitFramesLocals_frFR.lua</path>
+<path
+   action="M">/trunk/Druidcom/Druidcom.xml</path>
+<path
+   action="M">/trunk/Bidder_FCZS/gpl.txt</path>
+<path
+   action="M">/trunk/Antagonist/Locals/enGB.lua</path>
+<path
+   action="M">/trunk/CC_MainAssist/CC_MainAssist.lua</path>
+<path
+   action="M">/trunk/CommChannel/README</path>
+<path
+   action="M">/trunk/EnhancedLootFrames/EnhancedLootFrames.lua</path>
+<path
+   action="M">/trunk/FuBar_DakSmak/DakSmak.lua</path>
+<path
+   action="M">/trunk/Cartographer_Quests/LICENSE.txt</path>
+<path
+   action="M">/trunk/CooldownCount/Locale.enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_BagFu/BagFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/AH_Wipe/AH_WipeLocale-deDE.lua</path>
+<path
+   action="M">/trunk/BabbleLib/BabbleLib-2.1/Babble-Class-2.1/Babble-Class-2.1.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIOptionsBox.xml</path>
+<path
+   action="M">/trunk/Caterer/Caterer.lua</path>
+<path
+   action="M">/trunk/AoFHeal/Bindings.xml</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUIFactory-2.0.lua</path>
+<path
+   action="M">/trunk/FuBar_LocationFu/README.txt</path>
+<path
+   action="M">/trunk/CommChannel/Lib/CommChannel.lua</path>
+<path
+   action="M">/trunk/BlackSheeps/ReadMe.txt</path>
+<path
+   action="M">/trunk/Detox/locals_zhCN.lua</path>
+<path
+   action="M">/trunk/AceGUI/AceGUIElement.xml</path>
+<path
+   action="M">/trunk/AutoBar/Core.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/FocusMana.lua</path>
+<path
+   action="M">/trunk/Antagonist/Data/Cooldowns.lua</path>
+<path
+   action="M">/trunk/AutoAcceptInvite/CHANGELOG.txt</path>
+<path
+   action="M">/trunk/AutoBar/Style.lua</path>
+<path
+   action="M">/trunk/AceGUI/AceGUIContainer.lua</path>
+<path
+   action="M">/trunk/ChatLog/Bindings.xml</path>
+<path
+   action="M">/trunk/AceAutoInvite/AceAutoInviteLocals.lua</path>
+<path
+   action="M">/trunk/Ace/Ace.xml</path>
+<path
+   action="M">/trunk/ArcHUD2/Core.xml</path>
+<path
+   action="M">/trunk/Chronometer/Core/Chronometer-Locale.lua</path>
+<path
+   action="M">/trunk/Cyclone/locale.koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_DakSmak/Locale-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_AmmoFu/AmmoFuLocale-esES.lua</path>
+<path
+   action="M">/trunk/FuBar_BGQueueNumber/Core.lua</path>
+<path
+   action="M">/trunk/BiGOpt/readme.txt</path>
+<path
+   action="M">/trunk/AceTimer/Locale/AceTimerLocals.lua</path>
+<path
+   action="M">/trunk/EQCompare/localization.kr.lua</path>
+<path
+   action="M">/trunk/DKPmonInit/importdata.lua</path>
+<path
+   action="M">/trunk/Ace/AceState.lua</path>
+<path
+   action="M">/trunk/AceGUI/AceGUILocals.lua</path>
+<path
+   action="M">/trunk/AEmotes_Kelly/ReadMe.txt</path>
+<path
+   action="M">/trunk/EavesDrop/localization-enUS.lua</path>
+<path
+   action="M">/trunk/AEmotes_JonyC/ReadMe.txt</path>
+<path
+   action="M">/trunk/Fizzle/Core.lua</path>
+<path
+   action="M">/trunk/DKPmon_eqDKP/gpl.txt</path>
+<path
+   action="M">/trunk/FuBar/FuBar-Locale-koKR.lua</path>
+<path
+   action="M">/trunk/Buffalo/Buffalo-koKR.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Repair.lua</path>
+<path
+   action="M">/trunk/ChatLog/ChatLog.lua</path>
+<path
+   action="M">/trunk/FuBar_PetInFu/PetInFu.lua</path>
+<path
+   action="M">/trunk/ElkBuffBar/ElkBuffBar.lua</path>
+<path
+   action="M">/trunk/Capping/localization-deDE.lua</path>
+<path
+   action="M">/trunk/FuBar-compat-1.2/FuBarLocals.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Group.lua</path>
+<path
+   action="M">/trunk/Decursive/localization.cn.lua</path>
+<path
+   action="M">/trunk/DuctTape/DuctTape.lua</path>
+<path
+   action="M">/trunk/EavesDrop/options.lua</path>
+<path
+   action="M">/trunk/FuBar_PetInfoFu/PetInfoFuLocals-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_MCPFu/README.txt</path>
+<path
+   action="M">/trunk/FuBar/FuBar-Locale-zhTW.lua</path>
+<path
+   action="M">/trunk/FuBar_DurabilityFu/DurabilityFu.lua</path>
+<path
+   action="M">/trunk/ChatLog/Locale-enUS.lua</path>
+<path
+   action="M">/trunk/Barbrawl/Barbrawl.lua</path>
+<path
+   action="M">/trunk/BananaBar2/BananaBarConstants.lua</path>
+<path
+   action="M">/trunk/AEmotes_Kelly/AEmotes_Kelly.lua</path>
+<path
+   action="M">/trunk/FuBar_DebugFu/README.txt</path>
+<path
+   action="M">/trunk/BigWigs_LoathebTactical/BigWigs_LoathebTactical.lua</path>
+<path
+   action="M">/trunk/EQCompare/localization.tw.lua</path>
+<path
+   action="M">/trunk/FryBid/FryBid.lua</path>
+<path
+   action="M">/trunk/AEmotes_JonyC/AEmotes_JonyC.lua</path>
+<path
+   action="M">/trunk/Decursive/lisez-moi.txt</path>
+<path
+   action="M">/trunk/ClosetGnome_Gatherer/ClosetGnome_Gatherer.lua</path>
+<path
+   action="M">/trunk/AceTimer/Locale/AceTimerLocals_deDE.lua</path>
+<path
+   action="M">/trunk/AH_MailCollect/AH_MailCollect.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIDropDown.xml</path>
+<path
+   action="M">/trunk/FlexBar2/ButtonTheme.lua</path>
+<path
+   action="M">/trunk/ClosetGnome/locales/zhCN.lua</path>
+<path
+   action="M">/trunk/FuBar_AmmoFu/AmmoFuLocale-frFR.lua</path>
+<path
+   action="M">/trunk/CC_Target/Bindings.xml</path>
+<path
+   action="M">/trunk/Decursive/localization.lua</path>
+<path
+   action="M">/trunk/AceTimer/Data/AceTimerMage.lua</path>
+<path
+   action="M">/trunk/Borked_Monitor/about.txt</path>
+<path
+   action="M">/trunk/EQCompare/EQCompare.lua</path>
+<path
+   action="M">/trunk/Baggins/Baggins-koKR.lua</path>
+<path
+   action="M">/trunk/DKPmon/PointsDB/pointsdb.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/ADCommission.lua</path>
+<path
+   action="M">/trunk/DKPmon/DKPSystems/baseclass.lua</path>
+<path
+   action="M">/trunk/AH_MailCollect/AH_MailCollectUtil.lua</path>
+<path
+   action="M">/trunk/BagBoy2/BagBoy2Menu.lua</path>
+<path
+   action="M">/trunk/EmbedLib/EmbedLib.lua</path>
+<path
+   action="M">/trunk/FuBar_CRDelayFu/CRDelayFu.lua</path>
+<path
+   action="M">/trunk/FuBar_GroupFu/GroupFuLocal-koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/Minipet.lua</path>
+<path
+   action="M">/trunk/DrDamage/Data/Warlock.lua</path>
+<path
+   action="M">/trunk/Angler/AnglerSetChanger.lua</path>
+<path
+   action="M">/trunk/Buffalo/BuffaloDefaults.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/MirrorTimer.lua</path>
+<path
+   action="M">/trunk/Acolyte/Localizations/enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_NinjutFu/Menu.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/Mana.lua</path>
+<path
+   action="M">/trunk/FelwoodFarmer/FelwoodFarmer.lua</path>
+<path
+   action="M">/trunk/AceUnitFrames/AceUnitFramesLocals_deDE.lua</path>
+<path
+   action="M">/trunk/Fence/modules/Fence_Search.lua</path>
+<path
+   action="M">/trunk/BabbleLib/BabbleLib-2.1/Babble-Spell-2.1/Babble-Spell-2.1.lua</path>
+<path
+   action="M">/trunk/Acolyte/ChatCmd.lua</path>
+<path
+   action="M">/trunk/FuBar_LockFu/LockFuLocals_deDE.lua</path>
+<path
+   action="M">/trunk/Ace2/readme.txt</path>
+<path
+   action="M">/trunk/BarAnnounce3/Core.lua</path>
+<path
+   action="M">/trunk/FuBar_PerformanceFu/README.txt</path>
+<path
+   action="M">/trunk/FuBar_HonorFu/HonorFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/BossBlock/Core.lua</path>
+<path
+   action="M">/trunk/BigWigs_HealbotAssist/SEEA-2.0-Events-Only.lua</path>
+<path
+   action="M">/trunk/DKPmon/Comm/comm.lua</path>
+<path
+   action="M">/trunk/Ace2/version history.txt</path>
+<path
+   action="M">/trunk/FlexBar2/ButtonEventHandler.lua</path>
+<path
+   action="M">/trunk/Diplomat/Libs/AceEvent-2.0/AceEvent-2.0.lua</path>
+<path
+   action="M">/trunk/FuBar_HeartFu/Locale-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_LockFu/LockFu.lua</path>
+<path
+   action="M">/trunk/AceTimer/Mode/AceTimerFade.lua</path>
+<path
+   action="M">/trunk/AHFavorites/AHFavorites.lua</path>
+<path
+   action="M">/trunk/AutoBar/AutoBarButton.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUIRegion-2.0.lua</path>
+<path
+   action="M">/trunk/BigWigs_RazuviousAssistant/BigWigs_RazuviousAssistant.lua</path>
+<path
+   action="M">/trunk/ArenaMaster/localization.lua</path>
+<path
+   action="M">/trunk/BigWigs_CommonAuras/readme.txt</path>
+<path
+   action="M">/trunk/ElfReloaded/ElfReloaded.xml</path>
+<path
+   action="M">/trunk/BarAnnounce3/Plugins/Range.lua</path>
+<path
+   action="M">/trunk/ElkBuffBars/designdocument.txt</path>
+<path
+   action="M">/trunk/FuBar_BGQueueNumber/localizations.lua</path>
+<path
+   action="M">/trunk/Chronometer/Data/Warlock.lua</path>
+<path
+   action="M">/trunk/ErrorMonster/ErrorMonster-koKR.lua</path>
+<path
+   action="M">/trunk/Acceptance/Core.lua</path>
+<path
+   action="M">/trunk/Decursive/Dcr_lists.lua</path>
+<path
+   action="M">/trunk/BagBoy2/BagBoy2Glue.lua</path>
+<path
+   action="M">/trunk/Acolyte/Core.lua</path>
+<path
+   action="M">/trunk/FuBar_AspectFu/AspectFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_MiniPerfsFu/MiniPerfsFu.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Loner.lua</path>
+<path
+   action="M">/trunk/ExoticMaterial/ExoticMaterialCats.lua</path>
+<path
+   action="M">/trunk/Detox/Bindings.xml</path>
+<path
+   action="M">/trunk/BulkMail/BulkMail.lua</path>
+<path
+   action="M">/trunk/AceBuffGroups/priest.lua</path>
+<path
+   action="M">/trunk/Ace/AceChatCmd.lua</path>
+<path
+   action="M">/trunk/Cartographer/Modules/InstanceNotes/esES.lua</path>
+<path
+   action="M">/trunk/FuBar_GCInFu/GCInFu.lua</path>
+<path
+   action="M">/trunk/FuBar_MoneyFu/MoneyFuLocale-koKR.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/ring-prototypes.txt</path>
+<path
+   action="M">/trunk/FuBar_DebuggerFu/DebuggerFuLocals.lua</path>
+<path
+   action="M">/trunk/BarAnnounce3/Plugins/TestSuite.lua</path>
+<path
+   action="M">/trunk/BarAnnounce3/Comms.lua</path>
+<path
+   action="M">/trunk/EtchASketch/nodist/makeworker.lua</path>
+<path
+   action="M">/trunk/FuBar_MoneyFu/MoneyFuLocale-zhTW.lua</path>
+<path
+   action="M">/trunk/ElkBuffBar/readme.txt</path>
+<path
+   action="M">/trunk/BulkMail/BulkMailUtil.lua</path>
+<path
+   action="M">/trunk/BananaBar2/BananaBar2TargetScanner.lua</path>
+<path
+   action="M">/trunk/FuBar_GarbageFu/GarbageFu_Vendor.lua</path>
+<path
+   action="M">/trunk/FuBar_AmmoFu/AmmoFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/EtchASketch/ed_worker.lua</path>
+<path
+   action="M">/trunk/Bartender3/locales/Bartender3-koKR.lua</path>
+<path
+   action="M">/trunk/CBRipoff/core/cbripoff.lua</path>
+<path
+   action="M">/trunk/FelwoodFarmer/localisation.deDE.lua</path>
+<path
+   action="M">/trunk/DrDamage/Data/Paladin.lua</path>
+<path
+   action="M">/trunk/BlackSheeps/BlackSheeps.xml</path>
+<path
+   action="M">/trunk/Automaton/modules/Stand.lua</path>
+<path
+   action="M">/trunk/BarAnnounce3/ModulePrototype.lua</path>
+<path
+   action="M">/trunk/FuBar/FuBar-Locale-zhCN.lua</path>
+<path
+   action="M">/trunk/BananaBar2/BananaBar2Locale-frFR.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/TargetMana.lua</path>
+<path
+   action="M">/trunk/CommandHistory/CommandHistory.lua</path>
+<path
+   action="M">/trunk/Decursive/Decursive.xml</path>
+<path
+   action="M">/trunk/CooldownTimers2/Locale-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_DPS/FuBar_DPS-Locale-zhTW.lua</path>
+<path
+   action="M">/trunk/EQCompare/localization.cn.lua</path>
+<path
+   action="M">/trunk/FuBar_ExpRepGlueFu/ExpRepGlueFuLocals.lua</path>
+<path
+   action="M">/trunk/DKPmon_CSV/localization.enUS.lua</path>
+<path
+   action="M">/trunk/Cartographer/Modules/InstanceNotes/frFR.lua</path>
+<path
+   action="M">/trunk/CC_Target/CC_Target.xml</path>
+<path
+   action="M">/trunk/BidHelper/BidHelper.xml</path>
+<path
+   action="M">/trunk/FuBar_LogFu2/LogFu2.lua</path>
+<path
+   action="M">/trunk/BulkMail/README</path>
+<path
+   action="M">/trunk/Automaton/modules/Unshapeshift.lua</path>
+<path
+   action="M">/trunk/FuBar_KCIFu/KCIFu.lua</path>
+<path
+   action="M">/trunk/Decursive/loc_lists.txt</path>
+<path
+   action="M">/trunk/!SurfaceControl/SurfaceControl.lua</path>
+<path
+   action="M">/trunk/BuffProtectorGnome/BuffProtectorGnome.lua</path>
+<path
+   action="M">/trunk/AceWardrobe_UI/AceWardrobe_UILocals.zhcn.lua</path>
+<path
+   action="M">/trunk/Druidcom/Druidcom_Locals_frFR.lua</path>
+<path
+   action="M">/trunk/DKPmon/utils.lua</path>
+<path
+   action="M">/trunk/DKPmon_ZSumAuction/localization.enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_PetInfoFu/Bindings.xml</path>
+<path
+   action="M">/trunk/AceGUI-2.0/wowtester.lua</path>
+<path
+   action="M">/trunk/FuBar_PerformanceFu/PerformanceFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/CBRipoff/locale/enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_GuildFu/FuBar_GuildFuLocals.enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_LootTypeFu/LootTypeFu.lua</path>
+<path
+   action="M">/trunk/Chronometer/Data/Paladin.lua</path>
+<path
+   action="M">/trunk/Catalyst/Catalyst.lua</path>
+<path
+   action="M">/trunk/ChannelClean/Locale.lua</path>
+<path
+   action="M">/trunk/FuBar_MicroMenuFu/MicroMenuFuLocale-zhTW.lua</path>
+<path
+   action="M">/trunk/BabbleLib/Babble-Class-2.0/Babble-Class-2.0.lua</path>
+<path
+   action="M">/trunk/DKPmon_eqDKP/localization.enUS.lua</path>
+<path
+   action="M">/trunk/Combatotron/Combatotron.lua</path>
+<path
+   action="M">/trunk/Antagonist/Antagonist.lua</path>
+<path
+   action="M">/trunk/BiGOpt/BiGOpt-enUS.lua</path>
+<path
+   action="M">/trunk/AceWardrobe_UI/AceWardrobe_UILocals.lua</path>
+<path
+   action="M">/trunk/ChatSounds/ChatSounds.lua</path>
+<path
+   action="M">/trunk/ArkInventory/ReadMe.txt</path>
+<path
+   action="M">/trunk/AceWardrobe/AceWardrobeLocals.zhcn.lua</path>
+<path
+   action="M">/trunk/Antagonist/Locals/enUS.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUIFontInstance-2.0.lua</path>
+<path
+   action="M">/trunk/Assister/modules/Resurect.lua</path>
+<path
+   action="M">/trunk/FuBar_DurabilityFu/DurabilityFuLocale-esES.lua</path>
+<path
+   action="M">/trunk/AceSwiftShift/AceSwiftShiftLocals.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/ClassShaman.lua</path>
+<path
+   action="M">/trunk/DowJones/README</path>
+<path
+   action="M">/trunk/AceWardrobe_UI/AceWardrobe_UI.xml</path>
+<path
+   action="M">/trunk/Fizzle/Inspect.lua</path>
+<path
+   action="M">/trunk/CharacterInfoStorage/Bindings.xml</path>
+<path
+   action="M">/trunk/FuBar_LocationFu/LocationFuLocale-koKR.lua</path>
+<path
+   action="M">/trunk/Cartographer_Vendors/credits.txt</path>
+<path
+   action="M">/trunk/DeuceLog/DeuceLog.lua</path>
+<path
+   action="M">/trunk/AuldLangSyne/locales/koKR.lua</path>
+<path
+   action="M">/trunk/BananaBar2/BananaBar2.lua</path>
+<path
+   action="M">/trunk/FuBar_ClockFu/ClockFuLocale-koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_BagFu/BagFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/ColdFusionShell/ColdFusionShellEditor.xml</path>
+<path
+   action="M">/trunk/AH_Wipe/AH_WipeLocale-enUS.lua</path>
+<path
+   action="M">/trunk/Capping/WSG.lua</path>
+<path
+   action="M">/trunk/ABInfo Visor/ABInfo Visor.xml</path>
+<path
+   action="M">/trunk/Cartographer_Trainers/credits.txt</path>
+<path
+   action="M">/trunk/AceTimer/Data/AceTimerShaman.lua</path>
+<path
+   action="M">/trunk/Cartographer_Opening/addon.lua</path>
+<path
+   action="M">/trunk/Cartographer_Import/Import.lua</path>
+<path
+   action="M">/trunk/Antagonist/Data/Buffs.lua</path>
+<path
+   action="M">/trunk/Assister/modules/MoveTooltip.lua</path>
+<path
+   action="M">/trunk/FuBar-compat-1.2/FuBar-compat-1.2.lua</path>
+<path
+   action="M">/trunk/ClearFont2/Fonts/TinBirdhouse/License Info/legal_tb.txt</path>
+<path
+   action="M">/trunk/Deformat/Deformat-2.0/Deformat-2.0.lua</path>
+<path
+   action="M">/trunk/AH_MailCollect/AH_MailCollectLocals_xxXX.lua</path>
+<path
+   action="M">/trunk/FuBar_LockFu/readme.txt</path>
+<path
+   action="M">/trunk/Fizzle/FizzleLocale-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_LocationFu/LocationFuLocale-zhTW.lua</path>
+<path
+   action="M">/trunk/Druidcom/Druidcom_Druid.lua</path>
+<path
+   action="M">/trunk/FuBar_ClockFu/ClockFuLocale-zhTW.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/Tracking.lua</path>
+<path
+   action="M">/trunk/Cartographer_Treasure/LICENSE.txt</path>
+<path
+   action="M">/trunk/BanzaiAlert/license.txt</path>
+<path
+   action="M">/trunk/Fence/modules/Fence_Bookmarks.lua</path>
+<path
+   action="M">/trunk/FuBar_KeyQ/Core.lua</path>
+<path
+   action="M">/trunk/FryListDKP/FryListDKPPoints.lua</path>
+<path
+   action="M">/trunk/Decursive/DCR_init.lua</path>
+<path
+   action="M">/trunk/DrDamage/Data/Mage.lua</path>
+<path
+   action="M">/trunk/Ace/AceModule.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/Locale-koKR.lua</path>
+<path
+   action="M">/trunk/FinderReminder/locale.lua</path>
+<path
+   action="M">/trunk/DKPmon/DKPSystems/fixeddkp.lua</path>
+<path
+   action="M">/trunk/FuBar_HerbTrackerFu/HerbTrackerFu.lua</path>
+<path
+   action="M">/trunk/Ace2/AceDB-2.0/AceDB-2.0.lua</path>
+<path
+   action="M">/trunk/AutoBar/Locale-koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_KCIFu/KCIFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/AEmotes/gpl-v2.txt</path>
+<path
+   action="M">/trunk/FuBar_DurabilityFu/DurabilityFuLocale-frFR.lua</path>
+<path
+   action="M">/trunk/FuBar_CustomMenuFu/CustomMenuFu.lua</path>
+<path
+   action="M">/trunk/Capping/AB.lua</path>
+<path
+   action="M">/trunk/AoFDKP/dkp.bat</path>
+<path
+   action="M">/trunk/AutoBar/Bindings.xml</path>
+<path
+   action="M">/trunk/Borked_Monitor/Borked_Monitor.xml</path>
+<path
+   action="M">/trunk/FuBar_GarbageFu/GarbageFuLocale-koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_PoisonFu/Core.lua</path>
+<path
+   action="M">/trunk/FuBar_FriendsFu/FuBar_FriendsFuLocals.koKR.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Rez.lua</path>
+<path
+   action="M">/trunk/Deformat/LICENSE.txt</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/TargetHealth.lua</path>
+<path
+   action="M">/trunk/AutoBar/Locale-zhTW.lua</path>
+<path
+   action="M">/trunk/AoFDKP/updatedkp.exe.config</path>
+<path
+   action="M">/trunk/AceWardrobe/AceWardrobeLocals.lua</path>
+<path
+   action="M">/trunk/CVarScanner/AllWords.lua</path>
+<path
+   action="M">/trunk/BigWigs_RespawnTimers/BigWigs_RespawnTimers.lua</path>
+<path
+   action="M">/trunk/AceTimer/Data/AceTimerRogue.lua</path>
+<path
+   action="M">/trunk/BananaBar2/BananaBar2Locale-deDE.lua</path>
+<path
+   action="M">/trunk/FuBar_BagFu/README.txt</path>
+<path
+   action="M">/trunk/Automaton/modules/Release.lua</path>
+<path
+   action="M">/trunk/BabbleLib/Babble-SpellTree-2.0/Babble-SpellTree-2.0.lua</path>
+<path
+   action="M">/trunk/DrDamage/ItemSets.lua</path>
+<path
+   action="M">/trunk/FuBar_FriendsFu/FuBar_FriendsFuLocals.zhTW.lua</path>
+<path
+   action="M">/trunk/FuBar_MoneyFu/MoneyFuLocale-zhCN.lua</path>
+<path
+   action="M">/trunk/AutoBarConfig/AutoBarConfig.lua</path>
+<path
+   action="M">/trunk/DKPmon_CSV/importdata.lua</path>
+<path
+   action="M">/trunk/Cartographer/Modules/InstanceNotes/deDE.lua</path>
+<path
+   action="M">/trunk/AceItemBid/AceItemBidLocals.lua</path>
+<path
+   action="M">/trunk/AceSwiftShift/Bindings.xml</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIFrame.lua</path>
+<path
+   action="M">/trunk/Decursive/Dcr_Events.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/ModuleCore.lua</path>
+<path
+   action="M">/trunk/Diplomat/Libs/AceDB-2.0/AceDB-2.0.lua</path>
+<path
+   action="M">/trunk/Druidcom/Druidcom_Locals_deDE.lua</path>
+<path
+   action="M">/trunk/DrDamage/Localization.lua</path>
+<path
+   action="M">/trunk/Cartographer/Bindings.xml</path>
+<path
+   action="M">/trunk/AH_MailCollect/AH_MailCollectLocals.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUILayeredRegion-2.0.lua</path>
+<path
+   action="M">/trunk/BabbleLib/Babble-Spell-2.0/Babble-Spell-2.0.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIEditBox.xml</path>
+<path
+   action="M">/trunk/Decursive/GPL.txt</path>
+<path
+   action="M">/trunk/DKPmon/main.lua</path>
+<path
+   action="M">/trunk/Ace2/AceComm-2.0/AceComm-2.0.lua</path>
+<path
+   action="M">/trunk/Detox/locals_frFR.lua</path>
+<path
+   action="M">/trunk/ChatThrottleLib/ChatThrottleStats.lua</path>
+<path
+   action="M">/trunk/Bidder_FCZS/fczs.lua</path>
+<path
+   action="M">/trunk/Assister/modules/Summon.lua</path>
+<path
+   action="M">/trunk/DKPmon/README.txt</path>
+<path
+   action="M">/trunk/Decursive/Readme.txt</path>
+<path
+   action="M">/trunk/FuBar_Bartender2Fu/Bartender2Fu.lua</path>
+<path
+   action="M">/trunk/Cartographer/Scripts/pack.lua</path>
+<path
+   action="M">/trunk/AH_Wipe/AH_Wipe.lua</path>
+<path
+   action="M">/trunk/ClearFont2/Readme.txt</path>
+<path
+   action="M">/trunk/FuBar_ItemDBFu/FuBar_ItemDBFu.lua</path>
+<path
+   action="M">/trunk/FlexBar2/Core.lua</path>
+<path
+   action="M">/trunk/AutoTurnin/AutoTurnin.xml</path>
+<path
+   action="M">/trunk/ClosetGnome/locales/esES.lua</path>
+<path
+   action="M">/trunk/Capping/Capping.lua</path>
+<path
+   action="M">/trunk/CC_Note/CC_Note.xml</path>
+<path
+   action="M">/trunk/Chronometer/Data/Druid.lua</path>
+<path
+   action="M">/trunk/FuBar_BattlegroundFu/BattlegroundFuLocale-esES.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/Anchors.lua</path>
+<path
+   action="M">/trunk/FryListDKP/Points.lua</path>
+<path
+   action="M">/trunk/FuBar_FollowFu/FollowFu.lua</path>
+<path
+   action="M">/trunk/BuffMe/buffs.lua</path>
+<path
+   action="M">/trunk/Capping/localization.lua</path>
+<path
+   action="M">/trunk/FuBar_AnkhTimerFu/AnkhTimerFu.lua</path>
+<path
+   action="M">/trunk/BagBoy2/BagBoy2.lua</path>
+<path
+   action="M">/trunk/FuBar_ModMenu/Core.lua</path>
+<path
+   action="M">/trunk/Angler/MetrognomeLib.lua</path>
+<path
+   action="M">/trunk/BananaBar2/SecureActionQueue-2.0.lua</path>
+<path
+   action="M">/trunk/CompostLib/Compost-2.0/Compost-2.0.lua</path>
+<path
+   action="M">/trunk/CC_MainAssist/CC_MainAssist.xml</path>
+<path
+   action="M">/trunk/EnhancedLootFrames/EnhancedLootFrames.xml</path>
+<path
+   action="M">/trunk/ClosetGnome_BigWigs/ClosetGnome_BigWigs.lua</path>
+<path
+   action="M">/trunk/DrDamage/Data/Druid.lua</path>
+<path
+   action="M">/trunk/BattleChat/BattleChat.lua</path>
+<path
+   action="M">/trunk/FuBar_FactionsFu/FuBar_FactionsFu.options.lua</path>
+<path
+   action="M">/trunk/BA3_SpellAbilities/SpellAbilities.lua</path>
+<path
+   action="M">/trunk/BigTrouble/BigTrouble-koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_MicroMenuFu/MicroMenuFu.lua</path>
+<path
+   action="M">/trunk/AceBuffGroups/mage.lua</path>
+<path
+   action="M">/trunk/EQCompare/localization.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUITexture-2.0.lua</path>
+<path
+   action="M">/trunk/FramesResized/FramesResized.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/License.txt</path>
+<path
+   action="M">/trunk/Bidder/gpl.txt</path>
+<path
+   action="M">/trunk/Cartographer_Trainers/addon.lua</path>
+<path
+   action="M">/trunk/BarAnnounce3/FramesClass.lua</path>
+<path
+   action="M">/trunk/Ace2/AceHook-2.1/AceHook-2.1.lua</path>
+<path
+   action="M">/trunk/DKPmon/Localization/enUS.lua</path>
+<path
+   action="M">/trunk/EarPlug/Earplug.lua</path>
+<path
+   action="M">/trunk/FuBar_MageFu/Bindings.xml</path>
+<path
+   action="M">/trunk/ClosetGnome/locales/frFR.lua</path>
+<path
+   action="M">/trunk/FuBar_MCPFu/MCPFuLocals.lua</path>
+<path
+   action="M">/trunk/Ace/AceHook.lua</path>
+<path
+   action="M">/trunk/Cartographer_Vendors/gpl.txt</path>
+<path
+   action="M">/trunk/AltClickToAddItem/AltClickToAddItem.lua</path>
+<path
+   action="M">/trunk/ErrorMonster/ErrorMonster.lua</path>
+<path
+   action="M">/trunk/FuBar_DurabilityFu/DurabilityFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_OhNoes/Localization_zhCN.lua</path>
+<path
+   action="M">/trunk/Click2Cast/Click2Cast-koKR.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Locale_zhCN.lua</path>
+<path
+   action="M">/trunk/AuldLangSyne/locales/zhCN.lua</path>
+<path
+   action="M">/trunk/Ace/AceData.lua</path>
+<path
+   action="M">/trunk/Cartographer_Quests/addon.lua</path>
+<path
+   action="M">/trunk/FuBar_ClockFu/ClockFuLocale-zhCN.lua</path>
+<path
+   action="M">/trunk/FuBar_KungFu/KungFu.lua</path>
+<path
+   action="M">/trunk/ChatLog/ChatLog.xml</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/README.txt</path>
+<path
+   action="M">/trunk/Decursive/Dcr_opt.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUI-2.0.lua</path>
+<path
+   action="M">/trunk/ElkBuffBar/ElkBuffBar.xml</path>
+<path
+   action="M">/trunk/FuBar_HeyFu/Core.lua</path>
+<path
+   action="M">/trunk/Decursive/WhatsNew.txt</path>
+<path
+   action="M">/trunk/FuBar_NavigatorFu/NavigatorFu.lua</path>
+<path
+   action="M">/trunk/DKPmon/Looting/lootframe.lua</path>
+<path
+   action="M">/trunk/FuBar_GroupFu/GroupFu.lua</path>
+<path
+   action="M">/trunk/BidHelper/Locale.zhcn.lua</path>
+<path
+   action="M">/trunk/ClearFont2/Fonts/PerspectiveSans/Info.txt</path>
+<path
+   action="M">/trunk/DuctTape/DuctTape.xml</path>
+<path
+   action="M">/trunk/Barbrawl/Barbrawl.xml</path>
+<path
+   action="M">/trunk/DKPmon_eqDKP/README.txt</path>
+<path
+   action="M">/trunk/ClosetGnome_Zone/ClosetGnome_ZoneLocale-koKR.lua</path>
+<path
+   action="M">/trunk/FryListDKP/FryListDKP_ItemGUI.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Gossip/Locale-esES.lua</path>
+<path
+   action="M">/trunk/FuBar_AmmoFu/AmmoFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_ExperienceFu/ExperienceFuLocals-koKR.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIDialog.lua</path>
+<path
+   action="M">/trunk/AceGUI/AceGUIDropDown.xml</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/Locale-zhCN.lua</path>
+<path
+   action="M">/trunk/FelwoodFarmer/localisation.enUS.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Utils.lua</path>
+<path
+   action="M">/trunk/Chronometer/Data/Racial.lua</path>
+<path
+   action="M">/trunk/Cellular/core.lua</path>
+<path
+   action="M">/trunk/AutoBar/Locale-zhCN.lua</path>
+<path
+   action="M">/trunk/FuBar_ConjureFu/ConjureFuLocale-frFR.lua</path>
+<path
+   action="M">/trunk/Bidder/DKPSystems/fixeddkp.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIButton.lua</path>
+<path
+   action="M">/trunk/ClearFont/How to use the font packs.txt</path>
+<path
+   action="M">/trunk/Click2Cast/Click2Cast.lua</path>
+<path
+   action="M">/trunk/EQCompare/EQCompare.xml</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/TargetCasting.lua</path>
+<path
+   action="M">/trunk/FreezeFrameLib/Lib/FreezeFrameLib.lua</path>
+<path
+   action="M">/trunk/FuBar_ExperienceFu/ExperienceFuLocals-zhTW.lua</path>
+<path
+   action="M">/trunk/BabbleLib/BabbleLib-2.1/Babble-Boss-2.1/Babble-Boss-2.1.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/ClassHunterPetHappy.lua</path>
+<path
+   action="M">/trunk/Ace2/AceOO-2.0/AceOO-2.0.lua</path>
+<path
+   action="M">/trunk/ClearFont2/Fonts/TinBirdhouse/Info.txt</path>
+<path
+   action="M">/trunk/FuBar_ExperienceFu/ExperienceFuLocals.lua</path>
+<path
+   action="M">/trunk/DKPmon/Logging/logviewer.lua</path>
+<path
+   action="M">/trunk/Detox/locals_deDE.lua</path>
+<path
+   action="M">/trunk/EavesDrop/readme.txt</path>
+<path
+   action="M">/trunk/FuBar_ClockFu/ClockFu.lua</path>
+<path
+   action="M">/trunk/BigWigs_ThaddiusArrows/sounds/AboutSounds.txt</path>
+<path
+   action="M">/trunk/CommandHistory/CommandHistoryLocals.lua</path>
+<path
+   action="M">/trunk/BestInShow/README</path>
+<path
+   action="M">/trunk/FuBar_KungFu/KungFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_OutfitterFu/OutfitterFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/FelwoodFarmer/FelwoodFarmer.xml</path>
+<path
+   action="M">/trunk/FruityLoots/FruityLoots-koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_FuXPFu/FuXPLocals.lua</path>
+<path
+   action="M">/trunk/Fizzle/RepairCost.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Gossip/Locale-frFR.lua</path>
+<path
+   action="M">/trunk/CharacterInfo/CharacterInfo.lua</path>
+<path
+   action="M">/trunk/Ace2/AceModuleCore-2.0/AceModuleCore-2.0.lua</path>
+<path
+   action="M">/trunk/Ace/AceEvent.lua</path>
+<path
+   action="M">/trunk/Baggins/Baggins.lua</path>
+<path
+   action="M">/trunk/FuBar_MiniClockFu/MiniClockFu.lua</path>
+<path
+   action="M">/trunk/FuBar_ExpRepGlueFu/README.txt</path>
+<path
+   action="M">/trunk/AllPlayed/AllPlayed-enUS.lua</path>
+<path
+   action="M">/trunk/EnchantList/EnchantList.lua</path>
+<path
+   action="M">/trunk/FuBar/FuBar-Locale-esES.lua</path>
+<path
+   action="M">/trunk/Buffalo/Buffalo-esES.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIMoneyFrame.lua</path>
+<path
+   action="M">/trunk/AEmotes/AEMOTES.lua</path>
+<path
+   action="M">/trunk/FuBar_AssistFu/FuBar_AssistFu.lua</path>
+<path
+   action="M">/trunk/Chronometer/Data/Hunter.lua</path>
+<path
+   action="M">/trunk/AHFavorites/AHFavorites.xml</path>
+<path
+   action="M">/trunk/Diplomat/Libs/AceOO-2.0/AceOO-2.0.lua</path>
+<path
+   action="M">/trunk/Fence/Core.lua</path>
+<path
+   action="M">/trunk/FuBar_AEmotesFU/gpl-v2.txt</path>
+<path
+   action="M">/trunk/AceBuffGroups/core.lua</path>
+<path
+   action="M">/trunk/FuBar_FriendsFu/FuBar_FriendsFuOptions.lua</path>
+<path
+   action="M">/trunk/FuBar_LocationFu/LocationFu.lua</path>
+<path
+   action="M">/trunk/Ace/AceDB.lua</path>
+<path
+   action="M">/trunk/CoatHanger/CoatHanger.lua</path>
+<path
+   action="M">/trunk/FuBar_FuXPFu/FuBar_FuXPFu.lua</path>
+<path
+   action="M">/trunk/FuBar_HonorFu/README.txt</path>
+<path
+   action="M">/trunk/ClearFont2/Fonts/BaarSophia/Info.txt</path>
+<path
+   action="M">/trunk/BarAnnounce3/BarsClass.lua</path>
+<path
+   action="M">/trunk/ChatHighlighter/ChatHighlighter.lua</path>
+<path
+   action="M">/trunk/Diplomat/Libs/AceLibrary/AceLibrary.lua</path>
+<path
+   action="M">/trunk/Decursive/Dcr_lists.xml</path>
+<path
+   action="M">/trunk/AceTimer/Data/AceTimerWarrior.lua</path>
+<path
+   action="M">/trunk/ClosetGnome/locales/deDE.lua</path>
+<path
+   action="M">/trunk/Chronometer/Data/Priest.lua</path>
+<path
+   action="M">/trunk/Bidder/DKPBrowser/textline.lua</path>
+<path
+   action="M">/trunk/AceUnitFrames/AUF_Docs.txt</path>
+<path
+   action="M">/trunk/ClearFont2/Fonts/LucidaSD/Info.txt</path>
+<path
+   action="M">/trunk/BabbleLib/Babble-Boss-2.0/Babble-Boss-2.0.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/FocusHealth.lua</path>
+<path
+   action="M">/trunk/Decursive/Dcr_utils.lua</path>
+<path
+   action="M">/trunk/Cartographer_Noteshare/Cartographer_Noteshare.lua</path>
+<path
+   action="M">/trunk/Diplomat/Libs/AceConsole-2.0/AceConsole-2.0.lua</path>
+<path
+   action="M">/trunk/FuBar_FarmerFu/FarmerFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/FryListDKP/FryListDKP.lua</path>
+<path
+   action="M">/trunk/AutoAttack/Core.lua</path>
+<path
+   action="M">/trunk/FuBar/FuBar-Locale-frFR.lua</path>
+<path
+   action="M">/trunk/CharacterInfoStorage/CharacterInfoStorage.lua</path>
+<path
+   action="M">/trunk/FinderReminder/FinderReminder.lua</path>
+<path
+   action="M">/trunk/BigTrouble/BigTrouble-zhCN.lua</path>
+<path
+   action="M">/trunk/AHFavorites/AHFavLocals.lua</path>
+<path
+   action="M">/trunk/DKPmon/Looting/lootitem.lua</path>
+<path
+   action="M">/trunk/BigWigs_HealbotAssist/BigWigs_HealbotAssist.lua</path>
+<path
+   action="M">/trunk/Ace2/AceAddon-2.0/AceAddon-2.0.lua</path>
+<path
+   action="M">/trunk/Cartographer_Hotspot/Cartographer_Hotspot.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Filter.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIScrollEditBox.lua</path>
+<path
+   action="M">/trunk/BagBoy2/BagBoy2Locals.lua</path>
+<path
+   action="M">/trunk/FuBar_KCIFu/KCIFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/BigWigs/bigwigslod.bat</path>
+<path
+   action="M">/trunk/Cartographer_Icons_GathererPack/pack.lua</path>
+<path
+   action="M">/trunk/Decursive/Dcr_DebuffsFrame.lua</path>
+<path
+   action="M">/trunk/AceTimer/Mode/AceTimerCast.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_OhNoes/ClosetGnome_OhNoes.lua</path>
+<path
+   action="M">/trunk/FuBar_GarbageFu/GarbageFu.lua</path>
+<path
+   action="M">/trunk/Acolyte/Modules/SoulKeeper.lua</path>
+<path
+   action="M">/trunk/Cosplay/Bindings.xml</path>
+<path
+   action="M">/trunk/FuBar_DPS/changelog.txt</path>
+<path
+   action="M">/trunk/ArenaMaster/Core.lua</path>
+<path
+   action="M">/trunk/!StopTheSpam/Ruleset.lua</path>
+<path
+   action="M">/trunk/DKPmon/Skinning/frameskinning.lua</path>
+<path
+   action="M">/trunk/BananaBar2/BananaBar2Locale-enUS.lua</path>
+<path
+   action="M">/trunk/ColdFusionShell/Bindings.xml</path>
+<path
+   action="M">/trunk/FuBar_HeartFu/HeartFu.lua</path>
+<path
+   action="M">/trunk/Baggins/Baggins-frFR.lua</path>
+<path
+   action="M">/trunk/Denial2/Denial2Locale-enUS.lua</path>
+<path
+   action="M">/trunk/ArkInventory/ArkInventory.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/BuffTemplate.lua</path>
+<path
+   action="M">/trunk/AceGUI/AceGUI.lua</path>
+<path
+   action="M">/trunk/AceWardrobe/AceWardrobe.lua</path>
+<path
+   action="M">/trunk/DKPmon/Awarding/awardframe.lua</path>
+<path
+   action="M">/trunk/ErrorMonster/ErrorMonster-esES.lua</path>
+<path
+   action="M">/trunk/BarAnnounce3/Plugins/VersionInfo.lua</path>
+<path
+   action="M">/trunk/CooldownCount/Locale.koKR.lua</path>
+<path
+   action="M">/trunk/AEmotes_Kelly/gpl-v2.txt</path>
+<path
+   action="M">/trunk/ClearFont2/Fonts/LucidaGrande/Info.txt</path>
+<path
+   action="M">/trunk/AEmotes_JonyC/gpl-v2.txt</path>
+<path
+   action="M">/trunk/ClosetGnome_Zone/ClosetGnome_ZoneLocale-zhCN.lua</path>
+<path
+   action="M">/trunk/FuBar_PetInfoFu/PetInfoFu-readme.txt</path>
+<path
+   action="M">/trunk/DKPmon/gpl.txt</path>
+<path
+   action="M">/trunk/AutoAcceptInvite/AutoAcceptInvite.lua</path>
+<path
+   action="M">/trunk/DKPmon_FCZS/localization.enUS.lua</path>
+<path
+   action="M">/trunk/Druidcom/DruidcomDruidTemplate.xml</path>
+<path
+   action="M">/trunk/FuBar_ExperienceFu/ExperienceFuLocals-zhCN.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Gossip/Locale-deDE.lua</path>
+<path
+   action="M">/trunk/BabbleLib/BabbleLib-2.1/Babble-Race-2.1/Babble-Race-2.1.lua</path>
+<path
+   action="M">/trunk/Cancellation/Core.lua</path>
+<path
+   action="M">/trunk/FuBar_BagFu/BagFu.lua</path>
+<path
+   action="M">/trunk/BigTrouble/BigTrouble.lua</path>
+<path
+   action="M">/trunk/ExoticMaterial/Compost.lua</path>
+<path
+   action="M">/trunk/FuBar-compat-1.2/FuBarUtils.lua</path>
+<path
+   action="M">/trunk/FuBar_MoneyFu/MoneyFuLocale-esES.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/Casting.lua</path>
+<path
+   action="M">/trunk/Decursive/Bindings.xml</path>
+<path
+   action="M">/trunk/AceSwiftShift/AceSwiftShift.lua</path>
+<path
+   action="M">/trunk/FuBar_DPS/FuBar_DPS.lua</path>
+<path
+   action="M">/trunk/BigWigs_Timers/BigWigs_MCTimers.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/Health.lua</path>
+<path
+   action="M">/trunk/BagBoy2/BagBoy2RulesLocals.lua</path>
+<path
+   action="M">/trunk/FuBar_Experienced/FuBar_Experienced.lua</path>
+<path
+   action="M">/trunk/EavesDrop/localization-koKR.lua</path>
+<path
+   action="M">/trunk/Acolyte/Modules/MinionSummoner.lua</path>
+<path
+   action="M">/trunk/Capping/Arenas.lua</path>
+<path
+   action="M">/trunk/FuBar_GuildFu/FuBar_GuildFu.lua</path>
+<path
+   action="M">/trunk/BananaBar2/BananaBar2.xml</path>
+<path
+   action="M">/trunk/Bartender3/locales/Bartender3-esES.lua</path>
+<path
+   action="M">/trunk/BarAnnounce3/Gui.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/statrings.txt</path>
+<path
+   action="M">/trunk/DorjeHealingBars/DorjeHealingBars.lua</path>
+<path
+   action="M">/trunk/FuBar-compat-1.2/FuBar-compat-1.2.xml</path>
+<path
+   action="M">/trunk/Ace/AceLocals.lua</path>
+<path
+   action="M">/trunk/BigWigs_CommonAuras/CommonAuras.lua</path>
+<path
+   action="M">/trunk/Ace/README.txt</path>
+<path
+   action="M">/trunk/BarAnnounce3/Defaults.lua</path>
+<path
+   action="M">/trunk/FuBar/FuBar-Locale-deDE.lua</path>
+<path
+   action="M">/trunk/Buffalo/Buffalo-deDE.lua</path>
+<path
+   action="M">/trunk/FuBar_CombatTimeFu/FuBar_CombatTimeFu.lua</path>
+<path
+   action="M">/trunk/DKPmon_eqDKP/exportmod.lua</path>
+<path
+   action="M">/trunk/FuBar_GarbageFu_Prices/GarbageFu_Prices.lua</path>
+<path
+   action="M">/trunk/FuBar_MoneyFu/MoneyFuLocale-frFR.lua</path>
+<path
+   action="M">/trunk/AEmotes_DrWho/AEmotes_DrWho.lua</path>
+<path
+   action="M">/trunk/AceTimer/Core/AceTimerModules.lua</path>
+<path
+   action="M">/trunk/FuBar_ItemBonusesFu/ItemBonusesFu_Locale_koKR.lua</path>
+<path
+   action="M">/trunk/AutoBar/AutoBarItemList.lua</path>
+<path
+   action="M">/trunk/Cartographer_Quests/gpl.txt</path>
+<path
+   action="M">/trunk/FuBar_GuildFu/FuBar_GuildFuOptions.lua</path>
+<path
+   action="M">/trunk/FuBar_PetInFu/PetInFuLocals.enUS.lua</path>
+<path
+   action="M">/trunk/ChatLog/Locale-zhTW.lua</path>
+<path
+   action="M">/trunk/FuBar_DurabilityFu/DurabilityFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/Angler/Angler.lua</path>
+<path
+   action="M">/trunk/BabbleLib/Babble-Race-2.0/Babble-Race-2.0.lua</path>
+<path
+   action="M">/trunk/ColaLight/GPL.txt</path>
+<path
+   action="M">/trunk/Capping/AV.lua</path>
+<path
+   action="M">/trunk/FuBar_FactionItemsFu/Readme.txt</path>
+<path
+   action="M">/trunk/BugSack/gpl.txt</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/Core.lua</path>
+<path
+   action="M">/trunk/Bartender3/locales/Bartender3-frFR.lua</path>
+<path
+   action="M">/trunk/AceTargetLog/AceTargetLog.lua</path>
+<path
+   action="M">/trunk/Baggins/Baggins-deDE.lua</path>
+<path
+   action="M">/trunk/DKPmon_CSV/gpl.txt</path>
+<path
+   action="M">/trunk/DogChow/DogChow.lua</path>
+<path
+   action="M">/trunk/AutoBarConfig/AutoBarConfig.xml</path>
+<path
+   action="M">/trunk/FuBar_OutfitterFu/README.txt</path>
+<path
+   action="M">/trunk/ChatJustify/ChatJustify.lua</path>
+<path
+   action="M">/trunk/FuBar_LootTypeFu/LootTypeFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/AEmotes_DrWho/ReadMe.txt</path>
+<path
+   action="M">/trunk/CVarScanner/WikiFormatter.lua</path>
+<path
+   action="M">/trunk/Cartographer_Icons_MetaMapPack/pack.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIFrame.xml</path>
+<path
+   action="M">/trunk/ClosetGnome_OhNoes/Localization_esES.lua</path>
+<path
+   action="M">/trunk/FuBar_LocationFu/LocationFuLocale-esES.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Queue.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Locale_esES.lua</path>
+<path
+   action="M">/trunk/FuBar_GroupFu/GroupFuLocal-deDE.lua</path>
+<path
+   action="M">/trunk/AuldLangSyne/locales/esES.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/ClassMage.lua</path>
+<path
+   action="M">/trunk/FuBar_ClockFu/ClockFuLocale-esES.lua</path>
+<path
+   action="M">/trunk/AllPlayed/AllPlayed.lua</path>
+<path
+   action="M">/trunk/FuBar_Experienced/FuBar_ExperiencedLocals.lua</path>
+<path
+   action="M">/trunk/Cartographer/Libs/UTF8/utf8.lua</path>
+<path
+   action="M">/trunk/CC_Roll/CC_RollLocals.lua</path>
+<path
+   action="M">/trunk/Combine/Combine.lua</path>
+<path
+   action="M">/trunk/FuBar_HonorFu/HonorFuLocale-zhTW.lua</path>
+<path
+   action="M">/trunk/Detox/locals_enUS.lua</path>
+<path
+   action="M">/trunk/ArkInventory/Locale/deDE.lua</path>
+<path
+   action="M">/trunk/FuBar_CombatantsFu/Core.lua</path>
+<path
+   action="M">/trunk/Dock-1.0/Dock-1.0/Dock-1.0.lua</path>
+<path
+   action="M">/trunk/AbacusLib/Abacus-2.0/Abacus-2.0.lua</path>
+<path
+   action="M">/trunk/FuBar_FactionItemsFu/FactionItemsFu.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/Modules/Rogue.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/readme.txt</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/Locale-esES.lua</path>
+<path
+   action="M">/trunk/Combatants/Core.lua</path>
+<path
+   action="M">/trunk/AutoTurnin/AutoTurninGlobals.lua</path>
+<path
+   action="M">/trunk/DreamBuff/DreamBuff.lua</path>
+<path
+   action="M">/trunk/!!!StandaloneLibraries/README-BAT-FILES.txt</path>
+<path
+   action="M">/trunk/Decursive/localization.es.lua</path>
+<path
+   action="M">/trunk/AutoBar/Locale-esES.lua</path>
+<path
+   action="M">/trunk/CooldownCount/Locale.zhCN.lua</path>
+<path
+   action="M">/trunk/Cartographer/LICENSE.txt</path>
+<path
+   action="M">/trunk/FuBar_LocationFu/LocationFuLocale-frFR.lua</path>
+<path
+   action="M">/trunk/FuBar_FriendsFu/FuBar_FriendsFuLocals.esES.lua</path>
+<path
+   action="M">/trunk/BabbleLib/Class/BabbleLib-Class.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/Modules/Priest.lua</path>
+<path
+   action="M">/trunk/DKPmon/DKPSystems/registry.lua</path>
+<path
+   action="M">/trunk/FuBar_ErrorMonsterFu/ErrorMonsterFu.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Plates.lua</path>
+<path
+   action="M">/trunk/FuBar_FriendsFu/FuBar_FriendsFu.lua</path>
+<path
+   action="M">/trunk/FuBar_ClockFu/ClockFuLocale-frFR.lua</path>
+<path
+   action="M">/trunk/FuBar_PetInfoFu/PetInfoFu.lua</path>
+<path
+   action="M">/trunk/CandyBar/CandyBar-2.0/CandyBar-2.0.lua</path>
+<path
+   action="M">/trunk/ColaMachine/LICENSE.txt</path>
+<path
+   action="M">/trunk/FramesResized/FramesResized.xml</path>
+<path
+   action="M">/trunk/ChatThrottleLib/README.txt</path>
+<path
+   action="M">/trunk/Decursive/localization.fr.lua</path>
+<path
+   action="M">/trunk/Caterer/Locale-enUS.lua</path>
+<path
+   action="M">/trunk/Automaton/Core.lua</path>
+<path
+   action="M">/trunk/FuBar_MoneyFu/MoneyFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/AceTimer/Mode/AceTimerSkill.lua</path>
+<path
+   action="M">/trunk/Cartographer_Noteshare/LICENSE.txt</path>
+<path
+   action="M">/trunk/AceTimer/Core/AceTimer.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIListBox.lua</path>
+<path
+   action="M">/trunk/ClosetGnome/locales/enUS.lua</path>
+<path
+   action="M">/trunk/DKPmon/Options/options.lua</path>
+<path
+   action="M">/trunk/Bidder/Comm/comm.lua</path>
+<path
+   action="M">/trunk/FuBar_BattlegroundFu/BattlegroundFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/BagBoy2/BagBoy2Tooltip.lua</path>
+<path
+   action="M">/trunk/FuBar_AmmoFu/AmmoFu.lua</path>
+<path
+   action="M">/trunk/ChatThrottleLib/ChatThrottleLib.lua</path>
+<path
+   action="M">/trunk/Bidder/utils.lua</path>
+<path
+   action="M">/trunk/AutoBar/Locale-frFR.lua</path>
+<path
+   action="M">/trunk/Angler/AnglerEasyLure.lua</path>
+<path
+   action="M">/trunk/ColdFusionShell/ColdFusionShell.lua</path>
+<path
+   action="M">/trunk/FuBar_ConjureFu/Bindings.xml</path>
+<path
+   action="M">/trunk/ButtonNamer/ButtonNamer.lua</path>
+<path
+   action="M">/trunk/BuffMe/core.lua</path>
+<path
+   action="M">/trunk/Angler/AnglerTracker.lua</path>
+<path
+   action="M">/trunk/FuBar_GarbageFu/GarbageFuLocale-frFR.lua</path>
+<path
+   action="M">/trunk/AceBuffGroups/druid.lua</path>
+<path
+   action="M">/trunk/Bartender3/locales/Bartender3-deDE.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUI-2.0.xml</path>
+<path
+   action="M">/trunk/FuBar_FriendsFu/FuBar_FriendsFuLocals.frFR.lua</path>
+<path
+   action="M">/trunk/Bidder/Skinning/frameskinning.lua</path>
+<path
+   action="M">/trunk/Bidder/DKPstub.lua</path>
+<path
+   action="M">/trunk/FuBar_DPS/FuBar_DPS-Locale-deDE.lua</path>
+<path
+   action="M">/trunk/BiGOpt/main.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/Modules/Mage.lua</path>
+<path
+   action="M">/trunk/Decursive/localization.de.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUICheckBox.lua</path>
+<path
+   action="M">/trunk/Fence/modules/Fence_BidWatch.lua</path>
+<path
+   action="M">/trunk/BigWigs_Timers/BigWigs_AQTimers.lua</path>
+<path
+   action="M">/trunk/ChatLog/Locale-zhCN.lua</path>
+<path
+   action="M">/trunk/FuBar_CheckStoneFu/CheckStoneFu.lua</path>
+<path
+   action="M">/trunk/ColaMachine/GPL.txt</path>
+<path
+   action="M">/trunk/DKPmon_CSV/exportmod.lua</path>
+<path
+   action="M">/trunk/Babble-2.2/LICENSE.txt</path>
+<path
+   action="M">/trunk/FuBar_PerformanceFu/PerformanceFuLocale-koKR.lua</path>
+<path
+   action="M">/trunk/Cartographer_Icons/LICENSE.txt</path>
+<path
+   action="M">/trunk/DKPmon_FCZS/gpl.txt</path>
+<path
+   action="M">/trunk/FuBar_GuildFu/FuBar_GuildFuLocals.koKR.lua</path>
+<path
+   action="M">/trunk/CBRipoff/locale/koKR.lua</path>
+<path
+   action="M">/trunk/BigWigs_ZombieFood/ZombieFood.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIDialog.xml</path>
+<path
+   action="M">/trunk/DKPmonInit/README.txt</path>
+<path
+   action="M">/trunk/FuBar_ConjureFu/ConjureFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_NinjutFu/ToolTip.lua</path>
+<path
+   action="M">/trunk/FuBar_ModMenu/Localization.lua</path>
+<path
+   action="M">/trunk/FuBar_ModMenuTuFu/Core.lua</path>
+<path
+   action="M">/trunk/Bidder_FCZS/localization.enUS.lua</path>
+<path
+   action="M">/trunk/AHFavorites/AHFavLocals_deDE.lua</path>
+<path
+   action="M">/trunk/FuBar_MicroMenuFu/MicroMenuFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/EavesDrop/EavesDrop.lua</path>
+<path
+   action="M">/trunk/FuBar_PerformanceFu/PerformanceFuLocale-zhTW.lua</path>
+<path
+   action="M">/trunk/FuBar_FarmerFu/README.txt</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIButton.xml</path>
+<path
+   action="M">/trunk/Chronometer/Data/Warrior.lua</path>
+<path
+   action="M">/trunk/FuBar_GuildFu/FuBar_GuildFuLocals.zhTW.lua</path>
+<path
+   action="M">/trunk/CBRipoff/locale/zhTW.lua</path>
+<path
+   action="M">/trunk/Antagonist/Locals/koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_FarmerFu/FarmerFu.lua</path>
+<path
+   action="M">/trunk/EtchASketch/flashframe.lua</path>
+<path
+   action="M">/trunk/FuBar/FuBar.lua</path>
+<path
+   action="M">/trunk/Cartographer_Vendors/LICENSE.txt</path>
+<path
+   action="M">/trunk/AceBuffGroups/abg.xml</path>
+<path
+   action="M">/trunk/Ace2/AceLibrary/AceLibrary.lua</path>
+<path
+   action="M">/trunk/AbacusLib/LICENSE.txt</path>
+<path
+   action="M">/trunk/FuBar_ItemListFu/FuBar_ItemListFu.lua</path>
+<path
+   action="M">/trunk/Cartographer_Trainers/LICENSE.txt</path>
+<path
+   action="M">/trunk/CBRipoff/core/casting.lua</path>
+<path
+   action="M">/trunk/DogChow/LICENSE.txt</path>
+<path
+   action="M">/trunk/FuBar_BagFu/BagFuLocale-koKR.lua</path>
+<path
+   action="M">/trunk/Aperture/Aperture.lua</path>
+<path
+   action="M">/trunk/ElkBuffBars/EBBTest.lua</path>
+<path
+   action="M">/trunk/Bidder/Options/options.lua</path>
+<path
+   action="M">/trunk/!StopTheSpam/StopTheSpam.lua</path>
+<path
+   action="M">/trunk/Decursive/Downloads.txt</path>
+<path
+   action="M">/trunk/Angler/Bindings.xml</path>
+<path
+   action="M">/trunk/ArkInventory/DefaultCategories.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Gossip/Locale-enUS.lua</path>
+<path
+   action="M">/trunk/Ace2/AceConsole-2.0/AceConsole-2.0.lua</path>
+<path
+   action="M">/trunk/Acolyte/Modules/RitualofSummoning.lua</path>
+<path
+   action="M">/trunk/Fizzle/FizzleLocale-koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_HonorFu/HonorFuLocale-zhCN.lua</path>
+<path
+   action="M">/trunk/CharacterInfo/CharacterInfo.xml</path>
+<path
+   action="M">/trunk/FuBar_BagFu/BagFuLocale-zhTW.lua</path>
+<path
+   action="M">/trunk/FuBar_LocationFu/LocationFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIMoneyFrame.xml</path>
+<path
+   action="M">/trunk/ArcHUD2/Locale_deDE.lua</path>
+<path
+   action="M">/trunk/BananaBar2/BananaBar2Button.lua</path>
+<path
+   action="M">/trunk/FuBar_ClockFu/ClockFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/FuBar_FactionItemsFu/FactionItemsFuLocals.lua</path>
+<path
+   action="M">/trunk/ColdFusionShell/indent.lua</path>
+<path
+   action="M">/trunk/Cartographer_Quests/credits.txt</path>
+<path
+   action="M">/trunk/Fizzle/FizzleLocale-zhTW.lua</path>
+<path
+   action="M">/trunk/FuBar_AceWardrobeFu/core.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Gossip/GossipData.lua</path>
+<path
+   action="M">/trunk/AceTimer/Data/AceTimerDruid.lua</path>
+<path
+   action="M">/trunk/DrDamage/Data/Priest.lua</path>
+<path
+   action="M">/trunk/Assister/modules/Whisper.lua</path>
+<path
+   action="M">/trunk/BigTrouble/BigTrouble-frFR.lua</path>
+<path
+   action="M">/trunk/ClearFont2_FontPack_1/core.lua</path>
+<path
+   action="M">/trunk/BidHelper/Locale.lua</path>
+<path
+   action="M">/trunk/DKPmon/Custom/fixeddkp.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Zone/ClosetGnome_ZoneLocale-esES.lua</path>
+<path
+   action="M">/trunk/FuBar_GarbageFu/GarbageFu_Sell.lua</path>
+<path
+   action="M">/trunk/Cyclone/locale.enUS.lua</path>
+<path
+   action="M">/trunk/Chronometer/Data/Shaman.lua</path>
+<path
+   action="M">/trunk/CoatHanger/CoatHanger.xml</path>
+<path
+   action="M">/trunk/AutoBarConfig/AutoBarConfigSlot.lua</path>
+<path
+   action="M">/trunk/BestInShow/BestInShow.lua</path>
+<path
+   action="M">/trunk/Bidder/main.lua</path>
+<path
+   action="M">/trunk/FuBar_ExperienceFu/ExperienceFuLocals-esES.lua</path>
+<path
+   action="M">/trunk/BagBoy2/BagBoy2Globals.lua</path>
+<path
+   action="M">/trunk/AutoBarConfig/AutoBarChooseCategory.lua</path>
+<path
+   action="M">/trunk/FuBar_FactionsFu/Locales/FuBar_FactionsFu.frFR.lua</path>
+<path
+   action="M">/trunk/FuBar_NameToggleFu/Core.lua</path>
+<path
+   action="M">/trunk/Barf/Barf.lua</path>
+<path
+   action="M">/trunk/ColaLight/LICENSE.txt</path>
+<path
+   action="M">/trunk/AutoBar/Locale-deDE.lua</path>
+<path
+   action="M">/trunk/BabbleLib/BabbleLib-2.1/Babble-SpellTree-2.1/Babble-SpellTree-2.1.lua</path>
+<path
+   action="M">/trunk/Cartographer_Icons/addon.lua</path>
+<path
+   action="M">/trunk/FuBar/FuBar-Locale-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_GarbageFu/GarbageFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/Buffalo/Buffalo-enUS.lua</path>
+<path
+   action="M">/trunk/AceTimer/Locale/AceTimerLocals_koKR.lua</path>
+<path
+   action="M">/trunk/ClearFont2/Fonts/BaarPhilos/Info.txt</path>
+<path
+   action="M">/trunk/FryListDKP/FryListDKP.xml</path>
+<path
+   action="M">/trunk/FuBar_FriendsFu/FuBar_FriendsFuLocals.deDE.lua</path>
+<path
+   action="M">/trunk/Bidder/DKPSystems/registry.lua</path>
+<path
+   action="M">/trunk/FuBar_FromAViewToAKillFu/Locale_deDE.lua</path>
+<path
+   action="M">/trunk/EQCompare/localization.fr.lua</path>
+<path
+   action="M">/trunk/BanzaiLib/license.txt</path>
+<path
+   action="M">/trunk/AceUnitFrames/AceUnitFrames.lua</path>
+<path
+   action="M">/trunk/FryListDKP/FryListDKP_HistoryGUI.lua</path>
+<path
+   action="M">/trunk/Cartographer_Fishing/addon.lua</path>
+<path
+   action="M">/trunk/FuBar_MoneyFu/MoneyFu.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIScrollEditBox.xml</path>
+<path
+   action="M">/trunk/ArcHUD2/RingTemplate.lua</path>
+<path
+   action="M">/trunk/Assister/Core.lua</path>
+<path
+   action="M">/trunk/CooldownTimers2/fubar-plugin.lua</path>
+<path
+   action="M">/trunk/Baggins/bindings.xml</path>
+<path
+   action="M">/trunk/Automaton/modules/Gossip/Gossip.lua</path>
+<path
+   action="M">/trunk/Decursive/Dcr_DebuffsFrame.xml</path>
+<path
+   action="M">/trunk/CC_Core/CC_Core.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/LootBOP.lua</path>
+<path
+   action="M">/trunk/CC_RangeCheck/CC_RangeCheck.lua</path>
+<path
+   action="M">/trunk/EtchASketch/worker.lua</path>
+<path
+   action="M">/trunk/BigWigs_Timers/BigWigs_BWLTimers.lua</path>
+<path
+   action="M">/trunk/CrayonLib/LICENSE.txt</path>
+<path
+   action="M">/trunk/FuBar_DepositBoxFu/DepositBoxFu.lua</path>
+<path
+   action="M">/trunk/FuBar_PerformanceFu/PerformanceFu.lua</path>
+<path
+   action="M">/trunk/Engravings/EngravingsPresets.lua</path>
+<path
+   action="M">/trunk/FuBar_ExperienceFu/ExperienceFuLocals-frFR.lua</path>
+<path
+   action="M">/trunk/FuBar_NinjutFu/NinjutFu.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIFontstring.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Zone/ClosetGnome_Zone.lua</path>
+<path
+   action="M">/trunk/Diplomat/Libs/AceAddon-2.0/AceAddon-2.0.lua</path>
+<path
+   action="M">/trunk/FuBar_GreedBeacon/FuBar_GreedBeacon.lua</path>
+<path
+   action="M">/trunk/EQCompare/localization.de.lua</path>
+<path
+   action="M">/trunk/Baggins/Baggins-enUS.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIScrollFrame.lua</path>
+<path
+   action="M">/trunk/ArmchairAlchemist/ArmchairAlchemist.lua</path>
+<path
+   action="M">/trunk/CVarScanner/README.txt</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/ClassWarlock.lua</path>
+<path
+   action="M">/trunk/ArkInventory/ArkInventory.xml</path>
+<path
+   action="M">/trunk/AceGUI/AceGUI.xml</path>
+<path
+   action="M">/trunk/AceWardrobe/AceWardrobe.xml</path>
+<path
+   action="M">/trunk/FuBar_GroupFu/GroupFuLocal-enUS.lua</path>
+<path
+   action="M">/trunk/AceBuffGroups/localization.lua</path>
+<path
+   action="M">/trunk/FuBar_PetFu/PetFu.lua</path>
+<path
+   action="M">/trunk/FuBar_PerformanceFu/PerformanceFuLocale-zhCN.lua</path>
+<path
+   action="M">/trunk/Borked_Monitor/Borked_MonitorConstants.lua</path>
+<path
+   action="M">/trunk/FuBar_GuildFu/FuBar_GuildFuLocals.zhCN.lua</path>
+<path
+   action="M">/trunk/CBRipoff/locale/zhCN.lua</path>
+<path
+   action="M">/trunk/CC_MainAssist/Bindings.xml</path>
+<path
+   action="M">/trunk/AceGUI/AceGUIDropDownMenu.lua</path>
+<path
+   action="M">/trunk/CrayonLib/Crayon-2.0/Crayon-2.0.lua</path>
+<path
+   action="M">/trunk/ArkInventory/Locale/enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_GarbageFu/GarbageFu_Auction.lua</path>
+<path
+   action="M">/trunk/Antagonist/Antagonist-Options.lua</path>
+<path
+   action="M">/trunk/AEmotes/AEmotes.xml</path>
+<path
+   action="M">/trunk/DKPmon_ZSumAuction/gpl.txt</path>
+<path
+   action="M">/trunk/Druidcom/Druidcom_Locals.lua</path>
+<path
+   action="M">/trunk/Acolyte/Layout.lua</path>
+<path
+   action="M">/trunk/FuBar_ConjureFu/ConjureFu.lua</path>
+<path
+   action="M">/trunk/FuBar/LICENSE.txt</path>
+<path
+   action="M">/trunk/FixMe/FixMe.lua</path>
+<path
+   action="M">/trunk/Acolyte/Modules/StoneCreator.lua</path>
+<path
+   action="M">/trunk/FuBar_FromAViewToAKillFu/Core.lua</path>
+<path
+   action="M">/trunk/CooldownTimers2/Core.lua</path>
+<path
+   action="M">/trunk/ClosetGnome/TODO.txt</path>
+<path
+   action="M">/trunk/ClearFont/ClearFontAddons.lua</path>
+<path
+   action="M">/trunk/BulkMail/gui.lua</path>
+<path
+   action="M">/trunk/Ace2/AceLocale-2.2/AceLocale-2.2.lua</path>
+<path
+   action="M">/trunk/BabbleLib/Spell/BabbleLib-Spell.lua</path>
+<path
+   action="M">/trunk/BigTrouble/BigTrouble-deDE.lua</path>
+<path
+   action="M">/trunk/BabbleLib/Deformat/BabbleLib-Deformat.lua</path>
+<path
+   action="M">/trunk/Buffalo/Buffalo.lua</path>
+<path
+   action="M">/trunk/Bidder/DKPSystems/baseclass.lua</path>
+<path
+   action="M">/trunk/Diplomat/Core.lua</path>
+<path
+   action="M">/trunk/FuBar_BananaBar2Fu/FuBar_BananaBar2Fu.lua</path>
+<path
+   action="M">/trunk/FuBar_BagFu/BagFuLocale-zhCN.lua</path>
+<path
+   action="M">/trunk/ErrorMonster/ErrorMonster-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_HonorFu/HonorFu.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Dismount.lua</path>
+<path
+   action="M">/trunk/Fizzle/FizzleLocale-zhCN.lua</path>
+<path
+   action="M">/trunk/ChannelClean/ChannelClean.lua</path>
+<path
+   action="M">/trunk/DKPmon_FCZS/custom.lua</path>
+<path
+   action="M">/trunk/FuBar_NinjutFu/Locale-enUS.lua</path>
+<path
+   action="M">/trunk/Bits/Bits-1.0/Bits-1.0.lua</path>
+<path
+   action="M">/trunk/DewdropLib/Dewdrop-2.0/Dewdrop-2.0.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Summon.lua</path>
+<path
+   action="M">/trunk/Click2Cast/Click2Cast-deDE.lua</path>
+<path
+   action="M">/trunk/FruityLoots/FruityLoots.lua</path>
+<path
+   action="M">/trunk/AceCast/AceCast.lua</path>
+<path
+   action="M">/trunk/Buffalo/BuffaloOptions.lua</path>
+<path
+   action="M">/trunk/Bidder/DKPBrowser/browserframe.lua</path>
+<path
+   action="M">/trunk/FuBar_HerbTrackerFu/HerbTrackerFuLocale-esES.lua</path>
+<path
+   action="M">/trunk/FuBar_AmmoFu/AmmoFuLocale-koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_MageFu/Core.lua</path>
+<path
+   action="M">/trunk/FuBar_MoneyFu/MoneyFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/ClosetGnome_Switcher.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/EnergyTick.lua</path>
+<path
+   action="M">/trunk/Cartographer_Stats/LICENSE.txt</path>
+<path
+   action="M">/trunk/FelwoodFarmer/localisation.koKR.lua</path>
+<path
+   action="M">/trunk/!BugGrabber/gpl.txt</path>
+<path
+   action="M">/trunk/DKPmon/Options/optionfuncs.lua</path>
+<path
+   action="M">/trunk/FuBar_AssistFu/Bindings.xml</path>
+<path
+   action="M">/trunk/BarAnnounce3/Extensions/InstanceInfo.lua</path>
+<path
+   action="M">/trunk/EavesDrop/EavesDropStats.lua</path>
+<path
+   action="M">/trunk/FuBar_AmmoFu/AmmoFuLocale-zhTW.lua</path>
+<path
+   action="M">/trunk/!GetMoney_api/GetMoney_api.lua</path>
+<path
+   action="M">/trunk/EyeCandy/EyeCandy.lua</path>
+<path
+   action="M">/trunk/EnchantList/localization.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/ClassPaladin.lua</path>
+<path
+   action="M">/trunk/Bidder_ZSumAuction/gpl.txt</path>
+<path
+   action="M">/trunk/AutoBar/AutoBarProfile.lua</path>
+<path
+   action="M">/trunk/Bartender3/locales/Bartender3-enUS.lua</path>
+<path
+   action="M">/trunk/BuffMe/locale.enUS.lua</path>
+<path
+   action="M">/trunk/AutoBar/ChangeList.lua</path>
+<path
+   action="M">/trunk/FuBar_DPS/FuBar_DPS-Locale-enUS.lua</path>
+<path
+   action="M">/trunk/BabbleLib/Zone/BabbleLib-Zone.lua</path>
+<path
+   action="M">/trunk/FuBar_ExperienceFu/ExperienceFuLocals-deDE.lua</path>
+<path
+   action="M">/trunk/AceTargetLog/AceTargetLog.xml</path>
+<path
+   action="M">/trunk/AceGUI/README.txt</path>
+<path
+   action="M">/trunk/Decursive/QuoiDeNeuf.txt</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/PetMana.lua</path>
+<path
+   action="M">/trunk/FlexBar2/ButtonInterface.lua</path>
+<path
+   action="M">/trunk/ClearFont/Changelog.txt</path>
+<path
+   action="M">/trunk/BestInShow/BestInShowLocals.lua</path>
+<path
+   action="M">/trunk/FuBar_HerbTrackerFu/HerbTrackerFuLocale-frFR.lua</path>
+<path
+   action="M">/trunk/Druidcom/Druidcom.lua</path>
+<path
+   action="M">/trunk/FryListDKP/BidQuery.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Wuss.lua</path>
+<path
+   action="M">/trunk/FuBar_LockFu/LockFuLocals.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/Modules/Warrior.lua</path>
+<path
+   action="M">/trunk/Click2Cast/Click2CastMenu.lua</path>
+<path
+   action="M">/trunk/Acolyte/Modules/SpellCaster.lua</path>
+<path
+   action="M">/trunk/FuBar_MicroMenuFu/MicroMenuFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/CooldownCount/Locale.frFR.lua</path>
+<path
+   action="M">/trunk/AlfCast/AlfCast.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIOptionsBox.lua</path>
+<path
+   action="M">/trunk/FinderReminder/SpellButtonClass.lua</path>
+<path
+   action="M">/trunk/FuBar_ModMenu/PredefinedMenus.lua</path>
+<path
+   action="M">/trunk/Ace2/AceTab-2.0/AceTab-2.0.lua</path>
+<path
+   action="M">/trunk/AceGUI/AceGUIElement.lua</path>
+<path
+   action="M">/trunk/FruityLoots/FruityLoots-deDE.lua</path>
+<path
+   action="M">/trunk/Combine/Combine.xml</path>
+<path
+   action="M">/trunk/CC_Core/Bindings.xml</path>
+<path
+   action="M">/trunk/FuBar_ModMenu/README.txt</path>
+<path
+   action="M">/trunk/DKPmon_eqDKP/importdata.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Core.lua</path>
+<path
+   action="M">/trunk/Ace/Ace.lua</path>
+<path
+   action="M">/trunk/FuBar_LogFu2/LogFu2-enUS.lua</path>
+<path
+   action="M">/trunk/DKPmon/Roster/raid.lua</path>
+<path
+   action="M">/trunk/DeuceCommander/DeuceCommander.lua</path>
+<path
+   action="M">/trunk/FuBar_CheckStoneFu/CheckStoneFuLocals-enUS.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUISlider-2.0.lua</path>
+<path
+   action="M">/trunk/ExoticMaterial/ExoticMaterialGlobals.lua</path>
+<path
+   action="M">/trunk/Fence/modules/Fence_Wipe.lua</path>
+<path
+   action="M">/trunk/CompostLib/Lib/CompostLib.lua</path>
+<path
+   action="M">/trunk/ClosetGnome/license.txt</path>
+<path
+   action="M">/trunk/ClosetGnome_Mount/ClosetGnome_Mount.lua</path>
+<path
+   action="M">/trunk/Ace/AceCommands.lua</path>
+<path
+   action="M">/trunk/!!!StandaloneLibraries/makefilelist_wau.bat</path>
+<path
+   action="M">/trunk/BananaBar2/Bindings.xml</path>
+<path
+   action="M">/trunk/CVarScanner/CVarScanner.lua</path>
+<path
+   action="M">/trunk/FuBar_LocationFu/LocationFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/AceTimer/Mode/AceTimerAura.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Locale_enUS.lua</path>
+<path
+   action="M">/trunk/AuldLangSyne/locales/enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_ClockFu/ClockFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/BagBoy2/BagBoy2Rules.lua</path>
+<path
+   action="M">/trunk/BugSack/BugSack-esES.lua</path>
+<path
+   action="M">/trunk/Denial2/Denial2.lua</path>
+<path
+   action="M">/trunk/DKPmon/Dialogs/dialogs.lua</path>
+<path
+   action="M">/trunk/FuBar_AspectFu/AspectFu.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Banker/Banker.lua</path>
+<path
+   action="M">/trunk/FuBar_MicroMenuFu/README.txt</path>
+<path
+   action="M">/trunk/Comercio/koKR.lua</path>
+<path
+   action="M">/trunk/FuBar_FollowFu/FollowFuLocals.lua</path>
+<path
+   action="M">/trunk/DontBugMe/DontBugMe.lua</path>
+<path
+   action="M">/trunk/ClearFont2/Fonts/Franc/Info.txt</path>
+<path
+   action="M">/trunk/ChatLog/Locale-frFR.lua</path>
+<path
+   action="M">/trunk/DowJones/DowJones.lua</path>
+<path
+   action="M">/trunk/DKPmon_FCZS/fczs.lua</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIDropDown.lua</path>
+<path
+   action="M">/trunk/FuBar_MailFu/Core.lua</path>
+<path
+   action="M">/trunk/ConsoleMage/ConsoleMage.lua</path>
+<path
+   action="M">/trunk/AceTimer/Core/AceTimer.xml</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUIListBox.xml</path>
+<path
+   action="M">/trunk/EavesDrop/install.txt</path>
+<path
+   action="M">/trunk/DKPmonInit/gpl.txt</path>
+<path
+   action="M">/trunk/FuBar_HonorFu/HonorFuLocale-esES.lua</path>
+<path
+   action="M">/trunk/ClosetGnome_Switcher/Locale-enUS.lua</path>
+<path
+   action="M">/trunk/FuBar_AEmotesFU/AEmotesFU.lua</path>
+<path
+   action="M">/trunk/Aggromemnon/core.lua</path>
+<path
+   action="M">/trunk/Cartographer/Cartographer.lua</path>
+<path
+   action="M">/trunk/BananaBar2/BananaBar2Locale-koKR.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUITemplates-2.0.lua</path>
+<path
+   action="M">/trunk/AutoBar/Locale-enUS.lua</path>
+<path
+   action="M">/trunk/ChatThrottleLib/ChatThrottleLib.xml</path>
+<path
+   action="M">/trunk/ColdFusionShell/ColdFusionShell.xml</path>
+<path
+   action="M">/trunk/AutoBar/AutoBar.xml</path>
+<path
+   action="M">/trunk/DKPmon_ZSumAuction/zsumauction.lua</path>
+<path
+   action="M">/trunk/ButtonNamer/ButtonNamer.xml</path>
+<path
+   action="M">/trunk/FuBar_BGQueueNumber/network.txt</path>
+<path
+   action="M">/trunk/FuBar_GarbageFu/GarbageFuLocale-enUS.lua</path>
+<path
+   action="M">/trunk/Automaton/modules/Sell.lua</path>
+<path
+   action="M">/trunk/FuBar_FriendsFu/FuBar_FriendsFuLocals.enUS.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUIButton-2.0.lua</path>
+<path
+   action="M">/trunk/FuBar_FromAViewToAKillFu/Locale_enUS.lua</path>
+<path
+   action="M">/trunk/ExoticMaterial/ExoticMaterial.lua</path>
+<path
+   action="M">/trunk/Cyclone/core.lua</path>
+<path
+   action="M">/trunk/DKPmon_eqDKP/importmod.lua</path>
+<path
+   action="M">/trunk/Ace2/AceEvent-2.0/AceEvent-2.0.lua</path>
+<path
+   action="M">/trunk/FuBarPlugin-2.0/LICENSE.txt</path>
+<path
+   action="M">/trunk/AceGUI/elements/AceGUICheckBox.xml</path>
+<path
+   action="M">/trunk/Acolyte/Modules/MountSummoner.lua</path>
+<path
+   action="M">/trunk/FuBar_FactionsFu/FuBar_FactionsFu.lua</path>
+<path
+   action="M">/trunk/Cartographer/Modules/InstanceNotes/zhTW.lua</path>
+<path
+   action="M">/trunk/AceGUI-2.0/AceGUIFontString-2.0.lua</path>
+<path
+   action="M">/trunk/FuBar_CorkFu/ClassDruid.lua</path>
+<path
+   action="M">/trunk/Detox/Detox.lua</path>
+<path
+   action="M">/trunk/FuBar_DuraTek/Core.lua</path>
+<path
+   action="M">/trunk/FuBar_AmmoFu/AmmoFuLocale-zhCN.lua</path>
+<path
+   action="M">/trunk/Capping/options.lua</path>
+<path
+   action="M">/trunk/FuBar_HerbTrackerFu/HerbTrackerFuLocale-deDE.lua</path>
+<path
+   action="M">/trunk/DowJones/getItemDKP.pl</path>
+<path
+   action="M">/trunk/AEmotes/ReadMe.txt</path>
+<path
+   action="M">/trunk/Bidder/Options/optionfuncs.lua</path>
+<path
+   action="M">/trunk/FuBar_ExperienceFu/README.txt</path>
+<path
+   action="M">/trunk/Bidder/Dialogs/dialogs.lua</path>
+<path
+   action="M">/trunk/Bartender3_AutoBindings/Bartender3_AutoBindings.lua</path>
+<path
+   action="M">/trunk/EavesDrop/EavesDrop.xml</path>
+<path
+   action="M">/trunk/AceAutoInvite/AceAutoInvite.lua</path>
+<path
+   action="M">/trunk/BattleChat_Buffs/BattleChat_Buffs.lua</path>
+<path
+   action="M">/trunk/BananaBar2/BananaBar2AssistButton.lua</path>
+<path
+   action="M">/trunk/ArcHUD2/Rings/ComboPoints.lua</path>
+<path
+   action="M">/trunk/BabbleLib/Boss/BabbleLib-Boss.lua</path>
+<path
+   action="M">/trunk/FuBar_GarbageFu_Prices/GarbageFu_Prices_Table.lua</path>
+<path
+   action="M">/trunk/ElfReloaded/ElfReloaded.lua</path>
+<path
+   action="M">/trunk/DowJones/getPlayerDKP.pl</path>
+<path
+   action="M">/trunk/DKPmon/Looting/looting.lua</path>
+<path
+   action="M">/trunk/FuBar_DakSmak/changelog.txt</path>
+<path
+   action="M">/trunk/Baggins/libs/Sieve-0.1/Sieve-0.1.lua</path>
+<path
+   action="M">/trunk/Ace2/AceLocale-2.1/AceLocale-2.1.lua</path>
+<path
+   action="M">/trunk/FuBar_DakSmak/Locale-deDE.lua</path>
+<path
+   action="M">/trunk/DeclineDuel/DeclineDuel.lua</path>
+<path
+   action="M">/trunk/CBRipoff/core/mirror.lua</path>
+<path
+   action="M">/trunk/FuBar_FromAViewToAKillFu/Kopie von Core.lua</path>
+<path
+   action="M">/trunk/FryListDKP/FryListDKP-enUS.lua</path>
+<path
+   action="M">/trunk/ArmchairAlchemist/ArmchairAlchemistLocals.lua</path>
+<path
+   action="M">/trunk/Borked_Monitor/localisation.en.lua</path>
+<path
+   action="M">/trunk/ClearFont2/Fonts/Calibri_v0.9/Info.txt</path>
+<path
+   action="M">/trunk/Engravings/Engravings.lua</path>
+<path
+   action="M">/trunk/Cartographer_Trainers/gpl.txt</path>
+<path
+   action="M">/trunk/FuBar_KungFu/README.txt</path>
+<path
+   action="M">/trunk/EgoCast/EgoCast.lua</path>
+<path
+   action="M">/trunk/DewdropLib/LICENSE.txt</path>
+</paths>
+<msg>.Line ending fixups: trunk/</msg>
+</logentry>
+<logentry
+   revision="25760">
+<author>ckknight</author>
+<date>2007-01-22T11:06:42.655363Z</date>
+<paths>
+<path
+   action="M">/trunk/Ace2/AceEvent-2.0/AceEvent-2.0.lua</path>
+</paths>
+<msg>.AceEvent-2.0 - remove debug code</msg>
+</logentry>
+<logentry
+   revision="25759">
+<author>ckknight</author>
+<date>2007-01-22T11:06:04.497095Z</date>
+<paths>
+<path
+   action="M">/trunk/Ace2/AceEvent-2.0/AceEvent-2.0.lua</path>
+</paths>
+<msg>.AceEvent-2.0 - update the AceEvent_FullyInitialized code, apparently something between patches changed behavior. It now opens after channels join, as it should.</msg>
+</logentry>
+</log>

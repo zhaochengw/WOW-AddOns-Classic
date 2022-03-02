@@ -20,7 +20,7 @@ local PLAYER_LEVEL = PLAYER_LEVEL
 local L = ns.L
 local Inspect = ns.Inspect
 
----@type tdInspectPaperDoll
+---@class UI.PaperDoll: Object, Frame, AceEvent-3.0
 local PaperDoll = ns.Addon:NewClass('UI.PaperDoll', 'Frame')
 
 function PaperDoll:Constructor()
@@ -73,7 +73,7 @@ function PaperDoll:Constructor()
         ToggleButton:GetFontString():SetPoint('LEFT', ToggleButton, 'RIGHT', 0, 0)
         ToggleButton:SetNormalFontObject('GameFontNormalSmall')
         ToggleButton:SetHighlightFontObject('GameFontHighlightSmall')
-        ToggleButton:SetText(L['Show Modal'])
+        ToggleButton:SetText(L['Show Model'])
 
         ToggleButton:SetScript('OnClick', function(ToggleButton)
             ns.Addon.db.profile.showModel = not not ToggleButton:GetChecked()

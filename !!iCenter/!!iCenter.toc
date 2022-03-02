@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: Isler's WoWUI
 ## Notes: The console of Isler's WoWUI, includes some useful addons.
 ## Title-zhCN: |cff7fff7fIsler's WoWUI|R
@@ -52,7 +52,7 @@ Libs\LibLog-1.0\LibLog-1.0.lua
 Libs\LibCommSocket-3.0\Socket.lua
 Libs\tdGUI\Load.xml
 
-BlizzardRaidFramesFix.lua
+#BlizzardRaidFramesFix.lua
 
 # GConfirm.lua
 

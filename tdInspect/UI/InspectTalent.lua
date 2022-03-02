@@ -2,6 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/20/2020, 1:37:49 PM
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -14,7 +15,7 @@ local PanelTemplates_SetNumTabs = PanelTemplates_SetNumTabs
 local PanelTemplates_UpdateTabs = PanelTemplates_UpdateTabs
 local PanelTemplates_TabResize = PanelTemplates_TabResize
 
----@type tdInspectInspectTalentFrame
+---@class UI.InspectTalent: Object, Frame
 local InspectTalent = ns.Addon:NewClass('UI.InspectTalent', 'Frame')
 
 function InspectTalent:Constructor()
@@ -113,7 +114,6 @@ function InspectTalent:SetTab(id)
 end
 
 function InspectTalent:UpdateInfo()
-    ---@type tdInspectTalent
     local talent = ns.Talent:New(Inspect:GetUnitClassFileName(), Inspect:GetUnitTalent())
     local summaries = {}
 

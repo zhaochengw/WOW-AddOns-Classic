@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0PvP|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0PvP|r
 ## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0PvP|r
@@ -32,7 +32,7 @@
 ## X-DBM-Mod-Sort: 1500
 ## X-Curse-Project-ID: 61882
 ## X-Wago-ID: Xb6Xe0Kp
-## Version: r125
+## Version: r131
 
 localization.en.lua
 localization.br.lua
@@ -58,3 +58,6 @@ Battlegrounds\TempleOfKotmogu.lua
 Battlegrounds\TwinPeaks.lua
 Battlegrounds\Warsong.lua
 #Battlegrounds\Wintergrasp.lua
+
+## X-Vendor: NetEase
+## X-163UI-Version: 20220211134516

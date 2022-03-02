@@ -1,8 +1,8 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: FollowAuto - 自动跟随
 ## Author: Jason, LeonLin
 ## Notes: Automatically following - 自动跟随
-## Version: 1.3
+## Version: 1.1.28
 ## SavedVariables: settings
 FollowAuto.lua
 

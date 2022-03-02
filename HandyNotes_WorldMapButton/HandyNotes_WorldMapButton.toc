@@ -1,0 +1,21 @@
+## Interface: 20503
+## Title: HandyNotes_WorldMapButton
+## Version: 20503.02-BBC
+## Notes: Adds a Button to the Worldmap to toggle HandyNotes
+## Author: fuba
+## OptionalDeps: Ace3
+## RequiredDeps: HandyNotes
+
+#@no-lib-strip@
+# Library files
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\LibStub\LibStub.lua
+#@end-no-lib-strip@
+
+# Locale files
+Locale\enUS.lua
+Locale\deDE.lua
+
+# Core files
+HandyNotes_WorldMapButton.lua

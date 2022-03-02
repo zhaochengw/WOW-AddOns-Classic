@@ -1,9 +1,9 @@
 local mod	= DBM:NewMod("Attumen", "DBM-Karazhan")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210623160950")
+mod:SetRevision("20220208063318")
 mod:SetCreatureID(16151, 16152)--15550
-mod:SetEncounterID(WOW_PROJECT_ID ~= (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5) and 652 or 2444)
+mod:SetEncounterID(652, 2444)
 mod:SetModelID(16416)
 mod:SetBossHPInfoToHighest()
 
@@ -19,7 +19,7 @@ local warnKnockdown	= mod:NewSpellAnnounce(29711, 4)
 local warningCurse	= mod:NewSpellAnnounce(29833, 4)
 local warnPhase2	= mod:NewPhaseAnnounce(2)
 
-local timerCurseCD	= mod:NewCDTimer(27, 43127, nil, nil, nil, 3, nil, DBM_CORE_L.CURSE_ICON)
+local timerCurseCD	= mod:NewCDTimer(27, 29833, nil, nil, nil, 3, nil, DBM_COMMON_L.CURSE_ICON)
 
 function mod:OnCombatStart(delay)
 	self:SetStage(1)

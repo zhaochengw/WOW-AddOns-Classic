@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/21/2020, 11:22:55 AM
-
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -10,7 +10,7 @@ local tonumber = tonumber
 
 local GetNumTalentTabs = GetNumTalentTabs
 
----@type tdInspectTalent
+---@class Talent: Object
 local Talent = ns.Addon:NewClass('Talent')
 
 function Talent:Constructor(class, data)
@@ -65,6 +65,13 @@ function Talent:GetTalentInfo(tab, index)
         talent.column, --
         self.talents[tab][index], --
         talent.maxRank, talent.prereqs, self.talents[tab][index]
+    end
+end
+
+function Talent:GetTalentLink(tab, index)
+    local talent = self:_GetTalent(tab, index)
+    if talent and talent.id then
+        return format('|cff4e96f7|Htalent:%d:%d|h[%s]|h|r', talent.id, self.talents[tab][index] - 1, talent.name)
     end
 end
 

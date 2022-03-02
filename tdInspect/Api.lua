@@ -3,7 +3,7 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 2/9/2020, 1:02:09 PM
 --
----@type ns
+---@class ns
 local ns = select(2, ...)
 
 local ipairs = ipairs

@@ -1,36 +1,21 @@
-# [3.5.0](https://github.com/WeakAuras/WeakAuras2/tree/3.5.0) (2021-06-29)
+# [3.7.8](https://github.com/WeakAuras/WeakAuras2/tree/3.7.8) (2022-01-27)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/3.4.3...3.5.0)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/3.7.7...3.7.8)
 
 ## Highlights
 
- - Added a few new Patch 9.1 features
-- Performance Optimizations
-- Added BCC Encounter IDs 
+ - Bug fixes 
 
 ## Commits
 
-InfusOnWoW (8):
+Translit (1):
 
-- Make translations a bit easier
-- Add new soul bind traits and new conduits
-- Add most new legendary effects
-- Add Shards of Domination buffs
-- Move some StopMotion texture definitions to the plugin
-- Fix New from Templates adding two glows
-- Only update ViewTexture if it changed
-- Be less brain dead for updating the "eye" texture in the Options
+- additional WA logo textures (#3451)
 
-Stanzilla (2):
+mrbuds (4):
 
-- Update TOC for Patch 9.1.0
-- Update WeakAurasModelPaths from wow.tools
-
-mrbuds (1):
-
-- add bcc encounter ids and show list in correct order
-
-nullKomplex (1):
-
-- Update map of legendary ids and bonus ids. (#3170)
+- fix cast trigger for tbc 2.5.3 #3448
+- Fixing transmission and add a 5mn expiration timer on linked auras
+- fix glow in templates
+- fix bad order of aurabar foreground when importing old version, #3449
 

@@ -65,6 +65,7 @@ function C:HandleCommand(command, args)
 end
 
 C:Register("__DEFAULT__", function()
+    KT:Msg("/kt loadmessage - Toggles showing a message when AddOn loads.")
     KT:Msg("/kt target - Display number of kills on target mob.")
     KT:Msg("/kt lookup <name> - Display number of kills on <name>, <name> can also be NPC ID.")
     KT:Msg("/kt print - Toggle printing kill updates to chat.")
@@ -80,6 +81,10 @@ C:Register("__DEFAULT__", function()
     KT:Msg("/kt minimap - Toggles the minimap icon")
     KT:Msg("/kt tooltip - Toggles showing mob data in tooltip")
     KT:Msg("/kt - Displays this help message.")
+end)
+
+C:Register({"loadmessage", "lm"}, function()
+    KT:ToggleLoadMessage()
 end)
 
 C:Register({"target", "t", "tar"}, function()

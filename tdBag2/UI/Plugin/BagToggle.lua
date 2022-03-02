@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/20/2019, 2:30:12 AM
-
+--
 ---- LUA
 local select = select
 local tinsert = table.insert
@@ -25,7 +25,7 @@ local L = ns.L
 local Addon = ns.Addon
 local BAG_ID = ns.BAG_ID
 
----@type tdBag2BagToggle
+---@class UI.BagToggle: UI.MenuButton
 local BagToggle = ns.Addon:NewClass('UI.BagToggle', ns.UI.MenuButton)
 
 function BagToggle:Constructor(_, meta)

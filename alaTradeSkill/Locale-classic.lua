@@ -6,8 +6,90 @@ if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
 	return;
 end
 
+-->	fix for ptr
+local LE_ITEM_CLASS_CONSUMABLE = LE_ITEM_CLASS_CONSUMABLE or 0;
+local LE_ITEM_CLASS_CONTAINER = LE_ITEM_CLASS_CONTAINER or 1;
+local LE_ITEM_CLASS_WEAPON = LE_ITEM_CLASS_WEAPON or 2;
+local LE_ITEM_CLASS_GEM = LE_ITEM_CLASS_GEM or 3;
+local LE_ITEM_CLASS_ARMOR = LE_ITEM_CLASS_ARMOR or 4;
+local LE_ITEM_CLASS_REAGENT = LE_ITEM_CLASS_REAGENT or 5;
+local LE_ITEM_CLASS_PROJECTILE = LE_ITEM_CLASS_PROJECTILE or 6;
+local LE_ITEM_CLASS_TRADEGOODS = LE_ITEM_CLASS_TRADEGOODS or 7;
+local LE_ITEM_CLASS_ITEM_ENHANCEMENT = LE_ITEM_CLASS_ITEM_ENHANCEMENT or 8;
+local LE_ITEM_CLASS_RECIPE = LE_ITEM_CLASS_RECIPE or 9;
+local LE_ITEM_CLASS_QUIVER = LE_ITEM_CLASS_QUIVER or 11;
+local LE_ITEM_CLASS_QUESTITEM = LE_ITEM_CLASS_QUESTITEM or 12;
+local LE_ITEM_CLASS_KEY = LE_ITEM_CLASS_KEY or 13;
+local LE_ITEM_CLASS_MISCELLANEOUS = LE_ITEM_CLASS_MISCELLANEOUS or 15;
+local LE_ITEM_CLASS_GLYPH = LE_ITEM_CLASS_GLYPH or 16;
+local LE_ITEM_CLASS_BATTLEPET = LE_ITEM_CLASS_BATTLEPET or 17;
+local LE_ITEM_CLASS_WOW_TOKEN = LE_ITEM_CLASS_WOW_TOKEN or 18;
+local LE_ITEM_WEAPON_AXE1H = LE_ITEM_WEAPON_AXE1H or 0;
+local LE_ITEM_WEAPON_AXE2H = LE_ITEM_WEAPON_AXE2H or 1;
+local LE_ITEM_WEAPON_BOWS = LE_ITEM_WEAPON_BOWS or 2;
+local LE_ITEM_WEAPON_GUNS = LE_ITEM_WEAPON_GUNS or 3;
+local LE_ITEM_WEAPON_MACE1H = LE_ITEM_WEAPON_MACE1H or 4;
+local LE_ITEM_WEAPON_MACE2H = LE_ITEM_WEAPON_MACE2H or 5;
+local LE_ITEM_WEAPON_POLEARM = LE_ITEM_WEAPON_POLEARM or 6;
+local LE_ITEM_WEAPON_SWORD1H = LE_ITEM_WEAPON_SWORD1H or 7;
+local LE_ITEM_WEAPON_SWORD2H = LE_ITEM_WEAPON_SWORD2H or 8;
+local LE_ITEM_WEAPON_WARGLAIVE = LE_ITEM_WEAPON_WARGLAIVE or 9;
+local LE_ITEM_WEAPON_STAFF = LE_ITEM_WEAPON_STAFF or 10;
+local LE_ITEM_WEAPON_EXOTIC1H = LE_ITEM_WEAPON_EXOTIC1H or 11;
+local LE_ITEM_WEAPON_EXOTIC2H = LE_ITEM_WEAPON_EXOTIC2H or 12;
+local LE_ITEM_WEAPON_UNARMED = LE_ITEM_WEAPON_UNARMED or 13;
+local LE_ITEM_WEAPON_GENERIC = LE_ITEM_WEAPON_GENERIC or 14;
+local LE_ITEM_WEAPON_DAGGER = LE_ITEM_WEAPON_DAGGER or 15;
+local LE_ITEM_WEAPON_THROWN = LE_ITEM_WEAPON_THROWN or 16;
+local LE_ITEM_WEAPON_SPEAR = LE_ITEM_WEAPON_SPEAR or 17;
+local LE_ITEM_WEAPON_CROSSBOW = LE_ITEM_WEAPON_CROSSBOW or 18;
+local LE_ITEM_WEAPON_WAND = LE_ITEM_WEAPON_WAND or 19;
+local LE_ITEM_WEAPON_FISHINGPOLE = LE_ITEM_WEAPON_FISHINGPOLE or 20;
+local LE_ITEM_GEM_INTELLECT = LE_ITEM_GEM_INTELLECT or 0;
+local LE_ITEM_GEM_AGILITY = LE_ITEM_GEM_AGILITY or 1;
+local LE_ITEM_GEM_STRENGTH = LE_ITEM_GEM_STRENGTH or 2;
+local LE_ITEM_GEM_STAMINA = LE_ITEM_GEM_STAMINA or 3;
+local LE_ITEM_GEM_SPIRIT = LE_ITEM_GEM_SPIRIT or 4;
+local LE_ITEM_GEM_CRITICALSTRIKE = LE_ITEM_GEM_CRITICALSTRIKE or 5;
+local LE_ITEM_GEM_MASTERY = LE_ITEM_GEM_MASTERY or 6;
+local LE_ITEM_GEM_HASTE = LE_ITEM_GEM_HASTE or 7;
+local LE_ITEM_GEM_VERSATILITY = LE_ITEM_GEM_VERSATILITY or 8;
+--	9
+local LE_ITEM_GEM_MULTIPLESTATS = LE_ITEM_GEM_MULTIPLESTATS or 10;
+local LE_ITEM_GEM_ARTIFACTRELIC = LE_ITEM_GEM_ARTIFACTRELIC or 11;
+local LE_ITEM_ARMOR_GENERIC = LE_ITEM_ARMOR_GENERIC or 0;
+local LE_ITEM_ARMOR_CLOTH = LE_ITEM_ARMOR_CLOTH or 1;
+local LE_ITEM_ARMOR_LEATHER = LE_ITEM_ARMOR_LEATHER or 2;
+local LE_ITEM_ARMOR_MAIL = LE_ITEM_ARMOR_MAIL or 3;
+local LE_ITEM_ARMOR_PLATE = LE_ITEM_ARMOR_PLATE or 4;
+local LE_ITEM_ARMOR_COSMETIC = LE_ITEM_ARMOR_COSMETIC or 5;
+local LE_ITEM_ARMOR_SHIELD = LE_ITEM_ARMOR_SHIELD or 6;
+local LE_ITEM_ARMOR_LIBRAM = LE_ITEM_ARMOR_LIBRAM or 7;
+local LE_ITEM_ARMOR_IDOL = LE_ITEM_ARMOR_IDOL or 8;
+local LE_ITEM_ARMOR_TOTEM = LE_ITEM_ARMOR_TOTEM or 9;
+local LE_ITEM_ARMOR_SIGIL = LE_ITEM_ARMOR_SIGIL or 10;
+local LE_ITEM_ARMOR_RELIC = LE_ITEM_ARMOR_RELIC or 11;
+local LE_ITEM_RECIPE_BOOK = LE_ITEM_RECIPE_BOOK or 0;
+local LE_ITEM_RECIPE_LEATHERWORKING = LE_ITEM_RECIPE_LEATHERWORKING or 1;
+local LE_ITEM_RECIPE_TAILORING = LE_ITEM_RECIPE_TAILORING or 2;
+local LE_ITEM_RECIPE_ENGINEERING = LE_ITEM_RECIPE_ENGINEERING or 3;
+local LE_ITEM_RECIPE_BLACKSMITHING = LE_ITEM_RECIPE_BLACKSMITHING or 4;
+local LE_ITEM_RECIPE_COOKING = LE_ITEM_RECIPE_COOKING or 5;
+local LE_ITEM_RECIPE_ALCHEMY = LE_ITEM_RECIPE_ALCHEMY or 6;
+local LE_ITEM_RECIPE_FIRST_AID = LE_ITEM_RECIPE_FIRST_AID or 7;
+local LE_ITEM_RECIPE_ENCHANTING = LE_ITEM_RECIPE_ENCHANTING or 8;
+local LE_ITEM_RECIPE_FISHING = LE_ITEM_RECIPE_FISHING or 9;
+local LE_ITEM_RECIPE_JEWELCRAFTING = LE_ITEM_RECIPE_JEWELCRAFTING or 10;
+local LE_ITEM_RECIPE_INSCRIPTION = LE_ITEM_RECIPE_INSCRIPTION or 11;
+local LE_ITEM_MISCELLANEOUS_JUNK = LE_ITEM_MISCELLANEOUS_JUNK or 0;
+local LE_ITEM_MISCELLANEOUS_REAGENT = LE_ITEM_MISCELLANEOUS_REAGENT or 1;
+local LE_ITEM_MISCELLANEOUS_COMPANION_PET = LE_ITEM_MISCELLANEOUS_COMPANION_PET or 2;
+local LE_ITEM_MISCELLANEOUS_HOLIDAY = LE_ITEM_MISCELLANEOUS_HOLIDAY or 3;
+local LE_ITEM_MISCELLANEOUS_OTHER = LE_ITEM_MISCELLANEOUS_OTHER or 4;
+local LE_ITEM_MISCELLANEOUS_MOUNT = LE_ITEM_MISCELLANEOUS_MOUNT or 5;
 
-local ADDON, NS = ...;
+
+local __addon__, __namespace__ = ...;
 
 local LOCALE = GetLocale();
 local L = {
@@ -26,12 +108,24 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 	L["add_fav"] = "添加收藏";
 	L["sub_fav"] = "取消收藏";
 	L["query_who_can_craft_it"] = "谁会做它？";
-	L["showKnown"] = "已学";
+	--
 	L["showUnkown"] = "未学";
+	L["showKnown"] = "已学";
 	L["showHighRank"] = "高等级";
+	L["filterClass"] = UnitClass('player');
+	L["filterSpec"] = "专精";
 	L["showItemInsteadOfSpell"] = "物品";
 	L["showRank"] = "等级";
-	L["haveMaterials"] = "材料足够";
+	L["haveMaterials"] = "材料";
+	L["showUnkownTip"] = "显示还没学会的配方";
+	L["showKnownTip"] = "显示已经学会的配方";
+	L["showHighRankTip"] = "显示高等级的配方";
+	L["filterClassTip"] = "是否过滤掉" .. UnitClass('player') .. "不能学到的配方";
+	L["filterSpecTip"] = "是否过滤掉当前专精不能学到的配方";
+	L["showItemInsteadOfSpellTip"] = "鼠标提示显示物品而不是技能";
+	L["showRankTip"] = "显示难度等级";
+	L["haveMaterialsTip"] = "只显示有足够材料的配方";
+	--
 	L["costOnly"] = "只显示成本";
 	--
 	L["LABEL_RANK_LEVEL"] = "\124cffff7f00技能等级: \124r";
@@ -69,6 +163,9 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 	L["PRICE_DIFF+"] = "\124cff00ff00差价\124r";
 	L["PRICE_DIFF-"] = "\124cffff0000差价\124r";
 	L["PRICE_DIFF0"] = "持平";
+	L["PRICE_DIFF_AH+"] = "\124cff00ff00AH5%\124r";
+	L["PRICE_DIFF_AH-"] = "\124cffff0000AH5%\124r";
+	L["PRICE_DIFF_AH0"] = "AH";
 	L["PRICE_DIFF_INFO+"] = "\124cff00ff00利润\124r";
 	L["PRICE_DIFF_INFO-"] = "\124cffff0000亏损\124r";
 	L["CRAFT_INFO"] = "\124cffff7f00商业技能制造信息: \124r";
@@ -95,21 +192,6 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 		type = "物品类型",
 		subType = "子类型",
 		eqLoc = "装备部位",
-	};
-	L.TRADESKILL_NAME = {
-		[1] = "急救",
-		[2] = "锻造",
-		[3] = "制皮",
-		[4] = "炼金术",
-		[5] = "草药学",
-		[6] = "烹饪",
-		[7] = "采矿",
-		[8] = "裁缝",
-		[9] = "工程学",
-		[10] = "附魔",
-		[11] = "钓鱼",
-		[12] = "剥皮",
-		[13] = "毒药（盗贼）",
 	};
 	L.ITEM_TYPE_LIST = {
 		[LE_ITEM_CLASS_CONSUMABLE] = "消耗品",				--	0	Consumable
@@ -338,8 +420,7 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 		[5] = "胸部",
 		[6] = "腰部",
 		[7] = "腿部",
-		[8] = "脚",
-		[8] = "腿部",
+		[8] = "脚部",
 		[9] = "手腕",
 		[10] = "手",
 		[11] = "手指",
@@ -374,12 +455,19 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 		["portrait_button"] = "商业技能头像下拉菜单",
 		["show_board"] = "显示冷却面板",
 		["lock_board"] = "锁定冷却面板",
+		["show_DBIcon"] = "显示小地图按钮",
 		["hide_mtsl"] = "隐藏MTSL界面",
+		["first_auction_mod"] = "首选拍卖插件",
+		["first_auction_mod:*"] = "自动选择",
 	};
 	L.ALPHA = "透明度";
 	L.CHAR_LIST = "角色列表";
 	L.CHAR_DEL = "删除角色";
 	L["INVALID_COMMANDS"] = "无效命令参数，使用\124cff00ff00true、1、on、enable\124r 或者 \124cffff0000false、0、off、disable\124r.";
+	L.TooltipLines = {
+		"左键打开浏览器",
+		"右键打开设置",
+	};
 elseif LOCALE == "koKR" then
 	L["OK"] = "확인";
 	L["Search"] = "검색";
@@ -388,12 +476,24 @@ elseif LOCALE == "koKR" then
 	L["add_fav"] = "즐겨찾기";
 	L["sub_fav"] = "즐겨찾기 해제";
 	L["query_who_can_craft_it"] = "누가 제작 가능?";
-	L["showKnown"] = "알려짐";
+	--
 	L["showUnkown"] = "알 수 없음";
+	L["showKnown"] = "알려짐";
 	L["showHighRank"] = "높은 랭크";
+	L["filterClass"] = UnitClass('player');
+	L["filterSpec"] = "MySpec";
 	L["showItemInsteadOfSpell"] = "아이템";
 	L["showRank"] = "랭크";
 	L["haveMaterials"] = "보유 재료";
+	L["showUnkownTip"] = "Show unlearned recipes";
+	L["showKnownTip"] = "Show learned recipes";
+	L["showHighRankTip"] = "Show recipes of higher rank";
+	L["filterClassTip"] = "Hide recipes unavailable to" .. UnitClass('player');
+	L["filterSpecTip"] = "Hide recipes unavailable to current specialization";
+	L["showItemInsteadOfSpellTip"] = "Show item in tip instead of spell";
+	L["showRankTip"] = "Show color of difficulty";
+	L["haveMaterialsTip"] = "Show recipes that u have enough materials";
+	--
 	L["costOnly"] = "가격만 표시";
 	--
 	L["LABEL_RANK_LEVEL"] = "\124cffff7f00랭크: \124r";
@@ -431,6 +531,9 @@ elseif LOCALE == "koKR" then
 	L["PRICE_DIFF+"] = "\124cff00ff00가격 차이 \124r";
 	L["PRICE_DIFF-"] = "\124cffff0000가격 차이 \124r";
 	L["PRICE_DIFF0"] = "똑같음";
+	L["PRICE_DIFF_AH+"] = "\124cff00ff00AH5%\124r";
+	L["PRICE_DIFF_AH-"] = "\124cffff0000AH5%\124r";
+	L["PRICE_DIFF_AH0"] = "AH";
 	L["PRICE_DIFF_INFO+"] = "\124cff00ff00+\124r";
 	L["PRICE_DIFF_INFO-"] = "\124cffff0000-\124r";
 	L["CRAFT_INFO"] = "\124cffff7f00제작 정보: \124r";
@@ -457,21 +560,6 @@ elseif LOCALE == "koKR" then
 		type = "유형",
 		subType = "하위유형",
 		eqLoc = "장비부위",
-	};
-	L.TRADESKILL_NAME = {
-		[1] = "응급치료",
-		[2] = "대장기술",
-		[3] = "가죽세공",
-		[4] = "연금술",
-		[5] = "약초찾기",
-		[6] = "요리",
-		[7] = "채광",
-		[8] = "재봉술",
-		[9] = "기계공학",
-		[10] = "마법부여",
-		[11] = "낚시",
-		[12] = "무두질",
-		[13] = "독극물",
 	};
 	L.ITEM_TYPE_LIST = {
 		[LE_ITEM_CLASS_CONSUMABLE] = "소모품",				--	0	Consumable
@@ -735,12 +823,19 @@ elseif LOCALE == "koKR" then
 		["portrait_button"] = "Dropdown menu on portrait of tradeskill frame",
 		["show_board"] = "변환 쿨타임 보드 표시",
 		["lock_board"] = "변환 쿨타임 보드 잠금",
+		["show_DBIcon"] = "Show DBIcon on minimap",
 		["hide_mtsl"] = "MTSL 숨김",
+		["first_auction_mod"] = "Use this auction addon first",
+		["first_auction_mod:*"] = "Auto",
 	};
 	L.ALPHA = "Alpha";
 	L.CHAR_LIST = "캐릭터 목록";
 	L.CHAR_DEL = "캐릭터 삭제";
 	L["INVALID_COMMANDS"] = "잘못된 명령. 사용 \124cff00ff00true, 1, on, enable\124r or \124cffff0000false, 0, off, disable\124r instead.";
+	L.TooltipLines = {
+		"Left Click: Open Explorer",
+		"Right Click: Open SettingUI",
+	};
 else
 	L["OK"] = "OK";
 	L["Search"] = "Search";
@@ -749,12 +844,24 @@ else
 	L["add_fav"] = "Favorite";
 	L["sub_fav"] = "Unfavorite";
 	L["query_who_can_craft_it"] = "Who can craft it ?";
-	L["showKnown"] = "Known";
+	--
 	L["showUnkown"] = "Unknown";
-	L["showHighRank"] = "High Rank";
-	L["showItemInsteadOfSpell"] = "Items";
+	L["showKnown"] = "Known";
+	L["showHighRank"] = "HighRank";
+	L["filterClass"] = UnitClass('player');
+	L["filterSpec"] = "MySpec";
+	L["showItemInsteadOfSpell"] = "ItemTip";
 	L["showRank"] = "Rank";
 	L["haveMaterials"] = "haveMaterials";
+	L["showUnkownTip"] = "Show unlearned recipes";
+	L["showKnownTip"] = "Show learned recipes";
+	L["showHighRankTip"] = "Show recipes of higher rank";
+	L["filterClassTip"] = "Hide recipes unavailable to" .. UnitClass('player');
+	L["filterSpecTip"] = "Hide recipes unavailable to current specialization";
+	L["showItemInsteadOfSpellTip"] = "Show item in tip instead of spell";
+	L["showRankTip"] = "Show color of difficulty";
+	L["haveMaterialsTip"] = "Show recipes that u have enough materials";
+	--
 	L["costOnly"] = "Show cost only";
 	--
 	L["LABEL_RANK_LEVEL"] = "\124cffff7f00Rank: \124r";
@@ -792,6 +899,9 @@ else
 	L["PRICE_DIFF+"] = "\124cff00ff00Diff\124r";
 	L["PRICE_DIFF-"] = "\124cffff0000Diff\124r";
 	L["PRICE_DIFF0"] = "The same";
+	L["PRICE_DIFF_AH+"] = "\124cff00ff00AH5%\124r";
+	L["PRICE_DIFF_AH-"] = "\124cffff0000AH5%\124r";
+	L["PRICE_DIFF_AH0"] = "AH";
 	L["PRICE_DIFF_INFO+"] = "\124cff00ff00+\124r";
 	L["PRICE_DIFF_INFO-"] = "\124cffff0000-\124r";
 	L["CRAFT_INFO"] = "\124cffff7f00Craft info: \124r";
@@ -818,21 +928,6 @@ else
 		type = "Type",
 		subType = "SubType",
 		eqLoc = "EqLoc",
-	};
-	L.TRADESKILL_NAME = {
-		[1] = "FirstAid",
-		[2] = "Blacksmithing",
-		[3] = "Leatherworking",
-		[4] = "Alchemy",
-		[5] = "Herbalism",
-		[6] = "Cooking",
-		[7] = "Mining",
-		[8] = "Tailoring",
-		[9] = "Engineering",
-		[10] = "Enchanting",
-		[11] = "Fishing",
-		[12] = "Skinning",
-		[13] = "RoguePoisons",
 	};
 	L.ITEM_TYPE_LIST = {
 		[LE_ITEM_CLASS_CONSUMABLE] = "Consumable",				--	0	Consumable
@@ -1096,12 +1191,19 @@ else
 		["portrait_button"] = "Dropdown menu on portrait of tradeskill frame",
 		["show_board"] = "Show board",
 		["lock_board"] = "Lock board",
+		["show_DBIcon"] = "Show DBIcon on minimap",
 		["hide_mtsl"] = "Hide MTSL",
+		["first_auction_mod"] = "Use this auction addon first",
+		["first_auction_mod:*"] = "Auto",
 	};
 	L.ALPHA = "Alpha";
 	L.CHAR_LIST = "Character list";
 	L.CHAR_DEL = "Del character";
 	L["INVALID_COMMANDS"] = "Invalid commonds. Use \124cff00ff00true, 1, on, enable\124r or \124cffff0000false, 0, off, disable\124r instead.";
+	L.TooltipLines = {
+		"Left Click: Open Explorer",
+		"Right Click: Open SettingUI",
+	};
 end
 --
 L.ENCHANT_FILTER = {  };
@@ -1110,7 +1212,7 @@ if LOCALE == "zhCN" then
 	L.ENCHANT_FILTER.INVTYPE_CHEST = "胸甲";
 	L.ENCHANT_FILTER.INVTYPE_WRIST = "护腕";
 	L.ENCHANT_FILTER.INVTYPE_HAND = "手套";
-	L.ENCHANT_FILTER.INVTYPE_FEET = "靴子";
+	L.ENCHANT_FILTER.INVTYPE_FEET = "靴";
 	L.ENCHANT_FILTER.INVTYPE_WEAPON = "武器";
 	L.ENCHANT_FILTER.INVTYPE_SHIELD = "盾牌";
 	L.ENCHANT_FILTER.NONE = "没有匹配的附魔";
@@ -1119,7 +1221,7 @@ elseif LOCALE == "zhTW" then
 	L.ENCHANT_FILTER.INVTYPE_CHEST = "胸甲";
 	L.ENCHANT_FILTER.INVTYPE_WRIST = "護腕";
 	L.ENCHANT_FILTER.INVTYPE_HAND = "手套";
-	L.ENCHANT_FILTER.INVTYPE_FEET = "長靴";
+	L.ENCHANT_FILTER.INVTYPE_FEET = "靴";
 	L.ENCHANT_FILTER.INVTYPE_WEAPON = "武器";
 	L.ENCHANT_FILTER.INVTYPE_SHIELD = "盾牌";
 	L.ENCHANT_FILTER.NONE = "沒有匹配的附魔";
@@ -1192,4 +1294,4 @@ L.ENCHANT_FILTER.INVTYPE_2HWEAPON = L.ENCHANT_FILTER.INVTYPE_WEAPON;
 L.ENCHANT_FILTER.INVTYPE_WEAPONMAINHAND = L.ENCHANT_FILTER.INVTYPE_WEAPON;
 L.ENCHANT_FILTER.INVTYPE_WEAPONOFFHAND = L.ENCHANT_FILTER.INVTYPE_WEAPON;
 
-NS.L = L;
+__namespace__.L = L;

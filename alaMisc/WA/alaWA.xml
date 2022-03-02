@@ -1,0 +1,17 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+<!--
+	<Include file = "..\..\sharedxml\hybridscrollframe.xml"/>
+	<Include file = "template.xml"/>
+-->
+    <include file = "ala\main.xml" />
+
+	<script file = "Locale\zhCN.lua" />
+	<script file = "Locale\zhTW.lua" />
+	<script file = "Locale\enUS.lua" />
+	<script file = "data.lua" />
+	<script file = "core.lua" />
+
+</Ui>
+

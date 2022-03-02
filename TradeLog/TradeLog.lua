@@ -1,3 +1,7 @@
+local UIDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0");
+
+local addon, ns = ...;
+
 SLASH_TRADELOGSHOW1 = "/tbtdebug";
 SlashCmdList["TRADELOGSHOW"] = function(msg)
 	DEFAULT_CHAT_FRAME:AddMessage("(debug)TradeId-"..msg.." |Htradelog:"..msg.."|h[DETAIL]|h:");
@@ -34,36 +38,6 @@ function TradeLog_CreateNewTrade()
 	return trade;
 end
 
-function TradeLog_OnLoad(self)
-	local menu = CreateFrame("Frame", "TBT_AnnounceChannelDropDown", TradeFrame, "UIDropDownMenuTemplate");
-	-- menu:SetPoint("BOTTOMLEFT", "TradeFrame", "BOTTOMLEFT", 80, 49);
-	UIDropDownMenu_SetWidth(TBT_AnnounceChannelDropDown, 62, 3);
-    TBT_AnnounceChannelDropDown:SetScript("OnShow", function(self) self:SetFrameLevel(TradeFrame:GetFrameLevel()) end)
-
-	local cb = CreateFrame("CheckButton", "TBT_AnnounceCB", TradeFrame, "OptionsCheckButtonTemplate");
-	cb:SetPoint("BOTTOMLEFT", "TradeFrame", "BOTTOMLEFT", 16, 0);
-	cb:SetWidth(26);
-	cb:SetHeight(26);
-	TBT_AnnounceCBText:SetText(TRADE_LOG_ANNOUNCE);
-	cb.tooltipText = TRADE_LOG_ANNOUNCE_TIP;
-	cb:SetScript("OnClick", function(self) TradeLog_Announce_Checked = self:GetChecked()and true or false; end);
-
-    menu:SetPoint('BOTTOMLEFT', cb, 50, -3)
-
-	self:RegisterEvent("VARIABLES_LOADED");
-	self:RegisterEvent("TRADE_SHOW");
-	self:RegisterEvent("TRADE_CLOSED");
-	self:RegisterEvent("TRADE_REQUEST_CANCEL");
-	self:RegisterEvent("PLAYER_TRADE_MONEY");
-
-	self:RegisterEvent("TRADE_MONEY_CHANGED");
-	--self:RegisterEvent("TRADE_PLAYER_ITEM_CHANGED"); --this is an uncertain problem, seems TRADE_PLAYER_ITEM_CHANGED always fire 2 times?
-	self:RegisterEvent("TRADE_TARGET_ITEM_CHANGED");
-	self:RegisterEvent("TRADE_ACCEPT_UPDATE");
-	self:RegisterEvent("UI_INFO_MESSAGE");
-	self:RegisterEvent("UI_ERROR_MESSAGE");
-end
-
 function TradeLog_OnEvent(self, event, arg1, arg2, ...)
 	if (event=="UI_ERROR_MESSAGE") then
 		if(arg2==ERR_TRADE_BAG_FULL or arg2==ERR_TRADE_MAX_COUNT_EXCEEDED or arg2==ERR_TRADE_TARGET_BAG_FULL or arg2==ERR_TRADE_TARGET_MAX_COUNT_EXCEEDED) then
@@ -96,7 +70,7 @@ function TradeLog_OnEvent(self, event, arg1, arg2, ...)
 			TradeLog_UpdateItemInfo(i, "Target", curr().targetItems);
 		end
 		TradeLog_UpdateMoney();
-	elseif (event=="VARIABLES_LOADED") then
+	elseif (event=="ADDON_LOADED" and arg1 == addon) then
 		TradeLog_TradesHistory = TradeLog_TradesHistory or {};
 
 		for k, v in ipairs(TradeLog_TradesHistory) do
@@ -105,8 +79,25 @@ function TradeLog_OnEvent(self, event, arg1, arg2, ...)
 
 		TradeLog_AnnounceChannel = TradeLog_AnnounceChannel or "WHISPER";
 
-		UIDropDownMenu_Initialize(TBT_AnnounceChannelDropDown, TBT_AnnounceChannelDropDown_Initialize);
-		UIDropDownMenu_SetSelectedValue(TBT_AnnounceChannelDropDown, TradeLog_AnnounceChannel);
+		local menu = CreateFrame("Frame", "TBT_AnnounceChannelDropDown", TradeFrame, "UIDropDownMenuTemplate");
+		-- menu:SetPoint("BOTTOMLEFT", "TradeFrame", "BOTTOMLEFT", 80, 49);
+		UIDD:UIDropDownMenu_SetWidth(menu, 62, 3);
+		menu:SetScript("OnShow", function(self) self:SetFrameLevel(TradeFrame:GetFrameLevel()) end)
+		UIDD:UIDropDownMenu_Initialize(menu, TBT_AnnounceChannelDropDown_Initialize);
+		UIDD:UIDropDownMenu_SetSelectedValue(menu, TradeLog_AnnounceChannel);
+		menu.Button:SetScript("OnClick", function(self)
+			UIDD:ToggleDropDownMenu(1, nil, menu, self, -62, -3);
+		end)
+
+		local cb = CreateFrame("CheckButton", "TBT_AnnounceCB", TradeFrame, "OptionsCheckButtonTemplate");
+		cb:SetPoint("BOTTOMLEFT", "TradeFrame", "BOTTOMLEFT", 16, 0);
+		cb:SetWidth(26);
+		cb:SetHeight(26);
+		TBT_AnnounceCBText:SetText(TRADE_LOG_ANNOUNCE);
+		cb.tooltipText = TRADE_LOG_ANNOUNCE_TIP;
+		cb:SetScript("OnClick", function(self) TradeLog_Announce_Checked = self:GetChecked()and true or false; end);
+
+		menu:SetPoint('BOTTOMLEFT', cb, 50, -3)
 
 		if(TradeLog_Announce_Checked) then TBT_AnnounceCB:SetChecked(1); end;
 
@@ -353,7 +344,7 @@ function TradeLog_OutputLog()
 	if(type(TradeListScrollFrame_Update)=="function") then TradeListScrollFrame_Update(); end
 
 	TradeLog_Output(curr(), function(m, r, g, b) DEFAULT_CHAT_FRAME:AddMessage(m, r, g, b) end);
-	if(TBT_AnnounceCB:GetChecked()) then
+	if TradeLog_Announce_Checked then
 		TradeLog_Output(curr(), function(m) SendChat(m, curr().who) end, true);
 	end
 end
@@ -394,9 +385,9 @@ function TradeLog_TradeTooltip(self, trade)
 		local playerList = TradeLog_GetTradeList( trade.playerMoney, trade.playerItems, trade.targetItems[7], TradeLog_GetMoneyColorText)
 		local targetList = TradeLog_GetTradeList( trade.targetMoney, trade.targetItems, trade.playerItems[7], TradeLog_GetMoneyColorText)
 
-		GameTooltip:SetText(TRADE_LOG_RESULT_TEXT.complete.." - "..trade.who, 1, 1, 1);
+		GameTooltip:SetText(TRADE_LIST_RESULT_TEXT.complete.." - "..trade.who, 1, 1, 1);
 		local _,_,month,day,hour,min = string.find(trade.when, "(%d+)-(%d+) (%d+):(%d+)")
-		local when = (month..TRADE_LOG_MONTH_SUFFIX..day..TRADE_LOG_DAY_SUFFIX.." "..hour..":"..min);
+		local when = (month..TRADE_LIST_MONTH_SUFFIX..day..TRADE_LIST_DAY_SUFFIX.." "..hour..":"..min);
 		GameTooltip:AddDoubleLine(when, trade.where);
 		GameTooltip:AddDoubleLine(TRADE_LOG_HANDOUT, TRADE_LOG_RECEIVE, 0.6, 0.6, 0.6, 1, 1, 1);
 		--if trade.playerMoney + trade.targetMoney > 0 then
@@ -406,12 +397,12 @@ function TradeLog_TradeTooltip(self, trade)
 			GameTooltip:AddDoubleLine(playerList[i] or " ", targetList[i] or " ");
 		end
 		GameTooltip:AddLine(" ");
-		GameTooltip:AddLine(TRADE_LOG_COMPLETE_TOOLTIP, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
+		GameTooltip:AddLine(TRADE_LIST_COMPLETE_TOOLTIP, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
 	elseif(trade.result=="cancelled")then
-		GameTooltip:SetText(TRADE_LOG_RESULT_TEXT.cancelled.." - "..trade.who, 1, 0.5, 0.5);
+		GameTooltip:SetText(TRADE_LIST_RESULT_TEXT.cancelled.." - "..trade.who, 1, 0.5, 0.5);
 		GameTooltip:AddLine(CANCEL_REASON_TEXT[trade.reason], NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
 	else
-		GameTooltip:SetText(TRADE_LOG_RESULT_TEXT.error, 1, 0.1, 0.1);
+		GameTooltip:SetText(TRADE_LIST_RESULT_TEXT.error, 1, 0.1, 0.1);
 		GameTooltip:AddLine(trade.reason, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1);
 	end	
 	GameTooltip:Show();
@@ -419,13 +410,13 @@ end
 
 --for UI
 function TBT_AnnounceChannelDropDown_OnClick(self)
-	UIDropDownMenu_SetSelectedValue(TBT_AnnounceChannelDropDown, self.value);
+	UIDD:UIDropDownMenu_SetSelectedValue(TBT_AnnounceChannelDropDown, self.value);
 	TBT_AnnounceCB:SetChecked(1);
 	TradeLog_AnnounceChannel = self.value;
 end
 
 function TBT_AnnounceChannelDropDown_Initialize()
-	local selectedValue = UIDropDownMenu_GetSelectedValue(getglobal("TBT_AnnounceChannelDropDown"));
+	local selectedValue = UIDD:UIDropDownMenu_GetSelectedValue(getglobal("TBT_AnnounceChannelDropDown"));
 	local info;
 
 	info = {};
@@ -435,7 +426,7 @@ function TBT_AnnounceChannelDropDown_Initialize()
 	if ( info.value == selectedValue ) then
 		info.checked = 1;
 	end
-	UIDropDownMenu_AddButton(info);
+	UIDD:UIDropDownMenu_AddButton(info);
 	
 	info = {};
 	info.text = TRADE_LOG_CHANNELS.raid;
@@ -444,7 +435,7 @@ function TBT_AnnounceChannelDropDown_Initialize()
 	if ( info.value == selectedValue ) then
 		info.checked = 1;
 	end
-	UIDropDownMenu_AddButton(info);
+	UIDD:UIDropDownMenu_AddButton(info);
 
 	info = {};
 	info.text = TRADE_LOG_CHANNELS.party;
@@ -453,7 +444,7 @@ function TBT_AnnounceChannelDropDown_Initialize()
 	if ( info.value == selectedValue ) then
 		info.checked = 1;
 	end
-	UIDropDownMenu_AddButton(info);
+	UIDD:UIDropDownMenu_AddButton(info);
 
 	info = {};
 	info.text = TRADE_LOG_CHANNELS.say;
@@ -462,7 +453,7 @@ function TBT_AnnounceChannelDropDown_Initialize()
 	if ( info.value == selectedValue ) then
 		info.checked = 1;
 	end
-	UIDropDownMenu_AddButton(info);
+	UIDD:UIDropDownMenu_AddButton(info);
 
 	info = {};
 	info.text = TRADE_LOG_CHANNELS.yell;
@@ -471,9 +462,20 @@ function TBT_AnnounceChannelDropDown_Initialize()
 	if ( info.value == selectedValue ) then
 		info.checked = 1;
 	end
-	UIDropDownMenu_AddButton(info);
+	UIDD:UIDropDownMenu_AddButton(info);
 end
 
 local frame = CreateFrame("Frame");
 frame:SetScript("OnEvent", TradeLog_OnEvent);
-TradeLog_OnLoad(frame);
+frame:RegisterEvent("ADDON_LOADED");
+frame:RegisterEvent("TRADE_SHOW");
+frame:RegisterEvent("TRADE_CLOSED");
+frame:RegisterEvent("TRADE_REQUEST_CANCEL");
+frame:RegisterEvent("PLAYER_TRADE_MONEY");
+
+frame:RegisterEvent("TRADE_MONEY_CHANGED");
+--frame:RegisterEvent("TRADE_PLAYER_ITEM_CHANGED"); --this is an uncertain problem, seems TRADE_PLAYER_ITEM_CHANGED always fire 2 times?
+frame:RegisterEvent("TRADE_TARGET_ITEM_CHANGED");
+frame:RegisterEvent("TRADE_ACCEPT_UPDATE");
+frame:RegisterEvent("UI_INFO_MESSAGE");
+frame:RegisterEvent("UI_ERROR_MESSAGE");

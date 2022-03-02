@@ -12,7 +12,6 @@ local select = select
 local CloseDropDownMenus = CloseDropDownMenus
 local UnitIsUnit = UnitIsUnit
 local Ambiguate = Ambiguate
-local CheckInteractDistance = CheckInteractDistance
 
 local WHISPER = WHISPER
 local BUTTON_HEIGHT = UIDROPDOWNMENU_BUTTON_HEIGHT
@@ -23,17 +22,17 @@ UnitPopupButtons.INSPECT.dist = nil
 
 local function GetDropdownUnit()
     local menu = UIDROPDOWNMENU_INIT_MENU
-    if not menu or menu ~= FriendsDropDown then
+    if not menu or not (menu == FriendsDropDown or menu == PVPDropDown) then
         return
     end
 
     if menu.which == 'FRIEND' then
         return nil, ns.GetFullName(menu.chatTarget)
-    elseif menu.which == 'RAID' then
+    elseif menu.which == 'RAID' or menu.which == 'TEAM' then
         if menu.unit then
             return menu.unit, ns.UnitName(menu.unit)
         elseif menu.name then
-            return ns.GetFullName(menu.name)
+            return nil, ns.GetFullName(menu.name)
         end
     end
 end
@@ -110,7 +109,7 @@ hooksecurefunc('UnitPopup_ShowMenu', function(dropdownMenu, which, _, name)
         return
     end
     if UIDROPDOWNMENU_MENU_LEVEL == 1 and not UnitIsUnit('player', Ambiguate(name, 'none')) then
-        if which == 'FRIEND' then
+        if which == 'FRIEND' or which == 'TEAM' then
             FillToDropdownAfter(InspectButton, WHISPER, 1)
         elseif which == 'RAID' then
             FillToDropdownAfter(InspectButton, name, 1)
@@ -118,10 +117,11 @@ hooksecurefunc('UnitPopup_ShowMenu', function(dropdownMenu, which, _, name)
     end
 end)
 
+local VALID_DROPS = {PARTY = true, PLAYER = true, RAID_PLAYER = true}
+
 hooksecurefunc('UnitPopup_OnUpdate', function()
     local dropdown = OPEN_DROPDOWNMENUS[1]
-    if not dropdown or not dropdown.unit or
-        not (dropdown.which == 'PARTY' or dropdown.which == 'PLAYER' or dropdown.which == 'RAID_PLAYER') then
+    if not dropdown or not dropdown.unit or not VALID_DROPS[dropdown.which] then
         return
     end
 

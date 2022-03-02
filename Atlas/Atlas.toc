@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 #@non-debug@
 ## Title: Atlas
 ## Title-deDE: Atlas
@@ -46,11 +46,11 @@
 # ## Notes-zhTW: Atlas 地圖集主程式
 #@end-debug@
 ## Author: arith, dubcat
-## Version: v1.49.01
+## Version: v1.50.01
 ## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibBabble-Boss-3.0, LibBabble-SubZone-3.0, LibBabble-Faction-3.0, LibDBIcon-1.0, LibDialog-1.0, LibUIDropDownMenu
 ## X-Category: Map
 ## X-Credits: Dan Gilbert, Lothaer, Dynaletik
-## X-Date: 2021-06-14T8:42:27Z
+## X-Date: 2022-02-23T15:48:18Z
 ## X-Donate: http://pledgie.com/campaigns/14729
 ## X-Email: atlas.addon at gmail dot com
 ## X-Feedback: http://www.atlasmod.com/phpBB3/
@@ -61,6 +61,8 @@
 
 Data\Constants.lua
 Data\AreaIDs.lua
+Data\AreaIDs_ClassicEra.lua
+Data\AreaIDs_ClassicTBC.lua
 Libs\Libs.xml
 Locale\Locales.xml
 
@@ -84,3 +86,7 @@ Integration\EJLoot.xml
 Integration\WorldMap.lua
 Integration\Achievements.lua
 Integration\AtlasLootIntegration.lua
+
+## Title-zhCN: |cff880303[有爱]|r Atlas 副本地图浏览器
+## X-Vendor: NetEase
+## X-163UI-Version: 20220224141126

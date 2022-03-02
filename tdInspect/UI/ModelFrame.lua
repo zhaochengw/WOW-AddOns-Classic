@@ -2,6 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/18/2020, 1:04:14 AM
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -15,7 +16,7 @@ local factionLogoTextures = {
     ['Neutral'] = 'Interface\\Timer\\Panda-Logo',
 }
 
----@type tdInspectModelFrame
+---@class UI.ModelFrame: Object, Frame, AceEvent-3.0
 local ModelFrame = ns.Addon:NewClass('UI.ModelFrame', 'Frame')
 
 function ModelFrame:Constructor()

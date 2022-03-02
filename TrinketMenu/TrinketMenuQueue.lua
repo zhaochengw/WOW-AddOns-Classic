@@ -17,9 +17,9 @@ function TrinketMenu.QueueInit()
 	TrinketMenu_SubQueueFrame:SetBackdropBorderColor(.3, .3, .3,1)
 	TrinketMenu_ProfilesFrame:SetBackdropBorderColor(.3, .3, .3, 1)
 	TrinketMenu_ProfilesListFrame:SetBackdropBorderColor(.3, .3, .3, 1)
-	TrinketMenu_SortPriorityText:SetText("Priority")
+	TrinketMenu_SortPriorityText:SetText("优先")
 	TrinketMenu_SortPriorityText:SetTextColor(.95, .95, .95)
-	TrinketMenu_SortKeepEquippedText:SetText("Pause Queue")
+	TrinketMenu_SortKeepEquippedText:SetText("暂停队列")
 	TrinketMenu_SortKeepEquippedText:SetTextColor(.95, .95, .95)
 	TrinketMenu_SortListFrame:SetBackdropBorderColor(.3, .3, .3, 1)
 	TrinketMenu.ReflectQueueEnabled()
@@ -56,7 +56,7 @@ end
 
 function TrinketMenu.GetNameByID(id)
 	if id == 0 then
-		return "-- stop queue here --", "Interface\\Buttons\\UI-GroupLoot-Pass-Up", 1
+		return "-- 停止队列 --", "Interface\\Buttons\\UI-GroupLoot-Pass-Up", 1
 	else
 		local name, _, quality, _, _, _, _, _, _, texture = GetItemInfo(id or "")
 		return name, texture, quality

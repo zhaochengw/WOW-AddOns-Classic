@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: 能量和法力恢复提示
 ## Notes: PowerSpark
 ## Version: 2.0.8

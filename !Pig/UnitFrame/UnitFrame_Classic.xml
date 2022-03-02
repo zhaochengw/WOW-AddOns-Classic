@@ -1,0 +1,5 @@
+<Ui>
+	<Script file="PlayerFrame_BCC.lua" />
+	<Script file="TargetFrame_BCC.lua" />
+	<Script file="PartyMemberFrame_BCC.lua" />
+</Ui>

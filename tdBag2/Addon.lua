@@ -18,7 +18,17 @@ local LoadAddOn = LoadAddOn
 local BankFrame = BankFrame
 local UIParent = UIParent
 
----@type ns
+---@class ns
+-- modules
+---@field Events Events
+---@field Forever Forever
+---@field Tooltip Tooltip
+---@field GlobalSearch GlobalSearch
+---@field Counter Counter
+---@field Cache Cache
+-- classes
+---@field Thread Thread
+---@field FrameMeta FrameMeta
 local ns = select(2, ...)
 local L = ns.L
 local BAG_ID = ns.BAG_ID
@@ -35,7 +45,7 @@ ns.UI = {}
 ns.Search = LibStub('LibItemSearch-1.2')
 ns.Unfit = LibStub('Unfit-1.0')
 
----@type Addon
+---@class Addon: AceAddon-3.0, LibClass-2.0, AceHook-3.0, AceEvent-3.0
 local Addon = LibStub('AceAddon-3.0'):NewAddon('tdBag2', 'LibClass-2.0', 'AceHook-3.0', 'AceEvent-3.0')
 ns.Addon = Addon
 _G.tdBag2 = Addon
@@ -91,7 +101,9 @@ end
 
 function Addon:FOREVER_LOADED()
     for _, owner in ipairs(ns.Forever:GetOwners()) do
-        self:SetupCharacterOptions(owner)
+        if not ns.IsGuildOwner(owner) then
+            self:SetupCharacterOptions(owner)
+        end
     end
 end
 
@@ -424,12 +436,12 @@ end
 
 ---- plugin buttons
 
----@return fun():number, tdBag2PluginOptions
+
 function Addon:IteratePluginButtons()
     return safeipairs(self.plugins.Button)
 end
 
----@param opts tdBag2PluginOptions
+
 function Addon:RegisterPluginButton(opts)
     opts.type = 'Button'
     return self:RegisterPlugin(opts)
@@ -457,7 +469,7 @@ function Addon:HasAnyItemPlugin()
 end
 
 --- plugin
----@param opts tdBag2PluginOptions
+
 function Addon:RegisterPlugin(opts)
     if opts.type == 'Button' then
         self.plugins.Button = self.plugins.Button or {}

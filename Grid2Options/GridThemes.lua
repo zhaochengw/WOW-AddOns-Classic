@@ -108,8 +108,21 @@ do
 
 	do
 		-- groups & raids
-		local CONDITIONS = { 'solo', 'party', 'arena', 'raid', 'raid@pvp' ,'raid@lfr', 'raid@flex', 'raid@mythic', '10', '15', '20', '25', '30', '40' }
-		local CONDITIONS_DESC = { L['Solo'], L['Party'], L['Arena'], L['Raid'], L['Raid (PvP)'], L['Raid (LFR)'], L['Raid (N&H)'], L['Raid (Mythic)'], L['10 man'], L['15 man'], L['20 man'], L['25 man'], L['30 man'], L['40 man'] }
+		local CONDITIONS = {
+			'solo', 'arena',
+			'party', 'party@normal', 'party@heroic', 'party@mythic',
+			'raid', 'raid@pvp' ,'raid@lfr', 'raid@flex', 'raid@mythic',
+			'10', '15', '20', '25', '30', '40',
+			'TANK', 'HEALER', 'DAMAGER', 'NONE',
+		}
+		local CONDITIONS_DESC = {
+			L['Solo'], L['Arena'],
+			L['Party'], L['Party (Normal)'], L['Party (Heroic)'], L['Party (Mythic)'],
+			L['Raid'], L['Raid (PvP)'], L['Raid (LFR)'], L['Raid (N&H)'], L['Raid (Mythic)'],
+			L['10 man'], L['15 man'], L['20 man'], L['25 man'], L['30 man'], L['40 man'],
+			L['Tank (Role)'], L['Healer (Role)'], L['Damager (Role)'],	L['None (Role)'],
+		}
+		--
 		for o,k in ipairs(CONDITIONS) do
 			local key = string.format( "%03d;%s", o, k )
 			CONDITIONS_VALUES[key] = CONDITIONS_DESC[o] -- Descriptions used in "Enable Theme for" dropdown list values
@@ -118,11 +131,12 @@ do
 		-- current class
 		local classLoc, class = UnitClass("player")
 		local classKey = string.format("100;%s@0", class)
-		local classDesc= string.format("%s(%s)", classLoc, L["Class"])
+		local classDesc= string.format("%s (%s)", classLoc, L["Class"])
 		CONDITIONS_VALUES[classKey] = classDesc
 		CONDITIONS_NAMES[classKey]  = classDesc
 		-- current class + specs
 		if not Grid2.isClassic then
+			local CONDITIONS_EXCLUDE = { TANK = true, HEALER = true, DAMAGER = true, NONE = true }
 			local count = GetNumSpecializations()
 			for i=1,count do
 				local key = string.format("%d01;%s@%d",i, class, i)
@@ -132,12 +146,14 @@ do
 				else
 					name = string.format("|T%s:0|t%s",icon, name )
 				end
-				CONDITIONS_VALUES[ key ] = name
-				CONDITIONS_NAMES[ key ]  = name
+				CONDITIONS_VALUES[key] = name
+				CONDITIONS_NAMES[key] = name
 				for o,k in ipairs(CONDITIONS) do
-					local key = string.format( "%d%02d;%s@%d@%s", i,o+1,class,i,k )
-					CONDITIONS_VALUES[ key ] = string.format( '|T%s:0|t%s', icon, CONDITIONS_DESC[o] )
-					CONDITIONS_NAMES[ key ]  = string.format( '%s & %s', name, CONDITIONS_DESC[o] )
+					if not CONDITIONS_EXCLUDE[k] then
+						local key = string.format( "%d%02d;%s@%d@%s", i,o+1,class,i,k )
+						CONDITIONS_VALUES[ key ] = string.format( '|T%s:0|t%s', icon, CONDITIONS_DESC[o] )
+						CONDITIONS_NAMES[ key ]  = string.format( '%s & %s', name, CONDITIONS_DESC[o] )
+					end
 				end
 			end
 		end
@@ -229,7 +245,7 @@ do
 					db.extraThemes[index] = CopyTheme( itemp==0 and db or db.extraThemes[itemp] )
 				end
 				Grid2Options:MakeThemeOptions(index)
-				LibStub("AceConfigRegistry-3.0"):NotifyChange("Grid2")
+				Grid2Options:NotifyChange()
 			end)
 		end,
 		values = GetThemes,
@@ -245,7 +261,7 @@ do
 			local name = editedTheme.db.names[index] or L['Default']
 			Grid2Options:ShowEditDialog( L["Rename Theme:"], name, function(text)
 				editedTheme.db.names[index] = text
-				LibStub("AceConfigRegistry-3.0"):NotifyChange("Grid2")
+				Grid2Options:NotifyChange()
 			end)
 		end,
 		values = GetThemes,
@@ -344,7 +360,7 @@ function Grid2Options:MakeThemeOptions( index )
 	options[tostring(index)] = { type = "group", childGroups = "tab", order = index+300, name = GetThemeName, desc = "", arg = index, args = themeOptions }
 end
 
-Grid2:RegisterMessage("Grid_ThemeChanged", function() LibStub("AceConfigRegistry-3.0"):NotifyChange("Grid2") end)
+Grid2:RegisterMessage("Grid_ThemeChanged", Grid2Options.NotifyChange)
 
 --===========================================================================================
 

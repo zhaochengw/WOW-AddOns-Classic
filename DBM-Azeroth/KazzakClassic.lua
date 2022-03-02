@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("KazzakClassic", "DBM-Azeroth")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210611232013")
+mod:SetRevision("20220131033455")
 mod:SetCreatureID(12397)--121818 TW ID, 12397 classic ID
 --mod:SetModelID(17887)
 mod:EnableWBEngageSync()--Enable syncing engage in outdoors
@@ -19,7 +19,7 @@ local warningShadowBoltVolley	= mod:NewSpellAnnounce(21341, 2)
 local specWarnMark				= mod:NewSpecialWarningYou(21056, nil, nil, nil, 1, 2)--No Yell on purpose, outdoor chat restrictions and all
 
 --Timers seem totally random, like 5-40 type random nonsense, so are utterly worthless
---local timerMarkCD				= mod:NewCDTimer(19.1, 21056, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
+--local timerMarkCD				= mod:NewCDTimer(19.1, 21056, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
 --local timerShadowBoltVolleyCD	= mod:NewCDTimer(7.6, 21341, nil, nil, nil, 2)
 
 --mod:AddReadyCheckOption(48620, false)
@@ -55,9 +55,9 @@ end
 do
 	local playerName = UnitName("player")
 
-	function mod:OnSync(msg, targetName)
+	function mod:OnSync(msg, targetName, sender)
 		if not self:IsInCombat() then return end
-		if msg == "Mark" and targetName and self:AntiSpam(5, 1) then
+		if msg == "Mark" and sender and self:AntiSpam(5, 1) then
 			if targetName == playerName then
 				specWarnMark:Show()
 				specWarnMark:Play("targetyou")

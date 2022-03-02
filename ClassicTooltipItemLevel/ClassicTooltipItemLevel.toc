@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Version: 1.0.0
 ## Title: ClassicTooltipItemLevel
 ## Notes: Displays the item level in the tooltip

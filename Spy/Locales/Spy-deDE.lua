@@ -12,29 +12,32 @@ L["Profiles"] = "Profile"
 L["About"] = "Info"
 L["SpyDescription1"] = [[
 Spy ist ein Addon, das Sie über das Vorhandensein von, in der Nähe befindlichen, feindlichen Spielern benachrichtigt. Dies sind einige der Hauptmerkmale
+
 ]]
+
 L["SpyDescription2"] = [[
-|cffffd000In der Nähe-Liste|cffffffff
+|cffffd000 In der Nähe-Liste |cffffffff
 Die "In der Nähe"-Liste zeigt alle feindlichen Spieler, die in der Nähe entdeckt wurden.  Spieler, die für eine gewisse Zeit nicht erkannt wurden, werden aus der Liste entfernt.
 
-|cffffd000Letzte Stunde-Liste|cffffffff
+|cffffd000 Letzte Stunde-Liste |cffffffff
 Zeigt alle Feinde, die in der letzten Stunde erkannt wurden.
 
-|cffffd000Ignorierliste|cffffffff
+|cffffd000 Ignorierliste |cffffffff
 Spieler, die der Ignorierliste hinzugefügt werden, werden nicht vom Spy gemeldet. Mithilfe des Dropdown-Menüs der Schaltfläche oder Halten der STRG-Taste beim Klicken auf die Schaltfläche können Sie Spieler zu der Liste hinzufügen oder entfernen.
 
-|cffffd000Bei Sichtkontakt zu Töten-Liste|cffffffff
-Wird ein Spieler der "Bei Sichtkontakt zu Töten"-Liste erkannt, erklingt ein Alarm. Mithilfe des Dropdown-Menüs der Schaltfläche oder Halten der STRG-Taste beim Klicken auf die Schaltfläche können Sie Spieler zu der Liste hinzufügen oder entfernen.
+|cffffd000 Bei Sichtkontakt zu Töten-Liste |cffffffff
+Wird ein Spieler der "Bei Sichtkontakt zu Töten"-Liste erkannt, erklingt ein Alarm. Mithilfe des Dropdown-Menüs der Schaltfläche oder Halten der STRG-Taste beim Klicken auf die Schaltfläche können Sie Spieler zu der Liste hinzufügen oder entfernen. Ausserdem können Sie mithilfe des Dropdown-Menüs die Gründe hinterlegen, warum Sie jemanden zu der "Bei Sichtkontakt zu Töten"-Liste hinzugefügt haben. Möchten Sie einen nicht in der Liste hinterlegten Grund eingeben, verwenden Sie "Geben Sie Ihren eigenen Grund..." in der anderen Liste.
 
-Ausserdem können Sie mithilfe des Dropdown-Menüs die Gründe hinterlegen, warum Sie jemanden zu der "Bei Sichtkontakt zu Töten"-Liste hinzugefügt haben. Möchten Sie einen nicht in der Liste hinterlegten Grund eingeben, verwenden Sie "Geben Sie Ihren eigenen Grund..." in der anderen Liste.
+]]
 
-|cffffd000Statistics Window|cffffffff
+L["SpyDescription3"] = [[
+|cffffd000 Statistics Window |cffffffff
 The Statistics Window contains a list of all enemy encounters which can be sorted by name, level, guild, wins, losses and the last time an enemy was detected. It also provides the ability to search for a specific enemy by name or guild and has filters to show only enemies that are marked as Kill on Sight, with a Win/Loss or entered Reasons.
 
-|cffffd000Kill On Sight Button|cffffffff
+|cffffd000 Kill On Sight Button |cffffffff
 If enabled, this button will be located on the enemy players target frame. Clicking on this button will add/remove the enemy target to/from the Kill On Sight list. Right clicking on the button will allow you to enter Kill on Sight reasons.
 
-|cffffd000Autor: Slipjack|cffffffff
+|cffffd000 Autor:|cffffffff Slipjack
 ]]
 
 -- General Settings
@@ -72,6 +75,8 @@ L["Silithus"] = "Silithus"
 L["Chamber of Heart"] = "Die Herzkammer"
 L["Hall of Ancient Paths"] = "Halle der Uralten Pfade"
 L["Sanctum of the Sages"] = "Das Sanktum der Weisen"
+L["Rustbolt"] = "Rostbolzen"
+L["Oribos"] = "Oribos"
 
 -- Display
 L["DisplayOptions"] = "Anzeigen"
@@ -224,6 +229,7 @@ L["LimitSameContinentDescription"] = "Zeigt nur die entdeckten Feinde auf der Ka
 -- Data Management
 L["DataOptions"] = "Datenmanagement"
 L["DataOptionsDescription"] = [[
+
 Optionen, wie Spy Daten verwaltet und sammelt.
 ]]
 L["PurgeData"] = "Eliminiert unentdeckte feindliche Spieler-Daten nach:"
@@ -286,6 +292,7 @@ L["Time"] = "Zeit"
 L["List"] = "Liste"	
 L["Filter"] = "Filter"
 L["Show Only"] = "Zeige nur"
+L["Realm"] = "Realm"
 L["Won/Lost"] = "Gewonnen/Verloren"
 L["KOS"] = "KOS"
 L["Reason"] = "Grund"	
@@ -293,10 +300,10 @@ L["HonorKills"] = "Ehrenvolle Siege"
 L["PvPDeatchs"] = "PvP Tode"
 
 --Ausgabemeldungen
-L["VersionCheck"] = "|cffc41e3aWarnung! Die falsche Version von Spy ist installiert. Entfernen Sie diese Version und installieren Sie Spy Classic."
+L["VersionCheck"] = "|cffc41e3aWarnung! Die falsche Version von Spy ist installiert. Diese Version ist für Burning Crusade Classic."
 L["SpyEnabled"] = "|cff9933ffSpy-Addon aktiviert."
 L["SpyDisabled"] = "|cff9933ffSpy-Addon deaktiviert. Tippen Sie |cffffffff/spy show|cff9933ff um es zu aktivieren."
-L["UpgradeAvailable"] = "|cff9933ffEine neue Version von Spy ist verfügbar. Es kann von: \n| cffffffffhttps://www.curseforge.com/wow/addons/spy-classic heruntergeladen werden."
+L["UpgradeAvailable"] = "|cff9933ffEine neue Version von Spy ist verfügbar. Es kann von: \n| cffffffffhttps://www.curseforge.com/wow/addons/spy-tbc heruntergeladen werden."
 L["AlertStealthTitle"] = "Getarnte Spieler erkannt!"
 L["AlertKOSTitle"] = "Sofort zu tötenden Spieler erkannt!"
 L["AlertKOSGuildTitle"] = "Gilde eines Sofort zu tötenden Spielers erkannt!"
@@ -510,474 +517,480 @@ L["MinimapClassTextDEATHKNIGHT"] = "|cffc41e3a"
 L["MinimapClassTextMONK"] = "|cff00ff96"
 L["MinimapClassTextDEMONHUNTER"] = "|cffa330c9"
  
-Spy_AbilityList = {
- -----------------------------------------------------------
---Ermöglicht eine Abschätzung der Rasse, Klasse und Niveau ein
---Spieler bestimmt, welche Fähigkeiten beobachtet werden
---im Kampflog angezeigt.
------------------------------------------------------------
---++ Racial Traits ++	
-	["Schattenhaftigkeit"]={ race = "Night Elf", level = 1, },
-	["Kochendes Blut"]={ race = "Orc", level = 1, },
-	["Wille der Verlassenen"]={ race = "Undead", level = 1, },
-	["Steingestalt"]={ race = "Dwarf", level = 1, },
-	["Berserker"]={ race = "Troll", level = 1, },
-	["Zähigkeit"]={ race = "Orc", level = 1, },
-	["Schwert-Spezialisierung"]={ race = "Human", level = 1, },
-	["Entfesselungskünstler"]={ race = "Gnome", level = 1, },
-	["Unbeugsamkeit"]={ race = "Human", level = 1, },
-	["Regeneration"]={ race = "Troll", level = 1, },
-	["Wachsamkeit"]={ race = "Human", level = 1, },
-	["Durchhaltevermögen"]={ race = "Tauren", level = 1, },
-	["Bogenspezialisierung"]={ race = "Troll", level = 1, },
-	["Grüner Daumen"]={ race = "Tauren", level = 1, },
-	["Technologist"]={ race = "Gnome", level = 1, },
-	["Kriegsdonner"]={ race = "Tauren", level = 1, },
-	["Wildtierschlächter"]={ race = "Troll", level = 1, },
-	["Schatzsucher"]={ race = "Dwarf", level = 1, },
-	["Axtspezialisierung"]={ race = "Orc", level = 1, },
-	["Kannibalismus"]={ race = "Undead", level = 1, },
-	["Diplomatie"]={ race = "Human", level = 1, },
-	["Schnelligkeit"]={ race = "Night Elf", level = 1, },
-	["Wurfwaffen-Spezialisierung"]={ race = "Troll", level = 1, },
-	["Streitkolben-Spezialisierung"]={ race = "Human", level = 1, },
-	["Schusswaffenspezialisierung"]={ race = "Dwarf", level = 1, },
-	["Unterwasseratmung"]={ race = "Undead", level = 1, },
-	["Befehlsgewalt"]={ race = "Orc", level = 1, },
-	["Naturwiderstand"]={ race = "Night Elf", level = 1, },
-	["Frostwiderstand"]={ race = "Dwarf", level = 1, },
-	["Schattenwiderstand"]={ race = "Undead", level = 1, },
-	["Arkanwiderstand"]={ race = "Gnome", level = 1, },
-	["Irrwischgeist"]={ race = "Night Elf", level = 1, },
+				   
+															
+																
+														 
+						
+														   
+					  
+														   
+												 
+														   
+												 
+											  
+											 
+															
+														   
+												  
+												 
+												
+														 
+														 
+													
+												 
+												  
+														
+												 
+													 
+												   
+											   
+													  
+															   
+																 
+																
+													   
+												
+														
+													
+														
+													
+													  
 
---++ Druid Abilities ++	
-	["Heilende Berührung"]={ class = "DRUID", level = 1, },
-	["Zorn"]={ class = "DRUID", level = 1, },
-	["Mondfeuer"]={ class = "DRUID", level = 4, },
-	["Wucherwurzeln"]={ class = "DRUID", level = 8, },
-	["Bärengestalt"]={ class = "DRUID", level = 10, },
-	["Demoralisierendes Gebrüll"]={ class = "DRUID", level = 10, },
-	["Knurren"]={ class = "DRUID", level = 10, },
-	["Zermalmen"]={ class = "DRUID", level = 10, },
-	["Teleportieren: Moonglade"]={ class = "DRUID", level = 10, },
-	["Wutanfall"]={ class = "DRUID", level = 12, },
-	["Nachwachsen"]={ class = "DRUID", level = 12, },
-	["Hieb"]={ class = "DRUID", level = 14, },
-	["Wassergestalt"]={ class = "DRUID", level = 16, },
-	["Prankenhieb"]={ class = "DRUID", level = 16, },
-	["Feenfeuer"]={ class = "DRUID", level = 18, },
-	["Winterschlaf"]={ class = "DRUID", level = 18, },
-	["Katzengestalt"]={ class = "DRUID", level = 20, },
-	["Klaue"]={ class = "DRUID", level = 20, },
-	["Schleichen"]={ class = "DRUID", level = 20, },
-	["Wiedergeburt"]={ class = "DRUID", level = 20, },
-	["Zerfetzen"]={ class = "DRUID", level = 20, },
-	["Sternenfeuer"]={ class = "DRUID", level = 20, },
-	["Schreddern"]={ class = "DRUID", level = 22, },
-	["Tier besänftigen"]={ class = "DRUID", level = 22, },
-	["Krallenhieb"]={ class = "DRUID", level = 24, },
-	["Fluch aufheben"]={ class = "DRUID", level = 24, },
-	["Tigerfuror"]={ class = "DRUID", level = 24, },
-	["Vergiftung aufheben"]={ class = "DRUID", level = 26, },
-	["Spurt"]={ class = "DRUID", level = 26, },
-	["Herausforderndes Gebrüll"]={ class = "DRUID", level = 28, },
-	["Ducken"]={ class = "DRUID", level = 28, },
-	["Reisegestalt"]={ class = "DRUID", level = 30, },
-	["Wilder Biss"]={ class = "DRUID", level = 32, },
-	["Verheeren"]={ class = "DRUID", level = 32, },
-	["Rasende Regeneration"]={ class = "DRUID", level = 36, },
-	["Anspringen"]={ class = "DRUID", level = 36, },
-	["Terrorbärengestalt"]={ class = "DRUID", level = 40, },
---++ Druid Talents ++	
-	["Griff der Natur"]={ class = "DRUID", level = 10, },
-	["Wilde Attacke"]={ class = "DRUID", level = 20, },
-	["Insektenschwarm"]={ class = "DRUID", level = 20, },
-	["Omen der Klarsicht"]={ class = "DRUID", level = 20, },
-	["Feenfeuer (Tiergestalt)"]={ class = "DRUID", level = 30, },
---++ Hunter Abilities ++	
-	["Bereitschaft"]={ class = "HUNTER", level = 1, },
-	["Automatischer Schuss"]={ class = "HUNTER", level = 1, },
-	["Raptorstoß"]={ class = "HUNTER", level = 1, },
-	["Wildtiere aufspüren"]={ class = "HUNTER", level = 1, },
-	["Aspekt des Affen"]={ class = "HUNTER", level = 4, },
-	["Schlangenbiss"]={ class = "HUNTER", level = 4, },
-	["Arkaner Schuss"]={ class = "HUNTER", level = 6, },
-	["Mal des Jägers"]={ class = "HUNTER", level = 6, },
-	["Erschütternder Schuss"]={ class = "HUNTER", level = 8, },
-	["Aspekt des Falken"]={ class = "HUNTER", level = 10, },
-	["Tier rufen"]={ class = "HUNTER", level = 10, },
-	["Tier freigeben"]={ class = "HUNTER", level = 10, },
-	["Tier füttern"]={ class = "HUNTER", level = 10, },
-	["Tier wiederbeleben"]={ class = "HUNTER", level = 10, },
-	["Wildtier zähmen"]={ class = "HUNTER", level = 10, },
-	["Ablenkender Schuss"]={ class = "HUNTER", level = 12, },
-	["Tier heilen"]={ class = "HUNTER", level = 12, },
-	["Zurechtstutzen"]={ class = "HUNTER", level = 12, },
-	["Adlerauge"]={ class = "HUNTER", level = 14, },
-	["Augen des Wildtiers"]={ class = "HUNTER", level = 14, },
-	["Wildtier ängstigen"]={ class = "HUNTER", level = 14, },
-	["Feuerbrandfalle"]={ class = "HUNTER", level = 16, },
-	["Mungobiss"]={ class = "HUNTER", level = 16, },
-	["Mehrfachschuss"]={ class = "HUNTER", level = 18, },
-	["Untote aufspüren"]={ class = "HUNTER", level = 18, },
-	["Aspekt des Geparden"]={ class = "HUNTER", level = 20, },
-	["Rückzug"]={ class = "HUNTER", level = 20, },
-	["Eiskältefalle"]={ class = "HUNTER", level = 20, },
-	["Skorpidstich"]={ class = "HUNTER", level = 22, },
-	["Wildtierkunde"]={ class = "HUNTER", level = 24, },
-	["Verborgenes aufspüren"]={ class = "HUNTER", level = 24, },
-	["Schnellfeuer"]={ class = "HUNTER", level = 26, },
-	["Elementare aufspüren"]={ class = "HUNTER", level = 26, },
-	["Frostfalle"]={ class = "HUNTER", level = 28, },
-	["Aspekt des Wildtiers"]={ class = "HUNTER", level = 30, },
-	["Totstellen"]={ class = "HUNTER", level = 30, },
-	["Leuchtfeuer"]={ class = "HUNTER", level = 32, },
-	["Dämonen aufspüren"]={ class = "HUNTER", level = 32, },
-	["Sprengfalle"]={ class = "HUNTER", level = 34, },
-	["Vipernbiss"]={ class = "HUNTER", level = 36, },
-	["Aspekt des Rudels"]={ class = "HUNTER", level = 40, },
-	["Riesen aufspüren"]={ class = "HUNTER", level = 40, },
-	["Salve"]={ class = "HUNTER", level = 40, },
-	["Aspekt der Wildnis"]={ class = "HUNTER", level = 46, },
-	["Drachkin aufspüren"]={ class = "HUNTER", level = 50, },
-	["Einlullender Schuss"]={ class = "HUNTER", level = 60, },
---++ Hunter Talents ++	
-	["Gezielter Schuss"]={ class = "HUNTER", level = 20, },
-	["Abschreckung"]={ class = "HUNTER", level = 20, },
-	["Gegenangriff"]={ class = "HUNTER", level = 30, },
-	["Einschüchterung"]={ class = "HUNTER", level = 30, },
-	["Streuschuss"]={ class = "HUNTER", level = 30, },
-	["Zorn des Wildtiers"]={ class = "HUNTER", level = 40, },
-	["Stich des Flügeldrachen"]={ class = "HUNTER", level = 40, },
---++ Mage Abilities ++	
-	["Feuerball"]={ class = "MAGE", level = 1, },
-	["Frostrüstung"]={ class = "MAGE", level = 1, },
-	["Frostblitz"]={ class = "MAGE", level = 4, },
-	["Wasser herbeizaubern"]={ class = "MAGE", level = 4, },
-	["Feuerschlag"]={ class = "MAGE", level = 6, },
-	["Essen herbeizaubern"]={ class = "MAGE", level = 6, },
-	["Arkane Geschosse"]={ class = "MAGE", level = 8, },
-	["Verwandlung"]={ class = "MAGE", level = 8, },
-	["Frostnova"]={ class = "MAGE", level = 10, },
-	["Arkane Explosion"]={ class = "MAGE", level = 14, },
-	["Magie entdecken"]={ class = "MAGE", level = 16, },
-	["Flammenstoß"]={ class = "MAGE", level = 16, },
-	["Geringen Fluch aufheben"]={ class = "MAGE", level = 18, },
-	["Blinzeln"]={ class = "MAGE", level = 20, },
-	["Blizzard"]={ class = "MAGE", level = 20, },
-	["Hervorrufung"]={ class = "MAGE", level = 20, },
-	["Feuerzauberschutz"]={ class = "MAGE", level = 20, },
-	["Manaschild"]={ class = "MAGE", level = 20, },
-	["Teleportieren: Ironforge"]={ class = "MAGE", level = 20, },
-	["Teleportieren: Orgrimmar"]={ class = "MAGE", level = 20, },
-	["Teleportieren: Stormwind"]={ class = "MAGE", level = 20, },
-	["Teleportieren: Undercity"]={ class = "MAGE", level = 20, },
-	["Frostzauberschutz"]={ class = "MAGE", level = 22, },
-	["Versengen"]={ class = "MAGE", level = 22, },
-	["Gegenzauber"]={ class = "MAGE", level = 24, },
-	["Kältekegel"]={ class = "MAGE", level = 26, },
-	["Manaachat herbeizaubern"]={ class = "MAGE", level = 28, },
-	["Eisrüstung"]={ class = "MAGE", level = 30, },
-	["Teleportieren: Darnassus"]={ class = "MAGE", level = 30, },
-	["Teleportieren: Thunder Bluff"]={ class = "MAGE", level = 30, },
-	["Magische Rüstung"]={ class = "MAGE", level = 34, },
-	["Manajadestein herbeizaubern"]={ class = "MAGE", level = 38, },
-	["Portal: Ironforge"]={ class = "MAGE", level = 40, },
-	["Portal: Orgrimmar"]={ class = "MAGE", level = 40, },
-	["Portal: Stormwind"]={ class = "MAGE", level = 40, },
-	["Portal: Undercity"]={ class = "MAGE", level = 40, },
-	["Manacitrin herbeizaubern"]={ class = "MAGE", level = 48, },
-	["Portal: Darnassus"]={ class = "MAGE", level = 50, },
-	["Portal: Thunder Bluff"]={ class = "MAGE", level = 50, },
-	["Arkane Brillanz"]={ class = "MAGE", level = 56, },
-	["Manarubin herbeizaubern"]={ class = "MAGE", level = 58, },
-	["Verwandlung: Kuh"]={ class = "MAGE", level = 60, },
-	["Verwandlung"]={ class = "MAGE", level = 60, },
-	["Verwandlung"]={ class = "MAGE", level = 60, },
---++ Mage Talents ++	
-	["Kälteeinbruch"]={ class = "MAGE", level = 20, },
-	["Pyroschlag"]={ class = "MAGE", level = 20, },
-	["Druckwelle"]={ class = "MAGE", level = 30, },
-	["Eisblock"]={ class = "MAGE", level = 30, },
-	["Geistesgegenwart"]={ class = "MAGE", level = 30, },
-	["Arkane Macht"]={ class = "MAGE", level = 40, },
-	["Verbrennung"]={ class = "MAGE", level = 40, },
-	["Eisbarriere"]={ class = "MAGE", level = 40, },
---++ Paladin Abilities ++	
-	["Heiliges Licht"]={ class = "PALADIN", level = 1, },
-	["Siegel der Rechtschaffenheit"]={ class = "PALADIN", level = 1, },
-	["Richturteil"]={ class = "PALADIN", level = 4, },
-	["Göttlicher Schutz"]={ class = "PALADIN", level = 6, },
-	["Siegel des Kreuzfahrers"]={ class = "PALADIN", level = 6, },
-	["Hammer der Gerechtigkeit"]={ class = "PALADIN", level = 8, },
-	["Läutern"]={ class = "PALADIN", level = 8, },
-	["Handauflegung"]={ class = "PALADIN", level = 10, },
-	["Erlösung"]={ class = "PALADIN", level = 12, },
-	["Zorn der Gerechtigkeit"]={ class = "PALADIN", level = 16, },
-	["Exorzismus"]={ class = "PALADIN", level = 20, },
-	["Lichtblitz"]={ class = "PALADIN", level = 20, },
-	["Untote spüren"]={ class = "PALADIN", level = 20, },
-	["Siegel der Gerechtigkeit"]={ class = "PALADIN", level = 22, },
-	["Untote vertreiben"]={ class = "PALADIN", level = 24, },
-	["Segen der Rettung"]={ class = "PALADIN", level = 26, },
-	["Göttliches Eingreifen"]={ class = "PALADIN", level = 30, },
-	["Siegel des Lichts"]={ class = "PALADIN", level = 30, },
-	["Gottesschild"]={ class = "PALADIN", level = 34, },
-	["Siegel der Weisheit"]={ class = "PALADIN", level = 38, },
-	["Segen des Lichts"]={ class = "PALADIN", level = 40, },
-	["Schlachtross beschwören"]={ class = "PALADIN", level = 40, },
-	["Reinigung des Glaubens"]={ class = "PALADIN", level = 42, },
-	["Hammer des Zorns"]={ class = "PALADIN", level = 44, },
-	["Heiliger Zorn"]={ class = "PALADIN", level = 50, },
-	["Streitross beschwören"]={ class = "PALADIN", level = 60, },
---++ Paladin Talents ++	
-	["Weihe"]={ class = "PALADIN", level = 20, },
-	["Siegel des Befehls"]={ class = "PALADIN", level = 20, },
-	["Göttliche Gunst"]={ class = "PALADIN", level = 30, },
-	["Heiliger Schild"]={ class = "PALADIN", level = 40, },
-	["Heiliger Schock"]={ class = "PALADIN", level = 40, },
-	["Buße"]={ class = "PALADIN", level = 40, },
---++ Priest Abilities ++	
-	["Geringes Heilen"]={ class = "PRIEST", level = 1, },
-	["Göttliche Pein"]={ class = "PRIEST", level = 1, },
-	["Schattenwort: Schmerz"]={ class = "PRIEST", level = 4, },
-	["Verblassen"]={ class = "PRIEST", level = 8, },
-	["Verzweifeltes Gebet"]={ class = "PRIEST", level = 10, },
-	["Verhexung der Schwäche"]={ class = "PRIEST", level = 10, },
-	["Gedankenschlag"]={ class = "PRIEST", level = 10, },
-	["Auferstehung"]={ class = "PRIEST", level = 10, },
-	["Sternensplitter"]={ class = "PRIEST", level = 10, },
-	["Berührung der Schwäche"]={ class = "PRIEST", level = 10, },
-	["Inneres Feuer"]={ class = "PRIEST", level = 12, },
-	["Psychischer Schrei"]={ class = "PRIEST", level = 14, },
-	["Heilen"]={ class = "PRIEST", level = 16, },
-	["Magiebannung"]={ class = "PRIEST", level = 18, },
-	["Verschlingende Seuche"]={ class = "PRIEST", level = 20, },
-	["Elunes Anmut"]={ class = "PRIEST", level = 20, },
-	["Rückkopplung"]={ class = "PRIEST", level = 20, },
-	["Blitzheilung"]={ class = "PRIEST", level = 20, },
-	["Heiliges Feuer"]={ class = "PRIEST", level = 20, },
-	["Gedankenbesänftigung"]={ class = "PRIEST", level = 20, },
-	["Untote fesseln"]={ class = "PRIEST", level = 20, },
-	["Schattenschild"]={ class = "PRIEST", level = 20, },
-	["Gedankensicht"]={ class = "PRIEST", level = 22, },
-	["Manabrand"]={ class = "PRIEST", level = 24, },
-	["Gedankenkontrolle"]={ class = "PRIEST", level = 30, },
-	["Gebet der Heilung"]={ class = "PRIEST", level = 30, },
-	["Krankheit aufheben"]={ class = "PRIEST", level = 32, },
-	["Levitieren"]={ class = "PRIEST", level = 34, },
-	["Große Heilung"]={ class = "PRIEST", level = 40, },
---++ Priest Talents ++	
-	["Heilige Nova"]={ class = "PRIEST", level = 20, },
-	["Innerer Fokus"]={ class = "PRIEST", level = 20, },
-	["Gedankenschinden"]={ class = "PRIEST", level = 20, },
-	["Stille"]={ class = "PRIEST", level = 30, },
-	["Brunnen des Lichts"]={ class = "PRIEST", level = 40, },
-	["Schattengestalt"]={ class = "PRIEST", level = 40, },
---++ Rogue Abilities ++	
-	["Ausweiden"]={ class = "ROGUE", level = 1, },
-	["Schloss knacken"]={ class = "ROGUE", level = 1, },
-	["Finsterer Stoß"]={ class = "ROGUE", level = 1, },
-	["Verstohlenheit"]={ class = "ROGUE", level = 1, },
-	["Meucheln"]={ class = "ROGUE", level = 4, },
-	["Taschendiebstahl"]={ class = "ROGUE", level = 4, },
-	["Solarplexus"]={ class = "ROGUE", level = 6, },
-	["Entrinnen"]={ class = "ROGUE", level = 8, },
-	["Kopfnuss"]={ class = "ROGUE", level = 10, },
-	["Zerhäckseln"]={ class = "ROGUE", level = 10, },
-	["Sprinten"]={ class = "ROGUE", level = 10, },
-	["Tritt"]={ class = "ROGUE", level = 12, },
-	["Rüstung schwächen"]={ class = "ROGUE", level = 14, },
-	["Erdrosseln"]={ class = "ROGUE", level = 14, },
-	["Finte"]={ class = "ROGUE", level = 16, },
-	["Hinterhalt"]={ class = "ROGUE", level = 18, },
-	["Gifte"]={ class = "ROGUE", level = 20, },
-	["Blutung"]={ class = "ROGUE", level = 20, },
-	["Verkrüppelndes Gift"]={ class = "ROGUE", level = 20, },
-	["Sofort wirkendes Gift"]={ class = "ROGUE", level = 20, },
-	["Ablenken"]={ class = "ROGUE", level = 22, },
-	["Verschwinden"]={ class = "ROGUE", level = 22, },
-	["Fallen entdecken"]={ class = "ROGUE", level = 24, },
-	["Gedankenbenebelndes Gift"]={ class = "ROGUE", level = 24, },
-	["Fieser Trick"]={ class = "ROGUE", level = 26, },
-	["Falle entschärfen"]={ class = "ROGUE", level = 30, },
-	["Nierenhieb"]={ class = "ROGUE", level = 30, },
-	["Tödliches Gift"]={ class = "ROGUE", level = 30, },
-	["Wundgift"]={ class = "ROGUE", level = 32, },
-	["Blenden"]={ class = "ROGUE", level = 34, },
-	["Blendungspulver"]={ class = "ROGUE", level = 34, },
-	["Sicheres Fallen"]={ class = "ROGUE", level = 40, },
---++ Rogue Talents ++	
-	["Geisterhafter Stoß"]={ class = "ROGUE", level = 20, },
-	["Riposte"]={ class = "ROGUE", level = 20, },
-	["Klingenwirbel"]={ class = "ROGUE", level = 30, },
-	["Kaltblütigkeit"]={ class = "ROGUE", level = 30, },
-	["Blutsturz"]={ class = "ROGUE", level = 30, },
-	["Vorbereitung"]={ class = "ROGUE", level = 30, },
-	["Adrenalinrausch"]={ class = "ROGUE", level = 40, },
-	["Konzentration"]={ class = "ROGUE", level = 40, },
---++ Shaman Abilities ++	
-	["Welle der Heilung"]={ class = "SHAMAN", level = 1, },
-	["Blitzschlag"]={ class = "SHAMAN", level = 1, },
-	["Waffe des Felsbeißers"]={ class = "SHAMAN", level = 1, },
-	["Erdschock"]={ class = "SHAMAN", level = 4, },
-	["Totem der Steinhaut"]={ class = "SHAMAN", level = 4, },
-	["Totem der Erdbindung"]={ class = "SHAMAN", level = 6, },
-	["Blitzschlagschild"]={ class = "SHAMAN", level = 8, },
-	["Totem der Steinklaue"]={ class = "SHAMAN", level = 8, },
-	["Flammenschock"]={ class = "SHAMAN", level = 10, },
-	["Waffe der Flammenzunge"]={ class = "SHAMAN", level = 10, },
-	["Totem der Verbrennung"]={ class = "SHAMAN", level = 10, },
-	["Totem der Erdstärke"]={ class = "SHAMAN", level = 10, },
-	["Geist der Ahnen"]={ class = "SHAMAN", level = 12, },
-	["Totem der Feuernova"]={ class = "SHAMAN", level = 12, },
-	["Reinigen"]={ class = "SHAMAN", level = 12, },
-	["Totem des Erdstoßes"]={ class = "SHAMAN", level = 18, },
-	["Frostschock"]={ class = "SHAMAN", level = 20, },
-	["Waffe des Frostbrands"]={ class = "SHAMAN", level = 20, },
-	["Geisterwolf"]={ class = "SHAMAN", level = 20, },
-	["Totem des heilenden Flusses"]={ class = "SHAMAN", level = 20, },
-	["Geringe Welle der Heilung"]={ class = "SHAMAN", level = 20, },
-	["Totem der Giftreinigung"]={ class = "SHAMAN", level = 22, },
-	["Totem des Frostwiderstands"]={ class = "SHAMAN", level = 24, },
-	["Fernsicht"]={ class = "SHAMAN", level = 26, },
-	["Totem der glühenden Magma"]={ class = "SHAMAN", level = 26, },
-	["Totem der Manaquelle"]={ class = "SHAMAN", level = 26, },
-	["Totem des Feuerwiderstands"]={ class = "SHAMAN", level = 28, },
-	["Totem der Flammenzunge"]={ class = "SHAMAN", level = 28, },
-	["Astraler Rückruf"]={ class = "SHAMAN", level = 30, },
-	["Totem der Erdung"]={ class = "SHAMAN", level = 30, },
-	["Totem des Naturwiderstands"]={ class = "SHAMAN", level = 30, },
-	["Reinkarnation"]={ class = "SHAMAN", level = 30, },
-	["Waffe des Windzorns"]={ class = "SHAMAN", level = 30, },
-	["Kettenblitzschlag"]={ class = "SHAMAN", level = 32, },
-	["Totem des Windzorns"]={ class = "SHAMAN", level = 32, },
-	["Totem des Wachens"]={ class = "SHAMAN", level = 34, },
-	["Totem der Windmauer"]={ class = "SHAMAN", level = 36, },
-	["Totem der Krankheitsreinigung"]={ class = "SHAMAN", level = 38, },
-	["Kettenheilung"]={ class = "SHAMAN", level = 40, },
-	["Totem der luftgleichen Anmut"]={ class = "SHAMAN", level = 42, },
-	["Totem der beruhigenden Winde"]={ class = "SHAMAN", level = 50, },
---++ Shaman Talents ++	
-	["Parieren"]={ class = "SHAMAN", level = 30, },
-	["Elementarbeherrschung"]={ class = "SHAMAN", level = 40, },
-	["Totem der Manaflut"]={ class = "SHAMAN", level = 40, },
-	["Sturmschlag"]={ class = "SHAMAN", level = 40, },
---++ Warlock Abilities ++	
-	["Dämonenhaut"]={ class = "WARLOCK", level = 1, },
-	["Feuerbrand"]={ class = "WARLOCK", level = 1, },
-	["Schattenblitz"]={ class = "WARLOCK", level = 1, },
-	["Wichtel beschwören"]={ class = "WARLOCK", level = 1, },
-	["Verderbnis"]={ class = "WARLOCK", level = 4, },
-	["Fluch der Schwäche"]={ class = "WARLOCK", level = 4, },
-	["Aderlass"]={ class = "WARLOCK", level = 6, },
-	["Fluch der Pein"]={ class = "WARLOCK", level = 8, },
-	["Furcht"]={ class = "WARLOCK", level = 8, },
-	["Gesundheitsstein herstellen (schwach)"]={ class = "WARLOCK", level = 10, },
-	["Seelendieb"]={ class = "WARLOCK", level = 10, },
-	["Leerwandler beschwören"]={ class = "WARLOCK", level = 10, },
-	["Lebenslinie"]={ class = "WARLOCK", level = 12, },
-	["Fluch der Tollkühnheit"]={ class = "WARLOCK", level = 14, },
-	["Blutsauger"]={ class = "WARLOCK", level = 14, },
-	["Unendlicher Atem"]={ class = "WARLOCK", level = 16, },
-	["Sengender Schmerz"]={ class = "WARLOCK", level = 18, },
-	["Seelenstein herstellen (schwach)"]={ class = "WARLOCK", level = 18, },
-	["Dämonenrüstung"]={ class = "WARLOCK", level = 20, },
-	["Feuerregen"]={ class = "WARLOCK", level = 20, },
-	["Ritual der Beschwörung"]={ class = "WARLOCK", level = 20, },
-	["Sukkubus beschwören"]={ class = "WARLOCK", level = 20, },
-	["Gesundheitsstein herstellen (gering)"]={ class = "WARLOCK", level = 22, },
-	["Auge von Kilrogg"]={ class = "WARLOCK", level = 22, },
-	["Mana entziehen"]={ class = "WARLOCK", level = 24, },
-	["Dämonen spüren"]={ class = "WARLOCK", level = 24, },
-	["Fluch der Sprachen"]={ class = "WARLOCK", level = 26, },
-	["Geringe Unsichtbarkeit entdecken"]={ class = "WARLOCK", level = 26, },
-	["Verbannen"]={ class = "WARLOCK", level = 28, },
-	["Feuerstein herstellen (gering)"]={ class = "WARLOCK", level = 28, },
-	["Dämonensklave"]={ class = "WARLOCK", level = 30, },
-	["Höllenfeuer"]={ class = "WARLOCK", level = 30, },
-	["Teufelsjäger beschwören"]={ class = "WARLOCK", level = 30, },
-	["Seelenstein herstellen (gering)"]={ class = "WARLOCK", level = 30, },
-	["Fluch der Elemente"]={ class = "WARLOCK", level = 32, },
-	["Schattenzauberschutz"]={ class = "WARLOCK", level = 32, },
-	["Gesundheitsstein herstellen"]={ class = "WARLOCK", level = 34, },
-	["Feuerstein herstellen"]={ class = "WARLOCK", level = 36, },
-	["Zauberstein herstellen"]={ class = "WARLOCK", level = 36, },
-	["Unsichtbarkeit entdecken"]={ class = "WARLOCK", level = 38, },
-	["Schreckensgeheul"]={ class = "WARLOCK", level = 40, },
-	["Teufelsross beschwören"]={ class = "WARLOCK", level = 40, },
-	["Seelenstein herstellen"]={ class = "WARLOCK", level = 40, },
-	["Todesmantel"]={ class = "WARLOCK", level = 42, },
-	["Fluch der Schatten"]={ class = "WARLOCK", level = 44, },
-	["Gesundheitsstein herstellen (groß)"]={ class = "WARLOCK", level = 46, },
-	["Feuerstein herstellen (groß)"]={ class = "WARLOCK", level = 46, },
-	["Seelenfeuer"]={ class = "WARLOCK", level = 48, },
-	["Zauberstein herstellen (groß)"]={ class = "WARLOCK", level = 48, },
-	["Große Unsichtbarkeit entdecken"]={ class = "WARLOCK", level = 50, },
-	["Inferno"]={ class = "WARLOCK", level = 50, },
-	["Seelenstein herstellen (groß)"]={ class = "WARLOCK", level = 50, },
-	["Feuerstein herstellen (erheblich)"]={ class = "WARLOCK", level = 56, },
-	["Gesundheitsstein herstellen (erheblich)"]={ class = "WARLOCK", level = 58, },
-	["Fluch der Verdammnis"]={ class = "WARLOCK", level = 60, },
-	["Ritual der Verdammnis"]={ class = "WARLOCK", level = 60, },
-	["Schreckensross herbeirufen"]={ class = "WARLOCK", level = 60, },
-	["Seelenstein herstellen (erheblich)"]={ class = "WARLOCK", level = 60, },
-	["Zauberstein herstellen (erheblich)"]={ class = "WARLOCK", level = 60, },
---++ Warlock Talents ++	
-	["Fluch verstärken"]={ class = "WARLOCK", level = 20, },
-	["Teufelsbeherrschung"]={ class = "WARLOCK", level = 20, },
-	["Schattenbrand"]={ class = "WARLOCK", level = 20, },
-	["Fluch der Erschöpfung"]={ class = "WARLOCK", level = 30, },
-	["Dämonische Opferung"]={ class = "WARLOCK", level = 30, },
-	["Lebensentzug"]={ class = "WARLOCK", level = 30, },
-	["Feuersbrunst"]={ class = "WARLOCK", level = 40, },
-	["Dunkler Pakt"]={ class = "WARLOCK", level = 40, },
-	["Seelenverbindung"]={ class = "WARLOCK", level = 40, },
---++ Warrior Abilities ++	
-	["Kampfhaltung"]={ class = "WARRIOR", level = 1, },
-	["Heldenhafter Stoß"]={ class = "WARRIOR", level = 1, },
-	["Verbessertes Zuschlagen"]={ class = "WARRIOR", level = 1, },
-	["Sturmangriff"]={ class = "WARRIOR", level = 4, },
-	["Verwunden"]={ class = "WARRIOR", level = 4, },
-	["Donnerknall"]={ class = "WARRIOR", level = 6, },
-	["Kniesehne"]={ class = "WARRIOR", level = 8, },
-	["Blutrausch"]={ class = "WARRIOR", level = 10, },
-	["Verteidigungshaltung"]={ class = "WARRIOR", level = 10, },
-	["Rüstung zerreißen"]={ class = "WARRIOR", level = 10, },
-	["Spott"]={ class = "WARRIOR", level = 10, },
-	["Überwältigen"]={ class = "WARRIOR", level = 12, },
-	["Schildhieb"]={ class = "WARRIOR", level = 12, },
-	["Demoralisierungsruf"]={ class = "WARRIOR", level = 14, },
-	["Rache"]={ class = "WARRIOR", level = 14, },
-	["Spöttischer Schlag"]={ class = "WARRIOR", level = 16, },
-	["Schildblock"]={ class = "WARRIOR", level = 16, },
-	["Entwaffnen"]={ class = "WARRIOR", level = 18, },
-	["Spalten"]={ class = "WARRIOR", level = 20, },
-	["Gegenschlag"]={ class = "WARRIOR", level = 20, },
-	["Drohruf"]={ class = "WARRIOR", level = 22, },
-	["Hinrichten"]={ class = "WARRIOR", level = 24, },
-	["Herausforderungsruf"]={ class = "WARRIOR", level = 26, },
-	["Schildwall"]={ class = "WARRIOR", level = 28, },
-	["Berserkerhaltung"]={ class = "WARRIOR", level = 30, },
-	["Abfangen"]={ class = "WARRIOR", level = 30, },
-	["Zerschmettern"]={ class = "WARRIOR", level = 30, },
-	["Berserkerwut"]={ class = "WARRIOR", level = 32, },
-	["Wirbelwind"]={ class = "WARRIOR", level = 36, },
-	["Zuschlagen"]={ class = "WARRIOR", level = 38, },
-	["Tollkühnheit"]={ class = "WARRIOR", level = 50, },
---++ Warrior Talents ++	
-	["Letztes Gefecht"]={ class = "WARRIOR", level = 20, },
-	["Durchdringendes Heulen"]={ class = "WARRIOR", level = 20, },
-	["Erschütternder Schlag"]={ class = "WARRIOR", level = 30, },
-	["Todeswunsch"]={ class = "WARRIOR", level = 30, },
-	["Weitreichende Stöße"]={ class = "WARRIOR", level = 30, },
-	["Blutdurst"]={ class = "WARRIOR", level = 40, },
-	["Tödlicher Stoß"]={ class = "WARRIOR", level = 40, },
-	["Schildschlag"]={ class = "WARRIOR", level = 40, },
-};
+						
+														 
+										  
+											   
+												   
+													
+																 
+											  
+												
+															   
+												
+												  
+										   
+													
+												  
+												
+												   
+													
+											
+												 
+												   
+												
+												   
+												 
+														
+												  
+													 
+												 
+														  
+											
+																
+											 
+												   
+												  
+												
+														   
+												 
+														  
+					  
+													  
+													
+													  
+														 
+															  
+						 
+												   
+														   
+												  
+														   
+													   
+													
+													 
+													  
+															 
+														 
+												  
+													  
+													 
+														  
+														
+														  
+												   
+													  
+												 
+														   
+														   
+													   
+												 
+													  
+														 
+														   
+												
+													  
+													
+													 
+															  
+													
+															 
+												  
+															
+												  
+												   
+														   
+												   
+												  
+														 
+														 
+											 
+														  
+														   
+														   
+					   
+														
+													
+													
+														
+												   
+														  
+																
+					   
+											  
+												  
+											   
+														 
+												
+														
+													 
+												
+											   
+													  
+													 
+												  
+															 
+											  
+											  
+												  
+													   
+												
+															  
+															  
+															  
+															  
+													   
+											   
+												 
+												 
+															 
+												 
+															  
+																  
+													   
+																 
+													   
+													   
+													   
+													   
+															  
+													   
+														   
+													 
+															 
+													  
+												 
+												 
+					 
+													
+												
+												
+											  
+													  
+												  
+												 
+												 
+						  
+													  
+																	
+												   
+														  
+															   
+																
+												
+													  
+												  
+															   
+												   
+												   
+													   
+																 
+														  
+														  
+															   
+														  
+													 
+															
+														 
+																 
+															   
+														 
+													  
+															   
+						
+											  
+														   
+														 
+														
+														
+											  
+						 
+													  
+													  
+															
+												 
+														   
+															   
+													  
+													
+													   
+																
+													 
+														  
+											  
+													
+															 
+													
+													 
+													
+													  
+															 
+													  
+													  
+													 
+												 
+														 
+														 
+														  
+												  
+													  
+					   
+													
+													 
+														
+											  
+														  
+													   
+						
+											   
+													 
+													 
+													
+											  
+													  
+												 
+											   
+											   
+												   
+											   
+											
+														  
+												 
+											
+												 
+											
+											  
+														   
+															
+											   
+												   
+													   
+															   
+												   
+														 
+												 
+													  
+											   
+											  
+													  
+													  
+					  
+														  
+											  
+													
+													  
+												
+												   
+													  
+													
+						 
+														
+												  
+															 
+												
+														  
+														   
+														
+														   
+													 
+															  
+															 
+															
+													   
+														   
+												
+															
+												   
+															 
+												   
+																   
+																 
+															   
+																  
+												 
+																  
+															
+																  
+															  
+														 
+														
+																  
+													 
+														   
+														 
+														   
+														 
+														   
+																	 
+													 
+																	
+																	
+					   
+												
+															 
+														  
+												   
+						  
+													
+												  
+													 
+														   
+												  
+														   
+												
+													  
+											  
+																			  
+												   
+																
+													
+																
+												   
+														 
+														  
+																		 
+														 
+												   
+																
+															 
+																			 
+														 
+													   
+														 
+														   
+																		 
+												  
+																	   
+													   
+													 
+																  
+																		
+														   
+															 
+																	
+															  
+															   
+																 
+														 
+																
+															   
+													
+														   
+																			
+																	  
+													
+																	   
+																		
+												
+																	   
+																		  
+																				
+															 
+															  
+																   
+																		   
+																		   
+						
+														  
+															
+													  
+															   
+															 
+													 
+													 
+													 
+														 
+						  
+													
+														  
+															   
+													
+												 
+												   
+												 
+												   
+															 
+															
+											  
+													   
+												   
+															
+											  
+															
+													
+												   
+												
+													
+												
+												   
+															
+												   
+														 
+												 
+													  
+													 
+												   
+												   
+													  
+						
+														
+															   
+															   
+													
+															  
+												  
+														 
+													 
+  
 
 Spy_IgnoreList = {
-	["Briefkasten"]=true, 
-	["Schatztruhe"]=true,
-	["Kleine Schatztruhe"]=true,
+	["Briefkasten"]=true, ["Schreddermeister Mk1"]=true, ["Schrott-o-matik 1000"]=true,
+	["Boat to Stormwind City"]=true, ["Boat to Boralus Harbor, Tiragarde Sound"]=true,
+	["Schatztruhe"]=true, ["Kleine Schatztruhe"]=true,
+	["Akundas Biss"]=true, ["Ankerkraut"]=true, ["Flussknospe"]=true,    
+	["Meeresstängel"]=true, ["Sirenenpollen"]=true, ["Sternmoos"]=true,   
+	["Winterkuss"]=true, ["War Headquarters (PvP)"]=true,
+	["Allianzattentäter"]=true, ["Hordeattentäter"]=true,	
+	["Mystiker Vogelhut"]=true, ["Cousin Träghand"]=true,
+	["Azerit für die Allianz"]=true, ["Azerit für die Horde"]=true,	
 };

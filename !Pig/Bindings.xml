@@ -1,0 +1,50 @@
+<Bindings>
+  <Binding name="CLICK piganniu_1_1:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_1_2:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_1_3:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_1_4:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_1_5:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_1_6:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_1_7:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_1_8:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_1_9:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_1_10:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_1_11:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_1_12:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_1:LeftButton" header="PIGDZUOTIAO1" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_2:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_3:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_4:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_5:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_6:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_7:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_8:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_9:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_10:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_11:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_2_12:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_1:LeftButton" header="PIGDZUOTIAO2" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_2:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_3:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_4:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_5:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_6:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_7:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_8:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_9:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_10:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_11:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_3_12:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_1:LeftButton" header="PIGDZUOTIAO3" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_2:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_3:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_4:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_5:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_6:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_7:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_8:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_9:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_10:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_11:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK piganniu_4_12:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+</Bindings>

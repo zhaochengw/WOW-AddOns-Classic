@@ -84,6 +84,7 @@ L:SetMiscLocalization{
 	Human		= "인간",
 	Demon		= "악마",
 	YellDemon	= "꺼져라, 엘프 꼬맹이. 지금부터는 내가 주인이다!",
+	YellPhase1  = "드디어, 내가 풀려났도다!",
 	YellPhase2	= "안 돼... 안 돼! 무슨 짓이냐? 내가 주인이야! 내 말 듣지 못해? 나란 말이야! 내가... 으아악! 놈을 억누를 수... 없...어."
 }
 
@@ -139,7 +140,8 @@ L:SetWarningLocalization{
 	WarnNaga				= "곧 나가 (%s)",
 	WarnShield				= "보호막 %d/4 깨짐",
 	WarnLoot				= "오염된 핵: >%s<",
-	SpecWarnElemental		= "오염된 정령 - 점사!"
+	SpecWarnElemental		= "오염된 정령 - 점사!",
+	SpecWarnCore			= "오염된 핵 가짐!"
 }
 
 L:SetTimerLocalization{
@@ -160,7 +162,7 @@ L:SetOptionLocalization{
 	TimerStrider			= "다음 포자손 타이머 바 보기",
 	TimerNaga				= "다음 나가 타이머 바 보기",
 	SpecWarnElemental		= "오염된 정령 등장 특수 경고 보기",
-	AutoChangeLootToFFA		= "2단계에서 전리품 획득 설정을 자유로 자동 변경"
+	SpecWarnCore		= "오염된 핵을 가졌을 때 특수 경고 보기"
 }
 
 L:SetMiscLocalization{

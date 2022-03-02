@@ -1,0 +1,123 @@
+-------------------------------------------------------
+-- All levels (Cooking)
+-------------------------------------------------------
+MTSL_DATA["levels"]["Cooking"] = 
+{
+	{
+		["expansion"] = 1,
+		["id"] = 2550,
+		["max_skill"] = 75,
+		["min_skill"] = 0,
+		["min_xp_level"] = 1,
+		["name"] = {
+			["Chinese"] = "烹饪 (初级)",
+			["English"] = "Cooking (Apprentice)",
+			["Taiwanese"] = "烹飪 (學徒)",
+		},
+		["phase"] = 1,
+		["rank"] = 1,
+		["trainers"] = {
+			["price"] = 100,
+			["sources"] = {
+				1355,
+				1382,
+				1430,
+				1699,
+				3026,
+				3067,
+				3087,
+				3399,
+				4210,
+				4552,
+				5159,
+				5482,
+				6286,
+				8306,
+			},
+		},
+	},
+	{
+		["expansion"] = 1,
+		["id"] = 3102,
+		["max_skill"] = 150,
+		["min_skill"] = 50,
+		["min_xp_level"] = 1,
+		["name"] = {
+			["Chinese"] = "烹饪 (中级)",
+			["English"] = "Cooking (Journeyman)",
+			["Taiwanese"] = "烹飪 (熟練工)",
+		},
+		["phase"] = 1,
+		["rank"] = 2,
+		["trainers"] = {
+			["price"] = 500,
+			["sources"] = {
+				1355,
+				1382,
+				1430,
+				1699,
+				3026,
+				3067,
+				3087,
+				3399,
+				4210,
+				4552,
+				5159,
+				5482,
+				6286,
+				8306,
+			},
+		},
+	},
+	{
+		["expansion"] = 1,
+		["id"] = 3413,
+		["items"] = {
+			16072,
+		},
+		["max_skill"] = 225,
+		["min_skill"] = 125,
+		["min_xp_level"] = 1,
+		["name"] = {
+			["Chinese"] = "烹饪 (高级)",
+			["English"] = "Cooking (Expert)",
+			["Taiwanese"] = "烹飪 (專家)",
+		},
+		["phase"] = 1,
+		["rank"] = 3,
+	},
+	{
+		["expansion"] = 1,
+		["id"] = 18260,
+		["max_skill"] = 300,
+		["min_skill"] = 225,
+		["min_xp_level"] = 35,
+		["name"] = {
+			["Chinese"] = "烹饪 (大师级)",
+			["English"] = "Cooking (Artisan)",
+			["Taiwanese"] = "烹飪 (大工匠)",
+		},
+		["phase"] = 1,
+		["quests"] = {
+			6610,
+		},
+		["rank"] = 4,
+	},
+	{
+		["expansion"] = 2,
+		["id"] = 33359,
+		["items"] = {
+			27736,
+		},
+		["max_skill"] = 375,
+		["min_skill"] = 300,
+		["min_xp_level"] = 35,
+		["name"] = {
+			["Chinese"] = "烹饪 (大师级)",
+			["English"] = "Cooking (Master)",
+			["Taiwanese"] = "烹飪 (大师级)",
+		},
+		["phase"] = 1,
+		["rank"] = 5,
+	},
+}

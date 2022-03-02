@@ -1,6 +1,6 @@
 # Pixel Perfect Align
 
-## [v1.11.01](https://github.com/mooreatv/PixelPerfectAlign/tree/v1.11.01) (2021-06-29)
-[Full Changelog](https://github.com/mooreatv/PixelPerfectAlign/compare/v1.11.00...v1.11.01)
+## [v1.11.02](https://github.com/mooreatv/PixelPerfectAlign/tree/v1.11.02) (2021-09-02)
+[Full Changelog](https://github.com/mooreatv/PixelPerfectAlign/compare/v1.11.01...v1.11.02)
 
-- Updated tocs for Shadowlands Chains of Domination (90100)  
+- Burning Crusade 2.5.2 update  

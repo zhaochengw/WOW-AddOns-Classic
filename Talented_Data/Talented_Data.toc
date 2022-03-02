@@ -1,0 +1,42 @@
+## Interface: 20503
+## Title: Talented Data
+## Notes: Gather localized information about the different talent trees of your toons
+## Author: Jerry,Lethay
+## SavedVariables: Talented_DataDB
+## RequiredDeps: Talented
+## OptionalDeps: Ace3
+## X-ExpectedBuild: "2.5.1 - 38598 - May 6 2021 - 20501"
+
+## LIBS START
+Libs\LibStub.lua
+Libs\CallbackHandler-1.0.lua
+Libs\Ace3\AceAddon-3.0.lua
+Libs\Ace3\AceConsole-3.0.lua
+Libs\Ace3\AceEvent-3.0.lua
+Libs\LibGratuity-3.0\LibGratuity-3.0.lua
+## LIBS END
+
+Core.lua
+
+Data\Talented_Data_HUNTER.lua
+Data\Talented_Data_WARRIOR.lua
+Data\Talented_Data_PALADIN.lua
+Data\Talented_Data_MAGE.lua
+Data\Talented_Data_PRIEST.lua
+Data\Talented_Data_WARLOCK.lua
+Data\Talented_Data_SHAMAN.lua
+Data\Talented_Data_DRUID.lua
+Data\Talented_Data_ROGUE.lua
+
+Locales\Talented_Data_esES.lua
+Locales\Talented_Data_zhCN.lua
+Locales\Talented_Data_frFR.lua
+Locales\Talented_Data_zhTW.lua
+Locales\Talented_Data_deDE.lua
+Locales\Talented_Data_ruRU.lua
+Locales\Talented_Data_koKR.lua
+Locales\Talented_Data_enUS.lua
+
+## Title-zhCN: |cff0055FF小I插件|r Talented 天赋模拟器
+## provider: 小I插件1.4.6
+## Update time: 20211203

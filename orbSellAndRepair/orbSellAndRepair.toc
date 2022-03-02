@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: orbSellAndRepair
 ## Notes: Automatically sell your gray items and repair your equipment when you visit a merchant.
 ## Title-zhCN: |CFFFF8000辅助|R 自动贩卖修理

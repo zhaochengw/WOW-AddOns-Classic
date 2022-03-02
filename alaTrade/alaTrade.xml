@@ -1,0 +1,21 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+<!--
+    <Include file = "..\..\sharedxml\hybridscrollframe.xml"/>
+    <Include file = "template.xml"/>
+-->
+    <script file = "libs\LibStub\LibStub.lua" />
+    <include file = "libs\CallbackHandler-1.0\CallbackHandler-1.0.xml" />
+    <script file = "libs\LibDataBroker-1.1\LibDataBroker-1.1.lua" />
+    <script file = "libs\LibDBIcon-1.0\LibDBIcon-1.0.lua" />
+    <include file = "libs\ala\main.xml" />
+
+    <script file = "alaTrade_new.lua" />
+
+    <script file = "BaudAuction.lua" />
+    <!-- <include file = "Bindings.xml" /> -->
+    
+
+</Ui>
+

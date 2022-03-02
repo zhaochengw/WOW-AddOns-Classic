@@ -24,6 +24,9 @@ local LocalizedCounterattack = GetSpellInfo(19306)
 -- local LocalizedExecute = GetSpellInfo(20662)
 -- local LocalizedShadowBolt = GetSpellInfo(686)
 local LocalizedMongooseBite = GetSpellInfo(1495)
+local LocalizedEarthShock = GetSpellInfo(8042)
+local LocalizedFlameShock = GetSpellInfo(8050)
+local LocalizedFrostShock = GetSpellInfo(8056)
 local LBG
 
 local spellNamesByID = {
@@ -94,12 +97,87 @@ local spellNamesByID = {
     [24274] = "HammerOfWrath",
     [24239] = "HammerOfWrath",
     [27180] = "HammerOfWrath",
+
+    [8042] = "EarthShock",
+    [8044] = "EarthShock",
+    [8045] = "EarthShock",
+    [8046] = "EarthShock",
+    [10412] = "EarthShock",
+    [10413] = "EarthShock",
+    [10414] = "EarthShock",
+    [25454] = "EarthShock",
+
+    [8050] = "FlameShock",
+    [8052] = "FlameShock",
+    [8053] = "FlameShock",
+    [10447] = "FlameShock",
+    [10448] = "FlameShock",
+    [29228] = "FlameShock",
+    [25457] = "FlameShock",
+
+    [8056] = "FrostShock",
+    [8058] = "FrostShock",
+    [10472] = "FrostShock",
+    [10473] = "FrostShock",
+    [25464] = "FrostShock",
 }
+
+local AddonHandler = {
+    ["Dominos"] = function(self)
+        local dominosPrefix = "DominosActionButton"
+        for i = 1, 72 do
+            local btnName = dominosPrefix..i
+            local btn = _G[btnName]
+            if btn then
+                self:RegisterForActivations(btn)
+            end
+        end
+    end,
+
+    ["ExtraActionBar"] = function(self)
+        print("ExtraActionBar")
+        local hash = {};
+        local function func(name)
+            for i = 1, 12 do
+                local btn = _G[name .. "AB" .. i]
+                if btn then
+                    self:RegisterForActivations(btn)
+                end
+            end
+        end
+        if MOGUBar_GetExBar ~= nil then
+            local _MOGUBar_GetExBar = MOGUBar_GetExBar;
+            MOGUBar_GetExBar = function(name)
+                local bar = _MOGUBar_GetExBar(name);
+                if bar ~= nil and hash[bar] == nil then
+                    func(bar:GetName());
+                end
+                return bar;
+            end
+        end
+        local index = 1;
+        local bar = _G["U1BAR" .. index];
+        while bar ~= nil do
+            hash[bar] = true;
+            func(bar:GetName());
+            index = index + 1;
+            bar = _G["U1BAR" .. index];
+        end
+        local dominosPrefix = "DominosActionButton"
+    end,
+
+};
+function f:ADDON_LOADED(event, addon)
+    local h = AddonHandler[addon];
+    if h then
+        h(self);
+    end
+end
 
 f:RegisterEvent("PLAYER_LOGIN")
 function f:PLAYER_LOGIN()
 
-    if class == "WARRIOR" or class == "ROGUE" or class == "HUNTER" or class == "WARLOCK" or class == "PALADIN" then
+    if class == "WARRIOR" or class == "ROGUE" or class == "HUNTER" or class == "WARLOCK" or class == "PALADIN" or class == "SHAMAN" then
         self:RegisterEvent("SPELLS_CHANGED")
         self:SPELLS_CHANGED()
 
@@ -133,16 +211,12 @@ function f:PLAYER_LOGIN()
             end)
         end
 
-        if IsAddOnLoaded("Dominos") then
-            local dominosPrefix = "DominosActionButton"
-            for i = 1, 72 do
-                local btnName = dominosPrefix..i
-                local btn = _G[btnName]
-                if btn then
-                    self:RegisterForActivations(btn)
-                end
+        for addon, h in next, AddonHandler do
+            if IsAddOnLoaded(addon) then
+                h(self);
             end
         end
+        f:RegisterEvent("ADDON_LOADED");
 
         -- if Neuron then
         --     for i,bar in ipairs(Neuron.BARIndex) do
@@ -171,6 +245,7 @@ local function FindAura(unit, spellID, filter)
 end
 
 local hadShadowTrance
+local hadFocused
 local hadBacklash
 function f:SPELLS_CHANGED()
     if class == "WARRIOR" then
@@ -319,6 +394,34 @@ function f:SPELLS_CHANGED()
             self:SetScript("OnUpdate", nil)
             self:UnregisterEvent("UNIT_AURA")
         end
+    elseif class == "SHAMAN" then
+        self:SetScript("OnUpdate", self.timerOnUpdate)
+        local hasShamanisticFocusTalent = IsPlayerSpell(43338)
+        if hasShamanisticFocusTalent then
+            self:RegisterUnitEvent("UNIT_AURA", "player")
+            self:SetScript("OnUpdate", self.timerOnUpdate)
+            self.UNIT_AURA = function(self, event, unit)
+                if hasShamanisticFocusTalent then
+                    local name, _, _, _, duration, expirationTime = FindAura(unit, 43339, "HELPFUL") -- Focused
+                    local haveFocused = name ~= nil
+                    if hadFocused ~= haveFocused then
+                        if haveFocused then
+                            f:Activate("EarthShock", duration, true)
+                            f:Activate("FlameShock", duration, true)
+                            f:Activate("FrostShock", duration, true)
+                        else
+                            f:Deactivate("EarthShock")
+                            f:Deactivate("FlameShock")
+                            f:Deactivate("FrostShock")
+                        end
+                        hadFocused = haveFocused
+                    end
+                end
+            end
+        else
+            self:SetScript("OnUpdate", nil)
+            self:UnregisterEvent("UNIT_AURA")
+        end
     end
 end
 
@@ -389,6 +492,9 @@ local reverseSpellRanks = {
     Exorcism = { 27138, 10314, 10313, 10312, 5615, 5614, 879 },
     HammerOfWrath = { 27180, 24239, 24274, 24275 },
     VictoryRush = { 34428 },
+    EarthShock = { 25454, 10414, 10413, 10412, 8046, 8045, 8044, 8042 },
+    FlameShock = { 25457, 29228, 10448, 10447, 8053, 8052, 8050 },
+    FrostShock = { 25464, 10473, 10472, 8058, 8056 },
 }
 function ns.findHighestRank(spellName)
     for _, spellID in ipairs(reverseSpellRanks[spellName]) do

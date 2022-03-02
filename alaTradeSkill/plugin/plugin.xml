@@ -1,0 +1,22 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+    <script file = "AuctionBase.lua" />
+    <script file = "alaTrade.lua" />
+    <script file = "Auctionator.lua" />
+    <script file = "AuctionDB.lua" />
+    <script file = "Auctioneer.lua" />
+    <script file = "AuctionFaster.lua" />
+    <script file = "AuctionMaster.lua" />
+    <script file = "Auctipus.lua" />
+    <script file = "aux-addon.lua" />
+    <script file = "tdAuction.lua" />
+    <script file = "TradeSkillMaster.lua" />
+
+    <script file = "MissingTradeSkillsList.lua" />
+    <script file = "ElvUI.lua" />
+    <script file = "CloudyTradeSkill.lua" />
+    <script file = "Leatrix_Plus.lua" />
+
+</Ui>
+

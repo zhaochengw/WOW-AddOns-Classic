@@ -393,6 +393,7 @@ end
 function ns.OpenUrlDialog(url)
     if not StaticPopupDialogs['MEETINGHORN_COPY_URL'] then
         StaticPopupDialogs['MEETINGHORN_COPY_URL'] = {
+			preferredIndex = STATICPOPUP_NUMDIALOGS,
             text = '请按<|cff00ff00Ctrl+C|r>复制网址到浏览器打开',
             button1 = OKAY,
             timeout = 0,
@@ -415,4 +416,49 @@ function ns.OpenUrlDialog(url)
     end
 
     StaticPopup_Show('MEETINGHORN_COPY_URL', nil, nil, url)
+end
+
+function ns.GetAddonSource()
+    return 0
+end
+
+function ns.ListToMap(list)
+    local map = {}
+    do
+        for i, v in pairs(list) do
+            map[v] = true
+        end
+    end
+    return map
+end
+
+function ns.ApplyLeaderBtnClick(Btn, param)
+    param = param or {}
+    local function OnBtnClick()
+        if not Btn.QRApplyLeaderTooltip then
+            Btn.QRApplyLeaderTooltip = CreateFrame('Frame', nil, Btn, 'MeetingHornActivityTooltipTemplate')
+            Btn.QRApplyLeaderTooltip:ClearAllPoints()
+            if param.point then
+                Btn.QRApplyLeaderTooltip:SetPoint(unpack(param.point))
+            else
+                Btn.QRApplyLeaderTooltip:SetPoint('BOTTOMLEFT', Btn, 'BOTTOMRIGHT', 20, -8)
+            end
+            local qrCode = Btn.QRApplyLeaderTooltip.QRCode:CreateTexture(nil, 'ARTWORK')
+            qrCode:SetAllPoints()
+            Btn.QRApplyLeaderTooltip.QRCode.texture = qrCode
+            Btn.QRApplyLeaderTooltip:Hide()
+        end
+        Btn.QRApplyLeaderTooltip.Text:SetText(param.tip or '微信扫码 申请星团长')
+        Btn.QRApplyLeaderTooltip.QRCode.texture:SetTexture(param.qrTexture or
+                                                               'Interface/AddOns/MeetingHorn/Media/ApplyLeaderQR')
+        Btn.QRApplyLeaderTooltip:SetHeight(param.height or 215)
+        Btn.QRApplyLeaderTooltip:Show()
+
+    end
+    if param.clickTarget then
+        param.clickTarget:SetScript('OnClick', OnBtnClick)
+    else
+        Btn:SetScript('OnClick', OnBtnClick)
+    end
+
 end

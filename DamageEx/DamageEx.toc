@@ -1,0 +1,22 @@
+## Interface: 20503
+## Title:|CFFFF0000[战斗]|R 战斗指示器 伤害显示
+## Notes-zhCN: 显示你对敌人的伤害，对目标的治疗量，并可显示技能名字|n命令:/dex
+
+
+## Version: 3.01
+## Author: Dennie
+## Localization-zhTW: Ghostar 星魂 (CWDG)
+## SavedVariablesPerCharacter: DEX_SAVE
+## OptionalDeps: myAddOns
+## Dependencies:
+
+localization.lua
+localization_zhCN.lua
+localization_zhTW.lua
+
+DamageEx.Lua
+DEXoptions.lua
+DEX_ui_path.lua
+
+DamageEx.xml
+DEXoptions.xml

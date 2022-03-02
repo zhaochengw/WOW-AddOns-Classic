@@ -8,7 +8,7 @@ local ns = select(2, ...)
 local Addon = ns.Addon
 local BAG_ID = ns.BAG_ID
 
----@type tdBag2AutoDisplay
+---@class AutoDisplay: AceAddon-3.0, AceHook-3.0, AceEvent-3.0
 local AutoDisplay = Addon:NewModule('AutoDisplay', 'AceHook-3.0', 'AceEvent-3.0')
 
 function AutoDisplay:OnInitialize()

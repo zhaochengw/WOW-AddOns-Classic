@@ -1,9 +1,7 @@
 <Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
     <Frame name="GoodLeaderRaidTemplate" virtual="true">
-        <KeyValues>
-            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
-        </KeyValues>
+        
         <Size x="90" y="62"/>
         <Layers>
             <Layer level="BACKGROUND" textureSubLevel="1">
@@ -162,6 +160,12 @@
                                     <TexCoords left="0" right="0.546875" top="0" bottom="1"/>
                                 </DisabledTexture>
                                 <ButtonText inherits="GameFontHighlightSmall"/>
+                            </Button>
+                            <Button parentKey="ApplyLeaderBtn" inherits="UIPanelButtonTemplate">
+                                <Size x="120" y="22"/>
+                                <Anchors>
+                                    <Anchor point="TOP" relativeKey="$parent.Search" relativePoint="BOTTOM" x="0" y="2"/>
+                                </Anchors>
                             </Button>
                         </Frames>
                     </Frame>
@@ -350,13 +354,10 @@
             </OnLoad>
         </Scripts>
     </CheckButton>
-    <Frame name="GoodLeaderGradePanelTemplate" toplevel="true" hidden="true" frameStrata="DIALOG" enableMouse="true" parent="UIParent" virtual="true">
+    <Frame name="GoodLeaderGradePanelTemplate" inherits="BackdropTemplate" toplevel="true" hidden="true" frameStrata="DIALOG" enableMouse="true" parent="UIParent" virtual="true">
         <Size x="350" y="1"/>
-        
         <KeyValues>
             <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
-            <KeyValue key="backdropColor" value="TOOLTIP_DEFAULT_BACKGROUND_COLOR" type="global"/>
-            <KeyValue key="backdropBorderColor" value="TOOLTIP_DEFAULT_COLOR" type="global"/>
         </KeyValues>
         <Layers>
             <Layer level="OVERLAY">
@@ -477,11 +478,7 @@
                     <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
                 </Anchors>
                 
-                <KeyValues>
-                    <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
-                    <KeyValue key="backdropColor" value="TOOLTIP_DEFAULT_BACKGROUND_COLOR" type="global"/>
-                    <KeyValue key="backdropBorderColor" value="TOOLTIP_DEFAULT_COLOR" type="global"/>
-                </KeyValues>
+                
                 <Frames>
                     <Button parentKey="QRCode">
                         <Size x="152" y="152"/>
@@ -524,10 +521,5 @@
                 </Scripts>
             </Button>
         </Frames>
-        <Scripts>
-            <OnLoad>
-                LibStub('tdGUI-1.0'):Embed(self, 'Backdrop')
-            </OnLoad>
-        </Scripts>
     </Frame>
 </Ui>

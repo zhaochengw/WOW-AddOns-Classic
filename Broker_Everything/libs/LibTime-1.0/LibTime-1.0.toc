@@ -1,0 +1,11 @@
+## Interface: 20503
+## Title: Lib: LibTime-1.0
+## Notes: A little library around date, time and GetGameTime and more...
+## Author: Hizuro
+## Version: r28
+## OptionalDeps: LibStub, CallbackHandler-1.0
+
+## X-Curse-Project-ID: 279585
+
+
+LibTime-1.0.xml

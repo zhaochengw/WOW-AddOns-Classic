@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/28/2019, 1:35:39 AM
-
+--
 ---@type ns
 local ns = select(2, ...)
 local L = ns.L
@@ -18,7 +18,7 @@ local ADD = ADD
 local DELETE = DELETE
 local SEARCH = SEARCH
 
----@type tdBag2SearchToggle
+---@class UI.SearchToggle: UI.MenuButton
 local SearchToggle = ns.Addon:NewClass('UI.SearchToggle', ns.UI.MenuButton)
 
 function SearchToggle:Constructor(_, meta)

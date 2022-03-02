@@ -1,0 +1,21 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+<!--
+	<Include file = "..\..\sharedxml\hybridscrollframe.xml"/>
+	<Include file = "template.xml"/>
+-->
+	<include file = "ala\main.xml" />
+	<!-- <script file = "alaDropMenu.lua" /> -->
+	<script file = "run_first.lua" />
+	<!-- <script file = "dress_up.lua" /> -->
+	<include file = "InstanceLockeddownTimer\InstanceLockeddownTimer.xml" />
+	<script file = "target_warn.lua" />
+	<!-- <script file = "honor.lua" /> -->
+	<include file = "WA\alaWA.xml" />
+
+	<!-- <include file = "Bindings.xml" /> -->
+
+
+</Ui>
+

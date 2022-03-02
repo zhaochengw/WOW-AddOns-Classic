@@ -12,29 +12,32 @@ L["Profiles"] = "프로필"
 L["About"] = "정보"
 L["SpyDescription1"] = [[
 Spy는 근처에 있는 적 플레이어를 알려주는 애드온 입니다.
+
 ]]
+
 L["SpyDescription2"] = [[
-|cffffd000근접한 적 목록|cffffffff
+|cffffd000 근접한 적 목록 |cffffffff
 근접한 적 목록은 근처에 있는 탐지 된 적을 표시합니다. 근접한 적 목록을 클릭하면 적을 타겟팅하지만, 전투 상황은 아닙니다. 근접한 적에 등록된 플레이어가 일정 시간이 지나도 탐지되지 않는다면 자동으로 지워집니다.
 
-|cffffd0001시간 내 목록|cffffffff
+|cffffd000 1시간 내 목록 |cffffffff
 한 시간 안에 감지 된 모든 적을 표시합니다.
 
-|cffffd000제외 목록|cffffffff
+|cffffd000 제외 목록 |cffffffff
 제외 목록에 포함 된 적 플레이어는 Spy에 기록되지 않습니다. 드롭다운 메뉴 또는 목록을 Ctrl + 좌클릭 으로 플레이어를 제외목록에 추가 / 제거 할 수 있습니다.
 
-|cffffd000살생부 명단|cffffffff
-살생부 명단에 있는 적이 탐지되었을 때 알람이 울립니다. 드롭다운 메뉴 또는 목록을 Shift + 좌클릭 으로 플레이어를 살생부에 추가 / 제거 할 수 있습니다.
+|cffffd000 살생부 명단 |cffffffff
+살생부 명단에 있는 적이 탐지되었을 때 알람이 울립니다. 드롭다운 메뉴 또는 목록을 Shift + 좌클릭 으로 플레이어를 살생부에 추가 / 제거 할 수 있습니다. 드롭다운 메뉴로 살생부 명단에 추가한 이유를 설정 할 수 있습니다. 만약 알맞은 이유가 없다면, "이유를 입력하세요..." 를 선택해 직접 작성 할 수 있습니다.
 
-드롭다운 메뉴로 살생부 명단에 추가한 이유를 설정 할 수 있습니다. 만약 알맞은 이유가 없다면, "이유를 입력하세요..." 를 선택해 직접 작성 할 수 있습니다.
+]]
 
-|cffffd000Statistics Window|cffffffff
+L["SpyDescription3"] = [[
+|cffffd000 Statistics Window |cffffffff
 The Statistics Window contains a list of all enemy encounters which can be sorted by name, level, guild, wins, losses and the last time an enemy was detected. It also provides the ability to search for a specific enemy by name or guild and has filters to show only enemies that are marked as Kill on Sight, with a Win/Loss or entered Reasons.
 
-|cffffd000Kill On Sight Button|cffffffff
+|cffffd000 Kill On Sight Button |cffffffff
 If enabled, this button will be located on the enemy players target frame. Clicking on this button will add/remove the enemy target to/from the Kill On Sight list. Right clicking on the button will allow you to enter Kill on Sight reasons.
 
-|cffffd000제작자: Slipjack|cffffffff
+|cffffd000 제작자:|cffffffff Slipjack
 ]]
 
 -- General Settings
@@ -72,6 +75,8 @@ L["Silithus"] = "실리더스"
 L["Chamber of Heart"] = "심장의 방"
 L["Hall of Ancient Paths"] = "고대 길의 전당"
 L["Sanctum of the Sages"] = "현자의 성소"
+L["Rustbolt"] = "녹슨나사"
+L["Oribos"] = "오리보스"
 
 -- Display
 L["DisplayOptions"] = "디스플레이"
@@ -224,6 +229,7 @@ L["LimitSameContinentDescription"] = "같은 대륙에 있는 탐지된 적만 �
 -- Data Management
 L["DataOptions"] = "데이터 관리"
 L["DataOptionsDescription"] = [[
+
 Spy 가 데이터를 유지 관리하고 수집하는 방법에 대한 옵션.
 ]]
 L["PurgeData"] = "일정 기간 후 적 데이터 삭제:"
@@ -286,6 +292,7 @@ L["Time"] = "시간"
 L["List"] = "표식"
 L["Filter"] = "검색"
 L["Show Only"] = "필터"
+L["Realm"] = "Realm"
 L["KOS"] = "살생부"
 L["Won/Lost"] = "승/패"
 L["Reason"] = "이유"	 
@@ -293,10 +300,10 @@ L["HonorKills"] = "명예 킬"
 L["PvPDeaths"] = "PvP 죽음"
 
 -- Output Messages
-L["VersionCheck"] = "|cffc41e3a경고! 잘못된 Spy 버전이 설치되었습니다. 이 버전을 제거하고 Spy Classic 을 설치하십시오."
+L["VersionCheck"] = "|cffc41e3a경고! 잘못된 Spy 버전이 설치되었습니다. 이 버전은 Burning Crusade Classic 용입니다."
 L["SpyEnabled"] = "|cff9933ffSpy 애드온이 활성화되었습니다.."
 L["SpyDisabled"] = "|cff9933ffSpy 애드온이 비활성화되었습니다. |cffffffff/spy show|cff9933ff 을 입력해 활성화 시키십시오."
-L["UpgradeAvailable"] = "|cff9933ffA Spy의 새로운 버전을 사용할 수 있습니다. 다운로드 주소:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-classic"
+L["UpgradeAvailable"] = "|cff9933ffA Spy의 새로운 버전을 사용할 수 있습니다. 다운로드 주소:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-tbc"
 L["AlertStealthTitle"] = "은신한 적이 탐지되었습니다!"
 L["AlertKOSTitle"] = "살생부 명단의 적이 탐지되었습니다!"
 L["AlertKOSGuildTitle"] = "살생부 명단의 적 길드가 탐지되었습니다!"
@@ -510,471 +517,471 @@ L["MinimapClassTextDEATHKNIGHT"] = "|cffc41e3a"
 L["MinimapClassTextMONK"] = "|cff00ff96"
 L["MinimapClassTextDEMONHUNTER"] = "|cffa330c9"
 
-Spy_AbilityList = {
------------------------------------------------------------
--- Allows an estimation of the race, class and level of a
--- player based on the abilities observed in the combat log.
------------------------------------------------------------
+				   
+														   
+														 
+															
+														   
 
---++ Racial Traits ++	
-	["그림자 숨기"]={ race = "Night Elf", level = 1, },
-	["피의 격노"]={ race = "Orc", level = 1, },
-	["포세이큰의 의지"]={ race = "Undead", level = 1, },
-	["석화"]={ race = "Dwarf", level = 1, },
-	["광폭화"]={ race = "Troll", level = 1, },
-	["강인함"]={ race = "Orc", level = 1, },
-	["도검류 전문화"]={ race = "Human", level = 1, },
-	["탈출의 명수"]={ race = "Gnome", level = 1, },
-	["인간의 정신력"]={ race = "Human", level = 1, },
-	["재생력"]={ race = "Troll", level = 1, },
-	["직관력"]={ race = "Human", level = 1, },
-	["인내력"]={ race = "Tauren", level = 1, },
-	["활류 전문화"]={ race = "Troll", level = 1, },
-	["재배"]={ race = "Tauren", level = 1, },
-	["기계공학 전문화"]={ race = "Gnome", level = 1, },
-	["전투 발구르기"]={ race = "Tauren", level = 1, },
-	["야수 사냥 전문화"]={ race = "Troll", level = 1, },
-	["보물 찾기"]={ race = "Dwarf", level = 1, },
-	["도끼류 전문화"]={ race = "Orc", level = 1, },
-	["시체먹기"]={ race = "Undead", level = 1, },
-	["외교"]={ race = "Human", level = 1, },
-	["민첩"]={ race = "Night Elf", level = 1, },
-	["투척술 전문화"]={ race = "Troll", level = 1, },
-	["둔기류 전문화"]={ race = "Human", level = 1, },
-	["총기류 전문화"]={ race = "Dwarf", level = 1, },
-	["수중 호흡"]={ race = "Undead", level = 1, },
-	["지배"]={ race = "Orc", level = 1, },
-	["자연 저항력"]={ race = "Night Elf", level = 1, },
-	["냉기 저항력"]={ race = "Dwarf", level = 1, },
-	["암흑 저항력"]={ race = "Undead", level = 1, },
-	["비전 저항력"]={ race = "Gnome", level = 1, },
-	["위습의 영혼"]={ race = "Night Elf", level = 1, },
+					  
+														 
+												
+															
+										   
+											  
+											
+														
+													 
+														
+											  
+											  
+											   
+													 
+											
+														   
+														 
+															
+												  
+													  
+												  
+										   
+											   
+														
+														
+														
+												   
+										 
+														 
+													 
+													  
+													 
+														 
 
---++ Druid Abilities ++	
-	["치유의 손길"]={ class = "DRUID", level = 1, },
-	["천벌"]={ class = "DRUID", level = 1, },
-	["달빛 섬광"]={ class = "DRUID", level = 4, },
-	["휘감는 뿌리"]={ class = "DRUID", level = 8, },
-	["곰 변신"]={ class = "DRUID", level = 10, },
-	["위협의 포효"]={ class = "DRUID", level = 10, },
-	["포효"]={ class = "DRUID", level = 10, },
-	["후려치기"]={ class = "DRUID", level = 10, },
-	["순간이동: 달의 숲"]={ class = "DRUID", level = 10, },
-	["분노"]={ class = "DRUID", level = 12, },
-	["재생"]={ class = "DRUID", level = 12, },
-	["강타"]={ class = "DRUID", level = 14, },
-	["바다표범 변신"]={ class = "DRUID", level = 16, },
-	["휘둘러치기"]={ class = "DRUID", level = 16, },
-	["요정의 불꽃"]={ class = "DRUID", level = 18, },
-	["겨울잠"]={ class = "DRUID", level = 18, },
-	["표범 변신"]={ class = "DRUID", level = 20, },
-	["할퀴기"]={ class = "DRUID", level = 20, },
-	["숨기"]={ class = "DRUID", level = 20, },
-	["환생"]={ class = "DRUID", level = 20, },
-	["도려내기"]={ class = "DRUID", level = 20, },
-	["별빛 화살"]={ class = "DRUID", level = 20, },
-	["칼날 발톱"]={ class = "DRUID", level = 22, },
-	["동물 달래기"]={ class = "DRUID", level = 22, },
-	["갈퀴 발톱"]={ class = "DRUID", level = 24, },
-	["저주 해제"]={ class = "DRUID", level = 24, },
-	["맹공격"]={ class = "DRUID", level = 24, },
-	["독 해제"]={ class = "DRUID", level = 26, },
-	["질주"]={ class = "DRUID", level = 26, },
-	["도전의 포효"]={ class = "DRUID", level = 28, },
-	["웅크리기"]={ class = "DRUID", level = 28, },
-	["치타 변신"]={ class = "DRUID", level = 30, },
-	["흉포한 이빨"]={ class = "DRUID", level = 32, },
-	["찢어발기기"]={ class = "DRUID", level = 32, },
-	["광포한 재생력"]={ class = "DRUID", level = 36, },
-	["암습"]={ class = "DRUID", level = 36, },
-	["광포한 곰 변신"]={ class = "DRUID", level = 40, },
---++ Druid Talents ++	
-	["자연의 손아귀"]={ class = "DRUID", level = 10, },
-	["야성의 돌진"]={ class = "DRUID", level = 20, },
-	["곤충 떼"]={ class = "DRUID", level = 20, },
-	["청명의 전조"]={ class = "DRUID", level = 20, },
-	["요정의 불꽃 (야성)"]={ class = "DRUID", level = 30, },
---++ Hunter Abilities ++	
-	["만반의 준비"]={ class = "HUNTER", level = 1, },
-	["자동 사격"]={ class = "HUNTER", level = 1, },
-	["랩터의 일격"]={ class = "HUNTER", level = 1, },
-	["야수 추적"]={ class = "HUNTER", level = 1, },
-	["원숭이의 상"]={ class = "HUNTER", level = 4, },
-	["독사 쐐기"]={ class = "HUNTER", level = 4, },
-	["신비한 사격"]={ class = "HUNTER", level = 6, },
-	["사냥꾼의 징표"]={ class = "HUNTER", level = 6, },
-	["충격포"]={ class = "HUNTER", level = 8, },
-	["매의 상"]={ class = "HUNTER", level = 10, },
-	["야수 부르기"]={ class = "HUNTER", level = 10, },
-	["야수 소환해제"]={ class = "HUNTER", level = 10, },
-	["먹이주기"]={ class = "HUNTER", level = 10, },
-	["야수 되살리기"]={ class = "HUNTER", level = 10, },
-	["야수 길들이기"]={ class = "HUNTER", level = 10, },
-	["견제 사격"]={ class = "HUNTER", level = 12, },
-	["동물 치료"]={ class = "HUNTER", level = 12, },
-	["날개 절단"]={ class = "HUNTER", level = 12, },
-	["독수리의 눈"]={ class = "HUNTER", level = 14, },
-	["야수의 눈"]={ class = "HUNTER", level = 14, },
-	["야수 겁주기"]={ class = "HUNTER", level = 14, },
-	["제물의 덫"]={ class = "HUNTER", level = 16, },
-	["살쾡이의 이빨"]={ class = "HUNTER", level = 16, },
-	["일제 사격"]={ class = "HUNTER", level = 18, },
-	["언데드 추적"]={ class = "HUNTER", level = 18, },
-	["치타의 상"]={ class = "HUNTER", level = 20, },
-	["철수"]={ class = "HUNTER", level = 20, },
-	["얼음의 덫"]={ class = "HUNTER", level = 20, },
-	["전갈 쐐기"]={ class = "HUNTER", level = 22, },
-	["야수 연구"]={ class = "HUNTER", level = 24, },
-	["은신 추적"]={ class = "HUNTER", level = 24, },
-	["속사"]={ class = "HUNTER", level = 26, },
-	["정령 추적"]={ class = "HUNTER", level = 26, },
-	["냉기의 덫"]={ class = "HUNTER", level = 28, },
-	["야수의 상"]={ class = "HUNTER", level = 30, },
-	["죽은척하기"]={ class = "HUNTER", level = 30, },
-	["섬광"]={ class = "HUNTER", level = 32, },
-	["악마 추적"]={ class = "HUNTER", level = 32, },
-	["폭발의 덫"]={ class = "HUNTER", level = 34, },
-	["살무사 쐐기"]={ class = "HUNTER", level = 36, },
-	["치타 무리의 상"]={ class = "HUNTER", level = 40, },
-	["거인 추적"]={ class = "HUNTER", level = 40, },
-	["연발 사격"]={ class = "HUNTER", level = 40, },
-	["야생의 상"]={ class = "HUNTER", level = 46, },
-	["용족 추적"]={ class = "HUNTER", level = 50, },
-	["평정의 사격"]={ class = "HUNTER", level = 60, },
---++ Hunter Talents ++	
-	["조준 사격"]={ class = "HUNTER", level = 20, },
-	["공격 저지"]={ class = "HUNTER", level = 20, },
-	["역습"]={ class = "HUNTER", level = 30, },
-	["위협"]={ class = "HUNTER", level = 30, },
-	["산탄 사격"]={ class = "HUNTER", level = 30, },
-	["야수의 격노"]={ class = "HUNTER", level = 40, },
-	["비룡 쐐기"]={ class = "HUNTER", level = 40, },
---++ Mage Abilities ++	
-	["화염구"]={ class = "MAGE", level = 1, },
-	["냉기 갑옷"]={ class = "MAGE", level = 1, },
-	["얼음 화살"]={ class = "MAGE", level = 4, },
-	["음료 창조"]={ class = "MAGE", level = 4, },
-	["화염 작열"]={ class = "MAGE", level = 6, },
-	["음식 창조"]={ class = "MAGE", level = 6, },
-	["신비한 화살"]={ class = "MAGE", level = 8, },
-	["변이"]={ class = "MAGE", level = 8, },
-	["얼음 회오리"]={ class = "MAGE", level = 10, },
-	["신비한 폭발"]={ class = "MAGE", level = 14, },
-	["마법 감지"]={ class = "MAGE", level = 16, },
-	["불기둥"]={ class = "MAGE", level = 16, },
-	["하급 저주 해제"]={ class = "MAGE", level = 18, },
-	["점멸"]={ class = "MAGE", level = 20, },
-	["눈보라"]={ class = "MAGE", level = 20, },
-	["환기"]={ class = "MAGE", level = 20, },
-	["화염계 수호"]={ class = "MAGE", level = 20, },
-	["마나 보호막"]={ class = "MAGE", level = 20, },
-	["순간이동: 아이언포지"]={ class = "MAGE", level = 20, },
-	["순간이동: 오그리마"]={ class = "MAGE", level = 20, },
-	["순간이동: 스톰윈드"]={ class = "MAGE", level = 20, },
-	["순간이동: 언더시티"]={ class = "MAGE", level = 20, },
-	["냉기계 수호"]={ class = "MAGE", level = 22, },
-	["불태우기"]={ class = "MAGE", level = 22, },
-	["마법 차단"]={ class = "MAGE", level = 24, },
-	["냉기 돌풍"]={ class = "MAGE", level = 26, },
-	["마나 마노 창조"]={ class = "MAGE", level = 28, },
-	["얼음 갑옷"]={ class = "MAGE", level = 30, },
-	["순간이동: 다르나서스"]={ class = "MAGE", level = 30, },
-	["순간이동: 썬더 블러프"]={ class = "MAGE", level = 30, },
-	["마법사 갑옷"]={ class = "MAGE", level = 34, },
-	["마나 비취 창조"]={ class = "MAGE", level = 38, },
-	["차원의 문: 아이언포지"]={ class = "MAGE", level = 40, },
-	["차원의 문: 오그리마"]={ class = "MAGE", level = 40, },
-	["차원의 문: 스톰윈드"]={ class = "MAGE", level = 40, },
-	["차원의 문: 언더시티"]={ class = "MAGE", level = 40, },
-	["마나 황수정 창조"]={ class = "MAGE", level = 48, },
-	["차원의 문: 다르나서스"]={ class = "MAGE", level = 50, },
-	["차원의 문: 썬더 블러프"]={ class = "MAGE", level = 50, },
-	["신비한 총명함"]={ class = "MAGE", level = 56, },
-	["마나 루비 창조"]={ class = "MAGE", level = 58, },
-	["변이: 소"]={ class = "MAGE", level = 60, },
-	["변이"]={ class = "MAGE", level = 60, },
-	["변이"]={ class = "MAGE", level = 60, },
---++ Mage Talents ++	
-	["매서운 한파"]={ class = "MAGE", level = 20, },
-	["불덩이 작열"]={ class = "MAGE", level = 20, },
-	["화염 폭풍"]={ class = "MAGE", level = 30, },
-	["얼음 방패"]={ class = "MAGE", level = 30, },
-	["냉정"]={ class = "MAGE", level = 30, },
-	["신비의 마법 강화"]={ class = "MAGE", level = 40, },
-	["발화"]={ class = "MAGE", level = 40, },
-	["얼음 보호막"]={ class = "MAGE", level = 40, },
---++ Paladin Abilities ++	
-	["성스러운 빛"]={ class = "PALADIN", level = 1, },
-	["정의의 문장"]={ class = "PALADIN", level = 1, },
-	["심판"]={ class = "PALADIN", level = 4, },
-	["신의 가호"]={ class = "PALADIN", level = 6, },
-	["성전사의 문장"]={ class = "PALADIN", level = 6, },
-	["심판의 망치"]={ class = "PALADIN", level = 8, },
-	["순화"]={ class = "PALADIN", level = 8, },
-	["신의 축복"]={ class = "PALADIN", level = 10, },
-	["구원"]={ class = "PALADIN", level = 12, },
-	["정의의 격노"]={ class = "PALADIN", level = 16, },
-	["퇴마술"]={ class = "PALADIN", level = 20, },
-	["빛의 섬광"]={ class = "PALADIN", level = 20, },
-	["언데드 감지"]={ class = "PALADIN", level = 20, },
-	["심판의 문장"]={ class = "PALADIN", level = 22, },
-	["언데드 퇴치"]={ class = "PALADIN", level = 24, },
-	["구원의 축복"]={ class = "PALADIN", level = 26, },
-	["성스러운 중재"]={ class = "PALADIN", level = 30, },
-	["빛의 문장"]={ class = "PALADIN", level = 30, },
-	["천상의 보호막"]={ class = "PALADIN", level = 34, },
-	["지혜의 문장"]={ class = "PALADIN", level = 38, },
-	["빛의 축복"]={ class = "PALADIN", level = 40, },
-	["군마 소환"]={ class = "PALADIN", level = 40, },
-	["정화"]={ class = "PALADIN", level = 42, },
-	["천벌의 망치"]={ class = "PALADIN", level = 44, },
-	["신의 격노"]={ class = "PALADIN", level = 50, },
-	["군마 소환"]={ class = "PALADIN", level = 60, },
---++ Paladin Talents ++	
-	["신성화"]={ class = "PALADIN", level = 20, },
-	["지휘의 문장"]={ class = "PALADIN", level = 20, },
-	["신의 은총"]={ class = "PALADIN", level = 30, },
-	["신성한 방패"]={ class = "PALADIN", level = 40, },
-	["신성 충격"]={ class = "PALADIN", level = 40, },
-	["참회"]={ class = "PALADIN", level = 40, },
---++ Priest Abilities ++	
-	["하급 치유"]={ class = "PRIEST", level = 1, },
-	["성스러운 일격"]={ class = "PRIEST", level = 1, },
-	["어둠의 권능: 고통"]={ class = "PRIEST", level = 4, },
-	["소실"]={ class = "PRIEST", level = 8, },
-	["구원의 기도"]={ class = "PRIEST", level = 10, },
-	["무력의 주술"]={ class = "PRIEST", level = 10, },
-	["정신 분열"]={ class = "PRIEST", level = 10, },
-	["부활"]={ class = "PRIEST", level = 10, },
-	["별조각"]={ class = "PRIEST", level = 10, },
-	["무력의 손길"]={ class = "PRIEST", level = 10, },
-	["내면의 열정"]={ class = "PRIEST", level = 12, },
-	["영혼의 절규"]={ class = "PRIEST", level = 14, },
-	["치유"]={ class = "PRIEST", level = 16, },
-	["마법 무효화"]={ class = "PRIEST", level = 18, },
-	["파멸의 역병"]={ class = "PRIEST", level = 20, },
-	["엘룬의 은총"]={ class = "PRIEST", level = 20, },
-	["역순환"]={ class = "PRIEST", level = 20, },
-	["순간 치유"]={ class = "PRIEST", level = 20, },
-	["신성한 불꽃"]={ class = "PRIEST", level = 20, },
-	["평정"]={ class = "PRIEST", level = 20, },
-	["언데드 속박"]={ class = "PRIEST", level = 20, },
-	["어둠의 수호"]={ class = "PRIEST", level = 20, },
-	["마음의 눈"]={ class = "PRIEST", level = 22, },
-	["마나 연소"]={ class = "PRIEST", level = 24, },
-	["정신 지배"]={ class = "PRIEST", level = 30, },
-	["치유의 기원"]={ class = "PRIEST", level = 30, },
-	["질병 해제"]={ class = "PRIEST", level = 32, },
-	["공중 부양"]={ class = "PRIEST", level = 34, },
-	["상급 치유"]={ class = "PRIEST", level = 40, },
---++ Priest Talents ++	
-	["신성한 폭발"]={ class = "PRIEST", level = 20, },
-	["내면의 집중력"]={ class = "PRIEST", level = 20, },
-	["정신의 채찍"]={ class = "PRIEST", level = 20, },
-	["침묵"]={ class = "PRIEST", level = 30, },
-	["빛샘"]={ class = "PRIEST", level = 40, },
-	["어둠의 형상"]={ class = "PRIEST", level = 40, },
---++ Rogue Abilities ++	
-	["절개"]={ class = "ROGUE", level = 1, },
-	["자물쇠 따기"]={ class = "ROGUE", level = 1, },
-	["사악한 일격"]={ class = "ROGUE", level = 1, },
-	["은신"]={ class = "ROGUE", level = 1, },
-	["기습"]={ class = "ROGUE", level = 4, },
-	["훔치기"]={ class = "ROGUE", level = 4, },
-	["후려치기"]={ class = "ROGUE", level = 6, },
-	["회피"]={ class = "ROGUE", level = 8, },
-	["기절시키기"]={ class = "ROGUE", level = 10, },
-	["난도질"]={ class = "ROGUE", level = 10, },
-	["전력 질주"]={ class = "ROGUE", level = 10, },
-	["발차기"]={ class = "ROGUE", level = 12, },
-	["약점 노출"]={ class = "ROGUE", level = 14, },
-	["목조르기"]={ class = "ROGUE", level = 14, },
-	["교란"]={ class = "ROGUE", level = 16, },
-	["매복"]={ class = "ROGUE", level = 18, },
-	["독 조제"]={ class = "ROGUE", level = 20, },
-	["파열"]={ class = "ROGUE", level = 20, },
-	["신경 마비 독"]={ class = "ROGUE", level = 20, },
-	["순간 효과 독"]={ class = "ROGUE", level = 20, },
-	["혼란"]={ class = "ROGUE", level = 22, },
-	["소멸"]={ class = "ROGUE", level = 22, },
-	["함정 감지"]={ class = "ROGUE", level = 24, },
-	["정신 마비 독"]={ class = "ROGUE", level = 24, },
-	["비열한 습격"]={ class = "ROGUE", level = 26, },
-	["함정 해제"]={ class = "ROGUE", level = 30, },
-	["급소 가격"]={ class = "ROGUE", level = 30, },
-	["맹독"]={ class = "ROGUE", level = 30, },
-	["상처 감염 독"]={ class = "ROGUE", level = 32, },
-	["실명"]={ class = "ROGUE", level = 34, },
-	["실명 가루"]={ class = "ROGUE", level = 34, },
-	["낙법"]={ class = "ROGUE", level = 40, },
---++ Rogue Talents ++	
-	["그림자 일격"]={ class = "ROGUE", level = 20, },
-	["반격"]={ class = "ROGUE", level = 20, },
-	["폭풍의 칼날"]={ class = "ROGUE", level = 30, },
-	["냉혈"]={ class = "ROGUE", level = 30, },
-	["과다출혈"]={ class = "ROGUE", level = 30, },
-	["마음가짐"]={ class = "ROGUE", level = 30, },
-	["아드레날린 촉진"]={ class = "ROGUE", level = 40, },
-	["사전계획"]={ class = "ROGUE", level = 40, },
---++ Shaman Abilities ++	
-	["치유의 물결"]={ class = "SHAMAN", level = 1, },
-	["번개 화살"]={ class = "SHAMAN", level = 1, },
-	["대지의 무기"]={ class = "SHAMAN", level = 1, },
-	["대지 충격"]={ class = "SHAMAN", level = 4, },
-	["돌가죽 토템"]={ class = "SHAMAN", level = 4, },
-	["속박의 토템"]={ class = "SHAMAN", level = 6, },
-	["번개 보호막"]={ class = "SHAMAN", level = 8, },
-	["돌발톱 토템"]={ class = "SHAMAN", level = 8, },
-	["화염 충격"]={ class = "SHAMAN", level = 10, },
-	["불꽃의 무기"]={ class = "SHAMAN", level = 10, },
-	["불타는 토템"]={ class = "SHAMAN", level = 10, },
-	["대지력 토템"]={ class = "SHAMAN", level = 10, },
-	["고대의 영혼"]={ class = "SHAMAN", level = 12, },
-	["불꽃 회오리 토템"]={ class = "SHAMAN", level = 12, },
-	["정화"]={ class = "SHAMAN", level = 12, },
-	["진동의 토템"]={ class = "SHAMAN", level = 18, },
-	["냉기 충격"]={ class = "SHAMAN", level = 20, },
-	["냉기의 무기"]={ class = "SHAMAN", level = 20, },
-	["늑대 정령"]={ class = "SHAMAN", level = 20, },
-	["치유의 토템"]={ class = "SHAMAN", level = 20, },
-	["하급 치유의 물결"]={ class = "SHAMAN", level = 20, },
-	["독 정화 토템"]={ class = "SHAMAN", level = 22, },
-	["냉기 저항 토템"]={ class = "SHAMAN", level = 24, },
-	["천리안"]={ class = "SHAMAN", level = 26, },
-	["용암 토템"]={ class = "SHAMAN", level = 26, },
-	["마나샘 토템"]={ class = "SHAMAN", level = 26, },
-	["화염 저항 토템"]={ class = "SHAMAN", level = 28, },
-	["불꽃의 토템"]={ class = "SHAMAN", level = 28, },
-	["영혼의 귀환"]={ class = "SHAMAN", level = 30, },
-	["마법정화 토템"]={ class = "SHAMAN", level = 30, },
-	["자연 저항 토템"]={ class = "SHAMAN", level = 30, },
-	["윤회"]={ class = "SHAMAN", level = 30, },
-	["질풍의 무기"]={ class = "SHAMAN", level = 30, },
-	["연쇄 번개"]={ class = "SHAMAN", level = 32, },
-	["질풍의 토템"]={ class = "SHAMAN", level = 32, },
-	["감시의 토템"]={ class = "SHAMAN", level = 34, },
-	["바람막이 토템"]={ class = "SHAMAN", level = 36, },
-	["질병 정화 토템"]={ class = "SHAMAN", level = 38, },
-	["연쇄 치유"]={ class = "SHAMAN", level = 40, },
-	["은총의 토템"]={ class = "SHAMAN", level = 42, },
-	["평온의 토템"]={ class = "SHAMAN", level = 50, },
---++ Shaman Talents ++	
-	["무기 막기"]={ class = "SHAMAN", level = 30, },
-	["정기의 깨달음"]={ class = "SHAMAN", level = 40, },
-	["마나 해일 토템"]={ class = "SHAMAN", level = 40, },
-	["폭풍의 일격"]={ class = "SHAMAN", level = 40, },
---++ Warlock Abilities ++	
-	["악마의 피부"]={ class = "WARLOCK", level = 1, },
-	["제물"]={ class = "WARLOCK", level = 1, },
-	["어둠의 화살"]={ class = "WARLOCK", level = 1, },
-	["임프 소환"]={ class = "WARLOCK", level = 1, },
-	["부패"]={ class = "WARLOCK", level = 4, },
-	["무력화 저주"]={ class = "WARLOCK", level = 4, },
-	["생명력 전환"]={ class = "WARLOCK", level = 6, },
-	["고통의 저주"]={ class = "WARLOCK", level = 8, },
-	["공포"]={ class = "WARLOCK", level = 8, },
-	["생명석 창조 (최하급)"]={ class = "WARLOCK", level = 10, },
-	["영혼 흡수"]={ class = "WARLOCK", level = 10, },
-	["보이드워커 소환"]={ class = "WARLOCK", level = 10, },
-	["생명력 집중"]={ class = "WARLOCK", level = 12, },
-	["무모함의 저주"]={ class = "WARLOCK", level = 14, },
-	["생명력 흡수"]={ class = "WARLOCK", level = 14, },
-	["영원의 숨결"]={ class = "WARLOCK", level = 16, },
-	["불타는 고통"]={ class = "WARLOCK", level = 18, },
-	["영혼석 창조 (최하급)"]={ class = "WARLOCK", level = 18, },
-	["악마의 갑옷"]={ class = "WARLOCK", level = 20, },
-	["불의 비"]={ class = "WARLOCK", level = 20, },
-	["소환 의식"]={ class = "WARLOCK", level = 20, },
-	["서큐버스 소환"]={ class = "WARLOCK", level = 20, },
-	["생명석 창조 (하급)"]={ class = "WARLOCK", level = 22, },
-	["킬로그의 눈"]={ class = "WARLOCK", level = 22, },
-	["마나 흡수"]={ class = "WARLOCK", level = 24, },
-	["악마 감지"]={ class = "WARLOCK", level = 24, },
-	["언어의 저주"]={ class = "WARLOCK", level = 26, },
-	["하급 투명체 감지"]={ class = "WARLOCK", level = 26, },
-	["추방"]={ class = "WARLOCK", level = 28, },
-	["화염석 창조 (하급)"]={ class = "WARLOCK", level = 28, },
-	["악마 지배"]={ class = "WARLOCK", level = 30, },
-	["지옥의 불길"]={ class = "WARLOCK", level = 30, },
-	["지옥사냥개 소환"]={ class = "WARLOCK", level = 30, },
-	["영혼석 창조 (하급)"]={ class = "WARLOCK", level = 30, },
-	["원소의 저주"]={ class = "WARLOCK", level = 32, },
-	["암흑계 수호"]={ class = "WARLOCK", level = 32, },
-	["생명석 창조 (중급)"]={ class = "WARLOCK", level = 34, },
-	["화염석 창조 (중급)"]={ class = "WARLOCK", level = 36, },
-	["주문석 창조"]={ class = "WARLOCK", level = 36, },
-	["투명체 감지"]={ class = "WARLOCK", level = 38, },
-	["공포의 울부짖음"]={ class = "WARLOCK", level = 40, },
-	["지옥마 소환"]={ class = "WARLOCK", level = 40, },
-	["영혼석 창조"]={ class = "WARLOCK", level = 40, },
-	["죽음의 고리"]={ class = "WARLOCK", level = 42, },
-	["어둠의 저주"]={ class = "WARLOCK", level = 44, },
-	["생명석 창조 (상급)"]={ class = "WARLOCK", level = 46, },
-	["화염석 창조 (상급)"]={ class = "WARLOCK", level = 46, },
-	["영혼의 불꽃"]={ class = "WARLOCK", level = 48, },
-	["주문석 창조 (상급)"]={ class = "WARLOCK", level = 48, },
-	["상급 투명체 감지"]={ class = "WARLOCK", level = 50, },
-	["불지옥"]={ class = "WARLOCK", level = 50, },
-	["영혼석 창조 (상급)"]={ class = "WARLOCK", level = 50, },
-	["화염석 창조 (최상급)"]={ class = "WARLOCK", level = 56, },
-	["생명석 창조 (최상급)"]={ class = "WARLOCK", level = 58, },
-	["파멸의 저주"]={ class = "WARLOCK", level = 60, },
-	["파멸의 의식"]={ class = "WARLOCK", level = 60, },
-	["공포마 소환"]={ class = "WARLOCK", level = 60, },
-	["영혼석 창조 (최상급)"]={ class = "WARLOCK", level = 60, },
-	["주문석 창조 (최상급)"]={ class = "WARLOCK", level = 60, },
---++ Warlock Talents ++	
-	["저주 증폭"]={ class = "WARLOCK", level = 20, },
-	["마의 지배"]={ class = "WARLOCK", level = 20, },
-	["어둠의 연소"]={ class = "WARLOCK", level = 20, },
-	["피로의 저주"]={ class = "WARLOCK", level = 30, },
-	["악의 제물"]={ class = "WARLOCK", level = 30, },
-	["생명력 착취"]={ class = "WARLOCK", level = 30, },
-	["점화"]={ class = "WARLOCK", level = 40, },
-	["암흑의 계약"]={ class = "WARLOCK", level = 40, },
-	["영혼의 고리"]={ class = "WARLOCK", level = 40, },
---++ Warrior Abilities ++	
-	["전투 태세"]={ class = "WARRIOR", level = 1, },
-	["영웅의 일격"]={ class = "WARRIOR", level = 1, },
-	["자루 공격 연마"]={ class = "WARRIOR", level = 1, },
-	["돌진"]={ class = "WARRIOR", level = 4, },
-	["분쇄"]={ class = "WARRIOR", level = 4, },
-	["천둥벼락"]={ class = "WARRIOR", level = 6, },
-	["무력화"]={ class = "WARRIOR", level = 8, },
-	["피의 분노"]={ class = "WARRIOR", level = 10, },
-	["방어 태세"]={ class = "WARRIOR", level = 10, },
-	["방어구 가르기"]={ class = "WARRIOR", level = 10, },
-	["도발"]={ class = "WARRIOR", level = 10, },
-	["제압"]={ class = "WARRIOR", level = 12, },
-	["방패 가격"]={ class = "WARRIOR", level = 12, },
-	["사기의 외침"]={ class = "WARRIOR", level = 14, },
-	["복수"]={ class = "WARRIOR", level = 14, },
-	["도발의 일격"]={ class = "WARRIOR", level = 16, },
-	["방패 막기"]={ class = "WARRIOR", level = 16, },
-	["무장 해제"]={ class = "WARRIOR", level = 18, },
-	["회전베기"]={ class = "WARRIOR", level = 20, },
-	["보복"]={ class = "WARRIOR", level = 20, },
-	["위협의 외침"]={ class = "WARRIOR", level = 22, },
-	["마무리 일격"]={ class = "WARRIOR", level = 24, },
-	["도전의 외침"]={ class = "WARRIOR", level = 26, },
-	["방패의 벽"]={ class = "WARRIOR", level = 28, },
-	["광폭 태세"]={ class = "WARRIOR", level = 30, },
-	["봉쇄"]={ class = "WARRIOR", level = 30, },
-	["격돌"]={ class = "WARRIOR", level = 30, },
-	["광전사의 격노"]={ class = "WARRIOR", level = 32, },
-	["소용돌이"]={ class = "WARRIOR", level = 36, },
-	["자루 공격"]={ class = "WARRIOR", level = 38, },
-	["무모한 희생"]={ class = "WARRIOR", level = 50, },
---++ Warrior Talents ++	
-	["최후의 저항"]={ class = "WARRIOR", level = 20, },
-	["날카로운 고함"]={ class = "WARRIOR", level = 20, },
-	["충격의 일격"]={ class = "WARRIOR", level = 30, },
-	["죽음의 소원"]={ class = "WARRIOR", level = 30, },
-	["휩쓸기 일격"]={ class = "WARRIOR", level = 30, },
-	["피의 갈증"]={ class = "WARRIOR", level = 40, },
-	["죽음의 일격"]={ class = "WARRIOR", level = 40, },
-	["방패 밀쳐내기"]={ class = "WARRIOR", level = 40, },
-};
+						
+													  
+											
+												   
+													  
+												 
+													   
+											 
+												   
+															   
+											 
+											 
+											 
+														  
+													  
+													   
+												
+													
+												
+											 
+											 
+												   
+													
+													
+													   
+													
+													
+												
+												 
+											 
+													   
+												   
+													
+													   
+													  
+														  
+											 
+														   
+					  
+														  
+													   
+												 
+													   
+																
+						 
+													   
+													
+													   
+													
+													   
+													
+													   
+														  
+												
+												  
+														
+														   
+													
+														   
+														   
+													 
+													 
+													 
+														
+													 
+														
+													 
+														   
+													 
+														
+													 
+											  
+													 
+													 
+													 
+													 
+											  
+													 
+													 
+													 
+													   
+											  
+													 
+													 
+														
+															
+													 
+													 
+													 
+													 
+														
+					   
+													 
+													 
+											  
+											  
+													 
+														
+													 
+					   
+											  
+												  
+												  
+												  
+												  
+												  
+													 
+										   
+													  
+													  
+												   
+											   
+														  
+											
+											   
+											
+													  
+													  
+																   
+																
+																
+																
+													  
+												  
+												   
+												   
+														  
+												   
+																   
+																	
+													  
+														  
+																	
+																 
+																 
+																 
+															 
+																	
+																	 
+														 
+														  
+												 
+											
+											
+					 
+													  
+													  
+												   
+												   
+											
+															 
+											
+													  
+						  
+														
+														
+											  
+													 
+														   
+														
+											  
+													  
+											   
+														 
+												  
+													  
+														 
+														 
+														 
+														 
+															
+													  
+															
+														 
+													  
+													  
+											   
+														 
+													  
+													  
+						
+												  
+														 
+													  
+														 
+													  
+											   
+						 
+													
+														  
+															   
+											 
+														
+														
+													 
+											  
+												 
+														
+														
+														
+											  
+														
+														
+														
+												 
+													 
+														
+											  
+														
+														
+													 
+													 
+													 
+														
+													 
+													 
+													 
+					   
+														
+														   
+														
+											  
+											  
+														
+						
+											
+													  
+													  
+											
+											
+											   
+												  
+											
+													  
+												
+													
+												
+													
+												   
+											 
+											 
+												 
+											 
+														
+														
+											 
+											 
+													
+														
+													   
+													
+													
+											 
+														
+											 
+													
+											 
+					  
+													   
+											 
+													   
+											 
+												   
+												   
+															 
+												   
+						 
+													   
+													
+													   
+													
+													   
+													   
+													   
+													   
+													 
+														
+														
+														
+														
+															   
+											  
+														
+													 
+														
+													 
+														
+															   
+														 
+															
+												 
+													 
+														
+															
+														
+														
+														   
+															
+											  
+														
+													 
+														
+														
+														   
+															
+													 
+														
+														
+					   
+													 
+														   
+															
+														
+						  
+														
+											  
+														
+													 
+											  
+														
+														
+														
+											  
+																	 
+													  
+															   
+														 
+															
+														 
+														 
+														 
+																	 
+														 
+												   
+													  
+															
+																  
+														 
+													  
+													  
+														 
+																
+											   
+																  
+													  
+														 
+															   
+																  
+														 
+														 
+																  
+																  
+														 
+														 
+															   
+														 
+														 
+														 
+														 
+																  
+																  
+														 
+																  
+																
+												  
+																  
+																	 
+																	 
+														 
+														 
+														 
+																	 
+																	 
+						
+													  
+													  
+														 
+														 
+													  
+														 
+											   
+														 
+														 
+						  
+													 
+														
+															
+											  
+											  
+													
+												 
+													  
+													  
+															
+											   
+											   
+													  
+														 
+											   
+														 
+													  
+													  
+													 
+											   
+														 
+														 
+														 
+													  
+													  
+											   
+											   
+															
+													 
+													  
+														 
+						
+														 
+															
+														 
+														 
+														 
+													  
+														 
+															
+  
 
 Spy_IgnoreList = {
 	["우체통"]=true, 

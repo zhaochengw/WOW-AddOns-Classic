@@ -81,7 +81,7 @@
 			</Anchor>
 		</Anchors>
 		<Frames>
-			<Frame name="$parentBackground" setAllPoints="true">
+			<Frame name="$parentBackground" setAllPoints="true" inherits="BackdropTemplate">
 				<Backdrop edgeFile="Interface\AddOns\ChatBar CLassic\Skin\ChatBarBorder" bgFile="Interface\AddOns\ChatBar Classic\Skin\BlackBg">
 					<BackgroundInsets>
 						<AbsInset left="8" right="8" top="8" bottom="8"/>

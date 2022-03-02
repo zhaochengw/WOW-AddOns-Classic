@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: BugGrabber
 ## Notes: Grabs bugs for the bug sack.
 ## Notes-zhCN: Grabs bugs for the bug sack.

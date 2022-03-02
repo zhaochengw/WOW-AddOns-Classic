@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: Battle Info
 ## Title-zhCN: BattleInfo 战场助手
 ## Title-zhTW: 戰場資訊增強

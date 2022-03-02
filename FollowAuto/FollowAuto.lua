@@ -51,7 +51,7 @@ function CreatPanel()
     nameTitle1:SetPoint("TOPLEFT", 15, -65)
     nameTitle1:SetText("跟随命令:")
 
-    local nameBox1 = CreateFrame("EditBox","FollowUnit", configurationPanel,"InputBoxTemplate")
+    local nameBox1 = CreateFrame("EditBox","FollowUnit", configurationPanel,BackdropTemplateMixin and "BackdropTemplate")
     nameBox1:SetMultiLine(true)
     nameBox1:SetTextInsets(6, 10, 3, 5)
     nameBox1:SetFontObject(ChatFontNormal)
@@ -61,14 +61,10 @@ function CreatPanel()
     nameBox1:HighlightText()
     nameBox1:SetMaxLetters(10)
     nameBox1:SetAutoFocus(false)
-    -- nameBox1:SetBackdrop({
-    --     _,
-    --     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    --     _,
-    --     _,
-    --     edgeSize = 10,
-    --     _
-    -- })
+    nameBox1:SetBackdrop({
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        edgeSize = 10,
+    })
 
 
     local stopCheckBox = CreateFrame("CheckButton","stopCheckBox", configurationPanel, "ChatConfigCheckButtonTemplate")
@@ -79,7 +75,7 @@ function CreatPanel()
     nameTitle2:SetPoint("TOPLEFT", 55, -120)
     nameTitle2:SetText("停止命令:")
 
-    local nameBox2 = CreateFrame("EditBox","FollowUnit", configurationPanel,"InputBoxTemplate")
+    local nameBox2 = CreateFrame("EditBox","FollowUnit", configurationPanel,BackdropTemplateMixin and "BackdropTemplate")
     nameBox2:SetMultiLine(true)
     nameBox2:SetTextInsets(6, 10, 3, 5)
     nameBox2:SetFontObject(ChatFontNormal)
@@ -89,14 +85,10 @@ function CreatPanel()
     nameBox2:HighlightText()
     nameBox2:SetMaxLetters(10)
     nameBox2:SetAutoFocus(false)
-    -- nameBox2:SetBackdrop({
-    --     _,
-    --     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    --     _,
-    --     _,
-    --     edgeSize = 10,
-    --     _
-    -- })
+    nameBox2:SetBackdrop({
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        edgeSize = 10,
+    })
 
 
     local followLeaderCheckBox = CreateFrame("CheckButton","followLeaderCheckBox", configurationPanel, "ChatConfigCheckButtonTemplate")
@@ -107,7 +99,7 @@ function CreatPanel()
     followNameCheckBox:SetPoint("TOPLEFT",55, -175)
     getglobal(followNameCheckBox:GetName().."Text"):SetText("只听从指定目标命令 - 如果队伍中找不到该目标，将听从全队命令。")
 
-    local nameBox3 = CreateFrame("EditBox","FollowUnit", configurationPanel,"InputBoxTemplate")
+    local nameBox3 = CreateFrame("EditBox","FollowUnit", configurationPanel,BackdropTemplateMixin and "BackdropTemplate")
     nameBox3:SetMultiLine(true)
     nameBox3:SetTextInsets(6, 10, 3, 5)
     nameBox3:SetFontObject(ChatFontNormal)
@@ -117,14 +109,10 @@ function CreatPanel()
     nameBox3:HighlightText()
     nameBox3:SetMaxLetters(18)
     nameBox3:SetAutoFocus(false)
-    -- nameBox3:SetBackdrop({
-    --     _,
-    --     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    --     _,
-    --     _,
-    --     edgeSize = 10,
-    --     _
-    -- })
+    nameBox3:SetBackdrop({
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        edgeSize = 10,
+    })
 
 
     local followPartyCheckBox = CreateFrame("CheckButton","followPartyCheckBox", configurationPanel, "ChatConfigCheckButtonTemplate")
@@ -243,12 +231,8 @@ function CreatPanel()
 		followCheckBox:SetChecked(settings.followCheck)
 		stopCheckBox:SetChecked(settings.stopCheck)
 
-    if settings.command1 then
-		  nameBox1:SetText(settings.command1)
-    end
-    if settings.command2 then
-		  nameBox2:SetText(settings.command2)
-    end
+		nameBox1:SetText(settings.command1)
+		nameBox2:SetText(settings.command2)
 
 		followLeaderCheckBox:SetChecked(settings.followLeaderCheck)
 		followNameCheckBox:SetChecked(settings.followNameCheck)

@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 20503
 ## LoadOnDemand: 1
 ## Title: Lib: Sink-2.0
 ## Notes: Library that handles chat output.

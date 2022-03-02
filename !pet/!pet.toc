@@ -1,0 +1,6 @@
+## Interface: 20503
+
+## Title: !pet
+## Notes: Show water elemental duration on default petframe portrait and hide damage/healing number.
+## Notes-zhCN: 默认宠物头像显示水元素的持续时间,隐藏受到伤害/治疗数字.
+pet.lua

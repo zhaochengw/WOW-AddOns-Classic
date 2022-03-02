@@ -38,8 +38,8 @@ P(5, 1):raid(3923) -- 格鲁尔的巢穴
 P(5, 1):raid(3836) -- 玛瑟里顿的巢穴
 P(5, 2):raid(3607) -- 毒蛇神殿
 P(5, 2):raid(3845) -- 风暴要塞
-P(5, 2):raid(3606) -- 海加尔山
-P(5, 2):raid(3959) -- 黑暗神庙
+P(5, 2):raid(3606) -- 海加尔峰
+P(5, 2):raid(3959) -- 黑暗神殿
 P(5, 3):raid(3805, 10) -- 祖阿曼
 P(5, 4):raid(4075) -- 太阳井
 ---- classic
@@ -114,12 +114,13 @@ P(2):dungeon(718, 17) -- 哀嚎洞穴
 P(2):dungeon(1581, 17) -- 死亡矿井
 P(2):dungeon(2437, 13) -- 怒焰裂谷
 -- 世界boss
-P(2):boss('Lord Kazzak') -- 卡扎克
-P(2):boss('Azuregos') -- 艾索雷葛斯
-P(2):boss('Ysondre') -- 伊森德雷
-P(2):boss('Taerar') -- 泰拉尔
-P(2):boss('Emeriss') -- 艾莫莉丝
-P(2):boss('Lethon') -- 莱索恩
+P(2):boss('Doomwalker', 70) -- 末日行者
+P(2):boss('Lord Kazzak', 60) -- 卡扎克
+P(2):boss('Azuregos', 60) -- 艾索雷葛斯
+P(2):boss('Ysondre', 60) -- 伊森德雷
+P(2):boss('Taerar', 60) -- 泰拉尔
+P(2):boss('Emeriss', 60) -- 艾莫莉丝
+P(2):boss('Lethon', 60) -- 莱索恩
 -- 战场
 P(2):pvp(2597, 40) -- 奥特兰克山谷
 P(2):pvp(3277, 10) -- 战歌峡谷

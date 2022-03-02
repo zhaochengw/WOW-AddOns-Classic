@@ -5,18 +5,20 @@
 ----------------------------------------------------------------------------------------------------
 local __addon, __ns = ...;
 
-if __ns.__dev then
-	setfenv(1, __ns.__fenv);
-end
 local _G = _G;
 local _ = nil;
 ----------------------------------------------------------------------------------------------------
---[=[dev]=]	if __ns.__dev then __ns._F_devDebugProfileStart('module.core'); end
+--[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart('module.core'); end
 
 -->		variables
-	local strfind = strfind;
+	local select = select;
 	local next = next;
+	local wipe = table.wipe;
+	local strfind = string.find;
+	local floor, random = math.floor, math.random;
 	local bit_band = bit.band;
+	local IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown = IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown;
+	local GetQuestDifficultyColor = GetQuestDifficultyColor;
 	local GetNumQuestLogEntries = GetNumQuestLogEntries;
 	local GetQuestLogTitle = GetQuestLogTitle;
 	local GetNumQuestLeaderBoards = GetNumQuestLeaderBoards;
@@ -29,6 +31,29 @@ local _ = nil;
 	local GetFactionInfoByID = GetFactionInfoByID;
 	local GetNumSkillLines = GetNumSkillLines;
 	local GetSkillLineInfo = GetSkillLineInfo;
+
+	local GetNumGossipActiveQuests = GetNumGossipActiveQuests;
+	local GetGossipActiveQuests = GetGossipActiveQuests;
+	local SelectGossipActiveQuest = SelectGossipActiveQuest;
+	local GetNumGossipAvailableQuests = GetNumGossipAvailableQuests;
+	local GetGossipAvailableQuests = GetGossipAvailableQuests;
+	local SelectGossipAvailableQuest = SelectGossipAvailableQuest;
+	local GetNumActiveQuests = GetNumActiveQuests;
+	local GetActiveTitle = GetActiveTitle;
+	local SelectActiveQuest = SelectActiveQuest;
+	local GetNumAvailableQuests = GetNumAvailableQuests;
+	local GetAvailableTitle = GetAvailableTitle;
+	local SelectAvailableQuest = SelectAvailableQuest;
+	local AcceptQuest = AcceptQuest;
+	local IsQuestCompletable = IsQuestCompletable;
+	local CompleteQuest = CompleteQuest;
+	local GetNumQuestChoices = GetNumQuestChoices;
+	local GetQuestReward = GetQuestReward;
+	local ConfirmAcceptQuest = ConfirmAcceptQuest;
+	local GetQuestLogIndexByID = GetQuestLogIndexByID;
+	local GetQuestLogIsAutoComplete = GetQuestLogIsAutoComplete;
+	local ShowQuestComplete = ShowQuestComplete;
+	local StaticPopup_Hide = StaticPopup_Hide;
 
 	local __db = __ns.db;
 	local __db_quest = __db.quest;
@@ -50,24 +75,29 @@ local _ = nil;
 	local __loc_object = __loc.object;
 	local __loc_profession = __loc.profession;
 
-	local _F_SafeCall = __ns.core._F_SafeCall;
-	local __eventHandler = __ns.core.__eventHandler;
-	local __const = __ns.core.__const;
-	local __L_QUEST_MONSTERS_KILLED = __ns.core.__L_QUEST_MONSTERS_KILLED;
-	local __L_QUEST_ITEMS_NEEDED = __ns.core.__L_QUEST_ITEMS_NEEDED;
-	local __L_QUEST_OBJECTS_FOUND = __ns.core.__L_QUEST_OBJECTS_FOUND;
-	local __L_QUEST_DEFAULT_PATTERN = __ns.core.__L_QUEST_DEFAULT_PATTERN;
-	local FindMinLevenshteinDistance = __ns.core.FindMinLevenshteinDistance;
-	local PreloadCoords = __ns.core.PreloadCoords;
-	local IMG_INDEX = __ns.core.IMG_INDEX;
-	local GetQuestStartTexture = __ns.core.GetQuestStartTexture;
+	local __core = __ns.core;
+	local _F_SafeCall = __core._F_SafeCall;
+	local __eventHandler = __core.__eventHandler;
+	local __const = __core.__const;
+	local __L_QUEST_MONSTERS_KILLED = __core.__L_QUEST_MONSTERS_KILLED;
+	local __L_QUEST_ITEMS_NEEDED = __core.__L_QUEST_ITEMS_NEEDED;
+	local __L_QUEST_OBJECTS_FOUND = __core.__L_QUEST_OBJECTS_FOUND;
+	local __L_QUEST_DEFAULT_PATTERN = __core.__L_QUEST_DEFAULT_PATTERN;
+	local FindMinLevenshteinDistance = __core.FindMinLevenshteinDistance;
+	local PreloadCoords = __core.PreloadCoords;
+	local IMG_INDEX = __core.IMG_INDEX;
+	local GetQuestStartTexture = __core.GetQuestStartTexture;
 
-	local UnitHelpFac = __ns.core.UnitHelpFac;
+	local UnitHelpFac = __core.UnitHelpFac;
 	local _log_ = __ns._log_;
 
 	local SET = nil;
 
 	__ns.__player_level = UnitLevel('player');
+-->
+if __ns.__is_dev then
+	__ns:BuildEnv("core");
+end
 -->		MAIN
 	local show_starter, show_ender = false, false;
 	local quest_auto_inverse_modifier = IsShiftKeyDown;
@@ -85,13 +115,13 @@ local _ = nil;
 				[4] = description,
 				[5] = finished,
 				[6] = is_large_pin,
-				[7] = one_monster_add_all,
 			},
 		}
 	]]
 	local CACHE = {  };	--	如果META初始不为空（从保存变量中加载），需要根据META表初始化
 	local OBJ_LOOKUP = {  };
 	local QUESTS_COMPLETED = {  };
+	local QUESTS_CONFILCTED = {  };
 	__ns.__core_meta = META;
 	__ns.__obj_lookup = OBJ_LOOKUP;
 	__ns.__core_quests_completed = QUESTS_COMPLETED;
@@ -99,15 +129,17 @@ local _ = nil;
 		local GetColor3, RelColor3, GetColor3NextIndex, ResetColor3;
 		local CoreAddUUID, CoreSubUUID, CoreGetUUID, ResetUUID;
 		local GetVariedNodeTexture, AddCommonNodes, DelCommonNodes, AddLargeNodes, DelLargeNodes, AddVariedNodes, DelVariedNodes;
-		local AddUnit, DelUnit, AddObject, DelObject, AddRefloot, DelRefloot, AddItem, DelItem, AddEvent, DelEvent;
+		local AddSpawn, DelSpawn, AddUnit, DelUnit, AddObject, DelObject, AddRefloot, DelRefloot, AddItem, DelItem, AddEvent, DelEvent;
 		local AddQuester_VariedTexture, DelQuester_VariedTexture, AddQuestStart, DelQuestStart, AddQuestEnd, DelQuestEnd;
 		local AddLine, AddLineByID, DelLine;
-		local AddLineAllObj, DelLineAllObj;
 		local LoadQuestCache, UpdateQuests;
+		local AddConfilct, DelConfilct;
 		local UpdateQuestGivers;
 		local CalcQuestColor;
 		--	setting
 		local SetQuestStarterShown, SetQuestEnderShown, SetQuestAutoInverseModifier;
+		--	setup
+		local SetupCompleted;
 	-->
 	-->		--	color
 		local COLOR3 = {  };
@@ -280,6 +312,7 @@ local _ = nil;
 		__ns.CoreSubUUID = CoreSubUUID;
 		__ns.CoreGetUUID = CoreGetUUID;
 	-->
+	-- __ns.__core_uuid = UUID;
 	-->		send data to ui
 		local COMMON_UUID_FLAG = {  };
 		local LARGE_UUID_FLAG = {  };
@@ -385,9 +418,38 @@ local _ = nil;
 		end
 	-->
 	-->		send quest data
+		function AddSpawn(quest, line, spawn, show_coords, showFriend)
+			if spawn.U ~= nil then
+				for unit, _ in next, spawn.U do
+					local large_pin = __db_large_pin:Check(quest, 'unit', unit);
+					AddUnit(quest, line, unit, show_coords, large_pin, showFriend);
+				end
+			end
+			if spawn.O ~= nil then
+				for object, _ in next, spawn.O do
+					local large_pin = __db_large_pin:Check(quest, 'object', object);
+					AddObject(quest, line, object, show_coords, large_pin);
+				end
+			end
+		end
+		function DelSpawn(quest, line, spawn, total_del)
+			if spawn.U ~= nil then
+				for unit, _ in next, spawn.U do
+					local large_pin = __db_large_pin:Check(quest, 'unit', unit);
+					DelUnit(quest, line, unit, total_del, large_pin);
+				end
+			end
+			if spawn.O ~= nil then
+				for object, _ in next, spawn.O do
+					local large_pin = __db_large_pin:Check(quest, 'object', object);
+					DelObject(quest, line, object, total_del, large_pin);
+				end
+			end
+		end
 		function AddUnit(quest, line, uid, show_coords, large_pin, showFriend)
 			local info = __db_unit[uid];
 			if info ~= nil then
+				local draw = true;
 				if showFriend ~= nil then
 					local isFriend = nil;
 					if info.fac == nil then
@@ -405,23 +467,42 @@ local _ = nil;
 						isFriend = UnitHelpFac[info.fac];
 					end
 					if not showFriend ~= not isFriend then
-						return;
+						draw = false;
 					end
 				end
-				PreloadCoords(info);
-				local coords = show_coords and (info.waypoints or info.coords) or nil;
-				if large_pin then
-					AddLargeNodes('unit', uid, quest, line, coords);
-				else
-					AddCommonNodes('unit', uid, quest, line, coords);
+				if info.waypoints ~= nil then
+					large_pin = false;
+				end
+				if draw then
+					PreloadCoords(info);
+					local coords = show_coords and (info.waypoints or info.coords) or nil;
+					if large_pin and info.waypoints == nil then
+						AddLargeNodes('unit', uid, quest, line, coords);
+					else
+						AddCommonNodes('unit', uid, quest, line, coords);
+					end
+				end
+				local spawn = info.spawn;
+				if spawn ~= nil then
+					AddSpawn(quest, line, spawn, show_coords, showFriend);
 				end
 			end
 		end
 		function DelUnit(quest, line, uid, total_del, large_pin)
-			if large_pin then
-				DelLargeNodes('unit', uid, quest, line, total_del);
-			else
-				DelCommonNodes('unit', uid, quest, line, total_del);
+			local info = __db_unit[uid];
+			if info ~= nil then
+				if info.waypoints ~= nil then
+					large_pin = false;
+				end
+				if large_pin then
+					DelLargeNodes('unit', uid, quest, line, total_del);
+				else
+					DelCommonNodes('unit', uid, quest, line, total_del);
+				end
+				local spawn = info.spawn;
+				if spawn ~= nil then
+					DelSpawn(quest, line, spawn, total_del);
+				end
 			end
 		end
 		function AddObject(quest, line, oid, show_coords, large_pin)
@@ -436,6 +517,10 @@ local _ = nil;
 						AddCommonNodes('object', oid, quest, line, coords);
 					end
 				-- end
+				local spawn = info.spawn;
+				if spawn ~= nil then
+					AddSpawn(quest, line, spawn, show_coords);
+				end
 			end
 			local name = __loc_object[oid];
 			if name ~= nil then
@@ -443,10 +528,17 @@ local _ = nil;
 			end
 		end
 		function DelObject(quest, line, oid, total_del, large_pin)
-			if large_pin then
-				DelLargeNodes('object', oid, quest, line, total_del);
-			else
-				DelCommonNodes('object', oid, quest, line, total_del);
+			local info = __db_object[oid];
+			if info ~= nil then
+				if large_pin then
+					DelLargeNodes('object', oid, quest, line, total_del);
+				else
+					DelCommonNodes('object', oid, quest, line, total_del);
+				end
+				local spawn = info.spawn;
+				if spawn ~= nil then
+					DelSpawn(quest, line, spawn, total_del);
+				end
 			end
 		end
 		function AddRefloot(quest, line, rid, show_coords, large_pin)
@@ -512,9 +604,9 @@ local _ = nil;
 					end
 				end
 				if info.I ~= nil then
-					local line2 = line > 0 and -line or line;
+					-- local line2 = line > 0 and -line or line;
 					for iid2, _ in next, info.I do
-						AddItem(quest, line2, iid2, show_coords, large_pin);
+						AddItem(quest, line, iid2, show_coords, large_pin);
 					end
 				end
 			end
@@ -546,51 +638,45 @@ local _ = nil;
 					end
 				end
 				if info.I ~= nil then
-					local line2 = line > 0 and -line or line;
+					-- local line2 = line > 0 and -line or line;
 					for iid2, _ in next, info.I do
-						DelItem(quest, line2, iid2, total_del, large_pin);
+						DelItem(quest, line, iid2, total_del, large_pin);
 					end
 				end
 			end
 		end
-		function AddEvent(quest)
-			local info = __db_quest[quest];
-			local obj = info.obj;
-			if obj ~= nil then
-				local E = obj.E;
-				if E ~= nil then
-					local coords = E.coords;
-					if coords == nil then
-						coords = {  };
-						for index = 1, #E do
-							local event = __db_event[E[index]];
-							if event ~= nil then
-								local cs = event.coords;
-								if cs ~= nil and cs[1] ~= nil then
-									for j = 1, #cs do
-										coords[#coords + 1] = cs[j];
-									end
-								end
-							end
+		function AddEvent(quest, show_coords)
+			local obj = __db_quest[quest].obj;
+			if obj ~= nil and obj.E ~= nil then
+				local events = obj.E;
+				for index = 1, #events do
+					local event = events[index];
+					local info = __db_event[event];
+					if info ~= nil then
+						PreloadCoords(info);
+						local coords = show_coords and info.coords or nil;
+						AddLargeNodes('event', event, quest, 'event', coords);
+						local spawn = info.spawn;
+						if spawn ~= nil then
+							AddSpawn(quest, 'event', spawn, show_coords);
 						end
-						E.coords = coords;
-						PreloadCoords(E);
-					end
-					if coords ~= nil and coords[1] ~= nil then
-						AddLargeNodes('event', quest, quest, 'event', coords);
 					end
 				end
 			end
 		end
-		function DelEvent(quest)
-			local info = __db_quest[quest];
-			local obj = info.obj;
-			if obj ~= nil then
-				local E = obj.E;
-				if E ~= nil then
-					local coords = E.coords;
-					if coords ~= nil and coords[1] ~= nil then
-						DelLargeNodes('event', quest, quest, 'event');
+		function DelEvent(quest, total_del)
+			local obj = __db_quest[quest].obj;
+			if obj ~= nil and obj.E ~= nil then
+				local events = obj.E;
+				for index = 1, #events do
+					local event = events[index];
+					local info = __db_event[event];
+					if info ~= nil then
+						DelLargeNodes('event', event, quest, 'event', total_del);
+						local spawn = info.spawn;
+						if spawn ~= nil then
+							DelSpawn(quest, 'event', spawn, total_del);
+						end
 					end
 				end
 			end
@@ -780,61 +866,6 @@ local _ = nil;
 				_log_('obj', quest_id, index, objective_type, objective_id)
 			end
 		end
-		function AddLineAllObj(quest_id, index, obj, finished)
-			--	@obj = { @U = { id... }, @I = { id... }, @O = { id... }, @E = { id... }, @R = { id, min, }, },
-			local U = obj.U;
-			local I = obj.I;
-			local O = obj.O;
-			local E = obj.E;
-			if U ~= nil and U[1] ~= nil then
-				for index = 1, #U do
-					local uid = U[index];
-					AddUnit(quest_id, index, uid, not finished, __db_large_pin:Check(quest_id, 'unit', uid), nil);
-				end
-			end
-			if I ~= nil and I[1] ~= nil then
-				for index = 1, #I do
-					local iid = I[index];
-					AddItem(quest_id, index, iid, not finished, __db_large_pin:Check(quest_id, 'item', iid), nil);
-				end
-			end
-			if O ~= nil and O[1] ~= nil then
-				for index = 1, #O do
-					local oid = O[index];
-					AddObject(quest_id, index, oid, not finished, __db_large_pin:Check(quest_id, 'object', oid), nil);
-				end
-			end
-			if E ~= nil and E[1] ~= nil then
-				AddEvent(quest_id);
-			end
-		end
-		function DelLineAllObj(quest_id, index, obj, total_del)
-			local U = obj.U;
-			local I = obj.I;
-			local O = obj.O;
-			local E = obj.E;
-			if U ~= nil and U[1] ~= nil then
-				for index = 1, #U do
-					local uid = U[index];
-					DelUnit(quest_id, index, uid, total_del, __db_large_pin:Check(quest_id, 'unit', uid), nil);
-				end
-			end
-			if I ~= nil and I[1] ~= nil then
-				for index = 1, #I do
-					local iid = I[index];
-					DelItem(quest_id, index, iid, total_del, __db_large_pin:Check(quest_id, 'item', iid), nil);
-				end
-			end
-			if O ~= nil and O[1] ~= nil then
-				for index = 1, #O do
-					local oid = O[index];
-					DelObject(quest_id, index, oid, total_del, __db_large_pin:Check(quest_id, 'object', oid), nil);
-				end
-			end
-			if E ~= nil and E[1] ~= nil then
-				DelEvent(quest_id);
-			end
-		end
 		function LoadQuestCache(quest_id, completed)
 			local info = __db_quest[quest_id];
 			if completed == -1 then
@@ -878,8 +909,53 @@ local _ = nil;
 				end
 			end
 		end
+		function AddConfilct(quest_id)
+			--	QUESTS_CONFILCTED
+			local info = __db_quest[quest_id];
+			if info ~= nil then
+				local _excl = info.excl;
+				if _excl ~= nil then
+					for index = 1, #_excl do
+						local ex = _excl[index];
+						if QUESTS_CONFILCTED[ex] == nil then
+							QUESTS_CONFILCTED[ex] = true;
+							AddConfilct(ex);
+						end
+					end
+				end
+				local _next = info.next;
+				if _next ~= nil then
+					if QUESTS_CONFILCTED[_next] == nil then
+						QUESTS_CONFILCTED[_next] = true;
+						AddConfilct(_next);
+					end
+				end
+				-- local _pres = info.preSingle;
+				-- if _pres ~= nil then
+				-- 	for index = 1, #_pres do
+				-- 		local ps = _pres[index];
+				-- 		if QUESTS_CONFILCTED[ps] == nil then
+				-- 			QUESTS_CONFILCTED[ps] = true;
+				-- 			AddConfilct(ps);
+				-- 		end
+				-- 	end
+				-- end
+				-- local _preg = info.preGroup;
+				-- if _preg ~= nil then
+				-- 	for index = 1, #_preg do
+				-- 		local pg = _preg[index];
+				-- 		if QUESTS_CONFILCTED[pg] == nil then
+				-- 			QUESTS_CONFILCTED[pg] = true;
+				-- 			AddConfilct(pg);
+				-- 		end
+				-- 	end
+				-- end
+			end
+		end
+		function DelConfilct(quest_id)
+		end
 		function UpdateQuests()
-			--[=[dev]=]	if __ns.__dev then __ns._F_devDebugProfileStart('module.core.|cffff0000UpdateQuests|r'); end
+			--[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart('module.core.|cffff0000UpdateQuests|r'); end
 			local _, num = GetNumQuestLogEntries();
 			local quest_changed = false;
 			local need_re_draw = false;
@@ -915,27 +991,7 @@ local _ = nil;
 							--
 							local obj = info.obj;
 							if obj ~= nil then
-								-- if num_lines == 1 then
-								-- 	local description, objective_type, finished = GetQuestLogLeaderBoard(1, index);
-								-- 	local meta_line = meta[1];
-								-- 	if meta_line == nil then
-								-- 		meta_line = { false, objective_type, nil, description, finished, nil, };
-								-- 		meta[1] = meta_line;
-								-- 		AddLineAllObj(quest_id, 1, obj, completed == 1 or completed == -1);
-								-- 		__ns.PushAddLine(quest_id, 1, finished, objective_type, -1, description);
-								-- 	else
-								-- 		meta_line[2] = objective_type;
-								-- 		meta_line[4] = description;
-								-- 		meta_line[5] = finished;
-								-- 	end
-								-- else
-								-- 	if meta.num_lines == 1 then
-								-- 		DelLineAllObj(quest_id, 1, obj, true);
-								-- 	end
-								-- end
-								local num_monster_lines = 0;
-								local monster_line = -1;
-								local U2 = obj.U2;
+								local has_event = nil;
 								if completed == 1 or completed == -1 then			--	第一次检测到任务成功或失败时，隐藏已显示的任务目标
 									for line = 1, num_lines do
 										local description, objective_type, finished = GetQuestLogLeaderBoard(line, index);
@@ -955,7 +1011,7 @@ local _ = nil;
 											if meta.completed == 0 then
 												if meta_line[1] then
 													DelLine(quest_id, line, meta_line[2], meta_line[3], false, meta_line[6]);
-													_log_('DelLine-TTT', nil, objective_type, objective_id);
+													_log_('DelLine-TTT', nil, objective_type, meta_line[3]);
 												end
 												meta_line[1] = false;
 											end
@@ -969,19 +1025,17 @@ local _ = nil;
 												meta_line[6] = large_pin;
 											end
 										end
-										if objective_type == 'monster' and (objective_id == nil or U2 == nil or U2[objective_id] ~= true) then
-											num_monster_lines = num_monster_lines + 1;
-											monster_line = line;
+										if objective_type == 'event' or objective_type == 'log' then
+											has_event = finished;
 										end
 										if push_line and objective_id ~= nil then
 											__ns.PushAddLine(quest_id, line, finished, objective_type, objective_id, description);
 										end
 									end
 									if meta.event_shown == true then
-										DelEvent(quest_id);
+										DelEvent(quest_id, false);
 									end
 								else												--	检查任务进度
-									local has_unfinished_event = false;
 									for line = 1, num_lines do
 										local description, objective_type, finished = GetQuestLogLeaderBoard(line, index);
 										local meta_line = meta[line];
@@ -1027,70 +1081,25 @@ local _ = nil;
 													end
 												end
 											end
-											if objective_type == 'event' or objective_type == 'log' then
-												has_unfinished_event = true;
-											end
 										end
-										if objective_type == 'monster' and (objective_id == nil or U2 == nil or U2[objective_id] ~= true) then
-											num_monster_lines = num_monster_lines + 1;
-											monster_line = line;
+										if objective_type == 'event' or objective_type == 'log' then
+											has_event = finished;
 										end
 										if push_line and objective_id ~= nil then
 											__ns.PushAddLine(quest_id, line, finished, objective_type, objective_id, description);
 										end
 									end
-									if has_unfinished_event then
-										if meta.event_shown ~= true then
-											AddEvent(quest_id);
-											meta.event_shown = true;
-											__ns.PushAddLine(quest_id, 'event', finished, 'event', quest_id, 'event');
-										end
-									else
-										if meta.event_shown == true then
-											DelEvent(quest_id);
-											meta.event_shown = false;
-										end
-									end
 								end
-								if num_monster_lines == 1 then
-									local U = obj.U2 or obj.U;
-									if U ~= nil and U[1] ~= nil then
-										local meta_line = meta[monster_line];
-										if meta_line[1] and meta_line[3] ~= nil and meta_line[7] == nil then
-											--	DelLine
-											DelLine(quest_id, monster_line, meta_line[2], meta_line[3], false, meta_line[6]);
-										end
-										if completed == 1 or completed == -1 or meta_line[5] then
-											if meta_line[7] == nil then
-												meta_line[7] = -1;
-												--	AddAllHidden
-												for index = 1, #U do
-													local uid = U[index];
-													local large_pin = __db_large_pin:Check(quest_id, 'unit', uid);
-													AddUnit(quest_id, monster_line, uid, false, large_pin, nil);
-												end
-											elseif meta_line[7] == 1 then
-												meta_line[7] = -1;
-												--	HalfDel
-												--	= DelAllShown + AddAllHidden
-												for index = 1, #U do
-													local uid = U[index];
-													local large_pin = __db_large_pin:Check(quest_id, 'unit', uid);
-													DelUnit(quest_id, monster_line, uid, false, large_pin);
-													-- AddUnit(quest_id, monster_line, uid, false, large_pin, nil);
-												end
-											end
-										else
-											if meta_line[7] ~= 1 then
-												meta_line[7] = 1;
-												--	AddAllShown
-												for index = 1, #U do
-													local uid = U[index];
-													local large_pin = __db_large_pin:Check(quest_id, 'unit', uid);
-													AddUnit(quest_id, monster_line, uid, true, large_pin, nil);
-												end
-											end
-										end
+								if has_event ~= nil then
+									if meta.event_shown ~= true then
+										AddEvent(quest_id, not has_event);
+										meta.event_shown = true;
+										__ns.PushAddLine(quest_id, 'event', not has_event, 'event', quest_id, 'event');
+									end
+								else
+									if meta.event_shown == true then
+										DelEvent(quest_id, false);
+										meta.event_shown = false;
 									end
 								end
 							end
@@ -1129,6 +1138,7 @@ local _ = nil;
 					end
 				end
 			end
+			QUESTS_CONFILCTED = {  };
 			for quest_id, meta in next, META do
 				if meta.flag == -1 then
 					CACHE[quest_id] = nil;
@@ -1137,19 +1147,7 @@ local _ = nil;
 						for line = 1, meta.num_lines do
 							local meta_line = meta[line];
 							if meta_line ~= nil then
-								if meta_line[7] ~= nil then		--	num_monster_lines == 1
-									local obj = info.obj;
-									if obj ~= nil then
-										local U = obj.U;
-										if U ~= nil and U[1] ~= nil then
-											for index = 1, #U do
-												local uid = U[index];
-												local large_pin = __db_large_pin:Check(quest_id, 'unit', uid);
-												DelUnit(quest_id, line, uid, true, large_pin);
-											end
-										end
-									end
-								elseif meta_line[3] ~= nil then
+								if meta_line[3] ~= nil then
 									DelLine(quest_id, line, meta_line[2], meta_line[3], true, meta_line[6]);
 									_log_('DelLine-F__', nil, meta_line[2], meta_line[3]);
 								end
@@ -1163,13 +1161,15 @@ local _ = nil;
 						end
 					end
 					if meta.event_shown == true then
-						DelEvent(quest_id);
+						DelEvent(quest_id, true);
 						meta.event_shown = false;
 					end
 					META[quest_id] = nil;
 					quest_changed = true;
 					need_re_draw = true;
 					__ns.PushDelQuest(quest_id, meta.completed);
+				else
+					AddConfilct(quest_id);
 				end
 			end
 			if quest_changed then
@@ -1178,21 +1178,21 @@ local _ = nil;
 			if need_re_draw then
 				__eventHandler:run_on_next_tick(__ns.MapDrawNodes);
 			end
-			--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.core.|cffff0000UpdateQuests|r'); end
+			__ns.PushFlushBuffer();
+			--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.core.|cffff0000UpdateQuests|r'); end
 		end
 	-->
 	-->		avl quest giver
 		local QUEST_WATCH_REP = {  };
 		local QUEST_WATCH_SKILL = {  };
 		function UpdateQuestGivers()
-			--[=[dev]=]	if __ns.__dev then __ns._F_devDebugProfileStart("module.core.UpdateQuestGivers"); end
+			--[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart("module.core.UpdateQuestGivers"); end
 			local lowest = __ns.__player_level + SET.quest_lvl_lowest_ofs;
 			local highest = __ns.__player_level + SET.quest_lvl_highest_ofs;
 			for _, quest_id in next, __db_avl_quest_list do
 				local info = __db_quest[quest_id];
-				if META[quest_id] == nil and QUESTS_COMPLETED[quest_id] == nil then
-					if info.lvl == nil or info.min == nil then print(quest_id, info.lvl, info.min); end
-					local acceptable = info.lvl >= lowest and info.min <= highest;
+				if META[quest_id] == nil and QUESTS_COMPLETED[quest_id] == nil and QUESTS_CONFILCTED[quest_id] == nil then
+					local acceptable = info.lvl < 0 or (info.lvl >= lowest and info.min <= highest);
 					if acceptable then
 						local parent = info.parent;
 						if parent ~= nil then
@@ -1207,7 +1207,7 @@ local _ = nil;
 						if acceptable then
 							local _next = info.next;
 							if _next ~= nil then
-								if QUESTS_COMPLETED[_next] == 1 then
+								if QUESTS_COMPLETED[_next] then
 									acceptable = false;
 								end
 							end
@@ -1217,7 +1217,7 @@ local _ = nil;
 									acceptable = false;
 									for index2 = 1, #preSingle do
 										local id = preSingle[index2];
-										if QUESTS_COMPLETED[id] == 1 then
+										if QUESTS_COMPLETED[id] then
 											acceptable = true;
 											break;
 										end
@@ -1228,7 +1228,7 @@ local _ = nil;
 									if excl ~= nil then
 										for index2 = 1, #excl do
 											local id = excl[index2];
-											if META[id] ~= nil or QUESTS_COMPLETED[id] == 1 then
+											if META[id] ~= nil or QUESTS_COMPLETED[id] ~= nil then
 												acceptable = false;
 												break;
 											end
@@ -1239,7 +1239,7 @@ local _ = nil;
 										if preGroup ~= nil then
 											for index2 = 1, #preGroup do
 												local id = preGroup[index2];
-												if QUESTS_COMPLETED[id] ~= 1 then
+												if QUESTS_COMPLETED[id] == nil then
 													acceptable = false;
 													break;
 												end
@@ -1286,12 +1286,12 @@ local _ = nil;
 					else
 						DelQuestStart(quest_id, info);
 					end
-				elseif not show_starter then
+				else
 					DelQuestStart(quest_id, info);
 				end
 			end
 			__eventHandler:run_on_next_tick(__ns.MapDrawNodes);
-			--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.core.UpdateQuestGivers'); end
+			--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.core.UpdateQuestGivers'); end
 		end
 	-->
 	-->		misc
@@ -1410,32 +1410,10 @@ local _ = nil;
 			wipe(COMMON_UUID_FLAG);
 			wipe(LARGE_UUID_FLAG);
 			wipe(VARIED_UUID_FLAG);
-			QUESTS_COMPLETED = GetQuestsCompleted();
+			SetupCompleted();
 		end
 	-->
 	-->		events and hooks
-		local GetNumGossipActiveQuests = GetNumGossipActiveQuests;
-		local GetGossipActiveQuests = GetGossipActiveQuests;
-		local SelectGossipActiveQuest = SelectGossipActiveQuest;
-		local GetNumGossipAvailableQuests = GetNumGossipAvailableQuests;
-		local GetGossipAvailableQuests = GetGossipAvailableQuests;
-		local SelectGossipAvailableQuest = SelectGossipAvailableQuest;
-		local GetNumActiveQuests = GetNumActiveQuests;
-		local GetActiveTitle = GetActiveTitle;
-		local SelectActiveQuest = SelectActiveQuest;
-		local GetNumAvailableQuests = GetNumAvailableQuests;
-		local GetAvailableTitle = GetAvailableTitle;
-		local SelectAvailableQuest = SelectAvailableQuest;
-		local AcceptQuest = AcceptQuest;
-		local IsQuestCompletable = IsQuestCompletable;
-		local CompleteQuest = CompleteQuest;
-		local GetNumQuestChoices = GetNumQuestChoices;
-		local GetQuestReward = GetQuestReward;
-		local ConfirmAcceptQuest = ConfirmAcceptQuest;
-		local GetQuestLogIndexByID = GetQuestLogIndexByID;
-		local GetQuestLogIsAutoComplete = GetQuestLogIsAutoComplete;
-		local ShowQuestComplete = ShowQuestComplete;
-		local StaticPopup_Hide = StaticPopup_Hide;
 		--
 		function __ns.PLAYER_LEVEL_CHANGED(oldLevel, newLevel)
 		end
@@ -1462,31 +1440,43 @@ local _ = nil;
 			__eventHandler:run_on_next_tick(UpdateQuests);
 			__eventHandler:run_on_next_tick(UpdateQuestGivers);
 		end
-		function __ns.QUEST_TURNED_IN(quest_id, xp, money)
-			_log_('QUEST_TURNED_IN', quest_id, xp, money);
+		local function QUEST_TURNED_IN()
+			GetQuestsCompleted(QUESTS_COMPLETED);
 			__eventHandler:run_on_next_tick(UpdateQuests);
 			__eventHandler:run_on_next_tick(UpdateQuestGivers);
+		end
+		function __ns.QUEST_TURNED_IN(quest_id, xp, money)
+			_log_('QUEST_TURNED_IN', quest_id, xp, money);
+			QUESTS_COMPLETED[quest_id] = true;
+			QUEST_TURNED_IN();
+			-- __ns.After(0.5, QUEST_TURNED_IN);
+			__ns.After(1.0, QUEST_TURNED_IN);
+			-- __ns.After(1.5, QUEST_TURNED_IN);
+			-- __ns.After(2.0, QUEST_TURNED_IN);
+			-- __ns.After(2.5, QUEST_TURNED_IN);
+			-- __ns.After(3.0, QUEST_TURNED_IN);
 			local info = __db_quest[quest_id];
 			if info ~= nil then
 				DelQuestEnd(quest_id, info);
+				local flag = info.flag;
 				local exflag = info.exflag;
-				if exflag ~= nil and bit_band(exflag, 1) ~= 0 then
+				if exflag ~= nil and bit_band(exflag, 1) ~= 0 and (flag == nil or bit_band(flag, 4096) == 0) then
 					AddQuestStart(quest_id, info, IMG_INDEX.IMG_S_REPEATABLE);
 				else
 					DelQuestStart(quest_id, info);
-					QUESTS_COMPLETED[quest_id] = 1;
-					local info = __db_quest[quest_id];
-					if info ~= nil then
-						local _excl = info.excl;
-						if _excl ~= nil then
-							for _, val in next, _excl do
-								QUESTS_COMPLETED[val] = -1;
-							end
-						end
-					end
+					-- QUESTS_COMPLETED[quest_id] = 1;
+					-- local info = __db_quest[quest_id];
+					-- if info ~= nil then
+					-- 	local _excl = info.excl;
+					-- 	if _excl ~= nil then
+					-- 		for _, val in next, _excl do
+					-- 			QUESTS_COMPLETED[val] = -1;
+					-- 		end
+					-- 	end
+					-- end
 					local _prev = __db_chain_prev_quest[quest_id];
-					if _prev ~= nil then
-						QUESTS_COMPLETED[_prev] = -2;
+					if _prev ~= nil and QUESTS_COMPLETED[_prev] ~= 1 then
+						QUESTS_COMPLETED[_prev] = 2;
 					end
 				end
 			end
@@ -1584,28 +1574,33 @@ local _ = nil;
 			end
 		end
 	-->
+	function SetupCompleted()
+		GetQuestsCompleted(QUESTS_COMPLETED);
+		-- wipe(QUESTS_COMPLETED);
+		-- local temp = GetQuestsCompleted();
+		-- for quest, _ in next, temp do
+		-- 	QUESTS_COMPLETED[quest] = 1;
+		-- 	local info = __db_quest[quest];
+		-- 	if info ~= nil then
+		-- 		local _excl = info.excl;
+		-- 		if _excl ~= nil then
+		-- 			for _, val in next, _excl do
+		-- 				QUESTS_COMPLETED[val] = -1;
+		-- 			end
+		-- 		end
+		-- 	end
+		-- 	local _prev = __db_chain_prev_quest[quest];
+		-- 	if _prev ~= nil and QUESTS_COMPLETED[_prev] ~= 1 then
+		-- 		QUESTS_COMPLETED[_prev] = 2;
+		-- 	end
+		-- end
+	end
 	function __ns.core_setup()
 		SET = __ns.__setting;
-		local temp = GetQuestsCompleted();
-		for quest, _ in next, temp do
-			QUESTS_COMPLETED[quest] = 1;
-			local info = __db_quest[quest];
-			if info ~= nil then
-				local _excl = info.excl;
-				if _excl ~= nil then
-					for _, val in next, _excl do
-						QUESTS_COMPLETED[val] = -1;
-					end
-				end
-			end
-			local _prev = __db_chain_prev_quest[quest];
-			if _prev ~= nil then
-				QUESTS_COMPLETED[_prev] = -2;
-			end
-		end
+		SetupCompleted();
 		-- __eventHandler:RegEvent("ADDON_LOADED");
 		-- __eventHandler:RegEvent("PLAYER_ENTERING_WORLD");
-		--__eventHandler:RegEvent("SKILL_LINES_CHANGED");
+		-- __eventHandler:RegEvent("SKILL_LINES_CHANGED");
 
 		__eventHandler:RegEvent("GOSSIP_SHOW");
 		__eventHandler:RegEvent("QUEST_GREETING");
@@ -1667,4 +1662,4 @@ local _ = nil;
 		-->		NAME_PLATE_UNIT_REMOVED	
 -->
 
---[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.core'); end
+--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.core'); end

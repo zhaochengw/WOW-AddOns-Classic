@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/19/2019, 1:52:03 AM
-
+--
 ---- LUA
 local _G = _G
 local select = select
@@ -25,7 +25,7 @@ local ns = select(2, ...)
 local L = ns.L
 local Cache = ns.Cache
 
----@type tdBag2MoneyFrame
+---@class UI.MoneyFrame: EventsMixin, Object, Button
 local MoneyFrame = ns.Addon:NewClass('UI.MoneyFrame', 'Button')
 
 MoneyFrame.GenerateName = ns.NameGenerator('tdBag2MoneyFrame')
@@ -33,6 +33,7 @@ MoneyFrame.GenerateName = ns.NameGenerator('tdBag2MoneyFrame')
 function MoneyFrame:Constructor(_, meta)
     self.meta = meta
 
+    ---@type SmallMoneyFrameTemplate
     self.Money = CreateFrame('Frame', self:GenerateName(), self, 'SmallMoneyFrameTemplate')
     self.Money.trialErrorButton:SetPoint('LEFT', 8, 1)
     self.Money:SetScript('OnEvent', nil)
@@ -82,7 +83,7 @@ function MoneyFrame:OnEnter()
     local total = 0
     for _, name in ipairs(Cache:GetOwners()) do
         local owner = Cache:GetOwnerInfo(name)
-        if not owner.isguild and owner.money then
+        if owner.money then
             local name = ns.GetOwnerColoredName(owner)
             local coins = GetMoneyString(owner.money, true)
 

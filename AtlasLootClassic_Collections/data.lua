@@ -7,7 +7,10 @@ local string = _G.string
 local format = string.format
 
 -- WoW
-local C_Map_GetAreaInfo = C_Map.GetAreaInfo
+local function C_Map_GetAreaInfo(id)
+	local d = C_Map.GetAreaInfo(id)
+	return d or "GetAreaInfo"..id
+end
 
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
@@ -22,6 +25,7 @@ local ALIL = AtlasLoot.IngameLocales
 local GetForVersion = AtlasLoot.ReturnForGameVersion
 
 local NORMAL_DIFF = data:AddDifficulty(AL["Normal"], "n", 1, nil, true)
+local HEROIC_DIFF = data:AddDifficulty(AL["Heroic"], "h", 2, nil, true)
 local ALLIANCE_DIFF, HORDE_DIFF, LOAD_DIFF
 if UnitFactionGroup("player") == "Horde" then
 	HORDE_DIFF = data:AddDifficulty(FACTION_HORDE, "horde", nil, 1)
@@ -56,37 +60,49 @@ data["BadgeofJustice"] = {
 		{
 			name = ALIL["Cloth"],
 			[NORMAL_DIFF] = {
-				{ 1, 30762 }, -- Infernoweave Robe
-				{ 2, 30764 }, -- Infernoweave Gloves
-				{ 3, 30761 }, -- Infernoweave Leggings
-				{ 4, 30763 }, -- Infernoweave Boots
+				{ 1, 32089 }, -- Mana-Binders Cowl
+				{ 2, 32090 }, -- Cowl of Naaru Blessings
+
+				{ 4, 30762 }, -- Infernoweave Robe
+				{ 5, 30764 }, -- Infernoweave Gloves
+				{ 6, 30761 }, -- Infernoweave Leggings
+				{ 7, 30763 }, -- Infernoweave Boots
 			},
 		},
 		{
 			name = ALIL["Leather"],
 			[NORMAL_DIFF] = {
-				{ 1, 30776 }, -- Inferno Hardened Chestguard
-				{ 2, 30780 }, -- Inferno Hardened Gloves
-				{ 3, 30778 }, -- Inferno Hardened Leggings
-				{ 4, 30779 }, -- Inferno Hardened Boots
+				{ 1, 32087 }, -- Mask of the Deceiver
+				{ 2, 32088 }, -- Cowl of Beastly Rage
+
+				{ 4, 30776 }, -- Inferno Hardened Chestguard
+				{ 5, 30780 }, -- Inferno Hardened Gloves
+				{ 6, 30778 }, -- Inferno Hardened Leggings
+				{ 7, 30779 }, -- Inferno Hardened Boots
 			},
 		},
 		{
 			name = ALIL["Mail"],
 			[NORMAL_DIFF] = {
-				{ 1, 30773 }, -- Inferno Forged Hauberk
-				{ 2, 30774 }, -- Inferno Forged Gloves
-				{ 3, 30770 }, -- Inferno Forged Boots
-				{ 4, 30772 }, -- Inferno Forged Leggings
+				{ 1, 32085 }, -- Warpstalker Helm
+				{ 2, 32086 }, -- Storm Master's Helmet
+
+				{ 4, 30773 }, -- Inferno Forged Hauberk
+				{ 5, 30774 }, -- Inferno Forged Gloves
+				{ 6, 30770 }, -- Inferno Forged Boots
+				{ 7, 30772 }, -- Inferno Forged Leggings
 			},
 		},
 		{
 			name = ALIL["Plate"],
 			[NORMAL_DIFF] = {
-				{ 1, 30769,  }, -- Inferno Tempered Chestguard
-				{ 2, 30767,  }, -- Inferno Tempered Gauntlets
-				{ 3, 30766 }, -- Inferno Tempered Leggings
-				{ 4, 30768 }, -- Inferno Tempered Boots
+				{ 1, 32083 }, -- Faceguard of Determination
+				{ 2, 32084 }, -- Helmet of the Steadfast Champion
+
+				{ 4, 30769,  }, -- Inferno Tempered Chestguard
+				{ 5, 30767,  }, -- Inferno Tempered Gauntlets
+				{ 6, 30766 }, -- Inferno Tempered Leggings
+				{ 7, 30768 }, -- Inferno Tempered Boots
 			},
 		},
 		{
@@ -691,19 +707,34 @@ data["Mounts"] = {
 				{ 21,  13322 }, -- Unpainted Mechanostrider
 				{ 22,  8563 }, -- Red Mechanostrider
 				{ 23,  8595 }, -- Blue Mechanostrider
-				{ 9,  18776 }, -- Swift Palomino
-				{ 10,  18777 }, -- Swift Brown Steed
-				{ 11,  18778 }, -- Swift White Steed
-				{ 24,  2414 }, -- Pinto Bridle
-				{ 25,  5656 }, -- Brown Horse Bridle
-				{ 26,  5655 }, -- Chestnut Mare Bridle
-				{ 27,  2411 }, -- Black Stallion Bridle
-				{ 13,  18902 }, -- Reins of the Swift Stormsaber
-				{ 14,  18767 }, -- Reins of the Swift Mistsaber
-				{ 15,  18766 }, -- Reins of the Swift Frostsaber
-				{ 28,  8632 }, -- Reins of the Spotted Frostsaber
-				{ 29,  8631 }, -- Reins of the Striped Frostsaber
-				{ 30,  8629 }, -- Reins of the Striped Nightsaber
+				{ 10,  18776 }, -- Swift Palomino
+				{ 11,  18777 }, -- Swift Brown Steed
+				{ 12,  18778 }, -- Swift White Steed
+				{ 25,  2414 }, -- Pinto Bridle
+				{ 26,  5656 }, -- Brown Horse Bridle
+				{ 27,  5655 }, -- Chestnut Mare Bridle
+				{ 28,  2411 }, -- Black Stallion Bridle
+				{ 101,  18902 }, -- Reins of the Swift Stormsaber
+				{ 102,  18767 }, -- Reins of the Swift Mistsaber
+				{ 103,  18766 }, -- Reins of the Swift Frostsaber
+				{ 116,  8632 }, -- Reins of the Spotted Frostsaber
+				{ 117,  8631 }, -- Reins of the Striped Frostsaber
+				{ 118,  8629 }, -- Reins of the Striped Nightsaber
+			--@version-bcc@
+				{ 105, 29745 }, -- Great Blue Elekk
+				{ 106, 29746 }, -- Great Green Elekk
+				{ 107, 29747 }, -- Great Purple Elekk
+				{ 120, 28481 }, -- Brown Elekk
+				{ 121, 29743 }, -- Purple Elekk
+				{ 122, 29744 }, -- Gray Elekk
+				{ 109, 25527 }, -- Swift Red Gryphon
+				{ 110, 25528 }, -- Swift Green Gryphon
+				{ 111, 25529 }, -- Swift Purple Gryphon
+				{ 112, 25473 }, -- Swift Blue Gryphon
+				{ 124, 25470 }, -- Golden Gryphon
+				{ 125, 25471 }, -- Ebon Gryphon
+				{ 126, 25472 }, -- Snowy Gryphon
+			--@end-version-bcc@
 			},
 			[HORDE_DIFF] = {
 				{ 1,  18798 }, -- Horn of the Swift Gray Wolf
@@ -728,6 +759,22 @@ data["Mounts"] = {
 				{ 28,  13333 }, -- Brown Skeletal Horse
 				{ 29,  13332 }, -- Blue Skeletal Horse
 				{ 30,  13331 }, -- Red Skeletal Horse
+			-- @version-bcc@
+				{ 101, 29223 }, -- Swift Green Hawkstrider
+				{ 102, 29224 }, -- Swift Purple Hawkstrider
+				{ 103, 28936 }, -- Swift Pink Hawkstrider
+				{ 116, 29220 }, -- Blue Hawkstrider
+				{ 117, 29221 }, -- Black Hawkstrider
+				{ 118, 29222 }, -- Purple Hawkstrider
+				{ 119, 28927 }, -- Red Hawkstrider
+				{ 106, 25531 }, -- Swift Green Windrider
+				{ 107, 25532 }, -- Swift Yellow Windrider
+				{ 108, 25533 }, -- Swift Purple Windrider
+				{ 109, 25477 }, -- Swift Red Windrider
+				{ 121, 25474 }, -- Tawny Windrider
+				{ 122, 25475 }, -- Blue Windrider
+				{ 123, 25476 }, -- Green Windrider
+			--@end-version-bcc@
 			},
 		},
 		{ -- PvPMountsPvP
@@ -740,10 +787,12 @@ data["Mounts"] = {
 				{ 6,  GetForVersion(18242,29471) }, -- Reins of the Black War Tiger
 --@version-bcc@
 				{ 7,  35906 }, -- Reins of the Black War Elekk
+				{ 9,  29228 }, -- Reins of the Dark War Talbuk
+				{ 10,  28915 }, -- Reins of the Dark Riding Talbuk
 				{ 16,  30609 }, -- Swift Nether Drake
-				{ 17,  37676 }, -- Vengeful Nether Drake
-				{ 18,  34092 }, -- Merciless Nether Drake
-				--{ 19,  43516 }, -- Brutal Nether Drake NYI
+				{ 17,  34092 }, -- Merciless Nether Drake
+				{ 18,  37676 }, -- Vengeful Nether Drake
+				{ 19,  43516 }, -- Brutal Nether Drake
 --@end-version-bcc@
 			},
 			[HORDE_DIFF] = {
@@ -754,10 +803,12 @@ data["Mounts"] = {
 				{ 6, GetForVersion(18248,29470) }, -- Red Skeletal Warhorse
 --@version-bcc@
 				{ 7, 34129 }, -- Swift Warstrider
+				{ 9, 29228 }, -- Reins of the Dark War Talbuk
+				{ 10,  28915 }, -- Reins of the Dark Riding Talbuk
 				{ 16,  30609 }, -- Swift Nether Drake
-				{ 17,  37676 }, -- Vengeful Nether Drake
-				{ 18,  34092 }, -- Merciless Nether Drake
-				--{ 19,  43516 }, -- Brutal Nether Drake NYI
+				{ 17,  34092 }, -- Merciless Nether Drake
+				{ 18,  37676 }, -- Vengeful Nether Drake
+				{ 19,  43516 }, -- Brutal Nether Drake
 --@end-version-bcc@
 			},
 		},
@@ -833,9 +884,10 @@ data["Mounts"] = {
 		{
 			name = AL["World Events"],
 			[NORMAL_DIFF] = {
-				{ 1, 33977 }, -- Swift Brewfest Ram
-				{ 2, 33976 }, -- Brewfest Ram
-				{ 4, 37012 }, -- The Horseman's Reins
+				{ 1, 37828 }, -- Great Brewfest Kodo
+				{ 2, 33977 }, -- Swift Brewfest Ram
+				{ 3, 33976 }, -- Brewfest Ram
+				{ 5, 37012 }, -- The Horseman's Reins
 				{ 16, 33182 }, -- Swift Flying Broom
 				{ 17, 33184 }, -- Swift Magic Broom
 				{ 18, 33176 }, -- Flying Broom
@@ -1104,6 +1156,7 @@ data["Halloween"] = {
 	ContentType = WORLD_EVENT_CONTENT,
 	LoadDifficulty = NORMAL_DIFF,
 	TableType = NORMAL_ITTYPE,
+	gameVersion = 1,
 	items = {
 		{ -- Halloween1
 			name = AL["Hallow's End"].." - "..AL["Misc"],
@@ -1152,6 +1205,84 @@ data["Halloween"] = {
 				{ 23, 20574 }, -- Flimsy Female Undead Mask
 			},
 		},
+	},
+}
+
+data["HalloweenTBC"] = {
+	name = AL["Hallow's End"],
+	ContentType = WORLD_EVENT_CONTENT,
+	LoadDifficulty = NORMAL_DIFF,
+	TableType = NORMAL_ITTYPE,
+	gameVersion = 2,
+	items = {
+		{ -- Halloween1
+			name = AL["Hallow's End"].." - "..AL["Misc"],
+			[NORMAL_DIFF] = {
+				{ 1,  20400 }, -- Pumpkin Bag
+				{ 3,  18633 }, -- Styleen's Sour Suckerpop
+				{ 4,  18632 }, -- Moonbrook Riot Taffy
+				{ 5,  18635 }, -- Bellara's Nutterbar
+				{ 6,  20557 }, -- Hallow's End Pumpkin Treat
+				{ 8,  20389 }, -- Candy Corn
+				{ 9,  20388 }, -- Lollipop
+				{ 10, 20390 }, -- Candy Bar
+			},
+		},
+		{ -- Halloween1
+			name = AL["Hallow's End"].." - "..AL["Wands"],
+			[NORMAL_DIFF] = {
+				{ 1, 20410 }, -- Hallowed Wand - Bat
+				{ 2, 20409 }, -- Hallowed Wand - Ghost
+				{ 3, 20399 }, -- Hallowed Wand - Leper Gnome
+				{ 4, 20398 }, -- Hallowed Wand - Ninja
+				{ 5, 20397 }, -- Hallowed Wand - Pirate
+				{ 6, 20413 }, -- Hallowed Wand - Random
+				{ 7, 20411 }, -- Hallowed Wand - Skeleton
+				{ 8, 20414 }, -- Hallowed Wand - Wisp
+			},
+		},
+		{ -- Halloween3
+			name = AL["Hallow's End"].." - "..AL["Masks"],
+			[NORMAL_DIFF] = {
+				{ 1,  20561 }, -- Flimsy Male Dwarf Mask
+				{ 2,  20391 }, -- Flimsy Male Gnome Mask
+				{ 3,  20566 }, -- Flimsy Male Human Mask
+				{ 4,  20564 }, -- Flimsy Male Nightelf Mask
+				{ 5,  20570 }, -- Flimsy Male Orc Mask
+				{ 6,  20572 }, -- Flimsy Male Tauren Mask
+				{ 7,  20568 }, -- Flimsy Male Troll Mask
+				{ 8,  20573 }, -- Flimsy Male Undead Mask
+				{ 16, 20562 }, -- Flimsy Female Dwarf Mask
+				{ 17, 20392 }, -- Flimsy Female Gnome Mask
+				{ 18, 20565 }, -- Flimsy Female Human Mask
+				{ 19, 20563 }, -- Flimsy Female Nightelf Mask
+				{ 20, 20569 }, -- Flimsy Female Orc Mask
+				{ 21, 20571 }, -- Flimsy Female Tauren Mask
+				{ 22, 20567 }, -- Flimsy Female Troll Mask
+				{ 23, 20574 }, -- Flimsy Female Undead Mask
+			},
+		},
+--@version-bcc@
+		{ -- SMHeadlessHorseman
+			name = C_Map_GetAreaInfo(796).." - "..AL["Graveyard - Headless Horseman"],
+			[NORMAL_DIFF] = {
+                { 1, 34075 }, -- Ring of Ghoulish Delight
+                { 2, 34073 }, -- The Horseman's Signet Ring
+                { 3, 34074 }, -- Witches Band
+                { 5, 33808 }, -- The Horseman's Helm
+                { 6, 38175 }, -- The Horseman's Blade
+                { 8, 33292 }, -- Hallowed Helm
+                { 10, 34068 }, -- Weighted Jack-o'-Lantern
+                { 12, 33277 }, -- Tome of Thomas Thomson
+                { 16, 37012 }, -- The Horseman's Reins
+                { 18, 33182 }, -- Swift Flying Broom        280% flying
+                { 19, 33176 }, -- Flying Broom              60% flying
+                { 21, 33184 }, -- Swift Magic Broom         100% ground
+                { 22, 37011 }, -- Magic Broom               60% ground
+                { 24, 33154 }, -- Sinister Squashling
+			},
+		},
+--@end-version-bcc@
 	},
 }
 
@@ -1339,11 +1470,48 @@ data["LunarFestival"] = {
 	},
 }
 
+data["Darkmoon"] = {
+	FactionID = 909,
+	ContentType = WORLD_EVENT_CONTENT,
+	LoadDifficulty = LOAD_DIFF,
+	ContentPhase = 3,
+	items = {
+		{ -- Exalted
+			name = GetFactionInfoByID(909),
+			[NORMAL_DIFF] = {
+				{ 1, "INV_Box_01", nil, AL["Classic"] },
+				{ 2,  19228 }, -- Darkmoon Card: Blue Dragon
+				{ 3,  19267 }, -- Darkmoon Card: Maelstrom
+				{ 4,  19257 }, -- Darkmoon Card: Heroism
+				{ 5,  19277 }, -- Darkmoon Card: Twisting Nether
+--@version-bcc@
+				{ 7, "INV_Box_01", nil, AL["Burning Crusade"] },
+				{ 8,  31907 }, -- Darkmoon Card: Vengeance
+				{ 9,  31890 }, -- Darkmoon Card: Crusade
+				{ 10,  31891 }, -- Darkmoon Card: Wrath
+				{ 11,  31914 }, -- Darkmoon Card: Madness
+--@end-version-bcc@
+				{ 16,  19491, 19182, [ATLASLOOT_IT_AMOUNT2] = 1200 }, -- Amulet of the Darkmoon
+				{ 17,  19426, 19182, [ATLASLOOT_IT_AMOUNT2] = 1200 }, -- Orb of the Darkmoon
+				{ 19,  19293, 19182, [ATLASLOOT_IT_AMOUNT2] = 50 }, -- Last Year's Mutton
+				{ 20,  19291, 19182, [ATLASLOOT_IT_AMOUNT2] = 50 }, -- Darkmoon Storage Box
+				{ 22,  9249, 19182, [ATLASLOOT_IT_AMOUNT2] = 40 }, -- Schematic: Steam Tonk Controller
+				{ 23,  19296, 19182, [ATLASLOOT_IT_AMOUNT2] = 40 }, -- Greater Darkmoon Prize
+				{ 25,  19297, 19182, [ATLASLOOT_IT_AMOUNT2] = 12 }, -- Lesser Darkmoon Prize
+				{ 27,  19292, 19182, [ATLASLOOT_IT_AMOUNT2] = 10 }, -- Last Month's Mutton
+				{ 29,  19298, 19182, [ATLASLOOT_IT_AMOUNT2] = 5 }, -- Minor Darkmoon Prize
+				{ 30,  19295, 19182, [ATLASLOOT_IT_AMOUNT2] = 5 }, -- Darkmoon Flower
+			},
+		},
+	},
+}
+
 data["MidsummerFestival"] = {
 	name = AL["Midsummer Festival"],
 	ContentType = WORLD_EVENT_CONTENT,
 	LoadDifficulty = NORMAL_DIFF,
 	TableType = NORMAL_ITTYPE,
+	gameVersion = 1,
 	items = {
 		{ -- MidsummerFestival
 			name = AL["Midsummer Festival"],
@@ -1358,6 +1526,135 @@ data["MidsummerFestival"] = {
 				{ 10, 23327 }, -- Fire-toasted Bun
 				{ 11, 23326 }, -- Midsummer Sausage
 				{ 12, 23211 }, -- Toasted Smorc
+			},
+		},
+	},
+}
+
+data["MidsummerFestivalTBC"] = {
+	name = AL["Midsummer Festival"],
+	ContentType = WORLD_EVENT_CONTENT,
+	LoadDifficulty = NORMAL_DIFF,
+	TableType = NORMAL_ITTYPE,
+	gameVersion = 2,
+	items = {
+		{ -- MidsummerFestivalTBC
+			name = AL["Midsummer Festival"],
+			[NORMAL_DIFF] = {
+				{ 1,  23083 }, -- Captured Flame
+				{ 2,  34686 }, -- Brazier of Dancing Flames
+				{ 4,  23324 }, -- Mantle of the Fire Festival
+				{ 5,  23323 }, -- Crown of the Fire Festival
+				{ 6,  34683 }, -- Sandals of Summer
+				{ 7,  34685 }, -- Vestment of Summer
+				{ 9,  23247 }, -- Burning Blossom
+				{ 10,  34599 }, -- Juggling Torch
+				{ 11,  34684 }, -- Handful of Summer Petals
+				{ 12,  23246 }, -- Fiery Festival Brew
+				{ 16, 23215 }, -- Bag of Smorc Ingredients
+				{ 17, 23211 }, -- Toasted Smorc
+				{ 18,  23435 }, -- Elderberry Pie
+				{ 19, 23327 }, -- Fire-toasted Bun
+				{ 20, 23326 }, -- Midsummer Sausage
+			},
+		},
+		{ -- CFRSlaveAhune
+			name = C_Map_GetAreaInfo(3717).." - "..AL["Ahune"],
+			[NORMAL_DIFF] = {
+                { 1, 35514 }, -- Frostscythe of Lord Ahune
+                { 2, 35494 }, -- Shroud of Winter's Chill
+                { 3, 35495 }, -- The Frost Lord's War Cloak
+                { 4, 35496 }, -- Icebound Cloak
+                { 5, 35497 }, -- Cloak of the Frigid Winds
+                { 7, 35723 }, -- Shards of Ahune
+                { 16, 35498 }, -- Formula: Enchant Weapon - Deathfrost
+                { 18, 34955 }, -- Scorched Stone
+                { 19, 35557 }, -- Huge Snowball
+			},
+			[HEROIC_DIFF] = {
+                { 1, 29434 }, -- Badge of Justice
+                { 2, 35507 }, -- Amulet of Bitter Hatred
+                { 3, 35508 }, -- Choker of the Arctic Flow
+                { 4, 35509 }, -- Amulet of Glacial Tranquility
+                { 5, 35511 }, -- Hailstone Pendant
+                { 7, 35514 }, -- Frostscythe of Lord Ahune
+                { 8, 35494 }, -- Shroud of Winter's Chill
+                { 9, 35495 }, -- The Frost Lord's War Cloak
+                { 10, 35496 }, -- Icebound Cloak
+                { 11, 35497 }, -- Cloak of the Frigid Winds
+                { 13, 35723 }, -- Shards of Ahune
+                { 22, 35498 }, -- Formula: Enchant Weapon - Deathfrost
+                { 24, 34955 }, -- Scorched Stone
+                { 25, 35557 }, -- Huge Snowball
+			},
+		},
+	},
+}
+
+data["Brewfest"] = {
+	name = AL["Brewfest"],
+	ContentType = WORLD_EVENT_CONTENT,
+	LoadDifficulty = NORMAL_DIFF,
+	TableType = NORMAL_ITTYPE,
+	gameVersion = 2,
+	items = {
+		{ -- Brewfest
+			name = AL["Brewfest"],
+			[NORMAL_DIFF] = {
+				{ 1,  33968 }, -- Blue Brewfest Hat
+				{ 2,  33864 }, -- Brown Brewfest Hat
+				{ 3,  33967 }, -- Green Brewfest Hat
+				{ 4,  33969 }, -- Purple Brewfest Hat
+				{ 5,  33863 }, -- Brewfest Dress
+				{ 6,  33862 }, -- Brewfest Regalia
+				{ 7,  33966 }, -- Brewfest Slippers
+				{ 8,  33868 }, -- Brewfest Boots
+				{ 10,  33047 }, -- Belbi's Eyesight Enhancing Romance Goggles (Alliance)
+				{ 11,  34008 }, -- Blix's Eyesight Enhancing Romance Goggles (Horde)
+				{ 13,  33016 }, -- Blue Brewfest Stein
+				{ 15,  37829 }, -- Brewfest Prize Token
+				{ 16,  33976 }, -- Brewfest Ram
+				{ 17,  33977 }, -- Swift Brewfest Ram
+				{ 19,  32233 }, -- Wolpertinger's Tankard
+				{ 21,  34028 }, -- "Honorary Brewer" Hand Stamp
+				{ 22,  37599 }, -- "Brew of the Month" Club Membership Form
+				{ 24,  33927 }, -- Brewfest Pony Keg
+				{ 26,  37750 }, -- Fresh Brewfest Hops
+				{ 27,  39477 }, -- Fresh Dwarven Brewfest Hops
+				{ 28,  39476 }, -- Fresh Goblin Brewfest Hops
+				{ 29,  37816 }, -- Preserved Brewfest Hops
+			},
+		},
+		{
+			name = AL["Food"],
+			[NORMAL_DIFF] = {
+				{ 1,  33043 }, -- The Essential Brewfest Pretzel
+				{ 3,  34017 }, -- Small Step Brew
+				{ 4,  34018 }, -- long Stride Brew
+				{ 5,  34019 }, -- Path of Brew
+				{ 6,  34020 }, -- Jungle River Water
+				{ 7,  34021 }, -- Brewdoo Magic
+				{ 8,  34022 }, -- Stout Shrunken Head
+				{ 9,  33034 }, -- Gordok Grog
+				{ 10,  33035 }, -- Ogre Mead
+				{ 11,  33036 }, -- Mudder's Milk
+
+			},
+		},
+		{
+			name = C_Map_GetAreaInfo(1584).." - "..AL["Coren Direbrew"],
+			[NORMAL_DIFF] = {
+				{ 1,  37128 }, -- Balebrew Charm
+				{ 2,  37127 }, -- Brightbrew Charm
+				{ 3,  38287 }, -- Empty Mug of Direbrew
+				{ 4,  38290 }, -- Dark Iron Smoking Pipe
+				{ 5,  38288 }, -- Direbrew Hops
+				{ 6,  38289 }, -- Coren's Lucky Coin
+				{ 8,  37597 }, -- Direbrew's Shanker
+				{ 16,  33977 }, -- Swift Brewfest Ram
+				{ 17,  37828 }, -- Great Brewfest Kodo
+				{ 19,  37863 }, -- Direbrew's Remote
+				{ 21,  38280 }, -- Direbrew's Dire Brew
 			},
 		},
 	},
@@ -1392,40 +1689,6 @@ data["ElementalInvasions"] = {
 				{ 23, 19268 }, -- Ace of Elementals
 				{ 24, 21548 }, -- Pattern: Stormshroud Gloves
 				{ 25, 18677 }, -- Zephyr Cloak
-			},
-		},
-	},
-}
-
-data["Darkmoon"] = {
-	FactionID = 909,
-	ContentType = WORLD_EVENT_CONTENT,
-	LoadDifficulty = LOAD_DIFF,
-	ContentPhase = 3,
-	items = {
-		{ -- Exalted
-			name = GetFactionInfoByID(909),
-			[NORMAL_DIFF] = {
-				{ 1,  19228 }, -- Darkmoon Card: Blue Dragon
-				{ 2,  19267 }, -- Darkmoon Card: Maelstrom
-				{ 3,  19257 }, -- Darkmoon Card: Heroism
-				{ 4,  19277 }, -- Darkmoon Card: Twisting Nether
---@version-bcc@
-				{ 6,  31907 }, -- Darkmoon Card: Vengeance
-				{ 7,  31890 }, -- Darkmoon Card: Crusade
-				{ 8,  31891 }, -- Darkmoon Card: Wrath
-				{ 9,  31914 }, -- Darkmoon Card: Madness
---@end-version-bcc@
-				{ 16,  19491, 19182, [ATLASLOOT_IT_AMOUNT2] = 1200 }, -- Amulet of the Darkmoon
-				{ 17,  19426, 19182, [ATLASLOOT_IT_AMOUNT2] = 1200 }, -- Orb of the Darkmoon
-				{ 19,  19293, 19182, [ATLASLOOT_IT_AMOUNT2] = 50 }, -- Last Year's Mutton
-				{ 20,  19291, 19182, [ATLASLOOT_IT_AMOUNT2] = 50 }, -- Darkmoon Storage Box
-				{ 22,  9249, 19182, [ATLASLOOT_IT_AMOUNT2] = 40 }, -- Schematic: Steam Tonk Controller
-				{ 23,  19296, 19182, [ATLASLOOT_IT_AMOUNT2] = 40 }, -- Greater Darkmoon Prize
-				{ 25,  19297, 19182, [ATLASLOOT_IT_AMOUNT2] = 12 }, -- Lesser Darkmoon Prize
-				{ 27,  19292, 19182, [ATLASLOOT_IT_AMOUNT2] = 10 }, -- Last Month's Mutton
-				{ 29,  19298, 19182, [ATLASLOOT_IT_AMOUNT2] = 5 }, -- Minor Darkmoon Prize
-				{ 30,  19295, 19182, [ATLASLOOT_IT_AMOUNT2] = 5 }, -- Darkmoon Flower
 			},
 		},
 	},

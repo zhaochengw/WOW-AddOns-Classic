@@ -12,7 +12,7 @@ local CreateFrame = CreateFrame
 ---@type ns
 local ns = select(2, ...)
 
----@type tdBag2PluginFrame
+---@class UI.PluginFrame: EventsMixin, Object, Frame
 local PluginFrame = ns.Addon:NewClass('UI.PluginFrame', 'Frame')
 PluginFrame.SPACING = 3
 PluginFrame.BUTTON_TEMPLATE = 'tdBag2ToggleButtonTemplate'
@@ -57,6 +57,7 @@ function PluginFrame:Update()
 end
 
 function PluginFrame:CreatePluginButton(plugin)
+    ---@type tdBag2ToggleButtonTemplate
     local button = CreateFrame('CheckButton', nil, self, self.BUTTON_TEMPLATE)
     button:Hide()
     button.texture:SetTexture(plugin.icon)

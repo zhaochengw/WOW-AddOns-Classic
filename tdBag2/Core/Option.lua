@@ -2,6 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/23/2019, 3:14:52 PM
+--
 ---- LUA
 local ipairs, pairs = ipairs, pairs
 local format = string.format
@@ -10,6 +11,8 @@ local type = type
 
 ---@type ns
 local ns = select(2, ...)
+
+---@class Addon
 local Addon = ns.Addon
 local L = ns.L
 
@@ -20,7 +23,6 @@ local BAG_ARGS = { --
     [ns.BAG_ID.BAG] = {},
     [ns.BAG_ID.BANK] = {},
 }
-local STYLES = {}
 
 function Addon:SetupOptionFrame()
     local order = 0
@@ -267,6 +269,7 @@ function Addon:SetupOptionFrame()
                 generalHeader = header(GENERAL),
                 lockFrame = fullToggle(L['Lock Frames']),
                 tipCount = fullToggle(L['Show Item Count in Tooltip']),
+                tipCountGuild = fullToggle(L['Show Guild Bank Count in Tooltip']),
                 appearanceHeader = header(L['Appearance']),
                 style = drop(L['Bag Style'], function()
                     local values = {}

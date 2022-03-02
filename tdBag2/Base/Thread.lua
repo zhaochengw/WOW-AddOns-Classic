@@ -2,6 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 7/15/2020, 4:41:36 PM
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -19,7 +20,7 @@ do
     end
 end
 
----@type tdBag2Thread
+---@class Thread: Object
 local Thread = ns.Addon:NewClass('Thread')
 
 local KILLED = newproxy()

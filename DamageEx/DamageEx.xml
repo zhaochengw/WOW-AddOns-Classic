@@ -1,0 +1,58 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/"> 
+	<Script file="damageEx.lua"/>	
+
+	<Frame name="DEX_TEXT" toplevel="true" enableMouse="false" parent="UIParent" frameStrata="HIGH">
+		<Size>
+			<AbsDimension x="24" y="24"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER">
+				<Offset>
+					<AbsDimension x="0" y="60"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+	
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="DEXaniText1" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText2" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText3" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText4" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText5" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText6" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText7" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText8" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText9" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText10" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText11" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText12" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText13" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText14" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText15" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText16" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText17" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText18" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText19" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText20" inherits="GameFontNormal"/>	
+				<FontString name="DEXaniText21" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText22" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText23" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText24" inherits="GameFontNormal"/>
+				<FontString name="DEXaniText25" inherits="GameFontNormal"/>
+			</Layer>		
+		</Layers>
+		
+		<Scripts>
+	      	<OnLoad>
+				DEX_OnLoad(self);
+	      	</OnLoad>
+	      	<OnEvent>
+	        	DEX_OnEvent(self, event, ...);
+	      	</OnEvent>	     
+			<OnUpdate>
+	        	DEX_GameUpdate(self);
+	      	</OnUpdate>			
+		</Scripts>
+	</Frame>	
+</Ui>

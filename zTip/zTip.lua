@@ -1,9 +1,13 @@
 ﻿--[[
 	上官晓雾
-	2021年5月28日
-	tbc 2.3.2
+	2021年07月24日
+	2.3.16
 
 	重写了观察装等/天赋的模块
+	添加观察史诗地下城分数
+	优化了下地下城分数
+	修复了添加地下城分数后版本导致敌对目标的关注目标不显示的问题
+    修正了装备弩后装等错误的情况
 ]] --
 
 --观察数据缓存到本地
@@ -109,7 +113,126 @@ local function GetRangeColorText(minRange, maxRange)
 	return text
 end
 
-function zTip:SetTooltip(guid, gear, spec)
+function zTip:AddLine(line1, line2)
+	if self.lastlinenum and self.lastlinenum < GameTooltip:NumLines() then
+		self.lastlinenum = self.lastlinenum + 1
+		_G["GameTooltipTextLeft" .. self.lastlinenum]:SetText(line1)
+		if line2 then
+			_G["GameTooltipTextRight" .. self.lastlinenum]:SetText(line2)
+		end
+	else
+		if line2 then
+			GameTooltip:AddDoubleLine(line1, line2)
+		else
+			GameTooltip:AddLine(line1)
+		end
+		self.lastlinenum = GameTooltip:NumLines()
+	end
+end
+
+local cache_MythicPlusRating = {}
+function DungeonsInTip(unit)
+	if C_PlayerInfo and C_PlayerInfo.GetPlayerMythicPlusRatingSummary then
+		if UnitIsPlayer(unit) and UnitLevel(unit) == MAX_PLAYER_LEVEL then
+			local ratingSummary = C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)
+			local GUID = UnitGUID(unit)
+			if not ratingSummary then
+				ratingSummary = cache_MythicPlusRating[GUID]
+			else
+				cache_MythicPlusRating[GUID] = ratingSummary
+			end
+			if ratingSummary then
+				local color = C_ChallengeMode.GetDungeonScoreRarityColor(ratingSummary.currentSeasonScore) or HIGHLIGHT_FONT_COLOR
+				zTip:AddLine(
+					"|cffffff00" .. DUNGEON_SCORE_TOTAL_SCORE:format(color:WrapTextInColorCode(ratingSummary.currentSeasonScore))
+				)
+				if IsControlKeyDown() then
+					if ratingSummary and ratingSummary.runs then
+						zTip:AddLine(" ")
+						for key, value in pairs(ratingSummary.runs) do
+							local leaderDungeonScoreInfo = value
+							local color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(leaderDungeonScoreInfo.mapScore)
+							if (not color) then
+								color = HIGHLIGHT_FONT_COLOR
+							end
+							local left = C_ChallengeMode.GetMapUIInfo(leaderDungeonScoreInfo.challengeModeID)
+							local right = color:WrapTextInColorCode(leaderDungeonScoreInfo.mapScore)
+							if (leaderDungeonScoreInfo.mapScore == 0) then
+							elseif (leaderDungeonScoreInfo.finishedSuccess) then
+								right = right .. "|cffffffff(" .. leaderDungeonScoreInfo.bestRunLevel .. ")"
+							else
+								right = right .. "|cff808080(" .. leaderDungeonScoreInfo.bestRunLevel .. ")"
+							end
+							zTip:AddLine(left, right)
+						end
+					end
+				end
+				GameTooltip:Show()
+			end
+		end
+	end
+end
+function TargetedInTip(unit)
+	local num = GetNumGroupMembers()
+	if (num > 0) then
+		local players, counter = "", 0
+		for i = 1, num do
+			local unit1 = (UnitName("raid" .. i) and "raid" .. i or "party" .. i)
+			if (UnitIsUnit(unit1 .. "target", unit)) and (not UnitIsUnit(unit1, "player")) then
+				if (mod(counter + 3, 6) == 0) then
+					players = players .. "\n"
+				end
+				local color = RAID_CLASS_COLORS[select(2, UnitClass(unit1))]
+				players = ("%s|cff%.2x%.2x%.2x%s|r, "):format(players, color.r * 255, color.g * 255, color.b * 255, UnitName(unit1))
+				counter = (counter + 1)
+			end
+		end
+		if (players ~= "") then
+			zTip:AddLine(L["TargetedBy"] .. " (|cffffffff" .. counter .. "|r): " .. players:sub(1, -5))
+		--~ 	--------------------------------------------
+		-- if lastlinenum >= GameTooltip:NumLines() then
+		-- 	GameTooltip:AddLine("zTip -- targetedby line")
+		-- 	lastlinenum = GameTooltip:NumLines()
+		-- 	print(213)
+		-- else
+		-- 	if zTipSaves.ShowTalent then
+		-- 		lastlinenum = lastlinenum + 1
+		-- 	end
+		-- 	if zTipSaves.ItemLevel then
+		-- 		lastlinenum = lastlinenum + 1
+		-- 	end
+		-- end
+		-- text = _G["GameTooltipTextLeft" .. lastlinenum]
+		-- if text then
+		-- 	text:SetText(L["TargetedBy"] .. " (|cffffffff" .. counter .. "|r): " .. players:sub(1, -5))
+		-- else
+		-- 	--~ 					lastlinenum = nil
+		-- end
+		end
+	end
+end
+
+function HSetTooltip(guid, gear, spec, flag)
+	local unit = select(2, GameTooltip:GetUnit())
+	if not unit or UnitGUID(unit) ~= guid then
+		return
+	end
+	zTip.lastlinenum = zTip.trueNum
+	if zTipSaves.ItemLevel then
+		if gear then
+			local msg = "|cffffff00" .. HInspect.GearStr .. gear
+			zTip:AddLine(msg)
+		end
+	end
+	if zTipSaves.ShowTalent then
+		if spec then
+			local msg = "|cffffff00" .. HInspect.TalentStr .. spec
+			zTip:AddLine(msg)
+		end
+	end
+	zTip:SetTooltipOtherInfo(unit)
+end
+function zTip:SetTooltip_1(guid, gear, spec)
 	local unit = select(2, GameTooltip:GetUnit())
 	if not unit or UnitGUID(unit) ~= guid then
 		return
@@ -124,38 +247,49 @@ function zTip:SetTooltip(guid, gear, spec)
 			specLine = line
 		end
 	end
-	if zTipSaves.ItemLevel and gear then
-		local msg = "|cffffff00" .. self.GearStr .. gear
-		if gearLine then
-			gearLine:SetText(msg)
+	if zTipSaves.ItemLevel then
+		if gear then
+			local msg = "|cffffff00" .. self.GearStr .. gear
+			if gearLine then
+				gearLine:SetText(msg)
+			else
+				if specLine then
+					specLine:SetText(msg)
+					specLine = nil
+				else
+					GameTooltip:AddLine(msg)
+				end
+			end
+		else
+			if gearLine then
+				gearLine:SetText()
+			else
+				if specLine then
+					specLine:SetText()
+					specLine = nil
+				else
+					GameTooltip:AddLine()
+				end
+			end
+		end
+	end
+	if zTipSaves.ShowTalent then
+		if spec then
+			local msg = "|cffffff00" .. self.TalentStr .. spec
+			if specLine then
+				specLine:SetText(msg)
+			else
+				GameTooltip:AddLine(msg)
+			end
 		else
 			if specLine then
 				specLine:SetText(msg)
-				specLine = nil
 			else
 				GameTooltip:AddLine(msg)
 			end
 		end
 	end
-	if zTipSaves.ShowTalent and spec then
-		local msg = "|cffffff00" .. self.TalentStr .. spec
-		if specLine then
-			specLine:SetText(msg)
-		else
-			GameTooltip:AddLine(msg)
-		end
-	end
 	GameTooltip:Show()
-end
-
-function zTip:AddLine(line)
-	if lastlinenum < GameTooltip:NumLines() then
-		lastlinenum = lastlinenum + 1
-		_G["GameTooltipTextLeft" .. lastlinenum]:SetText(line)
-	else
-		GameTooltip:AddLine(line)
-		lastlinenum = GameTooltip:NumLines()
-	end
 end
 
 zTipSaves = zTip:GetDefault()
@@ -191,6 +325,18 @@ hooksecurefunc(
 	end
 )
 
+function zTip:SetTooltipOtherInfo(unit)
+	if zTipSaves.ShowDungeons then
+		DungeonsInTip(unit)
+	end
+
+	-- Add "Targeted By" line
+	if zTipSaves.TargetedBy then
+		TargetedInTip(unit)
+	end
+
+	GameTooltip:Show()
+end
 --[[	返回职业图标	]]
 function zTip:GetClassIconForText(class, size)
 	if not class then
@@ -238,9 +384,9 @@ local updateTooltip = 2
 function zTip:OnUpdate(elapsed)
 	-- offset to mouse
 	if zTip.AnchorType then
-		x, y = GetCursorPosition()
-		uiscale = UIParent:GetScale()
-		tipscale = GameTooltip:GetScale()
+		local x, y = GetCursorPosition()
+		local uiscale = UIParent:GetScale()
+		local tipscale = GameTooltip:GetScale()
 		x = (x + zTipSaves.OffsetX) / tipscale / uiscale
 		GameTooltip:ClearAllPoints()
 		if zTip.AnchorType == 2 then
@@ -252,13 +398,15 @@ function zTip:OnUpdate(elapsed)
 		end
 	end
 
-	if UnitExists("mouseover") then
-		-- refresh target of mouseover
-		zTip:RefreshMouseOverTarget(elapsed)
-	elseif zTip.unit and not zTipSaves.Fade and GameTooltip:IsOwned(UIParent) then
-		GameTooltip:Hide()
-	elseif not GameTooltipTextLeft1:GetText() and not GameTooltipTextRight1:GetText() then
-		GameTooltip:Hide()
+	if elapsed then
+		if UnitExists("mouseover") then
+			-- refresh target of mouseover
+			zTip:RefreshMouseOverTarget(elapsed)
+		elseif zTip.unit and not zTipSaves.Fade and GameTooltip:IsOwned(UIParent) then
+			GameTooltip:Hide()
+		elseif not GameTooltipTextLeft1:GetText() and not GameTooltipTextRight1:GetText() then
+			GameTooltip:Hide()
+		end
 	end
 end
 
@@ -284,7 +432,7 @@ function zTip:Init()
 		self.inspectDB = {}
 	end
 
-	HInspect = Mixin(CreateFrame("FRAME"), HInspectMixin):Init(self.inspectDB, L["ItemLevel"], nil, self.SetTooltip)
+	HInspect = Mixin(CreateFrame("FRAME"), HInspectMixin):Init(self.inspectDB, L["ItemLevel"], nil, HSetTooltip)
 	--加载一些额外功能
 
 	---血量条动态变色（暴雪默认方案）
@@ -339,6 +487,15 @@ function zTip:Init()
 	--GameTooltip_UnitColor = function(unit)
 	--	return zTip:UnitColor(unit)
 	--end
+	if zTipSaves.HealthBAR then
+		GameTooltipStatusBar.pauseUpdates = false
+	else
+		GameTooltipStatusBar.pauseUpdates = true
+	end
+
+	if zTipSaves.VividMask then
+		zTip:GetVividMask():Show()
+	end
 
 	-- Slash
 	SLASH_ZTIPSLASH1 = "/ztip"
@@ -416,7 +573,7 @@ function zTip:SetDefaultAnchor(parent)
 		if parent == UIParent then
 			if zTipSaves.SelfUse and InCombatLockdown() then
 				GameTooltip:ClearAllPoints()
-				GameTooltip:SetPoint("TOPLEFT", UIParent, "TOPLEFT", CONTAINER_OFFSET_X - 80, CONTAINER_OFFSET_Y - 200)
+				GameTooltip:SetPoint("TOPLEFT", UIParent, "TOPLEFT", CONTAINER_OFFSET_X - 80, CONTAINER_OFFSET_Y - 170)
 				return
 			end
 			-- posiont will be set in update function
@@ -439,7 +596,7 @@ function zTip:SetDefaultAnchor(parent)
 				else -- follow cursor [0,2,3,5]
 				end
 				--如果目标是unit,刷新一次
-				zTip:OnUpdate(0.01)
+				zTip:OnUpdate() --鼠标跟随模式，修改位置
 			else -- not unit 像是熔炉，信箱
 				self:SetOwner(parent, "ANCHOR_CURSOR")
 				zTip.AnchorType = nil
@@ -590,8 +747,11 @@ function zTip:OnTooltipSetUnit()
 		GameTooltip:Hide()
 	end
 
-	zTip.unit = zTip:OnMouseOverUnit(GameTooltip:GetUnit())
+	zTip:OnMouseOverUnit(GameTooltip:GetUnit())
 	if zTip.unit then
+		if not zTipSaves.HealthBAR then
+			GameTooltipStatusBar:Hide()
+		end
 		zTip.unittarget = zTip.unit .. "target"
 	end
 end
@@ -599,7 +759,7 @@ end
 --[[	清理目标目标	]]
 function zTip:OnGameTooltipHide()
 	targetlinenum = nil
-	trueNum = nil
+	self.trueNum = nil
 	mouseTarget = nil
 	mouseTTarget = nil
 	zTip.AnchorType = nil
@@ -624,6 +784,7 @@ function zTip:UnitColor(unit, bdead, tapped, reaction, bbattlepet)
 	tapped = tapped or UnitIsTapDenied(unit)
 	reaction = reaction or UnitReaction(unit, "player")
 	local ISPLAYER = UnitIsPlayer(unit)
+	local r, g, b
 	if tapped or bdead then
 		r = 0.55
 		g = 0.55
@@ -673,6 +834,7 @@ end
 --[[	修改tip整体格式 ]]
 local tip
 function zTip:OnMouseOverUnit(name, unit)
+	zTip.unit = unit
 	if not unit then
 		return
 	end
@@ -699,12 +861,12 @@ function zTip:OnMouseOverUnit(name, unit)
 	--[[
 	New Way
 --]]
-	tip, text, levelline, foundpvp, foundfact, tmp, tmp2 = nil
-	local pvplinenum, factlinenum = nil
+	tip, text, levelline, tmp, tmp2 = nil, nil, nil, nil, nil
+	local pvplinenum, factlinenum = nil, nil
 	--[[ Serch and Delete ]]
-	trueNum = GameTooltip:NumLines()
-	lastlinenum = trueNum
-	for i = 2, trueNum do
+	self.trueNum = GameTooltip:NumLines()
+	self.lastlinenum = self.trueNum
+	for i = 2, self.trueNum do
 		text = _G[GameTooltip:GetName() .. "TextLeft" .. i]
 		tip = text:GetText()
 		if tip then
@@ -715,15 +877,15 @@ function zTip:OnMouseOverUnit(name, unit)
 			elseif not zTipSaves.ShowFaction and (tip == FACTION_ALLIANCE or tip == FACTION_HORDE) then
 				-- 删除PVP字符
 				text:SetText()
-				foundfact = true
+				-- foundfact = true
 				factlinenum = i
 				--~ 				_G["GameTooltipTextLeft"..i]:Hide()
-				lastlinenum = lastlinenum - 1
+				self.lastlinenum = self.lastlinenum - 1
 			elseif tip == PVP then
 				-- 能否驯服
 				text:SetText()
 				pvplinenum = i
-				lastlinenum = lastlinenum - 1
+				self.lastlinenum = self.lastlinenum - 1
 			elseif tip == TAMEABLE then
 				text:SetText(format("|cff00FF00%s|r", tip))
 			elseif tip == NOT_TAMEABLE then
@@ -731,17 +893,21 @@ function zTip:OnMouseOverUnit(name, unit)
 			end
 		end
 	end
+	self.trueNum = self.lastlinenum
 	-- insert target line
 	if zTipSaves.TargetOfMouse then
-		if lastlinenum >= GameTooltip:NumLines() then
-			GameTooltip:AddLine("zTip -- target line")
-			targetlinenum = GameTooltip:NumLines()
-		else
-			targetlinenum = lastlinenum + 1
-		end
-		lastlinenum = targetlinenum
-		text = _G["GameTooltipTextLeft" .. targetlinenum]
+		self:AddLine("zTip -- target line")
+		-- if lastlinenum >= GameTooltip:NumLines() then
+		-- 	GameTooltip:AddLine("zTip -- target line")
+		-- 	targetlinenum = GameTooltip:NumLines()
+		-- else
+		-- 	targetlinenum = lastlinenum + 1
+		-- end
+		-- lastlinenum = targetlinenum
+		text = _G["GameTooltipTextLeft" .. self.lastlinenum]
 		if text then
+			targetlinenum = self.lastlinenum
+			self.trueNum = self.lastlinenum
 			-- end
 			-- text.dtxtt = SetMouseTarget(text)
 
@@ -759,64 +925,24 @@ function zTip:OnMouseOverUnit(name, unit)
 			targetlinenum = nil
 		end
 	end
-
 	-- if false and bplayer and UnitLevel(unit) > 0 and CheckInteractDistance(unit, 1) and CanInspect(unit,true) then
 	-- and not UnitCanAttack("player", unit)
 	---尝试下敌对阵营中立区域能不能观察
 	-- _G.print(CheckInteractDistance(unit, 1))
-	if zTipSaves.ItemLevel or zTipSaves.ShowTalent then
-		if bplayer and UnitLevel(unit) > 9 then
-			if self.ScanIns then
-				self:ScanIns(unit)
-			end
-			if HInspect.ScanIns then
-				HInspect:ScanIns(unit)
-			end
-		end
-	end
-
-	-- Add "Targeted By" line
-	if zTipSaves.TargetedBy then
-		local num = GetNumGroupMembers()
-		if (num > 0) then
-			local players, counter = "", 0
-			for i = 1, num do
-				local unit1 = (UnitName("raid" .. i) and "raid" .. i or "party" .. i)
-				if (UnitIsUnit(unit1 .. "target", unit)) and (not UnitIsUnit(unit1, "player")) then
-					if (mod(counter + 3, 6) == 0) then
-						players = players .. "\n"
-					end
-					local color = RAID_CLASS_COLORS[select(2, UnitClass(unit1))]
-					players =
-						("%s|cff%.2x%.2x%.2x%s|r, "):format(players, color.r * 255, color.g * 255, color.b * 255, UnitName(unit1))
-					counter = (counter + 1)
+	if bplayer then
+		if zTipSaves.ItemLevel or zTipSaves.ShowTalent then
+			if bplayer and UnitLevel(unit) > 9 then
+				if self.ScanIns then
+					self:ScanIns(unit)
+				end
+				if HInspect.ScanIns then
+					HInspect:ScanIns(unit)
 				end
 			end
-			if (players ~= "") then
-				GameTooltip:AddLine(L["TargetedBy"] .. " (|cffffffff" .. counter .. "|r): " .. players:sub(1, -5))
-			--~ 	--------------------------------------------
-			-- if lastlinenum >= GameTooltip:NumLines() then
-			-- 	GameTooltip:AddLine("zTip -- targetedby line")
-			-- 	lastlinenum = GameTooltip:NumLines()
-			-- 	print(213)
-			-- else
-			-- 	if zTipSaves.ShowTalent then
-			-- 		lastlinenum = lastlinenum + 1
-			-- 	end
-			-- 	if zTipSaves.ItemLevel then
-			-- 		lastlinenum = lastlinenum + 1
-			-- 	end
-			-- end
-			-- text = _G["GameTooltipTextLeft" .. lastlinenum]
-			-- if text then
-			-- 	text:SetText(L["TargetedBy"] .. " (|cffffffff" .. counter .. "|r): " .. players:sub(1, -5))
-			-- else
-			-- 	--~ 					lastlinenum = nil
-			-- end
-			end
 		end
+	else
+		self:SetTooltipOtherInfo(unit)
 	end
-
 	--[[ 等级行涂改 ]]
 	if levelline then
 		-- 表示 等级,尸体(如果死亡)
@@ -991,7 +1117,7 @@ function zTip:OnMouseOverUnit(name, unit)
 
 	--[[ Colors ]]
 	--~ 第一行名字上色，并调整第一行
-	r, g, b = zTip:UnitColor(unit, bdead, tapped, reaction, bbattlepet)
+	local r, g, b = zTip:UnitColor(unit, bdead, tapped, reaction, bbattlepet)
 	if bbattlepet then
 		GameTooltipTextLeft1:SetText(cicon .. OldName)
 	else
@@ -1167,3 +1293,33 @@ ItemRefShoppingTooltip1:HookScript("OnTooltipSetItem", attachItemTooltip)
 ItemRefShoppingTooltip2:HookScript("OnTooltipSetItem", attachItemTooltip)
 ShoppingTooltip1:HookScript("OnTooltipSetItem", attachItemTooltip)
 ShoppingTooltip2:HookScript("OnTooltipSetItem", attachItemTooltip)
+
+if PaperDollFrame_SetItemLevel then
+	--- 角色界面数字 ---
+	hooksecurefunc(
+		"PaperDollFrame_SetItemLevel",
+		function(self, unit)
+			if (unit ~= "player") then
+				return
+			end
+
+			local total, equip = GetAverageItemLevel()
+			if (total > 0) then
+				total = string.format("%.1f", total)
+			end
+			if (equip > 0) then
+				equip = string.format("%.1f", equip)
+			end
+
+			local ilvl = equip
+			if ((tonumber(equip) or 0) < (tonumber(total) or 0)) then
+				ilvl = (equip or 0) .. " / " .. (total or 0)
+			end
+
+			-- local ilvlLine = _G[self:GetName() .. 'StatText']
+			CharacterStatsPane.ItemLevelFrame.Value:SetText(ilvl)
+
+			self.tooltip = "|cffffffff" .. STAT_AVERAGE_ITEM_LEVEL .. " " .. ilvl
+		end
+	)
+end

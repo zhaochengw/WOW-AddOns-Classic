@@ -3,9 +3,9 @@
         InspectUnit('target')
     </Binding>
     <Binding name="TDINSPECT_VIEW_MOUSEOVER" category="ADDONS">
-        local unit = 'mouseover'
+        local unit = select(2, GameTooltip:GetUnit())
         if not UnitExists(unit) then
-            unit = select(2, GameTooltip:GetUnit())
+            unit = 'mouseover'
         end
         if not UnitExists(unit) then
             unit = 'target'

@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 11/29/2019, 2:59:16 PM
-
+--
 ---- LUA
 local _G = _G
 local pairs = pairs
@@ -21,7 +21,8 @@ local UIParent = UIParent
 ---@type ns
 local ns = select(2, ...)
 
----@type tdBag2MenuButton
+---@class UI.MenuButton: Object, Button
+---@field DropMenu Frame
 local MenuButton = ns.Addon:NewClass('UI.MenuButton', 'Button')
 MenuButton.GenerateName = ns.NameGenerator('tdBag2DropMenu')
 
@@ -81,7 +82,7 @@ function MenuButton:CloseMenu()
 end
 
 function MenuButton:IsMenuOpened()
-    return self.DropMenu and self.LastDropdown == self and _G.UIDROPDOWNMENU_OPEN_MENU == self.DropMenu and
+    return self.DropMenu and self.LastDropdown == self and UIDROPDOWNMENU_OPEN_MENU == self.DropMenu and
                DropDownList1:IsShown()
 end
 
@@ -134,3 +135,11 @@ function MenuButton:OnMenuClosed()
         self.EnterBlocker:Hide()
     end
 end
+
+--[=[@debug@
+MenuButton.MENU_OFFSET = {}
+
+function MenuButton:CreateMenu()
+    error('not implement')
+end
+--@end-debug@]=]

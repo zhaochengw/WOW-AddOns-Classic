@@ -1,16 +1,8 @@
 ------------------------------------------------------------------------
-r453 | Zimzarina | 2021-05-21 16:46:53 +0000 (Fri, 21 May 2021) | 1 line
-Changed paths:
-   M /trunk/Modules/BlackBook.lua
-   M /trunk/Postal.lua
-   M /trunk/Postal.toc
-
-Updated for BCC.
-------------------------------------------------------------------------
-r452 | Zimzarina | 2021-03-24 14:35:01 +0000 (Wed, 24 Mar 2021) | 1 line
+r520 | Zimzarina | 2022-02-27 06:09:49 +0000 (Sun, 27 Feb 2022) | 1 line
 Changed paths:
    M /trunk/Postal.toc
 
-
+TOC Update.
 ------------------------------------------------------------------------
 

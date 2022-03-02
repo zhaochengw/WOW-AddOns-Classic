@@ -1,12 +1,11 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: Grid2 |cd0ff7d0aOptions|r
 ## Title-esES: Grid2 |cd0ff7d0aOpciones|r
 ## Notes: Configuration module for Grid2
 ## Notes-esES: Modulo de configuracion del Grid2
 ## LoadOnDemand: 1
 ## Dependencies: Grid2
-## Version: 2.0.14
-
+## Version: 2.0.33
 # Ace Libraries
 Libs\AceGUI-3.0\AceGUI-3.0.xml
 Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
@@ -15,10 +14,8 @@ Libs\AceConfig-3.0\AceConfig-3.0.xml
 Libs\AceSerializer-3.0\AceSerializer-3.0.xml
 Libs\AceComm-3.0\AceComm-3.0.xml
 Libs\LibCompress\LibCompress.lua
-
 # Locales
 locales.xml
-
 # Grid2Options
 GridCore.lua
 GridUtils.lua
@@ -27,5 +24,8 @@ GridGeneral.lua
 GridIndicators.lua
 GridStatuses.lua
 GridThemes.lua
-
 modules.xml
+
+## Title-zhCN: |cff880303[有爱]|r Grid2 团队框架设置界面
+## X-Vendor: NetEase
+## X-163UI-Version: 20220211134516

@@ -86,6 +86,9 @@ end
 
 
 function ClassicStatsFrameTemplate_Onload(self)
+    if BackdropTemplateMixin ~= nil then
+        Mixin(self, BackdropTemplateMixin);
+    end
     self.backdrop = {
         bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
@@ -169,7 +172,8 @@ function ClassicStatsFrameTemplate_OnShow(self)
             offset = offset + 36
         end
         self.SuitCategory:Show()
-        self.SuitCategory:SetPoint("TOPLEFT", self.EnhancementsCategory, "BOTTOMLEFT", 0, offset)
+        --self.SuitCategory:SetPoint("TOPLEFT", self.EnhancementsCategory, "BOTTOMLEFT", 0, offset)
+        self.SuitCategory:SetPoint("TOPLEFT", button, "BOTTOMLEFT", 0, 0)
         height = height + 36
         offset = offset - 36
         for _, v in ipairs(self.data.suit) do

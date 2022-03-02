@@ -5,7 +5,12 @@
         <AbsDimension x="320" y="124"/>
     </Size>
     <Scripts>
+        <OnEvent>
+            self[event](self, ...)
+        </OnEvent>
         <OnLoad>
+            self.queues = {}
+            self:RegisterEvent("UPDATE_BATTLEFIELD_STATUS")
             local BACKDROP_DIALOG_32_32 = BACKDROP_DIALOG_32_32 or {
                 bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]],
                 edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],
@@ -17,15 +22,6 @@
             if BackdropTemplateMixin then Mixin(self, BackdropTemplateMixin) end
             self:SetBackdrop(BACKDROP_DIALOG_32_32)
         </OnLoad>
-        <OnHide>
-            if InCombatLockdown() then
-                self.hidePopup = true
-                return
-            end
-            self.battleground = nil
-            self.battlefieldId = nil
-            self.EnterButton:SetAttribute("macrotext", "")
-        </OnHide>
     </Scripts>
     <Layers>
         <Layer level="ARTWORK">
@@ -67,13 +63,18 @@
             <Attributes>
                 <Attribute name="type" value="macro"/>
             </Attributes>
+            <Scripts>
+                <PreClick>
+                    self:GetParent():SetMacroText()
+                </PreClick>
+            </Scripts>
             <Anchors>
                 <Anchor point="BOTTOM" relativeTo="$parent" relativePoint="BOTTOM" x="0" y="26"/>
             </Anchors>
         </Button>
     </Frames>
 </Frame>
-<Frame name="SafeQueuePopup" inherits="SafeQueuePopupTemplate" parent="UIParent" id="1">
+<Frame name="SafeQueue" inherits="SafeQueuePopupTemplate" parent="UIParent" id="1">
     <Anchors>
         <Anchor point="TOP" x="0" y="-135"/>
     </Anchors>

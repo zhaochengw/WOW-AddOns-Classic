@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 1/6/2020, 4:12:47 PM
-
+--
 local select = select
 local wipe = table.wipe or wipe
 local setmetatable = setmetatable
@@ -10,7 +10,7 @@ local setmetatable = setmetatable
 ---@type ns
 local ns = select(2, ...)
 
----@type tdBag2Cacher
+---@class Cacher: Object
 local Cacher = ns.Addon:NewClass('Cacher')
 
 local null = {}

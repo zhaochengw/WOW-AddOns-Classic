@@ -171,8 +171,7 @@ L:SetOptionLocalization{
 	TimerElemental		= "Abklingzeit von Besudelter Elementar anzeigen",
 	TimerStrider		= "Zeige Zeit bis nächster Schreiter",
 	TimerNaga			= "Zeige Zeit bis nächster Naga",
-	SpecWarnElemental	= "Spezialwarnung, wenn Besudelter Elementar kommt",
-	AutoChangeLootToFFA	= "Plündermodus in Phase 2 automatisch auf 'Jeder gegen jeden' einstellen"
+	SpecWarnElemental	= "Spezialwarnung, wenn Besudelter Elementar kommt"
 }
 
 L:SetMiscLocalization{

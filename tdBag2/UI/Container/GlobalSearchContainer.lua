@@ -8,7 +8,7 @@ local ns = select(2, ...)
 
 local TitleContainer = ns.UI.TitleContainer
 
----@type tdBag2GlobalSearchContainer
+---@class UI.GlobalSearchContainer: UI.TitleContainer
 local GlobalSearchContainer = ns.Addon:NewClass('UI.GlobalSearchContainer', TitleContainer)
 GlobalSearchContainer.SEARCHING_TEMPLATE = 'tdBag2SearchingTemplate'
 

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.2) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.4) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "ptBR");
 
 if not L then
-    T._LoadedFiles["ptBR.lua"] = "2.7.8.2";
+    T._LoadedFiles["ptBR.lua"] = "2.7.8.4";
     return;
 end
 
@@ -166,6 +166,7 @@ L["MISSINGUNIT"] = "Unidade ausente"
 L["NEW_VERSION_ALERT"] = "Uma nova versão do Decursive foi detectada: |cFFEE7722%q|r lançada em |cFFEE7722%s|r! Vá para |cFFFF0000WoWAce.com|r para obtê-la! --------"
 L["NORMAL"] = "Normal"
 L["NOSPELL"] = "Nenhum feitiço disponível"
+L["NOTICE_FRAME_TEMPLATE"] = "|cFFFF0000Decursive - Aviso|r %s"
 L["OPT_ABOLISHCHECK_DESC"] = "seleciona se as unidades com um feitiço 'Abolir' ativo são mostradas e curadas"
 L["OPT_ABOUT"] = "Sobre"
 L["OPT_ADD_A_CUSTOM_SPELL"] = "Adicionar feitiço/item personalizado"
@@ -410,5 +411,5 @@ L["UNSTABLERELEASE"] = "Versão instável"
 
 
 
-T._LoadedFiles["ptBR.lua"] = "2.7.8.2";
+T._LoadedFiles["ptBR.lua"] = "2.7.8.4";
 

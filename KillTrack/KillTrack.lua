@@ -120,6 +120,9 @@ function KT.Events.ADDON_LOADED(self, ...)
         _G["KILLTRACK"] = {}
     end
     self.Global = _G["KILLTRACK"]
+    if type(self.Global.LOAD_MESSAGE) ~= "boolean" then
+        self.Global.LOAD_MESSAGE = false
+    end
     if type(self.Global.PRINTKILLS) ~= "boolean" then
         self.Global.PRINTKILLS = false
     end
@@ -173,7 +176,11 @@ function KT.Events.ADDON_LOADED(self, ...)
         self.CharGlobal.MOBS = {}
     end
     self.PlayerName = UnitName("player")
-    self:Msg("AddOn Loaded!")
+
+    if self.Global.LOAD_MESSAGE then
+        self:Msg("AddOn Loaded!")
+    end
+
     self.Session.Start = time()
     self.Broker:OnLoad()
 end
@@ -278,6 +285,15 @@ function KT.Events.ENCOUNTER_END(self, _, _, _, size)
         self.Frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
         self.Frame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
         self.Frame:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN")
+    end
+end
+
+function KT:ToggleLoadMessage()
+    self.Global.LOAD_MESSAGE = not self.Global.LOAD_MESSAGE
+    if self.Global.LOAD_MESSAGE then
+        KT:Msg("Now showing message on AddOn load")
+    else
+        KT:Msg("No longer showing message on AddOn load")
     end
 end
 

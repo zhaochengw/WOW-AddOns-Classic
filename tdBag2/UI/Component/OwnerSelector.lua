@@ -27,7 +27,7 @@ local L = ns.L
 local Addon = ns.Addon
 local Cache = ns.Cache
 
----@type tdBag2OwnerSelector
+---@class UI.OwnerSelector: EventsMixin, UI.MenuButton
 local OwnerSelector = ns.Addon:NewClass('UI.OwnerSelector', ns.UI.MenuButton)
 
 function OwnerSelector:Constructor(_, meta)
@@ -119,7 +119,9 @@ end
 function OwnerSelector:CreateMenu()
     local menuList = {}
     for _, owner in ipairs(Cache:GetOwners()) do
-        tinsert(menuList, self:CreateOwnerMenu(owner))
+        if not ns.IsGuildOwner(owner) then
+            tinsert(menuList, self:CreateOwnerMenu(owner))
+        end
     end
     return menuList
 end

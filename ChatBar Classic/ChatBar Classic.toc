@@ -1,5 +1,5 @@
-## Interface: 20501
-## Title: ChatBar Classic
+## Interface: 20503
+## Title: ChatBar Classic for BCC
 ## Title-deDE: Chat-Leiste Classic
 ## Title-ruRU: ChatBar Classic
 ## Notes: Button Bar for openning chat messages of each type.
@@ -11,7 +11,7 @@
 ## RequiredDeps:
 ## SavedVariablesPerCharacter: ChatBar_VerticalDisplay, ChatBar_AlternateOrientation, ChatBar_HideSpecialChannels, ChatBar_TextOnButtonDisplay, ChatBar_ButtonFlashing, ChatBar_BarBorder, ChatBar_ButtonText, ChatBar_StoredStickies, ChatBar_HiddenButtons, ChatBar_TextChannelNumbers, ChatBar_HideAllButtons, ChatBar_AltArt, ChatBar_ChannelBindings, ChatBar_ButtonScale, ChatBar_isLock
 ## Author: AnduinLothar, Foxylittlething, aNNiPAk, Yarko, dartraiden
-## Version: 3.17.3a
+## Version: 3.18.1-BCC
 ## X-Category: Chat
 ## X-Website: https://www.curseforge.com/wow/addons/chatbar-classic
 ChatBar Classic.xml

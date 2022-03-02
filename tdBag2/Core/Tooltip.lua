@@ -22,13 +22,33 @@ local L = ns.L
 local Cache = ns.Cache
 local Counter = ns.Counter
 
----@type tdBag2Tooltip
-local Tooltip = ns.Addon:NewModule('Tooltip', 'AceHook-3.0')
+---@class Tooltip: AceAddon-3.0, AceEvent-3.0, AceHook-3.0
+local Tooltip = ns.Addon:NewModule('Tooltip', 'AceHook-3.0', 'AceEvent-3.0')
 Tooltip.APIS = {
-    'SetMerchantItem', 'SetBuybackItem', 'SetBagItem', 'SetAuctionItem', 'SetAuctionSellItem', 'SetLootItem',
-    'SetLootRollItem', 'SetInventoryItem', 'SetTradePlayerItem', 'SetTradeTargetItem', 'SetQuestItem',
-    'SetQuestLogItem', 'SetInboxItem', 'SetSendMailItem', 'SetHyperlink', 'SetCraftItem', 'SetTradeSkillItem',
-    'SetAction', 'SetItemByID',
+    'SetMerchantItem',
+    'SetBuybackItem',
+    'SetBagItem',
+    'SetAuctionItem',
+    'SetAuctionSellItem',
+    'SetLootItem',
+    'SetLootRollItem',
+    'SetInventoryItem',
+    'SetTradePlayerItem',
+    'SetTradeTargetItem',
+    'SetQuestItem',
+    'SetQuestLogItem',
+    'SetInboxItem',
+    'SetSendMailItem',
+    'SetHyperlink',
+    'SetTradeSkillItem',
+    'SetAction',
+    'SetItemByID',
+    'SetMerchantCostItem',
+    'SetGuildBankItem',
+    'SetExistingSocketGem',
+    'SetSocketGem',
+    'SetSocketedItem',
+    SetCraftItem = true,
 }
 Tooltip.EMPTY = {}
 Tooltip.CACHED_EMPTY = {cached = true}
@@ -38,7 +58,8 @@ Tooltip.SPACES = {
     L['Inventory'], --
     L['Bank'], --
     L['Mail'], --
-    L['COD'],
+    L['COD'], --
+    L['Guild bank'],
 }
 
 function Tooltip:OnInitialize()
@@ -49,6 +70,17 @@ function Tooltip:OnInitialize()
     end
 end
 
+function Tooltip:OnEnable()
+    self:Update()
+
+    self:RegisterMessage('GUILDBANK_OPENED', 'OnGuildBankUpdate')
+    self:RegisterMessage('GUILDBANK_CLOSED', 'OnGuildBankUpdate')
+end
+
+function Tooltip:OnGuildBankUpdate()
+    self.Cacher:RemoveCache(ns.GetCurrentGuildOwner())
+end
+
 function Tooltip:Update()
     if ns.Addon.db.profile.tipCount then
         self:HookTip(GameTooltip)
@@ -57,15 +89,28 @@ function Tooltip:Update()
         self:UnhookAll()
     end
 end
-Tooltip.OnEnable = Tooltip.Update
 
 function Tooltip:HookTip(tip)
-    for _, api in ipairs(self.APIS) do
-        self:SecureHook(tip, api, 'OnTooltipItem')
+    local api, handler
+    for k, v in pairs(self.APIS) do
+        if type(k) == 'number' then
+            api, handler = v, 'OnTooltipItem'
+        elseif type(v) == 'string' then
+            api, handler = k, v
+        else
+            api, handler = k, k
+        end
+
+        if tip[api] then
+            self:SecureHook(tip, api, handler)
+        end
     end
 
-    for _, shoppingTip in ipairs(tip.shoppingTooltips) do
-        self:SecureHook(shoppingTip, 'SetCompareItem', 'OnCompareItem')
+    if tip.shoppingTooltips then
+        for _, shoppingTip in ipairs(tip.shoppingTooltips) do
+            self:SecureHook(shoppingTip, 'SetCompareItem', 'OnCompareItem')
+            self:HookTip(shoppingTip)
+        end
     end
 end
 
@@ -74,11 +119,23 @@ function Tooltip:OnCompareItem(tip1, tip2)
     self:OnTooltipItem(tip2)
 end
 
-function Tooltip:OnTooltipItem(tip)
+function Tooltip:SetCraftItem(tip, index, slot)
+    if not slot then
+        return self:OnItem(tip, GetCraftItemLink(index))
+    else
+        return self:OnItem(tip, GetCraftReagentItemLink(index, slot))
+    end
+end
+
+function Tooltip:OnTooltipItem(tip, itemId)
     local _, item = tip:GetItem()
     if not item then
         return
     end
+    self:OnItem(tip, item)
+end
+
+function Tooltip:OnItem(tip, item)
     local itemId = tonumber(item and item:match('item:(%d+)'))
     if itemId and itemId ~= HEARTHSTONE_ITEM_ID then
         self:AddOwners(tip, itemId)
@@ -86,15 +143,26 @@ function Tooltip:OnTooltipItem(tip)
     end
 end
 
+function Tooltip:FormatName(info)
+    if info.guild then
+        return Ambiguate(info.name:sub(2), 'none')
+    else
+        return Ambiguate(info.name, 'none')
+    end
+end
+
 function Tooltip:AddOwners(tip, item)
     local owners, total = 0, 0
     for _, owner in ipairs(Cache:GetOwners()) do
-        local info = self:GetOwnerItemInfo(owner, item)
-        if info and info.total then
-            local r, g, b = info.color.r, info.color.g, info.color.b
-            tip:AddDoubleLine(Ambiguate(info.name, 'none'), info.text, r, g, b, r, g, b)
-            owners = owners + 1
-            total = total + info.total
+        if ns.Addon.db.profile.tipCountGuild or not ns.IsGuildOwner(owner) then
+            local info = self:GetOwnerItemInfo(owner, item)
+            if info and info.total then
+                local r, g, b = info.color.r, info.color.g, info.color.b
+                tip:AddDoubleLine(info.name, info.text, r, g, b, r, g, b)
+
+                total = total + info.total
+                owners = owners + 1
+            end
         end
     end
 
@@ -130,13 +198,14 @@ end
 function Tooltip:GetOwnerItemInfo(owner, itemId)
     local info = Cache:GetOwnerInfo(owner)
     local total, text = self:GetCounts(Counter:GetOwnerItemCount(owner, itemId))
+    local name = self:FormatName(info)
     local item
     if total then
         item = { --
-            name = info.name,
+            name = name,
             text = text,
             total = total,
-            color = RAID_CLASS_COLORS[info.class or 'PRIEST'],
+            color = info.guild and NORMAL_FONT_COLOR or RAID_CLASS_COLORS[info.class or 'PRIEST'],
             cached = info.cached,
         }
     elseif info.cached then

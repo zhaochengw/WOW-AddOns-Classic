@@ -54,6 +54,23 @@ L:SetGeneralLocalization{
 	name = "아카마의 망령"
 }
 
+L:SetWarningLocalization({
+	warnAshtongueDefender	= "잿빛혓바닥 수호병",
+	warnAshtongueSorcerer	= "잿빛혓바닥 사술사"
+})
+
+L:SetTimerLocalization({
+	timerAshtongueDefender	= "잿빛혓바닥 수호병: %s",
+	timerAshtongueSorcerer	= "잿빛혓바닥 사술사: %s"
+})
+
+L:SetOptionLocalization({
+	warnAshtongueDefender	= "잿빛혓바닥 수호병 경고 보기",
+	warnAshtongueSorcerer	= "잿빛혓바닥 사술사 경고 보기",
+	timerAshtongueDefender	= "잿빛혓바닥 수호병 타이머 바 보기",
+	timerAshtongueSorcerer	= "잿빛혓바닥 사술사 타이머 바 보기"
+})
+
 -------------------------
 --  Teron Gorefiend  --
 -------------------------
@@ -120,7 +137,11 @@ L:SetGeneralLocalization{
 }
 
 L:SetOptionLocalization{
-	timerAura	= "변위의 오라 타이머 바 보기"
+	timerAura	= "변화의 오라 타이머 바 보기",
+	FAHelper	= "치명적인 매력의 모드 작동 방식을 설정합니다. 공대장이 DBM을 사용한다면 공대장의 설정을 사용합니다",
+	North		= "별 징표가 왼쪽/서쪽, 동그라미 징표가 오른쪽/동쪽, 다이아 징표가 위/북쪽",--Default
+	South		= "별 징표가 왼쪽/서쪽, 동그라미 징표가 오른쪽/동쪽, 다이아 징표가 아래/남쪽",
+	None		= "화살표가 표시되지 않으며 대신 정보 창에 숫자 표시"
 }
 
 ----------------------

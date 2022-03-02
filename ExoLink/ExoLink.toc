@@ -1,0 +1,12 @@
+## Interface: 20503
+## Title: ExoLink
+## Notes:俏俏制作 
+## Version: TBC-2.1beta
+
+Libraries\Libraries.xml
+
+ExoLink.lua
+
+## Title-zhCN: |cff880303[有爱]|r ExoLink BIS提示核心库
+## X-Vendor: NetEase
+## X-163UI-Version: 20220120164410

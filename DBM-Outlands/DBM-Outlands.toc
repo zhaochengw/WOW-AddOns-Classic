@@ -1,8 +1,10 @@
-## Interface: 20501
+## Interface: 20503
 ## X-Min-Interface: 20501
+## Version: 2.5.29
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Outlands|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0아웃랜드|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Scherbenwelt|r
+## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0外域|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0外域|r
 ## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Запределье|r
 ## LoadOnDemand: 1
@@ -19,10 +21,9 @@
 ## X-DBM-Mod-LoadCID: 17711,18728,18166,20130
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-DBM-Mod-MinExpansion: 1
-## X-Curse-Project-ID: 16442
-## X-WoWI-ID: 11700
-## X-Wago-ID: 7x61xpN1
-## Version: 2.5.8
+## X-Curse-Project-ID: 3358
+## X-WoWI-ID: 8814
+## X-Wago-ID: qv633o6b
 
 localization.en.lua
 localization.de.lua
@@ -37,3 +38,6 @@ Magtheridon.lua
 Kazzak.lua
 Doomwalker.lua
 Quest.lua
+
+## X-Vendor: NetEase
+## X-163UI-Version: 20220224141126

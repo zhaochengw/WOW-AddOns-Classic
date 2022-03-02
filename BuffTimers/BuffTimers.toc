@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: BuffTimers
 ## Author: mdhippie
 ## Notes: v1.5.0 -- Buff time options

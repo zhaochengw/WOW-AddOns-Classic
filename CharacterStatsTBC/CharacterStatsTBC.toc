@@ -1,0 +1,31 @@
+## Interface: 20503
+## Author: Peter Getov
+## Version: 1.2.3
+## Title: |cff00aeffCharacterStatsTBC|r
+## Notes: Advanced Character Stats
+## DefaultState:  enabled
+## SavedVariables: CharacterStatsTbcDB
+## SavedVariablesPerCharacter: CharacterStatsTbcCharacterDB
+
+Localization\Localization_en.lua
+Localization\Localization_de.lua
+Localization\Localization_cn.lua
+Localization\Localization_ru.lua
+Localization\Localization_fr.lua
+Localization\Localization_it.lua
+Localization\Localization_tw.lua
+Localization\Localization_kr.lua
+Localization\Localization_es.lua
+Localization\Localization_br.lua
+
+CharacterStatsTbcConstants.lua
+CharacterStatsTbcUI.lua
+CharacterStatsTbcMain.lua
+CharacterStatsTbcUtils.lua
+CharacterStatsTbcCore.lua
+CharacterStatsTbcClassUtils.lua
+CharacterStatsTbcCallbacks.lua
+
+## Title-zhCN: |cff880303[有爱]|r CharacterStats 增强玩家属性面板
+## X-Vendor: NetEase
+## X-163UI-Version: 20211217104056

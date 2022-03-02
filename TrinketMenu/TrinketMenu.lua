@@ -1,4 +1,4 @@
---[[ TrinketMenu 9.0.0 ]]--
+--[[ TrinketMenu 9.0.6 ]]--
 
 TrinketMenu = { }
 
@@ -9,11 +9,11 @@ local IsClassic = WOW_PROJECT_ID >= WOW_PROJECT_CLASSIC
 local IsVanillaClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 -- localized strings required to support engineering bags
-TrinketMenu.BAG = "Bag" -- 7th return of GetItemInfo on a normal bag
+TrinketMenu.BAG = "行囊" -- 7th return of GetItemInfo on a normal bag
 TrinketMenu.ENGINEERING_BAG = "Engineering Bag" -- 7th return of GetItemInfo on an engineering bag
-TrinketMenu.TRADE_GOODS = "Trade Goods" -- 6th return of GetItemInfo on most engineered trinkets
+TrinketMenu.TRADE_GOODS = "商品" -- 6th return of GetItemInfo on most engineered trinkets
 TrinketMenu.DEVICES = "Devices" -- 7th return of GetItemInfo on most engineered trinkets
-TrinketMenu.REQUIRES_ENGINEERING = "Requires Engineering" -- from tooltip when GetItemInfo ambiguous
+TrinketMenu.REQUIRES_ENGINEERING = "需要 工程学" -- from tooltip when GetItemInfo ambiguous
 
 function TrinketMenu.LoadDefaults()
 	TrinketMenuOptions = TrinketMenuOptions or {
@@ -63,8 +63,8 @@ end
 
 TrinketMenu_Version = GetAddOnMetadata("TrinketMenu", "Version")
 BINDING_HEADER_TRINKETMENU = "TrinketMenu"
-setglobal("BINDING_NAME_CLICK TrinketMenu_Trinket0:LeftButton", "Use Top Trinket")
-setglobal("BINDING_NAME_CLICK TrinketMenu_Trinket1:LeftButton", "Use Bottom Trinket")
+setglobal("BINDING_NAME_CLICK TrinketMenu_Trinket0:LeftButton", "使用饰品1(上)")
+setglobal("BINDING_NAME_CLICK TrinketMenu_Trinket1:LeftButton", "使用饰品2(下)")
 
 TrinketMenu.MaxTrinkets = 30 -- add more to TrinketMenu_MenuFrame if this changes
 TrinketMenu.BaggedTrinkets = { } -- indexed by number, 1-30 of trinkets in the menu
@@ -280,6 +280,7 @@ function TrinketMenu.Initialize()
 	TrinketMenuPerOptions.Hidden = TrinketMenuPerOptions.Hidden or { }
 	options.MenuOnRight = options.MenuOnRight or "OFF" -- 3.61
 	if TrinketMenuPerOptions.XPos and TrinketMenuPerOptions.YPos then
+		TrinketMenu_MainFrame:ClearAllPoints()
 		TrinketMenu_MainFrame:SetPoint("TOPLEFT", "UIParent", "BOTTOMLEFT", TrinketMenuPerOptions.XPos, TrinketMenuPerOptions.YPos)
 	end
 	if TrinketMenuPerOptions.MainScale then
@@ -388,8 +389,8 @@ function TrinketMenu.OnLoad(self)
 	self:RegisterEvent("PLAYER_LOGIN")
 end
 
-local shown
 function TrinketMenu.OnEvent(self, event, ...)
+	local wasShown
 	if event == "UNIT_INVENTORY_CHANGED" then
 		local unitID = ...
 		if unitID == "player" then
@@ -401,13 +402,14 @@ function TrinketMenu.OnEvent(self, event, ...)
 		TrinketMenu.UpdateWornCooldowns(1)
 	elseif event == "PET_BATTLE_OPENING_START" then
 		if TrinketMenuOptions.HidePetBattle == "ON" then
-			shown = TrinketMenu_MainFrame:IsShown()
-			if shown then
+			wasShown = TrinketMenu_MainFrame:IsShown()
+			if wasShown then
 				TrinketMenu_MainFrame:Hide()
+				TrinketMenuPerOptions.Visible = "ON"
 			end
 		end
 	elseif event == "PET_BATTLE_CLOSE" then
-		if TrinketMenuOptions.HidePetBattle == "ON" and shown then
+		if TrinketMenuOptions.HidePetBattle == "ON" and wasShown then
 			TrinketMenu_MainFrame:Show()
 		end
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_UNGHOST" or event == "PLAYER_ALIVE") and not TrinketMenu.IsPlayerReallyDead() then
@@ -425,7 +427,6 @@ function TrinketMenu.OnEvent(self, event, ...)
 		TrinketMenu_OptMenuOnRight:Disable()
 	elseif event == "PLAYER_LOGIN" then
 		TrinketMenu.LoadDefaults()
-		TrinketMenu_MainFrame:ClearAllPoints()
 		TrinketMenu.Initialize()
 		self:RegisterEvent("PLAYER_REGEN_ENABLED")
 		self:RegisterEvent("PLAYER_REGEN_DISABLED")
@@ -533,7 +534,7 @@ end
 
 function TrinketMenu.ResetSettings()
 	StaticPopupDialogs["TRINKETMENURESET"] = {
-		text = "Are you sure you want to reset TrinketMenu to default state and reload the UI?",
+		text = "是否确实要将TrinketMenu重置为默认状态并重新加载UI？",
 		button1 = "Yes", button2 = "No", showAlert = 1, timeout = 0, whileDead = 1,
 		OnAccept = function()
 			TrinketMenuOptions = nil
@@ -1107,7 +1108,7 @@ function TrinketMenu.CooldownUpdate()
 				if TrinketMenuOptions.NotifyThirty == "ON" then
 					name = GetItemInfo(i)
 					if name then
-						TrinketMenu.Notify(name.." ready soon!")
+						TrinketMenu.Notify(name.." 马上准备完毕!")
 					end
 				end
 				TrinketMenuPerOptions.ItemsUsed[i] = 5 -- tag for just 0 notify now
@@ -1115,7 +1116,7 @@ function TrinketMenu.CooldownUpdate()
 				if TrinketMenuOptions.Notify == "ON" then
 					name = GetItemInfo(i)
 					if name then
-						TrinketMenu.Notify(name.." ready!")
+						TrinketMenu.Notify(name.." 准备完毕!")
 					end
 				end
 			end
@@ -1176,6 +1177,9 @@ function TrinketMenu.OnShow()
 end
 
 function TrinketMenu.OnHide()
+	if not UIParent:IsShown() then
+		return
+	end
 	TrinketMenuPerOptions.Visible = "OFF"
 	TrinketMenu_MenuFrame:Hide()
 end

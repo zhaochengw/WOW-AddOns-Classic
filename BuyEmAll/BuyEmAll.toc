@@ -1,5 +1,5 @@
 ## Author: Shinisuryu
-## Interface: 20501
+## Interface: 20503
 ## Title: BuyEmAll
 ## Notes: Enhances shift-click interface at vendors.
 ## Title-zhCN: |CFFFF8000辅助|R 材料购买助手

@@ -84,99 +84,121 @@ Addon.RunTime = {
 	Healing = {},
 	Other = {},
 	Ignore = {},
+	Notips = {},
 }
 --默认监控法术列表
 Addon.Default = {
 	InstantHarm = {
 		--瞬发控制
-		[L["Repentance"]] = L["Repentance"],
-		[L["Wyvern Sting"]] = L["Wyvern Sting"],
-		[L["Gouge"]] = L["Gouge"],
-		[L["Hammer of Justice"]] = L["Hammer of Justice"],
-		[L["Scatter Shot"]] = L["Scatter Shot"],
-		[L["Blind"]] = L["Blind"],
-		[L["Sap"]] = L["Sap"],
-		[L["Death Coil"]] = L["Death Coil"],
-		[L["Intimidating Shout"]] = L["Intimidating Shout"],
-		[L["Psychic Scream"]] = L["Psychic Scream"],
+		[(GetSpellInfo(20066))] = true, -- Repentance
+		[(GetSpellInfo(19386))] = true, -- Wyvern Sting
+		[(GetSpellInfo(1776))] = true, -- Gouge
+		[(GetSpellInfo(853))] = true, -- Hammer of Justice
+		[(GetSpellInfo(19503))] = true, -- Scatter Shot
+		[(GetSpellInfo(2094))] = true, -- Blind
+		[(GetSpellInfo(2070))] = true, -- Sap
+		[(GetSpellInfo(6789))] = true, -- Death Coil
+		[(GetSpellInfo(5246))] = true, -- Intimidating Shout
+		[(GetSpellInfo(8122))] = true, -- Psychic Scream
+		[(GetSpellInfo(31661))] = true, -- Dragon's Breath
+		[(GetSpellInfo(34490))] = true, -- Silencing Shot
+		[(GetSpellInfo(15487))] = true, -- Silence
 	},
 	InstantHelp = {
 		--瞬发增益
-		[L["Innervate"]] = L["Innervate"],
-		[L["Fear Ward"]] = L["Fear Ward"],
-		[L["Power Infusion"]] = L["Power Infusion"],
-		[L["Divine Intervention"]] = L["Divine Intervention"],
-		[L["Blessing of Protection"]] = L["Blessing of Protection"],
-		[L["Blessing of Freedom"]] = L["Blessing of Freedom"],
-		[L["Lay on Hands"]] = L["Lay on Hands"],
+		[(GetSpellInfo(29166))] = true, -- Innervate
+		[(GetSpellInfo(6346))] = true, -- Fear Ward
+		[(GetSpellInfo(10060))] = true, -- Power Infusion
+		[(GetSpellInfo(19752))] = true, -- Divine Intervention
+		[(GetSpellInfo(1022))] = true, -- Blessing of Protection
+		[(GetSpellInfo(1044))] = true, -- Blessing of Freedom
+		[(GetSpellInfo(633))] = true, -- Lay on Hands
+		[(GetSpellInfo(33206))] = true, -- Pain Suppression
 	},
 	CastHarm = {
 		--施法控制
-		[L["Polymorph"]] = L["Polymorph"],
-		[L["Hibernate"]] = L["Hibernate"],
-		[L["Shackle Undead"]] = L["Shackle Undead"],
-		[L["Banish"]] = L["Banish"],
-		[L["Fear"]] = L["Fear"],
-		[L["Howl of Terror"]] = L["Howl of Terror"],
-		[L["Entangling Roots"]] = L["Entangling Roots"],
-		[L["Turn Undead"]] = L["Turn Undead"],
-		[L["Enslave Demon"]] = L["Enslave Demon"],
-		[L["Scare Beast"]] = L["Scare Beast"],
+		[(GetSpellInfo(118))] = true, -- Polymorph
+		[(GetSpellInfo(2637))] = true, -- Hibernate
+		[(GetSpellInfo(9484))] = true, -- Shackle Undead
+		[(GetSpellInfo(710))] = true, -- Banish
+		[(GetSpellInfo(5782))] = true, -- Fear
+		[(GetSpellInfo(5484))] = true, -- Howl of Terror
+		[(GetSpellInfo(339))] = true, -- Entangling Roots
+		[(GetSpellInfo(2878))] = true, -- Turn Undead
+		[(GetSpellInfo(1098))] = true, -- Enslave Demon
+		[(GetSpellInfo(1513))] = true, -- Scare Beast
+		[(GetSpellInfo(33786))] = true, -- Cyclone
 	},
 	CastHelp = {
 		--施法增益
-		[L["Rebirth"]] = L["Rebirth"],
-		[L["Resurrection"]] = L["Resurrection"],
-		[L["Redemption"]] = L["Redemption"],
-		[L["Ancestral Spirit"]] = L["Ancestral Spirit"],
-		[L["Ritual of Summoning"]] = L["Ritual of Summoning"],
-		[L["Soulstone Resurrection"]] = L["Soulstone Resurrection"],
+		[(GetSpellInfo(20484))] = true, -- Rebirth
+		[(GetSpellInfo(2006))] = true, -- Resurrection
+		[(GetSpellInfo(7328))] = true, -- Redemption
+		[(GetSpellInfo(2008))] = true, -- Ancestral Spirit
+		[(GetSpellInfo(698))] = true, -- Ritual of Summoning
+		[(GetSpellInfo(20707))] = true, -- Soulstone Resurrection
 	},
 	SelfBuff = {
-		[L["Shield Wall"]] = L["Shield Wall"],
-		[L["Last Stand"]] = L["Last Stand"],
-		[L["Gift of Life"]] = L["Gift of Life"],
+		[(GetSpellInfo(871))] = true, -- Shield Wall
+		[(GetSpellInfo(12975))] = true, -- Last Stand
+		[(GetSpellInfo(23725))] = true, -- Gift of Life
 	},
 	Healing = {
 		--治疗法术
-		[L["Holy Light"]] = L["Holy Light"],
-		[L["Flash of Light"]] = L["Flash of Light"],
-		[L["Lay on Hands"]] = L["Lay on Hands"],
-		[L["Holy Shock"]] = L["Holy Shock"],
-		[L["Lesser Healing Wave"]] = L["Lesser Healing Wave"],
-		[L["Healing Wave"]] = L["Healing Wave"],
-		[L["Chain Heal"]] = L["Chain Heal"],
-		[L["Healing Touch"]] = L["Healing Touch"],
-		[L["Regrowth"]] = L["Regrowth"],
-		[L["Rejuvenation"]] = L["Rejuvenation"],
-		[L["Swiftmend"]] = L["Swiftmend"],
-		[L["Power Word: Shield"]] = L["Power Word: Shield"],
-		[L["Heal"]] = L["Heal"],
-		[L["Lesser Heal"]] = L["Lesser Heal"],
-		[L["Renew"]] = L["Renew"],
-		[L["Flash Heal"]] = L["Flash Heal"],
-		[L["Greater Heal"]] = L["Greater Heal"],
+		[(GetSpellInfo(635))] = true, -- Holy Light
+		[(GetSpellInfo(19750))] = true, -- Flash of Light
+		[(GetSpellInfo(633))] = true, -- Lay on Hands
+		[(GetSpellInfo(20473))] = true, -- Holy Shock
+		[(GetSpellInfo(8004))] = true, -- Lesser Healing Wave
+		[(GetSpellInfo(331))] = true, -- Healing Wave
+		[(GetSpellInfo(1064))] = true, -- Chain Heal
+		[(GetSpellInfo(5185))] = true, -- Healing Touch
+		[(GetSpellInfo(8936))] = true, -- Regrowth
+		[(GetSpellInfo(774))] = true, -- Rejuvenation
+		[(GetSpellInfo(18562))] = true, -- Swiftmend
+		[(GetSpellInfo(17))] = true, -- Power Word: Shield
+		[(GetSpellInfo(2054))] = true, -- Heal
+		[(GetSpellInfo(2050))] = true, -- Lesser Heal
+		[(GetSpellInfo(139))] = true, -- Renew
+		[(GetSpellInfo(2061))] = true, -- Flash Heal
+		[(GetSpellInfo(2060))] = true, -- Greater Heal
+		-- TBC
+		[(GetSpellInfo(33763))] = true, -- Lifebloom
+		[(GetSpellInfo(32546))] = true, -- Binding Heal
+		[(GetSpellInfo(33076))] = true, -- Prayer of Mending
 	},
 	Other = {
 		--其他需要通告的被抵抗技能
-		[L["Taunt"]] = L["Taunt"],
-		[L["Mocking Blow"]] = L["Mocking Blow"],
-		[L["Challenging Shout"]] = L["Challenging Shout"],
-		[L["Shield Slam"]] = L["Shield Slam"],
-		[L["Growl"]] = L["Growl"],
-		[L["Challenging Roar"]] = L["Challenging Roar"],
-		-- [L["Kidney Shot"]] = L["Kidney Shot"],
-		-- [L["Feign Death"]] = L["Feign Death"],
+		[(GetSpellInfo(355))] = true, -- Taunt
+		[(GetSpellInfo(694))] = true, -- Mocking Blow
+		[(GetSpellInfo(1161))] = true, -- Challenging Shout
+		[(GetSpellInfo(23922))] = true, -- Shield Slam
+		[(GetSpellInfo(6795))] = true, -- Growl
+		[(GetSpellInfo(5209))] = true, -- Challenging Roar
+		[(GetSpellInfo(5384))] = true, -- Feign Death
+		-- Kidney Shot
+		-- Feign Death
 	},
 	Ignore = {
 		--不存在打破的控制技能
-		[L["Banish"]] = L["Banish"],
-		[L["Fear"]] = L["Fear"],
-		[L["Howl of Terror"]] = L["Howl of Terror"],
-		[L["Entangling Roots"]] = L["Entangling Roots"],
-		[L["Turn Undead"]] = L["Turn Undead"],
-		[L["Enslave Demon"]] = L["Enslave Demon"],
-		[L["Scare Beast"]] = L["Scare Beast"],
+		[(GetSpellInfo(710))] = true, -- Banish
+		[(GetSpellInfo(5782))] = true, -- Fear
+		[(GetSpellInfo(5484))] = true, -- Howl of Terror
+		[(GetSpellInfo(339))] = true, -- Entangling Roots
+		[(GetSpellInfo(2878))] = true, -- Turn Undead
+		[(GetSpellInfo(1098))] = true, -- Enslave Demon
+		[(GetSpellInfo(1513))] = true, -- Scare Beast
+		[(GetSpellInfo(6789))] = true, -- Death Coil
+		[(GetSpellInfo(5246))] = true, -- Intimidating Shout
+		[(GetSpellInfo(8122))] = true, -- Psychic Scream
+		[(GetSpellInfo(34490))] = true, -- Silencing Shot
+		[(GetSpellInfo(15487))] = true, -- Silence
+	},
+	Notips = {
+		-- 不需要提示破控的技能
+		[(GetSpellInfo(8218))] = true, -- Sneak
+		[(GetSpellInfo(31661))] = true, -- Dragon's Breath
+		[(GetSpellInfo(1776))] = true, -- Gouge
 	},
 }
 

@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 11/29/2019, 11:10:36 AM
-
 local ipairs, select = ipairs, select
 local tinsert, tremove = table.insert, table.remove
 
@@ -21,9 +20,8 @@ local ns = select(2, ...)
 local L = ns.L
 local Events = ns.Events
 
----@type tdBag2TokenFrame
+---@class UI.TokenFrame: EventsMixin, UI.MenuButton
 local TokenFrame = ns.Addon:NewClass('UI.TokenFrame', ns.UI.MenuButton)
-TokenFrame.SPACING = 5
 TokenFrame.PADDING = 10
 
 function TokenFrame:Constructor(_, meta)
@@ -85,9 +83,9 @@ function TokenFrame:GetButton(i)
     if not self.buttons[i] then
         local button = ns.UI.Token:New(self)
         if i == 1 then
-            button:SetPoint('LEFT', 10, 0)
+            button:SetPoint('LEFT', self.PADDING, 0)
         else
-            button:SetPoint('LEFT', self.buttons[i - 1], 'RIGHT', 5, 0)
+            button:SetPoint('LEFT', self.buttons[i - 1], 'RIGHT', 0, 0)
         end
         self.buttons[i] = button
     end
@@ -103,7 +101,7 @@ function TokenFrame:Update()
         button:SetItem(self.meta.owner, watch.itemId, watch.watchAll)
         button:Show()
 
-        width = width + button:GetWidth() + self.SPACING
+        width = width + button:GetWidth()
 
         if width > self:GetWidth() then
             button:Hide()
@@ -123,7 +121,7 @@ function TokenFrame:CreateMenu()
         local icon = GetItemIcon(watch.itemId)
 
         menu[i] = {
-            text = format('|T%s:14|t', icon) .. (name or 'item:' .. watch.itemId),
+            text = format('|T%s:14|t', icon) .. (name or ('item:' .. watch.itemId)),
             notCheckable = true,
             colorCode = quality and '|c' .. select(4, GetItemQualityColor(quality)) or nil,
             keepShownOnClick = true,

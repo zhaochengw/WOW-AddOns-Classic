@@ -2,6 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/18/2020, 1:10:21 PM
+--
 ---@type ns
 local ns = select(2, ...)
 
@@ -26,7 +27,7 @@ local GameTooltip = GameTooltip
 
 local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
 
----@type tdInspectInspectFrame
+---@class UI.InspectFrame: Object, Frame, AceEvent-3.0
 local InspectFrame = ns.Addon:NewClass('UI.InspectFrame', 'Frame')
 
 function InspectFrame:Constructor()
@@ -85,6 +86,7 @@ function InspectFrame:OnShow()
 end
 
 function InspectFrame:OnHide()
+    self.unitName = nil
     self:UnregisterAllEvents()
     Inspect:Clear()
     self:SetTab(1)
@@ -146,9 +148,10 @@ end
 
 function InspectFrame:UpdatePortrait()
     if self.unit then
+        self.unitName = ns.UnitName(self.unit)
         self.Portrait:SetTexCoord(0, 1, 0, 1)
         SetPortraitTexture(self.Portrait, self.unit)
-    else
+    elseif not self.unitName or self.unitName ~= Inspect.unitName then
         local class = Inspect:GetUnitClassFileName()
         if class then
             self.Portrait:SetTexture([[Interface\TargetingFrame\UI-Classes-Circles]])

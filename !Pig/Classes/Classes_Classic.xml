@@ -1,0 +1,4 @@
+<Ui>
+	<Script file="Classes.lua" />
+	<Script file="AutoGensui.lua" />
+</Ui>

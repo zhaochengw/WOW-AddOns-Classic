@@ -3,33 +3,125 @@
 	CREDIT shagu/pfQuest(MIT LICENSE) @ https://github.com/shagu
 --]]--
 ----------------------------------------------------------------------------------------------------
-local __addon, __ns = ...;
+local _G = _G;
+local __ala_meta__ = _G.__ala_meta__;
 
-_G.__ala_meta__ = _G.__ala_meta__ or {  };
+local __addon, __ns = ...;
 __ala_meta__.quest = __ns;
-local core = {  };
-__ns.core = core;
+
+local __core = {  };
+__ns.core = __core;
 __ns.____bn_tag = select(2, BNGetInfo());
-__ns.__dev = select(2, GetAddOnInfo("!!!!!DebugMe")) ~= nil;
+__ns.__is_dev = select(2, GetAddOnInfo("!!!!!DebugMe")) ~= nil;
 __ns.__toc = select(4, GetBuildInfo());
 __ns.__expansion = GetExpansionLevel();
 __ns.__maxLevel = GetMaxLevelForExpansionLevel(__ns.__expansion);
+__ns.After = C_Timer.After;
+__ns.NewTicker = C_Timer.NewTicker;
+__ns.NewTimer = C_Timer.NewTimer;
 
-__ns.__fenv = setmetatable({  }, {
-		__index = _G,
-		__newindex = function(t, key, value)
-			rawset(t, key, value);
-			print("cdx assign global", key, value);
-			return value;
-		end,
-	}
-);
-if __ns.__dev then
-	setfenv(1, __ns.__fenv);
-end
-local _G = _G;
+-->		Dev
+	local setfenv = setfenv;
+	local rawset = rawset;
+	local next = next;
+	local _GlobalRef = {  };
+	local _GlobalAssign = {  };
+	function __ns:BuildEnv(category)
+		local _G = _G;
+		_GlobalRef[category] = _GlobalRef[category] or {  };
+		_GlobalAssign[category] = _GlobalAssign[category] or {  };
+		local Ref = _GlobalRef[category];
+		local Assign = _GlobalAssign[category];
+		setfenv(2, setmetatable(
+			{  },
+			{
+				__index = function(tbl, key, val)
+					Ref[key] = (Ref[key] or 0) + 1;
+					return _G[key];
+				end,
+				__newindex = function(tbl, key, value)
+					rawset(tbl, key, value);
+					Assign[key] = (Assign[key] or 0) + 1;
+					return value;
+				end,
+			}
+		));
+	end
+	function __ns:MergeGlobal(DB)
+		local _Ref = DB._GlobalRef;
+		if _Ref ~= nil then
+			for category, db in next, _Ref do
+				local to = _GlobalRef[category];
+				if to == nil then
+					_GlobalRef[category] = db;
+				else
+					for key, val in next, db do
+						to[key] = (to[key] or 0) + val;
+					end
+				end
+			end
+		end
+		DB._GlobalRef = _GlobalRef;
+		local _Assign = DB._GlobalAssign;
+		if _Assign ~= nil then
+			for category, db in next, _Assign do
+				local to = _GlobalAssign[category];
+				if to == nil then
+					_GlobalAssign[category] = db;
+				else
+					for key, val in next, db do
+						to[key] = (to[key] or 0) + val;
+					end
+				end
+			end
+		end
+		DB._GlobalAssign = _GlobalAssign;
+	end
+-->
+
 local _ = nil;
 --------------------------------------------------
+
+-->		upvalue
+	local xpcall = xpcall;
+	local debugprofilestart, debugprofilestop = debugprofilestart, debugprofilestop;
+	local geterrorhandler = geterrorhandler;
+	local hooksecurefunc = hooksecurefunc;
+	local date = date;
+	local GetTimePreciseSec = GetTimePreciseSec;
+	local next, ipairs = next, ipairs;
+	local select = select;
+	local setmetatable = setmetatable;
+	local tremove, table_concat = table.remove, table.concat;
+	local strbyte, strfind, format, gsub = string.byte, string.find, string.format, string.gsub;
+	local min = math.min;
+	local _bit_band = bit.band;
+	local loadstring = loadstring;
+	local tostring = tostring;
+	local CreateFrame = CreateFrame;
+	local GetQuestTagInfo = GetQuestTagInfo;
+	local UnitPosition = UnitPosition;
+	local C_Map = C_Map;
+	local CreateVector2D = CreateVector2D;
+
+	local _PLAYER_GUID = UnitGUID('player');
+	local _PLAYER_NAME = UnitName('player');
+	local _PLAYER_RACE, _PLAYER_RACEFILE, _PLAYER_RACEID = UnitRace('player');
+	local _PLAYER_CLASS = UnitClassBase('player');
+	local _PLAYER_FACTIONGROUP = UnitFactionGroup('player');
+	__core._PLAYER_GUID = _PLAYER_GUID;
+	__core._PLAYER_NAME = _PLAYER_NAME;
+	__core._PLAYER_RACE = _PLAYER_RACE;
+	__core._PLAYER_RACEFILE = _PLAYER_RACEFILE;
+	__core._PLAYER_RACEID = _PLAYER_RACEID;
+	__core._PLAYER_CLASS = _PLAYER_CLASS;
+	__core._PLAYER_FACTIONGROUP = _PLAYER_FACTIONGROUP;
+-->
+
+if __ns.__is_dev then
+	__ns:BuildEnv("init");
+end
+
 -->		Time
 	local _debugprofilestart, _debugprofilestop = debugprofilestart, debugprofilestop;
 	local TheFuckingAccurateTime = _G.AccurateTime;
@@ -65,9 +157,10 @@ local _ = nil;
 	-->		Time
 	if GetTimePreciseSec == nil then
 		_F_devDebugProfileStart("_sys._1core.time.alternative");
-		 GetTimePreciseSec = function()
+		GetTimePreciseSec = function()
 			return _F_devDebugProfileTick("_sys._1core.time.alternative");
-		 end
+		end
+		_G.GetTimePreciseSec = GetTimePreciseSec;
 	end
 	local _LN_devBaseTime = GetTimePreciseSec();
 	function __ns._F_devGetPreciseTime()
@@ -76,24 +169,23 @@ local _ = nil;
 	end
 -->
 
---[=[dev]=]	if __ns.__dev then __ns._F_devDebugProfileStart('module.init'); end
+--[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart('module.init'); end
 
 local SET = nil;
 
 -->		SafeCall
-	local xpcall = xpcall;
 	local _F_ErrorHandler = geterrorhandler();
 	hooksecurefunc("seterrorhandler", function(handler)
 		_F_ErrorHandler = handler;
 	end);
-	function core._F_SafeCall(func, ...)
+	function __core._F_SafeCall(func, ...)
 		return xpcall(func, _F_ErrorHandler, ...);
 	end
 -->
 
 -->		EventHandler
-	local _EventHandler = CreateFrame("FRAME");
-	core.__eventHandler = _EventHandler;
+	local _EventHandler = CreateFrame('FRAME');
+	__core.__eventHandler = _EventHandler;
 	local function _noop_()
 	end
 	-->		Simple Event Dispatcher
@@ -162,7 +254,7 @@ local SET = nil;
 -->
 
 -->		Const
-	core.__const = {
+	__core.__const = {
 		TAG_DEFAULT = '__pin_tag_default',
 		TAG_WM_COMMON = '__pin_tag_wm_common',
 		TAG_WM_LARGE = '__pin_tag_wm_large',
@@ -174,57 +266,68 @@ local SET = nil;
 -->
 
 -->		Restricted Implementation
-	local select = select;
-	local loadstring = loadstring;
-	local tostring = tostring;
-	local table_concat = table.concat;
-	local _F_SafeCall = core._F_SafeCall;
+	local _F_SafeCall = __core._F_SafeCall;
+	local _LT_CorePrint_Method_Env = {
+		select = select,
+		tostring = tostring,
+		format = format,
+		table_concat = table_concat,
+		__DefaultMessageFrame = _G.DEFAULT_CHAT_FRAME,
+	};
 	local _LT_CorePrint_Method = setmetatable(
 		{
-			[0] = function()
-				DEFAULT_CHAT_FRAME:AddMessage("\124cff00ff00>\124r nil");
-			end,
-			['*'] = function(...)
-				local _nargs = select('#', ...);
-				local _argsv = { ... };
-				for _index = _nargs, 1, -1 do
-					if _argsv[_index] ~= nil then
-						_nargs = _index;
-						break;
+			[0] = setfenv(
+				function()
+					__DefaultMessageFrame:AddMessage("|cff00ff00>|r nil");
+				end,
+				_LT_CorePrint_Method_Env
+			),
+			["*"] = setfenv(
+				function(...)
+					local _nargs = select("#", ...);
+					local _argsv = { ... };
+					for _index = _nargs, 1, -1 do
+						if _argsv[_index] ~= nil then
+							_nargs = _index;
+							break;
+						end
 					end
-				end
-				for _index = 1, _nargs do
-					_argsv[_index] = tostring(_argsv[_index]);
-				end
-				DEFAULT_CHAT_FRAME:AddMessage("\124cff00ff00>\124r " .. table_concat(_argsv, " "));
-			end,	
+					for _index = 1, _nargs do
+						_argsv[_index] = tostring(_argsv[_index]);
+					end
+					__DefaultMessageFrame:AddMessage("|cff00ff00>|r " .. table_concat(_argsv, " "));
+				end,
+				_LT_CorePrint_Method_Env
+			),
 		},
 		{
-			__index = function(t, nargs)
+			__index = function(tbl, nargs)
 				if nargs > 0 and nargs < 8 then
-					local _head = "local tostring = tostring;\nreturn function(arg1";
-					local _body = ") DEFAULT_CHAT_FRAME:AddMessage(\"\124cff00ff00>\124r \" .. tostring(arg1)";
-					local _tail = "); end";
+					local _head = [[local tostring = tostring;\nreturn function(arg1]];
+					local _body = [[) __DefaultMessageFrame:AddMessage("|cff00ff00>|r " .. tostring(arg1)]];
+					local _tail = [[); end]];
 					for _index = 2, nargs do
-						_head = _head .. ", arg" .. _index;
-						_body = _body .. " .. \" \" .. tostring(arg" .. _index .. ")";
+						_head = _head .. [[, arg]] .. _index;
+						_body = _body .. [[ .. " " .. tostring(arg]] .. _index .. [[)]];
 					end
 					local _func0, _err = loadstring(_head .. _body .. _tail);
 					if _func0 == nil then
-						local _func = t['*'];
-						t[nargs] = _func;
+						local _func = tbl["*"];
+						tbl[nargs] = _func;
 						return _func;
 					else
 						local _, _func = _F_SafeCall(_func0);
 						if _func == nil then
-							_func = t['*'];
+							_func = tbl["*"];
+						else
+							setfenv(_func, _LT_CorePrint_Method_Env);
 						end
-						t[nargs] = _func;
+						tbl[nargs] = _func;
 						return _func;
 					end
 				else
-					local _func = t['*'];
-					t[nargs] = _func;
+					local _func = tbl["*"];
+					tbl[nargs] = _func;
 					return _func;
 				end
 			end,
@@ -243,38 +346,36 @@ local SET = nil;
 -->
 
 -->		string
-	local gsub = gsub;
 	local function BuildRegularExp(pattern)
-		-- escape magic characters
+		--	escape magic characters
 		pattern = gsub(pattern, "([%+%-%*%(%)%?%[%]%^])", "%%%1");
-		-- remove capture indexes
+		--	remove capture indexes
 		pattern = gsub(pattern, "%d%$", "");
-		-- catch all characters
+		--	catch all characters
 		pattern = gsub(pattern, "(%%%a)", "%(%1+%)");
-		-- convert all %s to .+
+		--	convert all %s to .+
 		pattern = gsub(pattern, "%%s%+", ".+");
-		-- set priority to numbers over strings
+		--	set priority to numbers over strings
 		pattern = gsub(pattern, "%(.%+%)%(%%d%+%)", "%(.-%)%(%%d%+%)");
 
 		return pattern;
 	end
-	core.__L_QUEST_MONSTERS_KILLED = BuildRegularExp(QUEST_MONSTERS_KILLED);
-	core.__L_QUEST_ITEMS_NEEDED = BuildRegularExp(QUEST_ITEMS_NEEDED);
-	core.__L_QUEST_OBJECTS_FOUND = BuildRegularExp(QUEST_OBJECTS_FOUND);
-	if strfind(QUEST_MONSTERS_KILLED, "：") then
-		core.__L_QUEST_DEFAULT_PATTERN = "(.+)：";
+	__core.__L_QUEST_MONSTERS_KILLED = BuildRegularExp(_G.QUEST_MONSTERS_KILLED);
+	__core.__L_QUEST_ITEMS_NEEDED = BuildRegularExp(_G.QUEST_ITEMS_NEEDED);
+	__core.__L_QUEST_OBJECTS_FOUND = BuildRegularExp(_G.QUEST_OBJECTS_FOUND);
+	if strfind(_G.QUEST_MONSTERS_KILLED, "：") then
+		__core.__L_QUEST_DEFAULT_PATTERN = "(.+)：";
 	else
-		core.__L_QUEST_DEFAULT_PATTERN = "(.+):";
+		__core.__L_QUEST_DEFAULT_PATTERN = "(.+):";
 	end 
 
 	local LevenshteinDistance;
-	if CalculateStringEditDistance ~= nil then
-		LevenshteinDistance = CalculateStringEditDistance;
+	if _G.CalculateStringEditDistance ~= nil then
+		LevenshteinDistance = _G.CalculateStringEditDistance;
 	else
 		--	credit https://gist.github.com/Badgerati/3261142
-		local strbyte, min = strbyte, math.min;
 		function LevenshteinDistance(str1, str2)
-			-- quick cut-offs to save time
+			--	quick cut-offs to save time
 			if str1 == "" then
 				return #str2;
 			elseif str2 == "" then
@@ -287,7 +388,7 @@ local SET = nil;
 			local len2 = #str2;
 			local matrix = {  };
 
-			-- initialise the base matrix values
+			--	initialise the base matrix values
 			for i = 0, len1 do
 				matrix[i] = {  };
 				matrix[i][0] = i;
@@ -296,7 +397,7 @@ local SET = nil;
 				matrix[0][j] = j;
 			end
 
-			-- actual Levenshtein algorithm
+			--	actual Levenshtein algorithm
 			for i = 1, len1 do
 				for j = 1, len2 do
 					if strbyte(str1, i) == strbyte(str2, j) then
@@ -307,7 +408,7 @@ local SET = nil;
 				end
 			end
 
-			-- return the last value - this is the Levenshtein distance
+			--	return the last value - this is the Levenshtein distance
 			return matrix[len1][len2];
 		end
 	end
@@ -330,7 +431,7 @@ local SET = nil;
 		return ids[bestIndex], bestIndex, bestDistance;
 	end
 
-	core.FindMinLevenshteinDistance = FindMinLevenshteinDistance;
+	__core.FindMinLevenshteinDistance = FindMinLevenshteinDistance;
 -->
 
 -->		bit-data
@@ -360,35 +461,30 @@ local SET = nil;
 		["DRUID"] = 1024,
 	};
 	local classbit = {  }; for _class, _bit in next, bitclass do classbit[_bit] = _class; end
-	local __player_race = select(2, UnitRace('player'));
-	local __player_race_bit = bitrace[__player_race];
-	local __player_class = UnitClassBase('player');
-	local __player_class_bit = bitclass[__player_class];
-	local _bit_band = bit.band;
+	local _PLAYER_RACEBIT = bitrace[_PLAYER_RACEFILE];
+	local _PLAYER_CLASSBIT = bitclass[_PLAYER_CLASS];
 	local function bit_check(_b1, _b2)
 		return _bit_band(_b1, _b2) ~= 0;
 	end
 	local function bit_check_race(_b)
-		return _bit_band(_b, __player_race_bit) ~= 0;
+		return _bit_band(_b, _PLAYER_RACEBIT) ~= 0;
 	end
 	local function bit_check_class(_b)
-		return _bit_band(_b, __player_class_bit) ~= 0;
+		return _bit_band(_b, _PLAYER_CLASSBIT) ~= 0;
 	end
 	local function bit_check_race_class(_b1, _b2)
-		return _bit_band(_b1, __player_race_bit) ~= 0 and _bit_band(_b2, __player_class_bit) ~= 0;
+		return _bit_band(_b1, _PLAYER_RACEBIT) ~= 0 and _bit_band(_b2, _PLAYER_CLASSBIT) ~= 0;
 	end
-	core.__bitrace = bitrace;
-	core.__racebit = racebit;
-	core.__bitclass = bitclass;
-	core.__classbit = classbit;
-	core.__player_race = __player_race;
-	core.__player_race_bit = __player_race_bit;
-	core.__player_class = __player_class;
-	core.__player_class_bit = __player_class_bit;
-	core.__bit_check = bit_check;
-	core.__bit_check_race = bit_check_race;
-	core.__bit_check_class = bit_check_class;
-	core.__bit_check_race_class = bit_check_race_class;
+	__core.__bitrace = bitrace;
+	__core.__racebit = racebit;
+	__core.__bitclass = bitclass;
+	__core.__classbit = classbit;
+	__core._PLAYER_RACEBIT = _PLAYER_RACEBIT;
+	__core._PLAYER_CLASSBIT = _PLAYER_CLASSBIT;
+	__core.__bit_check = bit_check;
+	__core.__bit_check_race = bit_check_race;
+	__core.__bit_check_class = bit_check_class;
+	__core.__bit_check_race_class = bit_check_race_class;
 -->
 
 -->		Map			--	坐标系转换方法，参考自HandyNotes	--	C_Map效率非常低，可能因为构建太多Mixin(CreateVector2D)
@@ -403,9 +499,6 @@ local SET = nil;
 			5 = MICRO
 			6 = ORPHAN
 	]]
-	local tremove, next = tremove, next;
-	local UnitPosition = UnitPosition;
-	local C_Map = C_Map;
 	local C_Map_GetBestMapForUnit = C_Map.GetBestMapForUnit;
 	local C_Map_GetWorldPosFromMapPos = C_Map.GetWorldPosFromMapPos;
 	local C_Map_GetMapChildrenInfo = C_Map.GetMapChildrenInfo;
@@ -415,14 +508,100 @@ local SET = nil;
 	local C_Map_GetMapInfoAtPosition = C_Map.GetMapInfoAtPosition;
 	--
 	local WORLD_MAP_ID = C_Map.GetFallbackWorldMapID() or 947;		--	947
+	local MapTypeDungeon = Enum.UIMapType.Dungeon;
 	local mapMeta = {  };		--	[map] = { 1width, 2height, 3left, 4top, [instance], [name], [mapType], [parent], [children], [adjoined], }
-	local worldMapData= {		--	[instance] = { 1width, 2height, 3left, 4top, }
-		[0] = { 44688.53, 29795.11, 32601.04, 9894.93 },	--	Eastern Kingdoms
-		[1] = { 44878.66, 29916.10, 8723.96, 14824.53 },	--	Kalimdor
-	};
+	local worldMapData = nil;		--	[instance] = { 1width, 2height, 3left, 4top, }
+	if __ns.__toc < 20000 then
+		worldMapData= {		--	[instance] = { 1width, 2height, 3left, 4top, }
+			[0] = { 44688.53, 29795.11, 32601.04, 9894.93 },	--	Eastern Kingdoms
+			[1] = { 44878.66, 29916.10, 8723.96, 14824.53 },	--	Kalimdor
+		};
+	elseif __ns.__toc < 30000 then
+		worldMapData= {		--	[instance] = { 1width, 2height, 3left, 4top, }
+			[0] = { 44688.53, 29791.24, 32681.47, 11479.44 },	--	Eastern Kingdoms
+			[1] = { 44878.66, 29916.10,  8723.96, 14824.53 },	--	Kalimdor
+		};
+	end
+	local TransformMeta = {  };
+	-->		TransformData from HBD
+		local transformData;
+		if __ns.__toc >= 20000 and __ns.__toc < 30000 then
+			transformData = {
+				{ 530, 0, 4800, 16000, -10133.3, -2666.67, -2400, 2662.8 },
+				{ 530, 1, -6933.33, 533.33, -16000, -8000, 10339.7, 17600 },
+			};
+		else
+			transformData = {
+				{ 530, 1, -6933.33, 533.33, -16000, -8000, 9916, 17600 },
+				{ 530, 0, 4800, 16000, -10133.3, -2666.67, -2400, 2400 },
+				{ 732, 0, -3200, 533.3, -533.3, 2666.7, -611.8, 3904.3 },
+				{ 1064, 870, 5391, 8148, 3518, 7655, -2134.2, -2286.6 },
+				{ 1208, 1116, -2666, -2133, -2133, -1600, 10210.7, 2411.4 },
+				{ 1460, 1220, -1066.7, 2133.3, 0, 3200, -2333.9, 966.7 },
+				{ 1599, 1, 4800, 5866.7, -4266.7, -3200, -490.6, -0.4 },
+				{ 1609, 571, 6400, 8533.3, -1600, 533.3, 512.8, 545.3 },
+			};
+		end
+		for _, transform in next, transformData do
+			local instance = transform[1];
+			local meta = TransformMeta[instance]
+			if TransformMeta[instance] == nil then
+				meta = {
+					{
+						newInstanceID = transform[2],
+						minY = transform[3],
+						maxY = transform[4],
+						minX = transform[5],
+						maxX = transform[6],
+						offsetY = transform[7],
+						offsetX = transform[8],
+					},
+				};
+				TransformMeta[instance] = meta;
+			else
+				meta[#meta + 1] = {
+					newInstanceID = transform[2],
+					minY = transform[3],
+					maxY = transform[4],
+					minX = transform[5],
+					maxX = transform[6],
+					offsetY = transform[7],
+					offsetX = transform[8],
+				};
+			end
+		end
+	-->
+	local function TransformCoord(instance, x, y)
+		if TransformMeta[instance] then
+			for _, data in ipairs(TransformMeta[instance]) do
+				if x <= data.maxX and x >= data.minX and y <= data.maxY and y >= data.minY then
+					instance = data.newInstanceID;
+					x = x + data.offsetX;
+					y = y + data.offsetY;
+					break;
+				end
+			end
+		end
+		return instance, x, y;
+	end
+	local function TransformScope(instance, left, right, top, bottom)
+		if TransformMeta[instance] then
+			for _, data in ipairs(TransformMeta[instance]) do
+				if left <= data.maxX and right >= data.minX and top <= data.maxY and bottom >= data.minY then
+					instance = data.newInstanceID;
+					left   = left   + data.offsetX;
+					right  = right  + data.offsetX;
+					top    = top    + data.offsetY;
+					bottom = bottom + data.offsetY;
+					break;
+				end
+			end
+		end
+		return instance, left, right, top, bottom;
+	end
 	local __player_map_id = C_Map_GetBestMapForUnit('player');
 	-->		data
-		local mapHandler = CreateFrame("FRAME");
+		local mapHandler = CreateFrame('FRAME');
 		mapHandler:SetScript("OnEvent", function(self, event)
 			local map = C_Map_GetBestMapForUnit('player');
 			if __player_map_id ~= map then
@@ -444,20 +623,20 @@ local SET = nil;
 			local meta = mapMeta[map];
 			if meta == nil then
 				local data = C_Map_GetMapInfo(map);
-				if data ~= nil then
-					-- get two positions from the map, we use 0/0 and 0.5/0.5 to avoid issues on some maps where 1/1 is translated inaccurately
+				if data ~= nil and data.mapType ~= MapTypeDungeon then
+					--	get two positions from the map, we use 0/0 and 0.5/0.5 to avoid issues on some maps where 1/1 is translated inaccurately
 					local instance, x00y00 = C_Map_GetWorldPosFromMapPos(map, vector0000);
 					local _, x05y05 = C_Map_GetWorldPosFromMapPos(map, vector0505);
 					if x00y00 ~= nil and x05y05 ~= nil then
 						local top, left = x00y00:GetXY();
 						local bottom, right = x05y05:GetXY();
-						local width, height = (left - right) * 2, (top - bottom) * 2;
-						bottom = top - height;
-						right = left - width;
-						meta = { width, height, left, top, instance = instance,       name = data.name, mapType = data.mapType, };
+						bottom = top + (bottom - top) * 2;
+						right = left + (right - left) * 2;
+						instance, left, right, top, bottom = TransformScope(instance, left, right, top, bottom);
+						meta = { left - right, top - bottom, left, top, instance = instance,       name = data.name, mapType = data.mapType, };
 						mapMeta[map] = meta;
 					else
-						meta = { 0, 0, 0, 0,               instance = instance or -1, name = data.name, mapType = data.mapType, };
+						meta = { 0, 0, 0, 0,                            instance = instance or -1, name = data.name, mapType = data.mapType, };
 						mapMeta[map] = meta;
 					end
 					local pmap = data.parentMapID;
@@ -486,12 +665,13 @@ local SET = nil;
 										meta.children = cmaps;
 									end
 									cmaps[cmap] = 1;
+									cmeta.parent = map;
 								end
 							end
 						end
 					end
-					-- process sibling maps (in the same group)
-					-- in some cases these are not discovered by GetMapChildrenInfo above
+					--	process sibling maps (in the same group)
+					--	in some cases these are not discovered by GetMapChildrenInfo above
 					-->		Maybe classic doesnot use it.
 					local groupID = C_Map_GetMapGroupID(map);
 					if groupID then
@@ -529,28 +709,32 @@ local SET = nil;
 			end
 			return meta;
 		end
-		-- find all maps in well known structures
+		--	find all maps in well known structures
 		processMap(WORLD_MAP_ID);
-		-- try to fill in holes in the map list
+		--	try to fill in holes in the map list
 		for map = 1, 2000 do
 			processMap(map);
 		end
 		if __ns.__toc >= 20000 and __ns.__toc < 30000 then
 			local data = {
-				[1944] = { 1946, 1952, },
-				[1946] = { 1944, 1949, 1951, 1952, 1955, },
-				[1948] = { 1952, },
-				[1949] = { 1946, 1953, },
-				[1951] = { 1946, 1952, 1955, },
-				[1952] = { 1944, 1946, 1948, 1951, 1955, },
-				[1953] = { 1949, },
-				[1955] = { 1946, 1951, 1952, },
+				[1438] = { 1457, },	--	泰达希尔
+				[1457] = { 1438, },	--	达纳苏斯
 				--
-				[1947] = { 1950, },
-				[1950] = { 1947, },
-				[1941] = { 1942, 1954, },
-				[1942] = { 1941, },
-				[1954] = { 1941, },
+				[1944] = { 1946, 1951, 1952, },				--	地狱火半岛
+				[1946] = { 1944, 1949, 1951, 1952, 1955, },	--	赞加沼泽
+				[1948] = { 1952, },							--	影月谷
+				[1949] = { 1946, 1953, },					--	刀锋山
+				[1951] = { 1944, 1946, 1952, 1955, },		--	纳格兰
+				[1952] = { 1944, 1946, 1948, 1951, 1955, },	--	泰罗卡森林
+				[1953] = { 1949, },							--	虚空风暴
+				[1955] = { 1946, 1951, 1952, },				--	沙塔斯城
+						--
+				[1947] = { 1943, },	--	埃索达
+				[1950] = { 1943, },	--	秘血岛
+				[1943] = { 1947, },	--	秘蓝岛
+				[1941] = { 1942, 1954, },	--	永歌森林
+				[1942] = { 1941, },	--	幽魂之地
+				[1954] = { 1941, },	--	银月城
 			};
 			for map, list in next, data do
 				local meta = mapMeta[map];
@@ -569,11 +753,43 @@ local SET = nil;
 				end
 			end
 		end
+		--	fill in continent and planet
+		local function FillInChildren(which, map, children)
+			for cmap, _ in next, children do
+				local cmeta = mapMeta[cmap];
+				if cmeta ~= nil then
+					cmeta[which] = map;
+					if cmeta.children ~= nil then
+						FillInChildren(which, map, cmeta.children)
+					end
+				end
+			end
+		end
+		local function FillIn(which, map)
+			local meta = mapMeta[map];
+			if meta ~= nil and meta.children ~= nil then
+				FillInChildren(which, map, meta.children);
+			end
+		end
+		FillIn("universe", 946);
+		FillIn("planet", 947);
+		FillIn("planet", 1945);
+		FillIn("continent", 1414);
+		FillIn("continent", 1415);
+		FillIn("continent", 1945);
 	-->
+	__core.ContinentMapID = {
+		[946] = "Universe",
+		[947] = "Azeroth",
+		[1414] = "Kalimdor",
+		[1415] = "Eastern Kingdoms",
+		[1945] = "Outland",
+	};
 	--	return map, x, y
 	local function GetUnitPosition(unit)
 		local y, x, _z, map = UnitPosition(unit);
-		return map, y, x;
+		return TransformCoord(map, x, y);
+		-- return map, y, x;
 	end
 	--	return map, x, y	-->	bound to [0.0, 1.0]
 	local function GetZonePositionFromWorldPosition(map, x, y)
@@ -618,7 +834,8 @@ local SET = nil;
 
 	--	return map, x, y
 	local function GetUnitZonePosition(unit)
-		local y, x, _z, map = UnitPosition(unit);
+		-- local y, x, _z, map = UnitPosition(unit);
+		local map, x, y = GetUnitPosition('player');
 		if x ~= nil and y ~= nil then
 			return GetZonePositionFromWorldPosition(C_Map_GetBestMapForUnit(unit), x, y);
 		end
@@ -628,7 +845,8 @@ local SET = nil;
 	end
 	--	return map, x, y
 	local function GetPlayerZonePosition()
-		local y, x, _z, instance = UnitPosition('player');
+		-- local y, x, _z, map = UnitPosition('player');
+		local map, x, y = GetUnitPosition('player');
 		if x ~= nil and y ~= nil then
 			return GetZonePositionFromWorldPosition(__player_map_id, x, y);
 		end
@@ -641,6 +859,7 @@ local SET = nil;
 		return mapMeta[map];
 	end
 	local function GetMapParent(map)
+		local meta = mapMeta[map];
 		if meta ~= nil then
 			return meta.parent;
 		end
@@ -657,15 +876,21 @@ local SET = nil;
 			return meta.children;
 		end
 	end
+	local function GetMapContinent(map)
+		local meta = mapMeta[map];
+		if meta ~= nil then
+			return meta.continent;
+		end
+	end
 
-	core.GetUnitPosition = GetUnitPosition;
-	core.GetZonePositionFromWorldPosition = GetZonePositionFromWorldPosition;
-	core.GetWorldPositionFromZonePosition = GetWorldPositionFromZonePosition;
-	core.GetWorldPositionFromAzerothWorldMapPosition = GetWorldPositionFromAzerothWorldMapPosition;
-	core.GetAzerothWorldMapPositionFromWorldPosition = GetAzerothWorldMapPositionFromWorldPosition;
-	core.GetUnitZonePosition = GetUnitZonePosition;
-	core.GetPlayerZone = GetPlayerZone;
-	core.GetPlayerZonePosition = GetPlayerZonePosition;
+	__core.GetUnitPosition = GetUnitPosition;
+	__core.GetZonePositionFromWorldPosition = GetZonePositionFromWorldPosition;
+	__core.GetWorldPositionFromZonePosition = GetWorldPositionFromZonePosition;
+	__core.GetWorldPositionFromAzerothWorldMapPosition = GetWorldPositionFromAzerothWorldMapPosition;
+	__core.GetAzerothWorldMapPositionFromWorldPosition = GetAzerothWorldMapPositionFromWorldPosition;
+	__core.GetUnitZonePosition = GetUnitZonePosition;
+	__core.GetPlayerZone = GetPlayerZone;
+	__core.GetPlayerZonePosition = GetPlayerZonePosition;
 	---/run ac=__ala_meta__.quest.core
 	---/print ac.GetWorldPositionFromZonePosition(ac.GetPlayerZonePosition())
 	---/print UnitPosition('player')
@@ -675,27 +900,33 @@ local SET = nil;
 	---/print ac.GetWorldPositionFromZonePosition(1416, 0.184, 0.88)
 	---/print ac.GetZonePositionFromWorldPosition(1416,select(2,ac.GetWorldPositionFromZonePosition(1416, 0.184, 0.88)))
 
-	core.GetAllMapMetas = GetAllMapMetas;
-	core.GetMapMeta = GetMapMeta;
-	core.GetMapParent = GetMapParent;
-	core.GetMapAdjoined = GetMapAdjoined;
-	core.GetMapChildren = GetMapChildren;
+	__core.GetAllMapMetas = GetAllMapMetas;
+	__core.GetMapMeta = GetMapMeta;
+	__core.GetMapParent = GetMapParent;
+	__core.GetMapAdjoined = GetMapAdjoined;
+	__core.GetMapChildren = GetMapChildren;
+	__core.GetMapContinent = GetMapContinent;
 	--
 	local function PreloadCoordsFunc(coords, wcoords)
 		local num_coords = #coords;
 		local index = 1;
 		while index <= num_coords do
 			local coord = coords[index];
-			local instance, x, y = GetWorldPositionFromZonePosition(coord[3], coord[1] * 0.01, coord[2] * 0.01);
-			-- local instance, v = C_Map.GetWorldPosFromMapPos(coord[3], CreateVector2D(coord[1], coord[2]));	--	VERY SLOW, 90ms vs 1200ms
-			-- coord[5] = x;
-			-- coord[6] = y;
-			-- coord[7] = instance;
-			if x ~= nil and y ~= nil and instance ~= nil then
-				local wcoord = { x, y, instance, coord[4], };
-				wcoords[index] = wcoord;
-				coord[5] = wcoord;
-				index = index + 1;
+			if coord[1] >= 0 or coord[2] >= 0 then
+				local instance, x, y = GetWorldPositionFromZonePosition(coord[3], coord[1] * 0.01, coord[2] * 0.01);
+				-- local instance, v = C_Map.GetWorldPosFromMapPos(coord[3], CreateVector2D(coord[1], coord[2]));	--	VERY SLOW, 90ms vs 1200ms
+				-- coord[5] = x;
+				-- coord[6] = y;
+				-- coord[7] = instance;
+				if x ~= nil and y ~= nil and instance ~= nil then
+					local wcoord = { x, y, instance, coord[4], };
+					wcoords[index] = wcoord;
+					coord[5] = wcoord;
+					index = index + 1;
+				else
+					tremove(coords, index);
+					num_coords = num_coords - 1;
+				end
 			else
 				tremove(coords, index);
 				num_coords = num_coords - 1;
@@ -726,14 +957,24 @@ local SET = nil;
 					end
 				end
 			end
-			local pmap = GetMapParent(map);
-			if pmap ~= nil then
-				local pmap, x, y = GetZonePositionFromWorldPosition(pmap, wcoord[1], wcoord[2]);
-				if pmap ~= nil then
-					coords[pos] = { x * 100.0, y * 100.0, pmap, coord[4], wcoord, };
-					pos = pos + 1;
+			-- local pmap = GetMapParent(map);
+			-- if pmap ~= nil then
+			-- 	local pmap, x, y = GetZonePositionFromWorldPosition(pmap, wcoord[1], wcoord[2]);
+			-- 	if pmap ~= nil then
+			-- 		coords[pos] = { x * 100.0, y * 100.0, pmap, coord[4], wcoord, };
+			-- 		pos = pos + 1;
+			-- 	end
+			-- end
+			-- if SET.show_in_continent then
+				local cmap = GetMapContinent(map);
+				if cmap ~= nil then
+					local cmap, x, y = GetZonePositionFromWorldPosition(cmap, wcoord[1], wcoord[2]);
+					if cmap ~= nil then
+						coords[pos] = { x * 100.0, y * 100.0, cmap, coord[4], wcoord, };
+						pos = pos + 1;
+					end
 				end
-			end
+			-- end
 		end
 	end
 	local function PreloadCoords(info)
@@ -752,7 +993,7 @@ local SET = nil;
 			PreloadCoordsFunc(waypoints, wwaypoints);
 		end
 	end
-	__ns.core.PreloadCoords = PreloadCoords;
+	__core.PreloadCoords = PreloadCoords;
 -->
 
 -->		Texture
@@ -795,16 +1036,15 @@ local SET = nil;
 	local TIP_IMG_LIST = {  };
 	for index, info in next, IMG_LIST do
 		if (info[2] ~= nil and info[3] ~= nil and info[4] ~= nil) and (info[2] ~= 1.0 or info[3] ~= 1.0 or info[4] ~= 1.0) then
-			TIP_IMG_LIST[index] = format("\124T%s:0:0:0:0:1:1:0:1:0:1:%d:%d:%d\124t", info[1], info[2] * 255, info[3] * 255, info[4] * 255);
+			TIP_IMG_LIST[index] = format("|T%s:0:0:0:0:1:1:0:1:0:1:%d:%d:%d|t", info[1], info[2] * 255, info[3] * 255, info[4] * 255);
 		else
-			TIP_IMG_LIST[index] = format("\124T%s:0\124t", info[1]);
+			TIP_IMG_LIST[index] = format("|T%s:0|t", info[1]);
 		end
 	end
-	local _bit_band = bit.band;
 	local function GetQuestStartTexture(info)
 		local TEXTURE = IMG_INDEX.IMG_S_NORMAL;
 		local min = info.min;
-		local diff = min - __ns.__player_level;
+		local diff = min < 0 and 0 or (min - __ns.__player_level);
 		if diff > 0 then
 			if diff > 1 then
 				TEXTURE = IMG_INDEX.IMG_S_HIGH_LEVEL;
@@ -817,6 +1057,7 @@ local SET = nil;
 				TEXTURE = IMG_INDEX.IMG_S_REPEATABLE;
 			else
 				local lvl = info.lvl;
+				lvl = lvl >= 0 and lvl or __ns.__player_level
 				if lvl >= SET.quest_lvl_red then
 					TEXTURE = IMG_INDEX.IMG_S_VERY_HARD;
 				elseif lvl >= SET.quest_lvl_orange then
@@ -832,16 +1073,15 @@ local SET = nil;
 		end
 		return TEXTURE;
 	end
-	core.IMG_INDEX = IMG_INDEX;
-	core.IMG_PATH = IMG_PATH;
-	core.IMG_PATH_PIN = IMG_PATH_PIN;
-	core.IMG_LIST = IMG_LIST;
-	core.TIP_IMG_LIST = TIP_IMG_LIST;
-	core.GetQuestStartTexture = GetQuestStartTexture;
+	__core.IMG_INDEX = IMG_INDEX;
+	__core.IMG_PATH = IMG_PATH;
+	__core.IMG_PATH_PIN = IMG_PATH_PIN;
+	__core.IMG_LIST = IMG_LIST;
+	__core.TIP_IMG_LIST = TIP_IMG_LIST;
+	__core.GetQuestStartTexture = GetQuestStartTexture;
 -->
 
 -->		Quest
-	local GetQuestTagInfo = GetQuestTagInfo;
 	local QuestTagCache = {
 		[373] = 81,
 		[4146] = 81,
@@ -878,16 +1118,16 @@ local SET = nil;
 
 -->		Misc
 	local UnitHelpFac = { AH = 1, };
-	if UnitFactionGroup('player') == "Alliance" then
+	if _PLAYER_FACTIONGROUP == "Alliance" then
 		UnitHelpFac.A = 1;
 	else
 		UnitHelpFac.H = 1;
 	end
-	__ns.core.UnitHelpFac = UnitHelpFac;
+	__core.UnitHelpFac = UnitHelpFac;
 	local date = date;
 	local function _log_(...)
-		if __ns.__dev then
-			_F_CorePrint(date('\124cff00ff00%H:%M:%S\124r cl'), ...);
+		if __ns.__is_dev then
+			_F_CorePrint(date('|cff00ff00%H:%M:%S|r cl'), ...);
 		end
 	end
 	__ns._log_ = _log_;
@@ -936,57 +1176,59 @@ local SET = nil;
 			local cost = __ns._F_devDebugProfileTick(tag);
 			if val == false or cost >= 10.0 then
 				cost = cost - cost % 0.0001;
-				_F_CorePrint(date('\124cff00ff00%H:%M:%S\124r cl'), tag, cost, ex1, ex2, ex3);
+				_F_CorePrint(date('|cff00ff00%H:%M:%S|r cl'), tag, cost, ex1, ex2, ex3);
 			end
 		end
 	end
 	function __ns.__opt_log(tag, ...)
-		_F_CorePrint(date('\124cff00ff00%H:%M:%S\124r cl'), tag, ...);
+		_F_CorePrint(date('|cff00ff00%H:%M:%S|r cl'), tag, ...);
 	end
 -->
 
 -->		INITIALIZE
 	local function init()
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_start('module.init.init'); end
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_start('module.init.init.patch'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_start('module.init.init'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_start('module.init.init.patch'); end
 		__ns.apply_patch();
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.init.init.patch'); end
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_start('module.init.init.extra_db'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.patch'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_start('module.init.init.extra_db'); end
 		__ns.load_extra_db();
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.init.init.extra_db'); end
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_start('module.init.init.setting'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.extra_db'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_start('module.init.init.setting'); end
 		__ns.setting_setup();
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.init.init.setting'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.setting'); end
 		SET = __ns.__setting;
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_start('module.init.init.map'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_start('module.init.init.map'); end
 		__ns.map_setup();
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.init.init.map'); end
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_start('module.init.init.comm'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.map'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_start('module.init.init.comm'); end
 		__ns.comm_setup();
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.init.init.comm'); end
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_start('module.init.init.core'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.comm'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_start('module.init.init.core'); end
 		__ns.core_setup();
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.init.init.core'); end
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_start('module.init.init.util'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.core'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_start('module.init.init.util'); end
 		__ns.util_setup();
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.init.init.util'); end
-		--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.init.init'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.util'); end
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init'); end
+
+		__ns:MergeGlobal(__ns.__svar);
 		if __ala_meta__.initpublic then __ala_meta__.initpublic(); end
 	end
 	function __ns.PLAYER_ENTERING_WORLD()
 		_EventHandler:UnregEvent("PLAYER_ENTERING_WORLD");
-		C_Timer.After(0.1, init);
+		__ns.After(0.1, init);
 	end
 	function __ns.LOADING_SCREEN_ENABLED()
 		_EventHandler:UnregEvent("LOADING_SCREEN_ENABLED");
 	end
 	function __ns.LOADING_SCREEN_DISABLED()
 		_EventHandler:UnregEvent("LOADING_SCREEN_DISABLED");
-		C_Timer.After(0.1, init);
+		__ns.After(0.1, init);
 	end
 	-- _EventHandler:RegEvent("PLAYER_ENTERING_WORLD");
 	-- _EventHandler:RegEvent("LOADING_SCREEN_ENABLED");
 	_EventHandler:RegEvent("LOADING_SCREEN_DISABLED");
 -->
 
---[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.init'); end
+--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init'); end

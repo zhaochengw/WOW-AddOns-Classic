@@ -20,7 +20,11 @@ local UIParent = UIParent
 
 local LibWindow = LibStub('LibWindow-1.1')
 
----@type tdBag2Frame
+---@class UI.Frame: EventsMixin, Object, Frame, tdBag2BaseFrameTemplate
+-- UI
+---@field Container UI.Container
+-- members
+---@field lockOwner boolean
 local Frame = ns.Addon:NewClass('UI.Frame', 'Frame')
 Frame.TEMPLATE = 'tdBag2BaseFrameTemplate'
 

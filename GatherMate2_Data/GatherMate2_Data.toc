@@ -1,8 +1,8 @@
-## Interface: 20501
+## Interface: 20503
 ## Notes: GatherMate2 data fetched from Wowhead
 ## Title: GatherMate2Data
 ## Author: kagaro, Xinhuan, Spinx, Marrtin
-## Version: v2021-06-27
+## Version: v2022-01-20
 ## LoadOnDemand: 1
 ## Dependencies: GatherMate2
 
@@ -10,4 +10,9 @@ MiningData.lua
 HerbalismData.lua
 FishData.lua
 TreasureData.lua
+GasData.lua
 GatherMateData.lua
+
+## Title-zhCN: |cff880303[有爱]|r GatherMate2 数据
+## X-Vendor: NetEase
+## X-163UI-Version: 20220211134516

@@ -1,8 +1,8 @@
 ## Title: Quartz
-## Interface: 20501
+## Interface: 20503
 ## Notes: Modular casting bar.
 ## Author: Nevcairiel, Nymbia
-## Version: 3.6.6
+## Version: 3.6.9
 ## X-License: GPL v2
 ## X-Credits: Ammo (some code based on PitBull_CastBar), kergoth (Tradeskill Merge module idea), Roartindon (Lag Embed mode for Latency module)
 ## X-Curse-Project-ID: 4558
@@ -61,3 +61,8 @@ modules\Interrupt.lua
 modules\Range.lua
 modules\Flight.lua
 modules\EnemyCasts.lua
+
+## Title-zhCN: |cff880303[有爱]|r Quartz 美化施法条
+## Notes-zhCN: 美化和增强施法条，支持延迟显示等贴心功能
+## X-Vendor: NetEase
+## X-163UI-Version: 20220224141126

@@ -46,6 +46,7 @@ local tempGroup = {
 };
 OptionsPrivate.tempGroup = tempGroup;
 
+-- Does not duplicate child auras.
 function OptionsPrivate.DuplicateAura(data, newParent, massEdit)
   local base_id = data.id .. " "
   local num = 2
@@ -406,14 +407,6 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
     end
   end,
   OnCancel = function(self)
-    if self.data.parents then
-      for id in pairs(self.data.parents) do
-        local parentRegion = WeakAuras.GetRegion(id)
-        if parentRegion.Resume then
-          parentRegion:Resume()
-        end
-      end
-    end
     self.data = nil
   end,
   showAlert = true,
@@ -546,7 +539,7 @@ function WeakAuras.ToggleOptions(msg, Private)
   end
   if not OptionsPrivate.Private then
     OptionsPrivate.Private = Private
-    OptionsPrivate.Private:RegisterCallback("AuraWarningsUpdated", function(event, uid)
+    OptionsPrivate.Private.callbacks:RegisterCallback("AuraWarningsUpdated", function(event, uid)
       local id = OptionsPrivate.Private.UIDtoID(uid)
       if displayButtons[id] then
         -- The button does not yet exists if a new aura is created
@@ -554,9 +547,9 @@ function WeakAuras.ToggleOptions(msg, Private)
       end
     end)
 
-    OptionsPrivate.Private:RegisterCallback("ScanForLoads", AfterScanForLoads)
-    OptionsPrivate.Private:RegisterCallback("AboutToDelete", OnAboutToDelete)
-    OptionsPrivate.Private:RegisterCallback("Rename", OnRename)
+    OptionsPrivate.Private.callbacks:RegisterCallback("ScanForLoads", AfterScanForLoads)
+    OptionsPrivate.Private.callbacks:RegisterCallback("AboutToDelete", OnAboutToDelete)
+    OptionsPrivate.Private.callbacks:RegisterCallback("Rename", OnRename)
   end
 
   if(frame and frame:IsVisible()) then
@@ -643,10 +636,6 @@ local function LayoutDisplayButtons(msg)
   local loadedSorted, unloadedSorted = GetSortedOptionsLists();
 
   frame:SetLoadProgressVisible(true)
-  --frame.buttonsScroll:AddChild(frame.newButton);
-  --if(frame.addonsButton) then
-  --  frame.buttonsScroll:AddChild(frame.addonsButton);
-  --end
   if WeakAurasCompanion then
     frame.buttonsScroll:AddChild(frame.pendingInstallButton);
     frame.buttonsScroll:AddChild(frame.pendingUpdateButton);
@@ -770,9 +759,7 @@ function WeakAuras.ShowOptions(msg)
     -- Show what was last shown
     OptionsPrivate.Private.PauseAllDynamicGroups();
     for id, button in pairs(displayButtons) do
-      if (button:GetVisibility() > 0) then
-        button:PriorityShow(button:GetVisibility());
-      end
+      button:SyncVisibility()
     end
     OptionsPrivate.Private.ResumeAllDynamicGroups();
   end
@@ -892,7 +879,7 @@ function OptionsPrivate.UpdateButtonsScroll()
 end
 
 local function addChildButtons(button, children, visible)
-  local controlledChildren = children[button:GetTitle()];
+  local controlledChildren = children[button.data.id];
   if(controlledChildren) then
     table.sort(controlledChildren, function(a, b) return displayButtons[a]:GetGroupOrder() <  displayButtons[b]:GetGroupOrder(); end);
     for _, groupchild in ipairs(controlledChildren) do
@@ -1260,7 +1247,11 @@ function OptionsPrivate.PickDisplayMultipleShift(target)
               table.insert(batchSelection, child);
               for i = index + 1, #group.controlledChildren do
                 local current = group.controlledChildren[i];
-                table.insert(batchSelection, current);
+                if (WeakAuras.GetData(current).controlledChildren) then
+                  -- Skip sub groups
+                else
+                  table.insert(batchSelection, current);
+                end
                 -- last button: stop selection
                 if (current == target or current == first) then
                   break;
@@ -1339,6 +1330,10 @@ function OptionsPrivate.SetGrouping(data)
 end
 
 function OptionsPrivate.Ungroup(data)
+  if not OptionsPrivate.IsDisplayPicked(data.id) then
+    WeakAuras.PickDisplay(data.id)
+  end
+
   if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
     for index, childId in ipairs(tempGroup.controlledChildren) do
       local button = WeakAuras.GetDisplayButton(childId);
@@ -1785,7 +1780,7 @@ function OptionsPrivate.DuplicateCollapseData(id, namespace, path)
   end
 end
 
-function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden, index, total)
+function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden, withoutColor, index, total)
   local headerOption
   if withHeader and (not index or index == 1) then
     headerOption =  {
@@ -1837,7 +1832,7 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
 
         local selectedFormat = get(symbol .. "_format")
         if (OptionsPrivate.Private.format_types[selectedFormat]) then
-          OptionsPrivate.Private.format_types[selectedFormat].AddOptions(symbol, hidden, addOption, get)
+          OptionsPrivate.Private.format_types[selectedFormat].AddOptions(symbol, hidden, addOption, get, withoutColor)
         end
         seenSymbols[symbol] = true
       end

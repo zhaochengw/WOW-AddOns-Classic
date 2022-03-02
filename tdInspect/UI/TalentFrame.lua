@@ -7,7 +7,7 @@ local huge = math.huge
 local rshift = bit.rshift
 local ripairs = ripairs or ipairs_reverse
 
----@type tdInspectTalentFrame
+---@class UI.TalentFrame: Object, ScrollFrame, AceEvent-3.0
 local TalentFrame = ns.Addon:NewClass('UI.TalentFrame', 'ScrollFrame')
 
 local MAX_TALENT_TABS = 3
@@ -124,6 +124,12 @@ local function TalentOnEnter(button)
     button:GetParent():GetParent():ShowTooltip(button)
 end
 
+local function TalentOnClick(button)
+    if button.link then
+        HandleModifiedItemClick(button.link)
+    end
+end
+
 local function AddLine(line, r, g, b)
     GameTooltip:AddLine(line, r or 1, g or 1, b or 1)
 end
@@ -201,6 +207,7 @@ function TalentFrame:GetTalentButton(i)
         button:SetID(i)
         button:SetScript('OnEnter', TalentOnEnter)
         button:SetScript('OnLeave', GameTooltip_Hide)
+        button:SetScript('OnClick', TalentOnClick)
 
         local Slot = button:CreateTexture(nil, 'BACKGROUND')
         Slot:SetSize(64, 64)
@@ -278,6 +285,7 @@ function TalentFrame:Update()
             -- Set the button info
             local name, iconTexture, tier, column, rank, maxRank = self.talent:GetTalentInfo(self.tabIndex, i)
             if name and tier <= MAX_NUM_TALENT_TIERS then
+                button.link = self.talent:GetTalentLink(self.tabIndex, i)
                 button.Rank:SetText(rank)
                 self:SetButtonLocation(button, tier, column, talentButtonSize, initialOffsetX, initialOffsetY,
                                        buttonSpacingX, buttonSpacingY)

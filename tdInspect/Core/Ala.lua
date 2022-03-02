@@ -6,13 +6,11 @@
 -- Code from https://github.com/alexqu0822/alaTalentEmu/blob/master/alaShared/core.lua
 --
 
----@type ns
+---@class ns
 local ns = select(2, ...)
 
 local Ala = {}
 ns.Ala = Ala
-
-local ALA_CLASSES = {}
 
 local CODE_TABLE = {}
 local REV_CODE_TABLE = {}

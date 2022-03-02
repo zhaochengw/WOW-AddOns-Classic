@@ -1,7 +1,7 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: TotemTimers
 ## Author:  Xianghar
-## Version: 1.18.10
+## Version: 2.0.3
 ## SavedVariables: TotemTimers_GlobalSettings, TotemTimers_Profiles
 ## OptionalDeps: Masque
 ## LoadManagers: AddonLoader
@@ -39,6 +39,7 @@ Settings.lua
 Spells.lua
 SetupTimers.lua
 SetupTrackers.lua
+EnhanceCDs.lua
 TotemTimers.xml
 TotemTimers.lua
 Warnings.lua
@@ -57,7 +58,12 @@ GUI\localization.esmx.lua
 GUI\General.lua
 GUI\Timers.lua
 GUI\Trackers.lua
+GUI\EnhanceCDs.lua
 GUI\Messages.lua
 GUI\Totems.lua
 GUI\Profiles.lua
 
+
+## Title-zhCN: |cff880303[有爱]|r TotemTimers 萨满图腾助手
+## X-Vendor: NetEase
+## X-163UI-Version: 20220224141126

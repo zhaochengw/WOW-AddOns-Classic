@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: SoulSort
 ## Notes: Easy Soul Shard Management
 ## Author: Anilusion

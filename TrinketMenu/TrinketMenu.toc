@@ -1,6 +1,6 @@
-## Interface: 20501
-## Title: TrinketMenu 9.0.3
-## Version: 9.0.3
+## Interface: 20503
+## Title: TrinketMenu 9.0.6
+## Version: 9.0.6
 ## Author: Gello, Resike
 ## Notes: Addon to manage trinkets.
 ## SavedVariables: TrinketMenuOptions
@@ -15,3 +15,8 @@ TrinketMenuOpt.lua
 TrinketMenuOpt.xml
 TrinketMenuQueue.lua
 TrinketMenuQueue.xml
+
+## Title-zhCN: |cff880303[有爱]|r TrinketMenu 饰品管理
+## Notes-zhCN: 便捷更换和监视饰品
+## X-Vendor: NetEase
+## X-163UI-Version: 20220211134516

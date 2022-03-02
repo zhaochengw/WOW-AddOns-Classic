@@ -1,4 +1,4 @@
-## Interface: 20501
+## Interface: 20503
 ## Title: CritSound
 ## Notes: Plays a sound when you perform a critical hit or healing.
 ## Notes-zhCN: 当你的近战、远程攻击以及伤害、治疗技能等爆击时播放预设音效

@@ -16,7 +16,7 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	NextPlatform	= "Show timer for when Al'ar changes platforms"
+	NextPlatform	= "Показывать таймер как долго Ал'ар может оставаться на платформе (Может улететь раньше, но позже никогда)"
 }
 
 ------------------
@@ -38,35 +38,33 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	WarnSplit		= "*** Приспешники на подходе ***",
-	WarnSplitSoon	= "*** Разделение через 5 секунд ***",
-	WarnAgent		= "*** Пособники появились ***",
-	WarnPriest		= "*** Жрецы и Солариан появились ***"
+	WarnSplit		= "Исчезновение",
+	WarnSplitSoon	= "Исчезновение через 5 секунд",
+	WarnAgent		= "Посланники появились",
+	WarnPriest		= "Жрецы и Солариан появились"
 
 }
 
 L:SetTimerLocalization{
-	TimerSplit		= "Разделение",
-	TimerAgent		= "Пособники",
-	TimerPriest		= "Жрецы и Солариан"
+	TimerSplit		= "Следующее Исчезновение",
+	TimerAgent		= "Посланники приближаются",
+	TimerPriest		= "Жрецы и Солариан приближаются"
 }
 
-L:SetOptionLocalization{--Translate
-	WarnSplit		= "Show warning for Split",
-	WarnSplitSoon	= "Show pre-warning for Split",
-	WarnAgent		= "Show warning for Agents spawn",
-	WarnPriest		= "Show warning for Priests and Solarian spawn",
-	TimerSplit		= "Show timer for Split",
-	TimerAgent		= "Show timer for Agents spawn",
-	TimerPriest		= "Show timer for Priests and Solarian spawn",
-	WrathWhisper	= "Сообщить шепотом цели, если Гнев на нем"
+L:SetOptionLocalization{
+	WarnSplit		= "Показывать предупреждение об Исчезновении",
+	WarnSplitSoon	= "Показывать предупреждение о скором Исчезновении",
+	WarnAgent		= "Показывать предупреждение о появлении Посланников",
+	WarnPriest		= "Показывать предупреждение о появлении Жрецов и Солариана",
+	TimerSplit		= "Показывать таймер об Исчезновении",
+	TimerAgent		= "Показывать таймер о появлении Посланников",
+	TimerPriest		= "Показывать таймер о появлении Жрецов и Солариана"
 }
 
 L:SetMiscLocalization{
-	WrathWhisper	= "Гнев на вас!",
-	YellSplit1		= "I will crush your delusions of grandeur!",--Translate
-	YellSplit2		= "You are hopelessly outmatched!",--Translate
-	YellPhase2		= "I become"--Translate
+	YellSplit1		= "Я навсегда избавлю вас от мании величия!",
+	YellSplit2		= "Вы безнадежно слабы!",
+	YellPhase2		= "Я сольюсь"
 }
 
 ---------------------------
@@ -79,54 +77,52 @@ L:SetGeneralLocalization{
 }
 
 L:SetWarningLocalization{
-	WarnGaze		= "*** Таладред бросает взор на >%s< ***",
-	WarnMobDead		= "%s down",--Translate
-	WarnEgg			= "*** Феникс убит - появляется яйцо ***",
-	SpecWarnGaze	= "Бегите!",
-	SpecWarnEgg		= "*** Феникс убит - появляется яйцо ***"
+	WarnGaze		= "Взгляд на >%s<",
+	WarnMobDead		= "%s мертв",
+	WarnEgg			= "Яйцо феникса появилось",
+	SpecWarnGaze	= "Взгляд на ТЕБЕ - Убегай!",
+	SpecWarnEgg		= "Яйцо феникса появилось - Смени цель!"
 }
 
 L:SetTimerLocalization{
-	TimerPhase		= "Next Phase",--Translate
+	TimerPhase		= "Следующая Фаза",
 	TimerPhase1mob	= "%s",
-	TimerNextGaze	= "Восстановление взгляда",
-	TimerRebirth	= "Возрождение"
+	TimerNextGaze	= "Новая цель Взгляда",
+	TimerRebirth	= "Возрождение Феникса"
 }
 
-L:SetOptionLocalization{--Translate
-	WarnGaze		= "Show warning for Thaladred's Gaze target",
-	WarnMobDead		= "Show warning for Phase 2 mob down",
-	WarnEgg			= "Show warning when Phoenix Egg spawn",
-	SpecWarnGaze	= "Show special warning when Gaze on you",
-	SpecWarnEgg		= "Show special warning when Phoenix Egg spawn",
-	TimerPhase		= "Show time for next phase",
-	TimerPhase1mob	= "Show time for Phase 1 mob active",
-	TimerNextGaze	= "Show timer for Thaladred's Gaze target changes",
-	TimerRebirth	= "Show timer for Phoenix Egg rebirth remaining",
-	GazeWhisper		= "Сообщить шепотом цели, если Таладред на нем",
-	GazeIcon		= "Установить метку на цель Таладред"
+L:SetOptionLocalization{
+	WarnGaze		= "Показывать предупреждение о цели Взгляда Талареда",
+	WarnMobDead		= "Показывать предупреждение о смерти советников на Фазе 2",
+	WarnEgg			= "Показывать предупреждение о появлении Яйца феникса",
+	SpecWarnGaze	= "Показывать специальное предупреждение о Взгляде на тебе",
+	SpecWarnEgg		= "Показывать специальное предупреждение о появлении Яйца феникса",
+	TimerPhase		= "Показывать таймер о следующей фазе",
+	TimerPhase1mob	= "Показывать таймер об активности моба на Фазе 1",
+	TimerNextGaze	= "Показывать таймер смены цели Взгляда Талареда",
+	TimerRebirth	= "Показывать таймер до возрождения Яйца феникса",
+	GazeIcon		= "Установить метку на цель Взгляда Талареда"
 }
 
 L:SetMiscLocalization{
-	YellPhase2	= "As you see, I have many weapons in my arsenal....",--Translate
-	YellPhase3	= "Perhaps I underestimated you. It would be unfair to make you fight all four advisors at once, but... fair treatment was never shown to my people. I'm just returning the favor.",--Translate
-	YellPhase4	= "Alas, sometimes one must take matters into one's own hands. Balamore shanal!",--Translate
-	YellPhase5	= "I have not come this far to be stopped! The future I have planned will not be jeopardized! Now you will taste true power!!",--Translate
-	YellSang	= "You have persevered against some of my best advisors... but none can withstand the might of the Blood Hammer. Behold, Lord Sanguinar!",--Translate
-	YellCaper	= "Capernian will see to it that your stay here is a short one.",--Translate
-	YellTelo	= "Well done, you have proven worthy to test your skills against my master engineer, Telonicus.",--Translate
-	EmoteGaze	= "sets eyes on ([^%s]+)!",--Translate
-	GazeWhisper	= "Таладред бросает взор на ВАС! Бегите!",
+	YellPhase2	= "Как видите, оружия у меня предостаточно...",
+	YellPhase3	= "Возможно, я недооценил вас. Было бы несправедливо заставлять вас драться с четырьмя советниками сразу, но... Мои люди тоже никогда не знали справедливости. Я лишь возвращаю долг.",
+	YellPhase4	= "Увы, иногда приходится брать все в свои руки. Баламоре шаналь!",
+	YellPhase5	= "Я не затем ступил на этот путь, чтобы остановиться на полдороги! Мои планы должны сбыться – и они сбудутся! Узрите же истинную мощь!",
+	YellSang	= "Вы справились с моими лучшими советниками... Но перед мощью Кровавого Молота не устоит никто. Узрите лорда Сангвинара!",
+	YellCaper	= "Каперниан проследит, чтобы вы не задержались здесь надолго.",
+	YellTelo	= "Неплохо, теперь вы можете потягаться с моим главным инженером Телоникусом.",
+	EmoteGaze	= "смотрит на ([^%s]+).",
 	Thaladred	= "Таладред Светокрад",
 	Sanguinar	= "Лорд Сангвинар",
 	Capernian	= "Великий Звездочет Каперниан",
-	Telonicus	= "Старший инженер Телоникус",
-	Bow			= "Netherstrand Longbow",--Translate
-	Axe			= "Devastation",--Translate
-	Mace		= "Cosmic Infuser",--Translate
-	Dagger		= "Infinity Blades",--Translate
-	Sword		= "Warp Slicer",--Translate
-	Shield		= "Phaseshift Bulwark",--Translate
-	Staff		= "Staff of Disintegration",--Translate
+	Telonicus	= "Главный инженер Телоникус",
+	Bow			= "Длинный лук Края Пустоты",
+	Axe			= "Сокрушение",
+	Mace		= "Вселенский вдохновитель",
+	Dagger		= "Клинки Бесконечности",
+	Sword		= "Астральный тесак",
+	Shield		= "Фазовый щит",
+	Staff		= "Посох распыления",
 	Egg			= "Яйцо феникса"
 }

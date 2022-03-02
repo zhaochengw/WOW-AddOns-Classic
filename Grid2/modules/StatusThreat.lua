@@ -4,11 +4,13 @@ local Grid2 = Grid2
 local UnitExists = UnitExists
 local UnitThreatSituation = UnitThreatSituation
 
+local unit_is_valid = Grid2.roster_guids
+
 local colors
 local activeValue
 
 function Threat:UpdateUnit(_, unit)
-	if unit then -- unit can be nil which is so wtf
+	if unit_is_valid[unit or 0] then -- unit can be nil which is so wtf
 		self:UpdateIndicators(unit)
 	end
 end

@@ -1,0 +1,5 @@
+<Ui>
+	<Script file="other.lua" />
+	<Script file="Auxtxt.lua" />
+	<Script file="AddButton.lua" />
+</Ui>

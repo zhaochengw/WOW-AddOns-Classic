@@ -2,14 +2,14 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 1/1/2020, 12:22:38 AM
-
----@type ns
+--
+---@class ns
 local ns = select(2, ...)
 local Forever = ns.Forever
 local Current = ns.Current
 local GlobalSearch = ns.GlobalSearch
 
----@type tdBag2Cache
+---@class Cache
 local Cache = {}
 ns.Cache = Cache
 

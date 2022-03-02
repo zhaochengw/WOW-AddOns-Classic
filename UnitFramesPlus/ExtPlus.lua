@@ -28,7 +28,7 @@ local IsSpellInRange = IsSpellInRange;
 --     if UnitFramesPlusDB["extra"]["bosshppct"] == 1 then
 --         for id = 1, MAX_BOSS_FRAMES, 1 do
 --             _G["UFP_Boss"..id.."HPPct"]:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
---             _G["UFP_Boss"..id.."HPPct"]:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "boss"..id)
+--             _G["UFP_Boss"..id.."HPPct"]:RegisterUnitEvent("UNIT_HEALTH", "boss"..id)
 --             _G["UFP_Boss"..id.."HPPct"]:SetScript("OnEvent", function(self, event, ...)
 --                 UnitFramesPlus_BossHealthPctDisplayUpdate(id);
 --             end)
@@ -311,13 +311,13 @@ end
 --     if IsAddOnLoaded("Blizzard_ArenaUI") then
 --         for id = 1, MAX_ARENA_ENEMIES, 1 do
 --             if UnitFramesPlusDB["extra"]["pvphppct"] == 0 then
---                 if _G["UFP_ArenaEnemyHPPct"..id]:IsEventRegistered("UNIT_HEALTH_FREQUENT") then
+--                 if _G["UFP_ArenaEnemyHPPct"..id]:IsEventRegistered("UNIT_HEALTH") then
 --                     _G["UFP_ArenaEnemyHPPct"..id]:UnregisterAllEvents();
 --                     _G["UFP_ArenaEnemyHPPct"..id]:SetScript("OnEvent", nil);
 --                     _G["UFP_ArenaEnemyHPPct"..id]:Hide();
 --                 end
 --             else
---                 _G["UFP_ArenaEnemyHPPct"..id]:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "arena"..id);
+--                 _G["UFP_ArenaEnemyHPPct"..id]:RegisterUnitEvent("UNIT_HEALTH", "arena"..id);
 --                 _G["UFP_ArenaEnemyHPPct"..id]:SetScript("OnEvent", function(self, event, ...)
 --                     UnitFramesPlus_ArenaEnemyHPPctDisplayUpdate(id);
 --                 end)

@@ -6,7 +6,6 @@ local wipe = wipe
 local pairs = pairs
 local ipairs = ipairs
 local format = string.format
-local ICON_TEMPLATE = (not Grid2.isVanilla) and "BackdropTemplate" or nil
 
 local function Icon_Create(self, parent)
 	local f = self:CreateFrame("Frame", parent)
@@ -110,11 +109,12 @@ end
 
 local function Icon_Layout(self, parent)
 	local f = parent[self.name]
-	local x,y   = 0,0
+	local x,y = 0,0
 	local ux,uy = self.ux,self.uy
 	local vx,vy = self.vx,self.vy
-	local size  = self.iconTotSize
 	local borderSize = self.borderSize
+	local iconSize = self.iconSize>1 and self.iconSize or self.iconSize * parent:GetHeight()
+	local size = iconSize + self.iconSpacing
 	local frameName
 	if not self.dbx.disableOmniCC then
 		local i,j  = parent:GetName():match("Grid2LayoutHeader(%d+)UnitButton(%d+)")
@@ -124,16 +124,16 @@ local function Icon_Layout(self, parent)
 	f:ClearAllPoints()
 	f:SetPoint(self.anchor, parent.container, self.anchorRel, self.offsetx, self.offsety)
 	f:SetFrameLevel(parent:GetFrameLevel() + self.frameLevel)
-	f:SetSize( self.width, self.height )
+	f:SetSize( size*self.pw, size*self.ph )
 	local auras = f.auras
 	for i=1,self.maxIcons do
 		local frame = auras[i]
 		if not frame then
-			frame = CreateFrame("Frame", nil, f, ICON_TEMPLATE)
+			frame = CreateFrame("Frame", nil, f, "BackdropTemplate")
 			frame.icon = frame:CreateTexture(nil, "ARTWORK")
 			auras[i] = frame
 		end
-		frame:SetSize( self.iconSize, self.iconSize )
+		frame:SetSize( iconSize, iconSize )
 		-- frame container
 		Grid2:SetFrameBackdrop(frame, self.backdrop)
 		if borderSize>0 then
@@ -205,18 +205,17 @@ local function Icon_LoadDB(self)
 	self.iconSpacing    = dbx.iconSpacing or 1
 	self.maxIcons       = dbx.maxIcons or 3
 	self.maxIconsPerRow = dbx.maxIconsPerRow or 3
-	self.iconTotSize    = self.iconSize + self.iconSpacing
-	local maxRows = math.floor(self.maxIcons/self.maxIconsPerRow) + (self.maxIcons%self.maxIconsPerRow==0 and 0 or 1)
-	self.uy     = 0
-	self.vx     = 0
-	self.ux     = pointsX[self.anchorIcon]
-	self.vy     = pointsY[self.anchorIcon]
-	self.width  = math.abs(self.ux)*self.iconTotSize*self.maxIconsPerRow
-	self.height = math.abs(self.vy)*self.iconTotSize*maxRows
+	self.maxRows        = math.floor(self.maxIcons/self.maxIconsPerRow) + (self.maxIcons%self.maxIconsPerRow==0 and 0 or 1)
+	self.uy 			= 0
+	self.vx 			= 0
+	self.ux 			= pointsX[self.anchorIcon]
+	self.vy 			= pointsY[self.anchorIcon]
+	self.pw             = math.abs(self.ux)*self.maxIconsPerRow
+	self.ph             = math.abs(self.vy)*self.maxRows
 	if self.orientation=="VERTICAL" then
 		self.ux, self.vx = self.vx, self.ux
 		self.uy, self.vy = self.vy, self.uy
-		self.width, self.height = self.height,self.width
+		self.pw, self.ph = self.ph, self.pw
 	end
 	self.showCooldown    = not dbx.disableCooldown
 	self.showStack       = not dbx.disableStack

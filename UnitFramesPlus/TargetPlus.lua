@@ -372,10 +372,10 @@ function UnitFramesPlus_TargetHPMPPct()
         end
     else
         TargetHPMPPct:RegisterEvent("PLAYER_TARGET_CHANGED");
-        TargetHPMPPct:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "target");
+        TargetHPMPPct:RegisterUnitEvent("UNIT_HEALTH", "target");
         TargetHPMPPct:RegisterUnitEvent("UNIT_POWER_FREQUENT", "target");
         TargetHPMPPct:SetScript("OnEvent", function(self, event, ...)
-            if event == "UNIT_HEALTH_FREQUENT" then
+            if event == "UNIT_HEALTH" then
                 UnitFramesPlus_TargetHPValueDisplayUpdate();
             elseif event == "UNIT_POWER_FREQUENT" then
                 UnitFramesPlus_TargetMPValueDisplayUpdate();
@@ -472,7 +472,7 @@ end
 --     if UnitFramesPlusDB["target"]["colorhp"] == 1 then
 --         if UnitFramesPlusDB["target"]["colortype"] == 1 then
 --             TargetFrameHealthBar:SetScript("OnValueChanged", nil);
---             -- if chb:IsEventRegistered("UNIT_HEALTH_FREQUENT") then
+--             -- if chb:IsEventRegistered("UNIT_HEALTH") then
 --             --     chb:UnregisterAllEvents();
 --             -- end
 --             chb:RegisterEvent("PLAYER_TARGET_CHANGED");
@@ -487,7 +487,7 @@ end
 --             if chb:IsEventRegistered("PLAYER_TARGET_CHANGED") then
 --                 chb:UnregisterAllEvents();
 --             end
---             -- chb:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "target");
+--             -- chb:RegisterUnitEvent("UNIT_HEALTH", "target");
 --         end
 --         --TargetFrameHealthBar.lockColor = true;
 --     else
@@ -1065,7 +1065,7 @@ function UnitFramesPlus_TargetPortrait()
             tpt:RegisterUnitEvent("UNIT_TARGETABLE_CHANGED", "target");
             tpt:RegisterUnitEvent("UNIT_MODEL_CHANGED", "target");
             tpt:RegisterUnitEvent("UNIT_CONNECTION", "target");
-            tpt:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "target");
+            tpt:RegisterUnitEvent("UNIT_HEALTH", "target");
             tpt:SetScript("OnEvent", function(self, event, ...)
                 if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_ENTERING_WORLD" or event == "UNIT_TARGETABLE_CHANGED" then
                     if UnitExists("target") then
@@ -1077,7 +1077,7 @@ function UnitFramesPlus_TargetPortrait()
                     end
                 elseif event == "UNIT_MODEL_CHANGED" or event == "UNIT_CONNECTION" then
                     UnitFramesPlus_TargetPortraitDisplayUpdate();
-                elseif event == "UNIT_HEALTH_FREQUENT" then
+                elseif event == "UNIT_HEALTH" then
                     if TargetFramePortrait:IsShown() then
                         TargetFramePortrait:Hide();
                     end
@@ -1114,7 +1114,7 @@ function UnitFramesPlus_TargetPortrait()
             else
                 if tpt:IsEventRegistered("UNIT_MODEL_CHANGED") then
                     tpt:UnregisterEvent("UNIT_MODEL_CHANGED");
-                    tpt:UnregisterEvent("UNIT_HEALTH_FREQUENT");
+                    tpt:UnregisterEvent("UNIT_HEALTH");
                 end
             end
             tpt:SetScript("OnEvent", function(self, event, ...)

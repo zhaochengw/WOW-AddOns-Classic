@@ -1,7 +1,9 @@
 --[[
     上官晓雾
-    2021年5月27日21:08:58
+    2021年7月24日18:11:51
 
+    将查询物品等级的方法改成SetInventoryItem为主
+    修正了装备弩后装等错误的情况
 ]]
 local i, _
 local GetTalentTabInfo, GetInventoryItemTexture, GetInventoryItemLink =
@@ -26,10 +28,12 @@ local CUSTOM_DELAY_INSPECT = 1.5
 local CUSTOM_DELAY_NEXT_GEAR = 0.01
 
 local print = function(...)
-    if HDebugPrint then
-        HDebugPrint(GetTime(), ...)
-    else
-        -- print(GetTime(), ...)
+    if (false) then
+        if HDebugPrint then
+            HDebugPrint(GetTime(), ...)
+        else
+            -- print(GetTime(), ...)
+        end
     end
 end
 function LowMixin(object, ...)
@@ -246,41 +250,57 @@ function HInspectMixin:OnInsUpdate(elapsed)
     end
 end
 
-function HInspectMixin:BeginIns(unit, guid)
+function HInspectMixin:BeginIns(...)
+    local unit, guid = ...
     if not guid then
         return
     end
+    local raidindex = nil
     if not unit or guid ~= UnitGUID(unit) then
-        unit = HTool.GetUnit(guid)
+        unit, raidindex = HTool.GetUnit(guid)
     end
     if (not unit) then --客户端缓存检测？？(小队除外？？)
         -- self:SetState(guid,"不存在");
-        print("不存在")
+        print("不存在unit")
         return
     end
     if not UnitIsVisible(unit) then
-        -- if(not unit:find("party")) then    --客户端缓存检测？？(小队除外？？)
-        -- self:SetState(guid,"不存在");
-        print("不存在")
-        return
-    -- end
+        if (GameVer > 90000 and unit:find("party")) then --客户端缓存检测？？(小队除外？？)
+            if raidindex then
+                local name, rank, subgroup, level, class, fileName, zone, online, isDead, role =
+                    GetRaidRosterInfo(raidindex)
+                if not online then
+                    print("已离线")
+                    return
+                end
+            end
+        else
+            -- self:SetState(guid, "不存在")
+            print("不存在")
+            self:StopInspect()
+            return
+        end
     end
 
     -- if UnitIsDeadOrGhost('player') then	self:SetState(guid,"死亡");return end		--你死亡
     if UnitIsDead("player") then
         self:SetState(guid, "你已死亡")
+        self:StopInspect()
         return
     end --你死亡
     if UnitOnTaxi("player") then
         self:SetState(guid, "InTaxi")
+        self:StopInspect()
         return
     end --你在飞机上
     if InspectFrame and InspectFrame:IsShown() then
         self:SetState(guid, "观察中")
+        self:StopInspect()
         return
     end --你正在观察其他单位(如果同时调用观察指令，正在观察的单位信息会变动)
     if not CanInspect(unit) then
         self:SetState(guid, "不可观察")
+        self:StopInspect()
         return
     end --可否观察,理论上这个方法应该包括上述所有检测,但是该方法会弹出提示，甚至导致自动下坐骑(待确认)
 
@@ -310,7 +330,7 @@ end
 ----该方法会在切换地图/载入游戏时多次触发,导致卡蓝条
 function HInspectMixin:OnInventoryChanged(unit, ...)
     if unit == "player" then
-        return
+    -- return
     end
     local guid = UnitGUID(unit)
     ----这里可能存在其他根据具体的变动(观察下其他插件在这里的操作，以及该事件的详细信息)
@@ -332,7 +352,7 @@ function HInspectMixin:OnInspectReady(guid)
     local user = self:GetInsInfo(guid)
     print("INSPECT_READY:DO ", user.SpecInfo.IsFlag, "/", user.GearInfo.IsFlag)
     -- if not user.SpecInfo.IsFlag then     --缓存速度够快，只要ins了，就获取一次
-    if GameVer > 20000 then     --classic不能观察天赋
+    if GameVer > 20000 then --classic不能观察天赋
         self:ScanInspectSpec(user.Guid, user.SpecInfo)
     end
     -- end
@@ -377,42 +397,36 @@ function HInspectMixin:ScanInspectGear(guid, info)
     info.StateInfo = "查询中"
     info.IsFlag = true
     local total, offhandlevel = 0, 0 --记录副手武器装等,若双持状态，让副手装等=主手
-    local hasreclic = UnitHasRelicSlot and UnitHasRelicSlot(unit)
+    local hasreclic = false
+    if GameVer > 90000 then
+        hasreclic = false
+    else
+        hasreclic = true
+    end
     for i = 1, hasreclic and 18 or 17 do --圣物版本18，其他版本17
         if (i ~= 4) then --排除无效
             local level, NeedAgain, itemLink = 0, false, nil
-            local itemTexture = GetInventoryItemTexture(unit, i) --用于判断物品是否存在，因为延迟情况，其他Get方法可能会返回nil,但是这个不会
+            local itemTexture = GetInventoryItemTexture(unit, i) --用于判断物品是否存在，因为延迟情况，其他Get方法可能会返回nil,但是这个不会/错误，该方法也会放回nil
             if itemTexture then
-                itemLink = GetInventoryItemLink(unit, i)
-                -- if not itemLink then
-                --     itemLink = GetInventoryItemLink(unit, i)
-                -- end
+                if GameVer < 50000 then
+                    itemLink = GetInventoryItemLink(unit, i)
+                end
                 if not itemLink then
                     print("通过id查询")
                     --通过id查询
                     level, itemLink = HTool.GetItemInfoByIndex(unit, i)
-                    ---这里获取到的itemLink，在没有装等浮动装备版本，是可以用来获取物品等级的(本质上等于通过物品id)
-                    ---pass这种方法获取到的是错误信息,具体不明，不考虑了
-                    -- if not level then
-                    --     if itemLink then
-                    --         level = select(10,(":"):split(itemLink));
-                    --     end
-                    --     print(level,"通过id itemLink")
-                    -- end
                     if not info.NeedAgain and not level then
                         print("zTip:Index false")
-                        ----id方式也无法获取，再来一次
                         info.StateInfo = "正在查询"
                         info.NeedAgain = true
                         info.IsFlag = false
                         info.error = info.error + 1
-                    -- level = 0           --小号会一件件装备缓存，很慢
-                    -- return
                     end
                     if not level then
                         level = 0
                     end
                 else
+                    --通过itemlink获取物品等级，拥有浮动物品的等级的版本，不适用
                     level, NeedAgain = HTool.GetItemInfoByItemLink(itemLink)
                     if not info.NeedAgain and NeedAgain then
                         -- 链接也有了，但是结果还是不对，再来一次（一般是军团神器）
@@ -428,15 +442,27 @@ function HInspectMixin:ScanInspectGear(guid, info)
                         level = 0
                     end
                 end
-                if not level then
+                if not level or not itemLink then
                     print("没有level???")
                 end
                 if (i == 16) then
-                    offhandlevel = level
+                    local slot = select(9, GetItemInfo(itemLink))
+                    --并且16主手使用的是双手武器
+                    if
+                        (slot == "INVTYPE_2HWEAPON") or (slot == "INVTYPE_RANGED") or
+                            ((slot == "INVTYPE_RANGEDRIGHT") and (select(2,UnitClass(unit)) == "HUNTER"))
+                     then
+                        --使用双手武器中,副手武器装等设置为主手武器装等
+                        offhandlevel = level
+                    end
                 elseif (i == 17) then
                     offhandlevel = 0
                 end
                 total = total + level
+            else
+                -- print("GetInventoryItemTexture返回了nil")
+                -- info.NeedAgain = true
+                -- info.IsFlag = false
             end
             print(itemTexture, itemLink, level, i)
         end
@@ -445,12 +471,13 @@ function HInspectMixin:ScanInspectGear(guid, info)
         if (offhandlevel) then
             total = total + offhandlevel
         end
+        print("totalinfo:", total, offhandlevel)
         local ilvl = total / (hasreclic and 17 or 16)
         if (ilvl > 0) then
             ilvl = string.format("%.1f", ilvl)
         end
         info.Msg = ilvl
-        if info.Msg then
+        if info.Msg and info.Msg ~= 0 then
             info.LastUpdateTime = GetTime()
             info.StateInfo = "查询完成"
         else
@@ -475,7 +502,7 @@ function HInspectMixin:ScanInspectSpec(guid, info)
         for i = 1, 3 do
             local name, _, points = GetTalentTabInfo(i, true) --获取上一个Inspect缓存目标的天赋信息(暴雪的查询方式都是这样，发送查询指令，返回信息并缓存在本地，之后调用其他指令读取缓存信息)
             print(name, points, i)
-            table_talent[i] = {n = name, p = points}
+            table_talent[i] = {n = name or NONE, p = points or 0}
         end
         info.Msg = HTool.GetTalentStr(table_talent)
     else
@@ -513,28 +540,30 @@ function HInspectMixin:ScanInspectSpec(guid, info)
     end
 end
 
-function HInspectMixin:SetTooltipInspect(guid)
+function HInspectMixin:SetTooltipInspect(guid, flag)
     local user = self:GetInsInfo(guid)
     local gearstr =
         user.GearInfo.Msg and (user.GearInfo.Msg .. (user.GearInfo.IsFlag and "" or "*")) or user.GearInfo.StateInfo
     local specstr =
         user.SpecInfo.Msg and (user.SpecInfo.Msg .. (user.SpecInfo.IsFlag and "" or "*")) or user.SpecInfo.StateInfo
     if self.SetTooltip then
-        self:SetTooltip(guid, gearstr, specstr)
+        self.SetTooltip(guid, gearstr, specstr, flag)
     end
 end
 
 function HInspectMixin:ScanIns(unit)
     local guid = UnitGUID(unit)
-    self:SetTooltipInspect(guid)
+    self:SetTooltipInspect(guid, true)
 
     if UnitCanAttack("player", unit) then
         return
     end --目标不可否攻击(用于排除敌对状态的敌对玩家)
 
-    if not CheckInteractDistance(unit, 1) then --观察距离判断/注意 貌似某些版本 队友可以无视该距离？
-        -- self:SetState(self.CurrentInfo.GUID,"过远")
-        return
+    if GameVer < 90000 then --正式服观察没有距离限制了？？？
+        if not CheckInteractDistance(unit, 1) then --观察距离判断/注意 貌似某些版本 队友可以无视该距离？
+            -- self:SetState(self.CurrentInfo.GUID,"过远")
+            return
+        end
     end
 
     if IsShiftKeyDown() then

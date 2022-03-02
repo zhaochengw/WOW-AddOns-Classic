@@ -1,15 +1,15 @@
 local mod	= DBM:NewMod("Loatheb", "DBM-Naxx", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210526013940")
+mod:SetRevision("20220221015800")
 mod:SetCreatureID(16011)
 mod:SetEncounterID(1115)
 mod:SetModelID(16110)
 mod:RegisterCombat("combat")--Maybe change to a yell later so pull detection works if you chain pull him from tash gauntlet
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 29194 29196 29185 29198 29195 29197 29199",
-	"SPELL_AURA_REMOVED 29194 29196 29185 29198 29195 29197 29199",
+	"SPELL_AURA_APPLIED 29185 29194 29196 29198",-- 29184 29195 29197 29199
+	"SPELL_AURA_REMOVED 29185 29194 29196 29198",-- 29184 29195 29197 29199
 	"SPELL_CAST_SUCCESS 29234 29204 30281",
 	"UNIT_DIED"
 )
@@ -22,10 +22,10 @@ local warnRemoveCurse		= mod:NewSpellAnnounce(30281, 3)
 local warnHealSoon			= mod:NewAnnounce("WarningHealSoon", 4, 29184)
 local warnHealNow			= mod:NewAnnounce("WarningHealNow", 1, 29184, false)
 
-local timerSpore			= mod:NewNextCountTimer(12.9, 29234, nil, nil, nil, 5, "134530", DBM_CORE_L.DAMAGE_ICON)-- initial 11.3 then 12.92-12.99
+local timerSpore			= mod:NewNextCountTimer(12.9, 29234, nil, nil, nil, 5, "134530", DBM_COMMON_L.DAMAGE_ICON)-- initial 11.3 then 12.92-12.99
 local timerDoom				= mod:NewNextTimer(29, 29204, nil, nil, nil, 2)-- initial 130 then 29.1-32.4
 local timerRemoveCurseCD	= mod:NewNextTimer(30.8, 30281, nil, nil, nil, 5)
---local timerAura			= mod:NewBuffActiveTimer(17, 55593, nil, nil, nil, 5, nil, DBM_CORE_L.HEALER_ICON)
+--local timerAura			= mod:NewBuffActiveTimer(17, 55593, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
 
 mod:AddInfoFrameOption(29184, "Tank|Healer")
 mod:AddDropdownOption("CorruptedSorting", {"Alphabetical", "Duration"}, "Alphabetical")
@@ -128,7 +128,7 @@ end
 --29185--Priest
 --29198--Shaman
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(29194, 29196, 29185, 29198) and DBM:UnitDebuff(args.destName, 29184, 29195, 29197, 29199) then
+	if args:IsSpellID(29185, 29194, 29196, 29198) and DBM:UnitDebuff(args.destName, 29184, 29195, 29197, 29199) then
 		hadCorrupted[args.destName] = GetTime() + 60
 		if args:IsPlayer() then
 			warnHealSoon:Schedule(55)
@@ -137,14 +137,14 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(29194, 29196, 29185, 29198) and not DBM:UnitDebuff(args.destName, 29184, 29195, 29197, 29199) then
+	if args:IsSpellID(29185, 29194, 29196, 29198) and not DBM:UnitDebuff(args.destName, 29184, 29195, 29197, 29199) then
 		if args:IsPlayer() then
 			warnHealNow:Show()
 		end
 	end
 end
 
---because in all likelyhood, pull detection failed (cause 90s like to chargein there trash and all and pull it
+--because in all likelyhood, pull detection failed (cause 90s like to charge in there trash and all and pull it
 --We unschedule the pre warnings on death as a failsafe
 function mod:UNIT_DIED(args)
 	if self:GetCIDFromGUID(args.destGUID) == 16011 then

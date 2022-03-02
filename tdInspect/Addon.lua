@@ -3,19 +3,21 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 5/18/2020, 11:25:23 AM
 --
----@type ns
+---@class ns
+---@field Inspect Inspect
+---@field Talent Talent
 local ns = select(2, ...)
 
-local _
-local pairs, ipairs = pairs, ipairs
-
-local GetSpellInfo = GetSpellInfo
 local ShowUIPanel = LibStub('LibShowUIPanel-1.0').ShowUIPanel
 
 ns.UI = {}
 ns.L = LibStub('AceLocale-3.0'):GetLocale('tdInspect')
 
----@type tdInspectAddon
+_G.BINDING_HEADER_TDINSPECT = 'tdInspect'
+_G.BINDING_NAME_TDINSPECT_VIEW_TARGET = ns.L['Inspect target']
+_G.BINDING_NAME_TDINSPECT_VIEW_MOUSEOVER = ns.L['Inspect mouseover']
+
+---@class Addon: AceAddon-3.0, LibClass-2.0, AceEvent-3.0
 local Addon = LibStub('AceAddon-3.0'):NewAddon('tdInspect', 'LibClass-2.0', 'AceEvent-3.0')
 ns.Addon = Addon
 

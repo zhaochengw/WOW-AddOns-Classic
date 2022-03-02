@@ -5,21 +5,27 @@
 ----------------------------------------------------------------------------------------------------
 local __addon, __ns = ...;
 
-if __ns.__dev then
-	setfenv(1, __ns.__fenv);
-end
 local _G = _G;
 local _ = nil;
 ----------------------------------------------------------------------------------------------------
---[=[dev]=]	if __ns.__dev then __ns._F_devDebugProfileStart('module.map'); end
+--[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart('module.map'); end
 
 -->		variables
+	local hooksecurefunc = hooksecurefunc;
 	local next = next;
+	local tremove, wipe = table.remove, table.wipe;
 	local _radius_sin, _radius_cos = math.cos, math.sin;
+	local GetCVar = GetCVar;
+	local GetTime = GetTime;
+	local IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown = IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown;
+	local GetPlayerFacing = GetPlayerFacing;
+	local C_Map = C_Map;
 	local CreateFrame = CreateFrame;
 	local WorldMapFrame = WorldMapFrame;	-->		WorldMapFrame:WorldMapFrameTemplate	interiting	MapCanvasFrameTemplate:MapCanvasMixin
 	local mapCanvas = WorldMapFrame:GetCanvas();	-->		equal WorldMapFrame.ScrollContainer.Child	--	not implementation of MapCanvasMixin!!!
+	local CreateFromMixins, MapCanvasDataProviderMixin = CreateFromMixins, MapCanvasDataProviderMixin;
 	local Minimap = Minimap;
+	local GameTooltip = GameTooltip;
 
 	local __db = __ns.db;
 	local __db_quest = __db.quest;
@@ -37,22 +43,25 @@ local _ = nil;
 	local __loc_profession = __loc.profession;
 	local __UILOC = __ns.UILOC;
 
-	local _F_SafeCall = __ns.core._F_SafeCall;
-	local __eventHandler = __ns.core.__eventHandler;
-	local __const = __ns.core.__const;
-	local IMG_INDEX = __ns.core.IMG_INDEX;
-	local IMG_PATH_PIN = __ns.core.IMG_PATH_PIN;
-	local IMG_LIST = __ns.core.IMG_LIST;
+	local __core = __ns.core;
+	local _F_SafeCall = __core._F_SafeCall;
+	local __eventHandler = __core.__eventHandler;
+	local __const = __core.__const;
+	local IMG_INDEX = __core.IMG_INDEX;
+	local IMG_PATH_PIN = __core.IMG_PATH_PIN;
+	local IMG_LIST = __core.IMG_LIST;
+	local ContinentMapID = __core.ContinentMapID;
+	local GetUnitPosition = __core.GetUnitPosition;
 
 	local __core_meta = __ns.__core_meta;
 
 	local _log_ = __ns._log_;
 
 	-- local pinFrameLevel = WorldMapFrame:GetPinFrameLevelsManager():GetValidFrameLevel("PIN_FRAME_LEVEL_AREA_POI");
-	local wm_wrap = CreateFrame("FRAME", nil, mapCanvas);
+	local wm_wrap = CreateFrame('FRAME', nil, mapCanvas);
 		wm_wrap:SetSize(1, 1);
 		wm_wrap:SetPoint("CENTER");
-	local mm_wrap = CreateFrame("FRAME", nil, Minimap);
+	local mm_wrap = CreateFrame('FRAME', nil, Minimap);
 		mm_wrap:SetSize(1, 1);
 		mm_wrap:SetPoint("CENTER");
 	local CommonPinFrameLevel, LargePinFrameLevel = 1, 1;
@@ -71,6 +80,10 @@ local _ = nil;
 	ReCalcFrameLevel(pinFrameLevelsManager);
 
 	local SET = nil;
+-->
+if __ns.__is_dev then
+	__ns:BuildEnv("map");
+end
 -->		MAIN
 	-->		--	count
 		local __popt = { 0, 0, 0, 0, };
@@ -79,11 +92,11 @@ local _ = nil;
 		end
 		function __popt:count(index, count)
 			__popt[index] = __popt[index] + count;
-			if __ns.__dev then __eventHandler:run_on_next_tick(__opt_prompt); end
+			if __ns.__is_dev then __eventHandler:run_on_next_tick(__opt_prompt); end
 		end
 		function __popt:reset(index)
 			__popt[index] = 0;
-			if __ns.__dev then __eventHandler:run_on_next_tick(__opt_prompt); end
+			if __ns.__is_dev then __eventHandler:run_on_next_tick(__opt_prompt); end
 		end
 		function __popt:echo(index)
 			return __popt[index];
@@ -125,13 +138,12 @@ local _ = nil;
 		local MapPermanentlyShowQuestNodes, MapPermanentlyHideQuestNodes, MapPermanentlyToggleQuestNodes;
 		local MapHideNodes, MapDrawNodes;
 		--	setting
+		local SetShowPinInContinent;
 		local SetWorldmapAlpha, SetMinimapAlpha;
 		local SetCommonPinSize, SetLargePinSize, SetVariedPinSize;
 		local SetHideNodeModifier, SetMinimapNodeInset, SetMinimapPlayerArrowOnTop;
 	-->
 	-->		--	Pin Handler
-		local GameTooltip = GameTooltip;
-		local GetFactionInfoByID = GetFactionInfoByID;
 		function Pin_OnEnter(self)
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 			local uuid = self.uuid;
@@ -159,15 +171,17 @@ local _ = nil;
 		function NewWorldMapPin(__PIN_TAG, pool_inuse, pool_unused, size, Release, frameLevel)
 			local pin = next(pool_unused);
 			if pin == nil then
-				pin = CreateFrame("BUTTON", nil, wm_wrap);
-				pin:SetNormalTexture(IMG_PATH_PIN);
+				pin = CreateFrame('FRAME', nil, wm_wrap);
 				pin:SetScript("OnEnter", Pin_OnEnter);
 				pin:SetScript("OnLeave", __ns.OnLeave);
-				pin:SetScript("OnClick", Pin_OnClick);
+				pin:SetScript("OnMouseUp", Pin_OnClick);
 				pin:SetFrameLevel(frameLevel or CommonPinFrameLevel);
 				pin.Release = Release;
 				pin.__PIN_TAG = __PIN_TAG;
-				pin.__NORMAL_TEXTURE = pin:GetNormalTexture();
+				local icon = pin:CreateTexture(nil, "ARTWORK");
+				icon:SetAllPoints();
+				icon:SetTexture(IMG_PATH_PIN);
+				pin.icon = icon;
 			else
 				pool_unused[pin] = nil;
 			end
@@ -191,7 +205,7 @@ local _ = nil;
 			--	and lots of bullshit about 'nudge'
 			local rscale = 0.01 / pin:GetScale();
 			pin:SetPoint("CENTER", mapCanvas, "TOPLEFT", mapCanvas:GetWidth() * x * rscale, -mapCanvas:GetHeight() * y * rscale);
-			pin.__NORMAL_TEXTURE:SetVertexColor(color3[1], color3[2], color3[3]);
+			pin.icon:SetVertexColor(color3[1], color3[2], color3[3]);
 			pin:Show();
 			return pin;
 		end
@@ -211,7 +225,7 @@ local _ = nil;
 			--	and lots of bullshit about 'nudge'
 			local rscale = 0.01 / pin:GetScale();
 			pin:SetPoint("CENTER", mapCanvas, "TOPLEFT", mapCanvas:GetWidth() * x * rscale, -mapCanvas:GetHeight() * y * rscale);
-			pin.__NORMAL_TEXTURE:SetVertexColor(color3[1], color3[2], color3[3]);
+			pin.icon:SetVertexColor(color3[1], color3[2], color3[3]);
 			pin:Show();
 			return pin;
 		end
@@ -233,12 +247,12 @@ local _ = nil;
 			--	and lots of bullshit about 'nudge'
 			local rscale = 0.01 / pin:GetScale();
 			pin:SetPoint("CENTER", mapCanvas, "TOPLEFT", mapCanvas:GetWidth() * x * rscale, -mapCanvas:GetHeight() * y * rscale);
-			pin:SetNormalTexture(texture[1]);
-			pin.__NORMAL_TEXTURE:SetVertexColor(texture[2] or color3[1] or 1.0, texture[3] or color3[2] or 1.0, texture[4] or color3[3] or 1.0);
+			pin.icon:SetTexture(texture[1]);
+			pin.icon:SetVertexColor(texture[2] or color3[1] or 1.0, texture[3] or color3[2] or 1.0, texture[4] or color3[3] or 1.0);
 			-- if color3 ~= nil then
-			-- 	pin.__NORMAL_TEXTURE:SetVertexColor(color3[1] or 1.0, color3[2] or 1.0, color3[3] or 1.0);
+			-- 	pin.icon:SetVertexColor(color3[1] or 1.0, color3[2] or 1.0, color3[3] or 1.0);
 			-- else
-			-- 	pin.__NORMAL_TEXTURE:SetVertexColor(texture[2] or 1.0, texture[3] or 1.0, texture[4] or 1.0);
+			-- 	pin.icon:SetVertexColor(texture[2] or 1.0, texture[3] or 1.0, texture[4] or 1.0);
 			-- end
 			pin:Show();
 			return pin;
@@ -273,9 +287,14 @@ local _ = nil;
 	-->
 	local function UUIDCheckState(uuid, val)
 		for quest, refs in next, uuid[4] do
-			if QUEST_TEMPORARILY_BLOCKED[quest] ~= true and QUEST_PERMANENTLY_BLOCKED[quest] ~= true then
+			local meta = __core_meta[quest];
+			if meta ~= nil and meta.completed ~= 1 and meta.completed ~= -1 and QUEST_TEMPORARILY_BLOCKED[quest] ~= true and QUEST_PERMANENTLY_BLOCKED[quest] ~= true then
 				for line, texture in next, refs do
-					if texture == val then
+					if line == 'event' then
+						return true;
+					end
+					local meta_line = meta[line];
+					if meta_line ~= nil and not meta_line[5] and texture == val then
 						return true;
 					end
 				end
@@ -355,7 +374,7 @@ local _ = nil;
 					local num_pins = #pins;
 					if num_pins > 0 then
 						for index = 1, num_pins do
-							pins[index].__NORMAL_TEXTURE:SetVertexColor(color3[1], color3[2], color3[3]);
+							pins[index].icon:SetVertexColor(color3[1], color3[2], color3[3]);
 						end
 					end
 				end
@@ -368,7 +387,7 @@ local _ = nil;
 					local num_pins = #pins;
 					if num_pins > 0 then
 						for index = 1, num_pins do
-							pins[index].__NORMAL_TEXTURE:SetVertexColor(color3[1], color3[2], color3[3]);
+							pins[index].icon:SetVertexColor(color3[1], color3[2], color3[3]);
 						end
 					end
 				end
@@ -384,8 +403,8 @@ local _ = nil;
 					for index = 1, #pins do
 						local pin = pins[index];
 						local texture = IMG_LIST[TEXTURE] or IMG_LIST[IMG_INDEX.IMG_DEF];
-						pin:SetNormalTexture(texture[1]);
-						pin.__NORMAL_TEXTURE:SetVertexColor(texture[2], texture[3], texture[4]);
+						pin.icon:SetTexture(texture[1]);
+						pin.icon:SetVertexColor(texture[2], texture[3], texture[4]);
 						pin:SetFrameLevel(texture[7]);
 					end
 				end
@@ -508,6 +527,9 @@ local _ = nil;
 			end
 		end
 		function WorldMap_DrawNodesMap(map)
+			if not SET.show_in_continent and ContinentMapID[map] ~= nil then
+				return;
+			end
 			local meta = META_COMMON[map];
 			if meta ~= nil then
 				for uuid, data in next, meta do
@@ -622,14 +644,16 @@ local _ = nil;
 		function NewMinimapPin(__PIN_TAG, pool_inuse, pool_unused, size, Release, frameLevel)
 			local pin = next(pool_unused);
 			if pin == nil then
-				pin = CreateFrame("BUTTON", nil, mm_wrap);
-				pin:SetNormalTexture(IMG_PATH_PIN);
+				pin = CreateFrame('FRAME', nil, mm_wrap);
 				pin:SetScript("OnEnter", Pin_OnEnter);
 				pin:SetScript("OnLeave", __ns.OnLeave);
-				pin:SetScript("OnClick", Pin_OnClick);
+				pin:SetScript("OnMouseUp", Pin_OnClick);
 				pin.Release = Release;
 				pin.__PIN_TAG = __PIN_TAG;
-				pin.__NORMAL_TEXTURE = pin:GetNormalTexture();
+				local icon = pin:CreateTexture(nil, "ARTWORK");
+				icon:SetAllPoints();
+				icon:SetTexture(IMG_PATH_PIN);
+				pin.icon = icon;
 			else
 				pool_unused[pin] = nil;
 			end
@@ -652,8 +676,8 @@ local _ = nil;
 			--	>>	MapCanvasMixin:SetPinPosition(pin, x, y)
 			--	>>	MapCanvasMixin:ApplyPinPosition(pin, x, y) mainly implemented below
 			--	and lots of bullshit about 'nudge'
-			pin:SetNormalTexture(img);
-			pin.__NORMAL_TEXTURE:SetVertexColor(r, g, b);
+			pin.icon:SetTexture(img);
+			pin.icon:SetVertexColor(r, g, b);
 			pin:Show();
 			return pin;
 		end
@@ -667,10 +691,6 @@ local _ = nil;
 	-->
 	-->		--	draw on Minimap			--	只有少部分点显示在小地图，所以单独建表
 		--	variables
-			local GetCVar = GetCVar;
-			local GetTime = GetTime;
-			local UnitPosition = UnitPosition;
-			local GetPlayerFacing = GetPlayerFacing;
 			local minimap_size = {
 				indoor = {
 					[0] = 300, -- scale
@@ -695,6 +715,7 @@ local _ = nil;
 				end,
 			};
 			local mm_shape = "CIRCLE";
+			local GetMinimapShape = _G.GetMinimapShape;
 			if GetMinimapShape ~= nil then
 				mm_shape = GetMinimapShape() or "CIRCLE";
 			else
@@ -711,7 +732,7 @@ local _ = nil;
 			local mm_rotate_cos = mm_rotate ~= nil and _radius_cos(mm_rotate) or nil;
 			local mm_check_func = mm_check_func_table[mm_shape];
 			local mm_force_update = false;
-			local mm_player_y, mm_player_x = UnitPosition('player');
+			local mm_player_map, mm_player_x, mm_player_y = GetUnitPosition('player');
 			if mm_player_y == nil then mm_player_y = 0.0; end
 			if mm_player_x == nil then mm_player_x = 0.0; end
 			local mm_dynamic_update_interval = 0.05;
@@ -825,7 +846,7 @@ local _ = nil;
 					for index = 1, #coords do
 						local pin = MM_COMMON_PINS[coords[index]];
 						if pin ~= nil then
-							pin.__NORMAL_TEXTURE:SetVertexColor(color3[1], color3[2], color3[3]);
+							pin.icon:SetVertexColor(color3[1], color3[2], color3[3]);
 						end
 					end
 				end
@@ -838,7 +859,7 @@ local _ = nil;
 					for index = 1, #coords do
 						local pin = MM_LARGE_PINS[coords[index]];
 						if pin ~= nil then
-							pin.__NORMAL_TEXTURE:SetVertexColor(color3[1], color3[2], color3[3]);
+							pin.icon:SetVertexColor(color3[1], color3[2], color3[3]);
 						end
 					end
 				end
@@ -856,8 +877,8 @@ local _ = nil;
 						local texture = IMG_LIST[TEXTURE] or IMG_LIST[IMG_INDEX.IMG_DEF];
 						local pin = MM_VARIED_PINS[coord];
 						if pin ~= nil then
-							pin:SetNormalTexture(texture[1]);
-							pin.__NORMAL_TEXTURE:SetVertexColor(texture[2], texture[3], texture[4]);
+							pin.icon:SetTexture(texture[1]);
+							pin.icon:SetVertexColor(texture[2], texture[3], texture[4]);
 							pin:SetFrameLevel(texture[7]);
 						end
 					end
@@ -885,8 +906,8 @@ local _ = nil;
 									MM_COMMON_PINS[coord] = pin;
 									num_changed = num_changed + 1;
 								else
-									pin:SetNormalTexture(IMG_PATH_PIN);
-									pin.__NORMAL_TEXTURE:SetVertexColor(color3[1], color3[2], color3[3]);
+									pin.icon:SetTexture(IMG_PATH_PIN);
+									pin.icon:SetVertexColor(color3[1], color3[2], color3[3]);
 								end
 								pin:ClearAllPoints();
 								if mm_is_rotate then
@@ -925,8 +946,8 @@ local _ = nil;
 									MM_LARGE_PINS[coord] = pin;
 									num_changed = num_changed + 1;
 								else
-									pin:SetNormalTexture(IMG_PATH_PIN);
-									pin.__NORMAL_TEXTURE:SetVertexColor(color3[1], color3[2], color3[3]);
+									pin.icon:SetTexture(IMG_PATH_PIN);
+									pin.icon:SetVertexColor(color3[1], color3[2], color3[3]);
 								end
 								pin:ClearAllPoints();
 								if mm_is_rotate then
@@ -967,8 +988,8 @@ local _ = nil;
 									MM_VARIED_PINS[coord] = pin;
 									num_changed = num_changed + 1;
 								else
-									pin:SetNormalTexture(texture[1]);
-									pin.__NORMAL_TEXTURE:SetVertexColor(texture[2], texture[3], texture[4]);
+									pin.icon:SetTexture(texture[1]);
+									pin.icon:SetVertexColor(texture[2], texture[3], texture[4]);
 								end
 								pin:ClearAllPoints();
 								if mm_is_rotate then
@@ -994,7 +1015,7 @@ local _ = nil;
 			end
 			local cost = __ns._F_devDebugProfileTick('module.map.Minimap_DrawNodesMap');
 			mm_dynamic_update_interval = cost * 0.2;
-			--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.map.Minimap_DrawNodesMap', mm_dynamic_update_interval); end
+			--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.map.Minimap_DrawNodesMap', mm_dynamic_update_interval); end
 		end
 		function Minimap_HideNodesQuest(quest)
 			local num_pins = 0;
@@ -1043,8 +1064,8 @@ local _ = nil;
 									MM_COMMON_PINS[coord] = pin;
 									num_changed = num_changed + 1;
 								else
-									pin:SetNormalTexture(IMG_PATH_PIN);
-									pin.__NORMAL_TEXTURE:SetVertexColor(color3[1], color3[2], color3[3]);
+									pin.icon:SetTexture(IMG_PATH_PIN);
+									pin.icon:SetVertexColor(color3[1], color3[2], color3[3]);
 								end
 								pin:ClearAllPoints();
 								if mm_is_rotate then
@@ -1083,8 +1104,8 @@ local _ = nil;
 									MM_LARGE_PINS[coord] = pin;
 									num_changed = num_changed + 1;
 								else
-									pin:SetNormalTexture(IMG_PATH_PIN);
-									pin.__NORMAL_TEXTURE:SetVertexColor(color3[1], color3[2], color3[3]);
+									pin.icon:SetTexture(IMG_PATH_PIN);
+									pin.icon:SetVertexColor(color3[1], color3[2], color3[3]);
 								end
 								pin:ClearAllPoints();
 								if mm_is_rotate then
@@ -1125,8 +1146,8 @@ local _ = nil;
 									MM_VARIED_PINS[coord] = pin;
 									num_changed = num_changed + 1;
 								else
-									pin:SetNormalTexture(texture[1]);
-									pin.__NORMAL_TEXTURE:SetVertexColor(texture[2], texture[3], texture[4]);
+									pin.icon:SetTexture(texture[1]);
+									pin.icon:SetVertexColor(texture[2], texture[3], texture[4]);
 								end
 								pin:ClearAllPoints();
 								if mm_is_rotate then
@@ -1152,7 +1173,7 @@ local _ = nil;
 			end
 			local cost = __ns._F_devDebugProfileTick('module.map.Minimap_DrawNodesMap');
 			mm_dynamic_update_interval = cost * 0.2;
-			--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.map.Minimap_DrawNodesMap', mm_dynamic_update_interval); end
+			--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.map.Minimap_DrawNodesMap', mm_dynamic_update_interval); end
 		end
 		function Minimap_HideNodes()
 			local num_pins = 0;
@@ -1180,6 +1201,7 @@ local _ = nil;
 				if facing ~= nil then
 					local now = GetTime();
 					if __mm_prev_update + mm_dynamic_update_interval <= now then
+						local GetMinimapShape = _G.GetMinimapShape;
 						if GetMinimapShape ~= nil then
 							local shape = GetMinimapShape() or "CIRCLE";
 							if mm_shape ~= shape then
@@ -1198,7 +1220,7 @@ local _ = nil;
 						end
 						local indoor = GetCVar("minimapZoom") + 0 == Minimap:GetZoom() and "outdoor" or "indoor";
 						Minimap:SetZoom(zoom);
-						local y, x = UnitPosition('player');
+						local map, x, y = GetUnitPosition('player');
 						if mm_force_update or (mm_player_x ~= x or mm_player_y ~= y or zoom ~= mm_zoom or indoor ~= mm_indoor or (mm_is_rotate and facing ~= mm_rotate)) then
 							mm_player_x = x;
 							mm_player_y = y;
@@ -1431,6 +1453,15 @@ local _ = nil;
 	-->
 	-->		--	setting
 		--	set pin
+		function SetShowPinInContinent()
+			if ContinentMapID[wm_map] ~= nil then
+				if SET.show_in_continent then
+					WorldMap_DrawNodesMap(wm_map);
+				else
+					WorldMap_HideNodesMap(wm_map);
+				end
+			end
+		end
 		function SetWorldmapAlpha()
 			wm_wrap:SetAlpha(SET.worldmap_alpha);
 		end
@@ -1503,6 +1534,7 @@ local _ = nil;
 	-->
 	-->		--	extern method
 		--
+		__ns.SetShowPinInContinent = SetShowPinInContinent;
 		__ns.SetWorldmapAlpha = SetWorldmapAlpha;
 		__ns.SetMinimapAlpha = SetMinimapAlpha;
 		__ns.SetCommonPinSize = SetCommonPinSize;
@@ -1542,6 +1574,12 @@ local _ = nil;
 			wipe(MM_VARIED_PINS);
 			ResetMMPin();
 		end
+		function __ns.map_ToggleWorldMapPin(shown)
+			wm_wrap:SetShown(shown ~= false);
+		end
+		function __ns.map_ToggleMinimapPin(shown)
+			mm_wrap:SetShown(shown ~= false);
+		end
 	-->
 	-->		--	events and hooks
 		-->		--	MapCanvasDataProvider
@@ -1561,19 +1599,19 @@ local _ = nil;
 			function mapCallback:OnMapChanged()
 				--  Optionally override in your mixin, called when map ID changes
 				-- self:RefreshAllData();
-				--[=[dev]=]	if __ns.__dev then __ns._F_devDebugProfileStart('module.map.mapCallback:OnMapChanged'); end
+				--[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart('module.map.mapCallback:OnMapChanged'); end
 				local uiMapID = WorldMapFrame:GetMapID();
 				if uiMapID ~= wm_map then
 					WorldMap_HideNodesMap(wm_map);
 					wm_map = uiMapID;
 					WorldMap_DrawNodesMap(uiMapID);
 				end
-				--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.map.mapCallback:OnMapChanged'); end
+				--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.map.mapCallback:OnMapChanged'); end
 			end
 			function mapCallback:OnCanvasScaleChanged()
 				local scale = mapCanvas:GetScale();
 				if map_canvas_scale ~= scale then
-					--[=[dev]=]	if __ns.__dev then __ns._F_devDebugProfileStart('module.map.mapCallback:OnCanvasScaleChanged'); end
+					--[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart('module.map.mapCallback:OnCanvasScaleChanged'); end
 					map_canvas_scale = scale;
 					local pin_scale_max = SET.pin_scale_max;
 					--
@@ -1592,7 +1630,7 @@ local _ = nil;
 						varied_size = varied_size * pin_scale_max / scale;
 					end
 					IterateWorldMapPinSetSize();
-					--[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.map.mapCallback:OnCanvasScaleChanged'); end
+					--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.map.mapCallback:OnCanvasScaleChanged'); end
 				end
 			end
 			function mapCallback:OnCanvasSizeChanged()
@@ -1666,4 +1704,4 @@ local _ = nil;
 -->		dev
 -->
 
---[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.map'); end
+--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.map'); end

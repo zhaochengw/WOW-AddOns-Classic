@@ -5,16 +5,20 @@
 ----------------------------------------------------------------------------------------------------
 local __addon, __ns = ...;
 
-if __ns.__dev then
-	setfenv(1, __ns.__fenv);
-end
 local _G = _G;
 local _ = nil;
 ----------------------------------------------------------------------------------------------------
---[=[dev]=]	if __ns.__dev then __ns._F_devDebugProfileStart('module.locale'); end
+--[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart('module.locale'); end
+
+local setmetatable, rawset = setmetatable, rawset;
+local LOCALE = GetLocale();
+
+if __ns.__is_dev then
+	__ns:BuildEnv("locale");
+end
 
 local UILOC = setmetatable(
-	{  },
+	{ GetDebugName = false, },
 	{
 		__newindex = function(tbl, key, val)
 			if val == true then
@@ -33,7 +37,6 @@ local UILOC = setmetatable(
 );
 __ns.UILOC = UILOC;
 
-local LOCALE = GetLocale();
 
 local LOC_PATTERN_LIST = {
 	deDE = {
@@ -119,6 +122,7 @@ if LOCALE == 'zhCN' then
 	UILOC.show_buttons_in_log = "显示任务日志按钮";
 	UILOC.show_id_in_tooltip = "在鼠标提示中显示id";
 	--	map
+	UILOC.show_in_continent = "在大陆地图上显示标记";
 	UILOC.show_quest_starter = "显示任务给予者";
 	UILOC.show_quest_ender = "显示任务交还者";
 	UILOC.min_rate = "最低物品掉率";
@@ -178,6 +182,7 @@ elseif LOCALE == 'zhTW' then
 	UILOC.show_buttons_in_log = "顯示任務日志按鈕";
 	UILOC.show_id_in_tooltip = "在鼠標提示中顯示id";
 	--	map
+	UILOC.show_in_continent = "在大陸地圖上顯示標記";
 	UILOC.show_quest_starter = "顯示任務給與者";
 	UILOC.show_quest_ender = "顯示任務交還者";
 	UILOC.min_rate = "最低物品掉率";
@@ -189,8 +194,8 @@ elseif LOCALE == 'zhTW' then
 	UILOC.pin_scale_max = "地圖縮放時標記點的最大縮放";
 	UILOC.quest_lvl_lowest_ofs = "最低任務等級偏差";
 	UILOC.quest_lvl_highest_ofs = "最高任務等級偏差";
-	UILOC.minimap_node_inset = "不顯示小地圖邊緣上的任務圖標";
 	UILOC.hide_node_modifier = "彈出隱藏任務按鍵";
+	UILOC.minimap_node_inset = "不顯示小地圖邊緣上的任務圖標";
 	UILOC.minimap_player_arrow_on_top = "置頂小地圖玩家箭頭";
 	--	interact
 	UILOC.auto_accept = "自動接任務";
@@ -207,6 +212,66 @@ elseif LOCALE == 'zhTW' then
 	UILOC.pin_menu_send_quest = "|cffff7f00發送|r";
 	--
 	UILOC.CODEX_LITE_CONFLICTS = "是否关闭功能重复的插件ClassicCodex和Questie，并重载？";
+elseif LOCALE == 'ruRU' then
+	--	tip
+	UILOC.TIP_WAYPOINT = "Исследование";
+	UILOC.TIP_QUEST_LVL = "Ур: ";
+	UILOC.TIP_QUEST_MIN = "Мин: ";
+	UILOC.QUEST_TAG = {
+		[1] = "+",				--	Group
+		[41] = "Г",				--	PVP
+		[64] = "Р",				--	Raid
+		[81] = "С",				--	Dungeon
+		[83] = "Легендарный",
+		[85] = "Героический",
+		[98] = "Сценарий",
+		[102] = "Аккаунт",
+		[117] = "Локальное задание Кожевничество",
+	};
+	UILOC.COMPLETED = "ЗАВЕРШЕННО";
+	UILOC.IN_PROGRESS = "Прогресс";
+	--	setting
+	UILOC.TAG_SETTING = "перевод Hubbottu@github";
+	UILOC['tab.general'] = "General";
+	UILOC['tab.map'] = "Map";
+	UILOC['tab.interact'] = "Interact";
+	UILOC['tab.misc'] = "Misc";
+	UILOC['tab.blocked'] = "Blocked";
+	--	general
+	UILOC.show_db_icon = "Показать иконку на мини-карте";
+	UILOC.show_buttons_in_log = "Show buttons in questlog";
+	UILOC.show_id_in_tooltip = "Show ID in tooltip";
+	--	map
+	UILOC.show_in_continent = "Show pins in continents";
+	UILOC.show_quest_starter = "Показать квестодателя";
+	UILOC.show_quest_ender = "Показать здачу задания";
+	UILOC.min_rate = "Минимальный шанс выпадения";
+	UILOC.worldmap_alpha = "Alpha of icons on world map";
+	UILOC.minimap_alpha = "Alpha of icons on minimap";
+	UILOC.pin_size = "Размер большинства контактов";
+	UILOC.large_size = "Размер отображения босса";
+	UILOC.varied_size = "Размер отображения квестовых NPC";
+	UILOC.pin_scale_max = "Максимальный размер шкалы";
+	UILOC.quest_lvl_lowest_ofs = "Смещение к минимальному уровню задания";
+	UILOC.quest_lvl_highest_ofs = "Смещение к макимальному уровню задания";
+	UILOC.hide_node_modifier = "Modifier of hiding quest";
+	UILOC.minimap_node_inset = "Hide pin on the border of minimap";
+	UILOC.minimap_player_arrow_on_top = "Player arrow on the top of minimap";
+	--	interact
+	UILOC.auto_accept = "Авто принятие задания";
+	UILOC.auto_complete = "Автозаполнение задания";
+	UILOC.quest_auto_inverse_modifier = "Отключить автоматическую сдачу";
+	UILOC.objective_tooltip_info = "Информация в подсказке";
+	--	questlogframe
+	UILOC.show_quest = "Показать";
+	UILOC.hide_quest = "Скрыть";
+	UILOC.reset_filter = "Обновить";
+	--	pin-onmenu
+	UILOC.pin_menu_hide_quest = "|cffff3f00Скрыть|r ";
+	UILOC.pin_menu_show_quest = "|cff00ff00Показать|r ";
+	UILOC.pin_menu_send_quest = "|cffff7f00Send|r";
+	--
+	UILOC.CODEX_LITE_CONFLICTS = "Отключить ClassicCodex и Questie, а затем перезагрузить интерфейс?";
 else
 	--	tip
 	UILOC.TIP_WAYPOINT = "Explore";
@@ -237,6 +302,7 @@ else
 	UILOC.show_buttons_in_log = "Show buttons in questlog";
 	UILOC.show_id_in_tooltip = "Show ID in tooltip";
 	--	map
+	UILOC.show_in_continent = "Show pins in continents";
 	UILOC.show_quest_starter = "Show Quest Giver";
 	UILOC.show_quest_ender = "Show Quest Turn In";
 	UILOC.min_rate = "Minium Drop Rate";
@@ -248,8 +314,8 @@ else
 	UILOC.pin_scale_max = "Maxium scale size";
 	UILOC.quest_lvl_lowest_ofs = "Lowest Level Offset";
 	UILOC.quest_lvl_highest_ofs = "Highest Level Offset";
-	UILOC.minimap_node_inset = "Hide pin on the border of minimap";
 	UILOC.hide_node_modifier = "Modifier of hiding quest";
+	UILOC.minimap_node_inset = "Hide pin on the border of minimap";
 	UILOC.minimap_player_arrow_on_top = "Player arrow on the top of minimap";
 	--	interact
 	UILOC.auto_accept = "Quest Auto Accept";
@@ -268,4 +334,4 @@ else
 	UILOC.CODEX_LITE_CONFLICTS = "Disable ClassicCodex and Questie, then reload UI?";
 end
 
---[=[dev]=]	if __ns.__dev then __ns.__performance_log_tick('module.locale'); end
+--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.locale'); end

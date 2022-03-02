@@ -69,6 +69,7 @@ L["Onyxia, hangs from the arches"] = "看看强大的联盟吧";
 
 --Alliance Nefarian buff NPC.
 L["Field Marshal Afrasiabi"] = "艾法希比元帅";
+L["Field Marshal Stonebridge"] = "艾法希比元帅"; --Incorrect I think, not changed yet?
 --Alliance Nefarian buff NPC first yell string (part of his first yell msg before before buff).
 L["the Lord of Blackrock is slain"] = "联盟的人民们";
 --Alliance Nefarian buff NPC second yell string (part of his second yell msg before before buff).
@@ -649,6 +650,74 @@ L["layerMsg4"] = "在 %s 选中任何NPC以查看你当前的位面."; --Target 
 L["note"] = "注意:";
 L["dmfConfigWarning"] = "暗夜马戏团Buff现在是角色独立设置,更改Buff类型只会对此角色生效.";
 
+---New---
+
+L["onyNpcMoving"] = "奥妮克希亚NPC开始漫步了!";
+L["nefNpcMoving"] = "奈法利安NPC开始漫步了!";
+
+L["buffHelpersHeaderDesc"] = "PVP服务器BUFF助手";
+
+L["buffHelpersTextDesc"] = "PVP服务器BUFF助手 (如果你获得了一个buff并在数秒内执行其中一个动作，这些将会被触发，你可以在下面调整秒数).";
+L["buffHelpersTextDesc2"] = "\n赞达拉buff";
+L["buffHelpersTextDesc3"] = "暗月马戏团buff";
+--L["buffHelpersTextDesc4"] = "Enter Battleground Macro (you need to press this twice to work so just spam it, this will drop queue if you don't have a pop yet so be careful not to press it early).\n|cFF9CD6DE/click DropDownList1Button2\n/click MiniMapBatlefieldFrame RightButton";
+
+L["takeTaxiZGTitle"] = "自动使用飞行航线";
+L["takeTaxiZGDesc"] = "只要buff刷新，就在藏宝海湾自动坐飞机, 在buff刷新后自动和飞行NPC交谈或者当buff刷新时打开飞行界面都会生效. |cFF00C800(鬼魂状态下也可也获得buff,因此建议在鬼魂状态下获得然后复生再去找飞行NPC自动飞行)";
+
+L["takeTaxiNodeTitle"] = "飞到哪里";
+L["takeTaxiNodeDesc"] = "如果你开启了任意一个自动飞行设置，你想飞到哪?";
+			
+L["dmfVanishSummonTitle"] = "消失召唤";
+L["dmfVanishSummonDesc"] = "盗贼: 拿到暗月buff后立马消失自动接受拉人召唤";
+
+L["dmfFeignSummonTitle"] = "假死召唤";
+L["dmfFeignSummonDesc"] = "猎人: 拿到暗月buff后立马假死自动接受拉人召唤";
+			
+L["dmfCombatSummonTitle"] = "战斗结束后召唤";
+L["dmfCombatSummonDesc"] = "在拿到暗月buff脱离战斗后自动接受拉人召唤";
+			
+L["dmfLeaveBGTitle"] = "自动离开战场";
+L["dmfLeaveBGDesc"] = "拿到暗月buff后在即将进入战场时自动离开战场";
+
+L["dmfGotBuffSummonTitle"] = "暗月buff召唤";
+L["dmfGotBuffSummonDesc"] = "当拿到暗月buff时自动接受任何待定的召唤.";
+
+L["zgGotBuffSummonTitle"] = "祖格buff召唤";
+L["zgGotBuffSummonDesc"] = "当拿到祖格buff时自动接受任何待定的召唤.";
+
+L["buffHelperDelayTitle"] = "buff助手开启秒数";
+L["buffHelperDelayDesc"] = "拿到buff后助手应该生效多少秒? 这样你可以保持助手开启，只有拿到buff后才生效一段时间";
+
+L["showNaxxWorldmapMarkersTitle"] = "纳克萨玛斯世界地图";
+L["showNaxxWorldmapMarkersDesc"] = "在世界地图上显示纳克萨玛斯标记";
+
+L["showNaxxMinimapMarkersTitle"] = "纳克萨玛斯小地图";
+L["showNaxxMinimapMarkersDesc"] = "在小地图上显示纳克萨玛斯标记。 当你在团本中死亡时也会直接告诉你去naxx的方向.";
+
+L["bigWigsSupportTitle"] = "支持BigWigs";
+L["bigWigsSupportDesc"] = "如果安装了BW显示一个计时条，类似DBM一样的计时条";
+
+L["soundsNpcWalkingTitle"] = "NPC漫步";
+L["soundsNpcWalkingDesc"] = "当奥格的BUFF NPC开始漫步时播放音效";
+
+L["buffHelpersTextDesc4"] = "轻歌花buff";
+L["songflowerGotBuffSummonTitle"] = "轻歌花召唤";
+L["songflowerGotBuffSummonDesc"] = "当拿到轻歌花buff时自动接受任何待定的召唤.";
+
+L["buffHelpersTextDesc5"] = "奥尼/雷德 Buff";
+L["cityGotBuffSummonTitle"] = "奥尼/雷德召唤";
+L["cityGotBuffSummonDesc"] = "当拿到奥尼/雷德buff时自动接受任何待定的召唤.";
+
+L["heraldFoundCrossroads"] = "发现传令官.十字路口雷德20秒后刷新";
+L["heraldFoundTimerMsg"] = "十字路口雷德"; --DBM/Bigwigs timer bar text.
+
+L["guildNpcWalkingTitle"] = "Npc漫步";
+L["guildNpcWalkingDesc"] = "当你的插件收到一个buff npc出现时在公会发送信息和播放音效? (开启奥尼/雷德BUFF NPC的聊天窗口台词，等有人挂头的时候触发这个警报).";
+
+L["buffHelpersTextDesc6"] = "暗月马戏团BUFF窗口";
+L["dmfFrameTitle"] = "暗月马戏团BUFF助手窗口";
+L["dmfFrameDesc"] = "pvp服务器鬼魂状态下靠近赛格时弹出一个窗口，有助于解决暴雪的卡顿问题.";
 L["Sheen of Zanza"] = "赞扎之光";
 L["Spirit of Zanza"] = "赞扎之魂";
 L["Swiftness of Zanza"] = "赞扎之速";
@@ -656,38 +725,91 @@ L["Swiftness of Zanza"] = "赞扎之速";
 L["Mind Control"] = "精神控制";
 L["Gnomish Mind Control Cap"] = "侏儒洗脑帽";
 
-L["Flask of Fortification"] = "Flask of Fortification";
-L["Flask of Pure Death"] = "Flask of Pure Death";
-L["Flask of Relentless Assault"] = "Flask of Relentless Assault";
-L["Flask of Blinding Light"] = "Flask of Blinding Light";
-L["Flask of Mighty Restoration"] = "Flask of Mighty Restoration";
-L["Flask of Chromatic Wonder"] = "Flask of Chromatic Wonder";
-L["Fortification of Shattrath"] = "Fortification of Shattrath";
-L["Pure Death of Shattrath"] = "Pure Death of Shattrath";
-L["Relentless Assault of Shattrath"] = "Relentless Assault of Shattrath";
-L["Blinding Light of Shattrath"] = "Blinding Light of Shattrath";
-L["Mighty Restoration of Shattrath"] = "Mighty Restoration of Shattrath";
-L["Supreme Power of Shattrath"] = "Supreme Power of Shattrath";
-L["Unstable Flask of the Beast"] = "Unstable Flask of the Beast";
-L["Unstable Flask of the Sorcerer"] = "Unstable Flask of the Sorcerer";
-L["Unstable Flask of the Bandit"] = "Unstable Flask of the Bandit";
-L["Unstable Flask of the Elder"] = "Unstable Flask of the Elder";
-L["Unstable Flask of the Physician"] = "Unstable Flask of the Physician";
-L["Unstable Flask of the Soldier"] = "Unstable Flask of the Soldier";
+L["tbcHeaderText"] = "燃烧的远征版本选项";
+L["tbcNoteText"] = "注意: 所有公会聊天设置也会在TBC版本中关闭.";
 
-L["Chronoboon Displacer"] = "Chronoboon Displacer";
+L["disableSoundsAboveMaxBuffLevelTitle"] = "等级64+时关闭所有声音";
+L["disableSoundsAboveMaxBuffLevelDesc"] = "Tbc版本63级以上角色关闭所有世界buff相关的声音";
+
+L["disableSoundsAllLevelsTitle"] = "任意等级下都关闭声音";
+L["disableSoundsAllLevelsDesc"] = "TBC版本中所有等级的角色都关闭世界buff相关的声音.";
+
+L["disableMiddleAboveMaxBuffLevelTitle"] = "等级64+时关闭屏幕中央警报";
+L["disableMiddleAboveMaxBuffLevelDesc"] = "Tbc版本63级以上角色关闭所有世界buff相关的屏幕中央警报";
+
+L["disableMiddleAllLevelsTitle"] = "任意等级下都关闭警报";
+L["disableMiddleAllLevelsDesc"] = "TBC版本中所有等级的角色都关闭世界buff相关的警报";
+
+L["disableChatAboveMaxBuffLevelTitle"] = "等级64+时关闭聊天窗口提示";
+L["disableChatAboveMaxBuffLevelDesc"] = "Tbc版本63级以上角色关闭所有世界buff相关的聊天窗口提示信息";
+
+L["disableChatAllLevelsTitle"] = "任意等级下都关闭聊天提示";
+L["disableChatAllLevelsDesc"] = "TBC版本中所有等级的角色都关闭世界buff相关的聊天窗口提示信息.";
+
+L["disableFlashAboveMaxBuffLevelTitle"] = "等级64+时关闭最小化游戏客户端的图标闪烁";
+L["disableFlashAboveMaxBuffLevelDesc"] = "Tbc版本63级以上角色关闭世界buff事件触发时的最小化游戏客户端的图标闪烁";
+
+L["disableFlashAllLevelsTitle"] = "任意等级下关闭最小化游戏客户端的图标闪烁";
+L["disableFlashAllLevelsDesc"] = "TBC版本中所有等级的角色都关闭世界buff事件触发时的最小化游戏客户端的图标闪烁.";
+
+L["disableLogonAboveMaxBuffLevelTitle"] = "等级64+时关闭角色游戏时长信息";
+L["disableLogonAboveMaxBuffLevelDesc"] = "Tbc版本63级以上角色关闭它的游戏游玩时长信息";
+
+L["disableLogonAllLevelsTitle"] = "任意等级下关闭角色游戏时长信息";
+L["disableLogonAllLevelsDesc"] = "TBC版本所有等级的角色都关闭它的游戏游玩时长信息";
+L["Flask of Fortification"] = "强固合剂";
+L["Flask of Pure Death"] = "纯粹死亡合剂";
+L["Flask of Relentless Assault"] = "无情突袭合剂";
+L["Flask of Blinding Light"] = "盲目光芒合剂";
+L["Flask of Mighty Restoration"] = "强效回复合剂";
+L["Flask of Chromatic Wonder"] = "多彩奇迹合剂";
+L["Fortification of Shattrath"] = "沙塔斯强固合剂";
+L["Pure Death of Shattrath"] = "沙塔斯纯粹死亡合剂";
+L["Relentless Assault of Shattrath"] = "沙塔斯无情突袭合剂";
+L["Blinding Light of Shattrath"] = "沙塔斯盲目光芒合剂";
+L["Mighty Restoration of Shattrath"] = "沙塔斯强效回复合剂";
+L["Supreme Power of Shattrath"] = "S沙塔斯超级能量合剂";
+L["Unstable Flask of the Beast"] = "不稳定的野兽合剂";
+L["Unstable Flask of the Sorcerer"] = "不稳定的巫术合剂";
+L["Unstable Flask of the Bandit"] = "不稳定的强盗合剂";
+L["Unstable Flask of the Elder"] = "不稳定的长者合剂";
+L["Unstable Flask of the Physician"] = "不稳定的医师合剂";
+L["Unstable Flask of the Soldier"] = "不稳定的士兵合剂";
+
+L["Chronoboon Displacer"] = "时光祝福置换器";
 
 L["Silithyst"] = "水晶尘";
 
-L["Gold"] = "Gold";
-L["level"] = "Level";
+L["Gold"] = "金币";
+L["level"] = "等级";
 L["realmGold"] = "Realm gold for";
-L["total"] = "Total";
-L["guild"] = "Guild";
-L["bagSlots"] = "Bag slots";
-L["durability"] = "Durability";
-L["items"] = "Items";
-L["ammunition"] = "Ammo";
+L["total"] = "全部";
+L["guild"] = "公会";
+L["bagSlots"] = "背包空格";
+L["durability"] = "耐久度";
+L["items"] = "物品";
+L["ammunition"] = "弹药";
 L["attunements"] = "Attunements";
-L["currentRaidLockouts"] = "Current Raid Lockouts";
-L["none"] = "None.";
+L["currentRaidLockouts"] = "当前团本锁定";
+L["none"] = "无.";
+L["dmfDamagePercent"] = "This new DMF buff is at %s%% damage.";
+L["dmfDamagePercentTooltip"] = "NWB detected this as %s damage.";
+
+L["guildLTitle"] = "公会位面共享";
+L["guildLDesc"] = "和公会分享你的位面。 /wb guild 使用该命令查看公会成员的位面";
+
+L["terokkarTimer"] = "泰罗卡森林";
+L["terokkarWarning"] = " %s";
+
+L["Nazgrel"] = "纳兹格雷尔";
+L["Hellfire Citadel is ours"] = "地狱火堡垒是我们的了";
+L["The time for us to rise"] = "是我们壮大的时候了";
+L["Force Commander Danath Trollbane"] = "远征军指挥官达纳斯·托尔贝恩";
+L["The feast of corruption is no more"] = "不会再有腐化盛宴了";
+L["Hear me brothers"] = "听我说，兄弟们";
+
+L["terokkarChat10Title"] = "泰罗卡BUFF10分钟提示";
+L["terokkarChat10Desc"] = "当泰罗卡buff还有10分钟刷新时在聊天框发送信息";
+
+L["terokkarMiddle10Title"] = "泰罗卡BUFF10分钟提示";
+L["terokkarMiddle10Desc"] = "当泰罗卡buff还有10分钟刷新时在屏幕中央发送警报.";

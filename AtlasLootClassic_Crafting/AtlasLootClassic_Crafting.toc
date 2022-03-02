@@ -1,6 +1,6 @@
-## Interface: 20501
+## Interface: 20503
 ## Author: Lag
-## Version: v2.3.1-bcc
+## Version: v2.4.0
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
 
@@ -35,6 +35,8 @@
 Locales\Locales.xml
 
 data.lua
-#@version-bc@
 data-tbc.lua
-#@end-version-bc@
+
+## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 制造业制造物品数据
+## X-Vendor: NetEase
+## X-163UI-Version: 20211111144807

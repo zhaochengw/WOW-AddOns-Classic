@@ -1,4 +1,4 @@
-﻿## Interface: 20501
+## Interface: 20503
 ## Title: ChatPlus
 ## Notes: ChatPlus
 ## Title-zhCN: |CFFFF8000辅助|R 聊天增强

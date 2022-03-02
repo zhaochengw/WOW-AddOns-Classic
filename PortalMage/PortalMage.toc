@@ -1,9 +1,0 @@
-## Interface: 20501
-## Title: Portal Mage
-## Notes: Bar with portals and teleports.
-## Author: Vampyr78
-## Version: 1.7.6-tbc
-## SavedVariablesPerCharacter: portalMageFrameX, portalMageFrameY, portalMageSpells, portalMageVertical, portalMageScale, portalMageRunes
-## OptionalDeps: Masque
-embeds.xml
-PortalMage.lua

@@ -1,0 +1,1247 @@
+local addonName, addonTable = ...;
+local gsub = _G.string.gsub 
+local find = _G.string.find
+function table.removekey(table, key)
+    local element = table[key]
+    table[key] = nil
+    return element
+end
+-------------
+local function ADD_Chat_Jilu()
+		local jilupindaoID={"PARTY","RAID"};
+		PIG['Chatjilu']["jiluinfo"]=PIG['Chatjilu']["jiluinfo"] or addonTable.Default['Chatjilu']["jiluinfo"]
+		local baocuntianshu=PIG['Chatjilu']["tianshu"];
+		for i=1,#jilupindaoID do
+			local shujuyaun=PIG['Chatjilu']["jiluinfo"][jilupindaoID[i]]["neirong"];
+			if #shujuyaun>0 then
+				if #shujuyaun[1]>0 then
+					for ii=#shujuyaun[1], 1, -1 do
+							local dangqianday=floor(GetServerTime()/60/60/24);
+							local jiluday=shujuyaun[1][ii];
+							if (dangqianday-jiluday)>baocuntianshu then
+								table.remove(shujuyaun[1],ii);
+								table.remove(shujuyaun[2],ii);
+							end
+					end
+				end
+			end
+		end
+		
+		--密语
+		local miyushuju=PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"];
+		if #miyushuju>0 then
+			for k,v in pairs(miyushuju[2]) do
+				for i=#v,1,-1 do
+					local baocunTime=baocuntianshu*60*60*24;
+					if (GetServerTime()-v[i][2])>baocunTime then
+						table.remove(v,i);					
+					end
+				end
+				if #v==0 then
+					for x=#miyushuju[1],1,-1 do
+						if miyushuju[1][x][3]==k then
+							table.remove(miyushuju[1],x);
+						end
+					end
+					table.removekey(miyushuju[2],k)
+				end
+			end
+		end
+		--------------
+		local fuFrame=QuickChatFFF_UI
+		local QuickChat_biaoqingName=addonTable.QuickChat_biaoqingName
+		--密语/团队聊天记录
+		local ChatWidth,ChatHeight=220,260;
+		local ChatjiluMianban = CreateFrame("Frame", "ChatjiluMianban_UI", UIParent);
+		ChatjiluMianban:SetSize(ChatWidth*4,ChatHeight*2);
+		ChatjiluMianban:SetPoint("CENTER",UIParent,"CENTER",0,80);
+		ChatjiluMianban:EnableMouse(true)
+		ChatjiluMianban:SetMovable(true)
+		ChatjiluMianban:SetClampedToScreen(true)
+		ChatjiluMianban:Hide()
+		tinsert(UISpecialFrames,"ChatjiluMianban_UI");
+		ChatjiluMianban.yidong = CreateFrame("Frame", nil, ChatjiluMianban);
+		ChatjiluMianban.yidong:SetSize(ChatWidth*4-60,24);
+		ChatjiluMianban.yidong:SetPoint("TOP", ChatjiluMianban, "TOP", 0, 0);
+		ChatjiluMianban.yidong:EnableMouse(true)
+		ChatjiluMianban.yidong:RegisterForDrag("LeftButton")
+		ChatjiluMianban.yidong:SetScript("OnDragStart",function()
+			ChatjiluMianban:StartMoving()
+		end)
+		ChatjiluMianban.yidong:SetScript("OnDragStop",function()
+			ChatjiluMianban:StopMovingOrSizing()
+		end)
+		ChatjiluMianban.text0 = ChatjiluMianban:CreateFontString();
+		ChatjiluMianban.text0:SetPoint("TOP", ChatjiluMianban, "TOP", 0,-4);
+		ChatjiluMianban.text0:SetFontObject(GameFontNormal);
+		ChatjiluMianban.text0:SetText("聊天记录");
+		ChatjiluMianban.Close = CreateFrame("Button",nil,ChatjiluMianban, "UIPanelCloseButton");  
+		ChatjiluMianban.Close:SetSize(32,32);
+		ChatjiluMianban.Close:SetPoint("TOPRIGHT", ChatjiluMianban, "TOPRIGHT", 5, 4);
+
+		ChatjiluMianban.TOP1 = ChatjiluMianban:CreateTexture(nil, "BORDER");
+		ChatjiluMianban.TOP1:SetTexture("interface/worldmap/ui-worldmap-top1.blp");
+		ChatjiluMianban.TOP1:SetSize(ChatWidth,ChatHeight);
+		ChatjiluMianban.TOP1:SetPoint("TOPLEFT",ChatjiluMianban,"TOPLEFT",0,0);
+		ChatjiluMianban.TOP2 = ChatjiluMianban:CreateTexture(nil, "BORDER");
+		ChatjiluMianban.TOP2:SetTexture("interface/worldmap/ui-worldmap-top2.blp");
+		ChatjiluMianban.TOP2:SetSize(ChatWidth,ChatHeight);
+		ChatjiluMianban.TOP2:SetPoint("TOPLEFT",ChatjiluMianban.TOP1,"TOPRIGHT",0,0);
+		ChatjiluMianban.TOP3 = ChatjiluMianban:CreateTexture(nil, "BORDER");
+		ChatjiluMianban.TOP3:SetTexture("interface/worldmap/ui-worldmap-top3.blp");
+		ChatjiluMianban.TOP3:SetSize(ChatWidth,ChatHeight);
+		ChatjiluMianban.TOP3:SetPoint("TOPLEFT",ChatjiluMianban.TOP2,"TOPRIGHT",0,0);
+		ChatjiluMianban.TOP4 = ChatjiluMianban:CreateTexture(nil, "BORDER");
+		ChatjiluMianban.TOP4:SetTexture("interface/worldmap/ui-worldmap-top4.blp");
+		ChatjiluMianban.TOP4:SetSize(ChatWidth,ChatHeight);
+		ChatjiluMianban.TOP4:SetPoint("TOPLEFT",ChatjiluMianban.TOP3,"TOPRIGHT",0,0);
+		---
+		ChatjiluMianban.BOTTOM1 = ChatjiluMianban:CreateTexture(nil, "BORDER");
+		ChatjiluMianban.BOTTOM1:SetTexture("interface/worldmap/ui-worldmap-bottom1.blp");
+		ChatjiluMianban.BOTTOM1:SetSize(ChatWidth,ChatHeight);
+		ChatjiluMianban.BOTTOM1:SetPoint("TOPLEFT",ChatjiluMianban.TOP1,"BOTTOMLEFT",0,0);
+		ChatjiluMianban.BOTTOM2 = ChatjiluMianban:CreateTexture(nil, "BORDER");
+		ChatjiluMianban.BOTTOM2:SetTexture("interface/worldmap/ui-worldmap-bottom2.blp");
+		ChatjiluMianban.BOTTOM2:SetSize(ChatWidth,ChatHeight);
+		ChatjiluMianban.BOTTOM2:SetPoint("TOPLEFT",ChatjiluMianban.BOTTOM1,"TOPRIGHT",0,0);
+		ChatjiluMianban.BOTTOM3 = ChatjiluMianban:CreateTexture(nil, "BORDER");
+		ChatjiluMianban.BOTTOM3:SetTexture("interface/worldmap/ui-worldmap-bottom3.blp");
+		ChatjiluMianban.BOTTOM3:SetSize(ChatWidth,ChatHeight);
+		ChatjiluMianban.BOTTOM3:SetPoint("TOPLEFT",ChatjiluMianban.BOTTOM2,"TOPRIGHT",0,0);
+		ChatjiluMianban.BOTTOM4 = ChatjiluMianban:CreateTexture(nil, "BORDER");
+		ChatjiluMianban.BOTTOM4:SetTexture("interface/worldmap/ui-worldmap-bottom4.blp");
+		ChatjiluMianban.BOTTOM4:SetSize(ChatWidth,ChatHeight);
+		ChatjiluMianban.BOTTOM4:SetPoint("TOPLEFT",ChatjiluMianban.BOTTOM3,"TOPRIGHT",0,0);
+
+		----记录频道选择
+		ChatjiluMianban.text1 = ChatjiluMianban:CreateFontString();
+		ChatjiluMianban.text1:SetPoint("TOPLEFT", ChatjiluMianban, "TOPLEFT", 340,-40);
+		ChatjiluMianban.text1:SetFontObject(GameFontNormal);
+		ChatjiluMianban.text1:SetText("记录频道:");
+		local huoquliaotianjiluFFF = CreateFrame("Frame");
+		local jilupindaoName={"队伍","团队"};
+		local jilupindaoNameC={"AAAAFF","FF7F00"};
+		local jilupindaoEvent={{"CHAT_MSG_PARTY","CHAT_MSG_PARTY_LEADER"},{"CHAT_MSG_RAID","CHAT_MSG_RAID_LEADER","CHAT_MSG_RAID_WARNING"}};
+		for j=1,#jilupindaoName do
+			local pindaoxuanzeC = CreateFrame("CheckButton", "pindaoxuanzeC_"..j.."_UI", ChatjiluMianban, "ChatConfigCheckButtonTemplate");
+			pindaoxuanzeC:SetSize(30,32);
+			pindaoxuanzeC:SetHitRectInsets(0,0,0,0);
+			if j==1 then
+				pindaoxuanzeC:SetPoint("LEFT",ChatjiluMianban.text1,"RIGHT",4,0);
+			else
+				pindaoxuanzeC:SetPoint("LEFT",_G["pindaoxuanzeC_"..(j-1).."_UI"],"RIGHT",40,0);
+			end
+			_G["pindaoxuanzeC_"..j.."_UIText"]:SetText("\124cff"..jilupindaoNameC[j]..jilupindaoName[j].."\124r");
+			pindaoxuanzeC.tooltip = "记录"..jilupindaoName[j].."频道聊天信息";
+			pindaoxuanzeC:SetScript("OnClick", function (self)
+				if self:GetChecked() then
+					PIG['Chatjilu']["jiluinfo"][jilupindaoID[j]]["kaiguan"]="ON";
+					for jj=1,#jilupindaoEvent[j] do
+						huoquliaotianjiluFFF:RegisterEvent(jilupindaoEvent[j][jj]);
+					end
+				else
+					PIG['Chatjilu']["jiluinfo"][jilupindaoID[j]]["kaiguan"]="OFF";
+					for jj=1,#jilupindaoEvent[j] do
+						huoquliaotianjiluFFF:UnregisterEvent(jilupindaoEvent[j][jj]);
+					end
+				end
+			end);
+		end
+		--保存天数
+		ChatjiluMianban.baocuntianchu = ChatjiluMianban:CreateFontString();
+		ChatjiluMianban.baocuntianchu:SetPoint("TOPLEFT",ChatjiluMianban,"TOPLEFT",600,-38);
+		ChatjiluMianban.baocuntianchu:SetFontObject(GameFontNormal);
+		ChatjiluMianban.baocuntianchu:SetText("保存时间");
+		-- --
+		local baocuntianshulist ={7,31,180,365};
+		local baocuntianshulistN ={"一周","一月","半年","一年"};
+		ChatjiluMianban.tianshuxiala = CreateFrame("FRAME", "ChatjiluMianban_tianshuxiala_UI", ChatjiluMianban, "UIDropDownMenuTemplate")
+		ChatjiluMianban.tianshuxiala:SetPoint("LEFT",ChatjiluMianban.baocuntianchu,"RIGHT",-16,-3)
+		UIDropDownMenu_SetWidth(ChatjiluMianban.tianshuxiala, 66)
+		local function baocuntianshulist_Up()
+			local info = UIDropDownMenu_CreateInfo()
+			info.func = ChatjiluMianban_tianshuxiala_UI.SetValue
+			for i=1,#baocuntianshulist,1 do
+				info.text, info.arg1 = baocuntianshulistN[i], baocuntianshulist[i];
+			   	info.checked=baocuntianshulist[i]==PIG['Chatjilu']["tianshu"];
+				UIDropDownMenu_AddButton(info)
+			end 
+		end
+		function ChatjiluMianban_tianshuxiala_UI:SetValue(DaynewValue)
+			for i=1,#baocuntianshulist,1 do
+				if DaynewValue==baocuntianshulist[i] then
+					UIDropDownMenu_SetText(ChatjiluMianban_tianshuxiala_UI, baocuntianshulistN[i])
+				end
+			end 
+			PIG['Chatjilu']["tianshu"]=DaynewValue;
+			CloseDropDownMenus();
+		end
+		ChatjiluMianban.qingkong = CreateFrame("Button",nil,ChatjiluMianban, "UIPanelButtonTemplate");
+		ChatjiluMianban.qingkong:SetSize(90,22);
+		ChatjiluMianban.qingkong:SetPoint("TOPRIGHT",ChatjiluMianban,"TOPRIGHT",-10,-34);
+		ChatjiluMianban.qingkong:SetText('清空重置');
+		ChatjiluMianban.qingkong:SetScript("OnClick", function (self)
+			StaticPopup_Show ("QINGKONGLIAOTIANJILU");
+		end);
+		---
+		local neirong = CreateFrame("Frame", "CHatjilu_neirong_UI", ChatjiluMianban,"BackdropTemplate");
+		neirong:SetBackdrop({bgFile = "interface/raidframe/ui-raidframe-groupbg.blp",tile = false,tileSize = 0});
+		neirong:SetSize(ChatWidth*4-8,ChatHeight*2-92);
+		neirong:SetPoint("TOP",ChatjiluMianban,"TOP",0,-66);
+		neirong.tishiliulan = neirong:CreateFontString();
+		neirong.tishiliulan:SetPoint("CENTER",neirong,"CENTER",0,0);
+		neirong.tishiliulan:SetFontObject(GameFontNormal);
+		neirong.tishiliulan:SetText("点击上方频道标签浏览聊天记录");
+		-------------
+		local hang_Width,hang_Height,hang_NUM  = CHatjilu_neirong_UI:GetWidth()*0.14-30, 20, 17;
+		local function CHATgengxinhang1(self)
+			local nn=1;
+			local laiyuan=jilupindaoID[nn];
+			if _G["PindaolistFrame_"..nn.."_UI"]:IsShown() then
+					for i = 1, hang_NUM do
+						_G["riqi_list_TAB_"..nn.."_"..i]:Hide()
+						_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetText();
+						_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetTextColor(0,250/255,154/255, 1);
+						_G["riqi_list_TAB_highlight1_"..nn.."_"..i]:Hide();
+					end
+					if #PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"]>0 then
+					    local ItemsNum = #PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"][1];
+					    FauxScrollFrame_Update(self, ItemsNum, hang_NUM, hang_Height);
+					    local offset = FauxScrollFrame_GetOffset(self);
+					    for i = 1, hang_NUM do
+							local dangqian = (ItemsNum+1)-i-offset;
+							if dangqian>0 then
+								_G["riqi_list_TAB_"..nn.."_"..i]:Show()
+								_G["riqi_list_TAB_"..nn.."_"..i]:SetID(dangqian)
+								_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetText(date("%Y-%m-%d",PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"][1][dangqian]*86400));
+								local yijihuohang=_G["liaotianneirong_shuaxin"..nn.."_UI"]:GetID()
+								if dangqian==yijihuohang then
+									_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetTextColor(1,1,1, 1);
+									_G["riqi_list_TAB_highlight1_"..nn.."_"..i]:Show();
+								end
+							end
+						end
+					end
+			end
+		end
+		---
+		local function CHATgengxinhang2(self)
+				local nn=2;
+				local laiyuan=jilupindaoID[nn];
+				if _G["PindaolistFrame_"..nn.."_UI"]:IsShown() then
+						for i = 1, hang_NUM do
+							_G["riqi_list_TAB_"..nn.."_"..i]:Hide()
+							_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetText();
+							_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetTextColor(0,250/255,154/255, 1);
+							_G["riqi_list_TAB_highlight1_"..nn.."_"..i]:Hide();
+						end
+						if #PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"]>0 then
+						    local ItemsNum = #PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"][1];
+						    FauxScrollFrame_Update(self, ItemsNum, hang_NUM, hang_Height);
+						    local offset = FauxScrollFrame_GetOffset(self);
+						    for i = 1, hang_NUM do
+								local dangqian = (ItemsNum+1)-i-offset;
+								if dangqian>0 then
+									_G["riqi_list_TAB_"..nn.."_"..i]:Show()
+									_G["riqi_list_TAB_"..nn.."_"..i]:SetID(dangqian)
+									_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetText(date("%Y-%m-%d",PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"][1][dangqian]*86400));
+									local yijihuohang=_G["liaotianneirong_shuaxin"..nn.."_UI"]:GetID()
+									if dangqian==yijihuohang then
+										_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetTextColor(1,1,1, 1);
+										_G["riqi_list_TAB_highlight1_"..nn.."_"..i]:Show();
+									end
+								end
+							end
+						end
+				end
+		end
+		
+		---
+		StaticPopupDialogs["QINGKONGLIAOTIANJILU"] = {
+			text = "确定要清空所有记录并重置配置吗？",
+			button1 = "确定",
+			button2 = "取消",
+			OnAccept = function()
+				for i=1,#jilupindaoID do
+					PIG['Chatjilu']["jiluinfo"][jilupindaoID[i]]["neirong"]={}
+					_G["liaotianneirong_shuaxin"..i.."_UI"]:SetID(0)
+					if i==1 then
+				    	CHATgengxinhang1(_G["riqi_list_Scroll_"..i.."_UI"]);
+				    elseif i==2 then
+				    	CHATgengxinhang2(_G["riqi_list_Scroll_"..i.."_UI"]);
+				    end
+					_G["CHatjilu_liaotianneirong_Scroll"..i.."_UI"]:Clear()
+					_G["dangtianzonghangshu_"..i.."_UI"]:SetText()
+				end
+			end,
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = true,
+		}
+		---
+		local TabWidth,TabHeight = 60,26;
+		for id=1,#jilupindaoName do
+			local Pindaolist = CreateFrame("Button","Pindaolist_"..id.."_UI",CHatjilu_neirong_UI, "TruncatedButtonTemplate",id);
+			Pindaolist:SetSize(TabWidth,TabHeight);
+			if id==1 then
+				Pindaolist:SetPoint("BOTTOMLEFT", CHatjilu_neirong_UI, "TOPLEFT", 10,-1);
+			else
+				Pindaolist:SetPoint("LEFT", _G["Pindaolist_"..(id-1).."_UI"], "RIGHT", 20,0);
+			end
+			local Pindaolist_Tex = Pindaolist:CreateTexture("Pindaolist_Tex_"..id, "BORDER");
+			Pindaolist_Tex:SetTexture("interface/paperdollinfoframe/ui-character-inactivetab.blp");
+			Pindaolist_Tex:SetRotation(3.1415927, 0.5, 0.5)
+			Pindaolist_Tex:SetSize(TabWidth*1.16,TabHeight*1.3);
+			Pindaolist_Tex:SetPoint("BOTTOM", Pindaolist, "BOTTOM", 0,0);
+			Pindaolist_title = Pindaolist:CreateFontString("Pindaolist_title_"..id);
+			Pindaolist_title:SetPoint("BOTTOM", Pindaolist, "BOTTOM", 0,5);
+			Pindaolist_title:SetFontObject(GameFontNormalSmall);
+			Pindaolist_title:SetText(jilupindaoName[id]);
+			local Pindaolist_highlight = Pindaolist:CreateTexture("Pindaolist_highlight_"..id, "BORDER");
+			Pindaolist_highlight:SetTexture("interface/paperdollinfoframe/ui-character-tab-highlight.blp");
+			Pindaolist_highlight:SetBlendMode("ADD")
+			Pindaolist_highlight:SetPoint("CENTER", Pindaolist_title, "CENTER", 0,0);
+			Pindaolist_highlight:SetSize(TabWidth-12,TabHeight);
+			Pindaolist_highlight:Hide();
+			Pindaolist:SetScript("OnEnter", function (self)
+				if not _G["PindaolistFrame_"..self:GetID().."_UI"]:IsShown() then
+					_G["Pindaolist_title_"..self:GetID()]:SetTextColor(1, 1, 1, 1);
+					_G["Pindaolist_highlight_"..self:GetID()]:Show();
+				end
+			end);
+			Pindaolist:SetScript("OnLeave", function (self)
+				if not _G["PindaolistFrame_"..self:GetID().."_UI"]:IsShown() then
+					_G["Pindaolist_title_"..self:GetID()]:SetTextColor(1, 215/255, 0, 1);	
+				end
+				_G["Pindaolist_highlight_"..self:GetID()]:Hide();
+			end);
+			Pindaolist:SetScript("OnMouseDown", function (self)
+				if not _G["PindaolistFrame_"..self:GetID().."_UI"]:IsShown() then
+					_G["Pindaolist_title_"..self:GetID()]:SetPoint("CENTER", _G["Pindaolist_"..self:GetID().."_UI"], "CENTER", 2, -2);
+				end
+			end);
+			Pindaolist:SetScript("OnMouseUp", function (self)		
+				if not _G["PindaolistFrame_"..self:GetID().."_UI"]:IsShown() then
+					_G["Pindaolist_title_"..self:GetID()]:SetPoint("CENTER", _G["Pindaolist_"..self:GetID().."_UI"], "CENTER", 0, 0);
+				end
+			end);
+			-----------
+			local PindaolistFrame = CreateFrame("Frame", "PindaolistFrame_"..id.."_UI",CHatjilu_neirong_UI);
+			PindaolistFrame:SetSize(ChatWidth*4-8,ChatHeight*2-92);
+			PindaolistFrame:SetPoint("TOP",CHatjilu_neirong_UI,"TOP",0,-0);
+			PindaolistFrame:Hide();
+
+			Pindaolist:SetScript("OnClick", function (self)
+				neirong.tishiliulan:Hide()
+				for x=1,#jilupindaoName do
+					_G["Pindaolist_Tex_"..x]:SetTexture("interface/paperdollinfoframe/ui-character-inactivetab.blp");
+					_G["Pindaolist_Tex_"..x]:SetPoint("BOTTOM", _G["Pindaolist_"..x.."_UI"], "BOTTOM", 0,0);
+					_G["Pindaolist_title_"..x]:SetTextColor(1, 215/255, 0, 1);
+					_G["PindaolistFrame_"..x.."_UI"]:Hide();
+				end
+				_G["Pindaolist_Tex_"..self:GetID()]:SetTexture("interface/paperdollinfoframe/ui-character-activetab.blp");
+				_G["Pindaolist_Tex_"..self:GetID()]:SetPoint("BOTTOM", _G["Pindaolist_"..self:GetID().."_UI"], "BOTTOM", 0,-2);
+				_G["Pindaolist_title_"..self:GetID()]:SetTextColor(1, 1, 1, 1);
+				_G["PindaolistFrame_"..self:GetID().."_UI"]:Show();
+				_G["Pindaolist_highlight_"..self:GetID()]:Hide();
+				if id==1 then
+			    	CHATgengxinhang1(_G["riqi_list_Scroll_"..id.."_UI"]);
+			    elseif id==2 then
+			    	CHATgengxinhang2(_G["riqi_list_Scroll_"..id.."_UI"]);
+			    end
+			end);
+			local riqi_list = CreateFrame("Frame", "CHAT_riqi_list_"..id.."_UI", PindaolistFrame,"BackdropTemplate");
+			riqi_list:SetBackdropBorderColor(1, 1, 1, 0.6);
+			riqi_list:SetSize(CHatjilu_neirong_UI:GetWidth()*0.14,ChatHeight*2-100);
+			riqi_list:SetPoint("LEFT",PindaolistFrame,"LEFT",0,-0);
+			riqi_list.line = riqi_list:CreateLine()
+			riqi_list.line:SetColorTexture(1,1,1,0.2)
+			riqi_list.line:SetThickness(2);
+			riqi_list.line:SetStartPoint("TOPRIGHT",2,2)
+			riqi_list.line:SetEndPoint("BOTTOMRIGHT",2,-3)
+			local liaotianneirong = CreateFrame("Frame", "CHAT_liaotianneirong_"..id.."_UI", PindaolistFrame,"BackdropTemplate");
+			liaotianneirong:SetBackdropBorderColor(1, 1, 1, 0.6);
+			liaotianneirong:SetSize(CHatjilu_neirong_UI:GetWidth()*0.85,ChatHeight*2-100);
+			liaotianneirong:SetPoint("RIGHT",PindaolistFrame,"RIGHT",-4,-0);
+			---
+			liaotianneirong.ends = CreateFrame("Button",nil,liaotianneirong, "TruncatedButtonTemplate");
+			liaotianneirong.ends:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-up.blp")
+			liaotianneirong.ends:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
+			liaotianneirong.ends:SetPushedTexture("interface/chatframe/ui-chaticon-scrollend-down.blp")
+			liaotianneirong.ends:SetSize(30,30);
+			liaotianneirong.ends:SetPoint("BOTTOMRIGHT",liaotianneirong,"BOTTOMRIGHT",0,4);
+			liaotianneirong.down = CreateFrame("Button",nil,liaotianneirong, "TruncatedButtonTemplate");
+			liaotianneirong.down:SetNormalTexture("interface/chatframe/ui-chaticon-scrolldown-up.blp")
+			liaotianneirong.down:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
+			liaotianneirong.down:SetPushedTexture("interface/chatframe/ui-chaticon-scrolldown-down.blp")
+			liaotianneirong.down:SetSize(30,30);
+			liaotianneirong.down:SetPoint("BOTTOM",liaotianneirong.ends,"TOP",0,6);
+			liaotianneirong.up = CreateFrame("Button",nil,liaotianneirong, "TruncatedButtonTemplate");
+			liaotianneirong.up:SetNormalTexture("interface/chatframe/ui-chaticon-scrollup-up.blp")
+			liaotianneirong.up:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
+			liaotianneirong.up:SetPushedTexture("interface/chatframe/ui-chaticon-scrollup-down.blp")
+			liaotianneirong.up:SetSize(30,30);
+			liaotianneirong.up:SetPoint("BOTTOM",liaotianneirong.down,"TOP",0,6);
+			liaotianneirong.shuaxin = CreateFrame("Button","liaotianneirong_shuaxin"..id.."_UI",liaotianneirong, "UIMenuButtonStretchTemplate");
+			liaotianneirong.shuaxin:SetHighlightTexture(nil);
+			liaotianneirong.shuaxin:SetSize(26,26);
+			liaotianneirong.shuaxin:SetPoint("BOTTOM",liaotianneirong.up,"TOP",-0.4,40);
+			liaotianneirong.shuaxin.highlight = liaotianneirong.shuaxin:CreateTexture(nil, "HIGHLIGHT");
+			liaotianneirong.shuaxin.highlight:SetTexture("interface/buttons/ui-common-mousehilight.blp");
+			liaotianneirong.shuaxin.highlight:SetBlendMode("ADD")
+			liaotianneirong.shuaxin.highlight:SetPoint("CENTER", liaotianneirong.shuaxin, "CENTER", 0,0);
+			liaotianneirong.shuaxin.highlight:SetSize(30,30);
+			liaotianneirong.shuaxin.Normal = liaotianneirong.shuaxin:CreateTexture(nil, "BORDER");
+			liaotianneirong.shuaxin.Normal:SetTexture("interface/buttons/ui-refreshbutton.blp");
+			liaotianneirong.shuaxin.Normal:SetBlendMode("ADD")
+			liaotianneirong.shuaxin.Normal:SetPoint("CENTER", liaotianneirong.shuaxin, "CENTER", 0,0);
+			liaotianneirong.shuaxin.Normal:SetSize(16,16);
+			liaotianneirong.shuaxin:HookScript("OnMouseDown", function (self)
+				liaotianneirong.shuaxin.Normal:SetPoint("CENTER", liaotianneirong.shuaxin, "CENTER", -1.5,-1.5);
+			end);
+			liaotianneirong.shuaxin:HookScript("OnMouseUp", function (self)
+				liaotianneirong.shuaxin.Normal:SetPoint("CENTER", liaotianneirong.shuaxin, "CENTER", 0,0);
+			end);
+			-------------
+			liaotianneirong.kaishi = CreateFrame("Button",nil,liaotianneirong, "TruncatedButtonTemplate");
+			liaotianneirong.kaishi:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
+			liaotianneirong.kaishi:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-up.blp")
+			liaotianneirong.kaishi:SetPushedTexture("interface/chatframe/ui-chaticon-scrollend-down.blp")
+			liaotianneirong.kaishi:SetSize(30,30);
+			liaotianneirong.kaishi:SetPoint("BOTTOM",liaotianneirong.shuaxin,"TOP",0,50);
+			local buttonTTTT=liaotianneirong.kaishi:GetNormalTexture() 
+			buttonTTTT:SetRotation(3.1415927, 0.5, 0.5)
+			local buttonTTTTT=liaotianneirong.kaishi:GetPushedTexture() 
+			buttonTTTTT:SetRotation(3.1415927, 0.5, 0.5)
+
+			liaotianneirong.del = CreateFrame("Button","liaotianneirong_del"..id.."_UI",liaotianneirong, "TruncatedButtonTemplate");
+			liaotianneirong.del:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square");
+			liaotianneirong.del:SetSize(24,24);
+			liaotianneirong.del:SetPoint("TOPRIGHT",liaotianneirong,"TOPRIGHT",-2,-4);
+			liaotianneirong.del.Tex = liaotianneirong.del:CreateTexture(nil, "BORDER");
+			liaotianneirong.del.Tex:SetTexture("interface/containerframe/bags.blp");
+			liaotianneirong.del.Tex:SetTexCoord(0.168,0.27,0.837,0.934);
+			liaotianneirong.del.Tex:SetAllPoints(liaotianneirong.del)
+
+			liaotianneirong.del.Tex1 = liaotianneirong.del:CreateTexture(nil, "BORDER");
+			liaotianneirong.del.Tex1:SetTexture("interface/containerframe/bags.blp");
+			liaotianneirong.del.Tex1:SetTexCoord(0.008,0.11,0.86,0.958);
+			liaotianneirong.del.Tex1:SetAllPoints(liaotianneirong.del)
+			liaotianneirong.del.Tex1:Hide();
+			liaotianneirong.del:SetScript("OnMouseDown", function (self)
+				self.Tex:Hide();
+				self.Tex1:Show();
+			end);
+			liaotianneirong.del:SetScript("OnMouseUp", function (self)
+				self.Tex:Show();
+				self.Tex1:Hide();
+			end);
+
+			liaotianneirong.kaishi:SetScript("OnClick", function (self)
+				_G["CHatjilu_liaotianneirong_Scroll"..id.."_UI"]:ScrollToTop()
+				liaotianneirong.kaishi:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-disabled.blp")
+				liaotianneirong.up:SetNormalTexture("interface/chatframe/ui-chaticon-scrollup-disabled.blp")
+				liaotianneirong.down:SetNormalTexture("interface/chatframe/ui-chaticon-scrolldown-up.blp")
+				liaotianneirong.ends:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-up.blp")
+			end);
+			liaotianneirong.up:SetScript("OnClick", function (self)
+				for i=1,20 do
+					_G["CHatjilu_liaotianneirong_Scroll"..id.."_UI"]:ScrollUp()
+				end
+				liaotianneirong.down:SetNormalTexture("interface/chatframe/ui-chaticon-scrolldown-up.blp")
+				liaotianneirong.ends:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-up.blp")
+			end);
+			liaotianneirong.down:SetScript("OnClick", function (self)
+				for i=1,20 do
+					_G["CHatjilu_liaotianneirong_Scroll"..id.."_UI"]:ScrollDown()
+				end
+				liaotianneirong.kaishi:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-up.blp")
+				liaotianneirong.up:SetNormalTexture("interface/chatframe/ui-chaticon-scrollup-up.blp")
+			end);
+			liaotianneirong.ends:SetScript("OnClick", function (self)
+				_G["CHatjilu_liaotianneirong_Scroll"..id.."_UI"]:ScrollToBottom()
+				liaotianneirong.kaishi:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-up.blp")
+				liaotianneirong.up:SetNormalTexture("interface/chatframe/ui-chaticon-scrollup-up.blp")
+				liaotianneirong.down:SetNormalTexture("interface/chatframe/ui-chaticon-scrolldown-disabled.blp")
+				liaotianneirong.ends:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-disabled.blp")
+			end);
+
+			local function zairuliaotianINFO(self,id)
+					local laiyuan=PIG['Chatjilu']["jiluinfo"][jilupindaoID[id]]["neirong"];
+					local jilulist=laiyuan[2][self:GetID()];
+					for x=1,#jilulist do
+						local Event =jilulist[x][1];
+						local info2 ="["..date("%H:%M",jilulist[x][2]).."] ";
+						local info3 =jilulist[x][3];
+						local info4_jiluxiaoxineirong =jilulist[x][4];
+						local info5 =jilulist[x][5];
+						for i=1,#QuickChat_biaoqingName do
+							if info4_jiluxiaoxineirong:find(QuickChat_biaoqingName[i][1]) then
+								info4_jiluxiaoxineirong = info4_jiluxiaoxineirong:gsub(QuickChat_biaoqingName[i][1], "\124T" .. QuickChat_biaoqingName[i][2] .. ":" ..(PIG['ChatFrame']['FontSize_value']+2) .. "\124t");
+							end
+						end
+						local textCHATINFO="";
+						if Event=="CHAT_MSG_PARTY_LEADER" then
+							textCHATINFO=info2.."|Hchannel:PARTY|h|cff89D2FF[队长]|r|h |Hplayer:"..info3..":000:PARTY:|h|cff89D2FF[|r|c"..info5..info3.."|r|cff89D2FF]|h："..info4_jiluxiaoxineirong.."|r";
+						elseif Event=="CHAT_MSG_PARTY" then							
+							textCHATINFO=info2.."|Hchannel:PARTY|h|cffAAAAFF[小队]|r|h |Hplayer:"..info3..":000:PARTY:|h|cffAAAAFF[|r|c"..info5..info3.."|r|cffAAAAFF]|h："..info4_jiluxiaoxineirong.."\124r";
+						elseif Event=="CHAT_MSG_RAID_LEADER" then							
+							textCHATINFO=info2.."|Hchannel:RAID|h\124cffFF4809[团队领袖]\124r|h |Hplayer:"..info3..":000:RAID:|h\124cffFF4809[\124r|c"..info5..info3.."|r\124cffFF4809]|h："..info4_jiluxiaoxineirong.."\124r";
+						elseif Event=="CHAT_MSG_RAID" then
+							textCHATINFO=info2.."|Hchannel:RAID|h\124cffFF7F00[团队]\124r|h |Hplayer:"..info3..":000:RAID:|h\124cffFF7F00[\124r|c"..info5..info3.."|r\124cffFF7F00]|h："..info4_jiluxiaoxineirong.."\124r";						
+						elseif Event=="CHAT_MSG_RAID_WARNING" then	
+							textCHATINFO=info2.."\124cffFF4800[团队通知]\124r |Hplayer:"..info3..":000:RAID:|h\124cffFF4800[\124r|c"..info5..info3.."|r\124cffFF4800]|h："..info4_jiluxiaoxineirong.."\124r";
+						end
+						_G["CHatjilu_liaotianneirong_Scroll"..id.."_UI"]:Show()
+						_G["CHatjilu_liaotianneirong_Scroll"..id.."_UI"]:AddMessage(textCHATINFO, nil, nil, nil, nil, true);	
+					end
+					local xianshiriqishuju=date("%Y-%m-%d",laiyuan[1][self:GetID()]*86400)
+					_G["dangtianzonghangshu_"..id.."_UI"]:SetText(xianshiriqishuju.."|cff"..jilupindaoNameC[id].."["..jilupindaoName[id].."]|r聊天总行数:"..#jilulist);
+			end
+			liaotianneirong.shuaxin:SetScript("OnClick", function (self)
+				liaotianneirong.kaishi:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-up.blp")
+				liaotianneirong.up:SetNormalTexture("interface/chatframe/ui-chaticon-scrollup-up.blp")
+				liaotianneirong.down:SetNormalTexture("interface/chatframe/ui-chaticon-scrolldown-disabled.blp")
+				liaotianneirong.ends:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-disabled.blp")
+				if self:GetID()>0 then
+					_G["CHatjilu_liaotianneirong_Scroll"..id.."_UI"]:Clear()
+					zairuliaotianINFO(self,id)
+				end
+			end);
+			liaotianneirong.del:SetScript("OnClick", function (self)
+				local bjid =self:GetID()
+				if bjid and bjid>0 then
+					_G["CHatjilu_liaotianneirong_Scroll"..id.."_UI"]:Clear()
+					table.remove(PIG["Chatjilu"]["jiluinfo"][jilupindaoID[id]]["neirong"][1],bjid);
+					table.remove(PIG["Chatjilu"]["jiluinfo"][jilupindaoID[id]]["neirong"][2],bjid);
+				    if id==1 then
+				    	CHATgengxinhang1(_G["riqi_list_Scroll_"..id.."_UI"]);
+				    elseif id==2 then
+				    	CHATgengxinhang2(_G["riqi_list_Scroll_"..id.."_UI"]);
+				    end
+				    self:SetID(0)
+				    liaotianneirong.shuaxin:SetID(0)
+				end
+			end);
+			---左边日期目录
+			riqi_list.Scroll = CreateFrame("ScrollFrame","riqi_list_Scroll_"..id.."_UI",riqi_list, "FauxScrollFrameTemplate");  
+			riqi_list.Scroll:SetPoint("TOPLEFT",riqi_list,"TOPLEFT",2,-2);
+			riqi_list.Scroll:SetPoint("BOTTOMRIGHT",riqi_list,"BOTTOMRIGHT",-24,0);
+			riqi_list.Scroll:SetScript("OnVerticalScroll", function(self, offset)
+				if id==1 then
+			    	FauxScrollFrame_OnVerticalScroll(self, offset, hang_Height, CHATgengxinhang1)
+			    elseif id==2 then
+			    	FauxScrollFrame_OnVerticalScroll(self, offset, hang_Height, CHATgengxinhang2)
+			    end
+			end)
+			for i=1, hang_NUM, 1 do
+				riqi_list.TAB = CreateFrame("Button", "riqi_list_TAB_"..id.."_"..i, _G["riqi_list_Scroll_"..id.."_UI"]:GetParent(),nil,i);
+				riqi_list.TAB:SetSize(hang_Width,hang_Height);
+				if i==1 then
+					riqi_list.TAB:SetPoint("TOPLEFT", riqi_list.Scroll, "TOPLEFT", 2, -3);
+				else
+					riqi_list.TAB:SetPoint("TOPLEFT", _G["riqi_list_TAB_"..id.."_"..(i-1)], "BOTTOMLEFT", 0, -4);
+				end
+				riqi_list.TAB.Title = riqi_list.TAB:CreateFontString("riqi_list_TAB_Title_"..id.."_"..i);
+				riqi_list.TAB.Title:SetPoint("LEFT", riqi_list.TAB, "LEFT", 6, 0);
+				riqi_list.TAB.Title:SetFontObject(GameFontNormal);
+				riqi_list.TAB.Title:SetTextColor(0,250/255,154/255, 1);
+				riqi_list.TAB.highlight = riqi_list.TAB:CreateTexture("riqi_list_TAB_highlight_"..id.."_"..i, "BORDER");
+				riqi_list.TAB.highlight:SetTexture("interface/buttons/ui-listbox-highlight2.blp");
+				riqi_list.TAB.highlight:SetBlendMode("ADD")
+				riqi_list.TAB.highlight:SetPoint("CENTER", riqi_list.TAB, "CENTER", 0,0);
+				riqi_list.TAB.highlight:SetSize(hang_Width,hang_Height);
+				riqi_list.TAB.highlight:SetAlpha(0.4);
+				riqi_list.TAB.highlight:Hide();
+				riqi_list.TAB.highlight1 = riqi_list.TAB:CreateTexture("riqi_list_TAB_highlight1_"..id.."_"..i, "BORDER");
+				riqi_list.TAB.highlight1:SetTexture("interface/buttons/ui-listbox-highlight.blp");
+				riqi_list.TAB.highlight1:SetPoint("CENTER", riqi_list.TAB, "CENTER", 0,0);
+				riqi_list.TAB.highlight1:SetSize(hang_Width,hang_Height);
+				riqi_list.TAB.highlight1:SetAlpha(0.9);
+				riqi_list.TAB.highlight1:Hide();
+				_G["riqi_list_TAB_"..id.."_"..i]:SetScript("OnEnter", function (self)
+					if not _G["riqi_list_TAB_highlight1_"..id.."_"..i]:IsShown() then
+						_G["riqi_list_TAB_Title_"..id.."_"..i]:SetTextColor(1,1,1,1);
+						_G["riqi_list_TAB_highlight_"..id.."_"..i]:Show();
+					end
+				end);
+				_G["riqi_list_TAB_"..id.."_"..i]:SetScript("OnLeave", function (self)
+					if not _G["riqi_list_TAB_highlight1_"..id.."_"..i]:IsShown() then
+						_G["riqi_list_TAB_Title_"..id.."_"..i]:SetTextColor(0,250/255,154/255,1);	
+					end
+					_G["riqi_list_TAB_highlight_"..id.."_"..i]:Hide();
+				end);
+				_G["riqi_list_TAB_"..id.."_"..i]:SetScript("OnClick", function (self)
+					for v=1,hang_NUM do
+						_G["riqi_list_TAB_highlight1_"..id.."_"..v]:Hide();
+						_G["riqi_list_TAB_highlight_"..id.."_"..v]:Hide();
+						_G["riqi_list_TAB_Title_"..id.."_"..v]:SetTextColor(0,250/255,154/255,1);
+					end
+					_G["riqi_list_TAB_Title_"..id.."_"..i]:SetTextColor(1,1,1,1);
+					_G["riqi_list_TAB_highlight1_"..id.."_"..i]:Show();
+					---
+					_G["liaotianneirong_shuaxin"..id.."_UI"]:SetID(self:GetID())
+					_G["liaotianneirong_del"..id.."_UI"]:SetID(self:GetID())
+					_G["CHatjilu_liaotianneirong_Scroll"..id.."_UI"]:Clear()
+					zairuliaotianINFO(self,id)
+				end)
+			end
+			---右边聊天内容
+			local liaotianneirong_Scroll = CreateFrame("ScrollingMessageFrame", "CHatjilu_liaotianneirong_Scroll"..id.."_UI", liaotianneirong, "ChatFrameTemplate")
+			liaotianneirong_Scroll:SetPoint("TOPLEFT",_G["CHAT_liaotianneirong_"..id.."_UI"],"TOPLEFT",6,-4);
+			liaotianneirong_Scroll:SetPoint("BOTTOMRIGHT",_G["CHAT_liaotianneirong_"..id.."_UI"],"BOTTOMRIGHT",-40,4);
+			liaotianneirong_Scroll:SetFading(false)
+			liaotianneirong_Scroll:SetMaxLines(9999)
+			liaotianneirong_Scroll:UnregisterAllEvents()
+			liaotianneirong_Scroll:SetFrameStrata("MEDIUM")
+			liaotianneirong_Scroll:SetToplevel(false)
+			liaotianneirong_Scroll:Hide()
+			liaotianneirong_Scroll:SetHyperlinksEnabled(true)
+			liaotianneirong_Scroll:EnableMouseWheel(true)
+			liaotianneirong_Scroll:SetScript("OnMouseWheel", function(self, delta)
+				if delta == 1 then
+					liaotianneirong.down:SetNormalTexture("interface/chatframe/ui-chaticon-scrolldown-up.blp")
+					liaotianneirong.ends:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-up.blp")
+					liaotianneirong_Scroll:ScrollUp()
+				elseif delta == -1 then
+					liaotianneirong.kaishi:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-up.blp")
+					liaotianneirong.up:SetNormalTexture("interface/chatframe/ui-chaticon-scrollup-up.blp")
+					liaotianneirong_Scroll:ScrollDown()
+				end
+			end)
+			---总行数
+			local dangtianzonghangshu = liaotianneirong_Scroll:CreateFontString("dangtianzonghangshu_"..id.."_UI");
+			dangtianzonghangshu:SetPoint("TOP",liaotianneirong_Scroll,"BOTTOM",0,-10);
+			dangtianzonghangshu:SetFontObject(GameFontNormal);
+		end
+
+		---根据启用注册事件
+		for i=1,#jilupindaoID do
+			if PIG['Chatjilu']["jiluinfo"][jilupindaoID[i]]["kaiguan"]=="ON" then
+				for jj=1,#jilupindaoEvent[i] do
+					huoquliaotianjiluFFF:RegisterEvent(jilupindaoEvent[i][jj]);
+				end
+			end
+		end
+		huoquliaotianjiluFFF:HookScript("OnEvent", function (self,event,arg1,arg2,arg3,arg4,arg5,_,_,_,_,_,_,arg12)
+				for i=1,#jilupindaoEvent do
+					for ii=1,#jilupindaoEvent[i] do
+						if jilupindaoEvent[i][ii]==event then
+							local xiaoxiTime=GetServerTime()
+							local YYDAY=floor(xiaoxiTime/60/60/24)
+							local localizedClass, englishClass = GetPlayerInfoByGUID(arg12)
+							local rPerc, gPerc, bPerc, argbHex = GetClassColor(englishClass);
+							local shujuyuanPR=PIG['Chatjilu']["jiluinfo"][jilupindaoID[i]]["neirong"]
+							if #shujuyuanPR>0 then
+								local yijingcunzairiqi=false
+								for f=#shujuyuanPR[1], 1, -1 do
+									if shujuyuanPR[1][f]==YYDAY then
+										table.insert(shujuyuanPR[2][f], {event,xiaoxiTime,arg5,arg1,argbHex});
+										yijingcunzairiqi=true;
+										break
+									end
+								end
+								if yijingcunzairiqi==false then
+									table.insert(shujuyuanPR[1], YYDAY);
+									table.insert(shujuyuanPR[2], {{event,xiaoxiTime,arg5,arg1,argbHex}});
+								end
+							else
+								PIG['Chatjilu']["jiluinfo"][jilupindaoID[i]]["neirong"]={
+									{YYDAY},{{{event,xiaoxiTime,arg5,arg1,argbHex}}}
+								}
+							end
+						end
+					end
+				end
+		end)
+		--=======================================
+		---密语记录
+		local www,hhh,hang_Height,hang_NUM = 160,310,24,12
+		local miyijiluF = CreateFrame("Frame", "miyijiluF_UI", UIParent,"BackdropTemplate");
+		miyijiluF:SetBackdrop( { bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 4,} );
+		miyijiluF:SetBackdropBorderColor(0.5, 0.5, 0.5, 0.8);
+		miyijiluF:SetSize(www,hhh);
+		miyijiluF:SetPoint("CENTER",UIParent,"CENTER",0,70);
+		miyijiluF:Hide();
+		miyijiluF:SetFrameStrata("HIGH")
+		miyijiluF:EnableMouse(true)
+		miyijiluF:SetMovable(true)
+		miyijiluF:SetClampedToScreen(true)
+		tinsert(UISpecialFrames,"miyijiluF_UI");
+
+		miyijiluF.line = miyijiluF:CreateLine()
+		miyijiluF.line:SetColorTexture(1,1,1,0.2)
+		miyijiluF.line:SetThickness(1);
+		miyijiluF.line:SetStartPoint("TOPLEFT",1,-20)
+		miyijiluF.line:SetEndPoint("TOPRIGHT",-1,-20)
+
+		miyijiluF.biaoti = CreateFrame("Frame", nil, miyijiluF);
+		miyijiluF.biaoti:SetSize(www,20);
+		miyijiluF.biaoti:SetPoint("TOP", miyijiluF, "TOP", 0, 0);
+		miyijiluF.biaoti:EnableMouse(true)
+		miyijiluF.biaoti:RegisterForDrag("LeftButton")
+		miyijiluF.biaoti:SetScript("OnDragStart",function()
+			miyijiluF:StartMoving()
+		end)
+		miyijiluF.biaoti:SetScript("OnDragStop",function()
+			miyijiluF:StopMovingOrSizing()
+		end)
+		miyijiluF.biaoti.shezhi = CreateFrame("Button",nil,miyijiluF.biaoti);
+		miyijiluF.biaoti.shezhi:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
+		miyijiluF.biaoti.shezhi:SetSize(18,18);
+		miyijiluF.biaoti.shezhi:SetPoint("LEFT",miyijiluF.biaoti,"LEFT",4,0);
+		miyijiluF.biaoti.shezhi.Tex = miyijiluF.biaoti.shezhi:CreateTexture(nil,"OVERLAY");
+		miyijiluF.biaoti.shezhi.Tex:SetTexture("interface/gossipframe/bindergossipicon.blp");
+		miyijiluF.biaoti.shezhi.Tex:SetPoint("CENTER", 0, 0);
+		miyijiluF.biaoti.shezhi.Tex:SetSize(16,16);
+		miyijiluF.biaoti.shezhi:SetScript("OnMouseDown", function (self)
+			self.Tex:SetPoint("CENTER",-1,-1);
+		end);
+		miyijiluF.biaoti.shezhi:SetScript("OnMouseUp", function (self)
+			self.Tex:SetPoint("CENTER");
+		end);
+		miyijiluF.biaoti.shezhi:SetScript("OnClick", function (self)
+			if miyijiluF.shezhiF:IsShown() then
+				miyijiluF.shezhiF:Hide();
+			else
+				miyijiluF.shezhiF:Show();
+				if PIG['Chatjilu']["jiluinfo"]["WHISPER"]["tixing"]=="ON" then
+					miyijiluF.shezhiF.tixing:SetChecked(true)
+				else
+					miyijiluF.shezhiF.tixing:SetChecked(false)
+				end
+			end
+		end)
+		miyijiluF.shezhiF = CreateFrame("Frame", nil, miyijiluF,"BackdropTemplate");
+		miyijiluF.shezhiF:SetBackdrop( { bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 4,} );
+		miyijiluF.shezhiF:SetBackdropBorderColor(0.5, 0.5, 0.5, 0.8);
+		miyijiluF.shezhiF:SetSize(www,hhh);
+		miyijiluF.shezhiF:SetPoint("TOPRIGHT",miyijiluF,"TOPLEFT",-1,0);
+		miyijiluF.shezhiF:Hide();
+		miyijiluF.shezhiF.Close = CreateFrame("Button",nil,miyijiluF.shezhiF, "TruncatedButtonTemplate");
+		miyijiluF.shezhiF.Close:SetSize(18,18);
+		miyijiluF.shezhiF.Close:SetPoint("TOPRIGHT",miyijiluF.shezhiF,"TOPRIGHT",-1,-2);
+		miyijiluF.shezhiF.Close.highlight = miyijiluF.shezhiF.Close:CreateTexture(nil, "HIGHLIGHT");
+		miyijiluF.shezhiF.Close.highlight:SetTexture("interface/buttons/ui-common-mousehilight.blp");
+		miyijiluF.shezhiF.Close.highlight:SetBlendMode("ADD")
+		miyijiluF.shezhiF.Close.highlight:SetPoint("CENTER", miyijiluF.shezhiF.Close, "CENTER", 0,0);
+		miyijiluF.shezhiF.Close.highlight:SetSize(16,16);
+		miyijiluF.shezhiF.Close.Tex = miyijiluF.shezhiF.Close:CreateTexture(nil, "BORDER");
+		miyijiluF.shezhiF.Close.Tex:SetTexture("interface/common/voicechat-muted.blp");
+		miyijiluF.shezhiF.Close.Tex:SetPoint("CENTER");
+		miyijiluF.shezhiF.Close.Tex:SetSize(12,12)
+		miyijiluF.shezhiF.Close:SetScript("OnMouseDown", function (self)
+			self.Tex:SetPoint("CENTER",-1,-1);
+		end);
+		miyijiluF.shezhiF.Close:SetScript("OnMouseUp", function (self)
+			self.Tex:SetPoint("CENTER");
+		end);
+		miyijiluF.shezhiF.Close:SetScript("OnClick", function (self)
+			miyijiluF.shezhiF:Hide()
+		end)
+
+		miyijiluF.shezhiF.tixing = CreateFrame("CheckButton", nil, miyijiluF.shezhiF, "ChatConfigCheckButtonTemplate");
+		miyijiluF.shezhiF.tixing:SetSize(28,30);
+		miyijiluF.shezhiF.tixing:SetHitRectInsets(0,-60,0,0);
+		miyijiluF.shezhiF.tixing:SetPoint("TOPLEFT", miyijiluF.shezhiF, "TOPLEFT", 8,-10);
+		miyijiluF.shezhiF.tixing.Text:SetText("来密语提醒");
+		miyijiluF.shezhiF.tixing.tooltip = "收到密语时频道切换按钮里面的图标会闪动";
+		miyijiluF.shezhiF.tixing:SetScript("OnClick", function (self)
+			if self:GetChecked() then
+				PIG['Chatjilu']["jiluinfo"]["WHISPER"]["tixing"]="ON" 
+			else
+				PIG['Chatjilu']["jiluinfo"]["WHISPER"]["tixing"]="OFF" 
+			end
+		end)
+		---重置密语记录
+		miyijiluF.shezhiF.MIYUJILU = miyijiluF.shezhiF:CreateFontString();
+		miyijiluF.shezhiF.MIYUJILU:SetPoint("BOTTOMLEFT",miyijiluF.shezhiF,"BOTTOMLEFT",2,3);
+		miyijiluF.shezhiF.MIYUJILU:SetFontObject(GameFontNormal);
+		miyijiluF.shezhiF.MIYUJILU:SetText("\124cffFFff00出问题点\124r");
+		miyijiluF.shezhiF.MIYUJILUBUT = CreateFrame("Button","Default_Button_daibenzhushou_UI",miyijiluF.shezhiF, "UIPanelButtonTemplate");  
+		miyijiluF.shezhiF.MIYUJILUBUT:SetSize(76,20);
+		miyijiluF.shezhiF.MIYUJILUBUT:SetPoint("LEFT",miyijiluF.shezhiF.MIYUJILU,"RIGHT",10,0);
+		miyijiluF.shezhiF.MIYUJILUBUT:SetText("清空重置");
+		miyijiluF.shezhiF.MIYUJILUBUT:SetScript("OnClick", function ()
+			StaticPopup_Show ("CHONGZHI_MIYUJILU");
+		end);
+		---------
+		miyijiluF.biaoti.text = miyijiluF.biaoti:CreateFontString();
+		miyijiluF.biaoti.text:SetPoint("CENTER",miyijiluF.biaoti,"CENTER",0,0);
+		miyijiluF.biaoti.text:SetFontObject(GameFontNormal);
+		miyijiluF.biaoti.text:SetText("密语记录");
+
+		miyijiluF.biaoti.Close = CreateFrame("Button",nil,miyijiluF.biaoti, "TruncatedButtonTemplate");
+		miyijiluF.biaoti.Close:SetSize(18,18);
+		miyijiluF.biaoti.Close:SetPoint("TOPRIGHT",miyijiluF.biaoti,"TOPRIGHT",-1,-2);
+		miyijiluF.biaoti.Close.highlight = miyijiluF.biaoti.Close:CreateTexture(nil, "HIGHLIGHT");
+		miyijiluF.biaoti.Close.highlight:SetTexture("interface/buttons/ui-common-mousehilight.blp");
+		miyijiluF.biaoti.Close.highlight:SetBlendMode("ADD")
+		miyijiluF.biaoti.Close.highlight:SetPoint("CENTER", miyijiluF.biaoti.Close, "CENTER", 0,0);
+		miyijiluF.biaoti.Close.highlight:SetSize(16,16);
+		miyijiluF.biaoti.Close.Tex = miyijiluF.biaoti.Close:CreateTexture(nil, "BORDER");
+		miyijiluF.biaoti.Close.Tex:SetTexture("interface/common/voicechat-muted.blp");
+		miyijiluF.biaoti.Close.Tex:SetPoint("CENTER");
+		miyijiluF.biaoti.Close.Tex:SetSize(12,12)
+		miyijiluF.biaoti.Close:SetScript("OnMouseDown", function (self)
+			self.Tex:SetPoint("CENTER",-1,-1);
+		end);
+		miyijiluF.biaoti.Close:SetScript("OnMouseUp", function (self)
+			self.Tex:SetPoint("CENTER");
+		end);
+		miyijiluF.biaoti.Close:SetScript("OnClick", function (self)
+			miyijiluF:Hide()
+		end)
+
+		miyijiluF.F = CreateFrame("Frame", nil, miyijiluF,"BackdropTemplate");
+		miyijiluF.F:SetPoint("TOPLEFT",miyijiluF,"TOPLEFT",0,-20);
+		miyijiluF.F:SetPoint("BOTTOMRIGHT",miyijiluF,"BOTTOMRIGHT",0,0);
+		local function gengxinhang(self)
+			for id = 1, hang_NUM do
+		    	_G["MSGhang_"..id]:Hide();
+		    end
+		    local shuju=PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]
+			if #shuju>0 then
+				local ItemsNum = #shuju[1];
+				FauxScrollFrame_Update(self, ItemsNum, hang_NUM, hang_Height);
+				local offset = FauxScrollFrame_GetOffset(self);
+			    for id = 1, hang_NUM do
+					local dangqian = id+offset;
+					if shuju[1][id] then
+						_G["MSGhang_"..id]:Show();
+						local coords = CLASS_ICON_TCOORDS[shuju[1][id][2]]
+						_G["MSGhang_"..id].zhiye:SetTexCoord(unpack(coords));
+						local name1,name2 = strsplit("-", shuju[1][id][1]);
+						_G["MSGhang_"..id].name:SetText(name1);
+						local rPerc, gPerc, bPerc, argbHex = GetClassColor(shuju[1][id][2]);
+						local nrname=shuju[1][id][1]
+						local nrheji=shuju[2][nrname]
+						if nrheji[#nrheji][1]=="CHAT_MSG_WHISPER" then
+							_G["MSGhang_"..id].name:SetTextColor(rPerc, gPerc, bPerc, 1);
+						else
+							_G["MSGhang_"..id].name:SetTextColor(0.6, 0.6, 0.6, 1);
+						end
+						_G["MSGhang_"..id].del:SetID(dangqian);
+					end
+				end
+			end
+		end
+		StaticPopupDialogs["CHONGZHI_MIYUJILU"] = {
+			text = "此操作将\124cffff0000重置\124r密语记录配置，并清空所有已保存数据。\n确定重置?",
+			button1 = "确定",
+			button2 = "取消",
+			OnAccept = function()
+				PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"] = addonTable.Default['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"];
+				gengxinhang(miyijiluF.F.Scroll)
+			end,
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = true,
+		}
+		miyijiluF.F.Scroll = CreateFrame("ScrollFrame",nil,miyijiluF.F, "FauxScrollFrameTemplate");  
+		miyijiluF.F.Scroll:SetPoint("TOPLEFT",miyijiluF.F,"TOPLEFT",0,0);
+		miyijiluF.F.Scroll:SetPoint("BOTTOMRIGHT",miyijiluF.F,"BOTTOMRIGHT",-22,0);
+		miyijiluF.F.Scroll:SetScript("OnVerticalScroll", function(self, offset)
+		    FauxScrollFrame_OnVerticalScroll(self, offset, hang_Height, gengxinhang)
+		end)
+		for id = 1, hang_NUM do
+			local hang = CreateFrame("Frame", "MSGhang_"..id, miyijiluF.F.Scroll:GetParent());
+			hang:SetSize(www, hang_Height);
+			if id==1 then
+				hang:SetPoint("TOPLEFT",miyijiluF.F.Scroll,"TOPLEFT",0,0);
+			else
+				hang:SetPoint("TOP",_G["MSGhang_"..(id-1)],"BOTTOM",0,-0);
+			end
+			hang:SetScript("OnEnter",  function(self)
+				miyijiluF.zhengzaixianshi = nil;
+				local WowWidth=GetScreenWidth()/2-300;
+				local offset = miyijiluF:GetLeft();
+				miyijiluF.nr:ClearAllPoints();
+				if offset<WowWidth then
+					miyijiluF.nr:SetPoint("TOPLEFT",miyijiluF,"TOPRIGHT",1,0);
+				else
+					miyijiluF.nr:SetPoint("TOPRIGHT",miyijiluF,"TOPLEFT",-1,0);
+				end
+				miyijiluF.nr:Show()
+				self.highlight:Show();
+				self.del:Show();
+				miyijiluF.nr.Scroll:Clear()
+
+				local idxx=self.del:GetID()
+				local shuju=PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]
+				local Aname = shuju[1][idxx][1];
+				
+				local rPerc, gPerc, bPerc, argbHex = GetClassColor(shuju[1][id][2]);
+				miyijiluF.nr.text:SetText("与 |c"..argbHex..Aname.."|r 聊天记录");
+				
+
+				local name1,name2 = strsplit("-", Aname);
+				local nering=shuju[2][Aname]
+				local zonghhh=#nering
+
+				miyijiluF.nr.ends:Hide()
+				miyijiluF.nr.down:Hide()
+				miyijiluF.nr.up:Hide()
+				if zonghhh>7 then
+					if zonghhh>21 then
+						miyijiluF.nr.ends:Show()
+						miyijiluF.nr.down:Show()
+						miyijiluF.nr.up:Show()
+						miyijiluF.nr:SetHeight(310);
+					else
+						miyijiluF.nr:SetHeight(zonghhh*14+20);
+					end
+				else
+					miyijiluF.nr:SetHeight(120);
+				end
+				for ix=1,zonghhh do
+					local Event =nering[ix][1];
+					local info2 ="[\124cffC0C0C0"..date("%m-%d %H:%M",nering[ix][2]).."]\124r ";
+					local info4_jiluxiaoxineirong =nering[ix][3];
+					local textCHATINFO="";
+					if Event=="CHAT_MSG_WHISPER_INFORM" then
+						textCHATINFO=info2.."\124cffFF80FF发送给|Hplayer:"..name1..":000:WHISPER:"..name1.."|h[\124r|c"..argbHex..name1.."|r\124cffFF80FF]|h："..info4_jiluxiaoxineirong.."\124r";						
+					elseif Event=="CHAT_MSG_WHISPER" then
+						textCHATINFO=info2.."|Hplayer:"..name1..":000:WHISPER:"..name1.."|h\124cffFF80FF[\124r|c"..argbHex..name1.."|r\124cffFF80FF]|h悄悄地说："..info4_jiluxiaoxineirong.."\124r";
+					end
+					miyijiluF.nr.Scroll:Show()
+					miyijiluF.nr.Scroll:AddMessage(textCHATINFO, nil, nil, nil, nil, true);
+				end
+			end)
+			hang:SetScript("OnLeave",  function(self)
+				miyijiluF.xiaoshidaojishi = 0.2;
+				miyijiluF.zhengzaixianshi = true;
+				self.highlight:Hide();
+				self.del:Hide();
+			end)
+			hang:SetScript("OnMouseUp", function(self,button)
+				local name = self.name:GetText()
+				if button=="LeftButton" then
+					local editBox = ChatEdit_ChooseBoxForSend();
+					local hasText = editBox:GetText()
+					if editBox:HasFocus() then
+						editBox:SetText("/WHISPER " ..name.." ".. hasText);
+					else
+						ChatEdit_ActivateChat(editBox)
+						editBox:SetText("/WHISPER " ..name.." ".. hasText);
+					end
+				elseif button=="RightButton" then
+					
+				end
+			end)
+			hang.highlight = hang:CreateTexture(nil, "BORDER");
+			hang.highlight:SetTexture("interface/buttons/ui-listbox-highlight2.blp");
+			hang.highlight:SetBlendMode("ADD")
+			hang.highlight:SetPoint("CENTER", hang, "CENTER", 0,0);
+			hang.highlight:SetSize(www, hang_Height-2);
+			hang.highlight:SetAlpha(0.4);
+			hang.highlight:Hide();
+			if id~=hang_NUM then
+				hang.line = hang:CreateLine()
+				hang.line:SetColorTexture(1,1,1,0.2)
+				hang.line:SetThickness(1);
+				hang.line:SetStartPoint("BOTTOMLEFT",0,0)
+				hang.line:SetEndPoint("BOTTOMRIGHT",0,0)
+			end
+			hang.zhiye = hang:CreateTexture(nil, "BORDER");
+			hang.zhiye:SetTexture("Interface/TargetingFrame/UI-Classes-Circles");
+			hang.zhiye:SetPoint("LEFT", hang, "LEFT", 4,0);
+			hang.zhiye:SetSize(hang_Height-5,hang_Height-5);
+			hang.name = hang:CreateFontString();
+			hang.name:SetPoint("LEFT", hang.zhiye, "RIGHT", 4,0);
+			hang.name:SetFont(ChatFontNormal:GetFont(), 13, "OUTLINE");
+			hang.del = CreateFrame("Button",nil,hang, "TruncatedButtonTemplate");
+			hang.del:SetSize(hang_Height-2,hang_Height-2);
+			hang.del:SetPoint("RIGHT",hang,"RIGHT",-14,-0);
+			hang.del:Hide();
+			hang.del.highlight = hang.del:CreateTexture(nil, "HIGHLIGHT");
+			hang.del.highlight:SetTexture("interface/buttons/ui-common-mousehilight.blp");
+			hang.del.highlight:SetBlendMode("ADD")
+			hang.del.highlight:SetPoint("CENTER", hang.del, "CENTER", 0,0);
+			hang.del.highlight:SetSize(hang_Height-10,hang_Height-10);
+			hang.del.Tex = hang.del:CreateTexture(nil, "BORDER");
+			hang.del.Tex:SetTexture("interface/common/voicechat-muted.blp");
+			hang.del.Tex:SetPoint("CENTER");
+			hang.del.Tex:SetSize(hang_Height-12,hang_Height-12)
+			hang.del:SetScript("OnEnter",  function(self)
+				self:Show();
+			end)
+			hang.del:SetScript("OnLeave",  function(self)
+				self:Hide();
+			end)
+			hang.del:SetScript("OnMouseDown", function (self)
+				self.Tex:SetPoint("CENTER",-1,-1);
+			end);
+			hang.del:SetScript("OnMouseUp", function (self)
+				self.Tex:SetPoint("CENTER");
+			end);
+			hang.del:SetScript("OnClick", function (self)
+				local idid=self:GetID()
+				local shuju=PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]	
+				table.removekey(shuju[2],shuju[1][idid][1])
+				table.remove(shuju[1],idid);
+				gengxinhang(miyijiluF.F.Scroll)
+			end)
+		end
+		huoquliaotianjiluFFF:RegisterEvent("CHAT_MSG_WHISPER_INFORM");
+		huoquliaotianjiluFFF:RegisterEvent("CHAT_MSG_WHISPER");
+		--密语提醒
+		local youNEWxiaoxinlai=false;
+		local function miyuMGStishi()
+				if fuFrame.ChatJilu.Tex:IsShown() then
+					fuFrame.ChatJilu.Tex:Hide()
+				else
+					fuFrame.ChatJilu.Tex:Show()
+				end
+				if youNEWxiaoxinlai then
+					C_Timer.After(0.8,miyuMGStishi)
+				else
+					fuFrame.ChatJilu.Tex:Show()
+				end
+		end
+		--提取消息
+		local miyuP={}
+		miyuP.zijiname, miyuP.zijirealm = UnitFullName("player")
+		huoquliaotianjiluFFF:HookScript("OnEvent", function (self,event,arg1,arg2,arg3,arg4,arg5,_,_,_,_,_,_,arg12)
+			if not miyuP.zijirealm then miyuP.zijiname, miyuP.zijirealm = UnitFullName("player") end
+			if event=="CHAT_MSG_WHISPER" then
+				if PIG['Chatjilu']["jiluinfo"]["WHISPER"]["tixing"]=="ON" and youNEWxiaoxinlai==false and not miyijiluF_UI:IsShown() then
+					youNEWxiaoxinlai=true 
+					miyuMGStishi() 
+				end
+			end
+			if event=="CHAT_MSG_WHISPER_INFORM" or event=="CHAT_MSG_WHISPER" then
+				if miyijiluF_UI:IsShown() then
+					local function zhixingshuaxiHn()
+						gengxinhang(miyijiluF.F.Scroll)
+					end
+					C_Timer.After(0.2,zhixingshuaxiHn)
+				end
+				local xiaoxiTime=GetServerTime()
+				--local YYDAY=floor(xiaoxiTime/60/60/24)
+				local localizedClass, englishClass = GetPlayerInfoByGUID(arg12)
+				local izedClass, englishClass, localizedRace, englishRace, sex, name, realm = GetPlayerInfoByGUID(arg12)
+				if realm=="" or realm==" " then
+					miyuP.miyuren=arg5.."-"..miyuP.zijirealm
+				else
+					miyuP.miyuren=arg5
+				end
+				local huancunshuju=PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]
+				if #huancunshuju>0 then
+					local yijingcunzairiqi=false
+					for f=#huancunshuju[1], 1, -1 do
+						if huancunshuju[1][f][1]==miyuP.miyuren then
+							table.remove(huancunshuju[1],f);
+							table.insert(huancunshuju[1],1,{miyuP.miyuren,englishClass});
+							if not huancunshuju[2] then
+								huancunshuju[2][miyuP.miyuren]={}
+							end
+							table.insert(huancunshuju[2][miyuP.miyuren], {event,xiaoxiTime,arg1});
+							yijingcunzairiqi=true;
+							break
+						end
+					end
+					if yijingcunzairiqi==false then
+						table.insert(huancunshuju[1],1,{miyuP.miyuren,englishClass});
+						huancunshuju[2][miyuP.miyuren]={{event,xiaoxiTime,arg1}}
+					end
+				else
+					PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]={
+						{{miyuP.miyuren,englishClass}},{[miyuP.miyuren]={{event,xiaoxiTime,arg1}}}
+					}
+				end
+			end
+		end)
+		-------------
+		miyijiluF.nr = CreateFrame("Frame", nil, miyijiluF,"BackdropTemplate");
+		miyijiluF.nr:SetBackdrop( { bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
+		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 4,} );
+		miyijiluF.nr:SetWidth(400)
+		miyijiluF.nr:SetHeight(120);
+		miyijiluF.nr:SetPoint("TOPRIGHT",miyijiluF,"TOPLEFT",-1,0);
+		miyijiluF.nr:Hide();
+		miyijiluF.nr:SetScript("OnEnter",  function(self)
+			miyijiluF.nr:Show();
+			miyijiluF.zhengzaixianshi = nil;
+		end)
+		miyijiluF.nr:SetScript("OnLeave",  function(self)
+			miyijiluF.xiaoshidaojishi = 0.2;
+			miyijiluF.zhengzaixianshi = true;
+		end)
+		miyijiluF.nr:SetScript("OnUpdate", function(self, ssss)
+			if miyijiluF.zhengzaixianshi==nil then
+				return;
+			else
+				if miyijiluF.zhengzaixianshi==true then
+					if miyijiluF.xiaoshidaojishi<= 0 then
+						miyijiluF.nr:Hide();
+						miyijiluF.zhengzaixianshi = nil;
+					else
+						miyijiluF.xiaoshidaojishi = miyijiluF.xiaoshidaojishi - ssss;	
+					end
+				end
+			end
+		end)
+
+		miyijiluF.nr.text = miyijiluF.nr:CreateFontString();
+		miyijiluF.nr.text:SetPoint("TOPLEFT",miyijiluF.nr,"TOPLEFT",4,-1);
+		miyijiluF.nr.text:SetFontObject(GameFontNormal);
+
+		miyijiluF.nr.line = miyijiluF.nr:CreateLine()
+		miyijiluF.nr.line:SetColorTexture(1,1,1,0.2)
+		miyijiluF.nr.line:SetThickness(1);
+		miyijiluF.nr.line:SetStartPoint("TOPLEFT",1,-20)
+		miyijiluF.nr.line:SetEndPoint("TOPRIGHT",-1,-20)
+		---翻页按钮=======================
+		local anniudaxiaoF = 24
+		miyijiluF.nr.ends = CreateFrame("Button",nil,miyijiluF.nr, "TruncatedButtonTemplate");
+		miyijiluF.nr.ends:SetNormalTexture("interface/chatframe/ui-chaticon-scrollend-up.blp")
+		miyijiluF.nr.ends:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
+		miyijiluF.nr.ends:SetPushedTexture("interface/chatframe/ui-chaticon-scrollend-down.blp")
+		miyijiluF.nr.ends:SetSize(anniudaxiaoF,anniudaxiaoF);
+		miyijiluF.nr.ends:SetPoint("BOTTOMRIGHT",miyijiluF.nr,"BOTTOMRIGHT",0,4);
+		miyijiluF.nr.ends.hilight = miyijiluF.nr.ends:CreateTexture(nil,"OVERLAY");
+		miyijiluF.nr.ends.hilight:SetTexture("interface/chatframe/ui-chaticon-blinkhilight.blp");
+		miyijiluF.nr.ends.hilight:SetSize(anniudaxiaoF,anniudaxiaoF);
+		miyijiluF.nr.ends.hilight:SetPoint("CENTER", 0, 0);
+		miyijiluF.nr.ends.hilight:Hide();
+		miyijiluF.nr.ends:SetScript("OnEnter",  function(self)
+			miyijiluF.nr:Show();
+			miyijiluF.zhengzaixianshi = nil;
+		end)
+		miyijiluF.nr.ends:SetScript("OnLeave",  function(self)
+			miyijiluF.xiaoshidaojishi = 0.2;
+			miyijiluF.zhengzaixianshi = true;
+		end)
+
+		miyijiluF.nr.down = CreateFrame("Button",nil,miyijiluF.nr, "TruncatedButtonTemplate");
+		miyijiluF.nr.down:SetNormalTexture("interface/chatframe/ui-chaticon-scrolldown-up.blp")
+		miyijiluF.nr.down:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
+		miyijiluF.nr.down:SetPushedTexture("interface/chatframe/ui-chaticon-scrolldown-down.blp")
+		miyijiluF.nr.down:SetSize(anniudaxiaoF,anniudaxiaoF);
+		miyijiluF.nr.down:SetPoint("BOTTOM",miyijiluF.nr.ends,"TOP",0,0);
+		miyijiluF.nr.down:SetScript("OnEnter",  function(self)
+			miyijiluF.nr:Show();
+			miyijiluF.zhengzaixianshi = nil;
+		end)
+		miyijiluF.nr.down:SetScript("OnLeave",  function(self)
+			miyijiluF.xiaoshidaojishi = 0.2;
+			miyijiluF.zhengzaixianshi = true;
+		end)
+		miyijiluF.nr.up = CreateFrame("Button",nil,miyijiluF.nr, "TruncatedButtonTemplate");
+		miyijiluF.nr.up:SetNormalTexture("interface/chatframe/ui-chaticon-scrollup-up.blp")
+		miyijiluF.nr.up:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
+		miyijiluF.nr.up:SetPushedTexture("interface/chatframe/ui-chaticon-scrollup-down.blp")
+		miyijiluF.nr.up:SetSize(anniudaxiaoF,anniudaxiaoF);
+		miyijiluF.nr.up:SetPoint("BOTTOM",miyijiluF.nr.down,"TOP",0,0);
+		miyijiluF.nr.up:SetScript("OnEnter",  function(self)
+			miyijiluF.nr:Show();
+			miyijiluF.zhengzaixianshi = nil;
+		end)
+		miyijiluF.nr.up:SetScript("OnLeave",  function(self)
+			miyijiluF.xiaoshidaojishi = 0.2;
+			miyijiluF.zhengzaixianshi = true;
+		end)
+		--内容显示UI============================================
+		miyijiluF.nr.Scroll = CreateFrame("ScrollingMessageFrame", "ChatFrame89", miyijiluF.nr, "ChatFrameTemplate")
+		miyijiluF.nr.Scroll:SetPoint("TOPLEFT",miyijiluF.nr,"TOPLEFT",4,-22);
+		miyijiluF.nr.Scroll:SetPoint("BOTTOMRIGHT",miyijiluF.nr,"BOTTOMRIGHT",-24,3);
+		miyijiluF.nr.Scroll:UnregisterAllEvents()
+		--miyijiluF.nr.Scroll:SetHyperlinksEnabled(true)--可点击
+		miyijiluF.nr.Scroll:SetMaxLines(9999)
+		miyijiluF.nr.Scroll:SetFading(false)
+		miyijiluF.nr.Scroll:SetFrameStrata("HIGH")
+		miyijiluF.nr.Scroll:SetScript("OnEnter",  function(self)
+			miyijiluF.nr:Show();
+			miyijiluF.zhengzaixianshi = nil;
+		end)
+		miyijiluF.nr.Scroll:SetScript("OnLeave",  function(self)
+			miyijiluF.xiaoshidaojishi = 0.2;
+			miyijiluF.zhengzaixianshi = true;
+		end)
+		miyijiluF.nr.Scroll:SetScript("OnMouseWheel", function(self, delta)
+			if delta == 1 then
+				miyijiluF.nr.Scroll:ScrollUp()
+				miyijiluF.nr.ends.hilight:Show();
+			elseif delta == -1 then
+				miyijiluF.nr.Scroll:ScrollDown()
+				if miyijiluF.nr.Scroll:GetScrollOffset()==0 then
+					miyijiluF.nr.ends.hilight:Hide();
+				end
+			end
+		end)
+		miyijiluF.nr.ends:SetScript("OnClick", function (self)
+			miyijiluF.nr.Scroll:ScrollToBottom()
+			miyijiluF.nr.ends.hilight:Hide();
+		end);
+		miyijiluF.nr.up:SetScript("OnClick", function (self)
+			miyijiluF.nr.Scroll:ScrollUp()
+			miyijiluF.nr.ends.hilight:Show();
+		end);
+		miyijiluF.nr.down:SetScript("OnClick", function (self)
+			miyijiluF.nr.Scroll:ScrollDown()
+			if miyijiluF.nr.Scroll:GetScrollOffset()==0 then
+				miyijiluF.nr.ends.hilight:Hide();
+			end
+		end);
+		---================================
+		--按钮
+		fuFrame.biankuang="UIMenuButtonStretchTemplate"
+		if PIG['ChatFrame']['wubiankuang']=="ON" then
+			fuFrame.biankuang="TruncatedButtonTemplate"
+		end
+		local Width,Height,jiangejuli = 24,24,4;
+		fuFrame.ChatJilu = CreateFrame("Button",nil,fuFrame, fuFrame.biankuang); 
+		fuFrame.ChatJilu:SetSize(Width,Height);
+		fuFrame.ChatJilu:SetFrameStrata("LOW")
+		fuFrame.ChatJilu:SetPoint("LEFT",fuFrame.CHANNEL_4,"RIGHT",jiangejuli,0);
+		fuFrame.ChatJilu.Tex = fuFrame.ChatJilu:CreateTexture(nil, "BORDER");
+		fuFrame.ChatJilu.Tex:SetTexture("interface/chatframe/ui-chatwhispericon.blp");
+		fuFrame.ChatJilu.Tex:SetPoint("CENTER",0,0);
+		fuFrame.ChatJilu.Tex:SetSize(Width-6,Height-4);
+		fuFrame.ChatJilu:SetScript("OnMouseDown", function (self)
+			self.Tex:SetPoint("CENTER",1,-1);
+		end);
+		fuFrame.ChatJilu:SetScript("OnMouseUp", function (self)
+			self.Tex:SetPoint("CENTER",0,0);
+		end);
+		fuFrame.ChatJilu:RegisterForClicks("LeftButtonUp","RightButtonUp")
+		fuFrame.ChatJilu:SetScript("OnClick", function(self, event)
+			if event=="LeftButton" then
+				ChatjiluMianban:Hide()
+				if miyijiluF_UI:IsShown() then
+					miyijiluF_UI:Hide()
+				else
+					youNEWxiaoxinlai=false;
+					miyijiluF_UI:Show()
+					gengxinhang(miyijiluF_UI.F.Scroll)
+				end
+			else
+				miyijiluF_UI:Hide()
+				if ChatjiluMianban:IsShown() then
+					ChatjiluMianban:Hide()
+				else
+					for i=1,#baocuntianshulist,1 do
+						if PIG['Chatjilu']["tianshu"]==baocuntianshulist[i] then
+							UIDropDownMenu_SetText(ChatjiluMianban_tianshuxiala_UI, baocuntianshulistN[i])
+						end
+					end
+					UIDropDownMenu_Initialize(ChatjiluMianban_tianshuxiala_UI, baocuntianshulist_Up)--初始化
+					for j=1,#jilupindaoID do
+						if PIG['Chatjilu']["jiluinfo"][jilupindaoID[j]]["kaiguan"]=="ON" then
+							_G["pindaoxuanzeC_"..j.."_UI"]:SetChecked(true);
+						elseif PIG['Chatjilu']["jiluinfo"][jilupindaoID[j]]["kaiguan"]=="OFF" then
+							_G["pindaoxuanzeC_"..j.."_UI"]:SetChecked(false);
+						end
+					end
+					ChatjiluMianban:SetFrameLevel(70)
+					ChatjiluMianban:Show()	
+				end
+			end
+		end);
+end
+
+--------------------------------------------
+addonTable.ADD_Chat_Jilu =ADD_Chat_Jilu

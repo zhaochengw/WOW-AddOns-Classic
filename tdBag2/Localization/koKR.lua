@@ -42,6 +42,8 @@ L["Frame Settings"] = "프레임 설정"
 --[[ L["Gems Color"] = ""--]] 
 L["Global search"] = "전역 검색"
 L["Global Settings"] = "전역 설정"
+--[[Translation missing --]]
+--[[ L["Guild bank"] = ""--]] 
 L["Herbalism Color"] = "약초 색상"
 L["Highlight Border"] = "테두리 강조 "
 L["Highlight Brightness"] = "밝게 강조"
@@ -81,6 +83,8 @@ L["Restore default Settings"] = "기본 설정 복원"
 L["Reverse Bag Order"] = "가방 순서 반대로"
 L["Reverse Slot Order"] = "칸 순서 반대로"
 L["Show Character Portrait"] = "캐릭터 초상화 보기"
+--[[Translation missing --]]
+--[[ L["Show Guild Bank Count in Tooltip"] = ""--]] 
 L["Show Item Count in Tooltip"] = "툴팁에 아이템 갯수 보기"
 L["Show Junk Icon"] = "잡템 아이콘 보기"
 L["Show Offline Text in Bag's Title"] = "다른 캐릭터 가방 제목에 접속종료 문자 보기"
@@ -113,6 +117,8 @@ L["TOOLTIP_WATCHED_TOKENS"] = "집계 토큰 변경"
 L["TOOLTIP_WATCHED_TOKENS_LEFTTIP"] = "집계를 추가하려면 아이템을 여기로 드래그"
 L["TOOLTIP_WATCHED_TOKENS_ONLY_IN_BAG"] = "가방에 있는 것만 집계"
 L["TOOLTIP_WATCHED_TOKENS_RIGHTTIP"] = "아이템 집계 관리"
+--[[Translation missing --]]
+--[[ L["TOOLTIP_WATCHED_TOKENS_SHIFT"] = ""--]] 
 L["Top"] = "상단"
 L["Total"] = "총"
 L["Trade Containers Location"] = "거래 물품 위치"

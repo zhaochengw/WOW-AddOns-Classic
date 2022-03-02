@@ -53,6 +53,8 @@ L["Frame Settings"] = "Параметры рамки"
 --[[ L["Global search"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Global Settings"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Guild bank"] = ""--]] 
 L["Herbalism Color"] = "Цвет травничества"
 L["Highlight Border"] = "Выделение граници"
 L["Highlight Brightness"] = "Яркость подсветки"
@@ -105,6 +107,8 @@ L["Reverse Bag Order"] = "Обратный порядок сумки"
 L["Reverse Slot Order"] = "Обратный порядок слота"
 --[[Translation missing --]]
 --[[ L["Show Character Portrait"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Show Guild Bank Count in Tooltip"] = ""--]] 
 L["Show Item Count in Tooltip"] = "Показать количество элементов в подсказке"
 L["Show Junk Icon"] = "Показать значок над хламом"
 L["Show Offline Text in Bag's Title"] = "Показать автономный текст в заголовке сумки"
@@ -154,6 +158,8 @@ L["TOOLTIP_TOGGLE_BANK"] = "Открыть банк"
 --[[ L["TOOLTIP_WATCHED_TOKENS_ONLY_IN_BAG"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["TOOLTIP_WATCHED_TOKENS_RIGHTTIP"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["TOOLTIP_WATCHED_TOKENS_SHIFT"] = ""--]] 
 L["Top"] = "Верх"
 L["Total"] = "Весь"
 L["Trade Containers Location"] = "Расположение торговых контейнеров"

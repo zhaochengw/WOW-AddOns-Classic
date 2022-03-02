@@ -1,6 +1,6 @@
-﻿## Interface: 20501
+## Interface: 20503
 ## Title: Spy
-## Version: 1.1.2
+## Version: 2.0.6
 ## Notes: Detects and alerts you to the presence of nearby enemy players.
 ## Notes-deDE: Detektiert und warnt Sie vor, in der Nähe befindlichen, Gegnern.
 ## Notes-esES: Detects and alerts you to the presence of nearby enemy players.
@@ -36,6 +36,7 @@ Locales\Spy-deDE.lua
 Locales\Spy-esES.lua
 Locales\Spy-esMX.lua
 Locales\Spy-frFR.lua
+Locales\Spy-itIT.lua
 Locales\Spy-koKR.lua
 Locales\Spy-ptBR.lua
 Locales\Spy-ruRU.lua
@@ -51,6 +52,7 @@ MainWindow.lua
 List.lua
 SpyStats.xml
 SpyData.lua
+
 ## Title-zhCN: |cff880303[有爱]|r Spy 敌对玩家提醒插件
 ## X-Vendor: NetEase
-## X-163UI-Version: 20210519103056
+## X-163UI-Version: 20220224141126
