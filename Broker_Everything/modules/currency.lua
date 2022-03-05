@@ -109,7 +109,7 @@ local function updateBroker()
 					end
 					str = CapColor(unpack(t));
 				end
-				tinsert(elems, str.."|T"..currencyInfo.iconFileID..":0|t");
+				tinsert(elems, str.."|T"..(currencyInfo.iconFileID or ns.icon_fallback)..":0|t");
 			end
 		end
 	end
@@ -405,7 +405,7 @@ function module.OptionMenu(parent)
 			if currencyInfo and currencyInfo.name then
 				pList = ns.EasyMenu:AddEntry({
 					arrow = true,
-					label = (C("dkyellow","%s %d:").."  |T%s:20:20:0:0|t %s"):format(L["Place"],place,currencyInfo.iconFileID,C("ltblue",currencyInfo.name)),
+					label = (C("dkyellow","%s %d:").."  |T%s:20:20:0:0|t %s"):format(L["Place"],place,(currencyInfo.iconFileID or ns.icon_fallback),C("ltblue",currencyInfo.name)),
 				});
 				ns.EasyMenu:AddEntry({ label = C("ltred",L["Remove the currency"]), func=function() setInTitle(place, false); end }, pList);
 				ns.EasyMenu:AddEntry({separator=true}, pList);
@@ -434,7 +434,7 @@ function module.OptionMenu(parent)
 					end
 					ns.EasyMenu:AddEntry({
 						label = nameStr,
-						icon = currencyInfo.iconFileID,
+						icon = currencyInfo.iconFileID or ns.icon_fallback,
 						disabled = disabled,
 						keepShown = false,
 						func = function() setInTitle(place,Currencies[i]); end
@@ -568,7 +568,7 @@ function module.init()
 	};
 	local A = faction=="Alliance";
 	Currencies = {
-		"EXPANSION_NAME8",1931,1904,1906,1977,1822,1813,1810,1828,1767,1885,1877,1883,1889,1808,1802,1891,1754,1820,1728,1816,1191,
+		"EXPANSION_NAME8",2009,1979,1931,1904,1906,1977,1822,1813,1810,1828,1767,1885,1877,1883,1889,1808,1802,1891,1754,1820,1728,1816,1191,
 		"DUNGEON_AND_RAID",1166,
 		"PLAYER_V_PLAYER",391,1792,1586,1602,
 		"MISCELLANEOUS",402,81,515,1388,1401,1379,

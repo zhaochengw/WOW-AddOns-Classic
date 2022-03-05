@@ -59,7 +59,7 @@ function module.onupdate()
 		return
 	end
 
-	local F,O,P,A = nil,"?","","" -- Frame, Owner, Prepend, Append
+	local F,O,P,A,I = nil,"?","","","" -- Frame, Owner, Prepend, Append, ID
 	local ldbObject = ns.LDB:GetDataObjectByName(module.ldbName);
 	lastFrame,lastMod,lastCombatState=f,mod,combat;
 
@@ -76,10 +76,11 @@ function module.onupdate()
 			F = f:GetName();
 
 			if F then
-				O = ownership(_G,F);
+				O = ownership(f:GetParent() or _G,F);
 			end
 
 			if F=="WorldFrame" then
+				-- Units
 				local guid,id,_ = UnitGUID("mouseover");
 				local uName = UnitName("mouseover");
 				if guid and uName then
@@ -92,13 +93,23 @@ function module.onupdate()
 				end
 			end
 
+			if f.id then
+				I = "objectID: "..f.id;
+			elseif f.GetID then
+				local id = f:GetID();
+				if id and id~=0 then
+					I = "frameID: "..id;
+				end
+			end
+
 			if F == nil and type(f.key)=="string" then -- LibQTip tooltips returns nil on GetName but f.key contains the current name
 				O = "LibQTip";
 				F = f.key;
 			end
 
 			if F == nil then
-				F = "<anonym>";
+				--F = "<anonym>";
+				F = f:GetDebugName();
 				local parent = f:GetParent();
 				if parent then
 					for i,v in pairs(parent)do
@@ -125,6 +136,9 @@ function module.onupdate()
 
 		if O~=false and ((ns.profile[name].ownership=="shift" and mod) or ns.profile[name].ownership=="always") then
 			str = "["..O.."] "..str;
+			if I~="" then
+				str = str..", "..I;
+			end
 		end
 
 		ldbObject.text = str;

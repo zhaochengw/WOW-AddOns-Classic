@@ -1,7 +1,7 @@
 ## Interface: 20503
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
-## Version: 3.7.11
+## Version: 3.7.12
 ## Notes: Templates for WeakAuras
 ## X-Category: Interface Enhancements
 ## Globe-Main: WeakAuras
@@ -18,4 +18,4 @@ AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
 
 ## Title-zhCN: |cff880303[有爱]|r WeakAuras 模板
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220224141126
+## X-163UI-Version: 20220303142735

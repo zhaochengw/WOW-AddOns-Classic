@@ -1682,7 +1682,7 @@ NWB.optionDefaults = {
 		disableFlashAllLevels = false,
 		disableLogonAboveMaxBuffLevel = true,
 		disableLogonAllLevels = false,
-		guildTerok10 = 1,
+		guildTerok10 = 0, --To be enabled in next version after new timer reliability is tested.
 	},
 };
 

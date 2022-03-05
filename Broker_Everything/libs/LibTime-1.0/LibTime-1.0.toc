@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 90105
 ## Title: Lib: LibTime-1.0
 ## Notes: A little library around date, time and GetGameTime and more...
 ## Author: Hizuro
@@ -7,5 +7,9 @@
 
 ## X-Curse-Project-ID: 279585
 
+#@no-lib-strip@
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+#@end-no-lib-strip@
 
 LibTime-1.0.xml

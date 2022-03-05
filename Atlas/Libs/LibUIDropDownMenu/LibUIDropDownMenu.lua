@@ -1,4 +1,4 @@
--- $Id: LibUIDropDownMenu.lua 91 2022-02-13 14:57:00Z arithmandar $
+-- $Id: LibUIDropDownMenu.lua 96 2022-02-27 16:04:56Z arithmandar $
 -- ----------------------------------------------------------------------------
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ local GameTooltip_SetTitle, GameTooltip_AddInstructionLine, GameTooltip_AddNorma
 
 -- ----------------------------------------------------------------------------
 local MAJOR_VERSION = "LibUIDropDownMenu-4.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 91 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 96 $"):match("%d+"))
 
 
 local LibStub = _G.LibStub
@@ -783,8 +783,8 @@ function lib:UIDropDownMenu_CreateFrames(level, index)
 		newList:SetID(L_UIDROPDOWNMENU_MAXLEVELS);
 		newList:SetWidth(180)
 		newList:SetHeight(10)
-		for i = WoWRetail and 1 or (L_UIDROPDOWNMENU_MINBUTTONS+1), L_UIDROPDOWNMENU_MAXBUTTONS do
---		for i=1, L_UIDROPDOWNMENU_MAXBUTTONS do
+--		for i = WoWRetail and 1 or (L_UIDROPDOWNMENU_MINBUTTONS+1), L_UIDROPDOWNMENU_MAXBUTTONS do
+		for i=1, L_UIDROPDOWNMENU_MAXBUTTONS do
 			--local newButton = CreateFrame("Button", "L_DropDownList"..L_UIDROPDOWNMENU_MAXLEVELS.."Button"..i, newList, "L_UIDropDownMenuButtonTemplate");
 			local newButton = create_MenuButton("L_DropDownList"..L_UIDROPDOWNMENU_MAXLEVELS.."Button"..i, newList)
 			newButton:SetID(i);
@@ -1411,15 +1411,16 @@ function lib:UIDropDownMenu_GetSelectedID(frame)
 		return frame.selectedID;
 	else
 		-- If no explicit selectedID then try to send the id of a selected value or name
-		local maxNum;
+--[[		local maxNum;
 		if (WoWClassicEra or WoWClassicTBC) then
 			maxNum = L_UIDROPDOWNMENU_MAXBUTTONS
 		else
 			local listFrame = _G["L_DropDownList"..L_UIDROPDOWNMENU_MENU_LEVEL];
 			maxNum = listFrame.numButtons
 		end
-		for i=1, maxNum do
---		for i=1, listFrame.numButtons do
+		for i=1, maxNum do]]
+		local listFrame = _G["L_DropDownList"..L_UIDROPDOWNMENU_MENU_LEVEL];
+		for i=1, listFrame.numButtons do
 			local button = _G["L_DropDownList"..L_UIDROPDOWNMENU_MENU_LEVEL.."Button"..i];
 			-- See if checked or not
 			if ( lib:UIDropDownMenu_GetSelectedName(frame) ) then

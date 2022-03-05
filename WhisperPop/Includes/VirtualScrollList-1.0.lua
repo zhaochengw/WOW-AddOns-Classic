@@ -838,7 +838,7 @@ local function Frame_CreateBorder(self, hasBkgnd)
 		return frame
 	end
 
-	frame = CreateFrame("Frame", nil, self)
+	frame = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.borderFrame = frame
 
 	frame:SetBackdrop({ bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", tile = true, tileSize = 16, edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 } })
@@ -944,7 +944,7 @@ function UICreateVirtualScrollList(name, parent, pageSize, selectable, checkbox,
 	scrollBar:SetMinMaxValues(0, 1)
 	scrollBar:SetValue(0)
 
-	local headerFrame = CreateFrame("Frame", name.."HeaderFrame", frame, BackdropTemplateMixin and "BackdropTemplate")
+	local headerFrame = CreateFrame("Frame", name.."HeaderFrame", frame, "BackdropTemplate")
 	frame.headerFrame = headerFrame
 	headerFrame:SetPoint("TOPLEFT")
 	headerFrame:SetPoint("TOPRIGHT", scrollBar, "TOPLEFT")

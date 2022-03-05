@@ -1,23 +1,30 @@
 ﻿--[[--
 	ALA@163UI
 --]]--
-local __version = 2;
+local __version = 4;
+
+local _G = _G;
+_G.__ala_meta__ = _G.__ala_meta__ or {  };
+local __ala_meta__ = _G.__ala_meta__;
+local uireimp = __ala_meta__.uireimp;
 
 local Popup = _G.alaPopup;
 if Popup ~= nil and Popup.__minor ~= nil and Popup.__minor >= __version then
 	return;
+elseif Popup ~= nil then
+	if Popup.menu ~= nil then
+		Popup.menu:Hide();
+	end
+else
+	Popup = {  };
 end
-Popup = Popup or {  };
 Popup.__minor = __version;
 _G.alaPopup = Popup;
 
-local ADDON, NS = ...;
 
 local type = type;
 local ipairs, pairs, tinsert, tremove = ipairs, pairs, tinsert, tremove;
-local _G = _G;
 local _ = nil;
-
 
 
 local DropDownList1 = DropDownList1;
@@ -36,15 +43,15 @@ local height = 16;
 local interval = 0;
 local v_to_border = 8;
 local h_to_border = 8;
-local menu = CreateFrame("BUTTON", nil, DropDownList1, BackdropTemplateMixin ~= nil and "BackdropTemplate" or nil);
+local menu = CreateFrame("BUTTON", nil, DropDownList1);
 menu:SetFrameStrata("FULLSCREEN_DIALOG");
 menu:SetClampedToScreen(false);
 menu:Show();
 menu:SetPoint("TOPLEFT", DropDownList1, "TOPRIGHT");
 menu:SetWidth(120);
-menu:SetBackdrop(dropMenuBackdrop);
-menu:SetBackdropColor(dropMenuBackdropColor[1], dropMenuBackdropColor[2], dropMenuBackdropColor[3], dropMenuBackdropColor[4]);
-menu:SetBackdropBorderColor(dropMenuBackdropBorderColor[1], dropMenuBackdropBorderColor[2], dropMenuBackdropBorderColor[3], dropMenuBackdropBorderColor[4]);
+uireimp._SetBackdrop(menu, dropMenuBackdrop);
+uireimp._SetBackdropColor(menu, dropMenuBackdropColor[1], dropMenuBackdropColor[2], dropMenuBackdropColor[3], dropMenuBackdropColor[4]);
+uireimp._SetBackdropBorderColor(menu, dropMenuBackdropBorderColor[1], dropMenuBackdropBorderColor[2], dropMenuBackdropBorderColor[3], dropMenuBackdropBorderColor[4]);
 menu:SetScript("OnClick", function(self, button)
 	DropDownList1:Hide();
 end);
@@ -58,8 +65,8 @@ end);
 
 local func = {  };
 local buttons = {  };
-local meta = {  };
-local list = {  };
+local meta = Popup.meta or {  };
+local list = Popup.list or {  };
 local target = nil;
 local which = nil;
 local function dropMenuButtonOnClick(self)
@@ -248,4 +255,30 @@ Popup.sub_list = sub_list;
 _G["ALAPOPUP"] = showMenu;
 Popup.func = func;
 Popup.menu = menu;
+Popup.meta = meta;
+Popup.list = list;
 
+
+local flat = {
+	bgFile = "Interface\\Buttons\\WHITE8X8",
+	edgeFile = "Interface\\Buttons\\WHITE8X8",
+	tile = false,
+	tileSize = 16,
+	edgeSize = 1,
+	insets = { left = 1, right = 1, top = 1, bottom = 1, },	
+};
+if IsAddOnLoaded("ElvUI") or IsAddOnLoaded("TuKUI") or IsAddOnLoaded("NDUI") then
+	uireimp._SetBackdrop(menu, flat);
+	uireimp._SetBackdropColor(menu, 0, 0, 0, 0.75);
+	uireimp._SetBackdropBorderColor(menu, 0, 0, 0, 0.9);
+else
+	menu:RegisterEvent("ADDON_LOADED");
+	menu:SetScript("OnEvent", function(self, event, addon)
+		addon = addon:lower();
+		if addon == "elvui" or addon == "tukui" or addon == "ndui" then
+			uireimp._SetBackdrop(menu, flat);
+			uireimp._SetBackdropColor(menu, 0, 0, 0, 0.75);
+			uireimp._SetBackdropBorderColor(menu, 0, 0, 0, 0.9);
+		end
+	end);
+end

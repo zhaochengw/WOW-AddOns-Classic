@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 90105
 ## Title: Lib: LibColors-1.0
 ## Notes: A library to easy coloring strings by hex codes, color tables, class names, color names and more.
 ## Author: Hizuro
@@ -7,5 +7,9 @@
 
 ## X-Curse-Project-ID: 83930
 
+#@no-lib-strip@
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+#@end-no-lib-strip@
 
 LibColors-1.0-all.xml

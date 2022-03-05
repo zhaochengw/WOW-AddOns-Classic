@@ -3,6 +3,7 @@
 --]]--
 local __version = 2;
 
+local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
 if __ala_meta__.__fixminor ~= nil and __ala_meta__.__fixminor >= __version then
 	return;
@@ -20,7 +21,7 @@ if (not select(2, GetAddOnInfo("!!!163ui!!!")) or not IsAddOnLoaded("!!!163ui!!!
 			'COLORSELECT',
 			'COOLDOWN',
 			'EDITBOX',
-			-- 'FOGOFWARFRAME',					--	no method Hide	for classic
+			-- 'FOGOFWARFRAME',					--	no method Hide for classic
 			'GAMETOOLTIP',
 			'MESSAGEFRAME',
 			-- 'MINIMAP',

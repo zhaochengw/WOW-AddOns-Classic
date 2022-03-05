@@ -2,7 +2,7 @@
 	ALA@163UI
 --]]--
 
-local __version = 6;
+local __version = 7;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -202,7 +202,9 @@ __commlib.CPlayerFullName = __commlib.CPlayerName .. "-" .. __commlib.CRealmName
 					end
 					--
 					_TSendThrottle[name] = now;
-					UNIT_GUID(channel == "INSTANCE_CHAT" and "INSTANCE_CHAT" or "WHISPER", sender);
+					if __commlib.CPlayerTAG ~= nil then
+						UNIT_GUID(channel == "INSTANCE_CHAT" and "INSTANCE_CHAT" or "WHISPER", sender);
+					end
 				end
 			else
 			end

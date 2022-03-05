@@ -17,7 +17,7 @@ ns.L = setmetatable(L,{
 });
 --]]
 
-local debugMode = "4.2.8-release"=="@".."project-version".."@";
+local debugMode = "4.2.9-release"=="@".."project-version".."@";
 ns.L = setmetatable({}, {
 	__newindex = function(t,k,v)
 		L[tostring(k)]=tostring(v);

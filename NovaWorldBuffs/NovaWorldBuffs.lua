@@ -44,7 +44,7 @@ NWB.LDBIcon = LibStub("LibDBIcon-1.0");
 local version = GetAddOnMetadata("NovaWorldBuffs", "Version") or 9999;
 NWB.latestRemoteVersion = version;
 NWB.prefixColor = "|cFFFF6900";
-local terokOffset = 2.75;
+local terokOffset = 2.7507;
 
 --Some notes on the change Blizzard just implemented to make layers share buffs.
 --The buff drop only works on both layers if each layer NPC is reset.
@@ -595,28 +595,35 @@ function NWB:ticker()
 					NWB.data.layers[layer][v .. "30"] = nil;
 					NWB:doWarning(v, 30, secondsLeft, layer);
 				end
-				if (NWB.data.layers[layer]["terokTowers10"] and NWB.data.layers[layer]["terokTowers"]
-						and tonumber(NWB.data.layers[layer]["terokTowers"])) then
-					--This timer drifts 3 seconds forward per minute.
-					local endTime = NWB.data.layers[layer]["terokTowers"] + NWB:round((((NWB.data.layers[layer]["terokTowers"]  - GetServerTime()) / 60) * terokOffset));
-					endTime = math.floor(endTime);
-					--local endTime = NWB.data.layers[layer]["terokTowers"];
-					local secondsLeft = endTime - GetServerTime()
-					if (secondsLeft <= 600 and secondsLeft >= 599) then
-						NWB.data.layers[layer]["terokTowers10"] = nil;
-						local layer = NWB:GetLayerNum(layer);
-						local layerMsg = " (Layer " .. layer .. ")";
-						if (NWB.db.global.terokkarChat10) then
-							NWB:print(string.format(L["terokkarWarning"], "10 minutes") .. layerMsg .. ".");
+				if (k == 1) then
+					if (NWB.data.layers[layer]["terokTowers10"] and NWB.data.layers[layer]["terokTowers"]
+							and tonumber(NWB.data.layers[layer]["terokTowers"])) then
+						--This timer drifts 3 seconds forward per minute.
+						local endTime = NWB:getTerokEndTime(NWB.data.layers[layer]["terokTowers"], NWB.data.layers[layer]["terokTowersTime"]);
+						--local endTime = NWB.data.layers[layer]["terokTowers"];
+						local secondsLeft = endTime - GetServerTime()
+						if (secondsLeft <= 600 and secondsLeft >= 599) then
+							NWB.data.layers[layer]["terokTowers10"] = nil;
+							local layer = NWB:GetLayerNum(layer);
+							local layerMsg = " (Layer " .. layer .. ")";
+							local msg = string.format(L["terokkarWarning"], "10 minutes") .. layerMsg .. ".";
+							if (NWB.db.global.terokkarChat10) then
+								NWB:print(msg);
+							end
+							if (NWB.db.global.terokkarMiddle10) then
+								NWB:middleScreenMsgTBC("middle30", msg, nil, 5);
+							end
+							if (NWB.db.global.guildTerok10) then
+								NWB:sendGuildMsg(msg, "guildTerok10", nil, "[NWB]");
+							end
+							NWB:debug("terok10", secondsLeft);
 						end
-						if (NWB.db.global.terokkarMiddle10) then
-							NWB:middleScreenMsgTBC("middle30", string.format(L["terokkarWarning"], "10 minutes") .. layerMsg .. ".", nil, 5);
+						if (secondsLeft < 0) then
+							NWB.data.layers[layer]["terokTowers"] = nil;
+							NWB.data.layers[layer]["terokTowersTime"] = nil;
+							NWB.data.layers[layer]["terokFaction"] = nil;
+							--NWB:debug("terrok timer ended on layer", layer);
 						end
-					end
-					if (secondsLeft < 0) then
-						NWB.data.layers[layer]["terokTowers"] = nil;
-						NWB.data.layers[layer]["terokFaction"] = nil;
-						--NWB:debug("terrok timer ended on layer", layer);
 					end
 				end
 				if (NWB.data.layers[layer][v .. "NpcDied"] and ((GetServerTime() - NWB.data.layers[layer][v .. "NpcDied"]) == npcRespawnTime
@@ -648,19 +655,28 @@ function NWB:ticker()
 				NWB.data[v .. "30"] = nil;
 				NWB:doWarning(v, 30, secondsLeft);
 			end
-			if (NWB.data["terokTowers10"] and NWB.data["terokTowers"]) then
-				--This timer drifts 3 seconds forward per minute.
-				local endTime = NWB.data["terokTowers"] + NWB:round((((NWB.data["terokTowers"]  - GetServerTime()) / 60) * terokOffset));
-				endTime = math.floor(endTime);
-				--local endTime = NWB.data["terokTowers"];
-				local secondsLeft = endTime - GetServerTime()
-				if (secondsLeft <= 600 and secondsLeft >= 599) then
-					NWB.data["terokTowers10"] = nil;
-					if (NWB.db.global.terokkarChat10) then
-						NWB:print(string.format(L["terokkarWarning"], "10 minutes") .. ".");
+			if (k == 1) then
+				if (NWB.data["terokTowers10"] and NWB.data["terokTowers"]) then
+					--This timer drifts 3 seconds forward per minute.
+					local endTime = NWB:getTerokEndTime(NWB.data["terokTowers"], NWB.data["terokTowersTime"]);
+					local secondsLeft = endTime - GetServerTime()
+					if (secondsLeft <= 600 and secondsLeft >= 599) then
+						NWB.data["terokTowers10"] = nil;
+						local msg = string.format(L["terokkarWarning"], "10 minutes") .. ".";
+						if (NWB.db.global.terokkarChat10) then
+							NWB:print(msg);
+						end
+						if (NWB.db.global.terokkarMiddle10) then
+							NWB:middleScreenMsgTBC("middle30", msg, nil, 5);
+						end
+						if (NWB.db.global.guildTerok10) then
+							NWB:sendGuildMsg(msg, "guildTerok10", nil, "[NWB]");
+						end
 					end
-					if (NWB.db.global.terokkarMiddle10) then
-						NWB:middleScreenMsgTBC("middle30", string.format(L["terokkarWarning"], "10 minutes") .. ".", nil, 5);
+					if (secondsLeft < 0) then
+						NWB.data.terokTowers = nil;
+						NWB.data.terokTowersTime = nil;
+						NWB.data.terokFaction = nil;
 					end
 				end
 			end
@@ -874,8 +890,8 @@ end
 --Can also specify zone so only 1 person from that zone will send the msg (like orgrimmar when npc yell goes out).
 --BUG: sometimes a user doesn't register as having addon, checked table they don't exist when this happens.
 --Must be some reason they don't send a guild addon msg at logon.
-function NWB:sendGuildMsg(msg, type, zoneName)
-	if (NWB.isTBC) then
+function NWB:sendGuildMsg(msg, type, zoneName, prefix)
+	if (NWB.isTBC and type ~= "guildTerok10") then
 		return;
 	end
 	if (NWB.db.global.disableAllGuildMsgs == 1) then
@@ -906,6 +922,7 @@ function NWB:sendGuildMsg(msg, type, zoneName)
 		["guild1"] = "l",
 		["guild0"] = "m",
 		["guildNpcWalking"] = "K",
+		["guildTerok10"] = "V",
 	};
 	local numTotalMembers = GetNumGuildMembers();
 	local onlineMembers = {};
@@ -949,7 +966,11 @@ function NWB:sendGuildMsg(msg, type, zoneName)
 	--Check temp table to see if we're first in alphabetical order.
 	for k, v in NWB:pairsByKeys(onlineMembers) do
 		if (k == me) then
-			SendChatMessage("[WorldBuffs] " .. NWB:stripColors(msg), "guild");
+			if (prefix) then
+				SendChatMessage(prefix .. " " .. NWB:stripColors(msg), "guild");
+			else
+				SendChatMessage("[WorldBuffs] " .. NWB:stripColors(msg), "guild");
+			end
 		end
 		return;
 	end
@@ -999,7 +1020,8 @@ function NWB:checkGuildMasterSetting(type)
 				found = true;
 			elseif (v == 2) then
 				if (type == "guild30" or type == "guild15" or type == "guild10"
-					 or type == "guild5" or type == "guild1" or type == "guild0") then
+					 or type == "guild5" or type == "guild1" or type == "guild0"
+					 or type == "guildTerok10") then
 					found = true;
 				end
 			elseif (v == 3) then
@@ -3435,6 +3457,27 @@ function NWB:throddleEventByFunc(event, time, func, ...)
 	end
 end
 
+function NWB:getTerokEndTime(terokTowers, terokTowersTime)
+	--Can potentially just adjust the time when it's recorded instead and remove the timeSet sharing..
+	--But this way makes it easier to adjust the offset with version updates if needed without wiping peoples timers and ignoring old versions.
+	--Will see how this works out for a while before trying the above method.
+	--local endTime = NWB.data.layers[layer]["terokTowers"] + NWB:round((((NWB.data.layers[layer]["terokTowers"]  - GetServerTime()) / 60) * terokOffset));
+	--local endTime = timestamp + NWB:round((((timestamp  - GetServerTime()) / 60) * terokOffset));
+	--return endTime;
+	if (terokTowersTime) then
+		--This worked fine when you're have a fresh timestamp by being in the zone or was just shared with.
+		--But it doesn't work when you have a timestamp set a while ago because Blizzard creeps the timestamp forward.
+		--local offset = math.floor((((terokTowers  - GetServerTime()) / 60) * terokOffset));
+		--This should work no matter when you got the timestamp.
+		local offset = math.floor(((terokTowers - terokTowersTime) / 60) * terokOffset)
+		local endTime = terokTowers + offset;
+		--print(1, offset, endTime)
+		return endTime;
+	else
+		return terokTowers;
+	end
+end
+
 local f = CreateFrame("Frame");
 f:RegisterEvent("PLAYER_ENTERING_WORLD");
 f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -4747,9 +4790,7 @@ function NWB:updateMinimapButton(tooltip, usingPanel)
 								texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 							end
 							--Offset was 3 seconds per minute because of drift, trying 0 offset now as it may be fixed on Blizzards end.
-							local endTime = v.terokTowers + NWB:round((((v.terokTowers  - GetServerTime()) / 60) * terokOffset));
-							endTime = math.floor(endTime);
-							--local endTime = v.terokTowers
+							local endTime = NWB:getTerokEndTime(v.terokTowers, v.terokTowersTime);
 							msg = msg .. texture .. L["terokkarTimer"] .. ": " .. NWB:getTimeString(endTime - GetServerTime(), true) .. ".";
 							if (NWB.db.global.showTimeStamp) then
 								local timeStamp = NWB:getTimeFormat(endTime);
@@ -4865,9 +4906,7 @@ function NWB:updateMinimapButton(tooltip, usingPanel)
 							texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						end
 						--Offset was 3 seconds per minute because of drift, trying 0 offset now as it may be fixed on Blizzards end.
-						local endTime = NWB.data.terokTowers + NWB:round((((NWB.data.terokTowers  - GetServerTime()) / 60) * terokOffset));
-						endTime = math.floor(endTime);
-						--local endTime = NWB.data.terokTowers;
+						local endTime = NWB:getTerokEndTime(NWB.data.terokTowers, NWB.data.terokTowersTime);
 						msg = msg .. texture .. L["terokkarTimer"] .. ": " .. NWB:getTimeString(endTime - GetServerTime(), true) .. ".";
 						if (NWB.db.global.showTimeStamp) then
 							local timeStamp = NWB:getTimeFormat(endTime);
@@ -9437,9 +9476,7 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 							--5387
 							texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						end
-						local endTime = v.terokTowers + NWB:round((((v.terokTowers  - GetServerTime()) / 60) * terokOffset));
-						endTime = math.floor(endTime);
-						--local endTime = v.terokTowers;
+						local endTime = NWB:getTerokEndTime(v.terokTowers, v.terokTowersTime);
 						msg = msg .. texture .. L["terokkarTimer"] .. ": " .. NWB:getTimeString(endTime - GetServerTime(), true) .. ".";
 						if (NWB.db.global.showTimeStamp) then
 							local timeStamp = NWB:getTimeFormat(endTime);
@@ -9572,9 +9609,7 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 								--5387
 								texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 							end
-							local endTime = v.terokTowers + NWB:round((((v.terokTowers  - GetServerTime()) / 60) * terokOffset));
-							endTime = math.floor(endTime);
-							--local endTime = v.terokTowers;
+							local endTime = NWB:getTerokEndTime(v.terokTowers, v.terokTowersTime);
 							msg = msg .. texture .. L["terokkarTimer"] .. ": " .. NWB:getTimeString(endTime - GetServerTime(), true) .. ".";
 							if (NWB.db.global.showTimeStamp) then
 								local timeStamp = NWB:getTimeFormat(endTime);
@@ -9694,9 +9729,7 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 						--5387
 						texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 					end
-					local endTime = NWB.data.terokTowers + NWB:round((((NWB.data.terokTowers  - GetServerTime()) / 60) * terokOffset));
-					endTime = math.floor(endTime);
-					--local endTime = NWB.data.terokTowers;
+					local endTime = NWB:getTerokEndTime(NWB.data.terokTowers, NWB.data.terokTowersTime);
 					msg = msg .. texture .. L["terokkarTimer"] .. ": " .. NWB:getTimeString(endTime - GetServerTime(), true) .. ".";
 					if (NWB.db.global.showTimeStamp) then
 						local timeStamp = NWB:getTimeFormat(endTime);

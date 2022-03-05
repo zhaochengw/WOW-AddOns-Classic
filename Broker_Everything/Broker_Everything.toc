@@ -2,12 +2,10 @@
 ## Title: Broker: Everything
 ## Notes: A collection of modules to display various informations as Broker-buttons on Broker Display AddOns or minimap buttons.
 ## Author: Hizuro, Ekaterina, Hungtar
-## Version: 4.2.8-release
+## Version: 4.2.9-release
 ## SavedVariables: Broker_Everything_DataDB, Broker_Everything_CharacterDB, Broker_Everything_AceDB
 ## OptionalDeps: LibStub, CallbackHandler-1.0, LibSharedMedia-3.0, LibDataBroker-1.1, LibDBIcon-1.0, LibQTip-1.0, LibColors-1.0, LibRealmInfo, LibTime-1.0, Ace3, LibDropDownMenu
-
 ## X-Curse-Project-ID: 28750
-
 #@no-lib-strip@
 libs\LibStub\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
@@ -24,9 +22,8 @@ libs\LibTime-1.0\LibTime-1.0.xml
 libs\LibDropDownMenu\LibDropDownMenu.xml
 libs\LibRealmInfo\LibRealmInfo.lua
 #@end-no-lib-strip@
-
 Broker_Everything.xml
 
 ## Title-zhCN: |cff880303[有爱]|r Broker_Everything 信息集合
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220120164410
+## X-163UI-Version: 20220303142735

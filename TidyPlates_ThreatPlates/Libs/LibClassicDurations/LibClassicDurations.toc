@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20502
 ## Title: LibClassicDurations
 ## Version: 1.69a
 ## Author: d87

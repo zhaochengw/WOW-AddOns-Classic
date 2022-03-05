@@ -5,11 +5,13 @@
 	请勿加密、乱码、删除空格tab换行符、设置加载依赖
 --]]--
 ----------------------------------------------------------------------------------------------------
+local _G = _G;
+local __ala_meta__ = _G.__ala_meta__;
+local uireimp = __ala_meta__.uireimp;
+
 local ADDON, NS = ...;
 local L = NS.L;
-_G.__ala_meta__ = _G.__ala_meta__ or {  };
 
-local _G = _G;
 do
 	if NS.__fenv == nil then
 		NS.__fenv = setmetatable({  },
@@ -38,6 +40,7 @@ end
 	local tConcat = table.concat;
 	local select = select;
 	local date, time = date, time;
+	local C_Timer = C_Timer;
 	----------------------------------------------------------------------------------------------------
 	local _ = nil;
 	local GameTooltip = GameTooltip;
@@ -171,6 +174,22 @@ local btn_SizeY = 36;
 local _EventHandler = CreateFrame("FRAME");
 _EventHandler:SetSize(4, 4);
 _EventHandler:EnableMouse(false);
+
+local T_Scheduler = setmetatable({  }, { __mode = 'k', })
+function NS.F_ScheduleDelayCall(func, delay)
+	local sch = T_Scheduler[func];
+	if sch == nil then
+		sch = {  };
+		sch[1] = function()
+			func();
+			sch[2] = false;
+		end;
+	elseif sch[2] then
+		return;
+	end
+	sch[2] = true;
+	C_Timer.After(delay or 0.2, sch[1]);
+end
 
 --EquipItemByName(id/name/link, slot)
 --RepairAllItems
@@ -569,9 +588,9 @@ function func.gm_CreateButton(parent, index, buttonHeight)
 	-- print("CREATE", index)
 	local button = CreateFrame("BUTTON", nil, parent);
 	button:SetHeight(buttonHeight);
-	button:SetBackdrop(buttonBackdrop);
-	button:SetBackdropColor(buttonBackdropColor[1], buttonBackdropColor[2], buttonBackdropColor[3], buttonBackdropColor[4]);
-	button:SetBackdropBorderColor(buttonBackdropBorderColor[1], buttonBackdropBorderColor[2], buttonBackdropBorderColor[3], buttonBackdropBorderColor[4]);
+	uireimp._SetBackdrop(button, buttonBackdrop);
+	uireimp._SetBackdropColor(button, buttonBackdropColor[1], buttonBackdropColor[2], buttonBackdropColor[3], buttonBackdropColor[4]);
+	uireimp._SetBackdropBorderColor(button, buttonBackdropBorderColor[1], buttonBackdropBorderColor[2], buttonBackdropBorderColor[3], buttonBackdropBorderColor[4]);
 	button:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar");
 	button:EnableMouse(true);
 	button:RegisterForDrag("LeftButton");
@@ -883,7 +902,7 @@ function func.initUI()
 	do	--win
 		ui.gearWin = CreateFrame("FRAME", nil, PaperDollFrame);
 		ui.gearWin:SetFrameStrata("FULLSCREEN");
-		ui.gearWin:SetBackdrop({
+		uireimp._SetBackdrop(ui.gearWin, {
 			bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
 			edgeFile = "interface\\dialogframe\\ui-dialogbox-border",
 			tile = true,
@@ -891,7 +910,7 @@ function func.initUI()
 			edgeSize = 20,
 			insets = { left = 4, right = 4, top = 4, bottom = 4 }
 		});
-		ui.gearWin:SetBackdropColor(0.0, 0.0, 0.0, 0.9)
+		uireimp._SetBackdropColor(ui.gearWin, 0.0, 0.0, 0.0, 0.9);
 		ui.gearWin:SetWidth(win_SizeX);
 		-- ui.gearWin:SetPoint("TOPLEFT", PaperDollFrame, "TOPRIGHT");
 		-- ui.gearWin:SetPoint("BOTTOMLEFT", PaperDollFrame, "BOTTOMRIGHT");
@@ -1492,7 +1511,7 @@ function func.initUI()
 	do	--customize
 		ui.custom = CreateFrame("FRAME", nil, ui.gearWin);
 		ui.custom:SetFrameStrata("FULLSCREEN");
-		ui.custom:SetBackdrop({
+		uireimp._SetBackdrop(ui.custom, {
 			bgFile = "Interface/Tooltips/UI-Tooltip-Background",
 			edgeFile = "interface/dialogframe/ui-dialogbox-border",
 			tile = true,
@@ -1500,7 +1519,7 @@ function func.initUI()
 			edgeSize = 20,
 			insets = { left = 4, right = 4, top = 4, bottom = 4 }
 		});
-		ui.custom:SetBackdropColor(0.0, 0.0, 0.0, 0.9)
+		uireimp._SetBackdropColor(ui.custom, 0.0, 0.0, 0.0, 0.9);
 		ui.custom:SetSize(470, 460);
 		ui.custom:SetPoint("TOPLEFT", ui.gearWin, "TOPRIGHT", 15, 0);
 		ui.custom:Hide();
@@ -1553,7 +1572,7 @@ function func.initUI()
 		ui.customEdit:SetJustifyH("LEFT");
 		ui.customEdit:Show();
 		ui.customEdit:EnableMouse(true);
-		-- ui.customEdit:SetBackdrop({
+		-- uireimp._SetBackdrop(, ui.customEdit{
 		-- 	bgFile = "Interface/Tooltips/UI-Tooltip-Background",
 		-- 	--edgeFile = "interface/dialogframe/ui-dialogbox-border",
 		-- 	tile = true,
@@ -1788,7 +1807,7 @@ function func.delete(set)
 		ui.scroll:SetNumValue(#saved_sets + 1);
 		-- ui.quick:Update();
 		ui.secure:Update();
-		_EventHandler:run_on_next_tick(func.refreshAppearance);
+		NS.F_ScheduleDelayCall(func.refreshAppearance);
 	end
 end
 function func.save(set)
@@ -2102,7 +2121,7 @@ function func.equip(set)
 		ShowHelm(set.helmet);
 		ShowCloak(set.cloak);
 		func.Sound_Equip();
-		_EventHandler:run_on_next_tick(func.refreshAppearance);
+		NS.F_ScheduleDelayCall(func.refreshAppearance);
 	end
 end
 function func.customOK()
@@ -2122,7 +2141,7 @@ function func.customOK()
 		func.save(index);
 		-- ui.quick:Update();
 		-- ui.secure:Update();	--func.save will always update securequick
-		-- _EventHandler:run_on_next_tick(func.refreshAppearance);
+		-- NS.F_ScheduleDelayCall(func.refreshAppearance);
 	end
 	func.pdf_hide_mask();
 	ui.custom:Hide();
@@ -2327,7 +2346,7 @@ function func.init_hook_tooltip()
 end
 
 function func.PLAYER_EQUIPMENT_CHANGED()
-	_EventHandler:run_on_next_tick(func.refreshAppearance);
+	NS.F_ScheduleDelayCall(func.refreshAppearance);
 end
 function func.UPDATE_BINDINGS(...)
 	-- print("UPDATE_BINDINGS", ...)
@@ -2384,49 +2403,6 @@ _EventHandler:SetScript("OnEvent", function(self, event, ...)
 	func[event](...);
 end);
 
-do	--	run_on_next_tick	--	execute two ticks later
-	local min_ticker_duration = 0.1;
-	local run_on_next_tick_func_1 = {  };
-	local run_on_next_tick_func_2 = {  };
-	local timer = 0.0;
-	local function run_on_next_tick_handler(self, elasped)
-		timer = timer + elasped;
-		if timer >= min_ticker_duration * 2 then
-			timer = 0.0;
-			while true do
-				local func = tremove(run_on_next_tick_func_1, 1);
-				if func then
-					func();
-				else
-					break;
-				end
-			end
-			if #run_on_next_tick_func_1 + #run_on_next_tick_func_2 == 0 then
-				_EventHandler:SetScript("OnUpdate", nil);
-			else
-				run_on_next_tick_func_1, run_on_next_tick_func_2 = run_on_next_tick_func_2, run_on_next_tick_func_1;
-			end
-		end
-	end
-	function _EventHandler:run_on_next_tick(func)
-		for index = 1, #run_on_next_tick_func_1 do
-			if func == run_on_next_tick_func_1[index] then
-				tremove(run_on_next_tick_func_1, index);
-				break;
-			end
-		end
-		for index = 1, #run_on_next_tick_func_2 do
-			if func == run_on_next_tick_func_2[index] then
-				return;
-			end
-		end
-		tinsert(run_on_next_tick_func_2, func);
-		_EventHandler:SetScript("OnUpdate", run_on_next_tick_handler);
-	end
-	function _EventHandler:frame_update_on_next_tick(frame)
-		_EventHandler:run_on_next_tick(frame.update_func);
-	end
-end
 
 do	--	SLASH
 	_G.SLASH_ALAGEARMAN1 = "/alaGearMan";

@@ -325,7 +325,7 @@ local sharedDefaults = {
 	showAllFactions = true,
 	showRealmNames = true,
 	showCharsFrom = "2",
-	minimap = {hide=true}
+	minimap = {hide=false}
 }
 
 local coords=nil;

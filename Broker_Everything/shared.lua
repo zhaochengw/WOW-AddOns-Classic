@@ -80,7 +80,7 @@ ns.LC.colorset({
 do
 	local addon_short = L[addon.."_Shortcut"];
 	local colors = {"82c5ff","00ff00","ff6060","44ffff","ffff00","ff8800","ff44ff","ffffff"};
-	ns.debugMode = "4.2.8-release" == "@".."project-version".."@";
+	ns.debugMode = "4.2.9-release" == "@".."project-version".."@";
 	local function colorize(...)
 		local t,c,a1 = {tostringall(...)},1,...;
 		if type(a1)=="boolean" then tremove(t,1); end

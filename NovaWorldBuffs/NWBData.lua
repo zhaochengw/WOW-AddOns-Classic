@@ -1082,6 +1082,7 @@ function NWB:createSettings(distribution)
 			["guild10"] = NWB.db.global.guild10,
 			["guild1"] = NWB.db.global.guild1,
 			["guildNpcWalking"] = NWB.db.global.guildNpcWalking,
+			["guildTerok10"] = NWB.db.global.guildTerok10,
 		};
 	end
 	--data['faction'] = NWB.faction;
@@ -1159,6 +1160,7 @@ local validSettings = {
 	["guild10"] = true,
 	["guild1"] = true,
 	["guildNpcWalking"] = true,
+	["guildTerok10"] = true,
 };
 
 function NWB:extractSettings(dataReceived, sender, distribution)
@@ -1834,6 +1836,7 @@ local shortKeys = {
 	["S"] = "tbcPD",
 	["T"] = "tbcPDT",
 	["U"] = "terokTowersTime",
+	["V"] = "guildTerok10",
 	["f1"] = "flower1",
 	["f2"] = "flower2",
 	["f3"] = "flower3",
@@ -3267,7 +3270,7 @@ f:SetScript('OnEvent', function(self, event, ...)
 			NWB:getTerokkarData();
 		end
 		--Widget 3112 is capture stage.
-		--[[if (NWB.isDebug and data and data.widgetID == 3112) then
+		if (NWB.isDebug and data and data.widgetID == 3112) then
 			local neutral = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(3097);
 			local alliance = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(3118);
 			local horde = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(3119);
@@ -3276,7 +3279,7 @@ f:SetScript('OnEvent', function(self, event, ...)
 			if (captureAlliance.state == 1 and captureHorde.state == 1) then
 				NWB:debug("Capture started:", GetServerTime());
 			end
-		end]]
+		end
 	end
 end)
 
@@ -3492,7 +3495,7 @@ function NWB:getTerokkarData()
 								NWB.data.layers[layer]["terokTowers10"] = true;
 							end
 							if (sendData and GetServerTime() - lastSendData > 175) then
-								NWB:debug("sending terokkar");
+								--NWB:debug("sending terokkar");
 								lastSendData = GetServerTime();
 								NWB:sendData("YELL", nil, nil, true, true, "terokkar");
 								NWB:sendData("GUILD", nil, nil, true, true, "terokkar");

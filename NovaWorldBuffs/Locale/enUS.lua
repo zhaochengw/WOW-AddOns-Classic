@@ -806,7 +806,7 @@ L["guildLTitle"] = "Guild Layer Sharing";
 L["guildLDesc"] = "Share what layer you are on with your guild? You can see your guilds layer list with /wb guild";
 
 L["terokkarTimer"] = "Terokkar";
-L["terokkarWarning"] = "Terokkar Forest spirit towers reset in %s";
+L["terokkarWarning"] = "Terokkar Forest towers reset in %s";
 
 L["Nazgrel"] = "Nazgrel";
 L["Hellfire Citadel is ours"] = "Hellfire Citadel is ours";

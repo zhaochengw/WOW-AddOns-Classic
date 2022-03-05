@@ -10,4 +10,4 @@ colorOptions.lua
 
 ## Title-zhCN: |cff880303[有爱]|r tullaRange 配置界面
 ## X-Vendor: NetEase
-## X-163UI-Version: 20211231144448
+## X-163UI-Version: 20220303142735

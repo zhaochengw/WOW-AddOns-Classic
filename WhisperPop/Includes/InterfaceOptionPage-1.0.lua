@@ -42,7 +42,12 @@
 -- function combo:OnComboChanged(value) end
 
 -- editbox = page:CreateEditBox("text" [, horizontal [, disableInCombat]])
+-- editBox.autoCommit: boolean (false by default), if true, the editbox automatically calls editbox:CommitText() when it loses focus or hides
+-- editBox.autoTrim: boolean (true by default), if true, leading and trailing whitespaces are automatically trimmed upon text commit, THIS VALUE IS TRUE BY DEFAULT!
+-- editBox.handleClick: string ("link" by default), "link" or "name" which causes shift-clicks on an item copy link/name into the activated editbox
+
 -- editbox:CommitText() -- Commit the text and clear focus if succeeds
+-- editbox:CancelText() -- Cancel any text changes
 
 -- function editbox:OnTextValidate(text) return cancel, newText end -- called when ENTER key is pressed
 -- function editbox:OnTextCommit(text) end -- called after editbox:OnTextValidate succeeds
@@ -89,6 +94,9 @@ local max = max
 local CreateFrame = CreateFrame
 local ipairs = ipairs
 local pairs = pairs
+local IsShiftKeyDown = IsShiftKeyDown
+local IsControlKeyDown = IsControlKeyDown
+local strtrim = strtrim
 local tinsert = tinsert
 local tremove = tremove
 local format = format
@@ -99,12 +107,13 @@ local hooksecurefunc = hooksecurefunc
 local CloseDropDownMenus = CloseDropDownMenus
 local InterfaceOptions_AddCategory = InterfaceOptions_AddCategory
 local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
+local GetCurrentKeyBoardFocus = GetCurrentKeyBoardFocus
+local strmatch = strmatch
 local _G = _G
 local UISpecialFrames = UISpecialFrames
-local _
 
 local MAJOR_VERSION = 1
-local MINOR_VERSION = 77
+local MINOR_VERSION = 85
 
 -- To prevent older libraries from over-riding newer ones...
 if type(UICreateInterfaceOptionPage_IsNewerVersion) == "function" and not UICreateInterfaceOptionPage_IsNewerVersion(MAJOR_VERSION, MINOR_VERSION) then return end
@@ -202,7 +211,7 @@ local function SubControl_OnLeave(self)
 end
 
 local function CreateSubControl(self, frameType, text, template, disableInCombat)
-	local frame = CreateFrame(frameType, self:GetNextControlName(frameType), self, template)
+	local frame = CreateFrame(frameType, self:GetNextControlName(frameType), self, template == nil and "BackdropTemplate" or template .. ",BackdropTemplate")
 	frame.text = getglobal(frame:GetName().."Text")
 
 	if text then
@@ -355,7 +364,7 @@ end
 
 local function MultiGroup_SetChecked(self, value, checked, noNotify)
 	checked = checked and 1 or nil
-	local button
+	local _, button
 	for _, button in ipairs(self.buttons) do
 		if button.value == value then
 			if CheckButton_GetChecked(button) ~= checked then
@@ -370,7 +379,7 @@ local function MultiGroup_SetChecked(self, value, checked, noNotify)
 end
 
 local function MultiGroup_GetChecked(self, value)
-	local button
+	local _, button
 	for _, button in ipairs(self.buttons) do
 		if button.value == value then
 			return CheckButton_GetChecked(button)
@@ -393,7 +402,7 @@ end
 
 local function SingleGroup_OnCheckChanged(self, value, checked, button)
 	if checked then
-		local other, changed
+		local _, other, changed
 		for _, other in ipairs(self.buttons) do
 			if other ~= button and CheckButton_GetChecked(other) then
 				other:SetChecked(nil)
@@ -411,7 +420,7 @@ local function SingleGroup_OnCheckChanged(self, value, checked, button)
 end
 
 local function SingleGroup_SetSelection(self, value, noNotify)
-	local button, found
+	local _, button, found
 	for _, button in ipairs(self.buttons) do
 		if button.value == value then
 			found = button
@@ -560,7 +569,7 @@ local function ComboBox_GetSelection(self)
 end
 
 local function ComboBox_SetSelection(self, value, noNotify)
-	local line, found
+	local _, line, found
 	for _, line in ipairs(self.dropdown.lines) do
 		if line.value == value then
 			found = line
@@ -600,7 +609,7 @@ local function ComboBox_AddLine(self, text, value, icon, flags, r, g, b, positio
 		line = { text = text, value = value, icon = icon }
 		if type(flags) == "string" then
 			local symbols = { strsplit(",", flags) }
-			local flag
+			local _, flag
 			for _, flag in ipairs(symbols) do
 				flag = strtrim(flag)
 				if flag ~= "" then
@@ -637,14 +646,17 @@ end
 
 local function ComboBox_DeleteLine(self, value, noNotify)
 	local i, line = ComboBox_FindLineData(self, value)
-	if i then
-		self.value = nil
-		ComboBox_SetText(self)
-		if not noNotify then
-			pcall(self.OnComboChanged, self)
-		end
-		return i
+	if not i then
+		return
 	end
+
+	tremove(self.dropdown.lines, i)
+	self.value = nil
+	ComboBox_SetText(self)
+	if not noNotify then
+		pcall(self.OnComboChanged, self)
+	end
+	return i
 end
 
 local function ComboBox_ClearLines(self, noNotify)
@@ -806,29 +818,15 @@ local function EditBox_Disable(self)
 	self.isEnabled = nil
 end
 
-local function EditBox_OnEditFocusGained(self)
-	self:HighlightText()
-	self.__contentsNeedCommit = 1
+local function EditBox_GetText(self)
+	local text = self:__OrigGetText()
+	if self.autoTrim then
+		text = strtrim(text)
+	end
+	return text
 end
 
-local function EditBox_OnEditFocusLost(self)
-	self:HighlightText(0, 0)
-	if self.__contentsNeedCommit and type(self.OnTextCancel) == "function" then
-		local newText = self:OnTextCancel()
-		if newText then
-			self:SetText(newText)
-		end
-	end
-end
-
-local function EditBox_OnEnterPressed(self)
-	if self:IsMultiLine() then
-		if IsShiftKeyDown() or IsControlKeyDown() or IsAltKeyDown() then
-			self:Insert("\n")
-			return
-		end
-	end
-
+local function EditBox_CommitText(self)
 	local text = self:GetText()
 
 	local abort, newText
@@ -849,18 +847,110 @@ local function EditBox_OnEnterPressed(self)
 	end
 end
 
+local function EditBox_CommitText(self)
+	local text = self:GetText()
+	local abort, newText
+	if type(self.OnTextValidate) == "function" then
+		abort, newText = self:OnTextValidate(text)
+		if newText then
+			text = newText
+			self:SetText(text)
+		end
+	end
+
+	if abort then
+		self:HighlightText()
+	elseif type(self.OnTextCommit) == "function" then
+		self:OnTextCommit(text)
+	end
+end
+
+local function EditBox_CancelText(self)
+	if type(self.OnTextCancel) == "function" then
+		local newText = self:OnTextCancel()
+		if newText then
+			self:SetText(newText)
+		end
+	end
+end
+
+local function EditBox_OnEditFocusGained(self)
+	self:HighlightText()
+	self.__contentsNeedCommit = 1
+	self.__escPressed = nil
+end
+
+local function EditBox_OnEditFocusLost(self)
+	self:HighlightText(0, 0)
+	if not self.__contentsNeedCommit then
+		return
+	end
+
+	self.__contentsNeedCommit = nil
+
+	if self.autoCommit and not self.__escPressed then
+		EditBox_CommitText(self)
+	else
+		self.__escPressed = nil
+		EditBox_CancelText(self)
+	end
+end
+
+local function EditBox_OnEnterPressed(self)
+	self.__escPressed = nil
+	if self:IsMultiLine() and (IsShiftKeyDown() or IsControlKeyDown()) then
+		self:Insert("\n")
+	else
+		EditBox_CommitText(self)
+		self.__contentsNeedCommit = nil
+		self:ClearFocus()
+	end
+end
+
 local function EditBox_OnEscapePressed(self)
+	self.__escPressed = 1
+	EditBox_CancelText(self)
 	self:ClearFocus()
 end
+
+hooksecurefunc("ChatEdit_InsertLink", function(link)
+	if type(link) ~= "string" then
+		return
+	end
+
+	local editBox = GetCurrentKeyBoardFocus()
+	if not editBox then
+		return
+	end
+
+	local handleClick = editBox.handleClick
+	if type(handleClick) ~= "string" then
+		return
+	end
+
+	handleClick = strlower(handleClick)
+
+	if handleClick == "link" then
+		editBox:SetText(link)
+	elseif handleClick == "name" then
+		local name = strmatch(link, "%[(.+)%]")
+		editBox:SetText(name or link)
+	end
+end)
 
 local function CreateEditBox(self, text, horizontal, disableInCombat, textColor)
 	local editbox = CreateSubControl(self, "EditBox", nil, nil, disableInCombat)
 	editbox:SetAutoFocus(false)
+	editbox.autoTrim = 1
+	editbox.handleClick = "link"
 	editbox:SetWidth(144)
 	editbox:SetHeight(26)
 	editbox:SetTextInsets(6, 6, 7, 7)
 	editbox:SetFontObject("GameFontHighlight")
 	editbox.borderFrame = CreatePanel(self, editbox)
+
+	editbox.__OrigGetText = editbox.GetText
+	editbox.GetText = EditBox_GetText
 
 	if type(textColor) == "table" then
 		editbox.defaultColor = textColor
@@ -893,7 +983,8 @@ local function CreateEditBox(self, text, horizontal, disableInCombat, textColor)
 	editbox.IsEnabled = EditBox_IsEnabled
 	editbox.Enable = EditBox_Enable
 	editbox.Disable = EditBox_Disable
-	editbox.CommitText = EditBox_OnEnterPressed
+	editbox.CommitText = EditBox_CommitText
+	editbox.CancelText = EditBox_CancelText
 
 	return editbox
 end
@@ -1105,7 +1196,7 @@ function UICreateInterfaceOptionPage(name, title, subTitle, categoryParent, pare
 		return
 	end
 
-	local page = CreateFrame("Frame", name, parentFrame)
+	local page = CreateFrame("Frame", name, parentFrame, "BackdropTemplate")
 	page:Hide()
 
 	page.title = page:CreateFontString(name.."Title", "ARTWORK", "GameFontNormal")

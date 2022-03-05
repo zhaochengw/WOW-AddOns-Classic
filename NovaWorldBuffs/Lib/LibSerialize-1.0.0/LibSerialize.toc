@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 90002
 ## Title: Lib: LibSerialize
 ## Notes: LibSerialize is a Lua library for efficiently serializing/deserializing arbitrary values
 ## Author: Ross Nichols
