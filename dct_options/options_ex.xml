@@ -95,7 +95,7 @@
 
 
 	<!-- MAIN OPTION FRAME -->
-	<Frame name="DCTEventOptionsExtra" toplevel="true" frameStrata="MEDIUM" enableMouse="true" hidden="true" parent="UIParent" inherits="DCT_OptionFrameBoxTemplate">
+	<Frame name="DCTEventOptionsExtra" toplevel="true" frameStrata="MEDIUM" enableMouse="true" hidden="true" parent="UIParent" inherits="BackdropTemplate,DCT_OptionFrameBoxTemplate">
 		<Size>
 			<AbsDimension x="385" y="520"/>
 		</Size>
@@ -128,7 +128,7 @@
 		</Layers>
 
 		<Frames>
-			<Frame name="DCTPreviewBG" inherits="DCT_OptionFrameBoxTemplate">
+			<Frame name="DCTPreviewBG" inherits="BackdropTemplate,DCT_OptionFrameBoxTemplate">
 				<Size>
 					<AbsDimension x="300" y="60"/>
 				</Size>

@@ -38,6 +38,3 @@ Magtheridon.lua
 Kazzak.lua
 Doomwalker.lua
 Quest.lua
-
-## X-Vendor: NetEase
-## X-163UI-Version: 20220224141126

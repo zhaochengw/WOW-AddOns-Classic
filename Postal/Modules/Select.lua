@@ -1,5 +1,3 @@
-local UIDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0");
-
 local Postal = LibStub("AceAddon-3.0"):GetAddon("Postal")
 local Postal_Select = Postal:NewModule("Select", "AceEvent-3.0", "AceHook-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Postal")
@@ -543,8 +541,8 @@ function Postal_Select.ModuleMenu(self, level)
 		info.hasArrow = 1
 		info.value = "KeepFreeSpace"
 		info.func = self.UncheckHack
-		UIDD:UIDropDownMenu_AddButton(info, level)
-		local listFrame = _G["L_DropDownList"..level]
+		UIDropDownMenu_AddButton(info, level)
+		local listFrame = _G["DropDownList"..level]
 		self.UncheckHack(_G[listFrame:GetName().."Button"..listFrame.numButtons])
 
 		info.text = L["Verbose mode"]
@@ -555,16 +553,16 @@ function Postal_Select.ModuleMenu(self, level)
 		info.arg2 = "SpamChat"
 		info.checked = Postal.db.profile.Select.SpamChat
 		info.isNotRadio = 1
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 	elseif level == 2 + self.levelAdjust then
-		if L_UIDROPDOWNMENU_MENU_VALUE == "KeepFreeSpace" then
+		if UIDROPDOWNMENU_MENU_VALUE == "KeepFreeSpace" then
 			local keepFree = Postal.db.profile.Select.KeepFreeSpace
 			info.func = Postal_Select.SetKeepFreeSpace
 			for _, v in ipairs(Postal.keepFreeOptions) do
 				info.text = v
 				info.checked = v == keepFree
 				info.arg1 = v
-				UIDD:UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddButton(info, level)
 			end
 		end
 	end

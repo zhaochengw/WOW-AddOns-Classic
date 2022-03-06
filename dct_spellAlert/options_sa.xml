@@ -83,7 +83,7 @@
 	</Frame>
 
 	<!-- MAIN OPTION FRAME -->
-	<Frame name="DCTSAOption" hidden="true" frameStrata="MEDIUM">
+	<Frame name="DCTSAOption" hidden="true" frameStrata="MEDIUM" inherits="BackdropTemplate">
 		<Size>
 			<AbsDimension x="490" y="360"/>
 		</Size>

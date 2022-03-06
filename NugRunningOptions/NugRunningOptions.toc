@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 90200
 ## Title: NugRunningOptions
 ## Notes: Options for NugRunning
 ## Author: d87
@@ -6,7 +6,3 @@
 ## LoadOnDemand: 1
 
 ..\NugRunning\Options\includes.xml
-
-## Title-zhCN: |cff880303[有爱]|r NugRunning 施法计时设置界面
-## X-Vendor: NetEase
-## X-163UI-Version: 20220224141126

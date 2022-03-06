@@ -19,4 +19,4 @@ localizations.lua
 Options.lua
 ## Title-zhCN: |cff880303[有爱]|r RangeDisplay 设置模块
 ## X-Vendor: NetEase
-## X-163UI-Version: 20210524145422
+## X-163UI-Version: 20220120164410

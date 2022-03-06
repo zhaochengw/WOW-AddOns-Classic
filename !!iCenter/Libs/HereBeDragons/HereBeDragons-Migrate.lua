@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "HereBeDragons-Migrate", 2
+local MAJOR, MINOR = "HereBeDragons-Migrate", 999902
 assert(LibStub, MAJOR .. " requires LibStub")
 
 local HBDMigrate, _oldversion = LibStub:NewLibrary(MAJOR, MINOR)

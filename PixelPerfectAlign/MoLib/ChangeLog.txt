@@ -4,6 +4,15 @@ Extensively used by DynamicBoxer e.g.
 https://github.com/mooreatv/DynamicBoxer/blob/master/DynamicBoxer/DBoxUI.lua
 but also meant to be reused in other addons, not just mine.
 
+v8.01.01 Nov 9th 2021
+- Handle case on tbc classic where sometimes an item just doesn't come up even after retries,
+  option to skip said item (option in AHDB addon)
+
+v8.01.00 Sept 18th 2021
+- frames have an optional frame.isCombatFrame boolean that prevents modifications in combat
+  that would otherwise error out
+- added .isBurningCrusade and .isClassicEra to addon bools (in addition to .isClassic)
+
 v8.00.00 May 10th 2021
 - Changed isClassic to return true for Burning Crusade Classic too (wow 2.5)
   makes DynamicBoxer/MAMA work for BCC

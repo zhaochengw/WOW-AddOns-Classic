@@ -33,6 +33,3 @@ Kazrogal.lua
 Azgalor.lua
 Archimonde.lua
 WaveTimers.lua
-
-## X-Vendor: NetEase
-## X-163UI-Version: 20220217141808

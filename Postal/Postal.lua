@@ -1,5 +1,3 @@
-local UIDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0");
-
 local Postal = LibStub("AceAddon-3.0"):NewAddon("Postal", "AceEvent-3.0", "AceHook-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Postal")
 _G["Postal"] = Postal
@@ -85,8 +83,8 @@ Postal_DropDownMenu.UncheckHack = function(dropdownbutton)
 	_G[dropdownbutton:GetName().."UnCheck"]:Hide()
 end
 Postal_DropDownMenu.HideMenu = function()
-	if L_UIDROPDOWNMENU_OPEN_MENU == Postal_DropDownMenu then
-		UIDD:CloseDropDownMenus()
+	if UIDROPDOWNMENU_OPEN_MENU == Postal_DropDownMenu then
+		CloseDropDownMenus()
 	end
 end
 
@@ -151,10 +149,10 @@ function Postal:OnInitialize()
 	Postal_ModuleMenuButton:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
 	Postal_ModuleMenuButton:SetScript("OnClick", function(self, button, down)
 		if Postal_DropDownMenu.initialize ~= Postal.Menu then
-			UIDD:CloseDropDownMenus()
+			CloseDropDownMenus()
 			Postal_DropDownMenu.initialize = Postal.Menu
 		end
-		UIDD:ToggleDropDownMenu(1, nil, Postal_DropDownMenu, self:GetName(), 0, 0)
+		ToggleDropDownMenu(1, nil, Postal_DropDownMenu, self:GetName(), 0, 0)
 	end)
 	Postal_ModuleMenuButton:SetScript("OnHide", Postal_DropDownMenu.HideMenu)
 
@@ -245,7 +243,7 @@ function Postal.ProfileFunc(dropdownbutton, arg1, arg2, checked)
 	else
 		Postal.db[arg1](Postal.db, arg2)
 	end
-	UIDD:CloseDropDownMenus()
+	CloseDropDownMenus()
 end
 
 StaticPopupDialogs["POSTAL_NEW_PROFILE"] = {
@@ -283,7 +281,7 @@ function Postal.Menu(self, level)
 		info.isTitle = 1
 		info.text = "Postal"
 		info.notCheckable = 1
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.disabled = nil
 		info.isTitle = nil
@@ -299,12 +297,12 @@ function Postal.Menu(self, level)
 			info.checked = module:IsEnabled()
 			info.hasArrow = module.ModuleMenu ~= nil
 			info.value = module
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 		end
 
 		wipe(info)
 		info.disabled = 1
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 		info.disabled = nil
 
 		info.text = L["Opening Speed"]
@@ -313,7 +311,7 @@ function Postal.Menu(self, level)
 		info.keepShownOnClick = 1
 		info.hasArrow = 1
 		info.value = "OpenSpeed"
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Chat Output"]
 		info.func = self.UncheckHack
@@ -321,32 +319,32 @@ function Postal.Menu(self, level)
 		info.keepShownOnClick = 1
 		info.hasArrow = 1
 		info.value = "ChatOutput"
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Profile"]
 		info.func = self.UncheckHack
 		info.value = "Profile"
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		wipe(info)
 		info.notCheckable = 1
 		info.text = L["Help"]
 		info.func = Postal.About
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.disabled = 1
 		info.text = nil
 		info.func = nil
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.disabled = nil
 		info.text = CLOSE
 		info.func = self.HideMenu
 		info.tooltipTitle = CLOSE
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 	elseif level == 2 then
-		if L_UIDROPDOWNMENU_MENU_VALUE == "OpenSpeed" then
+		if UIDROPDOWNMENU_MENU_VALUE == "OpenSpeed" then
 			local speed = Postal.db.profile.OpenSpeed
 			for i = 0, 0 do
 				local s = 0
@@ -354,7 +352,7 @@ function Postal.Menu(self, level)
 				info.func = Postal.SetOpenSpeed
 				info.checked = s == speed
 				info.arg1 = s
-				UIDD:UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddButton(info, level)
 			end
 			for i = 0, 13 do
 				local s = 0.3 + i*0.05
@@ -362,7 +360,7 @@ function Postal.Menu(self, level)
 				info.func = Postal.SetOpenSpeed
 				info.checked = s == speed
 				info.arg1 = s
-				UIDD:UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddButton(info, level)
 			end
 			for i = 0, 8 do
 				local s = 1 + i*0.5
@@ -370,10 +368,10 @@ function Postal.Menu(self, level)
 				info.func = Postal.SetOpenSpeed
 				info.checked = s == speed
 				info.arg1 = s
-				UIDD:UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddButton(info, level)
 			end
 
-		elseif L_UIDROPDOWNMENU_MENU_VALUE == "ChatOutput" then
+		elseif UIDROPDOWNMENU_MENU_VALUE == "ChatOutput" then
 			local selectedFrame = Postal.db.profile.ChatOutput
 			for i = 1, NUM_CHAT_WINDOWS do
 				if Postal:IsChatFrameActive(i) then
@@ -381,11 +379,11 @@ function Postal.Menu(self, level)
 					info.func = Postal.SetChatOutput
 					info.checked = i == selectedFrame
 					info.arg1 = i
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			end
 
-		elseif L_UIDROPDOWNMENU_MENU_VALUE == "Profile" then
+		elseif UIDROPDOWNMENU_MENU_VALUE == "Profile" then
 			-- Profile stuff
 			info.hasArrow = 1
 			info.keepShownOnClick = 1
@@ -394,39 +392,39 @@ function Postal.Menu(self, level)
 
 			info.text = L["Choose"]
 			info.value = "SetProfile"
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Copy From"]
 			info.value = "CopyProfile"
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Delete"]
 			info.value = "DeleteProfile"
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.hasArrow = nil
 			info.keepShownOnClick = nil
 			info.func = Postal.ProfileFunc
 			info.arg1 = "NewProfile"
 			info.text = L["New Profile"]
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Reset Profile"]
 			info.func = Postal.ProfileFunc
 			info.arg1 = "ResetProfile"
 			info.arg2 = nil
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
-		elseif type(L_UIDROPDOWNMENU_MENU_VALUE) == "table" and L_UIDROPDOWNMENU_MENU_VALUE.ModuleMenu then
+		elseif type(UIDROPDOWNMENU_MENU_VALUE) == "table" and UIDROPDOWNMENU_MENU_VALUE.ModuleMenu then
 			-- Submenus for modules
 			self.levelAdjust = 1
-			L_UIDROPDOWNMENU_MENU_VALUE.ModuleMenu(self, level)
+			UIDROPDOWNMENU_MENU_VALUE.ModuleMenu(self, level)
 			self.levelAdjust = 0
-			self.module = L_UIDROPDOWNMENU_MENU_VALUE
+			self.module = UIDROPDOWNMENU_MENU_VALUE
 		end
 
 	elseif level == 3 then
-		if L_UIDROPDOWNMENU_MENU_VALUE == "SetProfile" then
+		if UIDROPDOWNMENU_MENU_VALUE == "SetProfile" then
 			local cur = Postal.db:GetCurrentProfile()
 			Postal.db:GetProfiles(t)
 			table.sort(t)
@@ -437,22 +435,22 @@ function Postal.Menu(self, level)
 				info.text = s
 				info.arg2 = s
 				info.checked = cur == s
-				UIDD:UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddButton(info, level)
 			end
 
-		elseif L_UIDROPDOWNMENU_MENU_VALUE == "CopyProfile" or L_UIDROPDOWNMENU_MENU_VALUE == "DeleteProfile" then
+		elseif UIDROPDOWNMENU_MENU_VALUE == "CopyProfile" or UIDROPDOWNMENU_MENU_VALUE == "DeleteProfile" then
 			local cur = Postal.db:GetCurrentProfile()
 			Postal.db:GetProfiles(t)
 			table.sort(t)
 			info.func = Postal.ProfileFunc
-			info.arg1 = L_UIDROPDOWNMENU_MENU_VALUE
+			info.arg1 = UIDROPDOWNMENU_MENU_VALUE
 			info.notCheckable = 1
 			for i = 1, #t do
 				local s = t[i]
 				if s ~= cur then
 					info.text = s
 					info.arg2 = s
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			end
 

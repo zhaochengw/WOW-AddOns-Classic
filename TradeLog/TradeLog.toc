@@ -18,4 +18,4 @@ RecentTradeFrame.xml
 ## Title-zhCN: |cff880303[有爱]|r TradeLog 交易记录
 ## Notes-zhCN: 交易记录 by Warbaby (三月十二@聖光之願<冰封十字軍>)
 ## X-Vendor: NetEase
-## X-163UI-Version: 20211111144807
+## X-163UI-Version: 20220120164410

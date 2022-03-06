@@ -46,7 +46,3 @@ Modules\DoNotWant.lua
 Modules\CarbonCopy.lua
 Modules\Forward.lua
 Modules\QuickAttach.lua
-
-## Title-zhCN: |cff880303[有爱]|r Postal 邮箱助手
-## X-Vendor: NetEase
-## X-163UI-Version: 20220303142735

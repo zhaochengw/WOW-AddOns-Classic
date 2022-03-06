@@ -1,9 +1,9 @@
-## Interface: 20503
+## Interface: 11402
 ## Title: Pixel Perfect Align
 ## Notes: Pixel Perfect Alignment Grid and Measuring Tape using MoLib (|cFF99E5FF/ppa|r)
-## Notes: Classic (era) edition
+## Notes: Classic (Era and SoM) edition
 ## Author: MooreaTV moorea@ymail.com
-## Version: v1.11.02
+## Version: v1.12.01
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: pixelPerfectAlignSaved
@@ -13,6 +13,7 @@
 ## X-OpenSource-Releases: https://github.com/mooreatv/PixelPerfectAlign/releases
 ## X-Curse-Project-ID: 331518
 ## X-WoWI-ID: 25071
+## X-Wago-ID: vEGP55N1
 MoLib/MoLib.lua
 MoLib/MoLibUI.lua
 PPA.lua

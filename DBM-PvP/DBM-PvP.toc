@@ -58,6 +58,3 @@ Battlegrounds\TempleOfKotmogu.lua
 Battlegrounds\TwinPeaks.lua
 Battlegrounds\Warsong.lua
 #Battlegrounds\Wintergrasp.lua
-
-## X-Vendor: NetEase
-## X-163UI-Version: 20220211134516

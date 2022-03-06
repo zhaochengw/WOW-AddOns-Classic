@@ -1369,6 +1369,10 @@ function ML:MakeMoveable(f, callback, dragButton)
   end)
   f:SetScript("OnDragStop", function(w, ...)
     w:StopMovingOrSizing(...)
+    if w.isCombatFrame and InCombatLockdown() then
+      self:Debug(2,"Not snaping in combat frame")
+      return
+    end
     if w.Snap then
       w:Snap()
     else
@@ -1413,6 +1417,10 @@ end
 
 function ML:RestorePosition(f, pos, scale)
   self:Debug("# Restoring % %", pos, scale)
+  if f.isCombatFrame and InCombatLockdown() then
+    self:Debug(2, "Not restoring combat sensitive frame")
+    return
+  end
   f:SetScale(self:AdjustScale(scale))
   f:ClearAllPoints()
   f:SetPoint("TOPLEFT", nil, unpack(pos))

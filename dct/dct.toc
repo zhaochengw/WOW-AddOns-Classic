@@ -22,6 +22,5 @@ DCT.lua
 DCT.xml
 DCT_castbar.lua
 DCT_castbar.xml
-
-## provider: 小I插件1.4.1
-## Update time: 20210903
+## X-Vendor: NetEase
+## X-163UI-Version: 20220120164410

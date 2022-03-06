@@ -23,6 +23,8 @@ ML.name = addon
 
 -- Cover both classic (2) and bc (5)
 ML.isClassic = (_G.WOW_PROJECT_ID >= _G.WOW_PROJECT_CLASSIC)
+ML.isBurningCrusade = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
+ML.isClassicEra = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC)
 
 ML.Factions = {"Horde", "Alliance", "Neutral"}
 

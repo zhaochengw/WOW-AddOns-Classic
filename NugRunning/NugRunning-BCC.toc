@@ -4,10 +4,11 @@
 ## Author: d87
 ## SavedVariablesPerCharacter: NRunDB_Char
 ## SavedVariables: NRunDB_Global, NugRunningConfigCustom
-## Version: 9.1-bcc11
+## Version: 9.2.1
 
 ## X-WoWI-ID: 10440
 ## X-Curse-Project-ID: 27470
+## X-Wago-ID: vEGPo5K1
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua

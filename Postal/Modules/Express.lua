@@ -1,5 +1,3 @@
-local UIDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0");
-
 local Postal = LibStub("AceAddon-3.0"):GetAddon("Postal")
 local Postal_Express = Postal:NewModule("Express", "AceEvent-3.0", "AceHook-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Postal")
@@ -201,14 +199,14 @@ function Postal_Express.SetEnableAltClick(dropdownbutton, arg1, arg2, checked)
 		end
 	end
 	-- A hack to get the next button to disable/enable
-	local i, j = string.match(dropdownbutton:GetName(), "L_DropDownList(%d+)Button(%d+)")
+	local i, j = string.match(dropdownbutton:GetName(), "DropDownList(%d+)Button(%d+)")
 	j = tonumber(j) + 1
 	if checked then
-		_G["L_DropDownList"..i.."Button"..j]:Enable()
-		_G["L_DropDownList"..i.."Button"..j.."InvisibleButton"]:Hide()
+		_G["DropDownList"..i.."Button"..j]:Enable()
+		_G["DropDownList"..i.."Button"..j.."InvisibleButton"]:Hide()
 	else
-		_G["L_DropDownList"..i.."Button"..j]:Disable()
-		_G["L_DropDownList"..i.."Button"..j.."InvisibleButton"]:Show()
+		_G["DropDownList"..i.."Button"..j]:Disable()
+		_G["DropDownList"..i.."Button"..j.."InvisibleButton"]:Show()
 	end
 end
 
@@ -232,19 +230,19 @@ function Postal_Express.ModuleMenu(self, level)
 		info.text = L["Enable Alt-Click to send mail"]
 		info.func = Postal_Express.SetEnableAltClick
 		info.checked = db.EnableAltClick
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Auto-Send on Alt-Click"]
 		info.func = Postal_Express.SetAutoSend
 		info.checked = db.AutoSend
 		info.disabled = not Postal.db.profile.Express.EnableAltClick
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Auto-Attach similar items on Control-Click"]
 		info.func = Postal_Express.SetBulkSend
 		info.checked = db.BulkSend
 		info.disabled = nil
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Add multiple item mail tooltips"]
 		info.func = Postal.SaveOption
@@ -252,6 +250,6 @@ function Postal_Express.ModuleMenu(self, level)
 		info.arg1 = "Express"
 		info.arg2 = "MultiItemTooltip"
 		info.disabled = nil
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 	end
 end

@@ -17,6 +17,5 @@ locals\cn_loc_dctd.lua
 dctd.lua
 dctd_options.lua
 dctd_options.xml
-
-## provider: 小I插件1.4.1
-## Update time: 20210903
+## X-Vendor: NetEase
+## X-163UI-Version: 20220124111830

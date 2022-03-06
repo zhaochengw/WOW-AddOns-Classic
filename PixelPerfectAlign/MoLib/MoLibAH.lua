@@ -409,7 +409,8 @@ ML.ahPrefetch = 2500
 ML.ahMaxRetries = 10 -- how many retries without making progress (ie 1sec)
 ML.ahBaseTimerInterval = 0.1
 ML.ahMaxRestarts = 10 -- how many times to restart the scan when stepping on an expired auction
-ML.ahWaitForSellers = true
+ML.ahWaitForSellers = false -- used to work but they broke it in bcc and back ported the breakage to som...
+ML.ahSkipOverErrors = false
 
 function ML:AHscheduleNextDump(msg)
   if self.ahTimer then
@@ -574,6 +575,7 @@ function ML:AHdump(fromEvent)
     self.expectedCount = count
     self.currentCount = nil
     self.unknownOwners = 0
+    self.skippedItems = 0
   else
     if count ~= self.expectedCount and count ~= self.currentCount then
       self.ahRestarts = (self.ahRestarts or 0) + 1
@@ -601,6 +603,7 @@ function ML:AHdump(fromEvent)
       self.ahResumeAt = 1
       self.ahIsStale = true
       self.unknownOwners = 0
+      self.skippedItems = 0
       self:AHscheduleNextDump("restart from auction change")
       self.AHinDump = false
       return
@@ -684,12 +687,24 @@ function ML:AHdump(fromEvent)
           self.unknownOwners = self.unknownOwners + 1
           self.ahResumeAt = firstSellerMissing + 1
         else
-          self:Error("Too many retries (%) without progress when trying to get to full AH of % with page size %, " ..
-                       "stuck on item % (seller missing at %)", self.ahRetries, count, self.ahPrefetch, firstIncomplete,
-                     firstSellerMissing)
-          self:AHrestoreNormal()
-          self.AHinDump = false
-          return
+          if self.ahSkipOverErrors then
+            self:Warning("Too many retries (%) without progress when trying to get to full AH of %, " ..
+              "stuck on item % skipping it", self.ahRetries, count, firstIncomplete)
+            self.ahResumeAt = firstIncomplete + 1
+            self.skippedItems = self.skippedItems + 1
+            self.ahResult[firstIncomplete] = true
+            self.ahRetries = 0
+          else
+            self:Error("Too many retries (%) without progress when trying to get to full AH of % with page size %, " ..
+              "stuck on item % (seller missing at %)", self.ahRetries, count, self.ahPrefetch, firstIncomplete,
+              firstSellerMissing)
+            if self.ahWaitForSellers then
+              self:Warning("Blizzard broke getting Seller info since BCC, turn of that option in /ahdb config")
+            end
+            self:AHrestoreNormal()
+            self.AHinDump = false
+            return
+          end
         end
       else
         self.ahResumeAt = firstIncomplete
@@ -737,9 +752,10 @@ function ML:AHdump(fromEvent)
   entry.newItems = newItems
   entry.itemDBcount = itemDB._count_
   entry.missingSellers = self.unknownOwners
+  entry.skippedItems = self.skippedItems
   self:PrintInfo(self.name .. self.L[": Auction scan complete and captured for % listings in % s (% auctions/sec)."] ..
-                   "\n" .. self.L["% new items in DB, now % entries (% with info). % missing seller info."], count, elapsed, speed,
-                 newItems, itemDB._count_, itemDB._infoCount_, self.unknownOwners)
+                   "\n" .. self.L["% new items in DB, now % entries (% with info). % missing seller info. % skipped items."], count, elapsed, speed,
+                 newItems, itemDB._count_, itemDB._infoCount_, self.unknownOwners, self.skippedItems)
   self:AHrestoreNormal()
   self:AHendOfScanCB()
   self.AHinDump = false

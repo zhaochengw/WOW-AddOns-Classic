@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 Name: LibWindow-1.1
 Revision: $Rev: 18 $
 Author(s): Mikk (dpsgnome@mail.com)

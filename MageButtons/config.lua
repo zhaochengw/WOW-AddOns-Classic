@@ -528,7 +528,7 @@ function addon.init_config()
 	local blueValue = addon:getSV("bgcolor", "blue") or .1
 	local alphaValue = addon:getSV("bgcolor", "alpha") or 1
 
-	local colorbox = CreateFrame("Button", colorbox, mbPanel)
+	local colorbox = CreateFrame("Button", colorbox, mbPanel,"BackDropTemplate")
 	colorbox:SetWidth(24)
 	colorbox:SetHeight(24)
 	colorbox:SetPoint("LEFT", usageText, "RIGHT", 80, -20)

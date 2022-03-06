@@ -3,7 +3,7 @@
 
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/"> 
 	
-	<Frame name="DCTFontFrameS" inherits="DCT_OptionFrameBoxTemplate" virtual="true">		
+	<Frame name="DCTFontFrameS" inherits="DCT_OptionFrameBoxTemplate" virtual="true" inherits="BackdropTemplate">		
 		<Layers>
 			<Layer level="OVERLAY">
 				<FontString name="$parent_Text" inherits="GameFontNormal">	
@@ -29,7 +29,7 @@
 		</Scripts>
 	</Frame>
 	
-	<Frame name="DCTFontFrame" virtual="true">
+	<Frame name="DCTFontFrame" virtual="true" inherits="BackdropTemplate">
 		<Size>
 			<AbsDimension x="480" y="25"/>
 		</Size>
@@ -105,7 +105,7 @@
 	</Frame>
 
 	<!-- MAIN OPTION FRAME -->
-	<Frame name="DCTFontOption" hidden="true" frameStrata="MEDIUM" parent="DCT_Options"> 
+	<Frame name="DCTFontOption" hidden="true" frameStrata="MEDIUM" parent="DCT_Options" inherits="BackdropTemplate"> 
 		<Size>
 			<AbsDimension x="490" y="360"/>
 		</Size>
