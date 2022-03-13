@@ -2,7 +2,7 @@
 ## Notes: GatherMate2 data fetched from Wowhead
 ## Title: GatherMate2Data
 ## Author: kagaro, Xinhuan, Spinx, Marrtin
-## Version: v2022-01-20
+## Version: v2022-03-07
 ## LoadOnDemand: 1
 ## Dependencies: GatherMate2
 
@@ -15,4 +15,4 @@ GatherMateData.lua
 
 ## Title-zhCN: |cff880303[有爱]|r GatherMate2 数据
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220211134516
+## X-163UI-Version: 20220311143326

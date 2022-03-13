@@ -21370,7 +21370,7 @@ __ns.L.quest = {
     { [[将这箱材料交给乱风岗的魔导师艾洛塞。]], },
   },
   [9435] = {
-    [[[DEPRECATED] 遗失的水晶]],
+    [[遗失的水晶]],
     { [[If there's one great truth about Hillsbrad, it's that this region is destined to live under the shadow of war. Even something as innocuous as a cartload of stone is a target.]], [[Normally the loss of building materials is no great setback, but the most recent shipment from the Azurelode mine contained a crate of rare crystals I was eager to study. Forsaken raiders intercepted the cart and drove it northeast to a tower they're attempting to rebuild. It's imperative that we retrieve those crystals, <class>!]], },
     { [[从被遗忘者手中夺回一箱稀有的水晶，把它交给南海镇的忽尔兰。]], },
   },
@@ -21430,7 +21430,7 @@ __ns.L.quest = {
     { [[唤地者利迦要你对地狱火半岛玛格汉岗哨附近的那些疲惫的玛格汉步兵使用治疗药膏，医治10个疲惫的玛格汉步兵。]], },
   },
   [9448] = {
-    [[[DEPRECATED] 阿弗恩的怜悯]],
+    [[阿弗恩的怜悯]],
     { [[That blood elf witch, Cersei Dusksinger, has been cursing the Lost Ones, I just know it!  I don't know why or how, but the results are tragic.  Several of the Lost Ones have now been further corrupted - cursed with even more fel energies!]], [[<class>, can you find it in you to take pity on these poor creatures?  They should not have to live out the rest of their lives in such a horrible condition.]], [[You'll find these cursed Lost Ones at the Fallow Sanctuary, east down the path.]], },
     { [[杀死3名被诅咒的失落者，然后向悲伤沼泽避难所的学者阿弗恩复命。]], },
   },
@@ -22157,7 +22157,7 @@ __ns.L.quest = {
     { [[全面调查鲜血熔炉，然后向地狱火半岛上的萨尔玛内的纳兹格雷尔汇报。]], },
   },
   [9609] = {
-    [[[DEPRECATED] 帮助卫兵比格斯]],
+    [[帮助卫兵比格斯]],
     { [[Magtoor has informed me that there's a stranded watcher nearby.  Apparently the caravan he was escorting from Darkshire was attacked by Lost Ones.  It sounds as if he's the sole survivor.]], [[He's somewhere to the south.  Please, <class>, lend him your aid.]], },
     { [[找到悲伤沼泽的卫兵比格斯。]], },
   },
@@ -29253,12 +29253,12 @@ __ns.L.quest = {
     { [[从卡拉诺斯的弗莱恩·火酒那儿接过一只酒桶，然后将它交给波尔·冻石。如果你弄丢了你的赛羊，可以去找尼尔·拉姆斯登再要一头。]], },
   },
   [11123] = {
-    [[[DEPRECATED] 调查废墟]],
+    [[调查废墟]],
     { [[Poor James never recovered from the destruction of the Shady Rest and the murder of his family. The boys and I are doing what we can to find the bastards who did this.]], [[I've sent our best investigator, Inspector Tarem, out to the ruins, but this is too big a job for any one man. If you'd lend Tarem a hand, we'd appreciate it. Light knows, we'd all like to be out there helping.]], [[The main road will lead you to the inn, but take care. Your journey will take you beyond the protection of my soldiers.]], },
     { [[跟树荫旅店的调查员塔雷姆谈一谈。]], },
   },
   [11124] = {
-    [[[DEPRECATED] 调查废墟]],
+    [[调查废墟]],
     { [[If you follow the road south from the village, and then west toward the Barrens, you'll come across the ruins of the Shady Rest Inn.]], [[Theramore has sent an investigator to discover how the inn met its fate. Normally, I'd advise you to steer clear, but we have orders from Orgrimmar to 'assist' in the investigation.]], [[Accept any help the Theramore investigator offers, even feed him a tidbit or two of information if you'd like, but save your real findings for me.]], },
     { [[跟树荫旅店的调查员塔雷姆谈一谈。]], },
   },
@@ -29313,7 +29313,7 @@ __ns.L.quest = {
     { [[向警戒哨岗的维摩尔上尉报到。]], },
   },
   [11137] = {
-    [[[DEPRECATED] 尘泥沼泽有迪菲亚兄弟会？]],
+    [[尘泥沼泽有迪菲亚兄弟会？]],
     { [[My scouts have reported a shipwreck just off the beach to the northeast. Shipwrecks aren't all that unusual out here, but the reports also indicated the survivors were all wearing red bandanas!]], [[The Defias are craftsmen and guildsmen, not sailors. What are they doing at the site of a shipwreck on a continent they've no interest in?]], [[Their leader is rumored to reside on a large island just off the coast to the northeast of the tower. Kill him and retrieve any documents you find in his possession.]], },
     { [[从加恩·马瑟斯手中夺得迪菲亚命令书，把它们交给警戒岗哨的维摩尔上尉。]], },
   },
@@ -29358,7 +29358,7 @@ __ns.L.quest = {
     { [[北点哨塔的卢卡斯中士希望你能解救5名塞拉摩囚犯。]], },
   },
   [11146] = {
-    [[[DEPRECATED] 捕捉迅猛龙]],
+    [[捕捉迅猛龙]],
     { [[The patch of swamp to the northeast is home to a particularly nasty breed of raptors. We've lost more than one unwary soldier to them, but I think we can turn them against our Grimtotem neighbors.]], [[Take this rope and use it to capture bloodfen raptors or bloodfen screechers that you've subdued. I wouldn't try to capture one of the beasts until you've weakened them quite a bit in combat. It's going to be quite a struggle.]], },
     { [[北点哨塔的卢卡斯中士要求你捕捉6只迅猛龙。血沼迅猛龙或是血沼尖啸龙都可以满足他的要求。]], },
   },
@@ -29393,12 +29393,12 @@ __ns.L.quest = {
     { [[塞拉摩城堡中的盖兰·维米斯队长想让你在海厄尔家族墓碑前放上一个花圈。]], },
   },
   [11156] = {
-    [[[DEPRECATED] 恐角袭击者]],
+    [[恐角袭击者]],
     { [[恐怖图腾的成员聚集在北面的恐角岗哨，现在他们真是越来越大胆了。在晚上，你能常常听到他们在颂唱与这里的居民战斗的“事迹”。]], [[他们决心把我们从农场上赶走，但是塔贝萨在这里训练了一代代的学徒，怎么会说走就走呢？我们尽全力保护着农场，但学徒加里奥在上次战斗中受伤了。]], [[去恐角岗哨消灭你能找到的所有恐怖图腾！必须阻止他们的进攻！]], },
     { [[在恐角岗哨消灭12个恐怖图腾成员，然后向塔贝萨农场的学徒莫兰恩复命。]], },
   },
   [11158] = {
-    [[[DEPRECATED] 血沼羽毛]],
+    [[血沼羽毛]],
     { [[看见布洛格在这里，你是不是非常惊讶呢，小<race>？别担心，泥链镇的地精都是布洛格的朋友，你也可以喔。]], [[新的大王不敢向那些摧毁了我们故乡并屠杀我们同胞的黑龙复仇，所以布洛格就离开了蕨墙村。布洛格来这里，是为了让那些朋友们的灵魂重新得到安息，并向黑龙复仇！不过，布洛格首先需要做一些准备。为了举行仪式，布洛格需要羽毛，具有强大魔力的羽毛，比如镇子西边鲜血沼泽墓穴那边迅猛龙的羽毛。]], },
     { [[将5片血沼羽毛交给泥链镇的布洛格。]], },
   },
@@ -29443,7 +29443,7 @@ __ns.L.quest = {
     { [[进入祖阿曼并调查哈尔拉兹的大厅、加亚莱的平台和埃基尔松的平台。将这些地方的细节报告给巴德，他的营地就在幽魂之地。]], },
   },
   [11169] = {
-    [[[DEPRECATED] 恐怖图腾的武器]],
+    [[恐怖图腾的武器]],
     { [[我在上次恐怖图腾进攻的时候受伤了，不过在受伤之前，我从敌人那里夺取了一根奇怪的图腾。]], [[那个东西在战斗中会发射纯粹的能量箭，不过我实验了这么久，还是想不出它是怎么运作的。如果你愿意帮我测试一下那图腾的话，我很愿意把它借给你。]], [[那些令人讨厌的尘泥杂斑鳄鱼和尘泥利齿鳄鱼把农场周围的泥沼地当成了自己的家。试着在图腾附近和鳄鱼战斗。]], },
     { [[塔贝萨农场的学徒加里奥希望你在10头尘泥杂斑鳄鱼身上测试被捕获的图腾。]], },
   },
@@ -29453,22 +29453,22 @@ __ns.L.quest = {
     { [[战斧岭的巴德·奈德雷克要你前往祖阿曼，杀死妖术领主玛拉卡斯。]], },
   },
   [11172] = {
-    [[[DEPRECATED] 坠毁的飞艇]],
+    [[坠毁的飞艇]],
     { [[Not long ago, a goblin zeppelin crashed to the east. A representative of the Steamwheedle Cartel passed through here a few days ago.]], [[She was looking for information about the zeppelin's cargo and it's pilot, Beezil, but none of us really got a good look at the crash. I doubt she'll be able to clean up after the wreck by herself, much less recover whatever cargo the vessel might have carried.]], [[If you have time, you may want to check up on her out at Beezil's Wreck, due east of here, near the mountains.]], },
     { [[跟比吉尔的飞艇残骸的莫希·斯蒂格里谈一谈。]], },
   },
   [11173] = {
-    [[[DEPRECATED] 沼泽中的毒药]],
+    [[沼泽中的毒药]],
     { [[如果你指望学徒莫兰恩去做些什么的话，我想他所能做的也只有对着材料发牢骚了。]], [[我通常都是无视他，但根本不起作用。这次，我要试些不同的方法。]], [[如果我在他发现之前把缺少的材料补上，也许他就能让我安静一会。我们最常用的材料是沼泽毒药，那东西可以从农场北面沼泽的暗牙爬行者和毒性切割者身上得到。如果你能帮我弄来毒药，我就可以在莫兰恩发现前把它放回去。]], },
     { [[将6瓶沼泽毒药交给塔贝萨农场的学徒加里奥。]], },
   },
   [11174] = {
-    [[[DEPRECATED] 阻止腐蚀]],
+    [[阻止腐蚀]],
     { [[看看这个地方！到处都是软泥怪，要是我不想点什么办法控制它们的话，它们就会腐蚀掉残骸和飞艇的货物！]], [[我不能空手回去，<class>！在这些软泥怪消化掉所有东西之前，帮我消灭它们吧！]], [[这台设备充电后可以将能量集中到这些泥浆怪身上，让它们爆炸。飞艇的能量核心碎片应该可以给这台设备提供能量，靠近主坠毁点的那个始终可以正常工作，不过其它的时好时坏。]], },
     { [[莫希·斯蒂格里希望你去溶解10只软泥怪，然后回到比吉尔的飞艇残骸旁向她复命。]], },
   },
   [11177] = {
-    [[[DEPRECATED] 水光庄园的隐士]],
+    [[水光庄园的隐士]],
     { [[有这么一个家伙，他独自住在沼泽里，当地人叫他“沼泽之眼”加尔。前段时间水光庄园的前任主人神秘失踪了，他就“接管”了那里。]], [[我想时不时地找人查看一下他的状况。你知道吗？他让我想起了我的祖父。有人说他脑子不太正常。]], [[如果你朝西北走，沿着塞拉摩外的大路，就能在道路转向西边之前在女巫岭地区找到水光庄园。]], },
     { [[跟水光庄园的“沼泽之眼”加尔谈一谈。]], },
   },
@@ -29493,12 +29493,12 @@ __ns.L.quest = {
     { [[水光庄园的摩丹特·格雷斯比希望你将火把放置在码头的尽头，并打败随后出现的任何东西。]], },
   },
   [11184] = {
-    [[[DEPRECATED] 悬赏：贪婪的血爪]],
+    [[悬赏：贪婪的血爪]],
     { [[旅行者以及从事野外作业的热砂港雇员请注意，不要靠近城镇西边的鲜血沼泽墓穴。]], [[大群迅猛龙盘踞在那片区域，它们的首领“贪婪的血爪”既残忍又狡猾，至少有两名热砂港工程师惨死于这只野兽的利爪之下。]], [[如果谁能替泥链镇解除威胁，德拉兹特·迪普瓦尔愿意慷慨解囊，奖赏这位勇士。]], },
     { [[杀死贪婪的血爪，然后向泥链镇的德拉兹特·迪普瓦尔复命。]], },
   },
   [11185] = {
-    [[[DEPRECATED] 药剂师的信]],
+    [[药剂师的信]],
     { [[Recovered from the body of a Forsaken apothecary, this letter contains alarming evidence of a close alliance between the Grimtotems and the new masters of Lordaeron.]], [["As a demonstration of good faith and a symbol of our newfound trust, we have dispatched Apothecary Cylla to aid you in battling our mutual enemy in the land of Kalimdor. None will stand before our combined might and determination."]], [[This letter should be brought to the attention of the SI:7 agent at Tabetha's Farm, Andello Porter.]], },
     { [[将密封的信函交给塔贝萨农场中的安德罗·波特。]], },
   },
@@ -29508,7 +29508,7 @@ __ns.L.quest = {
     { [[将密封的信函交给蕨墙村的纳泽尔·血矛。]], },
   },
   [11191] = {
-    [[[DEPRECATED] 破旧的灯塔]],
+    [[破旧的灯塔]],
     { [[东边的旧灯塔已经坏了很久了，可巴布·菲兹托克不知道哪根筋不对非要修好它。]], [[我不知道她打算怎么做，但她声称这样船只和货物就能更为迅速地泊进码头，那么我也不好反对。和上前线比起来，在码头上抽税也没什么好抱怨的，你说是吧？]], },
     { [[跟塞拉摩东边岛屿上灯塔的巴布·菲兹托克谈一谈。]], },
   },
@@ -29573,7 +29573,7 @@ __ns.L.quest = {
     { [[回到蕨墙村的克罗格那里复命。]], },
   },
   [11207] = {
-    [[[DEPRECATED] 回收货物！]],
+    [[回收货物！]],
     { [[这艘飞艇运送了足足6个月的补给品给我们的泥链镇！当然，他们可以靠这些撑上一会儿，但没法坚持太久。]], [[我被派到这里来寻找任何我能找到的货物，但飞船的残骸支离破碎地散落在这块区域。我确信有很多货物没能在坠毁中保住，但你能不能尽可能地帮我把货物找来？]], },
     { [[比吉尔的飞艇残骸处的莫希·斯蒂格里要你找回8件飞艇上的货物。]], },
   },
@@ -29608,7 +29608,7 @@ __ns.L.quest = {
     { [[与泥潭沼泽农场里的塔贝萨谈一谈。]], },
   },
   [11214] = {
-    [[[DEPRECATED] 前往泥链镇]],
+    [[前往泥链镇]],
     { [[热砂财阀最近在尘泥沼泽的南部建立起了一处新的前哨。据我所知，它叫做泥链镇，就在塔贝萨的农场和石槌废墟往南的主路上。]], [[这是我们签订新贸易合同的大好机会，吉安娜女士要我派一个代表去谈协议。你愿意去吗？]], },
     { [[跟泥链镇的德拉兹特·迪普瓦尔谈一谈。]], },
   },
@@ -29623,7 +29623,7 @@ __ns.L.quest = {
     { [[与逆风小径卡拉赞外的大法师奥图鲁斯谈一谈。]], },
   },
   [11217] = {
-    [[[DEPRECATED] 龙尾草]],
+    [[龙尾草]],
     { [[飞艇的坠毁延缓了补给品的到达，我们的药品和绷带都用完了。]], [[我们正在利用一切可以获得的资源，不过这些虫子、伤者和一切与我们为敌的家伙都让我们焦头烂额，我快要坚持不下去了！我找到了一种草药，可以治疗伤口和缓解疼痛，但它也快要用完了。]], [[这种草药被称为龙尾草，它遍布在村子东面的黑龙谷和巨龙沼泽地区。那种植物的茎杆是卷曲的，而且你看着它们的时候似乎会微微地跳动。]], },
     { [[泥链镇的吉兹克斯·格里古格希望你帮他收集8根龙尾草。]], },
   },

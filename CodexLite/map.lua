@@ -149,7 +149,7 @@ end
 			local uuid = self.uuid;
 			local _type = uuid[1];
 			local _id = uuid[2];
-			__ns.GameTooltipSetInfo(_type, _id);
+			__ns.TooltipSetInfo(GameTooltip, _type, _id);
 			GameTooltip:Show();
 		end
 		function Pin_OnClick(self)

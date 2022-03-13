@@ -16805,7 +16805,7 @@ __ns.L.quest = {
     { [[Recoge una muestra de aire, fuego, tierra y agua para Bath'rah el Vigía del viento.]], },
   },
   [8411] = {
-    [[[DEPRECATED]Dominar los elementos]],
+    [[Dominar los elementos]],
     { [[Me alegro de verte, <class>. Tráeme los elementos y luego hablamos.]], [[El fuego, el aire, el agua y la tierra, m'harán falta pa' confiar en ti, colega. Tengo qu'asegurarme qu'eres <un entendido/una entendida>.]], },
     { [[Lleva los elementos tierra, aire, fuego y agua a Bath'rah el Vigía del viento.]], },
   },
@@ -29601,7 +29601,7 @@ __ns.L.quest = {
     { [[Encuentra el santuario calabaza de El Jinete decapitado.]], },
   },
   [11222] = {
-    [[[DEPRECATED]Prueba de traición]],
+    [[Prueba de traición]],
     { [[Although we don't have all the answers we might like, it's imperative that you bring our findings to Highlord Bolvar Fordragon right away!]], [[He needs to know that the Defias have a powerful patron in Stormwind and that they're involved in the disappearance of King Varian!]], [[I can use my magic to expedite your trip to Stormwind. Just speak to me when you're prepared to go, <name>.]], },
     { [[Speak to Highlord Bolvar Fordragon in Stormwind Keep.]], },
   },

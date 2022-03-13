@@ -199,7 +199,7 @@
 	</Frame>
 
 
-	<Frame name="TradeLogFrame" parent="UIParent" movable="true" toplevel="true" enableMouse="true" hidden="true">
+	<Frame name="TradeLogFrame" parent="UIParent" movable="true" toplevel="true" enableMouse="true" hidden="true" inherits="BackdropTemplate">
 		<TitleRegion setAllPoints="true"/>
 		<Size>
 			<AbsDimension x="260" y="270"/>
@@ -680,7 +680,7 @@
 		</HighlightTexture>
 	</Button>
 
-	<Frame name="TradeListFrame" parent="UIParent" movable="true" enableMouse="true" hidden="true">
+	<Frame name="TradeListFrame" parent="UIParent" movable="true" enableMouse="true" hidden="true" inherits="BackdropTemplate">
 		<TitleRegion setAllPoints="true"/>
 		<Size>
 			<AbsDimension x="543" y="330"/>

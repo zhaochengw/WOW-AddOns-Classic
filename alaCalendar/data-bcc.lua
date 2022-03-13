@@ -265,6 +265,8 @@ NS.milestone = {
 			instance = true,
 			min = 70,
 		},
+		--	P4
+		--	P5
 	--
 	--	Festival
 	--	P3	DarkMoon			--	UTC-8	2020-2-7
@@ -441,6 +443,7 @@ NS.milestone_list = {
 	"SW",
 	"BT",
 	"Hyjal",
+	"ZAM",
 	"Tempest",
 	"Serpent",
 	"Gruul",
@@ -538,10 +541,10 @@ NS.apply_region = {
 		NS.milestone["DarkMoon: Mulgore"][1] = 18812 * 86400 - 5 * 3600;
 		NS.milestone["DarkMoon: Elwynn"][1] = 18784 * 86400 - 5 * 3600;
 		NS.milestone["Fishing Extravaganza"][1] = 18371 * 86400 + 5 * 3600;
-		NS.milestone["Warsong Gulch"][1] = 18796 * 86400 - 9 * 3600;
-		NS.milestone["Arathi Basin"][1] = 18803 * 86400 - 9 * 3600;
+		NS.milestone["Warsong Gulch"][1] = 18789 * 86400 - 9 * 3600;
+		NS.milestone["Arathi Basin"][1] = 18796 * 86400 - 9 * 3600;
+		NS.milestone["Alterac Valley"][1] = 18803 * 86400 - 9 * 3600;
 		NS.milestone["Eye of the Storm"][1] = 18782 * 86400 - 9 * 3600;
-		NS.milestone["Alterac Valley"][1] = 18789 * 86400 - 9 * 3600;
 		NS.realmTimeZone = 9;
 		NS.set_time_zone();
 	end,
@@ -629,6 +632,7 @@ NS.raid_list = {
 	"SW",
 	"BT",
 	"Hyjal",
+	"ZAM",
 	"Tempest",
 	"Serpent",
 	"Gruul",
@@ -657,6 +661,7 @@ NS.instances_hash = {
 	["Gruul"] = true,
 	["Serpent"] = true,
 	["Tempest"] = true,
+	["ZAM"] = true,
 	["Hyjal"] = true,
 	["BT"] = true,
 	["SW"] = true,

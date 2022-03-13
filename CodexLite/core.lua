@@ -32,29 +32,6 @@ local _ = nil;
 	local GetNumSkillLines = GetNumSkillLines;
 	local GetSkillLineInfo = GetSkillLineInfo;
 
-	local GetNumGossipActiveQuests = GetNumGossipActiveQuests;
-	local GetGossipActiveQuests = GetGossipActiveQuests;
-	local SelectGossipActiveQuest = SelectGossipActiveQuest;
-	local GetNumGossipAvailableQuests = GetNumGossipAvailableQuests;
-	local GetGossipAvailableQuests = GetGossipAvailableQuests;
-	local SelectGossipAvailableQuest = SelectGossipAvailableQuest;
-	local GetNumActiveQuests = GetNumActiveQuests;
-	local GetActiveTitle = GetActiveTitle;
-	local SelectActiveQuest = SelectActiveQuest;
-	local GetNumAvailableQuests = GetNumAvailableQuests;
-	local GetAvailableTitle = GetAvailableTitle;
-	local SelectAvailableQuest = SelectAvailableQuest;
-	local AcceptQuest = AcceptQuest;
-	local IsQuestCompletable = IsQuestCompletable;
-	local CompleteQuest = CompleteQuest;
-	local GetNumQuestChoices = GetNumQuestChoices;
-	local GetQuestReward = GetQuestReward;
-	local ConfirmAcceptQuest = ConfirmAcceptQuest;
-	local GetQuestLogIndexByID = GetQuestLogIndexByID;
-	local GetQuestLogIsAutoComplete = GetQuestLogIsAutoComplete;
-	local ShowQuestComplete = ShowQuestComplete;
-	local StaticPopup_Hide = StaticPopup_Hide;
-
 	local __db = __ns.db;
 	local __db_quest = __db.quest;
 	local __db_unit = __db.unit;
@@ -100,7 +77,6 @@ if __ns.__is_dev then
 end
 -->		MAIN
 	local show_starter, show_ender = false, false;
-	local quest_auto_inverse_modifier = IsShiftKeyDown;
 	local META = {  };
 	--[[
 		[quest_id] = {
@@ -137,7 +113,7 @@ end
 		local UpdateQuestGivers;
 		local CalcQuestColor;
 		--	setting
-		local SetQuestStarterShown, SetQuestEnderShown, SetQuestAutoInverseModifier;
+		local SetQuestStarterShown, SetQuestEnderShown;
 		--	setup
 		local SetupCompleted;
 	-->
@@ -606,6 +582,7 @@ end
 				if info.I ~= nil then
 					-- local line2 = line > 0 and -line or line;
 					for iid2, _ in next, info.I do
+						local large_pin = __db_large_pin:Check(quest, 'item', iid2);
 						AddItem(quest, line, iid2, show_coords, large_pin);
 					end
 				end
@@ -640,6 +617,7 @@ end
 				if info.I ~= nil then
 					-- local line2 = line > 0 and -line or line;
 					for iid2, _ in next, info.I do
+						local large_pin = __db_large_pin:Check(quest, 'item', iid2);
 						DelItem(quest, line, iid2, total_del, large_pin);
 					end
 				end
@@ -1375,20 +1353,10 @@ end
 			end
 			__eventHandler:run_on_next_tick(__ns.MapDrawNodes);
 		end
-		function SetQuestAutoInverseModifier(modifier)
-			if modifier == "SHIFT" then
-				quest_auto_inverse_modifier = IsShiftKeyDown;
-			elseif modifier == "CTRL" then
-				quest_auto_inverse_modifier = IsControlKeyDown;
-			elseif modifier == "ALT" then
-				quest_auto_inverse_modifier = IsAltKeyDown;
-			end
-		end
 	-->
 	-->		extern method
 		__ns.SetQuestStarterShown = SetQuestStarterShown;
 		__ns.SetQuestEnderShown = SetQuestEnderShown;
-		__ns.SetQuestAutoInverseModifier = SetQuestAutoInverseModifier;
 		--
 		__ns.UpdateQuests = UpdateQuests;
 		__ns.UpdateQuestGivers = UpdateQuestGivers;
@@ -1486,93 +1454,6 @@ end
 			__eventHandler:run_on_next_tick(UpdateQuests);
 			__eventHandler:run_on_next_tick(UpdateQuestGivers);
 		end
-		--	Auto Accept and Turnin
-		function __ns.GOSSIP_SHOW()
-			local modstate = not quest_auto_inverse_modifier();
-			if not SET.auto_complete ~= modstate then
-				for i = 1, GetNumGossipActiveQuests() do
-					local title, level, isTrivial, isComplete, isLegendary, isIgnored = select(i * 6 - 5, GetGossipActiveQuests());
-					if title and isComplete then
-						return SelectGossipActiveQuest(i);
-					end
-				end
-			end
-			if not SET.auto_accept ~= modstate then
-				for i = 1, GetNumGossipAvailableQuests() do
-					local title, level, isTrivial, isDaily, isRepeatable, isLegendary, isIgnored = select(i * 7 - 6, GetGossipAvailableQuests());
-					if title then
-						return SelectGossipAvailableQuest(i);
-					end
-				end
-			end
-			-- if SET.auto_accept then
-			-- 	for i = 1, GetNumAvailableQuests() do
-			-- 		local titleText, level, isTrivial, frequency, isRepeatable, isLegendary, isIgnored = GetGossipAvailableQuests(i);
-			-- 		if title then
-			-- 			return SelectAvailableQuest(i);
-			-- 		end
-			-- 	end
-			-- end
-		end
-		function __ns.QUEST_GREETING()
-			local modstate = not quest_auto_inverse_modifier();
-			if not SET.auto_complete ~= modstate then
-				for i = 1, GetNumActiveQuests() do
-					local title, isComplete = GetActiveTitle(i);
-					if title and isComplete then
-						return SelectActiveQuest(i);
-					end
-				end
-			end
-			if not SET.auto_accept ~= modstate then
-				for i = 1, GetNumAvailableQuests() do
-					local title, isComplete = GetAvailableTitle(i);
-					if title then
-						return SelectAvailableQuest(i);
-					end
-				end
-			end
-		end
-		function __ns.QUEST_DETAIL()
-			local modstate = not quest_auto_inverse_modifier();
-			if not SET.auto_accept ~= modstate then
-				AcceptQuest();
-				QuestFrame:Hide();
-			end
-		end
-		function __ns.QUEST_PROGRESS()
-			local modstate = not quest_auto_inverse_modifier();
-			if not SET.auto_complete ~= modstate then
-				if IsQuestCompletable() then
-					CompleteQuest();
-				end
-			end
-		end
-		function __ns.QUEST_COMPLETE()
-			local modstate = not quest_auto_inverse_modifier();
-			if not SET.auto_complete ~= modstate then
-				local _NumChoices = GetNumQuestChoices();
-				if _NumChoices <= 1 then
-					GetQuestReward(_NumChoices);
-				end
-			end
-		end
-		function __ns.QUEST_ACCEPT_CONFIRM()
-			local modstate = not quest_auto_inverse_modifier();
-			if not SET.auto_accept ~= modstate then
-				ConfirmAcceptQuest() ;
-				StaticPopup_Hide("QUEST_ACCEPT");
-			end
-		end
-		function __ns.QUEST_AUTOCOMPLETE(id)
-			local modstate = not quest_auto_inverse_modifier();
-			if not SET.auto_complete ~= modstate then
-				local index = GetQuestLogIndexByID(id);
-				if GetQuestLogIsAutoComplete(index) then
-					ShowQuestComplete(index);
-				end
-			end
-		end
 	-->
 	function SetupCompleted()
 		GetQuestsCompleted(QUESTS_COMPLETED);
@@ -1602,13 +1483,6 @@ end
 		-- __eventHandler:RegEvent("PLAYER_ENTERING_WORLD");
 		-- __eventHandler:RegEvent("SKILL_LINES_CHANGED");
 
-		__eventHandler:RegEvent("GOSSIP_SHOW");
-		__eventHandler:RegEvent("QUEST_GREETING");
-		__eventHandler:RegEvent("QUEST_DETAIL");
-		__eventHandler:RegEvent("QUEST_PROGRESS");
-		__eventHandler:RegEvent("QUEST_COMPLETE");
-		__eventHandler:RegEvent("QUEST_ACCEPT_CONFIRM");
-		__eventHandler:RegEvent("QUEST_AUTOCOMPLETE");
 		-- __eventHandler:RegEvent("QUEST_FINISHED");
 		-- __eventHandler:RegEvent("QUEST_REMOVED");
 		--
@@ -1635,7 +1509,6 @@ end
 		--
 		show_starter = SET.show_quest_starter;
 		show_ender = SET.show_quest_ender;
-		SetQuestAutoInverseModifier(SET.quest_auto_inverse_modifier);
 	end
 -->
 

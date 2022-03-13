@@ -29,7 +29,7 @@ local time = time;
 local type, tostring, tonumber = type, tostring, tonumber;
 local tinsert, next, wipe = table.insert, next, wipe;
 local floor = math.floor;
-local strchar, strupper, strlower, strsplit, strlen, strsub, strfind, strrep = string.char, string.upper, string.lower, string.split, string.len, string.sub, string.find, string.rep;
+local strchar, strupper, strlower, strsplit, strsub, strfind, strrep = string.char, string.upper, string.lower, string.split, string.sub, string.find, string.rep;
 local bit = bit;
 local _ = nil;
 local RegisterAddonMessagePrefix = C_ChatInfo ~= nil and C_ChatInfo.RegisterAddonMessagePrefix or RegisterAddonMessagePrefix;
@@ -65,6 +65,7 @@ __emulib.classList, __emulib.classHash = { "DRUID", "HUNTER", "MAGE", "PALADIN",
 		__emulib.classHash[class] = index;
 		__emulib.classHash[strupper(class)] = index;
 		__emulib.classHash[strlower(class)] = index;
+		__emulib.classHash[strupper(strsub(class, 1, 1)) .. strlower(strsub(class, 2))] = index;
 	end
 --
 __emulib.CPlayerClassIndex = __emulib.classHash[__ala_meta__.CPlayerClassUpper];
@@ -260,7 +261,7 @@ __emulib.ADDON_MSG_REPLY_ADDON_PACK_ = "_reppk";
 		if data == nil then
 			return nil;
 		end
-		len = len or strlen(data);
+		len = len or #data;
 		local __base64 = __emulib.__base64;
 		level = level and tonumber(level) or __ala_meta__.MAX_LEVEL;
 		local pos = 0;

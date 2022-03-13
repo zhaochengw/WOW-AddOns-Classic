@@ -246,6 +246,7 @@ local L2 = {
 	BT = 564,
 	Gruul = 565,
 	SW = 580,
+	ZAM = 568,
 };
 __raid_meta.esMX = __raid_meta.esES;
 local to = __raid_meta.L[GetLocale()] or __raid_meta.L['*'];

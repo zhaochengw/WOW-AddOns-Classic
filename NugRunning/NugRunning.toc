@@ -1,4 +1,4 @@
-## Interface: 90200
+## Interface: 20503
 ## Title: NugRunning
 ## Notes: Spelltimers
 ## Author: d87
@@ -16,8 +16,13 @@ Libs\LibSharedMedia-3.0\lib.xml
 
 helpers.lua
 config.lua
+config.tbc.lua
 NugRunning.lua
 frame.lua
 special.lua
 totems.lua
 nameplates.lua
+
+## Title-zhCN: |cff880303[有爱]|r NugRunning 施法计时
+## X-Vendor: NetEase
+## X-163UI-Version: 20220311143326

@@ -417,14 +417,16 @@ local SET = nil;
 	local function FindMinLevenshteinDistance(str, loc, ids)
 		local bestDistance = BIG_NUMBER;
 		local bestIndex = -1;
+		local bestTextLen = nil;
 		for index = 1, #ids do
 			local id = ids[index];
 			local text = loc[id];
 			if text ~= nil then
 				local distance = LevenshteinDistance(str, text);
-				if distance < bestDistance then
+				if distance < bestDistance or (distance == bestDistance and #text < bestTextLen) then
 					bestDistance = distance;
 					bestIndex = index;
+					bestTextLen = #text;
 				end
 			end
 		end
@@ -835,7 +837,7 @@ local SET = nil;
 	--	return map, x, y
 	local function GetUnitZonePosition(unit)
 		-- local y, x, _z, map = UnitPosition(unit);
-		local map, x, y = GetUnitPosition('player');
+		local map, x, y = GetUnitPosition(unit);
 		if x ~= nil and y ~= nil then
 			return GetZonePositionFromWorldPosition(C_Map_GetBestMapForUnit(unit), x, y);
 		end

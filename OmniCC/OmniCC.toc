@@ -3,7 +3,7 @@
 ## Notes: Cooldown count for everything
 ## Notes-koKR: 모든 것을 위한 쿨다운 카운트
 ## Author: Tuller
-## Version: 9.1.6
+## Version: 9.2.0
 ## SavedVariables: OmniCCDB, OmniCC4Config
 embeds.xml
 localization\localization.xml
@@ -15,4 +15,4 @@ effects\effects.xml
 ## Title-zhCN: |cff880303[有爱]|r OmniCC 冷却文字
 ## Notes-zhCN: 给所有的技能冷却动画添加文字显示及冷却后的效果。
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220120164410
+## X-163UI-Version: 20220311143326

@@ -22,6 +22,7 @@ local _ = nil;
 	local GetFactionInfoByID = GetFactionInfoByID;
 	local IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown = IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown;
 	local GetQuestLogTitle = GetQuestLogTitle;
+	local GetQuestLogSelection = GetQuestLogSelection;
 	local GetItemCount = GetItemCount;
 	local GetMouseFocus = GetMouseFocus;
 	local IsModifiedClick = IsModifiedClick;
@@ -32,15 +33,40 @@ local _ = nil;
 	local ChatFrame_AddMessageEventFilter = ChatFrame_AddMessageEventFilter;
 	local UIParent = UIParent;
 	local GameTooltip = GameTooltip;
-	local GameTooltipTextLeft1 = GameTooltipTextLeft1;
 	local ItemRefTooltip = ItemRefTooltip;
+	local WorldMapFrame = WorldMapFrame;
 	local ChatFrame2 = ChatFrame2;
 	local FauxScrollFrame_GetOffset = FauxScrollFrame_GetOffset;
+	local QuestFrame = QuestFrame;
 	local QuestLogFrame = QuestLogFrame;
+	local QuestLogListScrollFrame = QuestLogListScrollFrame;
 	local QuestLogDetailScrollChildFrame = QuestLogDetailScrollChildFrame;
 	local QuestLogDescriptionTitle = QuestLogDescriptionTitle;
 	local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
 	local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS;
+
+	local GetNumGossipActiveQuests = GetNumGossipActiveQuests;
+	local GetGossipActiveQuests = GetGossipActiveQuests;
+	local SelectGossipActiveQuest = SelectGossipActiveQuest;
+	local GetNumGossipAvailableQuests = GetNumGossipAvailableQuests;
+	local GetGossipAvailableQuests = GetGossipAvailableQuests;
+	local SelectGossipAvailableQuest = SelectGossipAvailableQuest;
+	local GetNumActiveQuests = GetNumActiveQuests;
+	local GetActiveTitle = GetActiveTitle;
+	local SelectActiveQuest = SelectActiveQuest;
+	local GetNumAvailableQuests = GetNumAvailableQuests;
+	local GetAvailableTitle = GetAvailableTitle;
+	local SelectAvailableQuest = SelectAvailableQuest;
+	local AcceptQuest = AcceptQuest;
+	local IsQuestCompletable = IsQuestCompletable;
+	local CompleteQuest = CompleteQuest;
+	local GetNumQuestChoices = GetNumQuestChoices;
+	local GetQuestReward = GetQuestReward;
+	local ConfirmAcceptQuest = ConfirmAcceptQuest;
+	local GetQuestLogIndexByID = GetQuestLogIndexByID;
+	local GetQuestLogIsAutoComplete = GetQuestLogIsAutoComplete;
+	local ShowQuestComplete = ShowQuestComplete;
+	local StaticPopup_Hide = StaticPopup_Hide;
 
 	local __db = __ns.db;
 	local __db_quest = __db.quest;
@@ -93,6 +119,7 @@ if __ns.__is_dev then
 	__ns:BuildEnv("util");
 end
 -->		MAIN
+	local quest_auto_inverse_modifier = IsShiftKeyDown;
 	-->		methods
 		local function GetLevelTag(quest, info, modifier, colored)
 			local lvl_str = "[";
@@ -201,7 +228,7 @@ end
 			frame:SetPoint("CENTER");
 		end
 	-->		events and hooks
-		local function GameTooltipSetQuestTip(tip, uuid, META)
+		local function TooltipSetQuestTip(tip, uuid, META)
 			local modifier = IsShiftKeyDown();
 			local refs = uuid[4];
 			if next(refs) ~= nil then
@@ -399,12 +426,12 @@ end
 						end
 					end
 				end
-				tip:Show();
 			end
 		end
-		local function OnTooltipSetUnit(self)
+		local function OnTooltipSetUnit(tip)
+			tip.__TextLeft1Text = nil;
 			if SET.objective_tooltip_info then
-				local _, unit = self:GetUnit();
+				local _, unit = tip:GetUnit();
 				if unit and not UnitIsPlayer(unit) then
 					local GUID = UnitGUID(unit);
 					if GUID ~= nil then
@@ -413,9 +440,11 @@ end
 						if _type == "Creature" and _id ~= nil then
 							_id = tonumber(_id);
 							if _id ~= nil then
+								local reshow = false;
 								local uuid = __ns.CoreGetUUID('unit', _id);
 								if uuid ~= nil then
-									GameTooltipSetQuestTip(GameTooltip, uuid);
+									TooltipSetQuestTip(tip, uuid);
+									reshow = true;
 								end
 								for name, val in next, __ns.__comm_group_members do
 									local meta_table = __comm_meta[name];
@@ -423,10 +452,14 @@ end
 										local uuid = __ns.CommGetUUID(name, 'unit', _id);
 										if uuid ~= nil and next(uuid[4]) ~= nil then
 											local info = __ns.__comm_group_members_info[name];
-											GameTooltip:AddLine(GetPlayerTag(name, info ~= nil and info[4]));
-											GameTooltipSetQuestTip(GameTooltip, uuid, meta_table);
+											tip:AddLine(GetPlayerTag(name, info ~= nil and info[4]));
+											TooltipSetQuestTip(tip, uuid, meta_table);
+											reshow = true;
 										end
 									end
+								end
+								if reshow then
+									tip:Show();
 								end
 							end
 						end
@@ -435,6 +468,7 @@ end
 			end
 		end
 		local function OnTooltipSetItem(tip)
+			tip.__TextLeft1Text = nil;
 			if SET.objective_tooltip_info then
 				local name, link = tip:GetItem();
 				if link ~= nil then
@@ -442,6 +476,7 @@ end
 					if id ~= nil then
 						local QUESTS = __db_item_related_quest[id];
 						if QUESTS ~= nil and QUESTS[1] ~= nil then
+							local reshow = false;
 							local modifier = IsShiftKeyDown();
 							for _, quest in next, QUESTS do
 								local meta = __core_meta[quest];
@@ -473,7 +508,7 @@ end
 											break;
 										end
 									end
-									tip:Show();
+									reshow = true;
 								end
 							end
 							if modifier then
@@ -504,7 +539,7 @@ end
 												tip:AddLine(TIP_IMG_S_NORMAL .. IMG_TAG_UNCPL .. lvl_str .. "quest:" .. quest, color[2], color[3], color[4]);
 											end
 										end
-										tip:Show();
+										reshow = true;
 									end
 								end
 							end
@@ -518,7 +553,7 @@ end
 											if first_line_of_partner then
 												first_line_of_partner = false;
 												local info = __ns.__comm_group_members_info[name];
-												GameTooltip:AddLine(GetPlayerTag(name, info ~= nil and info[4]));
+												tip:AddLine(GetPlayerTag(name, info ~= nil and info[4]));
 											end
 											local qinfo = __db_quest[quest];
 											local color = IMG_LIST[GetQuestStartTexture(qinfo)];
@@ -539,33 +574,36 @@ end
 													break;
 												end
 											end
-											tip:Show();
 										end
 									end
 								end
+							end
+							if reshow then
+								tip:Show();
 							end
 						end
 					end
 				end
 			end
 		end
-		__ns.GameTooltipSetQuestTip = GameTooltipSetQuestTip;
 		--	object
-		local GameTooltipTextLeft1Text = nil;
 		local updateTimer = 0.0;
-		local function GameTooltipOnUpdate(self, elasped)
-			if SET.objective_tooltip_info and self:GetOwner() == UIParent then
+		local function TooltipOnUpdate(tip, elasped)
+			if SET.objective_tooltip_info and tip:GetOwner() == UIParent then
 				if updateTimer <= 0.0 then
 					updateTimer = 0.1;
-					if self:GetUnit() == nil and self:GetItem() == nil then
-						local text = GameTooltipTextLeft1:GetText();
-						if text ~= nil and text ~= GameTooltipTextLeft1Text then
-							GameTooltipTextLeft1Text = text;
+					if tip:GetUnit() == nil and tip:GetItem() == nil then
+						tip.__TextLeft1 = tip.__TextLeft1 or _G[tip:GetName() .. "TextLeft1"];
+						local text = tip.__TextLeft1:GetText();
+						if text ~= nil and text ~= tip.__TextLeft1Text then
+							local reshow = false;
+							tip.__TextLeft1Text = text;
 							local oid = __obj_lookup[text];
 							if oid ~= nil then
 								local uuid = __ns.CoreGetUUID('object', oid);
 								if uuid ~= nil then
-									GameTooltipSetQuestTip(GameTooltip, uuid);
+									TooltipSetQuestTip(tip, uuid);
+									reshow = true;
 								end
 								for name, val in next, __ns.__comm_group_members do
 									local meta_table = __comm_meta[name];
@@ -573,14 +611,18 @@ end
 										local uuid = __ns.CommGetUUID(name, 'object', oid);
 										if uuid ~= nil then
 											local info = __ns.__comm_group_members_info[name];
-											GameTooltip:AddLine(GetPlayerTag(name, info ~= nil and info[4]));
-											GameTooltipSetQuestTip(GameTooltip, uuid, meta_table);
+											tip:AddLine(GetPlayerTag(name, info ~= nil and info[4]));
+											TooltipSetQuestTip(tip, uuid, meta_table);
+											reshow = true;
 										end
 									end
 								end
 							end
 							local oid = __comm_obj_lookup[text];
 							if oid ~= nil then
+							end
+							if reshow then
+								tip:Show();
 							end
 						end
 					end
@@ -593,13 +635,12 @@ end
 			local focus = GetMouseFocus();
 			if focus ~= nil and focus.__PIN_TAG ~= nil then
 				__ns.Pin_OnEnter(focus);
-			end
-			if GameTooltip:IsShown() then
+			elseif GameTooltip:IsShown() then
 			end
 		end
-		function __ns.GameTooltipSetInfo(type, id)
+		function __ns.TooltipSetInfo(tip, type, id)
 			if type == 'event' then
-				GameTooltip:AddLine(__UILOC.TIP_WAYPOINT, 0.0, 1.0, 0.0);
+				tip:AddLine(__UILOC.TIP_WAYPOINT, 0.0, 1.0, 0.0);
 			else
 				local _loc = __loc[type];
 				if _loc ~= nil then
@@ -608,61 +649,61 @@ end
 							local info = __db_unit[id];
 							if info ~= nil then
 								if UnitHelpFac[info.fac] then
-									GameTooltip:AddLine(_loc[id] .. "(" .. id .. ")", 0.0, 1.0, 0.0);
+									tip:AddLine(_loc[id] .. "(" .. id .. ")", 0.0, 1.0, 0.0);
 								else
 									local facId = info.facId;
 									if facId ~= nil then
 										local _, _, standing_rank, _, _, val = GetFactionInfoByID(facId);
 										if standing_rank == nil then
-											GameTooltip:AddLine(_loc[id] .. "(" .. id .. ")", 1.0, 0.0, 0.0);
+											tip:AddLine(_loc[id] .. "(" .. id .. ")", 1.0, 0.0, 0.0);
 										elseif standing_rank == 4 then
-											GameTooltip:AddLine(_loc[id] .. "(" .. id .. ")", 1.0, 1.0, 0.0);
+											tip:AddLine(_loc[id] .. "(" .. id .. ")", 1.0, 1.0, 0.0);
 										elseif standing_rank < 4 then
-											GameTooltip:AddLine(_loc[id] .. "(" .. id .. ")", 1.0, (standing_rank - 1) * 0.25, 0.0);
+											tip:AddLine(_loc[id] .. "(" .. id .. ")", 1.0, (standing_rank - 1) * 0.25, 0.0);
 										else
-											GameTooltip:AddLine(_loc[id] .. "(" .. id .. ")", 0.5 - (standing_rank - 4) * 0.125, 1.0, 0.0);
+											tip:AddLine(_loc[id] .. "(" .. id .. ")", 0.5 - (standing_rank - 4) * 0.125, 1.0, 0.0);
 										end
 									else
-										GameTooltip:AddLine(_loc[id] .. "(" .. id .. ")", 1.0, 0.0, 0.0);
+										tip:AddLine(_loc[id] .. "(" .. id .. ")", 1.0, 0.0, 0.0);
 									end
 								end
 							end
 						else
-							GameTooltip:AddLine(_loc[id] .. "(" .. id .. ")", 1.0, 1.0, 1.0);
+							tip:AddLine(_loc[id] .. "(" .. id .. ")", 1.0, 1.0, 1.0);
 						end
 					else
 						if type == 'unit' then
 							local info = __db_unit[id];
 							if info ~= nil then
 								if UnitHelpFac[info.fac] then
-									GameTooltip:AddLine(_loc[id], 0.0, 1.0, 0.0);
+									tip:AddLine(_loc[id], 0.0, 1.0, 0.0);
 								else
 									local facId = info.facId;
 									if facId ~= nil then
 										local _, _, standing_rank, _, _, val = GetFactionInfoByID(facId);
 										if standing_rank == nil then
-											GameTooltip:AddLine(_loc[id], 1.0, 0.0, 0.0);
+											tip:AddLine(_loc[id], 1.0, 0.0, 0.0);
 										elseif standing_rank == 4 then
-											GameTooltip:AddLine(_loc[id], 1.0, 1.0, 0.0);
+											tip:AddLine(_loc[id], 1.0, 1.0, 0.0);
 										elseif standing_rank < 4 then
-											GameTooltip:AddLine(_loc[id], 1.0, (standing_rank - 1) * 0.25, 0.0);
+											tip:AddLine(_loc[id], 1.0, (standing_rank - 1) * 0.25, 0.0);
 										else
-											GameTooltip:AddLine(_loc[id], 0.5 - (standing_rank - 4) * 0.125, 1.0, 0.0);
+											tip:AddLine(_loc[id], 0.5 - (standing_rank - 4) * 0.125, 1.0, 0.0);
 										end
 									else
-										GameTooltip:AddLine(_loc[id], 1.0, 0.0, 0.0);
+										tip:AddLine(_loc[id], 1.0, 0.0, 0.0);
 									end
 								end
 							end
 						else
-							GameTooltip:AddLine(_loc[id], 1.0, 1.0, 1.0);
+							tip:AddLine(_loc[id], 1.0, 1.0, 1.0);
 						end
 					end
 				end
 			end
 			local uuid = __ns.CoreGetUUID(type, id);
 			if uuid ~= nil then
-				__ns.GameTooltipSetQuestTip(GameTooltip, uuid);
+				TooltipSetQuestTip(tip, uuid);
 			end
 			for name, val in next, __ns.__comm_group_members do
 				local meta_table = __comm_meta[name];
@@ -670,8 +711,8 @@ end
 					local uuid = __ns.CommGetUUID(name, type, id);
 					if uuid ~= nil and next(uuid[4]) ~= nil then
 						local info = __ns.__comm_group_members_info[name];
-						GameTooltip:AddLine(GetPlayerTag(name, info ~= nil and info[4]));
-						GameTooltipSetQuestTip(GameTooltip, uuid, meta_table);
+						tip:AddLine(GetPlayerTag(name, info ~= nil and info[4]));
+						TooltipSetQuestTip(tip, uuid, meta_table);
 					end
 				end
 			end
@@ -751,6 +792,102 @@ end
 						return true;
 					end
 				end
+			end
+		end
+	-->	Auto Accept and Turnin
+		function __ns.GOSSIP_SHOW()
+			local modstate = not quest_auto_inverse_modifier();
+			if not SET.auto_complete ~= modstate then
+				for i = 1, GetNumGossipActiveQuests() do
+					local title, level, isTrivial, isComplete, isLegendary, isIgnored = select(i * 6 - 5, GetGossipActiveQuests());
+					if title and isComplete then
+						return SelectGossipActiveQuest(i);
+					end
+				end
+			end
+			if not SET.auto_accept ~= modstate then
+				for i = 1, GetNumGossipAvailableQuests() do
+					local title, level, isTrivial, isDaily, isRepeatable, isLegendary, isIgnored = select(i * 7 - 6, GetGossipAvailableQuests());
+					if title then
+						return SelectGossipAvailableQuest(i);
+					end
+				end
+			end
+			-- if SET.auto_accept then
+			-- 	for i = 1, GetNumAvailableQuests() do
+			-- 		local titleText, level, isTrivial, frequency, isRepeatable, isLegendary, isIgnored = GetGossipAvailableQuests(i);
+			-- 		if title then
+			-- 			return SelectAvailableQuest(i);
+			-- 		end
+			-- 	end
+			-- end
+		end
+		function __ns.QUEST_GREETING()
+			local modstate = not quest_auto_inverse_modifier();
+			if not SET.auto_complete ~= modstate then
+				for i = 1, GetNumActiveQuests() do
+					local title, isComplete = GetActiveTitle(i);
+					if title and isComplete then
+						return SelectActiveQuest(i);
+					end
+				end
+			end
+			if not SET.auto_accept ~= modstate then
+				for i = 1, GetNumAvailableQuests() do
+					local title, isComplete = GetAvailableTitle(i);
+					if title then
+						return SelectAvailableQuest(i);
+					end
+				end
+			end
+		end
+		function __ns.QUEST_DETAIL()
+			local modstate = not quest_auto_inverse_modifier();
+			if not SET.auto_accept ~= modstate then
+				AcceptQuest();
+				QuestFrame:Hide();
+			end
+		end
+		function __ns.QUEST_PROGRESS()
+			local modstate = not quest_auto_inverse_modifier();
+			if not SET.auto_complete ~= modstate then
+				if IsQuestCompletable() then
+					CompleteQuest();
+				end
+			end
+		end
+		function __ns.QUEST_COMPLETE()
+			local modstate = not quest_auto_inverse_modifier();
+			if not SET.auto_complete ~= modstate then
+				local _NumChoices = GetNumQuestChoices();
+				if _NumChoices <= 1 then
+					GetQuestReward(_NumChoices);
+				end
+			end
+		end
+		function __ns.QUEST_ACCEPT_CONFIRM()
+			local modstate = not quest_auto_inverse_modifier();
+			if not SET.auto_accept ~= modstate then
+				ConfirmAcceptQuest() ;
+				StaticPopup_Hide("QUEST_ACCEPT");
+			end
+		end
+		function __ns.QUEST_AUTOCOMPLETE(id)
+			local modstate = not quest_auto_inverse_modifier();
+			if not SET.auto_complete ~= modstate then
+				local index = GetQuestLogIndexByID(id);
+				if GetQuestLogIsAutoComplete(index) then
+					ShowQuestComplete(index);
+				end
+			end
+		end
+		local function SetQuestAutoInverseModifier(modifier)
+			if modifier == "SHIFT" then
+				quest_auto_inverse_modifier = IsShiftKeyDown;
+			elseif modifier == "CTRL" then
+				quest_auto_inverse_modifier = IsControlKeyDown;
+			elseif modifier == "ALT" then
+				quest_auto_inverse_modifier = IsAltKeyDown;
 			end
 		end
 	-->		DBIcon
@@ -1038,6 +1175,7 @@ end
 	-->
 	-->		extern
 		__ns.GetQuestTitle = GetQuestTitle;
+		__ns.SetQuestAutoInverseModifier = SetQuestAutoInverseModifier;
 		__ns.SetQuestLogFrameButtonShown = SetQuestLogFrameButtonShown;
 	-->
 	function __ns.util_setup()
@@ -1045,16 +1183,24 @@ end
 		GameTooltip:HookScript("OnTooltipSetUnit", OnTooltipSetUnit);
 		GameTooltip:HookScript("OnTooltipSetItem", OnTooltipSetItem);
 		ItemRefTooltip:HookScript("OnTooltipSetItem", OnTooltipSetItem);
-		GameTooltip:HookScript("OnShow", function()
-			GameTooltipTextLeft1Text = nil;
+		GameTooltip:HookScript("OnShow", function(tip)
+			tip.__TextLeft1Text = nil;
 			updateTimer = 0.0;
 		end);
-		GameTooltip:HookScript("OnHide", function()
-			GameTooltipTextLeft1Text = nil;
+		GameTooltip:HookScript("OnHide", function(tip)
+			tip.__TextLeft1Text = nil;
 			updateTimer = 0.0;
 		end);
-		GameTooltip:HookScript("OnUpdate", GameTooltipOnUpdate);
+		GameTooltip:HookScript("OnUpdate", TooltipOnUpdate);
 		__eventHandler:RegEvent("MODIFIER_STATE_CHANGED");
+		--
+		__eventHandler:RegEvent("GOSSIP_SHOW");
+		__eventHandler:RegEvent("QUEST_GREETING");
+		__eventHandler:RegEvent("QUEST_DETAIL");
+		__eventHandler:RegEvent("QUEST_PROGRESS");
+		__eventHandler:RegEvent("QUEST_COMPLETE");
+		__eventHandler:RegEvent("QUEST_ACCEPT_CONFIRM");
+		__eventHandler:RegEvent("QUEST_AUTOCOMPLETE");
 		--
 		CreateDBIcon();
 		CreateWorldMapPinSwitch();
@@ -1063,6 +1209,7 @@ end
 		--
 		__ns.map_ToggleWorldMapPin(SET.show_worldmappin);
 		__ns.map_ToggleMinimapPin(SET.show_minimappin);
+		SetQuestAutoInverseModifier(SET.quest_auto_inverse_modifier);
 		--
 		_F_SafeCall(__ns._checkConflicts);
 	end

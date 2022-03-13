@@ -1,7 +1,7 @@
 ## Interface: 20503
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
-## Version: 3.7.12
+## Version: 3.7.13
 ## Notes: Model paths for WeakAuras
 ## Notes-esES: Las rutas de archivos de modelos en 3D para WeakAuras
 ## Notes-deDE: 3D-Model Pfade für WeakAuras
@@ -17,4 +17,4 @@ ModelPathsBCC.lua
 
 ## Title-zhCN: |cff880303[有爱]|r WeakAuras 模型
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220303142735
+## X-163UI-Version: 20220311143326

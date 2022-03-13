@@ -3601,7 +3601,7 @@ do	--	INITIALIZE
 				var = {  },
 				daily = {  };
 			};
-		elseif alaCalendarSV._version < 210610.01 then
+		elseif alaCalendarSV._version < 220308.01 then
 			for GUID, VAR in next, alaCalendarSV.var do
 				for _, inst in next, NS.raid_list do
 					if VAR[inst] == nil then
@@ -3610,14 +3610,8 @@ do	--	INITIALIZE
 				end
 			end
 			alaCalendarSV.daily = {  };
-		elseif alaCalendarSV._version < 210828.01 then
-			alaCalendarSV.daily = {  };
-		elseif alaCalendarSV._version < 210918.01 then
-			alaCalendarSV.daily = {  };
-		elseif alaCalendarSV._version < 220113.01 then
-			alaCalendarSV.daily = {  };
 		end
-		alaCalendarSV._version = 220113.01;
+		alaCalendarSV._version = 220308.01;
 		NS:MergeGlobal(alaCalendarSV);
 		--
 		alaCalendarSV.set = alaCalendarSV.set or {
