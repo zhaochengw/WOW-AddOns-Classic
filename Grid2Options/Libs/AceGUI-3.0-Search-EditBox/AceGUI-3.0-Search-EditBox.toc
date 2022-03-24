@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: AceGUI-3.0-Search-EditBox
 ## Author: Michael
 ## X-Curse-Project-ID: 37696

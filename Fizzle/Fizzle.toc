@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Fizzle
 ## Author: phyber
 ## Notes: Show item ilevel, durability, and quality in the character frame.

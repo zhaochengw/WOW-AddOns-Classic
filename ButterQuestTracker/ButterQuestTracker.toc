@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Butter Quest Tracker |cFFFFFFFFv1.9.27|r
 ## Author: Butter Cookie Kitkat
 ## Notes: A butter smooth quest tracker with the Classic Feel!

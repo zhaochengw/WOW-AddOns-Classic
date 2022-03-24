@@ -247,7 +247,7 @@ if C_ArtifactUI then
 	}
 end
 
-if C_AzeriteItem then
+if C_AzeriteItem and C_CurrencyInfo.GetAzeriteCurrencyID then
 	Lib.Filters.azerite = {
 		keyword = C_CurrencyInfo.GetBasicCurrencyInfo(C_CurrencyInfo.GetAzeriteCurrencyID()).name:lower(),
 

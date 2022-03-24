@@ -1,7 +1,7 @@
 ## Title: LibExtraTip |cff224477(lib)
 ## Notes: Assists in the management of additional tooltip information.
 ##
-## Interface: 20503
+## Interface: 20504
 ## LoadOnDemand: 0
 ##
 ## Version: 8.2.6340 (SwimmingSeadragon)

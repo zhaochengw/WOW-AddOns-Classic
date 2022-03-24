@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Missing TradeSkills List (TBC)
 ## Author: Thumbkin
 ## Notes: Shows missing skills & recipes for a profession and where to get them.

@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: HandyNotes_FlightMasters (Classic)
 ## Version: 1.09-bcc
 ## Notes: Shows locations of flight masters

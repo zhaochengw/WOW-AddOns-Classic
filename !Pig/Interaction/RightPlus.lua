@@ -1319,11 +1319,13 @@ local function RightPlus_Open()
 
 	local beijingico=DropDownList1MenuBackdrop.NineSlice.Center:GetTexture()
 	local beijing1,beijing2,beijing3,beijing4=DropDownList1MenuBackdrop.NineSlice.Center:GetVertexColor()
+	local Biankuang1,Biankuang2,Biankuang3,Biankuang4=DropDownList1MenuBackdrop:GetBackdropBorderColor()
 	DropDownList1.RightF = CreateFrame("Frame", nil, DropDownList1,"BackdropTemplate");
 	DropDownList1.RightF:SetBackdrop( { bgFile = beijingico,
 		edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
 		tile = false, tileSize = 0, edgeSize = 14, 
 		insets = { left = 4, right = 4, top = 4, bottom = 4 } });
+	DropDownList1.RightF:SetBackdropBorderColor(Biankuang1,Biankuang2,Biankuang3,Biankuang4);
 	DropDownList1.RightF:SetBackdropColor(beijing1,beijing2,beijing3,beijing4);
 	DropDownList1.RightF:SetSize(caidanW,caidanH*#listName+12);
 	DropDownList1.RightF:SetPoint("TOPLEFT",DropDownList1,"TOPRIGHT",-2,0);

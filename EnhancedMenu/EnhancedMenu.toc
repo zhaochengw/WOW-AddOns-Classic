@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: EnhancedMenu
 ## Notes: Extends popup menus.
 ## Notes-zhCN: 右键菜单增强

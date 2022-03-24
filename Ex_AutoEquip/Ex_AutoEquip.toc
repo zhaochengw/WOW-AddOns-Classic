@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Enigma Auto Equip
 ## Notes: |cffbc8f8fConvenient implementation of equipment management settings.|r
 ## Notes-zhCN: |cff00ff00Ex_AutoEquip|r|n|cffbc8f8f方便快捷的实现装备管理设置。|r

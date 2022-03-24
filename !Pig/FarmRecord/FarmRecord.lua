@@ -2490,7 +2490,7 @@ fuFrame.daiben:SetStartPoint("TOPLEFT",2,-340)
 fuFrame.daiben:SetEndPoint("TOPRIGHT",-2,-340)
 ---------------
 --添加快捷打开按钮
-local function ADD_daibenzhushou()
+local function ADD_FarmRecord_but()
 	PIG_Per["FarmRecord"] =PIG_Per["FarmRecord"] or addonTable.Default_Per["FarmRecord"]
 	if PIG_Per["FarmRecord"]["AddBut"]=="ON" then
 		fuFrame.FarmRecordBUT_ADD:SetChecked(true);
@@ -2575,7 +2575,7 @@ local function ADD_daibenzhushou()
 		addonTable.Classes_gengxinkuanduinfo()
 	end
 end
-addonTable.FarmRecord_AddBut=ADD_daibenzhushou
+addonTable.ADD_FarmRecord_but=ADD_FarmRecord_but
 --
 fuFrame.FarmRecordBUT_ADD = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
 fuFrame.FarmRecordBUT_ADD:SetSize(30,30);
@@ -2587,7 +2587,7 @@ fuFrame.FarmRecordBUT_ADD.tooltip = "添加"..gongnengName.."到快捷按钮中�
 fuFrame.FarmRecordBUT_ADD:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG_Per["FarmRecord"]["AddBut"]="ON"
-		ADD_daibenzhushou()
+		ADD_FarmRecord_but()
 	else
 		PIG_Per["FarmRecord"]["AddBut"]="OFF"
 		Pig_Options_RLtishi_UI:Show();
@@ -2615,7 +2615,7 @@ fuFrame.FarmRecord:SetScript("OnClick", function (self)
 		TimeRecord()
 		gengxinshouru();
 		gengxincishu();
-		ADD_daibenzhushou();
+		ADD_FarmRecord_but();
 		FarmRecordFFFFF_UI:RegisterEvent("PLAYER_LOGOUT");
 		FarmRecordFFFFF_UI:RegisterEvent("PLAYER_ENTERING_WORLD");
 		FarmRecordFFFFF_UI:RegisterEvent("PLAYER_LEAVING_WORLD");

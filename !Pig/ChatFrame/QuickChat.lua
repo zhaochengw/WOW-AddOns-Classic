@@ -342,11 +342,12 @@ local function ChatFrame_QuickChat_Open()
 		QuickChatFFF.CHANNEL_1.Text:SetTextColor(0.888, 0.668, 0.668, 1.0);
 		QuickChatFFF.CHANNEL_1.Text:SetPoint("CENTER",QuickChatFFF.CHANNEL_1,"CENTER",0.5,0.3);
 		QuickChatFFF.CHANNEL_1:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-		QuickChatFFF.CHANNEL_1.X = QuickChatFFF.CHANNEL_1:CreateTexture("pingdaopingbi1", "OVERLAY");
+		QuickChatFFF.CHANNEL_1.X = QuickChatFFF.CHANNEL_1:CreateTexture(nil, "OVERLAY");
 		QuickChatFFF.CHANNEL_1.X:SetTexture("interface/common/voicechat-muted.blp");
 		QuickChatFFF.CHANNEL_1.X:SetSize(16,16);
 		QuickChatFFF.CHANNEL_1.X:SetAlpha(0.6);
 		QuickChatFFF.CHANNEL_1.X:SetPoint("CENTER",0,0);
+		QuickChatFFF.CHANNEL_1.X:Hide()
 		QuickChatFFF.CHANNEL_1:SetScript("OnClick", function(self, event)
 			local ADDName= "综合"
 			local channel,channelName, _ = GetChannelName(ADDName)
@@ -372,9 +373,27 @@ local function ChatFrame_QuickChat_Open()
 				QuickChatFFF.CHANNEL_1.X:Hide();
 			end
 			if event=="RightButton" then
-				ChatFrame_RemoveChannel(chatFrame, ADDName);
-				print("|cff00FFFF!Pig:|r|cffFFFF00已屏蔽"..ADDName.."频道消息，左键重新接收！|r");
-				QuickChatFFF.CHANNEL_1.X:Show();
+				local pindaomulu = {GetChatWindowChannels(1)}
+				for i=1,#pindaomulu do
+					if pindaomulu[i]==ADDName then
+						ChatFrame_RemoveChannel(chatFrame, ADDName);
+						self.X:Show();
+						print("|cff00FFFF!Pig:|r|cffFFFF00已屏蔽"..ADDName.."频道消息！|r");
+						return
+					end
+				end
+				local pindaomulu = {GetChatWindowChannels(1)}
+				for i=1,#pindaomulu do
+					if pindaomulu[i]==ADDName then
+						ChatFrame_RemoveChannel(chatFrame, ADDName);
+						self.X:Show();
+						print("|cff00FFFF!Pig:|r|cffFFFF00已屏蔽"..ADDName.."频道消息！|r");
+						return
+					end
+				end
+				ChatFrame_AddChannel(chatFrame, ADDName)
+				self.X:Hide();
+				print("|cff00FFFF!Pig:|r|cffFFFF00已解除"..ADDName.."频道消息屏蔽！|r");
 			end
 		end);
 		--寻求组队--
@@ -387,11 +406,12 @@ local function ChatFrame_QuickChat_Open()
 		QuickChatFFF.CHANNEL_2.Text:SetTextColor(0.888, 0.668, 0.668, 1.0);
 		QuickChatFFF.CHANNEL_2.Text:SetPoint("CENTER",QuickChatFFF.CHANNEL_2,"CENTER",0.8,0.3);
 		QuickChatFFF.CHANNEL_2:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-		QuickChatFFF.CHANNEL_2.X = QuickChatFFF.CHANNEL_2:CreateTexture("pingdaopingbi2", "OVERLAY");
+		QuickChatFFF.CHANNEL_2.X = QuickChatFFF.CHANNEL_2:CreateTexture(nil, "OVERLAY");
 		QuickChatFFF.CHANNEL_2.X:SetTexture("interface/common/voicechat-muted.blp");
 		QuickChatFFF.CHANNEL_2.X:SetSize(16,16);
 		QuickChatFFF.CHANNEL_2.X:SetAlpha(0.6);
 		QuickChatFFF.CHANNEL_2.X:SetPoint("CENTER",0,0);
+		QuickChatFFF.CHANNEL_2.X:Hide()
 		QuickChatFFF.CHANNEL_2:SetScript("OnClick", function(self, event)
 			local ADDName= "寻求组队"
 			local channel,channelName, _ = GetChannelName(ADDName)
@@ -417,9 +437,18 @@ local function ChatFrame_QuickChat_Open()
 				QuickChatFFF.CHANNEL_2.X:Hide();
 			end
 			if event=="RightButton" then
-				ChatFrame_RemoveChannel(chatFrame, ADDName);
-				print("|cff00FFFF!Pig:|r|cffFFFF00已屏蔽"..ADDName.."频道消息，左键重新接收！|r");
-				QuickChatFFF.CHANNEL_2.X:Show();
+				local pindaomulu = {GetChatWindowChannels(1)}
+				for i=1,#pindaomulu do
+					if pindaomulu[i]==ADDName then
+						ChatFrame_RemoveChannel(chatFrame, ADDName);
+						self.X:Show();
+						print("|cff00FFFF!Pig:|r|cffFFFF00已屏蔽"..ADDName.."频道消息！|r");
+						return
+					end
+				end
+				ChatFrame_AddChannel(chatFrame, ADDName)
+				self.X:Hide();
+				print("|cff00FFFF!Pig:|r|cffFFFF00已解除"..ADDName.."频道消息屏蔽！|r");
 			end
 		end);
 		--PIG--
@@ -432,11 +461,12 @@ local function ChatFrame_QuickChat_Open()
 		QuickChatFFF.CHANNEL_3.Text:SetTextColor(102/255,1,204/255, 1);--#49e8e8
 		QuickChatFFF.CHANNEL_3.Text:SetPoint("CENTER",QuickChatFFF.CHANNEL_3,"CENTER",0.8,0.3);
 		QuickChatFFF.CHANNEL_3:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-		QuickChatFFF.CHANNEL_3.X = QuickChatFFF.CHANNEL_3:CreateTexture("pingdaopingbi3", "OVERLAY");
+		QuickChatFFF.CHANNEL_3.X = QuickChatFFF.CHANNEL_3:CreateTexture(nil, "OVERLAY");
 		QuickChatFFF.CHANNEL_3.X:SetTexture("interface/common/voicechat-muted.blp");
 		QuickChatFFF.CHANNEL_3.X:SetSize(16,16);
 		QuickChatFFF.CHANNEL_3.X:SetAlpha(0.6);
 		QuickChatFFF.CHANNEL_3.X:SetPoint("CENTER",0,0);
+		QuickChatFFF.CHANNEL_3.X:Hide()
 		QuickChatFFF.CHANNEL_3:SetScript("OnClick", function(self, event)
 			local ADDName= "PIG"
 			local channel,channelName, _ = GetChannelName(ADDName)
@@ -462,9 +492,18 @@ local function ChatFrame_QuickChat_Open()
 				QuickChatFFF.CHANNEL_3.X:Hide();
 			end
 			if event=="RightButton" then
-				ChatFrame_RemoveChannel(chatFrame, ADDName);
-				print("|cff00FFFF!Pig:|r|cffFFFF00已屏蔽"..ADDName.."频道消息，左键重新接收！|r");
-				QuickChatFFF.CHANNEL_3.X:Show();
+				local pindaomulu = {GetChatWindowChannels(1)}
+				for i=1,#pindaomulu do
+					if pindaomulu[i]==ADDName then
+						ChatFrame_RemoveChannel(chatFrame, ADDName);
+						self.X:Show();
+						print("|cff00FFFF!Pig:|r|cffFFFF00已屏蔽"..ADDName.."频道消息！|r");
+						return
+					end
+				end
+				ChatFrame_AddChannel(chatFrame, ADDName)
+				self.X:Hide();
+				print("|cff00FFFF!Pig:|r|cffFFFF00已解除"..ADDName.."频道消息屏蔽！|r");
 			end
 		end);
 
@@ -478,11 +517,12 @@ local function ChatFrame_QuickChat_Open()
 		QuickChatFFF.CHANNEL_4.Text:SetTextColor(0.888, 0.668, 0.668, 1.0);
 		QuickChatFFF.CHANNEL_4.Text:SetPoint("CENTER",QuickChatFFF.CHANNEL_4,"CENTER",0.3,0.3);
 		QuickChatFFF.CHANNEL_4:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-		QuickChatFFF.CHANNEL_4.X = QuickChatFFF.CHANNEL_4:CreateTexture("pingdaopingbi4", "OVERLAY");
+		QuickChatFFF.CHANNEL_4.X = QuickChatFFF.CHANNEL_4:CreateTexture(nil, "OVERLAY");
 		QuickChatFFF.CHANNEL_4.X:SetTexture("interface/common/voicechat-muted.blp");
 		QuickChatFFF.CHANNEL_4.X:SetSize(16,16);
 		QuickChatFFF.CHANNEL_4.X:SetAlpha(0.6);
 		QuickChatFFF.CHANNEL_4.X:SetPoint("CENTER",0,0);
+		QuickChatFFF.CHANNEL_4.X:Hide()
 		QuickChatFFF.CHANNEL_4:SetScript("OnClick", function(self, event)
 			local ADDName= "大脚世界频道"
 			local channel,channelName, _ = GetChannelName(ADDName)
@@ -505,12 +545,21 @@ local function ChatFrame_QuickChat_Open()
 						editBox:SetText("/"..channel.." " ..hasText);
 					end
 				end
-				QuickChatFFF.CHANNEL_4.X:Hide();
+				self.X:Hide();
 			end
 			if event=="RightButton" then
-				ChatFrame_RemoveChannel(chatFrame, ADDName);
-				print("|cff00FFFF!Pig:|r|cffFFFF00已屏蔽"..ADDName.."频道消息，左键重新接收！|r");
-				QuickChatFFF.CHANNEL_4.X:Show();
+				local pindaomulu = {GetChatWindowChannels(1)}
+				for i=1,#pindaomulu do
+					if pindaomulu[i]==ADDName then
+						ChatFrame_RemoveChannel(chatFrame, ADDName);
+						self.X:Show();
+						print("|cff00FFFF!Pig:|r|cffFFFF00已屏蔽"..ADDName.."频道消息！|r");
+						return
+					end
+				end
+				ChatFrame_AddChannel(chatFrame, ADDName)
+				self.X:Hide();
+				print("|cff00FFFF!Pig:|r|cffFFFF00已解除"..ADDName.."频道消息屏蔽！|r");
 			end
 		end);
 		---================================
@@ -524,28 +573,34 @@ local function ChatFrame_QuickChat_Open()
 			ChatFrame1EditBox:SetPoint("TOPLEFT",ChatFrame1,"BOTTOMLEFT",-5,-23);
 			ChatFrame1EditBox:SetPoint("TOPRIGHT",ChatFrame1,"BOTTOMRIGHT",5,-23);
 		end
-		----更新按钮的屏蔽状态
-		local function gengxinpingbiizhuangtai()
-			local chaozhaopindao = {"综合","寻求组队","PIG","大脚世界频道"}
-			local chaozhaopindaoName = {"QuickChatFFF_UI.CHANNEL_1.X","QuickChatFFF_UI.CHANNEL_2.X","QuickChatFFF_UI.CHANNEL_3.X","QuickChatFFF_UI.CHANNEL_4.X"}
-			local pindaomulu = {GetChatWindowChannels(1)}
-			for i=1,#pindaomulu do
-				for ii=1,#chaozhaopindao do
-					if pindaomulu[i]==chaozhaopindao[ii] then
-						_G["pingdaopingbi"..ii]:Hide();
-					end
-				end
-			end
-		end
-		C_Timer.After(4, gengxinpingbiizhuangtai);
-		C_Timer.After(7, gengxinpingbiizhuangtai);
-		C_Timer.After(10, gengxinpingbiizhuangtai);
-
+		--
 		addonTable.ADD_Chat_Jilu()
 		addonTable.ADD_guanjianzi_open()
 		addonTable.ADD_Roll_Plus()
 		addonTable.ADD_jiuweidaojishi()
 	end
+	----更新按钮的屏蔽状态
+	local function gengxinpingbiizhuangtai()
+		local channel,channelName, _ = GetChannelName("综合")
+		if channel then
+			local chaozhaopindao = {"综合","寻求组队","PIG","大脚世界频道"}
+			local chaozhaopindaoName = {QuickChatFFF_UI.CHANNEL_1.X,QuickChatFFF_UI.CHANNEL_2.X,QuickChatFFF_UI.CHANNEL_3.X,QuickChatFFF_UI.CHANNEL_4.X}
+			local pindaomulu = {GetChatWindowChannels(1)}
+			for ii=1,#chaozhaopindao do
+				chaozhaopindaoName[ii]:Show();
+			end
+			for i=1,#pindaomulu do
+				for ii=1,#chaozhaopindao do
+					if pindaomulu[i]==chaozhaopindao[ii] then
+						chaozhaopindaoName[ii]:Hide();
+					end
+				end
+			end
+		else
+			C_Timer.After(1, gengxinpingbiizhuangtai);
+		end
+	end
+	C_Timer.After(3, gengxinpingbiizhuangtai);
 end
 ---------------------
 fuFrame.QuickChat = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
@@ -754,6 +809,7 @@ local function JoinPIGX()
 		C_Timer.After(1, JoinPIGX)
 	end
 end
+------
 local ADDName= {"PIG","PIG1","PIG2","PIG3","PIG4","PIG5","大脚世界频道","大脚世界频道1","大脚世界频道2","大脚世界频道3","大脚世界频道4","大脚世界频道5"}
 local function JoinPermanentPIG()
 	JoinPIGX()

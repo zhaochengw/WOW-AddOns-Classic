@@ -1217,9 +1217,9 @@ addonTable.Classes_Assistant = function()
 		end
 	end
 	addonTable.ADD_PlaneInvite_but()
-	addonTable.ADD_SkillFubenCD()
+	addonTable.ADD_SkillFubenCD_but()
 	addonTable.ADD_SpellCD_but()
-	addonTable.AutoSellBuy_but()
-	addonTable.FarmRecord_AddBut()
-	addonTable.RaidRecord_AddBut()
+	addonTable.ADD_AutoSellBuy_but()
+	addonTable.ADD_FarmRecord_but()
+	addonTable.ADD_RaidRecord_but()
 end

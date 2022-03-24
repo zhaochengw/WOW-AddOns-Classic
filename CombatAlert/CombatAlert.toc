@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title:进入/脱离战斗,屏幕中间提示
 ## Notes: 进入/脱离战斗,屏幕中间提示
 

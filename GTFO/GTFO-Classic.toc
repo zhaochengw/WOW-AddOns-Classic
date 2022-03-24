@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
 ## Author: Zensunim of Dragonblight/Myzrael

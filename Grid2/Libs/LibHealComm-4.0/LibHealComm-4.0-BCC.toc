@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Lib: HealComm-4.0
 ## Notes: Library for showing incoming heals and hots
 ## Author: Shadowed, xbeeps, Azilroka

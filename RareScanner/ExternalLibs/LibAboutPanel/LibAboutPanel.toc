@@ -8,7 +8,7 @@
 ## X-Author-Server: Hyjal US
 ## X-Donate: http://www.curseforge.com/projects/libaboutpanel/#w_donations
 
-## Interface: 20503
+## Interface: 20504
 ## Version: v1.52
 ## X-Revision: 053887905abd9023c3bd666a2357336e958d8924
 ## X-Date: 2017-05-16T22:16:20Z

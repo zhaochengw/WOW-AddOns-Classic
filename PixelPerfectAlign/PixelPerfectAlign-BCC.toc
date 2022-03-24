@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Pixel Perfect Align
 ## Notes: Pixel Perfect Alignment Grid and Measuring Tape using MoLib (|cFF99E5FF/ppa|r)
 ## Notes: Burning Crusade Classic edition

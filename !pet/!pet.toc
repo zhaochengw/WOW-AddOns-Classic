@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 
 ## Title: !pet
 ## Notes: Show water elemental duration on default petframe portrait and hide damage/healing number.

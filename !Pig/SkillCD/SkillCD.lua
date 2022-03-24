@@ -320,7 +320,7 @@ local function gengxin_Fuben(self)
 	end
 end
 --创建监控面板===================================================
-local function AddSkillItem()
+local function Add_Skill_CD()
 	if zhuanyeCDUI==nil then
 		--显示框架
 		local Width,Height = 595,440;
@@ -566,7 +566,7 @@ end
 
 --////////////////////////////////////////////
 --添加快捷打开按钮
-local function ADD_SkillfubenCD()
+local function ADD_SkillfubenCD_but()
 	PIG["SkillFBCD"]=PIG["SkillFBCD"] or addonTable.Default["SkillFBCD"]
 	if PIG["SkillFBCD"]["AddBut"]=="ON" then
 		fuFrame_Skill_ADD_UI:SetChecked(true);
@@ -633,7 +633,7 @@ local function ADD_SkillfubenCD()
 		addonTable.Classes_gengxinkuanduinfo()
 	end
 end
-addonTable.ADD_SkillFubenCD=ADD_SkillfubenCD
+addonTable.ADD_SkillFubenCD_but=ADD_SkillfubenCD_but
 --------
 fuFrame.Skill_ADD = CreateFrame("CheckButton", "fuFrame_Skill_ADD_UI", fuFrame, "ChatConfigCheckButtonTemplate");
 fuFrame.Skill_ADD:SetSize(28,30);
@@ -645,7 +645,7 @@ fuFrame.Skill_ADD.tooltip = "添加"..gongnengName.."监控到快捷按钮中，
 fuFrame.Skill_ADD:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG["SkillFBCD"]["AddBut"]="ON"
-		ADD_SkillfubenCD()
+		ADD_SkillfubenCD_but()
 	else
 		PIG["SkillFBCD"]["AddBut"]="OFF"
 		Pig_Options_RLtishi_UI:Show();
@@ -663,8 +663,8 @@ fuFrame.Skill_FB:SetScript("OnClick", function (self)
 		PIG["SkillFBCD"]["Open"]="ON";
 		Pig_OptionsUI.zhuanyeCD:Enable();
 		fuFrame_Skill_ADD_UI:Enable()
-		ADD_SkillfubenCD()
-		AddSkillItem();
+		ADD_SkillfubenCD_but()
+		Add_Skill_CD();
 		huoqu_Skill()
 		RequestRaidInfo()
 	else
@@ -679,7 +679,7 @@ addonTable.Assistant_Skill_FB = function()
 	if PIG["SkillFBCD"]["Open"]=="ON" then
 		fuFrame.Skill_FB:SetChecked(true);
 		Pig_OptionsUI.zhuanyeCD:Enable();
-		C_Timer.After(1, AddSkillItem)
+		C_Timer.After(1, Add_Skill_CD)
 		C_Timer.After(3, huoqu_Skill)
 		C_Timer.After(6, huoqu_Skill)
 		RequestRaidInfo()

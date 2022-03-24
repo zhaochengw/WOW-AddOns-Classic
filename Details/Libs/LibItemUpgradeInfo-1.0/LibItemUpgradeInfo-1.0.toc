@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Lib: ItemUpgradeInfo-1.0
 ## Notes: Database of item upgrade IDs
 ## Author: eridius

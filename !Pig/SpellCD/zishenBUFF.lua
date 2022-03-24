@@ -197,16 +197,16 @@ local function add_BUFF(shuruspID)
 			return
 		end
 	end
-	local shuoming = GetSpellDescription(shuruspID)
-	local _, _, _, chixuTime1 = shuoming:find("(持续(.+)秒)");
-	local _, _, _, chixuTime2 = shuoming:find("(持续(.+)分钟)");	
-	fuFrame.chixuTime=0
-	if chixuTime1 then
-		fuFrame.chixuTime=chixuTime1
-	elseif chixuTime2 then
-		fuFrame.chixuTime=chixuTime2*60
-	end
-	if fuFrame.chixuTime==0 then  print("|cff00FFFF!Pig:|r|cffFFFF00该技能没有持续时长，无需监控！|r") return end
+	-- local shuoming = GetSpellDescription(shuruspID)
+	-- local _, _, _, chixuTime1 = shuoming:find("(持续(.+)秒)");
+	-- local _, _, _, chixuTime2 = shuoming:find("(持续(.+)分钟)");	
+	-- fuFrame.chixuTime=0
+	-- if chixuTime1 then
+	-- 	fuFrame.chixuTime=chixuTime1
+	-- elseif chixuTime2 then
+	-- 	fuFrame.chixuTime=chixuTime2*60
+	-- end
+	-- if fuFrame.chixuTime==0 then  print("|cff00FFFF!Pig:|r|cffFFFF00该技能没有持续时长，无需监控！|r") return end
 	local link="\124cff71d5ff\124Hspell:"..spellId.."\124h["..name.."]\124h\124r";
 	table.insert(PIG_Per['SpellJK']["Spell_list"][tabID], {spellId,name,icon,link,tonumber(fuFrame.chixuTime)});
 	gengxinhang(fuFrame.list.Scroll)

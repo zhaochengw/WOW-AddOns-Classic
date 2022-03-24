@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: alaMisc
 ## Title-zhCN: ala 实用小功能
 ## Title-zhTW: ala 实用小功能

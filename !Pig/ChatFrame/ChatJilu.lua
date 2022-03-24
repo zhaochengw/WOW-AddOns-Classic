@@ -6,8 +6,11 @@ function table.removekey(table, key)
     table[key] = nil
     return element
 end
+
 -------------
 local function ADD_Chat_Jilu()
+		local miyuP={}
+		miyuP.zijirealm = GetRealmName()
 		local jilupindaoID={"PARTY","RAID"};
 		PIG['Chatjilu']["jiluinfo"]=PIG['Chatjilu']["jiluinfo"] or addonTable.Default['Chatjilu']["jiluinfo"]
 		local baocuntianshu=PIG['Chatjilu']["tianshu"];
@@ -38,12 +41,16 @@ local function ADD_Chat_Jilu()
 					end
 				end
 				if #v==0 then
-					for x=#miyushuju[1],1,-1 do
-						if miyushuju[1][x][3]==k then
-							table.remove(miyushuju[1],x);
-						end
-					end
 					table.removekey(miyushuju[2],k)
+				end
+			end
+			for x=#miyushuju[1],1,-1 do
+				if miyushuju[2][miyushuju[1][x][1]] then
+					if #miyushuju[2][miyushuju[1][x][1]]==0 then
+						table.remove(miyushuju[1],x);
+					end
+				else
+					table.remove(miyushuju[1],x);
 				end
 			end
 		end
@@ -794,6 +801,112 @@ local function ADD_Chat_Jilu()
 		miyijiluF.biaoti.Close:SetScript("OnClick", function (self)
 			miyijiluF:Hide()
 		end)
+		
+		--右键功能
+		local yuanchengchaj=addonTable.YCchaokanzhuangbei
+		local function RGongNeng(menuName,name)
+			local fullnameX = name
+			if menuName=="邀请组队" then
+				InviteUnit(fullnameX)
+			elseif menuName=="目标信息" then
+				C_FriendList.SendWho(fullnameX)
+			elseif menuName=="添加好友" then
+				C_FriendList.AddFriend(fullnameX)
+			elseif menuName=="邀请入会" then
+				GuildInvite(fullnameX)
+			elseif menuName=="复制名字" then
+				local editBoxXX
+				editBoxXX = ChatEdit_ChooseBoxForSend()
+		        local hasText = (editBoxXX:GetText() ~= "")
+		        ChatEdit_ActivateChat(editBoxXX)
+				editBoxXX:Insert(fullnameX)
+		        if (not hasText) then editBoxXX:HighlightText() end
+			elseif menuName=="查看装备" then
+				yuanchengchaj(fullnameX)
+			end
+		end
+		local listName={"邀请组队","目标信息","添加好友","邀请入会","复制名字","查看装备","取消"}
+		local caidanW,caidanH=106,20
+
+		local beijingico=DropDownList1MenuBackdrop.NineSlice.Center:GetTexture()
+		local beijing1,beijing2,beijing3,beijing4=DropDownList1MenuBackdrop.NineSlice.Center:GetVertexColor()
+		local Biankuang1,Biankuang2,Biankuang3,Biankuang4=DropDownList1MenuBackdrop:GetBackdropBorderColor()
+		miyijiluF.RGN = CreateFrame("Frame", nil, miyijiluF,"BackdropTemplate");
+		miyijiluF.RGN:SetBackdrop( { bgFile = beijingico,
+			edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+			tile = false, tileSize = 0, edgeSize = 14, 
+			insets = { left = 4, right = 4, top = 4, bottom = 4 } });
+		miyijiluF.RGN:SetBackdropBorderColor(Biankuang1,Biankuang2,Biankuang3,Biankuang4);
+		miyijiluF.RGN:SetBackdropColor(beijing1,beijing2,beijing3,beijing4);
+		miyijiluF.RGN:SetSize(caidanW,caidanH*#listName+12+16);
+		miyijiluF.RGN:Hide();
+		miyijiluF.RGN:SetFrameLevel(8)
+		miyijiluF.RGN:EnableMouse(true)
+		miyijiluF.RGN:SetScript("OnUpdate", function(self, ssss)
+			if miyijiluF.RGN.zhengzaixianshi==nil then
+				return;
+			else
+				if miyijiluF.RGN.zhengzaixianshi==true then
+					if miyijiluF.RGN.xiaoshidaojishi<= 0 then
+						miyijiluF.RGN:Hide();
+						miyijiluF.RGN.zhengzaixianshi = nil;
+					else
+						miyijiluF.RGN.xiaoshidaojishi = miyijiluF.RGN.xiaoshidaojishi - ssss;	
+					end
+				end
+			end
+
+		end)
+		miyijiluF.RGN:SetScript("OnEnter", function()
+			miyijiluF.RGN.zhengzaixianshi = nil;
+		end)
+		miyijiluF.RGN:SetScript("OnLeave", function()
+			miyijiluF.RGN.xiaoshidaojishi = 1.5;
+			miyijiluF.RGN.zhengzaixianshi = true;
+		end)
+		---
+		miyijiluF.RGN.name = miyijiluF.RGN:CreateFontString();
+		miyijiluF.RGN.name:SetPoint("TOP",miyijiluF.RGN,"TOP",0,-4);
+		miyijiluF.RGN.name:SetFontObject(GameFontNormal);
+		------
+		for i=1,#listName do
+			local RGNTAB = CreateFrame("Frame", "RGNTAB_"..i, miyijiluF.RGN);
+			RGNTAB:SetSize(caidanW,caidanH);
+			if i==1 then
+				RGNTAB:SetPoint("TOPLEFT", miyijiluF.RGN, "TOPLEFT", 4, -22);
+			else
+				RGNTAB:SetPoint("TOPLEFT", _G["RGNTAB_"..(i-1)], "BOTTOMLEFT", 0, 0);
+			end
+			RGNTAB.Title = RGNTAB:CreateFontString();
+			RGNTAB.Title:SetPoint("LEFT", RGNTAB, "LEFT", 6, 0);
+			RGNTAB.Title:SetFontObject(GameFontNormal);
+			RGNTAB.Title:SetTextColor(1,1,1, 1);
+			RGNTAB.Title:SetText(listName[i]);
+			RGNTAB.highlight1 = RGNTAB:CreateTexture(nil, "BORDER");
+			RGNTAB.highlight1:SetTexture("interface/buttons/ui-listbox-highlight.blp");
+			RGNTAB.highlight1:SetPoint("CENTER", RGNTAB, "CENTER", -3,0);
+			RGNTAB.highlight1:SetSize(caidanW-18,16);
+			RGNTAB.highlight1:SetAlpha(0.9);
+			RGNTAB.highlight1:Hide();
+			RGNTAB:SetScript("OnEnter", function(self)
+				self.highlight1:Show()
+				miyijiluF.RGN.zhengzaixianshi = nil;
+			end);
+			RGNTAB:SetScript("OnLeave", function(self)
+				self.highlight1:Hide()
+				miyijiluF.RGN.xiaoshidaojishi = 1.5;
+				miyijiluF.RGN.zhengzaixianshi = true;
+			end);
+			RGNTAB:SetScript("OnMouseDown", function(self)
+				self.Title:SetPoint("LEFT", self, "LEFT", 7.4, -1.4);
+			end);
+			RGNTAB:SetScript("OnMouseUp", function(self)
+				self.Title:SetPoint("LEFT", self, "LEFT", 6, 0);
+				miyijiluF.RGN:Hide();
+				RGongNeng(self.Title:GetText(),miyijiluF.RGN.name.X)
+			end);
+		end
+		---------
 
 		miyijiluF.F = CreateFrame("Frame", nil, miyijiluF,"BackdropTemplate");
 		miyijiluF.F:SetPoint("TOPLEFT",miyijiluF,"TOPLEFT",0,-20);
@@ -809,19 +922,29 @@ local function ADD_Chat_Jilu()
 				local offset = FauxScrollFrame_GetOffset(self);
 			    for id = 1, hang_NUM do
 					local dangqian = id+offset;
-					if shuju[1][id] then
+					if shuju[1][dangqian] then
 						_G["MSGhang_"..id]:Show();
-						local coords = CLASS_ICON_TCOORDS[shuju[1][id][2]]
+						local coords = CLASS_ICON_TCOORDS[shuju[1][dangqian][2]]
 						_G["MSGhang_"..id].zhiye:SetTexCoord(unpack(coords));
-						local name1,name2 = strsplit("-", shuju[1][id][1]);
-						_G["MSGhang_"..id].name:SetText(name1);
-						local rPerc, gPerc, bPerc, argbHex = GetClassColor(shuju[1][id][2]);
-						local nrname=shuju[1][id][1]
+						local name1,name2 = strsplit("-", shuju[1][dangqian][1]);
+						_G["MSGhang_"..id].name.X=shuju[1][dangqian][1]
+						if name2 == GetRealmName() then
+							_G["MSGhang_"..id].name:SetText(name1);
+						else
+							_G["MSGhang_"..id].name:SetText(name1.."(*)");
+						end
+						local rPerc, gPerc, bPerc, argbHex = GetClassColor(shuju[1][dangqian][2]);
+						local nrname=shuju[1][dangqian][1]
+						local shifouyuedu=shuju[1][dangqian][3]
 						local nrheji=shuju[2][nrname]
 						if nrheji[#nrheji][1]=="CHAT_MSG_WHISPER" then
-							_G["MSGhang_"..id].name:SetTextColor(rPerc, gPerc, bPerc, 1);
+							if shifouyuedu then
+								_G["MSGhang_"..id].name:SetTextColor(rPerc, gPerc, bPerc, 1);
+							else
+								_G["MSGhang_"..id].name:SetTextColor(0.9, 0.9, 0.9, 1);
+							end
 						else
-							_G["MSGhang_"..id].name:SetTextColor(0.6, 0.6, 0.6, 1);
+							_G["MSGhang_"..id].name:SetTextColor(0.5, 0.5, 0.5, 1);
 						end
 						_G["MSGhang_"..id].del:SetID(dangqian);
 					end
@@ -841,11 +964,12 @@ local function ADD_Chat_Jilu()
 			hideOnEscape = true,
 		}
 		miyijiluF.F.Scroll = CreateFrame("ScrollFrame",nil,miyijiluF.F, "FauxScrollFrameTemplate");  
-		miyijiluF.F.Scroll:SetPoint("TOPLEFT",miyijiluF.F,"TOPLEFT",0,0);
-		miyijiluF.F.Scroll:SetPoint("BOTTOMRIGHT",miyijiluF.F,"BOTTOMRIGHT",-22,0);
+		miyijiluF.F.Scroll:SetPoint("TOPLEFT",miyijiluF.F,"TOPLEFT",0,-2);
+		miyijiluF.F.Scroll:SetPoint("BOTTOMRIGHT",miyijiluF.F,"BOTTOMRIGHT",-22,2);
 		miyijiluF.F.Scroll:SetScript("OnVerticalScroll", function(self, offset)
 		    FauxScrollFrame_OnVerticalScroll(self, offset, hang_Height, gengxinhang)
 		end)
+		miyijiluF.F.Scroll.ScrollBar:SetScale(0.9);
 		for id = 1, hang_NUM do
 			local hang = CreateFrame("Frame", "MSGhang_"..id, miyijiluF.F.Scroll:GetParent());
 			hang:SetSize(www, hang_Height);
@@ -872,14 +996,21 @@ local function ADD_Chat_Jilu()
 				local idxx=self.del:GetID()
 				local shuju=PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]
 				local Aname = shuju[1][idxx][1];
+				shuju[1][idxx][3]=false
 				
-				local rPerc, gPerc, bPerc, argbHex = GetClassColor(shuju[1][id][2]);
+				
+				local rPerc, gPerc, bPerc, argbHex = GetClassColor(shuju[1][idxx][2]);
 				miyijiluF.nr.text:SetText("与 |c"..argbHex..Aname.."|r 聊天记录");
 				
 
 				local name1,name2 = strsplit("-", Aname);
 				local nering=shuju[2][Aname]
 				local zonghhh=#nering
+				if nering[zonghhh][1]=="CHAT_MSG_WHISPER_INFORM" then
+					self.name:SetTextColor(0.5, 0.5, 0.5, 1);
+				else
+					self.name:SetTextColor(0.9, 0.9, 0.9, 1);
+				end
 
 				miyijiluF.nr.ends:Hide()
 				miyijiluF.nr.down:Hide()
@@ -917,18 +1048,29 @@ local function ADD_Chat_Jilu()
 				self.del:Hide();
 			end)
 			hang:SetScript("OnMouseUp", function(self,button)
-				local name = self.name:GetText()
+				local name = self.name:GetText()	
+				local cunzai =name:find("*")
+				if not cunzai then
+					self.name.X=name
+				end
+				local nameinfo = self.name.X
 				if button=="LeftButton" then
 					local editBox = ChatEdit_ChooseBoxForSend();
 					local hasText = editBox:GetText()
 					if editBox:HasFocus() then
-						editBox:SetText("/WHISPER " ..name.." ".. hasText);
+						editBox:SetText("/WHISPER " ..nameinfo.." ".. hasText);
 					else
 						ChatEdit_ActivateChat(editBox)
-						editBox:SetText("/WHISPER " ..name.." ".. hasText);
+						editBox:SetText("/WHISPER " ..nameinfo.." ".. hasText);
 					end
 				elseif button=="RightButton" then
-					
+					miyijiluF.RGN:ClearAllPoints();
+					miyijiluF.RGN:SetPoint("TOPLEFT",self,"BOTTOMLEFT",24,0);
+					miyijiluF.RGN:Show()
+					miyijiluF.RGN.name:SetText(name);
+					miyijiluF.RGN.name.X=nameinfo;
+					miyijiluF.RGN.xiaoshidaojishi = 1.5;
+					miyijiluF.RGN.zhengzaixianshi = true;
 				end
 			end)
 			hang.highlight = hang:CreateTexture(nil, "BORDER");
@@ -1002,10 +1144,9 @@ local function ADD_Chat_Jilu()
 				end
 		end
 		--提取消息
-		local miyuP={}
-		miyuP.zijiname, miyuP.zijirealm = UnitFullName("player")
+		miyuP.zijirealm = GetRealmName()
 		huoquliaotianjiluFFF:HookScript("OnEvent", function (self,event,arg1,arg2,arg3,arg4,arg5,_,_,_,_,_,_,arg12)
-			if not miyuP.zijirealm then miyuP.zijiname, miyuP.zijirealm = UnitFullName("player") end
+			if not miyuP.zijirealm then miyuP.zijirealm = GetRealmName() end
 			if event=="CHAT_MSG_WHISPER" then
 				if PIG['Chatjilu']["jiluinfo"]["WHISPER"]["tixing"]=="ON" and youNEWxiaoxinlai==false and not miyijiluF_UI:IsShown() then
 					youNEWxiaoxinlai=true 
@@ -1034,7 +1175,7 @@ local function ADD_Chat_Jilu()
 					for f=#huancunshuju[1], 1, -1 do
 						if huancunshuju[1][f][1]==miyuP.miyuren then
 							table.remove(huancunshuju[1],f);
-							table.insert(huancunshuju[1],1,{miyuP.miyuren,englishClass});
+							table.insert(huancunshuju[1],1,{miyuP.miyuren,englishClass,true});
 							if not huancunshuju[2] then
 								huancunshuju[2][miyuP.miyuren]={}
 							end
@@ -1044,12 +1185,12 @@ local function ADD_Chat_Jilu()
 						end
 					end
 					if yijingcunzairiqi==false then
-						table.insert(huancunshuju[1],1,{miyuP.miyuren,englishClass});
+						table.insert(huancunshuju[1],1,{miyuP.miyuren,englishClass,true});
 						huancunshuju[2][miyuP.miyuren]={{event,xiaoxiTime,arg1}}
 					end
 				else
 					PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]={
-						{{miyuP.miyuren,englishClass}},{[miyuP.miyuren]={{event,xiaoxiTime,arg1}}}
+						{{miyuP.miyuren,englishClass,true}},{[miyuP.miyuren]={{event,xiaoxiTime,arg1}}}
 					}
 				end
 			end

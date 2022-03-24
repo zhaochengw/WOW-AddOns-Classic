@@ -15,6 +15,7 @@ Bugshouji:SetSize(WWW,HHH);
 Bugshouji:SetPoint("CENTER",UIParent,"CENTER",0,0);
 Bugshouji:SetMovable(true)
 Bugshouji:SetClampedToScreen(true)
+Bugshouji:SetFrameStrata("HIGH")
 tinsert(UISpecialFrames,"Bugshouji_UI");
 
 Bugshouji.Moving = CreateFrame("Frame", nil, Bugshouji);
@@ -234,7 +235,7 @@ end)
 local function errottishi()
 	if PIG then
 		if PIG["Other"]["ErrorTishi"] then
-			if MinimapButton_PigUI and MinimapButton_PigUI.error then
+			if MinimapButton_PigUI then
 				MinimapButton_PigUI.error:Show();
 				--print("|cffFF0000"..addonName.."：发生错误，/per打开错误报告！|r");
 			end
@@ -259,6 +260,12 @@ local function errotFUN(msg)
 	xianshixinxi(#bencierrinfo)
 	errottishi()
 end
+local function yanchizhixing()
+	if #bencierrinfo>0 then
+		errottishi()
+	end
+end
+C_Timer.After(6,yanchizhixing)
 UIParent:UnregisterEvent("LUA_WARNING")
 Pig_seterrorhandler(errotFUN);
 function seterrorhandler() end

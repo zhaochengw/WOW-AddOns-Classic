@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Talented Data
 ## Notes: Gather localized information about the different talent trees of your toons
 ## Author: Jerry,Lethay

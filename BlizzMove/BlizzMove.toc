@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Blizzmove
 ## Notes: Move those blizzard windows
 ## Author: yess

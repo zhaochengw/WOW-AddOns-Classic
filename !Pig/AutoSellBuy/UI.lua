@@ -149,10 +149,18 @@ local function SellBuy_ADD()
 			self.highlight:Hide();
 		end);
 	end
+	---
+	SpllBuy_TabFrame_1:Show()
+	SpllBuy_Tab_1.Tex:SetTexture("interface/helpframe/helpframetab-active.blp");
+	SpllBuy_Tab_1.Tex:SetPoint("CENTER", SpllBuy_Tab_1, "CENTER", 4,0);
+	SpllBuy_Tab_1.title:SetTextColor(1, 1, 1, 1);
+	addonTable.FastDiuqi()
+	addonTable.SellPlus()
+	addonTable.BuyPlus()
 end
 --===========================================================
 --添加快捷打开按钮
-local function ADD_AutoSellBuy()
+local function ADD_AutoSellBuy_but()
 	PIG["AutoSellBuy"]=PIG["AutoSellBuy"] or addonTable.Default["AutoSellBuy"]
 	PIG["AutoSellBuy"]["Kaiqi"]=PIG["AutoSellBuy"]["Kaiqi"] or addonTable.Default["AutoSellBuy"]["Kaiqi"]
 	PIG["AutoSellBuy"]["AddBut"]=PIG["AutoSellBuy"]["AddBut"] or addonTable.Default["AutoSellBuy"]["AddBut"]
@@ -225,7 +233,7 @@ local function ADD_AutoSellBuy()
 		addonTable.Classes_gengxinkuanduinfo()
 	end	
 end
-addonTable.AutoSellBuy_but=ADD_AutoSellBuy
+addonTable.ADD_AutoSellBuy_but=ADD_AutoSellBuy_but
 --=====================================================
 fuFrame.BuySPELLXIAN = fuFrame:CreateLine()
 fuFrame.BuySPELLXIAN:SetColorTexture(1,1,1,0.4)
@@ -243,7 +251,7 @@ fuFrame.ADD:SetMotionScriptsWhileDisabled(true)
 fuFrame.ADD:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG["AutoSellBuy"]["AddBut"]="ON";
-		ADD_AutoSellBuy()
+		ADD_AutoSellBuy_but()
 	else
 		Pig_Options_RLtishi_UI:Show()
 		PIG["AutoSellBuy"]["AddBut"]="OFF";
@@ -262,14 +270,7 @@ fuFrame.Open:SetScript("OnClick", function (self)
 		SellBuy_ADD()
 		fuFrame.ADD:Enable()
 		Pig_OptionsUI.SellBuy:Enable();
-		SpllBuy_TabFrame_1:Show()
-		SpllBuy_Tab_1.Tex:SetTexture("interface/helpframe/helpframetab-active.blp");
-		SpllBuy_Tab_1.Tex:SetPoint("CENTER", SpllBuy_Tab_1, "CENTER", 4,0);
-		SpllBuy_Tab_1.title:SetTextColor(1, 1, 1, 1);
-		addonTable.FastDiuqi()
-		addonTable.SellPlus()
-		addonTable.BuyPlus()
-		ADD_AutoSellBuy()
+		ADD_AutoSellBuy_but()
 	else
 		Pig_Options_RLtishi_UI:Show()
 		fuFrame.ADD:Disable()
@@ -286,12 +287,5 @@ addonTable.AutoSellBuy_SellBuy = function()
 		SellBuy_ADD()
 		fuFrame.Open:SetChecked(true);
 		Pig_OptionsUI.SellBuy:Enable();
-		SpllBuy_TabFrame_1:Show()
-		SpllBuy_Tab_1.Tex:SetTexture("interface/helpframe/helpframetab-active.blp");
-		SpllBuy_Tab_1.Tex:SetPoint("CENTER", SpllBuy_Tab_1, "CENTER", 4,0);
-		SpllBuy_Tab_1.title:SetTextColor(1, 1, 1, 1);
-		addonTable.FastDiuqi()
-		addonTable.SellPlus()
-		addonTable.BuyPlus()
 	end
 end

@@ -26,7 +26,7 @@ Pig_OptionsUI.PlaneInvite:SetScript("OnLeave", function ()
 	GameTooltip:Hide()
 end);
 local function ADD_PlaneInviteFrame()
-	if PlaneInvite_UI~=nil then return end
+	if PlaneInvite_UI then return end
 	---设置主面板------------------------------------------------
 	local Width,Height=880,520;
 	local PlaneInvite = CreateFrame("Frame", "PlaneInvite_UI", UIParent);

@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 20504
 ## LoadOnDemand: 1
 ## Title: Lib: DualSpec-1.0
 ## Version: v1.20

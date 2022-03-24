@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: CritSound Options
 ## Title-zhTW: 爆擊音效 設置
 ## X-Repple: 辅助

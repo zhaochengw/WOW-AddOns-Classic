@@ -1,4 +1,4 @@
-## Interface: 60200
+## Interface: 20504
 ## Title: LDB: |cff69ccffWhisperPop|r
 ## Version: 4.12
 ## Author: Abin

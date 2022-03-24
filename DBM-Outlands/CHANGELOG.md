@@ -1,20 +1,42 @@
 # <DBM> Outlands
 
-## [2.5.29](https://github.com/DeadlyBossMods/DBM-TBC-Classic/tree/2.5.29) (2022-02-22)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-TBC-Classic/compare/2.5.28...2.5.29) [Previous Releases](https://github.com/DeadlyBossMods/DBM-TBC-Classic/releases)
+## [2.5.30](https://github.com/DeadlyBossMods/DBM-TBC-Classic/tree/2.5.30) (2022-03-22)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-TBC-Classic/compare/2.5.29...2.5.30) [Previous Releases](https://github.com/DeadlyBossMods/DBM-TBC-Classic/releases)
 
-- prep new tags  
-- bump toc files  
-- changing it back to spellId because that's only way i won't fuck it up  
-- minor sync  
-- Update commonlocal.fr.lua (#78)  
-- Add support for range 6 in TBC, Closes https://github.com/DeadlyBossMods/DBM-TBC-Classic/issues/104 Also fixed a regression that dates back to unified core where TBC and classic would show ranges in drop down that are unavailable.  
-- and one more regression i missed  
-- Fixed regressionn that caused some stage warnings to get grouped funny.  
-- Adds left fix will work better if the adds left object isn't also called \"adds\"  
-- Gui Updates: - Fixed AddsLeft warnings getting filtered (not grouped) with improved object identification - Added ability to group Generic Announce and Special Announce objects with optional spellID argument  
-- Update soul scream timer to match the data from logs (#105)  
-    Co-authored-by: Adam <MysticalOS@users.noreply.github.com>  
-- Updated new GUI parsing to properly handle achievement timer objects, which exist in a lot of wrath and mop content.  
-- Fixed a bug that caused crushed icon description to be missing. While at it, upgradedd object to show used icons, respect global disable, and lastly use better icons so it doesn't mess with icons usually used to. mark mobs.  
-- bump alpha versions  
+- prep new retail and tbc tags  
+- bump BCC toc Raise boss unit ID scan to boss 10, per hotfix last week, now allows up to 10 and all return valid unit events  
+- bump BCC toc  
+- Update koKR (#90)  
+- revise tanking check with a new option to only request status 3 check  
+- Update localization.cn.lua (#89)  
+- add a you pos count object.  
+- Update commonlocal.cn.lua (#88)  
+- Update localization.tw.lua (#87)  
+- Update commonlocal.tw.lua (#86)  
+- Update alpha revision  
+- prep new tag for retail  
+- Find and report duplicate entries (usually typos in objects that cause problems)  
+- Update commonlocal.ru.lua (#83) Add one phrase. Small cleaning.  
+- Update koKR (#84)  
+- Add count variant of tank combo  
+- swear i copy/pasted that  
+- set new alpha revision  
+- prep fresh retail tag  
+- Closing out another feature request. It's now possible to set pull timer countdown voice seperately from regular countdown options.  
+- bump alpha  
+- ready new release now that LFR updated, changed bosses updated, and last 3 updated. :)  
+- Update localization.fr.lua (#79)  
+- support up to 8 boss unit ids, apparently 6-8 were added in 9.2?  
+- Update localization.cn.lua (#82)  
+- bump alpha, again  
+- prep new tag, no revision update  
+- bumped alpha version (aka tomorrows release with fridays hotfixes probably :D)  
+- prep new retail tag  
+- bump alpha  
+- Bump version and ready new retail tag  
+- prep next cycle  
+- Fix missing comma on shadowlands outdoor addition  
+- Fix up sounds for BCC/Classic based on accurate SoundKitID's  
+- Update localization.ru.lua (#80) So correct.  
+- Kill off extended raid icons feature, blizzard broke it in recent builds (predicted they would, but hoped they'd actually finish feature instead, was wishful thinking I suppose)  
+- bump alphas  

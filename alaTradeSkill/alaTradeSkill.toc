@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: ala's Trade Skill
 ## Title-zhCN: ala's Trade Skill
 ## Title-zhTW: ala's Trade Skill

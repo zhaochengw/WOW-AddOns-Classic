@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: TrinketMenu 9.0.7
 ## Version: 9.0.7
 ## Author: Gello, Resike

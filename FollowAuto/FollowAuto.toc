@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: FollowAuto - 自动跟随
 ## Author: Jason, LeonLin
 ## Notes: Automatically following - 自动跟随

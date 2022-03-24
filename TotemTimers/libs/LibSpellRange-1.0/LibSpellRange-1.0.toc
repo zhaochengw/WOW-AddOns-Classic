@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Version: 1.0.15
 ## X-CompatibleWith: 80000
 ## Title: Lib: SpellRange-1.0

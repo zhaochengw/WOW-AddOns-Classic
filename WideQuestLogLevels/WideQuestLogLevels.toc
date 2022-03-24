@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Wide Quest Log Levels
 ## Author: bloodline_
 ## Notes: Adds Level Badges to the Quest Log Overview

@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Isler's WoWUI
 ## Notes: The console of Isler's WoWUI, includes some useful addons.
 ## Title-zhCN: |cff7fff7fIsler's WoWUI|R

@@ -1,7 +1,7 @@
 #
 # Do not edit - this file is generated from TOC_TEMPLATE.TOC
 #
-## Interface: 20503
+## Interface: 20504
 ## Title: Restocker TBC
 ## Author: kvakvs; original author RainForDays
 ## Notes: Restock items automatically

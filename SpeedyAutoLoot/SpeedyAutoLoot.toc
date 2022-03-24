@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: |cffEEE4AESpeedy AutoLoot|r
 ## Notes: |cff58C6FALoot at ludicrous speed!|r|n|n|cffFFC700Slash command: /sal, /speedyautoloot|r
 ## Author: Yuyuli

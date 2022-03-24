@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 
 ## Title: zBar3
 ## Notes: ZeroFire's ActionBar Mod. |n Third Edition.
