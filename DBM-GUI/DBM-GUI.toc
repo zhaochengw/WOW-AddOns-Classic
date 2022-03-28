@@ -74,3 +74,6 @@ modules\options\frames\Frames.lua
 modules\options\frames\InfoFrame.lua
 modules\options\frames\Range.lua
 modules\options\frames\Nameplate.lua
+
+## X-Vendor: NetEase
+## X-163UI-Version: 20220324111210

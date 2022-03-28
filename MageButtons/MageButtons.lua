@@ -26,7 +26,7 @@ local LibDBIcon = LibStub("LibDBIcon-1.0")
 ------------------
 --- Main frame ---
 ------------------
-local MageButtonsConfig = CreateFrame("Frame", nil, UIParent,"BackDropTemplate")
+local MageButtonsConfig = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
 MageButtonsConfig:SetMovable(false)
 MageButtonsConfig:EnableMouse(false)
 MageButtonsConfig:RegisterForDrag("LeftButton")

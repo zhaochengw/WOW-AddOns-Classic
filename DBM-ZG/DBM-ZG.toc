@@ -42,3 +42,6 @@ Bloodlord.lua
 EdgeOfMadness.lua
 Gahzranka.lua
 Jindo.lua
+
+## X-Vendor: NetEase
+## X-163UI-Version: 20220324111210

@@ -15,4 +15,4 @@ options.lua
 ## Title-zhCN: |cff880303[有爱]|r OmniCC 配置界面
 ## Notes-zhCN: 技能冷却计时-配置界面模块
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220311143326
+## X-163UI-Version: 20220324111210

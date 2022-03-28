@@ -1,6 +1,6 @@
 local _G = getfenv(0)
 
-CreateFrame("Frame", "zBarConfig", UIParent)
+CreateFrame("Frame", "zBarConfig", UIParent, "BackdropTemplate")
 zBar3:AddPlugin(zBarConfig)
 
 --[[ functional ]]

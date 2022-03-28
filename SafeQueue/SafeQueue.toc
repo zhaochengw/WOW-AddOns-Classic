@@ -1,7 +1,7 @@
 ## Interface: 20504
 ## Title: SafeQueue
 ## Notes: Fixes the Enter Battle button for classic battlegrounds
-## Version: v7.2
+## Version: v7.3
 ## Author: Jordon
 ## DefaultState: Enabled
 ## X-Curse-Project-ID: 29171
@@ -19,3 +19,6 @@ SafeQueue.xml
 SafeQueue.lua
 Classic.lua
 
+## Title-zhCN: |cff880303[有爱]|r SafeQueue 进入战场按钮
+## X-Vendor: NetEase
+## X-163UI-Version: 20220324111210

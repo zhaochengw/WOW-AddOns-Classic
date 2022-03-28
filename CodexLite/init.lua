@@ -344,6 +344,7 @@ local SET = nil;
 	end
 	__ns._F_CorePrint = _F_CorePrint;
 -->
+local _F_CorePrint = __ns._F_CorePrint;
 
 -->		string
 	local function BuildRegularExp(pattern)

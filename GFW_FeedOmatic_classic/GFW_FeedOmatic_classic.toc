@@ -21,4 +21,4 @@ FeedOMatic.lua
 FeedOMatic.xml
 ## Title-zhCN: |cff880303[有爱]|r GFW_FeedOmatic_classic 猎人宠物一键喂食
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220120164410
+## X-163UI-Version: 20220324111210

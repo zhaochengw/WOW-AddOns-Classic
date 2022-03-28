@@ -36,24 +36,40 @@ L["Advance Scout Chadwick"] = "Vorhutsspäher Chadwick"
 L["Aged Dalaran Wizard"] = "Gealterter Hexer von Dalaran"
 --[[Translation missing --]]
 --[[ L["Al'ar"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Alexston Chrome <Tavern of Time>"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Alurmi <Keepers of Time Quartermaster>"] = ""--]] 
 L["Aluyen <Reagents>"] = "Aluyen <Reagenzien>"
+--[[Translation missing --]]
+--[[ L["Alyson Antille"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Ambassador Hellmaw"] = ""--]] 
 L["Ambassador Pax'ivi"] = "Botschafter Pax'ivi"
+--[[Translation missing --]]
+--[[ L["Anachronos <Keepers of Time>"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Andormu <Keepers of Time>"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Anzu"] = ""--]] 
 L["Apoko"] = "Apoko"
 --[[Translation missing --]]
 --[[ L["Apprentice Darius"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Arazmodu <The Scale of Sands>"] = ""--]] 
 L["Arca"] = "Arka"
 --[[Translation missing --]]
 --[[ L["Archmage Alturus"] = ""--]] 
 L["Archmage Leryda"] = "Erzmagierin Leryda"
+--[[Translation missing --]]
+--[[ L["Arinoth"] = ""--]] 
 L["Artificer Morphalius"] = "Konstrukteur Morphalius"
 --[[Translation missing --]]
 --[[ L["Attumen the Huntsman"] = ""--]] 
 L["Auch"] = "Auch"
 L["Avatar of the Martyred"] = "Avatar des Gemarterten"
+--[[Translation missing --]]
+--[[ L["Bakkalzu"] = ""--]] 
 L["Barkeep Kelly <Bartender>"] = "Barkeeper Kelly <Schankkellner>"
 L["Barnes <The Stage Manager>"] = "Barnes <Der Inspizient>"
 L["Baron Rafe Dreuger"] = "Baron Rafe Dreuger"
@@ -67,7 +83,11 @@ L["Bilger the Straight-laced"] = "Bilger der Strenge"
 --[[Translation missing --]]
 --[[ L["Blindeye the Seer"] = ""--]] 
 --[[Translation missing --]]
+--[[ L["Blood Guard Hakkuz <Darkspear Elite>"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Blood Guard Porung"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Bortega <Reagents & Poison Supplies>"] = ""--]] 
 L["Bota"] = "Bota"
 L["Brazen"] = "Brazen"
 --[[Translation missing --]]
@@ -103,6 +123,8 @@ L["Cryo-Engineer Sha'heen"] = "Kryoingenieur Sha'heen"
 --[[Translation missing --]]
 --[[ L["Dalliah the Doomsayer"] = ""--]] 
 --[[Translation missing --]]
+--[[ L["Darkheart"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Darkweaver Syth"] = ""--]] 
 L["Dealer Tariq <Shady Dealer>"] = "Händler Tariq <Zwielichtiger Händler>"
 L["Dealer Vijaad"] = "Händler Vijaad"
@@ -129,6 +151,8 @@ L["Erozion"] = "Erozion"
 --[[Translation missing --]]
 --[[ L["Essence of Suffering"] = ""--]] 
 L["Ethereal Transporter Control Panel"] = "Bedienungskonsole des Astraltransporters"
+--[[Translation missing --]]
+--[[ L["Eulinda <Reagents>"] = ""--]] 
 L["Exarch Larethor"] = "Exarch Larethor"
 --[[Translation missing --]]
 --[[ L["Exarch Maladaar"] = ""--]] 
@@ -139,10 +163,16 @@ L["Farmer Kent"] = "Bauer Kent"
 L["Fel Crystals"] = "Teufelskristalle"
 --[[Translation missing --]]
 --[[ L["Felmyst"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Fenstalker"] = ""--]] 
 L["Field Commander Mahfuun"] = "Feldkommandeur Mahfuun"
 L["First Fragment Guardian"] = "Wächter des ersten Teils"
 L["Fizzle"] = "Zischel"
+--[[Translation missing --]]
+--[[ L["Forest Frogs"] = ""--]] 
 L["Frances Lin <Barmaid>"] = "Frances Lin <Bardame>"
+--[[Translation missing --]]
+--[[ L["Galgrom <Provisioner>"] = ""--]] 
 L["Garaxxas"] = "Garaxxas"
 --[[Translation missing --]]
 --[[ L["Gatewatcher Gyro-Kill"] = ""--]] 
@@ -150,6 +180,8 @@ L["Garaxxas"] = "Garaxxas"
 --[[ L["Gatewatcher Iron-Hand"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Gathios the Shatterer"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Gazakroth"] = ""--]] 
 L["GL"] = "Gruul"
 L["Gradav <The Warlock>"] = "Gradav <Der Hexenmeister>"
 --[[Translation missing --]]
@@ -170,8 +202,12 @@ L["Gunny"] = "Gunny"
 L["Hal McAllister"] = "Hal McAllister"
 L["Ha'lei"] = "Ha'lei"
 --[[Translation missing --]]
+--[[ L["Harald <Food Vendor>"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Harbinger Skyriss"] = ""--]] 
 L["Hastings <The Caretaker>"] = "Hastings <Der Hauswart>"
+--[[Translation missing --]]
+--[[ L["Hazlek"] = ""--]] 
 L["HC"] = "HZ"
 L["Helcular"] = "Helcular"
 L["Herod the Bully"] = "Herod der Tyrann"
@@ -208,9 +244,13 @@ L["Julie Honeywell"] = "Julie Honigbrunn"
 --[[ L["Kael'thas Sunstrider"] = ""--]] 
 L["Kagani Nightstrike"] = "Kagani Nachtschlag"
 --[[Translation missing --]]
+--[[ L["Kaldrick"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Kalecgos"] = ""--]] 
 L["Kamsis <The Conjurer>"] = "Kamsis <Die Beschwörerin>"
 L["Kara"] = "Kara"
+--[[Translation missing --]]
+--[[ L["Kasha"] = ""--]] 
 L["Keanna's Log"] = "Keannas Aufzeichnungen"
 --[[Translation missing --]]
 --[[ L["Keli'dan the Breaker"] = ""--]] 
@@ -221,6 +261,8 @@ L["Keanna's Log"] = "Keannas Aufzeichnungen"
 --[[Translation missing --]]
 --[[ L["Kil'rek"] = ""--]] 
 L["Korag Proudmane"] = "Korag Mähnenstolz"
+--[[Translation missing --]]
+--[[ L["Koragg"] = ""--]] 
 L["Koren <The Blacksmith>"] = "Koren <Der Schmied>"
 --[[Translation missing --]]
 --[[ L["Krosh Firehand"] = ""--]] 
@@ -238,9 +280,13 @@ L["Lady Keira Berrybuck"] = "Lady Keira Beerhas"
 L["Lakka"] = "Lakka"
 L["Landing Spot"] = "Landepunkt"
 --[[Translation missing --]]
+--[[ L["Lenzo"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Leotheras the Blind"] = ""--]] 
 L["Little Jimmy Vishas"] = "Kleiner Jimmy Vishas"
 L["Lord Crispin Ference"] = "Lord Crispin Ference"
+--[[Translation missing --]]
+--[[ L["Lord Raadan"] = ""--]] 
 L["Lord Robin Daris"] = "Lord Robin Daris"
 --[[Translation missing --]]
 --[[ L["Lord Sanguinar"] = ""--]] 
@@ -257,6 +303,8 @@ L["Mamdy the \"Ologist\""] = "Mamdy der \"Ologe\""
 --[[Translation missing --]]
 --[[ L["Master Engineer Telonicus"] = ""--]] 
 L["MaT"] = "TdM"
+--[[Translation missing --]]
+--[[ L["Mawago"] = ""--]] 
 L["Mech"] = "Mecha"
 --[[Translation missing --]]
 --[[ L["Mechano-Lord Capacitus"] = ""--]] 
@@ -265,7 +313,13 @@ L["Meeting Stone of Magtheridon's Lair"] = "Versammlungsstein für Magtheridons 
 --[[Translation missing --]]
 --[[ L["Mekgineer Steamrigger"] = ""--]] 
 --[[Translation missing --]]
+--[[ L["Melasong"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Melissa"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Mennu the Betrayer"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Micah"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Midnight"] = ""--]] 
 L["Millhouse Manastorm"] = "Millhaus Manasturm"
@@ -299,6 +353,10 @@ L["Nexus-Prince Haramad"] = "Nexusprinz Haramad"
 --[[ L["Nexus-Prince Shaffar"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Nightbane"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Norkani"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Nozari <Keepers of Time>"] = ""--]] 
 L["Okuno <Ashtongue Deathsworn Quartermaster>"] = "Okuno <Rüstmeister der Todeshörigen>"
 --[[Translation missing --]]
 --[[ L["Olm the Summoner"] = ""--]] 
@@ -339,6 +397,8 @@ L["Red Riding Hood"] = "Rotkäppchen"
 L["Reinforced Fel Iron Chest"] = "Verstärkte Teufelseisentruhe"
 --[[Translation missing --]]
 --[[ L["Reliquary of Souls"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Relissa"] = ""--]] 
 L["Renault Mograine"] = "Renault Mograine"
 L["Rifleman Brownbeard"] = "Scharfschütze Braunbart"
 --[[Translation missing --]]
@@ -351,6 +411,8 @@ L["Rifleman Brownbeard"] = "Scharfschütze Braunbart"
 --[[ L["Romulo"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Romulo & Julianne"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Rosa"] = ""--]] 
 L["Sa'at <Keepers of Time>"] = "Sa'at <Hüter der Zeit>"
 L["Sally Whitemane"] = "Sally Weißsträhne"
 --[[Translation missing --]]
@@ -378,7 +440,11 @@ L["Shattered Hand Executioner"] = "Henker der Zerschmetterten Hand"
 --[[ L["Shirrak the Dead Watcher"] = ""--]] 
 L["Skar'this the Heretic"] = "Nar'biss der Ketzer"
 L["SL"] = "Laby"
+--[[Translation missing --]]
+--[[ L["Slither"] = ""--]] 
 L["Sliver <Garaxxas' Pet>"] = "Splitter <Garaxxas Tier>"
+--[[Translation missing --]]
+--[[ L["Soridormi <The Scale of Sands>"] = ""--]] 
 L["Southshore Inn"] = "Süderstade Gasthaus"
 L["SP"] = "SU"
 L["Spiral Stairs to Netherspace"] = "Wendeltreppe zum Netherraum"
@@ -399,6 +465,8 @@ L["SSC"] = "SSC, HdS"
 --[[ L["Stairs to Upper Stable"] = ""--]] 
 L["Stalvan Mistmantle"] = "Stalvan Dunstmantel"
 L["Steps and path to the Blood Furnace"] = "Stufen und Pfad zum Blutkessel"
+--[[Translation missing --]]
+--[[ L["Steward of Time <Keepers of Time>"] = ""--]] 
 L["Stone Guard Stok'ton"] = "Steingardist Stok'ton"
 --[[Translation missing --]]
 --[[ L["Strawman"] = ""--]] 
@@ -433,6 +501,8 @@ L["The Codex of Blood"] = "Kodex des Blutes"
 --[[ L["The Lurker Below"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["The Maker"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["The Map of Zul'Aman"] = ""--]] 
 L["The Master's Terrace"] = "Die Terrasse des Meisters"
 L["The Saga of Terokk"] = "Die Sage von Terokk"
 L["The Underspore"] = "Die Tiefenspore"
@@ -442,6 +512,8 @@ L["Thomas Yance <Travelling Salesman>"] = "Thomas Yance <Fliegender Händler>"
 --[[ L["Thorngrin the Tender"] = ""--]] 
 L["Thrall"] = "Thrall"
 L["Thrall <Warchief>"] = "Thrall <Kriegshäuptling>"
+--[[Translation missing --]]
+--[[ L["Thurg"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Tinhead"] = ""--]] 
 --[[Translation missing --]]
@@ -453,6 +525,8 @@ L["Towards Reliquary of Souls"] = "Zum Relikt der Seelen"
 L["Towards Teron Gorefiend"] = "Zu Teron Blutschatten"
 L["T'shu"] = "T'shu"
 L["Tydormu <Keeper of Lost Artifacts>"] = "Tydormu <Bewahrer der verlorenen Artefakte>"
+--[[Translation missing --]]
+--[[ L["Tyllan"] = ""--]] 
 L["Tyrande Whisperwind <High Priestess of Elune>"] = "Tyrande Wisperwind <Hohepriesterin von Elune>"
 L["Tyrith"] = "Tyrith"
 L["UB"] = "TS"
@@ -465,6 +539,10 @@ L["Udalo"] = "Udalo"
 --[[ L["Vexallus"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Void Reaver"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Vol'jin"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Voodoo Pile"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Warbringer O'mrogg"] = ""--]] 
 --[[Translation missing --]]
@@ -481,19 +559,27 @@ L["Watcher Jhang"] = "Behüterin Jhang"
 --[[ L["Watchkeeper Gargolmar"] = ""--]] 
 L["Weeder Greenthumb"] = "Jäter Gründaum"
 L["Windcaller Claw"] = "Windrufer Klaue"
+--[[Translation missing --]]
+--[[ L["Witch Doctor T'wansi"] = ""--]] 
 L["Wizard of Oz"] = "Zauberer von Oz"
 --[[Translation missing --]]
 --[[ L["Wrath-Scryer Soccothrates"] = ""--]] 
 L["Wravien <The Mage>"] = "Wravien <Der Magier>"
+--[[Translation missing --]]
+--[[ L["Yarley <Armorer>"] = ""--]] 
 L["Yazzai"] = "Yazzai"
 --[[Translation missing --]]
 --[[ L["Yor"] = ""--]] 
 L["Young Blanchy"] = "Kleine Graumähne"
 L["Ythyar"] = "Ythyar"
+--[[Translation missing --]]
+--[[ L["Zaladormu"] = ""--]] 
 L["Zelfan"] = "Zelfan"
 --[[Translation missing --]]
 --[[ L["Zereketh the Unbound"] = ""--]] 
 L["Zixil <Aspiring Merchant>"] = "Zixil <Aufstrebender Händler>"
+--[[Translation missing --]]
+--[[ L["Zungam"] = ""--]] 
 
 
 end

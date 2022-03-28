@@ -1,9 +1,5 @@
 --[[--
 	by ALA @ 163UI
-	##	2020-04-27
-		Initial beta
-	##	2020-05-13
-		Config frame. DST. Adjust time.
 --]]--
 
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
@@ -13,6 +9,7 @@ end
 local ADDON, NS = ...;
 local ARTWORK_PATH = "Interface\\AddOns\\alaCalendar\\ARTWORK\\";
 
+NS.CUR_PHASE = 6;
 --	fixed_cycle		1_first_seen,	2_cycle,		3_nil,			4_nil,		5_dur,	6_tex_start,	7_curtain,	8_tex_end,	9_tex_start_coord,	10_curtain_coord,	11_tex_end_coord
 --	month_week_day	1_first_seen,	2_cycle_month,	3_check_day,	4_latency,	5_dur,	6_tex_start,	7_curtain,	8_tex_end,	9_tex_start_coord,	10_curtain_coord,	11_tex_end_coord
 --	using UTC-0

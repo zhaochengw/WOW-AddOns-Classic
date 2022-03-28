@@ -1,0 +1,426 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+
+	<EditBox name="LunarEditBox" toplevel="true" hidden="false" virtual="true" autofocus="false">
+		<Size>
+			<AbsDimension x="128" y="20"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentLeft" file="Interface\Common\Common-Input-Border">
+					<Size>
+						<AbsDimension x="8" y="20"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="-5" y="0"/>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0" right="0.0625" top="0" bottom="0.625"/>
+				</Texture>
+				<Texture name="$parentRight" file="Interface\Common\Common-Input-Border">
+					<Size>
+						<AbsDimension x="8" y="20"/>
+					</Size>
+					<Anchors>
+						<Anchor point="RIGHT">
+							<Offset x="0" y="0"/>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.9375" right="1.0" top="0" bottom="0.625"/>
+				</Texture>
+				<Texture name="$parentMiddle" file="Interface\Common\Common-Input-Border">
+					<Size>
+						<AbsDimension x="0" y="20"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT"/>
+						<Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT"/>
+					</Anchors>
+					<TexCoords left="0.0625" right="0.9375" top="0" bottom="0.625"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<FontString name="$parentText" inherits="ChatFontSmall"/>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				OnLoadCheckMixin(self)
+			</OnLoad>
+			<OnShow>
+				self:ClearFocus();
+			</OnShow>
+		</Scripts>
+	</EditBox>
+
+	<Frame name="LunarWindow" movable="true" toplevel="true" enableMouse="true" hidden="true" parent="UIParent" virtual="true">
+		<Size>
+			<AbsDimension x="352" y="32"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER" />
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitle" inherits="GameFontNormal" justifyH="LEFT" text="">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="28" y="-9"/> 
+							</Offset>
+						</Anchor>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-36" y="-20"/> 
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<Texture name="$parentIcon" file="Interface\Addons\LunarSphere\Art\logo.blp">
+					<Size>
+						<AbsDimension x="14" y="14"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="11" y="-9"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentWindowContainer" toplevel="true" enableMouse="true">
+				<Size>
+					<AbsDimension x="160" y="256"/>
+				</Size>
+				<HitRectInsets>
+					<AbsInset left="0" right="0" top="8" bottom="0"/>
+				</HitRectInsets>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="9"/>
+						</Offset>
+					</Anchor>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="9"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture file="Interface\AddOns\LunarSphere\art\Window-TitleEdge">
+							<Size>
+								<AbsDimension x="16" y="31"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+									<Offset>
+										<AbsDimension x="-20" y="23"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad inherit="prepend">
+						LunarOnLoadSetBackdrop(self, BACKDROP_LUNARWINDOW)
+						self:SetBackdropColor(0.2,0.2,0.2,1.0);
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton" toplevel="true">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				LunarOnLoadSetBackdrop(self, BACKDROP_LUNARWINDOW)
+				self:SetBackdropColor(1.0,1.0,1.0,1);
+			</OnLoad>
+			<OnMouseDown>
+				if ( button == "LeftButton" ) then
+					self:StartMoving();
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				self:StopMovingOrSizing();
+			</OnMouseUp>
+		</Scripts>
+	</Frame>
+
+	<Frame name="LunarContainer" toplevel="false" hidden="false" virtual="true">
+		<Size>
+			<AbsDimension x="128" y="128"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT"/>
+		</Anchors>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				LunarOnLoadSetBackdrop(self, BACKDROP_LUNARCONTAINER)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="LunarContainerSolid" toplevel="false" hidden="false" virtual="true">
+		<Size>
+			<AbsDimension x="128" y="128"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT"/>
+		</Anchors>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				LunarOnLoadSetBackdrop(self, BACKDROP_LUNARWINDOW)
+				self:SetBackdropColor(0.2,0.2,0.2,1.0);
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Slider name="LunarHorizontalSlider" inherits="OptionsSliderTemplate" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentValue" inherits="GameFontNormal" justifyH="LEFT" text="">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="5" y="-2"/> 
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Slider>
+
+	<Slider name="LunarHorizontalSliderWithTextbox" inherits="OptionsSliderTemplate" virtual="true">
+		<Frames>
+			<EditBox name="$parentValue" inherits="LunarEditBox">
+				<Size>
+					<AbsDimension x="36" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="7" y="4"/> 
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</EditBox>
+		</Frames>
+	</Slider>
+
+	<Slider name="LunarVerticalSlider" orientation="VERTICAL" minValue="0" maxValue="1" valueStep="1" defaultValue="0" virtual="true">
+		<Size>
+			<AbsDimension x="16" y="110"/>
+		</Size>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				LunarOnLoadSetBackdrop(self, BACKDROP_LUNARVERTICALSLIDER)
+			</OnLoad>
+		</Scripts>
+		<ThumbTexture name = "$parentThumb" file="Interface\AddOns\LunarSphere\Art\verticalScroller.blp">
+			<Size>
+				<AbsDimension x="32" y="32"/>
+			</Size>
+		</ThumbTexture>
+	</Slider>
+
+	<Frame name="LunarCaption" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" inherits="GameFontNormal" justifyH="LEFT" text="">
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				OnLoadCheckMixin(self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Frame name="LunarCaptionSmall" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT" text="">
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				OnLoadCheckMixin(self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Button name="LunarColorSelector" virtual="true" enableMouse="true">
+		<Size>
+			<AbsDimension x="16" y="16"/>
+		</Size>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentColor"/>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="RIGHT">
+							<Offset>
+								<AbsDimension x="7" y="1"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<Texture name="$parentBorder" file="Interface\Minimap\MiniMap-TrackingBorder.blp">
+					<Size>
+						<AbsDimension x="48" y="48"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="-6" y="6"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				OnLoadCheckMixin(self)
+			</OnLoad>
+		</Scripts>
+		<HighlightTexture alphamode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+	</Button>
+
+	<Frame name="LunarVerticalTab" toplevel="false" hidden="false" enableMouse="true" virtual="true">
+		<Size>
+			<AbsDimension x="92" y="32"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT" text="">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="10" y="0"/> 
+							</Offset>
+						</Anchor>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+							<Offset>
+								<AbsDimension x="-9" y="3"/> 
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				LunarOnLoadSetBackdrop(self, BACKDROP_LUNARWINDOW)
+				self:SetBackdropColor(0.9,0.9,0.9,1.0);
+			</OnLoad>
+			<OnMouseDown>
+				-- Tab name structure: (Name Of Tab Chain)(# of tabs in chain)(# Index of tab)
+				-- Ex: the MainTab chain has 4 tabs in its "chain". The names of the tabs would be:
+				-- "MainTab41"  (chain name: MainTab, total tabs in chain: 4, tab #1)
+				-- "MainTab42"  (chain name: MainTab, total tabs in chain: 4, tab #2)
+				-- "MainTab43"  (chain name: MainTab, total tabs in chain: 4, tab #3)
+				-- "MainTab44"  (chain name: MainTab, total tabs in chain: 4, tab #4)
+
+				-- Also supports larger groups, up to 99. Naming format is the same, but # of tabs
+				-- and # index of tab MUST be 2 characters in length. So, the first index of a 12
+				-- tab group is:
+				-- "MainTab1201" (chain name: MainTab, total tabs in chain: 12, tab #01)
+
+				-- Determine if it's a small group or large group of tabs
+				local largeTab = string.match(self:GetName(), "%d%d%d%d");
+
+				-- Create our locals
+				local tabChainName, filler, index, maxIndex, bleh;
+
+				-- Find the total count of tabs in this chain based upon whether or not it's a
+				-- large group or small group of tabs. For some reason, I can't use some logic
+				-- comparisons in this XML, so I have to do things the long way (but it works)
+				if (largeTab) then
+					
+					maxIndex = tonumber(string.sub(self:GetName(), string.len(self:GetName()) - 3, string.len(self:GetName())-2));
+					tabChainName = string.sub(self:GetName(), 1, string.len(self:GetName()) - 2);
+
+					-- Cycle through all linked tabs and set their background color to
+					-- gray, hide and show it (so they layer properly), and hide the container
+					-- that is also linked to it.
+					for index = maxIndex, 10, -1 do
+						getglobal(tabChainName .. index):SetBackdropColor(0.9,0.9,0.9,1.0);
+						getglobal(tabChainName .. index .. "Container"):Hide();
+					end
+					for index = 9, 1, -1 do
+						getglobal(tabChainName .. "0" .. index):SetBackdropColor(0.9,0.9,0.9,1.0);
+						getglobal(tabChainName .. "0" .. index .. "Container"):Hide();
+					end
+				else
+					
+					maxIndex = tonumber(string.sub(self:GetName(), string.len(self:GetName()) - 1, string.len(self:GetName())-1));
+					tabChainName = string.sub(self:GetName(), 1, string.len(self:GetName()) - 1);
+
+					-- Cycle through all linked tabs and set their background color to
+					-- gray, hide and show it (so they layer properly), and hide the container
+					-- that is also linked to it.
+					for index = maxIndex, 1, -1 do
+						getglobal(tabChainName .. index):SetBackdropColor(0.9,0.9,0.9,1.0);
+						getglobal(tabChainName .. index .. "Container"):Hide();
+					end
+				end
+
+				-- Now, set this tab to being highlighted and show its container
+				self:SetBackdropColor(0.0,0.5,1.0,1.0);
+				getglobal(self:GetName() .. "Container"):Show();
+			</OnMouseDown>
+			<OnEnter>
+				getglobal(self:GetName() .. "Text"):SetTextColor(1.0,1.0,1.0,1.0);
+			</OnEnter>
+			<OnLeave>
+				getglobal(self:GetName() .. "Text"):SetTextColor(1.0,0.82,0.0,1.0);
+			</OnLeave>
+		</Scripts>
+	</Frame>
+
+	<CheckButton name="LunarCheckButton" inherits="OptionsCheckButtonTemplate" virtual="true">
+	</CheckButton>
+
+	<Frame name="LunarDropDown" inherits="UIDropDownMenuTemplate" toplevel="false" hidden="false" enableMouse="true" virtual="true">
+		<Anchors>
+			<Anchor point="TOPLEFT"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<FontString name="$parentLabel" inherits="GameFontNormalSmall" text="">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="21" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				OnLoadCheckMixin(self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

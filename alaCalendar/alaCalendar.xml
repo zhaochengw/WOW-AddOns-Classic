@@ -7,7 +7,7 @@
 -->
     <include file = "libs\libs.xml" />
 
-    <script file = "raidlock.lua" />
+    <!-- <script file = "raidlock.lua" /> -->
     <script file = "Locale.lua" />
     <script file = "data-classic.lua" />
     <script file = "data-bcc.lua" />

@@ -1,4 +1,4 @@
-## Interface: 20504
+## Interface: 90100
 ## Interface-BCC: 20502
 ## Interface-Classic: 11307
 ## Title: Lib: Frame Fade

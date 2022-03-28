@@ -23,3 +23,7 @@ HandyNotes_NPCs (Burning Crusade Classic).lua
 options.lua
 search.lua
 altrecipes.lua
+
+## Title-zhCN: |cff880303[有爱]|r HandyNotes NPC数据
+## X-Vendor: NetEase
+## X-163UI-Version: 20220324111210

@@ -25,4 +25,4 @@ nameplates.lua
 
 ## Title-zhCN: |cff880303[有爱]|r NugRunning 施法计时
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220311143326
+## X-163UI-Version: 20220324111210

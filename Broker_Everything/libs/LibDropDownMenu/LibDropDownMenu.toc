@@ -1,4 +1,4 @@
-## Interface: 20504
+## Interface: 90105
 ## Title: Lib: LibDropDownMenu
 ## Notes: Library providing downdown menu like blizzards DropDownMenu
 ## Author: Hizuro

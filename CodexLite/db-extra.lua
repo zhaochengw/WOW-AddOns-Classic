@@ -32,6 +32,8 @@ local __bit_check_race_class = __core.__bit_check_race_class;
 local blacklist_quest = __db.blacklist_quest;
 local blacklist_item = __db.blacklist_item;
 
+local _F_CorePrint = __ns._F_CorePrint;
+
 local chain_prev_quest = {  };
 __db.chain_prev_quest = chain_prev_quest;
 
@@ -120,7 +122,7 @@ function MarkUnit(quest, unit)
 		end
 	-- end
 end
-function MarkItem(quest, item)
+function MarkItem(quest, item, spawned)
 	-- if HashItem[item] == nil then
 		HashItem[item] = 1;
 		local info = __db_item[item];
@@ -152,7 +154,9 @@ function MarkItem(quest, item)
 			end
 		end
 	-- end
-	MarkItemRelation(quest, item);
+	if spawned == nil or spawned < 2 then
+		MarkItemRelation(quest, item);
+	end
 end
 function MarkObject(quest, object)
 	-- if HashObject[object] == nil then
@@ -307,11 +311,154 @@ local function load_extra_db()
 			end
 		end
 		-->
+		MarkUnit, MarkItem, MarkObject, MarkRefloot, MarkEvent = nil;
+		HashUnit, HashItem, HashObject, HashRefloot, HashEvent = nil;
+		Hash = nil;
+		-->
 		collectgarbage('collect');
 	-->
 	--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.extra_db.mark'); end
 end
 
-__ns.load_extra_db = load_extra_db;
+
+local function VerifyData()
+	_F_CorePrint("|cffff7f00Start|r |cffff0000VerifyData|r");
+	local vitem, vobject, vunit, vrefloot;
+	local VI, VO, VU, VR = {  }, {  }, {  }, {  };
+	function vitem(t, k, id, hu, hi, ho, path)
+		if blacklist_item[id] or VI[id] then
+			return;
+		end
+		path = path .. " item:" .. id;
+		local spawn = __db_item[id];
+			if spawn ~= nil then
+				if hi[id] then
+					return _F_CorePrint("|cffff0000SpawnError|r", path, hi[id]);
+				end
+				hi[id] = true;
+				if spawn.U ~= nil then
+					for unit, _ in next, spawn.U do
+						vunit(t, k, unit, hu, hi, ho, path);
+					end
+				end
+				if spawn.O ~= nil then
+					for object, _ in next, spawn.O do
+						vobject(t, k, object, hu, hi, ho, path);
+					end
+				end
+				if spawn.I ~= nil then
+					for item, _ in next, spawn.I do
+						vitem(t, k, item, hu, hi, ho, path);
+					end
+				end
+				hi[id] = nil;
+			end
+		VI[id] = true;
+	end
+	function vobject(t, k, id, hu, hi, ho, path)
+		if VO[id] then
+			return;
+		end
+		path = path .. " object:" .. id;
+		local info = __db_object[id];
+		if info ~= nil then
+			local spawn = info.spawn;
+			if spawn ~= nil then
+				if ho[id] then
+					return _F_CorePrint("|cffff0000SpawnError|r", path, ho[id]);
+				end
+				ho[id] = true;
+				if spawn.U ~= nil then
+					for unit, _ in next, spawn.U do
+						vunit(t, k, unit, hu, hi, ho, path);
+					end
+				end
+				if spawn.O ~= nil then
+					for object, _ in next, spawn.O do
+						vobject(t, k, object, hu, hi, ho, path);
+					end
+				end
+				if spawn.I ~= nil then
+					for item, _ in next, spawn.I do
+						vitem(t, k, item, hu, hi, ho, path);
+					end
+				end
+				ho[id] = nil;
+			end
+		end
+		VO[id] = true;
+	end
+	function vunit(t, k, id, hu, hi, ho, path)
+		if VU[id] then
+			return;
+		end
+		path = path .. " unit:" .. id;
+		local info = __db_unit[id];
+		if info ~= nil then
+			local spawn = info.spawn;
+			if spawn ~= nil then
+				if hu[id] then
+					return _F_CorePrint("|cffff0000SpawnError|r", path, hu[id]);
+				end
+				hu[id] = true;
+				if spawn.U ~= nil then
+					for unit, _ in next, spawn.U do
+						vunit(t, k, unit, hu, hi, ho, path);
+					end
+				end
+				if spawn.O ~= nil then
+					for object, _ in next, spawn.O do
+						vobject(t, k, object, hu, hi, ho, path);
+					end
+				end
+				if spawn.I ~= nil then
+					for item, _ in next, spawn.I do
+						vitem(t, k, item, hu, hi, ho, path);
+					end
+				end
+				hu[id] = nil;
+			end
+		end
+		VU[id] = true;
+	end
+	function vrefloot(t, k, id, hu, hi, ho, path)
+		if VR[id] then
+			return;
+		end
+		path = path .. " refloot:" .. id;
+		local info = __db_refloot[id];
+		if info ~= nil then
+			if info.U ~= nil then
+				for unit, _ in next, info.U do
+					vunit(t, k, unit, hu, hi, ho, path);
+				end
+			end
+			if info.O ~= nil then
+				for object, _ in next, info.O do
+					vobject(t, k, object, hu, hi, ho, path);
+				end
+			end
+		end
+		VR[id] = true;
+	end
+	for unit, info in next, __db_unit do
+		vunit('unit', unit, unit, {  }, {  }, {  }, "");
+	end
+	for item, info in next, __db_item do
+		vitem('item', item, item, {  }, {  }, {  }, "");
+	end
+	for object, info in next, __db_object do
+		vobject('object', object, object, {  }, {  }, {  }, "");
+	end
+	_F_CorePrint("|cff00ff00Finish|r |cffff0000VerifyData|r");
+end
+
+
+__ns.load_extra_db = function()
+	if __ns.__is_dev then
+		VerifyData();
+	end
+	load_extra_db();
+end
 
 --[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.db-extra'); end

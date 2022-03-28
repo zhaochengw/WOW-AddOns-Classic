@@ -6,3 +6,7 @@
 ## SavedVariables: TDDB_PACK2
 
 Load.xml
+
+## Title-zhCN: |cff880303[有爱]|r tdPack2 背包整理工具
+## X-Vendor: NetEase
+## X-163UI-Version: 20220324111210

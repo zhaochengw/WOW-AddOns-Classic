@@ -17,4 +17,4 @@ Grid2LDB.lua
 
 ## Title-zhCN: |cff880303[有爱]|r Grid2 团队框架数据加载
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220211134516
+## X-163UI-Version: 20220324111210

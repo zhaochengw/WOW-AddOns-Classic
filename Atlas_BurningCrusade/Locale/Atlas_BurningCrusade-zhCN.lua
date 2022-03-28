@@ -39,24 +39,40 @@ L["Advance Scout Chadwick"] = "高级斥候卡德维克"
 L["Aged Dalaran Wizard"] = "老迈的达拉然巫师"
 --[[Translation missing --]]
 --[[ L["Al'ar"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Alexston Chrome <Tavern of Time>"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Alurmi <Keepers of Time Quartermaster>"] = ""--]] 
 L["Aluyen <Reagents>"] = "奥鲁尤 <材料商>"
+--[[Translation missing --]]
+--[[ L["Alyson Antille"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Ambassador Hellmaw"] = ""--]] 
 L["Ambassador Pax'ivi"] = "帕克希维大使"
+--[[Translation missing --]]
+--[[ L["Anachronos <Keepers of Time>"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Andormu <Keepers of Time>"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Anzu"] = ""--]] 
 L["Apoko"] = "埃波克"
 --[[Translation missing --]]
 --[[ L["Apprentice Darius"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Arazmodu <The Scale of Sands>"] = ""--]] 
 L["Arca"] = "Arca"
 --[[Translation missing --]]
 --[[ L["Archmage Alturus"] = ""--]] 
 L["Archmage Leryda"] = "大法师蕾尔达"
+--[[Translation missing --]]
+--[[ L["Arinoth"] = ""--]] 
 L["Artificer Morphalius"] = "工匠莫法鲁斯"
 --[[Translation missing --]]
 --[[ L["Attumen the Huntsman"] = ""--]] 
 L["Auch"] = "Auch"
 L["Avatar of the Martyred"] = "殉难者的化身"
+--[[Translation missing --]]
+--[[ L["Bakkalzu"] = ""--]] 
 L["Barkeep Kelly <Bartender>"] = "酒吧招待凯利 <调酒师>"
 L["Barnes <The Stage Manager>"] = "巴内斯 <舞台管理员>"
 L["Baron Rafe Dreuger"] = "拉弗·杜格尔男爵"
@@ -70,7 +86,11 @@ L["Bilger the Straight-laced"] = "古板的比格尔"
 --[[Translation missing --]]
 --[[ L["Blindeye the Seer"] = ""--]] 
 --[[Translation missing --]]
+--[[ L["Blood Guard Hakkuz <Darkspear Elite>"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Blood Guard Porung"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Bortega <Reagents & Poison Supplies>"] = ""--]] 
 L["Bota"] = "Bota"
 L["Brazen"] = "布拉森"
 --[[Translation missing --]]
@@ -106,6 +126,8 @@ L["Cryo-Engineer Sha'heen"] = "低温工程师沙赫恩"
 --[[Translation missing --]]
 --[[ L["Dalliah the Doomsayer"] = ""--]] 
 --[[Translation missing --]]
+--[[ L["Darkheart"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Darkweaver Syth"] = ""--]] 
 L["Dealer Tariq <Shady Dealer>"] = "商人塔利基 <毒药商>"
 L["Dealer Vijaad"] = "商人维嘉德"
@@ -132,6 +154,8 @@ L["Erozion"] = "伊洛希恩"
 --[[Translation missing --]]
 --[[ L["Essence of Suffering"] = ""--]] 
 L["Ethereal Transporter Control Panel"] = "虚灵传送器控制台"
+--[[Translation missing --]]
+--[[ L["Eulinda <Reagents>"] = ""--]] 
 L["Exarch Larethor"] = "主教拉雷索尔"
 --[[Translation missing --]]
 --[[ L["Exarch Maladaar"] = ""--]] 
@@ -142,10 +166,16 @@ L["Farmer Kent"] = "农夫肯特"
 L["Fel Crystals"] = "邪能水晶"
 --[[Translation missing --]]
 --[[ L["Felmyst"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Fenstalker"] = ""--]] 
 L["Field Commander Mahfuun"] = "战地指挥官玛弗恩"
 L["First Fragment Guardian"] = "第一块碎片的守护者"
 L["Fizzle"] = "菲兹尔"
+--[[Translation missing --]]
+--[[ L["Forest Frogs"] = ""--]] 
 L["Frances Lin <Barmaid>"] = "弗兰斯·林 <招待员>"
+--[[Translation missing --]]
+--[[ L["Galgrom <Provisioner>"] = ""--]] 
 L["Garaxxas"] = "贾拉克萨斯"
 --[[Translation missing --]]
 --[[ L["Gatewatcher Gyro-Kill"] = ""--]] 
@@ -153,6 +183,8 @@ L["Garaxxas"] = "贾拉克萨斯"
 --[[ L["Gatewatcher Iron-Hand"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Gathios the Shatterer"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Gazakroth"] = ""--]] 
 L["GL"] = "GL"
 L["Gradav <The Warlock>"] = "格拉达夫 <术士>"
 --[[Translation missing --]]
@@ -173,8 +205,12 @@ L["Gunny"] = "冈尼"
 L["Hal McAllister"] = "哈尔·马克奥里斯特"
 L["Ha'lei"] = "哈雷"
 --[[Translation missing --]]
+--[[ L["Harald <Food Vendor>"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Harbinger Skyriss"] = ""--]] 
 L["Hastings <The Caretaker>"] = "哈斯汀斯 <看管者>"
+--[[Translation missing --]]
+--[[ L["Hazlek"] = ""--]] 
 L["HC"] = "HC"
 L["Helcular"] = "赫尔库拉"
 L["Herod the Bully"] = "赫洛德"
@@ -211,9 +247,13 @@ L["Julie Honeywell"] = "朱丽·哈尼维尔"
 --[[ L["Kael'thas Sunstrider"] = ""--]] 
 L["Kagani Nightstrike"] = "卡加尼·夜锋"
 --[[Translation missing --]]
+--[[ L["Kaldrick"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Kalecgos"] = ""--]] 
 L["Kamsis <The Conjurer>"] = "卡姆希丝 <咒术师>"
 L["Kara"] = "Kara"
+--[[Translation missing --]]
+--[[ L["Kasha"] = ""--]] 
 L["Keanna's Log"] = "金娜的日记"
 --[[Translation missing --]]
 --[[ L["Keli'dan the Breaker"] = ""--]] 
@@ -224,6 +264,8 @@ L["Keanna's Log"] = "金娜的日记"
 --[[Translation missing --]]
 --[[ L["Kil'rek"] = ""--]] 
 L["Korag Proudmane"] = "克拉格·傲鬃"
+--[[Translation missing --]]
+--[[ L["Koragg"] = ""--]] 
 L["Koren <The Blacksmith>"] = "库雷恩 <铁匠>"
 --[[Translation missing --]]
 --[[ L["Krosh Firehand"] = ""--]] 
@@ -241,9 +283,13 @@ L["Lady Keira Berrybuck"] = "吉拉·拜瑞巴克女伯爵"
 L["Lakka"] = "拉卡"
 L["Landing Spot"] = "着陆点"
 --[[Translation missing --]]
+--[[ L["Lenzo"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Leotheras the Blind"] = ""--]] 
 L["Little Jimmy Vishas"] = "吉米·维沙斯"
 L["Lord Crispin Ference"] = "克里斯宾·费伦斯伯爵"
+--[[Translation missing --]]
+--[[ L["Lord Raadan"] = ""--]] 
 L["Lord Robin Daris"] = "罗宾·达瑞斯伯爵"
 --[[Translation missing --]]
 --[[ L["Lord Sanguinar"] = ""--]] 
@@ -260,6 +306,8 @@ L["Mamdy the \"Ologist\""] = "“杂学家”玛姆迪"
 --[[Translation missing --]]
 --[[ L["Master Engineer Telonicus"] = ""--]] 
 L["MaT"] = "MT"
+--[[Translation missing --]]
+--[[ L["Mawago"] = ""--]] 
 L["Mech"] = "Mech"
 --[[Translation missing --]]
 --[[ L["Mechano-Lord Capacitus"] = ""--]] 
@@ -268,7 +316,13 @@ L["Meeting Stone of Magtheridon's Lair"] = "集合石 - 玛瑟里顿的巢穴"
 --[[Translation missing --]]
 --[[ L["Mekgineer Steamrigger"] = ""--]] 
 --[[Translation missing --]]
+--[[ L["Melasong"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Melissa"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Mennu the Betrayer"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Micah"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Midnight"] = ""--]] 
 L["Millhouse Manastorm"] = "米尔豪斯·法力风暴"
@@ -302,6 +356,10 @@ L["Nexus-Prince Haramad"] = "节点亲王哈拉迈德"
 --[[ L["Nexus-Prince Shaffar"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Nightbane"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Norkani"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Nozari <Keepers of Time>"] = ""--]] 
 L["Okuno <Ashtongue Deathsworn Quartermaster>"] = "沃库诺 <灰舌死誓者军需官>"
 --[[Translation missing --]]
 --[[ L["Olm the Summoner"] = ""--]] 
@@ -342,6 +400,8 @@ L["Red Riding Hood"] = "小红帽"
 L["Reinforced Fel Iron Chest"] = "强化魔铁箱"
 --[[Translation missing --]]
 --[[ L["Reliquary of Souls"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Relissa"] = ""--]] 
 L["Renault Mograine"] = "雷诺·莫格莱尼"
 L["Rifleman Brownbeard"] = "火枪手布隆恩·棕须"
 --[[Translation missing --]]
@@ -354,6 +414,8 @@ L["Rifleman Brownbeard"] = "火枪手布隆恩·棕须"
 --[[ L["Romulo"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Romulo & Julianne"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Rosa"] = ""--]] 
 L["Sa'at <Keepers of Time>"] = "萨艾特 <时光守护者>"
 L["Sally Whitemane"] = "萨莉·怀特迈恩"
 --[[Translation missing --]]
@@ -381,7 +443,11 @@ L["Shattered Hand Executioner"] = "碎手斩杀者"
 --[[ L["Shirrak the Dead Watcher"] = ""--]] 
 L["Skar'this the Heretic"] = "异教徒斯卡希斯"
 L["SL"] = "SL"
+--[[Translation missing --]]
+--[[ L["Slither"] = ""--]] 
 L["Sliver <Garaxxas' Pet>"] = "脆皮 <贾拉克萨斯的宠物>"
+--[[Translation missing --]]
+--[[ L["Soridormi <The Scale of Sands>"] = ""--]] 
 L["Southshore Inn"] = "南海镇旅馆"
 L["SP"] = "SP"
 L["Spiral Stairs to Netherspace"] = "通往虚空异界的楼梯"
@@ -402,6 +468,8 @@ L["SSC"] = "SSC"
 --[[ L["Stairs to Upper Stable"] = ""--]] 
 L["Stalvan Mistmantle"] = "斯塔文·密斯特曼托"
 L["Steps and path to the Blood Furnace"] = "通往鲜血熔炉的阶梯与通道"
+--[[Translation missing --]]
+--[[ L["Steward of Time <Keepers of Time>"] = ""--]] 
 L["Stone Guard Stok'ton"] = "石头守卫斯托克顿"
 --[[Translation missing --]]
 --[[ L["Strawman"] = ""--]] 
@@ -436,6 +504,8 @@ L["The Codex of Blood"] = "鲜血法典"
 --[[ L["The Lurker Below"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["The Maker"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["The Map of Zul'Aman"] = ""--]] 
 L["The Master's Terrace"] = "主宰的露台"
 L["The Saga of Terokk"] = "泰罗克的传说"
 L["The Underspore"] = "幽暗孢子"
@@ -445,6 +515,8 @@ L["Thomas Yance <Travelling Salesman>"] = "托马斯·杨斯 <旅行商人>"
 --[[ L["Thorngrin the Tender"] = ""--]] 
 L["Thrall"] = "萨尔"
 L["Thrall <Warchief>"] = "萨尔 <酋长>"
+--[[Translation missing --]]
+--[[ L["Thurg"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Tinhead"] = ""--]] 
 --[[Translation missing --]]
@@ -456,6 +528,8 @@ L["Towards Reliquary of Souls"] = "通往灵魂之匣"
 L["Towards Teron Gorefiend"] = "通往塔隆·血魔"
 L["T'shu"] = "塔苏"
 L["Tydormu <Keeper of Lost Artifacts>"] = "泰多姆 <失落神器的保管者>"
+--[[Translation missing --]]
+--[[ L["Tyllan"] = ""--]] 
 L["Tyrande Whisperwind <High Priestess of Elune>"] = "泰兰德·语风 <艾露恩的高阶女祭司>"
 L["Tyrith"] = "塔雷斯"
 L["UB"] = "UB"
@@ -468,6 +542,10 @@ L["Udalo"] = "先知乌达鲁"
 --[[ L["Vexallus"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Void Reaver"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Vol'jin"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Voodoo Pile"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Warbringer O'mrogg"] = ""--]] 
 --[[Translation missing --]]
@@ -484,18 +562,26 @@ L["Watcher Jhang"] = "观察者杰哈恩"
 --[[ L["Watchkeeper Gargolmar"] = ""--]] 
 L["Weeder Greenthumb"] = "除草者格林萨姆"
 L["Windcaller Claw"] = "唤风者克劳恩"
+--[[Translation missing --]]
+--[[ L["Witch Doctor T'wansi"] = ""--]] 
 L["Wizard of Oz"] = "绿野仙踪"
 --[[Translation missing --]]
 --[[ L["Wrath-Scryer Soccothrates"] = ""--]] 
 L["Wravien <The Mage>"] = "拉维恩 <法师>"
+--[[Translation missing --]]
+--[[ L["Yarley <Armorer>"] = ""--]] 
 L["Yazzai"] = "亚赛"
 --[[Translation missing --]]
 --[[ L["Yor"] = ""--]] 
 L["Young Blanchy"] = "小马布兰契"
 L["Ythyar"] = "伊萨尔"
+--[[Translation missing --]]
+--[[ L["Zaladormu"] = ""--]] 
 L["Zelfan"] = "扎尔凡"
 --[[Translation missing --]]
 --[[ L["Zereketh the Unbound"] = ""--]] 
 L["Zixil <Aspiring Merchant>"] = "吉克希尔 <有抱负的商人>"
+--[[Translation missing --]]
+--[[ L["Zungam"] = ""--]] 
 
 end

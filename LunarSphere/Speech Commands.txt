@@ -1,0 +1,186 @@
+Speech Command help file
+============================================================
+
+I. Intro
+II. List of commands
+III. Details for each command
+
+============================================================
+I. Intro
+============================================================
+
+LunarSphere has a speech system that allows the user to have
+their character say text in the SAY, GROUP, RAID, EMOTE, or
+WHISPER channels when a spell or item is used. This feature
+also allows the use of special keywords or commands to help
+personalize the text that is spit out. One such example
+could be:
+
+===========================================
+I'm going to heal <target> with <spell>!
+===========================================
+
+Which would replace <target> with the name of your current
+target, and <spell> with the spell or item that was used to
+trigger the speech. There are quite a few speech commands,
+so this file will help you.
+
+============================================================
+II. List of commands
+============================================================
+
+Here is the list of all chat commands in alphabetical order
+
+<emote>
+<focus>
+<mount>
+<newline>
+<party>
+<pet>
+<player>
+<portal>
+<raid>
+<say>
+<sound=PATH\SOUND.WAV>
+<spell>
+<target>
+<whisper>
+<yell>
+
+============================================================
+III. Details for each command
+============================================================
+
+Here are the details:
+
+<emote>
+	Forces the text after this command to be an emote
+	and spoken to the emote channel.
+
+<focus>
+	The focus target's name will replace this command,
+	so you can say the name of your focus. An example
+	could be:
+
+	"I'm getting ready to sheep <focus>!"
+
+	Result:
+	
+	Moongaze says: I'm getting ready to sheep Arthas!
+
+<mount>
+	The name of the mount being summoned will replace
+	this command. This is useful for mount speeches.
+	An example could be:
+
+	"I'm mounting my <mount>!"
+
+	Result:
+
+	Moongaze says: I'm mounting my Black Kodo!
+
+<newline>
+	Forces the speech to be split into another line.
+	This is useful for multi-part speeches. An example
+	could be:
+
+	"Why do I need to summon them?<newline><emote>cries.
+
+	Result:
+	
+	Moongaze says: Why do I need to summon them?
+	Moongaze cries.
+
+<party>
+	Forces the text after this command to be a party
+	speech and spoken to the party channel.
+	
+<pet>
+	The hunter or warlock's pet name will replace this
+	command, so you can say the name of your pet. This
+	typically only works when the pet is already out,
+	sorry =(. An example could be:
+
+	"Come here, <pet>! You get to eat fish!"
+
+	Result:
+	
+	Moongaze says: Come here, Luna! You get to eat fish!
+
+<player>
+	The name of the player will replace this command,
+	so you can say your name, for whatever reason.
+	An example could be:
+
+	"<target>, I'm <player>, your killer!"
+
+	Result:
+	
+	Moongaze says: Arthas, I'm Moongaze, your killer!
+
+<portal>
+	The name of the portal being opened replace this
+	command, so you can say where you are porting to.
+	An example could be:
+
+	"Opening a portal to <portal>! Hop in!"
+	
+	Result:
+
+	Moongaze says: Opening a portal to Dalaran! Hop in!
+
+<raid>
+	Forces the text after this command to be a raid
+	speech and spoken to the raid channel.
+
+<say>
+	Forces the text after this command to be a say
+	speech and spoken to the say channel.
+
+<sound=PATH\SOUND.WAV>
+	This is a special command that plays a sound file
+	in the World of Warcraft folder. This is useful for
+	playing NPC speech sound effects, explosion sounds,
+	or whatever else you want, when you cast a spell or
+	use an item. Remember, only YOU can hear this sound.
+	The PATH must be the location the sound file can be
+	found, from the WOW folder. The SOUND.WAV is the
+	sound file you wish to play, followed by .wav. An
+	example could be:
+
+	"Get over here!<sound=Sound\Creature\HeadlessHorseman\Horseman_Beckon_01.wav>"
+
+	Result:
+
+	Moongaze: Get over here!
+	(sound file with headless horseman saying: "Get over here you idiot!")
+
+<spell>
+	The name of the spell or item being used to trigger
+	the speech will replace this command, so you can say
+	what you are using. An example could be:
+	
+	"<spell> for all!"
+
+	Result:
+
+	Moongaze says: Prayer of Fortitude for all!
+
+<target>
+	The target's name will replace this command, so
+	you can say the name of your target. An example
+	could be:
+
+	"Chaining <target>! You break it, you tank it!"
+
+	Result:
+	
+	Moongaze says: Chaining Zombie! You break it, you tank it!"
+
+<whisper>
+	Forces the text after this command to be a whisper
+	and spoken to the whisper channel to your target.
+	
+<yell>
+	Forces the text after this command to be a yell
+	and spoken to the yell channel.

@@ -39,4 +39,4 @@ source-tbc.lua
 
 ## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 数据
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220120150836
+## X-163UI-Version: 20220324111210

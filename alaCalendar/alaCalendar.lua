@@ -71,7 +71,6 @@ end
 
 
 local LOCALE = GetLocale();
-local curPhase = 6;
 ----------------------------------------------------------------------------------------------------upvalue
 	----------------------------------------------------------------------------------------------------LUA
 	local date, time = date, time;
@@ -760,7 +759,7 @@ do	--	MAIN
 						for _, inst in inext, NS.milestone_list, 0 do
 							if SET.inst_hash[inst] then
 								local val = NS.milestone[inst];
-								if val and val.phase <= curPhase then
+								if val and val.phase <= NS.CUR_PHASE then
 									local first_seen = val.dst and (val[1] - dst_ofs) or val[1];
 									local start_of_day_first_seen = date_engine.get_localized_start_of_day(first_seen);
 									if NOW0 >= start_of_day_first_seen then
@@ -2291,7 +2290,7 @@ do	--	MAIN
 						local VAR = AVAR[key];
 						local var = VAR[inst];
 						local ms = NS.milestone[inst];
-						if ms and ms.phase <= curPhase and SET.inst_hash[inst] then
+						if ms and ms.phase <= NS.CUR_PHASE and SET.inst_hash[inst] then
 							if (var and var[1]) or (SET.show_unlocked and VAR.PLAYER_LEVEL and VAR.PLAYER_LEVEL >= ms.min) or VAR.manual then
 								if add_head then
 									tinsert(list, 'header');
@@ -3709,13 +3708,11 @@ do	--	INITIALIZE
 		SET.show_indicator = false;
 		NS.ui_refresh_config();
 	end
-	function NS.ADDON_LOADED(addon)
-		if addon == ADDON then
-			_EventHandler:UnregEvent("ADDON_LOADED");
-			init();
-		end
+	function NS.PLAYER_ENTERING_WORLD(addon)
+		_EventHandler:UnregEvent("PLAYER_ENTERING_WORLD");
+		init();
 	end
-	_EventHandler:RegEvent("ADDON_LOADED");
+	_EventHandler:RegEvent("PLAYER_ENTERING_WORLD");
 end
 
 do	--	SLASH

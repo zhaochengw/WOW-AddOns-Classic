@@ -252,3 +252,6 @@ ZulFarrak\WitchDoctorZumrah.lua
 ZulFarrak\HydromancerVelrath.lua
 ZulFarrak\Nekrum_Sezzziz.lua
 ZulFarrak\ChiefUkorzSandscalp.lua
+
+## X-Vendor: NetEase
+## X-163UI-Version: 20220324111210

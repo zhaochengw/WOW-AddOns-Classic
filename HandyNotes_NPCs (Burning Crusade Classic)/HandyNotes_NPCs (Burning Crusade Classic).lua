@@ -429,6 +429,7 @@ local defaults = {
 			},
 		},
 		minimapButton = { -- for LibDBIcon
+			minimapPos = 140,
 			hide = false,
 		},
 		button = {

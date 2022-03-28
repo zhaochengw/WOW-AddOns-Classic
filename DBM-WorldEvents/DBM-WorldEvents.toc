@@ -45,3 +45,6 @@ localization.it.lua
 Holidays\Ahune.lua
 Holidays\CorenDirebrew.lua
 Holidays\HeadlessHorseman.lua
+
+## X-Vendor: NetEase
+## X-163UI-Version: 20220324111210

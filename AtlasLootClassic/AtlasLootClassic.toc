@@ -1,6 +1,6 @@
 ## Interface: 20504
 ## Author: Lag
-## Version: v2.4.0
+## Version: v2.4.1-bcc
 ## SavedVariables: AtlasLootClassicDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDBIcon-1.0, LibDataBroker-1.1
 ## DefaultState: Enabled
@@ -106,4 +106,4 @@ Addons\Favourites_GUI.lua
 
 ## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 副本掉落查询
 ## X-Vendor: NetEase
-## X-163UI-Version: 20211111144807
+## X-163UI-Version: 20220324111210

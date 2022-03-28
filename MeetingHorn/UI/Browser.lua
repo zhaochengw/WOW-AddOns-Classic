@@ -121,6 +121,7 @@ function Browser:Constructor()
     SetupQuickButton(self.Quick6, 3923)
     SetupQuickButton(self.Quick7, 3606)
     SetupQuickButton(self.Quick8, 3959)
+    SetupQuickButton(self.Quick9, 3805)
     -- @end-bcc@
 
     self.Activity:SetMenuTable(ns.ACTIVITY_FILTER_MENU)

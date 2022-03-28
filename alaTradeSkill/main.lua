@@ -950,9 +950,9 @@ do	--	SLASH
 			end,
 		},
 	};
-	_G.SLASH_ALATRADEFRAME1 = "/alatradeframe";
-	_G.SLASH_ALATRADEFRAME2 = "/alatf";
-	_G.SLASH_ALATRADEFRAME3 = "/atf";
+	_G.SLASH_ALATRADEFRAME1 = "/alatradeskill";
+	_G.SLASH_ALATRADEFRAME2 = "/alats";
+	_G.SLASH_ALATRADEFRAME3 = "/ats";
 	local SET_PATTERN = "^" .. SEPARATOR .. "set" .. SEPARATOR .. "(.+)" .. SEPARATOR .. "$";
 	local UI_PATTERN = "^" .. SEPARATOR .. "ui" .. SEPARATOR .. "(.+)" .. SEPARATOR .. "$";
 	local DUMP_PATTERN = "^" .. SEPARATOR .. "dump" .. SEPARATOR .. "(.+)" .. SEPARATOR .. "$";

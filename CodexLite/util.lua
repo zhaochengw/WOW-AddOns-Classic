@@ -794,7 +794,7 @@ end
 				end
 			end
 		end
-	-->	Auto Accept and Turnin
+	-->		Auto Accept and Turnin
 		function __ns.GOSSIP_SHOW()
 			local modstate = not quest_auto_inverse_modifier();
 			if not SET.auto_complete ~= modstate then

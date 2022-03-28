@@ -407,6 +407,12 @@ end
 					AddObject(quest, line, object, show_coords, large_pin);
 				end
 			end
+			if spawn.I ~= nil then
+				for item, num in next, spawn.I do
+					local large_pin = __db_large_pin:Check(quest, 'item', item);
+					AddItem(quest, line, item, show_coords, large_pin);
+				end
+			end
 		end
 		function DelSpawn(quest, line, spawn, total_del)
 			if spawn.U ~= nil then
@@ -419,6 +425,12 @@ end
 				for object, _ in next, spawn.O do
 					local large_pin = __db_large_pin:Check(quest, 'object', object);
 					DelObject(quest, line, object, total_del, large_pin);
+				end
+			end
+			if spawn.I ~= nil then
+				for item, num in next, spawn.I do
+					local large_pin = __db_large_pin:Check(quest, 'item', item);
+					DelItem(quest, line, item, total_del, large_pin);
 				end
 			end
 		end

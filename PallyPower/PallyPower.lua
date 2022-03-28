@@ -1616,19 +1616,6 @@ function PallyPower:CHAT_MSG_SYSTEM(event, text)
 	end
 end
 
-function PallyPower:UNIT_AURA(event, unitTarget)
-	local ShowPets = self.opt.ShowPets
-	local isPet = unitTarget:find("pet")
-	local pclass = select(2, UnitClass(unitTarget))
-	if ShowPets then
-		if isPet and (pclass == "MAGE" or pclass == "PALADIN") then --Warlock Imp or Succubus pet
-			self:UpdateLayout()
-			self:UpdateRoster()
-			--self:Debug("EVENT: UNIT_AURA - [Warlock Imp Changed Phase]")
-		end
-	end
-end
-
 function PallyPower:UNIT_SPELLCAST_SUCCEEDED(event, unitTarget, castGUID, spellID)
 	if select(2, UnitClass(unitTarget)) == "PALADIN" then
 		for _, spells in pairs(self.Cooldowns) do
@@ -2006,7 +1993,7 @@ function PallyPower:UpdateRoster()
 			tmp.name = GetUnitName(unitid, true)
 			local ShowPets = self.opt.ShowPets
 			local isPet = tmp.unitid:find("pet")
-			local pclass = select(2, UnitClass(unitid))
+			local pclass = (UnitClassBase(unitid))
 			if ShowPets or (not isPet) then
 				if isPet and pclass == "MAGE" then --Warlock Imp pet
 					local i = 1
@@ -2578,17 +2565,17 @@ function PallyPower:UpdateButton(button, baseName, classID)
 			local gspell = self.GSpells[gspellID]
 			if raidtank == "MAINTANK" then
 				local _, _, buffName = self:IsBuffActive(spell, spell2, unit.unitid)
-				if (buffName == self.GSpells[4] or buffName == self.Spells[4]) then
+				if unit.hasbuff and (buffName == self.GSpells[4] or buffName == self.Spells[4]) then
 					nneed = nneed + 1
 					nhave = nhave - 1
 					if InCombatLockdown() and (buffName ~= self.Spells[7]) then
 						nspecial = nspecial - 1
 					end
-				elseif (buffName ~= self.GSpells[4] and gspellID == 4) or (buffName ~= self.Spells[4] and spellID == 4) then
+				elseif (not unit.hasbuff) and ((buffName ~= self.GSpells[4] and gspellID == 4) or (buffName ~= self.Spells[4] and spellID == 4)) then
 					nhave = nhave + 1
 					nneed = nneed - 1
 				end
-				if (buffName ~= self.Spells[7]) and spellID == 7 then
+				if unit.specialbuff and (not unit.hasbuff) and (buffName ~= self.Spells[7]) and spellID == 7 then
 					nneed = nneed + 1
 					nspecial = nspecial - 1
 				end

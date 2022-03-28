@@ -1,0 +1,44 @@
+Very simple, really.
+
+FOLDERS THAT MUST BE REPLACED EVERY TIME
+=======================================================
+
+- LunarSphere
+- LunarSphereExporter
+
+Whenever upgrading to a new version of LunarSphere,
+ALWAYS delete the original "LunarSphere" folder and
+copy this new folder in its place. DON'T just
+"overwrite" the old folder, since some unzipping
+programs will not do this properly and there will be
+old code mixed with new code, and that's not good.
+
+Also, ALWAYS delete the original "LunarSphereExporter"
+folder and copy this new folder in its place. This
+ensures that the exporting code is always current.
+DON'T just "overwrite" the old folder, since some
+unzipping programs will not do this properly and
+there will be old code mixed with new code, and
+that's not good.
+
+FOLDERS THAT DO NOT NEED TO BE REPLACED
+=======================================================
+
+- LunarSphereImports
+
+You do NOT need to delete the "LunarSphereImports"
+folder. Leave that one be. That's pretty much where
+you store any art you want to import into LunarSphere.
+If you delete it or replace it with the folder in the
+ZIP file, you will need to re-copy all of your art
+again, and that's not fun. So, just leave it alone :)
+However, if you plan to not have any imported art,
+you can delete the folder completely. It does nothing
+except hold art.
+
+Any questions or comments, feel free to visit the home
+of LunarSphere at:
+
+www.lunaraddons.com
+
+-Moongaze (moongazemods@gmail.com)

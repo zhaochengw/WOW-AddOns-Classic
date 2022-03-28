@@ -23,3 +23,6 @@
 ## X-Website: https://deadlybossmods.com
 
 DBT.lua
+
+## X-Vendor: NetEase
+## X-163UI-Version: 20220324111210

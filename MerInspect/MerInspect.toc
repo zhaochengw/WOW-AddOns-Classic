@@ -24,4 +24,4 @@ InspectUnitStats.lua
 
 ## Title-zhCN: |cff880303[有爱]|r MerInspect 观察助手
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220121151626
+## X-163UI-Version: 20220324111210

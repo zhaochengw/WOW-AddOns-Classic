@@ -1,0 +1,45 @@
+﻿## Interface: 11402
+##
+## Version: v1.57
+##
+## Author: Moongaze (Twisting Nether)
+## Fixer:  Shaun Voysey
+## Fixer#2: Toludin (Stormrage)
+## Fixer#3: Fullmoon (Sulfuras)
+##
+## Title: LunarSphere v.1.57
+##
+## Notes: A universal sphere for all classes
+## Title-zhTW: LunarSphere 全職業多功能球體插件 v.1.57
+## Notes-zhTW: 兼具快捷列/修裝/購物/騎乘/消耗品助手...等功能, 超完美的插件。中文化：恰恰@語風
+## Title-zhCN: LunarSphere 全职业多功能球体插件 v.1.57
+## Notes-zhCN: 兼具快捷列/修装/购物/座骑/消耗品助手...等功能, 超完美的插件。中文化：无名人士
+## Title-frFR: LunarSphere v.1.57
+## Notes-frFR: A universal sphere for all classes
+## Title-deDE: LunarSphere v.1.57
+## Notes-deDE: A universal sphere for all classes
+## Title-koKR: LunarSphere v.1.57
+## Notes-koKR: A universal sphere for all classes
+## Title-ruRU: LunarSphere v.1.57
+## Notes-ruRU: A universal sphere for all classes
+## Title-esES: LunarSphere v.1.57
+## Notes-esES: A universal sphere for all classes
+## Title-esMX: LunarSphere v.1.57
+## Notes-esMX: A universal sphere for all classes
+##
+## SavedVariables: LunarSphereGlobal
+## SavedVariablesPerCharacter: LunarSphereSettings, LunarSpeechLibrary
+
+lib\moduleLocale.lua
+lib\moduleMemory.lua
+lib\moduleAPI.lua
+lib\moduleTemplate.lua
+lib\moduleButton.lua
+lib\moduleSphere.lua
+lib\moduleItems.lua
+lib\moduleObject.lua
+lib\moduleSettings.lua
+lib\moduleSpeech.lua
+lib\templatesObject.xml
+LunarSphere.lua
+LunarSphere.xml

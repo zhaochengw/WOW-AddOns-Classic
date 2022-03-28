@@ -41,3 +41,6 @@ Flamegor.lua
 Chromaggus.lua
 Nefarian.lua
 TalonGuards.lua
+
+## X-Vendor: NetEase
+## X-163UI-Version: 20220324111210

@@ -12,10 +12,10 @@
 ## Author: |cff00ff00ALA|r @ |cffff0000163UI|r, Baudzilla(BaudAuction)
 ## Author-zhCN: |cff00ff00ALA|r @ |cffff0000网易有爱|r, Baudzilla(BaudAuction)
 ## Author-zhTW: |cff00ff00ALA|r @ |cffff0000网易有爱|r, Baudzilla(BaudAuction)
-## Version: 205r.220302
+## Version: 205r.220324
 
 alaTrade.xml
 
 ## Title-zhCN: |cff880303[有爱]|r ala 拍卖增强
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220303142735
+## X-163UI-Version: 20220324111210

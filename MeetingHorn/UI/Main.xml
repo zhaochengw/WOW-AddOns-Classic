@@ -182,7 +182,7 @@
                             <Anchor point="LEFT" relativeKey="$parent.Quick7" relativePoint="RIGHT" x="5" y="0"/>
                         </Anchors>
                     </Button>
-                   <Button parentKey="Quick1" inherits="MeetingHornQuickTemplate">
+                    <Button parentKey="Quick1" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Quick7" relativePoint="TOPLEFT" x="2" y="10"/>
@@ -198,6 +198,12 @@
                         <Size x="35" y="22"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Quick2" relativePoint="RIGHT" x="5" y="0"/>
+                        </Anchors>
+                    </Button>
+                    <Button parentKey="Quick9" inherits="MeetingHornQuickTemplate">
+                        <Size x="35" y="22"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick3" relativePoint="RIGHT" x="5" y="0"/>
                         </Anchors>
                     </Button>
                     <Button parentKey="Quick4" inherits="MeetingHornQuickTemplate">

@@ -19,3 +19,7 @@ Locale\deDE.lua
 
 # Core files
 HandyNotes_WorldMapButton.lua
+
+## Title-zhCN: |cff880303[有爱]|r HandyNotes 世界地图开关
+## X-Vendor: NetEase
+## X-163UI-Version: 20220324111210

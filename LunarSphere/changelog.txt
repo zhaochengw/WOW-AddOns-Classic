@@ -1,0 +1,434 @@
+LunarSphere Public Release
+Version 1.57 Changelog
+
+======================
+Bug Fixes
+======================
+
+* Updated the ToC interface version for the Classic client.
+
+======================
+Known Issues
+======================
+
+* The mount buttons might not work for spell mounts: Summon Warhorse, Summon
+  Charger, Summon Felsteed, and Summon Dreadsteed. The workaround is to
+  create a regular button.
+
+If you play a palladin or warlock and are willing to help me fix this, please
+post in the forum.
+
+=======================================================================================
+
+LunarSphere Public Release
+Version 1.56 Changelog
+
+======================
+Bug Fixes
+======================
+
+* Fixed random mount and random ground mount for Classic.
+
+======================
+Known Issues
+======================
+
+* The mount buttons might not work for spell mounts: Summon Warhorse, Summon
+  Charger, Summon Felsteed, and Summon Dreadsteed. The workaround is to
+  create a regular button.
+
+If you play a palladin or warlock and are willing to help me fix this, please
+post in the forum.
+
+=======================================================================================
+
+LunarSphere Public Release
+Version 1.55 Changelog
+
+======================
+Bug Fixes
+======================
+
+* Fixed GameTooltip:GetBackdrop() for Retail and Classic.
+* Fixed exception for the Classic client where GetSpellLink only returns the
+  spell name and not a link.
+
+=======================================================================================
+
+LunarSphere Public Release
+Version 1.54 Changelog
+
+======================
+Bug Fixes
+======================
+
+* Updated detection for healthstones for the Classic clients. The old method
+  only worked for minor healthstones because that's the name of the spell in
+  the Retail client.
+* Updated speech module according to speedwaystar's patch.
+* Quick and dirty fix for Retail 90105
+
+=======================================================================================
+
+LunarSphere Public Release
+Version 1.53 Changelog
+
+======================
+Bug Fixes
+======================
+
+* Added proper support fr AQ40 mounts for Classic and BCC.
+* Added support for BCC 310 % speed mounts. 
+* Changed the randon mount selection for ground mounts, flying mounts, and
+  random mount for Classic and BCC: now the epic mounts are selected over
+  regular mounts.
+* Fixed spell mounts (palladin and warlock) mounts for Classic and BCC
+  (thanks beren12 for the bug report)
+* Fixed exception when calling GetProfessions in Classic and BCC.
+* Fixed master healthstone in BCC.
+* Fixed error in the Retail client that caused an exception when dragging a
+  mount to a action button (thanks nicodemusmercy for the bug report).
+
+=======================================================================================
+
+LunarSphere Public Release
+Version 1.52 Changelog
+
+======================
+Bug Fixes
+======================
+
+* Fixed the special mounts buttons for BCC and Classic.
+* Fixed bug that caused an exception when setting the tooltip of a button with a spell that has been unlearned.
+
+=======================================================================================
+
+
+LunarSphere Public Release
+Version 1.51 Changelog
+
+======================
+Bug Fixes
+======================
+
+*  Fixed Mount Button for Classic and BCC
+
+
+*  Fixed Improved Healthstones as a Healing Item button for Classic and BCC
+
+
+=======================================================================================
+
+
+LunarSphere Public Release
+Version 1.50 Changelog
+
+
+======================
+Bug Fixes
+======================
+
+* Update for BCC. Unified codebase for Retail, BCC, and Classic.
+
+
+=======================================================================================
+
+
+LunarSphere Public Release
+Version 1.42 b2 Changelog:
+
+
+======================
+Bug Fixes
+======================
+
+* Minor updates
+
+
+=======================================================================================
+
+
+LunarSphere Public Release
+Version 1.41 Changelog:
+
+
+======================
+Bug Fixes
+======================
+
+*  LS now works with Classic as well.
+
+
+=======================================================================================
+
+
+LunarSphere Public Release 
+Version 1.40 Changelog:
+
+==================================
+Battle for Azeroth compatibility
+==================================
+
+
+======================
+Known Issues
+======================
+
+*  Toys currently can't be directly added to buttons. You can create a /usetoy macro and put that on a button for now.
+
+
+
+=======================================================================================
+
+
+LunarSphere Public Release 
+Version 1.11 Changelog:
+
+==================================
+Mists of Pandaria compatibility
+==================================
+
+*  Most of the major problems caused by WoW 5.0 have been fixed.
+
+*  Some problems remain and it is quite possible i will be re-writing a lot of LunarSpheres code over the next few months.
+
+======================
+Known Issues
+======================
+
+*  Spells replaced by talents will dissapear from LS when loading templates and occasionally on reloading the UI/game client.
+   The problem is caused by the way blizzard replaces these spells, LS currently can not tell the replacement spell from the original and as such removes them when they aren't found in the spellbook.
+   The only way around this is by using macros
+   (Asphyxiate, Faerie Swarm, Aspect of the Iron Hawk, Greater Invisibility, Chi Torpedo, Eternal Flame, Fist of Justice, Mindbender, Shuriken Toss, Earthgrab Totem, Soul Link, Blood Fear, Impending Victory, Safeguard, Cobra Shot)
+
+*  Under Menu Bar Tabs Toggle Dungeon Journal and Toggle Mounts and Pets are not available
+
+*  Companion pets can not be added to any button
+   
+
+=======================================================================================
+
+
+LunarSphere Public Release 
+Version 1.10 Changelog:
+
+======================
+Feature Additions
+======================
+
+*  WOW 4.0 patch compliance. Yay! (There are too many things to list as "fixed" or "changed" because of the 4.0 update, sooo ... this is all you get for an explaination)
+
+*  Sphere/Gauge Event: Power(x) added, where "x" is none, Eclipse, Holy Power, or Soul Shards. Some classes had a new power mechanic added, and LS will now show you the information from that as well.
+
+*  Sphere Text: Show Percentages added. If a sphere text event it set that can show a value or a percentage, this option will be visible.
+
+*  Buttons - Rogues now have a Shadow Dance stance added to their stance selections. Sadly, Shadow Dance and Vanish will share the SAME stance information, so be warned.
+
+*  Templates - Users may now overwrite templates with the same name! If a template is selected when Save is clicked, the template name field and all sections the original template had saved with it will be auto-filled in. By keeping the name the same, you will overwrite the template with the new data.
+
+
+======================
+Feature Changes
+======================
+
+*  Tab - Other: Modified the display location for the coordinates that are shown on the minimap when time and coordinates are turned on.
+
+
+======================
+Bug Fixes
+======================
+
+*  Fixed an issue where the "Show Count" feature, if turned on for some button types (such as "Toggle Spellbook"), would result in an error.
+
+*  Fixed an issue where some users (not all) who are using the Dual Spec template feature of LunarSphere might get an error upon logging into the game while already in their second spec.
+
+*  Fixed an issue where the button settings window would show old texture information for pet action bar icons or bag icons.
+
+*  Fixed an issue where templates that were being hot-swapped were not clearing out buttons that no longer exist.
+
+*  Fixed an issue where spells given during spec changes were not recognized when the hot-swap dual spec template feature was used. A delay of 0.5 seconds was added before template swapping to ensure that all spells were loaded before the template is applied.
+
+
+
+=======================================================================================
+
+
+LunarSphere Public Release
+Version 1.09 Changelog
+
+======================
+Feature Additions
+======================
+
+*  Templates Tab: Support for Dual Spec templates has been added. Basically, create a template for each spec, select the template from your list of templates to be made into a primary or secondary spec template and click one of the new "Primary" and "Secondary" template buttons (Right clicking the button will remove the Primary or Secondary status of the template). If you have "Hotswap Templates" turned on, this is fast and easy. If you do NOT have hotswap templates turned on, this WILL force a UI reload if you change specs and have a template attached to it.
+
+*  Buttons: The "Toggle Backpack" and "Toggle Bag" button types have new functionality to mimic the bags more accurately. With "Edit Button" mode OFF, you can DRAG the bag icon off of the bag button and move it to a new bag slot that is on LunarSphere, or swap it with another bag at the bank. If the bag is empty, you can drag a new bag onto it to switch out the bag as well. Lastly, you can drop an item that is on your cursor onto a LunarSphere bag button and that bag will take the item (if it can). In other words, the bag button types now function like the original bag buttons on the default WOW UI.
+
+*  DrDamage Support: LunarSphere now has official support via DrDamage, so all the DrDamage text on the LunarSphere buttons can now be handled via DrDamage. This means that you now have access to showing two sets of text on a button (instead of the standard one) and you can set the size of the DrDamage text via the DrDamage addon's interface options. While DrDamage supports LunarSphere now, LunarSphere is still in charge of providing information to DrDamage, meaning that if DrDamage has a new version that handles things differently than before, it will still query LunarSphere for the information it needs and LS will provide it. If LS changes its button database for any reason, the DrDamage support function within LS will be updated as well. This stance of support should ensure than DrDamage and LunarSphere play together very nicely for a very long time.
+
+*  Debug Tab: A new option has been added near the bottom, called "Epic Random Flying (310% only)." Turning this option on will force LunarSphere to pick from the 310% mounts first (if they exist), before going down to the 280% speed mounts for the "Use Epic Random Flying Mount" button types. This is only useful for those who have a ton of 310% speed mounts, so you can have a random rotation without getting 280% speed mounts.
+
+
+======================
+Feature Changes
+======================
+
+*  Mount Buttons: The "Random Ground Mount" and "Random Flying Mount" button types no longer show a generic mount icon, nor do the tooltips say generic mount text. Now, the mount to be used till be shown on the button, and the tooltip will reflect it.
+
+*  Mount Buttons: The tooltip for the mount button type will update when you have your mouse over the button, so you will see the next mount you will summon without having to move the mouse back onto the button.
+
+*  Skin Tab: The way the sphere's skin is handled has been changed a little bit. If the "Use Sphere Click Icon" feature is turned on, the sphere's texture will be set to whatever the sphere's "show icon" setting is set to in the sphere's button settings window. However, the new functionality is that if no texture is found (due to a spell not being on the click action, or the "Show Icon" is set to off for a stance, for example, the normal sphere skin will be used instead. An example of how this could be awesome is if you are a rogue and want your sphere to show your character portrait while you are not stealthed, and the stealth icon when you are stealthed. By turning the "Show Icon" feature off in the Button Settings window for the sphere itself while in humanoid form and turning it on and setting it to the click action for stealth, you will achieve this goal. A little advanced, but it works.
+
+*  Macros: Now, when equipment is changed, macro icons will be re-evaluated and updated if there is new items found. Useful for macros that target an inventory slot, like ammo or trinket macros.
+
+*  Reagent Tab: Now, you users can specify up to 99,999 reagents to be purchased at the limit, instead of 9,999. This was changed to make ammo user's lives easier, now that ammo sizes have increased dramatically. Also, the box of the reagent number has been increased in width to fit
+
+
+======================
+Bug Fixes
+======================
+
+*  Fixed an issue where the new Celestial Steed mount was not recognized as a mount. Its scalable speed will also be considered.
+
+*  Fixed an issue where the Death Knight flying mount would be classified as a ground mount as well.
+
+*  Fixed an issue where a few other mounts were not being recognized properly. Mounts include the Mimiron's Head, Swift Flight Form (Druid, it now scales), and the Engineering flying mounts.
+
+*  Fixed an issue where "Use Random Epic Flying Mount" would pick the first non-epic mount it would find (and typically, always the same one), if no epic mounts were found. Now, it will pick a random non-epic mount if no epic mounts were found.
+
+*  Fixed an issue where having "Show Count" turned on for a button and set to a click action for an Equipment Set would result in an error. This would also happen for "Use last submenu action" button types that grabbed a hold of an Equipment Set button.
+
+*  Fixed an issue where the button type of "Toggle Spellbook" would cause execution taint, preventing users from casting spells from the spellbook.
+
+*  Fixed an issue where having "Show Count" turned on for a button and set to a macro would result in an error.
+
+*  Fixed an issue where LunarSphere could try to buy reagents that have no names (due to server item data still being cached) and, if a reagent was saved without a name as well, this could be problematic, resulting in lots of reagents being bought that shouldn't have. Extremely rare situation, but it could still happen.
+
+*  Fixed various taint issues that could affect the vehicle UI
+
+*  Fixed an issue where turning on DrDamage support for Tooltips wouldn't work unless the DrDamage support for buttons was turned on. Now, these options operate separate of each other.
+
+*  Fixed an issue where the combo point displays for gauges and sphere text would not update unless you switched targets. Now, the proper events are captured to ensure the combo points are updated.
+
+*  Fixed an issue where playing as a stance using character and turning on and then off the Hide UI feature for hiding the Action Buttons would sometimes prevent the stance action bars to re-appear.
+
+*  Fixed an issue where loading a template would also bring with it the sphere's old position that was saved with the template. The sphere wouldn't be moved until the UI was reloaded. Now, the current sphere location will be used when the new template is brought over and saved to the new template data.
+
+*  Fixed an issue where auto-vendoring of junk would not work with a few select NPCs that sold nothing, but could buy back items. Auto-vendoring of junk should work properly in all cases now.
+
+
+
+=======================================================================================
+
+
+LunarSphere Public Release
+Version 1.08 Changelog
+
+======================
+Bug Fixes
+======================
+
+*  Fixed an issue where the old April Fools joke code actually had an error that would render LunarSphere unusable on April 1st.
+
+
+
+=======================================================================================
+
+
+LunarSphere Public Release
+Version 1.07 Changelog
+
+======================
+Bug Fixes
+======================
+
+*  Fixed an issue with keybinds and other addons, such as Dominos.
+
+
+
+=======================================================================================
+
+
+
+LunarSphere Public Release
+Version 1.06 Changelog
+
+======================
+Feature Additions
+======================
+
+*  Stance Support: Based upon user input and tests, I have turned on Stance Support for Warlocks. I have no clue if this works properly other than what people have told me, sooo ... I guess you get Stances if you want them, Warlocks =)
+
+*  Button Type: Added a new mount button type called "Random non-epic mount" that will summon a non-epic mount for you, if you want to use random slow mounts to run with your slow mounted friends =)
+
+*  Speech Tab: Added a new speech command for people to use. It's simple, and is kinda HTML like. It plays sound files. Wooooow. Anyway, the command is this: 
+<sound=SOUNDPATH_AND_SOUND_TO_PLAY>
+
+If I wanted to have the Headless Horseman saying "Get over here you idiot!" when I use the DK's "Get Over Here" spell, simply make a speech in a script with this in it: 
+
+<sound=Sound\Creature\HeadlessHorseman\Horseman_Beckon_01.wav>
+
+and assign that script to the DK's spell and there you have it. Enjoy.
+
+*  Settings Interface: Option sliders now have text boxes instead of the number for what value the slider has. This allows the user to type in values that they would like to use (within the range of the slider ranges), for those instances where the screen resolution prevented the slider from falling on the right number the user wanted. The values for a lot of the sliders have been increased as well, to accommodate the new numbers.
+
+*  Templates: New option added, called "Allow hotswap templates" which will allow for users to switch templates without a user interface reload. When turning this option from off to on, the game will reload to make sure it has the code it needs. As long as you leave it on, you'll be able to hot-swap stuff.
+
+
+======================
+Feature Changes
+======================
+
+
+*  Buttons: The "PVP" button will now show either the Alliance or the Horde PVP icon, based upon character's faction.
+
+
+*  Buttons: The Button Types that use a random epic flying mount will now ignore all 280% speed mounts if you have at least one 310% mount. Thus, you will always get your fastest mounts when using the random feature. If you want the slower 280% mounts too, I advise using the "Random Flying Mount" button types, and not the epic ones ... but you'll also get the 150% speed ones.
+
+*  Hide UI: The "Hide Bottom Bar" Hide UI option used to also hide the background images for the vehicle interface. Now, it shows the vehicle bar background so the floating vehicle buttons and aimming controls don't look silly anymore.
+
+
+======================
+Bug Fixes
+======================
+
+*  Fixed an issue where flying mounts were not being properly sorted for the "Use epic flying mount" button types, and non-epic mounts were being counted as epic.
+
+
+*  Fixed an issue where users that had "Templates" disabled in the Memory tab would experience a loading error that would break LunarSphere.
+
+
+*  Fixed an issue where users with "Hide main menu buttons" turned on would recieve errors due to a bug in Blizzard's code calling a function that no longer exists.
+
+
+*  Fixed an issue where the "PVP Toggle" menu type didn't work.
+
+
+*  Fixed an issue where the "Dungeon Finder Toggle" menu type would cause errors.
+
+
+*  Fixed an issue where loading a template with a specifically assigned mount or pet to a button would not actually load the mount/pet onto the button.
+
+
+*  Fixed an issue where swapping a pet or mount buttons while in "Edit Button" mode would not carry over the pet/mount summoning button code. 
+
+*  Fixed an issue where non-epic flying mounts were being mixed up with flying mounts in the item detection code. When the flying mount speed for non-epic mounts was changed from 100 to 150, LS was not aware and left the original rules in place.
+
+*  Fixed an issue where some mounts were not properly recognized for what they were (Mechano-hog wasn't recognized as an epic ground mount, and some of the drakes which have INCORRECT tooltips have also been converted to their 310% bad selfs). I also added Arthas's mount, the new Valentine's mount, and the Death Knight flying mount, since those tooltips are awkward and don't really tell the speed properly.
+
+*  Fixed an issue where hiding the default action bar buttons would screw with the possess bar to make it unstable and work *sometimes* which, while in a raid, is totally unacceptable. This fix is not fully tested, so if it still freaks out, I will need to do more work.
+
+*  Fixed an issue where hiding and then showing the action bar buttons with LunarSphere, while on a Warrior, would break the action bar and require a reload of the interface.
+
+
+
+
+===========================================
+All previous changelogs can be seen inside
+the changelog board (which also looks better
+and is formatted), found at:
+
+http://lunaraddons.com/forum/index.php?board=29.0
+
+- Moongaze (moongazemods@gmail.com)
+===========================================

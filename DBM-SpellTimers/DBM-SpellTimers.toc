@@ -33,4 +33,4 @@ localization.ru.lua
 SpellTimers.lua
 
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220211134516
+## X-163UI-Version: 20220324111210

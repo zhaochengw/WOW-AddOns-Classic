@@ -1,6 +1,6 @@
 ## Interface: 20504
 ## Author: Lag
-## Version: v2.4.0
+## Version: v2.4.1-bcc
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
 
@@ -40,4 +40,4 @@ droprate.lua
 
 ## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 副本掉落物品数据
 ## X-Vendor: NetEase
-## X-163UI-Version: 20211111144807
+## X-163UI-Version: 20220324111210

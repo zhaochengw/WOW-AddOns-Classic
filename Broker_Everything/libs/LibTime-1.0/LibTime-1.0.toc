@@ -1,4 +1,4 @@
-## Interface: 20504
+## Interface: 90105
 ## Title: Lib: LibTime-1.0
 ## Notes: A little library around date, time and GetGameTime and more...
 ## Author: Hizuro

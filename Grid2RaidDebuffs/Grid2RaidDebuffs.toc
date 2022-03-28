@@ -10,4 +10,4 @@ Grid2RaidDebuffs.lua
 
 ## Title-zhCN: |cff880303[有爱]|r Grid2 首领减益效果数据
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220211134516
+## X-163UI-Version: 20220324111210

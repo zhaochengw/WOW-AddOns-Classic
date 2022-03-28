@@ -40,3 +40,6 @@ Chess.lua
 PrinceMalchezaar.lua
 Nightbane.lua
 NamedBeasts.lua
+
+## X-Vendor: NetEase
+## X-163UI-Version: 20220324111210
