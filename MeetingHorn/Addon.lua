@@ -72,7 +72,9 @@ function Addon:OnInitialize()
 
     _G.MEETINGHORN_DB_CHARACTER_MEMBERS = _G.MEETINGHORN_DB_CHARACTER_MEMBERS or {}
 
-    self.MainPanel = ns.UI.MainPanel:Bind(CreateFrame('Button', nil, UIParent, 'MeetingHornMainPanelTemplate'))
+    self.MainPanel = ns.UI.MainPanel:Bind(CreateFrame('Button', "MeetingHornMainPanel", UIParent, 'MeetingHornMainPanelTemplate'))
+    tinsert(UISpecialFrames, "MeetingHornMainPanel");
+    MeetingHornMainPanel:SetPoint("CENTER")
     self.DataBroker = ns.UI.DataBroker:Bind(MeetingHornDataBroker)
 
     self:RegisterMessage('MEETINGHORN_OPTION_CHANGED_CHATFILTER')
@@ -163,9 +165,11 @@ end
 
 function Addon:Toggle()
     if self.MainPanel:IsShown() then
-        HideUIPanel(self.MainPanel)
+        -- HideUIPanel(self.MainPanel)
+        self.MainPanel:Hide();
     else
-        ShowUIPanel(self.MainPanel)
+        -- ShowUIPanel(self.MainPanel)
+        self.MainPanel:Show();
     end
 
     if ns.LFG:GetCurrentActivity() then
@@ -175,7 +179,8 @@ end
 
 function Addon:OpenEncounter(...)
     if not self.MainPanel:IsShown() then
-        ShowUIPanel(self.MainPanel)
+        -- ShowUIPanel(self.MainPanel)
+        self.MainPanel:Show();
     end
 
     self.MainPanel:SetTab(self.MainPanel.Encounter)

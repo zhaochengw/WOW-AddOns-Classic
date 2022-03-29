@@ -165,6 +165,9 @@ function Activity:GetShortName()
 end
 
 function Activity:GetComment()
+    if self.comment == nil or self.comment == "" then
+        return " ";
+    end
     return self.comment
 end
 
