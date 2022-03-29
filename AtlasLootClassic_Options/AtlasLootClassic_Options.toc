@@ -1,6 +1,6 @@
 ## Interface: 20504
-## Author: Lag
-## Version: v2.4.1-bcc
+## Author: Lag  (Continued by Marsz413@NGA.cn)
+## Version: v2.5.4-bcc
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
 
@@ -48,7 +48,3 @@ Main.lua
 Windows.lua
 MiniMapButton.lua
 Addons.lua
-
-## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 设置界面
-## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210

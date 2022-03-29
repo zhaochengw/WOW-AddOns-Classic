@@ -227,6 +227,7 @@ local TOKEN = {
 	[18704] = { 18714, type = 4 }, -- Mature Blue Dragon Sinew
 	[12871] = { 12895, 0, 12903, 12945, type = 4 }, -- Chromatic Carapace
 	[18706] = { 19024, 0, {18706, 12}, type = 4 }, -- Arena Master
+	[33102] = { {29434, 10}, },
 
 
 	[22523] = { 22523, 22524, 0,
