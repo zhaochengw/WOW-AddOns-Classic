@@ -38,8 +38,8 @@ L:SetOptionLocalization{
 }
 
 L:SetMiscLocalization{
-	PhaseTank		= "땅이 갈라져서 열리기 시작합니다!",
-	PhaseKite		= "분노하여 땅을 내리찍습니다!",
+	PhaseTank		= "분노하여 땅을 내리찍습니다!",
+	PhaseKite		= "땅이 갈라져서 열리기 시작합니다!",
 	ChangeTarget	= "새로운 대상이 필요합니다!",
 	Kite			= "드리블",
 	Tank			= "일반"

@@ -2,6 +2,7 @@
 ..\FrameXML\UI.xsd">
     <Script file="LibStub.lua"/>
     <Script file="LibEvent.lua"/>
+    <Script file="LibItemGem.lua"/>
     <Script file="LibSchedule.lua"/>
     <Script file="LibItemInfo.lua"/>
     <Script file="LibItemEnchant.lua"/>

@@ -37,4 +37,4 @@ cli.lua
 
 ## Title-zhCN: |cff880303[有爱]|r RaidLedger G团助手
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220120164410
+## X-163UI-Version: 20220331145254

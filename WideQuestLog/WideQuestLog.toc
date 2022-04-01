@@ -1,5 +1,9 @@
 ## Interface: 20504
 ## Title: Wide Quest Log
-## Author: bloodline_
+## Author: clonevince
 ## Notes: Doubles the Width of the Quest Log
 WideQuestLog.lua
+
+## Title-zhCN: |cff880303[有爱]|r WideQuestLog 增强任务窗口
+## X-Vendor: NetEase
+## X-163UI-Version: 20220331145254

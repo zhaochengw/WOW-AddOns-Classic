@@ -1,6 +1,6 @@
 ## Interface: 20504
 ## X-Min-Interface: 20501
-## Version: 2.5.30
+## Version: 2.5.31
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Outlands|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0아웃랜드|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Scherbenwelt|r
@@ -40,4 +40,4 @@ Doomwalker.lua
 Quest.lua
 
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+## X-163UI-Version: 20220331145254

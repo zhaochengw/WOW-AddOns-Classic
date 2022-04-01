@@ -13,7 +13,7 @@ local __db__ = __namespace__.__db__;
 
 __db__.__DataVersion = 211227;
 
-__db__.CURPHASE = 3;
+__db__.CURPHASE = 4;
 __db__.MAXPHASE = 5;
 __db__.MAXRANK = 375;
 __db__.DBMINPID = 1;
@@ -4821,3 +4821,8 @@ __db__.T_RaceBonus = {
 		[15] = 5,
 	},
 };
+
+
+if __db__.CURPHASE >= 4 then
+	T_Recipe_Data[47280][index_cid] = 191061;
+end

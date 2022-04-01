@@ -27,6 +27,7 @@ local TidyPlatesThreat = TidyPlatesThreat
 local LibStub = LibStub
 local RGB_WITH_HEX = t.RGB_WITH_HEX
 local L = t.L
+local CVars = Addon.CVars
 
 local _G =_G
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
@@ -779,13 +780,13 @@ function Addon:SetCVarsForOcclusionDetection()
   Addon.CVars:Set("nameplateMaxAlpha", 1)
 
   -- Create enough separation between occluded and not occluded nameplates, even for targeted units
-  local occluded_alpha_mult = tonumber(GetCVar("nameplateOccludedAlphaMult")) or tonumber(GetCVarDefault("nameplateOccludedAlphaMult"))
+  local occluded_alpha_mult = CVars:GetAsNumber("nameplateOccludedAlphaMult")
   if occluded_alpha_mult > 0.9  then
     occluded_alpha_mult = 0.9
     Addon.CVars:Set("nameplateOccludedAlphaMult", occluded_alpha_mult)
   end
 
-  local selected_alpha =  tonumber(GetCVar("nameplateSelectedAlpha")) or tonumber(GetCVarDefault("nameplateSelectedAlpha"))
+  local selected_alpha =  CVars:GetAsNumber("nameplateSelectedAlpha")
   if not selected_alpha or (selected_alpha < occluded_alpha_mult + 0.1) then
     selected_alpha = occluded_alpha_mult + 0.1
     Addon.CVars:Set("nameplateSelectedAlpha", selected_alpha)
@@ -793,7 +794,7 @@ function Addon:SetCVarsForOcclusionDetection()
 
   -- Occlusion detection does not work when a target is selected in Classic, see https://github.com/Stanzilla/WoWUIBugs/issues/134
   if Addon.IS_CLASSIC or Addon.IS_TBC_CLASSIC then
-    local not_selected_alpha =  tonumber(GetCVar("nameplateNotSelectedAlpha")) or tonumber(GetCVarDefault("nameplateNotSelectedAlpha"))
+    local not_selected_alpha =  CVars:GetAsNumber("nameplateNotSelectedAlpha")
     if not not_selected_alpha or (not_selected_alpha < occluded_alpha_mult + 0.1) then
       not_selected_alpha = occluded_alpha_mult + 0.1
       Addon.CVars:Set("nameplateNotSelectedAlpha", not_selected_alpha)
@@ -5210,14 +5211,17 @@ local function CreateColorsSettings()
           },
           PlayerPvPOffSelfPvPOff = { 
             name = L["PvP Off"], 
-            order = 90, type = "color", 
+            order = 90, 
+            type = "color", 
             arg = { "ColorByReaction", "FriendlyPlayer" }, 
+            width = "double",
             desc = L["The (friendly or hostile) player is not flagged for PvP or the player is in a sanctuary."],
           },
           FriendlyOn = { 
             name = L["Friendly PvP On"], 
             order = 100, 
             type = "color", 
+            width = "double",
             arg = { "ColorByReaction", "FriendlyPlayerPvPOn" }, 
             desc = L["The player is friendly to you, and flagged for PvP."],
           },
@@ -5225,6 +5229,7 @@ local function CreateColorsSettings()
             name = L["Hostile PvP On - Self Off"], 
             order = 110, 
             type = "color", 
+            width = "double",
             arg = { "ColorByReaction", "HostilePlayerPvPOnSelfPvPOff" }, 
             desc = L["The player is hostile, and flagged for PvP, but you are not."],
           },
@@ -5232,6 +5237,7 @@ local function CreateColorsSettings()
             name = L["Hostile PvP On - Self On"], 
             order = 120, 
             type = "color", 
+            width = "double",
             arg = { "ColorByReaction", "HostilePlayer" }, 
             desc = L["Both you and the other player are flagged for PvP."],          },
          Spacer3 = GetSpacerEntry(195),
@@ -5837,11 +5843,59 @@ local function CreateHealthbarOptions()
                 set = function(info, val) SetValue(info, not val) end,
               },
               Header = { name = L["Colors"], type = "header", order = 10, },
-              FriendlyColorNPC = { name = L["Friendly NPCs"], order = 20, type = "color", arg = { "ColorByReaction", "FriendlyNPC", }, },
-              FriendlyColorPlayer = { name = L["Friendly Players"], order = 30, type = "color", arg = { "ColorByReaction", "FriendlyPlayer" }, },
-              EnemyColorNPC = { name = L["Hostile NPCs"], order = 40, type = "color", arg = { "ColorByReaction", "HostileNPC" }, },
-              EnemyColorPlayer = { name = L["Hostile Players"], order = 50, type = "color", arg = { "ColorByReaction", "HostilePlayer" }, },
-              NeutralColor = { name = L["Neutral Units"], order = 60, type = "color", arg = { "ColorByReaction", "NeutralUnit" }, },
+              FriendlyColorNPC = { name = L["Friendly NPCs"], order = 10, type = "color", arg = { "ColorByReaction", "FriendlyNPC", }, },
+              EnemyColorNPC = { name = L["Hostile NPCs"], order = 30, type = "color", arg = { "ColorByReaction", "HostileNPC" }, },
+              UnfriendlyFactionCalor = { name = L["Unfriendly"], order = 50, type = "color", arg = { "ColorByReaction", "UnfriendlyFaction" }, },
+              NeutralColor = { name = L["Neutral"], order = 60, type = "color", arg = { "ColorByReaction", "NeutralUnit" }, },
+              Spacer1 = GetSpacerEntry(65),
+              TappedUnitColor = { name = L["Tapped"], order = 70, type = "color", arg = { "ColorByReaction", "TappedUnit" }, },
+              DisconnectedUnitColor = { name = L["Disconnected"], order = 80, type = "color", arg = { "ColorByReaction", "DisconnectedUnit" }, },
+              HeaderPvP = { 
+                name = L["Players"], 
+                type = "header",
+                order = 85,
+              },
+              PlayerPvPOffSelfPvPOff = { 
+                name = L["PvP Off"], 
+                order = 90, 
+                type = "color", 
+                width = "double",
+                arg = { "ColorByReaction", "FriendlyPlayer" }, 
+                desc = L["The (friendly or hostile) player is not flagged for PvP or the player is in a sanctuary."],
+              },
+              FriendlyOn = { 
+                name = L["Friendly PvP On"], 
+                order = 100, 
+                type = "color", 
+                width = "double",
+                arg = { "ColorByReaction", "FriendlyPlayerPvPOn" }, 
+                desc = L["The player is friendly to you, and flagged for PvP."],
+              },
+              HostileOnSelfOff = { 
+                name = L["Hostile PvP On - Self Off"], 
+                order = 110, 
+                type = "color", 
+                width = "double",
+                arg = { "ColorByReaction", "HostilePlayerPvPOnSelfPvPOff" }, 
+                desc = L["The player is hostile, and flagged for PvP, but you are not."],
+              },
+              HostileOnSelfOn = {
+                name = L["Hostile PvP On - Self On"], 
+                order = 120, 
+                type = "color", 
+                width = "double",
+                arg = { "ColorByReaction", "HostilePlayer" }, 
+                desc = L["Both you and the other player are flagged for PvP."],          
+              },
+              Spacer2 = GetSpacerEntry(125),
+              IgnorePvPStatus = {
+                name = L["Ignore PvP Status"],
+                order = 130,
+                type = "toggle",
+                set = SetValue,
+                get = GetValue,
+                arg = { "ColorByReaction", "IgnorePvPStatus" },
+              },
             },
           },
         },

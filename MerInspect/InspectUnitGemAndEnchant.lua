@@ -1,76 +1,4 @@
---  Interface\ItemSocketingFrame\UI-EmptySocket-Red
---  Red, Yellow, Blue, Meta
---  ItemRefTooltipTexture1-9
-local _GemTextureHash = {  };
-for k, v in next, {
-    [ [[Interface\ItemSocketingFrame\UI-EmptySocket-Red]] ] = "Red",
-    [ [[Interface\ItemSocketingFrame\UI-EmptySocket-Yellow]] ] = "Yellow",
-    [ [[Interface\ItemSocketingFrame\UI-EmptySocket-Blue]] ] = "Blue",
-    [ [[Interface\ItemSocketingFrame\UI-EmptySocket-Meta]] ] = "Meta",
-    [ [[Interface/ItemSocketingFrame/UI-EmptySocket-Red]] ] = "Red",
-    [ [[Interface/ItemSocketingFrame/UI-EmptySocket-Yellow]] ] = "Yellow",
-    [ [[Interface/ItemSocketingFrame/UI-EmptySocket-Blue]] ] = "Blue",
-    [ [[Interface/ItemSocketingFrame/UI-EmptySocket-Meta]] ] = "Meta",
-} do
-    _GemTextureHash[k] = v;
-    _GemTextureHash[strlower(k)] = v;
-    _GemTextureHash[strupper(k)] = v;
-end
-local _GemTexture = {
-    ["Red"] = [[Interface\ItemSocketingFrame\UI-EmptySocket-Red]],
-    ["Yellow"] = [[Interface\ItemSocketingFrame\UI-EmptySocket-Yellow]],
-    ["Blue"] = [[Interface\ItemSocketingFrame\UI-EmptySocket-Blue]],
-    ["Meta"] = [[Interface\ItemSocketingFrame\UI-EmptySocket-Meta]],
-};
-local _ReadingTooltipName = gsub("_MerInsRTip" .. tostring(time() or 123456) .. strsub(tostring(random()), -8), "[^a-zA-Z_0-9]", "_");
-local _ReadingTooltip = CreateFrame('GAMETOOLTIP', _ReadingTooltipName, nil, "GameTooltipTemplate");
-_ReadingTooltip:SetClampedToScreen(false);
-_ReadingTooltip:SetOwner(UIParent, "ANCHOR_TOP");
-_ReadingTooltip:ClearAllPoints();
-_ReadingTooltip:SetPoint("BOTTOM", UIParent, "TOP", 0, 100);
-local _ReadingTooltipTexture = {  };
-for i = 1, 9 do 
-    _ReadingTooltipTexture[i] = _G[_ReadingTooltipName .. "Texture" .. i];
-end
-local function _GetItemGemInfo(ItemLink)
-    local id, enchant, gem1, gem2, gem3 = strmatch(ItemLink, "item:(%d+):(%d*):(%d*):(%d*):(%d*):");
-    if id == nil or id == "" then
-        return nil;
-    end
-    _ReadingTooltip:SetHyperlink(ItemLink);
-    _ReadingTooltip:Show();
-    local gems = { gem1, gem2, gem3 };
-    for i = 1, 3 do
-        local gem = gems[i];
-        local T = _ReadingTooltipTexture[i];
-        if T:IsShown() then
-            local Texture = T:GetTexture();
-            local Type = _GemTextureHash[Texture];
-            if gem ~= "" then
-                gems[i] = tonumber(gem);
-                gems[i + 3] = Texture;
-            elseif Type ~= nil then
-                gems[i] = Type;
-                gems[i + 3] = Texture;
-            elseif Texture ~= nil then
-                Type = _GemTextureHash[strlower(Texture)];
-                if Type ~= nil then
-                    gems[i] = Type;
-                    gems[i + 3] = Texture;
-                else
-                    gems[i] = nil;
-                    gems[i + 3] = nil;
-                end
-            else
-                gems[i] = nil;
-                gems[i + 3] = nil;
-            end
-        else
-            return i - 1, gems;
-        end
-    end
-    return 3, gems;
-end
+
 -------------------------------------
 -- 顯示附魔信息 (经典版无宝石)
 -- @Author: M
@@ -79,21 +7,19 @@ end
 
 local addon, ns = ...
 
+local LibItemGem = LibStub:GetLibrary("LibItemGem.7000")
 local LibSchedule = LibStub:GetLibrary("LibSchedule.7000")
 local LibItemEnchant = LibStub:GetLibrary("LibItemEnchant.7000")
 
 --0:optional
 local EnchantParts = {
-    [1] = { 1, HEADSLOT },
-    [3] = { 1, SHOULDERSLOT },
-    [5]  = { 1, CHESTSLOT },
-    [7] = { 1, LEGSSLOT },
-    [8]  = { 1, FEETSLOT },
-    [9]  = { 1, WRISTSLOT },
-    [10] = { 1, HANDSSLOT },
-    [15] = { 1, BACKSLOT },
-    [16] = { 1, MAINHANDSLOT },
-    [17] = { 0, SECONDARYHANDSLOT },
+    [5]  = {1, CHESTSLOT},
+    [8]  = {1, FEETSLOT},
+    [9]  = {1, WRISTSLOT},
+    [10] = {1, HANDSSLOT},
+    [15] = {1, BACKSLOT},
+    [16] = {1, MAINHANDSLOT},
+    [17] = {0, SECONDARYHANDSLOT},
 }
 
 --創建圖標框架
@@ -204,25 +130,30 @@ end
 --讀取並顯示圖標
 local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
     if (not ItemLink) then return 0 end
-    local num = 0
-    local _, link, quality, texture, icon, r, g, b
-    local enchantItemID, enchantID = LibItemEnchant:GetEnchantItemID(ItemLink)
-    local enchantSpellID = LibItemEnchant:GetEnchantSpellID(ItemLink)
-    -- local enchantID, enchantSpellID, enchantItemID = LibItemEnchant:GetEnchant(ItemLink)
-	if (enchantItemID) then
-        num = num + 1
+    local num, info, qty = LibItemGem:GetItemGemInfo(ItemLink)
+    local _, quality, texture, icon, r, g, b
+    for i, v in ipairs(info) do
         icon = GetIconFrame(frame)
-        _, link, quality, _, _, _, _, _, _, texture = GetItemInfo(enchantItemID)
-        r, g, b = GetItemQualityColor(quality or 0)
-        icon.bg:SetVertexColor(r, g, b)
-        icon.texture:SetTexture(texture)
-        UpdateIconTexture(icon, texture, enchantItemID, "item")
-        icon.itemLink = link
+        if (v.link) then
+            _, _, quality, _, _, _, _, _, _, texture = GetItemInfo(v.link)
+            r, g, b = GetItemQualityColor(quality or 0)
+            icon.bg:SetVertexColor(r, g, b)
+            icon.texture:SetTexture(texture or "Interface\\Cursor\\Quest")
+            UpdateIconTexture(icon, texture, v.link, "item")
+        else
+            icon.bg:SetVertexColor(1, 0.82, 0, 0.5)
+            icon.texture:SetTexture("Interface\\Cursor\\Quest")
+        end
+        icon.title = v.name
+        icon.itemLink = v.link
         icon:ClearAllPoints()
-        icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
+        icon:SetPoint("LEFT", anchorFrame, "RIGHT", i == 1 and 6 or 1, 0)
         icon:Show()
         anchorFrame = icon
-	elseif (enchantSpellID) then
+    end
+    local enchantItemID, enchantID = LibItemEnchant:GetEnchantItemID(ItemLink)
+    local enchantSpellID = LibItemEnchant:GetEnchantSpellID(ItemLink)
+    if (enchantSpellID) then
         num = num + 1
         icon = GetIconFrame(frame)
         _, _, texture = GetSpellInfo(enchantSpellID)
@@ -230,6 +161,19 @@ local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
         icon.texture:SetTexture(texture)
         UpdateIconTexture(icon, texture, enchantSpellID, "spell")
         icon.spellID = enchantSpellID
+        icon:ClearAllPoints()
+        icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
+        icon:Show()
+        anchorFrame = icon
+    elseif (enchantItemID) then
+        num = num + 1
+        icon = GetIconFrame(frame)
+        _, ItemLink, quality, _, _, _, _, _, _, texture = GetItemInfo(enchantItemID)
+        r, g, b = GetItemQualityColor(quality or 0)
+        icon.bg:SetVertexColor(r, g, b)
+        icon.texture:SetTexture(texture)
+        UpdateIconTexture(icon, texture, enchantItemID, "item")
+        icon.itemLink = ItemLink
         icon:ClearAllPoints()
         icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
         icon:Show()
@@ -254,27 +198,6 @@ local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
         icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
         icon:Show()
         anchorFrame = icon
-    end
-    local ng, gems = _GetItemGemInfo(ItemLink);
-    if ng ~= nil then
-        for i = 1, ng do
-            local gem = gems[i];
-            num = num + 1;
-            icon = GetIconFrame(frame)
-            if gem == "Red" or gem == "Blue" or gem == "Yellow" or gem == "Meta" then
-                icon.title = ns.L[gem]
-            elseif gem ~= nil then
-                icon.itemLink = "item" .. ": " .. gem;
-            else
-                icon.title = ns.L.UnkGem;
-            end
-            icon.bg:SetVertexColor(1, 1, 1, 1)
-            icon.texture:SetTexture(gems[i + 3] or [[Interface\Icons\INV_Misc_QuestionMark]])
-            icon:ClearAllPoints()
-            icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
-            icon:Show()
-            anchorFrame = icon
-        end
     end
     return num * 18
 end

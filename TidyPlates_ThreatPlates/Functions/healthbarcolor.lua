@@ -10,7 +10,7 @@ local floor = floor
 local abs = abs
 
 -- WoW APIs
-local UnitIsConnected, UnitReaction, UnitCanAttack = UnitIsConnected, UnitReaction, UnitCanAttack
+local UnitIsConnected, UnitReaction, UnitCanAttack, UnitIsPVP = UnitIsConnected, UnitReaction, UnitCanAttack, UnitIsPVP
 local UnitIsPlayer, UnitPlayerControlled = UnitIsPlayer, UnitPlayerControlled
 local UnitThreatSituation, UnitIsUnit, UnitExists, UnitGroupRolesAssigned = UnitThreatSituation, UnitIsUnit, UnitExists, UnitGroupRolesAssigned
 local IsInInstance = IsInInstance
@@ -259,26 +259,20 @@ end
 local function GetColorByReaction(unit)
   local db = Addon.db.profile.ColorByReaction
 
-  -- local UnitPlayerControlled = function(...) return true end
-  -- local UnitIsPVP = function(...) 
-  --   if ... == "player" then return false else return true end
-  -- end
-  -- local UnitCanAttack = function(...) return true end
-
-  -- unit.type, unit.reaction = "PLAYER", "HOSTILE"
-  -- unit_can_attack = true
-  -- unit.blue, unit.green, unit.red = 0, 0.55, 1
-
   -- PvP coloring based on: https://wowpedia.fandom.com/wiki/PvP_flag
   -- Coloring for pets is the same as for the player controlling the pet
   local unit_type = (UnitPlayerControlled(unit.unitid) and "PLAYER") or unit.type
   local color
+  -- * For players and their pets
   if unit_type == "PLAYER" then
-    local unit_is_pvp = UnitIsPVP(unit.unitid) or false
-    local player_is_pvp = UnitIsPVP("player") or false
-    -- Currenty only works for PLAYER, not pets
-    color = db[UNIT_COLOR_MAP[unit.reaction][unit_type][unit_is_pvp][player_is_pvp]]
-  -- unit.type == "NPC" (without pets)
+    if db.IgnorePvPStatus or Addon.IsInPvPInstance then
+      color = (unit.reaction == "HOSTILE" and db.HostilePlayer) or db.FriendlyPlayer
+    else
+      local unit_is_pvp = UnitIsPVP(unit.unitid) or false
+      local player_is_pvp = UnitIsPVP("player") or false
+      color = db[UNIT_COLOR_MAP[unit.reaction][unit_type][unit_is_pvp][player_is_pvp]]
+    end
+  -- * From here: For NPCs (without pets)
   elseif not UnitCanAttack("player", unit.unitid) and unit.blue < 0.1 and unit.green > 0.5 and unit.green < 0.6 and unit.red > 0.9 then
     -- Handle non-attackable units with brown healtbars - currently, I know no better way to detect this.
     color = db.UnfriendlyFaction
@@ -288,48 +282,6 @@ local function GetColorByReaction(unit)
 
   return color
 end
-
---local function GetColorByReaction(unit)
---  local db = Addon.db.profile
---  local db_color = db.ColorByReaction
---
---  local color
---  if not UnitIsConnected(unit.unitid) then
---    color =  db_color.DisconnectedUnit
---  elseif unit.isTapped then
---    color =  db_color.TappedUnit
---  elseif unit.reaction == "FRIENDLY" and unit.type == "PLAYER" then
---    IsFriend = IsFriend or ThreatPlates.IsFriend
---    IsGuildmate = IsGuildmate or ThreatPlates.IsGuildmate
---
---    local db_social = db.socialWidget
---    if db_social.ShowFriendColor and IsFriend(unit) then
---      color =  db_social.FriendColor
---    elseif db_social.ShowGuildmateColor and IsGuildmate(unit) then
---      color =  db_social.GuildmateColor
---    else
---      -- wrong: next elseif missing here color = db_color[reference[unit.reaction][unit.type]]
---    end
---  elseif unit.type == "NPC" and not UnitCanAttack("player", unit.unitid) and UnitReaction("player", unit.unitid) == 3 then
---    -- 1/2 is same color (red), 4 is neutral (yellow),5-8 is same color (green)
---    color = FACTION_BAR_COLORS[3]
---  else
---    color = db_color[reference[unit.reaction][unit.type]]
---  end
---
---  return color
---end
-
---local HEALTHBAR_COLOR_FUNCTIONS = {
---  --  NameOnly = nil,
---  --  empty = nil,
---  --  etotem = nil,
---  unique = UniqueHealthbarColor,
---  totem = TotemHealthbarColor,
---  normal = DefaultHealthbarColor,
---  tank = ThreatHealthbarColor,
---  dps = ThreatHealthbarColor,
---}
 
 function Addon:SetHealthbarColor(unit)
   local style = unit.style

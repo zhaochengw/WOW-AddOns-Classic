@@ -3685,7 +3685,6 @@ do	--	INITIALIZE
 	end
 	local function init()
 		--	NS.db_init();
-		MODIFY_SAVED_VARIABLE();
 		NS.InitTimeZone();
 		NS.RegInstanceEvent();
 		NS.InitDaily();
@@ -3708,11 +3707,23 @@ do	--	INITIALIZE
 		SET.show_indicator = false;
 		NS.ui_refresh_config();
 	end
-	function NS.PLAYER_ENTERING_WORLD(addon)
+	function NS.PLAYER_ENTERING_WORLD()
 		_EventHandler:UnregEvent("PLAYER_ENTERING_WORLD");
+		if not NS.initializeddb then
+			NS.ADDON_LOADED(ADDON);
+		end
 		init();
 	end
 	_EventHandler:RegEvent("PLAYER_ENTERING_WORLD");
+	function NS.ADDON_LOADED(addon)
+		if addon == ADDON then
+			_EventHandler:UnregEvent("ADDON_LOADED");
+			if not NS.initializeddb then
+				MODIFY_SAVED_VARIABLE();
+			end
+		end
+	end
+	_EventHandler:RegEvent("ADDON_LOADED");
 end
 
 do	--	SLASH

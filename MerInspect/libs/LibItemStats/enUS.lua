@@ -4,6 +4,7 @@ local locale = GetLocale()
 if (locale == "enUS" or locale == "enGB") then
 
     LibItemStatsPatterns = {
+        setprefix = "Set:",
         ignore = {
             "^Use",
             "^Chance on hit",
@@ -24,7 +25,7 @@ if (locale == "enUS" or locale == "enGB") then
             { key = "Spirit",    pattern = "Spirit" },
             { key = "hp",        pattern = "生命力$" },
             { key = "mp",        pattern = "法力$" },
-            { key = "Resilience", pattern = "Resilience" },
+            { key = "Resilience", pattern = "Resilience" },		
             { key = "Stamina|Agility|Strength|Intellect|Spirit", pattern = "All Stats" },
             { key = "ManaRestore", pattern = "Mana Regen" },
             { key = "ResistanceFrost",  pattern = "Frost Resistance" },
@@ -55,8 +56,8 @@ if (locale == "enUS" or locale == "enGB") then
             { key = "Parry",   pattern = "招架等級" },
             { key = "Defense", pattern = "Defense" },
             { key = "HitRating", pattern = "命中等級" },
-            { key = "RangedAttackPower", pattern = "ranged Attack Power" },
-            { key = "AttackCrit|RangedAttackCrit", pattern = "致命一擊等級" },
+            { key = "RangedAttackPower", pattern = "ranged Attack Power" },		
+            { key = "AttackCrit|RangedAttackCrit", pattern = "致命一擊等級" },		
             { key = "AttackPower|RangedAttackPower", pattern = "Attack Power" },
         },
         extra = {
@@ -70,7 +71,7 @@ if (locale == "enUS" or locale == "enGB") then
             { key = "SpellHitRating", pattern = "Improves your chance to hit with spells by (%d+)" },
             { key = "HasteSpell", pattern = "提高法術加速等級(%d+)" },
             { key = "SpellCrit", pattern = "Improves your chance to get a critical strike with spells by (%d+)" },
-            { key = "SpellStrike", pattern = "法術穿透力提高(%d+)" },
+            { key = "SpellStrike", pattern = "法術穿透力提高(%d+)" },		
             { key = "SpellDamage|Healing", pattern = "Increases damage and healing done by magical spells and effects by up to (%d+)" },
             { key = "Healing", pattern = "Increases healing done by spells and effects by up to (%d+)" },
             { key = "DamageFrost", pattern = "Increases damage done by Frost spells and effects by up to (%d+)" },
@@ -80,8 +81,8 @@ if (locale == "enUS" or locale == "enGB") then
             { key = "DamageNature", pattern = "Increases damage done by Nature spells and effects by up to (%d+)" },
             { key = "DamageHoly", pattern = "Increases damage done by Holy spells and effects by up to (%d+)" },
             { key = "HasteMelee", pattern = "提高加速等級(%d+)" },
-            { key = "RangedAttackPower", pattern = "提高遠程攻擊強度(%d+)" },
-            { key = "AttackCrit|RangedAttackCrit", pattern = "Improves your chance to get a critical strike by (%d+)" },
+            { key = "RangedAttackPower", pattern = "提高遠程攻擊強度(%d+)" },		
+            { key = "AttackCrit|RangedAttackCrit", pattern = "Improves your chance to get a critical strike by (%d+)" },		
             { key = "AttackPower|RangedAttackPower", pattern = "提高攻擊強度(%d+)" },
             { key = "HitRating", pattern = "提高命中等級(%d+)" },
             { key = "Parry", pattern = "Increases your chance to parry an attack by (%d+)" },
@@ -89,7 +90,7 @@ if (locale == "enUS" or locale == "enGB") then
             { key = "Dodge", pattern = "Increases your chance to dodge an attack by (%d+)" },
             { key = "Block", pattern = "Increases the block value of your shield by (%d+)" },
             { key = "ReduceResistance", pattern = "使你法術目標的魔法抗性降低(%d+)點。" },
-            { key = "RangedAttackPower", pattern = "遠程攻擊強度提高(%d+)" },
+            { key = "RangedAttackPower", pattern = "遠程攻擊強度提高(%d+)" },		
             { key = "HitRating", pattern = "Improves your chance to hit by (%d+)" },
         },
         percent = {
@@ -100,7 +101,7 @@ if (locale == "enUS" or locale == "enGB") then
             { key = "DamageFire|DamageArcane", value = 50, pattern = "烈日火焰$" },
             { key = "ResistanceComa", value = 5, pattern = "昏迷抗性" },
             { key = "ManaRestore|HealthRestore", value = 4, pattern = "活力$" },
-            { key = "AttackPower|RangedAttackPower", value = 70, pattern = "野性$" },
+            { key = "AttackPower|RangedAttackPower", value = 70, pattern = "野性$" },		
             { key = "MountSpeed", value = 4, pattern = "秘銀馬刺" },
             { key = "MountSpeed", value = 2, pattern = "坐騎移動速度略微提升" },
             { key = "MountSpeed", value = 10, pattern = "坐騎速度提高10%%" },
@@ -126,10 +127,10 @@ if (locale == "enUS" or locale == "enGB") then
             { key = "ResistanceFrost", pattern = "冰霜抗性提高(%d+)"},
             { key = "Stamina|Agility|Strength|Intellect|Spirit", percent = true, pattern = "all attributes by (%d+)%%"},
             { key = "Stamina|Agility|Strength|Intellect|Spirit", pattern = "all attributes by (%d+)"},
-            { key = "ResistanceFrost|ResistanceShadow|ResistanceArcane|ResistanceFire|ResistanceNature|ResistanceHoly", pattern = "all resistances by (%d+)"},
+            { key = "ResistanceFrost|ResistanceShadow|ResistanceArcane|ResistanceFire|ResistanceNature|ResistanceHoly", pattern = "all resistances by (%d+)", conflict = true },
             { key = "ManaRestore", pattern = "每5秒恢復(%d+)點法力"},
             { key = "HealthRestore", pattern = "每5秒恢復(%d+)點生命"},
-
+            
             { key = "SpellCrit", percent = true, pattern = "法術造成致命一擊的機率提高(%d+)%%"},
             { key = "Dodge", percent = true, pattern = "閃躲機率提高(%d+)%%"},
             { key = "AttackPower", pattern = "近戰攻擊強度提高(%d+)"},
@@ -149,14 +150,14 @@ if (locale == "enUS" or locale == "enGB") then
             { key = "Spirit", pattern = "精神提高(%d+)"},
             { key = "Intellect|Spirit", pattern = "智力和精神提高(%d+)"},
             { key = "SpellDamage", pattern = "法術傷害和治療效果提高最多(%d+)"},
-            { key = "SpellCrit", pattern = "法術致命一擊等級提高(%d+)"},
+            { key = "SpellCrit", pattern = "法術致命一擊等級提高(%d+)"},		
             { key = "AttackCrit|RangedAttackCrit", pattern = "致命一擊提高(%d+)"},
             { key = "SpellDamage", pattern = "法術傷害提高(%d+)"},
             { key = "SpellDamage", pattern = "法術傷害提高最多(%d+)"},
             { key = "DamageShadow", baseon = "SpellDamage", percent = true, pattern = "造成的暗影傷害提高(%d+)%%"},
-            { key = "ArmorReduce2", pattern = "受到物理攻擊時承受的傷害降低(%d+)%%"},
+            { key = "ArmorReduce2", pattern = "受到物理攻擊時承受的傷害降低(%d+)%%"},	
         },
-
+        
     }
 
 end

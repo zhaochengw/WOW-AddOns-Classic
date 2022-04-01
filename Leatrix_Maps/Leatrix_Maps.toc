@@ -3,7 +3,7 @@
 ## Title: Leatrix Maps
 ## Notes: Enhancements for your maps.
 
-## Version: 2.5.95
+## Version: 2.5.96
 ## Author: Leatrix
 ## SavedVariables: LeaMapsDB
 
@@ -17,4 +17,4 @@ Leatrix_Maps.lua
 
 ## Title-zhCN: |cff880303[有爱]|r Leatrix_Maps 世界地图增强
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+## X-163UI-Version: 20220331145254

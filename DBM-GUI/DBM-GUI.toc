@@ -25,7 +25,7 @@
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: ee7a996
+## Version: a163ba7
 ## X-Website: https://deadlybossmods.com
 
 localization.en.lua
@@ -76,4 +76,4 @@ modules\options\frames\Range.lua
 modules\options\frames\Nameplate.lua
 
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+## X-163UI-Version: 20220331145254

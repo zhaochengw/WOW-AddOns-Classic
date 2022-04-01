@@ -5,7 +5,7 @@
 ---------------------------------------------------------------------------------------------------
 local L = Addon.ThreatPlates.L
 
-local DEBUG = Addon.ThreatPlates.Meta("version") == "10.3.2"
+local DEBUG = Addon.ThreatPlates.Meta("version") == "10.3.4"
 local function toggleDPS()
 	Addon:SetRole(false)
 	Addon.db.profile.threat.ON = true
@@ -120,7 +120,7 @@ local function ChatCommandDebug(cmd_list)
 	elseif command == "unit" then
 		local plate = C_NamePlate.GetNamePlateForUnit("target")
 		if not plate then return end
-		Addon.Debug.PrintUnit(plate.TPFrame.unit)
+		Addon.Debug.PrintUnit(plate.TPFrame.unit, true)
 		--elseif command == "migrate" then
 		--	Addon.TestMigration()
 		--	Addon.MigrateDatabase(TP.Meta("version"))

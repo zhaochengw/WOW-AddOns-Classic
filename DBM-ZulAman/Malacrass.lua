@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Malacrass", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116041726")
+mod:SetRevision("20220324233154")
 mod:SetCreatureID(24239)
 mod:SetEncounterID(1193, 2486)
 mod:SetZone()
@@ -11,7 +11,7 @@ mod:RegisterCombat("combat_yell", L.YellPull)
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 43501 43421",
 	"SPELL_CAST_START 43548 43451 43431",
-	"SPELL_CAST_SUCCESS 43383 43329",
+	"SPELL_CAST_SUCCESS 43383",--43329
 	"SPELL_SUMMON 43436"
 )
 
@@ -22,7 +22,7 @@ local warnHeal1		= mod:NewCastAnnounce(43548, 3)
 local warnHeal2		= mod:NewCastAnnounce(43451, 3)
 local warnHeal3		= mod:NewCastAnnounce(43431, 3)
 local warnHeal4		= mod:NewTargetNoFilterAnnounce(43421, 3)
-local warnPatch		= mod:NewSpellAnnounce(43429, 3)
+--local warnPatch		= mod:NewSpellAnnounce(43429, 3)
 
 local specWarnBolt	= mod:NewSpecialWarningSpell(43383, nil, nil, nil, 2, 2)
 local specWarnHeal1	= mod:NewSpecialWarningInterrupt(43548, "HasInterrupt", nil, nil, 1, 2)
@@ -34,7 +34,7 @@ local specWarnTotem	= mod:NewSpecialWarningSwitch(43436, "Dps", nil, nil, 1, 2)
 local timerSiphon	= mod:NewTargetTimer(30, 43501, nil, nil, nil, 6)
 local timerBoltCD	= mod:NewCDTimer(41, 43383, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 local timerBolt		= mod:NewCastTimer(10, 43383, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
-local timerPatch	= mod:NewCastTimer(20, 43429, nil, nil, nil, 3)
+--local timerPatch	= mod:NewCastTimer(20, 43429, nil, nil, nil, 3)
 
 function mod:OnCombatStart(delay)
 	timerBoltCD:Start(30)
@@ -87,9 +87,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnBoltSoon:Schedule(35)
 		timerBolt:Start()
 		timerBoltCD:Start()
-	elseif args:IsSpellID(43329) then
-		warnPatch:Show()
-		timerPatch:Start()
+--	elseif args:IsSpellID(43329) then
+--		warnPatch:Show()
+--		timerPatch:Start()
 	end
 end
 

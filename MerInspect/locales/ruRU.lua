@@ -36,12 +36,6 @@ ns.L = {
     PaperDoll                   = "Окно персонажа",
     Chat                        = "Чат",
     --Loot                        = "",
-    --
-    Red = "Red",
-    Yellow = "Yellow",
-    Blue = "Blue",
-    Meta = "Meta",
-    UnkGem = "Unknown",
 }
 
 BINDING_NAME_InspectRaidFrame = "рамку"

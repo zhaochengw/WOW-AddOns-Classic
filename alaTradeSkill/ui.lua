@@ -1439,7 +1439,7 @@ end
 			elseif IsAltKeyDown() then
 				local text1 = nil;
 				local text2 = nil;
-				if data then
+				if data and __db__.T_TradeSkill_ID[frame.flag] ~= nil then
 					local n = frame.F_GetRecipeNumReagents(data);
 					if n and n > 0 then
 						local m1, m2 = frame.F_GetRecipeNumMade(data);
@@ -3393,8 +3393,10 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 			SetTradeSkillSubClassFilter(0, 1, 1);
 			UIDropDownMenu_SetSelectedID(TradeSkillSubClassDropDown, 1);
 			SetTradeSkillInvSlotFilter(0, 1, 1);
-			SetTradeSkillItemNameFilter(nil);
-			SetTradeSkillItemLevelFilter(0, 0);
+			if __namespace__.__is_bcc then
+				SetTradeSkillItemNameFilter(nil);
+				SetTradeSkillItemLevelFilter(0, 0);
+			end
 			UIDropDownMenu_SetSelectedID(TradeSkillInvSlotDropDown, 1);
 			ExpandTradeSkillSubClass(0);
 			if __namespace__.__is_bcc then

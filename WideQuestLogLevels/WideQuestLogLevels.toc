@@ -1,9 +1,9 @@
 ## Interface: 20504
 ## Title: Wide Quest Log Levels
-## Author: bloodline_
+## Author: clonevince
 ## Notes: Adds Level Badges to the Quest Log Overview
 WideQuestLogLevels.lua
 
 ## Title-zhCN: |cff880303[有爱]|r WideQuestLog 任务等级模块
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220120164410
+## X-163UI-Version: 20220331145254

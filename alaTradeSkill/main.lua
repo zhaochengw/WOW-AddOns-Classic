@@ -278,7 +278,7 @@ __namespace__:BuildEnv("main");
 	-->		ADDON_LOADED
 	local B_MonitoringAddOnLoad = false;
 	local T_AddOnCallback = {  };
-	function F.ADDON_LOADED(addon)
+	local function LF_ADDON_LOADED(addon)
 		addon = strupper(addon);
 		local callback = T_AddOnCallback[addon];
 		if callback then
@@ -293,6 +293,7 @@ __namespace__:BuildEnv("main");
 		end
 	end
 	local function LF_StartMonitoringAddOnLoad()
+		F.ADDON_LOADED = LF_ADDON_LOADED;
 		F:RegisterEvent("ADDON_LOADED");
 		B_MonitoringAddOnLoad = true;
 		for addon, callback in next, T_AddOnCallback do
@@ -532,21 +533,10 @@ local F_SafeCall = __namespace__.F_SafeCall;
 	end
 -->		Initialize
 	local isInitialized = false;
+	local isDBInitialized = false;
 	local function LF_Init()
 		if not isInitialized then
 			isInitialized = true;
-			if not F_SafeCall(LF_ModifySavedVariable) then
-				local fav = alaTradeSkillSV.fav;
-				alaTradeSkillSV = nil;
-				if F_SafeCall(LF_ModifySavedVariable) then
-					if type(fav) == 'table' then
-						FAV = fav;
-						alaTradeSkillSV.fav = fav;
-					end
-				else
-					__namespace__._error_("|cffff0000alaTradeSkill fetal error");
-				end
-			end
 			--
 			F_SafeCall(__namespace__.init_db);		--	!!!must be earlier than any others!!!
 			F_SafeCall(__namespace__.init_ui);
@@ -571,9 +561,32 @@ local F_SafeCall = __namespace__.F_SafeCall;
 	end
 	local function LOADING_SCREEN_DISABLED()
 		__namespace__:UnregisterEvent("LOADING_SCREEN_DISABLED");
+		if not isDBInitialized then
+			__namespace__:FireEvent(__addon__);
+		end
 		C_Timer_After(1.0, LF_Init);
 	end
 	__namespace__:RegisterEvent("LOADING_SCREEN_DISABLED", LOADING_SCREEN_DISABLED);
+	local function ADDON_LOADED(addon)
+		if addon == __addon__ then
+			__namespace__:UnregisterEvent("ADDON_LOADED");
+			if not isDBInitialized then
+				if not F_SafeCall(LF_ModifySavedVariable) then
+					local fav = alaTradeSkillSV.fav;
+					alaTradeSkillSV = nil;
+					if F_SafeCall(LF_ModifySavedVariable) then
+						if type(fav) == 'table' then
+							FAV = fav;
+							alaTradeSkillSV.fav = fav;
+						end
+					else
+						__namespace__._error_("|cffff0000alaTradeSkill fetal error");
+					end
+				end
+			end
+		end
+	end
+	__namespace__:RegisterEvent("ADDON_LOADED", ADDON_LOADED);
 -->
 
 

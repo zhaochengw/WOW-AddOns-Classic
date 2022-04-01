@@ -2360,7 +2360,6 @@ function func.BANKFRAME_CLOSED(...)
 	var.isBankOpened = false;
 end
 function func.init()
-	func.init_variables();
 	saved_sets = alaGearManSV.sets[GUID];
 	if saved_sets == nil then
 		saved_sets = {  };
@@ -2380,12 +2379,24 @@ function func.PLAYER_REGEN_ENABLED()
 end
 function func.PLAYER_ENTERING_WORLD()
 	_EventHandler:UnregisterEvent("PLAYER_ENTERING_WORLD");
+	if not NS.initializeddb then
+		func.ADDON_LOADED(ADDON);
+	end
 	if InCombatLockdown() then
 		_EventHandler:RegEvent("PLAYER_REGEN_ENABLED");
 	else
 		C_Timer.After(0.1, func.init);
 	end
 	if __ala_meta__.initpublic then __ala_meta__.initpublic(); end
+end
+function func.ADDON_LOADED(addon)
+	if addon == ADDON then
+		_EventHandler:UnregisterEvent("ADDON_LOADED");
+		if not NS.initializeddb then
+			NS.initializeddb = true;
+			func.init_variables();
+		end
+	end
 end
 
 function _EventHandler:RegEvent(event)
@@ -2484,6 +2495,7 @@ do	--	extern style
 end
 
 _EventHandler:RegEvent("PLAYER_ENTERING_WORLD");
+_EventHandler:RegEvent("ADDON_LOADED");
 
 _G.AGM_FUNC = func;
 

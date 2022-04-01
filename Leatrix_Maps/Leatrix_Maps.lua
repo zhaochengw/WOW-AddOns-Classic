@@ -1,6 +1,6 @@
 ﻿
 	----------------------------------------------------------------------
-	-- 	Leatrix Maps 2.5.95 (23rd March 2022)
+	-- 	Leatrix Maps 2.5.96 (30th March 2022)
 	----------------------------------------------------------------------
 
 	-- 10:Func, 20:Comm, 30:Evnt, 40:Panl
@@ -12,7 +12,7 @@
 	local LeaMapsLC, LeaMapsCB, LeaDropList, LeaConfigList = {}, {}, {}, {}
 
 	-- Version
-	LeaMapsLC["AddonVer"] = "2.5.95"
+	LeaMapsLC["AddonVer"] = "2.5.96"
 
 	-- Get locale table
 	local void, Leatrix_Maps = ...
@@ -1010,9 +1010,6 @@
 				--[[Westfall]]				[1436] = {minLevel = 10, 	maxLevel = 20,		minFish = "1",},
 				--[[Western Plaguelands]]	[1422] = {minLevel = 51, 	maxLevel = 58,		minFish = "205",},
 				--[[Wetlands]]				[1437] = {minLevel = 20, 	maxLevel = 30,		minFish = "55",},
-											[1941] = {minLevel = 1, 	maxLevel = 10,		minFish = "1",},
-											[1942] = {minLevel = 10, 	maxLevel = 20,		minFish = "1",},
-											[1954] = {},
 
 				-- Kalimdor
 				--[[Ashenvale]]				[1440] = {minLevel = 18, 	maxLevel = 30,		minFish = "55",},
@@ -1036,9 +1033,6 @@
 				--[[Thunder Bluff]]			[1456] = {minFish = 1,},
 				--[[Un'Goro Crater]]		[1449] = {minLevel = 48, 	maxLevel = 55,		minFish = "205",},
 				--[[Winterspring]]			[1452] = {minLevel = 55, 	maxLevel = 60,		minFish = "330",},
-											[1943] = {minLevel = 1, 	maxLevel = 10,		minFish = "1",},
-											[1950] = {minLevel = 10, 	maxLevel = 20,		minFish = "1",},
-											[1947] = {},
 
 				-- Outland
 				--[[Blade's Edge Mntains]]	[1949] = {minLevel = 65, 	maxLevel = 70,},
@@ -1048,7 +1042,6 @@
 				--[[Shadowmoon Valley]]		[1948] = {minLevel = 67, 	maxLevel = 70,		minFish = "280",},
 				--[[Terokkar Forest]]		[1952] = {minLevel = 62, 	maxLevel = 70,		minFish = "355 (405)",},
 				--[[Zangarmarsh]]			[1946] = {minLevel = 60, 	maxLevel = 63,		minFish = "305 (355)",},
-											[1955] = {minLevel = 60, 	maxLevel = 70,},
 
 			}
 
@@ -1954,9 +1947,6 @@
 				--[[Tanaris]] [1446] = {
 					{"Dungeon", 38.7, 20.0, L["Zul'Farrak"], L["Dungeon"], dnTex, 42, 46, 35, 42, 50},
 					{"Dunraid", 65.7, 49.9, L["Caverns of Time"], L["Black Morass"] .. ", " .. L["Hyjal Summit"] .. ", " .. L["Old Hillsbrad"], dnTex, 66, 68, 66},
-					{"Dungeon", 55.6, 53.7, L["旧希尔斯布莱德丘陵"], L["Dungeon"], dnTex, 66, 68, 66},
-					{"Dungeon", 57.4, 62.8, L["黑暗沼泽"], L["Dungeon"], dnTex, 66, 68, 66},
-					{"Raid", 57.3, 50.0, L["海加尔山"], L["Raid"], rdTex, 70, 70},
 					{"FlightA", 51.0, 29.3, L["Gadgetzan"] .. ", " .. L["Tanaris"], nil, tATex, nil, nil},
 					{"FlightH", 51.6, 25.4, L["Gadgetzan"] .. ", " .. L["Tanaris"], nil, tHTex, nil, nil},
 					{"Spirit", 53.9, 28.8, L["Spirit Healer"], nil, spTex, nil, nil},
@@ -2181,10 +2171,6 @@
 					{"FlightH", 33.0, 51.0, L["Zabra'jin"] .. ", " .. L["Zangarmarsh"], nil, tHTex, nil, nil},
 					{"FlightH", 84.8, 55.0, L["Swamprat Post"] .. ", " .. L["Zangarmarsh"], nil, tHTex, nil, nil},
 					{"Dunraid", 50.4, 40.9, L["Coilfang Reservoir"], L["Serpentshrine Cavern"] .. ", " .. L["Slave Pens"] .. ", " .. L["Steamvault"] .. ", " .. L["Underbog"], dnTex, 62, 70, 55},
-					{"Dungeon", 54.4, 34.6, L["幽暗沼泽"], L["Dungeon"], dnTex, 62, 70, 55},
-					{"Dungeon", 48.9, 35.6, L["奴隶围栏"], L["Dungeon"], dnTex, 69, 70, 55},
-					{"Dungeon", 50.3, 33.3, L["蒸汽地窟"], L["Dungeon"], dnTex, 69, 70, 65},
-					{"Raid", 51.9, 33.2, L["毒蛇神殿"], L["Raid"], rdTex, 70, 70},
 					{"Spirit", 17.0, 48.1, L["Spirit Healer"], nil, spTex, nil, nil},
 					{"Spirit", 36.8, 47.7, L["Spirit Healer"], nil, spTex, nil, nil},
 					{"Spirit", 43.6, 31.7, L["Spirit Healer"], nil, spTex, nil, nil},
@@ -2223,9 +2209,6 @@
 
 			function LeaMix:RefreshAllData()
 
-				if _163LeatrixMapMinimap ~= nil then
-					_163LeatrixMapMinimap:Clear();
-				end
 				-- Remove all pins created by Leatrix Maps
 				self:GetMap():RemoveAllPinsByTemplate("LeaMapsGlobalPinTemplate")
 
@@ -2363,22 +2346,11 @@
 									pin.Texture:SetRotation(pinInfo[12])
 									pin.HighlightTexture:SetRotation(pinInfo[12])
 								end
-								if _163LeatrixMapMinimap ~= nil then
-									_163LeatrixMapMinimap.Add(pMapID, pinInfo, myPOI, pin.Texture);
-								end
 							end
 
 						end
 					end
 
-				end
-			end
-			function LeaMix:OnHide()
-				if not IsInInstance() then
-					local map = C_Map.GetBestMapForUnit('player');
-					if map ~= nil then
-						WorldMapFrame:SetMapID(map);
-					end
 				end
 			end
 
@@ -2439,7 +2411,7 @@
 				LeaMapsLC["ShowDungeonIcons"] = "On"
 				LeaMapsLC["ShowTravelPoints"] = "On"
 				LeaMapsLC["ShowTravelOpposing"] = "Off"
-				LeaMapsLC["ShowSpiritHealers"] = "Off"
+				LeaMapsLC["ShowSpiritHealers"] = "On"
 				LeaMapsLC["ShowZoneCrossings"] = "On"
 				SetPointsOfInterest()
 				poiFrame:Hide(); poiFrame:Show()
@@ -2452,7 +2424,7 @@
 					LeaMapsLC["ShowDungeonIcons"] = "On"
 					LeaMapsLC["ShowTravelPoints"] = "On"
 					LeaMapsLC["ShowTravelOpposing"] = "Off"
-					LeaMapsLC["ShowSpiritHealers"] = "Off"
+					LeaMapsLC["ShowSpiritHealers"] = "On"
 					LeaMapsLC["ShowZoneCrossings"] = "On"
 					SetPointsOfInterest()
 					if poiFrame:IsShown() then poiFrame:Hide(); poiFrame:Show(); end
@@ -3674,6 +3646,11 @@
 				wipe(LeaMapsDB)
 				LeaMapsLC["NoSaveSettings"] = true
 				ReloadUI()
+			elseif str == "nosave" then
+				-- Prevent Leatrix Maps from overwriting LeaMapsDB at next logout
+				LeaMapsLC.EventFrame:UnregisterEvent("PLAYER_LOGOUT")
+				LeaMapsLC:Print("Leatrix Maps will not overwrite LeaMapsDB at next logout.")
+				return
 			elseif str == "setmap" then
 				-- Set map to map ID
 				arg1 = tonumber(arg1)
@@ -3837,6 +3814,7 @@
 
 	-- Create event frame
 	local eFrame = CreateFrame("FRAME")
+	LeaMapsLC.EventFrame = eFrame -- Used with nosave command
 	eFrame:RegisterEvent("ADDON_LOADED")
 	eFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	eFrame:RegisterEvent("PLAYER_LOGOUT")

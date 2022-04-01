@@ -1,6 +1,6 @@
 ## Interface: 20504
 ## Title: MerInspect
-## Version: 1.0.2
+## Version: 1.0.3
 ## Notes: Inspect Assiest
 ## Notes-zhCN: 观察助手
 ## Notes-zhTW: 觀察助手
@@ -19,9 +19,8 @@ InspectUnit.lua
 InspectUnitGemAndEnchant.lua
 InspectUnitSpecialization.lua
 InspectUnitStats.lua
-
-
+InspectUnitStatsHonor.lua
 
 ## Title-zhCN: |cff880303[有爱]|r MerInspect 观察助手
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+## X-163UI-Version: 20220331145254

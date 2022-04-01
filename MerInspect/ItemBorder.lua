@@ -2,7 +2,6 @@
 -------------------------------------
 -- 物品邊框 Author: M
 -------------------------------------
-do return end           -->>>>          wtf
 
 local LibEvent = LibStub:GetLibrary("LibEvent.7000")
 

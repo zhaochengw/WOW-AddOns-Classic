@@ -1,6 +1,6 @@
 ## Interface: 20504
 ## Title: HandyNotes_WorldMapButton
-## Version: 20503.02-BBC
+## Version: 20504.01-BBC
 ## Notes: Adds a Button to the Worldmap to toggle HandyNotes
 ## Author: fuba
 ## OptionalDeps: Ace3
@@ -22,4 +22,4 @@ HandyNotes_WorldMapButton.lua
 
 ## Title-zhCN: |cff880303[有爱]|r HandyNotes 世界地图开关
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+## X-163UI-Version: 20220331145254

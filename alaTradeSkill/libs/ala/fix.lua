@@ -6,6 +6,7 @@ do return end
 local __version = 2;
 
 local _G = _G;
+local __ala_meta__ = _G.__ala_meta__;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
 if __ala_meta__.__fixminor ~= nil and __ala_meta__.__fixminor >= __version then
 	return;

@@ -1,7 +1,7 @@
 ## Interface: 20504
 
 ## Title: Threat Plates
-## Version: 10.3.2
+## Version: 10.3.4
 ## Notes: Threat-reactive nameplates.
 ## Notes-deDE: Bedrohungsreaktive Namensplaketten.
 ## Notes-esES: Placas Identificativas de Amenaza
@@ -48,4 +48,4 @@ Widgets\Widgets.xml
 ## Notes-zhCN: Threat Plates 姓名版插件。
 ## Notes-zhTW: Threat Plates 姓名版插件。
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220303142735
+## X-163UI-Version: 20220331145254

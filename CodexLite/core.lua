@@ -1197,7 +1197,7 @@ end
 						if acceptable then
 							local _next = info.next;
 							if _next ~= nil then
-								if QUESTS_COMPLETED[_next] then
+								if META[_next] ~= nil or QUESTS_COMPLETED[_next] then
 									acceptable = false;
 								end
 							end
