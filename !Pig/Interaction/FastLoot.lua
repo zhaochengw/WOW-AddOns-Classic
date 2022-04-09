@@ -1,6 +1,9 @@
 local _, addonTable= ...;
 -------------------
 local fuFrame=Pig_Options_RF_TAB_1_UI
+--------
+local _, _, _, tocversion = GetBuildInfo()
+--------------
 --//快速拾取（不显示拾取界面）/////////--
 -- local shiqushike = 0
 -- local shiqujiange = 0.01
@@ -271,7 +274,7 @@ fuFrame.AutolootCK = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckBu
 fuFrame.AutolootCK:SetSize(30,32);
 fuFrame.AutolootCK:SetHitRectInsets(0,-100,0,0);
 fuFrame.AutolootCK:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-20);
-fuFrame.AutolootCK.Text:SetText("快速拾取");
+fuFrame.AutolootCK.Text:SetText("快速拾取(TBC/60)");
 fuFrame.AutolootCK.tooltip = "加快拾取速度(在队长分配不起作用)。";
 fuFrame.AutolootCK:SetScript("OnClick", function (self)
 	if self:GetChecked() then
@@ -288,10 +291,15 @@ end);
 --------------------
 addonTable.Interaction_FastLoot = function()
 	PIG['Interaction']=PIG['Interaction'] or addonTable.Default['Interaction']
-	if PIG['Interaction']['Autoloot']=="ON" then
-		fuFrame.AutolootCK:SetChecked(true);
-		PIG_AutoLoot:OnInit();
-		--SetCVar("autoLootRate", "0")
-		--LootF:RegisterEvent("LOOT_READY")
-	end
+    if tocversion<40000 then 
+        if PIG['Interaction']['Autoloot']=="ON" then
+            fuFrame.AutolootCK:SetChecked(true);
+            PIG_AutoLoot:OnInit();
+            --SetCVar("autoLootRate", "0")
+            --LootF:RegisterEvent("LOOT_READY")
+        end
+    else
+        fuFrame.AutolootCK:Disable();
+        fuFrame.AutolootCK.Text:SetTextColor(0.4, 0.4, 0.4, 1) 
+    end
 end

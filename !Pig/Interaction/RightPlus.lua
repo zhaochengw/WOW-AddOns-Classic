@@ -1668,7 +1668,7 @@ local function RightPlus_Open()
 				tianfuBUT.dianshuBG:SetSize(tianfuB*1.74,tianfuB);
 				tianfuBUT.dianshuBG:SetPoint("BOTTOMRIGHT",tianfuBUT,"BOTTOMRIGHT",25,-14);
 				tianfuBUT.dianshu = tianfuBUT:CreateFontString();
-				tianfuBUT.dianshu:SetPoint("CENTER", tianfuBUT.dianshuBG, "CENTER", 1,2);
+				tianfuBUT.dianshu:SetPoint("CENTER", tianfuBUT.dianshuBG, "CENTER", 1,1);
 				tianfuBUT.dianshu:SetFont(ChatFontNormal:GetFont(), 12, "OUTLINE");
 			end
 		end

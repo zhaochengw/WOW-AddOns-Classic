@@ -68,7 +68,8 @@ local function SellPlus_Open()
 	end
 end
 -----------
-local function sell_add(fuFrame)
+local function sell_add()
+	local fuFrame = SpllBuy_TabFrame_2;
 	local Width = fuFrame:GetWidth()-20;
 	--滚动框架
 	fuFrame.Sell = CreateFrame("Frame", nil, fuFrame,"BackdropTemplate")
@@ -85,10 +86,10 @@ local function sell_add(fuFrame)
 	-- --滚动更新目录
 	local function gengxinMulu(self)
 		for id = 1, hang_NUM do
-			_G["Guolv_hang"..id].item.icon:SetTexture();
-			_G["Guolv_hang"..id].item.link:SetText();
-			_G["Guolv_hang"..id].item:Hide();
-			_G["Guolv_hang"..id].del:Hide();
+			_G["Sell_hang"..id].item.icon:SetTexture();
+			_G["Sell_hang"..id].item.link:SetText();
+			_G["Sell_hang"..id].item:Hide();
+			_G["Sell_hang"..id].del:Hide();
 	    end
 		if #PIG['AutoSellBuy']['AutoSell_List']>0 then
 			local paichushu = #PIG['AutoSellBuy']['AutoSell_List'];
@@ -97,20 +98,20 @@ local function sell_add(fuFrame)
 		    for id = 1, hang_NUM do
 		    	local dangqianH = id+offset;
 		    	if PIG['AutoSellBuy']['AutoSell_List'][dangqianH] then
-			    	_G["Guolv_hang"..id].item.icon:SetTexture(PIG['AutoSellBuy']['AutoSell_List'][dangqianH][1]);
-					_G["Guolv_hang"..id].item.link:SetText(PIG['AutoSellBuy']['AutoSell_List'][dangqianH][2]);
-					_G["Guolv_hang"..id].item:Show();
-					_G["Guolv_hang"..id].item:SetScript("OnMouseDown", function (self)
+			    	_G["Sell_hang"..id].item.icon:SetTexture(PIG['AutoSellBuy']['AutoSell_List'][dangqianH][1]);
+					_G["Sell_hang"..id].item.link:SetText(PIG['AutoSellBuy']['AutoSell_List'][dangqianH][2]);
+					_G["Sell_hang"..id].item:Show();
+					_G["Sell_hang"..id].item:SetScript("OnMouseDown", function (self)
 						GameTooltip:ClearLines();
 						GameTooltip:SetOwner(self, "ANCHOR_CURSOR");
 						GameTooltip:SetHyperlink(PIG['AutoSellBuy']['AutoSell_List'][dangqianH][2])
 					end);
-					_G["Guolv_hang"..id].item:SetScript("OnMouseUp", function ()
+					_G["Sell_hang"..id].item:SetScript("OnMouseUp", function ()
 						GameTooltip:ClearLines();
 						GameTooltip:Hide() 
 					end);
-					_G["Guolv_hang"..id].del:Show();
-					_G["Guolv_hang"..id].del:SetID(dangqianH);
+					_G["Sell_hang"..id].del:Show();
+					_G["Sell_hang"..id].del:SetID(dangqianH);
 				end
 			end
 		end
@@ -124,44 +125,44 @@ local function sell_add(fuFrame)
 	end)
 	--创建行
 	for id = 1, hang_NUM do
-		local Guolv = CreateFrame("Frame", "Guolv_hang"..id, fuFrame.Sell);
-		Guolv:SetSize(Width-36, hang_Height);
+		local Sell = CreateFrame("Frame", "Sell_hang"..id, fuFrame.Sell);
+		Sell:SetSize(Width-36, hang_Height);
 		if id==1 then
-			Guolv:SetPoint("TOP",fuFrame.Sell.Scroll,"TOP",0,0);
+			Sell:SetPoint("TOP",fuFrame.Sell.Scroll,"TOP",0,0);
 		else
-			Guolv:SetPoint("TOP",_G["Guolv_hang"..(id-1)],"BOTTOM",0,-0);
+			Sell:SetPoint("TOP",_G["Sell_hang"..(id-1)],"BOTTOM",0,-0);
 		end
 		if id~=hang_NUM then
-			local Guolv_line = Guolv:CreateLine()
-			Guolv_line:SetColorTexture(1,1,1,0.2)
-			Guolv_line:SetThickness(1);
-			Guolv_line:SetStartPoint("BOTTOMLEFT",0,0)
-			Guolv_line:SetEndPoint("BOTTOMRIGHT",0,0)
+			local Sell_line = Sell:CreateLine()
+			Sell_line:SetColorTexture(1,1,1,0.2)
+			Sell_line:SetThickness(1);
+			Sell_line:SetStartPoint("BOTTOMLEFT",0,0)
+			Sell_line:SetEndPoint("BOTTOMRIGHT",0,0)
 		end
-		Guolv.item = CreateFrame("Frame", nil, Guolv);
-		Guolv.item:SetSize(Width-70,hang_Height);
-		Guolv.item:SetPoint("LEFT",Guolv,"LEFT",hang_Height,0);
-		Guolv.item.icon = Guolv.item:CreateTexture(nil, "BORDER");
-		Guolv.item.icon:SetSize(26,26);
-		Guolv.item.icon:SetPoint("LEFT", Guolv.item, "LEFT", 0,0);
-		Guolv.item.link = Guolv.item:CreateFontString();
-		Guolv.item.link:SetPoint("LEFT", Guolv.item, "LEFT", 30,0);
-		Guolv.item.link:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
+		Sell.item = CreateFrame("Frame", nil, Sell);
+		Sell.item:SetSize(Width-70,hang_Height);
+		Sell.item:SetPoint("LEFT",Sell,"LEFT",hang_Height,0);
+		Sell.item.icon = Sell.item:CreateTexture(nil, "BORDER");
+		Sell.item.icon:SetSize(26,26);
+		Sell.item.icon:SetPoint("LEFT", Sell.item, "LEFT", 0,0);
+		Sell.item.link = Sell.item:CreateFontString();
+		Sell.item.link:SetPoint("LEFT", Sell.item, "LEFT", 30,0);
+		Sell.item.link:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
 
-		Guolv.del = CreateFrame("Button",nil, Guolv, "TruncatedButtonTemplate");
-		Guolv.del:SetSize(hang_Height,hang_Height);
-		Guolv.del:SetPoint("LEFT", Guolv, "LEFT", 0,0);
-		Guolv.del.Tex = Guolv.del:CreateTexture(nil, "BORDER");
-		Guolv.del.Tex:SetTexture("interface/common/voicechat-muted.blp");
-		Guolv.del.Tex:SetPoint("CENTER");
-		Guolv.del.Tex:SetSize(13,13);
-		Guolv.del:SetScript("OnMouseDown", function (self)
+		Sell.del = CreateFrame("Button",nil, Sell, "TruncatedButtonTemplate");
+		Sell.del:SetSize(hang_Height,hang_Height);
+		Sell.del:SetPoint("LEFT", Sell, "LEFT", 0,0);
+		Sell.del.Tex = Sell.del:CreateTexture(nil, "BORDER");
+		Sell.del.Tex:SetTexture("interface/common/voicechat-muted.blp");
+		Sell.del.Tex:SetPoint("CENTER");
+		Sell.del.Tex:SetSize(13,13);
+		Sell.del:SetScript("OnMouseDown", function (self)
 			self.Tex:SetPoint("CENTER",1.5,-1.5);
 		end);
-		Guolv.del:SetScript("OnMouseUp", function (self)
+		Sell.del:SetScript("OnMouseUp", function (self)
 			self.Tex:SetPoint("CENTER");
 		end);
-		Guolv.del:SetScript("OnClick", function (self)
+		Sell.del:SetScript("OnClick", function (self)
 			table.remove(PIG['AutoSellBuy']['AutoSell_List'], self:GetID());
 			gengxinMulu(fuFrame.Sell.Scroll);
 		end);
@@ -171,38 +172,38 @@ local function sell_add(fuFrame)
 	fuFrame.Sell.ADD:SetPoint("TOPLEFT",fuFrame.Sell,"TOPLEFT",0,0);
 	fuFrame.Sell.ADD:SetPoint("BOTTOMRIGHT",fuFrame.Sell,"BOTTOMRIGHT",0,0);
 	---
-	fuFrame.Guolv_iteminfo={};
+	fuFrame.Sell.ADD.iteminfo={};
 	fuFrame.Sell:RegisterEvent("ITEM_LOCK_CHANGED");
 	fuFrame.Sell:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if arg1 and arg2 then
 			if CursorHasItem() then
 				local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1,arg2);
-				fuFrame.Guolv_iteminfo={icon, itemLink, itemID, noValue};
+				fuFrame.Sell.ADD.iteminfo={icon, itemLink, itemID, noValue};
 				fuFrame.Sell.ADD:SetFrameLevel(48);
 			end
 		end
 	end);
 	fuFrame.Sell.ADD:SetScript("OnMouseUp", function ()
 		if CursorHasItem() then
-			if fuFrame.Guolv_iteminfo[4]==true then
+			if fuFrame.Sell.ADD.iteminfo[4]==true then
 				print("|cff00FFFF!Pig:|r|cffffFF00物品无法售卖！|r") 
 				ClearCursor();
-				fuFrame.Guolv_iteminfo={};
+				fuFrame.Sell.ADD.iteminfo={};
 				fuFrame.Sell.ADD:SetFrameLevel(40);
 				return 
 			end
 			for i=1,#PIG['AutoSellBuy']['AutoSell_List'] do
-				if fuFrame.Guolv_iteminfo[3]==PIG['AutoSellBuy']['AutoSell_List'][i][3] then
+				if fuFrame.Sell.ADD.iteminfo[3]==PIG['AutoSellBuy']['AutoSell_List'][i][3] then
 					print("|cff00FFFF!Pig:|r|cffffFF00物品已在目录内！|r");
 					ClearCursor();
-					fuFrame.Guolv_iteminfo={};
+					fuFrame.Sell.ADD.iteminfo={};
 					fuFrame.Sell.ADD:SetFrameLevel(40);
 					return
 				end			
 			end
-			table.insert(PIG['AutoSellBuy']['AutoSell_List'], fuFrame.Guolv_iteminfo);
+			table.insert(PIG['AutoSellBuy']['AutoSell_List'], fuFrame.Sell.ADD.iteminfo);
 			ClearCursor();
-			fuFrame.Guolv_iteminfo={};
+			fuFrame.Sell.ADD.iteminfo={};
 			gengxinMulu(fuFrame.Sell.Scroll)
 		end
 		fuFrame.Sell.ADD:SetFrameLevel(40);
@@ -261,13 +262,9 @@ local function sell_add(fuFrame)
 			shoumailaji()
 		end
 	end);
-end
---===============================================
-addonTable.SellPlus = function()
+	-----------
 	PIG['AutoSellBuy']['AutoSell_Open']=PIG['AutoSellBuy']['AutoSell_Open'] or addonTable.Default['AutoSellBuy']['AutoSell_Open']
 	PIG['AutoSellBuy']['AutoSell_List']=PIG['AutoSellBuy']['AutoSell_List'] or addonTable.Default['AutoSellBuy']['AutoSell_List']
-	local fuFrame = SpllBuy_TabFrame_2;
-	sell_add(fuFrame)
 	if PIG['AutoSellBuy']['AutoSell_Open']=="ON" then
 		fuFrame.AutoSell_feihui:SetChecked(true);
 	end
@@ -281,3 +278,5 @@ addonTable.SellPlus = function()
 		fuFrame.AutoSellLJ:SetChecked(true);
 	end
 end
+--===============================================
+addonTable.SellPlus = sell_add

@@ -96,7 +96,7 @@ local function ZhandoushijianTime_ADD()
 		CombatTime.Texture:SetTexCoord(caijie_B[1],caijie_B[2],caijie_B[3],caijie_B[4]);--blue
 		CombatTime.Texture:SetSize(WWW+20,HHH+10);
 		CombatTime.Texture:SetPoint("CENTER",CombatTime,"CENTER",0,0);
-		CombatTime.Texture:SetAlpha(0.8);
+		CombatTime.Texture:SetAlpha(0.6);
 		CombatTime.Texture:Hide()
 		if PIG['CombatPlus']["Beijing"]==2 then
 			CombatTime.Texture:Hide()
@@ -185,23 +185,21 @@ fuFrame.linec1:SetColorTexture(1,1,1,0.2)
 fuFrame.linec1:SetThickness(1);
 fuFrame.linec1:SetStartPoint("TOPLEFT",2,-190)
 fuFrame.linec1:SetEndPoint("TOPRIGHT",-2,-190)
-fuFrame.linec2 = fuFrame:CreateLine()
-fuFrame.linec2:SetColorTexture(1,1,1,0.2)
-fuFrame.linec2:SetThickness(1);
-fuFrame.linec2:SetStartPoint("TOPLEFT",2,-240)
-fuFrame.linec2:SetEndPoint("TOPRIGHT",-2,-240)
+---
 fuFrame.CombatTimeCK = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
 fuFrame.CombatTimeCK:SetSize(30,30);
 fuFrame.CombatTimeCK:SetPoint("TOPLEFT",fuFrame.linec1,"TOPLEFT",20,-10);
-fuFrame.CombatTimeCK:SetHitRectInsets(0,-10,0,0);
+fuFrame.CombatTimeCK:SetHitRectInsets(0,-60,0,0);
 fuFrame.CombatTimeCK.Text:SetText("战斗计时");
 fuFrame.CombatTimeCK.tooltip = "在游戏界面启用一个显示战斗时间的框架\n|cff00FF00副本内：\n左边本次进本的战斗总用时，右边为本次战斗用时。|r\n|cff00FF00副本外：\n只显示本次战斗用时。|r";
 fuFrame.CombatTimeCK:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['CombatPlus']["CombatTime"]=true
+		fuFrame.CBTPoint:Show()
 		ZhandoushijianTime_ADD()
 	else
 		PIG['CombatPlus']["CombatTime"]=false
+		fuFrame.CBTPoint:Hide()
 		CombatTime_UI:Hide()
 		CombatTime_UI:UnregisterEvent("PLAYER_REGEN_DISABLED")
 		CombatTime_UI:UnregisterEvent("PLAYER_REGEN_ENABLED")
@@ -209,9 +207,45 @@ fuFrame.CombatTimeCK:SetScript("OnClick", function (self)
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
+---重置位置
+fuFrame.CBTPoint = CreateFrame("Button",nil,fuFrame);
+fuFrame.CBTPoint:SetSize(22,22);
+fuFrame.CBTPoint:SetPoint("LEFT",fuFrame.CombatTimeCK.Text,"RIGHT",16,-1);
+fuFrame.CBTPoint:Hide()
+fuFrame.CBTPoint.highlight = fuFrame.CBTPoint:CreateTexture(nil, "HIGHLIGHT");
+fuFrame.CBTPoint.highlight:SetTexture("interface/buttons/ui-common-mousehilight.blp");
+fuFrame.CBTPoint.highlight:SetBlendMode("ADD")
+fuFrame.CBTPoint.highlight:SetPoint("CENTER", fuFrame.CBTPoint, "CENTER", 0,0);
+fuFrame.CBTPoint.highlight:SetSize(30,30);
+fuFrame.CBTPoint.Normal = fuFrame.CBTPoint:CreateTexture(nil, "BORDER");
+fuFrame.CBTPoint.Normal:SetTexture("interface/buttons/ui-refreshbutton.blp");
+fuFrame.CBTPoint.Normal:SetBlendMode("ADD")
+fuFrame.CBTPoint.Normal:SetPoint("CENTER", fuFrame.CBTPoint, "CENTER", 0,0);
+fuFrame.CBTPoint.Normal:SetSize(18,18);
+fuFrame.CBTPoint:HookScript("OnMouseDown", function (self)
+	fuFrame.CBTPoint.Normal:SetPoint("CENTER", fuFrame.CBTPoint, "CENTER", -1.5,-1.5);
+end);
+fuFrame.CBTPoint:HookScript("OnMouseUp", function (self)
+	fuFrame.CBTPoint.Normal:SetPoint("CENTER", fuFrame.CBTPoint, "CENTER", 0,0);
+end);
+fuFrame.CBTPoint:SetScript("OnEnter", function (self)
+	GameTooltip:ClearLines();
+	GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT",0,0);
+	GameTooltip:AddLine("提示：")
+	GameTooltip:AddLine("\124cff00ff00重置战斗计时的位置\124r")
+	GameTooltip:Show();
+end);
+fuFrame.CBTPoint:SetScript("OnLeave", function ()
+	GameTooltip:ClearLines();
+	GameTooltip:Hide() 
+end);
+fuFrame.CBTPoint:SetScript("OnClick", function ()
+	CombatTime_UI:ClearAllPoints();
+	CombatTime_UI:SetPoint("TOP",UIParent,"TOP",0,-60);
+end)
 ----
 fuFrame.zitimiaobian = fuFrame:CreateFontString();
-fuFrame.zitimiaobian:SetPoint("LEFT",fuFrame.CombatTimeCK.Text,"RIGHT",10,0);
+fuFrame.zitimiaobian:SetPoint("LEFT",fuFrame.CBTPoint,"RIGHT",10,0);
 fuFrame.zitimiaobian:SetFontObject(GameFontNormal);
 fuFrame.zitimiaobian:SetText("字体描边");
 local ChatFontList = {"无","OUTLINE","THICKOUTLINE","MONOCHROME"};
@@ -280,6 +314,7 @@ addonTable.CombatPlus_TimeOpen = function()
 	UIDropDownMenu_SetText(fuFrame.BGcaizhiD, BGList[PIG['CombatPlus']["Beijing"]])
 	if PIG['CombatPlus']["CombatTime"] then
 		fuFrame.CombatTimeCK:SetChecked(true);
+		fuFrame.CBTPoint:Show()
 		ZhandoushijianTime_ADD()
 	end
 end

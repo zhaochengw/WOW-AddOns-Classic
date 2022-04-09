@@ -157,6 +157,13 @@ local function ADD_RaidR_UI()
 			_G["TablistFrame_"..self:GetID().."_UI"]:Show();
 			self.highlight:Hide();
 		end);
+		if id==1 then
+			--激活选项卡第一页
+			Tablist.Tex:SetTexture("interface/paperdollinfoframe/ui-character-activetab.blp");
+			Tablist.Tex:SetPoint("BOTTOM", Tablist, "BOTTOM", 0,-2);
+			Tablist.title:SetTextColor(1, 1, 1, 1);
+			TablistFrame:Show()
+		end
 	end
 	--////////////下方控制栏//////////////////////////////////////
 	RaidR.xiafangF = CreateFrame("Frame", nil, RaidR);
@@ -260,14 +267,6 @@ local function ADD_RaidR_UI()
 	addonTable.RaidRecord_UpdateG = UpdateG;
 	--=====================================================
 	--新的记录
-	local NEW_jilu = CreateFrame("Button","NEW_jilu_UI",RaidR.xiafangF, "UIPanelButtonTemplate");  
-	NEW_jilu:SetSize(80,28);
-	NEW_jilu:SetPoint("TOPLEFT",RaidR.xiafangF,"TOPLEFT",Width*0.61,-6);
-	NEW_jilu:SetText("新的记录");
-	NEW_jilu:SetScript("OnClick", function ()
-		StaticPopup_Show ("NEW_WUPIN_LIST");
-	end);
-	---
 	StaticPopupDialogs["NEW_WUPIN_LIST"] = {
 		text = "开始一份\124cff00ff00新的\124r副本记录吗?\n\n已有记录将被保存在历史记录内\n\n",
 		button1 = "确定",
@@ -358,6 +357,31 @@ local function ADD_RaidR_UI()
 		whileDead = true,
 		hideOnEscape = true,
 	}
+	--
+	RaidR.xiafangF.NEW_jilu = CreateFrame("Button",nil,RaidR.xiafangF, "UIPanelButtonTemplate");  
+	RaidR.xiafangF.NEW_jilu:SetSize(80,28);
+	RaidR.xiafangF.NEW_jilu:SetPoint("TOPLEFT",RaidR.xiafangF,"TOPLEFT",Width*0.61,-6);
+	RaidR.xiafangF.NEW_jilu:SetText("新的记录");
+	RaidR.xiafangF.NEW_jilu:SetScript("OnClick", function ()
+		StaticPopup_Show("NEW_WUPIN_LIST");
+	end);
+	---
+	RaidR_UI:RegisterEvent("PLAYER_ENTERING_WORLD");
+	RaidR_UI:SetScript("OnEvent",function (self,event,arg1,arg2,arg3,arg4,arg5)
+		local inInstance, instanceType = IsInInstance()
+		if inInstance and instanceType=="raid" then
+			if #PIG["RaidRecord"]["ItemList"]==0 then
+				PIG["RaidRecord"]["instanceName"][1]=GetServerTime();
+				PIG["RaidRecord"]["instanceName"][2]=GetRealZoneText();
+			else
+				if PIG["RaidRecord"]["instanceName"][2]~=GetRealZoneText() then
+					if GetServerTime()-PIG["RaidRecord"]["instanceName"][1]<86400 then
+						StaticPopup_Show("NEW_WUPIN_LIST");
+					end
+				end
+			end
+		end
+	end);
 	---子页面
 	addonTable.ADD_Item();--创建拾取目录
 	addonTable.ADD_buzhu();

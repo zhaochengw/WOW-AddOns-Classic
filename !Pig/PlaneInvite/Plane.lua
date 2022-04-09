@@ -12,9 +12,8 @@ PlaneFFFFF:RegisterEvent("PLAYER_TARGET_CHANGED");
 PlaneFFFFF:RegisterEvent("CHAT_MSG_WHISPER");  
 PlaneFFFFF:RegisterEvent("PLAYER_ENTERING_WORLD");   
 PlaneFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_,_,arg9)
-	if event=="PLAYER_ENTERING_WORLD" then
-		local wanjia, realm = UnitFullName("player");
-		PIG_WB.realm=realm
+	if event=="PLAYER_ENTERING_WORLD" then	
+		PIG_WB.realm = GetRealmName()
 	end
 	if event=="PLAYER_TARGET_CHANGED" then
 		if not UnitIsPlayer("target") then
@@ -25,6 +24,7 @@ PlaneFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_,
 						local unitType, _, serverID, instanceID, zoneID, npcID = strsplit("-", mubiaoGUID);
 						PIG_WB.weimianMapID=C_Map.GetBestMapForUnit("player")
 						if zoneID and PIG_WB.weimianMapID then
+							if not PIG_WB.realm then PIG_WB.realm = GetRealmName() end
 							PIG_WB.weimianID_MapID=zoneID.."^"..PIG_WB.weimianMapID.."^"..PIG_WB.realm
 							
 							PIG_WB.weimianID=tonumber(zoneID)
@@ -60,6 +60,7 @@ PlaneFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_,
 			if not inInstance then
 				if arg9=="PIG" and arg1=="请求位面信息" then
 					if arg5 ~=GetUnitName("player", true) then
+						PIG_WB.weimianID_MapID=PIG_WB.weimianID_MapID.."^"..PIG['PlaneInvite']['Kaiqi']
 						C_ChatInfo.SendAddonMessage(biaotou,PIG_WB.weimianID_MapID,"WHISPER",arg5)
 					end
 				end
@@ -81,16 +82,13 @@ PlaneFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_,
 		end
 	end
 end)
---=============================================================k,v)
+--=============================================================
 local function ADD_Plane_Frame()
 	PIG['PlaneInvite']['WeimianList']=PIG['PlaneInvite']['WeimianList'] or addonTable.Default['PlaneInvite']['WeimianList']
 	local fuFrame=PlaneInviteFrame_1;
 	local Width,Height=fuFrame:GetWidth(),fuFrame:GetHeight();
 	------------------
-	--local biaotiName={"服务器ID","位面ID","玩家名","位置","更新时间"}
-	fuFrame.biaotiName={"位面(区域ID)","玩家名","更新时间"}
-	-- fuFrame.IDchaV=1000;
-	-- fuFrame.IDchaV={{1-150},{151-150},{1-150},{1-150},{1-150},{1-150},{1-150},{1-150},};
+	fuFrame.biaotiName={"位面(区域ID)","玩家名","位置","更新时间"}
 	for i=1,#fuFrame.biaotiName do
 		fuFrame.biaoti = fuFrame:CreateFontString();
 		fuFrame.biaoti:SetFontObject(GameFontNormal);
@@ -100,6 +98,9 @@ local function ADD_Plane_Frame()
 		elseif i==2 then
 			fuFrame.biaoti:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",202,-8);
 		elseif i==3 then
+			fuFrame.biaoti:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",350,-8);
+			fuFrame.biaoti:Hide()
+		elseif i==4 then
 			fuFrame.biaoti:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",460,-8);
 		end
 	end
@@ -116,6 +117,7 @@ local function ADD_Plane_Frame()
 			_G["WeimianList_"..i].Weimian:SetText();
 			_G["WeimianList_"..i].WMID:SetText();
 			_G["WeimianList_"..i].Name:SetText();
+			_G["WeimianList_"..i].Weizhi:SetText();
 			_G["WeimianList_"..i].Time:SetText();	
 		end
 		local ItemsNum = #PIG_WB.weimianListInfo;
@@ -128,38 +130,43 @@ local function ADD_Plane_Frame()
 			end
 			for x=#PIG_WB.linshipaixu,1,-1 do
 				if PIG_WB.linshipaixu[x] then
-					local libaiji=date("%w",GetServerTime())
-					if libaiji=="4" then
-						if GetServerTime()-PIG_WB.linshipaixu[x][2]>86400 then
+					if PIG_WB.linshipaixu[x][2] then
+						local dqTime=GetServerTime()
+						local libaiji=date("%w",dqTime)
+						local yiguoquTime=dqTime-PIG_WB.linshipaixu[x][2]
+						if yiguoquTime and yiguoquTime>604800 then
 							table.remove(PIG_WB.linshipaixu,x);
+						else
+							if libaiji=="4" then
+								if yiguoquTime>86400 then
+									table.remove(PIG_WB.linshipaixu,x);
+								end
+							elseif libaiji=="5" then
+								if yiguoquTime>172800 then
+									table.remove(PIG_WB.linshipaixu,x);
+								end
+							elseif libaiji=="6" then
+								if yiguoquTime>259200 then
+									table.remove(PIG_WB.linshipaixu,x);
+								end
+							elseif libaiji=="7" then
+								if yiguoquTime>345600 then
+									table.remove(PIG_WB.linshipaixu,x);
+								end
+							elseif libaiji=="1" then
+								if yiguoquTime>432000 then
+									table.remove(PIG_WB.linshipaixu,x);
+								end
+							elseif libaiji=="2" then
+								if yiguoquTime>518400 then
+									table.remove(PIG_WB.linshipaixu,x);
+								end
+							-- elseif libaiji=="3" then
+							-- 	if yiguoquTime>604800 then
+							-- 		table.remove(PIG_WB.linshipaixu,x);
+							-- 	end
+							end
 						end
-					elseif libaiji=="5" then
-						if GetServerTime()-PIG_WB.linshipaixu[x][2]>172800 then
-							table.remove(PIG_WB.linshipaixu,x);
-						end
-					elseif libaiji=="6" then
-						if GetServerTime()-PIG_WB.linshipaixu[x][2]>259200 then
-							table.remove(PIG_WB.linshipaixu,x);
-						end
-					elseif libaiji=="7" then
-						if GetServerTime()-PIG_WB.linshipaixu[x][2]>345600 then
-							table.remove(PIG_WB.linshipaixu,x);
-						end
-					elseif libaiji=="1" then
-						if GetServerTime()-PIG_WB.linshipaixu[x][2]>432000 then
-							table.remove(PIG_WB.linshipaixu,x);
-						end
-					elseif libaiji=="2" then
-						if GetServerTime()-PIG_WB.linshipaixu[x][2]>518400 then
-							table.remove(PIG_WB.linshipaixu,x);
-						end
-					elseif libaiji=="3" then
-						if GetServerTime()-PIG_WB.linshipaixu[x][2]>604800 then
-							table.remove(PIG_WB.linshipaixu,x);
-						end
-					end
-					if GetServerTime()-PIG_WB.linshipaixu[x][2]>604800 then
-						table.remove(PIG_WB.linshipaixu,x);
 					end
 				end
 			end
@@ -195,7 +202,7 @@ local function ADD_Plane_Frame()
 		    for i = 1, hang_NUM do
 				local dangqian = i+offset;
 				if PIG_WB.weimianListInfo[dangqian] then
-					local zoneID, MapID, fuwuqiname = strsplit("^", PIG_WB.weimianListInfo[dangqian][1]);
+					local zoneID, MapID, fuwuqiname,OnOff = strsplit("^", PIG_WB.weimianListInfo[dangqian][1]);
 					_G["WeimianList_"..i].WMID:SetText(zoneID);
 					_G["WeimianList_"..i]:Show()
 
@@ -225,12 +232,20 @@ local function ADD_Plane_Frame()
 						panduanMin(tonumber(zoneID),weimianbianhao[x],x)
 				    end
 					_G["WeimianList_"..i].Weimian:SetText(zuixiaozhiweimian[2]);
-					_G["WeimianList_"..i].miyu:Enable()
-					_G["WeimianList_"..i].miyu:SetText("请求换位面");
+					
 					_G["WeimianList_"..i].Weimian:SetTextColor(0,250/255,154/255, 1);
 					_G["WeimianList_"..i].Name:SetTextColor(0,250/255,154/255, 1);
 					_G["WeimianList_"..i].Time:SetTextColor(0,250/255,154/255, 1);
-					
+					_G["WeimianList_"..i].miyu:SetText("请求换位面");
+					_G["WeimianList_"..i].miyu:Enable()
+					if OnOff and OnOff=="OFF" then
+						_G["WeimianList_"..i].miyu:SetText("未开启");
+						_G["WeimianList_"..i].miyu:Disable()
+						_G["WeimianList_"..i].Weimian:SetTextColor(1,1,1, 0.4);
+						_G["WeimianList_"..i].Name:SetTextColor(1,1,1, 0.4);
+						_G["WeimianList_"..i].Time:SetTextColor(1,1,1, 0.4);
+					end				
+				
 					local zuixiaozhiweimian_ziji={nil,"？"}
 					local function panduanMin_ziji(zoneID,VVV,x)
 						local ChazhiV_ziji=0
@@ -255,7 +270,6 @@ local function ADD_Plane_Frame()
 					for x=1,#weimianbianhao do	
 						panduanMin_ziji(PIG_WB.weimianID,weimianbianhao[x],x)
 					end
-					--print(zuixiaozhiweimian[2])print(zuixiaozhiweimian_ziji[2])
 					if zuixiaozhiweimian[2]~="？" and zuixiaozhiweimian_ziji[2]~="？" then
 						if zuixiaozhiweimian[2]==zuixiaozhiweimian_ziji[2] then
 							_G["WeimianList_"..i].miyu:Disable()
@@ -267,7 +281,12 @@ local function ADD_Plane_Frame()
 					end
 
 					_G["WeimianList_"..i].Name:SetText(PIG_WB.weimianListInfo[dangqian][2]);
-					--_G["WeimianList_"..i].weizhi:SetText(mapname);
+					if MapID then
+						local weizhixinxi = C_Map.GetMapInfo(MapID).name
+						_G["WeimianList_"..i].Weizhi:SetText(weizhixinxi);
+					else
+						_G["WeimianList_"..i].Weizhi:SetText("|cffFFFF00未知|r");
+					end
 					_G["WeimianList_"..i].Time:SetText(date("%H:%M:%S",PIG_WB.weimianListInfo[dangqian][3]));
 					_G["WeimianList_"..i].miyu:SetID(dangqian)
 				end
@@ -301,22 +320,21 @@ local function ADD_Plane_Frame()
 		liebiao.Weimian:SetPoint("LEFT", liebiao, "LEFT", 20, 0);
 		liebiao.Weimian:SetFontObject(ChatFontNormal);
 		liebiao.Weimian:SetTextColor(0,250/255,154/255, 1);
-		--liebiao.Weimian:SetText("888888");
 		liebiao.WMID = liebiao:CreateFontString();
 		liebiao.WMID:SetPoint("BOTTOMLEFT", liebiao.Weimian, "BOTTOMRIGHT", 26, -0);
 		liebiao.WMID:SetFontObject(ChatFontNormal);
 		liebiao.WMID:SetFont(GameFontNormal:GetFont(), 12,"OUTLINE")
 		liebiao.WMID:SetTextColor(0.9,0.9,0.9, 0.9);
-		--liebiao.WMID:SetText("99999");
 		liebiao.Name = liebiao:CreateFontString();
 		liebiao.Name:SetPoint("LEFT", liebiao, "LEFT", 200, 0);
 		liebiao.Name:SetFontObject(ChatFontNormal);
 		liebiao.Name:SetTextColor(0,250/255,154/255, 1);
 
-		-- liebiao.weizhi = liebiao:CreateFontString();
-		-- liebiao.weizhi:SetPoint("LEFT", liebiao, "LEFT", 400, 0);
-		-- liebiao.weizhi:SetFontObject(ChatFontNormal);
-		-- liebiao.weizhi:SetTextColor(0,250/255,154/255, 1);
+		liebiao.Weizhi = liebiao:CreateFontString();
+		liebiao.Weizhi:SetPoint("LEFT", liebiao, "LEFT", 350, 0);
+		liebiao.Weizhi:SetFontObject(ChatFontNormal);
+		liebiao.Weizhi:SetTextColor(0,250/255,154/255, 1);
+		liebiao.Weizhi:Hide()
 
 		liebiao.Time = liebiao:CreateFontString();
 		liebiao.Time:SetPoint("LEFT", liebiao, "LEFT", 460, 0);
@@ -397,17 +415,32 @@ local function ADD_Plane_Frame()
 	fuFrame.shuaxinweimian.err = fuFrame.shuaxinweimian:CreateFontString();
 	fuFrame.shuaxinweimian.err:SetPoint("BOTTOMLEFT",fuFrame.shuaxinweimian,"TOPLEFT",2,0);
 	fuFrame.shuaxinweimian.err:SetFont(GameFontNormal:GetFont(), 14)
-	fuFrame.shuaxinweimian.err:SetText("获取数据异常，请稍后再试!");
+	fuFrame.shuaxinweimian.err:SetText("未获取到位面信息，请稍后再试!");
 	fuFrame.shuaxinweimian.err:SetTextColor(1, 0.4, 0, 1);
 	fuFrame.shuaxinweimian.err:Hide();
+	StaticPopupDialogs["XIANHUOQUZIJIWEIMIAN"] = {
+		text = "请先获取自身角色位面，点击任意NPC即可获取。",
+		button1 = "好的",
+		OnAccept = function()
+			PlaneInvite_UI:Hide()
+		end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+	}
 	fuFrame.shuaxinweimian:SetScript("OnClick", function (self)
-		if PIG_WB.weimianID==nil then StaticPopup_Show ("XIANHUOQUZIJIWEIMIAN") return end
+		if PIG_WB.weimianID==nil then
+			StaticPopup_Show ("XIANHUOQUZIJIWEIMIAN") 
+			return 
+		end
 		self:Disable();
 		fuFrame.daojishiJG =60;
 		fuFrame.shuaxinweimian:SetText("更新位面信息("..fuFrame.daojishiJG..")");
 		Weimian_daojishi()
-		addonTable.Chedui_daojishi(true)
+
 		huoquchedui_UI:Disable();
+		addonTable.Chedui_daojishi(true)
+		
 		fuFrame.jieshoushuju:Show();
 		zhengzaihuoqudaojishi = yanchishuaxinliebiao
 		local msg = "请求位面信息";
@@ -422,22 +455,12 @@ local function ADD_Plane_Frame()
 		end
 		print("|cff00FFFF!Pig:|r|cffFFFF00请先加入PIG频道获取位面信息！|r")
 	end);
-	StaticPopupDialogs["XIANHUOQUZIJIWEIMIAN"] = {
-		text = "请先获取自身角色位面，点击任意NPC即可获取。",
-		button1 = "好的",
-		OnAccept = function()
-			PlaneInvite_UI:Hide()
-		end,
-		timeout = 0,
-		whileDead = true,
-		hideOnEscape = true,
-	}
 	-----------------------
 	fuFrame.PIGPlane_zudui = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
 	fuFrame.PIGPlane_zudui:SetSize(30,32);
 	fuFrame.PIGPlane_zudui:SetHitRectInsets(0,-120,0,0);
-	fuFrame.PIGPlane_zudui:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",400,36);
-	fuFrame.PIGPlane_zudui.Text:SetText("|cff00FF00自动接受玩家位面申请(未组队且不在副本时)|r");
+	fuFrame.PIGPlane_zudui:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",360,32);
+	fuFrame.PIGPlane_zudui.Text:SetText("|cff00FF00自动接受玩家位面申请(单人且不在副本时)|r");
 	fuFrame.PIGPlane_zudui.tooltip = "自动接受玩家位面申请(未组队且不在副本时)\n|cff00FF00我为人人，人人为我。请不要做精致的利己主义者。|r";
 	fuFrame.PIGPlane_zudui:SetScript("OnClick", function (self)
 		if self:GetChecked() then
@@ -449,6 +472,17 @@ local function ADD_Plane_Frame()
 	if PIG['PlaneInvite']['zidongjieshou']=="ON" then
 		fuFrame.PIGPlane_zudui:SetChecked(true);
 	end
+	------
+	fuFrame.Errorxiufu = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");  
+	fuFrame.Errorxiufu:SetSize(80,24);
+	fuFrame.Errorxiufu:SetPoint("TOPRIGHT",fuFrame,"TOPRIGHT",-10,32);
+	fuFrame.Errorxiufu:SetText("异常修复");
+	fuFrame.Errorxiufu:SetScript("OnClick", function (self)
+		if not PIG_WB.realm then PIG_WB.realm = GetRealmName() end
+		PIG['PlaneInvite']['WeimianList'][PIG_WB.realm]={}
+		print("|cff00FFFF!Pig:|r|cff00FF00修复完成，请重新获取！|r")
+	end)
+
 	fuFrame:SetScript("OnShow", function()
 		if PIG_WB.weimianID then
 			fuFrame.zijiweimianID:SetText(PIG_WB.weimianID);

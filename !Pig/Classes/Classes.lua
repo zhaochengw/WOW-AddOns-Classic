@@ -8,6 +8,7 @@ local ActionW = ActionButton1:GetWidth()
 local Width,Height=ActionW,ActionW;
 --父框架
 local function Classes_addUI()
+	if Classes_UI then return end
 	local Classes = CreateFrame("Frame", "Classes_UI", UIParent);
 	Classes:SetSize(Width*10+12,Height);
 	Classes:SetPoint("CENTER",UIParent,"CENTER",0,-200);

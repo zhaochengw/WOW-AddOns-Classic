@@ -1,5 +1,6 @@
 ﻿local _, addonTable = ...;
 local fuFrame=Pig_Options_RF_TAB_6_UI
+local _, _, _, tocversion = GetBuildInfo()
 -------------------------------------------------
 ----隐藏鹰标
 local function PigUI_ShhijiuIcon()
@@ -30,13 +31,13 @@ end);
 --===================================
 --主动作条缩放比例
 local function ActionBar_bili_gengxin()
-	ActionBar_bili_Slider_UI:SetValue(PIG['PigUI']['ActionBar_bili_value']*10);
-	ActionBar_bili_Slider_UIText:SetText(PIG['PigUI']['ActionBar_bili_value']);
+	fuFrame.ActionBar_bili_Slider:SetValue(PIG['PigUI']['ActionBar_bili_value']*10);
+	fuFrame.ActionBar_bili_Slider.Text:SetText(PIG['PigUI']['ActionBar_bili_value']);
 	if PIG['PigUI']['ActionBar_bili']=="ON" then
-		ActionBar_bili_Slider_UI:Enable();
-		ActionBar_bili_Slider_UILow:SetTextColor(1, 1, 1, 1);
-		ActionBar_bili_Slider_UIHigh:SetTextColor(1, 1, 1, 1);
-		ActionBar_bili_Slider_UIText:SetTextColor(1, 1, 1, 1);
+		fuFrame.ActionBar_bili_Slider:Enable();
+		fuFrame.ActionBar_bili_Slider.Low:SetTextColor(1, 1, 1, 1);
+		fuFrame.ActionBar_bili_Slider.High:SetTextColor(1, 1, 1, 1);
+		fuFrame.ActionBar_bili_Slider.Text:SetTextColor(1, 1, 1, 1);
 		fuFrame.ActionBar_bili_ck:SetChecked(true);
 		MainMenuBar:SetScale(PIG['PigUI']['ActionBar_bili_value']);
 		VerticalMultiBarsContainer:SetScale(PIG['PigUI']['ActionBar_bili_value']);
@@ -46,10 +47,10 @@ local function ActionBar_bili_gengxin()
 		end
 	elseif PIG['PigUI']['ActionBar_bili']=="OFF" then
 		fuFrame.ActionBar_bili_ck:SetChecked(false);
-		ActionBar_bili_Slider_UI:Disable();
-		ActionBar_bili_Slider_UILow:SetTextColor(0.8, 0.8, 0.8, 0.5);
-		ActionBar_bili_Slider_UIHigh:SetTextColor(0.8, 0.8, 0.8, 0.5);
-		ActionBar_bili_Slider_UIText:SetTextColor(0.8, 0.8, 0.8, 0.5);
+		fuFrame.ActionBar_bili_Slider:Disable();
+		fuFrame.ActionBar_bili_Slider.Low:SetTextColor(0.8, 0.8, 0.8, 0.5);
+		fuFrame.ActionBar_bili_Slider.High:SetTextColor(0.8, 0.8, 0.8, 0.5);
+		fuFrame.ActionBar_bili_Slider.Text:SetTextColor(0.8, 0.8, 0.8, 0.5);
 	end
 end
 fuFrame.ActionBar_bili_ck = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
@@ -68,21 +69,21 @@ fuFrame.ActionBar_bili_ck:SetScript("OnClick", function (self)
 	ActionBar_bili_gengxin()
 end);
 -------
-local ActionBar_bili_Slider = CreateFrame("Slider", "ActionBar_bili_Slider_UI", fuFrame, "OptionsSliderTemplate")
-ActionBar_bili_Slider:SetWidth(140)
-ActionBar_bili_Slider:SetHeight(15)
-ActionBar_bili_Slider:SetPoint("LEFT",fuFrame.ActionBar_bili_ck,"RIGHT",96,0);
-ActionBar_bili_Slider:Show()
-ActionBar_bili_Slider.tooltipText = '拖动滑块或者用鼠标滚轮调整动作条缩放比例,注意此设置和系统高级里面的UI缩放不同，只调整动作条比例';
-ActionBar_bili_Slider:SetMinMaxValues(6, 14);
-ActionBar_bili_Slider:SetValueStep(1);
-ActionBar_bili_Slider:SetObeyStepOnDrag(true);
-ActionBar_bili_Slider.Low:SetText('0.6');
-ActionBar_bili_Slider.High:SetText('1.4');
+fuFrame.ActionBar_bili_Slider = CreateFrame("Slider", nil, fuFrame, "OptionsSliderTemplate")
+fuFrame.ActionBar_bili_Slider:SetWidth(140)
+fuFrame.ActionBar_bili_Slider:SetHeight(15)
+fuFrame.ActionBar_bili_Slider:SetPoint("LEFT",fuFrame.ActionBar_bili_ck,"RIGHT",96,0);
+fuFrame.ActionBar_bili_Slider:Show()
+fuFrame.ActionBar_bili_Slider.tooltipText = '拖动滑块或者用鼠标滚轮调整动作条缩放比例,注意此设置和系统高级里面的UI缩放不同，只调整动作条比例';
+fuFrame.ActionBar_bili_Slider:SetMinMaxValues(6, 14);
+fuFrame.ActionBar_bili_Slider:SetValueStep(1);
+fuFrame.ActionBar_bili_Slider:SetObeyStepOnDrag(true);
+fuFrame.ActionBar_bili_Slider.Low:SetText('0.6');
+fuFrame.ActionBar_bili_Slider.High:SetText('1.4');
 --启用鼠标滚轮调整
-ActionBar_bili_Slider:EnableMouseWheel(true);
-ActionBar_bili_Slider:SetScript("OnMouseWheel", function(self, arg1)
-	if ActionBar_bili_Slider:IsEnabled() then
+fuFrame.ActionBar_bili_Slider:EnableMouseWheel(true);
+fuFrame.ActionBar_bili_Slider:SetScript("OnMouseWheel", function(self, arg1)
+	if fuFrame.ActionBar_bili_Slider:IsEnabled() then
 		local step = 1 * arg1
 		local value = self:GetValue()
 		if step > 0 then
@@ -92,7 +93,7 @@ ActionBar_bili_Slider:SetScript("OnMouseWheel", function(self, arg1)
 		end
 	end
 end)
-ActionBar_bili_Slider:SetScript('OnValueChanged', function(self)
+fuFrame.ActionBar_bili_Slider:SetScript('OnValueChanged', function(self)
 	local Newval = (self:GetValue()/10)
 	PIG['PigUI']['ActionBar_bili_value']=Newval;
 	ActionBar_bili_gengxin()
@@ -116,7 +117,7 @@ local function StanceBar_yidong()
 				else
 					StanceBarFrame:ClearAllPoints()
 					StanceBarFrame:SetMovable(true)
-					if ReputationWatchBar:IsShown() then
+					if ReputationWatchBar and ReputationWatchBar:IsShown() then
 						StanceBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 9)
 					else
 						StanceBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 0)

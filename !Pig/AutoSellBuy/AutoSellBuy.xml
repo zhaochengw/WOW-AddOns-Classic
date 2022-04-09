@@ -4,4 +4,5 @@
 	<Script file="AutoSell.lua" />
 	<Script file="AutoBuy.lua" />
 	<Script file="FastDiuqi.lua" />
+	<Script file="Open.lua" />
 </Ui>

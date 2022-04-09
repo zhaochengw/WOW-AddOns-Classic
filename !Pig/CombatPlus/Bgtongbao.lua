@@ -6,8 +6,8 @@ local function CombatPlus_BGtongbao_Open()
 	if BGanniuUI==nil then
 		local BGanniu = CreateFrame("Button","BGanniuUI",UIParent, "UIPanelButtonTemplate");  
 		BGanniu:SetSize(80,30);
-		BGanniu:SetPoint("BOTTOMRIGHT",MultiBarBottomRightButton12,"TOPRIGHT",0,40);
-		BGanniu:SetText("战场通报");
+		BGanniu:SetPoint("BOTTOM",UIParent,"BOTTOM",100,260);
+		BGanniu:SetText("战情通报");
 		BGanniu:SetMovable(true)
 		BGanniu:SetClampedToScreen(true)
 		BGanniu:RegisterForDrag("LeftButton")
@@ -46,7 +46,7 @@ fuFrame.BGtongbao:SetSize(30,32);
 fuFrame.BGtongbao:SetHitRectInsets(0,-100,0,0);
 fuFrame.BGtongbao:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-80);
 fuFrame.BGtongbao.Text:SetText("战场快捷通报按钮");
-fuFrame.BGtongbao.tooltip = "在动作条上方增加战场快捷通报按钮！";
+fuFrame.BGtongbao.tooltip = "在动作条上方增加战场快捷通报按钮,注意战场外不显示！";
 fuFrame.BGtongbao:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['CombatPlus']['BGtongbao']="ON";
@@ -92,7 +92,7 @@ fuFrame.CZPoint:SetScript("OnLeave", function ()
 end);
 fuFrame.CZPoint:SetScript("OnClick", function ()
 	BGanniuUI:ClearAllPoints();
-	BGanniuUI:SetPoint("BOTTOMRIGHT",MultiBarBottomRightButton12,"TOPRIGHT",0,40);
+	BGanniuUI:SetPoint("BOTTOM",UIParent,"BOTTOM",100,260);
 end)
 --=====================================
 addonTable.CombatPlus_BGtongbao = function()

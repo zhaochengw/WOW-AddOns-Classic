@@ -75,40 +75,76 @@ local function Classes_Gensui_B()
 	if gensui_B_UI:GetChecked() then
 		gensui_B_UI:RegisterEvent("CHAT_MSG_PARTY");--收到组队信息
 		gensui_B_UI:RegisterEvent("CHAT_MSG_PARTY_LEADER");--当组长发送或接收消息时触发。
+		gensui_B_UI:RegisterEvent("CHAT_MSG_RAID");--收到团队信息
+		gensui_B_UI:RegisterEvent("CHAT_MSG_RAID_LEADER");--收到团队领导信息
 		gensui_B_UI:RegisterEvent("CHAT_MSG_WHISPER");--当收到其他玩家的耳语时触发
+		PIG_Per['Classes']['beidongkaiqi']=true
+		gensui_B_tishi_UI:Show()
+		gensui_Z_UI:Disable();
+		gensui_B_CMD_UI:Disable();
+		if zhixingzdgensui then zhixingzdgensui:Cancel() end
+		if zhixingzBDensui then zhixingzBDensui:Cancel() end
+		if IsInGroup() then
+			if IsInRaid() then
+				SendChatMessage('[!Pig] 已开启被动跟随,收到指令 '..PIG["Classes"]["GensuiKaishi"]..' 跟随；收到 '..PIG["Classes"]["GensuiJieshu"]..' 停止', "RAID", nil);
+			else
+				SendChatMessage('[!Pig] 已开启被动跟随,收到指令 '..PIG["Classes"]["GensuiKaishi"]..' 跟随；收到 '..PIG["Classes"]["GensuiJieshu"]..' 停止', "PARTY", nil);
+			end
+		end
 	else
+		PIG_Per['Classes']['beidongkaiqi']=false
+		gensui_B_tishi_UI:Hide();
+		gensui_Z_UI:Enable();
+		gensui_B_CMD_UI:Enable();
+		local name,_ = UnitName("player");
+		if zhixingzdgensui then zhixingzdgensui:Cancel() end
+		if zhixingzBDensui then zhixingzBDensui:Cancel() end
+		FollowUnit(name);
+		if IsInGroup() then
+			SendChatMessage("[!Pig] 已关闭被动跟随！", "PARTY", nil);
+		end
 		gensui_B_UI:UnregisterEvent("CHAT_MSG_PARTY");--收到组队信息
 		gensui_B_UI:UnregisterEvent("CHAT_MSG_PARTY_LEADER");--当组长发送或接收消息时触发。
+		gensui_B_UI:UnregisterEvent("CHAT_MSG_RAID");--收到团队信息
+		gensui_B_UI:UnregisterEvent("CHAT_MSG_RAID_LEADER");--收到团队领导信息
 		gensui_B_UI:UnregisterEvent("CHAT_MSG_WHISPER");--当收到其他玩家的耳语时触发
 	end
 	gensui_B_UI:SetScript("OnEvent",function (self,event,arg1,_,_,_,arg5)
+		self.wanjiaming=arg5
+		local zijirealm = GetRealmName()
+		local wanjia, wanjiarealm = strsplit("-", arg5);
+		if zijirealm==wanjiarealm then self.wanjiaming=wanjia end
 		local function Classes_Gensui_Z_shuaxin()
-			FollowUnit(arg5);
+			FollowUnit(self.wanjiaming);
 		end
 		if PIG['Classes']['Duizhang']=="ON" then
-			if event == "CHAT_MSG_PARTY_LEADER" or event == "CHAT_MSG_WHISPER" and UnitIsGroupLeader(arg5, "LE_PARTY_CATEGORY_HOME") then
+			if event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_PARTY_LEADER" or event == "CHAT_MSG_WHISPER" and UnitIsGroupLeader(self.wanjiaming) then
 				if arg1 == PIG["Classes"]["GensuiKaishi"] then
-					if CheckInteractDistance(arg5, 4) then
+					if CheckInteractDistance(self.wanjiaming, 4) then
 						if zhixingzdgensui then zhixingzdgensui:Cancel() end
 						if zhixingzBDensui then zhixingzBDensui:Cancel() end
 						if PIG['Classes']['qianglimoshi']=="ON" then
 							zhixingzBDensui=C_Timer.NewTicker(0.5, Classes_Gensui_Z_shuaxin)
 						else
-							FollowUnit(arg5);
+							FollowUnit(self.wanjiaming);
 						end
 						if PIG['Classes']['gensuitishi']=="ON" then
-							if IsInGroup() then	
-								SendChatMessage("[!Pig] 开始跟随玩家《"..arg5.."》，发送"..PIG["Classes"]["GensuiJieshu"].."将停止跟随!", "PARTY", nil);
-							else
-								SendChatMessage("[!Pig] 我已开始跟随你，发送"..PIG["Classes"]["GensuiJieshu"].."将停止跟随！", "WHISPER", nil, arg5)
+							if event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+								SendChatMessage("[!Pig] 开始跟随玩家《"..self.wanjiaming.."》，发送"..PIG["Classes"]["GensuiJieshu"].."将停止跟随!", "RAID", nil);
+							elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER"then 
+								SendChatMessage("[!Pig] 开始跟随玩家《"..self.wanjiaming.."》，发送"..PIG["Classes"]["GensuiJieshu"].."将停止跟随!", "PARTY", nil);
+							elseif event == "CHAT_MSG_WHISPER" then
+								SendChatMessage("[!Pig] 我已开始跟随你，发送"..PIG["Classes"]["GensuiJieshu"].."将停止跟随！", "WHISPER", nil, self.wanjiaming)
 							end
 						end
 					else
 						if PIG['Classes']['gensuitishi']=="ON" then
-							if IsInGroup() then	
-								SendChatMessage("[!Pig] 跟随玩家《"..arg5.."》失败，超出距离，请靠近一些!", "PARTY", nil);
-							else
-								SendChatMessage("[!Pig] 跟随你失败，超出距离，请靠近一些！", "WHISPER", nil, arg5)
+							if event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+								SendChatMessage("[!Pig] 跟随玩家《"..self.wanjiaming.."》失败，超出距离，请靠近一些!", "RAID", nil);
+							elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER"then 
+								SendChatMessage("[!Pig] 跟随玩家《"..self.wanjiaming.."》失败，超出距离，请靠近一些!", "PARTY", nil);
+							elseif event == "CHAT_MSG_WHISPER" then
+								SendChatMessage("[!Pig] 跟随你失败，超出距离，请靠近一些！", "WHISPER", nil, self.wanjiaming)
 							end
 						end
 					end
@@ -118,53 +154,60 @@ local function Classes_Gensui_B()
 					if zhixingzBDensui then zhixingzBDensui:Cancel() end
 					FollowUnit("player");
 					if PIG['Classes']['gensuitishi']=="ON" then		
-						if IsInGroup() then
-							SendChatMessage("[!Pig] 停止跟随玩家《"..arg5.."》，发送"..PIG["Classes"]["GensuiKaishi"].."将再次跟随", "PARTY", nil);
-						else
-							SendChatMessage("[!Pig] 已停止跟随你，发送"..PIG["Classes"]["GensuiKaishi"].."将再次跟随！", "WHISPER", nil, arg5);
+						if event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+							SendChatMessage("[!Pig] 停止跟随玩家《"..self.wanjiaming.."》，发送"..PIG["Classes"]["GensuiKaishi"].."将再次跟随", "RAID", nil);
+						elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER"then 
+							SendChatMessage("[!Pig] 停止跟随玩家《"..self.wanjiaming.."》，发送"..PIG["Classes"]["GensuiKaishi"].."将再次跟随", "PARTY", nil);
+						elseif event == "CHAT_MSG_WHISPER" then
+							SendChatMessage("[!Pig] 已停止跟随你，发送"..PIG["Classes"]["GensuiKaishi"].."将再次跟随！", "WHISPER", nil, self.wanjiaming);
 						end
 					end		
 				end		
 			end
 		else
-			local name,_ = UnitName("player")
-			if (event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER" or event == "CHAT_MSG_WHISPER") then
-				if (arg1 == PIG["Classes"]["GensuiKaishi"] and arg5~=name) then
-					if CheckInteractDistance(arg5, 4) then
+			if event=="CHAT_MSG_RAID" or event=="CHAT_MSG_RAID_LEADER" or event=="CHAT_MSG_PARTY" or event=="CHAT_MSG_PARTY_LEADER" or event=="CHAT_MSG_WHISPER" then
+				if not UnitInParty(self.wanjiaming) then return end
+				if arg1 == PIG["Classes"]["GensuiKaishi"] then
+					if CheckInteractDistance(self.wanjiaming, 4) then
 						if zhixingzdgensui then zhixingzdgensui:Cancel() end
 						if zhixingzBDensui then zhixingzBDensui:Cancel() end
 						if PIG['Classes']['qianglimoshi']=="ON" then
 							zhixingzBDensui=C_Timer.NewTicker(0.5, Classes_Gensui_Z_shuaxin)
 						else
-							FollowUnit(arg5);
+							FollowUnit(self.wanjiaming);
 						end
 						if PIG['Classes']['gensuitishi']=="ON" then
-							if IsInGroup() then	
-								SendChatMessage("[!Pig] 开始跟随玩家《"..arg5.."》，发送"..PIG["Classes"]["GensuiJieshu"].."将停止跟随!", "PARTY", nil);
-							else
-								SendChatMessage("[!Pig] 我已开始跟随你，发送"..PIG["Classes"]["GensuiJieshu"].."将停止跟随！", "WHISPER", nil, arg5)
+							if event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+								SendChatMessage("[!Pig] 开始跟随玩家《"..self.wanjiaming.."》，发送"..PIG["Classes"]["GensuiJieshu"].."将停止跟随!", "RAID", nil);
+							elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER"then 
+								SendChatMessage("[!Pig] 开始跟随玩家《"..self.wanjiaming.."》，发送"..PIG["Classes"]["GensuiJieshu"].."将停止跟随!", "PARTY", nil);
+							elseif event == "CHAT_MSG_WHISPER" then
+								SendChatMessage("[!Pig] 我已开始跟随你，发送"..PIG["Classes"]["GensuiJieshu"].."将停止跟随！", "WHISPER", nil, self.wanjiaming)
 							end
 						end
 					else
 						if PIG['Classes']['gensuitishi']=="ON" then
-							if IsInGroup() then	
-								SendChatMessage("[!Pig] 跟随玩家《"..arg5.."》失败，超出距离，请靠近一些!", "PARTY", nil);
-							else
-								SendChatMessage("[!Pig] 跟随你失败，超出距离，请靠近一些！", "WHISPER", nil, arg5)
+							if event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+								SendChatMessage("[!Pig] 跟随玩家《"..self.wanjiaming.."》失败，超出距离，请靠近一些!", "RAID", nil);
+							elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER"then 
+								SendChatMessage("[!Pig] 跟随玩家《"..self.wanjiaming.."》失败，超出距离，请靠近一些!", "PARTY", nil);
+							elseif event == "CHAT_MSG_WHISPER" then
+								SendChatMessage("[!Pig] 跟随你失败，超出距离，请靠近一些！", "WHISPER", nil, self.wanjiaming)
 							end
 						end
 					end
-				end
-				if (arg1 == PIG["Classes"]["GensuiJieshu"] and arg5~=name) then
+				elseif (arg1 == PIG["Classes"]["GensuiJieshu"]) then
 					if zhixingzdgensui then zhixingzdgensui:Cancel() end
 					if zhixingzBDensui then zhixingzBDensui:Cancel() end
 					FollowUnit("player");
-					if PIG['Classes']['gensuitishi']=="ON" then	
-						if IsInGroup() then
-							SendChatMessage("[!Pig] 停止跟随玩家《"..arg5.."》，发送"..PIG["Classes"]["GensuiKaishi"].."将再次跟随", "PARTY", nil);
-						else
-							SendChatMessage("[!Pig] 已停止跟随你，发送"..PIG["Classes"]["GensuiKaishi"].."将再次跟随！", "WHISPER", nil, arg5);
-						end	
+					if PIG['Classes']['gensuitishi']=="ON" then
+						if event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+							SendChatMessage("[!Pig] 停止跟随玩家《"..self.wanjiaming.."》，发送"..PIG["Classes"]["GensuiKaishi"].."将再次跟随", "RAID", nil);
+						elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER"then 
+							SendChatMessage("[!Pig] 停止跟随玩家《"..self.wanjiaming.."》，发送"..PIG["Classes"]["GensuiKaishi"].."将再次跟随", "PARTY", nil);
+						elseif event == "CHAT_MSG_WHISPER" then
+							SendChatMessage("[!Pig] 已停止跟随你，发送"..PIG["Classes"]["GensuiKaishi"].."将再次跟随！", "WHISPER", nil, self.wanjiaming);
+						end
 					end		
 				end		
 			end
@@ -173,7 +216,6 @@ local function Classes_Gensui_B()
 end
 local gensuizidongjiuweiFFF = CreateFrame("Frame");
 local function Classes_Gensui()
-	if not Classes_UI then return end
 	local ZiFuFamre =Classes_UI.nr
 	local aciWidth = ActionButton1:GetWidth()
 	local Width,Height=aciWidth,aciWidth;
@@ -250,34 +292,13 @@ local function Classes_Gensui()
 		gensui_B_tishi.t:SetFont(GameFontNormal:GetFont(), 30,"OUTLINE")
 		gensui_B_tishi.t:SetTextColor(0/255, 215/255, 255/255, 1);
 		gensui_B_tishi.t:SetText('|cffffFF00被动|r跟随中...');
-		ZiFuFamre.gensui_B_CMD = CreateFrame("Button", nil, ZiFuFamre, "UIPanelButtonTemplate");
+		ZiFuFamre.gensui_B_CMD = CreateFrame("Button", "gensui_B_CMD_UI", ZiFuFamre, "UIPanelButtonTemplate");
 		ZiFuFamre.gensui_B_CMD:SetSize(Width-2,Height-2);
 		ZiFuFamre.gensui_B_CMD:SetPoint("LEFT",ZiFuFamre.gensui_B,"RIGHT",0,3); 
 		ZiFuFamre.gensui_B_CMD:SetText("被");
 		ZiFuFamre.gensui_B_CMD:RegisterForClicks("LeftButtonUp","RightButtonUp")
 		ZiFuFamre.gensui_B:SetScript("OnClick", function (self)
 			Classes_Gensui_B()
-			if self:GetChecked() then
-				gensui_B_tishi:Show()
-				gensui_Z_UI:Disable();
-				ZiFuFamre.gensui_B_CMD:Disable();
-				if zhixingzdgensui then zhixingzdgensui:Cancel() end
-				if zhixingzBDensui then zhixingzBDensui:Cancel() end
-				if IsInGroup() then
-					SendChatMessage('[!Pig] 已开启被动跟随,收到指令 '..PIG["Classes"]["GensuiKaishi"]..' 跟随；收到 '..PIG["Classes"]["GensuiJieshu"]..' 停止', "PARTY", nil);
-				end
-			else
-				gensui_B_tishi:Hide();
-				gensui_Z_UI:Enable();
-				ZiFuFamre.gensui_B_CMD:Enable();
-				local name,_ = UnitName("player");
-				if zhixingzdgensui then zhixingzdgensui:Cancel() end
-				if zhixingzBDensui then zhixingzBDensui:Cancel() end
-				FollowUnit(name);
-				if IsInGroup() then
-					SendChatMessage("[!Pig] 已关闭被动跟随！", "PARTY", nil);
-				end
-			end
 		end);
 		ZiFuFamre.gensui_B_CMD:SetScript("OnEnter", function ()
 			GameTooltip:ClearLines();
@@ -292,16 +313,28 @@ local function Classes_Gensui()
 		ZiFuFamre.gensui_B_CMD:SetScript("OnClick", function (self,botton)
 			if botton=="LeftButton" then
 				if IsInGroup() then
-					SendChatMessage(PIG["Classes"]["GensuiKaishi"], "PARTY", nil);
+					if IsInRaid() then
+						SendChatMessage(PIG["Classes"]["GensuiKaishi"], "RAID", nil);
+					else
+						SendChatMessage(PIG["Classes"]["GensuiKaishi"], "PARTY", nil);
+					end
 				end
 			else
 				if IsInGroup() then
-					SendChatMessage(PIG["Classes"]["GensuiJieshu"], "PARTY", nil);
+					if IsInRaid() then
+						SendChatMessage(PIG["Classes"]["GensuiJieshu"], "RAID", nil);
+					else
+						SendChatMessage(PIG["Classes"]["GensuiJieshu"], "PARTY", nil);
+					end
 				end
 			end
 		end);
 	end
 	addonTable.Classes_gengxinkuanduinfo()
+	if PIG_Per['Classes']['beidongkaiqi'] then
+		ZiFuFamre.gensui_B:SetChecked(true);
+		Classes_Gensui_B()
+	end
 end
 
 --=============================
@@ -361,7 +394,7 @@ yijiaoduizhangFFFF:SetScript("OnEvent",function (self,event,arg1,_,_,_,arg5)
 			if UnitIsGroupLeader("player") then
 				if gensui_B_UI or gensui_Z_UI then
 					if gensui_B_UI:GetChecked() or gensui_Z_UI:GetChecked() then
-						if string.match(arg1,"队长") then		
+						if string.match(arg1,"队长") or string.match(arg1,"团长") then		
 							PromoteToLeader(arg5)
 						end
 					end
@@ -374,8 +407,8 @@ fuFrame.gensuiF.yijiaoduizhang = CreateFrame("CheckButton", nil, fuFrame.gensuiF
 fuFrame.gensuiF.yijiaoduizhang:SetSize(30,32);
 fuFrame.gensuiF.yijiaoduizhang:SetHitRectInsets(0,-100,0,0);
 fuFrame.gensuiF.yijiaoduizhang:SetPoint("LEFT",fuFrame.gensuiF.gensuijiuwei,"RIGHT",170,0);
-fuFrame.gensuiF.yijiaoduizhang.Text:SetText("跟随开启时自动移交队长");
-fuFrame.gensuiF.yijiaoduizhang.tooltip = "开启后，跟随开启时收到密语内容为[队长]，将自动移交队长给对方";
+fuFrame.gensuiF.yijiaoduizhang.Text:SetText("跟随开启时自动移交队长/团长");
+fuFrame.gensuiF.yijiaoduizhang.tooltip = "开启后，跟随开启时收到密语内容为[队长]/[团长]，将自动移交队长/团长给对方";
 fuFrame.gensuiF.yijiaoduizhang:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['Classes']['yijiaoduizhang']="ON";

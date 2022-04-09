@@ -30,19 +30,20 @@ end
 addonTable.FastDiuqi_DelItem = DelItem
 -------
 local function FastDiuqi_ADD()
-	local Width = SpllBuy_TabFrame_1:GetWidth()-20;
+	local frameX = SpllBuy_TabFrame_1
+	local Width = frameX:GetWidth()-20;
 	--滚动框架
-	SpllBuy_TabFrame_1.FastDiuqi = CreateFrame("Frame", nil, SpllBuy_TabFrame_1,"BackdropTemplate")
-	SpllBuy_TabFrame_1.FastDiuqi:SetBackdrop({edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+	frameX.FastDiuqi = CreateFrame("Frame", nil, frameX,"BackdropTemplate")
+	frameX.FastDiuqi:SetBackdrop({edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
 		edgeSize = 14,insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	})
-	SpllBuy_TabFrame_1.FastDiuqi:SetSize(Width, hang_Height*14+10)
-	SpllBuy_TabFrame_1.FastDiuqi:SetPoint("BOTTOM", SpllBuy_TabFrame_1, "BOTTOM", 0, 10)
-	SpllBuy_TabFrame_1.FastDiuqi:SetBackdropBorderColor(0.5, 0.5, 0.5, 0.5);
-	SpllBuy_TabFrame_1.FastDiuqi.biaoti = SpllBuy_TabFrame_1.FastDiuqi:CreateFontString();
-	SpllBuy_TabFrame_1.FastDiuqi.biaoti:SetPoint("BOTTOM", SpllBuy_TabFrame_1.FastDiuqi, "TOP", 0, -0);
-	SpllBuy_TabFrame_1.FastDiuqi.biaoti:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
-	SpllBuy_TabFrame_1.FastDiuqi.biaoti:SetText("\124cffFFFF00丢弃目录\124r\124cff00FF00(拖拽物品到此)\124r");
+	frameX.FastDiuqi:SetSize(Width, hang_Height*hang_NUM+10)
+	frameX.FastDiuqi:SetPoint("BOTTOM", frameX, "BOTTOM", 0, 10)
+	frameX.FastDiuqi:SetBackdropBorderColor(0.5, 0.5, 0.5, 0.5);
+	frameX.FastDiuqi.biaoti = frameX.FastDiuqi:CreateFontString();
+	frameX.FastDiuqi.biaoti:SetPoint("BOTTOM", frameX.FastDiuqi, "TOP", 0, -0);
+	frameX.FastDiuqi.biaoti:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
+	frameX.FastDiuqi.biaoti:SetText("\124cffFFFF00丢弃目录\124r\124cff00FF00(拖拽物品到此)\124r");
 	-- --滚动更新
 	local function gengxinDEL(self)
 		for id = 1, hang_NUM do
@@ -78,18 +79,18 @@ local function FastDiuqi_ADD()
 	end
 
 	----创建可滚动区域
-	SpllBuy_TabFrame_1.FastDiuqi.Scroll = CreateFrame("ScrollFrame",nil,SpllBuy_TabFrame_1.FastDiuqi, "FauxScrollFrameTemplate");  
-	SpllBuy_TabFrame_1.FastDiuqi.Scroll:SetPoint("TOPLEFT",SpllBuy_TabFrame_1.FastDiuqi,"TOPLEFT",0,-5);
-	SpllBuy_TabFrame_1.FastDiuqi.Scroll:SetPoint("BOTTOMRIGHT",SpllBuy_TabFrame_1.FastDiuqi,"BOTTOMRIGHT",-27,5);
-	SpllBuy_TabFrame_1.FastDiuqi.Scroll:SetScript("OnVerticalScroll", function(self, offset)
+	frameX.FastDiuqi.Scroll = CreateFrame("ScrollFrame",nil,frameX.FastDiuqi, "FauxScrollFrameTemplate");  
+	frameX.FastDiuqi.Scroll:SetPoint("TOPLEFT",frameX.FastDiuqi,"TOPLEFT",0,-5);
+	frameX.FastDiuqi.Scroll:SetPoint("BOTTOMRIGHT",frameX.FastDiuqi,"BOTTOMRIGHT",-27,5);
+	frameX.FastDiuqi.Scroll:SetScript("OnVerticalScroll", function(self, offset)
 	    FauxScrollFrame_OnVerticalScroll(self, offset, hang_Height, gengxinDEL)
 	end)
 	--创建行
 	for id = 1, hang_NUM do
-		local DelH = CreateFrame("Frame", "DelH_hang"..id, SpllBuy_TabFrame_1.FastDiuqi);
+		local DelH = CreateFrame("Frame", "DelH_hang"..id, frameX.FastDiuqi);
 		DelH:SetSize(Width-36, hang_Height);
 		if id==1 then
-			DelH:SetPoint("TOP",SpllBuy_TabFrame_1.FastDiuqi.Scroll,"TOP",0,0);
+			DelH:SetPoint("TOP",frameX.FastDiuqi.Scroll,"TOP",0,0);
 		else
 			DelH:SetPoint("TOP",_G["DelH_hang"..(id-1)],"BOTTOM",0,-0);
 		end
@@ -125,45 +126,45 @@ local function FastDiuqi_ADD()
 		end);
 		DelH.del:SetScript("OnClick", function (self)
 			table.remove(PIG["FastDiuqi"], self:GetID());
-			gengxinDEL(SpllBuy_TabFrame_1.FastDiuqi.Scroll);
+			gengxinDEL(frameX.FastDiuqi.Scroll);
 		end);
 	end
 	-- ----
-	SpllBuy_TabFrame_1.FastDiuqi.ADD = CreateFrame("Frame",nil,SpllBuy_TabFrame_1.FastDiuqi);  
-	SpllBuy_TabFrame_1.FastDiuqi.ADD:SetPoint("TOPLEFT",SpllBuy_TabFrame_1.FastDiuqi,"TOPLEFT",0,0);
-	SpllBuy_TabFrame_1.FastDiuqi.ADD:SetPoint("BOTTOMRIGHT",SpllBuy_TabFrame_1.FastDiuqi,"BOTTOMRIGHT",-0,0);
+	frameX.FastDiuqi.ADD = CreateFrame("Frame",nil,frameX.FastDiuqi);  
+	frameX.FastDiuqi.ADD:SetPoint("TOPLEFT",frameX.FastDiuqi,"TOPLEFT",0,0);
+	frameX.FastDiuqi.ADD:SetPoint("BOTTOMRIGHT",frameX.FastDiuqi,"BOTTOMRIGHT",-0,0);
 	---
-	SpllBuy_TabFrame_1.FastDiuqi:RegisterEvent("ITEM_LOCK_CHANGED");
-	local DEL_iteminfo={};
-	SpllBuy_TabFrame_1.FastDiuqi:SetScript("OnEvent",function (self,event,arg1,arg2)
+	frameX.FastDiuqi:RegisterEvent("ITEM_LOCK_CHANGED");
+	frameX.FastDiuqi.ADD.iteminfo={};
+	frameX.FastDiuqi:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if arg1 and arg2 then
 			if CursorHasItem() then
 				local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1,arg2);
-				DEL_iteminfo={icon, itemLink, itemID};
-				SpllBuy_TabFrame_1.FastDiuqi.ADD:SetFrameLevel(48);
+				frameX.FastDiuqi.ADD.iteminfo={icon, itemLink, itemID};
+				frameX.FastDiuqi.ADD:SetFrameLevel(48);
 			end
 		end
 	end);
-	SpllBuy_TabFrame_1.FastDiuqi.ADD:SetScript("OnMouseUp", function ()
+	frameX.FastDiuqi.ADD:SetScript("OnMouseUp", function ()
 		if CursorHasItem() then
 			for i=1,#PIG["FastDiuqi"] do
-				if DEL_iteminfo[3]==PIG["FastDiuqi"][i][3] then
+				if frameX.FastDiuqi.ADD.iteminfo[3]==PIG["FastDiuqi"][i][3] then
 					print("|cff00FFFF!Pig:|r|cffffFF00物品已在目录内！|r");
 					ClearCursor();
-					DEL_iteminfo={};
-					SpllBuy_TabFrame_1.FastDiuqi.ADD:SetFrameLevel(40);
+					frameX.FastDiuqi.ADD.iteminfo={};
+					frameX.FastDiuqi.ADD:SetFrameLevel(40);
 					return
 				end			
 			end
-			table.insert(PIG["FastDiuqi"], DEL_iteminfo);
+			table.insert(PIG["FastDiuqi"], frameX.FastDiuqi.ADD.iteminfo);
 			ClearCursor();
-			DEL_iteminfo={};
-			gengxinDEL(SpllBuy_TabFrame_1.FastDiuqi.Scroll);
+			frameX.FastDiuqi.ADD.iteminfo={};
+			gengxinDEL(frameX.FastDiuqi.Scroll);
 		end
-		SpllBuy_TabFrame_1.FastDiuqi.ADD:SetFrameLevel(40);
+		frameX.FastDiuqi.ADD:SetFrameLevel(40);
 	end);
-	SpllBuy_TabFrame_1.FastDiuqi:SetScript("OnShow", function()
-		gengxinDEL(SpllBuy_TabFrame_1.FastDiuqi.Scroll);
+	frameX.FastDiuqi:SetScript("OnShow", function()
+		gengxinDEL(frameX.FastDiuqi.Scroll);
 	end)
 
 	--需要开锁技能打开的物品
@@ -171,23 +172,6 @@ local function FastDiuqi_ADD()
 	local zidongkaishidiuqiFFF = CreateFrame("Frame");
 	zidongkaishidiuqiFFF:RegisterEvent("BAG_UPDATE");
 	zidongkaishidiuqiFFF:SetScript("OnEvent", function(self,event,arg1)
-		if PIG['AutoSellBuy']['zidongKaiqi']=="ON" then
-			local xx=GetContainerNumSlots(arg1)
-			for k=1,xx do	
-				zidongkaishidiuqiFFF.bushidaisuode=true
-				local texture, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1, k);
-				if lootable then
-					for i=1,#xukaisuo do
-						if itemID==xukaisuo[i] then
-							zidongkaishidiuqiFFF.bushidaisuode=false
-						end
-					end
-					if zidongkaishidiuqiFFF.bushidaisuode then
-						UseContainerItem(arg1, k)
-					end
-				end
-			end
-		end
 		if PIG['AutoSellBuy']['diuqitishi']=="ON" then
 			local bnum=GetContainerNumSlots(arg1)
 			for l=1,bnum do
@@ -202,27 +186,15 @@ local function FastDiuqi_ADD()
 		end
 	end);
 
-	SpllBuy_TabFrame_1.zidongKaiqi = CreateFrame("CheckButton", nil, SpllBuy_TabFrame_1, "ChatConfigCheckButtonTemplate");
-	SpllBuy_TabFrame_1.zidongKaiqi:SetSize(28,30);
-	SpllBuy_TabFrame_1.zidongKaiqi:SetHitRectInsets(0,-72,0,0);
-	SpllBuy_TabFrame_1.zidongKaiqi:SetPoint("TOPLEFT",SpllBuy_TabFrame_1,"TOPLEFT",20,-36);
-	SpllBuy_TabFrame_1.zidongKaiqi.Text:SetText("自动打开");
-	SpllBuy_TabFrame_1.zidongKaiqi.tooltip = "启用后将自动打开可开启物品（例如：箱/盒/袋/蚌壳）!|r";
-	SpllBuy_TabFrame_1.zidongKaiqi:SetScript("OnClick", function (self)
-		if self:GetChecked() then
-			PIG['AutoSellBuy']['zidongKaiqi']="ON";
-		else
-			PIG['AutoSellBuy']['zidongKaiqi']="OFF";
-		end
-	end);
+
 	----
-	SpllBuy_TabFrame_1.tishidiuqi = CreateFrame("CheckButton", nil, SpllBuy_TabFrame_1, "ChatConfigCheckButtonTemplate");
-	SpllBuy_TabFrame_1.tishidiuqi:SetSize(28,30);
-	SpllBuy_TabFrame_1.tishidiuqi:SetHitRectInsets(0,-68,0,0);
-	SpllBuy_TabFrame_1.tishidiuqi:SetPoint("TOPLEFT",SpllBuy_TabFrame_1,"TOPLEFT",160,-36);
-	SpllBuy_TabFrame_1.tishidiuqi.Text:SetText("提示丢弃");
-	SpllBuy_TabFrame_1.tishidiuqi.tooltip = "有可丢弃物品将会在快捷按钮提示!|r";
-	SpllBuy_TabFrame_1.tishidiuqi:SetScript("OnClick", function (self)
+	frameX.tishidiuqi = CreateFrame("CheckButton", nil, frameX, "ChatConfigCheckButtonTemplate");
+	frameX.tishidiuqi:SetSize(28,30);
+	frameX.tishidiuqi:SetHitRectInsets(0,-68,0,0);
+	frameX.tishidiuqi:SetPoint("TOPLEFT",frameX,"TOPLEFT",20,-10);
+	frameX.tishidiuqi.Text:SetText("提示丢弃");
+	frameX.tishidiuqi.tooltip = "有可丢弃物品将会在快捷按钮提示!|r";
+	frameX.tishidiuqi:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG['AutoSellBuy']['diuqitishi']="ON";
 		else
@@ -243,21 +215,17 @@ local function FastDiuqi_ADD()
 		whileDead = true,
 		hideOnEscape = true,
 	}
-	SpllBuy_TabFrame_1.zidongDiuqi = CreateFrame("Button",nil,SpllBuy_TabFrame_1, "UIPanelButtonTemplate");
-	SpllBuy_TabFrame_1.zidongDiuqi:SetSize(110,22);
-	SpllBuy_TabFrame_1.zidongDiuqi:SetPoint("TOP",SpllBuy_TabFrame_1,"TOP",0,-10);
-	SpllBuy_TabFrame_1.zidongDiuqi:SetText("复制销毁指令");
-	SpllBuy_TabFrame_1.zidongDiuqi:SetScript("OnClick", function(event, button)
+	frameX.zidongDiuqi = CreateFrame("Button",nil,frameX, "UIPanelButtonTemplate");
+	frameX.zidongDiuqi:SetSize(110,22);
+	frameX.zidongDiuqi:SetPoint("TOPLEFT",frameX,"TOPLEFT",160,-10);
+	frameX.zidongDiuqi:SetText("复制销毁指令");
+	frameX.zidongDiuqi:SetScript("OnClick", function(event, button)
 		StaticPopup_Show ("FUZHIXIAOHUIZHILING");
 	end)
+	-----
+	if PIG['AutoSellBuy']['diuqitishi']=="ON" then
+		frameX.tishidiuqi:SetChecked(true);
+	end
 end
 --==============================
-addonTable.FastDiuqi = function()
-	FastDiuqi_ADD()
-	if PIG['AutoSellBuy']['zidongKaiqi']=="ON" then
-		SpllBuy_TabFrame_1.zidongKaiqi:SetChecked(true);
-	end
-	if PIG['AutoSellBuy']['diuqitishi']=="ON" then
-		SpllBuy_TabFrame_1.tishidiuqi:SetChecked(true);
-	end	
-end
+addonTable.FastDiuqi = FastDiuqi_ADD

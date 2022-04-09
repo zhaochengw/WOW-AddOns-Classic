@@ -44,7 +44,7 @@ end);
 addonTable.CombatPlus_Cailiao = function()
     if PIG['FramePlus']['Cailiao']=="ON" then
         fuFrame.Cailiao:SetChecked(true);
-        if tocversion<20000 then
+        if fuFrame.Cailiao:IsEnabled() then
            ShowActionCount_Init()
         end   
     end

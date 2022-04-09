@@ -340,6 +340,7 @@ local function ADD_Invite()
 		local macroSlot = GetMacroIndexByName("!Pig")
 		local hanhuaneirong="";
 		hanhuaneirong=hanhuaneirong..invite.kaituanhanhua_E:GetText();
+		local zhilingV = invite.jinzuzhiling_E:GetText()
 		if zhilingV~="" and zhilingV~=" " then
 			hanhuaneirong=hanhuaneirong..",密"..zhilingV.."进组";
 		end

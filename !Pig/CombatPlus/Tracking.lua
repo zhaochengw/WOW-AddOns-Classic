@@ -108,7 +108,7 @@ end);
 addonTable.CombatPlus_Zhuizong = function()
 	if PIG['CombatPlus']['Zhuizong']=="ON" then
 		fuFrame.Zhuizong:SetChecked(true);
-		if tocversion<20000 then
+		if fuFrame.Zhuizong:IsEnabled() then
 			CombatPlus_Zhuizong()
 		end
 	end

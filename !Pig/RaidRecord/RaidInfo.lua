@@ -283,7 +283,7 @@ local function ADD_RaidInfo()
 		self.Tex:SetPoint("CENTER");
 	end);
 	fuFrame.shuaxinINFO:SetScript("OnClick", function (self)
-		StaticPopup_Show ("SHUAXINRENYUANXINXI");
+		StaticPopup_Show("SHUAXINRENYUANXINXI");
 	end);
 
 	StaticPopupDialogs["SHUAXINRENYUANXINXI"] = {
@@ -562,7 +562,7 @@ local function ADD_RaidInfo()
 		GameTooltip:Hide() 
 	end);
 	RaidR_UI.xiafangF.DongjieTishi:SetScript("OnMouseUp", function ()
-		StaticPopup_Show ("OFFSHISHIRAIDINFO");
+		StaticPopup_Show("OFFSHISHIRAIDINFO");
 	end);
 	StaticPopupDialogs["OFFSHISHIRAIDINFO"] = {
 		text = "确定解除人员信息冻结吗？\n\n解除后人员将实时更新\n\n\124cff00FF00分G计算前需重新冻结\124r\n\n",
@@ -601,9 +601,9 @@ local function ADD_RaidInfo()
 	end);
 	RaidR_UI.xiafangF.huoquRaidInfo:SetScript("OnClick", function (self)
 		if self:GetText()=='更新冻结信息' then
-			StaticPopup_Show ("HUOQU_RAIDINFO_UP");
+			StaticPopup_Show("HUOQU_RAIDINFO_UP");
 		elseif self:GetText()=='冻结人员信息' then
-			StaticPopup_Show ("HUOQU_RAIDINFO");
+			StaticPopup_Show("HUOQU_RAIDINFO");
 		end
 	end);
 	StaticPopupDialogs["HUOQU_RAIDINFO_UP"] = {

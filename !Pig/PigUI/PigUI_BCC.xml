@@ -1,4 +1,4 @@
 <Ui>
-	<Script file="ActionBar_BCC.lua" />
+	<Script file="ActionBar_Classic.lua" />
 	<Script file="ChatFrame.lua" />
 </Ui>

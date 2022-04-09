@@ -58,6 +58,41 @@ local function shuaxinBAGweizhi(frame, size, id)
 		_G[name.."MoneyFrame"]:SetPoint("TOPRIGHT", BAGheji_UI.moneyframe, "TOPRIGHT", 6, -5);
 		_G[name.."AddSlotsButton"]:SetShown(false);
 		_G[name.."MoneyFrame"]:SetParent(BAGheji_UI);
+		local function ADDshowEV(fameFF)
+				fameFF:SetScript("OnEnter", function (self)
+					GameTooltip:ClearLines();
+					GameTooltip:SetOwner(self, "ANCHOR_CURSOR",0,0);
+					
+					local lixianheji = PIG['zhegnheBAG']["lixian"]
+					local lixianhejiNAMEG = {}
+					lixianhejiNAMEG.ZIJIg=GetMoney();
+					for k,v in pairs(lixianheji) do
+						if k~=PIG_renwuming then
+							if v["G"] and v["G"]>0 then
+								table.insert(lixianhejiNAMEG,{k,v["G"],v["Class"]})
+								lixianhejiNAMEG.ZIJIg=lixianhejiNAMEG.ZIJIg+v["G"]
+							end
+						end
+					end
+					GameTooltip:AddLine("总计："..GetCoinTextureString(lixianhejiNAMEG.ZIJIg))
+					for n=1,#lixianhejiNAMEG do
+						local rPerc, gPerc, bPerc, argbHex = GetClassColor(lixianhejiNAMEG[n][3]);
+						GameTooltip:AddLine("\124c"..argbHex..lixianhejiNAMEG[n][1].."\124r："..GetCoinTextureString(lixianhejiNAMEG[n][2]))
+					end
+					GameTooltip:Show();
+				end);
+				fameFF:SetScript("OnLeave", function ()
+					GameTooltip:ClearLines();
+					GameTooltip:Hide() 
+				end);
+		end
+		ADDshowEV(_G[name.."MoneyFrame"])
+		local monheji = {_G[name.."MoneyFrame"]:GetChildren()}
+		for i=1,#monheji do
+			if monheji[i]~=ContainerFrame1MoneyFrameTrialErrorButton then
+				ADDshowEV(monheji[i])
+			end
+		end
 	else
 		_G[name.."MoneyFrame"]:Hide()
 	end
@@ -253,6 +288,7 @@ local function SAVE_BAG()
 		end
 	end
 	PIG['zhegnheBAG']["lixian"][PIG_renwuming]["BAG"] = wupinshujuinfo
+	PIG['zhegnheBAG']["lixian"][PIG_renwuming]["G"] = GetMoney();
 end
 local function SAVE_bank()
 	local wupinshujuinfo = {}
@@ -835,8 +871,8 @@ local function zhegnhe_Open()
 	else
 		BAGheji.Bg = BAGheji:CreateTexture(nil, "BORDER");
 		BAGheji.Bg:SetTexture("interface/framegeneral/ui-background-rock.blp");
-		BAGheji.Bg:SetPoint("TOPLEFT", BAGheji, "TOPLEFT",2, -2);
-		BAGheji.Bg:SetPoint("BOTTOMRIGHT", BAGheji, "BOTTOMRIGHT", -2, 2);
+		BAGheji.Bg:SetPoint("TOPLEFT", BAGheji, "TOPLEFT",4, -2);
+		BAGheji.Bg:SetPoint("BOTTOMRIGHT", BAGheji, "BOTTOMRIGHT", -2, 6);
 		BAGheji.Bg:SetDrawLayer("BORDER", 1)
 		BAGheji.topbg = BAGheji:CreateTexture(nil, "BACKGROUND");
 		BAGheji.topbg:SetTexture(374157);
@@ -1600,9 +1636,9 @@ local function zhegnhe_Open()
 	    BankFrame:StopMovingOrSizing()
 	    BankFrame:SetUserPlaced(false)
 	end)
-	BankCloseButton:SetScript("PostClick",  function (self)
-		if not IsBagOpen(0) then BAGheji_UI:Hide() end
-	end);
+	-- BankCloseButton:SetScript("PostClick",  function (self)
+	-- 	if not IsBagOpen(0) then BAGheji_UI:Hide() end
+	-- end);
 	BankFrame.AutoSort = CreateFrame("Button",nil,BankFrame, "TruncatedButtonTemplate");
 	BankFrame.AutoSort:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square");
 	BankFrame.AutoSort:SetSize(24,24);
@@ -1871,44 +1907,62 @@ end);
 
 -------------
 --背包剩余
-MainMenuBarBackpackButton.yushu = MainMenuBarBackpackButton:CreateFontString();
-MainMenuBarBackpackButton.yushu:SetPoint("BOTTOMRIGHT", MainMenuBarBackpackButton, "BOTTOMRIGHT", -2, 4);
-MainMenuBarBackpackButton.yushu:SetFont(ChatFontNormal:GetFont(), 18, "OUTLINE");
 local function gengxinbeibaoshengyugeshu()
 	local beibaoshengyushuliangduoshao = 0
 	for bag=BACKPACK_CONTAINER, NUM_BAG_SLOTS do 
 		local numberOfFreeSlots=GetContainerNumFreeSlots(bag);
 		beibaoshengyushuliangduoshao=beibaoshengyushuliangduoshao+numberOfFreeSlots
 	end
-	MainMenuBarBackpackButton.yushu:SetText(beibaoshengyushuliangduoshao); 
-	if beibaoshengyushuliangduoshao<10 then
-		MainMenuBarBackpackButton.yushu:SetTextColor(1, 0, 0, 1);
+	if tocversion<20000 then
+		MainMenuBarBackpackButton.Count:SetText(beibaoshengyushuliangduoshao); 
 	else
-		MainMenuBarBackpackButton.yushu:SetTextColor(0, 1, 0, 1);
+		MainMenuBarBackpackButton.Count:SetScale(1.4);
+		MainMenuBarBackpackButton.Count:SetPoint("CENTER", MainMenuBarBackpackButton, "CENTER", 1, -4);
+	end
+	if beibaoshengyushuliangduoshao<10 then
+		MainMenuBarBackpackButton.Count:SetTextColor(1, 0, 0, 1);
+	else
+		MainMenuBarBackpackButton.Count:SetTextColor(0, 1, 0, 1);
 	end
 end
-
-fuFrame.BAGkongyu = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.BAGkongyu:SetSize(30,32);
-fuFrame.BAGkongyu:SetHitRectInsets(0,-100,0,0);
-fuFrame.BAGkongyu:SetPoint("TOPLEFT",fuFrame.beibaoxin1,"TOPLEFT",300,-20);
-fuFrame.BAGkongyu.Text:SetText("显示背包剩余格数");
-fuFrame.BAGkongyu.tooltip = "在背包上显示背包的总剩余格数！";
-fuFrame.BAGkongyu:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG['zhegnheBAG']['BAGkongyu']="ON";
-		gengxinbeibaoshengyugeshu()
-		MainMenuBarBackpackButton.yushu:Show()
-	else
-		PIG['zhegnheBAG']['BAGkongyu']="OFF";
-		MainMenuBarBackpackButton.yushu:Hide()
-	end
-end);
+----
+if not MainMenuBarBackpackButton.Count then
+	MainMenuBarBackpackButton.Count = MainMenuBarBackpackButton:CreateFontString();
+	MainMenuBarBackpackButton.Count:SetPoint("BOTTOMRIGHT", MainMenuBarBackpackButton, "BOTTOMRIGHT", -2, 4);
+	MainMenuBarBackpackButton.Count:SetFont(ChatFontNormal:GetFont(), 18, "OUTLINE");
+end
 MainMenuBarBackpackButton:HookScript("OnEvent", function(self,event,arg1)
 	if PIG['zhegnheBAG']['BAGkongyu']=="ON" then
 		if event=="BAG_UPDATE" then
 			gengxinbeibaoshengyugeshu()
 		end
+	end
+end);
+----
+fuFrame.BAGkongyu = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
+fuFrame.BAGkongyu:SetSize(30,32);
+fuFrame.BAGkongyu:SetHitRectInsets(0,-100,0,0);
+fuFrame.BAGkongyu:SetPoint("TOPLEFT",fuFrame.beibaoxin1,"TOPLEFT",300,-20);
+if tocversion<20000 then
+	fuFrame.BAGkongyu.Text:SetText("显示背包剩余空间");
+	fuFrame.BAGkongyu.tooltip = "在背包上显示背包的总剩余空间";
+else
+	fuFrame.BAGkongyu.Text:SetText("增大系统背包剩余空间数字");
+	fuFrame.BAGkongyu.tooltip = "增大系统的背包剩余空间数字(大于等于10显示绿色,小于10显示红色)\n|cff00FF00TBC系统已自带背包剩余空间显示，请在ESC菜单-界面-显示内打开|r";
+end
+gengxinbeibaoshengyugeshu()
+fuFrame.BAGkongyu:SetScript("OnClick", function (self)
+	if self:GetChecked() then
+		PIG['zhegnheBAG']['BAGkongyu']="ON";
+		if tocversion<20000 then
+			MainMenuBarBackpackButton.Count:Show()
+		end
+		gengxinbeibaoshengyugeshu()
+	else
+		PIG['zhegnheBAG']['BAGkongyu']="OFF";
+		if tocversion<20000 then
+			MainMenuBarBackpackButton.Count:Hide()
+		end	
 	end
 end);
 --加载设置---------------
@@ -1920,7 +1974,7 @@ addonTable.BagBank = function()
 	PIG_renwuming=Pname.."-"..GetRealmName()
 	if PIG_renwuming then
 		if not PIG['zhegnheBAG']["lixian"][PIG_renwuming] then
-			PIG['zhegnheBAG']["lixian"][PIG_renwuming]={["Class"]=englishClass,["C"]={},["BAG"]={},["BANK"]={}}
+			PIG['zhegnheBAG']["lixian"][PIG_renwuming]={["Class"]=englishClass,["C"]={},["G"]={},["BAG"]={},["BANK"]={}}
 		end
 		if not PIG['zhegnheBAG']["lixian"][PIG_renwuming]["Class"] then
 			PIG['zhegnheBAG']["lixian"][PIG_renwuming]["Class"]=englishClass

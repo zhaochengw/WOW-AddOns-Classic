@@ -141,7 +141,7 @@ local function ZishenFrame_Open()
 					PlayerFrame.loot:SetText("需求");	
 				end
 			else
-				PlayerFrame.loot:SetText();
+				PlayerFrame.loot:SetText("单人");
 			end
 		end
 		zhanlipinfenpei()

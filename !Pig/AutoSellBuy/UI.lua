@@ -87,7 +87,7 @@ local function SellBuy_ADD()
 	SellBuy.F:SetPoint("TOP",SellBuy,"TOP",0,-biaotiH+6);
 	-- ----
 	local TabWidth,TabHeight = 30,70;
-	local TabName = {"丢","卖","买"};
+	local TabName = {"丢","卖","买","开"};
 	for id=1,#TabName do
 		SellBuy.F.Tablist = CreateFrame("Button","SpllBuy_Tab_"..id, SellBuy.F, "TruncatedButtonTemplate",id);
 		SellBuy.F.Tablist:SetSize(TabWidth,TabHeight);
@@ -99,9 +99,9 @@ local function SellBuy_ADD()
 		SellBuy.F.Tablist.Tex = SellBuy.F.Tablist:CreateTexture(nil, "BORDER");
 		SellBuy.F.Tablist.Tex:SetTexture("interface/helpframe/helpframetab-inactive.blp");
 		SellBuy.F.Tablist.Tex:SetRotation(1.5707964, 0.5, 0.5)
-		SellBuy.F.Tablist.Tex:SetPoint("CENTER", SellBuy.F.Tablist, "CENTER", 1,0);
+		SellBuy.F.Tablist.Tex:SetPoint("CENTER", SellBuy.F.Tablist, "CENTER", 0,0);
 		SellBuy.F.Tablist.title = SellBuy.F.Tablist:CreateFontString();
-		SellBuy.F.Tablist.title:SetPoint("CENTER", SellBuy.F.Tablist, "CENTER", 6,0);
+		SellBuy.F.Tablist.title:SetPoint("CENTER", SellBuy.F.Tablist, "CENTER", 8,0);
 		SellBuy.F.Tablist.title:SetFontObject(GameFontNormalSmall);
 		SellBuy.F.Tablist.title:SetText(TabName[id]);
 		SellBuy.F.Tablist.highlight = SellBuy.F.Tablist:CreateTexture(nil, "BORDER");
@@ -143,24 +143,22 @@ local function SellBuy_ADD()
 				_G["SpllBuy_TabFrame_"..x]:Hide();
 			end
 			self.Tex:SetTexture("interface/helpframe/helpframetab-active.blp");
-			self.Tex:SetPoint("CENTER", self, "CENTER", 4,0);
+			self.Tex:SetPoint("CENTER", self, "CENTER", 5,0);
 			self.title:SetTextColor(1, 1, 1, 1);
 			_G["SpllBuy_TabFrame_"..self:GetID()]:Show();
 			self.highlight:Hide();
 		end);
+		if id==1 then
+			SellBuy.F.TabFrame:Show()
+			SellBuy.F.Tablist.Tex:SetTexture("interface/helpframe/helpframetab-active.blp");
+			SellBuy.F.Tablist.Tex:SetPoint("CENTER", SellBuy.F.Tablist, "CENTER", 5,0);
+			SellBuy.F.Tablist.title:SetTextColor(1, 1, 1, 1);
+		end
 	end
-	---
-	SpllBuy_TabFrame_1:Show()
-	SpllBuy_Tab_1.Tex:SetTexture("interface/helpframe/helpframetab-active.blp");
-	SpllBuy_Tab_1.Tex:SetPoint("CENTER", SpllBuy_Tab_1, "CENTER", 4,0);
-	SpllBuy_Tab_1.title:SetTextColor(1, 1, 1, 1);
-	addonTable.FastDiuqi()
-	addonTable.SellPlus()
-	addonTable.BuyPlus()
 end
 --===========================================================
 --添加快捷打开按钮
-local function ADD_AutoSellBuy_but()
+local function ADD_AutoSellBuy()
 	PIG["AutoSellBuy"]=PIG["AutoSellBuy"] or addonTable.Default["AutoSellBuy"]
 	PIG["AutoSellBuy"]["Kaiqi"]=PIG["AutoSellBuy"]["Kaiqi"] or addonTable.Default["AutoSellBuy"]["Kaiqi"]
 	PIG["AutoSellBuy"]["AddBut"]=PIG["AutoSellBuy"]["AddBut"] or addonTable.Default["AutoSellBuy"]["AddBut"]
@@ -233,7 +231,7 @@ local function ADD_AutoSellBuy_but()
 		addonTable.Classes_gengxinkuanduinfo()
 	end	
 end
-addonTable.ADD_AutoSellBuy_but=ADD_AutoSellBuy_but
+addonTable.ADD_AutoSellBuy_but=ADD_AutoSellBuy
 --=====================================================
 fuFrame.BuySPELLXIAN = fuFrame:CreateLine()
 fuFrame.BuySPELLXIAN:SetColorTexture(1,1,1,0.4)
@@ -251,7 +249,7 @@ fuFrame.ADD:SetMotionScriptsWhileDisabled(true)
 fuFrame.ADD:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG["AutoSellBuy"]["AddBut"]="ON";
-		ADD_AutoSellBuy_but()
+		ADD_AutoSellBuy()
 	else
 		Pig_Options_RLtishi_UI:Show()
 		PIG["AutoSellBuy"]["AddBut"]="OFF";
@@ -262,7 +260,7 @@ fuFrame.Open:SetSize(30,30);
 fuFrame.Open:SetHitRectInsets(0,-100,0,0);
 fuFrame.Open:SetPoint("TOPLEFT",fuFrame.BuySPELLXIAN,"TOPLEFT",20,-11);
 fuFrame.Open.Text:SetText(gongnengName);
-fuFrame.Open.tooltip = "一键摧毁/自动卖出制定物品/自动购买指定物品";
+fuFrame.Open.tooltip = "一键摧毁/自动卖出/自动购买/自动开启";
 fuFrame.Open:SetMotionScriptsWhileDisabled(true) 
 fuFrame.Open:SetScript("OnClick", function (self)
 	if self:GetChecked() then
@@ -270,7 +268,11 @@ fuFrame.Open:SetScript("OnClick", function (self)
 		SellBuy_ADD()
 		fuFrame.ADD:Enable()
 		Pig_OptionsUI.SellBuy:Enable();
-		ADD_AutoSellBuy_but()
+		addonTable.FastDiuqi()
+		addonTable.SellPlus()
+		addonTable.BuyPlus()
+		addonTable.Open_ADD()
+		ADD_AutoSellBuy()
 	else
 		Pig_Options_RLtishi_UI:Show()
 		fuFrame.ADD:Disable()
@@ -287,5 +289,9 @@ addonTable.AutoSellBuy_SellBuy = function()
 		SellBuy_ADD()
 		fuFrame.Open:SetChecked(true);
 		Pig_OptionsUI.SellBuy:Enable();
+		addonTable.FastDiuqi()
+		addonTable.SellPlus()
+		addonTable.BuyPlus()
+		addonTable.Open()
 	end
 end

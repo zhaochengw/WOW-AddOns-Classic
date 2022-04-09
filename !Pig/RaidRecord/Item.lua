@@ -1114,33 +1114,35 @@ local function ADD_Item()
 
 	--=============================================
 	--最低拾取品质
-	local pinzhiguolv = RaidR_UI.xiafangF:CreateFontString("pinzhiguolv_UI");
-	pinzhiguolv:SetPoint("TOPLEFT",RaidR_UI.xiafangF,"TOPLEFT",Width/3*2-22,-48);
-	pinzhiguolv:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
-	pinzhiguolv:SetText("\124cff00FF00最低记录品质：\124r");
+	RaidR_UI.xiafangF.pinzhiguolv = RaidR_UI.xiafangF:CreateFontString();
+	RaidR_UI.xiafangF.pinzhiguolv:SetPoint("TOPLEFT",RaidR_UI.xiafangF,"TOPLEFT",Width/3*2-22,-48);
+	RaidR_UI.xiafangF.pinzhiguolv:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
+	RaidR_UI.xiafangF.pinzhiguolv:SetText("\124cff00FF00最低记录品质：\124r");
 
 	local pinzhiName,pinzhiV = {"普通","\124cff1eff00优秀\124r","\124cff0070dd精良\124r","\124cffa335ee史诗\124r","\124cffff8000传说\124r","\124cffe6cc80神器\124r"},{1,2,3,4,5,6};
-	local pinzhiguolv_D = CreateFrame("FRAME", "pinzhiguolv_D_UI", RaidR_UI.xiafangF, "UIDropDownMenuTemplate")
-	pinzhiguolv_D:SetPoint("LEFT",pinzhiguolv,"RIGHT",-16,-2)
-	UIDropDownMenu_SetWidth(pinzhiguolv_D, 80)
+	RaidR_UI.xiafangF.D = CreateFrame("FRAME", nil, RaidR_UI.xiafangF, "UIDropDownMenuTemplate")
+	RaidR_UI.xiafangF.D:SetPoint("LEFT",RaidR_UI.xiafangF.pinzhiguolv,"RIGHT",-16,-2)
+	UIDropDownMenu_SetWidth(RaidR_UI.xiafangF.D, 80)
 
 	local function pinzhiguolv_Up()
 		local info = UIDropDownMenu_CreateInfo()
-		info.func = pinzhiguolv_D.SetValue
+		info.func = RaidR_UI.xiafangF.D.SetValue
 		for i=1,#pinzhiV,1 do
 		    info.text, info.arg1, info.checked = pinzhiName[i], pinzhiV[i], pinzhiV[i] == PIG["RaidRecord"]["pinzhimoren"];
 			UIDropDownMenu_AddButton(info)
 		end 
 	end
-	function pinzhiguolv_D:SetValue(newValue)
+	function RaidR_UI.xiafangF.D:SetValue(newValue)
 		for i=1,#pinzhiV,1 do
 			if newValue==pinzhiV[i] then
-				UIDropDownMenu_SetText(pinzhiguolv_D, pinzhiName[i]);
+				UIDropDownMenu_SetText(RaidR_UI.xiafangF.D, pinzhiName[i]);
 			end
 		end
 		PIG["RaidRecord"]["pinzhimoren"]=newValue;
 		CloseDropDownMenus();
 	end
+	UIDropDownMenu_SetText(RaidR_UI.xiafangF.D, pinzhiName[PIG["RaidRecord"]["pinzhimoren"]])
+	UIDropDownMenu_Initialize(RaidR_UI.xiafangF.D, pinzhiguolv_Up)
 	--======================================================
 	local function zhixingtianjia(itemLink,LOOT_itemNO,shiquname,itemQuality,itemTexture,itemID)
 						--1时间/2物品/3数量/4拾取人/5品质/6icon/7已拍卖/8成交人/9成交价/10成交时间/11ID/12交易倒计时/13通报结束/14欠款
@@ -1180,9 +1182,8 @@ local function ADD_Item()
 	--拾取记录添加到数组
 	local function AddItem(Link,shiquname)
 		if #PIG["RaidRecord"]["ItemList"]==0 then
-			local diname = GetRealZoneText();
 			PIG["RaidRecord"]["instanceName"][1]=GetServerTime();
-			PIG["RaidRecord"]["instanceName"][2]=diname;
+			PIG["RaidRecord"]["instanceName"][2]=GetRealZoneText();
 		end
 		local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount,
 		itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent=GetItemInfo(Link);
@@ -1215,46 +1216,20 @@ local function ADD_Item()
 		end
 	end
 	---注册事件
-	local ItemEvent = CreateFrame("Frame");
-	ItemEvent:SetScript("OnEvent",function (self,event,arg1,arg2,arg3,arg4,arg5)
-		if event=="PLAYER_ENTERING_WORLD" then
-			local inInstance, instanceType = IsInInstance()
-			if inInstance and instanceType=="raid" then
-				if #PIG["RaidRecord"]["ItemList"]==0 then
-					PIG["RaidRecord"]["instanceName"][1]=GetServerTime();
-					PIG["RaidRecord"]["instanceName"][2]=GetRealZoneText();
-				else
-					StaticPopup_Show ("NEW_WUPIN_LIST");
-				end
-			end
-		end
-		if event=="CHAT_MSG_LOOT" then
-			local inInstance, instanceType = IsInInstance()
-			if inInstance and instanceType=="raid" then
+	fuFrame:RegisterEvent("CHAT_MSG_LOOT");
+	fuFrame:SetScript("OnEvent",function (self,event,arg1,arg2,arg3,arg4,arg5)
+		local inInstance, instanceType = IsInInstance()
+		if inInstance and instanceType=="raid" then
+			shiqushijian(arg1,arg5)
+		elseif inInstance and instanceType=="party" then
+			if PIG["RaidRecord"]["Rsetting"]["wurenben"]=="ON" then
 				shiqushijian(arg1,arg5)
-			elseif inInstance and instanceType=="party" then
-				if PIG["RaidRecord"]["Rsetting"]["wurenben"]=="ON" then
-					shiqushijian(arg1,arg5)
-				end
-			elseif not inInstance and instanceType=="none" then
-				if PIG["RaidRecord"]["Rsetting"]["fubenwai"]=="ON" then
-					shiqushijian(arg1,arg5)
-				end
+			end
+		elseif not inInstance and instanceType=="none" then
+			if PIG["RaidRecord"]["Rsetting"]["fubenwai"]=="ON" then
+				shiqushijian(arg1,arg5)
 			end
 		end
 	end);
-	---
-	UIDropDownMenu_SetText(pinzhiguolv_D, pinzhiName[PIG["RaidRecord"]["pinzhimoren"]])--默认品质默认选中
-	UIDropDownMenu_Initialize(pinzhiguolv_D, pinzhiguolv_Up)--默认品质初始化
-	if PIG["RaidRecord"]["Kaiqi"]=="ON" then
-		--激活选项卡第一页
-		Tablist_1_UI.Tex:SetTexture("interface/paperdollinfoframe/ui-character-activetab.blp");
-		Tablist_1_UI.Tex:SetPoint("BOTTOM", Tablist_1_UI, "BOTTOM", 0,-2);
-		Tablist_1_UI.title:SetTextColor(1, 1, 1, 1);
-		fuFrame:Show()
-		--注册事件
-		ItemEvent:RegisterEvent("PLAYER_ENTERING_WORLD");
-		ItemEvent:RegisterEvent("CHAT_MSG_LOOT");
-	end
 end
 addonTable.ADD_Item = ADD_Item;

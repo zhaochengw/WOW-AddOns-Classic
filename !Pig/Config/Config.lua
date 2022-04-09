@@ -39,6 +39,7 @@ addonTable.Default = {
 		['AutoSell_Open']="OFF",
 		["AutoSell_List"]={},
 		['SellPlus']="OFF",
+		["Openlist"]={},
 	},
 	['CVars']={
 		["cameraDistanceMaxZoomFactor"]="OFF",
@@ -122,6 +123,12 @@ addonTable.Default = {
 		["CombatTime"]=false,
 		["Miaobian"]="OUTLINE",
 		["Beijing"]=3,
+		["ziyuantiao"]=false,
+		["zhandouHide"]=true,
+		["suofangbili"]=1,
+		["Xpianyi"]=0,
+		["Ypianyi"]=0,
+		["Showshuzhi"]=true,
 	},
 	["MinimapBpaichu"] = {
 		"MiniMapTrackingFrame", -- [1]
@@ -493,8 +500,7 @@ addonTable.Default_Per = {
 		["Spell_list"] = {{},{},{},{}}
 	},
 	["Classes"] = {
-		["zidongDiuqi"] = "OFF",
-		["zidongKaiqi"] = "OFF",
+		["beidongkaiqi"] = false,
 		["Spell_list"] = {}
 	},
 	["FarmRecord"] = {
@@ -512,7 +518,7 @@ addonTable.Default_Per = {
 		["hanhuapindao_lv"]="ON",
 		['hanhuapindao_lvdanjia']="ON",
 		["hanhuapindao"]={{true,false,false,false,false},{false,false,false,false,false,false,false}},
-		["hanhuaMSG"] = "暂无",
+		["hanhuaMSG"] = "[Pig]带本助手喊话测试....",
 		["autohuifu"] = "OFF",
 		["autohuifu_inv"] = "666",
 		["autohuifu_Qianzhui"]="永不翻车，自由拾取",
@@ -533,25 +539,8 @@ addonTable.Default_Per = {
 		["YijingCZ"] = "OFF",
 		["DuiwuNei"] = {false,false},
 		["kaichemudidi"]="无",
-		["LV-danjia"] = {
-			["怒焰裂谷"]={{8,16,5,},{0,0,0,},{0,0,0,},{0,0,0,}},
-			["死亡矿井"]={{10,20,10,},{0,0,0,},{0,0,0,},{0,0,0,}},
-			["影牙城堡"]={{14,21,10,},{0,0,0,},{0,0,0,},{0,0,0,}},
-			["监狱"]={{15,25,5,},{0,0,0,},{0,0,0,},{0,0,0,}},
-			["血色修道院"]={{20,40,20,},{0,0,0,},{0,0,0,},{0,0,0,}},
-			["玛拉顿"]={{30,48,30,},{0,0,0,},{0,0,0,},{0,0,0,}},
-			["斯坦索姆"]={{45,60,30,},{0,0,0,},{0,0,0,},{0,0,0,}},
-			["奴隶围栏"]={{55,65,40,},{0,0,0,},{0,0,0,},{0,0,0,}},
-			["破碎大厅"]={{65,70,40,},{0,0,0,},{0,0,0,},{0,0,0,}},
-			["暗影迷宫"]={{65,70,40,},{0,0,0,},{0,0,0,},{0,0,0,}},
-			["蒸汽地窟"]={{55,70,40,},{0,0,0,},{0,0,0,},{0,0,0,}},
-			["生态船"]={{65,70,40,},{0,0,0,},{0,0,0,},{0,0,0,}},
-		},
-		["namelist"] = {
-		},
-		["shouruG"] = {
-			0,
-			0,
-		},
+		["LV-danjia"] = {},
+		["namelist"] = {},
+		["shouruG"] = {0,0},
 	},
 };

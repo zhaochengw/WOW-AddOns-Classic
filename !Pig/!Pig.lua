@@ -31,6 +31,7 @@ local CombatPlus_Zhuizong=addonTable.CombatPlus_Zhuizong
 local CombatPlus_Cailiao=addonTable.CombatPlus_Cailiao;
 local CombatPlus_BuffTime=addonTable.CombatPlus_BuffTime;
 local CombatPlus_TimeOpen=addonTable.CombatPlus_TimeOpen
+local CombatPlus_HPMPziyuan=addonTable.CombatPlus_HPMPziyuan
 -------
 local FramePlus_ExtFrame=addonTable.FramePlus_ExtFrame;
 local FramePlus_CharacterFrame=addonTable.FramePlus_CharacterFrame;
@@ -126,6 +127,7 @@ AAAAA:SetScript("OnEvent",function(self, event, arg1)
 		CombatPlus_Cailiao();
 		CombatPlus_BuffTime();
 		CombatPlus_TimeOpen();
+		CombatPlus_HPMPziyuan();
 		-------
 		FramePlus_ExtFrame();
 		FramePlus_CharacterFrame();

@@ -4,22 +4,38 @@ local _, _, _, tocversion = GetBuildInfo()
 --///动作条按键范围着色/////////////
 local function CombatPlus_ActionBar_Ranse_Open()
 	if fuFrame.Ranse:IsEnabled() then
-		hooksecurefunc("ActionButton_OnUpdate", function(self, elapsed)
-			if self.rangeTimer == TOOLTIP_UPDATE_TIME and self.action then
-				local range = false
-				if IsActionInRange(self.action) == false then 
-					_G[self:GetName().."Icon"]:SetVertexColor(0.5, 0.1, 0.1)
-					range = true
-				end;
-				if self.range ~= range and range == false then
-					ActionButton_UpdateUsable(self)
-				end;
-				self.range = range
-			end
-		end)
+		if tocversion<40000 then
+			hooksecurefunc("ActionButton_OnUpdate", function(self, elapsed)
+				if self.rangeTimer == TOOLTIP_UPDATE_TIME and self.action then
+					local range = false
+					if IsActionInRange(self.action) == false then 
+						_G[self:GetName().."Icon"]:SetVertexColor(0.5, 0.1, 0.1)
+						range = true
+					end;
+					if self.range ~= range and range == false then
+						ActionButton_UpdateUsable(self)
+					end;
+					self.range = range
+				end
+			end)
+		else
+			local Ransekkksss = Ransekkksss or CreateFrame("Frame")
+			Ransekkksss:HookScript("OnUpdate", function(self,event)
+				for i = 1, NUM_ACTIONBAR_BUTTONS do
+					--local anniuF = _G["ActionButton"..i]
+					--if IsActionInRange(anniuF.action) == nil then
+						--_G["ActionButton"..i.."Icon"]:SetVertexColor(0.8,0.8,0.8,1)
+					--end
+					_G["ActionButton"..i.."Icon"]:SetVertexColor(_G["ActionButton"..i.."HotKey"]:GetTextColor())
+					_G["MultiBarBottomLeftButton"..i.."Icon"]:SetVertexColor(_G["MultiBarBottomLeftButton"..i.."HotKey"]:GetTextColor())
+					_G["MultiBarBottomRightButton"..i.."Icon"]:SetVertexColor(_G["MultiBarBottomRightButton"..i.."HotKey"]:GetTextColor())
+					_G["MultiBarLeftButton"..i.."Icon"]:SetVertexColor(_G["MultiBarLeftButton"..i.."HotKey"]:GetTextColor())
+					_G["MultiBarRightButton"..i.."Icon"]:SetVertexColor(_G["MultiBarRightButton"..i.."HotKey"]:GetTextColor())
+				end
+			end)
+		end
 	end
 end
-
 ---------------------
 fuFrame.Ranse = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
 fuFrame.Ranse:SetSize(30,32);
@@ -41,7 +57,7 @@ addonTable.CombatPlus_ActionBar_Ranse = function()
 	if PIG['CombatPlus']['ActionBar_Ranse']=="ON" then
 		fuFrame.Ranse:SetChecked(true);
 		if tocversion>39999 then
-            fuFrame.Cailiao:Disable() fuFrame.Cailiao.Text:SetTextColor(0.4, 0.4, 0.4, 1) 
+            fuFrame.Cailiao:Disable() fuFrame.Cailiao.Text:SetTextColor(0.4, 0.4, 0.4, 1)
         end
 		CombatPlus_ActionBar_Ranse_Open();
 	end

@@ -1,9 +1,10 @@
 <Ui>
 	<Script file="Ranse.lua" />
-	<Script file="ZidongQiehuan.lua" />
+	<Script file="CombatQiehuan.lua" />
 	<Script file="Bgtongbao.lua" />
 	<Script file="Pet.lua" />
 	<Script file="Tracking.lua" />
 	<Script file="ShiFaCailiao.lua" />
 	<Script file="BuffTime.lua" />
+	<Script file="HPMP.lua" />
 </Ui>

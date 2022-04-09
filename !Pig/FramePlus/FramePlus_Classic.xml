@@ -1,5 +1,5 @@
 <Ui>
-	<Script file="ExtFrame_BCC.lua" />
+	<Script file="ExtFrame.lua" />
 	<Script file="CharacterFrame.lua" />
-	<Script file="WowUIMove_BCC.lua" />
+	<Script file="WowUIMove.lua" />
 </Ui>

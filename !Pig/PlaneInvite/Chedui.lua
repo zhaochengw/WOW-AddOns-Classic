@@ -10,7 +10,6 @@ C_ChatInfo.RegisterAddonMessagePrefix(biaotou)
 local CheduiFFFFF = CreateFrame("Frame")
 CheduiFFFFF:RegisterEvent("CHAT_MSG_CHANNEL");
 CheduiFFFFF:RegisterEvent("CHAT_MSG_ADDON");
--- CheduiFFFFF:RegisterEvent("PLAYER_TARGET_CHANGED");
 CheduiFFFFF:RegisterEvent("CHAT_MSG_WHISPER");      
 CheduiFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_,_,arg9)
 	if PIG_Per["FarmRecord"]['Kaiqi']=="ON" and PIG_Per["FarmRecord"]['autohuifu']=="ON" then
@@ -203,7 +202,7 @@ local function ADD_Chedui_Frame()
 	fuFrame.biaotiline:SetEndPoint("TOPRIGHT",0,-29)
 	------------
 	local hang_Height,hang_NUM  = 24, 16;
-	local function gengxinhang(self)
+	local function gengxinhang(self,guolv)
 		for i = 1, hang_NUM do
 			_G["CheduiList_"..i]:Hide()
 			_G["CheduiList_"..i].Mudidi:SetText();
@@ -282,7 +281,9 @@ local function ADD_Chedui_Frame()
 				end
 			end
 		else
-			fuFrame.shuaxinweimian.err:Show();
+			if guolv~="guolvlist" then
+				fuFrame.shuaxinweimian.err:Show();
+			end
 		end
 	end
 	---目录
@@ -339,7 +340,6 @@ local function ADD_Chedui_Frame()
 		liebiao.Name = CreateFrame("Frame", nil, liebiao);
 		liebiao.Name:SetSize(120,hang_Height);
 		liebiao.Name:SetPoint("LEFT", liebiao, "LEFT", 288, 0);
-		--liebiao.Name:EnableMouse(true)
 		liebiao.Name.T = liebiao.Name:CreateFontString();
 		liebiao.Name.T:SetPoint("LEFT", liebiao.Name, "LEFT", 0, 0);
 		liebiao.Name.T:SetFontObject(ChatFontNormal);
@@ -403,16 +403,6 @@ local function ADD_Chedui_Frame()
 			liebiao.miyu:Disable()
 			liebiao.miyu:SetText("已申请");
 		end)
-
-		-- liebiao.siliao = CreateFrame("Button",nil,liebiao, "UIPanelButtonTemplate");
-		-- liebiao.siliao:SetSize(70,20);
-		-- liebiao.siliao:SetPoint("LEFT",liebiao,"LEFT",790,0);
-		-- liebiao.siliao:SetText("密");
-		-- liebiao.siliao.Font=liebiao.siliao:GetFontString()
-		-- liebiao.siliao.Font:SetFont(ChatFontNormal:GetFont(), 10);
-		-- liebiao.siliao:SetScript("OnClick", function(self)
-		-- 	local name = self:GetParent().Name.T:GetText()
-		-- end)
 	end
 	-----
 	fuFrame.guolvfubenT = fuFrame:CreateFontString();
@@ -429,9 +419,9 @@ local function ADD_Chedui_Frame()
 		info.func = self.SetValue
 		for i=1,#suodaifuben,1 do
 			if suodaifuben[i]=="无" then 
-			    info.text, info.arg1 = "全部显示", "全部显示"
+			    info.text, info.arg1, info.checked = "全部显示", "全部显示","全部显示" == yixuanzhongShowfuben;
 			else
-				info.text, info.arg1 = suodaifuben[i], suodaifuben[i]
+				info.text, info.arg1, info.checked = suodaifuben[i], suodaifuben[i], suodaifuben[i] == yixuanzhongShowfuben;
 			end
 			UIDropDownMenu_AddButton(info)
 		end 
@@ -440,7 +430,7 @@ local function ADD_Chedui_Frame()
 		UIDropDownMenu_SetText(fuFrame.guolvfubenN, newValue)
 		yixuanzhongShowfuben=newValue
 		CloseDropDownMenus()
-		gengxinhang(fuFrame.Scroll)
+		gengxinhang(fuFrame.Scroll,"guolvlist")
 	end
 	UIDropDownMenu_SetText(fuFrame.guolvfubenN, yixuanzhongShowfuben)
 	---
@@ -498,7 +488,7 @@ local function ADD_Chedui_Frame()
 	fuFrame.shuaxinweimian.err = fuFrame.shuaxinweimian:CreateFontString();
 	fuFrame.shuaxinweimian.err:SetPoint("BOTTOMLEFT",fuFrame.shuaxinweimian,"TOPLEFT",2,0);
 	fuFrame.shuaxinweimian.err:SetFont(GameFontNormal:GetFont(), 14)
-	fuFrame.shuaxinweimian.err:SetText("获取数据异常，请稍后再试!");
+	fuFrame.shuaxinweimian.err:SetText("未获取到车队信息，请稍后再试!");
 	fuFrame.shuaxinweimian.err:SetTextColor(1, 0.4, 0, 1);
 	fuFrame.shuaxinweimian.err:Hide();
 	fuFrame.shuaxinweimian:SetScript("OnClick", function (self)

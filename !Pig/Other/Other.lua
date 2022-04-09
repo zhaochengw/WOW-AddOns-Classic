@@ -86,8 +86,8 @@ local function MinimapButton_Pig_Open()
 		MinimapButton_Pig.Border:SetPoint("TOPLEFT", 0, 0);
 		MinimapButton_Pig.Icon = MinimapButton_Pig:CreateTexture(nil, "ARTWORK");
 		MinimapButton_Pig.Icon:SetTexture(132311);
-		MinimapButton_Pig.Icon:SetSize(22,22);
-		MinimapButton_Pig.Icon:SetPoint("CENTER", 0, 0);
+		MinimapButton_Pig.Icon:SetSize(23,23);
+		MinimapButton_Pig.Icon:SetPoint("CENTER", 0, 1);
 		MinimapButton_Pig.error = MinimapButton_Pig:CreateTexture(nil, "OVERLAY");
 		MinimapButton_Pig.error:SetTexture("interface/common/voicechat-muted.blp");
 		MinimapButton_Pig.error:SetSize(19,19);

@@ -1,6 +1,6 @@
 local _, addonTable = ...;
 --================================
-local hang_Height,hang_NUM  = 30, 12;
+local hang_Height,hang_NUM  = 30, 14;
 
 -- --滚动更新目录
 local function gengxinBuylist(self)
@@ -105,38 +105,39 @@ local function zidonggoumai()
 end
 ---------
 local function SellBuy_ADD()
-	local Width = SpllBuy_TabFrame_3:GetWidth()-20;
+	local fuFrame = SpllBuy_TabFrame_3;
+	local Width = fuFrame:GetWidth()-20;
 	----------------
-	SpllBuy_TabFrame_3.title = SpllBuy_TabFrame_3:CreateFontString();
-	SpllBuy_TabFrame_3.title:SetPoint("TOP", SpllBuy_TabFrame_3, "TOP", 0, -10);
-	SpllBuy_TabFrame_3.title:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
-	SpllBuy_TabFrame_3.title:SetTextColor(0.8, 0.8, 0, 1);
-	SpllBuy_TabFrame_3.title:SetText("自动购买物品角色独享");
+	fuFrame.title = fuFrame:CreateFontString();
+	fuFrame.title:SetPoint("TOP", fuFrame, "TOP", 0, -10);
+	fuFrame.title:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
+	fuFrame.title:SetTextColor(1,20/255,147/255, 1);
+	fuFrame.title:SetText("自动购买物品设置角色独享");
 	--滚动框架
-	SpllBuy_TabFrame_3.Buy = CreateFrame("Frame", nil, SpllBuy_TabFrame_3,"BackdropTemplate")
-	SpllBuy_TabFrame_3.Buy:SetBackdrop({edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+	fuFrame.Buy = CreateFrame("Frame", nil, fuFrame,"BackdropTemplate")
+	fuFrame.Buy:SetBackdrop({edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
 		edgeSize = 14,insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	})
-	SpllBuy_TabFrame_3.Buy:SetSize(Width, hang_Height*12+10)
-	SpllBuy_TabFrame_3.Buy:SetPoint("BOTTOM", SpllBuy_TabFrame_3, "BOTTOM", 0, 10)
-	SpllBuy_TabFrame_3.Buy:SetBackdropBorderColor(0.5, 0.5, 0.5, 0.5);
-	SpllBuy_TabFrame_3.Buy.biaoti = SpllBuy_TabFrame_3.Buy:CreateFontString();
-	SpllBuy_TabFrame_3.Buy.biaoti:SetPoint("BOTTOM", SpllBuy_TabFrame_3.Buy, "TOP", 0, -0);
-	SpllBuy_TabFrame_3.Buy.biaoti:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
-	SpllBuy_TabFrame_3.Buy.biaoti:SetText("\124cffFFFF00自动购买目录\124r\124cff00FF00(拖拽物品到此)\124r");
+	fuFrame.Buy:SetSize(Width, hang_Height*hang_NUM+10)
+	fuFrame.Buy:SetPoint("BOTTOM", fuFrame, "BOTTOM", 0, 10)
+	fuFrame.Buy:SetBackdropBorderColor(0.5, 0.5, 0.5, 0.5);
+	fuFrame.Buy.biaoti = fuFrame.Buy:CreateFontString();
+	fuFrame.Buy.biaoti:SetPoint("BOTTOM", fuFrame.Buy, "TOP", 0, -0);
+	fuFrame.Buy.biaoti:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
+	fuFrame.Buy.biaoti:SetText("\124cffFFFF00自动购买目录\124r\124cff00FF00(拖拽物品到此)\124r");
 	----创建可滚动区域
-	SpllBuy_TabFrame_3.Buy.Scroll = CreateFrame("ScrollFrame",nil,SpllBuy_TabFrame_3.Buy, "FauxScrollFrameTemplate");  
-	SpllBuy_TabFrame_3.Buy.Scroll:SetPoint("TOPLEFT",SpllBuy_TabFrame_3.Buy,"TOPLEFT",0,-5);
-	SpllBuy_TabFrame_3.Buy.Scroll:SetPoint("BOTTOMRIGHT",SpllBuy_TabFrame_3.Buy,"BOTTOMRIGHT",-27,5);
-	SpllBuy_TabFrame_3.Buy.Scroll:SetScript("OnVerticalScroll", function(self, offset)
+	fuFrame.Buy.Scroll = CreateFrame("ScrollFrame",nil,fuFrame.Buy, "FauxScrollFrameTemplate");  
+	fuFrame.Buy.Scroll:SetPoint("TOPLEFT",fuFrame.Buy,"TOPLEFT",0,-5);
+	fuFrame.Buy.Scroll:SetPoint("BOTTOMRIGHT",fuFrame.Buy,"BOTTOMRIGHT",-27,5);
+	fuFrame.Buy.Scroll:SetScript("OnVerticalScroll", function(self, offset)
 	    FauxScrollFrame_OnVerticalScroll(self, offset, hang_Height, gengxinBuylist)
 	end)
 	--创建行
 	for id = 1, hang_NUM do
-		local Buy = CreateFrame("Frame", "Buy_hang"..id, SpllBuy_TabFrame_3.Buy);
+		local Buy = CreateFrame("Frame", "Buy_hang"..id, fuFrame.Buy);
 		Buy:SetSize(Width-36, hang_Height);
 		if id==1 then
-			Buy:SetPoint("TOP",SpllBuy_TabFrame_3.Buy.Scroll,"TOP",0,0);
+			Buy:SetPoint("TOP",fuFrame.Buy.Scroll,"TOP",0,0);
 		else
 			Buy:SetPoint("TOP",_G["Buy_hang"..(id-1)],"BOTTOM",0,-0);
 		end
@@ -178,7 +179,7 @@ local function SellBuy_ADD()
 	 		self:SetText(NWEdanjiaV);
 	 		local bianjiID=self:GetParent().del:GetID()
 			PIG_Per['AutoSellBuy']['BuyList'][bianjiID][4]=NWEdanjiaV;
-			gengxinBuylist(SpllBuy_TabFrame_3.Buy.Scroll);
+			gengxinBuylist(fuFrame.Buy.Scroll);
 		end);
 		----------
 		Buy.del = CreateFrame("Button",nil, Buy, "TruncatedButtonTemplate");
@@ -197,58 +198,58 @@ local function SellBuy_ADD()
 		Buy.del:SetScript("OnClick", function (self)
 			self:GetParent().Cont:ClearFocus() 
 			table.remove(PIG_Per['AutoSellBuy']['BuyList'], self:GetID());
-			gengxinBuylist(SpllBuy_TabFrame_3.Buy.Scroll);
+			gengxinBuylist(fuFrame.Buy.Scroll);
 		end);
 	end
-	SpllBuy_TabFrame_3.Buy:SetScript("OnShow", function()
-		gengxinBuylist(SpllBuy_TabFrame_3.Buy.Scroll)
+	fuFrame.Buy:SetScript("OnShow", function()
+		gengxinBuylist(fuFrame.Buy.Scroll)
 	end)
 	---
-	SpllBuy_TabFrame_3.Buy.ADD = CreateFrame("Frame",nil,SpllBuy_TabFrame_3.Buy);  
-	SpllBuy_TabFrame_3.Buy.ADD:SetPoint("TOPLEFT",SpllBuy_TabFrame_3.Buy,"TOPLEFT",0,0);
-	SpllBuy_TabFrame_3.Buy.ADD:SetPoint("BOTTOMRIGHT",SpllBuy_TabFrame_3.Buy,"BOTTOMRIGHT",0,0);
+	fuFrame.Buy.ADD = CreateFrame("Frame",nil,fuFrame.Buy);  
+	fuFrame.Buy.ADD:SetPoint("TOPLEFT",fuFrame.Buy,"TOPLEFT",0,0);
+	fuFrame.Buy.ADD:SetPoint("BOTTOMRIGHT",fuFrame.Buy,"BOTTOMRIGHT",0,0);
 	---
-	local Buy_iteminfo={};
-	SpllBuy_TabFrame_3.Buy:RegisterEvent("ITEM_LOCK_CHANGED");
-	SpllBuy_TabFrame_3.Buy:SetScript("OnEvent",function (self,event,arg1,arg2)
+	fuFrame.Buy.ADD.iteminfo={};
+	fuFrame.Buy:RegisterEvent("ITEM_LOCK_CHANGED");
+	fuFrame.Buy:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if arg1 and arg2 then
 			if CursorHasItem() then
 				local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1,arg2);
 				if itemID then
 					local _,_,_,_,_,_,_,itemStackCount= GetItemInfo(itemID) 
-					Buy_iteminfo={icon, itemLink, itemID,itemStackCount,itemStackCount,};
-					SpllBuy_TabFrame_3.Buy.ADD:SetFrameLevel(48);
+					fuFrame.Buy.ADD.iteminfo={icon, itemLink, itemID,itemStackCount,itemStackCount,};
+					fuFrame.Buy.ADD:SetFrameLevel(48);
 				end
 			end
 		end
 	end);
-	SpllBuy_TabFrame_3.Buy.ADD:SetScript("OnMouseUp", function ()
+	fuFrame.Buy.ADD:SetScript("OnMouseUp", function ()
 		if CursorHasItem() then
 			for i=1,#PIG_Per['AutoSellBuy']['BuyList'] do
-				if Buy_iteminfo[3]==PIG_Per['AutoSellBuy']['BuyList'][i][3] then
+				if fuFrame.Buy.ADD.iteminfo[3]==PIG_Per['AutoSellBuy']['BuyList'][i][3] then
 					print("|cff00FFFF!Pig:|r|cffffFF00物品已在目录内！|r");
 					ClearCursor();
-					Buy_iteminfo={};
-					SpllBuy_TabFrame_3.Buy.ADD:SetFrameLevel(40);
+					fuFrame.Buy.ADD.iteminfo={};
+					fuFrame.Buy.ADD:SetFrameLevel(40);
 					return
 				end			
 			end
-			table.insert(PIG_Per['AutoSellBuy']['BuyList'], Buy_iteminfo);
+			table.insert(PIG_Per['AutoSellBuy']['BuyList'], fuFrame.Buy.ADD.iteminfo);
 			ClearCursor();
-			Buy_iteminfo={};
-			gengxinBuylist(SpllBuy_TabFrame_3.Buy.Scroll)
+			fuFrame.Buy.ADD.iteminfo={};
+			gengxinBuylist(fuFrame.Buy.Scroll)
 		end
-		SpllBuy_TabFrame_3.Buy.ADD:SetFrameLevel(40);
+		fuFrame.Buy.ADD:SetFrameLevel(40);
 	end);
 
 	-- --===========================================================
-	SpllBuy_TabFrame_3.BuyCheck = CreateFrame("CheckButton",nil,SpllBuy_TabFrame_3, "ChatConfigCheckButtonTemplate");
-	SpllBuy_TabFrame_3.BuyCheck:SetSize(28,30);
-	SpllBuy_TabFrame_3.BuyCheck:SetHitRectInsets(0,-68,0,0);
-	SpllBuy_TabFrame_3.BuyCheck:SetPoint("TOPLEFT",SpllBuy_TabFrame_3,"TOPLEFT",20,-30);
-	SpllBuy_TabFrame_3.BuyCheck.Text:SetText("自动购买");
-	SpllBuy_TabFrame_3.BuyCheck.tooltip = "打开商人界面自动购买下方目录指定物品！";
-	SpllBuy_TabFrame_3.BuyCheck:SetScript("OnClick", function (self)
+	fuFrame.BuyCheck = CreateFrame("CheckButton",nil,fuFrame, "ChatConfigCheckButtonTemplate");
+	fuFrame.BuyCheck:SetSize(28,30);
+	fuFrame.BuyCheck:SetHitRectInsets(0,-68,0,0);
+	fuFrame.BuyCheck:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-30);
+	fuFrame.BuyCheck.Text:SetText("自动购买");
+	fuFrame.BuyCheck.tooltip = "打开商人界面自动购买下方目录指定物品！";
+	fuFrame.BuyCheck:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG_Per["AutoSellBuy"]["BuyOpen"]="ON";
 		else
@@ -257,19 +258,18 @@ local function SellBuy_ADD()
 	end);
 	MerchantFrame:HookScript("OnEvent",function (self,event)
 		if event=="MERCHANT_SHOW" then
-			if SpllBuy_TabFrame_3.BuyCheck:GetChecked() then
+			if fuFrame.BuyCheck:GetChecked() then
 				zidonggoumai();
 			end
 		end
 	end);
-end
------------------------------------------------
-addonTable.BuyPlus = function()
+	----
 	PIG_Per["AutoSellBuy"]=PIG_Per["AutoSellBuy"] or addonTable.Default_Per["AutoSellBuy"]
 	PIG_Per["AutoSellBuy"]["BuyOpen"]=PIG_Per["AutoSellBuy"]["BuyOpen"] or addonTable.Default_Per["AutoSellBuy"]["BuyOpen"]
 	PIG_Per['AutoSellBuy']['BuyList']=PIG_Per['AutoSellBuy']['BuyList'] or addonTable.Default_Per['AutoSellBuy']['BuyList'];
-	SellBuy_ADD()
 	if PIG_Per["AutoSellBuy"]["BuyOpen"]=="ON" then
-		SpllBuy_TabFrame_3.BuyCheck:SetChecked(true);
+		fuFrame.BuyCheck:SetChecked(true);
 	end
 end
+-----------------------------------------------
+addonTable.BuyPlus = SellBuy_ADD
