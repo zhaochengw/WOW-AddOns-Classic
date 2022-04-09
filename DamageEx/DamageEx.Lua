@@ -505,7 +505,7 @@ _SUMMON
 		end
 
 	elseif suffixes == "HEAL" then
-		amount, overDamage, critical = select(DEX_PREFIXES[prefixes],...);
+		amount, overDamage, _, critical = select(DEX_PREFIXES[prefixes],...);
 		dexText = amount
 		DEX_OverHeal = overDamage
 		if critical and prefixes == "SPELL" and spellId ~= 143924 then dexCrit = 1;end		--Modify Heal Spell Critical,排除汲取效果

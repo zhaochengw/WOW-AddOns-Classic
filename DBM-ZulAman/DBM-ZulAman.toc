@@ -4,7 +4,8 @@
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0줄아만|r
 ## LoadOnDemand: 1
 ## RequiredDeps: DBM-Core
-## SavedVariablesPerCharacter: DBMZulAman_SavedVars, DBMZulAman_SavedStats
+## SavedVariables: DBMZulAman_AllSavedVars
+## SavedVariablesPerCharacter: DBMZulAman_SavedStats
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Category: BC
 ## X-DBM-StatTypes: normal
@@ -25,4 +26,4 @@ Malacrass.lua
 Zul'jin.lua
 
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220331145254
+## X-163UI-Version: 20220407154941

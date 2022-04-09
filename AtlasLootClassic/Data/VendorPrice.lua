@@ -27,6 +27,7 @@ local PRICE_INFO_LIST = {
 	["ApexisC"] = { itemID = 32572 }, -- Apexis Crystal
 	["ApexisS"] = { itemID = 32569 }, -- Apexis Shard
 	["Brewfest"] = { itemID = 37829 }, -- Brewfest Prize Token
+	["Sunmote"] = { itemID = 34664 }, -- Sunmote
 	-- pvp
 	["honor"] = { currencyID = 1901 }, -- Honor
 	["arena"] = { currencyID = 1900 },  -- Arena
@@ -40,7 +41,11 @@ local PRICE_INFO_LIST = {
 
 local VENDOR_PRICES = {
 --@version-bcc@
+	[35320] = "honor:15300:pvpAlterac:5",
+	[35319] = "honor:15300:pvpEye:5",
+	[35317] = "honor:15300:pvpEye:5",
 	[30183] = "BoJ:15",
+	[35327] = "honor:30000:pvpAlterac:20",
 	[35326] = "BoJ:75",
 	[33280] = "BoJ:60",
 	[33324] = "BoJ:60",

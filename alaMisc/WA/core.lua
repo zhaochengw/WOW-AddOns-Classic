@@ -666,7 +666,17 @@ end
 
 do	--	EVENTS
 	function core.ADDON_LOADED(addon)
-		if addon == "WeakAuras" then
+		if addon == ADDON then
+			if select(2, GetAddOnInfo('\33\33\33\49\54\51\85\73\33\33\33')) then
+				-- _EventVehicle:RegisterEvent("ADDON_LOADED");
+				if IsAddOnLoaded("WeakAuras") then
+					core.InitUI();
+					C_Timer.After(1.0, core.ALATEST);
+				end
+			else
+				_EventVehicle:UnregisterEvent("ADDON_LOADED");
+			end
+		elseif addon == "WeakAuras" then
 			core.InitUI();
 			C_Timer.After(1.0, core.ALATEST);
 		elseif addon == "WeakAurasOptions" then
@@ -675,17 +685,7 @@ do	--	EVENTS
 			end
 		end
 	end
-	function core.PLAYER_ENTERING_WORLD()
-		_EventVehicle:UnregisterEvent("PLAYER_ENTERING_WORLD");
-		if select(2, GetAddOnInfo('\33\33\33\49\54\51\85\73\33\33\33')) then
-			_EventVehicle:RegisterEvent("ADDON_LOADED");
-			if IsAddOnLoaded("WeakAuras") then
-				core.InitUI();
-				C_Timer.After(1.0, core.ALATEST);
-			end
-		end
-	end
-	_EventVehicle:RegisterEvent("PLAYER_ENTERING_WORLD");
+	_EventVehicle:RegisterEvent("ADDON_LOADED");
 end
 
 
@@ -731,8 +731,8 @@ do	--	dev
 		y = 24,  z = 25,  A = 26,  B = 27,  C = 28,  D = 29,  E = 30,  F = 31,
 		G = 32,  H = 33,  I = 34,  J = 35,  K = 36,  L = 37,  M = 38,  N = 39,
 		O = 40,  P = 41,  Q = 42,  R = 43,  S = 44,  T = 45,  U = 46,  V = 47,
-		W = 48,  X = 49,  Y = 50,  Z = 51,["0"]=52,["1"]=53,["2"]=54,["3"]=55,
-		["4"]=56,["5"]=57,["6"]=58,["7"]=59,["8"]=60,["9"]=61,["("]=62,[")"]=63
+		W = 48,  X = 49,  Y = 50,  Z = 51,  ["0"]=52,["1"]=53,["2"]=54,["3"]=55,
+		["4"]=56,["5"]=57,["6"]=58,["7"]=59,["8"]=60,["9"]=61,["("]=62,[")"]=63,
 	  };
 	local decodeB64Table = {};
 

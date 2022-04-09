@@ -3804,7 +3804,7 @@ MTSL_DATA["items"]["Blacksmithing"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 6,
 		},
 		["vendors"] = {
@@ -3825,7 +3825,7 @@ MTSL_DATA["items"]["Blacksmithing"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 5,
 		},
 		["vendors"] = {
@@ -3846,7 +3846,7 @@ MTSL_DATA["items"]["Blacksmithing"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 6,
 		},
 		["vendors"] = {
@@ -3867,7 +3867,7 @@ MTSL_DATA["items"]["Blacksmithing"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 5,
 		},
 		["vendors"] = {

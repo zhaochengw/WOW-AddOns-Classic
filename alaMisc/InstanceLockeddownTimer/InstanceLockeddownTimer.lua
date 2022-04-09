@@ -974,11 +974,14 @@ end
 			--.
 		end
 	end
-	function __ns.LOADING_SCREEN_DISABLED()
+	function __ns.ADDON_LOADED(addon)
+		if addon ~= ADDON then
+			return;
+		end
 		safe_call(__ns.init_variables);
 		_, __ns.ui = safe_call(__ns.initUI);
 		--
-		_EventHandler:UnregEvent("LOADING_SCREEN_DISABLED");
+		_EventHandler:UnregEvent("ADDON_LOADED");
 		__instlib.RegInstanceIDCallback(__ns.extern_callback, __ns.extern_revoke, __ns.extern_mark_as_local);
 		--
 		__ns.bak_INSTANCE_RESET_FAILED = INSTANCE_RESET_FAILED;
@@ -987,7 +990,7 @@ end
 		__ns.instance_reset_success_pattern = gsub(INSTANCE_RESET_SUCCESS, "%%s", "(.+)");
 		_EventHandler:RegEvent("CHAT_MSG_SYSTEM");
 	end
-	_EventHandler:RegEvent("LOADING_SCREEN_DISABLED");
+	_EventHandler:RegEvent("ADDON_LOADED");
 -->		SLASH & CONFIG
 	_G.SLASH_ALAINSTANCETIMER1 = "/alainstancetimer";
 	_G.SLASH_ALAINSTANCETIMER2 = "/alainsttimer";

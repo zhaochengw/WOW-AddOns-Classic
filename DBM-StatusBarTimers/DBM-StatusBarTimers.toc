@@ -19,10 +19,10 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: a163ba7
+## Version: ee0f023
 ## X-Website: https://deadlybossmods.com
 
 DBT.lua
 
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220331145254
+## X-163UI-Version: 20220407154941

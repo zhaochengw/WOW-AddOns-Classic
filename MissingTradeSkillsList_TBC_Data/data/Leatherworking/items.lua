@@ -3570,6 +3570,27 @@ MTSL_DATA["items"]["Leatherworking"] =
 		},
 	},
 	{
+		["expansion"] = 2,
+		["id"] = 185925,
+		["name"] = {
+			["Chinese"] = "图样：强效恐慌之鼓",
+			["English"] = "Pattern: Drums of Panic+",
+			["Taiwanese"] = "圖樣:强效驚慌之鼓",
+		},
+		["phase"] = 4,
+		["quality"] = "rare",
+		["reputation"] = {
+			["faction_id"] = 989,
+			["level_id"] = 6,
+		},
+		["vendors"] = {
+			["price"] = 120000,
+			["sources"] = {
+				21643,
+			},
+		},
+	},
+	{
 		["drops"] = {
 			["range"] = {
 				["max_xp_level"] = 73,
@@ -3588,6 +3609,27 @@ MTSL_DATA["items"]["Leatherworking"] =
 	},
 	{
 		["expansion"] = 2,
+		["id"] = 187048,
+		["name"] = {
+			["Chinese"] = "图样：强效恢复之鼓",
+			["English"] = "Pattern: Drums of Restoration+",
+			["Taiwanese"] = "圖樣:强效恢復之鼓",
+		},
+		["phase"] = 4,
+		["quality"] = "rare",
+		["reputation"] = {
+			["faction_id"] = 978,
+			["level_id"] = 6,
+		},
+		["vendors"] = {
+			["price"] = 120000,
+			["sources"] = {
+				20240,
+			},
+		},
+	},
+	{
+		["expansion"] = 2,
 		["id"] = 29717,
 		["name"] = {
 			["Chinese"] = "图样：战斗之鼓",
@@ -3595,6 +3637,27 @@ MTSL_DATA["items"]["Leatherworking"] =
 			["Taiwanese"] = "圖樣:戰鬥之鼓",
 		},
 		["phase"] = 1,
+		["quality"] = "rare",
+		["reputation"] = {
+			["faction_id"] = 935,
+			["level_id"] = 6,
+		},
+		["vendors"] = {
+			["price"] = 120000,
+			["sources"] = {
+				21432,
+			},
+		},
+	},
+	{
+		["expansion"] = 2,
+		["id"] = 185926,
+		["name"] = {
+			["Chinese"] = "图样：强效战斗之鼓",
+			["English"] = "Pattern: Drums of Battle+",
+			["Taiwanese"] = "圖樣:强效戰鬥之鼓",
+		},
+		["phase"] = 4,
 		["quality"] = "rare",
 		["reputation"] = {
 			["faction_id"] = 935,
@@ -3623,6 +3686,27 @@ MTSL_DATA["items"]["Leatherworking"] =
 		},
 		["phase"] = 1,
 		["quality"] = "uncommon",
+	},
+	{
+		["expansion"] = 2,
+		["id"] = 187049,
+		["name"] = {
+			["Chinese"] = "图样：强效速度之鼓",
+			["English"] = "Pattern: Drums of Speed+",
+			["Taiwanese"] = "圖樣:强效速度之鼓",
+		},
+		["phase"] = 4,
+		["quality"] = "rare",
+		["reputation"] = {
+			["faction_id"] = 978,
+			["level_id"] = 6,
+		},
+		["vendors"] = {
+			["price"] = 120000,
+			["sources"] = {
+				20240,
+			},
+		},
 	},
 	{
 		["expansion"] = 2,
@@ -4128,7 +4212,7 @@ MTSL_DATA["items"]["Leatherworking"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 5,
 		},
 		["vendors"] = {
@@ -4149,7 +4233,7 @@ MTSL_DATA["items"]["Leatherworking"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 5,
 		},
 		["vendors"] = {
@@ -4170,7 +4254,7 @@ MTSL_DATA["items"]["Leatherworking"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 6,
 		},
 		["vendors"] = {
@@ -4191,7 +4275,7 @@ MTSL_DATA["items"]["Leatherworking"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 6,
 		},
 		["vendors"] = {
@@ -4212,7 +4296,7 @@ MTSL_DATA["items"]["Leatherworking"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 6,
 		},
 		["vendors"] = {
@@ -4233,7 +4317,7 @@ MTSL_DATA["items"]["Leatherworking"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 6,
 		},
 		["vendors"] = {
@@ -4254,7 +4338,7 @@ MTSL_DATA["items"]["Leatherworking"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 5,
 		},
 		["vendors"] = {
@@ -4275,7 +4359,7 @@ MTSL_DATA["items"]["Leatherworking"] =
 		["phase"] = 3,
 		["quality"] = "common",
 		["reputation"] = {
-			["faction_id"] = 1077,
+			["faction_id"] = 1012,
 			["level_id"] = 5,
 		},
 		["vendors"] = {

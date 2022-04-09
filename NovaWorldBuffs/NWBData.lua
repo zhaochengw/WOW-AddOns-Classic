@@ -181,7 +181,7 @@ function NWB:OnCommReceived(commPrefix, string, distribution, sender)
 			NWB:doNpcWalkingMsg(type, layer, sender);
 		end
 	end
-	if (tonumber(remoteVersion) < 2.21) then
+	if (tonumber(remoteVersion) < 2.23) then
 		if (cmd == "requestData" and distribution == "GUILD") then
 			if (not NWB:getGuildDataStatus()) then
 				NWB:sendSettings("GUILD");
@@ -1195,6 +1195,7 @@ end
 --Add received data to our database.
 --This is super ugly for layered stuff, but it's meant to work with all diff versions at once, will be cleaned up later.
 local maxLayerTime = 43200;
+local lastHasNewData = 0;
 function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 	local deserializeResult, data = NWB.serializer:Deserialize(dataReceived);
 	if (not deserializeResult) then
@@ -1364,9 +1365,6 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 												NWB:timerLog(k, v, layer, nil, nil, distribution);
 											end
 											if (k == "terokTowers" or k == "terokTowersTime") then
-												---Only works for debug version for now, we enable sending the data with this update.
-												---And enable receiving the data with the next update after testing and more people are sending.
-												
 												--Handle terokkar tower timers seperately so we can set timestamps that are older than current.
 												--Tower cooldowns are unreliable and can drift +/- ~10mins.
 												--So we update if the time it was recorded at is newer even if the actual tower timer is older.
@@ -1377,19 +1375,25 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 													if (NWB.data.layers[layer][k] and v ~= 0 and vv.terokTowersTime and vv.terokTowersTime ~= 0
 															and vv.terokTowersTime > NWB.data.layers[layer].terokTowersTime
 															and v > GetServerTime() and v < GetServerTime() + 21700
-															and v > NWB.data.layers[layer][k] - 1800) then
-														if (vv.terokTowersTime > GetServerTime() - 21700
+															and v > NWB.data.layers[layer][k] - 1800
+															and NWB:validateCloseTimestamps(layer, k, v)) then
+														if (v < NWB.data.layers[layer][k] - 300) then
+															NWB:debug("New backwards timer from:", sender, v, NWB.data.layers[layer][k] - v);
+														elseif (vv.terokTowersTime > GetServerTime() - 21700
 																and vv.terokTowersTime < GetServerTime() + 21700) then
 															if (vv.terokFaction) then
 																NWB.data.layers[layer].terokFaction = vv.terokFaction;
 															end
 															NWB.data.layers[layer][k] = v;
 															NWB.data.layers[layer].terokTowersTime = vv.terokTowersTime;
+															if (GetServerTime() - lastHasNewData > 300) then
+																hasNewData = true;
+																lastHasNewData = GetServerTime();
+															end
+															--NWB:debug("New terok timer from:", sender, v, vv.terokTowersTime);
 														end
 													end
 												end
-											--if (k == "terokTowersTime") then
-												--First half of fix, doing nothing here until next update.
 											--Make sure the key exists, stop a lua error in old versions if we add a new timer type.
 											elseif (NWB.data.layers[layer][k] and v ~= 0 and v > NWB.data.layers[layer][k]
 													and NWB:validateTimestamp(v, k, layer) and k ~= "terokFaction") then
@@ -1519,10 +1523,13 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 									end
 									NWB.data[k] = v;
 									NWB.data.terokTowersTime = data.terokTowersTime;
+									if (GetServerTime() - lastHasNewData > 300) then
+										hasNewData = true;
+										lastHasNewData = GetServerTime();
+									end
 								end
 							end
 						end
-					--if (k == "terokTowersTime") then
 					--Make sure the key exists, stop a lua error in old versions if we add a new timer type.
 					elseif (NWB.data[k] and v ~= 0 and v > NWB.data[k] and NWB:validateTimestamp(v, k) and k ~= "terokFaction"
 							and k ~= "tbcHD" and k ~= "tbcDD" and k ~= "tbcPD") then
@@ -2379,7 +2386,7 @@ function NWB:recalcTimerLogFrame()
 						layerText = "|cff00ff00[All Layers]|r ";
 						layers = {};
 					elseif (NWB.isLayered) then
-						layerText = "|cff00ff00[Layer " .. layerNum .. "]|r ";
+						layerText = "|cff00ff00[位面 " .. layerNum .. "]|r ";
 					end
 					local timeLeftString = "";
 					if (v.type == "r") then
@@ -3061,7 +3068,7 @@ end)
 NWBLFrame.fs = NWBLFrame:CreateFontString("NWBLFrameFS", "HIGH");
 NWBLFrame.fs:SetPoint("TOP", 0, -0);
 NWBLFrame.fs:SetFont(NWB.regionFont, 14);
-NWBLFrame.fs:SetText("|cFFFFFF00Guild Layers|r");
+NWBLFrame.fs:SetText("|cFFFFFF00公会位面|r");
 
 local NWBLDragFrame = CreateFrame("Frame", "NWBLDragFrame", NWBLFrame);
 NWBLDragFrame:SetToplevel(true);
@@ -3078,7 +3085,7 @@ NWBLDragFrame.tooltip:SetAlpha(.8);
 NWBLDragFrame.tooltip.fs = NWBLDragFrame.tooltip:CreateFontString("NWBLDragTooltipFS", "HIGH");
 NWBLDragFrame.tooltip.fs:SetPoint("CENTER", 0, 0.5);
 NWBLDragFrame.tooltip.fs:SetFont(NWB.regionFont, 12);
-NWBLDragFrame.tooltip.fs:SetText("Hold to drag");
+NWBLDragFrame.tooltip.fs:SetText("点击移动");
 NWBLDragFrame.tooltip:SetWidth(NWBLDragFrame.tooltip.fs:GetStringWidth() + 16);
 NWBLDragFrame.tooltip:SetHeight(NWBLDragFrame.tooltip.fs:GetStringHeight() + 10);
 NWBLDragFrame:SetScript("OnEnter", function(self)
@@ -3133,7 +3140,7 @@ local NWBLFrameRefreshButton = CreateFrame("Button", "NWBLFrameRefreshButton", N
 NWBLFrameRefreshButton:SetPoint("TOPRIGHT", -8, 3);
 NWBLFrameRefreshButton:SetWidth(90);
 NWBLFrameRefreshButton:SetHeight(17);
-NWBLFrameRefreshButton:SetText(L["Refresh"]);
+NWBLFrameRefreshButton:SetText(L["刷新"]);
 NWBLFrameRefreshButton:SetNormalFontObject("GameFontNormalSmall");
 NWBLFrameRefreshButton:SetScript("OnClick", function(self, arg)
 	NWB:recalcLFrame()
@@ -3229,7 +3236,7 @@ function NWB:recalcLFrame()
 		local found;
 		local text = "";
 		for layer, data in NWB:pairsByKeys(sorted) do
-			text = text .. "|cff00ff00[Layer " .. layer .. "]|r\n";
+			text = text .. "|cff00ff00[位面 " .. layer .. "]|r\n";
 			for k, v in NWB:pairsByKeys(data) do
 				found = true;
 				local _, _, _, classColor = GetClassColor(v.class);
@@ -3240,7 +3247,7 @@ function NWB:recalcLFrame()
 		if (found) then
 			NWBLFrame.EditBox:Insert(text);
 		else
-			NWBLFrame.EditBox:Insert("|cffFFFF00No guild members online sharing layer data found.");
+			NWBLFrame.EditBox:Insert("|cffFFFF00当前没有公会成员在线无法共享位面数据.");
 		end
 	end
 end
@@ -3248,11 +3255,14 @@ end
 local lastTerokkarUpdate = 0;
 local lastZoneChange = 0;
 local lastPew = 0;
+local lastZone;
+local lastZoneSend = 0;
 local f = CreateFrame("Frame");
 f:RegisterEvent("PLAYER_ENTERING_WORLD");
 f:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 f:RegisterEvent("UPDATE_UI_WIDGET");
 f:RegisterEvent("UPDATE_UI_WIDGET");
+f:RegisterEvent("AREA_POIS_UPDATED");
 f:SetScript('OnEvent', function(self, event, ...)
 	if (event == "PLAYER_ENTERING_WORLD" ) then
 		lastPew = GetServerTime();
@@ -3280,6 +3290,23 @@ f:SetScript('OnEvent', function(self, event, ...)
 				NWB:debug("Capture started:", GetServerTime());
 			end
 		end
+	elseif (event == "AREA_POIS_UPDATED") then
+		if (UnitOnTaxi("player")) then
+			lastZone = nil;
+			return;
+		end
+		local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
+		--If we came from terokkar to shat then share data we found, this only sends terokkar timer nothing else.
+		if (lastZone == 1952 and zone == 1955) then
+			C_Timer.After(14, function()
+				local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
+				if (zone == 1955 and GetServerTime() - lastZoneSend > 120) then
+					NWB:sendData("YELL", nil, nil, true, true, "terokkar");
+					lastZoneSend = GetServerTime();
+				end
+			end)
+		end
+		lastZone = zone;
 	end
 end)
 
@@ -3313,7 +3340,8 @@ function NWB:validateTerokkarRecord(old, new, layer)
 end
 
 local firstTerokkarData = true;
-local lastSendData = 0;
+local lastSendData, lastSelfTimestamp = 0, 0;
+local timestampTemp, GetServerTimeTemp, controlTypeTemp, waitingTerok;
 function NWB:getTerokkarData()
 	if (not NWB.isTBC) then
 		return;
@@ -3468,9 +3496,6 @@ function NWB:getTerokkarData()
 					if (not NWB.data.layers[layer]["terokTowers"]) then
 						NWB.data.layers[layer]["terokTowers"] = 0;
 					end
-					--if (not NWB.data.layers[layer]["terokTowersTime"]) then
-					--	NWB.data.layers[layer]["terokTowersTime"] = 0;
-					--end
 					--local diff = timestamp - NWB.data.layers[layer]["terokTowers"];
 					--if (diff >= 0) then
 					--	diff = "+" .. diff;
@@ -3478,7 +3503,6 @@ function NWB:getTerokkarData()
 					--NWB:debug(timestamp, NWB.data.layers[layer]["terokTowers"], timestamp - NWB.data.layers[layer]["terokTowers"])
 					if (timestamp - NWB.data.layers[layer]["terokTowers"] > -1800) then
 						if (NWB:validateTerokkarRecord(NWB.data.layers[layer]["terokTowers"], timestamp, layer)) then
-							--NWB:debug("set terokkar timer layered", timestamp, diff);
 							local lastTimeLeft = 0;
 							local sendData;
 							if (NWB.data.layers[layer]["terokTowers"] - GetServerTime() > 0
@@ -3487,19 +3511,33 @@ function NWB:getTerokkarData()
 							end
 							--print(NWB.data.layers[layer]["terokTowers"] - GetServerTime(), firstTerokkarData, timestamp - GetServerTime())
 							--NWB:debug("set terokkar timer layered2", timestamp, controlType, GetServerTime());
-							NWB.data.layers[layer]["terokTowers"] = timestamp;
-							NWB.data.layers[layer]["terokTowersTime"] = GetServerTime();
-							NWB.data.layers[layer]["terokFaction"] = controlType;
-							lastTerokkarUpdate = GetServerTime();
-							if (timestamp - GetServerTime() > 900) then
-								NWB.data.layers[layer]["terokTowers10"] = true;
+							
+							--Slight delay to try counter a bug with the widget updating more than once at the same time and with diff times.
+							--In observations when the widget gives wrong timer it updates 4 times in the same second.
+							--The first 2 updates in this same second are roughly 565 seconds behind the real timer.
+							--The last 2 updates are the correct time, so if we wait 2 seconds before recording any data it should fix this issue.
+							--We can disable some of the other backwards timer checks for now and see if this fixes the issue.
+							timestampTemp = timestamp;
+							GetServerTimeTemp = GetServerTime();
+							controlTypeTemp = controlType;
+							if (not waitingTerok) then
+								C_Timer.After(2, function()
+									waitingTerok = false
+									NWB.data.layers[layer]["terokTowers"] = timestampTemp;
+									NWB.data.layers[layer]["terokTowersTime"] = GetServerTimeTemp;
+									NWB.data.layers[layer]["terokFaction"] = controlTypeTemp;
+									lastTerokkarUpdate = GetServerTime();
+									if (timestamp - GetServerTime() > 900) then
+										NWB.data.layers[layer]["terokTowers10"] = true;
+									end
+									if (sendData and GetServerTime() - lastSendData > 175) then
+										lastSendData = GetServerTime();
+										NWB:sendData("YELL", nil, nil, true, true, "terokkar");
+										NWB:sendData("GUILD", nil, nil, true, true, "terokkar");
+									end
+								end)
 							end
-							if (sendData and GetServerTime() - lastSendData > 175) then
-								--NWB:debug("sending terokkar");
-								lastSendData = GetServerTime();
-								NWB:sendData("YELL", nil, nil, true, true, "terokkar");
-								NWB:sendData("GUILD", nil, nil, true, true, "terokkar");
-							end
+							waitingTerok = true;
 						end
 					end
 				end
@@ -3531,7 +3569,7 @@ function NWB:getTerokkarData()
 end
 
 function NWB:wipeTerokkarData()
-	if (NWB.db.global.wipeTerokkarData3) then
+	if (NWB.db.global.wipeTerokkarData4) then
 		for k, v in pairs(NWB.data.layers) do
 			NWB.data.layers[k].terokTowers = nil;
 			NWB.data.layers[k].terokTowersTime = nil
@@ -3540,7 +3578,7 @@ function NWB:wipeTerokkarData()
 		NWB.data.terokTowers = nil;
 		NWB.data.terokTowersTime = nil;
 		NWB.data.terokFaction = nil;
-		NWB.db.global.wipeTerokkarData3 = false;
+		NWB.db.global.wipeTerokkarData4 = false;
 	end
 end
 
@@ -3567,7 +3605,7 @@ function NWB:updateTerokkarMarkers(type, layer)
 				break;
 			end
 		end
-		_G[type .. layer .. "NWBTerokkarMap"].fsLayer:SetText("|cff00ff00[Layer " .. count.. "] |cFFB5E0E6(" .. layerZoneID .. ")");
+		_G[type .. layer .. "NWBTerokkarMap"].fsLayer:SetText("|cff00ff00[位面 " .. count.. "] |cFFB5E0E6(" .. layerZoneID .. ")");
 		if (NWB.data.layers[layer] and NWB.data.layers[layer]["terokTowers"]) then
 			time = NWB.data.layers[layer]["terokTowers"] - GetServerTime() or 0;
 		else
@@ -3697,12 +3735,12 @@ function NWB:createTerokkarMarker(type, data, layer, count)
 					if (button == "RightButton") then
 						if (GetServerTime() - obj.lastChatMsgSay > 5) then
 							obj.lastChatMsgSay = GetServerTime();
-							SendChatMessage("[Terokkar] Towers reset in " .. obj.timerMsg .. ".", "say");
+							SendChatMessage("[泰罗卡森林] 哨塔重置还剩 " .. obj.timerMsg .. ".", "say");
 						end
 					else
 						if (GetServerTime() - obj.lastChatMsgGuild > 5) then
 							obj.lastChatMsgGuild = GetServerTime();
-							SendChatMessage("[Terokkar] Towers reset in " .. obj.timerMsg .. ".", "guild");
+							SendChatMessage("[泰罗卡森林] 哨塔重置还剩 " .. obj.timerMsg .. ".", "guild");
 						end
 					end
 				end
@@ -3712,12 +3750,12 @@ function NWB:createTerokkarMarker(type, data, layer, count)
 					if (button == "RightButton") then
 						if (GetServerTime() - obj.lastChatMsgSay > 5) then
 							obj.lastChatMsgSay = GetServerTime();
-							SendChatMessage("[Terokkar] Towers reset in " .. obj.timerMsg .. ".", "say");
+							SendChatMessage("[泰罗卡森林] 哨塔重置还剩 " .. obj.timerMsg .. ".", "say");
 						end
 					else
 						if (GetServerTime() - obj.lastChatMsgGuild > 5) then
 							obj.lastChatMsgGuild = GetServerTime();
-							SendChatMessage("[Terokkar] Towers reset in " .. obj.timerMsg .. ".", "guild");
+							SendChatMessage("[泰罗卡森林] 哨塔重置还剩 " .. obj.timerMsg .. ".", "guild");
 						end
 					end
 				end
@@ -3731,7 +3769,7 @@ function NWB:createTerokkarMarker(type, data, layer, count)
 			obj.tooltip.fs:SetPoint("CENTER", 0, 0);
 			obj.tooltip.fs:SetFont(NWB.regionFont, 14);
 			obj.tooltip.fs:SetJustifyH("LEFT")
-			obj.tooltip.fs:SetText("|CffDEDE42Shift Left-Click to send timers to guild chat.\nShift Right-Click to send timers to say.");
+			obj.tooltip.fs:SetText("泰罗卡森林\n|CffDEDE42Shift+左键-单击，发送到公会聊天频道。\nShift+右键-单击，发送到本地聊天频道。");
 			obj.tooltip:SetWidth(obj.tooltip.fs:GetStringWidth() + 18);
 			obj.tooltip:SetHeight(obj.tooltip.fs:GetStringHeight() + 12);
 			obj.tooltip:Hide();
@@ -3793,12 +3831,12 @@ function NWB:createTerokkarMarker(type, data, layer, count)
 					if (button == "RightButton") then
 						if (GetServerTime() - obj.lastChatMsgSay > 5) then
 							obj.lastChatMsgSay = GetServerTime();
-							SendChatMessage("[Terokkar] Towers reset in " .. obj.timerMsg .. ".", "say");
+							SendChatMessage("[泰罗卡森林] 哨塔重置还剩 " .. obj.timerMsg .. ".", "say");
 						end
 					else
 						if (GetServerTime() - obj.lastChatMsgGuild > 5) then
 							obj.lastChatMsgGuild = GetServerTime();
-							SendChatMessage("[Terokkar] Towers reset in " .. obj.timerMsg .. ".", "guild");
+							SendChatMessage("[泰罗卡森林] 哨塔重置还剩 " .. obj.timerMsg .. ".", "guild");
 						end
 					end
 				end
@@ -3808,12 +3846,12 @@ function NWB:createTerokkarMarker(type, data, layer, count)
 					if (button == "RightButton") then
 						if (GetServerTime() - obj.lastChatMsgSay > 5) then
 							obj.lastChatMsgSay = GetServerTime();
-							SendChatMessage("[Terokkar] Towers reset in " .. obj.timerMsg .. ".", "say");
+							SendChatMessage("[泰罗卡森林] 哨塔重置还剩 " .. obj.timerMsg .. ".", "say");
 						end
 					else
 						if (GetServerTime() - obj.lastChatMsgGuild > 5) then
 							obj.lastChatMsgGuild = GetServerTime();
-							SendChatMessage("[Terokkar] Towers reset in " .. obj.timerMsg .. ".", "guild");
+							SendChatMessage("[泰罗卡森林] 哨塔重置还剩 " .. obj.timerMsg .. ".", "guild");
 						end
 					end
 				end
@@ -3827,7 +3865,7 @@ function NWB:createTerokkarMarker(type, data, layer, count)
 			obj.tooltip.fs:SetPoint("CENTER", 0, 0);
 			obj.tooltip.fs:SetFont(NWB.regionFont, 14);
 			obj.tooltip.fs:SetJustifyH("LEFT")
-			obj.tooltip.fs:SetText("|CffDEDE42Shift Left-Click to send timers to guild chat.\nShift Right-Click to send timers to say.");
+			obj.tooltip.fs:SetText("|CffDEDE42Shift+左键-单击，发送到公会聊天频道。\nShift+右键-单击，发送到本地聊天频道。");
 			obj.tooltip:SetWidth(obj.tooltip.fs:GetStringWidth() + 18);
 			obj.tooltip:SetHeight(obj.tooltip.fs:GetStringHeight() + 12);
 			obj.tooltip:Hide();
@@ -3847,7 +3885,24 @@ function NWB:createTerokkarMarker(type, data, layer, count)
 	end
 end
 
+local hookWorldMap = true;
 function NWB:refreshTerokkarMarkers()
+	--If we're looking at the shat map.
+	if (NWB.db.global.showShatWorldmapMarkersTerok and WorldMapFrame and WorldMapFrame:GetMapID() == 1955) then
+		terokkarMapMarkerTypes = {
+			["towers"] = {x = 93, y = 75, mapID = 1955, icon = "Interface\\worldstateframe\\neutraltower.blp", name = L["rend"]},
+		};
+	else
+		terokkarMapMarkerTypes = {
+			["towers"] = {x = 87, y = 82, mapID = 1952, icon = "Interface\\worldstateframe\\neutraltower.blp", name = L["rend"]},
+		};
+	end
+	if (WorldMapFrame and hookWorldMap) then
+		hooksecurefunc(WorldMapFrame, "OnMapChanged", function()
+			NWB:refreshTerokkarMarkers();
+		end)
+		hookWorldMap = nil;
+	end
 	if (NWB.isLayered) then
 		local count = 0;
 		local offset = 0;
@@ -3903,198 +3958,174 @@ end
 NWB.tbcDungeonDailies = {
 	[11389] = {
 		id = 1,
-		name = "Wanted: Arcatraz Sentinels",
-		dungeon = "The Arcatraz",
-		abbrev = "Arc",
-		desc = "Nether-Stalker Mah'duun wants you to dismantle 5 Arcatraz Sentinels. Return to him in Shattrath's Lower City once "
-				.. "that has been accomplished in order to collect the bounty.",
+		name = "悬赏:禁魔监狱斥候",
+		dungeon = "禁魔监狱",
+		abbrev = "禁魔监狱",
+		desc = "虚空猎手玛哈杜恩要求你杀死5名禁魔监狱斥候。完成任务后返回沙塔斯城的贫民窟，找他领取奖赏。",
 	},
 	[11371] = {
 		id = 2,
-		name = "Wanted: Coilfang Myrmidons",
-		dungeon = "The Steamvault",
-		abbrev = "SV",
-		desc = "Nether-Stalker Mah'duun has asked you to slay 14 Coilfang Myrmidons. Return to him in Shattrath's Lower "
-				.. "City once they all lie dead in order to collect the bounty.",
+		name = "悬赏:盘牙侍从",
+		dungeon = "蒸汽地窟",
+		abbrev = "蒸汽地窟",
+		desc = "虚空猎手玛哈杜恩要求你杀死14名盘牙侍从。完成任务后返回沙塔斯城的贫民窟，找他领取奖赏。",
 	},
 	[11376] = {
 		id = 3,
-		name = "Wanted: Malicious Instructors",
-		dungeon = "Shadow Labyrinth",
-		abbrev = "SLabs",
-		desc = "Nether-Stalker Mah'duun wants you to kill 3 Malicious Instructors. Return to him in Shattrath's Lower City once "
-				.. "they all lie dead in order to collect the bounty.",
+		name = "悬赏:恶毒导师",
+		dungeon = "暗影迷宫",
+		abbrev = "暗影迷宫",
+		desc = "虚空猎手玛哈杜恩要求你杀死3名恶毒导师。完成任务后返回沙塔斯城的贫民窟，找他领取奖赏。",
 	},
 	[11383] = {
 		id = 4,
-		name = "Wanted: Rift Lords",
-		dungeon = "Black Morass",
-		abbrev = "BM",
-		desc = "Nether-Stalker Mah'duun wants you to kill 4 Rift Lords. Return to him in Shattrath's Lower City once they all "
-				.. "lie dead in order to collect the bounty.",
+		name = "悬赏:裂隙领主",
+		dungeon = "黑色沼泽",
+		abbrev = "黑色沼泽",
+		desc = "虚空猎手玛哈杜恩要求你杀死4名裂隙领主。完成任务后返回沙塔斯城的贫民窟，找他领取奖赏。",
 	},
 	[11364] = {
 		id = 5,
-		name = "Wanted: Shattered Hand Centurions",
-		dungeon = "Shattered Halls",
-		abbrev = "ShatH",
-		desc = "Nether-Stalker Mah'duun has tasked you with the deaths of 4 Shattered Hand Centurions. Return to him in Shattrath's "
-				.. "Lower City once they all lie dead in order to collect the bounty.",
+		name = "悬赏:碎手百夫长",
+		dungeon = "破碎大厅",
+		abbrev = "破碎大厅",
+		desc = "虚空猎手玛哈杜恩要求你杀死4名碎手百夫长。完成任务后返回沙塔斯城的贫民窟，找他领取奖赏。",
 	},
 	[11500] = {
 		id = 6,
-		name = "Wanted: Sisters of Torment",
-		dungeon = "Magisters' Terrace",
-		abbrev = "MGT",
-		desc = "Nether-Stalker Mah'duun wants you to slay 4 Sisters of Torment. Return to him in Shattrath's Lower City once you "
-				.. "have done so in order to collect the bounty.",
+		name = "悬赏:痛苦妖女",
+		dungeon = "魔导师平台",
+		abbrev = "魔导师平台",
+		desc = "虚空猎手玛哈杜恩要求你杀死4名痛苦妖女。完成任务后返回沙塔斯城的贫民窟，向他领取奖赏。",
 	},
 	[11385] = {
 		id = 7,
-		name = "Wanted: Sunseeker Channelers",
-		dungeon = "The Botanica",
-		abbrev = "Bot",
-		desc = "Nether-Stalker Mah'duun wants you to kill 6 Sunseeker Channelers. Return to him in Shattrath's Lower City once they "
-				.. "all lie dead in order to collect the bounty.",
+		name = "悬赏:寻日者导魔者",
+		dungeon = "生态船",
+		abbrev = "生态船",
+		desc = "虚空猎手玛哈杜恩要求你杀死6名寻日者导魔者。完成任务后返回沙塔斯城的贫民窟，找他领取奖赏。",
 	},
 	[11387] = {
 		id = 8,
-		name = "Wanted: Tempest-Forge Destroyers",
-		dungeon = "The Mechanar",
-		abbrev = "Mech",
-		desc = "Nether-Stalker Mah'duun wants you to destroy 5 Tempest-Forge Destroyers. Return to him in Shattrath's Lower City "
-				.. "once they all lie dead in order to collect the bounty.",
+		name = "悬赏:风暴锻铸摧毁者",
+		dungeon = "能源舰",
+		abbrev = "能源舰",
+		desc = "虚空猎手玛哈杜恩要求你杀死5名风暴锻铸摧毁者。完成任务后返回沙塔斯城的贫民窟，找他领取奖赏。",
 	},
 };
 
 NWB.tbcHeroicDailies = {
 	[11369] = {
 		id = 1,
-		name = "Wanted: A Black Stalker Egg",
-		dungeon = "The Underbog",
-		abbrev = "Bog",
-		desc = "Wind Trader Zhareem wants you to obtain a Black Stalker Egg. Deliver it to him in Shattrath's "
-				.. "Lower City to collect the reward.",
+		name = "悬赏:黑色阔步者的卵",
+		dungeon = "幽暗沼泽",
+		abbrev = "幽暗沼泽",
+		desc = "商人扎雷姆要求你取回一枚黑色阔步者的卵。将卵带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11384] = {
 		id = 2,
-		name = "Wanted: A Warp Splinter Clipping",
-		dungeon = "The Botanica",
-		abbrev = "Bot",
-		desc = "Wind Trader Zhareem has asked you to obtain a Warp Splinter Clipping. Deliver it to him in Shattrath's "
-				.. "Lower City to collect the reward.",
+		name = "悬赏：扭木碎片",
+		dungeon = "生态船",
+		abbrev = "生态船",
+		desc = "商人扎雷姆要求你夺得一份扭木碎片。将碎片带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11382] = {
 		id = 3,
-		name = "Wanted: Aeonus's Hourglass",
-		dungeon = "Black Morass",
-		abbrev = "BM",
-		desc = "Wind Trader Zhareem has asked you to acquire Aeonus's Hourglass. Deliver it to him in Shattrath's Lower "
-				.. "City to collect the reward.",
+		name = "悬赏：埃欧努斯的沙漏",
+		dungeon = "黑色沼泽",
+		abbrev = "黑色沼泽",
+		desc = "商人扎雷姆要求你夺得埃欧努斯的沙漏。将沙漏带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11363] = {
 		id = 4,
-		name = "Wanted: Bladefist's Seal",
-		dungeon = "The Shattered Halls",
-		abbrev = "ShatH",
-		desc = "Wind Trader Zhareem has asked you to obtain Bladefist's Seal. Deliver it to him in Shattrath's Lower "
-				.. "City to collect the reward.",
+		name = "悬赏：刃拳的印记",
+		dungeon = "破碎大厅",
+		abbrev = "破碎大厅",
+		desc = "商人扎雷姆要求你夺得刃拳的印记。将印记带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11362] = {
 		id = 5,
-		name = "Wanted: Keli'dan's Feathered Stave",
-		dungeon = "The Blood Furnace",
-		abbrev = "BF",
-		desc = "Wind Trader Zhareem has asked you to obtain Keli'dan's Feathered Stave. Deliver it to him in Shattrath's "
-				.. "Lower City to collect the reward.",
+		name = "悬赏：克里丹的羽饰法杖",
+		dungeon = "鲜血熔炉",
+		abbrev = "鲜血熔炉",
+		desc = "商人扎雷姆要求你夺得克里丹的羽饰法杖。将法杖带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11375] = {
 		id = 6,
-		name = "Wanted: Murmur's Whisper",
-		dungeon = "Shadow Labyrinth",
-		abbrev = "SLabs",
-		desc = "Wind Trader Zhareem has asked you to obtain Murmur's Whisper. Deliver it to him in Shattrath's "
-				.. "Lower City to collect the reward.",
+		name = "悬赏：摩摩尔的低语",
+		dungeon = "暗影迷宫",
+		abbrev = "暗影迷宫",
+		desc = "商人扎雷姆要求你夺得摩摩尔的低语。将这件器物带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11354] = {
 		id = 7,
-		name = "Wanted: Nazan's Riding Crop",
-		dungeon = "Hellfire Ramparts",
-		abbrev = "Ramps",
-		desc = "Wind Trader Zhareem has asked you to obtain Nazan's Riding Crop. Deliver it to him in Shattrath's "
-				.. "Lower City to collect the reward.",
+		name = "悬赏：纳杉的骑鞭",
+		dungeon = "地狱火城墙",
+		abbrev = "地狱火城墙",
+		desc = "商人扎雷姆要求你夺得纳杉的骑鞭。将骑鞭带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11386] = {
 		id = 8,
-		name = "Wanted: Pathaleon's Projector",
-		dungeon = "The Mechanar",
-		abbrev = "Mech",
-		desc = "Wind Trader Zhareem has asked you to acquire Pathaleon's Projector. Deliver it to him in Shattrath's "
-				.. "Lower City to collect the reward.",
+		name = "悬赏：帕萨雷恩的投影仪",
+		dungeon = "能源舰",
+		abbrev = "能源舰",
+		desc = "商人扎雷姆要求你夺得帕萨雷恩的投影仪。将投影仪带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11373] = {
 		id = 9,
-		name = "Wanted: Shaffar's Wondrous Pendant",
-		dungeon = "Mana-Tombs",
-		abbrev = "MT",
-		desc = "Wind Trader Zhareem wants you to obtain Shaffar's Wondrous Amulet. Deliver it to him in Shattrath's "
-				.. "Lower City to collect the reward.",
+		name = "悬赏：沙法尔的精致饰物",
+		dungeon = "法力陵墓",
+		abbrev = "法力陵墓",
+		desc = "商人扎雷姆要求你夺得沙法尔的精致饰物。将饰物带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11378] = {
 		id = 10,
-		name = "Wanted: The Epoch Hunter's Head",
-		dungeon = "Old Hillsbrad Foothills",
-		abbrev = "OHB",
-		desc = "Wind Trader Zhareem has asked you to obtain the Epoch Hunter's Head. Deliver it to him in Shattrath's "
-				.. "Lower City to collect the reward.",
+		name = "悬赏：时空猎手的头颅",
+		dungeon = "旧希尔斯布莱德丘陵",
+		abbrev = "旧希尔斯布莱德丘陵",
+		desc = "商人扎雷姆要求你取回时空猎手的头颅。将头颅带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11374] = {
 		id = 11,
-		name = "Wanted: The Exarch's Soul Gem",
-		dungeon = "Auchenai Crypts",
-		abbrev = "AC",
-		desc = "Wind Trader Zhareem has asked you to recover The Exarch's Soul Gem. Deliver it to him in Shattrath's "
-				.. "Lower City to collect the reward.",
+		name = "悬赏：主教的灵魂宝钻",
+		dungeon = "奥金尼地穴",
+		abbrev = "奥金尼地穴",
+		desc = "商人扎雷姆要求你夺得主教的灵魂宝钻。将宝钻带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11372] = {
 		id = 12,
-		name = "Wanted: The Headfeathers of Ikiss",
-		dungeon = "Sethekk Halls",
-		abbrev = "Sethekk",
-		desc = "Wind Trader Zhareem has asked you to acquire The Headfeathers of Ikiss. Deliver them to him in Shattrath's "
-				.. "Lower City to collect the reward.",
+		name = "悬赏：艾吉斯的冠羽",
+		dungeon = "塞泰克大厅",
+		abbrev = "塞泰克大厅",
+		desc = "商人扎雷姆要求你夺得艾吉斯的冠羽。将羽毛带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11368] = {
 		id = 13,
-		name = "Wanted: The Heart of Quagmirran",
-		dungeon = "The Slave Pens",
-		abbrev = "SP",
-		desc = "Wind Trader Zhareem has asked you to obtain The Heart of Quagmirran. Deliver it to him in Shattrath's Lower "
-				.. "City to collect the reward.",
+		name = "悬赏：夸格米拉之心",
+		dungeon = "奴隶围栏",
+		abbrev = "奴隶围栏",
+		desc = "商人扎雷姆要求你取回夸格米拉之心。将心脏带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11388] = {
 		id = 14,
-		name = "Wanted: The Scroll of Skyriss",
-		dungeon = "The Arcatraz",
-		abbrev = "Arc",
-		desc = "Wind Trader Zhareem has asked you to obtain The Scroll of Skyriss. Deliver it to him in Shattrath's Lower "
-				.. "City to collect the reward.",
+		name = "悬赏：斯克瑞斯的卷轴",
+		dungeon = "禁魔监狱",
+		abbrev = "禁魔监狱",
+		desc = "商人扎雷姆要求你夺得斯克瑞斯的卷轴。将卷轴带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11370] = {
 		id = 15,
-		name = "Wanted: The Warlord's Treatise",
-		dungeon = "The Steamvault",
-		abbrev = "SV",
-		desc = "Wind Trader Zhareem has asked you to acquire The Warlord's Treatise. Deliver it to him in Shattrath's "
-				.. "Lower City to collect the reward.",
+		name = "悬赏：督军的论文",
+		dungeon = "蒸汽洞窟",
+		abbrev = "蒸汽洞窟",
+		desc = "商人扎雷姆要求你夺得督军的论文。将论文带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 	[11499] = {
 		id = 16,
-		name = "WANTED: The Signet Ring of Prince Kael'thas",
-		dungeon = "Magisters' Terrace",
-		abbrev = "MGT",
-		desc = "Wind Trader Zhareem has asked you to obtain The Signet Ring of Prince Kael'thas. Deliver it to him in "
-				.. "Shattrath's Lower City to collect the reward.",
+		name = "悬赏：凯尔萨斯王子的徽记之戒",
+		dungeon = "魔导师平台",
+		abbrev = "魔导师平台",
+		desc = "商人扎雷姆要求你夺得凯尔萨斯王子的徽记之戒。将戒指带回沙塔斯城的贫民窟交给他，就能领取奖赏。",
 	},
 };
 
@@ -4102,44 +4133,44 @@ NWB.tbcPvpDailies = {
 	--Horde.
 	[11342] = {
 		id = 1,
-		name = "Call to Arms: Warsong Gulch",
-		desc = "Win a Warsong Gulch battleground match and return to a Horde Warbringer at any Horde capital city or Shattrath.",
+		name = "战斗的召唤:战歌峡谷",
+		desc = "在战歌峡谷的战场上赢得一场竞赛，然后去见任意部落主城、冬拥湖、达拉然或者沙塔斯的部落战争使者。",
 	},
 	[11339] = {
 		id = 2,
-		name = "Call to Arms: Arathi Basin",
-		desc = "Win an Arathi Basin battleground match and return to a Horde Warbringer at any Horde capital city or Shattrath.",
+		name = "战斗的召唤：阿拉希盆地",
+		desc = "在阿拉希盆地战场中获得一场胜利，然后向任意部落主城、冬拥湖、达拉然或沙塔斯城中的部落战争使者复命。",
 	},
 	[11340] = {
 		id = 3,
-		name = "Call to Arms: Alterac Valley",
-		desc = "Win an Alterac Valley battleground match and return to a Horde Warbringer at any Horde capital city or Shattrath.",
+		name = "战斗的召唤：奥特兰克山谷",
+		desc = "在奥特兰克山谷战场中获得一场胜利，然后向任意部落主城、冬拥湖、达拉然或沙塔斯城中的部落战争使者复命。",
 	},
 	[11341] = {
 		id = 4,
-		name = "Call to Arms: Eye of the Storm",
-		desc = "Win an Eye of the Storm battleground match and return to a Horde Warbringer at any Horde capital city or Shattrath.",
+		name = "战斗的召唤：风暴之眼",
+		desc = "在风暴之眼战场中获得一场胜利，然后向任意部落主城、冬拥湖、达拉然或沙塔斯城中的部落战争使者复命。",
 	},
 	--Alliance.
 	[11338] = {
 		id = 5,
-		name = "Call to Arms: Warsong Gulch",
-		desc = "Win a Warsong Gulch battleground match and return to an Alliance Brigadier General at any Alliance capital city or Shattrath.",
+		name = "战斗的召唤:战歌峡谷",
+		desc = "在战歌峡谷战场中获得一场胜利，然后向任意联盟主城、冬拥湖、达拉然或沙塔斯城中的联盟准将复命。",
 	},
 	[11335] = {
 		id = 6,
-		name = "Call to Arms: Arathi Basin",
-		desc = "Win an Arathi Basin battleground match and return to an Alliance Brigadier General at any Alliance capital city or Shattrath.",
+		name = "战斗的召唤：阿拉希盆地",
+		desc = "在阿拉希盆地战场中获得一场胜利，然后向任意联盟主城、冬拥湖、达拉然或沙塔斯城中的联盟准将复命。",
 	},
 	[11336] = {
 		id = 7,
-		name = "Call to Arms: Alterac Valley",
-		desc = "Win an Alterac Valley battleground match and return to an Alliance Brigadier General at any Alliance capital city or Shattrath.",
+		name = "战斗的召唤：奥特兰克山谷",
+		desc = "在奥特兰克山谷战场中获得一场胜利，然后向任意联盟主城、冬拥湖、达拉然或沙塔斯城中的联盟准将复命。",
 	},
 	[11337] = {
 		id = 8,
-		name = "Call to Arms: Eye of the Storm",
-		desc = "Win an Eye of the Storm battleground match and return to an Alliance Brigadier General at any Alliance capital city or Shattrath.",
+		name = "战斗的召唤：风暴之眼",
+		desc = "在风暴之眼战场中获得一场胜利，然后向任意联盟主城、冬拥湖、达拉然或沙塔斯城中的联盟准将复命。",
 	},
 };
 --Update data with localized names.
@@ -4258,12 +4289,12 @@ function NWB:updateShatDailyMarkers()
 			local questData = NWB:getTbcDungeonDailyData(NWB.data.tbcDD);
 			if (questData) then
 				local name = questData.nameLocale or questData.name;
-				_G["NWBShatDailyMap"].textFrame.fs:SetText(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cff00ff00N|r|cFF9CD6DE)|r "
+				_G["NWBShatDailyMap"].textFrame.fs:SetText(NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cff00ff00普通|r|cFF9CD6DE)|r "
 						.. name .. " (" .. questData.abbrev .. ")");
 				_G["NWBShatDailyMap"].textFrame:SetWidth(_G["NWBShatDailyMap"].textFrame.fs:GetStringWidth() + 18);
 				_G["NWBShatDailyMap"].textFrame:SetHeight(_G["NWBShatDailyMap"].textFrame.fs:GetStringHeight() + 12);
 				if (questData.desc and questData.desc ~= "") then
-					_G["NWBShatDailyMap"].tooltip.fs:SetText(NWB.prefixColor .. "NWB|r\n" .. "|cFF9CD6DE" .. NWB:addNewLineChars(questData.desc, 45));
+					_G["NWBShatDailyMap"].tooltip.fs:SetText(NWB.prefixColor .. "任务简介：|r\n" .. "|cFF9CD6DE" .. NWB:addNewLineChars(questData.desc, 45));
 					_G["NWBShatDailyMap"].tooltip:SetWidth(_G["NWBShatDailyMap"].tooltip.fs:GetStringWidth() + 18);
 					_G["NWBShatDailyMap"].tooltip:SetHeight(_G["NWBShatDailyMap"].tooltip.fs:GetStringHeight() + 12);
 					_G["NWBShatDailyMap"].tooltip.enable = true;
@@ -4275,7 +4306,7 @@ function NWB:updateShatDailyMarkers()
 				end
 			end
 		else
-			_G["NWBShatDailyMap"].textFrame.fs:SetText(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cff00ff00N|r|cFF9CD6DE)|r Unknown.");
+			_G["NWBShatDailyMap"].textFrame.fs:SetText(NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cff00ff00普通|r|cFF9CD6DE)|r 未知.");
 			_G["NWBShatDailyMap"].textFrame:SetWidth(_G["NWBShatDailyMap"].textFrame.fs:GetStringWidth() + 18);
 			_G["NWBShatDailyMap"].textFrame:SetHeight(_G["NWBShatDailyMap"].textFrame.fs:GetStringHeight() + 12);
 			_G["NWBShatDailyMap"].tooltip.fs:SetText("");
@@ -4287,12 +4318,12 @@ function NWB:updateShatDailyMarkers()
 			local questData = NWB:getTbcHeroicDailyData(NWB.data.tbcHD);
 			if (questData) then
 				local name = questData.nameLocale or questData.name;
-				_G["NWBShatHeroicMap"].textFrame.fs:SetText(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cFFFF2222H|r|cFF9CD6DE)|r "
+				_G["NWBShatHeroicMap"].textFrame.fs:SetText(NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cFFFF2222英雄|r|cFF9CD6DE)|r "
 						.. name .. " (" .. questData.abbrev .. ")");
 				_G["NWBShatHeroicMap"].textFrame:SetWidth(_G["NWBShatHeroicMap"].textFrame.fs:GetStringWidth() + 18);
 				_G["NWBShatHeroicMap"].textFrame:SetHeight(_G["NWBShatHeroicMap"].textFrame.fs:GetStringHeight() + 12);
 				if (questData.desc and questData.desc ~= "") then
-					_G["NWBShatHeroicMap"].tooltip.fs:SetText(NWB.prefixColor .. "NWB|r\n" .. "|cFF9CD6DE" .. NWB:addNewLineChars(questData.desc, 45));
+					_G["NWBShatHeroicMap"].tooltip.fs:SetText(NWB.prefixColor .. "任务简介：|r\n" .. "|cFF9CD6DE" .. NWB:addNewLineChars(questData.desc, 45));
 					_G["NWBShatHeroicMap"].tooltip:SetWidth(_G["NWBShatHeroicMap"].tooltip.fs:GetStringWidth() + 18);
 					_G["NWBShatHeroicMap"].tooltip:SetHeight(_G["NWBShatHeroicMap"].tooltip.fs:GetStringHeight() + 12);
 					_G["NWBShatHeroicMap"].tooltip.enable = true;
@@ -4304,7 +4335,7 @@ function NWB:updateShatDailyMarkers()
 				end
 			end
 		else
-			_G["NWBShatHeroicMap"].textFrame.fs:SetText(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cFFFF2222H|r|cFF9CD6DE)|r Unknown.");
+			_G["NWBShatHeroicMap"].textFrame.fs:SetText(NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cFFFF2222英雄|r|cFF9CD6DE)|r 未知.");
 			_G["NWBShatHeroicMap"].textFrame:SetWidth(_G["NWBShatHeroicMap"].textFrame.fs:GetStringWidth() + 18);
 			_G["NWBShatHeroicMap"].textFrame:SetHeight(_G["NWBShatHeroicMap"].textFrame.fs:GetStringHeight() + 12);
 			_G["NWBShatHeroicMap"].tooltip.fs:SetText("");

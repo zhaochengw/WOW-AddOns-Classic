@@ -231,8 +231,11 @@ function func.UNIT_TARGET(unit)
 		end
 	end
 end
-function func.PLAYER_ENTERING_WORLD()
-	board:UnregisterEvent("PLAYER_ENTERING_WORLD");
+function func.ADDON_LOADED(addon)
+	if addon ~= ADDON then
+		return;
+	end
+	board:UnregisterEvent("ADDON_LOADED");
 	-- print(alaMiscSV)
 	target_warn_sv = alaMiscSV.target_warn_sv[pGUID];
 	if target_warn_sv.locked then
@@ -252,7 +255,7 @@ function func.PLAYER_ENTERING_WORLD()
 	C_Timer.NewTicker(0.667, func.update_table);
 end
 
-board:RegisterEvent("PLAYER_ENTERING_WORLD");
+board:RegisterEvent("ADDON_LOADED");
 board:RegisterEvent("UNIT_TARGET");
 board:RegisterEvent("NAME_PLATE_UNIT_REMOVED");
 board:RegisterEvent("NAME_PLATE_UNIT_ADDED");

@@ -1,6 +1,6 @@
 ## Interface: 20504
-## Author: Lag  (Continued by Marsz413@NGA.cn)
-## Version: v2.5.4-bcc
+## Author: Lag (Continued by Marsz413@NGA.cn)
+## Version: v2.4.1-bcc
 ## SavedVariables: AtlasLootClassicDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDBIcon-1.0, LibDataBroker-1.1
 ## DefaultState: Enabled

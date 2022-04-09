@@ -14,7 +14,6 @@
 	<script file = "drop.lua" />
 	<script file = "popup.lua" />
 	<!-- <script file = "instlock.lua" /> -->
-	<script file = "raidlock.lua" />
 	<script file = "scroll.lua" />
 	<script file = "talent.lua" />
 

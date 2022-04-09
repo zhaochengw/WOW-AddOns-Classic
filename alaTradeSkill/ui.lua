@@ -321,7 +321,7 @@ end
 	function LT_SharedMethod.UpdateProfitFrame(frame)
 		local ProfitFrame = frame.ProfitFrame;
 		if ProfitFrame:IsVisible() then
-			_log_("LT_SharedMethod.UpdateProfitFrame|cff00ff00#1L1|r");
+			_log_("UpdateProfitFrame|cff00ff00#1L1|r");
 			local list = ProfitFrame.list;
 			local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
 			if ProfitFrame.CostOnlyCheck then
@@ -421,7 +421,7 @@ end
 						local sids = var[1];
 						local hash = var[2];
 						if update_var then
-							_log_("LT_SharedMethod.UpdateFrame|cff00ff00#1L1|r");
+							_log_("UpdateFrame|cff00ff00#1L1|r");
 							local num = frame.F_GetRecipeNumAvailable();
 							if num <= 0 then
 								-- frame.mute_update = false;
@@ -442,7 +442,7 @@ end
 										local info = __db__.get_info_by_sid(sid);
 										if info ~= nil then
 											if hash[sid] ~= nil then
-												_error_("LT_SharedMethod.UpdateFrame#0E3", pid .. "#" .. cid .. "#" .. sname .. "#" .. sid);
+												_error_("UpdateFrame#0E3", pid .. "#" .. cid .. "#" .. sname .. "#" .. sid);
 											else
 												tinsert(sids, sid);
 												hash[sid] = index;
@@ -452,17 +452,17 @@ end
 												frame.selected_sid = sid;
 											end
 										else
-											_error_("LT_SharedMethod.UpdateFrame#0E2", pid .. "#" .. cid .. "#" .. sname);
+											_error_("UpdateFrame#0E2", pid .. "#" .. cid .. "#" .. sname);
 										end
 									else
-										_error_("LT_SharedMethod.UpdateFrame#0E1", pid .. "#" .. sname);
+										_error_("UpdateFrame#0E1", pid .. "#" .. sname);
 									end
 								end
 							end
 							var.update = nil;
 							frame.update = nil;
 						else
-							_log_("LT_SharedMethod.UpdateFrame|cff00ff00#1L2|r");
+							_log_("UpdateFrame|cff00ff00#1L2|r");
 						end
 						if #sids > 0 then
 							if frame.prev_pid ~= pid then
@@ -520,7 +520,7 @@ end
 							-- frame.mute_update = false;
 						end
 					else
-						_log_("LT_SharedMethod.UpdateFrame|cff00ff00#2L1|r");
+						_log_("UpdateFrame|cff00ff00#2L1|r");
 						if #var[1] > 0 then
 							frame.ScrollFrame:Update();
 							if frame.ProfitFrame:IsShown() then
@@ -538,7 +538,7 @@ end
 						local sids = var[1];
 						local hash = var[2];
 						if update_var then
-							_log_("LT_SharedMethod.UpdateFrame|cff00ff00#1L1|r");
+							_log_("UpdateFrame|cff00ff00#1L1|r");
 							local num = frame.F_GetRecipeNumAvailable();
 							if num <= 0 then
 								-- frame.mute_update = false;
@@ -559,10 +559,10 @@ end
 												LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
 											end
 										else
-											_error_("LT_SharedMethod.UpdateFrame#0E2", pid .. "#" .. cid .. "#" .. sname);
+											_error_("UpdateFrame#0E2", pid .. "#" .. cid .. "#" .. sname);
 										end
 									else
-										_error_("LT_SharedMethod.UpdateFrame#0E1", pid .. "#" .. sname);
+										_error_("UpdateFrame#0E1", pid .. "#" .. sname);
 									end
 								end
 							end
@@ -704,7 +704,7 @@ end
 			local hash = frame.hash;
 			local list = frame.list;
 			if update_list then
-				_log_("LT_SharedMethod.UpdateExplorerFrame|cff00ff00#1L1|r");
+				_log_("UpdateExplorerFrame|cff00ff00#1L1|r");
 				if set.showProfit then
 					frame.ProfitFrame:Show();
 				else
@@ -720,7 +720,7 @@ end
 											list, hash, set.phase, nil, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, set.filterClass, set.filterSpec);
 				LT_SharedMethod.UpdateProfitFrame(frame);
 			else
-				_log_("LT_SharedMethod.UpdateExplorerFrame|cff00ff00#1L2|r");
+				_log_("UpdateExplorerFrame|cff00ff00#1L2|r");
 			end
 			frame.ScrollFrame:SetNumValue(#list);
 			frame.ScrollFrame:Update();

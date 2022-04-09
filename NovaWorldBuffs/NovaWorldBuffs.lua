@@ -614,7 +614,7 @@ function NWB:ticker()
 								NWB:middleScreenMsgTBC("middle30", msg, nil, 5);
 							end
 							if (NWB.db.global.guildTerok10) then
-								NWB:sendGuildMsg(msg, "guildTerok10", nil, "[NWB]");
+								NWB:sendGuildMsg(msg, "guildTerok10", nil, "[提醒]");
 							end
 							NWB:debug("terok10", secondsLeft);
 						end
@@ -4700,7 +4700,7 @@ function NWB:updateMinimapButton(tooltip, usingPanel)
 			local count = 0;
 			for k, v in NWB:pairsByKeys(NWB.data.layers) do
 				count = count + 1;
-				tooltip:AddLine("|cff00ff00[Layer " .. count .. "]|r  |cFF989898(zone " .. k .. ")|r");
+				tooltip:AddLine("|cff00ff00[位面 " .. count .. "]|r  |cFF989898(zone " .. k .. ")|r");
 				if (NWB.isClassic or not NWB.db.global.hideMinimapBuffTimers) then
 					if (NWB.faction == "Horde" or NWB.db.global.allianceEnableRend) then
 						if (v.rendTimer > (GetServerTime() - NWB.db.global.rendRespawnTime)) then
@@ -4816,7 +4816,7 @@ function NWB:updateMinimapButton(tooltip, usingPanel)
 				end
 			end
 			if (count == 0) then
-				tooltip:AddLine(NWB.chatColor .. "No layers found yet.");
+				tooltip:AddLine(NWB.chatColor .. "还没有发现可用位面.");
 			end
 		else
 			local msg = "";
@@ -4941,21 +4941,21 @@ function NWB:updateMinimapButton(tooltip, usingPanel)
 				local questData = NWB:getTbcDungeonDailyData(NWB.data.tbcDD);
 				if (questData) then
 					local name = questData.nameLocale or questData.name;
-					tooltip:AddLine(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cff00ff00N|r|cFF9CD6DE)|r "
+					tooltip:AddLine(NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cff00ff00普通|r|cFF9CD6DE)|r "
 							.. name .. " (" .. questData.abbrev .. ")");
 				end
 			else
-				tooltip:AddLine(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cff00ff00N|r|cFF9CD6DE)|r Unknown.");
+				tooltip:AddLine(NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cff00ff00普通|r|cFF9CD6DE)|r 未知.");
 			end
 			if (NWB.data.tbcHD and NWB.data.tbcHDT and GetServerTime() - NWB.data.tbcHDT < 86400) then
 				local questData = NWB:getTbcHeroicDailyData(NWB.data.tbcHD);
 				if (questData) then
 					local name = questData.nameLocale or questData.name;
-					tooltip:AddLine(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cFFFF2222H|r|cFF9CD6DE)|r "
+					tooltip:AddLine(NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cFFFF2222英雄|r|cFF9CD6DE)|r "
 							.. name .. " (" .. questData.abbrev .. ")");
 				end
 			else
-				tooltip:AddLine(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cFFFF2222H|r|cFF9CD6DE)|r Unknown.");
+				tooltip:AddLine(NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cFFFF2222英雄|r|cFF9CD6DE)|r 未知.");
 			end
 			local texture = "|TInterface\\TargetingFrame\\UI-PVP-Horde:12:12:-1:0:64:64:7:36:1:36|t";
 			if (NWB.faction == "Alliance") then
@@ -4965,19 +4965,19 @@ function NWB:updateMinimapButton(tooltip, usingPanel)
 				local questData = NWB:getTbcPvpDailyData(NWB.data.tbcPD);
 				if (questData) then
 					local name = questData.nameLocale or questData.name;
-					tooltip:AddLine(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r" .. texture .. "|cFF9CD6DE)|r "
+					tooltip:AddLine(NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r" .. texture .. "|cFF9CD6DE)|r "
 							.. name);
 				end
 			else
-				tooltip:AddLine(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r" .. texture .. "|cFF9CD6DE)|r Unknown.");
+				tooltip:AddLine(NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r" .. texture .. "|cFF9CD6DE)|r Unknown.");
 			end
 		end
-		tooltip:AddLine("|cFF9CD6DELeft-Click|r Timers");
-		tooltip:AddLine("|cFF9CD6DERight-Click|r Buffs");
-		tooltip:AddLine("|cFF9CD6DEShift Left-Click|r Felwood Map");
-		tooltip:AddLine("|cFF9CD6DEShift Right-Click|r Config");
+		tooltip:AddLine("|cFF9CD6DE左键点击|r 计时器");
+		tooltip:AddLine("|cFF9CD6DE右键点击|r Buffs");
+		tooltip:AddLine("|cFF9CD6DEShift 左键点击|r 费伍德地图");
+		tooltip:AddLine("|cFF9CD6DEShift 右键点击|r 设置");
 		if (NWB.isLayered) then
-			tooltip:AddLine("|cFF9CD6DEControl Left-Click|r Guild Layers");
+			tooltip:AddLine("|cFF9CD6DEControl 左键点击|r 公会位面");
 		end
 		C_Timer.After(0.1, function()
 			NWB:updateMinimapButton(tooltip, usingPanel);
@@ -6424,7 +6424,7 @@ function NWB:updateWorldbuffMarkers(type, layer)
 			if (NWB.faction == "Horde" and zone == 1454) then
 				if (NWB.currentLayer > 0) then
 					local layerMsg = L["cityMapLayerMsgHorde"];
-					local layerString = "|cff00ff00[Layer " .. NWB.currentLayer .. "]|cff9CD6DE";
+					local layerString = "|cff00ff00[位面 " .. NWB.currentLayer .. "]|cff9CD6DE";
 					_G["nef" .. layer .. "NWBWorldMap"].fs2:SetText("|cff9CD6DE" .. string.format(layerMsg, layerString));
 					_G["nef" .. layer .. "NWBWorldMap"].noLayerFrame:Hide();
 				else
@@ -6434,7 +6434,7 @@ function NWB:updateWorldbuffMarkers(type, layer)
 			elseif (NWB.faction == "Alliance" and zone == 1453) then
 				if (NWB.currentLayer > 0) then
 					local layerMsg = L["cityMapLayerMsgAlliance"];
-					local layerString = "|cff00ff00[Layer " .. NWB.currentLayer .. "]|cff9CD6DE";
+					local layerString = "|cff00ff00[位面 " .. NWB.currentLayer .. "]|cff9CD6DE";
 					_G["nef" .. layer .. "NWBWorldMap"].fs2:SetText("|cff9CD6DE" .. string.format(layerMsg, layerString));
 					_G["nef" .. layer .. "NWBWorldMap"].noLayerFrame:Hide();
 				else
@@ -7481,7 +7481,7 @@ NWBbuffListDragFrame.tooltip:SetAlpha(.8);
 NWBbuffListDragFrame.tooltip.fs = NWBbuffListDragFrame.tooltip:CreateFontString("NWBbuffListDragTooltipFS", "HIGH");
 NWBbuffListDragFrame.tooltip.fs:SetPoint("CENTER", 0, 0.5);
 NWBbuffListDragFrame.tooltip.fs:SetFont(NWB.regionFont, 12);
-NWBbuffListDragFrame.tooltip.fs:SetText("Hold to drag");
+NWBbuffListDragFrame.tooltip.fs:SetText("点击移动");
 NWBbuffListDragFrame.tooltip:SetWidth(NWBbuffListDragFrame.tooltip.fs:GetStringWidth() + 16);
 NWBbuffListDragFrame.tooltip:SetHeight(NWBbuffListDragFrame.tooltip.fs:GetStringHeight() + 10);
 NWBbuffListDragFrame:SetScript("OnEnter", function(self)
@@ -7598,9 +7598,9 @@ NWBbuffListFrameWipeButton:SetText(L["Reset Data"]);
 NWBbuffListFrameWipeButton:SetNormalFontObject("GameFontNormalSmall");
 NWBbuffListFrameWipeButton:SetScript("OnClick", function(self, arg)
 	StaticPopupDialogs["NWB_BUFFDATARESET"] = {
-	  text = "Delete buff data?",
-	  button1 = "Yes",
-	  button2 = "No",
+	  text = "删除所有Buff数据统计?",
+	  button1 = "是",
+	  button2 = "否",
 	  OnAccept = function()
 	      NWB:resetBuffData();
 	  end,
@@ -7634,8 +7634,8 @@ function NWB:createShowStatsButton()
 		NWB.showStatsButton = CreateFrame("CheckButton", "NWBShowStatsButton", NWBbuffListFrame.EditBox, "ChatConfigCheckButtonTemplate");
 		NWB.showStatsButton:SetPoint("TOPLEFT", -1, 1);
 		--So strange the way to set text is to append Text to the global frame name.
-		NWBShowStatsButtonText:SetText("Show Stats");
-		NWB.showStatsButton.tooltip = "Show how many times you got each buff.";
+		NWBShowStatsButtonText:SetText("显示数据");
+		NWB.showStatsButton.tooltip = "显示你使用BUFF的数据统计次数.";
 		--NWB.showStatsButton:SetFrameStrata("HIGH");
 		NWB.showStatsButton:SetFrameLevel(3);
 		NWB.showStatsButton:SetWidth(24);
@@ -7653,8 +7653,8 @@ function NWB:createShowStatsButton()
 	if (not NWB.showStatsAllButton) then
 		NWB.showStatsAllButton = CreateFrame("CheckButton", "NWBShowStatsAllButton", NWBbuffListFrame.EditBox, "ChatConfigCheckButtonTemplate");
 		NWB.showStatsAllButton:SetPoint("TOPLEFT", 95, 1);
-		NWBShowStatsAllButtonText:SetText("All");
-		NWB.showStatsAllButton.tooltip = "Show all alts that have buff stats? (stats must be enabled).";
+		NWBShowStatsAllButtonText:SetText("全部");
+		NWB.showStatsAllButton.tooltip = "显示所有BUFF的属性? (需开启显示数据才能使用).";
 		--NWB.showStatsAllButton:SetFrameStrata("HIGH");
 		NWB.showStatsAllButton:SetFrameLevel(4);
 		NWB.showStatsAllButton:SetWidth(24);
@@ -8089,9 +8089,9 @@ function NWB:recalcBuffListFrame()
 	end
 	if (not foundChars) then
 		NWBbuffListFrame.fs2:SetText("");
-		NWB:insertBuffsLineFrameString("|cffffff00No characters with buffs found.");
+		NWB:insertBuffsLineFrameString("|cffffff00没有找到获得Buff的角色信息.");
 	else
-		NWBbuffListFrame.fs2:SetText("|cffffff00Mouseover char names for extra info");
+		NWBbuffListFrame.fs2:SetText("|cffffff00鼠标移动到角色名称获取更多信息");
 	end
 	if (NWB.db.global.showBuffStats) then
 		--A little wider to fit the buff count.
@@ -8602,7 +8602,7 @@ NWBlayerDragFrame.tooltip:SetAlpha(.8);
 NWBlayerDragFrame.tooltip.fs = NWBlayerDragFrame.tooltip:CreateFontString("NWBlayerDragTooltipFS", "HIGH");
 NWBlayerDragFrame.tooltip.fs:SetPoint("CENTER", 0, 0.5);
 NWBlayerDragFrame.tooltip.fs:SetFont(NWB.regionFont, 12);
-NWBlayerDragFrame.tooltip.fs:SetText("Hold to drag");
+NWBlayerDragFrame.tooltip.fs:SetText("点击移动");
 NWBlayerDragFrame.tooltip:SetWidth(NWBlayerDragFrame.tooltip.fs:GetStringWidth() + 16);
 NWBlayerDragFrame.tooltip:SetHeight(NWBlayerDragFrame.tooltip.fs:GetStringHeight() + 10);
 NWBlayerDragFrame:SetScript("OnEnter", function(self)
@@ -8717,7 +8717,7 @@ local NWBlayerFrameMapButton = CreateFrame("Button", "NWBlayerFrameMapButton", N
 NWBlayerFrameMapButton:SetPoint("CENTER", -58, -28);
 NWBlayerFrameMapButton:SetWidth(90);
 NWBlayerFrameMapButton:SetHeight(17);
-NWBlayerFrameMapButton:SetText("Layer Map");
+NWBlayerFrameMapButton:SetText("位面地图");
 NWBlayerFrameMapButton:SetNormalFontObject("GameFontNormalSmall");
 NWBlayerFrameMapButton:SetScript("OnClick", function(self, arg)
 	NWB:openLayerMapFrame();
@@ -8747,7 +8747,7 @@ local NWBGuildLayersButton = CreateFrame("Button", "NWBGuildLayersButton", NWBla
 NWBGuildLayersButton:SetPoint("CENTER", -58, -57);
 NWBGuildLayersButton:SetWidth(90);
 NWBGuildLayersButton:SetHeight(17);
-NWBGuildLayersButton:SetText("Guild Layers");
+NWBGuildLayersButton:SetText("公会位面");
 NWBGuildLayersButton:SetNormalFontObject("GameFontNormalSmall");
 NWBGuildLayersButton:SetScript("OnClick", function(self, arg)
 	NWB:openLFrame();
@@ -8851,7 +8851,7 @@ local NWBlayerFrameCopyButton = CreateFrame("Button", "NWBlayerFrameCopyButton",
 NWBlayerFrameCopyButton:SetPoint("TOPLEFT", 1, 1);
 NWBlayerFrameCopyButton:SetWidth(90);
 NWBlayerFrameCopyButton:SetHeight(17);
-NWBlayerFrameCopyButton:SetText("Copy/Paste");
+NWBlayerFrameCopyButton:SetText("复制/粘贴");
 NWBlayerFrameCopyButton:SetNormalFontObject("GameFontNormalSmall");
 NWBlayerFrameCopyButton:SetScript("OnClick", function(self, arg)
 	NWB:openCopyFrame();
@@ -8946,7 +8946,7 @@ function NWB:recalcCopyFrame()
 end
 
 function NWB:openLayerFrame()
-	NWBlayerFrame.fs:SetText(NWB.prefixColor .. "NovaWorldBuffs v" .. version .. "|r");
+	NWBlayerFrame.fs:SetText(NWB.prefixColor .. "世界BUFF和位面 v" .. version .. "|r");
 	--Quick fix to re-set the region font since the frames are created before we set region font.
 	NWBlayerFrame.fs2:SetFont(NWB.regionFont, 14);
 	NWBlayerFrame.fs3:SetFont(NWB.regionFont, 14);
@@ -9369,8 +9369,8 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 		for k, v in NWB:pairsByKeys(NWB.data.layers) do
 			foundTimers = true;
 			count = count + 1;
-			--NWBlayerFrame.EditBox:Insert("\n|cff00ff00[Layer " .. count .. "]|r  |cFF989898(zone " .. k .. ")|r\n");
-			text = text .. "\n|cff00ff00[Layer " .. count .. "]|r  |cFF989898(zone " .. k .. ")|r\n";
+			--NWBlayerFrame.EditBox:Insert("\n|cff00ff00[位面 " .. count .. "]|r  |cFF989898(zone " .. k .. ")|r\n");
+			text = text .. "\n|cff00ff00[位面 " .. count .. "]|r  |cFF989898(zone " .. k .. ")|r\n";
 			text = text .. NWB.chatColor;
 			if (not _G["NWBDisableLayerButton" .. count]) then
 				NWB:createDisableLayerButton(count);
@@ -9503,8 +9503,8 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 			for k, v in NWB:pairsByKeys(NWB.data.layersDisabled) do
 				foundTimers = true;
 				count = count + 1;
-				--NWBlayerFrame.EditBox:Insert("\n|cFF989898[Layer Disabled]  (zone " .. k .. ")|r\n");
-				text = text .. "\n|cFF989898[Layer Disabled]  (zone " .. k .. ")|r\n";
+				--NWBlayerFrame.EditBox:Insert("\n|cFF989898[位面已禁用]  (zone " .. k .. ")|r\n");
+				text = text .. "\n|cFF989898[位面已禁用]  (zone " .. k .. ")|r\n";
 				if (not _G["NWBEnableLayerButton" .. count]) then
 					NWB:createEnabledLayerButton(count);
 				end
@@ -9754,21 +9754,21 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 			local questData = NWB:getTbcDungeonDailyData(NWB.data.tbcDD);
 			if (questData) then
 				local name = questData.nameLocale or questData.name;
-				text = text .. "\n" .. NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cff00ff00N|r|cFF9CD6DE)|r "
+				text = text .. "\n" .. NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cff00ff00普通|r|cFF9CD6DE)|r "
 						.. name .. " (" .. questData.abbrev .. ")";
 			end
 		else
-			text = text .. "\n" .. NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cff00ff00N|r|cFF9CD6DE)|r Unknown.";
+			text = text .. "\n" .. NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cff00ff00普通|r|cFF9CD6DE)|r 未知.";
 		end
 		if (NWB.data.tbcHD and NWB.data.tbcHDT and GetServerTime() - NWB.data.tbcHDT < 86400) then
 			local questData = NWB:getTbcHeroicDailyData(NWB.data.tbcHD);
 			if (questData) then
 				local name = questData.nameLocale or questData.name;
-				text = text .. "\n" .. NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cFFFF2222H|r|cFF9CD6DE)|r "
+				text = text .. "\n" .. NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cFFFF2222英雄|r|cFF9CD6DE)|r "
 						.. name .. " (" .. questData.abbrev .. ")";
 			end
 		else
-			text = text .. "\n" .. NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cFFFF2222H|r|cFF9CD6DE)|r Unknown.";
+			text = text .. "\n" .. NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r|cFFFF2222英雄|r|cFF9CD6DE)|r 未知.";
 		end
 		local texture = "|TInterface\\TargetingFrame\\UI-PVP-Horde:12:12:-1:-1:64:64:7:36:1:36|t";
 		if (NWB.faction == "Alliance") then
@@ -9778,11 +9778,11 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 			local questData = NWB:getTbcPvpDailyData(NWB.data.tbcPD);
 			if (questData) then
 				local name = questData.nameLocale or questData.name;
-				text = text .. "\n" .. NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r" .. texture .. "|cFF9CD6DE)|r "
+				text = text .. "\n" .. NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r" .. texture .. "|cFF9CD6DE)|r "
 						.. name;
 			end
 		else
-			text = text .. "\n" .. NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r" .. texture .. "|cFF9CD6DE)|r Unknown.";
+			text = text .. "\n" .. NWB.chatColor .."|cFFFF6900日常|r |cFF9CD6DE(|r" .. texture .. "|cFF9CD6DE)|r 未知.";
 		end
 	end
 	if (copyPaste) then
@@ -9795,7 +9795,7 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 		end
 	else
 		if (not foundTimers) then
-			NWBlayerFrame.EditBox:Insert(NWB.chatColor .. "\n\n\nNo current timers found.");
+			NWBlayerFrame.EditBox:Insert(NWB.chatColor .. "\n\n\n当前未找到位面计时.");
 		else
 			NWBlayerFrame.EditBox:Insert(NWB.chatColor .. text);
 		end
@@ -9827,8 +9827,8 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 		NWBlayerFrame.EditBox:Insert("\n\n|cFF9CD6DEYour guild master has the following public guild note settings enabled:" .. gmText);
 	end
 	if (NWB.latestRemoteVersion and tonumber(NWB.latestRemoteVersion) > tonumber(version)) then
-		NWBlayerFrame.fs3:SetText("Out of date version " .. version .. " (New version: "
-				.. NWB.latestRemoteVersion .. ")\nPlease update so your timers are accurate.");
+		NWBlayerFrame.fs3:SetText("当前版本已过期 " .. version .. " (New version: "
+				.. NWB.latestRemoteVersion .. ")\n请及时更新位面插件.");
 	end
 	--Add 2 extra blank lines to you can scroll layer data up past text at bottom of the frame.
 	NWBlayerFrame.EditBox:Insert("\n\n\n");
@@ -9988,7 +9988,7 @@ function NWB:setCurrentLayerText(unit)
 		return;
 	end
 	if (NWB.faction == "Alliance" and (zone ~= 1453 or not npcID)) then
-		NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg4"], "Stormwind") .. "|r");
+		NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg4"], "Orgrimmar") .. "|r");
 		return;
 	end
 	if (unitType ~= "Creature" or NWB.companionCreatures[tonumber(npcID)]) then
@@ -10003,7 +10003,7 @@ function NWB:setCurrentLayerText(unit)
 	for k, v in NWB:pairsByKeys(NWB.data.layers) do
 		count = count + 1;
 		if (k == tonumber(zoneID)) then
-			NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. L["You are currently on"] .. " |cff00ff00[Layer " .. count .. "]|cFF9CD6DE.|r");
+			NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. L["You are currently on"] .. " |cff00ff00[位面 " .. count .. "]|cFF9CD6DE.|r");
 			if (NWB.currentLayerShared ~= count) then
 				NWB:sendL(count, "set current layer text");
 				NWB.currentLayerShared = count;
@@ -10058,7 +10058,7 @@ function NWB:setCurrentLayerText(unit)
 			end
 		end
 	end]]
-	NWBlayerFrame.fs2:SetText("|cFF9CD6DECan't find current layer or no timers active for this layer.|r");
+	NWBlayerFrame.fs2:SetText("|cFF9CD6DE找不到当前位面或此位面没有活动的计时器.|r");
 end
 
 NWB.layerMapWhitelist = {
@@ -10388,7 +10388,7 @@ end)
 NWBLayerMapFrame.fs = NWBLayerMapFrame:CreateFontString("NWBLayerMapFrameFS", "HIGH");
 NWBLayerMapFrame.fs:SetPoint("TOP", 0, -0);
 NWBLayerMapFrame.fs:SetFont(NWB.regionFont, 14);
-NWBLayerMapFrame.fs:SetText("|cFFFFFF00Layer Mapping for " .. GetRealmName() .. "|r");
+NWBLayerMapFrame.fs:SetText("|cFFFFFF00位面映射 " .. GetRealmName() .. "|r");
 
 local NWBLayerMapDragFrame = CreateFrame("Frame", "NWBLayerMapDragFrame", NWBLayerMapFrame);
 NWBLayerMapDragFrame:SetToplevel(true);
@@ -10405,7 +10405,7 @@ NWBLayerMapDragFrame.tooltip:SetAlpha(.8);
 NWBLayerMapDragFrame.tooltip.fs = NWBLayerMapDragFrame.tooltip:CreateFontString("NWBLayerMapDragTooltipFS", "HIGH");
 NWBLayerMapDragFrame.tooltip.fs:SetPoint("CENTER", 0, 0.5);
 NWBLayerMapDragFrame.tooltip.fs:SetFont(NWB.regionFont, 12);
-NWBLayerMapDragFrame.tooltip.fs:SetText("Hold to drag");
+NWBLayerMapDragFrame.tooltip.fs:SetText("点击移动");
 NWBLayerMapDragFrame.tooltip:SetWidth(NWBLayerMapDragFrame.tooltip.fs:GetStringWidth() + 16);
 NWBLayerMapDragFrame.tooltip:SetHeight(NWBLayerMapDragFrame.tooltip.fs:GetStringHeight() + 10);
 NWBLayerMapDragFrame:SetScript("OnEnter", function(self)
@@ -10490,7 +10490,7 @@ end
 function NWB:recalcLayerMapFrame()
 	NWBLayerMapFrame.EditBox:SetText("\n");
 	if (not NWB.data.layers or type(NWB.data.layers) ~= "table" or not next(NWB.data.layers)) then
-		NWBLayerMapFrame.EditBox:Insert("|cffFFFF00No zones have been mapped yet since server restart.|r\n");
+		NWBLayerMapFrame.EditBox:Insert("|cffFFFF00服务器重启之后当前未找到映射位面.|r\n");
 	else
 		local count = 0;
 		for k, v in NWB:pairsByKeys(NWB.data.layers) do
@@ -10518,10 +10518,10 @@ function NWB:recalcLayerMapFrame()
 				text = text .. "  -|cffFFFF00No zones mapped for this layer yet.|r\n";
 			end
 			if (NWB.faction == "Horde") then
-				NWBLayerMapFrame.EditBox:Insert("\n|cff00ff00[Layer " .. count .. "]|r  |cff9CD6DE(Orgrimmar " .. k .. ")|r  "
+				NWBLayerMapFrame.EditBox:Insert("\n|cff00ff00[位面 " .. count .. "]|r  |cff9CD6DE(Orgrimmar " .. k .. ")|r  "
 						.. NWB.prefixColor .. "(" .. zoneCount .. " zones mapped)|r\n" .. text);
 			else
-				NWBLayerMapFrame.EditBox:Insert("\n|cff00ff00[Layer " .. count .. "]|r  |cff9CD6DE(Stormwind " .. k .. ")|r  "
+				NWBLayerMapFrame.EditBox:Insert("\n|cff00ff00[位面 " .. count .. "]|r  |cff9CD6DE(Stormwind " .. k .. ")|r  "
 						.. NWB.prefixColor .. "(" .. zoneCount .. " zones mapped)|r\n" .. text);
 			end
 		end
@@ -10732,7 +10732,7 @@ MinimapLayerFrame:SetMovable(true);
 MinimapLayerFrame.fs = MinimapLayerFrame:CreateFontString("MinimapLayerFrameFS", "ARTWORK");
 MinimapLayerFrame.fs:SetPoint("CENTER", 0, 0);
 MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 10); --No region font here, "Layer" in english always.
-MinimapLayerFrame.fs:SetText("No Layer");
+MinimapLayerFrame.fs:SetText("无位面");
 MinimapLayerFrame:SetWidth(46);
 MinimapLayerFrame:SetHeight(17);
 MinimapLayerFrame:Hide();
@@ -10744,7 +10744,7 @@ MinimapLayerFrame.tooltip:SetFrameLevel(9);
 MinimapLayerFrame.tooltip.fs = MinimapLayerFrame.tooltip:CreateFontString("NWBVersionDragTooltipFS", "HIGH");
 MinimapLayerFrame.tooltip.fs:SetPoint("CENTER", 0, 0.5);
 MinimapLayerFrame.tooltip.fs:SetFont(NWB.regionFont, 10);
-MinimapLayerFrame.tooltip.fs:SetText("Target a NPC to\nupdate your layer");
+MinimapLayerFrame.tooltip.fs:SetText("选择一个NPC\n更新你的位面。");
 MinimapLayerFrame.tooltip:SetWidth(MinimapLayerFrame.tooltip.fs:GetStringWidth() + 10);
 MinimapLayerFrame.tooltip:SetHeight(MinimapLayerFrame.tooltip.fs:GetStringHeight() + 10);
 MinimapLayerFrame:SetScript("OnEnter", function(self)
@@ -10790,12 +10790,12 @@ function NWB:recalcMinimapLayerFrame(zoneID, event, unit)
 	if ((GetServerTime() - NWB.lastJoinedGroup) < 5) then
 		--Don't update minimap frame for a few seconds after joining group.
 		NWB:toggleMinimapLayerFrame("hide");
-		MinimapLayerFrame.fs:SetText("No Layer");
+		MinimapLayerFrame.fs:SetText("无位面");
 		return;
 	end
 	if (not NWB.db.global.minimapLayerFrame or not NWB.isLayered) then
 		NWB:toggleMinimapLayerFrame("hide");
-		MinimapLayerFrame.fs:SetText("No Layer");
+		MinimapLayerFrame.fs:SetText("无位面");
 		return;
 	end
 	local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
@@ -10805,7 +10805,7 @@ function NWB:recalcMinimapLayerFrame(zoneID, event, unit)
 		for k, v in NWB:pairsByKeys(NWB.data.layers) do
 			count = count + 1;
 			if (k == NWB.lastKnownLayerMapID) then
-				NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. L["You are currently on"] .. " |cff00ff00[Layer " .. count .. "]|cFF9CD6DE.|r");
+				NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. L["You are currently on"] .. " |cff00ff00[位面 " .. count .. "]|cFF9CD6DE.|r");
 				if (NWB.currentLayerShared ~= count) then
 					NWB:sendL(count, "recalc minimap");
 					NWB.currentLayerShared = count;
@@ -10823,15 +10823,15 @@ function NWB:recalcMinimapLayerFrame(zoneID, event, unit)
 	if (foundLayer or (NWB.faction == "Horde" and zone == 1454)
 			or (NWB.faction == "Alliance" and zone == 1453)) then
 		if (NWB.currentLayer > 0) then
-			MinimapLayerFrame.fs:SetText(NWB.mmColor .. "Layer " .. NWB.lastKnownLayer);
+			MinimapLayerFrame.fs:SetText(NWB.mmColor .. "位面 " .. NWB.lastKnownLayer);
 			MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 12);
 			NWB_CurrentLayer = NWB.lastKnownLayer;
 		elseif (layerNum > 0) then
-			MinimapLayerFrame.fs:SetText(NWB.mmColor .. "Layer " .. layerNum);
+			MinimapLayerFrame.fs:SetText(NWB.mmColor .. "位面 " .. layerNum);
 			MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 12);
 			NWB_CurrentLayer = layerNum;
 		else
-			MinimapLayerFrame.fs:SetText(NWB.mmColor .. "No Layer");
+			MinimapLayerFrame.fs:SetText(NWB.mmColor .. "无位面");
 			MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 10);
 			NWB_CurrentLayer = 0;
 		end
@@ -10852,7 +10852,7 @@ function NWB:recalcMinimapLayerFrame(zoneID, event, unit)
 				if (v.layerMap and next(v.layerMap)) then
 					for zone, map in pairs(v.layerMap) do
 						if (zone == zoneID) then
-							MinimapLayerFrame.fs:SetText("Layer " .. backupCount);
+							MinimapLayerFrame.fs:SetText("位面 " .. backupCount);
 							MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 12);
 							foundBackup = true;
 							NWB_CurrentLayer = backupCount;
@@ -10969,7 +10969,7 @@ NWBVersionDragFrame.tooltip:SetAlpha(.8);
 NWBVersionDragFrame.tooltip.fs = NWBVersionDragFrame.tooltip:CreateFontString("NWBVersionDragTooltipFS", "HIGH");
 NWBVersionDragFrame.tooltip.fs:SetPoint("CENTER", 0, 0.5);
 NWBVersionDragFrame.tooltip.fs:SetFont(NWB.regionFont, 12);
-NWBVersionDragFrame.tooltip.fs:SetText("Hold to drag");
+NWBVersionDragFrame.tooltip.fs:SetText("点击移动");
 NWBVersionDragFrame.tooltip:SetWidth(NWBVersionDragFrame.tooltip.fs:GetStringWidth() + 16);
 NWBVersionDragFrame.tooltip:SetHeight(NWBVersionDragFrame.tooltip.fs:GetStringHeight() + 10);
 NWBVersionDragFrame:SetScript("OnEnter", function(self)
@@ -12361,7 +12361,7 @@ NWBDmfDragFrame.tooltip:SetAlpha(.8);
 NWBDmfDragFrame.tooltip.fs = NWBDmfDragFrame.tooltip:CreateFontString("NWBDmfDragTooltipFS", "HIGH");
 NWBDmfDragFrame.tooltip.fs:SetPoint("CENTER", 0, 0.5);
 NWBDmfDragFrame.tooltip.fs:SetFont(NWB.regionFont, 12);
-NWBDmfDragFrame.tooltip.fs:SetText("Hold to drag");
+NWBDmfDragFrame.tooltip.fs:SetText("点击移动");
 NWBDmfDragFrame.tooltip:SetWidth(NWBDmfDragFrame.tooltip.fs:GetStringWidth() + 16);
 NWBDmfDragFrame.tooltip:SetHeight(NWBDmfDragFrame.tooltip.fs:GetStringHeight() + 10);
 NWBDmfDragFrame:SetScript("OnEnter", function(self)

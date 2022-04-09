@@ -30,8 +30,11 @@ NS.realmID = GetRealmID();
 NS.pGUID = pGUID;
 
 
-local function PLAYER_ENTERING_WORLD()
-	_EventHandler:UnregisterEvent("PLAYER_ENTERING_WORLD");
+local function ADDON_LOADED(self, event, addon)
+	if addon ~= ADDON then
+		return;
+	end
+	_EventHandler:UnregisterEvent("ADDON_LOADED");
 	if alaMiscSV == nil then
 		_G.alaMiscSV = {
 			instance_timer_sv = {
@@ -70,8 +73,8 @@ local function PLAYER_ENTERING_WORLD()
 	end
 end
 
-_EventHandler:RegisterEvent("PLAYER_ENTERING_WORLD");
-_EventHandler:SetScript("OnEvent", PLAYER_ENTERING_WORLD);
+_EventHandler:RegisterEvent("ADDON_LOADED");
+_EventHandler:SetScript("OnEvent", ADDON_LOADED);
 
 local function alam_GetConfig(misc, key)
 	if misc == "instance_timer" then

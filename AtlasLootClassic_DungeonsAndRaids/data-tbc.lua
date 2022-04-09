@@ -2639,7 +2639,7 @@ data["Karazhan"] = {
                 { 6, 28671 }, -- Steelspine Faceguard
                 { 7, 28666 }, -- Pauldrons of the Justice-Seeker
                 { 9, 29434 }, -- Badge of Justice
-                { 9, 23933 }, -- Medivh's Journal
+                { 10, 23933 }, -- Medivh's Journal
                 { 16, 28674 }, -- Saberclaw Talisman
                 { 17, 28675 }, -- Shermanar Great-Ring
                 { 18, 28727 }, -- Pendant of the Violet Eye
@@ -2736,8 +2736,8 @@ data["Karazhan"] = {
                 { 6, 28597 }, -- Panzar'Thar Breastplate
                 { 7, 28608 }, -- Ironstriders of Urgency
                 { 9, 29434 }, -- Badge of Justice
-                { 9, 31751 }, -- Blazing Signet
-                { 10, 24139 }, -- Faint Arcane Essence
+                { 10, 31751 }, -- Blazing Signet
+                { 11, 24139 }, -- Faint Arcane Essence
                 { 16, 28609 }, -- Emberspur Talisman
                 { 17, 28603 }, -- Talisman of Nightbane
                 { 18, 28604 }, -- Nightstaff of the Everliving
@@ -2795,7 +2795,7 @@ data["ZulAman"] = {
                 { 6, 33293 }, -- Signet of Ancient Magics
                 { 7, 33214 }, -- Akil'zon's Talonblade
                 { 8, 33283 }, -- Amani Punisher
-                { 16, 33307 }, -- Formula: Enchant Weapon - Executioner
+                { 10, 33307 }, -- Formula: Enchant Weapon - Executioner
             }
         },
         { -- ZANalorakk
@@ -3073,8 +3073,8 @@ data["GruulsLair"] = {
                 { 7, 28822 }, -- Teeth of Gruul
                 { 8, 28823 }, -- Eye of Gruul
                 { 9, 28830 }, -- Dragonspine Trophy
-                { 11, 31750 }, -- Earthen Signet
-				{ 13, 29434 },
+ 				{ 11, 29434 },
+				{ 12, 31750 }, -- Earthen Signet
                 { 16, 29766 }, -- Leggings of the Fallen Champion
                 { 17, 29767 }, -- Leggings of the Fallen Defender
                 { 18, 29765 }, -- Leggings of the Fallen Hero
@@ -3842,12 +3842,12 @@ data["SunwellPlateau"] = {
             AtlasMapBossID = 1,
             [NORMAL_DIFF] = {
                 { 1, 34170 }, -- Pantaloons of Calming Strife
-                { 2, 34386 }, -- Pantaloons of Growing Strife
+                { 2, 34386, [PRICE_EXTRA_ITTYPE] = "34170:1:Sunmote:1" }, -- Pantaloons of Growing Strife
                 { 3, 34169 }, -- Breeches of Natural Aggression
-                { 4, 34384 }, -- Breeches of Natural Splendor
+                { 4, 34384, [PRICE_EXTRA_ITTYPE] = "34169:1:Sunmote:1" }, -- Breeches of Natural Splendor
                 { 5, 34168 }, -- Starstalker Legguards
                 { 6, 34167 }, -- Legplates of the Holy Juggernaut
-                { 7, 34382 }, -- Judicator's Legguards
+                { 7, 34382, [PRICE_EXTRA_ITTYPE] = "34167:1:Sunmote:1" }, -- Judicator's Legguards
                 { 8, 34166 }, -- Band of Lucent Beams
                 { 9, 34165 }, -- Fang of Kalecgos
                 { 10, 34164 }, -- Dragonscale-Encrusted Longblade
@@ -3865,7 +3865,7 @@ data["SunwellPlateau"] = {
             [NORMAL_DIFF] = {
                 { 1, 34181 }, -- Leggings of Calamity
                 { 2, 34180 }, -- Felfury Legplates
-                { 3, 34381 }, -- Felstrength Legplates
+                { 3, 34381, [PRICE_EXTRA_ITTYPE] = "34180:1:Sunmote:1" }, -- Felstrength Legplates
                 { 4, 34178 }, -- Collar of the Pit Lord
                 { 5, 34177 }, -- Clutch of Demise
                 { 6, 34179 }, -- Heart of the Pit
@@ -3884,9 +3884,9 @@ data["SunwellPlateau"] = {
             [NORMAL_DIFF] = {
                 { 1, 34352 }, -- Borderland Fortress Grips
                 { 2, 34188 }, -- Leggings of the Immortal Night
-                { 3, 34385 }, -- Leggings of the Immortal Beast
+                { 3, 34385, [PRICE_EXTRA_ITTYPE] = "34188:1:Sunmote:1" }, -- Leggings of the Immortal Beast
                 { 4, 34186 }, -- Chain Links of the Tumultuous Storm
-                { 5, 34383 }, -- Kilt of Spiritual Reconstruction
+                { 5, 34383, [PRICE_EXTRA_ITTYPE] = "34186:1:Sunmote:1" }, -- Kilt of Spiritual Reconstruction
                 { 6, 34184 }, -- Brooch of the Highborne
                 { 7, 34185 }, -- Sword Breaker's Bulwark
                 { 8, 34182 }, -- Grand Magister's Staff of Torrents
@@ -3906,18 +3906,18 @@ data["SunwellPlateau"] = {
                 { 2, 34190 }, -- Crimson Paragon's Cover
                 { 3, 34210 }, -- Amice of the Convoker
                 { 4, 34202 }, -- Shawl of Wonderment
-                { 5, 34393 }, -- Shoulderpads of Knowledge's Pursuit
+                { 5, 34393, [PRICE_EXTRA_ITTYPE] = "34202:1:Sunmote:1" }, -- Shoulderpads of Knowledge's Pursuit
                 { 6, 34209 }, -- Spaulders of Reclamation
-                { 7, 34391 }, -- Spaulders of Devastation
+                { 7, 34391, [PRICE_EXTRA_ITTYPE] = "34209:1:Sunmote:1" }, -- Spaulders of Devastation
                 { 8, 34195 }, -- Shoulderpads of Vehemence
-                { 9, 34392 }, -- Demontooth Shoulderpads
+                { 9, 34392, [PRICE_EXTRA_ITTYPE] = "34195:1:Sunmote:1" }, -- Demontooth Shoulderpads
                 { 10, 34194 }, -- Mantle of the Golden Forest
                 { 11, 34208 }, -- Equilibrium Epaulets
-                { 12, 34390 }, -- Erupting Epaulets
+                { 12, 34390, [PRICE_EXTRA_ITTYPE] = "34208:1:Sunmote:1" }, -- Erupting Epaulets
                 { 13, 34192 }, -- Pauldrons of Perseverance
-                { 14, 34388 }, -- Pauldrons of Berserking
+                { 14, 34388, [PRICE_EXTRA_ITTYPE] = "34192:1:Sunmote:1" }, -- Pauldrons of Berserking
                 { 16, 34193 }, -- Spaulders of the Thalassian Savior
-                { 17, 34389 }, -- Spaulders of the Thalassian Defender
+                { 17, 34389, [PRICE_EXTRA_ITTYPE] = "34193:1:Sunmote:1" }, -- Spaulders of the Thalassian Defender
                 { 18, 35290 }, -- Sin'dorei Pendant of Conquest
                 { 19, 35291 }, -- Sin'dorei Pendant of Salvation
                 { 20, 35292 }, -- Sin'dorei Pendant of Triumph
@@ -3940,21 +3940,21 @@ data["SunwellPlateau"] = {
             [NORMAL_DIFF] = {
                 { 1, 34232 }, -- Fel Conquerer Raiments
                 { 2, 34233 }, -- Robes of Faltered Light
-                { 3, 34399 }, -- Robes of Ghostly Hatred
+                { 3, 34399, [PRICE_EXTRA_ITTYPE] = "34233:1:Sunmote:1" }, -- Robes of Ghostly Hatred
                 { 4, 34212 }, -- Sunglow Vest
-                { 5, 34398 }, -- Utopian Tunic of Elune
+                { 5, 34398, [PRICE_EXTRA_ITTYPE] = "34212:1:Sunmote:1" }, -- Utopian Tunic of Elune
                 { 6, 34211 }, -- Harness of Carnal Instinct
-                { 7, 34397 }, -- Bladed Chaos Tunic
+                { 7, 34397, [PRICE_EXTRA_ITTYPE] = "34211:1:Sunmote:1" }, -- Bladed Chaos Tunic
                 { 8, 34234 }, -- Shadowed Gauntlets of Paroxysm
-                { 9, 34408 }, -- Gloves of the Forest Drifter
+                { 9, 34408, [PRICE_EXTRA_ITTYPE] = "34234:1:Sunmote:1" }, -- Gloves of the Forest Drifter
                 { 10, 34229 }, -- Garments of Serene Shores
-                { 11, 34396 }, -- Garments of Crashing Shores
+                { 11, 34396, [PRICE_EXTRA_ITTYPE] = "34229:1:Sunmote:1" }, -- Garments of Crashing Shores
                 { 12, 34228 }, -- Vicious Hawkstrider Hauberk
                 { 13, 34215 }, -- Warharness of Reckless Fury
-                { 14, 34394 }, -- Breastplate of Agony's Aversion
+                { 14, 34394, [PRICE_EXTRA_ITTYPE] = "34215:1:Sunmote:1" }, -- Breastplate of Agony's Aversion
                 { 15, 34240 }, -- Gauntlets of the Soothed Soul
                 { 16, 34216 }, -- Heroic Judicator's Chestguard
-                { 17, 34395 }, -- Noble Judicator's Chestguard
+                { 17, 34395, [PRICE_EXTRA_ITTYPE] = "34216:1:Sunmote:1" }, -- Noble Judicator's Chestguard
                 { 18, 34213 }, -- Ring of Hardened Resolve
                 { 19, 34230 }, -- Ring of Omnipotence
                 { 20, 35282 }, -- Sin'dorei Band of Dominance
@@ -3978,23 +3978,23 @@ data["SunwellPlateau"] = {
                 { 1, 34241 }, -- Cloak of Unforgivable Sin
                 { 2, 34242 }, -- Tattered Cape of Antonidas
                 { 3, 34339 }, -- Cowl of Light's Purity
-                { 4, 34405 }, -- Helm of Arcane Purity
+                { 4, 34405, [PRICE_EXTRA_ITTYPE] = "34339:1:Sunmote:1" }, -- Helm of Arcane Purity
                 { 5, 34340 }, -- Dark Conjuror's Collar
                 { 6, 34342 }, -- Handguards of the Dawn
-                { 7, 34406 }, -- Gloves of Tyri's Power
+                { 7, 34406, [PRICE_EXTRA_ITTYPE] = "34342:1:Sunmote:1" }, -- Gloves of Tyri's Power
                 { 8, 34344 }, -- Handguards of Defiled Worlds
                 { 9, 34244 }, -- Duplicitous Guise
-                { 10, 34404 }, -- Mask of the Fury Hunter
+                { 10, 34404, [PRICE_EXTRA_ITTYPE] = "34244:1:Sunmote:1" }, -- Mask of the Fury Hunter
                 { 11, 34245 }, -- Cover of Ursol the Wise
-                { 12, 34403 }, -- Cover of Ursoc the Mighty
+                { 12, 34403, [PRICE_EXTRA_ITTYPE] = "34245:1:Sunmote:1" }, -- Cover of Ursoc the Mighty
                 { 13, 34333 }, -- Coif of Alleria
                 { 14, 34332 }, -- Cowl of Gul'dan
-                { 15, 34402 }, -- Shroud of Chieftain Ner'zhul
+                { 15, 34402, [PRICE_EXTRA_ITTYPE] = "34332:1:Sunmote:1" }, -- Shroud of Chieftain Ner'zhul
                 { 16, 34343 }, -- Thalassian Ranger Gauntlets
                 { 17, 34243 }, -- Helm of Burning Righteousness
-                { 18, 34401 }, -- Helm of Uther's Resolve
+                { 18, 34401, [PRICE_EXTRA_ITTYPE] = "34243:1:Sunmote:1" }, -- Helm of Uther's Resolve
                 { 19, 34345 }, -- Crown of Anasterian
-                { 20, 34400 }, -- Crown of Dath'Remar
+                { 20, 34400, [PRICE_EXTRA_ITTYPE] = "34345:1:Sunmote:1" }, -- Crown of Dath'Remar
                 { 21, 34341 }, -- Borderland Paingrips
                 { 23, 34334 }, -- Thori'dal, the Stars' Fury
                 { 25, 34329 }, -- Crux of the Apocalypse
@@ -4017,27 +4017,31 @@ data["SunwellPlateau"] = {
                 { 6, 35218 }, -- Pattern: Carapace of Sun and Shadow
                 { 7, 35215 }, -- Pattern: Sun-Drenched Scale Gloves
                 { 8, 35219 }, -- Pattern: Sun-Drenched Scale Chestguard
-                { 9, 35204 }, -- Pattern: Sunfire Handwraps
-                { 10, 35206 }, -- Pattern: Sunfire Robe
-                { 11, 35205 }, -- Pattern: Hands of Eternal Light
-                { 12, 35207 }, -- Pattern: Robe of Eternal Light
-                { 13, 35198 }, -- Design: Loop of Forged Power
-                { 14, 35201 }, -- Design: Pendant of Sunfire
-                { 15, 35199 }, -- Design: Ring of Flowing Life
-                { 16, 35202 }, -- Design: Amulet of Flowing Life
-                { 17, 35200 }, -- Design: Hard Khorium Band
-                { 18, 35203 }, -- Design: Hard Khorium Choker
-                { 19, 35186 }, -- Schematic: Annihilator Holo-Gogs
-                { 20, 35187 }, -- Schematic: Justicebringer 3000 Specs
-                { 21, 35189 }, -- Schematic: Powerheal 9000 Lens
-                { 22, 35190 }, -- Schematic: Hyper-Magnified Moon Specs
-                { 23, 35191 }, -- Schematic: Wonderheal XT68 Shades
-                { 24, 35192 }, -- Schematic: Primal-Attuned Goggles
-                { 25, 35193 }, -- Schematic: Lightning Etched Specs
-                { 26, 35194 }, -- Schematic: Surestrike Goggles v3.0
-                { 27, 35195 }, -- Schematic: Mayhem Projection Goggles
-                { 28, 35196 }, -- Schematic: Hard Khorium Goggles
-                { 29, 35197 }, -- Schematic: Quad Deathblow X44 Goggles
+                { 10, 35204 }, -- Pattern: Sunfire Handwraps
+                { 11, 35206 }, -- Pattern: Sunfire Robe
+                { 12, 35205 }, -- Pattern: Hands of Eternal Light
+                { 13, 35207 }, -- Pattern: Robe of Eternal Light
+                { 16, 35198 }, -- Design: Loop of Forged Power
+                { 17, 35201 }, -- Design: Pendant of Sunfire
+                { 18, 35199 }, -- Design: Ring of Flowing Life
+                { 19, 35202 }, -- Design: Amulet of Flowing Life
+                { 20, 35200 }, -- Design: Hard Khorium Band
+                { 21, 35203 }, -- Design: Hard Khorium Choker
+				{ 25, 35208 }, -- Plans: Sunblessed Gauntlets
+                { 26, 35210 }, -- Plans: Sunblessed Breastplate
+                { 27, 35209 }, -- Plans: Hard Khorium Battlefists
+                { 28, 35211 }, -- Plans: Hard Khorium Battleplate
+                { 101, 35186 }, -- Schematic: Annihilator Holo-Gogs
+                { 102, 35187 }, -- Schematic: Justicebringer 3000 Specs
+                { 103, 35189 }, -- Schematic: Powerheal 9000 Lens
+                { 104, 35190 }, -- Schematic: Hyper-Magnified Moon Specs
+                { 105, 35191 }, -- Schematic: Wonderheal XT68 Shades
+                { 106, 35192 }, -- Schematic: Primal-Attuned Goggles
+                { 107, 35193 }, -- Schematic: Lightning Etched Specs
+                { 108, 35194 }, -- Schematic: Surestrike Goggles v3.0
+                { 109, 35195 }, -- Schematic: Mayhem Projection Goggles
+                { 110, 35196 }, -- Schematic: Hard Khorium Goggles
+                { 111, 35197 }, -- Schematic: Quad Deathblow X44 Goggles
             }
         },
         { -- SPTrash
@@ -4045,9 +4049,9 @@ data["SunwellPlateau"] = {
             ExtraList = true,
             [NORMAL_DIFF] = {
                 { 1, 34351 }, -- Tranquil Majesty Wraps
-                { 2, 34407 }, -- Tranquil Moonlight Wraps
+                { 2, 34407, [PRICE_EXTRA_ITTYPE] = "34351:1:Sunmote:1" }, -- Tranquil Moonlight Wraps
                 { 3, 34350 }, -- Gauntlets of the Ancient Shadowmoon
-                { 4, 34409 }, -- Gauntlets of the Ancient Frostwolf
+                { 4, 34409, [PRICE_EXTRA_ITTYPE] = "34350:1:Sunmote:1" }, -- Gauntlets of the Ancient Frostwolf
                 { 5, 35733 }, -- Ring of Harmonic Beauty
                 { 6, 34183 }, -- Shivering Felspine
                 { 7, 34346 }, -- Mounting Vengeance
@@ -4062,10 +4066,6 @@ data["SunwellPlateau"] = {
                 { 19, 32249 }, -- Seaspray Emerald
                 { 20, 32230 }, -- Shadowsong Amethyst
                 { 21, 32227 }, -- Crimson Spinel
-                { 23, 35208 }, -- Plans: Sunblessed Gauntlets
-                { 24, 35210 }, -- Plans: Sunblessed Breastplate
-                { 25, 35209 }, -- Plans: Hard Khorium Battlefists
-                { 26, 35211 }, -- Plans: Hard Khorium Battleplate
             }
         },
         T6_SET

@@ -13,10 +13,9 @@
 ## Author-zhCN: |cff00ff00ALA|r @ |cffff0000网易有爱|r
 ## Author-zhTW: |cff00ff00ALA|r @ |cffff0000网易有爱|r
 ## Version: 205r.220330
-
 alaGearMan.xml
 
 
 ## Title-zhCN: |cff880303[有爱]|r ala 装备界面增强
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220331145254
+## X-163UI-Version: 20220402180938

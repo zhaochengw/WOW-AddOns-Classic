@@ -52,7 +52,7 @@ local WORLD_EVENT_CONTENT = data:AddContentType(AL["World Events"], ATLASLOOT_SE
 
 --@version-bcc@
 data["BadgeofJustice"] = {
-	name = format(AL["'%s' Vendor"], "公正徽章"),
+	name = format(AL["'%s' Vendor"], "Badge of Justice"),
 	ContentType = VENDOR_CONTENT,
 	TableType = NORMAL_ITTYPE,
 	gameVersion = 2,
@@ -350,7 +350,7 @@ data["BadgeofJustice"] = {
 			},
 		},
 		{
-			name = ALIL["材料"],
+			name = ALIL["Misc"],
 			[NORMAL_DIFF] = {
 				{ 1, 23572 }, -- 源生虚空
 				{ 2, 30183 }, -- 虚空漩涡
@@ -1770,7 +1770,7 @@ data["MidsummerFestivalTBC"] = {
                 { 19, 35557 }, -- Huge Snowball
 			},
 			[HEROIC_DIFF] = {
-                { 1, 29434 }, -- 公正徽章
+                { 1, 29434 }, -- Badge of Justice
                 { 2, 35507 }, -- Amulet of Bitter Hatred
                 { 3, 35508 }, -- Choker of the Arctic Flow
                 { 4, 35509 }, -- Amulet of Glacial Tranquility

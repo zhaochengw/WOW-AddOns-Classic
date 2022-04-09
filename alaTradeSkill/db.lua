@@ -449,9 +449,9 @@ local function _LoadSavedVar()
 			T_TradeSkill_CheckName[pid] = sinfo[1];
 		end
 		--
-		for sid, sinfo in next, T_SpellData do
-			LF_HashSpell(sid, sinfo[1], sinfo[2]);
-		end
+	end
+	for sid, sinfo in next, T_SpellData do
+		LF_HashSpell(sid, sinfo[1], sinfo[2]);
 	end
 end
 -->

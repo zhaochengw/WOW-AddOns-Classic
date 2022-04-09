@@ -114,7 +114,7 @@ data["BCCHonorSet"] = {
 	LoadDifficulty = LOAD_DIFF,
 	items = {
 		{
-			name = ALIL["套装"],
+			name = ALIL["Sets"],
 			TableType = SET_ITTYPE,
 			[ALLIANCE_DIFF] = {
 				{ 1,    591 }, -- Warlock
@@ -240,7 +240,7 @@ data["BCCHonorSet"] = {
 			},
 		},
 		{
-			name = ALIL["背部"],
+			name = ALIL["Back"],
 			[ALLIANCE_DIFF] = {
 				{ 1, 28377 }, -- Sergeant's Heavy Cloak
 				{ 2, 28378 }, -- Sergeant's Heavy Cape
@@ -261,7 +261,7 @@ data["BCCReputationSet"] = {
 	LoadDifficulty = LOAD_DIFF,
 	items = {
 		{
-			name = ALIL["套装"],
+			name = ALIL["Sets"],
 			TableType = SET_ITTYPE,
 			[NORMAL_DIFF] = {
 				{ 1,    738 }, -- Warlock
@@ -331,7 +331,7 @@ data["ArenaS1PvP"] = {
 	TableType = NORMAL_ITTYPE,
 	items = {
 		{
-			name = AL["套装"],
+			name = AL["Sets"],
 			TableType = SET_ITTYPE,
 			[NORMAL_DIFF] = {
 				{ 1,    568 }, -- Warlock
@@ -596,7 +596,7 @@ data["ArenaS2PvP"] = {
 	TableType = NORMAL_ITTYPE,
 	items = {
 		{
-			name = AL["套装"],
+			name = AL["Sets"],
 			TableType = SET_ITTYPE,
 			[NORMAL_DIFF] = {
 				{ 1,    702 }, -- Warlock
@@ -802,7 +802,7 @@ data["ArenaS3PvP"] = {
 	TableType = NORMAL_ITTYPE,
 	items = {
 		{
-			name = AL["套装"],
+			name = AL["Sets"],
 			TableType = SET_ITTYPE,
 			[NORMAL_DIFF] = {
 				{ 1,    734 }, -- Warlock
@@ -1022,7 +1022,7 @@ data["ArenaS4PvP"] = {
 	TableType = NORMAL_ITTYPE,
 	items = {
 		{
-			name = AL["套装"],
+			name = AL["Sets"],
 			TableType = SET_ITTYPE,
 			[NORMAL_DIFF] = {
 				{ 1,    200568 }, -- Warlock

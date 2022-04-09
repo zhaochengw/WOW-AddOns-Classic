@@ -821,11 +821,17 @@ L["terokkarChat10Desc"] = "Print a msg in chat when 10 minutes left on terokkar 
 L["terokkarMiddle10Title"] = "Terokkar 10 Minutes";
 L["terokkarMiddle10Desc"] = "Show a raid warning style msg in the middle of the screen when 10 minutes left on terokkar spirit towers.";
 
-L["showShatWorldmapMarkersTitle"] = "Shattrath Worldmap";
+L["showShatWorldmapMarkersTitle"] = "Dailies Shattrath Worldmap";
 L["showShatWorldmapMarkersDesc"] = "Show dungeon daily markers on the Shattrath world map?";
 
-L["hideMinimapBuffTimersTitle"] = "Hide Minimap World Buff Timers";
-L["hideMinimapBuffTimersDesc"] = "Hide the world buffs when you hover over the minimap icon? You will only see the terokkar tower timers and dailies etc.";
+L["disableBuffTimersMaxBuffLevelTitle"] = "Disable Minimap Buff Timers 64+";
+L["disableBuffTimersMaxBuffLevelDesc"] = "Hide world buff timers when you hover over the minimap icon for characters level 64+? You will only see the terokkar tower timers and dailies etc.";
+
+L["hideMinimapBuffTimersTitle"] = "Disable Minimap Buff Timers All Levels";
+L["hideMinimapBuffTimersDesc"] = "Hide world buff timers when you hover over the minimap icon for characters all levels? You will only see the terokkar tower timers and dailies etc.";
 
 L["guildTerok10Title"] = "Guild Chat Terokkar 10 Minutes";
 L["guildTerok10Desc"] = "Send a message to guild chat when there's 10 minutes left on terokkar towers?";
+
+L["showShatWorldmapMarkersTerokTitle"] = "Terokkar Shattrath Worldmap";
+L["showShatWorldmapMarkersTerokDesc"] = "Show terokkar tower markers on the Shattrath world map?";

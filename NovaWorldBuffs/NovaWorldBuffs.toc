@@ -1,8 +1,8 @@
-## Interface: 20504
-## Notes: World buff timers and pre warnings.
-## Title: Nova World Buffs
+## Interface: 20503
+## Notes-zhCN: 位面插件--汉化来自：比格沃斯--战士--北風之神
+## Title-zhCN: 位面插件世界Buffs计时器。
 ## Author: Novaspark-Arugal OCE
-## Version: 2.22
+## Version: 2.24
 ## SavedVariables: NWBdatabase
 
 embeds.xml
@@ -14,7 +14,3 @@ NWBData.lua
 NWBCreatures.lua
 NWBRealms.lua
 NWBGuildFilter.lua
-
-## Title-zhCN:  |cff880303[有爱]|r NovaWorldBuffs 世界buff和位面
-## X-Vendor: NetEase
-## X-163UI-Version: 20220303142735
