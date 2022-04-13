@@ -6827,7 +6827,7 @@ desc = '精神鞭笞、心灵控制、治疗术、心灵尖啸、心灵震爆',
 title = '法师',
 noCollapse = false,
 expanded = false,
-desc = '火球、寒冰箭、冰霜信息',
+desc = '火球、寒冰箭、冰霜新星',
 },
 {
 title = '术士',
