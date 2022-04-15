@@ -38,7 +38,7 @@ local function shuaxinBAGweizhi(frame, size, id)
 	_G[name.."PortraitButton"]:Hide();
 	_G[name.."Portrait"]:Hide();
 	_G[name.."CloseButton"]:Hide();
-	if tocversion>29999 then
+	if tocversion>39999 then
 		BagItemSearchBox:SetParent(BAGheji_UI);
 		BagItemSearchBox:ClearAllPoints();
 		BagItemSearchBox:SetPoint("TOPLEFT",BAGheji_UI,"TOPLEFT",70,-28);
@@ -1222,7 +1222,7 @@ local function zhegnhe_Open()
 		hideOnEscape = true,
 	}
 
-	if tocversion<30000 then
+	if tocversion<40000 then
 		BAGheji.Search = CreateFrame('EditBox', nil, BAGheji, "BagSearchBoxTemplate");
 		BAGheji.Search:SetSize(120,24);
 		BAGheji.Search:SetPoint("TOPLEFT",BAGheji,"TOPLEFT",70,-28);

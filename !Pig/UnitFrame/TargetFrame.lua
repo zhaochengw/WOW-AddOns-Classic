@@ -57,6 +57,7 @@ local function MubiaoFrame_Open()
 		TargetFrame.zhiyetubiao:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 119, 3);
 		TargetFrame.zhiyetubiao:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight");
 		TargetFrame.zhiyetubiao:Hide()
+		TargetFrame.zhiyetubiao:SetFrameLevel(505)
 
 		TargetFrame.zhiyetubiao.Border = TargetFrame.zhiyetubiao:CreateTexture(nil, "OVERLAY");
 		TargetFrame.zhiyetubiao.Border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder");
@@ -359,6 +360,7 @@ local function ADD_yisu_Open()
 	TargetFrame.yisuF=CreateFrame("Frame",nil,TargetFrame);
 	TargetFrame.yisuF:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 192, -58);
 	TargetFrame.yisuF:SetSize(49,18);
+	TargetFrame.yisuF:SetFrameLevel(505)
 	TargetFrame.yisuF.Tex = TargetFrame.yisuF:CreateTexture("Frame_Texture_UI", "ARTWORK");
 	TargetFrame.yisuF.Tex:SetTexture("interface/icons/ability_rogue_sprint.blp");
 	TargetFrame.yisuF.Tex:SetSize(16,16);
@@ -410,6 +412,7 @@ local function Mubiaokuaisubiaoji_Open()
 		TargetFrame.mubiaobiaoji:SetPoint("TOPLEFT", TargetFrame, "TOPRIGHT", -20, -10);
 		TargetFrame.mubiaobiaoji:SetMovable(true)
 		TargetFrame.mubiaobiaoji:SetClampedToScreen(true)
+		TargetFrame.mubiaobiaoji:SetFrameLevel(505)
 		TargetFrame.mubiaobiaoji.yidong = CreateFrame("Frame", nil, TargetFrame.mubiaobiaoji,"BackdropTemplate")
 		TargetFrame.mubiaobiaoji.yidong:SetBackdrop(beijing_yidong)
 		TargetFrame.mubiaobiaoji.yidong:SetBackdropColor(0.1,0.1,0.1,0.5)

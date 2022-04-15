@@ -1,31 +1,45 @@
 local _, addonTable = ...;
 local fuFrame=Pig_Options_RF_TAB_1_UI
+local _, _, _, tocversion = GetBuildInfo()
 --////自动对话
 local function yanchizhixing()
 	--交任务
 	if PIG['Interaction']['AutoJiaorenwu']=="ON" then
-		local activeQuestCount = GetNumActiveQuests();
-		local gossipActiveQuestCount = GetNumGossipActiveQuests();
-		local gossipActiveQuests = { GetGossipActiveQuests() };
-		for i=1, activeQuestCount do
-			local title, isComplete = GetActiveTitle(i);
-			if (isComplete) then
-				SelectActiveQuest(i);
+		if tocversion<40000 then
+			local activeQuestCount = GetNumActiveQuests();
+			local gossipActiveQuestCount = GetNumGossipActiveQuests();
+			local gossipActiveQuests = { GetGossipActiveQuests() };
+			for i=1, activeQuestCount do
+				local title, isComplete = GetActiveTitle(i);
+				if (isComplete) then
+					SelectActiveQuest(i);
+				end
 			end
-		end
-
-		for i=1, gossipActiveQuestCount do
-			local propertyOffset = 6 * (i - 1);
-			local isComplete = gossipActiveQuests[4 + propertyOffset];
-		
-			if (isComplete) then
-				SelectGossipActiveQuest(i);
+			for i=1, gossipActiveQuestCount do
+				local propertyOffset = 6 * (i - 1);
+				local isComplete = gossipActiveQuests[4 + propertyOffset];
+			
+				if (isComplete) then
+					SelectGossipActiveQuest(i);
+				end
+			end
+		else
+			local activeQuestCount =C_GossipInfo.GetNumActiveQuests()
+			local gossipActiveQuests = { C_GossipInfo.GetActiveQuests() };
+			for i=1,activeQuestCount do
+				if gossipActiveQuests[i] then
+					for _,vv in pairs(gossipActiveQuests[i]) do
+						if (vv.isComplete) then
+							C_GossipInfo.SelectActiveQuest(i)
+						end
+					end
+				end
 			end
 		end
 	end
-
-		--接任务
-		if PIG['Interaction']['AutoJierenwu']=="ON" then
+	--接任务
+	if PIG['Interaction']['AutoJierenwu']=="ON" then
+		if tocversion<40000 then
 			local availableQuestCount = GetNumAvailableQuests();
 			local gossipAvailableQuestCount = GetNumGossipAvailableQuests();
 			local gossipAvailableQuests = { GetGossipAvailableQuests() };
@@ -36,7 +50,6 @@ local function yanchizhixing()
 					SelectAvailableQuest(i);
 				end
 			end
-
 			for i=1, gossipAvailableQuestCount do
 				local propertyOffset = 7 * (i - 1);
 				local isTrivial = gossipAvailableQuests[3 + propertyOffset];
@@ -45,7 +58,20 @@ local function yanchizhixing()
 					SelectGossipAvailableQuest(i);
 				end
 			end
+		else
+			local availableQuestCount  = C_GossipInfo.GetNumAvailableQuests();
+			local gossipAvailableQuests = { C_GossipInfo.GetAvailableQuests() };
+			for i=1,availableQuestCount do
+				if gossipAvailableQuests[i] then
+					for _,vv in pairs(gossipAvailableQuests[i]) do
+						if (not vv.isTrivial) then
+							C_GossipInfo.SelectAvailableQuest(i)
+						end
+					end
+				end
+			end
 		end
+	end
 end
 local function zidongduihua(self,event)
 	--接
@@ -76,16 +102,30 @@ local function zidongduihua(self,event)
 	---对话
 	if PIG['Interaction']['AutoDialogue']=="ON" then
 		if event=="GOSSIP_SHOW" then
-			local numOptions =GetNumGossipOptions() --NPC对话选项
-			local kejierenwu = GetNumGossipAvailableQuests();--返回此 NPC 提供的任务（您尚未参与）的数量
-			local jiaofurenwu = GetNumGossipActiveQuests();--返回你最终应该交给这个 NPC 的活动任务的数量。
-			if (numOptions+kejierenwu+jiaofurenwu)==1 then
-				SelectGossipOption(1) 
-				if PIG['Interaction']['AutoJierenwu']=="ON" then
+			if tocversion<40000 then
+				local numOptions = GetNumGossipOptions() --NPC对话选项
+				local kejierenwu = GetNumGossipActiveQuests() --返回此 NPC 提供的任务（您尚未参与）的数量
+				local jiaofurenwu = GetNumGossipAvailableQuests() --返回你最终应该交给这个 NPC 的活动任务的数量。
+				local zongjirenwu=kejierenwu+jiaofurenwu	
+				if zongjirenwu>0 then
 					yanchizhixing()
+				else
+					if numOptions==1 then
+						SelectGossipOption(1)
+					end
 				end
 			else
-				yanchizhixing()
+				local numOptions = C_GossipInfo.GetNumOptions() --NPC对话选项
+				local kejierenwu = C_GossipInfo.GetNumActiveQuests() --返回此 NPC 提供的任务（您尚未参与）的数量
+				local jiaofurenwu = C_GossipInfo.GetNumAvailableQuests() --返回你最终应该交给这个 NPC 的活动任务的数量。
+				local zongjirenwu=kejierenwu+jiaofurenwu
+				if zongjirenwu>0 then
+					yanchizhixing()
+				else
+					if numOptions==1 then
+						C_GossipInfo.SelectOption(1)
+					end
+				end
 			end
 		end
 	end

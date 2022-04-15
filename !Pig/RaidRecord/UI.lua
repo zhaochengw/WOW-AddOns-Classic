@@ -236,7 +236,7 @@ local function ADD_RaidR_UI()
 		for i=1, 8 do
 	    	if #PIG["RaidRecord"]["Raidinfo"][i]>0 then
 				for ii=1, #PIG["RaidRecord"]["Raidinfo"][i] do
-					if PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="坦克补助" or PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="开怪猎人" or PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="治疗补助" then
+					if PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="坦克补助" or PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="其他补助" or PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="治疗补助" then
 						Buzhu_shouru=PIG["RaidRecord"]["Raidinfo"][i][ii][6]+Buzhu_shouru;
 					end
 				end
@@ -310,7 +310,7 @@ local function ADD_RaidR_UI()
 					if #PIG["RaidRecord"]["Raidinfo"][i]>0 then
 						for ii=1, #PIG["RaidRecord"]["Raidinfo"][i] do
 							if #PIG["RaidRecord"]["Raidinfo"][i][ii]>0 then
-								if PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="坦克补助" or PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="开怪猎人" or PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="治疗补助" then
+								if PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="坦克补助" or PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="其他补助" or PIG["RaidRecord"]["Raidinfo"][i][ii][5]=="治疗补助" then
 									local Buzhu_list1=PIG["RaidRecord"]["Raidinfo"][i][ii][5];
 									local Buzhu_list2=PIG["RaidRecord"]["Raidinfo"][i][ii][6];
 									local Buzhu_list3=PIG["RaidRecord"]["Raidinfo"][i][ii][4];
