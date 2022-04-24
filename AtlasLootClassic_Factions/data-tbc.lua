@@ -273,8 +273,7 @@ data["TheShatar"] = {
                 { 17, 30826 }, -- Design: Ring of Arcane Shielding
                 { 18, 33155 }, -- Design: Kailee's Rose
                 { 20, 28273 }, -- Formula: Enchant Gloves - Major Healing
-				{ 22, 185926 },
-                { 23, 29717 }, -- Pattern: Drums of Battle
+                { 22, 29717 }, -- Pattern: Drums of Battle
 			},
 		},
 		{ -- Friendly
@@ -379,8 +378,7 @@ data["KeepersOfTime"] = {
                 { 18, 22536 }, -- Formula: Enchant Ring - Spellpower
                 { 20, 25910 }, -- Design: Enigmatic Skyfire Diamond
                 { 21, 33160 }, -- Design: Facet of Eternity
-				{ 23, 185925 },
-                { 24, 29713 }, -- Pattern: Drums of Panic
+                { 23, 29713 }, -- Pattern: Drums of Panic
 			},
 		},
 	},
@@ -1166,11 +1164,9 @@ data["TheMaghar"] = {
 				{ 1, "f941rep6" },
                 { 2, 29143 }, -- Clefthoof Hide Quiver
                 { 17, 25742 }, -- Pattern: Netherfury Leggings
-				{ 18, 185924 },
-				{ 19, 185923 },
-                { 20, 34174 }, -- Pattern: Drums of Restoration
-                { 21, 34172 }, -- Pattern: Drums of Speed
-                { 22, 29664 }, -- Pattern: Reinforced Mining Bag
+                { 18, 34174 }, -- Pattern: Drums of Restoration
+                { 19, 34172 }, -- Pattern: Drums of Speed
+                { 20, 29664 }, -- Pattern: Reinforced Mining Bag
 			},
 		},
 		{ -- Friendly
@@ -1287,11 +1283,9 @@ data["Kurenai"] = {
 				{ 1, "f978rep6" },
                 { 2, 29144 }, -- Worg Hide Quiver
                 { 17, 29219 }, -- Pattern: Netherfury Leggings
-				{ 18, 187048 },
-				{ 19, 187049 },
-                { 20, 34175 }, -- Pattern: Drums of Restoration
-                { 21, 34173 }, -- Pattern: Drums of Speed
-                { 22, 30444 }, -- Pattern: Reinforced Mining Bag
+                { 18, 34175 }, -- Pattern: Drums of Restoration
+                { 19, 34173 }, -- Pattern: Drums of Speed
+                { 20, 30444 }, -- Pattern: Reinforced Mining Bag
 			},
 		},
 		{ -- Friendly

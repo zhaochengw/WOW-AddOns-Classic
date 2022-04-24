@@ -3,7 +3,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PallyPower")
 PallyPower.commPrefix = "PLPWR"
 C_ChatInfo.RegisterAddonMessagePrefix(PallyPower.commPrefix)
 
-PALLYPOWER_MAXCLASSES = PallyPower.isBCC and 10 or 9
+PALLYPOWER_MAXCLASSES = PallyPower.isBCC and 9 or 9
 PALLYPOWER_MAXPERCLASS = 15
 PALLYPOWER_NORMALBLESSINGDURATION = PallyPower.isBCC and (10 * 60) or (5 * 60)
 PALLYPOWER_GREATERBLESSINGDURATION = PallyPower.isBCC and (30 * 60) or (15 * 60)
@@ -137,7 +137,6 @@ PallyPower.ClassID = PallyPower.isBCC and {
 	[7] = "MAGE",
 	[8] = "WARLOCK",
 	[9] = "SHAMAN",
-	[10] = "PET"
 } or {
 	[1] = "WARRIOR",
 	[2] = "ROGUE",
@@ -160,7 +159,6 @@ PallyPower.ClassToID = PallyPower.isBCC and {
 	["MAGE"] = 7,
 	["WARLOCK"] = 8,
 	["SHAMAN"] = 9,
-	["PET"] = 10
 } or {
 	["WARRIOR"] = 1,
 	["ROGUE"] = 2,
@@ -183,7 +181,6 @@ PallyPower.ClassIcons = PallyPower.isBCC and {
 	[7] = "Interface\\Icons\\ClassIcon_Mage",
 	[8] = "Interface\\Icons\\ClassIcon_Warlock",
 	[9] = "Interface\\Icons\\ClassIcon_Shaman",
-	[10] = "Interface\\Icons\\Ability_Mount_JungleTiger"
 } or {
 	[1] = "Interface\\Icons\\ClassIcon_Warrior",
 	[2] = "Interface\\Icons\\ClassIcon_Rogue",

@@ -3,11 +3,13 @@
 ## Title: Leatrix Maps
 ## Notes: Enhancements for your maps.
 
-## Version: 2.5.98
+## Version: 2.5.101
 ## Author: Leatrix
 ## SavedVariables: LeaMapsDB
 
 ## X-Curse-Project-ID: 463868
+
+## OptionalDeps: NDui
 
 Leatrix_Maps_Library.lua
 Leatrix_Maps_Locale.lua
@@ -15,6 +17,7 @@ Leatrix_Maps.xml
 Leatrix_Maps_Reveal.lua
 Leatrix_Maps.lua
 
+## Title: |cff880303[163UI]|r Leatrix Maps
 ## Title-zhCN: |cff880303[有爱]|r Leatrix_Maps 世界地图增强
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220407154941
+## X-163UI-Version: 20220421193619

@@ -1,9 +1,8 @@
 ## Interface: 20504
-## Author: Lag  (Continued by Marsz413@NGA.cn)
-## Version: v2.4.1-bcc
+## Author: Lag
+## Version: v2.4.2-bcc
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
-
 ## Title: AtlasLootClassic |cFFFF0000[Data]|r
 ## Title-deDE: AtlasLootClassic |cFFFF0000[Daten]|r
 ## Title-esES: AtlasLootClassic |cFFFF0000[Datos]|r
@@ -26,13 +25,15 @@
 ## Notes-ruRU: Модуль данных AtlasLoot
 ## Notes-zhCN: AtlasLoot 数据模块
 ## Notes-zhTW: 副本戰利品查詢的數據設定。
-
 ## X-Category: Map
 ## X-License: GPL v2
-
 core.lua
-
 locales.lua
 items.lua
 source.lua
 source-tbc.lua
+
+## Title: |cff880303[163UI]|r AtlasLootClassic |cFFFF0000[Data]|r
+## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 数据
+## X-Vendor: NetEase
+## X-163UI-Version: 20220414153603

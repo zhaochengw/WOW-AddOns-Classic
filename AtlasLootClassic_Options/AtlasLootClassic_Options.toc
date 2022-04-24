@@ -1,9 +1,8 @@
 ## Interface: 20504
-## Author: Lag  (Continued by Marsz413@NGA.cn)
-## Version: v2.4.1-bcc
+## Author: Lag
+## Version: v2.4.2-bcc
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
-
 ## Title: AtlasLoot Classic |cFF22B14C[Options]|r
 ## Title-deDE: AtlasLootClassic |cFF22B14C[Optionen]|r
 ## Title-esES: AtlasLoot Classic |cFF22B14C[Opciones]|r
@@ -26,12 +25,9 @@
 ## Notes-ruRU: Настройки модулей AtlasLoot
 ## Notes-zhCN: AtlasLoot t选项模块
 ## Notes-zhTW: 副本戰利品查詢的選項設定。
-
 ## X-Category: Map
 ## X-License: GPL v2
-
 embeds.xml
-
 Locales\constants.cn.lua
 Locales\constants.de.lua
 Locales\constants.es.lua
@@ -42,9 +38,13 @@ Locales\constants.mx.lua
 Locales\constants.pt.lua
 Locales\constants.ru.lua
 Locales\constants.tw.lua
-
 Core.lua
 Main.lua
 Windows.lua
 MiniMapButton.lua
 Addons.lua
+
+## Title: |cff880303[163UI]|r AtlasLoot Classic |cFF22B14C[Options]|r
+## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 设置界面
+## X-Vendor: NetEase
+## X-163UI-Version: 20220414153603

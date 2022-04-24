@@ -1,7 +1,7 @@
 ## Interface: 20504
 ## Author: Aznamir, Dyaxler, Es
 ## Title: PallyPower Classic
-## Version: v1.4.3-classic
+## Version: v1.4.4-classic
 ## Notes: Raid/Party Paladin buffs
 ## Notes-esES: Buffs de Paladín para Grupo/Banda
 ## Notes-zhCN: 圣骑士祝福管理
@@ -10,6 +10,7 @@
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, SharedMedia
 ## X-Category: Paladin
 ## X-Embeds: Ace3, LibClassicDurations, LibSharedMedia-3.0, LibUIDropDownMenu
+## X-Curse-Project-ID: 2703
 ## SavedVariables: PallyPowerDB, PallyPower_Assignments, PallyPower_NormalAssignments, PallyPower_AuraAssignments, PallyPower_SavedPresets, PallyPower_ChanNames, LCD_Data, LCD_GUIDAccess
 
 #@no-lib-strip@
@@ -30,8 +31,9 @@ locale\zhTW.lua
 PallyPower.lua
 PallyPowerValues.lua
 PallyPowerOptions.lua
-PallyPower.xml
+PallyPower_TBC.xml
 
+## Title: |cff880303[163UI]|r PallyPower Classic
 ## Title-zhCN: |cff880303[有爱]|r PallyPower 圣骑士祝福管理
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+## X-163UI-Version: 20220414153603

@@ -5,7 +5,8 @@ local LSM3 = LibStub("LibSharedMedia-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 local LUIDDM = LibStub("LibUIDropDownMenu-4.0")
 
-PallyPower.isBCC = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+PallyPower.isBCC = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
+PallyPower.petsShareBaseClass = PallyPower.isBCC
 local LCD = not PallyPower.isBCC  and LibStub("LibClassicDurations", true)
 
 local tinsert = table.insert
@@ -55,11 +56,15 @@ do
 
 	for i = 1, MAX_PARTY_MEMBERS do
 		table.insert(party_units, ("party%d"):format(i))
+	end
+	for i = 1, MAX_PARTY_MEMBERS do
 		table.insert(party_units, ("partypet%d"):format(i))
 	end
 
 	for i = 1, MAX_RAID_MEMBERS do
 		table.insert(raid_units, ("raid%d"):format(i))
+	end
+	for i = 1, MAX_RAID_MEMBERS do
 		table.insert(raid_units, ("raidpet%d"):format(i))
 	end
 end
@@ -67,12 +72,9 @@ end
 PallyPower.Credits1 = "PallyPower - by Aznamir (Lightbringer US)"
 PallyPower.Credits2 = "Updated for Classic by Dyaxler and Es"
 
-function PallyPower:Debug(string)
-	if not string then
-		string = "(nil)"
-	end
+function PallyPower:Debug(s)
 	if (PP_DebugEnabled) then
-		DEFAULT_CHAT_FRAME:AddMessage("[PP] " .. string, 1, 0, 0)
+		DEFAULT_CHAT_FRAME:AddMessage("[PP] " .. tostring(s), 1, 0, 0)
 	end
 end
 
@@ -550,7 +552,11 @@ function PallyPowerBlessingsGrid_Update(self, elapsed)
 					local unit = classes[i][j]
 					if unit.name then
 						local shortname = Ambiguate(unit.name, "short")
-						_G[pbnt .. "Text"]:SetText(shortname)
+						if unit.unitid:find("pet") then
+							_G[pbnt .. "Text"]:SetText("|T132242:0|t "..shortname)
+						else
+							_G[pbnt .. "Text"]:SetText(shortname)
+						end
 					end
 					local normal, greater = PallyPower:GetSpellID(i, unit.name)
 					if normal ~= greater then
@@ -1978,6 +1984,7 @@ function PallyPower:UpdateRoster()
 	for i = 1, PALLYPOWER_MAXCLASSES do
 		classlist[i] = 0
 		classes[i] = {}
+        classmaintanks[i] = false
 	end
 	if IsInRaid() then
 		units = raid_units
@@ -1991,38 +1998,31 @@ function PallyPower:UpdateRoster()
 			local tmp = {}
 			tmp.unitid = unitid
 			tmp.name = GetUnitName(unitid, true)
-			local ShowPets = self.opt.ShowPets
 			local isPet = tmp.unitid:find("pet")
+			local ShowPets = self.opt.ShowPets
 			local pclass = (UnitClassBase(unitid))
 			if ShowPets or (not isPet) then
-				if isPet and pclass == "MAGE" then --Warlock Imp pet
-					local i = 1
-					local name, icon = UnitBuff(unitid, i)
-					local isPhased = false
-					while name do
-						if icon == 136164 then
-							--self:Debug("isPet [isPhased]: "..tmp.name)
-							isPhased = true
-							break
-						end
-						i = i + 1
-						name, icon = UnitBuff(unitid, i)
-					end
-					if not isPhased then
-						--self:Debug("isPet [notPhased]: "..tmp.name)
-						tmp.class = "PET"
-					end
-				elseif isPet then -- All other pet's
-					if (pclass == "PALADIN" and IsInRaid()) then
-						-- Hide Succubus while in raids (they generally always get sacrificed)
+				tmp.class = pclass
+				if isPet then
+                    if not PallyPower.petsShareBaseClass then
+                        tmp.class = "PET"
+                    end
+					local npcId = (select(6, ("-"):split(UnitGUID(unitid))))
+					if (npcId == "510") or (npcId == "19668") or (npcId == "1863") or (npcId == "185317") then -- 510: Water Elemental, 19668: Shadowfiend, 1863: Succubus, 185317: Incubus
 						tmp.class = ""
 					else
-						--self:Debug("isPet: "..tmp.name)
-						tmp.class = "PET"
+						local i = 1
+						local isPhased = false
+						local buffSpellId = select(10, UnitBuff(unitid, i))
+						while buffSpellId do
+							if (buffSpellId == 4511) then -- 4511: Phase Shift (Imp)
+								tmp.class = ""
+								break
+							end
+							i = i + 1
+							buffSpellId = select(10, UnitBuff(unitid, i))
+						end
 					end
-				else --Players
-					--self:Debug("isPlayer: "..tmp.name)
-					tmp.class = pclass
 				end
 			end
 			if IsInRaid() and (not isPet) then
@@ -2030,6 +2030,7 @@ function PallyPower:UpdateRoster()
 				tmp.name, tmp.rank, tmp.subgroup = GetRaidRosterInfo(n)
 				tmp.zone = select(7, GetRaidRosterInfo(n))
 				raidtank = select(10, GetRaidRosterInfo(n))
+				tmp.tank = ((raidtank == "MAINTANK") or (self.opt.mainAssist and (raidtank == "MAINASSIST")))
 				class = self:GetClassID(pclass)
 				-- Warriors
 				if (class == 1) then
@@ -2106,13 +2107,7 @@ function PallyPower:UpdateRoster()
 					end
 				end
 
-				if classmaintanks[unitid] == true then
-					classmaintanks[unitid] = nil
-					classmaintanks[class] = nil
-				end
-
-				if (raidtank == "MAINTANK" and (class == 1 or class == 4 or class == 5)) then
-					classmaintanks[unitid] = true
+				if raidtank == "MAINTANK" then
 					classmaintanks[class] = true
 				end
 			else
@@ -2152,14 +2147,13 @@ function PallyPower:UpdateRoster()
 end
 
 function PallyPower:ScanClass(classID)
-	local class = classes[classID]
-	local hasBuffs = false
-	for _, unit in pairs(class) do
+	for _, unit in pairs(classes[classID]) do
 		if unit.unitid then
 			local spellID, gspellID = self:GetSpellID(classID, unit.name)
 			local spell = self.Spells[spellID]
 			local spell2 = self.GSpells[spellID]
 			local gspell = self.GSpells[gspellID]
+			local isMainTank = false
 			if IsInRaid() then
 				local n = select(3, unit.unitid:find("(%d+)"))
 				if unit.zone then
@@ -2170,13 +2164,9 @@ function PallyPower:ScanClass(classID)
 			unit.visible = UnitIsVisible(unit.unitid) and UnitIsConnected(unit.unitid)
 			unit.dead = UnitIsDeadOrGhost(unit.unitid)
 			unit.hasbuff = self:IsBuffActive(spell, spell2, unit.unitid)
-			unit.specialbuff = spellID ~= gspellID
-			if unit.hasbuff then
-				hasBuffs = true
-			end
+			unit.specialbuff = (spellID ~= gspellID)
 		end
 	end
-	return hasBuffs
 end
 
 function PallyPower:CreateLayout()
@@ -2520,6 +2510,26 @@ function PallyPower:UpdateButtonOnPostClick(button, mousebutton)
 	end
 end
 
+-- returns:
+-- "need_big" for missing greater blessing
+-- "need_small" for missing single blessing
+-- "have" for no missing buff
+local function ClassifyUnitBuffStateForButton(unit)
+	-- do not highlight dead players in combat
+	if unit.dead and InCombatLockdown() then
+		return "have"
+	end
+	if not unit.hasbuff then
+		if unit.specialbuff then
+			return "need_small"
+		else
+			return "need_big"
+		end
+	else
+		return "have"
+	end
+end
+
 function PallyPower:UpdateButton(button, baseName, classID)
 	local button = _G[baseName]
 	local classIcon = _G[baseName .. "ClassIcon"]
@@ -2530,63 +2540,23 @@ function PallyPower:UpdateButton(button, baseName, classID)
 	local nneed = 0
 	local nspecial = 0
 	local nhave = 0
-	local ndead = 0
 	for _, unit in pairs(classes[classID]) do
-		if unit.visible then
-			if not unit.hasbuff then
-				if unit.specialbuff then
-					nspecial = nspecial + 1
-				else
-					nneed = nneed + 1
-				end
-			else
-				nhave = nhave + 1
-			end
-		elseif UnitIsConnected(unit.unitid) then
-			if unit.hasbuff then
-				nhave = nhave + 1
-			else
-				nneed = nneed + 1
-			end
+		local state = ClassifyUnitBuffStateForButton(unit)
+		-- do not show tanks clicking off salvation on the class button
+		if unit.tank and (state == "need_big") and (self:GetSpellID(classID, unit.name) == 4) then
+			state = "have"
 		end
-		if unit.dead then
-			ndead = ndead + 1
+		-- do not show unreachable units on the class button
+		if (not unit.visible) and InCombatLockdown() then
+			state = "have"
 		end
-		local isPet = unit.unitid:find("pet")
-		if IsInRaid() and (not isPet) then
-			local n = select(3, unit.unitid:find("(%d+)"))
-			local raidtank
-			if n then
-				raidtank = select(10, GetRaidRosterInfo(n))
-			end
-			local spellID, gspellID = self:GetSpellID(classID, unit.name)
-			local spell = self.Spells[spellID]
-			local spell2 = self.GSpells[spellID]
-			local gspell = self.GSpells[gspellID]
-			if raidtank == "MAINTANK" then
-				local _, _, buffName = self:IsBuffActive(spell, spell2, unit.unitid)
-				if unit.hasbuff and (buffName == self.GSpells[4] or buffName == self.Spells[4]) then
-					nneed = nneed + 1
-					nhave = nhave - 1
-					if InCombatLockdown() and (buffName ~= self.Spells[7]) then
-						nspecial = nspecial - 1
-					end
-				elseif (not unit.hasbuff) and ((buffName ~= self.GSpells[4] and gspellID == 4) or (buffName ~= self.Spells[4] and spellID == 4)) then
-					nhave = nhave + 1
-					nneed = nneed - 1
-				end
-				if unit.specialbuff and (not unit.hasbuff) and (buffName ~= self.Spells[7]) and spellID == 7 then
-					nneed = nneed + 1
-					nspecial = nspecial - 1
-				end
-			end
-			if self.zone ~= unit.zone then
-				if unit.hasbuff then
-					nhave = nhave + 1
-				else
-					nneed = nneed - 1
-				end
-			end
+		
+		if state == "need_big" then
+			nneed = nneed + 1
+		elseif state == "need_small" then
+			nspecial = nspecial + 1
+		else
+			nhave = nhave + 1
 		end
 	end
 	classIcon:SetTexture(self.ClassIcons[classID])
@@ -2782,65 +2752,12 @@ function PallyPower:UpdatePButton(button, baseName, classID, playerID, mousebutt
 	local unit = classes[classID][playerID]
 	local raidtank
 	if unit then
-		local nneed = 0
-		local nspecial = 0
-		local nhave = 0
-		local ndead = 0
-		if unit.visible then
-			if not unit.hasbuff then
-				if unit.specialbuff then
-					nspecial = 1
-				end
-			else
-				nhave = 1
-			end
-		else
-			if unit.hasbuff then
-				nhave = 1
-			else
-				nneed = 1
-			end
-		end
-		if unit.dead then
-			ndead = 1
-		end
 		local spellID, gspellID = self:GetSpellID(classID, unit.name)
-		tankIcon:Hide()
+		tankIcon[unit.tank and "Show" or "Hide"](tankIcon)
 		buffIcon:SetTexture(self.BlessingIcons[spellID])
 		buffIcon:SetVertexColor(1, 1, 1)
 		time:SetText(self:FormatTime(unit.hasbuff))
-		local spell = self.Spells[spellID]
-		local spell2 = self.GSpells[spellID]
-		local gspell = self.GSpells[gspellID]
-		local isPet = unit.unitid:find("pet")
-		if IsInRaid() and (not isPet) then
-			local n = select(3, unit.unitid:find("(%d+)"))
-			if n then
-				raidtank = select(10, GetRaidRosterInfo(n))
-			end
-			if raidtank == "MAINTANK" then
-				local _, _, buffName = self:IsBuffActive(spell, spell2, unit.unitid)
-				tankIcon:Show()
-				if buffName == self.GSpells[4] or buffName == self.Spells[4] then
-					nhave = 0
-					if InCombatLockdown() and (buffName ~= self.Spells[7]) then
-						nspecial = 0
-					end
-				elseif (buffName ~= self.GSpells[4] and gspellID == 4) or (buffName ~= self.Spells[4] and spellID == 4) then
-					nhave = 1
-				end
-				if (buffName ~= self.Spells[7]) and spellID == 7 then
-					nspecial = 0
-				end
-			end
-			if self.zone ~= unit.zone then
-				if unit.hasbuff then
-					nhave = 1
-				else
-					nneed = 0
-				end
-			end
-		end
+		
 		-- The following logic keeps Blessing of Salvation from being assigned to Warrior, Druid and Paladin tanks while in a RAID
 		-- and SalvInCombat isn't enabled. Allows Normal Blessing of Salvation on everyone else and all other blessings.
 		if not InCombatLockdown() then
@@ -2875,13 +2792,16 @@ function PallyPower:UpdatePButton(button, baseName, classID, playerID, mousebutt
 				button:SetAttribute("spell2", nSpell)
 			end
 		end
-		if (nspecial == 1) then
-			self:ApplyBackdrop(button, self.opt.cBuffNeedSpecial)
-		elseif (nhave == 0) then
+		
+		local state = ClassifyUnitBuffStateForButton(unit)
+		if state == "need_big" then
 			self:ApplyBackdrop(button, self.opt.cBuffNeedAll)
+		elseif state == "need_small" then
+			self:ApplyBackdrop(button, self.opt.cBuffNeedSpecial)
 		else
 			self:ApplyBackdrop(button, self.opt.cBuffGood)
 		end
+		
 		if unit.hasbuff then
 			buffIcon:SetAlpha(1)
 			if not unit.visible and not unit.inrange then
@@ -2917,7 +2837,11 @@ function PallyPower:UpdatePButton(button, baseName, classID, playerID, mousebutt
 		end
 		if unit.name then
 			local shortname = Ambiguate(unit.name, "short")
-			name:SetText(shortname)
+			if unit.unitid:find("pet") then
+				name:SetText("|T132242:0|t "..shortname)
+			else
+				name:SetText(shortname)
+			end
 		end
 	else
 		self:ApplyBackdrop(button, self.opt.cBuffGood)
@@ -3071,7 +2995,6 @@ function PallyPower:GetUnitAndSpellSmart(classid, mousebutton)
 	if (mousebutton == "LeftButton") then
 		local minExpire, classMinExpire, classNeedsBuff, classMinUnitPenalty, classMinUnit, classMinSpell, classMaxSpell = 600, 600, true, 600, nil, nil, nil
 		for _, unit in pairs(class) do
-			local isPet = unit.unitid:find("pet")
 			local spellID, gspellID = self:GetSpellID(classid, unit.name)
 			local spell = self.Spells[spellID]
 			local gspell = self.GSpells[gspellID]
@@ -3108,24 +3031,22 @@ function PallyPower:GetUnitAndSpellSmart(classid, mousebutton)
 						penalty = 0
 					end
 				end
-				if IsInRaid() then
-					for k, v in pairs(classmaintanks) do
-						if (gspellID == 4 and not self.opt.SalvInCombat) then
-							-- Skip tanks if Salv is assigned. This allows autobuff to work since some tanks
-							-- have addons and/or scripts to auto cancel Salvation. Prevents getting stuck
-							-- buffing a tank when auto buff rotates among players in the class group.
-							if k == unit.unitid and v == true then
-								buffExpire = 9999
-								penalty = 9999
-							end
-						end
-					end
-				end
-				-- We don't buff pets with Greater Blessings
-				if isPet then
-					buffExpire = 9999
-					penalty = 9999
-				end
+
+                if gspellID == 4 then
+                    -- Skip tanks if Salv is assigned. This allows autobuff to work since some tanks
+                    -- have addons and/or scripts to auto cancel Salvation. Prevents getting stuck
+                    -- buffing a tank when auto buff rotates among players in the class group.
+                    if unit.tank then
+                        buffExpire = 9999
+                        penalty = 9999
+                    end
+                end
+
+                if (not PallyPower.petsShareBaseClass) and unit.unitid:find("pet") then
+                    -- in builds where pets do not share greater blessings, we don't autobuff them with such
+                    buffExpire = 9999
+                    penalty = 9999
+                end
 				-- Refresh any greater blessing under a 10 min duration
 				if ((not buffExpire or (buffExpire < classMinExpire) and buffExpire < PALLYPOWER_GREATERBLESSINGDURATION) and classMinExpire > 0) then
 					if (penalty < classMinUnitPenalty) then
@@ -3480,7 +3401,6 @@ function PallyPower:AutoBuff(button, mousebutton)
 					local spellID, gspellID = self:GetSpellID(i, unit.name)
 					local spell = self.Spells[spellID]
 					local gspell = self.GSpells[gspellID]
-					local isPet = unit.unitid:find("pet")
 					if (IsSpellInRange(gspell, unit.unitid) == 1) and not UnitIsDeadOrGhost(unit.unitid) then
 						local penalty = 0
 						local buffExpire, buffDuration, buffName = self:IsBuffActive(spell, gspell, unit.unitid)
@@ -3501,30 +3421,28 @@ function PallyPower:AutoBuff(button, mousebutton)
 							buffExpire = 0
 							penalty = 0
 						end
-						if IsInRaid() then
-							for k, v in pairs(classmaintanks) do
-								if (gspellID == 4 and not self.opt.SalvInCombat) then
-									-- If for some reason the targeted unit is in combat and there is a tank present
-									-- in the Class Group then disable Greater Blessing of Salvation for this unit.
-									if UnitAffectingCombat(unit.unitid) and (k == classID and v == true) then
-										buffExpire = 9999
-										penalty = 9999
-									end
-									-- Skip tanks if Salv is assigned. This allows autobuff to work since some tanks
-									-- have addons and/or scripts to auto cancel Salvation. Prevents getting stuck
-									-- buffing a tank when auto buff rotates among players in the class group.
-									if k == unit.unitid and v == true then
-										buffExpire = 9999
-										penalty = 9999
-									end
-								end
-							end
-							-- We don't buff pets with Greater Blessings
-							if isPet then
-								buffExpire = 9999
-								penalty = 9999
-							end
-						end
+                        
+                        if gspellID == 4 then
+                            -- If for some reason the targeted unit is in combat and there is a tank present
+                            -- in the Class Group then disable Greater Blessing of Salvation for this unit.
+                            if (not self.opt.SalvInCombat) and UnitAffectingCombat(unit.unitid) and classmaintanks[classID] then
+                                buffExpire = 9999
+                                penalty = 9999
+                            end
+                            -- Skip tanks if Salv is assigned. This allows autobuff to work since some tanks
+                            -- have addons and/or scripts to auto cancel Salvation. Prevents getting stuck
+                            -- buffing a tank when auto buff rotates among players in the class group.
+                            if unit.tank then
+                                buffExpire = 9999
+                                penalty = 9999
+                            end
+                        end
+                        
+                        if (not PallyPower.petsShareBaseClass) and unit.unitid:find("pet") then
+                            buffExpire = 9999
+                            penalty = 9999
+                        end
+
 						-- Refresh any greater blessing under a 10 min duration
 						if ((not buffExpire or buffExpire < classMinExpire and buffExpire < PALLYPOWER_GREATERBLESSINGDURATION) and classMinExpire > 0) then
 							if (penalty < classMinUnitPenalty) then
@@ -3608,13 +3526,12 @@ function PallyPower:AutoBuff(button, mousebutton)
 					-- Raid than there are buffs to assign so an Alternate Blessing might not be in
 					-- use to wipe Salvation from a tank. Prevents getting stuck buffing a tank when
 					-- auto buff rotates among players in the class group.
-					for k, v in pairs(classmaintanks) do
-						if k == unit.unitid and v == true then
-							if (spellID == 4 and not self.opt.SalvInCombat) then
-								buffExpire = 9999
-								penalty = 9999
-							end
-						end
+                    
+					if unit.tank then
+                        if (spellID == 4 and not self.opt.SalvInCombat) then
+                            buffExpire = 9999
+                            penalty = 9999
+                        end
 					end
 				end
 				-- Refresh any blessing under a 4 min duration

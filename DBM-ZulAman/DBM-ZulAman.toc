@@ -26,4 +26,4 @@ Malacrass.lua
 Zul'jin.lua
 
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220407154941
+## X-163UI-Version: 20220414153603

@@ -1,4 +1,4 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("PallyPower", "ruRU", false, false)
+﻿local L = LibStub("AceLocale-3.0"):NewLocale("PallyPower", "ruRU", false, false)
 if not L then return end 
 L["ALTMENU_LINE1"] = "может быть назначен"
 L["ALTMENU_LINE2"] = "Обычное благословение от:"
@@ -166,4 +166,4 @@ L["VERUPLEFT"] = "По вертикали вверх | слева"
 L["VERUPRIGHT"] = "По вертикали вверх | справа"
 L["WAIT"] = "Ожидать игроков"
 L["WAIT_DESC"] = "Если эта опция включена, то кнопка Автобаффа не будет автоматически пытаться бафать класс Великим Благословением или игрока Обычным Благословением, если они мертвы, не в сети или не находятся в пределах досягаемости."
- 
+

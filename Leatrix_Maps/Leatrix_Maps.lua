@@ -1,6 +1,6 @@
 ﻿
 	----------------------------------------------------------------------
-	-- 	Leatrix Maps 2.5.98 (6th April 2022)
+	-- 	Leatrix Maps 2.5.101 (20th April 2022)
 	----------------------------------------------------------------------
 
 	-- 10:Func, 20:Comm, 30:Evnt, 40:Panl
@@ -12,7 +12,7 @@
 	local LeaMapsLC, LeaMapsCB, LeaDropList, LeaConfigList = {}, {}, {}, {}
 
 	-- Version
-	LeaMapsLC["AddonVer"] = "2.5.98"
+	LeaMapsLC["AddonVer"] = "2.5.101"
 
 	-- Get locale table
 	local void, Leatrix_Maps = ...
@@ -1817,7 +1817,7 @@
 				},
 				--[[Ghostlands]] [1942] = {
 					{"FlightH", 45.4, 30.5, L["Tranquillien"] .. ", " .. L["Ghostlands"], nil, tHTex, nil, nil},
-					{"FlightN", 74.7, 67.1, L["Zul'Aman"] .. ", " .. L["Ghostlands"], L["(destination only)"], tNTex, nil, nil},
+					{"FlightN", 74.7, 67.1, L["Zul'Aman"] .. ", " .. L["Ghostlands"], nil, tNTex, nil, nil},
 					{"Raid", 82.3, 64.3, L["Zul'Aman"], L["Raid"], rdTex, 70, 70, 68},
 					{"Spirit", 43.9, 25.7, L["Spirit Healer"], nil, spTex, nil, nil},
 					{"Spirit", 61.5, 57.0, L["Spirit Healer"], nil, spTex, nil, nil},

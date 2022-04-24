@@ -1,4 +1,4 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("PallyPower", "zhCN", false, false)
+﻿local L = LibStub("AceLocale-3.0"):NewLocale("PallyPower", "zhCN", false, false)
 if not L then return end 
 L["ALTMENU_LINE1"] = "可以分配"
 L["ALTMENU_LINE2"] = "正常的祝福来自:"
@@ -11,7 +11,9 @@ L["AURATRACKER_DESC"] = "选择你想监视的光环"
 L["AUTO"] = "自动Buff按钮"
 L["AUTO_DESC"] = "[|cffffd200启用|r/|cffffd200禁用|r] 自动Buff按钮，或 [|cffffd200启用|r/|cffffd200禁用|r] 等待玩家。"
 L["AUTOASSIGN"] = "自动分配"
-L["AUTOASSIGN_DESC"] = [=[基于圣骑士的人数和他们可用的祝福自动分配所有祝福|cffffffff[Shift+左键点击]|r使用战场分配模板而不是团本分配模板]=]
+L["AUTOASSIGN_DESC"] = [=[基于圣骑士的人数和他们可用的祝福自动分配所有祝福
+
+|cffffffff[Shift+左键点击]|r使用战场分配模板而不是团本分配模板]=]
 L["AUTOBTN"] = "启用自动buff按钮"
 L["AUTOBTN_DESC"] = "[启用/禁用] 自动Buff按钮"
 L["AUTOKEY1"] = "[自动]普通祝福快捷键"
@@ -43,14 +45,16 @@ L["DRAGHANDLE_ENABLED_DESC"] = "[启用/禁用]拖拽"
 L["ENABLEPP"] = "全局显示"
 L["ENABLEPP_DESC"] = "[显示/隐藏] PallyPower"
 L["FREEASSIGN"] = "自由分配"
-L["FREEASSIGN_DESC"] = [=[允许其他没有团长或团队助理的人更改你负责的祝福（注：通常在团队中，要求祝福分配者有团队助理权限。）]=]
+L["FREEASSIGN_DESC"] = [=[允许其他没有团长或团队助理的人更改你负责的祝福
+（注：通常在团队中，要求祝福分配者有团队助理权限。）]=]
 L["FULLY_BUFFED"] = "全部祝福"
 L["HORLEFTDOWN"] = "水平向左 | 向下展开"
 L["HORLEFTUP"] = "水平向左 | 向上展开"
 L["HORRIGHTDOWN"] = "水平向右 | 向下展开"
 L["HORRIGHTUP"] = "水平向右 | 向上展开"
 L["LAYOUT"] = "Buff按钮 | 玩家按钮布局"
-L["LAYOUT_DESC"] = [=[垂直布局[左/右展开]水平布局[上/下展开]]=]
+L["LAYOUT_DESC"] = [=[垂直布局[左/右展开]
+水平布局[上/下展开]]=]
 L["MAINASSISTANT"] = "自动Buff主助理"
 L["MAINASSISTANT_DESC"] = "启用后，PallyPower将自动以普通祝福覆盖暴雪面板上标记为|cffffd200主助理|r的玩家的强效祝福。这将有效避免对|cffffd200主助理|r角色施放强效拯救祝福。"
 L["MAINASSISTANTGBUFFDP"] = "覆盖 德鲁伊 / 圣骑士..."
@@ -62,7 +66,11 @@ L["MAINASSISTANTNBUFFDP_DESC"] = "选择你希望覆盖到主坦克上的普通�
 L["MAINASSISTANTNBUFFW"] = "...以普通祝福..."
 L["MAINASSISTANTNBUFFW_DESC"] = "选择你希望覆盖到主坦克上的普通祝福指派：战士"
 L["MAINROLES"] = "主坦克 / 主助理角色"
-L["MAINROLES_DESC"] = [=[这些选项可以用来|cffff0000且仅用于|r以普通祝福替换自动指派给战士、德鲁伊或圣骑士坦克的强效祝福。（注：本功针对团队角色标记为主坦克或主助理的玩家变更不同种类的普通祝福之用。）通常主坦克和主助理角色用来区分主坦克和副坦克（主助理）。但是，一些工会将主坦克角色用来分配给坦克群（包含主副坦克），并将主助理角色分配给治疗们。 通过为这两个团队角色分开设置，将允许圣骑士职业长或者团长移除例如坦克职业的强效拯救祝福。当奶骑、奶德被标记为主助理角色时，可以设置为其使用普通智慧祝福来替代强效光明祝福。或者在为输出专精的德鲁伊、圣骑士指派强效力量祝福的同时为治疗专精的德鲁伊及圣骑士指派普通智慧祝福。]=]
+L["MAINROLES_DESC"] = [=[这些选项可以用来|cffff0000且仅用于|r以普通祝福替换自动指派给战士、德鲁伊或圣骑士坦克的强效祝福。（注：本功针对团队角色标记为主坦克或主助理的玩家变更不同种类的普通祝福之用。）
+
+通常主坦克和主助理角色用来区分主坦克和副坦克（主助理）。但是，一些工会将主坦克角色用来分配给坦克群（包含主副坦克），并将主助理角色分配给治疗们。 
+
+通过为这两个团队角色分开设置，将允许圣骑士职业长或者团长移除例如坦克职业的强效拯救祝福。当奶骑、奶德被标记为主助理角色时，可以设置为其使用普通智慧祝福来替代强效光明祝福。或者在为输出专精的德鲁伊、圣骑士指派强效力量祝福的同时为治疗专精的德鲁伊及圣骑士指派普通智慧祝福。]=]
 L["MAINTANKGBUFFDP"] = "覆盖德鲁伊/圣骑士..."
 L["MAINTANKGBUFFDP_DESC"] = "选择你希望覆盖到主坦克上的强效祝福指派：德鲁伊/圣骑士"
 L["MAINTANKGBUFFW"] = "覆盖战士..."
@@ -71,7 +79,8 @@ L["MAINTANKNBUFFDP"] = "...以普通祝福..."
 L["MAINTANKNBUFFDP_DESC"] = "选择你希望覆盖到主坦克上的普通祝福指派: 德鲁伊/圣骑士"
 L["MAINTANKNBUFFW"] = "...以普通祝福..."
 L["MAINTANKNBUFFW_DESC"] = "选择你希望覆盖到主坦克上的普通祝福指派：战士。"
-L["MINIMAPICON"] = [=[|cffffffff[Left-Click]|r 打开祝福分配面板|cffffffff[Right-Click]|r 打开选项]=]
+L["MINIMAPICON"] = [=[|cffffffff[Left-Click]|r 打开祝福分配面板
+|cffffffff[Right-Click]|r 打开选项]=]
 L["NONE"] = "None"
 L["NONE_BUFFED"] = "未祝福"
 L["OPTIONS"] = "选项设置"
@@ -97,14 +106,22 @@ L["PPMAINTANK_DESC"] = "启用后，PallyPower将自动以普通祝福覆盖暴�
 L["RAID"] = "团队"
 L["RAID_DESC"] = "团队选项"
 L["REPORTCHANNEL"] = "祝福报告发送频道"
-L["REPORTCHANNEL_DESC"] = [=[选择你想要广播祝福报告的频道:|cffffd200[None]|r 选择“None”，则频道选择基于你所在的队伍。（小队/团队）|cffffd200[频道列表]|r 推送的频道基于玩家所加入的频道。例如：通用、交易等默认频道将会被自动过滤掉。|cffffff00Note: 如果你改变了频道顺序，则需要重新加载UI并验证是否广播到了正确的频道。|r]=]
+L["REPORTCHANNEL_DESC"] = [=[选择你想要广播祝福报告的频道:
+
+|cffffd200[None]|r 选择“None”，则频道选择基于你所在的队伍。（小队/团队）
+
+|cffffd200[频道列表]|r 推送的频道基于玩家所加入的频道。例如：通用、交易等默认频道将会被自动过滤掉。
+
+|cffffff00Note: 如果你改变了频道顺序，则需要重新加载UI并验证是否广播到了正确的频道。|r]=]
 L["RESET"] = "重置框架"
 L["RESET_DESC"] = "将所有PallyPower框架的位置重置回屏幕中央"
 L["RESIZEGRIP"] = "按住左键调整大小 ，右键重置默认大小"
 L["RFM"] = "激活正义之怒"
 L["RFM_DESC"] = "[激活/禁用]正义之怒"
 L["SALVCOMBAT"] = "战斗中拯救祝福"
-L["SALVCOMBAT_DESC"] = [=[如果你允许了此选项，则可在战斗中对战士、德鲁伊、骑士施放拯救祝福。|cffffff00Note: 此设置仅适用于RAID团队，很多坦克玩家使用脚本或插件来取消非战斗状态下施放的拯救祝福，这个选项基本上是一种防范在战斗中意外对坦克职业施放拯救祝福的安全措施。|r]=]
+L["SALVCOMBAT_DESC"] = [=[如果你允许了此选项，则可在战斗中对战士、德鲁伊、骑士施放拯救祝福。
+
+|cffffff00Note: 此设置仅适用于RAID团队，很多坦克玩家使用脚本或插件来取消非战斗状态下施放的拯救祝福，这个选项基本上是一种防范在战斗中意外对坦克职业施放拯救祝福的安全措施。|r]=]
 L["SEAL"] = "圣印按钮"
 L["SEAL_DESC"] = "[|cffffd200启用|r/|cffffd200禁用|r] 圣印按钮，启用/禁用 正义之怒或你想要监视的圣印。"
 L["SEALBTN"] = "圣印按钮"
@@ -134,4 +151,4 @@ L["VERUPLEFT"] = "垂直向上 | 向左展开"
 L["VERUPRIGHT"] = "垂直向上 | 向右展开"
 L["WAIT"] = "启用等待玩家"
 L["WAIT_DESC"] = "启用后，如果玩家死亡、离线或者不在施法范围中（100码），那么自动Buff按钮不会自动给对应的职业加强效祝福。"
- 
+

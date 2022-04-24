@@ -1,5 +1,11 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("PallyPower", "enUS", true, false)
+local silent = false
+--[==[@debug@
+silent = true
+--@end-debug@]==]
+
+local L = LibStub("AceLocale-3.0"):NewLocale("PallyPower", "enUS", true, silent)
 if not L then return end
+
 L["ALTMENU_LINE1"] = "can be assigned"
 L["ALTMENU_LINE2"] = "a Normal Blessing from:"
 L["AURA"] = "Aura Button"
@@ -170,4 +176,4 @@ L["VERUPLEFT"] = "Vertical Up | Left"
 L["VERUPRIGHT"] = "Vertical Up | Right"
 L["WAIT"] = "Wait for Players"
 L["WAIT_DESC"] = "If this option is enabled then the Auto Buff Button and the Class Buff Button(s) will not auto buff a Greater Blessing if recipient(s) are not within the Paladins range (100yds). This range check excludes AFK, Dead and Offline players."
- 
+

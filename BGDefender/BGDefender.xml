@@ -150,7 +150,17 @@
                     </Anchor>
                 </Anchors>
                 <Scripts>
-                    <OnClick>BGD_Close();</OnClick>
+                    <OnClick>
+                        BGD_Close();
+                    </OnClick>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+                        GameTooltip:SetText(CLOSE or "CLOSE");
+                        GameTooltip:Show()
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                    </OnLeave>
                 </Scripts>
             </Button>
             <Button name="Button10" inherits="UIPanelButtonTemplate" id="19" text=" o ">
@@ -163,7 +173,17 @@
                     </Anchor>
                 </Anchors>
                 <Scripts>
-                    <OnClick>BGD_Options_Open();</OnClick>
+                    <OnClick>
+                        BGD_Options_Open();
+                    </OnClick>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+                        GameTooltip:SetText(SETTINGS or "SETTING");
+                        GameTooltip:Show()
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                    </OnLeave>
                 </Scripts>
             </Button>
             <Button name="Button11" inherits="UIPanelButtonTemplate" id="19" text=" m ">
@@ -176,7 +196,17 @@
                     </Anchor>
                 </Anchors>
                 <Scripts>
-                    <OnClick>BGD_Toggle_Movable();</OnClick>
+                    <OnClick>
+                        BGD_Toggle_Movable();
+                    </OnClick>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+                        GameTooltip:SetText(LOCK and UNLOCK and (LOCK .. "/" .. UNLOCK) or "LOCK/UNLOCK");
+                        GameTooltip:Show()
+                    </OnEnter>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                    </OnLeave>
                 </Scripts>
             </Button>
         </Frames>

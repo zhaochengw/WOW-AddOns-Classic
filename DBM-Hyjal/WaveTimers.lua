@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("HyjalWaveTimers", "DBM-Hyjal")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220324233644")
+mod:SetRevision("20220407161445")
 
 mod:RegisterEvents(
 	"GOSSIP_SHOW",
@@ -50,7 +50,7 @@ function mod:GOSSIP_SHOW()
 			elseif selection == L.KazrogalGossip then
 				boss = 3
 				self:SendSync("boss", 3)
-			elseif selection == L.AzgalorGossip then
+			elseif selection == L.AzgalorGossip or selection == L.AzgalorGossipF then
 				boss = 4
 				self:SendSync("boss", 4)
 			end
