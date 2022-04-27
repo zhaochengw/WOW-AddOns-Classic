@@ -1,0 +1,5 @@
+<Ui>
+	<Include file="libs\libs.xml"/>
+	<Include file="Build\Build.xml"/>
+</Ui>
+

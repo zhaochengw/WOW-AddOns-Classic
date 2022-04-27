@@ -1,0 +1,9 @@
+## Interface: 20502
+## Title:auto_follow
+## Title-zhCN: 自动跟随
+## Author: Thrall
+## SavedVariables: U1DBG
+#--fix7 ,NGSwordsUI,NGSSymbolsUI
+## SavedVariablesPerCharacter: U1DB
+
+Auto_Follow.xml

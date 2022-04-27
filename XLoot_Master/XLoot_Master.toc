@@ -1,0 +1,15 @@
+## Interface: 20504
+## Interface: 20504
+## Interface: 20504
+## Title: XLoot Master
+## Notes: Configurable Master Looter interface
+## Version: 9.2.5-2
+## Author: Xuerian, Dridzt
+## X-Category: Inventory
+## Dependencies: XLoot
+load.xml
+## Title: |cff880303[163UI]|r XLoot Master
+## Title-zhCN: |cff880303[有爱]|r XLoot 拾取分配模块
+## Notes: XLoot配置拾取分配的界面
+## X-Vendor: NetEase
+## X-163UI-Version: 20220421193619
