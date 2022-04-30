@@ -442,8 +442,8 @@ L["Meta Socket"] = EMPTY_SOCKET_META
 -----------------------
 -- Item Level and ID --
 -----------------------
-L["ItemLevel: "] = "NivelItem"
-L["ItemID: "] = "IDItem"
+L["ItemLevel: "] = "Nivel de objeto "
+L["ItemID: "] = "ItemID: "
 -----------------------
 -- Matching Patterns --
 -----------------------
@@ -493,7 +493,7 @@ L["ItemID: "] = "IDItem"
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = " en (%d+)", addInfo = "AfterNumber",},
+	{pattern = " en (%d+) p", addInfo = "AfterNumber",},
 	{pattern = "([%+%-]%d+)", addInfo = "AfterStat",},
 	{pattern = "Otorga.-(%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
 	{pattern = "aumenta.-(%d+)", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
@@ -598,7 +598,7 @@ L["$value HP"] = "$value Vida"
 L["$value MP"] = "$value Mana"
 L["$value AP"] = "$value P.At"
 L["$value RAP"] = "$value P.At Dist"
-L["$value Dmg"] = "$value Daño"
+L["$value Spell Dmg"] = "$value Daño"
 L["$value Heal"] = "$value Sanacion"
 L["$value Armor"] = "$value Armadura"
 L["$value Block"] = "$value Bloqueo"

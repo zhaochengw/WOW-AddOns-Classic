@@ -5,6 +5,7 @@ With other useful functions.
 Before the version 2.1.1, I split the function of Trades/Mails Logger to independent Addon which named MailLogger, if you still need this function, please go to curse and download it.
 http://https://www.curseforge.com/wow/addons/maillogger
 
+2.3.1 Add Arena Healing spell failed whisper.
 2.2.9 Smooth the codes.
 2.2.8 Rebuild Spell Codes, Rebuild progress codes.
 2.2.7 Modify the "Reflect" Announce Codes.

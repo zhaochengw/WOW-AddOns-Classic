@@ -161,6 +161,8 @@ addon.Spells = {
         [10899] = { parent = 17 },
         [10900] = { parent = 17 },
         [10901] = { parent = 17 },
+        [25217] = { parent = 17 },
+        [25218] = { parent = 17 },
     [605] = { type = CROWD_CONTROL }, -- Mind Control
         [10911] = { parent = 605 },
         [10912] = { parent = 605 },
@@ -263,6 +265,8 @@ addon.Spells = {
     [20170] = { type = CROWD_CONTROL }, -- Seal of Justice stun
     [6940] = { type = BUFF_DEFENSIVE }, -- Blessing of Sacrifice
         [20729] = { parent = 6940 },
+        [27147] = { parent = 6940 },
+        [27148] = { parent = 6940 },
     [19753] = { type = IMMUNITY }, -- Divine Intervention
     [10326] = { type = CROWD_CONTROL }, -- Turn Evil
         [2878] = { parent = 10326 },
@@ -342,16 +346,19 @@ addon.Spells = {
     -- [16979] = { type = ROOT }, -- Feral Charge TODO: invalid spellId, root effect must be different than the interrupt
     [1850] = { type = BUFF_OFFENSIVE }, -- Dash
         [9821] = { parent = 1850 },
+        [33357] = { parent = 1850 },
     [16689] = { type = BUFF_OFFENSIVE }, -- Nature's Grasp Buff
         [16810] = { parent = 16689 },
         [16811] = { parent = 16689 },
         [16812] = { parent = 16689 },
         [16813] = { parent = 16689 },
         [17329] = { parent = 16689 },
+        [27009] = { parent = 16689 },
     [770] = { type = BUFF_OTHER }, -- Faerie Fire
         [778] = { parent = 770 },
         [9749] = { parent = 770 },
         [9907] = { parent = 770 },
+        [26993] = { parent = 770 },
     [33786] = { type = CROWD_CONTROL }, -- Cyclone
     [19675] = { type = ROOT }, -- Feral Charge Effect
         [45334] = { parent = 19675 },
@@ -371,16 +378,20 @@ addon.Spells = {
         [13031] = { parent = 11426 },
         [13032] = { parent = 11426 },
         [13033] = { parent = 11426 },
+        [27134] = { parent = 11426 },
+        [33405] = { parent = 11426 },
     [543] = { type = BUFF_DEFENSIVE }, -- Fire Ward
         [8457] = { parent = 543 },
         [8458] = { parent = 543 },
         [10223] = { parent = 543 },
         [10225] = { parent = 543 },
+        [27128] = { parent = 543 },
     [6143] = { type = BUFF_DEFENSIVE }, -- Frost Ward
         [8461] = { parent = 6143 },
         [8462] = { parent = 6143 },
         [10177] = { parent = 6143 },
         [28609] = { parent = 6143 },
+        [32796] = { parent = 6143 },
     [12355] = { type = CROWD_CONTROL }, -- Impact Stun
     [12494] = { type = ROOT }, -- Frostbite
     [122] = { type = ROOT }, -- Frost Nova

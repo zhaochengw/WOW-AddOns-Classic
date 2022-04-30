@@ -7,6 +7,7 @@ local __addon, __ns = ...;
 
 local _G = _G;
 local _ = nil;
+local autostyle = __ala_meta__.autostyle;
 ----------------------------------------------------------------------------------------------------
 --[=[dev]=]	if __ns.__is_dev then __ns._F_devDebugProfileStart('module.util'); end
 
@@ -964,6 +965,9 @@ end
 			D:SetTexture(__core.IMG_PATH .. "close");
 			D:SetShown(not SET.show_worldmappin);
 			Switch.D = D;
+			if autostyle ~= nil then
+				autostyle:AddReskinObject(Switch);
+			end
 		end
 	-->
 	-->		Chat
@@ -1156,6 +1160,11 @@ end
 				_ShowQuest:Hide();
 				_HideQuest:Hide();
 				_ResetButton:Hide();
+			end
+			if autostyle ~= nil then
+				autostyle:AddReskinObject(_ShowQuest);
+				autostyle:AddReskinObject(_HideQuest);
+				autostyle:AddReskinObject(_ResetButton);
 			end
 		end
 		local function SetQuestLogFrameButtonShown(shown)

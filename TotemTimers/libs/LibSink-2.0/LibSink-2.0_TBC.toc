@@ -1,5 +1,5 @@
 ## Interface: 20504
-## Version: v9.2.0
+## Version: v9.2.1
 ## LoadOnDemand: 1
 ## Title: Lib: Sink-2.0
 ## Notes: Library that handles chat output.
@@ -9,7 +9,7 @@
 ## OptionalDeps: LibStub
 ## X-Category: Library
 ## X-Credits: Rabbit
-## X-License: CC-BY-NC-SA 3.0
+## X-License: All Rights Reserved
 
 embeds.xml
 LibSink-2.0\lib.xml

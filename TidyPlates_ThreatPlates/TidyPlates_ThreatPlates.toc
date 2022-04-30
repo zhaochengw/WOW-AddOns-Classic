@@ -1,7 +1,7 @@
 ## Interface: 20504
 
 ## Title: Threat Plates
-## Version: 10.3.4
+## Version: 10.3.5
 ## Notes: Threat-reactive nameplates.
 ## Notes-deDE: Bedrohungsreaktive Namensplaketten.
 ## Notes-esES: Placas Identificativas de Amenaza
@@ -42,10 +42,10 @@ Options.lua
 Styles\Styles.xml
 Functions\Functions.xml
 Widgets\Widgets.xml
-
+## Title: |cff880303[163UI]|r Threat Plates
 ## Title-zhCN: |cff880303[有爱]|r Threat Plates 姓名板
 ## Title-zhTW: |cff880303[有爱]|r Threat Plates 姓名板
 ## Notes-zhCN: Threat Plates 姓名版插件。
 ## Notes-zhTW: Threat Plates 姓名版插件。
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220331145254
+## X-163UI-Version: 20220428140518

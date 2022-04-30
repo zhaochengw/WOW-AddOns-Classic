@@ -1158,7 +1158,7 @@ function Frame:COMBAT_LOG_EVENT_UNFILTERED(...)
 	local TypeHelpHarm = nil
 	local InstanceType = select(2, IsInInstance())
 
-	if arg[2] == "SPELL_CAST_FAILED" and arg[4] == PlayerGUID and (InstanceType == "party" or InstanceType == "raid") then --治疗法术失败提示
+	if arg[2] == "SPELL_CAST_FAILED" and arg[4] == PlayerGUID and (InstanceType == "party" or InstanceType == "raid" or InstanceType == "arena") then --治疗法术失败提示
 		local FailedReason = nil
 		for k in pairs(FailReason) do
 			if arg[15] == FailReason[k] then

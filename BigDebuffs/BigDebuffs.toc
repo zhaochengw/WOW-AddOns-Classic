@@ -36,4 +36,4 @@ Options.lua
 
 ## Title-zhCN: |cff880303[有爱]|r BigDebuffs 控制技能提示
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220414153603
+## X-163UI-Version: 20220428140518

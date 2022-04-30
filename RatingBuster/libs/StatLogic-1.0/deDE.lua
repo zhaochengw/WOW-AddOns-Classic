@@ -333,9 +333,11 @@ L["StatIDLookup"] = {
 	["Trefferwertung"] = {"MELEE_HIT_RATING",},
 	["Erhöht Trefferwertung"] = {"MELEE_HIT_RATING",}, -- ITEM_MOD_HIT_RATING
 	["Erhöht Eure Trefferwertung"] = {"MELEE_HIT_RATING",}, -- ITEM_MOD_HIT_MELEE_RATING
+	["Erhöht die Trefferwertung"] = {"MELEE_HIT_RATING",},
 	["Zaubertrefferwertung"] = {"SPELL_HIT_RATING",},
 	["Erhöht Zaubertrefferwertung"] = {"SPELL_HIT_RATING",}, -- ITEM_MOD_HIT_SPELL_RATING
 	["Erhöht Eure Zaubertrefferwertung"] = {"SPELL_HIT_RATING",},
+	["Erhöht die Zaubertrefferwertung"] = {"SPELL_HIT_RATING",},
 	["Distanztrefferwertung"] = {"RANGED_HIT_RATING",},
 	["Erhöht Distanztrefferwertung"] = {"RANGED_HIT_RATING",}, -- ITEM_MOD_HIT_RANGED_RATING
 	["Erhöht Eure Distanztrefferwertung"] = {"RANGED_HIT_RATING",},
@@ -343,9 +345,11 @@ L["StatIDLookup"] = {
 	["kritische Trefferwertung"] = {"MELEE_CRIT_RATING",},
 	["Erhöht kritische Trefferwertung"] = {"MELEE_CRIT_RATING",},
 	["Erhöht Eure kritische Trefferwertung"] = {"MELEE_CRIT_RATING",},
+	["Erhöht die kritische Trefferwertung"] = {"MELEE_CRIT_RATING",},
 	["kritische Zaubertrefferwertung"] = {"SPELL_CRIT_RATING",},
 	["Erhöht kritische Zaubertrefferwertung"] = {"SPELL_CRIT_RATING",},
 	["Erhöht Eure kritische Zaubertrefferwertung"] = {"SPELL_CRIT_RATING",},
+	["Erhöht die kritische Zaubertrefferwertung"] = {"SPELL_CRIT_RATING",},
 	["Erhöht die kritische Zaubertrefferwertung aller Gruppenmitglieder innerhalb von 30 Metern"] = {"SPELL_CRIT_RATING",},
 	["Erhöht Eure kritische Distanztrefferwertung"] = {"RANGED_CRIT_RATING",}, -- Fletcher's Gloves ID:7348
 
@@ -365,10 +369,12 @@ L["StatIDLookup"] = {
 	["Zaubertempowertung"] = {"SPELL_HASTE_RATING"},
 	["Distanzangriffstempowertung"] = {"RANGED_HASTE_RATING"},
 	["Erhöht Tempowertung"] = {"MELEE_HASTE_RATING"}, -- [Pfeilabwehrender Brustschutz] ID:33328
+	["Erhöht die Tempowertung"] = {"MELEE_HASTE_RATING"},
 	["Erhöht Angriffstempowertung"] = {"MELEE_HASTE_RATING"},
 	["Erhöht Eure Angriffstempowertung"] = {"MELEE_HASTE_RATING"},
 	["Erhöht Eure Distanzangriffstempowertung"] = {"RANGED_HASTE_RATING"},
 	["Erhöht Zaubertempowertung"] = {"SPELL_HASTE_RATING"},
+	["Erhöht die Zaubertempowertung"] = {"SPELL_HASTE_RATING"},
 
 	["Erhöht die Fertigkeitswertung für Dolche"] = {"DAGGER_WEAPON_RATING"},
 	["Erhöht die Fertigkeitswertung für Schwerter"] = {"SWORD_WEAPON_RATING"},
@@ -385,6 +391,8 @@ L["StatIDLookup"] = {
 	["Erhöht die Fertigkeitswertung für unbewaffneten Kampf"] = {"FIST_WEAPON_RATING"}, -- Demonblood Eviscerator ID:27533
 
 	["Erhöht die Waffenkundewertung"] = {"EXPERTISE_RATING"},
+	["Erhöht Eure Waffenkundewertung"] = {"EXPERTISE_RATING"},
+
 	-- Exclude
 	["Sek"] = false,
 	["bis"] = false,

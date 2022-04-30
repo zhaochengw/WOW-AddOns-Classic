@@ -1,15 +1,15 @@
 ## Interface: 20504
-## Interface-Classic: 11307
 ## Title: RatingBuster
 ## Notes: Item stat breakdown, analysis and comparing
 ## Notes-zhTW: 裝備數值解析與比較
 ## Author: Whitetooth, raethkcj
 ## SavedVariables: RatingBusterDB
-## OptionalDeps: Ace2, TipHookerLib, StatLogicLib, UTF8, LibBabble-Inventory-3.0, TankPoints
-## X-Embeds: Ace2, TipHookerLib, StatLogicLib, UTF8, LibBabble-Inventory-3.0
+## OptionalDeps: Ace3, TipHookerLib, StatLogicLib, UTF8, LibBabble-Inventory-3.0, TankPoints
+## X-Embeds: Ace3, TipHookerLib, StatLogicLib, UTF8, LibBabble-Inventory-3.0
 ## X-Category: Interface Enhancements
 ## X-License: GPL v2
 ## X-Encoding: UTF-8
+## X-WoWI-ID: 26235
 
 #############
 # Libraries #
@@ -28,6 +28,7 @@ locales\locales.xml
 ########
 RatingBuster.lua
 
+## Title: |cff880303[163UI]|r RatingBuster
 ## Title-zhCN: |cff880303[有爱]|r RatingBuster 装备属性转换
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220211134516
+## X-163UI-Version: 20220428140518

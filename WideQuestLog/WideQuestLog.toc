@@ -6,4 +6,4 @@ WideQuestLog.lua
 
 ## Title-zhCN: |cff880303[有爱]|r WideQuestLog 增强任务窗口
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220331145254
+## X-163UI-Version: 20220428140518

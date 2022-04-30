@@ -64,12 +64,12 @@ local function SkinFrames()
     local oldQuestsDisplayed = QUESTS_DISPLAYED;
     QUESTS_DISPLAYED = QUESTS_DISPLAYED + 17;
 
-    local _, elvSkinningEnabled = GetElvUI()
+    -- local _, elvSkinningEnabled = GetElvUI()
 
     -- Show 3 more quests when ElvUI is present
-    if (elvSkinningEnabled) then
+    -- if (elvSkinningEnabled) then
         QUESTS_DISPLAYED = QUESTS_DISPLAYED + 1;
-    end
+    -- end
 
     for i = oldQuestsDisplayed + 1, QUESTS_DISPLAYED do
         local button = CreateFrame("Button", "QuestLogTitle" .. i, QuestLogFrame, "QuestLogTitleButtonTemplate");

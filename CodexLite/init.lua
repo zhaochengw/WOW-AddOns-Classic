@@ -93,7 +93,7 @@ local _ = nil;
 	local select = select;
 	local setmetatable = setmetatable;
 	local tremove, table_concat = table.remove, table.concat;
-	local strbyte, strfind, format, gsub = string.byte, string.find, string.format, string.gsub;
+	local strbyte, strmatch, format, gsub = string.byte, string.match, string.format, string.gsub;
 	local min = math.min;
 	local _bit_band = bit.band;
 	local loadstring = loadstring;
@@ -364,7 +364,7 @@ local _F_CorePrint = __ns._F_CorePrint;
 	__core.__L_QUEST_MONSTERS_KILLED = BuildRegularExp(_G.QUEST_MONSTERS_KILLED);
 	__core.__L_QUEST_ITEMS_NEEDED = BuildRegularExp(_G.QUEST_ITEMS_NEEDED);
 	__core.__L_QUEST_OBJECTS_FOUND = BuildRegularExp(_G.QUEST_OBJECTS_FOUND);
-	if strfind(_G.QUEST_MONSTERS_KILLED, "：") then
+	if strmatch(_G.QUEST_MONSTERS_KILLED, "：") then
 		__core.__L_QUEST_DEFAULT_PATTERN = "(.+)：";
 	else
 		__core.__L_QUEST_DEFAULT_PATTERN = "(.+):";

@@ -8,6 +8,8 @@
 
 	<script file = "main.lua" />
 	<script file = "uiimp.lua" />
+	<script file = "autostyle.lua" />
+	<script file = "serializer.lua" />
 	<!-- <script file = "fix.lua" /> -->
 	<script file = "coder.lua" />
 	<script file = "comm.lua" />

@@ -594,7 +594,7 @@ L["ItemID: "] = "ID предмета: "
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = " на (%d+)", addInfo = "AfterNumber", space = " ", },
+	{pattern = " на (%d+)[^%%]?$", addInfo = "AfterNumber", space = " ", },
 	{pattern = "([%+%-]%d+)", addInfo = "AfterNumber", space = " ", },
 	{pattern = " увеличена на (%d+)", addInfo = "AfterNumber", space = " ", },
 	{pattern = "(%d+) к ", addInfo = "AfterNumber", space = " ", }, -- тест
@@ -689,6 +689,8 @@ L["statList"] = {
 	{pattern = "рейтинга критического удара заклинаниями", id = CR_CRIT_SPELL},
 	{pattern = "рейтингу критического удара заклинаниями", id = CR_CRIT_SPELL},
 	{pattern = "рейтинг критического удара заклинаниями", id = CR_CRIT_SPELL},
+	{pattern = "критический удар %(заклинания%)", id = CR_CRIT_SPELL},
+	{pattern = "меткость %(заклинания%)", id = CR_HIT_SPELL},
 	{pattern = "spell critical hit rating", id = CR_CRIT_SPELL},
 	{pattern = "spell critical rating", id = CR_CRIT_SPELL},
 	{pattern = "spell crit rating", id = CR_CRIT_SPELL},
@@ -709,6 +711,7 @@ L["statList"] = {
 	{pattern = "рейтинг меткости %(заклинания%)", id = CR_HIT_SPELL},
 	{pattern = "рейтингу меткости %(заклинания%)", id = CR_HIT_SPELL},
 	{pattern = "рейтинга меткости %(заклинания%)", id = CR_HIT_SPELL},
+	{pattern = "рейтинга меткости заклинаний", id = CR_HIT_SPELL},
 	{pattern = "рейтингу меткости заклинаний", id = CR_HIT_SPELL},
 	{pattern = "Рейтинг меткости (оруж. дальн. боя)", id = CR_HIT_RANGED},
 	{pattern = "рейтинга нанесения удара ближнего боя", id = CR_HIT_MELEE},
@@ -780,7 +783,7 @@ L["$value HP"] = "$value Здор"
 L["$value MP"] = "$value Мана"
 L["$value AP"] = "$value Сила атаки"
 L["$value RAP"] = "$value САДБ"
-L["$value Dmg"] = "$value урона"
+L["$value Spell Dmg"] = "$value урона"
 L["$value Heal"] = "$value Исцеления"
 L["$value Armor"] = "$value Броня"
 L["$value Block"] = "$value% Блок"

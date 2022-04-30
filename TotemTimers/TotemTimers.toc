@@ -1,14 +1,18 @@
 ## Interface: 20504
 ## Title: TotemTimers
 ## Author:  Xianghar
-## Version: 2.1.1
+## Version: 2.2.1
 ## SavedVariables: TotemTimers_GlobalSettings, TotemTimers_Profiles
 ## OptionalDeps: Masque
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Class: Shaman
 ## X-Curse-Project-ID: 339602
 ## X-WoWI-ID: 25223
+
+
+
 embeds.xml
+
 TotemData.lua
 localization\localization.lua
 localization\localization.ge.lua
@@ -58,7 +62,10 @@ GUI\Messages.lua
 GUI\Totems.lua
 GUI\Sets.lua
 GUI\Profiles.lua
+
+
+
 ## Title: |cff880303[163UI]|r TotemTimers
 ## Title-zhCN: |cff880303[有爱]|r TotemTimers 萨满图腾助手
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220421193619
+## X-163UI-Version: 20220428140518

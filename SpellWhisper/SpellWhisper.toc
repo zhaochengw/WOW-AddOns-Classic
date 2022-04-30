@@ -1,5 +1,5 @@
 ## Interface: 20504
-## Version: 2.3.0
+## Version: 2.3.1
 ## Title: SpellWhisper
 ## Author: Aoikaze
 ## SavedVariables: SpellWhisperDB

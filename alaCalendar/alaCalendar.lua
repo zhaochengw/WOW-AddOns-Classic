@@ -115,18 +115,6 @@ local LOCALE = GetLocale();
 	local function _log_(...)
 		print(date('\124cff00ffff%H:%M:%S\124r cal'), ...);
 	end
-	local function _error_(header, child, ...)
-		print(date('\124cffff0000%H:%M:%S\124r cal'), header, child, ...);
-		if alaCalendarSV then
-			local err = alaCalendarSV.err;
-			if not err then
-				err = {  };
-				alaCalendarSV.err = err;
-			end
-			err[header] = err[header] or {  };
-			err[header][child] = (err[header][child] or 0) + 1;
-		end
-	end
 	local function _noop_()
 	end
 	--------------------------------------------------
@@ -228,11 +216,13 @@ local ARTWORK_ICON_PATH = "Interface\\AddOns\\alaCalendar\\ARTWORK\\ICON";
 ---------------------------------------------------------------------------------------------------
 local AVAR, VAR, SET = nil, nil, nil;
 local gui = {  };
+local DB = nil;
 
+local PLAYER_GUID = UnitGUID('player');
 local PLAYER_NAME = UnitName('player');
 local PLAYER_REALM_ID = tonumber(GetRealmID());
 local PLAYER_REALM_NAME = GetRealmName();
-local PLAYER_GUID = UnitGUID('player');
+local PLAYER_FULLNAME = PLAYER_NAME .. "-" .. PLAYER_REALM_NAME;
 
 local function info_OnEnter(self)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -3018,9 +3008,10 @@ do	--	MAIN
 	local ADDON_MSG_CONTROL_CODE_LEN = 6;
 	local ADDON_MSG_QUERY = "_q_cal";
 	local ADDON_MSG_REPLY = "_r_cal";
-	local ADDON_MSG_BCMDAILY = "_b_dln";
-	local ADDON_MSG_VER = 2;
-	local ADDON_MSG_MIN_VER = 2;
+	local ADDON_MSG_BCMDAILY = "_b_dlu";
+	local ADDON_MSG_VER = 1;
+	local ADDON_MSG_MIN_VER = 1;
+	local ADDON_MSG_MAX_VER = 1;
 	do	--	comm
 		--	GUID#INST# index-count #id#t#numEncounters#encounterProgress#bossName#isKilled
 		local function encode_data(cache, max_len, GUID, inst, var)
@@ -3085,15 +3076,16 @@ do	--	MAIN
 				if prefix == ADDON_PREFIX then
 					local control_code = strsub(msg, 1, ADDON_MSG_CONTROL_CODE_LEN);
 					if control_code == ADDON_MSG_BCMDAILY then
-						local _, Ver, NID, NTime, HID, HTime, CID, CTime, FID, FTime = strsplit("#", msg);
-						Ver = tonumber(Ver);
-						if Ver ~= nil and Ver >= ADDON_MSG_MIN_VER then
+						local _, MinVer, MaxVer, NID, NTime, NSRC, HID, HTime, HSRC, CID, CTime, CSRC, FID, FTime, FSRC = strsplit("#", msg);
+						MinVer = tonumber(MinVer) or 999999;
+						MaxVer = tonumber(MaxVer) or -1;
+						if ADDON_MSG_VER >= MinVer and ADDON_MSG_VER <= MaxVer then
 							NS.DailyOnComm(
 								channel, sender,
-								NID, NTime,
-								HID, HTime,
-								CID, CTime,
-								FID, FTime
+								NID, NTime, NSRC,
+								HID, HTime, HSRC,
+								CID, CTime, CSRC,
+								FID, FTime, FSRC
 							);
 						end
 					end
@@ -3138,15 +3130,15 @@ do	--	MAIN
 		local function GetCalMessage()
 			--	ADDON_MSG_BCMDAILY#ID#FLAG#TIME
 			-- local reputable = "send:1.27-bcc";
-			local msg = ADDON_MSG_BCMDAILY .. "#" .. ADDON_MSG_VER;
+			local msg = ADDON_MSG_BCMDAILY .. "#" .. ADDON_MSG_MIN_VER .. "#" .. ADDON_MSG_MAX_VER;
 			for index = 1, 4 do
 				local D = DLY[index];
 				if D ~= nil and D[1] ~= nil then
 					-- reputable = reputable .. ":" .. D[1] .. ":" .. GetQuestResetTime();
-					msg = msg .. "#" .. D[1] .. "#" .. (D[2] or -1);
+					msg = msg .. "#" .. D[1] .. "#" .. (D[2] or -1) .. "#" .. (D[3] or "*");
 				else
 					-- reputable = reputable .. "::";
-					msg = msg .. "##";
+					msg = msg .. "###";
 				end
 			end
 			-- reputable = reputable .. "::";
@@ -3162,14 +3154,16 @@ do	--	MAIN
 				if D ~= nil and D[2] ~= nil and prevreset <= D[2] then
 					valid = true;
 				elseif D ~= nil then
-					if __isdev then
-						if D[2] ~= nil then
-							_log_("daily clean #" .. index .. " id: " .. (D[1] or -1) .. date(" %Y-%m-%d %H:%M:%S", D[2]));
-						else
-							_log_("daily clean #" .. index .. " id: " .. (D[1] or -1));
+					if next(D) ~= nil then
+						if __isdev then
+							if D[2] ~= nil then
+								_log_("daily clean #" .. index .. " id: " .. (D[1] or -1) .. date(" %Y-%m-%d %H:%M:%S", D[2]));
+							else
+								_log_("daily clean #" .. index .. " id: " .. (D[1] or -1));
+							end
 						end
+						wipe(D);
 					end
-					wipe(D);
 				else
 					if __isdev then
 						_log_("daily clean #" .. index);
@@ -3230,7 +3224,7 @@ do	--	MAIN
 				end
 				LT_ValidNPC = LT_QuestList.MonitoredNPC;
 				--
-				DLY = alaCalendarSV.daily;
+				DLY = DB.daily;
 				--
 				GetQuestsCompleted(LT_QuestCompleted);
 				-- local completed = GetQuestsCompleted();
@@ -3256,15 +3250,18 @@ do	--	MAIN
 				local id = LT_QuestName2ID[name];
 				if id ~= nil and LT_DailyInfo[id] ~= nil then
 					local info = LT_DailyInfo[id];
-					DLY[info[3]] = { id, GetServerTime(), };
-					if __isdev then
-						_log_('add', info[3], id, name);
-					end
+					DLY[info[3]] = { id, GetServerTime(), PLAYER_FULLNAME, };
 				end
 			end
 		end
 		local function DelayProcQuests()
-			ProcQuests(GetGossipAvailableQuests());
+			local GUID = UnitGUID('npc');
+			if GUID ~= nil then
+				local _, _, _, _, _, id = strsplit("-", GUID);
+				if LT_ValidNPC[id] then
+					ProcQuests(GetGossipAvailableQuests());
+				end
+			end
 		end
 		function NS.GOSSIP_SHOW()
 			local GUID = UnitGUID('npc');
@@ -3284,10 +3281,7 @@ do	--	MAIN
 					local id = GetQuestID();
 					local info = LT_DailyInfo[id];
 					if info ~= nil then
-						DLY[info[3]] = { id, GetServerTime(), };
-						if __isdev then
-							_log_('add', info[3], id);
-						end
+						DLY[info[3]] = { id, GetServerTime(), PLAYER_FULLNAME, };
 					end
 				end
 			end
@@ -3317,13 +3311,16 @@ do	--	MAIN
 					else
 						Tooltip:AddDoubleLine(info[1], info[2], 1, 0, 0, 1, 1, 1);
 					end
+					if __isdev and D[3] ~= nil then
+						Tooltip:AddDoubleLine(" ", D[3], 0, 0, 0, 0.25, 0.25, 0.25);
+					end
 				end
 			end
 			if got then
 				Tooltip:AddLine(" ");
 			end
 		end
-		local function CheckComm(index, id, time, sender)
+		local function CheckComm(index, id, time, src, sender)
 			local D = DLY[index];
 			id = tonumber(id);
 			time = tonumber(time);
@@ -3331,7 +3328,7 @@ do	--	MAIN
 				if D == nil then
 					DLY[index] = { val, time, };
 					if __isdev then
-						_log_("recv add #" .. index .. " id: " .. id .. " @" .. sender .. date(" %Y-%m-%d %H:%M:%S", time));
+						_log_("recv add #" .. index .. " id: " .. id .. " src:" .. src .. " @" .. sender .. date(" %Y-%m-%d %H:%M:%S", time));
 					end
 				elseif D[1] == nil or D[2] == nil or D[2] < time then
 					if __isdev then
@@ -3339,8 +3336,9 @@ do	--	MAIN
 					end
 					D[1] = id;
 					D[2] = time;
+					D[3] = src;
 					if __isdev then
-						_log_("recv ref #" .. index .. " id: " .. id .. " @" .. sender .. date(" %Y-%m-%d %H:%M:%S", time));
+						_log_("recv ref #" .. index .. " id: " .. id .. " src:" .. src .. " @" .. sender .. date(" %Y-%m-%d %H:%M:%S", time));
 					end
 				elseif D[1] ~= id then
 					return 1;
@@ -3348,13 +3346,10 @@ do	--	MAIN
 			end
 			return 0;
 		end
-		function NS.DailyOnComm(channel, sender, NID, NTime, HID, HTime, CID, CTime, FID, FTime)
-			local v = CheckComm(1, NID, NTime, sender) + CheckComm(2, HID, HTime, sender) + CheckComm(3, CID, CTime, sender) + CheckComm(4, FID, FTime, sender);
+		function NS.DailyOnComm(channel, sender, NID, NTime, NSRC, HID, HTime, HSRC, CID, CTime, CSRC, FID, FTime, FSRC)
+			local v = CheckComm(1, NID, NTime, NSRC, sender) + CheckComm(2, HID, HTime, HSRC, sender) + CheckComm(3, CID, CTime, CSRC, sender) + CheckComm(4, FID, FTime, FSRC, sender);
 			if (v <= 0) and channel == "YELL" then
 				LT_BCMCD.YELL = min(LT_BCMCD.YELL + 16, GetServerTime() + 32);
-				if __isdev then
-					_log_("Delay", LT_BCMCD.YELL - GetServerTime());
-				end
 			end
 		end
 	end
@@ -3589,8 +3584,9 @@ do	--	INITIALIZE
 		default_set.dst = true;
 	end
 	local function MODIFY_SAVED_VARIABLE()
-		if alaCalendarSV == nil or alaCalendarSV._version == nil or alaCalendarSV._version < 210606.01 then
-			_G.alaCalendarSV = {
+		DB = alaCalendarSV;
+		if DB == nil or DB._version == nil or DB._version < 210606.01 then
+			DB = {
 				set = {
 					raid_list = Mixin({  }, NS.raid_list),
 					inst_hash = Mixin({  }, NS.instances_hash),
@@ -3600,30 +3596,31 @@ do	--	INITIALIZE
 				var = {  },
 				daily = {  };
 			};
-		elseif alaCalendarSV._version < 220308.01 then
-			for GUID, VAR in next, alaCalendarSV.var do
+			_G.alaCalendarSV = DB;
+		elseif DB._version < 220308.01 then
+			for GUID, VAR in next, DB.var do
 				for _, inst in next, NS.raid_list do
 					if VAR[inst] == nil then
 						VAR[inst] = {  };
 					end
 				end
 			end
-			alaCalendarSV.daily = {  };
+			DB.daily = {  };
 		end
-		alaCalendarSV._version = 220308.01;
-		NS:MergeGlobal(alaCalendarSV);
+		DB._version = 220308.01;
+		NS:MergeGlobal(DB);
 		--
-		alaCalendarSV.set = alaCalendarSV.set or {
+		DB.set = DB.set or {
 			raid_list = Mixin({  }, NS.raid_list),
 			inst_hash = Mixin({  }, NS.instances_hash),
 			char_list = {  },
 			collapsed = {  },
 		};
-		alaCalendarSV.var = alaCalendarSV.var or {  };
-		alaCalendarSV.daily = alaCalendarSV.daily or {  };
+		DB.var = DB.var or {  };
+		DB.daily = DB.daily or {  };
 		--
-		SET = setmetatable(alaCalendarSV.set, { __index = default_set, });
-		AVAR = alaCalendarSV.var;
+		SET = setmetatable(DB.set, { __index = default_set, });
+		AVAR = DB.var;
 		VAR = AVAR[PLAYER_GUID];
 		if VAR == nil then
 			VAR = NS.init_var({ PLAYER_LEVEL = UnitLevel('player'), realm_id = PLAYER_REALM_ID, realm_name = PLAYER_REALM_NAME, });
@@ -3679,7 +3676,7 @@ do	--	INITIALIZE
 				GetPlayerInfoByGUID(GUID);
 			end
 		end
-		if alaCalendarSV.__overridedev == false then
+		if DB.__overridedev == false then
 			__isdev = false;
 		end
 	end

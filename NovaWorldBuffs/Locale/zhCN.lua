@@ -693,5 +693,3 @@ L["ammunition"] = "Ammo";
 L["attunements"] = "Attunements";
 L["currentRaidLockouts"] = "Current Raid Lockouts";
 L["none"] = "None.";
-L["terokkarTimer"] = "泰罗卡森林";
-L["terokkarWarning"] = "泰罗卡森林哨塔重置还剩余 %s";

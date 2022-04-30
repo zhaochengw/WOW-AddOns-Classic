@@ -152,9 +152,27 @@ end
 			__ns.TooltipSetInfo(GameTooltip, _type, _id);
 			GameTooltip:Show();
 		end
-		function Pin_OnClick(self)
+		local TomTom = nil;
+		function Pin_OnClick(self, button)
 			local uuid = self.uuid;
 			if uuid ~= nil then
+				if button == "RightButton" then
+					TomTom = TomTom or _G.TomTom;
+					local coord = self.coord;
+					if coord ~= nil and TomTom ~= nil then
+						local _type = uuid[1];
+						local _id = uuid[2];
+						local _loc = __loc[_type];
+						local uid = TomTom:AddWaypoint(coord[3], coord[1] * 0.01, coord[2] * 0.01, {
+							title = _loc ~= nil and _loc[_id] or (_type .. ":" .. _id),
+							persistent = false,
+							minimap = true,
+							world = true,
+							from = "CodexLite",
+						});
+						return TomTom:SetCrazyArrow(uid, TomTom.profile.arrow.arrival, uid.title or "TomTom waypoint");
+					end
+				end
 				if hide_node_modifier() then
 					if __ns.NodeOnModifiedClick(self, uuid) then
 						return;
@@ -422,10 +440,11 @@ end
 						local num_pins = #pins;
 						if num_pins < num_coords then
 							for index = num_pins + 1, num_coords do
-								local val = coords[index];
-								local pin = AddWorldMapCommonPin(val[1], val[2], color3);
+								local coord = coords[index];
+								local pin = AddWorldMapCommonPin(coord[1], coord[2], color3);
 								pins[index] = pin;
 								pin.uuid = uuid;
+								pin.coord = coord;
 							end
 							__popt:count(1, num_coords - num_pins);
 						end
@@ -443,10 +462,11 @@ end
 						local num_pins = #pins;
 						if num_pins < num_coords then
 							for index = num_pins + 1, num_coords do
-								local val = coords[index];
-								local pin = AddWorldMapLargePin(val[1], val[2], color3);
+								local coord = coords[index];
+								local pin = AddWorldMapLargePin(coord[1], coord[2], color3);
 								pins[index] = pin;
 								pin.uuid = uuid;
+								pin.coord = coord;
 							end
 							__popt:count(2, num_coords - num_pins);
 						end
@@ -465,10 +485,11 @@ end
 						local num_pins = #pins;
 						if num_pins < num_coords then
 							for index = num_pins + 1, num_coords do
-								local val = coords[index];
-								local pin = AddWorldMapVariedPin(val[1], val[2], color3, TEXTURE);
+								local coord = coords[index];
+								local pin = AddWorldMapVariedPin(coord[1], coord[2], color3, TEXTURE);
 								pins[index] = pin;
 								pin.uuid = uuid;
+								pin.coord = coord;
 							end
 							__popt:count(3, num_coords - num_pins);
 						end
@@ -541,10 +562,11 @@ end
 						local num_pins = #pins;
 						if num_pins < num_coords then
 							for index = num_pins + 1, num_coords do
-								local val = coords[index];
-								local pin = AddWorldMapCommonPin(val[1], val[2], color3);
+								local coord = coords[index];
+								local pin = AddWorldMapCommonPin(coord[1], coord[2], color3);
 								pins[index] = pin;
 								pin.uuid = uuid;
+								pin.coord = coord;
 							end
 							__popt:count(1, num_coords - num_pins);
 						end
@@ -562,10 +584,11 @@ end
 						local num_pins = #pins;
 						if num_pins < num_coords then
 							for index = num_pins + 1, num_coords do
-								local val = coords[index];
-								local pin = AddWorldMapLargePin(val[1], val[2], color3);
+								local coord = coords[index];
+								local pin = AddWorldMapLargePin(coord[1], coord[2], color3);
 								pins[index] = pin;
 								pin.uuid = uuid;
+								pin.coord = coord;
 							end
 							__popt:count(2, num_coords - num_pins);
 						end
@@ -584,10 +607,11 @@ end
 						local num_pins = #pins;
 						if num_pins < num_coords then
 							for index = num_pins + 1, num_coords do
-								local val = coords[index];
-								local pin = AddWorldMapVariedPin(val[1], val[2], color3, TEXTURE);
+								local coord = coords[index];
+								local pin = AddWorldMapVariedPin(coord[1], coord[2], color3, TEXTURE);
 								pins[index] = pin;
 								pin.uuid = uuid;
+								pin.coord = coord;
 							end
 							__popt:count(3, num_coords - num_pins);
 						end
@@ -916,6 +940,7 @@ end
 								pin:SetPoint("CENTER", Minimap, "CENTER", - mm_hwidth * dx / mm_hsize, mm_hheight * dy / mm_hsize);
 								--	transform from world-coord[bottomleft->topright] to UI-coord[bottomleft->topright]
 								pin.uuid = uuid;
+								-- pin.coord = coord;
 							else
 								local pin = MM_COMMON_PINS[coord];
 								if pin ~= nil then
@@ -956,6 +981,7 @@ end
 								pin:SetPoint("CENTER", Minimap, "CENTER", - mm_hwidth * dx / mm_hsize, mm_hheight * dy / mm_hsize);
 								--	transform from world-coord[bottomleft->topright] to UI-coord[bottomleft->topright]
 								pin.uuid = uuid;
+								-- pin.coord = coord;
 							else
 								local pin = MM_LARGE_PINS[coord];
 								if pin ~= nil then
@@ -998,6 +1024,7 @@ end
 								pin:SetPoint("CENTER", Minimap, "CENTER", - mm_hwidth * dx / mm_hsize, mm_hheight * dy / mm_hsize);
 								--	transform from world-coord[bottomleft->topright] to UI-coord[bottomleft->topright]
 								pin.uuid = uuid;
+								-- pin.coord = coord;
 							else
 								local pin = MM_VARIED_PINS[coord];
 								if pin ~= nil then
@@ -1074,6 +1101,7 @@ end
 								pin:SetPoint("CENTER", Minimap, "CENTER", - mm_hwidth * dx / mm_hsize, mm_hheight * dy / mm_hsize);
 								--	transform from world-coord[bottomleft->topright] to UI-coord[bottomleft->topright]
 								pin.uuid = uuid;
+								-- pin.coord = coord;
 							else
 								local pin = MM_COMMON_PINS[coord];
 								if pin ~= nil then
@@ -1114,6 +1142,7 @@ end
 								pin:SetPoint("CENTER", Minimap, "CENTER", - mm_hwidth * dx / mm_hsize, mm_hheight * dy / mm_hsize);
 								--	transform from world-coord[bottomleft->topright] to UI-coord[bottomleft->topright]
 								pin.uuid = uuid;
+								-- pin.coord = coord;
 							else
 								local pin = MM_LARGE_PINS[coord];
 								if pin ~= nil then
@@ -1156,6 +1185,7 @@ end
 								pin:SetPoint("CENTER", Minimap, "CENTER", - mm_hwidth * dx / mm_hsize, mm_hheight * dy / mm_hsize);
 								--	transform from world-coord[bottomleft->topright] to UI-coord[bottomleft->topright]
 								pin.uuid = uuid;
+								-- pin.coord = coord;
 							else
 								local pin = MM_VARIED_PINS[coord];
 								if pin ~= nil then

@@ -485,10 +485,11 @@ L["ItemID: "] = true
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = " by (%d+)", addInfo = "AfterNumber",},
+	{pattern = " by (%d+)$", addInfo = "AfterNumber",},
+	{pattern = " by (%d+)[^%%]", addInfo = "AfterNumber",},
 	{pattern = "([%+%-]%d+)", addInfo = "AfterStat",},
 	{pattern = "grant.-(%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
-	{pattern = "add.-(%d+)", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
+	{pattern = "add.-(%d+)[^%%]?$", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
 	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID: 24261
 	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
 	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat",}, -- [發光的暗影卓奈石] +6法術傷害及5耐力
@@ -539,10 +540,12 @@ L["statList"] = {
 	{pattern = "block rating", id = CR_BLOCK}, -- block enchant: "+10 Shield Block Rating"
 	{pattern = "parry rating", id = CR_PARRY},
 
+	{pattern = "spell critical strikes", id = nil}, -- Cyclone Regalia, Tirisfal Regalia
 	{pattern = "spell critical strike rating", id = CR_CRIT_SPELL},
 	{pattern = "spell critical hit rating", id = CR_CRIT_SPELL},
 	{pattern = "spell critical rating", id = CR_CRIT_SPELL},
 	{pattern = "spell crit rating", id = CR_CRIT_SPELL},
+	{pattern = "spell critical", id = CR_CRIT_SPELL},
 	{pattern = "ranged critical strike rating", id = CR_CRIT_RANGED},
 	{pattern = "ranged critical hit rating", id = CR_CRIT_RANGED},
 	{pattern = "ranged critical rating", id = CR_CRIT_RANGED},
@@ -597,7 +600,7 @@ L["$value HP"] = true
 L["$value MP"] = true
 L["$value AP"] = true
 L["$value RAP"] = true
-L["$value Dmg"] = true
+L["$value Spell Dmg"] = true
 L["$value Heal"] = true
 L["$value Armor"] = true
 L["$value Block"] = true

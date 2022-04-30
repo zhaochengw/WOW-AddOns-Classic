@@ -5,7 +5,7 @@
 ---------------------------------------------------------------------------------------------------
 local L = Addon.ThreatPlates.L
 
-local DEBUG = Addon.ThreatPlates.Meta("version") == "10.3.4"
+local DEBUG = Addon.ThreatPlates.Meta("version") == "10.3.5"
 local function toggleDPS()
 	Addon:SetRole(false)
 	Addon.db.profile.threat.ON = true

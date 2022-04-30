@@ -8,6 +8,7 @@
 local _G = _G;
 local __ala_meta__ = _G.__ala_meta__;
 local uireimp = __ala_meta__.uireimp;
+local autostyle = __ala_meta__.autostyle;
 
 local ADDON, NS = ...;
 local L = NS.L;
@@ -241,6 +242,11 @@ function func.pdf_CreateButton(index)
 	button:GetPushedTexture():SetVertexColor(0.5, 0.5, 0.5, 1.0);
 	button:SetHighlightTexture(texture_highlight);
 	button:GetHighlightTexture():SetTexCoord(unpack(texture_highlight_coord));
+
+	if autostyle ~= nil then
+		autostyle:AddReskinObject(button, "BUTTON.WITH.TEXTURE");
+	end
+
 	local glow = button:CreateTexture(nil, "OVERLAY");
 	glow:SetAllPoints();
 	glow:SetTexture(texture_glow);
@@ -596,11 +602,19 @@ function func.gm_CreateButton(parent, index, buttonHeight)
 	button:RegisterForDrag("LeftButton");
 	button:Show();
 
+	if autostyle ~= nil then
+		autostyle:AddReskinObject(button, "BUTTON.WITH.TEXTURE");
+	end
+
 	local icon = button:CreateTexture(nil, "OVERLAY");
 	icon:SetTexture(texture_unk);
 	icon:SetSize(buttonHeight - 4, buttonHeight - 4);
 	icon:SetPoint("LEFT", 4, 0);
 	button.icon = icon;
+
+	if autostyle ~= nil then
+		autostyle:AddReskinObject(icon, "TEXTURE");
+	end
 
 	local title = button:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall");
 	title:SetPoint("LEFT", icon, "RIGHT", 4, 0);
@@ -931,6 +945,10 @@ function func.initUI()
 		end);
 		ui.gearWin:Hide();
 
+		if autostyle ~= nil then
+			autostyle:AddReskinObject(ui.gearWin);
+		end
+
 		ui.scroll = ALASCR(ui.gearWin, win_SizeX - 20, win_SizeY - 64, btn_SizeY, func.gm_CreateButton, func.gm_SetButton);
 		ui.scroll:SetPoint("BOTTOMLEFT", 10, 10);
 
@@ -940,11 +958,19 @@ function func.initUI()
 		ui.save:SetSize(win_SizeX / 3, 24);
 		ui.save:SetScript("OnClick", function(self) func.save(); end);
 
+		if autostyle ~= nil then
+			autostyle:AddReskinObject(ui.save);
+		end
+
 		ui.equip = CreateFrame("BUTTON", nil, ui.gearWin, "UIPanelButtonTemplate");
 		ui.equip:SetPoint("TOPLEFT", win_SizeX * 5 / 9, -16);
 		ui.equip:SetText(L["Equip"]);
 		ui.equip:SetSize(win_SizeX / 3, 24);
 		ui.equip:SetScript("OnClick", function(self) func.equip(); end);
+
+		if autostyle ~= nil then
+			autostyle:AddReskinObject(ui.equip);
+		end
 
 		ui.setting = CreateFrame("BUTTON", nil, ui.gearWin);
 		ui.setting:SetSize(24, 24);
@@ -1271,6 +1297,11 @@ function func.initUI()
 				button:SetScript("OnSizeChanged", function(self)
 					self.title:SetScale(self:GetWidth() / alaGearManSV.quickSize);
 				end);
+
+				if autostyle ~= nil then
+					autostyle:AddReskinObject(button, "BUTTON.WITH.TEXTURE");
+				end
+			
 				local title = button:CreateFontString(nil, "OVERLAY");
 				title:SetPoint("CENTER");
 				title:SetFont(GameFontNormal:GetFont(), alaGearManSV.quickSize * 0.75, "OUTLINE");
@@ -1281,6 +1312,11 @@ function func.initUI()
 				local icon = button:CreateTexture(nil, "ARTWORK");
 				icon:SetAllPoints();
 				button.icon = icon;
+
+				if autostyle ~= nil then
+					autostyle:AddReskinObject(icon, "TEXTURE");
+				end
+
 				local glow_current = button:CreateTexture(nil, "OVERLAY");
 				glow_current:SetTexture(texture_glow);
 				glow_current:SetTexCoord(unpack(texture_glow_coord));
@@ -1565,6 +1601,10 @@ function func.initUI()
 			end
 		end
 
+		if autostyle ~= nil then
+			autostyle:AddReskinObject(ui.custom);
+		end
+
 		ui.customEdit = CreateFrame("EDITBOX", nil, ui.custom);
 		ui.customEdit:SetSize(220, 24);
 		ui.customEdit:SetFontObject(GameFontHighlightSmall);
@@ -1601,17 +1641,29 @@ function func.initUI()
 		ui.customEditTexture:SetBlendMode("ADD");
 		ui.customEditTexture:SetVertexColor(0.25, 0.25, 0.25);
 
+		if autostyle ~= nil then
+			autostyle:AddReskinObject(ui.customEdit);
+		end
+
 		ui.customOK = CreateFrame("BUTTON", nil, ui.custom, "UIPanelButtonTemplate");
 		ui.customOK:SetPoint("TOPRIGHT", -12, -12);
 		ui.customOK:SetText(L["OK"]);
 		ui.customOK:SetSize(70, 24);
 		ui.customOK:SetScript("OnClick", func.customOK);
 
+		if autostyle ~= nil then
+			autostyle:AddReskinObject(ui.customOK);
+		end
+
 		ui.customCancel = CreateFrame("BUTTON", nil, ui.custom, "UIPanelButtonTemplate");
 		ui.customCancel:SetPoint("BOTTOMRIGHT", -12, 12);
 		ui.customCancel:SetText(L["Cancel"]);
 		ui.customCancel:SetSize(70, 24);
 		ui.customCancel:SetScript("OnClick", func.customCancel);
+
+		if autostyle ~= nil then
+			autostyle:AddReskinObject(ui.customCancel);
+		end
 
 		local customIconButtons = {  };
 		local row = 0;
@@ -1635,6 +1687,10 @@ function func.initUI()
 				end
 			end);
 
+			if autostyle ~= nil then
+				autostyle:AddReskinObject(button, "BUTTON.WITH.TEXTURE");
+			end
+	
 			local glow = button:CreateTexture(nil, "OVERLAY");
 			glow:SetTexture(texture_glow);
 			glow:SetTexCoord(unpack(texture_glow_coord));
@@ -2010,6 +2066,9 @@ function func.equipItem2(item1, item2, slot1, slot2)
 	end
 end
 function func.equipItem(item, slot)
+	if item == nil then
+		return;
+	end
 	if GetInventoryItemLink('player', slot) == item then
 		return;
 	end
@@ -2360,7 +2419,6 @@ function func.BANKFRAME_CLOSED(...)
 	var.isBankOpened = false;
 end
 function func.init()
-	func.init_variables();
 	saved_sets = alaGearManSV.sets[GUID];
 	if saved_sets == nil then
 		saved_sets = {  };
@@ -2380,12 +2438,24 @@ function func.PLAYER_REGEN_ENABLED()
 end
 function func.PLAYER_ENTERING_WORLD()
 	_EventHandler:UnregisterEvent("PLAYER_ENTERING_WORLD");
+	if not NS.initializeddb then
+		func.ADDON_LOADED(ADDON);
+	end
 	if InCombatLockdown() then
 		_EventHandler:RegEvent("PLAYER_REGEN_ENABLED");
 	else
 		C_Timer.After(0.1, func.init);
 	end
 	if __ala_meta__.initpublic then __ala_meta__.initpublic(); end
+end
+function func.ADDON_LOADED(addon)
+	if addon == ADDON then
+		_EventHandler:UnregisterEvent("ADDON_LOADED");
+		if not NS.initializeddb then
+			NS.initializeddb = true;
+			func.init_variables();
+		end
+	end
 end
 
 function _EventHandler:RegEvent(event)
@@ -2419,6 +2489,7 @@ do	--	SLASH
 end
 
 do	--	extern style
+	local F = CreateFrame('FRAME');
 	local handler_table = {  };
 	local style = {  };
 	function handler_table.ElvUI()
@@ -2440,7 +2511,7 @@ do	--	extern style
 				style.drop = function(f) return S:HandleDropDownBox(f); end;
 				local index = 1;
 				while true do
-					if not ui.scroll:HandleButtonByRawIndex(index, func.StyleScroll) then
+					if not ui.scroll:HandleButtonByRawIndex(index, F.StyleScroll) then
 						break;
 					end
 					index = index + 1;
@@ -2467,14 +2538,20 @@ do	--	extern style
 			return handler(f);
 		end
 	end
-	function func.ADDON_LOADED(addon)
+	function F.ADDON_LOADED(addon)
 		local handler = handler_table[addon];
 		if handler then
 			handler();
 		end
 	end
 	function func.RegAddonListener()
-		_EventHandler:RegEvent("ADDON_LOADED");
+		F:RegisterEvent("ADDON_LOADED");
+		F:SetScript("OnEvent", function(self, event, ...)
+			local f = self[event];
+			if f ~= nil then
+				return f(...);
+			end
+		end);
 		for addon, handler in next, handler_table do
 			if IsAddOnLoaded(addon) then
 				handler();
@@ -2484,6 +2561,7 @@ do	--	extern style
 end
 
 _EventHandler:RegEvent("PLAYER_ENTERING_WORLD");
+_EventHandler:RegEvent("ADDON_LOADED");
 
 _G.AGM_FUNC = func;
 

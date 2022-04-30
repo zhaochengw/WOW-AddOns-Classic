@@ -92,7 +92,6 @@ end
 local cache = {}
 setmetatable(cache, {__mode = "kv"}) -- weak table to enable garbage collection
 
-
 --------------
 -- Activate --
 --------------
@@ -121,6 +120,49 @@ for i = 1, 30 do
 	end
 end
 
+local mt = getmetatable(tip)
+local tipExtension = {
+	__index = function(tip, i)
+		if type(i) ~= "number" then
+			return mt.__index[i]
+		else
+			local textLeft = _G[tip:GetName().."TextLeft"..i]
+			tip[i] = textLeft
+			return textLeft
+		end
+	end
+}
+setmetatable(tip, tipExtension)
+setmetatable(tipMiner, tipExtension)
+
+--------------------
+-- Item Set Cache --
+--------------------
+
+-- Maps SetID to number of equipped pieces
+local equipped_sets = setmetatable({}, {
+	__index = function(t, set)
+		local equipped = 0
+
+		for i = 1, INVSLOT_LAST_EQUIPPED do
+			local itemID = GetInventoryItemID("player", i)
+			if itemID and select(16, GetItemInfo(itemID)) == set then
+				equipped = equipped + 1
+			end
+		end
+
+		t[set] = equipped
+		return equipped
+	end
+})
+
+do
+	local f = CreateFrame("Frame")
+	f:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player")
+	f:SetScript("OnEvent", function()
+		wipe(equipped_sets)
+	end)
+end
 
 ---------------------
 -- Local Variables --
@@ -155,9 +197,10 @@ local UnitLevel = UnitLevel
 local UnitStat = UnitStat
 local GetShapeshiftForm = GetShapeshiftForm
 local GetShapeshiftFormInfo = GetShapeshiftFormInfo
+local GetShapeShiftFormID = GetShapeShiftFormID
 local GetTalentInfo = GetTalentInfo
-wowBuildNo = select(2, GetBuildInfo()) -- need a global for loadstring
-local wowBuildNo = wowBuildNo
+tocversion = select(4, GetBuildInfo()) -- need a global for loadstring
+local tocversion = tocversion
 
 -- Cached GetItemInfo
 local GetItemInfoCached = setmetatable({}, { __index = function(self, n)
@@ -181,6 +224,9 @@ end
 ---------------
 -- metatable for stat tables
 local statTableMetatable = {
+	__index = function()
+		return 0
+	end,
 	__add = function(op1, op2)
 		if type(op2) == "table" then
 			for k, v in pairs(op2) do
@@ -204,7 +250,7 @@ local statTableMetatable = {
 					end
 				elseif k == "itemType" then
 					local i = 1
-					while op1["diffItemType"..i] do
+					while rawget(op1, "diffItemType"..i) do
 						i = i + 1
 					end
 					op1["diffItemType"..i] = op2.itemType
@@ -515,11 +561,9 @@ end
 
 local function GetPlayerBuffRank(buff)
 	local spellID = select(10, AuraUtil.FindAuraByName(buff, "player"))
+	local rank = GetSpellSubtext(spellID)
 	if spellID then
-		local rank = GetSpellSubtext(spellID)
-		if rank then
-			return strmatch(rank, "(%d+)") or 1
-		end
+		return rank and strmatch(rank, "(%d+)") or 1
 	end
 end
 
@@ -1050,7 +1094,7 @@ local StatModTable = {
 				["rank"] = {
 					0.05, 0.10, 0.15,
 				},
-				["condition"] = "wowBuildNo < '7382'",
+				["condition"] = "tocversion < 20300",
 			},
 			[2] = {
 				["tab"] = 3,
@@ -1058,7 +1102,7 @@ local StatModTable = {
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["condition"] = "wowBuildNo >= '7382'",
+				["condition"] = "tocversion >= 20300",
 			},
 		},
 		-- Druid: Dreamstate (Rank 3) - 1,17
@@ -1234,7 +1278,7 @@ local StatModTable = {
 					0.04, 0.08, 0.12, 0.16, 0.2,
 				},
 				["buff"] = GetSpellInfo(32356),		-- ["Cat Form"],
-				["condition"] = "wowBuildNo < '7382'",
+				["condition"] = "tocversion < 20300",
 			},
 			[2] = {
 				["tab"] = 2,
@@ -1255,7 +1299,7 @@ local StatModTable = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
 				["buff"] = GetSpellInfo(32356),		-- ["Cat Form"],
-				["condition"] = "wowBuildNo >= '7382'",
+				["condition"] = "tocversion >= 20300",
 			},
 		},
 		-- Druid: Survival of the Fittest (Rank 3) - 2,16
@@ -1342,8 +1386,7 @@ local StatModTable = {
 			},
 		},
 		-- Hunter: Survival Instincts (Rank 2) - 3,14
-		--         Reduces all damage taken by 2%/4%.
-		-- 2.1.0 "Survival Instincts" now also increase attack power by 2/4%.
+		--         Reduces all damage taken by 2%/4% and increases attack power by 2%/4%.
 		["MOD_AP"] = {
 			[1] = {
 				["tab"] = 3,
@@ -1355,6 +1398,8 @@ local StatModTable = {
 		},
 		-- Hunter: Master Marksman (Rank 5) - 2,19
 		--         Increases your ranged attack power by 2%/4%/6%/8%/10%.
+		-- Hunter: Survival Instincts (Rank 2) - 3,14
+		--         Reduces all damage taken by 2%/4% and increases attack power by 2%/4%.
 		["MOD_RANGED_AP"] = {
 			[1] = {
 				["tab"] = 2,
@@ -1362,6 +1407,13 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
+			},
+			[2] = {
+				["tab"] = 3,
+				["num"] = 14,
+				["rank"] = {
+					0.02, 0.04,
+				}
 			},
 		},
 		-- Hunter: Catlike Reflexes (Rank 3) - 1,19
@@ -1507,7 +1559,7 @@ local StatModTable = {
 				["rank"] = {
 					0.05, 0.1, 0.15,
 				},
-				["condition"] = "wowBuildNo < '7382'",
+				["condition"] = "tocversion < 20300",
 			},
 			[2] = {
 				["tab"] = 1,
@@ -1515,7 +1567,16 @@ local StatModTable = {
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["condition"] = "wowBuildNo >= '7382'",
+				["condition"] = "tocversion >= 20300",
+			},
+			[3] = {
+				-- All ranks of Mage Armor give 30% regen
+				["rank"] = setmetatable({}, {
+					__index = function(t, k)
+						return k and 0.3
+					end
+				}),
+				["buff"] = GetSpellInfo(6117),		-- ["Mage Armor"],
 			},
 		},
 		-- Mage: Mind Mastery (Rank 5) - 1,22
@@ -1762,7 +1823,7 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["condition"] = "wowBuildNo >= '7382'",
+				["condition"] = "tocversion >= 20300",
 			},
 		},
 		-- Paladin: Divine Intellect (Rank 5) - 1,2
@@ -1799,7 +1860,7 @@ local StatModTable = {
 				["rank"] = {
 					0.05, 0.1, 0.15,
 				},
-				["condition"] = "wowBuildNo < '7382'",
+				["condition"] = "tocversion < 20300",
 			},
 			[2] = {
 				["tab"] = 1,
@@ -1807,7 +1868,7 @@ local StatModTable = {
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["condition"] = "wowBuildNo >= '7382'",
+				["condition"] = "tocversion >= 20300",
 			},
 		},
 		-- Priest: Spiritual Guidance (Rank 5) - 2,14
@@ -2726,6 +2787,39 @@ local StatModTable = {
 				["race"] = "Human",
 			},
 		},
+		-- Whitemend Wisdom
+		-- Increases healing by up to 10% of your total Intellect.
+		["ADD_HEALING_MOD_INT"] = {
+			[1] = {
+				["rank"] = {
+					0.1,
+				},
+				["set"] = 571,
+				["pieces"] = 2,
+			}
+		},
+		-- Wrath of Spellfire
+		-- Increases spell damage by up to 7% of your total Intellect.
+		["ADD_SPELL_DMG_MOD_INT"] = {
+			[1] = {
+				["rank"] = {
+					0.07,
+				},
+				["set"] = 552,
+				["pieces"] = 3,
+			},
+		},
+		-- Primal Mooncloth
+		-- Allow 5% of your Mana regeneration to continue while casting.
+		["ADD_MANA_REG_MOD_NORMAL_MANA_REG"] = {
+			[1] = {
+				["rank"] = {
+					0.05,
+				},
+				["set"] = 554,
+				["pieces"] = 3,
+			},
+		},
 	},
 }
 
@@ -2773,6 +2867,7 @@ function StatLogic:GetStatMod(stat, school)
 			if ok and case.buff and not AuraUtil.FindAuraByName(case.buff, "player") then ok = nil end
 			if ok and case.stance and case.stance ~= GetStanceIcon() then ok = nil end
 			if ok and case.race and case.race ~= playerRace then ok = nil end
+			if ok and case.set and (equipped_sets[case.set] == nil or equipped_sets[case.set] < case.pieces) then ok = nil end
 			if ok then
 				local r
 				-- there are no talants in non class specific mods
@@ -2780,7 +2875,7 @@ function StatLogic:GetStatMod(stat, school)
 				if case.buff then
 					r = GetPlayerBuffRank(case.buff)
 				-- no talant but all other given conditions are statisfied
-				elseif case.condition or case.stance or case.race then
+				elseif case.condition or case.stance or case.race or case.set then
 					r = 1
 				end
 				if r and r ~= 0 and case.rank[r] then
@@ -3151,7 +3246,7 @@ function StatLogic:GetAPPerAgi(class)
 		class = ClassNameToID[playerClass]
 	end
 	-- Check druid cat form
-	if (class == 9) and GetShapeshiftForm() == 2 then		-- ["Cat Form"]
+	if (class == 9) and (GetShapeshiftFormID() == CAT_FORM) then		-- ["Cat Form"]
 		return 1
 	end
 	return APPerAgi[class], "AP"
@@ -3222,16 +3317,15 @@ end
 -----------------------------------]]
 
 local RAPPerAgi = {
-	1, 0, 1, 1, 0, 0, 0, 0, 0,
-	--["WARRIOR"] = 1,
-	--["PALADIN"] = 0,
-	--["HUNTER"] = 1,
-	--["ROGUE"] = 1,
-	--["PRIEST"] = 0,
-	--["SHAMAN"] = 0,
-	--["MAGE"] = 0,
-	--["WARLOCK"] = 0,
-	--["DRUID"] = 0,
+	[ClassNameToID["WARRIOR"]] = 1,
+	[ClassNameToID["PALADIN"]] = 0,
+	[ClassNameToID["HUNTER"]] = tocversion >= 20100 and 1 or 2,
+	[ClassNameToID["ROGUE"]] = 1,
+	[ClassNameToID["PRIEST"]] = 0,
+	[ClassNameToID["SHAMAN"]] = 0,
+	[ClassNameToID["MAGE"]] = 0,
+	[ClassNameToID["WARLOCK"]] = 0,
+	[ClassNameToID["DRUID"]] = 0,
 }
 
 function StatLogic:GetRAPPerAgi(class)
@@ -3702,7 +3796,7 @@ end
 
 -- New mana regen from spirit code for 2.4
 local BaseManaRegenPerSpi
-if wowBuildNo >= '7897' then
+if tocversion >= 20400 then
 	--[[---------------------------------
 	{	:GetNormalManaRegenFromSpi(spi, [int], [level])
 	-------------------------------------
@@ -4145,8 +4239,13 @@ function StatLogic:GetSum(item, table)
 	table = table or new()
 	setmetatable(table, statTableMetatable)
 
+	tip:ClearLines() -- this is required or SetX won't work the second time its called
+	tip:SetHyperlink(link)
+
+	local numLines = tip:NumLines()
+
 	-- Get data from cache if available
-	if cache[link] then
+	if cache[link] and cache[link].numLines == numLines then
 		copyTable(table, cache[link])
 		return table
 	end
@@ -4154,6 +4253,7 @@ function StatLogic:GetSum(item, table)
 	-- Set metadata
 	table.itemType = itemType
 	table.link = link
+	table.numLines = numLines
 
 	-- Don't scan Relics because they don't have general stats
 	if itemType == "INVTYPE_RELIC" then
@@ -4162,8 +4262,6 @@ function StatLogic:GetSum(item, table)
 	end
 
 	-- Start parsing
-	tip:ClearLines() -- this is required or SetX won't work the second time its called
-	tip:SetHyperlink(link)
 	print(link)
 	for i = 2, tip:NumLines() do
 		local text = tip[i]:GetText()

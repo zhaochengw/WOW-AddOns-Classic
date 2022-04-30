@@ -385,12 +385,15 @@ L["StatIDLookup"] = {
 	["Increases defense rating"] = {"DEFENSE_RATING",},
 	["Dodge Rating"] = {"DODGE_RATING",},
 	["Increases your dodge rating"] = {"DODGE_RATING",},
+	["Increases your chance to dodge an attack%"] = {"DODGE",},
 	["Parry Rating"] = {"PARRY_RATING",},
 	["Increases your parry rating"] = {"PARRY_RATING",},
+	["Increases your chance to parry an attack%"] = {"PARRY",},
 	["Shield Block Rating"] = {"BLOCK_RATING",}, -- Enchant Shield - Lesser Block +10 Shield Block Rating http://wow.allakhazam.com/db/spell.html?wspell=13689
 	["Block Rating"] = {"BLOCK_RATING",},
 	["Increases your block rating"] = {"BLOCK_RATING",},
 	["Increases your shield block rating"] = {"BLOCK_RATING",},
+	["Increases your chance to block attacks with a shield%"] = {"BLOCK_CHANCE",},
 
 	["Improves your chance to hit%"] = {"MELEE_HIT"},
 	["Hit Rating"] = {"MELEE_HIT_RATING",},
@@ -419,6 +422,7 @@ L["StatIDLookup"] = {
 	["Spell Critical strike rating"] = {"SPELL_CRIT_RATING",},
 	["Spell Critical Rating"] = {"SPELL_CRIT_RATING",},
 	["Spell Crit Rating"] = {"SPELL_CRIT_RATING",},
+	["Spell Critical"] = {"SPELL_CRIT_RATING",},
 	["Increases your spell critical strike rating"] = {"SPELL_CRIT_RATING",},
 	["Increases the spell critical strike rating of all party members within 30 yards"] = {"SPELL_CRIT_RATING",},
 	["Improves spell critical strike rating"] = {"SPELL_CRIT_RATING",},

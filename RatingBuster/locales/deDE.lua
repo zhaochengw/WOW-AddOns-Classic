@@ -272,7 +272,7 @@ L["Sum Healing"] = "Heilung zusammenrechnen"
 L["Healing <- Healing Intellect, Spirit, Agility, Strength"] = "Heilung <- Heilung, Intelligenz, Willenskraft, Beweglichkeit, Sträke"
 -- /rb sum stat hit
 L["Sum Hit Chance"] = "Trefferchance zusammenrechnen"
-L["Hit Chance <- Hit Rating Weapon Skill Rating"] = "Trefferchance <- Trefferwertung, Waffenfertigkeitswertung"
+L["Hit Chance <- Hit Rating, Weapon Skill Rating"] = "Trefferchance <- Trefferwertung, Waffenfertigkeitswertung"
 -- /rb sum stat crit
 L["Sum Crit Chance"] = "kritische Trefferchance zusammenrechnen"
 L["Crit Chance <- Crit Rating Agility, Weapon Skill Rating"] = "kritische Trefferchance <- kritische Trefferwertung, Beweglichkeit, Waffenfertigkeitswertung"
@@ -491,7 +491,8 @@ L["Meta Socket"] = EMPTY_SOCKET_META
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = " um (%d+)", addInfo = "AfterNumber",},
+	{pattern = " um (%d+)$", addInfo = "AfterNumber",},
+	{pattern = " um (%d+)[^%%]", addInfo = "AfterNumber",},
 	{pattern = "([%+%-]%d+)", addInfo = "AfterStat",},
 	{pattern = "verleiht.-(%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
 	{pattern = "(%d+) erhöhen.", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
@@ -603,7 +604,7 @@ L["$value% Dodge"] = "$value% Ausweichen"
 --	["$value MP"] = true,
 --	["$value AP"] = true,
 --	["$value RAP"] = true,
-L["$value Dmg"] = "$value Schaden"
+L["$value Spell Dmg"] = "$value Schaden"
 L["$value Heal"] = "$value Heilung"
 L["$value Armor"] = "$value Rüstung"
 L["$value Block"] = "$value Blocken"

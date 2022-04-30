@@ -63,7 +63,7 @@ local strjoin = strjoin
 local unpack = unpack
 local tonumber = tonumber
 local UnitStat = UnitStat
-local wowBuildNo = select(2, GetBuildInfo())
+local tocversion = select(4, GetBuildInfo())
 
 local GetItemInfoCached = setmetatable({}, { __index = function(self, n)
 	self[n] = {GetItemInfo(n)} -- store in cache
@@ -380,6 +380,12 @@ local options = {
 								end
 								ColorPickerFrame:SetColorRGB(profileDB.textColor.r, profileDB.textColor.g, profileDB.textColor.b);
 								ColorPickerFrame.previousValues = {r = profileDB.textColor.r, g = profileDB.textColor.g, b = profileDB.textColor.b};
+								ColorPickerFrame:SetFrameStrata("FULLSCREEN_DIALOG")
+								ColorPickerFrame:SetMovable(true)
+								ColorPickerFrame:EnableMouse(true)
+								ColorPickerFrame:RegisterForDrag("LeftButton")
+								ColorPickerFrame:SetScript("OnDragStart", ColorPickerFrame.StartMoving)
+								ColorPickerFrame:SetScript("OnDragStop", ColorPickerFrame.StopMovingOrSizing)
 								ColorPickerFrame:Show()
 							end,
 						},
@@ -550,7 +556,10 @@ local options = {
 					type = 'select',
 					name = L["Display style for diff value"],
 					desc = L["Display diff values in the main tooltip or only in compare tooltips"],
-					values = {"comp", "main"},
+					values = {
+						["comp"] = "Compare",
+						["main"] = "Main"
+					},
 				},
 				space = {
 					type = 'group',
@@ -1291,6 +1300,7 @@ PLAYER_LOGIN - Most information about the game world should now be available to 
 -- OnInitialize(name) called at ADDON_LOADED
 function RatingBuster:RefreshConfig()
 	profileDB = self.db.profile
+	wipe(cache)
 end
 
 function RatingBuster:OnInitialize()
@@ -1375,6 +1385,18 @@ local currentColorCode
 function RatingBuster.ProcessTooltip(tooltip, name, link)
 	-- Check if we're in standby mode
 	--if not RatingBuster:IsActive() then return end
+
+	-- Process recipes only once
+	local itemType = select(6, GetItemInfoInstant(link))
+	if itemType == Enum.ItemClass.Recipe then
+		if not tooltip.ratingBusterProcessedRecipe then
+			tooltip.ratingBusterProcessedRecipe = true
+		else
+			tooltip.ratingBusterProcessedRecipe = false
+			return
+		end
+	end
+
 	---------------------------
 	-- Set calculation level --
 	---------------------------
@@ -1428,10 +1450,8 @@ function RatingBuster.ProcessTooltip(tooltip, name, link)
 				fontString:SetText(text)
 			end
 		end
-		local width = fontString:GetWrappedWidth()
-		if width > tooltip:GetMinimumWidth() then
-			tooltip:SetMinimumWidth(math.ceil(width))
-		end
+		-- Workaround for strange spell power truncation bug
+		fontString:SetWidth(math.ceil(fontString:GetWidth()))
 	end
 	----------------------------
 	-- Item Level and Item ID --
@@ -1640,9 +1660,9 @@ function RatingBuster:ProcessText(text)
 							local mod = StatLogic:GetStatMod("MOD_AP") * StatLogic:GetStatMod("MOD_SPELL_DMG")
 							local effect = value * StatLogic:GetAPPerStr(class) * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_AP") * mod
 							if (mod ~= 1 or statmod ~= 1) and floor(abs(effect) * 10 + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.1f", effect))))
+								tinsert(infoTable, (gsub(L["$value Spell Dmg"], "$value", format("%+.1f", effect))))
 							elseif floor(abs(effect) + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.0f", effect))))
+								tinsert(infoTable, (gsub(L["$value Spell Dmg"], "$value", format("%+.0f", effect))))
 							end
 						end
 						if profileDB.showHealingFromStr then -- Shaman: Mental Quickness (Rank 3) - 2,15
@@ -1732,7 +1752,7 @@ function RatingBuster:ProcessText(text)
 							local mod = StatLogic:GetStatMod("MOD_SPELL_DMG")
 							local effect = value * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_STA") * mod
 							if floor(abs(effect) * 10 + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.1f", effect))))
+								tinsert(infoTable, (gsub(L["$value Spell Dmg"], "$value", format("%+.1f", effect))))
 							end
 						end
 						infoString = strjoin(", ", unpack(infoTable))
@@ -1765,7 +1785,7 @@ function RatingBuster:ProcessText(text)
 							local mod = StatLogic:GetStatMod("MOD_SPELL_DMG")
 							local effect = value * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_INT") * mod
 							if floor(abs(effect) * 10 + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.1f", effect))))
+								tinsert(infoTable, (gsub(L["$value Spell Dmg"], "$value", format("%+.1f", effect))))
 							end
 						end
 						if profileDB.showHealingFromInt then
@@ -1777,7 +1797,7 @@ function RatingBuster:ProcessText(text)
 						end
 						if profileDB.showMP5FromInt then
 							local effect
-							if wowBuildNo >= '7897' then -- 2.4.0
+							if tocversion >= 20400 then -- 2.4.0
 								local _, int = UnitStat("player", 4)
 								local _, spi = UnitStat("player", 5)
 								effect = value * StatLogic:GetStatMod("ADD_MANA_REG_MOD_INT") + (StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel) - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)) * StatLogic:GetStatMod("ADD_MANA_REG_MOD_NORMAL_MANA_REG")
@@ -1790,7 +1810,7 @@ function RatingBuster:ProcessText(text)
 						end
 						if profileDB.showMP5NCFromInt then
 							local effect
-							if wowBuildNo >= '7897' then -- 2.4.0
+							if tocversion >= 20400 then -- 2.4.0
 								local _, int = UnitStat("player", 4)
 								local _, spi = UnitStat("player", 5)
 								effect = value * StatLogic:GetStatMod("ADD_MANA_REG_MOD_INT") + StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel) - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)
@@ -1828,7 +1848,7 @@ function RatingBuster:ProcessText(text)
 						if profileDB.showMP5FromSpi then
 							local mod = StatLogic:GetStatMod("ADD_MANA_REG_MOD_NORMAL_MANA_REG")
 							local effect
-							if wowBuildNo >= '7897' then -- 2.4.0
+							if tocversion >= 20400 then -- 2.4.0
 								effect = StatLogic:GetNormalManaRegenFromSpi(value, nil, calcLevel) * mod
 							else
 								effect = StatLogic:GetNormalManaRegenFromSpi(value, class) * mod
@@ -1839,7 +1859,7 @@ function RatingBuster:ProcessText(text)
 						end
 						if profileDB.showMP5NCFromSpi then
 							local effect
-							if wowBuildNo >= '7897' then -- 2.4.0
+							if tocversion >= 20400 then -- 2.4.0
 								effect = StatLogic:GetNormalManaRegenFromSpi(value, nil, calcLevel)
 							else
 								effect = StatLogic:GetNormalManaRegenFromSpi(value, class)
@@ -1858,7 +1878,7 @@ function RatingBuster:ProcessText(text)
 							local mod = StatLogic:GetStatMod("MOD_SPELL_DMG")
 							local effect = value * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_SPI") * mod
 							if floor(abs(effect) * 10 + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value Dmg"], "$value", format("%+.1f", effect))))
+								tinsert(infoTable, (gsub(L["$value Spell Dmg"], "$value", format("%+.1f", effect))))
 							end
 						end
 						if profileDB.showHealingFromSpi then
@@ -1880,7 +1900,11 @@ function RatingBuster:ProcessText(text)
 						-- Build replacement string
 						if num.addInfo == "AfterNumber" then -- Add after number
 							infoString = gsub(infoString, "%%", "%%%%%%%%") -- sub "%" with "%%%%"
-							infoString = gsub(strsub(text, s, e), "%d+", "%0 "..infoString, 1) -- sub "33" with "33 (3.33%)"
+							-- Only substitue the number pattern's actual captured number
+							-- This allows checking for invalid characters after the digits,
+							-- while still placing the infoString directly after the digits.
+							local numPattern = num.pattern:match(".-%)")
+							infoString = gsub(strsub(text, s, e), numPattern, "%0 "..infoString, 1) -- sub "33" with "33 (3.33%)"
 						else -- Add after stat
 							infoString = gsub(infoString, "%%", "%%%%")
 							s, e = strfind(lowerText, stat.pattern)
@@ -1999,40 +2023,40 @@ local summaryCalcData = {
 	{
 		option = "sumHP",
 		name = "HEALTH",
-		func = function(sum) return ((sum["HEALTH"] or 0) + (sum["STA"] * 10)) * StatLogic:GetStatMod("MOD_HEALTH") end,
+		func = function(sum) return (sum["HEALTH"] + (sum["STA"] * 10)) * StatLogic:GetStatMod("MOD_HEALTH") end,
 	},
 	-- Mana - MANA, INT
 	{
 		option = "sumMP",
 		name = "MANA",
-		func = function(sum) return ((sum["MANA"] or 0) + (sum["INT"] * 15)) * StatLogic:GetStatMod("MOD_MANA") end,
+		func = function(sum) return (sum["MANA"] + (sum["INT"] * 15)) * StatLogic:GetStatMod("MOD_MANA") end,
 	},
 	-- Health Regen - HEALTH_REG
 	{
 		option = "sumHP5",
 		name = "HEALTH_REG",
-		func = function(sum) return (sum["HEALTH_REG"] or 0) end,
+		func = function(sum) return sum["HEALTH_REG"] end,
 	},
 	-- Health Regen while Out of Combat - HEALTH_REG, SPI
 	{
 		option = "sumHP5OC",
 		name = "HEALTH_REG_OUT_OF_COMBAT",
-		func = function(sum) return (sum["HEALTH_REG"] or 0) + StatLogic:GetHealthRegenFromSpi(sum["SPI"], class) end,
+		func = function(sum) return sum["HEALTH_REG"] + StatLogic:GetHealthRegenFromSpi(sum["SPI"], class) end,
 	},
 	-- Mana Regen - MANA_REG, SPI, INT
 	{
 		option = "sumMP5",
 		name = "MANA_REG",
 		func = function(sum)
-			if wowBuildNo >= '7897' then -- 2.4.0
+			if tocversion >= 20400 then -- 2.4.0
 				local _, int = UnitStat("player", 4)
 				local _, spi = UnitStat("player", 5)
-				return (sum["MANA_REG"] or 0)
+				return sum["MANA_REG"]
 				 + (sum["INT"] * StatLogic:GetStatMod("ADD_MANA_REG_MOD_INT"))
 				 + (StatLogic:GetNormalManaRegenFromSpi(spi + sum["SPI"], int + sum["INT"], calcLevel)
 				 - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)) * StatLogic:GetStatMod("ADD_MANA_REG_MOD_NORMAL_MANA_REG")
 			else
-				return (sum["MANA_REG"] or 0)
+				return sum["MANA_REG"]
 				 + (sum["INT"] * StatLogic:GetStatMod("ADD_MANA_REG_MOD_INT"))
 				 + (StatLogic:GetNormalManaRegenFromSpi(sum["SPI"], class) * StatLogic:GetStatMod("ADD_MANA_REG_MOD_NORMAL_MANA_REG"))
 			end
@@ -2043,15 +2067,15 @@ local summaryCalcData = {
 		option = "sumMP5NC",
 		name = "MANA_REG_NOT_CASTING",
 		func = function(sum)
-			if wowBuildNo >= '7897' then -- 2.4.0
+			if tocversion >= 20400 then -- 2.4.0
 				local _, int = UnitStat("player", 4)
 				local _, spi = UnitStat("player", 5)
-				return (sum["MANA_REG"] or 0)
+				return sum["MANA_REG"]
 				 + (sum["INT"] * StatLogic:GetStatMod("ADD_MANA_REG_MOD_INT"))
 				 + StatLogic:GetNormalManaRegenFromSpi(spi + sum["SPI"], int + sum["INT"], calcLevel)
 				 - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)
 			else
-				return (sum["MANA_REG"] or 0)
+				return sum["MANA_REG"]
 				 + (sum["INT"] * StatLogic:GetStatMod("ADD_MANA_REG_MOD_INT"))
 				 + StatLogic:GetNormalManaRegenFromSpi(sum["SPI"], class)
 			end
@@ -2064,21 +2088,21 @@ local summaryCalcData = {
 	{
 		option = "sumAP",
 		name = "AP",
-		func = function(sum) return ((sum["AP"] or 0) + (sum["STR"] * StatLogic:GetAPPerStr(class))
+		func = function(sum) return (sum["AP"] + (sum["STR"] * StatLogic:GetAPPerStr(class))
 			 + (sum["AGI"] * StatLogic:GetAPPerAgi(class))) * StatLogic:GetStatMod("MOD_AP") end,
 	},
 	-- Ranged Attack Power - RANGED_AP, AP, AGI, INT
 	{
 		option = "sumRAP",
 		name = "RANGED_AP",
-		func = function(sum) return ((sum["RANGED_AP"] or 0) + (sum["AP"] or 0) + (sum["AGI"] * StatLogic:GetRAPPerAgi(class))
+		func = function(sum) return (sum["RANGED_AP"] + sum["AP"] + (sum["AGI"] * StatLogic:GetRAPPerAgi(class))
 			 + (sum["INT"] * StatLogic:GetStatMod("ADD_RANGED_AP_MOD_INT"))) * (StatLogic:GetStatMod("MOD_RANGED_AP") + StatLogic:GetStatMod("MOD_AP") - 1) end,
 	},
 	-- Feral Attack Power - FERAL_AP, AP, STR, AGI
 	{
 		option = "sumFAP",
 		name = "FERAL_AP",
-		func = function(sum) return ((sum["FERAL_AP"] or 0) + (sum["AP"] or 0) + (sum["STR"] * StatLogic:GetAPPerStr(class))
+		func = function(sum) return (sum["FERAL_AP"] + sum["AP"] + (sum["STR"] * StatLogic:GetAPPerStr(class))
 			 + (sum["AGI"] * StatLogic:GetAPPerAgi(class))) * StatLogic:GetStatMod("MOD_AP") end,
 	},
 	-- Hit Chance - MELEE_HIT_RATING, WEAPON_RATING
@@ -2093,8 +2117,8 @@ local summaryCalcData = {
 					break
 				end
 			end
-			return s + StatLogic:GetEffectFromRating((sum["MELEE_HIT_RATING"] or 0), "MELEE_HIT_RATING", calcLevel)
-			+ (sum["MELEE_HIT"] or 0)
+			return s + StatLogic:GetEffectFromRating(sum["MELEE_HIT_RATING"], "MELEE_HIT_RATING", calcLevel)
+			+ sum["MELEE_HIT"]
 		end,
 		ispercent = true,
 	},
@@ -2102,7 +2126,7 @@ local summaryCalcData = {
 	{
 		option = "sumHitRating",
 		name = "MELEE_HIT_RATING",
-		func = function(sum) return (sum["MELEE_HIT_RATING"] or 0) end,
+		func = function(sum) return sum["MELEE_HIT_RATING"] end,
 	},
 	-- Crit Chance - MELEE_CRIT_RATING, WEAPON_RATING, AGI
 	{
@@ -2116,9 +2140,9 @@ local summaryCalcData = {
 					break
 				end
 			end
-			return s + StatLogic:GetEffectFromRating((sum["MELEE_CRIT_RATING"] or 0), "MELEE_CRIT_RATING", calcLevel)
+			return s + StatLogic:GetEffectFromRating(sum["MELEE_CRIT_RATING"], "MELEE_CRIT_RATING", calcLevel)
 			+ StatLogic:GetCritFromAgi(sum["AGI"], class, calcLevel)
-			+ (sum["MELEE_CRIT"] or 0)
+			+ sum["MELEE_CRIT"]
 		end,
 		ispercent = true,
 	},
@@ -2126,26 +2150,26 @@ local summaryCalcData = {
 	{
 		option = "sumCritRating",
 		name = "MELEE_CRIT_RATING",
-		func = function(sum) return (sum["MELEE_CRIT_RATING"] or 0) end,
+		func = function(sum) return sum["MELEE_CRIT_RATING"] end,
 	},
 	-- Haste - MELEE_HASTE_RATING
 	{
 		option = "sumHaste",
 		name = "MELEE_HASTE",
-		func = function(sum) return StatLogic:GetEffectFromRating((sum["MELEE_HASTE_RATING"] or 0), "MELEE_HASTE_RATING", calcLevel) end,
+		func = function(sum) return StatLogic:GetEffectFromRating(sum["MELEE_HASTE_RATING"], "MELEE_HASTE_RATING", calcLevel) end,
 		ispercent = true,
 	},
 	-- Haste Rating - MELEE_HASTE_RATING
 	{
 		option = "sumHasteRating",
 		name = "MELEE_HASTE_RATING",
-		func = function(sum) return (sum["MELEE_HASTE_RATING"] or 0) end,
+		func = function(sum) return sum["MELEE_HASTE_RATING"] end,
 	},
 	-- Expertise - EXPERTISE_RATING
 	{
 		option = "sumExpertise",
 		name = "EXPERTISE",
-		func = function(sum) return StatLogic:GetEffectFromRating((sum["EXPERTISE_RATING"] or 0), "EXPERTISE_RATING", calcLevel) end,
+		func = function(sum) return StatLogic:GetEffectFromRating(sum["EXPERTISE_RATING"], "EXPERTISE_RATING", calcLevel) end,
 	},
 	-- Dodge Neglect - EXPERTISE_RATING, WEAPON_RATING -- 2.3.0
 	{
@@ -2158,7 +2182,7 @@ local summaryCalcData = {
 					s = StatLogic:GetEffectFromRating(v, CR_WEAPON_SKILL, calcLevel) * 0.04
 				end
 			end
-			s = s + floor(StatLogic:GetEffectFromRating((sum["EXPERTISE_RATING"] or 0), "EXPERTISE_RATING", calcLevel)) * 0.25
+			s = s + floor(StatLogic:GetEffectFromRating(sum["EXPERTISE_RATING"], "EXPERTISE_RATING", calcLevel)) * 0.25
 			return s
 		end,
 		ispercent = true,
@@ -2174,7 +2198,7 @@ local summaryCalcData = {
 					s = StatLogic:GetEffectFromRating(v, CR_WEAPON_SKILL, calcLevel) * 0.04
 				end
 			end
-			s = s + floor(StatLogic:GetEffectFromRating((sum["EXPERTISE_RATING"] or 0), "EXPERTISE_RATING", calcLevel)) * 0.25
+			s = s + floor(StatLogic:GetEffectFromRating(sum["EXPERTISE_RATING"], "EXPERTISE_RATING", calcLevel)) * 0.25
 			return s
 		end,
 		ispercent = true,
@@ -2197,13 +2221,13 @@ local summaryCalcData = {
 	{
 		option = "sumWeaponMaxDamage",
 		name = "MAX_DAMAGE",
-		func = function(sum) return (sum["MAX_DAMAGE"] or 0) end,
+		func = function(sum) return sum["MAX_DAMAGE"] end,
 	},
 	-- Ignore Armor - IGNORE_ARMOR
 	{
 		option = "sumIgnoreArmor",
 		name = "IGNORE_ARMOR",
-		func = function(sum) return (sum["IGNORE_ARMOR"] or 0) end,
+		func = function(sum) return sum["IGNORE_ARMOR"] end,
 	},
 	------------------------------
 	-- Spell Damage and Healing --
@@ -2213,9 +2237,9 @@ local summaryCalcData = {
 		option = "sumSpellDmg",
 		name = "SPELL_DMG",
 		func = function(sum)
-			local ap = ((sum["AP"] or 0) + (sum["STR"] * StatLogic:GetAPPerStr(class))
+			local ap = (sum["AP"] + (sum["STR"] * StatLogic:GetAPPerStr(class))
 			 + (sum["AGI"] * StatLogic:GetAPPerAgi(class))) * StatLogic:GetStatMod("MOD_AP")
-			return ((sum["SPELL_DMG"] or 0) + (sum["STA"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_STA"))
+			return (sum["SPELL_DMG"] + (sum["STA"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_STA"))
 			 + (sum["INT"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
 			 + (sum["SPI"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_SPI"))
 			 + (ap * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_AP"))) * StatLogic:GetStatMod("MOD_SPELL_DMG")
@@ -2225,7 +2249,7 @@ local summaryCalcData = {
 	{
 		option = "sumHolyDmg",
 		name = "HOLY_SPELL_DMG",
-		func = function(sum) return ((sum["HOLY_SPELL_DMG"] or 0) + (sum["SPELL_DMG"] or 0)
+		func = function(sum) return (sum["HOLY_SPELL_DMG"] + sum["SPELL_DMG"]
 			 + (sum["STA"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_STA"))
 			 + (sum["INT"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
 			 + (sum["SPI"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_SPI"))) * StatLogic:GetStatMod("MOD_SPELL_DMG") end,
@@ -2234,7 +2258,7 @@ local summaryCalcData = {
 	{
 		option = "sumArcaneDmg",
 		name = "ARCANE_SPELL_DMG",
-		func = function(sum) return ((sum["ARCANE_SPELL_DMG"] or 0) + (sum["SPELL_DMG"] or 0)
+		func = function(sum) return (sum["ARCANE_SPELL_DMG"] + sum["SPELL_DMG"]
 			 + (sum["STA"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_STA"))
 			 + (sum["INT"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
 			 + (sum["SPI"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_SPI"))) * StatLogic:GetStatMod("MOD_SPELL_DMG") end,
@@ -2243,7 +2267,7 @@ local summaryCalcData = {
 	{
 		option = "sumFireDmg",
 		name = "FIRE_SPELL_DMG",
-		func = function(sum) return ((sum["FIRE_SPELL_DMG"] or 0) + (sum["SPELL_DMG"] or 0)
+		func = function(sum) return (sum["FIRE_SPELL_DMG"] + sum["SPELL_DMG"]
 			 + (sum["STA"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_STA"))
 			 + (sum["INT"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
 			 + (sum["SPI"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_SPI"))) * StatLogic:GetStatMod("MOD_SPELL_DMG") end,
@@ -2252,7 +2276,7 @@ local summaryCalcData = {
 	{
 		option = "sumNatureDmg",
 		name = "NATURE_SPELL_DMG",
-		func = function(sum) return ((sum["NATURE_SPELL_DMG"] or 0) + (sum["SPELL_DMG"] or 0)
+		func = function(sum) return (sum["NATURE_SPELL_DMG"] + sum["SPELL_DMG"]
 			 + (sum["STA"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_STA"))
 			 + (sum["INT"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
 			 + (sum["SPI"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_SPI"))) * StatLogic:GetStatMod("MOD_SPELL_DMG") end,
@@ -2261,7 +2285,7 @@ local summaryCalcData = {
 	{
 		option = "sumFrostDmg",
 		name = "FROST_SPELL_DMG",
-		func = function(sum) return ((sum["FROST_SPELL_DMG"] or 0) + (sum["SPELL_DMG"] or 0)
+		func = function(sum) return (sum["FROST_SPELL_DMG"] + sum["SPELL_DMG"]
 			 + (sum["STA"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_STA"))
 			 + (sum["INT"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
 			 + (sum["SPI"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_SPI"))) * StatLogic:GetStatMod("MOD_SPELL_DMG") end,
@@ -2270,7 +2294,7 @@ local summaryCalcData = {
 	{
 		option = "sumShadowDmg",
 		name = "SHADOW_SPELL_DMG",
-		func = function(sum) return ((sum["SHADOW_SPELL_DMG"] or 0) + (sum["SPELL_DMG"] or 0)
+		func = function(sum) return (sum["SHADOW_SPELL_DMG"] + sum["SPELL_DMG"]
 			 + (sum["STA"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_STA"))
 			 + (sum["INT"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_INT"))
 			 + (sum["SPI"] * StatLogic:GetStatMod("ADD_SPELL_DMG_MOD_SPI"))) * StatLogic:GetStatMod("MOD_SPELL_DMG") end,
@@ -2280,9 +2304,9 @@ local summaryCalcData = {
 		option = "sumHealing",
 		name = "HEAL",
 		func = function(sum)
-			local ap = ((sum["AP"] or 0) + (sum["STR"] * StatLogic:GetAPPerStr(class))
+			local ap = (sum["AP"] + (sum["STR"] * StatLogic:GetAPPerStr(class))
 			 + (sum["AGI"] * StatLogic:GetAPPerAgi(class))) * StatLogic:GetStatMod("MOD_AP")
-			return ((sum["HEAL"] or 0)
+			return (sum["HEAL"]
 			 + (sum["STR"] * StatLogic:GetStatMod("ADD_HEALING_MOD_STR"))
 			 + (sum["INT"] * StatLogic:GetStatMod("ADD_HEALING_MOD_INT"))
 			 + (sum["SPI"] * StatLogic:GetStatMod("ADD_HEALING_MOD_SPI"))
@@ -2294,8 +2318,8 @@ local summaryCalcData = {
 	{
 		option = "sumSpellHit",
 		name = "SPELL_HIT",
-		func = function(sum) return StatLogic:GetEffectFromRating((sum["SPELL_HIT_RATING"] or 0), "SPELL_HIT_RATING", calcLevel)
-			+ (sum["SPELL_HIT"] or 0)
+		func = function(sum) return StatLogic:GetEffectFromRating(sum["SPELL_HIT_RATING"], "SPELL_HIT_RATING", calcLevel)
+			+ sum["SPELL_HIT"]
 		end,
 		ispercent = true,
 	},
@@ -2303,15 +2327,15 @@ local summaryCalcData = {
 	{
 		option = "sumSpellHitRating",
 		name = "SPELL_HIT_RATING",
-		func = function(sum) return (sum["SPELL_HIT_RATING"] or 0) end,
+		func = function(sum) return sum["SPELL_HIT_RATING"] end,
 	},
 	-- Spell Crit Chance - SPELL_CRIT_RATING, INT
 	{
 		option = "sumSpellCrit",
 		name = "SPELL_CRIT",
-		func = function(sum) return StatLogic:GetEffectFromRating((sum["SPELL_CRIT_RATING"] or 0), "SPELL_CRIT_RATING", calcLevel)
+		func = function(sum) return StatLogic:GetEffectFromRating(sum["SPELL_CRIT_RATING"], "SPELL_CRIT_RATING", calcLevel)
 			 + StatLogic:GetSpellCritFromInt(sum["INT"], class, calcLevel)
-			 + (sum["SPELL_CRIT"] or 0)
+			 + sum["SPELL_CRIT"]
 		end,
 		ispercent = true,
 	},
@@ -2319,26 +2343,26 @@ local summaryCalcData = {
 	{
 		option = "sumSpellCritRating",
 		name = "SPELL_CRIT_RATING",
-		func = function(sum) return (sum["SPELL_CRIT_RATING"] or 0) end,
+		func = function(sum) return sum["SPELL_CRIT_RATING"] end,
 	},
 	-- Spell Haste - SPELL_HASTE_RATING
 	{
 		option = "sumSpellHaste",
 		name = "SPELL_HASTE",
-		func = function(sum) return StatLogic:GetEffectFromRating((sum["SPELL_HASTE_RATING"] or 0), "SPELL_HASTE_RATING", calcLevel) end,
+		func = function(sum) return StatLogic:GetEffectFromRating(sum["SPELL_HASTE_RATING"], "SPELL_HASTE_RATING", calcLevel) end,
 		ispercent = true,
 	},
 	-- Spell Haste Rating - SPELL_HASTE_RATING
 	{
 		option = "sumSpellHasteRating",
 		name = "SPELL_HASTE_RATING",
-		func = function(sum) return (sum["SPELL_HASTE_RATING"] or 0) end,
+		func = function(sum) return sum["SPELL_HASTE_RATING"] end,
 	},
 	-- Spell Penetration - SPELLPEN
 	{
 		option = "sumPenetration",
 		name = "SPELLPEN",
-		func = function(sum) return (sum["SPELLPEN"] or 0) end,
+		func = function(sum) return sum["SPELLPEN"] end,
 	},
 	----------
 	-- Tank --
@@ -2347,24 +2371,25 @@ local summaryCalcData = {
 	{
 		option = "sumArmor",
 		name = "ARMOR",
-		func = function(sum) return (sum["ARMOR"] or 0) * StatLogic:GetStatMod("MOD_ARMOR")
-			 + (sum["ARMOR_BONUS"] or 0) + ((sum["AGI"] or 0) * 2)
-			 + ((sum["INT"] or 0) * StatLogic:GetStatMod("ADD_ARMOR_MOD_INT")) end,
+		func = function(sum) return sum["ARMOR"] * StatLogic:GetStatMod("MOD_ARMOR")
+			 + sum["ARMOR_BONUS"] + (sum["AGI"] * 2)
+			 + (sum["INT"] * StatLogic:GetStatMod("ADD_ARMOR_MOD_INT")) end,
 	},
 	-- Dodge Chance - DODGE_RATING, DEFENSE_RATING, AGI
 	{
 		option = "sumDodge",
 		name = "DODGE",
-		func = function(sum) return StatLogic:GetEffectFromRating((sum["DODGE_RATING"] or 0), "DODGE_RATING", calcLevel)
-			 + (StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) + (sum["DEFENSE"] or 0)) * 0.04
-			 + StatLogic:GetDodgeFromAgi(sum["AGI"]) end,
+		func = function(sum) return StatLogic:GetEffectFromRating(sum["DODGE_RATING"], "DODGE_RATING", calcLevel)
+			 + (StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel) + sum["DEFENSE"]) * 0.04
+			 + StatLogic:GetDodgeFromAgi(sum["AGI"]) + sum["DODGE"]
+end,
 		ispercent = true,
 	},
 	-- Dodge Rating - DODGE_RATING
 	{
 		option = "sumDodgeRating",
 		name = "DODGE_RATING",
-		func = function(sum) return (sum["DODGE_RATING"] or 0) end,
+		func = function(sum) return sum["DODGE_RATING"] end,
 	},
 	-- Parry Chance - PARRY_RATING, DEFENSE_RATING
 	{
@@ -2372,8 +2397,8 @@ local summaryCalcData = {
 		name = "PARRY",
 		func = function(sum)
 			if GetParryChance() == 0 then return 0 end
-			return StatLogic:GetEffectFromRating((sum["PARRY_RATING"] or 0), "PARRY_RATING", calcLevel)
-				 + (StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) + (sum["DEFENSE"] or 0)) * 0.04
+			return StatLogic:GetEffectFromRating(sum["PARRY_RATING"], "PARRY_RATING", calcLevel)
+				 + (StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel) + sum["DEFENSE"]) * 0.04 + sum["PARRY"]
 		end,
 		ispercent = true,
 	},
@@ -2381,7 +2406,7 @@ local summaryCalcData = {
 	{
 		option = "sumParryRating",
 		name = "PARRY_RATING",
-		func = function(sum) return (sum["PARRY_RATING"] or 0) end,
+		func = function(sum) return sum["PARRY_RATING"] end,
 	},
 	-- Block Chance - BLOCK_RATING, DEFENSE_RATING
 	{
@@ -2389,8 +2414,8 @@ local summaryCalcData = {
 		name = "BLOCK",
 		func = function(sum)
 			if GetBlockChance() == 0 then return 0 end
-			return StatLogic:GetEffectFromRating((sum["BLOCK_RATING"] or 0), "BLOCK_RATING", calcLevel)
-				 + (StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) + (sum["DEFENSE"] or 0)) * 0.04
+			return StatLogic:GetEffectFromRating(sum["BLOCK_RATING"], "BLOCK_RATING", calcLevel)
+				 + (StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel) + sum["DEFENSE"]) * 0.04 + sum["BLOCK_CHANCE"]
 		end,
 		ispercent = true,
 	},
@@ -2398,7 +2423,7 @@ local summaryCalcData = {
 	{
 		option = "sumBlockRating",
 		name = "BLOCK_RATING",
-		func = function(sum) return (sum["BLOCK_RATING"] or 0) end,
+		func = function(sum) return sum["BLOCK_RATING"] end,
 	},
 	-- Block Value - BLOCK_VALUE, STR
 	{
@@ -2406,68 +2431,68 @@ local summaryCalcData = {
 		name = "BLOCK_VALUE",
 		func = function(sum)
 			if GetBlockChance() == 0 then return 0 end
-			return (sum["BLOCK_VALUE"] or 0) * StatLogic:GetStatMod("MOD_BLOCK_VALUE")
-				 + ((sum["STR"] or 0) * StatLogic:GetBlockValuePerStr(class))
+			return sum["BLOCK_VALUE"] * StatLogic:GetStatMod("MOD_BLOCK_VALUE")
+				 + (sum["STR"] * StatLogic:GetBlockValuePerStr(class))
 		end,
 	},
 	-- Hit Avoidance - DEFENSE_RATING, MELEE_HIT_AVOID_RATING
 	{
 		option = "sumHitAvoid",
 		name = "MELEE_HIT_AVOID",
-		func = function(sum) return StatLogic:GetEffectFromRating((sum["MELEE_HIT_AVOID_RATING"] or 0), "MELEE_HIT_AVOID_RATING", calcLevel)
-			 + (StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) + (sum["DEFENSE"] or 0)) * 0.04 end,
+		func = function(sum) return StatLogic:GetEffectFromRating(sum["MELEE_HIT_AVOID_RATING"], "MELEE_HIT_AVOID_RATING", calcLevel)
+			 + (StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel) + sum["DEFENSE"]) * 0.04 end,
 		ispercent = true,
 	},
 	-- Crit Avoidance - DEFENSE_RATING, RESILIENCE_RATING, MELEE_CRIT_AVOID_RATING
 	{
 		option = "sumCritAvoid",
 		name = "MELEE_CRIT_AVOID",
-		func = function(sum) return StatLogic:GetEffectFromRating((sum["MELEE_CRIT_AVOID_RATING"] or 0), "MELEE_CRIT_AVOID_RATING", calcLevel)
-			 + StatLogic:GetEffectFromRating((sum["RESILIENCE_RATING"] or 0), "RESILIENCE_RATING", calcLevel)
-			 + (StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) + (sum["DEFENSE"] or 0)) * 0.04 end,
+		func = function(sum) return StatLogic:GetEffectFromRating(sum["MELEE_CRIT_AVOID_RATING"], "MELEE_CRIT_AVOID_RATING", calcLevel)
+			 + StatLogic:GetEffectFromRating(sum["RESILIENCE_RATING"], "RESILIENCE_RATING", calcLevel)
+			 + (StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel) + sum["DEFENSE"]) * 0.04 end,
 		ispercent = true,
 	},
 	-- Resilience - RESILIENCE_RATING
 	{
 		option = "sumResilience",
 		name = "RESILIENCE_RATING",
-		func = function(sum) return (sum["RESILIENCE_RATING"] or 0) end,
+		func = function(sum) return sum["RESILIENCE_RATING"] end,
 	},
 	-- Arcane Resistance - ARCANE_RES
 	{
 		option = "sumArcaneResist",
 		name = "ARCANE_RES",
-		func = function(sum) return (sum["ARCANE_RES"] or 0) end,
+		func = function(sum) return sum["ARCANE_RES"] end,
 	},
 	-- Fire Resistance - FIRE_RES
 	{
 		option = "sumFireResist",
 		name = "FIRE_RES",
-		func = function(sum) return (sum["FIRE_RES"] or 0) end,
+		func = function(sum) return sum["FIRE_RES"] end,
 	},
 	-- Nature Resistance - NATURE_RES
 	{
 		option = "sumNatureResist",
 		name = "NATURE_RES",
-		func = function(sum) return (sum["NATURE_RES"] or 0) end,
+		func = function(sum) return sum["NATURE_RES"] end,
 	},
 	-- Frost Resistance - FROST_RES
 	{
 		option = "sumFrostResist",
 		name = "FROST_RES",
-		func = function(sum) return (sum["FROST_RES"] or 0) end,
+		func = function(sum) return sum["FROST_RES"] end,
 	},
 	-- Shadow Resistance - SHADOW_RES
 	{
 		option = "sumShadowResist",
 		name = "SHADOW_RES",
-		func = function(sum) return (sum["SHADOW_RES"] or 0) end,
+		func = function(sum) return sum["SHADOW_RES"] end,
 	},
 	-- Defense - DEFENSE_RATING
 	{
 		option = "sumDefense",
 		name = "DEFENSE",
-		func = function(sum) return StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) end,
+		func = function(sum) return StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel) end,
 	},
 	-- Avoidance - PARRY, DODGE, MOBMISS
 	{
@@ -2480,19 +2505,19 @@ local summaryCalcData = {
 				parry = 0
 			else
 				--parry = summaryCalcData["PARRY"].func(sum)
-				parry = StatLogic:GetEffectFromRating((sum["PARRY_RATING"] or 0), "PARRY_RATING", calcLevel)
-				 + (StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) + (sum["DEFENSE"] or 0)) * 0.04
+				parry = StatLogic:GetEffectFromRating(sum["PARRY_RATING"], "PARRY_RATING", calcLevel)
+				 + (StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel) + sum["DEFENSE"]) * 0.04
 			end
-			dodge = StatLogic:GetEffectFromRating((sum["DODGE_RATING"] or 0), "DODGE_RATING", calcLevel)
-			 + (StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) + (sum["DEFENSE"] or 0)) * 0.04
+			dodge = StatLogic:GetEffectFromRating(sum["DODGE_RATING"], "DODGE_RATING", calcLevel)
+			 + (StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel) + sum["DEFENSE"]) * 0.04
 			 + StatLogic:GetDodgeFromAgi(sum["AGI"])
-			mobMiss = (StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) + (sum["DEFENSE"] or 0)) * 0.04
+			mobMiss = (StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel) + sum["DEFENSE"]) * 0.04
 			if profileDB.sumAvoidWithBlock then
 				if GetBlockChance() == 0 then
 					block = 0
 				else
-					block = StatLogic:GetEffectFromRating((sum["BLOCK_RATING"] or 0), "BLOCK_RATING", calcLevel)
-					 + (StatLogic:GetEffectFromRating((sum["DEFENSE_RATING"] or 0), "DEFENSE_RATING", calcLevel) + (sum["DEFENSE"] or 0)) * 0.04
+					block = StatLogic:GetEffectFromRating(sum["BLOCK_RATING"], "BLOCK_RATING", calcLevel)
+					 + (StatLogic:GetEffectFromRating(sum["DEFENSE_RATING"], "DEFENSE_RATING", calcLevel) + sum["DEFENSE"]) * 0.04
 				end
 				return parry + dodge + mobMiss + block
 			end
@@ -2757,9 +2782,11 @@ function RatingBuster:StatSummary(tooltip, name, link)
 	else
 		id = StatLogic:GetDiffID(link, profileDB.sumIgnoreEnchant, profileDB.sumIgnoreGems, red, yellow, blue, meta)
 	end
+
+	local numLines = tooltip:NumLines()
 	
 	-- Check Cache
-	if cache[id] then
+	if cache[id] and cache[id].numLines == numLines then
 		if table.maxn(cache[id]) == 0 then return end
 		-- Write Tooltip
 		if profileDB.sumBlankLine then
@@ -2829,7 +2856,7 @@ function RatingBuster:StatSummary(tooltip, name, link)
 	if profileDB.sumHP then
 		local d = {name = "HEALTH"}
 		for k, sum in pairs(data) do
-			d[k] = ((sum["HEALTH"] or 0) + (sum["STA"] * 10)) * StatLogic:GetStatMod("MOD_HEALTH")
+			d[k] = (sum["HEALTH"] + (sum["STA"] * 10)) * StatLogic:GetStatMod("MOD_HEALTH")
 		end
 		tinsert(summary, d)
 	end
@@ -2837,7 +2864,7 @@ function RatingBuster:StatSummary(tooltip, name, link)
 		-- Health - HEALTH, STA
 		sumHP = {
 			name = "HEALTH",
-			func = function(sum) return ((sum["HEALTH"] or 0) + (sum["STA"] * 10)) * StatLogic:GetStatMod("MOD_HEALTH") end,
+			func = function(sum) return (sum["HEALTH"] + (sum["STA"] * 10)) * StatLogic:GetStatMod("MOD_HEALTH") end,
 			ispercent = false,
 		},
 	}
@@ -2919,6 +2946,7 @@ function RatingBuster:StatSummary(tooltip, name, link)
 	------------------------
 	-- Build Output Table --
 	local output = {}
+	output.numLines = numLines
 	for _, t in ipairs(summary) do
 		local n, s, d1, d2, ispercent = t.name, t.sum, t.diff1, t.diff2, t.ispercent
 		local right, left

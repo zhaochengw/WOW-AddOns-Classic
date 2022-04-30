@@ -1,13 +1,13 @@
 --- AceConfigDialog-3.0 generates AceGUI-3.0 based windows based on option tables.
 -- @class file
 -- @name AceConfigDialog-3.0
--- @release $Id$
+-- @release $Id: AceConfigDialog-3.0.lua 1255 2021-11-14 09:14:15Z nevcairiel $
 
 local LibStub = LibStub
 local gui = LibStub("AceGUI-3.0")
 local reg = LibStub("AceConfigRegistry-3.0")
 
-local MAJOR, MINOR = "AceConfigDialog-3.0", 80
+local MAJOR, MINOR = "AceConfigDialog-3.0", 82
 local AceConfigDialog, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfigDialog then return end
@@ -544,12 +544,13 @@ local function GetFuncName(option)
 end
 do
 	local frame = AceConfigDialog.popup
-	if not frame then
+	if not frame or oldminor < 81 then
 		frame = CreateFrame("Frame", nil, UIParent)
 		AceConfigDialog.popup = frame
 		frame:Hide()
 		frame:SetPoint("CENTER", UIParent, "CENTER")
 		frame:SetSize(320, 72)
+		frame:EnableMouse(true) -- Do not allow click-through on the frame
 		frame:SetFrameStrata("TOOLTIP")
 		frame:SetFrameLevel(100) -- Lots of room to draw under it
 		frame:SetScript("OnKeyDown", function(self, key)
@@ -575,7 +576,7 @@ do
 				insets = { left = 11, right = 11, top = 11, bottom = 11 },
 			})
 		else
-			local border = CreateFrame("Frame", nil, frame, "DialogBorderDarkTemplate")
+			local border = CreateFrame("Frame", nil, frame, "DialogBorderOpaqueTemplate")
 			border:SetAllPoints(frame)
 			frame:SetFixedFrameStrata(true)
 			frame:SetFixedFrameLevel(true)
@@ -1367,7 +1368,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 							elseif width == "half" then
 								check:SetWidth(width_multiplier / 2)
 							elseif (type(width) == "number") then
-								control:SetWidth(width_multiplier * width)
+								check:SetWidth(width_multiplier * width)
 							elseif width == "full" then
 								check.width = "fill"
 							else
