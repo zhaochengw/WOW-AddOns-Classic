@@ -1,8 +1,9 @@
 ## Interface: 20504
-## Author: Lag
-## Version: v2.4.2-bcc
+## Author: Ray
+## Version: v2.5.4-bcc
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
+
 ## Title: AtlasLootClassic |cFF0099FF[PvP]|r
 ## Title-deDE: AtlasLootClassic |cFF0099FF[PvP]|r
 ## Title-esES: AtlasLootClassic |cFF0099FF[JcJ]|r
@@ -25,14 +26,13 @@
 ## Notes-ruRU: Таблицы добычи AtlasLoot для PvP.
 ## Notes-zhCN: AtlasLoot  PvP掉落列表
 ## Notes-zhTW: PvP 物品資料庫。
+
 ## X-Category: Map
 ## X-License: GPL v2
+
 ## X-AtlasLootClassic-LootModule: 1
+
 Locales\Locales.xml
+
 data.lua
 data-tbc.lua
-
-## Title: |cff880303[163UI]|r AtlasLootClassic |cFF0099FF[PvP]|r
-## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic PvP物品数据
-## X-Vendor: NetEase
-## X-163UI-Version: 20220414153603

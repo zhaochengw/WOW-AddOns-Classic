@@ -1,8 +1,9 @@
 ## Interface: 20504
-## Author: Lag
-## Version: v2.4.2-bcc
+## Author: Ray
+## Version: v2.5.4-bcc
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
+
 ## Title: AtlasLootClassic |cFF0099FF[Collections]|r
 ## Title-deDE: AtlasLootClassic |cFF0099FF[Sammlungen]|r
 ## Title-esES: AtlasLootClassic |cFF0099FF[Colecciones]|r
@@ -25,13 +26,12 @@
 ## Notes-ruRU: Таблицы добычи AtlasLoot для коллекций предметов.
 ## Notes-zhCN: 收藏物品资料库。
 ## Notes-zhTW: 收藏物品資料庫。
+
 ## X-Category: Map
 ## X-License: GPL v2
-## X-AtlasLootClassic-LootModule: 1
-Locales\Locales.xml
-data.lua
 
-## Title: |cff880303[163UI]|r AtlasLootClassic |cFF0099FF[Collections]|r
-## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 收藏品数据
-## X-Vendor: NetEase
-## X-163UI-Version: 20220414153603
+## X-AtlasLootClassic-LootModule: 1
+
+Locales\Locales.xml
+
+data.lua

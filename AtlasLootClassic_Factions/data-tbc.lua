@@ -117,11 +117,18 @@ data["TheAldor"] = {
                 { 7, 28888, [PRICE_EXTRA_ITTYPE] = "holydust:8" }, -- Greater Inscription of Vengeance
                 { 8, 28889, [PRICE_EXTRA_ITTYPE] = "holydust:8" }, -- Greater Inscription of Warding
                 { 10, 31779 }, -- Aldor Tabard
+                { 12, 32898, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯强固合剂
+                { 13, 32899, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯强效回复合剂
+                { 14, 32901, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯无情突袭合剂
                 { 17, 23602 }, -- Plans: Flamebane Helm
                 { 19, 29702 }, -- Pattern: Blastguard Pants
                 { 20, 29689 }, -- Pattern: Flamescale Leggings
                 { 22, 24295 }, -- Pattern: Golden Spellthread
                 { 23, 30844 }, -- Pattern: Flameheart Vest
+                { 27, 32900, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯超级能量合剂
+                { 28, 35716, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯纯粹死亡合剂
+                { 29, 35717, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯盲目光芒合剂
+
 
 			},
 		},
@@ -184,10 +191,16 @@ data["TheScryers"] = {
                 { 7, 28912, [PRICE_EXTRA_ITTYPE] = "arcanerune:8" }, -- Greater Inscription of the Oracle
                 { 8, 28909, [PRICE_EXTRA_ITTYPE] = "arcanerune:8" }, -- Greater Inscription of the Orb
                 { 10, 31780 }, -- Scryers Tabard
+                { 12, 32898, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯强固合剂
+                { 13, 32899, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯强效回复合剂
+                { 14, 32901, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯无情突袭合剂
                 { 17, 23600 }, -- Plans: Enchanted Adamantite Leggings
                 { 19, 29698 }, -- Pattern: Enchanted Clefthoof Leggings
                 { 20, 29677 }, -- Pattern: Enchanted Felscale Leggings
                 { 22, 24294 }, -- Pattern: Runic Spellthread
+                { 27, 32900, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯超级能量合剂
+                { 28, 35716, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯纯粹死亡合剂
+                { 29, 35717, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯盲目光芒合剂
 			},
 		},
 		{ -- Revered
@@ -245,8 +258,14 @@ data["TheShatar"] = {
                 { 3, 29175 }, -- Gavel of Pure Light
                 { 4, 29176 }, -- Crest of the Sha'tar
                 { 6, 31781 }, -- Sha'tar Tabard
+                { 8, 32898, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯强固合剂
+                { 9, 32899, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯强效回复合剂
+                { 10, 32901, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯无情突袭合剂
+                { 23, 32900, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯超级能量合剂
+                { 24, 35716, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯纯粹死亡合剂
+                { 25, 35717, [PRICE_EXTRA_ITTYPE] = "Mark of the Illidari:1" }, -- 沙塔斯盲目光芒合剂
                 { 17, 33153 }, -- Formula: Enchant Gloves - Threat
-                { 199, 31354 }, -- Recipe: Flask of the Titans
+                { 19, 31354 }, -- Recipe: Flask of the Titans
 			},
 		},
 		{ -- Revered
@@ -273,7 +292,8 @@ data["TheShatar"] = {
                 { 17, 30826 }, -- Design: Ring of Arcane Shielding
                 { 18, 33155 }, -- Design: Kailee's Rose
                 { 20, 28273 }, -- Formula: Enchant Gloves - Major Healing
-                { 22, 29717 }, -- Pattern: Drums of Battle
+				{ 22, 185926 },
+                { 23, 29717 }, -- Pattern: Drums of Battle
 			},
 		},
 		{ -- Friendly
@@ -378,7 +398,8 @@ data["KeepersOfTime"] = {
                 { 18, 22536 }, -- Formula: Enchant Ring - Spellpower
                 { 20, 25910 }, -- Design: Enigmatic Skyfire Diamond
                 { 21, 33160 }, -- Design: Facet of Eternity
-                { 23, 29713 }, -- Pattern: Drums of Panic
+				{ 23, 185925 },
+                { 24, 29713 }, -- Pattern: Drums of Panic
 			},
 		},
 	},
@@ -983,8 +1004,18 @@ data["Ogrila"] = {
                 { 3, 32648 }, -- Vortex Walking Boots
                 { 4, 32651 }, -- Crystal Orb of Enlightenment
                 { 5, 32645 }, -- Crystalline Crossbow
-                { 7, 32828 }, -- Ogri'la Tabard
+                { 6, 32828 }, -- Ogri'la Tabard
+                { 8, 32634 }, -- 不稳定的紫水晶（精良）
+                { 9, 32635 }, -- 不稳定的翠榄石（精良）
+                { 10, 32636 }, -- 不稳定的蓝宝石（精良）
+                { 11, 32637 }, -- 不稳定的黄水晶（精良）
+                { 12, 32638 }, -- 不稳定的黄晶玉（精良）
+                { 13, 32639 }, -- 不稳定的水玉（精良）
+
                 { 17, 32569 }, -- Apexis Shard
+                { 19, 32640 }, -- 高能波动钻石
+                { 20, 32641 }, -- 魔能波动钻石
+
 			},
 		},
 		{ -- Revered
@@ -995,6 +1026,14 @@ data["Ogrila"] = {
                 { 3, 32654 }, -- Crystalforged Trinket
                 { 4, 32652 }, -- Ogri'la Aegis
                 { 5, 32650 }, -- Cerulean Crystal Rod
+                { 8, 32634 }, -- 不稳定的紫水晶（精良）
+                { 9, 32635 }, -- 不稳定的翠榄石（精良）
+                { 10, 32636 }, -- 不稳定的蓝宝石（精良）
+                { 11, 32637 }, -- 不稳定的黄水晶（精良）
+                { 12, 32638 }, -- 不稳定的黄晶玉（精良）
+                { 13, 32639 }, -- 不稳定的水玉（精良）
+                { 17, 32640 }, -- 高能波动钻石
+                { 18, 32641 }, -- 魔能波动钻石
 			},
 		},
 		{ -- Honored
@@ -1003,7 +1042,15 @@ data["Ogrila"] = {
 				{ 1, "f1038rep6" },
                 { 2, 32784 }, -- Red Ogre Brew
                 { 3, 32783 }, -- Blue Ogre Brew
+                { 5, 32634 }, -- 不稳定的紫水晶（精良）
+                { 6, 32635 }, -- 不稳定的翠榄石（精良）
+                { 7, 32636 }, -- 不稳定的蓝宝石（精良）
+                { 8, 32637 }, -- 不稳定的黄水晶（精良）
+                { 9, 32638 }, -- 不稳定的黄晶玉（精良）
+                { 10, 32639 }, -- 不稳定的水玉（精良）
                 { 17, 32572 }, -- Apexis Crystal
+                { 19, 32640 }, -- 高能波动钻石
+                { 20, 32641 }, -- 魔能波动钻石
 			},
 		},
 		{ -- Friendly
@@ -1012,6 +1059,14 @@ data["Ogrila"] = {
 				{ 1, "f1038rep5" },
                 { 2, 32910 }, -- Red Ogre Brew Special
                 { 3, 32909 }, -- Blue Ogre Brew Special
+                { 5, 32634 }, -- 不稳定的紫水晶（精良）
+                { 6, 32635 }, -- 不稳定的翠榄石（精良）
+                { 7, 32636 }, -- 不稳定的蓝宝石（精良）
+                { 8, 32637 }, -- 不稳定的黄水晶（精良）
+                { 9, 32638 }, -- 不稳定的黄晶玉（精良）
+                { 10, 32639 }, -- 不稳定的水玉（精良）
+                { 17, 32640 }, -- 高能波动钻石
+                { 18, 32641 }, -- 魔能波动钻石
 			},
 		},
 	},
@@ -1164,9 +1219,11 @@ data["TheMaghar"] = {
 				{ 1, "f941rep6" },
                 { 2, 29143 }, -- Clefthoof Hide Quiver
                 { 17, 25742 }, -- Pattern: Netherfury Leggings
-                { 18, 34174 }, -- Pattern: Drums of Restoration
-                { 19, 34172 }, -- Pattern: Drums of Speed
-                { 20, 29664 }, -- Pattern: Reinforced Mining Bag
+				{ 18, 185924 },
+				{ 19, 185923 },
+                { 20, 34174 }, -- Pattern: Drums of Restoration
+                { 21, 34172 }, -- Pattern: Drums of Speed
+                { 22, 29664 }, -- Pattern: Reinforced Mining Bag
 			},
 		},
 		{ -- Friendly
@@ -1283,9 +1340,11 @@ data["Kurenai"] = {
 				{ 1, "f978rep6" },
                 { 2, 29144 }, -- Worg Hide Quiver
                 { 17, 29219 }, -- Pattern: Netherfury Leggings
-                { 18, 34175 }, -- Pattern: Drums of Restoration
-                { 19, 34173 }, -- Pattern: Drums of Speed
-                { 20, 30444 }, -- Pattern: Reinforced Mining Bag
+				{ 18, 187048 },
+				{ 19, 187049 },
+                { 20, 34175 }, -- Pattern: Drums of Restoration
+                { 21, 34173 }, -- Pattern: Drums of Speed
+                { 22, 30444 }, -- Pattern: Reinforced Mining Bag
 			},
 		},
 		{ -- Friendly

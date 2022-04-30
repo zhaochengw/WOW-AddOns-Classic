@@ -1,8 +1,9 @@
 ## Interface: 20504
-## Author: Lag
-## Version: v2.4.2-bcc
+## Author: Ray
+## Version: v2.5.4-bcc
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
+
 ## Title: AtlasLootClassic |cFF0099FF[Factions]|r
 ## Title-deDE: AtlasLootClassic |cFF0099FF[Fraktionen]|r
 ## Title-esES: AtlasLootClassic |cFF0099FF[Facciones]|r
@@ -25,14 +26,13 @@
 ## Notes-ruRU: Таблицы добычи AtlasLoot для фракций.
 ## Notes-zhCN: AtlasLoot 阵营掉落列表
 ## Notes-zhTW: 陣營物品資料庫。
+
 ## X-Category: Map
 ## X-License: GPL v2
+
 ## X-AtlasLootClassic-LootModule: 1
+
 Locales\Locales.xml
+
 data.lua
 data-tbc.lua
-
-## Title: |cff880303[163UI]|r AtlasLootClassic |cFF0099FF[Factions]|r
-## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 声望阵营物品数据
-## X-Vendor: NetEase
-## X-163UI-Version: 20220414153603

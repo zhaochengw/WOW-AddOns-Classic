@@ -1866,10 +1866,12 @@ local RECIPE = {
 	[185851] = {3,375,0}, -- Greater Drums of Speed
 	[185852] = {3,375,0}, -- Greater Drums of War
 	[185922] = {3,375,351766}, -- Pattern: Greater Drums of War
-	[185923] = {3,375,351768}, -- Pattern: Greater Drums of Speed
-	[185924] = {3,375,351769}, -- Pattern: Greater Drums of Restoration
-	[185925] = {3,375,351770}, -- Pattern: Greater Drums of Panic
-	[185926] = {3,375,351771}, -- Pattern: Greater Drums of Battle
+	[185923] = {3,345,351768}, -- Pattern: Greater Drums of Speed (Maghar)
+	[185924] = {3,350,351769}, -- Pattern: Greater Drums of Restoration (Maghar)
+	[185925] = {3,370,351770}, -- Pattern: Greater Drums of Panic
+	[185926] = {3,365,351771}, -- Pattern: Greater Drums of Battle
+	[187048] = {3,350,351769}, -- Pattern: Greater Drums of Restoration (Kurenai)
+	[187049] = {3,345,351768}, -- Pattern: Greater Drums of Speed (Kurenai)
 --@end-version-bcc@
 }
 

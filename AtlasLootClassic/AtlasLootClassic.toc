@@ -1,12 +1,14 @@
 ## Interface: 20504
-## Author: Lag
-## Version: v2.4.2-bcc
+## Author: Ray
+## Version: v2.5.4-bcc
 ## SavedVariables: AtlasLootClassicDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDBIcon-1.0, LibDataBroker-1.1
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
+
 ## Title: AtlasLootClassic |cFF22B14C[Core]|r
 ## Notes: Shows the possible loot from the bosses
+
 ## Title-deDE: AtlasLootClassic |cFF22B14C[Kern]|r
 ## Title-esES: AtlasLootClassic |cFF22B14C[Núcleo]|r
 ## Title-esMX: AtlasLootClassic |cFF22B14C[Núcleo]|r
@@ -27,20 +29,26 @@
 ## Notes-ruRU: Показывает возможную добычу с боссов
 ## Notes-zhCN: 显示首领可能的掉落物品
 ## Notes-zhTW: 顯示首領與小怪可能掉落的物品，並可查詢各陣營與戰場的獎勵物品、套裝物品等資訊。
+
 ## X-Credits: Daviesh, Lag, Arith, Cellelach, Asurn, Pernicus, Dynaletik and many others
 ## X-Category: Map
 ## X-License: GPL v2
 ## X-Localizations: enUS, deDE, frFR, esES, koKR, zhCN, zhTW, esMX, ptBR, ruRU, itIT
 ## X-Curse-Project-ID: 326516
 ## X-Wago-ID: RXKqzoGy
+
 embeds.xml
+
 Init.lua
 Constants.lua
 db.lua
+
 Locales\Locales.xml
+
 AtlasLoot.xml
 AtlasLoot.lua
 Loader.lua
+
 Core\SlashCommands.lua
 Core\ClickHandler.lua
 Core\Tooltip.lua
@@ -51,7 +59,9 @@ Core\ItemString.lua
 Core\TargetScan.lua
 #Core\AtlasIntegration.lua
 #Core\WorldMapIntegration.xml
+
 MiniMapButton.lua
+
 Data\Token.lua
 Data\Profession.lua
 Data\Recipe.lua
@@ -63,8 +73,10 @@ Data\Requirements.lua
 Data\ClassFilter.lua
 Data\ItemSet.lua
 Data\VendorPrice.lua
+
 ItemDB\ItemDB.lua
 ItemDB\SoundData.lua
+
 Button\Button.lua
 Button\Item_type.lua
 Button\Link_type.lua
@@ -74,6 +86,7 @@ Button\Faction_type.lua
 Button\Set_type.lua
 Button\Extra_Price_type.lua
 #Button\Extra_Quest_type.lua
+
 GUI\GUI.xml
 GUI\GUI.lua
 GUI\Template_CheckBox.lua
@@ -85,12 +98,8 @@ GUI\Template_Model.lua
 GUI\ItemFrame.lua
 GUI\ModelFrame.lua
 GUI\SoundFrame.lua
+
 Addons\Addons.lua
 Addons\Sources.lua
 Addons\Favourites.lua
 Addons\Favourites_GUI.lua
-
-## Title: |cff880303[163UI]|r AtlasLootClassic |cFF22B14C[Core]|r
-## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 副本掉落查询
-## X-Vendor: NetEase
-## X-163UI-Version: 20220414153603

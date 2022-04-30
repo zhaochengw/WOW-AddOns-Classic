@@ -52,7 +52,7 @@ local WORLD_EVENT_CONTENT = data:AddContentType(AL["World Events"], ATLASLOOT_SE
 
 --@version-bcc@
 data["BadgeofJustice"] = {
-	name = format(AL["'%s' Vendor"], AL["Badge of Justice"]),
+	name = format(AL["'%s' Vendor"], "公正徽章P1-P3"),
 	ContentType = VENDOR_CONTENT,
 	TableType = NORMAL_ITTYPE,
 	gameVersion = 2,
@@ -162,264 +162,6 @@ data["BadgeofJustice"] = {
 				{ 1, 29388 }, -- Libram of Repentance
 				{ 2, 29389 }, -- Totem of the Pulsing Earth
 				{ 3, 29390 }, -- Everbloom Idol
-			},
-		},
-	}
-}
-
-data["BadgeofJustice4"] = {
-	name = format(AL["'%s %s' Vendor"], AL["Badge of Justice"], "P4"),
-	ContentType = VENDOR_CONTENT,
-	TableType = NORMAL_ITTYPE,
-	gameVersion = 2,
-	items = {
-		{
-			name = ALIL["Back"],
-			[NORMAL_DIFF] = {
-				{ 1, 33593 },
-				{ 2, 35321 },
-				{ 3, 33304 },
-				{ 4, 35324 },
-				{ 5, 33484 },
-				{ 6, 33333 },
-			},
-		},
-		{
-			name = ALIL["Cloth"],
-			[NORMAL_DIFF] = {
-				{1, 33588 },
-				{2, 33586 },
-				{3, 33291 },
-				{4, 33584 },
-				{6, 33589 },
-				{7, 33587 },
-				{8, 33585 },
-			},
-		},
-		{
-			name = ALIL["Leather"],
-			[NORMAL_DIFF] = {
-				{1, 33972 },
-				{2, 33973 },
-				{3, 33566 },
-				{4, 33578 },
-				{5, 33974 },
-				{6, 33559 },
-				{7, 33577 },
-
-				{9, 33287 },
-				{10, 33557 },
-				{11, 33552 },
-
-				{16, 33579 }, -- bonus armor
-				{17, 33580 }, -- bonus armor
-				{18, 33583 }, -- bonus armor
-				{19, 33582 }, -- bonus armor
-
-				{21, 33540 },
-				{22, 33539 },
-				{23, 33538 },
-				{24, 33222 },
-			},
-		},
-		{
-			name = ALIL["Mail"],
-			[NORMAL_DIFF] = {
-				{1, 33970 },
-				{2, 33965 },
-				{3, 33535 },
-				{4, 33524 },
-				{5, 33536 },
-				{6, 33537 },
-
-				{8, 33529 },
-				{9, 33528 },
-				{10, 33280 },
-				{11, 33527 },
-
-				{16, 33532 },
-				{17, 33531 },
-				{18, 33386 },
-				{19, 33530 },
-				{20, 33324 },
-			},
-		},
-		{
-			name = ALIL["Neck"],
-			[NORMAL_DIFF] = {
-				{1, 33296},
-			},
-		},
-		{
-			name = ALIL["Off-Hand"],
-			[NORMAL_DIFF] = {
-				{ 1, 33334 },
-				{ 2, 33325 },
-			},
-		},
-		{
-			name = ALIL["Plate"],
-			[NORMAL_DIFF] = {
-				{1, 33810 },
-				{2, 33514 },
-				{3, 33513 },
-				{4, 33331 },
-				{5, 33512 },
-				{6, 33501 },
-
-				{8, 33520 },
-				{9, 33519 },
-				{10, 33518 },
-				{11, 33207 },
-
-				{16, 33522 },
-				{17, 33516 },
-				{18, 33517 },
-				{19, 33279 },
-				{20, 33524 },
-				{21, 33515 },
-				{22, 33523 },
-			},
-		},
-		{
-			name = ALIL["Trinket"],
-			[NORMAL_DIFF] = {
-				{1, 35326 },
-				{2, 34049 },
-				{3, 34162 },
-				{4, 34163 },
-				{5, 33832 },
-				{6, 34050 },
-			},
-		},
-		{
-			name = ALIL["Relic"],
-			[NORMAL_DIFF] = {
-				{1, "INV_Box_01", nil, AL["Idols"] },
-				{2, 33510 },
-				{3, 33509 },
-				{4, 33508 },
-				{6, "INV_Box_01", nil, AL["Librams"] },
-				{7, 33503 },
-				{8, 33502 },
-				{10, "INV_Box_01", nil, AL["Totems"] },
-				{11, 33506 },
-				{12, 33507 },
-				{13, 33505 },
-			},
-		},
-		{
-			name = ALIL["Wand"],
-			[NORMAL_DIFF] = {
-				{ 1, 33192 }, -- Carved Witch Doctor Stick
-			},
-		},
-	}
-}
-
---copy/paste from Rootkit for P5 badge items - github issue #199
-data["BadgeofJusticeP5"] = {
-	name = format(AL["'%s %s' Vendor"], AL["Badge of Justice"], "P5"),
-	ContentType = VENDOR_CONTENT,
-	TableType = NORMAL_ITTYPE,
-	gameVersion = 2,
-	items = {
-		{
-			name = ALIL["Cloth"],
-			[NORMAL_DIFF] = {
-				{1, 34926},
-				{2, 34924},
-				{3, 34925},
-				{5, 34919},
-				{6, 34917},
-				{7, 34918},
-				{9, 34938},
-				{10, 34936},
-				{11, 34937},
-			},
-		},
-		{
-			name = ALIL["Gem"],
-			[NORMAL_DIFF] = {
-				{1, 32228},
-				{2, 32249},
-				{3, 32231},
-				{4, 32230},
-				{5, 32227},
-				{6, 32229},
-			},
-		},
-		{
-			name = ALIL["Leather"],
-			[NORMAL_DIFF] = {
-				{1, 34911}, --bonus armor
-				{2, 34906},  --bonus armor
-				{3, 34910}, --bonus armor
-				{5, 34929}, -- AP
-				{6, 34927}, -- AP
-				{7, 34928}, --AP
-				{16, 34902},  -- healing
-				{17, 34901}, -- healing
-				{18, 34900}, -- healing
-				{20, 34904},  -- SP
-				{21, 34903},  --SP
-				{22, 34905},  -- SP
-			},
-		},
-		{
-			name = ALIL["Mail"],
-			[NORMAL_DIFF] = {
-				{1, 34932}, -- Heal
-				{2, 34931}, -- heal
-				{3, 34930}, -- Heal
-				{5, 34916}, -- AP
-				{6, 34912}, -- AP
-				{7, 34914}, -- AP
-				{9, 34935}, -- SP
-				{10, 34934}, -- SP
-				{11, 34933}, -- SP
-			},
-		},
-		{
-			name = ALIL["Plate"],
-			[NORMAL_DIFF] = {
-				{1, 34947}, -- DEF + SP
-				{2, 34945}, -- Def + SP
-				{3, 34946}, -- DEF + SP
-				{5, 34941}, -- Def + Expertise
-				{6, 34939}, -- Def
-				{7, 34940}, -- Def + Expertise
-				{16, 34923}, -- Healing
-				{17, 34921}, -- Healing
-				{18, 34922}, -- Healing
-				{20, 34944}, -- STR + Haste
-				{21, 34942}, -- STR + Haste
-				{22, 34943}, -- STR + Haste
-			},
-		},
-		{
-			name = ALIL["Finger"],
-			[NORMAL_DIFF] = {
-				{1, 34887},
-				{2, 34890},
-				{3, 34889},
-				{4, 34888},
-			},
-		},
-		{
-			name = ALIL["Weapon"],
-			[NORMAL_DIFF] = {
-				{1, 34894},  -- 1H Dagger
-				{2, 34949}, -- OH Dagger
-				{3, 34952}, -- OH Dagger
-				{4, 34950}, -- OH Fist 1.5
-				{6, 34893}, -- MH Fist 2.5
-				{7, 34951}, -- OH - Fist 2.5
-				{16, 34891}, -- 2H Axe
-				{18, 34892}, -- Crossbow
-				{20, 34898}, -- Staff AP
-				{22, 34895}, -- MH Dagger - SP
-				{24, 34896}, -- MH Mace - Healing
 			},
 		},
 	}
@@ -2151,3 +1893,254 @@ data["ScourgeInvasion"] = {
 		},
 	},
 }
+data["BadgeofJusticeP4"] = {
+	name = format(AL["'%s' Vendor"], "公正徽章 P4"),
+	ContentType = VENDOR_CONTENT,
+	TableType = NORMAL_ITTYPE,
+	gameVersion = 2,
+	items = {
+		{
+			name = ALIL["Cloth"],
+			[NORMAL_DIFF] = {
+				{ 16, 33585}, 
+				{ 17, 33584},
+				{ 1, 33586},
+				{ 2, 33587},
+				{ 4, 33588},
+				{ 19, 33291},
+				{ 5, 33589},	
+			},
+		},
+		{
+			name = ALIL["Leather"],
+			[NORMAL_DIFF] = {
+				{ 1, 33540}, 
+				{ 21, 33538},
+				{ 11, 33222},
+				{ 6, 33539},
+				{ 3, 33578},
+				{ 4, 33580},
+				{ 16, 33566},
+				{ 9, 33582},
+				{ 10, 33577},
+				{ 26, 33287},
+				{ 20, 33552},
+				{ 2, 33557},
+				{ 7, 33974},
+				{ 25, 33973},
+				{ 19, 33559},
+				{ 23, 33972},
+				{ 17, 33579},
+				{ 18, 33583},
+
+			},
+		},
+		{
+			name = ALIL["Mail"],
+			[NORMAL_DIFF] = {
+				{ 1, 33324}, 
+				{ 2, 33529},
+				{ 3, 33537},
+				{ 4, 33965},
+				{ 5, 33970},
+				{ 6, 33527},
+				{ 7, 33528},
+				{ 8, 33386},
+				{ 9, 33530},
+				{ 10, 33280},
+				{ 11, 33531},
+				{ 12, 33534},
+				{ 13, 33536},
+				{ 14, 33532},
+				{ 15, 33535},
+			},
+		},
+		{
+			name = ALIL["Plate"],
+			[NORMAL_DIFF] = {
+				{1, 33523}, 
+				{2, 33516},
+				{3, 33331},
+				{4, 33522},
+				{5, 33514},
+				{6, 33515},
+				{7, 33513},
+				{8, 33517},
+				{9, 33810},
+				{10, 33279},
+				{11, 33501},
+				{12, 33207},
+				{13, 33520},
+				{14, 33518},
+				{15, 33512},
+				{16, 33519},
+				{17, 33524},
+			},
+		},
+		{
+			name = ALIL["Off Hand"],
+			[NORMAL_DIFF] = {
+				{1, 33334}, 
+				{2, 33325},
+			},
+		},
+		{
+			name = ALIL["Neck"],
+			[NORMAL_DIFF] = {
+				{ 1, 33296}, 
+			},
+		},
+		{
+			name = ALIL["Cloak"],
+			[NORMAL_DIFF] = {
+				{ 1, 35321}, 
+				{ 2, 33484},
+				{ 3, 33593},
+				{ 4, 33304},
+				{ 5, 33333},
+				{ 6, 35324},
+				
+			},
+		},
+		{
+			name = ALIL["Finger"],
+			[NORMAL_DIFF] = {
+				{ 1, 29367 }, -- Ring of Cryptic Dreams
+				{ 2, 29373 }, -- Band of Halos
+				{ 3, 29379 }, -- Ring of Arathi Warlords
+				{ 4, 29384 }, -- Ring of Unyielding Force
+			},
+		},
+		{
+			name = ALIL["Trinket"],
+			[NORMAL_DIFF] = {
+				{1, 35326}, 
+				{2, 33832},
+				{3, 34050},
+				{4, 34163},
+				{5, 34049},
+				{6, 34162},
+			},
+		},
+		{
+			name = ALIL["Relic"],
+			[NORMAL_DIFF] = {
+				{ 1, 33504}, 
+				{ 2, 33502},
+				{ 3, 33192},
+			},
+		},
+	}
+}
+--@end-version-bcc@
+
+data["BadgeofJusticeP5"] = {
+	name = format(AL["'%s' Vendor"], "公正徽章 P5"),
+	ContentType = VENDOR_CONTENT,
+	TableType = NORMAL_ITTYPE,
+	gameVersion = 2,
+	items = {
+		{
+			name = ALIL["Cloth"],
+			[NORMAL_DIFF] = {
+				{5, 34926},
+				{6, 34919},
+				{20, 34938},
+				{1, 34924},
+				{2, 34917},
+				{3, 34936},
+				{16, 34925},
+				{17, 34918},
+				{18, 34937},
+			},
+		},
+		{
+			name = ALIL["Leather"],
+			[NORMAL_DIFF] = {
+				{1, 34911},
+				{2, 34902},
+				{3, 34904},
+				{5, 34929},
+				{7, 34906},
+				{22, 34903},
+				{23, 34927},
+				{8, 34900},
+				{16, 34905},
+				{17, 34901},
+				{18, 34910},
+				{19, 34928},
+			},
+		},
+		{
+			name = ALIL["Mail"],
+			[NORMAL_DIFF] = {
+				{20, 34916},
+				{5, 34932},
+				{6, 34935},
+				{1, 34930},
+				{2, 34933},
+				{3, 34912},
+				{16, 34914},
+				{17, 34931},
+				{18, 34934},
+			},
+		},
+		{
+			name = ALIL["Plate"],
+			[NORMAL_DIFF] = {
+				{21, 34947},
+				{6, 34944},
+				{7, 34941},
+				{8, 34923},
+				{1, 34942},
+				{2, 34939},
+				{3, 34921},
+				{4, 34945},
+				{16, 34922},
+				{17, 34946},
+				{18, 34943},
+				{19, 34940},
+			},
+		},
+		{
+			name = ALIL["Finger"],
+			[NORMAL_DIFF] = {
+				{1, 34887},
+				{2, 34890},
+				{3, 34889},
+				{4, 34888},
+			},
+		},
+		{
+			name = ALIL["Weapon"],
+			[NORMAL_DIFF] = {
+				{20, 34949},
+				{21, 34952},
+				{23, 34894},
+				{7, 34893},
+				{1, 34891},
+				{2, 34892},
+				{8, 34895},
+				{5, 34896},
+				{6, 34898},
+				{16, 34951},
+				{17, 34950},
+			},
+		},
+
+		{
+			name = ALIL["材料"],
+			[NORMAL_DIFF] = {
+				{ 1, 23572 }, -- 源生虚空
+				{ 2, 30183 }, -- 虚空漩涡
+				{ 16, 32227 }, -- 赤尖石
+				{ 17, 32229 }, -- 狮眼石
+				{ 18, 32228 }, -- 天蓝宝石
+				{ 19, 32231 }, -- 焚石
+				{ 20, 32249 }, -- 海浪翡翠
+				{ 21, 32230 }, -- 影歌紫玉
+			},
+		},
+	}
+}
+--@end-version-bcc@

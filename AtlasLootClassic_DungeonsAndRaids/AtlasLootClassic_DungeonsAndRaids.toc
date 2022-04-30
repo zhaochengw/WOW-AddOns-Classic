@@ -1,8 +1,9 @@
 ## Interface: 20504
-## Author: Lag
-## Version: v2.4.2-bcc
+## Author: Ray
+## Version: v2.5.4-bcc
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
+
 ## Title: AtlasLootClassic |cFF0099FF[Dungeons and Raids]|r
 ## Title-deDE: AtlasLootClassic |cFF0099FF[Instanzen und Raids]|r
 ## Title-esES: AtlasLootClassic |cFF0099FF[Mazmorras y Bandas]|r
@@ -25,15 +26,14 @@
 ## Notes-ruRU: Таблицы добычи AtlasLoot для подземелий и рейдов.
 ## Notes-zhCN: AtlasLoot 地下城&团队副本掉落列表
 ## Notes-zhTW: 地城和團隊物品資料庫。
+
 ## X-Category: Map
 ## X-License: GPL v2
+
 ## X-AtlasLootClassic-LootModule: 1
+
 Locales\Locales.xml
+
 data.lua
 data-tbc.lua
 droprate.lua
-
-## Title: |cff880303[163UI]|r AtlasLootClassic |cFF0099FF[Dungeons and Raids]|r
-## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 副本掉落物品数据
-## X-Vendor: NetEase
-## X-163UI-Version: 20220414153603
