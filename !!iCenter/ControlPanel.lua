@@ -390,6 +390,46 @@ if title ~= nil then
 	end
 end
 
+local _, title = GetAddOnInfo("MailLogger");
+if title ~= nil then
+	if GetLocale() == "zhCN" then
+		FF_NameMailLogger	= "邮件交易助手";
+		FF_DescMailLogger	= "邮件、交易自动记录。";
+	elseif GetLocale() == "zhTW" then
+		FF_NameMailLogger	= "邮件交易助手";
+		FF_DescMailLogger	= "邮件、交易自动记录。";
+	else
+		FF_NameMailLogger	= "MailLogger";
+		FF_DescMailLogger	= "Automatic Log Mails & Trades.";
+	end
+	if ( EarthFeature_AddButton ) then
+		EarthFeature_AddButton(
+			{
+				id= "MailLogger";
+				tab= "data";
+				name= FF_NameMailLogger;
+				subtext= "MailLogger";
+				tooltip = FF_DescMailLogger;
+				icon= "Interface\\Icons\\INV_Scroll_07";
+				callback= function(button)
+					if not IsAddOnLoaded("MailLogger") then
+						LoadAddOn("MailLogger");
+					end
+					InterfaceOptionsFrame_OpenToCategory("MailLogger");
+					InterfaceOptionsFrame_OpenToCategory("MailLogger");
+				end;
+				test = function()
+					if not IsAddOnLoaded("MailLogger") and not IsAddOnLoadOnDemand("MailLogger") then
+						return false;
+					else
+						return true;
+					end
+				end;
+			}
+		);
+	end
+end
+
 local _, title = GetAddOnInfo("Accountant_Classic");
 if title ~= nil then
 	if GetLocale() == "zhCN" then
