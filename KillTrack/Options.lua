@@ -97,8 +97,9 @@ function Opt:Show()
         function(_, checked) KT.Global.COUNT_GROUP = checked end)
     countGroup:SetPoint("TOPLEFT", printNew, "BOTTOMLEFT", 0, -8)
 
-    local thresholdDesc = self:CreateFontString(nil, "ARTWORK", "ChatFontNormal")
+    local thresholdDesc = self:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     thresholdDesc:SetPoint("TOPLEFT", countGroup, "BOTTOMLEFT", 0, -8)
+    thresholdDesc:SetTextColor(1, 1, 1)
     thresholdDesc:SetText("Threshold for displaying kill achievements (press enter to apply)")
 
     local threshold = CreateFrame("EditBox", "KillTrackOptThreshold", panel, "InputBoxTemplate")
@@ -170,6 +171,70 @@ function Opt:Show()
         function(_, checked) KT.Global.DISABLE_RAIDS = checked end)
     disableRaids:SetPoint("TOPLEFT", disableDungeons, "BOTTOMLEFT", 0, -8)
 
+    local datetimeFormatDesc = self:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    datetimeFormatDesc:SetPoint("TOPLEFT", disableRaids, "BOTTOMLEFT", 0, -8)
+    datetimeFormatDesc:SetTextColor(1, 1, 1)
+    datetimeFormatDesc:SetText("Datetime format template (press enter to apply)")
+
+    local datetimeFormat = CreateFrame("EditBox", "KillTrackOptDateTimeFormat", panel, "InputBoxTemplate")
+    datetimeFormat:SetHeight(22)
+    datetimeFormat:SetWidth(200)
+    datetimeFormat:SetPoint("LEFT", datetimeFormatDesc, "RIGHT", 8, 0)
+    datetimeFormat:SetAutoFocus(false)
+    datetimeFormat:EnableMouse(true)
+    local datetimeFormatPreview = self:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    datetimeFormatPreview:SetPoint("TOPLEFT", datetimeFormat, "BOTTOMLEFT", 0, -2)
+    datetimeFormatPreview:SetTextColor(1, 1, 1)
+    datetimeFormatPreview:SetText("Preview:")
+    local datetimeFormatPreviewValue = self:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    datetimeFormatPreviewValue:SetPoint("LEFT", datetimeFormatPreview, "RIGHT", 8, 0)
+    datetimeFormatPreviewValue:SetTextColor(1, 1, 1)
+    datetimeFormatPreviewValue:SetText(KTT:FormatDateTime())
+
+    datetimeFormat:SetScript("OnEditFocusGained", function(box)
+        box:SetTextColor(0, 1, 0)
+        box:HighlightText()
+    end)
+    local function setDateTimeFormat(box, enter)
+        box:SetTextColor(1, 1, 1)
+        local value = box:GetText()
+        if type(value) ~= "string" then
+            box:SetText(KT.Global.DATETIME_FORMAT)
+            box:HighlightText()
+            return
+        end
+        local valid, errMsg = pcall(KTT.FormatDateTime, KTT, nil, value)
+        if not valid then
+            KT:Msg("Invalid format string: " .. (errMsg or "unknown error"))
+            box:HighlightText()
+            return
+        end
+        KT.Global.DATETIME_FORMAT = value
+        if not enter then
+            KT:Msg("Updated datetime format!")
+        end
+        box:ClearFocus()
+        box:SetText(KT.Global.DATETIME_FORMAT)
+    end
+    datetimeFormat:SetScript("OnEditFocusLost", function(box) setDateTimeFormat(box) end)
+    datetimeFormat:SetScript("OnEnterPressed", function(box) setDateTimeFormat(box, true) end)
+    datetimeFormat:SetScript("OnTextChanged", function(box)
+        local value = box:GetText()
+        if type(value) ~= "string" then return end
+        local valid, result = pcall(KTT.FormatDateTime, KTT, nil, value)
+        if valid then
+            datetimeFormatPreviewValue:SetText(result)
+        else
+            datetimeFormatPreviewValue:SetText("invalid format")
+        end
+    end)
+    local datetimeFormatReset = button("Reset", "Reset the datetime format to the default", function()
+        KT.Global.DATETIME_FORMAT = KT.Defaults.DateTimeFormat
+        datetimeFormat:SetText(KT.Global.DATETIME_FORMAT)
+    end)
+    datetimeFormatReset:SetWidth(80)
+    datetimeFormatReset:SetPoint("LEFT", datetimeFormat, "RIGHT", 5, 0)
+
     local function init()
         printKills:SetChecked(KT.Global.PRINT)
         tooltipControl:SetChecked(KT.Global.TOOLTIP)
@@ -179,6 +244,7 @@ function Opt:Show()
         minimap:SetChecked(not KT.Global.BROKER.MINIMAP.hide)
         disableDungeons:SetChecked(KT.Global.DISABLE_DUNGEONS)
         disableRaids:SetChecked(KT.Global.DISABLE_RAIDS)
+        datetimeFormat:SetText(KT.Global.DATETIME_FORMAT)
     end
 
     init()

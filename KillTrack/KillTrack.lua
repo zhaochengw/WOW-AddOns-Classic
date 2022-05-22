@@ -25,6 +25,7 @@ _G[NAME] = KT
 local UnitGUID = UnitGUID
 local UnitIsTapDenied = UnitIsTapDenied
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+local GetServerTime = GetServerTime
 
 local NO_NAME = "<No Name>"
 
@@ -50,6 +51,10 @@ KT.Session = {
 }
 KT.Messages = {
     Announce = "[KillTrack] Session Length: %s. Session Kills: %d. Kills Per Minute: %.2f."
+}
+
+KT.Defaults = {
+    DateTimeFormat = "%Y-%m-%d %H:%M:%S"
 }
 
 local ET
@@ -168,6 +173,9 @@ function KT.Events.ADDON_LOADED(self, ...)
     if type(self.Global.TOOLTIP) ~= "boolean" then
         self.Global.TOOLTIP = true
     end
+    if type(self.Global.DATETIME_FORMAT) ~= "string" then
+        self.Global.DATETIME_FORMAT = self.Defaults.DateTimeFormat
+    end
     if type(_G["KILLTRACK_CHAR"]) ~= "table" then
         _G["KILLTRACK_CHAR"] = {}
     end
@@ -247,27 +255,6 @@ function KT.Events.COMBAT_LOG_EVENT_UNFILTERED(self)
     end
 end
 
-function KT.Events.UPDATE_MOUSEOVER_UNIT(self)
-    if not self.Global.TOOLTIP then return end
-    if UnitIsPlayer("mouseover") then return end
-    local id = KTT:GUIDToID(UnitGUID("mouseover"))
-    if not id then return end
-    if UnitCanAttack("player", "mouseover") then
-        local mob, charMob = self:InitMob(id, UnitName("mouseover"))
-        local gKills, cKills = mob.Kills, charMob.Kills --self:GetKills(id)
-        local exp = mob.Exp
-        GameTooltip:AddLine(("Killed %d (%d) times."):format(cKills, gKills), 1, 1, 1)
-        if self.Global.SHOW_EXP and exp then
-            local toLevel = exp > 0 and math.ceil((UnitXPMax("player") - UnitXP("player")) / exp) or "N/A"
-            GameTooltip:AddLine(("EXP: %d (%s kills to level)"):format(exp, toLevel), 1, 1, 1)
-        end
-    end
-    if KT.Debug then
-        GameTooltip:AddLine(("ID = %d"):format(id))
-    end
-    GameTooltip:Show()
-end
-
 function KT.Events.CHAT_MSG_COMBAT_XP_GAIN(self, message)
     ET:CheckMessage(message)
 end
@@ -287,6 +274,29 @@ function KT.Events.ENCOUNTER_END(self, _, _, _, size)
         self.Frame:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN")
     end
 end
+
+GameTooltip:HookScript("OnTooltipSetUnit", function(self)
+    if not KT.Global.TOOLTIP then return end
+    local _, unit = self:GetUnit()
+    if not unit then return end
+    if UnitIsPlayer(unit) then return end
+    local id = KTT:GUIDToID(UnitGUID(unit))
+    if not id then return end
+    if UnitCanAttack("player", unit) then
+        local mob, charMob = KT:InitMob(id, UnitName(unit))
+        local gKills, cKills = mob.Kills, charMob.Kills --self:GetKills(id)
+        local exp = mob.Exp
+        self:AddLine(("Killed %d (%d) times."):format(cKills, gKills), 1, 1, 1)
+        if KT.Global.SHOW_EXP and exp then
+            local toLevel = exp > 0 and math.ceil((UnitXPMax("player") - UnitXP("player")) / exp) or "N/A"
+            self:AddLine(("EXP: %d (%s kills to level)"):format(exp, toLevel), 1, 1, 1)
+        end
+    end
+    if KT.Debug then
+        self:AddLine(("ID = %d"):format(id))
+    end
+    self:Show()
+end)
 
 function KT:ToggleLoadMessage()
     self.Global.LOAD_MESSAGE = not self.Global.LOAD_MESSAGE
@@ -395,9 +405,14 @@ end
 
 function KT:AddKill(id, name)
     name = name or NO_NAME
+    local current_time = GetServerTime()
     self:InitMob(id, name)
-    self.Global.MOBS[id].Kills = self.Global.MOBS[id].Kills + 1
-    self.CharGlobal.MOBS[id].Kills = self.CharGlobal.MOBS[id].Kills + 1
+    local globalMob = self.Global.MOBS[id]
+    local charMob = self.CharGlobal.MOBS[id]
+    globalMob.Kills = self.Global.MOBS[id].Kills + 1
+    globalMob.LastKillAt = current_time
+    charMob.Kills = self.CharGlobal.MOBS[id].Kills + 1
+    charMob.LastKillAt = current_time
     if self.Global.PRINTKILLS then
         local kills = self.Global.MOBS[id].Kills
         local cKills = self.CharGlobal.MOBS[id].Kills
@@ -531,11 +546,15 @@ function KT:PrintKills(identifier)
     local name = NO_NAME
     local gKills = 0
     local cKills = 0
+    local lastKillAt = nil
     if type(identifier) ~= "string" and type(identifier) ~= "number" then identifier = NO_NAME end
     for k,v in pairs(self.Global.MOBS) do
         if type(v) == "table" and (tostring(k) == tostring(identifier) or v.Name == identifier) then
             name = v.Name
             gKills = v.Kills
+            if type(v.LastKillAt) == "number" then
+                lastKillAt = KTT:FormatDateTime(v.LastKillAt)
+            end
             if self.CharGlobal.MOBS[k] then
                 cKills = self.CharGlobal.MOBS[k].Kills
             end
@@ -544,6 +563,9 @@ function KT:PrintKills(identifier)
     end
     if found then
         self:Msg(("You have killed %q %d times in total, %d times on this character"):format(name, gKills, cKills))
+        if lastKillAt then
+            self:Msg(("Last killed at %s"):format(lastKillAt))
+        end
     else
         if UnitExists("target") and not UnitIsPlayer("target") then
             identifier = UnitName("target")

@@ -125,6 +125,26 @@ local function CreateRow(container, previous)
         KT:ShowDelete(id, name)
     end)
 
+    row:SetScript("OnEnter", function(s)
+        local id = tonumber(s.idField:GetText())
+        if not id then return end
+        local globalData = KT.Global.MOBS[id]
+        if not globalData then return end
+        local killTimestamp = globalData.LastKillAt
+        if not killTimestamp then return end
+        local lastKillAt = KTT:FormatDateTime(killTimestamp)
+        local tpString = ("Last killed at %s"):format(lastKillAt)
+        GameTooltip:SetOwner(s, "ANCHOR_NONE")
+        GameTooltip:SetPoint("TOPLEFT", s, "BOTTOMLEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(tpString)
+        GameTooltip:Show()
+    end)
+
+    row:SetScript("OnLeave", function()
+        GameTooltip:Hide()
+    end)
+
     return row
 end
 

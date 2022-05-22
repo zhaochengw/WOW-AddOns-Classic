@@ -259,7 +259,7 @@ C:Register({"countmode", "cm", "count", "counttype", "changecount", "switchcount
 C:Register({"debug", "toggledebug", "d", "td"}, function() KT:ToggleDebug() end)
 C:Register({"exp", "xp", "experience", "shoexp", "showxp"}, function() KT:ToggleExp() end)
 C:Register({"options", "opt", "config", "conf"}, function() KT.Options:Open() end)
-C:Register({"minimap", "mp"}, function() KT.Broker:SetMinimap(not KT.Global.BROKER.MINIMAP.hide) end)
+C:Register({"minimap", "mp"}, function() KT.Broker:SetMinimap(KT.Global.BROKER.MINIMAP.hide) end)
 
 C:Register({"tooltip", "tt"}, function()
     KT.Global.TOOLTIP = not KT.Global.TOOLTIP

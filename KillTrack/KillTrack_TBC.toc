@@ -1,4 +1,4 @@
-## Interface: 90200
+## Interface: 20504
 ## Version: v2.31.0
 ## Title: KillTrack
 ## Notes: Keeps track of how many kills you have per mob and displays them in a list.

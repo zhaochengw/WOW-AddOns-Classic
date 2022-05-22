@@ -101,6 +101,16 @@ function KTT:TableLength(table)
     return count
 end
 
+--------------------
+-- DATETIME TOOLS --
+--------------------
+
+function KTT:FormatDateTime(timestamp, format)
+    timestamp = timestamp or GetServerTime()
+    format = format or KT.Global.DATETIME_FORMAT or KT.Defaults.DateTimeFormat
+    return date(format, timestamp)
+end
+
 -----------------
 -- OTHER TOOLS --
 -----------------
