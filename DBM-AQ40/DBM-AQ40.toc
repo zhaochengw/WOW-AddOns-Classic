@@ -42,6 +42,3 @@ Huhuran.lua
 Ouro.lua
 TwinEmps.lua
 CThun.lua
-
-## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210

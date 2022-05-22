@@ -43,6 +43,3 @@ Sulfuron.lua
 Golemagg.lua
 Majordomo.lua
 Ragnaros.lua
-
-## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210

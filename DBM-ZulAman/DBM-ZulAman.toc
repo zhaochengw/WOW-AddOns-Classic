@@ -24,6 +24,3 @@ Jan'alai.lua
 Halazzi.lua
 Malacrass.lua
 Zul'jin.lua
-
-## X-Vendor: NetEase
-## X-163UI-Version: 20220414153603

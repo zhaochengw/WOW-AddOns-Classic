@@ -68,7 +68,7 @@ L:SetOptionLocalization{
 L:SetMiscLocalization{
 	HyjalZoneName	= "하이잘 정상",
 	Thrall			= "스랄",
-	Jaina			= "제이나 프라우드무어",
+	Jaina			= "여군주 제이나 프라우드무어",
 	GeneralBoss		= "우두머리 등장",
 	RageWinterchill	= "격노한 윈터칠 등장",
 	Anetheron		= "아네테론 등장",
@@ -83,6 +83,7 @@ L:SetMiscLocalization{
 	RageGossip		= "제 동료와 저는 프라우드무어님, 당신과 함께하겠습니다.",
 	AnetheronGossip	= "아키몬드가 어떤 군대를 보내던 우리는 준비가 되어 있습니다, 프라우드무어 님.",
 	KazrogalGossip	= "당신과 함께 하겠습니다, 대족장님.",
+    KazrogalGossipF = "당신과 함께 하겠어요, 대족장님.",
 	AzgalorGossip	= "두려워할 것은 아무것도 없습니다.",
 	AzgalorGossipF 	= "두려워할 것은 아무것도 없어요.",
 	Ghoul			= "구울",

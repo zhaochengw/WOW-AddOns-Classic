@@ -32,7 +32,7 @@
 ## X-DBM-Mod-Sort: 1500
 ## X-Curse-Project-ID: 61882
 ## X-Wago-ID: Xb6Xe0Kp
-## Version: r131
+## Version: r132
 
 localization.en.lua
 localization.br.lua
@@ -60,4 +60,4 @@ Battlegrounds\Warsong.lua
 #Battlegrounds\Wintergrasp.lua
 
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+## X-163UI-Version: 20220520145709

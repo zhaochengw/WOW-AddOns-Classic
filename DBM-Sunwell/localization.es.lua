@@ -73,9 +73,7 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	WarnPhase		= "Anunciar cambios de fase",
-	TimerPhase		= "Mostrar temporizador para los cambios de fase",
-	VaporIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(45392),
-	EncapsIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(45665)
+	TimerPhase		= "Mostrar temporizador para los cambios de fase"
 }
 
 L:SetMiscLocalization{
@@ -92,12 +90,6 @@ L = DBM:GetModLocalization("Twins")
 
 L:SetGeneralLocalization{
 	name = "Las gemelas eredar"
-}
-
-L:SetOptionLocalization{
-	NovaIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(45329),
-	ConflagIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(45333),
-	RangeFrame		= DBM_CORE_L.AUTO_RANGE_OPTION_TEXT:format(10, 45333)
 }
 
 L:SetMiscLocalization{
@@ -166,9 +158,7 @@ L:SetOptionLocalization{
 	WarnBlueOrb		= "Mostrar aviso cuando se active un orbe azul",
 	SpecWarnDarkOrb	= "Mostrar aviso especial cuando aparezcan Orbes escudo",
 	SpecWarnBlueOrb	= "Mostrar aviso especial cuando se active un orbe azul",
-	TimerBlueOrb	= "Mostrar temporizador para la activación de los orbes azules",
-	RangeFrame		= DBM_CORE_L.AUTO_RANGE_OPTION_TEXT:format(10, 45641),
-	BloomIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(45641)
+	TimerBlueOrb	= "Mostrar temporizador para la activación de los orbes azules"
 }
 
 L:SetMiscLocalization{

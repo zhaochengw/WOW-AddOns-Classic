@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Netherspite", "DBM-Karazhan")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220202210525")
+mod:SetRevision("@file-date-integer@")
 mod:SetCreatureID(15689)
 mod:SetEncounterID(659, 2451)
 mod:SetModelID(15363)

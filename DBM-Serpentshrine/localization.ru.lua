@@ -131,7 +131,7 @@ L:SetTimerLocalization{
 L:SetOptionLocalization{
 	SpecWarnMurlocs	= "Показывать специальное предупреждение о появлении Мурлоков",
 	TimerMurlocs	= "Показывать таймер о появлении Мурлоков",
-	GraveIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TEXT:format(38049)
+	GraveIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TARGETS:format(38049)
 }
 
 L:SetMiscLocalization{

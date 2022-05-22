@@ -32,6 +32,3 @@ Alar.lua
 VoidReaver.lua
 Solarian.lua
 KaelThas.lua
-
-## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210

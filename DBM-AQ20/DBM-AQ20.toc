@@ -39,6 +39,3 @@ Moam.lua
 Buru.lua
 Ayamiss.lua
 Ossirian.lua
-
-## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
