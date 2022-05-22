@@ -2,6 +2,27 @@
 
 This mod is distributed under Version 2 of the GPL.  A copy of the GPL is included in this zip file with links to non-english translations.
 
+## v2.4.3 (May, 09, 2022)
+
+- Update .toc version
+- (bcc) Remove vendor items from sunwell loot tables and add them as tokens
+- (bcc) Add sunmote vendor
+- (bcc) Add sunwell sunmote prices to boss drops (PR #204)
+- (bcc) Remove Gladiators Maul from S3 (#205)
+- (bcc) Add Vendor scan that updates prices after visiting a vendor
+
+## v2.4.2 (Apr, 13, 2022)
+
+- (bcc) Update vendor prices
+- (bcc) #203 add Fist weapons for Hunter
+- (bcc) Update BoJ Vendors
+
+## v2.4.1-bcc (Jan, 19, 2022)
+
+- (bcc) update .toc version
+- (bcc) update vendor prices
+- (bcc) remove Heavy Netherweave Net
+
 ## v2.4.0 (Nov, 10, 2021)
 
 - update classic .toc version

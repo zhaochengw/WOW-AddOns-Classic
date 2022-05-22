@@ -1347,7 +1347,7 @@ data["JewelcraftingBC"] = {
 			}
 		},
 		{
-			name = format(GEM_FORMAT1, ALIL["橙色"]),
+			name = format(GEM_FORMAT1, ALIL["Orange"]),
 			[NORMAL_DIFF] = {
 				{ 1, 39738 }, -- Wicked Pyrestone (375)
 				{ 2, 39471 }, -- Wicked Noble Topaz (350)
@@ -1372,7 +1372,7 @@ data["JewelcraftingBC"] = {
 			}
 		},
 		{
-			name = format(GEM_FORMAT1, ALIL["绿色"]),
+			name = format(GEM_FORMAT1, ALIL["Green"]),
 			[NORMAL_DIFF] = {
 				{ 1, 39739 }, -- Enduring Seaspray Emerald (375)
 				{ 2, 31110 }, -- Enduring Talasite (350)
@@ -1393,7 +1393,7 @@ data["JewelcraftingBC"] = {
 			}
 		},
 		{
-			name = format(GEM_FORMAT1, ALIL["紫色"]),
+			name = format(GEM_FORMAT1, ALIL["Purple"]),
 			[NORMAL_DIFF] = {
 				{ 1, 39728 }, -- Shifting Shadowsong Amethyst (375)
 				{ 2, 31103 }, -- Shifting Nightseye (350)
@@ -1420,7 +1420,7 @@ data["JewelcraftingBC"] = {
 			}
 		},
 		{
-			name = AL["其它"],
+			name = AL["Misc"],
 			[NORMAL_DIFF] = {
 				{ 1, 38068 }, -- Mercurial Adamantite (325)
 				{ 2, 26880 }, -- Thorium Setting (235)

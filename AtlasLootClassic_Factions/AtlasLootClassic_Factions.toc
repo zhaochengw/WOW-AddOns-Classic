@@ -1,6 +1,6 @@
 ## Interface: 20504
-## Author: Ray
-## Version: v2.5.4-bcc
+## Author: Lag
+## Version: v2.4.4-bcc
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
 
@@ -36,3 +36,8 @@ Locales\Locales.xml
 
 data.lua
 data-tbc.lua
+
+## Title: |cff880303[163UI]|r AtlasLootClassic |cFF0099FF[Factions]|r
+## Title-zhCN: |cff880303[有爱]|r AtlasLootClassic 声望阵营物品数据
+## X-Vendor: NetEase
+## X-163UI-Version: 20220520145709

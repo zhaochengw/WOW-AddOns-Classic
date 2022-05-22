@@ -57,6 +57,8 @@ AL["Show minimap button."] = "Mostrar botón del minimapa"
 AL["Show minimum level for entry."] = "Mostrar nivel mínimo para entrar."
 AL["Show profession rank if available."] = "Mostrar rango de profesión si está disponible."
 AL["Show recipe source if available."] = "Mostrar fuente de la receta si está disponible."
+--[[Translation missing --]]
+--[[ AL["Show vendor prices if available."] = "Show vendor prices if available."--]] 
 AL["Sources"] = "Fuentes"
 AL["Text"] = "Texto"
 AL["This loads the |cff999999%s|r module."] = "Este se carga el módulo |cff999999%s|r."

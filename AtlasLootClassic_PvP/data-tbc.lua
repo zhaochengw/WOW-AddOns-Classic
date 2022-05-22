@@ -53,42 +53,30 @@ local PVP_INSIGNIA = {	-- Insignias
 	NORMAL_ITTYPE = ICON_ITTYPE,
 	ExtraList = true,
 	[ALLIANCE_DIFF] = {
-		{ 1, 25829, }, -- Talisman of the Alliance
-		{ 2, 37864, }, -- Medallion of the Alliance
-		{ 3, 28235, [PRICE_EXTRA_ITTYPE] = "honorA:2000" }, -- Medallion of the Alliance
-		{ 4, 28237, [PRICE_EXTRA_ITTYPE] = "honorA:2000" }, -- Medallion of the Alliance
-		{ 5, 28238, [PRICE_EXTRA_ITTYPE] = "honorA:2000" }, -- Medallion of the Alliance
-		{ 6, 28236, [PRICE_EXTRA_ITTYPE] = "honorA:2000" }, -- Medallion of the Alliance
-		{ 7, 30349, [PRICE_EXTRA_ITTYPE] = "honorA:2000" }, -- Medallion of the Alliance
-		{ 8, 28234, [PRICE_EXTRA_ITTYPE] = "honorA:2000" }, -- Medallion of the Alliance
-		{ 9, 30351, [PRICE_EXTRA_ITTYPE] = "honorA:2000" }, -- Medallion of the Alliance
-		{ 10, 30348, [PRICE_EXTRA_ITTYPE] = "honorA:2000" }, -- Medallion of the Alliance
-		{ 11, 30350, [PRICE_EXTRA_ITTYPE] = "honorA:2000" }, -- Medallion of the Alliance
-		{ 16, 34576 },
-		{ 17, 34577 },
-		{ 18, 34578 },
-		{ 19, 34579 },
-		{ 20, 34580 },
-		{ 21, 35327 },
+		{ 1, 25829, [PRICE_EXTRA_ITTYPE] = "honorA:22950:pvpEye:10" }, -- Talisman of the Alliance
+		{ 2, 37864, [PRICE_EXTRA_ITTYPE] = "honorA:40000" }, -- Medallion of the Alliance
+		{ 3, 28235, [PRICE_EXTRA_ITTYPE] = "honorA:8000" }, -- Medallion of the Alliance
+		{ 4, 28237, [PRICE_EXTRA_ITTYPE] = "honorA:8000" }, -- Medallion of the Alliance
+		{ 5, 28238, [PRICE_EXTRA_ITTYPE] = "honorA:8000" }, -- Medallion of the Alliance
+		{ 6, 28236, [PRICE_EXTRA_ITTYPE] = "honorA:8000" }, -- Medallion of the Alliance
+		{ 7, 30349, [PRICE_EXTRA_ITTYPE] = "honorA:8000" }, -- Medallion of the Alliance
+		{ 8, 28234, [PRICE_EXTRA_ITTYPE] = "honorA:8000" }, -- Medallion of the Alliance
+		{ 9, 30351, [PRICE_EXTRA_ITTYPE] = "honorA:8000" }, -- Medallion of the Alliance
+		{ 10, 30348, [PRICE_EXTRA_ITTYPE] = "honorA:8000" }, -- Medallion of the Alliance
+		{ 11, 30350, [PRICE_EXTRA_ITTYPE] = "honorA:8000" }, -- Medallion of the Alliance
 	},
 	[HORDE_DIFF] = {
-		{ 1, 24551, }, -- Talisman of the Horde
-		{ 2, 37865, }, -- Medallion of the Horde
-		{ 3, 28241, [PRICE_EXTRA_ITTYPE] = "honorH:2000" }, -- Medallion of the Horde
-		{ 4, 28243, [PRICE_EXTRA_ITTYPE] = "honorH:2000" }, -- Medallion of the Horde
-		{ 5, 28239, [PRICE_EXTRA_ITTYPE] = "honorH:2000" }, -- Medallion of the Horde
-		{ 6, 28242, [PRICE_EXTRA_ITTYPE] = "honorH:2000" }, -- Medallion of the Horde
-		{ 7, 30346, [PRICE_EXTRA_ITTYPE] = "honorH:2000" }, -- Medallion of the Horde
-		{ 8, 28240, [PRICE_EXTRA_ITTYPE] = "honorH:2000" }, -- Medallion of the Horde
-		{ 9, 30345, [PRICE_EXTRA_ITTYPE] = "honorH:2000" }, -- Medallion of the Horde
-		{ 10, 30343, [PRICE_EXTRA_ITTYPE] = "honorH:2000" }, -- Medallion of the Horde
-		{ 11, 30344, [PRICE_EXTRA_ITTYPE] = "honorH:2000" }, -- Medallion of the Horde
-		{ 16, 34576 },
-		{ 17, 34577 },
-		{ 18, 34578 },
-		{ 19, 34579 },
-		{ 20, 34580 },
-		{ 21, 35327 },
+		{ 1, 24551, [PRICE_EXTRA_ITTYPE] = "honorH:22950:pvpEye:10" }, -- Talisman of the Horde
+		{ 2, 37865, [PRICE_EXTRA_ITTYPE] = "honorH:40000" }, -- Medallion of the Horde
+		{ 3, 28241, [PRICE_EXTRA_ITTYPE] = "honorH:8000" }, -- Medallion of the Horde
+		{ 4, 28243, [PRICE_EXTRA_ITTYPE] = "honorH:8000" }, -- Medallion of the Horde
+		{ 5, 28239, [PRICE_EXTRA_ITTYPE] = "honorH:8000" }, -- Medallion of the Horde
+		{ 6, 28242, [PRICE_EXTRA_ITTYPE] = "honorH:8000" }, -- Medallion of the Horde
+		{ 7, 30346, [PRICE_EXTRA_ITTYPE] = "honorH:8000" }, -- Medallion of the Horde
+		{ 8, 28240, [PRICE_EXTRA_ITTYPE] = "honorH:8000" }, -- Medallion of the Horde
+		{ 9, 30345, [PRICE_EXTRA_ITTYPE] = "honorH:8000" }, -- Medallion of the Horde
+		{ 10, 30343, [PRICE_EXTRA_ITTYPE] = "honorH:8000" }, -- Medallion of the Horde
+		{ 11, 30344, [PRICE_EXTRA_ITTYPE] = "honorH:8000" }, -- Medallion of the Horde
 	},
 }
 
@@ -114,7 +102,7 @@ data["BCCHonorSet"] = {
 	LoadDifficulty = LOAD_DIFF,
 	items = {
 		{
-			name = ALIL["套装"],
+			name = ALIL["Sets"],
 			TableType = SET_ITTYPE,
 			[ALLIANCE_DIFF] = {
 				{ 1,    591 }, -- Warlock
@@ -240,7 +228,7 @@ data["BCCHonorSet"] = {
 			},
 		},
 		{
-			name = ALIL["背部"],
+			name = ALIL["Back"],
 			[ALLIANCE_DIFF] = {
 				{ 1, 28377 }, -- Sergeant's Heavy Cloak
 				{ 2, 28378 }, -- Sergeant's Heavy Cape
@@ -261,7 +249,7 @@ data["BCCReputationSet"] = {
 	LoadDifficulty = LOAD_DIFF,
 	items = {
 		{
-			name = ALIL["套装"],
+			name = ALIL["Sets"],
 			TableType = SET_ITTYPE,
 			[NORMAL_DIFF] = {
 				{ 1,    738 }, -- Warlock
@@ -331,7 +319,7 @@ data["ArenaS1PvP"] = {
 	TableType = NORMAL_ITTYPE,
 	items = {
 		{
-			name = AL["套装"],
+			name = AL["Sets"],
 			TableType = SET_ITTYPE,
 			[NORMAL_DIFF] = {
 				{ 1,    568 }, -- Warlock
@@ -596,7 +584,7 @@ data["ArenaS2PvP"] = {
 	TableType = NORMAL_ITTYPE,
 	items = {
 		{
-			name = AL["套装"],
+			name = AL["Sets"],
 			TableType = SET_ITTYPE,
 			[NORMAL_DIFF] = {
 				{ 1,    702 }, -- Warlock
@@ -789,7 +777,7 @@ data["ArenaS2PvP"] = {
 			name = AL["Gladiator Mount"],
 			ExtraList = true,
 			[NORMAL_DIFF] = {
-				{ 1,  34092 }, -- Merciless Nether Drake
+				{ 1,  37676 }, -- Vengeful Nether Drake
 			}
 		}
 	}
@@ -802,7 +790,7 @@ data["ArenaS3PvP"] = {
 	TableType = NORMAL_ITTYPE,
 	items = {
 		{
-			name = AL["套装"],
+			name = AL["Sets"],
 			TableType = SET_ITTYPE,
 			[NORMAL_DIFF] = {
 				{ 1,    734 }, -- Warlock
@@ -862,6 +850,7 @@ data["ArenaS3PvP"] = {
 				{ 6, 33727 }, -- Gladiator's Painsaw
 
 				{ 8, 33663 }, -- Gladiator's Bonegrinder
+				--{ 9, 32014 }, -- Gladiator's Maul
 
 				{ 16, 33766 }, -- Gladiator's War Staff
 				{ 17, 34540 }, -- Vengeful Gladiator's Battle Staff
@@ -911,20 +900,31 @@ data["ArenaS3PvP"] = {
 			name = ALIL["Neck"],
 			[NORMAL_DIFF] = {
 				{ 1, 33923 }, -- Vindicator's Pendant of Triumph
-				{ 2, 33922 }, -- Vindicator's Pendant of Salvation
-				{ 3, 33921 }, -- Vindicator's Pendant of Dominance
-				{ 4, 33920 }, -- Vindicator's Pendant of Conquest
-				{ 5, 35319 }, -- Vindicator's Pendant of Subjugation
-				{ 6, 35317 }, -- Vindicator's Pendant of Reprieve
+				{ 2, 35319 }, -- Vindicator's Pendant of Subjugation
+				{ 3, 33922 }, -- Vindicator's Pendant of Salvation
+				{ 4, 35317 }, -- Vindicator's Pendant of Reprieve
+				{ 5, 33921 }, -- Vindicator's Pendant of Dominance
+				{ 6, 33920 }, -- Vindicator's Pendant of Conquest
 			},
 		},
 		{
 			name = ALIL["Finger"],
 			[NORMAL_DIFF] = {
 				{ 1, 33919 }, -- Vindicator's Band of Triumph
-				{ 2, 33918 }, -- Vindicator's Band of Salvation
-				{ 3, 33853 }, -- Vindicator's Band of Dominance
-				{ 4, 35320 }, -- Vindicator's Band of Subjugation
+				{ 2, 35320 }, -- Vindicator's Band of Subjugation
+				{ 3, 33918 }, -- Vindicator's Band of Salvation
+				{ 4, 33853 }, -- Vindicator's Band of Dominance
+			},
+		},
+		{
+			name = ALIL["Trinket"],
+			[NORMAL_DIFF] = {
+				{ 1, 35327 }, -- Alacrity
+				{ 2, 34579 }, --
+				{ 3, 34576 }, --
+				{ 4, 34577 }, --
+				{ 5, 34578 }, --
+				{ 6, 34580 }, --
 			},
 		},
 		{
@@ -1009,7 +1009,7 @@ data["ArenaS3PvP"] = {
 			name = AL["Gladiator Mount"],
 			ExtraList = true,
 			[NORMAL_DIFF] = {
-				{ 1,  37676 }, -- Vengeful Nether Drake
+				{ 1,  34092 }, -- Merciless Nether Drake
 			}
 		}
 	}
@@ -1022,7 +1022,7 @@ data["ArenaS4PvP"] = {
 	TableType = NORMAL_ITTYPE,
 	items = {
 		{
-			name = AL["套装"],
+			name = AL["Sets"],
 			TableType = SET_ITTYPE,
 			[NORMAL_DIFF] = {
 				{ 1,    200568 }, -- Warlock
@@ -1247,22 +1247,16 @@ data["HellfirePeninsulaPvP"] = {
 			[ALLIANCE_DIFF] = {
 				{ 1, 24520 }, -- Honor Hold Favor
 				{ 3, 24579 }, -- Mark of Honor Hold
-				{ 16, 27833 },
-				{ 17, 27834 },
-				{ 18, 27809 },
-				{ 19, 27812 },
-				{ 20, 27820 },
-				{ 21, 28361 },
+				{ 16, 27830 }, -- Circlet of the Victor
+				{ 17, 27785 }, -- Notched Deep Peridot
+				{ 18, 27777 }, -- Stark Blood Garnet
 			},
 			[HORDE_DIFF] = {
 				{ 1, 24522 }, -- Thrallmar Favor
 				{ 3, 24581 }, -- Mark of Thrallmar
-				{ 16, 27830 },
-				{ 17, 27832 },
-				{ 18, 27777 },
-				{ 19, 27785 },
-				{ 20, 27786 },
-				{ 21, 28360 },
+				{ 16, 27833 }, -- Band of the Victor
+				{ 17, 27786 }, -- Barbed Deep Peridot
+				{ 18, 28360 }, -- Mighty Blood Garnet
 			},
 		},
 	},
