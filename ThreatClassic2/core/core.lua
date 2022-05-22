@@ -65,7 +65,7 @@ TC2.playerClass = ""
 TC2.playerTarget = ""
 
 local AceComm = LibStub("AceComm-3.0")
--- AceComm:Embed(TC2)
+AceComm:Embed(TC2)
 
 -- depreciation warning for ClassicThreatMeter
 C_Timer.After(3,
@@ -915,11 +915,11 @@ function TC2:PLAYER_LOGIN()
     -- Test Mode
     C.frame.test = false
 
-    -- if C.general.welcome then
-    --     print("|c00FFAA00"..self.addonName.." v"..self.version.." - "..L.message_welcome.."|r")
-    -- end
-    -- self:RegisterComm(self.commPrefix)
-    -- self:PublishVersion()
+    if C.general.welcome then
+        print("|c00FFAA00"..self.addonName.." v"..self.version.." - "..L.message_welcome.."|r")
+    end
+    self:RegisterComm(self.commPrefix)
+    self:PublishVersion()
 
     self.frame:RegisterEvent("PLAYER_ENTERING_WORLD")
     self.frame:RegisterEvent("GROUP_ROSTER_UPDATE")

@@ -5,7 +5,7 @@
 ## X-Curse-Project-ID: 355497
 ## X-WoWI-ID: 25966
 ## X-Wago-ID: pkNM1ONz
-## Version: 2.43
+## Version: 2.44
 ## SavedVariables: ThreatClassic2DB
 ## SavedVariablesPerCharacter: TC2_Options
 
@@ -18,7 +18,3 @@
 ## X-Website: https://github.com/dfherr/ThreatClassic2
 
 ThreatClassic2.xml
-
-## Title-zhCN: |cff880303[有爱]|r ThreatClassic2 仇恨监控插件v2
-## X-Vendor: NetEase
-## X-163UI-Version: 20220331145254

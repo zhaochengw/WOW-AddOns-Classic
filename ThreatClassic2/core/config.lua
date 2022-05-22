@@ -114,5 +114,3 @@ defaultConfig.warnings = {
 }
 
 TC2.defaultConfig = { profile = defaultConfig }
-
-defaultConfig.general.welcome = false;
