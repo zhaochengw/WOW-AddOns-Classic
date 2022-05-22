@@ -1,7 +1,7 @@
 ## Interface: 20504
 ## Title: TotemTimers
 ## Author:  Xianghar
-## Version: 2.2.1
+## Version: 2.2.2
 ## SavedVariables: TotemTimers_GlobalSettings, TotemTimers_Profiles
 ## OptionalDeps: Masque
 ## LoadManagers: AddonLoader
@@ -68,4 +68,4 @@ GUI\Profiles.lua
 ## Title: |cff880303[163UI]|r TotemTimers
 ## Title-zhCN: |cff880303[有爱]|r TotemTimers 萨满图腾助手
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220428140518
+## X-163UI-Version: 20220520145709
