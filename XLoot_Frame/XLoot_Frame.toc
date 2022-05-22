@@ -1,15 +1,16 @@
 ## Interface: 20504
-## Interface: 20504
-## Interface: 20504
 ## Title: XLoot Frame
 ## Notes: A customizable, skinnable loot frame.
-## Version: 9.2.5-2
+## Version: 9.2.5-3
 ## Author: Xuerian
 ## X-Category: Inventory
+
 ## Dependencies: XLoot
+
 load.xml
+
 ## Title: |cff880303[163UI]|r XLoot Frame
 ## Title-zhCN: |cff880303[有爱]|r XLoot 拾取框架模块
-## Notes: 可以自定义美化样式的拾取框架
+## Notes-zhCN: 可以自定义美化样式的拾取框架
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220421193619
+## X-163UI-Version: 20220512135655

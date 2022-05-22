@@ -1,15 +1,16 @@
 ## Interface: 20504
-## Interface: 20504
-## Interface: 20504
 ## Title: XLoot Group
 ## Notes: Customizable and skinnable loot roll, alert, and reroll frames
-## Version: 9.2.5-2
+## Version: 9.2.5-3
 ## Author: Xuerian
 ## X-Category: Inventory
+
 ## Dependencies: XLoot
+
 load.xml
+
 ## Title: |cff880303[163UI]|r XLoot Group
 ## Title-zhCN: |cff880303[有爱]|r XLoot 队伍模块
 ## Notes-zhCN: 美化拾取框,方便快捷的通告掉落到团队 工会 小队等频道.
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220421193619
+## X-163UI-Version: 20220512135655

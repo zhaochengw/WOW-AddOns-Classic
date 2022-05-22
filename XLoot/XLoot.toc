@@ -1,25 +1,29 @@
 ## Interface: 20504
-## Interface: 20504
-## Interface: 20504
 ## Title: XLoot
 ## Notes: Core module for Loot and Looting-related UI improvements
-## Version: 9.2.5-2
+## Version: 9.2.5-3
 ## Author: Xuerian
 ## X-Category: Inventory
 ## X-Name: XLoot
+
 ## SavedVariables: XLootADB
 ## OptionalDeps: Ace3, LibStub, ButtonFacade, Masque, Pawn
+
 #@no-lib-strip@
 Libs\Embeds.xml
 #@end-no-lib-strip@
+
 localization.lua
 XLoot.lua
 skins.lua
 SKIN_TWEAKS.lua
 stacks.lua
 helpers.lua
+
+
+
 ## Title: |cff880303[163UI]|r XLoot
 ## Title-zhCN: |cff880303[有爱]|r XLoot 拾取框增强
 ## Notes-zhCN: 美化拾取框,方便快捷的通告掉落到团队 工会 小队等频道.
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220421193619
+## X-163UI-Version: 20220512135655
