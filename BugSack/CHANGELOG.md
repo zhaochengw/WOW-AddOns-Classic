@@ -1,6 +1,6 @@
 # BugSack
 
-## [v9.1.0](https://github.com/funkydude/BugSack/tree/v9.1.0) (2021-06-29)
-[Full Changelog](https://github.com/funkydude/BugSack/compare/v9.0.3...v9.1.0) [Previous Releases](https://github.com/funkydude/BugSack/releases)
+## [v9.2.3](https://github.com/funkydude/BugSack/tree/v9.2.3) (2022-04-22)
+[Full Changelog](https://github.com/funkydude/BugSack/compare/v9.2.2...v9.2.3) [Previous Releases](https://github.com/funkydude/BugSack/releases)
 
-- Bump toc  
+- bump toc  
