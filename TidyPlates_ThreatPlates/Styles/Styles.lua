@@ -9,7 +9,7 @@ local ThreatPlates = Addon.ThreatPlates
 local InCombatLockdown, IsInInstance = InCombatLockdown, IsInInstance
 local UnitIsPlayer, UnitPlayerControlled, UnitIsUnit = UnitIsPlayer, UnitPlayerControlled, UnitIsUnit
 local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
-local UnitIsBattlePet = UnitIsBattlePet
+local UnitIsBattlePet, UnitCreatureType = UnitIsBattlePet, UnitCreatureType
 local UnitCanAttack = UnitCanAttack
 
 -- ThreatPlates APIs
@@ -239,8 +239,8 @@ function Addon.UnitStyle_NameDependent(unit)
     end
   end
 
-  if not plate_style then
-    -- Check for totem
+  if not plate_style and UnitCreatureType(unit.unitid) == Addon.TotemCreatureType then
+    -- Check for player totems and ignore NPC totems
     local totem_id = TOTEMS[unit.name]
     if totem_id then
       totem_settings = db.totemSettings[totem_id]
