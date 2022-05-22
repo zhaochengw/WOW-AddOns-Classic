@@ -1,3 +1,5 @@
+local UIDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0");
+
 local Postal = LibStub("AceAddon-3.0"):GetAddon("Postal")
 local Postal_OpenAll = Postal:NewModule("OpenAll", "AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Postal")
@@ -105,10 +107,10 @@ function Postal_OpenAll:OnEnable()
 		Postal_OpenAllMenuButton:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down");
 		Postal_OpenAllMenuButton:SetScript("OnClick", function(self, button, down)
 			if Postal_DropDownMenu.initialize ~= Postal_OpenAll.ModuleMenu then
-				CloseDropDownMenus()
+				UIDD:CloseDropDownMenus()
 				Postal_DropDownMenu.initialize = Postal_OpenAll.ModuleMenu
 			end
-			ToggleDropDownMenu(1, nil, Postal_DropDownMenu, self:GetName(), 0, 0)
+			UIDD:ToggleDropDownMenu(1, nil, Postal_DropDownMenu, self:GetName(), 0, 0)
 		end)
 		Postal_OpenAllMenuButton:SetFrameLevel(Postal_OpenAllMenuButton:GetFrameLevel() + 1)
 	end
@@ -388,15 +390,15 @@ function Postal_OpenAll.ModuleMenu(self, level)
 
 		info.text = L["AH-related mail"]
 		info.value = "AHMail"
-		UIDropDownMenu_AddButton(info, level)
+		UIDD:UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Non-AH related mail"]
 		info.value = "NonAHMail"
-		UIDropDownMenu_AddButton(info, level)
+		UIDD:UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Other options"]
 		info.value = "OtherOptions"
-		UIDropDownMenu_AddButton(info, level)
+		UIDD:UIDropDownMenu_AddButton(info, level)
 
 	elseif level == 2 + self.levelAdjust then
 
@@ -404,50 +406,50 @@ function Postal_OpenAll.ModuleMenu(self, level)
 		info.func = Postal.SaveOption
 		info.arg1 = "OpenAll"
 
-		if UIDROPDOWNMENU_MENU_VALUE == "AHMail" then
+		if L_UIDROPDOWNMENU_MENU_VALUE == "AHMail" then
 			info.text = L["Open all Auction cancelled mail"]
 			info.arg2 = "AHCancelled"
 			info.checked = db.AHCancelled
-			UIDropDownMenu_AddButton(info, level)
+			UIDD:UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Open all Auction expired mail"]
 			info.arg2 = "AHExpired"
 			info.checked = db.AHExpired
-			UIDropDownMenu_AddButton(info, level)
+			UIDD:UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Open all Outbid on mail"]
 			info.arg2 = "AHOutbid"
 			info.checked = db.AHOutbid
-			UIDropDownMenu_AddButton(info, level)
+			UIDD:UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Open all Auction successful mail"]
 			info.arg2 = "AHSuccess"
 			info.checked = db.AHSuccess
-			UIDropDownMenu_AddButton(info, level)
+			UIDD:UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Open all Auction won mail"]
 			info.arg2 = "AHWon"
 			info.checked = db.AHWon
-			UIDropDownMenu_AddButton(info, level)
+			UIDD:UIDropDownMenu_AddButton(info, level)
 
-		elseif UIDROPDOWNMENU_MENU_VALUE == "NonAHMail" then
+		elseif L_UIDROPDOWNMENU_MENU_VALUE == "NonAHMail" then
 			info.text = L["Open mail from the Postmaster"]
 			info.arg2 = "Postmaster"
 			info.checked = db.Postmaster
-			UIDropDownMenu_AddButton(info, level)
+			UIDD:UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Open all mail with attachments"]
 			info.arg2 = "Attachments"
 			info.checked = db.Attachments
-			UIDropDownMenu_AddButton(info, level)
+			UIDD:UIDropDownMenu_AddButton(info, level)
 
-		elseif UIDROPDOWNMENU_MENU_VALUE == "OtherOptions" then
+		elseif L_UIDROPDOWNMENU_MENU_VALUE == "OtherOptions" then
 			info.text = L["Keep free space"]
 			info.hasArrow = 1
 			info.value = "KeepFreeSpace"
 			info.func = self.UncheckHack
-			UIDropDownMenu_AddButton(info, level)
-			local listFrame = _G["DropDownList"..level]
+			UIDD:UIDropDownMenu_AddButton(info, level)
+			local listFrame = _G["L_DropDownList"..level]
 			self.UncheckHack(_G[listFrame:GetName().."Button"..listFrame.numButtons])
 
 			info.text = L["Verbose mode"]
@@ -456,11 +458,11 @@ function Postal_OpenAll.ModuleMenu(self, level)
 			info.func = Postal.SaveOption
 			info.arg2 = "SpamChat"
 			info.checked = db.SpamChat
-			UIDropDownMenu_AddButton(info, level)
+			UIDD:UIDropDownMenu_AddButton(info, level)
 		end
 
 	elseif level == 3 + self.levelAdjust then
-		if UIDROPDOWNMENU_MENU_VALUE == "KeepFreeSpace" then
+		if L_UIDROPDOWNMENU_MENU_VALUE == "KeepFreeSpace" then
 			local keepFree = db.KeepFreeSpace
 			info.func = Postal_OpenAll.SetKeepFreeSpace
 			info.isNotRadio = nil
@@ -468,7 +470,7 @@ function Postal_OpenAll.ModuleMenu(self, level)
 				info.text = v
 				info.checked = v == keepFree
 				info.arg1 = v
-				UIDropDownMenu_AddButton(info, level)
+				UIDD:UIDropDownMenu_AddButton(info, level)
 			end
 		end
 	end

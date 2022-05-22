@@ -1,3 +1,5 @@
+local UIDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0");
+
 local Postal = LibStub("AceAddon-3.0"):GetAddon("Postal")
 local Postal_QuickAttach = Postal:NewModule("QuickAttach", "AceHook-3.0", "AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Postal")
@@ -269,34 +271,34 @@ function Postal_QuickAttach.ModuleMenu(self, level)
 		info.arg1 = "QuickAttach"
 		info.arg2 = "EnableBag0"
 		info.checked = Postal.db.profile.QuickAttach.EnableBag0
-		UIDropDownMenu_AddButton(info, level)
+		UIDD:UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag one"]
 		info.func = Postal.SaveOption
 		info.arg1 = "QuickAttach"
 		info.arg2 = "EnableBag1"
 		info.checked = Postal.db.profile.QuickAttach.EnableBag1
-		UIDropDownMenu_AddButton(info, level)
+		UIDD:UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag two"]
 		info.func = Postal.SaveOption
 		info.arg1 = "QuickAttach"
 		info.arg2 = "EnableBag2"
 		info.checked = Postal.db.profile.QuickAttach.EnableBag2
-		UIDropDownMenu_AddButton(info, level)
+		UIDD:UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag three"]
 		info.func = Postal.SaveOption
 		info.arg1 = "QuickAttach"
 		info.arg2 = "EnableBag3"
 		info.checked = Postal.db.profile.QuickAttach.EnableBag3
-		UIDropDownMenu_AddButton(info, level)
+		UIDD:UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag four"]
 		info.func = Postal.SaveOption
 		info.arg1 = "QuickAttach"
 		info.arg2 = "EnableBag4"
 		info.checked = Postal.db.profile.QuickAttach.EnableBag4
-		UIDropDownMenu_AddButton(info, level)
+		UIDD:UIDropDownMenu_AddButton(info, level)
 	end
 end
