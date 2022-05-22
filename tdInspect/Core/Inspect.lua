@@ -359,7 +359,7 @@ end
 
 function Inspect:OnAlaCommand(_, msg, channel, sender)
     local cmd = msg:sub(1, ALA_CMD_LEN)
-    if cmd == '_r_equ' or cmd == '_repeq' then
+    if cmd == '_r_equ' or cmd == '_repeq' or cmd == '_r_eq3' then
         local sep = msg:sub(ALA_CMD_LEN + 1, ALA_CMD_LEN + 1)
         local data = {strsplit(sep, msg:sub(ALA_CMD_LEN + 2))}
 
@@ -368,7 +368,7 @@ function Inspect:OnAlaCommand(_, msg, channel, sender)
 
         for i = 1, #data, 2 do
             local slot, link = tonumber(data[i]), data[i + 1]
-            if slot and link ~= 'item:-1' then
+            if slot and link ~= 'item:-1' and link:find('item:(%d+)') then
                 db[slot] = link
             end
         end

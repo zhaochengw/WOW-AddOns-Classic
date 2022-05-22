@@ -12,11 +12,11 @@
 ## Author: |cff00ff00ALA|r @ |cffff0000163UI|r
 ## Author-zhCN: |cff00ff00ALA|r @ |cffff0000网易有爱|r
 ## Author-zhTW: |cff00ff00ALA|r @ |cffff0000网易有爱|r
-## Version: 205r.220425
+## Version: 205r.220520
 
 TradeSkill.xml
 
 
 ## Title-zhCN: |cff880303[有爱]|r ala 制造业界面增强
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220428140518
+## X-163UI-Version: 20220520145709

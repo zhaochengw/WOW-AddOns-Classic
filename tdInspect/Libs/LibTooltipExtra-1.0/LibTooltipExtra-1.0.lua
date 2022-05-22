@@ -3,7 +3,7 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/7/2021, 12:16:52 AM
 --
-local MAJOR, MINOR = 'LibTooltipExtra-1.0', 6
+local MAJOR, MINOR = 'LibTooltipExtra-1.0', 7
 
 ---@class LibTooltipExtra-1.0
 local Lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
@@ -14,13 +14,15 @@ end
 ---@class LibGameTooltip: GameTooltip
 local Tip = wipe(Lib.Tip or {})
 
+local TipCache = Lib.TipCache or {}
+
 local function new(rawTip, obj)
     obj = setmetatable(Mixin(obj or {}, Tip), {__index = rawTip})
     obj:OnLoad(rawTip)
     return obj
 end
 
-local TipCache = Lib.TipCache or setmetatable({}, {
+setmetatable(TipCache, {
     __mode = 'k',
     __index = function(t, k)
         t[k] = new(k)
@@ -56,8 +58,10 @@ if not Lib.SetTooltipMoney then
     end)
 end
 
-function Lib.SetTooltipMoney(tip)
-    local moneyFrame = _G[tip:GetName() .. 'MoneyFrame' .. tip.shownMoneyFrames]
+function Lib.SetTooltipMoney(rawTip)
+    local tip = Lib:New(rawTip)
+
+    local moneyFrame = tip:GetMoneyFrame(rawTip.shownMoneyFrames)
     if not moneyFrame then
         return
     end
@@ -74,6 +78,7 @@ function Tip:OnLoad(rawTip)
     self.tip = rawTip
     self.l = self.l or generateCache(rawTip:GetName(), 'TextLeft')
     self.r = self.r or generateCache(rawTip:GetName(), 'TextRight')
+    self.m = self.m or generateCache(rawTip:GetName(), 'MoneyFrame')
     self.minor = MINOR
 end
 
@@ -90,6 +95,11 @@ end
 ---@return FontString, FontString
 function Tip:GetFontStrings(n)
     return self.l[n], self.r[n]
+end
+
+---@return TooltipMoneyFrameTemplate
+function Tip:GetMoneyFrame(n)
+    return self.m[n]
 end
 
 local function AddFront(object, text)

@@ -40,6 +40,8 @@ local UCLASSBIT = __db__.UCLASSBIT;
 
 local BIG_NUMBER = 4294967295;
 local PLAYER_RACE, PLAYER_RACE_FILE, PLAYER_RACE_ID = UnitRace('player');
+local LOCALE = GetLocale();
+local PATCHVERSION, BUILDNUMBER, BUILDDATE, TOCVERSION = GetBuildInfo();
 
 local _noop_, _log_, _error_ = __namespace__._noop_, __namespace__._log_, __namespace__._error_;
 
@@ -1437,16 +1439,14 @@ function __namespace__.init_db()
 		end
 	end
 	local CACHE = __namespace__.CACHE;
-	local LOCALE = GetLocale();
 	local cache = CACHE[LOCALE];
-	local _PatchVersion, _BuildNumber, _BuildDate, _TocVersion = GetBuildInfo();
-	if cache == nil or cache.__WoWVersion == nil or cache.__WoWVersion < _TocVersion or cache.__DataVersion == nil or cache.__DataVersion < __db__.__DataVersion then
+	if cache == nil or cache.__WoWVersion == nil or cache.__WoWVersion < TOCVERSION or cache.__DataVersion == nil or cache.__DataVersion < __db__.__DataVersion then
 		cache = { S = T_SpellData, I = T_ItemData, };
 		CACHE[LOCALE] = cache;
 	else
 		T_SpellData, T_ItemData = cache.S, cache.I;
 	end
-	cache.__WoWVersion = _TocVersion;
+	cache.__WoWVersion = TOCVERSION;
 	cache.__DataVersion = __db__.__DataVersion;
 	_LoadSavedVar();
 	LF_PreloadSpell();

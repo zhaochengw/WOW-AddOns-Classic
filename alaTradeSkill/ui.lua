@@ -62,6 +62,7 @@ local L = __namespace__.L;
 	local SetUIPanelAttribute = SetUIPanelAttribute;
 	local DressUpItemLink = DressUpItemLink;
 	local GameTooltip = GameTooltip;
+	local UIParent = UIParent;
 	local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend;
 
 	local _G = _G;
@@ -83,6 +84,8 @@ local ICON_FOR_NO_CID = 135913;
 local PERIODIC_UPDATE_PERIOD = 1.0;
 local MAXIMUM_VAR_UPDATE_PERIOD = 4.0;
 local PLAYER_GUID = UnitGUID('player');
+local PLAYER_REALM_ID = tonumber(GetRealmID());
+local LOCALE = GetLocale();
 
 local _noop_, _log_, _error_ = __namespace__._noop_, __namespace__._log_, __namespace__._error_;
 local T_uiFrames = {  };
@@ -4685,7 +4688,6 @@ end
 local function LF_CreateBoard()
 	local frame = CreateFrame("FRAME", nil, UIParent);
 	frame:SetClampedToScreen(true);
-	local LOCALE = GetLocale();
 	if LOCALE == 'zhCN' or LOCALE == 'zhTW' or LOCALE == 'koKR' then
 		frame:SetWidth(260);
 	else
@@ -5626,7 +5628,6 @@ end
 
 function __namespace__.init_ui()
 	AVAR, VAR, SET, FAV = __namespace__.AVAR, __namespace__.VAR, __namespace__.SET, __namespace__.FAV;
-	local PLAYER_REALM_ID = tonumber(GetRealmID());
 	for GUID, VAR in next, AVAR do
 		if VAR.realm_id == PLAYER_REALM_ID then
 			for pid = __db__.DBMINPID, __db__.DBMAXPID do

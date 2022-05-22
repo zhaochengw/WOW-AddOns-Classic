@@ -13,7 +13,7 @@ local __db__ = __namespace__.__db__;
 
 __db__.__DataVersion = 211227;
 
-__db__.CURPHASE = 4;
+__db__.CURPHASE = 5;
 __db__.MAXPHASE = 5;
 __db__.MAXRANK = 375;
 __db__.DBMINPID = 1;

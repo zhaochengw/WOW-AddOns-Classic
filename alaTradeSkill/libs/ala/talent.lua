@@ -2,7 +2,7 @@
 	ALA@163UI
 --]]--
 
-local __version = 10;
+local __version = 11;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -464,7 +464,7 @@ local __ala_meta__ = _G.__ala_meta__;
 			wipe(data);
 		end
 		prefix = prefix or "";
-		suffix = suffxi or "";
+		suffix = suffix or "";
 		local lp = #prefix;
 		local ls = #suffix;
 		local limit = 255 - lp - ls;
@@ -484,7 +484,7 @@ local __ala_meta__ = _G.__ala_meta__;
 			else
 				tinsert(data, prefix .. msg .. suffix);
 				msg = sadd;
-				len = 0;
+				len = ladd;
 			end
 		end
 		if msg ~= "" then
