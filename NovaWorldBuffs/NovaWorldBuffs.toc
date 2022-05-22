@@ -2,7 +2,7 @@
 ## Notes: World buff timers and pre warnings.
 ## Title: Nova World Buffs
 ## Author: Novaspark-Arugal OCE
-## Version: 2.25
+## Version: 2.28
 ## SavedVariables: NWBdatabase
 
 embeds.xml
@@ -17,4 +17,4 @@ NWBGuildFilter.lua
 ## Title: |cff880303[163UI]|r Nova World Buffs
 ## Title-zhCN:  |cff880303[有爱]|r NovaWorldBuffs 世界buff和位面
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220428140518
+## X-163UI-Version: 20220520145709

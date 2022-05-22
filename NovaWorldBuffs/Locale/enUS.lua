@@ -835,3 +835,8 @@ L["guildTerok10Desc"] = "Send a message to guild chat when there's 10 minutes le
 
 L["showShatWorldmapMarkersTerokTitle"] = "Terokkar Shattrath Worldmap";
 L["showShatWorldmapMarkersTerokDesc"] = "Show terokkar tower markers on the Shattrath world map?";
+
+L["Completed PvP dailies"] = "Completed PvP dailies";
+L["Hellfire Towers"] = "Hellfire Towers";
+L["Terokkar Towers"] = "Terokkar Towers";
+L["Nagrand Halaa"] = "Nagrand Halaa";

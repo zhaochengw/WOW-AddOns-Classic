@@ -35,7 +35,7 @@ end
 
 function NWB:OnCommReceived(commPrefix, string, distribution, sender)
 	--if (NWB.isDebug) then
-		--return;
+	--	return;
 	--end
 	if (distribution == "GUILD" and commPrefix == NWB.commPrefix) then
 		--Temp bug fix test.
@@ -181,7 +181,7 @@ function NWB:OnCommReceived(commPrefix, string, distribution, sender)
 			NWB:doNpcWalkingMsg(type, layer, sender);
 		end
 	end
-	if (tonumber(remoteVersion) < 2.25) then
+	if (tonumber(remoteVersion) < 2.28) then
 		if (cmd == "requestData" and distribution == "GUILD") then
 			if (not NWB:getGuildDataStatus()) then
 				NWB:sendSettings("GUILD");
@@ -278,7 +278,7 @@ local enableLogging = true;
 local includeTimerLog = true;
 local logRendOnly = true;
 local logLayeredServersOnly = true;
-function NWB:sendData(distribution, target, prio, noLayerMap, noLogs, type)
+function NWB:sendData(distribution, target, prio, noLayerMap, noLogs, type, forceLayerMap)
 	--if (NWB.isDebug) then
 	--	return;
 	--end
@@ -291,7 +291,7 @@ function NWB:sendData(distribution, target, prio, noLayerMap, noLogs, type)
 	end
 	local data;
 	if (NWB.isLayered) then
-		data = NWB:createDataLayered(distribution, noLayerMap, noLogs, type);
+		data = NWB:createDataLayered(distribution, noLayerMap, noLogs, type, forceLayerMap);
 	else
 		data = NWB:createData(distribution, noLogs);
 	end
@@ -664,7 +664,7 @@ end
 local lastSendLayerMap = {};
 local lastSendLayerMapID = {};
 --local firstLayeredYell = true;
-function NWB:createDataLayered(distribution, noLayerMap, noLogs, type)
+function NWB:createDataLayered(distribution, noLayerMap, noLogs, type, forceLayerMap)
 	local data = {};
 	if ((UnitInBattleground("player") or NWB:isInArena()) and distribution ~= "GUILD") then
 		return data;
@@ -830,8 +830,8 @@ function NWB:createDataLayered(distribution, noLayerMap, noLogs, type)
 			data.layers[layer].hellfireRep = v.hellfireRep;
 			foundTimer = true;
 		end]]
-		if ((sendLayerMap and foundTimer) or not lastSendLayerMapID[layer]
-				or (lastSendLayerMapID[layer] and GetServerTime() - lastSendLayerMapID[layer] > 3600)) then
+		if (forceLayerMap or ((sendLayerMap and foundTimer) or not lastSendLayerMapID[layer]
+				or (lastSendLayerMapID[layer] and GetServerTime() - lastSendLayerMapID[layer] > 3600))) then
 			if (NWB.data.layers[layer].layerMap and next(NWB.data.layers[layer].layerMap)) then
 				--NWB:debug("sending layermap", layer);
 				lastSendLayerMap[distribution] = GetServerTime();
@@ -847,7 +847,7 @@ function NWB:createDataLayered(distribution, noLayerMap, noLogs, type)
 					count = count + 1;
 				end
 				--Incase anything goes wrong with arenas or other new zones etc in TBC, don't send large number of layer id's.
-				if (count < 60) then
+				if (count < 70) then
 					--NWB:debug("sending layer map data", distribution);
 					data.layers[layer].layerMap = NWB.data.layers[layer].layerMap;
 				end
@@ -926,7 +926,7 @@ function NWB:createDataLayered(distribution, noLayerMap, noLogs, type)
 		data.tbcPD = NWB.data.tbcPD;
 		data.tbcPDT = NWB.data.tbcPDT;
 	end
-	if (distribution == "GUILD") then
+	if (distribution == "GUILD" and not forceLayerMap) then
 		--Include settings with timer data for guild.
 		local settings = NWB:createSettings(distribution);
 		local me = UnitName("player") .. "-" .. GetNormalizedRealmName();
@@ -3268,6 +3268,12 @@ f:RegisterEvent("AREA_POIS_UPDATED");
 f:SetScript('OnEvent', function(self, event, ...)
 	if (event == "PLAYER_ENTERING_WORLD" ) then
 		lastPew = GetServerTime();
+		local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
+		if (zone == 1952) then
+			--Make a NPC retarget be required when entering terok to record timers.
+			NWB.lastTerokNPCID = nil;
+			--NWB:debug("entered world terokkar");
+		end
 	elseif (event == "ZONE_CHANGED_NEW_AREA" ) then
 		lastZoneChange = GetServerTime();
 	elseif (event == "UPDATE_UI_WIDGET" ) then
@@ -3293,14 +3299,20 @@ f:SetScript('OnEvent', function(self, event, ...)
 			end
 		end]]
 	elseif (event == "AREA_POIS_UPDATED") then
+		local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
+		if (lastZone ~= 1952 and zone == 1952) then
+			--Make a NPC retarget be required when entering terok to record timers.
+			NWB.lastTerokNPCID = nil;
+			--NWB:debug("entered terokkar");
+		end
 		if (UnitOnTaxi("player")) then
 			lastZone = nil;
 			return;
 		end
-		local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
 		--If we came from terokkar to shat then share data we found, this only sends terokkar timer nothing else.
 		if (lastZone == 1952 and zone == 1955) then
 			C_Timer.After(14, function()
+			
 				local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
 				if (zone == 1955 and GetServerTime() - lastZoneSend > 120) then
 					NWB:sendData("YELL", nil, nil, true, true, "terokkar");
@@ -3344,8 +3356,13 @@ end
 local firstTerokkarData = true;
 local lastSendData, lastSelfTimestamp = 0, 0;
 local timestampTemp, GetServerTimeTemp, controlTypeTemp, waitingTerok;
+local terokCache;
 function NWB:getTerokkarData()
 	if (not NWB.isTBC) then
+		return;
+	end
+	if (NWB.isLayered and not NWB.lastTerokNPCID) then
+		--NWB:debug("no last terok npc ID");
 		return;
 	end
 	local neutral = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(3097);
@@ -3504,7 +3521,14 @@ function NWB:getTerokkarData()
 					--end
 					--NWB:debug(timestamp, NWB.data.layers[layer]["terokTowers"], timestamp - NWB.data.layers[layer]["terokTowers"])
 					if (timestamp - NWB.data.layers[layer]["terokTowers"] > -1800) then
-						if (NWB:validateTerokkarRecord(NWB.data.layers[layer]["terokTowers"], timestamp, layer)) then
+						local halt;
+						if (NWB.realm == "Faerlina" or NWB.realm == "Firemaw" or NWB.realm == "Benediction" or NWB.realm == "Gehennas") then
+							local layerOffset = NWB:getLayerOffset(layer, 1952);
+							if (layerOffset and layerOffset > 150) then
+								halt = true;
+							end
+						end
+						if (not halt and NWB:validateTerokkarRecord(NWB.data.layers[layer]["terokTowers"], timestamp, layer)) then
 							local lastTimeLeft = 0;
 							local sendData;
 							if (NWB.data.layers[layer]["terokTowers"] - GetServerTime() > 0
@@ -3512,7 +3536,7 @@ function NWB:getTerokkarData()
 								sendData = true;
 							end
 							--print(NWB.data.layers[layer]["terokTowers"] - GetServerTime(), firstTerokkarData, timestamp - GetServerTime())
-							--NWB:debug("set terokkar timer layered2", timestamp, controlType, GetServerTime());
+							--NWB:debug("set terokkar timer stage reached", timestamp, controlType, GetServerTime());
 							
 							--Slight delay to try counter a bug with the widget updating more than once at the same time and with diff times.
 							--In observations when the widget gives wrong timer it updates 4 times in the same second.
@@ -3525,18 +3549,35 @@ function NWB:getTerokkarData()
 							if (not waitingTerok) then
 								C_Timer.After(2, function()
 									waitingTerok = false
-									NWB.data.layers[layer]["terokTowers"] = timestampTemp;
-									NWB.data.layers[layer]["terokTowersTime"] = GetServerTimeTemp;
-									NWB.data.layers[layer]["terokFaction"] = controlTypeTemp;
-									lastTerokkarUpdate = GetServerTime();
-									if (timestamp - GetServerTime() > 900) then
-										NWB.data.layers[layer]["terokTowers10"] = true;
+									--Aimed at fixing a new thing Blizzard seems to be doing, forcing layer changes in crowded areas with no group joined and no event to tell it happened.
+									--Keep a cache of the last timer and check if it's changed by too much, must be another layer or we left the zone for extended time if it has.
+									if (terokCache and (timestampTemp > terokCache + 100 or timestampTemp < terokCache - 100)) then
+										--NWB:debug("Possible forced layer change in Terokkar Forest.");
+										--No recording until a new mob is targeted.
+										NWB.lastKnownLayerMapID = 0;
+										NWB.lastKnownLayerMapIDBackup = 0;
+										NWB.lastKnownLayerMapID_Mapping = 0;
+										NWB.currentZoneID = 0;
+										NWB.lastTerokNPCID = nil;
+										terokCache = nil;
+									--Make sure a cache exists.
+									--2 updates in a row needed to set a timer.
+									elseif (terokCache) then
+										--NWB:debug("setting terokkar timer layered", timestamp, controlType, GetServerTime());
+										NWB.data.layers[layer]["terokTowers"] = timestampTemp;
+										NWB.data.layers[layer]["terokTowersTime"] = GetServerTimeTemp;
+										NWB.data.layers[layer]["terokFaction"] = controlTypeTemp;
+										lastTerokkarUpdate = GetServerTime();
+										if (timestamp - GetServerTime() > 900) then
+											NWB.data.layers[layer]["terokTowers10"] = true;
+										end
+										if (sendData and GetServerTime() - lastSendData > 175) then
+											lastSendData = GetServerTime();
+											NWB:sendData("YELL", nil, nil, true, true, "terokkar");
+											NWB:sendData("GUILD", nil, nil, true, true, "terokkar");
+										end
 									end
-									if (sendData and GetServerTime() - lastSendData > 175) then
-										lastSendData = GetServerTime();
-										NWB:sendData("YELL", nil, nil, true, true, "terokkar");
-										NWB:sendData("GUILD", nil, nil, true, true, "terokkar");
-									end
+									terokCache = timestampTemp;
 								end)
 							end
 							waitingTerok = true;
@@ -3544,7 +3585,7 @@ function NWB:getTerokkarData()
 					end
 				end
 			else
-				--NWB:debug("set terokkar timer", timestamp);
+				--NWB:debug("setting terokkar timer unlayered", timestamp);
 				local sendData;
 				if (NWB.data["terokTowers"] and NWB.data["terokTowers"] - GetServerTime() < 0 and not firstTerokkarData
 						and timestamp - GetServerTime() > 20700) then
@@ -3615,8 +3656,8 @@ function NWB:updateTerokkarMarkers(type, layer)
 		end
 		local timeString = L["noTimer"];
 		if (NWB.data.layers[layer] and _G[type .. layer .. "NWBTerokkarMap"] and time > 0) then
-	    	timeString = NWB:getTimeString(time, true, "short") .. " (" .. NWB:getTimeFormat(NWB.data.layers[layer]["terokTowers"]) .. ")";
-	    	local timeStamp = NWB:getTimeFormat(NWB.data.layers[layer]["terokTowers"]);
+			local endTime = NWB:getTerokEndTime(NWB.data.layers[layer].terokTowers, NWB.data.layers[layer].terokTowersTime);
+	    	timeString = NWB:getTimeString(endTime - GetServerTime(), true, "short") .. " (" .. NWB:getTimeFormat(endTime) .. ")";
 	    	if (NWB.data.layers[layer]["terokFaction"] == 2) then
 	    		_G[type .. layer .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\alliancetower.blp");
 	    	elseif (NWB.data.layers[layer]["terokFaction"] == 3) then
@@ -3642,8 +3683,8 @@ function NWB:updateTerokkarMarkers(type, layer)
 			time = 0;
 		end
 		if (NWB.data["terokTowers"] and _G[type .. "NWBTerokkarMap"] and time > 0) then
-	    	timeString = NWB:getTimeString(time, true, "short") .. " (" .. NWB:getTimeFormat(NWB.data["terokTowers"]) .. ")";
-	    	local timeStamp = NWB:getTimeFormat(NWB.data["terokTowers"]);
+			local endTime = NWB:getTerokEndTime(NWB.data.terokTowers, NWB.data.terokTowersTime);
+	    	timeString = NWB:getTimeString(endTime - GetServerTime(), true, "short") .. " (" .. NWB:getTimeFormat(endTime) .. ")";
 	    	if (NWB.data["terokFaction"] == 2) then
 	    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\alliancetower.blp");
 	    	elseif (NWB.data["terokFaction"] == 3) then

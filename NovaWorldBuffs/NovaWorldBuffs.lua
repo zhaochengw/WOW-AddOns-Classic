@@ -3484,6 +3484,43 @@ function NWB:getTerokEndTime(terokTowers, terokTowersTime)
 	end
 end
 
+--Get how far away our zoneid is from the capital city on this layer.
+function NWB:getLayerOffset(layerID, mapID, zoneID) --/run print(getLayerOffset(31, 1951))
+	--Using this for checking if a zone is mapped right, close to it's capital city ID.
+	--If it's far away then it's likely been mapped to the wrong layer or there's been a zone crash.
+	local offset;
+	if (not NWB.data.layers or not next(NWB.data.layers)) then
+		return;
+	end
+	local data = NWB.data.layers[layerID];
+	if (not data) then
+		return;
+	end
+	--Look via mapID if we already have a zoneID mapped.
+	if (mapID and layerID) then
+		for k, v in pairs(data.layerMap) do
+			if (v == mapID) then
+				if (k > layerID) then
+					offset = k - layerID;
+				else
+					offset = layerID - k;
+				end
+				return offset;
+			end
+		end
+	end
+	--Look via zoneID if this is an attempt to map.
+	if (zoneID and layerID) then
+		if (zoneID > layerID) then
+			offset = zoneID - layerID;
+		else
+			offset = layerID - zoneID;
+		end
+		return offset;
+	end
+	--If the zone isn't mapped yet we must be trying to map it.
+end
+
 local f = CreateFrame("Frame");
 f:RegisterEvent("PLAYER_ENTERING_WORLD");
 f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -4499,6 +4536,51 @@ function SlashCmdList.NOVALUAOFFCMD(msg, editBox)
 	end
 end
 
+SLASH_NOVAPVPDAILYCMD1, SLASH_NOVAPVPDAILYCMD2 = '/pvpdailies', '/pvpdaily';
+function SlashCmdList.NOVAPVPDAILYCMD(msg, editBox)
+	NWB:print("PvP Daily Status:", nil, "[NWB]")
+	local completedString;
+	if (NWB.faction == "Horde") then
+		if (C_QuestLog.IsQuestFlaggedCompleted(10110)) then
+			completedString = "|cFF00C800Completed|r";
+		else
+			completedString = "|cFFFF2222Not Completed|r";
+		end
+		print("|cFF9CD6DEHellfire Towers: " .. completedString .. ".");
+		if (C_QuestLog.IsQuestFlaggedCompleted(11506)) then
+			completedString = "|cFF00C800Completed|r";
+		else
+			completedString = "|cFFFF2222Not Completed|r";
+		end
+		print("|cFF9CD6DETerokkar Towers: " .. completedString .. ".");
+		if (C_QuestLog.IsQuestFlaggedCompleted(11503)) then
+			completedString = "|cFF00C800Completed|r";
+		else
+			completedString = "|cFFFF2222Not Completed|r";
+		end
+		print("|cFF9CD6DENagrand Halaa: " .. completedString .. ".");
+	else
+		if (C_QuestLog.IsQuestFlaggedCompleted(10106)) then
+			completedString = "|cFF00C800Completed|r";
+		else
+			completedString = "|cFFFF2222Not Completed|r";
+		end
+		print("|cFF9CD6DEHellfire Towers: " .. completedString .. ".");
+		if (C_QuestLog.IsQuestFlaggedCompleted(11505)) then
+			completedString = "|cFF00C800Completed|r";
+		else
+			completedString = "|cFFFF2222Not Completed|r";
+		end
+		print("|cFF9CD6DETerokkar Towers: " .. completedString .. ".");
+		if (C_QuestLog.IsQuestFlaggedCompleted(11502)) then
+			completedString = "|cFF00C800Completed|r";
+		else
+			completedString = "|cFFFF2222Not Completed|r";
+		end
+		print("|cFF9CD6DENagrand Halaa: " .. completedString .. ".");
+	end
+end
+
 function NWB:debug(...)
 	local data = ...;
 	if (data and NWB.isDebug) then
@@ -4979,6 +5061,54 @@ function NWB:updateMinimapButton(tooltip, usingPanel)
 			else
 				tooltip:AddLine(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r" .. texture .. "|cFF9CD6DE)|r Unknown.");
 			end
+			local completedQuests = {};
+			if (NWB.faction == "Horde") then
+				if (C_QuestLog.IsQuestFlaggedCompleted(10110)) then
+					table.insert(completedQuests, "|cFF9CD6DE" .. L["Hellfire Towers"] .. ": |cFF00C800Completed|r" .. ".");
+				end
+				if (C_QuestLog.IsQuestFlaggedCompleted(11506)) then
+					table.insert(completedQuests, "|cFF9CD6DE" .. L["Terokkar Towers"] .. ": |cFF00C800Completed|r" .. ".");
+				end
+				if (C_QuestLog.IsQuestFlaggedCompleted(11503)) then
+					table.insert(completedQuests, "|cFF9CD6DE" .. L["Nagrand Halaa"] .. ":  |cFF00C800Completed|r" .. ".");
+				end
+			else
+				if (C_QuestLog.IsQuestFlaggedCompleted(10106)) then
+					table.insert(completedQuests, "|cFF9CD6DE" .. L["Hellfire Towers"] .. ": |cFF00C800Completed|r" .. ".");
+				end
+				if (C_QuestLog.IsQuestFlaggedCompleted(11505)) then
+					table.insert(completedQuests, "|cFF9CD6DE" .. L["Terokkar Towers"] .. ": |cFF00C800Completed|r" .. ".");
+				end
+				if (C_QuestLog.IsQuestFlaggedCompleted(11502)) then
+					table.insert(completedQuests, "|cFF9CD6DE" .. L["Nagrand Halaa"] .. ":  |cFF00C800Completed|r" .. ".");
+				end
+			end
+			if (next(completedQuests)) then
+				tooltip:AddLine(" ");
+				if (not tooltip.NWBSeparator2) then
+				    tooltip.NWBSeparator2 = tooltip:CreateTexture(nil, "BORDER");
+				    tooltip.NWBSeparator2:SetColorTexture(0.6, 0.6, 0.6, 0.85);
+				    tooltip.NWBSeparator2:SetHeight(0.9);
+				    tooltip.NWBSeparator2:SetPoint("LEFT", 10, 0);
+				    tooltip.NWBSeparator2:SetPoint("RIGHT", -10, 0);
+				end
+				tooltip.NWBSeparator2:SetPoint("TOP", _G[tooltip:GetName() .. "TextLeft" .. tooltip:NumLines()], "CENTER");
+				tooltip.NWBSeparator2:Show();
+				tooltip:AddLine("Completed PvP dailies:");
+				for k, v in ipairs(completedQuests) do
+					tooltip:AddLine(v);
+				end
+				tooltip:AddLine(" ");
+				if (not tooltip.NWBSeparator3) then
+				    tooltip.NWBSeparator3 = tooltip:CreateTexture(nil, "BORDER");
+				    tooltip.NWBSeparator3:SetColorTexture(0.6, 0.6, 0.6, 0.85);
+				    tooltip.NWBSeparator3:SetHeight(0.9);
+				    tooltip.NWBSeparator3:SetPoint("LEFT", 10, 0);
+				    tooltip.NWBSeparator3:SetPoint("RIGHT", -10, 0);
+				end
+				tooltip.NWBSeparator3:SetPoint("TOP", _G[tooltip:GetName() .. "TextLeft" .. tooltip:NumLines()], "CENTER");
+				tooltip.NWBSeparator3:Show();
+			end
 		end
 		tooltip:AddLine("|cFF9CD6DELeft-Click|r Timers");
 		tooltip:AddLine("|cFF9CD6DERight-Click|r Buffs");
@@ -4993,6 +5123,12 @@ function NWB:updateMinimapButton(tooltip, usingPanel)
 	else
 		if (tooltip.NWBSeparator) then
 			tooltip.NWBSeparator:Hide();
+		end
+		if (tooltip.NWBSeparator2) then
+			tooltip.NWBSeparator2:Hide();
+		end
+		if (tooltip.NWBSeparator3) then
+			tooltip.NWBSeparator3:Hide();
 		end
 	end
 end
@@ -6941,24 +7077,12 @@ local staticDmfDates = {};
 function NWB:setDmfDates()
 	if (NWB.isTBC or NWB.realmsTBC) then
 		staticDmfDates = {
-			--[[[1] = { --Manually started DMF by Blizzard for prepatch.
-				day = 21,
-				month = 5,
-				year = 2021,
-				zone = "Mulgore",
-			},
-			[2] = { --July 30th setup, August 1st start 2021.
-				day = 30,
-				month = 7,
-				year = 2021,
-				zone = "Mulgore",
-			},
-			[3] = { --October 29th setup, October 31st start 2021.
+			[1] = {
 				day = 29,
-				month = 10,
-				year = 2021,
-				zone = "Elwynn Forest",
-			},]]
+				month = 4,
+				year = 2022,
+				zone = "Outlands",
+			},
 		}
 	else
 		staticDmfDates = {
@@ -9090,7 +9214,7 @@ function NWB:createNewLayer(zoneID, GUID, isFromNpc)
 			--Create a copy instead of refrence and ignore timestamp.
 			for k, v in pairs(NWB.data.layerMapBackups[zoneID]) do
 				--Ignore created timestamp, it's not needed in the layermap, only in the backup.
-				if (k ~= "created") then
+				if (k ~= "created" and v ~= 1952) then
 					NWB.data.layers[zoneID].layerMap[k] = v;
 				end
 			end
@@ -9792,6 +9916,36 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 		else
 			text = text .. "\n" .. NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r" .. texture .. "|cFF9CD6DE)|r Unknown.";
 		end
+		local completedQuests = {};
+		if (NWB.faction == "Horde") then
+			if (C_QuestLog.IsQuestFlaggedCompleted(10110)) then
+				table.insert(completedQuests, "|cFF9CD6DE" .. L["Hellfire Towers"] .. ": |cFF00C800Completed|r" .. ".");
+			end
+			if (C_QuestLog.IsQuestFlaggedCompleted(11506)) then
+				table.insert(completedQuests, "|cFF9CD6DE" .. L["Terokkar Towers"] .. ": |cFF00C800Completed|r" .. ".");
+			end
+			if (C_QuestLog.IsQuestFlaggedCompleted(11503)) then
+				table.insert(completedQuests, "|cFF9CD6DE" .. L["Nagrand Halaa"] .. ":  |cFF00C800Completed|r" .. ".");
+			end
+		else
+			if (C_QuestLog.IsQuestFlaggedCompleted(10106)) then
+				table.insert(completedQuests, "|cFF9CD6DE" .. L["Hellfire Towers"] .. ": |cFF00C800Completed|r" .. ".");
+			end
+			if (C_QuestLog.IsQuestFlaggedCompleted(11505)) then
+				table.insert(completedQuests, "|cFF9CD6DE" .. L["Terokkar Towers"] .. ": |cFF00C800Completed|r" .. ".");
+			end
+			if (C_QuestLog.IsQuestFlaggedCompleted(11502)) then
+				table.insert(completedQuests, "|cFF9CD6DE" .. L["Nagrand Halaa"] .. ":  |cFF00C800Completed|r" .. ".");
+			end
+		end
+		text = text .. "\n\n" .. NWB.chatColor .. L["Completed PvP dailies"] .. ":|r";
+		if (next(completedQuests)) then
+			for k, v in ipairs(completedQuests) do
+				text = text .. "\n" .. v;
+			end
+		else
+			text = text .. "\n|cFF9CD6DENone.|r";
+		end
 	end
 	if (copyPaste) then
 		--Remove newline chars from start and end of string.
@@ -9875,6 +10029,7 @@ f:SetScript('OnEvent', function(self, event, ...)
 		NWB:mapCurrentLayer("mouseover");
 	elseif (event == "GROUP_JOINED") then
 		NWB.lastKnownLayerMapID = 0;
+		NWB.lastKnownLayerMapID_Mapping = 0;
 		NWB.currentZoneID = 0;
 		--Block a new zoneid from being set for longer than the team join block is if it's the same zoneid they got earlier.
 		--IE not changed layer yet after joining group because of layer swap cooldown.
@@ -9906,6 +10061,7 @@ f:SetScript('OnEvent', function(self, event, ...)
 		logonEnteringWorld = GetServerTime();
 		if (IsInGroup()) then
 			NWB.lastKnownLayerMapID = 0;
+			NWB.lastKnownLayerMapID_Mapping = 0;
 			NWB.currentZoneID = 0;
 			--NWB.lastJoinedGroup = GetServerTime();
 		end
@@ -9967,6 +10123,7 @@ end
 NWB.lastKnownLayer = 0;
 NWB.lastKnownLayerID = 0;
 NWB.lastKnownLayerMapID = 0;
+NWB.lastKnownLayerMapID_Mapping = 0; --More strict layerMapID, can only be set in capitals and zones with timers can only be mapped by this.
 NWB.lastKnownLayerMapIDBackup = 0; --Only used for songflowers if logging on in a group.
 NWB.lastKnownLayerMapIDBackupValidFor = 120; --How long after logon this can be valid for.
 NWB.currentZoneID = 0;
@@ -9991,6 +10148,11 @@ function NWB:setCurrentLayerText(unit)
 		return;
 	end
 	--NWB:debug("Layer:", GUID);
+	if (zone == 1952) then
+		--This is for strict layer checks while recording terokkar tower timers.
+		NWB.lastTerokNPCID = npcID;
+	end
+	--This only works in capital cities past this point.
 	if (NWB.faction == "Horde" and (zone ~= 1454 or not npcID)) then
 		NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg4"], "Orgrimmar") .. "|r");
 		return;
@@ -10027,7 +10189,7 @@ function NWB:setCurrentLayerText(unit)
 			NWB:recalcMinimapLayerFrame();
 			--Update layer created time any time we target a NPC on this layer in capital city.
 			--To help layers persist better overnight but not after server restarts.
-			--But only if the layer has had a valid timer previously.
+			--But only if the player has had a valid timer previously.
 			--This may create problems with false layers being shared around if a layer is created by some not valid city NPC.
 			--Will see how this goes, I need layers to be shared without timers, hotfixes lately have broken world buff NPCs.
 			--if (v.rendTimer > 0 or v.onyTimer > 0 or v.nefTimer > 0) then
@@ -10045,14 +10207,24 @@ function NWB:setCurrentLayerText(unit)
 				--So when you join a group you can't get another valid zoneID from the same layer and then phase over after it bringing the wrong zoneID with you.
 				NWB.lastCurrentZoneID = tonumber(zoneID);
 				NWB.data.layers[k].lastSeenNPC = GetServerTime();
+				NWB.lastKnownLayerMapID_Mapping = tonumber(zoneID);
 			end
 			return;
 		end
 	end
-	if (((NWB.faction == "Alliance" and zone == 1453 and NWB.stormwindCreatures[tonumber(npcID)])
+	--[[if (((NWB.faction == "Alliance" and zone == 1453 and NWB.stormwindCreatures[tonumber(npcID)])
 			or (NWB.faction == "Horde" and zone == 1454 and NWB.orgrimmarCreatures[tonumber(npcID)]))
 			and tonumber(zoneID) and not NWB.data.layers[tonumber(zoneID)]) then
 		NWB:createNewLayer(tonumber(zoneID), GUID, true);
+	end]]
+	if (((NWB.faction == "Alliance" and zone == 1453 and NWB.stormwindCreatures[tonumber(npcID)])
+			or (NWB.faction == "Horde" and zone == 1454 and NWB.orgrimmarCreatures[tonumber(npcID)]))
+			and tonumber(zoneID)) then
+		if (not NWB.data.layers[tonumber(zoneID)]) then
+			NWB:createNewLayer(tonumber(zoneID), GUID, true);
+		end
+		--This can only be set while in a capital and is used for mapping zones with timers like terokkar.
+		NWB.lastKnownLayerMapID_Mapping = tonumber(zoneID);
 	end
 	--I was going to let it create layers from layermap backups out in the world when timers aren't dropped for a while.
 	--Needs more thought though how to handle old layermap data after server restarts.
@@ -10277,11 +10449,32 @@ function NWB:mapCurrentLayer(unit)
 					return;
 				end
 			end
-			if (NWB.layerMapWhitelist[zone] and NWB:validateZoneID(zoneID, NWB.lastKnownLayerMapID, zone)) then
+			local halt;
+			if (NWB.isTBC) then
+				if (NWB.realm == "Faerlina" or NWB.realm == "Firemaw" or NWB.realm == "Benediction" or NWB.realm == "Gehennas") then
+					local layerOffset = NWB:getLayerOffset(NWB.lastKnownLayerMapID, nil, zoneID);
+					if (layerOffset and layerOffset > 150) then
+						halt = true;
+					end
+				end
+			end
+			if (not halt and NWB.layerMapWhitelist[zone] and NWB:validateZoneID(zoneID, NWB.lastKnownLayerMapID, zone)) then
 				--If zone is not mapped yet since server restart then add it.
-				NWB:debug("mapped new zone to layer id", NWB.lastKnownLayerMapID, "zoneid:", zoneID, "zone:", zone);
-				NWB.data.layers[NWB.lastKnownLayerMapID].layerMap[zoneID] = zone;
-				NWB:sendData("GUILD");
+				if (zone == 1952) then
+					--1952 Terokkar.
+					if (NWB.lastKnownLayerMapID_Mapping > 0) then
+						--Only map zones with timers if we have gotten our current layer from a capital city.
+						NWB:debug("mapped new timer zone to layer id", NWB.lastKnownLayerMapID_Mapping, "zoneid:", zoneID, "zone:", zone);
+						NWB.data.layers[NWB.lastKnownLayerMapID_Mapping].layerMap[zoneID] = zone;
+						NWB:sendData("GUILD", nil, nil, nil, true, nil, true);
+						NWB:sendData("YELL", nil, nil, nil, true, nil, true);
+					end
+				else
+					NWB:debug("mapped new zone to layer id", NWB.lastKnownLayerMapID, "zoneid:", zoneID, "zone:", zone);
+					NWB.data.layers[NWB.lastKnownLayerMapID].layerMap[zoneID] = zone;
+					NWB:sendData("GUILD", nil, nil, nil, true, nil, true);
+					NWB:sendData("YELL", nil, nil, nil, true, nil, true);
+				end
 			end
 		else
 			--NWB:debug("zoneid already known");
@@ -10554,10 +10747,11 @@ function NWB:resetLayerData()
 		NWB.data.tbcPDT = nil;
 		NWB.db.global.resetDailyData = false;
 	end
-	if (NWB.db.global.resetLayers6) then
+	if (NWB.db.global.resetLayers9) then
 		NWB:debug("resetting layer data");
 		NWB.data.layers = {};
-		NWB.db.global.resetLayers6 = false;
+		NWB.data.layerMapBackups = {};
+		NWB.db.global.resetLayers9 = false;
 	end
 end
 
