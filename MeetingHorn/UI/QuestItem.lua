@@ -57,6 +57,7 @@ function SetItem(button, itemId, count)
         button:RegisterEvent('GET_ITEM_INFO_RECEIVED')
         button:SetScript('OnEvent', OnEvent)
     end
+    button:Show()
 end
 
 ---@param quest Quest

@@ -182,6 +182,12 @@
                             <Anchor point="LEFT" relativeKey="$parent.Quick7" relativePoint="RIGHT" x="5" y="0"/>
                         </Anchors>
                     </Button>
+                    <Button parentKey="Quick10" inherits="MeetingHornQuickTemplate">
+                        <Size x="35" y="22"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick8" relativePoint="RIGHT" x="5" y="0"/>
+                        </Anchors>
+                    </Button>
                     <Button parentKey="Quick1" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
@@ -212,22 +218,22 @@
                             <Anchor point="BOTTOMLEFT" relativeKey="$parent.Quick1" relativePoint="TOPLEFT" x="0" y="-2"/>
                         </Anchors>
                     </Button>
-                    <Button parentKey="Quick5" inherits="MeetingHornQuickTemplate">
+                    <Button parentKey="Quick6" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Quick4" relativePoint="RIGHT" x="5" y="0"/>
                         </Anchors>
                     </Button>d
-                    <Button parentKey="Quick6" inherits="MeetingHornQuickTemplate">
+                    <Button parentKey="Quick5" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
-                            <Anchor point="LEFT" relativeKey="$parent.Quick5" relativePoint="RIGHT" x="5" y="0"/>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick6" relativePoint="RIGHT" x="5" y="0"/>
                         </Anchors>
                     </Button>
-                     <Button parentKey="Refresh" inherits="UIPanelButtonTemplate" text="REFRESH">
+                    <Button parentKey="Refresh" inherits="UIPanelButtonTemplate" text="REFRESH">
                         <Size x="60" y="22"/>
                         <Anchors>
-                            <Anchor point="LEFT" relativeKey="$parent.Quick6" relativePoint="RIGHT" x="10" y="-1"/>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick5" relativePoint="RIGHT" x="30" y="-1"/>
                         </Anchors>
                         <Layers>
                             <Layer level="OVERLAY" textureSubLevel="1">

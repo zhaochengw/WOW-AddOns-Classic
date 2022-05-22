@@ -113,15 +113,16 @@ function Browser:Constructor()
     --@end-classic@]=]
 
     -- @bcc@
-    SetupQuickButton(self.Quick2, 3607)
-    SetupQuickButton(self.Quick3, 3845)
-    SetupQuickButton2(self.Quick1, L['5H'])
+    SetupQuickButton(self.Quick1, 3607)
+    SetupQuickButton(self.Quick2, 3845)
+    SetupQuickButton2(self.Quick3, L['5H'])
     SetupQuickButton(self.Quick4, 3457)
     SetupQuickButton(self.Quick5, 3836)
     SetupQuickButton(self.Quick6, 3923)
     SetupQuickButton(self.Quick7, 3606)
     SetupQuickButton(self.Quick8, 3959)
     SetupQuickButton(self.Quick9, 3805)
+    SetupQuickButton(self.Quick10, 4075)
     -- @end-bcc@
 
     self.Activity:SetMenuTable(ns.ACTIVITY_FILTER_MENU)

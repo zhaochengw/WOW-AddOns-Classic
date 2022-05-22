@@ -38,7 +38,7 @@ function QuestPanel:Constructor()
     self.Summary.Text:SetText([[1.玩家可自由组队或单人完成“全民周常挑战”；
 2.玩家完成任意符合挑战要求的内容即可参与挑战并累计进度；
 3.战场挑战面向61级及以上角色开放，日常任务挑战面向70级角色开放；
-4.周常进度和奖励领取将在每周副本CD更新时重置，请及时领取奖励，未领取则视作放弃，为避免进度更新失败，请尽量避免临近CD更新时（每周四凌晨6:00）完成挑战内容；]])
+4.周常进度和奖励领取将在每周副本CD更新时重置，请及时领取奖励，未领取则视作放弃，为避免进度更新失败，请尽量避免临近CD更新时（每周四凌晨7:00）完成挑战内容；]])
 
     self:RegisterMessage('MEETINGHORN_QUEST_FETCHED')
     self:RegisterMessage('MEETINGHORN_QUEST_UPDATE', 'MEETINGHORN_QUEST_FETCHED')

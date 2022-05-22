@@ -7,7 +7,6 @@
 ---@field ApplicantItem MeetingHornUIApplicantItem
 ---@field Encounter MeetingHornUIEncounter
 ---@field Challenge MeetingHornUIChallenge
-
 ---@class ns
 ---@field UI UI
 ---@field Addon MeetingHorn
@@ -20,15 +19,11 @@
 ---@field Channel MeetingHornChannel
 ---@field ChallengeGroup MeetingHornChallengeGroup
 ---@field Challenge MeetingHornChallenge
----@field ProtoBase ProtoBase
----@field Quest Quest
----@field QuestGroup QuestGroup
----@field QuestServies QuestServies
 local ns = select(2, ...)
 
 local L = LibStub('AceLocale-3.0'):GetLocale('MeetingHorn', true)
 
----@class MeetingHorn: AceAddon-3.0, AceEvent-3.0, LibClass-2.0
+---@class MeetingHorn
 ---@field private MainPanel MeetingHornUIMainPanel
 local Addon = LibStub('AceAddon-3.0'):NewAddon('MeetingHorn', 'LibClass-2.0', 'AceEvent-3.0')
 ns.Addon = Addon
@@ -77,7 +72,9 @@ function Addon:OnInitialize()
 
     _G.MEETINGHORN_DB_CHARACTER_MEMBERS = _G.MEETINGHORN_DB_CHARACTER_MEMBERS or {}
 
-    self.MainPanel = ns.UI.MainPanel:Bind(CreateFrame('Button', nil, UIParent, 'MeetingHornMainPanelTemplate'))
+    self.MainPanel = ns.UI.MainPanel:Bind(CreateFrame('Button', "MeetingHornMainPanel", UIParent, 'MeetingHornMainPanelTemplate'))
+    tinsert(UISpecialFrames, "MeetingHornMainPanel");
+    MeetingHornMainPanel:SetPoint("CENTER")
     self.DataBroker = ns.UI.DataBroker:Bind(MeetingHornDataBroker)
 
     self:RegisterMessage('MEETINGHORN_OPTION_CHANGED_CHATFILTER')
@@ -168,9 +165,11 @@ end
 
 function Addon:Toggle()
     if self.MainPanel:IsShown() then
-        HideUIPanel(self.MainPanel)
+        -- HideUIPanel(self.MainPanel)
+        self.MainPanel:Hide();
     else
-        ShowUIPanel(self.MainPanel)
+        -- ShowUIPanel(self.MainPanel)
+        self.MainPanel:Show();
     end
 
     if ns.LFG:GetCurrentActivity() then
@@ -180,7 +179,8 @@ end
 
 function Addon:OpenEncounter(...)
     if not self.MainPanel:IsShown() then
-        ShowUIPanel(self.MainPanel)
+        -- ShowUIPanel(self.MainPanel)
+        self.MainPanel:Show();
     end
 
     self.MainPanel:SetTab(self.MainPanel.Encounter)
