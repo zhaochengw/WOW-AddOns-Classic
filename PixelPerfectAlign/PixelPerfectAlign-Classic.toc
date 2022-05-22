@@ -1,9 +1,9 @@
-## Interface: 20504
+## Interface: 11402
 ## Title: Pixel Perfect Align
 ## Notes: Pixel Perfect Alignment Grid and Measuring Tape using MoLib (|cFF99E5FF/ppa|r)
 ## Notes: Classic (Era and SoM) edition
 ## Author: MooreaTV moorea@ymail.com
-## Version: v1.12.01
+## Version: v1.12.03
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: pixelPerfectAlignSaved
