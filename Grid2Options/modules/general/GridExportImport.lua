@@ -461,3 +461,4 @@ Grid2Options.AdvancedProfileOptions = { type = "group", order= 200, name = L["Im
 -- }}
 
 _G._163_Grid2_ImportProfile = ImportProfile;
+

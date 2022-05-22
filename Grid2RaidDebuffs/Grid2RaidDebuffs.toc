@@ -3,11 +3,13 @@
 ## Notes: Adds a Raid Boss debuff status.
 ## Notes-esES: Muestra los debuffs de Bosses de Raid en el Grid2.
 ## Dependencies: Grid2
-## Version:2.0.33
+## Version:2.0.43
 ## X-Category: UnitFrame
 ## X-Website: http://wowace.com/projects/grid2/
+
 Grid2RaidDebuffs.lua
 
+## Title: |cff880303[163UI]|r Grid2 |cd1ff7d0aRaidDebuffs|r
 ## Title-zhCN: |cff880303[有爱]|r Grid2 首领减益效果数据
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+## X-163UI-Version: 20220512135655

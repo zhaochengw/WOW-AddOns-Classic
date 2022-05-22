@@ -585,15 +585,25 @@ end
 do
 	local template = { type = 'custom', detachHeader = true }
 	local function AddHeader(self, key, units, setupIndex)
-		if self.db.profile[key] then
+		local db = self.db.profile
+		if db[key] then
+			if key=='displayHeaderBosses' then
+				template.unitsPerColumn = db.BossesUnitsPerColumn or 8
+				template.maxColumns = math.ceil(8/template.unitsPerColumn)
+				template.hideEmptyUnits = db.BossesHideEmpty
+			else
+				template.unitsPerColumn = 1
+				template.maxColumns = 1
+				template.hideEmptyUnits = nil
+			end
 			template.unitsFilter = units
-			self:AddHeader( template, nil, setupIndex)
+			self:AddHeader( template, nil, setupIndex )
 		end
 	end
 	function Grid2Layout:AddSpecialHeaders()
 		AddHeader( self, 'displayHeaderTarget', 'target', 10001 )
 		AddHeader( self, 'displayHeaderFocus',  'focus',  10002 )
-		AddHeader( self, 'displayHeaderBosses', 'boss1,boss2,boss3,boss4,boss5', 10003 )
+		AddHeader( self, 'displayHeaderBosses', 'boss1,boss2,boss3,boss4,boss5,boss6,boss7,boss8', 10003 )
 	end
 end
 
