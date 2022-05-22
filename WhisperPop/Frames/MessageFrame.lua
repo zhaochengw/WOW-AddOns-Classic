@@ -18,7 +18,7 @@ local ICON_TAG_LIST = ICON_TAG_LIST
 local addon = WhisperPop
 local L = addon.L
 
-local FRAME_WIDTH = 400
+local FRAME_WIDTH = 480
 local INDENT_LEFT = 8
 local INDENT_RIGHT = 28
 local LIST_WIDTH = FRAME_WIDTH - INDENT_LEFT - INDENT_RIGHT
@@ -170,7 +170,7 @@ function frame:AddMessage(text, inform, timeStamp, update)
 	end
 
 	if addon.db.time then
-		text = "|cffffd200"..timeStamp.."|r "..text
+		text = "|cff9f9f9f"..timeStamp.."|r "..text
 	end
 
 	list:AddMessage(text, r, g, b)

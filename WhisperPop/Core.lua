@@ -11,6 +11,7 @@ local strfind = strfind
 local type = type
 local tinsert = tinsert
 local strsub = strsub
+local gsub = gsub;
 local date = date
 local tonumber = tonumber
 local select = select
@@ -53,7 +54,7 @@ addon.MAX_MESSAGES = 500 -- Maximum messages stored for each conversation
 -- Message are saved in format of: [1/0][hh:mm:ss][contents]
 -- The first char is 1 if this message is inform, 0 otherwise
 function addon:EncodeMessage(text, inform)
-	local timeStamp = date("%H:%M:%S")--strsub(date(), 10, 17)
+	local timeStamp = date("%Y-%m-%d %H:%M:%S")--date("%H:%M:%S")--strsub(date(), 10, 17)
 	return (inform and "1" or "0")..timeStamp..(text or ""), timeStamp
 end
 
@@ -67,8 +68,8 @@ function addon:DecodeMessage(line)
 		inform = 1
 	end
 
-	local timeStamp = strsub(line, 2, 9)
-	local text = strsub(line, 10)
+	local timeStamp = strsub(line, 2, 20)
+	local text = strsub(line, 21)
 	return text, inform, timeStamp
 end
 
@@ -222,8 +223,8 @@ addon.DB_DEFAULTS = {
 }
 
 function addon:OnInitialize(db, firstTime)
-	if firstTime or not addon:VerifyDBVersion(4.12, db) then
-		db.version = 4.12
+	if firstTime or not addon:VerifyDBVersion(4.30, db) then
+		db.version = 4.30
 		local k, v
 		for k, v in pairs(self.DB_DEFAULTS) do
 			if v == 1 then
@@ -232,6 +233,20 @@ function addon:OnInitialize(db, firstTime)
 				--print(k, db[k])
 				if type(db[k]) ~= "number"  or db[k] < v.min or db[k] > v.max then
 					db[k] = v.default
+				end
+			end
+		end
+		local history = db.history;
+		if history ~= nil and type(history) == 'table' then
+			for i = 1, #history do
+				local messages = history[i].messages;
+				for j = 1, #messages do
+					local m = messages[j];
+					--6 16:09:
+					--16:09:00
+					m = gsub(m, "^([0-9])[0-9] ([0-2][0-9]:[0-5][0-9]:)", "%10000-00-00 %200");
+					m = gsub(m, "^([0-9])([0-9][0-9]:[0-9][0-9]:[0-9][0-9])", "%10000-00-00 %2");
+					messages[j] = m;
 				end
 			end
 		end
