@@ -9,7 +9,7 @@ end
 local ADDON, NS = ...;
 local ARTWORK_PATH = "Interface\\AddOns\\alaCalendar\\ARTWORK\\";
 
-NS.CUR_PHASE = 4;
+NS.CUR_PHASE = 5;
 --	fixed_cycle		1_first_seen,	2_cycle,		3_nil,			4_nil,		5_dur,	6_tex_start,	7_curtain,	8_tex_end,	9_tex_start_coord,	10_curtain_coord,	11_tex_end_coord
 --	month_week_day	1_first_seen,	2_cycle_month,	3_check_day,	4_latency,	5_dur,	6_tex_start,	7_curtain,	8_tex_end,	9_tex_start_coord,	10_curtain_coord,	11_tex_end_coord
 --	using UTC-0
@@ -522,6 +522,7 @@ NS.apply_region = {
 		NS.milestone["Hyjal"][1] = 18779 * 86400 + 16 * 3600 + 238 * 86400;		--
 		NS.milestone["BT"][1] = 18779 * 86400 + 16 * 3600 + 238 * 86400;		--
 		NS.milestone["ZAM"][1] = 18779 * 86400 + 16 * 3600 + 294 * 86400;		--
+		NS.milestone["BT"][1] = 18779 * 86400 + 16 * 3600 + 343 * 86400;		--
 		NS.milestone["DarkMoon: Terokkar"][1] = 18840 * 86400 + 16 * 3600;
 		NS.milestone["DarkMoon: Mulgore"][1] = 18812 * 86400 + 16 * 3600;
 		NS.milestone["DarkMoon: Elwynn"][1] = 18784 * 86400 + 16 * 3600;
@@ -549,6 +550,7 @@ NS.apply_region = {
 		NS.milestone["Hyjal"][1] = 18779 * 86400 + 16 * 3600 + 238 * 86400;		--
 		NS.milestone["BT"][1] = 18779 * 86400 + 16 * 3600 + 238 * 86400;		--
 		NS.milestone["ZAM"][1] = 18779 * 86400 + 16 * 3600 + 294 * 86400;		--
+		NS.milestone["BT"][1] = 18779 * 86400 + 16 * 3600 + 343 * 86400;		--
 		NS.milestone["DarkMoon: Terokkar"][1] = 18840 * 86400 + 13 * 3600;
 		NS.milestone["DarkMoon: Mulgore"][1] = 18812 * 86400 + 13 * 3600;
 		NS.milestone["DarkMoon: Elwynn"][1] = 18784 * 86400 + 13 * 3600;
@@ -576,6 +578,7 @@ NS.apply_region = {
 		NS.milestone["Hyjal"][1] = 18781 * 86400 + 1 * 3600 + 238 * 86400;
 		NS.milestone["BT"][1] = 18781 * 86400 + 1 * 3600 + 238 * 86400;
 		NS.milestone["ZAM"][1] = 18781 * 86400 + 1 * 3600 + 293 * 86400;
+		NS.milestone["BT"][1] = 18781 * 86400 + 1 * 3600 + 343 * 86400;
 		NS.milestone["DarkMoon: Terokkar"][1] = 18840 * 86400 - 5 * 3600;
 		NS.milestone["DarkMoon: Mulgore"][1] = 18812 * 86400 - 5 * 3600;
 		NS.milestone["DarkMoon: Elwynn"][1] = 18784 * 86400 - 5 * 3600;
@@ -603,6 +606,7 @@ NS.apply_region = {
 		NS.milestone["Hyjal"][1] = 18780 * 86400 + 7 * 3600 + 238 * 86400;		--
 		NS.milestone["BT"][1] = 18780 * 86400 + 7 * 3600 + 238 * 86400;		--
 		NS.milestone["ZAM"][1] = 18780 * 86400 + 7 * 3600 + 293 * 86400;		--
+		NS.milestone["BT"][1] = 18780 * 86400 + 7 * 3600 + 343 * 86400;		--
 		NS.milestone["DarkMoon: Terokkar"][1] = 18840 * 86400 + 3 * 3600;
 		NS.milestone["DarkMoon: Mulgore"][1] = 18812 * 86400 + 3 * 3600;
 		NS.milestone["DarkMoon: Elwynn"][1] = 18784 * 86400 + 3 * 3600;
@@ -630,6 +634,7 @@ NS.apply_region = {
 		NS.milestone["Hyjal"][1] = 18781 * 86400 + 1 * 3600 + 238 * 86400;
 		NS.milestone["BT"][1] = 18781 * 86400 + 1 * 3600 + 238 * 86400;
 		NS.milestone["ZAM"][1] = 18781 * 86400 + 1 * 3600 + 293 * 86400;
+		NS.milestone["BT"][1] = 18781 * 86400 + 1 * 3600 + 343 * 86400;
 		NS.milestone["DarkMoon: Terokkar"][1] = 18840 * 86400 - 4 * 3600;
 		NS.milestone["DarkMoon: Mulgore"][1] = 18812 * 86400 - 4 * 3600;
 		NS.milestone["DarkMoon: Elwynn"][1] = 18784 * 86400 - 4 * 3600;
@@ -657,6 +662,7 @@ NS.apply_region = {
 		NS.milestone["Hyjal"][1] = 18780 * 86400 + 23 * 3600 + 238 * 86400;			--	--	2022-01-27	1643238000
 		NS.milestone["BT"][1] = 18780 * 86400 + 23 * 3600 + 238 * 86400;			--	--	2022-01-27	1643238000
 		NS.milestone["ZAM"][1] = 18780 * 86400 + 23 * 3600 + 293 * 86400;			--	--	2022-03-25	1643238000
+		NS.milestone["SW"][1] = 18780 * 86400 + 23 * 3600 + 343 * 86400;			--	--	2022-01-27	1643238000
 		NS.milestone["DarkMoon: Terokkar"][1] = 18840 * 86400 - 4 * 3600;
 		NS.milestone["DarkMoon: Mulgore"][1] = 18812 * 86400 - 4 * 3600;
 		NS.milestone["DarkMoon: Elwynn"][1] = 18784 * 86400 - 4 * 3600;

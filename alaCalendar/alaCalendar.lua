@@ -222,7 +222,8 @@ local PLAYER_GUID = UnitGUID('player');
 local PLAYER_NAME = UnitName('player');
 local PLAYER_REALM_ID = tonumber(GetRealmID());
 local PLAYER_REALM_NAME = GetRealmName();
-local PLAYER_FULLNAME = PLAYER_NAME .. "-" .. PLAYER_REALM_NAME;
+local PLAYER_REALM_NAME_NOBLANK = gsub(PLAYER_REALM_NAME, " ", "");
+local PLAYER_FULLNAME = PLAYER_NAME .. "-" .. PLAYER_REALM_NAME_NOBLANK;
 
 local function info_OnEnter(self)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -3010,8 +3011,7 @@ do	--	MAIN
 	local ADDON_MSG_REPLY = "_r_cal";
 	local ADDON_MSG_BCMDAILY = "_b_dlu";
 	local ADDON_MSG_VER = 1;
-	local ADDON_MSG_MIN_VER = 1;
-	local ADDON_MSG_MAX_VER = 1;
+	local ADDON_MSG_RECEIVER_MIN_VER = 1;
 	do	--	comm
 		--	GUID#INST# index-count #id#t#numEncounters#encounterProgress#bossName#isKilled
 		local function encode_data(cache, max_len, GUID, inst, var)
@@ -3070,18 +3070,18 @@ do	--	MAIN
 			return false;
 		end
 		function NS.CHAT_MSG_ADDON(prefix, msg, channel, sender, target, zoneChannelID, localID, name, instanceID)
-			local name, realm = strsplit("-", sender);
-			if realm == nil or realm == PLAYER_REALM_NAME then
-				sender = name;
-				if prefix == ADDON_PREFIX then
+			if prefix == ADDON_PREFIX then
+				local name, realm = strsplit("\-", sender);
+				if (realm == nil or realm == PLAYER_REALM_NAME or realm == PLAYER_REALM_NAME_NOBLANK) and name ~= PLAYER_NAME then
+					sender = name;
 					local control_code = strsub(msg, 1, ADDON_MSG_CONTROL_CODE_LEN);
 					if control_code == ADDON_MSG_BCMDAILY then
-						local _, MinVer, MaxVer, NID, NTime, NSRC, HID, HTime, HSRC, CID, CTime, CSRC, FID, FTime, FSRC = strsplit("#", msg);
+						local _, MinVer, SenderVer, NID, NTime, NSRC, HID, HTime, HSRC, CID, CTime, CSRC, FID, FTime, FSRC = strsplit("#", msg);
 						MinVer = tonumber(MinVer) or 999999;
-						MaxVer = tonumber(MaxVer) or -1;
-						if ADDON_MSG_VER >= MinVer and ADDON_MSG_VER <= MaxVer then
+						if ADDON_MSG_VER >= MinVer then
+							SenderVer = tonumber(SenderVer) or -1;
 							NS.DailyOnComm(
-								channel, sender,
+								channel, sender, SenderVer <= ADDON_MSG_VER,
 								NID, NTime, NSRC,
 								HID, HTime, HSRC,
 								CID, CTime, CSRC,
@@ -3089,18 +3089,6 @@ do	--	MAIN
 							);
 						end
 					end
-				-- elseif prefix == "REPUTABLE" then
-					-- local action, version, NID, _, HID, _, CID, _, FID, _, PvP, _ = strsplit(":", msg);
-					-- if action ~= nil then
-					-- 	NS.DailyOnComm(
-					-- 		nil,
-					-- 		NID, -1,
-					-- 		HID, -1,
-					-- 		CID, -1,
-					-- 		FID, -1,
-					-- 		channel, sender
-					-- 	);
-					-- end
 				end
 			end
 		end
@@ -3130,7 +3118,7 @@ do	--	MAIN
 		local function GetCalMessage()
 			--	ADDON_MSG_BCMDAILY#ID#FLAG#TIME
 			-- local reputable = "send:1.27-bcc";
-			local msg = ADDON_MSG_BCMDAILY .. "#" .. ADDON_MSG_MIN_VER .. "#" .. ADDON_MSG_MAX_VER;
+			local msg = ADDON_MSG_BCMDAILY .. "#" .. ADDON_MSG_RECEIVER_MIN_VER .. "#" .. ADDON_MSG_VER;
 			for index = 1, 4 do
 				local D = DLY[index];
 				if D ~= nil and D[1] ~= nil then
@@ -3294,7 +3282,7 @@ do	--	MAIN
 		end
 		local DONE = DONE or "DONE";
 		local DAILY = DAILY or QUESTS_LABEL or "Daily";
-		local RESETS_IN = RESETS_IN or "Reset in "
+		local RESETS_IN = RESETS_IN or "Reset in ";
 		function NS.AddDailyInfo(Tooltip)
 			local got = false;
 			Tooltip:AddDoubleLine(DAILY, GetDailyQuestsCompleted() .. " / " ..  GetMaxDailyQuests(), 1, 1, 0, 1, 1, 1);
@@ -3321,12 +3309,19 @@ do	--	MAIN
 			end
 		end
 		local function CheckComm(index, id, time, src, sender)
+			if src == "*" then
+				return 1;
+			end
+			local name, realm = strsplit("\-", src);
+			if realm ~= nil and realm ~= PLAYER_REALM_NAME and realm ~= PLAYER_REALM_NAME_NOBLANK then
+				return 1;
+			end
 			local D = DLY[index];
 			id = tonumber(id);
 			time = tonumber(time);
 			if id ~= nil and id > 0 then
 				if D == nil then
-					DLY[index] = { val, time, };
+					DLY[index] = { val, time, src, };
 					if __isdev then
 						_log_("recv add #" .. index .. " id: " .. id .. " src:" .. src .. " @" .. sender .. date(" %Y-%m-%d %H:%M:%S", time));
 					end
@@ -3346,10 +3341,14 @@ do	--	MAIN
 			end
 			return 0;
 		end
-		function NS.DailyOnComm(channel, sender, NID, NTime, NSRC, HID, HTime, HSRC, CID, CTime, CSRC, FID, FTime, FSRC)
+		function NS.DailyOnComm(channel, sender, notmute, NID, NTime, NSRC, HID, HTime, HSRC, CID, CTime, CSRC, FID, FTime, FSRC)
 			local v = CheckComm(1, NID, NTime, NSRC, sender) + CheckComm(2, HID, HTime, HSRC, sender) + CheckComm(3, CID, CTime, CSRC, sender) + CheckComm(4, FID, FTime, FSRC, sender);
-			if (v <= 0) and channel == "YELL" then
-				LT_BCMCD.YELL = min(LT_BCMCD.YELL + 16, GetServerTime() + 32);
+			if notmute and v <= 0 then
+				if channel == "YELL" then
+					LT_BCMCD[channel] = min((LT_BCMCD[channel] or GetServerTime()) + 16, GetServerTime() + 32);
+				else
+					LT_BCMCD[channel] = min((LT_BCMCD[channel] or GetServerTime()) + 8, GetServerTime() + 16);
+				end
 			end
 		end
 	end
