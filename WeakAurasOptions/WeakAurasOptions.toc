@@ -1,7 +1,7 @@
 ## Interface: 20504
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
-## Version: 3.7.14
+## Version: 4.0.0
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras
@@ -13,8 +13,11 @@
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras
 ## SavedVariables: WeakAurasOptionsSaved
+
 locales.xml
+
 ForAllIndentsAndPurposes.lua
+
 RegionOptions\AuraBar.lua
 RegionOptions\Texture.lua
 RegionOptions\Icon.lua
@@ -24,6 +27,7 @@ RegionOptions\DynamicGroup.lua
 RegionOptions\StopMotion.lua
 RegionOptions\Model.lua
 RegionOptions\ProgressTexture.lua
+
 SubRegionOptions\SubRegionCommon.lua
 SubRegionOptions\Background.lua
 SubRegionOptions\SubText.lua
@@ -31,7 +35,9 @@ SubRegionOptions\Border.lua
 SubRegionOptions\Glow.lua
 SubRegionOptions\Tick.lua
 SubRegionOptions\Model.lua
+
 Cache.lua
+
 CommonOptions.lua
 GroupOptions.lua
 DisplayOptions.lua
@@ -40,13 +46,17 @@ LoadOptions.lua
 ActionOptions.lua
 AnimationOptions.lua
 InformationOptions.lua
+
 BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
+
 WeakAurasOptions.lua
 ConditionOptions.lua
 AuthorOptions.lua
+
 OptionsFrames\OptionsFrame.lua
+
 # Groups
 OptionsFrames\CodeReview.lua
 OptionsFrames\IconPicker.lua
@@ -54,9 +64,12 @@ OptionsFrames\ImportExport.lua
 OptionsFrames\ModelPicker.lua
 OptionsFrames\TextEditor.lua
 OptionsFrames\TexturePicker.lua
+OptionsFrames\Update.lua
+
 # Misc frames
 OptionsFrames\MoverSizer.lua
 OptionsFrames\FrameChooser.lua
+
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpand.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpandSmall.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasIcon.lua
@@ -78,7 +91,5 @@ AceGUI-Widgets\AceGUIContainer-WeakAurasTreeGroup.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSnippetButton.lua
 AceGUI-Widgets\AceGUIContainer-WeakAurasInlineGroup.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpandAnchor.lua
-
-## Title-zhCN: |cff880303[有爱]|r WeakAuras 配置
-## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+AceGUI-Widgets\AceGUIWidget-WeakAurasSpacer.lua
+AceGUI-Widgets\AceGuiWidget-WeakAurasProgressBar.lua
