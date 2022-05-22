@@ -1,4 +1,4 @@
-## Interface: 20504
+## Interface: 11402
 ## Version: 1.4.5
 ## Title: Vendor Price
 ## Notes: Displays the price of an item when not at a vendor
