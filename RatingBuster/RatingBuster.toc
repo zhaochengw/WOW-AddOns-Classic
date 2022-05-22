@@ -10,19 +10,16 @@
 ## X-License: GPL v2
 ## X-Encoding: UTF-8
 ## X-WoWI-ID: 26235
-
 #############
 # Libraries #
 #############
 UTF8\utf8data.lua
 UTF8\utf8.lua
 embeds.xml
-
 ################
 # Localization #
 ################
 locales\locales.xml
-
 ########
 # Core #
 ########
@@ -31,4 +28,4 @@ RatingBuster.lua
 ## Title: |cff880303[163UI]|r RatingBuster
 ## Title-zhCN: |cff880303[有爱]|r RatingBuster 装备属性转换
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220428140518
+## X-163UI-Version: 20220507101939
