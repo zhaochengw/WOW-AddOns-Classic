@@ -92,6 +92,7 @@ end
 		local AddSpawn, DelSpawn, AddUnit, DelUnit, AddObject, DelObject, AddRefloot, DelRefloot, AddItem, DelItem, AddEvent, DelEvent;
 		local AddQuester_VariedTexture, DelQuester_VariedTexture, AddQuestStart, DelQuestStart, AddQuestEnd, DelQuestEnd;
 		local AddLine, DelLine;
+		local AddExtra, DelExtra;
 		local MessageTicker, ScheduleMessage;
 		local PushReset, PushAddQuest, PushDelQuest, PushAddLine, PushFlushBuffer;
 		local PushResetSingle, PushAddQuestSingle, PushDelQuestSingle, PushAddLineSingle, PushFlushBufferSingle;
@@ -102,7 +103,7 @@ end
 	local noop = function() end
 	local is_comm_enabled = false;
 	-->		--	uuid:{ 1type, 2id, 3color3(run-time), 4{ [quest] = { [line] = TEXTURE, }, }, }
-	-->		--	line:	'start', 'end', >=1:line_quest_leader, 'event'
+	-->		--	line:	'start', 'end', >=1:line_quest_leader, 'extra'
 	-->		--	uuid 对应单位/对象类型，储存任务-行信息，对应META_COMMON表坐标设置一次即可
 		local _UUID = {  };
 		function CommDelUUID(name)
@@ -501,43 +502,33 @@ end
 				end
 			end
 		end
-		function AddEvent(name, quest)
-			if __db_quest[quest] ~= nil then
-			local obj = __db_quest[quest].obj;
-			if obj ~= nil and obj.E ~= nil then
-				local events = obj.E;
-				for index = 1, #events do
-					local event = events[index];
-					local info = __db_event[event];
-					if info ~= nil then
-						PreloadCoords(info);
-						AddLargeNodes(name, 'event', event, quest, 'event', nil);
-						local spawn = info.spawn;
-						if spawn ~= nil then
-							AddSpawn(name, quest, 'event', spawn, false);
-						end
-					end
+		function AddEvent(name, quest, line, eid, show_coords, large_pin)
+			local info = __db_event[eid];
+			if info ~= nil then
+				PreloadCoords(info);
+				if large_pin then
+					AddLargeNodes(name, 'event', eid, quest, line, nil);
+				else
+					AddCommonNodes(name, 'event', eid, quest, line, nil);
 				end
-			end
+				local spawn = info.spawn;
+				if spawn ~= nil then
+					AddSpawn(name, quest, line, spawn, false);
+				end
 			end
 		end
-		function DelEvent(name, quest, total_del)
-			if __db_quest[quest] ~= nil then
-			local obj = __db_quest[quest].obj;
-			if obj ~= nil and obj.E ~= nil then
-				local events = obj.E;
-				for index = 1, #events do
-					local event = events[index];
-					local info = __db_event[event];
-					if info ~= nil then
-						DelLargeNodes(name, 'event', event, quest, 'event', total_del);
-						local spawn = info.spawn;
-						if spawn ~= nil then
-							DelSpawn(name, quest, 'event', spawn, total_del);
-						end
-					end
+		function DelEvent(name, quest, line, eid, total_del, large_pin)
+			local info = __db_event[eid];
+			if info ~= nil then
+				if large_pin then
+					DelLargeNodes(name, 'event', eid, quest, line, total_del);
+				else
+					DelCommonNodes(name, 'event', eid, quest, line, total_del);
 				end
-			end
+				local spawn = info.spawn;
+				if spawn ~= nil then
+					DelSpawn(name, quest, line, spawn, total_del);
+				end
 			end
 		end
 		--
@@ -585,69 +576,151 @@ end
 				end
 			end
 		end
-		function AddQuestStart(name, quest_id, info, TEXTURE)
-			AddQuester_VariedTexture(name, quest_id, info.start, 'start', TEXTURE or GetQuestStartTexture(info));
+		function AddQuestStart(name, quest, info, TEXTURE)
+			AddQuester_VariedTexture(name, quest, info.start, 'start', TEXTURE or GetQuestStartTexture(info));
 		end
-		function DelQuestStart(name, quest_id, info)
-			DelQuester_VariedTexture(name, quest_id, info.start, 'start');
+		function DelQuestStart(name, quest, info)
+			DelQuester_VariedTexture(name, quest, info.start, 'start');
 		end
-		function AddQuestEnd(name, quest_id, info, TEXTURE)
-			AddQuester_VariedTexture(name, quest_id, info["end"], 'end', TEXTURE);
+		function AddQuestEnd(name, quest, info, TEXTURE)
+			AddQuester_VariedTexture(name, quest, info["end"], 'end', TEXTURE);
 		end
-		function DelQuestEnd(name, quest_id, info)
-			DelQuester_VariedTexture(name, quest_id, info["end"], 'end');
+		function DelQuestEnd(name, quest, info)
+			DelQuester_VariedTexture(name, quest, info["end"], 'end');
 		end
 	-->
 	-->		line	-1 = Quest Giver	-2 = Quest Completer	0 = event
-		function AddLine(name, _quest, _line, _type, _id, finished)
+		function AddLine(name, quest_id, _line, _type, _id, finished)
 			-- if finished then
 			-- 	_log_('AddLine-T_T', name, _type, _id);
 			-- else
 			-- 	_log_('AddLine-T_F', name, _type, _id);
 			-- end
 			if _type == 'monster' then
-				local large_pin = __db_large_pin:Check(_quest, 'unit', _id);
-				AddUnit(name, _quest, _line, _id, not finished, large_pin, nil);
+				local large_pin = __db_large_pin:Check(quest_id, 'unit', _id);
+				AddUnit(name, quest_id, _line, _id, not finished, large_pin, true);
 				return true, _id, large_pin;
 			elseif _type == 'item' then
-				local large_pin = __db_large_pin:Check(_quest, 'item', _id);
-				AddItem(name, _quest, _line, _id, not finished, large_pin);
+				local large_pin = __db_large_pin:Check(quest_id, 'item', _id);
+				AddItem(name, quest_id, _line, _id, not finished, large_pin);
 				return true, _id, large_pin;
 			elseif _type == 'object' then
-				local large_pin = __db_large_pin:Check(_quest, 'object', _id);
-				AddObject(name, _quest, _line, _id, not finished, large_pin);
+				local large_pin = __db_large_pin:Check(quest_id, 'object', _id);
+				AddObject(name, quest_id, _line, _id, not finished, large_pin);
 				return true, _id, large_pin;
 			elseif _type == 'event' or _type == 'log' then
-				AddEvent(name, _quest);
-			elseif _type == 'reputation' then
-			elseif _type == 'player' or _type == 'progressbar' then
-			else
-				_log_('comm_objective_type', _quest, finished, _type);
-			end
-			return true;
-		end
-		function DelLine(name, _quest, _line, _type, _id, total_del)
-			if _type == 'monster' then
-				local large_pin = __db_large_pin:Check(_quest, 'unit', _id);
-				DelUnit(name, _quest, _line, _id, total_del, large_pin);
-				return true, _id, large_pin;
-			elseif _type == 'item' then
-				local large_pin = __db_large_pin:Check(_quest, 'item', _id);
-				DelItem(name, _quest, _line, _id, total_del, large_pin);
-				return true, _id, large_pin;
-			elseif _type == 'object' then
-				local large_pin = __db_large_pin:Check(_quest, 'object', _id);
-				DelObject(name, _quest, _line, _id, total_del, large_pin);
-				return true, _id, large_pin;
-			elseif _type == 'event' or _type == 'log' then
-				DelEvent(name, _quest, total_del);
+				local info = __db_quest[quest_id];
+				if info ~= nil and info.obj ~= nil and info.obj.E ~= nil then
+					local events = info.obj.E;
+					for i = 1, #events do
+						local event = events[i];
+						AddEvent(name, quest_id, _line, event, false, true);
+					end
+				end
 				return true, 'event', true;
 			elseif _type == 'reputation' then
 			elseif _type == 'player' or _type == 'progressbar' then
 			else
-				_log_('comm_objective_type', _quest, _type, _id);
+				_log_('comm_objective_type', quest_id, finished, _type);
 			end
 			return true;
+		end
+		function DelLine(name, quest_id, _line, _type, _id, total_del)
+			if _type == 'monster' then
+				local large_pin = __db_large_pin:Check(quest_id, 'unit', _id);
+				DelUnit(name, quest_id, _line, _id, total_del, large_pin);
+				return true, _id, large_pin;
+			elseif _type == 'item' then
+				local large_pin = __db_large_pin:Check(quest_id, 'item', _id);
+				DelItem(name, quest_id, _line, _id, total_del, large_pin);
+				return true, _id, large_pin;
+			elseif _type == 'object' then
+				local large_pin = __db_large_pin:Check(quest_id, 'object', _id);
+				DelObject(name, quest_id, _line, _id, total_del, large_pin);
+				return true, _id, large_pin;
+			elseif _type == 'event' or _type == 'log' then
+				local info = __db_quest[quest_id];
+				if info ~= nil and info.obj ~= nil and info.obj.E ~= nil then
+					local events = info.obj.E;
+					for i = 1, #events do
+						local event = events[i];
+						DelEvent(name, quest_id, _line, event, total_del, true);
+					end
+				end
+				return true, 'event', true;
+			elseif _type == 'reputation' then
+			elseif _type == 'player' or _type == 'progressbar' then
+			else
+				_log_('comm_objective_type', quest_id, _type, _id);
+			end
+			return true;
+		end
+		function AddExtra(name, quest_id, extra, text, completed)
+			if extra.U ~= nil then
+				for uid, check in next, extra.U do
+					local large_pin = __db_large_pin:Check(quest_id, 'unit', uid);
+					if check == completed or check == 'always' then
+						AddUnit(name, quest_id, 'extra', uid, true, large_pin, true);
+					else
+						DelUnit(name, quest_id, 'extra', uid, false, large_pin);
+					end
+				end
+			end
+			if extra.I ~= nil then
+				for iid, check in next, extra.I do
+					local large_pin = __db_large_pin:Check(quest_id, 'unit', iid);
+					if check == completed or check == 'always' then
+						AddItem(name, quest_id, 'extra', iid, true, large_pin);
+					else
+						DelItem(name, quest_id, 'extra', iid, false, large_pin);
+					end
+				end
+			end
+			if extra.O ~= nil then
+				for oid, check in next, extra.O do
+					OBJ_LOOKUP[__loc_object[oid]] = oid;
+					local large_pin = __db_large_pin:Check(quest_id, 'object', oid);
+					if check == completed or check == 'always' then
+						AddObject(name, quest_id, 'extra', oid, true, large_pin);
+					else
+						DelObject(name, quest_id, 'extra', oid, false, large_pin);
+					end
+				end
+			end
+			if extra.E ~= nil then
+				for eid, check in next, extra.E do
+					if check == completed or check == 'always' then
+						AddEvent(name, quest_id, 'extra', eid, true, true);
+					else
+						DelEvent(name, quest_id, 'extra', eid, false, true);
+					end
+				end
+			end
+		end
+		function DelExtra(name, quest_id, extra)
+			if extra.U ~= nil then
+				for uid, check in next, extra.U do
+					local large_pin = __db_large_pin:Check(quest_id, 'unit', uid);
+					DelUnit(name, quest_id, 'extra', uid, true, large_pin);
+				end
+			end
+			if extra.I ~= nil then
+				for iid, check in next, extra.I do
+					local large_pin = __db_large_pin:Check(quest_id, 'unit', iid);
+					DelItem(name, quest_id, 'extra', iid, true, large_pin);
+				end
+			end
+			if extra.O ~= nil then
+				for oid, check in next, extra.O do
+					local large_pin = __db_large_pin:Check(quest_id, 'object', oid);
+					DelObject(name, quest_id, 'extra', oid, true, large_pin);
+				end
+			end
+			if extra.E ~= nil then
+				for eid, check in next, extra.E do
+					DelEvent(name, quest_id, 'extra', eid, true, true);
+				end
+			end
 		end
 	-->
 	-->		net buffer
@@ -737,7 +810,20 @@ end
 			PushMessage(ADDON_MSG_HEAD_PUSHQUEST_V2 .. "\001" .. _quest .. "\001-1\001" .. _completed);
 		end
 		function PushAddLine(_quest, _line, _finished, _type, _id, _text)
-			PushMessage(ADDON_MSG_HEAD_PUSHLINE_V2 .. "\001" .. _quest .. (_finished and "\0011\001" or "\0010\001") .. _line .. "\001" .. _type .. "\001" .. _id .. "\001" .. _text);
+			if _type == 'event' or _type == 'log' then
+				local info = __db_quest[_quest];
+				if info ~= nil and info.obj ~= nil and info.obj.E ~= nil then
+					local events = info.obj.E;
+					if events ~= nil then
+						for i = 1, #events do
+							local _id = events[i];
+							PushMessage(ADDON_MSG_HEAD_PUSHLINE_V2 .. "\001" .. _quest .. (_finished and "\0011\001" or "\0010\001") .. _line .. "\001event\001" .. _id .. "\001" .. _text);
+						end
+					end
+				end
+			else
+				PushMessage(ADDON_MSG_HEAD_PUSHLINE_V2 .. "\001" .. _quest .. (_finished and "\0011\001" or "\0010\001") .. _line .. "\001" .. _type .. "\001" .. _id .. "\001" .. _text);
+			end
 		end
 		function PushFlushBuffer()
 			local mem = _CommBuffer["*"];
@@ -854,6 +940,9 @@ end
 			if info ~= nil then
 				-- AddQuestStart(name, quest, info);
 				AddQuestEnd(name, quest, info, completed == 1 and IMG_INDEX.IMG_E_COMPLETED or IMG_INDEX.IMG_E_UNCOMPLETED);
+				if info.extra ~= nil then
+					AddExtra(name, quest, info.extra, title, completed);
+				end
 			end
 		end
 		local function OnCommQuestDel(name, quest)
@@ -871,6 +960,9 @@ end
 				if info ~= nil then
 					-- DelQuestStart(name, quest, info);
 					DelQuestEnd(name, quest, info);
+					if info.extra ~= nil then
+						DelExtra(name, quest, info.extra);
+					end
 				end
 			end
 		end
@@ -981,9 +1073,9 @@ end
 							local _finished = _SEQ[_pos] == "1";
 							local _line = _SEQ[_pos + 1];
 							local _type = _SEQ[_pos + 2];
-							local _id = tonumber(_SEQ[_pos + 3]);
+							local _id = _SEQ[_pos + 3];
 							local _text = _SEQ[_pos + 4];
-							OnCommQuestLine(name, _quest, tonumber(_line) or _line, _type, _id, _text, _finished);
+							OnCommQuestLine(name, _quest, tonumber(_line) or _line, _type, tonumber(_id) or _id, _text, _finished);
 							-- _log_('|cff00ff7fV2-Q|r|cff00ffffLine|r', name, _quest, _line, _type, _id, _finished, _text);
 						end
 					end

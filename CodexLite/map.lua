@@ -306,9 +306,9 @@ end
 	local function UUIDCheckState(uuid, val)
 		for quest, refs in next, uuid[4] do
 			local meta = __core_meta[quest];
-			if meta ~= nil and meta.completed ~= 1 and meta.completed ~= -1 and QUEST_TEMPORARILY_BLOCKED[quest] ~= true and QUEST_PERMANENTLY_BLOCKED[quest] ~= true then
+			if meta ~= nil and QUEST_TEMPORARILY_BLOCKED[quest] ~= true and QUEST_PERMANENTLY_BLOCKED[quest] ~= true then
 				for line, texture in next, refs do
-					if line == 'event' then
+					if line == 'extra' then
 						return true;
 					end
 					local meta_line = meta[line];

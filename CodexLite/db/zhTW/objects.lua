@@ -13930,7 +13930,6 @@ __ns.L.object = {
   [211067] = "Sarcophag",
   [211068] = "火焰圖騰",
   [211084] = "Mephistroph's HellFire",
-  [-1] = "入口",
   [-100010] = "TEMP Machine Shop",
   [-100011] = "TEMP Nearby Tubers",
   [-100012] = "TEMP Stone of Outer Binding",
@@ -14075,6 +14074,6 @@ __ns.L.object = {
   [-100156] = "TEMP Legion Teleporter",
   [-100157] = "TEMP Shattered Sun Portal",
   [-100158] = "TEMP Elrendar Falls",
-  [500000] = "奧格瑪傳送門",
-  [500001] = "暴風城傳送門",
+  [-101001] = "入口",
+  [-101002] = "入口",
 };

@@ -375,17 +375,7 @@ end
 										end
 									end
 								end
-							elseif line == 'event' then
-								for index = 1, #meta do
-									local meta_line = meta[index];
-									if meta_line[2] == 'event' or meta_line[2] == 'log' then
-										if meta_line[5] then
-											tip:AddLine("|cff000000**|r" .. meta_line[4], 0.5, 1.0, 0.0);
-										else
-											tip:AddLine("|cff000000**|r" .. meta_line[4], 1.0, 0.5, 0.0);
-										end
-									end
-								end
+							elseif line == 'extra' then
 							else
 								if line > 0 then
 									local meta_line = meta[line];
@@ -642,6 +632,7 @@ end
 		function __ns.TooltipSetInfo(tip, type, id)
 			if type == 'event' then
 				tip:AddLine(__UILOC.TIP_WAYPOINT, 0.0, 1.0, 0.0);
+			elseif type == 'extra' then
 			else
 				local _loc = __loc[type];
 				if _loc ~= nil then

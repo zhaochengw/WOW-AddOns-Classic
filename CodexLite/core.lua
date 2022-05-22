@@ -108,6 +108,7 @@ end
 		local AddSpawn, DelSpawn, AddUnit, DelUnit, AddObject, DelObject, AddRefloot, DelRefloot, AddItem, DelItem, AddEvent, DelEvent;
 		local AddQuester_VariedTexture, DelQuester_VariedTexture, AddQuestStart, DelQuestStart, AddQuestEnd, DelQuestEnd;
 		local AddLine, AddLineByID, DelLine;
+		local AddExtra, DelExtra;
 		local LoadQuestCache, UpdateQuests;
 		local AddConfilct, DelConfilct;
 		local UpdateQuestGivers;
@@ -204,7 +205,7 @@ end
 	-->
 	-->		--	uuid:{ 1type, 2id, 3color3(run-time), 4{ [quest] = { [line] = TEXTURE, }, }, 5TEXTURE, 6MANUAL_CHANGED_COLOR, }
 	-->		--	TEXTURE = 0 for invalid value	--	TEXTURE = -9999 for large pin	--	TEXTURE = -9998 for normal pin
-	-->		--	line:	'start', 'end', >=1:line_quest_leader, 'event'
+	-->		--	line:	'start', 'end', >=1:line_quest_leader, 'extra'
 	-->		--	uuid 对应单位/对象类型，储存任务-行信息，对应META_COMMON表坐标设置一次即可
 		local UUID = { event = {  }, item = {  }, object = {  }, quest = {  }, unit = {  }, };
 		function CoreAddUUID(_T, _id, _quest, _line, _val)
@@ -635,39 +636,33 @@ end
 				end
 			end
 		end
-		function AddEvent(quest, show_coords)
-			local obj = __db_quest[quest].obj;
-			if obj ~= nil and obj.E ~= nil then
-				local events = obj.E;
-				for index = 1, #events do
-					local event = events[index];
-					local info = __db_event[event];
-					if info ~= nil then
-						PreloadCoords(info);
-						local coords = show_coords and info.coords or nil;
-						AddLargeNodes('event', event, quest, 'event', coords);
-						local spawn = info.spawn;
-						if spawn ~= nil then
-							AddSpawn(quest, 'event', spawn, show_coords);
-						end
-					end
+		function AddEvent(quest, line, eid, show_coords, large_pin)
+			local info = __db_event[eid];
+			if info ~= nil then
+				PreloadCoords(info);
+				local coords = show_coords and info.coords or nil;
+				if large_pin then
+					AddLargeNodes('event', eid, quest, line, coords);
+				else
+					AddCommonNodes('event', eid, quest, line, coords);
+				end
+				local spawn = info.spawn;
+				if spawn ~= nil then
+					AddSpawn(quest, line, spawn, show_coords);
 				end
 			end
 		end
-		function DelEvent(quest, total_del)
-			local obj = __db_quest[quest].obj;
-			if obj ~= nil and obj.E ~= nil then
-				local events = obj.E;
-				for index = 1, #events do
-					local event = events[index];
-					local info = __db_event[event];
-					if info ~= nil then
-						DelLargeNodes('event', event, quest, 'event', total_del);
-						local spawn = info.spawn;
-						if spawn ~= nil then
-							DelSpawn(quest, 'event', spawn, total_del);
-						end
-					end
+		function DelEvent(quest, line, eid, total_del, large_pin)
+			local info = __db_event[eid];
+			if info ~= nil then
+				if large_pin then
+					DelLargeNodes('event', eid, quest, line, total_del);
+				else
+					DelCommonNodes('event', eid, quest, line, total_del);
+				end
+				local spawn = info.spawn;
+				if spawn ~= nil then
+					DelSpawn(quest, line, spawn, total_del);
 				end
 			end
 		end
@@ -720,17 +715,17 @@ end
 				end
 			end
 		end
-		function AddQuestStart(quest_id, info, TEXTURE)
-			AddQuester_VariedTexture(quest_id, info.start, 'start', TEXTURE or GetQuestStartTexture(info));
+		function AddQuestStart(quest, info, TEXTURE)
+			AddQuester_VariedTexture(quest, info.start, 'start', TEXTURE or GetQuestStartTexture(info));
 		end
-		function DelQuestStart(quest_id, info)
-			DelQuester_VariedTexture(quest_id, info.start, 'start');
+		function DelQuestStart(quest, info)
+			DelQuester_VariedTexture(quest, info.start, 'start');
 		end
-		function AddQuestEnd(quest_id, info, TEXTURE)
-			AddQuester_VariedTexture(quest_id, info["end"], 'end', TEXTURE);
+		function AddQuestEnd(quest, info, TEXTURE)
+			AddQuester_VariedTexture(quest, info["end"], 'end', TEXTURE);
 		end
-		function DelQuestEnd(quest_id, info)
-			DelQuester_VariedTexture(quest_id, info["end"], 'end');
+		function DelQuestEnd(quest, info)
+			DelQuester_VariedTexture(quest, info["end"], 'end');
 		end
 	-->
 	-->		process quest log
@@ -804,6 +799,14 @@ end
 						end
 					end
 				elseif objective_type == 'event' or objective_type == 'log' then
+					local events = obj.E;
+					if events ~= nil then
+						for i = 1, #events do
+							local event = events[i];
+							AddEvent(quest_id, index, event, not finished, true);
+						end
+					end
+					return true, 'event', true;
 				elseif objective_type == 'reputation' then
 				elseif objective_type == 'player' or objective_type == 'progressbar' then
 				else
@@ -847,6 +850,13 @@ end
 				elseif objective_type == 'object' then
 					DelObject(quest_id, index, objective_id, total_del, large_pin);
 				elseif objective_type == 'event' or objective_type == 'log' then
+					local events = obj.E;
+					if events ~= nil then
+						for i = 1, #events do
+							local event = events[i];
+							DelEvent(quest_id, index, event, total_del, true);
+						end
+					end
 				elseif objective_type == 'reputation' then
 				elseif objective_type == 'player' or objective_type == 'progressbar' then
 				else
@@ -854,6 +864,73 @@ end
 				end
 			else
 				_log_('obj', quest_id, index, objective_type, objective_id)
+			end
+		end
+		function AddExtra(quest_id, extra, text, completed)
+			if extra.U ~= nil then
+				for uid, check in next, extra.U do
+					local large_pin = __db_large_pin:Check(quest_id, 'unit', uid);
+					if check == completed or check == 'always' then
+						AddUnit(quest_id, 'extra', uid, true, large_pin, true);
+					else
+						DelUnit(quest_id, 'extra', uid, false, large_pin);
+					end
+				end
+			end
+			if extra.I ~= nil then
+				for iid, check in next, extra.I do
+					local large_pin = __db_large_pin:Check(quest_id, 'unit', iid);
+					if check == completed or check == 'always' then
+						AddItem(quest_id, 'extra', iid, true, large_pin);
+					else
+						DelItem(quest_id, 'extra', iid, false, large_pin);
+					end
+				end
+			end
+			if extra.O ~= nil then
+				for oid, check in next, extra.O do
+					OBJ_LOOKUP[__loc_object[oid]] = oid;
+					local large_pin = __db_large_pin:Check(quest_id, 'object', oid);
+					if check == completed or check == 'always' then
+						AddObject(quest_id, 'extra', oid, true, large_pin);
+					else
+						DelObject(quest_id, 'extra', oid, false, large_pin);
+					end
+				end
+			end
+			if extra.E ~= nil then
+				for eid, check in next, extra.E do
+					if check == completed or check == 'always' then
+						AddEvent(quest_id, 'extra', eid, true, true);
+					else
+						DelEvent(quest_id, 'extra', eid, false, true);
+					end
+				end
+			end
+		end
+		function DelExtra(quest_id, extra)
+			if extra.U ~= nil then
+				for uid, check in next, extra.U do
+					local large_pin = __db_large_pin:Check(quest_id, 'unit', uid);
+					DelUnit(quest_id, 'extra', uid, true, large_pin);
+				end
+			end
+			if extra.I ~= nil then
+				for iid, check in next, extra.I do
+					local large_pin = __db_large_pin:Check(quest_id, 'unit', iid);
+					DelItem(quest_id, 'extra', iid, true, large_pin);
+				end
+			end
+			if extra.O ~= nil then
+				for oid, check in next, extra.O do
+					local large_pin = __db_large_pin:Check(quest_id, 'object', oid);
+					DelObject(quest_id, 'extra', oid, true, large_pin);
+				end
+			end
+			if extra.E ~= nil then
+				for eid, check in next, extra.E do
+					DelEvent(quest_id, 'extra', eid, true, true);
+				end
 			end
 		end
 		function LoadQuestCache(quest_id, completed)
@@ -981,7 +1058,6 @@ end
 							--
 							local obj = info.obj;
 							if obj ~= nil then
-								local has_event = nil;
 								if completed == 1 or completed == -1 then			--	第一次检测到任务成功或失败时，隐藏已显示的任务目标
 									for line = 1, num_lines do
 										local description, objective_type, finished = GetQuestLogLeaderBoard(line, index);
@@ -992,7 +1068,7 @@ end
 											meta_line = { false, objective_type, nil, description, finished, nil, };
 											meta[line] = meta_line;
 										else
-											if meta_line[4] ~= description then
+											if meta_line[4] ~= description or meta_line[5] ~= finished then
 												push_line = true;
 											end
 											meta_line[2] = objective_type;
@@ -1015,15 +1091,9 @@ end
 												meta_line[6] = large_pin;
 											end
 										end
-										if objective_type == 'event' or objective_type == 'log' then
-											has_event = finished;
-										end
 										if push_line and objective_id ~= nil then
 											__ns.PushAddLine(quest_id, line, finished, objective_type, objective_id, description);
 										end
-									end
-									if meta.event_shown == true then
-										DelEvent(quest_id, false);
 									end
 								else												--	检查任务进度
 									for line = 1, num_lines do
@@ -1035,7 +1105,7 @@ end
 											meta_line = { false, objective_type, nil, description, finished, nil, };
 											meta[line] = meta_line;
 										else
-											if meta_line[4] ~= description then
+											if meta_line[4] ~= description or meta_line[5] ~= finished then
 												push_line = true;
 											end
 											meta_line[2] = objective_type;
@@ -1072,25 +1142,18 @@ end
 												end
 											end
 										end
-										if objective_type == 'event' or objective_type == 'log' then
-											has_event = finished;
-										end
 										if push_line and objective_id ~= nil then
 											__ns.PushAddLine(quest_id, line, finished, objective_type, objective_id, description);
 										end
 									end
 								end
-								if has_event ~= nil then
-									if meta.event_shown ~= true then
-										AddEvent(quest_id, not has_event);
-										meta.event_shown = true;
-										__ns.PushAddLine(quest_id, 'event', not has_event, 'event', quest_id, 'event');
-									end
+							end
+							local extra = info.extra;
+							if extra ~= nil then
+								if meta.completed ~= completed then
+									AddExtra(quest_id, extra, title, completed);
 								else
-									if meta.event_shown == true then
-										DelEvent(quest_id, false);
-										meta.event_shown = false;
-									end
+									AddExtra(quest_id, extra, title, completed);
 								end
 							end
 							--
@@ -1149,10 +1212,9 @@ end
 						if not QUESTS_COMPLETED[quest_id] and show_starter then
 							AddQuestStart(quest_id, info);
 						end
-					end
-					if meta.event_shown == true then
-						DelEvent(quest_id, true);
-						meta.event_shown = false;
+						if info.extra ~= nil then
+							DelExtra(quest_id, info.extra);
+						end
 					end
 					META[quest_id] = nil;
 					quest_changed = true;

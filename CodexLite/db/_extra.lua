@@ -914,11 +914,11 @@ local blacklist_quest = {
 	[1661] = true,
 	[3366] = true,
 	[3381] = true,
-	[3631] = true,
-	[4487] = true,
-	[4488] = true,
-	[4489] = true,
-	[4490] = true,
+	-- [3631] = true,
+	-- [4487] = true,
+	-- [4488] = true,
+	-- [4489] = true,
+	-- [4490] = true,
 	[5627] = true,
 	[5641] = true,
 	[5645] = true,
@@ -1127,47 +1127,47 @@ local blacklist_quest = {
 	-- [11196] = true,
 
 	-- Phase 5 Sunwell and Isle of Quel'Danas
-	[11481] = true,
-	[11482] = true,
-	[11488] = true,
-	[11496] = true,
-	[11513] = true,
-	[11514] = true,
-	[11515] = true,
-	[11516] = true,
-	[11517] = true,
-	[11520] = true,
-	[11521] = true,
-	[11523] = true,
-	[11524] = true,
-	[11525] = true,
-	[11526] = true,
-	[11532] = true,
-	[11533] = true,
-	[11534] = true,
-	[11535] = true,
-	[11536] = true,
-	[11537] = true,
-	[11538] = true,
-	[11539] = true,
-	[11540] = true,
-	[11541] = true,
-	[11542] = true,
-	[11543] = true,
-	[11544] = true,
-	[11545] = true,
-	[11546] = true,
-	[11547] = true,
-	[11548] = true,
-	[11549] = true,
-	[11550] = true,
-	[11554] = true,
-	[11555] = true,
-	[11556] = true,
-	[11557] = true,
-	[11875] = true,
-	[11880] = true,
-	[11877] = true,
+	-- [11481] = true,
+	-- [11482] = true,
+	-- [11488] = true,
+	-- [11496] = true,
+	-- [11513] = true,
+	-- [11514] = true,
+	-- [11515] = true,
+	-- [11516] = true,
+	-- [11517] = true,
+	-- [11520] = true,
+	-- [11521] = true,
+	-- [11523] = true,
+	-- [11524] = true,
+	-- [11525] = true,
+	-- [11526] = true,
+	-- [11532] = true,
+	-- [11533] = true,
+	-- [11534] = true,
+	-- [11535] = true,
+	-- [11536] = true,
+	-- [11537] = true,
+	-- [11538] = true,
+	-- [11539] = true,
+	-- [11540] = true,
+	-- [11541] = true,
+	-- [11542] = true,
+	-- [11543] = true,
+	-- [11544] = true,
+	-- [11545] = true,
+	-- [11546] = true,
+	-- [11547] = true,
+	-- [11548] = true,
+	-- [11549] = true,
+	-- [11550] = true,
+	-- [11554] = true,
+	-- [11555] = true,
+	-- [11556] = true,
+	-- [11557] = true,
+	-- [11875] = true,
+	-- [11880] = true,
+	-- [11877] = true,
 	--	AQWarEffortQuests
 	-- Commendation Signet
 	[8811] = true,
@@ -1279,6 +1279,7 @@ local blacklist_quest = {
 	[8795] = true,
 	[8796] = true,
 	[8797] = true,
+	[10500] = true,
 	[10501] = true,
 };
 __db.blacklist_quest = blacklist_quest;
@@ -7667,6 +7668,11 @@ local large_pin = {
 			[24429] = 1,
 		},
 	},
+	-- [11496] = {
+	-- 	["object"] = {
+	-- 		[187078] = 1,
+	-- 	},
+	-- },
 	[11524] = {
 		["unit"] = {
 			[24991] = 1,
@@ -7675,6 +7681,21 @@ local large_pin = {
 	[11525] = {
 		["unit"] = {
 			[24991] = 1,
+		},
+	},
+	[11532] = {
+		["unit"] = {
+			[25059] = 1,
+		},
+	},
+	[11533] = {
+		["unit"] = {
+			[25059] = 1,
+		},
+	},
+	[11538] = {
+		["unit"] = {
+			[25003] = 1,
 		},
 	},
 	[11547] = {
@@ -49662,3 +49683,45 @@ __ns.L.object[-201001] = __ns.L.object[-201001] or (__ns.L.quest[10782] ~= nil a
 __ns.L.object[-201002] = __ns.L.object[-201002] or (__ns.L.quest[11381] ~= nil and __ns.L.quest[11381][1]) or "-201002";
 __ns.L.object[-201003] = __ns.L.object[-201003] or (__ns.L.quest[10424] ~= nil and __ns.L.quest[10424][1]) or "-201003";
 __ns.L.object[-201004] = __ns.L.object[-201004] or (__ns.L.quest[10838] ~= nil and __ns.L.quest[10838][1]) or "-201004";
+
+
+local dbextraobj = {
+	[10129] = {
+		U = {
+			[19401] = 0,
+		},
+	},
+	[10146] = {
+		U = {
+			[19409] = 0,
+		},
+	},
+	[10340] = {
+		U = {
+			[19409] = 'always',
+		},
+	},
+	[11532] = {
+		U = {
+			[25059] = 0,
+		},
+	},
+	[11533] = {
+		U = {
+			[25059] = 0,
+		},
+	},
+	[11526] = {
+		E = {
+			[-20014] = 'always',
+		},
+	},
+};
+
+local __db_quest = __db.quest;
+for quest, extra in next, dbextraobj do
+	local info = __db_quest[quest];
+	if info ~= nil then
+		info.extra = extra;
+	end
+end

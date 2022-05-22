@@ -287,6 +287,9 @@ end
 	local _Inited, _META, _OnCommInit, _OnCommQuestAdd, _OnCommQuestDel, _OnCommQuestLine;
 	local function AddQuest(name, QuestInfo)
 		local quest = QuestInfo.id;
+		if quest == nil then
+			return;
+		end
 			-- print("Quest: ", quest);
 		local objectives = QuestInfo.objectives;
 		if objectives ~= nil then
@@ -378,11 +381,11 @@ end
 								-- print("NumQuest", data[1]);
 							for QuestIndex = 1, NumQuest do
 								local quest = data[pos];
-								local num = data[pos + 1];
+								local num = data[pos + 1] or 0;
 								pos = pos + 2;
 								local QuestInfo = {
 									id = quest,
-									objectives = num ~= nil and num > 0 and {  } or nil,
+									objectives = num > 0 and {  } or nil,
 								};
 								local index = 0;
 								while index < num and data[pos + 1] ~= nil do
