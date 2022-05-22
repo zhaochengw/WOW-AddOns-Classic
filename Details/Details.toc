@@ -1,7 +1,5 @@
 ## Interface: 20504
-## Interface: 20503
-## Interface: 20503
-## Title: Details Damage Meter
+## Title: Details! Damage Meter
 ## Notes: Essential tool to impress that chick in your raid.
 ## SavedVariables: _detalhes_global
 ## SavedVariablesPerCharacter: _detalhes_database
@@ -9,6 +7,7 @@
 #@no-lib-strip@
 Libs\libs.xml
 #@end-no-lib-strip@
+
 locales\Details-enUS.lua
 locales\Details-deDE.lua
 locales\Details-esES.lua
@@ -20,10 +19,12 @@ locales\Details-ptBR.lua
 locales\Details-ruRU.lua
 locales\Details-zhCN.lua
 locales\Details-zhTW.lua
+
 boot.lua
 indent.lua
 core\util.lua
 API.lua
+
 functions\profiles.lua
 functions\hooks.lua
 functions\bossmods.lua
@@ -54,11 +55,14 @@ functions\plater.lua
 functions\deathmenu.lua
 functions\macros.lua
 functions\testbars.lua
+
 core\timemachine.lua
+
 frames\anime.lua
 frames\anime.xml
 frames\fw_mods.lua
 frames\toolbar_button.xml
+
 frames\window_copy.lua
 frames\window_options2.lua
 frames\window_options2_sections.lua
@@ -88,6 +92,7 @@ frames\window_brokertexteditor.lua
 frames\window_bookmark.lua
 frames\window_classcolor.lua
 frames\window_statistics.lua
+
 classes\class_error.lua
 classes\class_combat.lua
 classes\class_damage.lua
@@ -100,14 +105,18 @@ classes\class_utility.lua
 classes\class_spellutility.lua
 classes\include_instance.lua
 classes\class_instance.lua
+
 classes\class_custom.lua
 classes\custom_damagedone.lua
 classes\custom_healingdone.lua
+
 core\control.lua
+
 classes\container_actors.lua
 classes\container_spells.lua
 classes\container_segments.lua
 classes\container_pets.lua
+
 core\plugins.lua
 core\plugins_toolbar.lua
 core\plugins_statusbar.lua
@@ -117,12 +126,17 @@ core\gears.lua
 core\windows.lua
 core\meta.lua
 core\network.lua
+
 core\parser.lua
 #core\parser_timewalk.lua
+
 functions\loaddata.lua
+
 startup.lua
+
 functions\api2.lua
 
+## Title: |cff880303[163UI]|r Details Damage Meter
 ## Title-zhCN: |cff880303[有爱]|r Details 伤害统计
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220120164410
+## X-163UI-Version: 20220507101939

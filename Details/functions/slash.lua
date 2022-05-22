@@ -168,6 +168,21 @@ function SlashCmdList.DETAILS (msg, editbox)
 	elseif (command == "discord") then
 		_detalhes:CopyPaste ("https://discord.gg/AGSzAZX")
 	
+
+	elseif (command == "exitlog") then
+		local newT = {}
+		for _, str in ipairs(_detalhes_global.exit_log) do
+			newT [#newT+1] = str
+		end
+
+		newT [#newT+1] = ""
+
+		for _, str in ipairs(_detalhes_global.exit_errors) do
+			newT [#newT+1] = str
+		end
+
+		Details:Dump(newT)
+
 	
 	elseif (command == "debugwindow") then
 		
@@ -1319,6 +1334,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		Details:ScrollDamage()
 
 	elseif (msg == "me" or msg == "ME" or msg == "Me" or msg == "mE") then
+	local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
 		local role = UnitGroupRolesAssigned("player")
 		if (role == "HEALER") then
 			Details:OpenPlayerDetails(2)

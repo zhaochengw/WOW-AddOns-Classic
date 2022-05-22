@@ -9,3 +9,7 @@ embeds.xml
 #@end-no-lib-strip@
 
 Details_Streamer.lua
+## Title: |cff880303[163UI]|r Details!: Streamer (plugin)
+## Title-zhCN: |cff880303[有爱]|r Details 直播辅助模块
+## X-Vendor: NetEase
+## X-163UI-Version: 20220507101939

@@ -1,4 +1,4 @@
-## Interface: 20504
+## Interface: 90200
 ## Title: Library Open Raid
 ## Notes: This is a library used by addons.
 

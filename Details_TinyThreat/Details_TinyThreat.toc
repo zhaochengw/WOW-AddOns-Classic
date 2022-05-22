@@ -12,3 +12,8 @@ enUS.lua
 ptBR.lua
 
 Details_TinyThreat.lua
+
+## Title: |cff880303[163UI]|r Details: Tiny Threat (plugin)
+## Title-zhCN: |cff880303[有爱]|r Details 仇恨模块
+## X-Vendor: NetEase
+## X-163UI-Version: 20220507101939

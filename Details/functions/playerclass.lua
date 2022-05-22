@@ -10,6 +10,8 @@ do
 	local _select = select
 	local _unpack = unpack
 
+	local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0", true)
+
 	local unknown_class_coords = {0.75, 1, 0.75, 1}
 
 	function Details:GetUnknownClassIcon()
@@ -255,6 +257,36 @@ do
 		end
 		
 	end
+
+	function Details:GetUnitId(unitName)
+		unitName = unitName or self.nome
+		if (openRaidLib) then
+			local unitId = openRaidLib.GetUnitID(unitName)
+			if (unitId) then
+				return unitId
+			end
+		end
+
+		if (IsInRaid()) then
+			for i = 1, GetNumGroupMembers() do
+				local unitId = "raid" .. i
+				if (GetUnitName(unitId, true) == unitName) then
+					return unitId
+				end
+			end
+ 
+		elseif (IsInGroup()) then
+			for i = 1, GetNumGroupMembers() -1 do
+				local unitId = "party" .. i
+				if (GetUnitName(unitId, true) == unitName) then
+					return unitId
+				end
+			end
+			if (UnitName("player") == unitName) then
+				return "player"
+			end
+		end
+	end
 	
 	function _detalhes:ReGuessSpec (t)
 		local Actor, container = t[1], t[2]
@@ -272,6 +304,8 @@ do
 						Actor.spec = spec
 						Actor.classe = _detalhes.SpecIDToClass [spec] or Actor.classe
 						Actor.guessing_spec = nil
+
+						Details:SendEvent("UNIT_SPEC", nil, Actor:GetUnitId(), spec, Actor.serial)
 						
 						if (container) then
 							container.need_refresh = true
@@ -296,6 +330,8 @@ do
 						
 							Actor.spec = spec
 							Actor.classe = _detalhes.SpecIDToClass [spec] or Actor.classe
+
+							Details:SendEvent("UNIT_SPEC", nil, Actor:GetUnitId(), spec, Actor.serial)
 							
 							if (container) then
 								container.need_refresh = true
@@ -328,6 +364,8 @@ do
 									
 										Actor.spec = spec
 										Actor.classe = _detalhes.SpecIDToClass [spec] or Actor.classe
+
+										Details:SendEvent("UNIT_SPEC", nil, Actor:GetUnitId(), spec, Actor.serial)
 										
 										if (container) then
 											container.need_refresh = true
@@ -396,6 +434,8 @@ do
 					
 						Actor.spec = spec
 						Actor.classe = _detalhes.SpecIDToClass [spec] or Actor.classe
+
+						Details:SendEvent("UNIT_SPEC", nil, Actor:GetUnitId(), spec, Actor.serial)
 						
 						Actor.guessing_spec = nil
 						
@@ -421,6 +461,8 @@ do
 							Actor.spec = spec
 							Actor.classe = _detalhes.SpecIDToClass [spec] or Actor.classe
 							Actor.guessing_spec = nil
+
+							Details:SendEvent("UNIT_SPEC", nil, Actor:GetUnitId(), spec, Actor.serial)
 							
 							if (container) then
 								container.need_refresh = true
@@ -447,6 +489,8 @@ do
 						Actor.spec = spec
 						Actor.classe = _detalhes.SpecIDToClass [spec] or Actor.classe
 						Actor.guessing_spec = nil
+
+						Details:SendEvent("UNIT_SPEC", nil, Actor:GetUnitId(), spec, Actor.serial)
 						
 						if (container) then
 							container.need_refresh = true
@@ -479,6 +523,8 @@ do
 							Actor.spec = spec
 							Actor.classe = _detalhes.SpecIDToClass [spec] or Actor.classe
 							Actor.guessing_spec = nil
+
+							Details:SendEvent("UNIT_SPEC", nil, Actor:GetUnitId(), spec, Actor.serial)
 							
 							if (container) then
 								container.need_refresh = true
