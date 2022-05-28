@@ -1,6 +1,6 @@
 ## Interface: 20504
 ## Title: HandyNotes_NPCs (Burning Crusade Classic)
-## Version: 1.07
+## Version: 1.08
 ## Notes: Shows locations of various npcs
 ## Author: Cali
 ## RequiredDeps: HandyNotes
@@ -24,6 +24,4 @@ options.lua
 search.lua
 altrecipes.lua
 
-## Title-zhCN: |cff880303[有爱]|r HandyNotes NPC数据
-## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+## X-163UI-Version: 20220526154328

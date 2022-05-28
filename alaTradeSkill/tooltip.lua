@@ -42,7 +42,7 @@ local L = __namespace__.L;
 	local GetInboxItem = GetInboxItem;
 	local GetSendMailItem = GetSendMailItem;
 	local GetTradeSkillReagentItemLink, GetTradeSkillItemLink = GetTradeSkillReagentItemLink, GetTradeSkillItemLink;
-	local GetCraftReagentItemLink = GetCraftReagentItemLink;
+	local GetCraftReagentItemLink, GetCraftItemLink = GetCraftReagentItemLink, GetCraftItemLink;
 	local GetGuildBankItemLink = GetGuildBankItemLink;
 	local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
 
@@ -520,27 +520,47 @@ local function LF_TooltipSetItemByID(Tooltip, iid)
 	end
 end
 local function LF_TooltipSetHyperlink(Tooltip, link)
-	local _, sid = Tooltip:GetSpell();
-	if sid then
-		LF_TooltipSetSpellByID(Tooltip, sid);
-		return;
-	end
 	if link then
-		local cid = tonumber(strmatch(link, "item:(%d+)") or nil);
-		if cid then
-			LF_TooltipSetItemByID(Tooltip, cid);
+		local sid = strmatch(link, "enchant:(%d+)");
+		if sid == nil then
+			sid = strmatch(link, "spell:(%d+)");
+		end
+		if sid ~= nil then
+			sid = tonumber(sid);
+			if sid ~= nil then
+				LF_TooltipSetSpellByID(Tooltip, sid);
+			end
+			return;
+		end
+		local cid = strmatch(link, "item:(%d+)");
+		if cid ~= nil then
+			cid = tonumber(cid);
+			if cid then
+				LF_TooltipSetItemByID(Tooltip, cid);
+			end
 		end
 	end
 end
-local function LF_TooltipSetCraftSpell(Tooltip)
-	local _, sid = Tooltip:GetSpell();
-	if sid ~= nil then
-		LF_TooltipSetSpellByID(Tooltip, sid);
-	else
-		local _, link = Tooltip:GetItem();
-		local iid = link and tonumber(strmatch(link, "item:(%d+)") or nil);
-		if iid ~= nil then
-			LF_TooltipSetItemByID(Tooltip, iid);
+local function LF_TooltipSetCraftSpell(Tooltip, index)
+	local link = GetCraftItemLink(index);
+	if link then
+		local sid = strmatch(link, "enchant:(%d+)");
+		if sid == nil then
+			sid = strmatch(link, "spell:(%d+)");
+		end
+		if sid ~= nil then
+			sid = tonumber(sid);
+			if sid ~= nil then
+				LF_TooltipSetSpellByID(Tooltip, sid);
+			end
+			return;
+		end
+		local cid = strmatch(link, "item:(%d+)");
+		if cid ~= nil then
+			cid = tonumber(cid);
+			if cid then
+				LF_TooltipSetItemByID(Tooltip, cid);
+			end
 		end
 	end
 end
@@ -736,9 +756,13 @@ local function F_HookTooltip(Tooltip)
 		hooksecurefunc(Tooltip, "SetSocketGem", LF_TooltipGUISetItem);
 		hooksecurefunc(Tooltip, "SetExistingSocketGem", LF_TooltipGUISetItem);
 	end
-	hooksecurefunc(Tooltip, "SetCompareItem", function(Tooltip, Tooltip2, service)
-		LF_TooltipGUISetItem(Tooltip);
-		LF_TooltipGUISetItem(Tooltip2);
+	hooksecurefunc(Tooltip, "SetCompareItem", function(Tooltip1, Tooltip2, service)
+		if Tooltip1:IsShown() then
+			LF_TooltipGUISetItem(Tooltip1);
+		end
+		if Tooltip2:IsShown() then
+			LF_TooltipGUISetItem(Tooltip2);
+		end
 	end);
 end
 
