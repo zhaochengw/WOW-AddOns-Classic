@@ -1,4 +1,4 @@
-﻿## Interface: 90002
+## Interface: 90002
 
 ## Title: Lib: Compress
 ## Notes: Compression and Decompression library
