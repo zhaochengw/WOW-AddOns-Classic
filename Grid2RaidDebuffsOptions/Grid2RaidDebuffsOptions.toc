@@ -6,7 +6,7 @@
 ## Author: Michael
 ## Dependencies: Grid2, Grid2RaidDebuffs
 ## LoadOnDemand: 1
-## Version: 2.0.43
+## Version: 2.0.44
 
 Grid2RaidDebuffsOptions.lua
 OptionsGeneral.lua
@@ -21,4 +21,4 @@ RaidDebuffsBC.lua
 ## Title: |cff880303[163UI]|r Grid2 |cd2ff7d0aRaidDebuffs Options|r
 ## Title-zhCN: |cff880303[有爱]|r Grid2 首领减益效果数据界面
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220512135655
+## X-163UI-Version: 20220609154744

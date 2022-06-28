@@ -323,7 +323,7 @@
 		</Scripts>
 	</Button>
 
-	<Button name = "PallyPowerPopupTemplate" virtual = "true" frameStrata = "LOW">
+	<Button name = "PallyPowerPopupTemplate" virtual = "true" frameStrata = "DIALOG">
 		<Size>
 			<AbsDimension x = "100" y = "34"/>
 		</Size>

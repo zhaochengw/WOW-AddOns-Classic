@@ -1,9 +1,10 @@
 ## Interface: 20504
 ## Title: UnitFramesPlus MobHealth
-## Title-zhCN: |CFF7FFF7F界面|R 系统头像增强 目标血量
-## Title-zhTW: |CFF7FFF7F介面|R 系統頭像增強 目標血量
+## Title-zhCN: 系统头像增强 目标血量
+## Title-zhTW: |cff4DD2FF[頭像]|r 暴雪頭像 (增強功能)-敵方血量
+## Notes-zhTW: UnitFramesPlus MobHealth |n暴雪頭像增強插件的敵方玩家實際血量模組。
 ## X-Repple: 界面
-## Version: 1.36.5
+## Version: 1.36.5.5-bcc
 ## Author: Isler
 ## Author-LibClassicMobHealth: Pneumatus
 ## RequiredDeps: UnitFramesPlus

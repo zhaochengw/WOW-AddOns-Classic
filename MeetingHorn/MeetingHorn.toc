@@ -1,8 +1,12 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: MeetingHorn
 ## Title-zhCN: 集结号
-## Version: 1.7.2
+## Version: 1.7.5
 ## SavedVariables: MEETINGHORN_DB
 ## SavedVariablesPerCharacter: MEETINGHORN_DB_CHARACTER_MEMBERS
 
 Load.xml
+
+## Title-zhCN: |cff880303[有爱]|r MeetingHorn 集结号
+## X-Vendor: NetEase
+## X-163UI-Version: 20220624171604

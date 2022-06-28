@@ -27,7 +27,7 @@ do
 	setfenv(1, NS.__fenv);
 end
 
-local curPhase = 4;
+local L = NS.L;
 ----------------------------------------------------------------------------------------------------upvalue
 	----------------------------------------------------------------------------------------------------LUA
 	local math, table, string, bit = math, table, string, bit;
@@ -118,177 +118,9 @@ local curPhase = 4;
 		smallFontSize = max(select(2, SystemFont_Shadow_Med1:GetFont()) - 3, 12),
 	};
 ----------------------------------------------------------------------------------------------------
-local LOCALE = GetLocale();
-local L = {  };
-do	-- LOCALE
-	if LOCALE == "zhCN" or LOCALE == "zhTW" then
-		L["CONFLICT"] = "alaTrade插件冲突: ";
-		L["pop_status"] = "清理...";
-		L["Scan full finished."] = "扫描完成";
-		L["Scan normal finished."] = "扫描完成";
-		L["pages"] = "页面: 当前/已缓存/总共 ";
-		L["PRICE"] = "价格";
-		L["HISTORY_PRICE"] = "历史价格";
-		L["AH_PRICE"] = "拍卖";
-		L["VENDOR_PRICE"] = "商人";
-		L["CACHE_TIME"] = "缓存时间";
-		L["UNKOWN"] = "未知";
-		L["BOP_ITEM"] = "拾取绑定";
-		L["QUEST_ITEM"] = "任务物品";
-		L["6H"] = "\124cffffff006小时前\124r";
-		L["24H"] = "\124cffff000024小时前\124r";
-		L["Disenchant"] = "分解";
-		L["DURATION"] = "持续时间";
-		L["ExactQuery"] = "精确匹配";
-		L["Reset"] = "重置";
-		L["CacheAll"] = "扫描全部";
-		L["timeLeft"] = {
-			[1] = "\124cffff0000小于30分钟\124r",
-			[2] = "\124cffff7f7f30分钟-2小时\124r",
-			[3] = "\124cffffff002小时-8小时\124r",
-			[4] = "\124cff00ff008小时-24小时\124r",
-		};
-		L["buyout"] = "一口价 ";
-		L["configButton"] = "设置";
-		L["TIP_SEARCH_NAME_ONLY_INFO"] = "只搜索名称，不搜索id";
-		L["close"] = "关闭";
-		L["OK"] = "确定";
-		L["showEmpty"] = "显示无价格记录的物品";
-		L["query_online"] = "向其他玩家查询价格";
-		L["show_vendor_price"] = "显示商人价格（单个物品）";
-		L["show_vendor_price_multi"] = "显示商人价格（当前数量）";
-		L["show_ah_price"] = "显示拍卖价格（单个物品）";
-		L["show_ah_price_multi"] = "显示拍卖价格（当前数量）";
-		L["show_disenchant_price"] = "显示分解价格";
-		L["show_disenchant_detail"] = "显示分解详细信息";
-		L["cache_history"] = "保存历史价格\124cff00ff00占用很多内存\124r";
-		L["BaudAuctionFrame"] = "改变购买窗口";
-		L["regular_exp"] = "正则表达式搜索\124cffff0000!!!慎用!!!\124r";
-		L["show_DBIcon"] = "显示小地图按钮";
-		L["avoid_stuck_cost"] = "全局扫描速度\124cffff0000警告: 人口较多的服务器请降低此数值\124r";
-		L["data_valid_time"] = "日期着色的基准时间";
-		L["auto_clean_time"] = "自动清理超过以下时间的数据";
-		L["TIME900"] = "15分钟";
-		L["TIME86400"] = "24小时";
-		L["TIME43200"] = "12小时";
-		L["TIME2592000"] = "30天";
-		L["SORT_METHOD"] = {
-			[1] = "ID",
-			[2] = "品质",
-			[3] = "名字",
-			[4] = "单价",
-			[5] = "缓存时间",
-			[6] = "等级",
-		};
-		L["COLORED_FORMATTED_TIME_LEN"] = {
-			"\124cff%.2x%.2x00%d天%02d时%02d分%02d秒\124r",
-			"\124cff%.2x%.2x00%d时%02d分%02d秒\124r",
-			"\124cff%.2x%.2x00%d分%02d秒\124r",
-			"\124cff%.2x%.2x00%d秒\124r",
-		};
-		L["FORMATTED_TIME_LEN"] = {
-			"%d天%02d时%02d分%02d秒",
-			"%d时%02d分%02d秒",
-			"%d分%02d秒",
-			"%d秒",
-		};
-		L["FORMATTED_TIME"] = "%Y年%m月%d日\n%H:%M:%S";
-		L["TIME_NA"] = "\124cffff0000未知\124r";
-		L["UI_TITLE"] = "ALA @ 网易有爱 \124cff00ff00wowui.w.163.com\124r";
-		L["DBIcon_Text"] = "\124cff00ff00左键\124r 搜索缓存的物品价格\n\124cff00ff00右键\124r 打开设置界面";
-		L["PRCIE_NOT_CACHED"] = "无数据";
-		L["ITEM_COUNT"] = "物品数";
-		L["MoneyString_Dec_Char_Format"] = {
-			"%d金%02d银%02d.%02d铜",
-			"%d银%02d.%02d铜",
-			"%d.%02d铜",
-		};
-	else
-		L["CONFLICT"] = "alaTrade conflicted addon : ";
-		L["pop_status"] = "Cleaning up...";
-		L["Scan full finished."] = "Scan finished";
-		L["Scan normal finished."] = "Scan finished";
-		L["pages"] = "Pages: current/cached/total ";
-		L["PRICE"] = "Price";
-		L["HISTORY_PRICE"] = "History Price";
-		L["AH_PRICE"] = "AH";
-		L["VENDOR_PRICE"] = "Vendor";
-		L["CACHE_TIME"] = "Cache Time";
-		L["UNKOWN"] = "Unkown";
-		L["BOP_ITEM"] = "BOP";
-		L["QUEST_ITEM"] = "Quest items";
-		L["6H"] = "\124cffffff006hours ago\124r";
-		L["24H"] = "\124cffff000024hours ago\124r";
-		L["Disenchant"] = "Disenchant";
-		L["DURATION"] = "Duration";
-		L["ExactQuery"] = "Exact";
-		L["Reset"] = "Reset";
-		L["CacheAll"] = "CacheAll";
-		L["timeLeft"] = {
-			[1] = "\124cffff0000Less than 30min\124r",
-			[2] = "\124cffff7f7f30mins-2hours\124r",
-			[3] = "\124cffffff002hours-8hours\124r",
-			[4] = "\124cff00ff008hours-24hours\124r",
-		};
-		L["buyout"] = "buyout ";
-		L["configButton"] = "config";
-		L["TIP_SEARCH_NAME_ONLY_INFO"] = "Search name only, otherwise both name and id";
-		L["close"] = "close";
-		L["OK"] = "OK";
-		L["showEmpty"] = "Show items without recorded prices";
-		L["query_online"] = "Query price from others";
-		L["show_vendor_price"] = "Vendor price (Single item)";
-		L["show_vendor_price_multi"] = "Vendor price (Current stack)";
-		L["show_ah_price"] = "AH price (Single item)";
-		L["show_ah_price_multi"] = "AH price (Current stack)";
-		L["show_disenchant_price"] = "Disenchant price ";
-		L["show_disenchant_detail"] = "Disenchant details";
-		L["cache_history"] = "Price history. \124cff00ff00Take up lots of ram\124r";
-		L["BaudAuctionFrame"] = "BaudAuctionFrame";
-		L["regular_exp"] = "Regular Expression\124cffff0000!!!Caution!!!\124r";
-		L["show_DBIcon"] = "Icon around the minimap";
-		L["avoid_stuck_cost"] = "Speed of full scan \124cff00ff00Warning: Make it lower if the realm is crowded.\124r";
-		L["data_valid_time"] = "Baseline of the color of timestamp. (Value older than this value is \124cffff0000red\124r)";
-		L["auto_clean_time"] = "Auto clean data older than ";
-		L["TIME900"] = "15mins";
-		L["TIME43200"] = "12hours";
-		L["TIME86400"] = "24hours";
-		L["TIME2592000"] = "30days";
-		L["SORT_METHOD"] = {
-			[1] = "ID",
-			[2] = "Quality",
-			[3] = "Name",
-			[4] = "Price",
-			[5] = "Cached time",
-			[6] = "Level",
-		};
-		L["COLORED_FORMATTED_TIME_LEN"] = {
-			"\124cff%.2x%.2x00%dd %02dh %02dm %02ds\124r",
-			"\124cff%.2x%.2x00%dh %02dm %02ds\124r",
-			"\124cff%.2x%.2x00%dm %02ds\124r",
-			"\124cff%.2x%.2x00%ds\124r",
-		};
-		L["FORMATTED_TIME_LEN"] = {
-			"%dd %02dh %02dm %02ds",
-			"%dh %02dm %02ds",
-			"%dm %02dsr",
-			"%ds",
-		};
-		L["FORMATTED_TIME"] = "%Y-%m-%d\n%H:%M:%S";
-		L["TIME_NA"] = "\124cffff0000NA\124r";
-		L["UI_TITLE"] = "ALA @ 163UI";
-		L["DBIcon_Text"] = "\124cff00ff00Left click\124r Search cached price.\n\124cff00ff00Right Click\124r Configure.";
-		L["PRCIE_NOT_CACHED"] = "No data";
-		L["ITEM_COUNT"] = "Item count";
-		L["MoneyString_Dec_Char_Format"] = {
-			"%dG%02dS%02d.%02dC",
-			"%dS%02d.%02dC",
-			"%d.%02dC",
-		};
-	end
-end
 ----------------------------------------------------------------------------------------------------
 local SET = nil;
+local FAV = nil;
 local cache = nil;
 local cache2 = nil;	-- [name] = id
 local cache3 = nil;	-- { id, }
@@ -326,12 +158,13 @@ do	--	InsertLink
 			end
 		end
 		function _G.ALA_HOOK_ChatEdit_InsertName(func)
-			for index = 1, #handlers_name do
+			local num = #handlers_name;
+			for index = 1, num do
 				if func == handlers_name[index] then
 					return;
 				end
 			end
-			tinsert(handlers_name, func);
+			handlers_name[num + 1] = func;
 		end
 		function _G.ALA_UNHOOK_ChatEdit_InsertName(func)
 			for index = 1, #handlers_name do
@@ -342,12 +175,13 @@ do	--	InsertLink
 			end
 		end
 		function _G.ALA_HOOK_ChatEdit_InsertLink(func)
-			for index = 1, #handlers_link do
+			local num = #handlers_link;
+			for index = 1, num do
 				if func == handlers_link[index] then
 					return;
 				end
 			end
-			tinsert(handlers_link, func);
+			handlers_link[num + 1] = func;
 		end
 		function _G.ALA_UNHOOK_ChatEdit_InsertLink(func)
 			for index = 1, #handlers_link do
@@ -562,6 +396,7 @@ end
 
 do	--	MAIN
 	local _callback_after_cache = {  };
+	local _num_callback_after_cache = 0;
 	local time_zone_ofs = 0;
 	do
 		local l = date("*t");
@@ -768,7 +603,7 @@ do	--	MAIN
 						queried_id_history[id] = t;
 					end
 					if id then
-						tinsert(query_queue, { id, cache_time or -1 });
+						query_queue[#query_queue + 1] = { id, cache_time or -1 };
 					end
 				end
 			end
@@ -957,9 +792,10 @@ do	--	MAIN
 					if c[index_cacheTime] == nil or abs(c[index_cacheTime] - cache_time) > MINIMUM_CACHE_INTERVAL then
 						if SET.cache_history and c[index_cacheTime] then
 							c[index_history] = c[index_history] or {  };
-							local n = #c[index_history];
-							if (n > 0 and c[index_history][n][1]) or c[index_buyoutPriceSingle] then
-								tinsert(c[index_history], { c[index_buyoutPriceSingle], c[index_count], c[index_cacheTime], });
+							local h = c[index_history];
+							local n = #h;
+							if (n > 0 and h[n][1]) or c[index_buyoutPriceSingle] then
+								h[n + 1] = { c[index_buyoutPriceSingle], c[index_count], c[index_cacheTime], };
 							end
 						end
 					end
@@ -979,8 +815,10 @@ do	--	MAIN
 					if temp[3] then
 						if SET.cache_history and c[index_cacheTime] and abs(c[index_cacheTime] - _cache_time) > MINIMUM_CACHE_INTERVAL then
 							c[index_history] = c[index_history] or {  };
-							if (#c[index_history] > 0 and c[index_history][#c[index_history]][1]) or c[index_buyoutPriceSingle] then
-								tinsert(c[index_history], { c[index_buyoutPriceSingle], c[index_count], c[index_cacheTime], });
+							local h = c[index_history];
+							local n = #h;
+							if (n > 0 and h[n][1]) or c[index_buyoutPriceSingle] then
+								h[n + 1] = { c[index_buyoutPriceSingle], c[index_count], c[index_cacheTime], };
 							end
 						end
 						c[index_buyoutPriceSingle] = temp[1];
@@ -990,8 +828,10 @@ do	--	MAIN
 					elseif _is_full_scan or c[index_name] and strfind(c[index_name], pattern) then
 						if SET.cache_history and c[index_cacheTime] then
 							c[index_history] = c[index_history] or {  };
-							if (#c[index_history] > 0 and c[index_history][#c[index_history]][1]) or c[index_buyoutPriceSingle] then
-								tinsert(c[index_history], { c[index_buyoutPriceSingle], c[index_count], c[index_cacheTime], });
+							local h = c[index_history];
+							local n = #h;
+							if (n > 0 and h[n][1]) or c[index_buyoutPriceSingle] then
+								h[n + 1] = { c[index_buyoutPriceSingle], c[index_count], c[index_cacheTime], };
 							end
 						end
 						c[index_buyoutPriceSingle] = nil;
@@ -1062,7 +902,7 @@ do	--	MAIN
 									-- c[index_vendorPrice] = select(11, GetItemInfo(id));
 									c[index_temp] = { buyoutPriceSingle, count, _cache_time, };
 									cache[id] = c;
-									tinsert(cache3, id);
+									cache3[#cache3 + 1] = id;
 								end
 							else
 								buyoutPrice = nil;
@@ -1098,7 +938,7 @@ do	--	MAIN
 									-- c[index_vendorPrice] = select(11, GetItemInfo(id));
 									c[index_temp] = { nil, count, nil, };
 									cache[id] = c;
-									tinsert(cache3, id);
+									cache3[#cache3 + 1] = id;
 								end
 							end
 							if name and name ~= "" then
@@ -1130,7 +970,7 @@ do	--	MAIN
 								buyoutPrice = buyoutPrice or BIG_NUMBER;
 								buyoutPriceSingle = buyoutPriceSingle or BIG_NUMBER;
 								-- _cache_temp_table[i + _last_query_page * BATCH_PER_PAGE] = ele;
-								tinsert(_cache_temp_table, ele);
+								_cache_temp_table[#_cache_temp_table + 1] = ele;
 							end
 						end
 						if SET.avoid_stuck and (i % 50 == 0) and (debugprofilestop() - p0 > SET.avoid_stuck_cost / 10) then
@@ -1204,7 +1044,7 @@ do	--	MAIN
 		end
 		do	-- send scan_full
 			function NS.notify_scan_full_done()
-				for index = 1, #_callback_after_cache do
+				for index = 1, _num_callback_after_cache do
 					_callback_after_cache[index]();
 				end
 				if NS.BaudAuctionFrame then
@@ -1267,7 +1107,7 @@ do	--	MAIN
 					_call_back(_para[1], _cache_temp_table, true);
 					_call_back = nil;
 				end
-				for index = 1, #_callback_after_cache do
+				for index = 1, _num_callback_after_cache do
 					_callback_after_cache[index]();
 				end
 				PlaySound(SOUNDKIT.AUCTION_WINDOW_CLOSE);
@@ -2295,44 +2135,61 @@ do	--	MAIN
 			local SORT_METHOD_OWNER = 4;
 			local SORT_METHOD_BID = 5;
 			local SORT_METHOD_BUYOUT = 6;
+			local t_sort_method = {
+				[SORT_METHOD_NAME] = {
+					[true] = function(v1, v2)
+						return CACHES[v1][index_name] < CACHES[v2][index_name];
+					end,
+					[false] = function(v1, v2)
+						return CACHES[v1][index_name] > CACHES[v2][index_name];
+					end,
+				},
+				[SORT_METHOD_LEVEL] = {
+					[true] = function(v1, v2)
+						return CACHES[v1][index_level] < CACHES[v2][index_level];
+					end,
+					[false] = function(v1, v2)
+						return CACHES[v1][index_level] > CACHES[v2][index_level];
+					end,
+				},
+				[SORT_METHOD_TIMELEFT] = {
+					[true] = function(v1, v2)
+						return CACHES[v1][index_timeLeft] < CACHES[v2][index_timeLeft];
+					end,
+					[false] = function(v1, v2)
+						return CACHES[v1][index_timeLeft] > CACHES[v2][index_timeLeft];
+					end,
+				},
+				[SORT_METHOD_OWNER] = {
+					[true] = function(v1, v2)
+						return CACHES[v1][index_owner] < CACHES[v2][index_owner];
+					end,
+					[false] = function(v1, v2)
+						return CACHES[v1][index_owner] > CACHES[v2][index_owner];
+					end,
+				},
+				[SORT_METHOD_BID] = {
+					[true] = function(v1, v2)
+						return (CACHES[v1][index_bidPriceSingle] or BIG_NUMBER) < (CACHES[v2][index_bidPriceSingle] or BIG_NUMBER);
+					end,
+					[false] = function(v1, v2)
+						return (CACHES[v1][index_bidPriceSingle] or BIG_NUMBER) > (CACHES[v2][index_bidPriceSingle] or BIG_NUMBER);
+					end,
+				},
+				[SORT_METHOD_BUYOUT] = {
+					[true] = function(v1, v2)
+						return (CACHES[v1][index_buyoutPriceSingle] or BIG_NUMBER) < (CACHES[v2][index_buyoutPriceSingle] or BIG_NUMBER);
+					end,
+					[false] = function(v1, v2)
+						return (CACHES[v1][index_buyoutPriceSingle] or BIG_NUMBER) > (CACHES[v2][index_buyoutPriceSingle] or BIG_NUMBER);
+					end,
+				},
+			};
 			local function func_sort_cache(sort_method, sort_method_seq)
 				if sort_method then
-					if sort_method == SORT_METHOD_NAME then
-						if sort_method_seq > 0 then
-							sort(INDICES, function(v1, v2) return CACHES[v1][index_name] < CACHES[v2][index_name]; end);
-						else
-							sort(INDICES, function(v1, v2) return CACHES[v1][index_name] > CACHES[v2][index_name]; end);
-						end
-					elseif sort_method == SORT_METHOD_LEVEL then
-						if sort_method_seq > 0 then
-							sort(INDICES, function(v1, v2) return CACHES[v1][index_level] < CACHES[v2][index_level]; end);
-						else
-							sort(INDICES, function(v1, v2) return CACHES[v1][index_level] > CACHES[v2][index_level]; end);
-						end
-					elseif sort_method == SORT_METHOD_TIMELEFT then
-						if sort_method_seq > 0 then
-							sort(INDICES, function(v1, v2) return CACHES[v1][index_timeLeft] < CACHES[v2][index_timeLeft]; end);
-						else
-							sort(INDICES, function(v1, v2) return CACHES[v1][index_timeLeft] > CACHES[v2][index_timeLeft]; end);
-						end
-					elseif sort_method == SORT_METHOD_OWNER then
-						if sort_method_seq > 0 then
-							sort(INDICES, function(v1, v2) return CACHES[v1][index_owner] < CACHES[v2][index_owner]; end);
-						else
-							sort(INDICES, function(v1, v2) return CACHES[v1][index_owner] > CACHES[v2][index_owner]; end);
-						end
-					elseif sort_method == SORT_METHOD_BID then
-						if sort_method_seq > 0 then
-							sort(INDICES, function(v1, v2) return (CACHES[v1][index_bidPriceSingle] or BIG_NUMBER) < (CACHES[v2][index_bidPriceSingle] or BIG_NUMBER); end);
-						else
-							sort(INDICES, function(v1, v2) return (CACHES[v1][index_bidPriceSingle] or BIG_NUMBER) > (CACHES[v2][index_bidPriceSingle] or BIG_NUMBER); end);
-						end
-					elseif sort_method == SORT_METHOD_BUYOUT then
-						if sort_method_seq > 0 then
-							sort(INDICES, function(v1, v2) return (CACHES[v1][index_buyoutPriceSingle] or BIG_NUMBER) < (CACHES[v2][index_buyoutPriceSingle] or BIG_NUMBER); end);
-						else
-							sort(INDICES, function(v1, v2) return (CACHES[v1][index_buyoutPriceSingle] or BIG_NUMBER) > (CACHES[v2][index_buyoutPriceSingle] or BIG_NUMBER); end);
-						end
+					local method = t_sort_method[sort_method];
+					if method then
+						sort(INDICES, method[sort_method_seq > 0]);
 					end
 				end
 			end
@@ -3062,6 +2919,7 @@ do	--	MAIN
 	end
 
 	do	--	UI
+		local uimethod = {  };
 		local ui = nil;
 		local configFrame = nil;
 		local SORT_METHOD_ID = 1;
@@ -3411,7 +3269,7 @@ do	--	MAIN
 			meta[n][2] = v2;
 			meta[n][3] = v3;
 		end
-		local function button_OnClick(self)
+		local function button_OnClick(self, button)
 			local list = self.list;
 			local data_index = self:GetDataIndex();
 			if data_index <= #list then
@@ -3441,24 +3299,29 @@ do	--	MAIN
 						if link then
 							DressUpItemLink(link);
 						end
-					elseif SET.cache_history then
-						local meta = ui.graph.list;
-						local n = 0;
-						local H = info[index_history];
-						if H then
-							for i = 1, #H do
-								n = n + 1;
-								insert_meta(meta, n, H[i][3], H[i][1], H[i][2]);
+					elseif button == "LeftButton" then
+						if SET.cache_history then
+							local meta = ui.graph.list;
+							local n = 0;
+							local H = info[index_history];
+							if H then
+								for i = 1, #H do
+									n = n + 1;
+									insert_meta(meta, n, H[i][3], H[i][1], H[i][2]);
+								end
 							end
+							if info[index_cacheTime] then
+								n = n + 1;
+								insert_meta(meta, n, info[index_cacheTime], info[index_buyoutPriceSingle], info[index_count]);
+							end
+							meta[0] = n;
+							meta.id = id;
+							ui.graph_container:Show();
+							graph_SetValue(ui.graph, meta);
 						end
-						if info[index_cacheTime] then
-							n = n + 1;
-							insert_meta(meta, n, info[index_cacheTime], info[index_buyoutPriceSingle], info[index_count]);
-						end
-						meta[0] = n;
-						meta.id = id;
-						ui.graph_container:Show();
-						graph_SetValue(ui.graph, meta);
+					else
+						FAV[id] = FAV[id] == nil and true or nil;
+						uimethod.func_update_ui();
 					end
 				end
 			end
@@ -3473,62 +3336,62 @@ do	--	MAIN
 		};
 		local ui_width = 4 + 4 -2 + 24; for _, w in next, button_elements_width do ui_width = ui_width + w + 2; end
 		local function funcToCreateButton(parent, index, buttonHeight)
-			local button = CreateFrame("BUTTON", nil, parent, "BackdropTemplate");
-			button:SetHeight(buttonHeight);
-			button:SetBackdrop(ui_style.buttonBackdrop);
-			button:SetBackdropColor(unpack(ui_style.buttonBackdropColor));
-			button:SetBackdropBorderColor(unpack(ui_style.buttonBackdropBorderColor));
-			button:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar");
-			button:EnableMouse(true);
-			button:Show();
+			local Button = CreateFrame("BUTTON", nil, parent, "BackdropTemplate");
+			Button:SetHeight(buttonHeight);
+			Button:SetBackdrop(ui_style.buttonBackdrop);
+			Button:SetBackdropColor(unpack(ui_style.buttonBackdropColor));
+			Button:SetBackdropBorderColor(unpack(ui_style.buttonBackdropBorderColor));
+			Button:SetHighlightTexture("Interface\\FriendsFrame\\UI-FriendsFrame-HighlightBar");
+			Button:EnableMouse(true);
+			Button:Show();
 
-			local itemID = button:CreateFontString(nil, "OVERLAY");
+			local itemID = Button:CreateFontString(nil, "OVERLAY");
 			itemID:SetFont(ui_style.frameFont, ui_style.frameFontSize, ui_style.frameFontOutline);
 			itemID:SetPoint("LEFT", 2, 0);
 			itemID:SetWidth(button_elements_width[SORT_METHOD_ID]);
 			itemID:SetMaxLines(1);
 			itemID:SetJustifyH("LEFT");
-			button.itemID = itemID;
+			Button.itemID = itemID;
 
-			local icon = button:CreateTexture(nil, "BORDER");
+			local icon = Button:CreateTexture(nil, "BORDER");
 			icon:SetTexture(UNK_TEXTURE);
 			icon:SetSize(buttonHeight - 2, buttonHeight - 2);
 			icon:SetPoint("LEFT", itemID, "RIGHT", 2, 0);
-			button.icon = icon;
+			Button.icon = icon;
 
-			local name = button:CreateFontString(nil, "OVERLAY");
+			local name = Button:CreateFontString(nil, "OVERLAY");
 			name:SetFont(ui_style.frameFont, ui_style.frameFontSize, ui_style.frameFontOutline);
 			name:SetPoint("LEFT", icon, "RIGHT", 2, 0);
 			name:SetWidth(button_elements_width[SORT_METHOD_NAME] + button_elements_width[SORT_METHOD_QUALITY] + 2 - buttonHeight);
 			name:SetMaxLines(1);
 			name:SetJustifyH("LEFT");
-			button.name = name;
+			Button.name = name;
 
-			local level = button:CreateFontString(nil, "OVERLAY");
+			local level = Button:CreateFontString(nil, "OVERLAY");
 			level:SetFont(ui_style.frameFont, ui_style.frameFontSize, ui_style.frameFontOutline);
 			level:SetPoint("LEFT", name, "RIGHT", 2, 0);
 			level:SetWidth(button_elements_width[SORT_METHOD_LEVEL]);
 			level:SetMaxLines(1);
 			level:SetJustifyH("LEFT");
-			button.level = level;
+			Button.level = level;
 
-			local buyoutPriceSingle = button:CreateFontString(nil, "ARTWORK");
+			local buyoutPriceSingle = Button:CreateFontString(nil, "ARTWORK");
 			buyoutPriceSingle:SetFont(ui_style.frameFont, ui_style.frameFontSize, ui_style.frameFontOutline);
 			buyoutPriceSingle:SetPoint("LEFT", level, "RIGHT", 2, 0);
 			buyoutPriceSingle:SetWidth(button_elements_width[SORT_METHOD_PRICE]);
 			buyoutPriceSingle:SetMaxLines(1);
 			buyoutPriceSingle:SetJustifyH("RIGHT");
-			button.buyoutPriceSingle = buyoutPriceSingle;
+			Button.buyoutPriceSingle = buyoutPriceSingle;
 
-			local cache_time = button:CreateFontString(nil, "OVERLAY");
+			local cache_time = Button:CreateFontString(nil, "OVERLAY");
 			cache_time:SetFont(ui_style.frameFont, ui_style.frameFontSize, ui_style.frameFontOutline);
 			cache_time:SetPoint("LEFT", buyoutPriceSingle, "RIGHT", 2, 0);
 			cache_time:SetWidth(button_elements_width[SORT_METHOD_TIME]);
 			cache_time:SetMaxLines(1);
 			cache_time:SetJustifyH("RIGHT");
-			button.cache_time = cache_time;
+			Button.cache_time = cache_time;
 
-			local quality_glow = button:CreateTexture(nil, "ARTWORK");
+			local quality_glow = Button:CreateTexture(nil, "ARTWORK");
 			quality_glow:SetTexture("Interface\\Buttons\\UI-ActionButton-Border");
 			quality_glow:SetBlendMode("ADD");
 			quality_glow:SetTexCoord(0.25, 0.75, 0.25, 0.75);
@@ -3536,58 +3399,66 @@ do	--	MAIN
 			quality_glow:SetPoint("CENTER", icon);
 			-- quality_glow:SetAlpha(0.75);
 			quality_glow:Show();
-			button.quality_glow = quality_glow;
+			Button.quality_glow = quality_glow;
 
-			local glow = button:CreateTexture(nil, "OVERLAY");
+			local glow = Button:CreateTexture(nil, "OVERLAY");
 			glow:SetTexture("Interface\\Buttons\\WHITE8X8");
 			-- glow:SetTexCoord(0.25, 0.75, 0.25, 0.75);
 			glow:SetVertexColor(0.25, 0.25, 0.25, 0.75);
 			glow:SetAllPoints();
 			glow:SetBlendMode("ADD");
 			glow:Hide();
-			button.glow = glow;
+			Button.glow = glow;
 
-			button:SetScript("OnEnter", button_OnEnter);
-			button:SetScript("OnLeave", button_OnLeave);
-			button:RegisterForClicks("AnyUp");
-			button:SetScript("OnClick", button_OnClick);
-			button:RegisterForDrag("LeftButton");
-			button:SetScript("OnHide", function()
-				ALADROP(button);
+			local Star = Button:CreateTexture(nil, "OVERLAY");
+			Star:SetTexture("interface\\collections\\collections");
+			Star:SetTexCoord(100 / 512, 118 / 512, 10 / 512, 28 / 512);
+			Star:SetSize(buttonHeight * 0.75, buttonHeight * 0.75);
+			Star:SetPoint("CENTER", Button, "TOPLEFT", buttonHeight * 0.25, -buttonHeight * 0.25);
+			Star:Hide();
+			Button.Star = Star;
+
+			Button:SetScript("OnEnter", button_OnEnter);
+			Button:SetScript("OnLeave", button_OnLeave);
+			Button:RegisterForClicks("AnyUp");
+			Button:SetScript("OnClick", button_OnClick);
+			Button:RegisterForDrag("LeftButton");
+			Button:SetScript("OnHide", function()
+				ALADROP(Button);
 			end);
 
-			function button:Select()
+			function Button:Select()
 				glow:Show();
 			end
-			function button:Deselect()
+			function Button:Deselect()
 				glow:Hide();
 			end
 
 			local frame = parent:GetParent():GetParent();
-			button.frame = frame;
-			button.list = frame.list;
-			button.searchEdit = frame.searchEdit;
+			Button.frame = frame;
+			Button.list = frame.list;
+			Button.searchEdit = frame.searchEdit;
 
-			return button;
+			return Button;
 		end
-		local function funcToSetButton(button, data_index)
-			local list = button.list;
-			ALADROP(button);
+		local function funcToSetButton(Button, data_index)
+			local list = Button.list;
+			ALADROP(Button);
 			if data_index <= #list then
 				local id = list[data_index];
 				local info = cache[id];
 				if info then
-					button.itemID:SetText(id);
-					button.icon:SetTexture(info[index_texture]);
-					button.name:SetText((info[index_name] == nil or info[index_name] == "") and ("ITEM" .. id) or info[index_name]);
+					Button.itemID:SetText(id);
+					Button.icon:SetTexture(info[index_texture]);
+					Button.name:SetText((info[index_name] == nil or info[index_name] == "") and ("ITEM" .. id) or info[index_name]);
 					if info[index_level] >= 0 then
-						button.level:SetText(info[index_level]);
+						Button.level:SetText(info[index_level]);
 					else
-						button.level:SetText(nil);
+						Button.level:SetText(nil);
 					end
 					if info[index_buyoutPriceSingle] then
-						button.buyoutPriceSingle:SetText(NS.MoneyString_Dec(info[index_buyoutPriceSingle]));
-						button.cache_time:SetText(NS.seconds_to_colored_formatted_time_len(GetServerTime() - info[index_cacheTime]));
+						Button.buyoutPriceSingle:SetText(NS.MoneyString_Dec(info[index_buyoutPriceSingle]));
+						Button.cache_time:SetText(NS.seconds_to_colored_formatted_time_len(GetServerTime() - info[index_cacheTime]));
 					else
 						local H = info[index_history];
 						local found_valid = false;
@@ -3595,90 +3466,115 @@ do	--	MAIN
 							for i = #H, 1, -1 do
 								if H[i][1] then
 									found_valid = true;
-									button.buyoutPriceSingle:SetText(NS.MoneyString_Dec(H[i][1]));
-									button.cache_time:SetText(NS.seconds_to_colored_formatted_time_len(GetServerTime() - H[i][3]));
+									Button.buyoutPriceSingle:SetText(NS.MoneyString_Dec(H[i][1]));
+									Button.cache_time:SetText(NS.seconds_to_colored_formatted_time_len(GetServerTime() - H[i][3]));
 									break;
 								end
 							end
 						end
 						if not found_valid then
-							button.buyoutPriceSingle:SetText(L["UNKOWN"]);
-							button.cache_time:SetText(L["TIME_NA"]);
+							Button.buyoutPriceSingle:SetText(L["UNKOWN"]);
+							Button.cache_time:SetText(L["TIME_NA"]);
 						end
 					end
 					if info[index_quality] then
 						local r, g, b, code = GetItemQualityColor(info[index_quality]);
-						button.name:SetTextColor(r, g, b, 1);
-						button.quality_glow:SetVertexColor(r, g, b);
-						button.quality_glow:Show();
+						Button.name:SetTextColor(r, g, b, 1);
+						Button.quality_glow:SetVertexColor(r, g, b);
+						Button.quality_glow:Show();
 					else
-						button.name:SetTextColor(1, 1, 1, 1);
-						button.quality_glow:Hide();
+						Button.name:SetTextColor(1, 1, 1, 1);
+						Button.quality_glow:Hide();
 					end
-					button:Show();
-					if GetMouseFocus() == button then
-						button_OnEnter(button);
+					Button:Show();
+					if FAV[id] then
+						Button.Star:Show();
+					else
+						Button.Star:Hide();
+					end
+					if GetMouseFocus() == Button then
+						button_OnEnter(Button);
 					end
 				else
-					button:Hide();
+					Button:Hide();
 				end
 			else
-				button:Hide();
+				Button:Hide();
 			end
 		end
-		local function func_sort_list(list, sort_method, sort_method_seq)
+		local t_sort_method = {
+			[SORT_METHOD_ID] = {
+				[true] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and (v1 < v2));
+				end,
+				[false] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and (v1 > v2));
+				end,
+			},
+			SORT_METHOD_QUALITY = {
+				[true] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and (cache[v1][index_quality] < cache[v2][index_quality]));
+				end,
+				[false] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and (cache[v1][index_quality] > cache[v2][index_quality]));
+				end,
+			},
+			SORT_METHOD_NAME = {
+				[true] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and (cache[v1][index_name] < cache[v2][index_name]));
+				end,
+				[false] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and (cache[v1][index_name] > cache[v2][index_name]));
+				end,
+			},
+			SORT_METHOD_PRICE = {
+				[true] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and ((NS.query_ah_price_by_id(v1, true) or BIG_NUMBER) < (NS.query_ah_price_by_id(v2, true) or BIG_NUMBER)));
+				end,
+				[false] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and ((NS.query_ah_price_by_id(v1, true) or BIG_NUMBER) > (NS.query_ah_price_by_id(v2, true) or BIG_NUMBER)));
+				end,
+			},
+			SORT_METHOD_TIME = {
+				[true] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and ((NS.query_last_cache_time_by_id(v1) or -1) < (NS.query_last_cache_time_by_id(v2) or -1)));
+				end,
+				[false] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and ((NS.query_last_cache_time_by_id(v1) or -1) > (NS.query_last_cache_time_by_id(v2) or -1)));
+				end,
+			},
+			SORT_METHOD_LEVEL = {
+				[true] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and (cache[v1][index_level] < cache[v2][index_level]));
+				end,
+				[false] = function(v1, v2)
+					return (FAV[v1] ~= nil and FAV[v2] == nil) or ((FAV[v1] ~= nil or FAV[v2] == nil) and (cache[v1][index_level] > cache[v2][index_level]));
+				end,
+			},
+		};
+		function uimethod.func_sort_list(list, sort_method, sort_method_seq)
 			if sort_method then
-				if sort_method == SORT_METHOD_ID then
-					if sort_method_seq > 0 then
-						sort(list, function(v1, v2) return v1 < v2; end);
-					else
-						sort(list, function(v1, v2) return v1 > v2; end);
-					end
-				elseif sort_method == SORT_METHOD_QUALITY then
-					if sort_method_seq > 0 then
-						sort(list, function(v1, v2) return cache[v1][index_quality] < cache[v2][index_quality]; end);
-					else
-						sort(list, function(v1, v2) return cache[v1][index_quality] > cache[v2][index_quality]; end);
-					end
-				elseif sort_method == SORT_METHOD_NAME then
-					if sort_method_seq > 0 then
-						sort(list, function(v1, v2) return cache[v1][index_name] < cache[v2][index_name]; end);
-					else
-						sort(list, function(v1, v2) return cache[v1][index_name] > cache[v2][index_name]; end);
-					end
-				elseif sort_method == SORT_METHOD_PRICE then
-					if sort_method_seq > 0 then
-						sort(list, function(v1, v2) return (NS.query_ah_price_by_id(v1, true) or BIG_NUMBER) < (NS.query_ah_price_by_id(v2, true) or BIG_NUMBER); end);
-					else
-						sort(list, function(v1, v2) return (NS.query_ah_price_by_id(v1, true) or BIG_NUMBER) > (NS.query_ah_price_by_id(v2, true) or BIG_NUMBER); end);
-					end
-				elseif sort_method == SORT_METHOD_TIME then
-					if sort_method_seq > 0 then
-						sort(list, function(v1, v2) return (NS.query_last_cache_time_by_id(v1) or -1) < (NS.query_last_cache_time_by_id(v2) or -1); end);
-					else
-						sort(list, function(v1, v2) return (NS.query_last_cache_time_by_id(v1) or -1) > (NS.query_last_cache_time_by_id(v2) or -1); end);
-					end
-				elseif sort_method == SORT_METHOD_LEVEL then
-					if sort_method_seq > 0 then
-						sort(list, function(v1, v2) return cache[v1][index_level] < cache[v2][index_level]; end);
-					else
-						sort(list, function(v1, v2) return cache[v1][index_level] > cache[v2][index_level]; end);
-					end
+				local method = t_sort_method[sort_method];
+				if method then
+					sort(list, method[sort_method_seq > 0]);
 				end
 			end
 		end
-		local function process_search(list, cache, str)
+		function uimethod.process_search(list, cache, str)
+			local top = 0;
 			if SET.showEmpty then
 				if SET.searchNameOnly then
 					for id, info in next, cache do
 						if (info[index_name] and strfind(info[index_name], str)) then
-							tinsert(list, id);
+							top = top + 1;
+							list[top] = id;
 						end
 					end
 				else
 					for id, info in next, cache do
 						if (info[index_name] and strfind(info[index_name], str)) or strfind(id, str) then
-							tinsert(list, id);
+							top = top + 1;
+							list[top] = id;
 						end
 					end
 				end
@@ -3686,19 +3582,21 @@ do	--	MAIN
 				if SET.searchNameOnly then
 					for id, info in next, cache do
 						if (NS.query_ah_price_by_id(id, true) ~= nil) and ((info[index_name] and strfind(info[index_name], str))) then
-							tinsert(list, id);
+							top = top + 1;
+							list[top] = id;
 						end
 					end
 				else
 					for id, info in next, cache do
 						if (NS.query_ah_price_by_id(id, true) ~= nil) and ((info[index_name] and strfind(info[index_name], str)) or strfind(id, str)) then
-							tinsert(list, id);
+							top = top + 1;
+							list[top] = id;
 						end
 					end
 				end
 			end
 		end
-		local function func_update_ui()
+		function uimethod.func_update_ui()
 			if not ui:IsShown() then
 				return;
 			end
@@ -3707,7 +3605,7 @@ do	--	MAIN
 			local str = ui.searchEdit:GetText();
 			if str and str ~= "" then
 				if SET.regular_exp then
-					local result, ret = pcall(process_search, list, cache, str);
+					local result, ret = pcall(uimethod.process_search, list, cache, str);
 					if result then
 						ui:SearchEditValid();
 					else
@@ -3715,18 +3613,20 @@ do	--	MAIN
 					end
 				else
 					str = gsub(strlower(str), "[%^%$%%%.%+%-%*%?%[%]%(%)]","%%%1");
-					process_search(list, cache, str);
+					uimethod.process_search(list, cache, str);
 					ui:SearchEditValid();
 				end
 			else
+				local top = 0;
 				for id, info in next, cache do
 					if NS.query_ah_price_by_id(id, true) ~= nil or SET.showEmpty then
-						tinsert(list, id);
+						top = top + 1;
+						list[top] = id;
 					end
 				end
 				ui:SearchEditValid();
 			end
-			func_sort_list(list, SET.sort_method, SET.sort_method_seq);
+			uimethod.func_sort_list(list, SET.sort_method, SET.sort_method_seq);
 			ui.scroll:SetNumValue(#list);
 			ui.scroll:Update();
 		end
@@ -3754,7 +3654,7 @@ do	--	MAIN
 					button.seq:Hide();
 				end
 			end
-			func_update_ui();
+			uimethod.func_update_ui();
 		end
 		local function sortButton_OnShow(self)
 			if SET and SET.sort_method == method then
@@ -3846,7 +3746,7 @@ do	--	MAIN
 				ui:SetScript("OnDragStop", function(self)
 					self:StopMovingOrSizing();
 				end);
-				ui:SetScript("OnShow", func_update_ui);
+				ui:SetScript("OnShow", uimethod.func_update_ui);
 				ui:Hide();
 
 				local title = ui:CreateFontString(nil, "OVERLAY");
@@ -3878,7 +3778,7 @@ do	--	MAIN
 				showEmpty:SetHitRectInsets(0, 0, 0, 0);
 				showEmpty:SetScript("OnClick", function(self)
 					SET["showEmpty"] = self:GetChecked();
-					func_update_ui();
+					uimethod.func_update_ui();
 				end);
 				local label = ui:CreateFontString(nil, "ARTWORK", "GameFontHighlight");
 				label:SetText(L["showEmpty"]);
@@ -3887,7 +3787,7 @@ do	--	MAIN
 				ui.showEmpty = showEmpty;
 				showEmpty:SetChecked(SET.showEmpty);
 
-				NS.add_cache_callback(func_update_ui);
+				NS.add_cache_callback(uimethod.func_update_ui);
 				C_Timer.NewTicker(1.0, ticker_update_ui);
 				-- ui:SetScript("OnShow", function()
 				-- 	ui.graph:Hide();
@@ -4094,7 +3994,7 @@ do	--	MAIN
 				searchEditNameOnly:SetScript("OnLeave", button_info_OnLeave);
 				searchEditNameOnly:SetScript("OnClick", function(self)
 					SET.searchNameOnly = self:GetChecked();
-					NS.F_ScheduleDelayCall(func_update_ui);
+					NS.F_ScheduleDelayCall(uimethod.func_update_ui);
 				end);
 				ui.searchEditNameOnly = searchEditNameOnly;
 				searchEditNameOnly:SetChecked(SET.searchNameOnly);
@@ -4142,7 +4042,7 @@ do	--	MAIN
 				searchEdit:SetScript("OnEnterPressed", function(self) self:ClearFocus(); end);
 				searchEdit:SetScript("OnEscapePressed", function(self) self:ClearFocus(); end);
 				searchEdit:SetScript("OnTextChanged", function(self, isUserInput)
-					NS.F_ScheduleDelayCall(func_update_ui);
+					NS.F_ScheduleDelayCall(uimethod.func_update_ui);
 					if self:GetText() == "" then
 						searchCancel:Hide();
 					else
@@ -4293,7 +4193,7 @@ do	--	MAIN
 						end
 					end,
 				},
-				{ "regular_exp", func_update_ui, },
+				{ "regular_exp", uimethod.func_update_ui, },
 			};
 			local cbs = {  };
 			local pos_x = 0;
@@ -4473,11 +4373,11 @@ do	--	MAIN
 		function NS.notify_cache_item_info(id)
 			if num < NUM_PER_SECOND then
 				if not NS.cache_item_info(id) then
-					tinsert(todo2, id);
+					todo2[#todo2 + 1] = id;
 				end
 				num = num + 1;
 			else
-				tinsert(todo1, id);
+				todo2[#todo1 + 1] = id;
 			end
 		end
 		function NS.GET_ITEM_INFO_RECEIVED(self, event, arg1, arg2)
@@ -4641,19 +4541,21 @@ do	--	MAIN
 
 	function NS.add_cache_callback(func)
 		if type(func) == 'function' then
-			for i = #_callback_after_cache, 1, -1 do
+			for i = _num_callback_after_cache, 1, -1 do
 				if _callback_after_cache[i] == func then
 					return;
 				end
 			end
-			tinsert(_callback_after_cache, func);
+			_num_callback_after_cache = _num_callback_after_cache + 1;
+			_callback_after_cache[_num_callback_after_cache] = func;
 		end
 	end
 	function NS.remove_cache_callback(func)
 		if type(func) == 'function' then
-			for i = #_callback_after_cache, 1, -1 do
+			for i = _num_callback_after_cache, 1, -1 do
 				if _callback_after_cache[i] == func then
 					tremove(_callback_after_cache, i);
+					_num_callback_after_cache = _num_callback_after_cache - 1;
 				end
 			end
 		end
@@ -4687,6 +4589,7 @@ do	--	INITIALIZE
 	function NS.PLAYER_ENTERING_WORLD()
 		_EventHandler:UnregisterEvent("PLAYER_ENTERING_WORLD");
 		do	-- initialze saved_var
+			local alaTradeSV = _G.alaTradeSV;
 			if alaTradeSV then
 				if alaTradeSV._version < 200214.0 then
 					for id, info in next, alaTradeSV.cache do
@@ -4721,15 +4624,18 @@ do	--	INITIALIZE
 					alaTradeSV.config.avoid_stuck_cost = default_set.avoid_stuck_cost;
 					alaTradeSV.config.regular_exp = default_set.regular_exp;
 				end
+				alaTradeSV.fav = alaTradeSV.fav or {  };
 				alaTradeSV.cache = alaTradeSV.cache or {  };
 				alaTradeSV.cache[PLAYER_REALM_NAME] = alaTradeSV.cache[PLAYER_REALM_NAME] or {  };
 			else
-				_G.alaTradeSV = { cache = { [PLAYER_REALM_NAME] = {  }, }, cache2 = {  }, cache3 = {  }, config = {  }, };
+				alaTradeSV = { config = {  }, fav = {  }, cache = { [PLAYER_REALM_NAME] = {  }, }, cache2 = {  }, cache3 = {  }, };
+				_G.alaTradeSV = alaTradeSV;
 			end
+			SET = alaTradeSV.config;
+			FAV = alaTradeSV.fav;
 			cache = alaTradeSV.cache[PLAYER_REALM_NAME];
 			cache2 = alaTradeSV.cache2;
 			cache3 = alaTradeSV.cache3;
-			SET = alaTradeSV.config;
 			for k, v in next, default_set do
 				if SET[k] == nil then
 					SET[k] = v;

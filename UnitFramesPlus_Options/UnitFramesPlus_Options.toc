@@ -1,9 +1,10 @@
 ## Interface: 20504
 ## Title: UnitFramesPlus Options
 ## Title-zhCN: 系统头像增强 设置
-## Title-zhTW: 系統頭像增強 設置
+## Title-zhTW: |cff4DD2FF[頭像]|r 暴雪頭像 (增強功能)-設定選項
+## Notes-zhTW: UnitFramesPlus Options |n暴雪頭像增強插件的設定選項。|n|cffffd200使用方法：|r從Esc>介面>插件>頭像-增強，進行設定。
 ## X-Repple: 界面
-## Version: 1.36.2
+## Version: 1.36.5.5-bcc
 ## Author: Isler
 ## LoadOnDemand: 1
 ## RequiredDeps: UnitFramesPlus

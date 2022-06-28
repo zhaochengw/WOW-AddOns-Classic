@@ -12,6 +12,7 @@ local _ = nil;
 
 -->		variables
 local collectgarbage = collectgarbage;
+local date = date;
 local next = next;
 local tremove = table.remove;
 local strfind = string.find;
@@ -23,6 +24,8 @@ local __db_item = __db.item;
 local __db_object = __db.object;
 local __db_refloot = __db.refloot;
 local __db_event = __db.event;
+
+local __loc = __ns.L;
 
 local __core = __ns.core;
 local __bit_check_race = __core.__bit_check_race;
@@ -232,6 +235,25 @@ local function load_extra_db()
 			chain_prev_quest[_next] = quest;
 		end
 	end
+	local __db_worldevent = __db.worldevent;
+	local __db_worldeventperiod = __db.worldeventperiod;
+	local today = date("*t");
+	local year, month, day, wday = today.year, today.month, today.day, today.wday;
+	for event, limits in next, __db_worldeventperiod do
+		local limit = limits[year] or limits["*"];
+		if limit == nil or
+			(limit[1] <= limit[3] and (month < limit[1] or month > limit[3])) or
+			(month < limit[1] and month > limit[3]) or
+			(month == limit[1] and day < limit[2]) or
+			(month == limit[3] and day > limit[4])
+		then
+		else
+			local eventquests = __db_worldevent[event];
+			for _, quest in next, eventquests do
+				blacklist_quest[quest] = nil;
+			end
+		end
+	end
 	--[=[dev]=]	if __ns.__is_dev then __ns.__performance_start('module.init.init.extra_db.faction'); end
 	-->		faction quest list
 		local key = __core._PLAYER_FACTIONGROUP == "Alliance" and "facA" or "facH";
@@ -351,8 +373,16 @@ local function load_extra_db()
 		for which, hash in next, Hash do
 			local info = EmptyInfo[which];
 			local db = __db[which];
-			for id, _ in next, hash do
-				db[id] = db[id] or info;
+			local loc = __loc[which];
+			if loc == nil then
+				for id, _ in next, hash do
+					db[id] = db[id] or info;
+				end
+			else
+				for id, _ in next, hash do
+					db[id] = db[id] or info;
+					loc[id] = loc[id] or which .. ":" .. id;
+				end
 			end
 			for id, _ in next, db do
 				if hash[id] == nil then
@@ -366,6 +396,45 @@ local function load_extra_db()
 		Hash = nil;
 		-->
 		collectgarbage('collect');
+	-->
+	-->		item-drop
+		for iid, info in next, __db_item do
+			if info.U ~= nil then
+				local throttle = false;
+				local U = info.U;
+				local O = info.O;
+				if O ~= nil then
+					for oid, r in next, O do
+						if r >= 25 then
+							throttle = true;
+							break;
+						end
+					end
+				end
+				if not throttle then
+					for uid, r in next, U do
+						if r >= 25 then
+							throttle = true;
+							break;
+						end
+					end
+				end
+				if throttle then
+					for uid, r in next, U do
+						if r <= 2 then
+							U[uid] = nil;
+						end
+					end
+					if O ~= nil then
+						for oid, r in next, O do
+							if r <= 2 then
+								O[oid] = nil;
+							end
+						end
+					end
+				end
+			end
+		end
 	-->
 	--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.extra_db.mark'); end
 end

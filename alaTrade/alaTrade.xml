@@ -5,12 +5,9 @@
     <Include file = "..\..\sharedxml\hybridscrollframe.xml"/>
     <Include file = "template.xml"/>
 -->
-    <script file = "libs\LibStub\LibStub.lua" />
-    <include file = "libs\CallbackHandler-1.0\CallbackHandler-1.0.xml" />
-    <script file = "libs\LibDataBroker-1.1\LibDataBroker-1.1.lua" />
-    <script file = "libs\LibDBIcon-1.0\LibDBIcon-1.0.lua" />
-    <include file = "libs\ala\main.xml" />
+    <include file = "Libs\Libs.xml" />
 
+    <script file = "locale.lua" />
     <script file = "alaTrade_new.lua" />
 
     <script file = "BaudAuction.lua" />

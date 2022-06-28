@@ -14,7 +14,7 @@ local _ = nil;
 	local select = select;
 	local next = next;
 	local wipe = table.wipe;
-	local strfind = string.find;
+	local strfind, gsub = string.find, string.gsub;
 	local floor, random = math.floor, math.random;
 	local bit_band = bit.band;
 	local IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown = IsShiftKeyDown, IsControlKeyDown, IsAltKeyDown;
@@ -51,6 +51,7 @@ local _ = nil;
 	local __loc_item = __loc.item;
 	local __loc_object = __loc.object;
 	local __loc_profession = __loc.profession;
+	local __loc_delprefix = __loc.delprefix;
 
 	local __core = __ns.core;
 	local _F_SafeCall = __core._F_SafeCall;
@@ -76,7 +77,6 @@ if __ns.__is_dev then
 	__ns:BuildEnv("core");
 end
 -->		MAIN
-	local show_starter, show_ender = false, false;
 	local META = {  };
 	--[[
 		[quest_id] = {
@@ -115,6 +115,7 @@ end
 		local CalcQuestColor;
 		--	setting
 		local SetQuestStarterShown, SetQuestEnderShown;
+		local SetLimitItemStarter;
 		--	setup
 		local SetupCompleted;
 	-->
@@ -288,7 +289,10 @@ end
 		__ns.CoreAddUUID = CoreAddUUID;
 		__ns.CoreSubUUID = CoreSubUUID;
 		__ns.CoreGetUUID = CoreGetUUID;
-	-->
+
+		if __ns.__is_dev then
+			__ns.CORE_UUID = UUID;
+		end	-->
 	-- __ns.__core_uuid = UUID;
 	-->		send data to ui
 		local COMMON_UUID_FLAG = {  };
@@ -535,7 +539,7 @@ end
 			if info ~= nil then
 				if info.U ~= nil then
 					for uid, _ in next, info.U do
-						AddUnit(quest, line, uid, show_coords, large_pin, false);
+						AddUnit(quest, line, uid, show_coords, large_pin, nil);
 					end
 				end
 				if info.O ~= nil then
@@ -697,6 +701,56 @@ end
 						end
 					end
 				end
+				local I = info.I;
+				if I ~= nil then
+					for index = 1, #I do
+						local info = __db_item[I[index]];
+						if info ~= nil then
+							local O = info.O;
+							if O ~= nil then
+								for oid, rate in next, O do
+									if rate > 10 or not SET.limit_item_starter_drop then
+										local info = __db_object[oid];
+										if info ~= nil then
+											PreloadCoords(info);
+											local wcoords = info.wcoords;
+											if wcoords == nil or #wcoords <= 5 or not SET.limit_item_starter_drop then
+												AddVariedNodes('object', oid, quest, which, info.coords, TEXTURE);
+											else
+												DelVariedNodes('object', oid, quest, which);
+											end
+										end
+										local name = __loc_object[oid];
+										if name ~= nil then
+											OBJ_LOOKUP[name] = oid;
+										end
+									else
+										DelVariedNodes('object', oid, quest, which);
+									end
+								end
+							end
+							local U = info.U;
+							if U ~= nil then
+								for uid, rate in next, U do
+									if rate > 10 or not SET.limit_item_starter_drop then
+										local info = __db_unit[uid];
+										if info ~= nil then
+											PreloadCoords(info);
+											local wcoords = info.wcoords;
+											if wcoords == nil or #wcoords <= 5 or not SET.limit_item_starter_drop then
+												AddVariedNodes('unit', uid, quest, which, info.coords, TEXTURE);
+											else
+												DelVariedNodes('unit', uid, quest, which);
+											end
+										end
+									else
+										DelVariedNodes('unit', uid, quest, which);
+									end
+								end
+							end
+						end
+					end
+				end
 			end
 		end
 		function DelQuester_VariedTexture(quest, info, which)
@@ -711,6 +765,26 @@ end
 				if U ~= nil then
 					for index = 1, #U do
 						DelVariedNodes('unit', U[index], quest, which);
+					end
+				end
+				local I = info.I;
+				if I ~= nil then
+					for index = 1, #I do
+						local info = __db_item[I[index]];
+						if info ~= nil then
+							local O = info.O;
+							if O ~= nil then
+								for oid, rate in next, O do
+									DelVariedNodes('object', oid, quest, which);
+								end
+							end
+							local U = info.U;
+							if U ~= nil then
+								for uid, rate in next, U do
+									DelVariedNodes('unit', uid, quest, which);
+								end
+							end
+						end
 					end
 				end
 			end
@@ -744,6 +818,11 @@ end
 					end
 					if name == "" or name == " " then
 						return false;
+					end
+					if __loc_delprefix ~= nil then
+						for _, v in next, __loc_delprefix do
+							name = gsub(name, v, "");
+						end
 					end
 					local U = obj.U;
 					if U ~= nil then
@@ -784,6 +863,11 @@ end
 					end
 					if name == "" or name == " " then
 						return false;
+					end
+					if __loc_delprefix ~= nil then
+						for _, v in next, __loc_delprefix do
+							name = gsub(name, v, "");
+						end
 					end
 					local O = obj.O;
 					if O ~= nil then
@@ -1160,19 +1244,19 @@ end
 							if meta.completed ~= completed then
 								meta.completed = completed;
 								if completed == -1 then							--	失败时，添加起始点
-									if show_starter then
+									if SET.show_quest_starter then
 										AddQuestStart(quest_id, info);
 									end
 									need_re_draw = true;
 								elseif completed == 1 then						--	成功时，添加结束点，删除起始点
 									DelQuestStart(quest_id, info);
-									if show_ender then
+									if SET.show_quest_ender then
 										AddQuestEnd(quest_id, info, IMG_INDEX.IMG_E_COMPLETED);
 									end
 									need_re_draw = true;
 								elseif completed == 0 then						--	未完成时，添加结束点，删除起始点
 									DelQuestStart(quest_id, info);
-									if show_ender then
+									if SET.show_quest_ender then
 										AddQuestEnd(quest_id, info, IMG_INDEX.IMG_E_UNCOMPLETED);
 									end
 									need_re_draw = true;
@@ -1209,7 +1293,7 @@ end
 					end
 					if info ~= nil then
 						DelQuestEnd(quest_id, info);
-						if not QUESTS_COMPLETED[quest_id] and show_starter then
+						if not QUESTS_COMPLETED[quest_id] and SET.show_quest_starter then
 							AddQuestStart(quest_id, info);
 						end
 						if info.extra ~= nil then
@@ -1333,7 +1417,7 @@ end
 							end
 						end
 					end
-					if acceptable and show_starter then
+					if acceptable and SET.show_quest_starter then
 						AddQuestStart(quest_id, info);
 					else
 						DelQuestStart(quest_id, info);
@@ -1395,9 +1479,8 @@ end
 	-->
 	-->		setting
 		function SetQuestStarterShown(shown)
-			show_starter = SET.show_quest_starter;
 			UpdateQuestGivers();
-			if show_starter then
+			if SET.show_quest_starter then
 				for quest_id, meta in next, META do
 					local info = __db_quest[quest_id];
 					if info ~= nil then
@@ -1410,11 +1493,10 @@ end
 			__eventHandler:run_on_next_tick(__ns.MapDrawNodes);
 		end
 		function SetQuestEnderShown(shown)
-			show_ender = SET.show_quest_ender;
 			for quest_id, meta in next, META do
 				local info = __db_quest[quest_id];
 				if info ~= nil then
-					if show_ender then
+					if SET.show_quest_ender then
 						if meta.completed == 1 then
 							AddQuestEnd(quest_id, info, IMG_INDEX.IMG_E_COMPLETED);
 						elseif meta.completed == 0 then
@@ -1427,10 +1509,14 @@ end
 			end
 			__eventHandler:run_on_next_tick(__ns.MapDrawNodes);
 		end
+		function SetLimitItemStarter(limit)
+			UpdateQuestGivers();
+		end
 	-->
 	-->		extern method
 		__ns.SetQuestStarterShown = SetQuestStarterShown;
 		__ns.SetQuestEnderShown = SetQuestEnderShown;
+		__ns.SetLimitItemStarter = SetLimitItemStarter;
 		--
 		__ns.UpdateQuests = UpdateQuests;
 		__ns.UpdateQuestGivers = UpdateQuestGivers;
@@ -1580,9 +1666,6 @@ end
 		__eventHandler:run_on_next_tick(UpdateQuests);
 		__eventHandler:run_on_next_tick(CalcQuestColor);
 		-- __eventHandler:run_on_next_tick(UpdateQuestGivers);
-		--
-		show_starter = SET.show_quest_starter;
-		show_ender = SET.show_quest_ender;
 	end
 -->
 

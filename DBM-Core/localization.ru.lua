@@ -201,7 +201,7 @@ L.PIZZA_CONFIRM_IGNORE				= "Игнорировать таймеры " .. L.DBM 
 L.PIZZA_ERROR_USAGE					= "Использование: /dbm [broadcast] timer <time> <text>. <time> должно быть больше 3."
 
 --L.MINIMAP_TOOLTIP_HEADER (Same as English locales)
-L.MINIMAP_TOOLTIP_FOOTER			= "[Shift+ЛКМ], чтобы переместить"
+L.MINIMAP_TOOLTIP_FOOTER			= "[Shift+ЛКМ] - переместить значок " .. L.DBM
 
 L.RANGECHECK_HEADER					= "Проверка дистанции (%dм)"
 L.RANGECHECK_HEADERT				= "Проверка дистанции (%dм-%dP)"
@@ -472,7 +472,12 @@ L.AUTO_TIMER_OPTIONS.adds			= "Отсчёт времени до прибытия
 L.AUTO_TIMER_OPTIONS.addscustom		= "Отсчёт времени до прибытия аддов"
 L.AUTO_TIMER_OPTIONS.roleplay		= "Отсчёт времени для ролевой игры"
 
-L.AUTO_ICONS_OPTION_TARGETS			= "Устанавливать метки на цели заклинания $spell:%s"
+L.AUTO_ICONS_OPTION_TARGETS			= "Устанавливать метки на цели $spell:%s"
+L.AUTO_ICONS_OPTION_TARGETS_MELEE_A		= "Устанавливать метки на цели $spell:%s с приоритетом ближнего боя и в алфавитном порядке"
+L.AUTO_ICONS_OPTION_TARGETS_MELEE_R		= "Устанавливать метки на цели $spell:%s с приоритетом ближнего боя и рейдового состава"
+L.AUTO_ICONS_OPTION_TARGETS_RANGED_A	= "Устанавливать метки на цели $spell:%s с приоритетом дальнего боя и в алфавитном порядке"
+L.AUTO_ICONS_OPTION_TARGETS_RANGED_R	= "Устанавливать метки на цели $spell:%s с приоритетом дальнего боя и рейдового состава"
+L.AUTO_ICONS_OPTION_TARGETS_ALPHA		= "Устанавливать метки на цели $spell:%s в алфавитном порядке"
 L.AUTO_ICONS_OPTION_NPCS			= "Устанавливать метки на $spell:%s"
 L.AUTO_ICONS_OPTION_CONFLICT		= " (Может конфликтовать с другими параметрами)"
 L.AUTO_ARROW_OPTION_TEXT			= "Показывать стрелку " .. L.DBM .. " к цели, на которой $spell:%s"
@@ -564,8 +569,8 @@ L.DUR_ENTRY							= "%s: прочность [%d процентов] / экипи
 L.LAG_FOOTER						= "Нет ответа: %s"
 
 --LDB
-L.LDB_TOOLTIP_HELP1					= "[ЛКМ], чтобы открыть " .. L.DBM
-L.LDB_TOOLTIP_HELP2					= "Alt+ПКМ для переключения в беззвучный режим"
+L.LDB_TOOLTIP_HELP1					= "[ЛКМ] - открыть " .. L.DBM
+L.LDB_TOOLTIP_HELP2					= "[Alt+ПКМ] - переключить в беззвучный режим"
 L.SILENTMODE_IS						= "Тихий режим "
 
 L.WORLD_BUFFS.hordeOny			= "Народы Орды, жители Оргриммара! Приходите, собирайтесь и поздравляйте героя Орды"

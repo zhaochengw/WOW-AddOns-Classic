@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("MordreshFireEye", "DBM-Party-Classic", 10)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("@file-date-integer@")
+mod:SetRevision("20220511043833")
 mod:SetCreatureID(7357)
 --mod:SetEncounterID(585)
 

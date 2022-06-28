@@ -332,19 +332,24 @@ function UnitFramesPlus_ToPMAttribute()
 end
 
 function UnitFramesPlus_PartyTargetPositionSet()
-    local xOffset, yOffset;
+    local xOffset, yOffset, yOffsetAdjust;
+	if IsAddOnLoaded("EasyFrames") then
+		yOffsetAdjust = -10;
+	else
+		yOffsetAdjust = 0;
+	end
     if UnitFramesPlusDB["partytarget"]["lite"] == 1 then
         xOffset = 151;
         if UnitFramesPlusDB["party"]["hp"] == 1 and UnitFramesPlusDB["party"]["hppct"] == 0 then
             xOffset = 211;
         end
-        yOffset = -8;
+        yOffset = yOffsetAdjust - 8;
     else
         xOffset = 151+50;
         if UnitFramesPlusDB["party"]["hp"] == 1 and UnitFramesPlusDB["party"]["hppct"] == 0 then
             xOffset = 231+50;
         end
-        yOffset = -5;
+        yOffset = yOffsetAdjust - 5;
     end
     for id = 1, 4, 1 do
         _G["UFP_PartyTarget"..id]:ClearAllPoints();

@@ -1405,39 +1405,6 @@ do
             },
 
             {type = "breakline"},
-            {type = "label", get = function() return "Arena Team Color" end, text_template = subSectionTitleTextTemplate},
-			{--team 1 color
-                type = "color",
-                get = function()
-                    local r, g, b = unpack(Details.class_colors.ARENA_GREEN)
-                    return {r, g, b, 1}
-                end,
-                set = function (self, r, g, b, a)
-                    Details.class_colors.ARENA_GREEN[1] = r
-                    Details.class_colors.ARENA_GREEN[2] = g
-                    Details.class_colors.ARENA_GREEN[3] = b
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_COLOR"],
-                desc = "Arena team color",
-            },
-			{--team 2 color
-                type = "color",
-                get = function()
-                    local r, g, b = unpack(Details.class_colors.ARENA_YELLOW)
-                    return {r, g, b, 1}
-                end,
-                set = function (self, r, g, b, a)
-                    Details.class_colors.ARENA_YELLOW[1] = r
-                    Details.class_colors.ARENA_YELLOW[2] = g
-                    Details.class_colors.ARENA_YELLOW[3] = b
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_COLOR"],
-                desc = "Arena team color",
-            },
-
-            {type = "blank"},
             {type = "label", get = function() return Loc ["STRING_OPTIONS_TEXT_ROWICONS_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
 
             {--select icon file
@@ -1486,7 +1453,7 @@ do
                 desc = Loc ["STRING_CUSTOM_TEXTURE_GUIDE"],
             },
 
-            {--bar start at
+            {--bar start after icon
                 type = "toggle",
                 get = function() return currentInstance.row_info.start_after_icon end,
                 set = function (self, fixedparam, value)
@@ -1497,61 +1464,83 @@ do
                 desc = Loc ["STRING_OPTIONS_BARSTART_DESC"],
             },
 
-            {type = "blank"},
-            {type = "label", get = function() return Loc ["STRING_OPTIONS_BAR_BACKDROP_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
-
-            {--border enabled
-                type = "toggle",
-                get = function() return currentInstance.row_info.backdrop.enabled end,
-                set = function (self, fixedparam, value)
-                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", value)
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_ENABLED"],
-                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_ENABLED_DESC"],
-            },
-
-			{--border color
-                type = "color",
-                get = function()
-                    local r, g, b, a = unpack(currentInstance.row_info.backdrop.color)
-                    return {r, g, b, a}
-                end,
-                set = function (self, r, g, b, a)
-                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, nil, {r, g, b, a})
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_COLOR"],
-                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_COLOR_DESC"],
-            },
-
-            {--border size
+            {--icon size offset
                 type = "range",
-                get = function() return tonumber (currentInstance.row_info.backdrop.size) end,
+                get = function() return tonumber (currentInstance.row_info.icon_size_offset) end,
                 set = function (self, fixedparam, value)
-                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, value)
+                    editInstanceSetting(currentInstance, "SetBarSettings", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, value)
                     afterUpdate()
                 end,
-                min = 0,
-                max = 10,
-                step = 1,
+                min = -20,
+                max = 20,
                 usedecimals = true,
-                name = Loc ["STRING_OPTIONS_SIZE"],
-                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_SIZE_DESC"],
-            },
-
-            {--border uses class colors
-                type = "toggle",
-                get = function() return currentInstance.row_info.backdrop.use_class_colors end,
-                set = function (self, fixedparam, value)
-                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, nil, nil, value)
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS"],
-                desc = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS_DESC"],
+                step = 0.5,
+                name = "Icon Size Offset", --localize-me
+                desc = "Icon Size Offset",
+                thumbscale = 2.2,
             },
 
             {type = "blank"},
+
+            {--show faction icon
+                type = "toggle",
+                get = function() return currentInstance.row_info.show_faction_icon end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarFactionIconSettings", value)
+                    afterUpdate()
+                end,
+                name = "Show Faction Icon", --localize-me
+                desc = "When showing a player from the opposite faction, show the faction icon.",
+            },
+
+            {--faction icon size offset
+                type = "range",
+                get = function() return tonumber (currentInstance.row_info.faction_icon_size_offset) end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarFactionIconSettings", nil, value)
+                    afterUpdate()
+                end,
+                min = -20,
+                max = 20,
+                usedecimals = true,
+                step = 0.5,
+                name = "Faction Icon Size Offset", --localize-me
+                desc = "Faction Icon Size Offset",
+                thumbscale = 2.2,
+            },
+
+            {type = "blank"},
+
+            {--show role icon
+                type = "toggle",
+                get = function() return currentInstance.row_info.show_arena_role_icon end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarArenaRoleIconSettings", value)
+                    afterUpdate()
+                end,
+                name = "Show Arena Role Icon", --localize-me
+                desc = "When showing a player from arena, show the role icon.",
+            },
+
+            {--role icon size offset
+                type = "range",
+                get = function() return tonumber (currentInstance.row_info.arena_role_icon_size_offset) end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarArenaRoleIconSettings", nil, value)
+                    afterUpdate()
+                end,
+                min = -20,
+                max = 20,
+                usedecimals = true,
+                step = 0.5,
+                name = "Arena Role Icon Size Offset", --localize-me
+                desc = "Arena Role Icon Size Offset",
+                thumbscale = 2.2,
+            },
+
+
+            {type = "blank"},
+            --{type = "breakline"},
             {type = "label", get = function() return Loc["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS"] end, text_template = subSectionTitleTextTemplate},
 
             {--inline text enabled
@@ -1578,6 +1567,23 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN"],
                 desc = Loc ["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN_DESC"],
+            },
+
+
+            {--name size offset
+                type = "range",
+                get = function() return tonumber(currentInstance.fontstrings_text_limit_offset) end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "fontstrings_text_limit_offset", value)
+                    editInstanceSetting(currentInstance, "InstanceRefreshRows")
+                    Details.options.RefreshInstances(currentInstance)
+                    afterUpdate()
+                end,
+                min = -30,
+                max = 30,
+                step = 1,
+                name = "Unit Name Size Offset",
+                desc = "Unit Name Size Offset",
             },
 
             {--lineText2 (left, usuali is the 'done' amount)
@@ -1626,6 +1632,7 @@ do
             },
 
             {type = "breakline"},
+
             {type = "label", get = function() return Loc ["STRING_OPTIONS_TOTALBAR_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
 
             {--total bar enabled
@@ -1661,6 +1668,94 @@ do
                 end,
                 name = Loc ["STRING_COLOR"],
                 desc = Loc ["STRING_OPTIONS_SHOW_TOTALBAR_COLOR_DESC"],
+            },
+
+            {type = "blank"},
+            {type = "label", get = function() return "Arena Team Color" end, text_template = subSectionTitleTextTemplate}, --localize-me
+			{--team 1 color
+                type = "color",
+                get = function()
+                    local r, g, b = unpack(Details.class_colors.ARENA_GREEN)
+                    return {r, g, b, 1}
+                end,
+                set = function (self, r, g, b, a)
+                    Details.class_colors.ARENA_GREEN[1] = r
+                    Details.class_colors.ARENA_GREEN[2] = g
+                    Details.class_colors.ARENA_GREEN[3] = b
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_COLOR"],
+                desc = "Arena team color", --localize-me
+            },
+			{--team 2 color
+                type = "color",
+                get = function()
+                    local r, g, b = unpack(Details.class_colors.ARENA_YELLOW)
+                    return {r, g, b, 1}
+                end,
+                set = function (self, r, g, b, a)
+                    Details.class_colors.ARENA_YELLOW[1] = r
+                    Details.class_colors.ARENA_YELLOW[2] = g
+                    Details.class_colors.ARENA_YELLOW[3] = b
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_COLOR"],
+                desc = "Arena team color", --localize-me
+            },
+
+            {type = "blank"},
+            {type = "label", get = function() return Loc ["STRING_OPTIONS_BAR_BACKDROP_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
+
+            {--border enabled
+                type = "toggle",
+                get = function() return currentInstance.row_info.backdrop.enabled end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", value)
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_ENABLED"],
+                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_ENABLED_DESC"],
+            },
+
+			{--border color
+                type = "color",
+                get = function()
+                    local r, g, b, a = unpack(currentInstance.row_info.backdrop.color)
+                    return {r, g, b, a}
+                end,
+                set = function (self, r, g, b, a)
+                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, nil, {r, g, b, a})
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_COLOR"],
+                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_COLOR_DESC"],
+            },
+
+            {--border size
+                type = "range",
+                get = function() return tonumber (currentInstance.row_info.backdrop.size) end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, value)
+                    afterUpdate()
+                end,
+                min = 0,
+                max = 10,
+                step = 1,
+                usedecimals = true,
+                name = Loc ["STRING_OPTIONS_SIZE"],
+                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_SIZE_DESC"],
+                thumbscale = 1.5,
+            },
+
+            {--border uses class colors
+                type = "toggle",
+                get = function() return currentInstance.row_info.backdrop.use_class_colors end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, nil, nil, value)
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS"],
+                desc = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS_DESC"],
             },
         }
 
@@ -5230,9 +5325,10 @@ do
 			Loc["STRING_OPTIONS_COMBAT_ALPHA_7"],
 			Loc["STRING_OPTIONS_COMBAT_ALPHA_8"],
 			Loc["STRING_OPTIONS_COMBAT_ALPHA_9"],
+			_G.ARENA or "_G.ARENA",
 		}
 
-		local optionsOrder = {3, 4, 5, 6, 7, 8, 1, 2}
+		local optionsOrder = {3, 4, 5, 6, 9, 7, 8, 1, 2}
 
 		local header1Label = _G.DetailsFramework:CreateLabel(sectionFrame, Loc["STRING_CONTEXT"])
 		local header2Label = _G.DetailsFramework:CreateLabel(sectionFrame, Loc["STRING_ENABLED"])
@@ -5270,27 +5366,28 @@ do
 			local line = _G.CreateFrame("frame", nil, sectionFrame,"BackdropTemplate")
 			line:SetSize(300, 22)
 			line:SetPoint("topleft", sectionFrame, "topleft", right_start_at, yyy + ((id) * -23) + 4)
-			_G.DetailsFramework:ApplyStandardBackdrop(line)
+			DetailsFramework:ApplyStandardBackdrop(line)
 
-			local contextLabel = _G.DetailsFramework:CreateLabel(line, typeCombatAlpha[i])
+			local contextLabel = DetailsFramework:CreateLabel(line, typeCombatAlpha[i])
 			contextLabel:SetPoint("left", line, "left", 2, 0)
 
-			local enabledCheckbox = _G.DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
+			local enabledCheckbox = DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
 			enabledCheckbox:SetPoint("left", line, "left", 118, 0)
 			enabledCheckbox:SetAsCheckBox()
 			enabledCheckbox.OnSwitch = onEnableHideContext
 			enabledCheckbox:SetFixedParameter(i)
 
-			local reverseCheckbox = _G.DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
+			local reverseCheckbox = DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
 			reverseCheckbox:SetPoint("left", line, "left", 140, 0)
 			reverseCheckbox:SetAsCheckBox()
 			reverseCheckbox.OnSwitch = onInverseValue
 			reverseCheckbox:SetFixedParameter(i)
 
-			local alphaSlider = _G.DetailsFramework:CreateSlider(line, 138, 20, 0, 100, 1, 100, false, nil, nil, nil, options_slider_template)
+			local alphaSlider = DetailsFramework:CreateSlider(line, 138, 20, 0, 100, 1, 100, false, nil, nil, nil, options_slider_template)
 			alphaSlider:SetPoint("left", line, "left", 162, 0)
 			alphaSlider:SetHook("OnValueChanged", onAlphaChanged)
 			alphaSlider:SetFixedParameter(i)
+            alphaSlider.thumb:SetWidth(32)
 
 			line.contextLabel = contextLabel
 			line.enabledCheckbox = enabledCheckbox

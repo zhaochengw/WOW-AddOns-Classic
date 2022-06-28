@@ -94,7 +94,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetMiscLocalization{
-	Nova			= "заклинание Кольцо Тьмы на (.+)%",
+	Nova			= "заклинание Кольцо Тьмы на (.+)",
 	Conflag			= "направляет \"Воспламенение\" на (.+)",
 	Sacrolash		= "Леди Сакролаш",
 	Alythess		= "Верховная чернокнижница Алитесса"

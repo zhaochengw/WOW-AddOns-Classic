@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Hakkar", "DBM-ZG", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("@file-date-integer@")
+mod:SetRevision("20220511043833")
 mod:SetCreatureID(14834)
 mod:SetEncounterID(793)
 mod:SetHotfixNoticeRev(20200419000000)--2020, 04, 19

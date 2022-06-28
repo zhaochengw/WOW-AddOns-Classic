@@ -5,7 +5,7 @@
 ## Author: Michael
 ## Dependencies: Grid2
 ## OptionalDeps: LibDataBroker-1.1
-## Version: 2.0.43
+## Version: 2.0.44
 ## X-ReleaseDate: "$Date: 2011-04-14 23:42:17 -0700 (Tue, 14 Apr 2011) $"
 ## X-Category: Databroker
 ## X-Website: none
@@ -20,4 +20,4 @@ Grid2LDB.lua
 ## Title: |cff880303[163UI]|r Grid2 |cd3ff7d0aLDB|r
 ## Title-zhCN: |cff880303[有爱]|r Grid2 团队框架数据加载
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220512135655
+## X-163UI-Version: 20220609154744

@@ -1,5 +1,5 @@
 ## Interface: 20504
-## X-Min-Interface: 90200
+## X-Min-Interface: 90205
 ## X-Min-Interface-Classic: 11403
 ## X-Min-Interface-BCC: 20504
 
@@ -20,7 +20,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: b1468f5
+## Version: 504201b
 ## X-Website: https://deadlybossmods.com
 
 Libs\LibStub\LibStub.lua
@@ -84,6 +84,3 @@ modules\SpecRole.lua
 modules\UpdateReminder.lua
 
 modules\objects\Localization.lua
-
-## X-Vendor: NetEase
-## X-163UI-Version: 20220520145709

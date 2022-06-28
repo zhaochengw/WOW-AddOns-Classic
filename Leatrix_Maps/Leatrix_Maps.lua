@@ -1,6 +1,6 @@
 ﻿
 	----------------------------------------------------------------------
-	-- 	Leatrix Maps 2.5.107 (25th May 2022)
+	-- 	Leatrix Maps 2.5.111 (22nd June 2022)
 	----------------------------------------------------------------------
 
 	-- 10:Func, 20:Comm, 30:Evnt, 40:Panl
@@ -12,7 +12,7 @@
 	local LeaMapsLC, LeaMapsCB, LeaDropList, LeaConfigList = {}, {}, {}, {}
 
 	-- Version
-	LeaMapsLC["AddonVer"] = "2.5.107"
+	LeaMapsLC["AddonVer"] = "2.5.111"
 
 	-- Get locale table
 	local void, Leatrix_Maps = ...
@@ -29,6 +29,9 @@
 			return
 		end
 	end
+
+	-- Set bindings translations
+	_G.BINDING_NAME_LEATRIX_MAPS_GLOBAL_TOGGLE = L["Toggle panel"]
 
 	----------------------------------------------------------------------
 	-- L00: Leatrix Maps
@@ -1598,6 +1601,7 @@
 					{"Spirit", 42.9, 38.0, L["Spirit Healer"], nil, spTex, nil, nil},
 					{"Arrow", 80.7, 34.2, L["Western Plagielands"], nil, arTex, nil, nil, nil, nil, nil, 0, 1422},
 					{"Arrow", 51.8, 68.8, L["Hillsbrad Foothills"], nil, arTex, nil, nil, nil, nil, nil, 3, 1424},
+					{"Arrow", 81.7, 77.5, L["Hillsbrad Foothills"], L["Ravenholdt Manor"], arTex, nil, nil, nil, nil, nil, 2.2, 1424},
 				},
 				--[[Arathi Highlands]] [1417] = {
 					{"FlightA", 45.8, 46.1, L["Refuge Pointe"] .. ", " .. L["Arathi Highlands"], nil, tATex, nil, nil},
@@ -1672,6 +1676,7 @@
 					{"Arrow", 54.8, 11.3, L["Alterac Mountains"], nil, arTex, nil, nil, nil, nil, nil, 0, 1416},
 					{"Arrow", 13.7, 46.2, L["Silverpine Forest"], nil, arTex, nil, nil, nil, nil, nil, 1.5, 1421},
 					{"Arrow", 76.0, 51.8, L["Arathi Highlands"], nil, arTex, nil, nil, nil, nil, nil, 4.1, 1417},
+					{"Arrow", 75.5, 24.6, L["Alterac Mountains"], L["Ravenholdt Manor"], arTex, nil, nil, nil, nil, nil, 0.0, 1416},
 				},
 				--[[The Hinterlands]] [1425] = {
 					{"FlightA", 11.1, 46.2, L["Aerie Peak"] .. ", " .. L["The Hinterlands"], nil, tATex, nil, nil},

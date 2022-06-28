@@ -692,6 +692,24 @@ end
 		local num = #list;
 		--		1hr limit
 		local num1hr = 0;
+		__ns.LineStart();
+		for index = num, 1, -1 do
+			local val = list[index];
+			if val[1] + ONE_HOUR > now then
+				if val[2] == 'party' or (val[2] == 'raid' and val[3] == 20) then
+					__ns.LineAddText(__ns.time_to_stamp("\124cffff0000[%M:%S]\124r", val[1] - now + ONE_HOUR));
+					num1hr = num1hr + 1;
+					if num1hr >= 5 then
+						break;
+					end
+				end
+			else
+				break;
+			end
+		end
+		__ns.LineEnd();
+		--[==[
+		local num1hr = 0;
 		local num1hrStart = num + 1;
 		for index = num, 1, -1 do
 			local info = list[index];
@@ -736,6 +754,7 @@ end
 				__ns.LineSetText(index, __ns.time_to_stamp("\124cffff0000[%M:%S]\124r", info[1] - now + ONE_HOUR));
 			end
 		end
+		--]==]
 		--		24hrs limit
 		if IsClassic then
 			local num24hrs = 0;

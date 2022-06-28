@@ -12,7 +12,7 @@
 ## Author: |cff00ff00ALA|r @ |cffff0000163UI|r
 ## Author-zhCN: |cff00ff00ALA|r @ |cffff0000网易有爱|r
 ## Author-zhTW: |cff00ff00ALA|r @ |cffff0000网易有爱|r
-## Version: 205r.220525
+## Version: 205r.220615
 ## GitHub: https://github.com/alexqu0822/CodexLite
 
 main.xml
@@ -21,4 +21,4 @@ main.xml
 ## Title-zhCN: |cff880303[有爱]|r CodexLite有爱任务辅助
 ## Title-zhTW: |cff880303[有愛]|r CodexLite有愛任務輔助
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220526154328
+## X-163UI-Version: 20220623152351

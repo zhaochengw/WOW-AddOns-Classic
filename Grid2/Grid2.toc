@@ -1,7 +1,7 @@
 ## Interface: 20504
 ## Title: Grid2
 ## Author: Pastamancer & Maia, Jerry, Toadkiller
-## Version: 2.0.43
+## Version: 2.0.44
 ## Notes: A modular, lightweight and screen-estate saving grid of party/raid unit frames
 ## Notes-esES: Marcos de unidades de raid compactos y ligeros.
 ## Notes-ruRU: Модульный, легкий, отображающий на экране область группы/рейда в виде сетки.
@@ -94,4 +94,4 @@ modules\StatusThreat.lua
 ## Title: |cff880303[163UI]|r Grid2
 ## Title-zhCN: |cff880303[有爱]|r Grid2 团队框架
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220512135655
+## X-163UI-Version: 20220609154744

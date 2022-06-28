@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Aran", "DBM-Karazhan")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("@file-date-integer@")
+mod:SetRevision("20220511043833")
 mod:SetCreatureID(16524)
 mod:SetEncounterID(658, 2450)
 mod:SetModelID(16621)

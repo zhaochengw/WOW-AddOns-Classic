@@ -188,6 +188,7 @@ _detalhes.instance_defaults = {
 		--use one fontstring for each value in the lines, e.g. one fontstring to damage done, another fontstring to dps and another to percent amount
 		use_multi_fontstrings = true,
 		use_auto_align_multi_fontstrings = true,
+		fontstrings_text_limit_offset = -10,
 		fontstrings_text4_anchor = 0,
 		fontstrings_text3_anchor = 38,
 		fontstrings_text2_anchor = 73,
@@ -274,6 +275,7 @@ _detalhes.instance_defaults = {
 			--space between bars
 				space = {left = 3, right = -5, between = 1},
 			--icon file
+				icon_size_offset = 0,
 				icon_file = [[Interface\AddOns\Details\images\classes_small]],
 				no_icon = false,
 				start_after_icon = true,
@@ -303,6 +305,12 @@ _detalhes.instance_defaults = {
 			--show spec icons
 				use_spec_icons = false,
 				spec_file = [[Interface\AddOns\Details\images\spec_icons_normal]],
+			--show faction icon
+				show_faction_icon = true,
+				faction_icon_size_offset = -10,
+			--show arena role icon
+				show_arena_role_icon = false,
+				arena_role_icon_size_offset = -10,
 		},
 	--instance window color
 		color = {1, 1, 1, 1},

@@ -67,7 +67,7 @@ ToTFrame.Highlight:SetAlpha(0);
 
 -- ToTFrame.Name = ToTFrame:CreateFontString("UFP_ToTName", "ARTWORK", "GameFontNormalSmall");
 ToTFrame.Name = ToTFrame:CreateFontString("UFP_ToTName", "ARTWORK");
-ToTFrame.Name:SetFont(GameFontNormal:GetFont(), 14, "OUTLINE");
+ToTFrame.Name:SetFont(GameFontNormal:GetFont(), 12, "OUTLINE");
 ToTFrame.Name:SetTextColor(1, 0.75, 0);
 ToTFrame.Name:ClearAllPoints();
 ToTFrame.Name:SetPoint("BOTTOMLEFT", ToTFrame, "BOTTOMLEFT", 36, 39);
@@ -497,7 +497,7 @@ ToToTFrame.Highlight:SetVertexColor(1, 0.82, 0);
 ToToTFrame.Highlight:SetAlpha(0);
 
 ToToTFrame.Name = ToToTFrame:CreateFontString("UFP_ToToTName", "ARTWORK");
-ToToTFrame.Name:SetFont(GameFontNormal:GetFont(), 14, "OUTLINE");
+ToToTFrame.Name:SetFont(GameFontNormal:GetFont(), 12, "OUTLINE");
 ToToTFrame.Name:SetTextColor(1, 0.75, 0);
 ToToTFrame.Name:ClearAllPoints();
 ToToTFrame.Name:SetPoint("BOTTOMLEFT", ToToTFrame, "BOTTOMLEFT", 36, 39);

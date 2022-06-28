@@ -105,8 +105,7 @@ end
 	local wm_map = WorldMapFrame:GetMapID();
 	local mm_map = C_Map.GetBestMapForUnit('player');
 	local map_canvas_scale = mapCanvas:GetScale();
-	local pin_size, large_size, varied_size = nil, nil, nil;
-	local minimap_node_inset = false;
+	local wm_pin_size, wm_large_size, wm_varied_size = nil, nil, nil;
 	local hide_node_modifier = IsShiftKeyDown;
 	local META_COMMON = {  };				-->		[map] =	{ [uuid] = { 1{ coord }, 2{ pin }, 3nil, 4nil, }, }
 	local META_LARGE = {  };				-->		[map] =	{ [uuid] = { 1{ coord }, 2{ pin }, 3nil, 4nil, }, }
@@ -216,7 +215,7 @@ end
 			pin:Hide();
 		end
 		function AddWorldMapCommonPin(x, y, color3)
-			local pin = NewWorldMapPin(__const.TAG_WM_COMMON, pool_worldmap_common_pin_inuse, pool_worldmap_common_pin_unused, pin_size, RelWorldMapCommonPin, CommonPinFrameLevel);
+			local pin = NewWorldMapPin(__const.TAG_WM_COMMON, pool_worldmap_common_pin_inuse, pool_worldmap_common_pin_unused, wm_pin_size, RelWorldMapCommonPin, CommonPinFrameLevel);
 			--		MapCanvasPinMixin:SetPosition(x, y)
 			--	>>	MapCanvasMixin:SetPinPosition(pin, x, y)
 			--	>>	MapCanvasMixin:ApplyPinPosition(pin, x, y) mainly implemented below
@@ -236,7 +235,7 @@ end
 			pin:Hide();
 		end
 		function AddWorldMapLargePin(x, y, color3)
-			local pin = NewWorldMapPin(__const.TAG_WM_LARGE, pool_worldmap_large_pin_inuse, pool_worldmap_large_pin_unused, large_size, RelWorldMapLargePin, LargePinFrameLevel);
+			local pin = NewWorldMapPin(__const.TAG_WM_LARGE, pool_worldmap_large_pin_inuse, pool_worldmap_large_pin_unused, wm_large_size, RelWorldMapLargePin, LargePinFrameLevel);
 			--		MapCanvasPinMixin:SetPosition(x, y)
 			--	>>	MapCanvasMixin:SetPinPosition(pin, x, y)
 			--	>>	MapCanvasMixin:ApplyPinPosition(pin, x, y) mainly implemented below
@@ -257,7 +256,7 @@ end
 		end
 		function AddWorldMapVariedPin(x, y, color3, TEXTURE)
 			local texture = IMG_LIST[TEXTURE] or IMG_LIST[IMG_INDEX.IMG_DEF];
-			local pin = NewWorldMapPin(__const.TAG_WM_VARIED, pool_worldmap_varied_pin_inuse, pool_worldmap_varied_pin_unused, varied_size, RelWorldMapVariedPin, texture[7]);
+			local pin = NewWorldMapPin(__const.TAG_WM_VARIED, pool_worldmap_varied_pin_inuse, pool_worldmap_varied_pin_unused, wm_varied_size, RelWorldMapVariedPin, texture[7]);
 			pin:SetFrameLevel(texture[7]);
 			--		MapCanvasPinMixin:SetPosition(x, y)
 			--	>>	MapCanvasMixin:SetPinPosition(pin, x, y)
@@ -278,13 +277,13 @@ end
 		--
 		function IterateWorldMapPinSetSize()
 			for pin, _ in next, pool_worldmap_common_pin_inuse do
-				pin:SetSize(pin_size, pin_size);
+				pin:SetSize(wm_pin_size, wm_pin_size);
 			end
 			for pin, _ in next, pool_worldmap_large_pin_inuse do
-				pin:SetSize(large_size, large_size);
+				pin:SetSize(wm_large_size, wm_large_size);
 			end
 			for pin, _ in next, pool_worldmap_varied_pin_inuse do
-				pin:SetSize(varied_size, varied_size);
+				pin:SetSize(wm_varied_size, wm_varied_size);
 			end
 		end
 		--
@@ -1071,7 +1070,7 @@ end
 		end
 		function Minimap_DrawNodesMap(map)
 			__ns._F_devDebugProfileStart('module.map.Minimap_DrawNodesMap');
-			local mm_check_range = minimap_node_inset and mm_hsize * 0.9 or mm_hsize;
+			local mm_check_range = SET.minimap_node_inset and mm_hsize * 0.9 or mm_hsize;
 			local num_changed = 0;
 			local meta = META_COMMON[map];
 			if meta ~= nil then
@@ -1171,7 +1170,7 @@ end
 								local pin = MM_VARIED_PINS[coord];
 								local texture = IMG_LIST[TEXTURE] or IMG_LIST[IMG_INDEX.IMG_DEF];
 								if pin == nil then
-									pin = AddMinimapPin(__const.TAG_MM_VARIED, texture[1], texture[2] or color3[1], texture[3] or color3[2], texture[4] or color3[3], SET.pin_size, texture[7]);
+									pin = AddMinimapPin(__const.TAG_MM_VARIED, texture[1], texture[2] or color3[1], texture[3] or color3[2], texture[4] or color3[3], SET.varied_size, texture[7]);
 									MM_VARIED_PINS[coord] = pin;
 									num_changed = num_changed + 1;
 								else
@@ -1500,47 +1499,47 @@ end
 		end
 		function SetCommonPinSize()
 			--	pool_worldmap_common_pin_inuse, pool_worldmap_common_pin_unused, MM_COMMON_PINS
-			pin_size = SET.pin_size;
+			wm_pin_size = SET.pin_size;
 			for _, pin in next, MM_COMMON_PINS do
-				pin:SetSize(pin_size, pin_size);
+				pin:SetSize(wm_pin_size, wm_pin_size);
 			end
 			local scale = map_canvas_scale;
 			local pin_scale_max = SET.pin_scale_max;
 			if scale > pin_scale_max then
-				pin_size = pin_size * pin_scale_max / scale;
+				wm_pin_size = wm_pin_size * pin_scale_max / scale;
 			end
 			for pin, _ in next, pool_worldmap_common_pin_inuse do
-				pin:SetSize(pin_size, pin_size);
+				pin:SetSize(wm_pin_size, wm_pin_size);
 			end
 		end
 		function SetLargePinSize()
 			--	pool_worldmap_large_pin_inuse, pool_worldmap_large_pin_unused, MM_LARGE_PINS
-			large_size = SET.large_size;
+			wm_large_size = SET.large_size;
 			for _, pin in next, MM_LARGE_PINS do
-				pin:SetSize(large_size, large_size);
+				pin:SetSize(wm_large_size, wm_large_size);
 			end
 			local scale = map_canvas_scale;
 			local pin_scale_max = SET.pin_scale_max;
 			if scale > pin_scale_max then
-				large_size = large_size * pin_scale_max / scale;
+				wm_large_size = wm_large_size * pin_scale_max / scale;
 			end
 			for pin, _ in next, pool_worldmap_large_pin_inuse do
-				pin:SetSize(large_size, large_size);
+				pin:SetSize(wm_large_size, wm_large_size);
 			end
 		end
 		function SetVariedPinSize()
 			--	pool_worldmap_varied_pin_inuse, pool_worldmap_varied_pin_unused, MM_VARIED_PINS
-			varied_size = SET.varied_size;
+			wm_varied_size = SET.varied_size;
 			for _, pin in next, MM_VARIED_PINS do
-				pin:SetSize(varied_size, varied_size);
+				pin:SetSize(wm_varied_size, wm_varied_size);
 			end
 			local scale = map_canvas_scale;
 			local pin_scale_max = SET.pin_scale_max;
 			if scale > pin_scale_max then
-				varied_size = varied_size * pin_scale_max / scale;
+				wm_varied_size = wm_varied_size * pin_scale_max / scale;
 			end
 			for pin, _ in next, pool_worldmap_varied_pin_inuse do
-				pin:SetSize(varied_size, varied_size);
+				pin:SetSize(wm_varied_size, wm_varied_size);
 			end
 		end
 		function SetHideNodeModifier()
@@ -1554,7 +1553,6 @@ end
 			end
 		end
 		function SetMinimapNodeInset()
-			minimap_node_inset = SET.minimap_node_inset;
 			Minimap_HideNodes();
 			Minimap_DrawNodesMap(mm_map);
 		end
@@ -1645,19 +1643,19 @@ end
 					map_canvas_scale = scale;
 					local pin_scale_max = SET.pin_scale_max;
 					--
-					pin_size = SET.pin_size;
+					wm_pin_size = SET.pin_size;
 					if scale > pin_scale_max then
-						pin_size = pin_size * pin_scale_max / scale;
+						wm_pin_size = wm_pin_size * pin_scale_max / scale;
 					end
 					--
-					large_size = SET.large_size;
+					wm_large_size = SET.large_size;
 					if scale > pin_scale_max then
-						large_size = large_size * pin_scale_max / scale;
+						wm_large_size = wm_large_size * pin_scale_max / scale;
 					end
 					--
-					varied_size = SET.varied_size;
+					wm_varied_size = SET.varied_size;
 					if scale > pin_scale_max then
-						varied_size = varied_size * pin_scale_max / scale;
+						wm_varied_size = wm_varied_size * pin_scale_max / scale;
 					end
 					IterateWorldMapPinSetSize();
 					--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.map.mapCallback:OnCanvasScaleChanged'); end
@@ -1713,20 +1711,19 @@ end
 		SetWorldmapAlpha();
 		SetMinimapAlpha();
 		local pin_scale_max = SET.pin_scale_max;
-		pin_size = SET.pin_size;
+		wm_pin_size = SET.pin_size;
 		if map_canvas_scale > pin_scale_max then
-			pin_size = pin_size * pin_scale_max / map_canvas_scale;
+			wm_pin_size = wm_pin_size * pin_scale_max / map_canvas_scale;
 		end
-		large_size = SET.large_size;
+		wm_large_size = SET.large_size;
 		if map_canvas_scale > pin_scale_max then
-			large_size = large_size * pin_scale_max / map_canvas_scale;
+			wm_large_size = wm_large_size * pin_scale_max / map_canvas_scale;
 		end
-		varied_size = SET.varied_size;
+		wm_varied_size = SET.varied_size;
 		if map_canvas_scale > pin_scale_max then
-			varied_size = varied_size * pin_scale_max / map_canvas_scale;
+			wm_varied_size = wm_varied_size * pin_scale_max / map_canvas_scale;
 		end
 		SetHideNodeModifier();
-		minimap_node_inset = SET.minimap_node_inset;
 		SetMinimapPlayerArrowOnTop();
 	end
 -->

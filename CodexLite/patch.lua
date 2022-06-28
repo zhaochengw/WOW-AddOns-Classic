@@ -56,6 +56,16 @@ end
 		else
 			patchDB(__db.fix_horde);
 		end
+		if __db.override ~= nil then
+			for key, patch in next, __db.override do
+				local db = __db[key];
+				if db ~= nil then
+					for id, val in next, patch do
+						db[id] = val;
+					end
+				end
+			end
+		end
 		for id, val in next, __db.waypoints do
 			local waypoints = {  };
 			for _, tbl in next, val do

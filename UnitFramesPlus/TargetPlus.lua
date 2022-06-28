@@ -44,14 +44,24 @@ local hooksecurefunc = hooksecurefunc;
 
 --非战斗状态中允许shift+左键拖动目标头像
 function UnitFramesPlus_TargetPositionSet()
-    if UnitFramesPlusVar["target"]["moved"] == 0 then
-        TargetFrame:ClearAllPoints();
-        if UnitFramesPlusDB["target"]["extrabar"] == 1 or UnitFramesPlusDB["target"]["hpmpparttwo"] ~= 5 then
-            TargetFrame:SetPoint("TOPLEFT", PlayerFrame, "TOPRIGHT", 108+96*UnitFramesPlusDB["player"]["scale"], 0);
-        else
-            TargetFrame:SetPoint("TOPLEFT", PlayerFrame, "TOPRIGHT", 45+96*UnitFramesPlusDB["player"]["scale"], 0);
-        end
-    else
+	if UnitFramesPlusVar["target"]["moved"] == 0 then
+		local offsetX = 0
+		if UnitFramesPlusDB["player"]["extrabar"] == 1 then
+			offsetX = 0
+		elseif UnitFramesPlusDB["player"]["hpmp"] == 0 then
+			offsetX = -57
+		end
+		if UnitFramesPlusDB["target"]["extrabar"] == 1 then
+			offsetX = offsetX + 108
+		elseif UnitFramesPlusDB["target"]["hpmp"] == 1 and UnitFramesPlusDB["target"]["hpmpparttwo"] ~= 5 then
+			offsetX = offsetX + 68
+		elseif UnitFramesPlusDB["target"]["hpmp"] == 1 then
+			offsetX = offsetX + 45
+		end
+		TargetFrame:ClearAllPoints();
+		TargetFrame:SetPoint("TOPLEFT", PlayerFrame, "TOPRIGHT", 96*UnitFramesPlusDB["player"]["scale"] + offsetX, 0);
+		UnitFramesPlusVar["target"]["moved"] = 0;
+	else
         TargetFrame:ClearAllPoints();
         TargetFrame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", UnitFramesPlusVar["target"]["x"], UnitFramesPlusVar["target"]["y"]);
     end
@@ -160,11 +170,11 @@ TargetThreat:SetAlpha(0);
 
 --目标仇恨百分比
 local TargetThreatText = TargetFrame:CreateFontString("UFP_TargetThreatText", "OVERLAY", "TextStatusBarText");
-TargetThreatText:SetFont(GameFontNormal:GetFont(), 12, "OUTLINE");
+TargetThreatText:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
 -- TargetThreatText:SetTextColor(1, 0.75, 0);
 TargetThreatText:SetText("");
 TargetThreatText:ClearAllPoints();
-TargetThreatText:SetPoint("BOTTOMRIGHT", TargetFrameNameBackground, "TOPRIGHT", -6, 2);
+TargetThreatText:SetPoint("BOTTOMRIGHT", TargetFrame, "TOPLEFT", 1, -28);
 TargetThreatText:SetJustifyH("RIGHT");
 
 local tt = CreateFrame("Frame");
@@ -185,47 +195,47 @@ function UnitFramesPlus_TargetThreat()
 end
 
 function UnitFramesPlus_TargetThreatDisplayUpdate()
-    local _, _, threat = UnitDetailedThreatSituation("player", "target");
-    if threat then
-        local threatfix = threat;
-        if threatfix > 100 then threatfix = 100 end
-        local r, g, b = UnitFramesPlus_GetRGB(threatfix, 100, 1)
-        if UnitFramesPlusDB["target"]["threat"] == 1 then
-            TargetThreat:SetVertexColor(r, g, b);
-            TargetThreat:SetAlpha(1);
-        else
-            TargetThreat:SetAlpha(0);
-        end
-        if UnitFramesPlusDB["target"]["threattext"] == 1 then
-            TargetThreatText:SetText(floor(threat).."%");
-            TargetThreatText:SetTextColor(r, g, b);
-        else
-            TargetThreatText:SetText("");
-        end
-    else
-        TargetThreat:SetAlpha(0);
-        TargetThreatText:SetText("");
-    end
+	local _, _, threat = UnitDetailedThreatSituation("player", "target");
+	if threat then
+		local threatfix = threat;
+		if threatfix > 100 then threatfix = 100 end
+		local r, g, b = UnitFramesPlus_GetRGB(threatfix, 100, 1)
+		if UnitFramesPlusDB["target"]["threat"] == 1 then
+			TargetThreat:SetVertexColor(r, g, b);
+			TargetThreat:SetAlpha(1);
+		else
+			TargetThreat:SetAlpha(0);
+		end
+		if UnitFramesPlusDB["target"]["threattext"] == 1 then
+			TargetThreatText:SetText(floor(threat).."%");
+			TargetThreatText:SetTextColor(r, g, b);
+		else
+			TargetThreatText:SetText("");
+		end
+	else
+		TargetThreat:SetAlpha(0);
+		TargetThreatText:SetText("");
+	end
 end
 
 --状态数值
 local TargetHPMPText = CreateFrame("Frame", "UFP_TargetHPMPText", TargetFrame);
 
-TargetFrameTextureFrameHealthBarText = TargetHPMPText:CreateFontString("UFP_TargetHPText", "OVERLAY", "TextStatusBarText");
-TargetFrameTextureFrameHealthBarText:SetFont(GameFontNormal:GetFont(), 12, "OUTLINE");
-TargetFrameTextureFrameHealthBarText:SetTextColor(1, 1, 1);
-TargetFrameTextureFrameHealthBarText:SetAlpha(1);
-TargetFrameTextureFrameHealthBarText:ClearAllPoints();
-TargetFrameTextureFrameHealthBarText:SetPoint("CENTER", TargetFrameHealthBar, "CENTER");
-TargetFrameTextureFrameHealthBarText:SetJustifyH("CENTER");
+TargetHPMPText.HP = TargetHPMPText:CreateFontString("UFP_TargetHPText", "OVERLAY", "TextStatusBarText");
+TargetHPMPText.HP:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
+TargetHPMPText.HP:SetTextColor(1, 1, 1);
+TargetHPMPText.HP:SetAlpha(1);
+TargetHPMPText.HP:ClearAllPoints();
+TargetHPMPText.HP:SetPoint("CENTER", TargetFrameHealthBar, "CENTER");
+TargetHPMPText.HP:SetJustifyH("CENTER");
 
-TargetFrameTextureFrameManaBarText = TargetHPMPText:CreateFontString("UFP_TargetMPText", "OVERLAY", "TextStatusBarText");
-TargetFrameTextureFrameManaBarText:SetFont(GameFontNormal:GetFont(), 12, "OUTLINE");
-TargetFrameTextureFrameManaBarText:SetTextColor(1, 1, 1);
-TargetFrameTextureFrameManaBarText:SetAlpha(1);
-TargetFrameTextureFrameManaBarText:ClearAllPoints();
-TargetFrameTextureFrameManaBarText:SetPoint("CENTER", TargetFrameManaBar, "CENTER");
-TargetFrameTextureFrameManaBarText:SetJustifyH("CENTER");
+TargetHPMPText.MP = TargetHPMPText:CreateFontString("UFP_TargetMPText", "OVERLAY", "TextStatusBarText");
+TargetHPMPText.MP:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
+TargetHPMPText.MP:SetTextColor(1, 1, 1);
+TargetHPMPText.MP:SetAlpha(1);
+TargetHPMPText.MP:ClearAllPoints();
+TargetHPMPText.MP:SetPoint("CENTER", TargetFrameManaBar, "CENTER");
+TargetHPMPText.MP:SetJustifyH("CENTER");
 
 --目标扩展框
 local TargetExtraBar = TargetFrame:CreateTexture("UFP_TargetExtraBar", "ARTWORK");
@@ -237,17 +247,17 @@ TargetExtraBarBG:Hide();
 local TargetHPMPPct = CreateFrame("Frame", "UFP_TargetHPMPPct", TargetFrame);
 TargetHPMPPct:SetFrameLevel(7);
 TargetHPMPPct.HP = TargetHPMPPct:CreateFontString("UFP_TargetHPMPPctHP", "OVERLAY", "TextStatusBarText");
-TargetHPMPPct.HP:SetFont(GameFontNormal:GetFont(), 12, "OUTLINE");
+TargetHPMPPct.HP:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
 TargetHPMPPct.HP:SetTextColor(1, 0.75, 0);
 TargetHPMPPct.HP:Hide();
 
 TargetHPMPPct.MP = TargetHPMPPct:CreateFontString("UFP_TargetHPMPPctMP", "OVERLAY", "TextStatusBarText");
-TargetHPMPPct.MP:SetFont(GameFontNormal:GetFont(), 12, "OUTLINE");
+TargetHPMPPct.MP:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
 TargetHPMPPct.MP:SetTextColor(1, 1, 1);
 TargetHPMPPct.MP:Hide();
 
 TargetHPMPPct.Pct = TargetHPMPPct:CreateFontString("UFP_TargetHPMPPctPct", "OVERLAY", "TextStatusBarText");
-TargetHPMPPct.Pct:SetFont(GameFontNormal:GetFont(), 12, "OUTLINE");
+TargetHPMPPct.Pct:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
 TargetHPMPPct.Pct:SetTextColor(0, 1, 0);
 TargetHPMPPct.Pct:Hide();
 
@@ -255,7 +265,7 @@ TargetHPMPPct.Pct:Hide();
 function UnitFramesPlus_TargetHPValueDisplayUpdate()
     if not UnitExists("target") then return end
     local CurHP, MaxHP;
-    if UnitFramesPlusDB["global"]["exacthp"] == 1 and UnitFramesPlus_GetUnitHealth and UnitIsEnemy("player", "target") and UnitIsPlayer("target") then
+    if UnitFramesPlus_GetUnitHealth and UnitIsEnemy("player", "target") and UnitIsPlayer("target") then
         CurHP, MaxHP = UnitFramesPlus_GetUnitHealth("target");
     else
         CurHP = UnitHealth("target");
@@ -264,16 +274,16 @@ function UnitFramesPlus_TargetHPValueDisplayUpdate()
     local CurHPfix, MaxHPfix, LossHPfix = UnitFramesPlus_GetValueFix(CurHP, MaxHP, UnitFramesPlusDB["target"]["hpmpunit"], UnitFramesPlusDB["target"]["unittype"]);
     local PctText = "";
     local TargetExtHPText = "";
-    local BarText = "";
 
     if MaxHP > 0 then
         PctText = floor(100*CurHP/MaxHP).."%";
     end
 
-    if UnitFramesPlusDB["target"]["bartext"] == 1 and not UnitIsDead("target") then
-        BarText = CurHPfix.."/"..MaxHPfix
+    if not UnitIsDead("target") then
+		TargetHPMPText.HP:SetText(CurHPfix.." / "..MaxHPfix);
+	else
+		TargetHPMPText.HP:SetText("");
     end
-    TargetFrameTextureFrameHealthBarText:SetText(BarText);
 
     -- if UnitFramesPlusDB["target"]["extrabar"] == 1 or UnitFramesPlusDB["target"]["hpmp"] == 1 then
     if UnitFramesPlusDB["target"]["hpmp"] == 1 then
@@ -314,8 +324,8 @@ function UnitFramesPlus_TargetMPValueDisplayUpdate()
     local MaxMP = UnitPowerMax("target");
     local CurMPfix, MaxMPfix, LossMPfix = UnitFramesPlus_GetValueFix(CurMP, MaxMP, UnitFramesPlusDB["target"]["hpmpunit"], UnitFramesPlusDB["target"]["unittype"]);
     local PctText = "";
-    local powerType = UnitPowerType("target");
-    local BarText = "";
+    local TargetExtMPText = "";
+	local powerType = UnitPowerType("target");
 
     if powerType == 0 then
         if MaxMP > 0 then
@@ -326,10 +336,11 @@ function UnitFramesPlus_TargetMPValueDisplayUpdate()
         -- PctText == 0 then PctText = "" end
     end
 
-    if UnitFramesPlusDB["target"]["bartext"] == 1 and not UnitIsDead("target") then
-        BarText = CurMPfix.."/"..MaxMPfix
+    if MaxMP > 0 and not UnitIsDead("target") then
+		TargetHPMPText.MP:SetText(CurMPfix.." / "..MaxMPfix);
+	else
+		TargetHPMPText.MP:SetText("");
     end
-    TargetFrameTextureFrameManaBarText:SetText(BarText);
 
     -- if UnitFramesPlusDB["target"]["extrabar"] == 1 or UnitFramesPlusDB["target"]["hpmp"] == 1 then
     if UnitFramesPlusDB["target"]["hpmp"] == 1 then
@@ -362,7 +373,7 @@ function UnitFramesPlus_TargetMPValueDisplayUpdate()
 end
 
 function UnitFramesPlus_TargetHPMPPct()
-    if UnitFramesPlusDB["target"]["hpmp"] == 0 then
+    if IsAddOnLoaded("EasyFrames") and UnitFramesPlusDB["target"]["hpmp"] == 0 then
         if TargetHPMPPct:IsEventRegistered("PLAYER_TARGET_CHANGED") then
             TargetHPMPPct:UnregisterAllEvents();
             TargetHPMPPct:SetScript("OnEvent", nil);
@@ -372,10 +383,10 @@ function UnitFramesPlus_TargetHPMPPct()
         end
     else
         TargetHPMPPct:RegisterEvent("PLAYER_TARGET_CHANGED");
-        TargetHPMPPct:RegisterUnitEvent("UNIT_HEALTH", "target");
+        TargetHPMPPct:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "target");
         TargetHPMPPct:RegisterUnitEvent("UNIT_POWER_FREQUENT", "target");
         TargetHPMPPct:SetScript("OnEvent", function(self, event, ...)
-            if event == "UNIT_HEALTH" then
+            if event == "UNIT_HEALTH_FREQUENT" then
                 UnitFramesPlus_TargetHPValueDisplayUpdate();
             elseif event == "UNIT_POWER_FREQUENT" then
                 UnitFramesPlus_TargetMPValueDisplayUpdate();
@@ -385,10 +396,17 @@ function UnitFramesPlus_TargetHPMPPct()
                 UnitFramesPlus_TargetExtrabarSet();
             end
         end)
-        TargetHPMPPct.HP:Show();
-        TargetHPMPPct.MP:Show();
-        TargetHPMPPct.Pct:Show();
+		if UnitFramesPlusDB["target"]["hpmp"] == 0 then
+			TargetHPMPPct.HP:Hide();
+            TargetHPMPPct.MP:Hide();
+            TargetHPMPPct.Pct:Hide();
+		else
+			TargetHPMPPct.HP:Show();
+			TargetHPMPPct.MP:Show();
+			TargetHPMPPct.Pct:Show();
+		end
     end
+	UnitFramesPlus_TargetPosition();
 end
 
 function UnitFramesPlus_TargetExtrabarSet()
@@ -457,10 +475,15 @@ function UnitFramesPlus_TargetExtrabar()
         TargetHPMPPct.MP:SetPoint("RIGHT", TargetFrameManaBar, "LEFT", -5, -1);
         TargetHPMPPct.MP:SetJustifyH("RIGHT");
         TargetHPMPPct.Pct:ClearAllPoints();
-        TargetHPMPPct.Pct:SetPoint("RIGHT", TargetFrameNameBackground, "LEFT", -5, -1);
+		local PctY = -1  -- 調整外側綠色百分比數字位置
+		if IsAddOnLoaded("EasyFrames") then
+			PctY = 10
+		end
+        TargetHPMPPct.Pct:SetPoint("RIGHT", TargetFrameNameBackground, "LEFT", -5, PctY);
         TargetHPMPPct.Pct:SetJustifyH("RIGHT");
     end
     UnitFramesPlus_TargetExtrabarSet();
+	UnitFramesPlus_TargetHPMPPct();
     UnitFramesPlus_TargetHPValueDisplayUpdate();
     UnitFramesPlus_TargetMPValueDisplayUpdate();
     UnitFramesPlus_TargetPosition();
@@ -472,7 +495,7 @@ end
 --     if UnitFramesPlusDB["target"]["colorhp"] == 1 then
 --         if UnitFramesPlusDB["target"]["colortype"] == 1 then
 --             TargetFrameHealthBar:SetScript("OnValueChanged", nil);
---             -- if chb:IsEventRegistered("UNIT_HEALTH") then
+--             -- if chb:IsEventRegistered("UNIT_HEALTH_FREQUENT") then
 --             --     chb:UnregisterAllEvents();
 --             -- end
 --             chb:RegisterEvent("PLAYER_TARGET_CHANGED");
@@ -487,7 +510,7 @@ end
 --             if chb:IsEventRegistered("PLAYER_TARGET_CHANGED") then
 --                 chb:UnregisterAllEvents();
 --             end
---             -- chb:RegisterUnitEvent("UNIT_HEALTH", "target");
+--             -- chb:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "target");
 --         end
 --         --TargetFrameHealthBar.lockColor = true;
 --     else
@@ -537,7 +560,7 @@ end);
 local TargetRace = TargetFrame:CreateFontString("UFP_TargetRace", "ARTWORK", "TextStatusBarText");
 TargetRace:ClearAllPoints();
 TargetRace:SetPoint("BOTTOMLEFT", TargetFrameNameBackground, "TOPLEFT", 6, 2);
-TargetRace:SetFont(GameFontNormal:GetFont(), 12, "OUTLINE");
+TargetRace:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
 TargetRace:SetTextColor(1, 0.75, 0);
 
 local tr = CreateFrame("Frame");
@@ -649,41 +672,51 @@ local function TargetClassIconDown()
 end
 
 ClassIcon:SetScript("OnMouseDown", function(self, button)
-    if UnitFramesPlusDB["target"]["moreaction"] == 1 then
-        if (not UnitCanAttack("player", "target")) and UnitIsPlayer("target") then
-            if button == "LeftButton" then
-                if CheckInteractDistance("target", 1) then
-                    isclicked = TargetClassIconDown();
-                    InspectUnit("target");
-                end
-            elseif button == "RightButton" then
-                if CheckInteractDistance("target", 2) then
-                    isclicked = TargetClassIconDown();
-                    InitiateTrade("target");
-                end
-            elseif button == "MiddleButton" then
-                isclicked = TargetClassIconDown();
-                local server = nil;
-                local name, server = UnitName("target");
-                local fullname = name;
-                if server and (not "target" or UnitIsSameServer("player", "target") ~= 1) then
-                    fullname = name.."-"..server;
-                end
-                ChatFrame_SendTell(fullname);
-            elseif button == "Button4" then
-                if CheckInteractDistance("target",4) then
-                    isclicked = TargetClassIconDown();
-                    local server = nil;
-                    local name, server = UnitName("target");
-                    local fullname = name;
-                    if server and (not "target" or UnitIsSameServer("player", "target") ~= 1) then
-                        fullname = name.."-"..server;
-                    end
-                    FollowUnit(fullname, 1);
-                end
-            end
-        end
+    if UnitFramesPlusDB["target"]["moreaction"] == 1 and UnitIsPlayer("target") and (not UnitIsUnit("player", "target")) and (not UnitIsEnemy("player", "target")) then
+		if button == "LeftButton" then
+			if CheckInteractDistance("target", 1) then
+				isclicked = TargetClassIconDown();
+				InspectUnit("target");
+			end
+		elseif button == "RightButton" then
+			if CheckInteractDistance("target", 2) then
+				isclicked = TargetClassIconDown();
+				InitiateTrade("target");
+			end
+		elseif button == "MiddleButton" then
+			isclicked = TargetClassIconDown();
+			local server = nil;
+			local name, server = UnitName("target");
+			local fullname = name;
+			if server and server ~= '' and (not "target" or UnitIsSameServer("player", "target") ~= 1) then
+				fullname = name.."-"..server;
+			end
+			ChatFrame_SendTell(fullname);
+		elseif button == "Button4" then
+			if CheckInteractDistance("target",4) then
+				isclicked = TargetClassIconDown();
+				local server = nil;
+				local name, server = UnitName("target");
+				local fullname = name;
+				if server and (not "target" or UnitIsSameServer("player", "target") ~= 1) then
+					fullname = name.."-"..server;
+				end
+				FollowUnit(fullname, 1);
+			end
+		end
     end
+end)
+
+ClassIcon:SetScript("OnEnter", function(self)
+	if UnitFramesPlusDB["target"]["moreaction"] == 1 and UnitIsPlayer("target") and (not UnitIsUnit("player", "target")) and (not UnitIsEnemy("player", "target")) then
+		GameTooltip:SetOwner (self, "ANCHOR_RIGHT");
+		GameTooltip:SetText (UFPLocal_ClassIcon, nil, nil, nil, nil, true);
+		GameTooltip:Show();
+	end
+end)
+
+ClassIcon:SetScript("OnLeave", function(self)
+		GameTooltip:Hide();
 end)
 
 local function TargetClassIconUp()
@@ -733,7 +766,7 @@ end
 
 --Target buff/debuff
 local UFP_MAX_TARGET_BUFFS = 32;
-local UFP_MAX_TARGET_DEBUFFS = 25;
+local UFP_MAX_TARGET_DEBUFFS = 16;
 function UFP_TargetFrame_UpdateAuras(self)
     if not IsAddOnLoaded("ClassicAuraDurations") then
         local frame, frameName;
@@ -848,7 +881,7 @@ function UnitFramesPlus_TargetCooldownTextDisplayUpdate()
             if icon then
                 if (not _G[frameName.."CooldownText"]) then
                     BuffCooldownText = _G[frameName.."Cooldown"]:CreateFontString(frameName.."CooldownText", "OVERLAY");
-                    BuffCooldownText:SetFont(GameFontNormal:GetFont(), 12, "OUTLINE");
+                    BuffCooldownText:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
                     BuffCooldownText:SetTextColor(1, 1, 1);--(1, 0.75, 0);
                     BuffCooldownText:ClearAllPoints();
                     -- BuffCooldownText:SetPoint("TOPLEFT", _G[frameName], "TOPLEFT", 0, 0);
@@ -906,7 +939,7 @@ function UnitFramesPlus_TargetCooldownTextDisplayUpdate()
                 if ( icon ) then
                     if (not _G[frameName.."CooldownText"]) then
                         DebuffCooldownText = _G[frameName.."Cooldown"]:CreateFontString(frameName.."CooldownText", "OVERLAY");
-                        DebuffCooldownText:SetFont(GameFontNormal:GetFont(), 12, "OUTLINE");
+                        DebuffCooldownText:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
                         DebuffCooldownText:SetTextColor(1, 1, 1);--(1, 0.75, 0);
                         DebuffCooldownText:ClearAllPoints();
                         -- DebuffCooldownText:SetPoint("TOPLEFT", _G[frameName], "TOPLEFT", 0, 0);
@@ -1065,7 +1098,7 @@ function UnitFramesPlus_TargetPortrait()
             tpt:RegisterUnitEvent("UNIT_TARGETABLE_CHANGED", "target");
             tpt:RegisterUnitEvent("UNIT_MODEL_CHANGED", "target");
             tpt:RegisterUnitEvent("UNIT_CONNECTION", "target");
-            tpt:RegisterUnitEvent("UNIT_HEALTH", "target");
+            tpt:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", "target");
             tpt:SetScript("OnEvent", function(self, event, ...)
                 if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_ENTERING_WORLD" or event == "UNIT_TARGETABLE_CHANGED" then
                     if UnitExists("target") then
@@ -1077,7 +1110,7 @@ function UnitFramesPlus_TargetPortrait()
                     end
                 elseif event == "UNIT_MODEL_CHANGED" or event == "UNIT_CONNECTION" then
                     UnitFramesPlus_TargetPortraitDisplayUpdate();
-                elseif event == "UNIT_HEALTH" then
+                elseif event == "UNIT_HEALTH_FREQUENT" then
                     if TargetFramePortrait:IsShown() then
                         TargetFramePortrait:Hide();
                     end
@@ -1114,7 +1147,7 @@ function UnitFramesPlus_TargetPortrait()
             else
                 if tpt:IsEventRegistered("UNIT_MODEL_CHANGED") then
                     tpt:UnregisterEvent("UNIT_MODEL_CHANGED");
-                    tpt:UnregisterEvent("UNIT_HEALTH");
+                    tpt:UnregisterEvent("UNIT_HEALTH_FREQUENT");
                 end
             end
             tpt:SetScript("OnEvent", function(self, event, ...)
@@ -1216,50 +1249,67 @@ end
 
 --鼠标移过时才显示数值
 function UnitFramesPlus_TargetBarTextMouseShow()
+	TargetFrameHealthBar.RightText:SetAlpha(0);
+	TargetFrameHealthBar.LeftText:SetAlpha(0);
+	TargetFrameHealthBar.TextString:SetAlpha(0);
+	TargetFrameManaBar.RightText:SetAlpha(0);
+	TargetFrameManaBar.LeftText:SetAlpha(0);
+	TargetFrameManaBar.TextString:SetAlpha(0);
+	TargetHPMPText.HP:SetAlpha(0);
+	TargetHPMPText.MP:SetAlpha(0);
     if UnitFramesPlusDB["target"]["mouseshow"] == 1 then
-        TargetFrameTextureFrameHealthBarText:SetAlpha(0);
-        -- TargetFrameTextureFrameHealthBarTextLeft:SetAlpha(0);
-        -- TargetFrameTextureFrameHealthBarTextRight:SetAlpha(0);
         TargetFrameHealthBar:SetScript("OnEnter", function(self)
-            TargetFrameTextureFrameHealthBarText:SetAlpha(1);
-            -- TargetFrameTextureFrameHealthBarTextLeft:SetAlpha(1);
-            -- TargetFrameTextureFrameHealthBarTextRight:SetAlpha(1);
+            if UnitFramesPlusDB["target"]["bartext"] == 1 then
+				TargetHPMPText.HP:SetAlpha(1);
+			else
+				TargetFrameHealthBar.RightText:SetAlpha(1);
+				TargetFrameHealthBar.LeftText:SetAlpha(1);
+				TargetFrameHealthBar.TextString:SetAlpha(1);
+			end
             UnitFrame_UpdateTooltip(TargetFrame);
         end);
         TargetFrameHealthBar:SetScript("OnLeave", function()
-            TargetFrameTextureFrameHealthBarText:SetAlpha(0);
-            -- TargetFrameTextureFrameHealthBarTextLeft:SetAlpha(0);
-            -- TargetFrameTextureFrameHealthBarTextRight:SetAlpha(0);
+            TargetFrameHealthBar.RightText:SetAlpha(0);
+			TargetFrameHealthBar.LeftText:SetAlpha(0);
+			TargetFrameHealthBar.TextString:SetAlpha(0);
+			TargetHPMPText.HP:SetAlpha(0);
             GameTooltip:Hide();
         end);
-        TargetFrameTextureFrameManaBarText:SetAlpha(0);
-        -- TargetFrameTextureFrameManaBarTextLeft:SetAlpha(0);
-        -- TargetFrameTextureFrameManaBarTextRight:SetAlpha(0);
         TargetFrameManaBar:SetScript("OnEnter", function(self)
-            TargetFrameTextureFrameManaBarText:SetAlpha(1);
-            -- TargetFrameTextureFrameManaBarTextLeft:SetAlpha(1);
-            -- TargetFrameTextureFrameManaBarTextRight:SetAlpha(1);
+            if UnitFramesPlusDB["target"]["bartext"] == 1 then
+				TargetHPMPText.MP:SetAlpha(1);
+			else
+				TargetFrameManaBar.RightText:SetAlpha(1);
+				TargetFrameManaBar.LeftText:SetAlpha(1);
+				TargetFrameManaBar.TextString:SetAlpha(1);
+			end
             UnitFrame_UpdateTooltip(TargetFrame);
         end);
         TargetFrameManaBar:SetScript("OnLeave", function()
-            TargetFrameTextureFrameManaBarText:SetAlpha(0);
-            -- TargetFrameTextureFrameManaBarTextLeft:SetAlpha(0);
-            -- TargetFrameTextureFrameManaBarTextRight:SetAlpha(0);
+            TargetFrameManaBar.RightText:SetAlpha(0);
+			TargetFrameManaBar.LeftText:SetAlpha(0);
+			TargetFrameManaBar.TextString:SetAlpha(0);
+			TargetHPMPText.MP:SetAlpha(0);
             GameTooltip:Hide();
         end);
     else
-        TargetFrameTextureFrameHealthBarText:SetAlpha(1);
-        -- TargetFrameTextureFrameHealthBarTextLeft:SetAlpha(1);
-        -- TargetFrameTextureFrameHealthBarTextRight:SetAlpha(1);
+        if UnitFramesPlusDB["target"]["bartext"] == 1 then
+			TargetHPMPText.HP:SetAlpha(1);
+			TargetHPMPText.MP:SetAlpha(1);
+		else
+			TargetFrameHealthBar.RightText:SetAlpha(1);
+			TargetFrameHealthBar.LeftText:SetAlpha(1);
+			TargetFrameHealthBar.TextString:SetAlpha(1);
+			TargetFrameManaBar.RightText:SetAlpha(0);
+			TargetFrameManaBar.LeftText:SetAlpha(0);
+			TargetFrameManaBar.TextString:SetAlpha(0);
+		end
         TargetFrameHealthBar:SetScript("OnEnter", function()
             UnitFrame_UpdateTooltip(TargetFrame);
         end);
         TargetFrameHealthBar:SetScript("OnLeave", function()
             GameTooltip:Hide();
         end);
-        TargetFrameTextureFrameManaBarText:SetAlpha(1);
-        -- TargetFrameTextureFrameManaBarTextLeft:SetAlpha(1);
-        -- TargetFrameTextureFrameManaBarTextRight:SetAlpha(1);
         TargetFrameManaBar:SetScript("OnEnter", function()
             UnitFrame_UpdateTooltip(TargetFrame);
         end);
@@ -1267,6 +1317,25 @@ function UnitFramesPlus_TargetBarTextMouseShow()
             GameTooltip:Hide();
         end);
     end
+end
+
+--顯示內側文字
+function UnitFramesPlus_TargetBarTextShow()
+	if UnitFramesPlusDB["target"]["bartext"] == 1 and not IsAddOnLoaded("EasyFrames") and not IsAddOnLoaded("RealMobHealth") then
+		TargetFrameHealthBar.TextString:SetAlpha(0);
+		TargetFrameManaBar.TextString:SetAlpha(0);
+		TargetHPMPText.HP:Show();
+		TargetHPMPText.MP:Show();
+		TargetHPMPText.HP:SetAlpha(1);
+		TargetHPMPText.MP:SetAlpha(1);
+	else
+		TargetHPMPText.HP:Hide();
+		TargetHPMPText.MP:Hide();
+		TargetFrameHealthBar.TextString:SetAlpha(1);
+		TargetFrameManaBar.TextString:SetAlpha(1);
+	end
+	UnitFramesPlus_TargetHPValueDisplayUpdate();
+    UnitFramesPlus_TargetMPValueDisplayUpdate();
 end
 
 local function UnitFramesPlus_SysToT()
@@ -1278,20 +1347,33 @@ local function UnitFramesPlus_SysToT()
 end
 
 function UnitFramesPlus_TargetExtraTextFontSize()
-    UFP_TargetThreatText:SetFont(GameFontNormal:GetFont(), UnitFramesPlusDB["target"]["fontsize"], "OUTLINE");
-    UFP_TargetHPText:SetFont(GameFontNormal:GetFont(), UnitFramesPlusDB["target"]["fontsize"], "OUTLINE");
-    UFP_TargetMPText:SetFont(GameFontNormal:GetFont(), UnitFramesPlusDB["target"]["fontsize"], "OUTLINE")
-    UFP_TargetHPMPPctHP:SetFont(GameFontNormal:GetFont(), UnitFramesPlusDB["target"]["fontsize"], "OUTLINE");
-    UFP_TargetHPMPPctMP:SetFont(GameFontNormal:GetFont(), UnitFramesPlusDB["target"]["fontsize"], "OUTLINE");
-    UFP_TargetHPMPPctPct:SetFont(GameFontNormal:GetFont(), UnitFramesPlusDB["target"]["fontsize"], "OUTLINE");
-    UFP_TargetRace:SetFont(GameFontNormal:GetFont(), UnitFramesPlusDB["target"]["fontsize"], "OUTLINE");
+    local BarFont = TargetFrameHealthBar.TextString:GetFont()
+	local BarFontSize = UnitFramesPlusDB["target"]["fontsize"];
+	UFP_TargetThreatText:SetFont(STANDARD_TEXT_FONT, BarFontSize, "OUTLINE");
+    UFP_TargetHPMPPctHP:SetFont(STANDARD_TEXT_FONT, BarFontSize, "OUTLINE");
+    UFP_TargetHPMPPctMP:SetFont(STANDARD_TEXT_FONT, BarFontSize, "OUTLINE");
+    UFP_TargetHPMPPctPct:SetFont(STANDARD_TEXT_FONT, BarFontSize, "OUTLINE");
+    UFP_TargetRace:SetFont(STANDARD_TEXT_FONT, BarFontSize, "OUTLINE");
 
-    TargetFrameTextureFrameName:SetFont(GameFontNormalSmall:GetFont(), UnitFramesPlusDB["target"]["fontsize"]);
+    if not IsAddOnLoaded("EasyFrames") then
+		TargetFrameTextureFrameName:SetFont(STANDARD_TEXT_FONT, BarFontSize);
+		UFP_TargetHPText:SetFont(BarFont, BarFontSize, "OUTLINE");
+		UFP_TargetMPText:SetFont(BarFont, BarFontSize, "OUTLINE")
+	end
 end
 
 --模块初始化
 function UnitFramesPlus_TargetInit()
-    UnitFramesPlus_TargetShiftDrag();
+
+    if IsAddOnLoaded("EasyFrames") then
+		UnitFramesPlusDB["target"]["extrabar"] = 0
+		UnitFramesPlusDB["target"]["race"] = 0
+		UnitFramesPlusDB["target"]["buffsize"] = 0
+		UnitFramesPlusDB["target"]["colorhp"] = 0
+		UnitFramesPlusDB["target"]["mouseshow"] = 0
+	end
+
+	UnitFramesPlus_TargetShiftDrag();
     UnitFramesPlus_TargetRace();
     UnitFramesPlus_TargetClassIcon();
     UnitFramesPlus_TargetPortraitIndicator();
@@ -1301,10 +1383,14 @@ function UnitFramesPlus_TargetInit()
     UnitFramesPlus_TargetBarTextMouseShow();
     UnitFramesPlus_TargetExtrabar();
     UnitFramesPlus_TargetHPMPPct();
-    UnitFramesPlus_TargetBuffCooldown();
-    UnitFramesPlus_TargetCooldownText();
+    if not IsAddOnLoaded("ClassicAuraDurations") then
+		UnitFramesPlus_TargetBuffCooldown();
+		UnitFramesPlus_TargetCooldownText();
+	end
     UnitFramesPlus_TargetThreat();
     UnitFramesPlus_TargetExtraTextFontSize();
+	UnitFramesPlus_TargetBarTextShow();
+
 end
 
 function UnitFramesPlus_TargetLayout()

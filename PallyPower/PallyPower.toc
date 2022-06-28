@@ -1,7 +1,7 @@
 ## Interface: 20504
 ## Author: Aznamir, Dyaxler, Es
 ## Title: PallyPower Classic
-## Version: v1.4.4-classic
+## Version: v1.4.5-classic
 ## Notes: Raid/Party Paladin buffs
 ## Notes-esES: Buffs de Paladín para Grupo/Banda
 ## Notes-zhCN: 圣骑士祝福管理
@@ -36,4 +36,4 @@ PallyPower_TBC.xml
 ## Title: |cff880303[163UI]|r PallyPower Classic
 ## Title-zhCN: |cff880303[有爱]|r PallyPower 圣骑士祝福管理
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220414153603
+## X-163UI-Version: 20220616152722

@@ -54,6 +54,12 @@ local function UnitFramesPlus_MinimapButton_BeingDragged()
 end
 
 function UnitFramesPlus_MinimapButton()
+	-- 暴雪頭像(美化調整) 也載入時多顯示設定選項
+	local showEasyFramesOption = false
+	if IsAddOnLoaded("EasyFrames") then
+		showEasyFramesOption = true
+	end
+
     if UnitFramesPlusDB["minimap"]["button"]==1 then
         MinimapButton:RegisterForDrag("RightButton");
         MinimapButton:SetScript("OnDragStart", function(self)
@@ -62,14 +68,23 @@ function UnitFramesPlus_MinimapButton()
         MinimapButton:SetScript("OnDragStop", function(self)
             self:SetScript("OnUpdate", nil);
         end)
-        MinimapButton:SetScript("OnClick", function(self)
-            UnitFramesPlus_SlashHandler();
+        MinimapButton:SetScript("OnClick", function(self, button)
+			if (button == "LeftButton") then
+				UnitFramesPlus_SlashHandler();
+			else
+				if showEasyFramesOption then
+					SlashCmdList["ACECONSOLE_EASYFRAMES"]("")
+				end
+			end
         end)
         MinimapButton:EnableMouse(true);
         MinimapButton:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT");
-            GameTooltip:SetText("UnitFramesPlus v"..GetAddOnMetadata("UnitFramesPlus", "Version"));
+            GameTooltip:SetText(UFPLocal_Title);
             GameTooltip:AddLine(UFPLocal_LeftOpen);
+			if showEasyFramesOption then
+				GameTooltip:AddLine(UFPLocal_RightOpen);
+			end
             GameTooltip:AddLine(UFPLocal_RightMove);
             GameTooltip:Show();
         end)

@@ -12,6 +12,7 @@ local segmentos = _detalhes.segmentos
 --lua locals
 local _math_ceil = math.ceil
 local _math_floor = math.floor
+local floor = _math_floor
 local _math_max = math.max
 local _ipairs = ipairs
 local _pairs = pairs
@@ -1874,11 +1875,13 @@ local barra_scripts_onenter = function (self)
 	self:SetBackdropColor (0.588, 0.588, 0.588, 0.7)
 
 	if (not _detalhes.instances_disable_bar_highlight) then
+		--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
 		if (self._instance.bars_inverted) then
 			self.right_to_left_texture:SetBlendMode ("ADD")
 		else
 			self.textura:SetBlendMode ("ADD")
-		end
+		end]]
+		self.textura:SetBlendMode ("ADD")
 	end
 
 	local lefttext = self.lineText1
@@ -1912,13 +1915,14 @@ local barra_scripts_onleave = function (self)
 	self:SetBackdrop (barra_backdrop_onleave)	
 	self:SetBackdropBorderColor (0, 0, 0, 0)
 	self:SetBackdropColor (0, 0, 0, 0)
-	
+	--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
 	if (self._instance.bars_inverted) then
 		self.right_to_left_texture:SetBlendMode ("BLEND")
 	else
 		self.textura:SetBlendMode ("BLEND")
-	end
-
+	end]]
+	self.textura:SetBlendMode ("BLEND")
+	
 	self.showing_allspells = false
 	self:SetScript ("OnUpdate", nil)
 	
@@ -2076,6 +2080,7 @@ function _detalhes:HandleTextsOnMouseClick (row, type)
 end
 
 local set_bar_value = function (self, value)
+	--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
 	if (self._instance.bars_inverted) then
 		self.statusbar:SetValue (0)
 		
@@ -2089,7 +2094,8 @@ local set_bar_value = function (self, value)
 		self.right_to_left_texture:SetTexCoord (coord_inverse, 0, 0, 1)
 	else
 		self.statusbar:SetValue (value)
-	end
+	end]]
+	self.statusbar:SetValue(value)
 	
 	self.statusbar.value = value
 	
@@ -4048,6 +4054,10 @@ end
 
 _detalhes.barras_criadas = 0
 
+local getActor = function(self)
+	return self.minha_tabela
+end
+
 --> search key: ~row ~barra  ~newbar ~createbar ~createrow
 function gump:CreateNewLine (instancia, index)
 
@@ -4062,6 +4072,8 @@ function gump:CreateNewLine (instancia, index)
 	newLine.instance_id = instancia.meu_id
 	newLine.animacao_fim = 0
 	newLine.animacao_fim2 = 0
+
+	newLine.GetActor = getActor
 	
 	--> set point, almost irrelevant here, it recalc this on SetBarGrowDirection()
 	local y = instancia.row_height * (index-1)
@@ -4085,6 +4097,7 @@ function gump:CreateNewLine (instancia, index)
 	--> statusbar
 	newLine.statusbar = CreateFrame ("StatusBar", "DetailsBarra_Statusbar_"..instancia.meu_id.."_"..index, newLine)
 	newLine.statusbar.value = 0
+	--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
 	--> right to left texture
 	newLine.statusbar.right_to_left_texture = newLine.statusbar:CreateTexture (nil, "overlay")
 	newLine.statusbar.right_to_left_texture:SetPoint ("topright", newLine.statusbar, "topright")
@@ -4092,7 +4105,7 @@ function gump:CreateNewLine (instancia, index)
 	newLine.statusbar.right_to_left_texture:SetWidth (0.000000001)
 	newLine.statusbar.right_to_left_texture:Hide()
 	newLine.right_to_left_texture = newLine.statusbar.right_to_left_texture
-	
+	]]
 	--> frame for hold the backdrop border
 	newLine.border = CreateFrame ("Frame", "DetailsBarra_Border_" .. instancia.meu_id .. "_" .. index, newLine.statusbar,"BackdropTemplate")
 	newLine.border:SetFrameLevel (newLine.statusbar:GetFrameLevel()+2)
@@ -4343,10 +4356,23 @@ function Details:RefreshTitleBar()
 
 	local texturePath = SharedMedia:Fetch("statusbar", texture)
 
-	self.baseframe.titleBar:SetShown(shown)
-	self.baseframe.titleBar:SetHeight(height)
-	self.baseframe.titleBar.texture:SetTexture(texturePath)
-	self.baseframe.titleBar.texture:SetVertexColor(DetailsFramework:ParseColors(color))
+	local titleBar = self.baseframe.titleBar
+	titleBar:SetShown(shown)
+
+	--menu_attribute_string is nil in tbc (20 jun 2022)
+	if (not self.menu_attribute_string) then
+		return
+	end
+
+	if (shown) then
+		titleBar:SetHeight(height)
+		titleBar.texture:SetTexture(texturePath)
+		titleBar.texture:SetVertexColor(DetailsFramework:ParseColors(color))
+
+		self.menu_attribute_string:SetParent(titleBar)
+	else
+		self.menu_attribute_string:SetParent(self.baseframe)
+	end
 end
 
 function _detalhes:SetBarModel (upper_enabled, upper_model, upper_alpha, lower_enabled, lower_model, lower_alpha)
@@ -4418,7 +4444,41 @@ function _detalhes:SetBarSpecIconSettings (enabled, iconfile, fulltrack)
 	self:ReajustaGump()
 end
 
-function _detalhes:SetBarSettings (height, texture, colorclass, fixedcolor, backgroundtexture, backgroundcolorclass, backgroundfixedcolor, alpha, iconfile, barstart, spacement, texture_custom)
+function Details:SetBarArenaRoleIconSettings(show_icon, icon_size_offset)
+	if (type(show_icon) ~= "boolean") then
+		show_icon = self.row_info.show_arena_role_icon
+	end
+
+	if (not icon_size_offset or type(icon_size_offset) ~= "number") then
+		icon_size_offset = self.row_info.arena_role_icon_size_offset
+	end
+
+	self.row_info.show_arena_role_icon = show_icon
+	self.row_info.arena_role_icon_size_offset = icon_size_offset
+
+	self:InstanceReset()
+	self:InstanceRefreshRows()
+	self:ReajustaGump()
+end
+
+function Details:SetBarFactionIconSettings(show_faction_icon, faction_icon_size_offset)
+	if (type(show_faction_icon) ~= "boolean") then
+		show_faction_icon = self.row_info.show_faction_icon
+	end
+
+	if (not faction_icon_size_offset or type(faction_icon_size_offset) ~= "number") then
+		faction_icon_size_offset = self.row_info.faction_icon_size_offset
+	end
+
+	self.row_info.show_faction_icon = show_faction_icon
+	self.row_info.faction_icon_size_offset = faction_icon_size_offset
+
+	self:InstanceReset()
+	self:InstanceRefreshRows()
+	self:ReajustaGump()
+end
+
+function _detalhes:SetBarSettings (height, texture, colorclass, fixedcolor, backgroundtexture, backgroundcolorclass, backgroundfixedcolor, alpha, iconfile, barstart, spacement, texture_custom, icon_size_offset)
 	
 	--> bar start
 	if (type (barstart) == "boolean") then
@@ -4493,6 +4553,10 @@ function _detalhes:SetBarSettings (height, texture, colorclass, fixedcolor, back
 		c [1], c [2], c [3], c [4] = red, green, blue, alpha
 	end
 
+	if (icon_size_offset and type(icon_size_offset) == "number") then
+		self.row_info.icon_size_offset = icon_size_offset
+	end
+
 	self:InstanceReset()
 	self:InstanceRefreshRows()
 	self:ReajustaGump()
@@ -4552,7 +4616,7 @@ end
 
 --/script _detalhes:InstanceRefreshRows (_detalhes.tabela_instancias[1])
 
---> on update function
+--onupdate function for 'Fast Updates' feature
 local fast_ps_func = function (self)
 	local instance = self.instance
 	
@@ -4560,8 +4624,16 @@ local fast_ps_func = function (self)
 		return
 	end
 	
-	local combat_time = instance.showing:GetCombatTime()
-	local ps_type = _detalhes.ps_abbreviation
+	local combatTime = instance.showing:GetCombatTime()
+	local abbreviationType = _detalhes.ps_abbreviation
+	local abbreviationFunc = tok_functions[abbreviationType]
+
+	local isInLineTextEnabled = instance.use_multi_fontstrings
+	local instanceShowDataSettings = instance.row_info.textR_show_data
+
+	local showingAllData = instanceShowDataSettings[3] and instanceShowDataSettings[2] and instanceShowDataSettings[1]
+	local showingTotalAndPS = not instanceShowDataSettings[3] and instanceShowDataSettings[2] and instanceShowDataSettings[1]
+	local showingOnlyPS = not instanceShowDataSettings[3] and instanceShowDataSettings[2] and not instanceShowDataSettings[1]
 
 	if (instance.rows_fit_in_window) then
 		for i = 1, instance.rows_fit_in_window do --instance:GetNumRows()
@@ -4569,14 +4641,21 @@ local fast_ps_func = function (self)
 			if (row and row:IsShown()) then
 				local actor = row.minha_tabela
 				if (actor) then
-					local dps_text = row.ps_text
-					if (dps_text) then
-						local new_dps = _math_floor (actor.total / combat_time)
-						local formated_dps = tok_functions [ps_type] (_, new_dps)
 
-						--row.lineText4:SetText (row.lineText4:GetText():gsub (dps_text, formated_dps))
-						row.lineText4:SetText (( row.lineText4:GetText() or "" ):gsub (dps_text, formated_dps))
-						row.ps_text = formated_dps
+					local currentDps = floor(actor.total / combatTime) --can also be hps
+					if (isInLineTextEnabled) then
+						if (showingAllData) then
+							row.lineText3:SetText(abbreviationFunc(nil, currentDps))
+						elseif (showingTotalAndPS or showingOnlyPS) then
+							row.lineText4:SetText(abbreviationFunc(nil, currentDps))
+						end
+					else
+						local dpsText = row.ps_text
+						if (dpsText) then
+							local formatedDps = abbreviationFunc(nil, currentDps)
+							row.lineText4:SetText((row.lineText4:GetText() or ""):gsub(dpsText, formatedDps))
+							row.ps_text = formatedDps
+						end
 					end
 				end
 			end
@@ -4824,9 +4903,9 @@ function _detalhes:InstanceRefreshRows (instancia)
 				row.statusbar:SetPoint ("bottomright", row, "bottomright")
 				row.lineText1:SetPoint ("right", row.statusbar, "right", -2, 0)
 				row.icone_classe:Hide()
-				
+				--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
 				row.right_to_left_texture:SetPoint ("topright", row.statusbar, "topright")
-				row.right_to_left_texture:SetPoint ("bottomright", row.statusbar, "bottomright")
+				row.right_to_left_texture:SetPoint ("bottomright", row.statusbar, "bottomright")]]
 			else
 			
 				row.icone_classe:ClearAllPoints()
@@ -4892,21 +4971,27 @@ function _detalhes:InstanceRefreshRows (instancia)
 		
 		--> texture:
 		row.textura:SetTexture (texture_file)
-		row.right_to_left_texture:SetTexture (texture_file)
+		--Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
+		--row.right_to_left_texture:SetTexture (texture_file)
+		
 		row.background:SetTexture (texture_file2)
 		row.overlayTexture:SetTexture(overlayTexture)
 		row.overlayTexture:SetVertexColor(unpack(overlayColor))
 		
 		if (is_mirror) then
-			row.right_to_left_texture:Show()
+			--Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
+			--row.right_to_left_texture:Show()
+			row.statusbar:SetReverseFill(true)
 			else
-			row.right_to_left_texture:Hide()
+			row.statusbar:SetReverseFill(false)
+			--row.right_to_left_texture:Hide()
 		end
 		
 		--> texture class color: if true color changes on the fly through class refresh
 		if (not texture_class_color) then
 			row.textura:SetVertexColor (texture_r, texture_g, texture_b, alpha)
-			row.right_to_left_texture:SetVertexColor (texture_r, texture_g, texture_b, alpha)
+			--Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
+			--row.right_to_left_texture:SetVertexColor (texture_r, texture_g, texture_b, alpha)
 		else
 			--automatically color the bar by the actor class
 			--forcing alpha 1 instead of use the alpha from the fixed color
@@ -7592,6 +7677,29 @@ function _detalhes:AdjustAlphaByContext(interacting)
 		end
 	end
 
+	--in arena
+	if (self.hide_on_context[9].enabled) then
+		local contextId = 9
+		local isInInstance = IsInInstance()
+		if (isInInstance and Details.zone_type == "arena") then
+			--player is within a pvp arena
+			if (not self.hide_on_context[contextId].inverse) then
+				self:SetWindowAlphaForCombat(true, true, getAlphaByContext(self, contextId))
+				self:SetWindowAlphaForCombat(true, true, getAlphaByContext(self, contextId))
+			else
+				self:SetWindowAlphaForCombat(false, false, getAlphaByContext(self, contextId)) --> deshida a janela
+			end
+			hasRuleEnabled = true
+		else
+			--player is not inside an arena
+			if (self.hide_on_context[contextId].inverse) then
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, contextId))
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, contextId))
+				hasRuleEnabled = true
+			end
+		end
+	end
+
 	--in battleground
 	if (self.hide_on_context[7].enabled) then
 		local isInInstance = IsInInstance()
@@ -7937,7 +8045,8 @@ function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side
 	
 	if (not self.menu_attribute_string) then 
 
-		local label = gump:NewLabel (self.floatingframe, nil, "DetailsAttributeStringInstance" .. self.meu_id, nil, "", "GameFontHighlightSmall")
+		--local label = gump:NewLabel (self.floatingframe, nil, "DetailsAttributeStringInstance" .. self.meu_id, nil, "", "GameFontHighlightSmall")
+		local label = gump:NewLabel (self.baseframe, nil, "DetailsAttributeStringInstance" .. self.meu_id, nil, "", "GameFontHighlightSmall")
 		self.menu_attribute_string = label
 		self.menu_attribute_string.text = _detalhes:GetSubAttributeName (self.atributo, self.sub_atributo)
 		self.menu_attribute_string.owner_instance = self

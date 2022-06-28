@@ -313,6 +313,17 @@ end
 					boolean_func,
 					'tab.map',
 				},
+				limit_item_starter_drop = {
+					'boolean',
+					function(val)
+						SET['limit_item_starter_drop'] = val;
+						__ns.SetLimitItemStarter();
+						return true;
+					end,
+					nil,
+					boolean_func,
+					'tab.map',
+				},
 			--	tab.interact
 				auto_accept = {
 					'boolean',
@@ -425,6 +436,7 @@ end
 			hide_node_modifier = "SHIFT",
 			minimap_node_inset = true,
 			minimap_player_arrow_on_top = true,
+			limit_item_starter_drop = true,
 		--	interact
 			auto_accept = false,
 			auto_complete = false,
@@ -455,6 +467,7 @@ end
 			"hide_node_modifier",
 			"minimap_node_inset",
 			"minimap_player_arrow_on_top",
+			"limit_item_starter_drop",
 		--	interact
 			"auto_accept",
 			"auto_complete",

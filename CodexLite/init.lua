@@ -16,6 +16,7 @@ __ns.__is_dev = select(2, GetAddOnInfo("!!!!!DebugMe")) ~= nil;
 __ns.__toc = select(4, GetBuildInfo());
 __ns.__expansion = GetExpansionLevel();
 __ns.__maxLevel = GetMaxLevelForExpansionLevel(__ns.__expansion);
+__ns.__locale = GetLocale();
 __ns.After = C_Timer.After;
 __ns.NewTicker = C_Timer.NewTicker;
 __ns.NewTimer = C_Timer.NewTimer;
@@ -371,48 +372,125 @@ local _F_CorePrint = __ns._F_CorePrint;
 	end 
 
 	local LevenshteinDistance;
-	if _G.CalculateStringEditDistance ~= nil then
-		LevenshteinDistance = _G.CalculateStringEditDistance;
-	else
-		--	credit https://gist.github.com/Badgerati/3261142
-		function LevenshteinDistance(str1, str2)
-			--	quick cut-offs to save time
-			if str1 == "" then
-				return #str2;
-			elseif str2 == "" then
-				return #str1;
-			elseif str1 == str2 then
-				return 0;
-			end
-
-			local len1 = #str1;
-			local len2 = #str2;
-			local matrix = {  };
-
-			--	initialise the base matrix values
-			for i = 0, len1 do
-				matrix[i] = {  };
-				matrix[i][0] = i;
-			end
-			for j = 0, len2 do
-				matrix[0][j] = j;
-			end
-
-			--	actual Levenshtein algorithm
-			for i = 1, len1 do
-				for j = 1, len2 do
-					if strbyte(str1, i) == strbyte(str2, j) then
-						matrix[i][j] = min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1]);
-					else
-						matrix[i][j] = min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + 1)
+	--[[if __ns.__locale == "zhCN" or __ns.__locale == "zhTW" or __ns.__locale == "koKR" then
+			--	modified https://gist.github.com/Badgerati/3261142
+			local function CutUTF8Str(str)
+				local tstr = {  };
+				local tlen = 0;
+				local len = #str;
+				local pos = 1;
+				while pos < len do
+					local b = strbyte(str, pos);
+					if b >= 0xfc then		--	11111100	6
+						tlen = tlen + 1;
+						tstr[tlen] = strsub(str, pos, pos + 5);
+						pos = pos + 6;
+					elseif b >= 0xf8 then	--	11111000	5
+						tlen = tlen + 1;
+						tstr[tlen] = strsub(str, pos, pos + 4);
+						pos = pos + 5;
+					elseif b >= 0xf0 then	--	11110000	4
+						tlen = tlen + 1;
+						tstr[tlen] = strsub(str, pos, pos + 3);
+						pos = pos + 4;
+					elseif b >= 0xe0 then	--	11100000	3
+						tlen = tlen + 1;
+						tstr[tlen] = strsub(str, pos, pos + 2);
+						pos = pos + 3;
+					elseif b >= 0xc0 then	--	11000000	2
+						tlen = tlen + 1;
+						tstr[tlen] = strsub(str, pos, pos + 1);
+						pos = pos + 2;
+					elseif b >= 0x80 then	--	10000000	error
+					else					--	00000000	1
+						tlen = tlen + 1;
+						tstr[tlen] = strsub(str, pos, pos);
+						pos = pos + 1;
 					end
 				end
+				return tstr, tlen;
 			end
+			function LevenshteinDistance(str1, str2)
+				--	quick cut-offs to save time
+				if str1 == "" then
+					return #str2;
+				elseif str2 == "" then
+					return #str1;
+				elseif str1 == str2 then
+					return 0;
+				end
 
-			--	return the last value - this is the Levenshtein distance
-			return matrix[len1][len2];
+				local tstr1, tlen1 = CutUTF8Str(str1);
+				local tstr2, tlen2 = CutUTF8Str(str2);
+				local matrix = {  };
+
+				--	initialise the base matrix values
+				for i = 0, tlen1 do
+					matrix[i] = {  };
+					matrix[i][0] = i;
+				end
+				for j = 0, tlen2 do
+					matrix[0][j] = j;
+				end
+
+				--	actual Levenshtein algorithm
+				for i = 1, tlen1 do
+					for j = 1, tlen2 do
+						if tstr1[i] == tstr2[j] then
+							matrix[i][j] = min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1]);
+						else
+							matrix[i][j] = min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + 1);
+						end
+					end
+				end
+
+				--	return the last value - this is the Levenshtein distance
+				return matrix[tlen1][tlen2];
+			end
+	else--]]
+		if _G.CalculateStringEditDistance ~= nil then
+			LevenshteinDistance = _G.CalculateStringEditDistance;
+		else
+			--	credit https://gist.github.com/Badgerati/3261142
+			function LevenshteinDistance(str1, str2)
+				--	quick cut-offs to save time
+				if str1 == "" then
+					return #str2;
+				elseif str2 == "" then
+					return #str1;
+				elseif str1 == str2 then
+					return 0;
+				end
+
+				local len1 = #str1;
+				local len2 = #str2;
+				local matrix = {  };
+
+				--	initialise the base matrix values
+				for i = 0, len1 do
+					matrix[i] = {  };
+					matrix[i][0] = i;
+				end
+				for j = 0, len2 do
+					matrix[0][j] = j;
+				end
+
+				--	actual Levenshtein algorithm
+				for i = 1, len1 do
+					for j = 1, len2 do
+						if strbyte(str1, i) == strbyte(str2, j) then
+							matrix[i][j] = min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1]);
+						else
+							matrix[i][j] = min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + 1);
+						end
+					end
+				end
+
+				--	return the last value - this is the Levenshtein distance
+				return matrix[len1][len2];
+			end
 		end
-	end
+	-- end
 
 	local BIG_NUMBER = 4294967295;
 	local function FindMinLevenshteinDistance(str, loc, ids)
@@ -434,6 +512,7 @@ local _F_CorePrint = __ns._F_CorePrint;
 		return ids[bestIndex], bestIndex, bestDistance;
 	end
 
+	__core.LevenshteinDistance = LevenshteinDistance;
 	__core.FindMinLevenshteinDistance = FindMinLevenshteinDistance;
 -->
 
@@ -603,7 +682,7 @@ local _F_CorePrint = __ns._F_CorePrint;
 		return instance, left, right, top, bottom;
 	end
 	local __player_map_id = C_Map_GetBestMapForUnit('player');
-	-->		data
+	function __ns.InitMapAgent()
 		local mapHandler = CreateFrame('FRAME');
 		mapHandler:SetScript("OnEvent", function(self, event)
 			local map = C_Map_GetBestMapForUnit('player');
@@ -780,7 +859,7 @@ local _F_CorePrint = __ns._F_CorePrint;
 		FillIn("continent", 1414);
 		FillIn("continent", 1415);
 		FillIn("continent", 1945);
-	-->
+	end
 	__core.ContinentMapID = {
 		[946] = "Universe",
 		[947] = "Azeroth",
@@ -1055,12 +1134,13 @@ local _F_CorePrint = __ns._F_CorePrint;
 				TEXTURE = IMG_INDEX.IMG_S_COMMING;
 			end
 		else
+			local flag = info.flag;
 			local exflag = info.exflag;
-			if exflag ~= nil and _bit_band(exflag, 1) ~= 0 then
+			if (exflag ~= nil and _bit_band(exflag, 1) ~= 0) or (flag ~= nil and _bit_band(flag, 4096) ~= 0) then
 				TEXTURE = IMG_INDEX.IMG_S_REPEATABLE;
 			else
 				local lvl = info.lvl;
-				lvl = lvl >= 0 and lvl or __ns.__player_level
+				lvl = lvl >= 0 and lvl or __ns.__player_level;
 				if lvl >= SET.quest_lvl_red then
 					TEXTURE = IMG_INDEX.IMG_S_VERY_HARD;
 				elseif lvl >= SET.quest_lvl_orange then
@@ -1070,7 +1150,7 @@ local _F_CorePrint = __ns._F_CorePrint;
 				elseif lvl >= SET.quest_lvl_green then
 					TEXTURE = IMG_INDEX.IMG_S_EASY;
 				else
-					TEXTURE = IMG_INDEX.IMG_S_LOW_LEVEL
+					TEXTURE = IMG_INDEX.IMG_S_LOW_LEVEL;
 				end
 			end
 		end
@@ -1157,6 +1237,7 @@ local _F_CorePrint = __ns._F_CorePrint;
 					['module.init.init.extra_db.del_unused'] = true,
 				['module.init.init.setting'] = true,
 				['module.init.init.core'] = true,
+				['module.init.init.agent'] = true,
 				['module.init.init.map'] = true,
 				['module.init.init.comm'] = true,
 				['module.init.init.util'] = true,
@@ -1201,6 +1282,9 @@ local _F_CorePrint = __ns._F_CorePrint;
 		__ns.setting_setup();
 		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.setting'); end
 		SET = __ns.__setting;
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_start('module.init.init.agent'); end
+		__ns.InitMapAgent();
+		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.agent'); end
 		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_start('module.init.init.map'); end
 		__ns.map_setup();
 		--[=[dev]=]	if __ns.__is_dev then __ns.__performance_log_tick('module.init.init.map'); end

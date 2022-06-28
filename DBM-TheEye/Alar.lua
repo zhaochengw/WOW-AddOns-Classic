@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Alar", "DBM-TheEye")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("@file-date-integer@")
+mod:SetRevision("20220511043833")
 mod:SetCreatureID(19514)
 mod:SetEncounterID(730, 2464)
 mod:SetModelID(18945)

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.5) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.6) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "esMX");
 
 if not L then
-    T._LoadedFiles["esMX.lua"] = "2.7.8.5";
+    T._LoadedFiles["esMX.lua"] = "2.7.8.6";
     return;
 end;
 
@@ -411,4 +411,4 @@ L["UNSTABLERELEASE"] = "Versión de lanzamiento inestable"
 
 
 
-T._LoadedFiles["esMX.lua"] = "2.7.8.5";
+T._LoadedFiles["esMX.lua"] = "2.7.8.6";

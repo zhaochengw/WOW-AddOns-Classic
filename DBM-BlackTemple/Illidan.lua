@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Illidan", "DBM-BlackTemple")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("@file-date-integer@")
+mod:SetRevision("20220511043833")
 mod:SetCreatureID(22917)
 mod:SetEncounterID(609, 2481)
 mod:SetModelID(21135)

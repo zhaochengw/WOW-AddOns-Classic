@@ -1,9 +1,9 @@
 ## Interface: 20504
 ## Title: Postal
-## Version: v3.8.0
-## X-Build: 524
-## X-ReleaseDate: 2022-05-01T18:40:00Z
-## X-Revision: 524
+## Version: v3.8.1
+## X-Build: 526
+## X-ReleaseDate: 2022-06-04T17:24:22Z
+## X-Revision: 526
 ## Author: Xinhuan
 ## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb, Jonny aka The_Original_Manbot
 ## X-Category: Mail
@@ -50,4 +50,4 @@ Modules\QuickAttach.lua
 ## Title: |cff880303[163UI]|r Postal
 ## Title-zhCN: |cff880303[有爱]|r Postal 邮箱助手
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220507101939
+## X-163UI-Version: 20220609154744

@@ -170,28 +170,10 @@
                             <Anchor point="TOPLEFT" relativeKey="$parent.SearchLabel" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
                         </Anchors>
                     </EditBox>
-                    <Button parentKey="Quick7" inherits="MeetingHornQuickTemplate">
-                        <Size x="35" y="22"/>
-                        <Anchors>
-                            <Anchor point="LEFT" relativeKey="$parent.Input" relativePoint="RIGHT" x="2" y="-10"/>
-                        </Anchors>
-                    </Button>
-                    <Button parentKey="Quick8" inherits="MeetingHornQuickTemplate">
-                        <Size x="35" y="22"/>
-                        <Anchors>
-                            <Anchor point="LEFT" relativeKey="$parent.Quick7" relativePoint="RIGHT" x="5" y="0"/>
-                        </Anchors>
-                    </Button>
-                    <Button parentKey="Quick10" inherits="MeetingHornQuickTemplate">
-                        <Size x="35" y="22"/>
-                        <Anchors>
-                            <Anchor point="LEFT" relativeKey="$parent.Quick8" relativePoint="RIGHT" x="5" y="0"/>
-                        </Anchors>
-                    </Button>
                     <Button parentKey="Quick1" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
-                            <Anchor point="LEFT" relativeKey="$parent.Quick7" relativePoint="TOPLEFT" x="2" y="10"/>
+                            <Anchor point="LEFT" relativeKey="$parent.Input" relativePoint="RIGHT" x="5" y="-5"/>
                         </Anchors>
                     </Button>
                     <Button parentKey="Quick2" inherits="MeetingHornQuickTemplate">
@@ -206,34 +188,52 @@
                             <Anchor point="LEFT" relativeKey="$parent.Quick2" relativePoint="RIGHT" x="5" y="0"/>
                         </Anchors>
                     </Button>
-                    <Button parentKey="Quick9" inherits="MeetingHornQuickTemplate">
+                    <Button parentKey="Quick4" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Quick3" relativePoint="RIGHT" x="5" y="0"/>
                         </Anchors>
                     </Button>
-                    <Button parentKey="Quick4" inherits="MeetingHornQuickTemplate">
-                        <Size x="35" y="22"/>
-                        <Anchors>
-                            <Anchor point="BOTTOMLEFT" relativeKey="$parent.Quick1" relativePoint="TOPLEFT" x="0" y="-2"/>
-                        </Anchors>
-                    </Button>
-                    <Button parentKey="Quick6" inherits="MeetingHornQuickTemplate">
+                    <Button parentKey="Quick5" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Quick4" relativePoint="RIGHT" x="5" y="0"/>
                         </Anchors>
                     </Button>d
-                    <Button parentKey="Quick5" inherits="MeetingHornQuickTemplate">
+                    <Button parentKey="Quick6" inherits="MeetingHornQuickTemplate">
+                        <Size x="35" y="22"/>
+                        <Anchors>
+                            <Anchor point="BOTTOMLEFT" relativeKey="$parent.Quick1" relativePoint="TOPLEFT" x="0" y="0"/>
+                        </Anchors>
+                    </Button>
+                    <Button parentKey="Quick7" inherits="MeetingHornQuickTemplate">
                         <Size x="35" y="22"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Quick6" relativePoint="RIGHT" x="5" y="0"/>
                         </Anchors>
                     </Button>
+                    <Button parentKey="Quick8" inherits="MeetingHornQuickTemplate">
+                        <Size x="35" y="22"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick7" relativePoint="RIGHT" x="5" y="0"/>
+                        </Anchors>
+                    </Button>
+                    <Button parentKey="Quick9" inherits="MeetingHornQuickTemplate">
+                        <Size x="35" y="22"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick8" relativePoint="RIGHT" x="5" y="0"/>
+                        </Anchors>
+                    </Button>
+                    <Button parentKey="Quick10" inherits="MeetingHornQuickTemplate">
+                        <Size x="35" y="22"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick9" relativePoint="RIGHT" x="5" y="0"/>
+                        </Anchors>
+                    </Button>
                     <Button parentKey="Refresh" inherits="UIPanelButtonTemplate" text="REFRESH">
                         <Size x="60" y="22"/>
                         <Anchors>
-                            <Anchor point="LEFT" relativeKey="$parent.Quick5" relativePoint="RIGHT" x="30" y="-1"/>
+                            <Anchor point="LEFT" relativeKey="$parent.Quick10" relativePoint="RIGHT" x="10" y="-1"/>
                         </Anchors>
                         <Layers>
                             <Layer level="OVERLAY" textureSubLevel="1">

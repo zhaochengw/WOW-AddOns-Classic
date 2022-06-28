@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("SneedsShredder", "DBM-Party-Classic", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("@file-date-integer@")
+mod:SetRevision("20220511043833")
 mod:SetCreatureID(642, 643)--Shredder, Sneed
 --mod:SetEncounterID(1144)
 

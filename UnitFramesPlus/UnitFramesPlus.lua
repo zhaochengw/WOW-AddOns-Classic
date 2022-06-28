@@ -28,14 +28,14 @@ UnitFramesPlusDefaultDB = {
         colorhp = 1,        --生命条染色
         colortype = 2,      --生命条染色类型：1职业，2生命值百分比
         -- textunit = 1,    --状态条数值显示为万亿
-        builtincd = 0,      --内置冷却计时
-        cdtext = 0,         --内置冷却计时数字
-        exacthp = 0,        --内置敌人精确生命值
+        builtincd = 1,      --内置冷却计时
+        cdtext = 1,         --内置冷却计时数字
+        exacthp = 1,        --内置敌人精确生命值
     },
 
     player = {
         scale = 1,          --玩家头像缩放比例
-        dragonborder = 1,   --精英头像
+        dragonborder = 0,   --精英头像
         bordertype = 1,     --精英头像类型：1精英头像，2银英头像，3稀有头像
         extrabar = 0,       --扩展框
         hpmp = 0,           --不显示扩展框时增加生命值和法力值(百分比)显示
@@ -43,14 +43,14 @@ UnitFramesPlusDefaultDB = {
         hpmpparttwo = 2,    --生命值和法力值第二部分：1当前值，2最大值，3損失值，4百分比，4不显示
         hpmpunit = 1,       --生命值和法力值进位
         unittype = 2,       --1为千进制(k/m)，2为万进位(万/亿)
-        colorhp = 1,        --生命条染色
+        colorhp = 0,        --生命条染色
         colortype = 2,      --生命条染色类型：1职业，2生命值百分比
         movable = 1,        --Shift拖动头像
         indicator = 1,      --头像内战斗信息
         portrait = 1,       --更改头像显示
         portraittype = 1,   --头像类型：1为3D，2为职业图标
         portrait3dbg = 1,   --3D头像背景
-        coord = 1,          --坐标
+        coord = 0,          --坐标
         coordpct = 1,       --副本战场内显示为百分比
         autohide = 0,       --玩家头像自动隐藏
         mouseshow = 0,      --鼠标滑过时才显示数值
@@ -72,11 +72,11 @@ UnitFramesPlusDefaultDB = {
         scale = 1,          --目标头像缩放比例
         classicon = 1,      --职业图标
         moreaction = 1,     --职业图标左键观察，右键交易，中键密语，4键跟随
-        race = 1,           --种族和类型
-        colorhp = 1,        --生命条染色
+        race = 0,           --种族和类型
+        colorhp = 0,        --生命条染色
         colortype = 2,      --生命条染色类型：1职业，2生命值百分比
         indicator = 1,      --头像内战斗信息
-        buffsize = 1,       --调节目标buff/debuff图标大小
+        buffsize = 0,       --调节目标buff/debuff图标大小
         mysize = 24,        --自己施放的buff/debuff大小，默认 21
         othersize = 18,     --其他人施放的buff/debuff大小，默认 17，OmniCC默认 18
         movable = 1,        --Shift拖动目标头像
@@ -88,12 +88,12 @@ UnitFramesPlusDefaultDB = {
         extrabar = 0,       --扩展框
         bartext = 1,        --目标血条数值
         hpmp = 0,           --不显示扩展框时增加生命值和法力值(百分比)显示
-        hpmppartone = 5,    --生命值和法力值第一部分：1当前值，2最大值，3損失值，4百分比
+        hpmppartone = 4,    --生命值和法力值第一部分：1当前值，2最大值，3損失值，4百分比
         hpmpparttwo = 5,    --生命值和法力值第二部分：1当前值，2最大值，3損失值，4百分比，5不显示
         hpmpunit = 1,       --生命值和法力值进位
         unittype = 2,       --1为千进制(k/m)，2为万进位(万/亿)
-        threat = 0,         --仇恨高亮
-        threattext = 0,     --仇恨百分比
+        threat = 1,         --仇恨高亮
+        threattext = 1,     --仇恨百分比
         fontsize = 12,      --扩展显示的数字大小
     },
 
@@ -101,7 +101,7 @@ UnitFramesPlusDefaultDB = {
         systot = 1,         --在进入游戏时自动关闭系统ToT
         showtot = 1,        --额外的ToT
         showtotot = 1,      --额外的ToToT
-        scale = 0.9,        --额外的ToT缩放比例
+        scale = 1,        --额外的ToT缩放比例
         colorname = 1,      --额外的ToT职业名字染色
         colornamenpcno = 1, --NPC不显示职业图标
         -- shortname = 1,   --额外的ToT名字服务器显示为(*)
@@ -114,9 +114,53 @@ UnitFramesPlusDefaultDB = {
         enemycheck = 1,     --敌友检测
     },
 
+	focus = {
+        scale = 1,          --焦点头像缩放比例
+        quick = 1,          --快速设置焦点
+        button = 1,         --快速设置焦点快捷键，1alt，2shift，3ctrl
+        classicon = 1,      --职业图标
+        moreaction = 1,     --职业图标左键观察，右键交易，中键密语，4键跟随
+        race = 0,           --种族和类型
+        colorhp = 0,        --生命条染色
+        colortype = 2,      --生命条染色类型：1职业，2生命值百分比
+        indicator = 0,      --头像内战斗信息
+        movable = 1,        --Shift拖动头像
+        portrait = 1,       --更改头像显示
+        portraittype = 1,   --头像类型：1为3D，2为职业图标
+        portrait3dbg = 1,   --3D头像背景
+        portraitnpcno = 1,  --NPC不显示职业图标
+        mouseshow = 0,      --鼠标滑过时才显示数值
+        extrabar = 0,       --扩展框
+		bartext = 1,        --焦点血条数值
+        hpmp = 0,           --不显示扩展框时增加生命值和法力值(百分比)显示
+        hpmppartone = 4,    --生命值和法力值第一部分：1当前值，2最大值，3損失值，4百分比
+        hpmpparttwo = 5,    --生命值和法力值第二部分：1当前值，2最大值，3損失值，4百分比，4不显示
+        hpmpunit = 1,       --生命值和法力值进位
+        unittype = 2,       --1为千进制(k/m)，2为万进位(万/亿)
+        threat = 1,         --仇恨高亮
+        ufpfontsize = 12,   --扩展显示的数字大小
+        namefontsize = 12,  --扩展显示的数字大小
+        barfontsize = 12,   --扩展显示的数字大小
+    },
+
+    focustarget = {
+        show = 1,           --焦点目标
+        scale = 1,        --焦点目标缩放比例
+        hppct = 1,          --焦点目标生命值百分比
+        colorname = 1,      --焦点目标职业名字染色
+        colornamenpcno = 1, --NPC不显示职业图标
+        shortname = 1,      --焦点目标名字服务器显示为(*)
+        debuff = 1,         --焦点目标debuff
+        cooldown = 1,       --焦点目标debuff冷却
+        movable = 1,        --Shift拖动ToF头像
+        portrait = 0,       --更改头像显示
+        portraitnpcno = 1,  --NPC不显示职业图标
+        enemycheck = 1,      --敌友检测
+    },
+
     party = {
         origin = 1,         --关闭团队风格小队界面
-        always = 1,         --团队中显示小队
+        always = 0,         --团队中显示小队
         level = 1,          --队友等级
         colorname = 1,      --队友名字染色
         shortname = 1,      --队友名字服务器显示为(*)
@@ -150,7 +194,7 @@ UnitFramesPlusDefaultDB = {
     partytarget = {
         show = 1,           --队友目标
         lite = 0,           --简易模式
-        hppct = 1,          --队友目标生命值百分比
+        hppct = 0,          --队友目标生命值百分比
         colorname = 1,      --队友目标职业名字染色
         colornamenpcno = 1, --NPC不显示职业图标
         shortname = 1,      --队友目标名字服务器显示为(*)
@@ -208,6 +252,17 @@ UnitFramesPlusDefaultVar = {
         moved = 0,          --ToT已被拖动
         x = 0,              --ToT位置
         y = 0,              --ToT位置
+    },
+
+	focus = {
+        moving = 0,         --焦点拖动状态
+    },
+
+    focustarget = {
+        moving = 0,         --焦点目标拖动状态
+        moved = 0,          --焦点目标已被拖动
+        x = 0,              --焦点目标位置
+        y = 0,              --焦点目标位置
     },
 
     party = {
@@ -292,6 +347,12 @@ local function UnitFramesPlus_Init()
     if UnitFramesPlus_TargetTargetInit then
         UnitFramesPlus_TargetTargetInit();
     end
+	if UnitFramesPlus_FocusInit then
+        UnitFramesPlus_FocusInit();
+    end
+    if UnitFramesPlus_FocusTargetInit then
+        UnitFramesPlus_FocusTargetInit();
+    end
     if UnitFramesPlus_PartyInit then
         UnitFramesPlus_PartyInit();
     end
@@ -333,6 +394,9 @@ local function UnitFramesPlus_Layout()
     end
     if UnitFramesPlus_TargetTargetLayout then
         UnitFramesPlus_TargetTargetLayout();
+    end
+	if UnitFramesPlus_FocusTargetLayout then
+        UnitFramesPlus_FocusTargetLayout();
     end
     if UnitFramesPlus_PartyTargetLayout then
         UnitFramesPlus_PartyTargetLayout();
@@ -383,6 +447,22 @@ ufpcb:SetScript("OnEvent", function(self, event)
     UnitFramesPlus_Call();
 end)
 
+--系统面板修复
+function UnitFramesPlus_OpenInterfacePanel(panel)
+        local panelName = panel.name;
+        if not panelName then return end
+        local t = {};
+        for i, p in pairs(INTERFACEOPTIONS_ADDONCATEGORIES) do
+            if p.name == panelName then
+                p.collapsed = true;
+                t.element = p;
+                InterfaceOptionsListButton_ToggleSubCategories(t);
+            end
+        end
+    InterfaceOptionsFrame_OpenToCategory(panel);
+    InterfaceOptionsFrame_OpenToCategory(panel);
+end
+
 --设置面板载入
 local function UnitFramesPlus_LoadOptionPanel()
     if not IsAddOnLoaded("UnitFramesPlus_Options") then
@@ -407,8 +487,9 @@ function UnitFramesPlus_SlashHandler(arg)
     end
     local result = UnitFramesPlus_LoadOptionPanel();
     if result == false then return end
-    InterfaceOptionsFrame_OpenToCategory(UnitFramesPlus_OptionsFrame);
-    InterfaceOptionsFrame_OpenToCategory(UnitFramesPlus_OptionsFrame);
+    -- InterfaceOptionsFrame_OpenToCategory(UnitFramesPlus_OptionsFrame);
+    -- InterfaceOptionsFrame_OpenToCategory(UnitFramesPlus_OptionsFrame);
+	UnitFramesPlus_OpenInterfacePanel(UnitFramesPlus_OptionsFrame);
 end
 SlashCmdList["UnitFramesPlus"] = UnitFramesPlus_SlashHandler;
 SLASH_UnitFramesPlus1 = "/unitframesplus";
@@ -531,7 +612,7 @@ ufp:SetScript("OnEvent", function(self, event, ...)
             UnitFramesPlus_Options_Init();
             UnitFramesPlus_Init();
             ufp:UnregisterEvent("ADDON_LOADED");
-            print(UFPLocal_Loaded);
+            -- print(UFPLocal_Loaded);
 
             if TitanPanel_AdjustFrames then
                 hooksecurefunc("TitanPanel_AdjustFrames", function()

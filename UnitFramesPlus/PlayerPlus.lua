@@ -199,6 +199,7 @@ function UnitFramesPlus_PlayerExtrabar()
         -- end
         UnitFramesPlus_PlayerHPMPPct();
     end
+	UnitFramesPlus_TargetPosition();
 end
 
 --隐藏扩展框后调整额外的生命值/法力值/生命值百分比的位置
@@ -225,6 +226,7 @@ function UnitFramesPlus_PlayerHPMPPct()
     UnitFramesPlus_PlayerHPValueDisplayUpdate();
     UnitFramesPlus_PlayerPower();
     UnitFramesPlus_PlayerMPValueDisplayUpdate();
+	UnitFramesPlus_TargetPosition();
 end
 
 --额外的生命值
@@ -378,6 +380,7 @@ function UnitFramesPlus_PlayerMPValueDisplayUpdate()
     local MaxMP = UnitPowerMax("player");
     local CurMPfix, MaxMPfix, LossMPfix = UnitFramesPlus_GetValueFix(CurMP, MaxMP, UnitFramesPlusDB["player"]["hpmpunit"], UnitFramesPlusDB["player"]["unittype"]);
     local PctText = "";
+	local PlayerExtMPText = "";
     local powerType = UnitPowerType("player");
 
     if powerType == 0 then
@@ -778,18 +781,27 @@ function UnitFramesPlus_PlayerExtraTextFontSize()
     UFP_PlayerHPMPPctMP:SetFont(GameFontNormal:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
     UFP_PlayerHPMPPctPct:SetFont(GameFontNormal:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
 
-    PlayerName:SetFont(GameFontNormalSmall:GetFont(), UnitFramesPlusDB["player"]["fontsize"]);
-    PlayerFrameHealthBarText:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
-    PlayerFrameHealthBarTextLeft:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
-    PlayerFrameHealthBarTextRight:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
-    PlayerFrameManaBarText:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
-    PlayerFrameManaBarTextLeft:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
-    PlayerFrameManaBarTextRight:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
+    if not IsAddOnLoaded("EasyFrames") then
+		PlayerName:SetFont(GameFontNormalSmall:GetFont(), UnitFramesPlusDB["player"]["fontsize"]);
+		PlayerFrameHealthBarText:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
+		PlayerFrameHealthBarTextLeft:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
+		PlayerFrameHealthBarTextRight:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
+		PlayerFrameManaBarText:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
+		PlayerFrameManaBarTextLeft:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
+		PlayerFrameManaBarTextRight:SetFont(TextStatusBarText:GetFont(), UnitFramesPlusDB["player"]["fontsize"], "OUTLINE");
+	end
 end
 
 --模块初始化
 function UnitFramesPlus_PlayerInit()
-    UnitFramesPlus_PlayerShiftDrag();
+
+	if IsAddOnLoaded("EasyFrames") then
+		UnitFramesPlusDB["player"]["extrabar"] = 0
+		UnitFramesPlusDB["player"]["dragonborder"] = 0
+		UnitFramesPlusDB["player"]["colorhp"] = 0
+	end
+
+	UnitFramesPlus_PlayerShiftDrag();
     UnitFramesPlus_PlayerDragon();
     UnitFramesPlus_PlayerExtrabar();
     -- UnitFramesPlus_PlayerColorHPBar();

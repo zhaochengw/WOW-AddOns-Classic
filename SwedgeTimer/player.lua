@@ -1,159 +1,181 @@
-local addon_name, addon_data = ...
-local print = addon_data.utils.print_msg
-local floor = addon_data.utils.SimpleRound
+local addon_name, st = ...
+local print = st.utils.print_msg
+local tolerance = st.utils.test_tolerance
+local floor = st.utils.simple_round
+local ST = LibStub("AceAddon-3.0"):GetAddon("SwedgeTimer")
 
 --=========================================================================================
 -- PLAYER SETTINGS 
 --=========================================================================================
-addon_data.player = {}
-addon_data.player.default_settings = {
-    lag_detection_enabled = true,
-    lag_threshold = 0.00,
-    lag_multiplier = 1.5,
-}
+st.player = {}
 
-addon_data.player.guid = UnitGUID("player")
+st.player.swing_timer = 0.00001
+st.player.prev_weapon_speed = 0.1
+st.player.current_weapon_speed = 4.0
+st.player.speed_changed = false
+st.player.extra_attacks_flag = false
 
-addon_data.player.swing_timer = 0.00001
-addon_data.player.prev_weapon_speed = 0.1
-addon_data.player.current_weapon_speed = 4.0
-addon_data.player.weapon_id = GetInventoryItemID("player", 16)
-addon_data.player.speed_changed = false
-addon_data.player.extra_attacks_flag = false
+-- Flag for when we update equipment without double counting the reset
+-- from any gear-related aura change triggers.
+st.player.equipment_update_flag = false
 
--- flag for when we update equipment without double counting the 
-addon_data.player.equipment_update_flag = false
+-- Flag to detect when to reset the timer from the player mounting up.
+st.player.is_mounted = false
 
 -- containers for seal information
-addon_data.player.n_active_seals = 0
-addon_data.player.active_seals = {}
-addon_data.player.active_seal_1 = nil
-addon_data.player.active_seal_1_remaining = 0
-addon_data.player.active_seal_2 = nil
-addon_data.player.active_seal_2_remaining = 0
+st.player.n_active_seals = 0
+st.player.active_seals = {}
+st.player.active_seal_1 = nil
+st.player.active_seal_1_remaining = 0
+st.player.active_seal_2 = nil
+st.player.active_seal_2_remaining = 0
 
-addon_data.player.twist_impossible = false
+-- A flag for when lag is likely to 
+st.player.twist_impossible = false
 
 -- does the player have heroism/lust buff active
-addon_data.player.has_bloodlust = false
+st.player.has_bloodlust = false
+
+-- does the player have KJ breath buff
+st.player.has_breath_haste = false
 
 -- judgement information
-addon_data.player.new_judgement_cast = false
-addon_data.player.judgement_being_tracked = false
-addon_data.player.judgement_on_cooldown = false
-addon_data.player.judgement_cd_remaining = 0.0
+st.player.new_judgement_cast = false
+st.player.judgement_being_tracked = false
+st.player.judgement_on_cooldown = false
+st.player.judgement_cd_remaining = 0.0
 
 -- containers for GCD information
-addon_data.player.active_gcd_full_duration = 0.0 -- length of the currently active GCD
-addon_data.player.active_gcd_remaining = 0.0 -- timer on currently active GCD.
-addon_data.reported_gcd_lockout = true
-addon_data.player.gcd_lockout = false -- lock for when we have an active GCD ticking
-addon_data.player.spell_gcd_duration = 1.5
-addon_data.player.base_gcd_duration = 1.5 -- should never change, use this for CS
+st.player.active_gcd_full_duration = 0.0 -- length of the currently active GCD
+st.player.active_gcd_remaining = 0.0 -- timer on currently active GCD.
+st.reported_gcd_lockout = true
+st.player.gcd_lockout = false -- lock for when we have an active GCD ticking
+st.player.spell_gcd_duration = 1.5
+st.player.base_gcd_duration = 1.5 -- should never change, use this for CS
 
 -- counter for periodic repolls
-addon_data.player.periodic_repoll_counter = 0.0
+st.player.periodic_repoll_counter = 0.0
 
 -- flag to run a double poll after 0.1s on aura change to catch bad API calls
-addon_data.player.aura_repoll_counter = 0.0
-addon_data.player.repoll_on_aura_change = true
+st.player.aura_repoll_counter = 0.0
+st.player.repoll_on_aura_change = true
 
 -- a flag to ensure the code on swing completion only runs once
-addon_data.player.reported_swing_timer_complete = false
-addon_data.player.reported_swing_timer_complete_double = false
-addon_data.player.time_since_swing_completion = 0.0
+st.player.reported_swing_timer_complete = false
+st.player.reported_swing_timer_complete_double = false
+st.player.time_since_swing_completion = 0.0
 
--- addon_data.player.new_parry = false
+-- container for the last guid we picked up being cast by the player
+st.player.currently_casting_spell_guid = nil
 
 -- a flag to ensure the code on speed change only runs once per change
-addon_data.player.reported_speed_change = true
+st.player.reported_speed_change = true
 
--- Flag to detect if we have a new/falling off SotCr aura and need to change swing
+-- Flags to detect if we have a new/falling off SotCr aura and need to change swing
 -- timers to account for haste snapshotting
-addon_data.crusader_lock = false
-addon_data.crusader_currently_active = false
+st.crusader_currently_active = false
+st.player.new_crusader_midswing = false
+st.player.crusader_fell_off_midswing = false
+st.increased_first = false
+st.dealt_with_stupid_edgecase = false
 
--- Flags to detect any spell casts that would reset the swing timer.
-addon_data.player.how_cast_guid = nil
-addon_data.player.holy_wrath_cast_guid = nil
+-- The points in two-handed weapon specialisation
+st.player.twohand_spec_points = 0
 
 -- A measure of the player's ping
-addon_data.player.lag_world = 0.0
+st.player.lag_world_ms = 0.0
+st.player.lag_calibrated_ms = 0.0
 
-addon_data.player.update_lag = function()
-    local _, _, _, lag = GetNetStats()
+-- Some timestamp containers used to determine when cast times get interrupted
+st.player.last_spell_update_timestamp = nil
+st.player.tracked_spell_cast_start_timestamp = nil
+st.player.swing_complete_timestamp = nil
+
+-- a flag to indicate if the player is currently in the "attacking" state
+-- from either using the manual "attack" spell 6603 or from executing 
+-- startattack/stopattack.
+st.player.is_attacking = false
+
+-- Updates the player's lag according to the specified calibration.
+st.player.update_lag = function()
+    local db = ST.db.profile
+    local lag = select(4, GetNetStats())
+    st.player.lag_world_ms = lag
     -- print('lag before calibration: ' .. tostring(lag))
-    -- print('lag multiplier: ' .. tostring(character_player_settings.lag_multiplier))
-    -- print('lag threshold: ' .. tostring(character_player_settings.lag_threshold))
-    lag = (lag * character_player_settings.lag_multiplier) + character_player_settings.lag_threshold
+    -- print('lag multiplier: ' .. tostring(db.lag_multiplier))
+    -- print('lag offset: ' .. tostring(db.lag_offset))
+    lag = (lag * db.lag_multiplier) + db.lag_offset
     -- print('lag after calibration: ' .. tostring(lag))
-    addon_data.player.lag_world = lag / 1000.0
+    st.player.lag_calibrated_ms = lag
 end
 
-addon_data.player.lag_detection_enabled = function()
-    return character_player_settings.lag_detection_enabled
+st.player.lag_detection_enabled = function()
+    local db = ST.db.profile
+    return db.lag_detection_enabled
 end
 
-addon_data.player.LoadSettings = function()
-    -- If the carried over settings dont exist then make them
-    if not character_player_settings then
-        character_player_settings = {}
+st.player.get_twohand_spec_points = function()
+    st.player.twohand_spec_points = select(5,GetTalentInfo(3, 13))
+    -- print("points in 2h spec = "..tostring(st.player.twohand_spec_points))
+end
+
+-- Returns true if any points in 2h weapon spec
+st.player.is_player_ret = function()
+    if st.player.twohand_spec_points > 0 then
+        return true
     end
-    -- If the carried over settings aren't set then set them to the defaults
-    for setting, value in pairs(addon_data.player.default_settings) do
-        if character_player_settings[setting] == nil then
-            character_player_settings[setting] = value
-        end
-    end
-    -- Update settings that dont change unless the interface is reloaded
-    addon_data.player.guid = UnitGUID("player")
+    return false
 end
 
 -- Called when the swing timer reaches zero
-addon_data.player.swing_timer_complete = function()
-    -- handle seal of the crusader snapshotting for new crusader buffs
-    if addon_data.crusader_lock then
-        -- print('releasing crusader lock')
-    end
-    addon_data.crusader_lock = false
+st.player.swing_timer_complete = function()
+    -- clear SotC flags
+    st.player.crusader_fell_off_midswing = false
+    st.player.new_crusader_midswing = false
+    st.increased_first = false
+    st.dealt_with_stupid_edgecase = false
+
     -- print('Swing timer complete.')
-    addon_data.player.update_weapon_speed()
-    addon_data.bar.update_bar_on_timer_full()
+    st.player.update_weapon_speed()
+    st.bar.update_bar_on_timer_full()
 end
 
 -- Called when the swing timer should be reset
-addon_data.player.reset_swing_timer = function()
-    if addon_data.crusader_lock then
-        -- print('releasing crusader lock')
-    end
+st.player.reset_swing_timer = function()
 
-    addon_data.crusader_lock = false
-    addon_data.player.twist_impossible = false
-    -- addon_data.player.update_weapon_speed() -- NOT SURE IF THIS IS NEEDED
-    addon_data.player.swing_timer = addon_data.player.current_weapon_speed
+    -- clear SotC flags
+    st.player.crusader_fell_off_midswing = false
+    st.player.new_crusader_midswing = false
+    st.increased_first = false
+    st.dealt_with_stupid_edgecase = false
+
+
+    st.player.twist_impossible = false
+    -- st.player.update_weapon_speed() -- NOT SURE IF THIS IS NEEDED
+    st.player.swing_timer = st.player.current_weapon_speed
     -- print('releasing double timer check')
-    addon_data.player.reported_swing_timer_complete = false
-    addon_data.bar.update_bar_on_swing_reset()
+    st.player.reported_swing_timer_complete = false
+    st.bar.update_bar_on_swing_reset()
 end
 
 -- called onupdate to manually alter the swing timer with the elapsed time
-addon_data.player.update_swing_timer = function(elapsed)
+st.player.update_swing_timer = function(elapsed)
     if true then
-        if addon_data.player.swing_timer > 0 then
-            addon_data.player.swing_timer = addon_data.player.swing_timer - elapsed
-            if addon_data.player.swing_timer < 0 then
-                addon_data.player.swing_timer = 0
+        if st.player.swing_timer > 0 then
+            st.player.swing_timer = st.player.swing_timer - elapsed
+            if st.player.swing_timer < 0 then
+                st.player.swing_timer = 0
             end
         end
     end
 end
 
 -- called onupdate to manually alter the active GCD remaining time_before_swing
-addon_data.player.update_active_gcd_timer = function(elapsed)
-    if addon_data.player.active_gcd_remaining > 0 then
-        addon_data.player.active_gcd_remaining = addon_data.player.active_gcd_remaining - elapsed
-        if addon_data.player.active_gcd_remaining < 0 then
-            addon_data.player.active_gcd_remaining = 0
+st.player.update_active_gcd_timer = function(elapsed)
+    if st.player.active_gcd_remaining > 0 then
+        st.player.active_gcd_remaining = st.player.active_gcd_remaining - elapsed
+        if st.player.active_gcd_remaining < 0 then
+            st.player.active_gcd_remaining = 0
         end
     end
 end 
@@ -162,48 +184,83 @@ end
 -- Functions run when relevant events are intercepted
 --=========================================================================================
 
-addon_data.player.update_weapon_speed = function()
+st.player.update_weapon_speed = function()
     -- Function called whenever it is possible that the attack speed has changed.
     -- We use the reported_speed_change flag to ensure that this logic happens
     -- exactly once during a player frame update, because multiple events can
     -- happen between the same update, and the logic to process speed changes
     -- is most efficiently handled in the onupdate.
-    if not addon_data.player.reported_speed_change then 
-        -- check the speed isn't the same, and if it is, return it
+
+    local old = st.player.current_weapon_speed
+    local new = UnitAttackSpeed("player")
+    -- print('API speed says: ' .. tostring(new))
+
+    -- Handle crusader snapshotting *before* we compare old and new speeds
+    -- apply a 1.4 speed multiplier until the next swing
+    -- but only if the speed has actually changed - if it hasn't
+    -- then the UnitAttackSpeed endpoint might be lagging, and we don't
+    -- want to double count the increase or reduction.
+
+    -- SotC has ONLY become active this swing, not fallen off
+    if st.player.new_crusader_midswing and not st.player.crusader_fell_off_midswing then
+        if not tolerance(new, old, 0.004) then
+            st.increased_first = true -- need to record this
+            new = new * 1.4
+        end
+    -- SotC has ONLY fallen off this swing, not become active
+    elseif st.player.crusader_fell_off_midswing and not st.player.new_crusader_midswing then
+        if not tolerance(new, old, 0.004) then
+            new = new / 1.4
+        end
+    -- SotC became active then fell off, things can misbehave here!
+    -- (seems fine when it falls off then is reactivated)
+    elseif st.player.new_crusader_midswing and st.increased_first then
+        -- if they are not the same, apply the correction,
+        if not tolerance(new, old, 0.004) then           
+            -- BUT ONLY if we haven't flagged that the API has registered
+            -- the change due to SotC falling off again.
+            if not st.dealt_with_stupid_edgecase then
+                new = new * 1.4
+            end
+        -- if they are substantially different, this is very likely due to the game
+        -- registering the attack speed change from crusader falling off. So enable
+        -- a flag that now prevents the correction from being re-applied if another
+        -- genuine haste effect changes state, like a dst proc.
+        else
+            st.dealt_with_stupid_edgecase = true
+        end
+    end
+
+    -- print('API speed after correction says: ' .. tostring(new))
+    if not st.player.reported_speed_change then 
+        -- check the speed isn't the same, and if it is, return 
         -- this check picks up on multiple events between updates
         -- that can trigger attack speed changes
-        local old = addon_data.player.current_weapon_speed
-        local new = UnitAttackSpeed("player")
-        if old == new then return end
+        if tolerance(new, old, 0.004) then return end
     end
-
-    -- Handle crusader snapshotting
-    if addon_data.crusader_lock == true then
-        -- print('十字军圣印快照锁定')
-        addon_data.player.speed_changed = false
-        return
+    
+    -- Handle when the API sometimes returns 0, especially on first 
+    -- load of the client.
+    -- Not perfect but it prevents infinities appearing in calculations.
+    if new == 0 then
+        new = 3.0
     end
-
-    addon_data.player.prev_weapon_speed = addon_data.player.current_weapon_speed
-    -- Poll the API for the attack speed
-    addon_data.player.current_weapon_speed, _ = UnitAttackSpeed("player")
-    -- print('API speed says: ' .. tostring(addon_data.player.current_weapon_speed))
-
-
 
     -- Update the attack speed and mark if it has changed.
-    if addon_data.player.current_weapon_speed ~= addon_data.player.prev_weapon_speed then
-        addon_data.player.speed_changed = true
-        addon_data.player.reported_speed_change = false
+    st.player.prev_weapon_speed = old
+    st.player.current_weapon_speed = new   
+    if st.player.current_weapon_speed ~= st.player.prev_weapon_speed then
+        st.player.speed_changed = true
+        st.player.reported_speed_change = false
     else
-        addon_data.player.speed_changed = false
+        st.player.speed_changed = false
     end
 
 end
 
 -- Function to return a bool indicating if we're in a seal we can twist from.
-addon_data.player.is_twist_seal_active = function()
-    if addon_data.player.active_seals["命令圣印"] ~= nil or addon_data.player.active_seals["正义圣印"] ~= nil then
+st.player.is_twist_seal_active = function()
+    if st.player.active_seals["command"] ~= nil or st.player.active_seals["righteousness"] ~= nil then
         return true
     else
         return false
@@ -211,148 +268,203 @@ addon_data.player.is_twist_seal_active = function()
 end
 
 -- Function run when we intercept an event indicating the player's equipment has changed.
-addon_data.player.on_equipment_change = function()
+st.player.on_equipment_change = function()
     local new_guid = GetInventoryItemID("player", 16)
     -- Check for a main hand weapon change
-    if addon_data.player.weapon_id ~= new_guid then
-        addon_data.player.equipment_update_flag = true
-        addon_data.player.update_weapon_speed()
-        addon_data.player.reset_swing_timer()
-        addon_data.player.weapon_id = new_guid
+    if st.player.weapon_id ~= new_guid then
+        st.player.equipment_update_flag = true
+        st.player.update_weapon_speed()
+        st.player.reset_swing_timer()
+        st.player.weapon_id = new_guid
 
         -- if we're also in combat, trigger a GCD
-        if addon_data.core.in_combat then
-            -- addon_data.player.force_gcd_repoll()
-            addon_data.player.process_possible_spell_cooldown(true)
+        if st.core.in_combat then
+            -- st.player.force_gcd_repoll()
+            st.player.process_possible_spell_cooldown(true)
         end
     end
 end
 
 -- Function run when we intercept an unfiltered combatlog event.
-addon_data.player.OnCombatLogUnfiltered = function(combat_info)
-	local _, event, _, source_guid, _, _, _, dest_guid, _, _, _, _, spell_name, _ = unpack(combat_info)
-	
-    -- print(event)
+st.player.OnCombatLogUnfiltered = function(combat_info)
+	local _, event, _, source_guid, _, _, _, dest_guid, _, _, _, _, _, _ = unpack(combat_info)
 
     -- Handle all relevant events where the player is the action source
-    if (source_guid == addon_data.player.guid) then
+    if (source_guid == st.player.guid) then
 
 	-- Check for extra attacks that would accidently reset the swing timer.
     -- If we find any, set a flag that lets the code know to expect two attack events to come 
     -- through later, and that we should ignore the first of these.
 		if (event == "SPELL_EXTRA_ATTACKS") then
-			addon_data.player.extra_attacks_flag = true
+			st.player.extra_attacks_flag = true
 		end
         if (event == "SWING_DAMAGE") then
-			if (addon_data.player.extra_attacks_flag == false) then
-				addon_data.player.reset_swing_timer()
+			if (st.player.extra_attacks_flag == false) then
+				st.player.reset_swing_timer()
 			end
-			addon_data.player.extra_attacks_flag = false
+			st.player.extra_attacks_flag = false
         elseif (event == "SWING_MISSED") then
-            if (addon_data.player.extra_attacks_flag == false) then
-			    addon_data.player.reset_swing_timer()
+            if (st.player.extra_attacks_flag == false) then
+			    st.player.reset_swing_timer()
             end
-            addon_data.player.extra_attacks_flag = false
+            st.player.extra_attacks_flag = false
         end
     -- Handle all relevant events where the player is the target
-    elseif (dest_guid == addon_data.player.guid) then
+    elseif (dest_guid == st.player.guid) then
         if (event == "SWING_MISSED") then
-            local miss_type, is_offhand = select(12, unpack(combat_info))
+            local miss_type = select(12, unpack(combat_info))
             if miss_type == "PARRY" then
                 -- parry reduces your swing timer by 40%, but cannot go below 20%.
-                local swing_timer_reduced_40p = addon_data.player.swing_timer - (0.4 * addon_data.player.current_weapon_speed)
-                local min_swing_time = addon_data.player.current_weapon_speed * 0.2             
+                local swing_timer_reduced_40p = st.player.swing_timer - (0.4 * st.player.current_weapon_speed)
+                local min_swing_time = st.player.current_weapon_speed * 0.2             
                 if swing_timer_reduced_40p < min_swing_time then
-                    addon_data.player.swing_timer = min_swing_time
+                    st.player.swing_timer = min_swing_time
                 else
-                    addon_data.player.swing_timer = swing_timer_reduced_40p
+                    st.player.swing_timer = swing_timer_reduced_40p
                 end
                 -- once the swing timer is updated, alter the bar as necessary
-                if addon_data.player.gcd_lockout then
-                    addon_data.bar.update_bar_on_parry()      
+                if st.player.gcd_lockout then
+                    st.bar.update_bar_on_parry()      
                 end
             end
         end
     end
-    -- finally update the attack speed
-    -- addon_data.player.update_weapon_speed()
 end
 
-addon_data.player.calculate_spell_GCD_duration = function()
+-- Function to calculate the player's GCD duration of a standard spell
+-- takes into account spell haste, and multiplicative buffs like
+-- bloodlust and breath buff
+st.player.calculate_spell_GCD_duration = function()
     local rating_percent_reduction = GetCombatRatingBonus(20)
-    local base = addon_data.player.base_gcd_duration
+    local base = st.player.base_gcd_duration
     local current = base * (100 / (100+rating_percent_reduction))
-    if addon_data.player.has_bloodlust then
-        
+    
+    -- Check for multiplicative buffs
+    if st.player.has_bloodlust then
         current = current * (1/1.3)
     end
+    if st.player.has_breath_haste then
+        current = current * (1/1.25)
+    end
+	
+	-- get FoL speed, should normally equivalent to GCD unless some debuff
+	local spellFoL = 19750
+	local _, _, _, timeFoL, _,  _, _ = GetSpellInfo(spellFoL)
+	timeFoL = timeFoL or 1500
+	timeFoL = timeFoL / 1000
+	
+	-- get the minimum of 2 logics
+	current = math.min(current, timeFoL)
+
     -- minimum GCD for paladins in 1s
     if current < 1 then
         current = 1.0
     end
+	
     -- round to 3 decimal places
     current = floor(current, 0.001)
-    addon_data.player.spell_gcd_duration = current
-    -- print('当前法术 GCD: ' .. current)
+    st.player.spell_gcd_duration = current
+    -- print('current spell GCD: ' .. current)
     return current
 end
 
--- Function to iterate over the player's auras and record any active Seals.
-addon_data.player.parse_auras = function()
-    local end_iter = false
-    local counter = 1
-    addon_data.player.n_active_seals = 0
-    -- print('处理BUFF刷新与变更...')
+-- Simple func to match a seal label.
+st.player.match_seal = function(seal_label)
+    if st.player.active_seals[seal_label] ~= nil then
+        return true
+    end
+    return false
+    
+end
 
+-- Function to iterate over the player's auras and record any active Seals.
+st.player.parse_auras = function()
+    
     -- copy the previous seals
-    addon_data.player.previous_active_seals = addon_data.player.active_seals
-    local has_bloodlust = false
+    st.player.previous_active_seals = st.player.active_seals
+
+    -- reset the player's state
+    st.player.n_active_seals = 0
+    st.player.has_bloodlust = false
+    st.player.has_breath_haste = false
+    st.player.active_seals = {}
+
     -- iterate over the current player auras and process seals
-    addon_data.player.active_seals = {}
-    while not end_iter do
-        local name, icon, count, _, duration, expiration_time, _, _, _, spell_id = UnitAura("player", counter)
+    -- and other buffs of interest
+    local counter = 1
+    while true do
+        local name, _, _, _, _, _, _, _, _, spell_id = UnitAura("player", counter)
         if name == nil then
-            end_iter = True
             break
         end
-        -- if a seal spell, process it
-        if string.find(name, '圣印') then
-            addon_data.player.active_seals[name] = true
-            addon_data.player.n_active_seals = addon_data.player.n_active_seals + 1
-            if name == '十字军圣印' then               
-                addon_data.player.crusader_currently_active = true
-            end
+
+        -- First cross check seals
+        if st.data.sob_ids[spell_id] ~= nil then
+            st.player.active_seals['blood'] = true
+            st.player.n_active_seals = st.player.n_active_seals + 1
+
+        elseif st.data.soc_ids[spell_id] ~= nil then
+            st.player.active_seals['command'] = true
+            st.player.n_active_seals = st.player.n_active_seals + 1
+
+        elseif st.data.sotc_ids[spell_id] ~= nil then
+            st.player.active_seals['crusader'] = true
+            st.player.crusader_currently_active = true
+            st.player.n_active_seals = st.player.n_active_seals + 1
+
+        elseif st.data.sor_ids[spell_id] ~= nil then
+            st.player.active_seals['righteousness'] = true         
+            st.player.n_active_seals = st.player.n_active_seals + 1
+
+        elseif st.data.sow_ids[spell_id] ~= nil then
+            st.player.active_seals['wisdom'] = true
+            st.player.n_active_seals = st.player.n_active_seals + 1
+
+        elseif st.data.sol_ids[spell_id] ~= nil then
+            st.player.active_seals['light'] = true
+            st.player.n_active_seals = st.player.n_active_seals + 1
+
+        elseif st.data.soj_ids[spell_id] ~= nil then
+            st.player.active_seals['justice'] = true
+            st.player.n_active_seals = st.player.n_active_seals + 1
+
+        elseif st.data.sov_ids[spell_id] ~= nil then
+            st.player.active_seals['vengeance'] = true
+            st.player.n_active_seals = st.player.n_active_seals + 1       
+
         -- Catch bloodlust or heroism
         elseif spell_id == 2825 or spell_id == 32182 then
-            -- print('嗜血/英勇了！')
-            has_bloodlust = true
+            st.player.has_bloodlust = true       
+
+        -- Catch KJ breath buff
+        elseif spell_id == 45856 then
+            st.player.has_breath_haste = true           
         end
         counter = counter + 1
     end
-    addon_data.player.has_bloodlust = has_bloodlust
 end
 
 -- Function to parse the list of Seals and set flags etc.
-addon_data.player.process_auras = function()
+st.player.process_auras = function()
     -- Check if crusader currently active.
-    if addon_data.player.active_seals["十字军圣印"] == nil then
-        addon_data.player.crusader_currently_active = false
+    if st.player.active_seals["crusader"] == nil then
+        st.player.crusader_currently_active = false
     end
-    -- check for any new Seal of the Crusader casts
-    if addon_data.player.crusader_currently_active then
-        if addon_data.player.previous_active_seals["十字军圣印"] == nil then
+    -- check for any new crusader casts
+    if st.player.crusader_currently_active then
+        if st.player.previous_active_seals["crusader"] == nil then
             -- if we're also midway through a swing, need some additional logic 
             -- to handle the haste snapshotting
-            if addon_data.player.swing_timer > 0 then
-                -- print('启用十字军圣印释放锁定')
-                addon_data.crusader_lock = true
+            if st.player.swing_timer > 0 then
+                -- print('enabling crusader lock, new SotC cast midswing')
+                st.player.new_crusader_midswing = true
             end
         end
-    -- check for any Seal of the Crusader that's fallen off midswing
-    elseif addon_data.player.previous_active_seals["十字军圣印"] then
-        if addon_data.player.swing_timer > 0 then
-            -- print('启用十字军圣印消失锁定')
-            addon_data.crusader_lock = true
+    -- check for any crusader that's fallen off midswing
+    elseif st.player.previous_active_seals["crusader"] then
+        if st.player.swing_timer > 0 then
+            -- print('enabling crusader lock, old SotC fell off midswing')
+            st.player.crusader_fell_off_midswing = true
         end
     end
 end
@@ -361,28 +473,27 @@ end
 
 -- There is no information in the event payload on what changed, so we have to rescan auras
 -- on the player.
-addon_data.player.on_player_aura_change = function()
+st.player.on_player_aura_change = function()
 
     -- Function that parses the auras to record seals.
-    addon_data.player.parse_auras()
+    st.player.parse_auras()
 
     -- Function that processes the above.
-    addon_data.player.process_auras()
+    st.player.process_auras()
 
-    -- print(addon_data.player.active_seals)
-    -- print(addon_data.player.n_active_seals)
-    addon_data.player.calculate_spell_GCD_duration()
-    addon_data.player.update_weapon_speed()
-    addon_data.player.check_impossible_twists()
-    addon_data.bar.update_bar_on_aura_change()
+    -- print(st.player.active_seals)
+    -- print(st.player.n_active_seals)
+    st.player.calculate_spell_GCD_duration()
+    st.player.update_weapon_speed()
+    st.player.check_impossible_twists()
+    st.bar.update_bar_on_aura_change()
     
 end
 
-
 -- Function to detect any spell casts like repentance that would reset
 -- the swing timer. GCD tracking handled elsewhere by other event triggers.
-addon_data.player.OnPlayerSpellCast = function(event, args)
-    -- print('检测到法术释放')
+st.player.OnPlayerSpellCast = function(args)
+    -- print('detected spell cast')
     -- only process player casts
     if not args[1] == "player" then
         return
@@ -391,80 +502,103 @@ addon_data.player.OnPlayerSpellCast = function(event, args)
     local spell_id = args[4] -- universal for a given spell type
     local spell_guid = args[3] -- completely unique 
 
-    -- detect judgements and track the cooldown
+    -- Detect judgements and track the cooldown
     if spell_id == 20271 then
-        addon_data.player.new_judgement_cast = true
+        st.player.new_judgement_cast = true
     end
 
-    -- detect repentance casts and reset the timer
-    if spell_id == 20066 then
-        addon_data.player.reset_swing_timer()
+    -- Detect casts that reset the timer on cast
+    if st.data.reset_on_cast_spell_ids[spell_id] ~= nil then
+        st.player.reset_swing_timer()
 
-    -- detect HoW casts and log the cast guid
-    elseif spell_id == 27180 then
-        addon_data.player.how_cast_guid = spell_guid
-
-    -- detect Holy Wrath casts and log the cast guid
-    elseif spell_id == 27139 then
-        addon_data.player.holy_wrath_cast_guid = spell_guid
+    -- Detect casts that reset the timer on completion and log
+    -- the spell guid to check it against any completing spells.
+    elseif st.data.reset_on_completion_spell_ids[spell_id] ~= nil then
+        st.player.currently_casting_spell_guid = spell_guid
     end
+
 end
 
 -- function to detect the player's successful casts that reset the 
 -- swing timer
-addon_data.player.OnPlayerSpellCompletion = function(event, args)
-    -- print('法术释放结束')
-    if args[2] == addon_data.player.how_cast_guid then
-        -- print('成功释放愤怒之锤，重置平砍条...')
-        addon_data.player.reset_swing_timer()
-    elseif args[2] == addon_data.player.holy_wrath_cast_guid then
-        -- print('成功释放神圣愤怒，重置平砍条...')
-        addon_data.player.reset_swing_timer()
+st.player.OnPlayerSpellCompletion = function(args)
+    -- print('Spell completed')
+    if args[2] == st.player.currently_casting_spell_guid then
+        -- print('detected a finished cast that resets the timer')
+        st.player.reset_swing_timer()
     end
+
+    local spell_id = args[3]
+    -- if this is the "attack" spell id 6603, switch the attack state
+    if spell_id == 6603 then
+        st.player.is_attacking = not st.player.is_attacking
+        -- print('player is attacking = '..tostring(st.player.is_attacking))
+    end
+    -- also clear the last spell cast timestamp
+    st.player.tracked_spell_cast_start_timestamp = nil
+
 end
 
 -- Called when the player's spellcast is interrupt to reset the gcd.
-addon_data.player.on_spell_interrupt = function()
-    addon_data.player.active_gcd_remaining = 0
-    addon_data.player.gcd_lockout = false
-    addon_data.bar.hide_gcd_bar()
+st.player.on_spell_interrupt = function()
+    st.player.active_gcd_remaining = 0
+    st.player.gcd_lockout = false
+    st.bar.hide_gcd_bar()
+
+    -- also check if we need to add time to the swing timer under
+    -- certain circumstances
+    if st.player.swing_timer == 0 and st.player.is_attacking then
+        if st.player.tracked_spell_cast_start_timestamp ~= nil then
+            local time_now = GetTime()
+            local deduction = time_now - st.player.swing_complete_timestamp
+            local new_swing_timer = st.player.current_weapon_speed - deduction
+            -- print('new swing timer says '..tostring(new_swing_timer))
+            st.player.reset_swing_timer()
+            st.player.swing_timer = new_swing_timer
+        end
+    end
+
+    st.player.tracked_spell_cast_start_timestamp = nil
+
 end
 
 -- Function to check for impossible twists and set the according flag
-addon_data.player.check_impossible_twists = function()
+st.player.check_impossible_twists = function()
+    
+    local db = ST.db.profile
     -- if setting is disabled just return
-    if not character_bar_settings.lag_detection_enabled then
+    if not db.lag_detection_enabled then
         return
     end
 
-    local gcd_with_lag = addon_data.player.active_gcd_remaining + addon_data.player.lag_world
-    local time_since_previous_swing = addon_data.player.current_weapon_speed - addon_data.player.swing_timer
+    local gcd_with_lag = st.player.active_gcd_remaining + (st.player.lag_calibrated_ms * 0.001)
+    local time_since_previous_swing = st.player.current_weapon_speed - st.player.swing_timer
     local gcd_ends_relative_to_swing = time_since_previous_swing + gcd_with_lag
     -- local gcd_ends_relative_to_swing = time_since_previous_swing + gcd_with_lag
-    -- print('平砍GCD + 延迟: ' .. tostring(gcd_ends_relative_to_swing))
-    -- print('当前攻击速度： ' .. tostring(addon_data.player.current_weapon_speed))
-    -- print('校正后延迟: ' .. tostring(addon_data.player.lag_world))
+    -- print('GCD + lag ends relative to swing: ' .. tostring(gcd_ends_relative_to_swing))
+    -- print('Current attack speed: ' .. tostring(st.player.current_weapon_speed))
+    -- print('Lag after calibration: ' .. tostring(st.player.lag_calibrated_ms))
     
-    if gcd_ends_relative_to_swing > addon_data.player.current_weapon_speed then
-        if addon_data.player.swing_timer > character_bar_settings.twist_window then
-            -- print('干，可能舞不出来了！')
-            addon_data.player.twist_impossible = true
+    if gcd_ends_relative_to_swing > st.player.current_weapon_speed then
+        if st.player.swing_timer > st.bar.get_twist_window_time_before_swing() then
+            -- print('SHIT SON WE COULD BE MISSING THIS TWIST')
+            st.player.twist_impossible = true
         else
-            addon_data.player.twist_impossible = false
+            st.player.twist_impossible = false
         end
     end
 end
 
 -- Called when we receive the SPELL_UPDATE_COOLDOWN event
-addon_data.player.process_possible_spell_cooldown = function(force_flag)
+st.player.process_possible_spell_cooldown = function(force_flag)
     -- first check if we're on gcd lockout
-    if addon_data.player.gcd_lockout and not force_flag then
-        -- print('GCD已锁定')
+    if st.player.gcd_lockout and not force_flag then
+        -- print('on gcd lockout already, ignoring')
         return
     end
 
     local time_started, duration = GetSpellCooldown(29515)
-    -- print('检测到GCD变化，内部设置: ' .. tostring(duration))
+    -- print('detected GCD going off, setting internally: ' .. tostring(duration))
     if duration == 0 then
         -- print('SPELL_UPDATE_COOLDOWN with no GCD duration')
         return
@@ -478,152 +612,152 @@ addon_data.player.process_possible_spell_cooldown = function(force_flag)
     -- print('duration says: ' .. tostring(duration))
     -- print('calculated duration remaining:' .. tostring(calced_duration_remaining))
 
-    addon_data.player.gcd_lockout = true
-    addon_data.reported_gcd_lockout = false
-    addon_data.player.active_gcd_full_duration = duration
-    addon_data.player.active_gcd_remaining = calced_duration_remaining
+    st.player.gcd_lockout = true
+    st.reported_gcd_lockout = false
+    st.player.active_gcd_full_duration = duration
+    st.player.active_gcd_remaining = calced_duration_remaining
 
     -- Figure out if we're lagging
-    addon_data.player.update_lag()
-
-    -- This is the lag derived from the difference in the duration remaining from the API
-    -- and when we are first aware of the GCD. This is most often zero but sometimes there
-    -- will be a pronounced difference that I theorise is due to lag, and is more likely
-    -- to be accurate that the ping from the GetNetStats API, which only repolls every 30s.
-    -- local dynamic_lag = duration - calced_duration_remaining
-    -- print('动态延迟估计: ' .. tostring(dynamic_lag))
+    st.player.update_lag()
 
     -- Check for impossible twists
-    addon_data.player.check_impossible_twists()   
+    st.player.check_impossible_twists()   
 end
 
-addon_data.player.process_gcd_end = function()
-    -- print('GCD锁定释放')
-    addon_data.player.active_gcd_remaining = 0
-    addon_data.player.gcd_lockout = false
-    addon_data.bar.hide_gcd_bar() -- i almost don't like this being here
+st.player.process_gcd_end = function()
+    -- print('reached end of GCD, releasing lock')
+    st.player.active_gcd_remaining = 0
+    st.player.gcd_lockout = false
+    st.bar.hide_gcd_bar() -- i almost don't like this being here
 end
 
 
-addon_data.player.process_new_judgment_cd = function()
+-- Called on spell update cooldown 
+st.player.on_spell_update_cooldown = function()
+    st.player.last_spell_update_timestamp = GetTime()
+end
+
+-- If the swing timer is not zero, we need to track the timestamp of the last
+-- SPELL_UPDATE_COOLDOWN event, which might need to be used in setting the swing timer
+st.player.on_spell_cast_start = function()
+    if st.player.swing_timer > 0 then
+        st.player.tracked_spell_cast_start_timestamp = st.player.last_spell_update_timestamp
+        -- print(st.player.tracked_spell_cast_start_timestamp)
+    end
+end
+
+st.player.process_new_judgment_cd = function()
     -- called each frame after judgement is registered until the API
     -- updates with the proper cooldown information
     
-    -- print('检测审判释放')
-    addon_data.player.judgement_on_cooldown = true
+    -- print('checking judgement cast')
+    st.player.judgement_on_cooldown = true
     local start_time, duration = GetSpellCooldown(20271)
     -- print(start_time)
     -- print(duration)
     
     if duration ~= 0 then
-        -- print('检测CD信息)
+        -- print('detected cooldown info')
         -- manipulate flags
-        addon_data.player.new_judgement_cast = false
-        addon_data.player.judgement_being_tracked = true
+        st.player.new_judgement_cast = false
+        st.player.judgement_being_tracked = true
         
         -- calc the duration
         local time_now = GetTime()
         local calced_duration_remaining = duration - (time_now - start_time)
         -- print(calced_duration_remaining)
-        addon_data.player.judgement_cd_remaining = calced_duration_remaining
+        st.player.judgement_cd_remaining = calced_duration_remaining
     end
 end
 
 -- CALLED EVERY FRAME
-addon_data.player.frame_on_update = function(self, elapsed)
+st.player.frame_on_update = function(self, elapsed)
     
     -- print('elapsed says')
     -- print(elapsed)
 
     -- Logic for when the swing timer is complete.
-    if addon_data.player.swing_timer == 0 and not addon_data.player.reported_swing_timer_complete then
-        addon_data.player.swing_timer_complete()
-        addon_data.bar.update_bar_on_timer_full()
-        addon_data.player.reported_swing_timer_complete = true
-        addon_data.player.twist_impossible = false
-        addon_data.player.reported_swing_timer_complete_double = false
-        addon_data.player.time_since_swing_completion = 0
+    if st.player.swing_timer == 0 and not st.player.reported_swing_timer_complete then
+        st.player.swing_complete_timestamp = GetTime()
+        st.player.swing_timer_complete()
+        st.bar.update_bar_on_timer_full()
+        st.player.reported_swing_timer_complete = true
+        st.player.twist_impossible = false
+        st.player.reported_swing_timer_complete_double = false
+        st.player.time_since_swing_completion = 0
     end
 
-    -- -- At the latest, repoll the attack speed every 0.2s
-    if addon_data.player.periodic_repoll_counter > 0.2 then
-        addon_data.player.update_weapon_speed()
-        -- print('periodic repoll')
-        addon_data.player.periodic_repoll_counter = 0.0
+    -- -- At the latest, repoll the attack speed every 0.1s
+    if st.player.periodic_repoll_counter > 0.1 then
+        st.player.update_weapon_speed()
+        st.player.periodic_repoll_counter = 0.0
     else
-        addon_data.player.periodic_repoll_counter = addon_data.player.periodic_repoll_counter + elapsed
+        st.player.periodic_repoll_counter = st.player.periodic_repoll_counter + elapsed
     end
-  
-    -- Repoll the attack speed a short while after an aura change
-    -- if addon_data.player.repoll_on_aura_change then
-    --     if addon_data.player.aura_repoll_counter > 0.1 then
-    --         -- print('SECONDARY API POLL ON AURA CHANGE')
-    --         addon_data.player.update_weapon_speed()
-    --         addon_data.bar.show_or_hide_bar()
-    --         addon_data.player.aura_repoll_counter = 0.0
-    --         addon_data.player.repoll_on_aura_change = false
-    --     else
-    --         addon_data.player.aura_repoll_counter = addon_data.player.aura_repoll_counter + elapsed
-    --     end
-    -- end
 
     -- If there is a GCD lock, check if we should clear it.
-    if addon_data.player.gcd_lockout then
-        addon_data.player.update_active_gcd_timer(elapsed)
-        if addon_data.player.active_gcd_remaining == 0 then
-            addon_data.player.process_gcd_end()
+    if st.player.gcd_lockout then
+        st.player.update_active_gcd_timer(elapsed)
+        if st.player.active_gcd_remaining == 0 then
+            st.player.process_gcd_end()
         end
     end
 
     -- If the weapon speed changed due to buffs/debuffs, we need to modify the swing timer
     -- and inform all the UI elements that need things altered or recalculated.   
-    if addon_data.player.speed_changed and not addon_data.player.reported_speed_change then
+    if st.player.speed_changed and not st.player.reported_speed_change then
+        -- st.player.check_impossible_twists()
         -- print('swing speed changed, timer updating')
-        -- print(tostring(addon_data.player.prev_weapon_speed) .. " > " .. tostring(addon_data.player.current_weapon_speed))        
+        -- print(tostring(st.player.prev_weapon_speed) .. " > " .. tostring(st.player.current_weapon_speed))        
 
         -- Modify swing timer but only if we don't have the equipment flag set because the timer is already reset
-        if not addon_data.player.equipment_update_flag then
-            local multiplier = addon_data.player.current_weapon_speed / addon_data.player.prev_weapon_speed
+        if not st.player.equipment_update_flag then
+            local multiplier = st.player.current_weapon_speed / st.player.prev_weapon_speed
             -- print('multiplier: ' .. tostring(multiplier))
-            -- print('swing timer before multiplier: ' .. tostring(addon_data.player.swing_timer))
-            addon_data.player.swing_timer = addon_data.player.swing_timer * multiplier
-            -- print('swing timer after multiplier: ' .. tostring(addon_data.player.swing_timer))
-            -- print(addon_data.player.swing_timer)
-            -- print('swing timer after update func and elapsed: ' .. tostring(addon_data.player.swing_timer))            
+            -- print('swing timer before multiplier: ' .. tostring(st.player.swing_timer))
+            st.player.swing_timer = st.player.swing_timer * multiplier
+            -- print('swing timer after multiplier: ' .. tostring(st.player.swing_timer))
+            -- print(st.player.swing_timer)
+            -- print('swing timer after update func and elapsed: ' .. tostring(st.player.swing_timer))            
         else
             -- print('intercepting redundant speed change from equipment change')
-            addon_data.player.equipment_update_flag = false
+            st.player.equipment_update_flag = false
         end            
         -- recalculate any necessary bar visuals
-        addon_data.bar.update_bar_on_speed_change()
+        st.bar.update_bar_on_speed_change()
         -- flag so this only runs once on speed change
-        addon_data.player.reported_speed_change = true
+        st.player.reported_speed_change = true
     end
 
-    if addon_data.player.gcd_lockout and not addon_data.reported_gcd_lockout then
-        addon_data.bar.update_bar_on_new_gcd()
-        addon_data.reported_gcd_lockout = true
+    if st.player.gcd_lockout and not st.reported_gcd_lockout then
+        st.bar.update_bar_on_new_gcd()
+        st.reported_gcd_lockout = true
     end 
 
     -- Track any judgement cooldowns
-    if addon_data.player.new_judgement_cast then
-        addon_data.player.process_new_judgment_cd()
+    if st.player.new_judgement_cast then
+        st.player.process_new_judgment_cd()
     end
 
-    if addon_data.player.judgement_being_tracked then
-        addon_data.player.judgement_cd_remaining = addon_data.player.judgement_cd_remaining - elapsed
-        if addon_data.player.judgement_cd_remaining <= 0 then
+    if st.player.judgement_being_tracked then
+        st.player.judgement_cd_remaining = st.player.judgement_cd_remaining - elapsed
+        if st.player.judgement_cd_remaining <= 0 then
             -- print('judgement off cd!')
-            addon_data.player.judgement_being_tracked = false
-            addon_data.bar.frame.judgement_line:Hide()
+            st.player.judgement_being_tracked = false
+            st.bar.frame.judgement_line:Hide()
         end
     end
 
     -- Always update the swing timer with how much time has elapsed
-    addon_data.player.update_swing_timer(elapsed)
+    st.player.update_swing_timer(elapsed)
+
+    if st.player.speed_changed then
+        st.player.check_impossible_twists()
+    end
+
 
     -- Always update the bar visuals
-    addon_data.bar.update_visuals_on_update()
+    st.bar.update_visuals_on_update()
 
 end
 
@@ -631,47 +765,69 @@ end
 -- Create a frame to process events relating to player information.
 --=========================================================================================
 -- This function handles events related to the player's statistics
-addon_data.player.frame_on_event = function(self, event, ...)
+st.player.frame_on_event = function(self, event, ...)
 	local args = {...}
     if event == "UNIT_INVENTORY_CHANGED" then
         -- print('INVENTORY CHANGE DETECTED')
-        addon_data.player.on_equipment_change()
+        st.player.on_equipment_change()
+
+    elseif event == "PLAYER_MOUNT_DISPLAY_CHANGED" then
+        if IsMounted() then
+            st.player.reset_swing_timer()
+        end
+
+    -- Check talent point changes.
+    elseif event == "CHARACTER_POINTS_CHANGED" then
+        st.player.get_twohand_spec_points()
 
     elseif event == "UNIT_SPELLCAST_SENT" then
         -- print('INFO: received spellcast trigger')
-        addon_data.player.OnPlayerSpellCast(event, args)        
+        st.player.OnPlayerSpellCast(args)        
 
     elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
         local combat_info = {CombatLogGetCurrentEventInfo()}
-        addon_data.player.OnCombatLogUnfiltered(combat_info)
+        st.player.OnCombatLogUnfiltered(combat_info)
     
     elseif event == "UNIT_AURA" then
         -- print('processing aura change')
-        addon_data.player.on_player_aura_change()
-
-        -- -- Trigger logic to repoll after a small amount of time
-        -- addon_data.player.repoll_on_aura_change = true
-        -- -- reset the counter if we're still waiting on a second poll
-        -- if addon_data.player.aura_repoll_counter > 0.0 then
-        --     addon_data.player.aura_repoll_counter = 0.0
-        -- end
+        st.player.on_player_aura_change()
     
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-        addon_data.player.OnPlayerSpellCompletion(event, args)
+        st.player.OnPlayerSpellCompletion(args)
 
     elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
         -- print('found an interruption')
-        addon_data.player.process_gcd_end()
+        st.player.on_spell_interrupt()
+        st.player.process_gcd_end()
+
+    elseif event == "UNIT_SPELLCAST_START" then
+        st.player.on_spell_cast_start()
 
     elseif event == "SPELL_UPDATE_COOLDOWN" then
         -- print('spell update cd triggering a GCD')
-        addon_data.player.process_possible_spell_cooldown(false)
+        st.player.on_spell_update_cooldown()
+        st.player.process_possible_spell_cooldown(false)
+    
+    elseif event == "EXECUTE_CHAT_LINE" then
+        -- If the command is stopattack or startattack, change attacking state
+        if args[1] == "/stopattack" then
+            st.player.is_attacking = false
+            -- print('player is attacking = '..tostring(st.player.is_attacking))
+        elseif args[1] == "/startattack" then
+            st.player.is_attacking = true  
+            -- print('player is attacking = '..tostring(st.player.is_attacking))
+        end        
+    
+    elseif event == "PLAYER_TARGET_SET_ATTACKING" then
+        st.player.is_attacking = true
     end
 
 end
-addon_data.player_frame = CreateFrame("Frame", addon_name .. "PlayerFrame", UIParent)
+
+-- Finally make the playerframe to house the logic.
+st.player_frame = CreateFrame("Frame", addon_name .. "PlayerFrame", UIParent)
 
 --=========================================================================================
 -- End, if debug verify module was read.
 --=========================================================================================
-if addon_data.debug then print('-- Parsed player.lua module correctly') end
+if st.debug then print('-- Parsed player.lua module correctly') end

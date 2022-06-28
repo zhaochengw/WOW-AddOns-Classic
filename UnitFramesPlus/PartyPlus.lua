@@ -118,12 +118,14 @@ function UnitFramesPlus_PartyOrigin()
 end
 
 --非战斗状态中允许shift+左键拖动队友头像
+--有bug，暫時移除此功能
 local function UnitFramesPlus_PartyShiftDrag()
+--[[
     for id = 1, MAX_PARTY_MEMBERS, 1 do
         _G["PartyMemberFrame"..id]:SetScript("OnMouseDown", function(self, elapsed)
-            if UnitFramesPlusDB["party"]["origin"] == 1 and UnitFramesPlusDB["party"]["movable"] == 1 then
-                if IsShiftKeyDown() and (not InCombatLockdown()) then
-                    PartyMemberFrame1:StartMoving();
+			if UnitFramesPlusDB["party"]["origin"] == 1 and UnitFramesPlusDB["party"]["movable"] == 1 then
+				if IsShiftKeyDown() and (not InCombatLockdown()) then
+					PartyMemberFrame1:StartMoving();
                     UnitFramesPlusVar["party"]["moving"] = 1;
                 end
             end
@@ -144,6 +146,7 @@ local function UnitFramesPlus_PartyShiftDrag()
 
     PartyMemberFrame1:SetMovable(1);
     PartyMemberFrame1:SetClampedToScreen(1);
+--]]
 end
 
 --队友等级
@@ -153,7 +156,7 @@ for id = 1, MAX_PARTY_MEMBERS, 1 do
     RegisterUnitWatch(PartyLevel);
     PartyLevel.Text = _G["UFP_PartyLevel"..id]:CreateFontString("PartyMemberFrame"..id.."Level", "OVERLAY", "GameTooltipText");
     PartyLevel.Text:ClearAllPoints();
-    PartyLevel.Text:SetPoint("TOPLEFT", _G["PartyMemberFrame"..id], "BOTTOMLEFT", -5, 12);
+    PartyLevel.Text:SetPoint("TOPLEFT", _G["PartyMemberFrame"..id], "BOTTOMLEFT", -2, 12);
     PartyLevel.Text:SetFont(GameFontNormal:GetFont(), 10, "OUTLINE");
     PartyLevel.Text:SetTextColor(1, 0.82, 0);
     PartyLevel.Text:SetJustifyH("CENTER");
@@ -593,7 +596,7 @@ function UnitFramesPlus_PartyHealthPctDisplayUpdate(id)
         if UnitFramesPlusDB["party"]["bartext"] == 1 and not UnitIsDead("party"..id) then
             local CurHPfix, MaxHPfix = UnitFramesPlus_GetValueFix(UnitHealth("party"..id), UnitHealthMax("party"..id), UnitFramesPlusDB["party"]["hpmpunit"], UnitFramesPlusDB["party"]["unittype"]);
             -- local CurManafix, MaxManafix = UnitFramesPlus_GetValueFix(UnitPower("party"..id), UnitPowerMax("party"..id), UnitFramesPlusDB["party"]["hpmpunit"], UnitFramesPlusDB["party"]["unittype"]);
-            HPText = CurHPfix.."/"..MaxHPfix;
+            HPText = CurHPfix -- .."/"..MaxHPfix;
             -- MPText = CurManafix.."/"..MaxManafix;
         end
 
@@ -628,7 +631,7 @@ function UnitFramesPlus_PartyPowerDisplayUpdate(id)
     if UnitExists("party"..id) and UnitFramesPlusDB["party"]["origin"] == 1 then
         if UnitFramesPlusDB["party"]["bartext"] == 1 and not UnitIsDead("party"..id) then
             local CurManafix, MaxManafix = UnitFramesPlus_GetValueFix(UnitPower("party"..id), UnitPowerMax("party"..id), UnitFramesPlusDB["party"]["hpmpunit"], UnitFramesPlusDB["party"]["unittype"]);
-            MPText = CurManafix.."/"..MaxManafix;
+            MPText = CurManafix -- .."/"..MaxManafix;
         end
     end
     _G["PartyMemberFrame"..id.."ManaBarText"]:SetText(MPText);
@@ -801,6 +804,26 @@ local UnitFramesPlusBuffFilter = {
     -- "NOT_CANCELABLE|RAID",
 }
 
+-- 減益圖示邊框顏色
+local DebuffTypeColor = {
+	["Curse"]	= { 0.6, 0.0, 1 },
+	["Disease"]	= { 0.6, 0.4, 0 },
+	["Magic"]	= { 0.2, 0.6, 1 },
+	["Poison"]	= { 0.0, 0.6, 0 },
+}
+
+-- 調整BUFF圖示位置
+local partyBuffsY = -32
+local partyDebuffsY = 4
+local petDebuffsY = -1
+local petFrameY = -13
+if IsAddOnLoaded("EasyFrames") then
+	partyBuffsY = -42
+	partyDebuffsY = -13
+	petDebuffsY = -15
+	petFrameY = -22
+end
+
 local UFP_MAX_PARTY_BUFFS = 16;
 local UFP_MAX_PARTY_DEBUFFS = 8;
 local UFP_MAX_PARTY_PET_DEBUFFS = 4;
@@ -813,7 +836,7 @@ for id = 1, MAX_PARTY_MEMBERS, 1 do
         buff:SetID(j);
         buff:ClearAllPoints();
         if j == 1 then
-            buff:SetPoint("TOPLEFT", _G["PartyMemberFrame"..id], "TOPLEFT", 48, -32);
+            buff:SetPoint("TOPLEFT", _G["PartyMemberFrame"..id], "TOPLEFT", 48, partyBuffsY);
         else
             buff:SetPoint("LEFT", _G["UFP_PartyMemberFrame"..id.."Buff"..j-1], "RIGHT", 2, 0);
         end
@@ -873,7 +896,7 @@ for id = 1, MAX_PARTY_MEMBERS, 1 do
         debuff:SetID(j);
         debuff:ClearAllPoints();
         if j == 1 then
-            debuff:SetPoint("BOTTOMLEFT", _G["PartyMemberFrame"..id], "TOPRIGHT", -8, 4);
+            debuff:SetPoint("BOTTOMLEFT", _G["PartyMemberFrame"..id], "TOPRIGHT", -8, partyDebuffsY);
         else
             debuff:SetPoint("LEFT", _G["UFP_PartyMemberFrame"..id.."Debuff"..j-1], "RIGHT", 2, 0);
         end
@@ -908,9 +931,10 @@ for id = 1, MAX_PARTY_MEMBERS, 1 do
 
         debuff.Border = debuff:CreateTexture("UFP_PartyMemberFrame"..id.."Debuff"..j.."Border", "OVERLAY");
         debuff.Border:SetTexture("Interface\\Buttons\\UI-Debuff-Overlays");
-        debuff.Border:SetWidth(17);
-        debuff.Border:SetHeight(17);
+        debuff.Border:SetWidth(18);
+        debuff.Border:SetHeight(18);
         debuff.Border:SetTexCoord(0.296875, 0.5703125, 0, 0.515625);
+		debuff.Border:SetVertexColor(1, 0, 0, 1);
         debuff.Border:ClearAllPoints();
         debuff.Border:SetPoint("TOPLEFT", debuff, "TOPLEFT", -1, 1);
 
@@ -1108,9 +1132,28 @@ function UnitFramesPlus_OptionsFrame_PartyBuffDisplayUpdate()
                 -- local textalpha = 0.7;
                 -- local r, g, b = 0, 1, 0;
 
-                local _, icon, count, _, duration, expirationTime, caster, _, _, spellId = UnitDebuff("party"..id, j, filter);
+                local _, icon, count, debuffType, duration, expirationTime, caster, _, _, spellId = UnitDebuff("party"..id, j, filter);
                 if icon and (GetDisplayedAllyFrames() == "party" or (GetDisplayedAllyFrames() == "raid" and UnitFramesPlusDB["party"]["hideraid"] == 1 and UnitFramesPlusDB["party"]["always"] == 1)) then
                     _G["UFP_PartyMemberFrame"..id.."Debuff"..j].Icon:SetTexture(icon);
+					
+					-- 減益圖示邊框顏色
+					if debuffType then
+						local color = DebuffTypeColor[debuffType];
+						if color then 
+							_G["UFP_PartyMemberFrame"..id.."Debuff"..j].Border:SetVertexColor(color[1], color[2], color[3], 1);
+						else
+							_G["UFP_PartyMemberFrame"..id.."Debuff"..j].Border:SetVertexColor(1, 0, 0, 1);
+						end
+					else
+						_G["UFP_PartyMemberFrame"..id.."Debuff"..j].Border:SetVertexColor(1, 0, 0, 1);
+					end
+					
+					-- 暫時修正，隱藏遊戲內建的減益圖示
+					local debufficon = _G["PartyMemberFrame"..id.."Debuff"..j];
+					if debufficon and debufficon:IsVisible()then
+						debufficon:Hide();
+					end
+
                     alpha = 1;
                     if count > 1 then
                         counttext = count;
@@ -1401,7 +1444,7 @@ function UnitFramesPlus_PartyPetSet()
             end
         end
         _G["PartyMemberFrame"..id.."PetFrame"]:ClearAllPoints();
-        _G["PartyMemberFrame"..id.."PetFrame"]:SetPoint("RIGHT", _G["PartyMemberFrame"..id], "LEFT", -5, 0);
+        _G["PartyMemberFrame"..id.."PetFrame"]:SetPoint("LEFT", _G["PartyMemberFrame"..id], "LEFT", 115, petFrameY); -- 隊友寵物框架的位置
     end
 end
 
@@ -1844,15 +1887,12 @@ up:SetScript("OnEvent", function(self, event, ...)
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyBuffCooldown);
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyBuffHidetip);
                             -- BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyCastbar);
-                            BlizzardOptionsPanel_Slider_Disable(UnitFramesPlus_OptionsFrame_PartyScaleSlider);
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyBartext);
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyHPMPUnit);
                             BlizzardOptionsPanel_Slider_Disable(UnitFramesPlus_OptionsFrame_PartyUnitTypeSlider);
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyMouseShow);
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyShiftDrag);
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyPortraitIndicator);
-                            BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyColorHP);
-                            BlizzardOptionsPanel_Slider_Disable(UnitFramesPlus_OptionsFrame_PartyColorHPSlider);
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyTarget);
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyTargetLite);
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyTargetHPPct);
@@ -1866,6 +1906,11 @@ up:SetScript("OnEvent", function(self, event, ...)
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyTargetClassPortrait);
                             BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyTargetClassPortraitNPCNo);
                             BlizzardOptionsPanel_Slider_Disable(UnitFramesPlus_OptionsFrame_PartyExtraTextFontSizeSlider);
+							if not IsAddOnLoaded("EasyFrames") then
+								BlizzardOptionsPanel_Slider_Disable(UnitFramesPlus_OptionsFrame_PartyScaleSlider);
+								BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_PartyColorHP);
+								BlizzardOptionsPanel_Slider_Disable(UnitFramesPlus_OptionsFrame_PartyColorHPSlider);
+							end
                         else
                             BlizzardOptionsPanel_CheckButton_Enable(UnitFramesPlus_OptionsFrame_PartyPet);
                             UnitFramesPlus_OptionsFrame_PartyPetText:SetTextColor(1, 1, 1);
@@ -1911,8 +1956,6 @@ up:SetScript("OnEvent", function(self, event, ...)
                             end
                             -- BlizzardOptionsPanel_CheckButton_Enable(UnitFramesPlus_OptionsFrame_PartyCastbar);
                             -- UnitFramesPlus_OptionsFrame_PartyCastbarText:SetTextColor(1, 1, 1);
-                            BlizzardOptionsPanel_Slider_Enable(UnitFramesPlus_OptionsFrame_PartyScaleSlider);
-                            UnitFramesPlus_OptionsFrame_PartyScaleSliderText:SetTextColor(1, 1, 1);
                             BlizzardOptionsPanel_CheckButton_Enable(UnitFramesPlus_OptionsFrame_PartyBartext);
                             UnitFramesPlus_OptionsFrame_PartyBartextText:SetTextColor(1, 1, 1);
                             BlizzardOptionsPanel_CheckButton_Enable(UnitFramesPlus_OptionsFrame_PartyHPMPUnit);
@@ -1931,12 +1974,16 @@ up:SetScript("OnEvent", function(self, event, ...)
                             UnitFramesPlus_OptionsFrame_PartyShiftDragText:SetTextColor(1, 1, 1);
                             BlizzardOptionsPanel_CheckButton_Enable(UnitFramesPlus_OptionsFrame_PartyPortraitIndicator);
                             UnitFramesPlus_OptionsFrame_PartyPortraitIndicatorText:SetTextColor(1, 1, 1);
-                            BlizzardOptionsPanel_CheckButton_Enable(UnitFramesPlus_OptionsFrame_PartyColorHP);
-                            UnitFramesPlus_OptionsFrame_PartyColorHPText:SetTextColor(1, 1, 1);
-                            if UnitFramesPlusDB["party"]["colorhp"] == 1 then
-                                BlizzardOptionsPanel_Slider_Enable(UnitFramesPlus_OptionsFrame_PartyColorHPSlider);
+                            if not IsAddOnLoaded("EasyFrames") then
+								BlizzardOptionsPanel_Slider_Enable(UnitFramesPlus_OptionsFrame_PartyScaleSlider);
+								UnitFramesPlus_OptionsFrame_PartyScaleSliderText:SetTextColor(1, 1, 1);
+								BlizzardOptionsPanel_CheckButton_Enable(UnitFramesPlus_OptionsFrame_PartyColorHP);
+								UnitFramesPlus_OptionsFrame_PartyColorHPText:SetTextColor(1, 1, 1);
+								if UnitFramesPlusDB["party"]["colorhp"] == 1 then
+									BlizzardOptionsPanel_Slider_Enable(UnitFramesPlus_OptionsFrame_PartyColorHPSlider);
+								end
                             end
-                            if UnitFramesPlusDB["partytarget"]["show"] == 1 then
+							if UnitFramesPlusDB["partytarget"]["show"] == 1 then
                                 BlizzardOptionsPanel_CheckButton_Enable(UnitFramesPlus_OptionsFrame_PartyTarget);
                                 UnitFramesPlus_OptionsFrame_PartyTargetText:SetTextColor(1, 1, 1);
                                 BlizzardOptionsPanel_CheckButton_Enable(UnitFramesPlus_OptionsFrame_PartyTargetLite);
@@ -2090,7 +2137,9 @@ function UnitFramesPlus_PartyExtraTextFontSize()
         _G["PartyMemberFrame"..id.."HPPct"]:SetFont(GameFontNormal:GetFont(), UnitFramesPlusDB["party"]["fontsize"], "OUTLINE");
         -- _G["PartyMemberFrame"..id.."DeathText"]:SetFont(GameFontNormal:GetFont(), UnitFramesPlusDB["party"]["fontsize"]+2, "OUTLINE");
 
-        _G["PartyMemberFrame"..id.."Name"]:SetFont(GameFontNormalSmall:GetFont(), UnitFramesPlusDB["party"]["fontsize"]+2);
+        if not IsAddOnLoaded("EasyFrames") then
+			_G["PartyMemberFrame"..id.."Name"]:SetFont(GameFontNormalSmall:GetFont(), UnitFramesPlusDB["party"]["fontsize"]+2);
+		end
     end
 end
 
@@ -2105,7 +2154,12 @@ end
 
 --模块初始化
 function UnitFramesPlus_PartyInit()
-    UnitFramesPlus_ShowPartyFrame();
+
+    if IsAddOnLoaded("EasyFrames") then
+		UnitFramesPlusDB["party"]["colorhp"] = 0
+	end
+
+	UnitFramesPlus_ShowPartyFrame();
     UnitFramesPlus_PartyShowHide();
     UnitFramesPlus_PartyMemberFrameFix();
     UnitFramesPlus_PartyShiftDrag();

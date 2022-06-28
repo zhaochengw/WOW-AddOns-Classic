@@ -5,8 +5,7 @@
 	<Include file = "..\..\sharedxml\hybridscrollframe.xml"/>
 	<Include file = "template.xml"/>
 -->
-	<include file = "ala\main.xml" />
-	<script file = "ala\instlock.lua" />
+	<script file = "instlock.lua" />
 	<script file = "InstanceLockeddownTimer.lua" />
 
 </Ui>

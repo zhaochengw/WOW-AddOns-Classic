@@ -188,6 +188,9 @@ end
 		__ns.CommAddUUID = CommAddUUID;
 		__ns.CommSubUUID = CommSubUUID;
 		__ns.CommGetUUID = CommGetUUID;
+		if __ns.__is_dev then
+			__ns.COMM_UUID = _UUID;
+		end
 	-->
 	-->		send data to ui
 		local COMMON_UUID_FLAG = {  };
@@ -403,7 +406,7 @@ end
 			if info ~= nil then
 				if info.U ~= nil then
 					for uid, _ in next, info.U do
-						AddUnit(name, quest, line, uid, show_coords, large_pin, false);
+						AddUnit(name, quest, line, uid, show_coords, large_pin, nil);
 					end
 				end
 				if info.O ~= nil then
@@ -437,7 +440,7 @@ end
 				if info.U ~= nil then
 					for uid, rate in next, info.U do
 						if rate >= SET.min_rate then
-							AddUnit(name, quest, line, uid, show_coords, large_pin, false);
+							AddUnit(name, quest, line, uid, show_coords, large_pin, nil);
 						end
 					end
 				end
@@ -598,7 +601,7 @@ end
 			-- end
 			if _type == 'monster' then
 				local large_pin = __db_large_pin:Check(quest_id, 'unit', _id);
-				AddUnit(name, quest_id, _line, _id, not finished, large_pin, true);
+				AddUnit(name, quest_id, _line, _id, not finished, large_pin, nil);
 				return true, _id, large_pin;
 			elseif _type == 'item' then
 				local large_pin = __db_large_pin:Check(quest_id, 'item', _id);

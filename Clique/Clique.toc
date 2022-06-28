@@ -1,0 +1,48 @@
+## Interface: 20504
+## Title: Clique
+## Author: Cladhaire
+## Version: v3.1.4
+## Notes: Simply powerful click-casting interface
+## SavedVariables: CliqueDB, CliqueDB3
+## X-Curse-Project-ID: 15564
+## X-WoWI-ID: 5108
+## X-Wago-ID: Mj6jLxGR
+
+## X-Localizations: enUS, enGB, ruRU, zhCN, zhTW
+## X-CompatibleLocales: enUS, enGB, deDE, frFR, esES, esMX, zhCN, zhTW, koKR, ruRU
+
+AddonCore.lua
+Localization.enUS.lua
+Localization.ruRU.lua
+Localization.zhCN.lua
+Localization.zhTW.lua
+
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+libs\AceDB-3.0\AceDB-3.0.xml
+libs\tekKonfigAboutPanel.lua
+
+DatabaseDefaults.lua
+
+ClickCastTemplate.xml
+
+Clique.xml
+
+Clique.lua
+Utils.lua
+
+BindConfig.lua
+
+OptionsPanel.lua
+FrameOptionsPanel.lua
+
+BlizzardFrames.lua
+
+# HeaderTest.xml
+# HeaderTest.lua
+# TestSuite.lua
+
+## Title: |cff880303[163UI]|r Clique
+## Title-zhCN: |cff880303[有爱]|r Clique 点击施法
+## X-Vendor: NetEase
+## X-163UI-Version: 20220609154744
