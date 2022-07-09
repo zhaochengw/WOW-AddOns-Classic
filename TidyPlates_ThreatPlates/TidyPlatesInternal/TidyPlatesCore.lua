@@ -25,7 +25,7 @@ local GetRaidTargetIndex = GetRaidTargetIndex
 local GetTime = GetTime
 local UnitChannelInfo  = UnitChannelInfo
 local UnitPlayerControlled = UnitPlayerControlled
-local GetCVar, Lerp, CombatLogGetCurrentEventInfo = GetCVar, Lerp, CombatLogGetCurrentEventInfo
+local GetCVarBool, CombatLogGetCurrentEventInfo = C_CVar.GetCVarBool, CombatLogGetCurrentEventInfo
 local GetPlayerInfoByGUID, RAID_CLASS_COLORS = GetPlayerInfoByGUID, RAID_CLASS_COLORS
 local UnitNameplateShowsWidgetsOnly = UnitNameplateShowsWidgetsOnly
 
@@ -138,6 +138,7 @@ local SettingsEnabledFading
 local SettingsOccludedAlpha, SettingsEnabledOccludedAlpha
 local SettingsShowEnemyBlizzardNameplates, SettingsShowFriendlyBlizzardNameplates, SettingsHideBuffsOnPersonalNameplate
 local SettingsTargetUnitHide, SettingsShowOnlyForTarget
+local SettingsShowOnlyNames
 
 -- External references to internal data
 Addon.PlatesCreated = PlatesCreated
@@ -226,6 +227,28 @@ do
 		-- Reset Mass-Update Flag
 		UpdateAll = false
 	end
+end
+
+---------------------------------------------------------------------------------------------------------------------
+-- Functions for setting unit attributes
+---------------------------------------------------------------------------------------------------------------------
+
+local function SetUnitAttributeName(unitid, unit_type)
+  local unit_name, realm = UnitName(unitid)
+
+  if unit_type == "PLAYER" then
+    local db = Addon.db.profile.settings.name
+
+    if db.ShowTitle then
+      unit_name = UnitPVPName(unitid)
+    end
+
+    if db.ShowRealm and realm then
+      unit_name = unit_name .. " - " .. realm
+    end
+  end
+
+  return unit_name
 end
 
 ---------------------------------------------------------------------------------------------------------------------
@@ -405,7 +428,7 @@ do
 
     Addon:UpdateUnitIdentity(unit, unitid)
 
-    unit.name, _ = UnitName(unitid)
+    unit.name = SetUnitAttributeName(unitid, unit.type)
     unit.isCasting = false
     unit.IsInterrupted = false
     visual.castbar.FlashTime = 0  -- Set FlashTime to 0 so that the castbar is actually hidden (see statusbar OnHide hook function OnHideCastbar)
@@ -978,6 +1001,11 @@ do
       return
     end
 
+    if SettingsShowOnlyNames then
+      UnitFrame.ClassificationFrame:SetAlpha(0)
+      --UnitFrame.ClassificationFrame.classificationIndicator:SetAlpha(0)
+    end
+
     -- Hide ThreatPlates nameplates if Blizzard nameplates should be shown for friendly units
     if UnitReaction(unitid, "player") > 4 then
       UnitFrame:SetShown(SettingsShowFriendlyBlizzardNameplates)
@@ -998,7 +1026,7 @@ do
       if not tp_frame.Active or UnitIsUnit(plate.UnitFrame.unit or "", "player") then
         return
       end
-
+     
       tp_frame:SetFrameLevel(plate:GetFrameLevel() * 10)
 
 --    for i = 1, #PlateOnUpdateQueue do
@@ -1106,7 +1134,7 @@ do
     -- Plate can be nil here, if unitid is party1, partypet4 or something like that
     if plate and plate.TPFrame.Active then
       UpdateReferences(plate)
-      unit.name, _ = UnitName(unitid)
+      unit.name = SetUnitAttributeName(unitid, unit.type)
 
       --Addon:UnitStyle_UnitType(extended, unit)
       local plate_style = Addon.UnitStyle_NameDependent(unit)
@@ -1863,6 +1891,7 @@ function Addon:ForceUpdate()
   wipe(Addon.Cache.Texts)
   Addon:UpdateConfigurationLocalization()
   Addon:UpdateConfigurationStatusText()
+  Addon.Font:UpdateConfiguration()
 
   CVAR_NameplateOccludedAlphaMult = CVars:GetAsNumber("nameplateOccludedAlphaMult")
 
@@ -1898,6 +1927,8 @@ function Addon:ForceUpdate()
     TidyPlatesCore:RegisterEvent("UNIT_TARGET")
   end
 
+  SettingsShowOnlyNames = CVars:GetAsBool("nameplateShowOnlyNames") and Addon.db.profile.BlizzardSettings.Names.Enabled and not (Addon.IS_CLASSIC or Addon.IS_TBC_CLASSIC)
+  
   for plate, unitid in pairs(self.PlatesVisible) do
     -- If Blizzard default plates are enabled (which means that these nameplates are not active), we need
     -- to check if they are enabled, so that Active is set correctly and plates are updated shown correctly.

@@ -14,11 +14,7 @@ local GetItemInfo = GetItemInfo
 local GetRealmName = GetRealmName
 local UnitFullName = UnitFullName
 
-local GameTooltip = GameTooltip
-
 local SPELL_PASSIVE = SPELL_PASSIVE
-local ITEM_SET_BONUS_GRAY_P = '^' .. ITEM_SET_BONUS_GRAY:gsub('%%s', '(.+)'):gsub('%(%%d%)', '%%((%%d+)%%)') .. '$'
-local ITEM_SET_BONUS_P = '^' .. format(ITEM_SET_BONUS, '(.+)')
 
 local function memorize(func)
     local cache = {}
@@ -94,90 +90,32 @@ function ns.UnitName(unit)
     return ns.GetFullName(UnitFullName(unit))
 end
 
-local function MatchBonus(text)
-    local count, summary = text:match(ITEM_SET_BONUS_GRAY_P)
-    if count then
-        return summary, tonumber(count)
-    end
-    return text:match(ITEM_SET_BONUS_P)
-end
-
-function ns.FixInspectItemTooltip()
-    local id = ns.ItemLinkToId(select(2, GameTooltip:GetItem()))
+function ns.FixInspectItemTooltip(tip)
+    local link = select(2, tip:GetItem())
+    local id = ns.ItemLinkToId(link)
     if not id then
         return
     end
 
-    local setId = select(16, GetItemInfo(id))
-    if not setId then
-        return
-    end
+    tip = LibStub('LibTooltipExtra-1.0'):New(tip)
 
-    local setName = GetItemSetInfo(setId)
-    if not setName then
-        return
-    end
+    ns.FixItemSets(tip, id)
+    ns.FixMetaGem(tip, link)
 
-    local equippedCount, itemNames, overrideNames = ns.Inspect:GetEquippedSetItems(setId)
-    local setNameLinePattern = '^(' .. setName .. '.+)(%d+)/(%d+)(.+)$'
+    tip:Show()
+end
 
-    local setLine
-    local firstBonusLine
-    local inSetLine = true
-    local bonus = ns.ItemSets[setId].bouns
-
-    for i = 2, GameTooltip:NumLines() do
-        local textLeft = _G['GameTooltipTextLeft' .. i]
-        local text = textLeft:GetText()
-
-        if not setLine then
-            local prefix, n, maxCount, suffix = text:match(setNameLinePattern)
-            if prefix then
-                setLine = i
-                textLeft:SetText(prefix .. equippedCount .. '/' .. maxCount .. suffix)
-            end
-        elseif inSetLine then
-            local line = text:trim()
-
-            if line == '' then
-                inSetLine = false
-            else
-                local n = itemNames[line]
-                if n and n > 0 then
-                    local overrideName = overrideNames[line]
-                    if overrideName and line ~= overrideName then
-                        textLeft:SetText(text:sub(1, #text - #line) .. overrideName)
-                    end
-
-                    textLeft:SetTextColor(1, 1, 0.6)
-                    itemNames[line] = n > 1 and n - 1 or nil
-                else
-                    textLeft:SetTextColor(0.5, 0.5, 0.5)
-                end
-            end
-        else
-            local summary, count = MatchBonus(text)
-            if summary then
-                if not firstBonusLine then
-                    firstBonusLine = i
-                end
-
-                if not count and firstBonusLine then
-                    count = bonus[i - firstBonusLine + 1]
-                end
-
-                if count then
-                    if equippedCount >= count then
-                        textLeft:SetText(ITEM_SET_BONUS:format(summary))
-                        textLeft:SetTextColor(0.1, 1, 0.1)
-                    else
-                        textLeft:SetText(ITEM_SET_BONUS_GRAY:format(count, summary))
-                        textLeft:SetTextColor(0.5, 0.5, 0.5)
-                    end
-                end
-            end
+local function FillGem(out, ...)
+    for i = 1, select('#', ...) do
+        local itemId = tonumber((select(i, ...)))
+        if itemId then
+            tinsert(out, itemId)
         end
     end
+    return out
+end
 
-    GameTooltip:Show()
+local cache = {}
+function ns.GetItemGems(link, out)
+    return FillGem(out or wipe(cache), link:match('item:%d+:[-%d]*:(%d*):(%d*):(%d*):(%d*):'))
 end

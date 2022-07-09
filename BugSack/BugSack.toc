@@ -1,5 +1,5 @@
-## Interface: 90200
-## Version: v9.2.3
+## Interface: 90205
+## Version: v9.2.4
 ## Title: BugSack
 ## Notes: Toss those bugs inna sack.
 ## Notes-deDE: Werft den Fehler in einen Sack.

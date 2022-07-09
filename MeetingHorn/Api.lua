@@ -471,7 +471,7 @@ function ns.ApplyLeaderBtnClick(Btn, param)
 end
 
 function ns.DataMake(allowCrossRealm)
-    ns.CERTIFICATION_MAP = {}
+    ns.CERTIFICATION_MAP = ns.CERTIFICATION_MAP or {}
 
     local function decode(v)
         return v:gsub('..', function(x)

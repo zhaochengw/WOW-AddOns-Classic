@@ -1,7 +1,7 @@
 ## Interface: 20504
 ## Title: tdInspect
 ## Author: Dencer
-## Version: 1.0.10
+## Version: 1.0.11
 ## SavedVariables: TDDB_INSPECT
 
 Load.xml
@@ -9,4 +9,4 @@ Load.xml
 ## Title: |cff880303[163UI]|r tdInspect
 ## Title-zhCN: |cff880303[有爱]|r 远程观察
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220520145709
+## X-163UI-Version: 20220707165501

@@ -119,6 +119,48 @@ function Inspect:IsItemEquipped(itemId)
     end
 end
 
+local GEM_COLORS = {
+    [Enum.ItemGemSubclass.Red] = {Enum.ItemGemSubclass.Red},
+    [Enum.ItemGemSubclass.Yellow] = {Enum.ItemGemSubclass.Yellow},
+    [Enum.ItemGemSubclass.Blue] = {Enum.ItemGemSubclass.Blue},
+    [Enum.ItemGemSubclass.Orange] = {Enum.ItemGemSubclass.Red, Enum.ItemGemSubclass.Yellow},
+    [Enum.ItemGemSubclass.Purple] = {Enum.ItemGemSubclass.Red, Enum.ItemGemSubclass.Blue},
+    [Enum.ItemGemSubclass.Green] = {Enum.ItemGemSubclass.Yellow, Enum.ItemGemSubclass.Blue},
+}
+
+local function CheckGem(out, itemId)
+    if not itemId or itemId == 0 then
+        return
+    end
+
+    local classId, subClassId = select(6, GetItemInfoInstant(itemId))
+    if classId ~= Enum.ItemClass.Gem then
+        return
+    end
+
+    local gemColors = GEM_COLORS[subClassId]
+    if not gemColors then
+        return
+    end
+
+    for _, v in ipairs(gemColors) do
+        out[v] = (out[v] or 0) + 1
+    end
+end
+
+function Inspect:GetEquippedGemCounts()
+    local out = {}
+    for slot = 1, 18 do
+        local link = self:GetItemLink(slot)
+        if link then
+            for _, itemId in ipairs(ns.GetItemGems(link)) do
+                CheckGem(out, itemId)
+            end
+        end
+    end
+    return out
+end
+
 function Inspect:GetEquippedSetItems(id)
     local count = 0
     local items = {}

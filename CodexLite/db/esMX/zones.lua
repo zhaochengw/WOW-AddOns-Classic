@@ -1,5 +1,5 @@
 local __addon, __ns = ...;
-if and GetLocale() ~= "esMX" then
+if GetLocale() ~= "esMX" then
   return;
 end
 __ns.L.zone = {

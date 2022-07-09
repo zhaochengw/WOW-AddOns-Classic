@@ -5,16 +5,20 @@
     <Script file="Api.lua"/>
     <Script file="Addon.lua"/>
 
-    <Script file="Data\Data.lua"/>
+    <Script file="Data\DataLoader.lua"/>
     
     <Script file="Data\Talents.BCC.lua"/>
     
     <Script file="Data\ItemSet.BCC.lua"/>
+    <Script file="Data\Data.lua"/>
 
     <Script file="Core\Inspect.lua"/>
     <Script file="Core\Hook.lua"/>
     <Script file="Core\Talent.lua"/>
     <Script file="Core\Ala.lua"/>
+
+    <Script file="Tooltip\FixItemSet.lua"/>
+    <Script file="Tooltip\FixMetaGem.lua"/>
 
     <Script file="UI\BaseItem.lua"/>
     <Script file="UI\SlotItem.lua"/>

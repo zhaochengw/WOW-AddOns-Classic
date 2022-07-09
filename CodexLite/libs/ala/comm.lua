@@ -186,6 +186,13 @@ local __serializer = __ala_meta__.__serializer;
 	_SliceFlush();
 -->
 -->
+	-- local function MonitorVariable(var)
+	-- 	if type(var) == 'table' then
+	-- 		setmetatable(var, {});
+	-- 	end
+	-- end
+	-- local function CompareDB(DB1, DB2)
+	-- end
 -->
 	local _TSendThrottle = {  };		--	1s lock
 	local _TGUID = {
@@ -616,19 +623,11 @@ local __serializer = __ala_meta__.__serializer;
 								end
 							end
 						end
-					elseif control_code == STREAMER_MSG_S_REPLY then
-						if __ala_meta__.__onstream[control_code] ~= nil then
-							__ala_meta__.__onstream[control_code](sender, strsub(msg, STREAMER_CONTROL_CODE_LEN + 2));
-						end
-					elseif control_code == STREAMER_MSG_G_REPLY then
-						if __ala_meta__.__onstream[control_code] ~= nil then
-							__ala_meta__.__onstream[control_code](sender, strsub(msg, STREAMER_CONTROL_CODE_LEN + 2));
-						end
-					elseif control_code == STREAMER_MSG_V_REPLY then
-						if __ala_meta__.__onstream[control_code] ~= nil then
-							__ala_meta__.__onstream[control_code](sender, strsub(msg, STREAMER_CONTROL_CODE_LEN + 2));
-						end
 					elseif control_code == STREAMER_MSG_STREAMER then
+					else
+						if __ala_meta__.__onstream[control_code] ~= nil then
+							__ala_meta__.__onstream[control_code](sender, strsub(msg, STREAMER_CONTROL_CODE_LEN + 2));
+						end
 					end
 				end
 			end
