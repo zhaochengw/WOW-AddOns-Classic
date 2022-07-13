@@ -1,0 +1,14 @@
+## Interface: 20504
+## Title: |cFFBF00FF[H]|r Memory
+## Notes: List Addons memory useage on Minimap time stamp
+## Title-zhCN: |cFFBF00FF|r 插件内存占用)
+## Notes-zhCN: 在小地图时间上展示插件内存占用情况
+## Author: Rippercase@Nga
+## Author-zhCN: Rippercase@Nga
+## Author-zhTW: Rippercase@Nga
+
+## Version: 0.1
+
+Memory.lua
+
+
