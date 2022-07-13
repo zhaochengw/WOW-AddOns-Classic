@@ -161,9 +161,9 @@ end
 --目标仇恨高亮
 local TargetThreat = TargetFrame:CreateTexture("UFP_TargetThreat", "BACKGROUND");
 TargetThreat:ClearAllPoints();
-TargetThreat:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", -24, 0);
+TargetThreat:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", -17, 3);
 TargetThreat:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame-Flash");
-TargetThreat:SetTexCoord(0, 0.9453125, 0, 0.181640625);
+TargetThreat:SetTexCoord(0, 1, 0, 1);
 TargetThreat:SetWidth(242);
 TargetThreat:SetHeight(93);
 TargetThreat:SetAlpha(0);
@@ -174,7 +174,7 @@ TargetThreatText:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE");
 -- TargetThreatText:SetTextColor(1, 0.75, 0);
 TargetThreatText:SetText("");
 TargetThreatText:ClearAllPoints();
-TargetThreatText:SetPoint("BOTTOMRIGHT", TargetFrame, "TOPLEFT", 1, -28);
+TargetThreatText:SetPoint("BOTTOMRIGHT", TargetFrame, "TOPLEFT", 140, -18);
 TargetThreatText:SetJustifyH("RIGHT");
 
 local tt = CreateFrame("Frame");
