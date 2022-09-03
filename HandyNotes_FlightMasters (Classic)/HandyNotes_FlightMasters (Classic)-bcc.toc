@@ -1,0 +1,10 @@
+## Interface: 30400
+## Title: HandyNotes_FlightMasters (Classic)
+## Version: 1.09-bcc
+## Notes: Shows locations of flight masters
+## Author: Caliaha of Cairne
+## RequiredDeps: HandyNotes
+## SavedVariables: HandyNotes_FlightMastersClassicDB
+
+locales\Locales.xml
+bcc.lua

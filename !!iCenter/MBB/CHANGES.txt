@@ -1,0 +1,10 @@
+lightweight tag e4f48101105c8fa0dea021b93bb7cc7c3f877877 v1.2.0
+Author:	VallanTV <vallantv@protonmail.com>
+Date:	Thu May 20 20:21:33 2021 -0700
+
+commit e4f48101105c8fa0dea021b93bb7cc7c3f877877
+Author: VallanTV <vallantv@protonmail.com>
+Date:   Thu May 20 20:21:33 2021 -0700
+
+    update for TBC Classic
+

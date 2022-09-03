@@ -1,0 +1,4 @@
+<Ui>
+	<Script file="BuffTime.lua" />
+	<Script file="Tooltip.lua" />
+</Ui>

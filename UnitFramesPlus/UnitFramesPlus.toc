@@ -1,0 +1,50 @@
+## Interface: 30400
+## Title: UnitFramesPlus
+## Notes: Enhanced Unit Frames
+## Title-zhCN: 系统头像增强
+## Notes-zhCN: 扩展系统头像功能
+## Title-zhTW: |cff4DD2FF[頭像]|r 暴雪頭像 (增強功能)-主程式
+## Notes-zhTW: UnitFramesPlus |n加強遊戲內建頭像的功能，提供更多自訂選項。特別強化隊友、寵物和目標的目標的功能。|n|cffffd200使用方法：|r點小地圖按鈕進行設定。|n要移動頭像，直接按住 Shift 拖曳移動，不用解鎖。|n可以搭配暴雪頭像 (美化調整) 插件一起使用，也可以單獨使用。
+## X-Repple: 界面
+## Version: 1.36.5.5-bcc
+## Author: Isler
+## SavedVariables: UnitFramesPlusDB
+## SavedVariablesPerCharacter: UnitFramesPlusVar
+
+## 初始化
+Localization.lua
+MinimapButton.lua
+UnitFramesPlus.lua
+
+## 玩家
+PlayerPlus.lua
+
+## 宠物
+PetPlus.lua
+
+## 宠物目标
+PetTarget.lua
+
+## 目标
+TargetPlus.lua
+
+## ToT和ToToT
+TargetTarget.lua
+
+## 焦点
+FocusPlus.lua
+
+## 焦点目标
+FocusTarget.lua
+
+## 队友
+PartyPlus.lua
+
+## 队友目标
+PartyTarget.lua
+
+## 队友施法条
+#PartyCastbar.lua
+
+## 杂项
+ExtPlus.lua

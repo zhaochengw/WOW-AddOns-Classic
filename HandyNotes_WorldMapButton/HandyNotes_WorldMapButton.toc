@@ -1,0 +1,25 @@
+## Interface: 30400
+## Title: HandyNotes_WorldMapButton
+## Version: 20504.01-BBC
+## Notes: Adds a Button to the Worldmap to toggle HandyNotes
+## Author: fuba
+## OptionalDeps: Ace3
+## RequiredDeps: HandyNotes
+
+#@no-lib-strip@
+# Library files
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\LibStub\LibStub.lua
+#@end-no-lib-strip@
+
+# Locale files
+Locale\enUS.lua
+Locale\deDE.lua
+
+# Core files
+HandyNotes_WorldMapButton.lua
+
+## Title-zhCN: |cff880303[有爱]|r HandyNotes 世界地图开关
+## X-Vendor: NetEase
+## X-163UI-Version: 20220331145254

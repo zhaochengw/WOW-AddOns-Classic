@@ -1,0 +1,12 @@
+lightweight tag 0108686cbf1fbb23cdbe76d6b7d2cc54d0a0442a 3.4.0.3
+Author:	LANCESTRE <lancetre@intenebris.org>
+Date:	Thu Sep 1 14:13:39 2022 +0200
+
+commit 0108686cbf1fbb23cdbe76d6b7d2cc54d0a0442a
+Author: LANCESTRE <lancetre@intenebris.org>
+Date:   Thu Sep 1 14:13:39 2022 +0200
+
+    Update LibStatLogic-1.2.lua
+    
+    disable debug mode
+

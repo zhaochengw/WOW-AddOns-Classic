@@ -1,0 +1,16 @@
+## Interface: 30400
+## Title: Lib: LibDropDownMenu
+## Notes: Library providing downdown menu like blizzards DropDownMenu
+## Author: Hizuro
+## Version: r21
+## OptionalDeps: LibStub, CallbackHandler-1.0
+
+## X-Curse-Project-ID: 298617
+
+#@no-lib-strip@
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+#@end-no-lib-strip@
+
+LibDropDownMenu.xml
+

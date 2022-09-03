@@ -1,0 +1,10 @@
+## Interface: 30400
+## Title: Grid2 |cd1ff7d0aRaidDebuffs|r
+## Notes: Adds a Raid Boss debuff status.
+## Notes-esES: Muestra los debuffs de Bosses de Raid en el Grid2.
+## Dependencies: Grid2
+## Version:2.0.49
+## X-Category: UnitFrame
+## X-Website: http://wowace.com/projects/grid2/
+
+Grid2RaidDebuffs.lua

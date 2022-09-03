@@ -1,0 +1,15 @@
+## Interface: 30400
+## Title: FloAspectBar
+## Author: Floraline, TBCC updates by Sansaan
+## Notes: Add an aspect bar similar to the paladin's aura bar
+## Version: 2.0.1
+## OptionalDeps: 
+## Dependencies:
+## SavedVariables: 
+## SavedVariablesPerCharacter: FLOASPECTBAR_OPTIONS, FLOASPECTBAR_OPTIONS2
+FloLib.xml
+FloAspectBar.xml
+
+## Title-zhCN: |cff880303[有爱]|r FloAspectBar 猎人守护助手
+## X-Vendor: NetEase
+## X-163UI-Version: 20211111144807

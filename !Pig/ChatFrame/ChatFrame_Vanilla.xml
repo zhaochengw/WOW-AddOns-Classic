@@ -1,0 +1,8 @@
+<Ui>
+	<Script file="Qita.lua" />
+	<Script file="QuickChat.lua" />
+	<Script file="ChatJilu.lua" />
+	<Script file="ChatKeyword.lua" />
+	<Script file="JiuweiDaojishi.lua" />
+	<Script file="Roll.lua" />
+</Ui>

@@ -1,0 +1,38 @@
+<Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Include file="Style\Style.xml"/>
+
+    <Script file="Abstract\MenuButton.lua"/>
+
+    <Script file="Component\Bag.lua"/>
+    <Script file="Component\BagFrame.lua"/>
+    <Script file="Component\MoneyFrame.lua"/>
+    <Script file="Component\OwnerSelector.lua"/>
+    <Script file="Component\SearchBox.lua"/>
+    <Script file="Component\GlobalSearchBox.lua"/>
+    <Script file="Component\TitleFrame.lua"/>
+    <Script file="Component\Token.lua"/>
+    <Script file="Component\TokenFrame.lua"/>
+    <Script file="Component\EquipBagToggle.lua"/>
+
+    <Script file="Item\ItemBase.lua"/>
+    <Script file="Item\Item.lua"/>
+    <Script file="Item\EquipItem.lua"/>
+
+    <Script file="Container\Container.lua"/>
+    <Script file="Container\TitleContainer.lua"/>
+    <Script file="Container\GlobalSearchContainer.lua"/>
+    <Script file="Container\EquipContainer.lua"/>
+
+    <Script file="Frame\Frame.lua"/>
+    <Script file="Frame\SimpleFrame.lua"/>
+    <Script file="Frame\ContainerFrame.lua"/>
+    <Script file="Frame\InventoryFrame.lua"/>
+    <Script file="Frame\BankFrame.lua"/>
+    <Script file="Frame\GlobalSearchFrame.lua"/>
+    <Script file="Frame\EquipFrame.lua"/>
+
+    <Script file="Plugin\BagToggle.lua"/>
+    <Script file="Plugin\SearchToggle.lua"/>
+    <Script file="Plugin\PluginFrame.lua"/>
+</Ui>

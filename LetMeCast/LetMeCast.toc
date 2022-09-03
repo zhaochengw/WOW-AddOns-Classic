@@ -1,0 +1,7 @@
+## Interface: 30400
+## Title: LetMeCast
+## Notes: AutoDismount and AutoStand
+## Author: Anilusion
+## Version: 1.3
+
+LetMeCast.lua

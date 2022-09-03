@@ -1,0 +1,10 @@
+## Interface: 30400
+## Title:进入/脱离战斗,屏幕中间提示
+## Notes: 进入/脱离战斗,屏幕中间提示
+
+## Version: Wow v1.12
+## Author: Lo
+## DefaultState: Enabled
+## LoadOnDemand: 0
+
+CombatAlert.lua

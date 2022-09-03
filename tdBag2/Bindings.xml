@@ -1,0 +1,14 @@
+<Bindings>
+    <Binding name="TDBAG2_TOGGLE_BAG" header="TDBAG2" category="ADDONS">
+        tdBag2:ToggleFrame(tdBag2.BAG_ID.BAG, true)
+    </Binding>
+    <Binding name="TDBAG2_TOGGLE_BANK" category="ADDONS">
+        tdBag2:ToggleFrame(tdBag2.BAG_ID.BANK, true)
+    </Binding>
+    <Binding name="TDBAG2_TOGGLE_MAIL" category="ADDONS">
+        tdBag2:ToggleFrame(tdBag2.BAG_ID.MAIL, true)
+    </Binding>
+    <Binding name="TDBAG2_TOGGLE_GLOBAL_SEARCH" category="ADDONS">
+        tdBag2:ToggleFrame(tdBag2.BAG_ID.SEARCH, true)
+    </Binding>
+</Bindings>

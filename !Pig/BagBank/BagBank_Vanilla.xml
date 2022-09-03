@@ -1,0 +1,4 @@
+<Ui>
+	<Script file="AutoSort_Vanilla.lua" />
+	<Script file="BagBank_Vanilla.lua" />
+</Ui>

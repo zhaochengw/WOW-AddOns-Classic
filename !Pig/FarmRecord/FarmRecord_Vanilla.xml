@@ -1,0 +1,4 @@
+<Ui>
+	<Script file="UI.lua" />
+	<Script file="Setting.lua" />
+</Ui>

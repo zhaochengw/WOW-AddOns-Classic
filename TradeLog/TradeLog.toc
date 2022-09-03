@@ -1,0 +1,21 @@
+## Interface: 30400
+## Title: The Burning Trade
+## Title-zhCN: The Burning Trade
+## Notes: |cffbc8f8ftrade log, mage warlock trade assistant.|r
+## Notes-zhCN: |cff00ff00TheBurningTrade|r|n|cffbc8f8f交易记录及交易界面增强。|r
+## OptionalDeps: Skinner
+## SavedVariablesPerCharacter: TradeLog_TradesHistory, TRADE_LOG_BUTTON_POS, TradeLog_Announce_Checked, TradeLog_AnnounceChannel,TBT_CurrentPortal
+## Author: Warbaby,Mod By Terry@BF
+## LoadOnDemand: 0
+Libs\LibDBIcon-1.0.xml
+localization-enUS.lua
+localization-zhCN.lua
+localization-zhTW.lua
+TheBurningTrade.xml
+TradeLogFrame.xml
+RecentTradeFrame.xml
+
+## Title-zhCN: |cff880303[有爱]|r TradeLog 交易记录
+## Notes-zhCN: 交易记录 by Warbaby (三月十二@聖光之願<冰封十字軍>)
+## X-Vendor: NetEase
+## X-163UI-Version: 20220120164410

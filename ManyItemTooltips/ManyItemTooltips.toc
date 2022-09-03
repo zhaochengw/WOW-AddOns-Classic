@@ -1,0 +1,10 @@
+## Interface: 30400
+## Title: ManyItemTooltips
+## Notes: Allows you to open an unlimited number of item tooltips.
+## Title-zhCN: |CFFFF8000辅助|R 多物品链接显示
+## Notes-zhCN: 让你可以点开多个链接，方便地查看比较物品
+## Title-zhTW: |CFFFF8000輔助|R 多物品連結顯示
+## Notes-zhTW: 讓你可以點開多個連結，方便地查看比較物品
+## X-Repple: 辅助
+## Author: Doomchicken of Dark Iron
+ManyItemTooltips.xml

@@ -1,0 +1,8 @@
+<Ui>
+	<Script file="UI.lua" />
+	<Script file="zishenBUFF.lua" />
+	<Script file="zishenCC.lua" />
+	<Script file="duiyouCD.lua" />
+	<Script file="mubiaoBUFF.lua" />
+	<Script file="difangCD.lua" />
+</Ui>

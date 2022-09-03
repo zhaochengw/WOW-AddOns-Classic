@@ -1,0 +1,13 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+	<Script file="Atlas_DungeonLocs-enUS.lua"/>
+	<Script file="Atlas_DungeonLocs-deDE.lua"/>
+	<Script file="Atlas_DungeonLocs-esES.lua"/>
+	<Script file="Atlas_DungeonLocs-esMX.lua"/>
+	<Script file="Atlas_DungeonLocs-frFR.lua"/>
+	<Script file="Atlas_DungeonLocs-itIT.lua"/>
+	<Script file="Atlas_DungeonLocs-koKR.lua"/>
+	<Script file="Atlas_DungeonLocs-ptBR.lua"/>
+	<Script file="Atlas_DungeonLocs-ruRU.lua"/>
+	<Script file="Atlas_DungeonLocs-zhCN.lua"/>
+	<Script file="Atlas_DungeonLocs-zhTW.lua"/>
+</Ui>

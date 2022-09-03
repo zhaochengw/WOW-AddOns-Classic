@@ -1,0 +1,215 @@
+------------------------------------------------------------------------
+r313 | whitetooth | 2010-10-28 05:14:38 +0000 (Thu, 28 Oct 2010) | 3 lines
+Changed paths:
+   A /tags/1.6.2 (from /trunk:312)
+
+1.6.2
+- Fixed: Error on Regorge UI
+- Fixed: Bonus armor calculation on cloaks
+------------------------------------------------------------------------
+r312 | Whitetooth | 2010-10-28 05:14:14 +0000 (Thu, 28 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/About RatingBuster.txt
+
+- Update changelog
+------------------------------------------------------------------------
+r311 | Whitetooth | 2010-10-28 04:47:39 +0000 (Thu, 28 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster.lua
+
+- Fix Reforge UI error
+------------------------------------------------------------------------
+r309 | whitetooth | 2010-10-27 14:34:05 +0000 (Wed, 27 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/About RatingBuster.txt
+   M /trunk/RatingBuster.lua
+
+- Rating conversion support for Reforge Frame
+------------------------------------------------------------------------
+r308 | 7destiny | 2010-10-26 16:12:54 +0000 (Tue, 26 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-koKR.lua
+
+- koKR Update
+------------------------------------------------------------------------
+r307 | Sayclub | 2010-10-25 10:53:06 +0000 (Mon, 25 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-koKR.lua
+
+- koKR update
+------------------------------------------------------------------------
+r306 | StingerSoft | 2010-10-25 06:23:20 +0000 (Mon, 25 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-ruRU.lua
+
+- ruRU update
+------------------------------------------------------------------------
+r305 | cremor | 2010-10-24 22:06:04 +0000 (Sun, 24 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+
+- deDE update
+------------------------------------------------------------------------
+r303 | whitetooth | 2010-10-24 21:49:56 +0000 (Sun, 24 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/About RatingBuster.txt
+   M /trunk/RatingBuster.lua
+
+- Prepare for release
+------------------------------------------------------------------------
+r302 | whitetooth | 2010-10-24 21:13:36 +0000 (Sun, 24 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-enUS.lua
+   M /trunk/RatingBuster.lua
+
+- StatSummary: Replaced all spell damage schools and healing with Spell Power, but dynamically displays spell damage and healing if different.
+------------------------------------------------------------------------
+r301 | whitetooth | 2010-10-24 19:26:00 +0000 (Sun, 24 Oct 2010) | 5 lines
+Changed paths:
+   M /trunk/About RatingBuster.txt
+   M /trunk/RatingBuster-Locale-deDE.lua
+   M /trunk/RatingBuster-Locale-enUS.lua
+   M /trunk/RatingBuster-Locale-esES.lua
+   M /trunk/RatingBuster-Locale-frFR.lua
+   M /trunk/RatingBuster-Locale-koKR.lua
+   M /trunk/RatingBuster-Locale-ruRU.lua
+   M /trunk/RatingBuster-Locale-zhCN.lua
+   M /trunk/RatingBuster-Locale-zhTW.lua
+   M /trunk/RatingBuster.lua
+
+- Options should now be fully up to date
+- Properly initialize AceDB custom class defaults in OnNewProfile
+- Spirit no longer gives Health Regen
+- Show Spell Power if Spell Damage equals Healing
+- Support for Spell Hit from Spirit talents
+------------------------------------------------------------------------
+r300 | cremor | 2010-10-24 14:26:43 +0000 (Sun, 24 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+
+- deDE update
+------------------------------------------------------------------------
+r299 | StingerSoft | 2010-10-24 09:50:02 +0000 (Sun, 24 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-ruRU.lua
+
+- ruRU update
+------------------------------------------------------------------------
+r298 | whitetooth | 2010-10-23 17:54:04 +0000 (Sat, 23 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+   M /trunk/RatingBuster-Locale-enUS.lua
+   M /trunk/RatingBuster-Locale-esES.lua
+   M /trunk/RatingBuster-Locale-frFR.lua
+   M /trunk/RatingBuster-Locale-koKR.lua
+   M /trunk/RatingBuster-Locale-ruRU.lua
+   M /trunk/RatingBuster-Locale-zhCN.lua
+   M /trunk/RatingBuster-Locale-zhTW.lua
+   M /trunk/RatingBuster.lua
+
+- Some updates to options and option tooltips
+------------------------------------------------------------------------
+r297 | whitetooth | 2010-10-23 17:20:15 +0000 (Sat, 23 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/About RatingBuster.txt
+
+- Stat Breakdown: Removed "Show Block Value from Strength"
+------------------------------------------------------------------------
+r296 | whitetooth | 2010-10-22 16:39:46 +0000 (Fri, 22 Oct 2010) | 5 lines
+Changed paths:
+   M /trunk/About RatingBuster.txt
+   M /trunk/RatingBuster-Locale-deDE.lua
+   M /trunk/RatingBuster-Locale-enUS.lua
+   M /trunk/RatingBuster-Locale-esES.lua
+   M /trunk/RatingBuster-Locale-frFR.lua
+   M /trunk/RatingBuster-Locale-koKR.lua
+   M /trunk/RatingBuster-Locale-ruRU.lua
+   M /trunk/RatingBuster-Locale-zhCN.lua
+   M /trunk/RatingBuster-Locale-zhTW.lua
+   M /trunk/RatingBuster.lua
+   M /trunk/RatingBuster.toc
+
+- Removed some deprecated statmod options(unfinished)
+- Paladins and Warriors now get a passive 25% Strength as Parry Rating
+- 1 Intellect = 1 Spell Power
+- Agility no longer gives Armor
+- toc bump
+------------------------------------------------------------------------
+r295 | cremor | 2010-10-22 16:37:30 +0000 (Fri, 22 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+
+- deDE update
+------------------------------------------------------------------------
+r294 | whitetooth | 2010-10-22 16:07:47 +0000 (Fri, 22 Oct 2010) | 2 lines
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+   M /trunk/RatingBuster-Locale-enUS.lua
+   M /trunk/RatingBuster-Locale-esES.lua
+   M /trunk/RatingBuster-Locale-frFR.lua
+   M /trunk/RatingBuster-Locale-koKR.lua
+   M /trunk/RatingBuster-Locale-ruRU.lua
+   M /trunk/RatingBuster-Locale-zhCN.lua
+   M /trunk/RatingBuster-Locale-zhTW.lua
+   M /trunk/RatingBuster.lua
+
+- Removed deprecated stats
+- Update libs
+------------------------------------------------------------------------
+r293 | cremor | 2010-10-22 14:12:12 +0000 (Fri, 22 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+
+- deDE update
+------------------------------------------------------------------------
+r292 | whitetooth | 2010-10-21 07:47:03 +0000 (Thu, 21 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+   M /trunk/RatingBuster-Locale-enUS.lua
+   M /trunk/RatingBuster-Locale-esES.lua
+   M /trunk/RatingBuster-Locale-frFR.lua
+   M /trunk/RatingBuster-Locale-koKR.lua
+   M /trunk/RatingBuster-Locale-ruRU.lua
+   M /trunk/RatingBuster-Locale-zhCN.lua
+   M /trunk/RatingBuster-Locale-zhTW.lua
+   M /trunk/RatingBuster.lua
+
+- Partial support for Master Rating
+------------------------------------------------------------------------
+r289 | whitetooth | 2010-10-19 17:22:17 +0000 (Tue, 19 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster.lua
+
+- Removed "ADD_AP_MOD_SPELL_DMG"
+------------------------------------------------------------------------
+r288 | whitetooth | 2010-10-19 17:01:30 +0000 (Tue, 19 Oct 2010) | 1 line
+Changed paths:
+   M /trunk
+   M /trunk/.pkgmeta
+   M /trunk/About RatingBuster.txt
+   M /trunk/RatingBuster.lua
+   M /trunk/RatingBuster.toc
+   M /trunk/embeds.xml
+
+- Core updated to LibStatLogic-1.2
+------------------------------------------------------------------------
+r287 | 7destiny | 2010-10-15 16:39:21 +0000 (Fri, 15 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-koKR.lua
+
+- koKR Update
+------------------------------------------------------------------------
+r286 | whitetooth | 2010-10-02 10:15:26 +0000 (Sat, 02 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster.lua
+
+- Fixed some loading errors in 4.0
+------------------------------------------------------------------------
+r285 | cremor | 2010-06-03 14:46:28 +0000 (Thu, 03 Jun 2010) | 2 lines
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+   M /trunk/RatingBuster.lua
+
+- "Hide Blizzard Item Comparisons" now also works for ItemRefTooltips
+- deDE update
+------------------------------------------------------------------------

@@ -1,0 +1,79 @@
+------------------------------------------------------------------------
+r295 | cremor | 2010-10-22 16:37:30 +0000 (Fri, 22 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+
+- deDE update
+------------------------------------------------------------------------
+r294 | whitetooth | 2010-10-22 16:07:47 +0000 (Fri, 22 Oct 2010) | 2 lines
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+   M /trunk/RatingBuster-Locale-enUS.lua
+   M /trunk/RatingBuster-Locale-esES.lua
+   M /trunk/RatingBuster-Locale-frFR.lua
+   M /trunk/RatingBuster-Locale-koKR.lua
+   M /trunk/RatingBuster-Locale-ruRU.lua
+   M /trunk/RatingBuster-Locale-zhCN.lua
+   M /trunk/RatingBuster-Locale-zhTW.lua
+   M /trunk/RatingBuster.lua
+
+- Removed deprecated stats
+- Update libs
+------------------------------------------------------------------------
+r293 | cremor | 2010-10-22 14:12:12 +0000 (Fri, 22 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+
+- deDE update
+------------------------------------------------------------------------
+r292 | whitetooth | 2010-10-21 07:47:03 +0000 (Thu, 21 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+   M /trunk/RatingBuster-Locale-enUS.lua
+   M /trunk/RatingBuster-Locale-esES.lua
+   M /trunk/RatingBuster-Locale-frFR.lua
+   M /trunk/RatingBuster-Locale-koKR.lua
+   M /trunk/RatingBuster-Locale-ruRU.lua
+   M /trunk/RatingBuster-Locale-zhCN.lua
+   M /trunk/RatingBuster-Locale-zhTW.lua
+   M /trunk/RatingBuster.lua
+
+- Partial support for Master Rating
+------------------------------------------------------------------------
+r289 | whitetooth | 2010-10-19 17:22:17 +0000 (Tue, 19 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster.lua
+
+- Removed "ADD_AP_MOD_SPELL_DMG"
+------------------------------------------------------------------------
+r288 | whitetooth | 2010-10-19 17:01:30 +0000 (Tue, 19 Oct 2010) | 1 line
+Changed paths:
+   M /trunk
+   M /trunk/.pkgmeta
+   M /trunk/About RatingBuster.txt
+   M /trunk/RatingBuster.lua
+   M /trunk/RatingBuster.toc
+   M /trunk/embeds.xml
+
+- Core updated to LibStatLogic-1.2
+------------------------------------------------------------------------
+r287 | 7destiny | 2010-10-15 16:39:21 +0000 (Fri, 15 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster-Locale-koKR.lua
+
+- koKR Update
+------------------------------------------------------------------------
+r286 | whitetooth | 2010-10-02 10:15:26 +0000 (Sat, 02 Oct 2010) | 1 line
+Changed paths:
+   M /trunk/RatingBuster.lua
+
+- Fixed some loading errors in 4.0
+------------------------------------------------------------------------
+r285 | cremor | 2010-06-03 14:46:28 +0000 (Thu, 03 Jun 2010) | 2 lines
+Changed paths:
+   M /trunk/RatingBuster-Locale-deDE.lua
+   M /trunk/RatingBuster.lua
+
+- "Hide Blizzard Item Comparisons" now also works for ItemRefTooltips
+- deDE update
+------------------------------------------------------------------------

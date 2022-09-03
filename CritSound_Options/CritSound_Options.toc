@@ -1,0 +1,13 @@
+## Interface: 30400
+## Title: CritSound Options
+## Title-zhTW: 爆擊音效 設置
+## X-Repple: 辅助
+## RequiredDeps: CritSound
+## LoadOnDemand: 1
+## Version: 2.5.4
+## Author: Isler
+## E-mail: isler@live.com
+## X-Website: http://isler-wowui.googlecode.com
+
+Localization.lua
+Options.lua

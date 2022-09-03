@@ -1,0 +1,12 @@
+## Interface: 30400
+## Title: Low HP Pulser
+## Notes: Provides visual feedback when health and mana reach the defined percentages
+## Title-zhCN: |CFF7FFF7F界面|R 低血量魔法视觉警报
+## Title-zhTW: |CFF7FFF7F介面|R 低血量魔法視覺警報
+## X-Repple: 界面
+## Version: 0.1
+## Author: movzx
+## SavedVariables: LowHPPulserDB
+
+Options.lua
+LowHPPulser.xml

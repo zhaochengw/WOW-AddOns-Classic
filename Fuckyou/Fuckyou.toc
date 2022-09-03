@@ -1,0 +1,10 @@
+## Interface: 30400
+## Title: |cff00ffffFuck☆|ryou
+## Title-zhCN: |cff00ffffFuck☆|ryou 口吐芬芳
+## Title-zhTW: |cff00ffffFuck☆|ryou 口吐芬芳
+## Version: R2
+## Author: EK (Linodas@Illidan-US)
+## Notes: #!*&#@$!*@&#$
+## Credits: Peterdox
+
+Fuckyou.lua

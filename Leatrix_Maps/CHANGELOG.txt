@@ -1,0 +1,167 @@
+3.0.05 - 1st September 2022
+- Added points of interest.
+
+3.0.04 - 31st August 2022
+- File layout fix and Eastern Plaguelands fix #2.
+
+3.0.02 - 31st August 2022
+- Fixed an issue with Eastern Plaguelands explored map showing unexplored areas.
+
+3.0.01 - 31st August 2022
+- Added some points of interest icons.
+- Fixed an issue which caused a texture to be shown behind the map if the map border was enabled and map opacity was not 100%.
+
+3.0.00 - 29th August 2022
+- Welcome to Wrath of the Lich King!
+- Removed BCC transitional code.
+- Added Utgarde Keep icon.
+
+2.5.120 - 24th August 2022
+- Wrath: For 'Show dungeons and raids', the Northrend dungeon icons now show level information (recommended dungeon level, minimum level required to enter and meeting stone level, where known).
+
+2.5.119 - 17th August 2022
+- Wrath: Added new flight points in Tirisfal Glades and Western Plaguelands.
+- Wrath: The 'Show spirit healers' setting is disabled.
+
+2.5.118 - 10th August 2022
+- Updated for Wrath Classic.
+- Wrath: The Northrend zone menu is now available (when logged into BCC, the menu will be disabled).
+- Wrath: All the Northrend zones are revealed and show points of interest if the settings are enabled.
+- For Wrath, it's best to use alpha releases during Wrath Beta/prepatch so that you get the latest development updates.  To switch to alpha releases, open CurseForge App, right-click Leatrix Maps in your Wrath addon listing and change release type to Alpha.  You can change it back to Release once Wrath is live for everyone.
+
+2.5.117 - 3rd August 2022
+- Leatrix Maps will be updated for Wrath Beta during August 2022.
+
+2.5.116 - 27th July 2022
+- For 'Unlock map frame', added a fix for Demodal preventing the map frame from being moved to the top edge of the screen.
+- Leatrix Maps for BCC will now attempt to run on Wrath Beta but note that it hasn't been tested and there are no Wrath features yet.
+
+2.5.115 - 20th July 2022
+- Fixed a minor cosmetic issue with 'Show zone menus' which may have sometimes caused menus to overlap.  Added skins for ElvUI.
+
+2.5.114 - 13th July 2022
+- Added a new setting 'Show zone menus'.  If enabled, continent and zone dropdown menus will be shown in the map frame allowing you to see the current map zone and change it as you wish.  It's enabled by default.
+- For 'Show zone crossings', Mulgore and Thunder Bluff maps now show north and south zone crossing arrows.
+- For 'Show dungeons and raids', Blackrock Mountain, Caverns of Time and Coilfang Reservoir icons will now show minimum levels for each of the dungeons and raids included.
+
+2.5.111 - 22nd June 2022
+- In the game key bindings menu, you can now set a keybind to toggle Leatrix Maps.
+
+2.5.109 - 8th June 2022
+- Added 'Ravenholdt Manor' zone crossing to Hillsbrad Foothills and Alterac Mountains maps.
+
+2.5.96 - 30th March 2022
+- For developers, you can now configure Leatrix Maps from your own addon or script using the following as a guide:
+
+-- Ensure Leatrix Maps does not replace LeaMapsDB on next reload
+SlashCmdList["Leatrix_Maps"]("nosave")
+-- Clear the settings database (optional but recommended)
+wipe(LeaMapsDB)
+-- Configure the settings (add any settings you like here)
+LeaMapsDB["NoMapBorder"] = "On"
+-- Reload the UI to apply the settings
+ReloadUI()
+
+2.5.95 - 23rd March 2022
+- Updated for game version 2.5.4.
+
+2.5.90 - 9th February 2022
+- For 'Center map on player', releasing shift (after holding it down to prevent the map from centering) will no longer cause the map to center.  Centering will only will start again when you do something that requires a map update without shift being held down.  This includes zooming, panning, clicking an area of the map that isn't a button, toggling the map, etc.  This applies to both the world map and battleground map.
+
+2.5.89 - 3rd February 2022
+- Added zone crossings for Eversong Woods and Silvermoon City.
+- Added Orb of Translocation for Silvermoon City and Undercity.
+
+2.5.86 - 19th January 2022
+- Updated for game version 2.5.3.
+
+2.5.76 - 22nd December 2021
+- Added missing Duskwood to Deadwind pass zone crossing.
+
+2.5.75 - 16th December 2021
+- Updated zone crossings for Exodar and Azuremyst Isle.
+
+2.5.70 - 1st December 2021
+- Added a new setting under 'Show points of interest' called 'Show zone crossings'.  If enabled, zone crossings will be shown.  These are clickable arrows indicating zone exit pathways.
+- Player arrow and group icon maximum size (for both world map and battlefield map) and battlefield maximum size increased to 400%.
+- Changed the Leatrix Maps minimap icon.
+
+2.5.69 - 24th November 2021
+- If 'Center map on player' is enabled (either world map or battlefield map), the map will center more quickly after zooming, panning, etc.  You can now hold shift while panning to temporarily prevent the map from centering.
+
+2.5.68 - 17th November 2021
+- Fixed a minor issue with 'Enhance battlefield map' where the battlefield map tab remained visible on startup until the battlefield map was shown.
+
+2.5.66 - 4th November 2021
+- Added new option called 'Increase zoom level'.  If enabled, you will be able to zoom further into the world map (up to 600% increased zoom).  You can set the maximum zoom level in the configuration panel.
+- If 'Enhance battlefield map' is enabled, you can set the maximum zoom level for the battlefield map in the configuration panel.
+- Changes to configuration panel layout.
+
+2.5.63 - 29th October 2021
+- Replaced packager to fix CurseForge App issue.
+
+2.5.62 - 28th October 2021
+- Fixed a few locale issues with invalid translations.
+
+2.5.61 - 21st October 2021
+- The 'Show flight points' and 'Show travel points' options (in the 'Show points of interest' configuration panel) are now combined into 'Show travel points for same faction' and 'Show travel points for opposing faction'.
+- Added a new setting to 'Enhance battlefield map' which lets you keep the battleifeld map centered on you.
+- The 'Show unexplored areas' option will now reveal unexplored areas on the battlefield map as well as the world map.  Toggling the option now requires a UI reload.
+- If 'Unlock battlefield map' is enabled, you can drag the bottom-right corner of the battlefield map to resize it (this is in addition to the 'Map Size' slider).
+- If 'Unlock map frame' is enabled, you can now set the world map scale using a slider in the configuration panel (this is in addition to the world map scale handle).
+
+2.5.60 - 13th October 2021
+- Added a new option 'Center map on player'.  If enabled, the map will remain centered on you as long as you are not dragging the map or in a dungeon.  No reload required so you can enable it as and when you wish.
+
+2.5.58 - 29th September 2021
+- The zone map dropdown menu (normally shown in the map border) is now shown in the Leatrix Maps panel instead.
+- The zoom out button is now hidden.
+
+2.5.56 - 16th September 2021
+- Updated for World of Warcraft game version 2.5.2.
+
+2.5.55 - 6th September 2021
+- Fixed a taint error when opening the guild frame.  As a result of this fix, the zone and continent map dropdown menus are now hidden.
+
+2.5.50 - 19th August 2021
+- Fixed an issue with malformed translations.
+
+2.5.43 - 24th June 2021
+- If 'Enhance battlefield map' is enabled, battlefield map position and opacity are now both set from the configuration panel.
+- The 'Hide town and city icons' option now applies to the Outland map too.
+- Fixed location of the Altar of Sha'tar flight point (Shadowmoon Valley).
+
+2.5.42 - 16th June 2021
+- Added 'Show spirit healers' to 'Show points of interest'.  It's enabled by default.
+- Added Shatter Point (Hellfire Peninsula), Magisters' Terrace (Isle of Quel'Danas), Sunwell Plateau (Isle of Quel'Danas), Zul'Aman (Ghostlands), Karazhan (Deadwind Pass), Caverns of Time (Tanaris) and Shattrath City (Terokkar Forest) points of interest.
+
+2.5.41 - 9th June 2021
+- Updated the group icon for 'Class-colored icons' and 'Enhance battlefield map'.
+- Fixed a bug with 'Auto-change zones' which caused a Lua error when entering Outland dungeons.
+
+2.5.40 - 8th June 2021
+- If you are updating from 2.5.38 or earlier, you you need to restart your game client after installing this update.
+- Added the preview icon back to 'Class colored icons' and 'Enhance battlefield map'.
+- Note that the size range of the class colored icons has changed so you may wish to adjust it in the configuration panel.
+
+2.5.39 - 8th June 2021
+- You need to restart your game client after installing this update.
+- Fixed an issue with 'Class colored icons' which caused the icons to be invisible.
+- Updated translations.
+
+2.5.38 - 2nd June 2021
+- Added the missing boat harbors that link Auberdine, Darkshore with Valaar's Berth, Azuremyst Isle.
+
+2.5.37 - 26th May 2021
+- Revised the dungeon icon level ranges.
+- If 'Show zone levels' is enabled, dungeon icons will now show minimum level requried to enter (if known) and level range required to use meeting stones (if known).
+- Fixed an issue with 'Show unexplored areas' which caused the Alterac Valley map to always appear unexplored.
+- Added the missing flight points for Emerald Sanctuary, Felwood (neutral) and Forest Song, Ashenvale (Alliance).
+
+2.5.10 - 15th May 2021
+- Welcome to Burning Crusade Classic.
+- Leatrix Maps for Burning Crusade Classic is based on Leatrix Maps for World of Warcraft Classic with the changes listed below.
+- If 'Remove map border' is enabled, the zone map dropdown menu will now be hidden.
+- Added new flight point icons for Rebel Camp (Stranglethorn Vale), Azuremyst Isle, Bloodmyst Isle, Eversong Woods, Ghostlands, Mudsprocket (Dustwallow Marsh) and Shattrath City (Terokkar Forest).
+- Added new portal icons for Shattrath City.
+- Thanks to Blizzard for the day one beta access allowing me to bring Leatrix addons to the BCC community.

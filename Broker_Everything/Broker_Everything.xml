@@ -1,0 +1,241 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+
+	<!-- localizations -->
+	<Script file="localizations/en.lua" />
+	<Script file="localizations/br.lua" />
+	<Script file="localizations/cn.lua" />
+	<Script file="localizations/de.lua" />
+	<Script file="localizations/es.lua" />
+	<Script file="localizations/fr.lua" />
+	<Script file="localizations/it.lua" />
+	<Script file="localizations/kr.lua" />
+	<Script file="localizations/mx.lua" />
+	<Script file="localizations/ru.lua" />
+	<Script file="localizations/tw.lua" />
+	<!-- /localizations -->
+
+	<Script file="shared.lua" />
+	<Script file="options.lua" />
+	<Script file="modules.lua" />
+
+	<!-- modules -->
+	<Script file="modules/friends.lua"/>
+	<Script file="modules/guild.lua"/>
+	<Script file="modules/volume.lua"/>
+	<!-- /modules -->
+
+	<!-- modules for classic -->
+	<!-- /modules for classic -->
+
+	<Script file="chatcommand.lua" />
+	<Script file="core.lua"/>
+
+	<Frame name="BE_SecureFrame" hidden="hidden" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="" hidden="true" alphamode="ADD" file="interface\friendsframe\ui-friendsframe-highlightbar" >
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0" />
+						<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+					</Anchors>
+					<Color a="1" r="1" g="0" b="0" />
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter>
+				self.highlight:Show()
+			</OnEnter>
+			<OnLeave>
+				self.highlight:Hide()
+			</OnLeave>
+		</Scripts>
+		<Frames>
+			<Button name="$parentButton" inherits="SecureActionButtonTemplate" parentKey="button">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0" />
+					<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+				</Anchors>
+				<HighlightTexture alphamode="ADD" file="interface\friendsframe\ui-friendsframe-highlightbar-blue" />
+			</Button>
+		</Frames>
+	</Frame>
+
+	<Button name="BE_SecureWrapper" hidden="hidden" virtual="true">
+		<HighlightTexture alphamode="ADD" file="interface\friendsframe\ui-friendsframe-highlightbar" />
+		<Frames>
+			<Button name="$parentButton" inherits="SecureActionButtonTemplate" parentKey="button">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="0" y="0" />
+					<Anchor point="BOTTOMRIGHT" x="0" y="0" />
+				</Anchors>
+				<HighlightTexture alphamode="ADD" file="interface\friendsframe\ui-friendsframe-highlightbar-blue" />
+			</Button>
+		</Frames>
+	</Button>
+
+	<Button name="BEOptionsAddonButtonTemplate" virtual="true">
+		<Size x="0" y="40" />
+		<Anchors>
+			<Anchor point="LEFT"/>
+			<Anchor point="RIGHT"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Name" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="LEFT" />
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Status" inherits="GameFontNormalSmall">
+
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Checkbox parentKey="StatusToggle" inherits="">
+				<Size x="20" y="20" />
+				<Anchors>
+					<Anchor point="RIGHT" relativeKey="$parent.Status" relativePoint="LEFT" y="-5" />
+				</Anchors>
+			</Checkbox>
+		</Frames>
+	</Button>
+
+	<Texture name="BEReputationBarTextureTemplate" file="Interface\BUTTONS\GreyscaleRamp64" hidden="true" virtual="true">
+		<Size x="1"/>
+		<TexCoords left="1" right="0" top="1" bottom="0" />
+		<Anchors><Anchor point="TOPLEFT" /><Anchor point="BOTTOM" /></Anchors>
+	</Texture>
+
+	<Frame name="BEStatusBarTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="1">
+				<Texture parentKey="Bar" inherits="BEReputationBarTextureTemplate" />
+			</Layer>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture parentKey="Bg" file="Interface\BUTTONS\GreyscaleRamp64" SetAllPoints="true">
+					<Color r="0.2" g="0.2" b="0.2" />
+					<TexCoords left="1" right="0" top="1" bottom="0" />
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="BEReputationBarTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="1">
+				<Texture parentKey="BarSingle" inherits="BEReputationBarTextureTemplate" />
+				<Texture parentKey="BarAIO" file="Interface\AddOns\Broker_Everything\media\aio-reputation-bar" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOM"/>
+					</Anchors>
+					<TexCoords left="0" right="0.830078125" top="0" bottom="0" />
+				</Texture>
+				<Texture parentKey="BarAIO_friend" file="Interface\AddOns\Broker_Everything\media\aio-reputation-bar_friend" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOM"/>
+					</Anchors>
+					<TexCoords left="0" right="0.830078125" top="0" bottom="0" />
+				</Texture>
+				<Texture parentKey="BarAIO_bodyguard" file="Interface\AddOns\Broker_Everything\media\aio-reputation-bar_bodyguard" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOM"/>
+					</Anchors>
+					<TexCoords left="0" right="0.830078125" top="0" bottom="0" />
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture parentKey="Bg" file="Interface\BUTTONS\GreyscaleRamp64" SetAllPoints="true">
+					<Color r="0.3" g="0.3" b="0.3" />
+					<TexCoords left="1" right="0" top="1" bottom="0" />
+				</Texture>
+				<Texture parentKey="Bg2" file="Interface\BUTTONS\GreyscaleRamp64" hidden="true">
+					<Size x="1" />
+					<Color r="0.66" g="0.66" b="0.66" />
+					<TexCoords left="1" right="0" top="1" bottom="0" />
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Bar1" />
+						<Anchor point="BOTTOM"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Frame name="BrokerEverythingNotesEditor" parent="UIParent" inherits="ButtonFrameTemplate" movable="TRUE" enableMouse="TRUE" toplevel="TRUE" clampedToScreen="TRUE" hidden="true">
+		<Size x="410" y="240"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="titleCount" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Inset" relativePoint="TOPRIGHT" x="0" y="7" />
+					</Anchors>
+				</FontString>
+				<FontString parentKey="textCount" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-11" y="9" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox parentKey="title" autoFocus="false" inherits="InputBoxInstructionsTemplate">
+				<Size y="24" />
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.Inset" relativePoint="TOPLEFT" x="8" y="2" />
+					<Anchor point="RIGHT" relativeKey="$parent.Inset" x="-62" />
+				</Anchors>
+			</EditBox>
+			<ScrollFrame name="$parent$crollFrame" parentKey="Scroll" inherits="MinimalScrollFrameTemplate">
+				<Size x="366" y="145" />
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Inset" x="5" y="-5" />
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Inset" x="-28" y="4" />
+				</Anchors>
+				<ScrollChild>
+					<EditBox parentKey="text" autoFocus="false" multiLine="true" countInvisibleLetters="true" inherits="InputBoxInstructionsTemplate">
+						<Size x="436" y="145" />
+						<Anchors>
+							<Anchor point="TOPLEFT" />
+							<Anchor point="RIGHT" />
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString parentKey="Instructions" justifyH="LEFT" justifyV="TOP" inherits="GameFontDisable" setAllPoints="true">
+									<Color r="0.35" g="0.35" b="0.35"/>
+								</FontString>
+							</Layer>
+						</Layers>
+						<FontString inherits="SystemFont_Med2">
+							<Color r=".99" g=".99" b=".99"/>
+						</FontString>
+					</EditBox>
+				</ScrollChild>
+			</ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForDrag("LeftButton");
+				self:SetScript("OnDragStart", self.StartMoving);
+				self:SetScript("OnDragStop", self.StopMovingOrSizing);
+				ButtonFrameTemplate_HidePortrait(self);
+				self.Scroll.ScrollBar:SetPoint("TOPLEFT",self.Scroll,"TOPRIGHT",5,-16);
+				self.Scroll.ScrollBar:SetPoint("BOTTOMLEFT",self.Scroll,"BOTTOMRIGHT",5,15);
+				self.text = self.Scroll.text;
+				self.text.Left:Hide()
+				self.text.Middle:Hide()
+				self.text.Right:Hide()
+				tinsert(UISpecialFrames, self:GetName())
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+</Ui>

@@ -1,0 +1,9 @@
+## Interface: 30400
+## Title: |cffEEE4AESpeedy AutoLoot|r
+## Notes: |cff58C6FALoot at ludicrous speed!|r|n|n|cffFFC700Slash command: /sal, /speedyautoloot|r
+## Author: Yuyuli
+## Version: 2.1.15
+## SavedVariables: SpeedyAutoLootDB
+## OptionalDeps: ElvUI, ElvUI_Config
+
+SpeedyAutoLoot.lua

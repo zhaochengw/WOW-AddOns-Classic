@@ -1,0 +1,50 @@
+## Interface: 30400
+## Title: Plater
+## Notes: Nameplate addon designed for advanced users.
+## SavedVariables: PlaterDB
+## SavedVariablesPerCharacter: PlaterDBChr
+## Version: Plater-v534-Wrath
+## X-Curse-Project-ID: 100547
+## X-Wago-ID: kRNLep6o
+
+#@no-lib-strip@
+libs\libs.xml
+#@end-no-lib-strip@
+
+locales\enUS.lua
+locales\deDE.lua
+locales\esES.lua
+locales\esMX.lua
+locales\frFR.lua
+locales\itIT.lua
+locales\koKR.lua
+locales\ptBR.lua
+locales\ruRU.lua
+locales\zhCN.lua
+locales\zhTW.lua
+
+Plater.xml
+
+Plater_DefaultSettings.lua
+
+Plater.lua
+Plater_Comms.lua
+Plater_Auras.lua
+Plater_Resources.lua
+Plater_Resources_Frames.lua
+Plater_Resources_Options.lua
+Plater_GhostAuras.lua
+Plater_GhostAurasFrames.lua
+Plater_OptionsPanel.lua
+Plater_ScriptingOptions.lua
+Plater_ScriptingPanels.lua
+Plater_ScriptLibrary.lua
+Plater_AnimationEditor.lua
+Plater_Designer.lua
+Plater_ChangeLog.lua
+Plater_Docs.lua
+Plater_BossModsSupport.lua
+Plater_Animations.lua
+Plater_CastColorPanels.lua
+Plater_Profiling.lua
+#Plater_SpellPrediction.lua

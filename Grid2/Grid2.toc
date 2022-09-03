@@ -1,0 +1,92 @@
+## Interface: 30400
+## Title: Grid2
+## Author: Pastamancer & Maia, Jerry, Toadkiller
+## Version: 2.0.49
+## Notes: A modular, lightweight and screen-estate saving grid of party/raid unit frames
+## Notes-esES: Marcos de unidades de raid compactos y ligeros.
+## Notes-ruRU: Модульный, легкий, отображающий на экране область группы/рейда в виде сетки.
+## Notes-zhCN: 小巧的轻量级模块化队伍框架
+## Notes-zhTW: 精簡的團隊框架功能
+## X-Curse-Project-ID: 15226
+## X-Wago-ID: vEGPyeN1
+## DefaultState: enabled
+## LoadOnDemand: 0
+## SavedVariables: Grid2DB
+## OptionalDeps: Ace3, Clique
+
+# Ace Libraries
+#@no-lib-strip@
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.lua
+Libs\LibHealComm-4.0\ChatThrottleLib.lua
+Libs\LibHealComm-4.0\LibHealComm-4.0.lua
+Libs\LibClassicDurations\LibClassicDurations.xml
+#@end-no-lib-strip@
+
+#Locales
+locales.xml
+
+GridGroupHeaders.xml
+
+# Grid2
+GridCore.lua
+GridUtils.lua
+GridUtilsCmd.lua
+GridRoster.lua
+GridFrame.lua
+GridLayout.lua
+GridLayoutLayouts.lua
+GridIndicator.lua
+GridIndicatorEffects.lua
+GridStatus.lua
+GridStatusLoad.lua
+GridSetup.lua
+GridDefaults.lua
+GridDefaultsClassic.lua
+
+# Indicators
+modules\IndicatorAlpha.lua
+modules\IndicatorBorder.lua
+modules\IndicatorBorderGlow.lua
+modules\IndicatorBackground.lua
+modules\IndicatorBar.lua
+modules\IndicatorMultiBar.lua
+modules\IndicatorText.lua
+modules\IndicatorIcon.lua
+modules\IndicatorIcons.lua
+modules\IndicatorSquare.lua
+modules\IndicatorTooltip.lua
+modules\IndicatorPortrait.lua
+modules\IndicatorShape.lua
+
+# Statuses
+modules\StatusHealth.lua
+modules\StatusMana.lua
+modules\StatusColor.lua
+modules\StatusName.lua
+modules\StatusOffline.lua
+modules\StatusPvP.lua
+modules\StatusRange.lua
+modules\StatusReadyCheck.lua
+modules\StatusRole.lua
+modules\StatusTarget.lua
+modules\StatusVoiceComm.lua
+modules\StatusRaidIcon.lua
+modules\StatusAFK.lua
+modules\StatusBanzai.lua
+modules\StatusRes.lua
+modules\StatusHealsAoe.lua
+modules\StatusSelf.lua
+modules\StatusDirection.lua
+modules\StatusCombat.lua
+modules\StatusAuras.lua
+modules\StatusAurasBuffs.lua
+modules\StatusAurasDebuffs.lua
+modules\StatusThreat.lua

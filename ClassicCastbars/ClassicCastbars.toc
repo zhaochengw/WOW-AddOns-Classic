@@ -1,0 +1,15 @@
+## Interface: 30400
+## Title: ClassicCastbars
+## Notes: Adds customizable castbars to various unitframes.
+## SavedVariables: ClassicCastbarsDB
+## SavedVariablesPerCharacter: ClassicCastbarsCharDB
+## Version: v1.5.1
+## X-Curse-Project-ID: 322865
+## X-Wago-ID: vEGPdkG1
+
+core/PoolManager.lua
+core/AnchorManager.lua
+core/Data.lua
+ClassicCastbars_NonClassic.lua
+core/Frames.lua
+core/LoadOptions.lua

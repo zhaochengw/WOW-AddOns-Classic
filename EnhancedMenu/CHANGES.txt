@@ -1,0 +1,36 @@
+commit dbeac54c1a815c3665670c56e4f8f1da6f18e37f
+Author: KevinSK <shinozakisama@live.com>
+Date:   Tue Mar 30 15:55:06 2021 +0800
+
+    Update EnhancedMenu.toc
+
+commit a4767233d9b82a4d7be1bdceb7b1b4494fe150d2
+Author: KevinSK <shinozakisama@live.com>
+Date:   Tue Mar 30 15:36:50 2021 +0800
+
+    Update Core.lua
+
+commit 8c03dd2512a739fa8b991797083861a9cb19c451
+Author: KevinSK <shinozakisama@live.com>
+Date:   Tue Mar 30 15:35:57 2021 +0800
+
+    add alt+left invitation
+
+commit 4ab782eb2780c6bc182ba67d9f808c62c6985441
+Author: KevinSK <shinozakisama@live.com>
+Date:   Tue Mar 30 15:02:05 2021 +0800
+
+    2.0
+
+commit 4c90d5501a53c75569fadd1de5099a2a0b82a186
+Author: KevinSK <shinozakisama@live.com>
+Date:   Sat Nov 7 02:35:24 2020 +0800
+
+    prepare for 2.0
+
+commit d630d06f1474d3a308be570dd685d1a8f4e83960
+Author: KevinSK <shinozakisama@live.com>
+Date:   Fri Nov 6 17:58:47 2020 +0800
+
+    Initial commit
+

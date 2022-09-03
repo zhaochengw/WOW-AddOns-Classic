@@ -1,0 +1,9 @@
+<Ui>
+	<Script file="FastLoot.lua" />
+	<Script file="WowUIMove.lua" />
+	<Script file="AutoXiama.lua" />
+	<Script file="AutoDialogue.lua" />
+	<Script file="RightPlus.lua" />
+	<Script file="TradePlus.lua" />
+	<Script file="LinkPlus.lua" />
+</Ui>

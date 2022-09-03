@@ -1,0 +1,20 @@
+## Interface: 30400
+## Title: |cFFBF00FF[H]|r zTip
+## Notes: Enhance GameTooltip
+## Title-zhCN: |cFFBF00FF[H]|r zTip(修改版)
+## Notes-zhCN: 鼠標提示信息增強
+## Author: Qshine
+## Author-zhCN: 上官晓雾
+## Author-zhTW: 上官曉霧
+
+## SavedVariables: zTipSaves
+
+## Version: 2.3.16
+
+HTool.lua
+HInspect.lua
+
+zTip.lua
+zTipOption.lua
+localization.lua
+

@@ -1,0 +1,8 @@
+## Interface: 30400
+## Version: 2.2.1
+## Title: tdBag2
+## Author: Dencer
+## OptionalDeps: tdPack2
+## SavedVariables: TDDB_BAG2
+
+Load.xml

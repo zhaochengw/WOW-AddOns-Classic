@@ -1,0 +1,4 @@
+<Ui>
+	<Script file="Function_Wrath.lua" />
+	<Script file="CombatCycle.lua" />
+</Ui>

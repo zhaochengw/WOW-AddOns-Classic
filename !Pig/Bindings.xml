@@ -1,0 +1,50 @@
+<Bindings>
+  <Binding name="CLICK Pigbar1_But1:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar1_But2:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar1_But3:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar1_But4:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar1_But5:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar1_But6:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar1_But7:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar1_But8:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar1_But9:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar1_But10:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar1_But11:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar1_But12:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But1:LeftButton" header="PIGDZUOTIAO1" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But2:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But3:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But4:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But5:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But6:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But7:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But8:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But9:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But10:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But11:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar2_But12:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But1:LeftButton" header="PIGDZUOTIAO2" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But2:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But3:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But4:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But5:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But6:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But7:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But8:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But9:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But10:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But11:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar3_But12:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But1:LeftButton" header="PIGDZUOTIAO3" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But2:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But3:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But4:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But5:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But6:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But7:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But8:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But9:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But10:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But11:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+  <Binding name="CLICK Pigbar4_But12:LeftButton" category="BINDING_HEADER_PIG"></Binding>
+</Bindings>

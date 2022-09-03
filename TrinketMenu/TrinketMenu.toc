@@ -1,0 +1,22 @@
+## Interface: 30400
+## Title: TrinketMenu 9.0.7
+## Version: 9.0.7
+## Author: Gello, Resike
+## Notes: Addon to manage trinkets.
+## SavedVariables: TrinketMenuOptions
+## SavedVariablesPerCharacter: TrinketMenuPerOptions, TrinketMenuQueue
+
+Libs\LibStub\LibStub.lua
+
+TrinketMenuGlobals.lua
+TrinketMenu.lua
+TrinketMenu.xml
+TrinketMenuOpt.lua
+TrinketMenuOpt.xml
+TrinketMenuQueue.lua
+TrinketMenuQueue.xml
+
+## Title-zhCN: |cff880303[有爱]|r TrinketMenu 饰品管理
+## Notes-zhCN: 便捷更换和监视饰品
+## X-Vendor: NetEase
+## X-163UI-Version: 20220311143326

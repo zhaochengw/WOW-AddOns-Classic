@@ -1,0 +1,13 @@
+Copyright (c) 2006-2012 Alexey Shmelev (aznamir@gmail.com)
+
+All Rights Reserved unless otherwise explicitly stated.
+
+This means you cannot host, modify/update/change, or do anything with
+this addon without the explicit permission of the author.
+
+The libraries in use with this addon follow their own licenses which
+also must be followed.
+
+The localizations used within this addon are free for use.
+
+http://www.wowinterface.com and http://www.curse.com are the only two sites allows to distribute this addon.

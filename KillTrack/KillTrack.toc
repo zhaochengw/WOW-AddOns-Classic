@@ -1,0 +1,32 @@
+## Interface: 30400
+## Version: v2.31.0
+## Title: KillTrack
+## Notes: Keeps track of how many kills you have per mob and displays them in a list.
+## Author: Sharparam
+## SavedVariables: KILLTRACK
+## SavedVariablesPerCharacter: KILLTRACK_CHAR
+## OptionalDeps: LibStub, CallbackHandler-1.0, LibDBIcon-1.0
+## X-Curse-Project-ID: 33976
+## X-WoWI-ID: 20509
+## X-Wago-ID: 5bGoqo60
+
+#@no-lib-strip@
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+#@end-no-lib-strip@
+libs\LibDataBroker-1-1\LibDataBroker-1.1.lua
+#@no-lib-strip@
+libs\LibDBIcon-1.0\LibDBIcon-1.0\LibDBIcon-1.0.lua
+#@end-no-lib-strip@
+
+Tools.lua
+KillTrack.lua
+Dialogs.lua
+Command.lua
+MobList.lua
+Timer.lua
+TimerFrame.lua
+ImmediateFrame.lua
+ExpTracker.lua
+Broker.lua
+Options.lua

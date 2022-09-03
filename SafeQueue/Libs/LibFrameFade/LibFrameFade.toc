@@ -1,0 +1,16 @@
+## Interface: 90100
+## Interface-BCC: 20502
+## Interface-Classic: 11307
+## Title: Lib: Frame Fade
+## Notes: Library that attempts to resolve issues with UIFrameFade taint.
+## Author: Daniel "Meorawr" Yates <me@meorawr.io>
+## Version: v4
+
+## X-Category: Libraries
+## X-License: Public Domain
+## X-Website: https://github.com/Meorawr/LibFrameFade
+## X-Curse-Project-ID: 523855
+## X-Wago-ID: e56nRD69
+## X-WoWI-ID: 26143
+
+lib.xml
