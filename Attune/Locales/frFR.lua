@@ -211,7 +211,7 @@ Lang["DelUnder70_DESC"] = "Supprime toutes les données recueillies sur les pers
 Lang["DelUnder70_CONF"] = "Vraiment supprimer les données des personnages en dessous du niveau 70 ?"
 Lang["DelUnder70_DONE"] = "Toutes les données des personnages en dessous du niveau 70 ont été supprimées."
 --302
-Lang["AnnounceAchieve_TEXT"] = "Annoncer les Hauts Faits à la guilde"
+Lang["AnnounceAchieve_TEXT"] = "Annoncer les Hauts Faits à la guilde                                             Seuil:"
 Lang["AnnounceAchieve_DESC"] = "Envoie un message au canal de guilde lorsqu'un Haut Fait est achevé."
 Lang["AchieveCompleteGuild"] = "##LINK## achevé! (##POINTS## points au total)" 
 Lang["AchieveSurvey"] = "Voulez vous qu'|cFFFFD100Attune|r envoie un message au canal de guilde lorsque vous achevez un Haut Fait?"

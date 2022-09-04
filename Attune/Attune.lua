@@ -8,8 +8,10 @@
 --
 -------------------------------------------------------------------------
 
--- Done in 304
---  THere is now a confirmation box to know whether you want Attune to announce achievements in guild chat
+-- Done in 305
+--  Fixed a missing quest description
+--  Updated the default url to point to WOTLK instead of TBC on Wowhead
+--  Added a point threshold for the Achievement guild announcements
 
 -------------------------------------------------------------------------
 -- ADDON VARIABLES
@@ -214,15 +216,32 @@ local attune_options = {
 					desc = Lang["AnnounceAchieve_DESC"],
 					get = function(info) return Attune_DB.announceAchieveCompleted end,
 					set = function(info, val) Attune_DB.announceAchieveCompleted = val end,
-					width = 1.65,
+					width = 2.6,
 					order = 20,
 				},				
-				spacer2 = {
-					type = "description",
-					name = " ",
-					width = "full",
+				achieveMinPoints = {
+					type = "select",
+					name = "",
+					desc = "",
+					values = {	
+						[10] = "10 Points", 
+						[20] = "20 Points",
+						[25] = "25 Points",
+						[30] = "30 Points",
+						[40] = "40 Points",
+						[50] = "50 Points",
+						[60] = "60 Points",
+						[70] = "70 Points",
+						[80] = "80 Points",
+						[90] = "90 Points",
+						[100] = "100 Points",
+					},
+					get = function(info) return Attune_DB.achieveMinPoints end,
+					set = function(info, val) Attune_DB.achieveMinPoints = val end,
+					width = 0.7,
 					order = 21,
 				},
+
 				showList = {
 					type = "toggle",
 					name = Lang["ShowGuildies_TEXT"],
@@ -230,7 +249,7 @@ local attune_options = {
 					get = function(info) return Attune_DB.showList end,
 					set = function(info, val) Attune_DB.showList = val end,
 					width = 2.8,
-					order = 22,
+					order = 23,
 				},
 				maxListSize = {
 					type = "input",
@@ -538,13 +557,14 @@ function Attune:OnEnable()
 	if Attune_DB.showStepReached == nil then Attune_DB.showStepReached = true end
 	if Attune_DB.announceAttuneCompleted == nil then Attune_DB.announceAttuneCompleted = true end
 	if Attune_DB.announceAchieveCompleted == nil then Attune_DB.announceAchieveCompleted = true end
+	if Attune_DB.achieveMinPoints == nil then Attune_DB.achieveMinPoints = 20 end
 	if Attune_DB.showOtherChat == nil then Attune_DB.showOtherChat = true end
 	if Attune_DB.maxListSize == nil then Attune_DB.maxListSize = "20" end
 	if Attune_DB.logs == nil then Attune_DB.logs = {} end
 	if Attune_DB.minimapbuttonpos == nil then Attune_DB.minimapbuttonpos = {} end
 	if Attune_DB.minimapbuttonpos.hide == nil then Attune_DB.minimapbuttonpos.hide = false end
 	if Attune_DB.autosurvey == nil then Attune_DB.autosurvey = false end
-	if Attune_DB.websiteUrl == nil then Attune_DB.websiteUrl = "https://tbc.wowhead.com" end
+	if Attune_DB.websiteUrl == nil then Attune_DB.websiteUrl = "https://wowhead.com/wotlk" end
 	if TreeExpandStatus == nil then TreeExpandStatus = {} end
 	if Attune_DB.announceAchieveSurvey == nil then Attune_DB.announceAchieveSurvey = false end
 	
@@ -861,7 +881,14 @@ function Attune:ACHIEVEMENT_EARNED(event, id)
 	guildName, guildRankName, guildRankIndex = GetGuildInfo("player");
 	if guildName ~= nil then attunelocal_myguild = guildName end
 
-	if Attune_DB.announceAchieveCompleted and attunelocal_myguild ~= "" and attunelocal_achieveDelayDone then SendChatMessage(Lang["AchieveCompleteGuild"]:gsub("##LINK##", GetAchievementLink(id)):gsub("##POINTS##", GetTotalAchievementPoints()) , "GUILD") end
+	achieveId, achieveName, achievePoints = GetAchievementInfo(id)
+	
+	if 	achievePoints >= Attune_DB.achieveMinPoints
+		and Attune_DB.announceAchieveCompleted 
+		and attunelocal_myguild ~= "" 
+		and attunelocal_achieveDelayDone then 
+			SendChatMessage(Lang["AchieveCompleteGuild"]:gsub("##LINK##", GetAchievementLink(id)):gsub("##POINTS##", GetTotalAchievementPoints()) , "GUILD")
+	end
 
 end
 

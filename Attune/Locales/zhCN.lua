@@ -168,7 +168,7 @@ Lang["AnnounceToGuild_TEXT"] = "在公会聊天中宣布完成"
 Lang["AnnounceToGuild_DESC"] = "使用权完成后发送公会消息。"
 Lang["ShowOther_TEXT"] = "显示其他聊天消息"
 Lang["ShowOther_DESC"] = "显示所有其他常规聊天消息（启动消息，发送调查，可用更新等）。"
-Lang["ShowGuildies_TEXT"] = "在每个使用权步骤中显示行会成员列表。               最大清单大小"  --this has a gap for the editbox
+Lang["ShowGuildies_TEXT"] = "在每个使用权步骤中显示行会成员列表。             最大清单大小"  --this has a gap for the editbox
 Lang["ShowGuildies_DESC"] = "当前在使用权步骤中的行会成员列表显示在步骤工具提示中。\n如有必要，请调整要在每个调整步骤中列出的最大结果数。"
 Lang["ShowAltsInstead_TEXT"] = "显示替代列表，而不是公会成员"
 Lang["ShowAltsInstead_DESC"] = "步骤工具提示将显示您当前在该使用权步骤中的所有替代项，而不是行会成员。"
@@ -189,7 +189,7 @@ Lang["DelUnder70_DESC"] = "删除所有收集的有关70级以下玩家的信息
 Lang["DelUnder70_CONF"] = "真的要删除70级以下的所有角色吗？"
 Lang["DelUnder70_DONE"] = "所有低于70的结果均已删除."
 --302
-Lang["AnnounceAchieve_TEXT"] = "在公会聊天中宣布成就"
+Lang["AnnounceAchieve_TEXT"] = "在公会聊天中宣布成就                                         临界点:"
 Lang["AnnounceAchieve_DESC"] = "获得成就时发送公会消息。"
 Lang["AchieveCompleteGuild"] = "##LINK## 声望已达到! (##POINTS## 总积分)" 
 Lang["AchieveSurvey"] = "你想|cFFFFD100Attune|r 在公会聊天中公布你的成就吗？"

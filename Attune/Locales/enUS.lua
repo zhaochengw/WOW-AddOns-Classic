@@ -211,8 +211,8 @@ Lang["DelUnder70_DESC"] = "Delete all the gathered information about players und
 Lang["DelUnder70_CONF"] = "Really delete all characters under level 70?"
 Lang["DelUnder70_DONE"] = "All results under 70 deleted."
 --302
-Lang["AnnounceAchieve_TEXT"] = "Announce Achievements in guild chat"
-Lang["AnnounceAchieve_DESC"] = "Send a guild message when an achievement is earned."
+Lang["AnnounceAchieve_TEXT"] = "Announce Achievements in guild chat.                                Threshold:"
+Lang["AnnounceAchieve_DESC"] = "Send a guild message when an achievement is earned rewarding at least that amount of points."
 Lang["AchieveCompleteGuild"] = "##LINK## complete! (##POINTS## points total)" 
 Lang["AchieveSurvey"] = "Would you like |cFFFFD100Attune|r to announce your achievements in guild chat?"
 					

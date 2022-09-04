@@ -189,7 +189,7 @@ Lang["DelUnder70_DESC"] = "70랩미만 케릭들의 자료를 삭제"
 Lang["DelUnder70_CONF"] = "70랩미만 정말 삭제할까요?"
 Lang["DelUnder70_DONE"] = "70랩미만 케릭들 삭제함"
 --302
-Lang["AnnounceAchieve_TEXT"] = "길드 채팅에서 업적 발표"
+Lang["AnnounceAchieve_TEXT"] = "길드 채팅에서 업적 발표                                                                             한계점:"
 Lang["AnnounceAchieve_DESC"] = "업적 달성 시 길드 메시지를 보냅니다."
 Lang["AchieveCompleteGuild"] = "##LINK## 완료! (##POINTS## 총 포인트)" 
 Lang["AchieveSurvey"] = "길드 채팅에서 |cFFFFD100Attune|r의 업적을 알리시겠습니까?"
