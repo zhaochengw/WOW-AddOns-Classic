@@ -1,5 +1,5 @@
 ## Interface: 90205
-## Version: 3.0.2
+## Version: 3.0.3
 ## LoadOnDemand: 1
 ## Title: Lib: Sink-2.0
 ## Notes: Library that handles chat output.
