@@ -110,6 +110,10 @@ AL["Honor Hold"] = "Bastión del Honor"
 --[[ AL["Horde Expedition"] = "Horde Expedition"--]] 
 --[[Translation missing --]]
 --[[ AL["Instructor Razuvious"] = "Instructor Razuvious"--]] 
+--[[Translation missing --]]
+--[[ AL["Item level:"] = "Item level:"--]] 
+--[[Translation missing --]]
+--[[ AL["ItemID:"] = "ItemID:"--]] 
 AL["Items"] = "Objetos"
 --[[Translation missing --]]
 --[[ AL["Kel'Thuzad"] = "Kel'Thuzad"--]] 

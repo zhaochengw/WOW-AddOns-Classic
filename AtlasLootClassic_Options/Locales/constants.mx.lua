@@ -7,6 +7,10 @@ if not AL then return end
 AL["Add line break before source."] = "Agrega un salto de línea antes de la fuente."
 AL["Add new list"] = "Añade nueva lista"
 AL["Added |cff00ff00%d|r items into list |cff00ff00%s|r."] = "|cff00ff00%d|r añadidos a la lista |cff00ff00%s|r"
+--[[Translation missing --]]
+--[[ AL[ [=[Also add the info into every ToolTip.
+This only works with the source Addon.]=] ] = [=[Also add the info into every ToolTip.
+This only works with the source Addon.]=]--]] 
 AL["Always active for all Profiles."] = "Siempre activo para todos los perfiles."
 AL["Always active for profile: |cff00ff00%s|r"] = "Siempre activo para perfil: |cff00ff00%s|r"
 AL["Always marks items as favourite for every profile if enabled."] = "Siempre marcar como favorito para todos los perfiles si activado."
@@ -30,6 +34,8 @@ AL["Export item list"] = "Exportar lista de objetos"
 AL["Font"] = "Fuente"
 AL["Font color/alpha"] = "Color/alfa del fuente"
 AL["Font size"] = "Tamaño del fuente"
+--[[Translation missing --]]
+--[[ AL["Global"] = "Global"--]] 
 AL["Icon"] = "Icono"
 AL["Import item list"] = "Importar lista de objetos"
 AL["Lock minimap button."] = "Bloquear botón del minimapa."
@@ -53,6 +59,8 @@ AL["Show content phase indicator for sets."] = "Mostrar indicador del fase de co
 AL["Show drop rate if available."] = "Mostrar probabilidad conseguirse si está disponible."
 AL["Show favourite item icon in item tooltip"] = "Mostrar icono de objeto favorito en el tooltip del icono."
 AL["Show ID's in tooltip."] = "Mostrar ID en tooltip."
+--[[Translation missing --]]
+--[[ AL["Show Item level in tooltip."] = "Show Item level in tooltip."--]] 
 AL["Show level range if available."] = "Mostrar rango de nivel si está disponible."
 AL["Show listname in item tooltip"] = "Mostrar nombre de lista en el tooltip del objeto"
 AL["Show minimap button."] = "Mostrar botón del minimapa"
