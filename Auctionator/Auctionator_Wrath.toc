@@ -1,6 +1,6 @@
 ## Interface: 30400
 ## Title: Auctionator
-## Version: 9.2.33
+## Version: 9.2.35
 ## Author: Borjamacare, plusmouse
 ## X-Website: http://mods.curse.com/addons/wow/auctionator
 ## X-Localizations: enUS, itIT, deDE, ruRU, koKR, frFR, esES, esMX, zhTW, ptBR, zhCN
