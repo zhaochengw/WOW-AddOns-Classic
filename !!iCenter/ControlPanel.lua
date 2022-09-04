@@ -3429,32 +3429,3 @@ if GetLocale() == "zhCN" then
 	end
 end
 
--- StaticPopupDialogs["ISDONATION"] = {
--- 	text = "感谢支持：wow.isler.me",
--- 	button1 = "知道了",
--- }
-if GetLocale() == "zhCN" then
-	if GetLocale() == "zhCN" then
-		DonationText	= "感谢支持！";
-	elseif GetLocale() == "zhTW" then
-		DonationText	= "感謝支持！";
-	else
-		DonationText	= "Thanks for donation!";
-	end
-	if ( EarthFeature_AddButton ) then
-		EarthFeature_AddButton(
-			{
-				id= "Donation";
-				tab= "main";
-				name= "Donation";
-				subtext= "wow.isler.me";
-				tooltip = DonationText;
-				icon= "Interface\\Icons\\Inv_Drink_13";
-				callback= function(button)
-					--StaticPopup_Show("ISDONATION");
-					Donation_SlashHandler();
-				end;
-			}
-		);
-	end
-end
