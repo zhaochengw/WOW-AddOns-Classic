@@ -1,3 +1,13 @@
+3.0.04 - 4th September 2022
+- For 'Automate quests', Darkmoon Faire repeatable quests will now be automated for English game clients if you have the required materials in your bag.
+- For 'Enhance minimap', fix for the square minimap mail icon overlapping the tracking icon.
+
+3.0.03 - 4th September 2022
+- For 'Enhance quest log', quest level and difficulty will now be shown in the quest detail pane once again for quests that are in your quest log.  Added a new setting to show the quest difficulty in the quest log list.
+- For 'Enhance professions', fix for intermittent horizontal bar showing in the professions frame.
+- For 'Enhance minimap', fix for the heroic instance difficulty badge to not move with the minimap.
+- Added lots of flight times.  There are now 3572 flight times stored in Leatrix Plus for Wrath Classic.
+
 3.0.02 - 31st August 2022
 - For 'Enhance quest log' ('Interface'), there is a new setting that lets you choose whether the quest log should be taller or not.
 - Fix for 'Enhance minimap' calendar button #2.
