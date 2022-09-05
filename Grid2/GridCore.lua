@@ -20,15 +20,16 @@ Grid2.versionCli = versionCli
 Grid2.isClassic = versionCli<90000 -- not retail
 Grid2.isVanilla = versionCli<20000
 Grid2.isTBC     = versionCli>=20000 and versionCli<30000
+Grid2.isWrath   = versionCli>=30000 and versionCli<40000
 Grid2.isWoW90   = versionCli>=90000
-Grid2.versionstring = "Grid2 v"..(versionToc=='2.0.49' and 'Dev' or versionToc)
+Grid2.versionstring = "Grid2 v"..(versionToc=='2.0.50' and 'Dev' or versionToc)
 
 -- build error check
 local isRetailBuild = true
 --@non-retail@
 isRetailBuild = false
 --@end-non-retail@
-if isRetailBuild~=(WOW_PROJECT_ID==WOW_PROJECT_MAINLINE) and versionToc~='2.0.49' then
+if isRetailBuild~=(WOW_PROJECT_ID==WOW_PROJECT_MAINLINE) and versionToc~='2.0.50' then
 	C_Timer.After(3, function() Grid2:Print(string.format("Error, this version of Grid2 was packaged for World of Warcraft %s. Please install the correct version !!!", isRetailBuild and 'Retail' or 'Classic')) end)
 end
 

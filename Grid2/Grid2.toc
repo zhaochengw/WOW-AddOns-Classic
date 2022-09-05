@@ -1,7 +1,7 @@
 ## Interface: 30400
 ## Title: Grid2
 ## Author: Pastamancer & Maia, Jerry, Toadkiller
-## Version: 2.0.49
+## Version: 2.0.50
 ## Notes: A modular, lightweight and screen-estate saving grid of party/raid unit frames
 ## Notes-esES: Marcos de unidades de raid compactos y ligeros.
 ## Notes-ruRU: Модульный, легкий, отображающий на экране область группы/рейда в виде сетки.
@@ -25,9 +25,6 @@ Libs\AceConsole-3.0\AceConsole-3.0.xml
 Libs\AceLocale-3.0\AceLocale-3.0.xml
 Libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
 Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.lua
-Libs\LibHealComm-4.0\ChatThrottleLib.lua
-Libs\LibHealComm-4.0\LibHealComm-4.0.lua
-Libs\LibClassicDurations\LibClassicDurations.xml
 #@end-no-lib-strip@
 
 #Locales
