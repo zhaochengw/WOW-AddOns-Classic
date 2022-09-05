@@ -148,5 +148,5 @@ function Events:ITEM_LOCK_CHANGED(_, bag, slot)
 end
 
 function Events:BackpackTokenFrame_Update()
-    self.events:Fire('WATCHED_TOKEN_CHANGED')
+    self.events:Fire('WATCHED_CURRENCY_CHANGED')
 end

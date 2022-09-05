@@ -30,6 +30,7 @@ function Token:SetItem(owner, itemId, watchAll)
     self:Clear()
     self.itemId = itemId
     self.Icon:SetTexture(GetItemIcon(itemId))
+    self.Icon:SetTexCoord(0, 1, 0, 1)
     if watchAll then
         self.Count:SetText(Counter:GetOwnerItemTotal(owner, itemId))
     else
@@ -39,15 +40,20 @@ function Token:SetItem(owner, itemId, watchAll)
     self:SetWidth(self.Count:GetWidth() + 20)
 end
 
--- @lkc@
+-- @build>3@
 function Token:SetCurrency(owner, currencyId, icon, count)
     self:Clear()
     self.currencyId = currencyId
     self.Icon:SetTexture(icon)
+    if currencyId == Constants.CurrencyConsts.CLASSIC_HONOR_CURRENCY_ID then
+        self.Icon:SetTexCoord(0.03125, 0.59375, 0.03125, 0.59375)
+    else
+        self.Icon:SetTexCoord(0, 1, 0, 1)
+    end
     self.Count:SetText(count)
     self:SetWidth(self.Count:GetWidth() + 20)
 end
--- @end-lkc@
+-- @end-build>3@
 
 function Token:TooltipItem()
     ---@type UI.TokenFrame
@@ -56,10 +62,10 @@ function Token:TooltipItem()
 
     if self.itemId then
         GameTooltip:SetHyperlink('item:' .. self.itemId)
-        -- @lkc@
+        -- @build>3@
     else
         GameTooltip:SetHyperlink('currency:' .. self.currencyId)
-        -- @end-lkc@
+        -- @end-build>3@
     end
 
     if parent.meta:IsSelf() then
@@ -75,7 +81,7 @@ function Token:TooltipAll()
     local parent = self:GetParent()
     local watchs = parent.meta.character.watches
 
-    if #watchs == 0 then
+    if #watchs == 0 and parent.currencyCount == 0 then
         return
     end
 
@@ -83,12 +89,18 @@ function Token:TooltipAll()
     GameTooltip:SetText(L['Watch Frame'])
     GameTooltip:AddLine(' ')
 
-    -- @lkc@
+    -- @build>3@
     if parent.meta:IsSelf() then
-        for i = 1, GetNumWatchedTokens() do
+        for i = 1, parent.currencyCount do
             local name, count, icon, currencyId = GetBackpackCurrencyInfo(i)
             if name then
-                local title = format('|T%s:14|t ', icon) .. name
+                local iconStr
+                if currencyId == Constants.CurrencyConsts.CLASSIC_HONOR_CURRENCY_ID then
+                    iconStr = CreateTextureMarkup(icon, 64, 64, 14, 14, 0.03125, 0.59375, 0.03125, 0.59375)
+                else
+                    iconStr = format('|T%s:14|t ', icon)
+                end
+                local title = iconStr .. name
                 local r, g, b = 1, 1, 1
                 local quality = select(8, GetCurrencyInfo(currencyId))
 
@@ -100,7 +112,7 @@ function Token:TooltipAll()
             end
         end
     end
-    -- @end-lkc@
+    -- @end-build>3@
 
     local owner = parent.meta.owner
     for _, watch in ipairs(watchs) do

@@ -43,6 +43,9 @@ function TokenFrame:OnShow()
     end
     self:RegisterEvent('WATCHED_TOKEN_CHANGED', 'Update')
     self:RegisterEvent('UPDATE_ALL', 'Update')
+    -- @build>3@
+    self:RegisterEvent('WATCHED_CURRENCY_CHANGED', 'Update')
+    -- @end-build>3@
     self:RegisterFrameEvent('OWNER_CHANGED', 'Update')
     self:Update()
 end
@@ -97,7 +100,7 @@ function TokenFrame:Update()
     local index = 0
     local width = self.PADDING * 2
 
-    -- @lkc@
+    -- @build>3@
     if self.meta:IsSelf() then
         for i = 1, MAX_WATCHED_TOKENS do
             local name, count, icon, currencyId = GetBackpackCurrencyInfo(i)
@@ -115,8 +118,10 @@ function TokenFrame:Update()
                 end
             end
         end
+
+        self.currencyCount = index
     end
-    -- @end-lkc@
+    -- @end-build>3@
 
     for _, watch in ipairs(self.meta.character.watches) do
         index = index + 1
