@@ -5,7 +5,6 @@ local internal = {
     isItemLocked = false,
     isLooting = false,
     isHidden = false,
-    TSM = false,
     ElvUI = false,
     isClassic = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE),
     audioChannel = "master",
@@ -85,7 +84,7 @@ function AutoLoot:OnLootClosed()
     self:ShowLootFrame(false);
 
     -- Workaround for TSM Destroy issue
-    if internal.TSM and TSMDestroyBtn and TSMDestroyBtn:IsVisible() then
+    if TSMDestroyBtn and TSMDestroyBtn:IsVisible() then
         C_Timer.NewTicker(0, function() SlashCmdList.TSM("destroy") end, 2);
     end
 end
@@ -231,10 +230,6 @@ function AutoLoot:OnAddonLoaded(name)
             internal.ElvUI = (ElvUI and ElvUI[1].private.general.loot);
             self:ShowLootFrame(false);
         end)
-
-        if IsAddOnLoaded("TradeSkillMaster") then
-            internal.TSM = true;
-        end
     end
 end
 
