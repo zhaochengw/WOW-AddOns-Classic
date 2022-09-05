@@ -1,9 +1,9 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: Pixel Perfect Align
 ## Notes: Pixel Perfect Alignment Grid and Measuring Tape using MoLib (|cFF99E5FF/ppa|r)
 ## Notes: Shadowlands Eternity's End edition
 ## Author: MooreaTV moorea@ymail.com
-## Version: v1.13.01
+## Version: v1.13.02
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: pixelPerfectAlignSaved

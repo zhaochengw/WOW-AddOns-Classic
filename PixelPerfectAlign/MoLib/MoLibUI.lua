@@ -1085,7 +1085,9 @@ function ML:WipeFrame(f, ...)
   if name then
     _G[name] = nil
   end
-  f:SetScale(1)
+  if f.SetScale then
+    f:SetScale(1)
+  end
   f:ClearAllPoints()
   local status, err = pcall(function()
     f:SetParent(nil)
