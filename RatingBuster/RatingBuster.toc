@@ -4,7 +4,7 @@
 ## Notes-zhTW: 裝備數值解析與比較
 ## Author: Whitetooth
 ## X-eMail: hotdogee [at] gmail [dot] com
-## SavedVariables: RatingBusterDB
+## SavedVariables: RatingBusterWOTLK_DB
 ## OptionalDeps: Ace3, LibTipHooker-1.1, LibStatLogic-1.2, UTF8, LibBabble-Inventory-3.0, LibDualSpec-1.0, TankPoints
 ## X-Embeds: Ace3, LibTipHooker-1.1, LibStatLogic-1.2, UTF8, LibBabble-Inventory-3.0, LibDualSpec-1.0
 ## X-Category: Interface Enhancements

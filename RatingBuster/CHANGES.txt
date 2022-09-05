@@ -1,10 +1,12 @@
-lightweight tag b30f7effac5aed55be13593faf494eb5bcffcae4 3.4.0.4
+lightweight tag 05f417c21dfd0a39b8d238a31c4d1f6924734852 3.4.0.5
 Author:	LANCESTRE <lancetre@intenebris.org>
-Date:	Sun Sep 4 14:24:01 2022 +0200
+Date:	Mon Sep 5 08:07:30 2022 +0200
 
-commit b30f7effac5aed55be13593faf494eb5bcffcae4
+commit a85804ad04e98847356f79c4869a79196c28b0f7
 Author: LANCESTRE <lancetre@intenebris.org>
-Date:   Sun Sep 4 14:24:01 2022 +0200
+Date:   Mon Sep 5 08:06:46 2022 +0200
 
-    Update .gitignore
+    fix profile
+    
+    fix profile
 
