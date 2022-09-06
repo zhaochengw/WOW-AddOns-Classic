@@ -83,8 +83,10 @@ MT.BuildEnv('MISC');
 		local TalentFrameTalents = {  };
 		local function HookTalentFrame(self, event, addon)
 			if addon == "Blizzard_TalentUI" then
-				self:UnregisterEvent("ADDON_LOADED");
-				self:SetScript("OnEvent", nil);
+				if self ~= nil then
+					self:UnregisterEvent("ADDON_LOADED");
+					self:SetScript("OnEvent", nil);
+				end
 
 				_TalentFrame = _G.TalentFrame or _G.PlayerTalentFrame;
 				Orig_TalentFrameTalent_OnClick = _G.TalentFrameTalent_OnClick or _G.PlayerTalentFrameTalent_OnClick;
