@@ -3,7 +3,7 @@
 ## Notes: Pixel Perfect Alignment Grid and Measuring Tape using MoLib (|cFF99E5FF/ppa|r)
 ## Notes: Burning Crusade Classic edition
 ## Author: MooreaTV moorea@ymail.com
-## Version: v1.13.02
+## Version: v1.13.03
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: pixelPerfectAlignSaved

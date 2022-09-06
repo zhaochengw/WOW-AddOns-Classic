@@ -1,8 +1,12 @@
 ChangeLog for MoLib by MooreaTv (moorea@ymail.com)
 --------------------------------------------------
-Extensively used by DynamicBoxer e.g.
-https://github.com/mooreatv/DynamicBoxer/blob/master/DynamicBoxer/DBoxUI.lua
+Extensively used by all my addons
+https://www.curseforge.com/members/mooreatv/projects
 but also meant to be reused in other addons, not just mine.
+
+v9.00.04 Sept 5th 2022
+- Learned the hard way that you can == with nil but not >= (my bad)
+  deal with WOW_PROJECT_BURNING_CRUSADE_CLASSIC being nil in SL client.
 
 v9.00.02 Sept 4th 2022
 - Added `isWrath` and changed `isBurningCrusade` to be true in Wrath too (use >= for all the classic booleans)

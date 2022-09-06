@@ -60,7 +60,7 @@ else
     -- Cover both classic (2) and bc (5)
   ML.isLegacy = false
   ML.isClassic = (_G.WOW_PROJECT_ID >= _G.WOW_PROJECT_CLASSIC)
-  ML.isBurningCrusade = (_G.WOW_PROJECT_ID >= _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
+  ML.isBurningCrusade = (_G.WOW_PROJECT_ID >= (_G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5))
   ML.isWrath = (_G.WOW_PROJECT_ID >= (_G.WOW_PROJECT_WRATH_CLASSIC or 11))
   ML.isClassicEra = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC)
 end
