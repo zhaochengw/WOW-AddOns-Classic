@@ -5689,6 +5689,23 @@ local loadstring = memoize(loadstring)
 ---------------
 -- Lua Tools --
 ---------------
+
+--check Aura on unit
+
+function StatLogic:CheckAura(Unit,SpellID)
+	for i=1,40 do
+		local name, icon, _, _, _, etime = UnitBuff(Unit,i)
+		if name == select(1, GetSpellInfo(SpellID)) then
+			--do things
+			print ("Aura presente",select(1, SpellID))
+			return true
+		else
+			
+		end
+	end
+end
+
+
 -- metatable for stat tables
 local statTableMetatable = {
   __add = function(op1, op2)
@@ -7020,7 +7037,7 @@ if playerClass == "DRUID" then
 		["ADD_SPELL_DMG_MOD_SPI"] = {
 			{
 				["tab"] = 1,
-				["num"] = 19,
+				["num"] = StatLogic:GetTalentIndex(1,48384),-- Druid: Improved Moonkin Form (Rank 3) - 1,19
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
@@ -7032,7 +7049,7 @@ if playerClass == "DRUID" then
 		["ADD_HEALING_MOD_SPI"] = {
 			{
 				["tab"] = 3,
-				["num"] = 24,
+				["num"] = StatLogic:GetTalentIndex(3,65139),	-- Druid: Improved Tree of Life (Rank 3) - 3,24
 				["rank"] = {
 					0.05, 0.10, 0.15,
 				},
@@ -7045,7 +7062,7 @@ if playerClass == "DRUID" then
 		["ADD_SPELL_DMG_MOD_INT"] = {
 			{
 				["tab"] = 1,
-				["num"] = 12,
+				["num"] = StatLogic:GetTalentIndex(1,33589),-- Druid: Lunar Guidance (Rank 3) - 1,12
 				["rank"] = {
 					0.04, 0.08, 0.12,
 				},
@@ -7057,7 +7074,7 @@ if playerClass == "DRUID" then
 		["ADD_HEALING_MOD_INT"] = {
 			{
 				["tab"] = 1,
-				["num"] = 12,
+				["num"] = StatLogic:GetTalentIndex(1,33589),-- Druid: Lunar Guidance (Rank 3) - 1,12
 				["rank"] = {
 					0.04, 0.08, 0.12,
 				},
@@ -7070,7 +7087,7 @@ if playerClass == "DRUID" then
 		["ADD_HEALING_MOD_AGI"] = {
 			{
 				["tab"] = 2,
-				["num"] = 15,
+				["num"] = StatLogic:GetTalentIndex(2,33872),-- Druid: Nurturing Instinct (Rank 2) - 2,14
 				["rank"] = {
 					0.35, 0.7,
 				},
@@ -7081,7 +7098,7 @@ if playerClass == "DRUID" then
 		["ADD_MANA_REG_MOD_NORMAL_MANA_REG"] = {
 			{
 				["tab"] = 3,
-				["num"] = 7,
+				["num"] = StatLogic:GetTalentIndex(3,17106),-- Druid: Intensity (Rank 3) - 3,7
 				["rank"] = {
 					0.17, 0.33, 0.50,
 				},
@@ -7092,7 +7109,7 @@ if playerClass == "DRUID" then
 		["ADD_MANA_REG_MOD_INT"] = {
 			{
 				["tab"] = 1,
-				["num"] = 15,
+				["num"] = StatLogic:GetTalentIndex(1,33597),-- Druid: Dreamstate (Rank 3) - 1,15
 				["rank"] = {
 					0.04, 0.07, 0.10,
 				},
@@ -7105,15 +7122,15 @@ if playerClass == "DRUID" then
 		["ADD_DODGE"] = {
 			{
 				["tab"] = 2,
-				["num"] = 6,
+				["num"] = StatLogic:GetTalentIndex(2,33597),-- Druid: Feral Swiftness (Rank 2) - 2,6
 				["rank"] = {
 					2, 4,
 				},
-				["buff"] = 32357,		-- ["Bear Form"],
+				["buff"] = 32357, --32357,		-- ["Bear Form"],
 			},
 			{
 				["tab"] = 2,
-				["num"] = 6,
+				["num"] = StatLogic:GetTalentIndex(2,33597),-- Druid: Feral Swiftness (Rank 2) - 2,6
 				["rank"] = {
 					2, 4,
 				},
@@ -7121,7 +7138,7 @@ if playerClass == "DRUID" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 6,
+				["num"] = StatLogic:GetTalentIndex(2,33597),-- Druid: Feral Swiftness (Rank 2) - 2,6
 				["rank"] = {
 					2, 4,
 				},
@@ -7129,7 +7146,7 @@ if playerClass == "DRUID" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 16,
+				["num"] = StatLogic:GetTalentIndex(2,57878),-- Druid: Natural Reaction (Rank 3) - 2,16
 				["rank"] = {
 					2, 4, 6,
 				},
@@ -7137,7 +7154,7 @@ if playerClass == "DRUID" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 16,
+				["num"] = StatLogic:GetTalentIndex(2,57878),-- Druid: Natural Reaction (Rank 3) - 2,16
 				["rank"] = {
 					2, 4, 6,
 				},
@@ -7150,7 +7167,7 @@ if playerClass == "DRUID" then
 			{
 				["MELEE"] = true,
 				["tab"] = 2,
-				["num"] = 18,
+				["num"] = StatLogic:GetTalentIndex(2,33853),-- Druid: Survival of the Fittest (Rank 3) - 2,18
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
@@ -7193,7 +7210,7 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 3,
-				["num"] = 25,
+				["num"] = StatLogic:GetTalentIndex(3,63410),-- Druid: Improved Barkskin (Rank 2) - 3,25
 				["rank"] = {
 					-0.05, -0.1,
 				},
@@ -7209,7 +7226,7 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 3,
-				["num"] = 19,
+				["num"] = StatLogic:GetTalentIndex(3,33883),-- Druid: Natural Perfection (Rank 3) - 3,19
 				["rank"] = {
 					-0.02, -0.03, -0.04,
 				},
@@ -7226,12 +7243,12 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(2,57877),-- Druid: Protector of the Pack (Rank 5) - 2,22
 				["rank"] = {
 					-0.01, -0.02, -0.03,
 				},
 				["buff"] = 32357,		-- ["Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 1",
+				["condition"] = "GetNumSubgroupMembers() == 1",
 			},
 			{
 				["MELEE"] = true,
@@ -7243,12 +7260,12 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(2,57877),-- Druid: Protector of the Pack (Rank 5) - 2,22
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
 				["buff"] = 32357,		-- ["Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 2",
+				["condition"] = "GetNumSubgroupMembers() == 2",
 			},
 			{
 				["MELEE"] = true,
@@ -7260,12 +7277,12 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(2,57877),-- Druid: Protector of the Pack (Rank 5) - 2,22
 				["rank"] = {
 					-0.03, -0.06, -0.09,
 				},
 				["buff"] = 32357,		-- ["Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 3",
+				["condition"] = "GetNumSubgroupMembers() == 3",
 			},
 			{
 				["MELEE"] = true,
@@ -7277,12 +7294,12 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(2,57877),-- Druid: Protector of the Pack (Rank 5) - 2,22
 				["rank"] = {
 					-0.04, -0.08, -0.12,
 				},
 				["buff"] = 32357,		-- ["Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 4",
+				["condition"] = "GetNumSubgroupMembers() == 4",
 			},
 			{
 				["MELEE"] = true,
@@ -7294,7 +7311,7 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(2,57877),-- Druid: Protector of the Pack (Rank 5) - 2,22
 				["rank"] = {
 					-0.01, -0.02, -0.03,
 				},
@@ -7311,7 +7328,7 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(2,57877),-- Druid: Protector of the Pack (Rank 5) - 2,22
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
@@ -7328,7 +7345,7 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(2,57877),-- Druid: Protector of the Pack (Rank 5) - 2,22
 				["rank"] = {
 					-0.03, -0.06, -0.09,
 				},
@@ -7345,7 +7362,7 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(2,57877),-- Druid: Protector of the Pack (Rank 5) - 2,22
 				["rank"] = {
 					-0.04, -0.08, -0.12,
 				},
@@ -7360,7 +7377,7 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 1,
-				["num"] = 17,
+				["num"] = StatLogic:GetTalentIndex(1,33596),-- Druid: Balance of Power (Rank 2) - 1,17
 				["rank"] = {
 					-0.03, -0.06,
 				},
@@ -7378,7 +7395,7 @@ if playerClass == "DRUID" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 1,
-				["num"] = 17,
+				["num"] = StatLogic:GetTalentIndex(1,33596),-- Druid: Balance of Power (Rank 2) - 1,17
 				["rank"] = {
 					-0.02, -0.04,
 				},
@@ -7403,7 +7420,7 @@ if playerClass == "DRUID" then
 		["MOD_ARMOR"] = {
 			{
 				["tab"] = 2,
-				["num"] = 5,
+				["num"] = StatLogic:GetTalentIndex(2,16931),-- Druid: Thick Hide (Rank 3) - 2,5
 				["rank"] = {
 					0.04, 0.07, 0.1,
 				},
@@ -7428,7 +7445,7 @@ if playerClass == "DRUID" then
 			},
 			{
 				["tab"] = 3,
-				["num"] = 24,
+				["num"] = StatLogic:GetTalentIndex(3,65139),	-- Druid: Improved Tree of Life (Rank 3) - 3,24
 				["rank"] = {
 					0.67, 1.33, 2,
 				},
@@ -7492,14 +7509,14 @@ if playerClass == "DRUID" then
 		["MOD_STA"] = {
 			{ -- Improved Mark of the Wild
 				["tab"] = 3,
-				["num"] = 1,
+				["num"] =  StatLogic:GetTalentIndex(3,17051), -- Druid: Improved Mark of the Wild (Rank 2) - 3,1
 				["rank"] = {
 					0.01, 0.02,
 				},
 			},
 			{ -- Heart of the Wild: +2/4/6/8/10% stamina in bear / dire bear
 				["tab"] = 2,
-				["num"] = 17,
+				["num"] = StatLogic:GetTalentIndex(2,17003),-- Druid: Heart of the Wild (Rank 5) - 2,17
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
@@ -7507,7 +7524,7 @@ if playerClass == "DRUID" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 17,
+				["num"] = StatLogic:GetTalentIndex(2,17003),-- Druid: Heart of the Wild (Rank 5) - 2,17
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
@@ -7515,7 +7532,7 @@ if playerClass == "DRUID" then
 			},
 			{ -- Survival of the Fittest: 2%/4%/6% all stats
 				["tab"] = 2,
-				["num"] = 18,
+				["num"] = StatLogic:GetTalentIndex(2,33853),-- Druid: Survival of the Fittest (Rank 3) - 2,18
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -7540,14 +7557,14 @@ if playerClass == "DRUID" then
 		["MOD_STR"] = {
 			{ -- Improved Mark of the Wild
 				["tab"] = 3,
-				["num"] = 1,
+				["num"] = StatLogic:GetTalentIndex(3,17051), -- Druid: Improved Mark of the Wild (Rank 2) - 3,1
 				["rank"] = {
 					0.01, 0.02,
 				},
 			},
 			{
 				["tab"] = 2,
-				["num"] = 18,
+				["num"] = StatLogic:GetTalentIndex(2,33853),-- Druid: Survival of the Fittest (Rank 3) - 2,18
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -7564,14 +7581,14 @@ if playerClass == "DRUID" then
 		["MOD_AP"] = {
 			{ -- Improved Mark of the Wild
 				["tab"] = 3,
-				["num"] = 1,
+				["num"] = StatLogic:GetTalentIndex(3,17051), -- Druid: Improved Mark of the Wild (Rank 2) - 3,1
 				["rank"] = {
 					0.01, 0.02,
 				},
 			},
 			{
 				["tab"] = 2,
-				["num"] = 17,
+				["num"] = StatLogic:GetTalentIndex(2,17003),-- Druid: Heart of the Wild (Rank 5) - 2,17
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
@@ -7579,7 +7596,7 @@ if playerClass == "DRUID" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(2,57877),-- Druid: Protector of the Pack (Rank 5) - 2,22
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -7587,7 +7604,7 @@ if playerClass == "DRUID" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 22,
+				["num"] =  StatLogic:GetTalentIndex(2,57877),-- Druid: Protector of the Pack (Rank 5) - 2,22
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -7601,14 +7618,14 @@ if playerClass == "DRUID" then
 		["MOD_AGI"] = {
 			{ -- Improved Mark of the Wild
 				["tab"] = 3,
-				["num"] = 1,
+				["num"] = StatLogic:GetTalentIndex(3,17051), -- Druid: Improved Mark of the Wild (Rank 2) - 3,1
 				["rank"] = {
 					0.01, 0.02,
 				},
 			},
 			{
 				["tab"] = 2,
-				["num"] = 18,
+				["num"] = StatLogic:GetTalentIndex(2,33853),-- Druid: Survival of the Fittest (Rank 3) - 2,18
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -7627,21 +7644,21 @@ if playerClass == "DRUID" then
 		["MOD_INT"] = {
 			{ -- Improved Mark of the Wild
 				["tab"] = 3,
-				["num"] = 1,
+				["num"] = StatLogic:GetTalentIndex(3,17051), -- Druid: Improved Mark of the Wild (Rank 2) - 3,1
 				["rank"] = {
 					0.01, 0.02,
 				},
 			},
 			{
 				["tab"] = 2,
-				["num"] = 17,
+				["num"] = StatLogic:GetTalentIndex(2,17003),-- Druid: Heart of the Wild (Rank 5) - 2,17
 				["rank"] = {
 					0.04, 0.08, 0.12, 0.16, 0.2,
 				},
 			},
 			{
 				["tab"] = 2,
-				["num"] = 18,
+				["num"] = StatLogic:GetTalentIndex(2,33853),-- Druid: Survival of the Fittest (Rank 3) - 2,18
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -7664,21 +7681,21 @@ if playerClass == "DRUID" then
 		["MOD_SPI"] = {
 			{ -- Improved Mark of the Wild
 				["tab"] = 3,
-				["num"] = 1,
+				["num"] = StatLogic:GetTalentIndex(3,17051), -- Druid: Improved Mark of the Wild (Rank 2) - 3,1
 				["rank"] = {
 					0.01, 0.02,
 				},
 			},
 			{
 				["tab"] = 3,
-				["num"] = 17,
+				["num"] = StatLogic:GetTalentIndex(2,17003),-- Druid: Heart of the Wild (Rank 5) - 2,17
 				["rank"] = {
 					0.05, 0.1, 0.15,
 				},
 			},
 			{
 				["tab"] = 2,
-				["num"] = 18,
+				["num"] = StatLogic:GetTalentIndex(2,33853),-- Druid: Survival of the Fittest (Rank 3) - 2,18
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -7702,7 +7719,7 @@ elseif playerClass == "DEATHKNIGHT" then
 		["ADD_AP_MOD_ARMOR"] = {
 			{
 				["tab"] = 1,
-				["num"] = 4,
+				["num"] = StatLogic:GetTalentIndex(1,48978),-- Death Knight: Bladed Armor (Rank 5) - 1,4
 				["rank"] = {
 					1/180, 2/180, 3/180, 4/180, 5/180,
 				},
@@ -7743,7 +7760,7 @@ elseif playerClass == "DEATHKNIGHT" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 1,
-				["num"] = 3,
+				["num"] = StatLogic:GetTalentIndex(1,49501),-- Death Knight: Blade Barrier - Buff - 1,3
 				["rank"] = {
 					-0.01, -0.02, -0.03, -0.04, -0.05,
 				},
@@ -7844,13 +7861,13 @@ elseif playerClass == "DEATHKNIGHT" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 1,
-				["num"] = 24,
+				["num"] = StatLogic:GetTalentIndex(1,50150),--Will of the Necropolis (Rank 3) - 1,24
 				["rank"] = {
 					-0.05, -0.1, -0.15,
 				},
 				["condition"] = "((UnitHealth('player') / UnitHealthMax('player')) < 0.35)",
 			},
-			{--Magic Suppression (Rank 3) - 3,17
+			{--Magic Suppression (Rank 3) - 3,18
 				["HOLY"] = true,
 				["FIRE"] = true,
 				["NATURE"] = true,
@@ -7858,7 +7875,7 @@ elseif playerClass == "DEATHKNIGHT" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 3,
-				["num"] = 17,
+				["num"] = StatLogic:GetTalentIndex(3,49611),--Magic Suppression (Rank 3) - 3,18
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
@@ -7872,7 +7889,7 @@ elseif playerClass == "DEATHKNIGHT" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 3,
-				["num"] = 18,
+				["num"] = StatLogic:GetTalentIndex(3,49611),
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
@@ -7927,7 +7944,7 @@ elseif playerClass == "DEATHKNIGHT" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 21,
+				["num"] = StatLogic:GetTalentIndex(2,50385),-- Improved Frost Presence 2,21
 				["rank"] = {
 					-0.01, -0.02,
 				},
@@ -7939,7 +7956,7 @@ elseif playerClass == "DEATHKNIGHT" then
 		["ADD_DODGE"] = {
 			{
 				["tab"] = 3,
-				["num"] = 3,
+				["num"] = StatLogic:GetTalentIndex(3,55133),--3,
 				["rank"] = {
 					1, 2, 3, 4, 5,
 				},
@@ -7950,7 +7967,7 @@ elseif playerClass == "DEATHKNIGHT" then
 		["ADD_HIT_TAKEN"] = {
 			{
 				["tab"] = 2,
-				["num"] = 13,
+				["num"] = StatLogic:GetTalentIndex(2,51109),--2.13,
 				["rank"] = {
 					-0.01, -0.02, -0.03,
 				},
@@ -7967,7 +7984,7 @@ elseif playerClass == "DEATHKNIGHT" then
 		["MOD_ARMOR"] = {
 			{
 				["tab"] = 2,
-				["num"] = 3,
+				["num"] = StatLogic:GetTalentIndex(2,49788),-- Death Knight: Toughness (Rank 5) - 2,3
 				["rank"] = {
 					0.03, 0.06, 0.09, 0.12, 0.15,
 				},
@@ -7975,7 +7992,7 @@ elseif playerClass == "DEATHKNIGHT" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 3,
+				["num"] = StatLogic:GetTalentIndex(2,49788),-- Death Knight: Toughness (Rank 5) - 2,3
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
@@ -8018,7 +8035,7 @@ elseif playerClass == "DEATHKNIGHT" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 21,
+				["num"] = StatLogic:GetTalentIndex(2,50385),-- Improved Frost Presence 2,21
 				["rank"] = {
 					0.05, 0.1,
 				},
@@ -8027,7 +8044,7 @@ elseif playerClass == "DEATHKNIGHT" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 21,
+				["num"] = StatLogic:GetTalentIndex(2,50385),-- Improved Frost Presence 2,21
 				["rank"] = {
 					0.05, 0.1,
 				},
@@ -8050,7 +8067,7 @@ elseif playerClass == "DEATHKNIGHT" then
 		["MOD_STA"] = {
 			{
 				["tab"] = 1,
-				["num"] = 14,
+				["num"] = StatLogic:GetTalentIndex(1,50029),-- Death Knight: Veteran of the Third War (Rank 3) - 1,14
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -8058,7 +8075,7 @@ elseif playerClass == "DEATHKNIGHT" then
 			},
 			{
 				["tab"] = 1,
-				["num"] = 14,
+				["num"] = StatLogic:GetTalentIndex(1,50029),-- Death Knight: Veteran of the Third War (Rank 3) - 1,14
 				["rank"] = {
 					0.01, 0.02, 0.03,
 				},
@@ -8080,7 +8097,7 @@ elseif playerClass == "DEATHKNIGHT" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 21,
+				["num"] = StatLogic:GetTalentIndex(2,50385),-- Improved Frost Presence 2,21
 				["rank"] = {
 					0.03, 0.06,
 				},
@@ -8089,7 +8106,7 @@ elseif playerClass == "DEATHKNIGHT" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 21,
+				["num"] = StatLogic:GetTalentIndex(2,50385),-- Improved Frost Presence 2,21
 				["rank"] = {
 					0.03, 0.06,
 				},
@@ -8098,7 +8115,7 @@ elseif playerClass == "DEATHKNIGHT" then
 			},
 			{-- Endless Winter
 				["tab"] = 2,
-				["num"] = 12,
+				["num"]  = StatLogic:GetTalentIndex(2,49657),-- -- Endless Winter
 				["rank"] = {
 					0.02, 0.04,
 				},
@@ -8116,7 +8133,7 @@ elseif playerClass == "DEATHKNIGHT" then
 		["MOD_STR"] = {
 			{
 				["tab"] = 1,
-				["num"] = 14,
+				["num"] = StatLogic:GetTalentIndex(1,50029),-- Death Knight: Veteran of the Third War (Rank 3) - 1,14
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -8137,14 +8154,14 @@ elseif playerClass == "DEATHKNIGHT" then
 			},
 			{
 				["tab"] = 3,
-				["num"] = 7,
+				["num"] = StatLogic:GetTalentIndex(3,49572),-- Death Knight: Ravenous Dead (Rank 3) - 3,7
 				["rank"] = {
 					0.01, 0.02, 0.03,
 				},
 			},
 			{
 				["tab"] = 1,
-				["num"] = 17,
+				["num"] = StatLogic:GetTalentIndex(1,53138),-- Death Knight: Abomination's Might - 1,17
 				["rank"] = {
 					0.01, 0.02,
 				},
@@ -9390,7 +9407,7 @@ elseif playerClass == "WARLOCK" then
 		["MOD_SPELL_DMG"] = {
 			{
 				["tab"] = 2,
-				["num"] = 26,
+				["num"] = StatLogic:GetTalentIndex(2,47239),-- ["Demonic Pact"],
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
@@ -9402,7 +9419,7 @@ elseif playerClass == "WARLOCK" then
 		["MOD_HEALING"] = {
 			{
 				["tab"] = 2,
-				["num"] = 26,
+				["num"] = StatLogic:GetTalentIndex(2,47239),-- ["Demonic Pact"],
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
@@ -9425,7 +9442,7 @@ elseif playerClass == "WARLOCK" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 11,
+				["num"] = StatLogic:GetTalentIndex(2,30145),
 				["rank"] = {
 					0.03, 0.06, 0.09,
 				},
@@ -9452,7 +9469,7 @@ elseif playerClass == "WARLOCK" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 11,
+				["num"] = StatLogic:GetTalentIndex(2,30145),
 				["rank"] = {
 					0.03, 0.06, 0.09,
 				},
@@ -9482,11 +9499,13 @@ elseif playerClass == "WARLOCK" then
 					0.1,
 				}, -- BoK, BoSanc
         ["oldtoc"] = 38000,
-				["condition"] = "UnitBuff('pet', GetSpellInfo(20217)) or UnitBuff('pet', GetSpellInfo(25898)) or UnitBuff('pet', GetSpellInfo(20911)) or UnitBuff('pet', GetSpellInfo(25899))",
+				--API change -- ["condition"] = "UnitBuff('pet', GetSpellInfo(20217)) or UnitBuff('pet', GetSpellInfo(25898)) or UnitBuff('pet', GetSpellInfo(20911)) or UnitBuff('pet', GetSpellInfo(25899))",
+			    ["condition"] = "StatLogic:CheckAura('pet', 20217) or StatLogic:CheckAura('pet', 25898) or StatLogic:CheckAura('pet',20911) or StatLogic:CheckAura('pet', 25899)",
 			},
+			
 			{ -- Fel Vitality: floor() * 1.15
 				["tab"] = 2,
-				["num"] = 7,
+				["num"] = StatLogic:GetTalentIndex(2,18744),
 				["rank"] = {
 					0.05, 0.1, 0.15,
 				},
@@ -9505,11 +9524,11 @@ elseif playerClass == "WARLOCK" then
 					0.1,
 				},
         ["oldtoc"] = 38000,
-				["condition"] = "UnitBuff('pet', GetSpellInfo(20217)) or UnitBuff('pet', GetSpellInfo(25898)) or UnitBuff('pet', GetSpellInfo(20911)) or UnitBuff('pet', GetSpellInfo(25899))",
+				["condition"] = "StatLogic:CheckAura('pet', 20217) or StatLogic:CheckAura('pet', 25898) or StatLogic:CheckAura('pet',20911) or StatLogic:CheckAura('pet', 25899)",
 			},
 			{ -- Fel Vitality
 				["tab"] = 2,
-				["num"] = 7,
+				["num"] = StatLogic:GetTalentIndex(2,18744),
 				["rank"] = {
 					0.05, 0.1, 0.15,
 				},
@@ -9521,7 +9540,7 @@ elseif playerClass == "WARLOCK" then
 		["ADD_SPELL_DMG_MOD_PET_STA"] = {
 			{
 				["tab"] = 2,
-				["num"] = 20,
+				["num"] = StatLogic:GetTalentIndex(2,35693),-- Warlock: Demonic Knowledge 
 				["rank"] = {
 					0.04, 0.08, 0.12,
 				},
@@ -9533,7 +9552,7 @@ elseif playerClass == "WARLOCK" then
 		["ADD_SPELL_DMG_MOD_PET_INT"] = {
 			{
 				["tab"] = 2,
-				["num"] = 20,
+				["num"] = StatLogic:GetTalentIndex(2,35693),-- Warlock: Demonic Knowledge 
 				["rank"] = {
 					0.04, 0.08, 0.12,
 				},
@@ -9552,7 +9571,7 @@ elseif playerClass == "WARLOCK" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 18,
+				["num"] = StatLogic:GetTalentIndex(2,30319),--- Warlock: Demonic Resilience (Rank 3) - 2,18
 				["rank"] = {
 					-0.01, -0.02, -0.03,
 				},
@@ -9569,7 +9588,7 @@ elseif playerClass == "WARLOCK" then
 				["MELEE"] = true,
 				["RANGED"] = true,
 				["tab"] = 2,
-				["num"] = 16,
+				["num"] = StatLogic:GetTalentIndex(2,23823),-- Warlock: Master Demonologist (Rank 5) - 2,16
 				["rank"] = {
 					-0.02, -0.04, -0.06, -0.08, -0.1,
 				},
@@ -9583,7 +9602,7 @@ elseif playerClass == "WARLOCK" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 16,
+				["num"] = StatLogic:GetTalentIndex(2,23823),-- Warlock: Master Demonologist (Rank 5) - 2,16
 				["rank"] = {
 					-0.02, -0.04, -0.06, -0.08, -0.1,
 				},
@@ -9599,7 +9618,7 @@ elseif playerClass == "WARLOCK" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 2,
-				["num"] = 16,
+				["num"] = StatLogic:GetTalentIndex(2,23823),-- Warlock: Master Demonologist (Rank 5) - 2,16
 				["rank"] = {
 					-0.01, -0.02, -0.03, -0.04, -0.05,
 				},
@@ -9625,7 +9644,7 @@ elseif playerClass == "WARLOCK" then
 		["MOD_HEALTH"] = {
 			{
 				["tab"] = 2,
-				["num"] = 7,
+				["num"] = StatLogic:GetTalentIndex(2,18731),-- Warlock: Fel Vitality (Rank 3) - 2,7
 				["rank"] = {
 					0.01, 0.02, 0.03,
 				},
@@ -9636,7 +9655,7 @@ elseif playerClass == "WARLOCK" then
 		["MOD_MANA"] = {
 			{
 				["tab"] = 2,
-				["num"] = 7,
+				["num"] = StatLogic:GetTalentIndex(2,18731),-- Warlock: Fel Vitality (Rank 3) - 2,7
 				["rank"] = {
 					0.01, 0.02, 0.03,
 				},
@@ -9647,7 +9666,7 @@ elseif playerClass == "WARLOCK" then
 		["MOD_STA"] = {
 			{
 				["tab"] = 2,
-				["num"] = 3,
+				["num"] = StatLogic:GetTalentIndex(2,18697),-- Warlock: Demonic Embrace (Rank 5) - 2,3
 				["rank"] = {
 					0.04, 0.07, 0.1,
 				},

@@ -1,12 +1,13 @@
-lightweight tag 05f417c21dfd0a39b8d238a31c4d1f6924734852 3.4.0.5
+lightweight tag 527bbc252ceafa91baf94e97b7f18444d02f7dda 3.4.0.6
 Author:	LANCESTRE <lancetre@intenebris.org>
-Date:	Mon Sep 5 08:07:30 2022 +0200
+Date:	Mon Sep 5 22:23:56 2022 +0200
 
-commit a85804ad04e98847356f79c4869a79196c28b0f7
+commit 527bbc252ceafa91baf94e97b7f18444d02f7dda
 Author: LANCESTRE <lancetre@intenebris.org>
-Date:   Mon Sep 5 08:06:46 2022 +0200
+Date:   Mon Sep 5 22:23:56 2022 +0200
 
-    fix profile
+    fix
     
-    fix profile
+    Fix check Aura on unit (Bug Warlock pet)
+    Stats for talent modified for Druid , Warlock , DK
 

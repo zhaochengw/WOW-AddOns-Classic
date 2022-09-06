@@ -46,14 +46,13 @@ function RSMinimap.LoadMinimapButton()
 		label = "RareScanner",
 		icon = RSConstants.NORMAL_NPC_TEXTURE,
 		OnClick = function(self, button) 
-			if (button == "LeftButton") then
+			if (button == "RightButton") then
 				InterfaceOptionsFrame_OpenToCategory("RareScanner")
 				InterfaceOptionsFrame_OpenToCategory("RareScanner")
 			end
 		end,
 		OnTooltipShow = function(tooltip)
 			tooltip:SetText("RareScanner")
-			tooltip:AddLine(AL["MINIMAP_ICON_TOOLTIP1"], 1, 1, 1)
 			tooltip:AddLine(AL["MINIMAP_ICON_TOOLTIP2"], 1, 1, 1)
 		end
 	})
