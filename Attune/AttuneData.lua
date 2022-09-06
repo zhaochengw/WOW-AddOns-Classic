@@ -14,10 +14,10 @@ Attune_Data.attunes = 	{
 --	{ID="1",NAME="Test multiple items",EXPAC="Testing", GROUP='MISC', FACTION="Both",ICON="Interface\\Icons\\inv_fabric_linen_01", "This is a simple debug attune, not to be used by non-developers"},
 	--vanilla
 	{ID="2",NAME=Lang["Molten Core"],EXPAC=Lang["World of Warcraft"], GROUP=Lang['RAIDS'], FACTION="Both",ICON="Interface\\Icons\\inv_hammer_unique_sulfuras", DESC=Lang["MC_Desc"], GROUPSIZE=40, SHOWRAIDPLANNER=1},
-	{ID="3",NAME=Lang["Onyxia's Lair"],EXPAC=Lang["World of Warcraft"], GROUP=Lang['RAIDS'], FACTION="Horde",ICON="Interface\\Icons\\inv_misc_head_dragon_01", DESC=Lang["Ony_Desc"], GROUPSIZE=40, SHOWRAIDPLANNER=1},
-	{ID="4",NAME=Lang["Onyxia's Lair"],EXPAC=Lang["World of Warcraft"], GROUP=Lang['RAIDS'], FACTION="Alliance",ICON="Interface\\Icons\\inv_misc_head_dragon_01", DESC=Lang["Ony_Desc"], GROUPSIZE=40, SHOWRAIDPLANNER=1},
+	{ID="3",NAME=Lang["Onyxia's Lair"],EXPAC=Lang["World of Warcraft"], GROUP=Lang['RAIDS'], FACTION="Horde",ICON="Interface\\Icons\\inv_misc_head_dragon_01", DESC=Lang["Ony_Desc"], GROUPSIZE=40, SHOWRAIDPLANNER=1, DEPRECATED=1},
+	{ID="4",NAME=Lang["Onyxia's Lair"],EXPAC=Lang["World of Warcraft"], GROUP=Lang['RAIDS'], FACTION="Alliance",ICON="Interface\\Icons\\inv_misc_head_dragon_01", DESC=Lang["Ony_Desc"], GROUPSIZE=40, SHOWRAIDPLANNER=1, DEPRECATED=1},
 	{ID="5",NAME=Lang["Blackwing Lair"],EXPAC=Lang["World of Warcraft"], GROUP=Lang['RAIDS'], FACTION="Both",ICON="Interface\\Icons\\inv_misc_head_dragon_black", DESC=Lang["BWL_Desc"], GROUPSIZE=40, SHOWRAIDPLANNER=1},
-	{ID="6",NAME=Lang["Naxxramas"],EXPAC=Lang["World of Warcraft"], GROUP=Lang['RAIDS'], FACTION="Both",ICON="Interface\\Icons\\inv_trinket_naxxramas06", DESC=Lang["All_Desc"], GROUPSIZE=40, SHOWRAIDPLANNER=1},
+	{ID="6",NAME=Lang["Naxxramas"],EXPAC=Lang["World of Warcraft"], GROUP=Lang['RAIDS'], FACTION="Both",ICON="Interface\\Icons\\inv_trinket_naxxramas06", DESC=Lang["All_Desc"], GROUPSIZE=40, SHOWRAIDPLANNER=1, DEPRECATED=1},
 	{ID="8",NAME=Lang["Aqual Quintessence"],EXPAC=Lang["World of Warcraft"], GROUP=Lang['MISC'], FACTION="Both",ICON="Interface\\Icons\\inv_potion_76", DESC=Lang["MC2_Desc"]},
 	{ID="10",NAME=Lang["Scepter of the Shifting Sands"],EXPAC=Lang["World of Warcraft"], GROUP=Lang['MISC'], FACTION="Both",ICON="Interface\\Icons\\inv_hammer_25", DESC=Lang["AQ_Desc"]},
 	{ID="12",NAME=Lang["Blackrock Depths"],EXPAC=Lang["World of Warcraft"], GROUP=Lang['KEYS'], FACTION="Both",ICON="Interface\\Icons\\inv_misc_key_08", DESC=Lang["OnlyOne_Desc"]},
@@ -1088,8 +1088,8 @@ Attune_Data.steps = 	{
 	
 	
 	{ID_ATTUNE="360",ID="10",TYPE="Level",STEP=Lang["Reach level"].." 80",LOCATION="",ID_WOWHEAD="80",ICON="Interface\\Icons\\spell_holy_innerfire",FOLLOWS="0",STAGE="10"},
-	{ID_ATTUNE="360",ID="20",TYPE="Kill",STEP="",LOCATION=Lang["The Eye of Eternity"],ID_WOWHEAD="15989",ICON="Interface\\Icons\\achievement_boss_sapphiron_01",FOLLOWS="10",STAGE="20"},
-	{ID_ATTUNE="360",ID="30",TYPE="Item",STEP="",LOCATION=Lang["The Eye of Eternity"],ID_WOWHEAD="44569",ICON="Interface\\Icons\\spell_holy_mindsooth",FOLLOWS="20",STAGE="30"},
+	{ID_ATTUNE="360",ID="20",TYPE="Kill",STEP="",LOCATION=Lang["Naxxramas"],ID_WOWHEAD="15989",ICON="Interface\\Icons\\achievement_boss_sapphiron_01",FOLLOWS="10",STAGE="20"},
+	{ID_ATTUNE="360",ID="30",TYPE="Item",STEP="",LOCATION=Lang["Naxxramas"],ID_WOWHEAD="44569",ICON="Interface\\Icons\\spell_holy_mindsooth",FOLLOWS="20",STAGE="30"},
 	{ID_ATTUNE="360",ID="40",TYPE="Quest",STEP="",LOCATION=Lang["Dragonblight"],ID_WOWHEAD="13372",ICON="Interface\\Icons\\inv_scroll_03",FOLLOWS="30",STAGE="40"},
 	{ID_ATTUNE="360",ID="48",TYPE="Spacer",STEP="Spacer",LOCATION="",ID_WOWHEAD="",ICON="",FOLLOWS="0",STAGE="50"},
 	{ID_ATTUNE="360",ID="50",TYPE="Item",STEP="",LOCATION=Lang["Dragonblight"],ID_WOWHEAD="44582",ICON="Interface\\Icons\\spell_holy_mindsooth",FOLLOWS="40",STAGE="50"},
@@ -1097,8 +1097,8 @@ Attune_Data.steps = 	{
 	{ID_ATTUNE="360",ID="60",TYPE="End",STEP="Attuned",LOCATION=Lang["Dragonblight"],ID_WOWHEAD="0",ICON="Interface\\Icons\\achievement_boss_malygos_01",FOLLOWS="50|55",STAGE="60"},
 		
 	{ID_ATTUNE="370",ID="10",TYPE="Level",STEP=Lang["Reach level"].." 80",LOCATION="",ID_WOWHEAD="80",ICON="Interface\\Icons\\spell_holy_innerfire",FOLLOWS="0",STAGE="10"},
-	{ID_ATTUNE="370",ID="20",TYPE="Kill",STEP="",LOCATION=Lang["The Eye of Eternity"],ID_WOWHEAD="15989",ICON="Interface\\Icons\\achievement_boss_sapphiron_01",FOLLOWS="10",STAGE="20"},
-	{ID_ATTUNE="370",ID="30",TYPE="Item",STEP="",LOCATION=Lang["The Eye of Eternity"],ID_WOWHEAD="44577",ICON="Interface\\Icons\\spell_holy_mindsooth",FOLLOWS="20",STAGE="30"},
+	{ID_ATTUNE="370",ID="20",TYPE="Kill",STEP="",LOCATION=Lang["Naxxramas"],ID_WOWHEAD="15989",ICON="Interface\\Icons\\achievement_boss_sapphiron_01",FOLLOWS="10",STAGE="20"},
+	{ID_ATTUNE="370",ID="30",TYPE="Item",STEP="",LOCATION=Lang["Naxxramas"],ID_WOWHEAD="44577",ICON="Interface\\Icons\\spell_holy_mindsooth",FOLLOWS="20",STAGE="30"},
 	{ID_ATTUNE="370",ID="40",TYPE="Quest",STEP="",LOCATION=Lang["Dragonblight"],ID_WOWHEAD="13375",ICON="Interface\\Icons\\inv_scroll_03",FOLLOWS="30",STAGE="40"},
 	{ID_ATTUNE="370",ID="50",TYPE="Item",STEP="",LOCATION=Lang["Dragonblight"],ID_WOWHEAD="44581",ICON="Interface\\Icons\\spell_holy_mindsooth",FOLLOWS="40",STAGE="50"},
 	{ID_ATTUNE="370",ID="60",TYPE="End",STEP="Attuned",LOCATION=Lang["Dragonblight"],ID_WOWHEAD="0",ICON="Interface\\Icons\\achievement_boss_malygos_01",FOLLOWS="50",STAGE="60"},

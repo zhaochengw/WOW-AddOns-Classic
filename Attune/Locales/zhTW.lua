@@ -189,11 +189,14 @@ Lang["DelUnder70_DESC"] = "刪除所有收集的有關70級以下玩家的信息
 Lang["DelUnder70_CONF"] = "真的要刪除70級以下的所有角色嗎？"
 Lang["DelUnder70_DONE"] = "所有低於70的角色均已刪除。"
 --302
-Lang["AnnounceAchieve_TEXT"] = "在公會聊天中宣布成就                                         臨界點:"
+Lang["AnnounceAchieve_TEXT"] = "在公會聊天中宣布成就                                      臨界點:"
 Lang["AnnounceAchieve_DESC"] = "獲得成就時發送公會消息。"
 Lang["AchieveCompleteGuild"] = "##LINK## 聲望已達到! (##POINTS## 總積分)" 
-Lang["AchieveSurvey"] = "你想|cFFFFD100Attune|r 在公會聊天中宣布你的成就嗎？"
-					
+Lang["AchieveSurvey"] = "想要|cFFFFD100Attune|r 在公會聊天中公佈|cFFFFD100##WHO##|r 的成就嗎？"
+--306
+Lang["showDeprecatedAttunes_TEXT"] = "顯示已棄用的調諧"
+Lang["showDeprecatedAttunes_DESC"] = "在列表中保持較舊的調音（奧妮克希亞 40、納克薩馬斯 40）可見"
+
 
 -- TREEVIEW
 Lang["World of Warcraft"] = "魔獸世界"

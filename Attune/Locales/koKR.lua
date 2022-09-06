@@ -189,11 +189,14 @@ Lang["DelUnder70_DESC"] = "70랩미만 케릭들의 자료를 삭제"
 Lang["DelUnder70_CONF"] = "70랩미만 정말 삭제할까요?"
 Lang["DelUnder70_DONE"] = "70랩미만 케릭들 삭제함"
 --302
-Lang["AnnounceAchieve_TEXT"] = "길드 채팅에서 업적 발표                                                                             한계점:"
+Lang["AnnounceAchieve_TEXT"] = "길드 채팅에서 업적 발표                                                                          한계점:"
 Lang["AnnounceAchieve_DESC"] = "업적 달성 시 길드 메시지를 보냅니다."
 Lang["AchieveCompleteGuild"] = "##LINK## 완료! (##POINTS## 총 포인트)" 
-Lang["AchieveSurvey"] = "길드 채팅에서 |cFFFFD100Attune|r의 업적을 알리시겠습니까?"
-					
+Lang["AchieveSurvey"] = "|cFFFFD100Attune|r이 길드 채팅에서 |cFFFFD100##WHO##|r의 업적을 발표하시겠습니까?"
+--306
+Lang["showDeprecatedAttunes_TEXT"] = "더 이상 사용되지 않는 조정 표시"
+Lang["showDeprecatedAttunes_DESC"] = "목록에서 오래된 조정(오닉시아 40, 낙스라마스 40)을 계속 볼 수 있도록 합니다."			
+
 
 -- TREEVIEW
 Lang["World of Warcraft"] = "시대서버"

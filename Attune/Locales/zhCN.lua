@@ -189,11 +189,14 @@ Lang["DelUnder70_DESC"] = "删除所有收集的有关70级以下玩家的信息
 Lang["DelUnder70_CONF"] = "真的要删除70级以下的所有角色吗？"
 Lang["DelUnder70_DONE"] = "所有低于70的结果均已删除."
 --302
-Lang["AnnounceAchieve_TEXT"] = "在公会聊天中宣布成就                                         临界点:"
+Lang["AnnounceAchieve_TEXT"] = "在公会聊天中宣布成就                                      临界点:"
 Lang["AnnounceAchieve_DESC"] = "获得成就时发送公会消息。"
 Lang["AchieveCompleteGuild"] = "##LINK## 声望已达到! (##POINTS## 总积分)" 
-Lang["AchieveSurvey"] = "你想|cFFFFD100Attune|r 在公会聊天中公布你的成就吗？"
-					
+Lang["AchieveSurvey"] = "想要|cFFFFD100Attune|r 在公会聊天中公布|cFFFFD100##WHO##|r 的成就吗？"
+--306
+Lang["showDeprecatedAttunes_TEXT"] = "显示已弃用的调谐"
+Lang["showDeprecatedAttunes_DESC"] = "在列表中保持较旧的调音（奥妮克希亚 40、纳克萨玛斯 40）可见"
+
 
 -- TREEVIEW
 Lang["World of Warcraft"] = "经典旧世"

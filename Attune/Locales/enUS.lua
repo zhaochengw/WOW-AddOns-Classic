@@ -211,10 +211,13 @@ Lang["DelUnder70_DESC"] = "Delete all the gathered information about players und
 Lang["DelUnder70_CONF"] = "Really delete all characters under level 70?"
 Lang["DelUnder70_DONE"] = "All results under 70 deleted."
 --302
-Lang["AnnounceAchieve_TEXT"] = "Announce Achievements in guild chat.                                Threshold:"
+Lang["AnnounceAchieve_TEXT"] = "Announce Achievements in guild chat.                             Threshold:"
 Lang["AnnounceAchieve_DESC"] = "Send a guild message when an achievement is earned rewarding at least that amount of points."
 Lang["AchieveCompleteGuild"] = "##LINK## complete! (##POINTS## points total)" 
-Lang["AchieveSurvey"] = "Would you like |cFFFFD100Attune|r to announce your achievements in guild chat?"
+Lang["AchieveSurvey"] = "Would you like |cFFFFD100Attune|r to announce |cFFFFD100##WHO##|r's achievements in guild chat?"
+--306
+Lang["showDeprecatedAttunes_TEXT"] = "Show deprecated attunements"
+Lang["showDeprecatedAttunes_DESC"] = "Keep the older attunements (Onyxia 40, Naxxramas 40) visible in the list"
 					
 
 -- TREEVIEW

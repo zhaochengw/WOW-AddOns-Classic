@@ -211,11 +211,13 @@ Lang["DelUnder70_DESC"] = "Lösche alle Daten von Spielern unter Level  70."
 Lang["DelUnder70_CONF"] = "Wirklich ALLE Daten von Spieler unter 70 löschen?"
 Lang["DelUnder70_DONE"] = "Alle Spieler unter 70 gelöscht."
 --302
-Lang["AnnounceAchieve_TEXT"] = "Kündigen Sie Erfolge im Gildenchat an                                   Schwelle:"
+Lang["AnnounceAchieve_TEXT"] = "Kündigen Sie Erfolge im Gildenchat an                                Schwelle:"
 Lang["AnnounceAchieve_DESC"] = "Kündige fertige Erfolg in der Gilde an"
 Lang["AchieveCompleteGuild"] = "##LINK## erfolgreich! (##POINTS## Gesamtpunktzahl)" 
-Lang["AchieveSurvey"] = "Möchtest du, dass |cFFFFD100Attune|r deine Erfolge im Gildenchat ankündigt?"
-
+Lang["AchieveSurvey"] = "Möchtest du, dass |cFFFFD100Attune|r |cFFFFD100##WHO##s|r Errungenschaften im Gildenchat ankündigt?"
+--306
+Lang["showDeprecatedAttunes_TEXT"] = "Veraltete Zugangsquests anzeigen"
+Lang["showDeprecatedAttunes_DESC"] = "Lassen Sie die älteren Zugangsquests (Onyxia 40, Naxxramas 40) in der Liste sichtbar"
 			
 
 -- TREEVIEW
