@@ -1,6 +1,6 @@
-## Interface: 30400
+﻿## Interface: 30400
 ## Title: Spy
-## Version: 2.0.7
+## Version: 3.0.0
 ## Notes: Detects and alerts you to the presence of nearby enemy players.
 ## Notes-deDE: Detektiert und warnt Sie vor, in der Nähe befindlichen, Gegnern.
 ## Notes-esES: Detects and alerts you to the presence of nearby enemy players.
@@ -52,7 +52,3 @@ MainWindow.lua
 List.lua
 SpyStats.xml
 SpyData.lua
-## Title: |cff880303[163UI]|r Spy
-## Title-zhCN: |cff880303[有爱]|r Spy 敌对玩家提醒插件
-## X-Vendor: NetEase
-## X-163UI-Version: 20220805113806
