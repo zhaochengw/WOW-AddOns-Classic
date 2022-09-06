@@ -1,2 +1,0 @@
-Auctionator.Buying = {}
-Auctionator.CraftSearch = {}

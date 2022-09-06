@@ -1,4 +1,0 @@
-<!-- Tabs/Mixins directory manifest -->
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
-  <Script file="Button.lua" />
-</Ui>
