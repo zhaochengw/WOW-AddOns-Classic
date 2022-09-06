@@ -276,7 +276,7 @@ function UnitFramesPlus_TargetHPValueDisplayUpdate()
     local TargetExtHPText = "";
 
     if MaxHP > 0 then
-        PctText = floor(100*CurHP/MaxHP).."%";
+        PctText = ceil(100*CurHP/MaxHP).."%";
     end
 
     if not UnitIsDead("target") then
@@ -329,7 +329,7 @@ function UnitFramesPlus_TargetMPValueDisplayUpdate()
 
     if powerType == 0 then
         if MaxMP > 0 then
-            PctText = floor(100*CurMP/MaxMP).."%";
+            PctText = ceil(100*CurMP/MaxMP).."%";
         end
     else
         PctText = CurMP;

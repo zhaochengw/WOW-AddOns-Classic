@@ -23,7 +23,7 @@ local ADDONNAME = ...;
 local MAJOR_VERSION = 1;
 local MINOR_VERSION = 3;
 
-local levelmax = 63;--in classic, maxlevel=63, like Kel'Thuzad, C'Thun, Nefarian, Ragnaros, Onyxia
+local levelmax = 83;--in classic, maxlevel=63, like Kel'Thuzad, C'Thun, Nefarian, Ragnaros, Onyxia
 
 local accumulatedHP = {}; -- Keeps Damage-taken data for mobs that we've actually poked during this session
 local accumulatedPercent = {}; -- Keeps Percentage-taken data for mobs that we've actually poked during this session
@@ -68,8 +68,8 @@ function UnitFramesPlus_PruneData()
     -- let's get rid of low-level players
     local playerLevel = UnitLevel("player");
     local maxLevel;
-    if playerLevel == 60 then
-        maxLevel = 60;
+    if playerLevel == 70 then
+        maxLevel = 70;
     else
         maxLevel = playerLevel*3/4;
         if maxLevel > playerLevel - 5 then
