@@ -1,0 +1,24 @@
+## Interface: 11403
+## Title: HandyNotes_NPCs (Classic)
+## Version: 1.29-classic
+## Notes: Shows locations of various old world npcs
+## Author: Revel of Pagle
+## RequiredDeps: HandyNotes
+## SavedVariables: HandyNotes_NPCsClassicDB
+
+libs\bcc\AceHook-3.0\AceHook-3.0.lua
+libs\bcc\LibUIDropDownMenu\LibUIDropDownMenu.xml
+libs\bcc\LibDataBroker-1.1\LibDataBroker-1.1.lua
+libs\bcc\LibDBIcon-1.0\LibDBIcon-1.0.lua
+libs\bcc\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+libs\bcc\AceGUI-3.0-SharedMediaWidgets\widget.xml
+libs\bcc\LibQTip-1.0\LibQTip-1.0.lua
+locales\classic\Locales.xml
+classic\data.lua
+classic\vendorData.lua
+classic\itemData.lua
+classic\weaponskills.lua
+classic\HandyNotes_NPCs (Classic).lua
+classic\options.lua
+classic\search.lua
+classic\altrecipes.lua

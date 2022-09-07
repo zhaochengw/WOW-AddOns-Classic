@@ -1,0 +1,25 @@
+## Interface: 30400
+## Title: HandyNotes_NPCs (Classic)
+## Version: 1.29-bcc
+## Notes: Shows locations of various npcs
+## Author: Cali
+## RequiredDeps: HandyNotes
+## OptionalDeps: LibStub, !LibUIDropDownMenu
+## SavedVariables: HandyNotes_NPCsClassicDB
+
+libs\bcc\AceHook-3.0\AceHook-3.0.lua
+libs\bcc\LibUIDropDownMenu\LibUIDropDownMenu.xml
+libs\bcc\LibDataBroker-1.1\LibDataBroker-1.1.lua
+libs\bcc\LibDBIcon-1.0\LibDBIcon-1.0.lua
+libs\bcc\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+libs\bcc\AceGUI-3.0-SharedMediaWidgets\widget.xml
+libs\bcc\LibQTip-1.0\LibQTip-1.0.lua
+locales\bcc\Locales.xml
+bcc\data.lua
+bcc\vendorData.lua
+bcc\itemData.lua
+bcc\weaponskills.lua
+bcc\HandyNotes_NPCs (Classic).lua
+bcc\options.lua
+bcc\search.lua
+bcc\altrecipes.lua
