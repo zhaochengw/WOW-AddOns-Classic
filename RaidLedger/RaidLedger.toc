@@ -13,7 +13,7 @@
 ## Notes-zhTW: 金團賬本，幫你在金團中記賬 反饋問題 farmer1992@gmail.com
 ## SavedVariablesPerCharacter: RaidLedgerDatabase
 ## Author: Boshi Lian(farmer1992@gmail.com)
-## Version: v1.9.5-v2.5.2
+## Version: v1.9.5-v3.4.0
 
 lib\LibStub\LibStub.lua
 lib\CallbackHandler-1.0\CallbackHandler-1.0.lua
@@ -34,7 +34,3 @@ gui.lua
 
 trade.lua
 cli.lua
-
-## Title-zhCN: |cff880303[有爱]|r RaidLedger G团助手
-## X-Vendor: NetEase
-## X-163UI-Version: 20220331145254

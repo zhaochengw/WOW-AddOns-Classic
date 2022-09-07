@@ -159,8 +159,8 @@ local function GetFilteritemsSet(s)
 
     end
 
+    -- kael'thas 7 weapons
     for _, line in pairs({
-        -- kael'thas 7 weapons
         30311,
         30312,
         30313,
@@ -170,8 +170,6 @@ local function GetFilteritemsSet(s)
         30318,
         30319,
         30320,
-        --  Badge of Justice
-        29434,
     }) do
         local itemName = GetItemInfo(line)
 
