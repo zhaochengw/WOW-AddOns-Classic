@@ -8175,7 +8175,7 @@ elseif playerClass == "HUNTER" then
 		["ADD_AP_MOD_STA"] = {
 			{
 				["tab"] = 3,
-				["num"] = 14,
+				["num"] = StatLogic:GetTalentIndex(3,56341),-- Hunter: Hunter vs. Wild (Rank 3) - 3,14
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
@@ -8186,7 +8186,7 @@ elseif playerClass == "HUNTER" then
 		["ADD_RANGED_AP_MOD_INT"] = {
 			{
 				["tab"] = 2,
-				["num"] = 4,
+				["num"] = StatLogic:GetTalentIndex(2,34484),-- Hunter: Careful Aim (Rank 3) - 2,4
 				["rank"] = {
 					0.33, 0.66, 1,
 				},
@@ -8203,7 +8203,7 @@ elseif playerClass == "HUNTER" then
 		["ADD_DODGE"] = {
 			{
 				["tab"] = 1,
-				["num"] = 19,
+				["num"] = StatLogic:GetTalentIndex(1,34465),-- Hunter: Catlike Reflexes (Rank 3) - 1,19
 				["rank"] = {
 					1, 2, 3,
 				},
@@ -8216,7 +8216,7 @@ elseif playerClass == "HUNTER" then
 			},
 			{
 				["tab"] = 1,
-				["num"] = 4,
+				["num"] = StatLogic:GetTalentIndex(1,19551),-- Hunter: Improved Aspect of the Monkey (Rank 3) - 1,4
 				["rank"] = {
 					2, 4, 6,
 				},
@@ -8230,7 +8230,7 @@ elseif playerClass == "HUNTER" then
 			},
 			{
 				["tab"] = 1,
-				["num"] = 4,
+				["num"] = StatLogic:GetTalentIndex(1,19551),-- Hunter: Improved Aspect of the Monkey (Rank 3) - 1,4
 				["rank"] = {
 					2, 4, 6,
 				},
@@ -8252,7 +8252,7 @@ elseif playerClass == "HUNTER" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 3,
-				["num"] = 7,
+				["num"] = StatLogic:GetTalentIndex(3,34496),	-- Hunter: Survival Instincts (Rank 2) - 3,7
 				["rank"] = {
 					-0.02, -0.04,
 				},
@@ -8267,7 +8267,7 @@ elseif playerClass == "HUNTER" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 1,
-				["num"] = 8,
+				["num"] = StatLogic:GetTalentIndex(1,53265),-- Hunter: Aspect Mastery - 1,8
 				["rank"] = {
 					-0.05,
 				},
@@ -8279,7 +8279,7 @@ elseif playerClass == "HUNTER" then
 		["MOD_ARMOR"] = {
 			{
 				["tab"] = 1,
-				["num"] = 5,
+				["num"] = StatLogic:GetTalentIndex(1,19612),-- Hunter: Thick Hide (Rank 3) - 1,5
 				["rank"] = {
 					0.04, 0.07, 0.1,
 				},
@@ -8290,7 +8290,7 @@ elseif playerClass == "HUNTER" then
 		["MOD_HEALTH"] = {
 			{
 				["tab"] = 1,
-				["num"] = 2,
+				["num"] = StatLogic:GetTalentIndex(1,19587),-- Hunter: Endurance Training (Rank 5) - 1,2
 				["rank"] = {
 					0.01, 0.02, 0.03, 0.04, 0.05,
 				},
@@ -8301,7 +8301,7 @@ elseif playerClass == "HUNTER" then
 		["MOD_STA"] = {
 			{
 				["tab"] = 3,
-				["num"] = 8,
+				["num"] = StatLogic:GetTalentIndex(3,19259),-- Hunter: Survivalist (Rank 5) - 3,8
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
@@ -8316,21 +8316,21 @@ elseif playerClass == "HUNTER" then
 		["MOD_AGI"] = {
 			{
 				["tab"] = 3,
-				["num"] = 27,
+				["num"] = StatLogic:GetTalentIndex(3,53292),-- Hunter: Hunting Party (Rank 3) - 3,27
 				["rank"] = {
 					0.01, 0.02, 0.03,
 				},
 			},
 			{
 				["tab"] = 2,
-				["num"] = 16,
+				["num"] = StatLogic:GetTalentIndex(2,34476),-- Hunter: Combat Experience (Rank 2) - 2,16
 				["rank"] = {
 					0.02, 0.04,
 				},
 			},
 			{
 				["tab"] = 3,
-				["num"] = 17,
+				["num"] = StatLogic:GetTalentIndex(3,24297),-- Hunter: Lightning Reflexes (Rank 5) - 3,17
 				["rank"] = {
 					0.03, 0.06, 0.09, 0.12, 0.15,
 				},
@@ -8341,7 +8341,7 @@ elseif playerClass == "HUNTER" then
 		["MOD_INT"] = {
 			{
 				["tab"] = 2,
-				["num"] = 16,
+				["num"] = StatLogic:GetTalentIndex(2,34476),-- Hunter: Combat Experience (Rank 2) - 2,16
 				["rank"] = {
 					0.02, 0.04,
 				},
@@ -9686,7 +9686,7 @@ elseif playerClass == "WARRIOR" then
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["tab"] = 3,
-				["num"] = 10,
+				["num"] = StatLogic:GetTalentIndex(3,59089),-- Warrior: Improved Spell Reflection (Rank 2) - 3,10
 				["rank"] = {
 					-0.02, -0.04,
 				},
@@ -9697,7 +9697,7 @@ elseif playerClass == "WARRIOR" then
 		["ADD_AP_MOD_ARMOR"] = {
 			{
 				["tab"] = 2,
-				["num"] = 1,
+				["num"] = StatLogic:GetTalentIndex(2,61222),-- Warrior: Armored to the Teeth (Rank 3) - 2,1
 				["rank"] = {
 					1/180, 2/180, 3/180,
 				},
@@ -9705,7 +9705,7 @@ elseif playerClass == "WARRIOR" then
 			},
 			{
 				["tab"] = 2,
-				["num"] = 1,
+				["num"] = StatLogic:GetTalentIndex(2,61222),-- Warrior: Armored to the Teeth (Rank 3) - 2,1
 				["rank"] = {
 					1/108, 2/108, 3/108,
 				},
@@ -9717,7 +9717,7 @@ elseif playerClass == "WARRIOR" then
 		["ADD_DODGE"] = {
 			{
 				["tab"] = 3,
-				["num"] = 5,
+				["num"] = StatLogic:GetTalentIndex(3,12753),-- Warrior: Anticipation (Rank 5) - 3,5
 				["rank"] = {
 					1, 2, 3, 4, 5,
 				},
@@ -9852,7 +9852,7 @@ elseif playerClass == "WARRIOR" then
 		["MOD_ARMOR"] = {
 			{
 				["tab"] = 3,
-				["num"] = 9,
+				["num"] = StatLogic:GetTalentIndex(3,12764),-- Warrior: Toughness (Rank 5) - 3,9
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
@@ -9865,7 +9865,7 @@ elseif playerClass == "WARRIOR" then
 		["MOD_STA"] = {
 			{
 				["tab"] = 3,
-				["num"] = 20,
+				["num"] = StatLogic:GetTalentIndex(3,29144),-- Warrior: Vitality (Rank 3) - 3,20
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -9873,7 +9873,7 @@ elseif playerClass == "WARRIOR" then
 			},
 			{
 				["tab"] = 3,
-				["num"] = 20,
+				["num"] = StatLogic:GetTalentIndex(3,29144),-- Warrior: Vitality (Rank 3) - 3,20
 				["rank"] = {
 					0.03, 0.06, 0.09,
 				},
@@ -9881,7 +9881,7 @@ elseif playerClass == "WARRIOR" then
 			},
 			{
 				["tab"] = 1,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(1,46866),-- Warrior: Strength of Arms (Rank 2) - 1,22
 				["rank"] = {
 					0.02, 0.04,
 				},
@@ -9897,21 +9897,21 @@ elseif playerClass == "WARRIOR" then
 		["MOD_STR"] = {
 			{
 				["tab"] = 3,
-				["num"] = 20,
+				["num"] = StatLogic:GetTalentIndex(3,29144),-- Warrior: Vitality (Rank 3) - 3,20
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
 			},
 			{
 				["tab"] = 1,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(1,46866),-- Warrior: Strength of Arms (Rank 2) - 1,22
 				["rank"] = {
 					0.02, 0.04,
 				},
 			},
 			{
 				["tab"] = 2,
-				["num"] = 22,
+				["num"] = StatLogic:GetTalentIndex(2,29763),-- Warrior: Improved Berserker Stance (Rank 5) - 2,22 - Stance
 				["rank"] = {
 					0.04, 0.08, 0.12, 0.16, 0.2,
 				},
@@ -9923,7 +9923,7 @@ elseif playerClass == "WARRIOR" then
 		["MOD_BLOCK_VALUE"] = {
 			{
 				["tab"] = 3,
-				["num"] = 8,
+				["num"] = StatLogic:GetTalentIndex(3,29599),-- Warrior: Shield Mastery (Rank 2) - 3,8
 				["rank"] = {
 					0.15, 0.3,
 				},
