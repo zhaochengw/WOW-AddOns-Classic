@@ -1,0 +1,108 @@
+TooltipItemIcon Slash Commands
+
+/tooltipitemicon <command>
+or
+/ttii <command>
+
+
+
+*** Global Commands
+
+/ttii reset
+Resets all the saved variables to the default settings. This will change to Frame mode, and delete any saved location settings for tooltips.
+
+/ttii frame
+Change to Frame mode - attaches the icon as a mini frame outside the tooltip. This is the default mode.
+
+/ttii inside
+Change to Inside mode - places the icon inside the tooltip, near the top right corner.
+
+/ttii title
+Change to Title mode - places the icon inside the tooltip to the left of the title text (top left corner).
+
+/ttii background
+Change to Background mode - stretches the icon and uses it as a background for the tooltip.
+
+/ttii size <number>
+(Frame, Inside and Title modes only)
+Sets the size of the icon. <number> must be 1 or more. Defaults are 39 for Frame mode and 24 for Inside or Title mode.
+
+/ttii fade <number>
+(Background mode only)
+Fades the brightness of the icon to make a more suitable background image. <number> must be between 0 and 1. Default is 0.4. 0 fades the image to completely black. 1 results in a full-brightness image, which could make the text in the tooltip difficult to read.
+
+/ttii alpha <number>
+(Frame and Background modes only)
+Sets the transparency of the icon/background. <number> must be between 0 and 1. 0 is invisible. 1 is fully opaque. Default is 0.9 for Background mode and 1 for Frame mode.
+
+/ttii item on|off
+Turn display of icons for items on or off. Default is on.
+
+/ttii spell on|off
+Turn display of icons for spells on or off. Default is on.
+
+/ttii achievement on|off
+Turn display of icons for achievements on or off. Default is on.
+
+/ttii token on|off
+Turn display of icons for currency tokens one or off. Default is on.
+
+
+
+*** Tooltip Commands
+
+/ttii <tooltip name> <location code>
+(Frame mode only)
+Moves the icon frame to a new location around the specified tooltip, for example at the top right or at the bottom. The new location is saved for that tooltip.
+
+<tooltip name> may be either the exact name of the tooltip or a 'template name'. A template name can be used to change multiple tooltips at the same time. This only works for a set of tooltips that have the same basic name but end in a different number, e.g. shoppingtooltip1 and shoppingtooltip2.
+A template name consists of all the characters before the number, in this case shoppingtooltip
+
+Common tooltip names:
+gametooltip: the default popup tooltip that appears when you mouse over something
+itemreftooltip: the default tooltip that appears when you click on a link in chat
+shoppingtooltip1, shoppingtooltip2, shoppingtooltip3: the default 'comparison' tooltips
+
+<location code> must be one of the following codes:
+lefttop: on the left, near the top
+righttop: on the right, near the top
+topleft: on top, at the left hand side
+topright: on top, at the right hand side
+topcenter: on top, in the middle (note the spelling of 'center')
+bottomleft: at the bottom, on the left hand side
+bottomright: at the bottom, on the right hand side
+bottomcenter: at the bottom, in the middle
+default: clears any previously saved location for this tooltip
+
+/ttii all <location code>
+(Frame mode only)
+Applies the <location code> to all known tooltips
+
+/ttii screen <location code>
+(Frame mode only)
+Applies the <location code> to all tooltips currently visible on screen
+
+/ttii compare <location code>
+(Frame mode only)
+Applies the <location code> to all known compare-type tooltips
+
+
+/ttii <tooltip name> <action>
+/ttii all <action>
+/ttii screen <action>
+(All modes)
+
+<action> is one of:
+
+off : Disable the icon for the specified tooltip(s). This setting is saved for each tooltip. Immediately hides the icon.
+
+on : Enable the icon for the specified tooltip(s). Removes the 'off' setting from the saved settings. Icon will be shown when the tooltip is next opened.
+
+reset : Clear all saved settings for the specified tooltip(s), including on/off setting and location setting.
+
+
+/ttii compare reset
+Works as above for all known compare tooltips
+
+/ttii compare on|off
+Enable or disable icons on all compare-style tooltips. This setting is saved Globally (not for each tooltip).

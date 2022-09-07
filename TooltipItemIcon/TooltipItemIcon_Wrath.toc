@@ -1,0 +1,15 @@
+## Title: TooltipItemIcon
+## Notes: Adds the icon for the displayed item to the tooltip
+## Author: brykrys
+## SavedVariables: TooltipItemIcon_Saved
+
+## Version: 1.794
+## X-Release: Release
+## X-Date: 6 September 2022
+
+## Interface: 30400
+
+## X-Curse-Project-ID: 3608
+## X-WoWI-ID: 11411
+
+TooltipItemIcon.lua
