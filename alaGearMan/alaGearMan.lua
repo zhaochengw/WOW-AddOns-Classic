@@ -2435,7 +2435,7 @@ function func.init_variables()
 	else
 		_G.alaGearManSV = default_sv;
 	end
-	alaGearManSV._version = 200610.0;
+	alaGearManSV._version = 220902.0;
 end
 function func.init_hook_tooltip()
 	GameTooltip:HookScript("OnTooltipSetItem", func.hook_tooltip);
