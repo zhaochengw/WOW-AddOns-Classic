@@ -1,18 +1,21 @@
-## Interface: 30400
+## Interface: 90200
 ## Title: NugRunning
 ## Notes: Spelltimers
 ## Author: d87
 ## SavedVariablesPerCharacter: NRunDB_Char
 ## SavedVariables: NRunDB_Global, NugRunningConfigCustom
-## Version: 9.2.2
+## Version: 9.2.3
+
 ## X-WoWI-ID: 10440
 ## X-Curse-Project-ID: 27470
 ## X-Wago-ID: vEGPo5K1
-## X-Revision: BigFoot
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+Libs\LibSharedMedia-3.0\lib.xml
 
 helpers.lua
 config.lua
-config.wotlk.lua
 NugRunning.lua
 frame.lua
 special.lua

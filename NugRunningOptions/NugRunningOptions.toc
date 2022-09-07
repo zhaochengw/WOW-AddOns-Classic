@@ -1,10 +1,8 @@
-## Interface: 30400
+## Interface: 90200
 ## Title: NugRunningOptions
 ## Notes: Options for NugRunning
 ## Author: d87
 ## RequiredDeps: NugRunning
 ## LoadOnDemand: 1
-## X-Revision: BigFoot
 
-..\NugRunning\Locales\zhCN.lua
-..\NugRunning\Options\NugRunningOptions.lua
+..\NugRunning\Options\includes.xml

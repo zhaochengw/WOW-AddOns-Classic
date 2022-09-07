@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 20504
 ## Title: NugRunning
 ## Notes: Spelltimers
 ## Author: d87
@@ -16,6 +16,7 @@ Libs\LibSharedMedia-3.0\lib.xml
 
 helpers.lua
 config.lua
+config.tbc.lua
 NugRunning.lua
 frame.lua
 special.lua

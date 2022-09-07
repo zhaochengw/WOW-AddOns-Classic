@@ -4,7 +4,7 @@
 ## Author: d87
 ## SavedVariablesPerCharacter: NRunDB_Char
 ## SavedVariables: NRunDB_Global, NugRunningConfigCustom
-## Version: 9.2.1
+## Version: 9.2.3
 
 ## X-WoWI-ID: 10440
 ## X-Curse-Project-ID: 27470
@@ -16,7 +16,7 @@ Libs\LibSharedMedia-3.0\lib.xml
 
 helpers.lua
 config.lua
-config.tbc.lua
+config.wotlk.lua
 NugRunning.lua
 frame.lua
 special.lua

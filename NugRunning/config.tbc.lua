@@ -24,8 +24,8 @@ local colors = NugRunningConfig.colors
 
 NugRunningConfig.nameplates.parented = true
 
-local tocVersion = select(4,GetBuildInfo())
-local isBC = tocVersion >= 20000 and tocVersion < 30000 -- WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local apiLevel = math.floor(select(4,GetBuildInfo())/10000)
+local isBC = apiLevel == 2
 if not isBC then return end
 
 -- RACIALS
