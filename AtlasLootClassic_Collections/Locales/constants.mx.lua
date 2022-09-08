@@ -26,13 +26,22 @@ AL["Brightly Colored Egg"] = "Huevo de colores vivos"
 --[[Translation missing --]]
 --[[ AL["Card Game Tabards"] = "Card Game Tabards"--]] 
 AL["Childrens Week"] = "Semana de los Niños"
-AL["Classic"] = "Clásico"
 AL["Crimson Templar"] = "Templario Carmesí"
 AL["Drops"] = "Despoja"
 AL["Dungeon Set %s"] = "Conjunto de Mazmorra %s"
 AL["Dungeon Sets"] = "Conjuntos de Mazmorra"
 AL["Earthen Templar"] = "Templario terráneo"
 AL["Elemental Invasions"] = "Invasión elemental"
+--[[Translation missing --]]
+--[[ AL["Emblem of Conquest"] = "Emblem of Conquest"--]] 
+--[[Translation missing --]]
+--[[ AL["Emblem of Frost"] = "Emblem of Frost"--]] 
+--[[Translation missing --]]
+--[[ AL["Emblem of Heroism"] = "Emblem of Heroism"--]] 
+--[[Translation missing --]]
+--[[ AL["Emblem of Triumph"] = "Emblem of Triumph"--]] 
+--[[Translation missing --]]
+--[[ AL["Emblem of Valor"] = "Emblem of Valor"--]] 
 AL["Equip"] = "Armadura"
 AL["Faction Mounts"] = "Monturas de facción"
 AL["Feast of Winter Veil"] = "El festín del Festival de Invierno"
@@ -46,6 +55,8 @@ AL["Graveyard - Headless Horseman"] = "Cementerio - El Jinete decapitado"
 AL["Gurubashi Arena"] = "Arena Gurubashi"
 AL["Hallow's End"] = "Halloween"
 AL["Harvest Festival"] = "Festival de la Cosecha"
+--[[Translation missing --]]
+--[[ AL["Heirloom"] = "Heirloom"--]] 
 AL["High Marshal Whirlaxis"] = "Alto mariscal Eje Torbellino"
 AL["Hoary Templar"] = "Templario vetusto"
 AL["Idols"] = "Ídolos"
@@ -81,12 +92,18 @@ AL["The Duke of Shards"] = "Duque de las Esquirlas"
 AL["The Duke of Zephyrs"] = "Duque de los Céfiros"
 AL["The Windreaver"] = "El Atracavientos"
 AL["Tier Sets"] = "Conjuntos de Tier"
+--[[Translation missing --]]
+--[[ AL["Token"] = "Token"--]] 
 AL["Totems"] = "Tótems"
+--[[Translation missing --]]
+--[[ AL["Trinket"] = "Trinket"--]] 
 AL["Two-Handed Weapons"] = "Armas de dos manos"
 AL["Unobtainable"] = "Inobtenible"
 --[[Translation missing --]]
 --[[ AL["Unobtainable Tabards"] = "Unobtainable Tabards"--]] 
 AL["Wands"] = "Varitas"
+--[[Translation missing --]]
+--[[ AL["Weapon"] = "Weapon"--]] 
 AL["World Epics"] = "Épicos del Mundo"
 AL["World Events"] = "Eventos del Mundo"
 --[[Translation missing --]]

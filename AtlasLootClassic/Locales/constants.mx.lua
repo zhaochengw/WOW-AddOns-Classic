@@ -57,6 +57,8 @@ AL["Bow"] = "Arco"
 --[[Translation missing --]]
 --[[ AL["Brutal %s"] = "Brutal %s"--]] 
 AL["Chat Link"] = "Enlace de Chat"
+--[[Translation missing --]]
+--[[ AL["Classic"] = "Classic"--]] 
 AL["Click to open Atlas instance map."] = "Haz clic para abrir el mapa de instancias de Atlas."
 AL["Collections"] = "Colecciones"
 AL["Command %s not found. Use '/al slash' for a full list of commands"] = "Comando %s no se encuentra. Escribe '/al slash' para una lista de todos los comandos."

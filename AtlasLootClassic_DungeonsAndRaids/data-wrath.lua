@@ -2081,7 +2081,7 @@ data["TrialoftheChampion"] = {
 	AtlasModule = ATLAS_MODULE_NAME,
 	AtlasMapID = "TrialOfTheChampion",
 	AtlasMapFile = {"TrialOfTheChampion"},
-	LevelRange = {80, 80, 80},
+	LevelRange = {75, 79, 80},
 	items = {
         { -- TrialoftheChampionChampions / 213
             name = AL["Grand Champions"],
@@ -2263,7 +2263,7 @@ data["ForgeOfSouls"] = {
 	AtlasModule = ATLAS_MODULE_NAME,
 	AtlasMapID = "FHTheForgeOfSouls",
 	AtlasMapFile = {"FHTheForgeOfSouls", "IcecrownEnt"},
-	LevelRange = {80, 80, 80},
+	LevelRange = {75, 79, 80},
 	items = {
         { -- FoSBronjahm / 268
             name = AL["Bronjahm"],
@@ -2346,7 +2346,7 @@ data["PitOfSaron"] = {
 	AtlasModule = ATLAS_MODULE_NAME,
 	AtlasMapID = "FHPitOfSaron",
 	AtlasMapFile = {"FHPitOfSaron", "IcecrownEnt"},
-	LevelRange = {80, 80, 80},
+	LevelRange = {75, 79, 80},
 	items = {
         { -- PoSGarfrost / 271
             name = AL["Forgemaster Garfrost"],
@@ -2449,7 +2449,7 @@ data["HallsOfReflection"] = {
 	AtlasModule = ATLAS_MODULE_NAME,
 	AtlasMapID = "FHHallsOfReflection",
 	AtlasMapFile = {"FHHallsOfReflection", "IcecrownEnt"},
-	LevelRange = {80, 80, 80},
+	LevelRange = {75, 79, 80},
 	items = {
         { -- HoRFalric / 275
             name = AL["Falric"],
@@ -4207,7 +4207,7 @@ data["Ulduar"] = {
 				{ 16, 45605 },	-- Daschal's Bite
             },
         },
-        { -- Trash
+        { -- Patterns
             name = AL["Patterns"],
             ExtraList = true,
             [NORMAL_DIFF] = {
@@ -5047,6 +5047,112 @@ data["TrialoftheCrusader"] = {
                 }
             ),
         },
+        {	-- Argent Crusade Tribute Chest
+            name = format(AL["Argent Crusade Tribute Chest"]),
+            --EncounterJournalID = 1623,
+            [RAID10H_DIFF] = AtlasLoot:GetRetByFaction(
+                { -- horde
+                    headerLines = {1, 3, 8, 10},
+                    { 1, "INV_Box_01", nil, format(AL["%s Attempts left"], "1-24"), nil },
+                    { 2, 47242, [ATLASLOOT_IT_AMOUNT1] = 2 },	-- Trophy of the Crusade
+                    { 17, 47556 },	-- Crusader Orb
+                    { 3, "INV_Box_01", nil, format(AL["%s Attempts left"], "25-44"), format(AL["Includes the loot from %s"], "1-24"), },
+                    { 4, 48703 }, --  The Facebreaker
+                    { 5, 48699 }, --  Blood and Glory
+                    { 6, 48693 }, --  Heartsmasher
+                    { 7, 48701 }, --  Spellharvest
+                    { 19, 48697 }, -- Frenzystrike Longbow
+                    { 20, 48705 }, -- Attrition
+                    { 21, 48695 }, -- Mor'kosh
+                    { 8, "INV_Box_01", nil, format(AL["%s Attempts left"], "45-49"), format(AL["Includes the loot from %s"], "1-44") },
+                    { 9, 47242, [ATLASLOOT_IT_AMOUNT1] = 2 },	-- Trophy of the Crusade
+                    { 10, "INV_Box_01", nil, format(AL["%s Attempts left"], "50"), format(AL["Includes the loot from %s"], "1-49") },
+                    { 11, 49046 }, -- Swift Horde Wolf
+                    { 12, 48669 }, -- Cloak of the Triumphant Combatant
+                    { 13, 48668 }, -- Cloak of Serrated Blades
+                    { 14, 48670 }, -- Cloak of the Unflinching Guardian
+                    { 27, 48666 }, -- Drape of the Sunreavers
+                    { 28, 48667 }, -- Shawl of the Devout Crusader
+                },
+                { -- alli
+                    headerLines = {1, 3, 8, 10},
+                    { 1, "INV_Box_01", nil, format(AL["%s Attempts left"], "1-24"), nil },
+                    { 2, 47242, [ATLASLOOT_IT_AMOUNT1] = 2 },	-- Trophy of the Crusade
+                    { 17, 47556 },	-- Crusader Orb
+                    { 3, "INV_Box_01", nil, format(AL["%s Attempts left"], "25-44"), format(AL["Includes the loot from %s"], "1-24"), },
+                    { 4, 48712 }, --  The Spinebreaker
+                    { 5, 48714 }, --  Honor of the Fallen
+                    { 6, 48709 }, --  Heartcrusher
+                    { 7, 48708 }, --  Spellstorm Blade
+                    { 19, 48711 }, -- Rhok'shalla the Shadow's Bane
+                    { 20, 48710 }, --  Paragon's Breadth
+                    { 21, 48713 }, --  Lothar's Edge
+                    { 8, "INV_Box_01", nil, format(AL["%s Attempts left"], "45-49"), format(AL["Includes the loot from %s"], "1-44") },
+                    { 9, 47242, [ATLASLOOT_IT_AMOUNT1] = 2 },	-- Trophy of the Crusade
+                    { 10, "INV_Box_01", nil, format(AL["%s Attempts left"], "50"), format(AL["Includes the loot from %s"], "1-49") },
+                    { 11, 49044 }, -- Swift Alliance Steed
+                    { 12, 48674 }, -- Cloak of the Victorious Combatant
+                    { 13, 48673 }, -- Cloak of the Silver Covenant
+                    { 14, 48675 }, -- Cloak of the Unmoving Guardian
+                    { 27, 48671 }, -- Drape of Bitter Incantation
+                    { 28, 48672 }, -- Shawl of Fervent Crusader
+                }
+            ),
+            [RAID25H_DIFF] = AtlasLoot:GetRetByFaction(
+                { -- horde
+                    headerLines = {1, 4, 9, 12},
+                    { 1, "INV_Box_01", nil, format(AL["%s Attempts left"], "1-24"), nil },
+                    { 2, 47557 }, -- Regalia of the Grand Conqueror
+                    { 3, 47558 }, -- Regalia of the Grand Protector
+                    { 17, 47559 }, -- Regalia of the Grand Vanquisher
+                    { 4, "INV_Box_01", nil, format(AL["%s Attempts left"], "25-44"), format(AL["Includes the loot from %s"], "1-24"), },
+                    { 5, 47513 }, -- Orgrim's Deflector
+                    { 6, 47528 }, -- Cudgel of the Damned
+                    { 7, 47518 }, -- Mortalis
+                    { 8, 47520 }, -- Grievance
+                    { 20, 47523 }, -- Fezzik's Autocannon
+                    { 21, 47525 }, -- Sufferance
+                    { 22, 47516 }, -- Fleshrender
+                    { 9, "INV_Box_01", nil, format(AL["%s Attempts left"], "45-49"), format(AL["Includes the loot from %s"], "1-44") },
+                    { 10, 47557 }, -- Regalia of the Grand Conqueror
+                    { 11, 47558 }, -- Regalia of the Grand Protector
+                    { 25, 47559 }, -- Regalia of the Grand Vanquisher
+                    { 12, "INV_Box_01", nil, format(AL["%s Attempts left"], "50"), format(AL["Includes the loot from %s"], "1-49") },
+                    { 13, 47548 }, -- Garrosh's Rage
+                    { 14, 47546 }, -- Sylvanas' Cunning
+                    { 15, 47550 }, -- Cairne's Endurance
+                    { 28, 49046 }, -- Swift Horde Wolf
+                    { 29, 47551 }, -- Aethas' Intensity
+                    { 30, 47554 }, -- Lady Liadrin's Conviction
+                },
+                { -- alli
+                    headerLines = {1, 4, 9, 12},
+                    { 1, "INV_Box_01", nil, format(AL["%s Attempts left"], "1-24"), nil },
+                    { 2, 47557 }, -- Regalia of the Grand Conqueror
+                    { 3, 47558 }, -- Regalia of the Grand Protector
+                    { 17, 47559 }, -- RRegalia of the Grand Vanquisher
+                    { 4, "INV_Box_01", nil, format(AL["%s Attempts left"], "25-44"), format(AL["Includes the loot from %s"], "1-24"), },
+                    { 5, 47506 }, -- Silverwing Defender
+                    { 6, 47526 }, -- Remorseless
+                    { 7, 47517 }, -- Blade of the Unbroken Covenant
+                    { 8, 47519 }, -- Catastrophe
+                    { 20, 47521 }, -- BRK-1000
+                    { 21, 47524 }, -- Clemency
+                    { 22, 47515 }, -- Decimation
+                    { 9, "INV_Box_01", nil, format(AL["%s Attempts left"], "45-49"), format(AL["Includes the loot from %s"], "1-44") },
+                    { 10, 47557 }, -- Regalia of the Grand Conqueror
+                    { 11, 47558 }, -- Regalia of the Grand Protector
+                    { 25, 47559 }, -- Regalia of the Grand Vanquisher
+                    { 12, "INV_Box_01", nil, format(AL["%s Attempts left"], "50"), format(AL["Includes the loot from %s"], "1-49") },
+                    { 13, 47547 }, -- Varian's Furor
+                    { 14, 47545 }, -- Vereesa's Dexterity
+                    { 15, 47549 }, -- Magni's Resolution
+                    { 28, 49044 }, -- Swift Alliance Steed
+                    { 29, 47552 }, -- Jaina's Radiance
+                    { 30, 47553 }, -- Bolvar's Devotion
+                }
+            ),
+        },
         {	--TrialoftheCrusader NorthrendBeasts
             name = AL["Patterns"],
             ExtraList = true,
@@ -5058,19 +5164,18 @@ data["TrialoftheCrusader"] = {
                     { 4,  47643 },	-- Plans: Sunforged Breastplate (p2 450)
                     { 5,  47644 },	-- Plans: Titanium Razorplate (p2 450)
                     { 6,  47645 },	-- Plans: Titanium Spikeguards (p2 450)
-                    { 7,  47646 },	-- Pattern: Black Chitin Bracers (p7 450)
-                    { 8,  47647 },	-- Pattern: Bracers of Swift Death (p7 450)
-                    { 9,  47648 },	-- Pattern: Crusader's Dragonscale Bracers (p7 450)
-                    { 10, 47649 },	-- Pattern: Crusader's Dragonscale Breastplate (p7 450)
-                    { 11, 47650 },	-- Pattern: Ensorcelled Nerubian Breastplate (p7 450)
-                    { 12, 47651 },	-- Pattern: Knightbane Carapace (p7 450)
-                    { 13, 47652 },	-- Pattern: Lunar Eclipse Chestguard (p7 450)
-                    { 14, 47653 },	-- Pattern: Moonshadow Armguards (p7 450)
+                    { 8,  47646 },	-- Pattern: Black Chitin Bracers (p7 450)
+                    { 9,  47647 },	-- Pattern: Bracers of Swift Death (p7 450)
+                    { 10,  47648 },	-- Pattern: Crusader's Dragonscale Bracers (p7 450)
+                    { 11, 47649 },	-- Pattern: Crusader's Dragonscale Breastplate (p7 450)
+                    { 12, 47650 },	-- Pattern: Ensorcelled Nerubian Breastplate (p7 450)
+                    { 13, 47651 },	-- Pattern: Knightbane Carapace (p7 450)
+                    { 14, 47652 },	-- Pattern: Lunar Eclipse Chestguard (p7 450)
+                    { 15, 47653 },	-- Pattern: Moonshadow Armguards (p7 450)
                     { 16, 47639 },	-- Pattern: Bejeweled Wizard's Bracers (p8 450)
                     { 17, 47638 },	-- Pattern: Merlin's Robe (p8 450)
                     { 18, 47637 },	-- Pattern: Royal Moonshroud Bracers (p8 450)
                     { 19, 47636 },	-- Pattern: Royal Moonshroud Robe (p8 450)
-                    { 21, 47556 },	-- Crusader Orb
                 },
                 { -- alli
                     { 1,  47622 },	-- Plans: Breastplate of the White Knight (p2 450)
@@ -5079,19 +5184,18 @@ data["TrialoftheCrusader"] = {
                     { 4,  47626 },	-- Plans: Sunforged Breastplate (p2 450)
                     { 5,  47624 },	-- Plans: Titanium Razorplate (p2 450)
                     { 6,  47625 },	-- Plans: Titanium Spikeguards (p2 450)
-                    { 7,  47629 },	-- Pattern: Black Chitin Bracers (p7 450)
-                    { 8,  47635 },	-- Pattern: Bracers of Swift Death (p7 450)
-                    { 9,  47631 },	-- Pattern: Crusader's Dragonscale Bracers (p7 450)
-                    { 10, 47630 },	-- Pattern: Crusader's Dragonscale Breastplate (p7 450)
-                    { 11, 47628 },	-- Pattern: Ensorcelled Nerubian Breastplate (p7 450)
-                    { 12, 47634 },	-- Pattern: Knightbane Carapace (p7 450)
-                    { 13, 47632 },	-- Pattern: Lunar Eclipse Chestguard (p7 450)
-                    { 14, 47633 },	-- Pattern: Moonshadow Armguards (p7 450)
+                    { 8,  47629 },	-- Pattern: Black Chitin Bracers (p7 450)
+                    { 9,  47635 },	-- Pattern: Bracers of Swift Death (p7 450)
+                    { 10,  47631 },	-- Pattern: Crusader's Dragonscale Bracers (p7 450)
+                    { 11, 47630 },	-- Pattern: Crusader's Dragonscale Breastplate (p7 450)
+                    { 12, 47628 },	-- Pattern: Ensorcelled Nerubian Breastplate (p7 450)
+                    { 13, 47634 },	-- Pattern: Knightbane Carapace (p7 450)
+                    { 14, 47632 },	-- Pattern: Lunar Eclipse Chestguard (p7 450)
+                    { 15, 47633 },	-- Pattern: Moonshadow Armguards (p7 450)
                     { 16, 47654 },	-- Pattern: Bejeweled Wizard's Bracers (p8 450)
                     { 17, 47655 },	-- Pattern: Merlin's Robe (p8 450)
                     { 18, 47656 },	-- Pattern: Royal Moonshroud Bracers (p8 450)
                     { 19, 47657 },	-- Pattern: Royal Moonshroud Robe (p8 450)
-                    { 21, 47556 },	-- Crusader Orb
                 }
             ),
         },
@@ -6417,7 +6521,7 @@ data["VaultofArchavon"] = {
                 { 28, "CLASS_PALADIN",      nil, CLASS_NAME["PALADIN"],     AL["Retribution"],  "VoA_T_PALADIN_25_D" },
                 { 101, "SLOT_CLOTH",        nil, ALIL["Cloth"],         nil,  "VoA_T_CLOTH_25" },
                 { 102, "SLOT_LEATHER",      nil, ALIL["Leather"],       nil,  "VoA_T_LEATHER_25" },
-                { 103, "SLOT_MAIL4",         nil, ALIL["Mail"],          nil,  "VoA_T_MAIL_25" },
+                { 103, "SLOT_MAIL4",        nil, ALIL["Mail"],          nil,  "VoA_T_MAIL_25" },
                 { 104, "SLOT_PLATE",        nil, ALIL["Plate"],         nil,  "VoA_T_PLATE_25" },
                 { 106, "SLOT_BACK",         nil, ALIL["Back"],          nil,  "VoA_T_BACK_25" },
                 { 107, "SLOT_NECK",         nil, ALIL["Neck"],          nil,  "VoA_T_NECK_25" },
