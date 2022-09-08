@@ -1,3 +1,7 @@
+3.0.05 - 7th September 2022
+- For 'Enhance questlog', there is a new setting in the configuration panel to show a toggle headers button.  It's enabled by default.  The toggle headers button allows you to collapse and expand all quest headers in one click.
+- Added lots of flight times.  There are now 3590 flight times stored in Leatrix Plus for Wrath Classic.
+
 3.0.04 - 4th September 2022
 - For 'Automate quests', Darkmoon Faire repeatable quests will now be automated for English game clients if you have the required materials in your bag.
 - For 'Enhance minimap', fix for the square minimap mail icon overlapping the tracking icon.
