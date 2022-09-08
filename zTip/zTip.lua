@@ -1,13 +1,9 @@
 ﻿--[[
 	上官晓雾
-	2021年07月24日
-	2.3.16
+	2022年9月7日
+	2.3.17
 
-	重写了观察装等/天赋的模块
-	添加观察史诗地下城分数
-	优化了下地下城分数
-	修复了添加地下城分数后版本导致敌对目标的关注目标不显示的问题
-    修正了装备弩后装等错误的情况
+	修正wlk的双天赋显示
 ]] --
 
 --观察数据缓存到本地
@@ -143,9 +139,7 @@ function DungeonsInTip(unit)
 			end
 			if ratingSummary then
 				local color = C_ChallengeMode.GetDungeonScoreRarityColor(ratingSummary.currentSeasonScore) or HIGHLIGHT_FONT_COLOR
-				zTip:AddLine(
-					"|cffffff00" .. DUNGEON_SCORE_TOTAL_SCORE:format(color:WrapTextInColorCode(ratingSummary.currentSeasonScore))
-				)
+				zTip:AddLine("|cffffff00" .. DUNGEON_SCORE_TOTAL_SCORE:format(color:WrapTextInColorCode(ratingSummary.currentSeasonScore)))
 				if IsControlKeyDown() then
 					if ratingSummary and ratingSummary.runs then
 						zTip:AddLine(" ")
@@ -179,11 +173,13 @@ function TargetedInTip(unit)
 		for i = 1, num do
 			local unit1 = (UnitName("raid" .. i) and "raid" .. i or "party" .. i)
 			if (UnitIsUnit(unit1 .. "target", unit)) and (not UnitIsUnit(unit1, "player")) then
-				if (mod(counter + 3, 6) == 0) then
-					players = players .. "\n"
+				-- if (mod(counter + 3, 6) == 0) then
+				-- 	players = players .. "\n"
+				-- end
+				if i <= 5 then
+					local color = RAID_CLASS_COLORS[select(2, UnitClass(unit1))]
+					players = ("%s|cff%.2x%.2x%.2x%s|r, "):format(players, color.r * 255, color.g * 255, color.b * 255, UnitName(unit1))
 				end
-				local color = RAID_CLASS_COLORS[select(2, UnitClass(unit1))]
-				players = ("%s|cff%.2x%.2x%.2x%s|r, "):format(players, color.r * 255, color.g * 255, color.b * 255, UnitName(unit1))
 				counter = (counter + 1)
 			end
 		end
@@ -226,7 +222,7 @@ function HSetTooltip(guid, gear, spec, flag)
 	end
 	if zTipSaves.ShowTalent then
 		if spec then
-			local msg = "|cffffff00" .. HInspect.TalentStr .. spec
+			local msg = "|cffffff00" .. spec
 			zTip:AddLine(msg)
 		end
 	end
@@ -344,11 +340,7 @@ function zTip:GetClassIconForText(class, size)
 	end
 	local classiconCoord = CLASS_ICON_TCOORDS[class]
 	if classiconCoord then
-		local a1, a2, a3, a4 =
-			classiconCoord[1] * 100,
-			classiconCoord[2] * 100,
-			classiconCoord[3] * 100,
-			classiconCoord[4] * 100
+		local a1, a2, a3, a4 = classiconCoord[1] * 100, classiconCoord[2] * 100, classiconCoord[3] * 100, classiconCoord[4] * 100
 		local ed
 		if size and tonumber(size) < 0 then
 			ed = a2 .. ":" .. a1 .. ":" .. a3 .. ":" .. a4 .. "|t "
@@ -381,6 +373,7 @@ local updateTooltip = 2
 ----
 --Events
 ----
+local last
 function zTip:OnUpdate(elapsed)
 	-- offset to mouse
 	if zTip.AnchorType then
@@ -400,8 +393,17 @@ function zTip:OnUpdate(elapsed)
 
 	if elapsed then
 		if UnitExists("mouseover") then
+			-- zTip:OnTooltipSetUnit()
 			-- refresh target of mouseover
-			zTip:RefreshMouseOverTarget(elapsed)
+			if zTip.IsSetUnit then
+				zTip:RefreshMouseOverTarget(elapsed)
+			else
+				local name, unit = GameTooltip:GetUnit()
+				if unit then --IsSetUnit 当获取到unit信息后，重新调用一次OnTooltipSetUnit
+					zTip:OnTooltipSetUnit()
+					GameTooltip:Show()
+				end
+			end
 		elseif zTip.unit and not zTipSaves.Fade and GameTooltip:IsOwned(UIParent) then
 			GameTooltip:Hide()
 		elseif not GameTooltipTextLeft1:GetText() and not GameTooltipTextRight1:GetText() then
@@ -416,6 +418,7 @@ function zTip:OnEvent(event, ...)
 	elseif event == "PLAYER_LEAVING_WORLD" then
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		GameTooltip:SetScale(zTipSaves.Scale)
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	elseif event == "UPDATE_FACTION" then
 		self:UpdatePlayerFaction()
 	end
@@ -560,50 +563,51 @@ end
 
 --[[	Positions		]]
 local x, y, uiscale, tipscale
-function zTip:SetDefaultAnchor(parent)
-	self:SetOwner(parent, "ANCHOR_NONE")
+function zTip.SetDefaultAnchor(tooltip, parent)
+	-- tooltip:SetOwner(parent, "ANCHOR_NONE")
+	tooltip:ClearAllPoints()
 	if zTipSaves.OrigPosX and zTipSaves.OrigPosY then
-		self:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -zTipSaves.OrigPosX - 13, zTipSaves.OrigPosY)
+		tooltip:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -zTipSaves.OrigPosX - 13, zTipSaves.OrigPosY)
 	else
-		self:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -CONTAINER_OFFSET_X - 13, CONTAINER_OFFSET_Y)
+		tooltip:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -CONTAINER_OFFSET_X - 13, CONTAINER_OFFSET_Y)
 	end
-	--self.default = 1;
+	--tooltip.default = 1;
 
 	if zTipSaves.Anchor then
 		if parent == UIParent then
 			if zTipSaves.SelfUse and InCombatLockdown() then
-				GameTooltip:ClearAllPoints()
-				GameTooltip:SetPoint("TOPLEFT", UIParent, "TOPLEFT", CONTAINER_OFFSET_X - 80, CONTAINER_OFFSET_Y - 170)
+				tooltip:ClearAllPoints()
+				tooltip:SetPoint("TOPLEFT", UIParent, "TOPLEFT", CONTAINER_OFFSET_X - 80, CONTAINER_OFFSET_Y - 170)
 				return
 			end
 			-- posiont will be set in update function
 			if zTipSaves.Anchor == 0 or zTipSaves.Anchor == 3 then
-				GameTooltip:ClearAllPoints()
+				tooltip:ClearAllPoints()
 				zTip.AnchorType = 1
 			elseif zTipSaves.Anchor == 2 or zTipSaves.Anchor == 5 then
-				GameTooltip:ClearAllPoints()
+				tooltip:ClearAllPoints()
 				zTip.AnchorType = 2
 			end
 			if UnitExists("mouseover") then
 				if zTipSaves.Anchor == 1 or zTipSaves.Anchor == 4 then -- on top
 					zTip.AnchorType = nil
 					uiscale = UIParent:GetScale()
-					tipscale = self:GetScale()
+					tipscale = tooltip:GetScale()
 					x = zTipSaves.OffsetX / tipscale / uiscale
 					y = zTipSaves.OffsetY / tipscale / uiscale
-					self:ClearAllPoints()
-					self:SetPoint("TOP", UIParent, "TOP", x, -y)
+					tooltip:ClearAllPoints()
+					tooltip:SetPoint("TOP", UIParent, "TOP", x, -y)
 				else -- follow cursor [0,2,3,5]
 				end
 				--如果目标是unit,刷新一次
 				zTip:OnUpdate() --鼠标跟随模式，修改位置
 			else -- not unit 像是熔炉，信箱
-				self:SetOwner(parent, "ANCHOR_CURSOR")
+				tooltip:SetOwner(parent, "ANCHOR_CURSOR")
 				zTip.AnchorType = nil
 			end
 		else -- not a unit tip, buttons or other
 			if zTipSaves.Anchor > 2 or parent.unit and zTipSaves.Anchor ~= 0 then
-				self:SetOwner(parent, "ANCHOR_RIGHT")
+				tooltip:SetOwner(parent, "ANCHOR_RIGHT")
 			else -- use default anchor (BottomRight to Screen)
 			end
 			if zTipSaves.Anchor == 2 then
@@ -647,24 +651,10 @@ local function GetTarget(unit, tname, ic)
 			tmp, tmp2 = UnitClass(unittarget)
 			if UnitIsEnemy(unittarget, "player") then
 				-- red enemy player
-				tip =
-					format(
-					"%s |cffFF0000%s|r |cff%s(%s)|r",
-					tip,
-					tname,
-					zTip:GetHexColor(RAID_CLASS_COLORS[(tmp2 or "")]),
-					zTip:GetClassIconForText(tmp2, -1) or nil
-				)
+				tip = format("%s |cffFF0000%s|r |cff%s(%s)|r", tip, tname, zTip:GetHexColor(RAID_CLASS_COLORS[(tmp2 or "")]), zTip:GetClassIconForText(tmp2, -1) or nil)
 			else
 				-- white friend player
-				tip =
-					format(
-					"%s |cff%s%s|r |cffFFFFFF(%s)|r",
-					tip,
-					zTip:GetHexColor(RAID_CLASS_COLORS[(tmp2 or "")]),
-					tname,
-					zTip:GetClassIconForText(tmp2, -1) or nil
-				)
+				tip = format("%s |cff%s%s|r |cffFFFFFF(%s)|r", tip, zTip:GetHexColor(RAID_CLASS_COLORS[(tmp2 or "")]), tname, zTip:GetClassIconForText(tmp2, -1) or nil)
 			end
 		else
 			tip = format("%s |cffFFFFFF%s|r", tip, tname)
@@ -718,7 +708,6 @@ function zTip:RefreshMouseOverTarget(elapsed)
 	if not targetlinenum then
 		return
 	end
-
 	local text
 	text = _G["GameTooltipTextLeft" .. targetlinenum]
 	if not text then
@@ -742,12 +731,17 @@ end
 
 --[[	设置目标		]]
 function zTip:OnTooltipSetUnit()
+	local name, unit = GameTooltip:GetUnit()
+	if not unit then --IsSetUnit 这算是一个错误，按住鼠标右键，鼠标并没有隐藏，此时划过单位，获取不到unit信息
+		return
+	else
+		zTip.IsSetUnit = true
+	end
 	--~ 	BOSS战中隐藏
 	if zTipSaves.CombatHide and UnitExists("boss1") then
 		GameTooltip:Hide()
 	end
-
-	zTip:OnMouseOverUnit(GameTooltip:GetUnit())
+	zTip:OnMouseOverUnit(name, unit)
 	if zTip.unit then
 		if not zTipSaves.HealthBAR then
 			GameTooltipStatusBar:Hide()
@@ -758,6 +752,7 @@ end
 
 --[[	清理目标目标	]]
 function zTip:OnGameTooltipHide()
+	self.IsSetUnit = false
 	targetlinenum = nil
 	self.trueNum = nil
 	mouseTarget = nil
@@ -835,9 +830,6 @@ end
 local tip
 function zTip:OnMouseOverUnit(name, unit)
 	zTip.unit = unit
-	if not unit then
-		return
-	end
 	-- hack to fix problems
 	if unit == "npc" then
 		unit = "mouseover"
@@ -1012,13 +1004,7 @@ function zTip:OnMouseOverUnit(name, unit)
 			tmp2 = format("%s |cffFFFFFF%s|r", tmp2, unitCreatureType)
 			if zTipSaves.NPCClass then
 				local SYSCType, SYSCID = select(2, UnitClass(unit))
-				tmp2 =
-					format(
-					"%s |cff%s%s|r",
-					tmp2,
-					zTip:GetHexColor(RAID_CLASS_COLORS[SYSCType]),
-					C_CreatureInfo.GetClassInfo(SYSCID).className
-				)
+				tmp2 = format("%s |cff%s%s|r", tmp2, zTip:GetHexColor(RAID_CLASS_COLORS[SYSCType]), C_CreatureInfo.GetClassInfo(SYSCID).className)
 			end
 			if zTipSaves.DisplayFaction and reaction and reaction > 0 then
 				tmp2 = format("%s %s ", tmp2, zTip:GetUnitFaction(unit, reaction))
@@ -1122,11 +1108,7 @@ function zTip:OnMouseOverUnit(name, unit)
 		GameTooltipTextLeft1:SetText(cicon .. OldName)
 	else
 		local isafk = UnitIsAFK(unit)
-		GameTooltipTextLeft1:SetText(
-			cicon ..
-				format("|cff%2x%2x%2x", r * 255, g * 255, b * 255) ..
-					GameTooltipTextLeft1:GetText() .. "|r" .. (isafk and "<" .. AFK .. ">" or "")
-		)
+		GameTooltipTextLeft1:SetText(cicon .. format("|cff%2x%2x%2x", r * 255, g * 255, b * 255) .. GameTooltipTextLeft1:GetText() .. "|r" .. (isafk and "<" .. AFK .. ">" or ""))
 	end
 
 	--~ 给第二行上色
@@ -1200,14 +1182,7 @@ function zTip:Slash(msg)
 end
 
 ---- ID
-local select, UnitBuff, UnitDebuff, UnitAura, tonumber, strfind, hooksecurefunc =
-	select,
-	UnitBuff,
-	UnitDebuff,
-	UnitAura,
-	tonumber,
-	strfind,
-	hooksecurefunc
+local select, UnitBuff, UnitDebuff, UnitAura, tonumber, strfind, hooksecurefunc = select, UnitBuff, UnitDebuff, UnitAura, tonumber, strfind, hooksecurefunc
 
 local function addLine(self, id, isItem)
 	if id and IsAltKeyDown() then

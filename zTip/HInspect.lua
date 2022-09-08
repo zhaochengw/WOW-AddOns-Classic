@@ -1,15 +1,12 @@
 --[[
     上官晓雾
-    2021年7月24日18:11:51
-
-    将查询物品等级的方法改成SetInventoryItem为主
-    修正了装备弩后装等错误的情况
+    2022-09-06 22:25
+    
+    修正wlk版本下天赋观察无效的情况
+    并添加双天赋支持
 ]]
 local i, _
-local GetTalentTabInfo, GetInventoryItemTexture, GetInventoryItemLink =
-    GetTalentTabInfo,
-    GetInventoryItemTexture,
-    GetInventoryItemLink
+local GetTalentTabInfo, GetInventoryItemTexture, GetInventoryItemLink = GetTalentTabInfo, GetInventoryItemTexture, GetInventoryItemLink
 --暴雪大部分API的查询流程:
 --发送查询指令，返回信息并缓存在本地，之后调用其他指令读取缓存信息)
 --部分指令只有单个缓存，例如观察目标时候，目标的天赋，成就等
@@ -258,6 +255,8 @@ function HInspectMixin:BeginIns(...)
     local raidindex = nil
     if not unit or guid ~= UnitGUID(unit) then
         unit, raidindex = HTool.GetUnit(guid)
+    else
+        _, raidindex = HTool.GetUnit(guid)
     end
     if (not unit) then --客户端缓存检测？？(小队除外？？)
         -- self:SetState(guid,"不存在");
@@ -265,18 +264,25 @@ function HInspectMixin:BeginIns(...)
         return
     end
     if not UnitIsVisible(unit) then
-        if (GameVer > 90000 and unit:find("party")) then --客户端缓存检测？？(小队除外？？)
-            if raidindex then
-                local name, rank, subgroup, level, class, fileName, zone, online, isDead, role =
-                    GetRaidRosterInfo(raidindex)
-                if not online then
-                    print("已离线")
-                    return
-                end
+        if raidindex and (GameVer > 90000 and unit:find("party")) then --客户端缓存检测？？(小队除外？？)
+            local name, rank, subgroup, level, class, fileName, zone, online, isDead, role = GetRaidRosterInfo(raidindex)
+            if not online then
+                print("已离线")
+                self:StopInspect()
+                return
+            else
+                --可以观察
             end
         else
             -- self:SetState(guid, "不存在")
-            print("不存在")
+            print("不存在/已离线")
+            self:StopInspect()
+            return
+        end
+    end
+
+    if GameVer < 90000 then
+        if not CheckInteractDistance(unit, 1) then
             self:StopInspect()
             return
         end
@@ -298,6 +304,11 @@ function HInspectMixin:BeginIns(...)
         self:StopInspect()
         return
     end --你正在观察其他单位(如果同时调用观察指令，正在观察的单位信息会变动)
+
+    -- if HDebugPrint then
+    --     HDebugPrint(GetTime(), "CanInspect一次")
+    -- end
+
     if not CanInspect(unit) then
         self:SetState(guid, "不可观察")
         self:StopInspect()
@@ -448,10 +459,7 @@ function HInspectMixin:ScanInspectGear(guid, info)
                 if (i == 16) then
                     local slot = select(9, GetItemInfo(itemLink))
                     --并且16主手使用的是双手武器
-                    if
-                        (slot == "INVTYPE_2HWEAPON") or (slot == "INVTYPE_RANGED") or
-                            ((slot == "INVTYPE_RANGEDRIGHT") and (select(2,UnitClass(unit)) == "HUNTER"))
-                     then
+                    if (slot == "INVTYPE_2HWEAPON") or (slot == "INVTYPE_RANGED") or ((slot == "INVTYPE_RANGEDRIGHT") and (select(2, UnitClass(unit)) == "HUNTER")) then
                         --使用双手武器中,副手武器装等设置为主手武器装等
                         offhandlevel = level
                     end
@@ -489,6 +497,17 @@ function HInspectMixin:ScanInspectGear(guid, info)
     end
     print("ag:", info.IsFlag, info.NeedAgain)
 end
+---- wlk 双天赋相关
+local function TalentMsg(group)
+    local table_talent = {}
+    for i = 1, 3 do
+        local name, _, points = GetTalentTabInfo(i, true, false, group)
+        print(name, points, i)
+        table_talent[i] = {n = name or NONE, p = points or 0}
+    end
+    return HTool.GetTalentStr(table_talent)
+end
+
 ---------天赋/专精
 function HInspectMixin:ScanInspectSpec(guid, info)
     print("查询天赋:", guid)
@@ -498,13 +517,15 @@ function HInspectMixin:ScanInspectSpec(guid, info)
     if GameVer < 20000 then
         info.Msg = "不支持"
     elseif GameVer >= 20000 and GameVer < 40000 then
-        local table_talent = {}
-        for i = 1, 3 do
-            local name, _, points = GetTalentTabInfo(i, true) --获取上一个Inspect缓存目标的天赋信息(暴雪的查询方式都是这样，发送查询指令，返回信息并缓存在本地，之后调用其他指令读取缓存信息)
-            print(name, points, i)
-            table_talent[i] = {n = name or NONE, p = points or 0}
+        local activeTalentGroup, numTalentGroups = GetActiveTalentGroup(true, false), GetNumTalentGroups(true, false)
+        local msgTable = {}
+        for i = 1, numTalentGroups do
+            msgTable[activeTalentGroup == i and 1 or 2] = TalentMsg(i)
         end
-        info.Msg = HTool.GetTalentStr(table_talent)
+        info.Msg = TALENT_SPEC_PRIMARY .. " : " .. msgTable[1]
+        if msgTable[2] then
+            info.Msg = info.Msg .. "\r\n" .. TALENT_SPEC_SECONDARY .. " : " .. msgTable[2]
+        end
     else
         local unit = HTool.GetUnit(guid)
         if not unit then
@@ -515,7 +536,7 @@ function HInspectMixin:ScanInspectSpec(guid, info)
             local specID = GetSpecialization()
             local specName, _, icon = select(2, GetSpecializationInfo(specID))
             if specName then
-                info.Msg = "|T" .. icon .. ":12:12:0:0:10:10:0:10:0:10|t " .. "|cff00ff00[" .. specName .. "]|r"
+                info.Msg = self.TalentStr .. "|T" .. icon .. ":12:12:0:0:10:10:0:10:0:10|t " .. "|cff00ff00[" .. specName .. "]|r"
             else
                 info.Msg = "|cff00ff00[" .. NONE .. "]|r"
             end
@@ -525,7 +546,7 @@ function HInspectMixin:ScanInspectSpec(guid, info)
             local specName, _, icon = select(2, GetSpecializationInfoByID(specID))
             print(specName)
             if specName then
-                info.Msg = "|T" .. icon .. ":12:12:0:0:10:10:0:10:0:10|t " .. "|cff00ff00[" .. specName .. "]|r"
+                info.Msg = self.TalentStr .. "|T" .. icon .. ":12:12:0:0:10:10:0:10:0:10|t " .. "|cff00ff00[" .. specName .. "]|r"
             else
                 info.Msg = "|cff00ff00[" .. NONE .. "]|r"
             end
@@ -542,10 +563,9 @@ end
 
 function HInspectMixin:SetTooltipInspect(guid, flag)
     local user = self:GetInsInfo(guid)
-    local gearstr =
-        user.GearInfo.Msg and (user.GearInfo.Msg .. (user.GearInfo.IsFlag and "" or "*")) or user.GearInfo.StateInfo
-    local specstr =
-        user.SpecInfo.Msg and (user.SpecInfo.Msg .. (user.SpecInfo.IsFlag and "" or "*")) or user.SpecInfo.StateInfo
+    local gearstr = user.GearInfo.Msg and (user.GearInfo.Msg .. (user.GearInfo.IsFlag and "" or "*")) or user.GearInfo.StateInfo
+    local specstr = user.SpecInfo.Msg and (user.SpecInfo.Msg .. (user.SpecInfo.IsFlag and "" or "*")) or user.SpecInfo.StateInfo
+
     if self.SetTooltip then
         self.SetTooltip(guid, gearstr, specstr, flag)
     end
@@ -612,9 +632,9 @@ function HInspectMixin:SetTooltip(guid, gear, spec)
     end
     if spec then
         if specLine then
-            specLine:SetText(self.TalentStr .. spec)
+            specLine:SetText(spec)
         else
-            GameTooltip:AddLine(self.TalentStr .. spec)
+            GameTooltip:AddLine(spec)
         end
     end
     GameTooltip:Show()

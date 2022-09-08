@@ -1,4 +1,4 @@
-## Interface: 30400
+﻿## Interface: 11307
 ## Title: |cFFBF00FF[H]|r zTip
 ## Notes: Enhance GameTooltip
 ## Title-zhCN: |cFFBF00FF[H]|r zTip(修改版)
@@ -9,7 +9,7 @@
 
 ## SavedVariables: zTipSaves
 
-## Version: 2.3.16
+## Version: 2.3.17
 
 HTool.lua
 HInspect.lua

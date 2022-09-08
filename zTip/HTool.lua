@@ -56,13 +56,14 @@ HTool.GetTalentStr = function(table_talent)
     else
         result = table_talent[first].n
     end
-    result =
-        result ..
-        " |cc8c8c8c8(" ..
-            HTool.TalentColor(table_talent[1].p, 61) ..
-                "|cc8c8c8c8/" ..
-                    HTool.TalentColor(table_talent[2].p, 61) ..
-                        "|cc8c8c8c8/" .. HTool.TalentColor(table_talent[3].p, 61) .. ")"
+    -- result =
+    --     result ..
+    --     " |cc8c8c8c8(" ..
+    --         HTool.TalentColor(table_talent[1].p, 61) ..
+    --             "|cc8c8c8c8/" ..
+    --                 HTool.TalentColor(table_talent[2].p, 61) ..
+    --                     "|cc8c8c8c8/" .. HTool.TalentColor(table_talent[3].p, 61) .. ")"
+    result = result .. " |cc8c8c8c8(" .. HTool.TalentColor(table_talent[1].p, 61) .. "|cc8c8c8c8/" .. HTool.TalentColor(table_talent[2].p, 61) .. "|cc8c8c8c8/" .. HTool.TalentColor(table_talent[3].p, 61) .. ")"
     return result
 end
 
@@ -144,19 +145,14 @@ HTool.GetClassIcon = function(class, size)
     end
     local classiconCoord = CLASS_ICON_TCOORDS[class]
     if classiconCoord then
-        local a1, a2, a3, a4 =
-            classiconCoord[1] * 100,
-            classiconCoord[2] * 100,
-            classiconCoord[3] * 100,
-            classiconCoord[4] * 100
+        local a1, a2, a3, a4 = classiconCoord[1] * 100, classiconCoord[2] * 100, classiconCoord[3] * 100, classiconCoord[4] * 100
         local ed
         if size and tonumber(size) < 0 then
             ed = a2 .. ":" .. a1 .. ":" .. a3 .. ":" .. a4 .. "|t "
         else
             ed = a1 .. ":" .. a2 .. ":" .. a3 .. ":" .. a4 .. "|t "
         end
-        return "|TInterface\\WorldStateFrame\\Icons-Classes:" ..
-            (size or 12) .. ":" .. (size or 12) .. ":0:0:100:100:" .. ed
+        return "|TInterface\\WorldStateFrame\\Icons-Classes:" .. (size or 12) .. ":" .. (size or 12) .. ":0:0:100:100:" .. ed
     end
 end
 
