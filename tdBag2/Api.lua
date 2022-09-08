@@ -57,17 +57,17 @@ ns.ITEM_SPACING = 2
 
 ns.SECONDS_OF_DAY = 24 * 60 * 60
 
---[=[@classic@
+--[=[@build<2@
 ns.KEYRING_FAMILY = 9
---@end-classic@]=]
---@non-classic@
+--@end-build<2@]=]
+-- @build>2@
 ns.KEYRING_FAMILY = 256
---@end-non-classic@
+-- @end-build>2@
 
 ns.LEFT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:228:283|t]]
 ns.RIGHT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385|t]]
 
---[=[@classic@
+--[=[@build<2@
 ns.RACE_ICON_TCOORDS = {
     ['HUMAN_MALE'] = {0, 0.25, 0, 0.25},
     ['DWARF_MALE'] = {0.25, 0.5, 0, 0.25},
@@ -89,8 +89,8 @@ ns.RACE_ICON_TCOORDS = {
     ['TROLL_FEMALE'] = {0.5, 0.75, 0.75, 1.0},
     ['ORC_FEMALE'] = {0.75, 1.0, 0.75, 1.0},
 }
---@end-classic@]=]
--- @non-classic@
+--@end-build<2@]=]
+-- @build>2@
 ns.RACE_ICON_TCOORDS = {
     ['HUMAN_MALE'] = {0, 0.125, 0, 0.25},
     ['DWARF_MALE'] = {0.125, 0.25, 0, 0.25},
@@ -118,12 +118,11 @@ ns.RACE_ICON_TCOORDS = {
     ['DRAENEI_MALE'] = {0.5, 0.625, 0, 0.25},
     ['DRAENEI_FEMALE'] = {0.5, 0.625, 0.5, 0.75},
 }
--- @end-non-classic@
+-- @end-build>2@
 
 ns.TOKENS = {20560, 20559, 20558}
 
 --[=[@debug@
-
 local L = LibStub('AceLocale-3.0'):GetLocale('tdBag2')
 --@end-debug@]=]
 --@non-debug@
@@ -137,9 +136,9 @@ local BAG_ID = { --
     MAIL = 'mail',
     EQUIP = 'equip',
     SEARCH = 'global-search',
-    -- @non-classic@
+    -- @build>2@
     GUILDBANK = 'guild',
-    -- @end-non-classic@
+    -- @end-build>2@
 }
 
 local BAG_ICONS = { --
@@ -173,9 +172,9 @@ local BAGS = { --
     [BAG_ID.MAIL] = {MAIL_CONTAINER, COD_CONTAINER},
     [BAG_ID.EQUIP] = {EQUIP_CONTAINER},
     [BAG_ID.SEARCH] = {},
-    -- @non-classic@
+    -- @build>2@
     [BAG_ID.GUILDBANK] = {},
-    -- @end-non-classic@
+    -- @end-build>2@
 }
 
 local BAG_CLASSES = {
@@ -213,11 +212,11 @@ do
         end
     end
 
-    -- @non-classic@
+    -- @build>2@
     for i = 1, MAX_GUILDBANK_TABS do
         tinsert(BAGS[BAG_ID.GUILDBANK], 50 + i)
     end
-    -- @end-non-classic@
+    -- @end-build>2@
 end
 
 local INV_TOOLTIPS = {}
@@ -476,13 +475,13 @@ end
 
 familyColor(nil, 'colorNormal', L['Normal Color'], {r = 1, g = 1, b = 1})
 familyColor({1, 2}, 'colorQuiver', L['Quiver Color'], {r = 1, g = 0.87, b = 0.68})
---[=[@classic@
+--[=[@build<2@
 familyColor({3, 4}, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
 familyColor(6, 'colorHerb', L['Herbalism Color'], {r = 0.5, g = 1, b = 0.5})
 familyColor(7, 'colorEnchant', L['Enchanting Color'], {r = 0.64, g = 0.83, b = 1})
 familyColor(9, 'colorKeyring', L['Keyring Color'], {r = 1, g = 0.67, b = 0.95})
---@end-classic@]=]
---@non-classic@
+--@end-build<2@]=]
+-- @non-build>2@
 familyColor(4, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
 familyColor(8, 'colorLeather', L['Leatherworking Color'], {r = 0.98, g = 0.44, b = 0.44})
 familyColor(32, 'colorHerb', L['Herbalism Color'], {r = 0.5, g = 1, b = 0.5})
@@ -491,7 +490,7 @@ familyColor(128, 'colorEngineer', L['Engineering Color'], {r = 0.96, g = 1, b = 
 familyColor(512, 'colorGems', L['Gems Color'], {r = 0.32, g = 0.61, b = 1})
 familyColor(512, 'colorMine', L['Mining Color'], {r = 0.96, g = 0.27, b = 0.90})
 familyColor(256, 'colorKeyring', L['Keyring Color'], {r = 1, g = 0.67, b = 0.95})
---@end-non-classic@
+-- @end-build>2@
 
 function ns.memorize(func)
     local cache = {}

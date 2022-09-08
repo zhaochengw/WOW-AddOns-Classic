@@ -55,7 +55,9 @@ function TokenFrame:OnClick(clicked)
         return
     end
     if clicked == 'RightButton' then
-        self:ToggleMenu()
+        if #self.meta.character.watches > 0 then
+            self:ToggleMenu()
+        end
     else
         self:OnReceiveDrag()
     end
