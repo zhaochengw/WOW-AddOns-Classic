@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Twins", "DBM-Sunwell")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220829192444")
+mod:SetRevision("20220907204453")
 mod:SetCreatureID(25165, 25166)
 mod:SetEncounterID(727, 2491)
 mod:SetModelID(23334)
@@ -73,7 +73,7 @@ end
 
 --Redundant checks for nova and conflag that are slower but don't require locales
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 45329 and self:AntiSpam(5, args.destName..1) then
+	if args.spellId == 45329 and args.destName and self:AntiSpam(5, args.destName..1) then
 		if args:IsPlayer() then
 			specWarnNova:Show()
 			specWarnNova:Play("targetyou")
@@ -84,7 +84,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if self.Options.NovaIcon then
 			self:SetIcon(args.destName, 7, 5)
 		end
-	elseif args.spellId == 45342 and self:AntiSpam(5, args.destName..2) then
+	elseif args.spellId == 45342 and args.destName and self:AntiSpam(5, args.destName..2) then
 		if args:IsPlayer() then
 			specWarnConflag:Show()
 			specWarnConflag:Play("targetyou")

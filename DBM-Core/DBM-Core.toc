@@ -21,7 +21,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: d87d644
+## Version: 6b283f7
 ## X-Website: https://deadlybossmods.com
 
 Libs\LibStub\LibStub.lua
