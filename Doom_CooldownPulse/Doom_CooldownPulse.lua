@@ -11,8 +11,8 @@ local defaultSettings = {
     holdTime = 0,
     petOverlay = {1,1,1},
     showSpellName = nil,
-    x = 0,
-    y = 0
+    x = UIParent:GetWidth()*UIParent:GetEffectiveScale()/2,
+    y = UIParent:GetHeight()*UIParent:GetEffectiveScale()/2
 }
 
 local defaultSettingsPerCharacter = {
@@ -27,16 +27,16 @@ DCP:RegisterForDrag("LeftButton")
 DCP:SetScript("OnDragStart", function(self) self:StartMoving() end)
 DCP:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
-    DCP_Saved.x = self:GetCenter() - UIParent:GetWidth() * UIParent:GetScale() * 0.5-- self:GetLeft()+self:GetWidth()/2
-    DCP_Saved.y = select(2, self:GetCenter()) - UIParent:GetHeight() * UIParent:GetScale() * 0.5-- self:GetBottom()+self:GetHeight()/2
+    DCP_Saved.x = self:GetLeft()+self:GetWidth()/2
+    DCP_Saved.y = self:GetBottom()+self:GetHeight()/2
     self:ClearAllPoints()
-    self:SetPoint("CENTER",UIParent,"CENTER",DCP_Saved.x,DCP_Saved.y)
+    self:SetPoint("CENTER",UIParent,"BOTTOMLEFT",DCP_Saved.x,DCP_Saved.y)
 end)
 DCP.TextFrame = DCP:CreateFontString(nil, "ARTWORK")
 DCP.TextFrame:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
 DCP.TextFrame:SetShadowOffset(2,-2)
 DCP.TextFrame:SetPoint("CENTER",DCP,"CENTER")
-DCP.TextFrame:SetSize(185, 185)
+DCP.TextFrame:SetWidth(185)
 DCP.TextFrame:SetJustifyH("CENTER")
 DCP.TextFrame:SetTextColor(1,1,1)
 
@@ -96,9 +96,30 @@ local function RefreshLocals()
     invertIgnored = DCP_SavedPerCharacter.invertIgnored
 
     ignoredSpells = { }
-    for _,v in ipairs({strsplit(",",DCP_SavedPerCharacter.ignoredSpells or "")}) do
+    for _,v in ipairs({strsplit(",",DCP_SavedPerCharacter.ignoredSpells)}) do
         ignoredSpells[strtrim(v)] = true
     end
+end
+
+local function MergeTable(destination, source)
+    for i, v in pairs(source) do
+        if (destination[i] == nil) then
+            destination[i] = v
+        end
+    end
+end
+
+local function InitializeSavedVariables()
+    if (DCP_Saved == nil) then
+        DCP_Saved = {}
+    end
+
+    if (DCP_SavedPerCharacter == nil) then
+        DCP_SavedPerCharacter = {}
+    end
+
+    MergeTable(DCP_Saved, defaultSettings)
+    MergeTable(DCP_SavedPerCharacter, defaultSettingsPerCharacter)
 end
 
 --------------------------
@@ -216,33 +237,9 @@ end
 -- Event Handlers --
 --------------------
 function DCP:ADDON_LOADED(addon)
-    if (not DCP_Saved) then
-        DCP_Saved = Mixin({}, defaultSettings)
-    else
-        for i,v in pairs(defaultSettings) do
-            if (not DCP_Saved[i]) then
-                DCP_Saved[i] = v
-            end
-        end
-    end
-    if (not DCP_SavedPerCharacter) then
-        -- Unpack as shallow clone to avoid reset-to-default as considering the
-        -- value assigned from the legacy saved variable below.
-        DCP_SavedPerCharacter = Mixin({}, defaultSettingsPerCharacter)
-
-        -- Backwards compatibility: Assign from legacy saved value if exists.
-        if (DCP_Saved.ignoredSpells) then
-            DCP_SavedPerCharacter.ignoredSpells = DCP_Saved.ignoredSpells
-        end
-    else
-        for i,v in pairs(defaultSettingsPerCharacter) do
-            if (not DCP_SavedPerCharacter[i]) then
-                DCP_SavedPerCharacter[i] = v
-            end
-        end
-    end
+    InitializeSavedVariables()
     RefreshLocals()
-    self:SetPoint("CENTER",UIParent,"CENTER",DCP_Saved.x,DCP_Saved.y)
+    self:SetPoint("CENTER",UIParent,"BOTTOMLEFT",DCP_Saved.x,DCP_Saved.y)
     self:UnregisterEvent("ADDON_LOADED")
 end
 DCP:RegisterEvent("ADDON_LOADED")
@@ -329,39 +326,39 @@ SLASH_DOOMCOOLDOWNPULSE3 = "/doomcooldownpulse"
 
 function DCP:CreateOptionsFrame()
     local sliders = {
-        { text = "图标大小", value = "iconSize", min = 30, max = 125, step = 5 },
-        { text = "淡进时间", value = "fadeInTime", min = 0, max = 1.5, step = 0.1 },
-        { text = "淡出时间", value = "fadeOutTime", min = 0, max = 1.5, step = 0.1 },
-        { text = "最大透明度", value = "maxAlpha", min = 0, max = 1, step = 0.1 },
-        { text = "最大透明度保持时间", value = "holdTime", min = 0, max = 1.5, step = 0.1 },
-        { text = "动画大小", value = "animScale", min = 0, max = 2, step = 0.1 },
+        { text = "Icon Size", value = "iconSize", min = 30, max = 125, step = 5 },
+        { text = "Fade In Time", value = "fadeInTime", min = 0, max = 1.5, step = 0.1 },
+        { text = "Fade Out Time", value = "fadeOutTime", min = 0, max = 1.5, step = 0.1 },
+        { text = "Max Opacity", value = "maxAlpha", min = 0, max = 1, step = 0.1 },
+        { text = "Max Opacity Hold Time", value = "holdTime", min = 0, max = 1.5, step = 0.1 },
+        { text = "Animation Scaling", value = "animScale", min = 0, max = 2, step = 0.1 },
     }
 
     local buttons = {
-        { text = "取消", func = function(self) self:GetParent():Hide() end },
-        { text = "测试", func = function(self)
-            DCP_OptionsFrameButton3:SetText("解锁")
+        { text = "Close", func = function(self) self:GetParent():Hide() end },
+        { text = "Test", func = function(self)
+            DCP_OptionsFrameButton3:SetText("Unlock")
             DCP:EnableMouse(false)
             RefreshLocals()
             tinsert(animating,{"Interface\\Icons\\Spell_Nature_Earthbind",nil,"Spell Name"})
             DCP:SetScript("OnUpdate", OnUpdate)
             end },
-        { text = "解锁", func = function(self)
-            if (self:GetText() == "解锁") then
+        { text = "Unlock", func = function(self)
+            if (self:GetText() == "Unlock") then
                 RefreshLocals()
                 DCP:SetWidth(iconSize)
                 DCP:SetHeight(iconSize)
-                self:SetText("锁定")
+                self:SetText("Lock")
                 DCP:SetScript("OnUpdate", nil)
                 DCP:SetAlpha(1)
                 DCPT:SetTexture("Interface\\Icons\\Spell_Nature_Earthbind")
                 DCP:EnableMouse(true)
             else
                 DCP:SetAlpha(0)
-                self:SetText("解锁")
+                self:SetText("Unlock")
                 DCP:EnableMouse(false)
             end end },
-        { text = "默认", func = function(self)
+        { text = "Defaults", func = function(self)
             for i,v in pairs(defaultSettings) do
                 DCP_Saved[i] = v
             end
@@ -376,7 +373,7 @@ function DCP:CreateOptionsFrame()
             DCP_OptionsFrameIgnoreTypeButtonBlacklist:SetChecked(true)
             DCP_OptionsFrameIgnoreBox:SetText("")
             DCP:ClearAllPoints()
-            DCP:SetPoint("CENTER",UIParent,"CENTER",DCP_Saved.x,DCP_Saved.y)
+            DCP:SetPoint("CENTER",UIParent,"BOTTOMLEFT",DCP_Saved.x,DCP_Saved.y)
             end },
     }
 
@@ -436,7 +433,7 @@ function DCP:CreateOptionsFrame()
 
     local pettext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     pettext:SetPoint("TOPLEFT","DCP_OptionsFrameSlider"..#sliders,"BOTTOMLEFT",-15,-30)
-    pettext:SetText("宠物彩色叠加:")
+    pettext:SetText("Pet color overlay:")
 
     local petcolorselect = CreateFrame('Button',"DCP_OptionsFramePetColorBox",optionsframe)
     petcolorselect:SetPoint("LEFT",pettext,"RIGHT",10,0)
@@ -444,7 +441,7 @@ function DCP:CreateOptionsFrame()
     petcolorselect:SetHeight(20)
     petcolorselect:SetNormalTexture('Interface/ChatFrame/ChatFrameColorSwatch')
     petcolorselect:GetNormalTexture():SetVertexColor(unpack(DCP_Saved.petOverlay))
-    petcolorselect:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("注意：如果你不想宠物冷却时间使用任何覆盖，请使用白色") end)
+    petcolorselect:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("Note: Use white if you don't want any overlay for pet cooldowns") end)
     petcolorselect:SetScript("OnLeave",function(self) GameTooltip:Hide() end)
     petcolorselect:SetScript('OnClick', function(self)
         self.r,self.g,self.b = unpack(DCP_Saved.petOverlay)
@@ -462,7 +459,7 @@ function DCP:CreateOptionsFrame()
 
     local spellnametext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     spellnametext:SetPoint("TOPLEFT",pettext,"BOTTOMLEFT",0,-18)
-    spellnametext:SetText("显示法术名:")
+    spellnametext:SetText("Show spell name:")
 
     local spellnamecbt = CreateFrame("CheckButton","DCP_OptionsFrameSpellNameCheckButton",optionsframe,"OptionsCheckButtonTemplate")
     spellnamecbt:SetPoint("LEFT",spellnametext,"RIGHT",6,0)
@@ -476,7 +473,7 @@ function DCP:CreateOptionsFrame()
 
     local ignoretext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     ignoretext:SetPoint("TOPLEFT",spellnametext,"BOTTOMLEFT",0,-18)
-    ignoretext:SetText("过滤法术:")
+    ignoretext:SetText("Filter spells:")
 
     local ignoretypebuttonblacklist = CreateFrame("Checkbutton","DCP_OptionsFrameIgnoreTypeButtonBlacklist",optionsframe,"UIRadioButtonTemplate")
     ignoretypebuttonblacklist:SetPoint("TOPLEFT",ignoretext,"BOTTOMLEFT",0,-4)
@@ -489,7 +486,7 @@ function DCP:CreateOptionsFrame()
 
     local ignoretypetextblacklist = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     ignoretypetextblacklist:SetPoint("LEFT",ignoretypebuttonblacklist,"RIGHT",4,0)
-    ignoretypetextblacklist:SetText("黑名单")
+    ignoretypetextblacklist:SetText("Blacklist")
 
     local ignoretypebuttonwhitelist = CreateFrame("Checkbutton","DCP_OptionsFrameIgnoreTypeButtonWhitelist",optionsframe,"UIRadioButtonTemplate")
     ignoretypebuttonwhitelist:SetPoint("LEFT",ignoretypetextblacklist,"RIGHT",10,0)
@@ -502,15 +499,15 @@ function DCP:CreateOptionsFrame()
 
     local ignoretypetextwhitelist = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     ignoretypetextwhitelist:SetPoint("LEFT",ignoretypebuttonwhitelist,"RIGHT",4,0)
-    ignoretypetextwhitelist:SetText("白名单")
+    ignoretypetextwhitelist:SetText("Whitelist")
 
     local ignorebox = CreateFrame("EditBox","DCP_OptionsFrameIgnoreBox",optionsframe,"InputBoxTemplate")
     ignorebox:SetAutoFocus(false)
     ignorebox:SetPoint("TOPLEFT",ignoretypebuttonblacklist,"BOTTOMLEFT",4,2)
     ignorebox:SetWidth(170)
     ignorebox:SetHeight(32)
-    if DCP_SavedPerCharacter.ignoredSpells then ignorebox:SetText(DCP_SavedPerCharacter.ignoredSpells); end
-    ignorebox:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("注意：用逗号分隔多个法术") end)
+    ignorebox:SetText(DCP_SavedPerCharacter.ignoredSpells)
+    ignorebox:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("Note: Separate multiple spells with commas") end)
     ignorebox:SetScript("OnLeave",function(self) GameTooltip:Hide() end)
     ignorebox:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
     ignorebox:SetScript("OnEditFocusLost",function(self)

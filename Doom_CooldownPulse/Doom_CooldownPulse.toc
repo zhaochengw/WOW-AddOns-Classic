@@ -6,7 +6,3 @@
 ## SavedVariablesPerCharacter: DCP_SavedPerCharacter
 
 Doom_CooldownPulse.lua
-
-## Title-zhCN: |cff880303[有爱]|r Doom_CooldownPulse 冷却提醒
-## X-Vendor: NetEase
-## X-163UI-Version: 20220120164410
