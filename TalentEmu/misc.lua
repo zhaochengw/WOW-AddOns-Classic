@@ -164,7 +164,7 @@ MT.BuildEnv('MISC');
 				local lClass, class, lRace, race, sex, name, realm = GetPlayerInfoByGUID(Def.param[1]);
 				if class ~= nil and name ~= nil then
 					Def.text = "|c" .. RAID_CLASS_COLORS[class].colorStr .. name .. "|r";
-					Def.param[3] = Def.text;
+					Def.param[3] = name;
 				else
 					halt = false;
 				end

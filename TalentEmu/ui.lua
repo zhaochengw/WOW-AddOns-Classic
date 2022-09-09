@@ -305,8 +305,13 @@ MT.BuildEnv('UI');
 				for TreeIndex = 1, 3 do
 					wipe(TreeFrames[TreeIndex].TalentChanged);
 				end
-				MT.UI.FrameSetBinding(Frame, name);
-				if name == L.message then
+				if name ~= L.message then
+					MT.UI.FrameSetBinding(Frame, name);
+					if strsub(name, 1, 1) == "#" then
+						Frame.EquipmentFrameContainer:Hide();
+						MT.Error("EquipFrame", "MT.UI.FrameSetName Hide");
+					end
+				else
 					Frame.EquipmentFrameContainer:Hide();
 					MT.Error("EquipFrame", "MT.UI.FrameSetName Hide");
 				end
@@ -984,7 +989,7 @@ MT.BuildEnv('UI');
 		end
 		function MT.UI.FrameUpdateLabelText(Frame)
 			local objects = Frame.objects;
-			if Frame.name then
+			if Frame.name ~= nil then
 				local should_show = false;
 				for TreeIndex = 1, 3 do
 					local TreeFrame = Frame.TreeFrames[TreeIndex];
@@ -1525,6 +1530,7 @@ MT.BuildEnv('UI');
 			for slot = 0, 19 do
 				local Node = EquipmentNodes[slot];
 				local item = cache[slot];
+				Node.item = item;
 				if item ~= nil then
 					local name, link, quality, _, _, _, _, _, _, texture = GetItemInfo(item);
 					if link ~= nil then
@@ -1573,6 +1579,7 @@ MT.BuildEnv('UI');
 				for index = 1, 6 do
 					local Node = GlyphNodes[index];
 					local info = data[index];
+					Node.info = info;
 					if info ~= nil then
 						Node.SpellID = info[3];
 						Node.Glyph:Show();
@@ -2237,6 +2244,7 @@ MT.BuildEnv('UI');
 					Node.Glyph = Glyph;
 					Node.Shine = Shine;
 					Node.def = def;
+					Node.type = def[1];
 					Node.d0 = NodesDef[0];
 					GlyphNodes[index] = Node;
 				end
@@ -2558,7 +2566,8 @@ MT.BuildEnv('UI');
 				if IsShiftKeyDown() then
 					VT.VAR.savedTalent[val[1]] = nil;
 				else
-					MT.ImportCode(Frame, val[2]);
+					VT.ImportIndex = VT.ImportIndex + 1;
+					MT.ImportCode(Frame, val[2], "#" .. L.import .. "[" .. VT.ImportIndex .. "] " .. val[1]);
 				end
 			end,
 			num = 0,
@@ -2639,17 +2648,21 @@ MT.BuildEnv('UI');
 		end
 		VT.ExportButtonMenuDefinition = {
 			handler = function(button, Frame, codec)
-				local code = codec.export(Frame, codec);
+				local code = codec.ExportCode(Frame, codec);
 				if code ~= nil then
 					local EditBox = Frame.EditBox;
 					EditBox:SetText(code);
 					EditBox:Show();
 					EditBox:SetFocus();
 					EditBox:HighlightText();
-					EditBox.type = 'export';
+					EditBox.type = "export";
 				end
 			end,
-			num = 0,
+			num = 1,
+			[1] = {
+				param = MT,
+				text = L.AllData,
+			},
 		};
 		local function ExportButton_OnClick(self, button)
 			local Frame = self.Frame;
@@ -2663,7 +2676,7 @@ MT.BuildEnv('UI');
 				EditBox.OKButton:SetPoint("LEFT", EditBox, "RIGHT", 0, 0);
 				EditBox.Parent = self;
 				if button == "LeftButton" then
-					EditBox:SetText(MT.Encode(Frame));
+					EditBox:SetText(MT.EncodeTalent(Frame));
 					EditBox:Show();
 					EditBox:SetFocus();
 					EditBox:HighlightText();
@@ -2680,7 +2693,8 @@ MT.BuildEnv('UI');
 				if IsShiftKeyDown() then
 					VT.VAR.savedTalent[val[1]] = nil;
 				else
-					MT.ImportCode(Frame, val[2]);
+					VT.ImportIndex = VT.ImportIndex + 1;
+					MT.ImportCode(Frame, val[2], "#" .. L.import .. "[" .. VT.ImportIndex .. "] " .. val[1]);
 				end
 			end,
 			num = 0,
@@ -2696,12 +2710,8 @@ MT.BuildEnv('UI');
 						end
 					end
 				else
-					-- MT.ImportCode(Frame, val[2]);
-					local Tick = MT.GetUnifiedTime();
-					local name = val[3];
-					VT.QuerySent[name] = Tick;
-					VT.AutoShowEquipmentFrameOnComm[name] = Tick;
-					return VT.__emulib.CHAT_MSG_ADDON(VT.__emulib.CT.COMM_PREFIX, val[2], "WHISPER", name);
+					VT.ImportIndex = VT.ImportIndex + 1;
+					MT.ImportCode(Frame, val[2], "#" .. L.import .. "[" .. VT.ImportIndex .. "] " .. val[3]);
 				end
 			end,
 			num = 0,
@@ -2773,24 +2783,30 @@ MT.BuildEnv('UI');
 			if self.type == nil then
 				return;
 			end
-			if self.type == "import" then
+			local Type = self.type;
+			self.type = nil;
+			self:ClearFocus();
+			self:Hide();
+			if Type == "import" then
 				local code = self:GetText();
 				if code ~= nil and code ~= "" then
-					local class, level, numGroup, activeGroup, data1, data2 = MT.Decode(code);
-					if class ~= nil then
-						MT.UI.FrameSetInfo(self.Frame, class, level, { data1, data2, num = numGroup, active = activeGroup, });
+					for media, codec in next, VT.ExternalCodec do
+						local class, level, data = codec.ImportCode(code, codec);
+						if class ~= nil then
+							VT.ImportIndex = VT.ImportIndex + 1;
+							return MT.UI.FrameSetInfo(self.Frame, class, level, { data, nil, num = 1, active = 1, }, 1, "#" .. L.import .. "[" .. VT.ImportIndex .. "]");
+						end
 					end
+					VT.ImportIndex = VT.ImportIndex + 1;
+					return MT.ImportCode(self.Frame, code, "#" .. L.import .. "[" .. VT.ImportIndex .. "]");
 				end
-			elseif self.type == "save" then
+			elseif Type == "save" then
 				local title = self:GetText();
 				if title == nil or title == "" then
 					title = #VT.VAR.savedTalent + 1;
 				end
-				VT.VAR.savedTalent[title] = MT.Encode(self.Frame);
+				VT.VAR.savedTalent[title] = MT.EncodeTalent(self.Frame);
 			end
-			self.type = nil;
-			self:ClearFocus();
-			self:Hide();
 		end
 		local function EditBoxOKButton_OnClick(self)
 			return EditBox_OnEnterPressed(self.EditBox);
@@ -2887,6 +2903,7 @@ MT.BuildEnv('UI');
 				ResetToEmuButton:GetPushedTexture():SetTexCoord(TTEXTURESET.CLOSE_COORD[1], TTEXTURESET.CLOSE_COORD[2], TTEXTURESET.CLOSE_COORD[3], TTEXTURESET.CLOSE_COORD[4]);
 				ResetToEmuButton:GetPushedTexture():SetVertexColor(TTEXTURESET.CONTROL_PUSHED_COLOR[1], TTEXTURESET.CONTROL_PUSHED_COLOR[2], TTEXTURESET.CONTROL_PUSHED_COLOR[3], TTEXTURESET.CONTROL_PUSHED_COLOR[4]);
 				ResetToEmuButton:SetHighlightTexture(TTEXTURESET.NORMAL_HIGHLIGHT);
+				ResetToEmuButton:SetFrameLevel(ResetToEmuButton:GetFrameLevel() + 1);
 				ResetToEmuButton:SetPoint("RIGHT", Name, "LEFT", 0, 0);
 				ResetToEmuButton:SetScript("OnClick", ResetToEmuButton_OnClick);
 				ResetToEmuButton:SetScript("OnEnter", MT.GeneralOnEnter);
@@ -2916,6 +2933,7 @@ MT.BuildEnv('UI');
 				ResetToSetButton:GetPushedTexture():SetTexCoord(TTEXTURESET.RESET_COORD[1], TTEXTURESET.RESET_COORD[2], TTEXTURESET.RESET_COORD[3], TTEXTURESET.RESET_COORD[4]);
 				ResetToSetButton:GetPushedTexture():SetVertexColor(TTEXTURESET.CONTROL_PUSHED_COLOR[1], TTEXTURESET.CONTROL_PUSHED_COLOR[2], TTEXTURESET.CONTROL_PUSHED_COLOR[3], TTEXTURESET.CONTROL_PUSHED_COLOR[4]);
 				ResetToSetButton:SetHighlightTexture(TTEXTURESET.NORMAL_HIGHLIGHT);
+				ResetToSetButton:SetFrameLevel(ResetToSetButton:GetFrameLevel() + 1);
 				ResetToSetButton:SetPoint("LEFT", Label, "RIGHT", 0, 0);
 				ResetToSetButton:SetScript("OnClick", ResetToSetButton_OnClick);
 				ResetToSetButton:SetScript("OnEnter", MT.GeneralOnEnter);

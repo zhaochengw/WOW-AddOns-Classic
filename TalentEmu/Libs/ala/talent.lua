@@ -2,7 +2,7 @@
 	ALA@163UI
 --]]--
 
-local __version = 220905.0;
+local __version = 220907.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -358,7 +358,7 @@ end
 	local _TalentMap = {  };
 	local function _GenerateTalentMap(class, inspect)
 		if not inspect and class ~= SELFCLASS then
-			_log_("_GenerateTalentMap", "not inspect and class ~= SELFCLASS", class, inspect);
+			_log_("_GenerateTalentMap", "not inspect and class ~= SELFCLASS", class, inspect, SELFCLASS);
 			return nil;
 		end
 		local Map = _TalentMap[class];
@@ -379,8 +379,8 @@ end
 			PMap[SpecIndex] = PM;
 			for TalentIndex = 1, NumTalents do
 				local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo(SpecIndex, TalentIndex, inspect);
-				if rank == nil then
-					_log_("_GenerateTalentMap", "rank == nil", class, inspect, SpecIndex, TalentIndex);
+				if maxRank == nil then
+					_log_("_GenerateTalentMap", "maxRank == nil", class, inspect, SpecIndex, TalentIndex, name, tier, column, rank, maxRank);
 					return nil;
 				end
 				MaxTier = (tier > MaxTier) and tier or MaxTier;
@@ -507,7 +507,7 @@ end
 				magic = magic * 64;
 				nChar = nChar + 1;
 			else
-				_log_("DecodeTalent", 4, c, index, code);
+				_log_("DecodeTalentBlock", 1, c, index, code);
 			end
 			if c == ":" or nChar == 5 or index == len then
 				magic = 1;
@@ -781,7 +781,7 @@ end
 					__base64[LvLow] .. __base64[LvHigh] ..
 					__base64[numGroup] ..
 					__base64[activeGroup] ..
-					__base64[lenc1] .. code1,
+					__base64[lenc1 or 0] .. (code1 or ""),
 					1,
 					1,
 					data1;
@@ -794,8 +794,8 @@ end
 					__base64[LvLow] .. __base64[LvHigh] ..
 					__base64[numGroup] ..
 					__base64[activeGroup] ..
-					__base64[lenc1] .. code1 ..
-					__base64[lenc2] .. code2,
+					__base64[lenc1 or 0] .. (code1 or "") ..
+					__base64[lenc2 or 0] .. (code2 or ""),
 					2,
 					activeGroup,
 					data1,
@@ -959,20 +959,17 @@ end
 		end
 		return code;
 	end
-	function __emulib.EncodePlayerGlyphDataV2()
-		local numGroup = GetNumTalentGroups(false, false);
-		local activeGroup = GetActiveTalentGroup(false, false);
-
+	function __emulib.EncodeGlyphDataV2(numGroup, activeGroup, data1, data2)
 		if numGroup < 2 then
-			local code1 = __emulib.EncodeGlyphBlock(__emulib.GetGlyphData(nil, 1));
+			local code1 = __emulib.EncodeGlyphBlock(data1);
 			return
 					COMM_GLYPH_PREFIX ..
 					__base64[numGroup] ..
 					__base64[activeGroup] ..
 					__base64[#code1] .. code1;
 		else
-			local code1 = __emulib.EncodeGlyphBlock(__emulib.GetGlyphData(nil, 1));
-			local code2 = __emulib.EncodeGlyphBlock(__emulib.GetGlyphData(nil, 2));
+			local code1 = __emulib.EncodeGlyphBlock(data1);
+			local code2 = __emulib.EncodeGlyphBlock(data2);
 			return
 					COMM_GLYPH_PREFIX ..
 					__base64[numGroup] ..
@@ -980,6 +977,14 @@ end
 					__base64[#code1] .. code1 ..
 					__base64[#code2] .. code2;
 		end
+	end
+	function __emulib.EncodePlayerGlyphDataV2()
+		return __emulib.EncodeGlyphDataV2(
+			GetNumTalentGroups(false, false),
+			GetActiveTalentGroup(false, false),
+			__emulib.GetGlyphData(nil, 1),
+			__emulib.GetGlyphData(nil, 2)
+		);
 	end
 -->		Addon Pack
 	--
@@ -1103,7 +1108,7 @@ end
 						if #v > 1 then
 							item = item .. RepeatedColon[__debase64[strsub(v, 1, 1)]] .. DecodeNumber(strsub(v, 2));
 						else
-							item = item .. RepeatedColon[v];
+							item = item .. RepeatedColon[__debase64[v]];
 						end
 					end
 					return item;
@@ -1111,75 +1116,6 @@ end
 			end
 		end
 		return nil;
-	end
-	function __emulib.GetEquipmentData(data, unit)
-		if data == nil then
-			data = {  };
-		end
-		for slot = 0, 19 do
-			local link = GetInventoryItemLink(unit or 'player', slot);
-			if link ~= nil then
-				data[slot] = strmatch(link, "\124H(item:[%-0-9:]+)\124h");
-			else
-				data[slot] = nil;
-			end
-		end
-		return data;
-	end
-	function __emulib.EncodePlayerEquipmentDataV1(data, prefix, suffix)
-		if data == nil then
-			data = {  };
-		else
-			wipe(data);
-		end
-		local pos = 0;
-		prefix = prefix or "";
-		suffix = suffix or "";
-		local limit = 255 - #prefix - #suffix;
-		local msg = "";
-		local len = 0;
-		for slot = 0, 19 do
-			local link = GetInventoryItemLink('player', slot);
-			if link ~= nil then
-				link = "+" .. slot .. "+" .. (strmatch(link, "\124H(item:[%-0-9:]+)\124h") or "item:-1");
-			else
-				link = "+" .. slot .. "+item:-1";
-			end
-			local ll = #link;
-			if len + ll < limit then
-				msg = msg .. link;
-				len = len + ll;
-			else
-				pos = pos + 1;
-				data[pos] = prefix .. msg .. suffix;
-				msg = link;
-				len = ll;
-			end
-		end
-		if msg ~= "" then
-			pos = pos + 1;
-			data[pos] = prefix .. msg .. suffix;
-		end
-		return data;
-	end
-	function __emulib.EncodePlayerEquipmentDataV2()
-		local pos = 0;
-		local msg = __base64[0];
-		for slot = 0, 19 do
-			local item = GetInventoryItemLink('player', slot);
-			if item ~= nil then
-				item = strmatch(item, "\124H(item:[%-0-9:]+)\124h");
-				if item ~= nil then
-					item = "+" .. EncodeItem(item);
-				else
-					item = "+^";
-				end
-			else
-				item = "+^";
-			end
-			msg = msg .. item;
-		end
-		return COMM_EQUIPMENT_PREFIX .. msg;
 	end
 	local _EquipmentDataSubDecoder = {
 		[1] = function(code, cache)
@@ -1242,6 +1178,83 @@ end
 		else
 			return "V1", __emulib.DecodeEquipmentDataV1(cache, code);
 		end
+	end
+	function __emulib.GetEquipmentData(data, unit)
+		if data == nil then
+			data = {  };
+		end
+		for slot = 0, 19 do
+			local link = GetInventoryItemLink(unit or 'player', slot);
+			if link ~= nil then
+				data[slot] = strmatch(link, "\124H(item:[%-0-9:]+)\124h");
+			else
+				data[slot] = nil;
+			end
+		end
+		return data;
+	end
+	function __emulib.EncodeEquipmentDataV2(data)
+		local pos = 0;
+		local msg = __base64[0];
+		for slot = 0, 19 do
+			msg = msg .. "+" .. (data[slot] and EncodeItem(data[slot]) or "^");
+		end
+		return COMM_EQUIPMENT_PREFIX .. msg;
+	end
+	function __emulib.EncodePlayerEquipmentDataV1(data, prefix, suffix)
+		if data == nil then
+			data = {  };
+		else
+			wipe(data);
+		end
+		local pos = 0;
+		prefix = prefix or "";
+		suffix = suffix or "";
+		local limit = 255 - #prefix - #suffix;
+		local msg = "";
+		local len = 0;
+		for slot = 0, 19 do
+			local link = GetInventoryItemLink('player', slot);
+			if link ~= nil then
+				link = "+" .. slot .. "+" .. (strmatch(link, "\124H(item:[%-0-9:]+)\124h") or "item:-1");
+			else
+				link = "+" .. slot .. "+item:-1";
+			end
+			local ll = #link;
+			if len + ll < limit then
+				msg = msg .. link;
+				len = len + ll;
+			else
+				pos = pos + 1;
+				data[pos] = prefix .. msg .. suffix;
+				msg = link;
+				len = ll;
+			end
+		end
+		if msg ~= "" then
+			pos = pos + 1;
+			data[pos] = prefix .. msg .. suffix;
+		end
+		return data;
+	end
+	function __emulib.EncodePlayerEquipmentDataV2()
+		local pos = 0;
+		local msg = __base64[0];
+		for slot = 0, 19 do
+			local item = GetInventoryItemLink('player', slot);
+			if item ~= nil then
+				item = strmatch(item, "\124H(item:[%-0-9:]+)\124h");
+				if item ~= nil then
+					item = "+" .. EncodeItem(item);
+				else
+					item = "+^";
+				end
+			else
+				item = "+^";
+			end
+			msg = msg .. item;
+		end
+		return COMM_EQUIPMENT_PREFIX .. msg;
 	end
 -->		Push
 	function __emulib.PushTalentsV1(code, channel, target)
@@ -1554,11 +1567,16 @@ function __emulib.CHAT_MSG_ADDON(prefix, msg, channel, sender, target, zoneChann
 	end
 end
 
+local function PeriodicGeneratePlayerTalentMap()
+	if _GenerateTalentMap(SELFCLASS, false) == nil then
+		After(1.0, PeriodicGeneratePlayerTalentMap);
+	end
+end
 function __emulib.PLAYER_LOGIN()
 	__emulib:UnregisterEvent("PLAYER_LOGIN");
 	if IsAddonMessagePrefixRegistered(COMM_PREFIX) or RegisterAddonMessagePrefix(COMM_PREFIX) then
-		_GenerateTalentMap(SELFCLASS, false);
 	end
+	PeriodicGeneratePlayerTalentMap();
 end
 
 local function OnEvent(self, event, ...)

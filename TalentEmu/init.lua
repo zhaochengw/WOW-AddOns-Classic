@@ -234,6 +234,7 @@ MT.BuildEnv('INIT');
 	VT.TQueryCache = {  };	--	[GUID] = { [addon] = { data, time, }, }
 	VT.QuerySent = {  };					--	尝试发送带弹出界面请求的时间，无论是否真实发送
 	VT.NameBindingFrame = {  };
+	VT.ImportTargetFrame = {  };
 	VT.PrevQueryRequestSentTime = {  };		--	真实发送请求的时间
 	VT.ApplyingTalents = {  };
 	VT.AutoShowEquipmentFrameOnComm = {  };
@@ -314,5 +315,6 @@ MT.BuildEnv('INIT');
 	else
 		MT.Error = MT.ErrorRelease;
 	end
+	VT.ImportIndex = 0;
 
 -->

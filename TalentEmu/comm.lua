@@ -145,7 +145,7 @@ MT.BuildEnv('COMM');
 		end
 		return false, msg, ...;
 	end
-	local _CommDistributor = {
+	MT._CommDistributor = {
 		OnTalent = function(name, code, version, Decoder, overheard)
 			local class, level, numGroup, activeGroup, data1, data2 = Decoder(code);
 			if class ~= nil then
@@ -261,7 +261,7 @@ MT.BuildEnv('COMM');
 		OnPush = function(name, body, version, channel, zoneChannelID, isinform)
 			local code, GUID, version = strsplit("#", body);
 			if code ~= nil and GUID ~= nil and version == nil then
-				local class, level, numGroup, activeGroup, data1, data2 = MT.Decode(code);
+				local class, level, numGroup, activeGroup, data1, data2 = MT.DecodeTalent(code);
 				if class ~= nil then
 					local title = MT.GenerateTitleFromRawData(data1, class, true);
 					if title ~= nil then
@@ -309,8 +309,8 @@ MT.BuildEnv('COMM');
 		end
 	end
 	function MT.SendTalents(Frame)
-		local code = MT.Encode(Frame);
-		local class, level, numGroup, activeGroup, data1, data2 = MT.Decode(code);
+		local code = MT.EncodeTalent(Frame);
+		local class, level, numGroup, activeGroup, data1, data2 = MT.DecodeTalent(code);
 		local title = MT.GenerateTitleFromRawData(data1, class, true);
 		if title ~= nil then
 			local link = MT.GenerateLink(title, class, code);
@@ -326,7 +326,7 @@ MT.BuildEnv('COMM');
 	ItemRefTooltip.SetHyperlink = function(Tip, link, ...)
 		local code = strmatch(link, "^emu:(.+)");
 		if code ~= nil then
-			local class, level, numGroup, activeGroup, data1, data2 = MT.Decode(code);
+			local class, level, numGroup, activeGroup, data1, data2 = MT.DecodeTalent(code);
 			if class ~= nil then
 				MT.CreateEmulator(nil, class, level, { data1, data2, num = numGroup, active = activeGroup, }, L.message, false, false);
 			end
@@ -337,7 +337,7 @@ MT.BuildEnv('COMM');
 	end
 	local _CurrentChannel, _CurrentTarget = nil;
 	local function ChatFilter_CHAT_Replacer(body, code)
-		local class, level, numGroup, activeGroup, data1, data2 = MT.Decode(code);
+		local class, level, numGroup, activeGroup, data1, data2 = MT.DecodeTalent(code);
 		if class ~= nil then
 			local title = MT.GenerateTitleFromRawData(data1, class, true);
 			if title ~= nil then
@@ -414,7 +414,7 @@ MT.BuildEnv('COMM');
 	end
 
 	MT.RegisterOnInit('COMM', function(LoggedIn)
-		VT.__emulib.RegisterCommmDistributor(_CommDistributor);
+		VT.__emulib.RegisterCommmDistributor(MT._CommDistributor);
 		local Driver = CreateFrame('FRAME', nil, UIParent);
 		Driver:RegisterEvent("CHAT_MSG_ADDON");
 		Driver:RegisterEvent("CHAT_MSG_ADDON_LOGGED");
