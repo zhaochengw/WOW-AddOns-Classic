@@ -488,6 +488,7 @@ AL["Zul'jin"] = "Zul'jin"
 
 if AtlasLoot:GameVersion_LT(AtlasLoot.WRATH_VERSION_NUM) then return end
 -- DungeonsAndRaidsWrath
+AL["%s Attempts left"] = "%s Versuche übrig"
 AL["Achievements"] = "Erfolge"
 AL["Algalon the Observer"] = "Algalon der Beobachter"
 AL["Amanitar"] = "Amanitar"

@@ -95,15 +95,11 @@ AL["Tier Sets"] = "Conjuntos de Tier"
 --[[Translation missing --]]
 --[[ AL["Token"] = "Token"--]] 
 AL["Totems"] = "Tótems"
---[[Translation missing --]]
---[[ AL["Trinket"] = "Trinket"--]] 
 AL["Two-Handed Weapons"] = "Armas de dos manos"
 AL["Unobtainable"] = "Inobtenible"
 --[[Translation missing --]]
 --[[ AL["Unobtainable Tabards"] = "Unobtainable Tabards"--]] 
 AL["Wands"] = "Varitas"
---[[Translation missing --]]
---[[ AL["Weapon"] = "Weapon"--]] 
 AL["World Epics"] = "Épicos del Mundo"
 AL["World Events"] = "Eventos del Mundo"
 --[[Translation missing --]]
