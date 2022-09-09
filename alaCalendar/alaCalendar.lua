@@ -2123,7 +2123,11 @@ do	--	MAIN
 				frame:SetSize(ui_style.board_XSize, ui_style.board_YSize);
 				frame:SetFrameStrata("HIGH");
 				if __iswrath then
-					frame:SetPoint("LEFT", CalendarFrame, "RIGHT", 1, 0);
+					if CalendarFrame ~= nil then
+						frame:SetPoint("LEFT", CalendarFrame, "RIGHT", 1, 0);
+					else
+						frame:SetPoint("RIGHT", UIParent, "RIGHT", -80, 0);
+					end
 				else
 					frame:SetPoint("TOPLEFT", gui["CALENDAR"], "TOPRIGHT", 1, 0);
 				end
@@ -2144,11 +2148,13 @@ do	--	MAIN
 				frame.display_list = {  };
 				local _StartMoving = frame.StartMoving;
 				function frame.StartMoving(self)
-					self:ClearAllPoints();
-					local cal = __iswrath and CalendarFrame or gui["CALENDAR"];
-					if cal ~= nil then
-						cal:ClearAllPoints();
-						cal:SetPoint("TOPRIGHT", self, "TOPLEFT", -1, 0);
+					if not __iswrath then
+						self:ClearAllPoints();
+						local cal = gui["CALENDAR"];
+						if cal ~= nil then
+							cal:ClearAllPoints();
+							cal:SetPoint("TOPRIGHT", self, "TOPLEFT", -1, 0);
+						end
 					end
 					_StartMoving(self);
 				end
@@ -2358,8 +2364,10 @@ do	--	MAIN
 			frame:SetScript("OnShow", function(self)
 				self:update_func();
 				if __iswrath then
-					self:ClearAllPoints();
-					self:SetPoint("LEFT", CalendarFrame, "RIGHT", 1, 0);
+					if CalendarFrame ~= nil then
+						self:ClearAllPoints();
+						self:SetPoint("LEFT", CalendarFrame, "RIGHT", 1, 0);
+					end
 				else
 					gui["CALENDAR"].call_board:Texture(true);
 				end
