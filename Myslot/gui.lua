@@ -5,7 +5,7 @@ local RegEvent = MySlot.regevent
 local MAX_PROFILES_COUNT = 50
 
 
-local f = CreateFrame("Frame", "MYSLOT_ReportFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+local f = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 f:SetWidth(650)
 f:SetHeight(600)
 f:SetBackdrop({
@@ -247,13 +247,13 @@ RegEvent("ADDON_LOADED", function()
         })
         t:SetBackdropColor(0, 0, 0, 0)
     
-        local s = CreateFrame("ScrollFrame", "MYSLOT_ScrollFrame", t, "UIPanelScrollFrameTemplate")
+        local s = CreateFrame("ScrollFrame", nil, t, "UIPanelScrollFrameTemplate")
         s:SetWidth(560)
         s:SetHeight(375)
         s:SetPoint("TOPLEFT", 10, -10)
 
 
-        local edit = CreateFrame("EditBox", "MYSLOT_ReportFrame_EditBox", s)
+        local edit = CreateFrame("EditBox", nil, s)
         s.cursorOffset = 0
         edit:SetWidth(550)
         s:SetScrollChild(edit)

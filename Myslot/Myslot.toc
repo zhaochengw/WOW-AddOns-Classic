@@ -2,10 +2,11 @@
 ## Title: Myslot
 ## Notes: Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com
 ## Notes-esES: Myslot sirve para transferir opciones entre distintas cuentas. Comentarios a farmer1992@gmail.com
+## Notes-ruRU: Myslot предназначен для передачи настроек между аккаунтами. Обратная связь farmer1992@gmail.com
 ## Notes-zhCN: Myslot可以帮助你在账号之间共享配置。反馈：farmer1992@gmail.com
 ## Notes-zhTW: Myslot可以跨帳號綁定技能與按鍵設置。反饋通道：farmer1992@gmail.com
 ## Author: Boshi Lian(farmer1992@gmail.com)
-## Version: v5.8.0-v2.5.2
+## Version: v5.8.1-v3.4.0
 ## SavedVariables: MyslotExports
 ## SavedVariablesPerCharacter: MyslotSettings
 
@@ -28,7 +29,3 @@ keys.lua
 Myslot.lua
 gui.lua
 options.lua
-
-## Title-zhCN: |cff880303[有爱]|r MySlot 技能栏保存
-## X-Vendor: NetEase
-## X-163UI-Version: 20211119144632
