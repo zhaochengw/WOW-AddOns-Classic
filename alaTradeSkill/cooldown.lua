@@ -37,7 +37,7 @@ local T_TradeSkill_CooldownList = __db__.T_TradeSkill_CooldownList;
 for pid, list in next, T_TradeSkill_CooldownList do
 	for index = 1, #list do
 		local data = list[index];
-		data[2] = __db__.get_learn_rank_by_sid(data[1]) or data[2];
+		data[2] = data[2] or __db__.get_learn_rank_by_sid(data[1]);
 	end
 end
 

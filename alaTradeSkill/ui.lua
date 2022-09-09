@@ -24,6 +24,7 @@ local L = __namespace__.L;
 	local max = math.max;
 	local min = math.min;
 	local floor = math.floor;
+	local strsub = string.sub;
 	local strlower = string.lower;
 	local strupper = string.upper;
 	local strmatch = string.match;
@@ -282,60 +283,63 @@ function LT_SharedMethod.CancelMarkKnown(sid, GUID)
 	end
 end
 local T_DynamicCreatedSID = {  };
-function LT_SharedMethod.DynamicCreateInfo(frame, pid, index, cur_rank, sid, srank)
+function LT_SharedMethod.DynamicCreateInfo(frame, pid, cur_rank, index, sid, srank)
 	--------------.-PHA-PID-----SID-----CID-LEARN--Y--GREEN-GREY-MIN--MAX---------R-------N--TRAINER-PRICE-RECIPE-QUEST-OBJ-CLASS-SPEC
 	--------------1--2---3-------4-------5----6----7----8----9---10---11---------12------13---14-------15-----16---17---18---19----20
-	--[[
+	--[~[
 	local difficulty_rank = T_RankIndex[srank];
 	if T_DynamicCreatedSID[sid] == nil then
-		local cid = frame.F_GetRecipeItemID(index);
-		local minMade, maxMade = frame.F_GetRecipeNumMade(index);
-		local info = { nil, 1, pid, sid, cid, cur_rank, cur_rank, cur_rank, cur_rank, minMade, maxMade, {  }, {  }, };
-		if difficulty_rank == 0 then
-			info[index_learn_rank] = cur_rank + 1;
-			info[index_yellow_rank] = cur_rank + 1;
-			info[index_green_rank] = cur_rank + 1;
-			info[index_grey_rank] = cur_rank + 1;
-		elseif difficulty_rank == 1 then
-			info[index_learn_rank] = cur_rank;
-			info[index_yellow_rank] = cur_rank + 1;
-			info[index_green_rank] = cur_rank + 1;
-			info[index_grey_rank] = cur_rank + 1;
-		elseif difficulty_rank == 2 then
-			info[index_learn_rank] = cur_rank;
-			info[index_yellow_rank] = cur_rank;
-			info[index_green_rank] = cur_rank + 1;
-			info[index_grey_rank] = cur_rank + 1;
-		elseif difficulty_rank == 3 then
-			info[index_learn_rank] = cur_rank;
-			info[index_yellow_rank] = cur_rank;
-			info[index_green_rank] = cur_rank;
-			info[index_grey_rank] = cur_rank + 1;
-		elseif difficulty_rank == 4 then
-			info[index_learn_rank] = cur_rank;
-			info[index_yellow_rank] = cur_rank;
-			info[index_green_rank] = cur_rank;
-			info[index_grey_rank] = cur_rank;
-		else
-			return;
-		end
-		local numReagents = frame.F_GetRecipeNumReagents(index);
-		if numReagents > 0 then
-			local ids = info[index_reagents_id];
-			local cts = info[index_reagents_count];
-			for i = 1, numReagents do
-				local id = frame.F_GetRecipeReagentID(index, i);
-				local name, texture, req, has = F.F_GetRecipeReagentInfo(index, i);
-				if id ~= nil and req ~= nil then
-					ids[i] = id;
-					cts[i] = req;
-				else
-					return;
+		local info = __db__.get_info_by_sid(sid);
+		if info == nil then
+			local cid = frame.F_GetRecipeItemID(index);
+			local minMade, maxMade = frame.F_GetRecipeNumMade(index);
+			local info = { nil, 1, pid, sid, cid, cur_rank, cur_rank, cur_rank, cur_rank, minMade, maxMade, {  }, {  }, };
+			if difficulty_rank == 0 then
+				info[index_learn_rank] = cur_rank + 1;
+				info[index_yellow_rank] = cur_rank + 1;
+				info[index_green_rank] = cur_rank + 1;
+				info[index_grey_rank] = cur_rank + 1;
+			elseif difficulty_rank == 1 then
+				info[index_learn_rank] = cur_rank;
+				info[index_yellow_rank] = cur_rank + 1;
+				info[index_green_rank] = cur_rank + 1;
+				info[index_grey_rank] = cur_rank + 1;
+			elseif difficulty_rank == 2 then
+				info[index_learn_rank] = cur_rank;
+				info[index_yellow_rank] = cur_rank;
+				info[index_green_rank] = cur_rank + 1;
+				info[index_grey_rank] = cur_rank + 1;
+			elseif difficulty_rank == 3 then
+				info[index_learn_rank] = cur_rank;
+				info[index_yellow_rank] = cur_rank;
+				info[index_green_rank] = cur_rank;
+				info[index_grey_rank] = cur_rank + 1;
+			elseif difficulty_rank == 4 then
+				info[index_learn_rank] = cur_rank;
+				info[index_yellow_rank] = cur_rank;
+				info[index_green_rank] = cur_rank;
+				info[index_grey_rank] = cur_rank;
+			else
+				return;
+			end
+			local numReagents = frame.F_GetRecipeNumReagents(index);
+			if numReagents > 0 then
+				local ids = info[index_reagents_id];
+				local cts = info[index_reagents_count];
+				for i = 1, numReagents do
+					local id = frame.F_GetRecipeReagentID(index, i);
+					local name, texture, req, has = frame.F_GetRecipeReagentInfo(index, i);
+					if id ~= nil and req ~= nil then
+						ids[i] = id;
+						cts[i] = req;
+					else
+						return;
+					end
 				end
 			end
+			T_DynamicCreatedSID[sid] = info;
+			return __db__.insert_info(sid, info);
 		end
-		T_DynamicCreatedSID[sid] = info;
-		return __db__.insert_info(sid, info);
 	else
 		local info = T_DynamicCreatedSID[sid];
 		if difficulty_rank == 0 then
@@ -384,7 +388,7 @@ end
 					local sid = sid_list[index];
 					local price_a_product, price_a_material, price_a_material_known, missing = __namespace__.F_GetPriceInfoBySID(SET[pid].phase, sid, __db__.get_num_made_by_sid(sid), nil);
 					if price_a_material then
-						tinsert(list, { sid, price_a_material, __db__.get_difficulty_rank_by_sid(sid, cur_rank), });
+						list[#list + 1] = { sid, price_a_material, __db__.get_difficulty_rank_by_sid(sid, cur_rank), };
 					end
 				end
 				sort(list, function(v1, v2)
@@ -402,7 +406,7 @@ end
 					local price_a_product, price_a_material, price_a_material_known, missing = __namespace__.F_GetPriceInfoBySID(SET[pid].phase, sid, __db__.get_num_made_by_sid(sid), nil);
 					if price_a_product and price_a_material then
 						if price_a_product > price_a_material then
-							tinsert(list, { sid, price_a_product - price_a_material, });
+							list[#list + 1] = { sid, price_a_product - price_a_material, };
 						end
 					end
 				end
@@ -459,6 +463,10 @@ end
 		end
 	end
 	function LT_SharedMethod.FrameFilterList(frame, regular_exp, list, searchText, searchNameOnly)
+		if strlower(strsub(searchText, 1, 5)) == "rexp:" then
+			regular_exp = true;
+			searchText = strsub(searchText, 6);
+		end
 		if regular_exp then
 			searchText = strlower(searchText);
 			local result, ret = pcall(LT_SharedMethod.ProcessTextFilter, list, searchText, searchNameOnly);
@@ -509,6 +517,13 @@ end
 				if SET.show_call then
 					frame.ToggleButton:Show();
 				end
+				if __namespace__.__is_wlk then
+					if pid == 10 then
+						frame.FilterDropdown:Show();
+					else
+						frame.FilterDropdown:Hide();
+					end
+				end
 				frame:F_ToggleOnSkill(true);
 				if frame:IsShown() then
 					if update_list then
@@ -540,7 +555,7 @@ end
 												if hash[sid] ~= nil then
 													_error_("UpdateFrame#0E3", pid .. "#" .. cid .. "#" .. sname .. "#" .. sid);
 												else
-													tinsert(sids, sid);
+													sids[#sids + 1] = sid;
 													hash[sid] = index;
 													if NotInspecting then
 														LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
@@ -556,15 +571,12 @@ end
 											_error_("UpdateFrame#0E1", pid .. "#" .. sname);
 										end
 									else
-										tinsert(sids, sid);
+										sids[#sids + 1] = sid;
 										hash[sid] = index;
 										if NotInspecting then
 											LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
 										end
-										local info = __db__.get_info_by_sid(sid);
-										if info == nil then
-											LT_SharedMethod.DynamicCreateInfo(frame, pid, cur_rank, index, sid, srank);
-										end
+										LT_SharedMethod.DynamicCreateInfo(frame, pid, cur_rank, index, sid, srank);
 									end
 								end
 							end
@@ -665,7 +677,7 @@ end
 											local info = __db__.get_info_by_sid(sid);
 											if info ~= nil then
 												if hash[sid] == nil then
-													tinsert(sids, sid);
+													sids[#sids + 1] = sid;
 													hash[sid] = index;
 													if NotInspecting then
 														LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
@@ -678,15 +690,12 @@ end
 											_error_("UpdateFrame#0E1", pid .. "#" .. sname);
 										end
 									else
-										tinsert(sids, sid);
+										sids[#sids + 1] = sid;
 										hash[sid] = index;
 										if NotInspecting then
 											LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
 										end
-										local info = __db__.get_info_by_sid(sid);
-										if info == nil then
-											LT_SharedMethod.DynamicCreateInfo(frame, pid, cur_rank, index, sid, srank);
-										end
+										LT_SharedMethod.DynamicCreateInfo(frame, pid, cur_rank, index, sid, srank);
 									end
 								end
 							end
@@ -785,7 +794,7 @@ end
 				end
 			end
 		end
-		if searchText then
+		if searchText ~= nil then
 			LT_SharedMethod.FrameFilterList(frame, SET.regular_exp, list, searchText, searchNameOnly)
 		else
 			frame:F_SearchEditValid();
@@ -1883,7 +1892,7 @@ end
 		if SET.default_skill_button_tip then
 			local frame = self.frame;
 			local index = self:GetID();
-			local link = frame.F_GetRecipeItemLink(index);
+			local link = frame.F_GetRecipeItemLink(index) or (frame.F_GetRecipeSpellLink ~= nil and frame.F_GetRecipeSpellLink(index)) or nil;
 			if link ~= nil then
 				SkillTip.__phase = CURPHASE;
 				SkillTip:SetOwner(self, "ANCHOR_RIGHT");
@@ -2828,12 +2837,12 @@ end
 						local name = __db__.get_check_name_by_pid(pid);
 						if name ~= nil and name ~= pname then
 							local element = { text = name, para = { frame, name, }, };
-							tinsert(elements, element);
+							elements[#elements + 1] = element;
 						end
 					end
 				end
-				tinsert(elements, { text = "explorer", para = { frame, '@explorer', }, });
-				tinsert(elements, { text = "config", para = { frame, '@config', }, });
+				elements[#elements + 1] = { text = "explorer", para = { frame, '@explorer', }, };
+				elements[#elements + 1] = { text = "config", para = { frame, '@config', }, };
 			end
 			frame.PortraitButton = PortraitButton;
 		end
@@ -3139,7 +3148,7 @@ end
 						TipInfo:SetText(nil);
 					end);
 				end
-				tinsert(T_CheckButtons, CheckButton);
+				T_CheckButtons[#T_CheckButtons + 1] = CheckButton;
 			end
 			SetFrame.T_CheckButtons = T_CheckButtons;
 
@@ -3548,6 +3557,7 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		F_GetRecipeInfo = GetTradeSkillInfo,
 			--	skillName, difficult & header, numAvailable, isExpanded = GetTradeSkillInfo(skillIndex)
 		F_GetRecipeSpellID = __namespace__.__is_wlk and function(arg1) local link = GetTradeSkillRecipeLink(arg1); return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil; end or nil,
+		F_GetRecipeSpellLink = __namespace__.__is_wlk and GetTradeSkillRecipeLink or nil;
 		F_GetRecipeItemID = function(arg1) local link = GetTradeSkillItemLink(arg1); return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil; end,
 		F_GetRecipeItemLink = GetTradeSkillItemLink,
 		F_GetRecipeIcon = GetTradeSkillIcon,
@@ -3609,6 +3619,113 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		TradeSkillFrameAvailableFilterCheckButton:SetPoint("TOPLEFT", TradeSkillFrame, "TOPLEFT", 68, -56);
 	end
 	TradeSkillExpandButtonFrame:Hide();
+	--
+	if __namespace__.__is_wlk then
+	local ENCHANT_FILTER = L.ENCHANT_FILTER;
+	--	Dropdown Filter
+		local T_CraftFrameFilterMeta = {
+			handler = function(_, key)
+				local text = ENCHANT_FILTER[key];
+				if text ~= nil then
+					frame:F_Search(text);
+				end
+			end,
+			elements = {
+				{	--	"披风"
+					text = ENCHANT_FILTER.INVTYPE_CLOAK,
+					para = { "INVTYPE_CLOAK", },
+				},
+				{	--	"胸甲"
+					text = ENCHANT_FILTER.INVTYPE_CHEST,
+					para = { "INVTYPE_CHEST", },
+				},
+				{	--	"护腕"
+					text = ENCHANT_FILTER.INVTYPE_WRIST,
+					para = { "INVTYPE_WRIST", },
+				},
+				{	--	"手套"
+					text = ENCHANT_FILTER.INVTYPE_HAND,
+					para = { "INVTYPE_HAND", },
+				},
+				{	--	"靴"
+					text = ENCHANT_FILTER.INVTYPE_FEET,
+					para = { "INVTYPE_FEET", },
+				},
+				{	--	"武器"
+					text = ENCHANT_FILTER.INVTYPE_WEAPON,
+					para = { "INVTYPE_WEAPON", },
+				},
+				{	--	"盾牌"
+					text = ENCHANT_FILTER.INVTYPE_SHIELD,
+					para = { "INVTYPE_SHIELD", },
+				},
+				-- {	--	"没有匹配的附魔"
+				-- 	text = ENCHANT_FILTER.NONE,
+				-- 	para = { "NONE", },
+				-- },
+			},
+		};
+		local FilterDropdown = CreateFrame("BUTTON", nil, frame);
+		FilterDropdown:SetSize(16, 16);
+		FilterDropdown:EnableMouse(true);
+		FilterDropdown:SetNormalTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+		FilterDropdown:GetNormalTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
+		FilterDropdown:SetPushedTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+		FilterDropdown:GetPushedTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
+		FilterDropdown:GetPushedTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorPushed));
+		FilterDropdown:SetHighlightTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+		FilterDropdown:GetHighlightTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
+		FilterDropdown:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
+		FilterDropdown:SetScript("OnClick", function(self, button)
+			ALADROP(self, "BOTTOMRIGHT", T_CraftFrameFilterMeta);
+		end);
+
+		-- frame.SearchEditBoxOK:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -46, -6);
+		frame.SearchEditBox:SetPoint("RIGHT", FilterDropdown, "LEFT", -2, 0);
+		FilterDropdown:SetPoint("RIGHT", frame.SearchEditBoxNameOnly, "LEFT", -2, 0);
+		frame.FilterDropdown = FilterDropdown;
+	--	Auto filter recipe when trading
+		local function LF_ProcessTradeTargetItemLink()
+			if frame.flag == 10 then
+				local link = GetTradeTargetItemLink(7);
+				if link ~= nil then
+					local loc = select(9, GetItemInfo(link));
+					if loc ~= nil and ENCHANT_FILTER[loc] then
+						frame.SearchEditBox:SetText(ENCHANT_FILTER[loc]);
+						frame:F_Search(ENCHANT_FILTER[loc]);
+					else
+						frame.SearchEditBox:SetText(ENCHANT_FILTER.NONE);
+						frame:F_Search(ENCHANT_FILTER.NONE);
+					end
+				end
+			end
+		end
+		local EventDriver = CreateFrame('FRAME');
+		EventDriver:SetScript("OnEvent", function(self, event, ...)
+			return self[event](...);
+		end);
+		function EventDriver.TRADE_CLOSED()
+			frame.SearchEditBox:SetText("");
+		end
+		function EventDriver.TRADE_TARGET_ITEM_CHANGED(_1)
+			if _1 == 7 then
+				LF_ProcessTradeTargetItemLink();
+			end
+		end
+		function EventDriver.TRADE_UPDATE()
+			LF_ProcessTradeTargetItemLink();
+		end
+		-- EventDriver:RegisterEvent("TRADE_SHOW");
+		EventDriver:RegisterEvent("TRADE_CLOSED");
+		EventDriver:RegisterEvent("TRADE_UPDATE");
+		EventDriver:RegisterEvent("TRADE_TARGET_ITEM_CHANGED");
+		frame.EventDriver = EventDriver;
+		frame:HookScript("OnShow", function()
+			if TradeSkillFrame:IsShown() then
+				__namespace__.F_ScheduleDelayCall(LF_ProcessTradeTargetItemLink);
+			end
+		end);
+	end
 	--
 	LF_FrameApplySetting(frame);
 end
@@ -3891,21 +4008,26 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 				end
 			end
 		end
-		function F.TRADE_CLOSED()
+		local EventDriver = CreateFrame('FRAME');
+		EventDriver:SetScript("OnEvent", function(self, event, ...)
+			return self[event](...);
+		end);
+		function EventDriver.TRADE_CLOSED()
 			frame.SearchEditBox:SetText("");
 		end
-		function F.TRADE_TARGET_ITEM_CHANGED(_1)
+		function EventDriver.TRADE_TARGET_ITEM_CHANGED(_1)
 			if _1 == 7 then
 				LF_ProcessTradeTargetItemLink();
 			end
 		end
-		function F.TRADE_UPDATE()
+		function EventDriver.TRADE_UPDATE()
 			LF_ProcessTradeTargetItemLink();
 		end
-		-- F:RegisterEvent("TRADE_SHOW");
-		F:RegisterEvent("TRADE_CLOSED");
-		F:RegisterEvent("TRADE_UPDATE");
-		F:RegisterEvent("TRADE_TARGET_ITEM_CHANGED");
+		-- EventDriver:RegisterEvent("TRADE_SHOW");
+		EventDriver:RegisterEvent("TRADE_CLOSED");
+		EventDriver:RegisterEvent("TRADE_UPDATE");
+		EventDriver:RegisterEvent("TRADE_TARGET_ITEM_CHANGED");
+		frame.EventDriver = EventDriver;
 		frame:HookScript("OnShow", function()
 			if CraftFrame:IsShown() then
 				__namespace__.F_ScheduleDelayCall(LF_ProcessTradeTargetItemLink);
@@ -4134,26 +4256,26 @@ end
 			if key == 'skill' then
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						tinsert(elements, { text = __db__.get_pname_by_pid(index), para = { frame, key, index, }, });
+						elements[#elements + 1] = { text = __db__.get_pname_by_pid(index), para = { frame, key, index, }, };
 					end
 				end
 			elseif key == 'type' then
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						tinsert(elements, { text = L.ITEM_TYPE_LIST[index], para = { frame, key, index, }, });
+						elements[#elements + 1] = { text = L.ITEM_TYPE_LIST[index], para = { frame, key, index, }, };
 					end
 				end
 			elseif key == 'subType' then
 				local key0 = filter.type;
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						tinsert(elements, { text = L.ITEM_SUB_TYPE_LIST[key0][index], para = { frame, key, index, }, });
+						elements[#elements + 1] = { text = L.ITEM_SUB_TYPE_LIST[key0][index], para = { frame, key, index, }, };
 					end
 				end
 			elseif key == 'eqLoc' then
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						tinsert(elements, { text = L.ITEM_EQUIP_LOC[index], para = { frame, key, index, }, });
+						elements[#elements + 1] = { text = L.ITEM_EQUIP_LOC[index], para = { frame, key, index, }, };
 					end
 				end
 			end
@@ -4461,7 +4583,7 @@ local function LF_CreateExplorerFrame()
 					TipInfo:SetText(nil);
 				end);
 			end
-			tinsert(T_CheckButtons, CheckButton);
+			T_CheckButtons[#T_CheckButtons + 1] = CheckButton;
 		end
 		SetFrame.T_CheckButtons = T_CheckButtons;
 
@@ -4527,7 +4649,7 @@ local function LF_CreateExplorerFrame()
 			Dropdown:SetScript("OnClick", F_ExplorerSetFrameDropdown_OnClick);
 			Dropdown.key = key;
 			Dropdown.frame = frame;
-			tinsert(T_Dropdowns, Dropdown);
+			T_Dropdowns[#T_Dropdowns + 1] = Dropdown;
 		end
 		SetFrame.T_Dropdowns = T_Dropdowns;
 
@@ -4697,18 +4819,15 @@ end
 		local cool;
 		do
 			local pid = __db__.get_pid_by_sid(sid);
-			if sid == 19566 then
-				pid = 3;
-			end
-			if pid then
+			if pid ~= nil then
 				local VAR = AVAR[GUID];
-				if VAR then
+				if VAR ~= nil then
 					local var = rawget(VAR, pid);
-					if var then
+					if var ~= nil then
 						local c = var[3];
-						if c then
+						if c ~= nil then
 							cool = c[sid];
-							if cool then
+							if cool ~= nil then
 								if cool > 0 then
 									local diff = cool - GetServerTime();
 									if diff > 0 then
@@ -4794,17 +4913,17 @@ end
 			for pid, list in next, __db__.T_TradeSkill_CooldownList do
 				if __db__.is_pid(pid) then
 					for index = 1, #list do
-						local sid = list[index];
+						local data = list[index];
 						local add_label = true;
 						for GUID, VAR in next, AVAR do
 							local var = rawget(VAR, pid);
 							if var then
 								local cool = var[3];
-								if cool and cool[sid[1]] then
+								if cool and cool[data[1]] then
 									if add_label then
-										cal.ext_RegHeader(sid[1], LF_CalendarSetHeader);
+										cal.ext_RegHeader(data[1], LF_CalendarSetHeader);
 									end
-									cal.ext_AddLine(sid[1], GUID, LF_CalendarSetLine);
+									cal.ext_AddLine(data[1], GUID, LF_CalendarSetLine);
 								end
 							end
 						end
@@ -5748,7 +5867,7 @@ function F.NEW_RECIPE_LEARNED(sid)
 	if pid then
 		local var = VAR[pid];
 		var.update = true;
-		tinsert(var[1], sid);
+		var[1][#var[1] + 1] = sid;
 		var[2][sid] = -1;
 		LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
 		__namespace__:FireEvent("USER_EVENT_RECIPE_LIST_UPDATE");
@@ -5802,5 +5921,7 @@ function __namespace__.init_ui()
 		end
 	end);
 	__namespace__:AddAddOnCallback("BLIZZARD_TRADESKILLUI", LF_AddOnCallback_Blizzard_TradeSkillUI);
-	__namespace__:AddAddOnCallback("BLIZZARD_CRAFTUI", LF_AddOnCallback_Blizzard_CraftUI);
+	if not __namespace__.__is_wlk then
+		__namespace__:AddAddOnCallback("BLIZZARD_CRAFTUI", LF_AddOnCallback_Blizzard_CraftUI);
+	end
 end

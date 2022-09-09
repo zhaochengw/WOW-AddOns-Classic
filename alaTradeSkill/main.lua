@@ -323,7 +323,7 @@ local F_SafeCall = __namespace__.F_SafeCall;
 				end
 			end
 			AVAR[key] = VAR;
-			tinsert(list, key);
+			list[#list + 1] = key;
 			if not before_initialized then
 				__namespace__.F_uiUpdateAllFrames();
 			end
@@ -501,7 +501,7 @@ local F_SafeCall = __namespace__.F_SafeCall;
 				end
 			end
 			if not found then
-				tinsert(list, GUID);
+				list[#list + 1] = GUID;
 			end
 		end
 		if AVAR[PLAYER_GUID] == nil then
@@ -1368,7 +1368,7 @@ if not _G.ALA_HOOK_ChatEdit_InsertLink then
 				return;
 			end
 		end
-		tinsert(handlers_name, func);
+		handlers_name[#handlers_name + 1] = func;
 	end
 	function _G.ALA_UNHOOK_ChatEdit_InsertName(func)
 		for index = 1, #handlers_name do
@@ -1384,7 +1384,7 @@ if not _G.ALA_HOOK_ChatEdit_InsertLink then
 				return;
 			end
 		end
-		tinsert(handlers_link, func);
+		handlers_link[#handlers_link + 1] = func;
 	end
 	function _G.ALA_UNHOOK_ChatEdit_InsertLink(func)
 		for index = 1, #handlers_link do

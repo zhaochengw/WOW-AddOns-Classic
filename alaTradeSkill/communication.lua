@@ -16,7 +16,6 @@ local __db__ = __namespace__.__db__;
 	local strsub = string.sub;
 	local strfind = string.find;
 	local format = string.format;
-	local tinsert = table.insert;
 	local wipe = table.wipe;
 
 	local GetRealmName = GetRealmName;
@@ -265,17 +264,17 @@ function __namespace__.F_cmmQuerySpell(sid)
 	end
 end
 local function LF_cmmBroadcast(pid, list, channel, target)
-	tinsert(T_QueuedMessageGuild, ADDON_MSG_BROADCAST_BEGIN .. "#" .. pid .. "#" .. #list);
+	T_QueuedMessageGuild[#T_QueuedMessageGuild + 1] = ADDON_MSG_BROADCAST_BEGIN .. "#" .. pid .. "#" .. #list;
 	local msg = ADDON_MSG_BROADCAST_BODY .. "#".. pid;
 	for index = 1, #list do
 		msg = msg .. "#" .. list[index];
 		if index % 40 == 0 then
-			tinsert(T_QueuedMessageGuild, msg);
+			T_QueuedMessageGuild[#T_QueuedMessageGuild + 1] = msg;
 			msg = ADDON_MSG_BROADCAST_BODY .. "#" .. pid;
 		end
 	end
 	--	#msg <= 250
-	tinsert(T_QueuedMessageGuild, ADDON_MSG_BROADCAST_END .. "#" .. pid);
+	T_QueuedMessageGuild[#T_QueuedMessageGuild + 1] = ADDON_MSG_BROADCAST_END .. "#" .. pid;
 end
 
 function __namespace__.init_communication()

@@ -12,7 +12,6 @@ local L = __namespace__.L;
 
 	local bitband = bit.band;
 	local strlower = string.lower;
-	local tinsert = table.insert;
 	local wipe = table.wipe;
 
 	local RequestLoadSpellData = RequestLoadSpellData or C_Spell.RequestLoadSpellData;
@@ -173,7 +172,7 @@ local function LF_HashSpell(sid, sname, sname_lower)
 			pt[sname] = ptn;
 			pt[sname_lower] = ptn;
 		end
-		tinsert(ptn, sid);
+		ptn[#ptn + 1] = sid;
 	end
 end
 local function LF_CacheSpell(sid)
@@ -517,6 +516,18 @@ end);
 				end
 				recipe[num + 1] = sid;
 			end
+			LF_CacheSpell(sid);
+			local cid = info[index_cid];
+			if cid ~= nil then
+				LF_CacheItem(cid);
+				T_cidpid2sid[pid] = T_cidpid2sid[pid] or {  };
+				local h2 = T_cidpid2sid[pid][cid];
+				if h2 == nil then
+					h2 = {  };
+					T_cidpid2sid[pid][cid] = h2;
+				end
+				h2[#h2 + 1] = sid;
+			end
 		end
 	end
 --	QUERY RECIPE DB
@@ -631,23 +642,21 @@ end);
 	function __db__.get_difficulty_rank_list_text_by_sid(sid, tipbonus)
 		if sid ~= nil then
 			local red, yellow, green, grey, bonus = __db__.get_difficulty_rank_list_by_sid(sid);
-			if red and yellow and green and grey then
-				if red <= 0 and yellow <= 0 and green <= 0 and grey <= 0 then
-					return "";
-				end
-				if bonus and tipbonus then
-					-- if red < yellow then
-						return "|cffff8f00" .. red .. "|r |cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r |cff00ff00*" .. PLAYER_RACE .. " " .. bonus .. "*|r";
-					-- else
-						-- return "|cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r |cff00ff00*" .. PLAYER_RACE .. " " .. bonus .. "*|r";
-					-- end
-				else
-					-- if red < yellow then
-						return "|cffff8f00" .. red .. "|r |cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r";
-					-- else
-						-- return "|cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r";
-					-- end
-				end
+			if (red == nil and yellow == nil and green == nil and grey == nil) or (red <= 0 and yellow <= 0 and green <= 0 and grey <= 0) then
+				return "";
+			end
+			if bonus and tipbonus then
+				-- if red < yellow then
+					return "|cffff8f00" .. red .. "|r |cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r |cff00ff00*" .. PLAYER_RACE .. " " .. bonus .. "*|r";
+				-- else
+					-- return "|cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r |cff00ff00*" .. PLAYER_RACE .. " " .. bonus .. "*|r";
+				-- end
+			else
+				-- if red < yellow then
+					return "|cffff8f00" .. red .. "|r |cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r";
+				-- else
+					-- return "|cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r";
+				-- end
 			end
 		end
 		return "";
@@ -697,9 +706,9 @@ end);
 	function __db__.get_sid_by_pid_sname(pid, sname)
 		if pid ~= nil and sname ~= nil then
 			local pt = T_sname2sid[pid];
-			if pt then
+			if pt ~= nil then
 				local ptn = pt[sname];
-				if ptn then
+				if ptn ~= nil then
 					return #ptn, ptn;
 				end
 			end
@@ -730,7 +739,7 @@ end);
 	function __db__.get_sid_by_cid(cid)
 		if cid ~= nil then
 			local sids = T_cis2sid[cid];
-			if sids then
+			if sids ~= nil then
 				return #sids, sids;
 			end
 		end
@@ -740,9 +749,11 @@ end);
 	function __db__.get_sid_by_pid_cid(pid, cid)
 		if pid ~= nil and cid ~= nil then
 			local p = T_cidpid2sid[pid];
-			if p then
+			if p ~= nil then
 				local sids = p[cid];
-				return #sids, sids;
+				if sids ~= nil then
+					return #sids, sids;
+				end
 			end
 		end
 		return 0;
@@ -916,7 +927,7 @@ end);
 --	pid, list, check_hash, phase, rank, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list | list{ sid, }
 local function FilterAdd(list, sid, class, spec, filterClass, filterSpec)
 	if (class == nil or not filterClass or bitband(class, UCLASSBIT) ~= 0) and (spec == nil or not filterSpec or T_IsSpecLearned[spec]) then
-		tinsert(list, sid);
+		list[#list + 1] = sid;
 	end
 end
 function __db__.get_ordered_list(pid, list, check_hash, phase, rank, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list)
@@ -926,7 +937,7 @@ function __db__.get_ordered_list(pid, list, check_hash, phase, rank, rankReverse
 			wipe(list);
 		end
 		for pid = __db__.DBMINPID, __db__.DBMAXPID do
-			if T_TradeSkill_RecipeList[pid] then
+			if T_TradeSkill_RecipeList[pid] ~= nil then
 				__db__.get_ordered_list(pid, list, check_hash, phase, rank, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, true);
 			end
 		end
@@ -1380,13 +1391,13 @@ function __namespace__.init_db()
 						h1 = {  };
 						T_cis2sid[cid] = h1;
 					end
-					tinsert(h1, sid);
+					h1[#h1 + 1] = sid;
 					local h2 = T_cidpid2sid[pid][cid];
 					if h2 == nil then
 						h2 = {  };
 						T_cidpid2sid[pid][cid] = h2;
 					end
-					tinsert(h2, sid);
+					h2[#h2 + 1] = sid;
 				end
 				local rids = info[index_recipe];
 				if rids ~= nil then
@@ -1396,9 +1407,9 @@ function __namespace__.init_db()
 					end
 				end
 				--	list
-				tinsert(recipe_sid_list, sid);
+				recipe_sid_list[#recipe_sid_list + 1] = sid;
 				if cid ~= nil then
-					tinsert(recipe_cid_list, cid);
+					recipe_cid_list[#recipe_cid_list + 1] = cid;
 				end
 				--	material
 				local regeants_id = info[index_reagents_id];
@@ -1410,8 +1421,8 @@ function __namespace__.init_db()
 						val = { {  }, {  }, };
 						T_material2sid[reagent_id] = val;
 					end
-					tinsert(val[1], sid);
-					tinsert(val[2], reagents_num[index]);
+					val[1][#val[1] + 1] = sid;
+					val[2][#val[2] + 1] = reagents_num[index];
 				end
 			end
 		end
@@ -1430,7 +1441,7 @@ function __namespace__.init_db()
 						h1 = {  };
 						T_cis2sid[cid] = h1;
 					end
-					tinsert(h1, sid);
+					h1[#h1 + 1] = sid;
 				end
 				local rids = info[index_recipe];
 				if rids ~= nil then
@@ -1449,8 +1460,8 @@ function __namespace__.init_db()
 						val = { {  }, {  }, };
 						T_material2sid[reagent_id] = val;
 					end
-					tinsert(val[1], sid);
-					tinsert(val[2], reagents_num[index]);
+					val[1][#val[1] + 1] = sid;
+					val[2][#val[2] + 1] = reagents_num[index];
 				end
 			end
 		end

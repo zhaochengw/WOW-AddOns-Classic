@@ -21,7 +21,6 @@ local L = __namespace__.L;
 	local strsplit = string.split;
 	local strmatch = string.match;
 	local format = string.format;
-	local tinsert = table.insert;
 
 	local IsShiftKeyDown = IsShiftKeyDown;
 	local GetItemQualityColor = GetItemQualityColor;
@@ -200,25 +199,25 @@ local function F_GetPriceInfoBySID(phase, sid, num, lines, stack_level, is_encha
 							if p ~= nil then
 								p = p * num;
 								if detail_lines ~= nil then
-									tinsert(detail_lines, T_SpaceTable[stack_level + 1] .. name .. "x" .. num);
-									tinsert(detail_lines, __namespace__.F_GetMoneyString(p));
+									detail_lines[#detail_lines + 1] = T_SpaceTable[stack_level + 1] .. name .. "x" .. num;
+									detail_lines[#detail_lines + 1] = __namespace__.F_GetMoneyString(p);
 								end
 							else
 								if detail_lines ~= nil then
 									local bindType = __db__.item_bindType(iid);
 									if bindType == 1 or bindType == 4 then
-										tinsert(detail_lines, T_SpaceTable[stack_level + 1] .. name .. "x" .. num);
-										tinsert(detail_lines, L["BOP"]);
+										detail_lines[#detail_lines + 1] = T_SpaceTable[stack_level + 1] .. name .. "x" .. num;
+										detail_lines[#detail_lines + 1] = L["BOP"];
 									else
-										tinsert(detail_lines, T_SpaceTable[stack_level + 1] .. name .. "x" .. num);
-										tinsert(detail_lines, L["UNKOWN_PRICE"]);
+										detail_lines[#detail_lines + 1] = T_SpaceTable[stack_level + 1] .. name .. "x" .. num;
+										detail_lines[#detail_lines + 1] = L["UNKOWN_PRICE"];
 									end
 								end
 							end
 						else
 							if detail_lines ~= nil then
-								tinsert(detail_lines, T_SpaceTable[stack_level + 1] .. name .. "x" .. num);
-								tinsert(detail_lines, "-");
+								detail_lines[#detail_lines + 1] = T_SpaceTable[stack_level + 1] .. name .. "x" .. num;
+								detail_lines[#detail_lines + 1] = "-";
 							end
 						end
 					end
@@ -266,47 +265,47 @@ local function F_GetPriceInfoBySID(phase, sid, num, lines, stack_level, is_encha
 		if stack_level == 0 then
 			if lines ~= nil then
 				for index = 1, #detail_lines do
-					tinsert(lines, detail_lines[index]);
+					lines[#lines+ 1] = detail_lines[index];
 				end
 				if is_enchanting then
 					if cost ~= nil then
-						tinsert(lines, "|cffff7f00**|r" .. "|cffffffff" .. __db__.spell_name_s(sid) .. "|r" or L["COST_PRICE"]);
-						tinsert(lines, L["COST_PRICE"] .. __namespace__.F_GetMoneyString(cost));
+						lines[#lines+ 1] = "|cffff7f00**|r" .. "|cffffffff" .. __db__.spell_name_s(sid) .. "|r" or L["COST_PRICE"];
+						lines[#lines+ 1] = L["COST_PRICE"] .. __namespace__.F_GetMoneyString(cost);
 					else
-						tinsert(lines, "|cffff7f00**|r" .. "|cffffffff" .. __db__.spell_name_s(sid) .. "|r" or L["COST_PRICE"]);
-						tinsert(lines, L["COST_PRICE_KNOWN"] .. __namespace__.F_GetMoneyString(cost_known));
+						lines[#lines+ 1] = "|cffff7f00**|r" .. "|cffffffff" .. __db__.spell_name_s(sid) .. "|r" or L["COST_PRICE"];
+						lines[#lines+ 1] = L["COST_PRICE_KNOWN"] .. __namespace__.F_GetMoneyString(cost_known);
 					end
 				else
 					if cost ~= nil then
-						tinsert(lines, "|cffff7f00**|r" .. name .. "x" .. num);
-						tinsert(lines, L["COST_PRICE"] .. __namespace__.F_GetMoneyString(cost));
+						lines[#lines+ 1] = "|cffff7f00**|r" .. name .. "x" .. num;
+						lines[#lines+ 1] = L["COST_PRICE"] .. __namespace__.F_GetMoneyString(cost);
 					else
-						tinsert(lines, "|cffff7f00**|r" .. name .. "x" .. num);
-						tinsert(lines, L["COST_PRICE_KNOWN"] .. __namespace__.F_GetMoneyString(cost_known));
+						lines[#lines+ 1] = "|cffff7f00**|r" .. name .. "x" .. num;
+						lines[#lines+ 1] = L["COST_PRICE_KNOWN"] .. __namespace__.F_GetMoneyString(cost_known);
 					end
 					if price ~= nil then
-						tinsert(lines, "|cff00ff00**|r" .. name .. "x" .. num);
-						tinsert(lines, L["AH_PRICE"] .. __namespace__.F_GetMoneyString(price));
+						lines[#lines+ 1] = "|cff00ff00**|r" .. name .. "x" .. num;
+						lines[#lines+ 1] = L["AH_PRICE"] .. __namespace__.F_GetMoneyString(price);
 					end
 					if cost ~= nil and price ~= nil then
 						local diff = price - cost;
 						local diffAH = price * 0.95 - cost;
 						if diff > 0 then
-							tinsert(lines, "|cff00ff00**|r" .. L["PRICE_DIFF+"]);
-							tinsert(lines, L["PRICE_DIFF_INFO+"] .. __namespace__.F_GetMoneyString(diff));
+							lines[#lines+ 1] = "|cff00ff00**|r" .. L["PRICE_DIFF+"];
+							lines[#lines+ 1] = L["PRICE_DIFF_INFO+"] .. __namespace__.F_GetMoneyString(diff);
 							if diffAH > 0 then
-								tinsert(lines, "|cff00ff00**|r" .. L["PRICE_DIFF_AH+"]);
-								tinsert(lines, L["PRICE_DIFF_INFO+"] .. __namespace__.F_GetMoneyString(diffAH));
+								lines[#lines+ 1] = "|cff00ff00**|r" .. L["PRICE_DIFF_AH+"];
+								lines[#lines+ 1] = L["PRICE_DIFF_INFO+"] .. __namespace__.F_GetMoneyString(diffAH);
 							elseif diffAH < 0 then
-								tinsert(lines, "|cffff0000**|r" .. L["PRICE_DIFF_AH-"]);
-								tinsert(lines, L["PRICE_DIFF_INFO-"] .. __namespace__.F_GetMoneyString(-diffAH));
+								lines[#lines+ 1] = "|cffff0000**|r" .. L["PRICE_DIFF_AH-"];
+								lines[#lines+ 1] = L["PRICE_DIFF_INFO-"] .. __namespace__.F_GetMoneyString(-diffAH);
 							else
 							end
 						elseif diff < 0 then
-							tinsert(lines, "|cffff0000**|r" .. L["PRICE_DIFF-"]);
-							tinsert(lines, L["PRICE_DIFF_INFO-"] .. __namespace__.F_GetMoneyString(-diff));
-							tinsert(lines, "|cffff0000**|r" .. L["PRICE_DIFF_AH-"]);
-							tinsert(lines, L["PRICE_DIFF_INFO-"] .. __namespace__.F_GetMoneyString(-diffAH));
+							lines[#lines+ 1] = "|cffff0000**|r" .. L["PRICE_DIFF-"];
+							lines[#lines+ 1] = L["PRICE_DIFF_INFO-"] .. __namespace__.F_GetMoneyString(-diff);
+							lines[#lines+ 1] = "|cffff0000**|r" .. L["PRICE_DIFF_AH-"];
+							lines[#lines+ 1] = L["PRICE_DIFF_INFO-"] .. __namespace__.F_GetMoneyString(-diffAH);
 						end
 					end
 				end
@@ -314,15 +313,15 @@ local function F_GetPriceInfoBySID(phase, sid, num, lines, stack_level, is_encha
 		else
 			if price ~= nil and (cost == nil or cost >= price) then
 				if lines then
-					tinsert(lines, T_SpaceTable[stack_level] .. name .. "x" .. num);
-					tinsert(lines, __namespace__.F_GetMoneyString(price));
+					lines[#lines+ 1] = T_SpaceTable[stack_level] .. name .. "x" .. num;
+					lines[#lines+ 1] = __namespace__.F_GetMoneyString(price);
 				end
 			elseif cost ~= nil and (price == nil or cost < price) then
 				if lines then
-					tinsert(lines, T_SpaceTable[stack_level] .. name .. "x" .. num);
-					tinsert(lines, __namespace__.F_GetMoneyString(cost));
+					lines[#lines+ 1] = T_SpaceTable[stack_level] .. name .. "x" .. num;
+					lines[#lines+ 1] = __namespace__.F_GetMoneyString(cost);
 					for index = 1, #detail_lines do
-						tinsert(lines, detail_lines[index]);
+						lines[#lines+ 1] = detail_lines[index];
 					end
 				end
 				price = nil;
@@ -330,11 +329,11 @@ local function F_GetPriceInfoBySID(phase, sid, num, lines, stack_level, is_encha
 				if lines ~= nil then
 					local bindType = __db__.item_bindType(cid);
 					if bindType == 1 or bindType == 4 then
-						tinsert(lines, T_SpaceTable[stack_level] .. name .. "x" .. num);
-						tinsert(lines, L["BOP"]);
+						lines[#lines+ 1] = T_SpaceTable[stack_level] .. name .. "x" .. num;
+						lines[#lines+ 1] = L["BOP"];
 					else
-						tinsert(lines, T_SpaceTable[stack_level] .. name .. "x" .. num);
-						tinsert(lines, L["UNKOWN_PRICE"]);
+						lines[#lines+ 1] = T_SpaceTable[stack_level] .. name .. "x" .. num;
+						lines[#lines+ 1] = L["UNKOWN_PRICE"];
 					end
 				end
 			end
