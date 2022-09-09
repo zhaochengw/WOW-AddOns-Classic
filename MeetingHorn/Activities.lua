@@ -27,9 +27,9 @@ C('Recruit', L.CATEGORY_RECRUIT, L['CHANNEL: Recruit'], 150, 300, true)
 C('Port', L.CATEGORY_PORT, L['CHANNEL: Group'], 150, 300)
 C('Summon', L.CATEGORY_SUMMON, L['CHANNEL: Group'], 150, 300)
 C('Other', OTHER)
---[=[@debug@
+--[[@debug@
 C('Debug', 'Debug', 'MeetingHornDebug')
---@end-debug@]=]
+--@end-debug@]]
 
 -- raid
 ---- tbc
@@ -192,8 +192,8 @@ P():base(L.CATEGORY_SUMMON, 'Summon', 20, nil, 'WARLOCK') --
 P():base(L.CATEGORY_RECRUIT, 'Recruit') --
 -- 其它
 P():base(OTHER, 'Other') --
---[=[@debug@
+--[[@debug@
 P():base('Debug', 'Debug')
---@end-debug@]=]
+--@end-debug@]]
 
 ns.Builder.End()
