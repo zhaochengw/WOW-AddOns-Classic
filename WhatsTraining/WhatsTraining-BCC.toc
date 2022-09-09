@@ -1,6 +1,6 @@
 ## Interface: 20501
 ## Title: What's Training?
-## Version: 4.0.2
+## Version: 4.0.3
 ## Author: Sveng
 ## Notes: Shows you what spells are available at your class trainer
 ## SavedVariablesPerCharacter: WT_LearnedPetAbilities, WT_NeedsToOpenBeastTraining
