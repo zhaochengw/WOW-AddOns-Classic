@@ -189,23 +189,23 @@ SettingsFunctions = {
     end,
 
     LastWeaponEnchant = function(value, Timers)
-        if value == 5 then
-            Timers[8].button:SetAttribute("type1", "macro")
-            Timers[8].button:SetAttribute("macrotext", "/cast " .. SpellNames[SpellIDs.WindfuryWeapon] .. "\n/use 16")
-            Timers[8].button:SetAttribute("doublespell1", SpellNames[SpellIDs.WindfuryWeapon])
-            Timers[8].button:SetAttribute("doublespell2", SpellNames[SpellIDs.FlametongueWeapon])
-            Timers[8].button:SetAttribute("ds", 1)
-        elseif value == 6 then
-            Timers[8].button:SetAttribute("type1", "macro")
-            Timers[8].button:SetAttribute("macrotext", "/cast " .. SpellNames[SpellIDs.WindfuryWeapon] .. "\n/use 16")
-            Timers[8].button:SetAttribute("*spell1", SpellNames[SpellIDs.WindfuryWeapon])
-            Timers[8].button:SetAttribute("doublespell1", SpellNames[SpellIDs.WindfuryWeapon])
-            Timers[8].button:SetAttribute("doublespell2", SpellNames[SpellIDs.FrostbrandWeapon])
-            Timers[8].button:SetAttribute("ds", 1)
+        local button = TotemTimers.WeaponTracker.button
+
+        if type(value) ~= "number" then value = select(7, GetSpellInfo(value)) end
+
+        if value >= 5 and value <= 7 then
+            local ds1 = value == 7 and SpellIDs.FlametongueWeapon or SpellIDs.WindfuryWeapon
+            local ds2 = value == 6 and SpellIDs.FrostbrandWeapon or SpellIDs.FlametongueWeapon
+
+            button:SetAttribute("type1", "macro")
+            button:SetAttribute("macrotext", "/cast " .. SpellNames[ds1] .. "\n/use 16")
+            button:SetAttribute("doublespell1", SpellNames[ds1])
+            button:SetAttribute("doublespell2", SpellNames[ds2])
+            button:SetAttribute("ds", 1)
         else
             if not GetSpellInfo(value) then value = SpellIDs.RockbiterWeapon end
-            Timers[8].button:SetAttribute("type1", "spell")
-            Timers[8].button:SetAttribute("spell1", value)
+            button:SetAttribute("type1", "spell")
+            button:SetAttribute("spell1", value)
         end
     end,
 
@@ -237,10 +237,10 @@ SettingsFunctions = {
                 Timers[i].button:SetAttribute("*macrotext2", "")
             else
                 Timers[i].button:SetAttribute("OpenMenu", "mouseover")
-                Timers[i].button:SetAttribute("*type2", "macro")
-                Timers[i].button:SetAttribute("*macrotext2", "/script XiTimers.timers[" .. i .. "].stopQuiet = true DestroyTotem(" .. Timers[i].nr .. ")")
-                Timers[i].button:SetAttribute("*type3", "spell")
-                Timers[i].button:SetAttribute("*spell3", SpellIDs.TotemicCall)
+                Timers[i].button:SetAttribute("type2", "macro")
+                Timers[i].button:SetAttribute("macrotext2", "/script XiTimers.timers[" .. i .. "].stopQuiet = true DestroyTotem(" .. Timers[i].nr .. ")")
+                Timers[i].button:SetAttribute("type3", "spell")
+                Timers[i].button:SetAttribute("spell3", SpellIDs.TotemicCall)
             end
         end
         if TotemTimers_MultiSpell then
