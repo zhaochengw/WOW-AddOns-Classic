@@ -1,5 +1,3 @@
-local UIDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0");
-
 local Postal = LibStub("AceAddon-3.0"):GetAddon("Postal")
 local Postal_QuickAttach = Postal:NewModule("QuickAttach", "AceHook-3.0", "AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Postal")
@@ -86,6 +84,24 @@ function Postal_QuickAttach:OnEnable()
 			table.insert(QAButtons, {"Postal_QuickAttachButton10", "Interface/Icons/inv_gizmo_goblingtonkcontroller", 7, 3, L["Devices"]})
 			table.insert(QAButtons, {"Postal_QuickAttachButton11", "Interface/Icons/INV_Misc_Ammo_Gunpowder_01", 7, 2, L["Explosives"]})
 			table.insert(QAButtons, {"Postal_QuickAttachButton12", "Interface/Icons/INV_Misc_Rune_09", 7, 11, L["Other"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton13", "Interface/Icons/Ability_Ensnare", 7, -1, L["Trade Goods"]})
+		end
+		if Postal.WOWWotLKClassic == true then
+			table.insert(QAButtons, {"Postal_QuickAttachButton1", GetSpellTexture(3908), 7, 5, L["Cloth"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton2", GetSpellTexture(2108), 7, 6, L["Leather"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton3", GetSpellTexture(2656), 7, 7, L["Metal & Stone"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton4", GetSpellTexture(2550), 7, 8, L["Cooking"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton5", GetSpellTexture(2383), 7, 9, L["Herb"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton6", GetSpellTexture(7411), 7, 12, L["Enchanting"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton7", GetSpellTexture(25229), 7, 4, L["Jewelcrafting"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton8", "Interface/Icons/INV_Gizmo_FelIronCasing", 7, 1, L["Parts"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton9", "Interface/Icons/INV_Elemental_Primal_Air", 7, 10, L["Elemental"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton10", "Interface/Icons/inv_gizmo_goblingtonkcontroller", 7, 3, L["Devices"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton11", "Interface/Icons/INV_Misc_Ammo_Gunpowder_01", 7, 2, L["Explosives"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton11", "Interface/Icons/INV_Elemental_Primal_Nether", 7, 13, L["Materials"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton12", "Interface/Icons/INV_Misc_Rune_09", 7, 11, L["Other"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton12", 237050, 7, 14, L["Armor Enchantment"]})
+			table.insert(QAButtons, {"Postal_QuickAttachButton12", 237172, 7, 15, L["Weapon Enchantment"]})
 			table.insert(QAButtons, {"Postal_QuickAttachButton13", "Interface/Icons/Ability_Ensnare", 7, -1, L["Trade Goods"]})
 		end
 		if Postal.WOWRetail == true then
@@ -271,34 +287,34 @@ function Postal_QuickAttach.ModuleMenu(self, level)
 		info.arg1 = "QuickAttach"
 		info.arg2 = "EnableBag0"
 		info.checked = Postal.db.profile.QuickAttach.EnableBag0
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag one"]
 		info.func = Postal.SaveOption
 		info.arg1 = "QuickAttach"
 		info.arg2 = "EnableBag1"
 		info.checked = Postal.db.profile.QuickAttach.EnableBag1
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag two"]
 		info.func = Postal.SaveOption
 		info.arg1 = "QuickAttach"
 		info.arg2 = "EnableBag2"
 		info.checked = Postal.db.profile.QuickAttach.EnableBag2
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag three"]
 		info.func = Postal.SaveOption
 		info.arg1 = "QuickAttach"
 		info.arg2 = "EnableBag3"
 		info.checked = Postal.db.profile.QuickAttach.EnableBag3
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag four"]
 		info.func = Postal.SaveOption
 		info.arg1 = "QuickAttach"
 		info.arg2 = "EnableBag4"
 		info.checked = Postal.db.profile.QuickAttach.EnableBag4
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 	end
 end

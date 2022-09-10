@@ -1,5 +1,3 @@
-local UIDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0");
-
 local Postal = LibStub("AceAddon-3.0"):GetAddon("Postal")
 local Postal_BlackBook = Postal:NewModule("BlackBook", "AceEvent-3.0", "AceHook-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Postal")
@@ -37,10 +35,10 @@ function Postal_BlackBook:OnEnable()
 		Postal_BlackBookButton:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
 		Postal_BlackBookButton:SetScript("OnClick", function(self, button, down)
 			if Postal_DropDownMenu.initialize ~= Postal_BlackBook.BlackBookMenu then
-				UIDD:CloseDropDownMenus()
+				CloseDropDownMenus()
 				Postal_DropDownMenu.initialize = Postal_BlackBook.BlackBookMenu
 			end
-			UIDD:ToggleDropDownMenu(1, nil, Postal_DropDownMenu, self:GetName(), 0, 0)
+			ToggleDropDownMenu(1, nil, Postal_DropDownMenu, self:GetName(), 0, 0)
 		end)
 		Postal_BlackBookButton:SetScript("OnHide", Postal_DropDownMenu.HideMenu)
 	end
@@ -152,7 +150,7 @@ function Postal_BlackBook.DeleteAlt(dropdownbutton, arg1, arg2, checked)
 			end
 		end
 	end
-	UIDD:CloseDropDownMenus()
+	CloseDropDownMenus()
 end
 
 -- Only called on a mail that is sent successfully
@@ -184,7 +182,7 @@ end
 
 function Postal_BlackBook.ClearRecent(dropdownbutton, arg1, arg2, checked)
 	wipe(Postal.db.profile.BlackBook.recent)
-	UIDD:CloseDropDownMenus()
+	CloseDropDownMenus()
 end
 
 function Postal_BlackBook:MailFrameTab_OnClick(button, tab)
@@ -340,7 +338,7 @@ end
 function Postal_BlackBook.SetSendMailName(dropdownbutton, arg1, arg2, checked)
 	SendMailNameEditBox:SetText(arg1)
 	if SendMailNameEditBox:HasFocus() then SendMailSubjectEditBox:SetFocus() end
-	UIDD:CloseDropDownMenus()
+	CloseDropDownMenus()
 end
 
 function Postal_BlackBook.AddContact(dropdownbutton, arg1, arg2, checked)
@@ -403,7 +401,7 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 		info.isTitle = 1
 		info.text = L["Contacts"]
 		info.notCheckable = 1
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.disabled = nil
 		info.isTitle = nil
@@ -413,7 +411,7 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 			info.text = db[i]
 			info.func = Postal_BlackBook.SetSendMailName
 			info.arg1 = db[i]
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 		end
 
 		info.arg1 = nil
@@ -421,22 +419,22 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 			info.disabled = 1
 			info.text = nil
 			info.func = nil
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 			info.disabled = nil
 		end
 
 		info.text = L["Add Contact"]
 		info.func = Postal_BlackBook.AddContact
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Remove Contact"]
 		info.func = Postal_BlackBook.RemoveContact
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.disabled = 1
 		info.text = nil
 		info.func = nil
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.hasArrow = 1
 		info.keepShownOnClick = 1
@@ -445,41 +443,41 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 		info.disabled = #Postal.db.profile.BlackBook.recent == 0
 		info.text = L["Recently Mailed"]
 		info.value = "recent"
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.disabled = not enableAltsMenu
 		info.text = L["Alts"]
 		info.value = "alt"
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.disabled = not enableAllAltsMenu
 		info.text = L["All Alts"]
 		info.value = "allalt"
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.disabled = Postal_BlackBook:SortAndCountNumFriends() == 0
 		info.text = L["Friends"]
 		info.value = "friend"
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.disabled = not IsInGuild()
 		info.text = L["Guild"]
 		info.value = "guild"
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		wipe(info)
 		info.disabled = 1
 		info.notCheckable = 1
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 		info.disabled = nil
 
 		info.text = CLOSE
 		info.func = self.HideMenu
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 	elseif level == 2 then
 		info.notCheckable = 1
-		if L_UIDROPDOWNMENU_MENU_VALUE == "recent" then
+		if UIDROPDOWNMENU_MENU_VALUE == "recent" then
 			local realm = GetRealmName()
 			local faction = UnitFactionGroup("player")
 			local player = UnitName("player")
@@ -491,7 +489,7 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 					info.text = p
 					info.func = Postal_BlackBook.SetSendMailName
 					info.arg1 = p
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			end
 
@@ -499,15 +497,15 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 			info.text = nil
 			info.func = nil
 			info.arg1 = nil
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 			info.disabled = nil
 
 			info.text = L["Clear list"]
 			info.func = Postal_BlackBook.ClearRecent
 			info.arg1 = nil
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
-		elseif L_UIDROPDOWNMENU_MENU_VALUE == "alt" then
+		elseif UIDROPDOWNMENU_MENU_VALUE == "alt" then
 			if not enableAltsMenu then return end
 			local db = altstable
 			info.notCheckable = 1
@@ -523,14 +521,14 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 					end
 					info.func = Postal_BlackBook.SetSendMailName
 					info.arg1 = p
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 
 				info.disabled = 1
 				info.text = nil
 				info.func = nil
 				info.arg1 = nil
-				UIDD:UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddButton(info, level)
 				info.disabled = nil
 
 				info.text = L["Delete"]
@@ -538,7 +536,7 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 				info.keepShownOnClick = 1
 				info.func = self.UncheckHack
 				info.value = "deletealt"
-				UIDD:UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddButton(info, level)
 			-- More than 25 people, split the list into multiple sublists of 25
 			elseif numAltsOnList > 25 then
 				info.hasArrow = 1
@@ -547,15 +545,15 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 				for i = 1, math.ceil(numAltsOnList/25) do
 					info.text  = L["Part %d"]:format(i)
 					info.value = "sapart"..i
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			end
 			-- ensure long lists stay on screen
-			if L_DropDownList2 then L_DropDownList2:SetClampedToScreen(true) end
-			if L_DropDownList3 then L_DropDownList3:SetClampedToScreen(true) end
-			if L_DropDownList4 then L_DropDownList4:SetClampedToScreen(true) end
+			if DropDownList2 then DropDownList2:SetClampedToScreen(true) end
+			if DropDownList3 then DropDownList3:SetClampedToScreen(true) end
+			if DropDownList4 then DropDownList4:SetClampedToScreen(true) end
 
-		elseif L_UIDROPDOWNMENU_MENU_VALUE == "allalt" then
+elseif UIDROPDOWNMENU_MENU_VALUE == "allalt" then
 			if not enableAllAltsMenu then return end
 			local db = Postal.db.global.BlackBook.alts
 			local realm = GetRealmName()
@@ -577,14 +575,14 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 						end
 						info.func = Postal_BlackBook.SetSendMailName
 						info.arg1 = ("%s-%s"):format(p, r)
-						UIDD:UIDropDownMenu_AddButton(info, level)
+						UIDropDownMenu_AddButton(info, level)
 					end
 				end
 				info.disabled = 1
 				info.text = nil
 				info.func = nil
 				info.arg1 = nil
-				UIDD:UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddButton(info, level)
 				info.disabled = nil
 
 				info.text = L["Delete"]
@@ -592,7 +590,7 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 				info.keepShownOnClick = 1
 				info.func = self.UncheckHack
 				info.value = "deleteallalt"
-				UIDD:UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddButton(info, level)
 			-- More than 25 people, split the list into multiple sublists of 25
 			elseif #db > 25 then
 				info.hasArrow = 1
@@ -601,15 +599,15 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 				for i = 1, math.ceil(#db/25) do
 					info.text  = L["Part %d"]:format(i)
 					info.value = "aapart"..i
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			end
 			-- ensure long lists stay on screen
-			if L_DropDownList2 then L_DropDownList2:SetClampedToScreen(true) end
-			if L_DropDownList3 then L_DropDownList3:SetClampedToScreen(true) end
-			if L_DropDownList4 then L_DropDownList4:SetClampedToScreen(true) end
+			if DropDownList2 then DropDownList2:SetClampedToScreen(true) end
+			if DropDownList3 then DropDownList3:SetClampedToScreen(true) end
+			if DropDownList4 then DropDownList4:SetClampedToScreen(true) end
 
-		elseif L_UIDROPDOWNMENU_MENU_VALUE == "friend" then
+		elseif UIDROPDOWNMENU_MENU_VALUE == "friend" then
 			-- Friends list
 			local numFriends = Postal_BlackBook:SortAndCountNumFriends()
 
@@ -620,7 +618,7 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 					info.text = name
 					info.func = Postal_BlackBook.SetSendMailName
 					info.arg1 = name
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			elseif numFriends > 25 then
 				-- More than 25 people, split the list into multiple sublists of 25
@@ -630,11 +628,11 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 				for i = 1, math.ceil(numFriends/25) do
 					info.text  = L["Part %d"]:format(i)
 					info.value = "fpart"..i
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			end
 
-		elseif L_UIDROPDOWNMENU_MENU_VALUE == "guild" then
+		elseif UIDROPDOWNMENU_MENU_VALUE == "guild" then
 			if not IsInGuild() then return end
 			local numFriends = GetNumGuildMembers(true)
 			for i = 1, numFriends do
@@ -652,7 +650,7 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 					info.text = sorttable[i]
 					info.func = Postal_BlackBook.SetSendMailName
 					info.arg1 = strmatch(sorttable[i], "(.*) |cffffd200")
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			-- More than 25 people, split the list into multiple sublists of 25
 			elseif numFriends > 25 then
@@ -662,15 +660,15 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 				for i = 1, math.ceil(numFriends/25) do
 					info.text  = L["Part %d"]:format(i)
 					info.value = "gpart"..i
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			end
 		end
 
 	elseif level >= 3 then
 		info.notCheckable = 1
-		if L_UIDROPDOWNMENU_MENU_VALUE == "deletealt" or L_UIDROPDOWNMENU_MENU_VALUE == "deleteallalt" then
-			local all = ( L_UIDROPDOWNMENU_MENU_VALUE == "deleteallalt" )
+		if UIDROPDOWNMENU_MENU_VALUE == "deletealt" or UIDROPDOWNMENU_MENU_VALUE == "deleteallalt" then
+			local all = ( UIDROPDOWNMENU_MENU_VALUE == "deleteallalt" )
 			local db = Postal.db.global.BlackBook.alts
 			local realm = GetRealmName()
 			local faction = UnitFactionGroup("player")
@@ -687,13 +685,13 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 					end
 					info.func = Postal_BlackBook.DeleteAlt
 					info.arg1 = db[i]
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			end
 
-		elseif strfind(L_UIDROPDOWNMENU_MENU_VALUE, "delsapart") then
+		elseif strfind(UIDROPDOWNMENU_MENU_VALUE, "delsapart") then
 			local db = altstable
-			local startIndex = tonumber(strmatch(L_UIDROPDOWNMENU_MENU_VALUE, "delsapart(%d+)")) * 25 - 24
+			local startIndex = tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "delsapart(%d+)")) * 25 - 24
 			local endIndex = math.min(startIndex+24, numAltsOnList)
 			for i = startIndex, endIndex do
 				local name = sorttable[i]
@@ -707,13 +705,13 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 					end
 					info.func = Postal_BlackBook.DeleteAlt
 					info.arg1 = db[i]
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 			end
 
-		elseif strfind(L_UIDROPDOWNMENU_MENU_VALUE, "delaapart") then
-			local all = strfind(L_UIDROPDOWNMENU_MENU_VALUE, "delaapart")
+		elseif strfind(UIDROPDOWNMENU_MENU_VALUE, "delaapart") then
+			local all = strfind(UIDROPDOWNMENU_MENU_VALUE, "delaapart")
 			local db = Postal.db.global.BlackBook.alts
-			local startIndex = tonumber(strmatch(L_UIDROPDOWNMENU_MENU_VALUE, "delaapart(%d+)")) * 25 - 24
+			local startIndex = tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "delaapart(%d+)")) * 25 - 24
 			local endIndex = math.min(startIndex+24, #db)
 			local realm = GetRealmName()
 			local faction = UnitFactionGroup("player")
@@ -730,13 +728,13 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 					end
 					info.func = Postal_BlackBook.DeleteAlt
 					info.arg1 = db[i]
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			end
 
-		elseif strfind(L_UIDROPDOWNMENU_MENU_VALUE, "sapart") then
+		elseif strfind(UIDROPDOWNMENU_MENU_VALUE, "sapart") then
 			local db = altstable
-			local startIndex = tonumber(strmatch(L_UIDROPDOWNMENU_MENU_VALUE, "sapart(%d+)")) * 25 - 24
+			local startIndex = tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "sapart(%d+)")) * 25 - 24
 			local endIndex = math.min(startIndex+24, numAltsOnList)
 			for i = startIndex, endIndex do
 				local name = sorttable[i]
@@ -751,26 +749,26 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 					end
 					info.func = Postal_BlackBook.SetSendMailName
 					info.arg1 = p
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			end
 			info.disabled = 1
 			info.text = nil
 			info.func = nil
 			info.arg1 = nil
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 			info.disabled = nil
 
 			info.text = L["Delete"]
 			info.hasArrow = 1
 			info.keepShownOnClick = 1
 			info.func = self.UncheckHack
-			info.value = "delsapart"..tonumber(strmatch(L_UIDROPDOWNMENU_MENU_VALUE, "sapart(%d+)"))
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			info.value = "delsapart"..tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "sapart(%d+)"))
+			UIDropDownMenu_AddButton(info, level)
 
-		elseif strfind(L_UIDROPDOWNMENU_MENU_VALUE, "aapart") then
+		elseif strfind(UIDROPDOWNMENU_MENU_VALUE, "aapart") then
 			local db = Postal.db.global.BlackBook.alts
-			local startIndex = tonumber(strmatch(L_UIDROPDOWNMENU_MENU_VALUE, "aapart(%d+)")) * 25 - 24
+			local startIndex = tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "aapart(%d+)")) * 25 - 24
 			local endIndex = math.min(startIndex+24, #db)
 			for i = startIndex, endIndex do
 				local name = sorttable[i]
@@ -785,43 +783,43 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 					end
 					info.func = Postal_BlackBook.SetSendMailName
 					info.arg1 = ("%s-%s"):format(p, r)
-					UIDD:UIDropDownMenu_AddButton(info, level)
+					UIDropDownMenu_AddButton(info, level)
 				end
 			end
 			info.disabled = 1
 			info.text = nil
 			info.func = nil
 			info.arg1 = nil
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 			info.disabled = nil
 
 			info.text = L["Delete"]
 			info.hasArrow = 1
 			info.keepShownOnClick = 1
 			info.func = self.UncheckHack
-			info.value = "delaapart"..tonumber(strmatch(L_UIDROPDOWNMENU_MENU_VALUE, "aapart(%d+)"))
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			info.value = "delaapart"..tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "aapart(%d+)"))
+			UIDropDownMenu_AddButton(info, level)
 
-		elseif strfind(L_UIDROPDOWNMENU_MENU_VALUE, "fpart") then
-			local startIndex = tonumber(strmatch(L_UIDROPDOWNMENU_MENU_VALUE, "fpart(%d+)")) * 25 - 24
+		elseif strfind(UIDROPDOWNMENU_MENU_VALUE, "fpart") then
+			local startIndex = tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "fpart(%d+)")) * 25 - 24
 			local endIndex = math.min(startIndex+24, numFriendsOnList)
 			for i = startIndex, endIndex do
 				local name = sorttable[i]
 				info.text = name
 				info.func = Postal_BlackBook.SetSendMailName
 				info.arg1 = name
-				UIDD:UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddButton(info, level)
 			end
 
-		elseif strfind(L_UIDROPDOWNMENU_MENU_VALUE, "gpart") then
-			local startIndex = tonumber(strmatch(L_UIDROPDOWNMENU_MENU_VALUE, "gpart(%d+)")) * 25 - 24
+		elseif strfind(UIDROPDOWNMENU_MENU_VALUE, "gpart") then
+			local startIndex = tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "gpart(%d+)")) * 25 - 24
 			local endIndex = math.min(startIndex+24, (GetNumGuildMembers(true)))
 			for i = startIndex, endIndex do
 				local name = sorttable[i]
 				info.text = sorttable[i]
 				info.func = Postal_BlackBook.SetSendMailName
 				info.arg1 = strmatch(sorttable[i], "(.*) |cffffd200")
-				UIDD:UIDropDownMenu_AddButton(info, level)
+				UIDropDownMenu_AddButton(info, level)
 			end
 		end
 
@@ -863,7 +861,7 @@ function Postal_BlackBook.ModuleMenu(self, level)
 		info.arg1 = "BlackBook"
 		info.arg2 = "AutoFill"
 		info.checked = Postal.db.profile.BlackBook.AutoFill
-		UIDD:UIDropDownMenu_AddButton(info, level)
+		UIDropDownMenu_AddButton(info, level)
 
 		info.hasArrow = 1
 		info.keepShownOnClick = 1
@@ -873,20 +871,20 @@ function Postal_BlackBook.ModuleMenu(self, level)
 		info.arg2 = nil
 		info.text = L["Name auto-completion options"]
 		info.value = "AutoComplete"
-		UIDD:UIDropDownMenu_AddButton(info, level)
-		local listFrame = _G["L_DropDownList"..level]
+		UIDropDownMenu_AddButton(info, level)
+		local listFrame = _G["DropDownList"..level]
 		self.UncheckHack(_G[listFrame:GetName().."Button"..listFrame.numButtons])
 
 	elseif level == 2 + self.levelAdjust then
 		local db = Postal.db.profile.BlackBook
 		info.arg1 = "BlackBook"
 
-		if L_UIDROPDOWNMENU_MENU_VALUE == "AutoComplete" then
+		if UIDROPDOWNMENU_MENU_VALUE == "AutoComplete" then
 			info.text = L["Use Postal's auto-complete"]
 			info.arg2 = "UseAutoComplete"
 			info.checked = db.UseAutoComplete
 			info.func = Postal_BlackBook.SetAutoComplete
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.func = Postal.SaveOption
 			info.disabled = not db.UseAutoComplete
@@ -895,22 +893,22 @@ function Postal_BlackBook.ModuleMenu(self, level)
 			info.text = L["Alts"]
 			info.arg2 = "AutoCompleteAlts"
 			info.checked = db.AutoCompleteAlts
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["All Alts"]
 			info.arg2 = "AutoCompleteAllAlts"
 			info.checked = db.AutoCompleteAllAlts
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Recently Mailed"]
 			info.arg2 = "AutoCompleteRecent"
 			info.checked = db.AutoCompleteRecent
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Contacts"]
 			info.arg2 = "AutoCompleteContacts"
 			info.checked = db.AutoCompleteContacts
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.disabled = nil
 
@@ -918,23 +916,23 @@ function Postal_BlackBook.ModuleMenu(self, level)
 			info.arg2 = "AutoCompleteFriends"
 			info.checked = db.AutoCompleteFriends
 			info.func = Postal_BlackBook.SaveFriendGuildOption
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Guild"]
 			info.arg2 = "AutoCompleteGuild"
 			info.checked = db.AutoCompleteGuild
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Exclude randoms you interacted with"]
 			info.arg2 = "ExcludeRandoms"
 			info.checked = db.ExcludeRandoms
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 
 			info.text = L["Disable Blizzard's auto-completion popup menu"]
 			info.arg2 = "DisableBlizzardAutoComplete"
 			info.checked = db.DisableBlizzardAutoComplete
 			info.func = Postal.SaveOption
-			UIDD:UIDropDownMenu_AddButton(info, level)
+			UIDropDownMenu_AddButton(info, level)
 		end
 	end
 end

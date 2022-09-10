@@ -1,9 +1,9 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: Postal
-## Version: @project-version@
-## X-Build: @project-revision@
-## X-ReleaseDate: @project-date-iso@
-## X-Revision: @project-revision@
+## Version: v3.8.2
+## X-Build: 529
+## X-ReleaseDate: 2022-09-09T17:24:21Z
+## X-Revision: 529
 ## Author: Xinhuan
 ## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb, Jonny aka The_Original_Manbot
 ## X-Category: Mail
@@ -45,3 +45,4 @@ Modules\BlackBook.lua
 Modules\DoNotWant.lua
 Modules\CarbonCopy.lua
 Modules\Forward.lua
+Modules\QuickAttach.lua
