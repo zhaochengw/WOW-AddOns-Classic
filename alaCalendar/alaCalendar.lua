@@ -3439,44 +3439,44 @@ do	--	MAIN
 				-- 	end);
 				-- end
 				if SET.show_indicator then
-					local TEXTURE = "interface\\minimap\\supertrackerarrow";
-					local NUM_TEX = 8;
-					local SPEED = 16;
-					local w, h = GameTimeFrame:GetHeight() * 4, GameTimeFrame:GetHeight();
-					local step = ceil(w / NUM_TEX);
-					w = step * NUM_TEX;
-					local indicator = CreateFrame("FRAME", nil, GameTimeFrame);
-					indicator:SetSize(w, h);
-					indicator:SetPoint("RIGHT", GameTimeFrame, "LEFT", 0, 0);
-					indicator:EnableMouse(false);
-					local textures = {  };
-					for index = 1, NUM_TEX do
-						local texture = indicator:CreateTexture(nil, "OVERLAY");
-						texture:SetSize(h / 2, h);
-						texture:SetTexture(TEXTURE);
-						texture:SetTexCoord(6 / 32, 26 / 32, 26 / 32, 26 / 32, 6 / 32, 6 / 32, 26 / 32, 6 / 32);
-						texture:SetBlendMode("ADD");
-						textures[index] = texture;
-					end
-					local timer = 0;
-					indicator:SetScript("OnUpdate", function(self, elasped)
-						timer = timer + elasped;
-						for index = 1, NUM_TEX do
-							local texture = textures[index];
-							texture:ClearAllPoints();
-							local temp = (SPEED * timer) % step;
-							texture:SetPoint("RIGHT", indicator, "RIGHT", -(step * (index - 1) - abs(temp - step * 0.5) * 2), 0);
-						end
-					end);
-					--
-					calendar:HookScript("OnShow", function()
-						indicator:Hide();
-						SET.show_indicator = false;
-					end);
-					board:HookScript("OnShow", function()
-						indicator:Hide();
-						SET.show_indicator = false;
-					end);
+					-- local TEXTURE = "interface\\minimap\\supertrackerarrow";
+					-- local NUM_TEX = 8;
+					-- local SPEED = 16;
+					-- local w, h = GameTimeFrame:GetHeight() * 4, GameTimeFrame:GetHeight();
+					-- local step = ceil(w / NUM_TEX);
+					-- w = step * NUM_TEX;
+					-- local indicator = CreateFrame("FRAME", nil, GameTimeFrame);
+					-- indicator:SetSize(w, h);
+					-- indicator:SetPoint("RIGHT", GameTimeFrame, "LEFT", 0, 0);
+					-- indicator:EnableMouse(false);
+					-- local textures = {  };
+					-- for index = 1, NUM_TEX do
+					-- 	local texture = indicator:CreateTexture(nil, "OVERLAY");
+					-- 	texture:SetSize(h / 2, h);
+					-- 	texture:SetTexture(TEXTURE);
+					-- 	texture:SetTexCoord(6 / 32, 26 / 32, 26 / 32, 26 / 32, 6 / 32, 6 / 32, 26 / 32, 6 / 32);
+					-- 	texture:SetBlendMode("ADD");
+					-- 	textures[index] = texture;
+					-- end
+					-- local timer = 0;
+					-- indicator:SetScript("OnUpdate", function(self, elasped)
+					-- 	timer = timer + elasped;
+					-- 	for index = 1, NUM_TEX do
+					-- 		local texture = textures[index];
+					-- 		texture:ClearAllPoints();
+					-- 		local temp = (SPEED * timer) % step;
+					-- 		texture:SetPoint("RIGHT", indicator, "RIGHT", -(step * (index - 1) - abs(temp - step * 0.5) * 2), 0);
+					-- 	end
+					-- end);
+					-- --
+					-- calendar:HookScript("OnShow", function()
+					-- 	indicator:Hide();
+					-- 	SET.show_indicator = false;
+					-- end);
+					-- board:HookScript("OnShow", function()
+					-- 	indicator:Hide();
+					-- 	SET.show_indicator = false;
+					-- end);
 				end
 			end
 		--	External Lib
