@@ -14,7 +14,8 @@ local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceDB = LibStub("AceDB-3.0")
-local TipHooker = LibStub("LibTipHooker-1.1")
+--local TipHooker = LibStub("LibTipHooker-1.1")
+local TipHooker = LibStub("LibTipHooker-1.0")
 local StatLogic = LibStub("LibStatLogic-1.2")
 local L = LibStub("AceLocale-3.0"):GetLocale("RatingBuster")
 local BI = LibStub("LibBabble-Inventory-3.0"):GetLookupTable()
@@ -2225,7 +2226,7 @@ function RatingBuster:OnInitialize()
 		ShoppingTooltip3, -- does this actually exist?
 	   
 	}) do
-		HookSetHyperlinkCompareItem(tooltip)
+		--HookSetHyperlinkCompareItem(tooltip)
 	end
 	
 	

@@ -1,10 +1,12 @@
-lightweight tag 66bbd0b14774fe5e434f16cdcf9c9ee4b9782dc5 3.4.0.7
+lightweight tag 516a9a0e1663663395be3b711896dbee617e640c 3.4.0.8
 Author:	LANCESTRE <lancetre@intenebris.org>
-Date:	Tue Sep 6 18:33:46 2022 +0200
+Date:	Sat Sep 10 17:14:30 2022 +0200
 
-commit 66bbd0b14774fe5e434f16cdcf9c9ee4b9782dc5
+commit 516a9a0e1663663395be3b711896dbee617e640c
 Author: LANCESTRE <lancetre@intenebris.org>
-Date:   Tue Sep 6 18:33:46 2022 +0200
+Date:   Sat Sep 10 17:14:30 2022 +0200
 
-    Update LibStatLogic-1.2.lua
+    Fix libtiphooker
+    
+    Fix TT  comparaison
 
