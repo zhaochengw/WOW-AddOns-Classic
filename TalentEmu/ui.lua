@@ -284,7 +284,7 @@ MT.BuildEnv('UI');
 				local objects = Frame.objects;
 				objects.Name:SetText(name);
 				if VT.SET.supreme and VT.TQueryCache[name] ~= nil and VT.TQueryCache[name].pack ~= nil then
-					local info = VT.__emulib.DecodeAddonPackData(VT.TQueryCache[name].pack);
+					local _, info = VT.__emulib.DecodeAddOnPackData(VT.TQueryCache[name].pack);
 					if info then
 						objects.PackLabel:SetText(info);
 						objects.PackLabel:Show();

@@ -2,7 +2,7 @@
 	ALA@163UI
 --]]--
 
-local __version = 220907.0;
+local __version = 220908.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -122,7 +122,7 @@ end
 	local COMM_TALENT_PREFIX = "!T" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
 	local COMM_GLYPH_PREFIX = "!G" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
 	local COMM_EQUIPMENT_PREFIX = "!E" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
-	local COMM_COMM_PREFIX = "!A" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
+	local COMM_ADDON_PREFIX = "!A" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
 	----------------
 	--	old version compatibility
 	local COMM_CONTROL_CODE_LEN_V1 = 6;
@@ -161,7 +161,7 @@ end
 				COMM_TALENT_PREFIX = COMM_TALENT_PREFIX,
 				COMM_GLYPH_PREFIX = COMM_GLYPH_PREFIX,
 				COMM_EQUIPMENT_PREFIX = COMM_EQUIPMENT_PREFIX,
-				COMM_COMM_PREFIX = COMM_COMM_PREFIX,
+				COMM_ADDON_PREFIX = COMM_ADDON_PREFIX,
 				----------------
 				--	old version compatibility
 				COMM_CONTROL_CODE_LEN_V1 = COMM_CONTROL_CODE_LEN_V1,
@@ -610,9 +610,9 @@ end
 		if CM ~= CLIENT_MAJOR then
 			return nil, "WOW VERSION";
 		end
-		local LIB_MAJOR = __debase64[strsub(code, 4, 4)];
-		if _TalentDataSubDecoder[LIB_MAJOR] ~= nil then
-			return _TalentDataSubDecoder[LIB_MAJOR](strsub(code, 5), nodecoding);
+		local LM = __debase64[strsub(code, 4, 4)];
+		if _TalentDataSubDecoder[LM] ~= nil then
+			return _TalentDataSubDecoder[LM](strsub(code, 5), nodecoding);
 		end
 		return nil, "NO DECODER";
 	end
@@ -927,9 +927,9 @@ end
 		if CLIENT_MAJOR ~= CLIENT_MAJOR then
 			return nil, "WOW VERSION";
 		end
-		local LIB_MAJOR = __debase64[strsub(code, 4, 4)];
-		if _GlyphDataSubDecoder[LIB_MAJOR] ~= nil then
-			return _GlyphDataSubDecoder[LIB_MAJOR](strsub(code, 5));
+		local LM = __debase64[strsub(code, 4, 4)];
+		if _GlyphDataSubDecoder[LM] ~= nil then
+			return _GlyphDataSubDecoder[LM](strsub(code, 5));
 		end
 		return nil, "NO DECODER";
 	end
@@ -988,7 +988,104 @@ end
 	end
 -->		Addon Pack
 	--
-	function __emulib.GetAddonPackData()
+	local _ColorTable = {
+		["0"] = {
+			["0"] = " |cffff0000",
+			["1"] = " |cffff7f00",
+		},
+		["1"] = {
+			["0"] = " |cff007fff",
+			["1"] = " |cff00ff00",
+		},
+	};
+	local _AddOnDataSubDecoder = {
+		[1] = function(code)
+			if code ~= nil and code ~= "" and type(code) == 'string' then
+				local val = tonumber(code);
+				if val then
+					local got = false;
+					local info = "*";
+					local index = NumAddOnPack - 1;
+					local magic = 2 ^ index;
+					while magic >= 1 do
+						if val >= magic then
+							got = true;
+							info = info .. " " .. (AddOnPackList[index + 1] or "???");
+							val = val - magic;
+						end
+						magic = magic / 2;
+						index = index - 1;
+					end
+					if got then
+						return info;
+					else
+						return "none";
+					end
+				else
+					local meta = { strsplit("`", code) };
+					local got = false;
+					local info = "";
+					for i = 1, #meta do
+						local val = meta[i];
+						local index, enabled, loaded = strsplit("~", val);
+						if index ~= nil and enabled ~= nil and loaded ~= nil then
+							index = tonumber(index);
+							if index ~= nil then
+								got = true;
+								info = info .. _ColorTable[enabled][loaded] .. (AddOnPackList[index] or "???") .. "|r";
+							end
+						end
+					end
+					if got then
+						return info;
+					else
+						return "none";
+					end
+				end
+			end
+		end,
+		[2] = function(code)
+			local len = #code;
+			if len >= 2 then
+				local info = "";
+				for pos = 1, len, 2 do
+					local v1 = __debase64[strsub(code, pos, pos)];
+					local v2 = __debase64[strsub(code, pos + 1, pos + 1)];
+					local enabled = v1 >= 32;
+					local loaded = (v1 % 32) >= 16;
+					local index = (v1 % 16) * 64 + v2;
+					info = info .. _ColorTable[enabled and "1" or "0"][loaded and "1" or "0"] .. (AddOnPackList[index] or "???") .. "|r";
+				end
+				return info;
+			end
+			return "none";
+		end,
+	};
+	function __emulib.DecodeAddOnPackDataV1(code)
+		return _AddOnDataSubDecoder[1](code);
+	end
+	function __emulib.DecodeAddOnPackDataV2(code)
+		if strsub(code, 1, 2) ~= "!A" then
+			return nil;
+		end
+		local CM = __debase64[strsub(code, 3, 3)];
+		if CM ~= CLIENT_MAJOR then
+			return nil, "WOW VERSION";
+		end
+		local LM = __debase64[strsub(code, 4, 4)];
+		if _AddOnDataSubDecoder[LM] ~= nil then
+			return _AddOnDataSubDecoder[LM](strsub(code, 5), cache);
+		end
+		return nil, "NO DECODER";
+	end
+	function __emulib.DecodeAddOnPackData(code)
+		if strsub(code, 1, 2) == "!A" then
+			return "V2", __emulib.DecodeAddOnPackDataV2(code);
+		else
+			return "V1", __emulib.DecodeAddOnPackDataV1(code);
+		end
+	end
+	function __emulib.EncodeAddOnPackDataV1()
 		local S = "a";
 		for index = 1, NumAddOnPack do
 			local pack = AddOnPackList[index];
@@ -1011,71 +1108,20 @@ end
 		__emulib.CLocalAddOnPacks = S;
 		return S;
 	end
-	local _ColorTable = {
-		["0"] = {
-			["0"] = " |cffff0000",
-			["1"] = " |cffff7f00",
-		},
-		["1"] = {
-			["0"] = " |cff007fff",
-			["1"] = " |cff00ff00",
-		},
-	};
-	function __emulib.DecodeAddonPackData(data, short)
-		if data ~= nil and data ~= "" and type(data) == 'string' then
-			local val = tonumber(data);
-			if val then
-				local got = false;
-				local info = "*";
-				local index = NumAddOnPack - 1;
-				local magic = 2 ^ index;
-				while magic >= 1 do
-					if val >= magic then
-						got = true;
-						if short then
-							info = info .. " " .. (AddOnPackList[index + 1] or "???");
-						else
-							info = info .. " " .. (AddOnPackList[index + 1] or "???") .. "-" .. index;
-						end
-						val = val - magic;
-					end
-					magic = magic / 2;
-					index = index - 1;
-				end
-				if got then
-					return info;
-				else
-					return "none";
-				end
-			else
-				local meta = { strsplit("`", data) };
-				local got = false;
-				local info = "";
-				for i = 1, #meta do
-					local val = meta[i];
-					local index, enabled, loaded = strsplit("~", val);
-					if index ~= nil and enabled ~= nil and loaded ~= nil then
-						index = tonumber(index);
-						if index ~= nil then
-							got = true;
-							if short then
-								info = info .. _ColorTable[enabled][loaded] .. (AddOnPackList[index] or "???") .. "|r";
-							else
-								info = info .. _ColorTable[enabled][loaded] .. (AddOnPackList[index] or "???") .. "-" .. index .. "|r";
-							end
-						end
-					end
-				end
-				if got then
-					return info;
-				else
-					return "none";
-				end
+	function __emulib.EncodeAddOnPackDataV2()
+		local msg = "";
+		for index = 1, NumAddOnPack do
+			local pack = AddOnPackList[index];
+			if select(5, GetAddOnInfo(pack)) ~= "MISSING" then
+				local loaded, finished = IsAddOnLoaded(pack);
+				local enabled = GetAddOnEnableState(nil, pack);
+				msg = msg .. __base64[(loaded and 1 or 0) * 16 + (enabled and 1 or 0) * 32] .. __base64[index];
 			end
 		end
+		return COMM_ADDON_PREFIX .. msg;
 	end
 -->		Equipment
-	--	item:id:...
+	--
 	local function EncodeItem(item)
 		local val = { strsplit(":", item) };
 		if val[1] == "item" then
@@ -1166,9 +1212,9 @@ end
 		if CLIENT_MAJOR ~= CLIENT_MAJOR then
 			return nil, "WOW VERSION";
 		end
-		local LIB_MAJOR = __debase64[strsub(code, 4, 4)];
-		if _EquipmentDataSubDecoder[LIB_MAJOR] ~= nil then
-			return _EquipmentDataSubDecoder[LIB_MAJOR](strsub(code, 5), cache);
+		local LM = __debase64[strsub(code, 4, 4)];
+		if _EquipmentDataSubDecoder[LM] ~= nil then
+			return _EquipmentDataSubDecoder[LM](strsub(code, 5), cache);
 		end
 		return nil, "NO DECODER";
 	end
@@ -1280,7 +1326,7 @@ end
 -->
 
 function __emulib.SendQueryRequest(shortname, realm, talent, glyph, equipment)
-	--[~=[
+	--[=[
 	if UnitInBattleground('player') and realm ~= SELFREALM then
 		if talent then
 			SendAddonMessage(COMM_PREFIX, COMM_QUERY_TALENTS_V1 .. "!" .. shortname .. "-" .. realm, "INSTANCE_CHAT");
@@ -1303,11 +1349,13 @@ function __emulib.SendQueryRequest(shortname, realm, talent, glyph, equipment)
 		end
 	end
 	--]=]
-	--[=[
-	if UnitInBattleground('player') and realm ~= SELFREALM then
-		SendAddonMessage(COMM_PREFIX, COMM_QUERY_PREFIX .. (talent and "T" or "") .. (equipment and "E" or "") .. "#" .. shortname .. "-" .. realm, "INSTANCE_CHAT");
-	else
-		SendAddonMessage(COMM_PREFIX, COMM_QUERY_PREFIX .. (talent and "T" or "") .. (equipment and "E" or ""), "WHISPER", shortname .. "-" .. realm);
+	--[~=[
+	if talent or glyph or equipment then
+		if UnitInBattleground('player') and realm ~= SELFREALM then
+			SendAddonMessage(COMM_PREFIX, COMM_QUERY_PREFIX .. (talent and "T" or "") .. (glyph and "G" or "") .. (equipment and "E" or "") .. "#" .. shortname .. "-" .. realm, "INSTANCE_CHAT");
+		else
+			SendAddonMessage(COMM_PREFIX, COMM_QUERY_PREFIX .. (talent and "T" or "") .. (glyph and "G" or "") .. (equipment and "E" or ""), "WHISPER", shortname .. "-" .. realm);
+		end
 	end
 	--]=]
 end
@@ -1399,31 +1447,28 @@ function __emulib.ProcV2Message(msg, channel, sender)
 			end
 			local name = Ambiguate(sender, 'none');
 			local now = GetTime();
-			local prev = _TThrottle[name];
-			if prev ~= nil and now - prev <= TALENT_REPLY_THROTTLED_INTERVAL then
-				return;
-			end
 			local ReplyData = {  };
 			for index = 3, #code do
 				local v = strsub(code, index, index);
 				if v == "T" then
-					ReplyData[1] = __emulib.EncodePlayerTalentDataV2();
-					if channel == "INSTANCE_CHAT" then
-						_SendFunc(COMM_REPLY_ADDON_PACK_V1_2 .. __emulib.GetAddonPackData(), "INSTANCE_CHAT");
-					else--if channel == "WHISPER" then
-						_SendFunc(COMM_REPLY_ADDON_PACK_V1_2 .. __emulib.GetAddonPackData(), "WHISPER", sender);
+					local prev = _TThrottle[name];
+					if prev == nil or now - prev > TALENT_REPLY_THROTTLED_INTERVAL then
+						_TThrottle[name] = now;
+						ReplyData[1] = __emulib.EncodePlayerTalentDataV2();
+						ReplyData[4] = __emulib.EncodeAddOnPackDataV2();
 					end
 				elseif v == "G" then
-					local name = Ambiguate(sender, 'none');
-					local now = GetTime();
 					local prev = _GThrottle[name];
-					if prev ~= nil and now - prev <= GLYPH_REPLY_THROTTLED_INTERVAL then
-						return;
+					if prev == nil or now - prev > GLYPH_REPLY_THROTTLED_INTERVAL then
+						_GThrottle[name] = now;
+						ReplyData[2] = __emulib.EncodePlayerGlyphDataV2();
 					end
-					_GThrottle[name] = now;
-					ReplyData[2] = __emulib.EncodePlayerGlyphDataV2();
 				elseif v == "E" then
-					ReplyData[3] = __emulib.EncodePlayerEquipmentDataV2();
+					local prev = _EThrottle[name];
+					if prev == nil or now - prev > EQUIPMENT_REPLY_THROTTLED_INTERVAL then
+						_EThrottle[name] = now;
+						ReplyData[3] = __emulib.EncodePlayerEquipmentDataV2();
+					end
 				elseif v == "A" then
 				else
 				end
@@ -1450,6 +1495,9 @@ function __emulib.ProcV2Message(msg, channel, sender)
 				__emulib._CommDistributor[index].OnEquipment(Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeEquipmentDataV2, overheard);
 			end
 		elseif v2_ctrl_code == "!A" then
+			for index = 1, __emulib._NumDistributors do
+				__emulib._CommDistributor[index].OnAddOn(Ambiguate(sender, 'none'), code, "V2", nil, overheard);
+			end
 		end
 	end
 end
@@ -1460,6 +1508,12 @@ function __emulib.CHAT_MSG_ADDON(prefix, msg, channel, sender, target, zoneChann
 			local control_code = strsub(msg, 1, COMM_CONTROL_CODE_LEN_V1);
 			if control_code == COMM_QUERY_TALENTS_V1 then
 				if strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, COMM_CONTROL_CODE_LEN_V1 + 1) == "!" then
+					if channel == "INSTANCE_CHAT" then
+						local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
+						if target ~= SELFFULLNAME then
+							return;
+						end
+					end
 					return __emulib.ProcV2Message("!QT", channel, sender);
 				end
 				local name = Ambiguate(sender, 'none');
@@ -1479,19 +1533,31 @@ function __emulib.CHAT_MSG_ADDON(prefix, msg, channel, sender, target, zoneChann
 				local code = __emulib.EncodePlayerTalentDataV1();
 				if code ~= nil then
 					if channel == "INSTANCE_CHAT" then
-						_SendFunc(COMM_REPLY_ADDON_PACK_V1_2 .. __emulib.GetAddonPackData(), "INSTANCE_CHAT");
+						_SendFunc(COMM_REPLY_ADDON_PACK_V1_2 .. __emulib.EncodeAddOnPackDataV1(), "INSTANCE_CHAT");
 						_SendFunc(COMM_REPLY_TALENTS_V1_2 .. code .. "#" .. sender, "INSTANCE_CHAT");
 					else--if channel == "WHISPER" then
-						_SendFunc(COMM_REPLY_ADDON_PACK_V1_2 .. __emulib.GetAddonPackData(), "WHISPER", sender);
+						_SendFunc(COMM_REPLY_ADDON_PACK_V1_2 .. __emulib.EncodeAddOnPackDataV1(), "WHISPER", sender);
 						_SendFunc(COMM_REPLY_TALENTS_V1_2 .. code, "WHISPER", sender);
 					end
 				end
 			elseif control_code == COMM_QUERY_GLYPH_V1 then
 				if CLIENT_MAJOR >= 3 then
+					if channel == "INSTANCE_CHAT" then
+						local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
+						if target ~= SELFFULLNAME then
+							return;
+						end
+					end
 					return __emulib.ProcV2Message("!QG", channel, sender);
 				end
 			elseif control_code == COMM_QUERY_EQUIPMENTS_V1 then
 				if strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, COMM_CONTROL_CODE_LEN_V1 + 1) == "!" then
+					if channel == "INSTANCE_CHAT" then
+						local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
+						if target ~= SELFFULLNAME then
+							return;
+						end
+					end
 					return __emulib.ProcV2Message("!QE", channel, sender);
 				end
 				local name = Ambiguate(sender, 'none');

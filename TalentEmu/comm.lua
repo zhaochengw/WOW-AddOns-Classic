@@ -32,7 +32,7 @@ MT.BuildEnv('COMM');
 -->		COMM
 	--
 	--	name, realm, force_update, popup, update_talent(nil means true), update_equipment(nil means true)
-	function MT.SendQueryRequest(name, realm, force_update, popup, update_talent, update_equipment)
+	function MT.SendQueryRequest(name, realm, force_update, popup, update_talent, update_glyph, update_equipment)
 		if name ~= nil then
 			local Tick = MT.GetUnifiedTime();
 			local shortname, r2 = strsplit("-", name);
@@ -62,7 +62,7 @@ MT.BuildEnv('COMM');
 										)
 									)
 								);
-			local update_gly = update_talent ~= false and
+			local update_gly = update_glyph ~= false and
 								ready and
 								(
 									cache == nil or

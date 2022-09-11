@@ -68,7 +68,7 @@ MT.BuildEnv('TOOLTIP');
 					Tip:AddLine(line);
 				end
 				if VT.SET.supreme and cache.pack ~= nil then
-					local info = VT.__emulib.DecodeAddonPackData(cache.pack, true);
+					local _, info = VT.__emulib.DecodeAddOnPackData(cache.pack);
 					if info ~= nil then
 						Tip:AddLine("|cffffffffPack|r: " .. info, 0.75, 1.0, 0.25);
 					end
@@ -103,7 +103,7 @@ MT.BuildEnv('TOOLTIP');
 			local _, unit = Tip:GetUnit();
 			if unit ~= nil and UnitIsPlayer(unit) and UnitIsConnected(unit) and UnitFactionGroup(unit) == CT.SELFFACTION then
 				local name, realm = UnitName(unit);
-				MT.SendQueryRequest(name, realm, false, false, true, false);
+				MT.SendQueryRequest(name, realm, false, false, true, false, false);
 			end
 		end
 	end
