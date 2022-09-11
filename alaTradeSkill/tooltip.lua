@@ -167,15 +167,17 @@ local function F_GetPriceInfoBySID(phase, sid, num, lines, stack_level, is_encha
 							if nsids > 0 then
 								for index = 1, #sids do
 									local sid = sids[index];
-									if __db__.get_pid_by_sid(sid) == pid then
-										local p2, c2 = F_GetPriceInfoBySID(phase, sid, num, detail_lines, stack_level + 1, nil, cid, ...);
-										p = p or p2;
-										if c2 ~= nil then
-											if c ~= nil and c > c2 or c == nil then
-												c = c2;
+									if T_PriceSpellBlackList[sid] == nil then
+										if __db__.get_pid_by_sid(sid) == pid then
+											local p2, c2 = F_GetPriceInfoBySID(phase, sid, num, detail_lines, stack_level + 1, nil, cid, ...);
+											p = p or p2;
+											if c2 ~= nil then
+												if c ~= nil and c > c2 or c == nil then
+													c = c2;
+												end
 											end
+											got = true;
 										end
-										got = true;
 									end
 								end
 							end
