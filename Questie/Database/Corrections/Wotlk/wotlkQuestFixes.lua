@@ -26,6 +26,11 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.requiredSourceItems] = {}, -- Overriding Classic correction
             [questKeys.triggerEnd] = {"Place a tribute at Grom's Monument",{[zoneIDs.ASHENVALE]={{83,78,},},},},
         },
+        [9154] = {
+            [questKeys.startedBy] = {{16241,16255}},
+            [questKeys.finishedBy] = {{16281}},
+            [questKeys.questLevel] = -1,
+        },
         [9648] = {
             [questKeys.name] = "Maatparm Mushroom Menagerie",
         },
@@ -632,6 +637,12 @@ function QuestieWotlkQuestFixes:Load()
                 [zoneIDs.UNDERCITY]={{60.67,87.66}},
                 [zoneIDs.DALARAN]={{58.3,20.5}},
             }},
+        },
+        [13410] = {
+            [questKeys.preQuestSingle] = {10143,10483},
+        },
+        [13411] = {
+            [questKeys.preQuestSingle] = {10124},
         },
         [13427] = {
             [questKeys.triggerEnd] = {"Victory in Alterac Valley", {
