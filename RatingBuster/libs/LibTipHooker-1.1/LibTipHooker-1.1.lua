@@ -245,7 +245,7 @@ local function CreateFrameHook(frameType, name, parent, inheritFrame)
 			        --print("CreateFrameHook("..tipType..") = "..name)
 		        	local tooltip = _G[name]
 					for _, methodName in ipairs(MethodList[tipType]) do
-						if type(tooltip[methodName]) == "function" then
+						if type(tooltip[methodName]) == "function" and (not TipHooker.HookedFrames[name]) then
 							hooksecurefunc(tooltip, methodName, Set[tipType])
 						end
 					end

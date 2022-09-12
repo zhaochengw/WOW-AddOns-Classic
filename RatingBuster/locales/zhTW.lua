@@ -1,6 +1,6 @@
 --[[
 Name: RatingBuster zhTW locale
-Revision: $Revision: 301 $
+Revision: $Revision: 388 $
 Translated by:
 - Whitetooth@Cenarius (hotdogee@bahamut.twbbs.org)
 - CuteMiyu
@@ -20,7 +20,6 @@ if not L then return end
 -- Waterfall --
 ---------------
 L["RatingBuster Options"] = "屬性轉換選項"
-L["Waterfall-1.0 is required to access the GUI."] = "需要 Waterfall-1.0 才能使用設定介面。"
 L["Enabled"] = "啟用"
 L["Suspend/resume this addon"] = "暫停/繼續使用這個插件"
 ---------------------------
@@ -45,18 +44,27 @@ L["Enable support for Stat Mods"] = "啟用屬性加成計算"
 -- /rb avoidancedr
 L["Enable Avoidance Diminishing Returns"] = "啟用迴避遞減效應"
 L["Dodge, Parry, Hit Avoidance values will be calculated using the avoidance deminishing return formula with your current stats"] = "你的閃避、招架、避免命中值會被計算在迴避遞減效應中"
--- /rb itemid
-L["Show ItemID"] = "顯示物品編號"
-L["Show the ItemID in tooltips"] = "顯示物品編號"
--- /rb itemlevel
-L["Show ItemLevel"] = "顯示物品等級"
-L["Show the ItemLevel in tooltips"] = "顯示物品等級"
+-- /rb subtract_equip
+--L["Enable Subtract Equipped Stats"] = "扣掉目前裝備的數值後再計算"
+--L["Enable for more accurate calculation of Mana Regen from Intellect and Spirit, and diminishing stats like Dodge, Parry, Resilience"] = "可以更精確的計算來至智力與精神得回魔，以及計算閃避、招架、韌性等遞減數值"
 -- /rb usereqlv
 L["Use Required Level"] = "使用需要等級"
 L["Calculate using the required level if you are below the required level"] = "如果你的等級低於需要等級則用需要等級來換算"
 -- /rb level
 L["Set Level"] = "設定換算等級"
 L["Set the level used in calculations (0 = your level)"] = "設定換算等級 (0 = 你的目前的等級)"
+-- /rb ilvlid
+L["Item Level and ID"] = "物品等級與編號"
+L["Settings for Item Level and Item ID"] = "物品等級與編號設定"
+-- /rb ilvlid coloritemlevel
+L["Colorize Item Level"] = "物品等級上色"
+L["Customize the color of the Item Level text"] = "自訂物品等級文字的顏色"
+-- /rb ilvlid itemlevelall
+L["Show Item Level on all items"] = "顯示所有物品等級"
+L["Display the Item Level on all items instead of just on equippable items"] = "在所有物品上顯示物品等級，而非只顯示在裝備上"
+-- /rb ilvlid itemid
+L["Show Item ID"] = "顯示物品編號"
+L["Display the Item ID on all items"] = "在所有物品上顯示物品編號"
 ---------------------------------------------------------------------------
 -- /rb rating
 L["Rating"] = "屬性等級"
@@ -109,6 +117,9 @@ L["Show Spell Damage from Strength"] = "顯示力量給的法術傷害加成"
 -- /rb stat str heal
 L["Show Healing"] = "顯示治療"
 L["Show Healing from Strength"] = "顯示力量給的治療加成"
+-- /rb stat str parryrating
+L["Show Parry Rating"] = "顯示招架等級"
+L["Show Parry Rating from Strength"] = "顯示力量給的招架加成"
 -- /rb stat str parry
 L["Show Parry"] = "顯示招架"
 L["Show Parry from Strength"] = "顯示力量給的招架加成"
@@ -128,6 +139,9 @@ L["Show Attack Power from Agility"] = "顯示敏捷給的攻擊強度"
 -- /rb stat agi rap
 L["Show Ranged Attack Power"] = "顯示遠程攻擊強度"
 L["Show Ranged Attack Power from Agility"] = "顯示敏捷給的遠程攻擊強度"
+-- /rb stat agi dmg
+L["Show Spell Damage"] = "顯示法傷"
+L["Show Spell Damage from Agility"] = "顯示敏捷給的法術傷害加成"
 -- /rb stat agi heal
 L["Show Healing"] = "顯示治療"
 L["Show Healing from Agility"] = "顯示敏捷給的治療加成"
@@ -164,11 +178,11 @@ L["Show Spell Damage from Intellect"] = "顯示智力給的法術傷害加成"
 L["Show Healing"] = "顯示治療"
 L["Show Healing from Intellect"] = "顯示智力給的治療加成"
 -- /rb stat int mp5
---L["Show Combat Mana Regen"] = "顯示施法回魔"
---L["Show Mana Regen while in combat from Intellect"] = "顯示智力給的施法中法力恢復量"
+L["Show Combat Mana Regen"] = "顯示戰鬥法力恢復"
+L["Show Mana Regen while in combat from Intellect"] = "顯示智力給的戰鬥中法力恢復量"
 -- /rb stat int mp5oc
---L["Show Normal Mana Regen"] = "顯示一般回魔"
---L["Show Mana Regen while not in combat from Intellect"] = "顯示在未施法狀態時，智力給的法力恢復量"
+L["Show Normal Mana Regen"] = "顯示一般法力恢復"
+L["Show Mana Regen while not in combat from Intellect"] = "顯示在非戰鬥狀態時，智力給的法力恢復量"
 -- /rb stat int rap
 L["Show Ranged Attack Power"] = "顯示遠程攻擊強度"
 L["Show Ranged Attack Power from Intellect"] = "顯示智力給的遠程攻擊強度"
@@ -180,23 +194,29 @@ L["Show Attack Power from Intellect"] = "顯示智力給的攻擊強度"
 L["Spirit"] = "精神"
 L["Changes the display of Spirit"] = "自訂精神解析項目"
 -- /rb stat spi mp5
---L["Show Combat Mana Regen"] = "顯示施法回魔"
---L["Show Mana Regen while in combat from Spirit"] = "顯示在施法狀態時，精神給的法力恢復量"
+--L["Show Combat Mana Regen"] = "顯示戰鬥法力恢復"
+L["Show Mana Regen while in combat from Spirit"] = "顯示在戰鬥中狀態時，精神給的法力恢復量"
 -- /rb stat spi mp5oc
 --L["Show Normal Mana Regen"] = "顯示一般回魔"
---L["Show Mana Regen while not in combat from Spirit"] = "顯示在未施法狀態時，精神給的法力恢復量"
+L["Show Mana Regen while not in combat from Spirit"] = "顯示在非戰鬥狀態時，精神給的法力恢復量"
 -- /rb stat spi hp5
---L["Show Normal Health Regen"] = "顯示回血"
---L["Show Health Regen while not in combat from Spirit"] = "顯示精神給的戰鬥外回生命力"
+L["Show Normal Health Regen"] = "顯示一般生命恢復"
+L["Show Health Regen while not in combat from Spirit"] = "顯示精神給的非戰鬥生命力恢復"
 -- /rb stat spi dmg
-L["Show Spell Damage"] = "顯示法傷"
+--L["Show Spell Damage"] = "顯示法傷"
 L["Show Spell Damage from Spirit"] = "顯示精神給的法術傷害加成"
 -- /rb stat spi heal
-L["Show Healing"] = "顯示治療"
+--L["Show Healing"] = "顯示治療"
 L["Show Healing from Spirit"] = "顯示精神給的治療加成"
 -- /rb stat spi spellcrit
 L["Show Spell Crit"] = "顯示法術致命"
 L["Show Spell Crit chance from Spirit"] = "顯示精神給的法術致命一擊機率"
+-- /rb stat spi spellhitrating
+L["Show Spell Hit Rating"] = "顯示法術命中等級"
+L["Show Spell Hit Rating from Spirit"] = "顯示精神給的法術命中等級"
+-- /rb stat spi spellhit
+L["Show Spell Hit"] = "顯示法術命中"
+L["Show Spell Hit from Spirit"] = "顯示精神給的法術命中機率"
 ---------------------------------------------------------------------------
 -- /rb stat armor
 L["Armor"] = "護甲"
@@ -245,8 +265,8 @@ L["Ignore enchants on items when calculating the stat summary"] = "統計時忽�
 L["Ignore Gems"] = "忽略寶石"
 L["Ignore gems on items when calculating the stat summary"] = "統計時忽略物品上的寶石效果"
 -- /rb sum ignore prismaticSocket
-L["Ignore Prismatic Sockets"] = "忽略多色插槽"
-L["Ignore gems in prismatic sockets when calculating the stat summary"] = "統計時忽略多色插槽裡的寶石效果"
+L["Ignore Prismatic Sockets"] = "忽略稜彩插槽"
+L["Ignore gems in prismatic sockets when calculating the stat summary"] = "統計時忽略稜彩插槽裡的寶石效果"
 -- /rb sum diffstyle
 L["Display Style For Diff Value"] = "差異值顯示方式"
 L["Display diff values in the main tooltip or only in compare tooltips"] = "設定在主提示框架或只在比較框架中顯示差異值"
@@ -291,17 +311,17 @@ L["Health <- Health, Stamina"] = "生命力 ← 生命力、耐力"
 L["Sum Mana"] = "統計法力"
 L["Mana <- Mana, Intellect"] = "法力 ← 法力、智力"
 -- /rb sum basic mp5
---L["Sum Combat Mana Regen"] = "統計法力恢復"
---L["Combat Mana Regen <- Mana Regen, Spirit"] = "法力恢復 ← 法力恢復、精神"
+L["Sum Combat Mana Regen"] = "統計戰鬥法力恢復"
+L["Combat Mana Regen <- Mana Regen, Spirit"] = "法力恢復 ← 法力恢復、精神"
 -- /rb sum basic mp5oc
---L["Sum Normal Mana Regen"] = "統計法力恢復 (未施法時)"
---L["Normal Mana Regen <- Spirit"] = "法力恢復 (未施法時) ← 精神"
+L["Sum Normal Mana Regen"] = "統計法力恢復 (未施法時)"
+L["Normal Mana Regen <- Spirit"] = "法力恢復 (未施法時) ← 精神"
 -- /rb sum basic hp5
---L["Sum Combat Health Regen"] = "統計生命恢復"
---L["Combat Health Regen <- Health Regen"] = "生命恢復 ← 生命恢復"
+L["Sum Combat Health Regen"] = "統計戰鬥生命恢復"
+L["Combat Health Regen <- Health Regen"] = "生命恢復 ← 生命恢復"
 -- /rb sum basic hp5oc
---L["Sum Normal Health Regen"] = "統計生命恢復 (未戰鬥時)"
---L["Normal Health Regen <- Spirit"] = "生命恢復 (未戰鬥時) ← 精神"
+L["Sum Normal Health Regen"] = "統計生命恢復 (未戰鬥時)"
+L["Normal Health Regen <- Spirit"] = "生命恢復 (未戰鬥時) ← 精神"
 -- /rb sum basic str
 L["Sum Strength"] = "統計力量"
 L["Strength Summary"] = "統計力量"
@@ -333,18 +353,15 @@ L["Attack Power <- Attack Power, Strength, Agility"] = "攻擊強度 ← 攻擊�
 -- /rb sum physical rap
 L["Sum Ranged Attack Power"] = "統計遠程攻擊強度"
 L["Ranged Attack Power <- Ranged Attack Power, Intellect, Attack Power, Strength, Agility"] = "遠程攻擊強度 ← 遠程攻擊強度、智力、攻擊強度、力量、敏捷"
--- /rb sum physical fap
-L["Sum Feral Attack Power"] = "統計野性攻擊強度"
-L["Feral Attack Power <- Feral Attack Power, Attack Power, Strength, Agility"] = "野性攻擊強度 ← 野性攻擊強度、攻擊強度、力量、敏捷"
 -- /rb sum physical hit
 L["Sum Hit Chance"] = "統計命中機率"
---L["Hit Chance <- Hit Rating"] = "命中機率 ← 命中等級、武器技能等級"
+L["Hit Chance <- Hit Rating"] = "命中機率 ← 命中等級"
 -- /rb sum physical hitrating
 L["Sum Hit Rating"] = "統計命中等級"
 L["Hit Rating Summary"] = "統計命中等級"
 -- /rb sum physical crit
 L["Sum Crit Chance"] = "統計致命一擊機率"
---L["Crit Chance <- Crit Rating, Agility"] = "致命一擊機率 ← 致命一擊等級、敏捷、武器技能等級"
+L["Crit Chance <- Crit Rating, Agility"] = "致命一擊機率 ← 致命一擊等級、敏捷"
 -- /rb sum physical critrating
 L["Sum Crit Rating"] = "統計致命等級"
 L["Crit Rating Summary"] = "統計致命等級"
@@ -356,13 +373,13 @@ L["Sum Haste Rating"] = "統計加速等級"
 L["Haste Rating Summary"] = "統計加速等級"
 -- /rb sum physical rangedhit
 L["Sum Ranged Hit Chance"] = "統計遠程命中機率"
---L["Ranged Hit Chance <- Hit Rating, Ranged Hit Rating"] = "遠程命中機率 ← 命中等級、武器技能等級、遠程命中等級"
+L["Ranged Hit Chance <- Hit Rating, Ranged Hit Rating"] = "遠程命中機率 ← 命中等級、遠程命中等級"
 -- /rb sum physical rangedhitrating
 L["Sum Ranged Hit Rating"] = "統計遠程命中等級"
 L["Ranged Hit Rating Summary"] = "統計遠程命中等級"
 -- /rb sum physical rangedcrit
 L["Sum Ranged Crit Chance"] = "統計遠程致命一級機率"
---L["Ranged Crit Chance <- Crit Rating, Agility, Ranged Crit Rating"] = "遠程致命一擊機率 ← 致命一擊等級、敏捷、武器技能等級、遠程致命一級等級"
+L["Ranged Crit Chance <- Crit Rating, Agility, Ranged Crit Rating"] = "遠程致命一擊機率 ← 致命一擊等級、敏捷、遠程致命一擊等級"
 -- /rb sum physical rangedcritrating
 L["Sum Ranged Crit Rating"] = "統計遠程致命一級等級"
 L["Ranged Crit Rating Summary"] = "統計遠程致命一級等級"
@@ -376,7 +393,7 @@ L["Ranged Haste Rating Summary"] = "統計遠程加速等級"
 L["Sum Weapon Max Damage"] = "統計武器最大傷害"
 L["Weapon Max Damage Summary"] = "統計武器最大傷害"
 -- /rb sum physical weapondps
---L["Sum Weapon DPS"] = true
+L["Sum Weapon DPS"] = "統計武器DPS"
 --L["Weapon DPS Summary"] = true
 -- /rb sum physical wpn
 L["Sum Weapon Skill"] = "統計武器技能"
@@ -391,6 +408,9 @@ L["Expertise Rating Summary"] = "統計熟練等級"
 -- /rb sum spell
 L["Stat - Spell"] = "統計魔法屬性"
 L["Choose spell damage and healing stats for summary"] = "自訂魔法傷害及治療屬性統計項目"
+-- /rb sum spell power
+L["Sum Spell Power"] = "統計法術能量"
+L["Spell Power <- Spell Power, Intellect, Agility, Strength"] = "法術能量 ← 法術傷害、智力、精神、耐力"
 -- /rb sum spell dmg
 L["Sum Spell Damage"] = "統計法術傷害"
 L["Spell Damage <- Spell Damage, Intellect, Spirit, Stamina"] = "法術傷害 ← 法術傷害、智力、精神、耐力"
@@ -445,19 +465,19 @@ L["Sum Armor"] = "統計護甲值"
 --L["Armor <- Armor from items and bonuses"] = "護甲值 ← 物品護甲、護甲加成、敏捷、智力"
 -- /rb sum tank dodge
 L["Sum Dodge Chance"] = "統計閃躲機率"
---L["Dodge Chance <- Dodge Rating, Agility"] = "閃躲機率 ← 閃躲等級、敏捷、防禦等級"
+L["Dodge Chance <- Dodge Rating, Agility"] = "閃躲機率 ← 閃躲等級、敏捷"
 -- /rb sum tank parry
 L["Sum Parry Chance"] = "統計招架機率"
---L["Parry Chance <- Parry Rating"] = "招架機率 ← 招架等級、防禦等級"
+L["Parry Chance <- Parry Rating"] = "招架機率 ← 招架等級"
 -- /rb sum tank block
 L["Sum Block Chance"] = "統計格擋機率"
---L["Block Chance <- Block Rating"] = "格擋機率 ← 格擋等級、防禦等級"
+L["Block Chance <- Block Rating"] = "格擋機率 ← 格擋等級"
 -- /rb sum tank neglectdodge
 L["Sum Dodge Neglect"] = "統計防止被閃躲"
---L["Dodge Neglect <- Expertise"] = "防止被閃躲 ← 熟練技能、武器技能等級"
+L["Dodge Neglect <- Expertise"] = "防止被閃躲 ← 熟練技能"
 -- /rb sum stat neglectparry
 L["Sum Parry Neglect"] = "統計防止被招架"
---L["Parry Neglect <- Expertise"] = "防止被招架 ← 熟練技能、武器技能等級"
+L["Parry Neglect <- Expertise"] = "防止被招架 ← 熟練技能"
 -- /rb sum tank resarcane
 L["Sum Arcane Resistance"] = "統計秘法抗性"
 L["Arcane Resistance Summary"] = "統計秘法抗性"
@@ -490,7 +510,7 @@ L["Sum TankPoints"] = "統計坦克點"
 L["TankPoints <- Health, Total Reduction"] = "坦克點 ← 生命力、傷害減免總值"
 -- /rb sum tank tr
 L["Sum Total Reduction"] = "統計傷害減免總值"
---L["Total Reduction <- Armor, Dodge, Parry, Block, MobMiss, MobCrit, MobCrush, DamageTakenMods"] = "傷害減免總值 ← 護甲、閃躲、招架、格擋、格檔值、防禦、韌性、怪物未擊中、怪物致命、怪物輾壓、DamageTakenMods (?)"
+L["Total Reduction <- Armor, Dodge, Parry, Block, MobMiss, MobCrit, MobCrush, DamageTakenMods"] = "傷害減免總值 ← 護甲、閃躲、招架、格擋、怪物未擊中、怪物致命、怪物輾壓、DamageTakenMods (?)"
 -- /rb sum tank avoid
 L["Sum Avoidance"] = "統計傷害迴避"
 L["Avoidance <- Dodge, Parry, MobMiss, Block(Optional)"] = "傷害迴避 ← 閃躲、招架、怪物未擊中、格擋(選項)"
@@ -580,15 +600,17 @@ L["ItemID: "] = "物品編號: "
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = "提高.-(%d+)", addInfo = "AfterNumber",},
-	{pattern = "提升.-(%d+)", addInfo = "AfterNumber",}, -- [奎克米瑞之眼] ID:27683
-	{pattern = "(%d+)。", addInfo = "AfterNumber",},
-	{pattern = "([%+%-]%d+)", addInfo = "AfterStat",},
-	{pattern = "佩戴者.-(%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
-	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat",}, -- [發光的暗影卓奈石] +6法術傷害及5耐力
+{pattern = "(%d+)。", addInfo = "AfterNumber", space = "", },
+{pattern = "([%+%-]%d+)", addInfo = "AfterStat", space = "", },
+{pattern = "佩戴者.-(%d+)", addInfo = "AfterNumber", space = "", }, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
+{pattern = "提高.-(%d+)", addInfo = "AfterNumber", space = "", },
+{pattern = "提高.-(%d+)點", addInfo = "AfterPattern", space = "", },
+{pattern = "提升.-(%d+)點", addInfo = "AfterPattern", space = "", }, -- [奎克米瑞之眼] ID:27683
+{pattern = "提升.-(%d+)", addInfo = "AfterNumber", space = "", }, -- [奎克米瑞之眼] ID:27683
+{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat", space = "", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
 }
 L["separators"] = {
-	"/", "和", ",", "。", " 持續 ", "&", "及", "並", "，",
+	"/", "和", "。", " 持續 ", "&", "及", "並", "，",
 }
 --[[ Rating ID
 CR_WEAPON_SKILL = 1;
@@ -623,54 +645,66 @@ SPELL_STAT4_NAME = "Intellect"
 SPELL_STAT5_NAME = "Spirit"
 --]]
 L["statList"] = {
-	{pattern = string.lower(SPELL_STAT1_NAME), id = SPELL_STAT1_NAME}, -- Strength
-	{pattern = string.lower(SPELL_STAT2_NAME), id = SPELL_STAT2_NAME}, -- Agility
-	{pattern = string.lower(SPELL_STAT3_NAME), id = SPELL_STAT3_NAME}, -- Stamina
-	{pattern = string.lower(SPELL_STAT4_NAME), id = SPELL_STAT4_NAME}, -- Intellect
-	{pattern = string.lower(SPELL_STAT5_NAME), id = SPELL_STAT5_NAME}, -- Spirit
-	{pattern = "防禦等級", id = CR_DEFENSE_SKILL},
-	{pattern = "閃躲等級", id = CR_DODGE},
-	{pattern = "格擋等級", id = CR_BLOCK}, -- block enchant: "+10 Shield Block Rating"
-	{pattern = "招架等級", id = CR_PARRY},
+{pattern = string.lower(SPELL_STAT1_NAME), id = SPELL_STAT1_NAME}, -- Strength
+{pattern = string.lower(SPELL_STAT2_NAME), id = SPELL_STAT2_NAME}, -- Agility
+{pattern = string.lower(SPELL_STAT3_NAME), id = SPELL_STAT3_NAME}, -- Stamina
+{pattern = string.lower(SPELL_STAT4_NAME), id = SPELL_STAT4_NAME}, -- Intellect
+{pattern = string.lower(SPELL_STAT5_NAME), id = SPELL_STAT5_NAME}, -- Spirit
+{pattern = "防禦", id = CR_DEFENSE_SKILL},
+{pattern = "閃躲", id = CR_DODGE},
+{pattern = "格擋", id = CR_BLOCK}, -- block enchant: "+10 Shield Block Rating"
+{pattern = "招架", id = CR_PARRY},
 
-	{pattern = "法術致命一擊等級", id = CR_CRIT_SPELL},
-	{pattern = "遠程攻擊致命一擊等級", id = CR_CRIT_RANGED},
-	{pattern = "致命一擊等級", id = CR_CRIT_MELEE},
+{pattern = "法術致命一擊等級", id = CR_CRIT_SPELL},
+{pattern = "遠程攻擊致命一擊", id = CR_CRIT_RANGED},
+{pattern = "致命一擊", id = CR_CRIT_MELEE},
+--{pattern = "spell crit rating", id = CR_CRIT_SPELL},
+--{pattern = "ranged critical strike rating", id = CR_CRIT_RANGED},
+--{pattern = "ranged critical strike", id = CR_CRIT_RANGED}, -- [Heartseeker Scope]
+--{pattern = "ranged critical hit rating", id = CR_CRIT_RANGED},
+--{pattern = "ranged critical rating", id = CR_CRIT_RANGED},
+{pattern = "遠程致命一擊等級", id = CR_CRIT_RANGED},
+--{pattern = "critical strike rating", id = CR_CRIT_MELEE},
+--{pattern = "critical hit rating", id = CR_CRIT_MELEE},
+--{pattern = "critical rating", id = CR_CRIT_MELEE},
+--{pattern = "crit rating", id = CR_CRIT_MELEE},
 
-	{pattern = "法術命中等級", id = CR_HIT_SPELL},
-	{pattern = "遠程命中等級", id = CR_HIT_RANGED},
-	{pattern = "命中等級", id = CR_HIT_MELEE},
+{pattern = "法術命中等級", id = CR_HIT_SPELL},
+{pattern = "遠程命中等級", id = CR_HIT_RANGED},
+{pattern = "命中", id = CR_HIT_MELEE},
 
-	{pattern = "韌性", id = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN}, -- resilience is implicitly a rating
+{pattern = "韌性", id = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN}, -- resilience is implicitly a rating
 
-	{pattern = "法術加速等級", id = CR_HASTE_SPELL},
-	{pattern = "遠程攻擊加速等級", id = CR_HASTE_RANGED},
-	{pattern = "加速等級", id = CR_HASTE_MELEE},
-	{pattern = "攻擊速度等級", id = CR_HASTE_MELEE}, -- [Drums of Battle]
+{pattern = "法術加速等級", id = CR_HASTE_SPELL},
+{pattern = "遠程攻擊加速等級", id = CR_HASTE_RANGED},
+{pattern = "加速", id = CR_HASTE_MELEE},
+{pattern = "攻擊速度", id = CR_HASTE_MELEE}, -- [Drums of Battle]
 
-	{pattern = "技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "熟練等級", id = CR_EXPERTISE}, -- 2.3
+{pattern = "技能等級", id = CR_WEAPON_SKILL},
+{pattern = "熟練", id = CR_EXPERTISE}, -- 2.3
 
-	{pattern = "命中迴避率", id = CR_HIT_TAKEN_MELEE},
-	{pattern = "護甲穿透等級", id = CR_ARMOR_PENETRATION},
-	{pattern = string.lower(ARMOR), id = ARMOR},
-	--[[
-	{pattern = "匕首技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "劍技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "雙手劍技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "斧技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "弓技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "弩技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "槍械技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "野性戰鬥技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "錘技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "長柄武器技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "法杖技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "雙手斧技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "雙手錘技能等級", id = CR_WEAPON_SKILL},
-	{pattern = "徒手戰鬥技能等級", id = CR_WEAPON_SKILL},
-	--]]
+{pattern = "命中迴避率", id = CR_HIT_TAKEN_MELEE},
+{pattern = "護甲穿透等級", id = CR_ARMOR_PENETRATION},
+{pattern = "精通", id = CR_MASTERY},
+{pattern = string.lower(ARMOR), id = ARMOR},
+--[[
+{pattern = "匕首技能等級", id = CR_WEAPON_SKILL},
+{pattern = "劍技能等級", id = CR_WEAPON_SKILL},
+{pattern = "雙手劍技能等級", id = CR_WEAPON_SKILL},
+{pattern = "斧技能等級", id = CR_WEAPON_SKILL},
+{pattern = "弓技能等級", id = CR_WEAPON_SKILL},
+{pattern = "弩技能等級", id = CR_WEAPON_SKILL},
+{pattern = "槍械技能等級", id = CR_WEAPON_SKILL},
+{pattern = "野性戰鬥技能等級", id = CR_WEAPON_SKILL},
+{pattern = "錘技能等級", id = CR_WEAPON_SKILL},
+{pattern = "長柄武器技能等級", id = CR_WEAPON_SKILL},
+{pattern = "法杖技能等級", id = CR_WEAPON_SKILL},
+{pattern = "雙手斧技能等級", id = CR_WEAPON_SKILL},
+{pattern = "雙手錘技能等級", id = CR_WEAPON_SKILL},
+{pattern = "徒手戰鬥技能等級", id = CR_WEAPON_SKILL},
+--]]
 }
+
 -------------------------
 -- Added info patterns --
 -------------------------
@@ -683,8 +717,9 @@ L["$value% Dodge"] = "$value% 閃躲"
 L["$value HP"] = "$value 生命"
 L["$value MP"] = "$value 法力"
 L["$value AP"] = "$value 強度"
+L["$value SP"] = "$value 法能"
 L["$value RAP"] = "$value 遠程強度"
-L["$value Dmg"] = "$value 法傷"
+L["$value Pwr"] = "$value 法傷"
 L["$value Heal"] = "$value 治療"
 L["$value Armor"] = "$value 護甲"
 L["$value Block"] = "$value 格擋值"
@@ -695,11 +730,13 @@ L["$value to be Dodged/Parried"] = "$value 被閃躲/被招架"
 L["$value to be Crit"] = "$value 被致命"
 L["$value Crit Dmg Taken"] = "$value 致命傷害減免"
 L["$value DOT Dmg Taken"] = "$value 持續傷害減免"
-L["$value% Parry"] = "$value% 招架"
+L["$value PVP Dmg Taken"] = "$value PVP傷害減免"
+L["$value Parry"] = "$value 招架"
 -- for hit rating showing both physical and spell conversions
 -- (+1.21%, S+0.98%)
 -- (+1.21%, +0.98% S)
 L["$value Spell"] = "$value 法術"
+L["$value Spell Hit"] = "$value 法術命中"
 
 ------------------
 -- Stat Summary --

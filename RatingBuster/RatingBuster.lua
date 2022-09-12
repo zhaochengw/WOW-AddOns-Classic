@@ -2970,6 +2970,7 @@ function RatingBuster:ProcessText(text, tooltip)
 							end
 						end
 						infoString = strjoin(", ", unpack(infoTable))
+						
 					elseif stat.id == SPELL_STAT4_NAME and isModifierKeyDown[profileDB.showStats] and isModifierKeyDown[profileDB.showStats]() then
 						---------------
 						-- Intellect --
@@ -3111,6 +3112,7 @@ function RatingBuster:ProcessText(text, tooltip)
 					if infoString ~= "" then
 						-- Add parenthesis
 						infoString = "("..infoString..")"
+				
 						-- Add Color
 						if profileDB.enableTextColor then
 							infoString = profileDB.textColor.hex..infoString..currentColorCode

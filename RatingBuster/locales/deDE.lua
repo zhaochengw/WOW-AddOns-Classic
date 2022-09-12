@@ -1,6 +1,6 @@
 --[[
 Name: RatingBuster deDE locale
-Revision: $Revision: 305 $
+Revision: $Revision: 339 $
 Translated by:
 - Kuja
 ]]
@@ -17,7 +17,6 @@ if not L then return end
 -- Waterfall --
 ---------------
 L["RatingBuster Options"] = "RatingBuster Optionen"
-L["Waterfall-1.0 is required to access the GUI."] = "Waterfall-1.0 wird zum Anzeigen der GUI benötigt"
 L["Enabled"] = "Aktiviert"
 L["Suspend/resume this addon"] = "Stoppt/Aktiviert dieses Addon"
 ---------------------------
@@ -39,21 +38,30 @@ L["Disable Blizzard stat change summary when using the built-in comparison toolt
 -- /rb statmod
 L["Enable Stat Mods"] = "Aktiviere Stat Mods"
 L["Enable support for Stat Mods"] = "Aktiviert die Unterstützung von Stat Mods"
--- /rb avoidancedr
-L["Enable Avoidance Diminishing Returns"] = "Aktiviere Diminishing Returns für Vermeidung"
-L["Dodge, Parry, Hit Avoidance values will be calculated using the avoidance deminishing return formula with your current stats"] = "Ausweichen, Parieren und Treffervermeidung wird über die Diminishing Returns (Abnehmende Wirkung) Formel berechnet"
--- /rb itemid
-L["Show ItemID"] = "Zeige ItemID"
-L["Show the ItemID in tooltips"] = "Zeigt ItemID im Tooltip"
--- /rb itemlevel
-L["Show ItemLevel"] = "Zeige ItemLevel"
-L["Show the ItemLevel in tooltips"] = "Zeigt ItemLevel im Tooltip"
+-- /rb subtract_equip
+L["Enable Subtract Equipped Stats"] = "Aktiviere Subtraktion von angelegten Stats"
+L["Enable for more accurate calculation of Mana Regen from Intellect and Spirit, and diminishing stats like Dodge, Parry, Resilience"] = "Aktivieren, um eine genauere Berechnung der Manaregeneration und von Werten mit abnehmender Wirkung wie Ausweichen, Parieren und Abhärtung zu erhalten"
+-- /rb enable_reforge_ui
+L["Enable integration with Blizzard Reforging UI"] = "Aktiviere Integration mit dem Blizzard Umschmiedungs-UI"
+L["Add rating information to the Blizzard Reforging UI"] = "Zeigt Wertungsinformationen im Blizzard Umschmiedungs-UI"
 -- /rb usereqlv
 L["Use Required Level"] = "Nutze benötigten Level"
 L["Calculate using the required level if you are below the required level"] = "Berechne auf Basis des benötigten Levels, falls du unter diesem bist"
 -- /rb level
 L["Set Level"] = "Setze Level"
 L["Set the level used in calculations (0 = your level)"] = "Legt den Level der zur Berechnung benutzt wird fest (0 = dein Level)"
+-- /rb ilvlid
+L["Item Level and ID"] = "Gegenstandsstufe und ID"
+L["Settings for Item Level and Item ID"] = "Einstellungen für die Gegenstandsstufe und ID"
+-- /rb ilvlid coloritemlevel
+L["Colorize Item Level"] = "Gegenstandsstufe einfärben"
+L["Customize the color of the Item Level text"] = "Ändere die Farbe des Gegenstandsstufe-Textes"
+-- /rb ilvlid itemlevelall
+L["Show Item Level on all items"] = "Zeige Gegenstandsstufe auf allen Gegenständen"
+L["Display the Item Level on all items instead of just on equippable items"] = "Zeigt die Gegenstandsstufe auf allen Gegenständen, anstatt nur auf ausrüstbaren Gegenständen"
+-- /rb ilvlid itemid
+L["Show Item ID"] = "Zeige Item ID"
+L["Display the Item ID on all items"] = "Zeige die Item ID auf allen Gegenständen"
 ---------------------------------------------------------------------------
 -- /rb rating
 L["Rating"] = "Wertung"
@@ -239,8 +247,8 @@ L["Hide stat summary for all cloth armor"] = "Verstecke die Werteübersicht für
 L["Ignore Leather"] = "Ignoriere Leder"
 L["Hide stat summary for all leather armor"] = "Verstecke die Werteübersicht für alle Rüstungen aus Leder"
 -- /rb sum ignore armor mail
-L["Ignore Mail"] = "Ignoriere Schwere Rüstung"
-L["Hide stat summary for all mail armor"] = "Verstecke die Werteübersicht für alle Rüstungen aus Schwerer Rüstung"
+L["Ignore Mail"] = "Ignoriere Kette"
+L["Hide stat summary for all mail armor"] = "Verstecke die Werteübersicht für alle Rüstungen aus Kette"
 -- /rb sum ignore armor plate
 L["Ignore Plate"] = "Ignoriere Platte"
 L["Hide stat summary for all plate armor"] = "Verstecke die Werteübersicht für alle Rüstungen aus Platte"
@@ -342,9 +350,6 @@ L["Attack Power <- Attack Power, Strength, Agility"] = "Angriffskraft <- Angriff
 -- /rb sum physical rap
 L["Sum Ranged Attack Power"] = "Distanzangriffskraft zusammenrechnen"
 L["Ranged Attack Power <- Ranged Attack Power, Intellect, Attack Power, Strength, Agility"] = "Distanzangriffskraft <- Distanzangriffskraft, Intelligenz, Angriffskraft, Stärke, Beweglichkeit"
--- /rb sum physical fap
-L["Sum Feral Attack Power"] = "Feral Angriffskraft zusammenrechnen"
-L["Feral Attack Power <- Feral Attack Power, Attack Power, Strength, Agility"] = "Feral Angriffskraft <- Feral Angriffskraft, Angriffskraft, Stärke, Beweglichkeit"
 -- /rb sum physical hit
 L["Sum Hit Chance"] = "Trefferchance zusammenrechnen"
 L["Hit Chance <- Hit Rating"] = "Trefferchance <- Trefferwertung"
@@ -541,7 +546,7 @@ L["Can't use the same modifier as Gem Set 2"] = "Kann nicht die gleiche Umschalt
 -----------------------
 -- Item Level and ID --
 -----------------------
-L["ItemLevel: "] = true
+L["ItemLevel: "] = "Gegenstandsstufe: "
 L["ItemID: "] = true
 -----------------------
 -- Matching Patterns --
@@ -592,16 +597,16 @@ L["ItemID: "] = true
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = " um (%d+)", addInfo = "AfterNumber",},
-	{pattern = "([%+%-]%d+)", addInfo = "AfterStat",},
-	{pattern = "verleiht.-(%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
-	{pattern = "(%d+) erhöhen.", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
+	{pattern = " (.+) um (%d+)", addInfo = "AfterNumber", space = " ", },
+	{pattern = " ([%+%-]%d+)", addInfo = "AfterStat", space = " ", },
+	{pattern = "verleiht.-(%d+)", addInfo = "AfterNumber", space = " ", }, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
+	{pattern = "(%d+) erhöhen.", addInfo = "AfterNumber", space = " ", }, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
 	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID: 24261
 	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
-	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat",}, -- [發光的暗影卓奈石] +6法術傷害及5耐力
+	{pattern = "([%+%-]%d+) (.+)", addInfo = "AfterStat", space = " ", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
 }
 L["separators"] = {
-	"/", " und ", ",", "%. ", " für ", "&", ":",
+	"/", " und ", "%. ", " für ", "&", ":",
 	-- Fix for [Mirror of Truth]
 	-- Equip: Chance on melee and ranged critical strike to increase your attack power by 1000 for 10 secs.
 	-- 1000 was falsely detected detected as ranged critical strike
@@ -639,73 +644,14 @@ SPELL_STAT3_NAME = "Ausdauer"
 SPELL_STAT4_NAME = "Intelligenz"
 SPELL_STAT5_NAME = "Willenskraft"
 --]]
-L["statList"] = {
-	{pattern = string.lower(SPELL_STAT1_NAME), id = SPELL_STAT1_NAME}, -- Strength
-	{pattern = string.lower(SPELL_STAT2_NAME), id = SPELL_STAT2_NAME}, -- Agility
-	{pattern = string.lower(SPELL_STAT3_NAME), id = SPELL_STAT3_NAME}, -- Stamina
-	{pattern = string.lower(SPELL_STAT4_NAME), id = SPELL_STAT4_NAME}, -- Intellect
-	{pattern = string.lower(SPELL_STAT5_NAME), id = SPELL_STAT5_NAME}, -- Spirit
-	{pattern = "verteidigungswertung", id = CR_DEFENSE_SKILL},
-	{pattern = "ausweichwertung", id = CR_DODGE},
-	{pattern = "blockwertung", id = CR_BLOCK}, -- block enchant: "+10 Shield Block Rating"
-	{pattern = "parierwertung", id = CR_PARRY},
--- Falls jemand ein Item mit den unten auskommentierten Patterns hat, die nicht der Übersetzung entsprechen soll er mir bescheid sagen, ich habe nix gefunden...
-	{pattern = "kritische zaubertrefferwertung", id = CR_CRIT_SPELL},
---	{pattern = "spell critical hit rating", id = CR_CRIT_SPELL},
---	{pattern = "spell critical rating", id = CR_CRIT_SPELL},
---	{pattern = "spell crit rating", id = CR_CRIT_SPELL},
-	{pattern = "kritische distanztrefferwertung", id = CR_CRIT_RANGED},
---	{pattern = "ranged critical strike", id = CR_CRIT_RANGED}, -- [Heartseeker Scope]
---	{pattern = "ranged critical hit rating", id = CR_CRIT_RANGED},
---	{pattern = "ranged critical rating", id = CR_CRIT_RANGED},
---	{pattern = "ranged crit rating", id = CR_CRIT_RANGED},
-	{pattern = "kritische trefferwertung", id = CR_CRIT_MELEE},
---	{pattern = "critical hit rating", id = CR_CRIT_MELEE},
---	{pattern = "critical rating", id = CR_CRIT_MELEE},
---	{pattern = "crit rating", id = CR_CRIT_MELEE},
 
-	{pattern = "zaubertrefferwertung", id = CR_HIT_SPELL},
-	{pattern = "distanztrefferwertung", id = CR_HIT_RANGED},
-	{pattern = "trefferwertung", id = CR_HIT_MELEE},
-
-	{pattern = "abhärtungswertung", id = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN}, -- resilience is implicitly a rating
-
-	{pattern = "zaubertempowertung", id = CR_HASTE_SPELL},
-	{pattern = "distanztempowertung", id = CR_HASTE_RANGED},
-	{pattern = "angriffstempowertung", id = CR_HASTE_MELEE},
-	{pattern = "nahkampftempowertung", id = CR_HASTE_MELEE},
-	{pattern = "tempowertung", id = CR_HASTE_MELEE}, -- [Drums of Battle]
-
---	{pattern = "skill rating", id = CR_WEAPON_SKILL}, -- seit 2.3.0 entfernt denke ich..
-	{pattern = "waffenkundewertung", id = CR_EXPERTISE},
---	{pattern = "hit avoidance rating", id = CR_HIT_TAKEN_MELEE}, - seit 2.0.10 gibt es kein item mehr damit
-	{pattern = "rüstungsdurchschlagwertung", id = CR_ARMOR_PENETRATION},
-	{pattern = "meisterschaftswertung", id = CR_MASTERY},
-	{pattern = string.lower(ARMOR), id = ARMOR},
-	--[[
-	{pattern = "dagger skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "sword skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed swords skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "axe skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "bow skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "crossbow skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "gun skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "feral combat skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "mace skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "polearm skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "staff skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed axes skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed maces skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "fist weapons skill rating", id = CR_WEAPON_SKILL},
-	--]]
-}
 -------------------------
 -- Added info patterns --
 -------------------------
 -- $value will be replaced with the number
 -- EX: "$value% Crit" -> "+1.34% Crit"
 -- EX: "Crit $value%" -> "Crit +1.34%"
-L["$value% Crit"] = "$value% krit."
+L["$value% Crit"] = "$value% Krit."
 L["$value% Spell Crit"] = "$value% Zauberkrit."
 L["$value% Dodge"] = "$value% Ausweichen"
 L["$value HP"] = true
@@ -713,7 +659,7 @@ L["$value MP"] = true
 L["$value AP"] = true
 L["$value SP"] = "$value ZM"
 L["$value RAP"] = true
-L["$value Dmg"] = "$value Schaden"
+L["$value Pwr"] = "$value Schaden"
 L["$value Heal"] = "$value Heilung"
 L["$value Armor"] = "$value Rüstung"
 L["$value Block"] = "$value Blocken"
@@ -722,8 +668,9 @@ L["$value MP5(OC)"] = true
 L["$value HP5"] = true
 L["$value to be Dodged/Parried"] = "$value wird Ausgewichen/Pariert"
 L["$value to be Crit"] = "$value wird kritisch"
-L["$value Crit Dmg Taken"] = "$value erlittener Schaden"
+L["$value Crit Dmg Taken"] = "$value erlittener krit. Schaden"
 L["$value DOT Dmg Taken"] = "$value erlittener Schaden durch DOTs"
+L["$value PVP Dmg Taken"] = "$value erlittener Schaden im PVP"
 L["$value Parry"] = "$value Parieren"
 -- for hit rating showing both physical and spell conversions
 -- (+1.21%, S+0.98%)

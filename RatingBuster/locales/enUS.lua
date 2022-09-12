@@ -1,6 +1,7 @@
+
 --[[
 Name: RatingBuster enUS locale
-Revision: $Revision: 302 $
+Revision: $Revision: 350 $
 Translated by:
 - Whitetooth (hotdogee [at] gmail [dot] com)
 ]]
@@ -17,7 +18,6 @@ if not L then return end
 -- Waterfall --
 ---------------
 L["RatingBuster Options"] = true
-L["Waterfall-1.0 is required to access the GUI."] = true
 L["Enabled"] = true
 L["Suspend/resume this addon"] = true
 ---------------------------
@@ -39,21 +39,30 @@ L["Disable Blizzard stat change summary when using the built-in comparison toolt
 -- /rb statmod
 L["Enable Stat Mods"] = true
 L["Enable support for Stat Mods"] = true
--- /rb avoidancedr
-L["Enable Avoidance Diminishing Returns"] = true
-L["Dodge, Parry, Hit Avoidance values will be calculated using the avoidance deminishing return formula with your current stats"] = true
--- /rb itemid
-L["Show ItemID"] = true
-L["Show the ItemID in tooltips"] = true
--- /rb itemlevel
-L["Show ItemLevel"] = true
-L["Show the ItemLevel in tooltips"] = true
+-- /rb subtract_equip
+L["Enable Subtract Equipped Stats"] = true
+L["Enable for more accurate calculation of Mana Regen from Intellect and Spirit, and diminishing stats like Dodge, Parry, Resilience"] = true
+-- /rb enable_reforge_ui
+L["Enable integration with Blizzard Reforging UI"] = true
+L["Add rating information to the Blizzard Reforging UI"] = true
 -- /rb usereqlv
 L["Use Required Level"] = true
 L["Calculate using the required level if you are below the required level"] = true
 -- /rb level
 L["Set Level"] = true
 L["Set the level used in calculations (0 = your level)"] = true
+-- /rb ilvlid
+L["Item Level and ID"] = true
+L["Settings for Item Level and Item ID"] = true
+-- /rb ilvlid coloritemlevel
+L["Colorize Item Level"] = true
+L["Customize the color of the Item Level text"] = true
+-- /rb ilvlid itemlevelall
+L["Show Item Level on all items"] = true
+L["Display the Item Level on all items instead of just on equippable items"] = true
+-- /rb ilvlid itemid
+L["Show Item ID"] = true
+L["Display the Item ID on all items"] = true
 ---------------------------------------------------------------------------
 -- /rb rating
 L["Rating"] = true
@@ -289,6 +298,23 @@ L["Enable to sort StatSummary alphabetically, disable to sort according to stat 
 -- /rb sum avoidhasblock
 L["Include Block Chance In Avoidance Summary"] = true
 L["Enable to include block chance in Avoidance summary, Disable for only dodge, parry, miss"] = true
+
+L["Enable Avoidance Diminishing Returns"] = true
+L["Dodge, Parry, Miss Avoidance values will be calculated using the avoidance deminishing return formula with your current stats"] = true
+L["Dodge, Parry, Hit Avoidance values will be calculated using the avoidance deminishing return formula with your current stats"] = true
+
+-- /rb itemid
+L["Show ItemID"] = true
+L["Show the ItemID in tooltips"] = true
+
+-- /rb itemlevel
+L["Show ItemLevel"] = true
+L["Show the ItemLevel in tooltips"] = true
+
+-- /rb sum stat fap
+L["Sum Feral Attack Power"] = true
+L["Feral Attack Power <- Feral Attack Power, Attack Power, Strength, Agility"] = true
+
 ---------------------------------------------------------------------------
 -- /rb sum basic
 L["Stat - Basic"] = true
@@ -342,9 +368,6 @@ L["Attack Power <- Attack Power, Strength, Agility"] = true
 -- /rb sum physical rap
 L["Sum Ranged Attack Power"] = true
 L["Ranged Attack Power <- Ranged Attack Power, Intellect, Attack Power, Strength, Agility"] = true
--- /rb sum physical fap
-L["Sum Feral Attack Power"] = true
-L["Feral Attack Power <- Feral Attack Power, Attack Power, Strength, Agility"] = true
 -- /rb sum physical hit
 L["Sum Hit Chance"] = true
 L["Hit Chance <- Hit Rating"] = true
@@ -592,16 +615,16 @@ L["ItemID: "] = true
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = " by (%d+)", addInfo = "AfterNumber",},
-	{pattern = "([%+%-]%d+)[^%%]", addInfo = "AfterStat",},
+	{pattern = " by (%d+)", addInfo = "AfterNumber", space = " ", },
+	{pattern = "([%+%-]%d+)[^%%]", addInfo = "AfterStat", space = " ", },
 	--{pattern = "grant.-(%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar ID:18348, Assassination Armor set
 	--{pattern = "add.-(%d+)", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone ID:23529
 	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID:24261
 	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
-	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat",}, -- [發光的暗影卓奈石] +6法術傷害及5耐力
+	{pattern = "(%d+)([^%d+%%|]+)", addInfo = "AfterStat", space = " ", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
 }
 L["separators"] = {
-	"/", " and ", ",", "%. ", " for ", "&", ":",
+	"/", " and ", "%. ", " for ", "&", ":",
 	-- Fix for [Mirror of Truth]
 	-- Equip: Chance on melee and ranged critical strike to increase your attack power by 1000 for 10 secs.
 	-- 1000 was falsely detected detected as ranged critical strike
@@ -640,64 +663,105 @@ SPELL_STAT4_NAME = "Intellect"
 SPELL_STAT5_NAME = "Spirit"
 --]]
 L["statList"] = {
+--Ive included the ex  They are formatted in the Blizzard globals as
+--"Increases your mastery by %s."  The gsum strips any 
+--gsub(ITEM_MOD_CRIT_RATING,"%s[%+%-]?%%.%.?","")
+
+--Stats
+	{pattern = string.lower(ARMOR), id = ARMOR},
 	{pattern = string.lower(SPELL_STAT1_NAME), id = SPELL_STAT1_NAME}, -- Strength
 	{pattern = string.lower(SPELL_STAT2_NAME), id = SPELL_STAT2_NAME}, -- Agility
 	{pattern = string.lower(SPELL_STAT3_NAME), id = SPELL_STAT3_NAME}, -- Stamina
 	{pattern = string.lower(SPELL_STAT4_NAME), id = SPELL_STAT4_NAME}, -- Intellect
 	{pattern = string.lower(SPELL_STAT5_NAME), id = SPELL_STAT5_NAME}, -- Spirit
-	{pattern = "defense rating", id = CR_DEFENSE_SKILL},
-	{pattern = "dodge rating", id = CR_DODGE},
-	{pattern = "block rating", id = CR_BLOCK}, -- block enchant: "+10 Shield Block Rating"
-	{pattern = "parry rating", id = CR_PARRY},
 
-	{pattern = "spell critical strike rating", id = CR_CRIT_SPELL},
-	{pattern = "spell critical hit rating", id = CR_CRIT_SPELL},
-	{pattern = "spell critical rating", id = CR_CRIT_SPELL},
-	{pattern = "spell crit rating", id = CR_CRIT_SPELL},
-	{pattern = "ranged critical strike rating", id = CR_CRIT_RANGED},
-	{pattern = "ranged critical strike", id = CR_CRIT_RANGED}, -- [Heartseeker Scope]
-	{pattern = "ranged critical hit rating", id = CR_CRIT_RANGED},
-	{pattern = "ranged critical rating", id = CR_CRIT_RANGED},
-	{pattern = "ranged crit rating", id = CR_CRIT_RANGED},
-	{pattern = "critical strike rating", id = CR_CRIT_MELEE},
-	{pattern = "critical hit rating", id = CR_CRIT_MELEE},
-	{pattern = "critical rating", id = CR_CRIT_MELEE},
-	{pattern = "crit rating", id = CR_CRIT_MELEE},
+	{pattern = string.lower(ITEM_MOD_STRENGTH_SHORT), id = SPELL_STAT1_NAME}, -- Strength
+	{pattern = string.lower(ITEM_MOD_AGILITY_SHORT), id = SPELL_STAT2_NAME}, -- Agility
+	{pattern = string.lower(ITEM_MOD_STAMINA_SHORT), id = SPELL_STAT3_NAME}, -- Stamina
+	{pattern = string.lower(ITEM_MOD_INTELLECT_SHORT), id = SPELL_STAT4_NAME}, -- Intellect
+	{pattern = string.lower(ITEM_MOD_SPIRIT_SHORT), id = SPELL_STAT5_NAME}, -- Spirit
+--Dodge
+	{pattern = string.lower(STAT_DODGE), id = CR_DODGE},
+	{pattern = string.lower(ITEM_MOD_DODGE_RATING_SHORT), id = CR_DODGE},
+	{pattern = string.lower(gsub(ITEM_MOD_DODGE_RATING,"%s[%+%-]?%%.%.?","")), id = CR_DODGE}, 
+--Parry
+	{pattern = string.lower(STAT_PARRY), id = CR_PARRY},
+	{pattern = string.lower(ITEM_MOD_PARRY_RATING_SHORT), id = CR_PARRY},
+	{pattern = string.lower(gsub(ITEM_MOD_PARRY_RATING,"%s[%+%-]?%%.%.?","")), id = CR_PARRY},
+--Block
+	{pattern = string.lower(STAT_BLOCK), id = CR_BLOCK}, -- block enchant: "+10 Shield Block"
+	{pattern = string.lower(ITEM_MOD_BLOCK_VALUE_SHORT), id = CR_BLOCK}, -- block enchant: "+10 Shield Block"
+	{pattern = string.lower(gsub(ITEM_MOD_BLOCK_VALUE,"%s[%+%-]?%%.%.?","")), id = CR_BLOCK}, 
+--Hit
+	{pattern = string.lower(ITEM_MOD_HIT_RATING_SHORT), id = CR_HIT_MELEE},
+	{pattern = string.lower(gsub(ITEM_MOD_HIT_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HIT_MELEE}, 
+	
+	{pattern = string.lower(ITEM_MOD_HIT_MELEE_RATING_SHORT), id = CR_HIT_MELEE},
+	{pattern = string.lower(gsub(ITEM_MOD_HIT_MELEE_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HIT_MELEE}, 
+	
+	{pattern = string.lower(ITEM_MOD_HIT_RANGED_RATING_SHORT), id = CR_HIT_RANGED},
+	{pattern = string.lower(gsub(ITEM_MOD_HIT_RANGED_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HIT_RANGED}, 
+	
+	{pattern = string.lower(ITEM_MOD_HIT_SPELL_RATING_SHORT), id = CR_HIT_SPELL},
+	{pattern = string.lower(gsub(ITEM_MOD_HIT_SPELL_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HIT_SPELL}, 
+--Crit
+	{pattern = string.lower(ITEM_MOD_CRIT_RATING_SHORT), id = CR_CRIT_MELEE},
+	{pattern = string.lower(gsub(ITEM_MOD_CRIT_RATING,"%s[%+%-]?%%.%.?","")), id = CR_CRIT_MELEE},
+	
+	{pattern = string.lower(ITEM_MOD_CRIT_MELEE_RATING_SHORT), id = CR_CRIT_MELEE},
+	{pattern = string.lower(gsub(ITEM_MOD_CRIT_MELEE_RATING,"%s[%+%-]?%%.%.?","")), id = CR_CRIT_MELEE},
+	
+	{pattern = string.lower(ITEM_MOD_CRIT_RANGED_RATING_SHORT), id = CR_CRIT_RANGED},
+	{pattern = string.lower(gsub(ITEM_MOD_CRIT_RANGED_RATING,"%s[%+%-]?%%.%.?","")), id = CR_CRIT_RANGED},
+	
+	{pattern = string.lower(ITEM_MOD_CRIT_SPELL_RATING_SHORT), id = CR_CRIT_SPELL},
+	{pattern = string.lower(gsub(ITEM_MOD_CRIT_SPELL_RATING,"%s[%+%-]?%%.%.?","")), id = CR_CRIT_SPELL},
+--Haste
+	{pattern = string.lower(ITEM_MOD_HASTE_RATING_SHORT), id = CR_HASTE_MELEE},
+	{pattern = string.lower(gsub(ITEM_MOD_HASTE_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HASTE_MELEE},
 
-	{pattern = "spell hit rating", id = CR_HIT_SPELL},
-	{pattern = "ranged hit rating", id = CR_HIT_RANGED},
-	{pattern = "hit rating", id = CR_HIT_MELEE},
+	{pattern = string.lower(ITEM_MOD_HASTE_MELEE_RATING_SHORT), id = CR_HASTE_MELEE},
+	{pattern = string.lower(gsub(ITEM_MOD_HASTE_MELEE_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HASTE_MELEE},
+	
+	{pattern = string.lower(ITEM_MOD_HASTE_RANGED_RATING_SHORT), id = CR_HASTE_RANGED},
+	{pattern = string.lower(gsub(ITEM_MOD_HASTE_RANGED_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HASTE_RANGED},
+	
+	{pattern = string.lower(ITEM_MOD_HASTE_SPELL_RATING_SHORT), id = CR_HASTE_SPELL},
+	{pattern = string.lower(gsub(ITEM_MOD_HASTE_SPELL_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HASTE_SPELL}, 
+--Expertise
+	{pattern = string.lower(ITEM_MOD_EXPERTISE_RATING_SHORT), id = CR_EXPERTISE},
+	{pattern = string.lower(gsub(ITEM_MOD_EXPERTISE_RATING,"%s[%+%-]?%%.%.?","")), id = CR_EXPERTISE},
+--Mastery
+	{pattern = string.lower(ITEM_MOD_MASTERY_RATING_SHORT), id = CR_MASTERY},
+	{pattern = string.lower(gsub(ITEM_MOD_MASTERY_RATING,"%s[%+%-]?%%.%.?","")), id = CR_MASTERY},
+--Spell Power
+	{pattern = string.lower(ITEM_MOD_SPELL_POWER_SHORT), id = SPELL_POWER},
+	{pattern = string.lower(gsub(ITEM_MOD_SPELL_POWER,"%s[%+%-]?%%.%.?","")), id = SPELL_POWER}, 
 
-	{pattern = "resilience", id = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN}, -- resilience is implicitly a rating
-
-	{pattern = "spell haste rating", id = CR_HASTE_SPELL},
-	{pattern = "ranged haste rating", id = CR_HASTE_RANGED},
-	{pattern = "haste rating", id = CR_HASTE_MELEE},
-	{pattern = "speed rating", id = CR_HASTE_MELEE}, -- [Drums of Battle]
-
-	{pattern = "skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "expertise rating", id = CR_EXPERTISE},
-
-	{pattern = "hit avoidance rating", id = CR_HIT_TAKEN_MELEE},
-	{pattern = "armor penetration rating", id = CR_ARMOR_PENETRATION},
-	{pattern = "mastery rating", id = CR_MASTERY},
-	{pattern = string.lower(ARMOR), id = ARMOR},
-	--[[
-	{pattern = "dagger skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "sword skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed swords skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "axe skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "bow skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "crossbow skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "gun skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "feral combat skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "mace skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "polearm skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "staff skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed axes skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed maces skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "fist weapons skill rating", id = CR_WEAPON_SKILL},
-	--]]
+	{pattern = string.lower(ITEM_MOD_SPELL_DAMAGE_DONE_SHORT), id = SPELL_DMG},
+	{pattern = string.lower(gsub(ITEM_MOD_SPELL_DAMAGE_DONE,"%s[%+%-]?%%.%.?","")), id = SPELL_DMG}, 
+--PVP Power
+	{pattern = string.lower(ITEM_MOD_PVP_POWER_SHORT), id = CR_PVP_POWER}, 
+	{pattern = string.lower(gsub(ITEM_MOD_PVP_POWER,"%s[%+%-]?%%.%.?","")), id = CR_PVP_POWER},
+--PVP Resil
+	{pattern = string.lower(ITEM_MOD_RESILIENCE_RATING_SHORT), id = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN},
+	{pattern = string.lower(gsub(ITEM_MOD_RESILIENCE_RATING,"%s[%+%-]?%%.%.?","")), id = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN},
+--Hit Taken
+	{pattern = string.lower(ITEM_MOD_HIT_TAKEN_RATING_SHORT), id = CR_HIT_TAKEN_MELEE},
+	{pattern = string.lower(gsub(ITEM_MOD_HIT_TAKEN_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HIT_TAKEN_MELEE},
+	
+	{pattern = string.lower(ITEM_MOD_HIT_TAKEN_MELEE_RATING_SHORT), id = CR_HIT_TAKEN_MELEE},
+	{pattern = string.lower(gsub(ITEM_MOD_HIT_TAKEN_MELEE_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HIT_TAKEN_MELEE},
+	
+	{pattern = string.lower(ITEM_MOD_HIT_TAKEN_RANGED_RATING_SHORT), id = CR_HIT_TAKEN_RANGED},
+	{pattern = string.lower(gsub(ITEM_MOD_HIT_TAKEN_RANGED_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HIT_TAKEN_RANGED},
+	
+	{pattern = string.lower(ITEM_MOD_HIT_TAKEN_SPELL_RATING_SHORT), id = CR_HIT_TAKEN_SPELL},
+	{pattern = string.lower(gsub(ITEM_MOD_HIT_TAKEN_SPELL_RATING,"%s[%+%-]?%%.%.?","")), id = CR_HIT_TAKEN_SPELL},
+--Misc
+	{pattern = string.lower(STAT_CATEGORY_DEFENSE), id = CR_DEFENSE_SKILL},
+	{pattern = string.lower(SKILL), id = CR_WEAPON_SKILL},
+	{pattern = string.lower(ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT), id = CR_ARMOR_PENETRATION},
 }
 -------------------------
 -- Added info patterns --
@@ -713,7 +777,7 @@ L["$value MP"] = true
 L["$value AP"] = true
 L["$value SP"] = true
 L["$value RAP"] = true
-L["$value Dmg"] = true
+L["$value Pwr"] = true
 L["$value Heal"] = true
 L["$value Armor"] = true
 L["$value Block"] = true
@@ -724,6 +788,7 @@ L["$value to be Dodged/Parried"] = true
 L["$value to be Crit"] = true
 L["$value Crit Dmg Taken"] = true
 L["$value DOT Dmg Taken"] = true
+L["$value PVP Dmg Taken"] = true
 L["$value Parry"] = true
 -- for hit rating showing both physical and spell conversions
 -- (+1.21%, S+0.98%)
@@ -735,3 +800,5 @@ L["$value Spell Hit"] = true
 -- Stat Summary --
 ------------------
 L["Stat Summary"] = true
+
+

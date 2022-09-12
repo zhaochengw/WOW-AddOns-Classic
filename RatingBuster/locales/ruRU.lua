@@ -1,6 +1,6 @@
 --[[
 Name: RatingBuster ruRU locale
-Revision: $Revision: 306 $
+Revision: $Revision: 343 $
 Translated by:
 - Orsana \ StingerSoft \ Swix
 ]]
@@ -17,7 +17,6 @@ if not L then return end
 -- Waterfall --
 ---------------
 L["RatingBuster Options"] = "Окно настроек"
-L["Waterfall-1.0 is required to access the GUI."] = "Требуется Waterfall чтобы открыть настройки"
 L["Enabled"] = "Включён"
 L["Suspend/resume this addon"] = "Отключить/Запустить аддон"
 ---------------------------
@@ -39,21 +38,27 @@ L["Disable Blizzard stat change summary when using the built-in comparison toolt
 -- /rb statmod
 L["Enable Stat Mods"] = "Включить модуль статистики"
 L["Enable support for Stat Mods"] = "Включает поддержку модуля статистики"
--- /rb avoidancedr
-L["Enable Avoidance Diminishing Returns"] = "Включить убывания уклонений от удара"
-L["Dodge, Parry, Hit Avoidance values will be calculated using the avoidance deminishing return formula with your current stats"] = "Значения уклонения, парирования, уклонений от удара при расчетах будет использоваться формула убывания (deminishing return) уклонений от удара по вашим текущим данным"
--- /rb itemid
-L["Show ItemID"] = "Показывать ID предметов"
-L["Show the ItemID in tooltips"] = "Показывать ID предметов в подсказке"
--- /rb itemlevel
-L["Show ItemLevel"] = "Показывать уровень предмета"
-L["Show the ItemLevel in tooltips"] = "Показывать уровень предмета в подсказке"
+-- /rb subtract_equip
+--L["Enable Subtract Equipped Stats"] = ""
+--L["Enable for more accurate calculation of Mana Regen from Intellect and Spirit, and diminishing stats like Dodge, Parry, Resilience"] = ""
 -- /rb usereqlv
 L["Use Required Level"] = "Использовать необходимый уровень"
 L["Calculate using the required level if you are below the required level"] = "Рассчитывать статы исходя из минимально необходимого для надевания предмета уровня, если вы ниже этого уровня"
 -- /rb level
 L["Set Level"] = "Задать уровень"
 L["Set the level used in calculations (0 = your level)"] = "Задать уровень используемый в расчетах (0 - ваш уровень)"
+-- /rb ilvlid
+--L["Item Level and ID"] = ""
+--L["Settings for Item Level and Item ID"] = ""
+-- /rb ilvlid coloritemlevel
+--L["Colorize Item Level"] = ""
+--L["Customize the color of the Item Level text"] = ""
+-- /rb ilvlid itemlevelall
+--L["Show Item Level on all items"] = ""
+--L["Display the Item Level on all items instead of just on equippable items"] = ""
+-- /rb ilvlid itemid
+--L["Show Item ID"] = ""
+--L["Display the Item ID on all items"] = ""
 ---------------------------------------------------------------------------
 -- /rb rating
 L["Rating"] = "Рейтинги"
@@ -342,9 +347,6 @@ L["Attack Power <- Attack Power, Strength, Agility"] = "Сила атаки <- �
 -- /rb sum physical rap
 L["Sum Ranged Attack Power"] = "Сумма силы атаки дальнего боя"
 L["Ranged Attack Power <- Ranged Attack Power, Intellect, Attack Power, Strength, Agility"] = "Сила атаки дальнего боя <- Сила атаки дальнего боя, Интеллект, Сила атаки, Сила, Ловкость"
--- /rb sum physical fap
-L["Sum Feral Attack Power"] = "Сумма силы атаки в облике зверя"
-L["Feral Attack Power <- Feral Attack Power, Attack Power, Strength, Agility"] = "Силы атаки в облике зверя <- Сила атаки в облике зверя, Сила атаки, Сила, Ловкость"
 -- /rb sum physical hit
 L["Sum Hit Chance"] = "Сумма вероятности поподания"
 L["Hit Chance <- Hit Rating"] = "Вероятности поподания <- Рейтинг меткости"
@@ -592,18 +594,18 @@ L["ItemID: "] = "ID предмета: "
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = " на (%d+)", addInfo = "AfterNumber",},
-	{pattern = "([%+%-]%d+)", addInfo = "AfterNumber",},
-	{pattern = " увеличена на (%d+)", addInfo = "AfterNumber",},
-	{pattern = "(%d+) к ", addInfo = "AfterNumber"}, -- тест
-	{pattern = "увеличение (%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
-	{pattern = "дополнительно (%d+)", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
+	{pattern = " на (%d+)", addInfo = "AfterNumber", space = " ", },
+	{pattern = "([%+%-]%d+)", addInfo = "AfterNumber", space = " ", },
+	{pattern = " увеличена на (%d+)", addInfo = "AfterNumber", space = " ", },
+	{pattern = "(%d+) к ", addInfo = "AfterNumber", space = " ", }, -- тест
+	{pattern = "увеличение (%d+)", addInfo = "AfterNumber", space = " ", }, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
+	{pattern = "дополнительно (%d+)", addInfo = "AfterNumber", space = " ", }, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
 	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID: 24261
 	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
-	{pattern = "на (%d+)([^%d%%|]+)", addInfo = "AfterNumber",}, -- [發光的暗影卓奈石] +6法術傷害及5耐力
+	{pattern = "на (%d+)([^%d%%|]+)", addInfo = "AfterNumber", space = " ", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
 }
 L["separators"] = {
-	"/", " и ", ",", "%. ", " для ", "&", ":",
+	"/", " и ", "%. ", " для ", "&", ":",
 	-- Fix for [Mirror of Truth]
 	-- Equip: Chance on melee and ranged critical strike to increase your attack power by 1000 for 10 secs.
 	-- 1000 was falsely detected detected as ranged critical strike
@@ -645,126 +647,7 @@ SPELL_STAT5_NAME = "Spirit"
 	-- рейтингу) т.к. иначе распознавание не работает.
 --
 
-L["statList"] = {
-	{pattern = string.lower("Силе атаки"), id = SPELL_STAT1115_NAME}, --чтобы Сила атаки и сила заклинаний не распознавалась как Сила
-	{pattern = string.lower("Сила атаки"), id = SPELL_STAT1115_NAME}, -- строки SPELL_STAT1115_NAME должны быть впереди
-	{pattern = string.lower("Силу атаки"), id = SPELL_STAT1115_NAME},
-	{pattern = string.lower("Сила заклинаний"), id = SPELL_STAT1115_NAME},
-	{pattern = string.lower("Силу заклинаний"), id = SPELL_STAT1115_NAME},
-	{pattern = string.lower("Силе заклинаний"), id = SPELL_STAT1115_NAME}, -- конец левых строчек
 
-	{pattern = string.lower(SPELL_STAT1_NAME), id = SPELL_STAT1_NAME}, -- Strength
-	{pattern = string.lower("Силе"), id = SPELL_STAT1_NAME},
-	{pattern = string.lower(SPELL_STAT2_NAME), id = SPELL_STAT2_NAME}, -- Agility
-	{pattern = string.lower("Ловкости"), id = SPELL_STAT2_NAME},
-	{pattern = string.lower(SPELL_STAT3_NAME), id = SPELL_STAT3_NAME}, -- Stamina
-	{pattern = string.lower("Выносливости"), id = SPELL_STAT3_NAME},
-	{pattern = string.lower(SPELL_STAT4_NAME), id = SPELL_STAT4_NAME}, -- Intellect
-	{pattern = string.lower("Интеллекту"), id = SPELL_STAT4_NAME},
-	{pattern = string.lower(SPELL_STAT5_NAME), id = SPELL_STAT5_NAME}, -- Spirit
-	{pattern = string.lower("Духу"), id = SPELL_STAT5_NAME},
-
-	{pattern = "рейтинг защиты", id = CR_DEFENSE_SKILL},
-	{pattern = "рейтингу защиты", id = CR_DEFENSE_SKILL},
-	{pattern = "рейтинга защиты", id = CR_DEFENSE_SKILL},
-	{pattern = "рейтинг уклонения", id = CR_DODGE},
-	{pattern = "рейтингу уклонения", id = CR_DODGE},
-	{pattern = "рейтинга уклонения", id = CR_DODGE},
-	{pattern = "рейтинг блокирования щитом", id = CR_BLOCK}, -- block enchant: "+10 Shield Block Rating"
-	{pattern = "рейтинга блокирования щитом", id = CR_BLOCK},
-	{pattern = "рейтингу блокирования щитом", id = CR_BLOCK},
-	{pattern = "увеличение рейтинга блокирования щита на", id = CR_BLOCK},
-	{pattern = "рейтинг блока", id = CR_BLOCK},
-	{pattern = "рейтинга блока", id = CR_BLOCK},
-	{pattern = "рейтингу блока", id = CR_BLOCK},
-	{pattern = "рейтинг парирования", id = CR_PARRY},
-	{pattern = "рейтинга парирования", id = CR_PARRY},
-	{pattern = "рейтингу парирования", id = CR_PARRY},
-
-	{pattern = "рейтинг критического удара %(заклинания%)", id = CR_CRIT_SPELL},
-	{pattern = "рейтингу критического удара %(заклинания%)", id = CR_CRIT_SPELL},
-	{pattern = "рейтинга критического удара %(заклинания%)", id = CR_CRIT_SPELL},
-	{pattern = "рейтинга критического удара заклинаниями", id = CR_CRIT_SPELL},
-	{pattern = "рейтингу критического удара заклинаниями", id = CR_CRIT_SPELL},
-	{pattern = "рейтинг критического удара заклинаниями", id = CR_CRIT_SPELL},
-	{pattern = "spell critical hit rating", id = CR_CRIT_SPELL},
-	{pattern = "spell critical rating", id = CR_CRIT_SPELL},
-	{pattern = "spell crit rating", id = CR_CRIT_SPELL},
-	{pattern = "ranged critical strike rating", id = CR_CRIT_RANGED},
-	{pattern = "к критическому удару в дальнем бою", id = CR_CRIT_RANGED}, -- [Heartseeker Scope]
-	{pattern = "ranged critical hit rating", id = CR_CRIT_RANGED},
-	{pattern = "ranged critical rating", id = CR_CRIT_RANGED},
-	{pattern = "ranged crit rating", id = CR_CRIT_RANGED},
-	{pattern = "рейтинг критического удара", id = CR_CRIT_MELEE},
-	{pattern = "рейтинг критического эффекта", id = CR_CRIT_MELEE},
-	{pattern = "рейтингу критического удара", id = CR_CRIT_MELEE},
-	{pattern = "рейтинга критического удара", id = CR_CRIT_MELEE},
-	{pattern = "рейтинг крит. удара оруж. ближнего боя", id = CR_CRIT_MELEE},
-	{pattern = "critical hit rating", id = CR_CRIT_MELEE},
-	{pattern = "critical rating", id = CR_CRIT_MELEE},
-	{pattern = "crit rating", id = CR_CRIT_MELEE},
-
-	{pattern = "рейтинг меткости %(заклинания%)", id = CR_HIT_SPELL},
-	{pattern = "рейтингу меткости %(заклинания%)", id = CR_HIT_SPELL},
-	{pattern = "рейтинга меткости %(заклинания%)", id = CR_HIT_SPELL},
-	{pattern = "рейтингу меткости заклинаний", id = CR_HIT_SPELL},
-	{pattern = "Рейтинг меткости (оруж. дальн. боя)", id = CR_HIT_RANGED},
-	{pattern = "рейтинга нанесения удара ближнего боя", id = CR_HIT_MELEE},
-	{pattern = "рейтинг меткости", id = CR_HIT_MELEE},
-	{pattern = "рейтинга меткости", id = CR_HIT_MELEE},
-	{pattern = "рейтингу меткости", id = CR_HIT_MELEE},
-
-	{pattern = "рейтинг устойчивости", id = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN}, -- resilience is implicitly a rating
-	{pattern = "рейтингу устойчивости", id = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN},
-	{pattern = "рейтинга устойчивости", id = COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN},
-
-	{pattern = "рейтинг скорости %(заклинания%)", id = CR_HASTE_SPELL},
-	{pattern = "рейтингу скорости %(заклинания%)", id = CR_HASTE_SPELL},
-	{pattern = "рейтинга скорости %(заклинания%)", id = CR_HASTE_SPELL},
-	{pattern = "скорости наложения заклинаний", id = CR_HASTE_SPELL},
-	{pattern = "скорость наложения заклинаний", id = CR_HASTE_SPELL},
-	{pattern = "рейтинг скорости дальнего боя", id = CR_HASTE_RANGED},
-	{pattern = "рейтингу скорости дальнего боя", id = CR_HASTE_RANGED},
-	{pattern = "рейтинга скорости дальнего боя", id = CR_HASTE_RANGED},
-	{pattern = "рейтинг скорости", id = CR_HASTE_MELEE},
-	{pattern = "рейтингу скорости", id = CR_HASTE_MELEE},
-	{pattern = "рейтинга скорости", id = CR_HASTE_MELEE},
-	{pattern = "speed rating", id = CR_HASTE_MELEE}, -- [Drums of Battle]
-
-	{pattern = "рейтинг владения", id = CR_WEAPON_SKILL},
-	{pattern = "рейтингу владения", id = CR_WEAPON_SKILL},
-	{pattern = "рейтинга владения", id = CR_WEAPON_SKILL},
-	{pattern = "рейтинг мастерства", id = CR_EXPERTISE},
-	{pattern = "рейтингу мастерства", id = CR_EXPERTISE},
-	{pattern = "рейтинга мастерства", id = CR_EXPERTISE},
-
-	{pattern = "рейтинг уклонения от удара", id = CR_HIT_TAKEN_MELEE},
-	{pattern = "Рейтингу уклонения от удара", id = CR_HIT_TAKEN_MELEE},
-	{pattern = "рейтинга уклонения от удара", id = CR_HIT_TAKEN_MELEE},
-	{pattern = "рейтинг пробивания брони", id = CR_ARMOR_PENETRATION},
-	{pattern = "рейтингу пробивания брони", id = CR_ARMOR_PENETRATION},
-	{pattern = "рейтинга пробивания брони", id = CR_ARMOR_PENETRATION},
-	{pattern = "рейтинг искусности", id = CR_MASTERY},
-	{pattern = "рейтингу искусности", id = CR_MASTERY},
-	{pattern = "рейтинга искусности", id = CR_MASTERY},
-	{pattern = string.lower(ARMOR), id = ARMOR},
-	--[[
-	{pattern = "dagger skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "sword skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed swords skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "axe skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "bow skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "crossbow skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "gun skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "feral combat skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "mace skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "polearm skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "staff skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed axes skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed maces skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "fist weapons skill rating", id = CR_WEAPON_SKILL},
-	--]]
-}
 -------------------------
 -- Added info patterns --
 -------------------------
@@ -778,7 +661,7 @@ L["$value HP"] = "$value Здор"
 L["$value MP"] = "$value Мана"
 L["$value AP"] = "$value Сила атаки"
 L["$value RAP"] = "$value САДБ"
-L["$value Dmg"] = "$value урона"
+L["$value Pwr"] = "$value урона"
 L["$value Heal"] = "$value Исцеления"
 L["$value Armor"] = "$value Броня"
 L["$value Block"] = "$value% Блок"
@@ -789,7 +672,7 @@ L["$value to be Dodged/Parried"] = "$value% уклон/парир"
 L["$value to be Crit"] = "$value% крит"
 L["$value Crit Dmg Taken"] = "$value крит урон"
 L["$value DOT Dmg Taken"] = "$value сила дотов"
-L["$value% Parry"] = "$value% парирование"
+L["$value Parry"] = "$value парирование"
 -- for hit rating showing both physical and spell conversions
 -- (+1.21%, S+0.98%)
 -- (+1.21%, +0.98% S)

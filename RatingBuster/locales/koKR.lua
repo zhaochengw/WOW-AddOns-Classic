@@ -1,6 +1,6 @@
 --[[
 Name: RatingBuster koKR locale
-Revision: $Revision: 308 $
+Revision: $Revision: 339 $
 Translated by:
 - Slowhand, 7destiny, kcgcom, fenlis
 ]]
@@ -17,7 +17,6 @@ if not L then return end
 -- Waterfall --
 ---------------
 L["RatingBuster Options"] = "RatingBuster 설정"
-L["Waterfall-1.0 is required to access the GUI."] = "GUI를 표시하려면 Waterfall-1.0 라이브러리가 필요합니다!"
 L["Enabled"] = "사용"
 L["Suspend/resume this addon"] = "이 애드온 중지/다시 시작"
 ---------------------------
@@ -39,21 +38,27 @@ L["Disable Blizzard stat change summary when using the built-in comparison toolt
 -- /rb statmod
 L["Enable Stat Mods"] = "기본 능력치에 가중치 적용"
 L["Enable support for Stat Mods"] = "기본 능력치에 특성이나 버프, 태세(형상, 폼)등에 의한 가중치를 적용합니다."
--- /rb avoidancedr
-L["Enable Avoidance Diminishing Returns"] = "방어행동 점감 효과 사용"
-L["Dodge, Parry, Hit Avoidance values will be calculated using the avoidance deminishing return formula with your current stats"] = "회피, 무기 막기, 빗맞힘 수치를 현재 능력치에서 점감 효과를 적용하여 계산합니다."
--- /rb itemid
-L["Show ItemID"] = "아이템 ID 표시"
-L["Show the ItemID in tooltips"] = "툴팁에 아이템 ID를 표시합니다."
--- /rb itemlevel
-L["Show ItemLevel"] = "아이템 레벨 표시"
-L["Show the ItemLevel in tooltips"] = "툴팁에 아이템 레벨을 표시합니다."
+-- /rb subtract_equip
+--L["Enable Subtract Equipped Stats"] = ""
+--L["Enable for more accurate calculation of Mana Regen from Intellect and Spirit, and diminishing stats like Dodge, Parry, Resilience"] = ""
 -- /rb usereqlv
 L["Use Required Level"] = "최소 요구 레벨 사용"
 L["Calculate using the required level if you are below the required level"] = "레벨이 낮아 사용하지 못하는 경우 최소 요구 레벨에 따라 계산합니다."
 -- /rb level
 L["Set Level"] = "레벨 설정"
 L["Set the level used in calculations (0 = your level)"] = "계산에 적용할 레벨을 설정합니다. (0 = 자신의 레벨)"
+-- /rb ilvlid
+--L["Item Level and ID"] = ""
+--L["Settings for Item Level and Item ID"] = ""
+-- /rb ilvlid coloritemlevel
+--L["Colorize Item Level"] = ""
+--L["Customize the color of the Item Level text"] = ""
+-- /rb ilvlid itemlevelall
+--L["Show Item Level on all items"] = ""
+--L["Display the Item Level on all items instead of just on equippable items"] = ""
+-- /rb ilvlid itemid
+--L["Show Item ID"] = ""
+--L["Display the Item ID on all items"] = ""
 ---------------------------------------------------------------------------
 -- /rb rating
 L["Rating"] = "전투 숙련도"
@@ -342,9 +347,6 @@ L["Attack Power <- Attack Power, Strength, Agility"] = "전투력 <- 전투력, 
 -- /rb sum physical rap
 L["Sum Ranged Attack Power"] = "원거리 전투력 합계"
 L["Ranged Attack Power <- Ranged Attack Power, Intellect, Attack Power, Strength, Agility"] = "원거리 전투력 <- 원거리 전투력, 지능, 전투력, 힘, 민첩성"
--- /rb sum physical fap
-L["Sum Feral Attack Power"] = "야성 전투력 합계"
-L["Feral Attack Power <- Feral Attack Power, Attack Power, Strength, Agility"] = "야성 전투력 <- 야성 전투력, 전투력, 힘, 민첩성"
 -- /rb sum physical hit
 L["Sum Hit Chance"] = "적중률 합계"
 L["Hit Chance <- Hit Rating"] = "적중률 <- 적중도"
@@ -592,16 +594,16 @@ L["ItemID: "] = "아이템ID: "
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
-	{pattern = "(%d+)만큼", addInfo = "AfterNumber",},
-	{pattern = "([%+%-]%d+)[^%%]", addInfo = "AfterStat",},
+	{pattern = "(%d+)만큼", addInfo = "AfterNumber", space = " ", },
+	{pattern = "([%+%-]%d+)[^%%]", addInfo = "AfterStat", space = " ", },
 	--{pattern = "grant.-(%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar ID:18348, Assassination Armor set
 	--{pattern = "add.-(%d+)", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
 	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID:24261
 	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
-	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat",}, -- [發光的暗影卓奈石] +6法術傷害及5耐力
+	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat", space = " ", }, -- [發光的暗影卓奈石] +6法術傷害及5耐力
 }
 L["separators"] = {
-	"/", " and ", ",", "%. ", " for ", "&", ":",
+	"/", " and ", "%. ", " for ", "&", ":",
 	-- Fix for [Mirror of Truth]
 	-- Equip: Chance on melee and ranged critical strike to increase your attack power by 1000 for 10 secs.
 	-- 1000 was falsely detected detected as ranged critical strike
@@ -639,68 +641,7 @@ SPELL_STAT3_NAME = "체력"
 SPELL_STAT4_NAME = "지능"
 SPELL_STAT5_NAME = "정신력"
 --]]
-L["statList"] = {
-	{pattern = string.lower(SPELL_STAT1_NAME), id = SPELL_STAT1_NAME}, -- Strength
-	{pattern = string.lower(SPELL_STAT2_NAME), id = SPELL_STAT2_NAME}, -- Agility
-	{pattern = string.lower(SPELL_STAT3_NAME), id = SPELL_STAT3_NAME}, -- Stamina
-	{pattern = string.lower(SPELL_STAT4_NAME), id = SPELL_STAT4_NAME}, -- Intellect
-	{pattern = string.lower(SPELL_STAT5_NAME), id = SPELL_STAT5_NAME}, -- Spirit
-	{pattern = "방어 숙련도", id = CR_DEFENSE_SKILL},
-	{pattern = "회피 숙련도", id = CR_DODGE},
-	{pattern = "방패 막기 숙련도", id = CR_BLOCK}, -- block enchant: "+10 Shield Block Rating"
-	{pattern = "무기 막기 숙련도", id = CR_PARRY},
 
-	{pattern = "주문 극대화 적중도", id = CR_CRIT_SPELL},
-	{pattern = "주문의 극대화 적중도", id = CR_CRIT_SPELL},
---		{pattern = "spell critical rating", id = CR_CRIT_SPELL},
---		{pattern = "spell crit rating", id = CR_CRIT_SPELL},
-	{pattern = "원거리 치명타 적중도", id = CR_CRIT_RANGED},
-	{pattern = "원거리 치명타", id = CR_CRIT_RANGED}, -- [Heartseeker Scope]
---		{pattern = "ranged critical hit rating", id = CR_CRIT_RANGED},
---		{pattern = "ranged critical rating", id = CR_CRIT_RANGED},
---		{pattern = "ranged crit rating", id = CR_CRIT_RANGED},
-	{pattern = "치명타 적중도", id = CR_CRIT_MELEE},
-	{pattern = "근접 치명타 적중도", id = CR_CRIT_MELEE},
-	{pattern = "critical rating", id = CR_CRIT_MELEE},
---		{pattern = "crit rating", id = CR_CRIT_MELEE},
-
-	{pattern = "주문 적중도", id = CR_HIT_SPELL},
-	{pattern = "원거리 적중도", id = CR_HIT_RANGED},
-	{pattern = "적중도", id = CR_HIT_MELEE},
-
-	{pattern = "탄력도", id = CR_CRIT_TAKEN_MELEE}, -- resilience is implicitly a rating
-
-	{pattern = "주문 가속도", id = CR_HASTE_SPELL},
-	{pattern = "주문 시전 가속도", id = CR_HASTE_SPELL},
-	{pattern = "원거리 공격 가속도", id = CR_HASTE_RANGED},
-	{pattern = "공격 가속도", id = CR_HASTE_MELEE},
-	{pattern = "가속도", id = CR_HASTE_MELEE}, -- [Drums of Battle]
-
-	{pattern = "무기 숙련도", id = CR_WEAPON_SKILL},
-	{pattern = "숙련도", id = CR_EXPERTISE},
-	{pattern = "숙련", id = CR_EXPERTISE}, -- WotLK beta Gem
-
-	{pattern = "근접 공격 회피", id = CR_HIT_TAKEN_MELEE},
-	{pattern = "방어구 관통력", id = CR_ARMOR_PENETRATION},	--armor penetration rating
-	{pattern = "특화도", id = CR_MASTERY},
-	{pattern = string.lower(ARMOR), id = ARMOR},
-	--[[
-	{pattern = "dagger skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "sword skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed swords skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "axe skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "bow skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "crossbow skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "gun skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "feral combat skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "mace skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "polearm skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "staff skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed axes skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "two%-handed maces skill rating", id = CR_WEAPON_SKILL},
-	{pattern = "fist weapons skill rating", id = CR_WEAPON_SKILL},
-	--]]
-}
 -------------------------
 -- Added info patterns --
 -------------------------
@@ -715,7 +656,7 @@ L["$value MP"] = "마나 $value"
 L["$value AP"] = "전투력 $value"
 L["$value SP"] = "주문력 $value"
 L["$value RAP"] = "원거리 $value"
-L["$value Dmg"] = "주문력 $value"
+L["$value Pwr"] = "주문력 $value"
 L["$value Heal"] = "치유량 $value"
 L["$value Armor"] = "방어도 $value"
 L["$value Block"] = "방피량 $value"
@@ -726,7 +667,8 @@ L["$value to be Dodged/Parried"] = "회피/막음 $value"
 L["$value to be Crit"] = "치명타 적중 $value"
 L["$value Crit Dmg Taken"] = "치명타 피해 $value"
 L["$value DOT Dmg Taken"] = "DoT 피해 $value"
-L["$value Parry"] = "무막 $value%"
+L["$value PVP Dmg Taken"] = "PVP 피해 $value"
+L["$value Parry"] = "무막 $value"
 -- for hit rating showing both physical and spell conversions
 -- (+1.21%, S+0.98%)
 -- (+1.21%, +0.98% S)

@@ -6986,7 +6986,7 @@ local numTalents = GetNumTalents(tab);
         nameTalent, icon, tier, column, currRank, maxRank= GetTalentInfo(tab,i);
         name, rank, icon, castTime, minRange, maxRange, spellID = GetSpellInfo(spellid)
 			if name == nameTalent then
-			DEFAULT_CHAT_FRAME:AddMessage("IndexTalent :"..i.."- "..nameTalent) 
+			--DEFAULT_CHAT_FRAME:AddMessage("IndexTalent :"..i.."- "..nameTalent) 
 			return i
 			end
 	end

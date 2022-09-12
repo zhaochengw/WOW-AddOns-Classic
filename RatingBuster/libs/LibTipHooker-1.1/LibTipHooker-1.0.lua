@@ -147,13 +147,13 @@ local MethodList = {
 local HandlerList = {}
 
 local Set = {
-	item = function(tooltip)
+	item = function(tooltip, ...)
 		if not tooltip.GetItem then return end
 		local name, link = tooltip:GetItem()
 		-- Check for empty slots
 		if not name then return end
 		for handler in pairs(HandlerList.item) do
-			handler(tooltip, name, link)
+			handler(tooltip, name, link, ...)
 		end
 	end,
 	buff = function(tooltip, unitId, buffIndex, raidFilter)
@@ -213,7 +213,7 @@ local function InitializeHook(tipType)
 								tooltip:HookScript(methodName, Set[tipType])
 							end
 						end
-						tinsert(TipHooker.SupportedTooltips, tooltip)
+						--tinsert(TipHooker.SupportedTooltips, tooltip)
 						break
 					end
 		        end
@@ -229,17 +229,18 @@ local function CreateFrameHook(frameType, name, parent, inheritFrame)
 	if name and frameType == "GameTooltip" then
 		for tipType in pairs(HandlerList) do
 	        for _, v in ipairs(TooltipList[tipType]) do
-	        	if strfind(name, v) then
+				-- prevent double hooking by checking HookedFrames table									
+	        	if strfind(name, v) and not HookedFrames[name]  then
 			        print("CreateFrameHook("..tipType..") = "..name)
 		        	local tooltip = _G[name]
 					for _, methodName in ipairs(MethodList[tipType]) do
 						-- prevent double hooking by checking HookedFrames table
 						if (type(tooltip[methodName]) == "function") and (not TipHooker.HookedFrames[name]) then
-							TipHooker.HookedFrames[name] = true
+							--TipHooker.HookedFrames[name] = true
 							hooksecurefunc(tooltip, methodName, Set[tipType])
 						end
 					end
-					tinsert(TipHooker.SupportedTooltips, tooltip)
+					--tinsert(TipHooker.SupportedTooltips, tooltip)
 					break
 				end
 	        end
@@ -251,6 +252,10 @@ end
 ------------------
 -- OnEventFrame --
 ------------------
+if TipHooker.OnEventFrame then -- Check for old frame
+	TipHooker.OnEventFrame:UnregisterAllEvents()
+	TipHooker.OnEventFrame:SetScript("OnEvent", nil)
+end												 
 local OnEventFrame = CreateFrame("Frame")
 
 OnEventFrame:RegisterEvent("VARIABLES_LOADED")
