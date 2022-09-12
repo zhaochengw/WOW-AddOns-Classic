@@ -7,10 +7,6 @@ if not AL then return end
 AL["Add line break before source."] = "Agrega un salto de línea antes de la fuente."
 AL["Add new list"] = "Añade nueva lista"
 AL["Added |cff00ff00%d|r items into list |cff00ff00%s|r."] = "|cff00ff00%d|r añadidos a la lista |cff00ff00%s|r"
---[[Translation missing --]]
---[[ AL[ [=[Also add the info into every ToolTip.
-This only works with the source Addon.]=] ] = [=[Also add the info into every ToolTip.
-This only works with the source Addon.]=]--]] 
 AL["Always active for all Profiles."] = "Siempre activo para todos los perfiles."
 AL["Always active for profile: |cff00ff00%s|r"] = "Siempre activo para perfil: |cff00ff00%s|r"
 AL["Always marks items as favourite for every profile if enabled."] = "Siempre marcar como favorito para todos los perfiles si activado."
@@ -31,11 +27,11 @@ AL["Enable auto selection of instances if available."] = "Activar selección aut
 --[[ AL["Enable colored loot table names."] = "Enable colored loot table names."--]] 
 AL["Enable WoWHead links."] = "Activar enlaces de WoWHead."
 AL["Export item list"] = "Exportar lista de objetos"
+--[[Translation missing --]]
+--[[ AL["Extra tooltip info"] = "Extra tooltip info"--]] 
 AL["Font"] = "Fuente"
 AL["Font color/alpha"] = "Color/alfa del fuente"
 AL["Font size"] = "Tamaño del fuente"
---[[Translation missing --]]
---[[ AL["Global"] = "Global"--]] 
 AL["Icon"] = "Icono"
 AL["Import item list"] = "Importar lista de objetos"
 AL["Lock minimap button."] = "Bloquear botón del minimapa."
@@ -57,10 +53,15 @@ AL["Show content phase indicator for items."] = "Mostrar indicador del fase de c
 AL["Show content phase indicator for loottables."] = "Mostrar indicador del fase de contenido para tablas de botín."
 AL["Show content phase indicator for sets."] = "Mostrar indicador del fase de contenido para conjuntos."
 AL["Show drop rate if available."] = "Mostrar probabilidad conseguirse si está disponible."
-AL["Show favourite item icon in item tooltip"] = "Mostrar icono de objeto favorito en el tooltip del icono."
-AL["Show ID's in tooltip."] = "Mostrar ID en tooltip."
 --[[Translation missing --]]
---[[ AL["Show Item level in tooltip."] = "Show Item level in tooltip."--]] 
+--[[ AL["Show extra info in every tooltip."] = "Show extra info in every tooltip."--]] 
+AL["Show favourite item icon in item tooltip"] = "Mostrar icono de objeto favorito en el tooltip del icono."
+--[[Translation missing --]]
+--[[ AL["Show ID's."] = "Show ID's."--]] 
+--[[Translation missing --]]
+--[[ AL["Show Item level."] = "Show Item level."--]] 
+--[[Translation missing --]]
+--[[ AL["Show learned info for companions."] = "Show learned info for companions."--]] 
 AL["Show level range if available."] = "Mostrar rango de nivel si está disponible."
 AL["Show listname in item tooltip"] = "Mostrar nombre de lista en el tooltip del objeto"
 AL["Show minimap button."] = "Mostrar botón del minimapa"
@@ -71,6 +72,8 @@ AL["Show vendor prices if available."] = "Mostrar precios de proveedores si est�
 AL["Sources"] = "Fuentes"
 AL["Text"] = "Texto"
 AL["This loads the |cff999999%s|r module."] = "Este se carga el módulo |cff999999%s|r."
+--[[Translation missing --]]
+--[[ AL["ToolTip"] = "ToolTip"--]] 
 AL["Use content color if available."] = "Utilizar color de contenido si está disponible."
 AL["Use english WoWHead."] = "Utilizar WoWHead inglés."
 AL["Use GameTooltip"] = "Utilizar tooltip del juego"

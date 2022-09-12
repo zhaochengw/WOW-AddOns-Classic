@@ -101,6 +101,8 @@ AL["Gun"] = "Arma de fuego"
 --[[Translation missing --]]
 --[[ AL["Hateful %s"] = "Hateful %s"--]] 
 --[[Translation missing --]]
+--[[ AL["Headless Horseman"] = "Headless Horseman"--]] 
+--[[Translation missing --]]
 --[[ AL["Heigan the Unclean"] = "Heigan the Unclean"--]] 
 --[[Translation missing --]]
 --[[ AL["Heroes' %s"] = "Heroes' %s"--]] 
@@ -130,6 +132,8 @@ AL["Lists"] = "Listas"
 --[[ AL["Loatheb"] = "Loatheb"--]] 
 AL["Loot"] = "Botín"
 --[[Translation missing --]]
+--[[ AL["Lord Blackwood"] = "Lord Blackwood"--]] 
+--[[Translation missing --]]
 --[[ AL["Maexxna"] = "Maexxna"--]] 
 AL["Main"] = "Principal"
 AL["Middle Click"] = "Clic Central"
@@ -157,6 +161,8 @@ AL["Open Options"] = "Opciones de Abrir"
 --[[ AL["Patchwerk"] = "Patchwerk"--]] 
 AL["Plans"] = "Diseños"
 AL["Polearm"] = "Arma de asta"
+--[[Translation missing --]]
+--[[ AL["Prince Tenris Mirkblood"] = "Prince Tenris Mirkblood"--]] 
 AL["Profile base list"] = "Lista basado en perfil"
 AL["PvP"] = "JcJ"
 AL["Quest"] = "Misión"
@@ -167,6 +173,8 @@ AL["Remove item from list"] = "Quitar objeto de la lista"
 AL["Reputation"] = "Reputación"
 AL["Required module %s is currently disabled."] = "Módulo requerido %s es desactivado."
 AL["Required module %s is not installed."] = "Módulo requerido %s no es instalado."
+--[[Translation missing --]]
+--[[ AL["Revanchion"] = "Revanchion"--]] 
 AL["Right Click"] = "Clic Derecho"
 AL["Right-click to close Atlas window."] = "Clic Derecho para cerrar la ventana de Atlas."
 --[[Translation missing --]]
@@ -175,6 +183,8 @@ AL["Right-click to close Atlas window."] = "Clic Derecho para cerrar la ventana 
 --[[ AL["Sapphiron"] = "Sapphiron"--]] 
 --[[Translation missing --]]
 --[[ AL["Savage %s"] = "Savage %s"--]] 
+--[[Translation missing --]]
+--[[ AL["Scorn"] = "Scorn"--]] 
 AL["Select Module"] = "Seleccionar módulo"
 AL["Select Subcategory"] = "Seleccionar subcategoría"
 AL["Set Favourite"] = "Seleccionar favorito"

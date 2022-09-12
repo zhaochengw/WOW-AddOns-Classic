@@ -50,7 +50,6 @@ AL["Show content phase indicator for loottables."] = "Afficher un indicateur de 
 AL["Show content phase indicator for sets."] = "Afficher un indicateur de phase du contenu pour les ensembles."
 AL["Show drop rate if available."] = "Afficher le taux d'obtention si possible."
 AL["Show favourite item icon in item tooltip"] = "Afficher l'icône d'objet favoris dans l'infobulle"
-AL["Show ID's in tooltip."] = "Afficher l'ID dans l'infobulle"
 AL["Show level range if available."] = "Afficher la plage de niveau si possible."
 AL["Show listname in item tooltip"] = "Afficher le nom de la liste dans l'infobulle"
 AL["Show minimap button."] = "Afficher le bouton de la minicarte"

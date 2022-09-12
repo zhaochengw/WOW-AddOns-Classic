@@ -50,7 +50,6 @@ AL["Show content phase indicator for loottables."] = "掉落物品显示内容�
 AL["Show content phase indicator for sets."] = "套装显示内容部分指示。"
 AL["Show drop rate if available."] = "显示掉率 如果有的话"
 AL["Show favourite item icon in item tooltip"] = "已收藏物品在鼠标提示显示图标"
-AL["Show ID's in tooltip."] = "鼠标提示显示物品ID"
 AL["Show level range if available."] = "显示等级范围"
 AL["Show listname in item tooltip"] = "在项目工具提示中显示列表名"
 AL["Show minimap button."] = "显示小地图按钮"
