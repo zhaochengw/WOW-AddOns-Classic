@@ -343,9 +343,7 @@ end
 local function PackTalent(inspect)
     local talents = {}
     for i = 1, GetNumTalentTabs(inspect) do
-        print(i, j, GetNumTalents(i, inspect))
         for j = 1, GetNumTalents(i, inspect) do
-            print((select(5, GetTalentInfo(i, j, inspect))))
             tinsert(talents, tostring(select(5, GetTalentInfo(i, j, inspect)) or 0))
         end
     end
@@ -365,9 +363,10 @@ end
 
 local function PackTalent(inspect)
     local talents = {}
+    local group = GetActiveTalentGroup(inspect)
     for i = 1, GetNumTalentTabs(inspect) do
         for j = 1, GetNumTalents(i, inspect) do
-            local _, _, tier, column, count = GetTalentInfo(i, j, inspect)
+            local _, _, tier, column, count = GetTalentInfo(i, j, inspect, nil, group)
             tinsert(talents, {count = tostring(count or 0), tab = i, tier = tier, column = column})
         end
     end
