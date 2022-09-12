@@ -68,7 +68,7 @@ SettingsFunctions = {
 
     TimeStyle = function(value, Timers)
         for k, timer in pairs(Timers) do
-            if ((k < 6 or not TotemTimers.ActiveProfile.ShieldChargesOnly) or k > 7) then
+            if timer ~= TotemTimers.FlameShockDuration and timer ~= TotemTimers.Maelstrom then
                 timer.timeStyle = value
             end
         end
@@ -198,10 +198,12 @@ SettingsFunctions = {
             local ds2 = value == 6 and SpellIDs.FrostbrandWeapon or SpellIDs.FlametongueWeapon
 
             button:SetAttribute("type1", "macro")
-            button:SetAttribute("macrotext", "/cast " .. SpellNames[ds1] .. "\n/use 16")
             button:SetAttribute("doublespell1", SpellNames[ds1])
             button:SetAttribute("doublespell2", SpellNames[ds2])
             button:SetAttribute("ds", 1)
+            -- update rank and set macro from attribute because of ft-1/ft-button
+            TotemTimers.UpdateRank(button)
+            button:SetAttribute("macrotext", "/cast " .. button:GetAttribute("doublespell1")) --.. "\n/use 16")
         else
             if not GetSpellInfo(value) then value = SpellIDs.RockbiterWeapon end
             button:SetAttribute("type1", "spell")
@@ -325,8 +327,11 @@ SettingsFunctions = {
     TimerBarTexture = function(value, Timers)
         local texture = LSM:Fetch("statusbar", value)
         if texture then
+            local maelstrom = TotemTimers.Maelstrom
             for _, timer in pairs(Timers) do
-                timer:SetBarTexture(texture)
+                if not maelstrom or maelstrom ~= timer then
+                    timer:SetBarTexture(texture)
+                end
             end
         end
     end,
@@ -335,7 +340,7 @@ SettingsFunctions = {
         for i = 1, #Timers do
             if value and i < 5 then
                 Timers[i]:SetBarColor(TotemColors[Timers[i].nr].r, TotemColors[Timers[i].nr].g, TotemColors[Timers[i].nr].b, 1)
-            elseif i ~= 21 then
+            elseif Timers[i] ~= TotemTimers.FlameShockDuration and (not TotemTimers.Maelstrom or Timers[i] ~= TotemTimers.Maelstrom) then
                 Timers[i]:SetBarColor(TotemTimers.ActiveProfile.TimerBarColor.r, TotemTimers.ActiveProfile.TimerBarColor.g,
                         TotemTimers.ActiveProfile.TimerBarColor.b, TotemTimers.ActiveProfile.TimerBarColor.a)
 
@@ -353,9 +358,16 @@ SettingsFunctions = {
     end,
 
     BarBindings = function(value, Timers)
-        for i = 1, 4 do
-            local actionBar = Timers[i].actionBar
-            local element = Timers[i].nr
+        local actionBars = {}
+        for i = 1, 4 do table.insert(actionBars, Timers[i].actionBar) end
+        if TotemTimers_MultiSpell then table.insert(actionBars, TotemTimers_MultiSpell.actionBar) end
+
+        for index, actionBar in pairs(actionBars) do
+            local element = 0
+            if index < 5 then
+                element = Timers[index].nr
+            end
+
             for j = 1, #actionBar.buttons do
                 local button = actionBar.buttons[j]
                 local key = GetBindingKey("TOTEMTIMERSCAST" .. element .. j)
@@ -711,6 +723,7 @@ if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
         --TotemTimers.maelstrombutton:SetWidth(value*3+10)
         --TotemTimers.FlameShockDuration:SetTimeWidth(value*3+10)
         TotemTimers.FlameShockDuration:SetScale(value / 36)
+        if TotemTimers.Maelstrom then TotemTimers.Maelstrom:SetScale(value/36) end
         TotemTimers.LayoutEnhanceCDs()
         --[[for i = 1,#TotemTimers.LongCooldowns do
             TotemTimers.LongCooldowns[i]:SetScale(value/36)
@@ -728,11 +741,15 @@ if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
                 timer.button.time:SetFont(font, value + 5, "OUTLINE")
             end
         end
-        TotemTimers.FlameShockDuration:SetTimeHeight(value * 1.2)
-        local font = TotemTimers.FlameShockDuration.button.time:GetFont()
-        TotemTimers.FlameShockDuration.button.time:SetFont(font, value * 1.2 + 5, "OUTLINE")
-        TotemTimers.FlameShockDuration.button:SetSize(value * 1.2, value * 1.2)
-        TotemTimers.FlameShockDuration.button.icons[1]:SetAllPoints(TotemTimers.FlameShockDuration.button)
+
+        local fs = TotemTimers.FlameShockDuration
+
+        fs:SetTimeHeight(value * 1.2)
+        local font = fs.timerBars[1].time:GetFont()
+        fs.timerBars[1].time:SetFont(font, value, "OUTLINE")
+        fs.button:SetSize(value * 1.2, value * 1.2)
+        fs.button.icons[1]:SetAllPoints(fs.button)
+
         TotemTimers.LayoutEnhanceCDs()
         --TotemTimers.LayoutLongCooldowns()
     end

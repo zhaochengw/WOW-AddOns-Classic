@@ -164,7 +164,7 @@ TotemData = {
     },
     [SpellIDs.Flametongue] = {
         element = FIRE_TOTEM_SLOT,
-        --rangeCheck = 20,
+        buff = 52109,
     },
     [SpellIDs.FireElemental] = {
         element = FIRE_TOTEM_SLOT,
@@ -181,7 +181,7 @@ TotemData = {
     [SpellIDs.ManaTide] = {
         element = WATER_TOTEM_SLOT,
         warningPoint = 2,
-        buff = 16191,
+        rangeCheck = 30,
     },
     [SpellIDs.Cleansing] = {
         element = WATER_TOTEM_SLOT,
@@ -209,6 +209,7 @@ TotemData = {
     },
     [SpellIDs.Windfury] = {
         element = AIR_TOTEM_SLOT,
+        buff = 8515,
         --rangeCheck = 20,
     },
     [SpellIDs.Sentry] = {
