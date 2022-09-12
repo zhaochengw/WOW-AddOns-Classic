@@ -181,7 +181,7 @@ function NWB:OnCommReceived(commPrefix, string, distribution, sender)
 			NWB:doNpcWalkingMsg(type, layer, sender);
 		end
 	end
-	if (tonumber(remoteVersion) < 2.28) then
+	if (tonumber(remoteVersion) < 2.32) then
 		if (cmd == "requestData" and distribution == "GUILD") then
 			if (not NWB:getGuildDataStatus()) then
 				NWB:sendSettings("GUILD");
@@ -1207,13 +1207,17 @@ function NWB:extractSettings(dataReceived, sender, distribution)
 	end
 	data = NWB:convertKeys(data, nil, distribution);
 	local nameOnly, realm = strsplit("-", sender, 2);
-	for k, v in pairs(data) do
-		if (type(v) == "table" and string.match(k, nameOnly) and string.match(k, "%-") and next(v)) then
-			--NWB:debug("Extracted settings from:", sender);
-			NWB.data[k] = v;
-			--Keep a timestamp for data cleanup funcs.
-			NWB.data[k].updated = GetServerTime();
+	if (data) then
+		for k, v in pairs(data) do
+			if (type(v) == "table" and string.match(k, nameOnly) and string.match(k, "%-") and next(v)) then
+				--NWB:debug("Extracted settings from:", sender);
+				NWB.data[k] = v;
+				--Keep a timestamp for data cleanup funcs.
+				NWB.data[k].updated = GetServerTime();
+			end
 		end
+	else
+		NWB:debug("bad convert keys data from", sender);
 	end
 end
 

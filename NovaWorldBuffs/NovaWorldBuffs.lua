@@ -10690,35 +10690,7 @@ f:SetScript('OnEvent', function(self, event, ...)
 		NWB:setCurrentLayerText("mouseover");
 		NWB:mapCurrentLayer("mouseover");
 	elseif (event == "GROUP_JOINED") then
-		NWB.lastKnownLayerMapID = 0;
-		NWB.lastKnownLayerMapID_Mapping = 0;
-		NWB.currentZoneID = 0;
-		--Block a new zoneid from being set for longer than the team join block is if it's the same zoneid they got earlier.
-		--IE not changed layer yet after joining group because of layer swap cooldown.
-		--This time should be a longer duration than lastJoinedGrop lockout below.
-		--if (NWB.validZoneIDTimer) then
-		--	NWB.validZoneIDTimer:Cancel();
-		--end
-		--NWB.validZoneIDTimer = C_Timer.NewTimer(600, function()
-		--	NWB.lastCurrentZoneID = nil;
-		--end)
-		NWB.lastJoinedGroup = GetServerTime();
-		if ((GetServerTime() - logonEnteringWorld) > 5) then
-			--NWB.lastKnownLayerMapIDBackup is used for songflowers only.
-			--It's a way to attach SF timers to a layer even if you logon in a group or join a group right after logon.
-			--NWB.lastKnownLayerMapID is wiped on joining group for layer changing reasons so that's why this backup exists only for songflowers.
-			--Here we allow NWB.lastKnownLayerMapIDBackup to be valid for 3 minutes after logging in if already in a group.
-			--Or valid for up to 1 minute after logon if you join a group after logon.
-			local sinceLogon = GetServerTime() - logonEnteringWorld;
-			local buffer = 60 - sinceLogon;
-			if (buffer > 0) then
-				C_Timer.After(buffer, function()
-					NWB.lastKnownLayerMapIDBackup = nil;
-				end)
-			else
-				NWB.lastKnownLayerMapIDBackup = nil;
-			end
-		end
+		NWB:joinedGroupLayer();
 	elseif (event == "PLAYER_LOGIN") then
 		logonEnteringWorld = GetServerTime();
 		if (IsInGroup()) then
@@ -10739,6 +10711,7 @@ f:SetScript('OnEvent', function(self, event, ...)
 		end
 		NWB.currentZoneID = 0;
 		NWB.lastCurrentZoneID = 0;
+		NWB.phaseCheck = 0;
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		local isLogon, isReload = ...;
 		NWB:recalcMinimapLayerFrame();
@@ -10768,6 +10741,40 @@ f:SetScript('OnEvent', function(self, event, ...)
 	end
 end)
 
+function NWB:joinedGroupLayer()
+	NWB.lastKnownLayerMapID = 0;
+	NWB.lastKnownLayerMapID_Mapping = 0;
+	NWB.currentZoneID = 0;
+	NWB.lastCurrentZoneID = 0;
+	NWB.phaseCheck = nil;
+	--Block a new zoneid from being set for longer than the team join block is if it's the same zoneid they got earlier.
+	--IE not changed layer yet after joining group because of layer swap cooldown.
+	--This time should be a longer duration than lastJoinedGrop lockout below.
+	--if (NWB.validZoneIDTimer) then
+	--	NWB.validZoneIDTimer:Cancel();
+	--end
+	--NWB.validZoneIDTimer = C_Timer.NewTimer(600, function()
+	--	NWB.lastCurrentZoneID = nil;
+	--end)
+	NWB.lastJoinedGroup = GetServerTime();
+	if ((GetServerTime() - logonEnteringWorld) > 5) then
+		--NWB.lastKnownLayerMapIDBackup is used for songflowers only.
+		--It's a way to attach SF timers to a layer even if you logon in a group or join a group right after logon.
+		--NWB.lastKnownLayerMapID is wiped on joining group for layer changing reasons so that's why this backup exists only for songflowers.
+		--Here we allow NWB.lastKnownLayerMapIDBackup to be valid for 3 minutes after logging in if already in a group.
+		--Or valid for up to 1 minute after logon if you join a group after logon.
+		local sinceLogon = GetServerTime() - logonEnteringWorld;
+		local buffer = 60 - sinceLogon;
+		if (buffer > 0) then
+			C_Timer.After(buffer, function()
+				NWB.lastKnownLayerMapIDBackup = nil;
+			end)
+		else
+			NWB.lastKnownLayerMapIDBackup = nil;
+		end
+	end
+end
+
 function NWB:guidFromClosestNameplate()
 	if (GetCVar("nameplateShowFriends") ~= "1") then
 		SetCVar("nameplateShowFriends", 1);
@@ -10790,6 +10797,7 @@ NWB.lastKnownLayerMapIDBackup = 0; --Only used for songflowers if logging on in 
 NWB.lastKnownLayerMapIDBackupValidFor = 120; --How long after logon this can be valid for.
 NWB.currentZoneID = 0;
 NWB.lastCurrentZoneID = 0;
+NWB.phaseCheck = 0;
 NWB.validZoneIDTimer = nil;
 NWB.AllowCurrentZoneID = true;
 --Enable some globals that other addons/weakauras can use.
@@ -11003,7 +11011,7 @@ end
 	On rare occasions it could map the wrong id if previous zone we came from is completly unknown,
 	but with the data being shared around the server, most of the time after server restarts it will just
 	get mapped one time by a few early players and shared around, so the chances of this bug happening is pretty low.]]
-	
+
 function NWB:mapCurrentLayer(unit)
 	if (not NWB.isLayered or not unit or UnitOnTaxi("player") or IsInInstance() or UnitInBattleground("player") or NWB:isInArena()) then
 		return;
@@ -11057,8 +11065,8 @@ function NWB:mapCurrentLayer(unit)
 	end
 	--Only start mapping if we have come from org/stormwind and know our layer already.
 	--And only start mapping if we haven't joined a group since leaving org.
+	local foundOldID;
 	if (NWB.lastKnownLayerMapID < 1) then
-		local foundOldID;
 		--if ((GetServerTime() - NWB.lastJoinedGroup) > 180) then
 			for k, v in pairs(NWB.data.layers) do
 				if (v.layerMap and next(v.layerMap)) then
@@ -11080,6 +11088,9 @@ function NWB:mapCurrentLayer(unit)
 			return;
 		end
 	end
+	--if (foundOldID) then
+	--	NWB.phaseCheck = zoneID;
+	--end
 	--Don't map a new zone if it's a guard outside capital city with the city zoneid.
 	if (zoneID == NWB.lastKnownLayerMapID) then
 		NWB:debug("trying to map zone to already known layer");
@@ -11095,6 +11106,16 @@ function NWB:mapCurrentLayer(unit)
 		--Never map new zones if group has been joined.
 		return;
 	end
+	if (NWB.phaseCheck ~= 0 and NWB.phaseCheck ~= zoneID) then
+		--NWB.phaseCheck is 0 when entering new zone and nil when joining a group.
+		--If we join a group then we must cross a zone border before we can record layer data.
+		--If we have a zoneID recorded for this zone and it suddenly changes then assume we got pushed off the later without a group join.
+		--Simulate a group join.
+		NWB:debug("Phase changed detected?");
+		NWB:joinedGroupLayer();
+		return;
+	end
+	NWB.phaseCheck = zoneID;
 	if (NWB.data.layers[NWB.lastKnownLayerMapID]) then
 		if (not NWB.data.layers[NWB.lastKnownLayerMapID].layerMap) then
 			--Create layer map if doesn't exist.
@@ -11128,17 +11149,17 @@ function NWB:mapCurrentLayer(unit)
 			local halt;
 			if (not NWB.isClassic) then
 				local offsetLimit;
-				if (NWB.isTBC or NWB.isWrathPrepatch) then
-					offsetLimit = 150;
-				else
+				if (NWB.isClassic) then
 					offsetLimit = 999;
+				else
+					offsetLimit = 200;
 				end
-				if (NWB.realm == "Faerlina" or NWB.realm == "Firemaw" or NWB.realm == "Benediction" or NWB.realm == "Gehennas") then
+				--if (NWB.realm == "Faerlina" or NWB.realm == "Firemaw" or NWB.realm == "Benediction" or NWB.realm == "Gehennas") then
 					local layerOffset = NWB:getLayerOffset(NWB.lastKnownLayerMapID, nil, zoneID);
 					if (layerOffset and layerOffset > offsetLimit) then
 						halt = true;
 					end
-				end
+				--end
 			end
 			if (not halt and NWB.layerMapWhitelist[zone] and NWB:validateZoneID(zoneID, NWB.lastKnownLayerMapID, zone)) then
 				--If zone is not mapped yet since server restart then add it.
@@ -11429,11 +11450,11 @@ function NWB:resetLayerData()
 		NWB.data.tbcPDT = nil;
 		NWB.db.global.resetDailyData = false;
 	end
-	if (NWB.db.global.resetLayers9) then
+	if (NWB.db.global.resetLayers11) then
 		NWB:debug("resetting layer data");
 		NWB.data.layers = {};
 		NWB.data.layerMapBackups = {};
-		NWB.db.global.resetLayers9 = false;
+		NWB.db.global.resetLayers11 = false;
 	end
 end
 
