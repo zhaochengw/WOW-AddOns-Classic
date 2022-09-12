@@ -213,7 +213,8 @@ Lang["DelUnder70_DONE"] = "Toutes les données des personnages en dessous du niv
 --302
 Lang["AnnounceAchieve_TEXT"] = "Annoncer les Hauts Faits à la guilde                                          Seuil:"
 Lang["AnnounceAchieve_DESC"] = "Envoie un message au canal de guilde lorsqu'un Haut Fait est achevé."
-Lang["AchieveCompleteGuild"] = "##LINK## achevé! (##POINTS## points au total)" 
+Lang["AchieveCompleteGuild"] = "##LINK## achevé!" 
+Lang["AchieveCompletePoints"] = "(##POINTS## points au total)" 
 Lang["AchieveSurvey"] = "Voulez vous qu'|cFFFFD100Attune|r envoie un message au canal de guilde lorsque |cFFFFD100##WHO##|r acheve un Haut Fait?"
 --306
 Lang["showDeprecatedAttunes_TEXT"] = "Afficher les accès obsolète"
@@ -703,8 +704,8 @@ Lang["Q1_9637"] = "La requête de Kalynna"			-- https://www.thegeekcrusade-serve
 Lang["Q2_9637"] = "Kalynna Rougelatte veut que vous récupériez le Tome du crépuscule sur le Grand démoniste Néanathème dans la citadelle des Flammes infernales, et le Livre des noms oubliés sur le Tisseur d'ombre Syth dans les salles des Sethekk à Auchindoun."
 Lang["Q1_9644"] = "Plaie-de-nuit"			-- https://www.thegeekcrusade-serveur.com/db/?quest=9644
 Lang["Q2_9644"] = "Allez sur la Terrasse du Maître à Karazhan et utilisez l'Urne de Kalynna pour invoquer Plaie-de-nuit. Récupérez l'Essence arcanique voilée sur le cadavre de Plaie-de-nuit et rapportez-la à l'archimage Alturus."
-Lang["Q1_10901"] = "Le gourdin de Kar'desh"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10901
-Lang["Q2_10901"] = "Skar’this l’Hérétique, dans les Enclos aux esclaves héroïques du Réservoir de Glissecroc, veut que vous lui apportiez la Chevalière terrestre et la Chevalière flamboyante."
+Lang["Q1_10901|13431"] = "Le gourdin de Kar'desh"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10901|13431
+Lang["Q2_10901|13431"] = "Skar’this l’Hérétique, dans les Enclos aux esclaves héroïques du Réservoir de Glissecroc, veut que vous lui apportiez la Chevalière terrestre et la Chevalière flamboyante."
 Lang["Q1_10900"] = "La marque de Vashj"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10900
 Lang["Q2_10900"] = ""
 Lang["Q1_10681"] = "La main de Gul'dan"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10681
@@ -765,12 +766,12 @@ Lang["Q1_10885"] = "L'épreuve des naaru : Force"			-- https://www.thegeekcrusad
 Lang["Q2_10885"] = "A'dal de Shattrath vous demande de récupérer le Trident de Kalithresh et l'Essence de Marmon.\n\nCette quête doit être accomplie en mode de difficulté du donjon Héroïque."
 Lang["Q1_10886"] = "L'épreuve des naaru : Ténacité"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10886
 Lang["Q2_10886"] = "A'dal de Shattrath vous demande de sauver Milhouse Tempête-de-mana de l'Arcatraz du donjon de la Tempête.\n\nCette quête doit être accomplie en mode de difficulté du donjon Héroïque."
-Lang["Q1_10888"] = "L'épreuve des naaru : Magtheridon"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10888
-Lang["Q2_10888"] = "A'dal de Shattrath vous demande de tuer Magtheridon."
+Lang["Q1_10888|13430"] = "L'épreuve des naaru : Magtheridon"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10888|13430
+Lang["Q2_10888|13430"] = "A'dal de Shattrath vous demande de tuer Magtheridon."
 Lang["Q1_10680"] = "La main de Gul'dan"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10680
 Lang["Q2_10680"] = "Parlez au soigneterre Torlok à l'Autel de la damnation dans la vallée d'Ombrelune."
-Lang["Q1_10445"] = "Les fioles d'éternité"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10445
-Lang["Q2_10445"] = "Soridormi aux Grottes du temps vous demande de récupérer le Reste de la fiole de Vashj auprès de Dame Vashj au réservoir de Glissecroc et le Reste de la fiole de Kael auprès de Kael'thas Haut-soleil au donjon de la Tempête."
+Lang["Q1_10445|13432"] = "Les fioles d'éternité"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10445|13432
+Lang["Q2_10445|13432"] = "Soridormi aux Grottes du temps vous demande de récupérer le Reste de la fiole de Vashj auprès de Dame Vashj au réservoir de Glissecroc et le Reste de la fiole de Kael auprès de Kael'thas Haut-soleil au donjon de la Tempête."
 Lang["Q1_10568"] = "Tablettes de Baa'ri"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10568
 Lang["Q2_10568"] = "L'anachorète Ceyla de l'Autel de Sha'tar veut que vous collectiez 12 Tablettes baa'ri sur le sol et sur les Ouvriers cendrelangue aux Ruines de Baa'ri.\n\nAccomplir des quêtes pour l'Aldor fera baisser votre réputation auprès des Clairvoyants."
 Lang["Q1_10683"] = "Tablettes de Baa'ri"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10683
@@ -809,8 +810,8 @@ Lang["Q1_10948"] = "L'âme otage"			-- https://www.thegeekcrusade-serveur.com/db
 Lang["Q2_10948"] = "Rendez-vous à Shattrath pour soumettre la requête d'Akama à A'dal."
 Lang["Q1_10949"] = "L'entrée dans le Temple Noir"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10949
 Lang["Q2_10949"] = "Rendez-vous à l'entrée du Temple Noir dans la vallée d'Ombrelune et allez parler à Xi'ri."
-Lang["Q1_10985"] = "Une distraction pour Akama"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10985
-Lang["Q2_10985"] = "Assurez-vous qu'Akama et Maiev pénètrent bien dans le Temple Noir de la Vallée d'Ombrelune une fois que les forces de Xi'ri auront fait diversion."
+Lang["Q1_10985|13429"] = "Une distraction pour Akama"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10985|13429
+Lang["Q2_10985|13429"] = "Assurez-vous qu'Akama et Maiev pénètrent bien dans le Temple Noir de la Vallée d'Ombrelune une fois que les forces de Xi'ri auront fait diversion."
 --v243
 Lang["Q1_10984"] = "Parler avec l'ogre"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10984
 Lang["Q2_10984"] = "Allez voir l'Ogre, Grok, dans le quartier de la Ville basse de Shattrath."

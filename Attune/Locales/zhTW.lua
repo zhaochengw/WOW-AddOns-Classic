@@ -191,7 +191,8 @@ Lang["DelUnder70_DONE"] = "所有低於70的角色均已刪除。"
 --302
 Lang["AnnounceAchieve_TEXT"] = "在公會聊天中宣布成就                                      臨界點:"
 Lang["AnnounceAchieve_DESC"] = "獲得成就時發送公會消息。"
-Lang["AchieveCompleteGuild"] = "##LINK## 聲望已達到! (##POINTS## 總積分)" 
+Lang["AchieveCompleteGuild"] = "##LINK## 聲望已達到!" 
+Lang["AchieveCompletePoints"] = "(##POINTS## 總積分)" 
 Lang["AchieveSurvey"] = "想要|cFFFFD100Attune|r 在公會聊天中公佈|cFFFFD100##WHO##|r 的成就嗎？"
 --306
 Lang["showDeprecatedAttunes_TEXT"] = "顯示已棄用的調諧"
@@ -673,8 +674,8 @@ Lang["Q1_9637"] = "凱娜的要求"			-- https://cn.tbc.wowhead.com/?quest=9637
 Lang["Q2_9637"] = "凱娜·拉斯蕊德要你到地獄火堡壘的破碎大廳，從大術士奈德克斯那裡取得黑暗之書，再到奧齊頓的塞司克大廳，從暗織者希斯那裡取得遺忘之名魔典。這個任務必須在英雄難度中完成。"
 Lang["Q1_9644"] = "夜禍"			-- https://cn.tbc.wowhead.com/?quest=9644
 Lang["Q2_9644"] = "前往卡拉贊大師的露臺並碰觸燻黑的骨灰甕來召喚夜禍。從夜禍的屍體取得微弱的秘法精華並帶給大法師艾特羅斯。"
-Lang["Q1_10901"] = "卡德許的鬥棍"			-- https://cn.tbc.wowhead.com/?quest=10901
-Lang["Q2_10901"] = "盤牙蓄湖中奴隸監獄的『異端』司卡利斯要你帶給他土靈徽記和熾烈徽記。"
+Lang["Q1_10901|13431"] = "卡德許的鬥棍"			-- https://cn.tbc.wowhead.com/?quest=10901|13431
+Lang["Q2_10901|13431"] = "盤牙蓄湖中奴隸監獄的『異端』司卡利斯要你帶給他土靈徽記和熾烈徽記。"
 Lang["Q1_10900"] = "瓦許的印記"			-- https://cn.tbc.wowhead.com/?quest=10900
 Lang["Q2_10900"] = ""
 Lang["Q1_10681"] = "古爾丹火山"			-- https://cn.tbc.wowhead.com/?quest=10681
@@ -735,12 +736,12 @@ Lang["Q1_10885"] = "那魯的試煉：力量"			-- https://cn.tbc.wowhead.com/?q
 Lang["Q2_10885"] = "撒塔斯城的阿達歐要你去取回卡利斯瑞的三叉戟和莫爾墨的精華。\n\n此任務必須在英雄難度的地城裡完成。"
 Lang["Q1_10886"] = "那魯的試煉：堅毅"			-- https://cn.tbc.wowhead.com/?quest=10886
 Lang["Q2_10886"] = "撒塔斯城的阿達歐要你去援救來自風暴要塞，亞克崔茲的米歐浩斯·曼納斯頓。\n\n此任務必須在英雄難度的地城裡完成。"
-Lang["Q1_10888"] = "那魯的試煉：瑪瑟里頓"			-- https://cn.tbc.wowhead.com/?quest=10888
-Lang["Q2_10888"] = "撒塔斯城的阿達歐要你殺死瑪瑟里頓。"
+Lang["Q1_10888|13430"] = "那魯的試煉：瑪瑟里頓"			-- https://cn.tbc.wowhead.com/?quest=10888|13430
+Lang["Q2_10888|13430"] = "撒塔斯城的阿達歐要你殺死瑪瑟里頓。"
 Lang["Q1_10680"] = "古爾丹火山"			-- https://cn.tbc.wowhead.com/?quest=10680
 Lang["Q2_10680"] = "跟影月谷詛咒祭壇的大地治癒者托爾洛克交談。"
-Lang["Q1_10445"] = "永恆之瓶"			-- https://cn.tbc.wowhead.com/?quest=10445
-Lang["Q2_10445"] = "時光之穴的索芮朵蜜要你去從盤牙蓄湖的瓦許女士身上取得瓦許的殘存之瓶，從風暴要塞的凱爾薩斯·逐日者身上取得凱爾薩斯的殘存之瓶。"
+Lang["Q1_10445|13432"] = "永恆之瓶"			-- https://cn.tbc.wowhead.com/?quest=10445|13432
+Lang["Q2_10445|13432"] = "時光之穴的索芮朵蜜要你去從盤牙蓄湖的瓦許女士身上取得瓦許的殘存之瓶，從風暴要塞的凱爾薩斯·逐日者身上取得凱爾薩斯的殘存之瓶。"
 Lang["Q1_10568"] = "巴瑞碑文"			-- https://cn.tbc.wowhead.com/?quest=10568
 Lang["Q2_10568"] = "薩塔祭壇的隱士希拉要你去巴瑞廢墟從地上或者灰舌勞工的身上收集12個巴瑞碑文。\n\n為奧多爾完成任務會讓你的占卜者聲望降低。"
 Lang["Q1_10683"] = "巴瑞碑文"			-- https://cn.tbc.wowhead.com/?quest=10683
@@ -779,8 +780,8 @@ Lang["Q1_10948"] = "靈魂之囚"			-- https://cn.tbc.wowhead.com/?quest=10948
 Lang["Q2_10948"] = "前往塔斯城，將阿卡瑪的請求告訴阿達歐。"
 Lang["Q1_10949"] = "進入黑暗神廟"			-- https://cn.tbc.wowhead.com/?quest=10949
 Lang["Q2_10949"] = "前往影月谷的黑暗神廟，在入口處與希瑞談話。"
-Lang["Q1_10985"] = "幫助阿卡瑪"			-- https://cn.tbc.wowhead.com/?quest=10985
-Lang["Q2_10985"] = "在克希利的軍隊發動佯攻之後，保護阿卡瑪和瑪維進入影月谷内的黑暗神廟。"
+Lang["Q1_10985|13429"] = "幫助阿卡瑪"			-- https://cn.tbc.wowhead.com/?quest=10985|13429
+Lang["Q2_10985|13429"] = "在克希利的軍隊發動佯攻之後，保護阿卡瑪和瑪維進入影月谷内的黑暗神廟。"
 --v243
 Lang["Q1_10984"] = "援助食人魔"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10984
 Lang["Q2_10984"] = "與沙塔斯城貧民窟的食人魔格羅科爾談一談。"

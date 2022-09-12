@@ -213,7 +213,8 @@ Lang["DelUnder70_DONE"] = "Alle Spieler unter 70 gelöscht."
 --302
 Lang["AnnounceAchieve_TEXT"] = "Kündigen Sie Erfolge im Gildenchat an                                Schwelle:"
 Lang["AnnounceAchieve_DESC"] = "Kündige fertige Erfolg in der Gilde an"
-Lang["AchieveCompleteGuild"] = "##LINK## erfolgreich! (##POINTS## Gesamtpunktzahl)" 
+Lang["AchieveCompleteGuild"] = "##LINK## erfolgreich!"
+Lang["AchieveCompletePoints"] = "(##POINTS## Gesamtpunktzahl)" 
 Lang["AchieveSurvey"] = "Möchtest du, dass |cFFFFD100Attune|r |cFFFFD100##WHO##s|r Errungenschaften im Gildenchat ankündigt?"
 --306
 Lang["showDeprecatedAttunes_TEXT"] = "Veraltete Zugangsquests anzeigen"
@@ -703,8 +704,8 @@ Lang["Q1_9637"] = "Kalynnas Bitte"			-- https://de.tbc.wowhead.com/quest=9637
 Lang["Q2_9637"] = "Kalynna Lathred möchte, dass Ihr den Dämmerfolianten vom Großhexenmeister Nethekurse in den Zerschmetterten Hallen der Höllenfeuerzitadelle und das Buch der vergessenen Namen von Dunkelwirker Syth in den Sethekkhallen in Auchindoun besorgt.\n\nIhr müsst diese Quest auf dem Schwierigkeitsgrad 'Heroisch' abschließen. "
 Lang["Q1_9644"] = "Schrecken der Nacht"			-- https://de.tbc.wowhead.com/quest=9644
 Lang["Q2_9644"] = "Geht zur Terrasse des Meisters in Karazhan und berührt die geschwärzte Urne, um den Schrecken der Nacht zu rufen. Entzieht dem Körper des Schreckens die schwache arkane Essenz und bringt sie zu Erzmagier Alturus."
-Lang["Q1_10901"] = "Der Knüppel von Kar´desh"			-- https://de.tbc.wowhead.com/quest=10901
-Lang["Q2_10901"] = "Nar'biss der Ketzer in den heroischen Sklavenunterkünften des Echsenkessels möchte, dass Ihr ihm das Erdensiegel und das Flammensiegel bringt."
+Lang["Q1_10901|13431"] = "Der Knüppel von Kar´desh"			-- https://de.tbc.wowhead.com/quest=10901|13431
+Lang["Q2_10901|13431"] = "Nar'biss der Ketzer in den heroischen Sklavenunterkünften des Echsenkessels möchte, dass Ihr ihm das Erdensiegel und das Flammensiegel bringt."
 Lang["Q1_10900"] = "Das Mal von Vashj"			-- https://de.tbc.wowhead.com/quest=10900
 Lang["Q2_10900"] = "Brennt es nieder! Brennt alles nieder! Sie haben nichts verdient. Habt Ihr mich verstanden? NICHTS! Sie müssen für ihre Taten bezahlen. Auch für ihre zukünftigen.\n\nIch würde Vashj selbst töten, wenn ich von diesen verdammten Fesseln frei wäre.\n\nOder wollt Ihr vielleicht Neptulons Arbeit erledigen? Ihr Tod ist uns beiden dienlich, Weichhaut. Werdet Ihr mir dabei helfen, den heiligen Knüppel herzustellen? "
 Lang["Q1_10681"] = "Die Hand von Gul´dan"			-- https://de.tbc.wowhead.com/quest=10681
@@ -765,12 +766,12 @@ Lang["Q1_10885"] = "Die Prüfung der Naaru: Stärke"			-- https://de.tbc.wowhead
 Lang["Q2_10885"] = "A'dal in Shattrath möchte, dass Ihr Kalithreshs Dreizack und Murmurs Essenz besorgt.\n\nDiese Aufgabe muss auf dem Schwierigkeitsgrad 'Heroisch' abgeschlossen werden."
 Lang["Q1_10886"] = "Die Prüfung der Naaru: Zuverlässigkeit"			-- https://de.tbc.wowhead.com/quest=10886
 Lang["Q2_10886"] = "A'dal in Shattrath möchte, dass Ihr Millhaus Manasturm aus der Arkatraz in der Festung der Stürme rettet.\n\nDiese Aufgabe muss auf dem Schwierigkeitsgrad 'Heroisch' abgeschlossen werden."
-Lang["Q1_10888"] = "Die Prüfung der Naaru: Magtheridon"			-- https://de.tbc.wowhead.com/quest=10888
-Lang["Q2_10888"] = "A'dal in Shattrath möchte, dass Ihr Magtheridon vernichtet."
+Lang["Q1_10888|13430"] = "Die Prüfung der Naaru: Magtheridon"			-- https://de.tbc.wowhead.com/quest=10888|13430
+Lang["Q2_10888|13430"] = "A'dal in Shattrath möchte, dass Ihr Magtheridon vernichtet."
 Lang["Q1_10680"] = "Die Hand von Gul'dan"			-- https://de.tbc.wowhead.com/quest=10680
 Lang["Q2_10680"] = "Sprecht mit Erdheiler Torlok am Altar der Verdammnis im Schattenmondtal."
-Lang["Q1_10445"] = "Die Phiolen der Ewigkeit"			-- https://de.tbc.wowhead.com/quest=10445
-Lang["Q2_10445"] = "Soridormi in den Höhlen der Zeit möchte, dass Ihr die Überreste von Vashjs Phiole im Echsenkessel und die Überreste von Kaels Phiole von Kael'thas Sonnenwanderer in der Festung der Stürme besorgt."
+Lang["Q1_10445|13432"] = "Die Phiolen der Ewigkeit"			-- https://de.tbc.wowhead.com/quest=10445|13432
+Lang["Q2_10445|13432"] = "Soridormi in den Höhlen der Zeit möchte, dass Ihr die Überreste von Vashjs Phiole im Echsenkessel und die Überreste von Kaels Phiole von Kael'thas Sonnenwanderer in der Festung der Stürme besorgt."
 Lang["Q1_10568"] = "Schrifttafeln von Baa´ri"			-- https://de.tbc.wowhead.com/quest=10568
 Lang["Q2_10568"] = "Anachoretin Ceyla beim Altar der Sha'tar möchte, dass Ihr 12 Schrifttafeln von Baa'ri vom Boden und von den Arbeitern der Aschenzungen in den Ruinen von Baa'ri sammelt.\n\nDas Abschließen von Quests für die Aldor führt zu einer Verringerung Eures Rufs bei den Sehern."
 Lang["Q1_10683"] = "Schrifttafeln von Baa´ri"			-- https://de.tbc.wowhead.com/quest=10683
@@ -809,8 +810,8 @@ Lang["Q1_10948"] = "Die Seelengeisel"			-- https://de.tbc.wowhead.com/quest=1094
 Lang["Q2_10948"] = "Reist nach Shattrath und erzählt A'dal von Akamas Bitte. "
 Lang["Q1_10949"] = "Zutritt zum schwarzen Tempel"			-- https://de.tbc.wowhead.com/quest=10949
 Lang["Q2_10949"] = "Reist zum Eingang des Schwarzen Tempels im Schattenmondtal und sprecht mit Xi'ri."
-Lang["Q1_10985"] = "Ein Ablenkungsmanöver für Akama"			-- https://de.tbc.wowhead.com/quest=10985
-Lang["Q2_10985"] = "Stellt sicher, dass Akama und Maiev den Schwarzen Tempel betreten, nachdem Xi'ris Streitkräfte ihr Ablenkungsmanöver durchgeführt haben."
+Lang["Q1_10985|13429"] = "Ein Ablenkungsmanöver für Akama"			-- https://de.tbc.wowhead.com/quest=10985|13429
+Lang["Q2_10985|13429"] = "Stellt sicher, dass Akama und Maiev den Schwarzen Tempel betreten, nachdem Xi'ris Streitkräfte ihr Ablenkungsmanöver durchgeführt haben."
 --v243
 Lang["Q1_10984"] = "Sprecht mit dem Oger"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10984
 Lang["Q2_10984"] = "Sprecht mit dem Oger Grok im unteren Viertel von Shattrath."

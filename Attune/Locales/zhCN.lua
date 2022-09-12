@@ -191,7 +191,8 @@ Lang["DelUnder70_DONE"] = "所有低于70的结果均已删除."
 --302
 Lang["AnnounceAchieve_TEXT"] = "在公会聊天中宣布成就                                      临界点:"
 Lang["AnnounceAchieve_DESC"] = "获得成就时发送公会消息。"
-Lang["AchieveCompleteGuild"] = "##LINK## 声望已达到! (##POINTS## 总积分)" 
+Lang["AchieveCompleteGuild"] = "##LINK## 声望已达到!" 
+Lang["AchieveCompletePoints"] = "(##POINTS## 总积分)" 
 Lang["AchieveSurvey"] = "想要|cFFFFD100Attune|r 在公会聊天中公布|cFFFFD100##WHO##|r 的成就吗？"
 --306
 Lang["showDeprecatedAttunes_TEXT"] = "显示已弃用的调谐"
@@ -673,8 +674,8 @@ Lang["Q1_9637"] = "卡琳娜的要求"			-- https://cn.tbc.wowhead.com/?quest=96
 Lang["Q2_9637"] = "从地狱火堡垒破碎大厅的高阶术士奈瑟库斯手中夺得暮色魔典，从奥金顿塞泰克大厅的黑暗编织者塞斯手中夺得忘却之名，将它们交给卡琳娜·拉瑟德。"
 Lang["Q1_9644"] = "夜之魇"			-- https://cn.tbc.wowhead.com/?quest=9644
 Lang["Q2_9644"] = "进入卡拉赞的主宰的露台，碰触黑色骨灰，召唤夜之魇并杀死它，然后从夜之魇的尸体上取得暗淡的奥术精华，并将它交给大法师奥图鲁斯。"
-Lang["Q1_10901"] = "卡达什圣杖"			-- https://cn.tbc.wowhead.com/?quest=10901
-Lang["Q2_10901"] = "将土灵徽记和灿烂徽记交给盘牙水库奴隶围栏的异教徒斯卡希斯。"
+Lang["Q1_10901|13431"] = "卡达什圣杖"			-- https://cn.tbc.wowhead.com/?quest=10901|13431
+Lang["Q2_10901|13431"] = "将土灵徽记和灿烂徽记交给盘牙水库奴隶围栏的异教徒斯卡希斯。"
 Lang["Q1_10900"] = "瓦丝琪的印记"			-- https://cn.tbc.wowhead.com/?quest=10900
 Lang["Q2_10900"] = ""
 Lang["Q1_10681"] = "古尔丹之手"			-- https://cn.tbc.wowhead.com/?quest=10681
@@ -735,12 +736,12 @@ Lang["Q1_10885"] = "纳鲁的试炼：力量"			-- https://cn.tbc.wowhead.com/?q
 Lang["Q2_10885"] = "沙塔斯城的阿达尔要求你取回卡利瑟里斯的三叉戟和摩摩尔的精华。\n\n该任务必须在英雄等级难度的地下城中完成。"
 Lang["Q1_10886"] = "纳鲁的试炼：坚韧"			-- https://cn.tbc.wowhead.com/?quest=10886
 Lang["Q2_10886"] = "沙塔斯城的阿达尔要求你从风暴要塞的禁魔监狱中救出米尔豪斯·法力风暴。\n\n该任务必须在英雄等级难度的地下城中完成。"
-Lang["Q1_10888"] = "纳鲁的试炼：玛瑟里顿"			-- https://cn.tbc.wowhead.com/?quest=10888
-Lang["Q2_10888"] = "沙塔斯城的阿达尔要求你杀死玛瑟里顿。"
+Lang["Q1_10888|13430"] = "纳鲁的试炼：玛瑟里顿"			-- https://cn.tbc.wowhead.com/?quest=10888|13430
+Lang["Q2_10888|13430"] = "沙塔斯城的阿达尔要求你杀死玛瑟里顿。"
 Lang["Q1_10680"] = "古尔丹之手"			-- https://cn.tbc.wowhead.com/?quest=10680
 Lang["Q2_10680"] = "与影月谷诅咒祭坛的大地治愈者托洛克谈一谈。"
-Lang["Q1_10445"] = "永恒水瓶"			-- https://cn.tbc.wowhead.com/?quest=10445
-Lang["Q2_10445"] = "时光之穴的索莉多米要你从盘牙水库的瓦丝琪那里取回瓦丝琪的水瓶残馀，并从风暴要塞的凯尔萨斯·逐日者那里取回凯尔萨斯的水瓶残馀。"
+Lang["Q1_10445|13432"] = "永恒水瓶"			-- https://cn.tbc.wowhead.com/?quest=10445|13432
+Lang["Q2_10445|13432"] = "时光之穴的索莉多米要你从盘牙水库的瓦丝琪那里取回瓦丝琪的水瓶残馀，并从风暴要塞的凯尔萨斯·逐日者那里取回凯尔萨斯的水瓶残馀。"
 Lang["Q1_10568"] = "巴尔里石板"			-- https://cn.tbc.wowhead.com/?quest=10568
 Lang["Q2_10568"] = "沙塔尔祭坛的学者希拉要你收集12块巴尔里石板，它们散落在巴尔里废墟中，那里的灰舌工人身上也携带着这种石板。\n\n为奥尔多阵营完成任务将降低你在占星者阵营中的声望等级。"
 Lang["Q1_10683"] = "巴尔里石板"			-- https://cn.tbc.wowhead.com/?quest=10683
@@ -779,8 +780,8 @@ Lang["Q1_10948"] = "灵魂之囚"			-- https://cn.tbc.wowhead.com/?quest=10948
 Lang["Q2_10948"] = "转至沙塔斯城，将阿卡玛的请求告诉阿达尔。"
 Lang["Q1_10949"] = "进入黑暗神殿"			-- https://cn.tbc.wowhead.com/?quest=10949
 Lang["Q2_10949"] = "转至影月谷的黑暗神殿入口处，与克希利谈一谈。"
-Lang["Q1_10985"] = "帮助阿卡玛"			-- https://cn.tbc.wowhead.com/?quest=10985
-Lang["Q2_10985"] = "在克希利的军队发动佯攻之后，保护阿卡玛和玛维进入影月谷内的黑暗神殿。"
+Lang["Q1_10985|13429"] = "帮助阿卡玛"			-- https://cn.tbc.wowhead.com/?quest=10985|13429
+Lang["Q2_10985|13429"] = "在克希利的军队发动佯攻之后，保护阿卡玛和玛维进入影月谷内的黑暗神殿。"
 --v243
 Lang["Q1_10984"] = "援助食人魔"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10984
 Lang["Q2_10984"] = "与沙塔斯城贫民窟的食人魔格罗科尔谈一谈。"

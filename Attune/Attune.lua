@@ -8,11 +8,10 @@
 --
 -------------------------------------------------------------------------
 
--- Done in 306
---  Changed the achivement annoucer settings to be character based instead of general
---  Fixed a location issue in the Eye of Eternity chains
---  Did a slight optim change for loading data
---  Added a setting to hide old/deprecated attunements (Ony40, Naxx40)
+-- Done in 307
+--  Added support for Feats of Strength
+--  Updated Tempest Keep, The Eye, BT Questlines to support the new Wrath quest Ids
+--  Added the [Attune] prefix to achievement announcements for easier filtering
 
 -------------------------------------------------------------------------
 -- ADDON VARIABLES
@@ -902,19 +901,26 @@ end
 -------------------------------------------------------------------------
 
 function Attune:ACHIEVEMENT_EARNED(event, id)
+	local FEAT_OF_STRENGTH_CATEGID = 81
+
 	--send a guild message when an achievement is earned 
-	guildName, guildRankName, guildRankIndex = GetGuildInfo("player");
+	local guildName, guildRankName, guildRankIndex = GetGuildInfo("player");
 	if guildName ~= nil then attunelocal_myguild = guildName end
 
-	achieveId, achieveName, achievePoints = GetAchievementInfo(id)
+	local achieveId, achieveName, achievePoints = GetAchievementInfo(id)
+	local categId = GetAchievementCategory(id)
 	
-	if 	achievePoints >= Attune_DB.toons[attunelocal_charKey].achieveMinPoints
+	if 	(achievePoints >= Attune_DB.toons[attunelocal_charKey].achieveMinPoints or categId == FEAT_OF_STRENGTH_CATEGID)
 		and Attune_DB.toons[attunelocal_charKey].announceAchieveCompleted
 		and attunelocal_myguild ~= ""
 		and attunelocal_achieveDelayDone then 
-			SendChatMessage(Lang["AchieveCompleteGuild"]:gsub("##LINK##", GetAchievementLink(id)):gsub("##POINTS##", GetTotalAchievementPoints()) , "GUILD")
-	end
 
+			local msg = "[Attune] "..Lang["AchieveCompleteGuild"]:gsub("##LINK##", GetAchievementLink(id))
+			if categId ~= FEAT_OF_STRENGTH_CATEGID then -- don't show points for FoS
+				msg = msg .. " "..Lang["AchieveCompletePoints"]:gsub("##POINTS##", GetTotalAchievementPoints())
+			end
+			SendChatMessage(msg , "GUILD")
+	end
 end
 
 -------------------------------------------------------------------------
@@ -1099,25 +1105,28 @@ function Attune:QUEST_ACCEPTED(event)
 		if showPatchStep(s) then
 			if s.TYPE == "Pick Up" then
 
-				if C_QuestLog.IsOnQuest(s.ID_WOWHEAD) then
+				local qIDs = Attune_split(s.ID_WOWHEAD, "|")
+				for i=1, #qIDs do 
+					if C_QuestLog.IsOnQuest(qIDs[i]) then
+					
+						if Attune_DB.toons[attunelocal_charKey].done[s.ID_ATTUNE .. "-" .. s.ID] == nil then
 
-					if Attune_DB.toons[attunelocal_charKey].done[s.ID_ATTUNE .. "-" .. s.ID] == nil then
-
-						local faction = UnitFactionGroup("player")
-						-- check attune warning is for the right faction
-						for k, a in pairs(Attune_Data.attunes) do
-							if (a.DEPRECATED == nil or Attune_DB.showDeprecatedAttunes) then 
-								if a.ID == s.ID_ATTUNE then
-									if a.FACTION == faction or a.FACTION == 'Both' then
-										--mark step as done
-										Attune_DB.toons[attunelocal_charKey].done[s.ID_ATTUNE .. "-" .. s.ID] = 1
-										refreshNeeded = true
-										PlaySound(1210) --putdownring
-										-- fetch attune name for chat message
-										if Attune_DB.showStepReached then print("|cffff00ff[Attune]|r "..Lang["CompletedStep"]:gsub("##TYPE##", s.TYPE):gsub("##STEP##", Lang["Q1_"..s.ID_WOWHEAD]):gsub("##NAME##", a.NAME)) end
-										Attune_SendPushInfo("TOON")
-										Attune_SendPushInfo(s.ID_ATTUNE .. "-" .. s.ID)
-										Attune_SendPushInfo("OVER")
+							local faction = UnitFactionGroup("player")
+							-- check attune warning is for the right faction
+							for k, a in pairs(Attune_Data.attunes) do
+								if (a.DEPRECATED == nil or Attune_DB.showDeprecatedAttunes) then 
+									if a.ID == s.ID_ATTUNE then
+										if a.FACTION == faction or a.FACTION == 'Both' then
+											--mark step as done
+											Attune_DB.toons[attunelocal_charKey].done[s.ID_ATTUNE .. "-" .. s.ID] = 1
+											refreshNeeded = true
+											PlaySound(1210) --putdownring
+											-- fetch attune name for chat message
+											if Attune_DB.showStepReached then print("|cffff00ff[Attune]|r "..Lang["CompletedStep"]:gsub("##TYPE##", s.TYPE):gsub("##STEP##", Lang["Q1_"..s.ID_WOWHEAD]):gsub("##NAME##", a.NAME)) end
+											Attune_SendPushInfo("TOON")
+											Attune_SendPushInfo(s.ID_ATTUNE .. "-" .. s.ID)
+											Attune_SendPushInfo("OVER")
+										end
 									end
 								end
 							end
@@ -1144,31 +1153,35 @@ function Attune:QUEST_TURNED_IN(event, arg1)
 		if showPatchStep(s) then
 			if s.TYPE == "Quest" or s.TYPE == "Turn In" then
 
-				if tonumber(s.ID_WOWHEAD) == arg1 then
+				local qIDs = Attune_split(s.ID_WOWHEAD, "|")
+				for i=1, #qIDs do 
 
-					if Attune_DB.toons[attunelocal_charKey].done[s.ID_ATTUNE .. "-" .. s.ID] == nil then
+					if tonumber(qIDs[i]) == arg1 then
 
-						local faction = UnitFactionGroup("player")
-						-- check attune warning is for the right faction
-						for k, a in pairs(Attune_Data.attunes) do
-							if (a.DEPRECATED == nil or Attune_DB.showDeprecatedAttunes) then 
-								if a.ID == s.ID_ATTUNE then
-									if a.FACTION == faction or a.FACTION == 'Both' then
-										--mark step as done
-										Attune_DB.toons[attunelocal_charKey].done[s.ID_ATTUNE .. "-" .. s.ID] = 1
-										refreshNeeded = true
-										PlaySound(1210) --putdownring
-										-- fetch attune name for chat message
-										if Attune_DB.showStepReached then print("|cffff00ff[Attune]|r "..Lang["CompletedStep"]:gsub("##TYPE##", s.TYPE):gsub("##STEP##", Lang["Q1_"..s.ID_WOWHEAD]):gsub("##NAME##", a.NAME)) end
-										Attune_SendPushInfo("TOON")
-										Attune_SendPushInfo(s.ID_ATTUNE .. "-" .. s.ID)
-										Attune_CheckComplete(false)
-										if Attune_DB.toons[attunelocal_charKey].attuned[a.ID] >= 100 then
-											PlaySound(5275) -- AuctionWindowClose
-											if Attune_DB.showStepReached then print("|cffff00ff[Attune]|r "..Lang["AttuneComplete"]:gsub("##NAME##", a.NAME)) end
-											if Attune_DB.announceAttuneCompleted and attunelocal_myguild ~= "" then SendChatMessage("[Attune] "..Lang["AttuneCompleteGuild"]:gsub("##NAME##", a.NAME), "GUILD") end
+						if Attune_DB.toons[attunelocal_charKey].done[s.ID_ATTUNE .. "-" .. s.ID] == nil then
+
+							local faction = UnitFactionGroup("player")
+							-- check attune warning is for the right faction
+							for k, a in pairs(Attune_Data.attunes) do
+								if (a.DEPRECATED == nil or Attune_DB.showDeprecatedAttunes) then 
+									if a.ID == s.ID_ATTUNE then
+										if a.FACTION == faction or a.FACTION == 'Both' then
+											--mark step as done
+											Attune_DB.toons[attunelocal_charKey].done[s.ID_ATTUNE .. "-" .. s.ID] = 1
+											refreshNeeded = true
+											PlaySound(1210) --putdownring
+											-- fetch attune name for chat message
+											if Attune_DB.showStepReached then print("|cffff00ff[Attune]|r "..Lang["CompletedStep"]:gsub("##TYPE##", s.TYPE):gsub("##STEP##", Lang["Q1_"..s.ID_WOWHEAD]):gsub("##NAME##", a.NAME)) end
+											Attune_SendPushInfo("TOON")
+											Attune_SendPushInfo(s.ID_ATTUNE .. "-" .. s.ID)
+											Attune_CheckComplete(false)
+											if Attune_DB.toons[attunelocal_charKey].attuned[a.ID] >= 100 then
+												PlaySound(5275) -- AuctionWindowClose
+												if Attune_DB.showStepReached then print("|cffff00ff[Attune]|r "..Lang["AttuneComplete"]:gsub("##NAME##", a.NAME)) end
+												if Attune_DB.announceAttuneCompleted and attunelocal_myguild ~= "" then SendChatMessage("[Attune] "..Lang["AttuneCompleteGuild"]:gsub("##NAME##", a.NAME), "GUILD") end
+											end
+											Attune_SendPushInfo("OVER")
 										end
-										Attune_SendPushInfo("OVER")
 									end
 								end
 							end
@@ -1475,14 +1488,28 @@ function Attune_CheckProgress()
 
 						--get QUEST accepts
 						if s.TYPE == "Pick Up" then
-							if C_QuestLog.IsOnQuest(s.ID_WOWHEAD) then
+							local eitherOnQuest = false
+							local qIDs = Attune_split(s.ID_WOWHEAD, "|")
+							for i=1, #qIDs do 
+								if C_QuestLog.IsOnQuest(qIDs[i]) then
+									eitherOnQuest = true
+								end
+							end
+							if eitherOnQuest then
 								att.done[a.ID .. "-" .. s.ID] = 1
 							end
 						end
 
 						--get QUEST completion
 						if s.TYPE == "Quest" or s.TYPE == "Turn In" then
-							if IsQuestFlaggedCompleted(s.ID_WOWHEAD) then
+							local eitherCompleted = false
+							local qIDs = Attune_split(s.ID_WOWHEAD, "|")
+							for i=1, #qIDs do 
+								if IsQuestFlaggedCompleted(qIDs[i]) then
+									eitherCompleted = true
+								end
+							end
+							if eitherCompleted then
 								att.done[a.ID .. "-" .. s.ID] = 1
 							end
 						end
@@ -2358,7 +2385,11 @@ function Attune_CreateNode(step, parent, posX, posY)
 			attunelocal_frame:SetStatusText(Lang["Q1_"..step.ID_WOWHEAD])
 			GameTooltip:SetOwner(fnode,"ANCHOR_NONE")
 			GameTooltip:SetPoint("TOPLEFT", fnode,"TOPRIGHT", 10, 0)
+
 			local quest = Attune_Data.quests[tonumber(step.ID_WOWHEAD)]
+			if string.find(step.ID_WOWHEAD, "|") then 
+				quest = Attune_Data.quests[tonumber(Attune_split(step.ID_WOWHEAD, "|")[1])]
+			end
 			if quest == nil then
 				-- error message if quest is not in AttuneData.lua
 				GameTooltip:SetText(Lang["Quest information not found"].." (ID "..step.ID_WOWHEAD..")", 1, 0.5, 0.5, 1)

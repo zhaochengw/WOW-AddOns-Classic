@@ -191,7 +191,8 @@ Lang["DelUnder70_DONE"] = "Todos los resultados por debajo de nivel 70 eliminado
 --302
 Lang["AnnounceAchieve_TEXT"] = "Anunciar logros en el chat del gremio                                    Límite:"
 Lang["AnnounceAchieve_DESC"] = "Envía un mensaje de hermandad cuando obtengas un logro."
-Lang["AchieveCompleteGuild"] = "##LINK## completada! (##POINTS## puntos totales)" 
+Lang["AchieveCompleteGuild"] = "##LINK## completada! " 
+Lang["AchieveCompletePoints"] = "(##POINTS## puntos totales)" 
 Lang["AchieveSurvey"] = "¿Te gustaría |cFFFFD100Attune|r anunciar los logros de |cFFFFD100##WHO##|r en el chat del gremio?"
 --306
 Lang["showDeprecatedAttunes_TEXT"] = "Mostrar armonización en desuso"
@@ -673,8 +674,8 @@ Lang["Q1_9637"] = "La petición de Kalynna"			-- https://es.tbc.wowhead.com/ques
 Lang["Q2_9637"] = "Kalynna Lathrojo quiere recuperar el Escrito del Ocaso del brujo supremo Malbisal en Las Salas Arrasadas de la Ciudadela del Fuego Infernal y el Libro de los Nombres Olvidados de Tejeoscuro Syth en las Salas Sethekk de Auchindoun."
 Lang["Q1_9644"] = "Nocturno"			-- https://es.tbc.wowhead.com/quest=9644
 Lang["Q2_9644"] = "Ve a El Bancal del Maestro en Karazhan y usa la urna ennegrecida para invocar a Nocturno. Recupera la esencia arcana intangible del cadáver de Nocturno y llévasela al archimago Alturus."
-Lang["Q1_10901"] = "La cayada de Kar'desh"			-- https://es.tbc.wowhead.com/quest=10901
-Lang["Q2_10901"] = "Skar'this el Herético, en El Reciento de los Esclavos heroico, en la Reserva Colmillo Torcido, quiere que le lleves el sello terráneo y el sello llameante."
+Lang["Q1_10901|13431"] = "La cayada de Kar'desh"			-- https://es.tbc.wowhead.com/quest=10901|13431
+Lang["Q2_10901|13431"] = "Skar'this el Herético, en El Reciento de los Esclavos heroico, en la Reserva Colmillo Torcido, quiere que le lleves el sello terráneo y el sello llameante."
 Lang["Q1_10900"] = "La marca de Vashj"			-- https://es.tbc.wowhead.com/quest=10900
 Lang["Q2_10900"] = ""
 Lang["Q1_10681"] = "La Mano de Gul'dan"			-- https://es.tbc.wowhead.com/quest=10681
@@ -735,12 +736,12 @@ Lang["Q1_10885"] = "Prueba de los naaru: fuerza"			-- https://es.tbc.wowhead.com
 Lang["Q2_10885"] = "A'dal de la Ciudad de Shattrath quiere que recuperes el tridente de Kalithresh y la esencia de Murmullo.\n\nEsta misión debe completarse en dificultad de mazmorra heroica."
 Lang["Q1_10886"] = "Prueba de los naaru: tenacidad"			-- https://es.tbc.wowhead.com/quest=10886
 Lang["Q2_10886"] = "A'dal, de la Ciudad de Shattrath, quiere que rescates a Molino Tormenta de Maná del Arcatraz de El Castillo de la Tempestad."
-Lang["Q1_10888"] = "Prueba de los naaru: Magtheridon"			-- https://es.tbc.wowhead.com/quest=10888
-Lang["Q2_10888"] = "A'dal en la Ciudad de Shattrath quiere que mates a Magtheridon."
+Lang["Q1_10888|13430"] = "Prueba de los naaru: Magtheridon"			-- https://es.tbc.wowhead.com/quest=10888|13430
+Lang["Q2_10888|13430"] = "A'dal en la Ciudad de Shattrath quiere que mates a Magtheridon."
 Lang["Q1_10680"] = "La Mano de Gul'dan"			-- https://es.tbc.wowhead.com/quest=10680
 Lang["Q2_10680"] = "Habla con el ensalmador de la tierra Torlok en El Altar de Condenación del Valle Sombraluna."
-Lang["Q1_10445"] = "Los viales de la eternidad"			-- https://es.tbc.wowhead.com/quest=10445
-Lang["Q2_10445"] = "Soridormi de las Cavernas del Tiempo quiere que recuperes los restos del vial de Vashj de lady Vashj en la Reserva Colmillo Torcido, y los restos del vial de Kael de Kael'thas Caminante del Sol, en El Castillo de la Tempestad."
+Lang["Q1_10445|13432"] = "Los viales de la eternidad"			-- https://es.tbc.wowhead.com/quest=10445|13432
+Lang["Q2_10445|13432"] = "Soridormi de las Cavernas del Tiempo quiere que recuperes los restos del vial de Vashj de lady Vashj en la Reserva Colmillo Torcido, y los restos del vial de Kael de Kael'thas Caminante del Sol, en El Castillo de la Tempestad."
 Lang["Q1_10568"] = "Las tablillas de Baa'ri"			-- https://es.tbc.wowhead.com/quest=10568
 Lang["Q2_10568"] = "La anacoreta Ceyla del Altar de Sha'tar quiere que recojas 12 tablillas Baa'ri del suelo y de los trabajadores Lengua de Ceniza en las Ruinas de Baa'ri.\n\nCompletar misiones para los Aldor hará que disminuya tu nivel de reputación con los Arúspices."
 Lang["Q1_10683"] = "Las tablillas de Baa'ri"			-- https://es.tbc.wowhead.com/quest=10683
@@ -779,8 +780,8 @@ Lang["Q1_10948"] = "El alma rehén"			-- https://es.tbc.wowhead.com/quest=10948
 Lang["Q2_10948"] = "Viaja hasta la Ciudad de Shattrath y háblale a A'dal de lo que pide Akama."
 Lang["Q1_10949"] = "La entrada a El Templo Oscuro"			-- https://es.tbc.wowhead.com/quest=10949
 Lang["Q2_10949"] = "Viaja hasta la entrada del Templo Oscuro en el Valle Sombraluna y habla con Xi'ri."
-Lang["Q1_10985"] = "Una distracción para Akama"			-- https://es.tbc.wowhead.com/quest=10985
-Lang["Q2_10985"] = "Asegúrate de que Akama y Maiev entran en El Templo Oscuro, en el Valle Sombraluna, cuando las fuerzas de Xi'ri creen una distracción."
+Lang["Q1_10985|13429"] = "Una distracción para Akama"			-- https://es.tbc.wowhead.com/quest=10985|13429
+Lang["Q2_10985|13429"] = "Asegúrate de que Akama y Maiev entran en El Templo Oscuro, en el Valle Sombraluna, cuando las fuerzas de Xi'ri creen una distracción."
 --v243
 Lang["Q1_10984"] = "Habla con el ogro"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10984
 Lang["Q2_10984"] = "Habla con Grok, el ogro, en el Bajo Arrabal de la Ciudad de Shattrath."

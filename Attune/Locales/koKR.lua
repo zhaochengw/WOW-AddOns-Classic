@@ -191,7 +191,8 @@ Lang["DelUnder70_DONE"] = "70랩미만 케릭들 삭제함"
 --302
 Lang["AnnounceAchieve_TEXT"] = "길드 채팅에서 업적 발표                                                                          한계점:"
 Lang["AnnounceAchieve_DESC"] = "업적 달성 시 길드 메시지를 보냅니다."
-Lang["AchieveCompleteGuild"] = "##LINK## 완료! (##POINTS## 총 포인트)" 
+Lang["AchieveCompleteGuild"] = "##LINK## 완료!" 
+Lang["AchieveCompletePoints"] = "(##POINTS## 총 포인트)" 
 Lang["AchieveSurvey"] = "|cFFFFD100Attune|r이 길드 채팅에서 |cFFFFD100##WHO##|r의 업적을 발표하시겠습니까?"
 --306
 Lang["showDeprecatedAttunes_TEXT"] = "더 이상 사용되지 않는 조정 표시"
@@ -673,8 +674,8 @@ Lang["Q1_9637"] = "칼린나의 부탁"			-- https://wow.inven.co.kr/dataninfo/w
 Lang["Q2_9637"] = "칼린나 나스레드가 지옥불 성채의 으스러진 손의 전당에 있는 대흑마법사 네더쿠르스로부터 어둠의 고서를, 아킨둔의 세데크 전당에 있는 흑마술사 시스에게서 잊혀진 이름의 고서를 되찾아 달라고 부탁했습니다.\n\n이 퀘스트는 던전 난이도를 영웅으로 설정한 후 수행해야 합니다."
 Lang["Q1_9644"] = "파멸의 어둠"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=9644
 Lang["Q2_9644"] = "카라잔에 있는 주인의 테라스로 간 후 어둠의 단지를 만져 파멸의 어둠을 소환한 후, 파멸의 어둠의 시체에서 희미한 비전 정수를 되찾은 후 대마법사 알투루스에게 가져가야 합니다."
-Lang["Q1_10901"] = "카르데쉬의 곤봉"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10901
-Lang["Q2_10901"] = "갈퀴송곳니 저수지의 용사 강제 노역소에 있는 이단자 스카디스가 땅의 인장과 불의 인장을 가져다 달라고 부탁했습니다.\n\n이 퀘스트는 던전 난이도를 영웅으로 설정한 후 수행해야 합니다."
+Lang["Q1_10901|13431"] = "카르데쉬의 곤봉"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10901|13431
+Lang["Q2_10901|13431"] = "갈퀴송곳니 저수지의 용사 강제 노역소에 있는 이단자 스카디스가 땅의 인장과 불의 인장을 가져다 달라고 부탁했습니다.\n\n이 퀘스트는 던전 난이도를 영웅으로 설정한 후 수행해야 합니다."
 Lang["Q1_10900"] = "바쉬의 증표"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10900
 Lang["Q2_10900"] = "(바로 완료됨)"
 Lang["Q1_10681"] = "굴단의 손아귀"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10681
@@ -735,12 +736,12 @@ Lang["Q1_10885"] = "나루의 시험: 힘"			-- https://wow.inven.co.kr/dataninf
 Lang["Q2_10885"] = "샤트라스에 있는 아달이 칼리스레쉬의 삼지창, 울림의 정수를 가져다 달라고 부탁했습니다.\n\n이 퀘스트는 던전 난이도를 영웅으로 설정한 후 수행해야 합니다."
 Lang["Q1_10886"] = "나루의 시험: 끈기"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10886
 Lang["Q2_10886"] = "샤트라스에 있는 아달이 폭풍우 요새의 알카트라즈에서 밀하우스 마나스톰을 구출해 달라고 부탁했습니다.\n\n이 퀘스트는 던전 난이도를 영웅으로 설정한 후 수행해야 합니다."
-Lang["Q1_10888"] = "나루의 시험: 마그테리돈"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10888
-Lang["Q2_10888"] = "샤트라스에 있는 아달이 마그테리돈을 처치해 달라고 부탁했습니다."
+Lang["Q1_10888|13430"] = "나루의 시험: 마그테리돈"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10888|13430
+Lang["Q2_10888|13430"] = "샤트라스에 있는 아달이 마그테리돈을 처치해 달라고 부탁했습니다."
 Lang["Q1_10680"] = "굴단의 손아귀"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10680
 Lang["Q2_10680"] = "어둠달 골짜기의 저주의 제단에 있는 대지의 치유사 토르록과 대화해야 합니다."
-Lang["Q1_10445"] = "영원의 샘"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10445
-Lang["Q2_10445"] = "시간의 동굴에 있는 소리도르미가 갈퀴송곳니 저수지에 있는 여군주 바쉬에게서 유리병 잔여물을, 폭풍우 요새에 있는 캘타스 선스트라이더로부터 유리병 잔여물을 되찾아 달라고 부탁했습니다."
+Lang["Q1_10445|13432"] = "영원의 샘"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10445|13432
+Lang["Q2_10445|13432"] = "시간의 동굴에 있는 소리도르미가 갈퀴송곳니 저수지에 있는 여군주 바쉬에게서 유리병 잔여물을, 폭풍우 요새에 있는 캘타스 선스트라이더로부터 유리병 잔여물을 되찾아 달라고 부탁했습니다."
 Lang["Q1_10568"] = "바아리 서판"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10568
 Lang["Q2_10568"] = "샤타르 제단에 있는 수도사 케일라가 바아리 폐허에서 바아리 서판 12개를 모아달라고 부탁했습니다. 서판은 땅에서 줍거나 폐허의 잿빛혓바닥 일꾼을 처치해서 얻을 수 있습니다\n\n알도르 사제회를 위한 퀘스트를 완료하면 점술가 길드에 대한 평판은 떨어질 것입니다."
 Lang["Q1_10683"] = "바아리 서판"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10683
@@ -779,8 +780,8 @@ Lang["Q1_10948"] = "볼모가 된 영혼"			-- https://wow.inven.co.kr/dataninfo
 Lang["Q2_10948"] = "샤트라스로 가서 아달에게 아카마의 요청에 대해서 알려줘야 합니다."
 Lang["Q1_10949"] = "검은 사원 속으로"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10949
 Lang["Q2_10949"] = "어둠달 골짜기에 있는 검은 사원의 입구로 간 후 지리와 대화해야 합니다.."
-Lang["Q1_10985"] = "아카마를 위한 소동"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10985
-Lang["Q2_10985"] = "지리의 군대가 소동을 일으킨 후에 마이에브와 아카마가 어둠달 골짜기의 검은 사원에 진입하도록 도와야 합니다."
+Lang["Q1_10985|13429"] = "아카마를 위한 소동"			-- https://wow.inven.co.kr/dataninfo/wdb/edb_quest/detail.php?id=10985|13429
+Lang["Q2_10985|13429"] = "지리의 군대가 소동을 일으킨 후에 마이에브와 아카마가 어둠달 골짜기의 검은 사원에 진입하도록 도와야 합니다."
 --v243
 Lang["Q1_10984"] = "오우거와 대화"			-- https://www.thegeekcrusade-serveur.com/db/?quest=10984
 Lang["Q2_10984"] = "샤트라스의 고난의 거리에 있는 오우거, 그록과 대화하십시오."
