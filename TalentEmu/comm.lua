@@ -10,7 +10,6 @@ local DT = __private.DT;
 
 -->		upvalue
 	local strsub, strsplit, strmatch, gsub = string.sub, string.split, string.match, string.gsub;
-	local UnitInBattleground = UnitInBattleground;
 	local Ambiguate = Ambiguate;
 	local CreateFrame = CreateFrame;
 	local _G = _G;
@@ -47,6 +46,16 @@ MT.BuildEnv('COMM');
 			end
 			VT.QuerySent[name] = popup and Tick or VT.QuerySent[name] or nil;
 			VT.AutoShowEquipmentFrameOnComm[name] = popup and update_equipment ~= false and Tick or VT.AutoShowEquipmentFrameOnComm[name];
+			if name == CT.SELFNAME then
+				VT.PrevQueryRequestSentTime[name] = Tick;
+				local code = VT.VAR[CT.SELFGUID];
+				if code ~= nil then
+					return VT.__emulib.CHAT_MSG_ADDON(VT.__emulib.CT.COMM_PREFIX, code, "WHISPER", name);
+				end
+			end
+			-- if VT.__is_inbattleground then
+			-- 	local v = VT.TBattlegroundComm[name];
+			-- end
 			local ready = VT.PrevQueryRequestSentTime[name] == nil or (Tick - VT.PrevQueryRequestSentTime[name] > 0.1);
 			local cache = VT.TQueryCache[name];
 			local update_tal = update_talent ~= false and
@@ -193,32 +202,6 @@ MT.BuildEnv('COMM');
 			end
 			cache.time_gly = Tick;
 			cache.glyph = { data1, data2, };
-			--[=[
-			if data1 ~= nil then
-				for index = 1, 6 do
-					local val = data1[index];
-					if val ~= nil then
-						MT.Error("GlyphSet 1: ", val[1], val[2], val[3], GetSpellLink(val[3]), val[4]);
-					else
-						MT.Error("GlyphSet 1: Empty");
-					end
-				end
-			else
-				MT.Error("No GlyphSet 1");
-			end
-			if data2 ~= nil then
-				for index = 1, 6 do
-					local val = data2[index];
-					if val ~= nil then
-						MT.Error("GlyphSet 1: ", val[1], val[2], val[3], val[4], GetSpellInfo(val[3]));
-					else
-						MT.Error("GlyphSet 1: Empty");
-					end
-				end
-			else
-				MT.Error("No GlyphSet 2");
-			end
-			--]=]
 			if not overheard then
 				MT._TriggerCallback("CALLBACK_DATA_RECV", name);
 				MT._TriggerCallback("CALLBACK_GLYPH_DATA_RECV", name, true);

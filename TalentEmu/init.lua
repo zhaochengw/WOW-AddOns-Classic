@@ -20,7 +20,9 @@ local DT = {  }; __private.DT = DT;		--	data
 	local tremove = table.remove;
 	local strrep = string.rep;
 	local IsLoggedIn =IsLoggedIn;
-	local _After = C_Timer.After;
+	local After = C_Timer.After;
+	local UnitInBattleground = UnitInBattleground;
+	local GetBestMapForUnit = C_Map.GetBestMapForUnit;
 	local CreateFrame = CreateFrame;
 	local _G = _G;
 
@@ -152,11 +154,11 @@ MT.BuildEnv('INIT');
 						if P[4] then
 							P[3] = false;
 						elseif P[5] == nil then
-							_After(P[2], P[1]);
+							After(P[2], P[1]);
 							callback();
 						elseif P[5] > 1 then
 							P[5] = P[5] - 1;
-							_After(P[2], P[1]);
+							After(P[2], P[1]);
 							callback();
 						elseif P[5] > 0 then
 							P[3] = false;
@@ -171,13 +173,13 @@ MT.BuildEnv('INIT');
 					[5] = limit,
 				};
 				_TimerPrivate[callback] = P;
-				return _After(P[2], P[1]);
+				return After(P[2], P[1]);
 			elseif not P[3] then
 				P[2] = int or 1.0;
 				P[3] = true;
 				P[4] = false;
 				P[5] = limit;
-				return _After(P[2], P[1]);
+				return After(P[2], P[1]);
 			else
 				P[2] = int or P[2];
 				P[4] = false;
@@ -233,6 +235,7 @@ MT.BuildEnv('INIT');
 	VT.Frames = { num = 0, used = 0, };
 	VT.TQueryCache = {  };	--	[GUID] = { [addon] = { data, time, }, }
 	VT.QuerySent = {  };					--	尝试发送带弹出界面请求的时间，无论是否真实发送
+	VT.TBattlegroundComm = {  };
 	VT.NameBindingFrame = {  };
 	VT.ImportTargetFrame = {  };
 	VT.PrevQueryRequestSentTime = {  };		--	真实发送请求的时间
@@ -268,6 +271,7 @@ MT.BuildEnv('INIT');
 	Driver:RegisterEvent("ADDON_LOADED");
 	Driver:RegisterEvent("PLAYER_LOGOUT");
 	Driver:RegisterEvent("PLAYER_LOGIN");
+	Driver:RegisterEvent("PLAYER_ENTERING_WORLD");
 	Driver:SetScript("OnEvent", function(Driver, event, addon)
 		if event == "ADDON_LOADED" then
 			if addon == __addon then
@@ -303,11 +307,19 @@ MT.BuildEnv('INIT');
 				local method = __onquit[key];
 				xpcall(method, ErrorHandler);
 			end
+		elseif event == "PLAYER_ENTERING_WORLD" then
+			VT.__is_inbattleground = UnitInBattleground('player');
+			local map = GetBestMapForUnit('player');
+			if VT.__player_map ~= map then
+				VT.__player_map = map;
+				VT.TBattlegroundComm = {  };
+			end
 		end
 	end);
 
 	VT.__is_loggedin = IsLoggedIn();
-	-- MT.InspectButtonKeyFunc = _G.IsAltKeyDown;
+	VT.__is_inbattleground = UnitInBattleground('player');
+	VT.__player_map = GetBestMapForUnit('player');
 	VT.__support_glyph = CT.TOCVERSION >= 30000;
 
 	if CT.BNTAG == "\97\108\101\120\35\53\49\54\55\50\50" or CT.BNTAG == "ALEX#125620" or CT.BNTAG == "Sanjeev#1289" then

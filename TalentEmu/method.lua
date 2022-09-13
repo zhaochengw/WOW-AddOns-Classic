@@ -206,10 +206,44 @@ MT.BuildEnv('METHOD');
 						type(TreeFrames[3]) == 'table' and type(TreeFrames[3].TalentSet) == 'table'
 				then
 				--
-				return VT.__emulib.EncodeFrameTalentDataV2(CT.ClassToIndex[Frame.class], Frame.level,
-							TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
-							#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
-						);
+				local activeGroup = Frame.activeGroup;
+				local data = Frame.data;
+				if activeGroup ~= nil and data ~= nil and data.num ~= nil then
+					if data.num == 2 then
+						local T2 = activeGroup == 1 and data[2] or data[1];
+						if T2 ~= nil then
+							local D1, D2, D3, N1, N2, N3 = TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
+										#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
+							local T1 = {  };
+							local len = 0;
+							for index = 1, N1 do len = len + 1; T1[len] = D1[index] or 0; end
+							for index = 1, N2 do len = len + 1; T1[len] = D2[index] or 0; end
+							for index = 1, N3 do len = len + 1; T1[len] = D3[index] or 0; end
+							local code1, data1, lenc1, lend1 = VT.__emulib.EncodeTalentBlock(T1, len);
+							local code2, data2, lenc2, lend2 = VT.__emulib.EncodeTalentBlock(T2, #T2);
+							if activeGroup == 1 then
+							return VT.__emulib.MergeTalentCodeV2(CT.ClassToIndex[Frame.class], Frame.level, activeGroup, 2, T1, len, T2, #T2);
+							else
+							return VT.__emulib.MergeTalentCodeV2(CT.ClassToIndex[Frame.class], Frame.level, activeGroup, 2, T2, #T2, T1, len);
+							end
+						else
+							return VT.__emulib.EncodeFrameTalentDataV2(CT.ClassToIndex[Frame.class], Frame.level,
+										TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
+										#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
+									);
+						end
+					else
+							return VT.__emulib.EncodeFrameTalentDataV2(CT.ClassToIndex[Frame.class], Frame.level,
+										TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
+										#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
+									);
+					end
+				else
+							return VT.__emulib.EncodeFrameTalentDataV2(CT.ClassToIndex[Frame.class], Frame.level,
+										TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
+										#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
+									);
+				end
 				--
 			else
 				MT.Error("MT.EncodeTalent", 1, "class", 'table');
@@ -724,52 +758,6 @@ MT.BuildEnv('METHOD');
 				text = L.TalentsInTipIcon_TRUE,
 			},
 		},
-		--[[
-		{
-			v = "inspectButtonOnUnitFrame",
-			[true] = {
-				handler = function(Button)
-					VT.SET.inspectButtonOnUnitFrame = false;
-				end,
-				param = nil,
-				text = L.InspectButtonOnUnitFrame_FALSE,
-			},
-			[false] = {
-				handler = function(Button)
-					VT.SET.inspectButtonOnUnitFrame = true;
-				end,
-				param = nil,
-				text = L.InspectButtonOnUnitFrame_TRUE,
-			},
-		},
-		{
-			v = "inspectButtonKey",
-			ALT = {
-				handler = function(Button)
-					VT.SET.inspectButtonKey = "ALT";
-					MT.InspectButtonKeyFunc = IsAltKeyDown;
-				end,
-				param = nil,
-				text = L.InsepctKey_ALT,
-			},
-			CTRL = {
-				handler = function(Button)
-					VT.SET.inspectButtonKey = "CTRL";
-					MT.InspectButtonKeyFunc = IsControlKeyDown;
-				end,
-				param = nil,
-				text = L.InsepctKey_CTRLK,
-			},
-			SHIFT = {
-				handler = function(Button)
-					VT.SET.inspectButtonKey = "SHIFT";
-					MT.InspectButtonKeyFunc = IsShiftKeyDown;
-				end,
-				param =  nil,
-				text = L.InsepctKey_SHIFT,
-			},
-		},
-		--]]
 	};
 	local MenuDefinition = {
 		num = 0,
