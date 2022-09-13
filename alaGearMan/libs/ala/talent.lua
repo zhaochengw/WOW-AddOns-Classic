@@ -2,7 +2,7 @@
 	ALA@163UI
 --]]--
 
-local __version = 220908.0;
+local __version = 220909.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -634,6 +634,9 @@ end
 		if data == nil then
 			return nil;
 		end
+		if type(data) == 'table' then
+			data.sub = __table_sub;
+		end
 		len = len or #data;
 		local num = 0;
 		local raw = 0;
@@ -754,7 +757,7 @@ end
 				__base64[LvLow] .. __base64[LvHigh] ..
 				__base64[1] ..
 				__base64[1] ..
-				__base64[lenc1] .. code1,
+				__base64[lenc1 or 0] .. (code1 or ""),
 				1,
 				1,
 				data1;
@@ -839,7 +842,7 @@ end
 					__base64[LvLow] .. __base64[LvHigh] ..
 					__base64[numGroup] ..
 					__base64[activeGroup] ..
-					__base64[lenc1] .. code1,
+					__base64[lenc1 or 0] .. (code1 or ""),
 					1,
 					1,
 					data1;
@@ -852,8 +855,41 @@ end
 					__base64[LvLow] .. __base64[LvHigh] ..
 					__base64[numGroup] ..
 					__base64[activeGroup] ..
-					__base64[lenc1] .. code1 ..
-					__base64[lenc2] .. code2,
+					__base64[lenc1 or 0] .. (code1 or "") ..
+					__base64[lenc2 or 0] .. (code2 or ""),
+					2,
+					activeGroup,
+					data1,
+					data2;
+		end
+	end
+	function __emulib.MergeTalentCodeV2(classIndex, level, activeGroup, numGroup, data1, len1, data2, len2)
+		local LvLow = level % 64;
+		local LvHigh = (level - LvLow) / 64;
+
+		if numGroup < 2 then
+			local code1, data1, lenc1, lend1 = __emulib.EncodeTalentBlock(data1, len1);
+			return
+					COMM_TALENT_PREFIX ..
+					__base64[classIndex] ..
+					__base64[LvLow] .. __base64[LvHigh] ..
+					__base64[numGroup] ..
+					__base64[activeGroup] ..
+					__base64[lenc1 or 0] .. (code1 or ""),
+					1,
+					1,
+					data1;
+		else
+			local code1, data1, lenc1, lend1 = __emulib.EncodeTalentBlock(data1, len1);
+			local code2, data2, lenc2, lend2 = __emulib.EncodeTalentBlock(data2, len2);
+			return
+					COMM_TALENT_PREFIX ..
+					__base64[classIndex] ..
+					__base64[LvLow] .. __base64[LvHigh] ..
+					__base64[numGroup] ..
+					__base64[activeGroup] ..
+					__base64[lenc1 or 0] .. (code1 or "") ..
+					__base64[lenc2 or 0] .. (code2 or ""),
 					2,
 					activeGroup,
 					data1,
