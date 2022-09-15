@@ -3,84 +3,100 @@ local _, _, _, tocversion = GetBuildInfo()
 local fuFrame=List_R_F_2_9
 ---------------------------------
 local ADD_Frame=addonTable.ADD_Frame
+local ADD_Biaoti=addonTable.ADD_Biaoti
 local ADD_Modbutton=addonTable.ADD_Modbutton
 local GnName,GnUI = "时空之门","PlaneInvite_UI";
 local FrameLevel=40
 local Options_PlaneInvite = ADD_Modbutton(GnName,GnUI,FrameLevel,4)
---=============================================================
-local SQPindao = {"寻求组队","请求位面信息","请求车队信息"}
+----
+local SQPindao = {
+	["pindao"]="寻求组队",["Leisure"]="请求活动信息",["Plane"]="请求位面信息",["Chedui"]="请求车队信息",
+}
 addonTable.CDWMinfo=SQPindao
+local function guolvqingqiuMSG(self,event,arg1,...)
+	--print(event,arg1)
+	if arg1==SQPindao["Leisure"] then
+		return true;
+	elseif arg1==SQPindao["Plane"] then
+    	return true;
+    elseif arg1==SQPindao["Chedui"] then
+    	return true;
+	end
+end
+-------------
+local function ADD_jindutiaoBUT(fuFrame,jindutiaoWW,butTXT,PointX,PointyY)
+	local jieshoushuju = CreateFrame("Frame", nil, fuFrame);
+	jieshoushuju:SetSize(jindutiaoWW+4,20);
+	jieshoushuju:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",PointX,PointyY);
+	jieshoushuju:Hide();
+	jieshoushuju.jindu = jieshoushuju:CreateTexture(nil, "BORDER");
+	jieshoushuju.jindu:SetTexture("interface/raidframe/raid-bar-hp-fill.blp");
+	jieshoushuju.jindu:SetColorTexture(0.3, 0.7, 0.1, 1)
+	jieshoushuju.jindu:SetSize(jindutiaoWW,16);
+	jieshoushuju.jindu:SetPoint("LEFT",jieshoushuju,"LEFT",2,0);
+	jieshoushuju.edg = CreateFrame("Frame", nil, jieshoushuju,"BackdropTemplate");
+	jieshoushuju.edg:SetBackdrop( { edgeFile = "Interface/Tooltips/UI-Tooltip-Border",edgeSize = 14,});
+	jieshoushuju.edg:SetBackdropBorderColor(0, 1, 1, 0.9);
+	jieshoushuju.edg:SetAllPoints(jieshoushuju)
+	jieshoushuju.edg.t = jieshoushuju.edg:CreateFontString();
+	jieshoushuju.edg.t:SetPoint("CENTER",jieshoushuju.edg,"CENTER",0,0);
+	jieshoushuju.edg.t:SetFont(GameFontNormal:GetFont(), 12,"OUTLINE")
+	jieshoushuju.edg.t:SetText("正在接收数据...");
+	------
+	local shuaxinChedui = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");  
+	shuaxinChedui:SetSize(136,24);
+	shuaxinChedui:SetPoint("TOPLEFT",jieshoushuju,"BOTTOMLEFT",0,0);
+	shuaxinChedui.anTXT=butTXT
+	shuaxinChedui:SetText(shuaxinChedui.anTXT);
+	---
+	shuaxinChedui.err = shuaxinChedui:CreateFontString();
+	shuaxinChedui.err:SetPoint("BOTTOMLEFT",shuaxinChedui,"TOPLEFT",2,0);
+	shuaxinChedui.err:SetFont(GameFontNormal:GetFont(), 15)
+	shuaxinChedui.err:SetText("");
+	shuaxinChedui.err:SetTextColor(1, 0.4, 0, 1);
+	return jieshoushuju,shuaxinChedui
+end
+addonTable.ADD_jindutiaoBUT=ADD_jindutiaoBUT
+--=============================================================
 local function ADD_PlaneInviteFrame()
 	if PlaneInvite_UI then return end
+	--过滤频道发言过频提示
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL",guolvqingqiuMSG)
 	---设置主面板------------------------------------------------
 	local Width,Height=880,520;
-	local PlaneInvite=ADD_Frame(GnUI,UIParent,Width,Height,"CENTER",UIParent,"CENTER",0,80,true,true,true,true,true)
-
-	PlaneInvite.yidong = CreateFrame("Frame", nil, PlaneInvite);
-	PlaneInvite.yidong:SetSize(200,24);
-	PlaneInvite.yidong:SetPoint("TOP", PlaneInvite, "TOP", 0, 0);
-	PlaneInvite.yidong:EnableMouse(true)
-	PlaneInvite.yidong:RegisterForDrag("LeftButton")
-	PlaneInvite.yidong:SetScript("OnDragStart",function()
-		PlaneInvite:StartMoving()
-	end)
-	PlaneInvite.yidong:SetScript("OnDragStop",function()
-		PlaneInvite:StopMovingOrSizing()
-	end)
-	PlaneInvite.yidong.text0 = PlaneInvite.yidong:CreateFontString();
-	PlaneInvite.yidong.text0:SetPoint("CENTER", PlaneInvite.yidong, "CENTER", 0,0);
-	PlaneInvite.yidong.text0:SetFontObject(GameFontNormal);
-	PlaneInvite.yidong.text0:SetText(GnName);
+	local PlaneInvite=ADD_Frame(GnUI,UIParent,Width,Height,"CENTER",UIParent,"CENTER",0,80,true,false,true,true,true,"BG2")
+	--
+	PlaneInvite.biaotititle = PlaneInvite:CreateFontString();
+	PlaneInvite.biaotititle:SetPoint("TOP", PlaneInvite, "TOP", 0,-3);
+	PlaneInvite.biaotititle:SetFontObject(GameFontNormal);
+	PlaneInvite.biaotititle:SetText(GnName);
+	---
 	PlaneInvite.Close = CreateFrame("Button",nil,PlaneInvite, "UIPanelCloseButton");  
 	PlaneInvite.Close:SetSize(32,32);
-	PlaneInvite.Close:SetPoint("TOPRIGHT", PlaneInvite, "TOPRIGHT", 5, 4);
-	PlaneInvite.TOP1 = PlaneInvite:CreateTexture(nil, "BORDER");
-	PlaneInvite.TOP1:SetTexture("interface/worldmap/ui-worldmap-top1.blp");
-	PlaneInvite.TOP1:SetSize(Width/4,Height/2);
-	PlaneInvite.TOP1:SetPoint("TOPLEFT",PlaneInvite,"TOPLEFT",0,0);
-	PlaneInvite.TOP2 = PlaneInvite:CreateTexture(nil, "BORDER");
-	PlaneInvite.TOP2:SetTexture("interface/worldmap/ui-worldmap-top2.blp");
-	PlaneInvite.TOP2:SetSize(Width/4,Height/2);
-	PlaneInvite.TOP2:SetPoint("TOPLEFT",PlaneInvite.TOP1,"TOPRIGHT",0,0);
-	PlaneInvite.TOP3 = PlaneInvite:CreateTexture(nil, "BORDER");
-	PlaneInvite.TOP3:SetTexture("interface/worldmap/ui-worldmap-top3.blp");
-	PlaneInvite.TOP3:SetSize(Width/4,Height/2);
-	PlaneInvite.TOP3:SetPoint("TOPLEFT",PlaneInvite.TOP2,"TOPRIGHT",0,0);
-	PlaneInvite.TOP4 = PlaneInvite:CreateTexture(nil, "BORDER");
-	PlaneInvite.TOP4:SetTexture("interface/worldmap/ui-worldmap-top4.blp");
-	PlaneInvite.TOP4:SetSize(Width/4,Height/2);
-	PlaneInvite.TOP4:SetPoint("TOPLEFT",PlaneInvite.TOP3,"TOPRIGHT",0,0);
-	---
-	PlaneInvite.BOTTOM1 = PlaneInvite:CreateTexture(nil, "BORDER");
-	PlaneInvite.BOTTOM1:SetTexture("interface/worldmap/ui-worldmap-bottom1.blp");
-	PlaneInvite.BOTTOM1:SetSize(Width/4,Height/2);
-	PlaneInvite.BOTTOM1:SetPoint("TOPLEFT",PlaneInvite.TOP1,"BOTTOMLEFT",0,0);
-	PlaneInvite.BOTTOM2 = PlaneInvite:CreateTexture(nil, "BORDER");
-	PlaneInvite.BOTTOM2:SetTexture("interface/worldmap/ui-worldmap-bottom2.blp");
-	PlaneInvite.BOTTOM2:SetSize(Width/4,Height/2);
-	PlaneInvite.BOTTOM2:SetPoint("TOPLEFT",PlaneInvite.BOTTOM1,"TOPRIGHT",0,0);
-	PlaneInvite.BOTTOM3 = PlaneInvite:CreateTexture(nil, "BORDER");
-	PlaneInvite.BOTTOM3:SetTexture("interface/worldmap/ui-worldmap-bottom3.blp");
-	PlaneInvite.BOTTOM3:SetSize(Width/4,Height/2);
-	PlaneInvite.BOTTOM3:SetPoint("TOPLEFT",PlaneInvite.BOTTOM2,"TOPRIGHT",0,0);
-	PlaneInvite.BOTTOM4 = PlaneInvite:CreateTexture(nil, "BORDER");
-	PlaneInvite.BOTTOM4:SetTexture("interface/worldmap/ui-worldmap-bottom4.blp");
-	PlaneInvite.BOTTOM4:SetSize(Width/4,Height/2);
-	PlaneInvite.BOTTOM4:SetPoint("TOPLEFT",PlaneInvite.BOTTOM3,"TOPRIGHT",0,0);
-	----------
-	PlaneInvite.NR = CreateFrame("Frame", nil, PlaneInvite,"BackdropTemplate");
-	PlaneInvite.NR:SetBackdrop({bgFile = "interface/raidframe/ui-raidframe-groupbg.blp",tile = false,tileSize = 0});
-	PlaneInvite.NR:SetSize(Width-8,Height-69);
-	PlaneInvite.NR:SetPoint("TOP",PlaneInvite,"TOP",0,-66);
+	PlaneInvite.Close:SetPoint("TOPRIGHT", PlaneInvite, "TOPRIGHT", 4, 5);
+	PlaneInvite.help = CreateFrame("Frame", nil, PlaneInvite);
+	PlaneInvite.help:SetSize(20,20);
+	PlaneInvite.help:SetPoint("TOPRIGHT", PlaneInvite, "TOPRIGHT", -34, -1);
+	PlaneInvite.help.tex = PlaneInvite.help:CreateTexture(nil, "ARTWORK");
+	PlaneInvite.help.tex:SetTexture("interface/friendsframe/reportspamicon.blp");
+	PlaneInvite.help.tex:SetSize(26,26);
+	PlaneInvite.help.tex:SetPoint("TOPLEFT",PlaneInvite.help,"TOPLEFT",1.4,-3);
+	-----
+	PlaneInvite.tline = PlaneInvite:CreateLine()
+	PlaneInvite.tline:SetColorTexture(0.9,0.9,0.9,0.3)
+	PlaneInvite.tline:SetThickness(1);
+	PlaneInvite.tline:SetStartPoint("TOPLEFT",2,-50)
+	PlaneInvite.tline:SetEndPoint("TOPRIGHT",-2.6,-50)
+	--NR
+	PlaneInvite.NR=ADD_Frame(nil,PlaneInvite,Width-9,Height-56,"BOTTOM",PlaneInvite,"BOTTOM",-0.6,4,false,true,false,false,false)
 	--TAB
 	local TabWidth,TabHeight = 110,26;
-	--local TabName = {"位面","车队","乘客"};
-	local TabName = {"位面","车队"};
+	local TabName = {"休闲","车队","位面"};
 	for id=1,#TabName do
 		local Tablist = CreateFrame("Button","PlaneInviteTAB_"..id,PlaneInvite, "TruncatedButtonTemplate",id);
 		Tablist:SetSize(TabWidth,TabHeight);
 		if id==1 then
-			Tablist:SetPoint("TOPLEFT", PlaneInvite, "BOTTOMLEFT", 30,3);
+			Tablist:SetPoint("TOPLEFT", PlaneInvite, "BOTTOMLEFT", 30,2);
 		else
 			Tablist:SetPoint("LEFT", _G["PlaneInviteTAB_"..(id-1)], "RIGHT", 20,0);
 		end
@@ -144,29 +160,10 @@ local function ADD_PlaneInviteFrame()
 			_G["PlaneInviteFrame_"..id]:Show();
 		end
 	end
-	--过滤频道发言过频提示
-	local function guolvqingqiuMSG(self,event,arg1,...)
-		--print(event,arg1)
-		if arg1==SQPindao[2] then
-			return true;
-		elseif arg1==SQPindao[3] then
-	    	return true;
-		end
-	end
-	ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL",guolvqingqiuMSG)
 	--3.4.0-以后必须加入队伍查找器
 	if tocversion<30000 then
 		PlaneInvite.yijiaru=true
 	elseif tocversion<40000 then
-		local function gengxinbut2()
-			if PlaneInvite.yijiaru then
-				huoquchedui_UI:Enable()
-				huiquweimian_UI:Enable()
-			else
-				huoquchedui_UI:Disable()
-				huiquweimian_UI:Disable()
-			end
-		end
 		local function gengxinbut1()
 			if (C_LFGList.HasActiveEntryInfo()) then
 				PlaneInvite.yijiaru=true
@@ -175,40 +172,42 @@ local function ADD_PlaneInviteFrame()
 				PlaneInvite.yijiaru=false
 				PlaneInvite.jiaruchazhaoqi:SetText("加入队伍查找器");
 			end
-		end
-		local function gengxinbut3()
-			gengxinbut1()
-			gengxinbut2()
+			PlaneInvite.jiaruchazhaoqi:Enable()
+			LFGListingFrame:RegisterEvent("LFG_LIST_ACTIVE_ENTRY_UPDATE");
 		end
 		PlaneInvite.jiaruchazhaoqi = CreateFrame("Button",nil,PlaneInvite, "UIPanelButtonTemplate");  
-		PlaneInvite.jiaruchazhaoqi:SetSize(140,20);
-		PlaneInvite.jiaruchazhaoqi:SetPoint("TOPLEFT",PlaneInvite,"TOPLEFT",250,-2);
+		PlaneInvite.jiaruchazhaoqi:SetSize(140,23);
+		PlaneInvite.jiaruchazhaoqi:SetPoint("TOPLEFT",PlaneInvite,"TOPLEFT",10,-24);
 		PlaneInvite.jiaruchazhaoqi:SetFrameLevel(PlaneInvite.jiaruchazhaoqi:GetFrameLevel()+2)
 		PlaneInvite.jiaruchazhaoqi:HookScript("OnShow", function (self)
-			gengxinbut3()
-		end)
-		PlaneInvite.jiaruchazhaoqi:SetScript("OnClick", function (self)
-			if self:GetText()=="加入队伍查找器" then
-				LFGListingFrame.dirty = true;
-				LFGListingFrame.activities={["1064"]=true}
-				LFGListingFrame:CreateOrUpdateListing()
-			elseif self:GetText()=="离开队伍查找器" then
-				LFGListingFrame.dirty = false;
-				LFGListingFrame:RemoveListing()
-			end
-			C_Timer.After(0.3,gengxinbut3)
+			gengxinbut1()
 		end)
 
-		PlaneInvite:RegisterEvent("LFG_LIST_SEARCH_RESULT_UPDATED");
+		PlaneInvite.jiaruchazhaoqi:SetScript("OnClick", function (self)
+			self:Disable()
+			LFGListingFrame:UnregisterEvent("LFG_LIST_ACTIVE_ENTRY_UPDATE");
+			if (C_LFGList.HasActiveEntryInfo()) then
+				--LFGListingFrame.dirty = false;
+				--PENDING_LISTING_UPDATE = true;
+				LFGListingFrame:RemoveListing()
+			else
+				--LFGListingFrame.dirty = true;
+				--PENDING_LISTING_UPDATE = true;
+				C_LFGList.CreateListing({1064}, false);
+			end
+		end)
+		PlaneInvite:RegisterEvent("LFG_LIST_ACTIVE_ENTRY_UPDATE");
+		--PlaneInvite:RegisterEvent("LFG_LIST_SEARCH_RESULT_UPDATED");--搜索
 		PlaneInvite:HookScript("OnEvent", function(self,event)
-			C_Timer.After(0.5,gengxinbut3)
+			C_Timer.After(0.6,gengxinbut1)
 		end)
 	else
 		PlaneInvite.yijiaru=true
 	end
-	------------------------------------
-	addonTable.ADD_Plane_Frame()
+	------------------------------
+	addonTable.ADD_Leisure_Frame()
 	addonTable.ADD_Chedui_Frame()
+	addonTable.ADD_Plane_Frame()
 end
 --================================
 local ADD_ModCheckbutton =addonTable.ADD_ModCheckbutton
@@ -252,7 +251,7 @@ OptionsModF_PlaneInvite:SetScript("OnClick", function (self)
 		local chazhi = 86400-shengyu
 		local hours = floor(mod(chazhi, 86400)/3600)
 		local minutes = math.ceil(mod(chazhi,3600)/60)
-		print("|cff00FFFF!Pig:|r|cffFFFF00时空之门正在修复(剩余"..hours.."时"..minutes.."分)！|r")
+		print("|cff00FFFF!Pig:|r|cffFFFF00时空之门充能中...(剩余"..hours.."时"..minutes.."分)！|r")
 		self:SetChecked(false)
 		return 
 	end

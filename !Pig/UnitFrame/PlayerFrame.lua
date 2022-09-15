@@ -219,7 +219,7 @@ end
 --------------------
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --
-fuFrame.Ziji=ADD_Checkbutton("自身头像增强","在系统默认头像上增加耐久/移速/拾取方式提示！",fuFrame,-100,fuFrame,20,-20)
+fuFrame.Ziji=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"自身头像增强","在系统默认头像上增加耐久/移速/拾取方式提示！")
 fuFrame.Ziji:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.UnitFrame.PlayerFrame.Plus=true;
@@ -233,7 +233,7 @@ fuFrame.Ziji:SetScript("OnClick", function (self)
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
-fuFrame.HPFF=ADD_Checkbutton("额外血量框架","在自身头像右侧显示额外血量框架！",fuFrame,-100,fuFrame.Ziji,30,-30)
+fuFrame.HPFF=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.Ziji,"TOPLEFT",30,-30,"额外血量框架","在自身头像右侧显示额外血量框架！")
 fuFrame.HPFF:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.UnitFrame.PlayerFrame.HPFF=true;
@@ -275,7 +275,7 @@ Mubiao_youyiFF:HookScript("OnEvent", function()
 end);
 -------
 local Mubiao_youyi_tooltip = "开启自身头像增强后，额外血量框架可能会和目标头像框架重叠，开启此选项后将会向右移动目标头像，可避免遮挡。\n|cff00FF00如需手动设置目标头像位置，请勿选中|r"
-fuFrame.Mubiao_youyi=ADD_Checkbutton("防止重叠遮挡",Mubiao_youyi_tooltip,fuFrame,-100,fuFrame.HPFF,30,-30)
+fuFrame.Mubiao_youyi=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.HPFF,"TOPLEFT",30,-30,"防止重叠遮挡",Mubiao_youyi_tooltip)
 fuFrame.Mubiao_youyi:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.UnitFrame.PlayerFrame.youyi=true;

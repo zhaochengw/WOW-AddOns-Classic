@@ -13,16 +13,7 @@ else
 end
 yinhangmorengezishu.banknum=yinhangmorengezishu[1]+yinhangmorengezishu[2]*36
 ----==============
-local pingzhiColor = {
-	[0]={157/255,157/255,157/255},
-	[1]={1, 1, 1},
-	[2]={30/255, 1, 0},
-	[3]={0,112/255,221/255},
-	[4]={163/255,53/255,238/255},
-	[5]={1,128/255,0},
-	[6]={230/255,204/255,128/255},
-	[7]={0,204/255,1},
-}
+local QualityColor=addonTable.QualityColor
 local bagID = {0,1,2,3,4}
 bagID.meihang=8
 bagID.suofang=1
@@ -382,7 +373,7 @@ local function Show_lixian_data(frameF,renwu,shuju,meihang,zongshu)
 						if effectiveILvl and effectiveILvl>0 then
 							frameX.LV:SetText(effectiveILvl)
 							local itemQuality = C_Item.GetItemQualityByID(itemLink)
-							frameX.LV:SetTextColor(pingzhiColor[itemQuality][1],pingzhiColor[itemQuality][2],pingzhiColor[itemQuality][3], 1);
+							frameX.LV:SetTextColor(QualityColor[itemQuality][1],QualityColor[itemQuality][2],QualityColor[itemQuality][3], 1);
 						end
 					end
 				end
@@ -392,7 +383,7 @@ local function Show_lixian_data(frameF,renwu,shuju,meihang,zongshu)
 					if effectiveILvl and effectiveILvl>0 then
 						frameX.LV:SetText(effectiveILvl)
 						local itemQuality = C_Item.GetItemQualityByID(itemLink)
-						frameX.LV:SetTextColor(pingzhiColor[itemQuality][1],pingzhiColor[itemQuality][2],pingzhiColor[itemQuality][3], 1);
+						frameX.LV:SetTextColor(QualityColor[itemQuality][1],QualityColor[itemQuality][2],QualityColor[itemQuality][3], 1);
 					end
 				end
 			end
@@ -422,7 +413,7 @@ local function shuaxin_LV(framef, id, slot)
 			if classID==2 or classID==4 then
 				local effectiveILvl = GetDetailedItemLevelInfo(itemLink)
 				framef.ZLV:SetText(effectiveILvl);
-				framef.ZLV:SetTextColor(pingzhiColor[itemQuality][1],pingzhiColor[itemQuality][2],pingzhiColor[itemQuality][3], 1);
+				framef.ZLV:SetTextColor(QualityColor[itemQuality][1],QualityColor[itemQuality][2],QualityColor[itemQuality][3], 1);
 			end
 		end
 	end

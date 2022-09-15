@@ -23,11 +23,14 @@ daibenData.Width,daibenData.DHeight,daibenData.biaotiH=Width,DHeight,biaotiH
 daibenData.WowWidth=WowWidth
 daibenData.WowHeight=WowHeight
 addonTable.daibenData=daibenData
+local jisuandanjia=addonTable.jisuandanjia--计算单价
+local huoquduiwLV=addonTable.huoquduiwLV
+local huoquLVdanjia=addonTable.huoquLVdanjia
 --===================================
 local function ADD_daibenUI()
 	if _G[GnUI] then return end
 	local Open_settingUI=addonTable.Open_settingUI--设置
-	local jisuandanjia=addonTable.jisuandanjia--计算单价
+
 	local daiben = CreateFrame("Frame", GnUI, UIParent,"BackdropTemplate");
 	daiben:SetBackdrop({ edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 6});
 	daiben:SetBackdropBorderColor(0, 1, 1, 0.4);
@@ -154,19 +157,18 @@ local function ADD_daibenUI()
 			daiben.hanren:SetText("喊话");
 		end
 	end
-	local huoquduiwLV=addonTable.huoquduiwLV
-	local huoquLVdanjia=addonTable.huoquLVdanjia
+
 	daiben.hanren:SetScript("OnClick", function (self)
 		self:Disable();
 		daiben.hanhuadaojishi=daiben.hanhuajiange*daiben.xuanzhongpindaoshu
 		self:SetText("喊话("..daiben.hanhuadaojishi..")");
 		hanhuadaojishiTime()
 		self.nr=PIG_Per.daiben.hanhuaMSG;
-		if PIG_Per.daiben.hanhua_lv then
-			self.nr=huoquduiwLV(self.nr)
+		if PIG_Per.daiben.hanhua_lv and IsInGroup() then
+			self.nr=self.nr..",".."队伍LV("..huoquduiwLV()..")"
 		end
 		if PIG_Per.daiben.hanhua_danjia and PIG_Per.daiben.fubenName~="无" then
-			self.nr=huoquLVdanjia(self.nr)
+			self.nr=self.nr..","..huoquLVdanjia()
 		end
 		--固定频道（说喊公会）
 		for s=1,#pindaolist[1] do
@@ -340,7 +342,7 @@ local function ADD_daibenUI()
 	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia:SetPoint("LEFT",daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji,"RIGHT",110,-1);
 	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia:SetHitRectInsets(0,-20,0,0);
 	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia.Text:SetText("喊话价格");
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia.tooltip = "喊话内容附带已设置的等级范围和单价";
+	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia.tooltip = "喊话内容附带已设置的等级范围和单价\n谨慎使用，可能会被别人举报是刷子";
 	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG_Per.daiben.hanhua_danjia=true
@@ -2214,12 +2216,12 @@ local function ADD_daibenUI()
 					local keyYes=arg1:find(keylist[i], 1)
 					if keyYes then
 						if zidonghuifuMSG.Dnum<zidonghuifuMSG.Znum then
-							zidonghuifuMSG.info="[!Pig]"..PIG_Per.daiben.autohuifu_NR..",尚有坑位:"..(zidonghuifuMSG.Znum-zidonghuifuMSG.Dnum).."，";
-							if PIG_Per.daiben.autohuifu_lv then
-								zidonghuifuMSG.info=huoquduiwLV(zidonghuifuMSG.info)
+							zidonghuifuMSG.info="[!Pig]"..PIG_Per.daiben.autohuifu_NR..",尚有坑位:"..(zidonghuifuMSG.Znum-zidonghuifuMSG.Dnum);
+							if PIG_Per.daiben.autohuifu_lv  and IsInGroup() then
+								zidonghuifuMSG.info=zidonghuifuMSG.info..",队伍LV("..huoquduiwLV()..")"
 							end
 							if PIG_Per.daiben.autohuifu_danjia and PIG_Per.daiben.fubenName~="无" then
-								zidonghuifuMSG.info=huoquLVdanjia(zidonghuifuMSG.info)
+								zidonghuifuMSG.info=zidonghuifuMSG.info..","..huoquLVdanjia()
 							end
 							if PIG_Per.daiben.autohuifu_inv then
 								zidonghuifuMSG.info=zidonghuifuMSG.info.."回复"..PIG_Per.daiben.autohuifu_invCMD.."进组";
@@ -2237,12 +2239,7 @@ local function ADD_daibenUI()
 					local invkey=arg1:find(PIG_Per.daiben.autohuifu_invCMD, 1)
 					if invkey then
 						if zidonghuifuMSG.Dnum<zidonghuifuMSG.Znum then
-							if tocversion<40000 then
-								InviteUnit(arg5)
-							else
-								C_PartyInfo.InviteUnit(arg5)
-								--C_PartyInfo.ConfirmInviteUnit(arg5)
-							end
+							PIG_InviteUnit(arg5)
 						else
 							SendChatMessage("[!Pig] 位置已满，感谢支持！", "WHISPER", nil, arg5);
 						end

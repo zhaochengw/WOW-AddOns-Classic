@@ -79,7 +79,7 @@ local function QuickButton_Lushi()
 end
 ----------
 local Lushi_tooltip = "启动炉石/专业按钮。\n|cff00ff00左键使用炉石！|r\n|cff00ff00右键打开专业技能面板!|r";
-fuFrame.Lushi=ADD_Checkbutton("添加<炉石/专业按钮>到快捷按钮栏",Lushi_tooltip,fuFrame.anniuF,-100,fuFrame.anniuF,20,-20)
+fuFrame.Lushi=ADD_Checkbutton(nil,fuFrame.anniuF,-100,"TOPLEFT",fuFrame.anniuF,"TOPLEFT",20,-20,"添加<炉石/专业按钮>到快捷按钮栏",Lushi_tooltip)
 fuFrame.Lushi:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['QuickButton']['Lushi']=true;
@@ -345,7 +345,7 @@ local function QuickButton_Spell()
 end
 --======================================================
 local Spell_tooltip = "启动职业辅助技能栏。\n|cff00ff00左键展开职业辅助技能栏！|r\n|cff00ff00右键打开Recount/Details统计面板(需安装插件:Recount/Details)。|r";
-fuFrame.Spell=ADD_Checkbutton("添加<职业辅助技能栏>到快捷按钮栏",Spell_tooltip,fuFrame.anniuF,-100,fuFrame.anniuF,20,-60)
+fuFrame.Spell=ADD_Checkbutton(nil,fuFrame.anniuF,-100,"TOPLEFT",fuFrame.anniuF,"TOPLEFT",20,-60,"添加<职业辅助技能栏>到快捷按钮栏",Spell_tooltip)
 fuFrame.Spell:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['QuickButton']['Spell']=true;
@@ -388,7 +388,7 @@ end
 addonTable.QuickButtonUpdate = QuickButtonUpdate
 ---------
 
-fuFrame.QuickButtonOpen=ADD_Checkbutton("快捷按钮栏","在屏幕上创建一条快捷按钮栏，以便快捷使用某些功能。\n你可以自定义需要显示在快捷按钮栏的按钮",fuFrame,-60,fuFrame,20,-20)
+fuFrame.QuickButtonOpen=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"快捷按钮栏","在屏幕上创建一条快捷按钮栏，以便快捷使用某些功能。\n你可以自定义需要显示在快捷按钮栏的按钮")
 fuFrame.QuickButtonOpen:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['QuickButton']['Open']=true;
@@ -436,7 +436,7 @@ fuFrame.QuickButtonOpen.CZPoint:SetScript("OnClick", function ()
 	QuickButtonUI:SetPoint(PIG['QuickButton']['Point'][1],UIParent,PIG['QuickButton']['Point'][2],PIG['QuickButton']['Point'][3],PIG['QuickButton']['Point'][4]);
 end)
 -------
-fuFrame.QuickButtonOpen.suoding=ADD_Checkbutton("锁定位置","锁定快捷按钮位置，并隐藏拖拽图标",fuFrame,-60,fuFrame.QuickButtonOpen,200,0)
+fuFrame.QuickButtonOpen.suoding=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame.QuickButtonOpen,"TOPLEFT",200,0,"锁定位置","锁定快捷按钮位置，并隐藏拖拽图标")
 fuFrame.QuickButtonOpen.suoding:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['QuickButton']['suoding']=true;

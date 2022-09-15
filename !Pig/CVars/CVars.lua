@@ -118,7 +118,7 @@ for i=1,#CVarsList do
 	elseif CVarsList[i][1]=="新版TAB" then
 		miaodian = {fuFrame.nr,300,-470,true}
 	end
-	local CVarsCB=ADD_Checkbutton(CVarsList[i][1],CVarsList[i][5],fuFrame.nr,-80,miaodian[1],miaodian[2],miaodian[3],"CVarsCB_"..i)
+	local CVarsCB=ADD_Checkbutton("CVarsCB_"..i,fuFrame.nr,-80,"TOPLEFT",miaodian[1],"TOPLEFT",miaodian[2],miaodian[3],CVarsList[i][1],CVarsList[i][5])
 	if CVarsList[i][6] then
 		ADD_tishi(CVarsCB,CVarsList[i][1],-2)
 	end

@@ -269,7 +269,7 @@ local function Update_naijiuV()
 	for inv = 1, #zhuangbeixilieID do
 		if zhuangbeixilieID[inv][3] then
 			local Frameu=_G["Character"..zhuangbeixilieID[inv][2].."Slot"].naijiuV
-			Frameu:SetText();
+			Frameu:SetText("");
 			local current, maximum = GetInventoryItemDurability(zhuangbeixilieID[inv][1]);
 			if maximum then
 				local naijiubaifenbi=floor(current/maximum*100);
@@ -292,11 +292,12 @@ end
 local function ADD_naijiuV()
 	for inv = 1, #zhuangbeixilieID do
 		local Frameu=_G["Character"..zhuangbeixilieID[inv][2].."Slot"]
-		if Frameu.naijiuV then return end
-		Frameu.naijiuV = Frameu:CreateFontString();
-		Frameu.naijiuV:SetPoint("BOTTOMLEFT", Frameu, "BOTTOMLEFT", 1, 1);
-		Frameu.naijiuV:SetFont(ChatFontNormal:GetFont(), 13, "OUTLINE");
-		Frameu.naijiuV:SetDrawLayer("OVERLAY", 7)
+		if not Frameu.naijiuV then
+			Frameu.naijiuV = Frameu:CreateFontString();
+			Frameu.naijiuV:SetPoint("BOTTOMLEFT", Frameu, "BOTTOMLEFT", 1, 1);
+			Frameu.naijiuV:SetFont(ChatFontNormal:GetFont(), 13, "OUTLINE");
+			Frameu.naijiuV:SetDrawLayer("OVERLAY", 7)
+		end
 	end
 	Update_naijiuV()
 	PaperDollItemsFrame:HookScript("OnShow",function (self,event)
@@ -513,7 +514,7 @@ PaperDollFrame:HookScript("OnEvent", function(self,event,arg1)
 	end
 
 	if event=="UNIT_MODEL_CHANGED" then
-		if PaperDollItemsFrame:IsShown() then
+		if PaperDollItemsFrame:IsVisible() then
 			if PIG['FramePlus']["CharacterFrame_naijiu"]=="ON" then Update_naijiuV() end
 			if PIG['ShowPlus']['zhuangbeiLV']=="ON" then Update_LV() end
 			if PIG['FramePlus']['CharacterFrame_ranse']=="ON" then Update_ranseV() end

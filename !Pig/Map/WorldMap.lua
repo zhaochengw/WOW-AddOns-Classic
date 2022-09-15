@@ -298,7 +298,7 @@ fuFrame.WorldMapPIG:SetBackdropBorderColor(0.5, 0.5, 0.5, 1);
 fuFrame.WorldMapPIG:SetPoint("TOPLEFT", fuFrame, "TOPLEFT", 300, -138)
 fuFrame.WorldMapPIG:SetPoint("BOTTOMRIGHT", fuFrame, "BOTTOMRIGHT", -10, 10)
 -----------
-fuFrame.WorldMapPIG.Open = ADD_Checkbutton("世界地图增强","世界地图增强",fuFrame.WorldMapPIG,-80,fuFrame.WorldMapPIG,40,25,nil)
+fuFrame.WorldMapPIG.Open = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",40,25,"世界地图增强","世界地图增强")
 fuFrame.WorldMapPIG.Open:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Map.WorldMapPlus=true;	
@@ -309,7 +309,7 @@ fuFrame.WorldMapPIG.Open:SetScript("OnClick", function (self)
 	WorldMap_Plus()
 end);
 --==================================================
-fuFrame.WorldMapPIG.Wind = ADD_Checkbutton("窗口化世界地图","窗口化世界地图并使其可以拖动",fuFrame.WorldMapPIG,-80,fuFrame.WorldMapPIG,20,-20,nil)
+fuFrame.WorldMapPIG.Wind = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-20,"窗口化世界地图","窗口化世界地图并使其可以拖动")
 fuFrame.WorldMapPIG.Wind:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Map.WorldMapWind=true;
@@ -319,7 +319,7 @@ fuFrame.WorldMapPIG.Wind:SetScript("OnClick", function (self)
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
-fuFrame.WorldMapPIG.XY = ADD_Checkbutton("显示玩家坐标","显示玩家在地图坐标",fuFrame.WorldMapPIG,-80,fuFrame.WorldMapPIG,20,-60,nil)
+fuFrame.WorldMapPIG.XY = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-60,"显示玩家坐标","显示玩家在地图坐标")
 fuFrame.WorldMapPIG.XY:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Map.WorldMapXY=true;
@@ -329,7 +329,7 @@ fuFrame.WorldMapPIG.XY:SetScript("OnClick", function (self)
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
-fuFrame.WorldMapPIG.LV = ADD_Checkbutton("显示等级范围","显示地图的等级范围",fuFrame.WorldMapPIG,-80,fuFrame.WorldMapPIG,20,-100,nil)
+fuFrame.WorldMapPIG.LV = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-100,"显示等级范围","显示地图的等级范围")
 fuFrame.WorldMapPIG.LV:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Map.WorldMapLV=true;
@@ -339,7 +339,7 @@ fuFrame.WorldMapPIG.LV:SetScript("OnClick", function (self)
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
-fuFrame.WorldMapPIG.Skill = ADD_Checkbutton("显示钓鱼技能要求","显示地图的钓鱼技能最低要求",fuFrame.WorldMapPIG,-80,fuFrame.WorldMapPIG,20,-140,nil)
+fuFrame.WorldMapPIG.Skill = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-140,"显示钓鱼技能要求","显示地图的钓鱼技能最低要求")
 fuFrame.WorldMapPIG.Skill:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Map.WorldMapSkill=true;
@@ -349,7 +349,7 @@ fuFrame.WorldMapPIG.Skill:SetScript("OnClick", function (self)
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
-fuFrame.WorldMapPIG.Miwu = ADD_Checkbutton("去除战争迷雾","去除地图战争迷雾",fuFrame.WorldMapPIG,-80,fuFrame.WorldMapPIG,20,-180,nil)
+fuFrame.WorldMapPIG.Miwu = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-180,"去除战争迷雾","去除地图战争迷雾")
 fuFrame.WorldMapPIG.Miwu:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Map.WorldMapMiwu=true;

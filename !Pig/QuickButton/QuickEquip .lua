@@ -251,7 +251,7 @@ local function ADD_QuickButton_AutoEquip()
 end
 addonTable.ADD_QuickButton_AutoEquip = ADD_QuickButton_AutoEquip
 
-fuFrame.AutoEquip=ADD_Checkbutton("添加<装备管理>到快捷按钮栏","在快捷按钮栏显示装备管理按钮",fuFrame.anniuF,-60,fuFrame.anniuF,20,-100)
+fuFrame.AutoEquip=ADD_Checkbutton(nil,fuFrame.anniuF,-60,"TOPLEFT",fuFrame.anniuF,"TOPLEFT",20,-100,"添加<装备管理>到快捷按钮栏","在快捷按钮栏显示装备管理按钮")
 fuFrame.AutoEquip:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['QuickButton']['AutoEquip']=true;

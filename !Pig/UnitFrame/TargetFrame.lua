@@ -4,6 +4,7 @@ local _, _, _, tocversion = GetBuildInfo()
 ---------------------------------
 local function MubiaoFrame_Open()
 	if UFP_Targetzhiyetubiao then return end
+	local SpentPoints = CreateFrame("Frame", "InspectTalentFrameSpentPoints", InspectTalentFrame);
 	if tocversion<20000 then
 		--目标血量
 		hooksecurefunc("TargetFrame_CheckClassification",function(self,lock)--银鹰标志
@@ -68,7 +69,7 @@ local function MubiaoFrame_Open()
 	TargetFrame.zhiyetubiao.Icon:SetPoint("CENTER");
 	--点击功能：左交易/右观察
 	TargetFrame.zhiyetubiao:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-	TargetFrame.zhiyetubiao:SetScript("OnClick", function (self, event, button)
+	TargetFrame.zhiyetubiao:HookScript("OnClick", function (self, event, button)
 		if UnitIsConnected("target") and UnitIsFriend("player", "target") then--目标未离线/是友善
 			local inRange1 = CheckInteractDistance("target", 1);				  
 			if event=="LeftButton" and not UnitIsDead("target") then
@@ -234,7 +235,7 @@ fuFrame.MubiaoLINE:SetEndPoint("TOPRIGHT",-2,-150)
 ---
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local Mubiaotooltip = "增强目标头像，显示血量/血量百分比/仇恨值/仇恨高亮/目标职业/生物种类！\r|cff00FFFF小提示：|r\r目标职业图标可以点击，左击观察/右击交易"
-fuFrame.Mubiao=ADD_Checkbutton("目标头像增强",Mubiaotooltip,fuFrame,-100,fuFrame.MubiaoLINE,20,-20)
+fuFrame.Mubiao=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.MubiaoLINE,"TOPLEFT",20,-20,"目标头像增强",Mubiaotooltip)
 fuFrame.Mubiao:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.UnitFrame.TargetFrame.Plus=true;
@@ -330,7 +331,7 @@ local function ADD_TOTOT_Open()
 	end)
 end
 ------------
-fuFrame.TOTOT=ADD_Checkbutton("显示目标的目标的目标","显示目标的目标的目标",fuFrame,-100,fuFrame.MubiaoLINE,300,-20)
+fuFrame.TOTOT=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.MubiaoLINE,"TOPLEFT",300,-20,"显示目标的目标的目标","显示目标的目标的目标")
 fuFrame.TOTOT:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.UnitFrame.TargetFrame.ToToToT=true;
@@ -353,12 +354,12 @@ local function ADD_yisu_Open()
 	TargetFrame.yisuT = TargetFrame.yisuF:CreateFontString();
 	TargetFrame.yisuT:SetPoint("LEFT", TargetFrame.yisuF.Tex, "RIGHT", 0, 0);
 	TargetFrame.yisuT:SetFont(ChatFontNormal:GetFont(), 14,"OUTLINE")
-	TargetFrame.yisuF:SetScript("OnUpdate", function ()
+	TargetFrame.yisuF:HookScript("OnUpdate", function ()
 		local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed("target");
 		TargetFrame.yisuT:SetText(Round(((currentSpeed/7)*100))..'%')
 	end)
 end
-fuFrame.yisu=ADD_Checkbutton("显示目标移动速度","显示目标移动速度",fuFrame,-100,fuFrame.MubiaoLINE,20,-80)
+fuFrame.yisu=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.MubiaoLINE,"TOPLEFT",20,-80,"显示目标移动速度","显示目标移动速度")
 fuFrame.yisu:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.UnitFrame.TargetFrame.Yisu=true;

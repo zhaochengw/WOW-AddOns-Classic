@@ -180,7 +180,7 @@ end
 --左边选项内容
 local Tab_L_List={
 	{"交互增强","聊天增强","战斗辅助","头像增强","显示增强","界面布局","快捷按钮栏","小地图/地图","游戏内置设置","开发工具","配 置","关 于"},
-	{"背包整合","拍卖增强","额外动作条","智能跟随","输出提示","技能监控","售卖助手","专业 C D","时空之门","开团助手","带本助手"},
+	{"背包整合","拍卖增强","额外动作条","快捷跟随","输出提示","技能监控","售卖助手","专业 C D","时空之门","开团助手","带本助手"},
 }
 local List_ButH = 24
 for i=1, #Tab_L, 1 do
@@ -308,7 +308,7 @@ PIG_AddOn.childpanel.name = "猪猪加油";
 PIG_AddOn.childpanel.parent = PIG_AddOn.panel.name;
 InterfaceOptions_AddCategory(PIG_AddOn.childpanel);
 --小地图按钮
-PIG_AddOnPanel.MinimapB=ADD_Checkbutton("显示小地图按钮","显示插件的小地图按钮",PIG_AddOnPanel,-80,PIG_AddOnPanel,20,-20)
+PIG_AddOnPanel.MinimapB=ADD_Checkbutton(nil,PIG_AddOnPanel,-80,"TOPLEFT",PIG_AddOnPanel,"TOPLEFT",20,-20,"显示小地图按钮","显示插件的小地图按钮")
 PIG_AddOnPanel.MinimapB:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Map.MinimapBut=true;
@@ -424,27 +424,41 @@ Version_tishi:SetScript("OnEvent",function(self, event, arg1, arg2, arg3, arg4, 
 		end
 	end
 end)
--- ----
+----
 -- local ButtonXX = CreateFrame("Button","ButtonXX_UI",UIParent, "UIPanelButtonTemplate");
 -- ButtonXX:SetSize(100,29);
 -- ButtonXX:SetPoint("CENTER",UIParent,"CENTER",0,-2);
 -- ButtonXX:SetText("GetTexture");
 -- ButtonXX:SetScript("OnClick", function(self, button)
-	--PlaySoundFile("sound/music/citymusic/darnassus/druid grove.mp3", "Master")
-	--PlaySoundFile(1, "Master")--8.2之后
 -- 		-- local hh = {TargetFrameToT:GetChildren()} 
--- 		local frame = BagItemAutoSortButton
--- 		-- local Icon = frame:GetTexture()
--- 		-- local zipboap = {frame:GetTexCoord()}
--- 		-- local kuandu =frame:GetWidth()
--- 		-- local gaodu =frame:GetHeight()
--- 		--local ffxinxi ={Icon,zipboap,kuandu,gaodu}
--- 		-- table.insert(PIG['zhegnheBAG']["linshiceshi"],ffxinxi)
--- 		local regions = { frame:GetRegions() }
--- 		for i=1,#regions do		
--- 				local zipboap = {regions[i]:GetTexCoord()}
--- 				for ii=1,#zipboap do
--- 					print(zipboap[ii])
--- 				end
+
+-- 		--local fffff = HelpFrameInsetInsetTopBorder
+-- 		local fffff = HelpFrameInsetInsetLeftBorder
+-- 		-- local fffff = HelpFrameInsetInsetRightBorder
+-- 		--local fffff = HelpFrameInsetInsetBottomBorder
+-- 		--local fffff = HelpFrameInsetInsetBotLeftCorner
+-- 		local Icon = fffff:GetTexture()
+-- 		print(Icon)
+-- 		local zipboap = {fffff:GetTexCoord()}
+-- 		print(fffff:GetTexCoord())
+-- 		local kuandu =fffff:GetWidth()
+-- 		local gaodu =fffff:GetHeight()
+-- 		print(kuandu,gaodu)
+-- 		local caijiannr = ""
+-- 		for i=1,#zipboap do
+-- 			if i==#zipboap then
+-- 				caijiannr=caijiannr..zipboap[i]
+-- 			else
+-- 				caijiannr=caijiannr..zipboap[i]..","
+-- 			end
 -- 		end
---end)
+-- 		local editBox = ChatEdit_ChooseBoxForSend();
+-- 		if editBox:HasFocus() then			
+-- 			editBox:SetText(caijiannr);
+-- 			editBox:HighlightText()
+-- 		else
+-- 			ChatEdit_ActivateChat(editBox)
+-- 			editBox:Insert(caijiannr)
+-- 			editBox:HighlightText()
+-- 		end
+-- end)

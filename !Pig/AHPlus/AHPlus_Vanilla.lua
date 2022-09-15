@@ -131,6 +131,7 @@ local function ADD_AHPlus()
 	end
 	shezhixitongHide(0)
 	--ADD浏览页
+	local ADD_Biaoti=addonTable.ADD_Biaoti
 	AuctionFrameBrowse.piglist = CreateFrame("Frame", nil, AuctionFrameBrowse,"BackdropTemplate")
 	local listF=AuctionFrameBrowse.piglist
 	listF:SetBackdrop( { bgFile = "interface/characterframe/ui-party-background.blp", });
@@ -162,23 +163,7 @@ local function ADD_AHPlus()
 		else
 			Buttonxx:SetPoint("LEFT",_G["piglist_biaoti_"..(i-1)],"RIGHT",0,0);
 		end
-		Buttonxx.TexC = Buttonxx:CreateTexture(nil, "BORDER");
-		Buttonxx.TexC:SetTexture("interface/friendsframe/whoframe-columntabs.blp");
-		Buttonxx.TexC:SetTexCoord(0.08,0.00,0.08,0.59,0.91,0.00,0.91,0.59);
-		Buttonxx.TexC:SetPoint("TOPLEFT",Buttonxx,"TOPLEFT",2,0);
-		Buttonxx.TexC:SetPoint("BOTTOMRIGHT",Buttonxx,"BOTTOMRIGHT",-0.8,0);
-		Buttonxx.TexL = Buttonxx:CreateTexture(nil, "BORDER");
-		Buttonxx.TexL:SetTexture("interface/friendsframe/whoframe-columntabs.blp");
-		Buttonxx.TexL:SetTexCoord(0.00,0.00,0.00,0.59,0.08,0.00,0.08,0.59);
-		Buttonxx.TexL:SetPoint("TOPRIGHT",Buttonxx.TexC,"TOPLEFT",0,0);
-		Buttonxx.TexL:SetPoint("BOTTOMRIGHT",Buttonxx.TexC,"BOTTOMLEFT",0,0);
-		Buttonxx.TexL:SetWidth(2)
-		Buttonxx.TexR = Buttonxx:CreateTexture(nil, "BORDER");
-		Buttonxx.TexR:SetTexture("interface/friendsframe/whoframe-columntabs.blp");
-		Buttonxx.TexR:SetTexCoord(0.91,0.00,0.91,0.59,0.97,0.00,0.97,0.59);
-		Buttonxx.TexR:SetPoint("TOPLEFT",Buttonxx.TexC,"TOPRIGHT",0,0);
-		Buttonxx.TexR:SetPoint("BOTTOMLEFT",Buttonxx.TexC,"BOTTOMRIGHT",0,0);
-		Buttonxx.TexR:SetWidth(2)
+		ADD_Biaoti(Buttonxx)
 		Buttonxx.title = Buttonxx:CreateFontString();
 		Buttonxx.title:SetFontObject(CombatLogFont);
 		Buttonxx.title:SetText(xulieID[i]);
@@ -329,7 +314,7 @@ local function ADD_AHPlus()
 					listFGV.zhangdie:SetText("-");
 					listFGV.zhangdie:SetTextColor(1, 1, 1, 1);
 					if PIG.AHPlus.Data[FWQrealm][name] then
-						if buyoutPrice>0 then
+						if buyoutPrice>0 and PIG.AHPlus.Data[FWQrealm][name][1]>0 then
 							local baifenbi = ((buyoutPrice/count)/PIG.AHPlus.Data[FWQrealm][name][1])*100+0.5
 							local baifenbi = floor(baifenbi)
 							listFGV.zhangdie:SetText(baifenbi.."%");
@@ -595,17 +580,19 @@ local function ADD_AHPlus()
 		for i=1,AHlinshiInfoListNum do
 			local name=AHlinshiInfoList[i][1]
 			local xianzaidanjia = AHlinshiInfoList[i][3]/AHlinshiInfoList[i][2]
-	   		if PIG.AHPlus.Data[FWQrealm][name] then
-	   			if PIG.AHPlus.Data[FWQrealm][name][2] then
-	   				if xianzaidanjia>0 and xianzaidanjia<PIG.AHPlus.Data[FWQrealm][name][1] then
-	   					PIG.AHPlus.Data[FWQrealm][name][1]=xianzaidanjia
-	   				end
-	   			else
-	   				PIG.AHPlus.Data[FWQrealm][name]={xianzaidanjia,true,GetServerTime()}
-	   			end
-	   		else
-	   			PIG.AHPlus.Data[FWQrealm][name]={xianzaidanjia,true,GetServerTime()}
-	   		end
+			if xianzaidanjia>0 then
+		   		if PIG.AHPlus.Data[FWQrealm][name] then
+		   			if PIG.AHPlus.Data[FWQrealm][name][2] then
+		   				if xianzaidanjia<PIG.AHPlus.Data[FWQrealm][name][1] then
+		   					PIG.AHPlus.Data[FWQrealm][name][1]=xianzaidanjia
+		   				end
+		   			else
+		   				PIG.AHPlus.Data[FWQrealm][name]={xianzaidanjia,true,GetServerTime()}
+		   			end
+		   		else
+		   			PIG.AHPlus.Data[FWQrealm][name]={xianzaidanjia,true,GetServerTime()}
+		   		end
+		   	end
 		end
 		HCUI.jindu.edg.t:SetText("数据缓存完毕");
 		for i = 1, hang_NUM do
@@ -765,6 +752,9 @@ local function ADD_AHPlus()
 		piglist_biaoti_6.paixu:Show()
 		piglist_biaoti_6.paixu:SetRotation(-0, 0.5, 0.5)
 		SetSelectedAuctionItem("list", 0);
+	end)
+	AuctionFrame:HookScript("OnHide",function(self)
+		huancunjiaqian:Hide()
 	end)
 	--收藏夹----------------------------
 	PIG.AHPlus["Coll"] = PIG.AHPlus["Coll"] or addonTable.Default.AHPlus["Coll"]

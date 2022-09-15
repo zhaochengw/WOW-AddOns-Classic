@@ -4,11 +4,12 @@
 ## Notes: Some tools
 ## Notes-zhCN: |cffFF8C00一些小工具|r  |cffFF00FF[猪猪加油祝你游戏愉快]|r
 ## Author: geligasi
-## Version: 4.8.1
+## Version: 4.8.3
 ## SavedVariables: PIG
 ## SavedVariablesPerCharacter: PIG_Per
-Function.lua
 Error.lua
+Function_UI.lua
+Function_Data.lua
 Options.lua
 Config\Config.xml
 Feedback\Feedback.xml

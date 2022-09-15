@@ -115,11 +115,7 @@ local function RenwuFrame_Open()
 	end
 end
 ---------------------
-fuFrame.Renwu = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.Renwu:SetSize(30,32);
-fuFrame.Renwu:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-20);
-fuFrame.Renwu.Text:SetText("任务界面扩展");
-fuFrame.Renwu.tooltip = "扩展任务界面为两列；左边任务列表，右边任务详情！";
+fuFrame.Renwu=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"TOPLEFT","任务界面扩展","扩展任务界面为两列；左边任务列表，右边任务详情！")
 if tocversion>90000 then
 	fuFrame.Renwu:Disable() fuFrame.Renwu.Text:SetTextColor(0.4, 0.4, 0.4, 1) 
 end
@@ -182,8 +178,10 @@ local function TradeSkillFunc()
 			TradeSkillInvSlotDropDown:ClearAllPoints()
 			TradeSkillInvSlotDropDown:SetPoint("TOPLEFT", TradeSkillFrame, "TOPLEFT", 498, -40)
 			--材料齐备
-			TradeSkillFrameAvailableFilterCheckButton:ClearAllPoints()
-			TradeSkillFrameAvailableFilterCheckButton:SetPoint("TOPLEFT", TradeSkillFrame, "TOPLEFT", 70, -50)
+			if TradeSkillFrameAvailableFilterCheckButton then
+				TradeSkillFrameAvailableFilterCheckButton:ClearAllPoints()
+				TradeSkillFrameAvailableFilterCheckButton:SetPoint("TOPLEFT", TradeSkillFrame, "TOPLEFT", 70, -50)
+			end
 			--搜索位置
 			if TradeSkillFrameEditBox then
 				TradeSkillFrameEditBox:ClearAllPoints()
@@ -389,7 +387,7 @@ local function ZhuanyeFrame_Open()
 	end
 end
 --
-fuFrame.Zhuanye=ADD_Checkbutton("专业界面扩展","扩展专业技能界面为两列；左边配方列表，右边配方详情",fuFrame,-60,fuFrame,300,-20)
+fuFrame.Zhuanye=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",300,-20,"专业界面扩展","扩展专业技能界面为两列；左边配方列表，右边配方详情")
 if tocversion>90000 then
 	fuFrame.Zhuanye:Disable() fuFrame.Zhuanye.Text:SetTextColor(0.4, 0.4, 0.4, 1) 
 end
@@ -582,42 +580,52 @@ local function ADD_Craft_QK()
 	end
 end
 local function ZhuanyeQKBUT_Open()
-	local zhuanyeQuickQH = CreateFrame("FRAME")
-	zhuanyeQuickQH:RegisterEvent("ADDON_LOADED")
-	zhuanyeQuickQH:SetScript("OnEvent", function(self, event, arg1)
-		if arg1 == "Blizzard_TradeSkillUI" then
-			huoqu_Skill_ID()
-			if InCombatLockdown() then
-				zhuanyeQuickQH:RegisterEvent("PLAYER_REGEN_ENABLED")
-			else
+	if IsAddOnLoaded("Blizzard_TradeSkillUI") then
+		huoqu_Skill_ID()
+		ADD_Skill_QK()
+	else
+		local zhuanyeQuickQH = CreateFrame("FRAME")
+		zhuanyeQuickQH:RegisterEvent("ADDON_LOADED")
+		zhuanyeQuickQH:SetScript("OnEvent", function(self, event, arg1)
+			if arg1 == "Blizzard_TradeSkillUI" then
+				huoqu_Skill_ID()
+				if InCombatLockdown() then
+					zhuanyeQuickQH:RegisterEvent("PLAYER_REGEN_ENABLED")
+				else
+					ADD_Skill_QK()
+				end
+				zhuanyeQuickQH:UnregisterEvent("ADDON_LOADED")
+			end
+			if event=="PLAYER_REGEN_ENABLED" then
 				ADD_Skill_QK()
+				zhuanyeQuickQH:UnregisterEvent("PLAYER_REGEN_ENABLED")
 			end
-			zhuanyeQuickQH:UnregisterEvent("ADDON_LOADED")
-		end
-		if event=="PLAYER_REGEN_ENABLED" then
-			ADD_Skill_QK()
-			zhuanyeQuickQH:UnregisterEvent("PLAYER_REGEN_ENABLED")
-		end
-	end)
-	local fumoQuickQH = CreateFrame("FRAME")
-	fumoQuickQH:RegisterEvent("ADDON_LOADED")
-	fumoQuickQH:SetScript("OnEvent", function(self, event, arg1)
-		if arg1 == "Blizzard_CraftUI" then
-			huoqu_Skill_ID()
-			if InCombatLockdown() then
-				fumoQuickQH:RegisterEvent("PLAYER_REGEN_ENABLED")
-			else
+		end)
+	end
+	if IsAddOnLoaded("Blizzard_CraftUI") then
+		huoqu_Skill_ID()
+		ADD_Craft_QK()
+	else
+		local fumoQuickQH = CreateFrame("FRAME")
+		fumoQuickQH:RegisterEvent("ADDON_LOADED")
+		fumoQuickQH:SetScript("OnEvent", function(self, event, arg1)
+			if arg1 == "Blizzard_CraftUI" then
+				huoqu_Skill_ID()
+				if InCombatLockdown() then
+					fumoQuickQH:RegisterEvent("PLAYER_REGEN_ENABLED")
+				else
+					ADD_Craft_QK()
+				end
+				fumoQuickQH:UnregisterEvent("ADDON_LOADED")
+			end
+			if event=="PLAYER_REGEN_ENABLED" then
 				ADD_Craft_QK()
+				fumoQuickQH:UnregisterEvent("PLAYER_REGEN_ENABLED")
 			end
-			fumoQuickQH:UnregisterEvent("ADDON_LOADED")
-		end
-		if event=="PLAYER_REGEN_ENABLED" then
-			ADD_Craft_QK()
-			fumoQuickQH:UnregisterEvent("PLAYER_REGEN_ENABLED")
-		end
-	end)
+		end)
+	end
 end
-fuFrame.QuickQH=ADD_Checkbutton("专业快速切换按钮","在专业界面右侧显示便捷切换专业按钮",fuFrame,-60,fuFrame,300,-60)
+fuFrame.QuickQH=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",300,-60,"专业快速切换按钮","在专业界面右侧显示便捷切换专业按钮")
 fuFrame.QuickQH:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['FramePlus']['ExtFrame_ZhuanyeQKBUT']=true;

@@ -751,35 +751,16 @@ local function gengxinpingbiizhuangtai()
 			C_Timer.After(1, gengxinpingbiizhuangtai);
 		end
 	end
-end
---自动加入寻求组队频道
-local function JoinPIGX()
-	local morenName= "综合"
-	local morenchannel = GetChannelName(morenName)
-	if morenchannel and GetChannelName(morenchannel) > 0 then
-		local pindaolist ="PIG"
-		local channel,channelName= GetChannelName(pindaolist)
-		if not channelName then
-			JoinPermanentChannel(pindaolist, nil, DEFAULT_CHAT_FRAME:GetID(), 1);
-			ChatFrame_AddChannel(DEFAULT_CHAT_FRAME, pindaolist)--订购一个聊天框以显示先前加入的聊天频道
-			gengxinpingbiizhuangtai()
-		end
-		ChatFrame_RemoveMessageGroup(DEFAULT_CHAT_FRAME, "CHANNEL")--屏蔽人员进入频道提示
-	else
-		C_Timer.After(1, JoinPIGX)
-	end
-end
-local ADDName= {"PIG","PIG1","PIG2","PIG3","PIG4","PIG5"}
-local function JoinPermanentChannel_PIG()
-	JoinPIGX()
-	---
+	--
+	local ADDName= {"PIG","PIG1","PIG2","PIG3","PIG4","PIG5"}
 	for ii=1,#ADDName do
 		local channel,channelName, _ = GetChannelName(ADDName[ii])
 		if channelName then
-			SetChannelPassword(channelName, "")
+			if IsDisplayChannelOwner() then
+				SetChannelPassword(channelName, "")
+			end
 		end
 	end
-	--------
 	C_ChatInfo.RegisterAddonMessagePrefix("pigOwner")
 	local ffff = CreateFrame("Frame");
 	ffff:RegisterEvent("CHAT_MSG_ADDON");
@@ -791,7 +772,6 @@ local function JoinPermanentChannel_PIG()
 					for ii=1,#ADDName do
 						local channel,channelName, _ = GetChannelName(ADDName[ii])
 						if channelName then
-							--SetChannelPassword(channelName, "")
 							SetChannelOwner(channelName,arg5)
 						end
 					end
@@ -800,37 +780,48 @@ local function JoinPermanentChannel_PIG()
 		end
 	end)
 end
+----
+local function JoinPIG(pindaoName)
+	local channel,channelName= GetChannelName(pindaoName)
+	if not channelName then
+		JoinPermanentChannel(pindaoName, nil, DEFAULT_CHAT_FRAME:GetID(), 1);
+		ChatFrame_AddChannel(DEFAULT_CHAT_FRAME, pindaoName)--订购一个聊天框以显示先前加入的聊天频道
+		gengxinpingbiizhuangtai()
+	end
+	ChatFrame_RemoveMessageGroup(DEFAULT_CHAT_FRAME, "CHANNEL")--屏蔽人员进入频道提示
+end
+local function JoinPermanentChannel()
+	fuFrame.JoinPindao.haoshi=fuFrame.JoinPindao.haoshi+1	
+	local morenName= "综合"
+	local morenchannel = GetChannelName(morenName)
+	if morenchannel and GetChannelName(morenchannel) > 0 then
+		JoinPIG("寻求组队")
+		if PIG['ChatFrame']['JoinPindao']=="ON" then
+			JoinPIG("PIG")
+		end
+	else
+		if fuFrame.JoinPindao.haoshi<10 then
+			C_Timer.After(1, JoinPermanentChannel)
+		end
+	end
+end
 fuFrame.JoinPindao = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
 fuFrame.JoinPindao:SetSize(30,32);
 fuFrame.JoinPindao:SetHitRectInsets(0,-120,0,0);
 fuFrame.JoinPindao:SetPoint("TOPLEFT",fuFrame.QCxian,"BOTTOMLEFT",20,-60);
 fuFrame.JoinPindao.Text:SetText("自动加入PIG频道");
 fuFrame.JoinPindao.tooltip = "进入游戏后自动加入PIG/世界防务频道！";
+fuFrame.JoinPindao.haoshi=0
 fuFrame.JoinPindao:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['ChatFrame']['JoinPindao']="ON";
-		JoinPermanentChannel_PIG();
+		JoinPIG("PIG")
 	else
 		PIG['ChatFrame']['JoinPindao']="OFF";
 	end
 end);
-------
-local function JoinPermanent_INV()
-	local ADDName,morenName= "寻求组队","综合"
-	local morenchannel = GetChannelName(morenName)
-	if morenchannel and GetChannelName(morenchannel) > 0 then
-		local channel,channelName, _ = GetChannelName(ADDName)
-		if not channelName then
-			JoinChannelByName(ADDName, nil, DEFAULT_CHAT_FRAME:GetID(), 1);
-			ChatFrame_AddChannel(DEFAULT_CHAT_FRAME, ADDName)--订购一个聊天框以显示先前加入的聊天频道
-			gengxinpingbiizhuangtai()
-		end
-		ChatFrame_RemoveMessageGroup(DEFAULT_CHAT_FRAME, "CHANNEL")--屏蔽人员进入频道提示
-	else
-		C_Timer.After(1, JoinPermanent_INV)
-	end
-end
----
+
+----
 fuFrame.huoqupindaosuoyouzhe = CreateFrame("Button", nil, fuFrame, "UIPanelButtonTemplate");  
 fuFrame.huoqupindaosuoyouzhe:SetSize(250,24);
 fuFrame.huoqupindaosuoyouzhe:SetPoint("TOPLEFT",fuFrame.QCxian,"BOTTOMLEFT",20,-110);
@@ -866,10 +857,9 @@ addonTable.ChatFrame_QuickChat = function()
 	end
 	zhixingjingjianpindao()
 	---
-	C_Timer.After(3, JoinPermanent_INV);
 	if PIG['ChatFrame']['JoinPindao']=="ON" then
 		fuFrame.JoinPindao:SetChecked(true);
-		C_Timer.After(3.4, JoinPermanentChannel_PIG);
 	end
+	C_Timer.After(3.4, JoinPermanentChannel);
 	C_Timer.After(3.8, gengxinpingbiizhuangtai);
 end

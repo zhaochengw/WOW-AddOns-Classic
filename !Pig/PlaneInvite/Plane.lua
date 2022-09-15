@@ -1,18 +1,19 @@
 local addonName, addonTable = ...;
 ----------------------------------
+local CDWMinfo=addonTable.CDWMinfo
+local SQPindao = CDWMinfo["pindao"]
+local qingqiumsg = CDWMinfo["Plane"]
+local shenqingMSG = "SQHWM";
+------
 local biaotou='!Pig-Plane';
 local PIG_WB={}
-PIG_WB.weimianListInfo={};
-local CDWMinfo=addonTable.CDWMinfo
-local SQPindao = CDWMinfo[1]
-local qingqiumsg = CDWMinfo[2];
-local qingqiuMSG = "你好，我需要换个位面，方便的话请组下，谢谢！";
+PIG_WB.JieshouInfo={};
 C_ChatInfo.RegisterAddonMessagePrefix(biaotou)
+-----
 local PlaneFFFFF = CreateFrame("Frame")
 PlaneFFFFF:RegisterEvent("CHAT_MSG_CHANNEL");
 PlaneFFFFF:RegisterEvent("CHAT_MSG_ADDON");
-PlaneFFFFF:RegisterEvent("PLAYER_TARGET_CHANGED");
-PlaneFFFFF:RegisterEvent("CHAT_MSG_WHISPER");  
+PlaneFFFFF:RegisterEvent("PLAYER_TARGET_CHANGED"); 
 PlaneFFFFF:RegisterEvent("PLAYER_ENTERING_WORLD");   
 PlaneFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_,_,arg9)
 	if event=="PLAYER_ENTERING_WORLD" then	
@@ -25,31 +26,30 @@ PlaneFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_,
 					local mubiaoGUID=UnitGUID("target")
 					if mubiaoGUID then
 						local unitType, _, serverID, instanceID, zoneID, npcID = strsplit("-", mubiaoGUID);
-						PIG_WB.weimianMapID=C_Map.GetBestMapForUnit("player")
-						if zoneID and PIG_WB.weimianMapID then
-							if not PIG_WB.realm then PIG_WB.realm = GetRealmName() end
-							PIG_WB.weimianID_MapID=zoneID.."^"..PIG_WB.weimianMapID.."^"..PIG_WB.realm
-							
-							PIG_WB.weimianID=tonumber(zoneID)
-							PIG_WB.weimianMapID=tonumber(PIG_WB.weimianMapID)
-							if PIG_WB.weimianMapID==1453 or PIG_WB.weimianMapID==1454 then
-								local PIG_WB_inshipaixu_you=true
-								if PIG['PlaneInvite']['WeimianList'][PIG_WB.realm] then 
-									for x=1,#PIG['PlaneInvite']['WeimianList'][PIG_WB.realm] do
-										if PIG_WB.weimianID==PIG['PlaneInvite']['WeimianList'][PIG_WB.realm][x][1] then
-											PIG_WB_inshipaixu_you=false
-										end
-									end
-								else
-									PIG['PlaneInvite']['WeimianList'][PIG_WB.realm]={}
-								end
-								if PIG_WB_inshipaixu_you then
-									table.insert(PIG['PlaneInvite']['WeimianList'][PIG_WB.realm],{PIG_WB.weimianID,GetServerTime()})
-								end
+						if zoneID then
+							PIG_WB.weimianID=zoneID
+							if PlaneInviteFrame_3 then
+								PlaneInviteFrame_3.zijiweimianID:SetText(zoneID);
 							end
-
-							if PlaneInviteFrame_1 then
-								PlaneInviteFrame_1.zijiweimianID:SetText(PIG_WB.weimianID);
+							local MapID=C_Map.GetBestMapForUnit("player")
+							if MapID then
+								PIG_WB.WeimianInfo=zoneID.."^"..MapID
+								if MapID==1453 or MapID==1454 then
+									if not PIG_WB.realm then PIG_WB.realm = GetRealmName() end
+									local PIG_WB_inshipaixu_you=true
+									if PIG['PlaneInvite']['WeimianList'][PIG_WB.realm] then 
+										for x=1,#PIG['PlaneInvite']['WeimianList'][PIG_WB.realm] do
+											if zoneID==PIG['PlaneInvite']['WeimianList'][PIG_WB.realm][x][1] then
+												PIG_WB_inshipaixu_you=false
+											end
+										end
+									else
+										PIG['PlaneInvite']['WeimianList'][PIG_WB.realm]={}
+									end
+									if PIG_WB_inshipaixu_you then
+										table.insert(PIG['PlaneInvite']['WeimianList'][PIG_WB.realm],{zoneID,GetServerTime()})
+									end
+								end						
 							end
 						end
 					end
@@ -58,83 +58,297 @@ PlaneFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_,
 	end
 	----
 	if event=="CHAT_MSG_CHANNEL" then
-		if PIG_WB.weimianID_MapID then
+		if PIG_WB.WeimianInfo then
 			local inInstance, instanceType =IsInInstance()
 			if not inInstance then
 				if arg9==SQPindao and arg1==qingqiumsg then
-					--if arg5 ~=GetUnitName("player", true) then
-						local SMessage=PIG_WB.weimianID_MapID.."^"..PIG['PlaneInvite']['Kaiqi']
+					if arg5 ~= GetUnitName("player", true) then
+						local kaiguanzhuangtai = "^N^N"
+						if PIG['PlaneInvite']['Kaiqi']=="ON" then
+							kaiguanzhuangtai="^Y"
+						else
+							kaiguanzhuangtai="^N"
+						end
+						if PIG['PlaneInvite']['zidongjieshou']=="ON" then
+							kaiguanzhuangtai=kaiguanzhuangtai.."^Y"
+						else
+							kaiguanzhuangtai=kaiguanzhuangtai.."^N"
+						end
+						local SMessage=PIG_WB.WeimianInfo..kaiguanzhuangtai
 						C_ChatInfo.SendAddonMessage(biaotou,SMessage,"WHISPER",arg5)
-					--end
+					end
 				end
 			end
 		end
 	end
 
 	if event=="CHAT_MSG_ADDON" and arg1 == biaotou then
-		table.insert(PIG_WB.weimianListInfo, {arg2,arg5,GetServerTime()});
+		table.insert(PIG_WB.JieshouInfo, {arg2,arg5,GetServerTime()});
 	end
 
 	if PIG['PlaneInvite']['Kaiqi']=="ON" and PIG['PlaneInvite']['zidongjieshou']=="ON" then
 		local inInstance, instanceType =IsInInstance()
 		local zuduizhong =IsInGroup("LE_PARTY_CATEGORY_HOME");
 		if not inInstance and not zuduizhong then
-			if event=="CHAT_MSG_WHISPER"  then
-				if arg1 == qingqiuMSG then
-					SendChatMessage("!Pig:你的插件版本过低，无法接受你的申请！", "WHISPER", nil, arg5);
-				end
-			end
 			if event=="CHAT_MSG_ADDON" and arg1 == biaotou then
-				if arg2 == qingqiuMSG then
-					InviteUnit(arg5)
+				if arg2 == shenqingMSG then
+					PIG_InviteUnit(arg5)
 				end
 			end
 		end
 	end
 end)
 --=============================================================
+local ADD_Frame=addonTable.ADD_Frame
+local ADD_jindutiaoBUT=addonTable.ADD_jindutiaoBUT
+local ADD_Biaoti=addonTable.ADD_Biaoti
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local function ADD_Plane_Frame()
 	PIG['PlaneInvite']['WeimianList']=PIG['PlaneInvite']['WeimianList'] or addonTable.Default['PlaneInvite']['WeimianList']
-	local fuFrame=PlaneInviteFrame_1;
+	local fufufuFrame=PlaneInvite_UI
+	local fuFrame=PlaneInviteFrame_3;
 	local Width,Height=fuFrame:GetWidth(),fuFrame:GetHeight();
-	------------------
-	local biaotiName={"位面(区域ID)","玩家名(点击私聊)","位置","更新时间"}
-	local biaotiNameL={20,202,350,460}
-	for i=1,#biaotiName do
-		fuFrame.biaoti = fuFrame:CreateFontString();
-		fuFrame.biaoti:SetFontObject(GameFontNormal);
-		fuFrame.biaoti:SetText(biaotiName[i]);
-		if i==1 then
-			fuFrame.biaoti:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",biaotiNameL[i],-8);
-		elseif i==2 then
-			fuFrame.biaoti:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",biaotiNameL[i],-8);
-		elseif i==3 then
-			fuFrame.biaoti:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",biaotiNameL[i],-8);
-			fuFrame.biaoti:Hide()
-		elseif i==4 then
-			fuFrame.biaoti:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",biaotiNameL[i],-8);
+	-----------------
+	fuFrame.zijiweimian = fuFrame:CreateFontString();
+	fuFrame.zijiweimian:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",10,-8);
+	fuFrame.zijiweimian:SetFontObject(ChatFontNormal);
+	fuFrame.zijiweimian:SetTextColor(0,250/255,154/255, 1);
+	fuFrame.zijiweimian:SetText("你的位面ID:");
+	fuFrame.zijiweimianID = fuFrame:CreateFontString();
+	fuFrame.zijiweimianID:SetPoint("TOPLEFT", fuFrame.zijiweimian, "BOTTOMLEFT", 0, -6);
+	fuFrame.zijiweimianID:SetFontObject(ChatFontNormal);
+	---
+	fuFrame.daojishiJG =PIG['PlaneInvite']['Weimiandaojishi'] or 0;
+	fuFrame.morenjiange=300
+	local jindutiaoWW = 156
+	fuFrame.jieshoushuju,fuFrame.shuaxinBUT=ADD_jindutiaoBUT(fuFrame,jindutiaoWW,"获取位面信息",180,0)
+
+	fuFrame.shuaxinBUT:HookScript("OnShow", function (self)
+		if #PIG_WB.JieshouInfo>0 then
+			local yiguoqu = GetServerTime()-fuFrame.daojishiJG
+			if yiguoqu>3600 then
+				self.err:SetText("上次获取时间:一小时之前");
+			elseif yiguoqu>1800 then
+				self.err:SetText("上次获取时间:半小时之前");
+			elseif yiguoqu>600 then
+				self.err:SetText("上次获取时间:10分钟之前");
+			elseif yiguoqu>300 then
+				self.err:SetText("上次获取时间:5分钟之前");
+			else
+				self.err:SetText("上次获取时间:刚刚");
+			end
 		end
+	end)
+	fuFrame.shuaxinBUT:SetScript("OnUpdate", function(self,sss)
+		local yiguoqu = GetServerTime()-fuFrame.daojishiJG
+		local chazhiV = fuFrame.morenjiange-yiguoqu
+		if chazhiV>0 then
+			self:SetText(self.anTXT.."("..chazhiV..")");
+			self:Disable()
+		else
+			self:SetText(self.anTXT);
+			if fufufuFrame.yijiaru then
+				self:Enable()
+			else
+				self:Disable()
+			end	
+		end
+	end);
+
+	fuFrame.jieshoushuju.time = 0
+	fuFrame.jieshoushuju:SetScript("OnUpdate", function(self,sss)
+		fuFrame.jieshoushuju.time=fuFrame.jieshoushuju.time+sss
+		if fuFrame.jieshoushuju.time<2 then
+			fuFrame.jieshoushuju.jindu:SetWidth(jindutiaoWW*(fuFrame.jieshoushuju.time/2))
+			fuFrame.jieshoushuju:Show();
+		else
+			fuFrame.jieshoushuju:Hide()
+			fuFrame.gengxinhang(fuFrame.NR.Scroll)
+		end
+	end);
+
+	StaticPopupDialogs["XIANHUOQUZIJIWEIMIAN"] = {
+		text = "请先获取自身角色位面，点击任意NPC即可获取。",
+		button1 = "好的",
+		OnAccept = function()
+			PlaneInvite_UI:Hide()
+		end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+	}
+	fuFrame.shuaxinBUT:SetScript("OnClick", function (self)
+		if PIG_WB.weimianID==nil then
+			StaticPopup_Show ("XIANHUOQUZIJIWEIMIAN") 
+			return 
+		end
+		local pindaolheji = {GetChannelList()};
+		pindaolheji.yijiaruPIG=true
+		pindaolheji.PIGID=0
+		for i=1,#pindaolheji do
+			if pindaolheji[i]==SQPindao then
+				pindaolheji.PIGID=pindaolheji[i-1]
+				pindaolheji.yijiaruPIG=false
+				break
+			end
+		end
+		if pindaolheji.yijiaruPIG then
+			print("|cff00FFFF!Pig:|r|cffFFFF00请先加入"..SQPindao.."频道获取位面信息！|r")
+			return
+		end
+
+		fuFrame.shuaxinBUT.anTXT="更新位面信息"
+		self:Disable();
+		PIG_WB.JieshouInfo={};
+		SendChatMessage(qingqiumsg,"CHANNEL",nil,pindaolheji.PIGID)
+
+		fuFrame.daojishiJG =GetServerTime();
+		PIG['PlaneInvite']['Weimiandaojishi']=fuFrame.daojishiJG
+
+		fuFrame.shuaxinBUT.err:SetText("")
+		fuFrame.jieshoushuju.time = 0
+		fuFrame.jieshoushuju:Show()
+	end);
+	
+	-----------------------
+	local Tooltip= "自动接受玩家位面申请(未组队且不在副本时)\n|cff00FF00我为人人，人人为我。请不要做精致的利己主义者。|r";
+	fuFrame.PIGPlane_zudui =ADD_Checkbutton(nil,fuFrame,-120,"TOPLEFT",fuFrame,"TOPLEFT",440,-2,"|cff00FF00自动接受玩家位面申请(单人且不在副本时)|r",Tooltip)
+	fuFrame.PIGPlane_zudui:SetScript("OnClick", function (self)
+		if self:GetChecked() then
+			PIG['PlaneInvite']['zidongjieshou']="ON";
+		else
+			PIG['PlaneInvite']['zidongjieshou']="OFF";
+		end
+	end);
+	if PIG['PlaneInvite']['zidongjieshou']=="ON" then
+		fuFrame.PIGPlane_zudui:SetChecked(true);
 	end
-	fuFrame.biaotiline = fuFrame:CreateLine()
-	fuFrame.biaotiline:SetColorTexture(1,1,1,0.2)
-	fuFrame.biaotiline:SetThickness(1);
-	fuFrame.biaotiline:SetStartPoint("TOPLEFT",0,-29)
-	fuFrame.biaotiline:SetEndPoint("TOPRIGHT",0,-29)
-	------------
-	local hang_Height,hang_NUM  = 24, 16;
-	local function gengxinhang(self)
-		for i = 1, hang_NUM do
-			local kjframe = _G["WeimianList_"..i]
-			kjframe:Hide()
-			kjframe.Weimian:SetText();
-			kjframe.WMID:SetText();
-			kjframe.Name.T:SetText();
-			kjframe.Weizhi:SetText();
-			kjframe.Time:SetText();	
+	------
+	fuFrame.Errorxiufu = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");  
+	fuFrame.Errorxiufu:SetSize(50,24);
+	fuFrame.Errorxiufu:SetPoint("TOPRIGHT",fuFrame,"TOPRIGHT",-10,-4);
+	fuFrame.Errorxiufu:SetText("重置");
+	fuFrame.Errorxiufu:SetScript("OnClick", function (self)
+		if not PIG_WB.realm then PIG_WB.realm = GetRealmName() end
+		PIG['PlaneInvite']['WeimianList'][PIG_WB.realm]={}
+		print("|cff00FFFF!Pig:|r|cff00FF00重置完成，请重新获取！|r")
+	end)
+	--------------
+	fuFrame.NR=ADD_Frame(nil,fuFrame,Width-20,Height-80,"BOTTOMLEFT",fuFrame,"BOTTOMLEFT",1,3,false,true,false,false,false,"BG3")
+	local biaotiName={"位面","区域ID","玩家名(点击私聊)","位置","自动接受申请","操作"}
+	local biaotiNameL={80,100,220,220,120,100}
+	for i=1,#biaotiName do
+		local biaoti = CreateFrame("Button","Weimianbiaoti_"..i,fuFrame.NR);
+		biaoti:SetSize(biaotiNameL[i],22);
+		if i==1 then
+			biaoti:SetPoint("BOTTOMLEFT",fuFrame.NR,"TOPLEFT",6,0);
+		else
+			biaoti:SetPoint("LEFT",_G["Weimianbiaoti_"..(i-1)],"RIGHT",0,0);
 		end
-		local ItemsNum = #PIG_WB.weimianListInfo;
+		biaoti.title = biaoti:CreateFontString();
+		biaoti.title:SetPoint("LEFT", biaoti, "LEFT", 8, -1);
+		biaoti.title:SetFontObject(CombatLogFont);
+		biaoti.title:SetText(biaotiName[i]);
+		ADD_Biaoti(biaoti)
+	end
+	local hang_Width,hang_Height,hang_NUM = fuFrame.NR:GetWidth()-4, 25, 14;
+	fuFrame.NR.Scroll = CreateFrame("ScrollFrame",nil,fuFrame.NR, "FauxScrollFrameTemplate");  
+	fuFrame.NR.Scroll:SetPoint("TOPLEFT",fuFrame.NR,"TOPLEFT",2,-2);
+	fuFrame.NR.Scroll:SetPoint("BOTTOMRIGHT",fuFrame.NR,"BOTTOMRIGHT",-4,2);
+	fuFrame.NR.Scroll:SetScript("OnVerticalScroll", function(self, offset)
+	    FauxScrollFrame_OnVerticalScroll(self, offset, hang_Height, fuFrame.gengxinhang)
+	end)
+	for i=1, hang_NUM, 1 do
+		local liebiao = CreateFrame("Frame", "WeimianList_"..i, fuFrame.NR.Scroll:GetParent());
+		liebiao:SetSize(hang_Width,hang_Height);
+		if i==1 then
+			liebiao:SetPoint("TOPLEFT", fuFrame.NR.Scroll, "TOPLEFT", 0, -3);
+		else
+			liebiao:SetPoint("TOPLEFT", _G["WeimianList_"..(i-1)], "BOTTOMLEFT", 0, -2);
+		end
+		liebiao:Hide()
+		if i~=hang_NUM then
+			liebiao.line = liebiao:CreateLine()
+			liebiao.line:SetColorTexture(1,1,1,0.2)
+			liebiao.line:SetThickness(1);
+			liebiao.line:SetStartPoint("BOTTOMLEFT",0,0)
+			liebiao.line:SetEndPoint("BOTTOMRIGHT",0,0)
+		end
+		liebiao.Weimian = liebiao:CreateFontString();
+		liebiao.Weimian:SetWidth(biaotiNameL[1]);
+		liebiao.Weimian:SetPoint("LEFT", liebiao, "LEFT", 6, 0);
+		liebiao.Weimian:SetFontObject(ChatFontNormal);
+		liebiao.Weimian:SetTextColor(0,250/255,154/255, 1);
+		liebiao.zoneID = liebiao:CreateFontString();
+		liebiao.zoneID:SetWidth(biaotiNameL[2]);
+		liebiao.zoneID:SetPoint("LEFT", liebiao.Weimian, "RIGHT", 0, 0);
+		liebiao.zoneID:SetFontObject(ChatFontNormal);
+		liebiao.zoneID:SetFont(GameFontNormal:GetFont(), 12,"OUTLINE")
+		liebiao.zoneID:SetTextColor(0.9,0.9,0.9, 0.9);
+		liebiao.zoneID:SetJustifyH("LEFT");
+
+		liebiao.Name = CreateFrame("Frame", nil, liebiao);
+		liebiao.Name:SetSize(biaotiNameL[3],hang_Height);
+		liebiao.Name:SetPoint("LEFT", liebiao.zoneID, "RIGHT", 0, 0);
+		liebiao.Name.T = liebiao.Name:CreateFontString();
+		liebiao.Name.T:SetPoint("LEFT", liebiao.Name, "LEFT", 0, 0);
+		liebiao.Name.T:SetFontObject(ChatFontNormal);
+		liebiao.Name.T:SetTextColor(0,250/255,154/255, 1);
+		liebiao.Name:SetScript("OnMouseUp", function(self,button)
+			local name = self.T:GetText()
+			local editBox = ChatEdit_ChooseBoxForSend();
+			local hasText = editBox:GetText()
+			if editBox:HasFocus() then
+				editBox:SetText("/WHISPER " ..name.." ".. hasText);
+			else
+				ChatEdit_ActivateChat(editBox)
+				editBox:SetText("/WHISPER " ..name.." ".. hasText);
+			end
+		end)
+		liebiao.Weizhi = liebiao:CreateFontString();
+		liebiao.Weizhi:SetWidth(biaotiNameL[4]);
+		liebiao.Weizhi:SetPoint("LEFT", liebiao.Name, "RIGHT", 0, 0);
+		liebiao.Weizhi:SetFontObject(ChatFontNormal);
+		liebiao.Weizhi:SetTextColor(0,250/255,154/255, 1);
+		liebiao.Weizhi:SetJustifyH("LEFT");
+
+		liebiao.autoinv = liebiao:CreateFontString();
+		liebiao.autoinv:SetWidth(biaotiNameL[5]);
+		liebiao.autoinv:SetPoint("LEFT", liebiao.Weizhi, "RIGHT", 10, 0);
+		liebiao.autoinv:SetFontObject(ChatFontNormal);
+		liebiao.autoinv:SetJustifyH("LEFT");
+
+		liebiao.miyu = CreateFrame("Button",nil,liebiao, "UIPanelButtonTemplate");
+		liebiao.miyu:SetSize(biaotiNameL[6]-20,20);
+		liebiao.miyu:SetPoint("LEFT",liebiao.autoinv,"RIGHT",0,0);
+		liebiao.miyu.Font=liebiao.miyu:GetFontString()
+		liebiao.miyu.Font:SetFont(ChatFontNormal:GetFont(), 10);
+		liebiao.miyu:SetScript("OnClick", function(self)
+			local name = self:GetParent().Name.T:GetText()
+			if self:GetText()=="密语" then
+				local editBox = ChatEdit_ChooseBoxForSend();
+				local hasText = editBox:GetText()
+				if editBox:HasFocus() then
+					editBox:SetText("/WHISPER " ..name.." ".. hasText);
+				else
+					ChatEdit_ActivateChat(editBox)
+					editBox:SetText("/WHISPER " ..name.." ".. hasText);
+				end
+			elseif self:GetText()=="请求换位面" then
+				C_ChatInfo.SendAddonMessage(biaotou,shenqingMSG,"WHISPER",name)
+			end
+			PIG_WB.JieshouInfo[self:GetID()][4]=true
+			fuFrame.gengxinhang(fuFrame.NR.Scroll)
+		end)
+	end
+	------------
+	fuFrame.gengxinhang=function(self)
+		for i = 1, hang_NUM do
+			_G["WeimianList_"..i]:Hide()	
+		end
+		local ItemsNum = #PIG_WB.JieshouInfo;
 		if ItemsNum>0 then
-			fuFrame.shuaxinWeimian.err:Hide();
+			fuFrame.shuaxinBUT.err:SetText("");
 			if PIG['PlaneInvite']['WeimianList'][PIG_WB.realm] then
 				PIG_WB.linshipaixu=PIG['PlaneInvite']['WeimianList'][PIG_WB.realm]
 			else
@@ -184,25 +398,24 @@ local function ADD_Plane_Frame()
 			end
 
 			for i=1,ItemsNum do
-				local zoneID, MapID, fuwuqiname = strsplit("^", PIG_WB.weimianListInfo[i][1]);
+				local zoneID, MapID = strsplit("^", PIG_WB.JieshouInfo[i][1]);
 				if tonumber(MapID)==1453 or tonumber(MapID)==1454 then
 					local PIG_WB_inshipaixu_you=true
 					for x=1,#PIG_WB.linshipaixu do
-						if tonumber(zoneID)==PIG_WB.linshipaixu[x][1] then
+						if zoneID==PIG_WB.linshipaixu[x][1] then
 							PIG_WB_inshipaixu_you=false
 						end
 					end
 					if PIG_WB_inshipaixu_you then
-						table.insert(PIG_WB.linshipaixu,{tonumber(zoneID),GetServerTime()})
+						table.insert(PIG_WB.linshipaixu,{zoneID,GetServerTime()})
 					end
 				end
 			end
-
 			PIG['PlaneInvite']['WeimianList'][PIG_WB.realm]=PIG_WB.linshipaixu
 
 			local weimianbianhao={}
 			for i=1,#PIG_WB.linshipaixu do
-				table.insert(weimianbianhao,PIG_WB.linshipaixu[i][1])
+				table.insert(weimianbianhao,tonumber(PIG_WB.linshipaixu[i][1]))
 			end
 			local function paixuxiaoda(element1, elemnet2)
 			    return element1 < elemnet2
@@ -212,319 +425,90 @@ local function ADD_Plane_Frame()
 		    FauxScrollFrame_Update(self, ItemsNum, hang_NUM, hang_Height);
 		    local offset = FauxScrollFrame_GetOffset(self);
 		    for i = 1, hang_NUM do
+		    	local kjframe = _G["WeimianList_"..i]
 				local dangqian = i+offset;
-				if PIG_WB.weimianListInfo[dangqian] then
-					local kjframe = _G["WeimianList_"..i]
+				if PIG_WB.JieshouInfo[dangqian] then			
 					kjframe:Show()
-					local zoneID, MapID, fuwuqiname,OnOff = strsplit("^", PIG_WB.weimianListInfo[dangqian][1]);
-					kjframe.WMID:SetText(zoneID);
-					local zuixiaozhiweimian={nil,"？"}
-					local function panduanMin(zoneID,VVV,x)
-						local ChazhiV=0
-						local ChazhiV=zoneID-VVV
-						if ChazhiV<0 then
-							ChazhiV=VVV-zoneID
-						end
-						if ChazhiV<100 then
-							if zuixiaozhiweimian[1] then
-								if ChazhiV<zuixiaozhiweimian[1] then
-									zuixiaozhiweimian[1]=ChazhiV
-									zuixiaozhiweimian[2]=x
-									return
-								end
-							else
-						    	zuixiaozhiweimian[1]=ChazhiV
-						    	zuixiaozhiweimian[2]=x
-						    	return
-						    end
-						end
+					kjframe.miyu:SetID(dangqian)
+					local zoneID, MapID, Open, autoinv = strsplit("^", PIG_WB.JieshouInfo[dangqian][1]);
+					kjframe.zoneID:SetText(zoneID);
+					--
+					local function panduanweimianID(zoneID)
+						local zuixiaozhiweimian={nil,"？"}
+						for x=1,#weimianbianhao do	
+							local ChazhiV=0
+							local ChazhiV=zoneID-weimianbianhao[x]
+							if ChazhiV<0 then
+								ChazhiV=weimianbianhao[x]-zoneID
+							end
+							if ChazhiV<100 then
+								if zuixiaozhiweimian[1] then
+									if ChazhiV<zuixiaozhiweimian[1] then
+										zuixiaozhiweimian[1]=ChazhiV
+										zuixiaozhiweimian[2]=x
+										return zuixiaozhiweimian[2]
+									end
+								else
+							    	zuixiaozhiweimian[1]=ChazhiV
+							    	zuixiaozhiweimian[2]=x
+							    	return zuixiaozhiweimian[2]
+							    end
+							end
+					    end
+					    return zuixiaozhiweimian[2]
 					end
-					
-					for x=1,#weimianbianhao do	
-						panduanMin(tonumber(zoneID),weimianbianhao[x],x)
-				    end
-					kjframe.Weimian:SetText(zuixiaozhiweimian[2]);
-					
-					kjframe.Weimian:SetTextColor(0,250/255,154/255, 1);
-					kjframe.Name.T:SetTextColor(0,250/255,154/255, 1);
-					kjframe.Time:SetTextColor(0,250/255,154/255, 1);
-					kjframe.miyu:SetText("请求换位面");
-					kjframe.miyu:Enable()
-					if PIG_WB.weimianListInfo[dangqian][4] then
-						kjframe.miyu:Disable()
-						kjframe.miyu:SetText("已申请");
+				    local weimianID = panduanweimianID(tonumber(zoneID))
+					kjframe.Weimian:SetText(weimianID);
+					--
+					kjframe.Name.T:SetText(PIG_WB.JieshouInfo[dangqian][2]);
+					local weizhi = C_Map.GetMapInfo(MapID).name
+					kjframe.Weizhi:SetText(weizhi);
+					if Open=="Y" and autoinv=="Y" then
+						kjframe.autoinv:SetText("|cff00FF00是|r");
+					else
+						kjframe.autoinv:SetText("|cffFF0000否|r");
 					end
-					if OnOff and OnOff=="OFF" then
-						kjframe.miyu:SetText("未开启");
-						kjframe.miyu:Disable()
-						kjframe.Weimian:SetTextColor(1,1,1, 0.4);
-						kjframe.Name.T:SetTextColor(1,1,1, 0.4);
-						kjframe.Time:SetTextColor(1,1,1, 0.4);
-					end				
-				
-					local zuixiaozhiweimian_ziji={nil,"？"}
-					local function panduanMin_ziji(zoneID,VVV,x)
-						local ChazhiV_ziji=0
-						local ChazhiV_ziji=zoneID-VVV
-						if ChazhiV_ziji<0 then
-							ChazhiV_ziji=VVV-zoneID
-						end
-						if ChazhiV_ziji<50 then
-							if zuixiaozhiweimian_ziji[1] then
-								if ChazhiV_ziji<zuixiaozhiweimian_ziji[1] then
-									zuixiaozhiweimian_ziji[1]=ChazhiV_ziji
-									zuixiaozhiweimian_ziji[2]=x
-									return
-								end
-							else
-						    	zuixiaozhiweimian_ziji[1]=ChazhiV_ziji
-						    	zuixiaozhiweimian_ziji[2]=x
-						    	return
-						    end
-						end
-					end
-					for x=1,#weimianbianhao do	
-						panduanMin_ziji(PIG_WB.weimianID,weimianbianhao[x],x)
-					end
-					if zuixiaozhiweimian[2]~="？" and zuixiaozhiweimian_ziji[2]~="？" then
-						if zuixiaozhiweimian[2]==zuixiaozhiweimian_ziji[2] then
-							kjframe.miyu:Disable()
-							kjframe.miyu:SetText("同位面");
+					---
+					local function DisableFrame(YN)
+						if YN then
+							kjframe.Weimian:SetTextColor(0,250/255,154/255, 1);
+							kjframe.Name.T:SetTextColor(0,250/255,154/255, 1);
+							kjframe.Weizhi:SetTextColor(0,250/255,154/255, 1);
+							kjframe.autoinv:SetTextColor(0,250/255,154/255, 1);
+						else
 							kjframe.Weimian:SetTextColor(1,1,1, 0.4);
 							kjframe.Name.T:SetTextColor(1,1,1, 0.4);
-							kjframe.Time:SetTextColor(1,1,1, 0.4);
+							kjframe.Weizhi:SetTextColor(1,1,1, 0.4);
+							kjframe.autoinv:SetTextColor(1,1,1, 0.4);
 						end
 					end
-
-					kjframe.Name.T:SetText(PIG_WB.weimianListInfo[dangqian][2]);
-					if MapID then
-						local weizhixinxi = C_Map.GetMapInfo(MapID).name
-						kjframe.Weizhi:SetText(weizhixinxi);
+					local weimianID_ziji = panduanweimianID(tonumber(PIG_WB.weimianID))
+					if weimianID~="？" and weimianID_ziji~="？" and weimianID==weimianID_ziji then
+						DisableFrame(false)
+						kjframe.miyu:Disable()
+						kjframe.miyu:SetText("同位面");
 					else
-						kjframe.Weizhi:SetText("|cffFFFF00未知|r");
-					end
-					kjframe.Time:SetText(date("%H:%M:%S",PIG_WB.weimianListInfo[dangqian][3]));
-					kjframe.miyu:SetID(dangqian)
+						DisableFrame(true)
+						if PIG_WB.JieshouInfo[dangqian][4] then
+							kjframe.miyu:Disable()
+							kjframe.miyu:SetText("已发送请求");
+						else
+							kjframe.miyu:Enable()
+							if Open=="Y" and autoinv=="Y" then
+								kjframe.miyu:SetText("请求换位面");
+							else
+								kjframe.miyu:SetText("密语");
+							end
+						end
+					end	
 				end
 			end
 		else
-			fuFrame.shuaxinWeimian.err:Show();
+			fuFrame.shuaxinBUT.err:SetText("未获取到位面信息，请稍后再试!");
 		end
-	end
-	---目录
-	fuFrame.Scroll = CreateFrame("ScrollFrame",nil,fuFrame, "FauxScrollFrameTemplate");  
-	fuFrame.Scroll:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",2,-26);
-	fuFrame.Scroll:SetPoint("BOTTOMRIGHT",fuFrame,"BOTTOMRIGHT",-24,0);
-	fuFrame.Scroll:SetScript("OnVerticalScroll", function(self, offset)
-	    FauxScrollFrame_OnVerticalScroll(self, offset, hang_Height, gengxinhang)
-	end)
-	for i=1, hang_NUM, 1 do
-		local liebiao = CreateFrame("Frame", "WeimianList_"..i, fuFrame.Scroll:GetParent());
-		liebiao:SetSize(Width-30,hang_Height);
-		if i==1 then
-			liebiao:SetPoint("TOPLEFT", fuFrame.Scroll, "TOPLEFT", 0, -3);
-		else
-			liebiao:SetPoint("TOPLEFT", _G["WeimianList_"..(i-1)], "BOTTOMLEFT", 0, -2);
-		end
-		liebiao:Hide()
-		liebiao.line = liebiao:CreateLine()
-		liebiao.line:SetColorTexture(1,1,1,0.2)
-		liebiao.line:SetThickness(1);
-		liebiao.line:SetStartPoint("BOTTOMLEFT",0,0)
-		liebiao.line:SetEndPoint("BOTTOMRIGHT",0,0)
-		liebiao.Weimian = liebiao:CreateFontString();
-		liebiao.Weimian:SetPoint("LEFT", liebiao, "LEFT", 20, 0);
-		liebiao.Weimian:SetFontObject(ChatFontNormal);
-		liebiao.Weimian:SetTextColor(0,250/255,154/255, 1);
-		liebiao.WMID = liebiao:CreateFontString();
-		liebiao.WMID:SetPoint("BOTTOMLEFT", liebiao.Weimian, "BOTTOMRIGHT", 26, -0);
-		liebiao.WMID:SetFontObject(ChatFontNormal);
-		liebiao.WMID:SetFont(GameFontNormal:GetFont(), 12,"OUTLINE")
-		liebiao.WMID:SetTextColor(0.9,0.9,0.9, 0.9);
-
-		liebiao.Name = CreateFrame("Frame", nil, liebiao);
-		liebiao.Name:SetSize(120,hang_Height);
-		liebiao.Name:SetPoint("LEFT", liebiao, "LEFT", 200, 0);
-		liebiao.Name.T = liebiao.Name:CreateFontString();
-		liebiao.Name.T:SetPoint("LEFT", liebiao.Name, "LEFT", 0, 0);
-		liebiao.Name.T:SetFontObject(ChatFontNormal);
-		liebiao.Name.T:SetTextColor(0,250/255,154/255, 1);
-		liebiao.Name:SetScript("OnMouseUp", function(self,button)
-			local name = self.T:GetText()
-			local editBox = ChatEdit_ChooseBoxForSend();
-			local hasText = editBox:GetText()
-			if editBox:HasFocus() then
-				editBox:SetText("/WHISPER " ..name.." ".. hasText);
-			else
-				ChatEdit_ActivateChat(editBox)
-				editBox:SetText("/WHISPER " ..name.." ".. hasText);
-			end
-		end)
-		liebiao.Weizhi = liebiao:CreateFontString();
-		liebiao.Weizhi:SetPoint("LEFT", liebiao, "LEFT", 350, 0);
-		liebiao.Weizhi:SetFontObject(ChatFontNormal);
-		liebiao.Weizhi:SetTextColor(0,250/255,154/255, 1);
-		liebiao.Weizhi:Hide()
-
-		liebiao.Time = liebiao:CreateFontString();
-		liebiao.Time:SetPoint("LEFT", liebiao, "LEFT", 460, 0);
-		liebiao.Time:SetFontObject(ChatFontNormal);
-
-		liebiao.miyu = CreateFrame("Button",nil,liebiao, "UIPanelButtonTemplate");
-		liebiao.miyu:SetSize(80,20);
-		liebiao.miyu:SetPoint("LEFT",liebiao,"LEFT",690,0);
-		liebiao.miyu.Font=liebiao.miyu:GetFontString()
-		liebiao.miyu.Font:SetFont(ChatFontNormal:GetFont(), 10);
-		liebiao.miyu:SetScript("OnClick", function(self)
-			local name = self:GetParent().Name.T:GetText()
-			C_ChatInfo.SendAddonMessage(biaotou,qingqiuMSG,"WHISPER",name)
-			PIG_WB.weimianListInfo[self:GetID()][4]=true
-			self:Disable()
-			self:SetText("已申请");
-		end)
 	end
 	-----
-	fuFrame.zijiweimian = fuFrame:CreateFontString();
-	fuFrame.zijiweimian:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,40);
-	fuFrame.zijiweimian:SetFontObject(ChatFontNormal);
-	fuFrame.zijiweimian:SetTextColor(0,250/255,154/255, 1);
-	fuFrame.zijiweimian:SetText("你的位面ID:");
-	fuFrame.zijiweimianID = fuFrame:CreateFontString();
-	fuFrame.zijiweimianID:SetPoint("LEFT", fuFrame.zijiweimian, "RIGHT", 0, 0);
-	fuFrame.zijiweimianID:SetFontObject(ChatFontNormal);
-	---
-	fuFrame.jieshoushuju = CreateFrame("Frame", nil, fuFrame);
-	fuFrame.jieshoushuju:SetSize(160,20);
-	fuFrame.jieshoushuju:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,22);
-	fuFrame.jieshoushuju:Hide();
-	fuFrame.jieshoushuju.jindu = fuFrame.jieshoushuju:CreateTexture(nil, "BORDER");
-	fuFrame.jieshoushuju.jindu:SetTexture("interface/raidframe/raid-bar-hp-fill.blp");
-	fuFrame.jieshoushuju.jindu:SetColorTexture(0.3, 0.7, 0.1, 1)
-	fuFrame.jieshoushuju.jindu:SetSize(156,16);
-	fuFrame.jieshoushuju.jindu:SetPoint("LEFT",fuFrame.jieshoushuju,"LEFT",2,0);
-	fuFrame.jieshoushuju.edg = CreateFrame("Frame", nil, fuFrame.jieshoushuju,"BackdropTemplate");
-	fuFrame.jieshoushuju.edg:SetBackdrop( { edgeFile = "Interface/Tooltips/UI-Tooltip-Border",edgeSize = 13,});
-	fuFrame.jieshoushuju.edg:SetBackdropBorderColor(0, 1, 1, 0.9);
-	fuFrame.jieshoushuju.edg:SetAllPoints(fuFrame.jieshoushuju)
-	fuFrame.jieshoushuju.edg.t = fuFrame.jieshoushuju.edg:CreateFontString();
-	fuFrame.jieshoushuju.edg.t:SetPoint("CENTER",fuFrame.jieshoushuju.edg,"CENTER",0,0);
-	fuFrame.jieshoushuju.edg.t:SetFont(GameFontNormal:GetFont(), 12)
-	fuFrame.jieshoushuju.edg.t:SetText("正在接收数据...");
-	local yanchishuaxinliebiao = 3
-	fuFrame.zhengzaihuoqudaojishi = yanchishuaxinliebiao
-	fuFrame.jieshoushuju:SetScript("OnUpdate", function(self,sss)
-		fuFrame.zhengzaihuoqudaojishi = fuFrame.zhengzaihuoqudaojishi-sss
-		if fuFrame.zhengzaihuoqudaojishi>0 then
-			fuFrame.jieshoushuju.jindu:SetWidth(156*((yanchishuaxinliebiao-fuFrame.zhengzaihuoqudaojishi)/yanchishuaxinliebiao))
-		else
-			fuFrame.jieshoushuju:Hide()
-		end
-	end);
-	------
-	local function shuaxinweimianliebiao()
-		gengxinhang(fuFrame.Scroll)
-	end
-	fuFrame.morenjiange =300;
-	fuFrame.daojishiJG =PIG['PlaneInvite']['Weimiandaojishi'] or 0;
-	local function Weimian_daojishi()
-		local chazhiV = GetServerTime()-fuFrame.daojishiJG
-		if chazhiV>fuFrame.morenjiange then
-			print(PlaneInvite_UI.yijiaru)
-			if PlaneInvite_UI.yijiaru then
-				fuFrame.shuaxinWeimian:Enable()
-			else
-				fuFrame.shuaxinWeimian:Disable()
-			end
-			fuFrame.shuaxinWeimian:SetText("更新位面信息");
-		else
-			fuFrame.shuaxinWeimian:SetText("更新位面信息("..fuFrame.morenjiange-chazhiV..")");
-			C_Timer.After(1,Weimian_daojishi)
-			fuFrame.shuaxinWeimian:Disable() 
-		end
-	end	
-
-	fuFrame.shuaxinWeimian = CreateFrame("Button","huiquweimian_UI",fuFrame, "UIPanelButtonTemplate");  
-	fuFrame.shuaxinWeimian:SetSize(136,24);
-	fuFrame.shuaxinWeimian:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",200,28);
-	fuFrame.shuaxinWeimian:SetText("获取位面信息");
-	fuFrame.shuaxinWeimian.err = fuFrame.shuaxinWeimian:CreateFontString();
-	fuFrame.shuaxinWeimian.err:SetPoint("BOTTOMLEFT",fuFrame.shuaxinWeimian,"TOPLEFT",2,0);
-	fuFrame.shuaxinWeimian.err:SetFont(GameFontNormal:GetFont(), 14)
-	fuFrame.shuaxinWeimian.err:SetText("未获取到位面信息，请稍后再试!");
-	fuFrame.shuaxinWeimian.err:SetTextColor(1, 0.4, 0, 1);
-	fuFrame.shuaxinWeimian.err:Hide();
-	StaticPopupDialogs["XIANHUOQUZIJIWEIMIAN"] = {
-		text = "请先获取自身角色位面，点击任意NPC即可获取。",
-		button1 = "好的",
-		OnAccept = function()
-			PlaneInvite_UI:Hide()
-		end,
-		timeout = 0,
-		whileDead = true,
-		hideOnEscape = true,
-	}
-	fuFrame.shuaxinWeimian:SetScript("OnClick", function (self)
-		if PIG_WB.weimianID==nil then
-			StaticPopup_Show ("XIANHUOQUZIJIWEIMIAN") 
-			return 
-		end
-		local pindaolheji = {GetChannelList()};
-		pindaolheji.yijiaruPIG=true
-		pindaolheji.PIGID=0
-		for i=1,#pindaolheji do
-			if pindaolheji[i]==SQPindao then
-				pindaolheji.PIGID=pindaolheji[i-1]
-				pindaolheji.yijiaruPIG=false
-				break
-			end
-		end
-		if pindaolheji.yijiaruPIG then
-			print("|cff00FFFF!Pig:|r|cffFFFF00请先加入"..SQPindao.."频道获取位面信息！|r")
-			return
-		end
-
-		self:Disable();
-		fuFrame.jieshoushuju:Show();
-		fuFrame.zhengzaihuoqudaojishi = yanchishuaxinliebiao
-
-		PIG_WB.weimianListInfo={};
-		SendChatMessage(qingqiumsg,"CHANNEL",nil,pindaolheji.PIGID)
-		C_Timer.After(yanchishuaxinliebiao,shuaxinweimianliebiao)
-
-		fuFrame.daojishiJG =GetServerTime();
-		PIG['PlaneInvite']['Weimiandaojishi']=fuFrame.daojishiJG
-		Weimian_daojishi()
-	end);
-	Weimian_daojishi()
-	-----------------------
-	fuFrame.PIGPlane_zudui = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-	fuFrame.PIGPlane_zudui:SetSize(30,32);
-	fuFrame.PIGPlane_zudui:SetHitRectInsets(0,-120,0,0);
-	fuFrame.PIGPlane_zudui:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",360,32);
-	fuFrame.PIGPlane_zudui.Text:SetText("|cff00FF00自动接受玩家位面申请(单人且不在副本时)|r");
-	fuFrame.PIGPlane_zudui.tooltip = "自动接受玩家位面申请(未组队且不在副本时)\n|cff00FF00我为人人，人人为我。请不要做精致的利己主义者。|r";
-	fuFrame.PIGPlane_zudui:SetScript("OnClick", function (self)
-		if self:GetChecked() then
-			PIG['PlaneInvite']['zidongjieshou']="ON";
-		else
-			PIG['PlaneInvite']['zidongjieshou']="OFF";
-		end
-	end);
-	if PIG['PlaneInvite']['zidongjieshou']=="ON" then
-		fuFrame.PIGPlane_zudui:SetChecked(true);
-	end
-	------
-	fuFrame.Errorxiufu = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");  
-	fuFrame.Errorxiufu:SetSize(80,24);
-	fuFrame.Errorxiufu:SetPoint("TOPRIGHT",fuFrame,"TOPRIGHT",-10,32);
-	fuFrame.Errorxiufu:SetText("异常修复");
-	fuFrame.Errorxiufu:SetScript("OnClick", function (self)
-		if not PIG_WB.realm then PIG_WB.realm = GetRealmName() end
-		PIG['PlaneInvite']['WeimianList'][PIG_WB.realm]={}
-		print("|cff00FFFF!Pig:|r|cff00FF00修复完成，请重新获取！|r")
-	end)
-
-	fuFrame:SetScript("OnShow", function()
+	fuFrame:HookScript("OnShow", function()
 		if PIG_WB.weimianID then
 			fuFrame.zijiweimianID:SetText(PIG_WB.weimianID);
 		else

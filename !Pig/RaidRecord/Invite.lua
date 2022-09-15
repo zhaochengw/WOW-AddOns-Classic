@@ -768,7 +768,7 @@ local function ADD_Invite()
 										if numGroupMembers==5 then
 											ConvertToRaid() 
 										end
-										InviteUnit(arg5)
+										PIG_InviteUnit(arg5)
 									else
 										SendChatMessage("[!Pig] "..localizedClass .. "已满，可换其他职业，感谢支持", "WHISPER", nil, arg5);
 									end
@@ -813,7 +813,7 @@ local function ADD_Invite()
 															if numGroupMembers==5 and not IsInRaid("LE_PARTY_CATEGORY_HOME") then
 																ConvertToRaid() 
 															end
-															InviteUnit(arg5)
+															PIG_InviteUnit(arg5)
 														else
 															SendChatMessage("[!Pig] "..zhiyeweizhiNameQ[k]..localizedClass .. "已满，可换其他职业/天赋，感谢支持", "WHISPER", nil, arg5);
 														end
@@ -840,7 +840,7 @@ local function ADD_Invite()
 						if numGroupMembers==5 and not IsInRaid("LE_PARTY_CATEGORY_HOME") then
 							ConvertToRaid() 
 						end
-						InviteUnit(arg5)
+						PIG_InviteUnit(arg5)
 					else
 						chunshuchuzhiyeyaoqing()
 					end

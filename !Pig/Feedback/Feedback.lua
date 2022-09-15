@@ -56,7 +56,7 @@ for i=1,#CVarsList do
 	if i>1 then
 		miaodian = {_G["ErrCB_"..(i-1)],0,-40}
 	end
-	local ErrCB=ADD_Checkbutton(CVarsList[i][1],CVarsList[i][5],fuFrame,-80,miaodian[1],miaodian[2],miaodian[3],"ErrCB_"..i)
+	local ErrCB=ADD_Checkbutton("ErrCB_"..i,fuFrame,-80,"TOPLEFT",miaodian[1],"TOPLEFT",miaodian[2],miaodian[3],CVarsList[i][1],CVarsList[i][5])
 	ErrCB:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			SetCVar(CVarsList[i][2], CVarsList[i][3])
@@ -73,7 +73,7 @@ fuFrame.errorUI:SetScript("OnClick", function (self)
 	Bugshouji_UI:Show()
 end);
 --
-fuFrame.tishiCK=ADD_Checkbutton("在小地图图标提示","发生错误时在小地图图标提示(显示一个红X)",fuFrame,-100,fuFrame.errorUI,140,3)
+fuFrame.tishiCK=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.errorUI,"TOPLEFT",140,3,"在小地图图标提示","发生错误时在小地图图标提示(显示一个红X)")
 fuFrame.tishiCK:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG["Error"]["ErrorTishi"] = true
@@ -97,3 +97,24 @@ fuFrame:SetScript("OnShow", function()
 		fuFrame.tishiCK:SetChecked(true)
 	end
 end);
+---创建常用3宏
+local hongNameList = {["RL"]={"/Reload",132096},["FST"]={"/fstack",132089},["EVE"]={"/eventtrace",132092}}
+fuFrame.New_hong = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");  
+fuFrame.New_hong:SetSize(100,24);
+fuFrame.New_hong:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-400);
+fuFrame.New_hong:SetText('创建宏');
+fuFrame.New_hong:SetScript("OnClick", function ()
+	for k,v in pairs(hongNameList) do
+		local macroSlot = GetMacroIndexByName(k)
+		if macroSlot>0 then
+			EditMacro(macroSlot, nil, v[2], v[1])
+		else
+			local global, perChar = GetNumMacros()
+			if global<120 then
+				CreateMacro(k, v[2], v[1], nil)
+			else
+				print("|cff00FFFF!Pig:|r|cffFFFF00你的宏数量已达最大值120，请删除一些再尝试。|r");
+			end
+		end
+	end
+end)

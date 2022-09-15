@@ -262,7 +262,7 @@ fuFrame.DuiyouLINE:SetEndPoint("TOPRIGHT",-2,-300)
 -----
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local Duiyoutooltip = "增强队友头像，显示额外血量框架，常驻显示队友BUFF，显示队友目标等！\r|cff00FFFF小提示：|r\r队友职业图标可以点击，左击观察/右击交易。"
-fuFrame.Duiyou=ADD_Checkbutton("队友头像增强",Duiyoutooltip,fuFrame,-100,fuFrame.DuiyouLINE,20,-20)
+fuFrame.Duiyou=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.DuiyouLINE,"TOPLEFT",20,-20,"队友头像增强",Duiyoutooltip)
 fuFrame.Duiyou:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.UnitFrame.PartyMemberFrame.Plus=true;

@@ -160,14 +160,14 @@ AAAAA:SetScript("OnEvent",function(self, event, arg1)
 		AutoSellBuy_SellBuy()
 		--专业副本CD
 		Skill_FuBen()
+		--时空之门
+		PlaneInvite()
 		--带本助手
 		daiben()
 		--开团助手
 		RaidRecord()
 		--技能监控
 		Spell_CD_JK()
-		--时空之门
-		PlaneInvite()
 		---
 		PIGRaidFrame()
 		-----

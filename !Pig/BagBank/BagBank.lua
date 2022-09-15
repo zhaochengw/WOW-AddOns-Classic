@@ -8,16 +8,7 @@ local ADD_Frame=addonTable.ADD_Frame
 local yinhangmorengezishu={28,7}
 yinhangmorengezishu.banknum=yinhangmorengezishu[1]+yinhangmorengezishu[2]*36
 ----==============
-local pingzhiColor = {
-	[0]={157/255,157/255,157/255},
-	[1]={1, 1, 1},
-	[2]={30/255, 1, 0},
-	[3]={0,112/255,221/255},
-	[4]={163/255,53/255,238/255},
-	[5]={1,128/255,0},
-	[6]={230/255,204/255,128/255},
-	[7]={0,204/255,1},
-}
+local QualityColor=addonTable.QualityColor
 local bagID = {0,1,2,3,4}
 bagID.meihang=10
 bagID.suofang=1

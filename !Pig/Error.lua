@@ -8,7 +8,14 @@ local bencierrinfo={}
 --------------------------------
 local WWW,HHH = 600,380
 local biaotiW = 25
-local Bugshouji=ADD_Frame("Bugshouji_UI",UIParent,WWW,HHH,"CENTER",UIParent,"CENTER",0,0,true,true,true,true,true)
+local Bugshouji = CreateFrame("Frame", "Bugshouji_UI", fuFrame,"BackdropTemplate");
+Bugshouji:SetSize(WWW,HHH);
+Bugshouji:SetPoint("CENTER",UIParent,"CENTER",0,0);
+Bugshouji:EnableMouse(true)
+Bugshouji:SetMovable(true)
+Bugshouji:SetClampedToScreen(true)
+Bugshouji:Hide()
+tinsert(UISpecialFrames,"Bugshouji_UI");
 Bugshouji:SetBackdrop({bgFile = "interface/raidframe/ui-raidframe-groupbg.blp", 
 	edgeFile = "interface/glues/common/textpanel-border.blp", 
 	tile = false, tileSize = 0, edgeSize = 20,insets = { left = 4, right = 4, top = 2, bottom = 4 }});
@@ -69,21 +76,35 @@ Bugshouji.NR.textArea:SetWidth(WWW-40)
 
 Bugshouji.NR.scroll:SetScrollChild(Bugshouji.NR.textArea)
 --------------
+Bugshouji.prevZ = CreateFrame("Button",nil,Bugshouji, "UIPanelButtonTemplate");
+Bugshouji.prevZ:SetSize(34,22);
+Bugshouji.prevZ:SetPoint("BOTTOMLEFT",Bugshouji,"BOTTOMLEFT",10,8);
+Bugshouji.prevZ:SetText("《");
+Bugshouji.prevZ:Disable()
+
 Bugshouji.prev = CreateFrame("Button",nil,Bugshouji, "UIPanelButtonTemplate");
 Bugshouji.prev:SetSize(90,22);
-Bugshouji.prev:SetPoint("BOTTOM",Bugshouji,"BOTTOM",-140,8);
+Bugshouji.prev:SetPoint("BOTTOM",Bugshouji,"BOTTOM",-130,8);
 Bugshouji.prev:SetText("上一条");
 Bugshouji.prev:Disable()
 
 Bugshouji.next = CreateFrame("Button",nil,Bugshouji, "UIPanelButtonTemplate");
 Bugshouji.next:SetSize(90,22);
-Bugshouji.next:SetPoint("BOTTOM",Bugshouji,"BOTTOM",140,8);
+Bugshouji.next:SetPoint("BOTTOM",Bugshouji,"BOTTOM",130,8);
 Bugshouji.next:SetText("下一条");
 Bugshouji.next:Disable()
+
+Bugshouji.nextZ = CreateFrame("Button",nil,Bugshouji, "UIPanelButtonTemplate");
+Bugshouji.nextZ:SetSize(34,22);
+Bugshouji.nextZ:SetPoint("BOTTOMRIGHT",Bugshouji,"BOTTOMRIGHT",-10,8);
+Bugshouji.nextZ:SetText("》");
+Bugshouji.nextZ:Disable()
 ------------
 function Bugshouji:qingkongERR()
 	Bugshouji.prev:Disable()
 	Bugshouji.next:Disable()
+	Bugshouji.prevZ:Disable()
+	Bugshouji.nextZ:Disable()
 	Bugshouji.Time:SetText("");
 	Bugshouji.biaoti:SetText("没有错误发生");
 	Bugshouji.NR.textArea:SetText("")
@@ -118,18 +139,26 @@ local function xianshixinxi(id)
 		Bugshouji.next.id=id
 		if shujuyuan.num>1 then
 			if id==1 then
+				Bugshouji.prevZ:Disable()
 				Bugshouji.prev:Disable()
 				Bugshouji.next:Enable()
+				Bugshouji.nextZ:Enable()
 			elseif shujuyuan.num==id then
 				Bugshouji.next:Disable()
+				Bugshouji.nextZ:Disable()
 				Bugshouji.prev:Enable()
+				Bugshouji.prevZ:Enable()
 			else
 				Bugshouji.prev:Enable()
 				Bugshouji.next:Enable()
+				Bugshouji.prevZ:Enable()
+				Bugshouji.nextZ:Enable()
 			end
 		else	
 			Bugshouji.prev:Disable()
 			Bugshouji.next:Disable()
+			Bugshouji.prevZ:Disable()
+			Bugshouji.nextZ:Disable()
 		end
 	end
 end
@@ -215,12 +244,20 @@ for id=1,#TabName do
 	end
 end
 -------
+Bugshouji.prevZ:SetScript("OnClick", function(self, button)
+	local newid = 1
+	xianshixinxi(newid)
+end)
 Bugshouji.prev:SetScript("OnClick", function(self, button)
 	local newid = self.id-1
 	xianshixinxi(newid)
 end)
 Bugshouji.next:SetScript("OnClick", function(self, button)
 	local newid = self.id+1
+	xianshixinxi(newid)
+end)
+Bugshouji.nextZ:SetScript("OnClick", function(self, button)
+	local newid = #bencierrinfo
 	xianshixinxi(newid)
 end)
 ----------------
@@ -267,14 +304,18 @@ UIParent:UnregisterEvent("LUA_WARNING")
 Pig_seterrorhandler(errotFUN);
 --function seterrorhandler() end
 --========================================================
+Bugshouji:RegisterEvent("ADDON_ACTION_FORBIDDEN");
+Bugshouji:RegisterEvent("ADDON_ACTION_BLOCKED");
+Bugshouji:RegisterEvent("MACRO_ACTION_FORBIDDEN");
+Bugshouji:RegisterEvent("MACRO_ACTION_BLOCKED");
 Bugshouji:RegisterEvent("PLAYER_LOGOUT");
 Bugshouji:RegisterEvent("ADDON_LOADED")
-Bugshouji:SetScript("OnEvent", function(self,event,arg1)
+Bugshouji:SetScript("OnEvent", function(self,event,arg1,arg2)
 	if event=="ADDON_LOADED" then
 		if arg1 == addonName then
 			PIG["Error"]=PIG["Error"] or addonTable.Default["Error"]
 			self.yijiazai=true
-			C_Timer.After(2,yanchizhixing)
+			
 			Bugshouji:UnregisterEvent("ADDON_LOADED")
 			if #PIG["Error"]["ErrorInfo"]>0 then
 				for i=#PIG["Error"]["ErrorInfo"],1,-1 do
@@ -284,11 +325,46 @@ Bugshouji:SetScript("OnEvent", function(self,event,arg1)
 				end
 			end
 		end
-	else
+	elseif event=="PLAYER_LOGOUT" then
 		local hejishu=#bencierrinfo
 		for i=1,hejishu do
 			table.insert(PIG["Error"]["ErrorInfo"], bencierrinfo[i]);
 		end
+		C_Timer.After(2,yanchizhixing)
+	elseif event=="ADDON_ACTION_FORBIDDEN" or event=="ADDON_ACTION_BLOCKED" then
+		local msg = "["..event.."] 插件< "..arg1.." >尝试调用保护功能< "..arg2.." >"
+		local stack = ""
+		local logrizhi = ""
+		local time = GetServerTime()
+		local hejishu=#bencierrinfo
+		Bugshouji.cuowushu = 1
+		for i=hejishu,1,-1 do
+			if bencierrinfo[i][1]==msg then
+				Bugshouji.cuowushu =Bugshouji.cuowushu+bencierrinfo[i][5]
+				table.remove(bencierrinfo,i);
+				break
+			end
+		end
+		table.insert(bencierrinfo, {msg,time,stack,logrizhi,Bugshouji.cuowushu});
+		xianshixinxi(#bencierrinfo)
+		errottishi()
+	elseif event=="MACRO_ACTION_FORBIDDEN" or event=="MACRO_ACTION_BLOCKED" then
+		local msg = "["..event.."] 宏尝试调用保护功能<"..arg1..">"
+		local stack = ""
+		local logrizhi = ""
+		local time = GetServerTime()
+		local hejishu=#bencierrinfo
+		Bugshouji.cuowushu = 1
+		for i=hejishu,1,-1 do
+			if bencierrinfo[i][1]==msg then
+				Bugshouji.cuowushu =Bugshouji.cuowushu+bencierrinfo[i][5]
+				table.remove(bencierrinfo,i);
+				break
+			end
+		end
+		table.insert(bencierrinfo, {msg,time,stack,logrizhi,Bugshouji.cuowushu});
+		xianshixinxi(#bencierrinfo)
+		errottishi()
 	end
 end)
 --==================================

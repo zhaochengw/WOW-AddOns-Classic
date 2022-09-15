@@ -225,7 +225,7 @@ local function Open_ADD()
 		StaticPopup_Show ("FUZHICMD_OPEN");
 	end)
 	---
-	fuFrame.yijiandakai = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");
+	fuFrame.yijiandakai = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate,SecureActionButtonTemplate");
 	fuFrame.yijiandakai:SetSize(100,22);
 	fuFrame.yijiandakai:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",100,-40);
 	fuFrame.yijiandakai:SetText("手动开启");

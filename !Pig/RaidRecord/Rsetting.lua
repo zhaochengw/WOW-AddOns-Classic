@@ -6,6 +6,7 @@ local ADD_Frame=addonTable.ADD_Frame
 -------
 local function add_RsettingFrame()
 	local Width,Height  = RaidR_UI:GetWidth(), RaidR_UI:GetHeight();
+	local GnName  = RaidR_UI.biaoti.title:GetText();
 	--=====================================================================
 	--设置按钮
 	local Rsetting = CreateFrame("Button","Rsetting_UI",RaidR_UI.xiafangF, "TruncatedButtonTemplate"); 
@@ -31,7 +32,7 @@ local function add_RsettingFrame()
 	RsettingF.biaoti = RsettingF:CreateFontString();
 	RsettingF.biaoti:SetPoint("TOP",RsettingF,"TOP",0,-10);
 	RsettingF.biaoti:SetFont(ChatFontNormal:GetFont(), 16, "OUTLINE");
-	RsettingF.biaoti:SetText("\124cff00FF00副本助手设置\124r");
+	RsettingF.biaoti:SetText("\124cff00FF00"..GnName.."设置\124r");
 	RsettingF.xxX = RsettingF:CreateLine()
 	RsettingF.xxX:SetColorTexture(1,1,1,0.3)
 	RsettingF.xxX:SetThickness(2);
@@ -649,16 +650,16 @@ local function add_RsettingFrame()
 	RsettingF.XXXXX:SetThickness(2);
 	RsettingF.XXXXX:SetStartPoint("BOTTOMLEFT",5,40)
 	RsettingF.XXXXX:SetEndPoint("BOTTOMRIGHT",-276,40)
-	---重置副本助手配置
+	---重置配置
 	RsettingF.Default = CreateFrame("Button",nil,RsettingF, "UIPanelButtonTemplate");  
 	RsettingF.Default:SetSize(138,26);
 	RsettingF.Default:SetPoint("BOTTOMLEFT",RsettingF,"BOTTOMLEFT",10,10);
-	RsettingF.Default:SetText("重置副本助手配置");
+	RsettingF.Default:SetText("重置"..GnName.."配置");
 	RsettingF.Default:SetScript("OnClick", function ()
 		StaticPopup_Show ("HUIFU_DEFAULT_FUBEN");
 	end);
 	StaticPopupDialogs["HUIFU_DEFAULT_FUBEN"] = {
-		text = "此操作将\124cffff0000重置\124r副本助手所有配置，需重载界面。\n确定重置?",
+		text = "此操作将\124cffff0000重置\124r"..GnName.."所有配置，需重载界面。\n确定重置?",
 		button1 = "确定",
 		button2 = "取消",
 		OnAccept = function()

@@ -672,7 +672,7 @@ local function ADD_RaidInfo()
 			Update_BUT()
 			if PIG["RaidRecord"]["Dongjie"] == "OFF" then
 				UpdateRiadInfo()
-				UpdateShow()
+				if fuFrame:IsShown() then UpdateShow() end
 				addonTable.RaidRecord_UpdateChengjiaorenxuanze()
 				addonTable.RaidRecord_Updatejianglixuanze()
 				addonTable.RaidRecord_Updatefakuanxuanze()
