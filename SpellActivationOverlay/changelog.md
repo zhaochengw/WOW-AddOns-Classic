@@ -1,5 +1,16 @@
 ## SpellActivationOverlay Changelog
 
+#### v0.6.2 (2022-09-13)
+
+Shout-out to MartGon once again for his contribution to the code. Thanks!
+
+- Glowing buttons no longer "un-glow" during the Global Cooldown (GCD)
+- Glowing buttons no longer "un-glow" due to the lack of rage, energy, or RP
+- New SAO: Druid's Predatory Strikes, based on Predatory Swiftness from Retail
+- New SAO: Mage's Firestarter, which uses texture of Impact
+- New GAB: Mage's Flamestrike button glows during Firestarter
+- Changed SAO: Mage's Impact uses texture of Lock and Load instead of Impact
+
 #### v0.6.1 (2022-09-06)
 
 Shout-out to MartGon and xHashii for their contribution to the code. Thanks!
