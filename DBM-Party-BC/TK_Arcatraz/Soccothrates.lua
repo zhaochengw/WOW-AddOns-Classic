@@ -1,7 +1,7 @@
 local mod = DBM:NewMod(550, "DBM-Party-BC", 15, 254)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20220907204453")
+mod:SetRevision("20220914213732")
 mod:SetCreatureID(20886)
 mod:SetEncounterID(1915)
 mod:SetModelID(19977)
@@ -14,7 +14,7 @@ mod:RegisterEventsInCombat(
 
 local warnKnockaway			= mod:NewSpellAnnounce(36512, 2, nil, nil, nil, nil, nil, 2)
 
-local specwarnFelFireShock	= mod:NewSpecialWarningDispel(35759, "Healer", nil, nil, 1, 2)
+local specwarnFelFireShock	= mod:NewSpecialWarningDispel(35759, "RemoveMagic", nil, 2, 1, 2)
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 36512 then

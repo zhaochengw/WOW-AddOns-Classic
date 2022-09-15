@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ZulJin", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220907204453")
+mod:SetRevision("20220914213732")
 mod:SetCreatureID(23863)
 mod:SetEncounterID(1194, 2487)--Data says Daakara, but it's not daakara in TBC it's Zul'jin
 mod:SetZone()
@@ -20,7 +20,7 @@ local warnParalyze		= mod:NewSpellAnnounce(43095, 4)
 local warnParalyzeSoon	= mod:NewPreWarnAnnounce(43095, 5, 3)
 local warnClaw			= mod:NewTargetNoFilterAnnounce(43150, 3)
 local warnFlame			= mod:NewSpellAnnounce(43213, 3)
-local warnPhase			= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase			= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 
 local specWarnParalyze	= mod:NewSpecialWarningDispel(43095, "RemoveMagic", nil, nil, 1, 2)
 
