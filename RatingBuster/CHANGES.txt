@@ -1,21 +1,12 @@
-lightweight tag 909b0f91ebc454a44d3950e943b60338df3b6ddc 3.4.0.9
+lightweight tag dbf71d05c61d015a3bb70f0c16e18d57b32e9217 3.4.0.10
 Author:	LANCESTRE <lancetre@intenebris.org>
-Date:	Sun Sep 11 12:26:31 2022 +0200
+Date:	Thu Sep 15 14:29:11 2022 +0200
 
-commit 909b0f91ebc454a44d3950e943b60338df3b6ddc
+commit dbf71d05c61d015a3bb70f0c16e18d57b32e9217
 Author: LANCESTRE <lancetre@intenebris.org>
-Date:   Sun Sep 11 12:26:31 2022 +0200
+Date:   Thu Sep 15 14:29:11 2022 +0200
 
-    Hooker - partern localization
+    MP5(NC)
     
-    Fix hooker tip
-    Add next translate patern
-
-commit 1219067e1626007636d2af6c3d71d90fc71703c7
-Author: LANCESTRE <lancetre@intenebris.org>
-Date:   Sat Sep 10 21:23:28 2022 +0200
-
-    Upgrade Localization and Translation
-    
-    Upgrade Localization and Translation
+    Fix MP5(NC) to MP5(OC)
 

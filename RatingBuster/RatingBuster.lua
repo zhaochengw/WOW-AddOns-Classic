@@ -3037,7 +3037,7 @@ function RatingBuster:ProcessText(text, tooltip)
                - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)
                + value * 15 * RatingBuster:GetStatMod("MOD_MANA") * RatingBuster:GetStatMod("ADD_COMBAT_MANA_REGEN_MOD_MANA")
 							if floor(abs(effect) * 10 + 0.5) > 0 then
-								tinsert(infoTable, (gsub(L["$value MP5(NC)"], "$value", format("%+.1f", effect))))
+								tinsert(infoTable, (gsub(L["$value MP5(OC)"], "$value", format("%+.1f", effect))))
 							end
 						end
 						infoString = strjoin(", ", unpack(infoTable))
