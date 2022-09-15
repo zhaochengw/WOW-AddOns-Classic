@@ -1,0 +1,14 @@
+## Interface: 30400
+## Notes: GatherMate2 data fetched from Wowhead
+## Title: GatherMate2Data
+## Author: kagaro, Xinhuan, Spinx, Marrtin
+## Version: v2022-08-31
+## LoadOnDemand: 1
+## Dependencies: GatherMate2
+
+MiningData.lua
+HerbalismData.lua
+FishData.lua
+TreasureData.lua
+GasData.lua
+GatherMateData.lua
