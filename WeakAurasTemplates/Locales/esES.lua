@@ -84,9 +84,9 @@ local L = WeakAuras.L
 	L["Cooldown Tracking"] = "Cooldown Tracking"
 	--[[Translation missing --]]
 	L["Create Auras"] = "Create Auras"
+	L["debuff"] = "perjuicio"
 	--[[Translation missing --]]
 	L["Debuff"] = "Debuff"
-	L["debuff"] = "perjuicio"
 	L["Debuffs"] = "Perjuicios"
 	--[[Translation missing --]]
 	L["Empowered Buff"] = "Empowered Buff"

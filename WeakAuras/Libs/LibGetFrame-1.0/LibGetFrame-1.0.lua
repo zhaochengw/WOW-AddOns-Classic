@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 44
+local MINOR_VERSION = 47
 if not LibStub then
   error(MAJOR_VERSION .. " requires LibStub.")
 end
@@ -13,7 +13,7 @@ local callbacks = lib.callbacks
 
 local GetPlayerInfoByGUID, UnitExists, IsAddOnLoaded, C_Timer, UnitIsUnit, SecureButton_GetUnit =
   GetPlayerInfoByGUID, UnitExists, IsAddOnLoaded, C_Timer, UnitIsUnit, SecureButton_GetUnit
-local tinsert, CopyTable, wipe = tinsert, CopyTable, wipe
+local tinsert, CopyTable, wipe, GetActionInfo = tinsert, CopyTable, wipe, GetActionInfo
 
 local maxDepth = 50
 
@@ -129,6 +129,12 @@ local FrameToUnitFresh = {}   -- frame adress => unit, all frames with a unit fo
 local FrameToUnit = {}        -- frame adress => unit, from last scan, to make differential with FrameToUnitFresh
 local UpdatedFrames = {}      -- frame adress => unit, frames found this scan with a unit different from previous scan
 
+local ActionButtons = {}      -- action frame => slot
+local ActionButtonsTemp = {}  -- temp table while scanning
+local ActionButtonUpdate = false
+local SlotToFrame = {}
+local SlotToAction = {}
+
 local function ScanFrames(depth, frame, ...)
   if not frame then
     return
@@ -150,6 +156,27 @@ local function ScanFrames(depth, frame, ...)
         end
         FrameToUnitFresh[frame] = unit
       end
+    elseif frameType == "CheckButton" and frame.action then
+      local action = frame.action
+      local slotType, slotId, slotSubType = GetActionInfo(action)
+      ActionButtonsTemp[frame] = frame.action
+      --  check if a frame is not assigned to same action
+      if ActionButtons[frame] ~= frame.action then
+        ActionButtonUpdate = true
+      end
+      -- check if action have same type/id/subType
+      if not SlotToAction[action] then
+        SlotToAction[action] = { type = slotType, id = slotId, subType = slotSubType }
+        ActionButtonUpdate = true
+      else
+        local slotData = SlotToAction[action]
+        if slotData.type ~= slotType or slotData.id ~= slotId or slotData.subType ~= slotSubType then
+          slotData.type = slotType
+          slotData.id = slotId
+          slotData.subType = slotSubType
+          ActionButtonUpdate = true
+        end
+      end
     end
   end
   ScanFrames(depth, ...)
@@ -165,6 +192,8 @@ local function doScanForUnitFrames()
     wipe(UpdatedFrames)
     wipe(GetFramesCacheTemp)
     wipe(FrameToUnitFresh)
+    wipe(ActionButtonsTemp)
+    ActionButtonUpdate = false
     status = "scanning"
     co = coroutine.create(ScanFrames)
     coroutineFrame:Show()
@@ -177,7 +206,14 @@ coroutineFrame:SetScript("OnUpdate", function()
     coroutine.resume(co, 0, UIParent)
   end
   if coroutine.status(co) == "dead" then
-    GetFramesCache = CopyTable(GetFramesCacheTemp)
+    local tmp = GetFramesCache
+    GetFramesCache = GetFramesCacheTemp
+    GetFramesCacheTemp = tmp
+    wipe(GetFramesCacheTemp)
+    tmp = ActionButtons
+    ActionButtons = ActionButtonsTemp
+    ActionButtonsTemp = tmp
+    wipe(ActionButtonsTemp)
     callbacks:Fire("GETFRAME_REFRESH")
     for frame, unit in pairs(UpdatedFrames) do
       callbacks:Fire("FRAME_UNIT_UPDATE", frame, unit)
@@ -187,6 +223,13 @@ coroutineFrame:SetScript("OnUpdate", function()
         callbacks:Fire("FRAME_UNIT_REMOVED", frame, unit)
         FrameToUnit[frame] = nil
       end
+    end
+    if ActionButtonUpdate then
+      SlotToFrame = {}
+      for frame, slot in pairs(ActionButtons) do
+        SlotToFrame[slot] = frame
+      end
+      callbacks:Fire("ACTIONBAR_SLOT_CHANGED")
     end
     coroutineFrame:Hide()
     if status == "scan_queued" then
@@ -310,6 +353,7 @@ local function Init(noDelay)
   GetFramesCacheListener:RegisterEvent("PLAYER_REGEN_ENABLED")
   GetFramesCacheListener:RegisterEvent("PLAYER_ENTERING_WORLD")
   GetFramesCacheListener:RegisterEvent("GROUP_ROSTER_UPDATE")
+  GetFramesCacheListener:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
   GetFramesCacheListener:RegisterEvent("UNIT_PET")
   GetFramesCacheListener:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
   GetFramesCacheListener:SetScript("OnEvent", function(event, unit)
@@ -335,23 +379,6 @@ local function Init(noDelay)
   end)
   ScanForUnitFrames(noDelay)
 end
-
---[[
-local trackingPets = false
--- TrackPets register UNIT_PET, can be useful for tracking pets changes while in encounter, but it can have a bad impact on FPS
-function lib.TrackPets(test)
-  if type(GetFramesCacheListener) ~= "table" then
-    Init(true)
-  end
-  if test and not trackingPets then
-    GetFramesCacheListener:RegisterEvent("UNIT_PET")
-    trackingPets = true
-  elseif not test and trackingPets then
-    GetFramesCacheListener:UnregisterEvent("UNIT_PET")
-    trackingPets = false
-  end
-end
-]]
 
 function lib.GetUnitFrame(target, opt)
   if type(GetFramesCacheListener) ~= "table" then
@@ -461,4 +488,43 @@ function lib.GetUnitNameplate(unit)
       return nameplate
     end
   end
+end
+
+---Return an action button for a slotId.
+---@param slotId number
+---@return CheckButton
+function lib.GetActionButtonBySlot(slotId)
+  return SlotToFrame[slotId]
+end
+
+---Return a list of action buttons for a spell or item or equipement set.
+---Check documentation of GetActionInfo for more information.
+---@param id number|string
+---@param actionType string
+---@param subType? number|string
+---@return table<CheckButton>
+function lib.GetActionButtonsById(id, actionType, subType)
+  if type(GetFramesCacheListener) ~= "table" then
+    Init(true)
+  end
+  local frames = {}
+  if actionType == "spell" and type(id) == "number" then
+    if C_ActionBar.HasSpellActionButtons(id) then
+      local slots = C_ActionBar.FindSpellActionButtons(id)
+      for _, slot in ipairs(slots) do
+        if SlotToFrame[slot] then
+          tinsert(frames, SlotToFrame[slot])
+        end
+      end
+    end
+  else
+    local slotType, slotId, slotSubType
+    for i = 1, 120 do
+      slotType, slotId, slotSubType = GetActionInfo(i)
+      if id == slotId and slotType == actionType and (subType == nil or subType == slotSubType) then
+        tinsert(frames, SlotToFrame[i])
+      end
+    end
+  end
+  return frames
 end

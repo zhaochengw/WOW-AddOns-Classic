@@ -295,8 +295,7 @@ Off Screen]=] ] = "Aura가 화면 밖에 있음"
 	--[[Translation missing --]]
 	L["Clipped by Progress"] = "Clipped by Progress"
 	L["Close"] = "닫기"
-	--[[Translation missing --]]
-	L["Code Editor"] = "Code Editor"
+	L["Code Editor"] = "코드 편집기"
 	L["Collapse"] = "접기"
 	L["Collapse all loaded displays"] = "불러온 모든 디스플레이 접기"
 	L["Collapse all non-loaded displays"] = "불러오지 않은 모든 디스플레이 접기"
@@ -480,8 +479,7 @@ UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Expansion is disabled because this group has no children"] = "이 그룹에 자식이 없어 확장이 비활성되었습니다"
 	--[[Translation missing --]]
 	L["Export debug table..."] = "Export debug table..."
-	--[[Translation missing --]]
-	L["Export..."] = "Export..."
+	L["Export..."] = "내보내기..."
 	--[[Translation missing --]]
 	L["Exporting"] = "Exporting"
 	L["External"] = "외부"
@@ -737,8 +735,7 @@ Can use \ to escape -.]=]
 	L["Magnetically Align"] = "자석 정렬"
 	L["Main"] = "메인"
 	L["Match Count"] = "일치 횟수"
-	--[[Translation missing --]]
-	L["Match Count per Unit"] = "Match Count per Unit"
+	L["Match Count per Unit"] = "유닛당 일치 횟수"
 	--[[Translation missing --]]
 	L["Matches the height setting of a horizontal bar or width for a vertical bar."] = "Matches the height setting of a horizontal bar or width for a vertical bar."
 	L["Max"] = "최대"
@@ -796,8 +793,7 @@ Can use \ to escape -.]=]
 	L["Not Loaded"] = "불러오지 않음"
 	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "참고: 일반 대화 및 외치기에 대한 자동화된 메시지는 인스턴스 외부에서 차단됩니다."
 	L["Note: The legacy buff trigger is now permanently disabled. It will be removed in the near future."] = "참고: 과거의 강화 효과 활성 조건은 이제 영구적으로 비활성되었습니다. 가까운 미래에 제거될겁니다."
-	--[[Translation missing --]]
-	L["Npc ID"] = "Npc ID"
+	L["Npc ID"] = "NPC ID"
 	L["Number of Entries"] = "항목 수"
 	L["Offer a guided way to create auras for your character"] = "캐릭터를 위한 aura 생성 가이드를 제공합니다"
 	--[[Translation missing --]]
@@ -994,12 +990,10 @@ Can use \ to escape -.]=]
 	L["Spark"] = "섬광"
 	L["Spark Settings"] = "섬광 설정"
 	L["Spark Texture"] = "섬광 텍스쳐"
-	--[[Translation missing --]]
-	L["Specialization"] = "Specialization"
+	L["Specialization"] = "전문화"
 	L["Specific Unit"] = "특정 유닛"
 	L["Spell ID"] = "주문 ID"
-	--[[Translation missing --]]
-	L["Spell Selection Filters"] = "Spell Selection Filters"
+	L["Spell Selection Filters"] = "주문 선택 필터"
 	L["Stack Count"] = "중첩 횟수"
 	L["Stack Info"] = "중첩 정보"
 	L["Stagger"] = "계단식 배치"
@@ -1131,8 +1125,7 @@ It might not work correctly with your version!]=]
 	L["Values are in normalized rgba format."] = "값은 정규화된 rgba 형식입니다."
 	L["Values:"] = "값:"
 	L["Version: "] = "버전:"
-	--[[Translation missing --]]
-	L["Version: %s"] = "Version: %s"
+	L["Version: %s"] = "버전: %s"
 	L["Vertical Align"] = "수직 정렬"
 	L["Vertical Bar"] = "수직 바"
 	L["View"] = "보기"
@@ -1157,8 +1150,7 @@ It might not work correctly with your version!]=]
 	L["Y Rotation"] = "Y 회전"
 	L["Y Scale"] = "세로 크기"
 	L["Yellow Rune"] = "노란색 룬"
-	--[[Translation missing --]]
-	L["Yes"] = "Yes"
+	L["Yes"] = "예"
 	L["y-Offset"] = "Y-좌표"
 	L["Y-Offset"] = "Y-좌표"
 	--[[Translation missing --]]

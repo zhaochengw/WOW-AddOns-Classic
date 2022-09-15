@@ -112,8 +112,7 @@ local L = WeakAuras.L
 	L["Root"] = "Root"
 	L["Runes"] = "룬"
 	L["Shapeshift Form"] = "태세 변환"
-	--[[Translation missing --]]
-	L["Shards Of Domination"] = "Shards Of Domination"
+	L["Shards Of Domination"] = "지배의 조각"
 	--[[Translation missing --]]
 	L["Show Always, Glow on Missing"] = "Show Always, Glow on Missing"
 	--[[Translation missing --]]
