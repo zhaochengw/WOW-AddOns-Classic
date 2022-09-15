@@ -120,7 +120,8 @@ local L = WeakAuras.L
 	L["|cFFffcc00Extra:|r %s and %s %s"] = "|cFFffcc00추가:|r %s 및 %s %s"
 	L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"] = "|cFFffcc00글꼴 표시 특성:|r |cFFFF0000%s|r, 그림자 |c%s색상|r (좌표 |cFFFF0000%s/%s|r)%s%s"
 	L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"] = "|cFFffcc00글꼴 표시 특성:|r |cFFFF0000%s|r, 그림자 |c%s색상|r (좌표 |cFFFF0000%s/%s|r)%s%s%s"
-	L["|cFFffcc00Format Options|r"] = "|cFFffcc00형식 옵션|r"
+	--[[Translation missing --]]
+	L["|cffffcc00Format Options|r"] = "|cffffcc00Format Options|r"
 	--[[Translation missing --]]
 	L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.
 • |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.
@@ -515,6 +516,8 @@ UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Filter by Class"] = "직업별 필터"
 	L["Filter by Group Role"] = "그룹 역할별 필터"
 	L["Filter by Nameplate Type"] = "이름표 유형별 필터"
+	--[[Translation missing --]]
+	L["Filter by Npc ID"] = "Filter by Npc ID"
 	L["Filter by Raid Role"] = "공격대 역할별 필터"
 	--[[Translation missing --]]
 	L["Filter by Specialization"] = "Filter by Specialization"
@@ -793,6 +796,8 @@ Can use \ to escape -.]=]
 	L["Not Loaded"] = "불러오지 않음"
 	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "참고: 일반 대화 및 외치기에 대한 자동화된 메시지는 인스턴스 외부에서 차단됩니다."
 	L["Note: The legacy buff trigger is now permanently disabled. It will be removed in the near future."] = "참고: 과거의 강화 효과 활성 조건은 이제 영구적으로 비활성되었습니다. 가까운 미래에 제거될겁니다."
+	--[[Translation missing --]]
+	L["Npc ID"] = "Npc ID"
 	L["Number of Entries"] = "항목 수"
 	L["Offer a guided way to create auras for your character"] = "캐릭터를 위한 aura 생성 가이드를 제공합니다"
 	--[[Translation missing --]]

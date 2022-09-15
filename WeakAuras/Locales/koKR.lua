@@ -372,6 +372,8 @@ L["Custom Condition Code"] = "Custom Condition Code"
 L["Custom Configuration"] = "사용자 설정 구성"
 L["Custom Function"] = "사용자 설정 함수"
 --[[Translation missing --]]
+L["Custom Grow"] = "Custom Grow"
+--[[Translation missing --]]
 L["Custom Sort"] = "Custom Sort"
 --[[Translation missing --]]
 L["Custom Text Function"] = "Custom Text Function"
@@ -477,7 +479,7 @@ L["Emalon the Storm Watcher"] = "Emalon the Storm Watcher"
 L["Emote"] = "감정 표현"
 L["Empty"] = "비었을 때"
 --[[Translation missing --]]
-L["Enables (incorrect) round down of seconds, which was the previous default behaviour."] = "Enables (incorrect) round down of seconds, which was the previous default behaviour."
+L["Enables (incorrect) round down of seconds, which was the previous default behavior."] = "Enables (incorrect) round down of seconds, which was the previous default behavior."
 L["Enchant Applied"] = "마법부여 적용"
 --[[Translation missing --]]
 L["Enchant Found"] = "Enchant Found"
@@ -980,7 +982,7 @@ L["Not on Cooldown"] = "재사용 대기 중이 아닐 때"
 L["Not On Threat Table"] = "위협 수준 없음"
 L["Note, that cross realm transmission is possible if you are on the same group"] = "참고로, 같은 영역에 있다면 상호 영역 전송이 가능합니다."
 --[[Translation missing --]]
-L["Note: Due to how complicated the swing timer behaviour is and the lack of APIs from Blizzard, results are inaccurate in edge cases."] = "Note: Due to how complicated the swing timer behaviour is and the lack of APIs from Blizzard, results are inaccurate in edge cases."
+L["Note: Due to how complicated the swing timer behavior is and the lack of APIs from Blizzard, results are inaccurate in edge cases."] = "Note: Due to how complicated the swing timer behavior is and the lack of APIs from Blizzard, results are inaccurate in edge cases."
 L["Note: 'Hide Alone' is not available in the new aura tracking system. A load option can be used instead."] = "참고: '혼자 숨기기'는 새로운 효과 추적 시스템에서 사용할 수 없습니다. 대신 불러오기 옵션을 사용하세요."
 --[[Translation missing --]]
 L["Note: The available text replacements for multi triggers match the normal triggers now."] = "Note: The available text replacements for multi triggers match the normal triggers now."
@@ -1556,6 +1558,8 @@ L["Units Affected"] = "영향 받은 유닛"
 --[[Translation missing --]]
 L["unknown location"] = "unknown location"
 L["Unlimited"] = "무제한"
+--[[Translation missing --]]
+L["Untrigger %s"] = "Untrigger %s"
 L["Up"] = "위로"
 L["Up, then Left"] = "위로, 왼쪽으로"
 L["Up, then Right"] = "위로, 오른쪽으로"

@@ -307,22 +307,19 @@ L[ [=[Current Zone
 ]=]
 L["Curse"] = "Проклятие"
 L["Custom"] = "Самостоятельно"
---[[Translation missing --]]
-L["Custom Action"] = "Custom Action"
---[[Translation missing --]]
-L["Custom Anchor"] = "Custom Anchor"
+L["Custom Action"] = "Свое действие"
+L["Custom Anchor"] = "Свое крепление"
 L["Custom Check"] = "Своя проверка"
 L["Custom Color"] = "Цвет"
 --[[Translation missing --]]
 L["Custom Condition Code"] = "Custom Condition Code"
 L["Custom Configuration"] = "Конфигурация пользователя"
 L["Custom Function"] = "Своя функция"
---[[Translation missing --]]
-L["Custom Sort"] = "Custom Sort"
+L["Custom Grow"] = "Свой способ заполнения"
+L["Custom Sort"] = "Свой критерий сортировки"
 --[[Translation missing --]]
 L["Custom Text Function"] = "Custom Text Function"
---[[Translation missing --]]
-L["Custom Trigger Combination"] = "Custom Trigger Combination"
+L["Custom Trigger Combination"] = "Комбинация триггеров"
 L["Daakara"] = "Даакара"
 L["Damage"] = "Урон"
 L["Damage Shield"] = "Урон от щита"
@@ -397,7 +394,7 @@ L["Elite"] = "Элитный"
 L["Emalon the Storm Watcher"] = "Эмалон Страж Бури"
 L["Emote"] = "Эмоция"
 L["Empty"] = "Пустой"
-L["Enables (incorrect) round down of seconds, which was the previous default behaviour."] = "Округление секунд происходит к меньшему целому числу. Это соответствует предыдущему поведению по умолчанию."
+L["Enables (incorrect) round down of seconds, which was the previous default behavior."] = "Округление секунд происходит к меньшему целому числу. Это соответствует предыдущему поведению по умолчанию."
 L["Enchant Applied"] = "Чары применены"
 L["Enchant Found"] = "Чары найдены"
 L["Enchant Missing"] = "Чары отсутствуют"
@@ -783,7 +780,7 @@ L["Not on Cooldown"] = "Не перезаряжается"
 L["Not On Threat Table"] = "Не в списке угроз"
 L["Note, that cross realm transmission is possible if you are on the same group"] = [=[Передача данных между игровыми мирами возможна,
 если вы находитесь в одной группе!]=]
-L["Note: Due to how complicated the swing timer behaviour is and the lack of APIs from Blizzard, results are inaccurate in edge cases."] = "|cFFFFCC00Примечание.|r Из-за сложности поведения таймера Swing и отсутствия API со стороны Blizzard результаты в крайних случаях неточны."
+L["Note: Due to how complicated the swing timer behavior is and the lack of APIs from Blizzard, results are inaccurate in edge cases."] = "|cFFFFCC00Примечание.|r Из-за сложности поведения таймера Swing и отсутствия API со стороны Blizzard результаты в крайних случаях неточны."
 L["Note: 'Hide Alone' is not available in the new aura tracking system. A load option can be used instead."] = "|cFFFFCC00Предупреждение.|r Параметр \"Скрыть когда не в группе\" недоступен в новой версии триггера. Вместо него может быть использовано соответствующее условие на вкладке Загрузка."
 L["Note: The available text replacements for multi triggers match the normal triggers now."] = "|cFFFFCC00Примечение.|r Теперь для данного варианта триггера (несколько целей) доступны такие же шаблоны замены текста, как и для остальных."
 L["Note: This trigger type estimates the range to the hitbox of a unit. The actual range of friendly players is usually 3 yards more than the estimate. Range checking capabilities depend on your current class and known abilities as well as the type of unit being checked. Some of the ranges may also not work with certain NPCs.|n|n|cFFAAFFAAFriendly Units:|r %s|n|cFFFFAAAAHarmful Units:|r %s|n|cFFAAAAFFMiscellanous Units:|r %s"] = "|cFFFFCC00Примечание.|r Триггер оценивает (определяет приближённо) расстояние до хитбокса единицы. Фактическое расстояние до дружественных игроков обычно на 3 метра больше оценки. Возможности проверки дистанции зависят от вашего текущего класса, имеющихся способностей и от типа проверяемой единицы. Некоторые диапазоны могут не работать с отдельными NPC. |n|n|cFFAAFFAACоюзники:|r %s|n|cFFFFAAAAПротивники:|r %s|n|cFFAAAAFFПрочие цели:|r %s"
@@ -1228,6 +1225,7 @@ L["Unit Name/Realm"] = "Имя / Игровой мир единицы"
 L["Units Affected"] = "Количество задействованных единиц"
 L["unknown location"] = "неизвестное местонахождение"
 L["Unlimited"] = "Неограниченное"
+L["Untrigger %s"] = "Детриггер %s"
 L["Up"] = "Вверх"
 L["Up, then Left"] = "Вверх, затем влево"
 L["Up, then Right"] = "Вверх, затем вправо"

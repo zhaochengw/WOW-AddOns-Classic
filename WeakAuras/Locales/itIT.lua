@@ -454,6 +454,8 @@ L["Custom Configuration"] = "Custom Configuration"
 --[[Translation missing --]]
 L["Custom Function"] = "Custom Function"
 --[[Translation missing --]]
+L["Custom Grow"] = "Custom Grow"
+--[[Translation missing --]]
 L["Custom Sort"] = "Custom Sort"
 --[[Translation missing --]]
 L["Custom Text Function"] = "Custom Text Function"
@@ -605,7 +607,7 @@ L["Emote"] = "Emote"
 --[[Translation missing --]]
 L["Empty"] = "Empty"
 --[[Translation missing --]]
-L["Enables (incorrect) round down of seconds, which was the previous default behaviour."] = "Enables (incorrect) round down of seconds, which was the previous default behaviour."
+L["Enables (incorrect) round down of seconds, which was the previous default behavior."] = "Enables (incorrect) round down of seconds, which was the previous default behavior."
 --[[Translation missing --]]
 L["Enchant Applied"] = "Enchant Applied"
 --[[Translation missing --]]
@@ -1368,7 +1370,7 @@ L["Not On Threat Table"] = "Not On Threat Table"
 --[[Translation missing --]]
 L["Note, that cross realm transmission is possible if you are on the same group"] = "Note, that cross realm transmission is possible if you are on the same group"
 --[[Translation missing --]]
-L["Note: Due to how complicated the swing timer behaviour is and the lack of APIs from Blizzard, results are inaccurate in edge cases."] = "Note: Due to how complicated the swing timer behaviour is and the lack of APIs from Blizzard, results are inaccurate in edge cases."
+L["Note: Due to how complicated the swing timer behavior is and the lack of APIs from Blizzard, results are inaccurate in edge cases."] = "Note: Due to how complicated the swing timer behavior is and the lack of APIs from Blizzard, results are inaccurate in edge cases."
 --[[Translation missing --]]
 L["Note: 'Hide Alone' is not available in the new aura tracking system. A load option can be used instead."] = "Note: 'Hide Alone' is not available in the new aura tracking system. A load option can be used instead."
 --[[Translation missing --]]
@@ -2247,6 +2249,8 @@ L["Units Affected"] = "Units Affected"
 L["unknown location"] = "unknown location"
 --[[Translation missing --]]
 L["Unlimited"] = "Unlimited"
+--[[Translation missing --]]
+L["Untrigger %s"] = "Untrigger %s"
 --[[Translation missing --]]
 L["Up"] = "Up"
 --[[Translation missing --]]
