@@ -20,11 +20,11 @@
 # ## Notes-ptBR: Mostrar as localizações dos barcos e zepelins no Mapa-múndi e no Minimapa.
 #@end-debug@
 ## Author: Dathwada
-## Version: v1
+## Version: v1.1
 ## RequiredDeps: HandyNotes
 ## DefaultState: enabled
 ## SavedVariables: HandyNotes_TravelGuideBCCDB
-## X-Date: 2022-08-31
+## X-Date: 2022-09-13
 ## X-Category: Map
 
 # LOCALIZATION FILES
