@@ -3331,7 +3331,7 @@ do	--	MAIN
 		end
 		local button_elements_width = {
 			[SORT_METHOD_ID] = 60,
-			[SORT_METHOD_NAME] = 100,
+			[SORT_METHOD_NAME] = 160,
 			[SORT_METHOD_QUALITY] = 65,
 			[SORT_METHOD_LEVEL] = 40,
 			[SORT_METHOD_PRICE] = 180,
