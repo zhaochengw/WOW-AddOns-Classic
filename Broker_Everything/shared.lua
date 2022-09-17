@@ -4,6 +4,9 @@
 -- ====================================== --
 local addon, ns = ...;
 local L,_ = ns.L;
+ns.debugMode = "4.4.0-beta"=="@".."project-version".."@";
+LibStub("HizurosSharedTools").RegisterPrint(ns,addon,"BE");
+
 local UnitName,UnitSex,UnitClass,UnitFactionGroup=UnitName,UnitSex,UnitClass,UnitFactionGroup;
 local UnitRace,GetRealmName,GetLocale,UnitGUID=UnitRace,GetRealmName,GetLocale,UnitGUID;
 local InCombatLockdown,CreateFrame=InCombatLockdown,CreateFrame;
@@ -72,45 +75,6 @@ ns.LC.colorset({
 
 	["unknown"]		= "ee0000",
 });
-
-
-  ---------------------------------------
---- nice little print function          ---
-  ---------------------------------------
-do
-	local addon_short = L[addon.."_Shortcut"];
-	local colors = {"82c5ff","00ff00","ff6060","44ffff","ffff00","ff8800","ff44ff","ffffff"};
-	ns.debugMode = "4.2.9-release" == "@".."project-version".."@";
-	local function colorize(...)
-		local t,c,a1 = {tostringall(...)},1,...;
-		if type(a1)=="boolean" then tremove(t,1); end
-		if a1~=false then
-			tinsert(t,1,"|cff82c5ff"..((a1==true and addon_short) or (a1=="||" and "||") or addon).."|r"..(a1~="||" and HEADER_COLON or ""));
-			c=2;
-		end
-		for i=c, #t do
-			if not t[i]:find("\124c") then
-				t[i],c = "|cff"..colors[c]..t[i].."|r", c<#colors and c+1 or 1;
-			end
-		end
-		return unpack(t);
-	end
-	function ns.print(...)
-		print(colorize(...));
-	end
-	function ns.debug(name,...)
-		ConsolePrint(date("|cff999999%X|r"),colorize("<debug::"..name..">",...));
-	end
-	function ns.debugPrint(name,...)
-		if not ns.debugMode then return end
-		print(colorize("<debug::"..name..">",...))
-	end
-	if ns.debugMode then
-		_G[addon.."_GetNamespace"] = function()
-			return ns;
-		end
-	end
-end
 
 
   ---------------------------------------
@@ -264,7 +228,7 @@ do
 			-- useless blacklisted cvars...
 				msg = L["CVarInCombat"]:format(cvar);
 			end
-			ns.print(ns.LC.color("ltorange",msg));
+			ns:print(ns.LC.color("ltorange",msg));
 		else
 			SetCVar(...)
 		end
@@ -900,12 +864,11 @@ do
 			end
 			itemsBySpell[info.spell][info.sharedSlot] = info.count;
 		end
-		if ns.client_version<2 then
+		if ns.ammo_classic then -- ns.ammo_classic declared in modules/ammo_classic.lua
 			if info.ammo then
 				ammo[info.sharedSlot] = true;
 				hasChanged.ammo = true;
 			end
-			-- souls?
 		end
 		if callbacks.item[info.id] then
 			hasChanged.item[info.id][info.sharedSlot] = true;
@@ -923,7 +886,7 @@ do
 			equip[sharedSlotIndex] = nil;
 			hasChanged.equip = true;
 		end
-		if ns.client_version<2 and ammo[sharedSlotIndex] then
+		if ns.ammo_classic and ammo[sharedSlotIndex] then
 			ammo[sharedSlotIndex] = nil;
 			hasChanged.ammo = true;
 		end
@@ -2225,54 +2188,10 @@ end
 -- Retail / Classic / BC Classic compatibility
 -- -------------------------------
 
-ns.C_CurrencyInfo_GetCurrencyInfo = (C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo) or function(currency)
-	local name, currentAmount, texture, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = GetCurrencyInfo(currency); -- classic and bfa
-	if name then
-		return {
-			-- from GetCurrencyInfo
-			name = name,
-			quantity = currentAmount,
-			iconFileID = texture,
-			quantityEarnedThisWeek = earnedThisWeek,
-			maxWeeklyQuantity = weeklyMax,
-			maxQuantity = totalMax,
-			discovered = isDiscovered,
-			quality = rarity,
-			-- ??
-			-- canEarnPerWeek
-			-- isHeaderExpanded
-			-- isTradeable
-			-- isHeader
-			-- isTypeUnused
-			-- isShowInBackpack
-		};
-	end
-end
-
-ns.C_CurrencyInfo_GetCurrencyListInfo = (C_CurrencyInfo and C_CurrencyInfo.GetCurrencyListInfo) or function(index)
-	local name, isHeader, isExpanded, isUnused, isWatched, count, icon, maximum, hasWeeklyLimit, currentWeeklyAmount, unknown, itemID = GetCurrencyListInfo(index)
-	local _, _, _, earnedThisWeek, weeklyMax, _, isDiscovered, rarity = GetCurrencyInfo(itemID);
-	return {
-		canEarnPerWeek = earnedThisWeek,
-		quantityEarnedThisWeek = currentWeeklyAmount,
-		isHeaderExpanded = isExpanded,
-		--isTradeable = ,
-		maxQuantity = maximum,
-		maxWeeklyQuantity = weeklyMax,
-		isHeader = isHeader,
-		name = name,
-		isTypeUnused = isUnused,
-		--isShowInBackpack = ,
-		discovered = isDiscovered,
-		quantity = count,
-		quality = rarity,
-	};
-end
-
 ns.C_QuestLog_GetInfo = (C_QuestLog and C_QuestLog.GetInfo) or function(questLogIndex)
 	local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory, isHidden, isScaling  = GetQuestLogTitle(questLogIndex);
 	if type(suggestedGroup)=="string" then
-		ns.debugPrint("C_QuestLog_GetInfo","suggestedGroup =",suggestedGroup);
+		ns:debugPrint("C_QuestLog_GetInfo","suggestedGroup =",suggestedGroup);
 		suggestedGroup = tonumber(suggestedGroup) or 0; -- problem on bc classic client?
 	end
 	return {
@@ -2312,25 +2231,6 @@ ns.C_QuestLog_GetQuestTagInfo = (C_QuestLog and C_QuestLog.GetQuestTagInfo) or f
 		isElite = isElite,
 		tradeskillLineIndex = tradeskillLineIndex
 	};
-end
-
-ns.IsQuestWatched = IsQuestWatched or function(questLogIndex)
-	local info = C_QuestLog.GetInfo(questLogIndex);
-	return C_QuestLog.GetQuestWatchType(info.questID) ~= nil;
-end
-
-ns.GetQuestLogPushable = GetQuestLogPushable or function(questLogIndex)
-	local info = C_QuestLog.GetInfo(questLogIndex);
-	return C_QuestLog.IsPushableQuest(info.questID);
-end
-
-function ns.GetTalentTierLevel(tier)
-	if CLASS_TALENT_LEVELS then
-		return (CLASS_TALENT_LEVELS[ns.player.class] or CLASS_TALENT_LEVELS.DEFAULT)[tier];
-	elseif GetTalentTierInfo then
-		local tierAvailable, selectedTalent, tierUnlockLevel = GetTalentTierInfo(tier, 1, false, "player");
-		return tierUnlockLevel
-	end
 end
 
 ns.C_BattleNet_GetFriendAccountInfo = (C_BattleNet and C_BattleNet.GetFriendAccountInfo) or function(friendIndex)

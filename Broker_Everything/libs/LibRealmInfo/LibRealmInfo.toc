@@ -1,5 +1,5 @@
-## Interface: 30400
-## Version: 14
+## Interface: 80100
+## Version: 17
 
 ## Title: Lib: Realm Info
 ## Notes: Library to provide information about realms.

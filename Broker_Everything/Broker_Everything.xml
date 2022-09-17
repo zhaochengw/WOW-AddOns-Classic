@@ -2,34 +2,69 @@
 ..\..\FrameXML\UI.xsd">
 
 	<!-- localizations -->
-	<Script file="localizations/en.lua" />
-	<Script file="localizations/br.lua" />
-	<Script file="localizations/cn.lua" />
-	<Script file="localizations/de.lua" />
-	<Script file="localizations/es.lua" />
-	<Script file="localizations/fr.lua" />
-	<Script file="localizations/it.lua" />
-	<Script file="localizations/kr.lua" />
-	<Script file="localizations/mx.lua" />
-	<Script file="localizations/ru.lua" />
-	<Script file="localizations/tw.lua" />
+	<Script file="localizations.lua" />
 	<!-- /localizations -->
 
+	<Script file="libs/HizurosSharedTools/HizurosSharedTools.lua"/>
 	<Script file="shared.lua" />
 	<Script file="options.lua" />
 	<Script file="modules.lua" />
 
 	<!-- modules -->
+	<Script file="modules/achievements.lua"/>
+	<Script file="modules/archaeology.lua"/>
+	<Script file="modules/artifactweapons.lua"/>
+	<Script file="modules/bags.lua"/>
+	<Script file="modules/calendar.lua"/>
+	<Script file="modules/chatchannels.lua"/>
+	<Script file="modules/classspecs.lua"/>
+	<Script file="modules/clock.lua"/>
+	<Script file="modules/currency.lua"/>
+	<Script file="modules/difficulty.lua"/>
+	<Script file="modules/durability.lua"/>
+	<Script file="modules/emissaryquests.lua"/>
+	<Script file="modules/equipment.lua"/>
+	<Script file="modules/followers.lua"/>
+	<Script file="modules/framenames.lua"/>
 	<Script file="modules/friends.lua"/>
+	<Script file="modules/gamemenu.lua"/>
+	<Script file="modules/garrison.lua"/>
+	<Script file="modules/gold.lua"/>
+	<Script file="modules/gps.lua"/>
+	<Script file="modules/guildlog.lua"/>
 	<Script file="modules/guild.lua"/>
+	<Script file="modules/ids.lua"/>
+	<Script file="modules/instances.lua"/>
+	<Script file="modules/invasions.lua"/>
+	<Script file="modules/mail.lua"/>
+	<Script file="modules/missions.lua"/>
+	<Script file="modules/nameplates.lua"/>
+	<Script file="modules/notes.lua"/>
+	<Script file="modules/orderhall.lua"/>
+	<Script file="modules/professions.lua"/>
+	<Script file="modules/questlog.lua"/>
+	<Script file="modules/reputation.lua"/>
+	<Script file="modules/speed.lua"/>
+	<Script file="modules/stuff.lua"/>
+	<Script file="modules/surprise.lua"/>
+	<Script file="modules/system.lua"/>
+	<Script file="modules/tanaanjungle.lua"/>
+	<Script file="modules/tracking.lua"/>
 	<Script file="modules/volume.lua"/>
+	<Script file="modules/wardrobe.lua"/>
+	<Script file="modules/wowtoken.lua"/>
+	<Script file="modules/xp.lua"/>
 	<!-- /modules -->
 
 	<!-- modules for classic -->
+	<Script file="modules/professions_classic.lua"/>
+	<Script file="modules/ammo_classic.lua"/>
 	<!-- /modules for classic -->
+
 
 	<Script file="chatcommand.lua" />
 	<Script file="core.lua"/>
+
 
 	<Frame name="BE_SecureFrame" hidden="hidden" virtual="true">
 		<Layers>

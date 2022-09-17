@@ -1,8 +1,10 @@
-## Interface: 30400
+## Interface: 90205
+## Interface-BCC: 20504
+## Interface-Classic: 11403
 ## Title: Lib: LibTime-1.0
 ## Notes: A little library around date, time and GetGameTime and more...
 ## Author: Hizuro
-## Version: r28
+## Version: r30
 ## OptionalDeps: LibStub, CallbackHandler-1.0
 
 ## X-Curse-Project-ID: 279585

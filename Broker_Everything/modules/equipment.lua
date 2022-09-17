@@ -29,6 +29,19 @@ I[name] = {iconfile="Interface\\ICONS\\INV_Chest_Chain", coords={0.1,0.9,0.1,0.9
 
 -- some local functions --
 --------------------------
+
+local function pairsEquipmentSets()
+	local equipSetIDs = C_EquipmentSet.GetEquipmentSetIDs() or {};
+	local i = 0;
+	return function()
+		i = i + 1;
+		if equipSetIDs[i] then
+			return C_EquipmentSet.GetEquipmentSetInfo(equipSetIDs[i]);
+		end
+		return nil;
+	end
+end
+
 -- defined in addon namespace for chatcommand.lua
 function ns.toggleEquipment(eSetID)
 	if InCombatLockdown() or UnitIsDeadOrGhost("player") then
@@ -46,33 +59,18 @@ local function updateBroker()
 	local pending = (equipPending and C("orange",equipPending)) or false;
 
 	if ns.profile[name].showCurrentSet and C_EquipmentSet then
-		local numEquipSets = C_EquipmentSet.GetNumEquipmentSets();
-
-		if numEquipSets > 0 then
-			local equipName, iconFile, setID, isEquipped, _, _, _, numMissing;
-			for i=0, numEquipSets do
-				equipName, iconFile, setID, isEquipped, _, _, _, numMissing = C_EquipmentSet.GetEquipmentSetInfo(i);
-				if equipName then
-					if isEquipped then
-						iconCoords = {0.05,0.95,0.05,0.95}
-						icon = iconFile;
-						tinsert(text,equipPending==setID and pending or equipName);
-					end
-				end
+		for equipName, iconFileID, setID, isEquipped, _, _, _, numMissing in pairsEquipmentSets() do
+			if equipName and isEquipped then
+				icon,iconCoords = iconFileID,{0.05,0.95,0.05,0.95};
+				tinsert(text,equipPending==setID and pending or equipName);
 			end
-			if(#text==0)then
-				local txt = L["Unknown set"];
-				if ns.profile[name].showShorterInfo then
-					txt = L["Set?"];
-				end
-				tinsert(text,pending~=false and pending or C("red",txt));
-			end
-		else
+		end
+		if #text==0 then
 			local txt = L["No sets found"];
 			if ns.profile[name].showShorterInfo then
 				txt = L["No sets"];
 			end
-			tinsert(text,txt);
+			tinsert(text,pending or txt);
 		end
 	elseif pending~=false then
 		tinsert(text,pending);
@@ -100,7 +98,7 @@ local function UpdateInventory()
 			obj.type = "inv";
 			ns.ScanTT.query(obj,true);
 			lst[d.slot] = obj;
-			if ns.client_version>=2 then
+			if ns.client_version>=6 then
 				obj.level = obj.level or 0;
 				if lst.iLevelMin==0 or obj.level<lst.iLevelMin then
 					lst.iLevelMin=obj.level;
@@ -194,7 +192,7 @@ end
 local function createTooltip(tt)
 	if not (tt and tt.key and tt.key==ttName) then return end -- don't override other LibQTip tooltips...
 
-	local line, column
+	local line, column, hasSets
 	if tt.lines~=nil then tt:Clear(); end
 	tt:AddHeader(C("dkyellow",BAG_FILTER_EQUIPMENT))
 
@@ -207,28 +205,24 @@ local function createTooltip(tt)
 			ns.AddSpannedLine(tt,L["Equipment manager is not enabled"]);
 			ns.AddSpannedLine(tt,L["Enable it from the character info"]);
 		else
-			local numEquipSets = C_EquipmentSet.GetNumEquipmentSets()
-			if (numEquipSets>0) then
-				local eName, icon, setID, isEquipped, numMissing, _;
-				for i=0, numEquipSets do
-					eName, icon, setID, isEquipped, _, _, _, numMissing = C_EquipmentSet.GetEquipmentSetInfo(i);
-					if eName then
-						local color = (equipPending and equipPending==i and "orange") or (numMissing>0 and "red") or (isEquipped and "ltyellow") or false
-						local formatName = color~=false and C(color,eName) or eName;
+			for eName, icon, setID, isEquipped, _, _, _, numMissing in pairsEquipmentSets() do
+				if eName then
+					local color = (equipPending and equipPending==setID and "orange") or (numMissing>0 and "red") or (isEquipped and "ltyellow") or false
+					local formatName = color~=false and C(color,eName) or eName;
 
-						local line = ns.AddSpannedLine(tt, "|T"..(icon or ns.icon_fallback)..":0|t "..formatName);
-						tt:SetLineScript(line, "OnMouseUp", equipOnClick,setID);
-						tt:SetLineScript(line, "OnEnter", equipOnEnter,setID);
-						tt:SetLineScript(line, "OnLeave", GameTooltip_Hide);
-					end
+					local line = ns.AddSpannedLine(tt, "|T"..(icon or ns.icon_fallback)..":0|t "..formatName);
+					tt:SetLineScript(line, "OnMouseUp", equipOnClick,setID);
+					tt:SetLineScript(line, "OnEnter", equipOnEnter,setID);
+					tt:SetLineScript(line, "OnLeave", GameTooltip_Hide);
+					hasSets = true;
 				end
-				if (ns.profile.GeneralOptions.showHints) then
-					tt:AddSeparator();
-					ns.AddSpannedLine(tt, C("ltblue",L["MouseBtn"]).." "..C("green",L["to equip"]) .." - ".. C("ltblue",L["ModKeyC"].."+"..L["MouseBtn"]).." "..C("green",L["to delete"]));
-					ns.AddSpannedLine(tt, C("ltblue",L["ModKeyS"].."+"..L["MouseBtn"]).." "..C("green",L["to update/save"]));
-				end
-			else
-				ns.AddSpannedLine(tt,L["No equipment sets found"]);
+			end
+			if not hasSets then
+				ns.AddSpannedLine(tt, L["No equipment sets found"]);
+			elseif ns.profile.GeneralOptions.showHints then
+				tt:AddSeparator();
+				ns.AddSpannedLine(tt, C("ltblue",L["MouseBtn"]).." "..C("green",L["to equip"]) .." - ".. C("ltblue",L["ModKeyC"].."+"..L["MouseBtn"]).." "..C("green",L["to delete"]));
+				ns.AddSpannedLine(tt, C("ltblue",L["ModKeyS"].."+"..L["MouseBtn"]).." "..C("green",L["to update/save"]));
 			end
 		end
 	end
@@ -240,7 +234,7 @@ local function createTooltip(tt)
 			C("ltblue",TRADESKILL_FILTER_SLOTS),
 			C("ltblue",NAME)
 		);
-		if ns.client_version>=2 then
+		if ns.client_version>=6 then
 			tt:SetCell(l,3,C("ltblue",LEVEL));
 		end
 
@@ -256,7 +250,7 @@ local function createTooltip(tt)
 		if prof2 then
 			_,_,_,_,_,_,prof2SkillLine = GetProfessionInfo(prof2);
 		end
-		--ns.debugPrint(name,prof1SkillLine,prof2SkillLine)
+		--ns:debugPrint(name,prof1SkillLine,prof2SkillLine)
 
 		local none,miss=true,false;
 		for _,i in ipairs({1,2,3,15,5,9,10,6,7,8,11,12,13,14,16,17}) do
@@ -316,7 +310,7 @@ local function createTooltip(tt)
 						upgrades = " "..C(col,itemInfo.upgrades);
 					end
 
-					if ns.client_version>=2 and itemInfo.level then
+					if ns.client_version>=6 and itemInfo.level then
 						itemLevel = C(GetILevelColor(itemInfo.level),itemInfo.level);
 					else
 						itemLevel = "";
@@ -347,7 +341,7 @@ local function createTooltip(tt)
 			tt:SetCell(l,1,L["All slots are empty"],nil,nil,ttColumns);
 		end
 		tt:AddSeparator();
-		if ns.client_version>=3 then
+		if ns.client_version>=6 and GetAverageItemLevel then
 			local _, avgItemLevelEquipped = GetAverageItemLevel();
 			local l = tt:AddLine(nil,nil,C(GetILevelColor(avgItemLevelEquipped),"%.1f"):format(avgItemLevelEquipped));
 			tt:SetCell(l,1,C("ltblue",STAT_AVERAGE_ITEM_LEVEL),nil,nil,2);
@@ -407,7 +401,7 @@ module = {
 	}
 }
 
-if ns.client_version>=2 then
+if ns.client_version>=6 then
 	tinsert(module.events,"EQUIPMENT_SWAP_FINISHED");
 	--tinsert(module.events,"ITEM_UPGRADE_MASTER_UPDATE"); -- TODO: removed in 9.1.5
 	tinsert(module.events,"EQUIPMENT_SETS_CHANGED");
@@ -463,7 +457,7 @@ function module.init()
 	197 -- Tailoring
 	--]]
 
-	if ns.client_version<2 then -- classic
+	if ns.client_version<3 then -- classic
 		enchantSlots = {
 			[8]=true, [9]=true,[5]=true,[10]=true,[15]=true,[17]=true,[16]=true, -- enchanters
 		}

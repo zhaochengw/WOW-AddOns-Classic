@@ -1,16 +1,16 @@
 
-local MAJOR, MINOR = "LibDropDownMenu", tonumber((gsub("r21","r",""))) or 9999;
+local MAJOR, MINOR = "LibDropDownMenu", tonumber((gsub("r24","r",""))) or 9999;
 local lib = LibStub:NewLibrary(MAJOR, MINOR);
 
 if not lib then return end
 
 local _G,print,math,type,max,table,tonumber = _G,print,math,type,max,table,tonumber;
 local strmatch,gsub,ipairs,strlen,strsub,select = strmatch,gsub,ipairs,strlen,strsub,select;
-local hooksecurefunc = hooksecurefunc;
-local CreateFrame,GetCursorPosition = CreateFrame,GetCursorPosition;
+local hooksecurefunc,C_Texture = hooksecurefunc,C_Texture;
+local CreateFrame,GetCursorPosition,PlaySound = CreateFrame,GetCursorPosition,PlaySound;
 local GetScreenWidth,GetScreenHeight = GetScreenWidth,GetScreenHeight;
 local GetCVar,SetCVar,GetAppropriateTooltip = GetCVar,SetCVar,GetAppropriateTooltip;
-local UIParent,GameTooltip_SetTitle = UIParent,GameTooltip_SetTitle;
+local UIParent,SOUNDKIT,GameTooltip_SetTitle = UIParent,SOUNDKIT,GameTooltip_SetTitle;
 local GameFontDisableSmallLeft = GameFontDisableSmallLeft;
 local GameFontHighlightSmallLeft = GameFontHighlightSmallLeft;
 local GameFontNormalSmallLeft = GameFontNormalSmallLeft;
@@ -332,6 +332,7 @@ info.leftPadding = [nil, NUMBER] -- Number of pixels to pad the button on the le
 info.minWidth = [nil, NUMBER] -- Minimum width for this line
 info.customFrame = frame -- Allows this button to be a completely custom frame, should inherit from UIDropDownCustomMenuEntryTemplate and override appropriate methods.
 info.icon = [TEXTURE] -- An icon for the button.
+info.iconXOffset = [nil, NUMBER] -- Number of pixels to shift the button's icon to the left or right (positive numbers shift right, negative numbers shift left).
 info.mouseOverIcon = [TEXTURE] -- An override icon when a button is moused over.
 info.ignoreAsMenuSelection [nil, true] -- Never set the menu text/icon to this, even when this button is checked
 ]]
@@ -480,9 +481,13 @@ function UIDropDownMenu_AddButton(info, level)
 		-- Set icon
 		if ( info.icon or info.mouseOverIcon ) then
 			icon:SetSize(16,16);
-			icon:SetTexture(info.icon);
+			if(info.icon and C_Texture.GetAtlasInfo(info.icon)) then
+				icon:SetAtlas(info.icon);
+			else
+				icon:SetTexture(info.icon);
+			end
 			icon:ClearAllPoints();
-			icon:SetPoint("RIGHT");
+			icon:SetPoint("RIGHT", info.iconXOffset or 0, 0);
 
 			if ( info.tCoordLeft ) then
 				icon:SetTexCoord(info.tCoordLeft, info.tCoordRight, info.tCoordTop, info.tCoordBottom);
@@ -553,6 +558,7 @@ function UIDropDownMenu_AddButton(info, level)
 	button.noClickSound = info.noClickSound;
 	button.padding = info.padding;
 	button.icon = info.icon;
+	button.iconXOffset = info.iconXOffset;
 	button.mouseOverIcon = info.mouseOverIcon;
 	button.ignoreAsMenuSelection = info.ignoreAsMenuSelection;
 
@@ -958,7 +964,7 @@ end
 
 function UIDropDownMenuButton_OnClick(self)
 	local checked = self.checked;
-	if ( type(checked) == "function" ) then
+	if ( type (checked) == "function" ) then
 		checked = checked(self);
 	end
 
@@ -1486,7 +1492,7 @@ end
 function UIDropDownMenu_GetValue(id)
 	--Only works if the dropdown has just been initialized, lame, I know =(
 	local button = _G["LibDropDownMenu_List1Button"..id];
-	if button then
+	if ( button ) then
 		return _G["LibDropDownMenu_List1Button"..id].value;
 	else
 		return nil;

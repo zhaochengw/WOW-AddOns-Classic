@@ -206,7 +206,7 @@ local options = {
 					type = "group", order = 1, inline = true,
 					name = C("ff00aaff",AUCTION_SUBCATEGORY_OTHER),
 					args = {
-						showAddOnLoaded = { type="toggle",order=1,name=L["AddOnLoaded"],desc=L["AddOnLoadedDesc"] },
+						showAddOnLoaded = { type="toggle",order=1,name=L["AddOnLoaded"],desc=L["AddOnLoadedDesc"].."|n|n|cff44ff44"..L["AddOnLoadedDescAlt"].."|r" },
 						suffixColour    = { type="toggle",order=2,name=L["SuffixColor"],desc=L["SuffixColorDesc"] },
 						usePrefix       = { type="toggle",order=3,name=L["Prefix"],desc=L["PrefixDesc"] },
 						chatCommands    = { type="toggle",order=4,name=L["ChatCommands"],desc=L["ChatCommandsDesc"] },
@@ -305,7 +305,7 @@ local options = {
 					}
 				}
 			}
-		}
+		},
 		-- profiles = {}, -- created by AceDBOptions
 	}
 }
@@ -322,6 +322,7 @@ ns.sharedOptions = {
 
 local sharedDefaults = {
 	shortNumbers = true,
+	showChars = true,
 	showAllFactions = true,
 	showRealmNames = true,
 	showCharsFrom = "2",
@@ -352,9 +353,6 @@ end
 local function optionWalker(modName,group,lst)
 	for k, v in pairs(lst)do
 		local tV,customModDesc = type(v);
-		if k=="showChars" then
-			ns.debug("opts",modName,k,tV,v,tV=="table" and #v or "?");
-		end
 		if tV=="table" and #v>0 then
 			-- short table {<order[number|bool]>, <customModDesc>}
 			customModDesc,v,tV = v[2],v[1],type(v[1]);
@@ -370,7 +368,6 @@ local function optionWalker(modName,group,lst)
 					if customModDesc==true then
 						customModDesc = modName;
 					end
-					ns.debug("opt",modName,k,shared.customDescFormat,customModDesc);
 					if shared.customDescFormat then
 						LStr = L[shared.customDescFormat:format(customModDesc)];
 						shared.customDescFormat = nil;
@@ -607,7 +604,9 @@ function ns.RegisterOptions()
 	options.args.profiles.order=-1;
 
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(addonLabel, options);
-	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(addonLabel);
+	local opts = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(addonLabel);
+	LibStub("HizurosSharedTools").BlizzOptions_ExpandOnShow(opts);
+	LibStub("HizurosSharedTools").AddCredit(addon);
 
 	local goldColor = ns.profile.GeneralOptions.goldColor;
 	if type(goldColor)~="string" then

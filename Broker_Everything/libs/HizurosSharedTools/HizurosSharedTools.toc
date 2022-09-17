@@ -1,0 +1,11 @@
+## Interface: 90205
+## Interface-BCC: 20504
+## Interface-Classic: 11403
+## Title: HizurosSharedTools
+## Notes: My little shared tools library for my addons
+## Author: Hizuro
+## Version: b41b82d
+## SavedVariables:
+## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibColors-1.0
+
+HizurosSharedTools.lua

@@ -3,7 +3,7 @@
 ----------------------------------
 local addon, ns = ...
 local C, L, I = ns.LC.color, ns.L, ns.I
-if ns.client_version<3 then return end
+if ns.client_version<6 then return end
 
 
 -- module own local variables and local cached functions --
@@ -21,7 +21,7 @@ I[name] = {iconfile="Interface\\Addons\\"..addon.."\\media\\nameplates"}; --Icon
 -- some local functions --
 --------------------------
 local function toggleCVar(self,v)
-	ns.debug(name,"<toggleCVar>",v.type,v.cvar,v.state);
+	ns:debug(name,"<toggleCVar>",v.type,v.cvar,v.state);
 	if v.type=="single" then
 		ns.SetCVar(v.cvar, v.state and 0 or 1, v.cvar);
 	elseif v.type=="group" then

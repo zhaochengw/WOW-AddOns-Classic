@@ -3,7 +3,7 @@
 ----------------------------------
 local addon, ns = ...;
 local C,L,I = ns.LC.color,ns.L,ns.I;
-if ns.client_version<3 then return end
+if ns.client_version<4 then return end
 
 
 -- module own local variables and local cached functions --
@@ -218,7 +218,7 @@ local function updateCooldownAndRecipeLists(skillLineID,rebuildCooldowns) -- on 
 			local _,_,cooldown = GetSpellCooldown(recipeId);
 			--learnedRecipes[recipeId] = recipeInfo.learned
 			if recipeId==143011 then
-				ns.debug(name,recipeId,cooldown);
+				ns:debug(name,recipeId,cooldown);
 			end
 			if cooldown then
 				dataDB.recipeCooldowns[skillLineID][recipeId] = {isDayCooldown, charges, maxCharges};

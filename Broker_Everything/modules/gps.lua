@@ -101,6 +101,16 @@ local function addToy(id)
 		local toyName, _, _, _, _, _, _, _, _, toyIcon = GetItemInfo(id);
 		local hasToy = PlayerHasToy(id);
 		local canUse =  C_ToyBox.IsToyUsable(id);
+		if _toyUsableBug[id] then
+			-- special problem; Sometimes C_ToyBox.IsToyUsable does not return correct state of some items
+			-- like the Broker Translocation Matrix (190237) on toons without needed reputation to purchase it.
+			-- But they can use it.
+			if canUse then
+				ns.data.IsToyUsable[id] = true;
+			elseif ns.data.IsToyUsable[id] then
+				canUse = true;
+			end
+		end
 		if toyName and hasToy and canUse then
 			local isHS, hsLoc = itemIsHearthstone(id);
 			foundToys[id] = {
@@ -155,7 +165,7 @@ local function updateItems()
 	end
 
 	-- update foundToys table;
-	if ns.client_version>=2 then
+	if ns.client_version>=5 then
 		for i=1, #_toyIds do
 			if addToy(_toyIds[i]) then
 				_namelessToys[_toyIds[i]] = true;
@@ -405,7 +415,7 @@ function transportMenu(self,button,name)
 		end
 	end
 
-	if ns.client_version>=2 and foundToysNum>0 then
+	if ns.client_version>=6 and foundToysNum>0 then
 		-- toy title
 		if not ns.profile[name].shortMenu then
 			tt4:AddSeparator(4,0,0,0,0);
@@ -487,7 +497,16 @@ local function init()
 	};
 
 	-- toys
-	_toyIds = {18984,18986,30542,30544,43824,48933,54452,64488,87215,93672,95567,95568,95589,95590,112059,129929,136849,140324,142542,151016,151652,162973,163045,165669,165670,165802,166746,166747,168907,169297,169298,172179,184353,180290,182773,172924};
+	_toyIds = {
+		18984,18986,30542,30544,43824,48933,87215,95567,95568,95589,95590,112059,129929,136849,140324,151016,151652,169297,169298,172924,
+		-- hearth stones
+		54452,64488,93672,142542,162973,163045,165669,165670,165802,166746,166747,168907,172179,184353,180290,182773,193588,190237,
+	};
+
+	-- on some toys C_ToyBox.IsToyUsable returns wrong state
+	_toyUsableBug = {
+		[190237] = true,
+	};
 
 	-- items with hearthstone spell
 	_hearthstones = {
@@ -514,10 +533,17 @@ local function init()
 		[184353]=1, -- Toy - Kyrian Hearthstone
 		[180290]=1, -- Toy - Night Fae Hearthstone
 		[182773]=1, -- Toy - Necrolord Hearthstone
+		[193588]=1, -- Toy - Timewalker's Hearthstone
+		[190237]=1, -- Toy - Broker Translocation Matrix
 	};
 
 	--_itemReplacementIds = {64488,28585,6948,44315,44314,37118,142542,142298};
 	_itemMustBeEquipped = {[32757]=1,[40585]=1,[142298]=1};
+
+	-- init ns.data
+	if ns.data.IsToyUsable==nil then
+		ns.data.IsToyUsable = {};
+	end
 
 	-- init ns.items
 	ns.items.Init("any");

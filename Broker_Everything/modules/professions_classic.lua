@@ -3,7 +3,7 @@
 ----------------------------------
 local addon, ns = ...;
 local C,L,I = ns.LC.color,ns.L,ns.I;
-if ns.client_version>3 then return end
+if ns.client_version>4 then return end
 
 
 -- module own local variables and local cached functions --
@@ -533,7 +533,7 @@ function module.onevent(self,event,arg1,...)
 	elseif event=="NEW_RECIPE_LEARNED" and type(arg1)=="number" then
 		ns.toon[name].learnedRecipes[arg1] = true;
 	elseif event=="CHAT_MSG_SKILL" then
-		ns.debug(event,arg1,...);
+		ns:debug(event,arg1,...);
 	elseif event=="PLAYER_LOGIN" or ns.eventPlayerEnteredWorld then
 		if ns.toon[name]==nil then
 			ns.toon[name]={};

@@ -31,6 +31,8 @@ function EasyMenu_Initialize( frame, level, menuList )
 		if (value.text) then
 			value.index = index;
 			UIDropDownMenu_AddButton( value, level );
+		elseif (value.separator) then -- missing in original
+			UIDropDownMenu_AddSeparator( level );
 		end
 	end
 end

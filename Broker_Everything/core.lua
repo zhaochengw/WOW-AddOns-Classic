@@ -80,8 +80,8 @@ Broker_Everything:SetScript("OnEvent", function (self, event, ...)
 			ns.RegisterSlashCommand();
 		end
 
-		if ns.profile.GeneralOptions.showAddOnLoaded then
-			ns.print(L["AddOnLoaded"]);
+		if ns.profile.GeneralOptions.showAddOnLoaded or IsShiftKeyDown() then
+			ns:print(L["AddOnLoaded"]);
 		end
 
 		ns.eventAddOnLoaded = true;

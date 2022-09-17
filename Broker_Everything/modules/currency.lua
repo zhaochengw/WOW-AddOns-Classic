@@ -3,7 +3,7 @@
 ----------------------------------
 local addon, ns = ...
 local C, L, I = ns.LC.color, ns.L, ns.I
-if ns.client_version<3 then return end
+if ns.client_version<5 then return end
 
 
 -- module own local variables and local cached functions --
@@ -77,7 +77,7 @@ local function resetCurrencySession()
 	local _
 	for _,id in ipairs(Currencies)do
 		if tonumber(id) then
-			local currencyInfo = ns.C_CurrencyInfo_GetCurrencyInfo(id);
+			local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(id);
 			CountCorrection(id,currencyInfo);
 			currencySession[id] = currencyInfo.quantity;
 		end
@@ -94,7 +94,7 @@ local function updateBroker()
 	for i=1, BrokerPlacesMax do
 		local id = ns.profile[name].currenciesInTitle[i];
 		if tonumber(id) then
-			local currencyInfo = ns.C_CurrencyInfo_GetCurrencyInfo(id);
+			local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(id);
 			if currencyInfo.discovered then
 				CountCorrection(id,currencyInfo);
 				local str = ns.FormatLargeNumber(name,currencyInfo.quantity);
@@ -190,7 +190,7 @@ function createTooltip(tt,update)
 			tt:SetLineScript(l,"OnMouseUp", toggleCurrencyHeader,Currencies[i]);
 		elseif not parentIsCollapsed then
 			local currencyId = Currencies[i];
-			local currencyInfo = ns.C_CurrencyInfo_GetCurrencyInfo(currencyId);
+			local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyId);
 			if currencyInfo and currencyInfo.name and (currencyInfo.discovered or hiddenSection) then
 				CountCorrection(currencyId,currencyInfo);
 
@@ -293,7 +293,7 @@ local function aceOptOnBrokerValues(info)
 				break;
 			elseif tonumber(Currencies[i]) then
 				local currencyId = Currencies[i];
-				local currencyInfo = ns.C_CurrencyInfo_GetCurrencyInfo(currencyId);
+				local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyId);
 				if currencyInfo and currencyInfo.name then
 					if not currencyInfo.discovered then
 						currencyInfo.name = C("gray",currencyInfo.name);
@@ -401,7 +401,7 @@ function module.OptionMenu(parent)
 		local id = ns.profile[name].currenciesInTitle[place];
 
 		if tonumber(id) then
-			local currencyInfo = ns.C_CurrencyInfo_GetCurrencyInfo(id);
+			local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(id);
 			if currencyInfo and currencyInfo.name then
 				pList = ns.EasyMenu:AddEntry({
 					arrow = true,
@@ -425,7 +425,7 @@ function module.OptionMenu(parent)
 				break;
 			elseif tonumber(Currencies[i]) then
 				--isHidden = Currencies[i]=="HIDDEN_CURRENCIES";
-				local currencyInfo = ns.C_CurrencyInfo_GetCurrencyInfo(Currencies[i]);
+				local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(Currencies[i]);
 				if currencyInfo and currencyInfo.name then
 					CountCorrection(Currencies[i],currencyInfo);
 					local nameStr,disabled = currencyInfo.name,true;
@@ -592,8 +592,8 @@ function module.init()
 	for i=42, 2500 do
 		if not known[i] and not ns.isArchaeologyCurrency(i) then
 			local info = C_CurrencyInfo.GetCurrencyInfo(i);
-			if info and info.name and not (ignore[info.name] or info.name:find("zzzold") or info.name:find("Test")) then -- (and not info.isHeader)
-				--ns.debug(name,i,info.name);
+			if info and info.name and not (ignore[info.name] or info.name:find("zzold") or info.name:find("Test") or info.name:find("Prototype") or info.name:find("Scoreboard")) then -- (and not info.isHeader)
+				--ns:debug(name,i,info.name);
 				tinsert(Currencies,i);
 			end
 		end
@@ -636,18 +636,16 @@ function module.onevent(self,event,arg1)
 		if covenantID==0 then
 			self:RegisterEvent("COVENANT_CHOSEN");
 		else
-			ns.debugPrint(name,"<insertShadowlandCurrencies("..covenantID..")>",event);
 			insertShadowlandCurrencies();
 		end
 	elseif event=="COVENANT_CHOSEN" then
 		-- update Covenant currencies
 		covenantID = C_Covenants.GetActiveCovenantID();
-		ns.debugPrint(name,"<insertShadowlandCurrencies("..covenantID..")>",event);
 		insertShadowlandCurrencies();
 	elseif event=="CHAT_MSG_CURRENCY" then -- detecting new currencies
 		local id = tonumber(arg1:match("currency:(%d*)"));
 		if id and not currencySession[id] then
-			local currencyInfo = ns.C_CurrencyInfo_GetCurrencyInfo(id);
+			local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(id);
 			CountCorrection(id,currencyInfo);
 			currencySession[id] = currencyInfo.quantity;
 		end
