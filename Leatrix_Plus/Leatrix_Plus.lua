@@ -1,5 +1,5 @@
 ﻿----------------------------------------------------------------------
--- 	Leatrix Plus 3.0.07 (14th September 2022)
+-- 	Leatrix Plus 3.0.08.alpha.4 (18th September 2022)
 ----------------------------------------------------------------------
 
 --	01:Functns, 02:Locks, 03:Restart, 20:Live, 30:Isolated, 40:Player
@@ -19,7 +19,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "3.0.07"
+	LeaPlusLC["AddonVer"] = "3.0.08.alpha.4"
 
 	-- Get locale table
 	local void, Leatrix_Plus = ...
@@ -846,6 +846,14 @@
 
 				},
 
+				-- Ripper (Arcanite ripper guitar sound)
+				["MuteRipper"] = {
+
+					-- sound/events/
+					"archaniteripper.ogg#567384",
+
+				},
+
 				-- Striders (footsteps are in another setting)
 				["MuteStriders"] = {
 
@@ -914,6 +922,7 @@
 
 			LeaPlusLC:MakeTx(SoundPanel, "Misc", 388, -72)
 			LeaPlusLC:MakeCB(SoundPanel, "MuteAdal", "A'dal", 388, -92, false, "If checked, A'dal in Shattrath City will be muted.")
+			LeaPlusLC:MakeCB(SoundPanel, "MuteRipper", "Ripper", 388, -112, false, "If checked, the Arcanite Ripper guitar sound will be muted.")
 
 			-- Set click width for sounds checkboxes
 			for k, v in pairs(muteTable) do
@@ -4989,7 +4998,7 @@
 
 						-- Handle flight time not correct or flight does not exist in database
 						local timeStart = GetTime()
-						C_Timer.After(5, function()
+						C_Timer.After(1, function()
 							if UnitOnTaxi("player") then
 								-- Player is on a taxi so register when taxi lands
 								flightFrame:RegisterEvent("PLAYER_CONTROL_GAINED")
@@ -7094,9 +7103,9 @@
 
 			local function SetHeadersButton()
 				if LeaPlusCB["ToggleQuestHeaders"].collapsed then
-					LeaPlusCB["ToggleQuestHeaders"]:SetText("Expand")
+					LeaPlusCB["ToggleQuestHeaders"]:SetText(L["Expand"])
 				else
-					LeaPlusCB["ToggleQuestHeaders"]:SetText("Collapse")
+					LeaPlusCB["ToggleQuestHeaders"]:SetText(L["Collapse"])
 				end
 				local headerButtonWidth = LeaPlusCB["ToggleQuestHeaders"]:GetFontString():GetStringWidth() + 13.6
 				if headerButtonWidth > 120 then headerButtonWidth = 120 end
@@ -8090,6 +8099,7 @@
 			BuffFrame:SetPoint(LeaPlusLC["BuffFrameA"], UIParent, LeaPlusLC["BuffFrameR"], LeaPlusLC["BuffFrameX"], LeaPlusLC["BuffFrameY"])
 			BuffFrame:SetScale(LeaPlusLC["BuffFrameScale"])
 			TemporaryEnchantFrame:SetScale(LeaPlusLC["BuffFrameScale"])
+			ConsolidatedBuffs:SetScale(LeaPlusLC["BuffFrameScale"])
 
 			-- Set buff frame position when the game resets it
 			hooksecurefunc("UIParent_UpdateTopFramePositions", function()
@@ -8165,6 +8175,7 @@
 			LeaPlusCB["BuffFrameScale"]:HookScript("OnValueChanged", function()
 				BuffFrame:SetScale(LeaPlusLC["BuffFrameScale"])
 				TemporaryEnchantFrame:SetScale(LeaPlusLC["BuffFrameScale"])
+				ConsolidatedBuffs:SetScale(LeaPlusLC["BuffFrameScale"])
 				dragframe:SetScale(LeaPlusLC["BuffFrameScale"])
 				-- Show formatted slider value
 				LeaPlusCB["BuffFrameScale"].f:SetFormattedText("%.0f%%", LeaPlusLC["BuffFrameScale"] * 100)
@@ -8229,6 +8240,7 @@
 					BuffFrame:SetPoint(LeaPlusLC["BuffFrameA"], UIParent, LeaPlusLC["BuffFrameR"], LeaPlusLC["BuffFrameX"], LeaPlusLC["BuffFrameY"])
 					BuffFrame:SetScale(LeaPlusLC["BuffFrameScale"])
 					TemporaryEnchantFrame:SetScale(LeaPlusLC["BuffFrameScale"])
+					ConsolidatedBuffs:SetScale(LeaPlusLC["BuffFrameScale"])
 				else
 					-- Find out if the UI has a non-standard scale
 					if GetCVar("useuiscale") == "1" then

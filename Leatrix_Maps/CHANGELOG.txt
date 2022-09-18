@@ -1,3 +1,6 @@
+3.0.08.alpha.1 - 18th September 2022
+- Updated dungeon and raid icon meeting stone requirements for Blackrock Mountain, Karazhan, Zul'Gurub, Zul'Aman, Onyxia's Lair and Caverns of Time, Ahn'Qiraj.
+
 3.0.07 - 14th September 2022
 - Locale updates.
 
