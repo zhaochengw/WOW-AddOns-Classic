@@ -1,0 +1,370 @@
+ChangeLog for MoLib by MooreaTv (moorea@ymail.com)
+--------------------------------------------------
+Extensively used by all my addons
+https://www.curseforge.com/members/mooreatv/projects
+but also meant to be reused in other addons, not just mine.
+
+v9.00.03 Sept 5th 2022
+- Some genius at blizzard thought removing a constant was a smart idea (!!!)
+  redefining missing WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+
+v9.00.02 Sept 4th 2022
+- Added `isWrath` and changed `isBurningCrusade` to be true in Wrath too (use >= for all the classic booleans)
+
+v9.00.01 July 24th 2022
+- Fix 335a issue with wipe/SetScale
+
+v9.00.00 July 9th 2022
+- Support for legacy (3.3.5a) client (wip)
+- Support for Wrath Classic (beta/wip)
+
+v8.01.01 Nov 9th 2021
+- Handle case on tbc classic where sometimes an item just doesn't come up even after retries,
+  option to skip said item (option in AHDB addon)
+
+v8.01.00 Sept 18th 2021
+- frames have an optional frame.isCombatFrame boolean that prevents modifications in combat
+  that would otherwise error out
+- added .isBurningCrusade and .isClassicEra to addon bools (in addition to .isClassic)
+
+v8.00.00 May 10th 2021
+- Changed isClassic to return true for Burning Crusade Classic too (wow 2.5)
+  makes DynamicBoxer/MAMA work for BCC
+
+v7.24.00 April 18th 2021
+- Multi line print now output to chat window as separate message so they can be scrolled back individually
+  (for addon `/dbox help` output for instance)
+
+v7.23.00 Feb 21st 2021
+- New addon.useUIscale option to change scale based on UIParent scale instead of plain pixels
+  like so far.
+
+v7.22.00 Feb 20th 2021
+- Changes to avoid wiping minimap button frames (to avoid errors in other minimap management addons)
+
+v7.21.00 Nov 24th 2020
+- workaround for Blizzard 9.0.2 bug of calling SetValue on checkboxes
+
+v7.20.01 Oct 24th 2020
+- :addTextButton and mirroring of position to make button overlays on text,
+  used in dynamicboxer unit frame
+
+v7.19.01 Oct 18th 2020
+- :WipeFrame fix for already wiped non nil frame/tables.
+
+v7.19.00 Sept 13th 2020
+- New :TextCompactor and :TextDeCompactor taking a-z + space + dot and turning it into base91
+- Tests
+
+v7.18.02 Sept 8th 2020
+- Fixed tooltip anchor for option menu in Classic
+v7.18.01 Sept 6th 2020
+- Performance tweaked :Encode()/:Decode(), added correctness and performance tests
+v7.18.00 Sept 5th 2020
+- New: baseN (2-255) encoding/decoding in MoLibConv.lua : allows to use base123 for maximum density in chat,
+  or base91 for exportable/printable only characters (without space or 92 with space)
+
+v7.17.00 Sept 2nd 2020
+- New :IsInOurGuild(name) method that is a version of UnitIsInMyGuild() that works even if the unit is not in range
+  To use you need to call :SetupGuildInfo() once at startup/from main init (it'll register an extra event handler
+  for GUILD_ROSTER_UPDATE)
+
+v7.16.00 July 24th 2020
+- Auction Item Database schema v5, now contains itemSellPrice, itemStackCount, itemClassID,
+    itemSubClassID, itemRarity, itemMinLevel prefix before the link
+v7.15.02 Oct 5th 2019
+- :RandomId now takes optional range for length of the id
+- initial working version of PlaceGrid(x, y) to place on 2 dimensional grid aligned by line/columns
+- :Table() using :PlaceGrid() to grid and :TableDemo() using it and RandomId for demo
+- also demo scrollable child frame in TableDemo()
+v7.14.00 Sept 30th 2019
+- Fix rounding issue in round() and improved AH info calc
+  fixes https://github.com/mooreatv/BetterVendorPrice/issues/6
+- wip on more scrollable things:
+- Split the addScrollEditFrame() code into reusable addScrollingFrame() and remaining editbox specific
+v7.13.00 Sept 25th 2019
+- AH: now wait for seller info (optionally) and yield in more places.
+v7.12.00 Sept 19th 2019
+- AH: now use periodic yield to avoid (rare) DCs
+v7.11.03 Sept 10th 2019
+- Allow non int keys in custom slider labels
+v7.11.02 Sept 9th 2019
+- Support for LibDBIcon in minimapButton (so SexyMap users are happy)
+  Fixes https://github.com/mooreatv/AuctionDB/issues/20
+v7.11.01 Sept 5th 2019
+- AH: very big bug fix for :AHGetAuctionInfoByLink() which was initializing minbid/minbuyout incorrectly
+  for the first auction if it had multiple items
+  Fixes https://github.com/mooreatv/AuctionDB/issues/18
+  Good news is the raw data is fine and it's just the runtime calculation that was off in some cases
+v7.11.00 Sept 1st 2019
+- AH: added numSellers and hasUnknownSellers to item info to show in tooltip
+  as well as more information about the auction in :auctionEntry() so it can
+  be overridden as a callback (done by AHDB addon)
+- Add price in new items info
+v7.10.04 Aug 27th 2019
+- For classic AH: Don't restore the event immediately (as that seems to create a huge pause, unlike BfA)
+  yet keep the UI functional even if you search after and hit enter in Name editbox for instance
+- shorten the classic realm message but make it a warning (1 time warning per session)
+v7.10.03 Aug 27th 2019
+- Fix ah restart message, normal with auction expirations for small change in number
+- Fix bug in ahRestarts not reset to 0 and some "unexpected dump" warnings too
+- new ah open/close event handling moved from AHDB addon to here :AHOpenCB() and :AHClosCB() called once
+  upon change. rely on boolean to accept or not a scan request (so it works with addons replacing the AH UI like aux-addon)
+v7.10.02 Aug 26th 2019
+- Another . to : fix.
+- round to .1 copper when dividing in AH info (avoids 16.6666666 copper)
+v7.10.01 Aug 26th 2019
+- Bug fix with GetMyRegion in classic code path that couldn't be tested until now (!) sorry!
+v7.10.00 Aug 26th 2019
+- Classic is out today!
+- scan v6: includes the current bid info; itemdb also checks/includes the locale.
+- new :AHGetAuctionInfoByLink() used by the combo AHDB+Better Vendor Price to show AHDB data
+- deserializes most recent scan result for tooltip usage (though :AHRestoreData() callback to be called)
+
+v7.09.00 Aug 25th 2019
+- itemdb version 4 (20% shorter), fixed bug where suffixId was skipped (gem4id exists, doesn't stop at gem3)
+- localization strings for AH messages
+- new :GetMyInfo returning both full,short,realm,region (combo of GetMyFQN and GetMyRegion)
+
+v7.08.06 Aug 24th 2019
+- Fix bogus realm mismatch warning (because GetRealmName returns non normalized realm, so normalize it with new :NormalizeRealm)
+- new :GetMyRealmAndRegion() (used by AH code)
+v7.08.05 Aug 23rd 2019
+- AH: better item link packing, Run Length Encode the ":"s; convert data from v1 to this v2
+- Scan data v3: better structure: group by item and seller, now down to 1.5Mb a scan from 30Mb when I started.
+v7.08.04 Aug 23rd 2019
+- AH: fix for Issue #16 - GetAuctionItemTimeLeft() can block and cause reentrance in our timer based block fetch
+- fixed bug with ah record wipe on detected db format change
+- now include auction time left in the ah records
+v7.08.03 Aug 22nd 2019
+- More AH code for my AHDB addon (the addon formerly known as AuctionDB, which was confusing to TSM folks):
+  - Fully functional, fast, full scan (:AHFullSave()) - does generate a huge amount of data though.
+  - Now setup with a per Wow product line (classic, bfa at the moment) ItemDB with short key and Scan result
+  - added item db version check
+  - count and show number of new items found in the scan
+  - expose :AHfullScanPossible()
+  - optional :AHendOfScanCB() end of scan callback
+  - :AHSaveAll() detects/warns if called before scan finishes
+  - prints up to .showItems new items found during scan
+- switched License from GPLv3 to GNU Lesser General Public License v3.0 (LGPLv3)
+  (as I always intended as this is a library and needs to be embedded, also WoW is proprietary
+  which I believe implies no Addon can be plain GPL)
+- new :HexDump function
+- handle PTR/unknown Realms
+- added changeable bug report params: .bugReportMaxLines = 225, .bugReportKeepFirst = 25, .bugReportMaxEntryLen = 400
+
+v7.07.00 Aug 15th 2019
+- more common code: handling of saved var and onload event (see Mama.lua for example of use)
+- deal with sandbox bug where realm is missing from UnitFullName but present in GetRealmName
+- wip Base64
+v7.06.00 Aug 14th 2019
+- more common code: .OnEvent, :RegisterEventHandlers
+- also fixed SetSaved to return changed count (like the newer version add except dbox)
+v7.05.00 Aug 10th 2019
+- added .isClassic boolean
+- use `.minimapButtonAngle` to set the :minimapButton() initial position, default 154 degree,
+  must be changed for each addon (137 for Mama)
+- expect self.savedVar to be set to the same pointer to the addon saved var
+  used by :SetSaved() so it doesn't need to be duplicated in each addon
+- new MoLibAH.lua for auction house utilities (wip)
+
+v7.04.07 Aug 9th 2019
+- Fix for fix for https://github.com/mooreatv/PixelPerfectAlign/issues/6
+  the inset didn't have a set frame level making the text unreadable only
+  on classic - thanks Meorawr for the fix idea!
+v7.04.06 Aug 3rd 2019
+- Switched to pixel perfect ScreenFrame from WorldFrame because WorldFrame can be moved
+  and handle that nil parent case properly in display size changed events.
+  (also renamed :WorldFrame() to :ScreenFrame())
+  fixes https://www.curseforge.com/wow/addons/pixel-perfect-align/issues/1
+v7.04.05 Aug 2nd 2019
+- Added notion of extra height and used it for the scroll frame inset / was off by 8 PixelPerfectScale
+- allow StandardFrame to have a parent (like ppa's always visible pixel perfect parent frame)
+v7.04.04 Aug 1st 2019
+- Allow :Frame() to specify a parent (but it must be a child of a pixel perfect frame)
+v7.04.03 July 31st 2019
+- bug fix in DisplayInfo's call to SetDefaultFont
+- new measure() function to measure run time and used it to dispell myth about needing
+  to "cache" global function calls
+- bug fix in bug report log truncation
+- :GetCursorCoordinates() now returns raw (worldframe) coordinates too.
+- option to make a worldframe (pp) attached frame: :WorldFrame()
+
+v7.04.02 July 29th 2019
+- :NormalizeFont() to always get font object, and use defaultFont object in addScrollEditFrame
+- Change bug report font
+- Escape illegal in edit box characters (like EMA/AceComm-3.0's raw \004)
+  new :EscNonPrintable() and :EscNonPrintableAndPipe() for that purpose
+- Truncate bug reports that are too long (in utf8 aware manner)
+
+v7.04.01 July 29th 2019 (dbox 2.03.00)
+- Using standard wow look and feel + pixel perfect snap for BugReport, it's much nicer!
+- Made :StandardFrame() for reuse beyond :BugReport plus some tweaks
+- handle addScrollEditFrame() extra scrollbar width for correct bounding boxes
+- added inset to addScrollEditFrame
+- fixed case of last line getting an update with a right aligned string that doesn't fit
+
+v7.04.00 July 29th 2019
+- New :BugReport function to easily copy pastable / submitable issues,
+  we keep a .sessionLog of all messages to add to the bug report. (Issue #3)
+
+v7.03.04 July 28th 2019
+- Fix for "..." of strings at some scale and removed need for double snap
+  also avoids shimmering when stop scaling (for DynamicBoxer status frame)
+v7.03.03 July 28th 2019
+- added :SetClampedToScreen(true) (Issue #11)
+- Workaround/Fix for https://github.com/mooreatv/DynamicBoxer/issues/65
+- Handle right aligned text better using 2 snap and the fontstring un wrapped width
+- added :SetTopLeft and use it to Fix https://github.com/mooreatv/DynamicBoxer/issues/64
+  by forcing TOPLEFT anchor for save/restore (as the widgets grow right and down, not up)
+
+v7.03.02 July 25th 2019 (matches ppa v1.04.00)
+- Added :GetCursorCoordinates() returning (pixelX, pixelY, uicoordX, uicoordY) for the cursor
+v7.03.01 July 25th 2019 (matches dbox v2.01.00)
+- Moved more code from DynamicBoxer to share with (my and other's) addons:
+    - new :MakeMoveable() to add dragging to a frame, with callback at the end to :SavePosition()
+    - new :RestorePosition() to call with what is saved by the MakeMoveable cb and SavePosition()
+    - use new :PixelPerfectSnap() for :Snap()
+- roundUp() works for negative numbers too (like point offsets from the top)
+- Opsa fixed collision between "first" as init marker and the new :first() lisp function
+- Also fixed handling of UI_SCALED_CHANGED broken recently for UIParent based Pixel Perfect base frames.
+- added :DrawPixel and use that for 1 pixel crosses instead of 2 lines (!)
+- addBorder remembers the lines made in f.border and the desired pixel thickness and adjusts on rescale to keep it
+- addLine option, used by addBorder to not add the line to the handled children of the frame
+
+v7.02.00 July 22nd 2019
+- Beat the 16k limit (well 16k at a time) for Textures/Lines count (use :Demo() to see and MoLib_PP_Demo:Hide()/Show() to toggle)
+- Expose grid demo colors .gold/.red
+- minimap button/icon/launcher, allow to restore saved position
+- moved :ShowToolTip() and :SplitFullName() from DynamicBoxer (to use in PPA/by others)
+- new lisp like function :first() (car ...) :rest() (cdr ...) and :Map(fn, ...) to apply a function to each remaining argument.
+v7.01.00 July 21st 2019
+- Allow single pixel for grid with length == 1 in :FineGrid()
+- :PixelPerfectScale() to update scale on PP frames and using it on change screen/scale events
+- :AspectRatio() calc and showing in DisplayInfo, always show a center cross even for even aspect ratios
+- added .defaultFont and .defaultTextColor properties to Frame() used by .addText()
+- :GetCVar for classic/bfa compat
+
+v7.00.01 July 21st 2019
+- Fix for modification for center cross (grid demo) was changing the whole line after it
+v7.00.00 July 21st 2019
+- Pixel perfect for real now - See PixelPerfectAlign demo addon
+  :FineGrid() and :DisplayInfo()
+- new :addLine() :addBorder() :WipeFrame()
+
+v6.00.02 July 20th 2019
+- added :DebugStack(...) that prints message and stack trace
+v6.00.01 July 18th 2019
+- add optional points for PlaceLeft/PlaceRight (so DynamicBoxer can use centered points)
+v6.00.00 July 17th 2019
+- Move in code from DynamicBoxer :ChangeScale  f:addTexture
+- added comments/doc
+- new :PreloadTextures (pending using coroutine/continuations or delaying layout
+  on update event for textures that aren't loaded yet)
+- overridePadding argument in (set)Scale() and better calculation of scale.
+- new :addAnimatedTexture
+- new :PlaceLeft() meant to place a single item to the left of last right
+- RgbToHex takes optional 4th argument for alpha
+
+5.3.2 July 15th 2019
+- Fixed slider to show formatted decimal numbers
+- Add optional call back (.callBack) to sliders
+5.3.1 July 11th 2019
+- fixed RgbToHex, was missing leading 0s on small hex numbers. also use uppercase.
+- widget addText can take either a font name string or a font object as 2nd param.
+- Adding a :Scale() that use the current frame anchor and scale the inside to fit
+  (kind of reverse of Snap() which changes the size of container to fit content)
+- Made Place() take optional Points so one can do centered layout (see DynamicBoxer TAB feature)
+5.3.0 July 11th 2019
+- pixel perfect snap to pixel boundary with :SnapFrame() on any frame
+- proper bottom right margin calculation and setting in f:Snap()
+- new :ErrorAndThrow(...) to both log a formatted error and throw the same message
+- working (for players as target) :GetUnitRealmUsingGuid() and :GetRealRealm()
+  (first uses just the guid's realmid, second uses the playerinfobyguid)
+5.2.1 July 9th+ 2019
+- new: :WatchedTable() a table where you get a callback when values are changed.
+- MoLibUI: added :setSizeToChildren which calculates the bounding box union of all placed children and
+sets that as the width and height of the containing frame.
+- new :RgbToHex
+5.2.0 July 7th 2019
+- (start of) Localization support: ML:GetLocalization creates an L table compatible with
+https://authors.curseforge.com/knowledge-base/world-of-warcraft/531-localization-substitutions
+- default DoEnable/DoDisable on all widgets
+5.1.1 July 6th 2019
+- Fixing taint by delaying creation of widget (see DynamicBoxer#38 and use/fix)
+5.1.0 July 4th 2019
+- Adding Realms.lua realm by id table obtained from Blizzard APIs with
+  https://github.com/mooreatv/WowApiClient
+5.0.0 July 3rd 2019
+- MoLibUI: Moved code from DynamicBoxer DBoxUI.lua so it can be reused
+(see example of use at the end of
+ https://github.com/mooreatv/DynamicBoxer/blob/master/DynamicBoxer/DBoxUI.lua)
+
+On going updates from June 7th-30th 2019
+4.1.0
+- Incompatible change:
+VerifySecureMessage returns true or false as first argument and an error message as
+second argument instead of printing their own Warning
+- adding :CloneTable as convenience shortcut deepmerge into a new table, also handles nicely nil and non table source
+  and will always return a table
+- adding :PrintDefault and :PrintInfo for white and blue printing with format'ing
+- colors tweak
+4.0.0
+- ***Big incompatible change!*** all functions now declared with ":" and not a mix and match of "." and ":"
+check all the callers, always use ":" !
+- added LRU:exists() and :newest() (and earlier :fromTable(table) and :toTable())
+- adding .Factions list of possible values returned by UnitFactionGroup()
+- fix ML.name use instead of self.name use in debug print
+- :Debug now shows SS.XX prefix where SS is modulo 100 seconds and XX hundredth of seconds
+- added LRU:toTable() and LRU:fromTable() and optional table argument to constructor (ML:LRU()) to import/export to flat table
+- ML.secureFutureThreshold = -5 ML.securePastThreshold = 45 changeable defaults instead of hardcoded -5 and +15 seconds before
+- Switched hashing to be 64 bits (2x32bits to be precise), :Sign and :CreateSecureMessage uses the 64bits hex string
+- new :ToHex(n) that gives a 32 bit (8 characters long) hex string representation (lua's %x fails for 2-4B)
+- CreateSecureMessage and VerifySecureMessage both now return the signature to be used as messageId
+- Dump/Debug etc now properly escape the wow | sequences
+- new .StartsWith(str, prefix [, cb]) returns true and the reminder of the str if str starts with prefix,
+optional cb argument is called with reminder of str after prefix if a match is found.
+- new :CreateSecureMessage and :VerifySecureMessage functions to exchange time limited secure messages
+based on 1 visible and 1 secret token, embeds server time and checks it too (messages stay valid for 15s)
+- new :Sign(msg, secret) which returns the long hash of msg .. secret, also exposed .Hash() in addition
+to earlier .ShortHash()
+- new ML.LRU(capacity) instance constructor with :add() and :iterateNewest() and :iterateOldest() methods
+- the Dump function (and thus Debug, etc...) can now print structures with pointer without infinite loop
+- start of some tests in tests/ directory, and reduced reliance on wow specific functions to limit the number of shm needed
+- changed all functions using :Debug to be :Functions (take self arg)
+	so the debugging level of user addons embedded under different
+	namespace do work (RandomId)
+- new :AddHashKey to add a single alphanum character hash at the end of a string
+- new :UnHash to check validity of, and remove previous hash key
+- new :GsubEsc(str) escapes a string so it can be used literally
+as a string.gsub(haystack, needle, replace) needle (ie escapes %?*-...)
+- new :ReplaceAll(haystack, needle, replace, ...) replaces literally
+every occurrence of needle by replace in haystack, rest of signature
+and return is same as gsub()
+- new :ShortHash(str) returning 1 alpha num hash of input string (and
+the longer 32 bits hash numerical value)
+- changed DebugEvCall to take mandatory level arg
+- new :RandomId(len) for random alpha num string of length len
+- new :Warning(formatStr, ...) for warnings with nice orange color
+- :Debug now takes optional level first argument (if absent level is 1), use higher level
+	for more verbose levels
+- new :Error(formatStr, ...) for errors in red function
+- Format() and thus Debug() now Dump()s table arguments
+- GetMyFQN when called to early can fail (for instance at UPDATE_BINDINGS time the realm is nil(!))
+- Darker green for :Debug() to not confuse with guild chat
+
+3.1.0 June 6th 2019
+- MoLib can now be installed in a different namespace than the one of the addon's name
+use MoLibInstallInto(namespace, name) to do so
+- As a consequence Debug() and MoLibInit() must be called using : so they can access state
+- Adding multi valued Dump(...)
+- Adding debug Ev handler DebugEvCall
+- prefix seconds (server time) prefix to debug logging
+- adding GetMyFQN fully qualified characterName-normalizedRealm
+3.0.0 June 6th 2019
+- Created MoLib for common code between WhoTracker, Camera, DynamicBoxer etc
+
+[... rest of the changelog in WhoTracker: https://github.com/mooreatv/WhoTracker ]
+
+1.0.0	Feb 20th 2009
+- Initial Release
