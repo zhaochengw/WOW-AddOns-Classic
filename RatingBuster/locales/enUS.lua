@@ -529,6 +529,8 @@ L["Total Reduction <- Armor, Dodge, Parry, Block, MobMiss, MobCrit, MobCrush, Da
 -- /rb sum tank avoid
 L["Sum Avoidance"] = true
 L["Avoidance <- Dodge, Parry, MobMiss, Block(Optional)"] = true
+L["Sum Defense"] = true
+L["Defense <- Defense Rating"] = true
 ---------------------------------------------------------------------------
 -- /rb sum gemset
 L["Gem Set"] = true

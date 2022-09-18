@@ -3300,6 +3300,14 @@ PatternLocale.frFR = {
     ["le score d'esquive"] = {"DODGE_RATING",},
     ["au score d'esquive"] = {"DODGE_RATING",},
     ["votre score d'esquive"] = {"DODGE_RATING",},
+	["score d'esquive"] = {"DODGE_RATING"},
+	["le score d'esquive"] = {"DODGE_RATING"},
+	["au score d'esquive"] = {"DODGE_RATING"},
+	["votre score d'esquive"] = {"DODGE_RATING"},
+	["score d’esquive"] = {"DODGE_RATING"},
+	["le score d’esquive"] = {"DODGE_RATING"},
+	["au score d’esquive"] = {"DODGE_RATING"},
+	["votre score d’esquive"] = {"DODGE_RATING"},
 
     ["score de parade"] = {"PARRY_RATING",},
     ["au score de parade"] = {"PARRY_RATING",},
@@ -3362,9 +3370,13 @@ PatternLocale.frFR = {
 
     ["le score de pénétration d'armure"] = {"ARMOR_PENETRATION_RATING"},
     ["votre score de pénétration d'armure"] = {"ARMOR_PENETRATION_RATING"},
+	["le score de pénétration d’armure"] = {"ARMOR_PENETRATION_RATING"},
+    ["votre score de pénétration d’armure"] = {"ARMOR_PENETRATION_RATING"},
 
     ["votre score d'expertise"] = {"EXPERTISE_RATING"},
     ["le score d'expertise"] = {"EXPERTISE_RATING"},
+	["le score d’expertise"] = {"EXPERTISE_RATING"},
+	["score d’expertise"] = {"EXPERTISE_RATING"},
 
     ["le score de la compétence dagues"] = {"DAGGER_WEAPON_RATING"},
     ["score de la compétence dagues"] = {"DAGGER_WEAPON_RATING"},
@@ -11486,7 +11498,7 @@ Example:
 -----------------------------------]]
 
 local BlockValuePerStr = {
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0.5, 0.5, 0, 0, 0, 0, 0.5, 0, 0, 0,
   --["WARRIOR"] = 0,
   --["PALADIN"] = 0,
   --["HUNTER"] = 0,
@@ -11801,17 +11813,17 @@ Example:
 
 local DodgePerAgiStatic
 DodgePerAgiStatic = {
-  0.0135962, 0.0192366, 0.0133266, 0.0240537, 0.0192366, 0.0135962, 0.0192366, 0.0195253, 0.0192366, 0.0240458,
-  --["WARRIOR"] =     0.0135962,
-  --["PALADIN"] =     0.0192366,
-  --["HUNTER"] =      0.0133266,
-  --["ROGUE"] =       0.0240537,
-  --["PRIEST"] =      0.0192366,
-  --["DEATHKNIGHT"] = 0.0135962,
-  --["SHAMAN"] =      0.0192366,
-  --["MAGE"] =        0.0195253,
-  --["WARLOCK"] =     0.0192366,
-  --["DRUID"] =       0.0240458,
+	0.0118, 0.0167, 0.0116, 0.0209, 0.0167, 0.0118, 0.0167, 0.017, 0.0167, 0.0209, 
+	--["WARRIOR"] =     0.0118,
+	--["PALADIN"] =     0.0167,
+	--["HUNTER"] =      0.0116,
+	--["ROGUE"] =       0.0209,
+	--["PRIEST"] =      0.0167,
+	--["DEATHKNIGHT"] = 0.0118,
+	--["SHAMAN"] =      0.0167,
+	--["MAGE"] =        0.017, 
+	--["WARLOCK"] =     0.0167,
+	--["DRUID"] =       0.0209,
 }
 
 local ModAgiClasses = {
@@ -11865,9 +11877,9 @@ function StatLogic:GetDodgePerAgi()
     dodgePerAgi = -c / b
   end
   --return dodgePerAgi
-  --return floor(dodgePerAgi*10000+0.5)/10000, "DODGE"
+  return floor(dodgePerAgi*10000+0.5)/10000, "DODGE"
  -- print (dodgePerAgi, "DODGE per Agi")
-  return dodgePerAgi, "DODGE"
+  --return dodgePerAgi, "DODGE"
 end
 
 --[[---------------------------------

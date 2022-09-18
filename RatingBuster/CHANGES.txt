@@ -1,12 +1,12 @@
-lightweight tag dbf71d05c61d015a3bb70f0c16e18d57b32e9217 3.4.0.10
+lightweight tag 023acc0b8c01552dba0c0e98128d3f34b234d53d 3.4.0.12
 Author:	LANCESTRE <lancetre@intenebris.org>
-Date:	Thu Sep 15 14:29:11 2022 +0200
+Date:	Sun Sep 18 14:44:55 2022 +0200
 
-commit dbf71d05c61d015a3bb70f0c16e18d57b32e9217
+commit 023acc0b8c01552dba0c0e98128d3f34b234d53d
 Author: LANCESTRE <lancetre@intenebris.org>
-Date:   Thu Sep 15 14:29:11 2022 +0200
+Date:   Sun Sep 18 14:44:55 2022 +0200
 
-    MP5(NC)
+    CallbackHandler
     
-    Fix MP5(NC) to MP5(OC)
+    CallbackHandler upgrade
 

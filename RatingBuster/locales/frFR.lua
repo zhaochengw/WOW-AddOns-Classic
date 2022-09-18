@@ -218,37 +218,37 @@ L["Show Attack Power from Armor"] = "Affiche la puissance d'attaque produite par
 ---------------------------------------------------------------------------
 -- /rb sum
 L["Stat Summary"] = true
-L["Options for stat summary"] = "Option du compte rendu global des statitstiques de l'objet."
+L["Options for stat summary"] = "Option du résumé global des statitstiques de l'objet."
 -- /rb sum show
-L["Show Stat Summary"] = "Voir le compte rendu"
-L["Select when to show stat summary in tooltips. Modifier keys needs to be pressed before showing the tooltips."] = "Définir si le compte rendu de statistiques est affiché en fonction d'un raccourcis clavier" 
+L["Show Stat Summary"] = "Voir le résumé des stats"
+L["Select when to show stat summary in tooltips. Modifier keys needs to be pressed before showing the tooltips."] = "Définir si le résumé de statistiques est affiché en fonction d'un raccourcis clavier" 
 -- /rb sum ignore
 L["Ignore Settings"] = "Restrictions"
 L["Ignore stuff when calculating the stat summary"] = "Indiquer les restrictions souhaitées"
 -- /rb sum ignore unused
 L["Ignore Undesirable Items"] = "Paramètres d'objets"
-L["Hide stat summary for undesirable items"] = "Ne pas afficher le compte rendu selon certains critères d'objets"
+L["Hide stat summary for undesirable items"] = "Ne pas afficher le résumé selon certains critères d'objets"
 -- /rb sum ignore quality
 L["Minimum Item Quality"] = "Qualité minimale"
-L["Show stat summary only for selected quality items and up"] = "Afficher le compte rendu pour les objets ayant une qualité minimale"
+L["Show stat summary only for selected quality items and up"] = "Afficher le résumé pour les objets ayant une qualité minimale"
 -- /rb sum ignore armor
 L["Armor Types"] = "Type d'armure"
 L["Select armor types you want to ignore"] = "Restreindre les objets en fonction de leur type d'armure "
 -- /rb sum ignore armor cloth
 L["Ignore Cloth"] = "Ignorer Tissu"
-L["Hide stat summary for all cloth armor"] = "Ne pas afficher de compte rendu pour les armures en Tissu"
+L["Hide stat summary for all cloth armor"] = "Ne pas afficher de résumé pour les armures en Tissu"
 -- /rb sum ignore armor leather
 L["Ignore Leather"] = "Ignorer Cuir"
-L["Hide stat summary for all leather armor"] = "Ne pas afficher de compte rendu pour les armures en Cuir"
+L["Hide stat summary for all leather armor"] = "Ne pas afficher de résumé pour les armures en Cuir"
 -- /rb sum ignore armor mail
 L["Ignore Mail"] = "Ignorer Maille"
-L["Hide stat summary for all mail armor"] = "Ne pas afficher de compte rendu pour les armures de Maille"
+L["Hide stat summary for all mail armor"] = "Ne pas afficher de résumé pour les armures de Maille"
 -- /rb sum ignore armor plate
 L["Ignore Plate"] = "Ignorer Plaque"
-L["Hide stat summary for all plate armor"] = "Ne pas afficher de compte rendu pour les armures de Plaque"
+L["Hide stat summary for all plate armor"] = "Ne pas afficher de résumé pour les armures de Plaque"
 -- /rb sum ignore equipped
 L["Ignore Equipped Items"] = "Ignorer les objets équipés"
-L["Hide stat summary for equipped items"] = "Ne pas afficher de compte rendu pour les objets équipés"
+L["Hide stat summary for equipped items"] = "Ne pas afficher de résumé pour les objets équipés"
 -- /rb sum ignore enchant
 L["Ignore Enchants"] = "Ignorer les enchantements"
 L["Ignore enchants on items when calculating the stat summary"] = "Ne pas tenir compte des enchantements"
@@ -263,31 +263,31 @@ L["Display Style For Diff Value"] = "Style des comparaisons"
 L["Display diff values in the main tooltip or only in compare tooltips"] = "Options de style des comparaisons"
 -- /rb sum space
 L["Add Empty Line"] = "Saut de ligne"
-L["Add a empty line before or after stat summary"] = "Ajouter une ligne vide apres ou après le compte rendu"
+L["Add a empty line before or after stat summary"] = "Ajouter une ligne vide apres ou après le résumé"
 -- /rb sum space before
 L["Add Before Summary"] = "Saut de ligne (avant)"
-L["Add a empty line before stat summary"] = "Ajouter une ligne vide avant le compte rendu"
+L["Add a empty line before stat summary"] = "Ajouter une ligne vide avant le résumé"
 -- /rb sum space after
 L["Add After Summary"] = "Saut de ligne (après)"
-L["Add a empty line after stat summary"] = "Ajouter une ligne vide après le compte rendu"
+L["Add a empty line after stat summary"] = "Ajouter une ligne vide après le résumé"
 -- /rb sum icon
 L["Show Icon"] = "Afficher l'icone"
-L["Show the sigma icon before summary listing"] = "Afficher l'icone de compte rendu (Epsilon)"
+L["Show the sigma icon before summary listing"] = "Afficher l'icone de résumé (Epsilon)"
 -- /rb sum title
 L["Show Title Text"] = "Afficher le titre"
-L["Show the title text before summary listing"] = "Afficher le titre du compte rendu"
+L["Show the title text before summary listing"] = "Afficher le titre du résumé"
 -- /rb sum showzerostat
 L["Show Zero Value Stats"] = "Lister les valeurs nulles (0)"
-L["Show zero value stats in summary for consistancy"] = "Lister les valeurs nulles (0) dans le compte rendu"
+L["Show zero value stats in summary for consistancy"] = "Lister les valeurs nulles (0) dans le résumé"
 -- /rb sum calcsum
-L["Calculate Stat Sum"] = "Etablir un compte rendu"
-L["Calculate the total stats for the item"] = "Etablir un compte rendu de statistiques de l'objet"
+L["Calculate Stat Sum"] = "Etablir un résumé"
+L["Calculate the total stats for the item"] = "Etablir un résumé de statistiques de l'objet"
 -- /rb sum calcdiff
 L["Calculate Stat Diff"] = "Comparer avec l'objet equipé"
 L["Calculate the stat difference for the item and equipped items"] = "Comparer cet objet avec l'objet actuellement equipé"
 -- /rb sum sort
-L["Sort StatSummary Alphabetically"] = "Classer le compte rendu par ordre alphabétique"
-L["Enable to sort StatSummary alphabetically, disable to sort according to stat type(basic, physical, spell, tank)"] = "Classer le compte rendu par ordre alphabétique"
+L["Sort StatSummary Alphabetically"] = "Classer le résumé par ordre alphabétique"
+L["Enable to sort StatSummary alphabetically, disable to sort according to stat type(basic, physical, spell, tank)"] = "Classer le résumé par ordre alphabétique"
 -- /rb sum avoidhasblock
 L["Include Block Chance In Avoidance Summary"] = "Inclure le blocage"
 L["Enable to include block chance in Avoidance summary, Disable for only dodge, parry, miss"] = "Inclure le blocage dans le total d'evitement. Desactiver pour ne prendre en compte que l'esquive et la parade"
@@ -440,8 +440,8 @@ L["Dodge Chance <- Dodge Rating, Agility"] = true
 L["Sum Parry Chance"] = "Cumul %Parade"
 L["Parry Chance <- Parry Rating"] = true
 -- /rb sum tank block
-L["Sum Block Chance"] = "Cumul %Bloc"
-L["Block Chance <- Block Rating"] = "Cumul %Bloc"
+L["Sum Block Chance"] = "Cumul %Blocage"
+L["Block Chance <- Block Rating"] = "Cumul %Blocage"
 -- /rb sum tank neglectdodge
 L["Sum Dodge Neglect"] = "Cumul %Esquive ignorée"
 L["Dodge Neglect <- Expertise"] = "Cumul %Esquive ignorée <- Expertise"
@@ -470,7 +470,7 @@ L["Dodge Rating Summary"] = true
 L["Sum Parry Rating"] = "Cumul Parade"
 L["Parry Rating Summary"] = true
 -- /rb sum tank blockrating
-L["Sum Block Rating"] = "Cumul Bloc"
+L["Sum Block Rating"] = "Cumul Blocage"
 L["Block Rating Summary"] = true
 -- /rb sum tank res
 L["Sum Resilience"] = "Cumul Résilience"
@@ -730,7 +730,7 @@ L["$value SP"] = "$value Puis.sort"
 L["$value RAP"] = "$value PA dist"
 L["$value Pwr"] = "$value Dégats"
 L["$value Heal"] = "$value Soins"
-L["$value Armor"] = "$value Af"
+L["$value Armor"] = "$value Armure"
 L["$value Block"] = "$value Bloc"
 L["$value MP5"] = "$value Mp5"
 L["$value MP5(OC)"] = "$value Mp5(oC)"
@@ -749,4 +749,4 @@ L["$value Spell Hit"] = "$value(Sort)"
 ------------------
 -- Stat Summary --
 ------------------
-L["Stat Summary"] = "Compte-rendu"
+L["Stat Summary"] = "Résumé des Stats"
