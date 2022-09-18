@@ -22,6 +22,7 @@ local activations = {}
 local LocalizedOverpower = GetSpellInfo(7384)
 local LocalizedRevenge = GetSpellInfo(6572)
 local LocalizedRampage = GetSpellInfo(29801)
+local LocalizedSlam = GetSpellInfo(1464)
 local LocalizedRiposte = GetSpellInfo(14251)
 local LocalizedCounterattack = GetSpellInfo(19306)
 -- local LocalizedExecute = GetSpellInfo(20662)
@@ -52,6 +53,8 @@ end
 AddSpellName("VictoryRush", 34428 )
 AddSpellName("Overpower", 11585, 11584, 7887, 7384 ) -- 7384 - only Wrath rank
 AddSpellName("Rampage", 30033, 30030, 29801 ) -- TBC only
+AddSpellName("Slam", 1464, 8820, 11604, 11605, 25241, 25242, 47474)
+
 AddSpellName("Riposte", 14251 )
 AddSpellName("Counterattack", 27067, 20910, 20909, 19306 )
 AddSpellName("KillCommand", 34026 )
@@ -447,6 +450,15 @@ local CheckSwordAndBoard = OnAuraStateChange(function() return FindAura("player"
         end
     end
 )
+local CheckBloodsurge = OnAuraStateChange(function() return FindAura("player", 46916, "HELPFUL") end,
+    function(present, duration)
+        if present then
+            f:Activate("Slam", "Bloodsurge", duration, true)
+        else
+            f:Deactivate("Slam", "Bloodsurge")
+        end
+    end
+)
 
 ns.configs.WARRIOR = function(self)
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -508,7 +520,8 @@ ns.configs.WARRIOR = function(self)
     local hasTasteForBloodTalent = IsPlayerSpell(56636) or IsPlayerSpell(56637) or IsPlayerSpell(56638)
     local hasSuddenDeathTalent = IsPlayerSpell(29723) or IsPlayerSpell(29725) or IsPlayerSpell(29724)
     local hasSwordAndBoardTalent = IsPlayerSpell(46951) or IsPlayerSpell(46952) or IsPlayerSpell(46953)
-    if hasTasteForBloodTalent or hasSuddenDeathTalent or hasSwordAndBoardTalent then
+    local hasBloodsurgeTalent = IsPlayerSpell(46913) or IsPlayerSpell(46914) or IsPlayerSpell(46915)
+    if hasTasteForBloodTalent or hasSuddenDeathTalent or hasSwordAndBoardTalent or hasBloodsurgeTalent then
         self:RegisterUnitEvent("UNIT_AURA", "player")
         self.UNIT_AURA = function(self, event, unit)
             if hasTasteForBloodTalent then
@@ -519,6 +532,9 @@ ns.configs.WARRIOR = function(self)
             end
             if hasSwordAndBoardTalent then
                 CheckSwordAndBoard()
+            end
+            if hasBloodsurgeTalent then
+            	CheckBloodsurge()
             end
         end
     else
