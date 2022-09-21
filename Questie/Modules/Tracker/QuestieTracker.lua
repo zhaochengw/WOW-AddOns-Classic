@@ -856,7 +856,7 @@ function QuestieTracker:Update()
                     end
                 end
 
-                trackerLineWidth = math.max(trackerLineWidth, line.label:GetWidth())
+                trackerLineWidth = math.max(trackerLineWidth, line.label:GetUnboundedStringWidth())
 
                 line:SetVerticalPadding(2)
 
@@ -903,7 +903,7 @@ function QuestieTracker:Update()
                         line.label:SetWidth(lineWidth)
                         line:SetWidth(lineWidth)
 
-                        trackerLineWidth = math.max(trackerLineWidth, line.label:GetWidth())
+                        trackerLineWidth = math.max(trackerLineWidth, line.label:GetUnboundedStringWidth())
                         line:Show()
                         line.label:Show()
                     end
@@ -930,7 +930,7 @@ function QuestieTracker:Update()
                             line.label:SetWidth(lineWidth)
                             line:SetWidth(lineWidth)
 
-                            trackerLineWidth = math.max(trackerLineWidth, line.label:GetWidth())
+                            trackerLineWidth = math.max(trackerLineWidth, line.label:GetUnboundedStringWidth())
                             line:SetVerticalPadding(1)
                             line:Show()
                             line.label:Show()
@@ -960,7 +960,7 @@ function QuestieTracker:Update()
                         line.label:SetWidth(_QuestieTracker.baseFrame:GetWidth() - objectiveMarginLeft - 10 - trackerSpaceBuffer)
                         line:SetWidth(line.label:GetWidth())
 
-                        trackerLineWidth = math.max(trackerLineWidth, line.label:GetWidth())
+                        trackerLineWidth = math.max(trackerLineWidth, line.label:GetUnboundedStringWidth())
                         line:SetVerticalPadding(1)
                         line:Show()
                         line.label:Show()
@@ -1007,27 +1007,10 @@ function QuestieTracker:Update()
         end
     end)
 
-    -- Auto adjust tracker size and visibility
-    local activeQuestsHeaderTotal = trackerSpaceBuffer + _QuestieTracker.activeQuestsHeader.trackedQuests.label:GetUnboundedStringWidth() + trackerFontSizeHeader
-    local trackerVARScombined = trackerLineWidth + trackerSpaceBuffer + trackerLineIndent
-    local trackerBaseFrame = _QuestieTracker.baseFrame:GetWidth()
-
     if line then
-        if Questie.db[Questie.db.global.questieTLoc].TrackerWidth > 0 then
-            if (Questie.db[Questie.db.global.questieTLoc].TrackerWidth < activeQuestsHeaderTotal and _QuestieTracker.isSizing ~= true) then
-                _QuestieTracker.baseFrame:SetWidth(activeQuestsHeaderTotal)
-                Questie.db[Questie.db.global.questieTLoc].TrackerWidth = activeQuestsHeaderTotal
-            elseif (Questie.db[Questie.db.global.questieTLoc].TrackerWidth ~= trackerBaseFrame and _QuestieTracker.isSizing ~= true) then
-                _QuestieTracker.baseFrame:SetWidth(Questie.db[Questie.db.global.questieTLoc].TrackerWidth)
-            end
-        else
-
-            if (trackerVARScombined < activeQuestsHeaderTotal) then
-                _QuestieTracker.baseFrame:SetWidth(activeQuestsHeaderTotal)
-            elseif (trackerVARScombined ~= trackerBaseFrame) then
-                _QuestieTracker.baseFrame:SetWidth(trackerVARScombined)
-            end
-        end
+        local activeQuestsHeaderWidth = trackerSpaceBuffer + _QuestieTracker.activeQuestsHeader:GetWidth() + trackerFontSizeHeader
+        local trackerVarsCombined = trackerLineWidth + trackerSpaceBuffer + trackerLineIndent
+        TrackerBaseFrame.UpdateWidth(activeQuestsHeaderWidth, trackerVarsCombined)
 
         -- Trims the bottom of the tracker (overall height) based on min/max'd zones and/or quests
         local trackerBottomPadding
@@ -1055,7 +1038,7 @@ function QuestieTracker:Update()
         end
 
         _QuestieTracker.baseFrame:SetMaxResize(GetScreenWidth()/2, GetScreenHeight())
-        _QuestieTracker.baseFrame:SetMinResize(activeQuestsHeaderTotal, _QuestieTracker.baseFrame:GetHeight())
+        _QuestieTracker.baseFrame:SetMinResize(activeQuestsHeaderWidth, _QuestieTracker.baseFrame:GetHeight())
         _QuestieTracker.trackedQuestsFrame:Show()
     end
 
