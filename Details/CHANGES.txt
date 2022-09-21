@@ -1,22 +1,340 @@
-tag 4da0b460463e4b40fa12a222ffe4df409d61dc41 DetailsRetail.v9.2.7.10018.146
+tag 252a74c1027a14bfc9684873ea0bdd372d082979 DetailsRetail.9.2.7.10029.146
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Wed Aug 31 19:15:29 2022 -0300
+Date:	Wed Sep 21 13:43:39 2022 -0300
 
-commit 27ca0d6df73caa348f61ca1e3b95c7e33a050e31
+commit 5e847efe3c1cec7512454cca5edc2f3e5825b5cc
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Wed Aug 31 19:15:06 2022 -0300
+Date:   Wed Sep 21 13:42:55 2022 -0300
 
-    Version Bump
+    framework update; added /dumpt to dump tables
 
-commit 57bc1895a68c20dec674bee86c0f882eb4d50076
-Author: Colton Schlosser <1498529+cltnschlosser@users.noreply.github.com>
-Date:   Wed Aug 31 17:10:58 2022 -0500
+commit 762623ddafe12b8fdbbe3012286473ff27974bda
+Author: ForestJ316 <91183260+ForestJ316@users.noreply.github.com>
+Date:   Tue Sep 20 17:05:20 2022 +0100
 
-    Fix IsWotLKWow typo
+    Update SpecSpellList to WotLK standard
 
-commit 57bc1895a68c20dec674bee86c0f882eb4d50076
-Author: Colton Schlosser <1498529+cltnschlosser@users.noreply.github.com>
-Date:   Wed Aug 31 17:10:58 2022 -0500
+commit 762623ddafe12b8fdbbe3012286473ff27974bda
+Author: ForestJ316 <91183260+ForestJ316@users.noreply.github.com>
+Date:   Tue Sep 20 17:05:20 2022 +0100
 
-    Fix IsWotLKWow typo
+    Update SpecSpellList to WotLK standard
+
+commit 8e5e6d3c99b907ab5b70cdc19ee439883a947acd
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Sep 16 14:40:19 2022 -0300
+
+    framework udpate
+
+commit 019acd6809e89e25e0209140d960bdd869aacf6c
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 15 22:30:25 2022 -0300
+
+    fixed an issue on Streamer! Plugin
+
+commit ed0a2cc6d8ae3fbd0aaf8b108fc32d9c83b98432
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 15 18:59:48 2022 -0300
+
+    More fixes
+
+commit 6eca9ae6cfbe1a977235cc49f1f5cc96c52464d8
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Thu Sep 15 15:13:07 2022 -0500
+
+    Another divide by zero fix
+
+commit 6eca9ae6cfbe1a977235cc49f1f5cc96c52464d8
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Thu Sep 15 15:13:07 2022 -0500
+
+    Another divide by zero fix
+
+commit b58853ff066e89541c234f9fa6fab2d569ffb16b
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 15 13:50:22 2022 -0300
+
+    Streamer Plugin updated to Dragonflight
+
+commit e20cee2303458b697f861b696224838578ca7193
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 15 12:42:15 2022 -0300
+
+    Framework update
+
+commit be700db39abccdad75b3fcc114475ce9b89dfd52
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 15 12:42:03 2022 -0300
+
+    Updates on Scroll Damage panel
+
+commit b7cee955ba381e3f219df49da819f3e22df93210
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Wed Sep 14 22:29:39 2022 -0300
+
+    dragonflight version 30
+
+commit b91ba87254515ffd59d51d37714efa3d81ce18c5
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Wed Sep 14 22:11:34 2022 -0300
+
+    LibOpenRaid update
+
+commit 666b643875d73a9a66bd2eff384acefdb5cc79e0
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Wed Sep 14 20:27:06 2022 -0300
+
+    titlebar text updates
+
+commit 7c8511bd1dc5ee470c1ade93e876cc7d7a9608ee
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Tue Sep 13 22:29:08 2022 -0300
+
+    ptr fix
+
+commit 74d61145467553c25118806056d5313993f184e4
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Tue Sep 13 20:10:37 2022 -0300
+
+    updates
+
+commit af09a4bb4f614a8a27993c6f6354591ea0608dbe
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Sat Sep 10 22:45:01 2022 -0500
+
+    White Box Fix
+    
+    If a skin has certain defaults still set from instance_defaults then assume it is a corrupted skin
+
+commit af09a4bb4f614a8a27993c6f6354591ea0608dbe
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Sat Sep 10 22:45:01 2022 -0500
+
+    White Box Fix
+    
+    If a skin has certain defaults still set from instance_defaults then assume it is a corrupted skin
+
+commit d6e0e27aa3870d78b7646909a255575bf8876dfd
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 8 18:22:18 2022 -0300
+
+    More fixes for Dragonflight
+
+commit aaa5a149c2b92c1276a04f86cc9cf9b1ae279851
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 8 16:28:44 2022 -0300
+
+    SetAlpha above 1.0 is causing error
+
+commit dfe69e81ba8874544a1d6f6124edd3dc8d672ed7
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 8 14:42:00 2022 -0300
+
+    fix
+
+commit 21fa845bf6adc97d268026d8e30ec18bc97716eb
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Wed Sep 7 23:24:47 2022 -0300
+
+    wake up curseforge packager
+
+commit 842e86404b29166240adcafc198a91532b44afb0
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Wed Sep 7 22:07:50 2022 -0300
+
+    LibOpenRaid Update
+
+commit 0306cda9c3aa35e2b3bf65a8f3aac72af8db7030
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sun Sep 4 18:00:39 2022 -0300
+
+    Fixing the statusbar color for the player breakdown window not showing on 10.0
+
+commit 685b06193aa075986135d18d42bd1005e59adffb
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Sun Sep 4 14:12:21 2022 -0300
+
+    Framework update
+
+commit df3430ac726359c4cb68cdf7c1521caef891b8e6
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Sun Sep 4 09:56:59 2022 -0500
+
+    Add DK into GetRoleFromSpec
+
+commit df3430ac726359c4cb68cdf7c1521caef891b8e6
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Sun Sep 4 09:56:59 2022 -0500
+
+    Add DK into GetRoleFromSpec
+
+commit d2254f51f1a4881305809b3a826ac04ee06bd940
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Sun Sep 4 09:48:18 2022 -0500
+
+    Send spec data in Wrath
+
+commit d65d6d08bd10348a009f278a17c437d6c60585a3
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Sun Sep 4 05:47:41 2022 -0500
+
+    Change check for IsTBCWow to IsWotLKWow
+    
+    I got the capitalization correct this time I swear. I triple checked it!
+
+commit 2b2f45e3e560e9495a525a81254b5e040c92e4f9
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Sep 2 21:20:50 2022 -0300
+
+    fix
+
+commit 2f975000250203e95c6c5c538ad94d8f5069c387
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Sep 2 19:57:53 2022 -0300
+
+    framework update
+
+commit 8454447388bcf2a0fc44231a9b5cd9ed60c94517
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Sep 2 18:49:11 2022 -0300
+
+    Little revamp on Player Breakdown Window lines
+
+commit 400a05288c20832f53d0afc06190ec7025249759
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Sep 2 17:34:01 2022 -0300
+
+    More fixes for dragonflight
+
+commit 5269549ea57ea70896cb1333d97e1f2230b5d1b7
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Sep 2 14:14:24 2022 -0300
+
+    fix
+
+commit 8a2539f151bc65860138c379f40026a11f0a9135
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Sep 2 10:31:37 2022 -0300
+
+    version bump for auto run error handler
+
+commit 4214f1eb0daf256efb4ca011f14e54603006cc94
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Sep 2 10:16:14 2022 -0300
+
+    Better auto run script error handler
+
+commit 691a3d5e72493e135f93dbe19a62dc7d9c4b7ddc
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Sep 2 09:24:44 2022 -0300
+
+    More fixes for dragonflight
+
+commit 5c2e1a19f6cb79a20ee84343e0f9cae3064d9103
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Fri Sep 2 08:50:45 2022 -0300
+
+    Fixed texture creating passing wrong parameters
+
+commit 58bf707f40709914ebf0d73b6b8bd6a38a07b677
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 23:55:46 2022 -0300
+
+    More Evoker Fixes
+
+commit dcf62493eb7cda5680c4f2d1a1ca58b4ee72e6e4
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 23:33:52 2022 -0300
+
+    15
+
+commit 5fcc9786eee1f1f3267c3d1e9dcce2701c72c522
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 23:33:04 2022 -0300
+
+    Evoker Specs, class coords and colors
+
+commit e3a556562f67142f3b40a214e61e093e75e02255
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 23:07:41 2022 -0300
+
+    Show dragonflight beta version when /details
+
+commit c21cd7593a9120a625e3871b9ed4b00d0755a720
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 22:31:47 2022 -0300
+
+    Fixes (12)
+
+commit 673bc527d7ce03561849f031c55a95d2727142b0
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 22:23:15 2022 -0300
+
+    Fixes (11)
+
+commit 4abcab3a6e732d3cb712e24f9fcdbce1f4fc9712
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 21:09:39 2022 -0300
+
+    Fixes (10)
+
+commit dfde3d5dbcfa9adb82e35034141d985c811eeb8b
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 20:54:06 2022 -0300
+
+    Fixes (9)
+
+commit a1ee5d1ef228a9e6c4dd113f0517847b4f1b4e09
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 20:47:03 2022 -0300
+
+    Fixes (8)
+
+commit 6c275453d0da43e0df6868a876401e8e94d3b010
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 20:32:51 2022 -0300
+
+    Fixes (7)
+
+commit 295287cd0b0f4593b362a3a1b4d8b49e088a140f
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 20:05:31 2022 -0300
+
+    Fixes (6)
+
+commit e6511163b7fb594903ba6ab6554d4e00c16e3649
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 19:56:19 2022 -0300
+
+    Fixes (5)
+
+commit d7b507912997fcabe7601f291385961435802ed7
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 19:53:48 2022 -0300
+
+    Fixes (4)
+
+commit b069b05b53a5f16559bb501a14f119f42edc05c7
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 19:52:24 2022 -0300
+
+    Fixes (3)
+
+commit ae22cfc6349ccaf43ab6181553bb1b761468c688
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 19:22:41 2022 -0300
+
+    Fixes (2)
+
+commit 4fe02b4ddc687ac58a5dd000c59bc865c473230b
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 18:51:25 2022 -0300
+
+    Fixes
+
+commit 22b83e722c111b7dd0e22d576cd97bb1d0c5b58c
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 1 11:17:32 2022 -0300
+
+    Reset Auto Hide automation settings after importing a profile
 

@@ -11,6 +11,13 @@ local UnitGUID = UnitGUID
 local tonumber= tonumber 
 local LoggingCombat = LoggingCombat
 
+SLASH_DUMPTABLE1 = "/dumpt"
+function SlashCmdList.DUMPTABLE(msg, editbox)
+	local result = "return function() return " .. msg .. " end"
+	local extractValue = loadstring(result)
+	return Details:Dump(extractValue()())
+end
+
 SLASH_DETAILS1, SLASH_DETAILS2, SLASH_DETAILS3 = "/details", "/dt", "/de"
 
 function SlashCmdList.DETAILS (msg, editbox)
@@ -1706,6 +1713,10 @@ function SlashCmdList.DETAILS (msg, editbox)
 			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00DETAILS! VERSION|r: |cFFFFAA00R" .. (_detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter))
 			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00GAME VERSION|r: |cFFFFAA00" .. _detalhes.game_version)
 		end
+
+		if (DetailsFramework.IsDragonflight()) then
+			print("Dragonflight BETA VERSION:", _detalhes.dragonflight_beta_version)
+		end
 	end
 end
 
@@ -1952,6 +1963,8 @@ end
 
 if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 	SLASH_KEYSTONE1 = "/keystone"
+	SLASH_KEYSTONE2 = "/keys"
+	SLASH_KEYSTONE3 = "/key"
 
 	function SlashCmdList.KEYSTONE(msg, editbox)
 		local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")

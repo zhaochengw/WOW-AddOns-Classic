@@ -212,9 +212,14 @@ local function CreatePluginFrames()
 	SOF:SetMovable (true)
 	SOF:SetResizable (true)
 	SOF:SetClampedToScreen (true)
-	SOF:SetMinResize (150, 10)
-	SOF:SetMaxResize (800, 1024)
-	
+
+	if (DetailsFramework.IsDragonflight()) then
+		SOF:SetResizeBounds(150, 10, 800, 1024)
+	else
+		SOF:SetMinResize(150, 10)
+		SOF:SetMaxResize(800, 1024)
+	end
+
 	function StreamOverlay:SaveWindowSizeAnLocation()
 		--> save size first
 		StreamOverlay.db.main_frame_size [1] = SOF:GetWidth()
@@ -534,12 +539,12 @@ local function CreatePluginFrames()
 				end
 				
 				if (castinfo.Success) then
-					line.spark:SetVertexColor (1, 1, 1, 0.4)
-					line.spark:SetPoint ("left", line.statusbar, "left", (line.statusbar:GetWidth() / 100 * percent) - 8, 0)
+					line.spark:SetVertexColor(1, 1, 1, 0.4)
+					line.spark:SetPoint("left", line.statusbar, "left", (line.statusbar:GetWidth() / 100 * percent) - 8, 0)
 
 				elseif (castinfo.Interrupted) then
-					line.spark:SetVertexColor (1, 0, 0, 0.4)
-					line.spark:SetPoint ("left", line.statusbar, "left", (line.statusbar:GetWidth() / 100 * percent) - 8, 0)
+					line.spark:SetVertexColor(1, 0, 0, 0.4)
+					line.spark:SetPoint("left", line.statusbar, "left", (line.statusbar:GetWidth() / 100 * percent) - 8, 0)
 				end
 				
 				line.in_use = data.CastStart
@@ -705,24 +710,23 @@ local function CreatePluginFrames()
 			row.arrow:Show()
 		end
 		
-		local texture = SharedMedia:Fetch ("statusbar", StreamOverlay.db.row_texture)
-		row.statusbar_texture:SetTexture (texture)
-		row.statusbar_texture:SetVertexColor (unpack (StreamOverlay.db.row_color))
-		
-		row.arrow:SetTexture (StreamOverlay.db.arrow_texture)
-		row.arrow:SetSize (StreamOverlay.db.arrow_size, StreamOverlay.db.arrow_size)
-		row.arrow:SetVertexColor (unpack (StreamOverlay.db.arrow_color))
-		row.arrow:SetPoint ("center", row, "center", StreamOverlay.db.arrow_anchor_x, StreamOverlay.db.arrow_anchor_y)
-		
+		local texture = SharedMedia:Fetch("statusbar", StreamOverlay.db.row_texture)
+		row.statusbar_texture:SetTexture(texture)
+		row.statusbar_texture:SetVertexColor(unpack(StreamOverlay.db.row_color))
+
+		row.arrow:SetTexture(StreamOverlay.db.arrow_texture)
+		row.arrow:SetSize(StreamOverlay.db.arrow_size, StreamOverlay.db.arrow_size)
+		row.arrow:SetVertexColor(unpack(StreamOverlay.db.arrow_color))
+		row.arrow:SetPoint("center", row, "center", StreamOverlay.db.arrow_anchor_x, StreamOverlay.db.arrow_anchor_y)
 	end
-	
-	function StreamOverlay:RefreshInUse (line)
+
+	function StreamOverlay:RefreshInUse(line)
 		local now = GetTime()
-		local i  = -1 --was nil before from _G["i"]
+		local i = -1 --was nil before from _G["i"]
 		if (line) then
 			local line_in_use = line.in_use or 1
 			local content_in_use = StreamOverlay.battle_content [i] and StreamOverlay.battle_content [i].CastStart or 1
-		
+
 			if (max (line_in_use, content_in_use) + 60 < now) then
 				fader (nil, line, "in")
 			else
@@ -1123,14 +1127,14 @@ listener.track_spell_cast = function()
 							else
 								line.spark:Hide()
 							end
-							line.spark:SetVertexColor (1, 1, 1, 0.5 + (percent/100))
-							line.spark:SetVertexColor (1, 1, 1, 1)
-							line.spark:SetPoint ("left", line.statusbar, "left", (line.statusbar:GetWidth() / 100 * percent) - 6, 0)
+
+							line.spark:SetVertexColor(1, 1, 1, 1)
+							line.spark:SetPoint("left", line.statusbar, "left", (line.statusbar:GetWidth() / 100 * percent) - 6, 0)
 						end
 
 					else
 						--> still casting
-						local spell, displayName, icon, startTime, endTime, isTradeSkill, castID, interrupt = UnitCastingInfo ("player")
+						local spell, displayName, icon, startTime, endTime, isTradeSkill, castID, interrupt = UnitCastingInfo("player")
 						if (spell) then
 							startTime = startTime / 1000
 							endTime = endTime / 1000
@@ -1146,8 +1150,8 @@ listener.track_spell_cast = function()
 							else
 								line.spark:Hide()
 							end
-							line.spark:SetVertexColor (1, 1, 1, 0.5 + (percent/100))
-							line.spark:SetPoint ("left", line.statusbar, "left", (line.statusbar:GetWidth() / 100 * percent) - 6, 0)
+							line.spark:SetVertexColor(1, 1, 1, 1)
+							line.spark:SetPoint("left", line.statusbar, "left", (line.statusbar:GetWidth() / 100 * percent) - 6, 0)
 						end
 					end
 					
@@ -1176,7 +1180,7 @@ listener.track_spell_cast = function()
 							line.spark:Hide()
 						end
 						
-						line.spark:SetVertexColor (1, 1, 1, 0.5 + (percent/100))
+						line.spark:SetVertexColor (1, 1, 1, 1)
 						line.spark:SetPoint ("left", line.statusbar, "left", (line.statusbar:GetWidth() / 100 * percent) - 6, 0)
 					end
 				end
@@ -1668,26 +1672,41 @@ end
 function StreamOverlay.OpenOptionsPanel (from_options_panel)
 
 	if (not StreamOverlayOptionsPanel) then
-	
 		local fw = Details:GetFramework()
-	
+
 		local options_text_template = fw:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
 		local options_dropdown_template = fw:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
 		local options_switch_template = fw:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE")
 		local options_slider_template = fw:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE")
 		local options_button_template = fw:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
-		
-		local options_frame = StreamOverlay:CreatePluginOptionsFrame ("StreamOverlayOptionsPanel", "Details! Streamer: Action Tracker", 1)
-		options_frame:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-		options_frame:SetBackdropColor (0, 0, 0, 0.5)
-		options_frame:SetBackdropBorderColor (0, 0, 0, 1)
-		options_frame:SetWidth (520)
-		options_frame:SetHeight (625)
 
-		local selectModeFrame = CreateFrame("frame", nil, options_frame, "BackdropTemplate")
+		local optionsFrame = StreamOverlay:CreatePluginOptionsFrame("StreamOverlayOptionsPanel", "Details! Streamer: Action Tracker", 1)
+		optionsFrame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+		optionsFrame:SetBackdropColor(0, 0, 0, 0.5)
+		optionsFrame:SetBackdropBorderColor(0, 0, 0, 1)
+		optionsFrame:SetWidth(530)
+		optionsFrame:SetHeight(655)
+
+		if (StreamOverlayWelcomeWindow) then
+			if (StreamOverlayWelcomeWindow:IsShown()) then
+				StreamOverlayWelcomeWindow:Hide()
+			end
+		end
+
+		local statusBar = DetailsFramework:CreateStatusBar(optionsFrame)
+		statusBar.text = statusBar:CreateFontString(nil, "overlay", "GameFontNormal")
+		statusBar.text:SetPoint("left", statusBar, "left", 5, 0)
+		statusBar.text:SetText("By Terciob | From Details! Damage Meter Streamer Plugin")
+		DetailsFramework:SetFontSize(statusBar.text, 11)
+		DetailsFramework:SetFontColor(statusBar.text, "gray")
+
+		StreamOverlayOptionsPanelBackgroundBigDog:ClearAllPoints()
+		StreamOverlayOptionsPanelBackgroundBigDog:SetPoint("bottomright", statusBar, "topright", 0, 0)
+
+		local selectModeFrame = CreateFrame("frame", nil, optionsFrame, "BackdropTemplate")
 		DetailsFramework:ApplyStandardBackdrop(selectModeFrame)
-		selectModeFrame:SetPoint("topleft", options_frame, "topleft", 5, -95)
-		selectModeFrame:SetSize(options_frame:GetWidth()-10, 120)
+		selectModeFrame:SetPoint("topleft", optionsFrame, "topleft", 5, -95)
+		selectModeFrame:SetSize(optionsFrame:GetWidth()-10, 120)
 
 		local selectedFrame = CreateFrame("frame", nil, selectModeFrame, "BackdropTemplate")
 		selectedFrame:SetSize(260, 81)
@@ -1709,10 +1728,10 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 		end
 
 		local selectModeLabel = DetailsFramework:CreateLabel(selectModeFrame, "Select Mode (test casting some spells)", 14, "orange")
-		selectModeLabel:SetPoint("top", options_frame, "top", 0, -100)
+		selectModeLabel:SetPoint("top", optionsFrame, "top", 0, -100)
 
 		local classicModeSelectButton = DetailsFramework:CreateButton(selectModeFrame, selectClassicMode, 256, 77, "")
-		classicModeSelectButton:SetPoint("topleft", options_frame, "topleft", 15, -120)
+		classicModeSelectButton:SetPoint("topleft", optionsFrame, "topleft", 15, -120)
 		local classicModeTexture = classicModeSelectButton:CreateTexture(nil, "overlay")
 		classicModeTexture:SetTexture([[Interface\Addons\Details_Streamer\images\tracker_full]])
 		classicModeTexture:SetAllPoints()
@@ -1850,9 +1869,21 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 				desc = "Color used on the background.",
 				name = "Background Color"
 			},
-			
-			{type = "space"},
-			
+
+			{
+				type = "range",
+				get = function() return StreamOverlay.db.scale or 1 end,
+				set = function (self, fixedparam, value) StreamOverlay.db.scale = value; StreamOverlay.Frame:SetScale(value) end,
+				min = 0.6,
+				max = 2,
+				step = 0.1,
+				desc = "Scale",
+				name = "Scale",
+				usedecimals = true,
+			},
+
+			{type = "blank"},
+
 			{
 				type = "range",
 				get = function() return StreamOverlay.db.row_height end,
@@ -2140,7 +2171,7 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 			
 		}
 		
-		fw:BuildMenu (options_frame, options, 15, -235, 860, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+		fw:BuildMenu (optionsFrame, options, 15, -235, 860, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 		
 		--select profile dropdown
 		local select_profile = function (_, _, profileName)
@@ -2176,7 +2207,7 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 			StreamOverlay:RefreshAllBattleLineStyle()
 			
 			--> update the options panel
-			options_frame:RefreshOptions()
+			optionsFrame:RefreshOptions()
 		end
 		
 		local select_profile_fill = function()
@@ -2187,10 +2218,10 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 			return t
 		end
 		
-		local label_profile = Details.gump:CreateLabel (options_frame, "Profile" .. ": ", Details.gump:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
-		local dropdown_profile = Details.gump:CreateDropDown (options_frame, select_profile_fill, nil, 160, 20, "dropdown_profile", nil, Details.gump:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+		local label_profile = Details.gump:CreateLabel (optionsFrame, "Profile" .. ": ", Details.gump:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
+		local dropdown_profile = Details.gump:CreateDropDown (optionsFrame, select_profile_fill, nil, 160, 20, "dropdown_profile", nil, Details.gump:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 		dropdown_profile:SetPoint ("left", label_profile, "right", 2, 0)
-		label_profile:SetPoint ("topleft", options_frame, "topleft", 15, -65)
+		label_profile:SetPoint ("topleft", optionsFrame, "topleft", 15, -65)
 		
 		local pname = UnitName ("player") .. " - " .. GetRealmName()
 		dropdown_profile:Select (Details_StreamerDB.characters [pname])
@@ -2208,18 +2239,18 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 				_detalhes.table.deploy (Details_StreamerDB.profiles [pname], StreamOverlay.DefaultConfigTable) --update with any new config from the default table
 				--StreamOverlay.db = Details_StreamerDB.profiles [pname] --no can't change the local database table
 				
-				options_frame.NewProfileButton:Hide()
+				optionsFrame.NewProfileButton:Hide()
 				
 				--> update all settings
 				StreamOverlay:RefreshAllBattleLineStyle()
 				
 				--> update the options panel
-				options_frame:RefreshOptions()
+				optionsFrame:RefreshOptions()
 				dropdown_profile:Select (Details_StreamerDB.characters [pname])
 				
 			end
-			options_frame.NewProfileButton = Details.gump:CreateButton (options_frame, add_profile, 60, 18, "New Profiile", _, _, _, _, _, _, Details.gump:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Details.gump:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
-			options_frame.NewProfileButton:SetPoint ("left", dropdown_profile, "right", 4, 0)
+			optionsFrame.NewProfileButton = Details.gump:CreateButton (optionsFrame, add_profile, 60, 18, "New Profiile", _, _, _, _, _, _, Details.gump:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"), Details.gump:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
+			optionsFrame.NewProfileButton:SetPoint ("left", dropdown_profile, "right", 4, 0)
 		end
 		
 		--enable / disable plugin button
@@ -2231,26 +2262,26 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
                 pluginStable.enabled = false
                 pluginObject.__enabled = false
 				Details:SendEvent("PLUGIN_DISABLED", pluginObject)
-				options_frame.toggleButton.text = "Start Plugin"
+				optionsFrame.toggleButton.text = "Start Plugin"
 
 			else
                 pluginStable.enabled = true
                 pluginObject.__enabled = true
 				Details:SendEvent("PLUGIN_ENABLED", pluginObject)
-				options_frame.toggleButton.text = "Disable Plugin"
+				optionsFrame.toggleButton.text = "Disable Plugin"
 			end
 		end
 
 		--get the plugin state
 		local pluginStable = Details:GetPluginSavedTable("DETAILS_PLUGIN_STREAM_OVERLAY")
 
-		local toggleButton = DetailsFramework:CreateButton(options_frame, toggle_OnOff, 120, 20, pluginStable.enabled and "Disable Plugin" or "Start Plugin")
-		toggleButton:SetPoint ("topleft", options_frame, "topleft", 15, -35)
+		local toggleButton = DetailsFramework:CreateButton(optionsFrame, toggle_OnOff, 120, 20, pluginStable.enabled and "Disable Plugin" or "Start Plugin")
+		toggleButton:SetPoint ("topleft", optionsFrame, "topleft", 15, -35)
 		toggleButton:SetTemplate(DetailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
 
-		options_frame.toggleButton = toggleButton
+		optionsFrame.toggleButton = toggleButton
 
-		options_frame:SetScript ("OnHide", function()
+		optionsFrame:SetScript ("OnHide", function()
 			if (StreamOverlay.FromOptionsPanel) then
 				--> reopen the options panel
 				C_Timer.After (0.2, function()
@@ -2259,7 +2290,7 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 			end
 		end)
 
-		options_frame:SetScript("OnShow", function()
+		optionsFrame:SetScript("OnShow", function()
 			local pluginStable = Details:GetPluginSavedTable("DETAILS_PLUGIN_STREAM_OVERLAY")
 			local pluginObject = Details:GetPlugin("DETAILS_PLUGIN_STREAM_OVERLAY")
 
@@ -2373,63 +2404,67 @@ function StreamOverlay:OnEvent (_, event, ...)
 						Details:DisablePlugin ("DETAILS_PLUGIN_STREAM_OVERLAY")
 					end
 				end
-				
-				if (StreamOverlay.db.is_first_run and not Details:GetTutorialCVar ("STREAMER_PLUGIN_FIRSTRUN")) then
 
+				if (StreamOverlay.db.is_first_run and not Details:GetTutorialCVar ("STREAMER_PLUGIN_FIRSTRUN")) then
 					local show_frame = function()
-					
+
 						if ((DetailsWelcomeWindow and DetailsWelcomeWindow:IsShown()) or not StreamOverlay.db.is_first_run) then
 							return
 						end
-						
+
 						StreamOverlay.ShowWelcomeFrame:Cancel()
-						
-						local welcome_window = CreateFrame ("frame", "StreamOverlayWelcomeWindow", UIParent, "BackdropTemplate")
-						welcome_window:SetPoint ("center", UIParent, "center")
-						welcome_window:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-						welcome_window:SetBackdropColor (0, 0, 0, 0.5)
-						welcome_window:SetBackdropBorderColor (0, 0, 0, 1)
-						welcome_window:SetSize (740, 270)
-						DetailsFramework:ApplyStandardBackdrop(welcome_window)
-						
-						local icon = welcome_window:CreateTexture (nil, "overlay")
+
+						local welcomeWindow = CreateFrame ("frame", "StreamOverlayWelcomeWindow", UIParent, "BackdropTemplate")
+						welcomeWindow:SetPoint ("center", UIParent, "center")
+						welcomeWindow:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+						welcomeWindow:SetBackdropColor (0, 0, 0, 0.5)
+						welcomeWindow:SetBackdropBorderColor (0, 0, 0, 1)
+						welcomeWindow:SetSize (740, 270)
+						DetailsFramework:ApplyStandardBackdrop(welcomeWindow)
+
+						local icon = welcomeWindow:CreateTexture (nil, "overlay")
 						icon:SetTexture ([[Interface\MINIMAP\MOVIERECORDINGICON]])
-						local title = welcome_window:CreateFontString (nil, "overlay", "GameFontNormal")
+						local title = welcomeWindow:CreateFontString (nil, "overlay", "GameFontNormal")
 						title:SetText ("Details!: Action Tracker (plugin)")
 						StreamOverlay:SetFontSize (title, 20)
-						
-						local text1 = welcome_window:CreateFontString (nil, "overlay", "GameFontNormal")
-						text1:SetText ("If you are a Streamer or Youtuber, \nthis plugin shows to your audience the spells you're casting,\nhence they can follow your steps and learn together.")
-						local text2 = welcome_window:CreateFontString (nil, "overlay", "GameFontNormal")
+
+						local youtubeTwitchIcons = welcomeWindow:CreateTexture(nil, "overlay")
+						youtubeTwitchIcons:SetTexture([[Interface\AddOns\Details\images\icons2]])
+						youtubeTwitchIcons:SetTexCoord(0, 109/512, 370/512, 413/512)
+						youtubeTwitchIcons:SetSize(109, 413 - 370)
+						youtubeTwitchIcons:SetPoint("topleft", welcomeWindow, "topleft", 123, -61)
+
+						local text1 = welcomeWindow:CreateFontString (nil, "overlay", "GameFontNormal")
+						text1:SetText ("SHOW TO YOUR VIEWERS YOUR ROTATION\nThis way they can learn while watching your content")
+						local text2 = welcomeWindow:CreateFontString (nil, "overlay", "GameFontNormal")
 						text2:SetText ("Use the command:")
-						local text3 = welcome_window:CreateFontString (nil, "overlay", "GameFontNormal")
+						local text3 = welcomeWindow:CreateFontString (nil, "overlay", "GameFontNormal")
 						text3:SetText ("/streamer")
 						DetailsFramework:SetFontSize(text3, 16)
-						
-						icon:SetPoint ("topleft", welcome_window, "topleft", 10, -20)
+
+						icon:SetPoint ("topleft", welcomeWindow, "topleft", 10, -20)
 						title:SetPoint ("left", icon, "right", 10, 0)
-						
-						text1:SetPoint ("topleft", welcome_window, "topleft", 10, -70)
-						text2:SetPoint ("center", text1, "center", 0, -50)
+
+						text1:SetPoint ("topleft", welcomeWindow, "topleft", 10, -120)
+						text2:SetPoint ("center", text1, "center", 0, -40)
 						text3:SetPoint ("center", text2, "center", 0, -16)
 
-						local image1 = welcome_window:CreateTexture(nil, "overlay")
+						local image1 = welcomeWindow:CreateTexture(nil, "overlay")
 						image1:SetTexture([[Interface\AddOns\Details_Streamer\streamer_plugin_lines]])
-						image1:SetPoint("topleft", welcome_window, "topleft", 410, -6)
+						image1:SetPoint("topleft", welcomeWindow, "topleft", 410, -6)
 						image1:SetSize(512, 256)
 						
 						local close_func = function()
 							StreamOverlay.db.is_first_run = false
 							Details:SetTutorialCVar ("STREAMER_PLUGIN_FIRSTRUN", true)
-							welcome_window:Hide()
+							welcomeWindow:Hide()
 						end
 						
-						local close = Details.gump:CreateButton (welcome_window, close_func, 120, 20, "Okay", nil, nil, nil, nil, nil, nil, Details.gump:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+						local close = Details.gump:CreateButton (welcomeWindow, close_func, 120, 20, "Okay", nil, nil, nil, nil, nil, nil, Details.gump:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
 						close:SetPoint ("center", text3, "center", 0, -50)
 					end
 					
 					StreamOverlay.ShowWelcomeFrame = C_Timer.NewTicker (5, show_frame)
-				
 				end
 				
 				--wipe (StreamOverlay.db)

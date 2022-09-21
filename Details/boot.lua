@@ -6,8 +6,8 @@
 
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10018
-		_detalhes.alpha_build_counter = 10018 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 10029
+		_detalhes.alpha_build_counter = 10029 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. _detalhes.build_counter
@@ -17,6 +17,8 @@
 
 		_detalhes.BFACORE = 131 --core version on BFA launch
 		_detalhes.SHADOWLANDSCORE = 143 --core version on Shadowlands launch
+--
+		_detalhes.dragonflight_beta_version = 32
 
 		Details = _detalhes
 
@@ -916,6 +918,7 @@ do
 			if orig_type == 'table' then
 				copy = {}
 				for orig_key, orig_value in next, orig, nil do
+					--print(orig_key, orig_value)
 					copy [Details.CopyTable (orig_key)] = Details.CopyTable (orig_value)
 				end
 			else
@@ -1007,4 +1010,16 @@ do
 			_G ["BINDING_NAME_DETAILS_BOOKMARK9"] = format (Loc ["STRING_KEYBIND_BOOKMARK_NUMBER"], 9)
 			_G ["BINDING_NAME_DETAILS_BOOKMARK10"] = format (Loc ["STRING_KEYBIND_BOOKMARK_NUMBER"], 10)
 			
+end
+
+if (select(4, GetBuildInfo()) >= 100000) then
+	local f = CreateFrame("frame")
+	f:RegisterEvent("ADDON_ACTION_FORBIDDEN")
+	f:SetScript("OnEvent", function()
+		local text = StaticPopup1 and StaticPopup1.text and StaticPopup1.text:GetText()
+		if (text and text:find("Details")) then
+			--fix false-positive taints that are being attributed to random addons
+			StaticPopup1.button2:Click()
+		end
+	end)
 end
