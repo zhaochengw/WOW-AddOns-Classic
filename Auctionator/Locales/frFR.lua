@@ -17,8 +17,7 @@ L["AUCTION_TOOLTIP_TOOLTIP_HEADER"] = "Prix à la vente dans les infobulles"
 L["AUCTION_TOOLTIP_TOOLTIP_TEXT"] = "Inclus les prix à la vente dans les infobulles"
 L["AUCTIONATOR"] = "Auctionator"
 L["AUTHOR_HEADER"] = "Auteur"
---[[Translation missing --]]
-L["BID_ONLY_AVAILABLE"] = "bid only available"
+L["BID_ONLY_AVAILABLE"] = "offre uniquement disponible"
 L["BID_PRICE"] = "Prix de l'enchère"
 L["BIDDER"] = "Encherisseur"
 L["BIDDING_AUCTION_INFO"] = "%s enchérir sur %s"
@@ -93,6 +92,8 @@ L["CONFIG_PET_TOOLTIP"] = "Afficher les prix des mascottes"
 L["CONFIG_PROFILE_CATEGORY"] = "Profils"
 L["CONFIG_PROFILE_TEXT"] = "Configuration par personnage."
 L["CONFIG_PROFILE_TOGGLE"] = "N'appliquer les paramètres qu'à ce personnage"
+--[[Translation missing --]]
+L["CONFIG_PROSPECT_TOOLTIP"] = "Show prospect value for ore from jewelcrafting in tooltips"
 L["CONFIG_QUANTITIES_CATEGORY"] = "Vente : Quantités"
 L["CONFIG_QUANTITIES_TEXT"] = "Choisissez la quantité par défaut utilisée pour les différentes catégories d'objets."
 L["CONFIG_RESET_STACK_SIZE_MEMORY"] = "Réinitialiser les données de taille des piles"
@@ -122,12 +123,9 @@ L["CONFIG_SELLING_GEAR_VENDOR_PRICE_MULTIPLIER_SUFFIX"] = "Définir à 0 pour d�
 L["CONFIG_SELLING_GEAR_VENDOR_PRICE_MULTIPLIER_TOOLTIP_HEADER"] = "Multiplication du prix au marchand"
 L["CONFIG_SELLING_GEAR_VENDOR_PRICE_MULTIPLIER_TOOLTIP_TEXT"] = [=[Définis un prix d'achat immédiat à partir d'un multiple du prix au marchand.
 Auctionator utilisera ce calcul pour tout objet dont il ne connait pas de prix. Définir sur 0 désactivera le calcul du prix.]=]
---[[Translation missing --]]
-L["CONFIG_SELLING_GREY_POST_BUTTON"] = "Grey (disable) the post button when a post may fail"
---[[Translation missing --]]
-L["CONFIG_SELLING_GREY_POST_BUTTON_TOOLTIP_HEADER"] = "Grey post button"
---[[Translation missing --]]
-L["CONFIG_SELLING_GREY_POST_BUTTON_TOOLTIP_TEXT"] = "When a post may fail the post button will be greyed out (disabled). Turn this option off to avoid waiting for the button to enable so you can attempt to post sooner."
+L["CONFIG_SELLING_GREY_POST_BUTTON"] = "Gris (désactiver) le bouton de publication lorsqu'une publication peut échouer"
+L["CONFIG_SELLING_GREY_POST_BUTTON_TOOLTIP_HEADER"] = "Bouton de poste grisé"
+L["CONFIG_SELLING_GREY_POST_BUTTON_TOOLTIP_TEXT"] = "Lorsqu'un message risque d'échouer, le bouton Poster est alors grisé (désactivé). Désactivez cette option pour éviter d'attendre que le bouton soit actif et pour pouvoir tenter de publier un message."
 L["CONFIG_SELLING_ICON_SIZE"] = "Taille des icônes (/reload requis)"
 L["CONFIG_SELLING_ICON_SIZE_TOOLTIP_HEADER"] = "Taille des icônes"
 L["CONFIG_SELLING_ICON_SIZE_TOOLTIP_TEXT"] = "Vous pouvez agrandir (jusqu'à 50) ou réduire (jusqu'à 10) les icônes des objets de l'inventaire dans l'onglet Vente. La taille par défaut est de 42."
@@ -291,13 +289,18 @@ L["PERCENTAGE_TOOLTIP_TEXT"] = "Le pourcentage de baisse du prix qui sera utilis
 L["PET_TOOLTIP_TOOLTIP_HEADER"] = "Prix des mascottes"
 L["PET_TOOLTIP_TOOLTIP_TEXT"] = "Inclus les prix des mascottes dans les info-bulles."
 L["POST"] = "Mettre en vente"
---[[Translation missing --]]
-L["POST_ATTEMPT_FAILED"] = "Your last post attempt didn't work. Try again."
+L["POST_ATTEMPT_FAILED"] = "Votre dernière tentative de post n'a pas fonctionné. Essayez à nouveau."
 L["PRICE"] = "Prix"
 L["PRICE_INCREASE_WARNING"] = "Prix augmenté de %s, attente de %ss"
 L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "Activer les paramètres par personnage"
 L["PROFILE_TOGGLE_TOOLTIP_TEXT"] = "Les modifications apportées aux paramètres d'Auctionator n'affecteront que ce personnage."
 L["PROFIT_COLON"] = "Gains :"
+--[[Translation missing --]]
+L["PROSPECT"] = "Prospect"
+--[[Translation missing --]]
+L["PROSPECT_TOOLTIP_TOOLTIP_HEADER"] = "Prospect Tooltip Information"
+--[[Translation missing --]]
+L["PROSPECT_TOOLTIP_TOOLTIP_TEXT"] = "Show jewelcrafting prospecting estimated value in tooltip on mouseover."
 L["PURCHASED_X_XX"] = "Acheté %s x%s"
 L["QUANTITY"] = "Quantité"
 L["REAGENT_SEARCH"] = "Composants"

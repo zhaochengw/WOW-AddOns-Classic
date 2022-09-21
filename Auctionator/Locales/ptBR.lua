@@ -100,6 +100,8 @@ L["CONFIG_PET_TOOLTIP"] = "Mostrar caixa de texto para bichos de estimação"
 L["CONFIG_PROFILE_CATEGORY"] = "Perfil"
 L["CONFIG_PROFILE_TEXT"] = "Definir definições para cada personagem."
 L["CONFIG_PROFILE_TOGGLE"] = "Aplicar definições apenas para este personagem."
+--[[Translation missing --]]
+L["CONFIG_PROSPECT_TOOLTIP"] = "Show prospect value for ore from jewelcrafting in tooltips"
 L["CONFIG_QUANTITIES_CATEGORY"] = [=[Vendendo: Quantidades
 ]=]
 L["CONFIG_QUANTITIES_TEXT"] = [=[Escolha a quantidade padrão usada para as diferentes categorias de itens.
@@ -346,6 +348,12 @@ L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "Ativar definições específicas para cada
 L["PROFILE_TOGGLE_TOOLTIP_TEXT"] = "Faz mudanças para as configurações do Auctionator afetar apenas este personagem."
 L["PROFIT_COLON"] = [=[Lucro:
 ]=]
+--[[Translation missing --]]
+L["PROSPECT"] = "Prospect"
+--[[Translation missing --]]
+L["PROSPECT_TOOLTIP_TOOLTIP_HEADER"] = "Prospect Tooltip Information"
+--[[Translation missing --]]
+L["PROSPECT_TOOLTIP_TOOLTIP_TEXT"] = "Show jewelcrafting prospecting estimated value in tooltip on mouseover."
 L["PURCHASED_X_XX"] = [=[Comprado %s x%s
 ]=]
 L["QUANTITY"] = "Quantidade"

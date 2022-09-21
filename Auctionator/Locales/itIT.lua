@@ -93,6 +93,8 @@ L["CONFIG_PET_TOOLTIP"] = "Mostra tooltip Mascotte"
 L["CONFIG_PROFILE_CATEGORY"] = "Profilo"
 L["CONFIG_PROFILE_TEXT"] = "Imposta opzioni per ogni personaggio."
 L["CONFIG_PROFILE_TOGGLE"] = "Applica solo a questo personaggio"
+--[[Translation missing --]]
+L["CONFIG_PROSPECT_TOOLTIP"] = "Show prospect value for ore from jewelcrafting in tooltips"
 L["CONFIG_QUANTITIES_CATEGORY"] = "Vendi: Quantità"
 L["CONFIG_QUANTITIES_TEXT"] = "Scegli le quantità predefinite per ogni oggetto di ogni categoria."
 L["CONFIG_RESET_STACK_SIZE_MEMORY"] = "Reimposta dimensione stack di memoria"
@@ -300,6 +302,12 @@ L["PRICE_INCREASE_WARNING"] = "Prezzo aumentato di %s, in attesa di %ss"
 L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "Abilita impostazioni per ogni personaggio"
 L["PROFILE_TOGGLE_TOOLTIP_TEXT"] = "Le modifiche alle impostazioni di Auctionator riguardano solo questo personaggio."
 L["PROFIT_COLON"] = "Profitto:"
+--[[Translation missing --]]
+L["PROSPECT"] = "Prospect"
+--[[Translation missing --]]
+L["PROSPECT_TOOLTIP_TOOLTIP_HEADER"] = "Prospect Tooltip Information"
+--[[Translation missing --]]
+L["PROSPECT_TOOLTIP_TOOLTIP_TEXT"] = "Show jewelcrafting prospecting estimated value in tooltip on mouseover."
 L["PURCHASED_X_XX"] = "Acquistati %s x%s"
 L["QUANTITY"] = "Quantità"
 L["REAGENT_SEARCH"] = "Ricerca Reagenti"
