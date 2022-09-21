@@ -5709,7 +5709,7 @@ function StatLogic:CheckAura(Unit,SpellID)
 		local name, icon, _, _, _, etime = UnitBuff(Unit,i)
 		if name == select(1, GetSpellInfo(SpellID)) then
 			--do things
-			print ("Aura presente",select(1, SpellID))
+			--print ("Aura presente",select(1, SpellID))
 			return true
 		else
 			
@@ -7075,6 +7075,7 @@ if playerClass == "DRUID" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,33589),-- Druid: Lunar Guidance (Rank 3) - 1,12
+				["known"] = 33589,
 				["rank"] = {
 					0.04, 0.08, 0.12,
 				},
@@ -7087,6 +7088,7 @@ if playerClass == "DRUID" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,33589),-- Druid: Lunar Guidance (Rank 3) - 1,12
+				["known"] = 33589,
 				["rank"] = {
 					0.04, 0.08, 0.12,
 				},
@@ -7100,6 +7102,7 @@ if playerClass == "DRUID" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,33872),-- Druid: Nurturing Instinct (Rank 2) - 2,14
+				["known"] = 33872,
 				["rank"] = {
 					0.35, 0.7,
 				},
@@ -7111,6 +7114,7 @@ if playerClass == "DRUID" then
 			{
 				["tab"] = 3,
 				["num"] = StatLogic:GetTalentIndex(3,17106),-- Druid: Intensity (Rank 3) - 3,7
+				["known"] = 17106,
 				["rank"] = {
 					0.17, 0.33, 0.50,
 				},
@@ -7122,6 +7126,7 @@ if playerClass == "DRUID" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,33597),-- Druid: Dreamstate (Rank 3) - 1,15
+				["known"] = 33597,
 				["rank"] = {
 					0.04, 0.07, 0.10,
 				},
@@ -7180,6 +7185,7 @@ if playerClass == "DRUID" then
 				["MELEE"] = true,
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,33853),-- Druid: Survival of the Fittest (Rank 3) - 2,18
+				["known"] = 33853,
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
@@ -7433,6 +7439,7 @@ if playerClass == "DRUID" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,16931),-- Druid: Thick Hide (Rank 3) - 2,5
+				["known"] = 16931,
 				["rank"] = {
 					0.04, 0.07, 0.1,
 				},
@@ -7522,6 +7529,7 @@ if playerClass == "DRUID" then
 			{ -- Improved Mark of the Wild
 				["tab"] = 3,
 				["num"] =  StatLogic:GetTalentIndex(3,17051), -- Druid: Improved Mark of the Wild (Rank 2) - 3,1
+				["known"] = 17051,
 				["rank"] = {
 					0.01, 0.02,
 				},
@@ -7545,6 +7553,7 @@ if playerClass == "DRUID" then
 			{ -- Survival of the Fittest: 2%/4%/6% all stats
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,33853),-- Druid: Survival of the Fittest (Rank 3) - 2,18
+				["known"] = 33853,
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
@@ -8964,24 +8973,19 @@ elseif playerClass == "PRIEST" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,14901),-- Priest: Spiritual Guidance (Rank 5) - 2,14
+				["known"] = 14901,
 				["rank"] = {
 					0.05, 0.1, 0.15, 0.2, 0.25,
 				},
 			},
-			{
-				["tab"] = 3,
-				["num"] = StatLogic:GetTalentIndex(3,47573),-- Priest: Twisted Faith (Rank 5) - 3,26
-				["rank"] = {
-					0.02, 0.04, 0.06, 0.08, 0.1,
-				},
-				["old"] = 10371,
-			},
+			
 			{
 				["tab"] = 3,
 				["num"] = StatLogic:GetTalentIndex(3,47573),-- Priest: Twisted Faith (Rank 5) - 3,26
 				["rank"] = {
 					0.04, 0.08, 0.12, 0.16, 0.2,
 				},
+				["known"] = 47573,
 				["new"] = 10371,
 			},
 		},
@@ -8993,6 +8997,7 @@ elseif playerClass == "PRIEST" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,14901),-- Priest: Spiritual Guidance (Rank 5) - 2,14
+				--["known"] = 14901,
 				["rank"] = {
 					0.05, 0.1, 0.15, 0.2, 0.25,
 				},
@@ -9003,16 +9008,10 @@ elseif playerClass == "PRIEST" then
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["old"] = 10371,
+				["known"] = 47573,
 			},
-			{
-				["tab"] = 3,
-				["num"] = StatLogic:GetTalentIndex(3,47573),-- Priest: Twisted Faith (Rank 5) - 3,26
-				["rank"] = {
-					0.04, 0.08, 0.12, 0.16, 0.2,
-				},
-				["new"] = 10371,
-			},
+
+
 		},
 		-- Priest: Spell Warding (Rank 5) - 2,4
 		--         Reduces all spell damage taken by 2%/4%/6%/8%/10%.
@@ -9028,6 +9027,7 @@ elseif playerClass == "PRIEST" then
 				["ARCANE"] = true,
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,27901),-- Priest: Spell Warding (Rank 5) - 2,4
+				["known"] = 27901,
 				["rank"] = {
 					-0.02, -0.04, -0.06, -0.08, -0.1,
 				},
@@ -9055,6 +9055,7 @@ elseif playerClass == "PRIEST" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,34910),-- Priest: Enlightenment (Rank 5) - 1,17
+				["known"] = 34910,
 				["rank"] = {
 					0.01, 0.02, 0.03, 0.04, 0.05,
 				},
@@ -9062,6 +9063,7 @@ elseif playerClass == "PRIEST" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,14767),-- Priest: Improved Power Word: Fortitude (Rank 2) - 1,5
+				["known"] = 14767,
 				["rank"] = {
 					0.02, 0.04,
 				},
@@ -9073,6 +9075,7 @@ elseif playerClass == "PRIEST" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,18555),-- Priest: Mental Strength (Rank 5) - 1,14
+				["known"] = 18555,
 				["rank"] = {
 					0.03, 0.06, 0.09, 0.12, 0.15,
 				},
@@ -9086,6 +9089,7 @@ elseif playerClass == "PRIEST" then
 			{
 				["tab"] = 1,
 				["num"] = StatLogic:GetTalentIndex(1,34910),-- Priest: Enlightenment (Rank 5) - 1,17
+				["known"] = 34910,
 				["rank"] = {
 					0.01, 0.02, 0.03, 0.04, 0.05,
 				},
@@ -9093,6 +9097,7 @@ elseif playerClass == "PRIEST" then
 			{
 				["tab"] = 2,
 				["num"] = StatLogic:GetTalentIndex(2,20711),-- Priest: Spirit of Redemption - 2,13
+				["known"] = 20711,
 				["rank"] = {
 					0.05,
 				},
@@ -10614,6 +10619,7 @@ function StatLogic:GetStatMod(stat, school, talentGroup)
   -- if school is required for this statMod but not given
   if statModInfo.school and not school then return mod + statModInfo.finalAdjust end
   -- disable for 4.0.1 until we get talent/buffs data implemented
+  --print (toc,mod , statModInfo.finalAdjust ,type(StatModTable[playerClass][stat]))
   if toc >= 40000 then return mod + statModInfo.finalAdjust end
   wipe(buffGroup)
   -- Class specific mods
@@ -10623,7 +10629,7 @@ function StatLogic:GetStatMod(stat, school, talentGroup)
 	  
 	  local ok = true
       if school and not case[school] then ok = nil end
-      if ok and case.newtoc and toc < case.newtoc then ok = nil end
+	  if ok and case.newtoc and toc < case.newtoc then ok = nil end
       if ok and case.oldtoc and toc >= case.oldtoc then ok = nil end
       if ok and case.new and wowBuildNo < case.new then ok = nil end
       if ok and case.old and wowBuildNo >= case.old then ok = nil end
@@ -10632,13 +10638,12 @@ function StatLogic:GetStatMod(stat, school, talentGroup)
       if ok and case.buff2Name and not PlayerHasAura(case.buff2Name) then ok = nil end
       if ok and case.stance and case.stance ~= GetStanceIcon() then ok = nil end
       if ok and case.glyph and not PlayerHasGlyph(case.glyph, talentGroup) then ok = nil end
-      if ok and case.enchant and not SlotHasEnchant(case.enchant, case.slot) then ok = nil end
+	  if ok and case.enchant and not SlotHasEnchant(case.enchant, case.slot) then ok = nil end
       if ok and case.itemset and ((not PlayerItemSets[case.itemset[1]]) or PlayerItemSets[case.itemset[1]] < case.itemset[2]) then ok = nil end
       if ok and case.armorspec and case.armorspec ~= ArmorSpecActive then ok = nil end
-      if ok and case.known and not IsSpellKnown(case.known) then ok = nil end
-      
+      --if ok and case.known and not IsSpellKnown(case.known) then ok = nil end
 	  
-	  
+
 	  if ok then
         local r, _
         local s = 1

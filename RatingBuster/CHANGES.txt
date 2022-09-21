@@ -1,12 +1,23 @@
-lightweight tag 023acc0b8c01552dba0c0e98128d3f34b234d53d 3.4.0.12
+lightweight tag 209348f3c4d0b10db7cbc2ebb877e3210d1550a2 3.4.0.13
 Author:	LANCESTRE <lancetre@intenebris.org>
-Date:	Sun Sep 18 14:44:55 2022 +0200
+Date:	Mon Sep 19 23:12:37 2022 +0200
 
-commit 023acc0b8c01552dba0c0e98128d3f34b234d53d
+commit 209348f3c4d0b10db7cbc2ebb877e3210d1550a2
 Author: LANCESTRE <lancetre@intenebris.org>
-Date:   Sun Sep 18 14:44:55 2022 +0200
+Date:   Mon Sep 19 23:12:37 2022 +0200
 
-    CallbackHandler
+    see detail
     
-    CallbackHandler upgrade
+    Stat Mod Priest guidance
+    showSpellDmgFromSpi
+    HookSetHyperlinkCompareItem
+
+commit b4b2efde7a5f2857518c2e1e988ba52922909cb5
+Author: LANCESTRE <lancetre@intenebris.org>
+Date:   Sun Sep 18 22:28:56 2022 +0200
+
+    See Description
+    
+    Fix spam messages
+    Show Armor from Agility
 
