@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(635, "DBM-Party-WotLK", 13, 284)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909230257")
+mod:SetRevision("20220920233058")
 mod:SetCreatureID(35119)
 --mod:SetEncounterID(2023)--DO NOT ENABLE. Confessor and Eadric are both flagged as same encounterid ("Argent Champion")
 --
@@ -31,7 +31,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 66940 and self:CheckDispelFilter() then
+	if args.spellId == 66940 and self:CheckDispelFilter("magic") then
 		specwarnHammerofJustice:Show(args.destName)
 		specwarnHammerofJustice:Play("helpdispel")
 	elseif args.spellId == 66889 then
