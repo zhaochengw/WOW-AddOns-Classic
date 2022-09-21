@@ -28,7 +28,7 @@ DEXOptionsFrameCheckButtons = {
 	["DEX_ShowNameOnCrit"] = { title = "当暴击才显示", tooltipText = "只有在致命一击时才显示技能名"},
 	["DEX_ShowNameOnMiss"] = { title = "当未击中时才显示", tooltipText = "只有在技能未击中、被抵抗等才显示技能名"},
 	["DEX_ShowInterruptCrit"] = { title = "暴击方式显示打断", tooltipText = "暴击方式显示打断"},
-	["DEX_ShowCurrentOnly"] = { title = "只显示当前选中目标的数值", tooltipText = "只显示当前选中目标的伤害和治疗，非当前选中目标则不显示"},
+	["DEX_ShowCurrentOnly"] = { title = "只显示当前选中目标的伤害数值", tooltipText = "只显示当前选中目标的伤害和治疗，非当前选中目标则不显示"},
 	["DEX_ShowDamagePeriodic"] = { title = "显示持续伤害", tooltipText = "显示持续攻击的伤害"},
 	["DEX_ShowDamageShield"] = { title = "显示反弹伤害", tooltipText = "显示你对敌人伤害的反弹量"},
 	["DEX_ShowDamageHealth"] = { title = "显示治疗量", tooltipText = "显示对目标的实际治疗和过量治疗"},
