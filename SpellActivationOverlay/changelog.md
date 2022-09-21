@@ -1,5 +1,12 @@
 ## SpellActivationOverlay Changelog
 
+#### v0.6.3 (2022-09-20)
+
+- New SAO: Warlock's Decimation
+- New GAB: Warlock's Soul Fire button glows during Decimation
+- Changed SAO: Warlock's Molten Core SAO no longer displays the 3rd charge
+- Rogue's Riposte SAO should no longer trigger without the talent
+
 #### v0.6.2 (2022-09-13)
 
 Shout-out to MartGon once again for his contribution to the code. Thanks!
@@ -35,7 +42,7 @@ Shout-out to MartGon and xHashii for their contribution to the code. Thanks!
 #### v0.5.0-beta (2022-08-31)
 
 SpellActivationOverlay now has a Discord server!
-Make sure to check it out at https://discord.gg/VrDkvDV4
+Make sure to check it out at https://discord.gg/xJmGfGcd4M
 
 Support for Glowing Action Buttons (GABs), making some actions glow, namely:
 - Death Knight's Rune Strike button glows after parrying or dodging an attack
