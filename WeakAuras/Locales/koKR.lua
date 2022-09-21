@@ -329,10 +329,8 @@ L["Crushing"] = "강타"
 L["C'thun"] = "쑨"
 L["Current Experience"] = "현재 경험치"
 L["Current Movement Speed (%)"] = "현재 이동 속도 (%)"
---[[Translation missing --]]
 L[ [=[Current Zone Group
-]=] ] = [=[Current Zone Group
-]=]
+]=] ] = "현재 지역 그룹"
 L[ [=[Current Zone
 ]=] ] = "현재 지역"
 L["Curse"] = "저주"
@@ -344,18 +342,15 @@ L["Custom Anchor"] = "Custom Anchor"
 --[[Translation missing --]]
 L["Custom Check"] = "Custom Check"
 L["Custom Color"] = "사용자 설정 색상"
---[[Translation missing --]]
-L["Custom Condition Code"] = "Custom Condition Code"
+L["Custom Condition Code"] = "사용자 정의 조건 코드"
 L["Custom Configuration"] = "사용자 설정 구성"
 L["Custom Function"] = "사용자 설정 함수"
 --[[Translation missing --]]
 L["Custom Grow"] = "Custom Grow"
---[[Translation missing --]]
-L["Custom Sort"] = "Custom Sort"
+L["Custom Sort"] = "사용자 정의 정렬"
 --[[Translation missing --]]
 L["Custom Text Function"] = "Custom Text Function"
---[[Translation missing --]]
-L["Custom Trigger Combination"] = "Custom Trigger Combination"
+L["Custom Trigger Combination"] = "사용자 정의 활성 조건 조합"
 L["Daakara"] = "다카라"
 L["Damage"] = "피해"
 L["Damage Shield"] = "피해 반사"
@@ -373,12 +368,9 @@ L["Debuff"] = "약화 효과"
 L["Debuff Class"] = "약화 효과 직업"
 L["Debuff Class Icon"] = "약화 효과 직업 아이콘"
 L["Debuff Type"] = "약화 효과 유형"
---[[Translation missing --]]
-L["Debug Log contains more than 1000 entries"] = "Debug Log contains more than 1000 entries"
---[[Translation missing --]]
-L["Debug Logging enabled"] = "Debug Logging enabled"
---[[Translation missing --]]
-L["Debug Logging enabled for '%s'"] = "Debug Logging enabled for '%s'"
+L["Debug Log contains more than 1000 entries"] = "디버그 로그에 항목이 1000개 이상 있습니다."
+L["Debug Logging enabled"] = "디버그 로깅 사용함"
+L["Debug Logging enabled for '%s'"] = "'%s'에 대해 디버그 로깅 사용함"
 --[[Translation missing --]]
 L["Defense"] = "Defense"
 L["Deflect"] = "튕김"
@@ -434,8 +426,7 @@ L["Durability Damage All"] = "모든 내구도 손상"
 L["Duration Function"] = "Duration Function"
 --[[Translation missing --]]
 L["Duration Function (fallback state)"] = "Duration Function (fallback state)"
---[[Translation missing --]]
-L["Dynamic Information"] = "Dynamic Information"
+L["Dynamic Information"] = "유동적 정보"
 --[[Translation missing --]]
 L["Ease In"] = "Ease In"
 --[[Translation missing --]]
@@ -515,10 +506,8 @@ L["Fankriss the Unyielding"] = "불굴의 판크리스"
 L["Fathom-Lord Karathress"] = "심연의 군주 카라드레스"
 L["Felmyst"] = "지옥안개"
 L["Festergut"] = "구린속"
---[[Translation missing --]]
-L["Fetch Legendary Power"] = "Fetch Legendary Power"
---[[Translation missing --]]
-L["Fetches the name and icon of the Legendary Power that matches this bonus id."] = "Fetches the name and icon of the Legendary Power that matches this bonus id."
+L["Fetch Legendary Power"] = "전설 능력 가져오기"
+L["Fetches the name and icon of the Legendary Power that matches this bonus id."] = "이 보너스 ID와 일치하는 전설 능력의 이름과 아이콘을 가져옵니다."
 L["Filter messages with format <message>"] = "<메시지> 형식의 메시지 필터링"
 L["Fire Resistance"] = "화염 저항"
 L["Firemaw"] = "화염아귀"
@@ -593,10 +582,8 @@ L["Grid"] = "Grid"
 L["Grobbulus"] = "그라불루스"
 L["Group"] = "그룹"
 L["Group Arrangement"] = "그룹 편성"
---[[Translation missing --]]
-L["Group Leader"] = "Group Leader"
---[[Translation missing --]]
-L["Group Type"] = "Group Type"
+L["Group Leader"] = "그룹장"
+L["Group Type"] = "그룹 유형"
 L["Grow"] = "성장"
 L["Gruul the Dragonkiller"] = "용 학살자 그룰"
 L["Gruul's Lair"] = "그룰의 둥지"
@@ -626,8 +613,7 @@ L["Health (%)"] = "생명력 (%)"
 L["Health Deficit"] = "Health Deficit"
 L["Heigan the Unclean"] = "부정의 헤이건"
 L["Height"] = "높이"
---[[Translation missing --]]
-L["Heroic Party"] = "Heroic Party"
+L["Heroic Party"] = "영웅 파티"
 L["Hex Lord Malacrass"] = "사술 군주 말라크라스"
 L["Hide"] = "숨기기"
 L["Hide 0 cooldowns"] = "0 재사용 대기시간 숨기기"
@@ -672,13 +658,11 @@ L["Illidan Stormrage"] = "일리단 스톰레이지"
 L["Immune"] = "면역"
 --[[Translation missing --]]
 L["Important"] = "Important"
---[[Translation missing --]]
-L["Importing will start after combat ends."] = "Importing will start after combat ends."
+L["Importing will start after combat ends."] = "전투 종료 후 가져오기가 시작됩니다."
 L["In Combat"] = "전투 중"
 L["In Encounter"] = "교전 중"
 L["In Group"] = "파티 중"
---[[Translation missing --]]
-L["In Party"] = "In Party"
+L["In Party"] = "파티 중"
 L["In Pet Battle"] = "애완동물 대전 중"
 L["In Raid"] = "공격대 중"
 L["In Vehicle"] = "차량 탑승 중"
@@ -842,8 +826,7 @@ L["Missing"] = "누락"
 L["Mists of Pandaria"] = "판다리아의 안개"
 L["Moam"] = "모암"
 L["Model"] = "모델"
---[[Translation missing --]]
-L["Modern Blizzard (1h 3m | 3m 7s | 10s | 2.4)"] = "Modern Blizzard (1h 3m | 3m 7s | 10s | 2.4)"
+L["Modern Blizzard (1h 3m | 3m 7s | 10s | 2.4)"] = "현 블리자드 (1h 3m | 3m 7s | 10s | 2.4)"
 L["Molten Core"] = "화산 심장부"
 L["Monochrome"] = "모노크롬"
 L["Monochrome Outline"] = "모노크롬 외곽선"
@@ -882,7 +865,7 @@ L["Naxxramas"] = "낙스라마스"
 L["Nefarian"] = "네파리안"
 L["Netherspite"] = "황천의 원령"
 L["Neutral"] = "중립"
-L["Never"] = "절대 안함"
+L["Never"] = "절대 안 함"
 L["Next Combat"] = "다음 전투"
 L["Next Encounter"] = "다음 교전"
 L["Nightbane"] = "파멸의 어둠"
@@ -893,13 +876,11 @@ L["No Profiling information saved."] = "저장된 프로파일링 정보가 없�
 L["None"] = "없음"
 L["Non-player Character"] = "NPC"
 L["Normal"] = "일반"
---[[Translation missing --]]
-L["Normal Party"] = "Normal Party"
+L["Normal Party"] = "일반 파티"
 --[[Translation missing --]]
 L["Northrend Beasts"] = "Northrend Beasts"
-L["Not in Group"] = "파티에 속하지 않음"
---[[Translation missing --]]
-L["Not in Smart Group"] = "Not in Smart Group"
+L["Not in Group"] = "그룹에 없음"
+L["Not in Smart Group"] = "스마트 그룹에 없음"
 L["Not on Cooldown"] = "재사용 대기 중이 아닐 때"
 L["Not On Threat Table"] = "위협 수준 없음"
 L["Note, that cross realm transmission is possible if you are on the same group"] = "참고로, 같은 영역에 있다면 상호 영역 전송이 가능합니다."
@@ -922,8 +903,7 @@ L["Officer"] = "길드관리자"
 L["Offset from progress"] = "Offset from progress"
 --[[Translation missing --]]
 L["Offset Timer"] = "Offset Timer"
---[[Translation missing --]]
-L["Old Blizzard (2h | 3m | 10s | 2.4)"] = "Old Blizzard (2h | 3m | 10s | 2.4)"
+L["Old Blizzard (2h | 3m | 10s | 2.4)"] = "옛 블리자드 (2h | 3m | 10s | 2.4)"
 L["On Cooldown"] = "재사용 대기 중일 때"
 --[[Translation missing --]]
 L["On Taxi"] = "On Taxi"
@@ -944,7 +924,7 @@ L["Opera Hall"] = "Opera Hall"
 L["Option Group"] = "옵션 그룹"
 --[[Translation missing --]]
 L["Options could not be loaded, the addon is %s"] = "Options could not be loaded, the addon is %s"
-L["Options will finish loading after combat ends."] = "옵션은 전투가 끝난 후 로딩을 완료합니다."
+L["Options will finish loading after combat ends."] = "옵션은 전투가 끝나면 불러오기가 완료됩니다."
 --[[Translation missing --]]
 L["Options will open after the login process has completed."] = "Options will open after the login process has completed."
 --[[Translation missing --]]
@@ -995,7 +975,7 @@ L["Player"] = "플레이어"
 L["Player Character"] = "플레이어 캐릭터"
 L["Player Class"] = "플레이어 직업"
 L["Player Covenant"] = "플레이어 성약의 단"
-L["Player Effective Level"] = "플레이어 유효 레벨"
+L["Player Effective Level"] = "플레이어 실제 레벨"
 L["Player Experience"] = "플레이어 경험치"
 L["Player Faction"] = "플레이어 진영"
 L["Player Level"] = "플레이어 레벨"
@@ -1200,8 +1180,7 @@ L["Since Stack Lost"] = "Since Stack Lost"
 --[[Translation missing --]]
 L["Sindragosa"] = "Sindragosa"
 L["Size & Position"] = "크기 & 위치"
---[[Translation missing --]]
-L["Slide Animation"] = "Slide Animation"
+L["Slide Animation"] = "슬라이드 애니메이션"
 L["Slide from Bottom"] = "아래부터 슬라이드"
 L["Slide from Left"] = "왼쪽부터 슬라이드"
 L["Slide from Right"] = "오른쪽부터 슬라이드"
@@ -1336,8 +1315,7 @@ L["Thaddius"] = "타디우스"
 L["The aura has overwritten the global '%s', this might affect other auras."] = "aura가 전역 '%s'|1을;를; 덮어썼습니다, 다른 aura도 영향을 받습니다."
 L["The Battle for Mount Hyjal"] = "하이잘 산 전투"
 L["The Curator"] = "전시 관리인"
---[[Translation missing --]]
-L["The effective level differs from the level in e.g. Time Walking dungeons."] = "The effective level differs from the level in e.g. Time Walking dungeons."
+L["The effective level differs from the level in e.g. Time Walking dungeons."] = "실제 레벨은 예를 들어 시간여행 던전의 레벨과는 다릅니다."
 L["The Eye of Eternity"] = "영원의 눈"
 L["The Four Horsemen"] = "4기사단"
 L["The Illidari Council"] = "일리다리 의회"
@@ -1356,8 +1334,7 @@ L["Third Value of Tooltip Text"] = "툴팁 문자의 세 번째 값"
 --[[Translation missing --]]
 L["This aura has caused a Lua error."] = "This aura has caused a Lua error."
 L["This aura has legacy aura trigger(s), which are no longer supported."] = "이 aura는 더 이상 지원되지 않는 과거의 aura 활성 조건을 포함하고 있습니다."
---[[Translation missing --]]
-L["This aura plays a sound via a condition."] = "This aura plays a sound via a condition."
+L["This aura plays a sound via a condition."] = "이 효과는 조건을 통해 소리를 재생합니다."
 --[[Translation missing --]]
 L["This aura plays a sound via an action."] = "This aura plays a sound via an action."
 --[[Translation missing --]]
@@ -1457,7 +1434,7 @@ L["Up, then Right"] = "위로, 오른쪽으로"
 L["Update Position"] = "Update Position"
 L["Usage:"] = "사용법:"
 L["Use /wa minimap to show the minimap icon again."] = "/wa minimap 을 사용하여 미니맵 아이콘을 다시 표시합니다."
-L["Use Custom Color"] = "사용자 설정 색상 사용"
+L["Use Custom Color"] = "사용자 정의 색상 사용"
 --[[Translation missing --]]
 L["Use Legacy floor rounding"] = "Use Legacy floor rounding"
 --[[Translation missing --]]
@@ -1514,8 +1491,7 @@ L["XT-002 Deconstructor"] = "XT-002 해체자"
 L["Yell"] = "외침"
 L["Y-Offset"] = "Y-좌표"
 L["Yogg-Saron"] = "요그사론"
---[[Translation missing --]]
-L["You have new auras ready to be installed!"] = "You have new auras ready to be installed!"
+L["You have new auras ready to be installed!"] = "새로운 효과를 설치할 준비가 되었습니다!"
 L["Your next encounter will automatically be profiled."] = "다음 교전은 자동으로 프로파일링됩니다."
 --[[Translation missing --]]
 L["Your next instance of combat will automatically be profiled."] = "Your next instance of combat will automatically be profiled."
@@ -1526,8 +1502,7 @@ L["Your total threat on the mob."] = "몬스터가 가진 당신의 총 위협 �
 L["Zone ID(s)"] = "지역 ID"
 L["Zone Name"] = "지역 이름"
 L["Zoom"] = "확대"
---[[Translation missing --]]
-L["Zoom Animation"] = "Zoom Animation"
+L["Zoom Animation"] = "확대 애니메이션"
 L["Zul'Aman"] = "줄아만"
 L["Zul'Gurub"] = "줄구룹"
 

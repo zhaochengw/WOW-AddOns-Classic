@@ -60,8 +60,8 @@ local L = WeakAuras.L
 	L["cooldown"] = "temps de recharge"
 	L["Cooldown Tracking"] = "Suivi du temps de recharge"
 	L["Create Auras"] = "Créer Auras"
-	L["debuff"] = "affaiblissement"
 	L["Debuff"] = "Affaiblissement"
+	L["debuff"] = "affaiblissement"
 	L["Debuffs"] = "Affaiblissements"
 	--[[Translation missing --]]
 	L["Empowered Buff"] = "Empowered Buff"

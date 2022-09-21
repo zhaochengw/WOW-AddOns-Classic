@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 47
+local MINOR_VERSION = 50
 if not LibStub then
   error(MAJOR_VERSION .. " requires LibStub.")
 end
@@ -135,11 +135,74 @@ local ActionButtonUpdate = false
 local SlotToFrame = {}
 local SlotToAction = {}
 
+local profiling = false
+local profileData
+
+local function doNothing()
+end
+
+local StartProfiling = doNothing
+local StopProfiling = doNothing
+
+local function _StartProfiling(id)
+  if not profileData[id] then
+    profileData[id] = {}
+    profileData[id].count = 1
+    profileData[id].start = debugprofilestop()
+    profileData[id].elapsed = 0
+    profileData[id].spike = 0
+    return
+  end
+
+  if profileData[id].count == 0 then
+    profileData[id].count = 1
+    profileData[id].start = debugprofilestop()
+  else
+    profileData[id].count = profileData[id].count + 1
+  end
+end
+
+local function _StopProfiling(id)
+  profileData[id].count = profileData[id].count - 1
+  if profileData[id].count == 0 then
+    local elapsed = debugprofilestop() - profileData[id].start
+    profileData[id].elapsed = profileData[id].elapsed + elapsed
+    if elapsed > profileData[id].spike then
+      profileData[id].spike = elapsed
+    end
+  end
+end
+
+function lib.StartProfile()
+  if profiling then
+    print(MAJOR_VERSION, " (StartProfile) Profiling already started")
+    return false
+  end
+  profiling = true
+  profileData = {}
+  StartProfiling = _StartProfiling
+  StopProfiling = _StopProfiling
+end
+
+function lib.StopProfile()
+  if not profiling then
+    print(MAJOR_VERSION, " (StopProfile) Profiling not running")
+    return false
+  end
+  profiling = false
+  StartProfiling = doNothing
+  StopProfiling = doNothing
+end
+
+function lib.GetProfileData()
+  return profileData or {}
+end
+
 local function ScanFrames(depth, frame, ...)
+  coroutine.yield()
   if not frame then
     return
   end
-  coroutine.yield()
   if depth < maxDepth and frame.IsForbidden and not frame:IsForbidden() then
     local frameType = frame:GetObjectType()
     if frameType == "Frame" or frameType == "Button" then
@@ -187,7 +250,7 @@ local co
 local coroutineFrame = CreateFrame("Frame")
 coroutineFrame:Hide()
 
-local function doScanForUnitFrames()
+local function doScanForUnitFrames(event)
   if not coroutineFrame:IsShown() then
     wipe(UpdatedFrames)
     wipe(GetFramesCacheTemp)
@@ -202,10 +265,14 @@ end
 
 coroutineFrame:SetScript("OnUpdate", function()
   local start = debugprofilestop()
-  while debugprofilestop() - start < 16 and coroutine.status(co) ~= "dead" do
+  -- Limit to 6ms per frame
+  StartProfiling("scan frames")
+  while debugprofilestop() - start < 5 and coroutine.status(co) ~= "dead" do
     coroutine.resume(co, 0, UIParent)
   end
+  StopProfiling("scan frames")
   if coroutine.status(co) == "dead" then
+    StartProfiling("callbacks")
     local tmp = GetFramesCache
     GetFramesCache = GetFramesCacheTemp
     GetFramesCacheTemp = tmp
@@ -214,26 +281,36 @@ coroutineFrame:SetScript("OnUpdate", function()
     ActionButtons = ActionButtonsTemp
     ActionButtonsTemp = tmp
     wipe(ActionButtonsTemp)
+    StartProfiling("callback GETFRAME_REFRESH")
     callbacks:Fire("GETFRAME_REFRESH")
+    StopProfiling("callback GETFRAME_REFRESH")
+    StartProfiling("callback FRAME_UNIT_UPDATE")
     for frame, unit in pairs(UpdatedFrames) do
       callbacks:Fire("FRAME_UNIT_UPDATE", frame, unit)
     end
+    StopProfiling("callback FRAME_UNIT_UPDATE")
+    StartProfiling("callback FRAME_UNIT_REMOVED")
     for frame, unit in pairs(FrameToUnit) do
       if FrameToUnitFresh[frame] ~= unit then
         callbacks:Fire("FRAME_UNIT_REMOVED", frame, unit)
         FrameToUnit[frame] = nil
       end
     end
+    StopProfiling("callback FRAME_UNIT_REMOVED")
     if ActionButtonUpdate then
-      SlotToFrame = {}
+      StartProfiling("callback ACTIONBAR_SLOT_CHANGED")
+      wipe(SlotToFrame)
       for frame, slot in pairs(ActionButtons) do
-        SlotToFrame[slot] = frame
+        SlotToFrame[slot] = SlotToFrame[slot] or {}
+        tinsert(SlotToFrame[slot], frame)
       end
-      callbacks:Fire("ACTIONBAR_SLOT_CHANGED")
+      callbacks:Fire("ACTIONBAR_SLOT_CHANGED") -- this does not reflect which event triggered the scan
+      StopProfiling("callback ACTIONBAR_SLOT_CHANGED")
     end
     coroutineFrame:Hide()
+    StopProfiling("callbacks")
     if status == "scan_queued" then
-      doScanForUnitFrames()
+      doScanForUnitFrames("queued")
     else
       status = "ready"
     end
@@ -353,10 +430,10 @@ local function Init(noDelay)
   GetFramesCacheListener:RegisterEvent("PLAYER_REGEN_ENABLED")
   GetFramesCacheListener:RegisterEvent("PLAYER_ENTERING_WORLD")
   GetFramesCacheListener:RegisterEvent("GROUP_ROSTER_UPDATE")
-  GetFramesCacheListener:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
+  GetFramesCacheListener:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
   GetFramesCacheListener:RegisterEvent("UNIT_PET")
   GetFramesCacheListener:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
-  GetFramesCacheListener:SetScript("OnEvent", function(event, unit)
+  GetFramesCacheListener:SetScript("OnEvent", function(self, event, unit, ...)
     if event == "GROUP_ROSTER_UPDATE" then
       wipe(unitPetState)
       for member in IterateGroupMembers() do
@@ -490,14 +567,14 @@ function lib.GetUnitNameplate(unit)
   end
 end
 
----Return an action button for a slotId.
+---Return a list of action buttons for a slotId.
 ---@param slotId number
----@return CheckButton
-function lib.GetActionButtonBySlot(slotId)
+---@return table<CheckButton>
+function lib.GetActionButtonsBySlot(slotId)
   return SlotToFrame[slotId]
 end
 
----Return a list of action buttons for a spell or item or equipement set.
+---Return a list of action buttons for a spell/item/equipement set.
 ---Check documentation of GetActionInfo for more information.
 ---@param id number|string
 ---@param actionType string
@@ -513,7 +590,9 @@ function lib.GetActionButtonsById(id, actionType, subType)
       local slots = C_ActionBar.FindSpellActionButtons(id)
       for _, slot in ipairs(slots) do
         if SlotToFrame[slot] then
-          tinsert(frames, SlotToFrame[slot])
+          for _, frame in ipairs(SlotToFrame[slot]) do
+            tinsert(frames, frame)
+          end
         end
       end
     end
@@ -521,8 +600,14 @@ function lib.GetActionButtonsById(id, actionType, subType)
     local slotType, slotId, slotSubType
     for i = 1, 120 do
       slotType, slotId, slotSubType = GetActionInfo(i)
-      if id == slotId and slotType == actionType and (subType == nil or subType == slotSubType) then
-        tinsert(frames, SlotToFrame[i])
+      if id == slotId
+      and slotType == actionType
+      and (subType == nil or subType == slotSubType)
+      and SlotToFrame[i]
+      then
+        for _, frame in ipairs(SlotToFrame[i]) do
+          tinsert(frames, frame)
+        end
       end
     end
   end
