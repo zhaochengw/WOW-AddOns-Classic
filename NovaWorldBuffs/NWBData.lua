@@ -532,7 +532,7 @@ function NWB:requestData(distribution, target, prio)
 	data = NWB.serializer:Serialize(data);
 	NWB.lastDataSent = GetServerTime();
 	if (NWB:isClassicCheck()) then
-		NWB:sendComm(distribution, "requestData " .. version .. " " .. data, target, prio);
+		NWB:sendComm(distribution, "requestData " .. version .. " " .. self.k() .. " " .. data, target, prio);
 	else
 		NWB:requestSettings(distribution, target, prio);
 	end
@@ -1277,7 +1277,7 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 	end
 	local hasNewData, newFlowerData, hasNewTerok;
 	--Insert our layered data here.
-	if (NWB.isLayered and data.layers and self.j(elapsed) and (NWB.isClassic or distribution == "GUILD" or time > 50)) then
+	if (NWB.isLayered and data.layers and self.j(elapsed) and (NWB.isClassic or distribution == "GUILD" or time > 2)) then
 		--There's a lot of ugly shit in this function trying to quick fix timer bugs for this layered stuff...
 		for k, _ in pairs(data.layers) do
 			if (type(k) ~= "number") then
@@ -1380,7 +1380,7 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 								if ((type(k) == "string" and (string.match(k, "flower") and NWB.db.global.syncFlowersAll)
 										or (not NWB.db.global.receiveGuildDataOnly)
 										or (NWB.db.global.receiveGuildDataOnly and distribution == "GUILD"))
-										and (NWB.isClassic or distribution == "GUILD" or time > 50)) then
+										and (NWB.isClassic or distribution == "GUILD" or time > 2)) then
 									if (NWB.validKeys[k] and tonumber(v)) then
 										--If data is numeric (a timestamp) then check it's newer than our current timer.
 										if (v ~= nil) then
@@ -1516,7 +1516,7 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 		--bad argument #1 to 'match' (string expected, got table)
 		if (self.j(elapsed) and (type(k) == "string" and (string.match(k, "flower") and NWB.db.global.syncFlowersAll)
 				or (not NWB.db.global.receiveGuildDataOnly)
-				or (NWB.db.global.receiveGuildDataOnly and distribution == "GUILD")) and (NWB.isClassic or time > 50)) then
+				or (NWB.db.global.receiveGuildDataOnly and distribution == "GUILD")) and (NWB.isClassic or time > 2)) then
 			if (NWB.validKeys[k] and tonumber(v)) then
 				--If data is numeric (a timestamp) then check it's newer than our current timer.
 				if (v ~= nil) then
@@ -3720,7 +3720,7 @@ function NWB:updateTerokkarMarkers(type, layer)
 		end
 		local timeString = L["noTimer"];
 		if (NWB.data.layers[layer] and _G[type .. layer .. "NWBTerokkarMap"]) then
-			if (NWB.db.global.showExpiredTimersTerok and time < 1 and time > -3599) then
+			if (NWB.db.global.showExpiredTimersTerok and time < 0 and time > -3599) then
 				time = time * -1;
 				local minutes = string.format("%02.f", math.floor(time / 60));
 			    local seconds = string.format("%02.f", math.floor(time - minutes * 60));
@@ -3764,17 +3764,17 @@ function NWB:updateTerokkarMarkers(type, layer)
 			time = 0;
 		end
 		if (NWB.data["terokTowers"] and _G[type .. "NWBTerokkarMap"]) then
-			if (NWB.db.global.showExpiredTimersTerok and time < 1 and time > -3599) then
+			if (NWB.db.global.showExpiredTimersTerok and time < 0 and time > -3599) then
 				time = time * -1;
 				local minutes = string.format("%02.f", math.floor(time / 60));
 			    local seconds = string.format("%02.f", math.floor(time - minutes * 60));
 				timeString = "|Cffff2500-" .. minutes .. ":" .. seconds .. " (expired)|r";
-				if (NWB.data.layers[layer]["terokFaction"] == 2) then
-		    		_G[type .. layer .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\alliancetower.blp");
-		    	elseif (NWB.data.layers[layer]["terokFaction"] == 3) then
-		    		_G[type .. layer .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\hordetower.blp");
+				if (NWB.data[layer]["terokFaction"] == 2) then
+		    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\alliancetower.blp");
+		    	elseif (NWB.data[layer]["terokFaction"] == 3) then
+		    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\hordetower.blp");
 		    	else
-		    		_G[type .. layer .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\neutraltower.blp");
+		    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\neutraltower.blp");
 		    	end
 			elseif (time > 0) then
 				local endTime = NWB:getTerokEndTime(NWB.data.terokTowers, NWB.data.terokTowersTime);
@@ -3813,7 +3813,7 @@ function NWB:updateWintergraspMarkers(type, layer)
 	end
 	_G[type .. "NWBTerokkarMap"].fsTitle:SetText("|cFFFFFF00Wintergrasp");
 	if (NWB.data.wintergrasp and _G[type .. "NWBTerokkarMap"]) then
-		if (NWB.db.global.showExpiredTimersTerok and time < 1 and time > -3599) then
+		if (NWB.db.global.showExpiredTimersTerok and time < 0 and time > -3599) then
 			time = time * -1;
 			local minutes = string.format("%02.f", math.floor(time / 60));
 		    local seconds = string.format("%02.f", math.floor(time - minutes * 60));

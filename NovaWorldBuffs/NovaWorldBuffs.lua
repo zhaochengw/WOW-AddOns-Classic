@@ -11156,7 +11156,7 @@ function NWB:mapCurrentLayer(unit)
 				end
 				--if (NWB.realm == "Faerlina" or NWB.realm == "Firemaw" or NWB.realm == "Benediction" or NWB.realm == "Gehennas") then
 					local layerOffset = NWB:getLayerOffset(NWB.lastKnownLayerMapID, nil, zoneID);
-					if (layerOffset and layerOffset > offsetLimit) then
+					if (layerOffset and (layerOffset > offsetLimit and NWB.lastKnownLayerMapID_Mapping == 0)) then
 						halt = true;
 					end
 				--end
