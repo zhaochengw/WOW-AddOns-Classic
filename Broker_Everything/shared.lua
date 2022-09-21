@@ -4,7 +4,7 @@
 -- ====================================== --
 local addon, ns = ...;
 local L,_ = ns.L;
-ns.debugMode = "4.4.0-beta"=="@".."project-version".."@";
+ns.debugMode = "4.4.0-release"=="@".."project-version".."@";
 LibStub("HizurosSharedTools").RegisterPrint(ns,addon,"BE");
 
 local UnitName,UnitSex,UnitClass,UnitFactionGroup=UnitName,UnitSex,UnitClass,UnitFactionGroup;
