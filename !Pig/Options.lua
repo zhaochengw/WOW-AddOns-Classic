@@ -179,7 +179,7 @@ end
 
 --左边选项内容
 local Tab_L_List={
-	{"交互增强","聊天增强","战斗辅助","头像增强","显示增强","界面布局","快捷按钮栏","小地图/地图","游戏内置设置","开发工具","配 置","关 于"},
+	{"交互增强","聊天增强","战斗辅助","头像增强","显示增强","界面布局","快捷按钮栏","小地图/地图","游戏内置设置","试验功能","开发工具","配 置","关 于"},
 	{"背包整合","拍卖增强","额外动作条","快捷跟随","输出提示","技能监控","售卖助手","专业 C D","时空之门","开团助手","带本助手"},
 }
 local List_ButH = 24
@@ -324,7 +324,7 @@ PIG_AddOnPanel:HookScript("OnShow", function ()
 	end
 end)
 --打开设置面板
-PIG_AddOnPanel.Openshezhi = ADD_Button("设置",nil,PIG_AddOnPanel,80,28,PIG_AddOnPanel,20,-60)
+PIG_AddOnPanel.Openshezhi = ADD_Button("设置",nil,PIG_AddOnPanel,80,28,"TOPLEFT",PIG_AddOnPanel,"TOPLEFT",20,-60)
 PIG_AddOnPanel.Openshezhi:SetScript("OnClick", function ()
 	if Pig_OptionsUI:IsShown() then	
 		Pig_OptionsUI:Hide();

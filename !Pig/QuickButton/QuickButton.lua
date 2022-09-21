@@ -102,6 +102,7 @@ local function QuickButton_Spell()
 	local Cursor_Fun=addonTable.Cursor_Fun
 	local OnEnter_Item=addonTable.OnEnter_Item
 	local OnEnter_Spell=addonTable.OnEnter_Spell
+	local OnEnter_Companion=addonTable.OnEnter_Companion
 	local Update_Icon=addonTable.Update_Icon
 	local Update_Cooldown=addonTable.Update_Cooldown
 	local Update_Count=addonTable.Update_Count
@@ -124,29 +125,19 @@ local function QuickButton_Spell()
 	Zhushou_List:SetScale(PIG['QuickButton']['bili']);
 	Zhushou_List:Hide();
 	Zhushou_List:SetFrameLevel(33)
-	-- local offset = Zhushou:GetBottom();
-	-- if offset<600 then
-	-- 	Zhushou_List:SetPoint("BOTTOM", Zhushou, "TOP", 0, 4);
-	-- else
-	-- 	Zhushou_List:SetPoint("TOP", Zhushou, "BOTTOM", 0, -4);
-	-- end
+
 	Zhushou_List.Close = CreateFrame("Button",nil,Zhushou_List, "UIPanelCloseButton");  
 	Zhushou_List.Close:SetSize(38,38);
-	Zhushou_List.Close:SetPoint("BOTTOMRIGHT", Zhushou_List, "TOPRIGHT", 2, -2);
-	--
-	Zhushou_List:HookScript("OnShow",function(self)
-		local WowHeight=GetScreenHeight();
-		local offset = Zhushou:GetBottom();
-		self:ClearAllPoints();
-		self.Close:ClearAllPoints();
-		if offset>(WowHeight*0.5) then
-			self:SetPoint("TOP", Zhushou, "BOTTOM", 0, -4);
-			self.Close:SetPoint("TOPRIGHT", Zhushou_List, "BOTTOMRIGHT", 2, 2);
-		else
-			self:SetPoint("BOTTOM", Zhushou, "TOP", 0, 4);
-			self.Close:SetPoint("BOTTOMRIGHT", Zhushou_List, "TOPRIGHT", 2, -2);
-		end
-	end)
+
+	local WowHeight=GetScreenHeight();
+	local offset = Zhushou:GetBottom();
+	if offset>(WowHeight*0.5) then
+		Zhushou_List:SetPoint("TOP", Zhushou, "BOTTOM", 0, -4);
+		Zhushou_List.Close:SetPoint("TOPRIGHT", Zhushou_List, "BOTTOMRIGHT", 2, 2);
+	else
+		Zhushou_List:SetPoint("BOTTOM", Zhushou, "TOP", 0, 4);
+		Zhushou_List.Close:SetPoint("BOTTOMRIGHT", Zhushou_List, "TOPRIGHT", 2, -2);
+	end
 	Zhushou:HookScript("OnClick",function(self,button)
 		if button == "RightButton" then
 			if Recount then
@@ -281,6 +272,8 @@ local function QuickButton_Spell()
 								GameTooltip:Show();
 							end
 						end
+					elseif Type=="companion" then
+						OnEnter_Companion(Type,SimID,butInfo[3])
 					end
 				end
 			end
@@ -306,7 +299,7 @@ local function QuickButton_Spell()
 		zhushoubut:HookScript("OnEvent", function(self,event,arg1,arg2,arg3)
 			if Zhushou_List:IsShown() then
 				if event=="PLAYER_REGEN_ENABLED" then
-					PigMacroDeleted_QK,PigMacroCount_QK=Update_Macro(self,PigMacroDeleted_QK,PigMacroCount_QK)
+					PigMacroDeleted_QK,PigMacroCount_QK=Update_Macro(self,PigMacroDeleted_QK,PigMacroCount_QK,"QuickButton")
 					self:UnregisterEvent("PLAYER_REGEN_ENABLED");
 				end
 				if event=="BAG_UPDATE" then
@@ -330,7 +323,7 @@ local function QuickButton_Spell()
 							elseif (PigMacroCount_QK > AccMacros + CharMacros) then
 								PigMacroDeleted_QK = true;
 							end
-							PigMacroDeleted_QK,PigMacroCount_QK=Update_Macro(self,PigMacroDeleted_QK,PigMacroCount_QK)
+							PigMacroDeleted_QK,PigMacroCount_QK=Update_Macro(self,PigMacroDeleted_QK,PigMacroCount_QK,"QuickButton")
 						end
 					end
 					Update_Icon(self)

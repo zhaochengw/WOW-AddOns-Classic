@@ -212,7 +212,7 @@ local function ADD_Plane_Frame()
 	
 	-----------------------
 	local Tooltip= "自动接受玩家位面申请(未组队且不在副本时)\n|cff00FF00我为人人，人人为我。请不要做精致的利己主义者。|r";
-	fuFrame.PIGPlane_zudui =ADD_Checkbutton(nil,fuFrame,-120,"TOPLEFT",fuFrame,"TOPLEFT",440,-2,"|cff00FF00自动接受玩家位面申请(单人且不在副本时)|r",Tooltip)
+	fuFrame.PIGPlane_zudui =ADD_Checkbutton(nil,fuFrame,-120,"TOPLEFT",fuFrame,"TOPLEFT",420,-2,"|cff00FF00自动接受玩家位面申请(单人且不在副本时)|r",Tooltip)
 	fuFrame.PIGPlane_zudui:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG['PlaneInvite']['zidongjieshou']="ON";
@@ -223,6 +223,11 @@ local function ADD_Plane_Frame()
 	if PIG['PlaneInvite']['zidongjieshou']=="ON" then
 		fuFrame.PIGPlane_zudui:SetChecked(true);
 	end
+	fuFrame.PIGPlane_zudui.help = fuFrame.PIGPlane_zudui:CreateFontString();
+	fuFrame.PIGPlane_zudui.help:SetPoint("TOPLEFT", fuFrame.PIGPlane_zudui, "BOTTOMLEFT", 10, 0);
+	fuFrame.PIGPlane_zudui.help:SetFontObject(GameFontNormal);
+	fuFrame.PIGPlane_zudui.help:SetTextColor(0, 1, 1, 1);
+	fuFrame.PIGPlane_zudui.help:SetText("我为人人，人人为我。请不要做精致的利己主义者");
 	------
 	fuFrame.Errorxiufu = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");  
 	fuFrame.Errorxiufu:SetSize(50,24);

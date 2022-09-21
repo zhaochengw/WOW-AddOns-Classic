@@ -160,14 +160,21 @@ local function ADD_Biaoti(self)
 end
 addonTable.ADD_Biaoti=ADD_Biaoti
 --创建按钮
-local function ADD_Button(GnName,UIName,fuFrame,Width,Height,Point,PointX,PointY)
+local function ADD_Button(GnName,UIName,fuFrame,Width,Height,Point,fuPoint,rPoint,PointX,PointY)
 	local frame = CreateFrame("Button", UIName, fuFrame, "UIPanelButtonTemplate");  
 	frame:SetSize(Width,Height);
-	frame:SetPoint("TOPLEFT",Point,"TOPLEFT",PointX,PointY);
+	frame:SetPoint(Point,fuPoint,rPoint,PointX,PointY);
 	frame:SetText(GnName);
 	return frame
 end
 addonTable.ADD_Button=ADD_Button
+local function ADD_ButtonMima(GnName,UIName,fuFrame,Width,Height,Point,fuPoint,rPoint,PointX,PointY,id)
+	local frame = CreateFrame("Button", UIName, fuFrame, "UIPanelSquareButton",id);  
+	frame:SetSize(Width,Height);
+	frame:SetPoint(Point,fuPoint,rPoint,PointX,PointY);
+	return frame
+end
+addonTable.ADD_ButtonMima=ADD_ButtonMima
 --创建选择按钮
 local function ADD_Checkbutton(frameName,fuFrame,fanwei,Point,fuPoint,rPoint,PointX,PointY,GnName,Tooltip)
 	local frame = CreateFrame("CheckButton", frameName, fuFrame, "ChatConfigCheckButtonTemplate");

@@ -219,6 +219,7 @@ local function gengxin_Skill(self)
 	end
 end
 --
+local tishiframepig
 local function xianshitishi()
 	if not InCombatLockdown() then
 		local youlengquewancCD=false;
@@ -240,9 +241,9 @@ local function xianshitishi()
 			end
 		end
 		if youlengquewancCD then 
-			GameTimeFrame.Texture:SetAlpha(1); 
+			tishiframepig:Show(); 
 		else
-			GameTimeFrame.Texture:SetAlpha(0);
+			tishiframepig:Hide();
 		end
 	end
 	C_Timer.After(2,xianshitishi);
@@ -469,11 +470,16 @@ local function Add_Skill_CD()
 		SK_list.time:SetFontObject(ChatFontNormal);
 	end
 	--小地图提示图标
-	GameTimeFrame.Texture = GameTimeFrame:CreateTexture("GameTimeFrameCD1", "OVERLAY");
-	GameTimeFrame.Texture:SetTexture("interface/common/help-i.blp");
-	GameTimeFrame.Texture:SetSize(48,48);
-	GameTimeFrame.Texture:SetPoint("CENTER",GameTimeFrame,"CENTER",0,0);
-	GameTimeFrame.Texture:SetAlpha(0);
+	GameTimeFrame.CDtishi = GameTimeFrame:CreateTexture(nil, "OVERLAY");
+	GameTimeFrame.CDtishi:SetTexture("interface/common/help-i.blp");
+	GameTimeFrame.CDtishi:SetSize(40,40);
+	GameTimeFrame.CDtishi:SetPoint("CENTER",GameTimeFrame,"CENTER",0,0);
+	GameTimeFrame.CDtishi:Hide();
+	if tocversion<30000 then
+		tishiframepig=GameTimeFrame.CDtishi
+	else
+		tishiframepig=GameTimeCalendarInvitesGlow
+	end
 	C_Timer.After(4,xianshitishi);
 
 	--副本CD列表===================================================
@@ -645,24 +651,12 @@ local function Add_Skill_CD()
 	        end)
 	    end
 	end
-	GameTimeFrame.yijiazairili=false
-	GameTimeFrame:HookScript("OnMouseUp", function ()
-		if zhuanyeCDUI:IsShown() then
-			zhuanyeCDUI:Hide();
-		else
-			zhuanyeCDUI:SetFrameLevel(FrameLevel)
-			zhuanyeCDUI:Show();
-		end
-	end)
 end
 --===============================
 local ADD_ModCheckbutton =addonTable.ADD_ModCheckbutton
-local Tooltip = "创建一个监控所有角色"..GnName.."界面！\r|cff00ff00点击小地图上的太阳月亮图标打开界面|r\r专业技能冷却完成后会在此图标上有提示！";
+local Tooltip = "创建一个监控所有角色"..GnName.."界面！";
 local Cfanwei,xulieID = -80, 2
 local OptionsModF_Skill_FB = ADD_ModCheckbutton(GnName,Tooltip,fuFrame,Cfanwei,xulieID)
-if tocversion>40000 then
-	OptionsModF_Skill_FB:Disable() OptionsModF_Skill_FB.Text:SetTextColor(0.4, 0.4, 0.4, 1) 
-end
 ---
 local ADD_QuickButton=addonTable.ADD_QuickButton
 local function ADD_QuickButton_SkillfubenCD()
@@ -706,9 +700,6 @@ OptionsModF_Skill_FB:SetScript("OnClick", function (self)
 	end
 	ADD_QuickButton_SkillfubenCD()
 end);
-if tocversion>40000 then
-	OptionsModF_Skill_FB.ADD:Disable() OptionsModF_Skill_FB.ADD.Text:SetTextColor(0.4, 0.4, 0.4, 1) 
-end
 OptionsModF_Skill_FB.ADD:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG["SkillFBCD"]["AddBut"]="ON"

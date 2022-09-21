@@ -1,7 +1,7 @@
 local _, addonTable = ...;
 
 --///////////////////////////////////////////
-local fuFrame=List_R_F_1_11
+local fuFrame=List_R_F_1_12
 
 local Config_Name ={"常用配置","调试配置","PIG",};
 local Config_ID ={"AllNO","Default","PIG"};

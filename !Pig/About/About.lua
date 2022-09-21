@@ -1,7 +1,7 @@
 local _, addonTable = ...;
 
 ---------------------------------------------------
-local fuFrame=List_R_F_1_12
+local fuFrame=List_R_F_1_13
 local Pigtxt=addonTable.Pigtxt
 ------
 fuFrame.top = fuFrame:CreateFontString();
@@ -71,57 +71,3 @@ fuFrame.retail_P = fuFrame:CreateFontString();
 fuFrame.retail_P:SetPoint("TOP",fuFrame.retail,"BOTTOM",0,-4);
 fuFrame.retail_P:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
 fuFrame.retail_P:SetText(fuFrame.PLAYERS_retail);
-
-----------------------------------2431
-fuFrame.Pigbut1 = CreateFrame("Button",nil,fuFrame, "UIPanelSquareButton");  
-fuFrame.Pigbut1:SetSize(14,14);
-fuFrame.Pigbut1:SetPoint("TOPLEFT",fuFrame.fengexian,"TOPLEFT",2,-2);
-fuFrame.Pigbut1:SetScript("OnClick", function ()
-	if not PIG["RaidRecord"]["Invite"]["jihuo"] then PIG["RaidRecord"]["Invite"]["jihuo"]={nil,nil,nil,nil} end
-	if PIG["RaidRecord"]["Invite"]["jihuo"][2]==true and PIG["RaidRecord"]["Invite"]["jihuo"][4]==true and PIG["RaidRecord"]["Invite"]["jihuo"][3]==true then
-		PIG["RaidRecord"]["Invite"]["jihuo"][1]=true
-	else
-		PIG["RaidRecord"]["Invite"]["jihuo"][1]=nil
-		PIG["RaidRecord"]["Invite"]["jihuo"][3]=nil
-		PIG["RaidRecord"]["Invite"]["jihuo"][4]=nil
-		PIG["RaidRecord"]["Invite"]["jihuo"][2]=nil
-	end
-end);
-fuFrame.Pigbut2 = CreateFrame("Button",nil,fuFrame, "UIPanelSquareButton");  
-fuFrame.Pigbut2:SetSize(14,14);
-fuFrame.Pigbut2:SetPoint("TOPRIGHT",fuFrame.fengexian,"TOPRIGHT",-2,-2);
-fuFrame.Pigbut2:SetScript("OnClick", function ()
-	if not PIG["RaidRecord"]["Invite"]["jihuo"] then PIG["RaidRecord"]["Invite"]["jihuo"]={nil,nil,nil,nil} end
-	PIG["RaidRecord"]["Invite"]["jihuo"][1]=nil
-	PIG["RaidRecord"]["Invite"]["jihuo"][3]=nil
-	PIG["RaidRecord"]["Invite"]["jihuo"][4]=nil
-	PIG["RaidRecord"]["Invite"]["jihuo"][2]=true
-end);
-fuFrame.Pigbut3 = CreateFrame("Button",nil,fuFrame, "UIPanelSquareButton");  
-fuFrame.Pigbut3:SetSize(14,14);
-fuFrame.Pigbut3:SetPoint("BOTTOMLEFT",fuFrame,"BOTTOMLEFT",2,2);
-fuFrame.Pigbut3:SetScript("OnClick", function ()
-	if not PIG["RaidRecord"]["Invite"]["jihuo"] then PIG["RaidRecord"]["Invite"]["jihuo"]={nil,nil,nil,nil} end
-	if PIG["RaidRecord"]["Invite"]["jihuo"][2]==true and PIG["RaidRecord"]["Invite"]["jihuo"][4]==true then
-		PIG["RaidRecord"]["Invite"]["jihuo"][3]=true
-	else
-		PIG["RaidRecord"]["Invite"]["jihuo"][1]=nil
-		PIG["RaidRecord"]["Invite"]["jihuo"][3]=nil
-		PIG["RaidRecord"]["Invite"]["jihuo"][4]=nil
-		PIG["RaidRecord"]["Invite"]["jihuo"][2]=nil
-	end
-end);
-fuFrame.Pigbut4 = CreateFrame("Button",nil,fuFrame, "UIPanelSquareButton");  
-fuFrame.Pigbut4:SetSize(14,14);
-fuFrame.Pigbut4:SetPoint("BOTTOMRIGHT",fuFrame,"BOTTOMRIGHT",-2,2);
-fuFrame.Pigbut4:SetScript("OnClick", function ()
-	if not PIG["RaidRecord"]["Invite"]["jihuo"] then PIG["RaidRecord"]["Invite"]["jihuo"]={nil,nil,nil,nil} end
-	if PIG["RaidRecord"]["Invite"]["jihuo"][2]==true then
-		PIG["RaidRecord"]["Invite"]["jihuo"][4]=true
-	else
-		PIG["RaidRecord"]["Invite"]["jihuo"][1]=nil
-		PIG["RaidRecord"]["Invite"]["jihuo"][3]=nil
-		PIG["RaidRecord"]["Invite"]["jihuo"][4]=nil
-		PIG["RaidRecord"]["Invite"]["jihuo"][2]=nil
-	end
-end);

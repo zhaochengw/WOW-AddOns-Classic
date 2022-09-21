@@ -7,7 +7,10 @@ local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local function Classes_Gensui_Z(botton)
 	if botton=="LeftButton" then
 		if PIG["QuickFollow"]["Name"]~=nil and PIG["QuickFollow"]["Name"]~="" then
-			FollowUnit(PIG["QuickFollow"]["Name"]);
+			local isRecognized = IsRecognizedName(PIG["QuickFollow"]["Name"], AUTOCOMPLETE_FLAG_ONLINE, AUTOCOMPLETE_FLAG_NONE)
+			if isRecognized then
+				FollowUnit(PIG["QuickFollow"]["Name"]);
+			end
 		end
 	else
 		local name,_ = UnitName("player");

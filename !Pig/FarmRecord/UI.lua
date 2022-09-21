@@ -2050,7 +2050,7 @@ local function ADD_daibenUI()
 		--print(event)
 		local function shuaxinjizhangInfo()
 			local inInstance, instanceType = IsInInstance()
-			if inInstance then
+			if inInstance and instanceType=="party" or instanceType=="raid" then
 				local jishadata = PIG_Per.daiben.Timelist[1][4]
 				if jishadata and jishadata>1 then
 					Update_jizhangData(nil,true)

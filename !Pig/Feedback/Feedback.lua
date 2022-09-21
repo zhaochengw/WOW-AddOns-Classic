@@ -1,18 +1,18 @@
 local _, addonTable = ...;
 local gsub = _G.string.gsub 
 local find = _G.string.find
-local fuFrame=List_R_F_1_10
+local fuFrame=List_R_F_1_11
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local ADD_Button=addonTable.ADD_Button
 --///////////////////////////////////////////
-fuFrame.NPCID = ADD_Button("获取目标GUID",nil,fuFrame,114,24,fuFrame,20,-20)
+fuFrame.NPCID = ADD_Button("获取目标GUID",nil,fuFrame,114,24,"TOPLEFT",fuFrame,"TOPLEFT",20,-20)
 fuFrame.NPCID:SetScript("OnClick", function (self)
 	print(UnitGUID("target"))
 end);
 --==================================================
 --启用CPU监控
 SetCVar("scriptProfile", 0)--默认设置关闭
-fuFrame.CPU_OPEN = ADD_Button("开启CPU监控",nil,fuFrame,110,24,fuFrame,20,-80)
+fuFrame.CPU_OPEN = ADD_Button("开启CPU监控",nil,fuFrame,110,24,"TOPLEFT",fuFrame,"TOPLEFT",20,-80)
 fuFrame.CPU_OPEN:SetScript("OnClick", function (self)
 	if self:GetText()=="关闭CPU监控" then
 		SetCVar("scriptProfile", 0)
@@ -22,7 +22,7 @@ fuFrame.CPU_OPEN:SetScript("OnClick", function (self)
 		fuFrame.CPU_OPEN:SetText("关闭CPU监控");
 	end
 end);
-fuFrame.CPU_OPEN.DAYIN = ADD_Button("打印数据到聊天框",nil,fuFrame.CPU_OPEN,150,24,fuFrame.CPU_OPEN,160,0)
+fuFrame.CPU_OPEN.DAYIN = ADD_Button("打印数据到聊天框",nil,fuFrame.CPU_OPEN,150,24,"TOPLEFT",fuFrame.CPU_OPEN,"TOPLEFT",160,0)
 fuFrame.CPU_OPEN.DAYIN:SetScript("OnClick", function (self)
 	if GetCVarInfo("scriptProfile")=="1" then
 		UpdateAddOnMemoryUsage()
@@ -42,7 +42,7 @@ fuFrame.CPU_OPEN.DAYIN:SetScript("OnClick", function (self)
 		end
 	end
 end);
-fuFrame.CPU_OPEN.CZ = ADD_Button("重置数据",nil,fuFrame.CPU_OPEN,80,24,fuFrame.CPU_OPEN,380,0)
+fuFrame.CPU_OPEN.CZ = ADD_Button("重置数据",nil,fuFrame.CPU_OPEN,80,24,"TOPLEFT",fuFrame.CPU_OPEN,"TOPLEFT",380,0)
 fuFrame.CPU_OPEN.CZ:SetScript("OnClick", function (self)
 	ResetCPUUsage()
 end);
@@ -52,7 +52,7 @@ local CVarsList = {
 	{"打开系统LUA错误提示","scriptErrors","1","0","打开系统的LUA错误提示功能，对插件不了解请勿开启！！！",false},
 }
 for i=1,#CVarsList do
-	local miaodian = {fuFrame,20,-230}
+	local miaodian = {fuFrame,20,-250}
 	if i>1 then
 		miaodian = {_G["ErrCB_"..(i-1)],0,-40}
 	end
@@ -67,13 +67,19 @@ for i=1,#CVarsList do
 end
 
 --------------------------------
-fuFrame.errorUI = ADD_Button("错误报告",nil,fuFrame,120,24,fuFrame,20,-180)
+fuFrame.errorUI = ADD_Button("错误报告",nil,fuFrame,120,24,"TOPLEFT",fuFrame,"TOPLEFT",20,-180)
 fuFrame.errorUI:SetScript("OnClick", function (self)
 	Pig_OptionsUI:Hide()
 	Bugshouji_UI:Show()
 end);
 --
-fuFrame.tishiCK=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.errorUI,"TOPLEFT",140,3,"在小地图图标提示","发生错误时在小地图图标提示(显示一个红X)")
+fuFrame.tishi = fuFrame:CreateFontString();
+fuFrame.tishi:SetPoint("LEFT", fuFrame.errorUI, "RIGHT", 10, 0);
+fuFrame.tishi:SetFontObject(GameFontNormal);
+fuFrame.tishi:SetTextColor(1, 1, 0, 1);
+fuFrame.tishi:SetText('打开报告指令：/per');
+--
+fuFrame.tishiCK=ADD_Checkbutton(nil,fuFrame,-100,"LEFT",fuFrame.tishi,"RIGHT",10,0,"在小地图图标提示错误","发生错误时在小地图图标提示(显示一个红X)")
 fuFrame.tishiCK:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG["Error"]["ErrorTishi"] = true
@@ -81,11 +87,6 @@ fuFrame.tishiCK:SetScript("OnClick", function (self)
 		PIG["Error"]["ErrorTishi"] = false
 	end
 end);
-fuFrame.tishi = fuFrame:CreateFontString();
-fuFrame.tishi:SetPoint("LEFT", fuFrame.tishiCK.Text, "RIGHT", 16, 0);
-fuFrame.tishi:SetFontObject(GameFontNormal);
-fuFrame.tishi:SetTextColor(1, 1, 0, 1);
-fuFrame.tishi:SetText('打开错误报告指令：/per');
 -----------------
 fuFrame:SetScript("OnShow", function()
 	for i=1,#CVarsList do
@@ -99,10 +100,11 @@ fuFrame:SetScript("OnShow", function()
 end);
 ---创建常用3宏
 local hongNameList = {["RL"]={"/Reload",132096},["FST"]={"/fstack",132089},["EVE"]={"/eventtrace",132092}}
-fuFrame.New_hong = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");  
-fuFrame.New_hong:SetSize(100,24);
-fuFrame.New_hong:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-400);
-fuFrame.New_hong:SetText('创建宏');
+fuFrame.New_hong = ADD_Button("创建宏",nil,fuFrame,100,24,"TOPLEFT",fuFrame,"TOPLEFT",20,-400)
+-- fuFrame.New_hong = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");  
+-- fuFrame.New_hong:SetSize(100,24);
+-- fuFrame.New_hong:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-400);
+-- fuFrame.New_hong:SetText('创建宏');
 fuFrame.New_hong:SetScript("OnClick", function ()
 	for k,v in pairs(hongNameList) do
 		local macroSlot = GetMacroIndexByName(k)

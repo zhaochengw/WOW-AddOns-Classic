@@ -250,7 +250,6 @@ addonTable.Default = {
 		["AutoFuhuo"]="OFF",
 		["SpellLinkPlus"]="OFF",
 		["QuestLinkPlus"]="OFF",
-		["AutoLOOTqwueren"]="OFF",
 		["jiaoyizengqiang"]=false,
 	},
 	["SkillFBCD"] = {

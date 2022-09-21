@@ -8,7 +8,8 @@ local function Classes_Gensui_Z()
 	local name,_ = UnitName("player");
 	--判断指定输入框
 	if PIG["QuickFollow"]["Name"]~=nil and PIG["QuickFollow"]["Name"]~="" then
-		if PIG["QuickFollow"]["Name"]~=name then
+		local isRecognized = IsRecognizedName(PIG["QuickFollow"]["Name"], AUTOCOMPLETE_FLAG_ONLINE, AUTOCOMPLETE_FLAG_NONE)
+		if isRecognized and PIG["QuickFollow"]["Name"]~=name then
 			FollowUnit(PIG["QuickFollow"]["Name"]);
 			return
 		end

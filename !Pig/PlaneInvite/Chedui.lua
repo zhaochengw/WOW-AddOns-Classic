@@ -383,7 +383,11 @@ local function ADD_Chedui_Frame()
 					editBox:SetText("/WHISPER " ..name.." ".. hasText);
 				end
 			elseif button=="RightButton" then
-				addonTable.YCchaokanzhuangbei(name)
+				if PIG['ChatFrame']['RightPlus']=="ON" then
+					addonTable.YCchaokanzhuangbei(name)
+				else
+					PIG_print("请先开启右键增强")
+				end
 			end
 		end)
 

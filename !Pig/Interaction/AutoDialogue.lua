@@ -189,9 +189,7 @@ fuFrame.AutoJiaorenwu:SetScript("OnClick", function ()
 	end
 end);
 ----自动接收组队邀请
-local zidongjieshouzuduiyaoqingFFF = CreateFrame("FRAME")
--- zidongjieshouzuduiyaoqingFFF:RegisterEvent("CONFIRM_DISENCHANT_ROLL") 
--- zidongjieshouzuduiyaoqingFFF:RegisterEvent("CONFIRM_LOOT_ROLL")   
+local zidongjieshouzuduiyaoqingFFF = CreateFrame("FRAME") 
 zidongjieshouzuduiyaoqingFFF:SetScript("OnEvent", function(self, event, arg1, arg2)
 	if event=="PARTY_INVITE_REQUEST" then
 		AcceptGroup()
@@ -200,16 +198,6 @@ zidongjieshouzuduiyaoqingFFF:SetScript("OnEvent", function(self, event, arg1, ar
 	if event=="RESURRECT_REQUEST" then
 		AcceptResurrect()
 		StaticPopup_Hide("RESURRECT")
-	end
-	if event=="LOOT_BIND_CONFIRM" then
-		-- for i = 1, STATICPOPUP_NUMDIALOGS do 
-		-- 	local frame = _G["StaticPopup"..i] 
-		-- 	if (frame.which == "CONFIRM_LOOT_ROLL" or frame.which == "LOOT_BIND" or frame.which == "LOOT_BIND_CONFIRM") and frame:IsVisible() then 
-		-- 		StaticPopup_OnClick(frame, 1) 
-		-- 	end
-		-- end
-		StaticPopup_OnClick(StaticPopup1, 1) 
-		StaticPopup1:Hide()
 	end
 end)
 fuFrame.zidongjieshouyaoqing = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
@@ -243,32 +231,6 @@ fuFrame.zidongFuhuo:SetScript("OnClick", function (self)
 		zidongjieshouzuduiyaoqingFFF:UnregisterEvent("RESURRECT_REQUEST")
 	end
 end);
-----自动确定拾取
-fuFrame.zidongLOOTqueren = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.zidongLOOTqueren:SetSize(30,32);
-fuFrame.zidongLOOTqueren:SetHitRectInsets(0,-100,0,0);
-fuFrame.zidongLOOTqueren:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-180);
-fuFrame.zidongLOOTqueren.Text:SetText("自动确认拾取绑定");
-fuFrame.zidongLOOTqueren.tooltip = "自动确认拾取绑定！";
-fuFrame.zidongLOOTqueren:Hide()
-fuFrame.zidongLOOTqueren:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG['Interaction']['AutoLOOTqwueren']="ON";
-		zidongjieshouzuduiyaoqingFFF:RegisterEvent("LOOT_BIND_CONFIRM")
-	else
-		PIG['Interaction']['AutoLOOTqwueren']="OFF";
-		zidongjieshouzuduiyaoqingFFF:UnregisterEvent("LOOT_BIND_CONFIRM")
-	end
-end);
-fuFrame:SetScript("OnShow", function ()
-	if PIG["RaidRecord"]["Invite"]["jihuo"] then
-		if PIG["RaidRecord"]["Invite"]["jihuo"][1]==true and PIG["RaidRecord"]["Invite"]["jihuo"][2]==true and PIG["RaidRecord"]["Invite"]["jihuo"][4]==true and PIG["RaidRecord"]["Invite"]["jihuo"][3]==true then		
-			fuFrame.zidongLOOTqueren:Show()
-		else
-			fuFrame.zidongLOOTqueren:Hide()
-		end
-	end
-end)
 --------------------
 addonTable.Interaction_AutoDialogue = function()
 	PIG['Interaction']['AutoDialogue']=PIG['Interaction']['AutoDialogue'] or addonTable.Default['Interaction']['AutoDialogue']
@@ -301,9 +263,5 @@ addonTable.Interaction_AutoDialogue = function()
 	if PIG['Interaction']['AutoFuhuo']=="ON" then
 		fuFrame.zidongFuhuo:SetChecked(true);
 		zidongjieshouzuduiyaoqingFFF:RegisterEvent("RESURRECT_REQUEST")
-	end
-	if PIG['Interaction']['AutoLOOTqwueren']=="ON" then
-		zidongjieshouzuduiyaoqingFFF:RegisterEvent("LOOT_BIND_CONFIRM")
-		fuFrame.zidongLOOTqueren:SetChecked(true);
 	end
 end

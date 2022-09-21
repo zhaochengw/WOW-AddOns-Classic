@@ -251,7 +251,6 @@ addonTable.PIG = {
 		["AutoFuhuo"]="OFF",
 		["SpellLinkPlus"]="ON",
 		["QuestLinkPlus"]="ON",
-		["AutoLOOTqwueren"]="OFF",
 		["jiaoyizengqiang"]=true,
 	},
 	["SkillFBCD"] = {

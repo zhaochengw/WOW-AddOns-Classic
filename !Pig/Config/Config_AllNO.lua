@@ -251,7 +251,6 @@ addonTable.AllNO = {
 		["AutoFuhuo"]="OFF",
 		["SpellLinkPlus"]="ON",
 		["QuestLinkPlus"]="ON",
-		["AutoLOOTqwueren"]="OFF",
 		["jiaoyizengqiang"]=true,
 	},
 	["SkillFBCD"] = {

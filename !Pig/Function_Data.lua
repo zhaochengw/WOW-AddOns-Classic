@@ -80,11 +80,13 @@ addonTable.FBdata={InstanceList,InstanceID}
 --根据等级计算单价
 local function jisuandanjia(lv)
 	local fbName=PIG_Per.daiben.fubenName
-	local danjiaList=PIG_Per.daiben.LV_danjia[fbName]
-	for id = 1, 4, 1 do
-		if danjiaList[id][1]>0 then
-			if lv>=danjiaList[id][1] and lv<=danjiaList[id][2] then
-				return danjiaList[id][3]
+	if fbName~="无" then
+		local danjiaList=PIG_Per.daiben.LV_danjia[fbName]
+		for id = 1, 4, 1 do
+			if danjiaList[id][1]>0 then
+				if lv>=danjiaList[id][1] and lv<=danjiaList[id][2] then
+					return danjiaList[id][3]
+				end
 			end
 		end
 	end

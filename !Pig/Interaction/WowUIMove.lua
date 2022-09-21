@@ -151,6 +151,7 @@ local function yidongOpen()
 end
 --成就UI
 local function Achievement_ADD()
+    if AchievementFrame.biaoti then return end
     AchievementFrame:SetMovable(true)
     AchievementFrame:SetClampedToScreen(true)
     AchievementFrame.biaoti = CreateFrame("Frame", nil, AchievementFrame)
@@ -184,6 +185,7 @@ end
 local function Communities_ADD()
     if tocversion<40000 then
     else
+        if CommunitiesFrame.biaoti then return end
         CommunitiesFrame:SetMovable(true)
         CommunitiesFrame:SetClampedToScreen(true)
         CommunitiesFrame.biaoti = CreateFrame("Frame", nil, CommunitiesFrame)
@@ -217,6 +219,8 @@ end
 local function CollectionsJournal_ADD()
     if tocversion<40000 then
     else
+        if CollectionsJournal.biaoti then return end
+        --UIPanelWindows["CollectionsJournal"] = nil
         CollectionsJournal:SetMovable(true)
         CollectionsJournal:SetClampedToScreen(true)
         CollectionsJournal.biaoti = CreateFrame("Frame", nil, CollectionsJournal)
@@ -252,6 +256,7 @@ end
 local function EncounterJournal_ADD()
     if tocversion<40000 then
     else
+        if EncounterJournal.biaoti then return end
         EncounterJournal:SetMovable(true)
         EncounterJournal:SetClampedToScreen(true)
         EncounterJournal.biaoti = CreateFrame("Frame", nil, EncounterJournal)

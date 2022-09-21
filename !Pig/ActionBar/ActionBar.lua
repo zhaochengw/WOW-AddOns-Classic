@@ -118,6 +118,7 @@ local Update_PostClick=addonTable.Update_PostClick
 local Cursor_Fun=addonTable.Cursor_Fun
 local OnEnter_Item=addonTable.OnEnter_Item
 local OnEnter_Spell=addonTable.OnEnter_Spell
+local OnEnter_Companion=addonTable.OnEnter_Companion
 local Update_Icon=addonTable.Update_Icon
 local Update_Cooldown=addonTable.Update_Cooldown
 local Update_Count=addonTable.Update_Count
@@ -272,14 +273,26 @@ local function ADD_ActionBar(index)
 			Update_Count(self)
 		end);
 		----
-		piganniu:SetAttribute("_ondragstart",[=[
-			self:SetAttribute("type", nil)
-		]=])
 		piganniu:HookScript("OnDragStart", function (self)
-			Cursor_Fun(self,"OnDragStart","PigAction")
-			Update_Icon(self)
-			Update_Cooldown(self)
-			Update_Count(self)
+			if InCombatLockdown() then return end
+			local lockvalue = GetCVarInfo("lockActionBars")
+			if lockvalue=="0" then
+				self:SetAttribute("type", nil)
+				Cursor_Fun(self,"OnDragStart","PigAction")
+				Update_Icon(self)
+				Update_Cooldown(self)
+				Update_Count(self)
+				Update_State(self)
+			elseif lockvalue=="1" then
+				if IsShiftKeyDown() then
+					self:SetAttribute("type", nil)
+					Cursor_Fun(self,"OnDragStart","PigAction")
+					Update_Icon(self)
+					Update_Cooldown(self)
+					Update_Count(self)
+					Update_State(self)
+				end
+			end
 		end)
 		----
 		piganniu:SetAttribute("_onreceivedrag",[=[
@@ -315,6 +328,10 @@ local function ADD_ActionBar(index)
 						OnEnter_Spell(Type,SimID)
 					elseif Type=="item" then
 						OnEnter_Item(Type,SimID)
+					elseif Type=="companion" then
+						OnEnter_Companion(Type,SimID,butInfo[3])
+					elseif Type=="mount" then
+						OnEnter_Companion(Type,SimID,butInfo[3])
 					elseif Type=="macro" then
 						local hongSpellID = GetMacroSpell(SimID)
 						if hongSpellID then
@@ -400,7 +417,7 @@ local function ADD_ActionBar(index)
 					self:Show();
 				end
 				if self.Type=="macro" then
-					PigMacroDeleted,PigMacroCount=Update_Macro(self,PigMacroDeleted,PigMacroCount)
+					PigMacroDeleted,PigMacroCount=Update_Macro(self,PigMacroDeleted,PigMacroCount,"PigAction")
 				end
 				self:UnregisterEvent("PLAYER_REGEN_ENABLED");
 			end
@@ -426,11 +443,12 @@ local function ADD_ActionBar(index)
 						elseif (PigMacroCount > AccMacros + CharMacros) then
 							PigMacroDeleted = true;
 						end
-						PigMacroDeleted,PigMacroCount=Update_Macro(self,PigMacroDeleted,PigMacroCount)
+						PigMacroDeleted,PigMacroCount=Update_Macro(self,PigMacroDeleted,PigMacroCount,"PigAction")
 					end
 				end
 				Update_Icon(self)
 				Update_Count(self)
+				Update_State(self)
 			end
 			if event=="AREA_POIS_UPDATED" then
 				Update_bukeyong(self)

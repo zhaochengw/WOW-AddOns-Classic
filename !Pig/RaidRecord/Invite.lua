@@ -659,46 +659,14 @@ local function ADD_Invite()
 			end
 		end
 	end)
-
-	---间隔
-	invite.hanhuajiange = invite:CreateFontString();
-	invite.hanhuajiange:SetPoint("LEFT",invite.zidongyaoqingBUT,"RIGHT",6,0);
-	invite.hanhuajiange:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
-	invite.hanhuajiange:SetText("\124cff00FF00间隔/S：\124r");
-	invite.hanhuajiange:Hide()
-	invite.hanhuajiange_E = CreateFrame('EditBox', nil, invite,"InputBoxInstructionsTemplate");
-	invite.hanhuajiange_E:SetSize(zhiye_Height*1.8,zhiye_Height+14);
-	invite.hanhuajiange_E:SetPoint("LEFT", invite.hanhuajiange, "RIGHT", 4,-0);
-	invite.hanhuajiange_E:SetFontObject(ChatFontNormal);
-	invite.hanhuajiange_E:SetMaxLetters(4)
-	invite.hanhuajiange_E:SetAutoFocus(false);
-	invite.hanhuajiange_E:SetNumeric()
-	invite.hanhuajiange_E:Hide()
-	invite.hanhuajiange_E:SetScript("OnEscapePressed", function(self) 
-		self:ClearFocus()
-	end);
-	invite.hanhuajiange_E:SetScript("OnEnterPressed", function(self) 
-		self:ClearFocus() 
-	end);
-	invite.hanhuajiange_E:SetScript("OnEditFocusLost", function(self)
-		if self:GetNumber()<300 then
-			self:SetText(300)
-			PIG["RaidRecord"]["Invite"]["shijianjiange"]=self:GetNumber();
-			print("|cff00FFFF!Pig:|r|cffFFFF00不能小于300秒。|r");
-		else
-			PIG["RaidRecord"]["Invite"]["shijianjiange"]=self:GetNumber();
-		end
-	end);
 	---
 	invite.hanhuakaishi = CreateFrame("Button",nil,invite, "UIPanelButtonTemplate");  
 	invite.hanhuakaishi:SetSize(100,28);
-	invite.hanhuakaishi:SetPoint("LEFT",invite.hanhuajiange_E,"RIGHT",0,0);
 	invite.hanhuakaishi.Text:SetPoint("CENTER",invite.hanhuakaishi,"CENTER",10,0);
 	invite.hanhuakaishi_Font=invite.hanhuakaishi:GetFontString()
 	invite.hanhuakaishi_Font:SetFont(ChatFontNormal:GetFont(), 13);
 	invite.hanhuakaishi_Font:SetTextColor(0, 1, 1, 1);
 	invite.hanhuakaishi:SetText('自动喊话');
-	invite.hanhuakaishi:Hide();
 	invite.hanhuakaishi.Tex = invite.hanhuakaishi:CreateTexture(nil, "BORDER");
 	invite.hanhuakaishi.Tex:SetTexture("interface/common/indicator-gray.blp");
 	invite.hanhuakaishi.Tex:SetPoint("RIGHT",invite.hanhuakaishi.Text,"LEFT",0,-2);
@@ -716,7 +684,73 @@ local function ADD_Invite()
 			end
 		end
 	end)
-
+	---间隔
+	invite.hanhuajiange_E = CreateFrame('EditBox', nil, invite,"InputBoxInstructionsTemplate");
+	invite.hanhuajiange_E:SetSize(zhiye_Height*1.8,zhiye_Height+14);
+	invite.hanhuajiange_E:SetPoint("RIGHT", invite.hanhuakaishi, "LEFT", -4,-0);
+	invite.hanhuajiange_E:SetFontObject(ChatFontNormal);
+	invite.hanhuajiange_E:SetMaxLetters(4)
+	invite.hanhuajiange_E:SetAutoFocus(false);
+	invite.hanhuajiange_E:SetNumeric()
+	invite.hanhuajiange_E:SetScript("OnEscapePressed", function(self) 
+		self:ClearFocus()
+	end);
+	invite.hanhuajiange_E:SetScript("OnEnterPressed", function(self) 
+		self:ClearFocus() 
+	end);
+	invite.hanhuajiange_E:SetScript("OnEditFocusLost", function(self)
+		if self:GetNumber()<300 then
+			self:SetText(300)
+			PIG["RaidRecord"]["Invite"]["shijianjiange"]=self:GetNumber();
+			print("|cff00FFFF!Pig:|r|cffFFFF00不能小于300秒。|r");
+		else
+			PIG["RaidRecord"]["Invite"]["shijianjiange"]=self:GetNumber();
+		end
+	end);
+	invite.hanhuajiange = invite:CreateFontString();
+	invite.hanhuajiange:SetPoint("RIGHT",invite.hanhuajiange_E,"LEFT",-4,0);
+	invite.hanhuajiange:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
+	invite.hanhuajiange:SetText("\124cff00FF00间隔/S：\124r");
+	-----
+	local ADD_ButtonMima=addonTable.ADD_ButtonMima
+	local MIMAWEISHU = 6
+	invite.unlock={}
+	local XIAYIbv = -8
+	local weizhiList = {
+		{"TOPLEFT","TOPLEFT",20,XIAYIbv},
+		{"TOPLEFT","TOPLEFT",60,XIAYIbv},
+		{"TOPLEFT","TOPLEFT",100,XIAYIbv},
+		{"TOPLEFT","TOPLEFT",140,XIAYIbv},
+		{"TOPLEFT","TOPLEFT",180,XIAYIbv},
+		{"TOPLEFT","TOPLEFT",220,XIAYIbv},
+	}
+	local function CZzhuantai(num)
+		for i=1,#num do
+			invite.unlock[num[i]]=nil
+		end
+	end
+	local weizhiListxulie = {[1]={2,3,5,6},[2]={5,6},[3]={2,5,6},[4]={1,2,3,5,6},[5]={},[6]={5}}
+	for i=1,MIMAWEISHU do
+		local Pigbut = ADD_ButtonMima(nil,nil,invite,14,14,weizhiList[i][1],invite,weizhiList[i][2],weizhiList[i][3],weizhiList[i][4],i)
+		Pigbut:SetScript("OnClick", function (self)
+			if invite.yijiesuo then return end
+			local x = 1
+			for but=1,#weizhiListxulie[self:GetID()] do
+				if not invite.unlock[weizhiListxulie[self:GetID()][but]] then
+					CZzhuantai({1,2,3,4,5,6})
+					return
+				end
+			end
+			invite.unlock[self:GetID()]=true
+			
+			for i=1,4 do
+				if not invite.unlock[i] then return end
+			end
+			invite.yijiesuo=true
+			invite.hanhuakaishi:SetPoint("TOPRIGHT",invite,"TOPRIGHT",-10,-392);
+			invite.hanhuajiange_E:SetText(PIG["RaidRecord"]["Invite"]["shijianjiange"]);
+		end);
+	end
 	--===================================
 	local zhiyeweizhiNameQ={"坦克","治疗","输出"}
 	local zhiyeweizhiNameQQ={{"坦克","熊D","熊T","T","MT","坦","战士T","防骑","FQ"},{"治疗","奶","大奶"},{"输出","狂暴战","KBZ", "kbz", "狂暴", "DPS", "dps","惩戒"}}
@@ -852,18 +886,8 @@ local function ADD_Invite()
 	end)
 
 	--==========================================
+	invite.hanhuakaishi:SetPoint("TOPRIGHT",invite,"TOPRIGHT",99990,-99999);
 	invite:SetScript("OnShow", function ()
-		if PIG["RaidRecord"]["Invite"]["jihuo"] then
-			if PIG["RaidRecord"]["Invite"]["jihuo"][1]==true and PIG["RaidRecord"]["Invite"]["jihuo"][2]==true and PIG["RaidRecord"]["Invite"]["jihuo"][4]==true and PIG["RaidRecord"]["Invite"]["jihuo"][3]==true then		
-				invite.hanhuajiange:Show()
-				invite.hanhuajiange_E:Show()
-				invite.hanhuakaishi:Show()
-			else
-				invite.hanhuajiange:Hide()
-				invite.hanhuajiange_E:Hide()
-				invite.hanhuakaishi:Hide()
-			end
-		end
 		if PIG["RaidRecord"]["Invite"]["wutiaojianjINV"]=="ON" then
 			invite.INV_wuxianzhiyaoqing:SetChecked(true);
 		end

@@ -4,7 +4,7 @@
 ## Notes: Some tools
 ## Notes-zhCN: |cffFF8C00一些小工具|r  |cffFF00FF[猪猪加油祝你游戏愉快]|r
 ## Author: geligasi
-## Version: 4.8.3
+## Version: 4.8.5
 ## SavedVariables: PIG
 ## SavedVariablesPerCharacter: PIG_Per
 Error.lua
@@ -35,4 +35,5 @@ SkillCD\SkillCD_Wrath.xml
 SpellCD\SpellCD_Wrath.xml
 FarmRecord\FarmRecord_Wrath.xml
 RaidRecord\RaidRecord_Wrath.xml
+Test\Test_Wrath.xml
 !Pig.lua

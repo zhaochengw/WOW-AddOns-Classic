@@ -99,10 +99,10 @@ fuFrame.ActionBar_bili_Slider:SetScript('OnValueChanged', function(self)
 	ActionBar_bili_gengxin()
 end)
 --==============================================
---动作条
+---姿态条/变形条
 local function StanceBar_yidong()
 	if not InCombatLockdown()==true then
-		if StanceBarFrame then---姿态条/变形条
+		if StanceBarFrame then
 			if SHOW_MULTI_ACTIONBAR_4 and SHOW_MULTI_ACTIONBAR_3 and SHOW_MULTI_ACTIONBAR_1 then
 				StanceBarFrame:ClearAllPoints()
 				StanceBarFrame:SetMovable(true)
@@ -128,32 +128,48 @@ local function StanceBar_yidong()
 		end
 	end
 end
+----宠物动作条
 local function PetActionBar_yidong()
 	if not InCombatLockdown()==true then
-		if PetActionBarFrame then----宠物动作条
-			if SHOW_MULTI_ACTIONBAR_4 and SHOW_MULTI_ACTIONBAR_3 and SHOW_MULTI_ACTIONBAR_1 then
-				PetActionBarFrame:ClearAllPoints()
-				PetActionBarFrame:SetMovable(true)
-				PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 84)
-				PetActionBarFrame:SetUserPlaced(true)
-			else
-				if SHOW_MULTI_ACTIONBAR_1 then
+		if PetActionBarFrame then
+			if tocversion<30000 then
+				if SHOW_MULTI_ACTIONBAR_4 and SHOW_MULTI_ACTIONBAR_3 and SHOW_MULTI_ACTIONBAR_1 then
 					PetActionBarFrame:ClearAllPoints()
 					PetActionBarFrame:SetMovable(true)
-					PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 40)
+					PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 84)
 					PetActionBarFrame:SetUserPlaced(true)
 				else
+					if SHOW_MULTI_ACTIONBAR_1 then
+						PetActionBarFrame:ClearAllPoints()
+						PetActionBarFrame:SetMovable(true)
+						PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 40)
+						PetActionBarFrame:SetUserPlaced(true)
+					else
+						PetActionBarFrame:ClearAllPoints()
+						PetActionBarFrame:SetMovable(true)
+						PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 0)
+						PetActionBarFrame:SetUserPlaced(true)
+					end
+				end
+			else
+				if SHOW_MULTI_ACTIONBAR_4 and SHOW_MULTI_ACTIONBAR_3 and SHOW_MULTI_ACTIONBAR_1 then
 					PetActionBarFrame:ClearAllPoints()
-					PetActionBarFrame:SetMovable(true)
-					PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 0)
-					PetActionBarFrame:SetUserPlaced(true)
+					PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 84)
+				else
+					if SHOW_MULTI_ACTIONBAR_1 then
+						PetActionBarFrame:ClearAllPoints()
+						PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 42)
+					else
+						PetActionBarFrame:ClearAllPoints()
+						PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 2)
+					end
 				end
 			end
 		end
 	end
 end
+--竖动作栏-------
 local function PigUI_ActionBar_up()
-	--竖动作栏-------
 	for i=1, 12 do
 		_G["MultiBarLeftButton"..i]:ClearAllPoints();
 		_G["MultiBarLeftButton"..i]:SetPoint("BOTTOM",_G["MultiBarBottomLeftButton"..i],"TOP",0,6);

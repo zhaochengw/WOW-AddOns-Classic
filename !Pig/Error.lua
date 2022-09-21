@@ -268,19 +268,15 @@ end)
 ----错误处理FUN
 local function errottishi()
 	if Bugshouji.yijiazai then
-		if PIG["Error"]["ErrorTishi"] then
-			if MinimapButton_PigUI then
-				MinimapButton_PigUI.error:Show();
-			end
+		if PIG["Error"]["ErrorTishi"] and MinimapButton_PigUI then
+			MinimapButton_PigUI.error:Show();
 		end
-	else
-		--print("|cff00FFFF"..addonName.."：|r|cffFF0000插件发生LUA错误，/per查看错误报告！|r");
 	end
 end
 local function errotFUN(msg)
 	--print(msg)
-	local stack = debugstack(3) or "未知错误"
-	local logrizhi = debuglocals(3) or "未知错误"
+	local stack = debugstack(3) or "--"
+	local logrizhi = debuglocals(3) or "--"
 	local time = GetServerTime()
 	local hejishu=#bencierrinfo
 	Bugshouji.cuowushu = 1
@@ -295,15 +291,25 @@ local function errotFUN(msg)
 	xianshixinxi(#bencierrinfo)
 	errottishi()
 end
-local function yanchizhixing()
-	if #bencierrinfo>0 then
-		errottishi()
-	end
-end
 UIParent:UnregisterEvent("LUA_WARNING")
 Pig_seterrorhandler(errotFUN);
 --function seterrorhandler() end
 --========================================================
+local function del_ErrorInfo()			
+	PIG["Error"]=PIG["Error"] or addonTable.Default["Error"]
+	if #PIG["Error"]["ErrorInfo"]>0 then
+		for i=#PIG["Error"]["ErrorInfo"],1,-1 do
+			if (GetServerTime()-PIG["Error"]["ErrorInfo"][i][2])>86400 then
+				table.remove(PIG["Error"]["ErrorInfo"],i)
+			end
+		end
+	end
+	Bugshouji.yijiazai=true
+	if #bencierrinfo>0 then	
+		errottishi()
+	end
+end
+--
 Bugshouji:RegisterEvent("ADDON_ACTION_FORBIDDEN");
 Bugshouji:RegisterEvent("ADDON_ACTION_BLOCKED");
 Bugshouji:RegisterEvent("MACRO_ACTION_FORBIDDEN");
@@ -312,25 +318,13 @@ Bugshouji:RegisterEvent("PLAYER_LOGOUT");
 Bugshouji:RegisterEvent("ADDON_LOADED")
 Bugshouji:SetScript("OnEvent", function(self,event,arg1,arg2)
 	if event=="ADDON_LOADED" then
-		if arg1 == addonName then
-			PIG["Error"]=PIG["Error"] or addonTable.Default["Error"]
-			self.yijiazai=true
-			
-			Bugshouji:UnregisterEvent("ADDON_LOADED")
-			if #PIG["Error"]["ErrorInfo"]>0 then
-				for i=#PIG["Error"]["ErrorInfo"],1,-1 do
-					if (GetServerTime()-PIG["Error"]["ErrorInfo"][i][2])>86400 then
-						table.remove(PIG["Error"]["ErrorInfo"],i)
-					end
-				end
-			end
-		end
+		C_Timer.After(3,del_ErrorInfo)
+		Bugshouji:UnregisterEvent("ADDON_LOADED")
 	elseif event=="PLAYER_LOGOUT" then
 		local hejishu=#bencierrinfo
 		for i=1,hejishu do
 			table.insert(PIG["Error"]["ErrorInfo"], bencierrinfo[i]);
 		end
-		C_Timer.After(2,yanchizhixing)
 	elseif event=="ADDON_ACTION_FORBIDDEN" or event=="ADDON_ACTION_BLOCKED" then
 		local msg = "["..event.."] 插件< "..arg1.." >尝试调用保护功能< "..arg2.." >"
 		local stack = ""

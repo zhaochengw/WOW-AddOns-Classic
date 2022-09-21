@@ -75,6 +75,7 @@ local CVarsList = {
 	{"聊天栏显示职业颜色","chatClassColorOverride","0","1","聊天框发言的玩家姓名会根据职业染色",false},
 	{"显示目标所有增减益","noBuffDebuffFilterOnTarget","1","0","开启后目标所有增减益都会显示在目标头像，关闭则只显示自己施加的效果",false},
 	{"显示姓名板","nameplateShowOnlyNames","0","1","显示姓名板，正式服需要显示战斗外姓名版需要打开-界面-名字-显示所有姓名版",true},
+	{"姓名板锁定在屏幕内","clampTargetNameplateToScreen","1","0","姓名板锁定在屏幕内",false},
 	{"友方姓名板职业颜色","ShowClassColorInFriendlyNameplate","1","0","根据友方职业颜色染色姓名板",true},
 	{"敌方姓名板职业颜色","ShowClassColorInNameplate","1","0","根据敌方职业颜色染色姓名板",true},
 	---
@@ -98,20 +99,20 @@ local CVarsList = {
 	--
 	{"新版TAB","TargetNearestUseNew","1","0","使用7.2新的TAB选取目标功能",false},
 }
---print(GetCVarInfo("WorldTextScale"))
+--print(GetCVarInfo("clampTargetNameplateToScreen"))
 for i=1,#CVarsList do
 	local miaodian = {_G["CVarsCB_"..(i-1)],0,-30}
 	if i==1 then
 		miaodian = {fuFrame.nr,10,-10}
-	elseif i==7 then
-		miaodian = {_G["CVarsCB_"..(i-1)],0,-60}
-	elseif i==12 then
-		miaodian = {_G["CVarsCB_"..(i-1)],0,-70}
-	elseif i==15 then
+	elseif CVarsList[i][1]=="按下按键时施法" then
+		miaodian = {_G["CVarsCB_"..(i-1)],0,-50}
+	elseif CVarsList[i][1]=="禁止同步键位到服务器" then
+		miaodian = {_G["CVarsCB_"..(i-1)],0,-50}
+	elseif CVarsList[i][1]=="显示你对目标伤害信息" then
 		miaodian = {fuFrame.nr,300,-10}
-	elseif i==16 then
+	elseif CVarsList[i][1]=="旧版弹出方式" then
 		miaodian = {_G["CVarsCB_"..(i-1)],30,-26}
-	elseif i==17 then
+	elseif CVarsList[i][1]=="显示你对目标治疗信息" then
 		miaodian = {_G["CVarsCB_"..(i-1)],-30,-30}
 	elseif CVarsList[i][1]=="自身高亮" then
 		miaodian = {fuFrame.nr,300,-180}
