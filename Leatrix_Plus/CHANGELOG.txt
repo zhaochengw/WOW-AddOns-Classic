@@ -1,7 +1,7 @@
-3.0.08.alpha.4 - 18th September 2022
+3.0.08 - 21st September 2022
 - For 'Mute game sounds' ('System'), you can now mute the Arcanite Ripper guitar sound.
-- For 'Manage buffs' ('Frames'), the scale slider now applies to the consolidated buffs frame too.
-- Added lots of flight times.  There are now 3700 flight times stored in Leatrix Plus for Wrath Classic.
+- For 'Manage buffs' ('Frames'), fixed an issue which caused buff icons to overlap each other at higher scale values.  The scale slider will now affect the consolidated buff icon too.
+- Added lots of flight times.  There are now 3726 flight times stored in Leatrix Plus for Wrath Classic.
 
 3.0.07 - 14th September 2022
 - For 'Enhance tooltip' ('Interface'), if you use the setting to hide tooltips for world units during combat, you can now specify whether holding shift should override that setting or not.  Also some locale updates.
