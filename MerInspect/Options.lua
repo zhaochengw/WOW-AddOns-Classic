@@ -18,10 +18,10 @@ end})
 local DefaultDB = {
     version = VERSION,
     ShowItemSlotString = true,              --物品部位文字
-    ShowItemBorder = true,                  --物品直角邊框
+    ShowItemBorder = false,                  --物品直角邊框
     ShowCharacterItemSheet = true,          --玩家自己裝備列表
-    ShowCharacterItemStats = false,         --玩家自己屬性統計
-    ShowInspectAngularBorder = false,       --觀察面板直角邊框
+    ShowCharacterItemStats = true,          --玩家自己屬性統計
+    ShowInspectAngularBorder = true,       --觀察面板直角邊框
     ShowInspectColoredLabel = true,         --觀察面板顔色隨物品品質
     ShowInspectItemSheet = true,            --顯示观察对象装备列表
         ShowOwnFrameWhenInspecting = false,  --觀察同時顯示自己裝備列表
@@ -134,15 +134,11 @@ local function CreateAnchorFrame(anchorkey, parent)
         end)
         frame[anchorPoint] = button
     end
-    local frame = CreateFrame("Frame", nil, parent.SubtypeFrame or parent, "ThinBorderTemplate,BackdropTemplate")
+    local frame = CreateFrame("Frame", nil, parent.SubtypeFrame or parent, "ThinBorderTemplate")
     frame.anchorkey = anchorkey
-    frame:SetBackdrop({
-            bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
-            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-            tile     = true, tileSize = 8, edgeSize = 16,
-            insets   = {left = 4, right = 4, top = 4, bottom = 4}
-    })
-    frame:SetBackdropColor(0, 0, 0, 0.7)
+    Mixin(frame, BackdropTemplateMixin)
+    frame:SetBackdrop(GameTooltip:GetBackdrop())
+    frame:SetBackdropColor(GameTooltip:GetBackdropColor())
     frame:SetBackdropBorderColor(1, 1, 1, 0)
     frame:SetSize(80, 80)
     frame:SetPoint("TOPRIGHT", 100, -5)

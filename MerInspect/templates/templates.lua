@@ -11,7 +11,6 @@ local GetStatsValue = LibItemStats.GetStatsValue
 
 STAT_RESISTANCE_ATTRIBUTES = GetStatsName("Resistance")
 STAT_SUIT_ATTRIBUTES = GetStatsName("Suit")
-STAT_SUIT_PVP = GetStatsName("PVP")
 
 --赋数据
 local function SetStats(self, data)
@@ -21,11 +20,29 @@ end
 
 --创建单条属性按钮框体
 local function CreateStatFrame(parent, index, key, option)
-    local frame = CreateFrame("Frame", nil, parent, "ClassicCharacterStatFrameTemplate")
+    -- local frame = CreateFrame("Frame", nil, parent, "CharacterStatFrameTemplate")
+    local frame = CreateFrame("Frame", nil, parent)
     frame:EnableMouse(false)
     frame:SetWidth(178)
+    frame:SetHeight(15);
+    frame.Background = frame:CreateTexture(nil, "BACKGROUND");
+    frame.Background:SetAtlas("UI-Character-Info-Line-Bounce", true);
+    frame.Background:SetAlpha(0.3);
+    frame.Background:SetPoint("CENTER");
+    frame.Label = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall");
+    frame.Label:SetPoint("LEFT", 11, 0);
+    frame.Value = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall");
+    frame.Value:SetPoint("RIGHT", -8, 0);
     frame.key = key
     frame.Background:SetShown((index%2) ~= 1)
+    frame:SetScript("OnEnter", function(self)
+        if ( self.onEnterFunc ) then
+            self:onEnterFunc();
+        else
+            PaperDollStatTooltip(self);
+        end
+    end);
+    frame:SetScript("OnLeave", GameTooltip_Hide);
     parent["stat" .. index] = frame
     return frame
 end
@@ -42,7 +59,7 @@ local function GetStatFrame(self)
     return CreateStatFrame(self, index)
 end
 
---头像框架(装等框架/边框颜色等) @trigger: INSPECT_STATSFRAME_BACKDROP
+--头像框架(装等框架/边框颜色等) @trigger: INSPECT_FRAME_BACKDROP
 local ItemLevelPattern = (ITEM_LEVEL_ABBR or "ilvl") .. " %.1f"
 local function HandlePortraitFrame(self)
     local ilevel = self.data.ilevel or 0
@@ -61,14 +78,14 @@ local function HandlePortraitFrame(self)
     self.ResistanceCategory.Title:SetTextColor(color.r, color.g, color.b)
     self.EnhancementsCategory.Title:SetTextColor(color.r, color.g, color.b)
     self.SuitCategory.Title:SetTextColor(color.r, color.g, color.b)
-    LibEvent:trigger("INSPECT_STATSFRAME_BACKDROP", self)
+    LibEvent:trigger("INSPECT_FRAME_BACKDROP", self)
     self:SetBackdrop(self.backdrop)
     self:SetBackdropColor(0, 0, 0, 0.88)
     self:SetBackdropBorderColor(color.r, color.g, color.b)
 end
 
-
 function ClassicStatsFrameTemplate_Onload(self)
+    Mixin(self, BackdropTemplateMixin)
     self.backdrop = {
         bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
@@ -124,7 +141,7 @@ end
 
 function ClassicStatsFrameTemplate_OnShow(self)
     local button
-    local height = 68 + 36*3 + 15*self.maxStaticIndex
+    local height = 66 + 36*3 + 15*self.maxStaticIndex
     HandlePortraitFrame(self)
     for i = 1, self.maxStaticIndex do
         button = self["stat"..i]
@@ -151,11 +168,11 @@ function ClassicStatsFrameTemplate_OnShow(self)
         if (not hasEnhancements) then
             offset = offset + 36
         end
-        offset = offset - 6
         self.SuitCategory:Show()
-        self.SuitCategory:SetPoint("TOPLEFT", self.EnhancementsCategory, "BOTTOMLEFT", 0, offset)
-        height = height + 36 + 2
-        offset = offset - 36 + 6
+        --self.SuitCategory:SetPoint("TOPLEFT", self.EnhancementsCategory, "BOTTOMLEFT", 0, offset)
+        self.SuitCategory:SetPoint("TOPLEFT", button, "BOTTOMLEFT", 0, 0)
+        height = height + 36
+        offset = offset - 36
         for _, v in ipairs(self.data.suit) do
             button = GetStatFrame(self)
             button.Label:SetText(v.colorStr .. v.value)
@@ -174,7 +191,6 @@ function ClassicStatsFrameTemplate_OnShow(self)
     end
     height = max(height, 424)
     self:SetHeight(height)
-    LibEvent:trigger("INSPECT_STATSFRAME_SHOW", self)
 end
 
 function ClassicStatsFrameTemplate_OnHide(self)

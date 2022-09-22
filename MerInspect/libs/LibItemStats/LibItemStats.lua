@@ -40,20 +40,7 @@ local function SetStaticValue(stats, value, ...)
             stats.static[select(i,...)] = { value = 0, final = nil }
         end
         stats.static[select(i,...)].value = stats.static[select(i,...)].value + (tonumber(value) or 0)
-	end
-end
-
---静态值属性-套裝(只計算一次就好)(@todo 同屬性的多個套裝問題)
-local function SetOnceStaticValue(stats, value, ...)
-    if (not stats.oncestatic) then stats.oncestatic = {} end
-    for i = 1, select("#", ...) do
-        if (not stats.oncestatic[select(i,...)]) then
-            stats.oncestatic[select(i,...)] = { value = tonumber(value) or 0, once = true, final = nil }
-        elseif (stats.oncestatic[select(i,...)].once) then
-        else
-            stats.oncestatic[select(i,...)].value = stats.oncestatic[select(i,...)].value + (tonumber(value) or 0)
-        end
-	end
+    end
 end
 
 --静态值并设置为完整值
@@ -84,13 +71,7 @@ end
 
 --计算最终属性值
 local function CalculateStatLogic(unit, stats)
-    --step1 處理套裝或僅一次屬性的加成
-    if (stats.oncestatic) then
-        for k, v in pairs(stats.oncestatic) do
-            SetStaticValue(stats, v.value, k)
-        end
-    end
-    --step2 处理百分比属性
+    --step1 处理百分比属性
     if (stats.percent) then
         stats.percentValues = {}
         for _, v in ipairs(stats.percent) do
@@ -104,7 +85,7 @@ local function CalculateStatLogic(unit, stats)
             SetStaticValue(stats, floor(v), k)
         end
     end
-    --step3 换算%
+    --step2 换算%
 
     return stats
 end
@@ -112,7 +93,7 @@ end
 --装备属性: 逐条根据文字解析
 local function GetStats(text, r, g, b, stats, link)
     local v, v1, v2, txt, txt1, txt2
-    --套装名称
+    --套装
     if strfind(text, "%(%d/%d%)") or strfind(text, "（%d/%d）") then
         return SetSuitValue(stats, text, select(3, strfind(link or "","(|c%x+)|Hitem:.-|h|r")) or "|cffffffff")
     end
@@ -120,11 +101,11 @@ local function GetStats(text, r, g, b, stats, link)
     if r < 0.6 and g < 0.6 and b < 0.6 then return end
     --不用统计的先排除
     for _, p in ipairs(patterns.ignore) do
-		if strfind(text, p) then return end
-	end
+        if strfind(text, p) then return end
+    end
     --多属性
     for _, p in ipairs(patterns.multiple) do
-		if strfind(text, p.pattern) then
+        if strfind(text, p.pattern) then
             v1, v2, txt = strmatch(text, p.pattern)
             SetStaticValue(stats, v1, strsplit("|",p.key1))
             SetStaticValue(stats, v2, strsplit("|",p.key2))
@@ -133,144 +114,101 @@ local function GetStats(text, r, g, b, stats, link)
             end
             return
         end
-	end
+    end
     --递归的
     for _, p in ipairs(patterns.recursive) do
-		if strfind(text, p) then
+        if strfind(text, p) then
             txt1, txt2 = strmatch(text, p)
             GetStats(txt1, r, g, b, stats, link)
             GetStats(txt2, r, g, b, stats, link)
             return
         end
-	end
+    end
     --常规属性 +xx
-    if strfind(text, "%+(%d+)") then		
-		v = strmatch(text, "%+(%d+)")
-		for _, p in ipairs(patterns.general) do
-			if strfind(text, p.pattern) then
-                if (strfind(text, patterns.setprefix)) then
-                    SetOnceStaticValue(stats, v, strsplit("|",p.key))
-                else
-                    SetStaticValue(stats, v, strsplit("|",p.key))
-                end
-				break
-			end
-		end
-		return
-	end
+    if strfind(text, "%+(%d+)") then        
+        v = strmatch(text, "%+(%d+)")
+        for _, p in ipairs(patterns.general) do
+            if strfind(text, p.pattern) then
+                SetStaticValue(stats, v, strsplit("|",p.key))
+                break
+            end
+        end
+        return
+    end
     --描述属性
     for _, p in ipairs(patterns.extra) do
-		if strfind(text, p.pattern) then
+        if strfind(text, p.pattern) then
             v = strmatch(text, p.pattern)
-            if (strfind(text, patterns.setprefix)) then
-                SetOnceStaticValue(stats, v, strsplit("|",p.key))
-            else
-                SetStaticValue(stats, v, strsplit("|",p.key))
-            end
+            SetStaticValue(stats, v, strsplit("|",p.key))
             return
         end
-	end
+    end
     --百分比属性
     for _, p in ipairs(patterns.percent) do
-		if strfind(text, p.pattern) then
-			v = strmatch(text, p.pattern)
+        if strfind(text, p.pattern) then
+            v = strmatch(text, p.pattern)
             SetPercentValue(stats, v, p.baseon, p.key)
-			return
-		end
-	end
+            return
+        end
+    end
     --特殊值属性
     for _, p in ipairs(patterns.special) do
-		if strfind(text, p.pattern) then
+        if strfind(text, p.pattern) then
             SetStaticValue(stats, p.value, strsplit("|",p.key))
             if (not p.continue) then break end
         end
         return
-	end
+    end
 end
 
 --BUFF属性: 逐条解析
 local function GetBuffStats(text, stats)
     local v, txt1, txt2
     for _, p in ipairs(patterns.buff.convert or {}) do
-		text = gsub(text, p.from, p.to)
-	end
-	if strfind(text, ",") then
+        text = gsub(text, p.from, p.to)
+    end
+    if strfind(text, ",") then
         for txt1 in string.gmatch(text, "[^,]+") do
             GetBuffStats(txt1 or "", stats)
         end
-		return
-	end
-	for _, p in ipairs(patterns.buff) do
-		if strfind(text, p.pattern) then
-			v = strmatch(text, p.pattern)
-			if (v and tonumber(v) > 0) then
-				for key in string.gmatch(p.key, "[^|]+") do
-					if p.percent then
+        return
+    end
+    for _, p in ipairs(patterns.buff) do
+        if strfind(text, p.pattern) then
+            v = strmatch(text, p.pattern)
+            if (v and tonumber(v) > 0) then
+                for key in string.gmatch(p.key, "[^|]+") do
+                    if p.percent then
                         SetPercentValue(stats, v, p.baseon or key, key)
-					else
-						SetStaticValue(stats, v, key)
-					end
-				end
-			end
-		end
-	end
-end
-
---天赋解析 @todo
-local function GetTalentEffect(rank, nameTalent, stats, class, race, level)
-    
+                    else
+                        SetStaticValue(stats, v, key)
+                    end
+                end
+            end
+        end
+    end    
 end
 
 --读取UNIT的Buff加成
 function lib:GetUnitBuffStats(unit, stats)
     if (type(stats) ~= "table") then stats = {} end
-    local _, text, texture
-    local textures = {}
-	local i = 1
-	while UnitBuff(unit, i) do
-        _, texture = UnitBuff(unit, i)
-        textures[texture] = i
-		tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-		tooltip:ClearLines()
-		tooltip:SetUnitBuff(unit, i)
-		for j = 2, tooltip:NumLines() do			
-			text = _G[tooltip:GetName() .."TextLeft" .. j]:GetText()
-			GetBuffStats(text, stats)
-		end
-		i = i + 1;
-	end
-    --德鲁伊印记抗性和牧师暗抗(取牧师的:牧min^30>德max^25): 野性印记 图标136078 暗影防护 图标136121 
-    if (textures[136121] and textures[136078]) then
+    local text
+    local i = 1
+    while UnitBuff(unit, i) do
         tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-		tooltip:ClearLines()
-		tooltip:SetUnitBuff(unit, textures[136078])
-		for j = 2, tooltip:NumLines() do			
-			text = _G[tooltip:GetName() .."TextLeft" .. j]:GetText()
-			for _, p in ipairs(patterns.buff) do
-                if p.conflict and strfind(text, p.pattern) then
-                    v = strmatch(text, p.pattern)
-                    if (v and tonumber(v) > 0) then
-                        SetStaticValue(stats, -v, "ResistanceShadow")
-                    end
-                end
-            end
-		end
+        tooltip:ClearLines()
+        tooltip:SetUnitBuff(unit, i)
+        for j = 2, tooltip:NumLines() do            
+            text = _G[tooltip:GetName() .."TextLeft" .. j]:GetText()
+            GetBuffStats(text, stats)
+        end    
+        i = i + 1;
     end
 end
 
 --读取天赋加成 @todo
 function lib:GetUnitTalentStats(unit, stats, class, race, level)
-    local inspect = (unit ~= "player")
-    local numTabs = GetNumTalentTabs(inspect)
-	for i = 1, numTabs do
-		local numTalents = GetNumTalents(i,inspect)
-		for j = 1, numTalents do
-			nameTalent, _, _, _, currRank, maxRank = GetTalentInfo(i,j,inspect)
-			if currRank > 0 then
-				GetTalentEffect(currRank, nameTalent, stats, class, race, level)
-			end
-		end
-	end
+    
 end
 
 --读取种族及初始属性加成
