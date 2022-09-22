@@ -11437,7 +11437,7 @@ function NWB:recalcLayerMapFrame()
 	end
 end
 
---Reset layers one time, needed when upgrading from old version.
+--Reset layers, needed sometimes when upgrading from old version.
 --Old version copys over the whole table from new version users and prevents a proper new layer being created with that id.
 function NWB:resetLayerData()
 	if (NWB.db.global.resetDailyData) then
@@ -11450,11 +11450,11 @@ function NWB:resetLayerData()
 		NWB.data.tbcPDT = nil;
 		NWB.db.global.resetDailyData = false;
 	end
-	if (NWB.db.global.resetLayers11) then
+	if (NWB.db.global.resetLayers12) then
 		NWB:debug("resetting layer data");
 		NWB.data.layers = {};
 		NWB.data.layerMapBackups = {};
-		NWB.db.global.resetLayers11 = false;
+		NWB.db.global.resetLayers12 = false;
 	end
 end
 

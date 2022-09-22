@@ -181,7 +181,7 @@ function NWB:OnCommReceived(commPrefix, string, distribution, sender)
 			NWB:doNpcWalkingMsg(type, layer, sender);
 		end
 	end
-	if (tonumber(remoteVersion) < 2.32) then
+	if (tonumber(remoteVersion) < 2.34) then
 		if (cmd == "requestData" and distribution == "GUILD") then
 			if (not NWB:getGuildDataStatus()) then
 				NWB:sendSettings("GUILD");
@@ -1277,7 +1277,7 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 	end
 	local hasNewData, newFlowerData, hasNewTerok;
 	--Insert our layered data here.
-	if (NWB.isLayered and data.layers and self.j(elapsed) and (NWB.isClassic or distribution == "GUILD" or time > 2)) then
+	if (NWB.isLayered and data.layers and self.j(elapsed) and (NWB.isClassic or distribution == "GUILD" or time > 5)) then
 		--There's a lot of ugly shit in this function trying to quick fix timer bugs for this layered stuff...
 		for k, _ in pairs(data.layers) do
 			if (type(k) ~= "number") then
@@ -1380,7 +1380,7 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 								if ((type(k) == "string" and (string.match(k, "flower") and NWB.db.global.syncFlowersAll)
 										or (not NWB.db.global.receiveGuildDataOnly)
 										or (NWB.db.global.receiveGuildDataOnly and distribution == "GUILD"))
-										and (NWB.isClassic or distribution == "GUILD" or time > 2)) then
+										and (NWB.isClassic or distribution == "GUILD" or time > 5)) then
 									if (NWB.validKeys[k] and tonumber(v)) then
 										--If data is numeric (a timestamp) then check it's newer than our current timer.
 										if (v ~= nil) then
@@ -1516,7 +1516,7 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 		--bad argument #1 to 'match' (string expected, got table)
 		if (self.j(elapsed) and (type(k) == "string" and (string.match(k, "flower") and NWB.db.global.syncFlowersAll)
 				or (not NWB.db.global.receiveGuildDataOnly)
-				or (NWB.db.global.receiveGuildDataOnly and distribution == "GUILD")) and (NWB.isClassic or time > 2)) then
+				or (NWB.db.global.receiveGuildDataOnly and distribution == "GUILD")) and (NWB.isClassic or time > 5)) then
 			if (NWB.validKeys[k] and tonumber(v)) then
 				--If data is numeric (a timestamp) then check it's newer than our current timer.
 				if (v ~= nil) then
