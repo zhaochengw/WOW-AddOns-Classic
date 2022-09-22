@@ -12,53 +12,28 @@ local Width,Height,biaotiH  = 300, 550, 34;
 --父框架
 local function SellBuy_ADD()
 	if _G[GnUI] then return end
-	local SellBuy=ADD_Frame(GnUI,UIParent,Width, Height,"CENTER",UIParent,"CENTER",0,100,true,true,true,true,true)
+	local SellBuy=ADD_Frame(GnUI,UIParent,Width, Height,"CENTER",UIParent,"CENTER",0,100,true,false,false,true,true)
+	SellBuy:SetMovable(true)
 	--标题+拖拽按钮
-	SellBuy.biaoti = CreateFrame("Frame", nil, SellBuy,"BackdropTemplate")
-	SellBuy.biaoti:SetBackdrop({
-	    bgFile = "interface/characterframe/ui-party-background.blp",
-	    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-		edgeSize = 16,insets = { left = 2, right = 2, top = 2, bottom = 2 }
-	})
-	SellBuy.biaoti:SetBackdropBorderColor(0.6, 0.6, 0.6, 0.8);
-	SellBuy.biaoti:SetSize(120, biaotiH)
-	SellBuy.biaoti:SetPoint("TOP", SellBuy, "TOP", 0, 0)
-	SellBuy.biaoti:EnableMouse(true)
+	SellBuy.biaoti=ADD_Frame(nil,SellBuy,120, biaotiH,"TOP", SellBuy, "TOP", 0, 0,true,true,false,true,false,"BG7")
 	SellBuy.biaoti:RegisterForDrag("LeftButton")
-	SellBuy.biaoti:SetClampedToScreen(true)
 	SellBuy.biaoti:SetScript("OnDragStart",function()
 		SellBuy:StartMoving()
 	end)
 	SellBuy.biaoti:SetScript("OnDragStop",function()
 		SellBuy:StopMovingOrSizing()
 	end)
-	SellBuy.biaoti_title = SellBuy.biaoti:CreateFontString();
-	SellBuy.biaoti_title:SetPoint("TOP", SellBuy.biaoti, "TOP", 0, -10);
-	SellBuy.biaoti_title:SetFontObject(GameFontNormal);
-	SellBuy.biaoti_title:SetText("Pig"..GnName);
+	SellBuy.biaoti.title = SellBuy.biaoti:CreateFontString();
+	SellBuy.biaoti.title:SetPoint("TOP", SellBuy.biaoti, "TOP", 0, -10);
+	SellBuy.biaoti.title:SetFontObject(GameFontNormal);
+	SellBuy.biaoti.title:SetText("Pig"..GnName);
 	--关闭按钮
-	SellBuy.CloseF = CreateFrame("Frame", nil, SellBuy,"BackdropTemplate")
-	SellBuy.CloseF:SetBackdrop({
-	    bgFile = "interface/characterframe/ui-party-background.blp",
-	    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-		edgeSize = 16,insets = { left = 2, right = 2, top = 2, bottom = 2 }
-	})
-	SellBuy.CloseF:SetBackdropBorderColor(0.6, 0.6, 0.6, 0.8);
-	SellBuy.CloseF:SetSize(28,28);
-	SellBuy.CloseF:SetPoint("TOPRIGHT", SellBuy, "TOPRIGHT", -6, -6);
+	SellBuy.CloseF=ADD_Frame(nil,SellBuy,28,28,"TOPRIGHT", SellBuy, "TOPRIGHT", -6, -6,false,true,false,false,false,"BG7")
 	SellBuy.Close = CreateFrame("Button",nil,SellBuy, "UIPanelCloseButton");  
 	SellBuy.Close:SetSize(30,30);
 	SellBuy.Close:SetPoint("CENTER", SellBuy.CloseF, "CENTER", 1, 0);
 	--内容显示框架
-	SellBuy.F = CreateFrame("Frame", nil, SellBuy,"BackdropTemplate");
-	SellBuy.F:SetBackdrop({
-	    bgFile = "interface/characterframe/ui-party-background.blp",
-	    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-		edgeSize = 16,insets = { left = 4, right = 4, top = 4, bottom = 4 }
-	})
-	SellBuy.F:SetBackdropBorderColor(0.6, 0.6, 0.6, 0.8);
-	SellBuy.F:SetSize(Width,Height-biaotiH+6);
-	SellBuy.F:SetPoint("TOP",SellBuy,"TOP",0,-biaotiH+6);
+	SellBuy.F=ADD_Frame(nil,SellBuy,Width,Height-biaotiH+6,"TOP",SellBuy,"TOP",0,-biaotiH+6,false,true,false,false,false,"BG7")
 	-- ----
 	local TabWidth,TabHeight = 30,70;
 	local TabName = {"丢","卖","买","开","存","取"};

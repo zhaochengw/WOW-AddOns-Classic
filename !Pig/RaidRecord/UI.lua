@@ -10,13 +10,7 @@ local Options_Kaituanzhushou = ADD_Modbutton(GnName,GnUI,FrameLevel,5)
 local function ADD_RaidR_UI()
 	if RaidR_UI then return end
 	local Width,Height,hang_Height,hang_NUM  = 820, 570, 34, 13;
-	local RaidR=ADD_Frame(GnUI,UIParent,Width, Height,"CENTER",UIParent,"CENTER",0,20,true,true,true,true,true)
-	RaidR:SetBackdrop({
-	    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-	    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-	    tile = true,tileSize = 32,edgeSize = 32,
-	    insets = { left = 8, right = 8, top = 8, bottom = 8 }})
-
+	local RaidR=ADD_Frame(GnUI,UIParent,Width, Height,"CENTER",UIParent,"CENTER",0,20,true,false,true,true,true,"BG5")
 	--标题+拖拽按钮
 	RaidR.biaoti = CreateFrame("Frame", nil, RaidR)
 	RaidR.biaoti:SetSize(170, 46)

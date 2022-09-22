@@ -135,7 +135,7 @@ local function huoqu_Skill()
 	table.insert(shujuyaun,Skillinfo)
 end
 ----
-local hang_Height,hang_NUM  = 19, 18;
+local hang_Height,hang_NUM  = 20, 18;
 local function gengxin_Skill(self)
 	for x = 1, hang_NUM do
 		_G["SK_list_"..x]:Hide();
@@ -326,12 +326,8 @@ end
 local function Add_Skill_CD()
 	if zhuanyeCDUI then return end
 	--显示框架
-	local Width,Height = 595,440;
-	local zhuanyeCD=ADD_Frame(GnUI,UIParent,Width,Height,"CENTER",UIParent,"CENTER",0,0,true,true,true,true,true)
-	
-	zhuanyeCD:RegisterForDrag("LeftButton")
-	zhuanyeCD:SetScript("OnDragStart", zhuanyeCD.StartMoving)
-	zhuanyeCD:SetScript("OnDragStop", zhuanyeCD.StopMovingOrSizing)
+	local Width,Height = 650,460;
+	local zhuanyeCD=ADD_Frame(GnUI,UIParent,Width,Height,"CENTER",UIParent,"CENTER",0,0,true,false,true,true,true,"BG2")
 	
 	zhuanyeCD.title = zhuanyeCD:CreateFontString();
 	zhuanyeCD.title:SetPoint("TOP", zhuanyeCD, "TOP", 0, -3);
@@ -339,10 +335,10 @@ local function Add_Skill_CD()
 	zhuanyeCD.title:SetText("专业技能/副本CD监控");
 	zhuanyeCD.Close = CreateFrame("Button",nil,zhuanyeCD, "UIPanelCloseButton");  
 	zhuanyeCD.Close:SetSize(32,32);
-	zhuanyeCD.Close:SetPoint("TOPRIGHT",zhuanyeCD,"TOPRIGHT",2,5);
+	zhuanyeCD.Close:SetPoint("TOPRIGHT",zhuanyeCD,"TOPRIGHT",5,6);
 	---重置配置
 	zhuanyeCD.chongzhizhushouBUT = CreateFrame("Button",nil,zhuanyeCD, "UIPanelButtonTemplate");  
-	zhuanyeCD.chongzhizhushouBUT:SetSize(50,20);
+	zhuanyeCD.chongzhizhushouBUT:SetSize(50,18);
 	zhuanyeCD.chongzhizhushouBUT:SetPoint("RIGHT",zhuanyeCD.Close,"LEFT",-20,0);
 	zhuanyeCD.chongzhizhushouBUT:SetText("重置");
 	zhuanyeCD.chongzhizhushouBUT:SetScript("OnClick", function ()
@@ -362,50 +358,10 @@ local function Add_Skill_CD()
 		whileDead = true,
 		hideOnEscape = true,
 	}
-
-	zhuanyeCD.help = zhuanyeCD:CreateTexture(nil, "BORDER");
-	zhuanyeCD.help:SetTexture("interface/gossipframe/activequesticon.blp");
-	zhuanyeCD.help:ClearAllPoints();
-	zhuanyeCD.help:SetPoint("TOPRIGHT",zhuanyeCD,"TOPRIGHT",-30,-3);
-
-	zhuanyeCD.Texture_L = zhuanyeCD:CreateTexture(nil, "BORDER");
-	zhuanyeCD.Texture_L:SetTexture("interface/worldmap/ui-worldmapsmall-left.blp");
-	zhuanyeCD.Texture_L:ClearAllPoints();
-	zhuanyeCD.Texture_L:SetPoint("TOPLEFT", 0, 0);
-	zhuanyeCD.Texture_R = zhuanyeCD:CreateTexture(nil, "BORDER");
-	zhuanyeCD.Texture_R:SetTexture("interface/worldmap/ui-worldmapsmall-right.blp");
-	zhuanyeCD.Texture_R:ClearAllPoints();
-	zhuanyeCD.Texture_R:SetPoint("TOPLEFT", zhuanyeCD.Texture_L, "TOPRIGHT", 0, 0);
-
-	zhuanyeCD.Neirong = CreateFrame("Frame", nil, zhuanyeCD,"BackdropTemplate") ;
-	zhuanyeCD.Neirong:SetSize(Width-14,386);
-	zhuanyeCD.Neirong:SetBackdrop({ bgFile = "interface/characterframe/ui-party-background.blp"});
-	zhuanyeCD.Neirong:SetBackdropColor(0, 0, 0, 0.8);
-	zhuanyeCD.Neirong:SetPoint("TOP", zhuanyeCD, "TOP", 0, -22);
-
-	zhuanyeCD.xian1 = zhuanyeCD.Neirong:CreateLine()
-	zhuanyeCD.xian1:SetColorTexture(1,1,1,0.2)
-	zhuanyeCD.xian1:SetThickness(1.2);
-	zhuanyeCD.xian1:SetStartPoint("TOP",0,0)
-	zhuanyeCD.xian1:SetEndPoint("BOTTOM",0,0)
-	zhuanyeCD.xian2 = zhuanyeCD.Neirong:CreateLine()
-	zhuanyeCD.xian2:SetColorTexture(1,1,1,0.3)
-	zhuanyeCD.xian2:SetThickness(1.2);
-	zhuanyeCD.xian2:SetStartPoint("TOPLEFT",0,-24)
-	zhuanyeCD.xian2:SetEndPoint("TOPRIGHT",0,-24)
 	-------------------
-	zhuanyeCD.Neirong.titleL = zhuanyeCD.Neirong:CreateFontString();
-	zhuanyeCD.Neirong.titleL:SetPoint("TOPLEFT", zhuanyeCD.Neirong, "TOPLEFT", 50, -4);
-	zhuanyeCD.Neirong.titleL:SetFontObject(GameFontGreen);
-	zhuanyeCD.Neirong.titleL:SetText("正在冷却中的专业技能");
-
-	zhuanyeCD.Neirong.titleR = zhuanyeCD.Neirong:CreateFontString();
-	zhuanyeCD.Neirong.titleR:SetPoint("TOPLEFT", zhuanyeCD.Neirong, "TOPLEFT", 350, -4);
-	zhuanyeCD.Neirong.titleR:SetFontObject(GameFontGreen);
-	zhuanyeCD.Neirong.titleR:SetText("正在冷却中的副本");
 	--下方提示
 	zhuanyeCD.tishi = zhuanyeCD:CreateFontString();
-	zhuanyeCD.tishi:SetPoint("BOTTOM",zhuanyeCD,"BOTTOM",26,14);
+	zhuanyeCD.tishi:SetPoint("BOTTOM",zhuanyeCD,"BOTTOM",26,12);
 	zhuanyeCD.tishi:SetFont(ChatFontNormal:GetFont(), 12,"OUTLINE")
 	zhuanyeCD.tishi:SetText("\124cff00ff00第一次使用时请打开专业面板获取一次CD！\124r");
 	zhuanyeCD.tishiTex = zhuanyeCD:CreateTexture(nil, "ARTWORK");
@@ -414,21 +370,23 @@ local function Add_Skill_CD()
 	zhuanyeCD.tishiTex:SetSize(26,26);
 
 	---专业CD列表
-	zhuanyeCD.Neirong.SkillCD = CreateFrame("Frame", nil, zhuanyeCD.Neirong);
-	zhuanyeCD.Neirong.SkillCD:SetSize((Width-34)/2,360);
-	zhuanyeCD.Neirong.SkillCD:SetPoint("TOPLEFT", zhuanyeCD.Neirong, "TOPLEFT", 2, -28);
+	zhuanyeCD.SkillCD=ADD_Frame(GnUI,zhuanyeCD,(Width-48)/2,Height-70,"TOPLEFT", zhuanyeCD, "TOPLEFT", 5, -40,false,true,false,false,false,"BG3")
+	zhuanyeCD.SkillCD.titleL = zhuanyeCD.SkillCD:CreateFontString();
+	zhuanyeCD.SkillCD.titleL:SetPoint("BOTTOM", zhuanyeCD.SkillCD, "TOP", 0, 2);
+	zhuanyeCD.SkillCD.titleL:SetFontObject(GameFontGreen);
+	zhuanyeCD.SkillCD.titleL:SetText("正在冷却中的专业技能");
 	------------------
-	zhuanyeCD.Neirong.SkillCD.Scroll = CreateFrame("ScrollFrame",nil,zhuanyeCD.Neirong.SkillCD, "FauxScrollFrameTemplate");  
-	zhuanyeCD.Neirong.SkillCD.Scroll:SetPoint("TOPLEFT",zhuanyeCD.Neirong.SkillCD,"TOPLEFT",0,2);
-	zhuanyeCD.Neirong.SkillCD.Scroll:SetPoint("BOTTOMRIGHT",zhuanyeCD.Neirong.SkillCD,"BOTTOMRIGHT",-16,2);
-	zhuanyeCD.Neirong.SkillCD.Scroll:SetScript("OnVerticalScroll", function(self, offset)
+	zhuanyeCD.SkillCD.Scroll = CreateFrame("ScrollFrame",nil,zhuanyeCD.SkillCD, "FauxScrollFrameTemplate");  
+	zhuanyeCD.SkillCD.Scroll:SetPoint("TOPLEFT",zhuanyeCD.SkillCD,"TOPLEFT",4,-4);
+	zhuanyeCD.SkillCD.Scroll:SetPoint("BOTTOMRIGHT",zhuanyeCD.SkillCD,"BOTTOMRIGHT",-4,2);
+	zhuanyeCD.SkillCD.Scroll:SetScript("OnVerticalScroll", function(self, offset)
 	    FauxScrollFrame_OnVerticalScroll(self, offset, hang_Height, gengxin_Skill)
 	end)
 	for id = 1, hang_NUM, 1 do
-		local SK_list = CreateFrame("Frame", "SK_list_"..id, zhuanyeCD.Neirong.SkillCD.Scroll:GetParent());
-		SK_list:SetSize(zhuanyeCD.Neirong.SkillCD:GetWidth()-18,hang_Height);
+		local SK_list = CreateFrame("Frame", "SK_list_"..id, zhuanyeCD.SkillCD.Scroll:GetParent());
+		SK_list:SetSize(zhuanyeCD.SkillCD:GetWidth()-18,hang_Height);
 		if id==1 then
-			SK_list:SetPoint("TOPLEFT", zhuanyeCD.Neirong.SkillCD.Scroll, "TOPLEFT", 0, -1);
+			SK_list:SetPoint("TOPLEFT", zhuanyeCD.SkillCD.Scroll, "TOPLEFT", 0, -1);
 		else
 			SK_list:SetPoint("TOPLEFT", _G["SK_list_"..(id-1)], "BOTTOMLEFT", 0, -1);
 		end
@@ -451,7 +409,7 @@ local function Add_Skill_CD()
 			for i=1,#shujuyuan,1 do
 				if shujuyuan[i][1][1].."-"..shujuyuan[i][1][2]==wanjianame then
 					table.remove(shujuyuan,i);
-					gengxin_Skill(zhuanyeCD.Neirong.SkillCD.Scroll);
+					gengxin_Skill(zhuanyeCD.SkillCD.Scroll);
 					break
 				end
 			end
@@ -483,21 +441,23 @@ local function Add_Skill_CD()
 	C_Timer.After(4,xianshitishi);
 
 	--副本CD列表===================================================
-	zhuanyeCD.Neirong.fubenCD = CreateFrame("Frame", nil, zhuanyeCD.Neirong);
-	zhuanyeCD.Neirong.fubenCD:SetSize((Width-34)/2,360);
-	zhuanyeCD.Neirong.fubenCD:SetPoint("TOPRIGHT", zhuanyeCD.Neirong, "TOPRIGHT", -6, -28);
+	zhuanyeCD.fubenCD=ADD_Frame(GnUI,zhuanyeCD,(Width-48)/2,Height-70,"TOPRIGHT", zhuanyeCD, "TOPRIGHT", -24, -40,false,true,false,false,false,"BG3")
+	zhuanyeCD.fubenCD.titleR = zhuanyeCD.fubenCD:CreateFontString();
+	zhuanyeCD.fubenCD.titleR:SetPoint("BOTTOM", zhuanyeCD.fubenCD, "TOP", 0, 2);
+	zhuanyeCD.fubenCD.titleR:SetFontObject(GameFontGreen);
+	zhuanyeCD.fubenCD.titleR:SetText("正在冷却中的副本");
 	------
-	zhuanyeCD.Neirong.fubenCD.Scroll = CreateFrame("ScrollFrame",nil,zhuanyeCD.Neirong.fubenCD, "FauxScrollFrameTemplate");  
-	zhuanyeCD.Neirong.fubenCD.Scroll:SetPoint("TOPLEFT",zhuanyeCD.Neirong.fubenCD,"TOPLEFT",0,2);
-	zhuanyeCD.Neirong.fubenCD.Scroll:SetPoint("BOTTOMRIGHT",zhuanyeCD.Neirong.fubenCD,"BOTTOMRIGHT",-16,2);
-	zhuanyeCD.Neirong.fubenCD.Scroll:SetScript("OnVerticalScroll", function(self, offset)
+	zhuanyeCD.fubenCD.Scroll = CreateFrame("ScrollFrame",nil,zhuanyeCD.fubenCD, "FauxScrollFrameTemplate");  
+	zhuanyeCD.fubenCD.Scroll:SetPoint("TOPLEFT",zhuanyeCD.fubenCD,"TOPLEFT",4,-4);
+	zhuanyeCD.fubenCD.Scroll:SetPoint("BOTTOMRIGHT",zhuanyeCD.fubenCD,"BOTTOMRIGHT",-4,2);
+	zhuanyeCD.fubenCD.Scroll:SetScript("OnVerticalScroll", function(self, offset)
 	    FauxScrollFrame_OnVerticalScroll(self, offset, hang_Height, gengxin_Fuben)
 	end)
 	for id = 1, hang_NUM, 1 do
-		local fubenCD_list = CreateFrame("Frame", "fubenCD_list_"..id, zhuanyeCD.Neirong.fubenCD.Scroll:GetParent());
-		fubenCD_list:SetSize(zhuanyeCD.Neirong.fubenCD:GetWidth()-18,hang_Height);
+		local fubenCD_list = CreateFrame("Frame", "fubenCD_list_"..id, zhuanyeCD.fubenCD.Scroll:GetParent());
+		fubenCD_list:SetSize(zhuanyeCD.fubenCD:GetWidth()-18,hang_Height);
 		if id==1 then
-			fubenCD_list:SetPoint("TOPLEFT", zhuanyeCD.Neirong.fubenCD.Scroll, "TOPLEFT", 0, 0);
+			fubenCD_list:SetPoint("TOPLEFT", zhuanyeCD.fubenCD.Scroll, "TOPLEFT", 0, 0);
 		else
 			fubenCD_list:SetPoint("TOPLEFT", _G["fubenCD_list_"..id-1], "BOTTOMLEFT", 0, -1);
 		end
@@ -520,7 +480,7 @@ local function Add_Skill_CD()
 			for i=1,#shujuyuan,1 do
 				if shujuyuan[i][1][1].."-"..shujuyuan[i][1][2]==wanjianame then
 					table.remove(shujuyuan,i);
-					gengxin_Fuben(zhuanyeCD.Neirong.fubenCD.Scroll);
+					gengxin_Fuben(zhuanyeCD.fubenCD.Scroll);
 					break
 				end
 			end
@@ -549,7 +509,7 @@ local function Add_Skill_CD()
 										local start, duration = GetSpellCooldown(arg3);
 										shujuyuan[k][2][kk][4] =start;
 										shujuyuan[k][2][kk][5] =duration;
-										gengxin_Skill(zhuanyeCD.Neirong.SkillCD.Scroll);
+										gengxin_Skill(zhuanyeCD.SkillCD.Scroll);
 									end
 									C_Timer.After(1, gengxinSPCD1);								
 								end
@@ -575,7 +535,7 @@ local function Add_Skill_CD()
 													local startTime, duration = GetContainerItemCooldown(Bagid, sol)
 													shujuyuan[k][2][kk][4] =startTime;
 													shujuyuan[k][2][kk][5] =duration;
-													gengxin_Skill(zhuanyeCD.Neirong.SkillCD.Scroll);
+													gengxin_Skill(zhuanyeCD.SkillCD.Scroll);
 												end
 											end
 										end
@@ -590,7 +550,7 @@ local function Add_Skill_CD()
 		end
 		if event=="UPDATE_INSTANCE_INFO" then
 			huoqu_Fuben()
-			gengxin_Fuben(zhuanyeCD.Neirong.fubenCD.Scroll);
+			gengxin_Fuben(zhuanyeCD.fubenCD.Scroll);
 		end
 	end)
 	---更新专业CD
@@ -629,7 +589,7 @@ local function Add_Skill_CD()
 	zhuanyeCDUI:HookScript("OnShow", function ()
 		RequestRaidInfo()
 		huoqu_Skill()
-		gengxin_Skill(zhuanyeCD.Neirong.SkillCD.Scroll);
+		gengxin_Skill(zhuanyeCD.SkillCD.Scroll);
 	end)
 	local function jihuobangdingrili_Open()
 	    if IsAddOnLoaded("Blizzard_Calendar") then

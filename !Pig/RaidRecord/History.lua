@@ -1,5 +1,6 @@
 local _, addonTable = ...;
 --============历史记录====================
+local ADD_Frame=addonTable.ADD_Frame
 local hang_Height,hang_NUM  = 30, 12;
 local function ADD_History()
 	local Width,Height  = RaidR_UI:GetWidth(), RaidR_UI:GetHeight();
@@ -10,15 +11,9 @@ local function ADD_History()
 	RaidR_UI.xiafangF.History:SetPoint("TOPLEFT",RaidR_UI.xiafangF.lian1,"TOPLEFT",210,-6);
 	RaidR_UI.xiafangF.History:SetText("历史记录");
 	----
-	local History = CreateFrame("Frame", "History_UI", RaidR_UI,"BackdropTemplate");
-	History:SetBackdrop({bgFile = "interface/raidframe/ui-raidframe-groupbg.blp", 
-		edgeFile = "interface/glues/common/textpanel-border.blp", 
-		tile = false, tileSize = 0, edgeSize = 20,insets = { left = 4, right = 4, top = 4, bottom = 4 }});
-	History:SetSize(Width-22,Height-100);
-	History:SetPoint("TOP",RaidR_UI,"TOP",0,-18);
+	local History=ADD_Frame("History_UI",RaidR_UI,Width-22,Height-100,"TOP",RaidR_UI,"TOP",0,-18,true,false,false,false,false,"BG6")
 	History:SetFrameLevel(10);
-	History:EnableMouse(true);
-	History:Hide();
+
 	History.Close = CreateFrame("Button",nil,History, "UIPanelCloseButton");  
 	History.Close:SetSize(34,34);
 	History.Close:SetPoint("TOPRIGHT",History,"TOPRIGHT",2.4,3);

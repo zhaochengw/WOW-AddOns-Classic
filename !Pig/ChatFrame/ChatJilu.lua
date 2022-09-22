@@ -55,7 +55,7 @@ local function ADD_Chat_Jilu()
 		local QuickChat_biaoqingName=addonTable.QuickChat_biaoqingName
 		--密语/团队聊天记录
 		local ChatWidth,ChatHeight=220,260;
-		local ChatjiluMianban=ADD_Frame("ChatjiluMianban_UI",UIParent,ChatWidth*4,ChatHeight*2,"CENTER",UIParent,"CENTER",0,80,true,true,true,true,true)
+		local ChatjiluMianban=ADD_Frame("ChatjiluMianban_UI",UIParent,ChatWidth*4,ChatHeight*2,"CENTER",UIParent,"CENTER",0,80,true,false,true,true,true)
 
 		ChatjiluMianban.yidong = CreateFrame("Frame", nil, ChatjiluMianban);
 		ChatjiluMianban.yidong:SetSize(ChatWidth*4-60,24);

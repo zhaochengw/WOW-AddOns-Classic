@@ -51,7 +51,7 @@ local function ADD_QuickButton_AutoEquip()
 			--
 			local butW = QuickButtonUI.nr:GetHeight()
 			local anniushu=6
-			local AutoEquipList = ADD_Frame("AutoEquipList_UI",AutoEquip,butW, (butW+6)*anniushu,"BOTTOM",AutoEquip,"TOP",0,0,false,false,false,true,true)
+			local AutoEquipList = ADD_Frame("AutoEquipList_UI",AutoEquip,butW, (butW+6)*anniushu,"BOTTOM",AutoEquip,"TOP",0,0,false,false,false,false,true)
 			
 			local NumTexCoord = {
 				{0.326,0.43,0,0.32},

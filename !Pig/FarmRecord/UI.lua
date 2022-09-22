@@ -254,11 +254,7 @@ local function ADD_daibenUI()
 	daiben.hanren.bianjiHanhua.Tex:SetSize(biaotiH-4,biaotiH-4);
 	---------
 	local bianjikuanghanhuaH = 130
-	daiben.hanren.bianjiHanhua.F=ADD_Frame("daiben_bianjiHanhua_F_UI",daiben.hanren.bianjiHanhua,daiben:GetWidth(),bianjikuanghanhuaH,"CENTER",UIParent,"CENTER",0,0,true,true,true,true,true)
-	daiben.hanren.bianjiHanhua.F:SetBackdrop({
-		bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-		tile = true, tileSize = 0, edgeSize = 6,insets = { left = 0, right = 0, top = 0, bottom = 0 }});
-	daiben.hanren.bianjiHanhua.F:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.8);
+	daiben.hanren.bianjiHanhua.F=ADD_Frame("daiben_bianjiHanhua_F_UI",daiben.hanren.bianjiHanhua,daiben:GetWidth(),bianjikuanghanhuaH,"CENTER",UIParent,"CENTER",0,0,true,false,true,true,true,"BG4")
 
 	daiben.hanren.bianjiHanhua.F.Close = CreateFrame("Button",nil,daiben.hanren.bianjiHanhua.F, "UIPanelCloseButton");  
 	daiben.hanren.bianjiHanhua.F.Close:SetSize(28,28);
@@ -385,7 +381,7 @@ local function ADD_daibenUI()
 			if daiben_UI:GetBottom()<WowHeight then
 				self:SetPoint("BOTTOMRIGHT",daiben_UI,"BOTTOMLEFT",-2,-0);
 			else
-				self:SetPoint("TOPRIGHT",daiben_UI,"TOPLEFT",2,-0);
+				self:SetPoint("TOPRIGHT",daiben_UI,"TOPLEFT",-2,-0);
 			end
 		end
 		if PIG_Per.daiben.hanhua_lv then
@@ -507,16 +503,8 @@ local function ADD_daibenUI()
 		self.Down:Hide();
 	end);
 	---
-	daiben.TimeF = CreateFrame("Frame", nil, daiben,"BackdropTemplate");
-	daiben.TimeF:SetBackdrop({
-		bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 
-		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-		tile = true, tileSize = 0, edgeSize = 6,insets = { left = 0, right = 0, top = 0, bottom = 0 }});
-	daiben.TimeF:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.8);
-	daiben.TimeF:SetPoint("TOPLEFT",daiben,"BOTTOMLEFT",0,-2);
-	daiben.TimeF:SetPoint("TOPRIGHT",daiben,"BOTTOMRIGHT",0,-2);
+	daiben.TimeF=ADD_Frame(nil,daiben,520, 334,"TOPLEFT",daiben,"BOTTOMLEFT",0,-2,false,false,false,false,false,"BG4")
 	daiben.TimeF:SetHeight(TIME_Height)
-	daiben.TimeF:Hide()
 	--记账=========
 	daiben.Jizhang = CreateFrame("Button",nil,daiben, "TruncatedButtonTemplate"); 
 	daiben.Jizhang:SetNormalTexture("interface/chatframe/ui-chaticon-maximize-up.blp");
@@ -525,14 +513,8 @@ local function ADD_daibenUI()
 	daiben.Jizhang:SetSize(biaotiH,biaotiH);
 	daiben.Jizhang:SetPoint("RIGHT", daiben, "RIGHT", 0, 0);
 	--
-	daiben.JizhangF = CreateFrame("Frame", nil, daiben,"BackdropTemplate");
-	daiben.JizhangF:SetBackdrop({
-		bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 
-		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-		tile = true, tileSize = 0, edgeSize = 6,insets = { left = 0, right = 0, top = 0, bottom = 0 }});
-	daiben.JizhangF:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.8);
+	daiben.JizhangF=ADD_Frame(nil,daiben,520, 334,"TOPLEFT",daiben,"BOTTOMLEFT",0,-2,false,false,false,false,false,"BG4")
 	daiben.JizhangF:SetHeight(JZ_Height)
-	daiben.JizhangF:Hide()
 	--==刷新位置========================
 	local maxiconup ="interface/chatframe/ui-chaticon-maximize-up.blp"
 	local maxicondown ="interface/chatframe/ui-chaticon-maximize-down.blp"
@@ -1070,12 +1052,8 @@ local function ADD_daibenUI()
 	end)
 	----------------------
 	local tuikuanW,tuikuanH = 420,508;
-	daiben.JizhangF.tuikuan.F =ADD_Frame("tuikuan_F_UI",daiben.JizhangF.tuikuan,tuikuanW,tuikuanH,"CENTER",UIParent,"CENTER",0,0,true,true,true,true,true)
+	daiben.JizhangF.tuikuan.F =ADD_Frame("tuikuan_F_UI",daiben.JizhangF.tuikuan,tuikuanW,tuikuanH,"CENTER",UIParent,"CENTER",0,0,true,false,true,true,true,"BG4")
 	local tuikuanF = daiben.JizhangF.tuikuan.F
-	tuikuanF:SetBackdrop( { bgFile = "interface/characterframe/ui-party-background.blp",
-		edgeFile = "Interface/Tooltips/UI-Tooltip-Border",tile = false, tileSize = 0, edgeSize = 12, 
-		insets = { left = 3, right = 3, top = 3, bottom = 3 } });
-	tuikuanF:SetBackdropBorderColor(0, 1, 1, 0.4);
 
 	tuikuanF.yidong = CreateFrame("Frame", nil, tuikuanF);
 	tuikuanF.yidong:SetSize(tuikuanW-180,24);
@@ -1577,12 +1555,8 @@ local function ADD_daibenUI()
 		jishafenxi_mingxiF_UI:SetHeight(jsbgmxH*daiben.zuidajishashumu+76);
 	end
 	local jsbgW,jsbgH = 800,jsbgmxH*6+76
-	daiben.TimeF.jishaBG.F=ADD_Frame("jishafenxi_mingxiF_UI",daiben.TimeF.jishaBG,jsbgW,jsbgH,"CENTER",UIParent,"CENTER",0,0,true,true,true,true,true)
+	daiben.TimeF.jishaBG.F=ADD_Frame("jishafenxi_mingxiF_UI",daiben.TimeF.jishaBG,jsbgW,jsbgH,"CENTER",UIParent,"CENTER",0,0,true,false,true,true,true,"BG4")
 	local jishaBGF = daiben.TimeF.jishaBG.F
-	jishaBGF:SetBackdrop( { bgFile = "interface/characterframe/ui-party-background.blp",
-		edgeFile = "Interface/Tooltips/UI-Tooltip-Border",tile = false, tileSize = 0, edgeSize = 12, 
-		insets = { left = 3, right = 3, top = 3, bottom = 3 } });
-	jishaBGF:SetBackdropBorderColor(0, 1, 1, 0.4);
 
 	jishaBGF.yidong = CreateFrame("Frame", nil, jishaBGF);
 	jishaBGF.yidong:SetSize(jsbgW-100,20);

@@ -7,7 +7,6 @@ local function ADD_Frame(UIName,fuFrame,Width,Height,PointZi,Point,PointFu,Point
 	frame:SetSize(Width,Height);
 	frame:SetPoint(PointZi,Point,PointFu,PointX,PointY);
 	frame:EnableMouse(EnableMouse)
-	frame:SetShown(Show)
 	if Movable then
 		frame:SetMovable(true)
 		frame:RegisterForDrag("LeftButton")
@@ -20,15 +19,17 @@ local function ADD_Frame(UIName,fuFrame,Width,Height,PointZi,Point,PointFu,Point
 		frame:SetClampedToScreen(ToScreen)
 	end
 	if ESCOFF then
+		frame:Hide()
 		tinsert(UISpecialFrames,UIName);
+	else
+		frame:SetShown(Show)
 	end
-	if Backdrop=="BG1" then
+	if Backdrop=="BG1" then--常规白边框透明底
 		frame:SetBackdrop( { bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
 			edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
 			tile = false, tileSize = 0, edgeSize = 18, 
 			insets = { left = 4, right = 4, top = 4, bottom = 4 } });
-		frame:SetBackdropColor(0, 0, 0, 0.6);
-		frame:SetBackdropBorderColor(1, 1, 1, 0.8);
+		frame:SetBackdropBorderColor(1, 1, 1, 0.4);
 	elseif Backdrop=="BG2" then
 		frame.BG = frame:CreateTexture(nil, "BACKGROUND");
 		frame.BG:SetTexture("interface/framegeneral/ui-background-rock.blp");
@@ -135,6 +136,24 @@ local function ADD_Frame(UIName,fuFrame,Width,Height,PointZi,Point,PointFu,Point
 		frame.BOTTOM:SetPoint("BOTTOMLEFT", frame.BOTTOMLEFT, "BOTTOMRIGHT",0,0)
 		frame.BOTTOM:SetPoint("BOTTOMRIGHT", frame.BOTTOMRIGHT, "BOTTOMLEFT",0,0);
 		frame.BOTTOM:SetHeight(3);
+	elseif Backdrop=="BG4" then--直角无边框
+		frame:SetBackdrop({bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 
+			edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, tileSize = 0, 
+			edgeSize = 6,insets = { left = 0, right = 0, top = 0, bottom = 0 }});
+		frame:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.8);
+	elseif Backdrop=="BG5" then--加粗边框
+		frame:SetBackdrop({bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
+	    	edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",tile = true,tileSize = 32,
+	   		edgeSize = 32,insets = { left = 8, right = 8, top = 8, bottom = 8 }})
+	elseif Backdrop=="BG6" then--白边暴雪底色
+		frame:SetBackdrop({bgFile = "interface/raidframe/ui-raidframe-groupbg.blp", 
+			edgeFile = "interface/glues/common/textpanel-border.blp", tile = false, tileSize = 0, 
+			edgeSize = 20,insets = { left = 4, right = 4, top = 4, bottom = 4 }});
+	elseif Backdrop=="BG7" then--粗边框黑底
+		frame:SetBackdrop({bgFile = "interface/characterframe/ui-party-background.blp",
+			edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",edgeSize = 16,
+			insets = { left = 2, right = 2, top = 2, bottom = 2 }})
+		frame:SetBackdropBorderColor(0.6, 0.6, 0.6, 0.8);
 	end
 	return frame
 end

@@ -1,7 +1,8 @@
 local _, addonTable = ...;
 local gsub = _G.string.gsub 
 local find = _G.string.find
---=====组队助手==========================================================
+--=====组队助手=================================
+local ADD_Frame=addonTable.ADD_Frame
 local function ADD_Invite()
 	local Width,Height  = RaidR_UI:GetWidth(), RaidR_UI:GetHeight();
 	--组队助手
@@ -30,15 +31,9 @@ local function ADD_Invite()
 	RaidR_UI.xiafangF.zudui.tex:SetPoint("TOP",RaidR_UI.xiafangF.zudui,"TOP",0,-5);
 	RaidR_UI.xiafangF.zudui.tex:Hide()
 	------------------
-	local invite = CreateFrame("Frame", "invite_UI", RaidR_UI,"BackdropTemplate");
-	invite:SetBackdrop({bgFile = "interface/raidframe/ui-raidframe-groupbg.blp", 
-		edgeFile = "interface/glues/common/textpanel-border.blp", 
-		tile = false, tileSize = 20, edgeSize = 20,insets = { left = 4, right = 4, top = 4, bottom = 4 }});
-	invite:SetSize(Width-22,Height-100);
-	invite:SetPoint("TOP",RaidR_UI,"TOP",0,-18);
+	local invite=ADD_Frame("invite_UI",RaidR_UI,Width-22,Height-100,"TOP",RaidR_UI,"TOP",0,-18,true,false,false,false,false,"BG6")
 	invite:SetFrameLevel(10);
-	invite:EnableMouse(true);
-	invite:Hide();
+
 	invite.Close = CreateFrame("Button",nil,invite, "UIPanelCloseButton");  
 	invite.Close:SetSize(34,34);
 	invite.Close:SetPoint("TOPRIGHT",invite,"TOPRIGHT",2.4,2);

@@ -115,7 +115,7 @@ local function RenwuFrame_Open()
 	end
 end
 ---------------------
-fuFrame.Renwu=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"TOPLEFT","任务界面扩展","扩展任务界面为两列；左边任务列表，右边任务详情！")
+fuFrame.Renwu=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"任务界面扩展","扩展任务界面为两列；左边任务列表，右边任务详情！")
 if tocversion>90000 then
 	fuFrame.Renwu:Disable() fuFrame.Renwu.Text:SetTextColor(0.4, 0.4, 0.4, 1) 
 end

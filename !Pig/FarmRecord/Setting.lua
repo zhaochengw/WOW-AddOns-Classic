@@ -37,12 +37,7 @@ end
 addonTable.Open_settingUI=Open_settingUI
 local function ADD_settingUI(Width,WowWidth,WowHeight)
 	local fuFrame = daiben_UI.setting
-	fuFrame.F=ADD_Frame("Daiben_shezhi_F_UI",fuFrame,520, 334,"CENTER",UIParent,"CENTER",0,0,false,false,false,false,false)
-	fuFrame.F:SetBackdrop({
-		bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 
-		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-		tile = true, tileSize = 0, edgeSize = 6});
-	fuFrame.F:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.8);
+	fuFrame.F=ADD_Frame("Daiben_shezhi_F_UI",fuFrame,520, 334,"CENTER",UIParent,"CENTER",0,0,true,false,false,false,true,"BG4")
 	
 	fuFrame.F.Close = CreateFrame("Button",nil,fuFrame.F, "UIPanelCloseButton");  
 	fuFrame.F.Close:SetSize(28,28);
@@ -341,7 +336,7 @@ local function ADD_settingUI(Width,WowWidth,WowHeight)
 			PIG_Per.daiben.CZ_timejisha=false
 		end
 	end)
-	fuFrame.F.CZ_yueyuci = ADD_Checkbutton(nil,fuFrame.F,-100,"TOPLEFT",fuFrame.F.CZ_timejisha,"BOTTOMLEFT",0,0,"重置播报玩家余额/余次","重置播报队伍内玩家余额/余次(非队长不生效)")
+	fuFrame.F.CZ_yueyuci = ADD_Checkbutton(nil,fuFrame.F,-100,"TOPLEFT",fuFrame.F.CZ_timejisha,"BOTTOMLEFT",0,-2,"重置播报玩家余额/余次","重置播报队伍内玩家余额/余次(非队长不生效)")
 	fuFrame.F.CZ_yueyuci:SetSize(28,28);
 	fuFrame.F.CZ_yueyuci:SetScript("OnClick", function (self)
 		if self:GetChecked() then
@@ -350,7 +345,7 @@ local function ADD_settingUI(Width,WowWidth,WowHeight)
 			PIG_Per.daiben.CZ_yueyuci=false
 		end
 	end);
-	fuFrame.F.CZ_expSw = ADD_Checkbutton(nil,fuFrame.F,-100,"TOPLEFT",fuFrame.F.CZ_yueyuci,"BOTTOMLEFT",0,0,"重置播报自身经验/声望","重置播报上次自身刷本获得的经验/声望")
+	fuFrame.F.CZ_expSw = ADD_Checkbutton(nil,fuFrame.F,-100,"TOPLEFT",fuFrame.F.CZ_yueyuci,"BOTTOMLEFT",0,-2,"重置播报自身经验/声望","重置播报上次自身刷本获得的经验/声望")
 	fuFrame.F.CZ_expSw:SetSize(28,28);
 	fuFrame.F.CZ_expSw:SetScript("OnClick", function (self)
 		if self:GetChecked() then
@@ -360,7 +355,7 @@ local function ADD_settingUI(Width,WowWidth,WowHeight)
 		end
 	end);
 	--重置时就位确认
-	fuFrame.F.CZ_jiuwei= ADD_Checkbutton(nil,fuFrame.F,-100,"TOPLEFT",fuFrame.F.CZ_expSw,"BOTTOMLEFT",0,0,"重置时就位确认","重置时就位确认(非队长不生效)")
+	fuFrame.F.CZ_jiuwei= ADD_Checkbutton(nil,fuFrame.F,-100,"TOPLEFT",fuFrame.F.CZ_expSw,"BOTTOMLEFT",0,-2,"重置时就位确认","重置时就位确认(非队长不生效)")
 	fuFrame.F.CZ_jiuwei:SetSize(28,28);
 	fuFrame.F.CZ_jiuwei:SetScript("OnClick", function (self)
 		if self:GetChecked() then

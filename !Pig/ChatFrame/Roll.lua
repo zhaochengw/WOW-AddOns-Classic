@@ -12,7 +12,7 @@ local function ADD_Roll_Plus()
 	local RollWidth,RollHeight,RollbiaotiH  = 520, 540, 34;
 	local hang_Height,hang_NUM  = 30, 16;
 	--父框架
-	local RollF=ADD_Frame("RollF_UI",UIParent,RollWidth, RollHeight,"CENTER",UIParent,"CENTER",0,100,true,true,true,true,true)
+	local RollF=ADD_Frame("RollF_UI",UIParent,RollWidth, RollHeight,"CENTER",UIParent,"CENTER",0,100,true,false,true,true,true)
 	--标题+拖拽按钮
 	RollF.biaoti = CreateFrame("Frame", nil, RollF,"BackdropTemplate")
 	RollF.biaoti:SetBackdrop({

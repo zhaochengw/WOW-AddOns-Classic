@@ -9,46 +9,100 @@ local FrameLevel=30
 local Options_Spell_CD = ADD_Modbutton(GnName,GnUI,FrameLevel,1)
 --==========================
 local Width,Height=660,500
-local SpellJK=ADD_Frame("SpellJK_UI",UIParent,Width,Height,"CENTER",UIParent,"CENTER",0,50,true,true,true,true,true)
-SpellJK:SetBackdrop( { bgFile = "interface/raidframe/ui-raidframe-groupbg.blp",
-	edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-	tile = false, tileSize = 0, edgeSize = 14, 
-	insets = { left = 4, right = 4, top = 4, bottom = 4 } });
-SpellJK.yidong = CreateFrame("Frame", nil, SpellJK);
-SpellJK.yidong:SetSize(200,26);
-SpellJK.yidong:SetPoint("TOP", SpellJK, "TOP", 0, 0);
-SpellJK.yidong:EnableMouse(true)
-SpellJK.yidong:RegisterForDrag("LeftButton")
-SpellJK.yidong:SetScript("OnDragStart",function()
-	SpellJK:StartMoving()
-end)
-SpellJK.yidong:SetScript("OnDragStop",function()
-	SpellJK:StopMovingOrSizing()
-end)
+local SpellJK=ADD_Frame("SpellJK_UI",UIParent,Width,Height,"CENTER",UIParent,"CENTER",0,50,true,false,true,true,true,"BG2")
 SpellJK.Biaoti = SpellJK:CreateFontString();
-SpellJK.Biaoti:SetPoint("TOP", SpellJK, "TOP", 0,-7);
+SpellJK.Biaoti:SetPoint("TOP", SpellJK, "TOP", 0,-2);
 SpellJK.Biaoti:SetFontObject(GameFontNormal);
 SpellJK.Biaoti:SetText(GnName);
 SpellJK.Close = CreateFrame("Button",nil,SpellJK, "UIPanelCloseButton");  
 SpellJK.Close:SetSize(30,30);
-SpellJK.Close:SetPoint("TOPRIGHT",SpellJK,"TOPRIGHT",0,1);
-SpellJK.line = SpellJK:CreateLine()
-SpellJK.line:SetColorTexture(1,1,1,0.6)
-SpellJK.line:SetThickness(1);
-SpellJK.line:SetStartPoint("TOPLEFT",3,-26)
-SpellJK.line:SetEndPoint("TOPRIGHT",-2,-26)
-
-SpellJK.F= CreateFrame("Frame", nil, SpellJK);
-SpellJK.F:SetPoint("TOPLEFT", SpellJK, "TOPLEFT", 0,-28);
-SpellJK.F:SetPoint("BOTTOMRIGHT", SpellJK, "BOTTOMRIGHT", 0,0);
-----========================================================
+SpellJK.Close:SetPoint("TOPRIGHT",SpellJK,"TOPRIGHT",4,5);
+--提示
+SpellJK.tishi = CreateFrame("Frame", nil, SpellJK);
+SpellJK.tishi:SetSize(22,22);
+SpellJK.tishi:SetPoint("TOPLEFT",SpellJK,"TOPLEFT",0,0);
+SpellJK.tishi.Texture = SpellJK.tishi:CreateTexture(nil, "BORDER");
+SpellJK.tishi.Texture:SetTexture("interface/common/help-i.blp");
+SpellJK.tishi.Texture:SetSize(28,28);
+SpellJK.tishi.Texture:SetPoint("CENTER",0,0);
+SpellJK.tishi:SetScript("OnEnter", function ()
+	GameTooltip:ClearLines();
+	GameTooltip:SetOwner(SpellJK.tishi, "ANCHOR_TOPLEFT",0,0);
+	GameTooltip:AddLine("提示：")
+	GameTooltip:AddLine("\124cff00ff00注意战斗记录无法获取玩家施放技能等级，\n如果冷却时间不正确，请添加正确的技能等级ID。\n同名技能只能添加一个，建议直接添加技能最高等级ID。\124r")
+	GameTooltip:Show();
+end);
+SpellJK.tishi:SetScript("OnLeave", function ()
+	GameTooltip:ClearLines();
+	GameTooltip:Hide() 
+end);
+---------
+SpellJK.ceshi = CreateFrame("Button",nil,SpellJK, "UIPanelButtonTemplate");  
+SpellJK.ceshi:SetSize(84,18);
+SpellJK.ceshi:SetPoint("TOPRIGHT",SpellJK,"TOPRIGHT",-40,-1);
+SpellJK.ceshi:SetText("调试模式");
+SpellJK.ceshi:SetScript("OnClick", function ()
+	if SpellJK.ceshi:GetText()=="调试模式" then
+		SpellJK.ceshi:SetText("关闭调试");
+		SpellJK:SetHeight(28)
+		SpellJK_UI.F:Hide();
+		if zishenBUFF_UI then
+			zishenBUFF_UI.yidong:Show()
+		end
+		if zishenJiankong_UI then
+			zishenJiankong_UI.yidong:Show()
+		end
+		if duiyouJiankong_UI then
+			duiyouJiankong_UI.yidong:Show()
+		end
+		if mubiaoBUFF_UI then
+			mubiaoBUFF_UI.yidong:Show()
+		end
+	elseif SpellJK.ceshi:GetText()=="关闭调试" then
+		SpellJK.ceshi:SetText("调试模式");
+		SpellJK:SetHeight(Height)
+		SpellJK_UI.F:Show();
+		if zishenBUFF_UI then
+			zishenBUFF_UI.yidong:Hide()
+		end
+		if zishenJiankong_UI then
+			zishenJiankong_UI.yidong:Hide()
+		end
+		if duiyouJiankong_UI then
+			duiyouJiankong_UI.yidong:Hide()
+		end
+		if mubiaoBUFF_UI then
+			mubiaoBUFF_UI.yidong:Hide()
+		end
+	end
+end);
+SpellJK:HookScript("OnHide", function()
+	SpellJK.ceshi:SetText("调试模式");
+	SpellJK:SetHeight(Height)
+	SpellJK_UI.F:Show();
+	if zishenBUFF_UI then
+		zishenBUFF_UI.yidong:Hide()
+	end
+	if zishenJiankong_UI then
+		zishenJiankong_UI.yidong:Hide()
+	end
+	if duiyouJiankong_UI then
+		duiyouJiankong_UI.yidong:Hide()
+	end
+end)
+------------------------------
+SpellJK.F= CreateFrame("Frame", nil, SpellJK,"BackdropTemplate");
+SpellJK.F:SetBackdrop({bgFile = "interface/raidframe/ui-raidframe-groupbg.blp"})
+SpellJK.F:SetPoint("TOPLEFT", SpellJK, "TOPLEFT", 2,-22);
+SpellJK.F:SetPoint("BOTTOMRIGHT", SpellJK, "BOTTOMRIGHT", -4,2);
+----
 local tab_Width,tab_Height=110,26
-local TAB_Name={"BUFF缺失提醒","自身控制时长","队友技能冷却","目标BUFF监控","敌对控制冷却"} 
+local TAB_Name={"BUFF缺失","自身控制","队友冷却","目标BUFF","敌对控制"} 
 for i=1,#TAB_Name do
 	SpellJK.F.TAB= CreateFrame("Button", "SpellJK.F_TAB_"..i, SpellJK.F,nil,i);
 	SpellJK.F.TAB:SetSize(tab_Width,tab_Height);
 	if i==1 then
-		SpellJK.F.TAB:SetPoint("TOPLEFT", SpellJK.F, "BOTTOMLEFT", 10,4);
+		SpellJK.F.TAB:SetPoint("TOPLEFT", SpellJK.F, "BOTTOMLEFT", 10,2);
 	else
 		SpellJK.F.TAB:SetPoint("LEFT", _G["SpellJK.F_TAB_"..(i-1)], "RIGHT", 20,0);
 	end
@@ -106,79 +160,7 @@ for i=1,#TAB_Name do
 		_G["SpellJK_F_TabFrame_"..self:GetID()]:Show();
 	end);
 end
---=====================================
-SpellJK.ceshi = CreateFrame("Button",nil,SpellJK, "UIPanelButtonTemplate");  
-SpellJK.ceshi:SetSize(84,22);
-SpellJK.ceshi:SetPoint("TOPRIGHT",SpellJK,"TOPRIGHT",-40,-3);
-SpellJK.ceshi:SetText("调试模式");
-SpellJK.ceshi:SetScript("OnClick", function ()
-	if SpellJK.ceshi:GetText()=="调试模式" then
-		SpellJK.ceshi:SetText("关闭调试");
-		SpellJK:SetHeight(28)
-		SpellJK_UI.F:Hide();
-		if zishenBUFF_UI then
-			zishenBUFF_UI.yidong:Show()
-		end
-		if zishenJiankong_UI then
-			zishenJiankong_UI.yidong:Show()
-		end
-		if duiyouJiankong_UI then
-			duiyouJiankong_UI.yidong:Show()
-		end
-		if mubiaoBUFF_UI then
-			mubiaoBUFF_UI.yidong:Show()
-		end
-	elseif SpellJK.ceshi:GetText()=="关闭调试" then
-		SpellJK.ceshi:SetText("调试模式");
-		SpellJK:SetHeight(Height)
-		SpellJK_UI.F:Show();
-		if zishenBUFF_UI then
-			zishenBUFF_UI.yidong:Hide()
-		end
-		if zishenJiankong_UI then
-			zishenJiankong_UI.yidong:Hide()
-		end
-		if duiyouJiankong_UI then
-			duiyouJiankong_UI.yidong:Hide()
-		end
-		if mubiaoBUFF_UI then
-			mubiaoBUFF_UI.yidong:Hide()
-		end
-	end
-end);
-SpellJK:HookScript("OnHide", function()
-	SpellJK.ceshi:SetText("调试模式");
-	SpellJK:SetHeight(Height)
-	SpellJK_UI.F:Show();
-	if zishenBUFF_UI then
-		zishenBUFF_UI.yidong:Hide()
-	end
-	if zishenJiankong_UI then
-		zishenJiankong_UI.yidong:Hide()
-	end
-	if duiyouJiankong_UI then
-		duiyouJiankong_UI.yidong:Hide()
-	end
-end)
---=================================================================================
---提示
-SpellJK.tishi = CreateFrame("Frame", nil, SpellJK);
-SpellJK.tishi:SetSize(30,30);
-SpellJK.tishi:SetPoint("TOPLEFT",SpellJK,"TOPLEFT",0,0);
-SpellJK.tishi.Texture = SpellJK.tishi:CreateTexture(nil, "BORDER");
-SpellJK.tishi.Texture:SetTexture("interface/common/help-i.blp");
-SpellJK.tishi.Texture:SetAllPoints(SpellJK.tishi)
-SpellJK.tishi:SetScript("OnEnter", function ()
-	GameTooltip:ClearLines();
-	GameTooltip:SetOwner(SpellJK.tishi, "ANCHOR_TOPLEFT",0,0);
-	GameTooltip:AddLine("提示：")
-	GameTooltip:AddLine("\124cff00ff00注意战斗记录无法获取玩家施放技能等级，\n如果冷却时间不正确，请添加正确的技能等级ID。\n同名技能只能添加一个，建议直接添加技能最高等级ID。\124r")
-	GameTooltip:Show();
-end);
-SpellJK.tishi:SetScript("OnLeave", function ()
-	GameTooltip:ClearLines();
-	GameTooltip:Hide() 
-end);
+
 --============================================
 local ADD_ModCheckbutton =addonTable.ADD_ModCheckbutton
 local Tooltip = "监控技能CD/BUFF缺失获得！";

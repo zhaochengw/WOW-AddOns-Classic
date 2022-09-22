@@ -1,20 +1,15 @@
 local _, addonTable = ...;
 local gsub = _G.string.gsub 
 local find = _G.string.find
---=====分G助手==========================================================
+--=====分G助手==============================
+local ADD_Frame=addonTable.ADD_Frame
 local function ADD_fenG()
 	local Width,Height  = RaidR_UI:GetWidth(), RaidR_UI:GetHeight();
 	local duiwu_Width,duiwu_Height,duiwujiange=186,28,10;
 	----
-	local fenG = CreateFrame("Frame", "fenG_UI", RaidR_UI,"BackdropTemplate");
-	fenG:SetBackdrop({bgFile = "interface/raidframe/ui-raidframe-groupbg.blp", 
-		edgeFile = "interface/glues/common/textpanel-border.blp", 
-		tile = false, tileSize = 0, edgeSize = 20,insets = { left = 4, right = 4, top = 4, bottom = 4 }});
-	fenG:SetSize(Width-22,Height-100);
-	fenG:SetPoint("TOP",RaidR_UI,"TOP",0,-18);
+	local fenG=ADD_Frame("fenG_UI",RaidR_UI,Width-22,Height-100,"TOP",RaidR_UI,"TOP",0,-18,true,false,false,false,false,"BG6")
 	fenG:SetFrameLevel(10);
-	fenG:EnableMouse(true);
-	fenG:Hide();
+
 	fenG.Close = CreateFrame("Button",nil,fenG, "UIPanelCloseButton");  
 	fenG.Close:SetSize(34,34);
 	fenG.Close:SetPoint("TOPRIGHT",fenG,"TOPRIGHT",2.4,3);

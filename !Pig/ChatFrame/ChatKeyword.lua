@@ -245,6 +245,7 @@ local function ADD_guanjianzi_open()
 	guanjianzi.F.shezhi.F = CreateFrame("Frame", nil, guanjianzi.F.shezhi,"BackdropTemplate");
 	guanjianzi.F.shezhi.F:SetBackdrop( { bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
 	edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 4,} );
+	guanjianzi.F.shezhi.F:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.8);
 	guanjianzi.F.shezhi.F:SetSize(shezhiW,shezhiH);
 	guanjianzi.F.shezhi.F:SetPoint("BOTTOMLEFT",guanjianzi.F,"BOTTOMRIGHT",30,0);
 	guanjianzi.F.shezhi.F:Hide()
@@ -432,6 +433,7 @@ local function ADD_guanjianzi_open()
 	guanjianzi.F.guanjianzi.F = CreateFrame("Frame", nil, guanjianzi.F.guanjianzi,"BackdropTemplate");
 	guanjianzi.F.guanjianzi.F:SetBackdrop( { bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
 	edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 4} );
+	guanjianzi.F.guanjianzi.F:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.8);
 	guanjianzi.F.guanjianzi.F:SetSize(GJZW ,GJZH);
 	guanjianzi.F.guanjianzi.F:SetPoint("BOTTOMLEFT",guanjianzi.F,"BOTTOMRIGHT",30,0);
 	guanjianzi.F.guanjianzi.F:Hide()

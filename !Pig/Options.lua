@@ -4,7 +4,7 @@ local ADD_Frame=addonTable.ADD_Frame
 local ADD_Button=addonTable.ADD_Button
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ---===================================
-local Pig_Options=ADD_Frame("Pig_OptionsUI",UIParent,800, 540,"CENTER",UIParent,"CENTER",0,0,true,true,true,true,true)
+local Pig_Options=ADD_Frame("Pig_OptionsUI",UIParent,800, 540,"CENTER",UIParent,"CENTER",0,0,true,false,true,true,true)
 Pig_Options:SetBackdrop({bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
     edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
     tile = true,tileSize = 32,edgeSize = 32, insets = { left = 8, right = 8, top = 8, bottom = 8 }

@@ -516,6 +516,7 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 	local _, link = self:GetItem()
 	if link then
 		local itemID = GetItemInfoInstant(link)
+		if itemID==6948 then return end
 		local renwuWupinshu={}
 		local renwuWupinINFO=PIG['zhegnheBAG']["lixian"]
 		for k,v in pairs(renwuWupinINFO) do
@@ -649,7 +650,7 @@ local function zhegnhe_Open()
 		end
 	end
 	------
-	local BAGheji=ADD_Frame("BAGheji_UI",UIParent,BagdangeW*bagID.meihang+28,200,"CENTER",UIParent,"CENTER",420,-10,true,true,true,true,true)
+	local BAGheji=ADD_Frame("BAGheji_UI",UIParent,BagdangeW*bagID.meihang+28,200,"CENTER",UIParent,"CENTER",420,-10,true,false,true,true,true)
 	BAGheji:SetScale(bagID.suofang)
 	BAGheji:SetToplevel(true)
 	BAGheji:HookScript("OnHide",function()
@@ -1183,7 +1184,7 @@ local function zhegnhe_Open()
 	end
 
 	--离线背包================================
-	local lixianBAG=ADD_Frame("lixianBAG_UI",UIParent,400,200,"CENTER",UIParent,"CENTER",0,100,true,true,true,true,true)
+	local lixianBAG=ADD_Frame("lixianBAG_UI",UIParent,400,200,"CENTER",UIParent,"CENTER",0,100,true,false,true,true,true)
 	lixianBAG:SetUserPlaced(false)
 	lixianBAG:SetFrameLevel(110)
 	lixianBAG.Bg = lixianBAG:CreateTexture(nil, "BACKGROUND");
@@ -1311,7 +1312,7 @@ local function zhegnhe_Open()
 		lixianBAG.wupin.item.shuliang:SetFontObject(TextStatusBarText);
 	end
 	--已装备物品================================
-	local juesezhuangbei=ADD_Frame("juesezhuangbei_UI",UIParent,360,444,"CENTER",UIParent,"CENTER",-100, 100,true,true,true,true,true)
+	local juesezhuangbei=ADD_Frame("juesezhuangbei_UI",UIParent,360,444,"CENTER",UIParent,"CENTER",-100, 100,true,false,true,true,true)
 	juesezhuangbei:SetUserPlaced(false)
 	juesezhuangbei:SetFrameLevel(130)
 	juesezhuangbei.Portrait_BG = juesezhuangbei:CreateTexture(nil, "BORDER");
@@ -1388,7 +1389,7 @@ local function zhegnhe_Open()
 	end
 	
 	---银行================================
-	local BankFrameP=ADD_Frame("BankFrameP_UI",UIParent,bankID.meihang*BagdangeW+16,210,"TOPLEFT", BankFrame, "TOPLEFT", 9, -12,true,true,true,true,true)
+	local BankFrameP=ADD_Frame("BankFrameP_UI",UIParent,bankID.meihang*BagdangeW+16,210,"TOPLEFT", BankFrame, "TOPLEFT", 9, -12,true,false,true,true,true)
 	BankFrameP:SetUserPlaced(false)
 	BankFrameP:SetFrameLevel(120)
 	BankFrameP.Close = CreateFrame("Button",nil,BankFrameP, "UIPanelCloseButton");

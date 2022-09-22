@@ -20,10 +20,7 @@ local function add_RsettingFrame()
 	Rsetting.Down:SetPoint("CENTER");
 	Rsetting.Down:Hide();
 	--内容页-------------------------
-	local RsettingF=ADD_Frame("RsettingF_UI",Rsetting,Width-40,Height-104,"TOP",RaidR_UI,"TOP",0,-18,true,true,true,true,true)
-	RsettingF:SetBackdrop({bgFile = "interface/raidframe/ui-raidframe-groupbg.blp", 
-		edgeFile = "interface/glues/common/textpanel-border.blp", 
-		tile = false, tileSize = 0, edgeSize = 20,insets = { left = 4, right = 4, top = 4, bottom = 4 }});
+	local RsettingF=ADD_Frame("RsettingF_UI",Rsetting,Width-40,Height-104,"TOP",RaidR_UI,"TOP",0,-18,true,false,false,false,false,"BG6")
 	RsettingF:SetFrameLevel(20);
 
 	RsettingF.Close = CreateFrame("Button",nil,RsettingF, "UIPanelCloseButton");  
