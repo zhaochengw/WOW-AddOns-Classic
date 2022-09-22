@@ -1,0 +1,15 @@
+## Interface: 11307
+## Title: Private Tailor Tag (玩家标签)
+## Notes: 给玩家添加标签，标签只对自己可见
+## Author: 千古
+## Version: 0.0.1
+## SavedVariables: PlayTagDB
+## SavedVariablesPerCharacter:
+
+PT_Globals.lua
+# PT_Localization.lua
+PlayTagList.lua
+PlayTagUI.lua
+PT_BlizzardUI.lua
+minimapButton.lua
+PT_SystemTagList.lua
