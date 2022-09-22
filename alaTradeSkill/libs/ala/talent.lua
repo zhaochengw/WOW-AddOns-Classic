@@ -1114,7 +1114,7 @@ end
 		end
 		local LM = __debase64[strsub(code, 4, 4)];
 		if _AddOnDataSubDecoder[LM] ~= nil then
-			return _AddOnDataSubDecoder[LM](strsub(code, 5), cache);
+			return _AddOnDataSubDecoder[LM](strsub(code, 5));
 		end
 		return nil, "NO DECODER";
 	end
@@ -1204,7 +1204,7 @@ end
 		return nil;
 	end
 	local _EquipmentDataSubDecoder = {
-		[1] = function(code, cache)
+		[1] = function(code, DataTable)
 			local val = { strsplit("+", code) };	--	"", slot, item, slot, item...
 			if val[3] ~= nil then
 				local num = #val;
@@ -1215,36 +1215,36 @@ end
 					id = tonumber(id);
 					if id ~= nil and id > 0 then
 						GetItemInfo(id);
-						cache[slot] = item;
+						DataTable[slot] = item;
 					else
-						cache[slot] = nil;
+						DataTable[slot] = nil;
 					end
 				end
-				return true, cache;
+				return true, DataTable;
 			end
-			return false, cache;
+			return false, DataTable;
 		end,
-		[2] = function(code, cache)
+		[2] = function(code, DataTable)
 			local val = { strsplit("+", code) };
 			if val[2] ~= nil then
 				local start = __debase64[val[1]] - 2;
 				local num = #val;
 				for i = 2, num do
 					local item = DecodeItem(val[i]);
-					cache[start + i] = item;
+					DataTable[start + i] = item;
 					if item ~= nil then
 						GetItemInfo(item);
 					end
 				end
-				return true, cache;
+				return true, DataTable;
 			end
-			return false, cache;
+			return false, DataTable;
 		end,
 	};
-	function __emulib.DecodeEquipmentDataV1(cache, code)
-		return _EquipmentDataSubDecoder[1](code, cache);
+	function __emulib.DecodeEquipmentDataV1(DataTable, code)
+		return _EquipmentDataSubDecoder[1](code, DataTable);
 	end
-	function __emulib.DecodeEquipmentDataV2(cache, code)
+	function __emulib.DecodeEquipmentDataV2(DataTable, code)
 		if strsub(code, 1, 2) ~= "!E" then
 			return false;
 		end
@@ -1254,36 +1254,36 @@ end
 		end
 		local LM = __debase64[strsub(code, 4, 4)];
 		if _EquipmentDataSubDecoder[LM] ~= nil then
-			return _EquipmentDataSubDecoder[LM](strsub(code, 5), cache);
+			return _EquipmentDataSubDecoder[LM](strsub(code, 5), DataTable);
 		end
 		return nil, "NO DECODER";
 	end
-	function __emulib.DecodeEquipmentData(cache, code)
+	function __emulib.DecodeEquipmentData(DataTable, code)
 		if strsub(code, 1, 2) == "!E" then
-			return "V2", __emulib.DecodeEquipmentDataV2(cache, code);
+			return "V2", __emulib.DecodeEquipmentDataV2(DataTable, code);
 		else
-			return "V1", __emulib.DecodeEquipmentDataV1(cache, code);
+			return "V1", __emulib.DecodeEquipmentDataV1(DataTable, code);
 		end
 	end
-	function __emulib.GetEquipmentData(data, unit)
-		if data == nil then
-			data = {  };
+	function __emulib.GetEquipmentData(DataTable, unit)
+		if DataTable == nil then
+			DataTable = {  };
 		end
 		for slot = 0, 19 do
 			local link = GetInventoryItemLink(unit or 'player', slot);
 			if link ~= nil then
-				data[slot] = strmatch(link, "\124H(item:[%-0-9:]+)\124h");
+				DataTable[slot] = strmatch(link, "\124H(item:[%-0-9:]+)\124h");
 			else
-				data[slot] = nil;
+				DataTable[slot] = nil;
 			end
 		end
-		return data;
+		return DataTable;
 	end
-	function __emulib.EncodeEquipmentDataV2(data)
+	function __emulib.EncodeEquipmentDataV2(DataTable)
 		local pos = 0;
 		local msg = __base64[0];
 		for slot = 0, 19 do
-			msg = msg .. "+" .. (data[slot] and EncodeItem(data[slot]) or "^");
+			msg = msg .. "+" .. (DataTable[slot] and EncodeItem(DataTable[slot]) or "^");
 		end
 		return COMM_EQUIPMENT_PREFIX .. msg;
 	end
@@ -1757,19 +1757,3 @@ function __emulib:Halt()
 	Top = 0;
 end
 
-
-function _G.TestEquipmentV2()
-	local data = __emulib.EncodePlayerEquipmentDataV2({});
-	local cache = {};
-	_G.print(data)
-	__emulib.DecodeEquipmentDataV2(cache, data);
-	for i = 1, 19 do
-		local item = GetInventoryItemLink('player', i);
-		if item ~= nil then
-			item = strmatch(item, "\124H(item:[%-0-9:]+)\124h");
-			_G.print(i, cache[i] == item, cache[i]);
-		else
-			_G.print(i, cache[i] == nil, cache[i]);
-		end
-	end
-end
