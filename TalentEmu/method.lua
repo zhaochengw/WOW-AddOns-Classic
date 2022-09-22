@@ -207,10 +207,10 @@ MT.BuildEnv('METHOD');
 				then
 				--
 				local activeGroup = Frame.activeGroup;
-				local data = Frame.data;
-				if activeGroup ~= nil and data ~= nil and data.num ~= nil then
-					if data.num == 2 then
-						local T2 = activeGroup == 1 and data[2] or data[1];
+				local TalData = Frame.TalData;
+				if activeGroup ~= nil and TalData ~= nil and TalData.num ~= nil then
+					if TalData.num == 2 then
+						local T2 = activeGroup == 1 and TalData[2] or TalData[1];
 						if T2 ~= nil then
 							local D1, D2, D3, N1, N2, N3 = TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
 										#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
@@ -222,24 +222,24 @@ MT.BuildEnv('METHOD');
 							local code1, data1, lenc1, lend1 = VT.__emulib.EncodeTalentBlock(T1, len);
 							local code2, data2, lenc2, lend2 = VT.__emulib.EncodeTalentBlock(T2, #T2);
 							if activeGroup == 1 then
-							return VT.__emulib.MergeTalentCodeV2(CT.ClassToIndex[Frame.class], Frame.level, activeGroup, 2, T1, len, T2, #T2);
+							return VT.__emulib.MergeTalentCodeV2(DT.ClassToIndex[Frame.class], Frame.level, activeGroup, 2, T1, len, T2, #T2);
 							else
-							return VT.__emulib.MergeTalentCodeV2(CT.ClassToIndex[Frame.class], Frame.level, activeGroup, 2, T2, #T2, T1, len);
+							return VT.__emulib.MergeTalentCodeV2(DT.ClassToIndex[Frame.class], Frame.level, activeGroup, 2, T2, #T2, T1, len);
 							end
 						else
-							return VT.__emulib.EncodeFrameTalentDataV2(CT.ClassToIndex[Frame.class], Frame.level,
+							return VT.__emulib.EncodeFrameTalentDataV2(DT.ClassToIndex[Frame.class], Frame.level,
 										TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
 										#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
 									);
 						end
 					else
-							return VT.__emulib.EncodeFrameTalentDataV2(CT.ClassToIndex[Frame.class], Frame.level,
+							return VT.__emulib.EncodeFrameTalentDataV2(DT.ClassToIndex[Frame.class], Frame.level,
 										TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
 										#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
 									);
 					end
 				else
-							return VT.__emulib.EncodeFrameTalentDataV2(CT.ClassToIndex[Frame.class], Frame.level,
+							return VT.__emulib.EncodeFrameTalentDataV2(DT.ClassToIndex[Frame.class], Frame.level,
 										TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
 										#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
 									);
@@ -253,13 +253,13 @@ MT.BuildEnv('METHOD');
 			local classIndex = nil;
 			if TypeClass == 'number' then
 				classIndex = class;
-				class = CT.IndexToClass[class];
+				class = DT.IndexToClass[class];
 				if classIndex == nil then
 					MT.Error("MT.EncodeTalent", 2, "class", 'number', class);
 					return nil;
 				end
 			elseif TypeClass == 'string' then
-				classIndex = CT.ClassToIndex[class];
+				classIndex = DT.ClassToIndex[class];
 				if classIndex == nil then
 					MT.Error("MT.EncodeTalent", 3, "class", 'string', class);
 					return nil;
@@ -304,11 +304,11 @@ MT.BuildEnv('METHOD');
 	end
 	function MT.EncodeEquipment(Frame)
 		local EquipmentNodes = Frame.EquipmentContainer.EquipmentNodes;
-		local data = {  };
+		local DataTable = {  };
 		for slot = 1, 19 do
-			data[slot] = EquipmentNodes[slot].item;
+			DataTable[slot] = EquipmentNodes[slot].item;
 		end
-		return VT.__emulib.EncodeEquipmentDataV2(data);
+		return VT.__emulib.EncodeEquipmentDataV2(DataTable);
 	end
 
 	local function SetPackIteratorFunc(Frame, name)
@@ -789,7 +789,7 @@ MT.BuildEnv('METHOD');
 		if cache ~= nil then
 			local Tick = MT.GetUnifiedTime();
 			if VT.QuerySent[name] ~= nil and Tick - VT.QuerySent[name] <= CT.INSPECT_WAIT_TIME then
-				MT.Error("MT.CALLBACK.OnTalentDataRecv", cache.data.num);
+				MT.Error("MT.CALLBACK.OnTalentDataRecv", cache.TalData.num);
 				local readOnly = false;
 				if name ~= CT.SELFNAME then
 					readOnly = true;
@@ -799,15 +799,15 @@ MT.BuildEnv('METHOD');
 					local AnyShown = false;
 					for i = 1, #Frames do
 						if Frames[i]:IsShown() then
-							MT.UI.FrameSetInfo(Frames[i], cache.class, DT.MAX_LEVEL, cache.data, nil, name, readOnly);
+							MT.UI.FrameSetInfo(Frames[i], cache.class, DT.MAX_LEVEL, cache.TalData, nil, name, readOnly);
 							AnyShown = true;
 						end
 					end
 					if not AnyShown then
-						MT.CreateEmulator(nil, cache.class, DT.MAX_LEVEL, cache.data, name, readOnly, false);
+						MT.CreateEmulator(nil, cache.class, DT.MAX_LEVEL, cache.TalData, name, readOnly, false);
 					end
 				else
-					MT.CreateEmulator(nil, cache.class, DT.MAX_LEVEL, cache.data, name, readOnly, false);
+					MT.CreateEmulator(nil, cache.class, DT.MAX_LEVEL, cache.TalData, name, readOnly, false);
 				end
 			end
 			VT.QuerySent[name] = nil;
@@ -832,7 +832,7 @@ MT.BuildEnv('METHOD');
 				for i = 1, #Frames do
 					Frames[i].objects.EquipmentFrameButton:Show();
 					if Frames[i].EquipmentFrameContainer:IsShown() then
-						MT.UI.GlyphFrameUpdate(Frames[i].GlyphContainer, cache);
+						MT.UI.GlyphFrameUpdate(Frames[i].GlyphContainer, cache.GlyData);
 					end
 				end
 			end
@@ -857,7 +857,7 @@ MT.BuildEnv('METHOD');
 				for i = 1, #Frames do
 					Frames[i].objects.EquipmentFrameButton:Show();
 					if Frames[i].EquipmentFrameContainer:IsShown() then
-						MT.UI.EquipmentFrameUpdate(Frames[i].EquipmentContainer, cache);
+						MT.UI.EquipmentFrameUpdate(Frames[i].EquipmentContainer, cache.EquData);
 					end
 				end
 			end

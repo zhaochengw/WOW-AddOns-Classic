@@ -62,12 +62,12 @@ MT.BuildEnv('COMM');
 								ready and
 								(
 									cache == nil or
-									cache.time_tal == nil or
+									cache.TalData.Tick == nil or
 									(
-										(Tick - (cache.time_tal or -CT.DATA_VALIDITY) > CT.THROTTLE_TALENT_QUERY) and
+										(Tick - (cache.TalData.Tick or -CT.DATA_VALIDITY) > CT.THROTTLE_TALENT_QUERY) and
 										(
 											force_update or
-											(Tick - (cache.time_tal or -CT.DATA_VALIDITY) > CT.DATA_VALIDITY)
+											(Tick - (cache.TalData.Tick or -CT.DATA_VALIDITY) > CT.DATA_VALIDITY)
 										)
 									)
 								);
@@ -75,12 +75,12 @@ MT.BuildEnv('COMM');
 								ready and
 								(
 									cache == nil or
-									cache.time_gly == nil or
+									cache.GlyData.Tick == nil or
 									(
-										(Tick - (cache.time_gly or -CT.DATA_VALIDITY) > CT.THROTTLE_GLYPH_QUERY) and
+										(Tick - (cache.GlyData.Tick or -CT.DATA_VALIDITY) > CT.THROTTLE_GLYPH_QUERY) and
 										(
 											force_update or
-											(Tick - (cache.time_gly or -CT.DATA_VALIDITY) > CT.DATA_VALIDITY)
+											(Tick - (cache.GlyData.Tick or -CT.DATA_VALIDITY) > CT.DATA_VALIDITY)
 										)
 									)
 								);
@@ -88,12 +88,12 @@ MT.BuildEnv('COMM');
 								ready and
 								(
 									cache == nil or
-									cache.time_inv == nil or
+									cache.EquData.Tick == nil or
 									(
-										(Tick - (cache.time_inv or -CT.DATA_VALIDITY) > CT.THROTTLE_EQUIPMENT_QUERY) and
+										(Tick - (cache.EquData.Tick or -CT.DATA_VALIDITY) > CT.THROTTLE_EQUIPMENT_QUERY) and
 										(
 											force_update or
-											(Tick - (cache.time_inv or -CT.DATA_VALIDITY) > CT.DATA_VALIDITY)
+											(Tick - (cache.EquData.Tick or -CT.DATA_VALIDITY) > CT.DATA_VALIDITY)
 										)
 									)
 								);
@@ -164,21 +164,25 @@ MT.BuildEnv('COMM');
 				local Tick = MT.GetUnifiedTime();
 				local cache = VT.TQueryCache[name];
 				if cache == nil then
-					cache = {  };
+					cache = { TalData = {  }, EquData = {  }, GlyData = {  }, PakData = {  }, };
 					VT.TQueryCache[name] = cache;
 				end
-				cache.time_tal = Tick;
 				cache.class = class;
 				cache.level = level;
-				cache.talent = code;
-				cache.data = { data1, data2, num = numGroup, active = activeGroup, };
+				local TalData = cache.TalData;
+				TalData[1] = data1;
+				TalData[2] = data2;
+				TalData.num = numGroup;
+				TalData.active = activeGroup;
+				TalData.code = code;
+				TalData.Tick = Tick;
 				if not overheard then
 					MT._TriggerCallback("CALLBACK_DATA_RECV", name);
 					MT._TriggerCallback("CALLBACK_TALENT_DATA_RECV", name, true);
-					if cache.time_inv ~= nil and Tick - cache.time_inv < CT.DATA_VALIDITY then
+					if cache.EquData.Tick ~= nil and Tick - cache.EquData.Tick < CT.DATA_VALIDITY then
 						MT._TriggerCallback("CALLBACK_INVENTORY_DATA_RECV", name, true);
 					end
-					if cache.time_gly ~= nil and Tick - cache.time_gly < CT.DATA_VALIDITY then
+					if cache.GlyData.Tick ~= nil and Tick - cache.GlyData.Tick < CT.DATA_VALIDITY then
 						MT._TriggerCallback("CALLBACK_GLYPH_DATA_RECV", name, true);
 					end
 				end
@@ -197,11 +201,13 @@ MT.BuildEnv('COMM');
 			local Tick = MT.GetUnifiedTime();
 			local cache = VT.TQueryCache[name];
 			if cache == nil then
-				cache = {  };
+				cache = { TalData = {  }, EquData = {  }, GlyData = {  }, PakData = {  }, };
 				VT.TQueryCache[name] = cache;
 			end
-			cache.time_gly = Tick;
-			cache.glyph = { data1, data2, };
+			local GlyData = cache.GlyData;
+			GlyData[1] = data1;
+			GlyData[2] = data2;
+			GlyData.Tick = Tick;
 			if not overheard then
 				MT._TriggerCallback("CALLBACK_DATA_RECV", name);
 				MT._TriggerCallback("CALLBACK_GLYPH_DATA_RECV", name, true);
@@ -212,12 +218,12 @@ MT.BuildEnv('COMM');
 			-- #(%d)#(item:[%-0-9:]+)#(%d)#(item:[%-0-9:]+)#(%d)#(item:[%-0-9:]+)#(%d)#(item:[%-0-9:]+)
 			local cache = VT.TQueryCache[name];
 			if cache == nil then
-				cache = {  };
+				cache = { TalData = {  }, EquData = {  }, GlyData = {  }, PakData = {  }, };
 				VT.TQueryCache[name] = cache;
 			end
-			if Decoder(cache, code) then
-				local Tick = MT.GetUnifiedTime();
-				cache.time_inv = Tick;
+			local EquData = cache.EquData;
+			if Decoder(EquData, code) then
+				EquData.Tick = MT.GetUnifiedTime();
 				if not overheard then
 					MT._TriggerCallback("CALLBACK_DATA_RECV", name);
 					MT._TriggerCallback("CALLBACK_INVENTORY_DATA_RECV", name, true);
@@ -225,14 +231,14 @@ MT.BuildEnv('COMM');
 			end
 		end,
 		OnAddOn = function(prefix, name, code, version, Decoder, overheard)
-			local Tick = MT.GetUnifiedTime();
 			local cache = VT.TQueryCache[name];
 			if cache == nil then
-				cache = {  };
+				cache = { TalData = {  }, EquData = {  }, GlyData = {  }, PakData = {  }, };
 				VT.TQueryCache[name] = cache;
 			end
-			cache.time_pak = Tick;
-			cache.pack = code;
+			local PakData = cache.PakData;
+			PakData.Tick = MT.GetUnifiedTime();
+			PakData[1] = code;
 			MT.SetPack(name);
 			-- if VT.SET.inspect_pack then
 				-- NS.display_pack(code);

@@ -109,8 +109,6 @@ local DT = {  }; __private.DT = DT;		--	data
 	CT.THROTTLE_GLYPH_QUERY = VT.__emulib.CT.GLYPH_REPLY_THROTTLED_INTERVAL + 0.5;
 	CT.THROTTLE_EQUIPMENT_QUERY = VT.__emulib.CT.EQUIPMENT_REPLY_THROTTLED_INTERVAL + 0.5;
 	CT.DATA_VALIDITY = 30;
-	CT.IndexToClass = VT.__emulib.__classList;
-	CT.ClassToIndex = VT.__emulib.__classHash;
 	CT.TOOLTIP_UPDATE_DELAY = 0.02;
 	CT.INSPECT_WAIT_TIME = 10;
 	CT.L = {  };
@@ -120,6 +118,12 @@ local DT = {  }; __private.DT = DT;		--	data
 
 	CT.RepeatedZero = setmetatable(
 		{
+			GetParent = false,
+			SetShown = false,
+			GetDebugName = false,
+			IsObjectType = false,
+			GetChildren = false,
+			GetRegions = false,
 			[0] = "",
 			[1] = "0",
 		},
@@ -131,6 +135,9 @@ local DT = {  }; __private.DT = DT;		--	data
 			end,
 		}
 	);
+
+	DT.IndexToClass = VT.__emulib.__classList;
+	DT.ClassToIndex = VT.__emulib.__classHash;
 
 -->
 MT.BuildEnv('INIT');
