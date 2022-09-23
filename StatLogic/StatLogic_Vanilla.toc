@@ -1,0 +1,15 @@
+## Interface: 11403
+## Title: StatLogic
+## Author: Whitetooth, raethkcj
+## X-License: GPL v2
+
+libs\LibStub\LibStub.lua
+libs\AceLocale-3.0\AceLocale-3.0.xml
+
+libs\UTF8\utf8data.lua
+libs\UTF8\utf8.lua
+
+locales\locales.xml
+
+StatLogic.lua
+Vanilla_Logic.lua

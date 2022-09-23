@@ -1,35 +1,21 @@
 ## Interface: 30400
-## Title: RatingBuster, reborn by l'ancestre
-## Notes: Item stat breakdown, analysis and comparison
+## Title: RatingBuster
+## Notes: Item stat breakdown, analysis and comparing
 ## Notes-zhTW: 裝備數值解析與比較
-## Author: Whitetooth
-## X-eMail: hotdogee [at] gmail [dot] com
-## SavedVariables: RatingBusterWOTLK_DB
-## OptionalDeps: Ace3, LibTipHooker-1.1, LibStatLogic-1.2, UTF8, LibBabble-Inventory-3.0, LibDualSpec-1.0, TankPoints
-## X-Embeds: Ace3, LibTipHooker-1.1, LibStatLogic-1.2, UTF8, LibBabble-Inventory-3.0, LibDualSpec-1.0
+## Author: Whitetooth, raethkcj
+## SavedVariables: RatingBusterDB
+## Dependencies: StatLogic
+## OptionalDeps: Ace3, TipHookerLib
 ## X-Category: Interface Enhancements
-## X-RelSite-WoWI: 
-## X-RelSite-Curse: 
 ## X-License: GPL v2
-## X-Encoding: UTF-8
-## X-Curse-Packaged-Version: 1.6.2
-## X-Curse-Project-Name: 
-## X-Curse-Project-ID: 
-## X-Curse-Repository-ID: 
+## X-WoWI-ID: 26235
+## X-Wago-ID: RaN0eM6j
 
-# Non-Ace Libraries #
-UTF8\utf8data.lua
-UTF8\utf8.lua
-
-#@no-lib-strip@
+# Libraries
 embeds.xml
-#@end-no-lib-strip@
 
-
-# Localization Files #
+# Localization
 locales\locales.xml
 
-
-
-# Core #
+# Core
 RatingBuster.lua
