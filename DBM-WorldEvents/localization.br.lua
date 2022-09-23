@@ -4,6 +4,25 @@ if GetLocale() ~= "ptBR" then return end
 
 local L
 
+-----------------------
+--  Apothecary Trio  --
+-----------------------
+L = DBM:GetModLocalization("d288")
+
+L:SetTimerLocalization{
+	HummelActive		= "Humberto se ativa",
+	BaxterActive		= "Balduíno se ativa",
+	FryeActive			= "Frias se ativa"
+}
+
+L:SetOptionLocalization({
+	TrioActiveTimer		= "Exibir cronógrafos para quando o Apothecary Trio tornar-se ativo"
+})
+
+L:SetMiscLocalization({
+	SayCombatStart		= "Eles se deram ao trabalho de lhe dizer quem eu sou e por que estou fazendo isso?"
+})
+
 -------------
 --  Ahune  --
 -------------

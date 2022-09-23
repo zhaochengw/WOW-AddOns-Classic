@@ -1,6 +1,25 @@
 if GetLocale() ~= "koKR" then return end
 local L
 
+------------------------------
+--  The Crown Chemical Co.  --
+------------------------------
+L = DBM:GetModLocalization("d288")
+
+L:SetTimerLocalization{
+	HummelActive	= "훔멜 활성화",
+	BaxterActive	= "벡스터 활성화",
+	FryeActive		= "프라이 활성화"
+}
+
+L:SetOptionLocalization({
+	TrioActiveTimer		= "각 보스 활성화 타이머 바 보기"
+})
+
+L:SetMiscLocalization({
+	SayCombatStart		= "저들이 내가 누군지와 왜 이 일을 하는지 말해주려고 귀찮게 하든가?"
+})
+
 ----------------------------
 --  The Frost Lord Ahune  --
 ----------------------------

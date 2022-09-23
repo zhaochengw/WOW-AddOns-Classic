@@ -1,6 +1,25 @@
 if GetLocale() ~= "esES" and GetLocale() ~= "esMX" then return end
 local L
 
+------------------------------
+-- Químicos La Corona, S.L. --
+------------------------------
+L = DBM:GetModLocalization("d288")
+
+L:SetTimerLocalization{
+	HummelActive		= "Hummel entra en combate",
+	BaxterActive		= "Baxter entra en combate",
+	FryeActive			= "Frye entra en combate"
+}
+
+L:SetOptionLocalization({
+	TrioActiveTimer		= "Mostrar temporizadores para cuando los apotecarios entren en combate"
+})
+
+L:SetMiscLocalization({
+	SayCombatStart		= "¿Se han molestado en decirte quién soy y por qué estoy haciendo esto?"
+})
+
 -----------
 -- Ahune --
 -----------

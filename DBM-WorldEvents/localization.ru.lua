@@ -2,6 +2,25 @@ if GetLocale() ~= "ruRU" then return end
 
 local L
 
+------------------------------
+--  The Crown Chemical Co.  --
+------------------------------
+L = DBM:GetModLocalization("d288")
+
+L:SetTimerLocalization{
+	HummelActive		= "Хаммел вступает в бой",
+	BaxterActive		= "Бакстер вступает в бой",
+	FryeActive			= "Фрай вступает в бой"
+}
+
+L:SetOptionLocalization({
+	TrioActiveTimer		= "Отсчет времени до вступления Троих аптекарей в бой"
+})
+
+L:SetMiscLocalization({
+	SayCombatStart		= "Тебе хоть сказали, кто я и чем занимаюсь?"
+})
+
 ----------------------------
 --  The Frost Lord Ahune  --
 ----------------------------

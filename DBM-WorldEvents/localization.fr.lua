@@ -3,6 +3,47 @@
 if GetLocale() ~= "frFR" then return end
 local L
 
+------------------------------
+--  The Crown Chemical Co.  --
+------------------------------
+L = DBM:GetModLocalization("d288")
+
+L:SetTimerLocalization{
+	HummelActive		= "Hummel becomes active",
+	BaxterActive		= "Baxter becomes active",
+	FryeActive			= "Frye becomes active"
+}
+
+L:SetOptionLocalization({
+	TrioActiveTimer		= "Show timers for when Apothecary Trio becomes active"
+})
+
+L:SetMiscLocalization({
+	SayCombatStart		= "Did they bother to tell you who I am and why I am doing this?"
+})
+
+-----------------------
+--  Apothecary Trio  --
+-----------------------
+L = DBM:GetModLocalization("d288")
+
+L:SetWarningLocalization({
+})
+
+L:SetTimerLocalization{
+	HummelActive	= "Hummel devient actif",
+	BaxterActive	= "Baxter devient actif",
+	FryeActive		= "Frye devient actif"
+}
+
+L:SetOptionLocalization({
+	TrioActiveTimer		= "Afficher le timer lorsque le Trio d'apothicaire devient actif"
+})
+
+L:SetMiscLocalization({
+	SayCombatStart		= "Ont-ils pris la peine de vous dire qui je suis et pourquoi je fais cela?"
+})
+
 -------------
 --  Ahune  --
 -------------
