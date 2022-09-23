@@ -39,11 +39,9 @@ CheduiFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_
 							PIG_CD.cheduixinxi=PIG_CD.cheduixinxi..PIG_CD.duiwuLV.."团队模式~"
 						else
 							local numSubgroupMembers = GetNumSubgroupMembers()
-							local numSubgroupMembers = 4
 							PIG_CD.duiwuLV=(numSubgroupMembers+1).."/5^"
 							for id=1,numSubgroupMembers do
 								local lvvv = UnitLevel("Party"..id);
-								local lvvv = 56
 								if id==numSubgroupMembers then
 									PIG_CD.duiwuLV=PIG_CD.duiwuLV..lvvv
 								else
