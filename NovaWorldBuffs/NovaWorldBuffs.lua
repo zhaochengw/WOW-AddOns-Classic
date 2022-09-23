@@ -11450,11 +11450,11 @@ function NWB:resetLayerData()
 		NWB.data.tbcPDT = nil;
 		NWB.db.global.resetDailyData = false;
 	end
-	if (NWB.db.global.resetLayers12) then
+	if (NWB.db.global.resetLayers13) then
 		NWB:debug("resetting layer data");
 		NWB.data.layers = {};
 		NWB.data.layerMapBackups = {};
-		NWB.db.global.resetLayers12 = false;
+		NWB.db.global.resetLayers13 = false;
 	end
 end
 
