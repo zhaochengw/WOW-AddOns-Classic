@@ -2,7 +2,7 @@
 -- ChatBar Classic.lua 
 --------------------------------------------------------------------------
 --[[
-ChatBar Classic for Burning Crusade Classic
+ChatBar Classic for Wrath of the Lich King
 
 Author: AnduinLothar - karlkfi@yahoo.com
 Graphics: Vynn, Zseton
@@ -11,6 +11,13 @@ Edited: Foxylittlething, aNNiPAk, Yarko
 -Button Bar for openning chat messages of each type.
 
 Change Log:
+v 3.21a-WotLK (Foxylittlething)
+- fixed chinese translation
+v 3.21-WotLK (Foxylittlething)
+- converted to WotLK
+- fixed 3.4.0 version compatibility
+v 3.20-BCC (Foxylittlething)
+- fixed 2.5.3 version compatibility
 v 3.18.1-BCC (Foxylittlething)
 - first Burning Crusade Classic version
 - fixed problem with background compatibility (thanks to Doxxer3)

@@ -1,7 +1,8 @@
 --------------------------------------------------
 -- localization.lua (Simplified Chinese)
 -- Translate by IceChen (逆袭的蓝 / 元素之力)
--- Last Update : 2019/09/05 (Capable with 2.6.30000)
+-- edited by yisisixu
+-- Last Update : 2022/09/17
 --------------------------------------------------
 
 if ( GetLocale() == "zhCN" ) then
@@ -13,7 +14,7 @@ CHATBAR_YELL_ABRV			= "喊";
 CHATBAR_PARTY_ABRV			= "队";
 CHATBAR_RAID_ABRV			= "团";
 CHATBAR_RAID_WARNING_ABRV	= "警";
-CHATBAR_INSTANCE_CHAT_ABRV	= "战";
+CHATBAR_INSTANCE_CHAT_ABRV	= "副";
 CHATBAR_GUILD_ABRV			= "会";
 CHATBAR_OFFICER_ABRV		= "官";
 CHATBAR_WHISPER_ABRV		= "密";
