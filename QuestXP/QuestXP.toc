@@ -1,7 +1,7 @@
 ## Interface: 30400
 ## Title: QuestXP Tracker
 ## Author: KindredTwitch
-## Version: 0.7.1
+## Version: 0.8.0
 ## Notes: Shows Quest XP in the QuestLog Frame
 ## SavedVariablesPerCharacter: QXPdb
 
