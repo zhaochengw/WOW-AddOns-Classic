@@ -768,6 +768,8 @@ local CheckArtOfWar = OnAuraStateChange(function() return FindAura("player", 595
 ns.configs.PALADIN = function(self)
     self:SetScript("OnUpdate", self.timerOnUpdate)
 
+    local hasArtOfWar = IsPlayerSpell(53486) or IsPlayerSpell(53488)
+
     if ns.findHighestRank("Exorcism") then
         self:RegisterEvent("PLAYER_TARGET_CHANGED")
         self.PLAYER_TARGET_CHANGED = ns.PaladinExorcismCheck
@@ -775,14 +777,15 @@ ns.configs.PALADIN = function(self)
         if ns.findHighestRank("HammerOfWrath") then
             self:RegisterUnitEvent("UNIT_HEALTH", "target")
             self.PLAYER_TARGET_CHANGED = function(...)
-                ns.PaladinExorcismCheck(...)
+                if not hasArtOfWar then
+                    ns.PaladinExorcismCheck(...)
+                end
                 ns.HOWCheck(...)
             end
             self.UNIT_HEALTH = ns.HOWCheck
         end
     end
 
-    local hasArtOfWar = IsPlayerSpell(53486) or IsPlayerSpell(53488)
     if hasArtOfWar then
         self:RegisterUnitEvent("UNIT_AURA", "player")
         self:SetScript("OnUpdate", self.timerOnUpdate)
@@ -828,6 +831,15 @@ local CheckDecimation = OnAuraStateChange(function() return FindAura("player", 6
         end
     end
 )
+local CheckMoltenCore = OnAuraStateChange(function() return FindAura("player", 71165, "HELPFUL") end,
+    function(present, duration)
+        if present then
+            f:Activate("Incinerate", "MoltenCore", duration, true)
+        else
+            f:Deactivate("Incinerate", "MoltenCore")
+        end
+    end
+)
 
 function ns.DrainSoulExecuteCheck(self, event, unit)
     if UnitExists("target") and not UnitIsFriend("player", "target") then
@@ -862,12 +874,13 @@ ns.configs.WARLOCK = function(self)
     local hasNightfallTalent = IsPlayerSpell(18094) or IsPlayerSpell(18095) -- for all classic game versions
     local hasBacklashTalent = IsPlayerSpell(34939) or IsPlayerSpell(34938) or IsPlayerSpell(34935) -- starts with BC
     local hasDecimation = IsPlayerSpell(63156) or IsPlayerSpell(63158)
-
-    if hasNightfallTalent or hasBacklashTalent or hasDecimation then
+    local hasMoltenCore = IsPlayerSpell(47245) or IsPlayerSpell(47246) or IsPlayerSpell(47247)
+    local hasGlyphOfCorruption = IsPlayerSpell(56218) -- Nightfall proc from glyph of corruption
+    if hasNightfallTalent or hasBacklashTalent or hasDecimation or hasMoltenCore or hasGlyphOfCorruption then
         self:RegisterUnitEvent("UNIT_AURA", "player")
         self:SetScript("OnUpdate", self.timerOnUpdate)
         self.UNIT_AURA = function(self, event, unit)
-            if hasNightfallTalent then
+            if hasNightfallTalent or hasGlyphOfCorruption then
                 CheckNightfall()
             end
             if hasBacklashTalent then
@@ -875,6 +888,9 @@ ns.configs.WARLOCK = function(self)
             end
             if hasDecimation then
                 CheckDecimation()
+            end
+            if hasMoltenCore then
+                CheckMoltenCore()
             end
         end
     else

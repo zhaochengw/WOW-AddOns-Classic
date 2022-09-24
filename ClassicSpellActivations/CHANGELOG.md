@@ -1,8 +1,10 @@
 # ClassicSpellActivations
 
-## [3.0.3](https://github.com/rgd87/ClassicSpellActivations/tree/3.0.3) (2022-09-18)
-[Full Changelog](https://github.com/rgd87/ClassicSpellActivations/compare/3.0.2...3.0.3) [Previous Releases](https://github.com/rgd87/ClassicSpellActivations/releases)
+## [3.0.4](https://github.com/rgd87/ClassicSpellActivations/tree/3.0.4) (2022-09-24)
+[Full Changelog](https://github.com/rgd87/ClassicSpellActivations/compare/3.0.3...3.0.4) [Previous Releases](https://github.com/rgd87/ClassicSpellActivations/releases)
 
-- Merge pull request #13 from HelveteTV/patch-1  
-    Added support for Warrior talent Bloodsurge  
-- Added support for Warrior talent Bloodsurge  
+- Having Art of War talent disbles normal NPC type highlight  
+- Merge pull request #14 from doughnut1214/MoltenCorePatch  
+    Added Support for Demonology Warlock's Molten Core  
+- Added Support for Glyph of Corruption  
+- Added Support for Demonology Warlock's Molten Core  
