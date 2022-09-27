@@ -186,8 +186,7 @@ local function FastDiuqi_ADD()
 		gengxinDEL(fuFrame.FastDiuqi.Scroll);
 	end)
 
-	--需要开锁技能打开的物品
-	local xukaisuo = {4632,4633,4634,4636,4637,4638,5758,5759,5760,6354,6355,6712,12033,13875,13918,16882,16883,16884,16885,29569,31952};
+	
 	local zidongkaishidiuqiFFF = CreateFrame("Frame");
 	zidongkaishidiuqiFFF:RegisterEvent("BAG_UPDATE");
 	zidongkaishidiuqiFFF:SetScript("OnEvent", function(self,event,arg1)

@@ -327,15 +327,12 @@ local function Add_Skill_CD()
 	if zhuanyeCDUI then return end
 	--显示框架
 	local Width,Height = 650,460;
-	local zhuanyeCD=ADD_Frame(GnUI,UIParent,Width,Height,"CENTER",UIParent,"CENTER",0,0,true,false,true,true,true,"BG2")
+	local zhuanyeCD=ADD_Frame(GnUI,UIParent,Width,Height,"CENTER",UIParent,"CENTER",0,60,true,false,true,true,true,"BG2")
 	
 	zhuanyeCD.title = zhuanyeCD:CreateFontString();
 	zhuanyeCD.title:SetPoint("TOP", zhuanyeCD, "TOP", 0, -3);
 	zhuanyeCD.title:SetFontObject(GameFontNormalSmall);
 	zhuanyeCD.title:SetText("专业技能/副本CD监控");
-	zhuanyeCD.Close = CreateFrame("Button",nil,zhuanyeCD, "UIPanelCloseButton");  
-	zhuanyeCD.Close:SetSize(32,32);
-	zhuanyeCD.Close:SetPoint("TOPRIGHT",zhuanyeCD,"TOPRIGHT",5,6);
 	---重置配置
 	zhuanyeCD.chongzhizhushouBUT = CreateFrame("Button",nil,zhuanyeCD, "UIPanelButtonTemplate");  
 	zhuanyeCD.chongzhizhushouBUT:SetSize(50,18);

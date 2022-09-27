@@ -14,9 +14,6 @@ SpellJK.Biaoti = SpellJK:CreateFontString();
 SpellJK.Biaoti:SetPoint("TOP", SpellJK, "TOP", 0,-2);
 SpellJK.Biaoti:SetFontObject(GameFontNormal);
 SpellJK.Biaoti:SetText(GnName);
-SpellJK.Close = CreateFrame("Button",nil,SpellJK, "UIPanelCloseButton");  
-SpellJK.Close:SetSize(30,30);
-SpellJK.Close:SetPoint("TOPRIGHT",SpellJK,"TOPRIGHT",4,5);
 --提示
 SpellJK.tishi = CreateFrame("Frame", nil, SpellJK);
 SpellJK.tishi:SetSize(22,22);

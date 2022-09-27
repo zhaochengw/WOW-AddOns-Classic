@@ -377,6 +377,7 @@ local function QuickButtonUpdate()
 	addonTable.ADD_QuickButton_PlaneInvite()
 	addonTable.ADD_QuickButton_RaidRecord()
 	addonTable.ADD_QuickButton_daiben()
+	addonTable.ADD_QuickButton_AFK()
 end
 addonTable.QuickButtonUpdate = QuickButtonUpdate
 ---------

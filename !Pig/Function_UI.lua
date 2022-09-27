@@ -33,7 +33,7 @@ local function ADD_Frame(UIName,fuFrame,Width,Height,PointZi,Point,PointFu,Point
 	elseif Backdrop=="BG2" then
 		frame.BG = frame:CreateTexture(nil, "BACKGROUND");
 		frame.BG:SetTexture("interface/framegeneral/ui-background-rock.blp");
-		frame.BG:SetPoint("TOPLEFT", frame, "TOPLEFT",3, -23);
+		frame.BG:SetPoint("TOPLEFT", frame, "TOPLEFT",2, -23);
 		frame.BG:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT",-3, 3);
 		frame.biaotiBG = frame:CreateTexture(nil, "BACKGROUND");
 		frame.biaotiBG:SetTexture(374157);
@@ -44,23 +44,23 @@ local function ADD_Frame(UIName,fuFrame,Width,Height,PointZi,Point,PointFu,Point
 
 		frame.TOPLEFT = frame:CreateTexture(nil, "BORDER");
 		frame.TOPLEFT:SetTexture(374156);
-		frame.TOPLEFT:SetPoint("TOPLEFT", frame, "TOPLEFT",-6, 2);
-		frame.TOPLEFT:SetTexCoord(0.63,0.28,0.63,0.53,0.88,0.28,0.88,0.53);
+		frame.TOPLEFT:SetPoint("TOPLEFT", frame, "TOPLEFT",-6, 1);
+		frame.TOPLEFT:SetTexCoord(0.6328125,0.28125,0.6328125,0.53125,0.8828125,0.28125,0.8828125,0.53125);
 		frame.TOPLEFT:SetSize(33,33);
 		frame.TOPRIGHT = frame:CreateTexture(nil, "BORDER");
 		frame.TOPRIGHT:SetTexture(374156);
-		frame.TOPRIGHT:SetPoint("TOPRIGHT", frame, "TOPRIGHT",0, 2);
-		frame.TOPRIGHT:SetTexCoord(0.63,0.01,0.63,0.27,0.89,0.01,0.89,0.27);
+		frame.TOPRIGHT:SetPoint("TOPRIGHT", frame, "TOPRIGHT",0, 1);
+		frame.TOPRIGHT:SetTexCoord(0.6328125,0.0078125,0.6328125,0.265625,0.890625,0.0078125,0.890625,0.265625);
 		frame.TOPRIGHT:SetSize(33,35);
 		frame.BOTTOMLEFT = frame:CreateTexture(nil, "BORDER");
 		frame.BOTTOMLEFT:SetTexture(374156);
-		frame.BOTTOMLEFT:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT",-4.8, -4);
-		frame.BOTTOMLEFT:SetTexCoord(0.01,0.63,0.01,0.74,0.12,0.63,0.12,0.74);
+		frame.BOTTOMLEFT:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT",-6, -5);
+		frame.BOTTOMLEFT:SetTexCoord(0.0078125,0.6328125,0.0078125,0.7421875,0.1171875,0.6328125,0.1171875,0.7421875);
 		frame.BOTTOMLEFT:SetSize(14,14);
 		frame.BOTTOMRIGHT = frame:CreateTexture(nil, "BORDER");
 		frame.BOTTOMRIGHT:SetTexture(374156);
-		frame.BOTTOMRIGHT:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT",0, -4);
-		frame.BOTTOMRIGHT:SetTexCoord(0.13,0.90,0.13,0.98,0.22,0.90,0.22,0.98);
+		frame.BOTTOMRIGHT:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT",0, -5);
+		frame.BOTTOMRIGHT:SetTexCoord(0.1328125,0.8984375,0.1328125,0.984375,0.21875,0.8984375,0.21875,0.984375);
 		frame.BOTTOMRIGHT:SetSize(11,11);
 		frame.TOP = frame:CreateTexture(nil, "BORDER");
 		frame.TOP:SetTexture(374157);
@@ -71,8 +71,8 @@ local function ADD_Frame(UIName,fuFrame,Width,Height,PointZi,Point,PointFu,Point
 		frame.LEFT = frame:CreateTexture(nil, "BORDER");
 		frame.LEFT:SetTexture(374153);
 		frame.LEFT:SetTexCoord(0.36,0.00,0.36,2.29,0.61,0.00,0.61,2.29);
-		frame.LEFT:SetPoint("TOPLEFT", frame.TOPLEFT, "BOTTOMLEFT",1, 0);
-		frame.LEFT:SetPoint("BOTTOMLEFT", frame.BOTTOMLEFT, "TOPLEFT",1, 0);
+		frame.LEFT:SetPoint("TOPLEFT", frame.TOPLEFT, "BOTTOMLEFT",0, 0);
+		frame.LEFT:SetPoint("BOTTOMLEFT", frame.BOTTOMLEFT, "TOPLEFT",0, 0);
 		frame.LEFT:SetWidth(16);
 		frame.RIGHT = frame:CreateTexture(nil, "BORDER");
 		frame.RIGHT:SetTexture(374153);
@@ -86,6 +86,9 @@ local function ADD_Frame(UIName,fuFrame,Width,Height,PointZi,Point,PointFu,Point
 		frame.BOTTOM:SetPoint("BOTTOMLEFT", frame.BOTTOMLEFT, "BOTTOMRIGHT",0,0)
 		frame.BOTTOM:SetPoint("BOTTOMRIGHT", frame.BOTTOMRIGHT, "BOTTOMLEFT",0,0);
 		frame.BOTTOM:SetHeight(10);
+		frame.Close = CreateFrame("Button",nil,frame, "UIPanelCloseButton");  
+		frame.Close:SetSize(32,32);
+		frame.Close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 4.8, 5);
 	elseif Backdrop=="BG3" then
 		frame.BG = frame:CreateTexture(nil, "BACKGROUND");
 		frame.BG:SetTexture("interface/raidframe/ui-raidframe-groupbg.blp");

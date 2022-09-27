@@ -195,6 +195,10 @@ local function Update_bukeyong(self)
 	if Type then
 		local SimID=self.SimID
 		if Type=="spell" then
+			if not IsPlayerSpell(SimID) then
+				self.icon:SetVertexColor(0.5, 0.5, 0.5) 
+				return 
+			end
 			local usable, noMana = IsUsableSpell(SimID)	
 			if not usable then
 				self.icon:SetVertexColor(0.5, 0.5, 0.5) 
@@ -327,6 +331,7 @@ local function Update_PostClick(self)
 	if Type then
 		local SimID=self.SimID
 		if Type=="spell" then
+			if not IsPlayerSpell(SimID) then self:SetChecked(false) end
 			local usable, noMana = IsUsableSpell(SimID)	
 			if not usable then self:SetChecked(false) end
 		elseif Type=="item" then

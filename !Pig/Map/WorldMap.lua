@@ -92,8 +92,11 @@ local function WorldMap_XY()
 	WorldMapFrame.shubiaoYV:SetFont(GameFontNormal:GetFont(), 14,"OUTLINE")
 
 	WorldMapFrame:HookScript("OnUpdate", function(self)
-		local z = C_Map.GetBestMapForUnit("player"); pos = C_Map.GetPlayerMapPosition(z,"player"); 
-		--local zuobiaoBB = C_Map.GetMapInfo(z).name, 
+		local mapinfo = C_Map.GetBestMapForUnit("player"); 
+		if not mapinfo then return end
+		local pos = C_Map.GetPlayerMapPosition(mapinfo,"player");
+		if not pos then return end
+		--local zuobiaoBB = C_Map.GetMapInfo(mapinfo).name, 
 		local zuobiaoXX,zuobiaoYY = math.ceil(pos.x*10000)/100, math.ceil(pos.y*10000)/100
 		self.zuobiaoXV:SetText(zuobiaoXX);
 		self.zuobiaoYV:SetText(zuobiaoYY);

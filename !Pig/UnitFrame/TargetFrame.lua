@@ -331,7 +331,7 @@ local function ADD_TOTOT_Open()
 	end)
 end
 ------------
-fuFrame.TOTOT=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.MubiaoLINE,"TOPLEFT",300,-20,"显示目标的目标的目标","显示目标的目标的目标")
+fuFrame.TOTOT=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.MubiaoLINE,"TOPLEFT",300,-20,"显示目标的目标的目标","显示目标的目标的目标（注意：请先打开系统的目标的目标）")
 fuFrame.TOTOT:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.UnitFrame.TargetFrame.ToToToT=true;

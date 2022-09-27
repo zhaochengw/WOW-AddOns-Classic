@@ -46,25 +46,6 @@ fuFrame.CPU_OPEN.CZ = ADD_Button("重置数据",nil,fuFrame.CPU_OPEN,80,24,"TOPL
 fuFrame.CPU_OPEN.CZ:SetScript("OnClick", function (self)
 	ResetCPUUsage()
 end);
----
-local CVarsList = {
-	{"打开系统污染记录功能","taintLog","1","0","打开系统插件污染记录功能",false},
-	{"打开系统LUA错误提示","scriptErrors","1","0","打开系统的LUA错误提示功能，对插件不了解请勿开启！！！",false},
-}
-for i=1,#CVarsList do
-	local miaodian = {fuFrame,20,-250}
-	if i>1 then
-		miaodian = {_G["ErrCB_"..(i-1)],0,-40}
-	end
-	local ErrCB=ADD_Checkbutton("ErrCB_"..i,fuFrame,-80,"TOPLEFT",miaodian[1],"TOPLEFT",miaodian[2],miaodian[3],CVarsList[i][1],CVarsList[i][5])
-	ErrCB:SetScript("OnClick", function (self)
-		if self:GetChecked() then
-			SetCVar(CVarsList[i][2], CVarsList[i][3])
-		else
-			SetCVar(CVarsList[i][2], CVarsList[i][4])
-		end
-	end);
-end
 
 --------------------------------
 fuFrame.errorUI = ADD_Button("错误报告",nil,fuFrame,120,24,"TOPLEFT",fuFrame,"TOPLEFT",20,-180)
@@ -87,6 +68,49 @@ fuFrame.tishiCK:SetScript("OnClick", function (self)
 		PIG["Error"]["ErrorTishi"] = false
 	end
 end);
+---------
+local CVarsList = {
+	{"打开系统LUA错误提示","scriptErrors","1","0","打开系统的LUA错误提示功能，对插件不了解请勿开启！！！",false},
+}
+for i=1,#CVarsList do
+	local miaodian = {fuFrame,20,-290}
+	if i>1 then
+		miaodian = {_G["ErrCB_"..(i-1)],0,-40}
+	end
+	local ErrCB=ADD_Checkbutton("ErrCB_"..i,fuFrame,-80,"TOPLEFT",miaodian[1],"TOPLEFT",miaodian[2],miaodian[3],CVarsList[i][1],CVarsList[i][5])
+	ErrCB:SetScript("OnClick", function (self)
+		if self:GetChecked() then
+			SetCVar(CVarsList[i][2], CVarsList[i][3])
+		else
+			SetCVar(CVarsList[i][2], CVarsList[i][4])
+		end
+	end);
+end
+---
+local taintlist = {"0","1","2","11"}
+local taintlistmenu = {["0"]="不记录任何内容",["1"]="记录被阻止的操作",
+	["2"]="记录被阻止的操作/全局变量",["11"]="记录被阻止的操作/全局变量/条目(PTR/Beta)",
+}
+fuFrame.taintLog = CreateFrame("FRAME", nil, fuFrame, "UIDropDownMenuTemplate")
+fuFrame.taintLog:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",110,-250)
+UIDropDownMenu_SetWidth(fuFrame.taintLog,380)
+fuFrame.taintLog.tishi = fuFrame.taintLog:CreateFontString();
+fuFrame.taintLog.tishi:SetPoint("RIGHT", fuFrame.taintLog, "LEFT", 10, 2);
+fuFrame.taintLog.tishi:SetFontObject(GameFontNormal);
+fuFrame.taintLog.tishi:SetText("污染记录功能");
+local function taintLogxiala(self)
+	local info = UIDropDownMenu_CreateInfo()
+	info.func = self.SetValue
+	for i=1,#taintlist,1 do
+	    info.text, info.arg1, info.checked = taintlistmenu[taintlist[i]], taintlist[i], taintlist[i] == GetCVar("taintLog");
+		UIDropDownMenu_AddButton(info)
+	end 
+end
+function fuFrame.taintLog:SetValue(newValue)
+	UIDropDownMenu_SetText(fuFrame.taintLog, taintlistmenu[newValue])
+	SetCVar("taintLog", newValue)
+	CloseDropDownMenus()
+end
 -----------------
 fuFrame:SetScript("OnShow", function()
 	for i=1,#CVarsList do
@@ -97,14 +121,12 @@ fuFrame:SetScript("OnShow", function()
 	if PIG["Error"]["ErrorTishi"] then
 		fuFrame.tishiCK:SetChecked(true)
 	end
+	UIDropDownMenu_Initialize(fuFrame.taintLog, taintLogxiala)
+	UIDropDownMenu_SetText(fuFrame.taintLog, taintlistmenu[GetCVar("taintLog")])
 end);
 ---创建常用3宏
 local hongNameList = {["RL"]={"/Reload",132096},["FST"]={"/fstack",132089},["EVE"]={"/eventtrace",132092}}
 fuFrame.New_hong = ADD_Button("创建宏",nil,fuFrame,100,24,"TOPLEFT",fuFrame,"TOPLEFT",20,-400)
--- fuFrame.New_hong = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");  
--- fuFrame.New_hong:SetSize(100,24);
--- fuFrame.New_hong:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-400);
--- fuFrame.New_hong:SetText('创建宏');
 fuFrame.New_hong:SetScript("OnClick", function ()
 	for k,v in pairs(hongNameList) do
 		local macroSlot = GetMacroIndexByName(k)

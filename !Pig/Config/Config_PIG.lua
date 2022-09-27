@@ -21,6 +21,7 @@ addonTable.PIG = {
 		["Lushi"]=true,
 		["Spell"]=true,
 		["AutoEquip"]=true,
+		['AKF']=true,
 	},
 	["QuickFollow"] = {
 		["QuickBut"] = true,

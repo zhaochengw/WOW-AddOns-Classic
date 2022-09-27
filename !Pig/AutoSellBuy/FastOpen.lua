@@ -3,25 +3,6 @@ local _, addonTable = ...;
 local hang_Height,hang_NUM  = 30, 14;
 local FrameLevel=addonTable.SellBuyFrameLevel
 ----//////////////////
-local function OKEY_OPEN(arg1)
-	local shujuy =PIG["AutoSellBuy"]["Openlist"]
-	local xx=GetContainerNumSlots(arg1)
-	for k=1,xx do	
-		local texture, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1, k);
-		if lootable then
-			for i=1,#shujuy do
-				if itemID==shujuy[i][3] then
-					UseContainerItem(arg1, k)
-				end
-			end
-		end
-	end
-end
-function Pig_OpenItem()
-	for i=1,5 do
-		OKEY_OPEN(i-1)
-	end	
-end
 local function Open_ADD()
 	PIG["AutoSellBuy"]["Openlist"]=PIG["AutoSellBuy"]["Openlist"] or addonTable.Default["AutoSellBuy"]["Openlist"]
 	local fuFrame = SpllBuy_TabFrame_4
@@ -56,6 +37,27 @@ local function Open_ADD()
 	fuFrame.Open.daochu:SetScript("OnClick", function(self, button)
 		Config_daoru_UP(self,"PIG","AutoSellBuy~Openlist")
 	end)
+	-----
+	local function Open_Tishi()
+		if QkBut_AutoSellBuy_Open then
+			if PIG['AutoSellBuy']['zidongKaiqi']=="ON" then
+				for bag=0,4 do
+					local bnum=GetContainerNumSlots(bag)
+					for l=1,bnum do
+						for kk=1,#PIG["AutoSellBuy"]["Openlist"] do
+							if GetContainerItemID(bag,l)==PIG["AutoSellBuy"]["Openlist"][kk][3] then
+								QkBut_AutoSellBuy_Open.Height:Show();
+								return
+							end
+						end
+					end
+				end
+				QkBut_AutoSellBuy_Open.Height:Hide();
+			else
+				QkBut_AutoSellBuy_Open.Height:Hide();
+			end
+		end
+	end
 	-- --滚动更新
 	local function gengxinDEL(self)
 		for id = 1, hang_NUM do
@@ -140,6 +142,7 @@ local function Open_ADD()
 		Open.del:SetScript("OnClick", function (self)
 			table.remove(PIG["AutoSellBuy"]["Openlist"], self:GetID());
 			gengxinDEL(fuFrame.Open.Scroll);
+			Open_Tishi()
 		end);
 	end
 	-- ----
@@ -170,77 +173,73 @@ local function Open_ADD()
 					return
 				end			
 			end
-			table.insert(shujuy, fuFrame.Open.ADD.iteminfo);
+			table.insert(PIG["AutoSellBuy"]["Openlist"], fuFrame.Open.ADD.iteminfo);
 			ClearCursor();
 			fuFrame.Open.ADD.iteminfo={};
 			gengxinDEL(fuFrame.Open.Scroll);
+			Open_Tishi()
 		end
 		fuFrame.Open.ADD:SetFrameLevel(FrameLevel);
 	end);
 	fuFrame.Open:SetScript("OnShow", function()
 		gengxinDEL(fuFrame.Open.Scroll);
 	end)
-	----
+
+	--===================
+	local xukaisuo = {4632,4633,4634,4636,4637,4638,5758,5759,5760,6354,6355,6712,12033,13875,13918,16882,16883,16884,16885,29569,31952};
 	local zidongOpenXXXX = CreateFrame("Frame");
 	zidongOpenXXXX:SetScript("OnEvent", function(self,event,arg1)
-		if PIG['AutoSellBuy']['zidongKaiqi']=="ON" then
-			if arg1>=0 and arg1<5 then
-				OKEY_OPEN(arg1)
-			end
-		end
+		Open_Tishi()
 	end);
 
 	fuFrame.zidongKaiqi = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
 	fuFrame.zidongKaiqi:SetSize(28,30);
 	fuFrame.zidongKaiqi:SetHitRectInsets(0,-72,0,0);
 	fuFrame.zidongKaiqi:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-10);
-	fuFrame.zidongKaiqi.Text:SetText("自动打开");
-	fuFrame.zidongKaiqi.tooltip = "启用后将自动打开目录内可开启物品（例如：箱/盒/袋/蚌壳）!|r";
+	fuFrame.zidongKaiqi.Text:SetText("提示打开");
+	fuFrame.zidongKaiqi.tooltip = "有可打开物品（例如：箱/盒/袋/蚌壳）将会在快捷按钮提示!|r";
 	fuFrame.zidongKaiqi:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG['AutoSellBuy']['zidongKaiqi']="ON";
+			zidongOpenXXXX:RegisterEvent("BAG_UPDATE");
 		else
 			PIG['AutoSellBuy']['zidongKaiqi']="OFF";
+			zidongOpenXXXX:UnregisterEvent("BAG_UPDATE");
 		end
+		Open_Tishi()
 	end);
-	----
-	StaticPopupDialogs["FUZHICMD_OPEN"] = {
-		text = "新建一个宏并复制指令到宏内，拖动到技能条使用。\n或者复制到已有的宏尾部。这样在使用宏时将执行一次动作",
-		button1 = "知道了",
-		OnAccept = function()
-			editBoxXX = ChatEdit_ChooseBoxForSend()
-			ChatEdit_ActivateChat(editBoxXX)
-			editBoxXX:Insert("/run Pig_OpenItem()")
-			editBoxXX:HighlightText()
-		end,
-		timeout = 0,
-		whileDead = true,
-		hideOnEscape = true,
-	}
-	fuFrame.CopyCMD = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");
-	fuFrame.CopyCMD:SetSize(110,22);
-	fuFrame.CopyCMD:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",160,-10);
-	fuFrame.CopyCMD:SetText("复制打开指令");
-	fuFrame.CopyCMD:SetScript("OnClick", function(event, button)
-		StaticPopup_Show ("FUZHICMD_OPEN");
-	end)
+
 	---
+	local function Open_Item(self)
+		local shujuy =PIG["AutoSellBuy"]["Openlist"]
+		for arg1=0,4 do			
+			local xx=GetContainerNumSlots(arg1)
+			for k=1,xx do	
+				local texture, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1, k);
+				for i=1,#shujuy do
+					if itemID==shujuy[i][3] then
+						if InCombatLockdown() then PIG_print("请在脱战后使用") end
+						self:SetAttribute("item", itemLink)
+						return
+					end
+				end
+			end
+		end
+		PIG_print("没有需打开物品")
+	end
+	addonTable.Open_Item = Open_Item
 	fuFrame.yijiandakai = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate,SecureActionButtonTemplate");
 	fuFrame.yijiandakai:SetSize(100,22);
 	fuFrame.yijiandakai:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",100,-40);
 	fuFrame.yijiandakai:SetText("手动开启");
-	fuFrame.yijiandakai:SetScript("OnClick", function(event, button)
-		for i=1,5 do
-			OKEY_OPEN(i-1)
-		end	
-	end)
+	fuFrame.yijiandakai:SetAttribute("type", "item")
+	fuFrame.yijiandakai:SetScript("PreClick",  function (self)
+		Open_Item(self)
+	end);
 	----
 	if PIG['AutoSellBuy']['zidongKaiqi']=="ON" then
 		fuFrame.zidongKaiqi:SetChecked(true);
-		local function zhuceopenshijian()
-			zidongOpenXXXX:RegisterEvent("BAG_UPDATE");
-		end
-		C_Timer.After(4,zhuceopenshijian)
+		zidongOpenXXXX:RegisterEvent("BAG_UPDATE");
 	end
 end
 -- --==============================

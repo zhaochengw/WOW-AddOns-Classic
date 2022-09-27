@@ -9,6 +9,8 @@ addonTable.SellBuyFrameLevel=FrameLevel
 local Options_SellBuy = ADD_Modbutton(GnName,GnUI,FrameLevel,2)
 ------------------------------------------------
 local Width,Height,biaotiH  = 300, 550, 34;
+local TabWidth,TabHeight = 30,70;
+local TabName = {"丢","卖","买","开","存","取"};
 --父框架
 local function SellBuy_ADD()
 	if _G[GnUI] then return end
@@ -35,8 +37,6 @@ local function SellBuy_ADD()
 	--内容显示框架
 	SellBuy.F=ADD_Frame(nil,SellBuy,Width,Height-biaotiH+6,"TOP",SellBuy,"TOP",0,-biaotiH+6,false,true,false,false,false,"BG7")
 	-- ----
-	local TabWidth,TabHeight = 30,70;
-	local TabName = {"丢","卖","买","开","存","取"};
 	for id=1,#TabName do
 		SellBuy.F.Tablist = CreateFrame("Button","SpllBuy_Tab_"..id, SellBuy.F, "TruncatedButtonTemplate",id);
 		SellBuy.F.Tablist:SetSize(TabWidth,TabHeight);
@@ -111,6 +111,21 @@ local Tooltip = "一键摧毁/自动卖出/自动购买/自动开箱盒蚌";
 local Cfanwei,xulieID = -80, 1
 local OptionsModF_AutoSellBuy = ADD_ModCheckbutton(GnName,Tooltip,fuFrame,Cfanwei,xulieID)
 --添加快捷打开按钮
+local function Showlistshuzi(num)
+	_G[GnUI]:SetFrameLevel(FrameLevel)
+	_G[GnUI]:Show();
+	for x=1,#TabName do
+		_G["SpllBuy_Tab_"..x].Tex:SetTexture("interface/helpframe/helpframetab-inactive.blp");
+		_G["SpllBuy_Tab_"..x].Tex:SetPoint("CENTER", _G["SpllBuy_Tab_"..x], "CENTER", 0,0);
+		_G["SpllBuy_Tab_"..x].title:SetTextColor(1, 215/255, 0, 1);
+		_G["SpllBuy_TabFrame_"..x]:Hide();
+	end
+	_G["SpllBuy_Tab_"..num].Tex:SetTexture("interface/helpframe/helpframetab-active.blp");
+	_G["SpllBuy_Tab_"..num].Tex:SetPoint("CENTER", _G["SpllBuy_Tab_"..num], "CENTER", 5,0);
+	_G["SpllBuy_Tab_"..num].title:SetTextColor(1, 1, 1, 1);
+	_G["SpllBuy_TabFrame_".._G["SpllBuy_Tab_"..num]:GetID()]:Show();
+	_G["SpllBuy_Tab_"..num].highlight:Hide();
+end
 local ADD_QuickButton=addonTable.ADD_QuickButton
 local function ADD_QuickButton_AutoSellBuy()
 	local ckbut = OptionsModF_AutoSellBuy.ADD
@@ -125,6 +140,7 @@ local function ADD_QuickButton_AutoSellBuy()
 	if PIG['QuickButton']['Open'] and PIG["AutoSellBuy"]["Kaiqi"]=="ON" and PIG["AutoSellBuy"]["AddBut"]=="ON" then
 		local QkBut = "QkBut_AutoSellBuy"
 		if _G[QkBut] then return end
+		local FastDiuqi_DelItem=addonTable.FastDiuqi_DelItem
 		local Icon=134409
 		local Tooltip = "左击-|cff00FFFF丢弃指定物品|r\n右击-|cff00FFFF打开"..GnName.."|r"
 		local QkBut=ADD_QuickButton(QkBut,Tooltip,Icon)
@@ -135,13 +151,38 @@ local function ADD_QuickButton_AutoSellBuy()
 		QkBut.Height:Hide()
 		QkBut:SetScript("OnClick", function(self,button)
 			if button=="LeftButton" then
-				addonTable.FastDiuqi_DelItem()
+				FastDiuqi_DelItem()
 			else
 				if _G[GnUI]:IsShown() then
 					_G[GnUI]:Hide();
 				else
-					_G[GnUI]:SetFrameLevel(FrameLevel)
-					_G[GnUI]:Show();
+					Showlistshuzi(1)
+				end
+			end
+		end);
+		local Open_Item=addonTable.Open_Item
+		local QkBut_Open = "QkBut_AutoSellBuy_Open"
+		local Icon=136058
+		local Tooltip = "左击-|cff00FFFF打开指定物品|r\n右击-|cff00FFFF打开"..GnName.."|r"
+		local QkBut_Open=ADD_QuickButton(QkBut_Open,Tooltip,Icon,"SecureActionButtonTemplate")
+		QkBut_Open.Height = QkBut_Open:CreateTexture(nil, "OVERLAY");
+		QkBut_Open.Height:SetTexture(130724);
+		QkBut_Open.Height:SetBlendMode("ADD");
+		QkBut_Open.Height:SetAllPoints(QkBut_Open)
+		QkBut_Open.Height:Hide()
+		QkBut_Open:SetAttribute("type", "item")
+		QkBut_Open:SetScript("PreClick",  function (self,button)
+			if button=="LeftButton" then
+				Open_Item(self)
+			end
+		end);
+		QkBut_Open:HookScript("OnClick", function(self,button)
+			if button=="LeftButton" then
+			else
+				if _G[GnUI]:IsShown() then
+					_G[GnUI]:Hide();
+				else
+					Showlistshuzi(4)
 				end
 			end
 		end);

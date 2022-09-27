@@ -71,9 +71,6 @@ local function ADD_PlaneInviteFrame()
 	PlaneInvite.biaotititle:SetFontObject(GameFontNormal);
 	PlaneInvite.biaotititle:SetText(GnName);
 	---
-	PlaneInvite.Close = CreateFrame("Button",nil,PlaneInvite, "UIPanelCloseButton");  
-	PlaneInvite.Close:SetSize(32,32);
-	PlaneInvite.Close:SetPoint("TOPRIGHT", PlaneInvite, "TOPRIGHT", 4, 5);
 	PlaneInvite.help = CreateFrame("Frame", nil, PlaneInvite);
 	PlaneInvite.help:SetSize(20,20);
 	PlaneInvite.help:SetPoint("TOPRIGHT", PlaneInvite, "TOPRIGHT", -34, -1);
@@ -91,7 +88,7 @@ local function ADD_PlaneInviteFrame()
 	PlaneInvite.NR=ADD_Frame(nil,PlaneInvite,Width-9,Height-56,"BOTTOM",PlaneInvite,"BOTTOM",-0.6,4,false,true,false,false,false)
 	--TAB
 	local TabWidth,TabHeight = 110,26;
-	local TabName = {"休闲","车队","位面"};
+	local TabName = {"候车","车队","位面"};
 	for id=1,#TabName do
 		local Tablist = CreateFrame("Button","PlaneInviteTAB_"..id,PlaneInvite, "TruncatedButtonTemplate",id);
 		Tablist:SetSize(TabWidth,TabHeight);

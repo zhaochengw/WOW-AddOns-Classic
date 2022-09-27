@@ -433,10 +433,11 @@ end)
 -- 		-- local hh = {TargetFrameToT:GetChildren()} 
 
 -- 		--local fffff = HelpFrameInsetInsetTopBorder
--- 		local fffff = HelpFrameInsetInsetLeftBorder
+-- 		--local fffff = HelpFrameInsetInsetLeftBorder
 -- 		-- local fffff = HelpFrameInsetInsetRightBorder
 -- 		--local fffff = HelpFrameInsetInsetBottomBorder
 -- 		--local fffff = HelpFrameInsetInsetBotLeftCorner
+-- 		local fffff = HelpFrameTopRightCorner
 -- 		local Icon = fffff:GetTexture()
 -- 		print(Icon)
 -- 		local zipboap = {fffff:GetTexCoord()}
