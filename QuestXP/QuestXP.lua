@@ -17,6 +17,10 @@ function QXP:ADDON_LOADED(loadedAddOnName)
             QXP:QuestLog_Update("QuestLog")
         end)
 
+        hooksecurefunc(QuestLogListScrollFrame, "update", function()
+            QXP:QuestLog_Update("QuestLog")
+        end)
+
         -- support QuestLogEx
         if QuestLogEx then
             hooksecurefunc("QuestLog_Update", function()
@@ -142,10 +146,12 @@ function QXP:QuestLog_Update(addonName)
                 else
                     questTitleTag:SetText("");
                 end
-
             end
+
+            QuestLogTitleButton_Resize(questLogTitle)
         end
     end
+
 end
 
 QXP:SetScript("OnEvent",
