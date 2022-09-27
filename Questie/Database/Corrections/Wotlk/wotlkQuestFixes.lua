@@ -34,6 +34,9 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.finishedBy] = {{16281}},
             [questKeys.questLevel] = -1,
         },
+        [9247] = {
+            [questKeys.finishedBy] = {{16281}},
+        },
         [9648] = {
             [questKeys.name] = "Maatparm Mushroom Menagerie",
         },
@@ -55,6 +58,14 @@ function QuestieWotlkQuestFixes:Load()
         [10703] = {
             [questKeys.objectives] = {nil,nil,nil,nil,{{{21864,21878,21879,23020,21978},21978,},},},
         },
+        [11120] = {
+            [questKeys.startedBy] = {{24657}},
+            [questKeys.finishedBy] = {{24657}},
+        },
+        [11431] = {
+            [questKeys.startedBy] = {{24657}},
+            [questKeys.finishedBy] = {{24657}},
+        },
         [11531] = {
             [questKeys.specialFlags] = 1,
         },
@@ -66,6 +77,10 @@ function QuestieWotlkQuestFixes:Load()
         },
         [11157] = {
             [questKeys.objectives] = {{{23777,"Proto-Drake Egg destroyed"}},nil,nil,nil,{{{23688,23750},23688}}},
+        },
+        [11170] = {
+            [questKeys.objectives] = {{{24120,"North Fleet Reservist Infected"}}},
+            [questKeys.extraObjectives] = {{nil, ICON_TYPE_TALK, l10n("Talk to Bat Handler Camille"), 0, {{"monster", 23816}}}},
         },
         [11241] = {
             [questKeys.triggerEnd] = {"Rescue Apothecary Hanes",{[zoneIDs.HOWLING_FJORD]={{78.72,37.23,},},},},
@@ -79,11 +94,18 @@ function QuestieWotlkQuestFixes:Load()
         [11252] = {
             [questKeys.preQuestSingle] = {},
         },
+        [11282] = {
+            [questKeys.objectives] = {{{24161,"Oric the Baleful's Corpse Impaled"},{24016,"Ulf the Bloodletter's Corpse Impaled"},{24162,"Gunnar Thorvardsson's Corpse Impaled"}}},
+            [questKeys.extraObjectives] = {{nil, ICON_TYPE_SLAY, l10n("Slay Vrykul across the Forsaken blockade until they appear"), 0, {{"monster", 24015}}}},
+        },
         [11302] = {
             [questKeys.preQuestSingle] = {11269,11329},
         },
         [11314] = {
             [questKeys.extraObjectives] = {{nil, ICON_TYPE_EVENT, l10n("Use Lurielle's Pendant on Chill Nymph"), 0, {{"monster", 23678}}}},
+        },
+        [11319] = {
+            [questKeys.objectives] = {{{23876,"Spores frozen"}}},
         },
         [11332] = {
             [questKeys.preQuestSingle] = {11331},
@@ -96,6 +118,12 @@ function QuestieWotlkQuestFixes:Load()
         },
         [11346] = {
             [questKeys.preQuestSingle] = {11269,11329},
+        },
+        [11348] = {
+            [questKeys.objectives] = {{{23725,"Test Rune of Command"},{24334}}},
+        },
+        [11352] = {
+            [questKeys.objectives] = {{{23725,"Test Rune of Command"},{24334}}},
         },
         [11355] = {
             [questKeys.preQuestSingle] = {11269,11329},
@@ -331,6 +359,9 @@ function QuestieWotlkQuestFixes:Load()
         [12092] = {
             [questKeys.preQuestSingle] = {12065},
         },
+        [12099] = {
+            [questKeys.objectives] = {{{26417,"Runed Giants Freed"}}},
+        },
         [12107] = {
             [questKeys.extraObjectives] = {
                 {nil, ICON_TYPE_EVENT, l10n("Use Ley Line Focus Control Talisman"),0,{{"object", 188491}}},
@@ -431,11 +462,17 @@ function QuestieWotlkQuestFixes:Load()
         [12464] = {
             [questKeys.preQuestSingle] = {},
         },
+        [12467] = {
+            [questKeys.extraObjectives] = {{nil, ICON_TYPE_TALK, l10n("Talk to Wyrmbait and slay Icestorm"),0,{{"monster", 27843}}},},
+        },
         [12470] = {
             [questKeys.triggerEnd] = {"Hourglass of Eternity protected",{[zoneIDs.DRAGONBLIGHT]={{71.57,38.91,},},},},
         },
         [12473] = {
             [questKeys.triggerEnd] = {"Thel'zan the Duskbringer Defeated",{[zoneIDs.DRAGONBLIGHT]={{81.11,50.64,},},},},
+        },
+        [12481] = {
+            [questKeys.objectives] = {{{24238,"Bjorn Halgurdsson insulted"},{24238,"Bjorn Halgurdsson defeated"}}},
         },
         [12503] = {
             [questKeys.objectives] = {nil,nil,nil,nil,{{{28023,28026,28246,28669,28022},28022,"Scourge at The Argent Stand destroyed"}}},
