@@ -135,7 +135,7 @@ BlizzMoveAPI:RegisterFrames(
 			{
 				MinVersion = 90105,
 				Detachable = true,
-			}
+			},
 		},
 	},
 	["FriendsFrame"] =
@@ -158,8 +158,8 @@ BlizzMoveAPI:RegisterFrames(
 					{
 						MinVersion = 0,
 						MaxVersion = 100000,
-					}
-				}
+					},
+				},
 			},
 			["RecruitAFriendFrame.RecruitList.ScrollFrame"] =
 			{
@@ -222,7 +222,7 @@ BlizzMoveAPI:RegisterFrames(
 						MaxVersion = 40000, -- Removed when?
 						Detachable = true,
 					},
-				}
+				},
 			},
 		},
 	},
@@ -512,7 +512,7 @@ BlizzMoveAPI:RegisterAddOnFrames(
 				{
 					MinVersion = 90000,
 				},
-			}
+			},
 		},
 	},
 	["Blizzard_ArchaeologyUI"] =
@@ -666,7 +666,7 @@ BlizzMoveAPI:RegisterAddOnFrames(
 				["ClickBindingFrame.ScrollBox"] =
 				{
 					MinVersion = 90200,
-				}
+				},
 			},
 		},
 	},
@@ -799,7 +799,7 @@ BlizzMoveAPI:RegisterAddOnFrames(
 					MinVersion = 40000,
 					NonDraggable = true,
 				},
-			}
+			},
 		},
 	},
 	["Blizzard_FlightMap"] =
@@ -913,7 +913,7 @@ BlizzMoveAPI:RegisterAddOnFrames(
 					MinVersion = 30000,
 					MaxVersion = 60200,
 				},
-			}
+			},
 		},
 	},
 	["Blizzard_GMSurveyUI"] =
@@ -950,6 +950,58 @@ BlizzMoveAPI:RegisterAddOnFrames(
 		["InspectFrame"] =
 		{
 			MinVersion = 0,
+			SubFrames =
+			{
+				["InspectPaperDollFrame"] =
+				{
+					MinVersion = 0,
+				},
+				["InspectHonorFrame"] =
+				{
+					MinVersion = 0,
+					MaxVersion = 20000,
+				},
+				["InspectPVPFrame"] =
+				{
+					MinVersion = 20000,
+					SubFrames =
+					{
+						["InspectPVPFrameHonor"] =
+						{
+							MinVersion = 20000,
+							MaxVersion = 70300, -- Removed when?
+						},
+						["InspectPVPFrameArena"] =
+						{
+							MinVersion = 20000,
+							MaxVersion = 70300, -- Removed when?
+						},
+						["InspectPVPTeam1"] =
+						{
+							MinVersion = 20000,
+							MaxVersion = 70300, -- Removed when?
+						},
+						["InspectPVPTeam2"] =
+						{
+							MinVersion = 20000,
+							MaxVersion = 70300, -- Removed when?
+						},
+						["InspectPVPTeam3"] =
+						{
+							MinVersion = 20000,
+							MaxVersion = 70300, -- Removed when?
+						},
+					},
+				},
+				["InspectTalentFrame"] =
+				{
+					MinVersion = 20000, -- Added when?
+				},
+				["InspectGuildFrame"] =
+				{
+					MinVersion = 40000, -- Added when?
+				},
+			},
 		},
 	},
 	["Blizzard_IslandsPartyPoseUI"] =
