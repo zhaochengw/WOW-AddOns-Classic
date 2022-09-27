@@ -737,6 +737,9 @@ function RareScanner:OnInitialize()
 
 	-- Setup our map provider
 	WorldMapFrame:AddDataProvider(CreateFromMixins(RareScannerDataProviderMixin));
+
+	-- Add options button to the world map
+	RSMap.LoadWorldMapButton()
 	
 	-- Add minimap icon
 	RSMinimap.LoadMinimapButton()

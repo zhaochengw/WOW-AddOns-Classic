@@ -260,3 +260,28 @@ function RSMap.GetMapName(mapID)
 	
 	return AL["ZONES_CONTINENT_LIST"][mapID]
 end
+
+---============================================================================
+-- Map options button
+---============================================================================
+
+local worldMapButton
+function RSMap.LoadWorldMapButton()
+	local rwm = LibStub('Krowi_WorldMapButtons-1.4')
+	worldMapButton = rwm:Add("RSWorldMapButtonTemplate", 'DROPDOWNTOGGLEBUTTON')
+	if (not RSConfigDB.IsShowingWorldmapButton()) then 
+		worldMapButton:Hide() 
+	else
+		worldMapButton:Show() 
+	end
+end
+
+function RSMap.ToggleWorldmapButton() 
+	if (worldMapButton) then
+		if (RSConfigDB.IsShowingWorldmapButton()) then 
+			worldMapButton:Show() 
+		else 
+			worldMapButton:Hide() 
+		end 
+	end
+end

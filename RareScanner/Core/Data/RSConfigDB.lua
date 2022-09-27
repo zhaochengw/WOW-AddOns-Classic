@@ -637,6 +637,14 @@ function RSConfigDB.GetMMinimapButtonDB()
 	return private.db.display.minimapButton
 end
 
+function RSConfigDB.IsShowingWorldmapButton()
+	return private.db.display.worldmapButton
+end
+
+function RSConfigDB.SetShowingWorldmapButton(value)
+	private.db.display.worldmapButton = value
+end
+
 ---============================================================================
 -- Loot in general
 ---============================================================================

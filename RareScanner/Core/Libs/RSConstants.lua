@@ -25,7 +25,7 @@ RSConstants.LOOT_ITEM_ID = nil
 ---============================================================================
 
 RSConstants.CURRENT_DB_VERSION = 2
-RSConstants.CURRENT_LOOT_DB_VERSION = 2
+RSConstants.CURRENT_LOOT_DB_VERSION = 3
 
 ---============================================================================
 -- Current maps (newer)
@@ -102,6 +102,7 @@ RSConstants.PROFILE_DEFAULTS = {
 			minimapButton = {
 				hide = false
 			},
+			worldmapButton = true
 		},
 		rareFilters = {
 			filtersToggled = true,

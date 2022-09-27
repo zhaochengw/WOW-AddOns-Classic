@@ -741,6 +741,18 @@ local function GetDisplayOptions()
 					end,
 					width = "full",
 				},
+				worldmapButton = {
+					order = 16,
+					type = "toggle",
+					name = AL["DISPLAY_WORLDMAP_BUTTON"],
+					desc = AL["DISPLAY_WORLDMAP_BUTTON_DESC"],
+					get = function() return RSConfigDB.IsShowingWorldmapButton() end,
+					set = function(_, value)
+						RSConfigDB.SetShowingWorldmapButton(value)
+						RSMap.ToggleWorldmapButton() 
+					end,
+					width = "full",
+				},
 			},
 		}
 	end

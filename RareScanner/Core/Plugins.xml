@@ -8,5 +8,6 @@
 	<Include file="Plugins\MapPlugin\RSOverlayTemplate.xml"/>
 	<Include file="Plugins\MapPlugin\RSMinimapPinTemplate.xml"/>
 	<Include file="Plugins\MapPlugin\RSGuideTemplate.xml"/>
+	<Include file="Plugins\MapPlugin\RSWorldMapButtonTemplate.xml"/>
 	
 </Ui>
