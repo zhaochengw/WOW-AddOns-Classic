@@ -1,8 +1,10 @@
 ## Interface: 20504
 ## Title: HandyNotes_NPCs (Classic)
-## Version: 1.29-bcc
+## Version: 1.30a
 ## Notes: Shows locations of various npcs
 ## Author: Cali
+## X-Curse-Project-ID: 340222
+## X-WoWI-ID: 25295
 ## RequiredDeps: HandyNotes
 ## OptionalDeps: LibStub, !LibUIDropDownMenu
 ## SavedVariables: HandyNotes_NPCsClassicDB

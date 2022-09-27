@@ -1,8 +1,10 @@
 ## Interface: 11403
 ## Title: HandyNotes_NPCs (Classic)
-## Version: 1.29-classic
+## Version: 1.30a
 ## Notes: Shows locations of various old world npcs
 ## Author: Revel of Pagle
+## X-Curse-Project-ID: 340222
+## X-WoWI-ID: 25295
 ## RequiredDeps: HandyNotes
 ## SavedVariables: HandyNotes_NPCsClassicDB
 

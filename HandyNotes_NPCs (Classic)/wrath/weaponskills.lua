@@ -1,21 +1,21 @@
 local name, data = ...
 data["weaponmasters"] = { }
 data["weaponskills"] = { }
-local wm, ws = data["weaponmasters"], data["weaponskills"]
+wm, ws = data["weaponmasters"], data["weaponskills"]
 
 local L = LibStub("AceLocale-3.0"):GetLocale("HandyNotes_NPCs (Classic)")
 
-wm[17005] = "200, 201, 202"
-wm[11869] = "198, 199, 227"
-wm[11866] = "227, 264, 1180, 2567, 15590"
+wm[17005] = "200, 201, 202, 264, 1180, 2567"
 wm[16621] = "200, 201, 202, 264, 1180, 2567"
 wm[16773] = "198, 199, 201, 202, 1180, 5011"
-wm[11867] = "200, 201, 202, 227, 1180, 5011"
-wm[2704] = "196, 197, 227, 264, 2567"
-wm[11868] = "196, 197, 264, 1180, 2567, 15590"
-wm[11865] = "196, 197, 198, 199, 266, 15590"
-wm[13084] = "1180, 2567, 5011"
-wm[11870] = "200, 201, 202, 1180, 5011"
+wm[11867] = "200, 201, 202, 227, 1180, 5011, 43958"
+wm[2704] = "196, 197, 227, 264, 2567, 43958, 58514"
+wm[11868] = "196, 197, 264, 1180, 2567, 15590, 43958"
+wm[11865] = "196, 197, 198, 199, 266, 15590, 43958"
+wm[13084] = "1180, 2567, 5011, 43958"
+wm[11869] = "198, 199, 227, 266, 43958"
+wm[11866] = "227, 264, 1180, 2567, 15590, 43958"
+wm[11870] = "200, 201, 202, 1180, 5011, 43958"
 ws[200] = {
 	name = L["Polearms"],
 	icon = "inv_spear_06",
@@ -24,6 +24,7 @@ ws[200] = {
 		PALADIN = true,
 		HUNTER = true,
 		DEATHKNIGHT = true,
+		DRUID = true,
 	}
 }
 ws[201] = {
@@ -34,9 +35,9 @@ ws[201] = {
 		PALADIN = true,
 		HUNTER = true,
 		ROGUE = true,
+		DEATHKNIGHT = true,
 		MAGE = true,
 		WARLOCK = true,
-		DEATHKNIGHT = true,
 	}
 }
 ws[202] = {
@@ -72,15 +73,6 @@ ws[1180] = {
 		DRUID = true,
 	}
 }
-ws[2567] = {
-	name = L["Thrown"],
-	icon = "inv_throwingknife_02",
-	classes = {
-		WARRIOR = true,
-		HUNTER = true,
-		ROGUE = true,
-	}
-}
 ws[198] = {
 	name = L["One-Handed Maces"],
 	icon = "inv_mace_01",
@@ -89,9 +81,9 @@ ws[198] = {
 		PALADIN = true,
 		ROGUE = true,
 		PRIEST = true,
+		DEATHKNIGHT = true,
 		SHAMAN = true,
 		DRUID = true,
-		DEATHKNIGHT = true,
 	}
 }
 ws[199] = {
@@ -100,9 +92,18 @@ ws[199] = {
 	classes = {
 		WARRIOR = true,
 		PALADIN = true,
+		DEATHKNIGHT = true,
 		SHAMAN = true,
 		DRUID = true,
-		DEATHKNIGHT = true,
+	}
+}
+ws[5011] = {
+	name = L["Crossbows"],
+	icon = "inv_weapon_crossbow_01",
+	classes = {
+		WARRIOR = true,
+		HUNTER = true,
+		ROGUE = true,
 	}
 }
 ws[227] = {
@@ -118,26 +119,6 @@ ws[227] = {
 		DRUID = true,
 	}
 }
-ws[15590] = {
-	name = L["Fist Weapons"],
-	icon = "inv_gauntlets_04",
-	classes = {
-		WARRIOR = true,
-		HUNTER = true,
-		ROGUE = true,
-		SHAMAN = true,
-		DRUID = true,
-	}
-}
-ws[5011] = {
-	name = L["Crossbows"],
-	icon = "inv_weapon_crossbow_01",
-	classes = {
-		WARRIOR = true,
-		HUNTER = true,
-		ROGUE = true,
-	}
-}
 ws[196] = {
 	name = L["One-Handed Axes"],
 	icon = "inv_axe_01",
@@ -145,8 +126,9 @@ ws[196] = {
 		WARRIOR = true,
 		PALADIN = true,
 		HUNTER = true,
-		SHAMAN = true,
+		ROGUE = true,
 		DEATHKNIGHT = true,
+		SHAMAN = true,
 	}
 }
 ws[197] = {
@@ -156,8 +138,19 @@ ws[197] = {
 		WARRIOR = true,
 		PALADIN = true,
 		HUNTER = true,
-		SHAMAN = true,
 		DEATHKNIGHT = true,
+		SHAMAN = true,
+	}
+}
+ws[15590] = {
+	name = L["Fist Weapons"],
+	icon = "inv_gauntlets_04",
+	classes = {
+		WARRIOR = true,
+		HUNTER = true,
+		ROGUE = true,
+		SHAMAN = true,
+		DRUID = true,
 	}
 }
 ws[266] = {
