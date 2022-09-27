@@ -3905,7 +3905,6 @@ local tab_container_on_show = function (self)
 end
 
 function DF:CreateTabContainer (parent, title, frame_name, frameList, options_table, hookList)
-	
 	local options_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
 	local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
 	local options_switch_template = DF:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE")
@@ -3913,14 +3912,14 @@ function DF:CreateTabContainer (parent, title, frame_name, frameList, options_ta
 	local options_button_template = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
 	
 	options_table = options_table or {}
-	local frameWidth = parent:GetWidth()
-	local frame_height = parent:GetHeight()
+	local parentFrameWidth = parent:GetWidth()
 	local y_offset = options_table.y_offset or 0
-	local button_width = options_table.button_width or 160
-	local button_height = options_table.button_height or 20
+	local buttonWidth = options_table.button_width or 160
+	local buttonHeight = options_table.button_height or 20
 	local buttonAnchorX = options_table.button_x or 230
 	local buttonAnchorY = options_table.button_y or -32
 	local button_text_size = options_table.button_text_size or 10
+	local containerWidthOffset = options_table.container_width_offset or 0
 	
 	local mainFrame = CreateFrame ("frame", frame_name, parent.widget or parent, "BackdropTemplate")
 	mainFrame:SetAllPoints()
@@ -3953,9 +3952,10 @@ function DF:CreateTabContainer (parent, title, frame_name, frameList, options_ta
 		
 		local title = DF:CreateLabel (f, frame.title, 16, "silver")
 		title:SetPoint ("topleft", mainTitle, "bottomleft", 0, 0)
+		f.titleText = title
 		
-		local tabButton = DF:CreateButton (mainFrame, DF.TabContainerFunctions.SelectIndex, button_width, button_height, frame.title, i, nil, nil, nil, "$parentTabButton" .. frame.name, false, button_tab_template)
-		PixelUtil.SetSize (tabButton, button_width, button_height)
+		local tabButton = DF:CreateButton (mainFrame, DF.TabContainerFunctions.SelectIndex, buttonWidth, buttonHeight, frame.title, i, nil, nil, nil, "$parentTabButton" .. frame.name, false, button_tab_template)
+		PixelUtil.SetSize (tabButton, buttonWidth, buttonHeight)
 		tabButton:SetFrameLevel (220)
 		tabButton.textsize = button_text_size
 		tabButton.mainFrame = mainFrame
@@ -3993,22 +3993,20 @@ function DF:CreateTabContainer (parent, title, frame_name, frameList, options_ta
 	local y = buttonAnchorY
 	local spaceBetweenButtons = 3
 
-	local space_for_buttons = frameWidth - (#frameList * spaceBetweenButtons) - buttonAnchorX
-	local amount_buttons_per_row = floor (space_for_buttons / button_width)
-
-	local last_button = mainFrame.AllButtons[1]
+	local allocatedSpaceForButtons = parentFrameWidth - ((#frameList - 2) * spaceBetweenButtons) - buttonAnchorX + containerWidthOffset
+	local amountButtonsPerRow = floor(allocatedSpaceForButtons / buttonWidth)
 	
-	mainFrame.AllButtons[1]:SetPoint ("topleft", mainTitle, "topleft", x, y)
-	x = x + button_width + 2
+	mainFrame.AllButtons[1]:SetPoint("topleft", mainTitle, "topleft", x, y)
+	x = x + buttonWidth + 2
 	
 	for i = 2, #mainFrame.AllButtons do
-		local button = mainFrame.AllButtons [i]
-		PixelUtil.SetPoint (button, "topleft", mainTitle, "topleft", x, y)
-		x = x + button_width + 2
+		local button = mainFrame.AllButtons[i]
+		PixelUtil.SetPoint(button, "topleft", mainTitle, "topleft", x, y)
+		x = x + buttonWidth + 2
 		
-		if (i % amount_buttons_per_row == 0) then
+		if (i % amountButtonsPerRow == 0) then
 			x = buttonAnchorX
-			y = y - button_height - 1
+			y = y - buttonHeight - 1
 		end
 	end
 	
@@ -4231,196 +4229,28 @@ end
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- ~scrollbox
 
-DF.SortFunctions = {}
-
-local SortMember = ""
-local SortByMember = function (t1, t2)
-	return t1[SortMember] > t2[SortMember]
-end
-local SortByMemberReverse = function (t1, t2)
-	return t1[SortMember] < t2[SortMember]
-end
-
-DF.SortFunctions.Sort = function (self, t, by, is_reverse)
-	SortMember = by
-	if (not is_reverse) then
-		table.sort (t, SortByMember)
-	else
-		table.sort (t, SortByMemberReverse)
-	end
-end
-
-
-DF.ScrollBoxFunctions = {}
-
-DF.ScrollBoxFunctions.Refresh = function (self)
-	for _, frame in ipairs (self.Frames) do 
-		frame:Hide()
-		frame._InUse = nil
-	end
+function DF:CreateScrollBox (parent, name, refreshFunc, data, width, height, lineAmount, lineHeight, createLineFunc, autoAmount, noScroll)
+	local scroll = CreateFrame("scrollframe", name, parent, "FauxScrollFrameTemplate, BackdropTemplate")
 	
-	local offset = 0
-	if (self.IsFauxScroll) then
-		FauxScrollFrame_Update (self, #self.data, self.LineAmount, self.LineHeight)
-		offset = FauxScrollFrame_GetOffset (self)
-	end	
-	
-	DF:CoreDispatch ((self:GetName() or "ScrollBox") .. ":Refresh()", self.refresh_func, self, self.data, offset, self.LineAmount)
-
-	for _, frame in ipairs (self.Frames) do 
-		if (not frame._InUse) then
-			frame:Hide()
-		else
-			frame:Show()
-		end
-	end
-	
-	self:Show()
-	
-	if (self.HideScrollBar) then
-		local frameName = self:GetName()
-		if (frameName) then
-			local scrollBar = _G [frameName .. "ScrollBar"]
-			if (scrollBar) then
-				scrollBar:Hide()
-			end
-		else
-		
-		end
-		
-	end
-	
-	return self.Frames
-end
-
-DF.ScrollBoxFunctions.OnVerticalScroll = function (self, offset)
-	FauxScrollFrame_OnVerticalScroll (self, offset, self.LineHeight, self.Refresh)
-	return true
-end
-
-DF.ScrollBoxFunctions.CreateLine = function (self, func)
-	if (not func) then
-		func = self.CreateLineFunc
-	end
-	local okay, newLine = pcall (func, self, #self.Frames+1)
-	if (okay) then
-		tinsert (self.Frames, newLine)
-		newLine.Index = #self.Frames
-		return newLine
-	else
-		error ("Details! FrameWork: CreateLine(): " .. newLine)
-	end
-end
-
-DF.ScrollBoxFunctions.GetLine = function (self, line_index)
-	local line = self.Frames [line_index]
-	if (line) then
-		line._InUse = true
-	end
-	return line
-end
-
-DF.ScrollBoxFunctions.SetData = function (self, data)
-	self.data = data
-end
-DF.ScrollBoxFunctions.GetData = function (self)
-	return self.data
-end
-
-DF.ScrollBoxFunctions.GetFrames = function (self)
-	return self.Frames
-end
-
-DF.ScrollBoxFunctions.GetLines = function (self) --alias of GetFrames
-	return self.Frames
-end
-
-DF.ScrollBoxFunctions.GetNumFramesCreated = function (self)
-	return #self.Frames
-end
-
-DF.ScrollBoxFunctions.GetNumFramesShown = function (self)
-	return self.LineAmount
-end
-
-DF.ScrollBoxFunctions.SetNumFramesShown = function (self, new_amount)
-	--> hide frames which won't be used
-	if (new_amount < #self.Frames) then
-		for i = new_amount+1, #self.Frames do
-			self.Frames [i]:Hide()
-		end
-	end
-	
-	--> set the new amount
-	self.LineAmount = new_amount
-end
-
-DF.ScrollBoxFunctions.SetFramesHeight = function (self, new_height)
-	self.LineHeight = new_height
-	self:OnSizeChanged()
-	self:Refresh()
-end
-
-DF.ScrollBoxFunctions.OnSizeChanged = function (self)
-	if (self.ReajustNumFrames) then
-		--> how many lines the scroll can show
-		local amountOfFramesToShow = floor (self:GetHeight() / self.LineHeight)
-		
-		--> how many lines the scroll already have
-		local totalFramesCreated = self:GetNumFramesCreated()
-		
-		--> how many lines are current shown
-		local totalFramesShown = self:GetNumFramesShown()
-
-		--> the amount of frames increased
-		if (amountOfFramesToShow > totalFramesShown) then
-			for i = totalFramesShown+1, amountOfFramesToShow do
-				--> check if need to create a new line
-				if (i > totalFramesCreated) then
-					self:CreateLine (self.CreateLineFunc)
-				end
-			end
-			
-		--> the amount of frames decreased
-		elseif (amountOfFramesToShow < totalFramesShown) then
-			--> hide all frames above the new amount to show
-			for i = totalFramesCreated, amountOfFramesToShow, -1 do
-				if (self.Frames [i]) then
-					self.Frames [i]:Hide()
-				end
-			end
-		end
-
-		--> set the new amount of frames
-		self:SetNumFramesShown (amountOfFramesToShow)
-		
-		--> refresh lines
-		self:Refresh()
-	end
-end
-
-function DF:CreateScrollBox (parent, name, refresh_func, data, width, height, line_amount, line_height, create_line_func, auto_amount, no_scroll)
-	local scroll = CreateFrame ("scrollframe", name, parent, "FauxScrollFrameTemplate,BackdropTemplate")
-	
-	DF:ApplyStandardBackdrop (scroll)
+	DF:ApplyStandardBackdrop(scroll)
 	
 	scroll:SetSize (width, height)
-	scroll.LineAmount = line_amount
-	scroll.LineHeight = line_height
+	scroll.LineAmount = lineAmount
+	scroll.LineHeight = lineHeight
 	scroll.IsFauxScroll = true
-	scroll.HideScrollBar = no_scroll
+	scroll.HideScrollBar = noScroll
 	scroll.Frames = {}
-	scroll.ReajustNumFrames = auto_amount
-	scroll.CreateLineFunc = create_line_func
+	scroll.ReajustNumFrames = autoAmount
+	scroll.CreateLineFunc = createLineFunc
 	
-	DF:Mixin (scroll, DF.SortFunctions)
-	DF:Mixin (scroll, DF.ScrollBoxFunctions)
+	DF:Mixin(scroll, DF.SortFunctions)
+	DF:Mixin(scroll, DF.ScrollBoxFunctions)
 	
-	scroll.refresh_func = refresh_func
+	scroll.refresh_func = refreshFunc
 	scroll.data = data
 	
-	scroll:SetScript ("OnVerticalScroll", scroll.OnVerticalScroll)
-	scroll:SetScript ("OnSizeChanged", DF.ScrollBoxFunctions.OnSizeChanged)
+	scroll:SetScript("OnVerticalScroll", scroll.OnVerticalScroll)
+	scroll:SetScript("OnSizeChanged", DF.ScrollBoxFunctions.OnSizeChanged)
 	
 	return scroll
 end
@@ -5026,34 +4856,36 @@ end
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- ~standard backdrop
 
-function DF:ApplyStandardBackdrop (f, darkTheme, alphaScale)
+function DF:ApplyStandardBackdrop(frame, darkTheme, alphaScale)
 	alphaScale = alphaScale or 1.0
 
-	if(not f.SetBackdrop)then
+	if (not frame.SetBackdrop)then
 		--print(debugstack(1,2,1))
-		Mixin(f, BackdropTemplateMixin)
+		Mixin(frame, BackdropTemplateMixin)
 	end
 
 	if (darkTheme) then
-		f:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Cooldown\cooldown2]], tileSize = 32, tile = true})
-		f:SetBackdropBorderColor (0, 0, 0, 1)
-		f:SetBackdropColor (.54, .54, .54, .54 * alphaScale)
+		frame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Cooldown\cooldown2]], tileSize = 32, tile = true})
+		frame:SetBackdropBorderColor(0, 0, 0, 1)
+		frame:SetBackdropColor(.54, .54, .54, .54 * alphaScale)
+
 	else
-		f:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-		f:SetBackdropBorderColor (0, 0, 0, 1)
-		f:SetBackdropColor (0, 0, 0, 0.2 * alphaScale)
+		frame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+		frame:SetBackdropBorderColor(0, 0, 0, 1)
+		frame:SetBackdropColor(0.1215, 0.1176, 0.1294, 0.2 * alphaScale)
 	end
 	
-	if (not f.__background) then
-		f.__background = f:CreateTexture (nil, "background")
+	if (not frame.__background) then
+		frame.__background = frame:CreateTexture(nil, "background")
+		frame.__background:SetColorTexture(0.1215, 0.1176, 0.1294, 0.99)
+		frame.__background:SetAllPoints()
 	end
-	
-	f.__background:SetColorTexture (0.2317647, 0.2317647, 0.2317647)
-	f.__background:SetVertexColor (0.27, 0.27, 0.27)
-	f.__background:SetAlpha (0.8 * alphaScale)
-	f.__background:SetVertTile (true)
-	f.__background:SetHorizTile (true)
-	f.__background:SetAllPoints()
+
+	--frame.innerBorderTexture = frame:CreateTexture(nil, "overlay")
+	--frame.innerBorderTexture:SetAllPoints()
+	--frame.innerBorderTexture:SetAtlas("Options_InnerFrame")
+
+	frame.__background:SetAlpha(0.8 * alphaScale)
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -7230,9 +7062,9 @@ function DF:BuildStatusbarAuthorInfo (f, addonBy, authorsNameString)
 	discordTextEntry:SetPoint ("left", discordLabel, "right", 2, 0)
 	
 	--format
-	authorName:SetAlpha (.4)
-	discordLabel:SetAlpha (.4)
-	discordTextEntry:SetAlpha (.4)
+	authorName:SetAlpha (.6)
+	discordLabel:SetAlpha (.6)
+	discordTextEntry:SetAlpha (.6)
 	discordTextEntry:SetBackdropBorderColor (1, 1, 1, 0)
 	
 	discordTextEntry:SetHook ("OnEditFocusGained", function()

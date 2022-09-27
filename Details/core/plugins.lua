@@ -490,14 +490,17 @@
 			local bigdog = _detalhes.gump:NewImage (menuBackground, [[Interface\MainMenuBar\UI-MainMenuBar-EndCap-Human]], 180*0.7, 200*0.7, "overlay", {0, 1, 0, 1}, "backgroundBigDog", "$parentBackgroundBigDog")
 			bigdog:SetPoint ("bottomleft", custom_window, "bottomleft", 0, 1)
 			bigdog:SetAlpha (0.3)
-			
+
+			local gradientBelowTheLine = DetailsFramework:CreateTexture(menuBackground, {gradient = "vertical", fromColor = {0, 0, 0, 0.45}, toColor = "transparent"}, 1, 95, "artwork", {0, 1, 0, 1}, "dogGradient")
+			gradientBelowTheLine:SetPoint("bottoms")
+
 			local bigdogRow = menuBackground:CreateTexture (nil, "artwork")
 			bigdogRow:SetPoint ("bottomleft", menuBackground, "bottomleft", 1, 1)
 			bigdogRow:SetPoint ("bottomright", menuBackground, "bottomright", -1, 1)
 			bigdogRow:SetHeight (20)
 			bigdogRow:SetColorTexture (.5, .5, .5, .1)
 			bigdogRow:Hide()
-			
+
 			--
 		--> plugins menu title bar
 			local titlebar_plugins = CreateFrame ("frame", nil, menuBackground,"BackdropTemplate")

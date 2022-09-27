@@ -1,6 +1,6 @@
 
 
-local dversion = 355
+local dversion = 367
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -1071,47 +1071,45 @@ end
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> points
 
-	function DF:CheckPoints (v1, v2, v3, v4, v5, object)
-
+	function DF:CheckPoints(v1, v2, v3, v4, v5, object)
 		if (not v1 and not v2) then
 			return "topleft", object.widget:GetParent(), "topleft", 0, 0
 		end
-		
-		if (_type (v1) == "string") then
-			local frameGlobal = _G [v1]
-			if (frameGlobal and type (frameGlobal) == "table" and frameGlobal.GetObjectType) then
-				return DF:CheckPoints (frameGlobal, v2, v3, v4, v5, object)
+
+		if (type(v1) == "string") then
+			local frameGlobal = _G[v1]
+			if (frameGlobal and type(frameGlobal) == "table" and frameGlobal.GetObjectType) then
+				return DF:CheckPoints(frameGlobal, v2, v3, v4, v5, object)
 			end
-			
-		elseif (_type (v2) == "string") then
-			local frameGlobal = _G [v2]
-			if (frameGlobal and type (frameGlobal) == "table" and frameGlobal.GetObjectType) then
-				return DF:CheckPoints (v1, frameGlobal, v3, v4, v5, object)
+
+		elseif (type(v2) == "string") then
+			local frameGlobal = _G[v2]
+			if (frameGlobal and type(frameGlobal) == "table" and frameGlobal.GetObjectType) then
+				return DF:CheckPoints(v1, frameGlobal, v3, v4, v5, object)
 			end
 		end
-		
-		if (_type (v1) == "string" and _type (v2) == "table") then --> :setpoint ("left", frame, _, _, _)
-			if (not v3 or _type (v3) == "number") then --> :setpoint ("left", frame, 10, 10)
+
+		if (type(v1) == "string" and type(v2) == "table") then --setpoint("left", frame, _, _, _)
+			if (not v3 or type(v3) == "number") then --setpoint("left", frame, 10, 10)
 				v1, v2, v3, v4, v5 = v1, v2, v1, v3, v4
 			end
-			
-		elseif (_type (v1) == "string" and _type (v2) == "number") then --> :setpoint ("topleft", x, y)
+
+		elseif (type(v1) == "string" and type(v2) == "number") then --setpoint("topleft", x, y)
 			v1, v2, v3, v4, v5 = v1, object.widget:GetParent(), v1, v2, v3
-			
-		elseif (_type (v1) == "number") then --> :setpoint (x, y) 
+
+		elseif (type(v1) == "number") then --setpoint(x, y) 
 			v1, v2, v3, v4, v5 = "topleft", object.widget:GetParent(), "topleft", v1, v2
 
-		elseif (_type (v1) == "table") then --> :setpoint (frame, x, y)
+		elseif (type(v1) == "table") then --setpoint(frame, x, y)
 			v1, v2, v3, v4, v5 = "topleft", v1, "topleft", v2, v3
-			
 		end
-		
+
 		if (not v2) then
 			v2 = object.widget:GetParent()
 		elseif (v2.dframework) then
 			v2 = v2.widget
 		end
-		
+
 		return v1 or "topleft", v2, v3 or "topleft", v4 or 0, v5 or 0
 	end
 	
@@ -1247,7 +1245,7 @@ end
 			return {r, g, b, a}
 
 		elseif (newFormat == "tablemembers") then
-			return {["r"] = r, ["g"] = g, ["b"] = b, ["a"] = 1}
+			return {["r"] = r, ["g"] = g, ["b"] = b, ["a"] = a}
 
 		elseif (newFormat == "numbers") then
 			return r, g, b, a
@@ -1486,6 +1484,24 @@ end
 		height = abs ((height or parent:GetHeight()) - abs (y_offset) + 20)
 		height = height*-1
 
+		--normalize format types
+		for index, widgetTable in ipairs(menu) do
+			if (widgetTable.type == "space") then
+				widgetTable.type = "blank"
+			elseif (widgetTable.type == "dropdown") then
+				widgetTable.type = "select"
+			elseif (widgetTable.type == "switch") then
+				widgetTable.type = "toggle"
+			elseif (widgetTable.type == "slider") then
+				widgetTable.type = "range"
+			elseif (widgetTable.type == "button") then
+				widgetTable.type = "execute"
+			end
+		end
+
+		--catch some options added in the hash part of the menu table
+		local useBoxFirstOnAllWidgets = menu.always_boxfirst
+
 		for index, widget_table in ipairs(menu) do
 			if (not widget_table.hidden) then
 
@@ -1613,7 +1629,7 @@ end
 						switch:ClearAllPoints()
 						switch.hasLabel:ClearAllPoints()
 
-						if (widget_table.boxfirst) then
+						if (widget_table.boxfirst or useBoxFirstOnAllWidgets) then
 							switch:SetPoint (cur_x, cur_y)
 							switch.hasLabel:SetPoint ("left", switch, "right", 2)
 						else
@@ -1722,7 +1738,7 @@ end
 						label.text = widget_table.name .. (use_two_points and ": " or "")
 						label:SetTemplate(widget_table.text_template or text_template)
 
-						if (widget_table.boxfirst) then
+						if (widget_table.boxfirst or useBoxFirstOnAllWidgets) then
 							label:SetPoint("left", colorpick, "right", 2)
 							colorpick:SetPoint(cur_x, cur_y)
 							extraPaddingY = 1
@@ -1897,6 +1913,9 @@ end
 			end
 		end
 
+		--catch some options added in the hash part of the menu table
+		local useBoxFirstOnAllWidgets = menu.always_boxfirst
+
 		for index, widget_table in ipairs (menu) do
 			if (not widget_table.hidden) then
 
@@ -1998,7 +2017,7 @@ end
 					end
 
 					local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
-					if (widget_table.boxfirst) then
+					if (widget_table.boxfirst or useBoxFirstOnAllWidgets) then
 						switch:SetPoint (cur_x, cur_y)
 						label:SetPoint ("left", switch, "right", 2)
 
@@ -2102,7 +2121,7 @@ end
 					end
 					
 					local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
-					if (widget_table.boxfirst) then
+					if (widget_table.boxfirst or useBoxFirstOnAllWidgets) then
 						label:SetPoint("left", colorpick, "right", 2)
 						colorpick:SetPoint(cur_x, cur_y)
 						extraPaddingY = 1

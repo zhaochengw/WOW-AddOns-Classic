@@ -9,6 +9,7 @@ local floor = floor
 local GetNumGroupMembers = GetNumGroupMembers
 
 local CONST_INSPECT_ACHIEVEMENT_DISTANCE = 1 --Compare Achievements, 28 yards
+local CONST_SPELLBOOK_CLASSSPELLS_TABID = 2
 
 local storageDebug = false --remember to turn this to false!
 local store_instances = _detalhes.InstancesToStoreData
@@ -2283,14 +2284,18 @@ end
 
 function _detalhes.ilevel:GetInOrder()
 	local order = {}
-	
-	for guid, t in pairs (_detalhes.item_level_pool) do
-		order [#order+1] = {t.name, t.ilvl or 0, t.time}
+
+	for guid, t in pairs(_detalhes.item_level_pool) do
+		order[#order+1] = {t.name, t.ilvl or 0, t.time}
 	end
-	
-	table.sort (order, _detalhes.Sort2)
-	
+
+	table.sort(order, _detalhes.Sort2)
+
 	return order
+end
+
+function Details.ilevel:ClearIlvl(guid)
+	Details.item_level_pool[guid] = nil
 end
 
 function _detalhes:GetTalents (guid)
@@ -2355,8 +2360,8 @@ function Details:DecompressData (data, dataType)
 				return false
 			end
 		end
-		
 		local dataSerialized = LibDeflate:DecompressDeflate (dataCompressed)
+		
 		if (not dataSerialized) then
 			Details:Msg ("couldn't uncompress the data.")
 			return false
@@ -2771,3 +2776,272 @@ function Details.GetDragonflightTalentsAsHashTable()
 
 	return allTalents
 end
+
+
+--called from inside the function Details.GenerateSpecSpellList()
+local getSpellList = function(specIndex, completeListOfSpells, sharedSpellsBetweenSpecs, specNames)
+
+	local specId, specName, _, specIconTexture = GetSpecializationInfo(specIndex)
+	completeListOfSpells[specId] = {}
+	specNames[specId] = specName
+
+	--get spells from talents
+	local configId = C_ClassTalents.GetActiveConfigID()
+	if (not configId) then
+		return completeListOfSpells
+	end
+
+	local configInfo = C_Traits.GetConfigInfo(configId)
+	--get the spells from the SPEC from talents
+	for treeIndex, treeId in ipairs(configInfo.treeIDs) do
+		local treeNodes = C_Traits.GetTreeNodes(treeId)
+		for nodeIdIndex, treeNodeID in ipairs(treeNodes) do
+			local traitNodeInfo = C_Traits.GetNodeInfo(configId, treeNodeID)
+			if (traitNodeInfo and traitNodeInfo.posX > 9000) then
+				local entryIds = traitNodeInfo.entryIDs
+				for i = 1, #entryIds do
+					local entryId = entryIds[i] --number
+					local traitEntryInfo = C_Traits.GetEntryInfo(configId, entryId)
+					local borderTypes = Enum.TraitNodeEntryType
+					if (traitEntryInfo.type == borderTypes.SpendSquare) then
+						local definitionId = traitEntryInfo.definitionID
+						local traitDefinitionInfo = C_Traits.GetDefinitionInfo(definitionId)
+						local spellId = traitDefinitionInfo.overriddenSpellID or traitDefinitionInfo.spellID
+						local spellName, _, spellTexture = GetSpellInfo(spellId)
+						if (spellName) then
+							completeListOfSpells[specId][spellId] = specId
+						end
+					end
+				end
+			end
+		end
+	end
+
+    --get spells of the SPEC from the spell book
+    for i = 1, GetNumSpellTabs() do
+        local tabName, tabTexture, offset, numSpells, isGuild, offspecId = GetSpellTabInfo(i)
+        if (tabTexture == specIconTexture) then
+            offset = offset + 1
+            local tabEnd = offset + numSpells
+            for entryOffset = offset, tabEnd - 1 do
+                local spellType, spellId = GetSpellBookItemInfo(entryOffset, "player")
+                if (spellId) then
+                    if (spellType == "SPELL") then
+                        spellId = C_SpellBook.GetOverrideSpell(spellId)
+                        local spellName = GetSpellInfo(spellId)
+                        local isPassive = IsPassiveSpell(entryOffset, "player")
+                        if (spellName and not isPassive) then
+                            completeListOfSpells[specId][spellId] = specId
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    --get shared spells from the spell book
+    local tabName, tabTexture, offset, numSpells, isGuild, offspecId = GetSpellTabInfo(CONST_SPELLBOOK_CLASSSPELLS_TABID)
+    offset = offset + 1
+    local tabEnd = offset + numSpells
+    for entryOffset = offset, tabEnd - 1 do
+        local spellType, spellId = GetSpellBookItemInfo(entryOffset, "player")
+        if (spellId) then
+            if (spellType == "SPELL") then
+                spellId = C_SpellBook.GetOverrideSpell(spellId)
+                local spellName = GetSpellInfo(spellId)
+                local isPassive = IsPassiveSpell(entryOffset, "player")
+                if (spellName and not isPassive) then
+                    sharedSpellsBetweenSpecs[spellId] = true
+                end
+            end
+        end
+    end
+
+	local classNameLoc = UnitClass("player")
+    print(specName .. " " .. classNameLoc .. " spells recorded.")
+	return completeListOfSpells, sharedSpellsBetweenSpecs, specNames
+end
+
+function Details.GenerateSpecSpellList()
+    local dumpSpellTable = 1
+
+    local specId, specName, _, specIconTexture = GetSpecializationInfo(GetSpecialization())
+    local classNameLoc, className, classId = UnitClass("player")
+
+	local completeListOfSpells = {}
+	local sharedSpellsBetweenSpecs = {}
+	local specNames = {}
+
+	local amountSpecs = GetNumSpecializationsForClassID(classId)
+
+	local totalTimeToWait = 0
+	DetailsFramework.Schedules.NewTimer(0, function() SetSpecialization(1) end)
+	DetailsFramework.Schedules.NewTimer(6, getSpellList, 1, completeListOfSpells, sharedSpellsBetweenSpecs, specNames)
+	totalTimeToWait = 7
+	DetailsFramework.Schedules.NewTimer(7, function() SetSpecialization(2) end)
+	DetailsFramework.Schedules.NewTimer(13, getSpellList, 2, completeListOfSpells, sharedSpellsBetweenSpecs, specNames)
+	totalTimeToWait = 14
+
+	if (amountSpecs >= 3) then
+		DetailsFramework.Schedules.NewTimer(14, function() SetSpecialization(3) end)
+		DetailsFramework.Schedules.NewTimer(20, getSpellList, 3, completeListOfSpells, sharedSpellsBetweenSpecs, specNames)
+		totalTimeToWait = 21
+	end
+
+	if (amountSpecs >= 4) then
+		DetailsFramework.Schedules.NewTimer(21, function() SetSpecialization(4) end)
+		DetailsFramework.Schedules.NewTimer(28, getSpellList, 4, completeListOfSpells, sharedSpellsBetweenSpecs, specNames)
+		totalTimeToWait = 29
+	end
+
+	print("Total Time to Wait:", totalTimeToWait)
+	DetailsFramework.Schedules.NewTimer(totalTimeToWait, function()
+		if (dumpSpellTable) then
+			local parsedSpells = {}
+			local sharedSpells = sharedSpellsBetweenSpecs
+
+			for specId, spellTable in pairs(completeListOfSpells) do
+				parsedSpells[specId] = {}
+
+				--create a list of spells which is in use in the other spec talent tree
+				local spellsInUse = {}
+				for specId2, spellTable2 in pairs(completeListOfSpells) do
+					if (specId2 ~= specId) then
+						for spellId in pairs(spellTable2) do
+							spellsInUse[spellId] = true
+						end
+					end
+				end
+				for spellId in pairs(sharedSpells) do
+					spellsInUse[spellId] = true
+				end
+
+				--build the list of spells for this spec
+				for spellId in pairs(spellTable) do
+					if (not spellsInUse[spellId]) then
+						parsedSpells[specId][spellId] = true
+					end
+				end
+			end
+
+			local result = ""
+			for specId, spellsTable in pairs(parsedSpells) do
+				local specName = specNames[specId]
+				result = result .. "\n--" .. specName .. " " .. classNameLoc .. ":\n"
+				for spellId in pairs(spellsTable) do
+					local spellName = GetSpellInfo(spellId)
+					result = result .. "[" .. spellId .. "] = " .. specId .. ", --" .. spellName .. "\n"
+				end
+			end
+
+			Details:Dump({result})
+		end
+	end)
+end
+
+function Details.FillTableWithPlayerSpells(completeListOfSpells)
+    local specId, specName, _, specIconTexture = GetSpecializationInfo(GetSpecialization())
+    local classNameLoc, className, classId = UnitClass("player")
+
+	--get spells from talents
+	local configId = C_ClassTalents.GetActiveConfigID()
+	if (configId) then
+		local configInfo = C_Traits.GetConfigInfo(configId)
+		--get the spells from the SPEC from talents
+		for treeIndex, treeId in ipairs(configInfo.treeIDs) do
+			local treeNodes = C_Traits.GetTreeNodes(treeId)
+			for nodeIdIndex, treeNodeID in ipairs(treeNodes) do
+				local traitNodeInfo = C_Traits.GetNodeInfo(configId, treeNodeID)
+				if (traitNodeInfo) then
+					local entryIds = traitNodeInfo.entryIDs
+					for i = 1, #entryIds do
+						local entryId = entryIds[i] --number
+						local traitEntryInfo = C_Traits.GetEntryInfo(configId, entryId)
+						local borderTypes = Enum.TraitNodeEntryType
+						if (traitEntryInfo.type == borderTypes.SpendSquare) then
+							local definitionId = traitEntryInfo.definitionID
+							local traitDefinitionInfo = C_Traits.GetDefinitionInfo(definitionId)
+							local spellId = traitDefinitionInfo.overriddenSpellID or traitDefinitionInfo.spellID
+							local spellName, _, spellTexture = GetSpellInfo(spellId)
+							if (spellName) then
+								completeListOfSpells[spellId] = completeListOfSpells[spellId] or true
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
+	--get spells from the Spec spellbook
+    for i = 1, GetNumSpellTabs() do
+        local tabName, tabTexture, offset, numSpells, isGuild, offspecId = GetSpellTabInfo(i)
+        if (tabTexture == specIconTexture) then
+            offset = offset + 1
+            local tabEnd = offset + numSpells
+            for entryOffset = offset, tabEnd - 1 do
+                local spellType, spellId = GetSpellBookItemInfo(entryOffset, "player")
+                if (spellId) then
+                    if (spellType == "SPELL") then
+                        spellId = C_SpellBook.GetOverrideSpell(spellId)
+                        local spellName = GetSpellInfo(spellId)
+                        local isPassive = IsPassiveSpell(entryOffset, "player")
+                        if (spellName and not isPassive) then
+                            completeListOfSpells[spellId] = completeListOfSpells[spellId] or true
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    --get class shared spells from the spell book
+    local tabName, tabTexture, offset, numSpells, isGuild, offspecId = GetSpellTabInfo(CONST_SPELLBOOK_CLASSSPELLS_TABID)
+    offset = offset + 1
+    local tabEnd = offset + numSpells
+    for entryOffset = offset, tabEnd - 1 do
+        local spellType, spellId = GetSpellBookItemInfo(entryOffset, "player")
+        if (spellId) then
+            if (spellType == "SPELL") then
+                spellId = C_SpellBook.GetOverrideSpell(spellId)
+                local spellName = GetSpellInfo(spellId)
+                local isPassive = IsPassiveSpell(entryOffset, "player")
+                if (spellName and not isPassive) then
+                    completeListOfSpells[spellId] = completeListOfSpells[spellId] or true
+                end
+            end
+        end
+    end
+end
+
+function Details.GetPlayTimeOnClass()
+	local className = select(2, UnitClass("player"))
+	if (className) then
+		local playedTime = Details.class_time_played[className]
+		if (playedTime) then
+			playedTime = playedTime + (GetTime() - Details.GetStartupTime())
+			return playedTime
+		end
+	end
+	return 0
+end
+
+function Details.GetPlayTimeOnClassString()
+    local playedTime = Details.GetPlayTimeOnClass()
+    local days = floor(playedTime / 86400) .. " days"
+    playedTime = playedTime % 86400
+    local hours = floor(playedTime / 3600) .. " hours"
+    playedTime = playedTime % 3600
+    local minutes = floor(playedTime / 60) .. " minutes"
+
+	local expansionLevel = GetExpansionLevel()
+	local expansionName = _G["EXPANSION_NAME" .. GetExpansionLevel()]
+
+    return "|cffffff00Time played this class (" .. expansionName .. "): " .. days .. " " .. hours .. " " .. minutes
+end
+
+local timePlayerFrame = CreateFrame("frame")
+timePlayerFrame:RegisterEvent("TIME_PLAYED_MSG")
+timePlayerFrame:SetScript("OnEvent", function()
+	--C_Timer.After(0, function() print(Details.GetPlayTimeOnClassString()) end)
+end)
