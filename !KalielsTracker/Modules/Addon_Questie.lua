@@ -41,6 +41,7 @@ local function GetQuestieData()
             if Questie.started then
                 isQuestieDBLoaded = true
                 ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_MODULE_QUEST)
+                KT.Filters:Init()
                 initTicker:Cancel()
                 initTicker = nil
             end
@@ -287,7 +288,7 @@ end
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
-    self.isLoaded = (KT:CheckAddOn("Questie", "7.1.2") and db.addonQuestie)
+    self.isLoaded = (KT:CheckAddOn("Questie", "7.2.1") and db.addonQuestie)
 end
 
 function M:OnEnable()

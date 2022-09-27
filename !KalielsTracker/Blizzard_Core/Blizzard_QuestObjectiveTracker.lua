@@ -241,9 +241,6 @@ local function EnumQuestWatchData(func)
 	for i = 1, KT_GetNumQuestWatches() do
 		questID = KT_GetQuestListInfo(i).id
 		questLogIndex = GetQuestLogIndexByID(questID)
-		if questLogIndex == 0 then
-			return  -- no Blizzard quest data
-		end
 		questWatchInfoList[i] = { KT_GetQuestWatchInfo(questLogIndex) };
 	end
 

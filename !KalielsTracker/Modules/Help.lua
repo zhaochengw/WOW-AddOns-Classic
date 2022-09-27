@@ -241,12 +241,14 @@ local function SetupTutorials()
 			shineRight = 6,
 		},
 		{	-- 9
-			text = cTitle.."         What's NEW in version |r|cffffffff3.1.0|r\n\n"..
-					"- ADDED - Achievements support (tracking, static/auto filtering)\n"..
-					"- FIXED - Broken some Quest Rewards inside tooltips\n"..
-					"- UPDATED - Addon support - Questie 7.1.2\n"..
-					"- UPDATED - Addon support - ElvUI 12.88\n"..
-					"- UPDATED - Help\n\n"..
+			text = cTitle.."         What's NEW in version |r|cffffffff3.2.0|r\n\n"..
+                    "- ADDED - Sanitization of tracked Quests\n"..
+                    "- FIXED - Auto Filters not initialized for Questie zones\n"..
+                    "- FIXED - Error when quest has an unsupported type\n"..
+                    "- UPDATED - Addon support - Questie 7.2.1\n"..
+                    "- UPDATED - Addon support - ElvUI 12.91\n"..
+                    "- UPDATED - Help\n"..
+                    "- UPDATED - Help - Supporters\n\n"..
 
 					cTitle.."WoW 3.4.0 - Known issues w/o solution|r\n"..
 					"- Clicking on tracked quests or achievements has no response during combat.\n"..
@@ -277,9 +279,9 @@ local function SetupTutorials()
 			end
 			if i == 2 then
 				if KTF.FilterButton then
-					self[i].shineLeft = db.headerOtherButtons and -55 or -35
+					self[i].shineLeft = db.headerOtherButtons and -75 or -35
 				else
-					self[i].shineLeft = db.headerOtherButtons and -35 or -15
+					self[i].shineLeft = db.headerOtherButtons and -55 or -15
 				end
 			elseif i == 3 then
 				local questInfo = KT_GetQuestListInfo(1)
@@ -315,6 +317,7 @@ local function SetupTutorials()
 					"                                    Many thanks to all supporters  |T"..helpPath.."help_patreon:16:16:0:0:256:32:157:173:0:16|t\n\n"..
 					cTitle.."Patrons|r\n"..
 					SetFormatedPatronName("Legendary", "Zayah", "Vek'nilash")..
+					SetFormatedPatronName("Uncommon", "Kyle Fuller")..
 					SetFormatedPatronName("Uncommon", "Torresman", "Drak'thul")..
 					SetFormatedPatronName("Uncommon", "Xeelee", "Razorfen")..
 					SetFormatedPatronName("Common", "Darren Divecha")..

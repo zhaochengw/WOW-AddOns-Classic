@@ -1594,7 +1594,9 @@ function KT:CreateQuestTag(questTag, frequency, suggestedGroup)
 			tagIcons = tagIcons..self.CreateQuestTagIcon(nil, 7, 12, 2, 0, 0.055, 0.134, 0.28125, 0.5625)
 		else
 			texCoords = QuestUtils_GetQuestTagTextureCoords(questTag)
-			tagIcons = tagIcons..self.CreateQuestTagIcon(nil, 12, 12, 0, 0, unpack(texCoords))
+			if texCoords then
+				tagIcons = tagIcons..self.CreateQuestTagIcon(nil, 12, 12, 0, 0, unpack(texCoords))
+			end
 		end
 	end
 	if frequency > 1 then  -- daily
@@ -1835,5 +1837,14 @@ function KT:OnEnable()
 
 	if self.db.global.version ~= self.version then
 		self.db.global.version = self.version
+	end
+
+	if KT_GetNumQuestWatches() > 0 then
+		for k, quest in ipairs(dbChar.trackedQuests) do
+			local questLogIndex = GetQuestLogIndexByID(quest.id)
+			if not questLogIndex or questLogIndex <= 0 then
+				tremove(dbChar.trackedQuests, k)
+			end
+		end
 	end
 end

@@ -769,14 +769,6 @@ local function SetFrames()
 			if event == "ADDON_LOADED" and arg1 == "Blizzard_AchievementUI" then
 				SetHooks_AchievementUI()
 				self:UnregisterEvent(event)
-			elseif event == "PLAYER_ENTERING_WORLD" then
-				if db.filterAuto[1] == "zone" then
-					C_Timer.After(0, function()
-						KT.questStateStopUpdate = true
-						Filter_Quests("zone")
-						KT.questStateStopUpdate = false
-					end)
-				end
 			elseif event == "QUEST_ACCEPTED" or
 					event == "ZONE_CHANGED" or
 					event == "ZONE_CHANGED_INDOORS" then
@@ -798,7 +790,6 @@ local function SetFrames()
 		end)
 	end
 	eventFrame:RegisterEvent("ADDON_LOADED")
-	eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	eventFrame:RegisterEvent("QUEST_ACCEPTED")
 	eventFrame:RegisterEvent("ZONE_CHANGED")
 	eventFrame:RegisterEvent("ZONE_CHANGED_INDOORS")
