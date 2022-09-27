@@ -17,8 +17,7 @@ L["AUCTION_TOOLTIP_TOOLTIP_HEADER"] = "Tooltip Informazioni Aste"
 L["AUCTION_TOOLTIP_TOOLTIP_TEXT"] = "Mostra informazioni asta nel tooltip al passaggio del mouse."
 L["AUCTIONATOR"] = "Auctionator"
 L["AUTHOR_HEADER"] = "Autore"
---[[Translation missing --]]
-L["BID_ONLY_AVAILABLE"] = "bid only available"
+L["BID_ONLY_AVAILABLE"] = "disponibile solo l'offerta"
 L["BID_PRICE"] = "Prezzo Offerta"
 L["BIDDER"] = "Offerente"
 L["BIDDING_AUCTION_INFO"] = "%s offerta a %s"
@@ -93,8 +92,7 @@ L["CONFIG_PET_TOOLTIP"] = "Mostra tooltip Mascotte"
 L["CONFIG_PROFILE_CATEGORY"] = "Profilo"
 L["CONFIG_PROFILE_TEXT"] = "Imposta opzioni per ogni personaggio."
 L["CONFIG_PROFILE_TOGGLE"] = "Applica solo a questo personaggio"
---[[Translation missing --]]
-L["CONFIG_PROSPECT_TOOLTIP"] = "Show prospect value for ore from jewelcrafting in tooltips"
+L["CONFIG_PROSPECT_TOOLTIP"] = "Mostra valori di prospezione di gioielleria dei minerali nel tooltip."
 L["CONFIG_QUANTITIES_CATEGORY"] = "Vendi: Quantità"
 L["CONFIG_QUANTITIES_TEXT"] = "Scegli le quantità predefinite per ogni oggetto di ogni categoria."
 L["CONFIG_RESET_STACK_SIZE_MEMORY"] = "Reimposta dimensione stack di memoria"
@@ -123,12 +121,9 @@ L["CONFIG_SELLING_GEAR_USE_ILVL_VARIANTS_TOOLTIP_TEXT"] = "Normalmente l'equipag
 L["CONFIG_SELLING_GEAR_VENDOR_PRICE_MULTIPLIER_SUFFIX"] = "Imposta a 0 per nessun prezzo"
 L["CONFIG_SELLING_GEAR_VENDOR_PRICE_MULTIPLIER_TOOLTIP_HEADER"] = "Prezzo di Vendita Predefinito per Equipaggiamento"
 L["CONFIG_SELLING_GEAR_VENDOR_PRICE_MULTIPLIER_TOOLTIP_TEXT"] = "Imposta un prezzo predefinito di vendita per equipaggiamento ad un multiplo del prezzo del venditore. Usato da Auctioneer per tutti gli ovggetti che non hanno un prezzo di vendita. Imposta 0 per non impostare nessun prezzo."
---[[Translation missing --]]
-L["CONFIG_SELLING_GREY_POST_BUTTON"] = "Grey (disable) the post button when a post may fail"
---[[Translation missing --]]
-L["CONFIG_SELLING_GREY_POST_BUTTON_TOOLTIP_HEADER"] = "Grey post button"
---[[Translation missing --]]
-L["CONFIG_SELLING_GREY_POST_BUTTON_TOOLTIP_TEXT"] = "When a post may fail the post button will be greyed out (disabled). Turn this option off to avoid waiting for the button to enable so you can attempt to post sooner."
+L["CONFIG_SELLING_GREY_POST_BUTTON"] = "Rende Grigio (non abilitato) il pulsante per creare un'asta quando questa non va a buon fine."
+L["CONFIG_SELLING_GREY_POST_BUTTON_TOOLTIP_HEADER"] = "Abilita/Disabilita pulsante Crea"
+L["CONFIG_SELLING_GREY_POST_BUTTON_TOOLTIP_TEXT"] = "Quando la creazione di un'asta non va a buon fine, il pulsante Crea viene colorato di grigio (non è abilitato). Seleziona questa opzione per eliminare l'attesa che il pulsante ritorni attivo così puoi ricreare l'alta il prima possibile."
 L["CONFIG_SELLING_ICON_SIZE"] = "Dimensione icona zaino (riavvio richiesto)"
 L["CONFIG_SELLING_ICON_SIZE_TOOLTIP_HEADER"] = "Dimensione delle icone"
 L["CONFIG_SELLING_ICON_SIZE_TOOLTIP_TEXT"] = "Permette di impostare l'icona delle sacche nella scheda vendita più grande (fino a 50) o più piccola (fino a 10). La grandezza predefinita è 42"
@@ -147,12 +142,9 @@ L["CONFIG_SELLING_SHOW_BID_PRICE"] = "Mostra l'opzione per il prezzo d'asta quan
 L["CONFIG_SELLING_SHOW_BID_PRICE_TOOLTIP_HEADER"] = "Opzioni Offerta"
 L["CONFIG_SELLING_SHOW_BID_PRICE_TOOLTIP_TEXT"] = "Controlla se attivare o meno l'opzione per il prezzo d'asta per un'oggetto."
 L["CONFIG_SELLING_SKIP_SHORTCUT"] = "La scorciatoia per saltare l'asta dell'oggetto corrente è"
---[[Translation missing --]]
-L["CONFIG_SELLING_SPLIT_PANELS"] = "Show split panel view between current prices and historical prices"
---[[Translation missing --]]
-L["CONFIG_SELLING_SPLIT_PANELS_TOOLTIP_HEADER"] = "Split Panels View"
---[[Translation missing --]]
-L["CONFIG_SELLING_SPLIT_PANELS_TOOLTIP_TEXT"] = "Normally the historical prices are on a tab inside the Selling tab, instead this makes the current prices always visible, but the historical prices show as a panel below them."
+L["CONFIG_SELLING_SPLIT_PANELS"] = "Mostra la visione divisa del pannello per i prezzi attuali e i prezzi storici"
+L["CONFIG_SELLING_SPLIT_PANELS_TOOLTIP_HEADER"] = "Visualizza Pannelli Divisi"
+L["CONFIG_SELLING_SPLIT_PANELS_TOOLTIP_TEXT"] = "Normalmente lo storico dei prezzi è visibile in una scheda dentro la scheda Vendi; questa opzione, al contrario, rende i prezzi attuali sempre visibili, ma lo storico dei prezzi viene mostrato con una scheda sotto."
 L["CONFIG_SELLING_TBC_ALL_ITEMS"] = "Opzione per impostare la creazione predefinita delle aste per tutti gli oggetti."
 L["CONFIG_SELLING_TEXT"] = "Opzioni per modificare il comportamento della scheda Acquista."
 L["CONFIG_SHOPPING_ALWAYS_LOAD_MORE"] = "Carica sempre tutti i risultati disponibili."
@@ -295,19 +287,15 @@ L["PERCENTAGE_TOOLTIP_TEXT"] = "La percentuale di ribasso che verrà utilizzata 
 L["PET_TOOLTIP_TOOLTIP_HEADER"] = "Tooltips Mascotte"
 L["PET_TOOLTIP_TOOLTIP_TEXT"] = "Mostra informazioni di Auctionator per le Mascotte catturate."
 L["POST"] = "Crea"
---[[Translation missing --]]
-L["POST_ATTEMPT_FAILED"] = "Your last post attempt didn't work. Try again."
+L["POST_ATTEMPT_FAILED"] = "Il tuo ultimo tentativo di creare un'asta non è andato a buon fine, Riprova."
 L["PRICE"] = "Prezzo"
 L["PRICE_INCREASE_WARNING"] = "Prezzo aumentato di %s, in attesa di %ss"
 L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "Abilita impostazioni per ogni personaggio"
 L["PROFILE_TOGGLE_TOOLTIP_TEXT"] = "Le modifiche alle impostazioni di Auctionator riguardano solo questo personaggio."
 L["PROFIT_COLON"] = "Profitto:"
---[[Translation missing --]]
-L["PROSPECT"] = "Prospect"
---[[Translation missing --]]
-L["PROSPECT_TOOLTIP_TOOLTIP_HEADER"] = "Prospect Tooltip Information"
---[[Translation missing --]]
-L["PROSPECT_TOOLTIP_TOOLTIP_TEXT"] = "Show jewelcrafting prospecting estimated value in tooltip on mouseover."
+L["PROSPECT"] = "Prospezione"
+L["PROSPECT_TOOLTIP_TOOLTIP_HEADER"] = "Tooltip Informazioni Prospezione"
+L["PROSPECT_TOOLTIP_TOOLTIP_TEXT"] = "Mostra una stima dei valori di prospezione di gioielleria nel tooltip al passaggio del mouse."
 L["PURCHASED_X_XX"] = "Acquistati %s x%s"
 L["QUANTITY"] = "Quantità"
 L["REAGENT_SEARCH"] = "Ricerca Reagenti"
