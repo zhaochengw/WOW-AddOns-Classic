@@ -46,19 +46,17 @@ function InspectFrame:Constructor()
         return self:SetTab(id)
     end
 
+    local talentTab, glyphTab
+
     self.Portrait = InspectFramePortrait
     self.Name = InspectNameText
     self.PaperDoll = ns.UI.PaperDoll:Bind(InspectPaperDollFrame)
-    self.TalentFrame = ns.UI.InspectTalent:Bind(self:CreateTabFrame{
-        -- topLeft = [[Interface\FriendsFrame\UI-FRIENDSFRAME-TOPLEFT]],
-        -- topRight = [[Interface\PaperDollInfoFrame\UI-Character-ClassSkillsTab-R1]],
-        -- bottomLeft = [[Interface\FriendsFrame\UI-FriendsFrame-Pending-BotLeft]],
-        -- bottomRight = [[Interface\FriendsFrame\UI-FriendsFrame-Pending-BotRight]],
-    })
+    self.TalentFrame = ns.UI.InspectTalent:Bind(self:CreateTabFrame())
     --[=[@classic@
-    self:AddTab(TALENT, self.TalentFrame)
+    talentTab = self:AddTab(TALENT, self.TalentFrame)
     --@end-classic@]=]
     -- @non-classic@
+    talentTab = tIndexOf(INSPECTFRAME_SUBFRAMES, 'InspectTalentFrame')
     InspectTalentFrame:Hide()
     InspectTalentFrame.Show = function()
         self.TalentFrame:Show()
@@ -70,6 +68,26 @@ function InspectFrame:Constructor()
         self.TalentFrame:SetShown(shown)
     end
     -- @end-non-classic@
+    -- @build>3@
+    self.GlyphFrame = ns.UI.GlyphFrame:Bind(self:CreateTabFrame())
+    glyphTab = self:AddTab(GLYPHS, self.GlyphFrame)
+    -- @end-build>3@
+
+    self.tabDepends = {
+        [tIndexOf(INSPECTFRAME_SUBFRAMES, 'InspectPVPFrame')] = function()
+            return Inspect.unit and CheckInteractDistance(Inspect.unit, 1) and CanInspect(Inspect.unit)
+        end,
+        [talentTab] = function()
+            return Inspect:GetUnitClass() and Inspect:GetNumTalentGroups() > 0 and Inspect:GetUnitTalent()
+        end,
+        [glyphTab] = function()
+            return Inspect:GetNumTalentGroups() > 0 and Inspect:GetUnitGlyph()
+        end,
+    }
+
+    self.groupTabs = {}
+    self:AddTalentGroupTab(1)
+    self:AddTalentGroupTab(2)
 
     self.Portrait:SetSize(64, 64)
 end
@@ -82,16 +100,96 @@ function InspectFrame:OnShow()
     self:RegisterMessage('INSPECT_TALENT_READY', 'UpdateTabs')
     self:Update()
     self:UpdateTabs()
+    self:UpdateTalentGroups()
     PlaySound(839) -- SOUNDKIT.IG_CHARACTER_INFO_OPEN
 end
 
 function InspectFrame:OnHide()
+    self.groupId = nil
     self.unitName = nil
     self:UnregisterAllEvents()
+    self:UnregisterAllMessages()
     Inspect:Clear()
     self:SetTab(1)
     self.TalentFrame:SetTab(1)
     PlaySound(840) -- SOUNDKIT.IG_CHARACTER_INFO_CLOSE
+end
+
+local function SpecOnEnter(button)
+    local talent = Inspect:GetUnitTalent(button.id)
+    if not talent then
+        return
+    end
+
+    GameTooltip:SetOwner(button, 'ANCHOR_RIGHT')
+    GameTooltip:SetText(button.id == 1 and TALENT_SPEC_PRIMARY or TALENT_SPEC_SECONDARY)
+
+    if button.id == Inspect:GetActiveTalentGroup() then
+        GameTooltip:AddLine(TALENT_ACTIVE_SPEC_STATUS, GREEN_FONT_COLOR:GetRGB())
+    end
+
+    for i = 1, talent:GetNumTalentTabs() do
+        local name, _, pointsSpent = talent:GetTabInfo(i)
+        local green = pointsSpent == button.best
+        GameTooltip:AddDoubleLine(name, pointsSpent, 1, 1, 1, green and 0 or 1, 1, green and 0 or 1)
+    end
+end
+
+local function SpecOnClick(button)
+    ---@type UI.InspectFrame
+    local parent = button:GetParent()
+    parent:SetTalentGroup(button.id)
+end
+
+function InspectFrame:SetTalentGroup(id)
+    if self.groupId == id then
+        return
+    end
+
+    self.groupId = id
+    for _, tab in ipairs(self.groupTabs) do
+        tab.ct:SetShown(tab.id == id)
+    end
+
+    self.TalentFrame:SetTalentGroup(id)
+    self.GlyphFrame:SetTalentGroup(id)
+end
+
+function InspectFrame:AddTalentGroupTab(id)
+    local button = CreateFrame('Button', nil, self)
+    button:SetSize(32, 32)
+
+    local bg = button:CreateTexture(nil, 'BACKGROUND')
+    bg:SetPoint('TOPLEFT', -3, 11)
+    bg:SetSize(64, 64)
+    bg:SetTexture([[Interface\SpellBook\SpellBook-SkillLineTab]])
+
+    local nt = button:CreateTexture(nil, 'ARTWORK')
+    nt:SetAllPoints(true)
+
+    local ct = button:CreateTexture(nil, 'OVERLAY')
+    ct:SetAllPoints(true)
+    ct:SetTexture([[Interface\Buttons\CheckButtonHilight]])
+    ct:SetBlendMode('ADD')
+    ct:Hide()
+
+    button.ct = ct
+    button.nt = nt
+    button.id = id
+
+    button:SetHighlightTexture([[Interface\Buttons\ButtonHilight-Square]], 'ADD')
+
+    button:SetScript('OnClick', SpecOnClick)
+    button:SetScript('OnEnter', SpecOnEnter)
+    button:SetScript('OnLeave', GameTooltip_Hide)
+
+    if id == 1 then
+        button:SetPoint('TOPLEFT', self, 'TOPRIGHT', -32, -65)
+    else
+        button:SetPoint('TOPLEFT', self.groupTabs[id - 1], 'BOTTOMLEFT', 0, -22)
+    end
+
+    self.groupTabs[id] = button
 end
 
 local function TabOnEnter(self)
@@ -114,7 +212,7 @@ function InspectFrame:AddTab(text, frame)
 
     self.tabFrames[id] = frame or self:CreateTabFrame()
 
-    return frame
+    return id
 end
 
 function InspectFrame:CreateTabFrame(bgs)
@@ -188,24 +286,61 @@ function InspectFrame:UNIT_PORTRAIT_UPDATE(_, unit)
     end
 end
 
+function InspectFrame:INSPECT_TALENT_READY()
+    self:UpdateTabs()
+    self:UpdateTalentGroups()
+end
+
 function InspectFrame:SetTab(id)
     PanelTemplates_SetTab(self, id)
 
     for i, frame in ipairs(self.tabFrames) do
         frame:SetShown(i == id)
     end
+
+    self:UpdateTalentGroups()
 end
 
 function InspectFrame:UpdateTabs()
-    if Inspect:GetUnitTalent() and Inspect:GetUnitClassFileName() then
-        PanelTemplates_EnableTab(self, 3)
-    else
-        PanelTemplates_DisableTab(self, 3)
+    for id, depend in pairs(self.tabDepends) do
+        if depend() then
+            PanelTemplates_EnableTab(self, id)
+        else
+            PanelTemplates_DisableTab(self, id)
+        end
+    end
+end
+
+function InspectFrame:UpdateTalentGroups()
+    local numGroups = Inspect:GetNumTalentGroups()
+    local activeGroup = Inspect:GetActiveTalentGroup()
+    local showGroupTabs = numGroups > 1 and (self.selectedTab == 3 or self.selectedTab == 4)
+
+    for _, tab in ipairs(self.groupTabs) do
+        tab:SetShown(showGroupTabs)
+
+        if showGroupTabs then
+            local talent = Inspect:GetUnitTalent(tab.id)
+            local best
+            local bestIcon
+            for i = 1, talent:GetNumTalentTabs() do
+                local _, _, pointsSpent, icon = talent:GetTabInfo(i)
+                if not best or best < pointsSpent then
+                    best = pointsSpent
+                    bestIcon = icon
+                end
+            end
+
+            if bestIcon then
+                tab.best = best
+                tab.nt:SetTexture(bestIcon)
+            else
+                tab.best = nil
+            end
+        end
     end
 
-    if Inspect.unit and CheckInteractDistance(Inspect.unit, 1) and CanInspect(Inspect.unit) then
-        PanelTemplates_EnableTab(self, 2)
-    else
-        PanelTemplates_DisableTab(self, 2)
+    if not self.groupId and activeGroup then
+        self:SetTalentGroup(activeGroup)
     end
 end

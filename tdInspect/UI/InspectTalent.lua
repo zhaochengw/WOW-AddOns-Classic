@@ -15,7 +15,7 @@ local PanelTemplates_SetNumTabs = PanelTemplates_SetNumTabs
 local PanelTemplates_UpdateTabs = PanelTemplates_UpdateTabs
 local PanelTemplates_TabResize = PanelTemplates_TabResize
 
----@class UI.InspectTalent: Object, Frame
+---@class UI.InspectTalent: Object, Frame, AceEvent-3.0
 local InspectTalent = ns.Addon:NewClass('UI.InspectTalent', 'Frame')
 
 function InspectTalent:Constructor()
@@ -79,11 +79,16 @@ function InspectTalent:Constructor()
     self.Summary:SetPoint('CENTER')
 
     self:SetScript('OnShow', self.OnShow)
+    self:SetScript('OnHide', self.OnHide)
 end
 
 function InspectTalent:OnShow()
     self:RegisterMessage('INSPECT_TALENT_READY', 'UpdateInfo')
     self:UpdateInfo()
+end
+
+function InspectTalent:OnHide()
+    self:UnregisterMessage('INSPECT_TALENT_READY')
 end
 
 local function TabOnClick(self)
@@ -114,7 +119,12 @@ function InspectTalent:SetTab(id)
 end
 
 function InspectTalent:UpdateInfo()
-    local talent = ns.Talent:New(Inspect:GetUnitClassFileName(), Inspect:GetUnitTalent())
+    if not self:IsShown() then
+        return
+    end
+
+    local activeGroup = Inspect:GetActiveTalentGroup()
+    local talent = Inspect:GetUnitTalent(self.groupId or activeGroup)
     local summaries = {}
 
     for i = 1, talent:GetNumTalentTabs() do
@@ -130,4 +140,10 @@ function InspectTalent:UpdateInfo()
 
     self.Summary:SetText(table.concat(summaries, '  '))
     self.TalentFrame:SetTalent(talent)
+    self.TalentFrame:SetActive(self.groupId == activeGroup)
+end
+
+function InspectTalent:SetTalentGroup(id)
+    self.groupId = id
+    self:UpdateInfo()
 end

@@ -6,6 +6,7 @@
 ---@class ns
 ---@field Inspect Inspect
 ---@field Talent Talent
+---@field Glyph Glyph
 local ns = select(2, ...)
 
 local ShowUIPanel = LibStub('LibShowUIPanel-1.0').ShowUIPanel

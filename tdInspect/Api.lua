@@ -6,15 +6,10 @@
 ---@class ns
 local ns = select(2, ...)
 
-local ipairs = ipairs
 local tonumber = tonumber
 local format = string.format
 
-local GetItemInfo = GetItemInfo
-local GetRealmName = GetRealmName
 local UnitFullName = UnitFullName
-
-local SPELL_PASSIVE = SPELL_PASSIVE
 
 local function memorize(func)
     local cache = {}
@@ -119,5 +114,14 @@ end
 
 local cache = {}
 function ns.GetItemGems(link, out)
-    return FillGem(out or wipe(cache), link:match('item:%d+:[-%d]*:(%d*):(%d*):(%d*):(%d*):'))
+    return FillGem(out or wipe(cache), link:match('item:%d+:?[-%d]*:?(%d*):?(%d*):?(%d*):?(%d*)'))
+    -- out = out or wipe(cache)
+    -- for i = 1, 4 do
+    --     local _, gemLink = GetItemGem(link, i)
+    --     local gemId = gemLink and ns.ItemLinkToId(gemLink)
+    --     if gemId then
+    --         tinsert(out, gemId)
+    --     end
+    -- end
+    -- return out
 end

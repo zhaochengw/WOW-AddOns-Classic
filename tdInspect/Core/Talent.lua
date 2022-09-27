@@ -15,10 +15,30 @@ function Talent:Constructor(class, data)
     self.talents = {}
     self.class = class
     self.data = ns.Talents[class]
-    self:ParseTalent(data)
+
+    if type(data) == 'string' then
+        self:ParseTalentV1(data)
+    elseif type(data) == 'table' then
+        self:ParseTalentV2(data)
+    end
 end
 
-function Talent:ParseTalent(data)
+function Talent:ParseTalentV2(data)
+    for i = 1, self:GetNumTalentTabs() do
+        self.talents[i] = {}
+
+        local pointsSpent = 0
+        for j = 1, self.data[i].numTalents do
+            local point = tonumber(data[i]:sub(j, j)) or 0
+            self.talents[i][j] = point
+            pointsSpent = pointsSpent + point
+        end
+
+        self.talents[i].pointsSpent = pointsSpent
+    end
+end
+
+function Talent:ParseTalentV1(data)
     data = data:gsub('[^%d]+', '')
 
     local index = 1
@@ -49,7 +69,7 @@ end
 function Talent:GetTabInfo(tab)
     local tabData = self.data[tab]
     if tabData then
-        return tabData.name, ns.TALENT_BACKGROUNDS[tabData.tabId], self.talents[tab].pointsSpent
+        return tabData.name, tabData.bg, self.talents[tab].pointsSpent, tabData.icon
     end
 end
 

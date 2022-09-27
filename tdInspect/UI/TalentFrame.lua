@@ -135,7 +135,11 @@ local function AddLine(line, r, g, b)
 end
 
 local function AddSpellSummary(spellId)
-    GameTooltip:AddLine(GetSpellDescription(spellId), 1, 0.82, 0, true)
+    local description = GetSpellDescription(spellId)
+    if not description or description == '' then
+        GameTooltip:GetOwner().UpdateTooltip = TalentOnEnter
+    end
+    GameTooltip:AddLine(description, 1, 0.82, 0, true)
 end
 
 function TalentFrame:OnSizeChanged(width, height)
@@ -150,6 +154,8 @@ local TOOLTIP_TALENT_PREREQ = RED_FONT_COLOR:WrapTextInColorCode(TOOLTIP_TALENT_
 local TOOLTIP_TALENT_TIER_POINTS = RED_FONT_COLOR:WrapTextInColorCode(TOOLTIP_TALENT_TIER_POINTS)
 
 function TalentFrame:ShowTooltip(button)
+    button.UpdateTooltip = nil
+
     local id = button:GetID()
     local name, _, row, _, rank, maxRank = self.talent:GetTalentInfo(self.tabIndex, id)
     local spellId = self.talent:GetTalentRankSpell(self.tabIndex, id, rank)
@@ -252,7 +258,6 @@ function TalentFrame:GetTalentButton(i)
         button.Slot = Slot
         button.RankBorder = RankBorder
         button.Rank = Rank
-        button.UpdateTooltip = TalentOnEnter
 
         self.buttons[i] = button
     end
@@ -697,4 +702,11 @@ end
 function TalentFrame:SetTalent(talent)
     self.talent = talent
     self:Refresh()
+end
+
+function TalentFrame:SetActive(active)
+    self.TopLeft:SetDesaturated(not active)
+    self.TopRight:SetDesaturated(not active)
+    self.BottomLeft:SetDesaturated(not active)
+    self.BottomRight:SetDesaturated(not active)
 end

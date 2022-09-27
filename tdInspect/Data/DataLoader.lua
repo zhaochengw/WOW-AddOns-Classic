@@ -38,8 +38,8 @@ function ns.TalentMake()
         ns.Talents[classFileName] = CURRENT
     end
 
-    local function CreateTab(tabId, numTalents)
-        tinsert(CURRENT, {tabId = tabId, numTalents = numTalents, talents = {}})
+    local function CreateTab(tabId, numTalents, bg, icon)
+        tinsert(CURRENT, {tabId = tabId, numTalents = numTalents, bg = bg, icon = icon, talents = {}})
     end
 
     local function CreateTalentInfo(row, column, maxRank, id)
