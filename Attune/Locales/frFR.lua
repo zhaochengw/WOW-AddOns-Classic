@@ -223,7 +223,7 @@ Lang["showDeprecatedAttunes_DESC"] = "Garder les accès obsolète (Onyxia 40, Na
 
 -- TREEVIEW
 Lang["World of Warcraft"] = "World of Warcraft"
-Lang["The Burning Crusade"] = "The Burning Crusade"
+Lang["The Burning Crusade"] = "La Croisade Ardente"
 Lang["Molten Core"] = "Coeur du Magma"
 Lang["Onyxia's Lair"] = "Repaire d'Onyxia"
 Lang["Blackwing Lair"] = "Repaire de l'Aile Noire"
@@ -263,6 +263,7 @@ Lang["Magisters' Terrace Heroic"] = "Terrasse des Magistères Héroïque"
 Lang["Magisters' Terrace"] = "Terrasse des Magistères"
 Lang["MgT_Desc"] = "Tous les joueurs doivent terminer le donjon en mode normal pour pouvoir l'exécuter en mode héroïque."
 Lang["Isle of Quel'Danas"] = "Île de Quel'Danas"
+Lang["Wrath of the Lich King"] = "La Colère du Roi-Liche"
 
 
 -- GENERIC
@@ -1375,6 +1376,7 @@ Lang["O_2"] = "C'est un minuscule point rouge brillant sur le sol\nen face des p
 --v247
 Lang["O_3"] = "Le sanctuaire est situé au bout d'un couloir\nqui part du niveau supérieur de l'Anneau de la Loi."
 Lang["O_189311"] = "|cFFFFFFFFTome relié de chair|r\n|cFF808080Cet objet permet de lancer une quête|r\n\nLe livre est sur le sol de la crypte,\nprès du Nécro-seigneur Amarion (78.3, 52.3).\n\nUne fois que vous l'avez, depechez vous de partir\ncar des enemis vont apparaitre."
+Lang["Flesh-bound Tome"] = "Tome relié de chair"
 
 
 -- à : \195\160    è : \195\168    ì : \195\172    ò : \195\178    ù : \195\185

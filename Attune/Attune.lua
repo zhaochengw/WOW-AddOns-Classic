@@ -8,10 +8,9 @@
 --
 -------------------------------------------------------------------------
 
--- Done in 307
---  Added support for Feats of Strength
---  Updated Tempest Keep, The Eye, BT Questlines to support the new Wrath quest Ids
---  Added the [Attune] prefix to achievement announcements for easier filtering
+-- Done in 308
+--  Added support Korean and Chinese languages
+--  Fixed an issue in German and French localizations
 
 -------------------------------------------------------------------------
 -- ADDON VARIABLES

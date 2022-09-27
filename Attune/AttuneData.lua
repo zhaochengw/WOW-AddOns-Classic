@@ -1036,7 +1036,7 @@ Attune_Data.steps = 	{
 	{ID_ATTUNE="330",ID="353",TYPE="Quest",STEP="",LOCATION=Lang["The Storm Peaks"],ID_WOWHEAD="12975",ICON="Interface\\Icons\\inv_scroll_03",FOLLOWS="350",STAGE="343"},
 	{ID_ATTUNE="330",ID="354",TYPE="Spacer",STEP="Spacer",LOCATION="",ID_WOWHEAD="",ICON="",FOLLOWS="0",STAGE="346"},
 	{ID_ATTUNE="330",ID="356",TYPE="Quest",STEP="",LOCATION=Lang["The Storm Peaks"],ID_WOWHEAD="12976",ICON="Interface\\Icons\\inv_scroll_03",FOLLOWS="353",STAGE="346"},
-	{ID_ATTUNE="330",ID="360",TYPE="Rep",STEP="Friendly with "..Lang["Sons of Hodir"],LOCATION="1119",ID_WOWHEAD="3000",ICON="Interface\\Icons\\achievement_boss_hodir_01",FOLLOWS="0",STAGE="346"},
+	{ID_ATTUNE="330",ID="360",TYPE="Rep",STEP=Lang["Friendly with"].." " ..Lang["Sons of Hodir"],LOCATION="1119",ID_WOWHEAD="3000",ICON="Interface\\Icons\\achievement_boss_hodir_01",FOLLOWS="0",STAGE="346"},
 	{ID_ATTUNE="330",ID="370",TYPE="Quest",STEP="",LOCATION=Lang["The Storm Peaks"],ID_WOWHEAD="13011",ICON="Interface\\Icons\\inv_scroll_03",FOLLOWS="356&360",STAGE="355"},
 	{ID_ATTUNE="330",ID="380",TYPE="Turn In",STEP="",LOCATION=Lang["The Storm Peaks"],ID_WOWHEAD="13010",ICON="Interface\\Icons\\inv_scroll_03",FOLLOWS="370",STAGE="360"},
 	{ID_ATTUNE="330",ID="390",TYPE="End",STEP="Attuned",LOCATION=Lang["The Storm Peaks"],ID_WOWHEAD="0",ICON="Interface\\Icons\\achievement_boss_hodir_01",FOLLOWS="380",STAGE="370"},

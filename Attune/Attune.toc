@@ -4,7 +4,7 @@
 ## Notes: Track your Attunement progression
 ## SavedVariables: Attune_DB
 ## SavedVariablesPerCharacter: AttuneLastViewed, TreeExpandStatus
-## Version: 307
+## Version: 308
 ## X-Website: https://warcraftratings.com
 embeds.xml
 Locales\Locales.xml

@@ -263,6 +263,7 @@ Lang["Magisters' Terrace Heroic"] = "Magisters' Terrace Heroic"
 Lang["Magisters' Terrace"] = "Magisters' Terrace"
 Lang["MgT_Desc"] = "All players need to complete the dungeon on normal mode to be able to run it in heroic mode."
 Lang["Isle of Quel'Danas"] = "Isle of Quel'Danas"
+Lang["Wrath of the Lich King"] = "Wrath of the Lich King"
 
 
 -- GENERIC
@@ -1375,4 +1376,5 @@ Lang["O_2"] = "It's a tiny glowing red dot on the ground\nin front of the gates 
 --v247
 Lang["O_3"] = "The shrine is located at the end of a corridor\nthat starts from the upper level of the Ring of Law."
 Lang["O_189311"] = "|cFFFFFFFFFlesh-bound Tome|r\n|cFF808080Starts a new quest|r\n\nThe book is on the floor of the crypt,\nnext to where Necrolord Amarion is (78.3, 52.3).\n\nOnce you have the quest, hurry up and get out\nof the crypt as mobs will spawn and attack you"
+Lang["Flesh-bound Tome"] = "Flesh-bound Tome"
 

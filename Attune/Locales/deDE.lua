@@ -263,6 +263,7 @@ Lang["Magisters' Terrace Heroic"] = "Terrasse der Magister Heroisch"
 Lang["Magisters' Terrace"] = "Terrasse der Magister"
 Lang["MgT_Desc"] = "Alle Spieler müssen den Dungeon im normalen Modus abschließen, um ihn im heroischen Modus ausführen zu können."
 Lang["Isle of Quel'Danas"] = "Insel von Quel'Danas"
+Lang["Wrath of the Lich King"] = "Der Zorn des Lichkönigs"
 
 
 -- GENERIC
@@ -1375,4 +1376,5 @@ Lang["O_2"] = "Es ist ein kleiner, rot glühender Punkt auf dem Boden\nVor den T
 --v247
 Lang["O_3"] = "Der Schrein befindet sich am Ende eines Korridors,\nder auf der oberen Ebene des Ring of Law beginnt."
 Lang["O_189311"] = "|cFFFFFFFFDer fleischgebundene Foliant|r\n|cFF808080Startet eine neue Quest|r\n\nDas Buch ist auf dem Boden in der Gruft,\nNeben dem Nekrolord (78.3, 52.3).\n\nWenn du die Quest hast: Raus da\nsonst wirst du überrannt vom Respwan"
+Lang["Flesh-bound Tome"] = "Der fleischgebundene Foliant"
 
