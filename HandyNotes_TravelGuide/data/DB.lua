@@ -17,7 +17,7 @@ local function GetMapNames(id1, id2)
     end
 end
 
-GetAreaInfo = C_Map.GetAreaInfo
+local GetAreaInfo = C_Map.GetAreaInfo
 
 ----------------------------------------------------------------------------------------------------
 
@@ -148,7 +148,9 @@ DB.points = {
         [48988734] = { icon="portal", label=PtoBL, note=EasternKingdoms, faction="Alliance" }
         },
     [1456] = { -- Thunderbluff
-        [23151351] = { icon="portal", label=PtoBL, note=EasternKingdoms, faction="Horde" }
+        [23151351] = { icon="portal", label=PtoBL, note=EasternKingdoms, faction="Horde" },
+        [14352576] = { icon="zeppelin", label=ZtoOG, note=Durotar, faction="Horde" },
+        [14352577] = { icon="hzeppelin", label=ZtoOG, note=Durotar, faction="Alliance" }
         },
     [1411] = { -- Durotar
         [34017850] = { icon="boat", label=BtoBootyBay, note=StranglethornVale },
@@ -163,7 +165,9 @@ DB.points = {
         [42590954] = { icon="portal", label=PtoBL, note=EasternKingdoms, faction="Horde" }
         },
     [1412] = { -- Mulgore
-        [34511959] = { icon="portal", label=PtoBL, note=EasternKingdoms, faction="Horde"}
+        [34511959] = { icon="portal", label=PtoBL, note=EasternKingdoms, faction="Horde"},
+        [32722208] = { icon="zeppelin", label=ZtoOG, note=Durotar, faction="Horde" },
+        [32722209] = { icon="hzeppelin", label=ZtoOG, note=Durotar, faction="Alliance" }
         },
     [1420] = { -- Tirisfal Glades
         [60695877] = { icon="zeppelin", label=ZtoOG, note=Durotar, faction="Horde" },
@@ -193,6 +197,8 @@ DB.points = {
         [58994666] = { icon="hzeppelin", multilabel={ZtoUC, ZtoStranglethornVale}, multinote={Tirisfal, GromgolBaseCamp}, faction="Alliance" },
         [57644731] = { icon="zeppelin", multilabel={ZtoTB, ZtoBoreanTundra}, multinote={Mulgore, BoreanTundra}, faction="Horde" },
         [57644732] = { icon="hzeppelin", multilabel={ZtoTB, ZtoBoreanTundra}, multinote={Mulgore, BoreanTundra}, faction="Alliance" },
+        [45385636] = { icon="zeppelin", label=ZtoOG, note=Durotar, faction="Horde" },
+        [45385637] = { icon="hzeppelin", label=ZtoOG, note=Durotar, faction="Alliance" },
         [29332792] = { icon="boat", label=BtoAuberdine, note=Darkshore, faction="Alliance" },
         [29332791] = { icon="aboat", label=BtoAuberdine, note=Darkshore, faction="Horde" },
         [49997730] = { icon="portal", label=WtoSholazarBasin, note=Northrend, requirements={quest=12613} },

@@ -1,5 +1,9 @@
 ## Revision History:
 
+#### v1.2 (September 29, 2022)
+------------------------------
+* Added a missing Zeppelin to Orgrimmar
+
 #### v1.1 (September 13, 2022)
 ------------------------------
 * Added Portals to Blasted Lands
