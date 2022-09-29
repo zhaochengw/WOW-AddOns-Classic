@@ -1,16 +1,28 @@
-tag edd94eacb78540dfe2aa7d2f6a9f0399bf04ff77 Details.DF.SL.Wrath.10031.146
+tag 4d8158fbd8a57257c55a8b1c8cb08d65279cac16 Details.DF.SL.Wrath.10032.146
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Tue Sep 27 08:33:16 2022 -0300
+Date:	Tue Sep 27 13:41:32 2022 -0300
 
-commit e10d009139c3f10bc90523c5b4a44c343d15dbbe
+commit 14c4c0beaa03945e8fd4f837442b614e8a799b6b
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Tue Sep 27 08:32:32 2022 -0300
+Date:   Tue Sep 27 13:40:40 2022 -0300
 
-    Updating LibOpenRaid in an attempt to fix a bug.
+    Version bump and fix for Wrath Open Raid library
 
-commit bc481bef4898177ca700ae46c753b117f375b7c0
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Sep 26 22:10:46 2022 -0300
+commit 44ee86b66a27801d5c5b432d728f72289678c28c
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Tue Sep 27 11:17:55 2022 -0500
 
-    Fixed unknown .displayName after startup
+    LibOpenRaid version bump
+
+commit 44ee86b66a27801d5c5b432d728f72289678c28c
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Tue Sep 27 11:17:55 2022 -0500
+
+    LibOpenRaid version bump
+
+commit 7f0f62bfe543f839d0e0242faae5579af78a7f03
+Author: Flamanis <Flamanis@users.noreply.github.com>
+Date:   Tue Sep 27 11:17:30 2022 -0500
+
+    Moved Failed Load check in LibOpenRaid
 
