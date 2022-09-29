@@ -1,28 +1,28 @@
-tag 4d8158fbd8a57257c55a8b1c8cb08d65279cac16 Details.DF.SL.Wrath.10032.146
+tag c603e3de36138cf50563aaacb364745deb1bf715 Details.DF.SL.Wrath.10033.146
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Tue Sep 27 13:41:32 2022 -0300
+Date:	Thu Sep 29 13:37:23 2022 -0300
 
-commit 14c4c0beaa03945e8fd4f837442b614e8a799b6b
+commit 11aa42e4da603f0c1a9eb89cc254eb75fe390503
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Tue Sep 27 13:40:40 2022 -0300
+Date:   Thu Sep 29 13:36:43 2022 -0300
 
-    Version bump and fix for Wrath Open Raid library
+    General fixes, framework update
 
-commit 44ee86b66a27801d5c5b432d728f72289678c28c
+commit 5a327a5f624464faef9fea6abe91e31c97f470ad
 Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Tue Sep 27 11:17:55 2022 -0500
+Date:   Thu Sep 29 07:36:33 2022 -0500
 
-    LibOpenRaid version bump
+    LibOpenRaid use C_Container if it exists
 
-commit 44ee86b66a27801d5c5b432d728f72289678c28c
+commit 5a327a5f624464faef9fea6abe91e31c97f470ad
 Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Tue Sep 27 11:17:55 2022 -0500
+Date:   Thu Sep 29 07:36:33 2022 -0500
 
-    LibOpenRaid version bump
+    LibOpenRaid use C_Container if it exists
 
-commit 7f0f62bfe543f839d0e0242faae5579af78a7f03
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Tue Sep 27 11:17:30 2022 -0500
+commit 797fb75bad242c78a11a3d3d1689f4ba379a0cda
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Thu Sep 29 09:00:52 2022 -0300
 
-    Moved Failed Load check in LibOpenRaid
+    Fixed segment menu background color being trasparent
 
