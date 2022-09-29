@@ -80,6 +80,8 @@ AL["Dagger"] = "Daga"
 AL["Dress up"] = "Probar"
 AL["Droprate:"] = "Prob. de conseguirse: "
 AL["Dungeons and Raids"] = "Mazmorras y Bandas"
+--[[Translation missing --]]
+--[[ AL["Enhancements"] = "Enhancements"--]] 
 AL["Factions"] = "Facciones"
 AL["Favourites"] = "Favoritos"
 AL["Fishing Pole"] = "Caña de pescar"
@@ -104,6 +106,8 @@ AL["Gun"] = "Arma de fuego"
 --[[ AL["Headless Horseman"] = "Headless Horseman"--]] 
 --[[Translation missing --]]
 --[[ AL["Heigan the Unclean"] = "Heigan the Unclean"--]] 
+--[[Translation missing --]]
+--[[ AL["Heirloom"] = "Heirloom"--]] 
 --[[Translation missing --]]
 --[[ AL["Heroes' %s"] = "Heroes' %s"--]] 
 AL["Heroic"] = "Heroico"
@@ -168,6 +172,8 @@ AL["PvP"] = "JcJ"
 AL["Quest"] = "Misión"
 AL["Quest objective."] = "Objetivo de misión."
 AL["Reagent for..."] = "Componente para..."
+--[[Translation missing --]]
+--[[ AL["Recipe"] = "Recipe"--]] 
 AL["Regen"] = "Regeneración"
 AL["Remove item from list"] = "Quitar objeto de la lista"
 AL["Reputation"] = "Reputación"

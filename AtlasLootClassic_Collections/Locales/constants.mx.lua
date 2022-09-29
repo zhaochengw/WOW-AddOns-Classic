@@ -12,6 +12,8 @@ AL["Abyssal Lords"] = "Lords abisales"
 AL["Abyssal Templars"] = "Templarios abisales"
 AL["Ahune"] = "Ahune"
 --[[Translation missing --]]
+--[[ AL["Apothecary Hummel"] = "Apothecary Hummel"--]] 
+--[[Translation missing --]]
 --[[ AL["Argent Tournament"] = "Argent Tournament"--]] 
 AL["Avalanchion"] = "Avalanchion"
 AL["Azure Templar"] = "Templario azur"
@@ -56,8 +58,6 @@ AL["Gift of Adoration"] = "Ofrenda de adoración"
 AL["Gurubashi Arena"] = "Arena Gurubashi"
 AL["Hallow's End"] = "Halloween"
 AL["Harvest Festival"] = "Festival de la Cosecha"
---[[Translation missing --]]
---[[ AL["Heirloom"] = "Heirloom"--]] 
 AL["High Marshal Whirlaxis"] = "Alto mariscal Eje Torbellino"
 AL["Hoary Templar"] = "Templario vetusto"
 AL["Idols"] = "Ídolos"
@@ -77,8 +77,6 @@ AL["Princess Tempestria"] = "Princesa Tempestria"
 AL["Ranged Weapons"] = "Armas a distancia"
 AL["Rare Fish"] = "Pescados raros"
 AL["Rare Fish Rewards"] = "Recompensas raras de pesca"
---[[Translation missing --]]
---[[ AL["Recipe"] = "Recipe"--]] 
 AL["Scarlet Monastery - Graveyard"] = "Monasterio Escarlata - Cementerio"
 AL["Scourge Invasion"] = "Invasión de la Plaga"
 AL["Silithus Abyssal"] = "Abisal Silithus"

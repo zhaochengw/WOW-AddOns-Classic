@@ -1906,7 +1906,12 @@ data["InscriptionWrath"] = {
 			name = AL["Misc"],
 			[NORMAL_DIFF] = {
 				{ 1, 59387 },	-- Certificate of Ownership
-				{ 16, 52739 },	-- Armor Vellum
+				{ 3, 52739 },	-- Armor Vellum
+				{ 4, 59499 },	-- Armor Vellum II
+				{ 5, 59500 },	-- Armor Vellum III
+				{ 18, 52840 },	-- Weapon Vellum
+				{ 19, 59488 },	-- Weapon Vellum II
+				{ 20, 59501 },	-- Weapon Vellum III
 			}
 		},
 	}
@@ -2014,6 +2019,16 @@ data["CookingWrath"] = {
 			},
 		},
 		{
+			name = ALIL["Spell Power"],
+			[NORMAL_DIFF] = {
+				{ 1, 45550 },	-- Shoveltusk Steak
+				{ 2, 45564 },	-- Smoked Salmon
+				{ 16, 45556 },	-- Tender Shoveltusk Steak
+				{ 17, 45568 },	-- Firecracker Salmon
+			},
+		},
+
+		{
 			name = ALIL["Attack Power"].." + "..ALIL["Spell Power"],
 			[NORMAL_DIFF] = {
 				{ 1, 58065 },	-- Dalaran Clam Chowder
@@ -2044,7 +2059,9 @@ data["CookingWrath"] = {
 			name = AL["Feast"],
 			[NORMAL_DIFF] = {
 				{ 1, 45554 },	-- Great Feast
+				{ 3, 58528 },   -- Small Feast
 				{ 16, 57423 },	-- Fish Feast
+				{ 18, 58527 },  -- Gigantic Feast
 			},
 		},
 		{
@@ -2069,7 +2086,11 @@ data["CookingWrath"] = {
 			[NORMAL_DIFF] = {
 				{ 1, 57438 },	-- Blackened Worg Steak
 				{ 2, 57443 },	-- Tracker Snacks
+				{ 4, 58523 },   -- Bad Clams
+				{ 5, 58521 },   -- Last Week's Mammoth
 				{ 16, 57435 },	-- Critter Bites
+				{ 19, 58525 },  -- Haunted Herring
+				{ 20, 58512 },  -- Tasty Cupcake
 			},
 		},
 	}

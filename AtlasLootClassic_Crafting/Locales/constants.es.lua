@@ -11,7 +11,6 @@ AL["Cauldrons"] = "Calderas"
 AL["Class Professions"] = "Profesiones de clase"
 AL["Drums"] = "Tambores"
 AL["Elixirs"] = "Elixires"
-AL["Enhancements"] = "Mejoras"
 AL["Expert"] = "Experto"
 AL["Fireworks"] = "Fuegos artificiales"
 --[[Translation missing --]]
