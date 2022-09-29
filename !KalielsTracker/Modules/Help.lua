@@ -241,14 +241,16 @@ local function SetupTutorials()
 			shineRight = 6,
 		},
 		{	-- 9
-			text = cTitle.."         What's NEW in version |r|cffffffff3.2.0|r\n\n"..
-                    "- ADDED - Sanitization of tracked Quests\n"..
-                    "- FIXED - Auto Filters not initialized for Questie zones\n"..
-                    "- FIXED - Error when quest has an unsupported type\n"..
-                    "- UPDATED - Addon support - Questie 7.2.1\n"..
-                    "- UPDATED - Addon support - ElvUI 12.91\n"..
-                    "- UPDATED - Help\n"..
-                    "- UPDATED - Help - Supporters\n\n"..
+			text = cTitle.."         What's NEW in version |r|cffffffff3.2.1|r\n\n"..
+					"- ADDED - Sanitization of tracked Quests\n"..
+					"- ADDED - Debug code for better identification of some errors\n"..
+					"- IMPROVED - Options - \"Clear Tracker Data\" button\n"..
+					"- FIXED - Auto Filters not initialized for Questie zones\n"..
+					"- FIXED - Error when quest has an unsupported type\n"..
+					"- UPDATED - Addon support - Questie 7.2.1\n"..
+					"- UPDATED - Addon support - ElvUI 12.91\n"..
+					"- UPDATED - Help\n"..
+					"- UPDATED - Help - Supporters\n\n"..
 
 					cTitle.."WoW 3.4.0 - Known issues w/o solution|r\n"..
 					"- Clicking on tracked quests or achievements has no response during combat.\n"..

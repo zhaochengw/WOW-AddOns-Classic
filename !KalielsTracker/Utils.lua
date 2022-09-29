@@ -42,6 +42,11 @@ function KT.IsHigherVersion(newVersion, oldVersion)
     return result
 end
 
+-- Debug
+function KT.Debug(text)
+    return "\n|cffff6060"..KT.title.." "..KT.db.global.version.." - DEBUG:|r\n|cff00ff00Please copy this error and report it on CurseForge addon page!|r\n"..text
+end
+
 -- Table
 function KT.IsTableEmpty(table)
     return (next(table) == nil)
@@ -56,6 +61,31 @@ function KT.IsInTable(table, item)
         end
     end
     return result
+end
+
+function KT.PrintTable(tbl, indent)
+    if not indent then indent = 0 end
+    local toprint = "{\n"
+    indent = indent + 2
+    for k, v in pairs(tbl) do
+        toprint = toprint .. string.rep(" ", indent)
+        if (type(k) == "number") then
+            toprint = toprint .. "[" .. k .. "] = "
+        elseif (type(k) == "string") then
+            toprint = toprint  .. k ..  " = "
+        end
+        if (type(v) == "number") then
+            toprint = toprint .. v .. ",\n"
+        elseif (type(v) == "string") then
+            toprint = toprint .. "\"" .. v .. "\",\n"
+        elseif (type(v) == "table") then
+            toprint = toprint .. KT.PrintTable(v, indent) .. ",\n"
+        else
+            toprint = toprint .. tostring(v) .. ",\n"
+        end
+    end
+    toprint = toprint .. string.rep(" ", indent - 2) .. "}"
+    return toprint
 end
 
 -- Quest

@@ -1279,6 +1279,7 @@ function KT:SetupOptions()
 			name = "Clear Tracker Data",
 			desc = "Clear the data of the tracked content.",
 			type = "execute",
+			confirm = true,
 			confirmText = "Clear Tracker Data - "..cBold..self.playerName,
 			func = function()
 				self.stopUpdate = true
@@ -1290,9 +1291,8 @@ function KT:SetupOptions()
 				for i = 1, #db.filterAuto do
 					db.filterAuto[i] = nil
 				end
-				self:SetBackground()
 				self.stopUpdate = false
-				ObjectiveTracker_Update()
+				ReloadUI()
 			end,
 			order = 0.2,
 		},

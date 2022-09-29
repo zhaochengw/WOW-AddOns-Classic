@@ -241,6 +241,7 @@ local function EnumQuestWatchData(func)
 	for i = 1, KT_GetNumQuestWatches() do
 		questID = KT_GetQuestListInfo(i).id
 		questLogIndex = GetQuestLogIndexByID(questID)
+		assert(questLogIndex > 0, KT.Debug("idx = "..i.."\ntrackedQuests = "..KT.PrintTable(KT.db.char.trackedQuests)))
 		questWatchInfoList[i] = { KT_GetQuestWatchInfo(questLogIndex) };
 	end
 
