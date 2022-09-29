@@ -1,3 +1,17 @@
+3.0.13 - 29th September 2022
+- Added lots and lots of flight times.  There are now 4378 flight times stored in Leatrix Plus for Wrath Classic.
+
+3.0.12 - 28th September 2022
+- Added lots and lots of flight times.  There are now 4275 flight times stored in Leatrix Plus for Wrath Classic.
+
+3.0.11 - 28th September 2022
+- Added lots and lots of flight times.  There are now 4122 flight times stored in Leatrix Plus for Wrath Classic.
+
+3.0.10 - 28th September 2022
+- For 'Automate gossip' ('Automation'), stable master gossip will now be skipped as long as there are no other gossip options.  You can hold shift to prevent this.
+- Added Wrath of the Lich King main title music (media > various > main titles).
+- Added lots and lots of flight times.  There are now 4003 flight times stored in Leatrix Plus for Wrath Classic.
+
 3.0.09 - 27th September 2022
 - Added a new option 'Restore chat messages' ('Chat').  If enabled, you can reload your UI without losing your recent chat messages.
 - Added a new option 'Block shared quests' ('Social').  If enabled, shared quests will be automatically declined unless the player sharing the quest is a friend.
