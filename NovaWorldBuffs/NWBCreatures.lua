@@ -731,4 +731,8 @@ NWB.companionCreatures = {
 	[32980] = "Faithful Mule",
 	[36544] = "Night Elf Mohawk",
 	[32247] = "Zippy Copper Racer",
+	[194870] = "Pebble",
+	[194795] = "Fishspeaker Irtusk",
+	[32641] = "Drix Blackwrench", --Tundra mount.
+	[32642] = "Mojodishu", --Tundra mount.
 }

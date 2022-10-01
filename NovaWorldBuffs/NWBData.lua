@@ -123,10 +123,11 @@ function NWB:OnCommReceived(commPrefix, string, distribution, sender)
 		--data = args[2]; --Data (everything after version arg).
 		--remoteVersion = "0";
 	--end
-	if (tonumber(remoteVersion) < 1.83) then
-		data = args[3];
+	if (not remoteVersion or not tonumber(remoteVersion) or tonumber(remoteVersion) < 1.83) then
+		--data = args[3];
 		--NWB:extractSettings(data, sender, distribution);
-		--return;
+		--Just ignore versions this old now.
+		return;
 	end
 	NWB.hasAddon[sender] = (remoteVersion or "0");
 	--Trying to fix double guild msg bug, extract settings from data first even if the rest fails for some reason.
@@ -621,7 +622,7 @@ function NWB:createData(distribution, noLogs)
 		data.terokFaction = NWB.data.terokFaction;
 	end
 	if (NWB.isWrath and NWB.data.wintergrasp and tonumber(NWB.data.wintergrasp)
-			and NWB.data.wintergrasp > GetServerTime() and NWB.data.wintergrasp < GetServerTime() + 10860) then
+			and NWB.data.wintergrasp > GetServerTime() and NWB.data.wintergrasp < GetServerTime() + 86400) then
 		data.wintergrasp = NWB.data.wintergrasp;
 		data.wintergraspTime = NWB.data.wintergraspTime;
 		--data.wintergraspFaction = NWB.data.wintergraspFaction;
@@ -942,7 +943,7 @@ function NWB:createDataLayered(distribution, noLayerMap, noLogs, type, forceLaye
 	end
 	if (not type or type == "wintergrasp") then
 		if (NWB.isWrath and NWB.data.wintergrasp and tonumber(NWB.data.wintergrasp)
-				and NWB.data.wintergrasp > GetServerTime() and NWB.data.wintergrasp < GetServerTime() + 10860) then
+				and NWB.data.wintergrasp > GetServerTime() and NWB.data.wintergrasp < GetServerTime() + 86400) then
 			data.wintergrasp = NWB.data.wintergrasp;
 			data.wintergraspTime = NWB.data.wintergraspTime;
 			data.wintergraspFaction = NWB.data.wintergraspFaction;
