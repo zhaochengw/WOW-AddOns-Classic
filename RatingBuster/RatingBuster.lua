@@ -24,7 +24,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RatingBuster")
 RatingBuster = LibStub("AceAddon-3.0"):NewAddon("RatingBuster", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 RatingBuster.title = "Rating Buster"
 --@non-debug@
-RatingBuster.version = "1.5.8"
+RatingBuster.version = "1.5.14"
 --@end-non-debug@
 --[==[@debug@
 RatingBuster.version = "(development)"
@@ -456,6 +456,13 @@ local options = {
 						["main"] = "Main"
 					},
 					order = 4,
+				},
+				hideBlizzardComparisons = {
+					type = 'toggle',
+					name = L["Hide Blizzard Item Comparisons"],
+					desc = L["Disable Blizzard stat change summary when using the built-in comparison tooltip"],
+					width = "double",
+					order = 4.5,
 				},
 				sumShowIcon = {
 					type = 'toggle',
@@ -1039,6 +1046,7 @@ local defaults = {
 		sumSortAlpha = false,
 		calcDiff = true,
 		calcSum = true,
+		hideBlizzardComparisons = true,
 	},
 	profile = {
 		enableStatMods = true,
@@ -1613,14 +1621,18 @@ function RatingBuster.ProcessTooltip(tooltip, name, link)
 			if link then
 				local _, _, id = strfind(link, "item:(%d+)")
 				local newLine = ""
+				local statColor = globalDB.sumStatColor
+				local valueColor = globalDB.sumValueColor
 				if level and globalDB.showItemLevel then
-					newLine = newLine..L["ItemLevel: "]..level
+					newLine = newLine .. statColor:WrapTextInColorCode(L["ItemLevel: "])
+					newLine = newLine .. valueColor:WrapTextInColorCode(level)
 				end
 				if id and globalDB.showItemID then
 					if newLine ~= "" then
 						newLine = newLine..", "
 					end
-					newLine = newLine..L["ItemID: "]..id
+					newLine = newLine .. statColor:WrapTextInColorCode(L["ItemID: "])
+					newLine = newLine .. valueColor:WrapTextInColorCode(id)
 				end
 				if newLine ~= "" then
 					cache[link] = newLine
@@ -2211,6 +2223,52 @@ function RatingBuster:ProcessText(text, link)
 	return text
 end
 
+local blizzardComparisonPatterns = {
+	[ITEM_DELTA_DESCRIPTION] = true,
+	[ITEM_DELTA_MULTIPLE_COMPARISON_DESCRIPTION] = true,
+}
+
+local function RemoveFontString(fontString)
+	fontString:SetText("")
+	fontString:Hide()
+	fontString:SetWidth(0)
+end
+
+local function RemoveBlizzardItemComparisons(tooltip)
+	if not tooltip or not globalDB.hideBlizzardComparisons then return end
+
+	for _, shoppingTooltip in pairs(tooltip.shoppingTooltips) do
+		local tipTextLeft = shoppingTooltip:GetName().."TextLeft"
+		local tipTextRight = shoppingTooltip:GetName().."TextRight"
+		local isBlizzardComparison = false
+
+		for i = 2, shoppingTooltip:NumLines() do
+			local fontString = _G[tipTextLeft..i]
+			local text = fontString:GetText()
+			if text then
+				if not isBlizzardComparison and blizzardComparisonPatterns[text] then
+					isBlizzardComparison = true
+					local previousFontString = _G[tipTextLeft .. (i-1)]
+					if previousFontString:GetText():find("^%s*") then
+						RemoveFontString(previousFontString)
+					end
+				elseif isBlizzardComparison then
+					if not text:find("^|cffff2020%-") and not text:find("^|cff00ff00%+") then
+						isBlizzardComparison = false
+					end
+				end
+
+				if isBlizzardComparison then
+					RemoveFontString(fontString)
+					RemoveFontString(_G[tipTextRight..i])
+				end
+			end
+		end
+		shoppingTooltip:Show()
+	end
+end
+
+hooksecurefunc("GameTooltip_ShowCompareItem", RemoveBlizzardItemComparisons)
 
 -- Color Numbers
 local GREEN_FONT_COLOR_CODE = GREEN_FONT_COLOR_CODE -- "|cff20ff20" Green

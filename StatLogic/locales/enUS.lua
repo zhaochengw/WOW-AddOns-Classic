@@ -148,8 +148,10 @@ L["WholeTextLookup"] = {
 	["Eternium Line"] = {["FISHING"] = 5}, --
 	["Savagery"] = {["AP"] = 70}, --
 	["Vitality"] = {["MANA_REG"] = 4, ["HEALTH_REG"] = 4}, -- Enchant Boots - Vitality http://wow.allakhazam.com/db/spell.html?wspell=27948
-	["Soulfrost"] = {["SHADOW_SPELL_DMG"] = 54, ["FROST_SPELL_DMG"] = 54}, --
-	["Sunfire"] = {["ARCANE_SPELL_DMG"] = 50, ["FIRE_SPELL_DMG"] = 50}, --
+	["Soulfrost"] = {["SHADOW_SPELL_DMG"] = 54, ["FROST_SPELL_DMG"] = 54},
+	["+54 Shadow and Frost Spell Power"] = {["SHADOW_SPELL_DMG"] = 54, ["FROST_SPELL_DMG"] = 54},
+	["Sunfire"] = {["ARCANE_SPELL_DMG"] = 50, ["FIRE_SPELL_DMG"] = 50},
+	["+50 Arcane and Fire Spell Power"] = {["ARCANE_SPELL_DMG"] = 50, ["FIRE_SPELL_DMG"] = 50},
 
 	["Mithril Spurs"] = {["MOUNT_SPEED"] = 4}, -- Mithril Spurs
 	["Minor Mount Speed Increase"] = {["MOUNT_SPEED"] = 2}, -- Enchant Gloves - Riding Skill
@@ -167,6 +169,10 @@ L["WholeTextLookup"] = {
 	["Immune to Disarm"] = false, --
 	["Crusader"] = false, -- Enchant Crusader
 	["Lifestealing"] = false, -- Enchant Crusader
+	["Equip: Inflicts the will of the Ashbringer upon the wielder."] = false, -- Corrupted Ashbringer
+	["Equip: Your melee and ranged attacks have a chance to call on the power of the Arcane if you're exalted with the Scryers, or the Light if you're exalted with the Aldor."] = false,
+	["Equip: Your spells have a chance to call on the power of the Arcane if you're exalted with the Scryers, or the Light if you're exalted with the Aldor."] = false,
+	["Equip: Your heals have a chance to call on the power of the Arcane if you're exalted with the Scryers, or the Light if you're exalted with the Aldor."] = false,
 }
 ----------------------------
 -- Single Plus Stat Check --
