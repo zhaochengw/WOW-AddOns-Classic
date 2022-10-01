@@ -1,3 +1,14 @@
+3.0.16 - 1st October 2022
+- If 'Automate gossip' ('Automation') is enabled, the gossip from the engineer auction house robots in Dalaran will be skipped.
+- Added flight times.
+
+3.0.15 - 30th September 2022
+- Added flight times.
+
+3.0.14 - 30th September 2022
+- Changes to file structure.
+- Added flight times.
+
 3.0.13 - 29th September 2022
 - Added lots and lots of flight times.  There are now 4378 flight times stored in Leatrix Plus for Wrath Classic.
 
