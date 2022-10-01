@@ -1,7 +1,7 @@
 local mod = DBM:NewMod(603, "DBM-Party-WotLK", 16, 276)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20220724032315")
+mod:SetRevision("20220930022912")
 --mod:SetEncounterID(1990)--TODO, why was this unreliable?
 
 mod:RegisterEvents(
@@ -15,9 +15,9 @@ local timerEscape	= mod:NewAchievementTimer(360, 4526, "achievementEscape")
 
 mod.vb.waveCount = 0
 
-local ragingGoul = DBM:EJ_GetSectionInfo(7276) or L.Ghoul
-local witchDoctor = DBM:EJ_GetSectionInfo(7278) or L.Doctor
-local abomination = DBM:EJ_GetSectionInfo(7282) or L.Abom
+local ragingGoul = L.Ghoul
+local witchDoctor = L.Doctor
+local abomination = L.Abom
 
 local addWaves = {
 	[1] = { "6 "..ragingGoul, "1 "..witchDoctor },
