@@ -1,8 +1,8 @@
 PallyPower = LibStub("AceAddon-3.0"):NewAddon("PallyPower", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0", "AceTimer-3.0")
 
 PallyPower.isVanilla = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC)
-PallyPower.isBCC = ((_G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC) and select(4, GetBuildInfo()) < 30000)
-PallyPower.isWrath = (select(4, GetBuildInfo()) >= 30400 and select(4, GetBuildInfo()) < 40000) -- TODO: Change when there is a project ID
+PallyPower.isBCC = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
+PallyPower.isWrath = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC)
 
 local L = LibStub("AceLocale-3.0"):GetLocale("PallyPower")
 local LSM3 = LibStub("LibSharedMedia-3.0")
@@ -177,7 +177,7 @@ function PallyPower:OnInitialize()
 		self.opt.WrathTransition = true
 	end
 
-	if not PallyPower_SavedPresets or PallyPower_SavedPresets == nil then
+	if not PallyPower_SavedPresets then
 		PallyPower_SavedPresets = {}
 		PallyPower_SavedPresets["PallyPower_Assignments"] = {[0] = {}}
 		PallyPower_SavedPresets["PallyPower_NormalAssignments"] = {[0] = {}}
@@ -677,6 +677,7 @@ function PallyPowerBlessingsGrid_Update(self, elapsed)
 				if CooldownInfo[id] then
 					_G[fname .. "CIcon" .. id]:Show()
 					_G[fname .. "CSkill" .. id]:Show()
+					local txt
 					if CooldownInfo[id].start ~= 0 and CooldownInfo[id].duration ~= 0 then
 						CooldownInfo[id].text = PallyPower:FormatTime(CooldownInfo[id].start + CooldownInfo[id].duration - GetTime())
 						if CooldownInfo[id].start + CooldownInfo[id].duration - GetTime() < 1 then
@@ -1758,7 +1759,7 @@ function PallyPower:ParseMessage(sender, msg)
 			local talent = strsub(numbers, (i - 1) * 2 + 2, (i - 1) * 2 + 2)
 			if rank ~= "n" then
 				AllPallys[sender][i] = {}
-				AllPallys[sender][i].rank = tonumber(rank)
+				AllPallys[sender][i].rank = tonumber(rank, 16)
 				AllPallys[sender][i].talent = tonumber(talent)
 			end
 		end
@@ -1906,7 +1907,7 @@ function PallyPower:ParseMessage(sender, msg)
 				if rank ~= "n" then
 					AllPallys[sender].AuraInfo[i] = {}
 					AllPallys[sender].AuraInfo[i].rank = tonumber(rank, 16)
-					AllPallys[sender].AuraInfo[i].talent = tonumber(talent, 16)
+					AllPallys[sender].AuraInfo[i].talent = tonumber(talent)
 				end
 			end
 			if assign then

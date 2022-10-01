@@ -1,7 +1,7 @@
 ## Interface: 20504
 ## Author: Aznamir, Dyaxler, Es, gallantron
 ## Title: PallyPower Classic
-## Version: v1.4.9-classic
+## Version: v1.5.0-classic
 ## Notes: Raid/Party Paladin buffs
 ## Notes-esES: Buffs de Paladín para Grupo/Banda
 ## Notes-zhCN: 圣骑士祝福管理
