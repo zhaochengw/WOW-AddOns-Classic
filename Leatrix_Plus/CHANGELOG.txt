@@ -1,3 +1,7 @@
+3.0.17 - 1st October 2022
+- For 'Show flight times', you can now set the flight progress bar background to fill up instead of drain.
+- Added flight times.  There are more addon releases at the moment to make sure that everyone gets the latest flight times that have been submitted by thousands of Leatrix Plus users since Wrath's release.  Thank you everyone for your contribution.
+
 3.0.16 - 1st October 2022
 - If 'Automate gossip' ('Automation') is enabled, the gossip from the engineer auction house robots in Dalaran will be skipped.
 - Added flight times.

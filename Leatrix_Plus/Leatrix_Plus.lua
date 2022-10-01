@@ -1,5 +1,5 @@
 ﻿----------------------------------------------------------------------
--- 	Leatrix Plus 3.0.16 (1st October 2022)
+-- 	Leatrix Plus 3.0.17 (1st October 2022)
 ----------------------------------------------------------------------
 
 --	01:Functns, 02:Locks, 03:Restart, 20:Live, 30:Isolated, 40:Player
@@ -19,7 +19,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "3.0.16"
+	LeaPlusLC["AddonVer"] = "3.0.17"
 
 	-- Get locale table
 	local void, Leatrix_Plus = ...
@@ -5280,6 +5280,13 @@
 									mybar:SetLabel(barName)
 								end
 
+								-- Set flight bar fill mode
+								if LeaPlusLC["FlightBarFillBar"] == "On" then
+									mybar:SetFill(true)
+								else
+									mybar:SetFill(false)
+								end
+
 								mybar:EnableMouse(false)
 								mybar:SetDuration(duration)
 								mybar:Start()
@@ -5440,9 +5447,10 @@
 			LeaPlusLC:MakeTx(FlightPanel, "Settings", 16, -72)
 			LeaPlusLC:MakeCB(FlightPanel, "FlightBarBackground", "Show background", 16, -92, false, "If checked, the flight progress bar background texture will be shown.")
 			LeaPlusLC:MakeCB(FlightPanel, "FlightBarDestination", "Show destination", 16, -112, false, "If checked, the flight progress bar destination will be shown.")
+			LeaPlusLC:MakeCB(FlightPanel, "FlightBarFillBar", "Fill instead of drain", 16, -132, false, "If checked, the flight progress bar background will fill up instead of drain.")
 
-			LeaPlusLC:MakeTx(FlightPanel, "Contribute", 16, -152)
-			LeaPlusLC:MakeCB(FlightPanel, "FlightBarContribute", "Help contribute flight times", 16, -172, false, "If checked, you will be prompted to submit missing flight times.")
+			LeaPlusLC:MakeTx(FlightPanel, "Contribute", 16, -172)
+			LeaPlusLC:MakeCB(FlightPanel, "FlightBarContribute", "Help contribute flight times", 16, -192, false, "If checked, you will be prompted to submit missing flight times.")
 
 			LeaPlusLC:MakeTx(FlightPanel, "Scale", 356, -72)
 			LeaPlusLC:MakeSL(FlightPanel, "FlightBarScale", "Drag to set the flight progress bar scale.", 1, 5, 0.1, 356, -92, "%.2f")
@@ -5483,6 +5491,21 @@
 			-- Set progress bar background when option is clicked and on startup
 			LeaPlusCB["FlightBarBackground"]:HookScript("OnClick", SetProgressBarBackground)
 			SetProgressBarBackground()
+
+			-- Set progress bar fill mode
+			local function SetProgressBarFillMode()
+				if LeaPlusLC.FlightProgressBar then
+					if LeaPlusLC["FlightBarFillBar"] == "On" then
+						LeaPlusLC.FlightProgressBar:SetFill(true)
+					else
+						LeaPlusLC.FlightProgressBar:SetFill(false)
+					end
+				end
+			end
+
+			-- Set progress bar fill mode when option is clicked and on startup
+			LeaPlusCB["FlightBarFillBar"]:HookScript("OnClick", SetProgressBarFillMode)
+			SetProgressBarFillMode()
 
 			-- Set progress bar destination
 			local function SetProgressBarDestination()
@@ -5554,6 +5577,7 @@
 				-- Reset checkboxes
 				LeaPlusLC["FlightBarBackground"] = "On"
 				LeaPlusLC["FlightBarDestination"] = "On"
+				LeaPlusLC["FlightBarFillBar"] = "Off"; SetProgressBarFillMode()
 				LeaPlusLC["FlightBarContribute"] = "On"
 				-- Reset live progress bar
 				if LeaPlusLC.FlightProgressBar then
@@ -12212,6 +12236,8 @@
 				LeaPlusLC:LoadVarChk("ShowFlightTimes", "Off")				-- Show flight times
 				LeaPlusLC:LoadVarChk("FlightBarBackground", "On")			-- Show flight times bar background
 				LeaPlusLC:LoadVarChk("FlightBarDestination", "On")			-- Show flight times bar destination
+				LeaPlusLC:LoadVarChk("FlightBarFillBar", "Off")				-- Show flight times bar fill mode
+
 				LeaPlusLC:LoadVarChk("FlightBarContribute", "On")			-- Show flight times contribute
 				LeaPlusLC:LoadVarAnc("FlightBarA", "TOP")					-- Show flight times anchor
 				LeaPlusLC:LoadVarAnc("FlightBarR", "TOP")					-- Show flight times relative
@@ -12581,6 +12607,8 @@
 			LeaPlusDB["ShowFlightTimes"]		= LeaPlusLC["ShowFlightTimes"]
 			LeaPlusDB["FlightBarBackground"]	= LeaPlusLC["FlightBarBackground"]
 			LeaPlusDB["FlightBarDestination"]	= LeaPlusLC["FlightBarDestination"]
+			LeaPlusDB["FlightBarFillBar"]		= LeaPlusLC["FlightBarFillBar"]
+
 			LeaPlusDB["FlightBarContribute"]	= LeaPlusLC["FlightBarContribute"]
 			LeaPlusDB["FlightBarA"]				= LeaPlusLC["FlightBarA"]
 			LeaPlusDB["FlightBarR"]				= LeaPlusLC["FlightBarR"]
@@ -14654,6 +14682,7 @@
 				LeaPlusDB["ShowFlightTimes"] = "On"				-- Show flight times
 				LeaPlusDB["FlightBarBackground"] = "Off"		-- Show flight times bar background
 				LeaPlusDB["FlightBarDestination"] = "On"		-- Show flight times bar destination
+				LeaPlusDB["FlightBarFillBar"] = "Off"			-- Show flight times bar fill mode
 				LeaPlusDB["FlightBarContribute"] = "On"			-- Show flight times contribute
 
 				-- Interface: Manage frames
