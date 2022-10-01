@@ -51123,6 +51123,30 @@ t[8523] = {
 	sellPrice = 0,
 	reqLevel = 0,
 }
+t[1941] = {
+	name = L["Cask of Merlot"],
+	quality = 1,
+	icon = "inv_cask_01",
+	buyPrice = 815,
+	sellPrice = 203,
+	reqLevel = 0,
+}
+t[3426] = {
+	name = L["Bold Yellow Shirt"],
+	quality = 1,
+	icon = "inv_shirt_yellow_01",
+	buyPrice = 4000,
+	sellPrice = 1000,
+	reqLevel = 0,
+}
+t[3427] = {
+	name = L["Stylish Black Shirt"],
+	quality = 1,
+	icon = "inv_shirt_black_01",
+	buyPrice = 6000,
+	sellPrice = 1500,
+	reqLevel = 0,
+}
 t[2555] = {
 	name = L["true"],
 	profession = L["Alchemy"],
