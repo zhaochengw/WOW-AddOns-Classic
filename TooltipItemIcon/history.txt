@@ -1,5 +1,8 @@
 Version history:
 
+1.795
+- Fix for Equipment Manager in Wrath
+
 1.794
 - Update workflow to use BigWigs Packager V2
 - Update pkgmeta to support multiple TOC files

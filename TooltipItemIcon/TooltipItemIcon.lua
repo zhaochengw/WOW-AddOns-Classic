@@ -434,6 +434,7 @@ end
 
 -- Hook for when we know the frame contains an equipemnt set
 -- (OnTooltipSetEquipmentSet)
+-- Note: OnTooltipSetEquipmentSet script does not provide any additional info, so we have to figure out which equipment set is being displayed.
 local function HookEquipmentSet(frame)
 	if not options.equipmentset then
 		return
@@ -442,13 +443,24 @@ local function HookEquipmentSet(frame)
 	if data.disable or data.shown then
 		return
 	end
-	for i = 1, 8 do
-		if GameTooltipTextLeft1:GetText() == _G["PaperDollEquipmentManagerPaneButton"..i.."Text"]:GetText() then
-			DisplayIconDispatch(data, _G["PaperDollEquipmentManagerPaneButton"..i.."Icon"]:GetTexture())
 
-			return
+	-- Method relies on the tooltip's owner being set correctly, and the owner having an icon texture accessible via owner.icon
+	local owner = frame:GetOwner()
+	if owner then
+		local icon = owner.icon
+		if icon then
+			local texture = icon:GetTexture()
+			if texture then
+				DisplayIconDispatch(data, texture)
+			end
 		end
 	end
+
+	--[[ Alternative method to consider by getting the set name from the first line of the tooltip
+		setID = C_EquipmentSet.GetEquipmentSetID(setName)
+		_, texture = C_EquipmentSet.GetEquipmentSetInfo(setID)
+		(This relies on the name not having been changed by another AddOn; also need to consider our own "title" mode...
+	--]]
 end
 
 -- Hook for when we know the frame contains a toy
