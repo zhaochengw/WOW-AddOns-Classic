@@ -51147,6 +51147,94 @@ t[3427] = {
 	sellPrice = 1500,
 	reqLevel = 0,
 }
+t[44067] = {
+	name = L["Inscription of Triumph"],
+	quality = 3,
+	icon = "spell_holy_weaponmastery",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[44068] = {
+	name = L["Inscription of Dominance"],
+	quality = 3,
+	icon = "spell_holy_powerinfusion",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[44069] = {
+	name = L["Arcanum of Triumph"],
+	quality = 3,
+	icon = "ability_warrior_shieldmastery",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[44075] = {
+	name = L["Arcanum of Dominance"],
+	quality = 3,
+	icon = "spell_arcane_arcaneresilience",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[40202] = {
+	name = L["Sizzling Grizzly Flank"],
+	quality = 1,
+	icon = "inv_misc_food_90",
+	buyPrice = 0,
+	sellPrice = 800,
+	reqLevel = 75,
+}
+t[40360] = {
+	name = L["Punctured Pelt"],
+	quality = 0,
+	icon = "inv_misc_pelt_bear_ruin_05",
+	buyPrice = 6940,
+	sellPrice = 1735,
+	reqLevel = 0,
+}
+t[40361] = {
+	name = L["Shredded Cloth"],
+	quality = 0,
+	icon = "inv_misc_bandage_08",
+	buyPrice = 6940,
+	sellPrice = 1735,
+	reqLevel = 0,
+}
+t[40356] = {
+	name = L["Grizzleberries"],
+	quality = 1,
+	icon = "inv_misc_food_93_skethylberries-",
+	buyPrice = 0,
+	sellPrice = 425,
+	reqLevel = 65,
+}
+t[40357] = {
+	name = L["Grizzleberry Juice"],
+	quality = 1,
+	icon = "inv_drink_waterskin_09",
+	buyPrice = 0,
+	sellPrice = 300,
+	reqLevel = 65,
+}
+t[40358] = {
+	name = L["Raw Tallhorn Chunk"],
+	quality = 1,
+	icon = "inv_misc_pelt_wolf_ruin_01",
+	buyPrice = 0,
+	sellPrice = 425,
+	reqLevel = 65,
+}
+t[40359] = {
+	name = L["Fresh Eagle Meat"],
+	quality = 1,
+	icon = "inv_misc_food_72",
+	buyPrice = 0,
+	sellPrice = 425,
+	reqLevel = 65,
+}
 t[2555] = {
 	name = L["true"],
 	profession = L["Alchemy"],
