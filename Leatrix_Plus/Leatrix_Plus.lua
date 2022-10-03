@@ -1,5 +1,5 @@
 ﻿----------------------------------------------------------------------
--- 	Leatrix Plus 3.0.17 (1st October 2022)
+-- 	Leatrix Plus 3.0.20 (3rd October 2022)
 ----------------------------------------------------------------------
 
 --	01:Functns, 02:Locks, 03:Restart, 20:Live, 30:Isolated, 40:Player
@@ -19,7 +19,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "3.0.17"
+	LeaPlusLC["AddonVer"] = "3.0.20"
 
 	-- Get locale table
 	local void, Leatrix_Plus = ...
@@ -5447,7 +5447,7 @@
 			LeaPlusLC:MakeTx(FlightPanel, "Settings", 16, -72)
 			LeaPlusLC:MakeCB(FlightPanel, "FlightBarBackground", "Show background", 16, -92, false, "If checked, the flight progress bar background texture will be shown.")
 			LeaPlusLC:MakeCB(FlightPanel, "FlightBarDestination", "Show destination", 16, -112, false, "If checked, the flight progress bar destination will be shown.")
-			LeaPlusLC:MakeCB(FlightPanel, "FlightBarFillBar", "Fill instead of drain", 16, -132, false, "If checked, the flight progress bar background will fill up instead of drain.")
+			LeaPlusLC:MakeCB(FlightPanel, "FlightBarFillBar", "Fill instead of drain", 16, -132, false, "If checked, the flight progress bar background will fill instead of drain.")
 
 			LeaPlusLC:MakeTx(FlightPanel, "Contribute", 16, -172)
 			LeaPlusLC:MakeCB(FlightPanel, "FlightBarContribute", "Help contribute flight times", 16, -192, false, "If checked, you will be prompted to submit missing flight times.")
