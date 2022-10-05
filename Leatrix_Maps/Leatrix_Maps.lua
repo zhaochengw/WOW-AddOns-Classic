@@ -1,6 +1,6 @@
 ﻿
 	----------------------------------------------------------------------
-	-- 	Leatrix Maps 3.0.11 (28th September 2022)
+	-- 	Leatrix Maps 3.0.22 (5th October 2022)
 	----------------------------------------------------------------------
 
 	-- 10:Func, 20:Comm, 30:Evnt, 40:Panl
@@ -12,7 +12,7 @@
 	local LeaMapsLC, LeaMapsCB, LeaDropList, LeaConfigList = {}, {}, {}, {}
 
 	-- Version
-	LeaMapsLC["AddonVer"] = "3.0.11"
+	LeaMapsLC["AddonVer"] = "3.0.22"
 
 	-- Get locale table
 	local void, Leatrix_Maps = ...
@@ -2856,7 +2856,6 @@
 
 	-- Show tooltips for checkboxes
 	function LeaMapsLC:TipSee()
-		if not self:IsEnabled() then return end
 		GameTooltip:SetOwner(self, "ANCHOR_NONE")
 		local parent = self:GetParent()
 		local pscale = parent:GetEffectiveScale()
@@ -2873,7 +2872,6 @@
 
 	-- Show tooltips for configuration buttons and dropdown menus
 	function LeaMapsLC:ShowTooltip()
-		if not self:IsEnabled() then return end
 		GameTooltip:SetOwner(self, "ANCHOR_NONE")
 		local parent = LeaMapsLC["PageF"]
 		local pscale = parent:GetEffectiveScale()
@@ -2934,6 +2932,10 @@
 		LeaMapsLC:LockOption("ShowPointsOfInterest", "ShowPointsOfInterestBtn", false) -- Show points of interest
 		LeaMapsLC:LockOption("ShowZoneLevels", "ShowZoneLevelsBtn", false) -- Show zone levels
 		LeaMapsLC:LockOption("EnhanceBattleMap", "EnhanceBattleMapBtn", true) -- Enhance battlefield map
+		-- Ensure locked but enabled options remain locked
+		if LeaMapsLC["UseDefaultMap"] == "On" then
+			LeaMapsCB["UnlockMapFrameBtn"]:Disable()
+		end
 	end
 
 	-- Create a standard button
@@ -3013,10 +3015,10 @@
 
 		-- Create dropdown list
 		local ddlist =  CreateFrame("Frame",nil,frame, "BackdropTemplate")
-		LeaMapsCB["ListFrame"..ddname] = ddlist
-		ddlist:SetPoint("TOP",0,-42)
+		LeaMapsCB["ListFrame" .. ddname] = ddlist
+		ddlist:SetPoint("TOP",0, -42)
 		ddlist:SetWidth(frame:GetWidth())
-		ddlist:SetHeight((#items * 17) + 17 + 17)
+		ddlist:SetHeight((#items * 16) + 16 + 16)
 		ddlist:SetFrameStrata("FULLSCREEN_DIALOG")
 		ddlist:SetFrameLevel(12)
 		ddlist:SetBackdrop({bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark", edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border", tile = false, tileSize = 0, edgeSize = 32, insets = { left = 4, right = 4, top = 4, bottom = 4 }});
@@ -3038,8 +3040,8 @@
 			LeaMapsCB["Drop"..ddname..k] = dditem;
 			dditem:Show();
 			dditem:SetWidth(ddlist:GetWidth()-22)
-			dditem:SetHeight(20)
-			dditem:SetPoint("TOPLEFT", 12, -k * 16.9)
+			dditem:SetHeight(16)
+			dditem:SetPoint("TOPLEFT", 12, -k * 16)
 
 			dditem.f = dditem:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
 			dditem.f:SetPoint('LEFT', 16, 0)

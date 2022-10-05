@@ -1133,6 +1133,7 @@ L["If checked, the button to toggle the raid container frame will be shown just 
 L["If checked, the combat log will be hidden.|n|nThe combat log must be docked in order for this option to work.|n|nIf the combat log is undocked, you can dock it by dragging the tab (and reloading your UI) or by resetting the chat windows (from the chat menu)."] = "勾選後，戰鬥記錄會被隱藏。|n|n戰鬥記錄視窗必須未被分離時才能生效。|n|n如果戰鬥記錄視窗被分離了，你可以拖動其合併至主視窗（然後重載插件），或者在聊天設置中重置設置。"
 L["If checked, the editbox will be moved to the top of the chat frame."] = "勾選後輸入框會被移動至聊天視窗上方。"
 L["If checked, the flight progress bar background texture will be shown."] = "勾選後，將顯示飛行進度條背景材質。"
+L["If checked, the flight progress bar background will fill instead of drain."] = "勾選後，飛行進度條背景將為填滿而不是排空。"
 L["If checked, the flight progress bar destination will be shown."] = "勾選後，將顯示目的地的飛行進度條。"
 L["If checked, the grey screen of death and the netherworld effect will be disabled."] = "勾選後，死亡後的灰色螢幕以及靈魂世界特效將會停用。"
 L["If checked, the health bar will not be shown."] = "勾選後，血量調將不顯示。"
