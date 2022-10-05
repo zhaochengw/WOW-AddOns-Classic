@@ -1,8 +1,8 @@
 ## Interface: 30400
-## Title: ClassicHealPrediction
-## Notes: Adds heal prediction to the Blizzard unit/raid frames and nameplates
-## Version: v1.8.1
-## Author: dev7355608
+## Title: ClassicHealPrediction (Chinese localization By NaoGe)
+## Notes: 为单位/团队框架和姓名版增加治疗预估
+## Version: v1.8.2
+## Author: dev7355608(Local by Naoge)
 ## SavedVariablesPerCharacter: ClassicHealPredictionSettings
 ## OptionalDeps: ClassicInstantHealth
 ## X-Curse-Project-ID: 351332

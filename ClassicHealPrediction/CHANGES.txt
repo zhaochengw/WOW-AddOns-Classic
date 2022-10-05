@@ -1,10 +1,10 @@
-lightweight tag 982da3c696c269add4c788786ce5cd2c75b66da1 v1.8.1
+lightweight tag 1093a9f854525bdff643bddeb4dcb59f4300af72 v1.8.2
 Author:	dev7355608 <dev7355608@gmail.com>
-Date:	Mon Feb 7 00:13:54 2022 +0100
+Date:	Sun Sep 25 15:22:59 2022 +0200
 
-commit 982da3c696c269add4c788786ce5cd2c75b66da1
+commit 1093a9f854525bdff643bddeb4dcb59f4300af72
 Author: dev7355608 <dev7355608@gmail.com>
-Date:   Mon Feb 7 00:13:54 2022 +0100
+Date:   Sun Sep 25 15:22:59 2022 +0200
 
-    Fix UI
+    Update interface version
 
