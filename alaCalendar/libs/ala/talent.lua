@@ -2,7 +2,7 @@
 	ALA@163UI
 --]]--
 
-local __version = 220909.0;
+local __version = 220912.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -116,7 +116,11 @@ end
 	local CLIENT_MAJOR = floor(__ala_meta__.TOC_VERSION / 10000);
 	local LIB_MAJOR = 2;
 	--
-	local COMM_PREFIX = "ATEADD";
+	local COMM_PREFIX_LIST = { "ATEADD", "ATECOM", "EMUADD", "EMUCOM", };
+	local COMM_PREFIX_HASH = {  };
+	local COMM_HEART_BEAT = "**heart*beat**";
+	local COMM_LWRAVL_PREFIX = 1;
+	local COMM_PREFIX = COMM_PREFIX_LIST[1];
 	local COMM_PART_PREFIX = "!P" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
 	local COMM_QUERY_PREFIX = "!Q" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
 	local COMM_TALENT_PREFIX = "!T" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
@@ -212,7 +216,7 @@ end
 			while BlockSent > 0 and SliceSent > 0 do
 				local b = Buffer[Pos];
 				Buffer[Pos] = nil;
-				SendAddonMessage(COMM_PREFIX, b[1], b[2], b[3]);
+				SendAddonMessage(b[1], b[2], b[3], b[4]);
 				SliceSent = SliceSent - 1;
 				BlockSent = BlockSent - 1;
 				Pos = Pos + 1;
@@ -230,14 +234,14 @@ end
 		end
 	end
 	--
-	local function _SendFunc(msg, channel, target)
+	local function _SendFunc(prefix, msg, channel, target)
 		if BlockSent > 0 and SliceSent > 0 then
 			SliceSent = SliceSent - 1;
 			BlockSent = BlockSent - 1;
-			SendAddonMessage(COMM_PREFIX, msg, channel, target);
+			SendAddonMessage(prefix, msg, channel, target);
 		else
 			Top = Top + 1;
-			Buffer[Top] = { msg, channel, target, };
+			Buffer[Top] = { prefix, msg, channel, target, };
 		end
 		if isFlushSliceTimerIdle then
 			isFlushSliceTimerIdle = false;
@@ -1356,11 +1360,21 @@ end
 		end
 		return SendAddonMessage(COMM_PREFIX, COMM_PUSH_V1 .. code, channel, target);
 	end
-	function __emulib.PushTalentsInformV1(code, channel, target)
-		return SendAddonMessage(COMM_PREFIX, COMM_PUSH_RECV_V1 .. code, channel, target);
+	function __emulib.PushTalentsInformV1(prefix, code, channel, target)
+		return SendAddonMessage(prefix, COMM_PUSH_RECV_V1 .. code, channel, target);
 	end
 -->
 
+local MSG_LIMIT_LEN = 10.0;
+local MSG_LIMIT_NUM = 100.0;
+local MessageCounter = {  };
+local function _FlushMessageCounter()
+	After(MSG_LIMIT_LEN, _FlushMessageCounter);
+	for channel in next, MessageCounter do
+		MessageCounter[channel] = 0;
+	end
+end
+_FlushMessageCounter();
 function __emulib.SendQueryRequest(shortname, realm, talent, glyph, equipment)
 	--[=[
 	if UnitInBattleground('player') and realm ~= SELFREALM then
@@ -1411,12 +1425,17 @@ local _TThrottle = {  };		--	Talent		--	1s lock
 local _GThrottle = {  };		--	Glyph		--	4s lock
 local _EThrottle = {  };		--	Equipment	--	15s lock
 local _RecvBuffer = {  };
-local function _SendLongMessage(msg, channel, target)
+for i = 1, #COMM_PREFIX_LIST do
+	local prefix = COMM_PREFIX_LIST[i];
+	_RecvBuffer[prefix] = {  };
+	COMM_PREFIX_HASH[prefix] = i;
+end
+local function _SendLongMessage(prefix, msg, channel, target)
 	local len = #msg;
 	if channel == "INSTANCE_CHAT" then
 		local let = #target;
 		if len + 1 + let <= 255 then
-			return _SendFunc(msg .. "#" .. target, channel, target);
+			return _SendFunc(prefix, msg .. "#" .. target, channel, target);
 		end
 		local limit = 255 - 8 - 1 - let;
 		local num = ceil(len / limit);
@@ -1426,11 +1445,11 @@ local function _SendLongMessage(msg, channel, target)
 		for index = 1, num do
 				local indexLow = index % 64;
 				local indexHigh = (index - indexLow) / 64;
-			_SendFunc(COMM_PART_PREFIX .. d_num .. __base64[indexLow] .. __base64[indexHigh] .. strsub(msg, (index - 1) * limit + 1, index * limit) .. "#" .. target, channel, target);
+			_SendFunc(prefix, COMM_PART_PREFIX .. d_num .. __base64[indexLow] .. __base64[indexHigh] .. strsub(msg, (index - 1) * limit + 1, index * limit) .. "#" .. target, channel, target);
 		end
 	else
 		if len <= 255 then
-			return _SendFunc(msg, channel, target);
+			return _SendFunc(prefix, msg, channel, target);
 		end
 		local limit = 255 - 8;
 		local num = ceil(len / limit);
@@ -1438,13 +1457,146 @@ local function _SendLongMessage(msg, channel, target)
 			local NumHigh = (num - numLow) / 64;
 		local d_num = __base64[numLow] .. __base64[NumHigh];
 		for index = 1, num do
-				local indexLow = index % 64;
-				local indexHigh = (index - indexLow) / 64;
-			_SendFunc(COMM_PART_PREFIX .. d_num .. __base64[indexLow] .. __base64[indexHigh] .. strsub(msg, (index - 1) * limit + 1, index * limit), channel, target);
+			local indexLow = index % 64;
+			local indexHigh = (index - indexLow) / 64;
+			_SendFunc(prefix, COMM_PART_PREFIX .. d_num .. __base64[indexLow] .. __base64[indexHigh] .. strsub(msg, (index - 1) * limit + 1, index * limit), channel, target);
 		end
 	end
 end
-function __emulib.ProcV2Message(msg, channel, sender)
+function __emulib.ProcV1Message(prefix, msg, channel, sender)
+	local control_code = strsub(msg, 1, COMM_CONTROL_CODE_LEN_V1);
+	if control_code == COMM_QUERY_TALENTS_V1 then
+		if MessageCounter[channel] ~= nil and MessageCounter[channel] > MSG_LIMIT_NUM then
+			return;
+		end
+		if strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, COMM_CONTROL_CODE_LEN_V1 + 1) == "!" then
+			if channel == "INSTANCE_CHAT" then
+				local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
+				if target ~= SELFFULLNAME then
+					return;
+				end
+			end
+			return __emulib.ProcV2Message(prefix, "!QT", channel, sender);
+		end
+		local name = Ambiguate(sender, 'none');
+		local now = GetTime();
+		local prev = _TThrottle[name];
+		if prev ~= nil and now - prev <= TALENT_REPLY_THROTTLED_INTERVAL then
+			return;
+		end
+		--
+		if channel == "INSTANCE_CHAT" then
+			local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
+			if target ~= SELFFULLNAME then
+				return;
+			end
+		end
+		_TThrottle[name] = now;
+		local code = __emulib.EncodePlayerTalentDataV1();
+		if code ~= nil then
+			if channel == "INSTANCE_CHAT" then
+				_SendFunc(prefix, COMM_REPLY_ADDON_PACK_V1_2 .. __emulib.EncodeAddOnPackDataV1(), "INSTANCE_CHAT");
+				_SendFunc(prefix, COMM_REPLY_TALENTS_V1_2 .. code .. "#" .. sender, "INSTANCE_CHAT");
+			else--if channel == "WHISPER" then
+				_SendFunc(prefix, COMM_REPLY_ADDON_PACK_V1_2 .. __emulib.EncodeAddOnPackDataV1(), "WHISPER", sender);
+				_SendFunc(prefix, COMM_REPLY_TALENTS_V1_2 .. code, "WHISPER", sender);
+			end
+		end
+	elseif control_code == COMM_QUERY_GLYPH_V1 then
+		if MessageCounter[channel] ~= nil and MessageCounter[channel] > MSG_LIMIT_NUM then
+			return;
+		end
+		if CLIENT_MAJOR >= 3 then
+			if channel == "INSTANCE_CHAT" then
+				local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
+				if target ~= SELFFULLNAME then
+					return;
+				end
+			end
+			return __emulib.ProcV2Message(prefix, "!QG", channel, sender);
+		end
+	elseif control_code == COMM_QUERY_EQUIPMENTS_V1 then
+		if MessageCounter[channel] ~= nil and MessageCounter[channel] > MSG_LIMIT_NUM then
+			return;
+		end
+		if strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, COMM_CONTROL_CODE_LEN_V1 + 1) == "!" then
+			if channel == "INSTANCE_CHAT" then
+				local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
+				if target ~= SELFFULLNAME then
+					return;
+				end
+			end
+			return __emulib.ProcV2Message(prefix, "!QE", channel, sender);
+		end
+		local name = Ambiguate(sender, 'none');
+		local now = GetTime();
+		local prev = _EThrottle[name];
+		if prev ~= nil and now - prev <= EQUIPMENT_REPLY_THROTTLED_INTERVAL then
+			return;
+		end
+		--
+		if channel == "INSTANCE_CHAT" then
+			local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
+			if target ~= SELFFULLNAME then
+				return;
+			end
+		end
+		_EThrottle[name] = now;
+		local data = __emulib.EncodePlayerEquipmentDataV1(nil, COMM_REPLY_EQUIPMENTS_V1_3, channel == "INSTANCE_CHAT" and ("#" .. sender) or "");
+		for i = 1, #data do
+			_SendFunc(prefix, data[i], channel, sender);
+		end
+	elseif __emulib._NumDistributors > 0 then
+		if control_code == COMM_REPLY_TALENTS_V1_2 or control_code == COMM_REPLY_TALENTS_V1_1 then
+			local code = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, - 1);
+			if code ~= nil and code ~= "" then
+				local overheard = false;
+				local _1, _2 = strsplit("#", code);
+				code = _1;
+				if _2 ~= nil and _2 ~= SELFFULLNAME then
+					overheard = true;
+				end
+				for index = 1, __emulib._NumDistributors do
+					__emulib._CommDistributor[index].OnTalent(prefix, Ambiguate(sender, 'none'), code, "V1", __emulib.DecodeTalentDataV1, overheard);
+				end
+			end
+		elseif control_code == COMM_REPLY_EQUIPMENTS_V1_1 or control_code == COMM_REPLY_EQUIPMENTS_V1_2 or control_code == COMM_REPLY_EQUIPMENTS_V1_3 then
+			local code = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, - 1);
+			if code ~= nil and code ~= "" then
+				local overheard = false;
+				local _1, _2 = strsplit("#", code);
+				if _2 == nil or _2 == SELFFULLNAME then	-- OLDVERSION
+					code = _1;
+				else
+					overheard = true;
+				end
+				for index = 1, __emulib._NumDistributors do
+					__emulib._CommDistributor[index].OnEquipment(prefix, Ambiguate(sender, 'none'), code, "V1", __emulib.DecodeEquipmentDataV1, overheard);
+				end
+			end
+		elseif control_code == COMM_REPLY_ADDON_PACK_V1_2 or control_code == COMM_REPLY_ADDON_PACK_V1_1 then
+			local code = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, - 1);
+			if code ~= nil and code ~= "" then
+				local overheard = false;
+				local _1, _2 = strsplit("#", code);	-- OLD VERSION
+				if _2 ~= nil then
+					code = _1;
+				end
+				for index = 1, __emulib._NumDistributors do
+					__emulib._CommDistributor[index].OnAddOn(prefix, Ambiguate(sender, 'none'), code, "V1", nil, overheard);
+				end
+			end
+		elseif control_code == COMM_PUSH_V1 or control_code == COMM_PUSH_RECV_V1 then
+			local code = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, - 1);
+			if code ~= nil and code ~= "" then
+				for index = 1, __emulib._NumDistributors do
+					__emulib._CommDistributor[index].OnPush(prefix, Ambiguate(sender, 'none'), code, "V1", channel, control_code == COMM_PUSH_RECV_V1);
+				end
+			end
+		end
+	end
+end
+function __emulib.ProcV2Message(prefix, msg, channel, sender)
 	local overheard = false;
 	local receiver = SELFNAME;
 	if channel == "INSTANCE_CHAT" then
@@ -1458,17 +1610,17 @@ function __emulib.ProcV2Message(msg, channel, sender)
 	if strsub(msg, 1, 2) == "!P" then
 		local num = __debase64[strsub(msg, 5, 5)] + __debase64[strsub(msg, 6, 6)] * 64;
 		local index = __debase64[strsub(msg, 7, 7)] + __debase64[strsub(msg, 8, 8)] * 64;
-		_RecvBuffer[receiver] = _RecvBuffer[receiver] or {  };
-		_RecvBuffer[receiver][sender] = _RecvBuffer[receiver][sender] or {  };
-		local Buffer = _RecvBuffer[receiver][sender];
+		local Buffer = _RecvBuffer[prefix]; Buffer[receiver] = Buffer[receiver] or {  };
+		Buffer = Buffer[receiver]; Buffer[sender] = Buffer[sender] or {  };
+		Buffer = Buffer[sender];
 		Buffer[index] = strsub(msg, 9);
 		for index = 1, num do
 			if Buffer[index] == nil then
 				return;
 			end
 		end
-		_RecvBuffer[receiver][sender] = nil;
-		return __emulib.ProcV2Message(overheard and (concat(Buffer) .. "#" .. receiver) or concat(Buffer), channel, sender);
+		_RecvBuffer[prefix][receiver][sender] = nil;
+		return __emulib.ProcV2Message(prefix, overheard and (concat(Buffer) .. "#" .. receiver) or concat(Buffer), channel, sender);
 	end
 	local _;
 	local pos = 1;
@@ -1483,6 +1635,9 @@ function __emulib.ProcV2Message(msg, channel, sender)
 			end
 			local name = Ambiguate(sender, 'none');
 			local now = GetTime();
+			if MessageCounter[channel] ~= nil and MessageCounter[channel] > MSG_LIMIT_NUM then
+				return;
+			end
 			local ReplyData = {  };
 			for index = 3, #code do
 				local v = strsub(code, index, index);
@@ -1516,155 +1671,45 @@ function __emulib.ProcV2Message(msg, channel, sender)
 				end
 			end
 			if msg ~= "" then
-				_SendLongMessage(msg, channel, sender);
+				_SendLongMessage(prefix, msg, channel, sender);
 			end
 		elseif v2_ctrl_code == "!T" then
 			for index = 1, __emulib._NumDistributors do
-				__emulib._CommDistributor[index].OnTalent(Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeTalentDataV2, overheard);
+				__emulib._CommDistributor[index].OnTalent(prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeTalentDataV2, overheard);
 			end
 		elseif v2_ctrl_code == "!G" then
 			for index = 1, __emulib._NumDistributors do
-				__emulib._CommDistributor[index].OnGlyph(Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeGlyphDataV2, overheard);
+				__emulib._CommDistributor[index].OnGlyph(prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeGlyphDataV2, overheard);
 			end
 		elseif v2_ctrl_code == "!E" then
 			for index = 1, __emulib._NumDistributors do
-				__emulib._CommDistributor[index].OnEquipment(Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeEquipmentDataV2, overheard);
+				__emulib._CommDistributor[index].OnEquipment(prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeEquipmentDataV2, overheard);
 			end
 		elseif v2_ctrl_code == "!A" then
 			for index = 1, __emulib._NumDistributors do
-				__emulib._CommDistributor[index].OnAddOn(Ambiguate(sender, 'none'), code, "V2", nil, overheard);
+				__emulib._CommDistributor[index].OnAddOn(prefix, Ambiguate(sender, 'none'), code, "V2", nil, overheard);
 			end
 		end
 	end
 end
 function __emulib.CHAT_MSG_ADDON(prefix, msg, channel, sender, target, zoneChannelID, localID, name, instanceID)
-	if prefix == COMM_PREFIX then
+	local PrefixSeq = COMM_PREFIX_HASH[prefix];
+	if PrefixSeq ~= nil then
+		if msg == COMM_HEART_BEAT then
+			if PrefixSeq < COMM_LWRAVL_PREFIX then
+				COMM_LWRAVL_PREFIX = PrefixSeq;
+				COMM_PREFIX = COMM_PREFIX_LIST[PrefixSeq];
+			end
+			return;
+		end
+		if channel ~= "WHISPER" then
+			MessageCounter[channel] = (MessageCounter[channel] or 0) + 1;
+		end
 		local verkey = strsub(msg, 1, 1);
 		if verkey == "_" then
-			local control_code = strsub(msg, 1, COMM_CONTROL_CODE_LEN_V1);
-			if control_code == COMM_QUERY_TALENTS_V1 then
-				if strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, COMM_CONTROL_CODE_LEN_V1 + 1) == "!" then
-					if channel == "INSTANCE_CHAT" then
-						local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
-						if target ~= SELFFULLNAME then
-							return;
-						end
-					end
-					return __emulib.ProcV2Message("!QT", channel, sender);
-				end
-				local name = Ambiguate(sender, 'none');
-				local now = GetTime();
-				local prev = _TThrottle[name];
-				if prev ~= nil and now - prev <= TALENT_REPLY_THROTTLED_INTERVAL then
-					return;
-				end
-				--
-				if channel == "INSTANCE_CHAT" then
-					local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
-					if target ~= SELFFULLNAME then
-						return;
-					end
-				end
-				_TThrottle[name] = now;
-				local code = __emulib.EncodePlayerTalentDataV1();
-				if code ~= nil then
-					if channel == "INSTANCE_CHAT" then
-						_SendFunc(COMM_REPLY_ADDON_PACK_V1_2 .. __emulib.EncodeAddOnPackDataV1(), "INSTANCE_CHAT");
-						_SendFunc(COMM_REPLY_TALENTS_V1_2 .. code .. "#" .. sender, "INSTANCE_CHAT");
-					else--if channel == "WHISPER" then
-						_SendFunc(COMM_REPLY_ADDON_PACK_V1_2 .. __emulib.EncodeAddOnPackDataV1(), "WHISPER", sender);
-						_SendFunc(COMM_REPLY_TALENTS_V1_2 .. code, "WHISPER", sender);
-					end
-				end
-			elseif control_code == COMM_QUERY_GLYPH_V1 then
-				if CLIENT_MAJOR >= 3 then
-					if channel == "INSTANCE_CHAT" then
-						local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
-						if target ~= SELFFULLNAME then
-							return;
-						end
-					end
-					return __emulib.ProcV2Message("!QG", channel, sender);
-				end
-			elseif control_code == COMM_QUERY_EQUIPMENTS_V1 then
-				if strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, COMM_CONTROL_CODE_LEN_V1 + 1) == "!" then
-					if channel == "INSTANCE_CHAT" then
-						local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
-						if target ~= SELFFULLNAME then
-							return;
-						end
-					end
-					return __emulib.ProcV2Message("!QE", channel, sender);
-				end
-				local name = Ambiguate(sender, 'none');
-				local now = GetTime();
-				local prev = _EThrottle[name];
-				if prev ~= nil and now - prev <= EQUIPMENT_REPLY_THROTTLED_INTERVAL then
-					return;
-				end
-				--
-				if channel == "INSTANCE_CHAT" then
-					local target = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 2, - 1);
-					if target ~= SELFFULLNAME then
-						return;
-					end
-				end
-				_EThrottle[name] = now;
-				local data = __emulib.EncodePlayerEquipmentDataV1(nil, COMM_REPLY_EQUIPMENTS_V1_3, channel == "INSTANCE_CHAT" and ("#" .. sender) or "");
-				for i = 1, #data do
-					_SendFunc(data[i], channel, sender);
-				end
-			elseif __emulib._NumDistributors > 0 then
-				if control_code == COMM_REPLY_TALENTS_V1_2 or control_code == COMM_REPLY_TALENTS_V1_1 then
-					local code = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, - 1);
-					if code ~= nil and code ~= "" then
-						local overheard = false;
-						local _1, _2 = strsplit("#", code);
-						code = _1;
-						if _2 ~= nil and _2 ~= SELFFULLNAME then
-							overheard = true;
-						end
-						for index = 1, __emulib._NumDistributors do
-							__emulib._CommDistributor[index].OnTalent(Ambiguate(sender, 'none'), code, "V1", __emulib.DecodeTalentDataV1, overheard);
-						end
-					end
-				elseif control_code == COMM_REPLY_EQUIPMENTS_V1_1 or control_code == COMM_REPLY_EQUIPMENTS_V1_2 or control_code == COMM_REPLY_EQUIPMENTS_V1_3 then
-					local code = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, - 1);
-					if code ~= nil and code ~= "" then
-						local overheard = false;
-						local _1, _2 = strsplit("#", code);
-						if _2 == nil or _2 == SELFFULLNAME then	-- OLDVERSION
-							code = _1;
-						else
-							overheard = true;
-						end
-						for index = 1, __emulib._NumDistributors do
-							__emulib._CommDistributor[index].OnEquipment(Ambiguate(sender, 'none'), code, "V1", __emulib.DecodeEquipmentDataV1, overheard);
-						end
-					end
-				elseif control_code == COMM_REPLY_ADDON_PACK_V1_2 or control_code == COMM_REPLY_ADDON_PACK_V1_1 then
-					local code = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, - 1);
-					if code ~= nil and code ~= "" then
-						local overheard = false;
-						local _1, _2 = strsplit("#", code);	-- OLD VERSION
-						if _2 ~= nil then
-							code = _1;
-						end
-						for index = 1, __emulib._NumDistributors do
-							__emulib._CommDistributor[index].OnAddOn(Ambiguate(sender, 'none'), code, "V1", nil, overheard);
-						end
-					end
-				elseif control_code == COMM_PUSH_V1 or control_code == COMM_PUSH_RECV_V1 then
-					local code = strsub(msg, COMM_CONTROL_CODE_LEN_V1 + 1, - 1);
-					if code ~= nil and code ~= "" then
-						for index = 1, __emulib._NumDistributors do
-							__emulib._CommDistributor[index].OnPush(Ambiguate(sender, 'none'), code, "V1", channel, zoneChannelID, control_code == COMM_PUSH_RECV_V1);
-						end
-					end
-				end
-			end
+			return __emulib.ProcV1Message(prefix, msg, channel, sender);
 		elseif verkey == "!" and __emulib._NumDistributors > 0 then
-			return __emulib.ProcV2Message(msg, channel, sender);
+			return __emulib.ProcV2Message(prefix, msg, channel, sender);
 		end
 	end
 end
@@ -1674,11 +1719,24 @@ local function PeriodicGeneratePlayerTalentMap()
 		After(1.0, PeriodicGeneratePlayerTalentMap);
 	end
 end
+local function PeriodicCheckPrefix()
+	local num = #COMM_PREFIX_LIST;
+	COMM_LWRAVL_PREFIX = num;
+	for i = 1, #COMM_PREFIX_LIST do
+		local prefix = COMM_PREFIX_LIST[i];
+		SendAddonMessage(prefix, COMM_HEART_BEAT, "WHISPER", SELFFULLNAME);
+	end
+	After(600.0, PeriodicCheckPrefix);
+end
 function __emulib.PLAYER_LOGIN()
 	__emulib:UnregisterEvent("PLAYER_LOGIN");
-	if IsAddonMessagePrefixRegistered(COMM_PREFIX) or RegisterAddonMessagePrefix(COMM_PREFIX) then
+	for i = 1, #COMM_PREFIX_LIST do
+		local prefix = COMM_PREFIX_LIST[i];
+		if IsAddonMessagePrefixRegistered(prefix) or RegisterAddonMessagePrefix(prefix) then
+		end
 	end
 	PeriodicGeneratePlayerTalentMap();
+	-- After(1.0, PeriodicCheckPrefix);
 end
 
 local function OnEvent(self, event, ...)
