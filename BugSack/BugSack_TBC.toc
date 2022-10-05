@@ -1,5 +1,5 @@
 ## Interface: 20504
-## Version: v9.2.5-2-gee5adfb
+## Version: v9.2.6
 ## Title: BugSack
 ## Notes: Toss those bugs inna sack.
 ## Notes-deDE: Werft den Fehler in einen Sack.
