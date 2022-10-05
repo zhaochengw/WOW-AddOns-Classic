@@ -736,7 +736,7 @@ local function F_HookTooltip(Tooltip)
 	hooksecurefunc(Tooltip, "SetCraftItem", LF_TooltipSetCraftItem);
 	if __namespace__.__is_classic then
 		hooksecurefunc(Tooltip, "SetTrainerService", LF_TooltipGUISetItem);
-	elseif __namespace__.__is_bcc then
+	elseif __namespace__.__is_bcc or __namespace__.__is_wlk then
 		hooksecurefunc(Tooltip, "SetTrainerService", LF_TooltipGUISetSpell);
 		hooksecurefunc(Tooltip, "SetGuildBankItem", LF_TooltipSetGuildBankItem);
 		hooksecurefunc(Tooltip, "SetSocketGem", LF_TooltipGUISetItem);

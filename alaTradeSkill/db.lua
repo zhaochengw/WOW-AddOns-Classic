@@ -930,7 +930,7 @@ local function FilterAdd(list, sid, class, spec, filterClass, filterSpec)
 		list[#list + 1] = sid;
 	end
 end
-function __db__.get_ordered_list(pid, list, check_hash, phase, rank, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list)
+function __db__.get_ordered_list(pid, list, check_hash, phase, rank, rankOffset, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list)
 	if pid == nil then
 		_log_("__db__.get_ordered_list|cff00ff00#1L1|r");
 		if not donot_wipe_list then
@@ -938,7 +938,7 @@ function __db__.get_ordered_list(pid, list, check_hash, phase, rank, rankReverse
 		end
 		for pid = __db__.DBMINPID, __db__.DBMAXPID do
 			if T_TradeSkill_RecipeList[pid] ~= nil then
-				__db__.get_ordered_list(pid, list, check_hash, phase, rank, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, true);
+				__db__.get_ordered_list(pid, list, check_hash, phase, rank, rankOffset, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, true);
 			end
 		end
 	elseif T_TradeSkill_RecipeList[pid] ~= nil then
@@ -948,6 +948,7 @@ function __db__.get_ordered_list(pid, list, check_hash, phase, rank, rankReverse
 			wipe(list);
 		end
 		phase = phase or CURPHASE;
+		rankOffset = rankOffset or 0;
 		local notlowerphase = phase >= CURPHASE;
 		if check_hash ~= nil and rank ~= nil then
 			local bonus = T_CharRaceBonus[pid] or 0;

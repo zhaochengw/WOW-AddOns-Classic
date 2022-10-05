@@ -602,7 +602,7 @@ end
 							frame.prev_pid = pid;
 							frame.hash = hash;
 							local list = frame.list;
-							__db__.get_ordered_list(pid, list, hash, set.phase, cur_rank, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, set.filterClass, set.filterSpec);
+							__db__.get_ordered_list(pid, list, hash, set.phase, cur_rank, nil, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, set.filterClass, set.filterSpec);
 							if set.haveMaterials then
 								for i = #list, 1, -1 do
 									local sid = list[i];
@@ -763,7 +763,7 @@ end
 			},
 		};
 	function LT_SharedMethod.ExplorerFilterList(frame, stat, filter, searchText, searchNameOnly, list, check_hash, phase, rank, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list)
-		__db__.get_ordered_list(filter.skill, list, check_hash, phase, rank, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list);
+		__db__.get_ordered_list(filter.skill, list, check_hash, phase, rank, nil, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list);
 		do
 			local C_top = 1;
 			for index = 1, #list do
