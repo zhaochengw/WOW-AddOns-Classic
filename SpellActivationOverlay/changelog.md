@@ -1,5 +1,10 @@
 ## SpellActivationOverlay Changelog
 
+#### v0.6.5 (2022-10-05)
+
+- Entering a vehicle should no longer cause a Lua error
+- Spending 1 point out of 2 in Art of War now has a SAO and GABs
+
 #### v0.6.4 (2022-09-29)
 
 - Spell Alerts fade out after being out of combat for 30 seconds
