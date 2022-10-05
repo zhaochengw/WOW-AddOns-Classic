@@ -340,7 +340,7 @@ function QuestieQuest:ShouldShowQuestNotes(questId)
         return true
     end
 
-    local autoWatch = (GetCVar("autoQuestWatch") == "1")
+    local autoWatch = Questie.db.global.autoTrackQuests
     local trackedAuto = autoWatch and (not Questie.db.char.AutoUntrackedQuests or not Questie.db.char.AutoUntrackedQuests[questId])
     local trackedManual = not autoWatch and (Questie.db.char.TrackedQuests and Questie.db.char.TrackedQuests[questId])
     return trackedAuto or trackedManual
@@ -658,6 +658,13 @@ end
 ---@param quest Quest
 function QuestieQuest:PopulateObjective(quest, objectiveIndex, objective, blockItemTooltips) -- must be pcalled
     Questie:Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest:PopulateObjective]", objective.Description)
+
+    if (not objective.Update) then
+        -- TODO: This is a dirty band aid, to hide Lua errors to the users.
+        -- Some reports suggest there might be a race condition for SpecialObjectives so they don't get the fields used in here
+        -- before PopulateObjective is called.
+        return
+    end
 
     objective:Update()
     local completed = objective.Completed
