@@ -1,0 +1,8 @@
+﻿## Interface: 30400
+## Title: Improved Loot Frame
+## Version: 3.7.7
+## Author: Cybeloras of Aerie Peak
+## Notes: Expands the loot frame to fit all items onto one page.
+## X-Curse-Project-ID: 30888
+
+ImprovedLootFrame.lua
