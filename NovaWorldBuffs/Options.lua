@@ -418,6 +418,14 @@ NWB.options = {
 			get = "getTerokkarChat10",
 			set = "setTerokkarChat10",
 		},
+		wintergraspChat10 = {
+			type = "toggle",
+			name = L["wintergraspChat10Title"],
+			desc = L["wintergraspChat10Desc"],
+			order = 170,
+			get = "getWintergraspChat10",
+			set = "setWintergraspChat10",
+		},
 		middleWarningHeader = {
 			type = "header",
 			name = NWB.prefixColor .. L["middleWarningHeaderDesc"],
@@ -518,6 +526,14 @@ NWB.options = {
 			order = 192,
 			get = "getTerokkarMiddle10",
 			set = "setTerokkarMiddle10",
+		},
+		wintergraspMiddle10 = {
+			type = "toggle",
+			name = L["wintergraspMiddle10Title"],
+			desc = L["wintergraspMiddle10Desc"],
+			order = 193,
+			get = "getWintergraspMiddle10",
+			set = "setWintergraspMiddle10",
 		},
 		guildWarningHeader = {
 			type = "header",
@@ -1685,12 +1701,15 @@ NWB.optionDefaults = {
 		wipeSingleLayer = true,
 		guildL = true,
 		terokkarChat10 = true,
-		terokkarMiddle10 = false,
+		terokkarMiddle10 = true,
+		wintergraspChat10 = true,
+		wintergraspMiddle10 = true,
 		wipeTerokkarData4 = true,
 		showShatWorldmapMarkers = true,
 		showShatWorldmapMarkersTerok = true,
 		hideMinimapBuffTimers = false,
 		disableBuffTimersMaxBuffLevel = true,
+		
 		
 		--TBC options
 		disableSoundsAboveMaxBuffLevel = true,
@@ -1747,6 +1766,8 @@ function NWB:buildRealmFactionData()
 		dragon2 = 0,
 		dragon3 = 0,
 		dragon4 = 0,
+		wintergrasp = 0,
+		wintergraspTime = 0,
 	};
 	--if (NWB.isTBC) then
 	--	defaults.terokTowersTime = 0;
@@ -3654,6 +3675,24 @@ end
 
 function NWB:getTerokkarMiddle10(info)
 	return self.db.global.terokkarMiddle10;
+end
+
+--WG chat 10 minute warning.
+function NWB:setWintergraspChat10(info, value)
+	self.db.global.wintergraspChat10 = value;
+end
+
+function NWB:getWintergraspChat10(info)
+	return self.db.global.wintergraspChat10;
+end
+
+--WG middle 10 minute warning.
+function NWB:setWintergraspMiddle10(info, value)
+	self.db.global.wintergraspMiddle10 = value;
+end
+
+function NWB:getWintergraspMiddle10(info)
+	return self.db.global.wintergraspMiddle10;
 end
 
 --Hide buff timers above lvel 64.

@@ -82,7 +82,6 @@ function NWB:OnInitialize()
 	self:setRegionFont();
 	self:fixAllLayers();
 	self:checkLayers();
-	self:timerCleanup();
 	self:cleanupSettingsData();
 	self:setSongFlowers();
 	self:createSongflowerMarkers();
@@ -742,6 +741,40 @@ function NWB:ticker()
 			lastDmfTick = NWB.data.myChars[UnitName("player")].dmfCooldown;
 		end
 	end
+	if (NWB.isWrath) then
+		if (NWB.data.wintergrasp10 and NWB.data.wintergrasp
+				and tonumber(NWB.data.wintergrasp)) then
+			local wintergrasp, wintergraspTime, wintergraspFaction = NWB:getWintergraspData();
+			local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
+			local secondsLeft = endTime - GetServerTime();
+			lastSecondsLeft = secondsLeft;
+			--Seems to not fire on 10mins sometimes, maybe getting a timer update that skips the 600 seconds remaining mark.
+			--Trying a 30 second window instead.
+			if (secondsLeft <= 600 and secondsLeft >= 590) then
+				NWB.data.wintergrasp10 = nil;
+				--local layer = NWB:GetLayerNum(layer);
+				--local layerMsg = " (Layer " .. layer .. ")";
+				--local msg = string.format(L["wintergraspWarning"], "10 minutes") .. layerMsg .. ".";
+				local msg = string.format(L["wintergraspWarning"], "10 minutes") .. ".";
+				if (NWB.db.global.wintergraspChat10) then
+					NWB:print(msg);
+				end
+				if (NWB.db.global.wintergraspMiddle10) then
+					NWB:middleScreenMsgTBC("middle30", msg, nil, 5);
+				end
+				--Terok guild setting is shared.
+				if (NWB.db.global.guildTerok10) then
+					NWB:sendGuildMsg(msg, "guildTerok10", nil, "[NWB]", 2.37);
+				end
+			end
+			if (secondsLeft < 0) then
+				--Don't wipe timer data for WG, we use it to calc forward from for missing new timer.
+				--NWB.data.wintergrasp = nil;
+				--NWB.data.wintergraspTime = nil;
+				NWB.data.winterGraspFaction = nil;
+			end
+		end
+	end
 	--_G["\78\87\66"] = {};
 	NWB.db.global.lo = GetServerTime();
 	C_Timer.After(1, function()
@@ -911,7 +944,7 @@ end
 --Can also specify zone so only 1 person from that zone will send the msg (like orgrimmar when npc yell goes out).
 --BUG: sometimes a user doesn't register as having addon, checked table they don't exist when this happens.
 --Must be some reason they don't send a guild addon msg at logon.
-function NWB:sendGuildMsg(msg, type, zoneName, prefix)
+function NWB:sendGuildMsg(msg, type, zoneName, prefix, minVersion)
 	if (not NWB.isClassic and type ~= "guildTerok10" and type ~= "guildWintergrasp10") then
 		return;
 	end
@@ -959,21 +992,30 @@ function NWB:sendGuildMsg(msg, type, zoneName, prefix)
 		elseif (type) then
 			--If type then check our db for other peoples settings to ignore them in online list if they have this type disabled.
 			if (name and online and NWB.hasAddon[name] and not isMobile) then
-				if (NWB.data[name]) then
-					--If this is another guild member then check their settings.	
-					--A few different checks for backwards compatability.
-					if ((NWB.data[name][type] == true or NWB.data[name][type] == 1
-							or NWB.data[name][shortSettingsKeys[type]] == true or NWB.data[name][shortSettingsKeys[type]] == 1)
-							and NWB.data[name].disableAllGuildMsgs ~= true and NWB.data[name].disableAllGuildMsgs ~= 1
-							and NWB.data[name].a ~= true and NWB.data[name].a ~= 1) then
-						--Has addon and has this type of msg type option enabled.
-						onlineMembers[name] = true;
+				local skip;
+				if (minVersion) then
+					skip = true;
+					if (tonumber(NWB.hasAddon[name]) and tonumber(NWB.hasAddon[name]) >= minVersion) then
+						skip = nil;
 					end
-				elseif (name == me) then
-					--If myself check my settings.
-					if ((NWB.db.global[type] == true or NWB.db.global[type] == 1)
-							and NWB.db.global.disableAllGuildMsgs ~= true and NWB.db.global.disableAllGuildMsgs ~= 1) then
-						onlineMembers[name] = true;
+				end
+				if (not skip) then
+					if (NWB.data[name]) then
+						--If this is another guild member then check their settings.	
+						--A few different checks for backwards compatability.
+						if ((NWB.data[name][type] == true or NWB.data[name][type] == 1
+								or NWB.data[name][shortSettingsKeys[type]] == true or NWB.data[name][shortSettingsKeys[type]] == 1)
+								and NWB.data[name].disableAllGuildMsgs ~= true and NWB.data[name].disableAllGuildMsgs ~= 1
+								and NWB.data[name].a ~= true and NWB.data[name].a ~= 1) then
+							--Has addon and has this type of msg type option enabled.
+							onlineMembers[name] = true;
+						end
+					elseif (name == me) then
+						--If myself check my settings.
+						if ((NWB.db.global[type] == true or NWB.db.global[type] == 1)
+								and NWB.db.global.disableAllGuildMsgs ~= true and NWB.db.global.disableAllGuildMsgs ~= 1) then
+							onlineMembers[name] = true;
+						end
 					end
 				end
 			end
@@ -3450,8 +3492,10 @@ function NWB:timerCleanup()
 		end
 	end
 	if (NWB.isWrath) then
-		if (NWB.data["wintergrasp"] and tonumber(NWB.data["wintergrasp"])
-				and NWB.data["wintergrasp"] - GetServerTime() > 900) then
+		local wintergrasp = NWB:getWintergraspData();
+		if (wintergrasp > 0 and wintergrasp - GetServerTime() > 900) then
+		--if (NWB.data["wintergrasp"] and tonumber(NWB.data["wintergrasp"])
+				--and NWB.data["wintergrasp"] - GetServerTime() > 900) then
 			NWB.data["wintergrasp10"] = true;
 		end
 	end
@@ -3512,13 +3556,57 @@ function NWB:getTerokEndTime(terokTowers, terokTowersTime)
 	end
 end
 
-function NWB:getWintergraspEndTime(wintergrasp, twintergraspTime)
+function NWB:getWintergraspEndTime(wintergrasp, wintergraspTime)
 	--We'll see if wintergrasp needs adjustment like terokkar towers.
 	return wintergrasp;
 end
 
+function NWB:getWintergraspData(layer) --local wintergrasp, wintergraspTime, wintergraspFaction = NWB:getWintergraspData();
+	local wintergrasp, wintergraspTime, wintergraspFaction = 0, 0, 0;
+	if (NWB.data.wintergrasp) then
+		wintergrasp = NWB.data.wintergrasp;
+	end
+	if (NWB.data.wintergraspTime) then
+		wintergraspTime = NWB.data.wintergraspTime;
+	end
+	if (NWB.data.wintergraspFaction) then
+		wintergraspFaction = NWB.data.wintergraspFaction;
+	end
+	local isCached;
+	--It's not always a 3 hour cycle, sometime it skips, sometimes it's been even 12 hours.
+	--So we can't have a reliable time from the clock, but if there's no timer then fallback to clock.
+	--if (wintergrasp == 0) then
+		--No timer, calc from clock.
+		--Will maybe add later but really not needed if the rest is working properly.
+	--end
+	if (wintergrasp > 0) then
+		if (wintergrasp < GetServerTime()) then
+			--Old timer, calc forward in 3 hour increments.
+			--Divide seconds elapsed since our static timestamp in the past by the cycle time (3 hours).
+			--Get the floor of secondsSinceWintergrasp / cycle time
+			--Get the floor of that result (which would be last reset if multipled by cycle time) then add 1 for next reset, then multiply by cycle time.
+			--This can be off by 1 hour twice a year during the small window of DST changeover.
+			wintergrasp = wintergrasp + ((math.floor((GetServerTime() - wintergrasp) / 10800) + 1) * 10800);
+			--If it's in the first 15mins just expired then show it as expired, give last spawn instead of next.
+			if (wintergrasp - GetServerTime() > 9900) then
+				wintergrasp = wintergrasp - 10800;
+			end
+			isCached = true;
+		end
+	end
+	if (wintergrasp > 0 and wintergrasp - GetServerTime() > 660) then
+		NWB.data["wintergrasp10"] = true;
+	end
+	--Round to the hour.
+	local diff = wintergrasp % 3600;
+	if (diff < 61 and diff > 0) then
+		wintergrasp = wintergrasp - diff;
+	end
+	return wintergrasp, wintergraspTime, wintergraspFaction, isCached;
+end
+
 --Get how far away our zoneid is from the capital city on this layer.
-function NWB:getLayerOffset(layerID, mapID, zoneID) --/run print(getLayerOffset(31, 1951))
+function NWB:getLayerOffset(layerID, mapID, zoneID)
 	--Using this for checking if a zone is mapped right, close to it's capital city ID.
 	--If it's far away then it's likely been mapped to the wrong layer or there's been a zone crash.
 	local offset;
@@ -4749,8 +4837,8 @@ function NWB:resetTimerData(silent)
 	NWB.data.terokTowers = nil;
 	NWB.data.terokFaction = nil;
 	NWB.data.terokTime = nil;
-	NWB.data.wintergrasp = nil;
-	NWB.data.wintergraspTime = nil;
+	NWB.data.wintergrasp = 0;
+	NWB.data.wintergraspTime = 0;
 	NWB.data.wintergraspFaction = nil;
 	NWB.data.hellfireRep = nil;
 	NWB.data.tbcHD = nil;
@@ -4816,6 +4904,9 @@ function NWB:createBroker()
 			if (GameTooltip.NWBSeparator3) then
 				GameTooltip.NWBSeparator3:Hide();
 			end
+			if (GameTooltip.NWBSeparator4) then
+				GameTooltip.NWBSeparator4:Hide();
+			end
 		end,
 	};
 	NWBLDB = LDB:NewDataObject("NWB", data);
@@ -4838,6 +4929,9 @@ function NWB:updateMinimapButton(tooltip, frame)
 		end
 		if (tooltip.NWBSeparator3) then
 			tooltip.NWBSeparator3:Hide();
+		end
+		if (tooltip.NWBSeparator4) then
+			tooltip.NWBSeparator4:Hide();
 		end
 		return;
 	end
@@ -4975,11 +5069,12 @@ function NWB:updateMinimapButton(tooltip, frame)
 					tooltip:AddLine(NWB.chatColor .. msg);
 				end
 			end
-			if (NWB.isWrath) then
+			--[[if (NWB.isWrath) then
 				msg = "";
 				local texture = "";
 				if (NWB.data.wintergrasp) then
-					local endTime = NWB:getWintergraspEndTime(NWB.data.wintergrasp, NWB.data.wintergraspTime);
+					local wintergrasp, wintergraspTime, wintergraspFaction = NWB:getWintergraspData();
+					local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
 					local secondsLeft = endTime - GetServerTime();
 					--Will it be a strait 3h cycle and no need for expired timers?
 					--Maybe we'll just show 5 mins expired anyway so it stands out more it just started.
@@ -4989,10 +5084,10 @@ function NWB:updateMinimapButton(tooltip, frame)
 						secondsLeft = secondsLeft * -1;
 				    	local minutes = string.format("%02.f", math.floor(secondsLeft / 60));
 				    	local seconds = string.format("%02.f", math.floor(secondsLeft - minutes * 60));
-				    	if (NWB.data.wintergraspFaction == 2) then
+				    	if (wintergraspFaction == 2) then
 							--5242
 							texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-						elseif (NWB.data.wintergraspFaction == 3) then
+						elseif (wintergraspFaction == 3) then
 							--5243
 							texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						else
@@ -5001,11 +5096,11 @@ function NWB:updateMinimapButton(tooltip, frame)
 						end
 						msg = msg .. texture .. L["wintergraspTimer"] .. ": |Cffff2500-" .. minutes .. ":" .. seconds .. " (expired)|r";
 						tooltip:AddLine(NWB.chatColor .. msg);
-					elseif (NWB.data.wintergrasp > GetServerTime()) then
-						if (NWB.data.wintergraspFaction == 2) then
+					elseif (wintergrasp > GetServerTime()) then
+						if (wintergraspFaction == 2) then
 							--5242
 							texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-						elseif (NWB.data.wintergraspFaction == 3) then
+						elseif (wintergraspFaction == 3) then
 							--5243
 							texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						else
@@ -5039,7 +5134,7 @@ function NWB:updateMinimapButton(tooltip, frame)
 					msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. L["noCurrentTimer"] .. ".";
 					tooltip:AddLine(NWB.chatColor .. msg);
 				end
-			end
+			end]]
 			msg = "";
 			if ((v.rendTimer + 3600) > (GetServerTime() - NWB.db.global.rendRespawnTime)
 					or (v.onyTimer + 3600) > (GetServerTime() - NWB.db.global.onyRespawnTime)
@@ -5049,12 +5144,13 @@ function NWB:updateMinimapButton(tooltip, frame)
 		end
 		if (count == 0) then
 			tooltip:AddLine(NWB.chatColor .. "No layers found yet.");
-			--If no layers then display wintergrasp timer in wrash anyway, timer is same for all layers.
-			if (NWB.isWrath) then
+			--If no layers then display wintergrasp timer in wrath anyway, timer is same for all layers.
+			--[[if (NWB.isWrath) then
 				msg = "";
 				local texture = "";
 				if (NWB.data.wintergrasp) then
-					local endTime = NWB:getWintergraspEndTime(NWB.data.wintergrasp, NWB.data.wintergraspTime);
+					local wintergrasp, wintergraspTime, wintergraspFaction = NWB:getWintergraspData();
+					local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
 					local secondsLeft = endTime - GetServerTime();
 					--Will it be a strait 3h cycle and no need for expired timers?
 					--Maybe we'll just show 5 mins expired anyway so it stands out more it just started.
@@ -5064,10 +5160,10 @@ function NWB:updateMinimapButton(tooltip, frame)
 						secondsLeft = secondsLeft * -1;
 				    	local minutes = string.format("%02.f", math.floor(secondsLeft / 60));
 				    	local seconds = string.format("%02.f", math.floor(secondsLeft - minutes * 60));
-				    	if (NWB.data.wintergraspFaction == 2) then
+				    	if (wintergraspFaction == 2) then
 							--5242
 							texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-						elseif (NWB.data.wintergraspFaction == 3) then
+						elseif (wintergraspFaction == 3) then
 							--5243
 							texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						else
@@ -5076,11 +5172,11 @@ function NWB:updateMinimapButton(tooltip, frame)
 						end
 						msg = msg .. texture .. L["wintergraspTimer"] .. ": |Cffff2500-" .. minutes .. ":" .. seconds .. " (expired)|r";
 						tooltip:AddLine(NWB.chatColor .. msg);
-					elseif (NWB.data.wintergrasp > GetServerTime()) then
-						if (NWB.data.wintergraspFaction == 2) then
+					elseif (wintergrasp > GetServerTime()) then
+						if (wintergraspFaction == 2) then
 							--5242
 							texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-						elseif (NWB.data.wintergraspFaction == 3) then
+						elseif (wintergraspFaction == 3) then
 							--5243
 							texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						else
@@ -5114,7 +5210,7 @@ function NWB:updateMinimapButton(tooltip, frame)
 					msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. L["noCurrentTimer"] .. ".";
 					tooltip:AddLine(NWB.chatColor .. msg);
 				end
-			end
+			end]]
 		end
 	else
 		local msg = "";
@@ -5192,7 +5288,7 @@ function NWB:updateMinimapButton(tooltip, frame)
 		if (NWB.isTBC or NWB.isWrathPrepatch) then
 			msg = "";
 			local texture = "";
-			if (NWB.data.wintergrasp) then
+			if (NWB.data.terokTowers) then
 				local endTime = NWB:getTerokEndTime(NWB.data.terokTowers, NWB.data.terokTowersTime);
 				local secondsLeft = endTime - GetServerTime();
 				if (NWB.db.global.showExpiredTimersTerok and secondsLeft < 1 and secondsLeft > -3599) then
@@ -5240,11 +5336,12 @@ function NWB:updateMinimapButton(tooltip, frame)
 				tooltip:AddLine(NWB.chatColor .. msg);
 			end
 		end
-		if (NWB.isWrath) then
+		--[[if (NWB.isWrath) then
 			msg = "";
 			local texture = "";
 			if (NWB.data.wintergrasp) then
-				local endTime = NWB:getWintergraspEndTime(NWB.data.wintergrasp, NWB.data.wintergraspTime);
+				local wintergrasp, wintergraspTime, wintergraspFaction = NWB:getWintergraspData();
+				local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
 				local secondsLeft = endTime - GetServerTime();
 				--Will it be a strait 3h cycle and no need for expired timers?
 				--Maybe we'll just show 5 mins expired anyway so it stands out more it just started.
@@ -5254,10 +5351,10 @@ function NWB:updateMinimapButton(tooltip, frame)
 					secondsLeft = secondsLeft * -1;
 			    	local minutes = string.format("%02.f", math.floor(secondsLeft / 60));
 			    	local seconds = string.format("%02.f", math.floor(secondsLeft - minutes * 60));
-			    	if (NWB.data.wintergraspFaction == 2) then
+			    	if (wintergraspFaction == 2) then
 						--5242
 						texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-					elseif (NWB.data.wintergraspFaction == 3) then
+					elseif (wintergraspFaction == 3) then
 						--5243
 						texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 					else
@@ -5266,11 +5363,11 @@ function NWB:updateMinimapButton(tooltip, frame)
 					end
 					msg = msg .. texture .. L["wintergraspTimer"] .. ": |Cffff2500-" .. minutes .. ":" .. seconds .. " (expired)|r";
 					tooltip:AddLine(NWB.chatColor .. msg);
-				elseif (NWB.data.wintergrasp > GetServerTime()) then
-					if (NWB.data.wintergraspFaction == 2) then
+				elseif (wintergrasp > GetServerTime()) then
+					if (wintergraspFaction == 2) then
 						--5242
 						texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-					elseif (NWB.data.wintergraspFaction == 3) then
+					elseif (wintergraspFaction == 3) then
 						--5243
 						texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 					else
@@ -5304,10 +5401,89 @@ function NWB:updateMinimapButton(tooltip, frame)
 				msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. L["noCurrentTimer"] .. ".";
 				tooltip:AddLine(NWB.chatColor .. msg);
 			end
-		end
+		end]]
 		msg = "";
 	end
 	if (NWB.isTBC or NWB.isWrath) then
+		if (NWB.isWrath) then
+			tooltip:AddLine(" ");
+			if (not tooltip.NWBSeparator4) then
+			    tooltip.NWBSeparator4 = tooltip:CreateTexture(nil, "BORDER");
+			    tooltip.NWBSeparator4:SetColorTexture(0.6, 0.6, 0.6, 0.85);
+			    tooltip.NWBSeparator4:SetHeight(1);
+			    tooltip.NWBSeparator4:SetPoint("LEFT", 10, 0);
+			    tooltip.NWBSeparator4:SetPoint("RIGHT", -10, 0);
+			end
+			tooltip.NWBSeparator4:SetPoint("TOP", _G[tooltip:GetName() .. "TextLeft" .. tooltip:NumLines()], "CENTER");
+			tooltip.NWBSeparator4:Show();
+			local msg = "";
+			local texture = "";
+			if (NWB.data.wintergrasp) then
+				local wintergrasp, wintergraspTime, wintergraspFaction, isCache = NWB:getWintergraspData();
+				--if (isCache) then
+				--	NWB:debug("Using WG Cache");
+				--end
+				local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
+				local secondsLeft = endTime - GetServerTime();
+				--Will it be a strait 3h cycle and no need for expired timers?
+				--Maybe we'll just show 5 mins expired anyway so it stands out more it just started.
+				--This can just use the same setting as terok towers.
+				if (NWB.db.global.showExpiredTimersTerok and secondsLeft < 1 and secondsLeft > -900) then
+					--Convert seconds left to positive.
+					secondsLeft = secondsLeft * -1;
+			    	local minutes = string.format("%02.f", math.floor(secondsLeft / 60));
+			    	local seconds = string.format("%02.f", math.floor(secondsLeft - minutes * 60));
+			    	if (wintergraspFaction == 2) then
+						--5242
+						texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
+					elseif (wintergraspFaction == 3) then
+						--5243
+						texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
+					else
+						--5387
+						texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
+					end
+					msg = msg .. texture .. L["wintergraspTimer"] .. ": |Cffff2500-" .. minutes .. ":" .. seconds .. " (expired)|r";
+					tooltip:AddLine(NWB.chatColor .. msg);
+				elseif (wintergrasp > GetServerTime()) then
+					if (wintergraspFaction == 2) then
+						--5242
+						texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
+					elseif (wintergraspFaction == 3) then
+						--5243
+						texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
+					else
+						--5387
+						texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
+					end
+					msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. NWB:getTimeString(endTime - GetServerTime(), true) .. ".";
+					if (NWB.db.global.showTimeStamp) then
+						local timeStamp = NWB:getTimeFormat(endTime);
+						msg = msg .. " (" .. timeStamp .. ")";
+					end
+					tooltip:AddLine(NWB.chatColor .. msg);
+				--[[elseif (secondsLeft < 1 and secondsLeft > -43200 and NWB.isDebug) then
+					--Treat it as a repeating timer if expired within the last 12h, it seems to be exactly 3h repeating no matter how long the match goes.
+					texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
+					local secondsLeft = 10800 - math.abs(math.fmod(secondsLeft, 10800));
+					local endTime = GetServerTime() + secondsLeft;
+					msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. NWB:getTimeString(endTime - GetServerTime(), true) .. ".";
+					if (NWB.db.global.showTimeStamp) then
+						local timeStamp = NWB:getTimeFormat(endTime);
+						msg = msg .. " (" .. timeStamp .. ")";
+					end
+					tooltip:AddLine(NWB.chatColor .. msg);]]
+				else
+					texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
+					msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. L["noCurrentTimer"] .. ".";
+					tooltip:AddLine(NWB.chatColor .. msg);
+				end
+			else
+				texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
+				msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. L["noCurrentTimer"] .. ".";
+				tooltip:AddLine(NWB.chatColor .. msg);
+			end
+		end
 		tooltip:AddLine(" ");
 		if (not tooltip.NWBSeparator) then
 		    tooltip.NWBSeparator = tooltip:CreateTexture(nil, "BORDER");
@@ -7434,6 +7610,9 @@ local dmfCalenderCache = {
 };
 
 local function getNextDmfCalender()
+	--if (not IsAddOnLoaded("Blizzard_Calendar")) then
+	--
+	--end
 	if (CalendarFrame and CalendarFrame:IsShown()) then
 		--Use cache if it's open so we don't change page while player is looking at it.
 		--Maybe there's a way to calc from current month without SetAbsMonth() updating the UI?
@@ -7659,7 +7838,7 @@ end
 
 function NWB:getDmfData()
 	--Once Blizzard fixes calender timezones we'll get dmf spawn time from there.
-	--if (NWB.isClassic or NWB.isTBC) then
+	if (NWB.isClassic or NWB.isTBC) then
 		local dmfStart, dmfEnd = NWB:getDmfStartEnd();
 		local timestamp, timeLeft, type;
 		if (dmfStart and dmfEnd) then
@@ -7728,11 +7907,11 @@ function NWB:getDmfData()
 			--Timestamp of next start or end event, seconds left untill that event, and type of event.
 			return timestamp, timeLeft, type;
 		end
-	--else
-	--	local timestamp, timeLeft, type, zone = getNextDmfCalender();
-	--	NWB.dmfZone = zone;
-	--	return timestamp, timeLeft, type;
-	--end
+	else
+		local timestamp, timeLeft, type, zone = getNextDmfCalender();
+		NWB.dmfZone = zone;
+		return timestamp, timeLeft, type;
+	end
 end
 
 function NWB:getDmfZoneString()
@@ -7757,7 +7936,7 @@ function NWB:updateDmfMarkers(type)
 			text = text .. string.format(L["endsIn"], NWB:getTimeString(timeLeft, true, "short"));
 		end
 	end
-	if (timeLeft > 0) then
+	if (timeLeft and timeLeft > 0) then
 		local tooltipText = "|Cff00ff00" .. L["Darkmoon Faire"] .. "|CffDEDE42\n";
 		if (type == "start") then
 			tooltipText = tooltipText .. string.format(L["startsIn"], NWB:getTimeString(timeLeft, true)) .. "\n";
@@ -7793,6 +7972,11 @@ function NWB:updateDmfMarkers(type)
 		_G["NWBDMFContinent"].tooltip.fs:SetText(tooltipText);
     	_G["NWBDMFContinent"].tooltip:SetWidth(_G["NWBDMFContinent"].tooltip.fs:GetStringWidth() + 12);
 		_G["NWBDMFContinent"].tooltip:SetHeight(_G["NWBDMFContinent"].tooltip.fs:GetStringHeight() + 12);
+		--_G["NWBDMF"]:Show();
+  		--_G["NWBDMFContinent"]:Show();
+  	else
+  		--_G["NWBDMF"]:Hide();
+  		--_G["NWBDMFContinent"]:Hide();
   	end
 	return text;
 end
@@ -9633,6 +9817,9 @@ function NWB:removeOldLayers()
 			if (v.terokTowers and v.terokTowers + 3600 > GetServerTime()) then
 				validTimer = true;
 			end
+			if (v.lastSeenNPC and v.lastSeenNPC + expireTime > GetServerTime()) then
+				validTimer = true;
+			end
 			if (not v.created) then
 				--For older layers created before this version update and missing this field.
 				v.created = 0;
@@ -9647,7 +9834,7 @@ function NWB:removeOldLayers()
 				end
 				NWB.data.layers[k] = nil;
 				removed = true;
-				NWB:debug("Removed old layer", k);
+				NWB:debug("Removed old layer", k, v.lastSeenNPC, validTimer, v.created, v.created < GetServerTime() - expireTime);
 			end
 		end
 	end
@@ -10016,17 +10203,18 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 				local texture = "";
 				msg = "";
 				if (NWB.data.wintergrasp) then
-					local endTime = NWB:getWintergraspEndTime(NWB.data.wintergrasp, NWB.data.wintergraspTime);
+					local wintergrasp, wintergraspTime, wintergraspFaction = NWB:getWintergraspData();
+					local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
 					local secondsLeft = endTime - GetServerTime()
 					if (NWB.db.global.showExpiredTimersTerok and secondsLeft < 1 and secondsLeft > -900) then
 						--Convert seconds left to positive.
 						secondsLeft = secondsLeft * -1;
 				    	local minutes = string.format("%02.f", math.floor(secondsLeft / 60));
 				    	local seconds = string.format("%02.f", math.floor(secondsLeft - minutes * 60));
-				    	if (NWB.data.wintergraspFaction == 2) then
+				    	if (wintergraspFaction == 2) then
 							--5242
 							texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-						elseif (NWB.data.wintergraspFaction == 3) then
+						elseif (wintergraspFaction == 3) then
 							--5243
 							texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						else
@@ -10034,24 +10222,24 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 							texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						end
 						msg = msg .. texture .. L["wintergraspTimer"] .. ": |Cffff2500-" .. minutes .. ":" .. seconds .. " (expired)|r";
-					elseif (NWB.data.wintergrasp > GetServerTime()) then
-						if (NWB.data.wintergraspFaction == 2) then
+					elseif (wintergrasp > GetServerTime()) then
+						if (wintergraspFaction == 2) then
 							--5242
 							texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-						elseif (NWB.data.wintergraspFaction == 3) then
+						elseif (wintergraspFaction == 3) then
 							--5243
 							texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						else
 							--5387
 							texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						end
-						local endTime = NWB:getWintergraspEndTime(NWB.data.wintergrasp, NWB.data.wintergraspTime);
+						local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
 						msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. NWB:getTimeString(endTime - GetServerTime(), true) .. ".";
 						if (NWB.db.global.showTimeStamp) then
 							local timeStamp = NWB:getTimeFormat(endTime);
 							msg = msg .. " (" .. timeStamp .. ")";
 						end
-					elseif (secondsLeft < 1 and secondsLeft > -43200 and NWB.isDebug) then
+					--[[elseif (secondsLeft < 1 and secondsLeft > -43200 and NWB.isDebug) then
 						--Treat it as a repeating timer if expired within the last 12h, it seems to be exactly 3h repeating no matter how long the match goes.
 						texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						local secondsLeft = 10800 - math.abs(math.fmod(secondsLeft, 10800));
@@ -10060,7 +10248,7 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 						if (NWB.db.global.showTimeStamp) then
 							local timeStamp = NWB:getTimeFormat(endTime);
 							msg = msg .. " (" .. timeStamp .. ")";
-						end
+						end]]
 					else
 						texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. L["noCurrentTimer"] .. ".";
@@ -10226,17 +10414,18 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 					local texture = "";
 					msg = "";
 					if (NWB.data.wintergrasp) then
-						local endTime = NWB:getWintergraspEndTime(NWB.data.wintergrasp, NWB.data.wintergraspTime);
+						local wintergrasp, wintergraspTime, wintergraspFaction = NWB:getWintergraspData();
+						local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
 						local secondsLeft = endTime - GetServerTime()
 						if (NWB.db.global.showExpiredTimersTerok and secondsLeft < 1 and secondsLeft > -900) then
 							--Convert seconds left to positive.
 							secondsLeft = secondsLeft * -1;
 					    	local minutes = string.format("%02.f", math.floor(secondsLeft / 60));
 					    	local seconds = string.format("%02.f", math.floor(secondsLeft - minutes * 60));
-					    	if (NWB.data.wintergraspFaction == 2) then
+					    	if (wintergraspFaction == 2) then
 								--5242
 								texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-							elseif (NWB.data.wintergraspFaction == 3) then
+							elseif (wintergraspFaction == 3) then
 								--5243
 								texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 							else
@@ -10244,24 +10433,24 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 								texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 							end
 							msg = msg .. texture .. L["wintergraspTimer"] .. ": |Cffff2500-" .. minutes .. ":" .. seconds .. " (expired)|r";
-						elseif (NWB.data.wintergrasp > GetServerTime()) then
-							if (NWB.data.wintergraspFaction == 2) then
+						elseif (wintergrasp > GetServerTime()) then
+							if (wintergraspFaction == 2) then
 								--5242
 								texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-							elseif (NWB.data.wintergraspFaction == 3) then
+							elseif (wintergraspFaction == 3) then
 								--5243
 								texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 							else
 								--5387
 								texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 							end
-							local endTime = NWB:getWintergraspEndTime(NWB.data.wintergrasp, NWB.data.wintergraspTime);
+							local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
 							msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. NWB:getTimeString(endTime - GetServerTime(), true) .. ".";
 							if (NWB.db.global.showTimeStamp) then
 								local timeStamp = NWB:getTimeFormat(endTime);
 								msg = msg .. " (" .. timeStamp .. ")";
 							end
-						elseif (secondsLeft < 1 and secondsLeft > -43200 and NWB.isDebug) then
+						--[[elseif (secondsLeft < 1 and secondsLeft > -43200 and NWB.isDebug) then
 							--Treat it as a repeating timer if expired within the last 12h, it seems to be exactly 3h repeating no matter how long the match goes.
 							texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 							local secondsLeft = 10800 - math.abs(math.fmod(secondsLeft, 10800));
@@ -10270,7 +10459,7 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 							if (NWB.db.global.showTimeStamp) then
 								local timeStamp = NWB:getTimeFormat(endTime);
 								msg = msg .. " (" .. timeStamp .. ")";
-							end
+							end]]
 						else
 							texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 							msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. L["noCurrentTimer"] .. ".";
@@ -10425,17 +10614,18 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 			local texture = "";
 			msg = "";
 			if (NWB.data.wintergrasp) then
-				local endTime = NWB:getWintergraspEndTime(NWB.data.wintergrasp, NWB.data.wintergraspTime);
+				local wintergrasp, wintergraspTime, wintergraspFaction = NWB:getWintergraspData();
+				local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
 				local secondsLeft = endTime - GetServerTime()
 				if (NWB.db.global.showExpiredTimersTerok and secondsLeft < 1 and secondsLeft > -900) then
 					--Convert seconds left to positive.
 					secondsLeft = secondsLeft * -1;
 			    	local minutes = string.format("%02.f", math.floor(secondsLeft / 60));
 			    	local seconds = string.format("%02.f", math.floor(secondsLeft - minutes * 60));
-			    	if (NWB.data.wintergraspFaction == 2) then
+			    	if (wintergraspFaction == 2) then
 						--5242
 						texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-					elseif (NWB.data.wintergraspFaction == 3) then
+					elseif (wintergraspFaction == 3) then
 						--5243
 						texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 					else
@@ -10443,24 +10633,24 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 						texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 					end
 					msg = msg .. texture .. L["wintergraspTimer"] .. ": |Cffff2500-" .. minutes .. ":" .. seconds .. " (expired)|r";
-				elseif (NWB.data.wintergrasp > GetServerTime()) then
-					if (NWB.data.wintergraspFaction == 2) then
+				elseif (wintergrasp > GetServerTime()) then
+					if (wintergraspFaction == 2) then
 						--5242
 						texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-					elseif (NWB.data.wintergraspFaction == 3) then
+					elseif (wintergraspFaction == 3) then
 						--5243
 						texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 					else
 						--5387
 						texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 					end
-					local endTime = NWB:getWintergraspEndTime(NWB.data.wintergrasp, NWB.data.wintergraspTime);
+					local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
 					msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. NWB:getTimeString(endTime - GetServerTime(), true) .. ".";
 					if (NWB.db.global.showTimeStamp) then
 						local timeStamp = NWB:getTimeFormat(endTime);
 						msg = msg .. " (" .. timeStamp .. ")";
 					end
-				elseif (secondsLeft < 1 and secondsLeft > -43200 and NWB.isDebug) then
+				--[[elseif (secondsLeft < 1 and secondsLeft > -43200 and NWB.isDebug) then
 					--Treat it as a repeating timer if expired within the last 12h, it seems to be exactly 3h repeating no matter how long the match goes.
 					texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 					local secondsLeft = 10800 - math.abs(math.fmod(secondsLeft, 10800));
@@ -10469,7 +10659,7 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 					if (NWB.db.global.showTimeStamp) then
 						local timeStamp = NWB:getTimeFormat(endTime);
 						msg = msg .. " (" .. timeStamp .. ")";
-					end
+					end]]
 				else
 					texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 					msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. L["noCurrentTimer"] .. ".";
@@ -10562,17 +10752,18 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 				local texture = "";
 				local msg = "\n\n\n\n";
 				if (NWB.data.wintergrasp) then
-					local endTime = NWB:getWintergraspEndTime(NWB.data.wintergrasp, NWB.data.wintergraspTime);
+					local wintergrasp, wintergraspTime, wintergraspFaction = NWB:getWintergraspData();
+					local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
 					local secondsLeft = endTime - GetServerTime()
 					if (NWB.db.global.showExpiredTimersTerok and secondsLeft < 1 and secondsLeft > -900) then
 						--Convert seconds left to positive.
 						secondsLeft = secondsLeft * -1;
 				    	local minutes = string.format("%02.f", math.floor(secondsLeft / 60));
 				    	local seconds = string.format("%02.f", math.floor(secondsLeft - minutes * 60));
-				    	if (NWB.data.wintergraspFaction == 2) then
+				    	if (wintergraspFaction == 2) then
 							--5242
 							texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-						elseif (NWB.data.wintergraspFaction == 3) then
+						elseif (wintergraspFaction == 3) then
 							--5243
 							texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						else
@@ -10580,24 +10771,24 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 							texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						end
 						msg = msg .. texture .. L["wintergraspTimer"] .. ": |Cffff2500-" .. minutes .. ":" .. seconds .. " (expired)|r";
-					elseif (NWB.data.wintergrasp > GetServerTime()) then
-						if (NWB.data.wintergraspFaction == 2) then
+					elseif (wintergrasp > GetServerTime()) then
+						if (wintergraspFaction == 2) then
 							--5242
 							texture = "|TInterface\\worldstateframe\\alliancetower.blp:12:12:-2:1:32:32:1:18:1:18|t";
-						elseif (NWB.data.wintergraspFaction == 3) then
+						elseif (wintergraspFaction == 3) then
 							--5243
 							texture = "|TInterface\\worldstateframe\\hordetower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						else
 							--5387
 							texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						end
-						local endTime = NWB:getWintergraspEndTime(NWB.data.wintergrasp, NWB.data.wintergraspTime);
+						local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
 						msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. NWB:getTimeString(endTime - GetServerTime(), true) .. ".";
 						if (NWB.db.global.showTimeStamp) then
 							local timeStamp = NWB:getTimeFormat(endTime);
 							msg = msg .. " (" .. timeStamp .. ")";
 						end
-					elseif (secondsLeft < 1 and secondsLeft > -43200 and NWB.isDebug) then
+					--[[elseif (secondsLeft < 1 and secondsLeft > -43200 and NWB.isDebug) then
 						--Treat it as a repeating timer if expired within the last 12h, it seems to be exactly 3h repeating no matter how long the match goes.
 						texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						local secondsLeft = 10800 - math.abs(math.fmod(secondsLeft, 10800));
@@ -10606,7 +10797,7 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 						if (NWB.db.global.showTimeStamp) then
 							local timeStamp = NWB:getTimeFormat(endTime);
 							msg = msg .. " (" .. timeStamp .. ")";
-						end
+						end]]
 					else
 						texture = "|TInterface\\worldstateframe\\neutraltower.blp:12:12:-2:0:32:32:1:18:1:18|t";
 						msg = msg .. texture .. L["wintergraspTimer"] .. ": " .. L["noCurrentTimer"] .. ".";
@@ -10824,18 +11015,18 @@ function NWB:setCurrentLayerText(unit)
 	end
 	--This only works in capital cities past this point.
 	if (NWB.faction == "Horde" and (zone ~= 1454 or not npcID)) then
-		NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg4"], "Orgrimmar") .. "|r");
+		NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg3"], "Orgrimmar") .. "|r");
 		return;
 	end
 	if (NWB.faction == "Alliance" and (zone ~= 1453 or not npcID)) then
-		NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg4"], "Stormwind") .. "|r");
+		NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg3"], "Stormwind") .. "|r");
 		return;
 	end
 	if (unitType ~= "Creature" or NWB.companionCreatures[tonumber(npcID)]) then
 		if (NWB.faction == "Horde") then
-			NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg4"], "Orgrimmar") .. "|r");
+			NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg3"], "Orgrimmar") .. "|r");
 		else
-			NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg4"], "Stormwind") .. "|r");
+			NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg3"], "Stormwind") .. "|r");
 		end
 		return;
 	end

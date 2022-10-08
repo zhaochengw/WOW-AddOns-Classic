@@ -1456,6 +1456,15 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 																end
 																NWB.data.layers[layer][k] = v;
 															--end
+														elseif (k == "lastSeenNPC") then
+															if (NWB.data.layers[layer] and NWB.data.layers[layer].lastSeenNPC) then
+																--Only record newer timestamps.
+																if (v > NWB.data.layers[layer].lastSeenNPC) then
+																	NWB.data.layers[layer][k] = v;
+																end
+															else
+																NWB.data.layers[layer][k] = v;
+															end
 														else
 															NWB.data.layers[layer][k] = v;
 														end
@@ -1536,20 +1545,22 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 						--Handle wintergrasp tower timers seperately so we can set timestamps that are older than current.
 						--We'll see if this timer drifsts like terokkar towers.
 						if (k ~= "wintergraspTime") then
+							if (not NWB.data.wintergrasp) then
+								NWB.data.wintergrasp = 0;
+							end
 							if (not NWB.data.wintergraspTime) then
 								NWB.data.wintergraspTime = 0;
 							end
-							if (NWB.data[k] and v ~= 0 and data.wintergraspTime and data.wintergraspTime ~= 0
-									and data.wintergraspTime > NWB.data.wintergraspTime
-									and v > GetServerTime() and v < GetServerTime() + 10800
+							--This should have a check added later that the timestamp is newer, if they ever fix the npc from having random 17h timers...
+							if (data.wintergraspTime and data.wintergraspTime > NWB.data.wintergraspTime and v < GetServerTime() + 10800
 									and v > NWB.data[k] - 1800) then
 								if (data.wintergraspTime > GetServerTime() - 21700
 										and data.wintergraspTime < GetServerTime() + 21700) then
-									if (data.terokFaction) then
-										NWB.data.terokFaction = data.terokFaction;
+									if (data.wintergraspFaction) then
+										NWB.data.wintergraspkFaction = data.wintergraspFaction;
 									end
 									NWB.data[k] = v;
-									NWB.data.wintergraspTime = data.terokTowersTime;
+									NWB.data.wintergraspTime = data.wintergraspTime;
 									if (GetServerTime() - lastHasNewData > 300) then
 										hasNewData = true;
 										lastHasNewData = GetServerTime();
@@ -3331,7 +3342,7 @@ f:SetScript('OnEvent', function(self, event, ...)
 			NWB.lastTerokNPCID = nil;
 			--NWB:debug("entered world terokkar");
 		end
-	elseif (event == "ZONE_CHANGED_NEW_AREA" ) then
+	elseif (event == "ZONE_CHANGED_NEW_AREA") then
 		lastZoneChange = GetServerTime();
 	elseif (event == "UPDATE_UI_WIDGET" ) then
 		local data = ...;
@@ -3807,31 +3818,32 @@ function NWB:updateWintergraspMarkers(type, layer)
 	--Seconds left.
 	local time = 0;
 	local timeString = L["noTimer"];
-	if (NWB.data.wintergrasp and NWB.data.wintergrasp - GetServerTime() > 0) then
-		time = NWB.data.wintergrasp - GetServerTime();
+	local wintergrasp, wintergraspTime, wintergraspFaction = NWB:getWintergraspData();
+	if (wintergrasp and wintergrasp - GetServerTime() > 0) then
+		time = wintergrasp - GetServerTime();
 	else
 		time = 0;
 	end
-	_G[type .. "NWBTerokkarMap"].fsTitle:SetText("|cFFFFFF00Wintergrasp");
-	if (NWB.data.wintergrasp and _G[type .. "NWBTerokkarMap"]) then
-		if (NWB.db.global.showExpiredTimersTerok and time < 0 and time > -3599) then
+	_G[type .. "NWBTerokkarMap"].fsTitle:SetText("|cFFFF6900Wintergrasp");
+	if (wintergrasp and _G[type .. "NWBTerokkarMap"]) then
+		if (NWB.db.global.showExpiredTimersTerok and time < 0 and time > -900) then
 			time = time * -1;
 			local minutes = string.format("%02.f", math.floor(time / 60));
 		    local seconds = string.format("%02.f", math.floor(time - minutes * 60));
 			timeString = "|Cffff2500-" .. minutes .. ":" .. seconds .. " (expired)|r";
-			if (NWB.data.wintergraspFaction == 2) then
+			if (wintergraspFaction == 2) then
 	    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\alliancetower.blp");
-	    	elseif (NWB.data.wintergraspFaction == 3) then
+	    	elseif (wintergraspFaction == 3) then
 	    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\hordetower.blp");
 	    	else
 	    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\neutraltower.blp");
 	    	end
 		elseif (time > 0) then
-			local endTime = NWB.data.wintergrasp;
-	    	timeString = NWB:getTimeString(endTime - GetServerTime(), true, "short") .. " (" .. NWB:getTimeFormat(endTime) .. ")";
-	    	if (NWB.data.wintergraspFaction == 2) then
+			local endTime = wintergrasp;
+	    	timeString = "|cFFFFFF00" .. NWB:getTimeString(endTime - GetServerTime(), true, "short") .. " (" .. NWB:getTimeFormat(endTime) .. ")";
+	    	if (wintergraspFaction == 2) then
 	    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\alliancetower.blp");
-	    	elseif (NWB.data.wintergraspFaction == 3) then
+	    	elseif (wintergraspFaction == 3) then
 	    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\hordetower.blp");
 	    	else
 	    		_G[type .. "NWBTerokkarMap"].texture:SetTexture("Interface\\worldstateframe\\neutraltower.blp");
@@ -4742,7 +4754,7 @@ end
 
 NWB.lastWgSendNPC = 0;
 function NWB:setWgTimerFromNPC(npcID)
-	if (npcID == "32170") then
+	if (npcID == "32170" or npcID == "32169") then
 		local gossip = GetGossipText();
 		local hours, minutes, seconds;
 		if (string.match(gossip, "%d+:%d+:%d+")) then
@@ -4771,7 +4783,8 @@ function NWB:setWgTimerFromNPC(npcID)
 			if (minutes > 0) then
 				secondsLeft = secondsLeft + seconds;
 			end
-			if (secondsLeft > 0) then
+			--Don't set timer if more than 3h long, the npc is bugged and giving random times like 17 hours until next..
+			if (secondsLeft > 0 and secondsLeft < 10860) then
 				local timestamp = GetServerTime() + secondsLeft;
 				NWB.data.wintergrasp = timestamp;
 				NWB.data.wintergraspTime = GetServerTime();
@@ -4856,7 +4869,7 @@ f:SetScript('OnEvent', function(self, event, ...)
 		lastNpcID = npcID;
 		lastGossipOpen = GetTime();
 		if (NWB.isWrath) then
-			if (npcID == "32170") then
+			if (npcID == "32170" or npcID == "32169") then
 				NWB:setWgTimerFromNPC(npcID);
 			end
 		end

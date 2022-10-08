@@ -199,10 +199,10 @@ L["North-West of Irontree Woods"] = "North-West of Irontree Woods";
 L["South of Irontree Woods"] = "South of Irontree Woods";
 
 L["worldMapBuffsMsg"] = "Type /buffs to view all your\ncharacters current world buffs.";
-L["cityMapLayerMsgHorde"] = "Currently on %s\nTarget any NPC in Orgrimmar\nto update your layer after changing zones.|r";
-L["cityMapLayerMsgAlliance"] = "Currently on %s\nTarget any NPC in Stormwind\nto update your layer after changing zones.|r";
-L["noLayerYetHorde"] = "Please target any NPC in Orgrimmar\nto find your current layer.";
-L["noLayerYetAlliance"] = "Please target any NPC in Stormwind\nto find your current layer.";
+L["cityMapLayerMsgHorde"] = "Currently on %s\nTarget any NPC\nto update your layer after changing zones.|r";
+L["cityMapLayerMsgAlliance"] = "Currently on %s\nTarget any NPC\nto update your layer after changing zones.|r";
+L["noLayerYetHorde"] = "Please target any NPC\nto find your current layer.";
+L["noLayerYetAlliance"] = "Please target any NPC\nto find your current layer.";
 L["Reset Data"] = "Reset Data"; --A button to Reset buffs window data.
 
 ---New translations to do---
@@ -808,6 +808,9 @@ L["guildLDesc"] = "Share what layer you are on with your guild? You can see your
 L["terokkarTimer"] = "Terokkar";
 L["terokkarWarning"] = "Terokkar Forest towers reset in %s";
 
+L["wintergraspTimer"] = "Wintergrasp";
+L["wintergraspWarning"] = "Wintergrasp starts in %s";
+
 L["Nazgrel"] = "Nazgrel";
 L["Hellfire Citadel is ours"] = "Hellfire Citadel is ours";
 L["The time for us to rise"] = "The time for us to rise";
@@ -843,3 +846,9 @@ L["Nagrand Halaa"] = "Nagrand Halaa";
 
 L["wintergraspTimer"] = "Wintergrasp";
 L["wintergraspWarning"] = "Wintergrasp resets in %s";
+
+L["wintergraspChat10Title"] = "Wintergrasp 10 Minutes";
+L["wintergraspChat10Desc"] = "Print a msg in chat when 10 minutes left on Wintergrasp spirit towers.";
+
+L["wintergraspMiddle10Title"] = "Wintergrasp 10 Minutes";
+L["wintergraspMiddle10Desc"] = "Show a raid warning style msg in the middle of the screen when 10 minutes left on Wintergrasp spirit towers.";
