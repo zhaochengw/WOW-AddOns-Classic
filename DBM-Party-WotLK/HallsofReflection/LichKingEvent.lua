@@ -1,7 +1,7 @@
 local mod = DBM:NewMod(603, "DBM-Party-WotLK", 16, 276)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20220930022912")
+mod:SetRevision("20221006190430")
 --mod:SetEncounterID(1990)--TODO, why was this unreliable?
 
 mod:RegisterEvents(
@@ -9,6 +9,7 @@ mod:RegisterEvents(
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
+--TODO, if boss tokens still don't exist by this classic content update, this mod is basically useless
 local WarnWave		= mod:NewAnnounce("WarnWave", 2)
 
 local timerEscape	= mod:NewAchievementTimer(360, 4526, "achievementEscape")
