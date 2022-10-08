@@ -1515,7 +1515,7 @@ local function ClassicHealPredictionFrame_OnLoad(self)
             {"显示直接治疗", HealComm.DIRECT_HEALS},
             {"显示HOT", HealComm.HOT_HEALS},
             {"显示取消的治疗", HealComm.CHANNEL_HEALS},
-            {"显示治疗暴击", HealComm.BOMB_HEALS}
+            {"显示Bomb Heal", HealComm.BOMB_HEALS}
         }
     ) do
         local text, flag = unpack(x)

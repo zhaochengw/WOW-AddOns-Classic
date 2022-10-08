@@ -53,7 +53,7 @@ end
 AddSpellName("VictoryRush", 34428 )
 AddSpellName("Overpower", 11585, 11584, 7887, 7384 ) -- 7384 - only Wrath rank
 AddSpellName("Rampage", 30033, 30030, 29801 ) -- TBC only
-AddSpellName("Slam", 1464, 8820, 11604, 11605, 25241, 25242, 47474)
+AddSpellName("Slam", 1464, 8820, 11604, 11605, 25241, 25242, 47474, 47475)
 
 AddSpellName("Riposte", 14251 )
 AddSpellName("Counterattack", 27067, 20910, 20909, 19306 )
