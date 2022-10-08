@@ -1,5 +1,5 @@
 local major = "LibHealComm-4.0"
-local minor = 107
+local minor = 109
 assert(LibStub, format("%s requires LibStub.", major))
 
 local HealComm = LibStub:NewLibrary(major, minor)
@@ -96,8 +96,9 @@ local spellRankTableData = {
 	[11] = { 25299, 25297, 30020, 27136, 25221, 25391, 27030, 48442, 48071 },
 	[12] = { 26981, 26978, 25222, 25396, 27031, 48781, 48443 },
 	[13] = { 26982, 26979, 48782, 49272, 48067, 45543 },
-	[14] = { 49273, 48377, 48440, 48068, 45544 },
-	[15] = { 48378, 48441 },
+	[14] = { 49273, 48377, 48440, 48068, 51827 },
+	[15] = { 48378, 48441, 45544 },
+	[16] = { 51803 },
 }
 
 local SpellIDToRank = {}
@@ -1509,6 +1510,8 @@ if( playerClass == "PRIEST" ) then
 
 		CalculateHotHealing = function(guid, spellID)
 			local spellName, spellRank = GetSpellInfo(spellID), SpellIDToRank[spellID]
+			if not spellRank then return end
+
 			local healAmount = getBaseHealAmount(hotData, spellName, spellID, spellRank)
 			local spellPower = GetSpellBonusHealing()
 			local healModifier, spModifier = playerHealModifier, 1
@@ -1567,6 +1570,8 @@ if( playerClass == "PRIEST" ) then
 
 		CalculateHealing = function(guid, spellID)
 			local spellName, spellRank = GetSpellInfo(spellID), SpellIDToRank[spellID]
+			if not spellRank then return end
+
 			local healAmount = getBaseHealAmount(spellData, spellName, spellID, spellRank)
 			local spellPower = GetSpellBonusHealing()
 			local healModifier, spModifier = playerHealModifier, 1
@@ -2922,6 +2927,17 @@ function HealComm:UNIT_SPELLCAST_STOP(unit, castGUID, spellID)
 	spellCastSucceeded[spellID] = nil
 end
 
+function HealComm:UNIT_SPELLCAST_CHANNEL_STOP(unit, _, spellID)
+	local spellName = GetSpellInfo(spellID)
+	if( unit ~= "player" or not spellData[spellName] ) then return end
+
+	-- End heal if a Penance cast is stopped prematurely (e.g. by movement)
+	if( spellName == "Penance" ) then
+		parseHealEnd(playerGUID, nil, "name", spellID, true)
+		sendMessage(format("S::%d:1", spellID or 0))
+	end
+end
+
 -- Cast didn't go through, recheck any charge data if necessary
 function HealComm:UNIT_SPELLCAST_INTERRUPTED(unit, castGUID, spellID)
 	local spellName = GetSpellInfo(spellID)
@@ -3244,7 +3260,7 @@ function HealComm:OnInitialize()
 
 		local _GetHealTargets = GetHealTargets
 
-		GetHealTargets = function(bitType, guid, spellID)
+		GetHealTargets = function(bitType, guid, spellID, amount)
 			local spellName = GetSpellInfo(spellID)
 
 			if spellName == FirstAid then
@@ -3252,7 +3268,7 @@ function HealComm:OnInitialize()
 			end
 
 			if _GetHealTargets then
-				return _GetHealTargets(bitType, guid, spellID)
+				return _GetHealTargets(bitType, guid, spellID, amount)
 			end
 		end
 
@@ -3305,6 +3321,7 @@ function HealComm:OnInitialize()
 	self.eventFrame:RegisterEvent("UNIT_SPELLCAST_START")
 	self.eventFrame:RegisterEvent("UNIT_SPELLCAST_STOP")
 	self.eventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+	self.eventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
 	self.eventFrame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
 	self.eventFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
 	self.eventFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
@@ -3314,7 +3331,7 @@ function HealComm:OnInitialize()
 	self.eventFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 	self.eventFrame:RegisterEvent("PLAYER_LEVEL_UP")
 	self.eventFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
-	self.eventFrame:RegisterEvent("UNIT_AURA")
+	self.eventFrame:RegisterUnitEvent("UNIT_AURA", 'player')
 	if isWrath then
 		self.eventFrame:RegisterEvent("GLYPH_ADDED")
 		self.eventFrame:RegisterEvent("GLYPH_REMOVED")
