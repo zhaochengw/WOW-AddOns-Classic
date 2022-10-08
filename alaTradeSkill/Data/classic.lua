@@ -13,6 +13,8 @@ local __db__ = __namespace__.__db__;
 
 __db__.__DataVersion = 211227;
 
+__db__.FACTIONGROUP = UnitFactionGroup('player');
+__db__.ISHORDE = __db__.FACTIONGROUP == "HORDE";
 __db__.CURPHASE = 6;
 __db__.MAXPHASE = 6;
 __db__.MAXRANK = 300;

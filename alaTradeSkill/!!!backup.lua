@@ -53,7 +53,7 @@ do	--	supreme craft
 					end
 					local phase = info[index_phase];
 					if phase > CURPHASE then
-						GameTooltip:AddLine("|cffff0000" .. L["available_in_phase_"] .. phase .. "|r");
+						GameTooltip:AddLine("|cffff0000" .. L["AVAILABLE_IN_PHASE_"] .. phase .. "|r");
 					end
 					GameTooltip:Show();
 				else
@@ -457,11 +457,11 @@ do	--	supreme craft
 			call:SetScript("OnClick", function(self)
 				if supreme:IsShown() then
 					supreme:Hide();
-					call:SetText(L["Open"]);
+					call:SetText(L["OVERRIDE_OPEN"]);
 					SET.show_supreme = false;
 				else
 					supreme:Show();
-					call:SetText(L["Close"]);
+					call:SetText(L["OVERRIDE_CLOSE"]);
 					SET.show_supreme = true;
 					supreme.F_Update();
 				end

@@ -8,7 +8,7 @@ local __db__ = __namespace__.__db__;
 -->		upvalue
 	local rawget = rawget;
 	local next = next;
-	local wipe = table.wipe;
+	local tremove, wipe = table.remove, table.wipe;
 	local GetServerTime, GetTime = GetServerTime, GetTime;
 
 	local _G = _G;
@@ -35,9 +35,12 @@ __namespace__:BuildEnv("cooldown");
 local T_TradeSkill_CooldownList = __db__.T_TradeSkill_CooldownList;
 
 for pid, list in next, T_TradeSkill_CooldownList do
-	for index = 1, #list do
+	for index = #list, 1, -1 do
 		local data = list[index];
 		data[2] = data[2] or __db__.get_learn_rank_by_sid(data[1]);
+		if data[2] == nil then
+			tremove(list, index);
+		end
 	end
 end
 

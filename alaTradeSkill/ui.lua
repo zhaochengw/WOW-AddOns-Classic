@@ -149,13 +149,13 @@ local SkillTip = GameTooltip;	--	CreateFrame('GAMETOOLTIP', "_TradeSkillTooltip"
 
 local TEXTURE_PATH = [[Interface\AddOns\alaTradeSkill\Media\Textures\]];
 local T_UIDefinition = {
-	texture_white = "Interface\\Buttons\\WHITE8X8",
-	texture_unk = "Interface\\Icons\\inv_misc_questionmark",
-	texture_highlight = "Interface\\Buttons\\UI-Common-MouseHilight",
-	texture_triangle = "interface\\transmogrify\\transmog-tooltip-arrow",
+	texture_white = [[Interface\Buttons\WHITE8X8]],
+	texture_unk = [[Interface\Icons\inv_misc_questionmark]],
+	texture_highlight = [[Interface\Buttons\UI-Common-MouseHilight]],
+	texture_triangle = [[Interface\Transmogrify\Transmog-Tooltip-Arrow]],
 	texture_color_select = TEXTURE_PATH .. [[ColorSelect]],
 	texture_alpha_ribbon = TEXTURE_PATH .. [[AlphaRibbon]],
-	texture_config = "interface\\buttons\\ui-optionsbutton",
+	texture_config = [[Interface\Buttons\UI-OptionsButton]],
 	texture_explorer = TEXTURE_PATH .. [[explorer]],
 	texture_toggle = TEXTURE_PATH .. [[UI]],
 
@@ -172,7 +172,7 @@ local T_UIDefinition = {
 	color_white = { 1.0, 1.0, 1.0, 1.0, },
 
 	modernFrameBackdrop = {
-		bgFile = "Interface\\Buttons\\WHITE8X8",
+		bgFile = [[Interface\Buttons\WHITE8X8]],
 		edgeFile = nil,
 		tile = false,
 		tileSize = 16,
@@ -180,8 +180,8 @@ local T_UIDefinition = {
 		insets = { left = 0, right = 0, top = 0, bottom = 0, },
 	},
 	blzFrameBackdrop = {
-		bgFile = "Interface\\FrameGeneral\\UI-BackGround-Marble",
-		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",	--	"Interface\\Dialogframe\\UI-DialogBox-Border",
+		bgFile = [[Interface\FrameGeneral\UI-BackGround-Marble]],
+		edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
 		tile = false,
 		tileSize = 32,
 		edgeSize = 24,
@@ -283,7 +283,7 @@ function LT_SharedMethod.CancelMarkKnown(sid, GUID)
 	end
 end
 local T_DynamicCreatedSID = {  };
-function LT_SharedMethod.DynamicCreateInfo(frame, pid, cur_rank, index, sid, srank)
+function LT_SharedMethod.DynamicCreateInfo(Frame, pid, cur_rank, index, sid, srank)
 	--------------.-PHA-PID-----SID-----CID-LEARN--Y--GREEN-GREY-MIN--MAX---------R-------N--TRAINER-PRICE-RECIPE-QUEST-OBJ-CLASS-SPEC
 	--------------1--2---3-------4-------5----6----7----8----9---10---11---------12------13---14-------15-----16---17---18---19----20
 	--[~[
@@ -291,8 +291,8 @@ function LT_SharedMethod.DynamicCreateInfo(frame, pid, cur_rank, index, sid, sra
 	if T_DynamicCreatedSID[sid] == nil then
 		local info = __db__.get_info_by_sid(sid);
 		if info == nil then
-			local cid = frame.F_GetRecipeItemID(index);
-			local minMade, maxMade = frame.F_GetRecipeNumMade(index);
+			local cid = Frame.F_GetRecipeItemID(index);
+			local minMade, maxMade = Frame.F_GetRecipeNumMade(index);
 			local info = { nil, 1, pid, sid, cid, cur_rank, cur_rank, cur_rank, cur_rank, minMade, maxMade, {  }, {  }, };
 			if difficulty_rank == 0 then
 				info[index_learn_rank] = cur_rank + 1;
@@ -322,13 +322,13 @@ function LT_SharedMethod.DynamicCreateInfo(frame, pid, cur_rank, index, sid, sra
 			else
 				return;
 			end
-			local numReagents = frame.F_GetRecipeNumReagents(index);
+			local numReagents = Frame.F_GetRecipeNumReagents(index);
 			if numReagents > 0 then
 				local ids = info[index_reagents_id];
 				local cts = info[index_reagents_count];
 				for i = 1, numReagents do
-					local id = frame.F_GetRecipeReagentID(index, i);
-					local name, texture, req, has = frame.F_GetRecipeReagentInfo(index, i);
+					local id = Frame.F_GetRecipeReagentID(index, i);
+					local name, texture, req, has = Frame.F_GetRecipeReagentInfo(index, i);
 					if id ~= nil and req ~= nil then
 						ids[i] = id;
 						cts[i] = req;
@@ -376,12 +376,12 @@ end
 
 
 --	Update
-	function LT_SharedMethod.ProfitFilterList(frame, list, only_cost)
-		local sid_list = frame.list;
+	function LT_SharedMethod.ProfitFilterList(Frame, list, only_cost)
+		local sid_list = Frame.list;
 		wipe(list);
 		if AuctionMod ~= nil then
-			local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
-			if only_cost and frame.flag ~= 'explorer' then
+			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+			if only_cost and Frame.flag ~= 'explorer' then
 				local var = rawget(VAR, pid);
 				local cur_rank = var and var.cur_rank or 0;
 				for index = 1, #sid_list do
@@ -415,18 +415,18 @@ end
 		end
 		return list;
 	end
-	function LT_SharedMethod.UpdateProfitFrame(frame)
-		local ProfitFrame = frame.ProfitFrame;
+	function LT_SharedMethod.UpdateProfitFrame(Frame)
+		local ProfitFrame = Frame.ProfitFrame;
 		if ProfitFrame:IsVisible() then
 			_log_("UpdateProfitFrame|cff00ff00#1L1|r");
 			local list = ProfitFrame.list;
-			local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
+			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
 			if ProfitFrame.CostOnlyCheck then
-				local only_cost = SET[pid].costOnly;
-				LT_SharedMethod.ProfitFilterList(frame, list, only_cost);
+				local only_cost = SET[pid].PROFIT_SHOW_COST_ONLY;
+				LT_SharedMethod.ProfitFilterList(Frame, list, only_cost);
 				ProfitFrame.CostOnlyCheck:SetChecked(only_cost);
 			else
-				LT_SharedMethod.ProfitFilterList(frame, list);
+				LT_SharedMethod.ProfitFilterList(Frame, list);
 			end
 			ProfitFrame.ScrollFrame:SetNumValue(#list);
 			ProfitFrame.ScrollFrame:Update();
@@ -462,7 +462,7 @@ end
 			end
 		end
 	end
-	function LT_SharedMethod.FrameFilterList(frame, regular_exp, list, searchText, searchNameOnly)
+	function LT_SharedMethod.FrameFilterList(Frame, regular_exp, list, searchText, searchNameOnly)
 		if strlower(strsub(searchText, 1, 5)) == "rexp:" then
 			regular_exp = true;
 			searchText = strsub(searchText, 6);
@@ -471,69 +471,70 @@ end
 			searchText = strlower(searchText);
 			local result, ret = pcall(LT_SharedMethod.ProcessTextFilter, list, searchText, searchNameOnly);
 			if result then
-				frame:F_SearchEditValid();
+				Frame:F_SearchEditValid();
 			else
-				frame:F_SearchEditInvalid();
+				Frame:F_SearchEditInvalid();
 			end
 		else
 			searchText = gsub(strlower(searchText), "[%^%$%%%.%+%-%*%?%[%]%(%)]", "%%%1");
 			LT_SharedMethod.ProcessTextFilter(list, searchText, searchNameOnly);
-			frame:F_SearchEditValid();
+			Frame:F_SearchEditValid();
 		end
 	end
-	function LT_SharedMethod.UpdateFrame(frame)
-		-- if frame.mute_update then
+	function LT_SharedMethod.UpdateFrame(Frame)
+		-- if Frame.mute_update then
 		-- 	return;
 		-- end
-		-- frame.mute_update = true;
-		if frame.HookedFrame:IsShown() then
+		-- Frame.mute_update = true;
+		if Frame.HookedFrame:IsShown() then
 			local NotInspecting = not IsTradeSkillLinked();
-			frame:F_LayoutOnShow();
-			local skillName, cur_rank, max_rank = frame.F_GetSkillInfo();
+			Frame:F_LayoutOnShow();
+			local skillName, cur_rank, max_rank = Frame.F_GetSkillInfo();
 			local pid = __db__.get_pid_by_pname(skillName);
-			frame.flag = pid;
+			Frame.flag = pid;
 			if pid ~= nil then
 				local set = SET[pid];
 				local var = VAR[pid];
-				local update_var = var.update or frame.prev_pid ~= pid or var.cur_rank ~= cur_rank or frame.update;
+				local update_var = var.update or Frame.prev_pid ~= pid or var.cur_rank ~= cur_rank or Frame.update;
 				if not update_var then
 					local t = GetTime();
-					if t - frame.prev_var_update_time > MAXIMUM_VAR_UPDATE_PERIOD then
-						frame.prev_var_update_time = t;
+					if t - Frame.prev_var_update_time > MAXIMUM_VAR_UPDATE_PERIOD then
+						Frame.prev_var_update_time = t;
 						update_var = true;
 					end
 				end
 				var.update = update_var;	--	Redundancy for error
 				local update_list = update_var or set.update;
 				set.update = update_list;	--	Redundancy for error
-				frame.HaveMaterialsCheck:SetChecked(set.haveMaterials);
+				Frame.HaveMaterialsCheck:SetChecked(set.haveMaterials);
 				if set.shown then
-					frame:Show();
-					frame.ToggleButton:SetText(L["Close"]);
+					Frame:Show();
+					Frame.ToggleButton:SetText(L["OVERRIDE_CLOSE"]);
 				else
-					frame:Hide();
-					frame.ToggleButton:SetText(L["Open"]);
+					Frame:Hide();
+					Frame.ToggleButton:SetText(L["OVERRIDE_OPEN"]);
 				end
 				if SET.show_call then
-					frame.ToggleButton:Show();
+					Frame.ToggleButton:Show();
 				end
 				if __namespace__.__is_wlk then
 					if pid == 10 then
-						frame.FilterDropdown:Show();
+						Frame.FilterDropdown:Show();
 					else
-						frame.FilterDropdown:Hide();
+						Frame.FilterDropdown:Hide();
 					end
 				end
-				frame:F_ToggleOnSkill(true);
-				if frame:IsShown() then
+				Frame:F_ToggleOnSkill(true);
+				var.max_rank = max_rank;
+				if Frame:IsShown() then
 					if update_list then
 						local sids = var[1];
 						local hash = var[2];
 						if update_var then
 							_log_("UpdateFrame|cff00ff00#1L1|r");
-							local num = frame.F_GetRecipeNumAvailable();
+							local num = Frame.F_GetRecipeNumAvailable();
 							if num <= 0 then
-								-- frame.mute_update = false;
+								-- Frame.mute_update = false;
 								return;
 							end
 							var.cur_rank = cur_rank;
@@ -543,11 +544,11 @@ end
 							wipe(sids);
 							wipe(hash);
 							for index = 1, num do
-								local sname, srank = frame.F_GetRecipeInfo(index);
+								local sname, srank = Frame.F_GetRecipeInfo(index);
 								if sname ~= nil and srank ~= nil and srank ~= 'header' then
-									local sid = frame.F_GetRecipeSpellID ~= nil and frame.F_GetRecipeSpellID(index) or nil;
+									local sid = Frame.F_GetRecipeSpellID ~= nil and Frame.F_GetRecipeSpellID(index) or nil;
 									if sid == nil then
-										local cid = frame.F_GetRecipeItemID(index);
+										local cid = Frame.F_GetRecipeItemID(index);
 										if cid ~= nil then
 											local sid = __db__.get_sid_by_pid_sname_cid(pid, sname, cid);
 											local info = __db__.get_info_by_sid(sid);
@@ -561,8 +562,8 @@ end
 														LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
 													end
 												end
-												if index == frame.F_GetSelection() then
-													frame.selected_sid = sid;
+												if index == Frame.F_GetSelection() then
+													Frame.selected_sid = sid;
 												end
 											else
 												_error_("UpdateFrame#0E2", pid .. "#" .. cid .. "#" .. sname, sid or "_NIL");
@@ -576,38 +577,38 @@ end
 										if NotInspecting then
 											LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
 										end
-										LT_SharedMethod.DynamicCreateInfo(frame, pid, cur_rank, index, sid, srank);
+										LT_SharedMethod.DynamicCreateInfo(Frame, pid, cur_rank, index, sid, srank);
 									end
 								end
 							end
 							var.update = nil;
-							frame.update = nil;
+							Frame.update = nil;
 						else
 							_log_("UpdateFrame|cff00ff00#1L2|r");
 						end
 						if #sids > 0 then
-							if frame.prev_pid ~= pid then
+							if Frame.prev_pid ~= pid then
 								if set.showProfit then
-									frame.ProfitFrame:Show();
+									Frame.ProfitFrame:Show();
 								else
-									frame.ProfitFrame:Hide();
+									Frame.ProfitFrame:Hide();
 								end
 								if set.showSet then
-									frame:F_ShowSetFrame(true);
+									Frame:F_ShowSetFrame(true);
 								else
-									frame:F_HideSetFrame();
+									Frame:F_HideSetFrame();
 								end
-								frame.SearchEditBoxNameOnly:SetChecked(set.searchNameOnly);
+								Frame.SearchEditBoxNameOnly:SetChecked(set.searchNameOnly);
 							end
-							frame.prev_pid = pid;
-							frame.hash = hash;
-							local list = frame.list;
-							__db__.get_ordered_list(pid, list, hash, set.phase, cur_rank, nil, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, set.filterClass, set.filterSpec);
+							Frame.prev_pid = pid;
+							Frame.hash = hash;
+							local list = Frame.list;
+							__db__.get_ordered_list(pid, list, hash, set.phase, cur_rank, set.rankoffset, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, set.filterClass, set.filterSpec);
 							if set.haveMaterials then
 								for i = #list, 1, -1 do
 									local sid = list[i];
 									local index = hash[sid];
-									if index == nil or select(3, frame.F_GetRecipeInfo(index)) <= 0 then
+									if index == nil or select(3, Frame.F_GetRecipeInfo(index)) <= 0 then
 										tremove(list, i);
 									end
 								end
@@ -625,53 +626,54 @@ end
 							end
 							local searchText = set.searchText;
 							if searchText ~= nil then
-								LT_SharedMethod.FrameFilterList(frame, SET.regular_exp, list, searchText, set.searchNameOnly);
+								LT_SharedMethod.FrameFilterList(Frame, SET.regular_exp, list, searchText, set.searchNameOnly);
 							else
-								frame:F_SearchEditValid();
+								Frame:F_SearchEditValid();
 							end
-							frame.ScrollFrame:SetNumValue(#list);
-							frame.ScrollFrame:Update();
-							frame:F_RefreshSetFrame();
-							frame:F_RefreshSearchEdit();
-							LT_SharedMethod.UpdateProfitFrame(frame);
+							Frame.ScrollFrame:SetNumValue(#list);
+							Frame.ScrollFrame:Update();
+							Frame:F_RefreshSetFrame();
+							Frame:F_RefreshSearchEdit();
+							Frame:F_RefreshRankOffset();
+							LT_SharedMethod.UpdateProfitFrame(Frame);
 							set.update = nil;
 							__namespace__:FireEvent("USER_EVENT_RECIPE_LIST_UPDATE");
 						else
 							var.update = true;
-							-- frame.mute_update = false;
+							-- Frame.mute_update = false;
 						end
 					else
 						_log_("UpdateFrame|cff00ff00#2L1|r");
 						if #var[1] > 0 then
-							frame.ScrollFrame:Update();
-							if frame.ProfitFrame:IsShown() then
-								frame.ProfitFrame.ScrollFrame:Update();
+							Frame.ScrollFrame:Update();
+							if Frame.ProfitFrame:IsShown() then
+								Frame.ProfitFrame.ScrollFrame:Update();
 							end
 						end
 					end
 				else
-					frame.prev_pid = pid;
+					Frame.prev_pid = pid;
 					var.cur_rank = cur_rank;
 					set.update = nil;
 					var.update = nil;
-					frame.update = nil;
+					Frame.update = nil;
 					if update_list then
 						local sids = var[1];
 						local hash = var[2];
 						if update_var then
 							_log_("UpdateFrame|cff00ff00#1L1|r");
-							local num = frame.F_GetRecipeNumAvailable();
+							local num = Frame.F_GetRecipeNumAvailable();
 							if num <= 0 then
-								-- frame.mute_update = false;
+								-- Frame.mute_update = false;
 								return;
 							end
 							var.cur_rank = cur_rank;
 							for index = 1, num do
-								local sname, srank = frame.F_GetRecipeInfo(index);
+								local sname, srank = Frame.F_GetRecipeInfo(index);
 								if sname ~= nil and srank ~= nil and srank ~= 'header' then
-									local sid = frame.F_GetRecipeSpellID ~= nil and frame.F_GetRecipeSpellID(index) or nil;
+									local sid = Frame.F_GetRecipeSpellID ~= nil and Frame.F_GetRecipeSpellID(index) or nil;
 									if sid == nil then
-										local cid = frame.F_GetRecipeItemID(index);
+										local cid = Frame.F_GetRecipeItemID(index);
 										if cid ~= nil then
 											local sid = __db__.get_sid_by_pid_sname_cid(pid, sname, cid);
 											local info = __db__.get_info_by_sid(sid);
@@ -695,24 +697,23 @@ end
 										if NotInspecting then
 											LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
 										end
-										LT_SharedMethod.DynamicCreateInfo(frame, pid, cur_rank, index, sid, srank);
+										LT_SharedMethod.DynamicCreateInfo(Frame, pid, cur_rank, index, sid, srank);
 									end
 								end
 							end
 							var.update = nil;
-							frame.update = nil;
+							Frame.update = nil;
 						end
 					end
 				end
-				var.max_rank = max_rank;
 				__namespace__.F_CheckCooldown(pid, var);
 			else
-				frame:Hide();
-				frame.ToggleButton:Hide();
-				frame:F_ToggleOnSkill(false);
+				Frame:Hide();
+				Frame.ToggleButton:Hide();
+				Frame:F_ToggleOnSkill(false);
 			end
 		end
-		-- frame.mute_update = false;
+		-- Frame.mute_update = false;
 	end
 	--
 		local T_EquipLoc2ID = {
@@ -762,7 +763,7 @@ end
 				end,
 			},
 		};
-	function LT_SharedMethod.ExplorerFilterList(frame, stat, filter, searchText, searchNameOnly, list, check_hash, phase, rank, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list)
+	function LT_SharedMethod.ExplorerFilterList(Frame, stat, filter, searchText, searchNameOnly, list, check_hash, phase, rank, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list)
 		__db__.get_ordered_list(filter.skill, list, check_hash, phase, rank, nil, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list);
 		do
 			local C_top = 1;
@@ -795,9 +796,9 @@ end
 			end
 		end
 		if searchText ~= nil then
-			LT_SharedMethod.FrameFilterList(frame, SET.regular_exp, list, searchText, searchNameOnly)
+			LT_SharedMethod.FrameFilterList(Frame, SET.regular_exp, list, searchText, searchNameOnly)
 		else
-			frame:F_SearchEditValid();
+			Frame:F_SearchEditValid();
 		end
 		do
 			local skill_hash = stat.skill;
@@ -831,34 +832,34 @@ end
 		end
 		return stat;
 	end
-	function LT_SharedMethod.UpdateExplorerFrame(frame, update_list)
-		if frame:IsVisible() then
+	function LT_SharedMethod.UpdateExplorerFrame(Frame, update_list)
+		if Frame:IsVisible() then
 			local set = SET.explorer;
-			local hash = frame.hash;
-			local list = frame.list;
+			local hash = Frame.hash;
+			local list = Frame.list;
 			if update_list then
 				_log_("UpdateExplorerFrame|cff00ff00#1L1|r");
 				if set.showProfit then
-					frame.ProfitFrame:Show();
+					Frame.ProfitFrame:Show();
 				else
-					frame.ProfitFrame:Hide();
+					Frame.ProfitFrame:Hide();
 				end
 				if set.showSet then
-					frame.SetFrame:Show();
+					Frame.SetFrame:Show();
 				else
-					frame.SetFrame:Hide();
+					Frame.SetFrame:Hide();
 				end
-				frame.SearchEditBoxNameOnly:SetChecked(set.searchNameOnly);
-				LT_SharedMethod.ExplorerFilterList(frame, T_ExplorerStat, set.filter, set.searchText, set.searchNameOnly,
+				Frame.SearchEditBoxNameOnly:SetChecked(set.searchNameOnly);
+				LT_SharedMethod.ExplorerFilterList(Frame, T_ExplorerStat, set.filter, set.searchText, set.searchNameOnly,
 											list, hash, set.phase, nil, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, set.filterClass, set.filterSpec);
-				LT_SharedMethod.UpdateProfitFrame(frame);
+				LT_SharedMethod.UpdateProfitFrame(Frame);
 			else
 				_log_("UpdateExplorerFrame|cff00ff00#1L2|r");
 			end
-			frame.ScrollFrame:SetNumValue(#list);
-			frame.ScrollFrame:Update();
-			frame:F_RefreshSetFrame();
-			frame:F_RefreshSearchEdit();
+			Frame.ScrollFrame:SetNumValue(#list);
+			Frame.ScrollFrame:Update();
+			Frame:F_RefreshSetFrame();
+			Frame:F_RefreshSearchEdit();
 		end
 	end
 --
@@ -894,14 +895,14 @@ end
 					obj:ClearAllPoints();
 					obj:SetPoint("TOPRIGHT", ScrollFrame, "TOPRIGHT", 0, -16);
 					obj:SetPoint("BOTTOMRIGHT", ScrollFrame, "BOTTOMRIGHT", 0, 16);
-					local up = CreateFrame("BUTTON", nil, obj);
+					local up = CreateFrame('BUTTON', nil, obj);
 					up:SetSize(18, 16);
 					up:SetPoint("BOTTOM", obj, "TOP");
 					up:SetScript("OnClick", function(self)
 						obj:SetValue(obj:GetValue() - obj:GetValueStep());
 					end);
 					obj.ScrollUpButton = up;
-					local down = CreateFrame("BUTTON", nil, obj);
+					local down = CreateFrame('BUTTON', nil, obj);
 					down:SetSize(18, 16);
 					down:SetPoint("TOP", obj, "BOTTOM");
 					down:SetScript("OnClick", function(self)
@@ -931,14 +932,14 @@ end
 			end
 		end
 		--	style
-		function LT_SharedMethod.StyleModernBackdrop(frame)
-			uireimp._SetBackdrop(frame, T_UIDefinition.modernFrameBackdrop);
-			uireimp._SetBackdropColor(frame, unpack(SET.bg_color));
+		function LT_SharedMethod.StyleModernBackdrop(Frame)
+			uireimp._SetBackdrop(Frame, T_UIDefinition.modernFrameBackdrop);
+			uireimp._SetBackdropColor(Frame, unpack(SET.bg_color));
 		end
-		function LT_SharedMethod.StyleBLZBackdrop(frame)
-			uireimp._SetBackdrop(frame, T_UIDefinition.blzFrameBackdrop);
-			uireimp._SetBackdropColor(frame, 1.0, 1.0, 1.0, 1.0);
-			uireimp._SetBackdropBorderColor(frame, 1.0, 1.0, 1.0, 1.0);
+		function LT_SharedMethod.StyleBLZBackdrop(Frame)
+			uireimp._SetBackdrop(Frame, T_UIDefinition.blzFrameBackdrop);
+			uireimp._SetBackdropColor(Frame, 1.0, 1.0, 1.0, 1.0);
+			uireimp._SetBackdropBorderColor(Frame, 1.0, 1.0, 1.0, 1.0);
 		end
 		function LT_SharedMethod.StyleModernButton(Button, bak, texture)
 			if Button.Left then
@@ -1030,7 +1031,7 @@ end
 			uireimp._SetSimpleBackdrop(bar, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.25, 1.0);
 			local thumb = bar:GetThumbTexture();
 			if thumb == nil then
-				bar:SetThumbTexture("Interface\\Buttons\\UI-ScrollBar-Knob");
+				bar:SetThumbTexture([[Interface\Buttons\UI-ScrollBar-Knob]]);
 				thumb = bar:GetThumbTexture();
 			end
 			thumb:SetColorTexture(0.25, 0.25, 0.25, 1.0);
@@ -1079,32 +1080,32 @@ end
 			--
 			local bar = ScrollFrame.ScrollBar;
 			uireimp._SetSimpleBackdrop(bar, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.5, 0.5);
-			bar:SetThumbTexture("Interface\\Buttons\\UI-ScrollBar-Knob");
+			bar:SetThumbTexture([[Interface\Buttons\UI-ScrollBar-Knob]]);
 			bar:GetThumbTexture():SetWidth(bar:GetWidth());
 			local up = bar.ScrollUpButton;
-			up:SetNormalTexture("Interface\\Buttons\\UI-ScrollBar-ScrollUpButton-Up");
+			up:SetNormalTexture([[Interface\Buttons\UI-ScrollBar-ScrollUpButton-Up]]);
 			up:GetNormalTexture():SetTexCoord(0.2, 0.8, 0.25, 0.75);
 			up:GetNormalTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			up:SetPushedTexture("Interface\\Buttons\\UI-ScrollBar-ScrollUpButton-Down");
+			up:SetPushedTexture([[Interface\Buttons\UI-ScrollBar-ScrollUpButton-Down]]);
 			up:GetPushedTexture():SetTexCoord(0.2, 0.8, 0.25, 0.75);
 			up:GetPushedTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			up:SetHighlightTexture("Interface\\Buttons\\UI-ScrollBar-ScrollUpButton-Highlight");
+			up:SetHighlightTexture([[Interface\Buttons\UI-ScrollBar-ScrollUpButton-Highlight]]);
 			up:GetHighlightTexture():SetTexCoord(0.2, 0.8, 0.25, 0.75);
 			up:GetHighlightTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			up:SetDisabledTexture("Interface\\Buttons\\UI-ScrollBar-ScrollUpButton-Disabled");
+			up:SetDisabledTexture([[Interface\Buttons\UI-ScrollBar-ScrollUpButton-Disabled]]);
 			up:GetDisabledTexture():SetTexCoord(0.2, 0.8, 0.25, 0.75);
 			up:GetDisabledTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
 			local down = bar.ScrollDownButton;
-			down:SetNormalTexture("Interface\\Buttons\\UI-ScrollBar-ScrollDownButton-Up");
+			down:SetNormalTexture([[Interface\Buttons\UI-ScrollBar-ScrollDownButton-Up]]);
 			down:GetNormalTexture():SetTexCoord(0.2, 0.8, 0.25, 0.75);
 			down:GetNormalTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			down:SetPushedTexture("Interface\\Buttons\\UI-ScrollBar-ScrollDownButton-Down");
+			down:SetPushedTexture([[Interface\Buttons\UI-ScrollBar-ScrollDownButton-Down]]);
 			down:GetPushedTexture():SetTexCoord(0.2, 0.8, 0.25, 0.75);
 			down:GetPushedTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			down:SetHighlightTexture("Interface\\Buttons\\UI-ScrollBar-ScrollDownButton-Highlight");
+			down:SetHighlightTexture([[Interface\Buttons\UI-ScrollBar-ScrollDownButton-Highlight]]);
 			down:GetHighlightTexture():SetTexCoord(0.2, 0.8, 0.25, 0.75);
 			down:GetHighlightTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			down:SetDisabledTexture("Interface\\Buttons\\UI-ScrollBar-ScrollDownButton-Disabled");
+			down:SetDisabledTexture([[Interface\Buttons\UI-ScrollBar-ScrollDownButton-Disabled]]);
 			down:GetDisabledTexture():SetTexCoord(0.2, 0.8, 0.25, 0.75);
 			down:GetDisabledTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
 		end
@@ -1151,10 +1152,10 @@ end
 			uireimp._SetSimpleBackdrop(Dropdown, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 			local Button = Dropdown.Button;
 			Button:SetSize(24, 24);
-			Button:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up");
-			Button:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down");
-			Button:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight");
-			Button:SetDisabledTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Disabled");
+			Button:SetNormalTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up]]);
+			Button:SetPushedTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down]]);
+			Button:SetHighlightTexture([[Interface\Buttons\UI-Common-MouseHilight]]);
+			Button:SetDisabledTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled]]);
 			Button:GetNormalTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
 			Button:GetPushedTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
 			Button:GetHighlightTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
@@ -1193,24 +1194,24 @@ end
 			CheckButton:GetDisabledCheckedTexture():SetVertexColor(unpack(T_UIDefinition.modernCheckButtonColorDisabledChecked));
 		end
 		function LT_SharedMethod.StyleBLZCheckButton(CheckButton)
-			CheckButton:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Up");
+			CheckButton:SetNormalTexture([[Interface\Buttons\UI-CheckBox-Up]]);
 			CheckButton:GetNormalTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			CheckButton:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down");
+			CheckButton:SetPushedTexture([[Interface\Buttons\UI-CheckBox-Down]]);
 			CheckButton:GetPushedTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			CheckButton:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight");
+			CheckButton:SetHighlightTexture([[Interface\Buttons\UI-CheckBox-Highlight]]);
 			CheckButton:GetHighlightTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			CheckButton:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check");
+			CheckButton:SetCheckedTexture([[Interface\Buttons\UI-CheckBox-Check]]);
 			CheckButton:GetCheckedTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			CheckButton:SetDisabledTexture("Interface\\Buttons\\UI-CheckBox-Up");
+			CheckButton:SetDisabledTexture([[Interface\Buttons\UI-CheckBox-Up]]);
 			CheckButton:GetDisabledTexture():SetDesaturated(true);
-			CheckButton:SetDisabledCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check-Disabled");
+			CheckButton:SetDisabledCheckedTexture([[Interface\Buttons\UI-CheckBox-Check-Disabled]]);
 			CheckButton:GetDisabledCheckedTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
 		end
 		--
 			local SkillButton_TextureHash = {
-				["Interface\\Buttons\\UI-MinusButton-Up"] = T_UIDefinition.texture_modern_button_minus,
-				["Interface\\Buttons\\UI-PlusButton-Up"] = T_UIDefinition.texture_modern_button_plus,
-				["Interface\\Buttons\\UI-PlusButton-Hilight"] = T_UIDefinition.texture_modern_button_plus,
+				[ [[Interface\Buttons\UI-MinusButton-Up]] ] = T_UIDefinition.texture_modern_button_minus,
+				[ [[Interface\Buttons\UI-PlusButton-Up]] ] = T_UIDefinition.texture_modern_button_plus,
+				[ [[Interface\Buttons\UI-PlusButton-Hilight]] ] = T_UIDefinition.texture_modern_button_plus,
 			};
 			local SetTextureReplaced = {
 				_SetTexture = function(self, tex)
@@ -1297,6 +1298,11 @@ end
 			Button:SetPushedTextOffset(1.55, -1.55);
 		end
 		--
+		function LT_SharedMethod.StyleModernSlider(Slider)
+		end
+		function LT_SharedMethod.StyleBLZSlider(Slider)
+		end
+		--
 		function LT_SharedMethod.StyleModernALADropButton(Dropdown)
 			Dropdown:SetNormalTexture(T_UIDefinition.texture_modern_arrow_down);
 			Dropdown:GetNormalTexture():SetTexCoord(0.0, 1.0, 0.0, 1.0);
@@ -1312,22 +1318,22 @@ end
 			Dropdown:GetDisabledTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorDisabled));
 		end
 		function LT_SharedMethod.StyleBLZALADropButton(Dropdown)
-			Dropdown:SetNormalTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+			Dropdown:SetNormalTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 			Dropdown:GetNormalTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 			Dropdown:GetNormalTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			Dropdown:SetPushedTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+			Dropdown:SetPushedTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 			Dropdown:GetPushedTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 			Dropdown:GetPushedTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorPushed));
-			Dropdown:SetHighlightTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+			Dropdown:SetHighlightTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 			Dropdown:GetHighlightTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 			Dropdown:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
-			Dropdown:SetDisabledTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+			Dropdown:SetDisabledTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 			Dropdown:GetDisabledTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 			Dropdown:GetDisabledTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorDisabled));
 		end
 	--
-	function LT_SharedMethod.UICreateSearchBox(frame)
-		local SearchEditBox = CreateFrame("EDITBOX", nil, frame);
+	function LT_SharedMethod.UICreateSearchBox(Frame)
+		local SearchEditBox = CreateFrame('EDITBOX', nil, Frame);
 		SearchEditBox:SetHeight(16);
 		SearchEditBox:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, T_UIDefinition.frameFontOutline);
 		SearchEditBox:SetAutoFocus(false);
@@ -1337,12 +1343,12 @@ end
 		SearchEditBox:ClearFocus();
 		SearchEditBox:SetScript("OnEnterPressed", function(self) self:ClearFocus(); end);
 		SearchEditBox:SetScript("OnEscapePressed", function(self) self:ClearFocus(); end);
-		frame.SearchEditBox = SearchEditBox;
+		Frame.SearchEditBox = SearchEditBox;
 
 		local SearchEditBoxTexture = SearchEditBox:CreateTexture(nil, "ARTWORK");
 		SearchEditBoxTexture:SetPoint("TOPLEFT");
 		SearchEditBoxTexture:SetPoint("BOTTOMRIGHT");
-		SearchEditBoxTexture:SetTexture("Interface\\Buttons\\greyscaleramp64");
+		SearchEditBoxTexture:SetTexture([[Interface\Buttons\GreyScaleramp64]]);
 		SearchEditBoxTexture:SetTexCoord(0.0, 0.25, 0.0, 0.25);
 		SearchEditBoxTexture:SetAlpha(0.75);
 		SearchEditBoxTexture:SetBlendMode("ADD");
@@ -1355,14 +1361,14 @@ end
 		SearchEditBoxNote:SetText(L["Search"]);
 		SearchEditBoxNote:Show();
 
-		local SearchEditBoxCancel = CreateFrame("BUTTON", nil, SearchEditBox);
+		local SearchEditBoxCancel = CreateFrame('BUTTON', nil, SearchEditBox);
 		SearchEditBoxCancel:SetSize(16, 16);
 		SearchEditBoxCancel:SetPoint("RIGHT", SearchEditBox);
 		SearchEditBoxCancel:Hide();
-		SearchEditBoxCancel:SetNormalTexture(T_UIDefinition.texture_modern_button_close);	--	("interface\\petbattles\\deadpeticon");
-		SearchEditBoxCancel:SetScript("OnClick", function(self) SearchEditBox:SetText(""); frame:F_Search(""); SearchEditBox:ClearFocus(); end);
+		SearchEditBoxCancel:SetNormalTexture(T_UIDefinition.texture_modern_button_close);
+		SearchEditBoxCancel:SetScript("OnClick", function(self) SearchEditBox:SetText(""); Frame:F_Search(""); SearchEditBox:ClearFocus(); end);
 
-		local SearchEditBoxOK = CreateFrame("BUTTON", nil, frame);
+		local SearchEditBoxOK = CreateFrame('BUTTON', nil, Frame);
 		SearchEditBoxOK:SetSize(32, 16);
 		SearchEditBoxOK:Disable();
 		SearchEditBoxOK:SetNormalTexture(T_UIDefinition.texture_unk);
@@ -1379,9 +1385,9 @@ end
 		SearchEditBoxOK:SetScript("OnEnable", function(self) SearchEditBoxOKText:SetTextColor(1.0, 1.0, 1.0, 1.0); end);
 		SearchEditBoxOK:SetScript("OnDisable", function(self) SearchEditBoxOKText:SetTextColor(1.0, 1.0, 1.0, 0.5); end);
 		SearchEditBoxOK:Disable();
-		frame.SearchEditBoxOK = SearchEditBoxOK;
+		Frame.SearchEditBoxOK = SearchEditBoxOK;
 
-		local SearchEditBoxNameOnly = CreateFrame("CHECKBUTTON", nil, frame, "OptionsBaseCheckButtonTemplate");
+		local SearchEditBoxNameOnly = CreateFrame('CHECKBUTTON', nil, Frame, "OptionsBaseCheckButtonTemplate");
 		SearchEditBoxNameOnly:SetSize(24, 24);
 		SearchEditBoxNameOnly:SetHitRectInsets(0, 0, 0, 0);
 		SearchEditBoxNameOnly:Show();
@@ -1390,17 +1396,17 @@ end
 		SearchEditBoxNameOnly:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 		SearchEditBoxNameOnly:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
 		SearchEditBoxNameOnly:SetScript("OnClick", function(self)
-			local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
-			if pid then
+			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+			if pid ~= nil then
 				__namespace__.F_ChangeSetWithUpdate(SET[pid], "searchNameOnly", self:GetChecked());
 			end
-			frame.F_Update();
+			Frame.F_Update();
 		end);
-		frame.SearchEditBoxNameOnly = SearchEditBoxNameOnly;
+		Frame.SearchEditBoxNameOnly = SearchEditBoxNameOnly;
 
-		function frame:F_Search(text)
-			local pid = self.flag or __db__.get_pid_by_pname(self.F_GetSkillName());
-			if pid then
+		function Frame:F_Search(text)
+			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+			if pid ~= nil then
 				if text == "" then
 					__namespace__.F_ChangeSetWithUpdate(SET[pid], "searchText", nil);
 					if not SearchEditBox:HasFocus() then
@@ -1413,11 +1419,11 @@ end
 					SearchEditBoxNote:Hide();
 				end
 			end
-			self.F_Update();
+			Frame.F_Update();
 		end
-		function frame:F_RefreshSearchEdit()
-			local pid = self.flag or __db__.get_pid_by_pname(self.F_GetSkillName());
-			if pid then
+		function Frame:F_RefreshSearchEdit(pid)
+			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+			if pid ~= nil then
 				local searchText = SET[pid].searchText or "";
 				if SearchEditBox:GetText() ~= searchText then
 					SearchEditBox:SetText(searchText);
@@ -1433,15 +1439,15 @@ end
 				end
 			end
 		end
-		function frame:F_SearchEditValid()
+		function Frame:F_SearchEditValid()
 			SearchEditBoxTexture:SetVertexColor(0.25, 0.25, 0.25);
 		end
-		function frame:F_SearchEditInvalid()
+		function Frame:F_SearchEditInvalid()
 			SearchEditBoxTexture:SetVertexColor(0.25, 0.0, 0.0);
 		end
 		SearchEditBox:SetScript("OnTextChanged", function(self, isUserInput)
 			if isUserInput then
-				frame:F_Search(self:GetText());
+				Frame:F_Search(self:GetText());
 			end
 		end);
 		SearchEditBox:SetScript("OnEditFocusGained", function(self)
@@ -1460,28 +1466,28 @@ end
 	--	list button handler
 		local T_SkillListDropList = {
 			AddFav = {
-				handler = function(_, frame, pid, sid)
+				handler = function(_, Frame, pid, sid)
 					SET[pid].update = true;
 					FAV[sid] = 1;
-					frame.F_Update();
+					Frame.F_Update();
 				end,
-				text = L["add_fav"],
+				text = L["ADD_FAV"],
 				para = {  },
 			},
 			SubFav = {
-				handler = function(_, frame, pid, sid)
+				handler = function(_, Frame, pid, sid)
 					SET[pid].update = true;
 					FAV[sid] = nil;
-					frame.F_Update();
+					Frame.F_Update();
 				end,
-				text = L["sub_fav"],
+				text = L["SUB_FAV"],
 				para = {  },
 			},
 			QueryWhoCanCraftIt = {
-				handler = function(_, frame, pid, sid)
+				handler = function(_, Frame, pid, sid)
 					__namespace__.F_cmmQuerySpell(sid);
 				end,
-				text = L["query_who_can_craft_it"],
+				text = L["QUERY_WHO_CAN_CRAFT_IT"],
 				para = {  },
 			},
 		};
@@ -1495,7 +1501,7 @@ end
 		end
 	--
 	function LT_SharedMethod.SkillListButton_OnEnter(self)
-		local frame = self.frame;
+		local Frame = self.Frame;
 		local sid = self.list[self:GetDataIndex()];
 		if type(sid) == 'table' then
 			sid = sid[1];
@@ -1514,7 +1520,7 @@ end
 				end
 				local phase = info[index_phase];
 				if phase > CURPHASE then
-					SkillTip:AddLine("|cffff0000" .. L["available_in_phase_"] .. phase .. "|r");
+					SkillTip:AddLine("|cffff0000" .. L["AVAILABLE_IN_PHASE_"] .. phase .. "|r");
 				end
 				SkillTip:Show();
 			else
@@ -1525,7 +1531,7 @@ end
 				SkillTip:AddDoubleLine(L["LABEL_RANK_LEVEL"], text);
 				SkillTip:Show();
 			end
-			local data = frame.hash[sid];
+			local data = Frame.hash[sid];
 			if pid == 'explorer' then
 				local hash = T_LearnedRecipesHash[sid];
 				if hash then
@@ -1560,35 +1566,35 @@ end
 		SkillTip:Hide();
 	end
 	function LT_SharedMethod.SkillListButton_OnClick(self, button)
-		local frame = self.frame;
+		local Frame = self.Frame;
 		local sid = self.list[self:GetDataIndex()];
 		if type(sid) == 'table' then
 			sid = sid[1];
 		end
-		local data = frame.hash[sid];
+		local data = Frame.hash[sid];
 		if button == "LeftButton" then
 			if IsShiftKeyDown() then
 				__namespace__.F_HandleShiftClick(self.flag or __db__.get_pid_by_sid(sid), sid);
 			elseif IsAltKeyDown() then
 				local text1 = nil;
 				local text2 = nil;
-				if data and __db__.T_TradeSkill_ID[frame.flag] ~= nil then
-					local n = frame.F_GetRecipeNumReagents(data);
+				if data and __db__.T_TradeSkill_ID[Frame.flag] ~= nil then
+					local n = Frame.F_GetRecipeNumReagents(data);
 					if n and n > 0 then
-						local m1, m2 = frame.F_GetRecipeNumMade(data);
+						local m1, m2 = Frame.F_GetRecipeNumMade(data);
 						if m1 == m2 then
-							text1 = frame.F_GetRecipeItemLink(data) .. "x" .. m1 .. L["PRINT_MATERIALS: "];
+							text1 = Frame.F_GetRecipeItemLink(data) .. "x" .. m1 .. L["PRINT_MATERIALS: "];
 						else
-							text1 = frame.F_GetRecipeItemLink(data) .. "x" .. m1 .. "-" .. m2 .. L["PRINT_MATERIALS: "];
+							text1 = Frame.F_GetRecipeItemLink(data) .. "x" .. m1 .. "-" .. m2 .. L["PRINT_MATERIALS: "];
 						end
 						text2 = "";
 						if n > 4 then
 							for i = 1, n do
-								text2 = text2 .. frame.F_GetRecipeReagentInfo(data, i) .. "x" .. select(3, frame.F_GetRecipeReagentInfo(data, i));
+								text2 = text2 .. Frame.F_GetRecipeReagentInfo(data, i) .. "x" .. select(3, Frame.F_GetRecipeReagentInfo(data, i));
 							end
 						else
 							for i = 1, n do
-								text2 = text2 .. frame.F_GetRecipeReagentLink(data, i) .. "x" .. select(3, frame.F_GetRecipeReagentInfo(data, i));
+								text2 = text2 .. Frame.F_GetRecipeReagentLink(data, i) .. "x" .. select(3, Frame.F_GetRecipeReagentInfo(data, i));
 							end
 						end
 					end
@@ -1631,13 +1637,13 @@ end
 				end
 			else
 				if data and type(data) == 'number' then
-					frame.F_SetSelection(data);
-					frame.HookedFrame.numAvailable = select(3, frame.F_GetRecipeInfo(data));
-					frame.selected_sid = sid;
-					frame.F_Update();
-					frame.SearchEditBox:ClearFocus();
-					local HookedScrollBar = frame.HookedScrollBar;
-					local num = frame.F_GetRecipeNumAvailable();
+					Frame.F_SetSelection(data);
+					Frame.HookedFrame.numAvailable = select(3, Frame.F_GetRecipeInfo(data));
+					Frame.selected_sid = sid;
+					Frame.F_Update();
+					Frame.SearchEditBox:ClearFocus();
+					local HookedScrollBar = Frame.HookedScrollBar;
+					local num = Frame.F_GetRecipeNumAvailable();
 					local minVal, maxVal = HookedScrollBar:GetMinMaxValues();
 					local step = HookedScrollBar:GetValueStep();
 					local cur = HookedScrollBar:GetValue() + step;
@@ -1645,34 +1651,34 @@ end
 					if value < cur or value > (cur + num * step - maxVal) then
 						HookedScrollBar:SetValue(min(maxVal, value));
 					end
-					frame.ScrollFrame:Update();
-					if frame.ProfitFrame:IsShown() then
-						frame.ProfitFrame.ScrollFrame:Update();
+					Frame.ScrollFrame:Update();
+					if Frame.ProfitFrame:IsShown() then
+						Frame.ProfitFrame.ScrollFrame:Update();
 					end
 				end
 			end
 		elseif button == "RightButton" then
-			frame.SearchEditBox:ClearFocus();
+			Frame.SearchEditBox:ClearFocus();
 			local pid = __db__.get_pid_by_sid(sid);
 			if FAV[sid] then
-				T_SkillListDropList.SubFav.para[1] = frame;
+				T_SkillListDropList.SubFav.para[1] = Frame;
 				T_SkillListDropList.SubFav.para[2] = pid;
 				T_SkillListDropList.SubFav.para[3] = sid;
 				T_SkillListDropMeta.elements[1] = T_SkillListDropList.SubFav;
 			else
-				T_SkillListDropList.AddFav.para[1] = frame;
+				T_SkillListDropList.AddFav.para[1] = Frame;
 				T_SkillListDropList.AddFav.para[2] = pid;
 				T_SkillListDropList.AddFav.para[3] = sid;
 				T_SkillListDropMeta.elements[1] = T_SkillListDropList.AddFav;
 			end
-			T_SkillListDropList.QueryWhoCanCraftIt.para[1] = frame;
+			T_SkillListDropList.QueryWhoCanCraftIt.para[1] = Frame;
 			T_SkillListDropList.QueryWhoCanCraftIt.para[2] = pid;
 			T_SkillListDropList.QueryWhoCanCraftIt.para[3] = sid;
 			ALADROP(self, "BOTTOMLEFT", T_SkillListDropMeta);
 		end
 	end
 	function LT_SharedMethod.ProfitCreateSkillListButton(parent, index, buttonHeight)
-		local Button = CreateFrame("BUTTON", nil, parent);
+		local Button = CreateFrame('BUTTON', nil, parent);
 		Button:SetHeight(buttonHeight);
 		uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		Button:SetHighlightTexture(T_UIDefinition.texture_white);
@@ -1702,7 +1708,7 @@ end
 		Title:SetPoint("RIGHT", Note, "LEFT", -4, 0);
 
 		local QualityGlow = Button:CreateTexture(nil, "ARTWORK");
-		QualityGlow:SetTexture("Interface\\Buttons\\UI-ActionButton-Border");
+		QualityGlow:SetTexture([[Interface\Buttons\UI-ActionButton-Border]]);
 		QualityGlow:SetBlendMode("ADD");
 		QualityGlow:SetTexCoord(0.25, 0.75, 0.25, 0.75);
 		QualityGlow:SetSize(buttonHeight - 2, buttonHeight - 2);
@@ -1712,7 +1718,7 @@ end
 		Button.QualityGlow = QualityGlow;
 
 		local Star = Button:CreateTexture(nil, "OVERLAY");
-		Star:SetTexture("interface\\collections\\collections");
+		Star:SetTexture([[Interface\Collections\Collections]]);
 		Star:SetTexCoord(100 / 512, 118 / 512, 10 / 512, 28 / 512);
 		Star:SetSize(buttonHeight * 0.75, buttonHeight * 0.75);
 		Star:SetPoint("CENTER", Button, "TOPLEFT", buttonHeight * 0.25, -buttonHeight * 0.25);
@@ -1742,24 +1748,24 @@ end
 			SelectionGlow:Hide();
 		end
 
-		local frame = parent:GetParent():GetParent();
-		Button.frame = frame:GetParent();
-		Button.list = frame.list;
-		Button.flag = frame.flag;
+		local Frame = parent:GetParent():GetParent();
+		Button.Frame = Frame:GetParent();
+		Button.list = Frame.list;
+		Button.flag = Frame.flag;
 
 		return Button;
 	end
 	function LT_SharedMethod.ProfitSetSkillListButton(Button, data_index)
-		local frame = Button.frame;
+		local Frame = Button.Frame;
 		local list = Button.list;
-		local hash = frame.hash;
+		local hash = Frame.hash;
 		if data_index <= #list then
 			local val = list[data_index];
 			local sid = val[1];
 			local cid = __db__.get_cid_by_sid(sid);
 			local data = hash[sid];
 			if data ~= nil then
-				if frame.flag == 'explorer' then
+				if Frame.flag == 'explorer' then
 					Button:Show();
 					local _, quality, icon;
 					if cid ~= nil then
@@ -1788,7 +1794,7 @@ end
 					end
 					Button:Deselect();
 				else
-					local name, rank, num = frame.F_GetRecipeInfo(data);
+					local name, rank, num = Frame.F_GetRecipeInfo(data);
 					if name ~= nil and rank ~= 'header' then
 						Button:Show();
 						uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
@@ -1799,7 +1805,7 @@ end
 							quality = nil;
 							icon = ICON_FOR_NO_CID;
 						end
-						Button.Icon:SetTexture(frame.F_GetRecipeIcon(data));
+						Button.Icon:SetTexture(Frame.F_GetRecipeIcon(data));
 						Button.Icon:SetVertexColor(1.0, 1.0, 1.0, 1.0);
 						if num > 0 then
 							Button.Title:SetText(name .. " [" .. num .. "]");
@@ -1823,7 +1829,7 @@ end
 						if GetMouseFocus() == Button then
 							LT_SharedMethod.SkillListButton_OnEnter(Button);
 						end
-						if sid == frame.selected_sid then
+						if sid == Frame.selected_sid then
 							Button:Select();
 						else
 							Button:Deselect();
@@ -1834,7 +1840,7 @@ end
 				end
 			else
 				Button:Show();
-				if SET.colored_rank_for_unknown and frame.flag ~= 'explorer' then
+				if SET.colored_rank_for_unknown and Frame.flag ~= 'explorer' then
 					uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.5, 0.25, 0.25, 0.5);
 				else
 					uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
@@ -1849,7 +1855,7 @@ end
 				Button.Icon:SetTexture(icon);
 				Button.Icon:SetVertexColor(1.0, 0.0, 0.0, 1.0);
 				Button.Title:SetText(__db__.spell_name_s(sid));
-				if SET.colored_rank_for_unknown and frame.flag ~= 'explorer' then
+				if SET.colored_rank_for_unknown and Frame.flag ~= 'explorer' then
 					local pid = __db__.get_pid_by_sid(sid);
 					local var = rawget(VAR, pid);
 					local cur_rank = var and var.cur_rank or 0;
@@ -1890,9 +1896,9 @@ end
 --	SkillFrame
 	local function LF_BLZSkillListButton_OnEnter(self)
 		if SET.default_skill_button_tip then
-			local frame = self.frame;
+			local Frame = self.Frame;
 			local index = self:GetID();
-			local link = frame.F_GetRecipeItemLink(index) or (frame.F_GetRecipeSpellLink ~= nil and frame.F_GetRecipeSpellLink(index)) or nil;
+			local link = Frame.F_GetRecipeItemLink(index) or (Frame.F_GetRecipeSpellLink ~= nil and Frame.F_GetRecipeSpellLink(index)) or nil;
 			if link ~= nil then
 				SkillTip.__phase = CURPHASE;
 				SkillTip:SetOwner(self, "ANCHOR_RIGHT");
@@ -1904,7 +1910,7 @@ end
 		end
 	end
 	local function LF_CreateSkillListButton(parent, index, buttonHeight)
-		local Button = CreateFrame("BUTTON", nil, parent);
+		local Button = CreateFrame('BUTTON', nil, parent);
 		Button:SetHeight(buttonHeight);
 		uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
 		Button:SetHighlightTexture(T_UIDefinition.texture_white);
@@ -1940,7 +1946,7 @@ end
 		Button.Note = Note;
 
 		local QualityGlow = Button:CreateTexture(nil, "ARTWORK");
-		QualityGlow:SetTexture("Interface\\Buttons\\UI-ActionButton-Border");
+		QualityGlow:SetTexture([[Interface\Buttons\UI-ActionButton-Border]]);
 		QualityGlow:SetBlendMode("ADD");
 		QualityGlow:SetTexCoord(0.25, 0.75, 0.25, 0.75);
 		QualityGlow:SetSize(buttonHeight - 2, buttonHeight - 2);
@@ -1950,7 +1956,7 @@ end
 		Button.QualityGlow = QualityGlow;
 
 		local Star = Button:CreateTexture(nil, "OVERLAY");
-		Star:SetTexture("interface\\collections\\collections");
+		Star:SetTexture([[Interface\Collections\Collections]]);
 		Star:SetTexCoord(100 / 512, 118 / 512, 10 / 512, 28 / 512);
 		Star:SetSize(buttonHeight * 0.75, buttonHeight * 0.75);
 		Star:SetPoint("CENTER", Button, "TOPLEFT", buttonHeight * 0.25, -buttonHeight * 0.25);
@@ -1980,30 +1986,30 @@ end
 			SelectionGlow:Hide();
 		end
 
-		local frame = parent:GetParent():GetParent();
-		Button.frame = frame;
-		Button.list = frame.list;
-		Button.flag = frame.flag;
+		local Frame = parent:GetParent():GetParent();
+		Button.Frame = Frame;
+		Button.list = Frame.list;
+		Button.flag = Frame.flag;
 
 		return Button;
 	end
 	local function LF_SetSkillListButton(Button, data_index)
-		local frame = Button.frame;
+		local Frame = Button.Frame;
 		local list = Button.list;
-		local hash = frame.hash;
+		local hash = Frame.hash;
 		if data_index <= #list then
 			local sid = list[data_index];
-			local pid = frame.flag or __db__.get_pid_by_sid(sid);
+			local pid = Frame.flag or __db__.get_pid_by_sid(sid);
 			local set = SET[pid];
 			local cid = __db__.get_cid_by_sid(sid);
 			local data = hash[sid];
 			if data ~= nil then
-				local name, rank, num = frame.F_GetRecipeInfo(data);
+				local name, rank, num = Frame.F_GetRecipeInfo(data);
 				if name ~= nil and rank ~= 'header' then
 					Button:Show();
 					uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
 					local quality = cid and __db__.item_rarity(cid);
-					Button.Icon:SetTexture(frame.F_GetRecipeIcon(data));
+					Button.Icon:SetTexture(Frame.F_GetRecipeIcon(data));
 					Button.Icon:SetVertexColor(1.0, 1.0, 1.0, 1.0);
 					Button.Title:SetWidth(0);
 					Button.Title:SetText(name);
@@ -2035,7 +2041,7 @@ end
 					else
 						Button.Star:Hide();
 					end
-					if sid == frame.selected_sid then
+					if sid == Frame.selected_sid then
 						Button:Select();
 					else
 						Button:Deselect();
@@ -2098,10 +2104,10 @@ end
 			Button:Hide();
 		end
 	end
-	local function F_FrameUpdatePriceInfo(frame)
-		local T_PriceInfoInFrame = frame.T_PriceInfoInFrame;
+	local function F_FrameUpdatePriceInfo(Frame)
+		local T_PriceInfoInFrame = Frame.T_PriceInfoInFrame;
 		if AuctionMod ~= nil and SET.show_tradeskill_frame_price_info then
-			local sid = frame.selected_sid;
+			local sid = Frame.selected_sid;
 			if sid == nil or sid <= 0 then
 				T_PriceInfoInFrame[1]:SetText(nil);
 				T_PriceInfoInFrame[2]:SetText(nil);
@@ -2128,7 +2134,7 @@ end
 				if cid ~= nil then
 					-- local price_a_product = AuctionMod.F_QueryPriceByID(cid);
 					local price_v_product = __db__.item_sellPrice(info[index_cid]);
-					-- local minMade, maxMade = frame.num_made(index);
+					-- local minMade, maxMade = Frame.num_made(index);
 					-- local nMade = (minMade + maxMade) / 2;
 					-- price_a_product = price_a_product and price_a_product * nMade;
 					price_v_product = price_v_product and price_v_product * nMade;
@@ -2186,62 +2192,62 @@ end
 			T_PriceInfoInFrame[3]:SetText(nil);
 		end
 	end
-	local function F_FrameUpdateRankInfo(frame)
+	local function F_FrameUpdateRankInfo(Frame)
 		if SET.show_tradeskill_frame_rank_info then
-			frame.RankInfoInFrame:SetText(__db__.get_difficulty_rank_list_text_by_sid(frame.selected_sid, true));
+			Frame.RankInfoInFrame:SetText(__db__.get_difficulty_rank_list_text_by_sid(Frame.selected_sid, true));
 		else
-			frame.RankInfoInFrame:SetText(nil);
+			Frame.RankInfoInFrame:SetText(nil);
 		end
 	end
 	--
-	local function LF_FrameExpand(frame, expanded)
-		local T_StyleLayout = frame.T_StyleLayout;
+	local function LF_FrameExpand(Frame, expanded)
+		local T_StyleLayout = Frame.T_StyleLayout;
 		local layout = T_StyleLayout[expanded and 'expand' or 'normal'];
-		frame:ClearAllPoints();
+		Frame:ClearAllPoints();
 		for index = 1, #layout.anchor do
-			frame:SetPoint(unpack(layout.anchor[index]));
+			Frame:SetPoint(unpack(layout.anchor[index]));
 		end
-		frame:SetSize(unpack(layout.size));
-		frame.HookedFrame:SetSize(unpack(layout.frame_size));
-		frame.HookedScrollFrame:ClearAllPoints();
+		Frame:SetSize(unpack(layout.size));
+		Frame.HookedFrame:SetSize(unpack(layout.frame_size));
+		Frame.HookedScrollFrame:ClearAllPoints();
 		for index = 1, #layout.scroll_anchor do
-			frame.HookedScrollFrame:SetPoint(unpack(layout.scroll_anchor[index]));
+			Frame.HookedScrollFrame:SetPoint(unpack(layout.scroll_anchor[index]));
 		end
-		frame.HookedScrollFrame:SetSize(unpack(layout.scroll_size));
-		frame.HookedDetailFrame:ClearAllPoints();
+		Frame.HookedScrollFrame:SetSize(unpack(layout.scroll_size));
+		Frame.HookedDetailFrame:ClearAllPoints();
 		for index = 1, #layout.detail_anchor do
-			frame.HookedDetailFrame:SetPoint(unpack(layout.detail_anchor[index]));
+			Frame.HookedDetailFrame:SetPoint(unpack(layout.detail_anchor[index]));
 		end
-		frame.HookedDetailFrame:SetSize(unpack(layout.detail_size));
-		frame.HookedDetailFrame:UpdateScrollChildRect();
+		Frame.HookedDetailFrame:SetSize(unpack(layout.detail_size));
+		Frame.HookedDetailFrame:UpdateScrollChildRect();
 		if expanded then
-			frame.TextureLineBottom:Hide();
-			frame.HookedRankFrame:SetWidth(360);
-			SetUIPanelAttribute(frame.HookedFrame, 'width', 684);
+			Frame.TextureLineBottom:Hide();
+			Frame.HookedRankFrame:SetWidth(360);
+			SetUIPanelAttribute(Frame.HookedFrame, 'width', 684);
 			_G[T_StyleLayout.C_VariableName_NumSkillListButton] = layout.scroll_button_num;
-			frame.F_HookedFrameUpdate();
+			Frame.F_HookedFrameUpdate();
 		else
-			frame.TextureLineBottom:Show();
-			frame.HookedRankFrame:SetWidth(240);
-			SetUIPanelAttribute(frame.HookedFrame, 'width', 353);
+			Frame.TextureLineBottom:Show();
+			Frame.HookedRankFrame:SetWidth(240);
+			SetUIPanelAttribute(Frame.HookedFrame, 'width', 353);
 			_G[T_StyleLayout.C_VariableName_NumSkillListButton] = layout.scroll_button_num;
 			for index = layout.scroll_button_num + 1, T_StyleLayout.expand.scroll_button_num do
-				frame.T_SkillListButtons[index]:Hide();
+				Frame.T_SkillListButtons[index]:Hide();
 			end
 		end
 	end
-	local function LF_FrameBlzStyle(frame, blz_style, loading)
+	local function LF_FrameBlzStyle(Frame, blz_style, loading)
 		if blz_style then
-			LT_SharedMethod.StyleBLZScrollFrame(frame.ScrollFrame);
-			local FilterDropdown = frame.FilterDropdown;
+			LT_SharedMethod.StyleBLZScrollFrame(Frame.ScrollFrame);
+			local FilterDropdown = Frame.FilterDropdown;
 			if FilterDropdown ~= nil then
 				LT_SharedMethod.StyleBLZALADropButton(FilterDropdown, not loading and FilterDropdown.backup or nil);
 			end
-			LT_SharedMethod.StyleBLZCheckButton(frame.HaveMaterialsCheck);
-			frame.HaveMaterialsCheck:SetSize(24, 24);
-			LT_SharedMethod.StyleBLZCheckButton(frame.SearchEditBoxNameOnly);
-			frame.SearchEditBoxNameOnly:SetSize(24, 24);
-			local SetFrame = frame.SetFrame;
+			LT_SharedMethod.StyleBLZCheckButton(Frame.HaveMaterialsCheck);
+			Frame.HaveMaterialsCheck:SetSize(24, 24);
+			LT_SharedMethod.StyleBLZCheckButton(Frame.SearchEditBoxNameOnly);
+			Frame.SearchEditBoxNameOnly:SetSize(24, 24);
+			local SetFrame = Frame.SetFrame;
 			SetFrame:SetWidth(344);
 			LT_SharedMethod.StyleBLZBackdrop(SetFrame);
 			local T_CheckButtons = SetFrame.T_CheckButtons;
@@ -2250,7 +2256,7 @@ end
 				LT_SharedMethod.StyleBLZCheckButton(CheckButton);
 				CheckButton:SetSize(24, 24);
 			end
-			local ProfitFrame = frame.ProfitFrame;
+			local ProfitFrame = Frame.ProfitFrame;
 			LT_SharedMethod.StyleBLZBackdrop(ProfitFrame);
 			LT_SharedMethod.StyleBLZScrollFrame(ProfitFrame.ScrollFrame);
 			LT_SharedMethod.StyleBLZCheckButton(ProfitFrame.CostOnlyCheck);
@@ -2259,32 +2265,32 @@ end
 			ProfitFrameCloseButton:SetSize(32, 32);
 			LT_SharedMethod.StyleBLZButton(ProfitFrameCloseButton, not loading and ProfitFrameCloseButton.backup or nil);
 
-			frame.HookedFrame:SetHitRectInsets(11, 29, 9, 67);
-			local TextureBackground = frame.TextureBackground;
+			Frame.HookedFrame:SetHitRectInsets(11, 29, 9, 67);
+			local TextureBackground = Frame.TextureBackground;
 			TextureBackground:ClearAllPoints();
 			TextureBackground:SetPoint("TOPLEFT", 11, -7);
 			TextureBackground:SetPoint("BOTTOMRIGHT", -29, 67);
 			LT_SharedMethod.StyleBLZBackdrop(TextureBackground);
-			local TextureLineTop = frame.TextureLineTop;
-			TextureLineTop:SetTexture("Interface\\Dialogframe\\UI-Dialogbox-Divider", "MIRROR");
+			local TextureLineTop = Frame.TextureLineTop;
+			TextureLineTop:SetTexture([[Interface\Dialogframe\UI-Dialogbox-Divider]], "MIRROR");
 			TextureLineTop:SetTexCoord(4 / 256, 188 / 256, 5 / 32, 13 / 32);
 			TextureLineTop:SetHeight(2);
-			local TextureLineMiddle = frame.TextureLineMiddle;
-			TextureLineMiddle:SetTexture("Interface\\Dialogframe\\UI-Dialogbox-Divider", "MIRROR");
+			local TextureLineMiddle = Frame.TextureLineMiddle;
+			TextureLineMiddle:SetTexture([[Interface\Dialogframe\UI-Dialogbox-Divider]], "MIRROR");
 			TextureLineMiddle:SetTexCoord(4 / 256, 188 / 256, 5 / 32, 13 / 32);
 			TextureLineMiddle:SetHeight(2);
-			local TextureLineBottom = frame.TextureLineBottom;
-			TextureLineBottom:SetTexture("Interface\\Dialogframe\\UI-Dialogbox-Divider", "MIRROR");
+			local TextureLineBottom = Frame.TextureLineBottom;
+			TextureLineBottom:SetTexture([[Interface\Dialogframe\UI-Dialogbox-Divider]], "MIRROR");
 			TextureLineBottom:SetTexCoord(4 / 256, 188 / 256, 5 / 32, 13 / 32);
 			TextureLineBottom:SetHeight(2);
 
-			LT_SharedMethod.StyleBLZScrollFrame(frame.HookedScrollFrame);
-			LT_SharedMethod.StyleBLZScrollFrame(frame.HookedDetailFrame);
-			local HookedRankFrame = frame.HookedRankFrame;
+			LT_SharedMethod.StyleBLZScrollFrame(Frame.HookedScrollFrame);
+			LT_SharedMethod.StyleBLZScrollFrame(Frame.HookedDetailFrame);
+			local HookedRankFrame = Frame.HookedRankFrame;
 			HookedRankFrame.Border:Show();
 			uireimp._SetSimpleBackdrop(HookedRankFrame, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-			frame.PortraitBorder:Show();
-			local T_HookedFrameWidgets = frame.T_HookedFrameWidgets;
+			Frame.PortraitBorder:Show();
+			local T_HookedFrameWidgets = Frame.T_HookedFrameWidgets;
 			local T_HookedFrameButtons = T_HookedFrameWidgets.T_HookedFrameButtons;
 			if T_HookedFrameButtons.IncrementButton then
 				T_HookedFrameButtons.IncrementButton:SetSize(23, 22);
@@ -2293,6 +2299,7 @@ end
 				T_HookedFrameButtons.DecrementButton:SetSize(23, 22);
 			end
 			T_HookedFrameButtons.CloseButton:SetSize(32, 32);
+			T_HookedFrameButtons.RankOffsetButton:SetSize(40, 20);
 			local backup = T_HookedFrameWidgets.backup;
 			for _, Button in next, T_HookedFrameButtons do
 				local name = Button:GetName();
@@ -2338,24 +2345,24 @@ end
 					LT_SharedMethod.StyleBLZEditBox(EditBox);
 				end
 			end
-			for index = 1, #frame.T_SkillListButtons do
-				LT_SharedMethod.StyleBLZSkillButton(frame.T_SkillListButtons[index]);
+			for index = 1, #Frame.T_SkillListButtons do
+				LT_SharedMethod.StyleBLZSkillButton(Frame.T_SkillListButtons[index]);
 			end
 			if T_HookedFrameWidgets.CollapseAllButton ~= nil then
 				LT_SharedMethod.StyleBLZSkillButton(T_HookedFrameWidgets.CollapseAllButton);
 			end
-			frame.F_HookedFrameUpdate();
+			Frame.F_HookedFrameUpdate();
 		else
-			LT_SharedMethod.StyleModernScrollFrame(frame.ScrollFrame);
-			local FilterDropdown = frame.FilterDropdown;
+			LT_SharedMethod.StyleModernScrollFrame(Frame.ScrollFrame);
+			local FilterDropdown = Frame.FilterDropdown;
 			if FilterDropdown ~= nil then
 				LT_SharedMethod.StyleModernALADropButton(FilterDropdown);
 			end
-			LT_SharedMethod.StyleModernCheckButton(frame.HaveMaterialsCheck);
-			frame.HaveMaterialsCheck:SetSize(14, 14);
-			LT_SharedMethod.StyleModernCheckButton(frame.SearchEditBoxNameOnly);
-			frame.SearchEditBoxNameOnly:SetSize(14, 14);
-			local SetFrame = frame.SetFrame;
+			LT_SharedMethod.StyleModernCheckButton(Frame.HaveMaterialsCheck);
+			Frame.HaveMaterialsCheck:SetSize(14, 14);
+			LT_SharedMethod.StyleModernCheckButton(Frame.SearchEditBoxNameOnly);
+			Frame.SearchEditBoxNameOnly:SetSize(14, 14);
+			local SetFrame = Frame.SetFrame;
 			SetFrame:SetWidth(332);
 			LT_SharedMethod.StyleModernBackdrop(SetFrame);
 			local T_CheckButtons = SetFrame.T_CheckButtons;
@@ -2364,7 +2371,7 @@ end
 				LT_SharedMethod.StyleModernCheckButton(CheckButton);
 				CheckButton:SetSize(14, 14);
 			end
-			local ProfitFrame = frame.ProfitFrame;
+			local ProfitFrame = Frame.ProfitFrame;
 			LT_SharedMethod.StyleModernBackdrop(ProfitFrame);
 			LT_SharedMethod.StyleModernScrollFrame(ProfitFrame.ScrollFrame);
 			LT_SharedMethod.StyleModernCheckButton(ProfitFrame.CostOnlyCheck);
@@ -2378,29 +2385,29 @@ end
 				LT_SharedMethod.StyleModernButton(ProfitFrameCloseButton, nil, T_UIDefinition.texture_modern_button_close);
 			end
 
-			frame.HookedFrame:SetHitRectInsets(17, 35, 11, 73);
-			local TextureBackground = frame.TextureBackground;
+			Frame.HookedFrame:SetHitRectInsets(17, 35, 11, 73);
+			local TextureBackground = Frame.TextureBackground;
 			TextureBackground:ClearAllPoints();
 			TextureBackground:SetPoint("TOPLEFT", 11, -12);
 			TextureBackground:SetPoint("BOTTOMRIGHT", -32, 76);
 			LT_SharedMethod.StyleModernBackdrop(TextureBackground);
-			local TextureLineTop = frame.TextureLineTop;
+			local TextureLineTop = Frame.TextureLineTop;
 			TextureLineTop:SetColorTexture(unpack(T_UIDefinition.modernDividerColor));
 			TextureLineTop:SetHeight(1);
-			local TextureLineMiddle = frame.TextureLineMiddle;
+			local TextureLineMiddle = Frame.TextureLineMiddle;
 			TextureLineMiddle:SetColorTexture(unpack(T_UIDefinition.modernDividerColor));
 			TextureLineMiddle:SetHeight(1);
-			local TextureLineBottom = frame.TextureLineBottom;
+			local TextureLineBottom = Frame.TextureLineBottom;
 			TextureLineBottom:SetColorTexture(unpack(T_UIDefinition.modernDividerColor));
 			TextureLineBottom:SetHeight(1);
 
-			LT_SharedMethod.StyleModernScrollFrame(frame.HookedScrollFrame);
-			LT_SharedMethod.StyleModernScrollFrame(frame.HookedDetailFrame);
-			local HookedRankFrame = frame.HookedRankFrame;
+			LT_SharedMethod.StyleModernScrollFrame(Frame.HookedScrollFrame);
+			LT_SharedMethod.StyleModernScrollFrame(Frame.HookedDetailFrame);
+			local HookedRankFrame = Frame.HookedRankFrame;
 			HookedRankFrame.Border:Hide();
 			uireimp._SetSimpleBackdrop(HookedRankFrame, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.25, 1.0);
-			frame.PortraitBorder:Hide();
-			local T_HookedFrameWidgets = frame.T_HookedFrameWidgets;
+			Frame.PortraitBorder:Hide();
+			local T_HookedFrameWidgets = Frame.T_HookedFrameWidgets;
 			local T_HookedFrameButtons = T_HookedFrameWidgets.T_HookedFrameButtons;
 			if T_HookedFrameButtons.IncrementButton ~= nil then
 				T_HookedFrameButtons.IncrementButton:SetSize(14, 14);
@@ -2409,6 +2416,7 @@ end
 				T_HookedFrameButtons.DecrementButton:SetSize(14, 14);
 			end
 			T_HookedFrameButtons.CloseButton:SetSize(16, 16);
+			T_HookedFrameButtons.RankOffsetButton:SetSize(32, 14);
 			local backup = T_HookedFrameWidgets.backup;
 			local T_ButtonModernTexture = T_HookedFrameWidgets.T_ButtonModernTexture;
 			for _, Button in next, T_HookedFrameButtons do
@@ -2457,18 +2465,18 @@ end
 					LT_SharedMethod.StyleModernEditBox(EditBox);
 				end
 			end
-			for index = 1, #frame.T_SkillListButtons do
-				LT_SharedMethod.StyleModernSkillButton(frame.T_SkillListButtons[index]);
+			for index = 1, #Frame.T_SkillListButtons do
+				LT_SharedMethod.StyleModernSkillButton(Frame.T_SkillListButtons[index]);
 			end
 			if T_HookedFrameWidgets.CollapseAllButton ~= nil then
 				LT_SharedMethod.StyleModernSkillButton(T_HookedFrameWidgets.CollapseAllButton);
 			end
-			frame.F_HookedFrameUpdate();
+			Frame.F_HookedFrameUpdate();
 		end
 	end
-	local function LF_FrameFixSkillList(frame, expanded)
-		local layout = frame.T_StyleLayout[expanded and 'expand' or 'normal'];
-		local pref = frame.T_HookedFrameWidgets.C_SkillListButtonNamePrefix;
+	local function LF_FrameFixSkillList(Frame, expanded)
+		local layout = Frame.T_StyleLayout[expanded and 'expand' or 'normal'];
+		local pref = Frame.T_HookedFrameWidgets.C_SkillListButtonNamePrefix;
 		local index = layout.scroll_button_num + 1;
 		while true do
 			local Skill = _G[pref .. index];
@@ -2476,14 +2484,14 @@ end
 				return;
 			end
 			Skill:Hide();
-			frame.T_SkillListButtons[index] = frame.T_SkillListButtons[index] or Skill;
+			Frame.T_SkillListButtons[index] = Frame.T_SkillListButtons[index] or Skill;
 			index = index + 1;
 		end
 	end
 	local function LF_HookFrame(addon, meta)
 		local HookedFrame = meta.HookedFrame;
-		local frame = CreateFrame("FRAME", nil, HookedFrame);
-		HookedFrame.frame = frame;
+		local Frame = CreateFrame('FRAME', nil, HookedFrame);
+		HookedFrame.Frame = Frame;
 
 		for index = 1, #meta.T_DisabledFuncName do
 			local name = meta.T_DisabledFuncName[index];
@@ -2495,7 +2503,7 @@ end
 				for index = 1, #layout.anchor do
 					local point = layout.anchor[index];
 					if point[2] == nil then
-						point[2] = frame;
+						point[2] = Frame;
 					end
 				end
 			end
@@ -2503,7 +2511,7 @@ end
 				for index = 1, #layout.scroll_anchor do
 					local point = layout.scroll_anchor[index];
 					if point[2] == nil then
-						point[2] = frame;
+						point[2] = Frame;
 					end
 				end
 			end
@@ -2511,76 +2519,76 @@ end
 				for index = 1, #layout.detail_anchor do
 					local point = layout.detail_anchor[index];
 					if point[2] == nil then
-						point[2] = frame;
+						point[2] = Frame;
 					end
 				end
 			end
 		end
 		for key, val in next, meta do
-			frame[key] = val;
+			Frame[key] = val;
 		end
 
 		local function LF_ToggleFrame()
-			local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
-			if frame:IsShown() then
-				frame:Hide();
-				frame.ToggleButton:SetText(L["Open"]);
+			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+			if Frame:IsShown() then
+				Frame:Hide();
+				Frame.ToggleButton:SetText(L["OVERRIDE_OPEN"]);
 				if pid ~= nil then
 					SET[pid].shown = false;
 				end
 			else
-				frame:Show();
-				frame.ToggleButton:SetText(L["Close"]);
+				Frame:Show();
+				Frame.ToggleButton:SetText(L["OVERRIDE_CLOSE"]);
 				if pid ~= nil then
 					SET[pid].shown = true;
 				end
-				frame.update = true;
-				frame.F_Update();
+				Frame.update = true;
+				Frame.F_Update();
 			end
 		end
-		do	--	frame & HookedFrame
-			--	frame
-				frame:SetFrameStrata("HIGH");
-				frame:EnableMouse(true);
-				function frame.F_Update()
-					LT_SharedMethod.UpdateFrame(frame);
+		do	--	Frame & HookedFrame
+			--	Frame
+				Frame:SetFrameStrata("HIGH");
+				Frame:EnableMouse(true);
+				function Frame.F_Update()
+					LT_SharedMethod.UpdateFrame(Frame);
 				end
-				frame:SetScript("OnShow", function(self)
-					self:F_WithDisabledFrame(LT_SharedMethod.WidgetHidePermanently);
-					-- self.HookedScrollFrame:Hide();
-					self.F_ClearFilter();
-					for name, func in next, self.T_DisabledFunc do
+				Frame:SetScript("OnShow", function(Frame)
+					Frame:F_WithDisabledFrame(LT_SharedMethod.WidgetHidePermanently);
+					-- Frame.HookedScrollFrame:Hide();
+					Frame.F_ClearFilter();
+					for name, func in next, Frame.T_DisabledFunc do
 						_G[name] = _noop_;
 					end
 				end);
-				frame:SetScript("OnHide", function(self)
-					self:F_WithDisabledFrame(LT_SharedMethod.WidgetUnhidePermanently);
-					-- self.HookedScrollFrame:Show();
-					for name, func in next, self.T_DisabledFunc do
+				Frame:SetScript("OnHide", function(Frame)
+					Frame:F_WithDisabledFrame(LT_SharedMethod.WidgetUnhidePermanently);
+					-- Frame.HookedScrollFrame:Show();
+					for name, func in next, Frame.T_DisabledFunc do
 						_G[name] = func;
 					end
-					self.F_HookedFrameUpdate()
+					Frame.F_HookedFrameUpdate()
 				end);
 				if meta.T_MonitoredEvents then
 					for index = 1, #meta.T_MonitoredEvents do
-						frame:RegisterEvent(meta.T_MonitoredEvents[index]);
+						Frame:RegisterEvent(meta.T_MonitoredEvents[index]);
 					end
-					frame:SetScript("OnEvent", function(self, event, _1, ...)
-						self.update = true;
-						__namespace__.F_ScheduleDelayCall(self.F_Update);
+					Frame:SetScript("OnEvent", function(Frame, event, _1, ...)
+						Frame.update = true;
+						__namespace__.F_ScheduleDelayCall(Frame.F_Update);
 					end);
 				end
-				C_Timer_NewTicker(PERIODIC_UPDATE_PERIOD, frame.F_Update);
-				frame.list = {  };
-				frame.prev_var_update_time = GetTime() - MAXIMUM_VAR_UPDATE_PERIOD;
+				C_Timer_NewTicker(PERIODIC_UPDATE_PERIOD, Frame.F_Update);
+				Frame.list = {  };
+				Frame.prev_var_update_time = GetTime() - MAXIMUM_VAR_UPDATE_PERIOD;
 
-				local ScrollFrame = ALASCR(frame, nil, nil, T_UIDefinition.skillListButtonHeight, LF_CreateSkillListButton, LF_SetSkillListButton);
+				local ScrollFrame = ALASCR(Frame, nil, nil, T_UIDefinition.skillListButtonHeight, LF_CreateSkillListButton, LF_SetSkillListButton);
 				ScrollFrame:SetPoint("BOTTOMLEFT", 4, 0);
 				ScrollFrame:SetPoint("TOPRIGHT", -4, -28);
 				LT_SharedMethod.ModifyALAScrollFrame(ScrollFrame);
-				frame.ScrollFrame = ScrollFrame;
+				Frame.ScrollFrame = ScrollFrame;
 
-				local ToggleButton = CreateFrame("BUTTON", nil, HookedFrame, "UIPanelButtonTemplate");
+				local ToggleButton = CreateFrame('BUTTON', nil, HookedFrame, "UIPanelButtonTemplate");
 				ToggleButton:SetSize(70, 18);
 				ToggleButton:SetPoint("RIGHT", meta.Widget_AnchorTop, "LEFT", -2, 0);
 				-- ToggleButton:SetPoint("TOPRIGHT", -2, -42);
@@ -2590,11 +2598,11 @@ end
 				end);
 				-- ToggleButton:SetScript("OnEnter", Info_OnEnter);
 				-- ToggleButton:SetScript("OnLeave", Info_OnLeave);
-				frame.ToggleButton = ToggleButton;
+				Frame.ToggleButton = ToggleButton;
 			--
 
-			HookedFrame:HookScript("OnHide", function(self)
-				frame:Hide();
+			HookedFrame:HookScript("OnHide", function(HookedFrame)
+				Frame:Hide();
 			end);
 			--	variable
 			local T_HookedFrameWidgets = meta.T_HookedFrameWidgets;
@@ -2617,10 +2625,61 @@ end
 				local PortraitBorder = HookedFrame:CreateTexture(nil, "ARTWORK");
 				PortraitBorder:SetSize(70, 70);
 				PortraitBorder:SetPoint("CENTER", meta.HookedPortrait);
-				PortraitBorder:SetTexture("Interface\\Tradeskillframe\\CapacitanceUIGeneral");
+				PortraitBorder:SetTexture([[Interface\Tradeskillframe\CapacitanceUIGeneral]]);
 				PortraitBorder:SetTexCoord(65 / 256, 117 / 256, 45 / 128, 97 / 128);
 				PortraitBorder:Show();
-				frame.PortraitBorder = PortraitBorder;
+				Frame.PortraitBorder = PortraitBorder;
+			--	Rank Offset
+				local HookedRankFrame = meta.HookedRankFrame;
+				local RankOffsetButton = CreateFrame('BUTTON', nil, Frame, "UIPanelButtonTemplate");
+				RankOffsetButton:SetSize(40, 20);
+				RankOffsetButton:SetPoint("CENTER", HookedRankFrame, "RIGHT", 18, 0);
+				RankOffsetButton:SetText("+0");
+				Frame.RankOffsetButton = RankOffsetButton;
+				local RankOffsetSlider = CreateFrame('SLIDER', nil, Frame);
+				RankOffsetSlider:SetOrientation("HORIZONTAL");
+				RankOffsetSlider:SetThumbTexture([[Interface\Buttons\UI-SliderBar-Button-Horizontal]]);
+				local Thumb = RankOffsetSlider:GetThumbTexture();
+				Thumb:SetWidth(1);
+				Thumb:SetHeight(12);
+				Thumb:SetColorTexture(0.6, 1.0, 0.8, 1.0);
+				RankOffsetSlider:SetPoint("LEFT", HookedRankFrame, "LEFT", 0, 0);
+				RankOffsetSlider:SetPoint("RIGHT", HookedRankFrame, "RIGHT", 0, 0);
+				RankOffsetSlider:SetHeight(16);
+				RankOffsetSlider:SetMinMaxValues(1, 450);
+				RankOffsetSlider:SetValueStep(1);
+				RankOffsetSlider:SetObeyStepOnDrag(true);
+				RankOffsetSlider:HookScript("OnValueChanged", function(self, value, userInput)
+					if userInput then
+						local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+						if pid ~= nil then
+							local set = SET[pid];
+							local var = VAR[pid];
+							value = value + 0.5; value = value - value % 1.0;
+							value = value - var.cur_rank;
+							value = value + 0.1; value = value - value % 5.0 + 5;
+							set.rankoffset = value;
+							Frame.update = true;
+							__namespace__.F_ScheduleDelayCall(Frame.F_Update);
+						end
+					end
+				end);
+				Frame.RankOffsetSlider = RankOffsetSlider;
+				function Frame:F_RefreshRankOffset()
+					local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+					if pid ~= nil then
+						local set = SET[pid];
+						local var = VAR[pid];
+						Frame.RankOffsetSlider:SetMinMaxValues(1, var.max_rank ~= nil and var.max_rank > 1 and var.max_rank or 75);
+						if set.rankoffset ~= nil and set.rankoffset > 0 then
+							Frame.RankOffsetButton:SetText("+" .. set.rankoffset);
+							Frame.RankOffsetSlider:SetValue(var.cur_rank + set.rankoffset);
+						else
+							Frame.RankOffsetButton:SetText("+0");
+							Frame.RankOffsetSlider:SetValue(var.cur_rank);
+						end
+					end
+				end
 			--	objects
 				local T_HookedFrameDropdowns = T_HookedFrameWidgets.T_HookedFrameDropdowns;
 				if T_HookedFrameDropdowns ~= nil then
@@ -2647,6 +2706,7 @@ end
 				T_HookedFrameButtons.CloseButton:ClearAllPoints();
 				T_HookedFrameButtons.CloseButton:SetPoint("CENTER", HookedFrame, "TOPRIGHT", -51, -24);
 				T_HookedFrameButtons.ToggleButton = ToggleButton;
+				T_HookedFrameButtons.RankOffsetButton = RankOffsetButton;
 				local T_HookedFrameEditboxes = T_HookedFrameWidgets.T_HookedFrameEditboxes;
 				if T_HookedFrameEditboxes ~= nil and T_HookedFrameEditboxes.InputBox then
 					local Left = _G[T_HookedFrameEditboxes.InputBox:GetName() .. "Left"];
@@ -2690,11 +2750,11 @@ end
 				end
 				HookedRankFrame.Border = HookedRankFrameBorder;
 			--	BACKGROUND and DEVIDER
-				local TextureBackground = CreateFrame("FRAME", nil, HookedFrame);
+				local TextureBackground = CreateFrame('FRAME', nil, HookedFrame);
 				TextureBackground:SetPoint("TOPLEFT", 11, -12);
 				TextureBackground:SetPoint("BOTTOMRIGHT", -32, 76);
 				TextureBackground:SetFrameLevel(0);
-				frame.TextureBackground = TextureBackground;
+				Frame.TextureBackground = TextureBackground;
 
 				local TextureLineTop = TextureBackground:CreateTexture(nil, "BACKGROUND");
 				TextureLineTop:SetDrawLayer("BACKGROUND", 7);
@@ -2703,7 +2763,7 @@ end
 				TextureLineTop:SetPoint("LEFT", 2, 0);
 				TextureLineTop:SetPoint("RIGHT", -2, 0);
 				TextureLineTop:SetPoint("BOTTOM", HookedFrame, "TOP", 0, -38);
-				frame.TextureLineTop = TextureLineTop;
+				Frame.TextureLineTop = TextureLineTop;
 
 				local TextureLineMiddle = TextureBackground:CreateTexture(nil, "BACKGROUND");
 				TextureLineMiddle:SetDrawLayer("BACKGROUND", 7);
@@ -2712,7 +2772,7 @@ end
 				TextureLineMiddle:SetPoint("LEFT", 2, 0);
 				TextureLineMiddle:SetPoint("RIGHT", -2, 0);
 				TextureLineMiddle:SetPoint("TOP", HookedFrame, "TOP", 0, -61);
-				frame.TextureLineMiddle = TextureLineMiddle;
+				Frame.TextureLineMiddle = TextureLineMiddle;
 
 				local TextureLineBottom = TextureBackground:CreateTexture(nil, "BACKGROUND");
 				TextureLineBottom:SetDrawLayer("BACKGROUND", 7);
@@ -2721,17 +2781,17 @@ end
 				TextureLineBottom:SetPoint("LEFT", 2, 0);
 				TextureLineBottom:SetPoint("RIGHT", -2, 0);
 				TextureLineBottom:SetPoint("BOTTOM", meta.HookedDetailFrame, "TOP", 0, 2);
-				frame.TextureLineBottom = TextureLineBottom;
+				Frame.TextureLineBottom = TextureLineBottom;
 			--	SkillListButtons
 				local T_SkillListButtons = {  };
-				frame.T_SkillListButtons = T_SkillListButtons;
+				Frame.T_SkillListButtons = T_SkillListButtons;
 				local NumDisplayed = _G[T_StyleLayout.C_VariableName_NumSkillListButton];
 				for index = 1, NumDisplayed do
 					T_SkillListButtons[index] = _G[T_HookedFrameWidgets.C_SkillListButtonNamePrefix .. index];
 				end
 				for index = NumDisplayed + 1, T_StyleLayout.expand.scroll_button_num do
 					local name = T_HookedFrameWidgets.C_SkillListButtonNamePrefix .. index;
-					local Button = _G[name] or CreateFrame("BUTTON", name, HookedFrame, T_HookedFrameWidgets.C_SkillListButtonTemplate);
+					local Button = _G[name] or CreateFrame('BUTTON', name, HookedFrame, T_HookedFrameWidgets.C_SkillListButtonTemplate);
 					Button:SetPoint("TOPLEFT", T_SkillListButtons[index - 1], "BOTTOMLEFT", 0, 0);
 					Button:Hide();
 					T_SkillListButtons[index] = Button;
@@ -2745,12 +2805,12 @@ end
 					Button:SetScript("OnLeave", LT_SharedMethod.SkillListButton_OnLeave);
 					Button:SetID(index);
 					Button:SetFrameLevel(FrameLevel);
-					Button.frame = frame;
+					Button.Frame = Frame;
 					Button.ScrollFrame = meta.HookedScrollFrame;
 				end
 			--	reagentButton & ProductionIcon
 				local T_ReagentButtons = {  };
-				frame.T_ReagentButtons = T_ReagentButtons;
+				Frame.T_ReagentButtons = T_ReagentButtons;
 				for index = 1, 8 do
 					local Button = _G[T_HookedFrameWidgets.C_ReagentButtonNamePrefix .. index];
 					T_ReagentButtons[index] = Button;
@@ -2758,7 +2818,7 @@ end
 						if IsShiftKeyDown() then
 							local editBox = ChatEdit_ChooseBoxForSend();
 							if not editBox:HasFocus() then
-								local name = frame.F_GetRecipeReagentInfo(frame.F_GetSelection(), self:GetID());
+								local name = Frame.F_GetRecipeReagentInfo(Frame.F_GetSelection(), self:GetID());
 								if name ~= nil and name ~= "" then
 									ALA_INSERT_NAME(name);
 								end
@@ -2770,7 +2830,7 @@ end
 					if IsShiftKeyDown() then
 						local editBox = ChatEdit_ChooseBoxForSend();
 						if not editBox:HasFocus() then
-							local name = frame.F_GetRecipeInfo(frame.F_GetSelection());
+							local name = Frame.F_GetRecipeInfo(Frame.F_GetSelection());
 							if name ~= nil and name ~= "" then
 								ALA_INSERT_NAME(name);
 							end
@@ -2779,9 +2839,9 @@ end
 				end);
 			--
 
-			function frame:F_LayoutOnShow()
-				local HookedFrame = self.HookedFrame;
-				local T_HookedFrameWidgets = self.T_HookedFrameWidgets;
+			function Frame:F_LayoutOnShow()
+				local HookedFrame = Frame.HookedFrame;
+				local T_HookedFrameWidgets = Frame.T_HookedFrameWidgets;
 				local T_HookedFrameButtons = T_HookedFrameWidgets.T_HookedFrameButtons;
 				T_HookedFrameButtons.CancelButton:SetSize(72, 18);
 				T_HookedFrameButtons.CancelButton:ClearAllPoints();
@@ -2792,15 +2852,15 @@ end
 				T_HookedFrameButtons.CloseButton:ClearAllPoints();
 				T_HookedFrameButtons.CloseButton:SetPoint("CENTER", HookedFrame, "TOPRIGHT", -51, -24);
 			end
-			frame.F_Expand = LF_FrameExpand;
-			frame.F_FixSkillList = LF_FrameFixSkillList;
-			frame.F_BlzStyle = LF_FrameBlzStyle;
+			Frame.F_Expand = LF_FrameExpand;
+			Frame.F_FixSkillList = LF_FrameFixSkillList;
+			Frame.F_BlzStyle = LF_FrameBlzStyle;
 			if meta.T_ToggleOnSkill == nil then
-				frame.F_ToggleOnSkill = _noop_;
+				Frame.F_ToggleOnSkill = _noop_;
 			else
-				function frame:F_ToggleOnSkill(val)
+				function Frame:F_ToggleOnSkill(val)
 					val = not val;
-					local T_ToggleOnSkill = frame.T_ToggleOnSkill;
+					local T_ToggleOnSkill = Frame.T_ToggleOnSkill;
 					for index = 1, #T_ToggleOnSkill do
 						T_ToggleOnSkill[index]:SetShown(val);
 					end
@@ -2810,7 +2870,7 @@ end
 
 		do	--	PortraitButton
 			local T_PortraitDropMeta = {
-				handler = function(_, frame, name)
+				handler = function(_, Frame, name)
 					if name == '@explorer' then
 						__namespace__.F_uiToggleFrame("EXPLORER");
 					elseif name == '@config' then
@@ -2821,7 +2881,7 @@ end
 				end,
 				elements = {  },
 			};
-			local PortraitButton = CreateFrame("BUTTON", nil, HookedFrame);
+			local PortraitButton = CreateFrame('BUTTON', nil, HookedFrame);
 			PortraitButton:SetSize(42, 42);
 			PortraitButton:SetPoint("CENTER", meta.HookedPortrait);
 			PortraitButton:RegisterForClicks("AnyUp");
@@ -2831,33 +2891,33 @@ end
 			function PortraitButton:F_Update()
 				local elements = T_PortraitDropMeta.elements;
 				wipe(elements);
-				local pname = frame.F_GetSkillName();
+				local pname = Frame.F_GetSkillName();
 				for pid = __db__.DBMINPID, __db__.DBMAXPID do
 					if rawget(VAR, pid) ~= nil and __db__.is_pid_has_win(pid) then
 						local name = __db__.get_check_name_by_pid(pid);
 						if name ~= nil and name ~= pname then
-							local element = { text = name, para = { frame, name, }, };
+							local element = { text = name, para = { Frame, name, }, };
 							elements[#elements + 1] = element;
 						end
 					end
 				end
-				elements[#elements + 1] = { text = "explorer", para = { frame, '@explorer', }, };
-				elements[#elements + 1] = { text = "config", para = { frame, '@config', }, };
+				elements[#elements + 1] = { text = "explorer", para = { Frame, '@explorer', }, };
+				elements[#elements + 1] = { text = "config", para = { Frame, '@config', }, };
 			end
-			frame.PortraitButton = PortraitButton;
+			Frame.PortraitButton = PortraitButton;
 		end
 
 		do	--	TabFrame
-			local TabFrame = CreateFrame("FRAME", nil, HookedFrame);
+			local TabFrame = CreateFrame('FRAME', nil, HookedFrame);
 			TabFrame:SetFrameStrata("HIGH");
 			TabFrame:SetHeight(T_UIDefinition.tabSize + T_UIDefinition.tabInterval * 2);
-			TabFrame:SetPoint("LEFT", frame);
+			TabFrame:SetPoint("LEFT", Frame);
 			TabFrame:SetPoint("BOTTOM", meta.Widget_AnchorTop, "TOP", 0, -4);
 			TabFrame:SetPoint("LEFT", meta.Widget_AnchorLeftOfTabFrame, "LEFT", 0, 0);
 			TabFrame:Show();
 			local T_Tabs = {  };
 			function TabFrame:F_CreateTab(index)
-				local Tab = CreateFrame("BUTTON", nil, self);
+				local Tab = CreateFrame('BUTTON', nil, TabFrame);
 				Tab:SetSize(T_UIDefinition.tabSize, T_UIDefinition.tabSize);
 				Tab:SetNormalTexture(T_UIDefinition.texture_unk);
 				-- Tab:GetNormalTexture():SetTexCoord(0.0625, 1.0, 0.0625, 1.0);
@@ -2869,9 +2929,9 @@ end
 				-- Tab:GetHighlightTexture():SetBlendMode("BLEND");
 				Tab:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
 				Tab:EnableMouse(true);
-				Tab:SetScript("OnClick", function(self)
-					local pname = self.pname;
-					if pname ~= nil and not __db__.is_name_same_skill(pname, frame.F_GetSkillName()) then
+				Tab:SetScript("OnClick", function(TabFrame)
+					local pname = TabFrame.pname;
+					if pname ~= nil and not __db__.is_name_same_skill(pname, Frame.F_GetSkillName()) then
 						if pname == '@explorer' then
 							__namespace__.F_uiToggleFrame("EXPLORER");
 						elseif pname == '@config' then
@@ -2885,7 +2945,7 @@ end
 				end);
 				T_Tabs[index] = Tab;
 				if index == 1 then
-					Tab:SetPoint("LEFT", self, "LEFT", T_UIDefinition.tabInterval, 0);
+					Tab:SetPoint("LEFT", TabFrame, "LEFT", T_UIDefinition.tabInterval, 0);
 				else
 					Tab:SetPoint("LEFT", T_Tabs[index - 1], "RIGHT", T_UIDefinition.tabInterval, 0);
 				end
@@ -2923,10 +2983,10 @@ end
 						self:F_CreateTab(index):Show();
 					end
 				end
-				self:SetWidth(T_UIDefinition.tabSize * num + T_UIDefinition.tabInterval * (num + 1));
+				TabFrame:SetWidth(T_UIDefinition.tabSize * num + T_UIDefinition.tabInterval * (num + 1));
 			end
 			function TabFrame:F_SetTab(index, pname, ptexture)
-				local Tab = T_Tabs[index] or self:F_CreateTab(index);
+				local Tab = T_Tabs[index] or TabFrame:F_CreateTab(index);
 				Tab:Show();
 				Tab.pname = pname;
 				Tab:SetNormalTexture(ptexture);
@@ -2940,52 +3000,52 @@ end
 						local pname = __db__.get_check_name_by_pid(pid);
 						if pname ~= nil then
 							numSkill = numSkill + 1;
-							self:F_SetTab(numSkill, pname, __db__.get_texture_by_pid(pid));
+							TabFrame:F_SetTab(numSkill, pname, __db__.get_texture_by_pid(pid));
 						end
 					end
 				end
 				numSkill = numSkill + 1;
-				self:F_SetTab(numSkill, '@explorer', T_UIDefinition.texture_explorer);
+				TabFrame:F_SetTab(numSkill, '@explorer', T_UIDefinition.texture_explorer);
 				numSkill = numSkill + 1;
-				self:F_SetTab(numSkill, '@config', T_UIDefinition.texture_config);
+				TabFrame:F_SetTab(numSkill, '@config', T_UIDefinition.texture_config);
 				numSkill = numSkill + 1;
-				self:F_SetTab(numSkill, '@toggle', T_UIDefinition.texture_toggle);
-				self:F_SetNumTabs(numSkill);
+				TabFrame:F_SetTab(numSkill, '@toggle', T_UIDefinition.texture_toggle);
+				TabFrame:F_SetNumTabs(numSkill);
 			end
-			frame.TabFrame = TabFrame;
+			Frame.TabFrame = TabFrame;
 			TabFrame.T_Tabs = T_Tabs;
 		end
 
 		do	--	search_box
-			local SearchEditBox, SearchEditBoxOK, SearchEditBoxNameOnly = LT_SharedMethod.UICreateSearchBox(frame);
-			SearchEditBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, -6);
+			local SearchEditBox, SearchEditBoxOK, SearchEditBoxNameOnly = LT_SharedMethod.UICreateSearchBox(Frame);
+			SearchEditBox:SetPoint("TOPLEFT", Frame, "TOPLEFT", 4, -6);
 			SearchEditBox:SetPoint("RIGHT", SearchEditBoxNameOnly, "LEFT", -4, 0);
 			SearchEditBoxNameOnly:SetPoint("RIGHT", SearchEditBoxOK, "LEFT", -4, 0);
-			SearchEditBoxOK:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -68, -6);
+			SearchEditBoxOK:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -68, -6);
 		end
 
 		do	--	ProfitFrame
-			local ProfitFrame = CreateFrame("FRAME", nil, frame);
+			local ProfitFrame = CreateFrame('FRAME', nil, Frame);
 			ProfitFrame:SetFrameStrata("HIGH");
 			ProfitFrame:EnableMouse(true);
 			ProfitFrame:Hide();
 			ProfitFrame:SetSize(320, 320);
 			ProfitFrame:SetPoint("TOPLEFT", HookedFrame, "TOPRIGHT", -36, -68);
 			ProfitFrame.list = {  };
-			frame.ProfitFrame = ProfitFrame;
+			Frame.ProfitFrame = ProfitFrame;
 
-			local ToggleButton = CreateFrame("BUTTON", nil, frame);
+			local ToggleButton = CreateFrame('BUTTON', nil, Frame);
 			ToggleButton:SetSize(20, 20);
-			ToggleButton:SetNormalTexture("interface\\buttons\\ui-grouploot-coin-up");
-			ToggleButton:SetPushedTexture("interface\\buttons\\ui-grouploot-coin-down");
-			ToggleButton:SetHighlightTexture("interface\\buttons\\ui-grouploot-coin-highlight");
-			ToggleButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -24, -6);
+			ToggleButton:SetNormalTexture([[Interface\Buttons\UI-GroupLoot-Coin-UP]]);
+			ToggleButton:SetPushedTexture([[Interface\Buttons\UI-GroupLoot-Coin-DOWN]]);
+			ToggleButton:SetHighlightTexture([[Interface\Buttons\UI-GroupLoot-Coin-HighLight]]);
+			ToggleButton:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -24, -6);
 			ToggleButton:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 			ToggleButton:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
 			ToggleButton.info_lines = { L["TIP_PROFIT_FRAME_CALL_INFO"] };
 			ToggleButton:SetScript("OnClick", function(self)
 				if AuctionMod ~= nil then
-					local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
+					local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
 					if ProfitFrame:IsShown() then
 						ProfitFrame:Hide();
 						if pid ~= nil then
@@ -3001,18 +3061,18 @@ end
 			end);
 			ProfitFrame.ToggleButton = ToggleButton;
 
-			ProfitFrame:SetScript("OnShow", function(self)
+			ProfitFrame:SetScript("OnShow", function(ProfitFrame)
 				if AuctionMod ~= nil then
-					LT_SharedMethod.UpdateProfitFrame(frame);
-					ToggleButton:SetNormalTexture("interface\\buttons\\ui-grouploot-coin-down");
-					ToggleButton:SetPushedTexture("interface\\buttons\\ui-grouploot-coin-up");
+					LT_SharedMethod.UpdateProfitFrame(Frame);
+					ToggleButton:SetNormalTexture([[Interface\Buttons\UI-GroupLoot-Coin-DOWN]]);
+					ToggleButton:SetPushedTexture([[Interface\Buttons\UI-GroupLoot-Coin-UP]]);
 				else
-					self:Hide();
+					ProfitFrame:Hide();
 				end
 			end);
 			ProfitFrame:SetScript("OnHide", function()
-				ToggleButton:SetNormalTexture("interface\\buttons\\ui-grouploot-coin-up");
-				ToggleButton:SetPushedTexture("interface\\buttons\\ui-grouploot-coin-down");
+				ToggleButton:SetNormalTexture([[Interface\Buttons\UI-GroupLoot-Coin-UP]]);
+				ToggleButton:SetPushedTexture([[Interface\Buttons\UI-GroupLoot-Coin-DOWN]]);
 			end);
 
 			local ScrollFrame = ALASCR(ProfitFrame, nil, nil, T_UIDefinition.skillListButtonHeight, LT_SharedMethod.ProfitCreateSkillListButton, LT_SharedMethod.ProfitSetSkillListButton);
@@ -3020,7 +3080,7 @@ end
 			ScrollFrame:SetPoint("TOPRIGHT", -8, -28);
 			ProfitFrame.ScrollFrame = ScrollFrame;
 
-			local CostOnlyCheck = CreateFrame("CHECKBUTTON", nil, ProfitFrame, "OptionsBaseCheckButtonTemplate");
+			local CostOnlyCheck = CreateFrame('CHECKBUTTON', nil, ProfitFrame, "OptionsBaseCheckButtonTemplate");
 			CostOnlyCheck:SetSize(24, 24);
 			CostOnlyCheck:SetHitRectInsets(0, 0, 0, 0);
 			CostOnlyCheck:SetPoint("CENTER", ProfitFrame, "TOPLEFT", 18, -14);
@@ -3028,23 +3088,23 @@ end
 			local Text = ProfitFrame:CreateFontString(nil, "ARTWORK");
 			Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "OUTLINE");
 			Text:SetPoint("LEFT", CostOnlyCheck, "CENTER", 10, 0);
-			Text:SetText(L["costOnly"]);
+			Text:SetText(L["PROFIT_SHOW_COST_ONLY"]);
 			CostOnlyCheck.Text = Text;
 			CostOnlyCheck:SetScript("OnClick", function(self)
 				local checked = self:GetChecked();
-				local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
+				local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
 				if pid ~= nil then
-					SET[pid].costOnly = checked;
-					LT_SharedMethod.UpdateProfitFrame(frame);
+					SET[pid].PROFIT_SHOW_COST_ONLY = checked;
+					LT_SharedMethod.UpdateProfitFrame(Frame);
 				end
 			end);
 			ProfitFrame.CostOnlyCheck = CostOnlyCheck;
 
-			local CloseButton = CreateFrame("BUTTON", nil, ProfitFrame, "UIPanelCloseButton");
+			local CloseButton = CreateFrame('BUTTON', nil, ProfitFrame, "UIPanelCloseButton");
 			CloseButton:SetSize(32, 32);
 			CloseButton:SetPoint("CENTER", ProfitFrame, "TOPRIGHT", -18, -14);
 			CloseButton:SetScript("OnClick", function()
-				local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
+				local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
 				if pid ~= nil then
 					SET[pid].showProfit = false;
 				end
@@ -3056,34 +3116,34 @@ end
 		end
 
 		do	--	SetFrame
-			local SetFrame = CreateFrame("FRAME", nil, frame);
+			local SetFrame = CreateFrame('FRAME', nil, Frame);
 			SetFrame:SetFrameStrata("HIGH");
 			SetFrame:SetSize(332, 66);
 			SetFrame:Hide();
-			frame.SetFrame = SetFrame;
+			Frame.SetFrame = SetFrame;
 
 			local TipInfo = SetFrame:CreateFontString(nil, "ARTWORK");
 			TipInfo:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize - 1);
 			TipInfo:SetPoint("RIGHT", SetFrame, "BOTTOMRIGHT", -2, 9);
 			SetFrame.TipInfo = TipInfo;
 
-			local ToggleButton = CreateFrame("BUTTON", nil, frame);
+			local ToggleButton = CreateFrame('BUTTON', nil, Frame);
 			ToggleButton:SetSize(16, 16);
 			ToggleButton:SetNormalTexture(T_UIDefinition.texture_config);
 			ToggleButton:SetPushedTexture(T_UIDefinition.texture_config);
 			ToggleButton:GetPushedTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorPushed));
 			ToggleButton:SetHighlightTexture(T_UIDefinition.texture_config);
 			ToggleButton:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
-			ToggleButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -6);
+			ToggleButton:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -4, -6);
 			ToggleButton:SetScript("OnClick", function(self)
-				local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
+				local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
 				if SetFrame:IsShown() then
-					frame:F_HideSetFrame();
+					Frame:F_HideSetFrame();
 					if pid ~= nil then
 						SET[pid].showSet = false;
 					end
 				else
-					frame:F_ShowSetFrame(true);
+					Frame:F_ShowSetFrame(true);
 					if pid ~= nil then
 						SET[pid].showSet = true;
 					end
@@ -3091,10 +3151,10 @@ end
 			end);
 			SetFrame.ToggleButton = ToggleButton;
 
-			SetFrame:SetScript("OnShow", function(self)
+			SetFrame:SetScript("OnShow", function(SetFrame)
 				ToggleButton:GetNormalTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
 			end);
-			SetFrame:SetScript("OnHide", function(self)
+			SetFrame:SetScript("OnHide", function(SetFrame)
 				ToggleButton:GetNormalTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
 			end);
 
@@ -3102,7 +3162,7 @@ end
 			local T_KeyTables = { "showUnkown", "showKnown", "showHighRank", "filterClass", "filterSpec", "showItemInsteadOfSpell", "showRank", "haveMaterials", };
 			for index = 1, #T_KeyTables do
 				local key = T_KeyTables[index];
-				local CheckButton = CreateFrame("CHECKBUTTON", nil, SetFrame, "OptionsBaseCheckButtonTemplate");
+				local CheckButton = CreateFrame('CHECKBUTTON', nil, SetFrame, "OptionsBaseCheckButtonTemplate");
 				CheckButton:SetSize(24, 24);
 				CheckButton:SetHitRectInsets(0, 0, 0, 0);
 				CheckButton:Show();
@@ -3123,19 +3183,19 @@ end
 				end
 				if index == 1 or index == 2 or index == 3 or index == 4 or index == 5 or index == 8 then
 					CheckButton:SetScript("OnClick", function(self)
-						local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
+						local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
 						if pid ~= nil then
 							__namespace__.F_ChangeSetWithUpdate(SET[pid], key, self:GetChecked());
 						end
-						frame.F_Update();
+						Frame.F_Update();
 					end);
 				else
 					CheckButton:SetScript("OnClick", function(self)
-						local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
+						local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
 						if pid ~= nil then
 							__namespace__.F_ChangeSetWithUpdate(SET[pid], key, self:GetChecked());
 						end
-						frame.ScrollFrame:Update();
+						Frame.ScrollFrame:Update();
 					end);
 				end
 				CheckButton.key = key;
@@ -3152,7 +3212,7 @@ end
 			end
 			SetFrame.T_CheckButtons = T_CheckButtons;
 
-			local PhaseSlider = CreateFrame("SLIDER", nil, SetFrame, "OptionsSliderTemplate");
+			local PhaseSlider = CreateFrame('SLIDER', nil, SetFrame, "OptionsSliderTemplate");
 			PhaseSlider:SetPoint("BOTTOM", SetFrame, "TOP", 0, 10);
 			PhaseSlider:SetPoint("LEFT", 4, 0);
 			PhaseSlider:SetPoint("RIGHT", -4, 0);
@@ -3170,157 +3230,159 @@ end
 			PhaseSlider.High:SetText("|cffff0000" .. MAXPHASE .. "|r");
 			PhaseSlider:HookScript("OnValueChanged", function(self, value, userInput)
 				if userInput then
-					local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
+					local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
 					if pid ~= nil then
 						__namespace__.F_ChangeSetWithUpdate(SET[pid], "phase", value);
-						frame.F_Update();
+						Frame.F_Update();
 					end
 				end
 				self.Text:SetText("|cffffff00" .. L["phase"] .. "|r " .. value);
 			end);
 			SetFrame.PhaseSlider = PhaseSlider;
 
-			function frame:F_ShowSetFrame(show)
+			function Frame:F_ShowSetFrame(show)
+				local SetFrame = Frame.SetFrame;
 				if SET.show_tab then
 					SetFrame:ClearAllPoints();
-					SetFrame:SetPoint("LEFT", self.TextureBackground);
-					-- SetFrame:SetPoint("RIGHT", self);
-					SetFrame:SetPoint("BOTTOM", self.TabFrame, "TOP", 0, -4);
+					SetFrame:SetPoint("LEFT", Frame.TextureBackground);
+					-- SetFrame:SetPoint("RIGHT", Frame);
+					SetFrame:SetPoint("BOTTOM", Frame.TabFrame, "TOP", 0, -4);
 				else
 					SetFrame:ClearAllPoints();
-					SetFrame:SetPoint("LEFT", self.TextureBackground);
-					-- SetFrame:SetPoint("RIGHT", self);
-					SetFrame:SetPoint("BOTTOM", self.TextureBackground, "TOP", 0, 1);
+					SetFrame:SetPoint("LEFT", Frame.TextureBackground);
+					-- SetFrame:SetPoint("RIGHT", Frame);
+					SetFrame:SetPoint("BOTTOM", Frame.TextureBackground, "TOP", 0, 1);
 				end
 				if show then
 					SetFrame:Show();
 				end
 			end
-			function frame:F_HideSetFrame()
+			function Frame:F_HideSetFrame()
 				SetFrame:Hide();
 			end
-			function frame:F_RefreshSetFrame()
-				local pid = self.flag or __db__.get_pid_by_pname(self.F_GetSkillName());
+			function Frame:F_RefreshSetFrame()
+				local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
 				if pid ~= nil then
+					local SetFrame = Frame.SetFrame;
 					local set = SET[pid];
-					for index = 1, #T_CheckButtons do
-						local CheckButton = T_CheckButtons[index];
+					for index = 1, #SetFrame.T_CheckButtons do
+						local CheckButton = SetFrame.T_CheckButtons[index];
 						CheckButton:SetChecked(set[CheckButton.key]);
 					end
-					PhaseSlider:SetValue(set.phase);
+					SetFrame.PhaseSlider:SetValue(set.phase);
 				end
 			end
 		end
 
 		do	--	HaveMaterialsCheck
-			local HaveMaterialsCheck = CreateFrame("CHECKBUTTON", nil, frame, "OptionsBaseCheckButtonTemplate");
+			local HaveMaterialsCheck = CreateFrame('CHECKBUTTON', nil, Frame, "OptionsBaseCheckButtonTemplate");
 			HaveMaterialsCheck:SetSize(24, 24);
 			HaveMaterialsCheck:SetHitRectInsets(0, 0, 0, 0);
 			HaveMaterialsCheck:Show();
 			HaveMaterialsCheck:SetChecked(false);
-			HaveMaterialsCheck:SetPoint("CENTER", frame, "TOPRIGHT", -54, -14);
+			HaveMaterialsCheck:SetPoint("CENTER", Frame, "TOPRIGHT", -54, -14);
 			HaveMaterialsCheck:SetScript("OnClick", function(self)
-				local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
+				local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
 				if pid ~= nil then
 					__namespace__.F_ChangeSetWithUpdate(SET[pid], "haveMaterials", self:GetChecked());
 				end
-				frame.F_Update();
+				Frame.F_Update();
 			end);
 			HaveMaterialsCheck.info_lines = { L["haveMaterialsTip"], };
 			HaveMaterialsCheck:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 			HaveMaterialsCheck:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
-			frame.HaveMaterialsCheck = HaveMaterialsCheck;
+			Frame.HaveMaterialsCheck = HaveMaterialsCheck;
 		end
 
 		do	--	InfoInFrame
-			local RankInfoInFrame = frame.HookedDetailChild:CreateFontString(nil, "OVERLAY");
+			local RankInfoInFrame = Frame.HookedDetailChild:CreateFontString(nil, "OVERLAY");
 			RankInfoInFrame:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize);
-			RankInfoInFrame:SetPoint("TOPLEFT", frame.HookedDetailChild, "TOPLEFT", 5, -50);
-			frame.RankInfoInFrame = RankInfoInFrame;
+			RankInfoInFrame:SetPoint("TOPLEFT", Frame.HookedDetailChild, "TOPLEFT", 5, -50);
+			Frame.RankInfoInFrame = RankInfoInFrame;
 
 			local T_PriceInfoInFrame = {  };
-			T_PriceInfoInFrame[1] = frame.HookedDetailChild:CreateFontString(nil, "OVERLAY");
+			T_PriceInfoInFrame[1] = Frame.HookedDetailChild:CreateFontString(nil, "OVERLAY");
 			T_PriceInfoInFrame[1]:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize);
 			T_PriceInfoInFrame[1]:SetPoint("TOPLEFT", RankInfoInFrame, "BOTTOMLEFT", 0, -3);
-			T_PriceInfoInFrame[2] = frame.HookedDetailChild:CreateFontString(nil, "OVERLAY");
+			T_PriceInfoInFrame[2] = Frame.HookedDetailChild:CreateFontString(nil, "OVERLAY");
 			T_PriceInfoInFrame[2]:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize);
 			T_PriceInfoInFrame[2]:SetPoint("TOPLEFT", T_PriceInfoInFrame[1], "BOTTOMLEFT", 0, 0);
-			T_PriceInfoInFrame[3] = frame.HookedDetailChild:CreateFontString(nil, "OVERLAY");
+			T_PriceInfoInFrame[3] = Frame.HookedDetailChild:CreateFontString(nil, "OVERLAY");
 			T_PriceInfoInFrame[3]:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize);
 			T_PriceInfoInFrame[3]:SetPoint("TOPLEFT", T_PriceInfoInFrame[2], "BOTTOMLEFT", 0, 0);
-			frame.T_PriceInfoInFrame = T_PriceInfoInFrame;
+			Frame.T_PriceInfoInFrame = T_PriceInfoInFrame;
 
-			frame.Widget_PositionSkippedByInfoInFrame:ClearAllPoints();
-			frame.Widget_PositionSkippedByInfoInFrame:SetPoint("TOPLEFT", T_PriceInfoInFrame[3], "BOTTOMLEFT", 0, -3);
+			Frame.Widget_PositionSkippedByInfoInFrame:ClearAllPoints();
+			Frame.Widget_PositionSkippedByInfoInFrame:SetPoint("TOPLEFT", T_PriceInfoInFrame[3], "BOTTOMLEFT", 0, -3);
 
 			local function LF_DelayUpdateInfoInFrame()
-				frame:F_FrameUpdatePriceInfo();
-				frame:F_FrameUpdateRankInfo();
+				Frame:F_FrameUpdatePriceInfo();
+				Frame:F_FrameUpdateRankInfo();
 			end
 			local prev_sid = nil;
 			local function LF_OnSelection()
-				if not frame:IsShown() then
-					local index = frame.F_GetSelection();
+				if not Frame:IsShown() then
+					local index = Frame.F_GetSelection();
 					if index ~= nil then
-						frame.selected_sid = 
-							frame.F_GetRecipeSpellID ~= nil and frame.F_GetRecipeSpellID(index) or
-							__db__.get_sid_by_pid_sname_cid(__db__.get_pid_by_pname(frame.F_GetSkillName()), frame.F_GetRecipeInfo(index), frame.F_GetRecipeItemID(index));
+						Frame.selected_sid = 
+							Frame.F_GetRecipeSpellID ~= nil and Frame.F_GetRecipeSpellID(index) or
+							__db__.get_sid_by_pid_sname_cid(__db__.get_pid_by_pname(Frame.F_GetSkillName()), Frame.F_GetRecipeInfo(index), Frame.F_GetRecipeItemID(index));
 					end
 				end
-				if prev_sid ~= frame.selected_sid then
-					prev_sid = frame.selected_sid;
+				if prev_sid ~= Frame.selected_sid then
+					prev_sid = Frame.selected_sid;
 					T_PriceInfoInFrame[1]:SetText(nil);
 					T_PriceInfoInFrame[2]:SetText(nil);
 					T_PriceInfoInFrame[3]:SetText(nil);
 				end
 				C_Timer_After(0.5, LF_DelayUpdateInfoInFrame);
 			end
-			hooksecurefunc(frame.T_FunctionName.F_SetSelection, LF_OnSelection);
-			frame.F_OnSelection = LF_OnSelection;
-			frame.F_SetSelection = _G[frame.T_FunctionName.F_SetSelection];
-			frame.F_FrameUpdatePriceInfo = F_FrameUpdatePriceInfo;
-			frame.F_FrameUpdateRankInfo = F_FrameUpdateRankInfo;
+			hooksecurefunc(Frame.T_FunctionName.F_SetSelection, LF_OnSelection);
+			Frame.F_OnSelection = LF_OnSelection;
+			Frame.F_SetSelection = _G[Frame.T_FunctionName.F_SetSelection];
+			Frame.F_FrameUpdatePriceInfo = F_FrameUpdatePriceInfo;
+			Frame.F_FrameUpdateRankInfo = F_FrameUpdateRankInfo;
 		end
 
 		ALA_HOOK_ChatEdit_InsertLink(function(link, addon)
-			if frame:IsVisible() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+			if Frame:IsVisible() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
 				local name, _, _, _, _, _, _, _, loc = GetItemInfo(link);
 				if name ~= nil and name ~= "" then
-					local pid = frame.flag or __db__.get_pid_by_pname(frame.F_GetSkillName());
-					frame.SearchEditBox:ClearFocus();
+					local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+					Frame.SearchEditBox:ClearFocus();
 					if pid == 10 and loc and loc ~= "" then
 						local id = tonumber(strmatch(link, "item:(%d+)"));
 						if id ~= 11287 and id ~= 11288 and id ~= 11289 and id ~= 11290 then
 							if L.ENCHANT_FILTER[loc] ~= nil then
-								frame:F_Search(L.ENCHANT_FILTER[loc]);
+								Frame:F_Search(L.ENCHANT_FILTER[loc]);
 							else
-								frame:F_Search(L.ENCHANT_FILTER.NONE);
+								Frame:F_Search(L.ENCHANT_FILTER.NONE);
 							end
 						else
-							frame:F_Search(name);
+							Frame:F_Search(name);
 						end
 					else
-						frame:F_Search(name);
+						Frame:F_Search(name);
 					end
 					return true;
 				end
 			end
 		end);
 		ALA_HOOK_ChatEdit_InsertName(function(name, addon)
-			if frame:IsVisible() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+			if Frame:IsVisible() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
 				if name ~= nil and name ~= "" then
-					frame.SearchEditBox:SetText(name);
-					frame.SearchEditBox:ClearFocus();
-					frame:F_Search(name);
+					Frame.SearchEditBox:SetText(name);
+					Frame.SearchEditBox:ClearFocus();
+					Frame:F_Search(name);
 					return true;
 				end
 			end
 		end);
 
 		local function callback()
-			frame.ScrollFrame:Update();
-			LT_SharedMethod.UpdateProfitFrame(frame);
-			frame:F_FrameUpdatePriceInfo();
+			Frame.ScrollFrame:Update();
+			LT_SharedMethod.UpdateProfitFrame(Frame);
+			Frame:F_FrameUpdatePriceInfo();
 		end
 		-- if AuctionMod ~= nil and AuctionMod.F_OnDBUpdate ~= nil then
 		-- 	AuctionMod.F_OnDBUpdate(callback);
@@ -3336,42 +3398,42 @@ end
 		end);
 		__namespace__:AddCallback("UI_MOD_LOADED", function(mod)
 			if mod ~= nil and mod.Skin ~= nil then
-				mod.Skin(addon, frame);
+				mod.Skin(addon, Frame);
 			end
 		end);
 
-		return frame;
+		return Frame;
 	end
-	local function LF_FrameApplySetting(frame)
-		for key, name in next, frame.T_FunctionName do
-			frame[key] = _G[key] or frame[key];
+	local function LF_FrameApplySetting(Frame)
+		for key, name in next, Frame.T_FunctionName do
+			Frame[key] = _G[key] or Frame[key];
 		end
 		--
-		frame.TabFrame:F_Update();
-		frame.PortraitButton:F_Update();
-		frame:F_Expand(SET.expand);
-		frame:F_FixSkillList(SET.expand);
-		frame:F_BlzStyle(SET.blz_style, true);
+		Frame.TabFrame:F_Update();
+		Frame.PortraitButton:F_Update();
+		Frame:F_Expand(SET.expand);
+		Frame:F_FixSkillList(SET.expand);
+		Frame:F_BlzStyle(SET.blz_style, true);
 		if SET.show_call then
-			frame.ToggleButton:Show();
+			Frame.ToggleButton:Show();
 		else
-			frame.ToggleButton:Hide();
+			Frame.ToggleButton:Hide();
 		end
 		if SET.show_tab then
-			frame.TabFrame:Show();
+			Frame.TabFrame:Show();
 		else
-			frame.TabFrame:Hide();
+			Frame.TabFrame:Hide();
 		end
 		if SET.portrait_button then
-			frame.PortraitButton:Show();
+			Frame.PortraitButton:Show();
 		else
-			frame.PortraitButton:Hide();
+			Frame.PortraitButton:Hide();
 		end
 		--
 		local ticker = nil;
 		ticker = C_Timer_NewTicker(0.1, function()
-			if frame.HookedPortrait:GetTexture() == nil then
-				SetPortraitTexture(frame.HookedPortrait, "player");
+			if Frame.HookedPortrait:GetTexture() == nil then
+				SetPortraitTexture(Frame.HookedPortrait, "player");
 			else
 				ticker:Cancel();
 				ticker = nil;
@@ -3611,8 +3673,8 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 			F_SetSelection = "TradeSkillFrame_SetSelection",
 		},
 	};
-	local frame = LF_HookFrame(addon, meta);
-	T_uiFrames[addon] = frame;
+	local Frame = LF_HookFrame(addon, meta);
+	T_uiFrames[addon] = Frame;
 	--
 	if __namespace__.__is_bcc or __namespace__.__is_wlk then
 		TradeSkillFrameAvailableFilterCheckButton:ClearAllPoints();
@@ -3627,7 +3689,7 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 			handler = function(_, key)
 				local text = ENCHANT_FILTER[key];
 				if text ~= nil then
-					frame:F_Search(text);
+					Frame:F_Search(text);
 				end
 			end,
 			elements = {
@@ -3665,37 +3727,37 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 				-- },
 			},
 		};
-		local FilterDropdown = CreateFrame("BUTTON", nil, frame);
+		local FilterDropdown = CreateFrame('BUTTON', nil, Frame);
 		FilterDropdown:SetSize(16, 16);
 		FilterDropdown:EnableMouse(true);
-		FilterDropdown:SetNormalTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+		FilterDropdown:SetNormalTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 		FilterDropdown:GetNormalTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
-		FilterDropdown:SetPushedTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+		FilterDropdown:SetPushedTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 		FilterDropdown:GetPushedTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 		FilterDropdown:GetPushedTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorPushed));
-		FilterDropdown:SetHighlightTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+		FilterDropdown:SetHighlightTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 		FilterDropdown:GetHighlightTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 		FilterDropdown:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
 		FilterDropdown:SetScript("OnClick", function(self, button)
 			ALADROP(self, "BOTTOMRIGHT", T_CraftFrameFilterMeta);
 		end);
 
-		-- frame.SearchEditBoxOK:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -46, -6);
-		frame.SearchEditBox:SetPoint("RIGHT", FilterDropdown, "LEFT", -2, 0);
-		FilterDropdown:SetPoint("RIGHT", frame.SearchEditBoxNameOnly, "LEFT", -2, 0);
-		frame.FilterDropdown = FilterDropdown;
+		-- Frame.SearchEditBoxOK:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -46, -6);
+		Frame.SearchEditBox:SetPoint("RIGHT", FilterDropdown, "LEFT", -2, 0);
+		FilterDropdown:SetPoint("RIGHT", Frame.SearchEditBoxNameOnly, "LEFT", -2, 0);
+		Frame.FilterDropdown = FilterDropdown;
 	--	Auto filter recipe when trading
 		local function LF_ProcessTradeTargetItemLink()
-			if frame.flag == 10 then
+			if Frame.flag == 10 then
 				local link = GetTradeTargetItemLink(7);
 				if link ~= nil then
 					local loc = select(9, GetItemInfo(link));
 					if loc ~= nil and ENCHANT_FILTER[loc] then
-						frame.SearchEditBox:SetText(ENCHANT_FILTER[loc]);
-						frame:F_Search(ENCHANT_FILTER[loc]);
+						Frame.SearchEditBox:SetText(ENCHANT_FILTER[loc]);
+						Frame:F_Search(ENCHANT_FILTER[loc]);
 					else
-						frame.SearchEditBox:SetText(ENCHANT_FILTER.NONE);
-						frame:F_Search(ENCHANT_FILTER.NONE);
+						Frame.SearchEditBox:SetText(ENCHANT_FILTER.NONE);
+						Frame:F_Search(ENCHANT_FILTER.NONE);
 					end
 				end
 			end
@@ -3705,7 +3767,7 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 			return self[event](...);
 		end);
 		function EventDriver.TRADE_CLOSED()
-			frame.SearchEditBox:SetText("");
+			Frame.SearchEditBox:SetText("");
 		end
 		function EventDriver.TRADE_TARGET_ITEM_CHANGED(_1)
 			if _1 == 7 then
@@ -3719,15 +3781,15 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		EventDriver:RegisterEvent("TRADE_CLOSED");
 		EventDriver:RegisterEvent("TRADE_UPDATE");
 		EventDriver:RegisterEvent("TRADE_TARGET_ITEM_CHANGED");
-		frame.EventDriver = EventDriver;
-		frame:HookScript("OnShow", function()
+		Frame.EventDriver = EventDriver;
+		Frame:HookScript("OnShow", function()
 			if TradeSkillFrame:IsShown() then
 				__namespace__.F_ScheduleDelayCall(LF_ProcessTradeTargetItemLink);
 			end
 		end);
 	end
 	--
-	LF_FrameApplySetting(frame);
+	LF_FrameApplySetting(Frame);
 end
 local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 	-->
@@ -3920,8 +3982,8 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 			F_SetSelection = "CraftFrame_SetSelection",
 		},
 	};
-	local frame = LF_HookFrame(addon, meta);
-	T_uiFrames[addon] = frame;
+	local Frame = LF_HookFrame(addon, meta);
+	T_uiFrames[addon] = Frame;
 	--
 	if __namespace__.__is_bcc or __namespace__.__is_wlk then
 		CraftFrameAvailableFilterCheckButton:ClearAllPoints();
@@ -3937,7 +3999,7 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 			handler = function(_, key)
 				local text = ENCHANT_FILTER[key];
 				if text ~= nil then
-					frame:F_Search(text);
+					Frame:F_Search(text);
 				end
 			end,
 			elements = {
@@ -3975,36 +4037,36 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 				-- },
 			},
 		};
-		local FilterDropdown = CreateFrame("BUTTON", nil, frame);
+		local FilterDropdown = CreateFrame('BUTTON', nil, Frame);
 		FilterDropdown:SetSize(16, 16);
 		FilterDropdown:EnableMouse(true);
-		FilterDropdown:SetNormalTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+		FilterDropdown:SetNormalTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 		FilterDropdown:GetNormalTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
-		FilterDropdown:SetPushedTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+		FilterDropdown:SetPushedTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 		FilterDropdown:GetPushedTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 		FilterDropdown:GetPushedTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorPushed));
-		FilterDropdown:SetHighlightTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+		FilterDropdown:SetHighlightTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 		FilterDropdown:GetHighlightTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 		FilterDropdown:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
 		FilterDropdown:SetScript("OnClick", function(self, button)
 			ALADROP(self, "BOTTOMRIGHT", T_CraftFrameFilterMeta);
 		end);
 
-		-- frame.SearchEditBoxOK:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -46, -6);
-		frame.SearchEditBox:SetPoint("RIGHT", FilterDropdown, "LEFT", -2, 0);
-		FilterDropdown:SetPoint("RIGHT", frame.SearchEditBoxNameOnly, "LEFT", -2, 0);
-		frame.FilterDropdown = FilterDropdown;
+		-- Frame.SearchEditBoxOK:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -46, -6);
+		Frame.SearchEditBox:SetPoint("RIGHT", FilterDropdown, "LEFT", -2, 0);
+		FilterDropdown:SetPoint("RIGHT", Frame.SearchEditBoxNameOnly, "LEFT", -2, 0);
+		Frame.FilterDropdown = FilterDropdown;
 	--	Auto filter recipe when trading
 		local function LF_ProcessTradeTargetItemLink()
 			local link = GetTradeTargetItemLink(7);
 			if link ~= nil then
 				local loc = select(9, GetItemInfo(link));
 				if loc ~= nil and ENCHANT_FILTER[loc] then
-					frame.SearchEditBox:SetText(ENCHANT_FILTER[loc]);
-					frame:F_Search(ENCHANT_FILTER[loc]);
+					Frame.SearchEditBox:SetText(ENCHANT_FILTER[loc]);
+					Frame:F_Search(ENCHANT_FILTER[loc]);
 				else
-					frame.SearchEditBox:SetText(ENCHANT_FILTER.NONE);
-					frame:F_Search(ENCHANT_FILTER.NONE);
+					Frame.SearchEditBox:SetText(ENCHANT_FILTER.NONE);
+					Frame:F_Search(ENCHANT_FILTER.NONE);
 				end
 			end
 		end
@@ -4013,7 +4075,7 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 			return self[event](...);
 		end);
 		function EventDriver.TRADE_CLOSED()
-			frame.SearchEditBox:SetText("");
+			Frame.SearchEditBox:SetText("");
 		end
 		function EventDriver.TRADE_TARGET_ITEM_CHANGED(_1)
 			if _1 == 7 then
@@ -4027,18 +4089,18 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 		EventDriver:RegisterEvent("TRADE_CLOSED");
 		EventDriver:RegisterEvent("TRADE_UPDATE");
 		EventDriver:RegisterEvent("TRADE_TARGET_ITEM_CHANGED");
-		frame.EventDriver = EventDriver;
-		frame:HookScript("OnShow", function()
+		Frame.EventDriver = EventDriver;
+		Frame:HookScript("OnShow", function()
 			if CraftFrame:IsShown() then
 				__namespace__.F_ScheduleDelayCall(LF_ProcessTradeTargetItemLink);
 			end
 		end);
 	--
-	LF_FrameApplySetting(frame);
+	LF_FrameApplySetting(Frame);
 end
 --	Explorer
 	local function LF_ExplorerCreateSkillListButton(parent, index, buttonHeight)
-		local Button = CreateFrame("BUTTON", nil, parent);
+		local Button = CreateFrame('BUTTON', nil, parent);
 		Button:SetHeight(buttonHeight);
 		uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
 		Button:SetHighlightTexture(T_UIDefinition.texture_white);
@@ -4068,7 +4130,7 @@ end
 		Title:SetPoint("RIGHT", Note, "LEFT", -4, 0);
 
 		local QualityGlow = Button:CreateTexture(nil, "ARTWORK");
-		QualityGlow:SetTexture("Interface\\Buttons\\UI-ActionButton-Border");
+		QualityGlow:SetTexture([[Interface\Buttons\UI-ActionButton-Border]]);
 		QualityGlow:SetBlendMode("ADD");
 		QualityGlow:SetTexCoord(0.25, 0.75, 0.25, 0.75);
 		QualityGlow:SetSize(buttonHeight - 2, buttonHeight - 2);
@@ -4078,7 +4140,7 @@ end
 		Button.QualityGlow = QualityGlow;
 
 		local Star = Button:CreateTexture(nil, "OVERLAY");
-		Star:SetTexture("interface\\collections\\collections");
+		Star:SetTexture([[Interface\Collections\Collections]]);
 		Star:SetTexCoord(100 / 512, 118 / 512, 10 / 512, 28 / 512);
 		Star:SetSize(buttonHeight * 0.75, buttonHeight * 0.75);
 		Star:SetPoint("CENTER", Button, "TOPLEFT", buttonHeight * 0.25, -buttonHeight * 0.25);
@@ -4108,17 +4170,17 @@ end
 			SelectionGlow:Hide();
 		end
 
-		local frame = parent:GetParent():GetParent();
-		Button.frame = frame;
-		Button.list = frame.list;
-		Button.flag = frame.flag;
+		local Frame = parent:GetParent():GetParent();
+		Button.Frame = Frame;
+		Button.list = Frame.list;
+		Button.flag = Frame.flag;
 
 		return Button;
 	end
 	local function LF_ExplorerSetSkillListButton(Button, data_index)
-		local frame = Button.frame;
+		local Frame = Button.Frame;
 		local list = Button.list;
-		local hash = frame.hash;
+		local hash = Frame.hash;
 		if data_index <= #list then
 			local sid = list[data_index];
 			local cid = __db__.get_cid_by_sid(sid);
@@ -4209,12 +4271,12 @@ end
 		end
 		----
 		local T_ExplorerSetMeta = {
-			handler = function(_, frame, key, val)
+			handler = function(_, Frame, key, val)
 				SET.explorer.filter[key] = val;
 				if key == 'type' then
 					SET.explorer.filter.subType = nil;
 				end
-				frame.F_Update();
+				Frame.F_Update();
 			end,
 			elements = {  },
 		};
@@ -4232,7 +4294,7 @@ end
 			else
 				bound = index_bound[key];
 			end
-			local frame = self.frame;
+			local Frame = self.Frame;
 			local stat_list = nil;
 			if filter[key] then
 				local temp_filter = {  };
@@ -4244,54 +4306,54 @@ end
 					temp_filter.subType = nil;
 				end
 				stat_list = { skill = {  }, type = {  }, subType = {  }, eqLoc = {  }, };
-				LT_SharedMethod.ExplorerFilterList(frame, stat_list, temp_filter, set.searchText, set.searchNameOnly,
-											{  }, frame.hash, set.phase, nil, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, false, false);
+				LT_SharedMethod.ExplorerFilterList(Frame, stat_list, temp_filter, set.searchText, set.searchNameOnly,
+											{  }, Frame.hash, set.phase, nil, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, false, false);
 			else
 				stat_list = T_ExplorerStat;
 			end
 			local elements = T_ExplorerSetMeta.elements;
 			wipe(elements);
-			elements[1] = { text = L["EXPLORER_CLEAR_FILTER"], para = { frame, key, nil, }, };
+			elements[1] = { text = L["EXPLORER_CLEAR_FILTER"], para = { Frame, key, nil, }, };
 			local stat = stat_list[key];
 			if key == 'skill' then
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						elements[#elements + 1] = { text = __db__.get_pname_by_pid(index), para = { frame, key, index, }, };
+						elements[#elements + 1] = { text = __db__.get_pname_by_pid(index), para = { Frame, key, index, }, };
 					end
 				end
 			elseif key == 'type' then
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						elements[#elements + 1] = { text = L.ITEM_TYPE_LIST[index], para = { frame, key, index, }, };
+						elements[#elements + 1] = { text = L.ITEM_TYPE_LIST[index], para = { Frame, key, index, }, };
 					end
 				end
 			elseif key == 'subType' then
 				local key0 = filter.type;
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						elements[#elements + 1] = { text = L.ITEM_SUB_TYPE_LIST[key0][index], para = { frame, key, index, }, };
+						elements[#elements + 1] = { text = L.ITEM_SUB_TYPE_LIST[key0][index], para = { Frame, key, index, }, };
 					end
 				end
 			elseif key == 'eqLoc' then
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						elements[#elements + 1] = { text = L.ITEM_EQUIP_LOC[index], para = { frame, key, index, }, };
+						elements[#elements + 1] = { text = L.ITEM_EQUIP_LOC[index], para = { Frame, key, index, }, };
 					end
 				end
 			end
 			ALADROP(self, "BOTTOMRIGHT", T_ExplorerSetMeta);
 		end
 	--
-	local function LF_ExplorerBlzStyle(frame, blz_style, loading)
+	local function LF_ExplorerBlzStyle(Frame, blz_style, loading)
 		if blz_style then
-			LT_SharedMethod.StyleBLZBackdrop(frame);
-			local CloseButton = frame.CloseButton;
+			LT_SharedMethod.StyleBLZBackdrop(Frame);
+			local CloseButton = Frame.CloseButton;
 			CloseButton:SetSize(32, 32);
 			LT_SharedMethod.StyleBLZButton(CloseButton, not loading and CloseButton.backup or nil);
-			LT_SharedMethod.StyleBLZCheckButton(frame.SearchEditBoxNameOnly);
-			frame.SearchEditBoxNameOnly:SetSize(24, 24);
-			LT_SharedMethod.StyleBLZScrollFrame(frame.ScrollFrame);
-			local SetFrame = frame.SetFrame;
+			LT_SharedMethod.StyleBLZCheckButton(Frame.SearchEditBoxNameOnly);
+			Frame.SearchEditBoxNameOnly:SetSize(24, 24);
+			LT_SharedMethod.StyleBLZScrollFrame(Frame.ScrollFrame);
+			local SetFrame = Frame.SetFrame;
 			LT_SharedMethod.StyleBLZBackdrop(SetFrame);
 			local T_CheckButtons = SetFrame.T_CheckButtons;
 			for index = 1, #T_CheckButtons do
@@ -4305,15 +4367,15 @@ end
 				LT_SharedMethod.StyleBLZALADropButton(Dropdown);
 				Dropdown:SetSize(20, 20);
 			end
-			local ProfitFrame = frame.ProfitFrame;
+			local ProfitFrame = Frame.ProfitFrame;
 			LT_SharedMethod.StyleBLZBackdrop(ProfitFrame);
 			LT_SharedMethod.StyleBLZScrollFrame(ProfitFrame.ScrollFrame);
 			local ProfitFrameCloseButton = ProfitFrame.CloseButton;
 			ProfitFrameCloseButton:SetSize(32, 32);
 			LT_SharedMethod.StyleBLZButton(ProfitFrameCloseButton, not loading and ProfitFrameCloseButton.backup or nil);
 		else
-			LT_SharedMethod.StyleModernBackdrop(frame);
-			local CloseButton = frame.CloseButton;
+			LT_SharedMethod.StyleModernBackdrop(Frame);
+			local CloseButton = Frame.CloseButton;
 			CloseButton:SetSize(16, 16);
 			if CloseButton.backup == nil then
 				CloseButton.backup = {  };
@@ -4321,10 +4383,10 @@ end
 			else
 				LT_SharedMethod.StyleModernButton(CloseButton, nil, T_UIDefinition.texture_modern_button_close);
 			end
-			LT_SharedMethod.StyleModernCheckButton(frame.SearchEditBoxNameOnly);
-			frame.SearchEditBoxNameOnly:SetSize(14, 14);
-			LT_SharedMethod.StyleModernScrollFrame(frame.ScrollFrame);
-			local SetFrame = frame.SetFrame;
+			LT_SharedMethod.StyleModernCheckButton(Frame.SearchEditBoxNameOnly);
+			Frame.SearchEditBoxNameOnly:SetSize(14, 14);
+			LT_SharedMethod.StyleModernScrollFrame(Frame.ScrollFrame);
+			local SetFrame = Frame.SetFrame;
 			LT_SharedMethod.StyleModernBackdrop(SetFrame);
 			local T_CheckButtons = SetFrame.T_CheckButtons;
 			for index = 1, #T_CheckButtons do
@@ -4338,7 +4400,7 @@ end
 				LT_SharedMethod.StyleModernALADropButton(Dropdown);
 				Dropdown:SetSize(14, 14);
 			end
-			local ProfitFrame = frame.ProfitFrame;
+			local ProfitFrame = Frame.ProfitFrame;
 			LT_SharedMethod.StyleModernBackdrop(ProfitFrame);
 			LT_SharedMethod.StyleModernScrollFrame(ProfitFrame.ScrollFrame);
 			local ProfitFrameCloseButton = ProfitFrame.CloseButton;
@@ -4353,83 +4415,83 @@ end
 	end
 --
 local function LF_CreateExplorerFrame()
-	local frame = CreateFrame("FRAME", "ALA_TRADESKILL_EXPLORER", UIParent);
+	local Frame = CreateFrame('FRAME', "ALA_TRADESKILL_EXPLORER", UIParent);
 	tinsert(UISpecialFrames, "ALA_TRADESKILL_EXPLORER");
 
-	do	--	frame
-		frame:SetSize(T_UIDefinition.explorerWidth, T_UIDefinition.explorerHeight);
-		frame:SetFrameStrata("HIGH");
-		frame:SetPoint("CENTER", 0, 0);
-		frame:EnableMouse(true);
-		frame:SetMovable(true);
-		frame:RegisterForDrag("LeftButton");
-		frame:SetScript("OnDragStart", function(self)
+	do	--	Frame
+		Frame:SetSize(T_UIDefinition.explorerWidth, T_UIDefinition.explorerHeight);
+		Frame:SetFrameStrata("HIGH");
+		Frame:SetPoint("CENTER", 0, 0);
+		Frame:EnableMouse(true);
+		Frame:SetMovable(true);
+		Frame:RegisterForDrag("LeftButton");
+		Frame:SetScript("OnDragStart", function(self)
 			self:StartMoving();
 		end);
-		frame:SetScript("OnDragStop", function(self)
+		Frame:SetScript("OnDragStop", function(self)
 			self:StopMovingOrSizing();
 		end);
-		frame:SetScript("OnShow", function(self)
-			frame.F_Update();
+		Frame:SetScript("OnShow", function(self)
+			Frame.F_Update();
 		end);
-		frame:Hide();
+		Frame:Hide();
 
-		function frame.F_Update()
-			LT_SharedMethod.UpdateExplorerFrame(frame, true);
+		function Frame.F_Update()
+			LT_SharedMethod.UpdateExplorerFrame(Frame, true);
 		end
-		frame.list = {  };
-		frame.hash = T_LearnedRecipesHash;
-		frame.flag = 'explorer';
+		Frame.list = {  };
+		Frame.hash = T_LearnedRecipesHash;
+		Frame.flag = 'explorer';
 
-		local Title = frame:CreateFontString(nil, "ARTWORK");
+		local Title = Frame:CreateFontString(nil, "ARTWORK");
 		Title:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize);
-		Title:SetPoint("CENTER", frame, "TOP", 0, -16);
+		Title:SetPoint("CENTER", Frame, "TOP", 0, -16);
 		Title:SetText(L["EXPLORER_TITLE"]);
 
-		local ScrollFrame = ALASCR(frame, nil, nil, T_UIDefinition.skillListButtonHeight, LF_ExplorerCreateSkillListButton, LF_ExplorerSetSkillListButton);
+		local ScrollFrame = ALASCR(Frame, nil, nil, T_UIDefinition.skillListButtonHeight, LF_ExplorerCreateSkillListButton, LF_ExplorerSetSkillListButton);
 		ScrollFrame:SetPoint("BOTTOMLEFT", 6, 12);
 		ScrollFrame:SetPoint("TOPRIGHT", -10, -56);
-		frame.ScrollFrame = ScrollFrame;
+		Frame.ScrollFrame = ScrollFrame;
 
-		local CloseButton = CreateFrame("BUTTON", nil, frame, "UIPanelCloseButton");
+		local CloseButton = CreateFrame('BUTTON', nil, Frame, "UIPanelCloseButton");
 		CloseButton:SetSize(32, 32);
-		CloseButton:SetPoint("CENTER", frame, "TOPRIGHT", -18, -16);
+		CloseButton:SetPoint("CENTER", Frame, "TOPRIGHT", -18, -16);
 		CloseButton:SetScript("OnClick", function()
-			frame:Hide();
+			Frame:Hide();
 		end);
-		frame.CloseButton = CloseButton;
+		Frame.CloseButton = CloseButton;
 
 		LT_SharedMethod.ModifyALAScrollFrame(ScrollFrame);
 
-		frame.F_BlzStyle = LF_ExplorerBlzStyle;
+		Frame.F_BlzStyle = LF_ExplorerBlzStyle;
 	end
 
 	do	--	search_box
-		local SearchEditBox, SearchEditBoxOK, SearchEditBoxNameOnly = LT_SharedMethod.UICreateSearchBox(frame);
-		SearchEditBox:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -32);
+		local SearchEditBox, SearchEditBoxOK, SearchEditBoxNameOnly = LT_SharedMethod.UICreateSearchBox(Frame);
+		SearchEditBox:SetPoint("TOPLEFT", Frame, "TOPLEFT", 10, -32);
 		SearchEditBox:SetPoint("RIGHT", SearchEditBoxNameOnly, "LEFT", -4, 0);
 		SearchEditBoxNameOnly:SetPoint("RIGHT", SearchEditBoxOK, "LEFT", -4, 0);
-		SearchEditBoxOK:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -52, -32);
+		SearchEditBoxOK:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -52, -32);
 	end
 
 	do	--	ProfitFrame
-		local ProfitFrame = CreateFrame("FRAME", nil, frame);
+		local ProfitFrame = CreateFrame('FRAME', nil, Frame);
 		ProfitFrame:SetFrameStrata("HIGH");
 		ProfitFrame:EnableMouse(true);
 		ProfitFrame:Hide();
 		ProfitFrame:SetWidth(320);
-		ProfitFrame:SetPoint("TOPLEFT", frame, "TOPRIGHT", 2, 0);
-		ProfitFrame:SetPoint("BOTTOMLEFT", frame, "BOTTOMRIGHT", 2, 0);
+		ProfitFrame:SetPoint("TOPLEFT", Frame, "TOPRIGHT", 2, 0);
+		ProfitFrame:SetPoint("BOTTOMLEFT", Frame, "BOTTOMRIGHT", 2, 0);
 		ProfitFrame.list = {  };
 		ProfitFrame.flag = 'explorer';
-		frame.ProfitFrame = ProfitFrame;
+		Frame.ProfitFrame = ProfitFrame;
 
-		local ToggleButton = CreateFrame("BUTTON", nil, frame);
+		local ToggleButton = CreateFrame('BUTTON', nil, Frame);
 		ToggleButton:SetSize(20, 20);
-		ToggleButton:SetNormalTexture("interface\\buttons\\ui-grouploot-coin-up");
-		ToggleButton:SetPushedTexture("interface\\buttons\\ui-grouploot-coin-down");
-		ToggleButton:SetHighlightTexture("interface\\buttons\\ui-grouploot-coin-highlight");
-		ToggleButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -30, -32);
+		ToggleButton:SetNormalTexture([[Interface\Buttons\UI-GroupLoot-Coin-UP]]);
+		ToggleButton:SetPushedTexture([[Interface\Buttons\UI-GroupLoot-Coin-DOWN]]);
+		ToggleButton:SetHighlightTexture([[Interface\Buttons\UI-GroupLoot-Coin-HighLight]]);
+		ToggleButton:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -30, -32);
 		ToggleButton:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 		ToggleButton:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
 		ToggleButton.info_lines = { L["TIP_PROFIT_FRAME_CALL_INFO"] };
@@ -4448,16 +4510,16 @@ local function LF_CreateExplorerFrame()
 
 		ProfitFrame:SetScript("OnShow", function(self)
 			if AuctionMod ~= nil then
-				LT_SharedMethod.UpdateProfitFrame(frame);
-				ToggleButton:SetNormalTexture("interface\\buttons\\ui-grouploot-coin-down");
-				ToggleButton:SetPushedTexture("interface\\buttons\\ui-grouploot-coin-up");
+				LT_SharedMethod.UpdateProfitFrame(Frame);
+				ToggleButton:SetNormalTexture([[Interface\Buttons\UI-GroupLoot-Coin-DOWN]]);
+				ToggleButton:SetPushedTexture([[Interface\Buttons\UI-GroupLoot-Coin-UP]]);
 			else
 				self:Hide();
 			end
 		end);
 		ProfitFrame:SetScript("OnHide", function()
-			ToggleButton:SetNormalTexture("interface\\buttons\\ui-grouploot-coin-up");
-			ToggleButton:SetPushedTexture("interface\\buttons\\ui-grouploot-coin-down");
+			ToggleButton:SetNormalTexture([[Interface\Buttons\UI-GroupLoot-Coin-UP]]);
+			ToggleButton:SetPushedTexture([[Interface\Buttons\UI-GroupLoot-Coin-DOWN]]);
 		end);
 
 		local ScrollFrame = ALASCR(ProfitFrame, nil, nil, T_UIDefinition.skillListButtonHeight, LT_SharedMethod.ProfitCreateSkillListButton, LT_SharedMethod.ProfitSetSkillListButton);
@@ -4465,7 +4527,7 @@ local function LF_CreateExplorerFrame()
 		ScrollFrame:SetPoint("TOPRIGHT", -8, -28);
 		ProfitFrame.ScrollFrame = ScrollFrame;
 
-		-- local CostOnlyCheck = CreateFrame("CHECKBUTTON", nil, ProfitFrame, "OptionsBaseCheckButtonTemplate");
+		-- local CostOnlyCheck = CreateFrame('CHECKBUTTON', nil, ProfitFrame, "OptionsBaseCheckButtonTemplate");
 		-- CostOnlyCheck:SetSize(24, 24);
 		-- CostOnlyCheck:SetHitRectInsets(0, 0, 0, 0);
 		-- CostOnlyCheck:SetPoint("CENTER", ProfitFrame, "TOPLEFT", 17, -10);
@@ -4473,16 +4535,16 @@ local function LF_CreateExplorerFrame()
 		-- local Text = ProfitFrame:CreateFontString(nil, "ARTWORK");
 		-- Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "OUTLINE");
 		-- Text:SetPoint("LEFT", CostOnlyCheck, "RIGHT", 2, 0);
-		-- Text:SetText(L["costOnly"]);
+		-- Text:SetText(L["PROFIT_SHOW_COST_ONLY"]);
 		-- CostOnlyCheck.Text = Text;
 		-- CostOnlyCheck:SetScript("OnClick", function(self)
 		-- 	local checked = self:GetChecked();
-		-- 	SET.explorer.costOnly = checked;
-		-- 	LT_SharedMethod.UpdateProfitFrame(frame);
+		-- 	SET.explorer.PROFIT_SHOW_COST_ONLY = checked;
+		-- 	LT_SharedMethod.UpdateProfitFrame(Frame);
 		-- end);
 		-- ProfitFrame.CostOnlyCheck = CostOnlyCheck;
 
-		local CloseButton = CreateFrame("BUTTON", nil, ProfitFrame, "UIPanelCloseButton");
+		local CloseButton = CreateFrame('BUTTON', nil, ProfitFrame, "UIPanelCloseButton");
 		CloseButton:SetSize(32, 32);
 		CloseButton:SetPoint("CENTER", ProfitFrame, "TOPRIGHT", -18, -14);
 		CloseButton:SetScript("OnClick", function()
@@ -4491,32 +4553,32 @@ local function LF_CreateExplorerFrame()
 		end);
 		ProfitFrame.CloseButton = CloseButton;
 
-		LT_SharedMethod.ModifyALAScrollFrame(frame.ProfitFrame.ScrollFrame);
+		LT_SharedMethod.ModifyALAScrollFrame(Frame.ProfitFrame.ScrollFrame);
 	end
 
 	do	--	SetFrame
-		local SetFrame = CreateFrame("FRAME", nil, frame);
+		local SetFrame = CreateFrame('FRAME', nil, Frame);
 		SetFrame:SetFrameStrata("HIGH");
 		SetFrame:SetHeight(82);
-		SetFrame:SetPoint("LEFT", frame);
-		SetFrame:SetPoint("RIGHT", frame);
-		SetFrame:SetPoint("BOTTOM", frame, "TOP", 0, 1);
+		SetFrame:SetPoint("LEFT", Frame);
+		SetFrame:SetPoint("RIGHT", Frame);
+		SetFrame:SetPoint("BOTTOM", Frame, "TOP", 0, 1);
 		SetFrame:Hide();
-		frame.SetFrame = SetFrame;
+		Frame.SetFrame = SetFrame;
 
 		local TipInfo = SetFrame:CreateFontString(nil, "ARTWORK");
 		TipInfo:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize - 1);
 		TipInfo:SetPoint("RIGHT", SetFrame, "BOTTOMRIGHT", -2, 9);
 		SetFrame.TipInfo = TipInfo;
 
-		local ToggleButton = CreateFrame("BUTTON", nil, frame);
+		local ToggleButton = CreateFrame('BUTTON', nil, Frame);
 		ToggleButton:SetSize(16, 16);
 		ToggleButton:SetNormalTexture(T_UIDefinition.texture_config);
 		ToggleButton:SetPushedTexture(T_UIDefinition.texture_config);
 		ToggleButton:GetPushedTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorPushed));
 		ToggleButton:SetHighlightTexture(T_UIDefinition.texture_config);
 		ToggleButton:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
-		ToggleButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -10, -32);
+		ToggleButton:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -10, -32);
 		ToggleButton:SetScript("OnClick", function(self)
 			if SetFrame:IsShown() then
 				SetFrame:Hide();
@@ -4541,7 +4603,7 @@ local function LF_CreateExplorerFrame()
 		local T_KeyTables = { "showUnkown", "showKnown", "showItemInsteadOfSpell", "showRank", };
 		for index = 1, #T_KeyTables do
 			local key = T_KeyTables[index];
-			local CheckButton = CreateFrame("CHECKBUTTON", nil, SetFrame, "OptionsBaseCheckButtonTemplate");
+			local CheckButton = CreateFrame('CHECKBUTTON', nil, SetFrame, "OptionsBaseCheckButtonTemplate");
 			CheckButton:SetSize(24, 24);
 			CheckButton:SetHitRectInsets(0, 0, 0, 0);
 			CheckButton:Show();
@@ -4565,12 +4627,12 @@ local function LF_CreateExplorerFrame()
 			if index == 1 or index == 2 then
 				CheckButton:SetScript("OnClick", function(self)
 					SET.explorer[key] = self:GetChecked()
-					frame.F_Update();
+					Frame.F_Update();
 				end);
 			else
 				CheckButton:SetScript("OnClick", function(self)
 					SET.explorer[key] = self:GetChecked()
-					frame.ScrollFrame:Update();
+					Frame.ScrollFrame:Update();
 				end);
 			end
 			CheckButton.key = key;
@@ -4591,15 +4653,15 @@ local function LF_CreateExplorerFrame()
 		local T_KeyTables = { "skill", "type", "subType", "eqLoc", };
 		for index = 1, #T_KeyTables do
 			local key = T_KeyTables[index];
-			local Dropdown = CreateFrame("BUTTON", nil, SetFrame);
+			local Dropdown = CreateFrame('BUTTON', nil, SetFrame);
 			Dropdown:SetSize(20, 20);
 			Dropdown:EnableMouse(true);
-			Dropdown:SetNormalTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+			Dropdown:SetNormalTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 			Dropdown:GetNormalTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
-			Dropdown:SetPushedTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+			Dropdown:SetPushedTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 			Dropdown:GetPushedTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 			Dropdown:GetPushedTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorPushed));
-			Dropdown:SetHighlightTexture("interface\\mainmenubar\\ui-mainmenu-scrolldownbutton-up");
+			Dropdown:SetHighlightTexture([[Interface\MainMenuBar\UI-MainMenu-ScrollDownButton-UP]]);
 			Dropdown:GetHighlightTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 			Dropdown:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
 
@@ -4609,12 +4671,12 @@ local function LF_CreateExplorerFrame()
 			Label:SetPoint("LEFT", Dropdown, "RIGHT", 0, 0);
 			Dropdown.Label = Label;
 
-			local Cancel = CreateFrame("BUTTON", nil, SetFrame);
+			local Cancel = CreateFrame('BUTTON', nil, SetFrame);
 			Cancel:SetSize(16, 16);
-			Cancel:SetNormalTexture("interface\\buttons\\ui-grouploot-pass-up");
-			Cancel:SetPushedTexture("interface\\buttons\\ui-grouploot-pass-up");
+			Cancel:SetNormalTexture([[Interface\Buttons\UI-GroupLoot-Pass-UP]]);
+			Cancel:SetPushedTexture([[Interface\Buttons\UI-GroupLoot-Pass-UP]]);
 			Cancel:GetPushedTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorPushed));
-			Cancel:SetHighlightTexture("interface\\buttons\\ui-grouploot-pass-up");
+			Cancel:SetHighlightTexture([[Interface\Buttons\UI-GroupLoot-Pass-UP]]);
 			Cancel:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
 			Cancel:SetPoint("TOP", Dropdown, "BOTTOM", 0, -1);
 			Cancel:SetScript("OnClick", function(self)
@@ -4624,7 +4686,7 @@ local function LF_CreateExplorerFrame()
 					if key == 'type' then
 						filter.subType = nil;
 					end
-					frame.F_Update();
+					Frame.F_Update();
 				end
 			end);
 			Cancel.key = key;
@@ -4648,12 +4710,12 @@ local function LF_CreateExplorerFrame()
 			end
 			Dropdown:SetScript("OnClick", F_ExplorerSetFrameDropdown_OnClick);
 			Dropdown.key = key;
-			Dropdown.frame = frame;
+			Dropdown.Frame = Frame;
 			T_Dropdowns[#T_Dropdowns + 1] = Dropdown;
 		end
 		SetFrame.T_Dropdowns = T_Dropdowns;
 
-		local PhaseSlider = CreateFrame("SLIDER", nil, SetFrame, "OptionsSliderTemplate");
+		local PhaseSlider = CreateFrame('SLIDER', nil, SetFrame, "OptionsSliderTemplate");
 		PhaseSlider:SetPoint("BOTTOM", SetFrame, "TOP", 0, 12);
 		PhaseSlider:SetPoint("LEFT", 4, 0);
 		PhaseSlider:SetPoint("RIGHT", -4, 0);
@@ -4672,13 +4734,13 @@ local function LF_CreateExplorerFrame()
 		PhaseSlider:HookScript("OnValueChanged", function(self, value, userInput)
 			if userInput then
 				SET.explorer.phase = value;
-				frame.F_Update();
+				Frame.F_Update();
 			end
 			self.Text:SetText("|cffffff00" .. L["phase"] .. "|r " .. value);
 		end);
 		SetFrame.PhaseSlider = PhaseSlider;
 
-		function frame:F_RefreshSetFrame()
+		function Frame:F_RefreshSetFrame()
 			local set = SET.explorer;
 			for index = 1, #T_CheckButtons do
 				local CheckButton = T_CheckButtons[index];
@@ -4721,30 +4783,30 @@ local function LF_CreateExplorerFrame()
 	end
 
 	ALA_HOOK_ChatEdit_InsertLink(function(link, addon)
-		if frame:IsShown() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+		if Frame:IsShown() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
 			local name = GetItemInfo(link);
 			if name and name ~= "" then
-				frame.SearchEditBox:SetText(name);
-				frame.SearchEditBox:ClearFocus();
-				frame:F_Search(name);
+				Frame.SearchEditBox:SetText(name);
+				Frame.SearchEditBox:ClearFocus();
+				Frame:F_Search(name);
 				return true;
 			end
 		end
 	end);
 	ALA_HOOK_ChatEdit_InsertName(function(name, addon)
-		if frame:IsShown() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+		if Frame:IsShown() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
 			if name and name ~= "" then
-				frame.SearchEditBox:SetText(name);
-				frame.SearchEditBox:ClearFocus();
-				frame:F_Search(name);
+				Frame.SearchEditBox:SetText(name);
+				Frame.SearchEditBox:ClearFocus();
+				Frame:F_Search(name);
 				return true;
 			end
 		end
 	end);
 
 	local function callback()
-		frame.ScrollFrame:Update();
-		LT_SharedMethod.UpdateProfitFrame(frame);
+		Frame.ScrollFrame:Update();
+		LT_SharedMethod.UpdateProfitFrame(Frame);
 	end
 	-- if AuctionMod ~= nil and AuctionMod.F_OnDBUpdate ~= nil then
 	-- 	AuctionMod.F_OnDBUpdate(callback);
@@ -4759,7 +4821,7 @@ local function LF_CreateExplorerFrame()
 		end
 	end);
 
-	return frame;
+	return Frame;
 end
 --	Board
 	local T_BoardDropMeta = {
@@ -4859,9 +4921,9 @@ end
 		end
 	end
 	local function LF_UpdateBoard()
-		local frame = T_uiFrames["BOARD"];
-		if frame:IsShown() then
-			frame:F_Clear();
+		local Frame = T_uiFrames["BOARD"];
+		if Frame:IsShown() then
+			Frame:F_Clear();
 			for GUID, VAR in next, AVAR do
 				local add_label = true;
 				for pid = __db__.DBMINPID, __db__.DBMAXPID do
@@ -4875,16 +4937,16 @@ end
 								if name and class then
 									local classColorTable = RAID_CLASS_COLORS[strupper(class)];
 									name = format(">>|cff%.2x%.2x%.2x", classColorTable.r * 255, classColorTable.g * 255, classColorTable.b * 255) .. name .. "|r<<";
-									frame:F_AddLine(nil, name);
+									Frame:F_AddLine(nil, name);
 								else
-									frame:F_AddLine(nil, GUID);
+									Frame:F_AddLine(nil, GUID);
 								end
 							end
 							local texture = __db__.get_texture_by_pid(pid);
 							if var.cur_rank and var.max_rank then
-								frame:F_AddLine("|T" .. (texture or T_UIDefinition.texture_unk) .. ":12:12:0:0|t " .. (__db__.get_pname_by_pid(pid) or ""), nil, var.cur_rank .. " / " .. var.max_rank);
+								Frame:F_AddLine("|T" .. (texture or T_UIDefinition.texture_unk) .. ":12:12:0:0|t " .. (__db__.get_pname_by_pid(pid) or ""), nil, var.cur_rank .. " / " .. var.max_rank);
 							else
-								frame:F_AddLine("|T" .. (texture or T_UIDefinition.texture_unk) .. ":12:12:0:0|t " .. (__db__.get_pname_by_pid(pid) or ""));
+								Frame:F_AddLine("|T" .. (texture or T_UIDefinition.texture_unk) .. ":12:12:0:0|t " .. (__db__.get_pname_by_pid(pid) or ""));
 							end
 							for sid, c in next, cool do
 								local texture = __db__.item_icon(__db__.get_cid_by_sid(sid));
@@ -4892,20 +4954,20 @@ end
 								if c > 0 then
 									local diff = c - GetServerTime();
 									if diff > 0 then
-										frame:F_AddLine(sname, nil, LF_FormatTime(diff));
+										Frame:F_AddLine(sname, nil, LF_FormatTime(diff));
 									else
 										cool[sid] = -1;
-										frame:F_AddLine(sname, nil, L["COOLDOWN_EXPIRED"]);
+										Frame:F_AddLine(sname, nil, L["COOLDOWN_EXPIRED"]);
 									end
 								else
-									frame:F_AddLine(sname, nil, L["COOLDOWN_EXPIRED"]);
+									Frame:F_AddLine(sname, nil, L["COOLDOWN_EXPIRED"]);
 								end
 							end
 						end
 					end
 				end
 			end
-			frame:F_Update();
+			Frame:F_Update();
 		end
 		local cal = __ala_meta__.cal;
 		if cal then
@@ -4935,32 +4997,32 @@ end
 	end
 --
 local function LF_CreateBoard()
-	local frame = CreateFrame("FRAME", nil, UIParent);
-	frame:SetClampedToScreen(true);
+	local Frame = CreateFrame('FRAME', nil, UIParent);
+	Frame:SetClampedToScreen(true);
 	if LOCALE == 'zhCN' or LOCALE == 'zhTW' or LOCALE == 'koKR' then
-		frame:SetWidth(260);
+		Frame:SetWidth(260);
 	else
-		frame:SetWidth(320);
+		Frame:SetWidth(320);
 	end
-	frame:SetMovable(true);
-	-- frame:EnableMouse(true);
-	-- frame:RegisterForDrag("LeftButton");
-	function frame:F_Lock()
+	Frame:SetMovable(true);
+	-- Frame:EnableMouse(true);
+	-- Frame:RegisterForDrag("LeftButton");
+	function Frame:F_Lock()
 		self:EnableMouse(false);
 		uireimp._SetSimpleBackdrop(self, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	end
-	function frame:F_Unlock()
+	function Frame:F_Unlock()
 		self:EnableMouse(true);
 		uireimp._SetSimpleBackdrop(self, 0, 1, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5);
 	end
-	frame:SetScript("OnMouseDown", function(self, button)
+	Frame:SetScript("OnMouseDown", function(self, button)
 		if button == "LeftButton" then
 			self:StartMoving();
 		else
 			ALADROP(self, "BOTTOMLEFT", T_BoardDropMeta);
 		end
 	end);
-	frame:SetScript("OnMouseUp", function(self, button)
+	Frame:SetScript("OnMouseUp", function(self, button)
 		self:StopMovingOrSizing();
 		local pos = { self:GetPoint(), };
 		for index = 1, #pos do
@@ -4971,9 +5033,9 @@ local function LF_CreateBoard()
 		end
 		SET.board_pos = pos;
 	end);
-	frame:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
-	frame:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
-	function frame:F_AddLine(textL, textM, textR)
+	Frame:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
+	Frame:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
+	function Frame:F_AddLine(textL, textM, textR)
 		local T_Lines = self.T_Lines;
 		local index = self.curLine + 1;
 		self.curLine = index;
@@ -5010,7 +5072,7 @@ local function LF_CreateBoard()
 			Line[3]:Hide();
 		end
 	end
-	function frame:F_Clear()
+	function Frame:F_Clear()
 		local T_Lines = self.T_Lines;
 		for index = 1, self.curLine do
 			T_Lines[index][1]:Hide();
@@ -5021,31 +5083,31 @@ local function LF_CreateBoard()
 		end
 		self.curLine = 0;
 	end
-	function frame:F_Update()
+	function Frame:F_Update()
 		local h = 16 * max(self.curLine, 1);
 		self:SetHeight(h);
 		self:SetClampRectInsets(200, -200, 16 - h, h - 16);
 	end
-	frame.info_lines = { L["BOARD_TIP"], };
-	frame.T_Lines = {  };
-	frame.curLine = 0;
+	Frame.info_lines = { L["BOARD_TIP"], };
+	Frame.T_Lines = {  };
+	Frame.curLine = 0;
 	C_Timer_NewTicker(1.0, LF_UpdateBoard);
 	if SET.show_board then
-		frame:Show();
+		Frame:Show();
 	else
-		frame:Hide();
+		Frame:Hide();
 	end
 	if SET.lock_board then
-		frame:F_Lock();
+		Frame:F_Lock();
 	else
-		frame:F_Unlock();
+		Frame:F_Unlock();
 	end
 	if SET.board_pos then
-		frame:SetPoint(unpack(SET.board_pos));
+		Frame:SetPoint(unpack(SET.board_pos));
 	else
-		frame:SetPoint("TOP", 0, -20);
+		Frame:SetPoint("TOP", 0, -20);
 	end
-	return frame;
+	return Frame;
 end
 --	Config
 	local T_CharListDrop_Del = {
@@ -5053,9 +5115,9 @@ end
 		para = {  },
 	};
 	local T_CharListDropMeta = {
-		handler = function(_, index, frame)
+		handler = function(_, index, Frame)
 			__namespace__.F_DelChar(index);
-			frame.ScrollFrame:Update();
+			Frame.ScrollFrame:Update();
 		end,
 		elements = {
 			T_CharListDrop_Del,
@@ -5068,7 +5130,7 @@ end
 			local key = list[data_index];
 			if key ~= PLAYER_GUID then
 				T_CharListDrop_Del.para[1] = data_index;
-				T_CharListDrop_Del.para[2] = self.frame;
+				T_CharListDrop_Del.para[2] = self.Frame;
 				ALADROP(self, "BOTTOM", T_CharListDropMeta);
 			end
 		end
@@ -5123,7 +5185,7 @@ end
 		end
 	end
 	local function LF_ConfigCreateCharListButton(parent, index, buttonHeight)
-		local Button = CreateFrame("BUTTON", nil, parent);
+		local Button = CreateFrame('BUTTON', nil, parent);
 		Button:SetHeight(buttonHeight);
 		uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
 		Button:SetHighlightTexture(T_UIDefinition.texture_white);
@@ -5135,7 +5197,7 @@ end
 		Icon:SetTexture(T_UIDefinition.texture_unk);
 		Icon:SetSize(buttonHeight - 4, buttonHeight - 4);
 		Icon:SetPoint("LEFT", 8, 0);
-		Icon:SetTexture("interface\\targetingframe\\ui-classes-circles");
+		Icon:SetTexture([[Interface\TargetingFrame\UI-Classes-Circles]]);
 		Button.Icon = Icon;
 
 		local Title = Button:CreateFontString(nil, "OVERLAY");
@@ -5159,8 +5221,8 @@ end
 		Button:SetScript("OnEnter", LF_ConfigCharListButton_OnEnter);
 		Button:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
 
-		local frame = parent:GetParent():GetParent();
-		Button.frame = frame;
+		local Frame = parent:GetParent():GetParent();
+		Button.Frame = Frame;
 
 		return Button;
 	end
@@ -5205,7 +5267,7 @@ end
 		end
 	end
 	local function LF_ConfigCreateCheckButton(parent, key, text, OnClick)
-		local CheckButton = CreateFrame("CHECKBUTTON", nil, parent, "OptionsBaseCheckButtonTemplate");
+		local CheckButton = CreateFrame('CHECKBUTTON', nil, parent, "OptionsBaseCheckButtonTemplate");
 		CheckButton:SetNormalTexture(T_UIDefinition.texture_modern_check_button_border);
 		CheckButton:SetPushedTexture(T_UIDefinition.texture_modern_check_button_center);
 		CheckButton:SetHighlightTexture(T_UIDefinition.texture_modern_check_button_border);
@@ -5240,7 +5302,7 @@ end
 		end
 	end 
 	local function LF_ConfigCreateDrop(parent, key, text, meta)
-		local Dropdown = CreateFrame("BUTTON", nil, parent);
+		local Dropdown = CreateFrame('BUTTON', nil, parent);
 		Dropdown:SetSize(12, 12);
 		Dropdown:EnableMouse(true);
 		Dropdown:SetNormalTexture(T_UIDefinition.texture_modern_arrow_down);
@@ -5270,7 +5332,7 @@ end
 		return Dropdown;
 	end
 	local function LF_ConfigCreateSlider(parent, key, text, minVal, maxVal, step, OnValueChanged)
-		local Slider = CreateFrame("SLIDER", nil, parent, "OptionsSliderTemplate");
+		local Slider = CreateFrame('SLIDER', nil, parent, "OptionsSliderTemplate");
 		local Label = Slider:CreateFontString(nil, "ARTWORK");
 		Label:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "NORMAL");
 		Label:SetText(gsub(text, "%%[a-z]", ""));
@@ -5307,7 +5369,7 @@ end
 	local function LF_ConfigCreateColor4(parent, key, text, OnColor)
 		local ColorPickerFrame = _G.ColorPickerFrame;
 		local OpacitySliderFrame = _G.OpacitySliderFrame;
-		local Button = CreateFrame("BUTTON", nil, parent);
+		local Button = CreateFrame('BUTTON', nil, parent);
 		Button:SetSize(20, 20);
 		Button:EnableMouse(true);
 		Button:SetNormalTexture(T_UIDefinition.texture_color_select);
@@ -5370,10 +5432,10 @@ end
 --
 local function LF_CreateConfigFrame()
 	local SettingUIFreeContainer, SettingUIInterfaceOptionsFrameContainer;
-	local frame = CreateFrame("FRAME", nil, UIParent);
-	frame:SetSize(450, 250);
-	frame:SetFrameStrata("DIALOG");
-	frame:Hide();
+	local Frame = CreateFrame('FRAME', nil, UIParent);
+	Frame:SetSize(450, 250);
+	Frame:SetFrameStrata("DIALOG");
+	Frame:Hide();
 	--
 	SettingUIFreeContainer = CreateFrame('FRAME', "ALATRADESKILL_SETTING_UI_C", UIParent);
 	SettingUIFreeContainer:Hide();
@@ -5390,22 +5452,22 @@ local function LF_CreateConfigFrame()
 	end);
 	SettingUIFreeContainer:SetScript("OnShow", function(self)
 		SettingUIInterfaceOptionsFrameContainer:Hide();
-		self:SetSize(frame:GetWidth(), frame:GetHeight());
-		frame:_Show();
-		frame:ClearAllPoints();
-		frame:SetPoint("BOTTOM", self, "BOTTOM");
-		frame.Container = self;
+		self:SetSize(Frame:GetWidth(), Frame:GetHeight());
+		Frame:_Show();
+		Frame:ClearAllPoints();
+		Frame:SetPoint("BOTTOM", self, "BOTTOM");
+		Frame.Container = self;
 	end);
 	SettingUIFreeContainer:SetScript("OnHide", function()
 		if not SettingUIInterfaceOptionsFrameContainer:IsShown() then
-			frame:_Hide();
-			frame:ClearAllPoints();
+			Frame:_Hide();
+			Frame:ClearAllPoints();
 		end
 	end);
 	tinsert(UISpecialFrames, "ALATRADESKILL_SETTING_UI_C");
 	uireimp._SetSimpleBackdrop(SettingUIFreeContainer, 0, 1, 0.05, 0.05, 0.05, 1.0, 0.0, 0.0, 0.0, 1.0);
 	--
-	local Close = CreateFrame("BUTTON", nil, SettingUIFreeContainer);
+	local Close = CreateFrame('BUTTON', nil, SettingUIFreeContainer);
 	Close:SetSize(20, 20);
 	LT_SharedMethod.StyleModernButton(Close, nil, T_UIDefinition.texture_modern_button_close);
 	Close:SetPoint("TOPRIGHT", SettingUIFreeContainer, "TOPRIGHT", -2, -2);
@@ -5423,37 +5485,37 @@ local function LF_CreateConfigFrame()
 	SettingUIInterfaceOptionsFrameContainer.name = __addon__;
 	SettingUIInterfaceOptionsFrameContainer:SetScript("OnShow", function(self)
 		SettingUIFreeContainer:Hide();
-		frame:_Show();
-		frame:ClearAllPoints();
-		frame:SetPoint("TOPLEFT", self, "TOPLEFT", 4, 0);
-		frame.Container = self;
+		Frame:_Show();
+		Frame:ClearAllPoints();
+		Frame:SetPoint("TOPLEFT", self, "TOPLEFT", 4, 0);
+		Frame.Container = self;
 	end);
 	SettingUIInterfaceOptionsFrameContainer:SetScript("OnHide", function()
 		if not SettingUIFreeContainer:IsShown() then
-			frame:_Hide();
-			frame:ClearAllPoints();
+			Frame:_Hide();
+			Frame:ClearAllPoints();
 		end
 	end);
 	InterfaceOptions_AddCategory(SettingUIInterfaceOptionsFrameContainer);
 	--
-	frame._Show = frame.Show;
-	frame._Hide = frame.Hide;
-	frame._IsShown = frame.IsShown;
-	function frame:Show()
+	Frame._Show = Frame.Show;
+	Frame._Hide = Frame.Hide;
+	Frame._IsShown = Frame.IsShown;
+	function Frame:Show()
 		if InterfaceOptionsFrame:IsShown() then
 			InterfaceOptionsFrame_OpenToCategory(__addon__);
 		else
 			SettingUIFreeContainer:Show();
 		end
 	end
-	function frame:Hide()
+	function Frame:Hide()
 		if InterfaceOptionsFrame:IsShown() then
 			InterfaceOptionsFrame:Hide();
 		else
 			SettingUIFreeContainer:Hide();
 		end
 	end
-	function frame:IsShown()
+	function Frame:IsShown()
 		return SettingUIFreeContainer:IsShown() or SettingUIInterfaceOptionsFrameContainer:IsVisible();
 	end
 	--
@@ -5468,14 +5530,14 @@ local function LF_CreateConfigFrame()
 		end
 		local key = cmd[3];
 		if cmd[1] == 'bool' then
-			local CheckButton = LF_ConfigCreateCheckButton(frame, key, L.SLASH_NOTE[key], cmd[8]);
-			CheckButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 10 + 150 * px, -25 - 25 * py);
+			local CheckButton = LF_ConfigCreateCheckButton(Frame, key, L.SLASH_NOTE[key], cmd[8]);
+			CheckButton:SetPoint("TOPLEFT", Frame, "TOPLEFT", 10 + 150 * px, -25 - 25 * py);
 			T_SetWidgets[key] = CheckButton;
 			px = px + 1;
 			h = max(h, 1);
 		elseif cmd[7] == 'drop' then
-			local Dropdown = LF_ConfigCreateDrop(frame, key, L.SLASH_NOTE[key], cmd[8]);
-			Dropdown:SetPoint("TOPLEFT", frame, "TOPLEFT", 10 + 150 * px, -25 - 25 * py);
+			local Dropdown = LF_ConfigCreateDrop(Frame, key, L.SLASH_NOTE[key], cmd[8]);
+			Dropdown:SetPoint("TOPLEFT", Frame, "TOPLEFT", 10 + 150 * px, -25 - 25 * py);
 			T_SetWidgets[key] = Dropdown;
 			px = px + 1;
 			h = max(h, 1);
@@ -5485,8 +5547,8 @@ local function LF_CreateConfigFrame()
 				py = py + h;
 				h = 1;
 			end
-			local Slider = LF_ConfigCreateSlider(frame, key, L.SLASH_NOTE[key], cmd[9][1], cmd[9][2], cmd[9][3], cmd[8]);
-			Slider:SetPoint("TOPLEFT", frame, "TOPLEFT", 10 + 150 * px, -25 - 25 * py);
+			local Slider = LF_ConfigCreateSlider(Frame, key, L.SLASH_NOTE[key], cmd[9][1], cmd[9][2], cmd[9][3], cmd[8]);
+			Slider:SetPoint("TOPLEFT", Frame, "TOPLEFT", 10 + 150 * px, -25 - 25 * py);
 			T_SetWidgets[key] = Slider;
 			px = px + 2;
 			h = max(h, 2);
@@ -5500,36 +5562,36 @@ local function LF_CreateConfigFrame()
 				local exkey = extra[3];
 				children_key[exkey] = val;
 				if extra[7] == 'bool' then
-					local CheckButton = LF_ConfigCreateCheckButton(frame, exkey, L.SLASH_NOTE[exkey], extra[8]);
+					local CheckButton = LF_ConfigCreateCheckButton(Frame, exkey, L.SLASH_NOTE[exkey], extra[8]);
 					CheckButton:SetPoint("LEFT", father.Right, "RIGHT", 20, 0);
 					T_SetWidgets[exkey] = CheckButton;
 				elseif extra[7] == 'drop' then
-					local Dropdown = LF_ConfigCreateDrop(frame, exkey, L.SLASH_NOTE[exkey], extra[8]);
+					local Dropdown = LF_ConfigCreateDrop(Frame, exkey, L.SLASH_NOTE[exkey], extra[8]);
 					Dropdown:SetPoint("LEFT", father.Right, "RIGHT", 20, 0);
 					T_SetWidgets[exkey] = Dropdown;
 				elseif extra[7] == 'slider' then
-					local Slider = LF_ConfigCreateSlider(frame, exkey, L.SLASH_NOTE[exkey], extra[9][1], extra[9][2], extra[9][3], extra[8]);
+					local Slider = LF_ConfigCreateSlider(Frame, exkey, L.SLASH_NOTE[exkey], extra[9][1], extra[9][2], extra[9][3], extra[8]);
 					Slider:SetPoint("LEFT", father.Right, "RIGHT", 20, 0);
 					T_SetWidgets[exkey] = Slider;
 				elseif extra[7] == 'color4' then
-					local color4 = LF_ConfigCreateColor4(frame, exkey, L.SLASH_NOTE[exkey], extra[8]);
+					local color4 = LF_ConfigCreateColor4(Frame, exkey, L.SLASH_NOTE[exkey], extra[8]);
 					color4:SetPoint("LEFT", father.Right, "RIGHT", 40, 0);
 					T_SetWidgets[exkey] = color4;
 				end
 			end
 		end
 	end
-	frame.T_SetWidgets = T_SetWidgets;
+	Frame.T_SetWidgets = T_SetWidgets;
 	if px ~= 0 then
 		px = 0;
 		py = py + h;
 		h = 1;
 	end
 	do	--	character list
-		local CharList = CreateFrame("FRAME", nil, frame);
+		local CharList = CreateFrame('FRAME', nil, Frame);
 		uireimp._SetSimpleBackdrop(CharList, 0, 1, 0.05, 0.05, 0.05, 1.0, 0.0, 0.0, 0.0, 1.0);
 		CharList:SetSize(240, 400);
-		CharList:SetPoint("BOTTOMLEFT", frame, "BOTTOMRIGHT", 2, 0);
+		CharList:SetPoint("BOTTOMLEFT", Frame, "BOTTOMRIGHT", 2, 0);
 		CharList:EnableMouse(true);
 		CharList:SetMovable(false);
 		-- CharList:RegisterForDrag("LeftButton");
@@ -5553,9 +5615,9 @@ local function LF_CreateConfigFrame()
 		CharList:SetScript("OnHide", function(self)
 			T_uiFrames["CONFIG"].CharListToggleButton:F_SetStatusTexture(false);
 		end);
-		frame.CharList = CharList;
+		Frame.CharList = CharList;
 
-		local ToggleButton = CreateFrame("BUTTON", nil, frame);
+		local ToggleButton = CreateFrame('BUTTON', nil, Frame);
 		ToggleButton:SetSize(12, 12);
 		ToggleButton:SetNormalTexture(T_UIDefinition.texture_modern_arrow_right);
 		ToggleButton:SetPushedTexture(T_UIDefinition.texture_modern_arrow_right);
@@ -5584,7 +5646,7 @@ local function LF_CreateConfigFrame()
 				CharList:Show();
 			end
 		end);
-		frame.CharListToggleButton = ToggleButton;
+		Frame.CharListToggleButton = ToggleButton;
 
 		local Text = ToggleButton:CreateFontString(nil, "OVERLAY");
 		Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "NORMAL");
@@ -5598,7 +5660,7 @@ local function LF_CreateConfigFrame()
 			self.ScrollFrame:Update();
 		end
 	end
-	function frame:F_Refresh()
+	function Frame:F_Refresh()
 		for key, obj in next, T_SetWidgets do
 			obj:SetVal(SET[key]);
 			local children_key = obj.children_key;
@@ -5616,15 +5678,15 @@ local function LF_CreateConfigFrame()
 			end
 		end
 	end
-	function frame:F_Update()
+	function Frame:F_Update()
 		-- self:F_Refresh();
 		self.CharList:F_Update();
 	end
-	frame:SetScript("OnShow", function(self)
+	Frame:SetScript("OnShow", function(self)
 		self:F_Refresh();
 	end);
-	frame:SetHeight(25 + py * 25 + 25);
-	return frame;
+	Frame:SetHeight(25 + py * 25 + 25);
+	return Frame;
 end
 
 
@@ -5634,13 +5696,13 @@ end
 
 -->		external
 	function __namespace__.F_uiToggleFrame(key, val)
-		local frame = T_uiFrames[key];
-		if frame ~= nil then
-			if frame:IsShown() or val == false then
-				frame:Hide();
+		local Frame = T_uiFrames[key];
+		if Frame ~= nil then
+			if Frame:IsShown() or val == false then
+				Frame:Hide();
 				return false;
 			else
-				frame:Show();
+				Frame:Show();
 				return true;
 			end
 		end
@@ -5812,59 +5874,57 @@ function F.SKILL_LINES_CHANGED()	--	Donot process at the first trigger. Do it af
 		return;
 	end
 	F.scheduled_SKILL_LINES_CHANGED = true;
-	local LF_SKILL_LINES_CHANGED = function()
-		-- local check_id = __db__.table_tradeskill_check_id();
-		-- for pid = __db__.DBMINPID, __db__.DBMAXPID do
-		-- 	local cpid = check_id[pid];
-		-- 	if cpid ~= nil then
-		-- 		if not IsSpellKnown(cpid) then
-		-- 			rawset(VAR, pid, nil);
-		-- 		end
-		-- 	end
-		-- end
-		local check_name = __db__.table_tradeskill_check_name();
-		for pid = __db__.DBMINPID, __db__.DBMAXPID do
-			local cpname = check_name[pid];
-			if cpname ~= nil then
-				if GetSpellInfo(cpname) == nil then
-					rawset(VAR, pid, nil);
-				end
-			end
-		end
-		for index = 1, GetNumSkillLines() do
-			local pname, header, expanded, cur_rank, _, _, max_rank  = GetSkillLineInfo(index);
-			if not header then
-				local pid = __db__.get_pid_by_pname(pname);
-				if pid ~= nil then
-					local var = VAR[pid];
-					var.update = true;
-					var.cur_rank, var.max_rank = cur_rank, max_rank;
-					__namespace__.F_CheckCooldown(pid, var);
-				end
-			end
-		end
-		local TFrame = T_uiFrames.Blizzard_TradeSkillUI;
-		local CFrame = T_uiFrames.Blizzard_CraftUI;
-		if TFrame then
-			TFrame.TabFrame:F_Update();
-			TFrame.PortraitButton:F_Update();
-		end
-		if CFrame then
-			CFrame.TabFrame:F_Update();
-			CFrame.PortraitButton:F_Update();
-		end
-	end
 	--
 	C_Timer_After(1.0, function()
-		LF_SKILL_LINES_CHANGED();
-		F.SKILL_LINES_CHANGED = LF_SKILL_LINES_CHANGED;
-		LF_SKILL_LINES_CHANGED = nil;
 		F.scheduled_SKILL_LINES_CHANGED = nil;
+		F.SKILL_LINES_CHANGED = function()
+			-- local check_id = __db__.table_tradeskill_check_id();
+			-- for pid = __db__.DBMINPID, __db__.DBMAXPID do
+			-- 	local cpid = check_id[pid];
+			-- 	if cpid ~= nil then
+			-- 		if not IsSpellKnown(cpid) then
+			-- 			rawset(VAR, pid, nil);
+			-- 		end
+			-- 	end
+			-- end
+			local check_name = __db__.table_tradeskill_check_name();
+			for pid = __db__.DBMINPID, __db__.DBMAXPID do
+				local cpname = check_name[pid];
+				if cpname ~= nil then
+					if GetSpellInfo(cpname) == nil then
+						rawset(VAR, pid, nil);
+					end
+				end
+			end
+			for index = 1, GetNumSkillLines() do
+				local pname, header, expanded, cur_rank, _, _, max_rank  = GetSkillLineInfo(index);
+				if not header then
+					local pid = __db__.get_pid_by_pname(pname);
+					if pid ~= nil then
+						local var = VAR[pid];
+						var.update = true;
+						var.cur_rank, var.max_rank = cur_rank, max_rank;
+						__namespace__.F_CheckCooldown(pid, var);
+					end
+				end
+			end
+			local TFrame = T_uiFrames.Blizzard_TradeSkillUI;
+			local CFrame = T_uiFrames.Blizzard_CraftUI;
+			if TFrame then
+				TFrame.TabFrame:F_Update();
+				TFrame.PortraitButton:F_Update();
+			end
+			if CFrame then
+				CFrame.TabFrame:F_Update();
+				CFrame.PortraitButton:F_Update();
+			end
+		end
+		return F.SKILL_LINES_CHANGED();
 	end);
 end
 function F.NEW_RECIPE_LEARNED(sid)
 	local pid = __db__.get_pid_by_sid(sid);
-	if pid then
+	if pid ~= nil then
 		local var = VAR[pid];
 		var.update = true;
 		var[1][#var[1] + 1] = sid;

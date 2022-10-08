@@ -17,8 +17,8 @@ local function LF_Skin_ElvUI(addon, frame)
 		if S ~= nil then
 			if frame.call ~= nil then
 				S:HandleButton(frame.call);
-				-- if frame.profitFrame and frame.profitFrame.costOnly then
-					-- S:HandleCheckBox(frame.profitFrame.costOnly);
+				-- if frame.profitFrame and frame.profitFrame.PROFIT_SHOW_COST_ONLY then
+					-- S:HandleCheckBox(frame.profitFrame.PROFIT_SHOW_COST_ONLY);
 				-- end
 			end
 		end

@@ -2,7 +2,7 @@
 	by ALA @ 163UI
 --]]--
 
-if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+if WOW_PROJECT_ID ~= WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 	return;
 end
 
@@ -45,18 +45,15 @@ local LE_ITEM_WEAPON_SPEAR = LE_ITEM_WEAPON_SPEAR or 17;
 local LE_ITEM_WEAPON_CROSSBOW = LE_ITEM_WEAPON_CROSSBOW or 18;
 local LE_ITEM_WEAPON_WAND = LE_ITEM_WEAPON_WAND or 19;
 local LE_ITEM_WEAPON_FISHINGPOLE = LE_ITEM_WEAPON_FISHINGPOLE or 20;
-local LE_ITEM_GEM_INTELLECT = LE_ITEM_GEM_INTELLECT or 0;
-local LE_ITEM_GEM_AGILITY = LE_ITEM_GEM_AGILITY or 1;
-local LE_ITEM_GEM_STRENGTH = LE_ITEM_GEM_STRENGTH or 2;
-local LE_ITEM_GEM_STAMINA = LE_ITEM_GEM_STAMINA or 3;
-local LE_ITEM_GEM_SPIRIT = LE_ITEM_GEM_SPIRIT or 4;
-local LE_ITEM_GEM_CRITICALSTRIKE = LE_ITEM_GEM_CRITICALSTRIKE or 5;
-local LE_ITEM_GEM_MASTERY = LE_ITEM_GEM_MASTERY or 6;
-local LE_ITEM_GEM_HASTE = LE_ITEM_GEM_HASTE or 7;
-local LE_ITEM_GEM_VERSATILITY = LE_ITEM_GEM_VERSATILITY or 8;
---	9
-local LE_ITEM_GEM_MULTIPLESTATS = LE_ITEM_GEM_MULTIPLESTATS or 10;
-local LE_ITEM_GEM_ARTIFACTRELIC = LE_ITEM_GEM_ARTIFACTRELIC or 11;
+local LE_ITEM_GEM_RED = LE_ITEM_GEM_RED or 0;
+local LE_ITEM_GEM_BLUE = LE_ITEM_GEM_BLUE or 1;
+local LE_ITEM_GEM_YELLOW = LE_ITEM_GEM_YELLOW or 2;
+local LE_ITEM_GEM_PURPLE = LE_ITEM_GEM_PURPLE or 3;
+local LE_ITEM_GEM_GREEN = LE_ITEM_GEM_GREEN or 4;
+local LE_ITEM_GEM_ORANGE = LE_ITEM_GEM_ORANGE or 5;
+local LE_ITEM_GEM_META = LE_ITEM_GEM_META or 6;
+local LE_ITEM_GEM_SIMPLE = LE_ITEM_GEM_SIMPLE or 7;
+local LE_ITEM_GEM_PRISMATIC = LE_ITEM_GEM_PRISMATIC or 8;
 local LE_ITEM_ARMOR_GENERIC = LE_ITEM_ARMOR_GENERIC or 0;
 local LE_ITEM_ARMOR_CLOTH = LE_ITEM_ARMOR_CLOTH or 1;
 local LE_ITEM_ARMOR_LEATHER = LE_ITEM_ARMOR_LEATHER or 2;
@@ -103,11 +100,11 @@ end
 if LOCALE == "zhCN" or LOCALE == "zhTW" then
 	L["OK"] = "确定";
 	L["Search"] = "搜索";
-	L["Open"] = "打开搜索";
-	L["Close"] = "关闭搜索";
-	L["add_fav"] = "添加收藏";
-	L["sub_fav"] = "取消收藏";
-	L["query_who_can_craft_it"] = "谁会做它？";
+	L["OVERRIDE_OPEN"] = "打开搜索";
+	L["OVERRIDE_CLOSE"] = "关闭搜索";
+	L["ADD_FAV"] = "添加收藏";
+	L["SUB_FAV"] = "取消收藏";
+	L["QUERY_WHO_CAN_CRAFT_IT"] = "谁会做它？";
 	--
 	L["showUnkown"] = "未学";
 	L["showKnown"] = "已学";
@@ -124,9 +121,8 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 	L["filterSpecTip"] = "是否过滤掉当前专精不能学到的配方";
 	L["showItemInsteadOfSpellTip"] = "鼠标提示显示物品而不是技能";
 	L["showRankTip"] = "显示难度等级";
-	L["haveMaterialsTip"] = "只显示有足够材料的配方";
 	--
-	L["costOnly"] = "只显示成本";
+	L["PROFIT_SHOW_COST_ONLY"] = "只显示成本";
 	--
 	L["LABEL_RANK_LEVEL"] = "\124cffff7f00技能等级: \124r";
 	L["LABEL_GET_FROM"] = "\124cffff7f00来源: \124r";
@@ -145,8 +141,8 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 	L["elite"] = "精英";
 	L["phase"] = "阶段";
 	L["unknown area"] = "未知区域";
-	L["not_available_for_player's_faction"] = "不适用于当前角色阵营";
-	L["available_in_phase_"] = "开放于阶段: ";
+	L["NOT_AVAILABLE_FOR_PLAYER'S_FACTION"] = "不适用于当前角色阵营";
+	L["AVAILABLE_IN_PHASE_"] = "开放于阶段: ";
 	L["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00帐号角色状态: \124r";
 	L["LABEL_USED_AS_MATERIAL_IN"] = "\124cffff7f00用于制造: \124r";
 	L["RECIPE_LEARNED"] = "\124cff00ff00已学\124r";
@@ -172,8 +168,9 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 	L["ITEMS_UNK"] = "项未知";
 	L["NEED_UPDATE"] = "\124cffff0000!!需要刷新!!\124r";
 	--
-	L["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffff我想赚点零花钱! \124r";
 	L["TIP_SEARCH_NAME_ONLY_INFO"] = "\124cffffffff只搜索名字，而不是物品链接\124r";
+	L["haveMaterialsTip"] = "只显示有足够材料的配方";
+	L["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffff我想赚点零花钱! \124r";
 	--
 	L["BOARD_LOCK"] = "锁定";
 	L["BOARD_CLOSE"] = "关闭";
@@ -264,18 +261,15 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 			[LE_ITEM_WEAPON_FISHINGPOLE] = "钓鱼竿",	--	20	--	Fishing Poles
 		},
 		[LE_ITEM_CLASS_GEM] = {					--	3	Gem
-			[LE_ITEM_GEM_INTELLECT] = "智力",			--	0	--	Intellect
-			[LE_ITEM_GEM_AGILITY] = "敏捷",				--	1	--	Agility
-			[LE_ITEM_GEM_STRENGTH] = "力量",			--	2	--	Strength
-			[LE_ITEM_GEM_STAMINA] = "耐力",				--	3	--	Stamina
-			[LE_ITEM_GEM_SPIRIT] = "精神",				--	4	--	Spirit
-			[LE_ITEM_GEM_CRITICALSTRIKE] = "爆击",		--	5	--	Critical Strike
-			[LE_ITEM_GEM_MASTERY] = "精通",				--	6	--	Mastery
-			[LE_ITEM_GEM_HASTE] = "急速",				--	7	--	Haste
-			[LE_ITEM_GEM_VERSATILITY] = "全能",			--	8	--	Versatility
-			[9] = "Other",								--	9	--	Other
-			[LE_ITEM_GEM_MULTIPLESTATS] = "多属性",		--	10	--	Multiple Stats
-			[LE_ITEM_GEM_ARTIFACTRELIC] = "神器圣物",	--	11	--	Artifact Relic
+			[LE_ITEM_GEM_RED] = "红色宝石",					--	0	--	Intellect
+			[LE_ITEM_GEM_BLUE] = "蓝色宝石",				--	1	--	Agility
+			[LE_ITEM_GEM_YELLOW] = "黄色宝石",				--	2	--	Strength
+			[LE_ITEM_GEM_PURPLE] = "紫色宝石",				--	3	--	Stamina
+			[LE_ITEM_GEM_GREEN] = "绿色宝石",				--	4	--	Spirit
+			[LE_ITEM_GEM_ORANGE] = "橙色宝石",				--	5	--	Critical Strike
+			[LE_ITEM_GEM_META] = "多彩宝石",				--	6	--	Mastery
+			[LE_ITEM_GEM_SIMPLE] = "简单宝石",				--	7	--	Haste
+			[LE_ITEM_GEM_PRISMATIC] = "棱彩宝石",			--	8	--	Versatility
 		},
 		[LE_ITEM_CLASS_ARMOR] = {				--	4	Armor
 			[LE_ITEM_ARMOR_GENERIC] = "其它",		--	0	--	Miscellaneous	Includes Spellstones, Firestones, Trinkets, Rings and Necks
@@ -471,11 +465,11 @@ if LOCALE == "zhCN" or LOCALE == "zhTW" then
 elseif LOCALE == "koKR" then
 	L["OK"] = "확인";
 	L["Search"] = "검색";
-	L["Open"] = "열기";
-	L["Close"] = "닫기";
-	L["add_fav"] = "즐겨찾기";
-	L["sub_fav"] = "즐겨찾기 해제";
-	L["query_who_can_craft_it"] = "누가 제작 가능?";
+	L["OVERRIDE_OPEN"] = "열기";
+	L["OVERRIDE_CLOSE"] = "닫기";
+	L["ADD_FAV"] = "즐겨찾기";
+	L["SUB_FAV"] = "즐겨찾기 해제";
+	L["QUERY_WHO_CAN_CRAFT_IT"] = "누가 제작 가능?";
 	--
 	L["showUnkown"] = "알 수 없음";
 	L["showKnown"] = "알려짐";
@@ -492,9 +486,8 @@ elseif LOCALE == "koKR" then
 	L["filterSpecTip"] = "Hide recipes unavailable to current specialization";
 	L["showItemInsteadOfSpellTip"] = "Show item in tip instead of spell";
 	L["showRankTip"] = "Show color of difficulty";
-	L["haveMaterialsTip"] = "Show recipes that u have enough materials";
 	--
-	L["costOnly"] = "가격만 표시";
+	L["PROFIT_SHOW_COST_ONLY"] = "가격만 표시";
 	--
 	L["LABEL_RANK_LEVEL"] = "\124cffff7f00랭크: \124r";
 	L["LABEL_GET_FROM"] = "\124cffff7f00획득: \124r";
@@ -513,8 +506,8 @@ elseif LOCALE == "koKR" then
 	L["elite"] = "정예";
 	L["phase"] = "페이즈";
 	L["unknown area"] = "Unknown area";
-	L["not_available_for_player's_faction"] = "플레이어 진영에는 사용할 수 없습니다";
-	L["available_in_phase_"] = "페이즈에 이용 가능 → ";
+	L["NOT_AVAILABLE_FOR_PLAYER'S_FACTION"] = "플레이어 진영에는 사용할 수 없습니다";
+	L["AVAILABLE_IN_PHASE_"] = "페이즈에 이용 가능 → ";
 	L["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00Status of characters:\124r";
 	L["LABEL_USED_AS_MATERIAL_IN"] = "\124cffff7f00Used to craft: \124r";
 	L["RECIPE_LEARNED"] = "\124cff00ff00학습\124r";
@@ -540,8 +533,9 @@ elseif LOCALE == "koKR" then
 	L["ITEMS_UNK"] = "알 수 없는 아이템";
 	L["NEED_UPDATE"] = "\124cffff0000!!새로 고침 필요!\124r";
 	--
-	L["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffff돈을 버세요!\124r";
+	L["haveMaterialsTip"] = "Show recipes that u have enough materials";
 	L["TIP_SEARCH_NAME_ONLY_INFO"] = "\124cffffffSearch name instead of hyperlink\124r";
+	L["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffff돈을 버세요!\124r";
 	--
 	L["BOARD_LOCK"] = "잠금";
 	L["BOARD_CLOSE"] = "닫기";
@@ -632,18 +626,15 @@ elseif LOCALE == "koKR" then
 			[LE_ITEM_WEAPON_FISHINGPOLE] = "낚시대", 	--	20
 		},
 		[LE_ITEM_CLASS_GEM] = {					--	3	Gem
-			[LE_ITEM_GEM_INTELLECT] = "지능", 				--	0
-			[LE_ITEM_GEM_AGILITY] = "민첩", 					--	1
-			[LE_ITEM_GEM_STRENGTH] = "힘", 				--	2
-			[LE_ITEM_GEM_STAMINA] = "체력", 					--	3
-			[LE_ITEM_GEM_SPIRIT] = "정신력", 					--	4
-			[LE_ITEM_GEM_CRITICALSTRIKE] = "크리티컬", 	--	5
-			[LE_ITEM_GEM_MASTERY] = "숙련", 					--	6
-			[LE_ITEM_GEM_HASTE] = "가속", 						--	7
-			[LE_ITEM_GEM_VERSATILITY] = "유연성", 			--	8
-			[9] = "Other", 										--	9
-			[LE_ITEM_GEM_MULTIPLESTATS] = "다속성", 	--	10
-			[LE_ITEM_GEM_ARTIFACTRELIC] = "유물", 	--	11
+			[LE_ITEM_GEM_RED] = "Red Gem",					--	0	--	Intellect
+			[LE_ITEM_GEM_BLUE] = "Blue Gem",				--	1	--	Agility
+			[LE_ITEM_GEM_YELLOW] = "Yellow Gem",				--	2	--	Strength
+			[LE_ITEM_GEM_PURPLE] = "Purple Gem",				--	3	--	Stamina
+			[LE_ITEM_GEM_GREEN] = "Green Gem",				--	4	--	Spirit
+			[LE_ITEM_GEM_ORANGE] = "Orange Gem",				--	5	--	Critical Strike
+			[LE_ITEM_GEM_META] = "Meta Gem",				--	6	--	Mastery
+			[LE_ITEM_GEM_SIMPLE] = "Simple Gem",				--	7	--	Haste
+			[LE_ITEM_GEM_PRISMATIC] = "Prismatic Gem",			--	8	--	Versatility
 		},
 		[LE_ITEM_CLASS_ARMOR] = {						--	4	Armor
 			[LE_ITEM_ARMOR_GENERIC] = "기타", 	--	0	Includes Spellstones, Firestones, Trinkets, Rings and Necks
@@ -839,11 +830,11 @@ elseif LOCALE == "koKR" then
 else
 	L["OK"] = "OK";
 	L["Search"] = "Search";
-	L["Open"] = "Open";
-	L["Close"] = "Close";
-	L["add_fav"] = "Favorite";
-	L["sub_fav"] = "Unfavorite";
-	L["query_who_can_craft_it"] = "Who can craft it ?";
+	L["OVERRIDE_OPEN"] = "Open";
+	L["OVERRIDE_CLOSE"] = "Close";
+	L["ADD_FAV"] = "Favorite";
+	L["SUB_FAV"] = "Unfavorite";
+	L["QUERY_WHO_CAN_CRAFT_IT"] = "Who can craft it ?";
 	--
 	L["showUnkown"] = "Unknown";
 	L["showKnown"] = "Known";
@@ -860,9 +851,8 @@ else
 	L["filterSpecTip"] = "Hide recipes unavailable to current specialization";
 	L["showItemInsteadOfSpellTip"] = "Show item in tip instead of spell";
 	L["showRankTip"] = "Show color of difficulty";
-	L["haveMaterialsTip"] = "Show recipes that u have enough materials";
 	--
-	L["costOnly"] = "Show cost only";
+	L["PROFIT_SHOW_COST_ONLY"] = "Show cost only";
 	--
 	L["LABEL_RANK_LEVEL"] = "\124cffff7f00Rank: \124r";
 	L["LABEL_GET_FROM"] = "\124cffff7f00Get from: \124r";
@@ -881,8 +871,8 @@ else
 	L["elite"] = "Elite";
 	L["phase"] = "Phase";
 	L["unknown area"] = "Unknown area";
-	L["not_available_for_player's_faction"] = "Not available for player's faction";
-	L["available_in_phase_"] = "Available in phase ";
+	L["NOT_AVAILABLE_FOR_PLAYER'S_FACTION"] = "Not available for player's faction";
+	L["AVAILABLE_IN_PHASE_"] = "Available in phase ";
 	L["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00Status of characters:\124r";
 	L["LABEL_USED_AS_MATERIAL_IN"] = "\124cffff7f00Used to craft: \124r";
 	L["RECIPE_LEARNED"] = "\124cff00ff00Learned\124r";
@@ -908,8 +898,9 @@ else
 	L["ITEMS_UNK"] = "items unk";
 	L["NEED_UPDATE"] = "\124cffff0000!!Need refresh!!\124r";
 	--
-	L["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffffEarn some money! \124r";
+	L["haveMaterialsTip"] = "Show recipes that u have enough materials";
 	L["TIP_SEARCH_NAME_ONLY_INFO"] = "\124cffffffSearch name instead of hyperlink\124r";
+	L["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffffEarn some money! \124r";
 	--
 	L["BOARD_LOCK"] = "LOCK";
 	L["BOARD_CLOSE"] = "CLOSE";
@@ -1000,18 +991,15 @@ else
 			[LE_ITEM_WEAPON_FISHINGPOLE] = "Fishing Poles", 	--	20
 		},
 		[LE_ITEM_CLASS_GEM] = {					--	3	Gem
-			[LE_ITEM_GEM_INTELLECT] = "Intellect", 				--	0
-			[LE_ITEM_GEM_AGILITY] = "Agility", 					--	1
-			[LE_ITEM_GEM_STRENGTH] = "Strength", 				--	2
-			[LE_ITEM_GEM_STAMINA] = "Stamina", 					--	3
-			[LE_ITEM_GEM_SPIRIT] = "Spirit", 					--	4
-			[LE_ITEM_GEM_CRITICALSTRIKE] = "Critical Strike", 	--	5
-			[LE_ITEM_GEM_MASTERY] = "Mastery", 					--	6
-			[LE_ITEM_GEM_HASTE] = "Haste", 						--	7
-			[LE_ITEM_GEM_VERSATILITY] = "Versatility", 			--	8
-			[9] = "Other", 										--	9
-			[LE_ITEM_GEM_MULTIPLESTATS] = "Multiple Stats", 	--	10
-			[LE_ITEM_GEM_ARTIFACTRELIC] = "Artifact Relic", 	--	11
+			[LE_ITEM_GEM_RED] = "Red Gem",					--	0	--	Intellect
+			[LE_ITEM_GEM_BLUE] = "Blue Gem",				--	1	--	Agility
+			[LE_ITEM_GEM_YELLOW] = "Yellow Gem",				--	2	--	Strength
+			[LE_ITEM_GEM_PURPLE] = "Purple Gem",				--	3	--	Stamina
+			[LE_ITEM_GEM_GREEN] = "Green Gem",				--	4	--	Spirit
+			[LE_ITEM_GEM_ORANGE] = "Orange Gem",				--	5	--	Critical Strike
+			[LE_ITEM_GEM_META] = "Meta Gem",				--	6	--	Mastery
+			[LE_ITEM_GEM_SIMPLE] = "Simple Gem",				--	7	--	Haste
+			[LE_ITEM_GEM_PRISMATIC] = "Prismatic Gem",			--	8	--	Versatility
 		},
 		[LE_ITEM_CLASS_ARMOR] = {						--	4	Armor
 			[LE_ITEM_ARMOR_GENERIC] = "Miscellaneous", 	--	0	Includes Spellstones, Firestones, Trinkets, Rings and Necks

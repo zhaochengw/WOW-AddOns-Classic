@@ -44,6 +44,7 @@ local L = __namespace__.L;
 	local GetCraftReagentItemLink, GetCraftItemLink = GetCraftReagentItemLink, GetCraftItemLink;
 	local GetGuildBankItemLink = GetGuildBankItemLink;
 	local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
+	local MISCELLANEOUS = MISCELLANEOUS or "MISC";
 
 	local _G = _G;
 	--[[
@@ -377,14 +378,12 @@ local function set_tip_by_cid(Tooltip, cid)
 			local info = __db__.get_info_by_sid(sid);
 			if info ~= nil then
 				local pid = info[index_pid];
-				local texture = __db__.get_texture_by_pid(pid);
-				local pname = __db__.get_pname_by_pid(pid) or "";
-				if texture ~= nil then
-					pname = "|T" .. texture .. ":12:12:0:0|t " .. pname;
-				end
+				local pname = "|T" .. (__db__.get_texture_by_pid(pid) or [[Interface\Icons\Inv_Misc_QuestionMark]]) .. ":12:12:0:0|t " .. (__db__.get_pname_by_pid(pid) or MISCELLANEOUS);
 				local rankText = __db__.get_difficulty_rank_list_text_by_sid(sid, true);
-				if pname ~= "" and rankText ~= "" then
-					Tooltip:AddLine("|cff00afff" .. pname .. " " .. rankText .. "|r");
+				if rankText ~= "" then
+					Tooltip:AddDoubleLine("|cff00afff" .. pname .. " " .. rankText .. "|r", "ID: ".. sid, 1.0, 1.0, 1.0, 0.5, 0.5, 0.5);
+				else
+					Tooltip:AddDoubleLine("|cff00afff" .. pname .. "|r", "ID: ".. sid, 1.0, 1.0, 1.0, 0.5, 0.5, 0.5);
 				end
 				local detail_lines = {  };
 				F_GetPriceInfoBySID(Tooltip.__phase or CURPHASE, sid, __db__.get_num_made_by_sid(sid), detail_lines, 0, false);

@@ -383,6 +383,7 @@ local F_SafeCall = __namespace__.F_SafeCall;
 		showSet = false,
 		showProfit = false,
 		--
+		rankoffset = 0,
 		showKnown = true,
 		showUnkown = true,
 		showHighRank = false,
@@ -396,7 +397,7 @@ local F_SafeCall = __namespace__.F_SafeCall;
 		searchText = "",
 		searchNameOnly = false,
 		--
-		costOnly = false,
+		PROFIT_SHOW_COST_ONLY = false,
 		--
 	};
 	local default_var = {
@@ -421,7 +422,7 @@ local F_SafeCall = __namespace__.F_SafeCall;
 		},
 		searchText = "",
 		--
-		-- costOnly = false,
+		-- PROFIT_SHOW_COST_ONLY = false,
 	};
 	local function LF_ModifySavedVariable()
 		local alaTradeSkillSV = _G.alaTradeSkillSV;
