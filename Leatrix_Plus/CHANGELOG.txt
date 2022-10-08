@@ -1,3 +1,13 @@
+3.0.24 - 7th October 2022
+- Fixed 'Mute travelers' so that it applies to Gnimo too.  Gnimo sounds are shared with mechstrider wound sounds so now enabling either mute travelers or mute mechstriders will mute the mechstrider wound sounds.
+- Added flight times.
+
+3.0.23 - 6th October 2022
+- For 'Mute game sounds' ('System'), you can now mute travelers, bikes and mechanical guild vaults.
+- For 'Show minimap icon', some of the modified clicks have changed.  Read the option tooltip for more details.
+- The minimap button control-alt-click to toggle maximised windowed mode now runs much faster.
+- Added flight times.
+
 3.0.22 - 5th October 2022
 - Added flight times.
 
