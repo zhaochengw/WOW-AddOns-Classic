@@ -26,9 +26,9 @@ function QuestServies:SERVER_CONNECTED()
     self.connected = true
     self:SendMessage('MEETINGHORN_QUEST_CONNECTED')
 
-    --[[@debug@
+    --[=[@debug@
     print('QuestServies connected')
-    --@end-debug@]]
+    --@end-debug@]=]
 end
 
 function QuestServies:IsReady()
