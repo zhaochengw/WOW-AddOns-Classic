@@ -1,3 +1,6 @@
+3.0.25 - 8th October 2022
+- Added flight times.
+
 3.0.24 - 7th October 2022
 - Fixed 'Mute travelers' so that it applies to Gnimo too.  Gnimo sounds are shared with mechstrider wound sounds so now enabling either mute travelers or mute mechstriders will mute the mechstrider wound sounds.
 - Added flight times.
