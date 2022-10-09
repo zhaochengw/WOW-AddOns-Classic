@@ -406,7 +406,8 @@ L["SHIFT_RIGHT_CLICK"] = "Shift Clique Direito"
 L["SHOPPING_LIST"] = [=[Lista de compras
 ]=]
 L["SHOPPING_TAB"] = "Comprar"
-L["SHOPPING_TAB_HEADER"] = "Auctionator - Listas de Compras"
+--[[Translation missing --]]
+L["SHOPPING_TAB_HEADER_2"] = "Auctionator - Shopping"
 L["SKIP"] = "Pular"
 L["SORT"] = "Ordenar"
 L["SPLASH_830_BUGS_1"] = "Por favor junte-se a nós no Discord do Auctionator %s"

@@ -1,6 +1,6 @@
 ## Interface: 30400
 ## Title: Auctionator
-## Version: 9.2.41
+## Version: 9.2.42
 ## Author: Borjamacare, plusmouse
 ## X-Website: http://mods.curse.com/addons/wow/auctionator
 ## X-Localizations: enUS, itIT, deDE, ruRU, koKR, frFR, esES, esMX, zhTW, ptBR, zhCN
@@ -11,6 +11,7 @@
 ## SavedVariablesPerCharacter: AUCTIONATOR_CHARACTER_CONFIG
 
 Patches\TaintLess.xml
+Libs\Manifest.xml
 
 Assets_Classic.xml
 

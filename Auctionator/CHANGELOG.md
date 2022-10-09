@@ -1,10 +1,12 @@
 # Auctionator
 
-## [9.2.41](https://github.com/Auctionator/Auctionator/tree/9.2.41) (2022-10-02)
-[Full Changelog](https://github.com/Auctionator/Auctionator/compare/9.2.40...9.2.41) 
+## [9.2.42](https://github.com/Auctionator/Auctionator/tree/9.2.42) (2022-10-08)
+[Full Changelog](https://github.com/Auctionator/Auctionator/compare/9.2.41...9.2.42) 
 
-- [Fixes #1222] Shopping: Exact search on shift+click item to search  
-- Classic: Buy: Fix lua error if a bid only auction somehow gets selected  
-- Rework throttle for cancels/postings to not depend on the owned auctions list  
-- Classic: Prospect: Take different stack size drops into account  
-- Mainline: Update enchant stats  
+- Convert to using dropdown library to avoid taint, again. (#1226)  
+    This resolves a taint error in the Dragonflight pre-patch for edit mode  
+- [Fixes #1202] Shopping: Autocomplete searches with seen search terms  
+- DBKeyFromLink: Fix nil reference error in some cases  
+- Shopping: Isolate recents management code  
+- Code cleanup (no functionality changes)  
+- Rename ShoppingLists variable to Shopping  

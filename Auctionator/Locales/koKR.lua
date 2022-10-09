@@ -10,8 +10,7 @@ L["ALREADY_PURCHASED_X"] = "%s 구매함"
 L["ALT_LEFT_CLICK"] = "클릭"
 L["ALT_RIGHT_CLICK"] = "우클릭"
 L["ANY_LOWER"] = "모두"
---[[Translation missing --]]
-L["ANY_UPPER"] = "Any"
+L["ANY_UPPER"] = "모두"
 L["AUCTION"] = "경매"
 L["AUCTION_DURATION_12"] = "12시간"
 L["AUCTION_DURATION_24"] = "24시간"
@@ -25,10 +24,9 @@ L["BID_ONLY_AVAILABLE"] = "bid only available"
 L["BID_PRICE"] = "입찰가"
 L["BIDDER"] = "입찰자"
 L["BIDDING_AUCTION_INFO"] = "%s를 %s에 입찰했습니다."
---[[Translation missing --]]
-L["BRACKETS_X_EACH"] = "(%s each)"
+L["BRACKETS_X_EACH"] = "(개당 %s)"
 L["BUG_REPORT"] = "오류를 보고하기"
-L["BUG_TOOLTIP_HEADER"] = "깃허브에 오류를 보고하기"
+L["BUG_TOOLTIP_HEADER"] = "GitHub에 버그 보고"
 L["BUG_TOOLTIP_TEXT"] = "옥셔네이터 사용 도중 오류가 발생하면 깃허브에 어떤 상황에 오류가 났는지 알려주시기 바랍니다. !BugGrabber와 Bugssack 애드온 또한 사용 가능합니다."
 L["BUY"] = "구매"
 L["BUY_STACK"] = "묶음 구매"
@@ -37,8 +35,7 @@ L["BUYING_X_FOR_X"] = "%s를 %s에 구매"
 L["BUYOUT_AUCTION_INFO"] = "%s를 %s에 즉시구매가로 올렸습니다."
 L["BUYOUT_PRICE"] = "즉시구매가"
 L["CANCEL"] = "취소"
---[[Translation missing --]]
-L["CANCEL_SEARCH"] = "Cancel Search"
+L["CANCEL_SEARCH"] = "검색 취소"
 L["CANCEL_UNDERCUT"] = "최저가 경매취소"
 L["CANCELLING_TAB"] = "취소하기"
 L["CANCELLING_TAB_HEADER"] = "옥셔네이터 - 취소하기"
@@ -102,8 +99,7 @@ L["CONFIG_PROSPECT_TOOLTIP"] = "Show prospect value for ore from jewelcrafting i
 L["CONFIG_QUANTITIES_CATEGORY"] = "판매: 수량"
 L["CONFIG_QUANTITIES_TEXT"] = "다른 아이템 범주에 사용되는 기본 수량을 선택합니다."
 L["CONFIG_RESET_STACK_SIZE_MEMORY"] = "묶음 갯수 기록 재설정"
---[[Translation missing --]]
-L["CONFIG_SAVE_LAST_DURATION_AS_DEFAULT"] = "Save the last used auction duration as the default"
+L["CONFIG_SAVE_LAST_DURATION_AS_DEFAULT"] = "마지막으로 사용한 경매 기간을 기본값으로 저장"
 --[[Translation missing --]]
 L["CONFIG_SAVE_LAST_DURATION_AS_DEFAULT_TOOLTIP_HEADER"] = "Overwrite default duration with last used"
 --[[Translation missing --]]
@@ -129,8 +125,7 @@ L["CONFIG_SELLING_DEFAULT_QUANTITY_TOOLTIP_HEADER"] = "판매 갯수 설정"
 L["CONFIG_SELLING_DEFAULT_QUANTITY_TOOLTIP_TEXT"] = "경매장에 물건을 판매할 때 기본 갯수를 설정합니다. (ex. 현재 가진 영약이 40개일 경우 4를 입력하면 경매장에 올릴 때 4개를 자동으로 올립니다, 0일 경우 40개 모두 판매합니다.)"
 --[[Translation missing --]]
 L["CONFIG_SELLING_GEAR_USE_ILVL_VARIANTS"] = "For gear, use item level and title when selecting the price to compete with"
---[[Translation missing --]]
-L["CONFIG_SELLING_GEAR_USE_ILVL_VARIANTS_TOOLTIP_HEADER"] = "Use Item Level and Title"
+L["CONFIG_SELLING_GEAR_USE_ILVL_VARIANTS_TOOLTIP_HEADER"] = "아이템 레벨 및 제목 사용"
 --[[Translation missing --]]
 L["CONFIG_SELLING_GEAR_USE_ILVL_VARIANTS_TOOLTIP_TEXT"] = "Normally gear is compared with any other gear that is similar, but without taking item level and the \"of the\" titles into account. This will make them be taken into account."
 L["CONFIG_SELLING_GEAR_VENDOR_PRICE_MULTIPLIER_SUFFIX"] = "장비 판매의 배수 설정"
@@ -159,20 +154,17 @@ L["CONFIG_SELLING_POST_SHORTCUT"] = "A keyboard/mouse shortcut to post the curre
 L["CONFIG_SELLING_POST_SHORTCUT_TOOLTIP_TEXT"] = "Click and then press the buttons that you wish to use as the shortcut. This shortcut will only be active in the Selling tab and won't affect any other shortcuts bound to the buttons."
 --[[Translation missing --]]
 L["CONFIG_SELLING_SHORTCUTS_CATEGORY"] = "Selling: Shortcuts"
---[[Translation missing --]]
-L["CONFIG_SELLING_SHORTCUTS_TEXT"] = "Options for keyboard and mouse shortcuts inside the Selling tab"
+L["CONFIG_SELLING_SHORTCUTS_TEXT"] = "판매 탭 내 키보드 및 마우스 단축키 옵션"
 --[[Translation missing --]]
 L["CONFIG_SELLING_SHOW_BID_PRICE"] = "Show bid price option when listing an item (reload required)"
---[[Translation missing --]]
-L["CONFIG_SELLING_SHOW_BID_PRICE_TOOLTIP_HEADER"] = "Bid Options"
+L["CONFIG_SELLING_SHOW_BID_PRICE_TOOLTIP_HEADER"] = "입찰 옵션"
 --[[Translation missing --]]
 L["CONFIG_SELLING_SHOW_BID_PRICE_TOOLTIP_TEXT"] = "Controls whether the bid price option appears when posting an item."
 --[[Translation missing --]]
 L["CONFIG_SELLING_SKIP_SHORTCUT"] = "A shortcut to skip posting the currently selected item is"
 --[[Translation missing --]]
 L["CONFIG_SELLING_SPLIT_PANELS"] = "Show split panel view between current prices and historical prices"
---[[Translation missing --]]
-L["CONFIG_SELLING_SPLIT_PANELS_TOOLTIP_HEADER"] = "Split Panels View"
+L["CONFIG_SELLING_SPLIT_PANELS_TOOLTIP_HEADER"] = "분할 패널 보기"
 --[[Translation missing --]]
 L["CONFIG_SELLING_SPLIT_PANELS_TOOLTIP_TEXT"] = "Normally the historical prices are on a tab inside the Selling tab, instead this makes the current prices always visible, but the historical prices show as a panel below them."
 --[[Translation missing --]]
@@ -180,8 +172,7 @@ L["CONFIG_SELLING_TBC_ALL_ITEMS"] = "Options to set the default posting settings
 L["CONFIG_SELLING_TEXT"] = "판매하기 탭의 설정을 변경합니다."
 --[[Translation missing --]]
 L["CONFIG_SHOPPING_ALWAYS_LOAD_MORE"] = "Always load all available results."
---[[Translation missing --]]
-L["CONFIG_SHOPPING_ALWAYS_LOAD_MORE_TOOLTIP_HEADER"] = "Always load more"
+L["CONFIG_SHOPPING_ALWAYS_LOAD_MORE_TOOLTIP_HEADER"] = "항상 더 불러오기"
 --[[Translation missing --]]
 L["CONFIG_SHOPPING_ALWAYS_LOAD_MORE_TOOLTIP_TEXT"] = "While still getting an accurate minimum price some pages are skipped to speed up the shopping search. This prevents any pages from being skipped and ensures all possible results display."
 L["CONFIG_SHOPPING_CATEGORY"] = "구매목록"
@@ -216,8 +207,7 @@ L["CRAFTED_LEVEL"] = "제작 레벨"
 L["CREATE"] = "목록 생성"
 L["CREATE_LIST_DIALOG"] = "새로운 목록을 생성합니다."
 L["CURRENT"] = "현재"
---[[Translation missing --]]
-L["CURRENT_PRICES"] = "Current Prices"
+L["CURRENT_PRICES"] = "현재 가격"
 L["CUSTOM_KEYBOARD_SHORTCUTS"] = "사용자 정의 키보드 단축키"
 L["DATE"] = "날짜"
 L["DAY_1"] = "일요일"
@@ -288,10 +278,8 @@ L["LIST_EXTENDED_SEARCH_HEADER"] = "확장 검색 옵션"
 L["LIST_IMPORT_HEADER"] = "목록 가져오기"
 L["LIST_SEARCH_START"] = "검색중... (%s초)"
 L["LIST_SEARCH_STATUS"] = "검색완료 (%s초)"
---[[Translation missing --]]
-L["LOAD_HIGHER_PRICES"] = "Load higher prices"
---[[Translation missing --]]
-L["LOAD_MORE_RESULTS"] = "Load more results"
+L["LOAD_HIGHER_PRICES"] = "더 높은 가격 불러오기"
+L["LOAD_MORE_RESULTS"] = "더 많은 결과 불러오기"
 L["MAIL_TOOLTIP_TOOLTIP_HEADER"] = "우체통 툴팁"
 L["MAIL_TOOLTIP_TOOLTIP_TEXT"] = "우체통에 있는 아이템에 대한 경매 정보를 마우스를 올려 확인 할 수 있습니다."
 L["MAX"] = "최대"
@@ -335,13 +323,12 @@ L["POST_ATTEMPT_FAILED"] = "Your last post attempt didn't work. Try again."
 L["PRICE"] = "가격"
 --[[Translation missing --]]
 L["PRICE_INCREASE_WARNING"] = "Price increased by %s, waiting %ss"
-L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "캐릭터 별 설정"
+L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "캐릭터별 설정 사용"
 L["PROFILE_TOGGLE_TOOLTIP_TEXT"] = "캐릭터 별 옥셔네이터 설정을 적용합니다."
 L["PROFIT_COLON"] = "수익:"
 --[[Translation missing --]]
 L["PROSPECT"] = "Prospect"
---[[Translation missing --]]
-L["PROSPECT_TOOLTIP_TOOLTIP_HEADER"] = "Prospect Tooltip Information"
+L["PROSPECT_TOOLTIP_TOOLTIP_HEADER"] = "보석 추출 툴팁 정보"
 --[[Translation missing --]]
 L["PROSPECT_TOOLTIP_TOOLTIP_TEXT"] = "Show jewelcrafting prospecting estimated value in tooltip on mouseover."
 L["PURCHASED_X_XX"] = "%s x%s 구매함"
@@ -384,7 +371,8 @@ L["SHIFT_LEFT_CLICK"] = "쉬프트 + 클릭"
 L["SHIFT_RIGHT_CLICK"] = "쉬프트 + 우클릭"
 L["SHOPPING_LIST"] = "구매 목록"
 L["SHOPPING_TAB"] = "구매목록"
-L["SHOPPING_TAB_HEADER"] = "옥셔네이터 - 구매목록"
+--[[Translation missing --]]
+L["SHOPPING_TAB_HEADER_2"] = "Auctionator - Shopping"
 L["SKIP"] = "건너뛰기"
 L["SORT"] = "분류"
 L["SPLASH_830_BUGS_1"] = "옥셔네이터 디스코드 서버에 참가하세요. %s"
