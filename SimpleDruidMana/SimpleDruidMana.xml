@@ -1,0 +1,39 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="SimpleDruidMana.lua"/>
+
+	<StatusBar parentKey="DruidManaBar" parent="PlayerFrame" drawLayer="BORDER" hidden="true" frameLevel="5">
+		<Size x="119.2" y="12"/>
+		<Anchors>
+			<Anchor point="TOPLEFT" x="106" y="-63.8"/>
+		</Anchors>
+		<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+		<BarColor r="0" g="0" b="1.0"/>
+		<Scripts>
+			<OnLoad function="SimpleDruidMana_OnLoad"/>
+		</Scripts>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture setAllPoints="true">
+					<Color r="0" g="0" b="0" a="0.5"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture file="Interface\TargetingFrame\UI-TargetingFrame">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-1" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="4" y="0"/>
+					</Anchors>
+					<!-- left: 26.25, right: 150, top: 52, bottom: 65 -->
+					<TexCoords left="0.587890625" right="0.1044921875" top="0.41015625" bottom="0.51171875"/>
+				</Texture>
+				<FontString parentKey="Label" inherits="TextStatusBarText" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" x="-1.2" y="1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</StatusBar>
+</Ui>

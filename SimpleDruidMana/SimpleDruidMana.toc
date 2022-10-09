@@ -1,0 +1,7 @@
+## Title: SimpleDruidMana
+## Interface: 30400
+## Version: 0.6.0
+## Notes: Shows mana in bear/cat form
+## Notes-zhCN: 在熊/猫形态时显示魔法值
+## Author: R32
+SimpleDruidMana.xml
