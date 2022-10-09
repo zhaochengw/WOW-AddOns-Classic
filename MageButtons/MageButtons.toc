@@ -10,8 +10,8 @@ embeds.xml
 MageButtons.lua
 config.lua
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+## X-163UI-Version: 20220901200239
 
 ## Title-zhCN: |cff880303[有爱]|r MageButtons 法师按钮
 ## X-Vendor: NetEase
-## X-163UI-Version: 20220324111210
+## X-163UI-Version: 20220901200239

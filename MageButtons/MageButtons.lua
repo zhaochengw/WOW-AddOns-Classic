@@ -47,18 +47,18 @@ local spell_id_table = {  };
 local spell_name_table = {  };
 local spell_name_to_id = {  };
 --	spell_table
-	spell_id_table["Water"] = { 5504, 5505, 5506, 6127, 10138, 10139, 10140, 37420, 27090, };
-	spell_id_table["Food"] = { 587, 597, 990, 6129, 10144, 10145, 28612, 33717, };
+	spell_id_table["Water"] = { 5504, 5505, 5506, 6127, 10138, 10139, 10140, 37420, 27090, 42955, 42956, };
+	spell_id_table["Food"] = { 587, 597, 990, 6129, 10144, 10145, 28612, 33717, 42955, 42956, };
 	if UnitFactionGroup("player") == "Alliance" then
-		spell_id_table["Teleports"] = { 3565, 3561, 3562, 35715, 32271, 49359, 35715, 33690, };
-		spell_id_table["Portals"] = { 11419, 10059, 11416, 35717, 32266, 49360, 35717, 33691, };
+		spell_id_table["Teleports"] = { 3565, 3561, 3562, 35715, 32271, 49359, 35715, 33690, 53140, };
+		spell_id_table["Portals"] = { 11419, 10059, 11416, 35717, 32266, 49360, 35717, 33691, 53142, };
 	else
-		spell_id_table["Teleports"] = { 3566, 3563, 3567, 35715, 32272, 49358, 35715, 33690, };
-		spell_id_table["Portals"] = { 11420, 11418, 11417, 35717, 32267, 49361, 35717, 33691, };
+		spell_id_table["Teleports"] = { 3566, 3563, 3567, 35715, 32272, 49358, 35715, 33690, 53140, };
+		spell_id_table["Portals"] = { 11420, 11418, 11417, 35717, 32267, 49361, 35717, 33691, 53142, };
 	end
-	spell_id_table["Gems"] = { 759, 3552, 10053, 10054, 27101, };
+	spell_id_table["Gems"] = { 759, 3552, 10053, 10054, 27101, 42985, };
 	spell_id_table["Polymorph"] = { 118, 28272, 28271, 28270, };
-	spell_id_table["_RITUAL"] = { 43987, };
+	spell_id_table["_RITUAL"] = { 43987, 58659, };
 --
 local delayed = 0.0;
 function addon.cache_name()
