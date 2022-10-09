@@ -63,7 +63,36 @@ function SlashCmdList.DETAILS (msg, editbox)
 		else
 			_detalhes:ShutDownAllInstances()
 		end
-	
+
+	elseif (command == "perf") then
+		local performanceData = Details.performanceData
+		local framesLost = ceil(performanceData.deltaTime / 60)
+		local callStack = performanceData.callStack
+
+		local returnTable = {}
+
+		returnTable[#returnTable+1] = "Stuttering Information:"
+		returnTable[#returnTable+1] = "An addon feature, script is using: " .. performanceData.culpritFunc .. ""
+
+		returnTable[#returnTable+1] = ""
+
+		returnTable[#returnTable+1] = "Description: " .. performanceData.culpritDesc
+
+		returnTable[#returnTable+1] = ""
+
+		returnTable[#returnTable+1] = "You may first: disable the addon feature that uses the functionality."
+		returnTable[#returnTable+1] = "Second: disable a script which are using the function call: " .. performanceData.culpritFunc .. "."
+
+		returnTable[#returnTable+1] = ""
+
+		returnTable[#returnTable+1] = "Callstack for Debug:"
+		local callStackTable = DetailsFramework:SplitTextInLines(callStack)
+		for i = 1, #callStackTable do
+			returnTable[#returnTable+1] = callStackTable[i]
+		end
+
+		dumpt(returnTable)
+
 	elseif (command == "softhide") then
 		for instanceID, instance in _detalhes:ListInstances() do
 			if (instance:IsEnabled()) then
@@ -855,30 +884,6 @@ function SlashCmdList.DETAILS (msg, editbox)
 			_detalhes.id_frame.texto:HighlightText()
 		end
 		
-	--> debug
-	
-	elseif (msg == "auras") then
-		if (IsInRaid()) then
-			for raidIndex = 1, GetNumGroupMembers() do 
-				for buffIndex = 1, 41 do
-					local name, _, _, _, _, _, _, unitCaster, _, _, spellid  = UnitAura ("raid"..raidIndex, buffIndex, nil, "HELPFUL")
-					print (name, unitCaster, "==", "raid"..raidIndex)
-					if (name and unitCaster == "raid"..raidIndex) then
-						
-						local playerName, realmName = UnitName ("raid"..raidIndex)
-						if (realmName and realmName ~= "") then
-							playerName = playerName .. "-" .. realmName
-						end
-						
-						_detalhes.parser:add_buff_uptime (nil, GetTime(), UnitGUID ("raid"..raidIndex), playerName, 0x00000417, UnitGUID ("raid"..raidIndex), playerName, 0x00000417, spellid, name, in_or_out)
-						
-					else
-						--break
-					end
-				end
-			end
-		end
-		
 	elseif (command == "profile") then
 	
 		local profile = rest:match("^(%S*)%s*(.-)$")
@@ -887,6 +892,9 @@ function SlashCmdList.DETAILS (msg, editbox)
 		
 		_detalhes:ApplyProfile (profile, false)
 	
+	elseif (msg == "version") then
+		Details.ShowCopyValueFrame(Details.GetVersionString())
+
 	elseif (msg == "users" or msg == "version" or msg == "versioncheck") then
 		Details.SendHighFive()
 
@@ -991,6 +999,16 @@ function SlashCmdList.DETAILS (msg, editbox)
 		end
 
 	--> debug
+	elseif (command == "debugnet") then
+		if (_detalhes.debugnet) then
+			_detalhes.debugnet = false
+			print(Loc["STRING_DETAILS1"] .. "net diagnostic mode has been turned off.")
+			return
+		else
+			_detalhes.debugnet = true
+			print(Loc["STRING_DETAILS1"] .. "net diagnostic mode has been turned on.")
+		end
+
 	elseif (command == "debug") then
 		if (_detalhes.debug) then
 			_detalhes.debug = false
@@ -1557,6 +1575,8 @@ function SlashCmdList.DETAILS (msg, editbox)
 	--elseif (msg == "update") then
 	--	_detalhes:CopyPaste ([[https://www.wowinterface.com/downloads/info23056-DetailsDamageMeter8.07.3.5.html]])
 	
+	elseif (msg == "auras") then
+		Details.AuraTracker.Open()
 	
 	elseif (msg == "ec") then
 		if (rest and tonumber(rest)) then
@@ -1688,41 +1708,16 @@ function SlashCmdList.DETAILS (msg, editbox)
 			
 		end
 
-		print("|", msg)
-		
-		print (" ")
-		--local v = _detalhes.game_version .. "." .. (_detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter)
-		--print (Loc ["STRING_DETAILS1"] .. "" .. v .. " [|cFFFFFF00CORE: " .. _detalhes.realversion .. "|r] " ..  Loc ["STRING_COMMAND_LIST"] .. ":")
-		
-		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_NEW"] .. "|r: " .. Loc ["STRING_SLASH_NEW_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_SHOW"] .. " " .. Loc ["STRING_SLASH_HIDE"] .. " " .. Loc ["STRING_SLASH_TOGGLE"] .. "|r|cfffcffb0 <" .. Loc ["STRING_WINDOW_NUMBER"] .. ">|r: " .. Loc ["STRING_SLASH_SHOWHIDETOGGLE_DESC"])
-		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_ENABLE"] .. " " .. Loc ["STRING_SLASH_DISABLE"] .. "|r: " .. Loc ["STRING_SLASH_CAPTURE_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_RESET"] .. "|r: " .. Loc ["STRING_SLASH_RESET_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_OPTIONS"] .. "|r|cfffcffb0 <" .. Loc ["STRING_WINDOW_NUMBER"] .. ">|r: " .. Loc ["STRING_SLASH_OPTIONS_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. "API" .. "|r: " .. Loc ["STRING_SLASH_API_DESC"])
-		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_CHANGES"] .. "|r: " .. Loc ["STRING_SLASH_CHANGES_DESC"])
-		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_WIPECONFIG"] .. "|r: " .. Loc ["STRING_SLASH_WIPECONFIG_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. "me" .. "|r: open the player breakdown for you.") --localize-me
 		print ("|cffffaeae/details|r |cffffff33" .. "spells" .. "|r: list of spells already saw.") --localize-me
 
-		--print ("|cffffaeae/details " .. Loc ["STRING_SLASH_WORLDBOSS"] .. "|r: " .. Loc ["STRING_SLASH_WORLDBOSS_DESC"])
-		print (" ")
-
-		if (DetailsFramework.IsWotLKWow()) then
-			--wraft of the lich kind classic, the retail version of details should work on lich king, so let's print here the retail build counter
-			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00DETAILS! VERSION|r: |cFFFFAA00W" .. _detalhes.build_counter)
-			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00GAME VERSION|r: |cFFFFAA00" .. _detalhes.game_version)
-
-		else
-			--retail
-			local v = _detalhes.game_version .. "." .. (_detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter)
-			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00DETAILS! VERSION|r: |cFFFFAA00R" .. (_detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter))
-			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00GAME VERSION|r: |cFFFFAA00" .. _detalhes.game_version)
-		end
-
-		if (DetailsFramework.IsDragonflight()) then
-			print("Dragonflight BETA VERSION:", _detalhes.dragonflight_beta_version)
-		end
+		print("|cFFFFFF00DETAILS! VERSION|r:|cFFFFAA00" .. " " .. Details.GetVersionString())
+		print ("|cffffaeae/details|r |cffffff33" .. "version" .. "|r: copy version.")
+		
 	end
 end
 

@@ -2,12 +2,12 @@
 --> global name declaration
 
 		_ = nil
-		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
+		_G._detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10033
-		_detalhes.alpha_build_counter = 10033 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 10129
+		_detalhes.alpha_build_counter = 10129 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. " " .. _detalhes.build_counter
@@ -15,12 +15,36 @@
 		_detalhes.APIVersion = _detalhes.realversion --core version
 		_detalhes.version = _detalhes.userversion .. " (core " .. _detalhes.realversion .. ")" --simple stirng to show to players
 
+		_detalhes.acounter = 1 --in case of a second release with the same .build_counter
+		_detalhes.curseforgeVersion = GetAddOnMetadata("Details", "Version")
+
+		function _detalhes:GetCoreVersion()
+			return _detalhes.realversion
+		end
+
 		_detalhes.BFACORE = 131 --core version on BFA launch
 		_detalhes.SHADOWLANDSCORE = 143 --core version on Shadowlands launch
---
-		_detalhes.dragonflight_beta_version = 36
 
 		Details = _detalhes
+
+		local gameVersionPrefix = "Unknown Game Version - You're probably using a Details! not compatible with this version of the Game"
+		--these are the game versions currently compatible with this Details! versions
+		if (DetailsFramework.IsWotLKWow() or DetailsFramework.IsShadowlandsWow() or DetailsFramework.IsDragonflight()) then
+			gameVersionPrefix = "WSD"
+		end
+
+		Details.gameVersionPrefix = gameVersionPrefix
+
+		function Details.GetVersionString()
+			local alphaId = _detalhes.curseforgeVersion:match("%-(%d+)%-")
+			if (not alphaId) then
+				--this is a release version
+				alphaId = "R1"
+			else
+				alphaId = "A" .. alphaId
+			end
+			return Details.gameVersionPrefix .. Details.build_counter .. "." .. Details.acounter .. "." .. alphaId .. "(" .. Details.game_version .. ")"
+		end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> initialization stuff
@@ -510,7 +534,9 @@ do
 				if (Details.debug) then
 					Details:Msg("Safe run failed:", executionName, errorText)
 				end
+				return false
 			end
+			return true
 		end
 
 		--> tooltip
@@ -647,26 +673,56 @@ do
 			--> name to plugin object
 				_detalhes.StatusBar.NameTable = {}
 
-	--> constants
-		--[[global]] DETAILS_HEALTH_POTION_ID = 307192 -- spiritual healing potion
-		--[[global]] DETAILS_HEALTH_POTION2_ID = 359867 --cosmic healing potion
-		--[[global]] DETAILS_REJU_POTION_ID = 307194
-		--[[global]] DETAILS_MANA_POTION_ID = 307193
-		--[[global]] DETAILS_FOCUS_POTION_ID = 307161
-		--[[global]] DETAILS_HEALTHSTONE_ID = 6262
+		--> constants
+		if(DetailsFramework.IsWotLKWow()) then
+			--[[global]] DETAILS_HEALTH_POTION_ID = 33447 -- Runic Healing Potion
+			--[[global]] DETAILS_HEALTH_POTION2_ID = 41166 -- Runic Healing Injector
+			--[[global]] DETAILS_REJU_POTION_ID = 40087 -- Powerful Rejuvenation Potion
+			--[[global]] DETAILS_REJU_POTION2_ID = 40077 -- Crazy Alchemist's Potion
+			--[[global]] DETAILS_MANA_POTION_ID = 33448 -- Runic Mana Potion
+			--[[global]] DETAILS_MANA_POTION2_ID = 42545 -- Runic Mana Injector
+			--[[global]] DETAILS_FOCUS_POTION_ID = 307161
+			--[[global]] DETAILS_HEALTHSTONE_ID = 47875 --Warlock's Healthstone
+			--[[global]] DETAILS_HEALTHSTONE2_ID = 47876 --Warlock's Healthstone (1/2 Talent)
+			--[[global]] DETAILS_HEALTHSTONE3_ID = 47877 --Warlock's Healthstone (2/2 Talent)
+			
+			--[[global]] DETAILS_INT_POTION_ID = 40212 --Potion of Wild Magic
+			--[[global]] DETAILS_AGI_POTION_ID = 40211 --Potion of Speed
+			--[[global]] DETAILS_STR_POTION_ID = 307164
+			--[[global]] DETAILS_STAMINA_POTION_ID = 40093 --Indestructible Potion
+			--[[global]] DETAILS_HEALTH_POTION_LIST = {
+					[DETAILS_HEALTH_POTION_ID] = true, -- Runic Healing Potion
+					[DETAILS_HEALTH_POTION2_ID] = true, -- Runic Healing Injector
+					[DETAILS_HEALTHSTONE_ID] = true, --Warlock's Healthstone
+					[DETAILS_HEALTHSTONE2_ID] = true, --Warlock's Healthstone (1/2 Talent)
+					[DETAILS_HEALTHSTONE3_ID] = true, --Warlock's Healthstone (2/2 Talent)
+					[DETAILS_REJU_POTION_ID] = true, -- Powerful Rejuvenation Potion
+					[DETAILS_REJU_POTION2_ID] = true, -- Crazy Alchemist's Potion
+					[DETAILS_MANA_POTION_ID] = true, -- Runic Mana Potion
+					[DETAILS_MANA_POTION2_ID] = true, -- Runic Mana Injector
+				}
+				
+		else
+			--[[global]] DETAILS_HEALTH_POTION_ID = 307192 -- spiritual healing potion
+			--[[global]] DETAILS_HEALTH_POTION2_ID = 359867 --cosmic healing potion
+			--[[global]] DETAILS_REJU_POTION_ID = 307194
+			--[[global]] DETAILS_MANA_POTION_ID = 307193
+			--[[global]] DETAILS_FOCUS_POTION_ID = 307161
+			--[[global]] DETAILS_HEALTHSTONE_ID = 6262
 
-		--[[global]] DETAILS_INT_POTION_ID = 307162
-		--[[global]] DETAILS_AGI_POTION_ID = 307159
-		--[[global]] DETAILS_STR_POTION_ID = 307164
-		--[[global]] DETAILS_STAMINA_POTION_ID = 307163
-		--[[global]] DETAILS_HEALTH_POTION_LIST = {
-			[DETAILS_HEALTH_POTION_ID] = true, --Healing Potion
-			[DETAILS_HEALTHSTONE_ID] = true, --Warlock's Healthstone
-			[DETAILS_REJU_POTION_ID] = true, --Rejuvenation Potion
-			[DETAILS_MANA_POTION_ID] = true, --Mana Potion
-			[323436] = true, --Phial of Serenity (from Kyrians)
-			[DETAILS_HEALTH_POTION2_ID] = true,
-		}
+			--[[global]] DETAILS_INT_POTION_ID = 307162
+			--[[global]] DETAILS_AGI_POTION_ID = 307159
+			--[[global]] DETAILS_STR_POTION_ID = 307164
+			--[[global]] DETAILS_STAMINA_POTION_ID = 307163
+			--[[global]] DETAILS_HEALTH_POTION_LIST = {
+					[DETAILS_HEALTH_POTION_ID] = true, --Healing Potion
+					[DETAILS_HEALTHSTONE_ID] = true, --Warlock's Healthstone
+					[DETAILS_REJU_POTION_ID] = true, --Rejuvenation Potion
+					[DETAILS_MANA_POTION_ID] = true, --Mana Potion
+					[323436] = true, --Phial of Serenity (from Kyrians)
+					[DETAILS_HEALTH_POTION2_ID] = true,
+				}
+		end
 
 		--[[global]] DETAILS_MODE_GROUP = 2
 		--[[global]] DETAILS_MODE_ALL = 3
@@ -789,7 +845,11 @@ do
 	function Details.SendHighFive()
 		Details.users = {{UnitName("player"), GetRealmName(), (Details.userversion or "") .. " (" .. Details.APIVersion .. ")"}}
 		Details.sent_highfive = GetTime()
-		Details:SendRaidData (Details.network.ids.HIGHFIVE_REQUEST)
+		if (IsInRaid()) then
+			Details:SendRaidData(Details.network.ids.HIGHFIVE_REQUEST)
+		else
+			Details:SendPartyData(Details.network.ids.HIGHFIVE_REQUEST)
+		end
 	end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

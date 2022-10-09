@@ -192,6 +192,55 @@
 	if (isTBC) then
 		override_spellId = {}
 
+	elseif (isWOTLK) then
+		override_spellId = {
+			--Scourge Strike
+			[55090] = 55271,
+			[55265] = 55271,
+			[55270] = 55271,
+			[70890] = 55271, --shadow
+
+			--Frost Strike
+			[49143] = 55268,
+			[51416] = 55268,
+			[51417] = 55268,
+			[51418] = 55268,
+			[51419] = 55268,
+			[66962] = 55268, --offhand
+
+			--Obliterate
+			[49020] = 51425,
+			[51423] = 51425,
+			[51424] = 51425,
+			[66974] = 51425, --offhand
+
+			--Death Strike
+			[49998] = 49924,
+			[49999] = 49924,
+			[45463] = 49924,
+			[49923] = 49924,
+			[66953] = 49924, --offhand
+
+			--Blood Strike
+			[45902] = 49930,
+			[49926] = 49930,
+			[49927] = 49930,
+			[49928] = 49930,
+			[49929] = 49930,
+			[66979] = 49930, --offhand
+
+			--Rune Strike
+			[6621] = 56815, --offhand
+
+			--Plague Strike
+			[45462] = 49921,
+			[49917] = 49921,
+			[49918] = 49921,
+			[49919] = 49921,
+			[49920] = 49921,
+			[66992] = 49921, --offhand
+		}
+
 	else --retail
 		override_spellId = {
 			[184707] = 218617, --warrior rampage
@@ -364,15 +413,17 @@
 		ignore_spikeballs = 0,
 	}
 
-		local NPCID_KELTHUZAD_ADDMIMICPLAYERS = 176605
+	local NPCID_KELTHUZAD_ADDMIMICPLAYERS = 176605
 
 	--> damage spells to ignore
 	local damage_spells_to_ignore = {
 		--the damage that the warlock apply to its pet through soullink is ignored
 		--it is not useful for damage done or friendly fire
 		[SPELLID_WARLOCK_SOULLINK] = true,
+		[371597] = true, --Protoform Barrier gotten from an SPELL_ABSORBED cleu event
+		[371701] = true, --Protoform Barrier
 	}
-	
+
 	--> expose the ignore spells table to external scripts
 	_detalhes.SpellsToIgnore = damage_spells_to_ignore
 	
@@ -4890,6 +4941,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 			if (DetailsFramework.IsDragonflight()) then
 				Details:Msg("friendly reminder to enabled combat logs (/combatlog) if you're recording them (Dragonflight Beta).")
+				Details:Msg("and if you wanna help, you may post them on Details! discord as well.")
 			end
 		end
 		
