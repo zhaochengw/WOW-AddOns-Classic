@@ -2,5 +2,4 @@
 	<Script file="QuickButton.lua" />
 	<Script file="QuickFollow_Vanilla.lua" />
 	<Script file="QuickEquip.lua" />
-	<Script file="QuickAFK.lua" />
 </Ui>

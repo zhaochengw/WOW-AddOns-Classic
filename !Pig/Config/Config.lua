@@ -1,6 +1,10 @@
 local _, addonTable = ...;
 
 addonTable.Default = {
+	["AKF"]={
+		["Open"] = false,
+		["QuickButton"]=true,
+	},
 	["AHPlus"]={
 		["Open"] = false,
 		["AHtooltip"] = true,
@@ -21,7 +25,6 @@ addonTable.Default = {
 		["Lushi"]=true,
 		["Spell"]=true,
 		["AutoEquip"]=true,
-		['AKF']=true,
 	},
 	["QuickFollow"] = {
 		["QuickBut"] = true,

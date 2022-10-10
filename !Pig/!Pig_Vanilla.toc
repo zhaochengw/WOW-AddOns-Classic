@@ -4,12 +4,11 @@
 ## Notes: Some tools
 ## Notes-zhCN: |cffFF8C00一些小工具|r  |cffFF00FF[猪猪加油祝你游戏愉快]|r
 ## Author: geligasi
-## Version: 4.9.0
+## Version: 4.9.1
 ## SavedVariables: PIG
 ## SavedVariablesPerCharacter: PIG_Per
 Error.lua
-Function_UI.lua
-Function_Data.lua
+Function\Function.xml
 Options.lua
 Config\Config_Vanilla.xml
 Feedback\Feedback_Vanilla.xml
@@ -33,7 +32,8 @@ PlaneInvite\PlaneInvite_Vanilla.xml
 AutoSellBuy\AutoSellBuy_Vanilla.xml
 SkillCD\SkillCD_Vanilla.xml
 SpellCD\SpellCD_Vanilla.xml
-FarmRecord\FarmRecord_Vanilla.xml
 RaidRecord\RaidRecord_Vanilla.xml
+FarmRecord\FarmRecord_Vanilla.xml
+AFK\AFK_Vanilla.xml
 Test\Test_Vanilla.xml
 !Pig.lua

@@ -4,12 +4,11 @@
 ## Notes: Some tools
 ## Notes-zhCN: |cffFF8C00一些小工具|r  |cffFF00FF[猪猪加油祝你游戏愉快]|r
 ## Author: geligasi
-## Version: 4.9.0
+## Version: 4.9.1
 ## SavedVariables: PIG
 ## SavedVariablesPerCharacter: PIG_Per
 Error.lua
-Function_UI.lua
-Function_Data.lua
+Function\Function.xml
 Options.lua
 Config\Config_Wrath.xml
 Feedback\Feedback_Wrath.xml
@@ -33,7 +32,8 @@ PlaneInvite\PlaneInvite_Wrath.xml
 AutoSellBuy\AutoSellBuy_Wrath.xml
 SkillCD\SkillCD_Wrath.xml
 SpellCD\SpellCD_Wrath.xml
-FarmRecord\FarmRecord_Wrath.xml
 RaidRecord\RaidRecord_Wrath.xml
+FarmRecord\FarmRecord_Wrath.xml
+AFK\AFK_Wrath.xml
 Test\Test_Wrath.xml
 !Pig.lua

@@ -257,8 +257,15 @@ Bugshouji.next:SetScript("OnClick", function(self, button)
 	xianshixinxi(newid)
 end)
 Bugshouji.nextZ:SetScript("OnClick", function(self, button)
-	local newid = #bencierrinfo
-	xianshixinxi(newid)
+	for x=1,#TabName do
+		if _G["BugshoujiTAB_"..x].Show then
+			if x==1 then
+				xianshixinxi(#bencierrinfo)
+			elseif x==2 then
+				xianshixinxi(#PIG["Error"]["ErrorInfo"])
+			end
+		end
+	end
 end)
 ----------------
 Bugshouji:SetScript("OnShow", function(self)
@@ -274,7 +281,7 @@ local function errottishi()
 	end
 end
 local function errotFUN(msg)
-	--print(msg)
+	print(msg)
 	local stack = debugstack(3) or "--"
 	local logrizhi = debuglocals(3) or "--"
 	local time = GetServerTime()
@@ -293,7 +300,7 @@ local function errotFUN(msg)
 end
 UIParent:UnregisterEvent("LUA_WARNING")
 Pig_seterrorhandler(errotFUN);
---function seterrorhandler() end
+function seterrorhandler() end
 --========================================================
 local function del_ErrorInfo()			
 	PIG["Error"]=PIG["Error"] or addonTable.Default["Error"]
@@ -310,16 +317,21 @@ local function del_ErrorInfo()
 	end
 end
 --
+
+Bugshouji:RegisterEvent("LUA_WARNING")
 Bugshouji:RegisterEvent("ADDON_ACTION_FORBIDDEN");
 Bugshouji:RegisterEvent("ADDON_ACTION_BLOCKED");
 Bugshouji:RegisterEvent("MACRO_ACTION_FORBIDDEN");
 Bugshouji:RegisterEvent("MACRO_ACTION_BLOCKED");
+Bugshouji:RegisterEvent("PLAYER_LOGIN")
 Bugshouji:RegisterEvent("PLAYER_LOGOUT");
 Bugshouji:RegisterEvent("ADDON_LOADED")
 Bugshouji:SetScript("OnEvent", function(self,event,arg1,arg2)
 	if event=="ADDON_LOADED" then
 		C_Timer.After(3,del_ErrorInfo)
 		Bugshouji:UnregisterEvent("ADDON_LOADED")
+	elseif event=="PLAYER_LOGIN" then
+		--Pig_seterrorhandler(errotFUN);
 	elseif event=="PLAYER_LOGOUT" then
 		local hejishu=#bencierrinfo
 		for i=1,hejishu do
@@ -359,6 +371,8 @@ Bugshouji:SetScript("OnEvent", function(self,event,arg1,arg2)
 		table.insert(bencierrinfo, {msg,time,stack,logrizhi,Bugshouji.cuowushu});
 		xianshixinxi(#bencierrinfo)
 		errottishi()
+	elseif event=="LUA_WARNING" then
+		errotFUN(arg2)
 	end
 end)
 --==================================

@@ -466,7 +466,7 @@ end)
 ---
 local function NEW_hong()
 	local macroSlot = GetMacroIndexByName(Macro_FollowName)
-	local hanhuaneirong1="/follow 幺塞子辛洛斯";
+	local hanhuaneirong1="/follow 猪猪加油";
 	if macroSlot==0 then
 		CreateMacro(Macro_FollowName, 135994, hanhuaneirong1, nil)
 	else
@@ -559,7 +559,7 @@ fuFrame:HookScript("OnShow", function(self)
 	end
 end)
 ----------
-local function gengxinDATA()
+local function ADD_QuickButton_AutoGensui()
 	PIG.QuickFollow=PIG.QuickFollow or addonTable.Default.QuickFollow
 	PIG_Per.QuickFollow=PIG_Per.QuickFollow or addonTable.Default_Per.QuickFollow
 	if PIG["QuickButton"]["Open"] then
@@ -574,4 +574,4 @@ local function gengxinDATA()
 		C_Timer.After(0,Classes_Gensui_B_yanchi)
 	end
 end
-addonTable.AutoGensui = gengxinDATA
+addonTable.ADD_QuickButton_AutoGensui = ADD_QuickButton_AutoGensui

@@ -823,7 +823,7 @@ end);
 
 ----
 fuFrame.huoqupindaosuoyouzhe = CreateFrame("Button", nil, fuFrame, "UIPanelButtonTemplate");  
-fuFrame.huoqupindaosuoyouzhe:SetSize(250,24);
+fuFrame.huoqupindaosuoyouzhe:SetSize(280,24);
 fuFrame.huoqupindaosuoyouzhe:SetPoint("TOPLEFT",fuFrame.QCxian,"BOTTOMLEFT",20,-110);
 fuFrame.huoqupindaosuoyouzhe:SetText("打印自定义频道所有者到聊天窗口");
 fuFrame.huoqupindaosuoyouzhe:SetScript("OnClick", function (self)

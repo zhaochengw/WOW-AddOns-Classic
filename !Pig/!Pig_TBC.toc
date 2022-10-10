@@ -4,12 +4,11 @@
 ## Notes: Some tools
 ## Notes-zhCN: |cffFF8C00一些小工具|r  |cffFF00FF[猪猪加油祝你游戏愉快]|r
 ## Author: geligasi
-## Version: 4.9.0
+## Version: 4.9.1
 ## SavedVariables: PIG
 ## SavedVariablesPerCharacter: PIG_Per
 Error.lua
-Function_UI.lua
-Function_Data.lua
+Function\Function.xml
 Options.lua
 Config\Config_TBC.xml
 Feedback\Feedback_TBC.xml
@@ -33,7 +32,8 @@ PlaneInvite\PlaneInvite_TBC.xml
 AutoSellBuy\AutoSellBuy_TBC.xml
 SkillCD\SkillCD_TBC.xml
 SpellCD\SpellCD_TBC.xml
-FarmRecord\FarmRecord_TBC.xml
 RaidRecord\RaidRecord_TBC.xml
+FarmRecord\FarmRecord_TBC.xml
+AFK\AFK_TBC.xml
 Test\Test_TBC.xml
 !Pig.lua

@@ -90,16 +90,18 @@ AAAAA:SetScript("OnEvent",function(self, event, arg1)
 		-----
 		addonTable.AutoSellBuy_Repair()
 		addonTable.AutoSellBuy_SellBuy()
+		--技能监控
+		addonTable.Spell_CD_JK()
 		--专业副本CD
 		addonTable.Skill_FuBen()
 		--时空之门
 		addonTable.PlaneInvite()
-		--带本助手
-		addonTable.daiben()
 		--开团助手
 		addonTable.RaidRecord()
-		--技能监控
-		addonTable.Spell_CD_JK()
+		--带本助手
+		addonTable.daiben()
+		--屏保
+		addonTable.Pig_AFK()
 		---
 		addonTable.PIGRaidFrame()
 		-----
