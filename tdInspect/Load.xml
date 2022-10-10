@@ -7,9 +7,7 @@
 
     <Script file="Data\DataLoader.lua"/>
     
-    
     <Script file="Data\Talents.WLK.lua"/>
-    
     
     <Script file="Data\ItemSet.WLK.lua"/>
     <Script file="Data\Glyph.lua"/>

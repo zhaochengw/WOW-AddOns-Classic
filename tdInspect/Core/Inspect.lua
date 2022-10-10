@@ -420,11 +420,17 @@ function Inspect:INSPECT_READY(_, guid)
         db.class = select(3, UnitClass(self.unit))
         db.race = select(3, UnitRace(self.unit))
         db.level = UnitLevel(self.unit)
-        db.numGroups = GetNumTalentGroups(true)
-        db.activeGroup = GetActiveTalentGroup(true)
         -- @build>2@
         db.talents = Encoder:PackTalents(true)
         -- @end-build>2@
+        -- @build>3@
+        db.numGroups = GetNumTalentGroups(true)
+        db.activeGroup = GetActiveTalentGroup(true)
+        -- @build>3@
+        --[=[@build<3@
+        db.numGroups = 1
+        db.activeGroup = 1
+        --@end-build<3@]=]
 
         self:TryFireMessage(self.unit, name, db)
     end
@@ -464,7 +470,12 @@ function Inspect:OnComm(cmd, sender, ...)
     if cmd == 'Q' then
         local queryTalent, queryEquip, protoVersion, queryGlyph = ...
         if not protoVersion or protoVersion == 1 then
+            -- @build>3@
             local talent = queryTalent and Encoder:PackTalent(nil, GetActiveTalentGroup(), true) or nil
+            -- @end-build>3@
+            -- @buid<3@
+            local talent = queryTalent and Encoder:PackTalent(nil, 1, true) or nil
+            --@end-build<3@]=]
             local equips = queryEquip and Encoder:PackEquips(true) or nil
             local class = select(3, UnitClass('player'))
             local race = select(3, UnitRace('player'))
