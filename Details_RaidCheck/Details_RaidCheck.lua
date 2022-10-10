@@ -683,7 +683,7 @@ local CreatePluginFrames = function()
 				end
 			end
 
-			tinsert (PlayerData, {unitName, unitClassID,
+			tinsert(PlayerData, {unitName, unitClassID,
 				Name = unitName,
 				UnitNameRealm = unitNameWithRealm,
 				Class = unitClass,
@@ -727,7 +727,7 @@ local CreatePluginFrames = function()
 		raidCheckFrame:SetScript("OnUpdate", updateRaidCheckFrame)
 	end)
 
-	DetailsRaidCheck.ToolbarButton:SetScript("OnLeave", function (self)
+	DetailsRaidCheck.ToolbarButton:SetScript("OnLeave", function(self)
 		raidCheckFrame:SetScript("OnUpdate", nil)
 		raidCheckFrame:Hide()
 	end)
@@ -903,21 +903,21 @@ local buildOptionsPanel = function()
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.pre_pot_healers end,
-			set = function (self, fixedparam, value) DetailsRaidCheck.db.pre_pot_healers = value end,
+			set = function(self, fixedparam, value) DetailsRaidCheck.db.pre_pot_healers = value end,
 			desc = "If enabled, pre potion for healers are also shown.",
 			name = "Track Healers Pre Pot"
 		},
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.pre_pot_tanks end,
-			set = function (self, fixedparam, value) DetailsRaidCheck.db.pre_pot_tanks = value end,
+			set = function(self, fixedparam, value) DetailsRaidCheck.db.pre_pot_tanks = value end,
 			desc = "If enabled, pre potion for tanks are also shown.",
 			name = "Track Tank Pre Pot"
 		},
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.mythic_1_4 end,
-			set = function (self, fixedparam, value) DetailsRaidCheck.db.mythic_1_4 = value end,
+			set = function(self, fixedparam, value) DetailsRaidCheck.db.mythic_1_4 = value end,
 			desc = "When raiding on Mythic difficult, only check the first 4 groups.",
 			name = "Mythic 1-4 Group Only"
 		},
@@ -928,21 +928,21 @@ local buildOptionsPanel = function()
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.food_tier1 end,
-			set = function (self, fixedparam, value) DetailsRaidCheck.db.food_tier1 = value end,
+			set = function(self, fixedparam, value) DetailsRaidCheck.db.food_tier1 = value end,
 			desc = "Consider players using Tier 1 food.",
 			name = "Food Tier 1 [41]"
 		},
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.food_tier2 end,
-			set = function (self, fixedparam, value) DetailsRaidCheck.db.food_tier2 = value end,
+			set = function(self, fixedparam, value) DetailsRaidCheck.db.food_tier2 = value end,
 			desc = "Consider players using Tier 2 food.",
 			name = "Food Tier 2 [55]"
 		},
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.food_tier3 end,
-			set = function (self, fixedparam, value) DetailsRaidCheck.db.food_tier3 = value end,
+			set = function(self, fixedparam, value) DetailsRaidCheck.db.food_tier3 = value end,
 			desc = "Consider players using Tier 3 food.",
 			name = "Food Tier 3 [>= 75]"
 		},
@@ -1003,7 +1003,7 @@ function DetailsRaidCheck:OnEvent(_, event, ...)
 				C_Timer.After(1, function()
 					--install
 					local install, savedData, isEnabled = _G.Details:InstallPlugin("TOOLBAR", Loc["STRING_RAIDCHECK_PLUGIN_NAME"], [[Interface\Buttons\UI-CheckBox-Check]], DetailsRaidCheck, "DETAILS_PLUGIN_RAIDCHECK", MINIMAL_DETAILS_VERSION_REQUIRED, "Terciob", version, defaultSettings)
-					if (type (install) == "table" and install.error) then
+					if (type(install) == "table" and install.error) then
 						return print(install.error)
 					end
 
