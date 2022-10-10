@@ -1,3 +1,6 @@
+3.0.27 - 10th October 2022
+- Added flight times.
+
 3.0.26 - 9th October 2022
 - For 'Sell junk automatically' ('Automation'), white items entered in the exclusions editbox will be sold automatically.  Junk items entered in the editbox will not be sold automatically (as before).
 - Added flight times.
