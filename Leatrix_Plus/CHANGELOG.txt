@@ -1,3 +1,8 @@
+3.0.28 - 11th October 2022
+- For 'Mute game sounds' ('System'), you can now make Netherdrakes quieter.
+- Added flight times.
+- Removed references to instance chat.
+
 3.0.27 - 10th October 2022
 - Added flight times.
 
