@@ -570,7 +570,7 @@ fuFrame:HookScript("OnShow", function(self)
 	end
 end)
 ----------
-local function gengxinDATA()
+local function ADD_QuickButton_QuickFollow()
 	PIG.QuickFollow=PIG.QuickFollow or addonTable.Default.QuickFollow
 	PIG_Per.QuickFollow=PIG_Per.QuickFollow or addonTable.Default_Per.QuickFollow
 	if PIG["QuickButton"]["Open"] then
@@ -585,4 +585,4 @@ local function gengxinDATA()
 	end
 	zhucedelEvent()
 end
-addonTable.AutoGensui = gengxinDATA
+addonTable.ADD_QuickButton_QuickFollow = ADD_QuickButton_QuickFollow

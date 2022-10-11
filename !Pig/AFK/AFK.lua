@@ -18,7 +18,7 @@ local function Pig_AFK()
 		ModelUI:SetCamera(1)
 		--ModelUI:SetScale(0.8);
 		--ModelUI:ClearModel();--清空模型
-		ModelUI:SetPortraitZoom(-0.4);--模型视角远近
+		ModelUI:SetPortraitZoom(-0.6);--模型视角远近
 		--ModelUI:SetPosition(0,0,0);--相对于左下角定位模型Z,X,Y
 		--ModelUI:SetFacing(3.141596)--模型角度
 		--ModelUI:SetAnimation(69);
@@ -46,7 +46,7 @@ local function Pig_AFK()
 			MoveViewLeftStop()
 		end)
 		
-		local downV = -0.30
+		local downV = -0.50
 		local function weizhibiandong()
 			if ModelUI:IsShown() then
 				if ModelUI.pxulie then

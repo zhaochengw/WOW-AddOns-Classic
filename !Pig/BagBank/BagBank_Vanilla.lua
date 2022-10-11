@@ -1765,16 +1765,18 @@ local function zhegnhe_Open()
 			if PIG['zhegnheBAG']["JunkShow"] then Bag_Item_Junk(frame, size, id) end
 		end
 	end)
-	hooksecurefunc("ManageBackpackTokenFrame", function(backpack)
-		BackpackTokenFrame:ClearAllPoints();
-		BackpackTokenFrame:SetPoint("TOPRIGHT", BAGheji_UI.moneyframe, "TOPLEFT", 0, 5);
-		BackpackTokenFrame:SetParent(BAGheji_UI);
-		local regions = { BackpackTokenFrame:GetRegions() }
-		for gg=1,#regions do
-			regions[gg]:Hide()
-			--regions[gg]:SetTexCoord(0.05,0.8,0,0.74);
-		end	
-	end)
+	if tocversion>30000 then
+		hooksecurefunc("ManageBackpackTokenFrame", function(backpack)
+			BackpackTokenFrame:ClearAllPoints();
+			BackpackTokenFrame:SetPoint("TOPRIGHT", BAGheji_UI.moneyframe, "TOPLEFT", 0, 5);
+			BackpackTokenFrame:SetParent(BAGheji_UI);
+			local regions = { BackpackTokenFrame:GetRegions() }
+			for gg=1,#regions do
+				regions[gg]:Hide()
+				--regions[gg]:SetTexCoord(0.05,0.8,0,0.74);
+			end	
+		end)
+	end
 	MainMenuBarBackpackButton:SetScript("OnClick", function(self, button)
 		if ( IsBagOpen(0) ) then
 			CloseAllBags()

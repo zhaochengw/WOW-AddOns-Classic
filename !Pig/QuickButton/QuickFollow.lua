@@ -559,7 +559,7 @@ fuFrame:HookScript("OnShow", function(self)
 	end
 end)
 ----------
-local function ADD_QuickButton_AutoGensui()
+local function ADD_QuickButton_QuickFollow()
 	PIG.QuickFollow=PIG.QuickFollow or addonTable.Default.QuickFollow
 	PIG_Per.QuickFollow=PIG_Per.QuickFollow or addonTable.Default_Per.QuickFollow
 	if PIG["QuickButton"]["Open"] then
@@ -574,4 +574,4 @@ local function ADD_QuickButton_AutoGensui()
 		C_Timer.After(0,Classes_Gensui_B_yanchi)
 	end
 end
-addonTable.ADD_QuickButton_AutoGensui = ADD_QuickButton_AutoGensui
+addonTable.ADD_QuickButton_QuickFollow = ADD_QuickButton_QuickFollow

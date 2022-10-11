@@ -350,7 +350,7 @@ fuFrame.Spell:SetScript("OnClick", function (self)
 end);
 --设置面板=========================
 local function QuickButtonUpdate()
-	addonTable.ADD_QuickButton_AutoGensui()
+	addonTable.ADD_QuickButton_QuickFollow()
 	if PIG['QuickButton']['Lushi'] then
 		fuFrame.Lushi:SetChecked(true);
 	end
