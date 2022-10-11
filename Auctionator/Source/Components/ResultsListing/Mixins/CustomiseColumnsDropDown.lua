@@ -4,7 +4,8 @@ local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 function AuctionatorCustomiseColumnsDropDownMixin:OnLoad()
   LibDD:Create_UIDropDownMenu(self)
-  LibDD:UIDropDownMenu_Initialize(self, AuctionatorCustomiseColumnsDropDownMixin.Initialize, "MENU")
+  LibDD:UIDropDownMenu_SetInitializeFunction(self, AuctionatorCustomiseColumnsDropDownMixin.Initialize)
+  LibDD:UIDropDownMenu_SetDisplayMode(self, "MENU")
 end
 
 function AuctionatorCustomiseColumnsDropDownMixin:Callback(columns, hideStates, applyChanges)
@@ -28,7 +29,7 @@ end
 
 function AuctionatorCustomiseColumnsDropDownMixin:Initialize()
   if not self.columns then
-    HideDropDownMenu(1)
+    LibDD:HideDropDownMenu(1)
     return
   end
 
