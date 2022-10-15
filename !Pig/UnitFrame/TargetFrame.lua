@@ -24,7 +24,7 @@ local function MubiaoFrame_Open()
 		end
 		SetupStatusBarText(TargetFrameHealthBar,TargetFrameTextureFrame);
 		SetupStatusBarText(TargetFrameManaBar,TargetFrameTextureFrame);
-	elseif tocversion<40000 then
+	elseif tocversion<30000 then
 		TargetHealthDB = TargetHealthDB or { version=1, forcePercentages=false }
 		TargetHealthDB.forcePercentages = true
 		local function HealthBar_Update(statusbar, unit)
@@ -249,8 +249,6 @@ end);
 local function ADD_TOTOT_Open()	
 	if UFP_Target_Target_Target then return end
 	local fuF=TargetFrameToT
-	fuF:ClearAllPoints();
-	fuF:SetPoint("TOPLEFT", TargetFrame, "BOTTOMLEFT", 130, 26);
 
 	fuF.TTT = CreateFrame("Button", "UFP_Target_Target_Target", fuF, "SecureUnitButtonTemplate")
 	fuF.TTT:SetSize(96,50);
@@ -259,7 +257,12 @@ local function ADD_TOTOT_Open()
 	fuF.TTT:RegisterForDrag("LeftButton")
 	fuF.TTT:SetAttribute("*type1", "target")
 	fuF.TTT:SetAttribute("unit", "targettargettarget")
-	RegisterUnitWatch(fuF.TTT)
+	if InCombatLockdown() then
+		fuF.TTT:RegisterEvent("PLAYER_REGEN_ENABLED");
+	else
+		fuF:SetPoint("BOTTOMRIGHT", TargetFrame, "BOTTOMRIGHT", 6, -20);
+		RegisterUnitWatch(fuF.TTT)
+	end
 
 	fuF.TTT.HP = CreateFrame("StatusBar", nil, fuF.TTT);
 	fuF.TTT.HP:SetStatusBarTexture("interface/targetingframe/ui-statusbar.blp")
@@ -316,6 +319,9 @@ local function ADD_TOTOT_Open()
 		fuF.TTT.border.title:SetText(TTTname);
 		gengxinjindu_HP()
 		gengxinjindu_MP()
+		if event=="PLAYER_REGEN_ENABLED" then
+			self:UnregisterEvent("PLAYER_REGEN_ENABLED");
+		end
 	end)
 
 	fuF.TTT.HP:RegisterUnitEvent("UNIT_HEALTH","targettargettarget");

@@ -266,7 +266,7 @@ end);
 -- end);
 local function zhixingYidong()
 	TargetFrame:ClearAllPoints();
-	TargetFrame:SetPoint("TOPLEFT",UIParent,"TOPLEFT",350,-4);
+	TargetFrame:SetPoint("TOPLEFT",UIParent,"TOPLEFT",330,-4);
 	TargetFrame:SetUserPlaced(true);
 end
 local Mubiao_youyiFF = CreateFrame("Frame")

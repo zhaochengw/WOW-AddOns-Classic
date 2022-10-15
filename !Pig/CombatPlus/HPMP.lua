@@ -3,6 +3,8 @@ local _, _, _, tocversion = GetBuildInfo()
 local fuFrame=List_R_F_1_3
 ---------------------------------
 local www,hhh,bianju = 100,16,2
+local RuneW=www/6
+local RuneWBut,jianjuRUn,kuozhanbili=RuneW-4,4,6
 local function ADD_HPMPtiao()
 	if HPMPtiao_UI then return end
 	local HPMPtiao = CreateFrame("Button", "HPMPtiao_UI", UIParent, "SecureUnitButtonTemplate")
@@ -48,6 +50,137 @@ local function ADD_HPMPtiao()
 	HPMPtiao.MP.V:SetFont(GameFontNormal:GetFont(), 9,"OUTLINE")
 	HPMPtiao.MP.V:Hide()
 
+	local _, classId = UnitClassBase("player");
+	--职业编号1战士/2圣骑士/3猎人/4盗贼/5牧师/6死亡骑士/7萨满祭司/8法师/9术士/10武僧/11德鲁伊/12恶魔猎手
+	if classId==6 then--死亡骑士
+		-- RuneFrame:SetScale(1.8);
+		-- RuneFrame:SetPoint("TOP",PlayerFrame,"BOTTOM",200,-100);
+		
+		local RUNETYPE_BLOOD = 1;
+		local RUNETYPE_FROST = 2;
+		local RUNETYPE_UNHOLY = 3;
+		local RUNETYPE_DEATH = 4;
+		local iconTextures = {};
+		iconTextures[RUNETYPE_BLOOD] = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-Blood";
+		iconTextures[RUNETYPE_FROST] = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-Frost";
+		iconTextures[RUNETYPE_UNHOLY] = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-Unholy";
+		iconTextures[RUNETYPE_DEATH] = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-Death";
+		local runeColors = {
+			[RUNETYPE_BLOOD] = {1, 0, 0},
+			[RUNETYPE_FROST] = {0, 1, 1},
+			[RUNETYPE_UNHOLY] = {0, 0.5, 0},
+			[RUNETYPE_DEATH] = {0.8, 0.1, 1},
+		}
+		HPMPtiao.RuneFrame = CreateFrame("Frame", nil, HPMPtiao)
+		HPMPtiao.RuneFrame:SetSize(www,RuneW);
+		HPMPtiao.RuneFrame:SetPoint("TOP",HPMPtiao,"BOTTOM",0,-2);
+
+		HPMPtiao.RuneFrame.runes = {};
+		local function RuneButton_OnUpdate(self, elapsed, ...)
+			local cooldown = _G[self:GetName().."Cooldown"];
+			local index = self:GetID();
+			local start, duration, runeReady = GetRuneCooldown(index);
+			local displayCooldown = (runeReady and 0) or 1;
+			if ( displayCooldown and start and start > 0 and duration and duration > 0) then
+				CooldownFrame_Set(cooldown, start, duration, displayCooldown, true);
+				cooldown:SetUseCircularEdge(true)
+			end;
+			if ( runeReady ) then
+				self:SetScript("OnUpdate", nil);	
+			end
+		end
+		local function RuneButton_ShineFadeOut(self)
+			self.shining=false;
+			UIFrameFadeOut(self, 0.5);
+		end
+		local function RuneButton_ShineFadeIn(self)
+			if self.shining then
+				return
+			end
+			local fadeInfo={
+			mode = "IN",
+			timeToFade = 0.5,
+			finishedFunc = RuneButton_ShineFadeOut,
+			finishedArg1 = self,
+			}
+			self.shining=true;
+			UIFrameFade(self, fadeInfo);
+		end
+		local function RuneButton_Update(self, rune, dontFlash)
+			rune = rune or self:GetID();
+			local runeType = GetRuneType(rune);
+			if ( (not dontFlash) and (runeType) and (runeType ~= self.rune.runeType)) then 
+				self.shine:SetVertexColor(unpack(runeColors[runeType]));
+				RuneButton_ShineFadeIn(self.shine)
+			end
+			if (runeType) then
+				self.rune:SetTexture(iconTextures[runeType]);
+				self.rune:Show();
+				self.rune.runeType = runeType;
+				self.tooltipText = _G["COMBAT_TEXT_RUNE_"..runeMapping[runeType]];
+			else
+				self.rune:Hide();
+				self.tooltipText = nil;
+			end
+		end
+		local function RuneFrame_AddRune (runeFrame, rune)
+			tinsert(runeFrame.runes, rune);
+		end
+		
+		for i=1,6 do
+			local PigRune = CreateFrame("Frame", "PIG_Rune"..i, HPMPtiao.RuneFrame, "RuneButtonIndividualTemplate",i)
+			if i==1 then
+				PigRune:SetPoint("LEFT",HPMPtiao.RuneFrame,"LEFT",jianjuRUn/2,0);
+			elseif i==3 then
+			elseif i==5 then
+				PigRune:SetPoint("LEFT",_G["PIG_Rune"..(i-3)],"RIGHT",jianjuRUn,0);
+			else
+				PigRune:SetPoint("LEFT",_G["PIG_Rune"..(i-1)],"RIGHT",jianjuRUn,0);
+			end
+			PigRune:SetSize(RuneWBut,RuneWBut);
+			_G["PIG_Rune"..i.."Border"]:SetSize(RuneWBut+kuozhanbili,RuneWBut+kuozhanbili);
+			_G["PIG_Rune"..i.."Rune"]:SetSize(RuneWBut+kuozhanbili,RuneWBut+kuozhanbili);
+			PigRune:SetFrameStrata("LOW")
+			PigRune:EnableMouse(false)
+
+			PigRune:SetScript("OnEnter", nil);
+			PigRune:SetScript("OnLeave", nil);
+			PigRune:RegisterEvent("PLAYER_ENTERING_WORLD");
+			PigRune:SetScript("OnEvent", function(self, event)
+				RuneFrame_AddRune(HPMPtiao.RuneFrame, self);
+				self.rune = _G[self:GetName().."Rune"];
+				self.fill = _G[self:GetName().."Fill"];
+				self.shine = _G[self:GetName().."ShineTexture"];
+				RuneButton_Update(self);
+			end)
+		end
+		PIG_Rune3:SetPoint("LEFT",PIG_Rune6,"RIGHT",jianjuRUn,0);
+		--
+		HPMPtiao.RuneFrame:RegisterEvent("RUNE_POWER_UPDATE");
+		HPMPtiao.RuneFrame:RegisterEvent("RUNE_TYPE_UPDATE");
+		HPMPtiao.RuneFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
+		HPMPtiao.RuneFrame:SetScript("OnEvent", function(self, event, ...)
+			if ( event == "PLAYER_ENTERING_WORLD" ) then
+				for rune in next, self.runes do
+					RuneButton_Update(self.runes[rune], rune, true);
+				end		
+			elseif ( event == "RUNE_POWER_UPDATE" ) then		
+				local rune, usable= ...;
+				if ( not usable and rune and self.runes[rune] ) then
+					self.runes[rune]:SetScript("OnUpdate", RuneButton_OnUpdate);
+				elseif ( usable and rune and self.runes[rune] ) then
+					self.runes[rune].shine:SetVertexColor(1, 1, 1);
+					RuneButton_ShineFadeIn(self.runes[rune].shine)
+					self:SetScript("OnUpdate", nil);
+				end
+			elseif ( event == "RUNE_TYPE_UPDATE" ) then		
+				local rune = ...;
+				if ( rune ) then
+					RuneButton_Update(self.runes[rune], rune);
+				end
+			end
+		end);
+	end
 	local function gengxinjindu_HP()
 		local HP = UnitHealth("player")
 		local HPMAX = UnitHealthMax("player")
@@ -202,6 +335,10 @@ fuFrame.suofang:SetScript('OnValueChanged', function(self)
 	--HPMPtiao_UI.MP.V:SetFont(GameFontNormal:GetFont(), zihaoV[vallll],"OUTLINE")
 	HPMPtiao_UI.HP.V:SetFont(GameFontNormal:GetFont(), vallll-2,"OUTLINE")
 	HPMPtiao_UI.MP.V:SetFont(GameFontNormal:GetFont(), vallll-2,"OUTLINE")
+	--dk
+	if HPMPtiao_UI.RuneFrame then
+		HPMPtiao_UI.RuneFrame:SetScale(val);
+	end
 end)
 --X位置
 local WowWidth=floor(GetScreenWidth());

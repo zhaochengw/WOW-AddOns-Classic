@@ -5,6 +5,7 @@ local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local ADD_QuickButton=addonTable.ADD_QuickButton
 local ADD_Frame=addonTable.ADD_Frame
 --=======================================
+--创建快捷按钮
 local zhuangbeixilieID={
 	{1,"Head",true},
 	{2,"Neck",false},
@@ -26,7 +27,6 @@ local zhuangbeixilieID={
 	{18,"Ranged",true},
 	{19,"Tabard",false},
 }
---创建快捷按钮
 local function ADD_QuickButton_AutoEquip()
 	PIG_Per['QuickButton']['AutoEquipInfo']=PIG_Per['QuickButton']['AutoEquipInfo'] or {}
 	if PIG['QuickButton']['Open'] then
@@ -37,7 +37,7 @@ local function ADD_QuickButton_AutoEquip()
 			local FrameOnUpdate = CreateFrame("Frame");
 			FrameOnUpdate:Hide()
 			local Icon=133122
-			local Tooltip = "左击-|cff00FFFF展开切换按钮(左键切换/右键保存/Shift+左键删除)|r\n右击-|cff00FFFF卸下身上有耐久装备|r"
+			local Tooltip = "左击-|cff00FFFF展开切换按钮(左键切换右键保存)|r\n右击-|cff00FFFF卸下身上有耐久装备|r"
 			local AutoEquip=ADD_QuickButton(GnUI,Tooltip,Icon)
 			-- AutoEquip.BGtex = AutoEquip:CreateTexture(nil, "BACKGROUND", nil, -1);
 			-- AutoEquip.BGtex:SetTexture("interface/buttons/ui-emptyslot-white.blp");
@@ -50,9 +50,17 @@ local function ADD_QuickButton_AutoEquip()
 			-- AutoEquip.iconx:SetPoint("BOTTOMRIGHT", 0, 0);
 			--
 			local butW = QuickButtonUI.nr:GetHeight()
-			local anniushu=10
+			local anniushu=6
 			local AutoEquipList = ADD_Frame("AutoEquipList_UI",AutoEquip,butW, (butW+6)*anniushu,"BOTTOM",AutoEquip,"TOP",0,0,false,false,false,false,true)
 			
+			local NumTexCoord = {
+				{0.326,0.43,0,0.32},
+				{0.546,0.694,0,0.32},
+				{0.80,0.95,0,0.32},
+				{0.04,0.21,0.33,0.66},
+				{0.3,0.45,0.33,0.66},
+				{0.546,0.71,0.33,0.66},
+			}
 			for i=1,anniushu do
 				local AutoEquip_but = CreateFrame("Button", "AutoEquip_but"..i, AutoEquipList)
 				AutoEquip_but:SetSize(butW, butW)
@@ -62,14 +70,12 @@ local function ADD_QuickButton_AutoEquip()
 				AutoEquip_but.BGtex:SetAlpha(0.4);
 				AutoEquip_but.BGtex:SetPoint("TOPLEFT", -15, 15);
 				AutoEquip_but.BGtex:SetPoint("BOTTOMRIGHT", 15, -15);
-		
+				
 				AutoEquip_but.Tex = AutoEquip_but:CreateTexture(nil, "BORDER");
+				AutoEquip_but.Tex:SetTexture("interface/timer/bigtimernumbers.blp");
 				AutoEquip_but.Tex:SetPoint("TOPLEFT", 0, 0);
 				AutoEquip_but.Tex:SetPoint("BOTTOMRIGHT", 0, 0);
-
-				AutoEquip_but.name = AutoEquip_but:CreateFontString();
-				AutoEquip_but.name:SetPoint("BOTTOM", AutoEquip_but, "BOTTOM", 0, 0);
-				AutoEquip_but.name:SetFont(ChatFontNormal:GetFont(), 16,"OUTLINE")
+				AutoEquip_but.Tex:SetTexCoord(NumTexCoord[i][1],NumTexCoord[i][2],NumTexCoord[i][3],NumTexCoord[i][4]);
 
 				AutoEquip_but:RegisterForClicks("AnyUp");
 				AutoEquip_but.Down = AutoEquip_but:CreateTexture(nil, "OVERLAY");
@@ -84,23 +90,77 @@ local function ADD_QuickButton_AutoEquip()
 				AutoEquip_but:SetScript("OnMouseUp", function (self)
 					self.Down:Hide();
 				end);
-
 				AutoEquip_but:SetScript("OnClick", function(self,button)
 					if button=="LeftButton" then
-						if IsShiftKeyDown() then
-							C_EquipmentSet.DeleteEquipmentSet(i-1)
-							for i=1,anniushu do
-								local fujikj = _G["AutoEquip_but"..i]
-								local name, iconFileID, setID, isEquipped, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(i-1)
-								fujikj.Tex:SetTexture(iconFileID);
-								fujikj.name:SetText(name);
+						if InCombatLockdown() then return end
+						local wupinshujuinfo =PIG_Per['QuickButton']['AutoEquipInfo'][i]
+						if wupinshujuinfo then
+							FrameOnUpdate.hejilist={}
+							for gg=1,#wupinshujuinfo do
+								if wupinshujuinfo[gg][2] then
+									EquipItemByName(wupinshujuinfo[gg][2], wupinshujuinfo[gg][1])
+								else
+									local itemLink = GetInventoryItemLink("player", zhuangbeixilieID[gg][1])
+									if itemLink then
+										if wupinshujuinfo[gg][1]==17 then
+											if wupinshujuinfo[gg-1][2] then
+												local fffffID =C_Item.GetItemInventoryTypeByID(wupinshujuinfo[gg-1][2])
+												if fffffID~=17 then
+													table.insert(FrameOnUpdate.hejilist,zhuangbeixilieID[gg][1])
+												end
+											end
+										else
+											table.insert(FrameOnUpdate.hejilist,zhuangbeixilieID[gg][1])
+										end	
+									end
+								end
 							end
+							if #FrameOnUpdate.hejilist>0 then
+								FrameOnUpdate.konggekaishi=0
+								FrameOnUpdate.konggelist={}
+								for bagID=0,4 do
+									local numberOfFreeSlots, bagType = GetContainerNumFreeSlots(bagID)
+									if numberOfFreeSlots>0 and bagType==0 then
+										for ff=1,GetContainerNumSlots(bagID) do
+											if GetContainerItemID(bagID, ff) then
+											else
+												table.insert(FrameOnUpdate.konggelist,{bagID,ff})
+												FrameOnUpdate.konggekaishi=FrameOnUpdate.konggekaishi+1
+												if FrameOnUpdate.konggekaishi==#FrameOnUpdate.hejilist then
+													break
+												end
+											end
+										end
+									end
+									if FrameOnUpdate.konggekaishi==#FrameOnUpdate.hejilist then
+										break
+									end
+								end
+					
+								for inv = 1, #FrameOnUpdate.konggelist do
+									local isLocked2 = IsInventoryItemLocked(FrameOnUpdate.hejilist[inv])
+									if not isLocked2 then
+										PickupInventoryItem(FrameOnUpdate.hejilist[inv])
+										PickupContainerItem(FrameOnUpdate.konggelist[inv][1], FrameOnUpdate.konggelist[inv][2])
+									end
+								end
+								if #FrameOnUpdate.konggelist<#FrameOnUpdate.hejilist then
+									print("\124cff00FFFF!Pig：\124cffff0000更换"..i.."号配装失败(背包剩余空间不足)\124r");
+									return
+								end
+							end
+							print("\124cff00FFFF!Pig：\124cffffFF00更换"..i.."号配装成功\124r");
 						else
-							C_EquipmentSet.UseEquipmentSet(i-1)
+							print("\124cff00FFFF!Pig：\124cffff0000"..i.."号配装尚未保存\124r");
 						end
 					else
-						--C_EquipmentSet.UnassignEquipmentSetSpec(i-1)
-						C_EquipmentSet.SaveEquipmentSet(i-1)
+						local wupinshujuinfo = {}
+						for inv = 1, #zhuangbeixilieID do
+							local itemLink = GetInventoryItemLink("player", zhuangbeixilieID[inv][1])
+							table.insert(wupinshujuinfo, {zhuangbeixilieID[inv][1],itemLink});
+						end
+						PIG_Per['QuickButton']['AutoEquipInfo'][i] = wupinshujuinfo
+						print("\124cff00FFFF!Pig：\124cffffFF00当前装备已保存到"..i.."号配装\124r");
 					end
 				end)
 			end
@@ -137,12 +197,6 @@ local function ADD_QuickButton_AutoEquip()
 								end
 							end
 							AutoEquipList:SetPoint("BOTTOM",self,"TOP",0,6);
-						end
-						for i=1,anniushu do
-							local fujikj = _G["AutoEquip_but"..i]
-							local name, iconFileID, setID, isEquipped, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(i-1)
-							fujikj.Tex:SetTexture(iconFileID);
-							fujikj.name:SetText(name);
 						end
 						AutoEquipList:Show()
 					end
