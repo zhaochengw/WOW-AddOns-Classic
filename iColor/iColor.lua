@@ -1,3 +1,6 @@
+
+if IsAddOnLoaded('iColor') then return; end		--bf@178.com
+
 local _;
 local _G = _G
 local myName = UnitName("player")
@@ -6,7 +9,6 @@ local normal = NORMAL_FONT_COLOR
 local green = GREEN_FONT_COLOR
 local white = HIGHLIGHT_FONT_COLOR
 local defColor = FRIENDS_WOW_NAME_COLOR_CODE
-local MAX_SCORE_BUTTONS = MAX_SCORE_BUTTONS or 22
 
 local BC = {}
 for k, v in pairs(LOCALIZED_CLASS_NAMES_MALE) do BC[v] = k end
@@ -118,7 +120,7 @@ hooksecurefunc("WorldStateScoreFrame_Update", function()
 	-- local isArena = IsActiveBattlefieldArena()
 	local scrollOffset = FauxScrollFrame_GetOffset(WorldStateScoreScrollFrame)
 
-	for i = 1, MAX_SCORE_BUTTONS do
+	for i = 1, 22 do
 		local scoreButton = _G["WorldStateScoreButton"..i]
 		local name, _, _, _, _, faction, _, _, classToken = GetBattlefieldScore(scrollOffset + i)
 		if name and faction and classToken then
