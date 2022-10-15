@@ -2,7 +2,7 @@ local addonName, AutoLoot = ...;
 
 local Settings = {};
 local internal = {
-  _frame = CreateFrame("frame");
+  _frame = CreateFrame("frame", nil, UIParent);
   isItemLocked = false,
   isLooting = false,
   isHidden = true,
@@ -13,10 +13,18 @@ local internal = {
   Dragonflight = 9,
 };
 
+local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots
+
 function AutoLoot:ProcessLootItem(itemLink, itemQuantity)
+  local itemStackSize, _, _, _, itemClassID = select(8, GetItemInfo(itemLink));
   local itemFamily = GetItemFamily(itemLink);
-  for i = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+  for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS do
     local free, bagFamily = GetContainerNumFreeSlots(i);
+    if i == 5 then
+      if itemClassID == Enum.ItemClass.Tradegoods and free > 0 then
+        return true;
+      end
+    end
     if (not bagFamily or bagFamily == 0) or (itemFamily and bit.band(itemFamily, bagFamily) > 0) then
       if free > 0 then
         return true;
@@ -26,7 +34,6 @@ function AutoLoot:ProcessLootItem(itemLink, itemQuantity)
 
   local inventoryItemCount = GetItemCount(itemLink);
   if inventoryItemCount > 0 then
-    local itemStackSize = select(8, GetItemInfo(itemLink));
     if itemStackSize > 1 then
       local remainingSpace = (itemStackSize - inventoryItemCount) % itemStackSize;
       if remainingSpace >= itemQuantity then
@@ -84,11 +91,9 @@ function AutoLoot:OnLootClosed()
   internal.isLooting = false;
   internal.isHidden = true;
   internal.isItemLocked = false;
---[[   if not internal.ElvUI and LE_EXPANSION_LEVEL_CURRENT >= internal.Dragonflight then
-    LootFrame:Close()
-  end ]]
-  self:ResetLootFrame();
 
+  self:ResetLootFrame();
+  CloseLoot()
   -- Workaround for TSM Destroy issue
   if TSMDestroyBtn and TSMDestroyBtn:IsVisible() then
     C_Timer.NewTicker(0, function() SlashCmdList.TSM("destroy") end, 2);
@@ -121,17 +126,16 @@ function AutoLoot:AnchorLootFrame()
   local f = LootFrame
   if GetCVarBool("lootUnderMouse") then
     local x, y = GetCursorPosition();
+    f:ClearAllPoints();
     x = x / f:GetEffectiveScale();
     y = y / f:GetEffectiveScale();
-
-    f:ClearAllPoints();
     f:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x - 40, y + 20);
     f:GetCenter();
     f:Raise();
   else
-    f:ClearAllPoints();
-    f:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 20, -125);
-  end
+      f:ClearAllPoints();
+      f:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 20, -125);
+    end
   f:Show()
 end
 
@@ -153,7 +157,6 @@ end
 function AutoLoot:ResetLootFrame()
   if not internal.ElvUI and LootFrame:IsEventRegistered("LOOT_OPENED") then
     if LE_EXPANSION_LEVEL_CURRENT >= internal.Dragonflight then return end
-
     LootFrame:SetParent(internal._frame);
   end
 end
@@ -178,15 +181,6 @@ function AutoLoot:OnAddonLoaded(name)
         end
       end
 
---[[       if not internal.ElvUI and LootFrame:IsEventRegistered("LOOT_OPENED") then
-        if LE_EXPANSION_LEVEL_CURRENT >= internal.Dragonflight then
-           LootFrame.HideAnim:HookScript("OnFinished", function()
-            --LootFrame:SetParent(internal._frame);
-          end);
-        end
-      end ]]
-
-      --LootFrame:SetClampedToScreen(false)
       self:ResetLootFrame();
     end)
   end
