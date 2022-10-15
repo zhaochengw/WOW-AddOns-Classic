@@ -395,11 +395,14 @@ function ItemBase:IsQuestItem()
     if not self.hasItem then
         return
     end
-    if self:IsCached() or not self.meta:IsContainer() then
-        return IsQuestItem(self.info.link)
+
+    if not self:IsCached() and self.meta:IsContainer() then
+        local _, questId = GetContainerItemQuestInfo(self.bag, self.slot)
+        if questId then
+            return true
+        end
     end
-    local _, questId = GetContainerItemQuestInfo(self.bag, self.slot)
-    return questId
+    return IsQuestItem(self.info.link)
 end
 
 function ItemBase:IsQuestStarter()
