@@ -1,7 +1,7 @@
 ## Interface: 30400
 ## Title: MeetingHorn
 ## Title-zhCN: 集结号
-## Version: 1.8.0
+## Version: 1.8.2
 ## SavedVariables: MEETINGHORN_DB
 ## SavedVariablesPerCharacter: MEETINGHORN_DB_CHARACTER_MEMBERS
 
