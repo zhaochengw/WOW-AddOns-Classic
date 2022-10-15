@@ -4,7 +4,10 @@ This mod is distributed under Version 2 of the GPL.  A copy of the GPL is includ
 
 [Changelog history](https://github.com/Hoizame/AtlasLootClassic/blob/master/AtlasLootClassic/Documentation/Release_Notes.md)
 
-## v3.0.6 (Oct, 08, 2022)
+## v3.0.7 (Oct, 13, 2022)
 
-- fix classic Naxxramas opens when in Wotlk #260
-- add missing orange gems pr #259
+- add mounts into raid AC tables
+- add Missing Venomhide Ravasaur and Sea Turtle in Wrath mounts #262
+- add missing spellthreads #268
+- add missing green, red, meta, and Perfect gems #265
+- fix Naxx now shows wrath version not classic
