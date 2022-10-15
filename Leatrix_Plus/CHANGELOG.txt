@@ -1,3 +1,17 @@
+3.0.32 - 15th October 2022
+- Fixed 'Use class colors in chat' ('Chat') for game version 3.4.0.46158.
+- Added a flight time.
+
+3.0.31 - 15th October 2022
+- Added flight times.
+
+3.0.30 - 14th October 2022
+- Update for 'Enhance dressup' ('Interface') and ElvUI WrathArmory plugin.
+- Added flight times.
+
+3.0.29 - 12th October 2022
+- Added flight times.
+
 3.0.28 - 11th October 2022
 - For 'Mute game sounds' ('System'), you can now make Netherdrakes quieter.
 - Added flight times.

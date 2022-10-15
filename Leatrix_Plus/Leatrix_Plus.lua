@@ -1,5 +1,5 @@
 ﻿----------------------------------------------------------------------
--- 	Leatrix Plus 3.0.28 (11th October 2022)
+-- 	Leatrix Plus 3.0.32 (15th October 2022)
 ----------------------------------------------------------------------
 
 --	01:Functns, 02:Locks, 03:Restart, 20:Live, 30:Isolated, 40:Player
@@ -19,7 +19,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "3.0.28"
+	LeaPlusLC["AddonVer"] = "3.0.32"
 
 	-- Get locale table
 	local void, Leatrix_Plus = ...
@@ -567,6 +567,7 @@
 		or	(LeaPlusLC["NoStickyChat"]			~= LeaPlusDB["NoStickyChat"])			-- Disable sticky chat
 		or	(LeaPlusLC["UseArrowKeysInChat"]	~= LeaPlusDB["UseArrowKeysInChat"])		-- Use arrow keys in chat
 		or	(LeaPlusLC["NoChatFade"]			~= LeaPlusDB["NoChatFade"])				-- Disable chat fade
+		or	(LeaPlusLC["ClassColorsInChat"]		~= LeaPlusDB["ClassColorsInChat"])		-- Use class colors in chat
 		or	(LeaPlusLC["RecentChatWindow"]		~= LeaPlusDB["RecentChatWindow"])		-- Recent chat window
 		or	(LeaPlusLC["MaxChatHstory"]			~= LeaPlusDB["MaxChatHstory"])			-- Increase chat history
 		or	(LeaPlusLC["FilterChatMessages"]	~= LeaPlusDB["FilterChatMessages"])		-- Filter chat messages
@@ -6082,6 +6083,28 @@
 
 			-- Function to set vanity controls layout
 			local function SetVanityControlsLayout()
+
+				-- ElvUI_WrathArmory: Position helm and cloak checkboxes
+				if LeaPlusLC.ElvUI then
+					local E = LeaPlusLC.ElvUI:GetModule("ElvUI_WrathArmory", true)
+					if E then
+						LeaPlusCB["ShowHelm"].f:SetText(L["H"])
+						LeaPlusCB["ShowHelm"].f:ClearAllPoints()
+						LeaPlusCB["ShowHelm"].f:SetPoint("RIGHT", LeaPlusCB["ShowHelm"], "LEFT", 4, 0)
+						LeaPlusCB["ShowHelm"]:ClearAllPoints()
+						LeaPlusCB["ShowHelm"]:SetPoint("BOTTOMLEFT", CharacterFrame, "BOTTOMLEFT", 80, 110)
+						LeaPlusCB["ShowHelm"]:SetHitRectInsets(-LeaPlusCB["ShowHelm"].f:GetStringWidth() + 4, 3, 0, 0)
+						LeaPlusCB["ShowCloak"].f:SetText(L["C"])
+						LeaPlusCB["ShowCloak"].f:ClearAllPoints()
+						LeaPlusCB["ShowCloak"].f:SetPoint("RIGHT", LeaPlusCB["ShowCloak"], "LEFT", 4, 0)
+						LeaPlusCB["ShowCloak"]:ClearAllPoints()
+						LeaPlusCB["ShowCloak"]:SetPoint("LEFT", LeaPlusCB["ShowHelm"], "RIGHT", 4, 0)
+						LeaPlusCB["ShowCloak"]:SetHitRectInsets(-LeaPlusCB["ShowCloak"].f:GetStringWidth() + 4, 3, 0, 0)
+						return
+					end
+				end
+
+				-- Position helm and cloak checkboxes
 				if LeaPlusLC["VanityAltLayout"] == "On" then
 					-- Alternative layout
 					LeaPlusCB["ShowHelm"].f:SetText(L["H"])
@@ -6575,6 +6598,18 @@
 
 			local function ToggleStats(startup)
 
+				-- ElvUI_WrathArmory: Make character model full size
+				if LeaPlusLC.ElvUI then
+					local E = LeaPlusLC.ElvUI:GetModule("ElvUI_WrathArmory", true)
+					if E then
+						CharacterModelFrame:ClearAllPoints()
+						CharacterModelFrame:SetPoint("TOPLEFT", PaperDollFrame, 66, -76)
+						CharacterModelFrame:SetPoint("BOTTOMRIGHT", PaperDollFrame, -86, 134)
+						return
+					end
+				end
+
+				-- Toggle dressup stats
 				if LeaPlusLC["HideDressupStats"] == "On" then
 					CharacterResistanceFrame:Hide()
 					if CSC_HideStatsPanel then
@@ -6598,7 +6633,9 @@
 						LeaPlusCB["ShowHelm"]:Hide()
 						LeaPlusCB["ShowCloak"]:Hide()
 					end
+
 				else
+
 					CharacterResistanceFrame:Show()
 					if CSC_ShowStatsPanel then
 						-- CharacterStatsTBC is installed
@@ -6622,6 +6659,7 @@
 						LeaPlusCB["ShowCloak"]:Show()
 					end
 				end
+
 			end
 
 			-- Toggle stats with middle mouse button
@@ -7927,20 +7965,37 @@
 		--	Use class colors in chat
 		----------------------------------------------------------------------
 
-		do
+		if LeaPlusLC["ClassColorsInChat"] == "On" then
 
-			-- Function to set class colors
-			local function SetClassCol()
-				if LeaPlusLC["ClassColorsInChat"] == "On" then
-					SetCVar("chatClassColorOverride", "0")
-				else
-					SetCVar("chatClassColorOverride", "1")
+			SetCVar("chatClassColorOverride", "0")
+
+			C_Timer.After(0.1, function()
+
+				-- Set local channel colors and lock checkboxes
+				for i = 1, 18 do
+					if _G["ChatConfigChatSettingsLeftCheckBox" .. i .. "Check"] then
+						ToggleChatColorNamesByClassGroup(true, _G["ChatConfigChatSettingsLeftCheckBox" .. i .. "Check"]:GetParent().type)
+						LeaPlusLC:LockItem(_G["ChatConfigChatSettingsLeftCheckBox" .. i .. "ColorClasses"], true)
+					end
 				end
-			end
 
-			-- Set class colors on startup and when option is clicked (if enabled)
-			LeaPlusCB["ClassColorsInChat"]:HookScript("OnClick", SetClassCol)
-			if LeaPlusLC["ClassColorsInChat"] == "On" then SetClassCol() end
+				-- Set global channel colors
+				for i = 1, 50 do
+					ToggleChatColorNamesByClassGroup(true, "CHANNEL" .. i)
+				end
+
+				-- Lock global channel checkboxes on startup
+				hooksecurefunc("ChatConfig_CreateCheckboxes", function(self, checkBoxTable, checkBoxTemplate, title)
+					if ChatConfigChannelSettingsLeft.checkBoxTable then
+						for i = 1, 50 do
+							if _G["ChatConfigChannelSettingsLeftCheckBox" .. i .. "ColorClasses"] then
+								LeaPlusLC:LockItem(_G["ChatConfigChannelSettingsLeftCheckBox" .. i .. "ColorClasses"], true)
+							end
+						end
+					end
+				end)
+
+			end)
 
 		end
 
@@ -12891,6 +12946,22 @@
 		-- Restore default values for options that require reloads
 		----------------------------------------------------------------------
 
+		-- Use class colors
+		if LeaPlusDB["ClassColorsInChat"] == "On" then
+			if wipe or (not wipe and LeaPlusLC["ClassColorsInChat"] == "Off") then
+				-- Restore local channel color
+				for i = 1, 18 do
+					if _G["ChatConfigChatSettingsLeftCheckBox" .. i .. "Check"] then
+						ToggleChatColorNamesByClassGroup(false, _G["ChatConfigChatSettingsLeftCheckBox" .. i .. "Check"]:GetParent().type)
+					end
+				end
+				-- Restore global channel color
+				for i = 1, 50 do
+					ToggleChatColorNamesByClassGroup(false, "CHANNEL" .. i)
+				end
+			end
+		end
+
 		-- Enhance minimap restore round minimap if wipe or enhance minimap is toggled off
 		if LeaPlusDB["MinimapModder"] == "On" and LeaPlusDB["SquareMinimap"] == "On" then
 			if wipe or (not wipe and LeaPlusLC["MinimapModder"] == "Off") then
@@ -12922,14 +12993,6 @@
 				if AuctionFrameAuctions.duration then
 					LeaPlusDB["AHDuration"] = AuctionFrameAuctions.duration
 				end
-			end
-		end
-
-		-- Set locked options to original values (set before they were locked)
-		if LeaPlusLC.ElvUI then
-			for k, v in pairs(LeaLockList) do
-				LeaPlusLC[k] = v
-				LeaPlusDB[k] = v
 			end
 		end
 
@@ -15173,7 +15236,7 @@
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "UseArrowKeysInChat"		, 	"Use arrow keys in chat"		, 	340, -112, 	true,	"If checked, you can press the arrow keys to move the insertion point left and right in the chat frame.|n|nIf unchecked, the arrow keys will use the default keybind setting.")
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "NoChatFade"				, 	"Disable chat fade"				, 	340, -132, 	true,	"If checked, chat text will not fade out after a time period.")
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "UnivGroupColor"			,	"Universal group color"			,	340, -152,	false,	"If checked, raid chat will be colored blue (to match the default party chat color).")
-	LeaPlusLC:MakeCB(LeaPlusLC[pg], "ClassColorsInChat"			,	"Use class colors in chat"		,	340, -172,	false,	"If checked, class colors will be used in the chat frame.")
+	LeaPlusLC:MakeCB(LeaPlusLC[pg], "ClassColorsInChat"			,	"Use class colors in chat"		,	340, -172,	true,	"If checked, class colors will be used in the chat frame.")
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "RecentChatWindow"			,	"Recent chat window"			, 	340, -192, 	true,	"If checked, you can hold down the control key and click a chat tab to view recent chat in a copy-friendly window.")
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "MaxChatHstory"				,	"Increase chat history"			, 	340, -212, 	true,	"If checked, your chat history will increase to 4096 lines.  If unchecked, the default will be used (128 lines).|n|nEnabling this option may prevent some chat text from showing during login.")
 	LeaPlusLC:MakeCB(LeaPlusLC[pg], "FilterChatMessages"		, 	"Filter chat messages"			,	340, -232, 	true,	"If checked, you can block spell links, drunken spam and duel spam.")
