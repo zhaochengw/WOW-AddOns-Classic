@@ -1,0 +1,25 @@
+## Interface: 30400
+## Title: MountsJournal
+## Author: sfmict
+## Version: v3.4.17
+## Notes: Improved Mounts Journal.
+## Notes-ruRU: Улучшенный журнал средств передвижения.
+## SavedVariables: MountsJournalDB
+## SavedVariablesPerCharacter: MountsJournalChar
+embeds.xml
+locales.xml
+Util.lua
+widgets\Binding.lua
+templates.xml
+Mounts.lua
+db.lua
+config\Main.lua
+config\Classes.lua
+config\About.lua
+Journal.lua
+components\Tags.lua
+components\Camera.lua
+components\MountAnimations.lua
+components\DungeonRaidButton.lua
+components\Profiles.lua
+components\Hyperlinks.lua
