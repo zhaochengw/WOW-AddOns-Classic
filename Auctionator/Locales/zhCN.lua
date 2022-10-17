@@ -77,6 +77,12 @@ L["CONFIG_CHAT_LOG_TOOLTIP_TEXT"] = "停用此选项时，将不会扫描你的�
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT"] = "显示利润而不是制作成本"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = "制作成本显示利润"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = "当拍卖行打开时，制造窗口将显示制作物品的成本。 启用此选项以显示利润。"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW"] = "Show crafting costs in the crafting view"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Crafting screen extra info"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "The crafting screen will show the cost of crafting an item. Disable this option to not show the crafting costs."
 L["CONFIG_DEBUG"] = "输出出错讯息"
 L["CONFIG_DEBUG_TOOLTIP_HEADER"] = "拍卖小帮手出错"
 L["CONFIG_DEBUG_TOOLTIP_TEXT"] = "仅供维护人员使用，将出错信息输出到聊天视窗。"
@@ -175,6 +181,8 @@ L["COPY_NO_LIST_SELECTED"] = "无法复制物品。未选择购物清单"
 L["COPY_TEXT_HEADER"] = "复制文本"
 L["COPY_TO_LIST"] = "将物品复制到购物清单中"
 L["CRAFTED_LEVEL"] = "制作等级"
+--[[Translation missing --]]
+L["CRAFTING_INFO"] = "Crafting Info"
 L["CREATE"] = "建立"
 L["CREATE_LIST_DIALOG"] = "输入新购物清单的名称:"
 L["CURRENT"] = "当前"

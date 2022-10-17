@@ -84,6 +84,12 @@ L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = [=[Custo de Criação Mos
 ]=]
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = [=[Quando a Casa de Leilões estiver aberta, a tela de criação mostrará o custo de criação de um item. Ative esta opção para mostrar o lucro.
 ]=]
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW"] = "Show crafting costs in the crafting view"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Crafting screen extra info"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "The crafting screen will show the cost of crafting an item. Disable this option to not show the crafting costs."
 L["CONFIG_DEBUG"] = "Ativar/desativar mostrar mensagens de debug."
 L["CONFIG_DEBUG_TOOLTIP_HEADER"] = "Debug do Auctionator"
 L["CONFIG_DEBUG_TOOLTIP_TEXT"] = "Isto é utilizado pelos mantenedores para mostrar mensagens de debug no chat."
@@ -205,6 +211,8 @@ L["COPY_TEXT_HEADER"] = "Copia o Texto"
 L["COPY_TO_LIST"] = [=[Copiar item para lista de compras ativa
 ]=]
 L["CRAFTED_LEVEL"] = "Nível para Criação"
+--[[Translation missing --]]
+L["CRAFTING_INFO"] = "Crafting Info"
 L["CREATE"] = "Criar"
 L["CREATE_LIST_DIALOG"] = "Insira o nome para a nova lista de compras:"
 L["CURRENT"] = "Atual"

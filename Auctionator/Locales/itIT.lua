@@ -78,6 +78,12 @@ L["CONFIG_CHAT_LOG_TOOLTIP_TEXT"] = "Se questa opzione non è spuntata le tue as
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT"] = "Mostra profitto invece che costo dei reagenti"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = "Costo Reagenti Mostra Profitto"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = "Quando la Casa d'Aste è aperta la finestra di creazione mostrerà il costo per la creazione di un'oggetto. Abilita questa opzione per mostrare l'eventuale profitto."
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW"] = "Show crafting costs in the crafting view"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Crafting screen extra info"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "The crafting screen will show the cost of crafting an item. Disable this option to not show the crafting costs."
 L["CONFIG_DEBUG"] = "Attiva/disattiva l'output di debug."
 L["CONFIG_DEBUG_TOOLTIP_HEADER"] = "Auctionator Debug"
 L["CONFIG_DEBUG_TOOLTIP_TEXT"] = "Usato dagli sviluppatori per visualizzare messaggi di debug in chat."
@@ -176,6 +182,8 @@ L["COPY_NO_LIST_SELECTED"] = "Non posso copiare l'oggetto. Nessuna lista della s
 L["COPY_TEXT_HEADER"] = "Copia Testo"
 L["COPY_TO_LIST"] = "Copia l'oggetto nella lista della spesa attiva"
 L["CRAFTED_LEVEL"] = "Livello di creazione"
+--[[Translation missing --]]
+L["CRAFTING_INFO"] = "Crafting Info"
 L["CREATE"] = "Crea"
 L["CREATE_LIST_DIALOG"] = "Inserisci il nome di una nuova shopping list:"
 L["CURRENT"] = "Attuale"

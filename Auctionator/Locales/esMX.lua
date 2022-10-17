@@ -81,6 +81,12 @@ L["CONFIG_CHAT_LOG_TOOLTIP_TEXT"] = "Si esta opción está desactivada, sus suba
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT"] = "Muestra ganancias en lugar de costos de fabricación"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = "Costos de fabricación Mostrar ganancias"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = "Cuando la Casa de Subastas está abierta, la pantalla de fabricación mostrará el costo de fabricar un objeto. Habilita esta opción para mostrar la ganancia en su lugar."
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW"] = "Show crafting costs in the crafting view"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Crafting screen extra info"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "The crafting screen will show the cost of crafting an item. Disable this option to not show the crafting costs."
 L["CONFIG_DEBUG"] = "Alternar salida de depuración."
 L["CONFIG_DEBUG_TOOLTIP_HEADER"] = "Depurar Actionator"
 L["CONFIG_DEBUG_TOOLTIP_TEXT"] = "Esto es usado por los mantenedores para enviar mensajes de depuración al marco del chat."
@@ -201,6 +207,8 @@ L["COPY_NO_LIST_SELECTED"] = "No se puede copiar el objeto. No se ha seleccionad
 L["COPY_TEXT_HEADER"] = "Copiar texto"
 L["COPY_TO_LIST"] = "Copiar objeto a la lista de compras activa"
 L["CRAFTED_LEVEL"] = "Nivel de crafteo"
+--[[Translation missing --]]
+L["CRAFTING_INFO"] = "Crafting Info"
 L["CREATE"] = "Crear"
 L["CREATE_LIST_DIALOG"] = "Ingrese el nombre de la nueva lista de compras:"
 L["CURRENT"] = "Actual"

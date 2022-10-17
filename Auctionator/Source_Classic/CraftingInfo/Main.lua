@@ -1,4 +1,19 @@
-function Auctionator.ReagentSearch.DoTradeSkillReagentsSearch()
+-- Add a button to the tradeskill frame to search the AH for the reagents.
+-- The button will be hidden when the AH is closed.
+-- The total price is shown in a FontString next to the button
+local addedFunctionality = false
+function Auctionator.CraftingInfo.Initialize()
+  if addedFunctionality then
+    return
+  end
+
+  if TradeSkillFrame then
+    addedFunctionality = true
+    CreateFrame("Frame", "AuctionatorCraftingInfo", TradeSkillFrame, "AuctionatorCraftingInfoFrameTemplate");
+  end
+end
+
+function Auctionator.CraftingInfo.DoTradeSkillReagentsSearch()
   local recipeIndex = GetTradeSkillSelectionIndex()
   local recipeInfo =  { GetTradeSkillInfo(recipeIndex) }
 
@@ -25,7 +40,7 @@ function Auctionator.ReagentSearch.DoTradeSkillReagentsSearch()
   end
 end
 
-function Auctionator.ReagentSearch.GetSkillReagentsTotal()
+function Auctionator.CraftingInfo.GetSkillReagentsTotal()
   local recipeIndex = GetTradeSkillSelectionIndex()
 
   local total = 0
@@ -52,7 +67,7 @@ function Auctionator.ReagentSearch.GetSkillReagentsTotal()
   return total
 end
 
-function Auctionator.ReagentSearch.GetAHProfit()
+function Auctionator.CraftingInfo.GetAHProfit()
   local recipeIndex = GetTradeSkillSelectionIndex()
   local recipeLink =  GetTradeSkillItemLink(recipeIndex)
   local count = GetTradeSkillNumMade(recipeIndex)
@@ -65,7 +80,7 @@ function Auctionator.ReagentSearch.GetAHProfit()
   if currentAH == nil then
     currentAH = 0
   end
-  local toCraft = Auctionator.ReagentSearch.GetSkillReagentsTotal()
+  local toCraft = Auctionator.CraftingInfo.GetSkillReagentsTotal()
 
   return math.floor(currentAH * count * Auctionator.Constants.AfterAHCut - toCraft)
 end

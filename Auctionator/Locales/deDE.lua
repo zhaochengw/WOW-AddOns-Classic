@@ -77,6 +77,12 @@ L["CONFIG_CHAT_LOG_TOOLTIP_TEXT"] = "Wenn diese Option deaktiviert ist, werden k
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT"] = "Gewinn statt Herstellungskosten anzeigen"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = "Die Herstellungskosten zeigen Gewinn an"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = "Wenn das Auktionshaus geöffnet ist, zeigt der Handwerksbildschirm die Kosten für das Herstellen eines Gegenstands. Aktiviere diese Option, um stattdessen den Gewinn anzuzeigen."
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW"] = "Show crafting costs in the crafting view"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Crafting screen extra info"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "The crafting screen will show the cost of crafting an item. Disable this option to not show the crafting costs."
 L["CONFIG_DEBUG"] = "Zeige Debugmeldungen an."
 L["CONFIG_DEBUG_TOOLTIP_HEADER"] = "Auctionator Debug"
 L["CONFIG_DEBUG_TOOLTIP_TEXT"] = "Wird von den Entwicklern verwendet, um Debugmeldungen im Chat auszugeben."
@@ -176,6 +182,8 @@ L["COPY_NO_LIST_SELECTED"] = "Gegenstand kann nicht kopiert werden. Keine Einkau
 L["COPY_TEXT_HEADER"] = "Text kopieren"
 L["COPY_TO_LIST"] = "Gegenstand in die aktive Einkaufsliste kopieren"
 L["CRAFTED_LEVEL"] = "Hergestellte Stufe"
+--[[Translation missing --]]
+L["CRAFTING_INFO"] = "Crafting Info"
 L["CREATE"] = "Neu"
 L["CREATE_LIST_DIALOG"] = "Name der neuen Einkaufsliste eingeben:"
 L["CURRENT"] = "Aktuell"

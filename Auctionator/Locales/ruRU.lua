@@ -77,6 +77,12 @@ L["CONFIG_CHAT_LOG_TOOLTIP_TEXT"] = "Если эта настройка откл
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT"] = "Показывать прибыль вместо стоимости изготовления"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = "Стоимость изготовления показывает прибыль"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = "Когда аукцион открыт, на экране профессии будет отображаться стоимость изготовления предмета. Включите эту опцию, чтобы вместо этого отображать прибыль."
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW"] = "Show crafting costs in the crafting view"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Crafting screen extra info"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "The crafting screen will show the cost of crafting an item. Disable this option to not show the crafting costs."
 L["CONFIG_DEBUG"] = "Переключите вывод отладки."
 L["CONFIG_DEBUG_TOOLTIP_HEADER"] = "Отладка Auctionator"
 L["CONFIG_DEBUG_TOOLTIP_TEXT"] = "Это используется сопровождающими для вывода отладочных сообщений во окно чата."
@@ -175,6 +181,8 @@ L["COPY_NO_LIST_SELECTED"] = "Не могу скопировать предме�
 L["COPY_TEXT_HEADER"] = "Копировать текст"
 L["COPY_TO_LIST"] = "Копировать предмет в активный список покупок"
 L["CRAFTED_LEVEL"] = "Ур. созданных предметов"
+--[[Translation missing --]]
+L["CRAFTING_INFO"] = "Crafting Info"
 L["CREATE"] = "Создать"
 L["CREATE_LIST_DIALOG"] = "Введите название нового списка покупок:"
 L["CURRENT"] = "Текущий"
