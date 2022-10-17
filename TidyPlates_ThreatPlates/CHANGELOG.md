@@ -1,4 +1,3 @@
-# 10.5.4 (2022-10-07)
+# 10.5.5 (2022-10-16)
 
-* Added Shockwave (Warrior) to Auras widget as CC aura for Wrath Classic [Comment #6468].
-* Fixed a bug with configuration mode for clickable area where the the clickable area highlight showed an incorrect size [Issue #561].
+* Fixed a bug with totems of rank 10 not being recognized as totems [Comment #6491].
