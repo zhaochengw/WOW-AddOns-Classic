@@ -24,7 +24,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RatingBuster")
 RatingBuster = LibStub("AceAddon-3.0"):NewAddon("RatingBuster", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 RatingBuster.title = "Rating Buster"
 --@non-debug@
-RatingBuster.version = "1.5.14"
+RatingBuster.version = "1.5.16"
 --@end-non-debug@
 --[==[@debug@
 RatingBuster.version = "(development)"
@@ -157,7 +157,6 @@ local function setColor(info, r, g, b)
 	clearCache()
 end
 
-ColorPickerFrame:SetFrameStrata("FULLSCREEN_DIALOG")
 ColorPickerFrame:SetMovable(true)
 ColorPickerFrame:EnableMouse(true)
 ColorPickerFrame:RegisterForDrag("LeftButton")
@@ -169,7 +168,6 @@ ColorPickerFrame:SetScript("OnDragStart", function(self, button)
 	end
 end)
 ColorPickerFrame:SetScript("OnDragStop", ColorPickerFrame.StopMovingOrSizing)
-ColorPickerFrame:Show()
 
 local options = {
 	type = 'group',
@@ -638,11 +636,6 @@ local options = {
 							name = L["Sum Ranged Attack Power"],
 							desc = L["Ranged Attack Power <- Ranged Attack Power, Intellect, Attack Power, Strength, Agility"],
 						},
-						sumFAP = {
-							type = 'toggle',
-							name = L["Sum Feral Attack Power"],
-							desc = L["Feral Attack Power <- Feral Attack Power, Attack Power, Strength, Agility"],
-						},
 						sumHit = {
 							type = 'toggle',
 							name = L["Sum Hit Chance"],
@@ -1102,7 +1095,6 @@ local defaults = {
 		-- Physical
 		sumAP = false,
 		sumRAP = false,
-		sumFAP = false,
 		sumHit = false,
 		sumHitRating = false, -- new
 		sumCrit = false,
@@ -1192,7 +1184,7 @@ if class == "DEATHKNIGHT" then
 	defaults.profile.showSpellCritFromInt = false
 	defaults.profile.ratingPhysical = true
 elseif class == "DRUID" then
-	defaults.profile.sumFAP = true
+	defaults.profile.sumAP = true
 	defaults.profile.sumHit = true
 	defaults.profile.sumCrit = true
 	defaults.profile.sumHaste = true
@@ -2465,8 +2457,11 @@ local summaryCalcData = {
 		name = "AP",
 		func = function(sum)
 			return GSM("MOD_AP") * (
-				sum["AP"]
-				+ sum["STR"] * StatLogic:GetAPPerStr(class)
+				-- Feral Druid Predatory Strikes
+				(sum["FERAL_AP"] > 0 and GSM("MOD_FAP") or 1) * (
+					sum["AP"]
+					+ sum["FERAL_AP"] * GSM("ADD_AP_MOD_FAP")
+				) + sum["STR"] * StatLogic:GetAPPerStr(class)
 				+ sum["AGI"] * StatLogic:GetAPPerAgi(class)
 				+ sum["STA"] * GSM("ADD_AP_MOD_STA")
 				+ sum["INT"] * GSM("ADD_AP_MOD_INT")
@@ -2487,20 +2482,6 @@ local summaryCalcData = {
 				+ sum["STA"] * GSM("ADD_AP_MOD_STA")
 				+ summaryFunc["ARMOR"](sum) * GSM("ADD_AP_MOD_ARMOR")
 			)
-		end,
-	},
-	-- Feral Attack Power - FERAL_AP, AP, STR, AGI
-	{
-		option = "sumFAP",
-		name = "FERAL_AP",
-		func = function(sum)
-			local mod = GSM("MOD_AP")
-			return GSM("MOD_AP") * (
-				GSM("MOD_FAP") * (
-					sum["FERAL_AP"]
-					+ sum["AP"]
-				)
-			) + summaryFunc["AP"](sum) - mod * sum["AP"]
 		end,
 	},
 	-- Hit Chance - MELEE_HIT_RATING, WEAPON_SKILL
