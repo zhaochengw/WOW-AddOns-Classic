@@ -52,7 +52,7 @@ end
 function HelpMetaFunctions:SetPoint(v1, v2, v3, v4, v5)
 	v1, v2, v3, v4, v5 = DF:CheckPoints (v1, v2, v3, v4, v5, self)
 	if (not v1) then
-		print ("Invalid parameter for SetPoint")
+		print("Invalid parameter for SetPoint")
 		return
 	end
 	return self.widget:SetPoint(v1, v2, v3, v4, v5)
@@ -80,7 +80,7 @@ function DF:NewHelp (parent, width, height, x, y, buttonWidth, buttonHeight, nam
 	
 	if (not APIHelpFunctions) then
 		APIHelpFunctions = true
-		local idx = getmetatable (helpButton).__index
+		local idx = getmetatable(helpButton).__index
 		for funcName, funcAddress in pairs(idx) do 
 			if (not HelpMetaFunctions [funcName]) then
 				HelpMetaFunctions [funcName] = function(object, ...)
@@ -116,7 +116,7 @@ function DF:NewHelp (parent, width, height, x, y, buttonWidth, buttonHeight, nam
 		help:ShowHelp()
 	end)
 
-	setmetatable (help, HelpMetaFunctions)
+	setmetatable(help, HelpMetaFunctions)
 	
 	return help
 	

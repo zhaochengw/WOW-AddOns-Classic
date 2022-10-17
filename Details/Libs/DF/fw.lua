@@ -1,6 +1,6 @@
 
 
-local dversion = 379
+local dversion = 381
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary(major, minor)
 
@@ -107,15 +107,6 @@ function DF.IsShadowlandsWow()
     end
 end
 
-function DF.GetContainerItemInfo(containerIndex, slotIndex)
-	if (DF.IsDragonflightAndBeyond()) then
-		local itemInfo = C_Container.GetContainerItemInfo(containerIndex, slotIndex)
-		return itemInfo.iconFileID, itemInfo.stackCount, itemInfo.isLocked, itemInfo.quality, itemInfo.isReadable, itemInfo.hasLoot, itemInfo.hyperlink, itemInfo.isFiltered, itemInfo.hasNoValue, itemInfo.itemID, itemInfo.isBound
-	else
-		return GetContainerItemInfo(containerIndex, slotIndex)
-	end
-end
-
 local roleBySpecTextureName = {
 	DruidBalance = "DAMAGER",
 	DruidFeralCombat = "DAMAGER",
@@ -188,7 +179,7 @@ function DF:GetRoleByClassicTalentTree()
 
 	--get the spec with more points spent
 	local spec = pointsPerSpec[1]
-	if (spec and spec [2] >= MIN_SPECS) then
+	if (spec and spec[2] >= MIN_SPECS) then
 		local specName = spec[1]
 		local spentPoints = spec[2]
 		local specTexture = spec[3]
@@ -346,7 +337,6 @@ local embedFunctions = {
 	"BuildMenu",
 	"ShowTutorialAlertFrame",
 	"GetNpcIdFromGuid",
-	"ShowFeedbackPanel",
 	"SetAsOptionsPanel",
 	"GetPlayerRole",
 	"GetCharacterTalents",
@@ -370,7 +360,6 @@ local embedFunctions = {
 	"CreateSplitBar",
 	"CreateTextEntry",
 	"Create1PxPanel",
-	"CreateFeedbackButton",
 	"CreateOptionsFrame",
 	"NewSpecialLuaEditorEntry",
 	"ShowPromptPanel",
@@ -417,14 +406,14 @@ function DF:FadeFrame(frame, t)
 		frame.fading_out = false
 		frame.fading_in = false
 		frame:Show()
-		frame:SetAlpha (1)
+		frame:SetAlpha(1)
 
 	elseif (t == 1) then
 		frame.hidden = true
 		frame.faded = true
 		frame.fading_out = false
 		frame.fading_in = false
-		frame:SetAlpha (0)
+		frame:SetAlpha(0)
 		frame:Hide()
 	end
 end
@@ -650,7 +639,7 @@ if (symbol_1K) then
 		elseif (number > 999999) then
 			return format("%.2f", number/10000) .. symbol_10K
 		elseif (number > 99999) then
-			return floor (number/10000) .. symbol_10K
+			return floor(number/10000) .. symbol_10K
 		elseif (number > 9999) then
 			return format("%.1f", (number/10000)) .. symbol_10K
 		elseif (number > 999) then
@@ -665,7 +654,7 @@ else
 		elseif (number > 999999) then
 			return format("%.2f", number/1000000) .. "M"
 		elseif (number > 99999) then
-			return floor (number/1000) .. "K"
+			return floor(number/1000) .. "K"
 		elseif (number > 999) then
 			return format("%.1f", (number/1000)) .. "K"
 		end
@@ -685,7 +674,7 @@ function DF:CommaValue(value)
 
 	--source http://richard.warburton.it
 	local left, num, right = string_match (value, '^([^%d]*%d)(%d*)(.-)$')
-	return left .. (num:reverse():gsub ('(%d%d%d)','%1,'):reverse()) .. right
+	return left .. (num:reverse():gsub('(%d%d%d)','%1,'):reverse()) .. right
 end
 
 function DF:GroupIterator(callback, ...)
@@ -733,7 +722,7 @@ function DF:SetFontFace(fontString, fontface)
 end
 function DF:SetFontColor(fontString, r, g, b, a)
 	r, g, b, a = DF:ParseColors(r, g, b, a)
-	fontString:SetTextColor (r, g, b, a)
+	fontString:SetTextColor(r, g, b, a)
 end
 
 function DF:SetFontShadow (fontString, r, g, b, a, x, y)
@@ -1781,6 +1770,9 @@ end
 						label.text = (languageTable and languageTable[widgetTable.namePhraseId]) or formatOptionNameWithColon(widgetTable.name, useColon) or widgetTable.namePhraseId or ""
 						label:SetTemplate(widgetTable.text_template or textTemplate)
 
+						label:ClearAllPoints()
+						colorpick:ClearAllPoints()
+
 						if (widgetTable.boxfirst or useBoxFirstOnAllWidgets) then
 							label:SetPoint("left", colorpick, "right", 2)
 							colorpick:SetPoint(currentXOffset, currentYOffset)
@@ -2397,11 +2389,11 @@ end
 
 	function DF:CreateInCombatTexture(frame)
 		if (DF.debug and not frame) then
-			error ("Details! Framework: CreateInCombatTexture invalid frame on parameter 1.")
+			error("Details! Framework: CreateInCombatTexture invalid frame on parameter 1.")
 		end
 
-		local in_combat_background = DF:CreateImage (frame)
-		in_combat_background:SetColorTexture (.6, 0, 0, .1)
+		local in_combat_background = DF:CreateImage(frame)
+		in_combat_background:SetColorTexture(.6, 0, 0, .1)
 		in_combat_background:Hide()
 
 		local in_combat_label = Plater:CreateLabel(frame, "you are in combat", 24, "silver")
@@ -2439,7 +2431,7 @@ end
 			TutorialAlertFrame:Hide()
 			
 			TutorialAlertFrame:SetScript("OnMouseUp", function(self) 
-				if (self.clickfunc and type (self.clickfunc) == "function") then
+				if (self.clickfunc and type(self.clickfunc) == "function") then
 					self.clickfunc()
 				end
 				self:Hide()
@@ -2448,7 +2440,7 @@ end
 		end
 		
 		--
-		TutorialAlertFrame.label = type (maintext) == "string" and maintext or type (desctext) == "string" and desctext or ""
+		TutorialAlertFrame.label = type(maintext) == "string" and maintext or type(desctext) == "string" and desctext or ""
 		MicroButtonAlert_SetText (TutorialAlertFrame, alert.label)
 		--
 		
@@ -2472,7 +2464,7 @@ end
 				elseif (widget.widget_type == "color") then
 					local default_value, g, b, a = widget._get()
 					if (type(default_value) == "table") then
-						widget:SetColor (unpack (default_value))
+						widget:SetColor (unpack(default_value))
 					else
 						widget:SetColor (default_value, g, b, a)
 					end
@@ -2542,8 +2534,8 @@ end
 				end
 			end)
 			
-			options_frame:SetMovable (true)
-			options_frame:EnableMouse (true)
+			options_frame:SetMovable(true)
+			options_frame:EnableMouse(true)
 			options_frame:SetFrameStrata("DIALOG")
 			options_frame:SetToplevel (true)
 			
@@ -2582,8 +2574,8 @@ end
 				end
 			end)
 			
-			options_frame:SetMovable (true)
-			options_frame:EnableMouse (true)
+			options_frame:SetMovable(true)
+			options_frame:EnableMouse(true)
 			options_frame:SetFrameStrata("DIALOG")
 			options_frame:SetToplevel (true)
 			
@@ -2598,21 +2590,21 @@ end
 
 			local texturetitle = options_frame:CreateTexture(nil, "artwork")
 			texturetitle:SetTexture([[Interface\CURSOR\Interact]])
-			texturetitle:SetTexCoord (0, 1, 0, 1)
-			texturetitle:SetVertexColor (1, 1, 1, 1)
+			texturetitle:SetTexCoord(0, 1, 0, 1)
+			texturetitle:SetVertexColor(1, 1, 1, 1)
 			texturetitle:SetPoint("topleft", options_frame, "topleft", 2, -3)
 			texturetitle:SetWidth(36)
 			texturetitle:SetHeight(36)
 			
-			local title = DF:NewLabel(options_frame, nil, "$parentTitle", nil, title, nil, 20, "yellow")
-			title:SetPoint("left", texturetitle, "right", 2, -1)
-			DF:SetFontOutline (title, true)
+			local titleLabel = DF:NewLabel(options_frame, nil, "$parentTitle", nil, title, nil, 20, "yellow")
+			titleLabel:SetPoint("left", texturetitle, "right", 2, -1)
+			DF:SetFontOutline (titleLabel, true)
 
 			local c = CreateFrame("Button", nil, options_frame, "UIPanelCloseButton")
 			c:SetWidth(32)
 			c:SetHeight(32)
 			c:SetPoint("TOPRIGHT",  options_frame, "TOPRIGHT", -3, -3)
-			c:SetFrameLevel (options_frame:GetFrameLevel()+1)
+			c:SetFrameLevel(options_frame:GetFrameLevel()+1)
 			
 			return options_frame
 		end
@@ -2620,6 +2612,12 @@ end
 	
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --~templates
+
+local latinLanguageIds = {"enUS", "deDE", "esES", "esMX", "frFR", "itIT", "ptBR"}
+local alphbets = {
+	[latinLanguageIds] = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"},
+	["zhCN"] = {},
+}
 
 --fonts
 DF.font_templates = DF.font_templates or {}
@@ -2632,6 +2630,12 @@ end
 
 DF.ClientLanguage = clientLanguage
 
+function DF:DetectTextLanguage(text)
+	for i = 1, #text do
+		--or not
+	end
+end
+
 --returns which region the language the client is running, return "western", "russia" or "asia"
 function DF:GetClientRegion()
 	if (clientLanguage == "zhCN" or clientLanguage == "koKR" or clientLanguage == "zhTW") then
@@ -2643,8 +2647,37 @@ function DF:GetClientRegion()
 	end
 end
 
+DF.registeredFontPaths = DF.registeredFontPaths or {}
+
+function DF:GetBestFontPathForLanguage(locale)
+	local fontPath = DF.registeredFontPaths[locale]
+	if (fontPath) then
+		return fontPath
+	end
+
+	--font paths gotten from creating a FontString with template "GameFontNormal" and getting the font returned from FontString:GetFont()
+	if (locale == "enUS" or locale == "deDE" or locale == "esES" or locale == "esMX" or locale == "frFR" or locale == "itIT" or locale == "ptBR") then
+		return [[Fonts\FRIZQT__.TTF]]
+
+	elseif (locale == "ruRU") then
+		return [[Fonts\FRIZQT___CYR.TTF]]
+
+	elseif (locale == "zhCN") then
+		return [[Fonts\ARKai_T.ttf]]
+
+	elseif (locale == "zhTW") then
+		return [[Fonts\blei00d.TTF]]
+
+	elseif (locale == "koKR") then
+		return [[Fonts\2002.TTF]]
+	end
+
+	--the locale passed doesn't exists, so pass the enUS
+	return [[Fonts\FRIZQT__.TTF]]
+end
+
 --return the best font to use for the client language
-function DF:GetBestFontForLanguage (language, western, cyrillic, china, korean, taiwan)
+function DF:GetBestFontForLanguage(language, western, cyrillic, china, korean, taiwan)
 	if (not language) then
 		language = DF.ClientLanguage
 	end
@@ -2653,7 +2686,7 @@ function DF:GetBestFontForLanguage (language, western, cyrillic, china, korean, 
 		return western or "Friz Quadrata TT"
 
 	elseif (language == "ruRU") then
-		return cyrillic or "Arial Narrow"
+		return cyrillic or "Friz Quadrata TT"
 
 	elseif (language == "zhCN") then
 		return china or "AR CrystalzcuheiGBK Demibold"
@@ -2800,8 +2833,8 @@ function DF:InstallTemplate (widgetType, templateName, template, parentName)
 	return newTemplate
 end
 
-function DF:GetTemplate (widget_type, template_name)
-	widget_type = string.lower (widget_type)
+function DF:GetTemplate(widget_type, template_name)
+	widget_type = string.lower(widget_type)
 
 	local template_table
 	if (widget_type == "font") then
@@ -2818,82 +2851,16 @@ function DF:GetTemplate (widget_type, template_name)
 	return template_table [template_name]
 end
 
-function DF.GetParentName (frame)
+function DF.GetParentName(frame)
 	local parentName = frame:GetName()
 	if (not parentName) then
-		error ("Details! FrameWork: called $parent but parent was no name.", 2)
+		error("Details! FrameWork: called $parent but parent was no name.", 2)
 	end
 	return parentName
 end
 
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---widget scripts and hooks
-
-function DF:RunHooksForWidget (event, ...)
-	local hooks = self.HookList [event]
-	
-	if (not hooks) then
-		print (self.widget:GetName(), "no hooks for", event)
-		return
-	end
-	
-	for i, func in ipairs(hooks) do
-		local success, canInterrupt = pcall (func, ...)
-		if (not success) then
-			error ("Details! Framework: " .. event .. " hook for " .. self:GetName() .. ": " .. canInterrupt)
-		elseif (canInterrupt) then
-			return true
-		end
-	end
-end
-
-function DF:SetHook(hookType, func)
-	if (self.HookList [hookType]) then
-		if (type(func) == "function") then
-			local isRemoval = false
-			for i = #self.HookList [hookType], 1, -1 do
-				if (self.HookList [hookType] [i] == func) then
-					tremove (self.HookList [hookType], i)
-					isRemoval = true
-					break
-				end
-			end
-			if (not isRemoval) then
-				tinsert(self.HookList [hookType], func)
-			end
-		else
-			if (DF.debug) then
-				print (debugstack())
-				error ("Details! Framework: invalid function for widget " .. self.WidgetType .. ".")
-			end
-		end
-	else
-		if (DF.debug) then
-			error ("Details! Framework: unknown hook type for widget " .. self.WidgetType .. ": '" .. hookType .. "'.")
-		end
-	end
-end
-
-function DF:HasHook (hookType, func)
-	if (self.HookList [hookType]) then
-		if (type(func) == "function") then
-			for i = #self.HookList [hookType], 1, -1 do
-				if (self.HookList [hookType] [i] == func) then
-					return true
-				end
-			end
-		end
-	end
-end
-
-function DF:ClearHooks()
-	for hookType, hookTable in pairs(self.HookList) do
-		table.wipe(hookTable)
-	end
-end
-
 function DF:Error (errortext)
-	print ("|cFFFF2222Details! Framework Error|r:", errortext, self.GetName and self:GetName(), self.WidgetType, debugstack (2, 3, 0))
+	print("|cFFFF2222Details! Framework Error|r:", errortext, self.GetName and self:GetName(), self.WidgetType, debugstack (2, 3, 0))
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2927,17 +2894,17 @@ function DF:AddMemberForWidget (widgetName, memberType, memberName, func)
 				end
 			else
 				if (DF.debug) then
-					error ("Details! Framework: AddMemberForWidget invalid function.")
+					error("Details! Framework: AddMemberForWidget invalid function.")
 				end
 			end
 		else
 			if (DF.debug) then
-				error ("Details! Framework: AddMemberForWidget unknown memberName or memberType.")
+				error("Details! Framework: AddMemberForWidget unknown memberName or memberType.")
 			end
 		end
 	else
 		if (DF.debug) then
-			error ("Details! Framework: AddMemberForWidget unknown widget type: " .. (widgetName or "") .. ".")
+			error("Details! Framework: AddMemberForWidget unknown widget type: " .. (widgetName or "") .. ".")
 		end
 	end
 end
@@ -2984,11 +2951,11 @@ function DF:OpenInterfaceProfile()
 				if (text == self.__name) then
 					local toggle = _G ["InterfaceOptionsFrameAddOnsButton" .. i .. "Toggle"]
 					if (toggle) then
-						if (toggle:GetNormalTexture():GetTexture():find ("PlusButton")) then
+						if (toggle:GetNormalTexture():GetTexture():find("PlusButton")) then
 							--is minimized, need expand
 							toggle:Click()
 							_G ["InterfaceOptionsFrameAddOnsButton" .. i+1]:Click()
-						elseif (toggle:GetNormalTexture():GetTexture():find ("MinusButton")) then
+						elseif (toggle:GetNormalTexture():GetTexture():find("MinusButton")) then
 							--isn't minimized
 							_G ["InterfaceOptionsFrameAddOnsButton" .. i+1]:Click()
 						end
@@ -2997,7 +2964,7 @@ function DF:OpenInterfaceProfile()
 				end
 			end
 		else
-			self:Msg ("Couldn't not find the profile panel.")
+			self:Msg("Couldn't not find the profile panel.")
 			break
 		end
 	end
@@ -3109,21 +3076,21 @@ local frameshake_shake_finished = function(parent, shakeObject)
 			
 			--automatic anchoring and reanching needs to the reviwed in the future
 			if (#anchor == 1) then
-				local anchorTo = unpack (anchor)
+				local anchorTo = unpack(anchor)
 				parent:ClearAllPoints()
 				parent:SetPoint(anchorTo)
 				
 			elseif (#anchor == 2) then
-				local anchorTo, point1 = unpack (anchor)
+				local anchorTo, point1 = unpack(anchor)
 				parent:ClearAllPoints()
 				parent:SetPoint(anchorTo, point1)
 				
 			elseif (#anchor == 3) then
-				local anchorTo, point1, point2 = unpack (anchor)
+				local anchorTo, point1, point2 = unpack(anchor)
 				parent:SetPoint(anchorTo, point1, point2)
 				
 			elseif (#anchor == 5) then
-				local anchorName1, anchorTo, anchorName2, point1, point2 = unpack (anchor)
+				local anchorName1, anchorTo, anchorName2, point1, point2 = unpack(anchor)
 				parent:SetPoint(anchorName1, anchorTo, anchorName2, point1, point2)
 			end
 		end
@@ -3137,7 +3104,7 @@ frameshake_do_update = function(parent, shakeObject, deltaTime)
 	deltaTime = deltaTime or 0
 	
 	--update time left
-	shakeObject.TimeLeft = max (shakeObject.TimeLeft - deltaTime, 0)
+	shakeObject.TimeLeft = max(shakeObject.TimeLeft - deltaTime, 0)
 
 	if (shakeObject.TimeLeft > 0) then
 		--update fade in and out
@@ -3172,13 +3139,13 @@ frameshake_do_update = function(parent, shakeObject, deltaTime)
 			local newX, newY
 			if (shakeObject.AbsoluteSineX) then
 				--absoluting only the sine wave, passing a negative scale will reverse the absolute direction
-				newX = shakeObject.Amplitude * abs (math.sin (shakeObject.XSineOffset)) * scaleShake * shakeObject.ScaleX
+				newX = shakeObject.Amplitude * abs(math.sin (shakeObject.XSineOffset)) * scaleShake * shakeObject.ScaleX
 			else
 				newX = shakeObject.Amplitude * math.sin (shakeObject.XSineOffset) * scaleShake * shakeObject.ScaleX
 			end
 			
 			if (shakeObject.AbsoluteSineY) then
-				newY = shakeObject.Amplitude * abs (math.sin (shakeObject.YSineOffset)) * scaleShake * shakeObject.ScaleY
+				newY = shakeObject.Amplitude * abs(math.sin (shakeObject.YSineOffset)) * scaleShake * shakeObject.ScaleY
 			else
 				newY = shakeObject.Amplitude * math.sin (shakeObject.YSineOffset) * scaleShake * shakeObject.ScaleY
 			end
@@ -3188,13 +3155,13 @@ frameshake_do_update = function(parent, shakeObject, deltaTime)
 				local anchor = shakeObject.Anchors [i]
 				
 				if (#anchor == 1 or #anchor == 3) then
-					local anchorTo, point1, point2 = unpack (anchor)
+					local anchorTo, point1, point2 = unpack(anchor)
 					point1 = point1 or 0
 					point2 = point2 or 0
 					parent:SetPoint(anchorTo, point1 + newX, point2 + newY)
 					
 				elseif (#anchor == 5) then
-					local anchorName1, anchorTo, anchorName2, point1, point2 = unpack (anchor)
+					local anchorName1, anchorTo, anchorName2, point1, point2 = unpack(anchor)
 					--parent:ClearAllPoints()
 					
 					parent:SetPoint(anchorName1, anchorTo, anchorName2, point1 + newX, point2 + newY)
@@ -3390,7 +3357,7 @@ end
 local glow_overlay_setcolor = function(self, antsColor, glowColor)
 	if (antsColor) then
 		local r, g, b, a = DF:ParseColors(antsColor)
-		self.ants:SetVertexColor (r, g, b, a)
+		self.ants:SetVertexColor(r, g, b, a)
 		self.AntsColor.r = r
 		self.AntsColor.g = g
 		self.AntsColor.b = b
@@ -3399,7 +3366,7 @@ local glow_overlay_setcolor = function(self, antsColor, glowColor)
 	
 	if (glowColor) then
 		local r, g, b, a = DF:ParseColors(glowColor)
-		self.outerGlow:SetVertexColor (r, g, b, a)
+		self.outerGlow:SetVertexColor(r, g, b, a)
 		self.GlowColor.r = r
 		self.GlowColor.g = g
 		self.GlowColor.b = b
@@ -3438,11 +3405,11 @@ function DF:CreateGlowOverlay (parent, antsColor, glowColor)
 	parent.overlay:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", frameWidth * 0.32, -frameHeight * 0.36)
 	
 	local r, g, b, a = DF:ParseColors(antsColor or defaultColor)
-	glowFrame.ants:SetVertexColor (r, g, b, a)
+	glowFrame.ants:SetVertexColor(r, g, b, a)
 	glowFrame.AntsColor = {r, g, b, a}
 	
 	local r, g, b, a = DF:ParseColors(glowColor or defaultColor)
-	glowFrame.outerGlow:SetVertexColor (r, g, b, a)
+	glowFrame.outerGlow:SetVertexColor(r, g, b, a)
 	glowFrame.GlowColor = {r, g, b, a}
 	
 	glowFrame.outerGlow:SetScale(1.2)
@@ -3478,7 +3445,7 @@ function DF:CreateAnts (parent, antTable, leftOffset, rightOffset, topOffset, bo
 	t:SetAllPoints()
 	t:SetTexture(antTable.Texture)
 	t:SetBlendMode(antTable.BlendMode or "ADD")
-	t:SetVertexColor (DF:ParseColors(antTable.Color or "white"))
+	t:SetVertexColor(DF:ParseColors(antTable.Color or "white"))
 	f.Texture = t
 	
 	f.AntTable = antTable
@@ -3509,25 +3476,25 @@ local SetBorderAlpha = function(self, alpha1, alpha2, alpha3)
 	self.Borders.Alpha3 = alpha3 or self.Borders.Alpha3
 	
 	for _, texture in ipairs(self.Borders.Layer1) do
-		texture:SetAlpha (self.Borders.Alpha1)
+		texture:SetAlpha(self.Borders.Alpha1)
 	end
 	for _, texture in ipairs(self.Borders.Layer2) do
-		texture:SetAlpha (self.Borders.Alpha2)
+		texture:SetAlpha(self.Borders.Alpha2)
 	end
 	for _, texture in ipairs(self.Borders.Layer3) do
-		texture:SetAlpha (self.Borders.Alpha3)
+		texture:SetAlpha(self.Borders.Alpha3)
 	end
 end
 
 local SetBorderColor = function(self, r, g, b)
 	for _, texture in ipairs(self.Borders.Layer1) do
-		texture:SetColorTexture (r, g, b)
+		texture:SetColorTexture(r, g, b)
 	end
 	for _, texture in ipairs(self.Borders.Layer2) do
-		texture:SetColorTexture (r, g, b)
+		texture:SetColorTexture(r, g, b)
 	end
 	for _, texture in ipairs(self.Borders.Layer3) do
-		texture:SetColorTexture (r, g, b)
+		texture:SetColorTexture(r, g, b)
 	end
 end
 
@@ -3563,68 +3530,68 @@ function DF:CreateBorder (parent, alpha1, alpha2, alpha3)
 	parent.SetLayerVisibility = SetLayerVisibility
 	
 	local border1 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border1, "topleft", parent, "topleft", -1, 1)
-	PixelUtil.SetPoint (border1, "bottomleft", parent, "bottomleft", -1, -1)
-	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
+	PixelUtil.SetPoint(border1, "topleft", parent, "topleft", -1, 1)
+	PixelUtil.SetPoint(border1, "bottomleft", parent, "bottomleft", -1, -1)
+	border1:SetColorTexture(0, 0, 0, alpha1 or default_border_color1)
 	local border2 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border2, "topleft", parent, "topleft", -2, 2)
-	PixelUtil.SetPoint (border2, "bottomleft", parent, "bottomleft", -2, -2)
-	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
+	PixelUtil.SetPoint(border2, "topleft", parent, "topleft", -2, 2)
+	PixelUtil.SetPoint(border2, "bottomleft", parent, "bottomleft", -2, -2)
+	border2:SetColorTexture(0, 0, 0, alpha2 or default_border_color2)
 	local border3 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border3, "topleft", parent, "topleft", -3, 3)
-	PixelUtil.SetPoint (border3, "bottomleft", parent, "bottomleft", -3, -3)
-	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
+	PixelUtil.SetPoint(border3, "topleft", parent, "topleft", -3, 3)
+	PixelUtil.SetPoint(border3, "bottomleft", parent, "bottomleft", -3, -3)
+	border3:SetColorTexture(0, 0, 0, alpha3 or default_border_color3)
 	
 	tinsert(parent.Borders.Layer1, border1)
 	tinsert(parent.Borders.Layer2, border2)
 	tinsert(parent.Borders.Layer3, border3)
 	
 	local border1 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border1, "topleft", parent, "topleft", 0, 1)
-	PixelUtil.SetPoint (border1, "topright", parent, "topright", 1, 1)
-	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
+	PixelUtil.SetPoint(border1, "topleft", parent, "topleft", 0, 1)
+	PixelUtil.SetPoint(border1, "topright", parent, "topright", 1, 1)
+	border1:SetColorTexture(0, 0, 0, alpha1 or default_border_color1)
 	local border2 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border2, "topleft", parent, "topleft", -1, 2)
-	PixelUtil.SetPoint (border2, "topright", parent, "topright", 2, 2)
-	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
+	PixelUtil.SetPoint(border2, "topleft", parent, "topleft", -1, 2)
+	PixelUtil.SetPoint(border2, "topright", parent, "topright", 2, 2)
+	border2:SetColorTexture(0, 0, 0, alpha2 or default_border_color2)
 	local border3 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border3, "topleft", parent, "topleft", -2, 3)
-	PixelUtil.SetPoint (border3, "topright", parent, "topright", 3, 3)
-	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
+	PixelUtil.SetPoint(border3, "topleft", parent, "topleft", -2, 3)
+	PixelUtil.SetPoint(border3, "topright", parent, "topright", 3, 3)
+	border3:SetColorTexture(0, 0, 0, alpha3 or default_border_color3)
 	
 	tinsert(parent.Borders.Layer1, border1)
 	tinsert(parent.Borders.Layer2, border2)
 	tinsert(parent.Borders.Layer3, border3)	
 	
 	local border1 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border1, "topright", parent, "topright", 1, 0)
-	PixelUtil.SetPoint (border1, "bottomright", parent, "bottomright", 1, -1)
-	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
+	PixelUtil.SetPoint(border1, "topright", parent, "topright", 1, 0)
+	PixelUtil.SetPoint(border1, "bottomright", parent, "bottomright", 1, -1)
+	border1:SetColorTexture(0, 0, 0, alpha1 or default_border_color1)
 	local border2 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border2, "topright", parent, "topright", 2, 1)
-	PixelUtil.SetPoint (border2, "bottomright", parent, "bottomright", 2, -2)
-	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
+	PixelUtil.SetPoint(border2, "topright", parent, "topright", 2, 1)
+	PixelUtil.SetPoint(border2, "bottomright", parent, "bottomright", 2, -2)
+	border2:SetColorTexture(0, 0, 0, alpha2 or default_border_color2)
 	local border3 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border3, "topright", parent, "topright", 3, 2)
-	PixelUtil.SetPoint (border3, "bottomright", parent, "bottomright", 3, -3)
-	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
+	PixelUtil.SetPoint(border3, "topright", parent, "topright", 3, 2)
+	PixelUtil.SetPoint(border3, "bottomright", parent, "bottomright", 3, -3)
+	border3:SetColorTexture(0, 0, 0, alpha3 or default_border_color3)
 	
 	tinsert(parent.Borders.Layer1, border1)
 	tinsert(parent.Borders.Layer2, border2)
 	tinsert(parent.Borders.Layer3, border3)	
 	
 	local border1 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border1, "bottomleft", parent, "bottomleft", 0, -1)
-	PixelUtil.SetPoint (border1, "bottomright", parent, "bottomright", 0, -1)
-	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
+	PixelUtil.SetPoint(border1, "bottomleft", parent, "bottomleft", 0, -1)
+	PixelUtil.SetPoint(border1, "bottomright", parent, "bottomright", 0, -1)
+	border1:SetColorTexture(0, 0, 0, alpha1 or default_border_color1)
 	local border2 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border2, "bottomleft", parent, "bottomleft", -1, -2)
-	PixelUtil.SetPoint (border2, "bottomright", parent, "bottomright", 1, -2)
-	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
+	PixelUtil.SetPoint(border2, "bottomleft", parent, "bottomleft", -1, -2)
+	PixelUtil.SetPoint(border2, "bottomright", parent, "bottomright", 1, -2)
+	border2:SetColorTexture(0, 0, 0, alpha2 or default_border_color2)
 	local border3 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border3, "bottomleft", parent, "bottomleft", -2, -3)
-	PixelUtil.SetPoint (border3, "bottomright", parent, "bottomright", 2, -3)
-	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
+	PixelUtil.SetPoint(border3, "bottomleft", parent, "bottomleft", -2, -3)
+	PixelUtil.SetPoint(border3, "bottomright", parent, "bottomright", 2, -3)
+	border3:SetColorTexture(0, 0, 0, alpha3 or default_border_color3)
 	
 	tinsert(parent.Borders.Layer1, border1)
 	tinsert(parent.Borders.Layer2, border2)
@@ -3752,21 +3719,21 @@ function DF:CreateBorderWithSpread (parent, alpha1, alpha2, alpha3, size, spread
 	
 	--left
 	local border1 = parent:CreateTexture(nil, "background")
-	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
-	PixelUtil.SetPoint (border1, "topleft", parent, "topleft", -1 + spread, 1 + (-spread), 0, 0)
-	PixelUtil.SetPoint (border1, "bottomleft", parent, "bottomleft", -1 + spread, -1 + spread, 0, 0)
+	border1:SetColorTexture(0, 0, 0, alpha1 or default_border_color1)
+	PixelUtil.SetPoint(border1, "topleft", parent, "topleft", -1 + spread, 1 + (-spread), 0, 0)
+	PixelUtil.SetPoint(border1, "bottomleft", parent, "bottomleft", -1 + spread, -1 + spread, 0, 0)
 	PixelUtil.SetWidth (border1, size, minPixels)
 	
 	local border2 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border2, "topleft", parent, "topleft", -2 + spread, 2 + (-spread))
-	PixelUtil.SetPoint (border2, "bottomleft", parent, "bottomleft", -2 + spread, -2 + spread)
-	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
+	PixelUtil.SetPoint(border2, "topleft", parent, "topleft", -2 + spread, 2 + (-spread))
+	PixelUtil.SetPoint(border2, "bottomleft", parent, "bottomleft", -2 + spread, -2 + spread)
+	border2:SetColorTexture(0, 0, 0, alpha2 or default_border_color2)
 	PixelUtil.SetWidth (border2, size, minPixels)
 	
 	local border3 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border3, "topleft", parent, "topleft", -3 + spread, 3 + (-spread))
-	PixelUtil.SetPoint (border3, "bottomleft", parent, "bottomleft", -3 + spread, -3 + spread)
-	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
+	PixelUtil.SetPoint(border3, "topleft", parent, "topleft", -3 + spread, 3 + (-spread))
+	PixelUtil.SetPoint(border3, "bottomleft", parent, "bottomleft", -3 + spread, -3 + spread)
+	border3:SetColorTexture(0, 0, 0, alpha3 or default_border_color3)
 	PixelUtil.SetWidth (border3, size, minPixels)
 	
 	tinsert(parent.Borders.Layer1, border1)
@@ -3775,22 +3742,22 @@ function DF:CreateBorderWithSpread (parent, alpha1, alpha2, alpha3, size, spread
 	
 	--top
 	local border1 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border1, "topleft", parent, "topleft", 0 + spread, 1 + (-spread))
-	PixelUtil.SetPoint (border1, "topright", parent, "topright", 1 + (-spread), 1 + (-spread))
-	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
-	PixelUtil.SetHeight (border1, size, minPixels)
+	PixelUtil.SetPoint(border1, "topleft", parent, "topleft", 0 + spread, 1 + (-spread))
+	PixelUtil.SetPoint(border1, "topright", parent, "topright", 1 + (-spread), 1 + (-spread))
+	border1:SetColorTexture(0, 0, 0, alpha1 or default_border_color1)
+	PixelUtil.SetHeight(border1, size, minPixels)
 	
 	local border2 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border2, "topleft", parent, "topleft", -1 + spread, 2 + (-spread))
-	PixelUtil.SetPoint (border2, "topright", parent, "topright", 2 + (-spread), 2 + (-spread))
-	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
-	PixelUtil.SetHeight (border2, size, minPixels)
+	PixelUtil.SetPoint(border2, "topleft", parent, "topleft", -1 + spread, 2 + (-spread))
+	PixelUtil.SetPoint(border2, "topright", parent, "topright", 2 + (-spread), 2 + (-spread))
+	border2:SetColorTexture(0, 0, 0, alpha2 or default_border_color2)
+	PixelUtil.SetHeight(border2, size, minPixels)
 	
 	local border3 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border3, "topleft", parent, "topleft", -2 + spread, 3 + (-spread))
-	PixelUtil.SetPoint (border3, "topright", parent, "topright", 3 + (-spread), 3 + (-spread))
-	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
-	PixelUtil.SetHeight (border3, size, minPixels)
+	PixelUtil.SetPoint(border3, "topleft", parent, "topleft", -2 + spread, 3 + (-spread))
+	PixelUtil.SetPoint(border3, "topright", parent, "topright", 3 + (-spread), 3 + (-spread))
+	border3:SetColorTexture(0, 0, 0, alpha3 or default_border_color3)
+	PixelUtil.SetHeight(border3, size, minPixels)
 	
 	tinsert(parent.Borders.Layer1, border1)
 	tinsert(parent.Borders.Layer2, border2)
@@ -3798,21 +3765,21 @@ function DF:CreateBorderWithSpread (parent, alpha1, alpha2, alpha3, size, spread
 	
 	--right
 	local border1 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border1, "topright", parent, "topright", 1 + (-spread), 0 + (-spread))
-	PixelUtil.SetPoint (border1, "bottomright", parent, "bottomright", 1 + (-spread), -1 + spread)
-	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
+	PixelUtil.SetPoint(border1, "topright", parent, "topright", 1 + (-spread), 0 + (-spread))
+	PixelUtil.SetPoint(border1, "bottomright", parent, "bottomright", 1 + (-spread), -1 + spread)
+	border1:SetColorTexture(0, 0, 0, alpha1 or default_border_color1)
 	PixelUtil.SetWidth (border1, size, minPixels)
 	
 	local border2 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border2, "topright", parent, "topright", 2 + (-spread), 1 + (-spread))
-	PixelUtil.SetPoint (border2, "bottomright", parent, "bottomright", 2 + (-spread), -2 + spread)
-	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
+	PixelUtil.SetPoint(border2, "topright", parent, "topright", 2 + (-spread), 1 + (-spread))
+	PixelUtil.SetPoint(border2, "bottomright", parent, "bottomright", 2 + (-spread), -2 + spread)
+	border2:SetColorTexture(0, 0, 0, alpha2 or default_border_color2)
 	PixelUtil.SetWidth (border2, size, minPixels)
 	
 	local border3 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border3, "topright", parent, "topright", 3 + (-spread), 2 + (-spread))
-	PixelUtil.SetPoint (border3, "bottomright", parent, "bottomright", 3 + (-spread), -3 + spread)
-	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
+	PixelUtil.SetPoint(border3, "topright", parent, "topright", 3 + (-spread), 2 + (-spread))
+	PixelUtil.SetPoint(border3, "bottomright", parent, "bottomright", 3 + (-spread), -3 + spread)
+	border3:SetColorTexture(0, 0, 0, alpha3 or default_border_color3)
 	PixelUtil.SetWidth (border3, size, minPixels)
 	
 	tinsert(parent.Borders.Layer1, border1)
@@ -3820,22 +3787,22 @@ function DF:CreateBorderWithSpread (parent, alpha1, alpha2, alpha3, size, spread
 	tinsert(parent.Borders.Layer3, border3)	
 	
 	local border1 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border1, "bottomleft", parent, "bottomleft", 0 + spread, -1 + spread)
-	PixelUtil.SetPoint (border1, "bottomright", parent, "bottomright", 0 + (-spread), -1 + spread)
-	border1:SetColorTexture (0, 0, 0, alpha1 or default_border_color1)
-	PixelUtil.SetHeight (border1, size, minPixels)
+	PixelUtil.SetPoint(border1, "bottomleft", parent, "bottomleft", 0 + spread, -1 + spread)
+	PixelUtil.SetPoint(border1, "bottomright", parent, "bottomright", 0 + (-spread), -1 + spread)
+	border1:SetColorTexture(0, 0, 0, alpha1 or default_border_color1)
+	PixelUtil.SetHeight(border1, size, minPixels)
 	
 	local border2 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border2, "bottomleft", parent, "bottomleft", -1 + spread, -2 + spread)
-	PixelUtil.SetPoint (border2, "bottomright", parent, "bottomright", 1 + (-spread), -2 + spread)
-	border2:SetColorTexture (0, 0, 0, alpha2 or default_border_color2)
-	PixelUtil.SetHeight (border2, size, minPixels)
+	PixelUtil.SetPoint(border2, "bottomleft", parent, "bottomleft", -1 + spread, -2 + spread)
+	PixelUtil.SetPoint(border2, "bottomright", parent, "bottomright", 1 + (-spread), -2 + spread)
+	border2:SetColorTexture(0, 0, 0, alpha2 or default_border_color2)
+	PixelUtil.SetHeight(border2, size, minPixels)
 	
 	local border3 = parent:CreateTexture(nil, "background")
-	PixelUtil.SetPoint (border3, "bottomleft", parent, "bottomleft", -2 + spread, -3 + spread)
-	PixelUtil.SetPoint (border3, "bottomright", parent, "bottomright", 2 + (-spread), -3 + spread)
-	border3:SetColorTexture (0, 0, 0, alpha3 or default_border_color3)
-	PixelUtil.SetHeight (border3, size, minPixels)
+	PixelUtil.SetPoint(border3, "bottomleft", parent, "bottomleft", -2 + spread, -3 + spread)
+	PixelUtil.SetPoint(border3, "bottomright", parent, "bottomright", 2 + (-spread), -3 + spread)
+	border3:SetColorTexture(0, 0, 0, alpha3 or default_border_color3)
+	PixelUtil.SetHeight(border3, size, minPixels)
 	
 	tinsert(parent.Borders.Layer1, border1)
 	tinsert(parent.Borders.Layer2, border2)
@@ -3949,7 +3916,7 @@ end
 function DF:GetCurrentSpec()
 	local specIndex = DF.GetSpecialization()
 	if (specIndex) then
-		local specID = DF.GetSpecializationInfo (specIndex)
+		local specID = DF.GetSpecializationInfo(specIndex)
 		if (specID and specID ~= 0) then
 			return specID
 		end
@@ -3976,28 +3943,28 @@ local specs_per_class = {
 	["EVOKER"] = {1467, 1468},
 }
 
-function DF:GetClassSpecIDs (class)
+function DF:GetClassSpecIDs(class)
 	return specs_per_class [class]
 end
 
 local dispatch_error = function(context, errortext)
-	DF:Msg ( (context or "<no context>") .. " |cFFFF9900error|r: " .. (errortext or "<no error given>"))
+	DF:Msg( (context or "<no context>") .. " |cFFFF9900error|r: " .. (errortext or "<no error given>"))
 end
 
 --safe call an external func with payload and without telling who is calling
-function DF:QuickDispatch (func, ...)
+function DF:QuickDispatch(func, ...)
 	if (type(func) ~= "function") then
 		return
 	end
-	
-	local okay, errortext = pcall (func, ...)
-	
+
+	local okay, errortext = xpcall(func, geterrorhandler(), ...)
+
 	if (not okay) then
 		--trigger an error msg
-		dispatch_error (_, errortext)
+		dispatch_error(_, errortext)
 		return
 	end
-	
+
 	return true
 end
 
@@ -4006,7 +3973,7 @@ function DF:Dispatch(func, ...)
 		return dispatch_error (_, "DF:Dispatch expect a function as parameter 1.")
 	end
 
-	local dispatchResult = {xpcall (func, geterrorhandler(), ...)}
+	local dispatchResult = {xpcall(func, geterrorhandler(), ...)}
 	local okay = dispatchResult[1]
 
 	if (not okay) then
@@ -4019,18 +3986,18 @@ function DF:Dispatch(func, ...)
 end
 
 --[=[
-	DF:CoreDispatch (func, context, ...)
+	DF:CoreDispatch(func, context, ...)
 	safe call a function making a error window with what caused, the context and traceback of the error
 	this func is only used inside the framework for sensitive calls where the func must run without errors
 	@func = the function which will be called
 	@context = what made the function be called
 	... parameters to pass in the function call
 --]=]
-function DF:CoreDispatch (context, func, ...)
+function DF:CoreDispatch(context, func, ...)
 	if (type(func) ~= "function") then
 		local stack = debugstack(2)
 		local errortext = "D!Framework " .. context .. " error: invalid function to call\n====================\n" .. stack .. "\n====================\n"
-		error (errortext)
+		error(errortext)
 	end
 	
 	local okay, result1, result2, result3, result4 = xpcall(func, geterrorhandler(), ...)
@@ -4038,27 +4005,12 @@ function DF:CoreDispatch (context, func, ...)
 	--if (not okay) then --when using pcall
 		--local stack = debugstack(2)
 		--local errortext = "D!Framework (" .. context .. ") error: " .. result1 .. "\n====================\n" .. stack .. "\n====================\n"
-		--error (errortext)
+		--error(errortext)
 	--end
 	
 	return result1, result2, result3, result4
 end
 
-
---/run local a, b =32,3; local f=function(c,d) return c+d, 2, 3;end; print (xpcall(f,geterrorhandler(),a,b))
-function DF_CALC_PERFORMANCE()
-	local F = CreateFrame("frame")
-	local T = GetTime()
-	local J = false
-	F:SetScript("OnUpdate", function(self, deltaTime)
-		if (not J) then
-			J = true
-			return 
-		end
-		print ("Elapsed Time:", deltaTime)
-		F:SetScript("OnUpdate", nil)
-	end)
-end
 
 DF.ClassIndexToFileName = {
 	[6] = "DEATHKNIGHT",
@@ -4339,7 +4291,7 @@ DF.CLEncounterID = {
 }
 
 function DF:GetPlayerRole()
-	local assignedRole = DF.UnitGroupRolesAssigned ("player")
+	local assignedRole = DF.UnitGroupRolesAssigned("player")
 	if (assignedRole == "NONE") then
 		local spec = DF.GetSpecialization()
 		return spec and DF.GetSpecializationRole (spec) or "NONE"
@@ -4663,7 +4615,7 @@ end
 							local func = DF.RegisteredScriptsComm [ID]
 							if (func) then
 								DF:MakeFunctionSecure(func)
-								DF:Dispatch (func, commSource, select (5, unpack (data))) --this use xpcall
+								DF:Dispatch (func, commSource, select(5, unpack(data))) --this use xpcall
 							end
 						end
 					end
@@ -4685,7 +4637,7 @@ end
 	function DF:SendScriptComm (ID, ...)
 		if (DF.RegisteredScriptsComm [ID]) then
 			local sourceName = UnitName ("player") .. "-" .. GetRealmName()
-			local data = LibAceSerializer:Serialize (ID, UnitGUID ("player"), sourceName, ...)
+			local data = LibAceSerializer:Serialize (ID, UnitGUID("player"), sourceName, ...)
 			data = LibDeflate:CompressDeflate (data, {level = 9})
 			data = LibDeflate:EncodeForWoWAddonChannel (data)
 			aceComm:SendCommMessage ("_GSC", data, "PARTY")
@@ -4704,7 +4656,7 @@ DF.DebugMixin = {
 	debug = true,
 
 	CheckPoint = function(self, checkPointName, ...)
-		print (self:GetName(), checkPointName, ...)
+		print(self:GetName(), checkPointName, ...)
 	end,
 	
 	CheckVisibilityState = function(self, widget)
@@ -4712,12 +4664,12 @@ DF.DebugMixin = {
 		self = widget or self
 		
 		local width, height = self:GetSize()
-		width = floor (width)
-		height = floor (height)
+		width = floor(width)
+		height = floor(height)
 		
 		local numPoints = self:GetNumPoints()
 		
-		print ("shown:", self:IsShown(), "visible:", self:IsVisible(), "alpha:", self:GetAlpha(), "size:", width, height, "points:", numPoints)
+		print("shown:", self:IsShown(), "visible:", self:IsVisible(), "alpha:", self:GetAlpha(), "size:", width, height, "points:", numPoints)
 	end,
 	
 	CheckStack = function(self)
@@ -4731,7 +4683,7 @@ DF.DebugMixin = {
 	
 --returns if the unit is tapped (gray health color when another player hit the unit first) 
 function DF:IsUnitTapDenied (unitId)
-	return unitId and not UnitPlayerControlled (unitId) and UnitIsTapDenied (unitId)
+	return unitId and not UnitPlayerControlled(unitId) and UnitIsTapDenied(unitId)
 end
 
 

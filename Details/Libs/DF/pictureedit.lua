@@ -8,10 +8,10 @@ local _
 local texCoordinates
 
 local CreateImageEditorFrame = function()
-	local editorWindow = DF:NewPanel (UIParent, nil, "DetailsFrameworkImageEdit", nil, 650, 500, false)
+	local editorWindow = DF:NewPanel(UIParent, nil, "DetailsFrameworkImageEdit", nil, 650, 500, false)
 	editorWindow:SetPoint("center", UIParent, "center")
 	editorWindow:SetResizable(true)
-	editorWindow:SetMovable (true)
+	editorWindow:SetMovable(true)
 	editorWindow:SetClampedToScreen (true)
 	tinsert(UISpecialFrames, "DetailsFrameworkImageEdit")
 	editorWindow:SetFrameStrata("TOOLTIP")
@@ -26,22 +26,22 @@ local CreateImageEditorFrame = function()
 	
 	editorWindow.hooks = {}
 	
-	local background = DF:NewImage (editorWindow, nil, nil, nil, "background", nil, "background", "$parentBackground")
+	local background = DF:NewImage(editorWindow, nil, nil, nil, "background", nil, "background", "$parentBackground")
 	background:SetAllPoints()
 	background:SetTexture(0, 0, 0, .8)
 	
-	local edit_texture = DF:NewImage (editorWindow, nil, 500, 500, "artwork", nil, "edit_texture", "$parentImage")
+	local edit_texture = DF:NewImage(editorWindow, nil, 500, 500, "artwork", nil, "edit_texture", "$parentImage")
 	edit_texture:SetAllPoints()
 	_G.DetailsFrameworkImageEdit_EditTexture = edit_texture
 	
 	local background_frame = CreateFrame("frame", "DetailsFrameworkImageEditBackground", DetailsFrameworkImageEdit, "BackdropTemplate")
 	background_frame:SetPoint("topleft", DetailsFrameworkImageEdit, "topleft", -10, 30)
 	background_frame:SetFrameStrata("TOOLTIP")
-	background_frame:SetFrameLevel (editorWindow:GetFrameLevel())
+	background_frame:SetFrameLevel(editorWindow:GetFrameLevel())
 	background_frame:SetSize(790, 560)
 	
 	background_frame:SetResizable(true)
-	background_frame:SetMovable (true)
+	background_frame:SetMovable(true)
 	
 	background_frame:SetScript("OnMouseDown", function()
 		editorWindow:StartMoving()
@@ -51,7 +51,7 @@ local CreateImageEditorFrame = function()
 	end)
 
 	DF:CreateTitleBar (background_frame, "Image Editor")
-	DF:ApplyStandardBackdrop (background_frame, false, 0.98)
+	DF:ApplyStandardBackdrop(background_frame, false, 0.98)
 	DF:CreateStatusBar(background_frame)
 
 	background_frame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
@@ -63,7 +63,7 @@ local CreateImageEditorFrame = function()
 	
 --Top Slider
 	
-		local topCoordTexture = DF:NewImage (editorWindow, nil, nil, nil, "overlay", nil, nil, "$parentImageTopCoord")
+		local topCoordTexture = DF:NewImage(editorWindow, nil, nil, nil, "overlay", nil, nil, "$parentImageTopCoord")
 		topCoordTexture:SetPoint("topleft", editorWindow, "topleft")
 		topCoordTexture:SetPoint("topright", editorWindow, "topright")
 		topCoordTexture:SetColorTexture(1, 0, 0)
@@ -95,7 +95,7 @@ local CreateImageEditorFrame = function()
 
 --Bottom Slider
 
-		local bottomCoordTexture = DF:NewImage (editorWindow, nil, nil, nil, "overlay", nil, nil, "$parentImageBottomCoord")
+		local bottomCoordTexture = DF:NewImage(editorWindow, nil, nil, nil, "overlay", nil, nil, "$parentImageBottomCoord")
 		bottomCoordTexture:SetPoint("bottomleft", editorWindow, "bottomleft", 0, 0)
 		bottomCoordTexture:SetPoint("bottomright", editorWindow, "bottomright", 0, 0)
 		bottomCoordTexture:SetColorTexture(1, 0, 0)
@@ -117,8 +117,8 @@ local CreateImageEditorFrame = function()
 		bottomSlider:SetThumbTexture (bottomSliderThumpTexture)
 
 		bottomSlider:SetHook("OnValueChange", function(_, _, value)
-			value = math.abs (value-100)
-			bottomCoordTexture.image:SetHeight(math.max (editorWindow.frame:GetHeight()/100*value, 1))
+			value = math.abs(value-100)
+			bottomCoordTexture.image:SetHeight(math.max(editorWindow.frame:GetHeight()/100*value, 1))
 			if (editorWindow.callback_func) then
 				editorWindow.accept(nil, nil, true)
 			end
@@ -128,7 +128,7 @@ local CreateImageEditorFrame = function()
 		
 --Left Slider
 		
-		local leftCoordTexture = DF:NewImage (editorWindow, nil, nil, nil, "overlay", nil, nil, "$parentImageLeftCoord")
+		local leftCoordTexture = DF:NewImage(editorWindow, nil, nil, nil, "overlay", nil, nil, "$parentImageLeftCoord")
 		leftCoordTexture:SetPoint("topleft", editorWindow, "topleft", 0, 0)
 		leftCoordTexture:SetPoint("bottomleft", editorWindow, "bottomleft", 0, 0)
 		leftCoordTexture:SetColorTexture(1, 0, 0)
@@ -159,7 +159,7 @@ local CreateImageEditorFrame = function()
 		
 --Right Slider
 		
-		local rightCoordTexture = DF:NewImage (editorWindow, nil, nil, nil, "overlay", nil, nil, "$parentImageRightCoord")
+		local rightCoordTexture = DF:NewImage(editorWindow, nil, nil, nil, "overlay", nil, nil, "$parentImageRightCoord")
 		rightCoordTexture:SetPoint("topright", editorWindow, "topright", 0, 0)
 		rightCoordTexture:SetPoint("bottomright", editorWindow, "bottomright", 0, 0)
 		rightCoordTexture:SetColorTexture(1, 0, 0)
@@ -180,8 +180,8 @@ local CreateImageEditorFrame = function()
 		rightSlider:SetThumbTexture (rightSliderThumpTexture)
 		--]]
 		rightSlider:SetHook("OnValueChange", function(_, _, value)
-			value = math.abs (value-100)
-			rightCoordTexture.image:SetWidth(math.max (editorWindow.frame:GetWidth()/100*value, 1))
+			value = math.abs(value-100)
+			rightCoordTexture.image:SetWidth(math.max(editorWindow.frame:GetWidth()/100*value, 1))
 			if (editorWindow.callback_func) then
 				editorWindow.accept(nil, nil, true)
 			end
@@ -191,11 +191,11 @@ local CreateImageEditorFrame = function()
 		
 --Edit Buttons
 
-	local buttonsBackground = DF:NewPanel (UIParent, nil, "DetailsFrameworkImageEditButtonsBg", nil, 115, 230)
+	local buttonsBackground = DF:NewPanel(UIParent, nil, "DetailsFrameworkImageEditButtonsBg", nil, 115, 230)
 	--buttonsBackground:SetPoint("topleft", window, "topright", 2, 0)
 	buttonsBackground:SetPoint("topright", background_frame, "topright", -8, -10)
 	buttonsBackground:Hide()
-	--buttonsBackground:SetMovable (true)
+	--buttonsBackground:SetMovable(true)
 	tinsert(UISpecialFrames, "DetailsFrameworkImageEditButtonsBg")
 	buttonsBackground:SetFrameStrata("TOOLTIP")
 	
@@ -211,7 +211,7 @@ local CreateImageEditorFrame = function()
 			if (alphaFrameShown) then
 				alphaFrame:Hide()
 				alphaFrameShown = false
-				button.text:SetTextColor (unpack(originalColor))
+				button.text:SetTextColor(unpack(originalColor))
 			end
 			
 			if (ColorPickerFrame:IsShown()) then
@@ -219,7 +219,7 @@ local CreateImageEditorFrame = function()
 			end
 			
 			if (lastButton) then
-				lastButton.text:SetTextColor (unpack(originalColor))
+				lastButton.text:SetTextColor(unpack(originalColor))
 			end
 			
 			if (editingSide == side) then
@@ -232,7 +232,7 @@ local CreateImageEditorFrame = function()
 			end
 
 			editingSide = side
-			button.text:SetTextColor (1, 1, 1)
+			button.text:SetTextColor(1, 1, 1)
 			lastButton = button
 			
 			editorWindow [side.."Slider"]:Show()
@@ -296,11 +296,11 @@ local CreateImageEditorFrame = function()
 			if (alphaFrameShown) then
 				alphaFrame:Hide()
 				alphaFrameShown = false
-				Alpha.button.text:SetTextColor (unpack(originalColor))
+				Alpha.button.text:SetTextColor(unpack(originalColor))
 			end	
 			
 			if (lastButton) then
-				lastButton.text:SetTextColor (unpack(originalColor))
+				lastButton.text:SetTextColor(unpack(originalColor))
 				if (editingSide) then
 					editorWindow [editingSide.."Slider"]:Hide()
 				end
@@ -311,7 +311,7 @@ local CreateImageEditorFrame = function()
 		changeColorButton:SetPoint("topright", buttonsBackground, "topright", -8, -95 + yMod)
 		changeColorButton:SetTemplate(DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 		
-		alphaFrame = DF:NewPanel (buttonsBackground, nil, "DetailsFrameworkImageEditAlphaBg", nil, 40, 225)
+		alphaFrame = DF:NewPanel(buttonsBackground, nil, "DetailsFrameworkImageEditAlphaBg", nil, 40, 225)
 		alphaFrame:SetPoint("topleft", buttonsBackground, "topright", 2, 0)
 		alphaFrame:Hide() 
 		local alphaSlider = DF:NewSlider (alphaFrame, nil, "$parentAlphaSlider", "alphaSlider", 30, 220, 1, 100, 1, edit_texture:GetAlpha()*100)
@@ -328,7 +328,7 @@ local CreateImageEditorFrame = function()
 			end
 		
 			if (lastButton) then
-				lastButton.text:SetTextColor (unpack(originalColor))
+				lastButton.text:SetTextColor(unpack(originalColor))
 				if (editingSide) then
 					editorWindow [editingSide.."Slider"]:Hide()
 				end
@@ -338,11 +338,11 @@ local CreateImageEditorFrame = function()
 				alphaFrame:Show()
 				alphaSlider:SetValue(edit_texture:GetAlpha()*100)
 				alphaFrameShown = true
-				button.text:SetTextColor (1, 1, 1)
+				button.text:SetTextColor(1, 1, 1)
 			else
 				alphaFrame:Hide()
 				alphaFrameShown = false
-				button.text:SetTextColor (unpack(originalColor))
+				button.text:SetTextColor(unpack(originalColor))
 			end
 		end
 		
@@ -358,13 +358,13 @@ local CreateImageEditorFrame = function()
 		local resizer = CreateFrame("Button", nil, editorWindow.widget, "BackdropTemplate")
 		resizer:SetNormalTexture([[Interface\AddOns\Details\images\skins\default_skin]])
 		resizer:SetHighlightTexture([[Interface\AddOns\Details\images\skins\default_skin]])
-		resizer:GetNormalTexture():SetTexCoord (0.00146484375, 0.01513671875, 0.24560546875, 0.25927734375)
-		resizer:GetHighlightTexture():SetTexCoord (0.00146484375, 0.01513671875, 0.24560546875, 0.25927734375)
+		resizer:GetNormalTexture():SetTexCoord(0.00146484375, 0.01513671875, 0.24560546875, 0.25927734375)
+		resizer:GetHighlightTexture():SetTexCoord(0.00146484375, 0.01513671875, 0.24560546875, 0.25927734375)
 		resizer:SetWidth(16)
 		resizer:SetHeight(16)
 		resizer:SetPoint("BOTTOMRIGHT", editorWindow.widget, "BOTTOMRIGHT", 0, 0)
 		resizer:EnableMouse(true)
-		resizer:SetFrameLevel (editorWindow.widget:GetFrameLevel() + 2)
+		resizer:SetFrameLevel(editorWindow.widget:GetFrameLevel() + 2)
 		
 		resizer:SetScript("OnMouseDown", function(self, button) 
 			editorWindow.widget:StartSizing("BOTTOMRIGHT")
@@ -389,9 +389,9 @@ local CreateImageEditorFrame = function()
 			topSliderThumpTexture:SetWidth(editorWindow.width)
 			bottomSliderThumpTexture:SetWidth(editorWindow.width)
 			
-			rightCoordTexture.image:SetWidth(math.max ( (editorWindow.frame:GetWidth() / 100 * math.abs (rightSlider:GetValue()-100)), 1))
+			rightCoordTexture.image:SetWidth(math.max( (editorWindow.frame:GetWidth() / 100 * math.abs(rightSlider:GetValue()-100)), 1))
 			leftCoordTexture.image:SetWidth(editorWindow.frame:GetWidth()/100*leftSlider:GetValue())
-			bottomCoordTexture:SetHeight(math.max ( (editorWindow.frame:GetHeight() / 100 * math.abs (bottomSlider:GetValue()-100)), 1))
+			bottomCoordTexture:SetHeight(math.max( (editorWindow.frame:GetHeight() / 100 * math.abs(bottomSlider:GetValue()-100)), 1))
 			topCoordTexture:SetHeight(editorWindow.frame:GetHeight()/100*topSlider:GetValue())
 			
 			if (editorWindow.callback_func) then
@@ -500,7 +500,7 @@ local CreateImageEditorFrame = function()
 			dragFrame:EnableMouse(false)
 			dragFrame:Hide()
 			dragFrame:SetScript("OnUpdate", nil)
-			print (self.ClickedAt[1], self.ClickedAt[2], self.ReleaseAt[1], self.ReleaseAt[2])
+			print(self.ClickedAt[1], self.ClickedAt[2], self.ReleaseAt[1], self.ReleaseAt[2])
 		end
 	end)
 
