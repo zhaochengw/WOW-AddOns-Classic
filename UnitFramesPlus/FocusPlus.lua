@@ -47,6 +47,7 @@ function UnitFramesPlus_FocusFrameScale(newscale)
 end
 
 --状态数值
+--[[
 local FocusHPMPText = CreateFrame("Frame", "UFP_FocusHPMPText", FocusFrame);
 
 FocusHPMPText.HP = FocusHPMPText:CreateFontString("UFP_FocusHPText", "OVERLAY", "TextStatusBarText");
@@ -61,6 +62,7 @@ FocusHPMPText.MP:SetAlpha(1);
 FocusHPMPText.MP:ClearAllPoints();
 FocusHPMPText.MP:SetPoint("CENTER", FocusFrameManaBar, "CENTER");
 FocusHPMPText.MP:SetJustifyH("CENTER");
+--]]
 
 --焦点扩展框
 local FocusExtraBar = FocusFrame:CreateTexture("UFP_FocusExtraBar", "ARTWORK");
@@ -98,13 +100,13 @@ function UnitFramesPlus_FocusHPValueDisplayUpdate()
     if MaxHP > 0 then
         PctText = math.floor(100*CurHP/MaxHP).."%";
     end
-	
+--[[	
 	if not UnitIsDead("target") then
 		FocusHPMPText.HP:SetText(CurHPfix.." / "..MaxHPfix);
 	else
 		FocusHPMPText.HP:SetText("");
     end
-
+--]]
     -- if UnitFramesPlusDB["focus"]["extrabar"] == 1 or UnitFramesPlusDB["focus"]["hpmp"] == 1 then
     if UnitFramesPlusDB["focus"]["hpmp"] == 1 then
         if UnitFramesPlusDB["focus"]["hpmppartone"] == 1 then
@@ -154,13 +156,13 @@ function UnitFramesPlus_FocusMPValueDisplayUpdate()
         PctText = CurMP;
         -- PctText == 0 then PctText = "" end
     end
-	
+--[[	
 	if MaxMP > 0 and not UnitIsDead("target") then
 		FocusHPMPText.MP:SetText(CurMPfix.." / "..MaxMPfix);
 	else
 		FocusHPMPText.MP:SetText("");
     end
-
+--]]
     -- if UnitFramesPlusDB["focus"]["extrabar"] == 1 or UnitFramesPlusDB["focus"]["hpmp"] == 1 then
     if UnitFramesPlusDB["focus"]["hpmp"] == 1 then
         if UnitFramesPlusDB["focus"]["extrabar"] == 1 or powerType == 0 then
@@ -192,17 +194,17 @@ function UnitFramesPlus_FocusMPValueDisplayUpdate()
 end
 
 function UnitFramesPlus_FocusHPMPPct()
-    if UnitFramesPlusDB["focus"]["bartext"] == 0 and UnitFramesPlusDB["focus"]["hpmp"] == 0 then
+    if UnitFramesPlusDB["focus"]["hpmp"] == 0 then
         if FocusHPMPPct:IsEventRegistered("PLAYER_FOCUS_CHANGED") then
             FocusHPMPPct:UnregisterEvent("PLAYER_FOCUS_CHANGED");
-            FocusHPMPPct:UnregisterEvent("UNIT_HEALTH_FREQUENT_FREQUENT");
+            FocusHPMPPct:UnregisterEvent("UNIT_HEALTH_FREQUENT");
             FocusHPMPPct:UnregisterEvent("UNIT_POWER_FREQUENT");
             FocusHPMPPct:SetScript("OnEvent", nil);
             FocusHPMPPct.HP:Hide();
             FocusHPMPPct.MP:Hide();
             FocusHPMPPct.Pct:Hide();
-			FocusHPMPText.HP:Hide();
-			FocusHPMPText.MP:Hide();
+			-- FocusHPMPText.HP:Hide();
+			-- FocusHPMPText.MP:Hide();
         end
     else
         FocusHPMPPct:RegisterEvent("PLAYER_FOCUS_CHANGED");
@@ -219,27 +221,6 @@ function UnitFramesPlus_FocusHPMPPct()
                 UnitFramesPlus_FocusExtrabarSet();
             end
         end)
-        if UnitFramesPlusDB["focus"]["bartext"] == 1 and not IsAddOnLoaded("EasyFrames") and not IsAddOnLoaded("RealMobHealth") then
-			FocusFrameTextureFrame.HealthBarText:SetAlpha(0);
-			FocusFrameTextureFrame.HealthBarTextLeft:SetAlpha(0);
-			FocusFrameTextureFrame.HealthBarTextRight:SetAlpha(0);
-			FocusFrameTextureFrame.ManaBarText:SetAlpha(0);
-			FocusFrameTextureFrame.ManaBarTextLeft:SetAlpha(0);
-			FocusFrameTextureFrame.ManaBarTextRight:SetAlpha(0);
-			FocusHPMPText.HP:Show();
-			FocusHPMPText.MP:Show();
-			FocusHPMPText.HP:SetAlpha(1);
-			FocusHPMPText.MP:SetAlpha(1);
-		else
-			FocusHPMPText.HP:Hide();
-			FocusHPMPText.MP:Hide();
-			FocusFrameTextureFrame.HealthBarText:SetAlpha(1);
-			FocusFrameTextureFrame.HealthBarTextLeft:SetAlpha(1);
-			FocusFrameTextureFrame.HealthBarTextRight:SetAlpha(1);
-			FocusFrameTextureFrame.ManaBarText:SetAlpha(1);
-			FocusFrameTextureFrame.ManaBarTextLeft:SetAlpha(1);
-			FocusFrameTextureFrame.ManaBarTextRight:SetAlpha(1);
-		end
 		if UnitFramesPlusDB["focus"]["hpmp"] == 1 then
 			FocusHPMPPct.HP:Show();
 			FocusHPMPPct.MP:Show();
@@ -293,19 +274,19 @@ function UnitFramesPlus_FocusExtrabarSet()
 
         FocusHPMPPct.MP:SetAlpha(1);
     end
-	FocusHPMPText.MP:SetAlpha(1);
-	FocusHPMPText.HP:SetAlpha(1);
+	-- FocusHPMPText.MP:SetAlpha(1);
+	-- FocusHPMPText.HP:SetAlpha(1);
 end
 
 function UnitFramesPlus_FocusExtrabar()
-    
+--[[    
 	FocusHPMPText.HP:ClearAllPoints();
 	FocusHPMPText.HP:SetPoint("CENTER", FocusFrameHealthBar, "CENTER");
 	FocusHPMPText.HP:SetJustifyH("CENTER");
 	FocusHPMPText.MP:ClearAllPoints();
 	FocusHPMPText.MP:SetPoint("CENTER", FocusFrameManaBar, "CENTER");
 	FocusHPMPText.MP:SetJustifyH("CENTER");
-	
+--]]	
 	if UnitFramesPlusDB["focus"]["extrabar"] == 1 then
         FocusExtraBar:Show();
         FocusExtraBarBG:Show();
@@ -810,6 +791,7 @@ function UnitFramesPlus_FocusPortrait3DBGDisplayUpdate()
 end
 
 --鼠标移过时才显示数值
+
 FocusFrame.HealthBarX = CreateFrame("StatusBar", "UFP_FocusFrameHealthBar", FocusFrame);
 FocusFrame.HealthBarX:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
 FocusFrame.HealthBarX:SetFrameLevel(3);
@@ -826,6 +808,8 @@ FocusFrame.PowerBarX:SetHeight(12);
 FocusFrame.PowerBarX:ClearAllPoints();
 FocusFrame.PowerBarX:SetPoint("TOPRIGHT", FocusFrame, "TOPRIGHT", -106, -52);
 FocusFrame.PowerBarX:SetAlpha(0);
+
+
 function UnitFramesPlus_FocusBarTextMouseShow()
 		FocusFrameTextureFrame.HealthBarText:SetAlpha(0);
         FocusFrameTextureFrame.HealthBarTextLeft:SetAlpha(0);
@@ -833,51 +817,51 @@ function UnitFramesPlus_FocusBarTextMouseShow()
         FocusFrameTextureFrame.ManaBarText:SetAlpha(0);
         FocusFrameTextureFrame.ManaBarTextLeft:SetAlpha(0);
         FocusFrameTextureFrame.ManaBarTextRight:SetAlpha(0);
-		FocusHPMPText.HP:SetAlpha(0);
-		FocusHPMPText.MP:SetAlpha(0);
+		-- FocusHPMPText.HP:SetAlpha(0);
+		-- FocusHPMPText.MP:SetAlpha(0);
     if UnitFramesPlusDB["focus"]["mouseshow"] == 1 then
         FocusFrame.HealthBarX:SetScript("OnEnter",function(self)
-            if UnitFramesPlusDB["focus"]["bartext"] == 1 then
-				FocusHPMPText.HP:SetAlpha(1);
-			else
+            -- if UnitFramesPlusDB["focus"]["bartext"] == 1 then
+				-- FocusHPMPText.HP:SetAlpha(1);
+			-- else
 				FocusFrameTextureFrame.HealthBarText:SetAlpha(1);
 				FocusFrameTextureFrame.HealthBarTextLeft:SetAlpha(1);
 				FocusFrameTextureFrame.HealthBarTextRight:SetAlpha(1);
-			end
+			-- end
         end);
         FocusFrame.HealthBarX:SetScript("OnLeave",function()
             FocusFrameTextureFrame.HealthBarText:SetAlpha(0);
             FocusFrameTextureFrame.HealthBarTextLeft:SetAlpha(0);
             FocusFrameTextureFrame.HealthBarTextRight:SetAlpha(0);
-			FocusHPMPText.HP:SetAlpha(0);
+			-- FocusHPMPText.HP:SetAlpha(0);
         end);
         FocusFrame.PowerBarX:SetScript("OnEnter",function(self)
-            if UnitFramesPlusDB["focus"]["bartext"] == 1 then
-				FocusHPMPText.MP:SetAlpha(1);
-			else
+            -- if UnitFramesPlusDB["focus"]["bartext"] == 1 then
+				-- FocusHPMPText.MP:SetAlpha(1);
+			-- else
 				FocusFrameTextureFrame.ManaBarText:SetAlpha(1);
 				FocusFrameTextureFrame.ManaBarTextLeft:SetAlpha(1);
 				FocusFrameTextureFrame.ManaBarTextRight:SetAlpha(1);
-			end
+			-- end
         end);
         FocusFrame.PowerBarX:SetScript("OnLeave",function()
             FocusFrameTextureFrame.ManaBarText:SetAlpha(0);
             FocusFrameTextureFrame.ManaBarTextLeft:SetAlpha(0);
             FocusFrameTextureFrame.ManaBarTextRight:SetAlpha(0);
-			FocusHPMPText.MP:SetAlpha(0);
+			-- FocusHPMPText.MP:SetAlpha(0);
         end);
     else
-        if UnitFramesPlusDB["focus"]["bartext"] == 1 then
-			FocusHPMPText.HP:SetAlpha(1);
-			FocusHPMPText.MP:SetAlpha(1);
-		else
+        -- if UnitFramesPlusDB["focus"]["bartext"] == 1 then
+			-- FocusHPMPText.HP:SetAlpha(1);
+			-- FocusHPMPText.MP:SetAlpha(1);
+		-- else
 			FocusFrameTextureFrame.HealthBarText:SetAlpha(1);
 			FocusFrameTextureFrame.HealthBarTextLeft:SetAlpha(1);
 			FocusFrameTextureFrame.HealthBarTextRight:SetAlpha(1);
 			FocusFrameTextureFrame.ManaBarText:SetAlpha(1);
 			FocusFrameTextureFrame.ManaBarTextLeft:SetAlpha(1);
 			FocusFrameTextureFrame.ManaBarTextRight:SetAlpha(1);
-		end
+		-- end
         FocusFrame.HealthBarX:SetScript("OnEnter",nil);
         FocusFrame.HealthBarX:SetScript("OnLeave",nil);
         FocusFrame.PowerBarX:SetScript("OnEnter",nil);
@@ -896,8 +880,8 @@ function UnitFramesPlus_FocusExtraTextFontSize()
     FocusFrameTextureFrame.ManaBarTextLeft:SetFont(BarFont, BarFontSize, "OUTLINE");
     FocusFrameTextureFrame.ManaBarTextRight:SetFont(BarFont, BarFontSize, "OUTLINE");
 
-    UFP_FocusHPText:SetFont(BarFont, BarFontSize, "OUTLINE");
-    UFP_FocusMPText:SetFont(BarFont, BarFontSize, "OUTLINE")
+--    UFP_FocusHPText:SetFont(BarFont, BarFontSize, "OUTLINE");
+--    UFP_FocusMPText:SetFont(BarFont, BarFontSize, "OUTLINE")
 	UFP_FocusHPMPPctHP:SetFont(STANDARD_TEXT_FONT, UTPFontSize, "OUTLINE");
     UFP_FocusHPMPPctMP:SetFont(STANDARD_TEXT_FONT, UTPFontSize, "OUTLINE");
     UFP_FocusHPMPPctPct:SetFont(STANDARD_TEXT_FONT, UTPFontSize, "OUTLINE");
