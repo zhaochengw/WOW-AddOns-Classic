@@ -1,3 +1,13 @@
+3.0.34 - 17th October 2022
+- For 'Show flight times' text to speech, the speech volume will now be set to the game master volume slider and the option is now disabled by default.
+- For 'Automate quests' ('Automation'), quests from Lillehoff (The Sons of Hodir Quartermaster, The Storm Peaks) will not be selected, accepted or turned-in automatically if you are exalted with Sons of Hodir.
+- Added flight times.
+
+3.0.33 - 16th October 2022
+- For 'Show flight times', you can now have the remaining time spoken to you using text to speech.  The time will be announced once a minute and at 30 seconds, 20 seconds and 10 seconds.  This setting is enabled by default.
+- Fixed a minor issue with LibCandyBar.
+- Added flight times.
+
 3.0.32 - 15th October 2022
 - Fixed 'Use class colors in chat' ('Chat') for game version 3.4.0.46158.
 - Added a flight time.
