@@ -18,8 +18,8 @@ LBIS:AddItem(spec, "39297", LBIS.L["Back"], "Alt") --Cloak of Darkening
 
 LBIS:AddItem(spec, "40550", LBIS.L["Chest"], "BIS") --Valorous Scourgeborne Battleplate
 LBIS:AddItem(spec, "40627", LBIS.L["Chest"], "BIS") --Breastplate of the Lost Vanquisher
-LBIS:AddItem(spec, "39617", LBIS.L["Chest"], "BIS") --Heroes' Scourgeborne Battleplate
 LBIS:AddItem(spec, "40612", LBIS.L["Chest"], "BIS") --Chestguard of the Lost Vanquisher
+LBIS:AddItem(spec, "39617", LBIS.L["Chest"], "BIS") --Heroes' Scourgeborne Battleplate
 LBIS:AddItem(spec, "40539", LBIS.L["Chest"], "Alt") --Chestguard of the Recluse
 LBIS:AddItem(spec, "40365", LBIS.L["Chest"], "Alt") --Breastplate of Frozen Pain
 
@@ -38,8 +38,8 @@ LBIS:AddItem(spec, "40278", LBIS.L["Waist"], "BIS") --Girdle of Chivalry
 LBIS:AddItem(spec, "40317", LBIS.L["Waist"], "Alt") --Girdle of Razuvious
 LBIS:AddItem(spec, "40688", LBIS.L["Waist"], "Alt") --Verdungo's Barbarian Cord
 
-LBIS:AddItem(spec, "40556", LBIS.L["Legs"], "BIS") --Valorous Scourgeborne Legplates
 LBIS:AddItem(spec, "40636", LBIS.L["Legs"], "BIS") --Legplates of the Lost Vanquisher
+LBIS:AddItem(spec, "40556", LBIS.L["Legs"], "BIS") --Valorous Scourgeborne Legplates
 LBIS:AddItem(spec, "39620", LBIS.L["Legs"], "BIS") --Heroes' Scourgeborne Legplates
 LBIS:AddItem(spec, "40621", LBIS.L["Legs"], "BIS") --Leggings of the Lost Vanquisher
 LBIS:AddItem(spec, "40294", LBIS.L["Legs"], "BIS") --Riveted Abomination Leggings
@@ -49,8 +49,8 @@ LBIS:AddItem(spec, "40591", LBIS.L["Feet"], "BIS") --Melancholy Sabatons
 LBIS:AddItem(spec, "39706", LBIS.L["Feet"], "BIS") --Sabatons of Sudden Reprisal
 LBIS:AddItem(spec, "40206", LBIS.L["Feet"], "Alt") --Iron-Spring Jumpers
 
-LBIS:AddItem(spec, "44665", LBIS.L["Neck"], "BIS") --Nexus War Champion Beads
-LBIS:AddItem(spec, "44660", LBIS.L["Neck"], "Alt") --Drakescale Collar
+LBIS:AddItem(spec, "44664", LBIS.L["Neck"], "BIS") --Favor of the Dragon Queen
+LBIS:AddItem(spec, "44659", LBIS.L["Neck"], "Alt") --Pendant of the Dragonsworn
 LBIS:AddItem(spec, "39421", LBIS.L["Neck"], "Alt") --Gem of Imprisoned Vassals
 
 LBIS:AddItem(spec, "40075", LBIS.L["Ring"], "BIS") --Ruthlessness

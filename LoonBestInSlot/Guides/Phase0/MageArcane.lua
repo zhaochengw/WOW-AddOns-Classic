@@ -38,7 +38,7 @@ LBIS:AddItem(spec, "40696", LBIS.L["Waist"], "BIS") --Plush Sash of Guzbah
 
 LBIS:AddItem(spec, "34181", LBIS.L["Legs"], "BIS") --Leggings of Calamity
 LBIS:AddItem(spec, "34386", LBIS.L["Legs"], "Alt") --Pantaloons of Growing Strife
-LBIS:AddItem(spec, "34170", LBIS.L["Legs"], "Transmute Alt") --Pantaloons of Calming Strife
+LBIS:AddItem(spec, "34170", LBIS.L["Legs"], "Alt Transmute") --Pantaloons of Calming Strife
 LBIS:AddItem(spec, "37854", LBIS.L["Legs"], "Alt") --Woven Bracae Leggings
 
 LBIS:AddItem(spec, "44202", LBIS.L["Feet"], "BIS") --Sandals of Crimson Fury
@@ -57,6 +57,7 @@ LBIS:AddItem(spec, "42647", LBIS.L["Neck"], "Alt") --Titanium Spellshock Necklac
 LBIS:AddItem(spec, "40585", LBIS.L["Ring"], "BIS") --Signet of the Kirin Tor
 LBIS:AddItem(spec, "37694", LBIS.L["Ring"], "BIS") --Band of Guile
 LBIS:AddItem(spec, "37192", LBIS.L["Ring"], "Alt") --Annhylde's Ring
+LBIS:AddItem(spec, "42114", LBIS.L["Ring"], "Alt") --Deadly Gladiator's Band of Ascendancy
 LBIS:AddItem(spec, "44283", LBIS.L["Ring"], "Alt") --Signet of Hopeful Light
 LBIS:AddItem(spec, "42644", LBIS.L["Ring"], "Alt") --Titanium Spellshock Ring
 

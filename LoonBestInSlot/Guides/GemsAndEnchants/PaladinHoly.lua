@@ -21,7 +21,7 @@ LBIS:AddEnchant(spec1, "50368", LBIS.L["Head"]) --Arcanum of Burning Mysteries
 LBIS:AddEnchant(spec1, "50336", LBIS.L["Shoulder"]) --Greater Inscription of the Crag
 LBIS:AddEnchant(spec1, "50338", LBIS.L["Shoulder"]) --Greater Inscription of the Storm
 
-LBIS:AddEnchant(spec1, "60609", LBIS.L["Back"]) --Enchant Cloak - Speed
+LBIS:AddEnchant(spec1, "47898", LBIS.L["Back"]) --Enchant Cloak - Greater Speed
 LBIS:AddEnchant(spec1, "55769", LBIS.L["Back"]) --Darkglow Embroidery
 
 LBIS:AddEnchant(spec1, "60692", LBIS.L["Chest"]) --Enchant Chest - Powerful Stats

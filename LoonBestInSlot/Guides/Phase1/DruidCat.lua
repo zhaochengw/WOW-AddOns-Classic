@@ -9,8 +9,8 @@ LBIS:AddItem(spec, "40618", LBIS.L["Head"], "Alt") --Helm of the Lost Vanquisher
 LBIS:AddItem(spec, "42550", LBIS.L["Head"], "Alt") --Weakness Spectralizers
 
 LBIS:AddItem(spec, "40437", LBIS.L["Shoulder"], "BIS") --Concealment Shoulderpads
-LBIS:AddItem(spec, "40494", LBIS.L["Shoulder"], "BIS") --Valorous Dreamwalker Shoulderpads
 LBIS:AddItem(spec, "40639", LBIS.L["Shoulder"], "BIS") --Mantle of the Lost Vanquisher
+LBIS:AddItem(spec, "40494", LBIS.L["Shoulder"], "BIS") --Valorous Dreamwalker Shoulderpads
 LBIS:AddItem(spec, "40305", LBIS.L["Shoulder"], "Alt") --Spaulders of Egotism
 LBIS:AddItem(spec, "39237", LBIS.L["Shoulder"], "Alt") --Spaulders of Resumed Battle
 LBIS:AddItem(spec, "39556", LBIS.L["Shoulder"], "Alt") --Heroes' Dreamwalker Shoulderpads

@@ -11,8 +11,8 @@ LBIS:AddItem(spec, "42551", LBIS.L["Head"], "Alt") --Truesight Ice Blinders
 
 LBIS:AddItem(spec, "40524", LBIS.L["Shoulder"], "BIS") --Valorous Earthshatter Shoulderguards
 LBIS:AddItem(spec, "40638", LBIS.L["Shoulder"], "BIS") --Mantle of the Lost Protector
-LBIS:AddItem(spec, "39604", LBIS.L["Shoulder"], "Alt") --Heroes' Earthshatter Shoulderguards
 LBIS:AddItem(spec, "40623", LBIS.L["Shoulder"], "Alt") --Spaulders of the Lost Protector
+LBIS:AddItem(spec, "39604", LBIS.L["Shoulder"], "Alt") --Heroes' Earthshatter Shoulderguards
 LBIS:AddItem(spec, "40315", LBIS.L["Shoulder"], "Alt") --Shoulderpads of Secret Arts
 LBIS:AddItem(spec, "40299", LBIS.L["Shoulder"], "Alt") --Pauldrons of the Abandoned
 LBIS:AddItem(spec, "44003", LBIS.L["Shoulder"], "Alt") --Upstanding Spaulders
@@ -23,8 +23,8 @@ LBIS:AddItem(spec, "39404", LBIS.L["Back"], "Alt") --Cloak of Mastery
 LBIS:AddItem(spec, "40721", LBIS.L["Back"], "Alt") --Hammerhead Sharkskin Cloak
 LBIS:AddItem(spec, "40250", LBIS.L["Back"], "Alt") --Aged Winter Cloak
 
-LBIS:AddItem(spec, "40523", LBIS.L["Chest"], "BIS") --Valorous Earthshatter Chestguard
 LBIS:AddItem(spec, "40626", LBIS.L["Chest"], "BIS") --Breastplate of the Lost Protector
+LBIS:AddItem(spec, "40523", LBIS.L["Chest"], "BIS") --Valorous Earthshatter Chestguard
 LBIS:AddItem(spec, "39597", LBIS.L["Chest"], "Alt") --Heroes' Earthshatter Chestguard
 LBIS:AddItem(spec, "40611", LBIS.L["Chest"], "Alt") --Chestguard of the Lost Protector
 LBIS:AddItem(spec, "39724", LBIS.L["Chest"], "Alt") --Cult's Chestguard
@@ -87,14 +87,16 @@ LBIS:AddItem(spec, "37390", LBIS.L["Trinket"], "BIS") --Meteorite Whetstone
 LBIS:AddItem(spec, "40371", LBIS.L["Trinket"], "Alt") --Bandit's Insignia
 LBIS:AddItem(spec, "40531", LBIS.L["Trinket"], "Alt") --Mark of Norgannon
 
-LBIS:AddItem(spec, "39763", LBIS.L["Main Hand"], "BIS MH") --Wraith Strike
-LBIS:AddItem(spec, "39468", LBIS.L["Main Hand"], "BIS OH") --The Stray
-LBIS:AddItem(spec, "40383", LBIS.L["Main Hand"], "Alt MH") --Calamity's Grasp
-LBIS:AddItem(spec, "40189", LBIS.L["Main Hand"], "Alt MH/OH") --Angry Dread
-LBIS:AddItem(spec, "45085", LBIS.L["Main Hand"], "Alt MH") --Titansteel Spellblade
-LBIS:AddItem(spec, "40704", LBIS.L["Main Hand"], "Alt OH") --Pride
-LBIS:AddItem(spec, "41384", LBIS.L["Main Hand"], "Alt MH") --Titansteel Guardian
-LBIS:AddItem(spec, "41383", LBIS.L["Main Hand"], "Alt MH") --Titansteel Bonecrusher
+LBIS:AddItem(spec, "39763", LBIS.L["Main Hand"], "BIS") --Wraith Strike
+LBIS:AddItem(spec, "40383", LBIS.L["Main Hand"], "Alt") --Calamity's Grasp
+LBIS:AddItem(spec, "40189", LBIS.L["Main Hand"], "Alt") --Angry Dread
+LBIS:AddItem(spec, "45085", LBIS.L["Main Hand"], "Alt") --Titansteel Spellblade
+LBIS:AddItem(spec, "40429", LBIS.L["Main Hand"], "Alt") --Crimson Steel
+LBIS:AddItem(spec, "41384", LBIS.L["Main Hand"], "Alt") --Titansteel Guardian
+LBIS:AddItem(spec, "41383", LBIS.L["Main Hand"], "Alt") --Titansteel Bonecrusher
+
+LBIS:AddItem(spec, "39468", LBIS.L["Off Hand"], "BIS") --The Stray
+LBIS:AddItem(spec, "40704", LBIS.L["Off Hand"], "Alt") --Pride
 
 LBIS:AddItem(spec, "40322", LBIS.L["Totem"], "BIS") --Totem of Dueling
 LBIS:AddItem(spec, "40708", LBIS.L["Totem"], "Alt") --Totem of the Elemental Plane

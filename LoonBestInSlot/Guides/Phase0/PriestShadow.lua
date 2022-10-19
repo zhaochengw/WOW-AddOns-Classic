@@ -23,8 +23,8 @@ LBIS:AddItem(spec, "44378", LBIS.L["Shoulder"], "Alt") --Mantle of the Flesh Gia
 
 LBIS:AddItem(spec, "41610", LBIS.L["Back"], "BIS") --Deathchill Cloak
 LBIS:AddItem(spec, "42064", LBIS.L["Back"], "Alt") --Deadly Gladiator's Cloak of Ascendancy
-LBIS:AddItem(spec, "42063", LBIS.L["Back"], "Alt") --Deadly Gladiator's Cloak of Subjugation
 LBIS:AddItem(spec, "42062", LBIS.L["Back"], "Alt") --Deadly Gladiator's Cloak of Dominance
+LBIS:AddItem(spec, "42063", LBIS.L["Back"], "Alt") --Deadly Gladiator's Cloak of Subjugation
 LBIS:AddItem(spec, "42066", LBIS.L["Back"], "Alt") --Deadly Gladiator's Cloak of Deliverance
 LBIS:AddItem(spec, "37291", LBIS.L["Back"], "Alt") --Ancient Dragon Spirit Cape
 LBIS:AddItem(spec, "34242", LBIS.L["Back"], "Alt") --Tattered Cape of Antonidas
@@ -160,6 +160,13 @@ LBIS:AddItem(spec, "42990", LBIS.L["Trinket"], "Alt") --Darkmoon Card: Death
 LBIS:AddItem(spec, "44013", LBIS.L["Trinket"], "Alt") --Cannoneer's Fuselighter
 LBIS:AddItem(spec, "44322", LBIS.L["Trinket"], "Alt") --Mercurial Alchemist Stone
 
+LBIS:AddItem(spec, "37360", LBIS.L["Two Hand"], "BIS") --Staff of Draconic Combat
+LBIS:AddItem(spec, "37384", LBIS.L["Two Hand"], "Alt") --Staff of Wayward Principles
+LBIS:AddItem(spec, "37617", LBIS.L["Two Hand"], "Alt") --Staff of Sinister Claws
+LBIS:AddItem(spec, "37099", LBIS.L["Two Hand"], "Alt") --Sempiternal Staff
+LBIS:AddItem(spec, "41821", LBIS.L["Two Hand"], "Alt") --Chilly Slobberknocker
+LBIS:AddItem(spec, "44748", LBIS.L["Two Hand"], "Alt") --Stave of Youthful Sorrow
+
 LBIS:AddItem(spec, "41384", LBIS.L["Main Hand"], "BIS") --Titansteel Guardian
 LBIS:AddItem(spec, "45085", LBIS.L["Main Hand"], "Alt") --Titansteel Spellblade
 LBIS:AddItem(spec, "37169", LBIS.L["Main Hand"], "Alt") --War Mace of Unrequited Love
@@ -176,13 +183,6 @@ LBIS:AddItem(spec, "37718", LBIS.L["Off Hand"], "Alt") --Temple Crystal Fragment
 LBIS:AddItem(spec, "37086", LBIS.L["Off Hand"], "Alt") --Tome of Salramm
 LBIS:AddItem(spec, "37051", LBIS.L["Off Hand"], "Alt") --Seal of Valgarde
 LBIS:AddItem(spec, "44023", LBIS.L["Off Hand"], "Alt") --Bonecaster's Endgame
-
-LBIS:AddItem(spec, "37360", LBIS.L["Two Hand"], "BIS") --Staff of Draconic Combat
-LBIS:AddItem(spec, "37384", LBIS.L["Two Hand"], "Alt") --Staff of Wayward Principles
-LBIS:AddItem(spec, "37617", LBIS.L["Two Hand"], "Alt") --Staff of Sinister Claws
-LBIS:AddItem(spec, "37099", LBIS.L["Two Hand"], "Alt") --Sempiternal Staff
-LBIS:AddItem(spec, "41821", LBIS.L["Two Hand"], "Alt") --Chilly Slobberknocker
-LBIS:AddItem(spec, "44748", LBIS.L["Two Hand"], "Alt") --Stave of Youthful Sorrow
 
 LBIS:AddItem(spec, "37238", LBIS.L["Wand"], "BIS") --Rod of the Fallen Monarch
 LBIS:AddItem(spec, "37177", LBIS.L["Wand"], "Alt") --Wand of the San'layn

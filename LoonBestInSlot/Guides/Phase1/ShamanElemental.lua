@@ -33,8 +33,8 @@ LBIS:AddItem(spec, "40325", LBIS.L["Wrist"], "BIS") --Bindings of the Expansive 
 LBIS:AddItem(spec, "37788", LBIS.L["Wrist"], "Alt") --Limb Regeneration Bracers
 LBIS:AddItem(spec, "37884", LBIS.L["Wrist"], "Alt") --Azure Cloth Bindings
 
-LBIS:AddItem(spec, "40515", LBIS.L["Hands"], "BIS") --Valorous Earthshatter Gloves
 LBIS:AddItem(spec, "40629", LBIS.L["Hands"], "BIS") --Gauntlets of the Lost Protector
+LBIS:AddItem(spec, "40515", LBIS.L["Hands"], "BIS") --Valorous Earthshatter Gloves
 LBIS:AddItem(spec, "40302", LBIS.L["Hands"], "BIS") --Benefactor's Gauntlets
 LBIS:AddItem(spec, "39593", LBIS.L["Hands"], "Alt") --Heroes' Earthshatter Gloves
 LBIS:AddItem(spec, "40614", LBIS.L["Hands"], "Alt") --Gloves of the Lost Protector
@@ -73,6 +73,7 @@ LBIS:AddItem(spec, "43253", LBIS.L["Ring"], "Alt") --Ring of Northern Tears
 
 LBIS:AddItem(spec, "40432", LBIS.L["Trinket"], "BIS") --Illustration of the Dragon Soul
 LBIS:AddItem(spec, "39229", LBIS.L["Trinket"], "BIS") --Embrace of the Spider
+LBIS:AddItem(spec, "40255", LBIS.L["Trinket"], "Alt") --Dying Curse
 LBIS:AddItem(spec, "40682", LBIS.L["Trinket"], "Alt") --Sundial of the Exiled
 LBIS:AddItem(spec, "37873", LBIS.L["Trinket"], "Alt") --Mark of the War Prisoner
 LBIS:AddItem(spec, "42395", LBIS.L["Trinket"], "Alt") --Figurine - Twilight Serpent

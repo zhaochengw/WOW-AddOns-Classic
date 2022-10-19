@@ -10,8 +10,8 @@ LBIS:AddItem(spec, "37373", LBIS.L["Shoulder"], "BIS") --Massive Spaulders of th
 LBIS:AddItem(spec, "43481", LBIS.L["Shoulder"], "Alt") --Trollwoven Spaulders
 LBIS:AddItem(spec, "37679", LBIS.L["Shoulder"], "Alt") --Spaulders of the Abomination
 LBIS:AddItem(spec, "44257", LBIS.L["Shoulder"], "Alt") --Spaulders of the Black Arrow
-LBIS:AddItem(spec, "31024", LBIS.L["Shoulder"], "Alt") --Skyshatter Pauldrons
 LBIS:AddItem(spec, "31103", LBIS.L["Shoulder"], "Alt") --Pauldrons of the Forgotten Protector
+LBIS:AddItem(spec, "31024", LBIS.L["Shoulder"], "Alt") --Skyshatter Pauldrons
 
 LBIS:AddItem(spec, "43566", LBIS.L["Back"], "BIS") --Ice Striker's Cloak
 LBIS:AddItem(spec, "37840", LBIS.L["Back"], "BIS") --Shroud of Reverberation

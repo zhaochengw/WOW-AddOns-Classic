@@ -5,6 +5,7 @@ LBISSettings = LBISSettings or
 	SelectedPhase = LBIS.L["All"], 
 	SelectedSourceType = LBIS.L["All"], 
 	SelectedZone = LBIS.L["All"], 
+	SelectedZoneNumber = LBIS.L["All"],
 	minimap = { 
 		hide = false, 
 		minimapPos = 180

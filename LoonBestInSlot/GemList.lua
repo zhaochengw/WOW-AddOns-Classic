@@ -110,9 +110,3 @@ function LBIS.GemList:UpdateItems()
         end
     end);
 end
-
-function LBIS.GemList:Open()
-    
-    --local window = LBIS.BrowserWindow.Window;
-    
-end

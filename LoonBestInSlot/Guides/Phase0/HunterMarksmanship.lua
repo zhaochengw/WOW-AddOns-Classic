@@ -31,8 +31,8 @@ LBIS:AddItem(spec, "43131", LBIS.L["Wrist"], "Alt") --Eaglebane Bracers
 LBIS:AddItem(spec, "40490", LBIS.L["Wrist"], "Alt") --Necromantic Wristguards
 LBIS:AddItem(spec, "37656", LBIS.L["Wrist"], "Alt") --Raging Construct Bands
 
-LBIS:AddItem(spec, "39582", LBIS.L["Hands"], "BIS") --Heroes' Cryptstalker Handguards
 LBIS:AddItem(spec, "40614", LBIS.L["Hands"], "BIS") --Gloves of the Lost Protector
+LBIS:AddItem(spec, "39582", LBIS.L["Hands"], "BIS") --Heroes' Cryptstalker Handguards
 LBIS:AddItem(spec, "37886", LBIS.L["Hands"], "Alt") --Handgrips of the Savage Emissary
 LBIS:AddItem(spec, "37639", LBIS.L["Hands"], "Alt") --Grips of the Beast God
 LBIS:AddItem(spec, "37614", LBIS.L["Hands"], "Alt") --Gauntlets of the Plundering Geist
@@ -70,18 +70,18 @@ LBIS:AddItem(spec, "37723", LBIS.L["Trinket"], "Alt") --Incisor Fragment
 LBIS:AddItem(spec, "37166", LBIS.L["Trinket"], "Alt") --Sphere of Red Dragon's Blood
 LBIS:AddItem(spec, "37390", LBIS.L["Trinket"], "Alt") --Meteorite Whetstone
 
+LBIS:AddItem(spec, "44249", LBIS.L["Two Hand"], "BIS") --Runeblade of Demonstrable Power
+LBIS:AddItem(spec, "37848", LBIS.L["Two Hand"], "Alt") --Lightning Giant Staff
+LBIS:AddItem(spec, "37883", LBIS.L["Two Hand"], "Alt") --Staff of Trickery
+LBIS:AddItem(spec, "36962", LBIS.L["Two Hand"], "Alt") --Wyrmclaw Battleaxe
+LBIS:AddItem(spec, "34198", LBIS.L["Two Hand"], "Alt") --Stanchion of Primal Instinct
+
 LBIS:AddItem(spec, "37235", LBIS.L["Main Hand"], "BIS") --Crypt Lord's Deft Blade
 LBIS:AddItem(spec, "37871", LBIS.L["Main Hand"], "BIS") --The Key
 LBIS:AddItem(spec, "44193", LBIS.L["Main Hand"], "Alt") --Broken Stalactite
 LBIS:AddItem(spec, "44311", LBIS.L["Main Hand"], "Alt") --Avool's Sword of Jin
 LBIS:AddItem(spec, "44187", LBIS.L["Main Hand"], "Alt") --Fang of Truth
 LBIS:AddItem(spec, "37181", LBIS.L["Main Hand"], "Alt") --Dagger of Betrayal
-
-LBIS:AddItem(spec, "44249", LBIS.L["Two Hand"], "BIS") --Runeblade of Demonstrable Power
-LBIS:AddItem(spec, "37848", LBIS.L["Two Hand"], "Alt") --Lightning Giant Staff
-LBIS:AddItem(spec, "37883", LBIS.L["Two Hand"], "Alt") --Staff of Trickery
-LBIS:AddItem(spec, "36962", LBIS.L["Two Hand"], "Alt") --Wyrmclaw Battleaxe
-LBIS:AddItem(spec, "34198", LBIS.L["Two Hand"], "Alt") --Stanchion of Primal Instinct
 
 LBIS:AddItem(spec, "37191", LBIS.L["Ranged"], "BIS") --Drake-Mounted Crossbow
 LBIS:AddItem(spec, "44504", LBIS.L["Ranged"], "BIS") --Nesingwary 4000

@@ -33,8 +33,8 @@ LBIS:AddItem(spec, "37853", LBIS.L["Wrist"], "Alt") --Advanced Tooled-Leather Ba
 LBIS:AddItem(spec, "34448", LBIS.L["Wrist"], "Alt") --Slayer's Bracers
 LBIS:AddItem(spec, "34852", LBIS.L["Wrist"], "Alt") --Bracers of the Forgotten Vanquisher
 
-LBIS:AddItem(spec, "39560", LBIS.L["Hands"], "BIS") --Heroes' Bonescythe Gauntlets
 LBIS:AddItem(spec, "40615", LBIS.L["Hands"], "BIS") --Gloves of the Lost Vanquisher
+LBIS:AddItem(spec, "39560", LBIS.L["Hands"], "BIS") --Heroes' Bonescythe Gauntlets
 LBIS:AddItem(spec, "37409", LBIS.L["Hands"], "Alt") --Gilt-Edged Leather Gauntlets
 LBIS:AddItem(spec, "34370", LBIS.L["Hands"], "Alt") --Gloves of Immortal Dusk
 LBIS:AddItem(spec, "37846", LBIS.L["Hands"], "Alt") --Charged-Bolt Grips
@@ -43,8 +43,8 @@ LBIS:AddItem(spec, "40694", LBIS.L["Waist"], "BIS") --Jorach's Crocolisk Skin Be
 LBIS:AddItem(spec, "37194", LBIS.L["Waist"], "Alt") --Sharp-Barbed Leather Belt
 LBIS:AddItem(spec, "43484", LBIS.L["Waist"], "Alt") --Trollwoven Girdle
 LBIS:AddItem(spec, "37243", LBIS.L["Waist"], "Alt") --Treasure Seeker's Belt
-LBIS:AddItem(spec, "34558", LBIS.L["Waist"], "Alt") --Slayer's Belt
 LBIS:AddItem(spec, "34855", LBIS.L["Waist"], "Alt") --Belt of the Forgotten Vanquisher
+LBIS:AddItem(spec, "34558", LBIS.L["Waist"], "Alt") --Slayer's Belt
 
 LBIS:AddItem(spec, "37644", LBIS.L["Legs"], "BIS") --Gored Hide Legguards
 LBIS:AddItem(spec, "34188", LBIS.L["Legs"], "Alt") --Leggings of the Immortal Night

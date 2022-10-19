@@ -156,10 +156,3 @@ function LBIS.EnchantList:UpdateItems()
         end
     end);
 end
-
-function LBIS.EnchantList:Open()
-    
-    --local window = LBIS.BrowserWindow.Window;
-
-    
-end

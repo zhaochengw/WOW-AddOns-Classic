@@ -4,12 +4,14 @@ LBIS:AddItem(spec, "40562", LBIS.L["Head"], "BIS") --Hood of Rationality
 LBIS:AddItem(spec, "40339", LBIS.L["Head"], "Alt") --Gothik's Cowl
 LBIS:AddItem(spec, "40456", LBIS.L["Head"], "Alt") --Valorous Circlet of Faith
 LBIS:AddItem(spec, "40631", LBIS.L["Head"], "Alt") --Crown of the Lost Conqueror
+LBIS:AddItem(spec, "43995", LBIS.L["Head"], "Alt") --Enamored Cowl
 LBIS:AddItem(spec, "40287", LBIS.L["Head"], "Alt") --Cowl of Vanity
 LBIS:AddItem(spec, "39521", LBIS.L["Head"], "Alt") --Heroes' Circlet of Faith
 LBIS:AddItem(spec, "40616", LBIS.L["Head"], "Alt") --Helm of the Lost Conqueror
 LBIS:AddItem(spec, "39409", LBIS.L["Head"], "Alt") --Cowl of Winged Fear
 LBIS:AddItem(spec, "42553", LBIS.L["Head"], "Alt") --Visage Liquification Goggles
 LBIS:AddItem(spec, "39732", LBIS.L["Head"], "Alt") --Faerlina's Madness
+LBIS:AddItem(spec, "39295", LBIS.L["Head"], "Alt") --Cowl of Sheet Lightning
 
 LBIS:AddItem(spec, "40555", LBIS.L["Shoulder"], "BIS") --Mantle of Dissemination
 LBIS:AddItem(spec, "40459", LBIS.L["Shoulder"], "Alt") --Valorous Mantle of Faith
@@ -39,6 +41,8 @@ LBIS:AddItem(spec, "40234", LBIS.L["Chest"], "BIS") --Heigan's Putrid Vestments
 LBIS:AddItem(spec, "40458", LBIS.L["Chest"], "Alt") --Valorous Raiments of Faith
 LBIS:AddItem(spec, "40625", LBIS.L["Chest"], "Alt") --Breastplate of the Lost Conqueror
 LBIS:AddItem(spec, "40602", LBIS.L["Chest"], "Alt") --Robes of Mutation
+LBIS:AddItem(spec, "44002", LBIS.L["Chest"], "Alt") --The Sanctum's Flowing Vestments
+LBIS:AddItem(spec, "40526", LBIS.L["Chest"], "Alt") --Gown of the Spell-Weaver
 LBIS:AddItem(spec, "40194", LBIS.L["Chest"], "Alt") --Blanketing Robes of Snow
 LBIS:AddItem(spec, "40062", LBIS.L["Chest"], "Alt") --Digested Silken Robes
 LBIS:AddItem(spec, "39523", LBIS.L["Chest"], "Alt") --Heroes' Raiments of Faith
@@ -101,6 +105,7 @@ LBIS:AddItem(spec, "39254", LBIS.L["Feet"], "Alt") --Saltarello Shoes
 LBIS:AddItem(spec, "39273", LBIS.L["Feet"], "Alt") --Sullen Cloth Boots
 
 LBIS:AddItem(spec, "44661", LBIS.L["Neck"], "BIS") --Wyrmrest Necklace of Power
+LBIS:AddItem(spec, "44658", LBIS.L["Neck"], "Alt") --Chain of the Ancient Wyrm
 LBIS:AddItem(spec, "40374", LBIS.L["Neck"], "Alt") --Cosmic Lights
 LBIS:AddItem(spec, "40486", LBIS.L["Neck"], "Alt") --Necklace of the Glittering Chamber
 LBIS:AddItem(spec, "40427", LBIS.L["Neck"], "Alt") --Circle of Arcane Streams
@@ -133,6 +138,14 @@ LBIS:AddItem(spec, "39229", LBIS.L["Trinket"], "BIS") --Embrace of the Spider
 LBIS:AddItem(spec, "40682", LBIS.L["Trinket"], "Alt") --Sundial of the Exiled
 LBIS:AddItem(spec, "37873", LBIS.L["Trinket"], "Alt") --Mark of the War Prisoner
 
+LBIS:AddItem(spec, "40489", LBIS.L["Two Hand"], "BIS") --Greatstaff of the Nexus
+LBIS:AddItem(spec, "40348", LBIS.L["Two Hand"], "Alt") --Damnation
+LBIS:AddItem(spec, "40455", LBIS.L["Two Hand"], "Alt") --Staff of Restraint
+LBIS:AddItem(spec, "40300", LBIS.L["Two Hand"], "Alt") --Spire of Sunset
+LBIS:AddItem(spec, "39256", LBIS.L["Two Hand"], "Alt") --Sulfur Stave
+LBIS:AddItem(spec, "39394", LBIS.L["Two Hand"], "Alt") --Charmed Cierge
+LBIS:AddItem(spec, "37360", LBIS.L["Two Hand"], "Alt") --Staff of Draconic Combat
+
 LBIS:AddItem(spec, "40395", LBIS.L["Main Hand"], "BIS") --Torch of Holy Fire
 LBIS:AddItem(spec, "39424", LBIS.L["Main Hand"], "Alt") --The Soulblade
 LBIS:AddItem(spec, "40408", LBIS.L["Main Hand"], "Alt") --Haunting Call
@@ -148,14 +161,6 @@ LBIS:AddItem(spec, "40698", LBIS.L["Off Hand"], "Alt") --Ward of the Violet Cita
 LBIS:AddItem(spec, "39766", LBIS.L["Off Hand"], "Alt") --Matriarch's Spawn
 LBIS:AddItem(spec, "40192", LBIS.L["Off Hand"], "Alt") --Accursed Spine
 LBIS:AddItem(spec, "39199", LBIS.L["Off Hand"], "Alt") --Watchful Eye
-
-LBIS:AddItem(spec, "40489", LBIS.L["Two Hand"], "BIS") --Greatstaff of the Nexus
-LBIS:AddItem(spec, "40348", LBIS.L["Two Hand"], "Alt") --Damnation
-LBIS:AddItem(spec, "40455", LBIS.L["Two Hand"], "Alt") --Staff of Restraint
-LBIS:AddItem(spec, "40300", LBIS.L["Two Hand"], "Alt") --Spire of Sunset
-LBIS:AddItem(spec, "39256", LBIS.L["Two Hand"], "Alt") --Sulfur Stave
-LBIS:AddItem(spec, "39394", LBIS.L["Two Hand"], "Alt") --Charmed Cierge
-LBIS:AddItem(spec, "37360", LBIS.L["Two Hand"], "Alt") --Staff of Draconic Combat
 
 LBIS:AddItem(spec, "39712", LBIS.L["Wand"], "BIS") --Gemmed Wand of the Nerubians
 LBIS:AddItem(spec, "40284", LBIS.L["Wand"], "Alt") --Plague Igniter

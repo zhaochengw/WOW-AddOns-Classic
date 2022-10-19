@@ -39,6 +39,7 @@ LBIS:AddItem(spec, "41772", LBIS.L["Hands"], "Alt") --Deadly Gladiator's Dragonh
 LBIS:AddItem(spec, "40362", LBIS.L["Hands"], "Alt") --Gloves of Fast Reactions
 LBIS:AddItem(spec, "39727", LBIS.L["Hands"], "Alt") --Dislocating Handguards
 LBIS:AddItem(spec, "40541", LBIS.L["Hands"], "Alt") --Frosted Adroit Handguards
+LBIS:AddItem(spec, "39299", LBIS.L["Hands"], "Alt") --Rapid Attack Gloves
 
 LBIS:AddItem(spec, "43591", LBIS.L["Waist"], "BIS Mit") --Polar Cord
 LBIS:AddItem(spec, "40260", LBIS.L["Waist"], "BIS Thrt") --Belt of the Tortured

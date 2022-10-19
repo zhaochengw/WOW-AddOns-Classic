@@ -76,7 +76,7 @@ if GetLocale() == "deDE" then
   LBIS.L["Drak'Tharon Keep (Normal)"] = "Feste Drak'Tharon (Normal)";
   LBIS.L["Drakkari Colossus"] = "Koloss der Drakkari";
   LBIS.L["Drakos the Interrogator"] = "Drakos der Befrager";
-  LBIS.L["Drop"] = "Fallen";
+  LBIS.L["Drop"] = "Raid";
 --  LBIS.L["Duchess Mynx"] = "";
   LBIS.L["Dungeon Token"] = "Dungeon-Token";
   LBIS.L["Eck the Ferocious"] = "Der wilde Eck";
@@ -133,6 +133,7 @@ if GetLocale() == "deDE" then
   LBIS.L["Head Games"] = "Psychospielchen";
   LBIS.L["Heigan the Unclean"] = "Heigan der Unreine";
   LBIS.L["Herald Volazj"] = "Herold Volazj";
+  LBIS.L["Heroic Judgment at the Eye of Eternity"] = "Heroische Entscheidung im Auge der Ewigkeit";
   LBIS.L["Holy"] = "Heilig";
 --  LBIS.L["Honor Points"] = "";
   LBIS.L["Honored"] = "Wohlwollend";
@@ -149,6 +150,7 @@ if GetLocale() == "deDE" then
   LBIS.L["Items"] = "Gegenstände";
   LBIS.L["Jedoga Shadowseeker"] = "Jedoga Schattensucher";
   LBIS.L["Jewelcrafting"] = "Juwelierskunst";
+  LBIS.L["Judgement at the Eye of Eternity"] = "Entscheidung im Auge der Ewigkeit";
   LBIS.L["Karazhan"] = "Karazhan";
   LBIS.L["Keepers of Time (Exalted)"] = "Hüter der Zeit (Ehrfürchtig)";
   LBIS.L["Kel'Thuzad"] = "Kel'Thuzad";
@@ -173,8 +175,8 @@ if GetLocale() == "deDE" then
 --  LBIS.L["Lillehoff"] = "";
   LBIS.L["Loatheb"] = "Loatheb";
   LBIS.L["Loken"] = "Loken";
-  LBIS.L["Loon Best In Slot"] = "Seetaucher Bester im Slot";
-  LBIS.L["Loon Best In Slot Browser"] = "Seetaucher Bester im Slot Browser";
+  LBIS.L["Loon Best In Slot"] = "Loon Best in Slot";
+  LBIS.L["Loon Best In Slot Browser"] = "Loon Best in Slot Browser";
 --  LBIS.L["Madame Ruby"] = "";
   LBIS.L["Maexxna"] = "Maexxna";
   LBIS.L["Mage-Lord Urom"] = "Magierlord Urom";
@@ -194,14 +196,12 @@ if GetLocale() == "deDE" then
   LBIS.L["My Old Enemy"] = "Mein alter Feind";
   LBIS.L["Mystery of the Infinite, Redux"] = "Geheimnis der Ewigen, die 2.";
 --  LBIS.L["Nascent Val'kyr"] = "";
-  LBIS.L["Naxxramas"] = "Naxxramas";
   LBIS.L["Naxxramas (10)"] = "Naxxramas (10)";
   LBIS.L["Naxxramas (25)"] = "Naxxramas (25)";
   LBIS.L["Neck"] = "Hals";
   LBIS.L["Netherstorm"] = "Nethersturm";
   LBIS.L["Noth the Plaguebringer"] = "Noth der Seuchenfürst";
   LBIS.L["Novos the Summoner"] = "Novos der Beschwörer";
---  LBIS.L["Obsidian Sanctum"] = "";
   LBIS.L["Off Hand"] = "Schildhand";
   LBIS.L["One of a Kind"] = "Einzigartig";
 --  LBIS.L["Onyxia's Lair'"] = "";
@@ -216,14 +216,14 @@ if GetLocale() == "deDE" then
   LBIS.L["Phase 5"] = "Phase 5";
   LBIS.L["Plaguelands: The Scarlet Enclave"] = "Pestländer: Die Scharlachrote Enklave";
   LBIS.L["Post-partum Aggression"] = "Postnatale Aggression";
-  LBIS.L["PreRaid"] = "vor dem Überfall";
+  LBIS.L["PreRaid"] = "PreRaid";
   LBIS.L["Prince Keleseth"] = "Prinz Keleseth";
   LBIS.L["Prince Taldaram"] = "Prinz Taldaram";
   LBIS.L["Profession"] = "Beruf";
   LBIS.L["Protection"] = "Schutz";
 --  LBIS.L["Purkom (Venture Cove)"] = "";
   LBIS.L["PvP"] = "PvP";
-  LBIS.L["PvP Vendor"] = " PvP Anbieter";
+  LBIS.L["PvP Vendor"] = "PvP Händler";
 --  LBIS.L["Quartermasters"] = "";
   LBIS.L["Quest"] = "Quest";
   LBIS.L["Ranged"] = "Distanz";
@@ -269,7 +269,6 @@ if GetLocale() == "deDE" then
   LBIS.L["The Culling of Stratholme (Heroic)"] = "Das Ausmerzen von Stratholme (Heroisch)";
   LBIS.L["The Culling of Stratholme (Normal)"] = "Das Ausmerzen von Stratholme (Normal)";
   LBIS.L["The Drakkensryd"] = "Der Drakkensryd";
-  LBIS.L["The Eye of Eternity"] = "Das Auge der Ewigkeit";
   LBIS.L["The Eye of Eternity (10)"] = "Das Auge der Ewigkeit (10)";
   LBIS.L["The Eye of Eternity (25)"] = "Das Auge der Ewigkeit (25)";
 --  LBIS.L["The Fate of Bloodbane"] = "";
@@ -277,7 +276,7 @@ if GetLocale() == "deDE" then
   LBIS.L["The Forsaken Blight"] = "Die Seuche der Verlassenen";
   LBIS.L["The Four Horsemen"] = "Die Vier Reiter";
   LBIS.L["The Gifts of Loken"] = "Lokens Gaben";
---  LBIS.L["The Kalu'ak'"] = "";
+  LBIS.L["The Kalu'ak"] = "Die Kalu'ak";
   LBIS.L["The Last Line Of Defense"] = "Die letzte Verteidigungslinie";
   LBIS.L["The Nexus (Heroic)"] = "Der Nexus (Heroisch)";
   LBIS.L["The Nexus (Normal)"] = "Der Nexus (Normal)";
@@ -308,10 +307,10 @@ if GetLocale() == "deDE" then
 --  LBIS.L["Timothy Jones"] = "";
 --  LBIS.L["Tiny Titanium Lockbox"] = "";
 --  LBIS.L["Tirion's Gambit"] = "";
-  LBIS.L["Token"] = "Zeichen";
+  LBIS.L["Token"] = "Token";
   LBIS.L["Totem"] = "Totem";
-  LBIS.L["Transmute"] = "Verwandeln";
-  LBIS.L["Trash Drop"] = "Müllabwurf";
+  LBIS.L["Transmute"] = "Transmutieren";
+  LBIS.L["Trash Drop"] = "Trash Drop";
   LBIS.L["Trash Mobs"] = "Trash Mobs";
   LBIS.L["Trial of the Crusader"] = "Prüfung des Kreuzfahrers";
   LBIS.L["Trinket"] = "Schmuck";
@@ -328,7 +327,6 @@ if GetLocale() == "deDE" then
 --  LBIS.L["Vanessa Sellers"] = "";
 --  LBIS.L["Various Bosses"] = "";
   LBIS.L["Varos Cloudstrider"] = "Varos Wolkenwanderer";
-  LBIS.L["Vault of Archavon"] = "Archavons Kammer";
   LBIS.L["Vault of Archavon (10)"] = "Archavons Kammer (10)";
   LBIS.L["Vault of Archavon (25)"] = "Archavons Kammer (25)";
   LBIS.L["Vendor"] = "Händler";
@@ -342,7 +340,7 @@ if GetLocale() == "deDE" then
   LBIS.L["Wintergrasp"] = "Tausendwinter";
 --  LBIS.L["Wintergrasp Marks"] = "";
 --  LBIS.L["Wintergrasp Quartermaster"] = "";
-  LBIS.L["World Drop"] = "Welttropfen";
+  LBIS.L["World Drop"] = "Welt Drop";
 --  LBIS.L["World Drop (Skoll)"] = "";
   LBIS.L["Wrist"] = "Handgelenke";
   LBIS.L["Xevozz"] = "Xevozz";

@@ -133,6 +133,7 @@ if GetLocale() == "ruRU" then
   LBIS.L["Head Games"] = "Игры разума";
   LBIS.L["Heigan the Unclean"] = "Хейган Нечистивый";
   LBIS.L["Herald Volazj"] = "Глашатай Волаж";
+  LBIS.L["Heroic Judgment at the Eye of Eternity"] = "Героическое правосудие в Оке Вечности";
   LBIS.L["Holy"] = "Свет";
 --  LBIS.L["Honor Points"] = "";
   LBIS.L["Honored"] = "Уважение";
@@ -149,6 +150,7 @@ if GetLocale() == "ruRU" then
   LBIS.L["Items"] = "Предметы";
   LBIS.L["Jedoga Shadowseeker"] = "Джедога Искательница Теней";
   LBIS.L["Jewelcrafting"] = "Ювелирное дело";
+--  LBIS.L["Judgement at the Eye of Eternity"] = "";
   LBIS.L["Karazhan"] = "Каражан";
   LBIS.L["Keepers of Time (Exalted)"] = "Хранители Времени (Превознесение)";
   LBIS.L["Kel'Thuzad"] = "Кел'Тузад";
@@ -194,14 +196,12 @@ if GetLocale() == "ruRU" then
   LBIS.L["My Old Enemy"] = "Мой старый враг";
   LBIS.L["Mystery of the Infinite, Redux"] = "Тайна бесконечности, мания преследования";
 --  LBIS.L["Nascent Val'kyr"] = "";
-  LBIS.L["Naxxramas"] = "Наксрамас";
   LBIS.L["Naxxramas (10)"] = "Наксрамас (10)";
   LBIS.L["Naxxramas (25)"] = "Наксрамас (25)";
   LBIS.L["Neck"] = "Шея";
   LBIS.L["Netherstorm"] = "Пустоверть";
   LBIS.L["Noth the Plaguebringer"] = "Нот Чумной";
   LBIS.L["Novos the Summoner"] = "Новос Призыватель";
---  LBIS.L["Obsidian Sanctum"] = "";
   LBIS.L["Off Hand"] = "Левая рука";
   LBIS.L["One of a Kind"] = "Единственный в своем роде";
 --  LBIS.L["Onyxia's Lair'"] = "";
@@ -269,7 +269,6 @@ if GetLocale() == "ruRU" then
   LBIS.L["The Culling of Stratholme (Heroic)"] = "Очищение Стратхольма (Героический)";
   LBIS.L["The Culling of Stratholme (Normal)"] = "Очищение Стратхольма (Обычный)";
   LBIS.L["The Drakkensryd"] = "Драконобойца";
-  LBIS.L["The Eye of Eternity"] = "Око Вечности";
   LBIS.L["The Eye of Eternity (10)"] = "Око Вечности (10)";
   LBIS.L["The Eye of Eternity (25)"] = "Око Вечности (25)";
 --  LBIS.L["The Fate of Bloodbane"] = "";
@@ -277,7 +276,7 @@ if GetLocale() == "ruRU" then
   LBIS.L["The Forsaken Blight"] = "Гниль Отрекшихся";
   LBIS.L["The Four Horsemen"] = "Четыре Всадника";
   LBIS.L["The Gifts of Loken"] = "Дары Локена";
---  LBIS.L["The Kalu'ak'"] = "";
+  LBIS.L["The Kalu'ak"] = "Калу'ак";
   LBIS.L["The Last Line Of Defense"] = "Последний рубеж";
   LBIS.L["The Nexus (Heroic)"] = "Нексус (Героический)";
   LBIS.L["The Nexus (Normal)"] = "Нексус (Обычный)";
@@ -328,7 +327,6 @@ if GetLocale() == "ruRU" then
 --  LBIS.L["Vanessa Sellers"] = "";
 --  LBIS.L["Various Bosses"] = "";
   LBIS.L["Varos Cloudstrider"] = "Варос Заоблачный Странник";
-  LBIS.L["Vault of Archavon"] = "Хранилище Аркавона";
   LBIS.L["Vault of Archavon (10)"] = "Хранилище Аркавона (10)";
   LBIS.L["Vault of Archavon (25)"] = "Хранилище Аркавона (25)";
   LBIS.L["Vendor"] = "Торговец";

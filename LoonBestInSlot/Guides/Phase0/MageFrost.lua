@@ -3,12 +3,12 @@ local spec = LBIS:RegisterSpec(LBIS.L["Mage"], LBIS.L["Frost"], "0")
 LBIS:AddItem(spec, "42553", LBIS.L["Head"], "BIS") --Visage Liquification Goggles
 LBIS:AddItem(spec, "34340", LBIS.L["Head"], "Alt") --Dark Conjuror's Collar
 LBIS:AddItem(spec, "34405", LBIS.L["Head"], "Alt") --Helm of Arcane Purity
-LBIS:AddItem(spec, "34339", LBIS.L["Head"], "Transmute Alt") --Cowl of Light's Purity
+LBIS:AddItem(spec, "34339", LBIS.L["Head"], "Alt Transmute") --Cowl of Light's Purity
 LBIS:AddItem(spec, "37294", LBIS.L["Head"], "Alt") --Crown of Unbridled Magic
 
 LBIS:AddItem(spec, "34210", LBIS.L["Shoulder"], "BIS") --Amice of the Convoker
 LBIS:AddItem(spec, "34393", LBIS.L["Shoulder"], "Alt") --Shoulderpads of Knowledge's Pursuit
-LBIS:AddItem(spec, "34202", LBIS.L["Shoulder"], "Transmute Alt") --Shawl of Wonderment
+LBIS:AddItem(spec, "34202", LBIS.L["Shoulder"], "Alt Transmute") --Shawl of Wonderment
 LBIS:AddItem(spec, "37673", LBIS.L["Shoulder"], "Alt") --Dark Runic Mantle
 LBIS:AddItem(spec, "37196", LBIS.L["Shoulder"], "Alt") --Runecaster's Mantle
 LBIS:AddItem(spec, "37655", LBIS.L["Shoulder"], "Alt") --Mantle of the Tribunal
@@ -40,7 +40,7 @@ LBIS:AddItem(spec, "37854", LBIS.L["Legs"], "BIS") --Woven Bracae Leggings
 LBIS:AddItem(spec, "34181", LBIS.L["Legs"], "Alt") --Leggings of Calamity
 LBIS:AddItem(spec, "37369", LBIS.L["Legs"], "Alt") --Sorrowgrave's Breeches
 LBIS:AddItem(spec, "34386", LBIS.L["Legs"], "Alt") --Pantaloons of Growing Strife
-LBIS:AddItem(spec, "34170", LBIS.L["Legs"], "Transmute Alt") --Pantaloons of Calming Strife
+LBIS:AddItem(spec, "34170", LBIS.L["Legs"], "Alt Transmute") --Pantaloons of Calming Strife
 
 LBIS:AddItem(spec, "44202", LBIS.L["Feet"], "BIS") --Sandals of Crimson Fury
 LBIS:AddItem(spec, "40246", LBIS.L["Feet"], "BIS") --Boots of Impetuous Ideals

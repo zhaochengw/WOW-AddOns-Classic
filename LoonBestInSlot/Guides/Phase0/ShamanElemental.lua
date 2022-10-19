@@ -6,7 +6,7 @@ LBIS:AddItem(spec, "37180", LBIS.L["Head"], "Alt") --Battlemap Hide Helm
 LBIS:AddItem(spec, "37592", LBIS.L["Head"], "Alt") --Brood Plague Helmet
 
 LBIS:AddItem(spec, "34390", LBIS.L["Shoulder"], "BIS") --Erupting Epaulets
-LBIS:AddItem(spec, "34208", LBIS.L["Shoulder"], "Transmute BIS") --Equilibrium Epaulets
+LBIS:AddItem(spec, "34208", LBIS.L["Shoulder"], "BIS Transmute") --Equilibrium Epaulets
 LBIS:AddItem(spec, "37875", LBIS.L["Shoulder"], "BIS") --Spaulders of the Violet Hold
 LBIS:AddItem(spec, "37673", LBIS.L["Shoulder"], "BIS") --Dark Runic Mantle
 LBIS:AddItem(spec, "31023", LBIS.L["Shoulder"], "Alt") --Skyshatter Mantle
@@ -23,8 +23,8 @@ LBIS:AddItem(spec, "40611", LBIS.L["Chest"], "BIS") --Chestguard of the Lost Pro
 LBIS:AddItem(spec, "43461", LBIS.L["Chest"], "Alt") --Revenant's Breastplate
 LBIS:AddItem(spec, "43410", LBIS.L["Chest"], "Alt") --Moragg's Chestguard
 LBIS:AddItem(spec, "37256", LBIS.L["Chest"], "Alt") --Scaled Armor of Drakos
+LBIS:AddItem(spec, "34229", LBIS.L["Chest"], "Alt Transmute") --Garments of Serene Shores
 LBIS:AddItem(spec, "34396", LBIS.L["Chest"], "Alt") --Garments of Crashing Shores
-LBIS:AddItem(spec, "34229", LBIS.L["Chest"], "Transmute Alt") --Garments of Serene Shores
 LBIS:AddItem(spec, "31017", LBIS.L["Chest"], "Alt") --Skyshatter Breastplate
 LBIS:AddItem(spec, "31091", LBIS.L["Chest"], "Alt") --Chestguard of the Forgotten Protector
 

@@ -26,11 +26,11 @@ LBIS:AddItem(spec, "40723", LBIS.L["Back"], "Alt") --Disguise of the Kumiho
 
 LBIS:AddItem(spec, "40469", LBIS.L["Chest"], "BIS") --Valorous Dreamwalker Vestments
 LBIS:AddItem(spec, "40627", LBIS.L["Chest"], "BIS") --Breastplate of the Lost Vanquisher
+LBIS:AddItem(spec, "44002", LBIS.L["Chest"], "BIS") --The Sanctum's Flowing Vestments
 LBIS:AddItem(spec, "39547", LBIS.L["Chest"], "Alt") --Heroes' Dreamwalker Vestments
 LBIS:AddItem(spec, "40612", LBIS.L["Chest"], "Alt") --Chestguard of the Lost Vanquisher
 LBIS:AddItem(spec, "40526", LBIS.L["Chest"], "Alt") --Gown of the Spell-Weaver
 LBIS:AddItem(spec, "40234", LBIS.L["Chest"], "Alt") --Heigan's Putrid Vestments
-LBIS:AddItem(spec, "44002", LBIS.L["Chest"], "BIS") --The Sanctum's Flowing Vestments
 LBIS:AddItem(spec, "39396", LBIS.L["Chest"], "Alt") --Gown of Blaumeux
 
 LBIS:AddItem(spec, "44008", LBIS.L["Wrist"], "BIS") --Unsullied Cuffs
@@ -96,6 +96,12 @@ LBIS:AddItem(spec, "37873", LBIS.L["Trinket"], "Alt") --Mark of the War Prisoner
 LBIS:AddItem(spec, "40682", LBIS.L["Trinket"], "Alt") --Sundial of the Exiled
 LBIS:AddItem(spec, "49076", LBIS.L["Trinket"], "Alt") --Mithril Pocketwatch
 
+LBIS:AddItem(spec, "40348", LBIS.L["Two Hand"], "BIS") --Damnation
+LBIS:AddItem(spec, "40489", LBIS.L["Two Hand"], "BIS") --Greatstaff of the Nexus
+LBIS:AddItem(spec, "40300", LBIS.L["Two Hand"], "Alt") --Spire of Sunset
+LBIS:AddItem(spec, "44420", LBIS.L["Two Hand"], "Alt") --Deadly Gladiator's Focus Staff
+LBIS:AddItem(spec, "40455", LBIS.L["Two Hand"], "Alt") --Staff of Restraint
+
 LBIS:AddItem(spec, "40395", LBIS.L["Main Hand"], "BIS") --Torch of Holy Fire
 LBIS:AddItem(spec, "40408", LBIS.L["Main Hand"], "Alt") --Haunting Call
 LBIS:AddItem(spec, "39763", LBIS.L["Main Hand"], "Alt") --Wraith Strike
@@ -103,12 +109,6 @@ LBIS:AddItem(spec, "39423", LBIS.L["Main Hand"], "Alt") --Hammer of the Astral P
 LBIS:AddItem(spec, "39424", LBIS.L["Main Hand"], "Alt") --The Soulblade
 LBIS:AddItem(spec, "40488", LBIS.L["Main Hand"], "Alt") --Ice Spire Scepter
 LBIS:AddItem(spec, "40244", LBIS.L["Main Hand"], "Alt") --The Impossible Dream
-
-LBIS:AddItem(spec, "40348", LBIS.L["Two Hand"], "BIS") --Damnation
-LBIS:AddItem(spec, "40489", LBIS.L["Two Hand"], "BIS") --Greatstaff of the Nexus
-LBIS:AddItem(spec, "40300", LBIS.L["Two Hand"], "Alt") --Spire of Sunset
-LBIS:AddItem(spec, "44420", LBIS.L["Two Hand"], "Alt") --Deadly Gladiator's Focus Staff
-LBIS:AddItem(spec, "40455", LBIS.L["Two Hand"], "Alt") --Staff of Restraint
 
 LBIS:AddItem(spec, "40192", LBIS.L["Off Hand"], "BIS") --Accursed Spine
 LBIS:AddItem(spec, "40273", LBIS.L["Off Hand"], "BIS") --Surplus Limb

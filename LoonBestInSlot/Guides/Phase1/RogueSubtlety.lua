@@ -42,8 +42,8 @@ LBIS:AddItem(spec, "39765", LBIS.L["Wrist"], "Alt") --Sinner's Bindings
 LBIS:AddItem(spec, "39247", LBIS.L["Wrist"], "Alt") --Cuffs of Dark Shadows
 LBIS:AddItem(spec, "44203", LBIS.L["Wrist"], "Alt") --Dragonfriend Bracers
 
-LBIS:AddItem(spec, "40496", LBIS.L["Hands"], "BIS") --Valorous Bonescythe Gauntlets
 LBIS:AddItem(spec, "40630", LBIS.L["Hands"], "BIS") --Gauntlets of the Lost Vanquisher
+LBIS:AddItem(spec, "40496", LBIS.L["Hands"], "BIS") --Valorous Bonescythe Gauntlets
 LBIS:AddItem(spec, "40541", LBIS.L["Hands"], "Alt") --Frosted Adroit Handguards
 LBIS:AddItem(spec, "39727", LBIS.L["Hands"], "Alt") --Dislocating Handguards
 LBIS:AddItem(spec, "40362", LBIS.L["Hands"], "Alt") --Gloves of Fast Reactions

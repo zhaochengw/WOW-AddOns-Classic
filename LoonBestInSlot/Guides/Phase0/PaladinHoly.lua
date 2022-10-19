@@ -9,7 +9,7 @@ LBIS:AddItem(spec, "37673", LBIS.L["Shoulder"], "BIS") --Dark Runic Mantle
 LBIS:AddItem(spec, "37655", LBIS.L["Shoulder"], "BIS") --Mantle of the Tribunal
 LBIS:AddItem(spec, "37875", LBIS.L["Shoulder"], "BIS") --Spaulders of the Violet Hold
 LBIS:AddItem(spec, "34390", LBIS.L["Shoulder"], "Alt") --Erupting Epaulets
-LBIS:AddItem(spec, "34208", LBIS.L["Shoulder"], "Transmute Alt") --Equilibrium Epaulets
+LBIS:AddItem(spec, "34208", LBIS.L["Shoulder"], "Alt Transmute") --Equilibrium Epaulets
 
 LBIS:AddItem(spec, "34242", LBIS.L["Back"], "BIS") --Tattered Cape of Antonidas
 LBIS:AddItem(spec, "41609", LBIS.L["Back"], "BIS") --Wispcloak
@@ -22,7 +22,7 @@ LBIS:AddItem(spec, "43461", LBIS.L["Chest"], "Alt") --Revenant's Breastplate
 LBIS:AddItem(spec, "37258", LBIS.L["Chest"], "Alt") --Drakewing Raiments
 LBIS:AddItem(spec, "44180", LBIS.L["Chest"], "Alt") --Robes of Crackling Flame
 LBIS:AddItem(spec, "34395", LBIS.L["Chest"], "Alt") --Noble Judicator's Chestguard
-LBIS:AddItem(spec, "34216", LBIS.L["Chest"], "Transmute Alt") --Heroic Judicator's Chestguard
+LBIS:AddItem(spec, "34216", LBIS.L["Chest"], "Alt Transmute") --Heroic Judicator's Chestguard
 
 LBIS:AddItem(spec, "37788", LBIS.L["Wrist"], "BIS") --Limb Regeneration Bracers
 LBIS:AddItem(spec, "37590", LBIS.L["Wrist"], "Alt") --Bands of Fading Light

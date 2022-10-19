@@ -20,10 +20,10 @@ LBIS:AddItem(spec, "39404", LBIS.L["Back"], "Alt") --Cloak of Mastery
 LBIS:AddItem(spec, "37647", LBIS.L["Back"], "Alt") --Cloak of Bloodied Waters
 
 LBIS:AddItem(spec, "40539", LBIS.L["Chest"], "BIS") --Chestguard of the Recluse
-LBIS:AddItem(spec, "40525", LBIS.L["Chest"], "Alt") --Valorous Dreadnaught Battleplate
-LBIS:AddItem(spec, "40626", LBIS.L["Chest"], "Alt") --Breastplate of the Lost Protector
 LBIS:AddItem(spec, "39606", LBIS.L["Chest"], "BIS") --Heroes' Dreadnaught Battleplate
 LBIS:AddItem(spec, "40611", LBIS.L["Chest"], "BIS") --Chestguard of the Lost Protector
+LBIS:AddItem(spec, "40525", LBIS.L["Chest"], "Alt") --Valorous Dreadnaught Battleplate
+LBIS:AddItem(spec, "40626", LBIS.L["Chest"], "Alt") --Breastplate of the Lost Protector
 LBIS:AddItem(spec, "40365", LBIS.L["Chest"], "Alt") --Breastplate of Frozen Pain
 
 LBIS:AddItem(spec, "40330", LBIS.L["Wrist"], "BIS") --Bracers of Unrelenting Attack
@@ -60,20 +60,20 @@ LBIS:AddItem(spec, "37397", LBIS.L["Neck"], "Alt") --Gold Amulet of Kings
 
 LBIS:AddItem(spec, "40717", LBIS.L["Ring"], "BIS") --Ring of Invincibility
 LBIS:AddItem(spec, "43993", LBIS.L["Ring"], "BIS") --Greatring of Collision
+LBIS:AddItem(spec, "37642", LBIS.L["Ring"], "BIS") --Hemorrhaging Circle
 LBIS:AddItem(spec, "40474", LBIS.L["Ring"], "Alt") --Surge Needle Ring
 LBIS:AddItem(spec, "40075", LBIS.L["Ring"], "Alt") --Ruthlessness
-LBIS:AddItem(spec, "37642", LBIS.L["Ring"], "BIS") --Hemorrhaging Circle
 
 LBIS:AddItem(spec, "42987", LBIS.L["Trinket"], "BIS") --Darkmoon Card: Greatness
 LBIS:AddItem(spec, "40256", LBIS.L["Trinket"], "BIS") --Grim Toll
-LBIS:AddItem(spec, "40431", LBIS.L["Trinket"], "Alt") --Fury of the Five Flights
 LBIS:AddItem(spec, "39257", LBIS.L["Trinket"], "BIS") --Loatheb's Shadow
 LBIS:AddItem(spec, "40684", LBIS.L["Trinket"], "BIS") --Mirror of Truth
 LBIS:AddItem(spec, "37166", LBIS.L["Trinket"], "BIS") --Sphere of Red Dragon's Blood
+LBIS:AddItem(spec, "40431", LBIS.L["Trinket"], "Alt") --Fury of the Five Flights
 
 LBIS:AddItem(spec, "40384", LBIS.L["Two Hand"], "BIS") --Betrayer of Humanity
-LBIS:AddItem(spec, "40208", LBIS.L["Two Hand"], "Alt") --Cryptfiend's Bite
 LBIS:AddItem(spec, "39417", LBIS.L["Two Hand"], "BIS") --Death's Bite
+LBIS:AddItem(spec, "40208", LBIS.L["Two Hand"], "Alt") --Cryptfiend's Bite
 LBIS:AddItem(spec, "40497", LBIS.L["Two Hand"], "Alt") --Black Ice
 LBIS:AddItem(spec, "37852", LBIS.L["Two Hand"], "Alt") --Colossal Skull-Clad Cleaver
 

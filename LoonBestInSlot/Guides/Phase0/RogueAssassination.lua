@@ -31,8 +31,8 @@ LBIS:AddItem(spec, "37853", LBIS.L["Wrist"], "Alt") --Advanced Tooled-Leather Ba
 LBIS:AddItem(spec, "34448", LBIS.L["Wrist"], "Alt") --Slayer's Bracers
 LBIS:AddItem(spec, "34852", LBIS.L["Wrist"], "Alt") --Bracers of the Forgotten Vanquisher
 
-LBIS:AddItem(spec, "39560", LBIS.L["Hands"], "BIS") --Heroes' Bonescythe Gauntlets
 LBIS:AddItem(spec, "40615", LBIS.L["Hands"], "BIS") --Gloves of the Lost Vanquisher
+LBIS:AddItem(spec, "39560", LBIS.L["Hands"], "BIS") --Heroes' Bonescythe Gauntlets
 LBIS:AddItem(spec, "37409", LBIS.L["Hands"], "Alt") --Gilt-Edged Leather Gauntlets
 LBIS:AddItem(spec, "34370", LBIS.L["Hands"], "Alt") --Gloves of Immortal Dusk
 LBIS:AddItem(spec, "37846", LBIS.L["Hands"], "Alt") --Charged-Bolt Grips

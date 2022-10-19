@@ -133,6 +133,7 @@ if GetLocale() == "zhTW" then
   LBIS.L["Head Games"] = "鬥智遊戲";
   LBIS.L["Heigan the Unclean"] = "『骯髒者』海根";
   LBIS.L["Herald Volazj"] = "信使沃菈齊";
+  LBIS.L["Heroic Judgment at the Eye of Eternity"] = "永恆之眼的英雄審判";
   LBIS.L["Holy"] = "神聖";
 --  LBIS.L["Honor Points"] = "";
   LBIS.L["Honored"] = "尊敬";
@@ -149,6 +150,7 @@ if GetLocale() == "zhTW" then
   LBIS.L["Items"] = "物品";
   LBIS.L["Jedoga Shadowseeker"] = "潔杜佳·尋影者";
   LBIS.L["Jewelcrafting"] = "珠寶設計";
+--  LBIS.L["Judgement at the Eye of Eternity"] = "";
   LBIS.L["Karazhan"] = "卡拉贊";
   LBIS.L["Keepers of Time (Exalted)"] = "時光守望者 (崇拜)";
   LBIS.L["Kel'Thuzad"] = "科爾蘇加德";
@@ -194,14 +196,12 @@ if GetLocale() == "zhTW" then
   LBIS.L["My Old Enemy"] = "我的宿敵";
   LBIS.L["Mystery of the Infinite, Redux"] = "恆龍之謎，復甦";
 --  LBIS.L["Nascent Val'kyr"] = "";
-  LBIS.L["Naxxramas"] = "納克薩瑪斯";
   LBIS.L["Naxxramas (10)"] = "納克薩瑪斯 (10)";
   LBIS.L["Naxxramas (25)"] = "納克薩瑪斯 (25)";
   LBIS.L["Neck"] = "頸部";
   LBIS.L["Netherstorm"] = "虛空風暴";
   LBIS.L["Noth the Plaguebringer"] = "『瘟疫使者』諾斯";
   LBIS.L["Novos the Summoner"] = "『召喚者』諾沃司";
---  LBIS.L["Obsidian Sanctum"] = "";
   LBIS.L["Off Hand"] = "副手";
   LBIS.L["One of a Kind"] = "獨一無二";
 --  LBIS.L["Onyxia's Lair'"] = "";
@@ -269,7 +269,6 @@ if GetLocale() == "zhTW" then
   LBIS.L["The Culling of Stratholme (Heroic)"] = "斯坦索姆的抉擇 (英雄)";
   LBIS.L["The Culling of Stratholme (Normal)"] = "斯坦索姆的抉擇 (一般)";
   LBIS.L["The Drakkensryd"] = "德拉坎舍試煉";
-  LBIS.L["The Eye of Eternity"] = "永恆之眼";
   LBIS.L["The Eye of Eternity (10)"] = "永恆之眼 (10)";
   LBIS.L["The Eye of Eternity (25)"] = "永恆之眼 (25)";
 --  LBIS.L["The Fate of Bloodbane"] = "";
@@ -277,7 +276,7 @@ if GetLocale() == "zhTW" then
   LBIS.L["The Forsaken Blight"] = "被遺忘者荒疫";
   LBIS.L["The Four Horsemen"] = "四騎士";
   LBIS.L["The Gifts of Loken"] = "洛肯的賜禮";
---  LBIS.L["The Kalu'ak'"] = "";
+  LBIS.L["The Kalu'ak"] = "卡魯耶克";
   LBIS.L["The Last Line Of Defense"] = "最後防線";
   LBIS.L["The Nexus (Heroic)"] = "奧核之心 (英雄)";
   LBIS.L["The Nexus (Normal)"] = "奧核之心 (一般)";
@@ -328,7 +327,6 @@ if GetLocale() == "zhTW" then
 --  LBIS.L["Vanessa Sellers"] = "";
 --  LBIS.L["Various Bosses"] = "";
   LBIS.L["Varos Cloudstrider"] = "瓦羅斯·雲行者";
-  LBIS.L["Vault of Archavon"] = "亞夏梵穹殿";
   LBIS.L["Vault of Archavon (10)"] = "亞夏梵穹殿 (10)";
   LBIS.L["Vault of Archavon (25)"] = "亞夏梵穹殿 (25)";
   LBIS.L["Vendor"] = "商人";

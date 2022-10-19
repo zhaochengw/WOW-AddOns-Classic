@@ -7,7 +7,7 @@ LBIS:AddItem(spec, "37237", LBIS.L["Head"], "Alt") --Chitin Shell Greathelm
 
 LBIS:AddItem(spec, "44195", LBIS.L["Shoulder"], "BIS") --Spaulders of the Giant Lords
 LBIS:AddItem(spec, "34388", LBIS.L["Shoulder"], "Alt") --Pauldrons of Berserking
-LBIS:AddItem(spec, "34192", LBIS.L["Shoulder"], "Transmute Alt") --Pauldrons of Perseverance
+LBIS:AddItem(spec, "34192", LBIS.L["Shoulder"], "Alt Transmute") --Pauldrons of Perseverance
 LBIS:AddItem(spec, "44111", LBIS.L["Shoulder"], "Alt") --Gold Star Spaulders
 
 LBIS:AddItem(spec, "37647", LBIS.L["Back"], "BIS") --Cloak of Bloodied Waters

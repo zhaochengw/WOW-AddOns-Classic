@@ -13,9 +13,9 @@ LBIS:AddItem(spec, "40616", LBIS.L["Head"], "Alt") --Helm of the Lost Conqueror
 LBIS:AddItem(spec, "39732", LBIS.L["Head"], "Alt") --Faerlina's Madness
 LBIS:AddItem(spec, "39295", LBIS.L["Head"], "Alt") --Cowl of Sheet Lightning
 
-LBIS:AddItem(spec, "40555", LBIS.L["Shoulder"], "Alt") --Mantle of Dissemination
 LBIS:AddItem(spec, "40424", LBIS.L["Shoulder"], "BIS") --Valorous Plagueheart Shoulderpads
 LBIS:AddItem(spec, "40637", LBIS.L["Shoulder"], "BIS") --Mantle of the Lost Conqueror
+LBIS:AddItem(spec, "40555", LBIS.L["Shoulder"], "Alt") --Mantle of Dissemination
 LBIS:AddItem(spec, "40351", LBIS.L["Shoulder"], "Alt") --Mantle of the Fatigued Sage
 LBIS:AddItem(spec, "40286", LBIS.L["Shoulder"], "Alt") --Mantle of the Corrupted
 LBIS:AddItem(spec, "39719", LBIS.L["Shoulder"], "Alt") --Mantle of the Locusts
@@ -50,9 +50,9 @@ LBIS:AddItem(spec, "39252", LBIS.L["Wrist"], "Alt") --Preceptor's Bindings
 LBIS:AddItem(spec, "40338", LBIS.L["Wrist"], "Alt") --Bindings of Yearning
 LBIS:AddItem(spec, "39390", LBIS.L["Wrist"], "Alt") --Resurgent Phantom Bindings
 
-LBIS:AddItem(spec, "40380", LBIS.L["Hands"], "Alt") --Gloves of Grandeur
 LBIS:AddItem(spec, "40420", LBIS.L["Hands"], "BIS") --Valorous Plagueheart Gloves
 LBIS:AddItem(spec, "40628", LBIS.L["Hands"], "BIS") --Gauntlets of the Lost Conqueror
+LBIS:AddItem(spec, "40380", LBIS.L["Hands"], "Alt") --Gloves of Grandeur
 LBIS:AddItem(spec, "40197", LBIS.L["Hands"], "Alt") --Gloves of the Fallen Wizard
 LBIS:AddItem(spec, "39733", LBIS.L["Hands"], "Alt") --Gloves of Token Respect
 LBIS:AddItem(spec, "39192", LBIS.L["Hands"], "Alt") --Gloves of Dark Gestures
@@ -119,8 +119,8 @@ LBIS:AddItem(spec, "39424", LBIS.L["Main Hand"], "Alt") --The Soulblade
 LBIS:AddItem(spec, "40336", LBIS.L["Main Hand"], "Alt") --Life and Death
 LBIS:AddItem(spec, "42346", LBIS.L["Main Hand"], "Alt") --Deadly Gladiator's Spellblade
 
-LBIS:AddItem(spec, "40273", LBIS.L["Off Hand"], "Alt") --Surplus Limb
 LBIS:AddItem(spec, "40192", LBIS.L["Off Hand"], "BIS") --Accursed Spine
+LBIS:AddItem(spec, "40273", LBIS.L["Off Hand"], "Alt") --Surplus Limb
 LBIS:AddItem(spec, "40698", LBIS.L["Off Hand"], "Alt") --Ward of the Violet Citadel
 LBIS:AddItem(spec, "39766", LBIS.L["Off Hand"], "Alt") --Matriarch's Spawn
 LBIS:AddItem(spec, "39199", LBIS.L["Off Hand"], "Alt") --Watchful Eye

@@ -1,8 +1,8 @@
 local spec = LBIS:RegisterSpec(LBIS.L["Hunter"], LBIS.L["Survival"], "1")
 
-LBIS:AddItem(spec, "40505", LBIS.L["Head"], "BIS") --Valorous Cryptstalker Headpiece
-LBIS:AddItem(spec, "40632", LBIS.L["Head"], "BIS") --Crown of the Lost Protector
-LBIS:AddItem(spec, "40543", LBIS.L["Head"], "Alt") --Blue Aspect Helm
+LBIS:AddItem(spec, "40543", LBIS.L["Head"], "BIS") --Blue Aspect Helm
+LBIS:AddItem(spec, "40505", LBIS.L["Head"], "Alt") --Valorous Cryptstalker Headpiece
+LBIS:AddItem(spec, "40632", LBIS.L["Head"], "Alt") --Crown of the Lost Protector
 LBIS:AddItem(spec, "40344", LBIS.L["Head"], "Alt") --Helm of the Grave
 LBIS:AddItem(spec, "42551", LBIS.L["Head"], "Alt") --Truesight Ice Blinders
 
@@ -18,9 +18,9 @@ LBIS:AddItem(spec, "39404", LBIS.L["Back"], "Alt") --Cloak of Mastery
 LBIS:AddItem(spec, "43406", LBIS.L["Back"], "Alt") --Cloak of the Gushing Wound
 
 LBIS:AddItem(spec, "43998", LBIS.L["Chest"], "BIS") --Chestguard of Flagrant Prowess
+LBIS:AddItem(spec, "40503", LBIS.L["Chest"], "BIS") --Valorous Cryptstalker Tunic
+LBIS:AddItem(spec, "40626", LBIS.L["Chest"], "BIS") --Breastplate of the Lost Protector
 LBIS:AddItem(spec, "40193", LBIS.L["Chest"], "Alt") --Tunic of Masked Suffering
-LBIS:AddItem(spec, "40503", LBIS.L["Chest"], "Alt") --Valorous Cryptstalker Tunic
-LBIS:AddItem(spec, "40626", LBIS.L["Chest"], "Alt") --Breastplate of the Lost Protector
 LBIS:AddItem(spec, "39579", LBIS.L["Chest"], "Alt") --Heroes' Cryptstalker Tunic
 LBIS:AddItem(spec, "40611", LBIS.L["Chest"], "Alt") --Chestguard of the Lost Protector
 
@@ -30,6 +30,8 @@ LBIS:AddItem(spec, "39702", LBIS.L["Wrist"], "Alt") --Arachnoid Gold Band
 LBIS:AddItem(spec, "37170", LBIS.L["Wrist"], "Alt") --Interwoven Scale Bracers
 
 LBIS:AddItem(spec, "40541", LBIS.L["Hands"], "BIS") --Frosted Adroit Handguards
+LBIS:AddItem(spec, "40504", LBIS.L["Hands"], "BIS") --Valorous Cryptstalker Handguards
+LBIS:AddItem(spec, "40629", LBIS.L["Hands"], "BIS") --Gauntlets of the Lost Protector
 LBIS:AddItem(spec, "40262", LBIS.L["Hands"], "Alt") --Gloves of Calculated Risk
 LBIS:AddItem(spec, "39194", LBIS.L["Hands"], "Alt") --Rusted-Link Spiked Gauntlets
 LBIS:AddItem(spec, "39582", LBIS.L["Hands"], "Alt") --Heroes' Cryptstalker Handguards
@@ -64,19 +66,20 @@ LBIS:AddItem(spec, "42642", LBIS.L["Ring"], "Alt") --Titanium Impact Band
 LBIS:AddItem(spec, "37685", LBIS.L["Ring"], "Alt") --Mobius Band
 
 LBIS:AddItem(spec, "44253", LBIS.L["Trinket"], "BIS") --Darkmoon Card: Greatness
-LBIS:AddItem(spec, "40684", LBIS.L["Trinket"], "BIS") --Mirror of Truth
-LBIS:AddItem(spec, "40431", LBIS.L["Trinket"], "Alt") --Fury of the Five Flights
-
-LBIS:AddItem(spec, "39714", LBIS.L["Main Hand"], "BIS") --Webbed Death
-LBIS:AddItem(spec, "40386", LBIS.L["Main Hand"], "BIS") --Sinister Revenge
-LBIS:AddItem(spec, "37235", LBIS.L["Main Hand"], "Alt") --Crypt Lord's Deft Blade
-LBIS:AddItem(spec, "37871", LBIS.L["Main Hand"], "Alt") --The Key
+LBIS:AddItem(spec, "40431", LBIS.L["Trinket"], "BIS") --Fury of the Five Flights
+LBIS:AddItem(spec, "40256", LBIS.L["Trinket"], "BIS") --Grim Toll
+LBIS:AddItem(spec, "40684", LBIS.L["Trinket"], "Alt") --Mirror of Truth
 
 LBIS:AddItem(spec, "40388", LBIS.L["Two Hand"], "BIS") --Journey's End
 LBIS:AddItem(spec, "40384", LBIS.L["Two Hand"], "Alt") --Betrayer of Humanity
 LBIS:AddItem(spec, "40208", LBIS.L["Two Hand"], "Alt") --Cryptfiend's Bite
 LBIS:AddItem(spec, "40497", LBIS.L["Two Hand"], "Alt") --Black Ice
 LBIS:AddItem(spec, "37883", LBIS.L["Two Hand"], "Alt") --Staff of Trickery
+
+LBIS:AddItem(spec, "39714", LBIS.L["Main Hand"], "BIS") --Webbed Death
+LBIS:AddItem(spec, "40386", LBIS.L["Main Hand"], "BIS") --Sinister Revenge
+LBIS:AddItem(spec, "37235", LBIS.L["Main Hand"], "Alt") --Crypt Lord's Deft Blade
+LBIS:AddItem(spec, "37871", LBIS.L["Main Hand"], "Alt") --The Key
 
 LBIS:AddItem(spec, "40385", LBIS.L["Ranged"], "BIS") --Envoy of Mortality
 LBIS:AddItem(spec, "40265", LBIS.L["Ranged"], "Alt") --Arrowsong

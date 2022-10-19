@@ -35,7 +35,7 @@ LBIS:AddItem(spec, "40610", LBIS.L["Chest"], "BIS") --Chestguard of the Lost Con
 LBIS:AddItem(spec, "44180", LBIS.L["Chest"], "Alt") --Robes of Crackling Flame
 LBIS:AddItem(spec, "37258", LBIS.L["Chest"], "Alt") --Drakewing Raiments
 LBIS:AddItem(spec, "34399", LBIS.L["Chest"], "Alt") --Robes of Ghostly Hatred
-LBIS:AddItem(spec, "34233", LBIS.L["Chest"], "Transmute Alt") --Robes of Faltered Light
+LBIS:AddItem(spec, "34233", LBIS.L["Chest"], "Alt Transmute") --Robes of Faltered Light
 LBIS:AddItem(spec, "42100", LBIS.L["Chest"], "Alt") --Moonshroud Robe
 LBIS:AddItem(spec, "37222", LBIS.L["Chest"], "Alt") --Egg Sac Robes
 LBIS:AddItem(spec, "34365", LBIS.L["Chest"], "Alt") --Robe of Eternal Light
@@ -58,7 +58,7 @@ LBIS:AddItem(spec, "37825", LBIS.L["Hands"], "Alt") --Traditionally Dyed Handgua
 LBIS:AddItem(spec, "42103", LBIS.L["Hands"], "Alt") --Moonshroud Gloves
 LBIS:AddItem(spec, "37798", LBIS.L["Hands"], "Alt") --Overlook Handguards
 LBIS:AddItem(spec, "34406", LBIS.L["Hands"], "Alt") --Gloves of Tyri's Power
-LBIS:AddItem(spec, "34342", LBIS.L["Hands"], "Transmute Alt") --Handguards of the Dawn
+LBIS:AddItem(spec, "34342", LBIS.L["Hands"], "Alt Transmute") --Handguards of the Dawn
 LBIS:AddItem(spec, "37843", LBIS.L["Hands"], "Alt") --Giant-Hair Woven Gloves
 
 LBIS:AddItem(spec, "40697", LBIS.L["Waist"], "BIS") --Elegant Temple Gardens' Girdle
@@ -77,7 +77,7 @@ LBIS:AddItem(spec, "37854", LBIS.L["Legs"], "Alt") --Woven Bracae Leggings
 LBIS:AddItem(spec, "37622", LBIS.L["Legs"], "Alt") --Skirt of the Old Kingdom
 LBIS:AddItem(spec, "34181", LBIS.L["Legs"], "Alt") --Leggings of Calamity
 LBIS:AddItem(spec, "34386", LBIS.L["Legs"], "Alt") --Pantaloons of Growing Strife
-LBIS:AddItem(spec, "34170", LBIS.L["Legs"], "Transmute Alt") --Pantaloons of Calming Strife
+LBIS:AddItem(spec, "34170", LBIS.L["Legs"], "Alt Transmute") --Pantaloons of Calming Strife
 LBIS:AddItem(spec, "37369", LBIS.L["Legs"], "Alt") --Sorrowgrave's Breeches
 
 LBIS:AddItem(spec, "44202", LBIS.L["Feet"], "BIS") --Sandals of Crimson Fury

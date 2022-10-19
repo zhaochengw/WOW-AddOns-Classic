@@ -7,7 +7,6 @@ function LBIS.BrowserWindow:OpenWindow()
     LBIS:BuildItemCache()
     if not LBIS.BrowserWindow.Window then
         LBIS.BrowserWindow:CreateBrowserWindow();
-        LBIS.ItemList:Open();
     end
     LBIS.BrowserWindow:RefreshItems();
     LBIS.BrowserWindow.Window:Show();
@@ -153,7 +152,6 @@ function createTabs(window, content)
         PanelTemplates_SetTab(content, 1);
         open_tab = "ItemList";
 
-        LBIS.ItemList:Open();
         LBIS.BrowserWindow:RefreshItems();
     end);
 
@@ -166,7 +164,6 @@ function createTabs(window, content)
         PanelTemplates_SetTab(content, 2);
         open_tab = "GemList";
 
-        LBIS.GemList:Open();
         LBIS.BrowserWindow:RefreshItems();
     end);
 
@@ -179,7 +176,6 @@ function createTabs(window, content)
         PanelTemplates_SetTab(content, 3);
         open_tab = "EnchantList";
 
-        LBIS.EnchantList:Open();
         LBIS.BrowserWindow:RefreshItems();
     end);
 
@@ -215,7 +211,7 @@ function createDropDowns(window)
         end
     }
     window.SpecDropDown = LBIS:CreateDropdown(spec_opts);
-    window.SpecDropDown:SetPoint("TOPLEFT", window, 30, -28);    
+    window.SpecDropDown:SetPoint("TOPLEFT", window, 30, -28);      
 
     local slot_opts = {
         ['name']='slot',
@@ -263,7 +259,9 @@ function createDropDowns(window)
         ['name']='zone',
         ['parent']=window,
         ['title']='Raid:',
-        ['items']= { LBIS.L["All"], LBIS.L["Naxxramas"], LBIS.L["The Eye of Eternity"], LBIS.L["Vault of Archavon"], LBIS.L["Obsidian Sanctum"]},--, LBIS.L["Ulduar"], LBIS.L["Trial of the Crusader"], LBIS.L["Onyxia's Lair'"], LBIS.L["Icecrown Citadel"], LBIS.L["The Ruby Sanctum"]
+        ['items']= { LBIS.L["All"], LBIS.L["Naxxramas (10)"], LBIS.L["Naxxramas (25)"], LBIS.L["The Eye of Eternity (10)"], LBIS.L["The Eye of Eternity (25)"], 
+        LBIS.L["Vault of Archavon (10)"], LBIS.L["Vault of Archavon (25)"], LBIS.L["The Obsidian Sanctum (10)"], LBIS.L["The Obsidian Sanctum (25)"]},
+        --, LBIS.L["Ulduar"], LBIS.L["Trial of the Crusader"], LBIS.L["Onyxia's Lair'"], LBIS.L["Icecrown Citadel"], LBIS.L["The Ruby Sanctum"]
         ['defaultVal']= LBISSettings.SelectedZone,
         ['changeFunc']=function(dropdown_frame, dropdown_val)
             LBISSettings.SelectedZone = dropdown_val;
@@ -308,8 +306,7 @@ function LBIS.BrowserWindow:CreateBrowserWindow()
 
     createDropDowns(window);
 
-    local header = window:CreateFontString();
-    header:SetFont("Fonts\\FRIZQT__.TTF", 12); -- Fonts\\ARIALN.TTF - Fonts\\SKURRI.TTF -  -
+    local header = window:CreateFontString(nil, nil, "GameFontHighlightMed2");
     header:SetText(LBIS.L["Loon Best In Slot Browser"]);
     header:SetPoint("TOP", window, -5, -5);
 

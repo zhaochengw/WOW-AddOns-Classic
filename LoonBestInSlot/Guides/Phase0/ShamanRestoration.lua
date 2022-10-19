@@ -6,7 +6,7 @@ LBIS:AddItem(spec, "37180", LBIS.L["Head"], "Alt") --Battlemap Hide Helm
 LBIS:AddItem(spec, "37592", LBIS.L["Head"], "Alt") --Brood Plague Helmet
 
 LBIS:AddItem(spec, "34390", LBIS.L["Shoulder"], "BIS") --Erupting Epaulets
-LBIS:AddItem(spec, "34208", LBIS.L["Shoulder"], "Transmute BIS") --Equilibrium Epaulets
+LBIS:AddItem(spec, "34208", LBIS.L["Shoulder"], "BIS Transmute") --Equilibrium Epaulets
 LBIS:AddItem(spec, "37875", LBIS.L["Shoulder"], "BIS") --Spaulders of the Violet Hold
 LBIS:AddItem(spec, "37673", LBIS.L["Shoulder"], "BIS") --Dark Runic Mantle
 LBIS:AddItem(spec, "31022", LBIS.L["Shoulder"], "Alt") --Skyshatter Shoulderpads
@@ -26,7 +26,7 @@ LBIS:AddItem(spec, "43461", LBIS.L["Chest"], "Alt") --Revenant's Breastplate
 LBIS:AddItem(spec, "43410", LBIS.L["Chest"], "Alt") --Moragg's Chestguard
 LBIS:AddItem(spec, "37256", LBIS.L["Chest"], "Alt") --Scaled Armor of Drakos
 LBIS:AddItem(spec, "34396", LBIS.L["Chest"], "Alt") --Garments of Crashing Shores
-LBIS:AddItem(spec, "34229", LBIS.L["Chest"], "Transmute Alt") --Garments of Serene Shores
+LBIS:AddItem(spec, "34229", LBIS.L["Chest"], "Alt Transmute") --Garments of Serene Shores
 LBIS:AddItem(spec, "31016", LBIS.L["Chest"], "Alt") --Skyshatter Chestguard
 LBIS:AddItem(spec, "31091", LBIS.L["Chest"], "Alt") --Chestguard of the Forgotten Protector
 
@@ -37,8 +37,8 @@ LBIS:AddItem(spec, "34851", LBIS.L["Wrist"], "Alt") --Bracers of the Forgotten P
 LBIS:AddItem(spec, "37725", LBIS.L["Wrist"], "Alt") --Savage Wound Wrap
 LBIS:AddItem(spec, "32586", LBIS.L["Wrist"], "Alt") --Bracers of Nimble Thought
 
-LBIS:AddItem(spec, "39591", LBIS.L["Hands"], "BIS") --Heroes' Earthshatter Handguards
 LBIS:AddItem(spec, "40614", LBIS.L["Hands"], "BIS") --Gloves of the Lost Protector
+LBIS:AddItem(spec, "39591", LBIS.L["Hands"], "BIS") --Heroes' Earthshatter Handguards
 LBIS:AddItem(spec, "44204", LBIS.L["Hands"], "Alt") --Grips of Fierce Pronouncements
 LBIS:AddItem(spec, "37623", LBIS.L["Hands"], "Alt") --Fiery Obelisk Handguards
 LBIS:AddItem(spec, "42113", LBIS.L["Hands"], "Alt") --Spellweave Gloves
@@ -48,8 +48,8 @@ LBIS:AddItem(spec, "40693", LBIS.L["Waist"], "BIS") --Beadwork Belt of Shamanic 
 LBIS:AddItem(spec, "37643", LBIS.L["Waist"], "Alt") --Sash of Blood Removal
 LBIS:AddItem(spec, "44302", LBIS.L["Waist"], "Alt") --Belt of Dark Mending
 LBIS:AddItem(spec, "44181", LBIS.L["Waist"], "Alt") --Ghostflicker Waistband
-LBIS:AddItem(spec, "34543", LBIS.L["Waist"], "Alt") --Skyshatter Belt
 LBIS:AddItem(spec, "34854", LBIS.L["Waist"], "Alt") --Belt of the Forgotten Protector
+LBIS:AddItem(spec, "34543", LBIS.L["Waist"], "Alt") --Skyshatter Belt
 
 LBIS:AddItem(spec, "37791", LBIS.L["Legs"], "BIS") --Leggings of the Winged Serpent
 LBIS:AddItem(spec, "37622", LBIS.L["Legs"], "Alt") --Skirt of the Old Kingdom

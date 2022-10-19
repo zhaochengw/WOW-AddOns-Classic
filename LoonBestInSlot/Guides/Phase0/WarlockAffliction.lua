@@ -29,19 +29,24 @@ LBIS:AddItem(spec, "37055", LBIS.L["Shoulder"], "Alt") --Silken Amice of the Ymi
 LBIS:AddItem(spec, "36982", LBIS.L["Shoulder"], "Alt") --Mantle of Electrical Charges
 
 LBIS:AddItem(spec, "41610", LBIS.L["Back"], "BIS") --Deathchill Cloak
-LBIS:AddItem(spec, "42057", LBIS.L["Back"], "Alt") --Hateful Gladiator's Cloak of Ascendancy
+LBIS:AddItem(spec, "42063", LBIS.L["Back"], "Alt") --Deadly Gladiator's Cloak of Subjugation
 LBIS:AddItem(spec, "34242", LBIS.L["Back"], "Alt") --Tattered Cape of Antonidas
+LBIS:AddItem(spec, "42066", LBIS.L["Back"], "Alt") --Deadly Gladiator's Cloak of Deliverance
+LBIS:AddItem(spec, "42062", LBIS.L["Back"], "Alt") --Deadly Gladiator's Cloak of Dominance
 LBIS:AddItem(spec, "42056", LBIS.L["Back"], "Alt") --Hateful Gladiator's Cloak of Subjugation
 LBIS:AddItem(spec, "37291", LBIS.L["Back"], "Alt") --Ancient Dragon Spirit Cape
+LBIS:AddItem(spec, "42064", LBIS.L["Back"], "Alt") --Deadly Gladiator's Cloak of Ascendancy
 LBIS:AddItem(spec, "37799", LBIS.L["Back"], "Alt") --Reanimator's Cloak
 LBIS:AddItem(spec, "42059", LBIS.L["Back"], "Alt") --Hateful Gladiator's Cloak of Deliverance
+LBIS:AddItem(spec, "42055", LBIS.L["Back"], "Alt") --Hateful Gladiator's Cloak of Dominance
+LBIS:AddItem(spec, "42057", LBIS.L["Back"], "Alt") --Hateful Gladiator's Cloak of Ascendancy
 
-LBIS:AddItem(spec, "42102", LBIS.L["Chest"], "Alt") --Spellweave Robe
 LBIS:AddItem(spec, "39497", LBIS.L["Chest"], "BIS") --Heroes' Plagueheart Robe
 LBIS:AddItem(spec, "40610", LBIS.L["Chest"], "BIS") --Chestguard of the Lost Conqueror
+LBIS:AddItem(spec, "42102", LBIS.L["Chest"], "Alt") --Spellweave Robe
 LBIS:AddItem(spec, "34364", LBIS.L["Chest"], "Alt") --Sunfire Robe
 LBIS:AddItem(spec, "34399", LBIS.L["Chest"], "Alt") --Robes of Ghostly Hatred
-LBIS:AddItem(spec, "34233", LBIS.L["Chest"], "Transmute Alt") --Robes of Faltered Light
+LBIS:AddItem(spec, "34233", LBIS.L["Chest"], "Alt Transmute") --Robes of Faltered Light
 LBIS:AddItem(spec, "42101", LBIS.L["Chest"], "Alt") --Ebonweave Robe
 LBIS:AddItem(spec, "43401", LBIS.L["Chest"], "Alt") --Water-Drenched Robe
 LBIS:AddItem(spec, "34232", LBIS.L["Chest"], "Alt") --Fel Conquerer Raiments
@@ -53,21 +58,21 @@ LBIS:AddItem(spec, "37361", LBIS.L["Wrist"], "BIS") --Cuffs of Winged Levitation
 LBIS:AddItem(spec, "37725", LBIS.L["Wrist"], "Alt") --Savage Wound Wrap
 LBIS:AddItem(spec, "44200", LBIS.L["Wrist"], "Alt") --Ancestral Sinew Wristguards
 LBIS:AddItem(spec, "37884", LBIS.L["Wrist"], "Alt") --Azure Cloth Bindings
-LBIS:AddItem(spec, "34436", LBIS.L["Wrist"], "Alt") --Bracers of the Malefic
 LBIS:AddItem(spec, "34848", LBIS.L["Wrist"], "Alt") --Bracers of the Forgotten Conqueror
+LBIS:AddItem(spec, "34436", LBIS.L["Wrist"], "Alt") --Bracers of the Malefic
 LBIS:AddItem(spec, "36945", LBIS.L["Wrist"], "Alt") --Verdisa's Cuffs of Dreaming
 LBIS:AddItem(spec, "41878", LBIS.L["Wrist"], "Alt") --Hateful Gladiator's Cuffs of Salvation
 LBIS:AddItem(spec, "41555", LBIS.L["Wrist"], "Alt") --Black Duskweave Wristwraps
 LBIS:AddItem(spec, "37370", LBIS.L["Wrist"], "Alt") --Cuffs of the Trussed Hall
 LBIS:AddItem(spec, "41907", LBIS.L["Wrist"], "Alt") --Hateful Gladiator's Cuffs of Dominance
 
-LBIS:AddItem(spec, "42113", LBIS.L["Hands"], "Alt") --Spellweave Gloves
-LBIS:AddItem(spec, "34344", LBIS.L["Hands"], "Alt") --Handguards of Defiled Worlds
 LBIS:AddItem(spec, "39500", LBIS.L["Hands"], "BIS") --Heroes' Plagueheart Gloves
 LBIS:AddItem(spec, "40613", LBIS.L["Hands"], "BIS") --Gloves of the Lost Conqueror
+LBIS:AddItem(spec, "42113", LBIS.L["Hands"], "Alt") --Spellweave Gloves
+LBIS:AddItem(spec, "34344", LBIS.L["Hands"], "Alt") --Handguards of Defiled Worlds
 LBIS:AddItem(spec, "37172", LBIS.L["Hands"], "Alt") --Gloves of Glistening Runes
 LBIS:AddItem(spec, "34406", LBIS.L["Hands"], "Alt") --Gloves of Tyri's Power
-LBIS:AddItem(spec, "34342", LBIS.L["Hands"], "Transmute Alt") --Handguards of the Dawn
+LBIS:AddItem(spec, "34342", LBIS.L["Hands"], "Alt Transmute") --Handguards of the Dawn
 LBIS:AddItem(spec, "42111", LBIS.L["Hands"], "Alt") --Ebonweave Gloves
 LBIS:AddItem(spec, "43287", LBIS.L["Hands"], "Alt") --Silken Bridge Handwraps
 LBIS:AddItem(spec, "37798", LBIS.L["Hands"], "Alt") --Overlook Handguards
@@ -86,7 +91,7 @@ LBIS:AddItem(spec, "34541", LBIS.L["Waist"], "Alt") --Belt of the Malefic
 LBIS:AddItem(spec, "40697", LBIS.L["Waist"], "Alt") --Elegant Temple Gardens' Girdle
 
 LBIS:AddItem(spec, "34386", LBIS.L["Legs"], "BIS") --Pantaloons of Growing Strife
-LBIS:AddItem(spec, "34170", LBIS.L["Legs"], "Transmute BIS") --Pantaloons of Calming Strife
+LBIS:AddItem(spec, "34170", LBIS.L["Legs"], "BIS Transmute") --Pantaloons of Calming Strife
 LBIS:AddItem(spec, "34181", LBIS.L["Legs"], "Alt") --Leggings of Calamity
 LBIS:AddItem(spec, "37854", LBIS.L["Legs"], "Alt") --Woven Bracae Leggings
 LBIS:AddItem(spec, "42003", LBIS.L["Legs"], "Alt") --Hateful Gladiator's Felweave Trousers
@@ -110,15 +115,20 @@ LBIS:AddItem(spec, "41901", LBIS.L["Feet"], "Alt") --Hateful Gladiator's Slipper
 LBIS:AddItem(spec, "32239", LBIS.L["Feet"], "Alt") --Slippers of the Seacaller
 
 LBIS:AddItem(spec, "39472", LBIS.L["Neck"], "BIS") --Chain of Latent Energies
+LBIS:AddItem(spec, "42031", LBIS.L["Neck"], "Alt") --Deadly Gladiator's Pendant of Subjugation
 LBIS:AddItem(spec, "40680", LBIS.L["Neck"], "Alt") --Encircling Burnished Gold Chains
 LBIS:AddItem(spec, "42024", LBIS.L["Neck"], "Alt") --Hateful Gladiator's Pendant of Ascendancy
 LBIS:AddItem(spec, "42647", LBIS.L["Neck"], "Alt") --Titanium Spellshock Necklace
+LBIS:AddItem(spec, "42032", LBIS.L["Neck"], "Alt") --Deadly Gladiator's Pendant of Deliverance
+LBIS:AddItem(spec, "42029", LBIS.L["Neck"], "Alt") --Deadly Gladiator's Pendant of Dominance
 LBIS:AddItem(spec, "37595", LBIS.L["Neck"], "Alt") --Necklace of Taldaram
 LBIS:AddItem(spec, "42023", LBIS.L["Neck"], "Alt") --Hateful Gladiator's Pendant of Subjugation
+LBIS:AddItem(spec, "42030", LBIS.L["Neck"], "Alt") --Deadly Gladiator's Pendant of Ascendancy
 
 LBIS:AddItem(spec, "37694", LBIS.L["Ring"], "BIS") --Band of Guile
 LBIS:AddItem(spec, "37192", LBIS.L["Ring"], "BIS") --Annhylde's Ring
 LBIS:AddItem(spec, "40585", LBIS.L["Ring"], "BIS") --Signet of the Kirin Tor
+LBIS:AddItem(spec, "42114", LBIS.L["Ring"], "Alt") --Deadly Gladiator's Band of Ascendancy
 LBIS:AddItem(spec, "43253", LBIS.L["Ring"], "Alt") --Ring of Northern Tears
 LBIS:AddItem(spec, "42644", LBIS.L["Ring"], "Alt") --Titanium Spellshock Ring
 LBIS:AddItem(spec, "44283", LBIS.L["Ring"], "Alt") --Signet of Hopeful Light

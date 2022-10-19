@@ -133,6 +133,7 @@ if GetLocale() == "zhCN" then
   LBIS.L["Head Games"] = "欺骗游戏";
   LBIS.L["Heigan the Unclean"] = "肮脏的希尔盖";
   LBIS.L["Herald Volazj"] = "传令官沃拉兹";
+  LBIS.L["Heroic Judgment at the Eye of Eternity"] = "英雄永恒之眼的审判";
   LBIS.L["Holy"] = "神圣";
 --  LBIS.L["Honor Points"] = "";
   LBIS.L["Honored"] = "尊敬";
@@ -149,6 +150,7 @@ if GetLocale() == "zhCN" then
   LBIS.L["Items"] = "项目";
   LBIS.L["Jedoga Shadowseeker"] = "耶戈达·觅影者";
   LBIS.L["Jewelcrafting"] = "珠宝加工";
+--  LBIS.L["Judgement at the Eye of Eternity"] = "";
   LBIS.L["Karazhan"] = "卡拉赞";
   LBIS.L["Keepers of Time (Exalted)"] = "时光守护者 (崇拜)";
   LBIS.L["Kel'Thuzad"] = "克尔苏加德";
@@ -194,14 +196,12 @@ if GetLocale() == "zhCN" then
   LBIS.L["My Old Enemy"] = "我的老对手";
   LBIS.L["Mystery of the Infinite, Redux"] = "永恒之龙的秘密，再来一次";
 --  LBIS.L["Nascent Val'kyr"] = "";
-  LBIS.L["Naxxramas"] = "纳克萨玛斯";
   LBIS.L["Naxxramas (10)"] = "纳克萨玛斯 (10)";
   LBIS.L["Naxxramas (25)"] = "纳克萨玛斯 (25)";
   LBIS.L["Neck"] = "颈部";
   LBIS.L["Netherstorm"] = "虚空风暴";
   LBIS.L["Noth the Plaguebringer"] = "瘟疫使者诺斯";
   LBIS.L["Novos the Summoner"] = "召唤者诺沃斯";
---  LBIS.L["Obsidian Sanctum"] = "";
   LBIS.L["Off Hand"] = "副手";
   LBIS.L["One of a Kind"] = "集结的信号";
 --  LBIS.L["Onyxia's Lair'"] = "";
@@ -269,7 +269,6 @@ if GetLocale() == "zhCN" then
   LBIS.L["The Culling of Stratholme (Heroic)"] = "净化斯坦索姆 (英雄)";
   LBIS.L["The Culling of Stratholme (Normal)"] = "净化斯坦索姆 (一般)";
   LBIS.L["The Drakkensryd"] = "驭龙赛";
-  LBIS.L["The Eye of Eternity"] = "永恒之眼";
   LBIS.L["The Eye of Eternity (10)"] = "永恒之眼 (10)";
   LBIS.L["The Eye of Eternity (25)"] = "永恒之眼 (25)";
 --  LBIS.L["The Fate of Bloodbane"] = "";
@@ -277,7 +276,7 @@ if GetLocale() == "zhCN" then
   LBIS.L["The Forsaken Blight"] = "被遗忘者的凋零药剂";
   LBIS.L["The Four Horsemen"] = "四骑士";
   LBIS.L["The Gifts of Loken"] = "洛肯的礼物";
---  LBIS.L["The Kalu'ak'"] = "";
+  LBIS.L["The Kalu'ak"] = "卡鲁亚克";
   LBIS.L["The Last Line Of Defense"] = "最后一道防线";
   LBIS.L["The Nexus (Heroic)"] = "魔枢 (英雄)";
   LBIS.L["The Nexus (Normal)"] = "魔枢 (一般)";
@@ -328,7 +327,6 @@ if GetLocale() == "zhCN" then
 --  LBIS.L["Vanessa Sellers"] = "";
 --  LBIS.L["Various Bosses"] = "";
   LBIS.L["Varos Cloudstrider"] = "瓦尔洛斯·云击";
-  LBIS.L["Vault of Archavon"] = "阿尔卡冯的宝库";
   LBIS.L["Vault of Archavon (10)"] = "阿尔卡冯的宝库 (10)";
   LBIS.L["Vault of Archavon (25)"] = "阿尔卡冯的宝库 (25)";
   LBIS.L["Vendor"] = "商人";

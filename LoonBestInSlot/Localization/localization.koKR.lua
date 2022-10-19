@@ -133,6 +133,7 @@ if GetLocale() == "koKR" then
   LBIS.L["Head Games"] = "두뇌 싸움";
   LBIS.L["Heigan the Unclean"] = "부정의 헤이건";
   LBIS.L["Herald Volazj"] = "사자 볼라즈";
+  LBIS.L["Heroic Judgment at the Eye of Eternity"] = "영원의 눈에서의 영웅적 심판";
   LBIS.L["Holy"] = "신성";
   LBIS.L["Honor Points"] = "명예 점수";
   LBIS.L["Honored"] = "우호적";
@@ -149,6 +150,7 @@ if GetLocale() == "koKR" then
   LBIS.L["Items"] = "아이템";
   LBIS.L["Jedoga Shadowseeker"] = "어둠추적자 제도가";
   LBIS.L["Jewelcrafting"] = "보석세공";
+--  LBIS.L["Judgement at the Eye of Eternity"] = "";
   LBIS.L["Karazhan"] = "카라잔";
   LBIS.L["Keepers of Time (Exalted)"] = "시간의 수호자 (확고한 동맹)";
   LBIS.L["Kel'Thuzad"] = "켈투자드";
@@ -194,14 +196,12 @@ if GetLocale() == "koKR" then
   LBIS.L["My Old Enemy"] = "오랜 적수";
   LBIS.L["Mystery of the Infinite, Redux"] = "돌아온 무한의 비밀";
   LBIS.L["Nascent Val'kyr"] = "발키르 지원자";
-  LBIS.L["Naxxramas"] = "낙스라마스";
   LBIS.L["Naxxramas (10)"] = "낙스라마스 (10인)";
   LBIS.L["Naxxramas (25)"] = "낙스라마스 (25인)";
   LBIS.L["Neck"] = "목";
   LBIS.L["Netherstorm"] = "황천의 폭풍";
   LBIS.L["Noth the Plaguebringer"] = "역병술사 노스";
   LBIS.L["Novos the Summoner"] = "소환사 노보스";
-  LBIS.L["Obsidian Sanctum"] = "흑요석 성소";
   LBIS.L["Off Hand"] = "보조장비";
   LBIS.L["One of a Kind"] = "증거를 찾아라";
   LBIS.L["Onyxia's Lair'"] = "오닉시아의 둥지";
@@ -269,7 +269,6 @@ if GetLocale() == "koKR" then
   LBIS.L["The Culling of Stratholme (Heroic)"] = "옛 스트라솔름 (영웅)";
   LBIS.L["The Culling of Stratholme (Normal)"] = "옛 스트라솔름 (일반)";
   LBIS.L["The Drakkensryd"] = "드라켄스리드";
-  LBIS.L["The Eye of Eternity"] = "영원의 눈";
   LBIS.L["The Eye of Eternity (10)"] = "영원의 눈 (10)";
   LBIS.L["The Eye of Eternity (25)"] = "영원의 눈 (25)";
   LBIS.L["The Fate of Bloodbane"] = "블러드베인의 최후";
@@ -277,7 +276,7 @@ if GetLocale() == "koKR" then
   LBIS.L["The Forsaken Blight"] = "포세이큰 파멸의 역병";
   LBIS.L["The Four Horsemen"] = "4인의 기사단";
   LBIS.L["The Gifts of Loken"] = "로켄의 선물";
-  LBIS.L["The Kalu'ak'"] = "칼루아크";
+  LBIS.L["The Kalu'ak"] = "칼루아크";
   LBIS.L["The Last Line Of Defense"] = "최후의 방어";
   LBIS.L["The Nexus (Heroic)"] = "마력의 탑 (영웅)";
   LBIS.L["The Nexus (Normal)"] = "마력의 탑 (일반)";
@@ -328,7 +327,6 @@ if GetLocale() == "koKR" then
   LBIS.L["Vanessa Sellers"] = "바네사 셀러스 <결정 상인>";
   LBIS.L["Various Bosses"] = "기타 보스들";
   LBIS.L["Varos Cloudstrider"] = "바로스 클라우드스트라이더";
-  LBIS.L["Vault of Archavon"] = "아카본 석실";
   LBIS.L["Vault of Archavon (10)"] = "아카본 석실 (10)";
   LBIS.L["Vault of Archavon (25)"] = "아카본 석실 (25)";
   LBIS.L["Vendor"] = "상인";

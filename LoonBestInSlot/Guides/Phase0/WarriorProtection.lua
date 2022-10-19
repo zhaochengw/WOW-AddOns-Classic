@@ -2,7 +2,7 @@ local spec = LBIS:RegisterSpec(LBIS.L["Warrior"], LBIS.L["Protection"], "0")
 
 LBIS:AddItem(spec, "42549", LBIS.L["Head"], "BIS") --Armored Titanium Goggles
 LBIS:AddItem(spec, "34401", LBIS.L["Head"], "Alt") --Helm of Uther's Resolve
-LBIS:AddItem(spec, "34243", LBIS.L["Head"], "Transmute Alt") --Helm of Burning Righteousness
+LBIS:AddItem(spec, "34243", LBIS.L["Head"], "Alt Transmute") --Helm of Burning Righteousness
 LBIS:AddItem(spec, "37633", LBIS.L["Head"], "Alt") --Ground Tremor Helm
 LBIS:AddItem(spec, "36969", LBIS.L["Head"], "Alt") --Helm of the Ley-Guardian
 LBIS:AddItem(spec, "37135", LBIS.L["Head"], "Alt") --Arcane-Shielded Helm
@@ -10,7 +10,7 @@ LBIS:AddItem(spec, "41387", LBIS.L["Head"], "Alt") --Tempered Titansteel Helm
 LBIS:AddItem(spec, "44040", LBIS.L["Head"], "Alt") --The Crusader's Resolution
 
 LBIS:AddItem(spec, "34389", LBIS.L["Shoulder"], "BIS") --Spaulders of the Thalassian Defender
-LBIS:AddItem(spec, "34193", LBIS.L["Shoulder"], "Transmute BIS") --Spaulders of the Thalassian Savior
+LBIS:AddItem(spec, "34193", LBIS.L["Shoulder"], "BIS Transmute") --Spaulders of the Thalassian Savior
 LBIS:AddItem(spec, "44312", LBIS.L["Shoulder"], "BIS") --Wapach's Spaulders of Solidarity
 LBIS:AddItem(spec, "34192", LBIS.L["Shoulder"], "BIS") --Pauldrons of Perseverance
 LBIS:AddItem(spec, "37814", LBIS.L["Shoulder"], "Alt") --Iron Dwarf Smith Pauldrons
@@ -53,9 +53,9 @@ LBIS:AddItem(spec, "37826", LBIS.L["Waist"], "Alt") --The General's Steel Girdle
 LBIS:AddItem(spec, "43500", LBIS.L["Legs"], "BIS") --Bolstered Legplates
 LBIS:AddItem(spec, "37292", LBIS.L["Legs"], "Alt") --Ley-Guardian's Legguards
 LBIS:AddItem(spec, "34382", LBIS.L["Legs"], "Alt") --Judicator's Legguards
-LBIS:AddItem(spec, "34167", LBIS.L["Legs"], "Transmute Alt") --Legplates of the Holy Juggernaut
+LBIS:AddItem(spec, "34167", LBIS.L["Legs"], "Alt Transmute") --Legplates of the Holy Juggernaut
 LBIS:AddItem(spec, "34381", LBIS.L["Legs"], "Alt") --Felstrength Legplates
-LBIS:AddItem(spec, "34180", LBIS.L["Legs"], "Transmute Alt") --Felfury Legplates
+LBIS:AddItem(spec, "34180", LBIS.L["Legs"], "Alt Transmute") --Felfury Legplates
 LBIS:AddItem(spec, "37688", LBIS.L["Legs"], "Alt") --Legplates of the Infinite Drakonid
 LBIS:AddItem(spec, "44240", LBIS.L["Legs"], "Alt") --Special Issue Legplates
 
@@ -65,8 +65,8 @@ LBIS:AddItem(spec, "44201", LBIS.L["Feet"], "Alt Mit") --Sabatons of Draconic Vi
 LBIS:AddItem(spec, "44243", LBIS.L["Feet"], "Alt") --Toxin-Tempered Sabatons
 LBIS:AddItem(spec, "37082", LBIS.L["Feet"], "Alt") --Slaughterhouse Sabatons
 
-LBIS:AddItem(spec, "37646", LBIS.L["Neck"], "BIS") --Burning Skull Pendant
-LBIS:AddItem(spec, "40679", LBIS.L["Neck"], "BIS") --Chained Military Gorget
+LBIS:AddItem(spec, "37646", LBIS.L["Neck"], "Alt") --Burning Skull Pendant
+LBIS:AddItem(spec, "40679", LBIS.L["Neck"], "Alt") --Chained Military Gorget
 LBIS:AddItem(spec, "42646", LBIS.L["Neck"], "Alt") --Titanium Earthguard Chain
 LBIS:AddItem(spec, "43282", LBIS.L["Neck"], "Alt Mit") --Shadowseeker's Pendant
 LBIS:AddItem(spec, "37689", LBIS.L["Neck"], "Alt") --Pendant of the Nathrezim

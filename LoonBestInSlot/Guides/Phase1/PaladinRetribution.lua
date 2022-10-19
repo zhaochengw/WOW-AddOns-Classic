@@ -7,10 +7,10 @@ LBIS:AddItem(spec, "41386", LBIS.L["Head"], "Alt") --Spiked Titansteel Helm
 
 LBIS:AddItem(spec, "40578", LBIS.L["Shoulder"], "BIS") --Valorous Redemption Shoulderplates
 LBIS:AddItem(spec, "40637", LBIS.L["Shoulder"], "BIS") --Mantle of the Lost Conqueror
+LBIS:AddItem(spec, "34388", LBIS.L["Shoulder"], "BIS") --Pauldrons of Berserking
+LBIS:AddItem(spec, "34192", LBIS.L["Shoulder"], "BIS Transmute") --Pauldrons of Perseverance
 LBIS:AddItem(spec, "44003", LBIS.L["Shoulder"], "Alt") --Upstanding Spaulders
 LBIS:AddItem(spec, "43481", LBIS.L["Shoulder"], "Alt") --Trollwoven Spaulders
-LBIS:AddItem(spec, "34388", LBIS.L["Shoulder"], "Alt") --Pauldrons of Berserking
-LBIS:AddItem(spec, "34192", LBIS.L["Shoulder"], "Transmute BIS") --Pauldrons of Perseverance
 
 LBIS:AddItem(spec, "40403", LBIS.L["Back"], "BIS") --Drape of the Deadly Foe
 LBIS:AddItem(spec, "40721", LBIS.L["Back"], "Alt") --Hammerhead Sharkskin Cloak
@@ -18,8 +18,8 @@ LBIS:AddItem(spec, "37647", LBIS.L["Back"], "Alt") --Cloak of Bloodied Waters
 
 LBIS:AddItem(spec, "40574", LBIS.L["Chest"], "BIS") --Valorous Redemption Chestpiece
 LBIS:AddItem(spec, "40625", LBIS.L["Chest"], "BIS") --Breastplate of the Lost Conqueror
-LBIS:AddItem(spec, "39633", LBIS.L["Chest"], "Alt") --Heroes' Redemption Chestpiece
 LBIS:AddItem(spec, "40610", LBIS.L["Chest"], "Alt") --Chestguard of the Lost Conqueror
+LBIS:AddItem(spec, "39633", LBIS.L["Chest"], "Alt") --Heroes' Redemption Chestpiece
 LBIS:AddItem(spec, "40539", LBIS.L["Chest"], "Alt") --Chestguard of the Recluse
 
 LBIS:AddItem(spec, "40330", LBIS.L["Wrist"], "BIS") --Bracers of Unrelenting Attack
@@ -74,5 +74,5 @@ LBIS:AddItem(spec, "37852", LBIS.L["Two Hand"], "Alt") --Colossal Skull-Clad Cle
 LBIS:AddItem(spec, "41257", LBIS.L["Two Hand"], "Alt") --Titansteel Destroyer
 
 LBIS:AddItem(spec, "42852", LBIS.L["Libram"], "BIS") --Deadly Gladiator's Libram of Fortitude
+LBIS:AddItem(spec, "33503", LBIS.L["Libram"], "BIS") --Libram of Divine Judgement
 LBIS:AddItem(spec, "37574", LBIS.L["Libram"], "Alt") --Libram of Furious Blows
-LBIS:AddItem(spec, "33503", LBIS.L["Libram"], "Alt") --Libram of Divine Judgement

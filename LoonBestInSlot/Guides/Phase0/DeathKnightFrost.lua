@@ -5,7 +5,7 @@ LBIS:AddItem(spec, "42552", LBIS.L["Head"], "Alt") --Charged Titanium Specs
 LBIS:AddItem(spec, "37237", LBIS.L["Head"], "Alt") --Chitin Shell Greathelm
 
 LBIS:AddItem(spec, "34388", LBIS.L["Shoulder"], "BIS") --Pauldrons of Berserking
-LBIS:AddItem(spec, "34192", LBIS.L["Shoulder"], "Transmute BIS") --Pauldrons of Perseverance
+LBIS:AddItem(spec, "34192", LBIS.L["Shoulder"], "BIS Transmute") --Pauldrons of Perseverance
 LBIS:AddItem(spec, "44195", LBIS.L["Shoulder"], "Alt") --Spaulders of the Giant Lords
 LBIS:AddItem(spec, "37627", LBIS.L["Shoulder"], "Alt") --Snake Den Spaulders
 
@@ -15,8 +15,8 @@ LBIS:AddItem(spec, "37840", LBIS.L["Back"], "Alt") --Shroud of Reverberation
 
 LBIS:AddItem(spec, "39617", LBIS.L["Chest"], "BIS") --Heroes' Scourgeborne Battleplate
 LBIS:AddItem(spec, "40612", LBIS.L["Chest"], "BIS") --Chestguard of the Lost Vanquisher
+LBIS:AddItem(spec, "34211", LBIS.L["Chest"], "Alt Transmute") --Harness of Carnal Instinct
 LBIS:AddItem(spec, "34397", LBIS.L["Chest"], "Alt") --Bladed Chaos Tunic
-LBIS:AddItem(spec, "34211", LBIS.L["Chest"], "Transmute Alt") --Harness of Carnal Instinct
 LBIS:AddItem(spec, "37612", LBIS.L["Chest"], "Alt") --Bonegrinder Breastplate
 
 LBIS:AddItem(spec, "41355", LBIS.L["Wrist"], "BIS") --Vengeance Bindings

@@ -87,6 +87,7 @@ LBIS:AddItem(spec, "39244", LBIS.L["Ring"], "Alt") --Ring of the Fated
 
 LBIS:AddItem(spec, "40432", LBIS.L["Trinket"], "BIS") --Illustration of the Dragon Soul
 LBIS:AddItem(spec, "37111", LBIS.L["Trinket"], "BIS") --Soul Preserver
+LBIS:AddItem(spec, "39229", LBIS.L["Trinket"], "BIS") --Embrace of the Spider
 LBIS:AddItem(spec, "40685", LBIS.L["Trinket"], "BIS") --The Egg of Mortal Essence
 LBIS:AddItem(spec, "40382", LBIS.L["Trinket"], "Alt") --Soul of the Dead
 

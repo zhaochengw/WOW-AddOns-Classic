@@ -9,8 +9,8 @@ LBIS:AddItem(spec, "39395", LBIS.L["Head"], "Alt") --Thane's Tainted Greathelm
 LBIS:AddItem(spec, "41387", LBIS.L["Head"], "Alt") --Tempered Titansteel Helm
 LBIS:AddItem(spec, "40366", LBIS.L["Head"], "Alt") --Platehelm of the Great Wyrm
 
-LBIS:AddItem(spec, "40584", LBIS.L["Shoulder"], "BIS") --Valorous Redemption Shoulderguards
 LBIS:AddItem(spec, "40637", LBIS.L["Shoulder"], "BIS") --Mantle of the Lost Conqueror
+LBIS:AddItem(spec, "40584", LBIS.L["Shoulder"], "BIS") --Valorous Redemption Shoulderguards
 LBIS:AddItem(spec, "40334", LBIS.L["Shoulder"], "Alt") --Burdened Shoulderplates
 LBIS:AddItem(spec, "39704", LBIS.L["Shoulder"], "Alt Thrt") --Pauldrons of Unnatural Death
 LBIS:AddItem(spec, "39642", LBIS.L["Shoulder"], "Alt") --Heroes' Redemption Shoulderguards
@@ -66,8 +66,8 @@ LBIS:AddItem(spec, "39470", LBIS.L["Neck"], "Alt Mit") --Medallion of the Disgra
 LBIS:AddItem(spec, "44660", LBIS.L["Neck"], "Alt") --Drakescale Collar
 LBIS:AddItem(spec, "40069", LBIS.L["Neck"], "Alt") --Heritage
 
-LBIS:AddItem(spec, "40107", LBIS.L["Ring"], "BIS") --Sand-Worn Band
-LBIS:AddItem(spec, "40370", LBIS.L["Ring"], "BIS Mit") --Gatekeeper
+LBIS:AddItem(spec, "40107", LBIS.L["Ring"], "Alt") --Sand-Worn Band
+LBIS:AddItem(spec, "40370", LBIS.L["Ring"], "Alt Mit") --Gatekeeper
 LBIS:AddItem(spec, "40718", LBIS.L["Ring"], "Alt Thrt") --Signet of the Impregnable Fortress
 LBIS:AddItem(spec, "40426", LBIS.L["Ring"], "Alt") --Signet of the Accord
 LBIS:AddItem(spec, "39141", LBIS.L["Ring"], "Alt") --Deflection Band
@@ -75,7 +75,8 @@ LBIS:AddItem(spec, "39141", LBIS.L["Ring"], "Alt") --Deflection Band
 LBIS:AddItem(spec, "44063", LBIS.L["Trinket"], "BIS Stam") --Figurine - Monarch Crab
 LBIS:AddItem(spec, "37220", LBIS.L["Trinket"], "BIS Stam") --Essence of Gossamer
 LBIS:AddItem(spec, "42987", LBIS.L["Trinket"], "BIS Thrt") --Darkmoon Card: Greatness
-LBIS:AddItem(spec, "29387", LBIS.L["Trinket"], "Mit") --Gnomeregan Auto-Blocker 600
+LBIS:AddItem(spec, "40257", LBIS.L["Trinket"], "Alt Mit") --Defender's Code
+LBIS:AddItem(spec, "29387", LBIS.L["Trinket"], "Alt Mit") --Gnomeregan Auto-Blocker 600
 LBIS:AddItem(spec, "39292", LBIS.L["Trinket"], "Alt Mit") --Repelling Charge
 LBIS:AddItem(spec, "40683", LBIS.L["Trinket"], "Alt Mit") --Valor Medal of the First War
 LBIS:AddItem(spec, "40372", LBIS.L["Trinket"], "Alt Mit") --Rune of Repulsion

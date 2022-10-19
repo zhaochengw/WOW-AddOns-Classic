@@ -84,16 +84,16 @@ LBIS:AddItem(spec, "44322", LBIS.L["Trinket"], "Alt") --Mercurial Alchemist Ston
 LBIS:AddItem(spec, "36972", LBIS.L["Trinket"], "Alt") --Tome of Arcane Phenomena
 LBIS:AddItem(spec, "38765", LBIS.L["Trinket"], "Alt") --Rune of Infinite Power
 
+LBIS:AddItem(spec, "37360", LBIS.L["Two Hand"], "BIS") --Staff of Draconic Combat
+LBIS:AddItem(spec, "37384", LBIS.L["Two Hand"], "Alt") --Staff of Wayward Principles
+LBIS:AddItem(spec, "37617", LBIS.L["Two Hand"], "Alt") --Staff of Sinister Claws
+
 LBIS:AddItem(spec, "45085", LBIS.L["Main Hand"], "BIS") --Titansteel Spellblade
 LBIS:AddItem(spec, "41384", LBIS.L["Main Hand"], "Alt") --Titansteel Guardian
 LBIS:AddItem(spec, "37169", LBIS.L["Main Hand"], "Alt") --War Mace of Unrequited Love
 LBIS:AddItem(spec, "44173", LBIS.L["Main Hand"], "Alt") --Flameheart Spell Scalpel
 LBIS:AddItem(spec, "44199", LBIS.L["Main Hand"], "Alt") --Gavel of the Brewing Storm
 LBIS:AddItem(spec, "37377", LBIS.L["Main Hand"], "Alt") --Netherbreath Spellblade
-
-LBIS:AddItem(spec, "37360", LBIS.L["Two Hand"], "BIS") --Staff of Draconic Combat
-LBIS:AddItem(spec, "37384", LBIS.L["Two Hand"], "Alt") --Staff of Wayward Principles
-LBIS:AddItem(spec, "37617", LBIS.L["Two Hand"], "Alt") --Staff of Sinister Claws
 
 LBIS:AddItem(spec, "40698", LBIS.L["Off Hand"], "BIS") --Ward of the Violet Citadel
 LBIS:AddItem(spec, "37134", LBIS.L["Off Hand"], "Alt") --Telestra's Journal

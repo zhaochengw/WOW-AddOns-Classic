@@ -12,7 +12,7 @@ LBIS:AddItem(spec, "37139", LBIS.L["Shoulder"], "Alt") --Spaulders of the Carele
 LBIS:AddItem(spec, "31048", LBIS.L["Shoulder"], "Alt") --Thunderheart Pauldrons
 LBIS:AddItem(spec, "31102", LBIS.L["Shoulder"], "Alt") --Pauldrons of the Forgotten Vanquisher
 LBIS:AddItem(spec, "34392", LBIS.L["Shoulder"], "Alt") --Demontooth Shoulderpads
-LBIS:AddItem(spec, "34195", LBIS.L["Shoulder"], "Transmute Alt") --Shoulderpads of Vehemence
+LBIS:AddItem(spec, "34195", LBIS.L["Shoulder"], "Alt Transmute") --Shoulderpads of Vehemence
 LBIS:AddItem(spec, "37593", LBIS.L["Shoulder"], "Alt") --Sprinting Shoulderpads
 
 LBIS:AddItem(spec, "43406", LBIS.L["Back"], "BIS") --Cloak of the Gushing Wound
@@ -35,8 +35,8 @@ LBIS:AddItem(spec, "37853", LBIS.L["Wrist"], "Alt") --Advanced Tooled-Leather Ba
 LBIS:AddItem(spec, "41830", LBIS.L["Wrist"], "Alt") --Hateful Gladiator's Armwraps of Triumph
 
 LBIS:AddItem(spec, "37409", LBIS.L["Hands"], "BIS") --Gilt-Edged Leather Gauntlets
-LBIS:AddItem(spec, "39557", LBIS.L["Hands"], "BIS") --Heroes' Dreamwalker Handgrips
 LBIS:AddItem(spec, "40615", LBIS.L["Hands"], "BIS") --Gloves of the Lost Vanquisher
+LBIS:AddItem(spec, "39557", LBIS.L["Hands"], "BIS") --Heroes' Dreamwalker Handgrips
 LBIS:AddItem(spec, "34370", LBIS.L["Hands"], "Alt") --Gloves of Immortal Dusk
 LBIS:AddItem(spec, "37846", LBIS.L["Hands"], "Alt") --Charged-Bolt Grips
 LBIS:AddItem(spec, "34234", LBIS.L["Hands"], "Alt") --Shadowed Gauntlets of Paroxysm

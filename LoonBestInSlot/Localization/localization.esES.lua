@@ -133,6 +133,7 @@ if GetLocale() == "esES" then
   LBIS.L["Head Games"] = "Juegos mentales";
   LBIS.L["Heigan the Unclean"] = "Heigan el Impuro";
   LBIS.L["Herald Volazj"] = "Heraldo Volazj";
+  LBIS.L["Heroic Judgment at the Eye of Eternity"] = "Heroico: Juicio en El Ojo de la Eternidad";
   LBIS.L["Holy"] = "Sagrado";
 --  LBIS.L["Honor Points"] = "";
   LBIS.L["Honored"] = "Honorable";
@@ -149,6 +150,7 @@ if GetLocale() == "esES" then
   LBIS.L["Items"] = "Objetos";
   LBIS.L["Jedoga Shadowseeker"] = "Jedoga Buscasombras";
   LBIS.L["Jewelcrafting"] = "Joyería";
+  LBIS.L["Judgement at the Eye of Eternity"] = "Juicio en El Ojo de la Eternidad";
   LBIS.L["Karazhan"] = "Karazhan";
   LBIS.L["Keepers of Time (Exalted)"] = "Vigilantes del Tiempo (Exaltado)";
   LBIS.L["Kel'Thuzad"] = "Kel'Thuzad";
@@ -194,14 +196,12 @@ if GetLocale() == "esES" then
   LBIS.L["My Old Enemy"] = "Mi eterna enemiga";
   LBIS.L["Mystery of the Infinite, Redux"] = "El misterio del Infinito, Vuelta atrás";
 --  LBIS.L["Nascent Val'kyr"] = "";
-  LBIS.L["Naxxramas"] = "Naxxramas";
   LBIS.L["Naxxramas (10)"] = "Naxxramas (10)";
   LBIS.L["Naxxramas (25)"] = "Naxxramas (25)";
   LBIS.L["Neck"] = "Cuello";
   LBIS.L["Netherstorm"] = "Tormenta Abisal";
   LBIS.L["Noth the Plaguebringer"] = "Noth el Pesteador";
   LBIS.L["Novos the Summoner"] = "Novos el Invocador";
---  LBIS.L["Obsidian Sanctum"] = "";
   LBIS.L["Off Hand"] = "Mano Izquierda";
   LBIS.L["One of a Kind"] = "Único";
 --  LBIS.L["Onyxia's Lair'"] = "";
@@ -269,7 +269,6 @@ if GetLocale() == "esES" then
   LBIS.L["The Culling of Stratholme (Heroic)"] = "La Matanza de Stratholme (Heroico)";
   LBIS.L["The Culling of Stratholme (Normal)"] = "La Matanza de Stratholme (Normal)";
   LBIS.L["The Drakkensryd"] = "El Drakkensryd";
-  LBIS.L["The Eye of Eternity"] = "El Ojo de la Eternidad";
   LBIS.L["The Eye of Eternity (10)"] = "El Ojo de la Eternidad (10)";
   LBIS.L["The Eye of Eternity (25)"] = "El Ojo de la Eternidad (25)";
 --  LBIS.L["The Fate of Bloodbane"] = "";
@@ -277,7 +276,7 @@ if GetLocale() == "esES" then
   LBIS.L["The Forsaken Blight"] = "El añublo de los Renegados";
   LBIS.L["The Four Horsemen"] = "Los Cuatro Jinetes";
   LBIS.L["The Gifts of Loken"] = "Los obsequios de Loken";
---  LBIS.L["The Kalu'ak'"] = "";
+  LBIS.L["The Kalu'ak"] = "Los Kalu'ak";
   LBIS.L["The Last Line Of Defense"] = "La última línea de defensa";
   LBIS.L["The Nexus (Heroic)"] = "El Nexo (Heroico)";
   LBIS.L["The Nexus (Normal)"] = "El Nexo (Normal)";
@@ -328,7 +327,6 @@ if GetLocale() == "esES" then
 --  LBIS.L["Vanessa Sellers"] = "";
 --  LBIS.L["Various Bosses"] = "";
   LBIS.L["Varos Cloudstrider"] = "Varos Cloudstrider";
-  LBIS.L["Vault of Archavon"] = "La Cámara de Archavon";
   LBIS.L["Vault of Archavon (10)"] = "La Cámara de Archavon (10)";
   LBIS.L["Vault of Archavon (25)"] = "La Cámara de Archavon (25)";
   LBIS.L["Vendor"] = "Vendedor";

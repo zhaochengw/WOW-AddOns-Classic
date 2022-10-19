@@ -4,7 +4,7 @@ LBIS:AddItem(spec, "42553", LBIS.L["Head"], "BIS") --Visage Liquification Goggle
 LBIS:AddItem(spec, "37294", LBIS.L["Head"], "Alt") --Crown of Unbridled Magic
 LBIS:AddItem(spec, "37684", LBIS.L["Head"], "Alt") --Forgotten Shadow Hood
 LBIS:AddItem(spec, "34405", LBIS.L["Head"], "Alt") --Helm of Arcane Purity
-LBIS:AddItem(spec, "34339", LBIS.L["Head"], "Transmute Alt") --Cowl of Light's Purity
+LBIS:AddItem(spec, "34339", LBIS.L["Head"], "Alt Transmute") --Cowl of Light's Purity
 LBIS:AddItem(spec, "34340", LBIS.L["Head"], "Alt") --Dark Conjuror's Collar
 LBIS:AddItem(spec, "37594", LBIS.L["Head"], "Alt") --Elder Headpiece
 LBIS:AddItem(spec, "44408", LBIS.L["Head"], "Alt") --Cowl of the Vindictive Captain
@@ -12,7 +12,7 @@ LBIS:AddItem(spec, "44408", LBIS.L["Head"], "Alt") --Cowl of the Vindictive Capt
 LBIS:AddItem(spec, "37196", LBIS.L["Shoulder"], "BIS") --Runecaster's Mantle
 LBIS:AddItem(spec, "37691", LBIS.L["Shoulder"], "Alt") --Mantle of Deceit
 LBIS:AddItem(spec, "34393", LBIS.L["Shoulder"], "Alt") --Shoulderpads of Knowledge's Pursuit
-LBIS:AddItem(spec, "34202", LBIS.L["Shoulder"], "Transmute Alt") --Shawl of Wonderment
+LBIS:AddItem(spec, "34202", LBIS.L["Shoulder"], "Alt Transmute") --Shawl of Wonderment
 LBIS:AddItem(spec, "37673", LBIS.L["Shoulder"], "Alt") --Dark Runic Mantle
 LBIS:AddItem(spec, "34210", LBIS.L["Shoulder"], "Alt") --Amice of the Convoker
 LBIS:AddItem(spec, "37655", LBIS.L["Shoulder"], "Alt") --Mantle of the Tribunal
@@ -37,7 +37,7 @@ LBIS:AddItem(spec, "37258", LBIS.L["Chest"], "Alt") --Drakewing Raiments
 LBIS:AddItem(spec, "42100", LBIS.L["Chest"], "Alt") --Moonshroud Robe
 LBIS:AddItem(spec, "42101", LBIS.L["Chest"], "Alt") --Ebonweave Robe
 LBIS:AddItem(spec, "34399", LBIS.L["Chest"], "Alt") --Robes of Ghostly Hatred
-LBIS:AddItem(spec, "34233", LBIS.L["Chest"], "Transmute Alt") --Robes of Faltered Light
+LBIS:AddItem(spec, "34233", LBIS.L["Chest"], "Alt Transmute") --Robes of Faltered Light
 LBIS:AddItem(spec, "37641", LBIS.L["Chest"], "Alt") --Arcane Flame Altar-Garb
 LBIS:AddItem(spec, "37851", LBIS.L["Chest"], "Alt") --Ornate Woolen Stola
 
@@ -59,7 +59,7 @@ LBIS:AddItem(spec, "42113", LBIS.L["Hands"], "BIS") --Spellweave Gloves
 LBIS:AddItem(spec, "37172", LBIS.L["Hands"], "BIS") --Gloves of Glistening Runes
 LBIS:AddItem(spec, "37825", LBIS.L["Hands"], "Alt") --Traditionally Dyed Handguards
 LBIS:AddItem(spec, "34406", LBIS.L["Hands"], "Alt") --Gloves of Tyri's Power
-LBIS:AddItem(spec, "34342", LBIS.L["Hands"], "Transmute Alt") --Handguards of the Dawn
+LBIS:AddItem(spec, "34342", LBIS.L["Hands"], "Alt Transmute") --Handguards of the Dawn
 LBIS:AddItem(spec, "37798", LBIS.L["Hands"], "Alt") --Overlook Handguards
 LBIS:AddItem(spec, "42103", LBIS.L["Hands"], "Alt") --Moonshroud Gloves
 LBIS:AddItem(spec, "37843", LBIS.L["Hands"], "Alt") --Giant-Hair Woven Gloves
@@ -78,7 +78,7 @@ LBIS:AddItem(spec, "37189", LBIS.L["Legs"], "BIS") --Breeches of the Caller
 LBIS:AddItem(spec, "37854", LBIS.L["Legs"], "Alt") --Woven Bracae Leggings
 LBIS:AddItem(spec, "34181", LBIS.L["Legs"], "Alt") --Leggings of Calamity
 LBIS:AddItem(spec, "34386", LBIS.L["Legs"], "Alt") --Pantaloons of Growing Strife
-LBIS:AddItem(spec, "34170", LBIS.L["Legs"], "Transmute Alt") --Pantaloons of Calming Strife
+LBIS:AddItem(spec, "34170", LBIS.L["Legs"], "Alt Transmute") --Pantaloons of Calming Strife
 LBIS:AddItem(spec, "37369", LBIS.L["Legs"], "Alt") --Sorrowgrave's Breeches
 LBIS:AddItem(spec, "43313", LBIS.L["Legs"], "Alt") --Leggings of the Ruins Dweller
 
@@ -114,11 +114,11 @@ LBIS:AddItem(spec, "37732", LBIS.L["Ring"], "Alt") --Spectral Seal of the Prophe
 
 LBIS:AddItem(spec, "37835", LBIS.L["Trinket"], "BIS") --Je'Tze's Bell
 LBIS:AddItem(spec, "42988", LBIS.L["Trinket"], "BIS") --Darkmoon Card: Illusion
+LBIS:AddItem(spec, "44255", LBIS.L["Trinket"], "BIS") --Darkmoon Card: Greatness
+LBIS:AddItem(spec, "42413", LBIS.L["Trinket"], "BIS") --Figurine - Sapphire Owl
 LBIS:AddItem(spec, "42132", LBIS.L["Trinket"], "Alt") --Battlemaster's Bravery
 LBIS:AddItem(spec, "40685", LBIS.L["Trinket"], "Alt") --The Egg of Mortal Essence
 LBIS:AddItem(spec, "37660", LBIS.L["Trinket"], "Alt") --Forge Ember
-LBIS:AddItem(spec, "44255", LBIS.L["Trinket"], "BIS") --Darkmoon Card: Greatness
-LBIS:AddItem(spec, "42413", LBIS.L["Trinket"], "BIS") --Figurine - Sapphire Owl
 LBIS:AddItem(spec, "37657", LBIS.L["Trinket"], "Alt") --Spark of Life
 
 LBIS:AddItem(spec, "37169", LBIS.L["Main Hand"], "BIS") --War Mace of Unrequited Love

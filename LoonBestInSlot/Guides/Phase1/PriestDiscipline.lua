@@ -53,8 +53,8 @@ LBIS:AddItem(spec, "40628", LBIS.L["Hands"], "BIS") --Gauntlets of the Lost Conq
 LBIS:AddItem(spec, "40454", LBIS.L["Hands"], "BIS") --Valorous Handwraps of Faith
 LBIS:AddItem(spec, "39733", LBIS.L["Hands"], "Alt") --Gloves of Token Respect
 LBIS:AddItem(spec, "37172", LBIS.L["Hands"], "Alt") --Gloves of Glistening Runes
-LBIS:AddItem(spec, "39519", LBIS.L["Hands"], "Alt") --Heroes' Gloves of Faith
 LBIS:AddItem(spec, "40613", LBIS.L["Hands"], "Alt") --Gloves of the Lost Conqueror
+LBIS:AddItem(spec, "39519", LBIS.L["Hands"], "Alt") --Heroes' Gloves of Faith
 
 LBIS:AddItem(spec, "40561", LBIS.L["Waist"], "BIS") --Leash of Heedless Magic
 LBIS:AddItem(spec, "40271", LBIS.L["Waist"], "BIS") --Sash of Solitude
@@ -70,9 +70,9 @@ LBIS:AddItem(spec, "40448", LBIS.L["Legs"], "Alt") --Valorous Leggings of Faith
 LBIS:AddItem(spec, "40634", LBIS.L["Legs"], "Alt") --Legplates of the Lost Conqueror
 LBIS:AddItem(spec, "40457", LBIS.L["Legs"], "Alt") --Valorous Pants of Faith
 LBIS:AddItem(spec, "40060", LBIS.L["Legs"], "Alt") --Distorted Limbs
-LBIS:AddItem(spec, "39517", LBIS.L["Legs"], "Alt") --Heroes' Leggings of Faith
-LBIS:AddItem(spec, "40619", LBIS.L["Legs"], "Alt") --Leggings of the Lost Conqueror
 LBIS:AddItem(spec, "39528", LBIS.L["Legs"], "Alt") --Heroes' Pants of Faith
+LBIS:AddItem(spec, "40619", LBIS.L["Legs"], "Alt") --Leggings of the Lost Conqueror
+LBIS:AddItem(spec, "39517", LBIS.L["Legs"], "Alt") --Heroes' Leggings of Faith
 LBIS:AddItem(spec, "39309", LBIS.L["Legs"], "Alt") --Leggings of the Instructor
 LBIS:AddItem(spec, "39408", LBIS.L["Legs"], "Alt") --Leggings of Sapphiron
 LBIS:AddItem(spec, "37189", LBIS.L["Legs"], "Alt") --Breeches of the Caller
@@ -106,11 +106,12 @@ LBIS:AddItem(spec, "39407", LBIS.L["Ring"], "Alt") --Circle of Life
 LBIS:AddItem(spec, "44283", LBIS.L["Ring"], "Alt") --Signet of Hopeful Light
 
 LBIS:AddItem(spec, "40432", LBIS.L["Trinket"], "BIS") --Illustration of the Dragon Soul
+LBIS:AddItem(spec, "44255", LBIS.L["Trinket"], "BIS") --Darkmoon Card: Greatness
+LBIS:AddItem(spec, "42413", LBIS.L["Trinket"], "BIS") --Figurine - Sapphire Owl
 LBIS:AddItem(spec, "40258", LBIS.L["Trinket"], "Alt") --Forethought Talisman
 LBIS:AddItem(spec, "37835", LBIS.L["Trinket"], "Alt") --Je'Tze's Bell
 LBIS:AddItem(spec, "42988", LBIS.L["Trinket"], "Alt") --Darkmoon Card: Illusion
-LBIS:AddItem(spec, "44255", LBIS.L["Trinket"], "BIS") --Darkmoon Card: Greatness
-LBIS:AddItem(spec, "42413", LBIS.L["Trinket"], "BIS") --Figurine - Sapphire Owl
+LBIS:AddItem(spec, "40382", LBIS.L["Trinket"], "Alt") --Soul of the Dead
 
 LBIS:AddItem(spec, "40395", LBIS.L["Main Hand"], "BIS") --Torch of Holy Fire
 LBIS:AddItem(spec, "40488", LBIS.L["Main Hand"], "Alt") --Ice Spire Scepter
@@ -119,6 +120,7 @@ LBIS:AddItem(spec, "40300", LBIS.L["Main Hand"], "Alt") --Spire of Sunset
 LBIS:AddItem(spec, "40244", LBIS.L["Main Hand"], "Alt") --The Impossible Dream
 LBIS:AddItem(spec, "39424", LBIS.L["Main Hand"], "Alt") --The Soulblade
 LBIS:AddItem(spec, "40455", LBIS.L["Main Hand"], "Alt") --Staff of Restraint
+LBIS:AddItem(spec, "40348", LBIS.L["Main Hand"], "Alt") --Damnation
 LBIS:AddItem(spec, "37169", LBIS.L["Main Hand"], "Alt") --War Mace of Unrequited Love
 LBIS:AddItem(spec, "41384", LBIS.L["Main Hand"], "Alt") --Titansteel Guardian
 LBIS:AddItem(spec, "39281", LBIS.L["Main Hand"], "Alt") --Infection Repulser

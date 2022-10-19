@@ -62,9 +62,9 @@ LBIS:AddItem(spec, "40683", LBIS.L["Trinket"], "Alt") --Valor Medal of the First
 LBIS:AddItem(spec, "36993", LBIS.L["Trinket"], "Alt") --Seal of the Pantheon
 LBIS:AddItem(spec, "40767", LBIS.L["Trinket"], "Alt") --Sonic Booster
 
-LBIS:AddItem(spec, "42322", LBIS.L["Two Hand"], "BIS") --Deadly Gladiator's Bonegrinder
-LBIS:AddItem(spec, "42317", LBIS.L["Two Hand"], "BIS") --Deadly Gladiator's Decapitator
 LBIS:AddItem(spec, "42332", LBIS.L["Two Hand"], "BIS") --Deadly Gladiator's Greatsword
+LBIS:AddItem(spec, "42317", LBIS.L["Two Hand"], "BIS") --Deadly Gladiator's Decapitator
+LBIS:AddItem(spec, "42322", LBIS.L["Two Hand"], "BIS") --Deadly Gladiator's Bonegrinder
 LBIS:AddItem(spec, "41257", LBIS.L["Two Hand"], "BIS") --Titansteel Destroyer
 LBIS:AddItem(spec, "43409", LBIS.L["Two Hand"], "BIS") --Saliva Corroded Pike
 LBIS:AddItem(spec, "37653", LBIS.L["Two Hand"], "Alt") --Sword of Justice

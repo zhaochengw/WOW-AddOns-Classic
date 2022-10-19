@@ -213,7 +213,7 @@ end
 local function IsInZone(specItem)
     if LBISSettings.SelectedZone == LBIS.L["All"] then
         return true;
-    elseif strfind(specItem.SourceLocation, LBISSettings.SelectedZone) ~= nil then
+    elseif strfind(specItem.SourceLocation, gsub(gsub(LBISSettings.SelectedZone, "%(", "%%%("), "%)", "%%%)")) ~= nil then
         return true;
     end
     return false;
@@ -394,11 +394,4 @@ function LBIS.ItemList:UpdateItems()
             end
         end
     end);
-end
-
-function LBIS.ItemList:Open()
-    
-    --local window = LBIS.BrowserWindow.Window;
-
-    
 end

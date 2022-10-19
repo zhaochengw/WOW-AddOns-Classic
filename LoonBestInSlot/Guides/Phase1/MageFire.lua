@@ -15,8 +15,8 @@ LBIS:AddItem(spec, "44005", LBIS.L["Back"], "BIS") --Pennant Cloak
 LBIS:AddItem(spec, "40723", LBIS.L["Back"], "Alt") --Disguise of the Kumiho
 LBIS:AddItem(spec, "41610", LBIS.L["Back"], "Alt") --Deathchill Cloak
 
-LBIS:AddItem(spec, "40418", LBIS.L["Chest"], "BIS") --Valorous Frostfire Robe
 LBIS:AddItem(spec, "40627", LBIS.L["Chest"], "BIS") --Breastplate of the Lost Vanquisher
+LBIS:AddItem(spec, "40418", LBIS.L["Chest"], "BIS") --Valorous Frostfire Robe
 LBIS:AddItem(spec, "39492", LBIS.L["Chest"], "Alt") --Heroes' Frostfire Robe
 LBIS:AddItem(spec, "40612", LBIS.L["Chest"], "Alt") --Chestguard of the Lost Vanquisher
 LBIS:AddItem(spec, "40234", LBIS.L["Chest"], "Alt") --Heigan's Putrid Vestments

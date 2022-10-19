@@ -43,8 +43,8 @@ LBIS:AddItem(spec, "44203", LBIS.L["Wrist"], "Alt") --Dragonfriend Bracers
 
 LBIS:AddItem(spec, "40541", LBIS.L["Hands"], "BIS") --Frosted Adroit Handguards
 LBIS:AddItem(spec, "39727", LBIS.L["Hands"], "Alt") --Dislocating Handguards
-LBIS:AddItem(spec, "40496", LBIS.L["Hands"], "Alt") --Valorous Bonescythe Gauntlets
 LBIS:AddItem(spec, "40630", LBIS.L["Hands"], "Alt") --Gauntlets of the Lost Vanquisher
+LBIS:AddItem(spec, "40496", LBIS.L["Hands"], "Alt") --Valorous Bonescythe Gauntlets
 LBIS:AddItem(spec, "40362", LBIS.L["Hands"], "Alt") --Gloves of Fast Reactions
 LBIS:AddItem(spec, "39299", LBIS.L["Hands"], "Alt") --Rapid Attack Gloves
 LBIS:AddItem(spec, "39560", LBIS.L["Hands"], "Alt") --Heroes' Bonescythe Gauntlets
@@ -58,8 +58,8 @@ LBIS:AddItem(spec, "40694", LBIS.L["Waist"], "Alt") --Jorach's Crocolisk Skin Be
 LBIS:AddItem(spec, "39279", LBIS.L["Waist"], "Alt") --Blistered Belt of Decay
 
 LBIS:AddItem(spec, "44011", LBIS.L["Legs"], "BIS") --Leggings of the Honored
-LBIS:AddItem(spec, "40500", LBIS.L["Legs"], "Alt") --Valorous Bonescythe Legplates
 LBIS:AddItem(spec, "40636", LBIS.L["Legs"], "Alt") --Legplates of the Lost Vanquisher
+LBIS:AddItem(spec, "40500", LBIS.L["Legs"], "Alt") --Valorous Bonescythe Legplates
 LBIS:AddItem(spec, "39761", LBIS.L["Legs"], "Alt") --Infectious Skitterer Leggings
 LBIS:AddItem(spec, "40333", LBIS.L["Legs"], "Alt") --Leggings of Fleeting Moments
 LBIS:AddItem(spec, "39224", LBIS.L["Legs"], "Alt") --Leggings of Discord
