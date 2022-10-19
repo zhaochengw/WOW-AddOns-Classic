@@ -1,3 +1,6 @@
+3.0.35 - 18th October 2022
+- Added flight times.
+
 3.0.34 - 17th October 2022
 - For 'Show flight times' text to speech, the speech volume will now be set to the game master volume slider and the option is now disabled by default.
 - For 'Automate quests' ('Automation'), quests from Lillehoff (The Sons of Hodir Quartermaster, The Storm Peaks) will not be selected, accepted or turned-in automatically if you are exalted with Sons of Hodir.
