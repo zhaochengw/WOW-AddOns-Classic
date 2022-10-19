@@ -1,46 +1,10 @@
-tag 4f39a7c43a4a009aaf34416b8085cb2177914b34 Details.DF.SL.Wrath.10142.146
+tag 4f63a9e1d7646040aea8a76c060b30fd776256b6 Details.DF.SL.Wrath.10144.146
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Sat Oct 15 13:11:49 2022 -0300
+Date:	Tue Oct 18 14:16:03 2022 -0300
 
-commit 035c8d6a7fe65202fa4c8b749d43f0dce0dcf56b
+commit 33e6a45f8dcd649ec81226362b33d924caee5d06
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat Oct 15 13:11:18 2022 -0300
+Date:   Tue Oct 18 14:15:33 2022 -0300
 
-    bug fixes
-
-commit 3f3d4db5f0d3656d68d50d3c826117eb6d8be13c
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Fri Oct 14 13:21:58 2022 -0300
-
-    QuickDispatch now uses xpcall instead of pcall, fixed search box erroring on some searchs
-
-commit 50ed1cf776588b100ea208b88c393398041e0b94
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Oct 13 19:08:17 2022 -0300
-
-    Added Misses
-
-commit bebb4af33c3c39fd2dd88159a9a3ea04db26e80f
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Oct 13 13:41:07 2022 -0300
-
-    updates
-
-commit 6243a32740d002de384577337f8ebc5c2d26d84d
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Wed Oct 12 18:37:00 2022 -0300
-
-    More bug fixes
-
-commit 69899679e712f61425cbac8300d7e2fcd0c9f26d
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Oct 10 16:51:56 2022 -0300
-
-    Merging Seal of Command on Wrath classic
-
-commit 1ed29008aae667f2cb96c2718166850de605feed
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Oct 10 13:26:13 2022 -0300
-
-    Small bug fixes and improvements
+    bump
 
