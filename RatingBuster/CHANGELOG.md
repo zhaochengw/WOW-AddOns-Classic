@@ -1,6 +1,7 @@
 # RatingBuster
 
-## [1.5.16](https://github.com/raethkcj/RatingBuster/tree/1.5.16) (2022-10-14)
-[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/1.5.15...1.5.16) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
+## [1.5.17](https://github.com/raethkcj/RatingBuster/tree/1.5.17) (2022-10-20)
+[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/1.5.16...1.5.17) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
 
-- Check for Titan's Grip in diffs (Fixes #110)  
+- Improve deDE armor penetration patterns (Fixes #111)  
+- Improve attack power breakdowns  

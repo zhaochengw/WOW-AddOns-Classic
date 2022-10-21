@@ -197,6 +197,8 @@ L["Show Healing from Spirit"] = "Zeige Heilung resultierend aus Willenskraft"
 -- /rb stat armor
 L["Armor"] = "Rüstung"
 L["Changes the display of Armor"] = "Ändert die Anzeige von Rüstung"
+L["Attack Power"] = "Angriffskraft"
+L["Changes the display of Attack Power"] = "Ändert die Anzeige von Angriffskraft"
 -- /rb stat armor ap
 L["Show Attack Power"] = "Zeige Angriffskraft"
 L["Show Attack Power from Armor"] = "Zeige Angriffskraft, resultierend aus Rüstung"
@@ -602,7 +604,9 @@ L["statList"] = {
 	{pattern = "waffenkundewertung", id = CR_EXPERTISE},
 
 	{pattern = "rüstungsdurchschlagwertung", id = CR_ARMOR_PENETRATION},
+	{pattern = "rüstungsdurchschlag", id = CR_ARMOR_PENETRATION},
 	{pattern = string.lower(ARMOR), id = ARMOR},
+	{pattern = "angriffskraft", id = ATTACK_POWER},
 }
 -------------------------
 -- Added info patterns --
