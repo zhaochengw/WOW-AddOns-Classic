@@ -1,6 +1,6 @@
 # ClassicSpellActivations
 
-## [3.0.5](https://github.com/rgd87/ClassicSpellActivations/tree/3.0.5) (2022-10-06)
-[Full Changelog](https://github.com/rgd87/ClassicSpellActivations/compare/3.0.4...3.0.5) [Previous Releases](https://github.com/rgd87/ClassicSpellActivations/releases)
+## [3.0.6](https://github.com/rgd87/ClassicSpellActivations/tree/3.0.6) (2022-10-21)
+[Full Changelog](https://github.com/rgd87/ClassicSpellActivations/compare/3.0.5...3.0.6) [Previous Releases](https://github.com/rgd87/ClassicSpellActivations/releases)
 
-- Last Rank of Slam added  
+- Keep Decimation highlighted indefinitely  

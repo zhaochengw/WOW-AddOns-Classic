@@ -825,7 +825,7 @@ local CheckBacklash = OnAuraStateChange(function() return FindAura("player", 349
 local CheckDecimation = OnAuraStateChange(function() return FindAura("player", 63167, "HELPFUL") end,
     function(present, duration)
         if present then
-            f:Activate("SoulFire", "Decimation", duration, true)
+            f:Activate("SoulFire", "Decimation")
         else
             f:Deactivate("SoulFire", "Decimation")
         end
