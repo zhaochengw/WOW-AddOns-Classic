@@ -2,7 +2,7 @@
 	ALA@163UI
 --]]--
 
-local __version = 221001.0;
+local __version = 221018.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
