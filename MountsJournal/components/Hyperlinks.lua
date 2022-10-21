@@ -2,7 +2,7 @@ hooksecurefunc("HandleModifiedItemClick", function(link)
 	local mounts = MountsJournal
 	local config = mounts.config
 
-	if config.openHyperlinks and not config.useDefaultJournal and not InCombatLockdown() and IsModifiedClick("DRESSUP") and not IsModifiedClick("CHATLINK") then
+	if config.openHyperlinks and not InCombatLockdown() and IsModifiedClick("DRESSUP") and not IsModifiedClick("CHATLINK") then
 		local _,_,_, linkType, linkID = (":|H"):split(link)
 
 		local spellID

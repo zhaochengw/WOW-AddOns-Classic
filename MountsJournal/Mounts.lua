@@ -452,8 +452,16 @@ do
 	}
 
 	function mounts:isCanUseFlying(mapID)
-		return bcInstaces[self.instanceID]
-		    or wotlkInstances[self.instanceID] and IsSpellKnown(54197) and ((mapID or MapUtil.GetDisplayableMapForPlayer()) ~= 125 or GetSubZoneText() == self.krasusLanding)
+		if bcInstaces[self.instanceID] then return true end
+		if wotlkInstances[self.instanceID] and IsSpellKnown(54197) then
+			if not mapID then mapID = MapUtil.GetDisplayableMapForPlayer() end
+			if mapID ~= 126
+			and (mapID ~= 125 or GetSubZoneText() == self.krasusLanding)
+			then
+				return true
+			end
+		end
+		return false
 	end
 end
 
