@@ -1,3 +1,3 @@
-# 10.5.5 (2022-10-16)
+# 10.5.6 (2022-10-19)
 
-* Fixed a bug with totems of rank 10 not being recognized as totems [Comment #6491].
+* Added Rank 2 of Silenced effect of Counterspell (Mage) to Auras widget as CC aura for Wrath Classic [Comment #6416].
