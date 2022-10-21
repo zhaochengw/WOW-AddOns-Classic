@@ -16,6 +16,7 @@ local DT = __private.DT;
 	local UnitName = UnitName;
 	local UnitLevel = UnitLevel;
 	local UnitClassBase = UnitClassBase;
+	local UnitIsUnit = UnitIsUnit;
 	local UnitExists = UnitExists;
 	local UnitIsConnected = UnitIsConnected;
 	local IsInGroup = IsInGroup;
@@ -1433,8 +1434,8 @@ MT.BuildEnv('RAIDTOOL');
 			else
 				GameTooltip:SetText(RosterList[data_index]);
 			end
-			local EquData = cache ~= nil and cache.EquData;
-			if EquData ~= nil then
+			if cache ~= nil and cache.EquData ~= nil then
+				local EquData = cache.EquData;
 				for slot = 1, 18 do
 					if slot ~= 4 then
 						local item = EquData[slot];
@@ -1691,10 +1692,24 @@ MT.BuildEnv('RAIDTOOL');
 			local RosterInfo = Frame.RosterInfo;
 			wipe(RosterList);
 			local num = 0;
+			do	--	player on top
+				local name = UnitName('player');
+				local level = UnitLevel('player');
+				local class = UnitClassBase('player');
+				num = num + 1;
+				RosterList[num] = name;
+				RosterInfo[name] = RosterInfo[name] or {  };
+				local info = RosterInfo[name];
+				info[1] = class;
+				info[2] = level;
+				info[3] = true;
+				info[4] = unit;
+				MT.SendQueryRequest(name, nil, force_update, false);
+			end
 			if IsInRaid() then
 				for i = 1, 40 do
 					local unit = TRaidUnit[i];
-					if UnitExists(unit) then
+					if UnitExists(unit) and not UnitIsUnit(unit, 'player') then
 						local name, realm = UnitName(unit);
 						if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM then
 							name = name .. "-" .. realm;
@@ -1718,7 +1733,7 @@ MT.BuildEnv('RAIDTOOL');
 			elseif IsInGroup() then
 				for i = 1, 5 do
 					local unit = TPartyUnit[i];
-					if UnitExists(unit) then
+					if UnitExists(unit) and unit ~= 'player' then
 						local name, realm = UnitName(unit);
 						if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM then
 							name = name .. "-" .. realm;
@@ -1739,6 +1754,7 @@ MT.BuildEnv('RAIDTOOL');
 						end
 					end
 				end
+			else
 			end
 		end
 	end
