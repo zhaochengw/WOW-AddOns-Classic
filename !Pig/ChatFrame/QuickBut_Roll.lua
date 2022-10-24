@@ -7,7 +7,7 @@ local upper = _G.string.upper
 --===============================================
 local ADD_Frame=addonTable.ADD_Frame
 --
-local function ADD_Roll_Plus()
+local function ADD_QuickBut_Roll()
 	PIG_Per["ChatFrame"]["RollList"]=PIG_Per["ChatFrame"]["RollList"] or addonTable.Default_Per["ChatFrame"]["RollList"]
 	local RollWidth,RollHeight,RollbiaotiH  = 520, 540, 34;
 	local hang_Height,hang_NUM  = 30, 16;
@@ -306,4 +306,4 @@ local function ADD_Roll_Plus()
 	end);
 end
 ---==============================================
-addonTable.ADD_Roll_Plus = ADD_Roll_Plus
+addonTable.ADD_QuickBut_Roll = ADD_QuickBut_Roll

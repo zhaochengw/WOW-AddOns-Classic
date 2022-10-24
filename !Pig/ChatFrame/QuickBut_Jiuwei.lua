@@ -1,7 +1,7 @@
 local _, addonTable = ...;
 local Width,Height,jiangejuli = 24,24,0;
 -------------------------------------------
-local function ADD_jiuweidaojishi()
+local function ADD_QuickBut_jiuwei()
 		local fuFrame=QuickChatFFF_UI
 		fuFrame.biankuang="UIMenuButtonStretchTemplate"
 		if PIG['ChatFrame']['wubiankuang']=="ON" then
@@ -56,4 +56,4 @@ local function ADD_jiuweidaojishi()
 		end);
 end
 --=====================================
-addonTable.ADD_jiuweidaojishi = ADD_jiuweidaojishi
+addonTable.ADD_QuickBut_jiuwei = ADD_QuickBut_jiuwei

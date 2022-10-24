@@ -3,17 +3,9 @@ local fuFrame=List_R_F_1_2
 local gsub = _G.string.gsub
 local sub = _G.string.sub
 local find = _G.string.find
----分割线
-fuFrame.QCxian = fuFrame:CreateLine()
-fuFrame.QCxian:SetColorTexture(0.8,0.8,0.8,0.5)
-fuFrame.QCxian:SetThickness(1);
-fuFrame.QCxian:SetStartPoint("TOPLEFT",2,-290)
-fuFrame.QCxian:SetEndPoint("TOPRIGHT",-2,-290)
 --/////聊天快捷按钮--------
-local QuickChat_maodianID = {1,2};
-local QuickChat_maodianList = {{"BOTTOMLEFT","TOPLEFT",0,28},{"TOPLEFT","BOTTOMLEFT",-2,-4}};
-local QuickChat_maodianListCN = {"附着于聊天栏上方","附着于聊天栏下方"};
------
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
+--
 local QuickChat_biaoqingName = {
 	{"{rt1}","INTERFACE\\TARGETINGFRAME\\UI-RAIDTARGETINGICON_1"}, {"{rt2}","INTERFACE\\TARGETINGFRAME\\UI-RAIDTARGETINGICON_2"}, 
 	{"{rt3}","INTERFACE\\TARGETINGFRAME\\UI-RAIDTARGETINGICON_3"}, {"{rt4}","INTERFACE\\TARGETINGFRAME\\UI-RAIDTARGETINGICON_4"}, 
@@ -47,7 +39,25 @@ local QuickChat_biaoqingName = {
 	{"{雷锋}","Interface\\AddOns\\"..addonName.."\\ChatFrame\\icon\\volunteer.tga"},{"{委屈}","Interface\\AddOns\\"..addonName.."\\ChatFrame\\icon\\wronged.tga"},
 };
 addonTable.QuickChat_biaoqingName=QuickChat_biaoqingName
-
+---更新按钮的屏蔽状态
+local function Update_ChatBut_icon()
+	if PIG['ChatFrame']['QuickChat']=="ON" then
+		local chaozhaopindao = {"综合","寻求组队","PIG","大脚世界频道"}
+		local chaozhaopindaoName = {QuickChatFFF_UI.CHANNEL_1.X,QuickChatFFF_UI.CHANNEL_2.X,QuickChatFFF_UI.CHANNEL_3.X,QuickChatFFF_UI.CHANNEL_4.X}
+		local pindaomulu = {GetChatWindowChannels(1)}
+		for ii=1,#chaozhaopindao do
+			chaozhaopindaoName[ii]:Show();
+		end
+		for i=1,#pindaomulu do
+			for ii=1,#chaozhaopindao do
+				if pindaomulu[i]==chaozhaopindao[ii] then
+					chaozhaopindaoName[ii]:Hide();
+				end
+			end
+		end
+	end
+end
+addonTable.Update_ChatBut_icon=Update_ChatBut_icon
 local function tihuanliaotianxinxineirong(self,event,arg1,...)
 	for i=1,#QuickChat_biaoqingName do
 		if arg1:find(QuickChat_biaoqingName[i][1]) then
@@ -59,7 +69,7 @@ end
 -------------
 local Width,Height,jiangejuli = 24,24,0;
 local WidthB,HeightB,hangshu = 24,24,10;
-local function ChatFrame_QuickChat_Open()
+local function ChatFrame_QuickChat_Open(QuickChat_maodianList)
 	if QuickChatFFF_UI==nil then
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", tihuanliaotianxinxineirong)
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", tihuanliaotianxinxineirong)
@@ -562,8 +572,7 @@ local function ChatFrame_QuickChat_Open()
 				print("|cff00FFFF!Pig:|r|cffFFFF00已解除"..ADDName.."频道消息屏蔽！|r");
 			end
 		end);
-		---================================
-		----下移输入框
+		---下移输入框================================
 		if PIG['ChatFrame']['QuickChat_maodian']==1 then
 			ChatFrame1EditBox:ClearAllPoints();
 			ChatFrame1EditBox:SetPoint("BOTTOMLEFT",ChatFrame1,"TOPLEFT",-5,-0);
@@ -574,292 +583,11 @@ local function ChatFrame_QuickChat_Open()
 			ChatFrame1EditBox:SetPoint("TOPRIGHT",ChatFrame1,"BOTTOMRIGHT",5,-23);
 		end
 		--
-		addonTable.ADD_Chat_Jilu()
-		addonTable.ADD_guanjianzi_open()
-		addonTable.ADD_Roll_Plus()
-		addonTable.ADD_jiuweidaojishi()
+		addonTable.ADD_QuickBut_Jilu()
+		addonTable.ADD_QuickBut_Keyword()
+		addonTable.ADD_QuickBut_Roll()
+		addonTable.ADD_QuickBut_jiuwei()
+		addonTable.Update_ChatBut_icon()
 	end
 end
----------------------
-fuFrame.QuickChat = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.QuickChat:SetSize(30,32);
-fuFrame.QuickChat:SetHitRectInsets(0,-100,0,0);
-fuFrame.QuickChat:SetPoint("TOPLEFT",fuFrame.QCxian,"BOTTOMLEFT",20,-16);
-fuFrame.QuickChat.Text:SetText("快捷切换频道按钮");
-fuFrame.QuickChat.tooltip = "在聊天栏增加一排频道快捷切换按钮，可快速切换频道！";
-fuFrame.QuickChat:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG['ChatFrame']['QuickChat']="ON";
-		ChatFrame_QuickChat_Open();
-	else
-		PIG['ChatFrame']['QuickChat']="OFF";
-		Pig_Options_RLtishi_UI:Show()
-	end
-end);
----
-fuFrame.QuickChat_nil = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.QuickChat_nil:SetSize(30,32);
-fuFrame.QuickChat_nil:SetHitRectInsets(0,-100,0,0);
-fuFrame.QuickChat_nil:SetPoint("TOPLEFT",fuFrame.QCxian,"BOTTOMLEFT",400,-16);
-fuFrame.QuickChat_nil.Text:SetText("无边框模式");
-fuFrame.QuickChat_nil.tooltip = "频道快捷切换按钮无边框模式！";
-fuFrame.QuickChat_nil:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG['ChatFrame']['wubiankuang']="ON";
-		Pig_Options_RLtishi_UI:Show()
-	else
-		PIG['ChatFrame']['wubiankuang']="OFF";
-		Pig_Options_RLtishi_UI:Show()
-	end
-end);
----
-fuFrame.huoqupindaoguanli = CreateFrame("Button", nil, fuFrame, "TruncatedButtonTemplate");  
-fuFrame.huoqupindaoguanli:SetSize(14,14);
-fuFrame.huoqupindaoguanli:SetPoint("TOPRIGHT",fuFrame.QCxian,"TOPRIGHT",0,-0);
-fuFrame.huoqupindaoguanli:SetScript("OnClick", function (self)
-	if fuFrame.huoqupindaoguanli.f:IsShown() then
-		fuFrame.huoqupindaoguanli.f:Hide()
-	else
-		fuFrame.huoqupindaoguanli.f:Show()
-	end
-end);
-fuFrame.huoqupindaoguanli.f = CreateFrame("Frame", nil, fuFrame.huoqupindaoguanli,"BackdropTemplate");
-fuFrame.huoqupindaoguanli.f:SetSize(140,60);
-fuFrame.huoqupindaoguanli.f:SetBackdrop( { bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
-	edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-	tile = false, tileSize = 0, edgeSize = 12, 
-	insets = { left = 4, right = 4, top = 4, bottom = 4 } });
-fuFrame.huoqupindaoguanli.f:SetPoint("TOPLEFT", fuFrame.huoqupindaoguanli, "TOPRIGHT", 2, -0);
-fuFrame.huoqupindaoguanli.f:Hide()
-fuFrame.huoqupindaoguanli.f.E = CreateFrame('EditBox', nil, fuFrame.huoqupindaoguanli.f,"BackdropTemplate");
-fuFrame.huoqupindaoguanli.f.E:SetSize(120,30);
-fuFrame.huoqupindaoguanli.f.E:SetBackdrop({ bgFile = "interface/common/common-input-border.blp",insets = {left = -6,right = 0,top = 2,bottom = -13}})
-fuFrame.huoqupindaoguanli.f.E:SetPoint("TOP",fuFrame.huoqupindaoguanli.f,"TOP",2,-1);
-fuFrame.huoqupindaoguanli.f.E:SetFontObject(ChatFontNormal);
-fuFrame.huoqupindaoguanli.f.E:SetTextColor(200/255, 200/255, 200/255, 0.8);
-fuFrame.huoqupindaoguanli.f.E:SetAutoFocus(false);
-
-fuFrame.huoqupindaoguanli.f.yes = CreateFrame("Button", nil, fuFrame.huoqupindaoguanli.f, "UIPanelButtonTemplate");  
-fuFrame.huoqupindaoguanli.f.yes:SetSize(60,24);
-fuFrame.huoqupindaoguanli.f.yes:SetPoint("BOTTOM",fuFrame.huoqupindaoguanli.f,"BOTTOM",0,4);
-fuFrame.huoqupindaoguanli.f.yes:SetText("发送");
-fuFrame.huoqupindaoguanli.f.yes:SetScript("OnClick", function (self)
-	local XXNAME=fuFrame.huoqupindaoguanli.f.E:GetText()
-	if XXNAME~="" and XXNAME~=" " then
-		C_ChatInfo.SendAddonMessage("pigOwner","yijiaoOwner","WHISPER",XXNAME)
-	end
-	local ADDName= {"PIG","PIG1","PIG2","PIG3","PIG4","PIG5","大脚世界频道","大脚世界频道1","大脚世界频道2","大脚世界频道3","大脚世界频道4","大脚世界频道5"}
-end);
-fuFrame:SetScript("OnHide", function()
-	fuFrame.huoqupindaoguanli.f:Hide()
-	fuFrame.huoqupindaoguanli.f.E:SetText("")
-end)
----快捷条锚点
-local QuickChat_maodian = CreateFrame("FRAME", "QuickChat_maodian_UI", fuFrame, "UIDropDownMenuTemplate")
-QuickChat_maodian:SetPoint("LEFT",fuFrame.QuickChat.Text,"RIGHT",-10,-2)
-UIDropDownMenu_SetWidth(QuickChat_maodian, 158)
-
-local function QuickChat_maodian_Up()
-	local info = UIDropDownMenu_CreateInfo()
-	info.func = QuickChat_maodian.SetValue
-	for i=1,#QuickChat_maodianID,1 do
-	    info.text, info.arg1, info.checked = QuickChat_maodianListCN[i], QuickChat_maodianID[i], QuickChat_maodianID[i] == PIG['ChatFrame']['QuickChat_maodian'];
-		UIDropDownMenu_AddButton(info)
-	end 
-end
-function QuickChat_maodian:SetValue(newValueqk)
-	UIDropDownMenu_SetText(QuickChat_maodian, QuickChat_maodianListCN[newValueqk])
-	if QuickChatFFF_UI then
-		QuickChatFFF_UI:ClearAllPoints();
-		QuickChatFFF_UI:SetPoint(QuickChat_maodianList[newValueqk][1],ChatFrame1,QuickChat_maodianList[newValueqk][2],QuickChat_maodianList[newValueqk][3],QuickChat_maodianList[newValueqk][4]);
-		--下移输入框
-		ChatFrame1EditBox:Show();
-		if newValueqk==1 then
-			ChatFrame1EditBox:ClearAllPoints();
-			ChatFrame1EditBox:SetPoint("BOTTOMLEFT",ChatFrame1,"TOPLEFT",-5,-0);
-			ChatFrame1EditBox:SetPoint("BOTTOMRIGHT",ChatFrame1,"TOPRIGHT",5,-0);
-			guanjianzi_UI.F:SetPoint("BOTTOMRIGHT",DEFAULT_CHAT_FRAME,"TOPRIGHT",2,56);
-			guanjianzi_UI.F:SetPoint("BOTTOMLEFT",DEFAULT_CHAT_FRAME,"TOPLEFT",-3,56);
-		elseif newValueqk==2 then
-			ChatFrame1EditBox:ClearAllPoints();
-			ChatFrame1EditBox:SetPoint("TOPLEFT",ChatFrame1,"BOTTOMLEFT",-5,-23);
-			ChatFrame1EditBox:SetPoint("TOPRIGHT",ChatFrame1,"BOTTOMRIGHT",5,-23);
-			guanjianzi_UI.F:SetPoint("BOTTOMRIGHT",DEFAULT_CHAT_FRAME,"TOPRIGHT",2,28);
-			guanjianzi_UI.F:SetPoint("BOTTOMLEFT",DEFAULT_CHAT_FRAME,"TOPLEFT",-3,28);
-		end
-		ChatFrame1EditBox:Hide();
-	end
-	PIG['ChatFrame']['QuickChat_maodian'] = newValueqk;
-	CloseDropDownMenus()
-end
---========================================================
---精简频道名
-local function zhixingjingjianpindao()
-	local kaiqi = PIG.ChatFrame.jingjian
-	for i = 1, NUM_CHAT_WINDOWS do
-		if ( i ~= 2 ) then
-			local chatID = _G["ChatFrame"..i]
-			local msninfo = chatID.AddMessage
-			chatID.AddMessage = function(frame, text, ...)
-				if kaiqi=="ON" then
-					local msninfoYES=text:find("大脚世界频道", 1)
-					local msninfoYES1=text:find("寻求组队", 1)
-					if msninfoYES then
-						return msninfo(frame, text:gsub('|h%[(%d+)%. 大脚世界频道%]|h', '|h%[%1%. 世%]|h'), ...)
-					elseif msninfoYES1 then
-						return msninfo(frame, text:gsub('|h%[(%d+)%. 寻求组队%]|h', '|h%[%1%. 组%]|h'), ...)
-					end
-				end
-				return msninfo(frame, text, ...)
-			end
-		end
-	end
-end
-fuFrame.jingjianpindaoname = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.jingjianpindaoname:SetSize(30,32);
-fuFrame.jingjianpindaoname:SetHitRectInsets(0,-90,0,0);
-fuFrame.jingjianpindaoname:SetPoint("TOPLEFT",fuFrame.QCxian,"BOTTOMLEFT",300,-60);
-fuFrame.jingjianpindaoname.Text:SetText("精简频道名");
-fuFrame.jingjianpindaoname.tooltip = "精简频道名称，例：[寻求组队]变为[组]！";
-fuFrame.jingjianpindaoname:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG['ChatFrame']['jingjian']="ON";
-	else
-		PIG['ChatFrame']['jingjian']="OFF";
-	end
-end);
----===========================================================================		
-----更新按钮的屏蔽状态
-local function gengxinpingbiizhuangtai()
-	if PIG['ChatFrame']['QuickChat']=="ON" then
-		local channel,channelName, _ = GetChannelName("综合")
-		if channel then
-			local chaozhaopindao = {"综合","寻求组队","PIG","大脚世界频道"}
-			local chaozhaopindaoName = {QuickChatFFF_UI.CHANNEL_1.X,QuickChatFFF_UI.CHANNEL_2.X,QuickChatFFF_UI.CHANNEL_3.X,QuickChatFFF_UI.CHANNEL_4.X}
-			local pindaomulu = {GetChatWindowChannels(1)}
-			for ii=1,#chaozhaopindao do
-				chaozhaopindaoName[ii]:Show();
-			end
-			for i=1,#pindaomulu do
-				for ii=1,#chaozhaopindao do
-					if pindaomulu[i]==chaozhaopindao[ii] then
-						chaozhaopindaoName[ii]:Hide();
-					end
-				end
-			end
-		else
-			C_Timer.After(1, gengxinpingbiizhuangtai);
-		end
-	end
-	--
-	local ADDName= {"PIG","PIG1","PIG2","PIG3","PIG4","PIG5"}
-	for ii=1,#ADDName do
-		local channel,channelName, _ = GetChannelName(ADDName[ii])
-		if channelName then
-			if IsDisplayChannelOwner() then
-				SetChannelPassword(channelName, "")
-			end
-		end
-	end
-	C_ChatInfo.RegisterAddonMessagePrefix("pigOwner")
-	local ffff = CreateFrame("Frame");
-	ffff:RegisterEvent("CHAT_MSG_ADDON");
-	ffff:SetScript("OnEvent", function(self,event,arg1,arg2,arg3,arg4,arg5)
-		if arg1=="pigOwner" and arg2=="yijiaoOwner" then		
-			local playerName= {"心灵迁徙","猪猪加油","宁先生","加油猪猪","圣地法爷","哈老五"}
-			for i=1,#playerName do
-				if arg5==playerName[i] then
-					for ii=1,#ADDName do
-						local channel,channelName, _ = GetChannelName(ADDName[ii])
-						if channelName then
-							SetChannelOwner(channelName,arg5)
-						end
-					end
-				end
-			end
-		end
-	end)
-end
-----
-local function JoinPIG(pindaoName)
-	local channel,channelName= GetChannelName(pindaoName)
-	if not channelName then
-		JoinPermanentChannel(pindaoName, nil, DEFAULT_CHAT_FRAME:GetID(), 1);
-		ChatFrame_AddChannel(DEFAULT_CHAT_FRAME, pindaoName)--订购一个聊天框以显示先前加入的聊天频道
-		gengxinpingbiizhuangtai()
-	end
-	ChatFrame_RemoveMessageGroup(DEFAULT_CHAT_FRAME, "CHANNEL")--屏蔽人员进入频道提示
-end
-local function JoinPermanentChannel()
-	fuFrame.JoinPindao.haoshi=fuFrame.JoinPindao.haoshi+1	
-	local morenName= "综合"
-	local morenchannel = GetChannelName(morenName)
-	if morenchannel and GetChannelName(morenchannel) > 0 then
-		JoinPIG("寻求组队")
-		if PIG['ChatFrame']['JoinPindao']=="ON" then
-			JoinPIG("PIG")
-		end
-	else
-		if fuFrame.JoinPindao.haoshi<10 then
-			C_Timer.After(1, JoinPermanentChannel)
-		end
-	end
-end
-fuFrame.JoinPindao = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.JoinPindao:SetSize(30,32);
-fuFrame.JoinPindao:SetHitRectInsets(0,-120,0,0);
-fuFrame.JoinPindao:SetPoint("TOPLEFT",fuFrame.QCxian,"BOTTOMLEFT",20,-60);
-fuFrame.JoinPindao.Text:SetText("自动加入PIG频道");
-fuFrame.JoinPindao.tooltip = "进入游戏后自动加入PIG/世界防务频道！";
-fuFrame.JoinPindao.haoshi=0
-fuFrame.JoinPindao:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG['ChatFrame']['JoinPindao']="ON";
-		JoinPIG("PIG")
-	else
-		PIG['ChatFrame']['JoinPindao']="OFF";
-	end
-end);
-
-----
-fuFrame.huoqupindaosuoyouzhe = CreateFrame("Button", nil, fuFrame, "UIPanelButtonTemplate");  
-fuFrame.huoqupindaosuoyouzhe:SetSize(280,24);
-fuFrame.huoqupindaosuoyouzhe:SetPoint("TOPLEFT",fuFrame.QCxian,"BOTTOMLEFT",20,-110);
-fuFrame.huoqupindaosuoyouzhe:SetText("打印自定义频道所有者到聊天窗口");
-fuFrame.huoqupindaosuoyouzhe:SetScript("OnClick", function (self)
-	ChatFrame_AddMessageGroup(DEFAULT_CHAT_FRAME, "CHANNEL")
-	local ADDName= {"PIG","PIG1","PIG2","PIG3","PIG4","PIG5","大脚世界频道","大脚世界频道1","大脚世界频道2","大脚世界频道3","大脚世界频道4","大脚世界频道5"}
-	for ii=1,#ADDName do
-		DisplayChannelOwner(ADDName[ii])
-	end
-	local function xxxxx()
-		ChatFrame_RemoveMessageGroup(DEFAULT_CHAT_FRAME, "CHANNEL")
-	end
-	C_Timer.After(1,xxxxx)
-end);
---------------------------------------------
-addonTable.ChatFrame_QuickChat = function()
-	PIG['ChatFrame']['wubiankuang']=PIG['ChatFrame']['wubiankuang'] or addonTable.Default['ChatFrame']['wubiankuang']
-	if PIG['ChatFrame']['wubiankuang']=="ON" then
-		fuFrame.QuickChat_nil:SetChecked(true);
-	end
-	---
-	UIDropDownMenu_SetText(QuickChat_maodian, QuickChat_maodianListCN[PIG['ChatFrame']['QuickChat_maodian']])--设定下拉默认选中
-	UIDropDownMenu_Initialize(QuickChat_maodian, QuickChat_maodian_Up)--初始化下拉
-	if PIG['ChatFrame']['QuickChat']=="ON" then
-		fuFrame.QuickChat:SetChecked(true);
-		ChatFrame_QuickChat_Open();
-		C_Timer.After(3, gengxinpingbiizhuangtai);
-	end
-	---
-	if PIG['ChatFrame']['jingjian']=="ON" then
-		fuFrame.jingjianpindaoname:SetChecked(true);
-	end
-	zhixingjingjianpindao()
-	---
-	if PIG['ChatFrame']['JoinPindao']=="ON" then
-		fuFrame.JoinPindao:SetChecked(true);
-	end
-	C_Timer.After(3.4, JoinPermanentChannel);
-	C_Timer.After(3.8, gengxinpingbiizhuangtai);
-end
+addonTable.ChatFrame_QuickChat_Open = ChatFrame_QuickChat_Open

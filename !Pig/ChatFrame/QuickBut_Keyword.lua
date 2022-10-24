@@ -78,7 +78,7 @@ local function shuaxintiquguanjianzi()
 	end
 end
 --------------------
-local function ADD_guanjianzi_open()
+local function ADD_QuickBut_Keyword()
 	PIG['ChatFrame']['fanyejianR']=PIG['ChatFrame']['fanyejianR'] or addonTable.Default['ChatFrame']['fanyejianR']
 	PIG['ChatFrame']['gaoduH']=PIG['ChatFrame']['gaoduH'] or addonTable.Default['ChatFrame']['gaoduH']
 	PIG['ChatFrame']['toumingdu']=PIG['ChatFrame']['toumingdu'] or addonTable.Default['ChatFrame']['toumingdu']
@@ -928,4 +928,4 @@ local function ADD_guanjianzi_open()
 	-- end
 end
 ---=================================================================
-addonTable.ADD_guanjianzi_open = ADD_guanjianzi_open
+addonTable.ADD_QuickBut_Keyword = ADD_QuickBut_Keyword

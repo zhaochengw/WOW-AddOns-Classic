@@ -77,8 +77,7 @@ AAAAA:SetScript("OnEvent",function(self, event, arg1)
 		addonTable.UnitFrame_TargetFrame()
 		addonTable.UnitFrame_PartyMemberFrame()
 		--------
-		addonTable.ChatFrame_QuickChat()
-		addonTable.ChatFrame_Qita()
+		addonTable.ChatFrame_Set()
 		------
 		addonTable.PigUI_ActionBar()
 		addonTable.PigUI_ChatFrame()

@@ -4,7 +4,7 @@ local find = _G.string.find
 local _, _, _, tocversion = GetBuildInfo()
 local ADD_Frame=addonTable.ADD_Frame
 -----------------------------------------
-local function ADD_Chat_Jilu()
+local function ADD_QuickBut_Jilu()
 		local miyuP={}
 		miyuP.zijirealm = GetRealmName()
 		local jilupindaoID={"PARTY","RAID"};
@@ -1336,6 +1336,5 @@ local function ADD_Chat_Jilu()
 			end
 		end);
 end
-
 --------------------------------------------
-addonTable.ADD_Chat_Jilu =ADD_Chat_Jilu
+addonTable.ADD_QuickBut_Jilu =ADD_QuickBut_Jilu

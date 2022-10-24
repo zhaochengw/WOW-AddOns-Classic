@@ -11,7 +11,7 @@ local Options_zhuanyeCD = ADD_Modbutton(GnName,GnUI,FrameLevel,3)
 --/////专业技能/副本CD监控////////////////
 local Pig_SkillID={}
 local Pig_ItemID={}
-local zhuanyeIcon={136249,136240,134071}--裁缝/炼金/珠宝加工
+local zhuanyeIcon={136249,136240,134071,237171}--裁缝/炼金/珠宝加工/铭文
 if tocversion<20000 then
 	zhuanyejinengshuaxinshijian="TRADE_SKILL_UPDATE"
 	Pig_SkillID={
@@ -53,25 +53,14 @@ elseif tocversion<40000 then
 	zhuanyejinengshuaxinshijian="TRADE_SKILL_UPDATE"
 	Pig_SkillID={
 		--裁缝
-		{26751,zhuanyeIcon[1],"spell"},
-		{31373,zhuanyeIcon[1],"spell"},
-		{36686,zhuanyeIcon[1],"spell"},
+
 		--炼金
-		{32766,zhuanyeIcon[2],"spell"},
-		{32765,zhuanyeIcon[2],"spell"},
-		{29688,zhuanyeIcon[2],"spell"},
-		{28566,zhuanyeIcon[2],"spell"},
-		{28567,zhuanyeIcon[2],"spell"},
-		{28568,zhuanyeIcon[2],"spell"},
-		{28569,zhuanyeIcon[2],"spell"},
-		{28580,zhuanyeIcon[2],"spell"},
-		{28581,zhuanyeIcon[2],"spell"},
-		{28582,zhuanyeIcon[2],"spell"},
-		{28583,zhuanyeIcon[2],"spell"},
-		{28584,zhuanyeIcon[2],"spell"},
-		{28585,zhuanyeIcon[2],"spell"},
+		{60893,zhuanyeIcon[2],"spell"},
 		--珠宝加工
 		{47280,zhuanyeIcon[3],"spell"},
+		{62242,zhuanyeIcon[3],"spell"},
+		--铭文
+		{61177,zhuanyeIcon[4],"spell"},
 	};
 	Pig_ItemID={
 		--筛盐器

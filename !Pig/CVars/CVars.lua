@@ -72,7 +72,7 @@ if tocversion>80000 then
 end
 local CVarsList = {
 	{"自动比较装备","alwaysCompareItems","1","0","开启后在查看装备时会自动和身上装备对比",false},
-	{"聊天栏显示职业颜色","chatClassColorOverride","0","1","聊天框发言的玩家姓名会根据职业染色",false},
+	--{"聊天栏显示职业颜色","chatClassColorOverride","0","1","聊天框发言的玩家姓名会根据职业染色",false},
 	{"显示目标所有增减益","noBuffDebuffFilterOnTarget","1","0","开启后目标所有增减益都会显示在目标头像，关闭则只显示自己施加的效果",false},
 	{"显示姓名板","nameplateShowOnlyNames","0","1","显示姓名板，正式服需要显示战斗外姓名版需要打开-界面-名字-显示所有姓名版",true},
 	{"姓名板锁定在屏幕内","clampTargetNameplateToScreen","1","0","姓名板锁定在屏幕内",false},

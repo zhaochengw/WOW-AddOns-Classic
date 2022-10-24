@@ -1,5 +1,6 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_6
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --=========================================================
 fuFrame.kuang1F = CreateFrame("Frame", nil, fuFrame,"BackdropTemplate")
 fuFrame.kuang1F:SetBackdrop( {
@@ -35,13 +36,7 @@ local function ChatFrame_Width()
 		fuFrame.ChatFrame_Width_Slider.Text:SetTextColor(0.8, 0.8, 0.8, 0.5);
 	end
 end
-
-fuFrame.ChatFrame_Width = CreateFrame("CheckButton", nil, fuFrame.kuang1F, "ChatConfigCheckButtonTemplate");
-fuFrame.ChatFrame_Width:SetSize(30,32);
-fuFrame.ChatFrame_Width:SetHitRectInsets(0,-20,0,0);
-fuFrame.ChatFrame_Width:SetPoint("TOPLEFT",fuFrame.kuang1F,"TOPLEFT",10,-10);
-fuFrame.ChatFrame_Width.Text:SetText("设置宽度");
-fuFrame.ChatFrame_Width.tooltip = "设置主聊天窗口的宽度！";
+fuFrame.ChatFrame_Width = ADD_Checkbutton(nil,fuFrame,-40,"TOPLEFT",fuFrame.kuang1F,"TOPLEFT",10,-10,"设置宽度","设置主聊天窗口的宽度！")
 fuFrame.ChatFrame_Width:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['PigUI']['ChatFrame_Width']="ON";	
@@ -100,12 +95,7 @@ local function ChatFrame_Height()
 		fuFrame.ChatFrame_Height_Slider.Text:SetTextColor(0.8, 0.8, 0.8, 0.5);
 	end
 end
-fuFrame.ChatFrame_Height = CreateFrame("CheckButton", nil, fuFrame.kuang1F, "ChatConfigCheckButtonTemplate");
-fuFrame.ChatFrame_Height:SetSize(30,32);
-fuFrame.ChatFrame_Height:SetHitRectInsets(0,-20,0,0);
-fuFrame.ChatFrame_Height:SetPoint("TOPLEFT",fuFrame.kuang1F,"TOPLEFT",280,-10);
-fuFrame.ChatFrame_Height.Text:SetText("设置高度");
-fuFrame.ChatFrame_Height.tooltip = "设置主聊天窗口高度！";
+fuFrame.ChatFrame_Height = ADD_Checkbutton(nil,fuFrame,-40,"TOPLEFT",fuFrame.kuang1F,"TOPLEFT",280,-10,"设置高度","设置主聊天窗口高度！")
 fuFrame.ChatFrame_Height:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['PigUI']['ChatFrame_Height']="ON";
@@ -194,13 +184,7 @@ local function ChatFrame_Point_X()
 		fuFrame.ChatFrame_Point_Slider_Y.Text:SetTextColor(0.8, 0.8, 0.8, 0.5);
 	end
 end
-
-fuFrame.ChatFrame_Point = CreateFrame("CheckButton", nil, fuFrame.kuang1F, "ChatConfigCheckButtonTemplate");
-fuFrame.ChatFrame_Point:SetSize(30,32);
-fuFrame.ChatFrame_Point:SetHitRectInsets(0,-20,0,0);
-fuFrame.ChatFrame_Point:SetPoint("TOPLEFT",fuFrame.kuang1F,"TOPLEFT",10,-56);
-fuFrame.ChatFrame_Point.Text:SetText("设置位置");
-fuFrame.ChatFrame_Point.tooltip = "设置主聊天窗口位置";
+fuFrame.ChatFrame_Point = ADD_Checkbutton(nil,fuFrame,-40,"TOPLEFT",fuFrame.kuang1F,"TOPLEFT",10,-56,"设置位置","设置主聊天窗口位置")
 fuFrame.ChatFrame_Point:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['PigUI']['ChatFrame_Point']="ON";
@@ -326,12 +310,7 @@ local function ChatFame_LOOT_Width()
 		fuFrame.Loot_Width:Disable()
 	end
 end
-fuFrame.Loot_Width = CreateFrame("CheckButton", nil, fuFrame.fangkuang2F, "ChatConfigCheckButtonTemplate");
-fuFrame.Loot_Width:SetSize(30,32);
-fuFrame.Loot_Width:SetHitRectInsets(0,-20,0,0);
-fuFrame.Loot_Width:SetPoint("TOPLEFT",fuFrame.fangkuang2F,"TOPLEFT",10,-10);
-fuFrame.Loot_Width.Text:SetText("设置宽度");
-fuFrame.Loot_Width.tooltip = "设置拾取聊天窗口宽度！";
+fuFrame.Loot_Width = ADD_Checkbutton(nil,fuFrame,-40,"TOPLEFT",fuFrame.fangkuang2F,"TOPLEFT",10,-10,"设置宽度","设置拾取聊天窗口宽度！")
 fuFrame.Loot_Width:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['PigUI']['ChatFrame_Loot_Width']="ON";	
@@ -404,12 +383,7 @@ local function ChatFame_LOOT_Heigh()
 		fuFrame.Loot_Height:Disable();
 	end
 end
-fuFrame.Loot_Height = CreateFrame("CheckButton", nil, fuFrame.fangkuang2F, "ChatConfigCheckButtonTemplate");
-fuFrame.Loot_Height:SetSize(30,32);
-fuFrame.Loot_Height:SetHitRectInsets(0,-20,0,0);
-fuFrame.Loot_Height:SetPoint("TOPLEFT",fuFrame.fangkuang2F,"TOPLEFT",280,-10);
-fuFrame.Loot_Height.Text:SetText("窗口高度:");
-fuFrame.Loot_Height.tooltip = "设置拾取窗口高度为设定值。";
+fuFrame.Loot_Height = ADD_Checkbutton(nil,fuFrame,-40,"TOPLEFT",fuFrame.fangkuang2F,"TOPLEFT",280,-10,"窗口高度:","设置拾取窗口高度为设定值。")
 fuFrame.Loot_Height:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['PigUI']['ChatFrame_Loot_Height']="ON";
@@ -500,12 +474,7 @@ local function ChatFame_LOOT_Point_X()
 		fuFrame.ChatFrame_LOOT_Point:Disable();
 	end
 end
-fuFrame.ChatFrame_LOOT_Point = CreateFrame("CheckButton", nil, fuFrame.fangkuang2F, "ChatConfigCheckButtonTemplate");
-fuFrame.ChatFrame_LOOT_Point:SetSize(30,32);
-fuFrame.ChatFrame_LOOT_Point:SetHitRectInsets(0,-20,0,0);
-fuFrame.ChatFrame_LOOT_Point:SetPoint("TOPLEFT",fuFrame.fangkuang2F,"TOPLEFT",10,-56);
-fuFrame.ChatFrame_LOOT_Point.Text:SetText("设置位置");
-fuFrame.ChatFrame_LOOT_Point.tooltip = "设置主聊天窗口位置";
+fuFrame.ChatFrame_LOOT_Point = ADD_Checkbutton(nil,fuFrame,-40,"TOPLEFT",fuFrame.fangkuang2F,"TOPLEFT",10,-56,"设置位置","设置主聊天窗口位置")
 fuFrame.ChatFrame_LOOT_Point:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['PigUI']['ChatFrame_Loot_Point']="ON";
@@ -608,12 +577,7 @@ local function chongshepindaoneirong()
 		end
 	end
 end
-fuFrame.xianshiNeirong = CreateFrame("CheckButton", nil, fuFrame.fangkuang2F, "ChatConfigCheckButtonTemplate");
-fuFrame.xianshiNeirong:SetSize(30,32);
-fuFrame.xianshiNeirong:SetHitRectInsets(0,-120,0,0);
-fuFrame.xianshiNeirong:SetPoint("TOPLEFT",fuFrame.fangkuang2F,"TOPLEFT",10,-96);
-fuFrame.xianshiNeirong.Text:SetText("重设窗口显示内容");
-fuFrame.xianshiNeirong.tooltip = "启用独立拾取窗口后，建议打开此选项。\n重新设置窗口显示内容，综合频道将取消经验荣誉以及拾取信息的显示，拾取窗口添加拾取/经验/荣誉等的显示！\n修改战斗记录为记录以便缩短标签页长度。";
+fuFrame.xianshiNeirong = ADD_Checkbutton(nil,fuFrame,-120,"TOPLEFT",fuFrame.fangkuang2F,"TOPLEFT",10,-96,"重设窗口显示内容","启用独立拾取窗口后，建议打开此选项。\n重新设置窗口显示内容，综合频道将取消经验荣誉以及拾取信息的显示，拾取窗口添加拾取/经验/荣誉等的显示！\n修改战斗记录为记录以便缩短标签页长度。")
 fuFrame.xianshiNeirong:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['PigUI']['xianshiNeirong']="ON";
