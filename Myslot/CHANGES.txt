@@ -1,10 +1,10 @@
-lightweight tag 77d6ad00a8e1d9a0ed87af583b4dcb3c71e1b5f3 v5.8.1-v3.4.0
+lightweight tag 8ffcbd04c779bd2a1a08799d0fa48b179b792476 v5.8.2-v3.4.0
 Author:	Boshi Lian <farmer1992@gmail.com>
-Date:	Mon Sep 5 04:35:19 2022 -0700
+Date:	Sun Oct 16 02:29:08 2022 -0700
 
-commit 77d6ad00a8e1d9a0ed87af583b4dcb3c71e1b5f3
+commit 8ffcbd04c779bd2a1a08799d0fa48b179b792476
 Author: Boshi Lian <farmer1992@gmail.com>
-Date:   Mon Sep 5 04:35:19 2022 -0700
+Date:   Sun Oct 16 02:22:32 2022 -0700
 
-    bump ver for wlk
+    fix flyout nil format
 
