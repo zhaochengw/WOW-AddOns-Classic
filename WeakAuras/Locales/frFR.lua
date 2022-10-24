@@ -122,6 +122,10 @@ Last upgrade: %s]=] ] = "Êtes-vous sûr de vouloir exécuter l'outil de répara
 L["Arena"] = "Arène"
 L["Armor (%)"] = "Armure (%)"
 L["Armor against Target (%)"] = "Armure contre Cible (%)"
+--[[Translation missing --]]
+L["Armor Peneration Percent"] = "Armor Peneration Percent"
+--[[Translation missing --]]
+L["Armor Peneration Rating"] = "Armor Peneration Rating"
 L["Armor Rating"] = "Categorie d'armure"
 L["Array"] = "Tableau"
 L["Ascending"] = "Croissant"
@@ -510,6 +514,10 @@ L["Event(s)"] = "Evènement(s)"
 L["Every Frame"] = "Chaque image"
 L["Every Frame (High CPU usage)"] = "Chaque image (utilisation importante du CPU)"
 L["Experience (%)"] = "Expérience (%)"
+--[[Translation missing --]]
+L["Expertise Bonus"] = "Expertise Bonus"
+--[[Translation missing --]]
+L["Expertise Rating"] = "Expertise Rating"
 L["Extend Outside"] = "Étendre à l'extérieur"
 L["Extra Amount"] = "Quantité extra"
 L["Extra Attacks"] = "Attaque extra"
@@ -1385,6 +1393,8 @@ L["Spell IDs:"] = "IDs de sort"
 L["Spell in Range"] = "Sort à portée"
 L["Spell Known"] = "Sort connu"
 L["Spell Name"] = "Nom du sort"
+--[[Translation missing --]]
+L["Spell Peneration Percent"] = "Spell Peneration Percent"
 --[[Translation missing --]]
 L["Spell School"] = "Spell School"
 L["Spell Usable"] = "Sort Utilisable"

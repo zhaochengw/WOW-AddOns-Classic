@@ -858,7 +858,8 @@ It might not work correctly with your version!]=] ] = [=[Индикация бы
 В вашей версии она может работать неправильно!]=]
 	L["This display is currently loaded"] = "Эта индикация загружена"
 	L["This display is not currently loaded"] = "Эта индикация не загружена"
-	L["This enables the collection of debug logs. This requires custom coded auras that use DebugPrints."] = "Позволяет собирать записи отладки. Используйте DebugPrint в вашем коде для вывода значения переменной или выражения."
+	--[[Translation missing --]]
+	L["This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."] = "This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."
 	L["This is a modified version of your aura, |cff9900FF%s.|r"] = "Это изменённая версия вашей индикации |cFF9900FF%s|r"
 	L["This is a modified version of your group: |cff9900FF%s|r"] = "Это изменённая версия вашей группы индикаций |cFF9900FF%s|r"
 	L["This region of type \"%s\" is not supported."] = "Регион типа \"%s\" не поддерживается."

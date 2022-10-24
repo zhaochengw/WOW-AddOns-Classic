@@ -131,11 +131,6 @@ function WeakAuras.SpellSchool(school)
   return Private.combatlog_spell_school_types[school] or ""
 end
 
-function WeakAuras.TestSchool(spellSchool, test)
-  print(spellSchool, test, type(spellSchool), type(test))
-  return spellSchool == test
-end
-
 function WeakAuras.RaidFlagToIndex(flag)
   return Private.combatlog_raidFlags[flag] or 0
 end
@@ -1491,8 +1486,8 @@ Private.load_prototype = {
       display = L["Instance Size Type"],
       type = "multiselect",
       values = "instance_types",
+      sorted = true,
       init = "arg",
-      control = "WeakAurasSortedDropdown",
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
     },
     {
@@ -1510,8 +1505,8 @@ Private.load_prototype = {
       display = L["Instance Type"],
       type = "multiselect",
       values = "instance_difficulty_types",
+      sorted = true,
       init = "arg",
-      control = "WeakAurasSortedDropdown",
       events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"},
     },
     {
@@ -2112,12 +2107,12 @@ Private.event_prototypes = {
           end
           return ret
         end,
+        sorted = true,
         conditionType = "select",
         enable = function(trigger)
           return not trigger.use_watched
         end,
         test = "true",
-        control = "WeakAurasSortedDropdown"
       },
       {
         name = "name",
@@ -3752,9 +3747,9 @@ Private.event_prototypes = {
         display = WeakAuras.newFeatureString .. L["Spell School"],
         type = "select",
         values = "combatlog_spell_school_types_for_ui",
+        sorted = true,
         test = "spellSchool == %d",
         init = "arg",
-        control = "WeakAurasSortedDropdown",
         conditionType = "select",
         store = true,
         enable = function(trigger)
@@ -6834,8 +6829,8 @@ Private.event_prototypes = {
         display = L["Message Type"],
         type = "select",
         values = "chat_message_types",
+        sorted = true,
         test = "event == %q",
-        control = "WeakAurasSortedDropdown"
       },
       {
         name = "message",
@@ -7415,7 +7410,7 @@ Private.event_prototypes = {
             return L["Set IDs can be found on websites such as classic.wowhead.com/item-sets"]
           elseif WeakAuras.IsBCC() then
             return L["Set IDs can be found on websites such as tbc.wowhead.com/item-sets"]
-          elseif WeakAuras.IsWrath() then
+          elseif WeakAuras.IsWrathClassic() then
             return L["Set IDs can be found on websites such as wowhead.com/wotlk/item-sets"]
           end
         end
@@ -8219,8 +8214,8 @@ Private.event_prototypes = {
       {
         name = L["Latency"],
         func = function(trigger, state)
-          if not state.expirationTime or not state.duration then return 0, 0 end
-          return 0, (state.expirationTime - state.duration) - (Private.LAST_CURRENT_SPELL_CAST_CHANGED or 0)
+          if not Private.LAST_CURRENT_SPELL_CAST_START or not Private.LAST_CURRENT_SPELL_CAST_CHANGED then return 0, 0 end
+          return 0, Private.LAST_CURRENT_SPELL_CAST_START - Private.LAST_CURRENT_SPELL_CAST_CHANGED
         end,
         enable = function(trigger)
           return trigger.use_showLatency and trigger.unit == "player"
@@ -8379,6 +8374,56 @@ Private.event_prototypes = {
         init = "GetHaste()",
         store = true,
         conditionType = "number"
+      },
+      {
+        name = "expertiserating",
+        display = L["Expertise Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_EXPERTISE)",
+        store = true,
+        enable = WeakAuras.IsWrathClassic(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
+        name = "expertisebonus",
+        display = L["Expertise Bonus"],
+        type = "number",
+        init = "GetCombatRatingBonus(CR_EXPERTISE)",
+        store = true,
+        conditionType = "number",
+        enable = WeakAuras.IsWrathClassic(),
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
+        name = "armorpenrating",
+        display = L["Armor Peneration Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_ARMOR_PENETRATION)",
+        store = true,
+        enable = WeakAuras.IsWrathClassic(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
+        name = "armorpenpercent",
+        display = L["Armor Peneration Percent"],
+        type = "number",
+        init = "GetArmorPenetration()",
+        store = true,
+        conditionType = "number",
+        enable = WeakAuras.IsWrathClassic(),
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
+        name = "spellpenpercent",
+        display = L["Spell Peneration Percent"],
+        type = "number",
+        init = "GetSpellPenetration()",
+        store = true,
+        enable = WeakAuras.IsWrathClassic(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsWrathClassic()
       },
       {
         name = "masteryrating",
@@ -8826,8 +8871,8 @@ Private.event_prototypes = {
         display = L["Instance Size Type"],
         type = "multiselect",
         values = "instance_types",
+        sorted = true,
         init = "WeakAuras.InstanceType()",
-        control = "WeakAurasSortedDropdown",
       },
       {
         name = "instance_difficulty",

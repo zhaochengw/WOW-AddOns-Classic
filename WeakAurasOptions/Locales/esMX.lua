@@ -8,16 +8,12 @@ local L = WeakAuras.L
 
 -- WeakAuras/Options
 	L[" and |cFFFF0000mirrored|r"] = "y |cFFFF0000reflejado|r"
-	--[[Translation missing --]]
-	L["-- Do not remove this comment, it is part of this aura: "] = "-- Do not remove this comment, it is part of this aura: "
+	L["-- Do not remove this comment, it is part of this aura: "] = "-- No remover este comentario, es parte de esta aura"
 	L[" rotated |cFFFF0000%s|r degrees"] = "rotado |cFFFF0000%s|r grados"
 	L["% of Progress"] = "% de progreso"
-	--[[Translation missing --]]
-	L["%d |4aura:auras; added"] = "%d |4aura:auras; added"
-	--[[Translation missing --]]
-	L["%d |4aura:auras; deleted"] = "%d |4aura:auras; deleted"
-	--[[Translation missing --]]
-	L["%d |4aura:auras; modified"] = "%d |4aura:auras; modified"
+	L["%d |4aura:auras; added"] = "%d |4aura:auras; agregada(s)"
+	L["%d |4aura:auras; deleted"] = "%d |4aura:auras; eliminada(s)"
+	L["%d |4aura:auras; modified"] = "%d |4aura:auras; modificada(s)"
 	L["%i auras selected"] = "%i auras seleccionados"
 	L["%i Matches"] = "%i coincidencias"
 	--[[Translation missing --]]
@@ -165,8 +161,7 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Actions"] = "Acciones"
 	--[[Translation missing --]]
 	L["Active Aura Filters and Info"] = "Active Aura Filters and Info"
-	--[[Translation missing --]]
-	L["Actual Spec"] = "Actual Spec"
+	L["Actual Spec"] = "Espec. Actual"
 	L["Add"] = "Agregar"
 	L["Add %s"] = "Agrega %s"
 	L["Add a new display"] = "Agregar una nueva aura"
@@ -174,8 +169,7 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Add Entry"] = "Agregar entrada"
 	--[[Translation missing --]]
 	L["Add Extra Elements"] = "Add Extra Elements"
-	--[[Translation missing --]]
-	L["Add Option"] = "Add Option"
+	L["Add Option"] = "Agregar Opción"
 	--[[Translation missing --]]
 	L["Add Overlay"] = "Add Overlay"
 	--[[Translation missing --]]
@@ -194,8 +188,7 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	--[[Translation missing --]]
 	L["Affected Unit Filters and Info"] = "Affected Unit Filters and Info"
 	L["Align"] = "Alinear"
-	--[[Translation missing --]]
-	L["Alignment"] = "Alignment"
+	L["Alignment"] = "Alineación"
 	L["All of"] = "Todos de"
 	L["Allow Full Rotation"] = "Permitir rotación completa"
 	L["Alpha"] = "Transparencia"
@@ -203,12 +196,9 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Anchor Point"] = "Punto de anclaje"
 	L["Anchored To"] = "Anclado a"
 	L["And "] = "y"
-	--[[Translation missing --]]
-	L["and"] = "and"
-	--[[Translation missing --]]
-	L["and aligned left"] = "and aligned left"
-	--[[Translation missing --]]
-	L["and aligned right"] = "and aligned right"
+	L["and"] = "y"
+	L["and aligned left"] = "y alineado a la izquierda"
+	L["and aligned right"] = "y alineado a la derecha"
 	--[[Translation missing --]]
 	L["and rotated left"] = "and rotated left"
 	--[[Translation missing --]]
@@ -1283,7 +1273,7 @@ It might not work correctly with your version!]=]
 	L["This display is currently loaded"] = "Esta aura está cargada"
 	L["This display is not currently loaded"] = "Esta aura no está cargada"
 	--[[Translation missing --]]
-	L["This enables the collection of debug logs. This requires custom coded auras that use DebugPrints."] = "This enables the collection of debug logs. This requires custom coded auras that use DebugPrints."
+	L["This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."] = "This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."
 	--[[Translation missing --]]
 	L["This is a modified version of your aura, |cff9900FF%s.|r"] = "This is a modified version of your aura, |cff9900FF%s.|r"
 	--[[Translation missing --]]
@@ -1373,9 +1363,9 @@ It might not work correctly with your version!]=]
 	L["Use Texture"] = "Use Texture"
 	L["Use tooltip \"size\" instead of stacks"] = "Utilizar \"tamaño\" en vez de acumulaciones"
 	--[[Translation missing --]]
-	L["Used in auras:"] = "Used in auras:"
-	--[[Translation missing --]]
 	L["Used in Auras:"] = "Used in Auras:"
+	--[[Translation missing --]]
+	L["Used in auras:"] = "Used in auras:"
 	--[[Translation missing --]]
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "Uses UnitIsVisible() to check if in range. This is polled every second."
 	--[[Translation missing --]]
@@ -1407,8 +1397,8 @@ It might not work correctly with your version!]=]
 	L["X Offset"] = "Posición de X"
 	L["X Rotation"] = "Rotación de X"
 	L["X Scale"] = "Ajuste de tamaño de X"
-	L["X-Offset"] = "Desplazamiento X"
 	L["x-Offset"] = "Desplazamiento X"
+	L["X-Offset"] = "Desplazamiento X"
 	L["Y Offset"] = "Posición de Y"
 	L["Y Rotation"] = "Rotación de Y"
 	L["Y Scale"] = "Ajuste de tamaño de Y"

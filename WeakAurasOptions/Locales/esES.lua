@@ -194,9 +194,9 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Anchor"] = "Anclaje"
 	L["Anchor Point"] = "Punto de Anclaje"
 	L["Anchored To"] = "anclado a"
-	L["And "] = "y"
 	--[[Translation missing --]]
 	L["and"] = "and"
+	L["And "] = "y"
 	--[[Translation missing --]]
 	L["and aligned left"] = "and aligned left"
 	--[[Translation missing --]]
@@ -357,9 +357,9 @@ Off Screen]=]
 	L["Collapse all pending Import"] = "Collapse all pending Import"
 	--[[Translation missing --]]
 	L["Collapsible Group"] = "Collapsible Group"
+	L["Color"] = "Color"
 	--[[Translation missing --]]
 	L["color"] = "color"
-	L["Color"] = "Color"
 	--[[Translation missing --]]
 	L["Column Height"] = "Column Height"
 	--[[Translation missing --]]
@@ -1382,7 +1382,7 @@ It might not work correctly with your version!]=]
 	--[[Translation missing --]]
 	L["This display is not currently loaded"] = "This display is not currently loaded"
 	--[[Translation missing --]]
-	L["This enables the collection of debug logs. This requires custom coded auras that use DebugPrints."] = "This enables the collection of debug logs. This requires custom coded auras that use DebugPrints."
+	L["This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."] = "This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."
 	--[[Translation missing --]]
 	L["This is a modified version of your aura, |cff9900FF%s.|r"] = "This is a modified version of your aura, |cff9900FF%s.|r"
 	--[[Translation missing --]]

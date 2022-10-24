@@ -1134,6 +1134,7 @@ function Private.Login(initialTime, takeNewSnapshots)
         print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
         data.id = id;
       end
+
       tinsert(toAdd, data);
     end
     coroutine.yield();
@@ -2358,26 +2359,41 @@ function Private.SyncParentChildRelationships(silent)
   end
 end
 
-function WeakAuras.AddMany(table, takeSnapshots)
-  local idtable = {};
-  for _, data in ipairs(table) do
-    idtable[data.id] = data;
-  end
+local function loadOrder(tbl, idtable)
+  local order = {}
+
   local loaded = {};
   local function load(id, depends)
     local data = idtable[id];
     if(data.parent) then
       if(idtable[data.parent]) then
-        if(tContains(depends, data.parent)) then
+        if depends[data.parent] then
+          -- There was an unfortunate bug in update.lua in 2022 that resulted
+          -- in auras having a circular dependencies
+          -- Fix one of the two known cases here
+          -- We can probably remove this code in 2023 again
+          for d in pairs(depends) do
+            local uid = idtable[d].uid
+            if uid == "fjtz3A6LwBW" then -- Fojji - Deathknight UI, need to fixup a lot
+              local cycleRoot = d
+              idtable[cycleRoot].parent = nil
+
+              for d in pairs(depends) do
+                tDeleteItem(idtable[d].controlledChildren, cycleRoot)
+              end
+
+              return loadOrder(tbl, idtable)
+            end
+            coroutine.yield()
+          end
           error("Circular dependency in WeakAuras.AddMany between "..table.concat(depends, ", "));
         else
           if not(loaded[data.parent]) then
-            local dependsOut = {};
-            for i,v in pairs(depends) do
-              dependsOut[i] = v;
-            end
-            tinsert(dependsOut, data.parent);
-            load(data.parent, dependsOut);
+            local dependsOut = CopyTable(depends)
+            dependsOut[data.parent] = true
+            coroutine.yield()
+            load(data.parent, dependsOut)
+            coroutine.yield()
           end
         end
       else
@@ -2385,14 +2401,39 @@ function WeakAuras.AddMany(table, takeSnapshots)
       end
     end
     if not(loaded[id]) then
-      WeakAuras.Add(data, takeSnapshots);
       coroutine.yield();
       loaded[id] = true;
+      tinsert(order, idtable[id])
     end
   end
-  local groups = {}
+
   for id, data in pairs(idtable) do
     load(id, {});
+    coroutine.yield()
+  end
+
+  return order
+end
+
+function WeakAuras.AddMany(tbl, takeSnapshots)
+  local idtable = {};
+  for _, data in ipairs(tbl) do
+    -- There was an unfortunate bug in update.lua in 2022 that resulted
+    -- in auras having a circular dependencies
+    -- Fix one of the two known cases here
+    if data.id == data.parent then
+      data.parent = nil
+      tDeleteItem(data.controlledChildren, data.id)
+    end
+    idtable[data.id] = data;
+  end
+
+  local order = loadOrder(tbl, idtable)
+  coroutine.yield()
+  local groups = {}
+  for _, data in ipairs(order) do
+    WeakAuras.Add(data, takeSnapshots);
+    coroutine.yield()
     if data.regionType == "dynamicgroup" or data.regionType == "group" then
       groups[data] = true
     end
@@ -3189,35 +3230,40 @@ local glow_frame_monitor
 local anchor_unitframe_monitor
 Private.dyngroup_unitframe_monitor = {}
 do
-  local function frame_monitor_callback(event, frame, unit)
+  local function frame_monitor_callback(event, frame, unit, previousUnit)
     local new_frame
-    local update_frame = event == "FRAME_UNIT_UPDATE"
+    local FRAME_UNIT_UPDATE = event == "FRAME_UNIT_UPDATE"
+    local FRAME_UNIT_ADDED = event == "FRAME_UNIT_ADDED"
+    local FRAME_UNIT_REMOVED = event == "FRAME_UNIT_REMOVED"
 
     local dynamicGroupsToUpdate = {}
 
     if type(glow_frame_monitor) == "table" then
       for region, data in pairs(glow_frame_monitor) do
         if region.state and region.state.unit == unit
-        and (data.frame ~= frame) == update_frame
+        and ((data.frame ~= frame) and (FRAME_UNIT_ADDED or FRAME_UNIT_UPDATE))
+        or ((data.frame == frame) and FRAME_UNIT_REMOVED)
         then
           if not new_frame then
-            new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
+            new_frame = WeakAuras.GetUnitFrame(unit)
           end
-          if new_frame and new_frame ~= data.frame then
+          if new_frame ~= data.frame then
             local id = region.id .. (region.cloneId or "")
             -- remove previous glow
             if data.frame then
               actionGlowStop(data.actions, data.frame, id)
             end
-            -- apply the glow to new_frame
             data.frame = new_frame
-            actionGlowStart(data.actions, data.frame, id)
-            -- update hidefunc
-            local region = region
-            region.active_glows_hidefunc = region.active_glows_hidefunc or {}
-            region.active_glows_hidefunc[data.frame] = function()
-              actionGlowStop(data.actions, data.frame, id)
-              glow_frame_monitor[region] = nil
+            if new_frame then
+              -- apply the glow to new_frame
+              actionGlowStart(data.actions, data.frame, id)
+              -- update hidefunc
+              local region = region
+              region.active_glows_hidefunc = region.active_glows_hidefunc or {}
+              region.active_glows_hidefunc[data.frame] = function()
+                actionGlowStop(data.actions, data.frame, id)
+                glow_frame_monitor[region] = nil
+              end
             end
           end
         end
@@ -3226,20 +3272,22 @@ do
     if type(anchor_unitframe_monitor) == "table" then
       for region, data in pairs(anchor_unitframe_monitor) do
         if region.state and region.state.unit == unit
-        and (data.frame ~= frame) == update_frame
+        and ((data.frame ~= frame) and (FRAME_UNIT_ADDED or FRAME_UNIT_UPDATE))
+        or ((data.frame == frame) and FRAME_UNIT_REMOVED)
         then
           if not new_frame then
             new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
           end
-          if new_frame and new_frame ~= data.frame then
+          if new_frame ~= data.frame then
             Private.AnchorFrame(data.data, region, data.parent)
           end
         end
       end
     end
     for regionData, data_frame in pairs(Private.dyngroup_unitframe_monitor) do
-      if regionData.region and regionData.region.state and regionData.region.state.unit == unit
-      and (data_frame ~= frame) == update_frame
+      if regionData.region.state and regionData.region.state.unit == unit
+      and ((data_frame ~= frame) and (FRAME_UNIT_ADDED or FRAME_UNIT_UPDATE))
+      or ((data_frame == frame) and FRAME_UNIT_REMOVED)
       then
         if not new_frame then
           new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
@@ -3253,10 +3301,10 @@ do
     for frame in pairs(dynamicGroupsToUpdate) do
       frame:DoPositionChildren()
     end
-
   end
 
   LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_UPDATE", frame_monitor_callback)
+  LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_ADDED", frame_monitor_callback)
   LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_REMOVED", frame_monitor_callback)
 end
 
@@ -5518,6 +5566,19 @@ end
 
 function WeakAuras.UnitStagger(unit)
   return UnitStagger(unit) or 0
+end
+
+function Private.SortOrderForValues(values)
+  local sortOrder = {}
+  for key, value in pairs(values) do
+    tinsert(sortOrder, key)
+  end
+  table.sort(sortOrder, function(aKey, bKey)
+    local aValue = values[aKey]
+    local bValue = values[bKey]
+    return aValue < bValue
+  end)
+  return sortOrder
 end
 
 do

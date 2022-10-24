@@ -1,7 +1,7 @@
 ## Interface: 30400
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
-## Version: 4.1.4
+## Version: 4.1.5
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras
@@ -84,7 +84,6 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasIconButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasMultiLineEditBox.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasImportButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasSortedDropDown.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasToolbarButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasTwoColumnDropDown.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSnippetButton.lua

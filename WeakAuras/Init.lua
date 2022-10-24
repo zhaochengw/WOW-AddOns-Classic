@@ -8,8 +8,8 @@ WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "4.1.4"
-local buildTime = "20220920104545"
+local versionString = "4.1.5"
+local buildTime = "20221021171124"
 
 local flavorFromToc = GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
@@ -21,7 +21,7 @@ local flavorFromTocToNumber = {
 local flavor = flavorFromTocToNumber[flavorFromToc]
 
 --[==[@debug@
-if versionStringFromToc == "4.1.4" then
+if versionStringFromToc == "4.1.5" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
 end
@@ -46,6 +46,15 @@ end
 
 function WeakAuras.IsRetail()
   return flavor == 10
+end
+
+function WeakAuras.IsShadowlands()
+  return WeakAuras.IsRetail() and not WeakAuras.IsDragonflight()
+end
+
+local IsDragonflight = floor(select(4, GetBuildInfo()) / 10000) == 10
+function WeakAuras.IsDragonflight()
+  return IsDragonflight
 end
 
 function WeakAuras.IsClassicOrBCC()

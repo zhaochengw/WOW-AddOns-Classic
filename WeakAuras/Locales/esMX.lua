@@ -150,10 +150,13 @@ Last upgrade: %s]=] ] = [=[Are you sure you want to run the |cffff0000EXPERIMENT
 This will overwrite any changes you have made since the last database upgrade.
 Last upgrade: %s]=]
 L["Arena"] = "Arena"
---[[Translation missing --]]
-L["Armor (%)"] = "Armor (%)"
+L["Armor (%)"] = "Armadura (%)"
 --[[Translation missing --]]
 L["Armor against Target (%)"] = "Armor against Target (%)"
+--[[Translation missing --]]
+L["Armor Peneration Percent"] = "Armor Peneration Percent"
+--[[Translation missing --]]
+L["Armor Peneration Rating"] = "Armor Peneration Rating"
 --[[Translation missing --]]
 L["Armor Rating"] = "Armor Rating"
 --[[Translation missing --]]
@@ -628,6 +631,10 @@ L["Every Frame"] = "Todos los macros"
 L["Every Frame (High CPU usage)"] = "Every Frame (High CPU usage)"
 --[[Translation missing --]]
 L["Experience (%)"] = "Experience (%)"
+--[[Translation missing --]]
+L["Expertise Bonus"] = "Expertise Bonus"
+--[[Translation missing --]]
+L["Expertise Rating"] = "Expertise Rating"
 --[[Translation missing --]]
 L["Extend Outside"] = "Extend Outside"
 L["Extra Amount"] = "Cantidad adicional"
@@ -1693,6 +1700,8 @@ L["Spell in Range"] = "Spell in Range"
 L["Spell Known"] = "Hechizo conocido"
 L["Spell Name"] = "Nombre de hechizo"
 --[[Translation missing --]]
+L["Spell Peneration Percent"] = "Spell Peneration Percent"
+--[[Translation missing --]]
 L["Spell School"] = "Spell School"
 --[[Translation missing --]]
 L["Spell Usable"] = "Spell Usable"
@@ -1767,9 +1776,9 @@ L["Talent |cFFFF0000Not|r Known"] = "Talent |cFFFF0000Not|r Known"
 L["Talent |cFFFF0000Not|r Selected"] = "Talent |cFFFF0000Not|r Selected"
 --[[Translation missing --]]
 L["Talent Known"] = "Talent Known"
+L["Talent selected"] = "Talento seleccionado"
 --[[Translation missing --]]
 L["Talent Selected"] = "Talent Selected"
-L["Talent selected"] = "Talento seleccionado"
 L["Talent Specialization"] = "Especialización de talento"
 L["Tanking And Highest"] = "Tanqueando - El más alto"
 L["Tanking But Not Highest"] = "Tanqueando - No el más alto"

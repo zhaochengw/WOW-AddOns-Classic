@@ -318,8 +318,8 @@ Off Screen]=] ] = "Aura está fora da tela"
 	L["Collapse all pending Import"] = "Collapse all pending Import"
 	--[[Translation missing --]]
 	L["Collapsible Group"] = "Collapsible Group"
-	L["color"] = "cor"
 	L["Color"] = "Cor"
+	L["color"] = "cor"
 	--[[Translation missing --]]
 	L["Column Height"] = "Column Height"
 	--[[Translation missing --]]
@@ -734,9 +734,9 @@ Can use \ to escape -.]=]
 	--[[Translation missing --]]
 	L["Ignore out of checking range"] = "Ignore out of checking range"
 	--[[Translation missing --]]
-	L["Ignore Self"] = "Ignore Self"
-	--[[Translation missing --]]
 	L["Ignore self"] = "Ignore self"
+	--[[Translation missing --]]
+	L["Ignore Self"] = "Ignore Self"
 	--[[Translation missing --]]
 	L["Ignore updates"] = "Ignore updates"
 	L["Ignored"] = "Ignorado"
@@ -1276,7 +1276,7 @@ It might not work correctly with your version!]=]
 	--[[Translation missing --]]
 	L["This display is not currently loaded"] = "This display is not currently loaded"
 	--[[Translation missing --]]
-	L["This enables the collection of debug logs. This requires custom coded auras that use DebugPrints."] = "This enables the collection of debug logs. This requires custom coded auras that use DebugPrints."
+	L["This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."] = "This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."
 	--[[Translation missing --]]
 	L["This is a modified version of your aura, |cff9900FF%s.|r"] = "This is a modified version of your aura, |cff9900FF%s.|r"
 	--[[Translation missing --]]
@@ -1436,9 +1436,9 @@ It might not work correctly with your version!]=]
 	--[[Translation missing --]]
 	L["Yes"] = "Yes"
 	--[[Translation missing --]]
-	L["y-Offset"] = "y-Offset"
-	--[[Translation missing --]]
 	L["Y-Offset"] = "Y-Offset"
+	--[[Translation missing --]]
+	L["y-Offset"] = "y-Offset"
 	--[[Translation missing --]]
 	L["You already have this group/aura. Importing will create a duplicate."] = "You already have this group/aura. Importing will create a duplicate."
 	--[[Translation missing --]]

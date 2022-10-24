@@ -120,6 +120,10 @@ Last upgrade: %s]=] ] = [=[Вы уверены, что хотите запуст
 L["Arena"] = "Арена"
 L["Armor (%)"] = "Броня"
 L["Armor against Target (%)"] = "Броня против текущей цели"
+--[[Translation missing --]]
+L["Armor Peneration Percent"] = "Armor Peneration Percent"
+--[[Translation missing --]]
+L["Armor Peneration Rating"] = "Armor Peneration Rating"
 L["Armor Rating"] = "Количество брони"
 L["Array"] = "Массив"
 L["Ascending"] = "По возрастанию"
@@ -428,6 +432,10 @@ L["Event(s)"] = "События"
 L["Every Frame"] = "Каждый кадр"
 L["Every Frame (High CPU usage)"] = "Каждый кадр (высокая загрузка ЦП)"
 L["Experience (%)"] = "Опыт (%)"
+--[[Translation missing --]]
+L["Expertise Bonus"] = "Expertise Bonus"
+--[[Translation missing --]]
+L["Expertise Rating"] = "Expertise Rating"
 L["Extend Outside"] = "Выйти за границы"
 L["Extra Amount"] = "Дополнительное количество"
 L["Extra Attacks"] = "Дополнительные атаки"
@@ -1064,6 +1072,8 @@ L["Spell IDs:"] = "ID заклинаний:"
 L["Spell in Range"] = "В зоне действия (заклинание)"
 L["Spell Known"] = "Заклинание известно"
 L["Spell Name"] = "Название заклинания"
+--[[Translation missing --]]
+L["Spell Peneration Percent"] = "Spell Peneration Percent"
 L["Spell School"] = "Школа магии"
 L["Spell Usable"] = "Заклинание доступно"
 L["Spin"] = "Вращение"

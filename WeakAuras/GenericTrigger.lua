@@ -1193,8 +1193,8 @@ function GenericTrigger.FinishLoadUnload()
 end
 
 --- Adds a display, creating all internal data structures for all triggers.
--- @param data
--- @param region
+--- @param data table
+--- @param region table
 function GenericTrigger.Add(data, region)
   local id = data.id;
   events[id] = nil;
@@ -3458,8 +3458,36 @@ do
     if not castLatencyFrame then
       castLatencyFrame = CreateFrame("Frame")
       castLatencyFrame:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
-      castLatencyFrame:SetScript("OnEvent", function(event)
-        Private.LAST_CURRENT_SPELL_CAST_CHANGED = GetTime()
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")
+
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
+
+      if WeakAuras.IsDragonflight() then
+        castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "player")
+        castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "player")
+      end
+
+      castLatencyFrame:SetScript("OnEvent", function(self, event)
+        if event == "UNIT_SPELLCAST_START" then
+          Private.LAST_CURRENT_SPELL_CAST_START = select(4, UnitCastingInfo("player")) / 1000
+        elseif event == "UNIT_SPELLCAST_CHANNEL_START" then
+          Private.LAST_CURRENT_SPELL_CAST_START = select(4, UnitChannelInfo("player")) / 1000
+        elseif event == "UNIT_SPELLCAST_EMPOWER_START" then
+          Private.LAST_CURRENT_SPELL_CAST_START = select(4, UnitCastingInfo("player")) / 1000
+        elseif event == "CURRENT_SPELL_CAST_CHANGED" then
+          -- We want to store the CURRENT_SPELL_CAST_CHANGED time
+          -- that was the last before the actual START event
+          -- This prevents updating the CURRENT_SPELL_CAST_CHANGED time after
+          -- we got the start time
+          if not Private.LAST_CURRENT_SPELL_CAST_START then
+            Private.LAST_CURRENT_SPELL_CAST_CHANGED = GetTime()
+          end
+        else -- STOP EVENTS
+          Private.LAST_CURRENT_SPELL_CAST_START = nil
+        end
       end)
     end
   end
@@ -3655,8 +3683,8 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
 end
 
 --- Returns a table containing the names of all overlays
--- @param data
--- @param triggernum
+--- @param data table
+--- @param triggernum number
 function GenericTrigger.GetOverlayInfo(data, triggernum)
   local result;
 
@@ -3737,9 +3765,9 @@ function GenericTrigger.GetNameAndIcon(data, triggernum)
 end
 
 ---Returns the type of tooltip to show for the trigger.
--- @param data
--- @param triggernum
--- @return string
+--- @param data table
+--- @param triggernum number
+--- @return boolean|string
 function GenericTrigger.CanHaveTooltip(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   if (Private.category_event_prototype[trigger.type]) then

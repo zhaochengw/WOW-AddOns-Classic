@@ -140,6 +140,10 @@ Last upgrade: %s]=]
 L["Arena"] = "Arena"
 L["Armor (%)"] = "Armadura (%)"
 L["Armor against Target (%)"] = "Armadura contra o Alvo (%)"
+--[[Translation missing --]]
+L["Armor Peneration Percent"] = "Armor Peneration Percent"
+--[[Translation missing --]]
+L["Armor Peneration Rating"] = "Armor Peneration Rating"
 L["Armor Rating"] = "Classificação de armadura"
 L["Array"] = "Arranjo"
 L["Ascending"] = "Ascendente"
@@ -613,6 +617,10 @@ L["Every Frame"] = "Todo Frame"
 L["Every Frame (High CPU usage)"] = "Every Frame (High CPU usage)"
 --[[Translation missing --]]
 L["Experience (%)"] = "Experience (%)"
+--[[Translation missing --]]
+L["Expertise Bonus"] = "Expertise Bonus"
+--[[Translation missing --]]
+L["Expertise Rating"] = "Expertise Rating"
 --[[Translation missing --]]
 L["Extend Outside"] = "Extend Outside"
 L["Extra Amount"] = "Quantidade Extra"
@@ -1453,9 +1461,9 @@ L["PvP Flagged"] = "Marcado para JxJ"
 --[[Translation missing --]]
 L["PvP Talent %i"] = "PvP Talent %i"
 --[[Translation missing --]]
-L["PvP Talent selected"] = "PvP Talent selected"
---[[Translation missing --]]
 L["PvP Talent Selected"] = "PvP Talent Selected"
+--[[Translation missing --]]
+L["PvP Talent selected"] = "PvP Talent selected"
 --[[Translation missing --]]
 L["Queued Action"] = "Queued Action"
 L["Radius"] = "Raio"
@@ -1764,6 +1772,8 @@ L["Spell in Range"] = "Spell in Range"
 L["Spell Known"] = "Spell Known"
 L["Spell Name"] = "Nome do feitiço"
 --[[Translation missing --]]
+L["Spell Peneration Percent"] = "Spell Peneration Percent"
+--[[Translation missing --]]
 L["Spell School"] = "Spell School"
 --[[Translation missing --]]
 L["Spell Usable"] = "Spell Usable"
@@ -1839,9 +1849,9 @@ L["Talent |cFFFF0000Not|r Selected"] = "Talent |cFFFF0000Not|r Selected"
 --[[Translation missing --]]
 L["Talent Known"] = "Talent Known"
 --[[Translation missing --]]
-L["Talent Selected"] = "Talent Selected"
---[[Translation missing --]]
 L["Talent selected"] = "Talent selected"
+--[[Translation missing --]]
+L["Talent Selected"] = "Talent Selected"
 L["Talent Specialization"] = "Especialização de talentos"
 --[[Translation missing --]]
 L["Tanking And Highest"] = "Tanking And Highest"

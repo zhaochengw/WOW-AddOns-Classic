@@ -65,9 +65,9 @@ local L = WeakAuras.L
 	--[[Translation missing --]]
 	L["Create Auras"] = "Create Auras"
 	--[[Translation missing --]]
-	L["Debuff"] = "Debuff"
-	--[[Translation missing --]]
 	L["debuff"] = "debuff"
+	--[[Translation missing --]]
+	L["Debuff"] = "Debuff"
 	--[[Translation missing --]]
 	L["Debuffs"] = "Debuffs"
 	--[[Translation missing --]]

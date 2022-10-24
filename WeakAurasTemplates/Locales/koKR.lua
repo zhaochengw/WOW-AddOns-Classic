@@ -53,8 +53,7 @@ local L = WeakAuras.L
 	L["Charge and Debuff Tracking"] = "충전량 및 약화 효과 추적"
 	L["Charge and Duration Tracking"] = "충전량 및 지속시간 추적"
 	L["Charge Tracking"] = "충전량 추적"
-	--[[Translation missing --]]
-	L["Combustion Ready"] = "Combustion Ready"
+	L["Combustion Ready"] = "발화 준비"
 	L["Conduits"] = "도관"
 	L["Cooldown"] = "재사용 대기시간"
 	L["cooldown"] = "재사용 대기시간"
@@ -83,8 +82,7 @@ local L = WeakAuras.L
 	L["Initial Buff"] = "Initial Buff"
 	L["Keeps existing triggers intact"] = "활성 조건 그대로 유지"
 	L["Legendaries"] = "전설"
-	--[[Translation missing --]]
-	L["Meteor Ready"] = "Meteor Ready"
+	L["Meteor Ready"] = "유성 준비"
 	L["Nature"] = "자연"
 	L["Next"] = "다음"
 	L["Only show the aura if the target has the debuff."] = "대상에 약화 효과가 있을 때만 효과를 표시합니다."

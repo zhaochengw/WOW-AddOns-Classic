@@ -149,6 +149,10 @@ L["Armor (%)"] = "Armatura (%)"
 --[[Translation missing --]]
 L["Armor against Target (%)"] = "Armor against Target (%)"
 --[[Translation missing --]]
+L["Armor Peneration Percent"] = "Armor Peneration Percent"
+--[[Translation missing --]]
+L["Armor Peneration Rating"] = "Armor Peneration Rating"
+--[[Translation missing --]]
 L["Armor Rating"] = "Armor Rating"
 --[[Translation missing --]]
 L["Array"] = "Array"
@@ -670,6 +674,10 @@ L["Every Frame"] = "Every Frame"
 L["Every Frame (High CPU usage)"] = "Every Frame (High CPU usage)"
 --[[Translation missing --]]
 L["Experience (%)"] = "Experience (%)"
+--[[Translation missing --]]
+L["Expertise Bonus"] = "Expertise Bonus"
+--[[Translation missing --]]
+L["Expertise Rating"] = "Expertise Rating"
 --[[Translation missing --]]
 L["Extend Outside"] = "Extend Outside"
 --[[Translation missing --]]
@@ -1580,9 +1588,9 @@ L["PvP Flagged"] = "PvP Flagged"
 --[[Translation missing --]]
 L["PvP Talent %i"] = "PvP Talent %i"
 --[[Translation missing --]]
-L["PvP Talent selected"] = "PvP Talent selected"
---[[Translation missing --]]
 L["PvP Talent Selected"] = "PvP Talent Selected"
+--[[Translation missing --]]
+L["PvP Talent selected"] = "PvP Talent selected"
 --[[Translation missing --]]
 L["Queued Action"] = "Queued Action"
 --[[Translation missing --]]
@@ -1935,6 +1943,8 @@ L["Spell in Range"] = "Spell in Range"
 L["Spell Known"] = "Spell Known"
 --[[Translation missing --]]
 L["Spell Name"] = "Spell Name"
+--[[Translation missing --]]
+L["Spell Peneration Percent"] = "Spell Peneration Percent"
 --[[Translation missing --]]
 L["Spell School"] = "Spell School"
 --[[Translation missing --]]
