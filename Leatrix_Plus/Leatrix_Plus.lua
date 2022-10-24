@@ -1,5 +1,5 @@
 ﻿----------------------------------------------------------------------
--- 	Leatrix Plus 3.0.38 (21st October 2022)
+-- 	Leatrix Plus 3.0.41 (24th October 2022)
 ----------------------------------------------------------------------
 
 --	01:Functns, 02:Locks, 03:Restart, 20:Live, 30:Isolated, 40:Player
@@ -19,7 +19,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "3.0.38"
+	LeaPlusLC["AddonVer"] = "3.0.41"
 
 	-- Get locale table
 	local void, Leatrix_Plus = ...
@@ -2249,13 +2249,6 @@
 			-- Show help button for exclusions
 			LeaPlusLC:CreateHelpButton("SellJunkExcludeHelpButton", SellJunkFrame, titleTX, "Enter item IDs separated by commas.  Item IDs can be found in item tooltips while this panel is showing.|n|nJunk items entered here will not be sold automatically.|n|nWhite items entered here will be sold automatically.|n|nThe editbox tooltip will show you more information about the items you have entered.")
 
-			-- Teehee
-			local willPlay, soundHandle
-			LeaPlusCB["SellJunkExcludeHelpButton"]:HookScript("OnClick", function()
-				if soundHandle then StopSound(soundHandle) end
-				willPlay, soundHandle = PlaySoundFile(GetRandomArgument(540425, 540452, 540434, 540445, 540432, 540449, 540420, 540415, 540441, 540435, 540413, 540268, 540428, 540436, 540412, 540443, 540408, 540410, 540422, 540417, 540448, 540411))
-			end)
-
 			local eb = CreateFrame("Frame", nil, SellJunkFrame, "BackdropTemplate")
 			eb:SetSize(200, 180)
 			eb:SetPoint("TOPLEFT", 350, -92)
@@ -4051,6 +4044,7 @@
 
 				-- Lock out hide minimap buttons
 				LeaPlusLC:LockItem(LeaPlusCB["HideMiniAddonButtons"], true)
+				LeaPlusCB["HideMiniAddonButtons"].tiptext = LeaPlusCB["HideMiniAddonButtons"].tiptext .. "|n|n|cff00AAFF" .. L["Cannot be used with Combine addon buttons."]
 
 				-- Create button frame (parenting to cluster ensures bFrame scales correctly)
 				local bFrame = CreateFrame("FRAME", nil, MinimapCluster, "BackdropTemplate")
@@ -5658,7 +5652,16 @@
 
 								-- Set flight bar background
 								if LeaPlusLC["FlightBarBackground"] == "On" then
-									mybar:SetTexture(texture)
+									if LeaPlusLC.ElvUI then
+										_G.LeaPlusGlobalFlightBar = mybar.candyBarBar
+										if faction == "Alliance" then
+											LeaPlusLC.ElvUI:GetModule("Skins"):HandleStatusBar(_G.LeaPlusGlobalFlightBar, {0, 0.5, 1, 0.5})
+										else
+											LeaPlusLC.ElvUI:GetModule("Skins"):HandleStatusBar(_G.LeaPlusGlobalFlightBar, {1, 0.0, 0, 0.5})
+										end
+									else
+										mybar:SetTexture(texture)
+									end
 								else
 									mybar:SetTexture("")
 								end
@@ -5867,19 +5870,31 @@
 			end)
 
 			-- Set progress bar background
-			local function SetProgressBarBackground()
-				if LeaPlusLC.FlightProgressBar then
-					if LeaPlusLC["FlightBarBackground"] == "On" then
-						LeaPlusLC.FlightProgressBar:SetTexture(texture)
-					else
-						LeaPlusLC.FlightProgressBar:SetTexture("")
+			if LeaPlusLC.ElvUI then
+
+				-- Progress bar background is always enabled and cannot be disabled with ElvUI
+				LeaPlusLC:LockItem(LeaPlusCB["FlightBarBackground"], true)
+				LeaPlusLC["FlightBarBackground"] = "On"
+				LeaPlusCB["FlightBarBackground"].tiptext = LeaPlusCB["FlightBarBackground"].tiptext .. "|n|n|cff00AAFF" .. L["The background is always shown with ElvUI."]
+
+			else
+
+				-- Set progress bar background
+				local function SetProgressBarBackground()
+					if LeaPlusLC.FlightProgressBar then
+						if LeaPlusLC["FlightBarBackground"] == "On" then
+							LeaPlusLC.FlightProgressBar:SetTexture(texture)
+						else
+							LeaPlusLC.FlightProgressBar:SetTexture("")
+						end
 					end
 				end
-			end
 
-			-- Set progress bar background when option is clicked and on startup
-			LeaPlusCB["FlightBarBackground"]:HookScript("OnClick", SetProgressBarBackground)
-			SetProgressBarBackground()
+				-- Set progress bar background when option is clicked and on startup
+				LeaPlusCB["FlightBarBackground"]:HookScript("OnClick", SetProgressBarBackground)
+				SetProgressBarBackground()
+
+			end
 
 			-- Set progress bar fill mode
 			local function SetProgressBarFillMode()
