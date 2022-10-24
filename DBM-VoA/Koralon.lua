@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Koralon", "DBM-VoA")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221021034844")
+mod:SetRevision("20221024011807")
 mod:SetCreatureID(35013)
 mod:SetEncounterID(1128)
 mod:SetModelID(29524)

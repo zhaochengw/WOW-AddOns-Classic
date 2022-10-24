@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Kologarn", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221021034844")
+mod:SetRevision("20221024011807")
 mod:SetCreatureID(32930)--, 32933, 32934
 mod:SetEncounterID(1137)
 mod:SetModelID(28638)
