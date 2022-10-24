@@ -124,6 +124,7 @@ function MJMapCanvasMixin:AddMaskableTexture() end
 function MJMapCanvasMixin:refreshLayers()
 	self.mapID = self.navBar.mapID
 	self.detailLayerPool:ReleaseAll()
+	self.explorationLayerPool:ReleaseAll()
 
 	local layers = C_Map.GetMapArtLayers(self.mapID)
 	if not layers then return end
@@ -136,7 +137,6 @@ function MJMapCanvasMixin:refreshLayers()
 		detailLayer:Show()
 	end
 
-	self.explorationLayerPool:ReleaseAll()
 	local exploredMapTextures = C_MapExplorationInfo.GetExploredMapTextures(self.mapID)
 	if exploredMapTextures then
 		local tileWidth = layers[1].tileWidth

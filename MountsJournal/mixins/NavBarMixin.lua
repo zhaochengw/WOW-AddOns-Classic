@@ -132,5 +132,5 @@ end
 
 
 function MJNavBarMixin:setCurrentMap()
-	self:setMapID(MapUtil.GetDisplayableMapForPlayer())
+	self:setMapID(C_Map.GetBestMapForUnit("player") or C_Map.GetFallbackWorldMapID())
 end

@@ -389,90 +389,29 @@ end
 mounts.SKILL_LINES_CHANGED = mounts.updateProfessionsRank
 
 
-do
-	local bcInstaces = {
-		[530] = true, -- Outland
-		-- DUNGEONS
-		[269] = true, -- The Black Morass
-		[540] = true, -- The Shattered Halls
-		[542] = true, -- The Blood Furnace
-		[543] = true, -- Hellfire Ramparts
-		[545] = true, -- The Steamvault
-		[546] = true, -- The Underbog
-		[547] = true, -- The Slave Pens
-		[552] = true, -- The Arcatraz
-		[553] = true, -- The Botanica
-		[554] = true, -- The Mechanar
-		[555] = true, -- Shadow Labyrinth
-		[556] = true, -- Sethekk Halls
-		[557] = true, -- Mana-Tombs
-		[558] = true, -- Auchenai Crypts
-		[560] = true, -- Old Hillsbrad Foothills
-		[585] = true, -- Magisters' Terrace
-		-- RAIDS
-		[532] = true, -- Karazhan
-		[534] = true, -- Hyjal Summit
-		[544] = true, -- Magtheridon's Lair
-		[548] = true, -- Serpentshrine Cavern
-		[550] = true, -- Tempest Keep
-		[564] = true, -- Black Temple
-		[565] = true, -- Gruul's Lair
-		[580] = true, -- Sunwell Plateau
-	}
-
-	local wotlkInstances = {
-		[571] = true, -- Northrend
-		-- DUNGEONS
-		[574] = true, --Utgarde Keep
-		[575] = true, --Utgarde Pinnacle
-		[576] = true, --The Nexus
-		[578] = true, --The Oculus
-		[595] = true, --The Culling of Stratholme
-		[599] = true, --Halls of Stone
-		[600] = true, --Drak'Tharon Keep
-		[601] = true, --Azjol-Nerub
-		[602] = true, --Halls of Lightning
-		[604] = true, --Gundrak
-		[608] = true, --The Violet Hold
-		[619] = true, --Ahn'kahet: The Old Kingdom
-		[632] = true, --The Forge of Souls
-		[650] = true, --Trial of the Champion
-		[658] = true, --Pit of Saron
-		[668] = true, --Halls of Reflection
-		-- RAIDS
-		[249] = true, -- Onyxia's Lair
-		[533] = true, -- Naxxramas
-		[603] = true, -- Ulduar
-		[615] = true, -- The Obsidian Sanctum
-		[616] = true, -- The Eye of Eternity
-		[624] = true, -- Vault of Archavon
-		[631] = true, -- Icecrown Citadel
-		[649] = true, -- Trial of the Crusader
-		[724] = true, -- The Ruby Sanctum
-	}
-
-	function mounts:isCanUseFlying(mapID)
-		if bcInstaces[self.instanceID] then return true end
-		if wotlkInstances[self.instanceID] and IsSpellKnown(54197) then
-			if not mapID then mapID = MapUtil.GetDisplayableMapForPlayer() end
-			if mapID ~= 126
-			and (mapID ~= 125 or GetSubZoneText() == self.krasusLanding)
-			then
-				return true
-			end
+function mounts:isCanUseFlying(mapID)
+	if self.instanceID == 530 then return true -- Outland
+	elseif self.instanceID == 571 and IsSpellKnown(54197) then -- Northrend
+		if not mapID then mapID = MapUtil.GetDisplayableMapForPlayer() end
+		if mapID ~= 126
+		and (mapID ~= 125 or GetSubZoneText() == self.krasusLanding)
+		then
+			return true
 		end
-		return false
 	end
+	return false
 end
 
 
 do
 	local canUseMounts = {
-		[48025] = true,
-		[71342] = true,
-		[72286] = true,
-		[75614] = true,
-		[372677] = true,
+		[48025] = true, -- Скакун Всадника без головы
+		[71342] = true, -- "Сердцеед" X-45
+		[72286] = true, -- Непобедимый
+		[74856] = true, -- Пламенеющий гиппогриф
+		[75614] = true, -- Небесный скакун
+		[372677] = true, -- Калуакский китовый глайдер
+		[387320] = true, -- Пламенеющий гиппогриф
 	}
 
 	local mountsRequiringProf = {
@@ -542,6 +481,7 @@ end
 
 
 function mounts:setMountsList()
+	self.mapInfo = C_Map.GetMapInfo(C_Map.GetBestMapForUnit("player") or C_Map.GetFallbackWorldMapID())
 	local mapInfo = self.mapInfo
 	local zoneMounts = self.zoneMounts
 	self.mapFlags = nil
@@ -662,7 +602,7 @@ end
 
 
 function mounts:setFlags()
-	self.mapInfo = C_Map.GetMapInfo(MapUtil.GetDisplayableMapForPlayer())
+	self:setMountsList()
 	local flags = self.sFlags
 	local modifier = self.modifier() or flags.forceModifier
 	local isFlyableLocation = IsFlyableArea()
@@ -696,7 +636,6 @@ function mounts:init()
 			flags.forceModifier = nil
 			self:setFlags()
 		end
-		self:setMountsList()
 		if flags.inVehicle then
 			VehicleExit()
 		elseif flags.isMounted then
