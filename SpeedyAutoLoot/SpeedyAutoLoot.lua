@@ -2,7 +2,8 @@ local addonName, AutoLoot = ...;
 
 local Settings = {};
 local internal = {
-  _frame = CreateFrame("frame", nil, UIParent);
+  _frame = CreateFrame("frame"),
+  lootThreshold = 10,
   isItemLocked = false,
   isLooting = false,
   isHidden = true,
@@ -11,6 +12,7 @@ local internal = {
   isClassic = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE),
   audioChannel = "master",
   Dragonflight = 9,
+  slotsLooted = {},
 };
 
 local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots
@@ -24,6 +26,7 @@ function AutoLoot:ProcessLootItem(itemLink, itemQuantity)
       if itemClassID == Enum.ItemClass.Tradegoods and free > 0 then
         return true;
       end
+      break;
     end
     if (not bagFamily or bagFamily == 0) or (itemFamily and bit.band(itemFamily, bagFamily) > 0) then
       if free > 0 then
@@ -45,28 +48,21 @@ function AutoLoot:ProcessLootItem(itemLink, itemQuantity)
   return false;
 end
 
-function AutoLoot:LootItems(numItems)
-  local lootThreshold = (internal.isClassic and select(2,GetLootMethod()) == 0) and GetLootThreshold() or 10;
-  for i = numItems, 1, -1 do
-    local itemLink = GetLootSlotLink(i);
-    local slotType = GetLootSlotType(i);
-    local quantity, _, quality, locked, isQuestItem = select(3, GetLootSlotInfo(i));
-    if locked or (quality and quality >= lootThreshold) then
-      internal.isItemLocked = true;
-    else
-      if slotType ~= 1 or (not internal.isClassic and isQuestItem) or self:ProcessLootItem(itemLink, quantity) then
-        numItems = numItems - 1;
-        LootSlot(i);
+function AutoLoot:LootSlot(slot)
+  local itemLink = GetLootSlotLink(slot);
+  local slotType = GetLootSlotType(slot);
+  local lootQuantity, _, lootQuality, lootLocked, isQuestItem = select(3, GetLootSlotInfo(slot));
+  if lootLocked or (lootQuality and lootQuality >= internal.lootThreshold) then
+    internal.isItemLocked = true;
+  elseif slotType ~= 1 or (not internal.isClassic and isQuestItem) or self:ProcessLootItem(itemLink, lootQuantity) then
+    LootSlot(slot);
+    if internal.isClassic then
+      internal.slotsLooted[slot] = true;
+      if slotType == 1 and not UIParent:IsEventRegistered("LOOT_BIND_CONFIRM") then
+        ConfirmLootSlot(slot);
       end
     end
-  end
-  if numItems > 0 then
-    self:ShowLootFrame();
-    self:PlayInventoryFullSound();
-  end
-
-  if IsFishingLoot() and not Settings.global.fishingSoundDisabled then
-    PlaySound(SOUNDKIT.FISHING_REEL_IN, internal.audioChannel);
+    return true;
   end
 end
 
@@ -79,11 +75,33 @@ function AutoLoot:OnLootReady(autoLoot)
       return;
     end
 
+    if IsFishingLoot() and not Settings.global.fishingSoundDisabled then
+      PlaySound(SOUNDKIT.FISHING_REEL_IN, internal.audioChannel);
+    end
+
     if autoLoot or (autoLoot == nil and GetCVarBool("autoLootDefault") ~= IsModifiedClick("AUTOLOOTTOGGLE")) then
-      self:LootItems(numItems);
+      local lootMethod = GetLootMethod();
+      internal.lootThreshold = (internal.isClassic and IsInGroup() and (lootMethod=="group" or lootMethod=="needbeforegreed" or lootMethod=="master")) and GetLootThreshold() or 10;
+      for slot = numItems, 1, -1 do
+        numItems = self:LootSlot(slot) and numItems - 1 or numItems;
+      end
+
+      if numItems > 0 then
+        self:ShowLootFrame();
+        self:PlayInventoryFullSound();
+      end
     else
       self:ShowLootFrame();
     end
+  end
+end
+
+function AutoLoot:OnSlotChanged(slot)
+  -- workaround for bugged stackables in wrath
+  -- Check if we attempted to loot the slot internally, i don't actually know in what situations LOOT_SLOT_CHANGED fires
+  -- this should block situations where that event fires but the addon never attempted to loot the slot in the first place, should be good enough
+  if internal.isLooting and internal.slotsLooted[slot] and LootSlotHasItem(slot) then
+    self:LootSlot(slot);
   end
 end
 
@@ -91,9 +109,8 @@ function AutoLoot:OnLootClosed()
   internal.isLooting = false;
   internal.isHidden = true;
   internal.isItemLocked = false;
-
+  wipe(internal.slotsLooted);
   self:ResetLootFrame();
-  CloseLoot()
   -- Workaround for TSM Destroy issue
   if TSMDestroyBtn and TSMDestroyBtn:IsVisible() then
     C_Timer.NewTicker(0, function() SlashCmdList.TSM("destroy") end, 2);
@@ -110,9 +127,18 @@ function AutoLoot:OnErrorMessage(...)
 end
 
 function AutoLoot:OnBindConfirm()
-  if internal.isLooting and internal.isHidden then
+  if IsInGroup() and internal.isLooting and internal.isHidden then
+    UIParent:RegisterEvent("LOOT_BIND_CONFIRM")
     self:ShowLootFrame(true);
   end
+end
+
+function AutoLoot:OnGroupJoined()
+	UIParent:RegisterEvent("LOOT_BIND_CONFIRM");
+end
+
+function AutoLoot:OnGroupLeft()
+	UIParent:UnregisterEvent("LOOT_BIND_CONFIRM");
 end
 
 function AutoLoot:PlayInventoryFullSound()
@@ -145,7 +171,7 @@ function AutoLoot:ShowLootFrame(delayed)
     internal.ShowElvUILootFrame();
   elseif LootFrame:IsEventRegistered("LOOT_OPENED") then
     if LE_EXPANSION_LEVEL_CURRENT < internal.Dragonflight then
-      LootFrame:SetParent(UIParent)
+      LootFrame:SetParent(UIParent);
       LootFrame:SetFrameStrata("HIGH");
       if delayed then
         self:AnchorLootFrame();
@@ -202,6 +228,16 @@ function AutoLoot:OnInit()
 
   if internal.isClassic then
     self:RegisterEvent("LOOT_BIND_CONFIRM", self.OnBindConfirm);
+    self:RegisterEvent("GROUP_LEFT", self.OnGroupLeft);
+    self:RegisterEvent("GROUP_JOINED", self.OnGroupJoined);
+    -- group events don't fire on a /reload and probably also not when you login while already in a group
+    if not IsInGroup() then
+      self:OnGroupLeft();
+    end
+
+    if LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_WRATH_OF_THE_LICH_KING then
+      self:RegisterEvent("LOOT_SLOT_CHANGED", self.OnSlotChanged);
+    end
   end
 
   internal._frame:SetScript("OnEvent", function(_,event,...) internal._frame[event](self, ...) end);
