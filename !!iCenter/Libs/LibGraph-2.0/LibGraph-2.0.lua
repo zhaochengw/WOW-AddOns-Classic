@@ -1,6 +1,6 @@
 --[[
 Name: LibGraph-2.0
-Revision: $Rev: 55 $
+Revision: $Rev: 56 $
 Author(s): Cryect (cryect@gmail.com), Xinhuan
 Website: http://www.wowace.com/
 Documentation: http://www.wowace.com/wiki/GraphLib
@@ -11,7 +11,7 @@ Description: Allows for easy creation of graphs
 --Thanks to Nelson Minar for catching several errors where width was being used instead of height (damn copy and paste >_>)
 
 local major = "LibGraph-2.0"
-local minor = 90000 + tonumber(("$Revision: 55 $"):match("(%d+)"))
+local minor = 90000 + tonumber(("$Revision: 58 $"):match("(%d+)"))
 
 
 --Search for just Addon\\ at the front since the interface part often gets trimmed
@@ -23,9 +23,15 @@ do
 	if path then
 		TextureDirectory = "Interface\\AddOns\\"..path
 	else
-		error(major.." cannot determine the folder it is located in because the path is too long and got truncated in the debugstack(1, 1, 0) function call")
+		--error(major.." cannot determine the folder it is located in because the path is too long and got truncated in the debugstack(1, 1, 0) function call")
+		--beta doing some errors here
+		if (Details) then
+			TextureDirectory = [[Interface\AddOns\Details\Libs\LibGraph-2.0]]
+		end
 	end
 end
+
+TextureDirectory = "Interface\\Addons\\Details\\Libs\\LibGraph-2.0"
 
 
 if not LibStub then error(major .. " requires LibStub") end
@@ -135,7 +141,7 @@ end
 function lib:CreateGraphRealtime(name, parent, relative, relativeTo, offsetX, offsetY, Width, Height)
 	local graph
 	local i
-	graph = CreateFrame("Frame", name, parent)
+	graph = CreateFrame("Frame", name, parent, BackdropTemplateMixin and "BackdropTemplate")
 
 	Width = math_floor(Width)
 
@@ -152,7 +158,7 @@ function lib:CreateGraphRealtime(name, parent, relative, relativeTo, offsetX, of
 	graph.Height = Height
 	for i = 1, Width do
 		local bar
-		bar = CreateFrame("StatusBar", name.."Bar"..i, graph)--graph:CreateTexture(nil, "ARTWORK")
+		bar = CreateFrame("StatusBar", name.."Bar"..i, graph, BackdropTemplateMixin and "BackdropTemplate")--graph:CreateTexture(nil, "ARTWORK")
 		bar:SetPoint("BOTTOMLEFT", graph, "BOTTOMLEFT", i - 1, 0)
 		bar:SetHeight(Height)
 		bar:SetWidth(1)
@@ -267,7 +273,7 @@ end
 function lib:CreateGraphLine(name, parent, relative, relativeTo, offsetX, offsetY, Width, Height)
 	local graph
 	local i
-	graph = CreateFrame("Frame", name, parent)
+	graph = CreateFrame("Frame", name, parent, BackdropTemplateMixin and "BackdropTemplate")
 
 
 	graph:SetPoint(relative, parent, relativeTo, offsetX, offsetY)
@@ -357,7 +363,7 @@ end
 function lib:CreateGraphScatterPlot(name, parent, relative, relativeTo, offsetX, offsetY, Width, Height)
 	local graph
 	local i
-	graph = CreateFrame("Frame",name, parent)
+	graph = CreateFrame("Frame",name, parent, BackdropTemplateMixin and "BackdropTemplate")
 
 
 	graph:SetPoint(relative, parent, relativeTo, offsetX, offsetY)
@@ -425,7 +431,7 @@ end
 function lib:CreateGraphPieChart(name, parent, relative, relativeTo, offsetX, offsetY, Width, Height)
 	local graph
 	local i
-	graph = CreateFrame("Frame",name, parent)
+	graph = CreateFrame("Frame",name, parent, BackdropTemplateMixin and "BackdropTemplate")
 
 
 	graph:SetPoint(relative, parent, relativeTo, offsetX, offsetY)
@@ -681,7 +687,7 @@ function GraphFunctions:AddDataSeries(points, color, n2, linetexture)
 	end
 
 	if linetexture then
-		if not linetexture:find ("\\") and not linetexture:find ("//") then 
+		if not linetexture:find("\\") and not linetexture:find("//") then 
 			linetexture = TextureDirectory..linetexture
 		end
 	end
@@ -1288,24 +1294,24 @@ function GraphFunctions:SetYLabels(Left, Right)
 end
 
 function GraphFunctions:SetLineTexture(texture)
-	if (type (texture) ~= "string") then
-		return assert (false, "Parameter 1 for SetLineTexture must be a string")
+	if (type(texture) ~= "string") then
+		return assert(false, "Parameter 1 for SetLineTexture must be a string")
 	end
 
-	--> full path
-	if (texture:find ("\\") or texture:find ("//")) then 
+	--full path
+	if (texture:find("\\") or texture:find("//")) then 
 		self.CustomLine = texture
-	--> using an image inside lib-graph folder
+	--using an image inside lib-graph folder
 	else 
 		self.CustomLine = TextureDirectory..texture
 	end
 end
 
 function GraphFunctions:SetBorderSize(border, size)
-	border = string.lower (border)
+	border = string.lower(border)
 	
-	if (type (size) ~= "number") then
-		return assert (false, "Parameter 2 for SetBorderSize must be a number")
+	if (type(size) ~= "number") then
+		return assert(false, "Parameter 2 for SetBorderSize must be a number")
 	end
 	
 	if (border == "left") then
@@ -1322,7 +1328,7 @@ function GraphFunctions:SetBorderSize(border, size)
 		return true
 	end
 	
-	return assert (false, "Usage: GraphObject:SetBorderSize (LEFT RIGHT TOP BOTTOM, SIZE)")
+	return assert(false, "Usage: GraphObject:SetBorderSize (LEFT RIGHT TOP BOTTOM, SIZE)")
 end
 
 function GraphFunctions:CreateGridlines()
@@ -1707,7 +1713,7 @@ function GraphFunctions:RefreshLineGraph()
 
 		if not self.LockOnXMin then
 			if (self.CustomLeftBorder) then
-				self.XMin = MinX + self.CustomLeftBorder --> custom size of left border
+				self.XMin = MinX + self.CustomLeftBorder --custom size of left border
 			else
 				self.XMin = MinX - XBorder
 			end
@@ -1715,7 +1721,7 @@ function GraphFunctions:RefreshLineGraph()
 		
 		if not self.LockOnXMax then
 			if (self.CustomRightBorder) then
-				self.XMax = MaxX + self.CustomRightBorder --> custom size of right border
+				self.XMax = MaxX + self.CustomRightBorder --custom size of right border
 			else
 				self.XMax = MaxX + XBorder
 			end
@@ -1723,7 +1729,7 @@ function GraphFunctions:RefreshLineGraph()
 		
 		if not self.LockOnYMin then
 			if (self.CustomBottomBorder) then
-				self.YMin = MinY + self.CustomBottomBorder --> custom size of bottom border
+				self.YMin = MinY + self.CustomBottomBorder --custom size of bottom border
 			else
 				self.YMin = MinY - YBorder
 			end
@@ -1731,7 +1737,7 @@ function GraphFunctions:RefreshLineGraph()
 		
 		if not self.LockOnYMax then
 			if (self.CustomTopBorder) then
-				self.YMax = MaxY + self.CustomTopBorder --> custom size of top border
+				self.YMax = MaxY + self.CustomTopBorder --custom size of top border
 			else
 				self.YMax = MaxY + YBorder
 			end
@@ -1901,11 +1907,11 @@ function lib:DrawLine(C, sx, sy, ex, ey, w, color, layer, linetexture)
 
 	local T = tremove(C.GraphLib_Lines) or C:CreateTexture(nil, "ARTWORK")
 	
-	if linetexture then --> this data series texture
+	if linetexture then --this data series texture
 		T:SetTexture(linetexture)
-	elseif C.CustomLine then --> overall chart texture
+	elseif C.CustomLine then --overall chart texture
 		T:SetTexture(C.CustomLine)
-	else --> no texture assigned, use default
+	else --no texture assigned, use default
 		T:SetTexture(TextureDirectory.."line")
 	end
 	

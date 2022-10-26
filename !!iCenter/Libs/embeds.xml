@@ -5,6 +5,5 @@
     <Script file="LibClass-2.0\Class-2.0.lua"/>
     <Script file="LibLog-1.0\LibLog-1.0.lua"/>
     <Script file="LibCommSocket-3.0\Socket.lua"/>
-    <Include file="tdGUI\Load.xml"/>
 	<!-- GoodLeader，MeetingHorn，Wargame  ~end~ -->
 </Ui>

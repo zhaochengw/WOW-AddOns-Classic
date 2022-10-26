@@ -12,14 +12,10 @@
 ## SavedVariables: ACP_Data, ErrorMonsterDB, ExtraConfiguration, cfilter, cfilterall, cfilters, cfilterlist
 ## SavedVariablesPerCharacter: MBB_Exclude, MBB_Options, FeatureFrameMinimapButton_OffsetX, FeatureFrameMinimapButton_OffsetY, aienable, aikeyword, aichannel, aitextleft, aitextright
 
+# Libs
 Libs\Ace3.xml
 Libs\embeds.xml
 Libs\Libs.xml
-
-Libs\LibClass-2.0\Class-2.0.lua
-Libs\LibLog-1.0\LibLog-1.0.lua
-Libs\LibCommSocket-3.0\Socket.lua
-Libs\tdGUI\Load.xml
 
 # GConfirm.lua
 
