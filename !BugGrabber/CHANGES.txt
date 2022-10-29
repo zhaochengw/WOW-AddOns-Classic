@@ -1,28 +1,8 @@
 ------------------------------------------------------------------------
-r269 | funkehdude | 2022-09-08 01:04:31 +0000 (Thu, 08 Sep 2022) | 1 line
+r271 | funkehdude | 2022-10-26 01:19:38 +0000 (Wed, 26 Oct 2022) | 1 line
 Changed paths:
-   M /trunk/locales.lua
+   M /trunk/!BugGrabber.toc
 
-Add locale
-------------------------------------------------------------------------
-r268 | funkehdude | 2022-09-08 01:03:52 +0000 (Thu, 08 Sep 2022) | 1 line
-Changed paths:
-   M /trunk/BugGrabber.lua
-
-Cleanups
-------------------------------------------------------------------------
-r267 | funkehdude | 2022-09-08 01:01:44 +0000 (Thu, 08 Sep 2022) | 1 line
-Changed paths:
-   A /trunk/.luacheckrc
-
-Add luacheck file
-------------------------------------------------------------------------
-r266 | funkehdude | 2022-09-07 22:25:44 +0000 (Wed, 07 Sep 2022) | 1 line
-Changed paths:
-   D /trunk/License.txt
-   D /trunk/embedding.txt
-   D /trunk/gpl.txt
-
-Remove old files
+bump toc
 ------------------------------------------------------------------------
 
