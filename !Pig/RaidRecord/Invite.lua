@@ -179,37 +179,30 @@ local function ADD_Invite()
 	local xiafangjudingH =400
 	--载入默认人数配置
 	invite.renyuannpeizhiinfo = invite:CreateFontString("renyuannpeizhiinfo_UI");
-	invite.renyuannpeizhiinfo:SetPoint("TOPLEFT",invite,"TOPLEFT",16,-xiafangjudingH);
+	invite.renyuannpeizhiinfo:SetPoint("TOPLEFT",invite,"TOPLEFT",14,-xiafangjudingH);
 	invite.renyuannpeizhiinfo:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
-	invite.renyuannpeizhiinfo:SetText("\124cff00FF00导入配置\124r");
+	invite.renyuannpeizhiinfo:SetText(" ");
 	--
-	local fubenMoshi ={10,20,25,40};
+	local fubenMoshi ={10,15,20,25,40};
 	invite.renyuannpeizhiinfo_D = CreateFrame("FRAME", nil, invite, "UIDropDownMenuTemplate")
-	invite.renyuannpeizhiinfo_D:SetPoint("LEFT",invite.renyuannpeizhiinfo,"RIGHT",-16,-3)
-	UIDropDownMenu_SetWidth(invite.renyuannpeizhiinfo_D, 58)
+	invite.renyuannpeizhiinfo_D:SetPoint("LEFT",invite.renyuannpeizhiinfo,"RIGHT",-19,-3)
+	UIDropDownMenu_SetWidth(invite.renyuannpeizhiinfo_D, 100)
+	UIDropDownMenu_SetText(invite.renyuannpeizhiinfo_D, "导入预设")
 
 	local function renyuannpeizhiinfo_Up()
 		local info = UIDropDownMenu_CreateInfo()
 		info.func = invite.renyuannpeizhiinfo_D.SetValue
 		for i=1,#fubenMoshi,1 do
-		    info.text, info.arg1 = fubenMoshi[i].."人", fubenMoshi[i];
+		    info.text, info.arg1 = "导入"..fubenMoshi[i].."人预设", fubenMoshi[i];
 		    info.notCheckable = true;
 			UIDropDownMenu_AddButton(info)
 		end 
 	end
 	function invite.renyuannpeizhiinfo_D:SetValue(newValue)
-			if newValue==10 then
-				PIG["RaidRecord"]["Invite"]["dangqianrenshu"]=PIG["RaidRecord"]["Invite"]["LMBL"]["10人配置"];
-			elseif newValue==20 then
-				PIG["RaidRecord"]["Invite"]["dangqianrenshu"]=PIG["RaidRecord"]["Invite"]["LMBL"]["20人配置"];
-			elseif newValue==25 then
-				PIG["RaidRecord"]["Invite"]["dangqianrenshu"]=PIG["RaidRecord"]["Invite"]["LMBL"]["25人配置"];
-			elseif newValue==40 then
-				PIG["RaidRecord"]["Invite"]["dangqianrenshu"]=PIG["RaidRecord"]["Invite"]["LMBL"]["40人配置"];
-			end
-		UIDropDownMenu_SetText(invite.renyuannpeizhiinfo_D, newValue.."人")
+		PIG["RaidRecord"]["Invite"]["dangqianrenshu"]=invite.morenrenshu[newValue]
+		UIDropDownMenu_SetText(invite.renyuannpeizhiinfo_D, "导入预设")
 		PIG["RaidRecord"]["Invite"]["dangqianpeizhi"]=newValue;
-		print("|cff00FFFF!Pig:|r|cffFFFF00已导入|r"..newValue.."|cffFFFF00人副本职业配置！|r");
+		print("|cff00FFFF!Pig:|r|cffFFFF00已导入|r"..newValue.."|cffFFFF00人预设配置！|r");
 		CloseDropDownMenus();
 		UpdatePlayersINFO();
 	end
@@ -907,25 +900,8 @@ local function ADD_Invite()
 	local _, _, _, tocversion = GetBuildInfo()
 	if PIG["RaidRecord"]["Kaiqi"]=="ON" then
 		invite.clName={}
-		if tocversion>69999 then
-			invite.clName={
-				{"WARRIOR","PALADIN","DRUID","DEATHKNIGHT","MONK","DEMONHUNTER"},
-				{"PRIEST","DRUID","PALADIN","SHAMAN","MONK"},
-				{"WARRIOR","HUNTER","ROGUE","MAGE","WARLOCK","PRIEST","DRUID","PALADIN","SHAMAN","DEATHKNIGHT","MONK","DEMONHUNTER"}
-			}
-		elseif tocversion>29999 then
-			invite.clName={
-				{"WARRIOR","PALADIN","DRUID","DEATHKNIGHT"},
-				{"PRIEST","DRUID","PALADIN","SHAMAN"},
-				{"WARRIOR","HUNTER","ROGUE","MAGE","WARLOCK","PRIEST","DRUID","PALADIN","SHAMAN","DEATHKNIGHT"},
-			}
-		elseif tocversion>19999 then
-			invite.clName={
-				{"WARRIOR","PALADIN","DRUID"},
-				{"PRIEST","DRUID","PALADIN","SHAMAN"},
-				{"WARRIOR","HUNTER","ROGUE","MAGE","WARLOCK","PRIEST","DRUID","PALADIN","SHAMAN"}
-			}
-		else
+		invite.morenrenshu={}
+		if tocversion<20000 then
 			local englishFaction, _ = UnitFactionGroup("player")
 			if englishFaction=="Alliance" then
 				invite.clName={
@@ -933,21 +909,49 @@ local function ADD_Invite()
 					{"PRIEST","DRUID","PALADIN"},
 					{"WARRIOR","HUNTER","ROGUE","MAGE","WARLOCK","PRIEST","DRUID","PALADIN"}
 				}
+				for i=1,#fubenMoshi,1 do
+				    invite.morenrenshu[fubenMoshi[i]]=addonTable.Default["RaidRecord"]["Invite"]["LM"][fubenMoshi[i].."人配置"]
+				end
 			elseif englishFaction=="Horde" then
 				invite.clName={
 					{"WARRIOR","DRUID"},
 					{"PRIEST","DRUID","SHAMAN"},
 					{"WARRIOR","HUNTER","ROGUE","MAGE","WARLOCK","PRIEST","DRUID","SHAMAN"}
 				}
+				for i=1,#fubenMoshi,1 do
+				    invite.morenrenshu[fubenMoshi[i]]=addonTable.Default["RaidRecord"]["Invite"]["BL"][fubenMoshi[i].."人配置"]
+				end
+			end
+		else
+			if tocversion>69999 then
+				invite.clName={
+					{"WARRIOR","PALADIN","DRUID","DEATHKNIGHT","MONK","DEMONHUNTER"},
+					{"PRIEST","DRUID","PALADIN","SHAMAN","MONK"},
+					{"WARRIOR","HUNTER","ROGUE","MAGE","WARLOCK","PRIEST","DRUID","PALADIN","SHAMAN","DEATHKNIGHT","MONK","DEMONHUNTER"}
+				}
+			elseif tocversion>29999 then
+				invite.clName={
+					{"WARRIOR","PALADIN","DRUID","DEATHKNIGHT"},
+					{"PRIEST","DRUID","PALADIN","SHAMAN"},
+					{"WARRIOR","HUNTER","ROGUE","MAGE","WARLOCK","PRIEST","DRUID","PALADIN","SHAMAN","DEATHKNIGHT"},
+				}
+			elseif tocversion>19999 then
+				invite.clName={
+					{"WARRIOR","PALADIN","DRUID"},
+					{"PRIEST","DRUID","PALADIN","SHAMAN"},
+					{"WARRIOR","HUNTER","ROGUE","MAGE","WARLOCK","PRIEST","DRUID","PALADIN","SHAMAN"}
+				}
+			end
+			for i=1,#fubenMoshi,1 do
+				invite.morenrenshu[fubenMoshi[i]]=addonTable.Default["RaidRecord"]["Invite"]["LMBL"][fubenMoshi[i].."人配置"]
 			end
 		end
 		for i=1,#invite.classes_Name do
 			invite.classes_Name[i]=invite.clName[i]
 		end
 		chuangjianFrame()
-		UIDropDownMenu_SetText(invite.renyuannpeizhiinfo_D, PIG["RaidRecord"]["Invite"]["dangqianpeizhi"])--默认
-		UIDropDownMenu_Initialize(invite.renyuannpeizhiinfo_D, renyuannpeizhiinfo_Up)--初始化
-		UIDropDownMenu_Initialize(invite.hanhuaxuanzexiala, hanhuaxuanzexiala_Up)--初始化
+		UIDropDownMenu_Initialize(invite.renyuannpeizhiinfo_D, renyuannpeizhiinfo_Up)
+		UIDropDownMenu_Initialize(invite.hanhuaxuanzexiala, hanhuaxuanzexiala_Up)
 	end
 end
 addonTable.ADD_Invite = ADD_Invite;

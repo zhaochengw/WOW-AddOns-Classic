@@ -1,6 +1,7 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_2_2
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ----------------------------------
 local function Update_GGG(self,GGG)
 	self:Hide();
@@ -50,6 +51,46 @@ local function huoquhuizhangjiageG()
 end
 local function ADD_AHPlus()
 	if AuctionFrameBrowse.piglist then return end
+	local OLD_QueryAuctionItems = QueryAuctionItems	
+	QueryAuctionItems = function(...)
+		local text, minLevel, maxLevel, page, usable, rarity, allxiazai, exactMatch, filterData =...
+		if PIG.AHPlus.exactMatch or maichuxunjia then
+			local exactMatch = true
+			return OLD_QueryAuctionItems(text, minLevel, maxLevel, page, usable, rarity, allxiazai, exactMatch, filterData)
+		else
+			return OLD_QueryAuctionItems(text, minLevel, maxLevel, page, usable, rarity, allxiazai, exactMatch, filterData)
+		end
+	end
+	AuctionFrameBrowse.exact = CreateFrame("CheckButton", nil, AuctionFrameBrowse, "ChatConfigCheckButtonTemplate");
+	AuctionFrameBrowse.exact:SetSize(24,24);
+	AuctionFrameBrowse.exact:SetPoint("TOPLEFT",AuctionFrameBrowse,"TOPLEFT",530,-13);
+	AuctionFrameBrowse.exact:SetHitRectInsets(0,-10,0,0);
+	AuctionFrameBrowse.exact.tooltip = "选中后查找结果将精确匹配关键字";
+	AuctionFrameBrowse.exact.Text:SetText("精确查找");
+	AuctionFrameBrowse.exact.Text:SetTextColor(0, 1, 0, 0.8);
+	AuctionFrameBrowse.exact:SetScript("OnClick", function (self)
+		if self:GetChecked() then
+			PIG.AHPlus.exactMatch=true
+		else
+			PIG.AHPlus.exactMatch=false
+		end
+	end);
+	if PIG.AHPlus.exactMatch then
+		AuctionFrameBrowse.exact:SetChecked(true)
+	else
+		AuctionFrameBrowse.exact:SetChecked(false)
+	end
+	local function qingkongtiaojian()
+		BrowseName:SetText("")--清空搜索名
+		BrowseMinLevel:SetText("")
+		BrowseMaxLevel:SetText("")
+		UIDropDownMenu_SetSelectedValue(BrowseDropDown, -1, useValue)--品质
+		IsUsableCheckButton:SetChecked(false)--可用
+		AuctionFrameBrowse.selectedCategoryIndex=nil
+		AuctionFrameBrowse.selectedSubCategoryIndex=nil
+		AuctionFrameBrowse.selectedSubSubCategoryIndex =nil
+		AuctionFrameBrowse.page=0
+	end
 	local FWQrealm = GetRealmName()
 	PIG.AHPlus.Data[FWQrealm]=PIG.AHPlus.Data[FWQrealm] or {}
 	--调整原版UI
@@ -342,6 +383,11 @@ local function ADD_AHPlus()
 	listF.Scroll:SetPoint("BOTTOMRIGHT",listF,"BOTTOMRIGHT",-25,2);
 	listF.Scroll:SetScript("OnVerticalScroll", function(self, offset)
 	    FauxScrollFrame_OnVerticalScroll(self, offset, hang_Height, gengxinlist)
+	end)
+	BrowseScrollFrame:HookScript("OnVerticalScroll", function(self, offset)
+		BrowseNextPageButton:Show();
+		BrowsePrevPageButton:Show();
+		BrowseSearchCountText:Show();
 	end)
 	--创建行
 	local function zhixinghuanjie(frame,fujiF,Tooltip)
@@ -676,15 +722,7 @@ local function ADD_AHPlus()
 		HCUI.close:Hide();
 		HCUI.jindu.edg.t:SetText("正在获取数据...");
 		HCUI.jindu.tex:SetWidth(0)
-		BrowseName:SetText("")--清空搜索名
-		BrowseMinLevel:SetText("")
-		BrowseMaxLevel:SetText("")
-		UIDropDownMenu_SetSelectedValue(BrowseDropDown, -1, useValue)--品质
-		IsUsableCheckButton:SetChecked(false)
-		AuctionFrameBrowse.selectedCategoryIndex=nil
-		AuctionFrameBrowse.selectedSubCategoryIndex=nil
-		AuctionFrameBrowse.selectedSubSubCategoryIndex =nil
-		AuctionFrameBrowse.page=0	
+		qingkongtiaojian()
 		AuctionFrameBrowse_Search()
 		C_Timer.After(0.64,huoquzongshu)
 	end)
@@ -925,8 +963,8 @@ local function ADD_AHPlus()
 	SellListF.tishi:SetFontObject(GameFontNormal);
 	SellListF.tishi:SetText('没有此物品在售卖，无参考价！');
 	--
-	local SellxulieID = {"出售者","数量","剩余","竞标价","一口价","一口单价"}
-	local SellxulieID_www = {167,42,60,104,104,104}
+	local SellxulieID = {"","竞标价","一口价","一口单价","数量","剩余","出售者"}
+	local SellxulieID_www = {30,106,106,106,42,60,134}
 	for i=1,#SellxulieID do
 		local Buttonxx = CreateFrame("Button","SellList_biaoti_"..i,SellListF);
 		Buttonxx:SetSize(SellxulieID_www[i],anniuH);
@@ -963,40 +1001,42 @@ local function ADD_AHPlus()
 	end
 	local spellhangnum, hang_Height1= 6,hang_Height+4
 	local function gengxinSpelllist()
-		SellListF.count=nil
-		SellListF.minBid=nil
-		SellListF.buyoutPrice=nil
+		SellListF.tishi:SetText('没有此物品在售，无参考价！');
 		for i = 1, spellhangnum do
-		   	_G["SellList_item_"..i]:Hide()
+		   	local listFGV = _G["SellList_item_"..i]
+		   	listFGV:Hide()
+		   	listFGV.yajia.hang_count=count
+			listFGV.yajia.hang_minBid=minBid
+			listFGV.yajia.hang_buyoutPrice=buyoutPrice
 		end
 		local numBatchAuctions = GetNumAuctionItems("list");
 		if numBatchAuctions>0 then
 			SellListF.tishi:SetText('');
 			for i = 1, spellhangnum do
-		    	local listFGV = _G["SellList_item_"..i]
+				local listFGV = _G["SellList_item_"..i]
 				local name, texture, count, quality, canUse, level, levelColHeader, minBid, minIncrement, buyoutPrice, bidAmount, 
-	   			highBidder, bidderFullName, owner, ownerFullName, saleStatus, itemId, hasAllInfo =  GetAuctionItemInfo("list", i);
-	   			if name then		
-	   				if i==1 then
-						SellListF.count=count
-						SellListF.minBid=minBid
-						SellListF.buyoutPrice=buyoutPrice
-						SellListF.owner=owner
-						AuctionFrameAuctions.autojj:Enable()
-	   				end
-	   				listFGV:Show()
+	   			highBidder, bidderFullName, owner =  GetAuctionItemInfo("list", i);
+				if name then
+					if i==1 then
+						local chushouwupinname = GetAuctionSellItemInfo();
+			   			if chushouwupinname~=name then
+							SellListF.tishi:SetText('查询超时，请稍后再试！');
+							break
+			   			end
+			   		end
+			   		listFGV.yajia.hang_count=count
+					listFGV.yajia.hang_minBid=minBid
+					listFGV.yajia.hang_buyoutPrice=buyoutPrice
+			   		Update_GGG(listFGV.jingbiao,minBid)
+					Update_GGG(listFGV.yikou,buyoutPrice)
+					Update_GGG(listFGV.yikoudanjia,buyoutPrice/count)
 					listFGV.count:SetText(count);
 					listFGV.chushouzhe:SetText(owner);
 					local timeleft = GetAuctionItemTimeLeft("list", i)
 					listFGV.TimeLeft:SetText(shengyuTime[timeleft]);
-					Update_GGG(listFGV.jingbiao,minBid)
-					Update_GGG(listFGV.yikou,buyoutPrice)
-					Update_GGG(listFGV.yikoudanjia,buyoutPrice/count)
-	   			end
+					listFGV:Show()
+		   		end
 			end
-		else
-			AuctionFrameAuctions.autojj:Disable()
-			SellListF.tishi:SetText('没有此物品在售，无参考价！');
 		end
 		SellListF:Show()
 	end
@@ -1010,103 +1050,138 @@ local function ADD_AHPlus()
 			listFitem:SetPoint("TOP",_G["SellList_item_"..(i-1)],"BOTTOM",0,-2);
 		end
 		listFitem:Hide()
-		-- zhixinghuanjie(listFitem,listFitem)
-		-- listFitem.xuanzhong = listFitem:CreateTexture(nil, "BORDER");
-		-- listFitem.xuanzhong:SetTexture("interface/helpframe/helpframebutton-highlight.blp");
-		-- listFitem.xuanzhong:SetTexCoord(0.00,0.00,0.00,0.58,1.00,0.00,1.00,0.58);
-		-- listFitem.xuanzhong:SetAllPoints(listFitem)
-		-- listFitem.xuanzhong:SetBlendMode("ADD")
-		-- listFitem.xuanzhong:Hide()
+	
 		listFitem.line = listFitem:CreateLine()
 		listFitem.line:SetColorTexture(1,1,1,0.2)
 		listFitem.line:SetThickness(1);
 		listFitem.line:SetStartPoint("TOPLEFT",0,0)
 		listFitem.line:SetEndPoint("TOPRIGHT",0,0)
 
-		listFitem.chushouzhe = listFitem:CreateFontString();
-		listFitem.chushouzhe:SetWidth(SellxulieID_www[1]);
-		listFitem.chushouzhe:SetPoint("LEFT", listFitem, "LEFT", 2,0);
-		listFitem.chushouzhe:SetFont(ChatFontNormal:GetFont(), 13,"OUTLINE");
-		listFitem.chushouzhe:SetJustifyH("LEFT");
+		listFitem.yajia = CreateFrame("Button",nil,listFitem, "UIPanelButtonTemplate");
+		listFitem.yajia:SetSize(SellxulieID_www[1],22);
+		listFitem.yajia:SetPoint("LEFT", listFitem, "LEFT", 0,0);
+		listFitem.yajia:SetText("压");
+		listFitem.yajia:SetScript("OnClick", function(self, button)
+			local count=self.hang_count
+			local minBid=self.hang_minBid
+			local buyoutPrice=self.hang_buyoutPrice
+			local BiddanjiaGG = minBid/count
+			local buyoutdanjiaGG = buyoutPrice/count
+			local wanjiaN, realm = UnitFullName("player");
+
+			local priceType =UIDropDownMenu_GetSelectedValue(PriceDropDown) or 2
+			if priceType == 1  then
+				if owner~=wanjiaN then
+					if PIG.AHPlus.yajingbiao then
+						MoneyInputFrame_SetCopper(StartPrice, BiddanjiaGG-1);
+					else
+						MoneyInputFrame_SetCopper(StartPrice, buyoutdanjiaGG-1);
+					end
+					MoneyInputFrame_SetCopper(BuyoutPrice, buyoutdanjiaGG-1);
+				else
+					MoneyInputFrame_SetCopper(StartPrice, BiddanjiaGG);
+					MoneyInputFrame_SetCopper(BuyoutPrice, buyoutdanjiaGG);
+				end
+			else
+				local meizushu = AuctionsStackSizeEntry:GetNumber()
+				local ZBiddanjiaGG = meizushu*BiddanjiaGG
+				local ZbuyoutdanjiaGG = meizushu*buyoutdanjiaGG
+				if owner~=wanjiaN then
+					if PIG.AHPlus.yajingbiao then
+						MoneyInputFrame_SetCopper(StartPrice, ZBiddanjiaGG-1);
+					else
+						MoneyInputFrame_SetCopper(StartPrice, ZbuyoutdanjiaGG-1);
+					end
+					MoneyInputFrame_SetCopper(BuyoutPrice, ZbuyoutdanjiaGG-1);
+				else
+					MoneyInputFrame_SetCopper(StartPrice, ZBiddanjiaGG);
+					MoneyInputFrame_SetCopper(BuyoutPrice, ZbuyoutdanjiaGG);
+				end
+			end
+		end)
+		--
+		listFitem.jingbiao=chuangjianjinbiF(listFitem,listFitem.yajia,SellxulieID_www[2],hang_Height1)
+		--
+		listFitem.yikou=chuangjianjinbiF(listFitem,listFitem.jingbiao,SellxulieID_www[3],hang_Height1)
+		--
+		listFitem.yikoudanjia=chuangjianjinbiF(listFitem,listFitem.yikou,SellxulieID_www[4],hang_Height1)
 		---
 		listFitem.count = listFitem:CreateFontString();
-		listFitem.count:SetWidth(SellxulieID_www[2]);
-		listFitem.count:SetPoint("LEFT", listFitem.chushouzhe, "RIGHT", 0,0);
+		listFitem.count:SetWidth(SellxulieID_www[5]);
+		listFitem.count:SetPoint("LEFT", listFitem.yikoudanjia, "RIGHT", 0,0);
 		listFitem.count:SetFont(ChatFontNormal:GetFont(), 13);
-		listFitem.count:SetJustifyH("LEFT");
+		listFitem.count:SetTextColor(0, 1, 1, 1);
 		--
 		listFitem.TimeLeft = listFitem:CreateFontString();
-		listFitem.TimeLeft:SetWidth(SellxulieID_www[3]);
+		listFitem.TimeLeft:SetWidth(SellxulieID_www[6]);
 		listFitem.TimeLeft:SetPoint("LEFT", listFitem.count, "RIGHT", 0,0);
 		listFitem.TimeLeft:SetFont(ChatFontNormal:GetFont(), 13);
-		listFitem.TimeLeft:SetJustifyH("LEFT");
 		--
-		listFitem.jingbiao=chuangjianjinbiF(listFitem,listFitem.TimeLeft,SellxulieID_www[4],hang_Height1)
-		--
-		listFitem.yikou=chuangjianjinbiF(listFitem,listFitem.jingbiao,SellxulieID_www[5],hang_Height1)
-		--
-		listFitem.yikoudanjia=chuangjianjinbiF(listFitem,listFitem.yikou,SellxulieID_www[6],hang_Height1)
+		listFitem.chushouzhe = listFitem:CreateFontString();
+		listFitem.chushouzhe:SetWidth(SellxulieID_www[7]);
+		listFitem.chushouzhe:SetPoint("LEFT", listFitem.TimeLeft, "RIGHT", 2,0);
+		listFitem.chushouzhe:SetFont(ChatFontNormal:GetFont(), 13,"OUTLINE");
+		listFitem.chushouzhe:SetJustifyH("LEFT");
 	end
 	AuctionFrameAuctions:HookScript("OnHide",function()
 		SellListF:Hide()
 	end)
 	--压价按钮
-	AuctionFrameAuctions.autojj = CreateFrame("Button",nil,AuctionFrameAuctions, "UIPanelButtonTemplate");
-	AuctionFrameAuctions.autojj:SetSize(90,22);
-	AuctionFrameAuctions.autojj:SetPoint("TOPLEFT",AuctionFrameAuctions,"TOPLEFT",100,-286);
-	AuctionFrameAuctions.autojj:SetText("智能压价");
-	AuctionFrameAuctions.autojj:Disable()
-	AuctionFrameAuctions.autojj:SetScript("OnClick", function(self, button)
-		gengxinSpelllist(SellListF)
-		local count, minBid, buyoutPrice,owner=SellListF.count,SellListF.minBid,SellListF.buyoutPrice,SellListF.owner
-		local BiddanjiaGG = minBid/count
-		local buyoutdanjiaGG = buyoutPrice/count
-		local wanjiaN, realm = UnitFullName("player");
-
-		local priceType =UIDropDownMenu_GetSelectedValue(PriceDropDown) or 2
-		if priceType == 1  then
-			if owner~=wanjiaN then
-				MoneyInputFrame_SetCopper(StartPrice, BiddanjiaGG-1);
-				MoneyInputFrame_SetCopper(BuyoutPrice, buyoutdanjiaGG-1);
-			else
-				MoneyInputFrame_SetCopper(StartPrice, BiddanjiaGG);
-				MoneyInputFrame_SetCopper(BuyoutPrice, buyoutdanjiaGG);
-			end
+	AuctionFrameAuctions.yajingbiao = CreateFrame("CheckButton", nil, AuctionFrameAuctions, "ChatConfigCheckButtonTemplate");
+	AuctionFrameAuctions.yajingbiao:SetSize(24,24);
+	AuctionFrameAuctions.yajingbiao:SetPoint("TOPLEFT",AuctionFrameAuctions,"TOPLEFT",70,-286);
+	AuctionFrameAuctions.yajingbiao:SetHitRectInsets(0,-10,0,0);
+	AuctionFrameAuctions.yajingbiao.tooltip = "选中后压一口价同时压竞标价";
+	AuctionFrameAuctions.yajingbiao.Text:SetText("同时压竞标价");
+	AuctionFrameAuctions.yajingbiao.Text:SetTextColor(0, 1, 0, 0.8);
+	AuctionFrameAuctions.yajingbiao:SetScript("OnClick", function (self)
+		if self:GetChecked() then
+			PIG.AHPlus.yajingbiao=true
 		else
-			local meizushu = AuctionsStackSizeEntry:GetNumber()
-			local ZBiddanjiaGG = meizushu*BiddanjiaGG
-			local ZbuyoutdanjiaGG = meizushu*buyoutdanjiaGG
-			if owner~=wanjiaN then
-				MoneyInputFrame_SetCopper(StartPrice, ZBiddanjiaGG-1);
-				MoneyInputFrame_SetCopper(BuyoutPrice, ZbuyoutdanjiaGG-1);
-			else
-				MoneyInputFrame_SetCopper(StartPrice, ZBiddanjiaGG);
-				MoneyInputFrame_SetCopper(BuyoutPrice, ZbuyoutdanjiaGG);
-			end
+			PIG.AHPlus.yajingbiao=false
 		end
-	end)
+	end);
+	if PIG.AHPlus.yajingbiao then
+		AuctionFrameAuctions.yajingbiao:SetChecked(true)
+	end
+
 	AuctionsItemButton:HookScript("OnEvent",function(self,event,arg1,arg2)
 		if event=="NEW_AUCTION_UPDATE" then
 			AuctionsItemButtonCount:Hide();
 			local name, texture, count, quality, canUse, price, pricePerUnit, stackCount, totalCount, itemID = GetAuctionSellItemInfo();
-			SortAuctionSetSort("list","unitprice", false)
-			QueryAuctionItems(name, nil, nil, 0, nil, nil, false, true, nil)
-			C_Timer.After(0.2,gengxinSpelllist)
-			if (C_WowTokenPublic.IsAuctionableWowToken(itemID)) then
-			else
-				if ( totalCount > 1 ) then
-					AuctionsStackSizeEntry:Show();
-					AuctionsStackSizeMaxButton:Show();
-					AuctionsNumStacksEntry:Show();
-					AuctionsNumStacksMaxButton:Show();
-					PriceDropDown:Show();
-					UpdateMaximumButtons();
-				else	
-					AuctionsStackSizeEntry:Hide();
-					AuctionsStackSizeMaxButton:Hide();
-					AuctionsNumStacksEntry:Hide();
-					AuctionsNumStacksMaxButton:Hide();
+			if name then
+				SortAuctionSetSort("list","unitprice", false)
+				piglist_biaoti_6.paixu:Show()
+				piglist_biaoti_6.paixu:SetRotation(-0, 0.5, 0.5)
+				-- 	QueryAuctionItems(name, nil, nil, 0, nil, nil, false, true, nil)
+				qingkongtiaojian()
+				BrowseName:SetText(name)
+				AuctionFrame.maichuxunjia=true
+				AuctionFrameBrowse_Search()
+				AuctionFrame.maichuxunjia=false
+				if (C_WowTokenPublic.IsAuctionableWowToken(itemID)) then
+				else
+					if ( totalCount > 1 ) then
+						AuctionsStackSizeEntry:Show();
+						AuctionsStackSizeMaxButton:Show();
+						AuctionsNumStacksEntry:Show();
+						AuctionsNumStacksMaxButton:Show();
+						PriceDropDown:Show();
+						UpdateMaximumButtons();
+					else	
+						AuctionsStackSizeEntry:Hide();
+						AuctionsStackSizeMaxButton:Hide();
+						AuctionsNumStacksEntry:Hide();
+						AuctionsNumStacksMaxButton:Hide();
+					end
 				end
+				C_Timer.After(0.2,gengxinSpelllist)
+			else
+				AuctionsStackSizeEntry:Hide();
+				AuctionsStackSizeMaxButton:Hide();
+				AuctionsNumStacksEntry:Hide();
+				AuctionsNumStacksMaxButton:Hide();
+				SellListF:Hide()
 			end
 		end
 	end)

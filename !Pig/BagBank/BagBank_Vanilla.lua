@@ -1858,6 +1858,12 @@ local function zhegnhe_Open()
 		BAGheji.fenlei.show=false
 		BAGheji.fenlei.Tex:SetRotation(0, 0.4, 0.5)
 	end);
+	UIParent:HookScript("OnHide", function(self)
+		BAGheji:Hide()
+		lixianBAG:Hide()
+		juesezhuangbei:Hide()
+		BankFrameP:Hide()
+	end)
 end
 --==========================================================
 fuFrame.beibaozhenghe = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");

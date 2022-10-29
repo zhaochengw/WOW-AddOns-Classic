@@ -153,12 +153,12 @@ end);
 local function ChatFrame_Jianyin_Open()
 	if PIG['ChatFrame']['Jianyin']=="ON" then
 		for i = 1, NUM_CHAT_WINDOWS do
-			_G["ChatFrame"..i]:SetFading(false) --关闭文字渐隐 
+			_G["ChatFrame"..i]:SetFading(false)
 		end
 	end
 	if PIG['ChatFrame']['Jianyin']=="OFF" then
 		for i = 1, NUM_CHAT_WINDOWS do
-			_G["ChatFrame"..i]:SetFading(true) --开启文字渐隐  
+			_G["ChatFrame"..i]:SetFading(true) 
 		end
 	end
 end
@@ -175,25 +175,43 @@ end);
 
 --增加放大缩小字体按钮
 local ChatFontSizeList = {12,14,16,18,20,22,23,24,25,26};
+local ChatFont_Min =ChatFontSizeList[1]
+local ChatFont_Max =ChatFontSizeList[#ChatFontSizeList]
+local function ChatFrame_WINDOWS_Size(NewSize)
+	for id=1,NUM_CHAT_WINDOWS,1 do
+		FCF_SetChatWindowFontSize(nil, _G["ChatFrame"..id], NewSize);
+	end
+	if ChatFrame99 then
+		FCF_SetChatWindowFontSize(nil, ChatFrame99, NewSize);
+	end
+end
+local function panduanBUTzhuangtai(NewSize,fff1,fff2)
+	fff2.Tex:SetTexture(136480);
+	fff1.Tex:SetTexture(136483);
+	if NewSize==ChatFont_Min then
+		fff1.Tex:SetTexture(136481)
+	end
+	if NewSize==ChatFont_Max then
+		fff2.Tex:SetTexture(136478)
+	end
+end
 local function ChatFrame_MinMaxB_Open()
-	local ChatFontMin =ChatFontSizeList[1]
-	local ChatFontMax =ChatFontSizeList[#ChatFontSizeList]
-	if MinB_UI then return end
 	local fff = ChatFrame1
+	if fff.MinB then return end
 	local www,hhh = ChatFrameMenuButton:GetWidth(),ChatFrameMenuButton:GetHeight()
-	fff.MinB = CreateFrame("Button","MinB_UI",UIParent, "UIMenuButtonStretchTemplate"); 
+	fff.MinB = CreateFrame("Button",nil,UIParent,"UIMenuButtonStretchTemplate"); 
 	fff.MinB:SetHighlightTexture("");
 	fff.MinB:SetFrameStrata("LOW")
 	if tocversion<40000 then
 		fff.MinB:SetSize(www-5.4,hhh-7);
-		fff.MinB:SetPoint("BOTTOM",ChatFrame1ButtonFrameBottomButton,"TOP",-1,5);
+		fff.MinB:SetPoint("BOTTOM",ChatFrame1ButtonFrameBottomButton,"TOP",0,2);
 		for id=1,NUM_CHAT_WINDOWS,1 do
 			_G["ChatFrame"..id.."ButtonFrameUpButton"]:Hide()
 			_G["ChatFrame"..id.."ButtonFrameDownButton"]:Hide()
 		end
 	else
 		fff.MinB:SetSize(www-4.4,hhh-6);
-		fff.MinB:SetPoint("BOTTOM",ChatFrameMenuButton,"TOP",0,5);
+		fff.MinB:SetPoint("BOTTOM",ChatFrameMenuButton,"TOP",0,2);
 	end
 	fff.MinB.HighlightTex = fff.MinB:CreateTexture(nil,"HIGHLIGHT");
 	fff.MinB.HighlightTex:SetTexture("Interface/BUTTONS/UI-Common-MouseHilight");
@@ -201,20 +219,17 @@ local function ChatFrame_MinMaxB_Open()
 	fff.MinB.HighlightTex:SetPoint("CENTER", 0, 0);
 	fff.MinB.HighlightTex:SetBlendMode("ADD")
 	fff.MinB.Tex = fff.MinB:CreateTexture();
-	fff.MinB.Tex:SetTexture(136483);
 	fff.MinB.Tex:SetSize(14,6);
 	fff.MinB.Tex:SetPoint("CENTER", 0, 0);
 	fff.MinB.Tex:SetTexCoord(0.31,0.71,0.41,0.56);
 	fff.MinB:SetScript("OnMouseDown",  function(self)
-		local _,fontSize = GetChatWindowInfo(1);
-		if fontSize>ChatFontMin then
-			self.Tex:SetPoint("CENTER", -1, -1);
-		end
+		self.Tex:SetPoint("CENTER", -1, -1.5);
 	end)
 	fff.MinB:SetScript("OnMouseUp",  function(self)
 		self.Tex:SetPoint("CENTER", 0, 0);
 	end)
-	fff.MaxB = CreateFrame("Button","MaxB_UI",UIParent, "UIMenuButtonStretchTemplate");
+	-----
+	fff.MaxB = CreateFrame("Button",nil,UIParent, "UIMenuButtonStretchTemplate");
 	fff.MaxB:SetHighlightTexture("");
 	if tocversion<40000 then
 		fff.MaxB:SetSize(www-5.4,hhh-7);
@@ -229,50 +244,32 @@ local function ChatFrame_MinMaxB_Open()
 	fff.MaxB.HighlightTex:SetPoint("CENTER", 0, 0);
 	fff.MaxB.HighlightTex:SetBlendMode("ADD")
 	fff.MaxB.Tex = fff.MaxB:CreateTexture();
-	fff.MaxB.Tex:SetTexture(136480);
 	fff.MaxB.Tex:SetSize(13,12);
 	fff.MaxB.Tex:SetPoint("CENTER", 0, 0);
 	fff.MaxB.Tex:SetTexCoord(0.34,0.69,0.31,0.66);
 	fff.MaxB:SetScript("OnMouseDown",  function(self)
-		local _,fontSize = GetChatWindowInfo(1);
-		if fontSize<ChatFontMax then
-			self.Tex:SetPoint("CENTER", -1, -1);
-		end
+		self.Tex:SetPoint("CENTER", -1, -1.5);
 	end)
 	fff.MaxB:SetScript("OnMouseUp",  function(self)
 		self.Tex:SetPoint("CENTER", 0, 0);
 	end)
+
+	local _,fontSize = GetChatWindowInfo(1);
+	panduanBUTzhuangtai(fontSize,fff.MinB,fff.MaxB)
 	fff.MinB:SetScript("OnClick", function(self)
-		fff.MaxB.Tex:SetTexture(136480);
 		local _,fontSize = GetChatWindowInfo(1);
-		if fontSize>ChatFontMin then
-			local NEwZITI = fontSize-2
-			for id=1,NUM_CHAT_WINDOWS,1 do
-				FCF_SetChatWindowFontSize(nil, _G["ChatFrame"..id], NEwZITI);
-			end
-			if ChatFrame99 then
-				FCF_SetChatWindowFontSize(nil, ChatFrame99, NEwZITI);
-			end
-			if NEwZITI==ChatFontMin then self.Tex:SetTexture(136481); end
+		if fontSize>ChatFont_Min then
+			ChatFrame_WINDOWS_Size(fontSize-2)
+			panduanBUTzhuangtai(fontSize-2,fff.MinB,fff.MaxB)
 		end
 	end);
 	fff.MaxB:SetScript("OnClick", function(self)
-		fff.MinB.Tex:SetTexture(136483);
 		local _,fontSize = GetChatWindowInfo(1);
-		if fontSize<ChatFontMax then
-			local NEwZITI = fontSize+2
-			for id=1,NUM_CHAT_WINDOWS,1 do
-				FCF_SetChatWindowFontSize(nil, _G["ChatFrame"..id], NEwZITI);	
-			end
-			if ChatFrame99 then
-				FCF_SetChatWindowFontSize(nil, ChatFrame99, NEwZITI);
-			end
-			if NEwZITI==ChatFontMax then self.Tex:SetTexture(136478); end
+		if fontSize<ChatFont_Max then
+			ChatFrame_WINDOWS_Size(fontSize+2)
+			panduanBUTzhuangtai(fontSize+2,fff.MinB,fff.MaxB)
 		end
 	end);
-	local _,fontSize = GetChatWindowInfo(1);
-	if fontSize==ChatFontMin then MinB_UI.Tex:SetTexture(136481); end
-	if fontSize==ChatFontMax then MaxB_UI.Tex:SetTexture(136478); end
 end
 fuFrame.MinMaxB = ADD_Checkbutton(nil,fuFrame,-150,"TOPLEFT",fuFrame.AltEX,"BOTTOMLEFT",0,chushiY,"添加放大缩小字体按钮","在聊天栏右上方添加放大缩小字体按钮！")
 fuFrame.MinMaxB:SetScript("OnClick", function (self)
@@ -286,26 +283,15 @@ fuFrame.MinMaxB:SetScript("OnClick", function (self)
 end);
 
 --设置聊天字体大小
-local function ChatFrame_FontSize_ST()
-	for id=1,NUM_CHAT_WINDOWS,1 do
-		FCF_SetChatWindowFontSize(nil, _G["ChatFrame"..id], PIG['ChatFrame']['FontSize_value']);
-	end
-	if ChatFrame99 then
-		FCF_SetChatWindowFontSize(nil, ChatFrame99, PIG['ChatFrame']['FontSize_value']);
-	end
-	local _,fontSize = GetChatWindowInfo(1);
-	if fontSize==ChatFontMin then MinB_UI.Tex:SetTexture(136481); end
-	if fontSize==ChatFontMax then MaxB_UI.Tex:SetTexture(136478); end
-end
 local function PigUI_ChatFrame_FontSize_Open()
-	C_Timer.After(0.6, ChatFrame_FontSize_ST);
+	ChatFrame_WINDOWS_Size(PIG['ChatFrame']['FontSize_value'])
 end
 -----------------------
 fuFrame.FontSize = ADD_Checkbutton(nil,fuFrame,-120,"LEFT",fuFrame.MinMaxB,"RIGHT",250,0,"自动设置聊天字体:","开启后将在每次登录时恢复聊天字体大小为设置值，如果想自定义单独聊天窗字体大小请关闭此选项。")
 fuFrame.FontSize:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['ChatFrame']['FontSize']="ON";
-		ChatFrame_FontSize_ST();
+		PigUI_ChatFrame_FontSize_Open()
 	else
 		PIG['ChatFrame']['FontSize']="OFF";
 	end
