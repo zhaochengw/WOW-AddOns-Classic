@@ -1,3 +1,6 @@
+3.0.43 - 26th October 2022
+- Maintenance update.
+
 3.0.29 - 12th October 2022
 - Updated summon levels for all dungeons and raids.
 - Added summon level ranges to all Outland dungeons and raids.
