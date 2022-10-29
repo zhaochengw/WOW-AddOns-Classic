@@ -18,4 +18,4 @@ TalentEmu.xml
 ## Title-zhCN: |cff880303[有爱]|r ala 天赋模拟器
 ## Notes-zhCN: 天赋模拟器，可以模拟天赋、导出代码、导入代码、观察其他玩家天赋、应用模拟器天赋等。
 ## X-Vendor: NetEase
-## X-163UI-Version: 20200521143713
+## X-163UI-Version: 20221021175918
