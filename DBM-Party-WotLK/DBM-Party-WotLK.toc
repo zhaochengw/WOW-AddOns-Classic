@@ -41,7 +41,7 @@
 ## X-DBM-Mod-MinExpansion: 2
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
-## Version: 3.4.17-9-g00e91c4
+## Version: 3.4.18-5-g506f923
 
 localization.en.lua
 localization.cn.lua
