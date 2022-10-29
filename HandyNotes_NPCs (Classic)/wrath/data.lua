@@ -7336,12 +7336,6 @@ nodes[1434] = {
 		description = L["Zandalar Supplies & Repair"],
 		faction = "Neutral",
 	},
-	[31402880] = {
-		name = L["Vend-O-Tron D-Luxe"],
-		npcID = 24935,
-		category = "repair",
-		faction = "Horde",
-	},
 	[25607340] = {
 		name = L["Engineer Torquespindle"],
 		npcID = 25082,
@@ -7625,12 +7619,6 @@ nodes[1434] = {
 		profession = "engineering",
 		description = L["Engineering Supplies"],
 		faction = "Neutral",
-	},
-	[31402900] = {
-		name = L["Snack-O-Matic IV"],
-		npcID = 24934,
-		category = "vendors",
-		faction = "Horde",
 	},
 	[25407340] = {
 		name = L["Galley Chief Steelbelly"],
@@ -8791,27 +8779,6 @@ nodes[125] = {
 		description = L["Throwing Axes"],
 		faction = "Horde",
 	},
-	[39602880] = {
-		name = L["Gnimo"],
-		npcID = 32639,
-		category = "repair",
-		description = L["Adventurous Tinker"],
-		faction = "Alliance",
-	},
-	[57403260] = {
-		name = L["Drix Blackwrench"],
-		npcID = 32641,
-		category = "repair",
-		description = L["The Fixer"],
-		faction = "Horde",
-	},
-	[38605180] = {
-		name = L["Drix Blackwrench"],
-		npcID = 32641,
-		category = "repair",
-		description = L["The Fixer"],
-		faction = "Horde",
-	},
 	[46202720] = {
 		name = L["Dubin Clay"],
 		npcID = 34252,
@@ -9528,46 +9495,6 @@ nodes[125] = {
 		category = "vendors",
 		description = L["Butler"],
 		faction = "Neutral",
-	},
-	[39206360] = {
-		name = L["Hakmud of Argus"],
-		npcID = 32638,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Alliance",
-	},
-	[54204880] = {
-		name = L["Hakmud of Argus"],
-		npcID = 32638,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Alliance",
-	},
-	[43603780] = {
-		name = L["Mojodishu"],
-		npcID = 32642,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Horde",
-	},
-	[41405040] = {
-		name = L["Mojodishu"],
-		npcID = 32642,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Horde",
 	},
 	[44404740] = {
 		name = L["Sarah Brady"],
@@ -12144,13 +12071,6 @@ nodes[1454] = {
 		description = L["Veteran Armor Quartermaster"],
 		faction = "Horde",
 	},
-	[51806920] = {
-		name = L["Drix Blackwrench"],
-		npcID = 32641,
-		category = "repair",
-		description = L["The Fixer"],
-		faction = "Horde",
-	},
 	[37206460] = {
 		name = L["Blood Guard Zar'shi"],
 		npcID = 32832,
@@ -12961,16 +12881,6 @@ nodes[1454] = {
 		description = L["Jewelcrafting Quartermaster"],
 		faction = "Horde",
 	},
-	[51007000] = {
-		name = L["Mojodishu"],
-		npcID = 32642,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Horde",
-	},
 }
 nodes[1455] = {
 	[24007200] = {
@@ -13246,13 +13156,6 @@ nodes[1455] = {
 			ammo = true,
 		},
 		description = L["Weapon Merchant"],
-		faction = "Alliance",
-	},
-	[21004800] = {
-		name = L["Gnimo"],
-		npcID = 32639,
-		category = "repair",
-		description = L["Adventurous Tinker"],
 		faction = "Alliance",
 	},
 	[69408400] = {
@@ -14265,12 +14168,6 @@ nodes[1456] = {
 		description = L["Two Handed Weapon Merchant"],
 		faction = "Horde",
 	},
-	[14402420] = {
-		name = L["Vend-O-Tron D-Luxe"],
-		npcID = 24935,
-		category = "repair",
-		faction = "Horde",
-	},
 	[56401760] = {
 		name = L["Spirit Healer"],
 		category = "spirithealers",
@@ -14797,12 +14694,6 @@ nodes[1456] = {
 	[57807680] = {
 		name = L["Horde Warbringer"],
 		npcID = 15350,
-		category = "vendors",
-		faction = "Horde",
-	},
-	[13401880] = {
-		name = L["Snack-O-Matic IV"],
-		npcID = 24934,
 		category = "vendors",
 		faction = "Horde",
 	},
@@ -19516,12 +19407,6 @@ nodes[1413] = {
 		description = L["Smokywood Pastures"],
 		faction = "Horde",
 	},
-	[35803380] = {
-		name = L["Vend-O-Tron D-Luxe"],
-		npcID = 24935,
-		category = "repair",
-		faction = "Horde",
-	},
 	[63603900] = {
 		name = L["Engineer Torquespindle"],
 		npcID = 25082,
@@ -19771,12 +19656,6 @@ nodes[1413] = {
 		npcID = 23535,
 		category = "vendors",
 		faction = "Neutral",
-	},
-	[36003360] = {
-		name = L["Snack-O-Matic IV"],
-		npcID = 24934,
-		category = "vendors",
-		faction = "Horde",
 	},
 	[63603880] = {
 		name = L["Galley Chief Steelbelly"],
@@ -35054,20 +34933,6 @@ nodes[114] = {
 		description = L["Walker of Waves"],
 		faction = "Neutral",
 	},
-	[27402640] = {
-		name = L["Gnimo"],
-		npcID = 32639,
-		category = "repair",
-		description = L["Adventurous Tinker"],
-		faction = "Alliance",
-	},
-	[28202900] = {
-		name = L["Drix Blackwrench"],
-		npcID = 32641,
-		category = "repair",
-		description = L["The Fixer"],
-		faction = "Horde",
-	},
 	[30603340] = {
 		name = L["Spirit Healer"],
 		category = "spirithealers",
@@ -35508,26 +35373,6 @@ nodes[114] = {
 		description = L["Horde Expedition Quartermaster"],
 		faction = "Horde",
 	},
-	[27402620] = {
-		name = L["Hakmud of Argus"],
-		npcID = 32638,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Alliance",
-	},
-	[27402625] = {
-		name = L["Mojodishu"],
-		npcID = 32642,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Horde",
-	},
 	[42205520] = {
 		name = L["Tohfo Skyhoof"],
 		npcID = 35132,
@@ -35816,20 +35661,6 @@ nodes[120] = {
 		description = L["Blacksmithing Supplies"],
 		faction = "Neutral",
 	},
-	[45202160] = {
-		name = L["Gnimo"],
-		npcID = 32639,
-		category = "repair",
-		description = L["Adventurous Tinker"],
-		faction = "Alliance",
-	},
-	[45202165] = {
-		name = L["Drix Blackwrench"],
-		npcID = 32641,
-		category = "vendors",
-		description = L["The Fixer"],
-		faction = "Horde",
-	},
 	[28807485] = {
 		name = L["Brandig"],
 		category = "primaryProfession",
@@ -35995,16 +35826,6 @@ nodes[120] = {
 		category = "vendors",
 		description = L["The Sons of Hodir Quartermaster"],
 		faction = "Neutral",
-	},
-	[39802680] = {
-		name = L["Mojodishu"],
-		npcID = 32642,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Horde",
 	},
 	[40605120] = {
 		name = L["Dirkee"],
@@ -36185,20 +36006,6 @@ nodes[118] = {
 		category = "repair",
 		profession = "engineering",
 		description = L["Engineering Supplies"],
-		faction = "Horde",
-	},
-	[8404300] = {
-		name = L["Gnimo"],
-		npcID = 32639,
-		category = "repair",
-		description = L["Adventurous Tinker"],
-		faction = "Alliance",
-	},
-	[29603820] = {
-		name = L["Drix Blackwrench"],
-		npcID = 32641,
-		category = "repair",
-		description = L["The Fixer"],
 		faction = "Horde",
 	},
 	[20404785] = {
@@ -36828,20 +36635,6 @@ nodes[117] = {
 		description = L["Green Island"],
 		faction = "Neutral",
 	},
-	[57204600] = {
-		name = L["Gnimo"],
-		npcID = 32639,
-		category = "repair",
-		description = L["Adventurous Tinker"],
-		faction = "Alliance",
-	},
-	[57204640] = {
-		name = L["Drix Blackwrench"],
-		npcID = 32641,
-		category = "repair",
-		description = L["The Fixer"],
-		faction = "Horde",
-	},
 	[38007460] = {
 		name = L["Spirit Healer"],
 		category = "spirithealers",
@@ -37264,16 +37057,6 @@ nodes[117] = {
 		description = L["Kalu'ak Quartermaster"],
 		faction = "Neutral",
 	},
-	[28004180] = {
-		name = L["Hakmud of Argus"],
-		npcID = 32638,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Alliance",
-	},
 	[59606385] = {
 		name = L["Logistics Officer Brighton"],
 		npcID = 32773,
@@ -37475,12 +37258,12 @@ nodes[115] = {
 	[28905610] = {
 		name = L["Mailbox"],
 		category = "mailboxes",
-		faction = "Neutral",
+		faction = "Alliance",
 	},
 	[37304670] = {
 		name = L["Mailbox"],
 		category = "mailboxes",
-		faction = "Neutral",
+		faction = "Horde",
 	},
 	[48307440] = {
 		name = L["Mailbox"],
@@ -37490,12 +37273,12 @@ nodes[115] = {
 	[77006280] = {
 		name = L["Mailbox"],
 		category = "mailboxes",
-		faction = "Neutral",
+		faction = "Alliance",
 	},
 	[77305090] = {
 		name = L["Mailbox"],
 		category = "mailboxes",
-		faction = "Neutral",
+		faction = "Alliance",
 	},
 	[55002340] = {
 		name = L["Troz"],
@@ -37564,20 +37347,6 @@ nodes[115] = {
 		category = "repair",
 		description = L["Walker of Waves"],
 		faction = "Neutral",
-	},
-	[83405100] = {
-		name = L["Gnimo"],
-		npcID = 32639,
-		category = "repair",
-		description = L["Adventurous Tinker"],
-		faction = "Alliance",
-	},
-	[77006260] = {
-		name = L["Drix Blackwrench"],
-		npcID = 32641,
-		category = "repair",
-		description = L["The Fixer"],
-		faction = "Horde",
 	},
 	[83205100] = {
 		name = L["Spirit Healer"],
@@ -37815,26 +37584,6 @@ nodes[115] = {
 		description = L["Wyrmrest Accord Quartermaster"],
 		faction = "Neutral",
 	},
-	[24006000] = {
-		name = L["Hakmud of Argus"],
-		npcID = 32638,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Alliance",
-	},
-	[76806280] = {
-		name = L["Mojodishu"],
-		npcID = 32642,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Horde",
-	},
 	[48407560] = {
 		name = L["Sairuk"],
 		npcID = 32763,
@@ -38000,20 +37749,6 @@ nodes[119] = {
 		description = L["Shinies Collector"],
 		faction = "Neutral",
 	},
-	[64404880] = {
-		name = L["Gnimo"],
-		npcID = 32639,
-		category = "repair",
-		description = L["Adventurous Tinker"],
-		faction = "Alliance",
-	},
-	[24206120] = {
-		name = L["Drix Blackwrench"],
-		npcID = 32641,
-		category = "repair",
-		description = L["The Fixer"],
-		faction = "Horde",
-	},
 	[27205940] = {
 		name = L["Hadrius Harlowe"],
 		category = "stablemasters",
@@ -38074,16 +37809,6 @@ nodes[119] = {
 		category = "vendors",
 		description = L["Frenzyheart Quartermaster"],
 		faction = "Neutral",
-	},
-	[25205845] = {
-		name = L["Mojodishu"],
-		npcID = 32642,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Horde",
 	},
 	[41407360] = {
 		name = L["Aotona"],
@@ -38315,20 +38040,6 @@ nodes[116] = {
 		description = L["Blacksmithing Supplies"],
 		faction = "Horde",
 	},
-	[16204780] = {
-		name = L["Gnimo"],
-		npcID = 32639,
-		category = "repair",
-		description = L["Adventurous Tinker"],
-		faction = "Alliance",
-	},
-	[21206460] = {
-		name = L["Drix Blackwrench"],
-		npcID = 32641,
-		category = "repair",
-		description = L["The Fixer"],
-		faction = "Horde",
-	},
 	[59802800] = {
 		name = L["Maevin Farmoon"],
 		npcID = 26374,
@@ -38493,26 +38204,6 @@ nodes[116] = {
 		category = "vendors",
 		description = L["Trade Goods"],
 		faction = "Neutral",
-	},
-	[31405920] = {
-		name = L["Hakmud of Argus"],
-		npcID = 32638,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Alliance",
-	},
-	[22406305] = {
-		name = L["Mojodishu"],
-		npcID = 32642,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Horde",
 	},
 	[12405300] = {
 		name = L["Grocklar"],
@@ -38731,20 +38422,6 @@ nodes[121] = {
 		description = L["Ammunition"],
 		faction = "Neutral",
 	},
-	[76402140] = {
-		name = L["Gnimo"],
-		npcID = 32639,
-		category = "repair",
-		description = L["Adventurous Tinker"],
-		faction = "Alliance",
-	},
-	[48405620] = {
-		name = L["Drix Blackwrench"],
-		npcID = 32641,
-		category = "repair",
-		description = L["The Fixer"],
-		faction = "Horde",
-	},
 	[19807540] = {
 		name = L["Gristlegut"],
 		npcID = 28589,
@@ -38941,16 +38618,6 @@ nodes[121] = {
 		category = "vendors",
 		description = L["Snacks"],
 		faction = "Neutral",
-	},
-	[48405625] = {
-		name = L["Mojodishu"],
-		npcID = 32642,
-		category = "vendors",
-		vendors = {
-			ammo = true,
-		},
-		description = L["Traveling Trader"],
-		faction = "Horde",
 	},
 	[61406240] = {
 		name = L["Gondria"],
@@ -42619,40 +42286,6 @@ nodes[1952] = {
 		category = "secondaryProfession",
 		profession = "First Aid",
 		description = L["First Aid Trainer"],
-		faction = "Neutral",
-	},
-	[34603520] = {
-		name = L["Sylannia"],
-		npcID = 14844,
-		category = "vendors",
-		description = L["Darkmoon Faire Drink Vendor"],
-		faction = "Neutral",
-	},
-	[34603525] = {
-		name = L["Stamp Thunderhorn"],
-		npcID = 14845,
-		category = "vendors",
-		description = L["Darkmoon Faire Food Vendor"],
-		faction = "Neutral",
-	},
-	[34203440] = {
-		name = L["Lhara"],
-		npcID = 14846,
-		category = "vendors",
-		description = L["Darkmoon Faire Exotic Goods"],
-		faction = "Neutral",
-	},
-	[34203445] = {
-		name = L["Professor Thaddeus Paleo"],
-		npcID = 14847,
-		category = "vendors",
-		description = L["Darkmoon Faire Cards & Exotic Goods"],
-		faction = "Neutral",
-	},
-	[33803560] = {
-		name = L["Flik"],
-		npcID = 14860,
-		category = "vendors",
 		faction = "Neutral",
 	},
 	[50004560] = {
@@ -104833,12 +104466,6 @@ nodes[1420] = {
 		description = L["The Argent Dawn"],
 		faction = "Neutral",
 	},
-	[60405860] = {
-		name = L["Vend-O-Tron D-Luxe"],
-		npcID = 24935,
-		category = "repair",
-		faction = "Horde",
-	},
 	[31206480] = {
 		name = L["Spirit Healer"],
 		category = "spirithealers",
@@ -105145,12 +104772,6 @@ nodes[1420] = {
 	[55606980] = {
 		name = L["Darkcaller Yanka"],
 		npcID = 15197,
-		category = "vendors",
-		faction = "Horde",
-	},
-	[60405865] = {
-		name = L["Snack-O-Matic IV"],
-		npcID = 24934,
 		category = "vendors",
 		faction = "Horde",
 	},
@@ -121624,12 +121245,6 @@ nodes[1412] = {
 		description = L["Armorer & Shieldcrafter"],
 		faction = "Horde",
 	},
-	[41003880] = {
-		name = L["Vend-O-Tron D-Luxe"],
-		npcID = 24935,
-		category = "repair",
-		faction = "Horde",
-	},
 	[42607800] = {
 		name = L["Spirit Healer"],
 		category = "spirithealers",
@@ -121851,46 +121466,6 @@ nodes[1412] = {
 		category = "vendors",
 		profession = "fishing",
 		description = L["Fishing Supplies"],
-		faction = "Horde",
-	},
-	[36603820] = {
-		name = L["Sylannia"],
-		npcID = 14844,
-		category = "vendors",
-		description = L["Darkmoon Faire Drink Vendor"],
-		faction = "Neutral",
-	},
-	[36603825] = {
-		name = L["Stamp Thunderhorn"],
-		npcID = 14845,
-		category = "vendors",
-		description = L["Darkmoon Faire Food Vendor"],
-		faction = "Neutral",
-	},
-	[36403800] = {
-		name = L["Lhara"],
-		npcID = 14846,
-		category = "vendors",
-		description = L["Darkmoon Faire Exotic Goods"],
-		faction = "Neutral",
-	},
-	[36403805] = {
-		name = L["Professor Thaddeus Paleo"],
-		npcID = 14847,
-		category = "vendors",
-		description = L["Darkmoon Faire Cards & Exotic Goods"],
-		faction = "Neutral",
-	},
-	[36203560] = {
-		name = L["Flik"],
-		npcID = 14860,
-		category = "vendors",
-		faction = "Neutral",
-	},
-	[32401820] = {
-		name = L["Snack-O-Matic IV"],
-		npcID = 24934,
-		category = "vendors",
 		faction = "Horde",
 	},
 	[30002200] = {
@@ -124179,12 +123754,6 @@ nodes[1411] = {
 		description = L["Weapon Merchant"],
 		faction = "Horde",
 	},
-	[50801420] = {
-		name = L["Vend-O-Tron D-Luxe"],
-		npcID = 24935,
-		category = "repair",
-		faction = "Horde",
-	},
 	[44206940] = {
 		name = L["Spirit Healer"],
 		category = "spirithealers",
@@ -124530,12 +124099,6 @@ nodes[1411] = {
 	[40606845] = {
 		name = L["Hraug"],
 		npcID = 12776,
-		category = "vendors",
-		faction = "Horde",
-	},
-	[50801425] = {
-		name = L["Snack-O-Matic IV"],
-		npcID = 24934,
 		category = "vendors",
 		faction = "Horde",
 	},
@@ -125519,12 +125082,12 @@ nodes[1429] = {
 	[39406040] = {
 		name = L["Spirit Healer"],
 		category = "spirithealers",
-		faction = "Neutral",
+		faction = "Alliance",
 	},
 	[49404340] = {
 		name = L["Spirit Healer"],
 		category = "spirithealers",
-		faction = "Neutral",
+		faction = "Alliance",
 	},
 	[83406940] = {
 		name = L["Spirit Healer"],
@@ -125871,40 +125434,6 @@ nodes[1429] = {
 		npcID = 6374,
 		category = "vendors",
 		faction = "Alliance",
-	},
-	[42007000] = {
-		name = L["Sylannia"],
-		npcID = 14844,
-		category = "vendors",
-		description = L["Darkmoon Faire Drink Vendor"],
-		faction = "Neutral",
-	},
-	[42007005] = {
-		name = L["Stamp Thunderhorn"],
-		npcID = 14845,
-		category = "vendors",
-		description = L["Darkmoon Faire Food Vendor"],
-		faction = "Neutral",
-	},
-	[41206980] = {
-		name = L["Lhara"],
-		npcID = 14846,
-		category = "vendors",
-		description = L["Darkmoon Faire Exotic Goods"],
-		faction = "Neutral",
-	},
-	[41206985] = {
-		name = L["Professor Thaddeus Paleo"],
-		npcID = 14847,
-		category = "vendors",
-		description = L["Darkmoon Faire Cards & Exotic Goods"],
-		faction = "Neutral",
-	},
-	[42406560] = {
-		name = L["Flik"],
-		npcID = 14860,
-		category = "vendors",
-		faction = "Neutral",
 	},
 	[28405960] = {
 		name = L["Thuros Lightfingers"],
@@ -127162,13 +126691,6 @@ nodes[1426] = {
 		category = "repair",
 		description = L["Retiree"],
 		faction = "Horde",
-	},
-	[48803840] = {
-		name = L["Gnimo"],
-		npcID = 32639,
-		category = "repair",
-		description = L["Adventurous Tinker"],
-		faction = "Alliance",
 	},
 	[29406980] = {
 		name = L["Spirit Healer"],
