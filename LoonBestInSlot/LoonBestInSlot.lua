@@ -14,6 +14,7 @@ LBIS.CurrentPhase = 1;
 LBIS.EventFrame = CreateFrame("FRAME",addonName.."Events")
 
 SLASH_LOONBESTINSLOT1 = '/bis'
+SLASH_LOONBESTINSLOT2 = '/비스'
 SlashCmdList["LOONBESTINSLOT"] = function(command)
 	command = command:lower()
     
@@ -112,9 +113,9 @@ function LBIS:AddItem(bisEntry, id, slot, bis)
 
 	local searchedItem = LBIS.Items[id][bisEntry.Id];	
 
-	if searchedItem == nil then		
+	if searchedItem == nil then
 
-		searchedItem = { Id = id, Bis = bis, Phase = bisEntry.Phase, Slot = slot }
+		searchedItem = { Id = id, Bis = bis, Phase = bisEntry.Phase, PhaseList = bisEntry.Phase, Slot = slot }
 
 		if not LBIS.SpecItems[bisEntry.Id] then
 			LBIS.SpecItems[bisEntry.Id] = {}
@@ -132,6 +133,8 @@ function LBIS:AddItem(bisEntry, id, slot, bis)
 		else
 			searchedItem.Phase = bisEntry.Phase;
 		end
+
+		searchedItem.PhaseList = searchedItem.PhaseList..","..bisEntry.Phase;
 	end
 
 	LBIS.SpecItems[bisEntry.Id][tonumber(id)] = searchedItem;
@@ -170,7 +173,7 @@ function LBIS:AddGem(bisEntry, id, quality, isMeta)
 
 	if searchedItem == nil then
 
-		searchedItem = { Id = id, Phase = "", Quality = quality, IsMeta = isMeta, Bis = "" }
+		searchedItem = { Id = id, Phase = "", Quality = quality, IsMeta = isMeta, Bis = "", PhaseList = "0,1,2,3,4" }
 
 		if not LBIS.SpecGems[bisEntry.Id] then
 			LBIS.SpecGems[bisEntry.Id] = {}
@@ -207,7 +210,7 @@ function LBIS:AddEnchant(bisEntry, id, slot)
 		
 	local enchantSource = LBIS.EnchantSources[tonumber(id)];
 
-	local item = { Id = id, Slot = slot, Phase = "", Bis = "" };
+	local item = { Id = id, Slot = slot, Phase = "", Bis = "", PhaseList = "0,1,2,3,4" };
 
 	if enchantSource.IsSpell == "False" then
 	
@@ -215,7 +218,7 @@ function LBIS:AddEnchant(bisEntry, id, slot)
 			LBIS.Items[id] = {}
 		end
 
-		LBIS.Items[id][bisEntry.Id] = { Id = id, Slot = slot, Phase = "", Bis = "" }		
+		LBIS.Items[id][bisEntry.Id] = { Id = id, Slot = slot, Phase = "", Bis = "", PhaseList = "0,1,2,3,4" }		
 	else
 		if not LBIS.Spells[id] then
 			LBIS.Spells[id] = {}

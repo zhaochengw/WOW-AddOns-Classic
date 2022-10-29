@@ -122,6 +122,7 @@ if GetLocale() == "koKR" then
   LBIS.L["Gundrak (Heroic)"] = "군드락 (영웅)";
   LBIS.L["Gundrak (Normal)"] = "군드락 (일반)";
   LBIS.L["Hadronox"] = "하드로녹스";
+--  LBIS.L["Hallow's End"] = "";
   LBIS.L["Halls of Lightning (Heroic)"] = "번개의 전당 (영웅)";
   LBIS.L["Halls of Lightning (Normal)"] = "번개의 전당 (일반)";
   LBIS.L["Halls of Stone"] = "돌의 전당";
@@ -131,6 +132,7 @@ if GetLocale() == "koKR" then
   LBIS.L["Harold Winston"] = "해럴드 윈스톤 <보석공예품 상인>";
   LBIS.L["Head"] = "머리";
   LBIS.L["Head Games"] = "두뇌 싸움";
+  LBIS.L["Headless Horseman"] = "저주받은 기사";
   LBIS.L["Heigan the Unclean"] = "부정의 헤이건";
   LBIS.L["Herald Volazj"] = "사자 볼라즈";
   LBIS.L["Heroic Judgment at the Eye of Eternity"] = "영원의 눈에서의 영웅적 심판";

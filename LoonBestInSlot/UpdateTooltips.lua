@@ -7,6 +7,24 @@ local function iconOffset(col, row)
 	return offsetString .. ":" .. (row * 64 + iconCutoff) .. ":" .. ((row + 1) * 64 - iconCutoff)
 end
 
+local function isInEnabledPhase(phaseText) 
+
+	local showTooltip = false;
+	
+	if LBISSettings.PhaseTooltip[LBIS.L["PreRaid"]] == true then
+		if strfind(phaseText, "0") ~= nil then
+			showTooltip = true;
+		end
+	end
+	if LBISSettings.PhaseTooltip[LBIS.L["Phase 1"]] == true then
+		if strfind(phaseText, "1") ~= nil then
+			showTooltip = true;
+		end
+	end
+	
+	return showTooltip;
+end
+
 local function buildExtraTip(tooltip, entry)
 
 	local combinedTooltip = {};
@@ -39,10 +57,10 @@ local function buildExtraTip(tooltip, entry)
 			rogueCount = rogueCount + 1;
 		end
 	end
-
+	
 	local showTooltip = false;
 	for k, v in pairs(entry) do
-		if LBISSettings.Tooltip[k] then
+		if LBISSettings.Tooltip[k] and isInEnabledPhase(v.PhaseList) then
 			local classSpec = LBIS.ClassSpec[k]
 			local foundMatch = false;
 
@@ -91,7 +109,6 @@ local function buildExtraTip(tooltip, entry)
         end		
 	end	
 end
-
 
 local function onTooltipSetItem(tooltip, itemLink, quantity)
     if not itemLink then return end

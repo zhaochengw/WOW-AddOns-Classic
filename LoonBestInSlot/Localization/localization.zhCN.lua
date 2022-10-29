@@ -122,6 +122,7 @@ if GetLocale() == "zhCN" then
   LBIS.L["Gundrak (Heroic)"] = "古达克 (英雄)";
   LBIS.L["Gundrak (Normal)"] = "古达克 (一般)";
   LBIS.L["Hadronox"] = "哈多诺克斯";
+--  LBIS.L["Hallow's End"] = "";
   LBIS.L["Halls of Lightning (Heroic)"] = "闪电大厅 (英雄)";
   LBIS.L["Halls of Lightning (Normal)"] = "闪电大厅 (一般)";
   LBIS.L["Halls of Stone"] = "岩石大厅";
@@ -131,6 +132,7 @@ if GetLocale() == "zhCN" then
 --  LBIS.L["Harold Winston"] = "";
   LBIS.L["Head"] = "头部";
   LBIS.L["Head Games"] = "欺骗游戏";
+  LBIS.L["Headless Horseman"] = "无头骑士";
   LBIS.L["Heigan the Unclean"] = "肮脏的希尔盖";
   LBIS.L["Herald Volazj"] = "传令官沃拉兹";
   LBIS.L["Heroic Judgment at the Eye of Eternity"] = "英雄永恒之眼的审判";

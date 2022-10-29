@@ -20,7 +20,7 @@ LBIS:AddGem(spec1, "42702", "3", "False") --Enchanted Tear
 LBIS:AddGem(spec1, "40023", "3", "False") --Shifting Twilight Opal
 
 
-LBIS:AddEnchant(spec1, "50367", LBIS.L["Head"]) --Arcanum of Torment
+LBIS:AddEnchant(spec1, "44149", LBIS.L["Head"]) --Arcanum of Torment
 
 LBIS:AddEnchant(spec1, "61117", LBIS.L["Shoulder"]) --Master's Inscription of the Axe
 LBIS:AddEnchant(spec1, "50335", LBIS.L["Shoulder"]) --Greater Inscription of the Axe

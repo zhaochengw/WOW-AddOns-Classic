@@ -275,11 +275,13 @@ end
 
 function LBIS.BrowserWindow:CreateBrowserWindow()
     local step = 25;
-
-    local window = CreateFrame("Frame", "LootBrowserWindow", UIParent, "BasicFrameTemplateWithInset");
+    local windowName = "LootBrowserWindow";
+    local window = CreateFrame("Frame", windowName, UIParent, "BasicFrameTemplateWithInset");
     local scrollframe = CreateFrame("ScrollFrame", "ScrollFrame", window);
     local scrollbar = CreateFrame("Slider", "ScrollBar", scrollframe, "UIPanelScrollBarTemplate");
     local content = CreateFrame("Frame", "Container", scrollframe);
+    
+	tinsert(UISpecialFrames, windowName)	-- allow ESC close
 
     local function UpdateScrollValue(self, delta)
         if(delta == 1 and scrollbar:GetValue() >= 0) then

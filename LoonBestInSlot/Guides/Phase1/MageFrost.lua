@@ -49,6 +49,7 @@ LBIS:AddItem(spec, "39472", LBIS.L["Neck"], "Alt") --Chain of Latent Energies
 LBIS:AddItem(spec, "40719", LBIS.L["Ring"], "BIS") --Band of Channeled Magic
 LBIS:AddItem(spec, "40399", LBIS.L["Ring"], "BIS") --Signet of Manifested Pain
 LBIS:AddItem(spec, "40080", LBIS.L["Ring"], "Alt") --Lost Jewel
+LBIS:AddItem(spec, "49123", LBIS.L["Ring"], "Alt") --The Horseman's Seal
 LBIS:AddItem(spec, "40585", LBIS.L["Ring"], "Alt") --Signet of the Kirin Tor
 LBIS:AddItem(spec, "42644", LBIS.L["Ring"], "Alt") --Titanium Spellshock Ring
 

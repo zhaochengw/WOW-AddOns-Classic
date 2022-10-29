@@ -122,6 +122,7 @@ if GetLocale() == "esES" then
   LBIS.L["Gundrak (Heroic)"] = "Gundrak (Heroico)";
   LBIS.L["Gundrak (Normal)"] = "Gundrak (Normal)";
   LBIS.L["Hadronox"] = "Hadronox";
+--  LBIS.L["Hallow's End"] = "";
   LBIS.L["Halls of Lightning (Heroic)"] = "Cámaras de Relámpagos (Heroico)";
   LBIS.L["Halls of Lightning (Normal)"] = "Cámaras de Relámpagos (Normal)";
   LBIS.L["Halls of Stone"] = "Cámaras de Piedra";
@@ -131,6 +132,7 @@ if GetLocale() == "esES" then
 --  LBIS.L["Harold Winston"] = "";
   LBIS.L["Head"] = "Cabeza";
   LBIS.L["Head Games"] = "Juegos mentales";
+  LBIS.L["Headless Horseman"] = "Cofre de los Cuatro Jinetes";
   LBIS.L["Heigan the Unclean"] = "Heigan el Impuro";
   LBIS.L["Herald Volazj"] = "Heraldo Volazj";
   LBIS.L["Heroic Judgment at the Eye of Eternity"] = "Heroico: Juicio en El Ojo de la Eternidad";

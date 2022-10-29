@@ -4,11 +4,14 @@ local spec3 = LBIS:RegisterSpec(LBIS.L["Priest"], LBIS.L["Holy"], "3")
 local spec4 = LBIS:RegisterSpec(LBIS.L["Priest"], LBIS.L["Holy"], "4")
 
 LBIS:AddGem(spec1, "41401", "3", "True") --Insightful Earthsiege Diamond
-LBIS:AddGem(spec1, "49110", "4", "False") --Nightmare Tear
 LBIS:AddGem(spec1, "42148", "4", "False") --Brilliant Dragon's Eye
+LBIS:AddGem(spec1, "42150", "4", "False") --Quick Dragon's Eye
 LBIS:AddGem(spec1, "40012", "3", "False") --Brilliant Autumn's Glow
+LBIS:AddGem(spec1, "40017", "3", "False") --Quick Autumn's Glow
 LBIS:AddGem(spec1, "40092", "3", "False") --Seer's Forest Emerald
+LBIS:AddGem(spec1, "40026", "3", "False") --Purified Twilight Opal
 LBIS:AddGem(spec1, "40047", "3", "False") --Luminous Monarch Topaz
+LBIS:AddGem(spec1, "40051", "3", "False") --Reckless Monarch Topaz
 
 
 LBIS:AddEnchant(spec1, "50370", LBIS.L["Head"]) --Arcanum of Blissful Mending

@@ -34,8 +34,8 @@ LBIS:AddItem(spec, "42065", LBIS.L["Back"], "Alt") --Deadly Gladiator's Cloak of
 
 LBIS:AddItem(spec, "40194", LBIS.L["Chest"], "BIS") --Blanketing Robes of Snow
 LBIS:AddItem(spec, "40381", LBIS.L["Chest"], "BIS") --Sympathy
-LBIS:AddItem(spec, "40449", LBIS.L["Chest"], "Alt") --Valorous Robe of Faith
-LBIS:AddItem(spec, "40625", LBIS.L["Chest"], "Alt") --Breastplate of the Lost Conqueror
+LBIS:AddItem(spec, "40449", LBIS.L["Chest"], "BIS") --Valorous Robe of Faith
+LBIS:AddItem(spec, "40625", LBIS.L["Chest"], "BIS") --Breastplate of the Lost Conqueror
 LBIS:AddItem(spec, "40602", LBIS.L["Chest"], "Alt") --Robes of Mutation
 LBIS:AddItem(spec, "44002", LBIS.L["Chest"], "Alt") --The Sanctum's Flowing Vestments
 LBIS:AddItem(spec, "39515", LBIS.L["Chest"], "Alt") --Heroes' Robe of Faith
@@ -70,9 +70,9 @@ LBIS:AddItem(spec, "40448", LBIS.L["Legs"], "Alt") --Valorous Leggings of Faith
 LBIS:AddItem(spec, "40634", LBIS.L["Legs"], "Alt") --Legplates of the Lost Conqueror
 LBIS:AddItem(spec, "40457", LBIS.L["Legs"], "Alt") --Valorous Pants of Faith
 LBIS:AddItem(spec, "40060", LBIS.L["Legs"], "Alt") --Distorted Limbs
+LBIS:AddItem(spec, "39517", LBIS.L["Legs"], "Alt") --Heroes' Leggings of Faith
 LBIS:AddItem(spec, "39528", LBIS.L["Legs"], "Alt") --Heroes' Pants of Faith
 LBIS:AddItem(spec, "40619", LBIS.L["Legs"], "Alt") --Leggings of the Lost Conqueror
-LBIS:AddItem(spec, "39517", LBIS.L["Legs"], "Alt") --Heroes' Leggings of Faith
 LBIS:AddItem(spec, "39309", LBIS.L["Legs"], "Alt") --Leggings of the Instructor
 LBIS:AddItem(spec, "39408", LBIS.L["Legs"], "Alt") --Leggings of Sapphiron
 LBIS:AddItem(spec, "37189", LBIS.L["Legs"], "Alt") --Breeches of the Caller
@@ -91,6 +91,7 @@ LBIS:AddItem(spec, "44662", LBIS.L["Neck"], "BIS") --Life-Binder's Locket
 LBIS:AddItem(spec, "44657", LBIS.L["Neck"], "Alt") --Torque of the Red Dragonflight
 LBIS:AddItem(spec, "40071", LBIS.L["Neck"], "Alt") --Chains of Adoration
 LBIS:AddItem(spec, "40378", LBIS.L["Neck"], "Alt") --Ceaseless Pity
+LBIS:AddItem(spec, "40374", LBIS.L["Neck"], "Alt") --Cosmic Lights
 LBIS:AddItem(spec, "43992", LBIS.L["Neck"], "Alt") --Volitant Amulet
 LBIS:AddItem(spec, "40681", LBIS.L["Neck"], "Alt") --Lattice Choker of Light
 
@@ -108,9 +109,10 @@ LBIS:AddItem(spec, "44283", LBIS.L["Ring"], "Alt") --Signet of Hopeful Light
 LBIS:AddItem(spec, "40432", LBIS.L["Trinket"], "BIS") --Illustration of the Dragon Soul
 LBIS:AddItem(spec, "44255", LBIS.L["Trinket"], "BIS") --Darkmoon Card: Greatness
 LBIS:AddItem(spec, "42413", LBIS.L["Trinket"], "BIS") --Figurine - Sapphire Owl
-LBIS:AddItem(spec, "40258", LBIS.L["Trinket"], "Alt") --Forethought Talisman
-LBIS:AddItem(spec, "37835", LBIS.L["Trinket"], "Alt") --Je'Tze's Bell
+LBIS:AddItem(spec, "42132", LBIS.L["Trinket"], "Alt") --Battlemaster's Bravery
 LBIS:AddItem(spec, "42988", LBIS.L["Trinket"], "Alt") --Darkmoon Card: Illusion
+LBIS:AddItem(spec, "37835", LBIS.L["Trinket"], "Alt") --Je'Tze's Bell
+LBIS:AddItem(spec, "40258", LBIS.L["Trinket"], "Alt") --Forethought Talisman
 LBIS:AddItem(spec, "40382", LBIS.L["Trinket"], "Alt") --Soul of the Dead
 
 LBIS:AddItem(spec, "40395", LBIS.L["Main Hand"], "BIS") --Torch of Holy Fire

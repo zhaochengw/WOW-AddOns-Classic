@@ -11,8 +11,8 @@ LBIS:AddGem(spec1, "40017", "3", "False") --Quick Autumn's Glow
 LBIS:AddGem(spec1, "40027", "3", "False") --Royal Twilight Opal
 
 
-LBIS:AddEnchant(spec1, "44877", LBIS.L["Head"]) --Arcanum of Burning Mysteries
-LBIS:AddEnchant(spec1, "44876", LBIS.L["Head"]) --Arcanum of Blissful Mending
+LBIS:AddEnchant(spec1, "50368", LBIS.L["Head"]) --Arcanum of Burning Mysteries
+LBIS:AddEnchant(spec1, "50370", LBIS.L["Head"]) --Arcanum of Blissful Mending
 
 LBIS:AddEnchant(spec1, "61120", LBIS.L["Shoulder"]) --Master's Inscription of the Storm
 LBIS:AddEnchant(spec1, "61118", LBIS.L["Shoulder"]) --Master's Inscription of the Crag

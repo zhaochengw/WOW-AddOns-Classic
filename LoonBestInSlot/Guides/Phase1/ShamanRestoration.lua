@@ -89,6 +89,7 @@ LBIS:AddItem(spec, "40432", LBIS.L["Trinket"], "BIS") --Illustration of the Drag
 LBIS:AddItem(spec, "37111", LBIS.L["Trinket"], "BIS") --Soul Preserver
 LBIS:AddItem(spec, "39229", LBIS.L["Trinket"], "BIS") --Embrace of the Spider
 LBIS:AddItem(spec, "40685", LBIS.L["Trinket"], "BIS") --The Egg of Mortal Essence
+LBIS:AddItem(spec, "40258", LBIS.L["Trinket"], "Alt") --Forethought Talisman
 LBIS:AddItem(spec, "40382", LBIS.L["Trinket"], "Alt") --Soul of the Dead
 
 LBIS:AddItem(spec, "40395", LBIS.L["Main Hand"], "BIS") --Torch of Holy Fire

@@ -122,6 +122,7 @@ if GetLocale() == "ruRU" then
   LBIS.L["Gundrak (Heroic)"] = "Гундрак (Героический)";
   LBIS.L["Gundrak (Normal)"] = "Гундрак (Обычный)";
   LBIS.L["Hadronox"] = "Хадронокс";
+--  LBIS.L["Hallow's End"] = "";
   LBIS.L["Halls of Lightning (Heroic)"] = "Чертоги Молний (Героический)";
   LBIS.L["Halls of Lightning (Normal)"] = "Чертоги Молний (Обычный)";
   LBIS.L["Halls of Stone"] = "Чертоги Камня";
@@ -131,6 +132,7 @@ if GetLocale() == "ruRU" then
 --  LBIS.L["Harold Winston"] = "";
   LBIS.L["Head"] = "Голова";
   LBIS.L["Head Games"] = "Игры разума";
+  LBIS.L["Headless Horseman"] = "Всадник без головы";
   LBIS.L["Heigan the Unclean"] = "Хейган Нечистивый";
   LBIS.L["Herald Volazj"] = "Глашатай Волаж";
   LBIS.L["Heroic Judgment at the Eye of Eternity"] = "Героическое правосудие в Оке Вечности";

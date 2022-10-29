@@ -16,7 +16,7 @@ LBIS:AddGem(spec1, "40034", "3", "False") --Guardian's Twilight Opal
 LBIS:AddGem(spec1, "40088", "3", "False") --Vivid Forest Emerald
 
 
-LBIS:AddEnchant(spec1, "44879", LBIS.L["Head"]) --Arcanum of Torment
+LBIS:AddEnchant(spec1, "44149", LBIS.L["Head"]) --Arcanum of Torment
 
 LBIS:AddEnchant(spec1, "61117", LBIS.L["Shoulder"]) --Master's Inscription of the Axe
 LBIS:AddEnchant(spec1, "50335", LBIS.L["Shoulder"]) --Greater Inscription of the Axe

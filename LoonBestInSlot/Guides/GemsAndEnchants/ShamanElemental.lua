@@ -12,7 +12,7 @@ LBIS:AddGem(spec1, "40025", "3", "False") --Glowing Twilight Opal
 LBIS:AddGem(spec1, "40027", "3", "False") --Royal Twilight Opal
 
 
-LBIS:AddEnchant(spec1, "44877", LBIS.L["Head"]) --Arcanum of Burning Mysteries
+LBIS:AddEnchant(spec1, "50368", LBIS.L["Head"]) --Arcanum of Burning Mysteries
 
 LBIS:AddEnchant(spec1, "61120", LBIS.L["Shoulder"]) --Master's Inscription of the Storm
 LBIS:AddEnchant(spec1, "50338", LBIS.L["Shoulder"]) --Greater Inscription of the Storm

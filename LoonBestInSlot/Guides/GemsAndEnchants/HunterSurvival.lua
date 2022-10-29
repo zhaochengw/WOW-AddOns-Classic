@@ -13,9 +13,9 @@ LBIS:AddGem(spec1, "49110", "4", "False") --Nightmare Tear
 LBIS:AddGem(spec1, "42702", "3", "False") --Enchanted Tear
 
 
-LBIS:AddEnchant(spec1, "50367", LBIS.L["Head"]) --Arcanum of Torment
+LBIS:AddEnchant(spec1, "44149", LBIS.L["Head"]) --Arcanum of Torment
 
-LBIS:AddEnchant(spec1, "44133", LBIS.L["Shoulder"]) --Greater Inscription of the Axe
+LBIS:AddEnchant(spec1, "50335", LBIS.L["Shoulder"]) --Greater Inscription of the Axe
 LBIS:AddEnchant(spec1, "28888", LBIS.L["Shoulder"]) --Greater Inscription of Vengeance
 
 LBIS:AddEnchant(spec1, "55002", LBIS.L["Back"]) --Flexweave Underlay

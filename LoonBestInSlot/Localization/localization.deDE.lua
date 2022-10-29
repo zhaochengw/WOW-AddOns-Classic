@@ -35,7 +35,7 @@ if GetLocale() == "deDE" then
   LBIS.L["Banshee's Revenge"] = "Rache der Banshee";
   LBIS.L["Basic Chemistry"] = "Grundkenntnisse der Chemie";
   LBIS.L["Battle at Valhalas: Final Challenge"] = "Kampf bei Valhalas: Letzte Herausforderung";
-  LBIS.L["Bear"] = "Tragen";
+  LBIS.L["Bear"] = "Bär";
   LBIS.L["Beast Mastery"] = "Tierherrschaft";
   LBIS.L["Betrayal"] = "Verrat";
   LBIS.L["BIS"] = "BIS";
@@ -122,6 +122,7 @@ if GetLocale() == "deDE" then
   LBIS.L["Gundrak (Heroic)"] = "Gundrak (Heroisch)";
   LBIS.L["Gundrak (Normal)"] = "Gundrak (Normal)";
   LBIS.L["Hadronox"] = "Hadronox";
+--  LBIS.L["Hallow's End"] = "";
   LBIS.L["Halls of Lightning (Heroic)"] = "Hallen der Blitze (Heroisch)";
   LBIS.L["Halls of Lightning (Normal)"] = "Hallen der Blitze (Normal)";
   LBIS.L["Halls of Stone"] = "Die Hallen des Steins";
@@ -131,6 +132,7 @@ if GetLocale() == "deDE" then
 --  LBIS.L["Harold Winston"] = "";
   LBIS.L["Head"] = "Kopf";
   LBIS.L["Head Games"] = "Psychospielchen";
+  LBIS.L["Headless Horseman"] = "Der kopflose Reiter";
   LBIS.L["Heigan the Unclean"] = "Heigan der Unreine";
   LBIS.L["Herald Volazj"] = "Herold Volazj";
   LBIS.L["Heroic Judgment at the Eye of Eternity"] = "Heroische Entscheidung im Auge der Ewigkeit";

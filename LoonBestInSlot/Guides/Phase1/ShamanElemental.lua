@@ -8,12 +8,12 @@ LBIS:AddItem(spec, "40339", LBIS.L["Head"], "Alt") --Gothik's Cowl
 LBIS:AddItem(spec, "39405", LBIS.L["Head"], "Alt") --Helmet of the Inner Sanctum
 LBIS:AddItem(spec, "42555", LBIS.L["Head"], "Alt") --Electroflux Sight Enhancers
 
-LBIS:AddItem(spec, "40518", LBIS.L["Shoulder"], "BIS") --Valorous Earthshatter Shoulderpads
-LBIS:AddItem(spec, "40638", LBIS.L["Shoulder"], "BIS") --Mantle of the Lost Protector
+LBIS:AddItem(spec, "40286", LBIS.L["Shoulder"], "BIS") --Mantle of the Corrupted
+LBIS:AddItem(spec, "40638", LBIS.L["Shoulder"], "Alt") --Mantle of the Lost Protector
+LBIS:AddItem(spec, "40518", LBIS.L["Shoulder"], "Alt") --Valorous Earthshatter Shoulderpads
 LBIS:AddItem(spec, "39596", LBIS.L["Shoulder"], "Alt") --Heroes' Earthshatter Shoulderpads
 LBIS:AddItem(spec, "40623", LBIS.L["Shoulder"], "Alt") --Spaulders of the Lost Protector
 LBIS:AddItem(spec, "40439", LBIS.L["Shoulder"], "Alt") --Mantle of the Eternal Sentinel
-LBIS:AddItem(spec, "40286", LBIS.L["Shoulder"], "Alt") --Mantle of the Corrupted
 
 LBIS:AddItem(spec, "44005", LBIS.L["Back"], "BIS") --Pennant Cloak
 LBIS:AddItem(spec, "41610", LBIS.L["Back"], "Alt") --Deathchill Cloak
@@ -33,16 +33,16 @@ LBIS:AddItem(spec, "40325", LBIS.L["Wrist"], "BIS") --Bindings of the Expansive 
 LBIS:AddItem(spec, "37788", LBIS.L["Wrist"], "Alt") --Limb Regeneration Bracers
 LBIS:AddItem(spec, "37884", LBIS.L["Wrist"], "Alt") --Azure Cloth Bindings
 
-LBIS:AddItem(spec, "40629", LBIS.L["Hands"], "BIS") --Gauntlets of the Lost Protector
-LBIS:AddItem(spec, "40515", LBIS.L["Hands"], "BIS") --Valorous Earthshatter Gloves
 LBIS:AddItem(spec, "40302", LBIS.L["Hands"], "BIS") --Benefactor's Gauntlets
+LBIS:AddItem(spec, "40515", LBIS.L["Hands"], "Alt") --Valorous Earthshatter Gloves
+LBIS:AddItem(spec, "40629", LBIS.L["Hands"], "Alt") --Gauntlets of the Lost Protector
 LBIS:AddItem(spec, "39593", LBIS.L["Hands"], "Alt") --Heroes' Earthshatter Gloves
 LBIS:AddItem(spec, "40614", LBIS.L["Hands"], "Alt") --Gloves of the Lost Protector
 LBIS:AddItem(spec, "40380", LBIS.L["Hands"], "Alt") --Gloves of Grandeur
 LBIS:AddItem(spec, "39243", LBIS.L["Hands"], "Alt") --Handgrips of the Foredoomed
 
-LBIS:AddItem(spec, "40327", LBIS.L["Waist"], "BIS") --Girdle of Recuperation
 LBIS:AddItem(spec, "40301", LBIS.L["Waist"], "BIS") --Cincture of Polarity
+LBIS:AddItem(spec, "40327", LBIS.L["Waist"], "Alt") --Girdle of Recuperation
 LBIS:AddItem(spec, "40696", LBIS.L["Waist"], "Alt") --Plush Sash of Guzbah
 
 LBIS:AddItem(spec, "40560", LBIS.L["Legs"], "BIS") --Leggings of the Wanton Spellcaster
@@ -65,15 +65,16 @@ LBIS:AddItem(spec, "39472", LBIS.L["Neck"], "Alt") --Chain of Latent Energies
 LBIS:AddItem(spec, "42647", LBIS.L["Neck"], "Alt") --Titanium Spellshock Necklace
 
 LBIS:AddItem(spec, "40399", LBIS.L["Ring"], "BIS") --Signet of Manifested Pain
-LBIS:AddItem(spec, "39389", LBIS.L["Ring"], "BIS") --Signet of the Malevolent
+LBIS:AddItem(spec, "37694", LBIS.L["Ring"], "BIS") --Band of Guile
+LBIS:AddItem(spec, "39389", LBIS.L["Ring"], "Alt") --Signet of the Malevolent
 LBIS:AddItem(spec, "40585", LBIS.L["Ring"], "Alt") --Signet of the Kirin Tor
 LBIS:AddItem(spec, "39244", LBIS.L["Ring"], "Alt") --Ring of the Fated
 LBIS:AddItem(spec, "42644", LBIS.L["Ring"], "Alt") --Titanium Spellshock Ring
 LBIS:AddItem(spec, "43253", LBIS.L["Ring"], "Alt") --Ring of Northern Tears
 
 LBIS:AddItem(spec, "40432", LBIS.L["Trinket"], "BIS") --Illustration of the Dragon Soul
-LBIS:AddItem(spec, "39229", LBIS.L["Trinket"], "BIS") --Embrace of the Spider
-LBIS:AddItem(spec, "40255", LBIS.L["Trinket"], "Alt") --Dying Curse
+LBIS:AddItem(spec, "40255", LBIS.L["Trinket"], "BIS") --Dying Curse
+LBIS:AddItem(spec, "39229", LBIS.L["Trinket"], "Alt") --Embrace of the Spider
 LBIS:AddItem(spec, "40682", LBIS.L["Trinket"], "Alt") --Sundial of the Exiled
 LBIS:AddItem(spec, "37873", LBIS.L["Trinket"], "Alt") --Mark of the War Prisoner
 LBIS:AddItem(spec, "42395", LBIS.L["Trinket"], "Alt") --Figurine - Twilight Serpent

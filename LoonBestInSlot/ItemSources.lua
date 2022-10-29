@@ -1160,6 +1160,7 @@ LBIS.ItemSources =
     [42553] = { Name = "Visage Liquification Goggles", SourceType = LBIS.L["Profession"], Source = LBIS.L["Engineering"], SourceNumber = "0", SourceLocation = "56484" },
     [42554] = { Name = "Greensight Gogs", SourceType = LBIS.L["Profession"], Source = LBIS.L["Engineering"], SourceNumber = "0", SourceLocation = "56486" },
     [42555] = { Name = "Electroflux Sight Enhancers", SourceType = LBIS.L["Profession"], Source = LBIS.L["Engineering"], SourceNumber = "0", SourceLocation = "56487" },
+    [42611] = { Name = "Savage Gladiator's Libram of Fortitude", SourceType = LBIS.L["PvP"], Source = LBIS.L["Honor Points"].." & "..LBIS.L["Arena Points"], SourceNumber = "4480 & 175", SourceLocation = LBIS.L["Arena Vendor"] },
     [42620] = { Name = "Deadly Gladiator's Sigil of Strife", SourceType = LBIS.L["PvP"], Source = LBIS.L["Arena Points"], SourceNumber = "1200", SourceLocation = LBIS.L["Arena Vendor"] },
     [42642] = { Name = "Titanium Impact Band", SourceType = LBIS.L["Profession"], Source = LBIS.L["Jewelcrafting"], SourceNumber = "42648", SourceLocation = "56496" },
     [42643] = { Name = "Titanium Earthguard Ring", SourceType = LBIS.L["Profession"], Source = LBIS.L["Jewelcrafting"], SourceNumber = "42649", SourceLocation = "56497" },
@@ -1171,6 +1172,7 @@ LBIS.ItemSources =
     [42795] = { Name = "Leggings of Renewed Hope", SourceType = LBIS.L["Quest"], Source = LBIS.L["The Gifts of Loken"], SourceNumber = "0", SourceLocation = LBIS.L["The Storm Peaks"] },
     [42842] = { Name = "Fur-Lined Shoulder Warmers", SourceType = LBIS.L["Quest"], Source = LBIS.L["They Took Our Men!"], SourceNumber = "0", SourceLocation = LBIS.L["The Storm Peaks"] },
     [42850] = { Name = "Flamebringer's Crown", SourceType = LBIS.L["Quest"], Source = LBIS.L["Valkyrion Must Burn"], SourceNumber = "0", SourceLocation = LBIS.L["The Storm Peaks"] },
+    [42851] = { Name = "Hateful Gladiator's Libram of Fortitude", SourceType = LBIS.L["PvP"], Source = LBIS.L["Honor Points"].." & "..LBIS.L["Arena Points"], SourceNumber = "4480 & 350", SourceLocation = LBIS.L["Arena Vendor"] },
     [42852] = { Name = "Deadly Gladiator's Libram of Fortitude", SourceType = LBIS.L["PvP"], Source = LBIS.L["Arena Points"], SourceNumber = "1200", SourceLocation = LBIS.L["Arena Vendor"] },
     [42863] = { Name = "Sharpened Hyldnir Harpoon", SourceType = LBIS.L["Quest"], Source = LBIS.L["The Drakkensryd"], SourceNumber = "0", SourceLocation = LBIS.L["The Storm Peaks"] },
     [42987] = { Name = "Darkmoon Card: Greatness", SourceType = LBIS.L["Quest"], Source = LBIS.L["Darkmoon Nobles Deck"], SourceNumber = "0", SourceLocation = LBIS.L["Darkmoon Faire"] },
@@ -1358,5 +1360,7 @@ LBIS.ItemSources =
     [49078] = { Name = "Ancient Pickled Egg", SourceType = LBIS.L["Drop"], Source = LBIS.L["Coren Direbrew"], SourceNumber = "0", SourceLocation = LBIS.L["Brewfest"] },
     [49116] = { Name = "Bitter Balebrew Charm", SourceType = LBIS.L["Drop"], Source = LBIS.L["Coren Direbrew"], SourceNumber = "0", SourceLocation = LBIS.L["Brewfest"] },
     [49118] = { Name = "Bubbling Brightbrew Charm", SourceType = LBIS.L["Drop"], Source = LBIS.L["Coren Direbrew"], SourceNumber = "0", SourceLocation = LBIS.L["Brewfest"] },
+    [49123] = { Name = "The Horseman's Seal", SourceType = LBIS.L["Drop"], Source = LBIS.L["Headless Horseman"], SourceNumber = "0", SourceLocation = LBIS.L["Hallow's End"] },
+    [49126] = { Name = "The Horseman's Horrific Helm", SourceType = LBIS.L["Drop"], Source = LBIS.L["Headless Horseman"], SourceNumber = "0", SourceLocation = LBIS.L["Hallow's End"] },
     [49227] = { Name = "Skoll's Fang", SourceType = LBIS.L["Drop"], Source = LBIS.L["World Drop (Skoll)"], SourceNumber = "0", SourceLocation = LBIS.L["The Storm Peaks"] },
 }

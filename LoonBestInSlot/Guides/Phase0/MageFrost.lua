@@ -55,8 +55,10 @@ LBIS:AddItem(spec, "40680", LBIS.L["Neck"], "Alt") --Encircling Burnished Gold C
 LBIS:AddItem(spec, "42647", LBIS.L["Neck"], "Alt") --Titanium Spellshock Necklace
 
 LBIS:AddItem(spec, "40585", LBIS.L["Ring"], "BIS") --Signet of the Kirin Tor
+LBIS:AddItem(spec, "49123", LBIS.L["Ring"], "BIS") --The Horseman's Seal
 LBIS:AddItem(spec, "42644", LBIS.L["Ring"], "BIS") --Titanium Spellshock Ring
 LBIS:AddItem(spec, "37694", LBIS.L["Ring"], "Alt") --Band of Guile
+LBIS:AddItem(spec, "42114", LBIS.L["Ring"], "Alt") --Deadly Gladiator's Band of Ascendancy
 LBIS:AddItem(spec, "37192", LBIS.L["Ring"], "Alt") --Annhylde's Ring
 
 LBIS:AddItem(spec, "40682", LBIS.L["Trinket"], "BIS") --Sundial of the Exiled

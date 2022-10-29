@@ -42,6 +42,10 @@ LBISSettings = LBISSettings or
 		[LBIS.L["Arms"]..LBIS.L["Warrior"]] = true,
 		[LBIS.L["Fury"]..LBIS.L["Warrior"]] = true,
 		[LBIS.L["Protection"]..LBIS.L["Warrior"]] = true
+	},
+	PhaseTooltip = {
+		[LBIS.L["PreRaid"]] = true,
+		[LBIS.L["Phase 1"]] = true
 	}
 }
 
@@ -51,7 +55,7 @@ local lbis_options = {
     handler = LBIS,
     type = "group",
     args = {		
-		spacer1 = {
+		spacer0 = {
 			type = "header",
 			name = LBIS.L["Settings"],
 			width = "full",
@@ -435,46 +439,40 @@ local lbis_options = {
 			width = 1.6,
 			order = 38,
 		},
+		spacer2 = {
+			type = "header",
+			name = LBIS.L["Show Tooltip"],
+			width = "full",
+			order = 39,
+		},
+		showPreRaid = {
+			type = "toggle",
+			name = LBIS.L["PreRaid"],
+			desc = LBIS.L["PreRaid"],
+			get = function(info) return LBISSettings.PhaseTooltip[LBIS.L["PreRaid"]] end,
+			set = function(info, val) LBISSettings.PhaseTooltip[LBIS.L["PreRaid"]] = val end,
+			width = 1.1,
+			order = 40,
+		},
+		showPhase1 = {
+			type = "toggle",
+			name = LBIS.L["Phase 1"],
+			desc = LBIS.L["Phase 1"],
+			get = function(info) return LBISSettings.PhaseTooltip[LBIS.L["Phase 1"]] end,
+			set = function(info, val) LBISSettings.PhaseTooltip[LBIS.L["Phase 1"]] = val end,
+			width = 1.1,
+			order = 41,
+		},
 	}
 };
 
 function LBIS:CreateSettings()
 
-	--TODO: Remove this after a certain amount of time
-	if LBISSettings.Tooltip == nil then
-		LBISSettings.Tooltip = {			
-				[LBIS.L["Blood"]..LBIS.L["Death Knight"]] = true,
-				[LBIS.L["Frost"]..LBIS.L["Death Knight"]] = true,
-				[LBIS.L["Unholy"]..LBIS.L["Death Knight"]] = true,
-				[LBIS.L["Balance"]..LBIS.L["Druid"]] = true,
-				[LBIS.L["Bear"]..LBIS.L["Druid"]] = true,
-				[LBIS.L["Cat"]..LBIS.L["Druid"]] = true,
-				[LBIS.L["Restoration"]..LBIS.L["Druid"]] = true,
-				[LBIS.L["Beast Mastery"]..LBIS.L["Hunter"]] = true,
-				[LBIS.L["Marksmanship"]..LBIS.L["Hunter"]] = true,
-				[LBIS.L["Survival"]..LBIS.L["Hunter"]] = true,
-				[LBIS.L["Arcane"]..LBIS.L["Mage"]] = true,
-				[LBIS.L["Fire"]..LBIS.L["Mage"]] = true,
-				[LBIS.L["Frost"]..LBIS.L["Mage"]] = true,
-				[LBIS.L["Holy"]..LBIS.L["Paladin"]] = true,
-				[LBIS.L["Protection"]..LBIS.L["Paladin"]] = true,
-				[LBIS.L["Retribution"]..LBIS.L["Paladin"]] = true,
-				[LBIS.L["Discipline"]..LBIS.L["Priest"]] = true,
-				[LBIS.L["Holy"]..LBIS.L["Priest"]] = true,
-				[LBIS.L["Shadow"]..LBIS.L["Priest"]] = true,
-				[LBIS.L["Assassination"]..LBIS.L["Rogue"]] = true,
-				[LBIS.L["Combat"]..LBIS.L["Rogue"]] = true,
-				[LBIS.L["Subtlety"]..LBIS.L["Rogue"]] = true,
-				[LBIS.L["Elemental"]..LBIS.L["Shaman"]] = true,
-				[LBIS.L["Enhancement"]..LBIS.L["Shaman"]] = true,
-				[LBIS.L["Restoration"]..LBIS.L["Shaman"]] = true,
-				[LBIS.L["Affliction"]..LBIS.L["Warlock"]] = true,
-				[LBIS.L["Demonology"]..LBIS.L["Warlock"]] = true,
-				[LBIS.L["Destruction"]..LBIS.L["Warlock"]] = true,
-				[LBIS.L["Arms"]..LBIS.L["Warrior"]] = true,
-				[LBIS.L["Fury"]..LBIS.L["Warrior"]] = true,
-				[LBIS.L["Protection"]..LBIS.L["Warrior"]] = true
-		}
+	--TODO: Remove this after a certain amount of time	
+	if LBISSettings.PhaseTooltip == nil then
+		LBISSettings.PhaseTooltip = {};
+		LBISSettings.PhaseTooltip[LBIS.L["PreRaid"]] = true;
+		LBISSettings.PhaseTooltip[LBIS.L["Phase 1"]] = true;
 	end
 
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("Loon Best In Slot", lbis_options, nil)
