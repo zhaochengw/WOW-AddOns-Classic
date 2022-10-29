@@ -1,8 +1,8 @@
 ## Interface: 30400
 ## Title: BuffTimers
 ## Author: mdhippie
-## Notes: v1.5.11 -- Buff time options
-## Version: v1.5.11
+## Notes: v1.7.0 -- Buff time options
+## Version: v1.7.0
 ## DefaultState: enabled
 ## SavedVariables: BuffTimersOptions
 
