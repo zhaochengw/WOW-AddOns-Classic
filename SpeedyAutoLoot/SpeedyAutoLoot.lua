@@ -15,11 +15,14 @@ local internal = {
   slotsLooted = {},
 };
 
+-- Compat
 local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots
+local LOOT_SLOT_ITEM = LOOT_SLOT_ITEM or Enum.LootSlotType.Item
 
 function AutoLoot:ProcessLootItem(itemLink, itemQuantity)
   local itemStackSize, _, _, _, itemClassID = select(8, GetItemInfo(itemLink));
   local itemFamily = GetItemFamily(itemLink);
+
   for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS do
     local free, bagFamily = GetContainerNumFreeSlots(i);
     if i == 5 then
@@ -54,13 +57,10 @@ function AutoLoot:LootSlot(slot)
   local lootQuantity, _, lootQuality, lootLocked, isQuestItem = select(3, GetLootSlotInfo(slot));
   if lootLocked or (lootQuality and lootQuality >= internal.lootThreshold) then
     internal.isItemLocked = true;
-  elseif slotType ~= 1 or (not internal.isClassic and isQuestItem) or self:ProcessLootItem(itemLink, lootQuantity) then
+  elseif slotType ~= LOOT_SLOT_ITEM or (not internal.isClassic and isQuestItem) or self:ProcessLootItem(itemLink, lootQuantity) then
     LootSlot(slot);
     if internal.isClassic then
       internal.slotsLooted[slot] = true;
-      if slotType == 1 and not UIParent:IsEventRegistered("LOOT_BIND_CONFIRM") then
-        ConfirmLootSlot(slot);
-      end
     end
     return true;
   end
@@ -127,19 +127,18 @@ function AutoLoot:OnErrorMessage(...)
 end
 
 function AutoLoot:OnBindConfirm()
-  if IsInGroup() and internal.isLooting and internal.isHidden then
-    UIParent:RegisterEvent("LOOT_BIND_CONFIRM")
+  if internal.isLooting and internal.isHidden then
     self:ShowLootFrame(true);
   end
 end
 
-function AutoLoot:OnGroupJoined()
+--[[ function AutoLoot:OnGroupJoined()
 	UIParent:RegisterEvent("LOOT_BIND_CONFIRM");
 end
 
 function AutoLoot:OnGroupLeft()
 	UIParent:UnregisterEvent("LOOT_BIND_CONFIRM");
-end
+end ]]
 
 function AutoLoot:PlayInventoryFullSound()
   if Settings.global.enableSound and not internal.isItemLocked then
@@ -228,12 +227,12 @@ function AutoLoot:OnInit()
 
   if internal.isClassic then
     self:RegisterEvent("LOOT_BIND_CONFIRM", self.OnBindConfirm);
-    self:RegisterEvent("GROUP_LEFT", self.OnGroupLeft);
+--[[     self:RegisterEvent("GROUP_LEFT", self.OnGroupLeft);
     self:RegisterEvent("GROUP_JOINED", self.OnGroupJoined);
     -- group events don't fire on a /reload and probably also not when you login while already in a group
     if not IsInGroup() then
       self:OnGroupLeft();
-    end
+    end ]]
 
     if LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_WRATH_OF_THE_LICH_KING then
       self:RegisterEvent("LOOT_SLOT_CHANGED", self.OnSlotChanged);
