@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.9) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.11) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ end
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "ptBR");
 
 if not L then
-    T._LoadedFiles["ptBR.lua"] = "2.7.8.9";
+    T._LoadedFiles["ptBR.lua"] = "2.7.8.11";
     return;
 end
 
@@ -411,5 +411,5 @@ L["UNSTABLERELEASE"] = "Versão instável"
 
 
 
-T._LoadedFiles["ptBR.lua"] = "2.7.8.9";
+T._LoadedFiles["ptBR.lua"] = "2.7.8.11";
 

@@ -1,5 +1,22 @@
-Decursive 2.7.8.9
-=================
+Decursive 2.7.8.11
+==================
+
+Decursive 2.7.8.11 (2022-10-27)
+-------------------------------
+
+- Fix LUA error with LDB's tooltip creation.
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
+
+
+Decursive 2.7.8.10 (2022-10-26)
+-------------------------------
+
+- TOC update for Dragonflight + fix XML error.
+
+- WOTLK: Fix Body and Soul talent handling.
 
 Decursive 2.7.8.9 (2022-09-22)
 ------------------------------
@@ -7,10 +24,6 @@ Decursive 2.7.8.9 (2022-09-22)
 - WOTLK:
     - Fix Shaman's "Cleanse Spirit", Fellhunter's "Devour Magic" detection, Priests' "Body and Soul" talent detection.
     - Fix crash when adding custom pet spell by name in custom spell.
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
-
 
 Decursive 2.7.8.8 (2022-09-10)
 ------------------------------
