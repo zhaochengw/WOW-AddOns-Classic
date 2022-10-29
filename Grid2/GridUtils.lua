@@ -66,6 +66,21 @@ do
 	end
 end
 
+-- iterate over a list of values example: for value in Grid2.IterateValues(4,2,7,1) do
+function Grid2.IterateValues(...)
+  local i, t = 0, {...}
+  return function() i = i + 1; return t[i] end
+end
+
+-- retrieve config value, falling back to default
+function Grid2.GetSetupValue(condition, value, default)
+	if condition and value~=nil then
+		return value
+	else
+		return default
+	end
+end
+
 -- UTF8 string truncate
 do
 	local strbyte = string.byte
@@ -150,6 +165,12 @@ Grid2.statusLibrary = {
 		for unit in Grid2:IterateRosterUnits() do
 			self:UpdateIndicators(unit)
 		end
+	end,
+	GetTexCoord = function()
+		return 0.05, 0.95, 0.05, 0.95
+	end,
+	GetTexCoordZoomed = function()
+		return 0.08, 0.92, 0.08, 0.92
 	end,
 }
 
@@ -264,10 +285,14 @@ do
 				dispel.Disease = IsPlayerSpell(552) or IsPlayerSpell(528)
 			end
 		elseif class == 'SHAMAN' then
-			func = function()
+			func = Grid2.isWrath and (function()
+				dispel.Disease = IsPlayerSpell(2870) or IsPlayerSpell(526) or IsPlayerSpell(51886)
+				dispel.Poison  = IsPlayerSpell(526) or IsPlayerSpell(51886)
+				dispel.Curse   = IsPlayerSpell(51886)
+			end) or (function()
 				dispel.Disease = IsPlayerSpell(2870)
 				dispel.Poison  = IsPlayerSpell(526)
-			end
+			end)
 		elseif class == 'MAGE' then
 			func = function()
 				dispel.Curse = IsPlayerSpell(475)
@@ -313,6 +338,13 @@ do
 				dispel.Magic   = IsPlayerSpell(115450)
 				dispel.Disease = IsPlayerSpell(115450) or IsPlayerSpell(218164)
 				dispel.Poison  = IsPlayerSpell(115450) or IsPlayerSpell(218164)
+			end
+		elseif class == 'EVOKER' then
+			func = function()
+				dispel.Magic   = IsPlayerSpell(360823)
+				dispel.Curse   = IsPlayerSpell(374251)
+				dispel.Poison  = IsPlayerSpell(360823) or IsPlayerSpell(365585)
+				dispel.Disease = IsPlayerSpell(374251)
 			end
 		end
 	end

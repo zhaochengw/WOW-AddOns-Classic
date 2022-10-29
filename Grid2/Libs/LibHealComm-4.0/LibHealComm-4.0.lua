@@ -1,5 +1,5 @@
 local major = "LibHealComm-4.0"
-local minor = 109
+local minor = 110
 assert(LibStub, format("%s requires LibStub.", major))
 
 local HealComm = LibStub:NewLibrary(major, minor)
@@ -1205,6 +1205,8 @@ if( playerClass == "PALADIN" ) then
 		local BeaconofLight = GetSpellInfo(53563) or "BeaconofLight"
 		local SealofLight = GetSpellInfo(20165) or "SealofLight"
 		local DivineIllumination = GetSpellInfo(31842) or "DivineIllumination"
+		local DivinePlea = GetSpellInfo(54428)
+		local AvengingWrath = GetSpellInfo(31884)
 
 		if isWrath then
 			spellData[HolyLight] = { coeff = 2.5 / 3.5, levels = {1, 6, 14, 22, 30, 38, 46, 54, 60, 62, 70, 75, 80}, averages = {
@@ -1346,21 +1348,28 @@ if( playerClass == "PALADIN" ) then
 
 			if( equippedSetCache["Lightbringer"] >= 4 and spellName == FlashofLight ) then healModifier = healModifier + 0.05 end
 
+			if isWrath then
+				if( unitHasAura("player", AvengingWrath) ) then healModifier = healModifier * 1.2 end
+				if( unitHasAura("player", DivinePlea) ) then healModifier = healModifier * 0.5 end
+			end
+
 			spellPower = spellPower * spellData[spellName].coeff * (isWrath and 2.35 or 1)
 			healAmount = calculateGeneralAmount(spellData[spellName].levels[spellRank], healAmount, spellPower, spModifier, healModifier)
 
-			for auraID, values in pairs(blessings) do
-				if unitHasAura(unit, auraID) then
-					if playerCurrentRelic == 28592 then
-						if spellName == FlashofLight then
-							healAmount = calculateGeneralAmount(spellData[spellName].levels[spellRank], healAmount, values[spellName] + 60, healModifier, 1)
+			if not isWrath then -- Blessing of Light was baked in the base healing values of paladin spells in WotLK
+				for auraID, values in pairs(blessings) do
+					if unitHasAura(unit, auraID) then
+						if playerCurrentRelic == 28592 then
+							if spellName == FlashofLight then
+								healAmount = calculateGeneralAmount(spellData[spellName].levels[spellRank], healAmount, values[spellName] + 60, healModifier, 1)
+							else
+								healAmount = calculateGeneralAmount(spellData[spellName].levels[spellRank], healAmount, values[spellName] + 120, healModifier, 1)
+							end
 						else
-							healAmount = calculateGeneralAmount(spellData[spellName].levels[spellRank], healAmount, values[spellName] + 120, healModifier, 1)
+							healAmount = calculateGeneralAmount(spellData[spellName].levels[spellRank], healAmount, values[spellName], healModifier, 1)
 						end
-					else
-						healAmount = calculateGeneralAmount(spellData[spellName].levels[spellRank], healAmount, values[spellName], healModifier, 1)
+						break
 					end
-					break
 				end
 			end
 
@@ -3331,7 +3340,7 @@ function HealComm:OnInitialize()
 	self.eventFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 	self.eventFrame:RegisterEvent("PLAYER_LEVEL_UP")
 	self.eventFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
-	self.eventFrame:RegisterUnitEvent("UNIT_AURA", 'player')
+	self.eventFrame:RegisterEvent("UNIT_AURA")
 	if isWrath then
 		self.eventFrame:RegisterEvent("GLYPH_ADDED")
 		self.eventFrame:RegisterEvent("GLYPH_REMOVED")

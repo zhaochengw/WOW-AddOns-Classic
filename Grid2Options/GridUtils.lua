@@ -113,6 +113,27 @@ do
 	Grid2Options.FONT_FLAGS_DEFAULT       = FONT_FLAGS_DEFAULT
 end
 
+-- safe get value from table, returns def value if array table does not exist
+function Grid2Options.GetTableValueSafe(t, k, def)
+	if t then
+		local v = t[k]
+		if v~=nil then
+			return v
+		end
+	end
+	return def
+end
+
+-- safe set key,value pair to table, creates the table if not exist
+function Grid2Options.SetTableValueSafe(db, tableKey, key, value)
+	local t = db[tableKey]
+	if t then
+		t[key] = value
+	else
+		db[tableKey] = { [key] = value }
+	end
+end
+
 -- Grid2Option:UnpackColor()
 function Grid2Options:UnpackColor( color, colorKey )
 	color = color or Grid2.defaultColors[colorKey or "TRANSPARENT"]
@@ -210,17 +231,19 @@ do
 		Display    = { type = "header", order = 80,  name = L["Display"]    },
 		StackText  = { type = "header", order = 90,  name = L["Stack Text"] },
 		Cooldown   = { type = "header", order = 125, name = L["Cooldown"]	},
-		Animation  = { type = "header", order = 150, name = L["Animations"]	},
+		ZoomIn     = { type = "header", order = 150, name = L["Zoom In"]	},
+		Highlight  = { type = "header", order = 200, name = L["Highlight"]	},
 		-- statuses headers
-		Stacks	     = { type = "header", order = 4.9, name = L["Stacks"]      },
-		Colors	     = { type = "header", order = 10,  name = L["Colors"]      },
-		Thresholds   = { type = "header", order = 50,  name = L["Thresholds"], },
-		Value        = { type = "header", order = 90,  name = L["Value"] },
-		Text         = { type = "header", order = 95,  name = L["Text"] },
-		Misc         = { type = "header", order = 100, name = L["Misc"]        },
-		Auras	     = { type = "header", order = 150, name = L["Auras"]       },
-		DebuffFilter = { type = "header", order = 175, name = L["Filtered debuffs"] },
-		AurasExpanded= { type = "header", order = 300,  name = L["Display"] },
+		Stacks	      = { type = "header", order = 4.9, name = L["Stacks"]      },
+		Colors	      = { type = "header", order = 10,  name = L["Colors"]      },
+		Thresholds    = { type = "header", order = 50,  name = L["Thresholds"], },
+		Value         = { type = "header", order = 90,  name = L["Value"] },
+		Text          = { type = "header", order = 95,  name = L["Text"] },
+		Misc          = { type = "header", order = 100, name = L["Misc"]        },
+		Highlights    = { type = "header", order = 110,  name = L["Highlight"], },
+		Auras	      = { type = "header", order = 150, name = L["Auras"]       },
+		DebuffFilter  = { type = "header", order = 175, name = L["Filtered debuffs"] },
+		AurasExpanded = { type = "header", order = 300,  name = L["Display"] },
 	}
 	function Grid2Options:MakeHeaderOptions( options, key )
 		options[ "header"..key ] = headers[key]

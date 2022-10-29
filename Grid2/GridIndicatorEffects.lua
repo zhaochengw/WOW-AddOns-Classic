@@ -1,6 +1,88 @@
--- Implements blink and zoom in/out effects for indicators.
+-- Implements glow, blink and zoom in effects for indicators.
 
 local indicatorPrototype = Grid2.indicatorPrototype
+
+-- Glowing border effects
+local LCG = LibStub("LibCustomGlow-1.0")
+
+local function GetUpdate_GlowPixel(indicator)
+	local funcStatus = indicator.GetCurrentStatus
+	local funcFrame  = indicator.GetBlinkFrame
+	local funcStart  = LCG.PixelGlow_Start
+	local funcStop   = LCG.PixelGlow_Stop
+	local dbx = indicator.dbx
+	local color = dbx.glow_color
+	local linesCount = dbx.glow_linesCount or 8
+	local frequency = dbx.glow_frequency or 0.25
+	local thickness = dbx.glow_thickness or 2
+	local always = not not dbx.highlightAlways
+	return function(self, parent, unit)
+		local status, state = funcStatus(self, unit)
+		local frame = funcFrame(self, parent)
+		local enabled = status and (always or state=="blink")
+		if enabled ~= frame.__glowEnabled then
+			frame.__glowEnabled = enabled
+			if enabled then
+				funcStart( frame, color, linesCount, frequency, nil, thickness, 0, 0, false )
+			else
+				funcStop( frame )
+			end
+		end
+		self:OnUpdate(parent, unit, status)
+	end
+end
+
+local function GetUpdate_GlowAutoCast(indicator)
+	local funcStatus = indicator.GetCurrentStatus
+	local funcFrame  = indicator.GetBlinkFrame
+	local funcStart  = LCG.AutoCastGlow_Start
+	local funcStop   = LCG.AutoCastGlow_Stop
+	local dbx = indicator.dbx
+	local color = dbx.glow_color
+	local particlesCount = dbx.glow_particlesCount or 4
+	local frequency = dbx.glow_frequency or 0.12
+	local particlesScale = dbx.glow_particlesScale or 1
+	local always = not not dbx.highlightAlways
+	return function(self, parent, unit)
+		local status, state = funcStatus(self, unit)
+		local frame = funcFrame(self, parent)
+		local enabled = status and (always or state=="blink")
+		if enabled ~= frame.__glowEnabled then
+			frame.__glowEnabled = enabled
+			if enabled then
+				funcStart( frame, color, particlesCount, frequency, particlesScale, 0 , 0 )
+			else
+				funcStop( frame )
+			end
+		end
+		self:OnUpdate(parent, unit, status)
+	end
+end
+
+local function GetUpdate_GlowButton(indicator)
+	local funcStatus = indicator.GetCurrentStatus
+	local funcFrame  = indicator.GetBlinkFrame
+	local funcStart  = LCG.ButtonGlow_Start
+	local funcStop   = LCG.ButtonGlow_Stop
+	local dbx = indicator.dbx
+	local color = dbx.glow_color
+	local frequency = dbx.glow_frequency or 0.12
+	local always = not not dbx.highlightAlways
+	return function(self, parent, unit)
+		local status, state = funcStatus(self, unit)
+		local frame = funcFrame(self, parent)
+		local enabled = status and (always or state=="blink")
+		if enabled ~= frame.__glowEnabled then
+			frame.__glowEnabled = enabled
+			if enabled then
+				funcStart( frame, color, frequency )
+			else
+				funcStop( frame )
+			end
+		end
+		self:OnUpdate(parent, unit, status)
+	end
+end
 
 -- Zoom in/out effect, not using animation BOUNCE looping method because is bugged (generate glitches)
 local function CreateScaleAnimation(frame, dbx)
@@ -22,14 +104,22 @@ local function CreateScaleAnimation(frame, dbx)
 	return group
 end
 
-local function SetScaleEffect(indicator, frame, status)
-	local anim = frame.scaleAnim
-	if status then
-		if not (anim and anim:IsPlaying()) and not (indicator.dbx.animOnEnabled and frame:IsVisible()) then
-			(anim or CreateScaleAnimation(frame, indicator.dbx)):Play()
+local function GetUpdate_Scale(indicator)
+	local funcStatus = indicator.GetCurrentStatus
+	local funcFrame  = indicator.GetBlinkFrame
+	local animOnEnabled = indicator.dbx.animOnEnabled
+	return function(self, parent, unit)
+		local status, state = funcStatus(self, unit)
+		local frame = funcFrame(self, parent)
+		local anim = frame.scaleAnim
+		if status then
+			if not (anim and anim:IsPlaying()) and not (animOnEnabled and frame:IsVisible()) then
+				(anim or CreateScaleAnimation(frame, self.dbx)):Play()
+			end
+		elseif anim then
+			anim:Stop()
 		end
-	elseif anim then
-		anim:Stop()
+		self:OnUpdate(parent, unit, status)
 	end
 end
 
@@ -37,57 +127,59 @@ end
 local function CreateBlinkAnimation(frame, dbx)
 	local anim  = frame:CreateAnimationGroup()
 	local alpha = anim:CreateAnimation("Alpha")
+	anim.settings = alpha
 	anim:SetLooping("REPEAT")
 	alpha:SetOrder(1)
-	alpha:SetFromAlpha(1)
-	alpha:SetToAlpha(0.1)
-	alpha:SetDuration(1/dbx.blinkFrequency)
+	alpha:SetFromAlpha( 1 )
+	alpha:SetToAlpha( 0.1 )
+	alpha:SetDuration( 1 / (dbx.blink_frequency or 2) )
 	frame.blinkAnim = anim
 	return anim
 end
 
-local function SetBlinkEffect(indicator, frame, enabled)
-	local anim = frame.blinkAnim
-	if enabled then
-		(anim or CreateBlinkAnimation(frame,Grid2Frame.db.shared)):Play()
-	elseif anim then
-		anim:Stop()
-	end
-end
-
--- Indicator Update functions
-local function UpdateBlinkScale(self, parent, unit)
-	local status, state = self:GetCurrentStatus(unit)
-	local frame = self.GetBlinkFrame(self,parent)
-	SetBlinkEffect( self, frame, state=="blink" )
-	SetScaleEffect( self, frame, status )
-	self:OnUpdate(parent, unit, status)
-end
-
-local function UpdateScale(self, parent, unit)
-	local status, state = self:GetCurrentStatus(unit)
-	SetScaleEffect( self, self.GetBlinkFrame(self,parent), status )
-	self:OnUpdate(parent, unit, status)
-end
-
-local function UpdateBlink(self, parent, unit)
-	local status, state = self:GetCurrentStatus(unit)
-	SetBlinkEffect( self, self.GetBlinkFrame(self,parent), state=="blink" )
-	self:OnUpdate(parent, unit, status)
-end
-
--- Public method (overwriting the original UpdateDB defined in GridIndicator.lua)
-function indicatorPrototype:UpdateDB()
-	if self.LoadDB then
-		self:LoadDB()
-	end
-	if self.GetBlinkFrame then
-		if Grid2Frame.db.shared.blinkType~="None" then
-			self.Update = self.dbx.animEnabled and UpdateBlinkScale or UpdateBlink
-		else
-			self.Update = self.dbx.animEnabled and UpdateScale or indicatorPrototype.Update
+local function GetUpdate_Blink(indicator)
+	local funcStatus = indicator.GetCurrentStatus
+	local funcFrame  = indicator.GetBlinkFrame
+	local always = not not indicator.dbx.highlightAlways
+	return function(self, parent, unit)
+		local status, state = funcStatus(self, unit)
+		local frame = funcFrame(self, parent)
+		local anim = frame.blinkAnim
+		if status and (always or state=="blink") then
+			(anim or CreateBlinkAnimation(frame,self.dbx)):Play()
+		elseif anim then
+			anim:Stop()
 		end
-	elseif not rawget(self, "Update") then
-		self.Update = indicatorPrototype.Update -- speed optimization
+		self:OnUpdate(parent, unit, status)
+	end
+end
+
+local function GetUpdate_Original(indicator)
+	return indicatorPrototype.Update
+end
+
+do
+	local updateFunctions = {
+		[-2] = GetUpdate_Blink,
+		[-1] = GetUpdate_Scale,
+		[ 0] = GetUpdate_Original,
+		[ 1] = GetUpdate_GlowPixel,
+		[ 2] = GetUpdate_GlowAutoCast,
+		[ 3] = GetUpdate_GlowButton,
+	}
+	-- Called from indicator:RegisterStatus() inside GridIndicator.lua
+	function indicatorPrototype:RegisterHighlight(status)
+		if self.GetBlinkFrame and self.highlightType==nil then
+			if self.dbx.highlightAlways or (status.dbx and status.dbx.blinkThreshold) then
+				local typ = self.dbx.highlightType or -2 -- blink by default
+				self.highlightType = typ
+				self.Update = updateFunctions[typ](self)
+			end
+		end
+	end
+	-- Called from Grid2Options
+	function Grid2:RefreshHighlight(indicator)
+		indicator.highlightType = indicator.dbx.highlightType or -2 -- blink by default
+		indicator.Update = updateFunctions[indicator.highlightType](indicator)
 	end
 end

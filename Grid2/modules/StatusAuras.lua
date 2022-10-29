@@ -9,7 +9,8 @@ local UnitAura = UnitAura
 local isClassic = Grid2.isClassic
 
 -- Local variables
-local Statuses = {}
+local Statuses, filteredStatuses = {}, {}
+
 local Buffs = {}
 local Debuffs = {}
 local DebuffTypes = {}
@@ -126,6 +127,7 @@ do
 	local UnitClass = UnitClass
 	local UnitExists = UnitExists
 	local UnitIsFriend = UnitIsFriend
+	local UnitGroupRolesAssigned = UnitGroupRolesAssigned
 	local filter_mt = {	__index = function(t,u)
 		if UnitExists(u) then
 			local load, r = t.source
@@ -137,6 +139,10 @@ do
 				local _,class = UnitClass(u)
 				r = not load.unitClass[class]
 			end
+			if not r and load.unitRole then
+				local role = UnitGroupRolesAssigned(u)
+				r = not load.unitRole[role]
+			end
 			t[u] = r
 			return r
 		end
@@ -145,7 +151,7 @@ do
 	end }
 	MakeStatusFilter = function(status)
 		local load = status.dbx.load
-		if load and (load.unitReaction or load.unitClass) then
+		if load and (load.unitReaction or load.unitClass or load.unitRole) then
 			if status.filtered then
 				wipe(status.filtered).source = load
 			else
@@ -174,11 +180,20 @@ do
 	Grid2.RegisterMessage( Statuses, "Grid_UnitUpdated", UpdateAurasOfUnit )
 end
 
+-- Refresh auras filter, currently only used to reset unitRole filter
+function Grid2:RefreshAurasFilter(filterName)
+	for status, filtered in next, filteredStatuses do
+		local load = filtered.source
+		wipe(filtered).source = load
+		status:UpdateAllUnits()
+	end
+end
+
 -- EnableAuraEvents() DisableAuraEvents()
 local EnableAuraEvents, DisableAuraEvents
 do
 	local frame
-	EnableAuraEvents = function()
+	EnableAuraEvents = function(status)
 		if not next(Statuses) then
 			if not frame then frame = CreateFrame("Frame", nil, Grid2LayoutFrame) end
 			frame:SetScript("OnEvent", AuraFrame_OnEvent)
@@ -188,14 +203,22 @@ do
 				UnitAura = LibStub("LibClassicDurations").UnitAuraDirect
 			end
 		end
+		local filtered = status.filtered
+		if filtered and filtered.source.unitRole then
+			filteredStatuses[status] = filtered
+		end
 	end
-	DisableAuraEvents = function()
+	DisableAuraEvents = function(status)
 		if not next(Statuses) then
 			frame:SetScript("OnEvent", nil)
 			frame:UnregisterEvent("UNIT_AURA")
 			if Grid2.classicDurations then
 				LibStub("LibClassicDurations"):Unregister(Grid2)
 			end
+		end
+		local filtered = status.filtered
+		if filtered and filtered.source.unitRole then
+			filteredStatuses[status] = nil
 		end
 	end
 end
@@ -291,7 +314,7 @@ do
 end
 
 local function RegisterStatusAura(status, auraType, spell)
-	EnableAuraEvents()
+	EnableAuraEvents(status)
 	if auraType=="debuffType" then
 		DebuffTypes[spell] = status
 	elseif not spell then
@@ -322,7 +345,7 @@ local function UnregisterStatusAura(status, auraType, subType)
 		DebuffTypes[subType] = nil
 	end
 	Statuses[status] = nil
-	DisableAuraEvents()
+	DisableAuraEvents(status)
 end
 
 -- MakeStatusColorHandler()
@@ -374,7 +397,7 @@ do
 		self.idx[unit], self.exp[unit], self.val[unit] = nil, nil, nil
 		return true
 	end
-	-- with unit class/reaction filters
+	-- with unit class/reaction/role filters
 	local function IsActiveFilter(self, unit)
 		return not self.filtered[unit] and self.idx[unit]~=nil
 	end
@@ -389,13 +412,21 @@ do
 		if self.filtered[unit] or not (self.idx[unit] and self.cnt[unit]>=self.stacks) then return end
 		return self.tkr[unit]==1 or "blink"
 	end
+	local function IsActiveBlinkAFilter(self, unit)
+		if self.filtered[unit] or not self.idx[unit] then return end
+		return "blink"
+	end
+	local function IsActiveStacksBlinkAFilter(self, unit)
+		if self.filtered[unit] or not (self.idx[unit] and self.cnt[unit]>=self.stacks) then return end
+		return "blink"
+	end
 	local function IsInactiveFilter(self, unit)
 		return not self.filtered[unit] and not (self.idx[unit] or unit_is_pet[unit])
 	end
 	local function IsInactiveBlinkFilter(self, unit)
 		return not self.filtered[unit] and not self.idx[unit] and "blink"
 	end
-	-- no unit class/reaction filters
+	-- no unit class/reaction/role filters
 	local function IsActive(self, unit)
 		if self.idx[unit] then return true end
 	end
@@ -409,6 +440,14 @@ do
 	local function IsActiveStacksBlink(self, unit)
 		if not (self.idx[unit] and self.cnt[unit]>=self.stacks) then return end
 		return self.tkr[unit]==1 or "blink"
+	end
+	local function IsActiveBlinkA(self, unit)
+		if not self.idx[unit] then return end
+		return "blink"
+	end
+	local function IsActiveStacksBlinkA(self, unit)
+		if not (self.idx[unit] and self.cnt[unit]>=self.stacks) then return end
+		return "blink"
 	end
 	local function IsInactive(self, unit)
 		return not (self.idx[unit] or unit_is_pet[unit])
@@ -517,7 +556,7 @@ do
 	local function UpdateDB(self,dbx)
 		if self.enabled then self:OnDisable() end
 		local dbx = dbx or self.dbx
-		local blinkThreshold = Grid2Frame.db.shared.blinkType~="None" and dbx.blinkThreshold or nil
+		local blinkThreshold = dbx.blinkThreshold or nil
 		MakeStatusFilter(self)
 		self.vId = dbx.valueIndex or 0
 		self.valMax = dbx.valueMax
@@ -561,13 +600,22 @@ do
 			self.GetCount = GetCount
 			self.GetExpirationTime = GetExpirationTime
 			if blinkThreshold then
-				self.thresholds = { blinkThreshold }
-				if self.filtered then
-					self.IsActive = self.stacks and IsActiveStacksBlinkFilter or IsActiveBlinkFilter
-				else
-					self.IsActive = self.stacks and IsActiveStacksBlink or IsActiveBlink
+				if blinkThreshold>0 then -- blink/glow active after some time threshold
+					self.thresholds = { blinkThreshold }
+					if self.filtered then
+						self.IsActive = self.stacks and IsActiveStacksBlinkFilter or IsActiveBlinkFilter
+					else
+						self.IsActive = self.stacks and IsActiveStacksBlink or IsActiveBlink
+					end
+				else -- blink/glow always active, no timetracker is needed
+					self.thresholds = nil
+					if self.filtered then
+						self.IsActive = self.stacks and IsActiveStacksBlinkAFilter or IsActiveBlinkAFilter
+					else
+						self.IsActive = self.stacks and IsActiveStacksBlinkA or IsActiveBlinkA
+					end
 				end
-			else
+			else -- blinkThreshold==0 => always active
 				self.thresholds = dbx.colorThreshold
 				if self.filtered then
 					self.IsActive = self.stacks and IsActiveStacksFilter or IsActiveFilter

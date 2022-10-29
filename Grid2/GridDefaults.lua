@@ -5,7 +5,7 @@ Created by Michael, based on Grid2Options\GridDefaults.lua from original Grid2 a
 local Grid2 = Grid2
 
 -- Latest database profile version
-local DB_VERSION = 9
+local DB_VERSION = 11
 
 -- Database manipulation functions
 function Grid2:DbSetStatusDefaultValue(name, value)
@@ -119,6 +119,25 @@ function Grid2:UpdateDefaults()
 					dbx.playerClass = nil
 				end
 			end
+		end
+		if version<10 then
+			-- move some Grid2Layout options from global section to profile section
+			local dbx = Grid2Layout.dba.global
+			local val = (dbx.detachHeaders and 'player') or (dbx.detachPetHeaders and 'pet') or nil
+			if val or dbx.displayAllGroups then
+				local dba = Grid2Layout.dba.profile
+				for theme in Grid2.IterateValues(dba, unpack(dba.extraThemes or {}) ) do
+					theme.detachedHeaders = val
+					theme.displayAllGroups = dbx.displayAllGroups
+				end
+				dbx.detachHeaders = nil
+				dbx.detachPetHeaders = nil
+			end
+		end
+		if version<11 then
+			local threat = self.db.profile.statuses.threat
+			threat.blinkThreshold = not threat.disableBlink
+			threat.disableBlink = nil
 		end
 	end
 	-- Set database version

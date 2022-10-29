@@ -29,6 +29,28 @@ Grid2Options:AddGeneralOptions( "General", "Themes", {
 }, nil)
 
 --==========================================================================
+-- Icons Zoom
+--==========================================================================
+
+Grid2Options:AddGeneralOptions( "General", "Icons Zoom", {
+	displayZoomedIcons = {
+		type = "toggle",
+		name = L["Zoom In buffs/debuffs Icons"],
+		desc = L["Enable this option to completelly hide the default blizzard border of buffs and debuffs Icons."],
+		width = "full",
+		order = 10,
+		get = function ()
+			return Grid2Frame.db.shared.displayZoomedIcons
+		end,
+		set = function (_, v)
+			Grid2Frame.db.shared.displayZoomedIcons = v or nil
+			Grid2:SetupStatusPrototype()
+			Grid2Options:UpdateIndicators()
+		end,
+	},
+})
+
+--==========================================================================
 -- Text formatting
 --==========================================================================
 
@@ -183,53 +205,6 @@ Grid2Options:AddGeneralOptions( "General", "Text Formatting", {
 			string.format(v, 1) -- sanity check, crash if v is not a correct format mask
 			Grid2.db.profile.formatting.minutesElapsedFormat  = v
 			UpdateTextIndicators()
-		end,
-	},
-})
-
---==========================================================================
--- Blink
---==========================================================================
-
-Grid2Options:AddGeneralOptions( "General", "blink", {
-	effect = {
-		type = "select",
-		name = L["Blink effect"],
-		desc = L["Select the type of Blink effect used by Grid2."],
-		order = 10,
-		get = function () return Grid2Frame.db.shared.blinkType end,
-		set = function (_, v)
-			Grid2Frame.db.shared.blinkType = v
-			for _,indicator in ipairs(Grid2:GetIndicatorsSorted()) do
-				if indicator.GetBlinkFrame then
-					indicator:UpdateDB()
-				end
-			end
-			Grid2Options:MakeStatusesOptions(Grid2Options.statusesOptions)
-		end,
-		values= { None = L["None"], Flash = L["Flash"] },
-	},
-	frequency = {
-		type = "range",
-		name = L["Blink Frequency"],
-		desc = L["Adjust the frequency of the Blink effect."],
-		disabled = function () return Grid2Frame.db.shared.blinkType == "None" end,
-		min = 1,
-		max = 10,
-		step = .5,
-		get = function ()
-			return Grid2Frame.db.shared.blinkFrequency
-		end,
-		set = function (_, v)
-			Grid2Frame.db.shared.blinkFrequency = v
-			for _,indicator in ipairs(Grid2:GetIndicatorsSorted()) do
-				if indicator.GetBlinkFrame then
-					Grid2Frame:WithAllFrames(function (f)
-						local anim = indicator:GetBlinkFrame(f).blinkAnim
-						if anim then anim.settings:SetDuration(1/v) end
-					end)
-				end
-			end
 		end,
 	},
 })

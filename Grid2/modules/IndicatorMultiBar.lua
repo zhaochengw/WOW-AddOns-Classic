@@ -196,8 +196,10 @@ end
 local function Bar_Disable(self, parent)
 	local bar = parent[self.name]
 	local textures = bar.myTextures
-	for i=2,#textures do
-		textures[i]:Hide()
+	if textures then
+		for i=2,#textures do
+			textures[i]:Hide()
+		end
 	end
 	bar:Hide()
 	bar:SetParent(nil)
@@ -225,7 +227,7 @@ local function Bar_LoadDB(self)
 	self.height        = dbx.height
 	self.direction     = dbx.reverseFill and -1 or 1
 	self.horizontal    = (orientation == "HORIZONTAL")
-	self.reverseFill   = dbx.reverseFill
+	self.reverseFill   = not not dbx.reverseFill
 	self.backAnchor    = dbx.backAnchor
 	self.reverse       = dbx.reverseMainBar
 	self.opacity       = dbx.textureColor.a

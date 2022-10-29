@@ -578,103 +578,7 @@ function Grid2Options:MakeIndicatorLocationOptions(indicator, options)
 	}
 end
 
--- Grid2Options:MakeIndicatorAnimationOptions()
-function Grid2Options:MakeIndicatorAnimationOptions(indicator, options)
-	self:MakeHeaderOptions( options, "Animation" )
-	options.animEnabled = {
-		type = "toggle",
-		order = 155,
-		name = L["Enable animation"],
-		desc = L["Turn on/off zoom animation of icons."],
-		tristate = false,
-		get = function () return indicator.dbx.animEnabled end,
-		set = function (_, v)
-			indicator.dbx.animEnabled = v or nil
-			if not v then
-				indicator.dbx.animScale = nil
-				indicator.dbx.animDuration = nil
-				indicator.dbx.animOrigin = nil
-			end
-			indicator:UpdateDB()
-		end,
-	}
-	options.animOnEnabled = {
-		type = "toggle",
-		order = 157,
-		name = L["Only on Activation"],
-		desc = L["Start the animation only when the indicator is activated, not on updates."],
-		tristate = false,
-		get = function () return indicator.dbx.animOnEnabled end,
-		set = function (_, v)
-			indicator.dbx.animOnEnabled = v or nil
-			indicator:UpdateDB()
-		end,
-		hidden= function() return not indicator.dbx.animEnabled end,
-	}
-	options.animDuration = {
-		type = "range",
-		order = 160,
-		name = L["Duration"],
-		desc = L["Sets the duration in seconds."],
-		min  = 0.1,
-		max  = 2,
-		step = 0.1,
-		get = function () return indicator.dbx.animDuration or 0.7 end,
-		set = function (_, v)
-			indicator.dbx.animDuration = v
-			Grid2Frame:WithAllFrames( function (f)
-				local anim = indicator:GetBlinkFrame(f).scaleAnim
-				if anim then
-					anim.grow:SetDuration(v/2)
-					anim.shrink:SetDuration(v/2)
-				end
-			end)
-		end,
-		hidden= function() return not indicator.dbx.animEnabled end,
-	}
-	options.animScale = {
-		type = "range",
-		order = 164,
-		name = L["Scale"],
-		desc = L["Sets the zoom factor."],
-		min  = 1.1,
-		max  = 3,
-		step = 0.1,
-		get = function () return indicator.dbx.animScale or 1.5	end,
-		set = function (_, v)
-			indicator.dbx.animScale = v
-			Grid2Frame:WithAllFrames( function (f)
-				local anim = indicator:GetBlinkFrame(f).scaleAnim
-				if anim then
-					anim.grow:SetScale(v,v)
-					anim.shrink:SetScale(1/v,1/v)
-				end
-			end)
-		end,
-		hidden= function() return not indicator.dbx.animEnabled end,
-	}
-	options.animOrigin = {
-		type = 'select',
-		order = 165,
-		name = L["Origin"],
-		desc = L["Zoom origin point"],
-		values = self.pointValueList,
-		get = function() return self.pointMap[indicator.dbx.animOrigin or 'CENTER'] end,
-		set = function(_, v)
-			local point = self.pointMap[v]
-			indicator.dbx.animOrigin = point~='CENTER' and point or nil
-			Grid2Frame:WithAllFrames( function (f)
-				local anim = indicator:GetBlinkFrame(f).scaleAnim
-				if anim then
-					anim.grow:SetOrigin(point,0,0)
-					anim.shrink:SetOrigin(point,0,0)
-				end
-			end)
-		end,
-		hidden= function() return not indicator.dbx.animEnabled end,
-	}
-end
-
+-- Grid2Options:MakeIndicatorCooldownOptions()
 function Grid2Options:MakeIndicatorCooldownOptions(indicator, options)
 	self:MakeHeaderOptions( options, "Cooldown" )
 	options.disableCooldown = {
@@ -715,4 +619,286 @@ function Grid2Options:MakeIndicatorCooldownOptions(indicator, options)
 		end,
 		hidden= function() return indicator.dbx.disableCooldown end,
 	}
+end
+
+-- Grid2Options:MakeIndicatorHighlightEffectOptions()
+do
+	local LCG = LibStub("LibCustomGlow-1.0")
+	local DEFAULT_COLOR = { 1, 1, 0, 1 }
+	local DEFAULT_FREQS = { 0.25, 0.12, 0.12 }
+	local EFFECT_VALUES = { [-2] = L['Blink'], [-1] = L['Zoom In'], [0] = L['None'], [1] = L['Glow Border: Pixel'], [2] = L['Glow Border: Shine'], [3] = L['Glow Border: Blizzard'] }
+	local ACTIVATION1_VALUES = { L["Always active"], L["Status Controlled"] }
+	local ACTIVATION2_VALUES = { L["On Status Activation"], L["On Status Updates"] }
+
+	local function ResetSettings(dbx)
+		dbx.highlightAlways = nil
+		dbx.animOnEnabled = nil
+		dbx.animScale = nil
+		dbx.animDuration = nil
+		dbx.animOrigin = nil
+		dbx.glow_color = nil
+		dbx.glow_frequency = nil
+		dbx.glow_linesCount = nil
+		dbx.glow_thickness = nil
+		dbx.glow_particlesCount = nil
+		dbx.glow_particlesScale = nil
+	end
+
+	local function RefreshBlinkFrequencies(ind, freq)
+		for _,indicator in ipairs(Grid2:GetIndicatorsSorted()) do
+			if ind==indicator then
+				Grid2Frame:WithAllFrames(function (f)
+					local anim = indicator:GetBlinkFrame(f).blinkAnim
+					if anim then anim.settings:SetDuration(1/freq) end
+				end)
+			end
+		end
+	end
+
+	local function RefreshIndicator(indicator)
+		Grid2Frame:WithAllFrames(function (f)
+			local frame = indicator:GetBlinkFrame(f)
+			if frame.blinkAnim then	frame.blinkAnim:Stop() end -- cancel blink
+			for _, func in pairs(LCG.stopList) do -- cancel glow
+				func(frame); frame.__glowEnabled = nil
+			end
+		end)
+		Grid2:RefreshHighlight(indicator)
+		Grid2Frame:WithAllFrames(function(f)
+			if f.unit then
+				indicator:Update(f, f.unit)
+			end
+		end)
+	end
+
+	function Grid2Options:MakeIndicatorHighlightEffectOptions(indicator, options)
+		self:MakeHeaderOptions( options, "Highlight" )
+		options.highlightType = {
+			type = "select",
+			order = 320,
+			name = L["Highlight Effect"],
+			desc = L["Select the Highlight effect."],
+			get = function ()
+				return indicator.dbx.highlightType or -2 -- default blink
+			end,
+			set = function (_, v)
+				indicator.dbx.highlightType = v~=-2 and v or nil
+				ResetSettings(indicator.dbx)
+				RefreshIndicator(indicator)
+			end,
+			values = EFFECT_VALUES,
+		}
+		options.highlightActivation = {
+			type = "select",
+			order = 325,
+			name = L["Activation"],
+			desc = L["Select when to activate the highlight effect."],
+			get = function ()
+				return indicator.dbx.highlightAlways and 1 or 2
+			end,
+			set = function (_, v)
+				indicator.dbx.highlightAlways = v==1 or nil
+				ResetSettings(indicator.dbx)
+				RefreshIndicator(indicator)
+			end,
+			values = ACTIVATION1_VALUES,
+			hidden = function() return indicator.dbx.highlightType == -1 or indicator.dbx.highlightType == 0 end, -- zoomIn or none
+		}
+		-- common options
+		options.glowFrequency = { -- all glow
+			type = "range",
+			order = 340,
+			name = L["Animation Speed"],
+			desc = L["Animation Speed"],
+			min = -1.5,
+			max = 1.5,
+			step = 0.01,
+			get = function () return indicator.dbx.glow_frequency or DEFAULT_FREQS[indicator.dbx.highlightType] end,
+			set = function (_, v)
+				indicator.dbx.glow_frequency = (v~=0 and v~=DEFAULT_FREQS[v]) and v or nil
+				RefreshIndicator(indicator)
+			end,
+			hidden = function() return (indicator.dbx.highlightType or 0)<=0 end,
+		}
+		-- blink (-2|nil)
+		options.blinkFrequency = {
+			type = "range",
+			order = 340,
+			width = 'double',
+			name = L["Blink Frequency"],
+			desc = L["Adjust the frequency of the Blink effect."],
+			min = 1,
+			max = 10,
+			step = .5,
+			get = function ()
+				return indicator.dbx.blink_frequency or 2
+			end,
+			set = function (_, v)
+				indicator.dbx.blink_frequency = v~=2 and v or nil
+				RefreshBlinkFrequencies(indicator, v)
+			end,
+			hidden = function() return (indicator.dbx.highlightType or -2)~=-2 end,
+		}
+		-- glow pixel (1)
+		options.linesCount = {
+			type = "range",
+			order = 370,
+			width = "normal",
+			name = L["Number of Lines"],
+			desc = L["Number of Lines"],
+			min = 1,
+			max = 20,
+			step = 1,
+			get = function () return indicator.dbx.glow_linesCount or 8 end,
+			set = function (_, v)
+				indicator.dbx.glow_linesCount = (v~=8) and v or nil
+				RefreshIndicator(indicator)
+			end,
+			hidden = function() return indicator.dbx.highlightType~=1 end,
+		}
+		-- glow pixel (1)
+		options.thickness = {
+			type = "range",
+			order = 380,
+			width = "normal",
+			name = L["Thickness"],
+			desc = L["Thickness"],
+			min = 1,
+			max = 10,
+			step = 1,
+			get = function () return indicator.dbx.glow_thickness or 2 end,
+			set = function (_, v)
+				indicator.dbx.glow_thickness = (v~=2) and v or nil
+				RefreshIndicator(indicator)
+			end,
+			hidden = function() return indicator.dbx.highlightType~=1 end
+		}
+		-- glow shine (2)
+		options.particlesCount = {
+			type = "range",
+			order = 370,
+			width = "normal",
+			name = L["Number of particles"],
+			desc = L["Number of particles"],
+			min = 1,
+			max = 10,
+			step = 1,
+			get = function () return indicator.dbx.glow_particlesCount or 4 end,
+			set = function (_, v)
+				indicator.dbx.glow_particlesCount = (v~=4) and v or nil
+				RefreshIndicator(indicator)
+			end,
+			hidden = function() return indicator.dbx.highlightType~=2 end
+		}
+		options.particlesScale = {
+			type = "range",
+			order = 380,
+			width = "normal",
+			name = L["Scale of particles"],
+			desc = L["Scale of particles"],
+			min = 0.1,
+			max = 5,
+			step = 0.1,
+			get = function () return indicator.dbx.glow_particlesScale or 1 end,
+			set = function (_, v)
+				indicator.dbx.glow_particlesScale = (v~=1) and v or nil
+				RefreshIndicator(indicator)
+			end,
+			hidden = function() return indicator.dbx.highlightType~=2 end
+		}
+		-- glow common
+		options.glowColor = {
+			type = "color",
+			hasAlpha = true,
+			order = 390,
+			name = L["Glow Color"],
+			desc = L["Sets the glow color to display when the indicator is highlighted."],
+			get = function() return unpack(indicator.dbx.glow_color or DEFAULT_COLOR) end,
+			set = function( info, r,g,b,a )
+				indicator.dbx.glow_color = { r, g, b, a }
+				RefreshIndicator(indicator)
+			end,
+			hidden = function() return (indicator.dbx.highlightType or 0)<=0 end
+		}
+		-- zoomIn
+		options.animActivation = {
+			type = 'select',
+			order = 325,
+			name = L["Activation"],
+			desc = L["Select when to start the Zoom In effect"],
+			get = function()
+				return indicator.dbx.animOnEnabled and 1 or 2
+			end,
+			set = function(_, v)
+				indicator.dbx.animOnEnabled = v==1 or nil
+				indicator:UpdateDB()
+			end,
+			values = ACTIVATION2_VALUES,
+			hidden = function() return indicator.dbx.highlightType ~= -1 end,
+		}
+		options.animOrigin = {
+			type = 'select',
+			order = 340,
+			name = L["Origin"],
+			desc = L["Zoom origin point"],
+			values = self.pointValueList,
+			get = function() return self.pointMap[indicator.dbx.animOrigin or 'CENTER'] end,
+			set = function(_, v)
+				local point = self.pointMap[v]
+				indicator.dbx.animOrigin = point~='CENTER' and point or nil
+				Grid2Frame:WithAllFrames( function (f)
+					local anim = indicator:GetBlinkFrame(f).scaleAnim
+					if anim then
+						anim.grow:SetOrigin(point,0,0)
+						anim.shrink:SetOrigin(point,0,0)
+					end
+				end)
+			end,
+			hidden = function() return indicator.dbx.highlightType ~= -1 end,
+		}
+		options.animScale = {
+			type = "range",
+			order = 350,
+			name = L["Scale"],
+			desc = L["Sets the zoom factor."],
+			min  = 1.1,
+			max  = 3,
+			step = 0.1,
+			get = function () return indicator.dbx.animScale or 1.5	end,
+			set = function (_, v)
+				indicator.dbx.animScale = v
+				Grid2Frame:WithAllFrames( function (f)
+					local anim = indicator:GetBlinkFrame(f).scaleAnim
+					if anim then
+						anim.grow:SetScale(v,v)
+						anim.shrink:SetScale(1/v,1/v)
+					end
+				end)
+			end,
+			hidden = function() return indicator.dbx.highlightType ~= -1 end,
+		}
+		options.animDuration = {
+			type = "range",
+			order = 360,
+			width = 'double',
+			name = L["Duration"],
+			desc = L["Sets the duration in seconds."],
+			min  = 0.1,
+			max  = 2,
+			step = 0.1,
+			get = function () return indicator.dbx.animDuration or 0.7 end,
+			set = function (_, v)
+				indicator.dbx.animDuration = v
+				Grid2Frame:WithAllFrames( function (f)
+					local anim = indicator:GetBlinkFrame(f).scaleAnim
+					if anim then
+						anim.grow:SetDuration(v/2)
+						anim.shrink:SetDuration(v/2)
+					end
+				end)
+			end,
+			hidden = function() return indicator.dbx.highlightType  ~= -1 end,
+		}
+		return options
+	end
 end

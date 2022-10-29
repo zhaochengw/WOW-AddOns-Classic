@@ -3,7 +3,7 @@
 ## Notes: Adds a Raid Boss debuff status.
 ## Notes-esES: Muestra los debuffs de Bosses de Raid en el Grid2.
 ## Dependencies: Grid2
-## Version:2.0.54
+## Version:2.0.60
 ## X-Category: UnitFrame
 ## X-Website: http://wowace.com/projects/grid2/
 

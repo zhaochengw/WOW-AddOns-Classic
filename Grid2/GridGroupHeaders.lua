@@ -4,7 +4,6 @@
 
 local versionCli = select(4,GetBuildInfo())
 local isClassic = versionCli<30000 -- vanilla or tbc
-local isWrath = versionCli>=30000 and versionCli<40000 -- wrath
 local dummyFunc = function() end
 local select = select
 local unpack = unpack
@@ -83,23 +82,6 @@ local function SetupTestMode(self, units)
 			end
 		end
 	end
-end
-
--- bugfix: https://github.com/Stanzilla/WoWUIBugs/issues/274
-local function FixToggleForVehicleBug(self, headerType, unit)
-	if unit and self:GetAttribute('toggleForVehicle') then
-		if headerType=='player' then
-			if UnitHasVehicleUI(unit) then
-				return unit=='player' and 'pet' or gsub(unit,"^([%a]+)([%d]+)", "%1pet%2")
-			end
-		elseif headerType=='pet' then
-			local ownerUnit = unit=='pet' and 'player' or gsub(unit,"pet(%d)","%1")
-			if UnitHasVehicleUI(ownerUnit) then
-				return ownerUnit
-			end
-		end
-	end
-	return unit
 end
 
 -- misc table functions
@@ -399,11 +381,13 @@ local function DisplayButtons(self, unitTable)
 		else
 			unitButton:SetPoint(point, curAnchor, relPoint, xMult*xOffset, yMult*yOffset)
 		end
-		local unit = isWrath and FixToggleForVehicleBug(self, self.headerType, unitTable[i]) or unitTable[i]
+		local unit = unitTable[i]
 		unitButton:SetAttribute("unit", unit)
 		SetUnitWatch(unitButton, unitWatch)
 		if not unitWatch or UnitExists(unit) then
 			unitButton:Show()
+		else
+			unitButton:Hide()
 		end
 		colUnitCount = colUnitCount<unitsPerColumn and colUnitCount+1 or 1
 		buttonNum = buttonNum + 1
@@ -490,10 +474,6 @@ do
 		if self.headerType == 'pet' then
 			self:RegisterEvent("UNIT_PET")
 		end
-		if isWrath then -- bugfix see: FixToggleForVehicleBug()
-			self:RegisterEvent("UNIT_EXITED_VEHICLE")
-			self:RegisterEvent("UNIT_ENTERED_VEHICLE")
-		end
 		Update(self)
 	end
 
@@ -502,10 +482,6 @@ do
 		self:UnregisterEvent("UNIT_NAME_UPDATE")
 		if self.headerType == 'pet' then
 			self:UnregisterEvent("UNIT_PET")
-		end
-		if isWrath then -- bugfix see: FixToggleForVehicleBug()
-			self:UnregisterEvent("UNIT_EXITED_VEHICLE")
-			self:UnregisterEvent("UNIT_ENTERED_VEHICLE")
 		end
 	end
 
@@ -523,6 +499,15 @@ unitsFilter = "target, focus, player, party1, boss1, boss2, boss3, arena1, arena
 hideEmptyUnits = true|nil
 --]]
 do
+	--Forze size changed event to refresh decoration visibility
+	local function TriggerSizeChangedEvent(self)
+		if self:GetAttribute('hideEmptyUnits') then
+			local func = self:GetScript("OnSizeChanged")
+			if func then
+				C_Timer.After(0, function()	func(self) end)	end
+		end
+	end
+
 	-- notify grid2 roster for unit changes, OnUnitStateChanged() defined in Grid2Frame.lua
 	local function RefreshButtons(self, pattern)
 		local index, unitButton = 1, self[1]
@@ -532,6 +517,7 @@ do
 			end
 			index = index + 1; unitButton = self[index]
 		end
+		TriggerSizeChangedEvent(self)
 	end
 
 	-- event register management
@@ -607,8 +593,10 @@ do
 	local function OnEvent(self, event)
 		if event=='PLAYER_TARGET_CHANGED' then
 			self.buttonTarget:OnUnitStateChanged()
+			TriggerSizeChangedEvent(self)
 		elseif event=='PLAYER_FOCUS_CHANGED' then
 			self.buttonFocus:OnUnitStateChanged()
+			TriggerSizeChangedEvent(self)
 		elseif event=='INSTANCE_ENCOUNTER_ENGAGE_UNIT' then
 			self:RegisterEvent('PLAYER_REGEN_ENABLED')
 			RefreshButtons(self, "^boss")
