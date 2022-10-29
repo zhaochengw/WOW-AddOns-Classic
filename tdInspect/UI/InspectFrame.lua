@@ -133,6 +133,7 @@ local function SpecOnEnter(button)
         local green = pointsSpent == button.best
         GameTooltip:AddDoubleLine(name, pointsSpent, 1, 1, 1, green and 0 or 1, 1, green and 0 or 1)
     end
+    GameTooltip:Show()
 end
 
 local function SpecOnClick(button)
