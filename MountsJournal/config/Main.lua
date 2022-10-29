@@ -304,9 +304,50 @@ config:SetScript("OnShow", function(self)
 	self.useMagicBroom.tooltipRequirement = L["UseMagicBroomDescription"]
 	self.useMagicBroom:HookScript("OnClick", applyEnable)
 
+	-- SUMMON PET EVERY N MINUTES
+	self.summonPetEvery = CreateFrame("CheckButton", nil, self.rightPanelScroll.child, "MJCheckButtonTemplate")
+	self.summonPetEvery:SetPoint("TOPLEFT", self.useMagicBroom, "BOTTOMLEFT", 0, -15)
+	self.summonPetEvery.Text:SetText(L["Summon a pet every"])
+	self.summonPetEvery:HookScript("OnClick",  applyEnable)
+
+	-- count
+	self.summonPetEveryN = CreateFrame("Editbox", nil, self.rightPanelScroll.child, "MJNumberTextBox")
+	self.summonPetEveryN:SetPoint("LEFT", self.summonPetEvery.Text, "RIGHT", 3, 0)
+	self.summonPetEveryN:SetScript("OnTextChanged", function(editBox, userInput)
+		if userInput then
+			local value = tonumber(editBox:GetText()) or 0
+			if value < 1 then
+				editBox:SetNumber(1)
+			elseif value > 999 then
+				editBox:SetNumber(999)
+			end
+			applyEnable()
+		end
+	end)
+	self.summonPetEveryN:SetScript("OnMouseWheel", function(editBox, delta)
+		if editBox:IsEnabled() then
+			local value = (tonumber(editBox:GetText()) or 0) + (delta > 0 and 1 or -1)
+			if value >= 1 and value <= 999 then
+				editBox:SetNumber(value)
+			end
+			applyEnable()
+		end
+	end)
+	util.setCheckboxChild(self.useRepairMounts, self.summonPetEveryN)
+
+	-- minutes
+	self.summonPetMinutes = self.summonPetEveryN:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	self.summonPetMinutes:SetPoint("LEFT", self.summonPetEveryN, "RIGHT", 3, 0)
+	self.summonPetMinutes:SetText(L["min"])
+
+	-- SUMMON ONLY FAVORITES
+	self.summonPetOnlyFavorites = util.createCheckboxChild(L["Summon only favorites"], self.summonPetEvery)
+	self.summonPetOnlyFavorites.checkFunc = function() return mounts.config.summonPetOnlyFavorites end
+	self.summonPetOnlyFavorites:HookScript("OnClick", applyEnable)
+
 	-- NO PET IN RAID
 	self.noPetInRaid = CreateFrame("CheckButton", nil, self.rightPanelScroll.child, "MJCheckButtonTemplate")
-	self.noPetInRaid:SetPoint("TOPLEFT", self.useMagicBroom, "BOTTOMLEFT", 0, -15)
+	self.noPetInRaid:SetPoint("TOPLEFT", self.summonPetOnlyFavorites, "BOTTOMLEFT", -20, -3)
 	self.noPetInRaid.Text:SetSize(245, 25)
 	self.noPetInRaid.Text:SetText(L["NoPetInRaid"])
 	self.noPetInRaid:HookScript("OnClick", applyEnable)
@@ -381,9 +422,10 @@ config:SetScript("OnShow", function(self)
 			self.repairMountsCombobox:ddSetSelectedText(L["Random available mount"], 413588)
 		end
 		self.useMagicBroom:SetChecked(mounts.config.useMagicBroom)
-		if self.useUnderlightAngler then
-			self.useUnderlightAngler:SetChecked(mounts.config.useUnderlightAngler)
-			self.autoUseUnderlightAngler:SetChecked(mounts.config.autoUseUnderlightAngler)
+		self.summonPetEvery:SetChecked(mounts.config.summonPetEvery)
+		self.summonPetEveryN:SetNumber(tonumber(mounts.config.summonPetEveryN) or 1)
+		for _, child in ipairs(self.summonPetEvery.childs) do
+			child:SetChecked(child:checkFunc())
 		end
 		self.noPetInRaid:SetChecked(mounts.config.noPetInRaid)
 		self.noPetInGroup:SetChecked(mounts.config.noPetInGroup)
@@ -444,10 +486,29 @@ end
 
 config.okay = function(self)
 	binding.unboundMessage:Hide()
-	mounts:setModifier(self.modifierCombobox.selectedValue)
-	binding:saveBinding()
-	local ldbi = LibStub("LibDBIcon-1.0")
 	mounts.config.omb.hide = not self.showMinimapButton:GetChecked()
+	mounts.config.useRepairMounts = self.useRepairMounts:GetChecked()
+	mounts.config.useRepairMountsDurability = tonumber(self.repairPercent:GetText()) or 0
+	mounts.config.useRepairFlyable = self.repairFlyable:GetChecked()
+	mounts.config.useRepairFlyableDurability = tonumber(self.repairFlyablePercent:GetText()) or 0
+	mounts.config.repairSelectedMount = self.repairMountsCombobox.selectedValue
+	mounts.config.useMagicBroom = self.useMagicBroom:GetChecked()
+	mounts.config.summonPetEvery = self.summonPetEvery:GetChecked()
+	mounts.config.summonPetEveryN = tonumber(self.summonPetEveryN:GetText()) or 1
+	mounts.config.summonPetOnlyFavorites = self.summonPetOnlyFavorites:GetChecked()
+	mounts.config.noPetInRaid = self.noPetInRaid:GetChecked()
+	mounts.config.noPetInGroup = self.noPetInGroup:GetChecked()
+	mounts.config.copyMountTarget = self.copyMountTarget:GetChecked()
+	mounts.config.arrowButtonsBrowse = self.arrowButtons:GetChecked()
+	mounts.config.openHyperlinks = self.openLinks:GetChecked()
+
+	binding:saveBinding()
+	mounts:setModifier(self.modifierCombobox.selectedValue)
+	mounts:UPDATE_INVENTORY_DURABILITY()
+	mounts.pets:setSummonEvery()
+	MountsJournalFrame:setArrowSelectMount(mounts.config.arrowButtonsBrowse)
+
+	local ldbi = LibStub("LibDBIcon-1.0")
 	if mounts.config.omb.hide then
 		ldbi:Hide(addon)
 	else
@@ -458,19 +519,6 @@ config.okay = function(self)
 	else
 		ldbi:Unlock(addon)
 	end
-	mounts.config.useRepairMounts = self.useRepairMounts:GetChecked()
-	mounts.config.useRepairMountsDurability = tonumber(self.repairPercent:GetText()) or 0
-	mounts.config.useRepairFlyable = self.repairFlyable:GetChecked()
-	mounts.config.useRepairFlyableDurability = tonumber(self.repairFlyablePercent:GetText()) or 0
-	mounts:UPDATE_INVENTORY_DURABILITY()
-	mounts.config.repairSelectedMount = self.repairMountsCombobox.selectedValue
-	mounts.config.useMagicBroom = self.useMagicBroom:GetChecked()
-	mounts.config.noPetInRaid = self.noPetInRaid:GetChecked()
-	mounts.config.noPetInGroup = self.noPetInGroup:GetChecked()
-	mounts.config.copyMountTarget = self.copyMountTarget:GetChecked()
-	mounts.config.arrowButtonsBrowse = self.arrowButtons:GetChecked()
-	mounts.config.openHyperlinks = self.openLinks:GetChecked()
-	MountsJournalFrame:setArrowSelectMount(mounts.config.arrowButtonsBrowse)
 end
 
 

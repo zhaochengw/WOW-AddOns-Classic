@@ -50,6 +50,7 @@ function mounts:ADDON_LOADED(addonName)
 		end
 		self.config.useRepairMountsDurability = self.config.useRepairMountsDurability or 41
 		self.config.useRepairFlyableDurability = self.config.useRepairFlyableDurability or 31
+		self.config.summonPetEveryN = self.config.summonPetEveryN or 5
 		self.config.macrosConfig = self.config.macrosConfig or {}
 		for i = 1, GetNumClasses() do
 			local _, className = GetClassInfo(i)
@@ -179,6 +180,7 @@ function mounts:PLAYER_LOGIN()
 	self:setUsableRepairMounts()
 	self:updateProfessionsRank()
 	self:init()
+	self.pets:setSummonEvery()
 
 	-- MAP CHANGED
 	-- self:RegisterEvent("NEW_WMO_CHUNK")
@@ -281,54 +283,9 @@ function mounts:summonPet(spellID)
 	end
 
 	if type(petID) == "number" then
-		local petIndex = mounts.indexPetBySpellID[petID]
-		if not petIndex then return end
-
-		local creatureID, creatureName, creatureSpellID, icon, isSummoned = GetCompanionInfo("CRITTER", petIndex)
-		if not isSummoned then CallCompanion("CRITTER", petIndex) end
-	elseif petID then
-		local num = GetNumCompanions("CRITTER")
-		if num == 0 then return end
-		local petIndex
-
-		if num > 1 then
-			petIndex = random(num)
-			local creatureID, creatureName, creatureSpellID, icon, isSummoned = GetCompanionInfo("CRITTER", petIndex)
-			if isSummoned then
-				petIndex = petIndex + 1
-				if petIndex > num then petIndex = 1 end
-			end
-		else
-			local creatureID, creatureName, creatureSpellID, icon, isSummoned = GetCompanionInfo("CRITTER", 1)
-			if not isSummoned then petIndex = 1 end
-		end
-
-		if petIndex then CallCompanion("CRITTER", petIndex) end
+		self.pets:summon(petID)
 	else
-		local favoriteslist = {}
-		for petSpellID in next, self.charDB.petFavoritesList do
-			favoriteslist[#favoriteslist + 1] = self.indexPetBySpellID[petSpellID]
-		end
-
-		local num = #favoriteslist
-		if num == 0 then return end
-		local petIndex
-
-		if num > 1 then
-			local rNum = random(num)
-			petIndex = favoriteslist[rNum]
-			local creatureID, creatureName, creatureSpellID, icon, isSummoned = GetCompanionInfo("CRITTER", petIndex)
-			if isSummoned then
-				rNum = rNum + 1
-				if rNum > num then rNum = 1 end
-				petIndex = favoriteslist[rNum]
-			end
-		else
-			local creatureID, creatureName, creatureSpellID, icon, isSummoned = GetCompanionInfo("CRITTER", favoriteslist[1])
-			if not isSummoned then petIndex = favoriteslist[1] end
-		end
-
-		if petIndex then CallCompanion("CRITTER", petIndex) end
+		self.pets:summonRandomPet(not petID)
 	end
 end
 
@@ -336,8 +293,12 @@ end
 function mounts:updateIndexBySpellID()
 	wipe(self.indexBySpellID)
 	for i = 1, GetNumCompanions("MOUNT") do
-		local _,_, spellID = GetCompanionInfo("MOUNT", i)
+		local creatureID, _, spellID = GetCompanionInfo("MOUNT", i)
 		self.indexBySpellID[spellID] = i
+
+		if not util.getMountInfoBySpellID(spellID) then
+			util.addNewMount(spellID, creatureID)
+		end
 	end
 end
 

@@ -1,7 +1,8 @@
+--@curseforge-project-slug: libsfdropdown@
 -----------------------------------------------------------
 -- LibSFDropDown - DropDown menu for non-Blizzard addons --
 -----------------------------------------------------------
-local MAJOR_VERSION, MINOR_VERSION = "LibSFDropDown-1.4", 5
+local MAJOR_VERSION, MINOR_VERSION = "LibSFDropDown-1.4", 6
 local lib, oldminor = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
 oldminor = oldminor or 0
@@ -1035,7 +1036,7 @@ end
 ---------------------------------------------------
 -- UPDATE OLD VERSION
 ---------------------------------------------------
-if oldminor < 3 then
+if oldminor < MINOR_VERSION then
 	for i = 1, #dropDownSearchFrames do
 		local f = dropDownSearchFrames[i]
 		f.refresh = DropDownMenuSearchMixin.refresh

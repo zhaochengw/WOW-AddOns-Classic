@@ -649,3 +649,14 @@ function MountsJournalUtil.getMountInfoBySpellID(spellID)
 	-- spellID, creatureID, mountType, sourceType, mountFaction, expansion
 	return info[5], info[2], info[3], info[4], info[6]
 end
+
+
+function MountsJournalUtil.addNewMount(spellID, creatureID)
+	local info = {spellID, creatureID, 1, 0, 3, 3}
+	mounts.mountsDB[#mounts.mountsDB + 1] = info
+	mountBySpellID[spellID] = info
+
+	if MountsJournalFrame and not MountsJournalFrame.init then
+		MountsJournalFrame:sortMounts()
+	end
+end
