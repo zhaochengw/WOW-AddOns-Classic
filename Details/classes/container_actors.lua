@@ -15,7 +15,7 @@
 	local UnitGUID = UnitGUID --api local
 	local strsplit = strsplit --api local
 	
-	local _setmetatable = setmetatable --lua local
+	local setmetatable = setmetatable --lua local
 	local _getmetatable = getmetatable --lua local
 	local _bit_band = bit.band --lua local
 	local _table_sort = table.sort --lua local
@@ -160,7 +160,7 @@
 			_NameIndexTable = {}
 		}
 		
-		_setmetatable(_newContainer, container_combatentes)
+		setmetatable(_newContainer, container_combatentes)
 
 		return _newContainer
 	end
@@ -191,7 +191,7 @@
 			end
 		end
 
-		local _, engClass = _UnitClass (nome or "")
+		local _, engClass = _UnitClass(nome or "")
 
 		if (engClass) then
 			novo_objeto.classe = engClass
@@ -539,7 +539,6 @@
 	end
 
 	function container_combatentes:PegarCombatente (serial, nome, flag, criar)
-
 		--[[statistics]]-- _detalhes.statistics.container_calls = _detalhes.statistics.container_calls + 1
 	
 		--if (flag and nome:find("Kastfall") and bit.band(flag, 0x2000) ~= 0) then
@@ -547,7 +546,39 @@
 		--else
 			--print(nome, flag)
 		--end
-	
+
+		local npcId = Details:GetNpcIdFromGuid(serial or "")
+
+		--fix for rogue secret technich, can also be fixed by getting the time of the rogue's hit as the other hits go right after
+		if (npcId == 144961) then
+			pet_tooltip_frame:SetOwner(WorldFrame, "ANCHOR_NONE")
+			pet_tooltip_frame:SetHyperlink(("unit:" .. serial) or "")
+
+			local pname = _G["DetailsPetOwnerFinderTextLeft1"]
+			if (pname) then
+				local text = pname:GetText()
+				if (text and type(text) == "string") then
+					local isInRaid = _detalhes.tabela_vigente.raid_roster[text]
+					if (isInRaid) then
+						serial = UnitGUID(text)
+						nome = text
+						flag = 0x514
+					else
+						for playerName in text:gmatch("([^%s]+)") do
+							playerName = playerName:gsub(",", "")
+							local playerIsOnRaidCache = _detalhes.tabela_vigente.raid_roster[playerName]
+							if (playerIsOnRaidCache) then
+								serial = UnitGUID(playerName)
+								nome = playerName
+								flag = 0x514
+								break
+							end
+						end
+					end
+				end
+			end
+		end
+
 		--verifica se � um pet, se for confere se tem o nome do dono, se n�o tiver, precisa por
 		local dono_do_pet
 		serial = serial or "ns"
@@ -876,7 +907,7 @@
 
 	function _detalhes.refresh:r_container_combatentes (container, shadow)
 		--reconstr�i meta e indexes
-			_setmetatable(container, _detalhes.container_combatentes)
+			setmetatable(container, _detalhes.container_combatentes)
 			container.__index = _detalhes.container_combatentes
 			container.funcao_de_criacao = container_combatentes:FuncaoDeCriacao (container.tipo)
 

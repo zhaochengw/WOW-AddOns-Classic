@@ -6,8 +6,8 @@
 
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10144
-		_detalhes.alpha_build_counter = 10144 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 10205
+		_detalhes.alpha_build_counter = 10205 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. " " .. _detalhes.build_counter
@@ -36,13 +36,16 @@
 		Details.gameVersionPrefix = gameVersionPrefix
 
 		function Details.GetVersionString()
-			local alphaId = _detalhes.curseforgeVersion:match("%-(%d+)%-")
+			local curseforgeVersion = _detalhes.curseforgeVersion or ""
+			local alphaId = curseforgeVersion:match("%-(%d+)%-")
+
 			if (not alphaId) then
 				--this is a release version
 				alphaId = "R1"
 			else
 				alphaId = "A" .. alphaId
 			end
+			
 			return Details.gameVersionPrefix .. Details.build_counter .. "." .. Details.acounter .. "." .. alphaId .. "(" .. Details.game_version .. ")"
 		end
 
@@ -357,9 +360,7 @@ do
 
 		--current instances of the exp (need to maintain)
 			_detalhes.InstancesToStoreData = { --mapId
-				[2296] = true, --castle narnia
-				[2450] = true, --sanctum of domination
-				[2481] = true, --sepulcher of the first ones
+				[2522] = true, --sepulcher of the first ones
 			}
 
 		--armazena os escudos - Shields information for absorbs
@@ -572,7 +573,7 @@ do
 
 		_detalhes.gump:NewColor("DETAILS_PLUGIN_BUTTONTEXT_COLOR", 0.9999, 0.8196, 0, 1)
 
-		_detalhes.gump:InstallTemplate ("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE",
+		_detalhes.gump:InstallTemplate("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE",
 			{
 				backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 				backdropcolor = {0, 0, 0, .5},
@@ -580,7 +581,7 @@ do
 				onentercolor = {0.3, 0.3, 0.3, .5},
 			}
 		)
-		_detalhes.gump:InstallTemplate ("button", "DETAILS_PLUGINPANEL_BUTTONSELECTED_TEMPLATE",
+		_detalhes.gump:InstallTemplate("button", "DETAILS_PLUGINPANEL_BUTTONSELECTED_TEMPLATE",
 			{
 				backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 				backdropcolor = {0, 0, 0, .5},
@@ -589,7 +590,7 @@ do
 			}
 		)
 
-		_detalhes.gump:InstallTemplate ("button", "DETAILS_PLUGIN_BUTTON_TEMPLATE",
+		_detalhes.gump:InstallTemplate("button", "DETAILS_PLUGIN_BUTTON_TEMPLATE",
 			{
 				backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 				backdropcolor = {1, 1, 1, .5},
@@ -601,7 +602,7 @@ do
 				height = 20,
 			}
 		)
-		_detalhes.gump:InstallTemplate ("button", "DETAILS_PLUGIN_BUTTONSELECTED_TEMPLATE",
+		_detalhes.gump:InstallTemplate("button", "DETAILS_PLUGIN_BUTTONSELECTED_TEMPLATE",
 			{
 				backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 				backdropcolor = {1, 1, 1, .5},
@@ -614,14 +615,14 @@ do
 			}
 		)
 
-		_detalhes.gump:InstallTemplate ("button", "DETAILS_TAB_BUTTON_TEMPLATE",
+		_detalhes.gump:InstallTemplate("button", "DETAILS_TAB_BUTTON_TEMPLATE",
 			{
 				width = 100,
 				height = 20,
 			},
 			"DETAILS_PLUGIN_BUTTON_TEMPLATE"
 		)
-		_detalhes.gump:InstallTemplate ("button","DETAILS_TAB_BUTTONSELECTED_TEMPLATE",
+		_detalhes.gump:InstallTemplate("button","DETAILS_TAB_BUTTONSELECTED_TEMPLATE",
 			{
 				width = 100,
 				height = 20,
@@ -868,7 +869,7 @@ do
 
 	--Event Frame
 		_detalhes.listener = CreateFrame("Frame", nil, UIParent)
-		_detalhes.listener:RegisterEvent ("ADDON_LOADED")
+		_detalhes.listener:RegisterEvent("ADDON_LOADED")
 		_detalhes.listener:SetFrameStrata("LOW")
 		_detalhes.listener:SetFrameLevel(9)
 		_detalhes.listener.FrameTime = 0
@@ -898,18 +899,14 @@ do
 
 ------------------------------------------------------------------------------------------
 -- welcome panel
-	function _detalhes:CreateWelcomePanel (name, parent, width, height, make_movable)
-		local f = CreateFrame("frame", name, parent or UIParent, "BackdropTemplate")
+	function _detalhes:CreateWelcomePanel(name, parent, width, height, makeMovable)
+		local newWelcomePanel = CreateFrame("frame", name, parent or UIParent, "BackdropTemplate")
 
-		--f:SetBackdrop({bgFile = [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 128, insets = {left=3, right=3, top=3, bottom=3}, edgeFile = [[Interface\AddOns\Details\images\border_welcome]], edgeSize = 16})
-		f:SetBackdrop({bgFile = [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 128, insets = {left=0, right=0, top=0, bottom=0}, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
-		f:SetBackdropColor(1, 1, 1, 0.75)
-		f:SetBackdropBorderColor(0, 0, 0, 1)
+		DetailsFramework:ApplyStandardBackdrop(newWelcomePanel)
+		newWelcomePanel:SetSize(width or 1, height or 1)
 
-		f:SetSize(width or 1, height or 1)
-
-		if (make_movable) then
-			f:SetScript("OnMouseDown", function(self, button)
+		if (makeMovable) then
+			newWelcomePanel:SetScript("OnMouseDown", function(self, button)
 				if (self.isMoving) then
 					return
 				end
@@ -920,17 +917,18 @@ do
 					self.isMoving = true
 				end
 			end)
-			f:SetScript("OnMouseUp", function(self, button)
+
+			newWelcomePanel:SetScript("OnMouseUp", function(self, button)
 				if (self.isMoving and button == "LeftButton") then
 					self:StopMovingOrSizing()
 					self.isMoving = nil
 				end
 			end)
-			f:SetToplevel (true)
-			f:SetMovable(true)
+			newWelcomePanel:SetToplevel(true)
+			newWelcomePanel:SetMovable(true)
 		end
 
-		return f
+		return newWelcomePanel
 	end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -942,6 +940,8 @@ do
 	--register textures and fonts for shared media
 		local SharedMedia = LibStub:GetLibrary ("LibSharedMedia-3.0")
 		--default bars
+		SharedMedia:Register("statusbar", "Details Hyanda", [[Interface\AddOns\Details\images\bar_hyanda]])
+
 		SharedMedia:Register("statusbar", "Details D'ictum", [[Interface\AddOns\Details\images\bar4]])
 		SharedMedia:Register("statusbar", "Details Vidro", [[Interface\AddOns\Details\images\bar4_vidro]])
 		SharedMedia:Register("statusbar", "Details D'ictum (reverse)", [[Interface\AddOns\Details\images\bar4_reverse]])
@@ -995,7 +995,7 @@ do
 			end
 		end
 
-		function dumpt(value)
+		function dumpt(value) --[[GLOBAL]]
 			return Details:Dump(value)
 		end
 
@@ -1007,7 +1007,7 @@ do
 				copy = {}
 				for orig_key, orig_value in next, orig, nil do
 					--print(orig_key, orig_value)
-					copy [Details.CopyTable(orig_key)] = Details.CopyTable(orig_value)
+					copy[Details.CopyTable(orig_key)] = Details.CopyTable(orig_value)
 				end
 			else
 				copy = orig
@@ -1016,9 +1016,9 @@ do
 		end
 
 	--delay messages
-		function _detalhes:DelayMsg (msg)
+		function _detalhes:DelayMsg(msg)
 			_detalhes.delaymsgs = _detalhes.delaymsgs or {}
-			_detalhes.delaymsgs [#_detalhes.delaymsgs+1] = msg
+			_detalhes.delaymsgs[#_detalhes.delaymsgs+1] = msg
 		end
 		function _detalhes:ShowDelayMsg()
 			if (_detalhes.delaymsgs and #_detalhes.delaymsgs > 0) then
@@ -1030,12 +1030,11 @@ do
 		end
 
 	--print messages
-		function _detalhes:Msg(_string, arg1, arg2, arg3, arg4)
+		function _detalhes:Msg(str, arg1, arg2, arg3, arg4)
 			if (self.__name) then
-				--yes, we have a name!
-				print("|cffffaeae" .. self.__name .. "|r |cffcc7c7c(plugin)|r: " .. (_string or ""), arg1 or "", arg2 or "", arg3 or "", arg4 or "")
+				print("|cffffaeae" .. self.__name .. "|r |cffcc7c7c(plugin)|r: " .. (str or ""), arg1 or "", arg2 or "", arg3 or "", arg4 or "")
 			else
-				print(Loc ["STRING_DETAILS1"] .. (_string or ""), arg1 or "", arg2 or "", arg3 or "", arg4 or "")
+				print(Loc ["STRING_DETAILS1"] .. (str or ""), arg1 or "", arg2 or "", arg3 or "", arg4 or "")
 			end
 		end
 
@@ -1062,6 +1061,7 @@ do
 		Details.failed_to_load = C_Timer.NewTimer(1, function() Details.Schedules.NewTimer(20, _detalhes.WelcomeMsgLogon) end)
 
 	--key binds
+	--[=
 		--header
 			_G ["BINDING_HEADER_Details"] = "Details!"
 			_G ["BINDING_HEADER_DETAILS_KEYBIND_SEGMENTCONTROL"] = Loc ["STRING_KEYBIND_SEGMENTCONTROL"]
@@ -1097,6 +1097,7 @@ do
 			_G ["BINDING_NAME_DETAILS_BOOKMARK8"] = format(Loc ["STRING_KEYBIND_BOOKMARK_NUMBER"], 8)
 			_G ["BINDING_NAME_DETAILS_BOOKMARK9"] = format(Loc ["STRING_KEYBIND_BOOKMARK_NUMBER"], 9)
 			_G ["BINDING_NAME_DETAILS_BOOKMARK10"] = format(Loc ["STRING_KEYBIND_BOOKMARK_NUMBER"], 10)
+	--]=]
 
 end
 

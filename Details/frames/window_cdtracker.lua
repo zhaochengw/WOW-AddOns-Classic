@@ -173,6 +173,7 @@ end
         local spellIcon = GetSpellTexture(cooldownFrame.spellId)
         if (spellIcon) then
             cooldownFrame:SetIcon(spellIcon, .1, .9, .1, .9)
+
             local classColor = C_ClassColor.GetClassColor(cooldownFrame.class)
             cooldownFrame:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
             cooldownFrame:SetLeftText(DF:RemoveRealmName(cooldownFrame.unitName))
@@ -554,7 +555,7 @@ end
             DF:SetFontSize(warning1, 14)
             local animationHub = DF:CreateAnimationHub(warning1)
             local anim1 = DF:CreateAnimation(animationHub, "rotation", 1, 0, 35)
-            anim1:SetEndDelay(math.huge)
+            anim1:SetEndDelay(10000000)
             anim1:SetSmoothProgress(1)
             animationHub:Play()
             animationHub:Pause()

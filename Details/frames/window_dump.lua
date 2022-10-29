@@ -23,7 +23,7 @@ function Details:Dump (...)
 		DetailsDumpFrame:SetSize(700, 600)
 		DetailsDumpFrame:SetTitle("Details! Dump Table [|cFFFF3333Ready Only|r]")
 		
-		local text_editor = DetailsFramework:NewSpecialLuaEditorEntry (DetailsDumpFrame, 680, 560, "Editbox", "$parentEntry", true)
+		local text_editor = DetailsFramework:NewSpecialLuaEditorEntry(DetailsDumpFrame, 680, 560, "Editbox", "$parentEntry", true)
 		text_editor:SetPoint("topleft", DetailsDumpFrame, "topleft", 10, -30)
 		
 		text_editor.scroll:SetBackdrop(nil)
@@ -53,14 +53,13 @@ function Details:Dump (...)
 		return
 	else
 		if (type(t) == "table") then
-			local s = Details.table.dump(t)
+			local s = DetailsFramework.table.dump(t)
 			DetailsDumpFrame.Editbox:SetText(s)
 		else
 			t = {...}
+			local s = DetailsFramework.table.dump(t)
+			DetailsDumpFrame.Editbox:SetText(s)
 		end
-
-		local s = Details.table.dump(t)
-		DetailsDumpFrame.Editbox:SetText(s)
 	end
 
 	DetailsDumpFrame:Show()
@@ -85,7 +84,7 @@ function _detalhes:ShowImportWindow (defaultText, confirmFunc, titleText)
 		importWindow:SetPoint("center")
 		DetailsFramework:ApplyStandardBackdrop(importWindow, false, 1.2)
 	
-		local importTextEditor = DetailsFramework:NewSpecialLuaEditorEntry (importWindow, 780, 540, "ImportEditor", "$parentEditor", true)
+		local importTextEditor = DetailsFramework:NewSpecialLuaEditorEntry(importWindow, 780, 540, "ImportEditor", "$parentEditor", true)
 		importTextEditor:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
 		importTextEditor:SetBackdropColor(.2, .2, .2, .5)
 		importTextEditor:SetBackdropBorderColor(0, 0, 0, 1)

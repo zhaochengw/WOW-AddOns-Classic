@@ -14,11 +14,11 @@
 	local _table_sort = table.sort --lua local
 	local tinsert = table.insert --lua local
 	local _table_size = table.getn --lua local
-	local _setmetatable = setmetatable --lua local
+	local setmetatable = setmetatable --lua local
 	local _getmetatable = getmetatable --lua local
 	local ipairs = ipairs --lua local
 	local pairs = pairs --lua local
-	local _rawget= rawget --lua local
+	local rawget= rawget --lua local
 	local _math_min = math.min --lua local
 	local _math_max = math.max --lua local
 	local abs = math.abs --lua local
@@ -440,7 +440,7 @@ end
 			spells = container_habilidades:NovoContainer (container_damage)
 		}
 
-		_setmetatable(_new_damageActor, atributo_damage)
+		setmetatable(_new_damageActor, atributo_damage)
 
 		return _new_damageActor
 	end
@@ -667,12 +667,12 @@ end
 			GameCooltip:AddStatusBar (t[2]/top*100, 1, r, g, b, 0.8, false,  byspell_tooltip_background)
 
 			if (class) then
-				local specID = Details:GetSpec (t[1])
+				local specID = Details:GetSpec(t[1])
 				if (specID) then
 					local texture, l, r, t, b = Details:GetSpecIcon (specID, false)
 					GameCooltip:AddIcon (texture, 1, 1, lineHeight, lineHeight, l, r, t, b)
 				else
-					local texture, l, r, t, b = Details:GetClassIcon (class)
+					local texture, l, r, t, b = Details:GetClassIcon(class)
 					GameCooltip:AddIcon ("Interface\\AddOns\\Details\\images\\classes_small_alpha", 1, 1, lineHeight, lineHeight, l, r, t, b)
 				end
 
@@ -950,7 +950,7 @@ end
 		thisLine.colocacao = colocacao
 
 		if (not _getmetatable (tabela)) then
-			_setmetatable(tabela, {__call = RefreshBarraBySpell})
+			setmetatable(tabela, {__call = RefreshBarraBySpell})
 			tabela._custom = true
 		end
 
@@ -1093,7 +1093,7 @@ end
 						GameCooltip:AddIcon ("Interface\\LFGFRAME\\LFGROLE_BW", nil, nil, lineHeight, lineHeight, .25, .5, 0, 1)
 					else
 
-						local specID = Details:GetSpec (t[1])
+						local specID = Details:GetSpec(t[1])
 						if (specID) then
 							local texture, l, r, t, b = Details:GetSpecIcon (specID, false)
 							GameCooltip:AddIcon (texture, 1, 1, lineHeight, lineHeight, l, r, t, b)
@@ -1141,7 +1141,7 @@ end
 		thisLine.colocacao = colocacao
 
 		if (not _getmetatable (tabela)) then
-			_setmetatable(tabela, {__call = RefreshBarraFrags})
+			setmetatable(tabela, {__call = RefreshBarraFrags})
 			tabela._custom = true
 		end
 
@@ -1499,7 +1499,7 @@ end
 
 			local classe = Details:GetClass(t[1])
 			if (classe) then
-				local specID = Details:GetSpec (t[1])
+				local specID = Details:GetSpec(t[1])
 				if (specID) then
 					local texture, l, r, t, b = Details:GetSpecIcon (specID, false)
 					GameCooltip:AddIcon (texture, 1, 1, lineHeight, lineHeight, l, r, t, b)
@@ -3910,7 +3910,7 @@ function atributo_damage:ToolTip_FriendlyFire (instancia, numero, barra, keydown
 		if (classe == "UNKNOW") then
 			GameCooltip:AddIcon ("Interface\\AddOns\\Details\\images\\classes_small", nil, nil, lineHeight, lineHeight, unpack(Details.class_coords ["UNKNOW"]))
 		else
-			local specID = Details:GetSpec (DamagedPlayers[i][1])
+			local specID = Details:GetSpec(DamagedPlayers[i][1])
 			if (specID) then
 				local texture, l, r, t, b = Details:GetSpecIcon (specID, false)
 				GameCooltip:AddIcon (texture, 1, 1, lineHeight, lineHeight, l, r, t, b)
@@ -5875,7 +5875,7 @@ end
 
 function Details.refresh:r_atributo_damage (este_jogador, shadow)
 	--restaura metas do ator
-		_setmetatable(este_jogador, Details.atributo_damage)
+		setmetatable(este_jogador, Details.atributo_damage)
 		este_jogador.__index = Details.atributo_damage
 	--restaura as metas dos containers
 		Details.refresh:r_container_habilidades (este_jogador.spells, shadow and shadow.spells)

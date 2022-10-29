@@ -5,7 +5,7 @@ local tinsert = table.insert
 local _table_size = table.getn
 local ipairs = ipairs
 local pairs = pairs
-local _rawget= rawget
+local rawget= rawget
 local min = math.min
 local _math_max = math.max
 local abs = math.abs
@@ -434,7 +434,7 @@ function atributo_misc:ReportSingleDeadLine (morte, instancia)
 			fontSize = 10
 		end
 		local fonte, _, flags = _detalhes.fontstring_len:GetFont()
-		_detalhes.fontstring_len:SetFont (fonte, fontSize, flags)
+		_detalhes.fontstring_len:SetFont(fonte, fontSize, flags)
 		_detalhes.fontstring_len:SetText("thisisspacement")
 	end
 	local default_len = _detalhes.fontstring_len:GetStringWidth()
@@ -1820,7 +1820,7 @@ function atributo_misc:ToolTipDefensiveCooldowns (instancia, numero, barra)
 				if (classe == "UNKNOW") then
 					GameCooltip:AddIcon ("Interface\\LFGFRAME\\LFGROLE_BW", nil, nil, 14, 14, .25, .5, 0, 1)
 				else
-					local specID = _detalhes:GetSpec (alvos[i][1])
+					local specID = _detalhes:GetSpec(alvos[i][1])
 					if (specID) then
 						local texture, l, r, t, b = _detalhes:GetSpecIcon (specID, false)
 						GameCooltip:AddIcon (texture, 1, 1, lineHeight, lineHeight, l, r, t, b)
@@ -1900,7 +1900,7 @@ function atributo_misc:ToolTipRess (instancia, numero, barra)
 				if (classe == "UNKNOW") then
 					GameCooltip:AddIcon ("Interface\\LFGFRAME\\LFGROLE_BW", nil, nil, lineHeight, lineHeight, .25, .5, 0, 1)
 				else
-					local specID = _detalhes:GetSpec (alvos[i][1])
+					local specID = _detalhes:GetSpec(alvos[i][1])
 					if (specID) then
 						local texture, l, r, t, b = _detalhes:GetSpecIcon (specID, false)
 						GameCooltip:AddIcon (texture, 1, 1, lineHeight, lineHeight, l, r, t, b)

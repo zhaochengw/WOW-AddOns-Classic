@@ -9,7 +9,7 @@ local _math_floor = math.floor --lua local
 local abs = math.abs --lua local
 local _table_remove = table.remove --lua local
 local _getmetatable = getmetatable --lua local
-local _setmetatable = setmetatable --lua local
+local setmetatable = setmetatable --lua local
 local _string_len = string.len --lua local
 local _unpack = unpack --lua local
 local _cstr = string.format --lua local
@@ -49,7 +49,7 @@ local segmentos = _detalhes.segmentos
 		for index = 1, #_detalhes.tabela_instancias do
 			local instancia = _detalhes.tabela_instancias [index]
 			if (not _getmetatable (instancia)) then
-				_setmetatable(_detalhes.tabela_instancias[index], _detalhes)
+				setmetatable(_detalhes.tabela_instancias[index], _detalhes)
 			end
 		end
 
@@ -1353,7 +1353,7 @@ end
 				LastModo = modo_grupo,
 		}
 
-		_setmetatable(new_instance, _detalhes)
+		setmetatable(new_instance, _detalhes)
 		_detalhes.tabela_instancias [#_detalhes.tabela_instancias+1] = new_instance
 
 		--fill the empty instance with default values
@@ -1375,7 +1375,7 @@ end
 	function _detalhes:NovaInstancia (ID)
 
 		local new_instance = {}
-		_setmetatable(new_instance, _detalhes)
+		setmetatable(new_instance, _detalhes)
 		_detalhes.tabela_instancias [#_detalhes.tabela_instancias+1] = new_instance
 
 		--instance number
@@ -1615,6 +1615,13 @@ function _detalhes:RestauraJanela(index, temp, load_only)
 			self.mostrando = "normal"
 		end
 
+	--internal stuff
+		self.oldwith = self.baseframe:GetWidth()
+
+		self:RestoreMainWindowPosition()
+		self:ReajustaGump()
+		--self:SaveMainWindowPosition()
+	
 		--fix for the weird white window default skin
 		--this is a auto detect for configuration corruption, happens usually when the user install Details! over old config settings
 		--check if the skin used in the window is the default skin, check if statusbar is in use and if the color of the window is full white
@@ -1624,15 +1631,8 @@ function _detalhes:RestauraJanela(index, temp, load_only)
 				self.skin = "no skin"
 				self:ChangeSkin(_detalhes.default_skin_to_use)
 			end
-		end
-
-	--internal stuff
-		self.oldwith = self.baseframe:GetWidth()
-
-		self:RestoreMainWindowPosition()
-		self:ReajustaGump()
-		--self:SaveMainWindowPosition()
-
+		end	
+	
 		if (not load_only) then
 			self.iniciada = true
 			self:AtivarInstancia (temp)
@@ -3012,7 +3012,7 @@ function _detalhes:FormatReportLines (report_table, data, f1, f2, f3)
 		fontSize = 10
 	end
 	local fonte, _, flags = _detalhes.fontstring_len:GetFont()
-	_detalhes.fontstring_len:SetFont (fonte, fontSize, flags)
+	_detalhes.fontstring_len:SetFont(fonte, fontSize, flags)
 	_detalhes.fontstring_len:SetText("DEFAULT NAME")
 	local biggest_len = _detalhes.fontstring_len:GetStringWidth()
 

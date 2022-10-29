@@ -2057,6 +2057,7 @@ function Details:HandleTextsOnMouseClick(row, type)
 end
 
 local setBarValue = function(self, value)
+	value = Clamp(value, 0, 100)
 	self.statusbar:SetValue(value)
 	self.statusbar.value = value
 	if (self.using_upper_3dmodels) then
@@ -3101,7 +3102,7 @@ local function CreateAlertFrame(baseframe, instancia)
 	frame_lower:SetHeight(25)
 	frame_lower:SetPoint("left", frame_upper, "left")
 	frame_lower:SetPoint("right", frame_upper, "right")
-	frame_upper:SetScrollChild (frame_lower)
+	frame_upper:SetScrollChild(frame_lower)
 
 	local alert_bg = CreateFrame("frame", "DetailsAlertFrame" .. instancia.meu_id, frame_lower,"BackdropTemplate")
 	alert_bg:SetPoint("bottom", baseframe, "bottom")
@@ -3551,7 +3552,7 @@ function gump:CriaJanelaPrincipal (ID, instancia, criando)
 		scrollbar:Show()
 
 		--config set
-		scrollbar:SetOrientation ("VERTICAL")
+		scrollbar:SetOrientation("VERTICAL")
 		scrollbar.scrollMax = 0
 		scrollbar:SetMinMaxValues(0, 0)
 		scrollbar:SetValue(0)
@@ -3612,7 +3613,7 @@ function gump:CriaJanelaPrincipal (ID, instancia, criando)
 -- background window config -------------------------------------------------------------------------------------------------------------------------------------------------
 
 		backgroundframe:SetAllPoints(baseframe)
-		backgroundframe:SetScrollChild (backgrounddisplay)
+		backgroundframe:SetScrollChild(backgrounddisplay)
 
 		backgrounddisplay:SetResizable(true)
 		backgrounddisplay:SetPoint("topleft", baseframe, "topleft")
@@ -7332,8 +7333,8 @@ function updateClickThroughListener:LeaveCombat()
 	end)
 end
 
-updateClickThroughListener:RegisterEvent ("COMBAT_PLAYER_ENTER", "EnterCombat")
-updateClickThroughListener:RegisterEvent ("COMBAT_PLAYER_LEAVE", "EnterCombat")
+updateClickThroughListener:RegisterEvent("COMBAT_PLAYER_ENTER", "EnterCombat")
+updateClickThroughListener:RegisterEvent("COMBAT_PLAYER_LEAVE", "EnterCombat")
 
 function Details:UpdateClickThroughSettings (inCombat, window, bars, toolbaricons)
 	if (inCombat ~= nil) then

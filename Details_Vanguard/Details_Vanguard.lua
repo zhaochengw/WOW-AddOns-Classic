@@ -111,9 +111,9 @@ local function CreatePluginFrames (data)
 		
 			Vanguard.CurrentInstance = Vanguard:GetInstance(Vanguard.instance_id)
 			
-			VanguardFrame:RegisterEvent ("ROLE_CHANGED_INFORM")
-			VanguardFrame:RegisterEvent ("GROUP_ROSTER_UPDATE")
-			VanguardFrame:RegisterEvent ("PLAYER_TARGET_CHANGED")
+			VanguardFrame:RegisterEvent("ROLE_CHANGED_INFORM")
+			VanguardFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
+			VanguardFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 			
 			Vanguard:ResetBars()
 			
@@ -984,8 +984,8 @@ local build_options_panel = function()
 			min = 10,
 			max = 50,
 			step = 1,
-			--desc = "Inc Damage Heigth",
-			name = "Incoming Damage Heigth",
+			--desc = "Inc Damage Height",
+			name = "Incoming Damage Height",
 		},
 		{type = "blank"},
 
@@ -1138,15 +1138,15 @@ function Vanguard:OnEvent (_, event, arg1, token, time, who_serial, who_name, wh
 				CreatePluginFrames()
 
 				--Register needed events
-				_G._detalhes:RegisterEvent (Vanguard, "COMBAT_PLAYER_ENTER")
-				_G._detalhes:RegisterEvent (Vanguard, "COMBAT_PLAYER_LEAVE")
-				_G._detalhes:RegisterEvent (Vanguard, "DETAILS_INSTANCE_ENDRESIZE")
-				_G._detalhes:RegisterEvent (Vanguard, "DETAILS_INSTANCE_SIZECHANGED")
-				_G._detalhes:RegisterEvent (Vanguard, "GROUP_ONLEAVE")
-				_G._detalhes:RegisterEvent (Vanguard, "DETAILS_OPTIONS_MODIFIED")
+				_G._detalhes:RegisterEvent(Vanguard, "COMBAT_PLAYER_ENTER")
+				_G._detalhes:RegisterEvent(Vanguard, "COMBAT_PLAYER_LEAVE")
+				_G._detalhes:RegisterEvent(Vanguard, "DETAILS_INSTANCE_ENDRESIZE")
+				_G._detalhes:RegisterEvent(Vanguard, "DETAILS_INSTANCE_SIZECHANGED")
+				_G._detalhes:RegisterEvent(Vanguard, "GROUP_ONLEAVE")
+				_G._detalhes:RegisterEvent(Vanguard, "DETAILS_OPTIONS_MODIFIED")
 				
-				VanguardFrame:RegisterEvent ("ZONE_CHANGED_NEW_AREA")
-				VanguardFrame:RegisterEvent ("PLAYER_ENTERING_WORLD")
+				VanguardFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+				VanguardFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 			end
 		end
 	
