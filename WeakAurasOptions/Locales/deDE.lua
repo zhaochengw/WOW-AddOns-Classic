@@ -20,7 +20,6 @@ local L = WeakAuras.L
 	--[[Translation missing --]]
 	L["%d |4aura:auras; modified"] = "%d |4aura:auras; modified"
 	L["%i auras selected"] = "%i Auren ausgew\\195\\164hlt"
-	L["%i Matches"] = "%i Treffer"
 	--[[Translation missing --]]
 	L["%s - %i. Trigger"] = "%s - %i. Trigger"
 	--[[Translation missing --]]
@@ -95,6 +94,8 @@ local L = WeakAuras.L
 	--[[Translation missing --]]
 	L["%s Stacks Function"] = "%s Stacks Function"
 	--[[Translation missing --]]
+	L["%s stores around %s KB of data"] = "%s stores around %s KB of data"
+	--[[Translation missing --]]
 	L["%s Texture"] = "%s Texture"
 	--[[Translation missing --]]
 	L["%s Texture Function"] = "%s Texture Function"
@@ -167,7 +168,6 @@ local L = WeakAuras.L
 |cffff0000Note|r: Without a direct relationship to actual unitIDs, results may vary.
 
 |cffffff00*|r Yellow Unit settings can match multiple units and will default to being active even while no affected units are found without a Unit Count or Match Count setting.]=]
-	L["1 Match"] = "1 Treffer"
 	L["A 20x20 pixels icon"] = "Ein Symbol mit 20x20 Pixeln"
 	L["A 32x32 pixels icon"] = "Ein Symbol mit 32x32 Pixeln"
 	L["A 40x40 pixels icon"] = "Ein Symbol mit 40x40 Pixeln"
@@ -260,7 +260,6 @@ Off Screen]=]
 	--[[Translation missing --]]
 	L["Aura received from: %s"] = "Aura received from: %s"
 	L["Aura Type"] = "Auratyp"
-	L["Aura(s)"] = "Auren"
 	--[[Translation missing --]]
 	L["Aura: '%s'"] = "Aura: '%s'"
 	--[[Translation missing --]]
@@ -313,8 +312,6 @@ Off Screen]=]
 	--[[Translation missing --]]
 	L["Browse Wago, the largest collection of auras."] = "Browse Wago, the largest collection of auras."
 	--[[Translation missing --]]
-	L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."] = "Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."
-	--[[Translation missing --]]
 	L["Can be a UID (e.g., party1)."] = "Can be a UID (e.g., party1)."
 	--[[Translation missing --]]
 	L["Can set to 0 if Columns * Width equal File Width"] = "Can set to 0 if Columns * Width equal File Width"
@@ -338,6 +335,8 @@ Off Screen]=]
 	L["Class"] = "Klasse"
 	--[[Translation missing --]]
 	L["Clear Debug Logs"] = "Clear Debug Logs"
+	--[[Translation missing --]]
+	L["Clear Saved Data"] = "Clear Saved Data"
 	--[[Translation missing --]]
 	L["Clip Overlays"] = "Clip Overlays"
 	--[[Translation missing --]]
@@ -375,8 +374,6 @@ Off Screen]=]
 	L["Constant Factor"] = "Konstanter Faktor"
 	L["Control-click to select multiple displays"] = "Strg-Klick, um mehrere Anzeigen auszuwählen"
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "Eine Gruppe, die die Position und Konfiguration ihrer Kinder kontrolliert"
-	--[[Translation missing --]]
-	L["Convert to New Aura Trigger"] = "Convert to New Aura Trigger"
 	L["Convert to..."] = "Konvertieren zu..."
 	--[[Translation missing --]]
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."
@@ -429,6 +426,10 @@ Mehrere Events können durch Komma oder Leerzeichen getrennt werden.
 
 |cFF4444FFBeispiel:|r
 UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
+	--[[Translation missing --]]
+	L["Custom Trigger: Ignore Lua Errors on OPTIONS event"] = "Custom Trigger: Ignore Lua Errors on OPTIONS event"
+	--[[Translation missing --]]
+	L["Custom Trigger: Send fake events instead of STATUS event"] = "Custom Trigger: Send fake events instead of STATUS event"
 	L["Custom Untrigger"] = "Benutzerdefinierter Umkehrauslöser"
 	--[[Translation missing --]]
 	L["Custom Variables"] = "Custom Variables"
@@ -516,7 +517,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Enemy nameplate(s) found"] = "Enemy nameplate(s) found"
 	--[[Translation missing --]]
 	L["Enter a Spell ID"] = "Enter a Spell ID"
-	L["Enter an aura name, partial aura name, or spell id"] = "Auraname, Teilname oder Zauber-ID"
 	--[[Translation missing --]]
 	L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."] = "Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."
 	--[[Translation missing --]]
@@ -670,7 +670,6 @@ Falls die Zahl als Dezimalzahl (z.B. 0.5), Bruch (z.B. 1/2) oder Prozentsatz (z.
 	L["Group Description"] = "Group Description"
 	L["Group Icon"] = "Gruppensymbol"
 	L["Group key"] = "Gruppenschlüssel"
-	L["Group Member Count"] = "Anzahl der Gruppenmitglieder"
 	--[[Translation missing --]]
 	L["Group Options"] = "Group Options"
 	--[[Translation missing --]]
@@ -694,7 +693,6 @@ Falls die Zahl als Dezimalzahl (z.B. 0.5), Bruch (z.B. 1/2) oder Prozentsatz (z.
 	L["Hide this group's children"] = "Die Kinder dieser Gruppe ausblenden"
 	--[[Translation missing --]]
 	L["Hide Timer Text"] = "Hide Timer Text"
-	L["Hide When Not In Group"] = "Ausblenden, wenn ich gruppenlos bin"
 	L["Horizontal Align"] = "Horizontale Ausrichtung"
 	L["Horizontal Bar"] = "Horizontaler Balken"
 	--[[Translation missing --]]
@@ -738,13 +736,9 @@ Falls die Zahl als Dezimalzahl (z.B. 0.5), Bruch (z.B. 1/2) oder Prozentsatz (z.
 	--[[Translation missing --]]
 	L["Ignore Disconnected"] = "Ignore Disconnected"
 	--[[Translation missing --]]
-	L["Ignore Lua Errors on OPTIONS event"] = "Ignore Lua Errors on OPTIONS event"
-	--[[Translation missing --]]
 	L["Ignore out of checking range"] = "Ignore out of checking range"
 	--[[Translation missing --]]
 	L["Ignore Self"] = "Ignore Self"
-	--[[Translation missing --]]
-	L["Ignore self"] = "Ignore self"
 	--[[Translation missing --]]
 	L["Ignore updates"] = "Ignore updates"
 	L["Ignored"] = "Ignoriert"
@@ -904,8 +898,6 @@ Nur ein Wert kann ausgewählt werden.]=]
 	--[[Translation missing --]]
 	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "Note: Automated Messages to SAY and YELL are blocked outside of Instances."
 	--[[Translation missing --]]
-	L["Note: The legacy buff trigger is now permanently disabled. It will be removed in the near future."] = "Note: The legacy buff trigger is now permanently disabled. It will be removed in the near future."
-	--[[Translation missing --]]
 	L["Npc ID"] = "Npc ID"
 	--[[Translation missing --]]
 	L["Number of Entries"] = "Number of Entries"
@@ -921,10 +913,8 @@ Nur ein Wert kann ausgewählt werden.]=]
 	L["On Show"] = "Beim Einblenden"
 	--[[Translation missing --]]
 	L["Only Match auras cast by a player (not an npc)"] = "Only Match auras cast by a player (not an npc)"
-	L["Only match auras cast by people other than the player"] = "Nur Auren von anderen Spielern"
 	--[[Translation missing --]]
 	L["Only match auras cast by people other than the player or his pet"] = "Only match auras cast by people other than the player or his pet"
-	L["Only match auras cast by the player"] = "Nur Auren vom Spieler selbst"
 	--[[Translation missing --]]
 	L["Only match auras cast by the player or his pet"] = "Only match auras cast by the player or his pet"
 	L["Operator"] = "Operator"
@@ -1050,6 +1040,8 @@ Nur ein Wert kann ausgewählt werden.]=]
 	L["Same"] = "Gleich"
 	--[[Translation missing --]]
 	L["Same texture as Foreground"] = "Same texture as Foreground"
+	--[[Translation missing --]]
+	L["Saved Data"] = "Saved Data"
 	L["Scale"] = "Skalierung"
 	L["Search"] = "Suchen"
 	--[[Translation missing --]]
@@ -1079,7 +1071,6 @@ Nur ein Wert kann ausgewählt werden.]=]
 	L["Show \"Edge\""] = "Show \"Edge\""
 	--[[Translation missing --]]
 	L["Show \"Swipe\""] = "Show \"Swipe\""
-	L["Show all matches (Auto-clone)"] = "Alle Treffer anzeigen (Auto-Klonen)"
 	--[[Translation missing --]]
 	L["Show and Clone Settings"] = "Show and Clone Settings"
 	L["Show Border"] = "Rahmen anzeigen"
@@ -1089,7 +1080,6 @@ Nur ein Wert kann ausgewählt werden.]=]
 	L["Show Icon"] = "Symbol anzeigen"
 	--[[Translation missing --]]
 	L["Show If Unit Does Not Exist"] = "Show If Unit Does Not Exist"
-	L["Show If Unit Is Invalid"] = "Einblenden falls Einheit ungültig"
 	--[[Translation missing --]]
 	L["Show Matches for"] = "Show Matches for"
 	--[[Translation missing --]]
@@ -1170,7 +1160,6 @@ Nur ein Wert kann ausgewählt werden.]=]
 	L["Start Collapsed"] = "Start Collapsed"
 	--[[Translation missing --]]
 	L["Start of %s"] = "Start of %s"
-	L["Stealable"] = "stehlbare Aura"
 	L["Step Size"] = "Schrittgröße"
 	--[[Translation missing --]]
 	L["Stop Motion"] = "Stop Motion"
@@ -1300,18 +1289,14 @@ It might not work correctly with your version!]=]
 	L["Use Custom Color"] = "Benutzerdefinierte Farbe benutzen"
 	--[[Translation missing --]]
 	L["Use Display Info Id"] = "Use Display Info Id"
-	L["Use Full Scan (High CPU)"] = "Alle Auren scannen (CPU-Intensiv)"
-	--[[Translation missing --]]
-	L["Use nth value from tooltip:"] = "Use nth value from tooltip:"
 	--[[Translation missing --]]
 	L["Use SetTransform"] = "Use SetTransform"
 	--[[Translation missing --]]
 	L["Use Texture"] = "Use Texture"
-	L["Use tooltip \"size\" instead of stacks"] = "Tooltipgröße anstatt Stapel verwenden"
-	--[[Translation missing --]]
-	L["Used in auras:"] = "Used in auras:"
 	--[[Translation missing --]]
 	L["Used in Auras:"] = "Used in Auras:"
+	--[[Translation missing --]]
+	L["Used in auras:"] = "Used in auras:"
 	--[[Translation missing --]]
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "Uses UnitIsVisible() to check if in range. This is polled every second."
 	--[[Translation missing --]]
@@ -1349,9 +1334,9 @@ It might not work correctly with your version!]=]
 	L["Y Scale"] = "Skalierung (Y)"
 	L["Yellow Rune"] = "Gelbe Rune"
 	L["Yes"] = "Ja"
-	L["Y-Offset"] = "Y-Versatz"
 	--[[Translation missing --]]
 	L["y-Offset"] = "y-Offset"
+	L["Y-Offset"] = "Y-Versatz"
 	--[[Translation missing --]]
 	L["You already have this group/aura. Importing will create a duplicate."] = "You already have this group/aura. Importing will create a duplicate."
 	L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "Du bist im Begriff %d Aura/Auren zu löschen. |cFFFF0000Das Löschen kann nicht rückgängig gemacht werden!|r Willst du fortfahren?"

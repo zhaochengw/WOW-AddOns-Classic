@@ -133,6 +133,8 @@ L["Ascending"] = "Croissant"
 L["Assembly of Iron"] = "Assembly of Iron"
 L["Assigned Role"] = "Rôle assigné"
 L["Assigned Role Icon"] = "Icône de rôle assigné"
+--[[Translation missing --]]
+L["Assist"] = "Assist"
 L["At Least One Enemy"] = "Au moins un ennemi"
 --[[Translation missing --]]
 L["At missing Value"] = "At missing Value"
@@ -288,6 +290,8 @@ L["Charged Combo Point 1"] = "Point de combo chargé 1"
 L["Charged Combo Point 2"] = "Point de combo chargé 2"
 L["Charged Combo Point 3"] = "Point de combo chargé 3"
 L["Charged Combo Point 4"] = "Point de combo chargé 4"
+--[[Translation missing --]]
+L["Charged Empowered Cast"] = "Charged Empowered Cast"
 L["Charges"] = "Charges"
 --[[Translation missing --]]
 L["Charges Changed Event"] = "Charges Changed Event"
@@ -348,6 +352,8 @@ L["C'thun"] = "C'thun"
 L["Current Experience"] = "Current Experience"
 --[[Translation missing --]]
 L["Current Movement Speed (%)"] = "Current Movement Speed (%)"
+--[[Translation missing --]]
+L["Current Stage"] = "Current Stage"
 L[ [=[Current Zone Group
 ]=] ] = "Zone actuelle du groupe"
 L[ [=[Current Zone
@@ -448,6 +454,8 @@ L["Dropdown Menu"] = "Menu Déroulant"
 L["Dumping table"] = "Dumping table"
 L["Dungeon (Heroic)"] = "Donjon (Héroïque)"
 L["Dungeon (Mythic)"] = "Donjon (Mythique)"
+--[[Translation missing --]]
+L["Dungeon (Mythic+)"] = "Dungeon (Mythic+)"
 L["Dungeon (Normal)"] = "Donjon (Normal)"
 L["Dungeon (Timewalking)"] = "Donjon (Marcheurs du temps)"
 L["Dungeons"] = "Donjons"
@@ -473,6 +481,24 @@ L["Elite"] = "Elite"
 --[[Translation missing --]]
 L["Emalon the Storm Watcher"] = "Emalon the Storm Watcher"
 L["Emote"] = "Emote"
+--[[Translation missing --]]
+L["Empower Cast End"] = "Empower Cast End"
+--[[Translation missing --]]
+L["Empower Cast Interrupt"] = "Empower Cast Interrupt"
+--[[Translation missing --]]
+L["Empower Cast Start"] = "Empower Cast Start"
+--[[Translation missing --]]
+L["Empowered"] = "Empowered"
+--[[Translation missing --]]
+L["Empowered 1"] = "Empowered 1"
+--[[Translation missing --]]
+L["Empowered 2"] = "Empowered 2"
+--[[Translation missing --]]
+L["Empowered 3"] = "Empowered 3"
+--[[Translation missing --]]
+L["Empowered 4"] = "Empowered 4"
+--[[Translation missing --]]
+L["Empowered 5"] = "Empowered 5"
 L["Empty"] = "Vide"
 --[[Translation missing --]]
 L["Enables (incorrect) round down of seconds, which was the previous default behavior."] = "Enables (incorrect) round down of seconds, which was the previous default behavior."
@@ -640,7 +666,7 @@ L["Grobbulus"] = "Grobbulus"
 L["Group"] = "Groupe"
 L["Group Arrangement"] = "Arrangement du Groupe"
 --[[Translation missing --]]
-L["Group Leader"] = "Group Leader"
+L["Group Leader/Assist"] = "Group Leader/Assist"
 --[[Translation missing --]]
 L["Group Type"] = "Group Type"
 L["Grow"] = "Grandir"
@@ -845,6 +871,8 @@ L["Lady Vashj"] = "Lady Vashj"
 L["Large"] = "Large"
 --[[Translation missing --]]
 L["Latency"] = "Latency"
+--[[Translation missing --]]
+L["Leader"] = "Leader"
 L["Least remaining time"] = "Moins de temps restant"
 L["Leaving"] = "Quitter"
 L["Leech"] = "Drain"
@@ -854,10 +882,6 @@ L["Left"] = "Gauche"
 L["Left to Right"] = "De Gauche à Droite"
 L["Left, then Down"] = "Gauche, puis bas"
 L["Left, then Up"] = "Gauche, puis haut"
---[[Translation missing --]]
-L["Legacy Aura (disabled)"] = "Legacy Aura (disabled)"
---[[Translation missing --]]
-L["Legacy Aura (disabled):"] = "Legacy Aura (disabled):"
 --[[Translation missing --]]
 L["Legacy Looking for Raid"] = "Legacy Looking for Raid"
 L["Legacy RGB Gradient"] = "Dégradé RVB Hérité"
@@ -1044,8 +1068,6 @@ L["Only if DBM shows it on it's bar"] = "Only if DBM shows it on it's bar"
 --[[Translation missing --]]
 L["Only if on a different realm"] = "Only if on a different realm"
 L["Only if Primary"] = "Seulement si primaire"
---[[Translation missing --]]
-L["Only if selected"] = "Only if selected"
 L["Onyxia"] = "Onyxia"
 L["Onyxia's Lair"] = "Repaire d'Onyxia"
 L["Opaque"] = "Opaque"
@@ -1104,7 +1126,6 @@ L["Play"] = "Jouer"
 L["Player"] = "Joueur"
 L["Player Character"] = "Personnage Joueur"
 L["Player Class"] = "Classe du joueur"
-L["Player Covenant"] = "Congrégation du joueur"
 L["Player Effective Level"] = "Niveau effectif du joueur"
 --[[Translation missing --]]
 L["Player Experience"] = "Player Experience"
@@ -1208,6 +1229,10 @@ L["Requesting display information from %s ..."] = "Demande des informations de l
 L["Require Valid Target"] = "Exige une cible valide"
 --[[Translation missing --]]
 L["Requires syncing the specialization via LibSpecialization."] = "Requires syncing the specialization via LibSpecialization."
+--[[Translation missing --]]
+L["Resilience Percent"] = "Resilience Percent"
+--[[Translation missing --]]
+L["Resilience Rating"] = "Resilience Rating"
 L["Resist"] = "Résiste"
 L["Resisted"] = "Résisté"
 L["Rested"] = "Reposé"
@@ -1301,6 +1326,8 @@ L["Shift-Click to resume addon execution."] = "Maj-Clic pour reprendre l'exécut
 L["Show"] = "Montrer"
 L["Show Absorb"] = "Montrer l’Absorption"
 L["Show CD of Charge"] = "Afficher le Temps de Recharge de la charge"
+--[[Translation missing --]]
+L["Show charged duration for empowered casts"] = "Show charged duration for empowered casts"
 L["Show GCD"] = "Afficher GCD"
 L["Show Global Cooldown"] = "Afficher le Temps de Recharge Global"
 --[[Translation missing --]]
@@ -1514,9 +1541,11 @@ L["Thickness"] = "Épaisseur"
 L["Third"] = "Troisième"
 L["Third Value of Tooltip Text"] = "Troisième valeur du texte de l'info-bulle"
 --[[Translation missing --]]
+L["This aura calls GetData a lot, which is a slow function."] = "This aura calls GetData a lot, which is a slow function."
+--[[Translation missing --]]
 L["This aura has caused a Lua error."] = "This aura has caused a Lua error."
 --[[Translation missing --]]
-L["This aura has legacy aura trigger(s), which are no longer supported."] = "This aura has legacy aura trigger(s), which are no longer supported."
+L["This aura is saving %s KB of data"] = "This aura is saving %s KB of data"
 --[[Translation missing --]]
 L["This aura plays a sound via a condition."] = "This aura plays a sound via a condition."
 --[[Translation missing --]]
@@ -1531,7 +1560,6 @@ L["Threat Situation"] = "Situation de Menace"
 --[[Translation missing --]]
 L["Threat Value"] = "Threat Value"
 L["Tick"] = "Coche"
-L["Tier "] = "Pallier"
 --[[Translation missing --]]
 L["Time Format"] = "Time Format"
 --[[Translation missing --]]
@@ -1566,6 +1594,8 @@ L["Total Match Count"] = "Total Match Count"
 L["Total Stacks"] = "Total Stacks"
 --[[Translation missing --]]
 L["Total stacks over all matches"] = "Total stacks over all matches"
+--[[Translation missing --]]
+L["Total Stages"] = "Total Stages"
 --[[Translation missing --]]
 L["Total Unit Count"] = "Total Unit Count"
 L["Total Units"] = "Unités Total"
@@ -1641,6 +1671,10 @@ L["Use Custom Color"] = "Utiliser couleur personnalisée"
 L["Use Legacy floor rounding"] = "Use Legacy floor rounding"
 --[[Translation missing --]]
 L["Use Watched Faction"] = "Use Watched Faction"
+--[[Translation missing --]]
+L["Using WeakAuras.clones is deprecated. Use WeakAuras.GetRegion(id, cloneId) instead."] = "Using WeakAuras.clones is deprecated. Use WeakAuras.GetRegion(id, cloneId) instead."
+--[[Translation missing --]]
+L["Using WeakAuras.regions is deprecated. Use WeakAuras.GetRegion(id) instead."] = "Using WeakAuras.regions is deprecated. Use WeakAuras.GetRegion(id) instead."
 L["Vaelastrasz the Corrupt"] = "Vaelastrasz le Corrompu"
 --[[Translation missing --]]
 L["Valithria Dreamwalker"] = "Valithria Dreamwalker"

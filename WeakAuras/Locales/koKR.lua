@@ -57,8 +57,7 @@ L["AbbreviateLargeNumbers (Blizzard)"] = "큰 숫자 축약 (블리자드)"
 L["AbbreviateNumbers (Blizzard)"] = "숫자 축약 (블리자드)"
 L["Absorb"] = "흡수"
 L["Absorb Display"] = "흡수 디스플레이"
---[[Translation missing --]]
-L["Absorb Heal Display"] = "Absorb Heal Display"
+L["Absorb Heal Display"] = "흡수 치유 디스플레이"
 L["Absorbed"] = "흡수함"
 L["Action Button Glow"] = "동작 버튼 반짝임"
 L["Action Usable"] = "사용 가능"
@@ -71,8 +70,7 @@ L["Additional Trigger Replacements"] = "추가 활성 조건 교체"
 L["Advanced Caster's Target Check"] = "Advanced Caster's Target Check"
 L["Affected"] = "영향 받음"
 L["Affected Unit Count"] = "영향 받은 유닛 수"
---[[Translation missing --]]
-L["Afk"] = "Afk"
+L["Afk"] = "자리 비움"
 L["Aggro"] = "어그로"
 L["Agility"] = "민첩성"
 L["Ahn'Qiraj"] = "안퀴라즈"
@@ -96,7 +94,7 @@ L["Always True"] = "항상 참"
 L["Amount"] = "수량"
 --[[Translation missing --]]
 L["Anchoring"] = "Anchoring"
-L["And Talent"] = "특성과 "
+L["And Talent"] = "및 특성"
 L["Anetheron"] = "아네테론"
 L["Animations"] = "애니메이션"
 L["Anticlockwise"] = "반시계 방향"
@@ -127,6 +125,8 @@ L["Ascending"] = "오름차순"
 L["Assembly of Iron"] = "무쇠 평의회"
 L["Assigned Role"] = "할당된 역할"
 L["Assigned Role Icon"] = "할당된 역할 아이콘"
+--[[Translation missing --]]
+L["Assist"] = "Assist"
 L["At Least One Enemy"] = "최소 1명의 적 대상"
 --[[Translation missing --]]
 L["At missing Value"] = "At missing Value"
@@ -189,8 +189,7 @@ L["BG-System Neutral"] = "전장 중립"
 L["Big Number"] = "큰 숫자"
 L["BigWigs Addon"] = "BigWigs 애드온"
 L["BigWigs Message"] = "BigWigs 메시지"
---[[Translation missing --]]
-L["BigWigs Stage"] = "BigWigs Stage"
+L["BigWigs Stage"] = "BigWigs 단계"
 L["BigWigs Timer"] = "BigWigs 타이머"
 L["Black Temple"] = "검은 사원"
 L["Black Wing Lair"] = "검은날개 둥지"
@@ -274,9 +273,10 @@ L["Charged Combo Point 2"] = "Charged Combo Point 2"
 L["Charged Combo Point 3"] = "Charged Combo Point 3"
 --[[Translation missing --]]
 L["Charged Combo Point 4"] = "Charged Combo Point 4"
-L["Charges"] = "충전"
 --[[Translation missing --]]
-L["Charges Changed Event"] = "Charges Changed Event"
+L["Charged Empowered Cast"] = "Charged Empowered Cast"
+L["Charges"] = "충전량"
+L["Charges Changed Event"] = "충전량 변경 이벤트"
 L["Chat Frame"] = "대화창"
 L["Chat Message"] = "대화 메시지"
 --[[Translation missing --]]
@@ -325,6 +325,7 @@ L["Crushing"] = "강타"
 L["C'thun"] = "쑨"
 L["Current Experience"] = "현재 경험치"
 L["Current Movement Speed (%)"] = "현재 이동 속도 (%)"
+L["Current Stage"] = "현재 단계"
 L[ [=[Current Zone Group
 ]=] ] = "현재 지역 그룹"
 L[ [=[Current Zone
@@ -351,8 +352,7 @@ L["Damage Shield"] = "피해 반사"
 L["Damage Shield Missed"] = "피해 보호막 적중 실패"
 L["Damage Split"] = "피해 분배"
 L["DBM Announce"] = "DBM 알림"
---[[Translation missing --]]
-L["DBM Stage"] = "DBM Stage"
+L["DBM Stage"] = "DBM 단계"
 L["DBM Timer"] = "DBM 타이머"
 --[[Translation missing --]]
 L["Death"] = "Death"
@@ -410,6 +410,8 @@ L["Dropdown Menu"] = "드롭다운 메뉴"
 L["Dumping table"] = "Dumping table"
 L["Dungeon (Heroic)"] = "던전 (영웅)"
 L["Dungeon (Mythic)"] = "던전 (신화)"
+--[[Translation missing --]]
+L["Dungeon (Mythic+)"] = "Dungeon (Mythic+)"
 L["Dungeon (Normal)"] = "던전 (일반)"
 L["Dungeon (Timewalking)"] = "던전 (시간여행)"
 L["Dungeons"] = "던전"
@@ -433,6 +435,24 @@ L["Elide"] = "생략"
 L["Elite"] = "정예"
 L["Emalon the Storm Watcher"] = "폭풍 감시자 에말론"
 L["Emote"] = "감정 표현"
+--[[Translation missing --]]
+L["Empower Cast End"] = "Empower Cast End"
+--[[Translation missing --]]
+L["Empower Cast Interrupt"] = "Empower Cast Interrupt"
+--[[Translation missing --]]
+L["Empower Cast Start"] = "Empower Cast Start"
+--[[Translation missing --]]
+L["Empowered"] = "Empowered"
+--[[Translation missing --]]
+L["Empowered 1"] = "Empowered 1"
+--[[Translation missing --]]
+L["Empowered 2"] = "Empowered 2"
+--[[Translation missing --]]
+L["Empowered 3"] = "Empowered 3"
+--[[Translation missing --]]
+L["Empowered 4"] = "Empowered 4"
+--[[Translation missing --]]
+L["Empowered 5"] = "Empowered 5"
 L["Empty"] = "비었을 때"
 --[[Translation missing --]]
 L["Enables (incorrect) round down of seconds, which was the previous default behavior."] = "Enables (incorrect) round down of seconds, which was the previous default behavior."
@@ -493,8 +513,7 @@ L["Fade Animation"] = "Fade Animation"
 L["Fade In"] = "서서히 나타남"
 L["Fade Out"] = "서서히 사라짐"
 L["Fail Alert"] = "실패 경보"
---[[Translation missing --]]
-L["Fallback"] = "Fallback"
+L["Fallback"] = "대체"
 --[[Translation missing --]]
 L["Fallback Icon"] = "Fallback Icon"
 L["False"] = "거짓"
@@ -576,7 +595,8 @@ L["Grid"] = "Grid"
 L["Grobbulus"] = "그라불루스"
 L["Group"] = "그룹"
 L["Group Arrangement"] = "그룹 편성"
-L["Group Leader"] = "그룹장"
+--[[Translation missing --]]
+L["Group Leader/Assist"] = "Group Leader/Assist"
 L["Group Type"] = "그룹 유형"
 L["Grow"] = "성장"
 L["Gruul the Dragonkiller"] = "용 학살자 그룰"
@@ -596,8 +616,7 @@ L["HasPet"] = "소환수 있음 (생존)"
 L["Haste (%)"] = "가속 (%)"
 L["Haste Rating"] = "가속"
 L["Heal"] = "치유"
---[[Translation missing --]]
-L["Heal Absorb"] = "Heal Absorb"
+L["Heal Absorb"] = "치유 흡수"
 --[[Translation missing --]]
 L["Heal Absorbed"] = "Heal Absorbed"
 L["Health"] = "생명력"
@@ -667,8 +686,7 @@ L["Include Pets"] = "Include Pets"
 L["Incoming Heal"] = "받는 치유"
 --[[Translation missing --]]
 L["Increase Precision Below"] = "Increase Precision Below"
---[[Translation missing --]]
-L["Increases by one per stage or intermission."] = "Increases by one per stage or intermission."
+L["Increases by one per stage or intermission."] = "단계 또는 사잇단계당 1씩 증가합니다."
 L["Information"] = "정보"
 L["Inherited"] = "상속"
 L["Instakill"] = "죽임"
@@ -715,8 +733,7 @@ L["Item Type"] = "아이템 유형"
 L["Item Type Equipped"] = "착용한 아이템 유형"
 L["Jan'alai"] = "잔알라이"
 L["Jin'do the Hexxer"] = "주술사 진도"
---[[Translation missing --]]
-L["Journal Stage"] = "Journal Stage"
+L["Journal Stage"] = "도감 단계"
 L["Kael'thas Sunstrider"] = "캘타스 선스트라이더"
 L["Kalecgos"] = "칼렉고스"
 L["Karazhan"] = "카라잔"
@@ -732,6 +749,8 @@ L["Lady Vashj"] = "여군주 바쉬"
 L["Large"] = "큰"
 --[[Translation missing --]]
 L["Latency"] = "Latency"
+--[[Translation missing --]]
+L["Leader"] = "Leader"
 L["Least remaining time"] = "최소 남은 시간"
 L["Leaving"] = "떠남"
 L["Leech"] = "마력 흡수"
@@ -741,8 +760,6 @@ L["Left"] = "왼쪽"
 L["Left to Right"] = "왼쪽에서 오른쪽"
 L["Left, then Down"] = "왼쪽으로, 아래로"
 L["Left, then Up"] = "왼쪽으로, 위로"
-L["Legacy Aura (disabled)"] = "과거의 Aura (비활성화됨)"
-L["Legacy Aura (disabled):"] = "과거의 Aura (비활성화됨):"
 L["Legacy Looking for Raid"] = "낭만 공격대 찾기"
 L["Legacy RGB Gradient"] = "과거의 RGB 그라디언트"
 L["Legacy RGB Gradient Pulse"] = "과거의 RGB 그라디언트 맥박"
@@ -788,12 +805,9 @@ L["Mastery Rating"] = "특화"
 L["Match Count"] = "일치 횟수"
 L["Match Count per Unit"] = "유닛당 일치 횟수"
 L["Matches (Pattern)"] = "일치 (패턴)"
---[[Translation missing --]]
 L[ [=[Matches stage number of encounter journal.
 Intermissions are .5
-E.g. 1;2;1;2;2.5;3]=] ] = [=[Matches stage number of encounter journal.
-Intermissions are .5
-E.g. 1;2;1;2;2.5;3]=]
+E.g. 1;2;1;2;2.5;3]=] ] = "던전 도감의 단계 번호와 일치합니다. 사잇단계는 0.5 예를 들어 1;2;1;2;2.5;3"
 L["Max Char "] = "최대 글자수"
 L["Max Charges"] = "최대 충전량"
 L["Maximum"] = "최대"
@@ -905,8 +919,6 @@ L["Only if DBM shows it on it's bar"] = "Only if DBM shows it on it's bar"
 --[[Translation missing --]]
 L["Only if on a different realm"] = "Only if on a different realm"
 L["Only if Primary"] = "주 자원일때만"
---[[Translation missing --]]
-L["Only if selected"] = "Only if selected"
 L["Onyxia"] = "오닉시아"
 L["Onyxia's Lair"] = "오닉시아의 둥지"
 L["Opaque"] = "불투명"
@@ -916,8 +928,7 @@ L["Option Group"] = "옵션 그룹"
 L["Options could not be loaded, the addon is %s"] = "Options could not be loaded, the addon is %s"
 L["Options will finish loading after combat ends."] = "옵션은 전투가 끝나면 불러오기가 완료됩니다."
 L["Options will open after the login process has completed."] = "접속 과정이 끝난 후 옵션이 열립니다."
---[[Translation missing --]]
-L["Or Talent"] = "Or Talent"
+L["Or Talent"] = "또는 특성"
 L["Orbit"] = "공전"
 L["Orientation"] = "방향"
 L["Ossirian the Unscarred"] = "무적의 오시리안"
@@ -963,7 +974,6 @@ L["Play"] = "재생"
 L["Player"] = "플레이어"
 L["Player Character"] = "플레이어 캐릭터"
 L["Player Class"] = "플레이어 직업"
-L["Player Covenant"] = "플레이어 성약의 단"
 L["Player Effective Level"] = "플레이어 실제 레벨"
 L["Player Experience"] = "플레이어 경험치"
 L["Player Faction"] = "플레이어 진영"
@@ -1052,6 +1062,10 @@ L["Requested display not authorized"] = "요청한 디스플레이가 올바르�
 L["Requesting display information from %s ..."] = "%s의 디스플레이 정보 요청 중 ..."
 L["Require Valid Target"] = "유효 대상 필요"
 L["Requires syncing the specialization via LibSpecialization."] = "LibSpecialization을 통해 전문화를 동기화해야 합니다."
+--[[Translation missing --]]
+L["Resilience Percent"] = "Resilience Percent"
+--[[Translation missing --]]
+L["Resilience Rating"] = "Resilience Rating"
 L["Resist"] = "저항"
 L["Resisted"] = "저항함"
 --[[Translation missing --]]
@@ -1129,13 +1143,13 @@ L["Shift-Click to resume addon execution."] = "쉬프트-클릭으로 애드온 
 L["Show"] = "표시"
 L["Show Absorb"] = "흡수 표시"
 L["Show CD of Charge"] = "충전량 재사용 대기시간 표시"
+--[[Translation missing --]]
+L["Show charged duration for empowered casts"] = "Show charged duration for empowered casts"
 L["Show GCD"] = "전역 재사용 대기시간 표시"
 L["Show Global Cooldown"] = "전역 재사용 대기시간 표시"
---[[Translation missing --]]
-L["Show Heal Absorb"] = "Show Heal Absorb"
+L["Show Heal Absorb"] = "치유 흡수 표시"
 L["Show Incoming Heal"] = "받는 치유 표시"
---[[Translation missing --]]
-L["Show Loss of Control"] = "Show Loss of Control"
+L["Show Loss of Control"] = "제어 상실 표시"
 --[[Translation missing --]]
 L["Show On"] = "Show On"
 --[[Translation missing --]]
@@ -1227,10 +1241,8 @@ L["Stacks"] = "중첩"
 L["Stacks Function"] = "Stacks Function"
 --[[Translation missing --]]
 L["Stacks Function (fallback state)"] = "Stacks Function (fallback state)"
---[[Translation missing --]]
-L["Stage"] = "Stage"
---[[Translation missing --]]
-L["Stage Counter"] = "Stage Counter"
+L["Stage"] = "단계"
+L["Stage Counter"] = "단계 카운터"
 --[[Translation missing --]]
 L["Stagger Scale"] = "Stagger Scale"
 L["Stamina"] = "체력"
@@ -1308,8 +1320,11 @@ L["Thick Outline"] = "굵은 외곽선"
 L["Thickness"] = "굵기"
 L["Third"] = "세 번째"
 L["Third Value of Tooltip Text"] = "툴팁 문자의 세 번째 값"
+--[[Translation missing --]]
+L["This aura calls GetData a lot, which is a slow function."] = "This aura calls GetData a lot, which is a slow function."
 L["This aura has caused a Lua error."] = "이 효과는 Lua 오류를 일으켰습니다."
-L["This aura has legacy aura trigger(s), which are no longer supported."] = "이 aura는 더 이상 지원되지 않는 과거의 aura 활성 조건을 포함하고 있습니다."
+--[[Translation missing --]]
+L["This aura is saving %s KB of data"] = "This aura is saving %s KB of data"
 L["This aura plays a sound via a condition."] = "이 효과는 조건을 통해 소리를 재생합니다."
 L["This aura plays a sound via an action."] = "이 효과는 동작을 통해 소리를 재생합니다."
 --[[Translation missing --]]
@@ -1319,7 +1334,6 @@ L["Threat Percent"] = "위협 수준 백분율"
 L["Threat Situation"] = "위협 수준 상황"
 L["Threat Value"] = "위협 수준 수치"
 L["Tick"] = "틱"
-L["Tier "] = "단계"
 L["Time Format"] = "시간 형식"
 --[[Translation missing --]]
 L["Time in GCDs"] = "Time in GCDs"
@@ -1346,6 +1360,7 @@ L["Total Match Count"] = "총 일치 횟수"
 L["Total Stacks"] = "총 중첩"
 --[[Translation missing --]]
 L["Total stacks over all matches"] = "Total stacks over all matches"
+L["Total Stages"] = "총 단계"
 L["Total Unit Count"] = "총 유닛 수"
 L["Total Units"] = "총 유닛"
 L["Totem"] = "토템"
@@ -1410,6 +1425,10 @@ L["Use Custom Color"] = "사용자 정의 색상 사용"
 L["Use Legacy floor rounding"] = "Use Legacy floor rounding"
 --[[Translation missing --]]
 L["Use Watched Faction"] = "Use Watched Faction"
+--[[Translation missing --]]
+L["Using WeakAuras.clones is deprecated. Use WeakAuras.GetRegion(id, cloneId) instead."] = "Using WeakAuras.clones is deprecated. Use WeakAuras.GetRegion(id, cloneId) instead."
+--[[Translation missing --]]
+L["Using WeakAuras.regions is deprecated. Use WeakAuras.GetRegion(id) instead."] = "Using WeakAuras.regions is deprecated. Use WeakAuras.GetRegion(id) instead."
 L["Vaelastrasz the Corrupt"] = "타락한 밸라스트라즈"
 L["Valithria Dreamwalker"] = "발리스리아 드림워커"
 L["Val'kyr Twins"] = "발키르 쌍둥이"
@@ -1434,14 +1453,10 @@ L["Warning: Full Scan auras checking for both name and spell id can't be convert
 L["Warning: Name info is now available via %affected, %unaffected. Number of affected group members via %unitCount. Some options behave differently now. This is not automatically adjusted."] = "경고: %affected, %unaffected 를 통해 이름 정보를 사용할 수 있습니다. 영향을 받은 구성원의 수는 %unitCount 로 통합니다. 일부 옵션은 다르게 동작합니다. 이것은 자동으로 조정되지 않습니다."
 L["Warning: Tooltip values are now available via %tooltip1, %tooltip2, %tooltip3 instead of %s. This is not automatically adjusted."] = "경고: 툴팁 값은 이제 %s 대신 %tooltip1, %tooltip2, %tooltip3으로 사용할 수 있습니다. 이것은 자동으로 조정되지 않습니다."
 L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"] = "WeakAuras 내장 (63:42 | 3:07 | 10 | 2.4)"
---[[Translation missing --]]
 L[ [=[WeakAuras has detected that it has been downgraded.
 Your saved auras may no longer work properly.
 Would you like to run the |cffff0000EXPERIMENTAL|r repair tool? This will overwrite any changes you have made since the last database upgrade.
-Last upgrade: %s]=] ] = [=[WeakAuras has detected that it has been downgraded.
-Your saved auras may no longer work properly.
-Would you like to run the |cffff0000EXPERIMENTAL|r repair tool? This will overwrite any changes you have made since the last database upgrade.
-Last upgrade: %s]=]
+Last upgrade: %s]=] ] = "WeakAuras가 다운그레이드 되었음을 감지했습니다. 저장된 효과가 더 이상 제대로 작동하지 않을 수 있습니다. |cffff0000실험용|r 복구 도구를 실행할까요? 이는 마지막 DB 업그레이드 이후에 수행한 모든 변경 사항을 덮어씁니다. 마지막 업그레이드: %s"
 L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."] = "로그인 과정 중 WeakAuras에 문제가 발생했습니다. 이 문제를 https://github.com/WeakAuras/Weakauras2/issues/new 에 보고해주세요."
 L["WeakAuras Profiling"] = "WeakAuras 프로파일링"
 L["WeakAuras Profiling Report"] = "WeakAuras 프로파일링 보고서"

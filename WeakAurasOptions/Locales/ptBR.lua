@@ -19,7 +19,6 @@ local L = WeakAuras.L
 	--[[Translation missing --]]
 	L["%d |4aura:auras; modified"] = "%d |4aura:auras; modified"
 	L["%i auras selected"] = "%i auras selecionadas"
-	L["%i Matches"] = "%i resultados"
 	--[[Translation missing --]]
 	L["%s - %i. Trigger"] = "%s - %i. Trigger"
 	--[[Translation missing --]]
@@ -88,6 +87,8 @@ local L = WeakAuras.L
 	L["%s Name Function"] = "%s Name Function"
 	--[[Translation missing --]]
 	L["%s Stacks Function"] = "%s Stacks Function"
+	--[[Translation missing --]]
+	L["%s stores around %s KB of data"] = "%s stores around %s KB of data"
 	L["%s Texture"] = "%s Textura"
 	--[[Translation missing --]]
 	L["%s Texture Function"] = "%s Texture Function"
@@ -148,7 +149,6 @@ local L = WeakAuras.L
 |cffff0000Note|r: Without a direct relationship to actual unitIDs, results may vary.
 
 |cffffff00*|r Yellow Unit settings can match multiple units and will default to being active even while no affected units are found without a Unit Count or Match Count setting.]=]
-	L["1 Match"] = "1 resultado"
 	L["A 20x20 pixels icon"] = "Um ícone de 20x20 pixels"
 	L["A 32x32 pixels icon"] = "Um ícone de 32x32 pixels"
 	L["A 40x40 pixels icon"] = "Um ícone de 40x40 pixels"
@@ -232,7 +232,6 @@ Off Screen]=] ] = "Aura está fora da tela"
 	--[[Translation missing --]]
 	L["Aura received from: %s"] = "Aura received from: %s"
 	L["Aura Type"] = "Tipo de Aura"
-	L["Aura(s)"] = "Aura(s)"
 	--[[Translation missing --]]
 	L["Aura: '%s'"] = "Aura: '%s'"
 	L["Author Options"] = "Opções de Autor"
@@ -281,7 +280,6 @@ Off Screen]=] ] = "Aura está fora da tela"
 	--[[Translation missing --]]
 	L["Bracket Matching"] = "Bracket Matching"
 	L["Browse Wago, the largest collection of auras."] = "Acesse Wago, a maior coleção de auras."
-	L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."] = "Pode ser um nome ou um ID de unidade (por exemplo, grupo1). Um nome só funciona em jogadores aliados ​​em seu grupo."
 	L["Can be a UID (e.g., party1)."] = "Pode ser um UNID (por exemplo, grupo1)."
 	--[[Translation missing --]]
 	L["Can set to 0 if Columns * Width equal File Width"] = "Can set to 0 if Columns * Width equal File Width"
@@ -303,6 +301,8 @@ Off Screen]=] ] = "Aura está fora da tela"
 	--[[Translation missing --]]
 	L["Clear Debug Logs"] = "Clear Debug Logs"
 	--[[Translation missing --]]
+	L["Clear Saved Data"] = "Clear Saved Data"
+	--[[Translation missing --]]
 	L["Clip Overlays"] = "Clip Overlays"
 	--[[Translation missing --]]
 	L["Clipped by Progress"] = "Clipped by Progress"
@@ -318,8 +318,8 @@ Off Screen]=] ] = "Aura está fora da tela"
 	L["Collapse all pending Import"] = "Collapse all pending Import"
 	--[[Translation missing --]]
 	L["Collapsible Group"] = "Collapsible Group"
-	L["Color"] = "Cor"
 	L["color"] = "cor"
+	L["Color"] = "Cor"
 	--[[Translation missing --]]
 	L["Column Height"] = "Column Height"
 	--[[Translation missing --]]
@@ -344,8 +344,6 @@ Off Screen]=] ] = "Aura está fora da tela"
 	--[[Translation missing --]]
 	L["Control-click to select multiple displays"] = "Control-click to select multiple displays"
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "Controla o posicionamento e a configuração de múltiplos displays ao mesmo tempo"
-	--[[Translation missing --]]
-	L["Convert to New Aura Trigger"] = "Convert to New Aura Trigger"
 	L["Convert to..."] = "Converter para..."
 	--[[Translation missing --]]
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."
@@ -395,6 +393,10 @@ Off Screen]=] ] = "Aura está fora da tela"
 	L["Custom trigger event tooltip"] = "Custom trigger event tooltip"
 	--[[Translation missing --]]
 	L["Custom trigger status tooltip"] = "Custom trigger status tooltip"
+	--[[Translation missing --]]
+	L["Custom Trigger: Ignore Lua Errors on OPTIONS event"] = "Custom Trigger: Ignore Lua Errors on OPTIONS event"
+	--[[Translation missing --]]
+	L["Custom Trigger: Send fake events instead of STATUS event"] = "Custom Trigger: Send fake events instead of STATUS event"
 	--[[Translation missing --]]
 	L["Custom Untrigger"] = "Custom Untrigger"
 	--[[Translation missing --]]
@@ -490,7 +492,6 @@ Off Screen]=] ] = "Aura está fora da tela"
 	L["Enemy nameplate(s) found"] = "Enemy nameplate(s) found"
 	--[[Translation missing --]]
 	L["Enter a Spell ID"] = "Enter a Spell ID"
-	L["Enter an aura name, partial aura name, or spell id"] = "Entre um nome de aura, uma parte do nome da aura, ou id do feitiço"
 	--[[Translation missing --]]
 	L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."] = "Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."
 	L["Enter Author Mode"] = "Entrar no Modo de Autor"
@@ -653,7 +654,6 @@ Can use \ to escape -.]=]
 	L["Group Description"] = "Group Description"
 	L["Group Icon"] = "Ícone do Grupo"
 	L["Group key"] = "Chave do grupo"
-	L["Group Member Count"] = "Contagem dos membros do grupo"
 	--[[Translation missing --]]
 	L["Group Options"] = "Group Options"
 	--[[Translation missing --]]
@@ -684,7 +684,6 @@ Can use \ to escape -.]=]
 	L["Hide this group's children"] = "Hide this group's children"
 	--[[Translation missing --]]
 	L["Hide Timer Text"] = "Hide Timer Text"
-	L["Hide When Not In Group"] = "Esconder quando em grupo"
 	L["Horizontal Align"] = "Alinhamento horizontal"
 	L["Horizontal Bar"] = "Barra Horizontal"
 	--[[Translation missing --]]
@@ -730,11 +729,7 @@ Can use \ to escape -.]=]
 	--[[Translation missing --]]
 	L["Ignore Disconnected"] = "Ignore Disconnected"
 	--[[Translation missing --]]
-	L["Ignore Lua Errors on OPTIONS event"] = "Ignore Lua Errors on OPTIONS event"
-	--[[Translation missing --]]
 	L["Ignore out of checking range"] = "Ignore out of checking range"
-	--[[Translation missing --]]
-	L["Ignore self"] = "Ignore self"
 	--[[Translation missing --]]
 	L["Ignore Self"] = "Ignore Self"
 	--[[Translation missing --]]
@@ -917,8 +912,6 @@ Can use \ to escape -.]=]
 	--[[Translation missing --]]
 	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "Note: Automated Messages to SAY and YELL are blocked outside of Instances."
 	--[[Translation missing --]]
-	L["Note: The legacy buff trigger is now permanently disabled. It will be removed in the near future."] = "Note: The legacy buff trigger is now permanently disabled. It will be removed in the near future."
-	--[[Translation missing --]]
 	L["Npc ID"] = "Npc ID"
 	--[[Translation missing --]]
 	L["Number of Entries"] = "Number of Entries"
@@ -934,11 +927,7 @@ Can use \ to escape -.]=]
 	--[[Translation missing --]]
 	L["Only Match auras cast by a player (not an npc)"] = "Only Match auras cast by a player (not an npc)"
 	--[[Translation missing --]]
-	L["Only match auras cast by people other than the player"] = "Only match auras cast by people other than the player"
-	--[[Translation missing --]]
 	L["Only match auras cast by people other than the player or his pet"] = "Only match auras cast by people other than the player or his pet"
-	--[[Translation missing --]]
-	L["Only match auras cast by the player"] = "Only match auras cast by the player"
 	--[[Translation missing --]]
 	L["Only match auras cast by the player or his pet"] = "Only match auras cast by the player or his pet"
 	L["Operator"] = "Operador"
@@ -1081,6 +1070,8 @@ Can use \ to escape -.]=]
 	--[[Translation missing --]]
 	L["Same texture as Foreground"] = "Same texture as Foreground"
 	--[[Translation missing --]]
+	L["Saved Data"] = "Saved Data"
+	--[[Translation missing --]]
 	L["Scale"] = "Scale"
 	L["Search"] = "Procurar"
 	--[[Translation missing --]]
@@ -1113,7 +1104,6 @@ Can use \ to escape -.]=]
 	L["Show \"Edge\""] = "Show \"Edge\""
 	--[[Translation missing --]]
 	L["Show \"Swipe\""] = "Show \"Swipe\""
-	L["Show all matches (Auto-clone)"] = "Mostrar todas as correspondências"
 	--[[Translation missing --]]
 	L["Show and Clone Settings"] = "Show and Clone Settings"
 	--[[Translation missing --]]
@@ -1125,8 +1115,6 @@ Can use \ to escape -.]=]
 	L["Show Icon"] = "Mostrar Ícone"
 	--[[Translation missing --]]
 	L["Show If Unit Does Not Exist"] = "Show If Unit Does Not Exist"
-	--[[Translation missing --]]
-	L["Show If Unit Is Invalid"] = "Show If Unit Is Invalid"
 	--[[Translation missing --]]
 	L["Show Matches for"] = "Show Matches for"
 	--[[Translation missing --]]
@@ -1217,8 +1205,6 @@ Can use \ to escape -.]=]
 	L["Start Collapsed"] = "Start Collapsed"
 	--[[Translation missing --]]
 	L["Start of %s"] = "Start of %s"
-	--[[Translation missing --]]
-	L["Stealable"] = "Stealable"
 	--[[Translation missing --]]
 	L["Step Size"] = "Step Size"
 	L["Stop Motion"] = "Stop Motion"
@@ -1373,19 +1359,13 @@ It might not work correctly with your version!]=]
 	--[[Translation missing --]]
 	L["Use Display Info Id"] = "Use Display Info Id"
 	--[[Translation missing --]]
-	L["Use Full Scan (High CPU)"] = "Use Full Scan (High CPU)"
-	--[[Translation missing --]]
-	L["Use nth value from tooltip:"] = "Use nth value from tooltip:"
-	--[[Translation missing --]]
 	L["Use SetTransform"] = "Use SetTransform"
 	--[[Translation missing --]]
 	L["Use Texture"] = "Use Texture"
 	--[[Translation missing --]]
-	L["Use tooltip \"size\" instead of stacks"] = "Use tooltip \"size\" instead of stacks"
+	L["Used in Auras:"] = "Used in Auras:"
 	--[[Translation missing --]]
 	L["Used in auras:"] = "Used in auras:"
-	--[[Translation missing --]]
-	L["Used in Auras:"] = "Used in Auras:"
 	--[[Translation missing --]]
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "Uses UnitIsVisible() to check if in range. This is polled every second."
 	--[[Translation missing --]]
@@ -1436,9 +1416,9 @@ It might not work correctly with your version!]=]
 	--[[Translation missing --]]
 	L["Yes"] = "Yes"
 	--[[Translation missing --]]
-	L["Y-Offset"] = "Y-Offset"
-	--[[Translation missing --]]
 	L["y-Offset"] = "y-Offset"
+	--[[Translation missing --]]
+	L["Y-Offset"] = "Y-Offset"
 	--[[Translation missing --]]
 	L["You already have this group/aura. Importing will create a duplicate."] = "You already have this group/aura. Importing will create a duplicate."
 	--[[Translation missing --]]

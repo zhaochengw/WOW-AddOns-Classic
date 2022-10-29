@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 -- Lua APIs
@@ -103,7 +104,41 @@ else
 end
 
 if WeakAuras.IsBCCOrWrathOrRetail() then
-  WeakAuras.UnitChannelInfo = UnitChannelInfo
+  if WeakAuras.IsRetail() then
+    local cacheEmpowered = {}
+    WeakAuras.UnitChannelInfo = function(unit)
+      local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = UnitChannelInfo(unit)
+      if name == nil and cacheEmpowered[unit] then
+        local holdAtMaxTime
+        holdAtMaxTime, name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = unpack(cacheEmpowered[unit])
+        if endTime + holdAtMaxTime < GetTime() then -- invalidate too old data
+          cacheEmpowered[unit] = nil
+          return nil
+        end
+      end
+      return name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages
+    end
+    local cacheEmpoweredFrame = CreateFrame("Frame")
+    cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
+    cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
+    cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+    cacheEmpoweredFrame:SetScript("OnEvent", function(_, event, unit, ...)
+      if event == "UNIT_SPELLCAST_EMPOWER_START" or event == "UNIT_SPELLCAST_EMPOWER_UPDATE" then
+        cacheEmpowered[unit] = {GetUnitEmpowerHoldAtMaxTime(unit), UnitChannelInfo(unit)}
+      else
+        cacheEmpowered[unit] = nil
+      end
+      if unit == "player" and event == "UNIT_SPELLCAST_EMPOWER_START" or event == "UNIT_SPELLCAST_EMPOWER_STOP" then
+        local castLatencyFrame = Private.frames["Cast Latency Handler"]
+        if castLatencyFrame then
+          castLatencyFrame:GetScript("OnEvent")(nil, event, unit, ...)
+        end
+      end
+      WeakAuras.ScanUnitEvents(event.."_FAKE", unit, ...)
+    end)
+  else
+    WeakAuras.UnitChannelInfo = UnitChannelInfo
+  end
 else
   WeakAuras.UnitChannelInfo = function(unit)
     if UnitIsUnit(unit, "player") then
@@ -649,22 +684,6 @@ if WeakAuras.IsClassicOrBCCOrWrath() then
     end
     return result;
   end
-else
-  function WeakAuras.CheckTalentByIndex(index, extraOption)
-    local tier = ceil(index / 3)
-    local column = (index - 1) % 3 + 1
-    local _, _, _, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-    if extraOption == 4 then
-      return selected or known
-    elseif extraOption == 5 then
-      return not (selected or known)
-    end
-    if extraOption == 0 or extraOption == 2 then
-      return selected or known
-    else
-      return selected
-    end
-  end
 end
 
 function WeakAuras.CheckPvpTalentByIndex(index)
@@ -702,20 +721,6 @@ function WeakAuras.CheckNumericIds(loadids, currentId)
   return false;
 end
 
-function WeakAuras.CheckString(ids, currentId)
-  if (not ids or not currentId) then
-    return false;
-  end
-
-  for id in ids:gmatch('([^,]+)') do
-    if id:trim() == currentId then
-      return true
-    end
-  end
-
-  return false;
-end
-
 function WeakAuras.ValidateNumeric(info, val)
   if val ~= nil and val ~= "" and (not tonumber(val) or tonumber(val) >= 2^31) then
     return false;
@@ -723,7 +728,7 @@ function WeakAuras.ValidateNumeric(info, val)
   return true
 end
 
-function WeakAuras.ParseStringCheck(input)
+function Private.ExecEnv.ParseStringCheck(input)
   if not input then return end
   local matcher = {
     zones = {},
@@ -768,7 +773,7 @@ function WeakAuras.ValidateNumericOrPercent(info, val)
   return true
 end
 
-function WeakAuras.CheckMPlusAffixIds(loadids, currentId)
+function Private.ExecEnv.CheckMPlusAffixIds(loadids, currentId)
   if (not loadids or not currentId) or type(currentId) ~= "table" then
     return false
   end
@@ -780,13 +785,23 @@ function WeakAuras.CheckMPlusAffixIds(loadids, currentId)
   return false
 end
 
-function WeakAuras.CheckChargesDirection(direction, triggerDirection)
+function Private.ExecEnv.CheckGroupMemberType(loadSetting, currentFlags)
+  if loadSetting == "LEADER" then
+    return bit.band(currentFlags, 1) == 1
+  elseif loadSetting == "ASSIST" then
+    return bit.band(currentFlags, 2) == 2
+  else
+    return currentFlags == 0
+  end
+end
+
+function Private.ExecEnv.CheckChargesDirection(direction, triggerDirection)
   return triggerDirection == "CHANGED"
     or (triggerDirection == "GAINED" and direction > 0)
     or (triggerDirection == "LOST" and direction < 0)
 end
 
-function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
+function Private.ExecEnv.CheckCombatLogFlags(flags, flagToCheck)
   if type(flags) ~= "number" then return end
   if(flagToCheck == "Mine") then
     return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0
@@ -799,7 +814,7 @@ function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
   end
 end
 
-function WeakAuras.CheckCombatLogFlagsReaction(flags, flagToCheck)
+function Private.ExecEnv.CheckCombatLogFlagsReaction(flags, flagToCheck)
   if type(flags) ~= "number" then return end
   if (flagToCheck == "Hostile") then
     return bit.band(flags, 64) ~= 0;
@@ -818,14 +833,14 @@ local objectTypeToBit = {
   Player = 1024,
 }
 
-function WeakAuras.CheckCombatLogFlagsObjectType(flags, flagToCheck)
+function Private.ExecEnv.CheckCombatLogFlagsObjectType(flags, flagToCheck)
   if type(flags) ~= "number" then return end
   local bitToCheck = objectTypeToBit[flagToCheck]
   if not bitToCheck then return end
   return bit.band(flags, bitToCheck) ~= 0;
 end
 
-function WeakAuras.CheckRaidFlags(flags, flagToCheck)
+function Private.ExecEnv.CheckRaidFlags(flags, flagToCheck)
   flagToCheck = tonumber(flagToCheck)
   if not flagToCheck or not flags then return end --bailout
   if flagToCheck == 0 then --no raid mark
@@ -881,7 +896,7 @@ function WeakAuras.IsSpellKnownIncludingPet(spell)
   end
 end
 
-function WeakAuras.CompareSpellIds(a, b, exactCheck)
+function Private.ExecEnv.CompareSpellIds(a, b, exactCheck)
   if exactCheck then
     return tonumber(a) == tonumber(b)
   else
@@ -928,80 +943,14 @@ local function valuesForTalentFunction(trigger)
       single_class = select(2, UnitClass("player"));
     end
 
-    local single_spec
-    if WeakAuras.IsRetail() then
-      single_spec = Private.checkForSingleLoadCondition(trigger, "spec")
-      if single_spec == nil then
-        single_spec = GetSpecialization();
-      end
-    end
-    --[[ dragonflight
-    if WeakAuras.IsDragonflight() and single_class then
-      single_spec = Private.checkForSingleLoadCondition(trigger, "spec", function(specIndex)
-        for classID = 1, GetNumClasses() do
-          local _, classFile = GetClassInfo(classID)
-          if classFile == single_class then
-            if GetSpecializationInfoForClassID(classID, specIndex) then
-              return true
-            end
-            break
-          end
-        end
-      end)
-    end
-    ]]
-
-    local single_class_and_spec
-    if WeakAuras.IsRetail() and trigger.use_spec == nil and trigger.use_class == nil then
-      single_class_and_spec = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-    end
     -- If a single specific class was found, load the specific list for it
-    if false then -- placeholder for dragonflight
-      --[[
-      if single_class_and_spec and Private.talentInfo[specId] then
-        return Private.talentInfo[specId]
-      elseif single_class and single_spec then
-        local classId
-        for i = 1, GetNumClasses() do
-          if select(2, GetClassInfo(i)) == single_class then
-            classId = i
-            break
-          end
-        end
-        local specId = GetSpecializationInfoForClassID(classId, single_spec)
-        return Private.GetTalentInfo(specId)
+    if WeakAuras.IsRetail() then
+      local single_class_and_spec = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+      if single_class_and_spec then
+        return Private.talentInfo[single_class_and_spec]
       else
         -- this should never happen
         return {}
-      end
-      ]]
-    elseif WeakAuras.IsRetail() then
-      if single_class_and_spec then
-        local class = select(6, GetSpecializationInfoByID(single_class_and_spec))
-        if class then
-          for classID = 1, GetNumClasses() do -- we have classFile, we need classID
-            local _, classFile = GetClassInfo(classID)
-            if classFile == class then
-              for specIndex = 1, 4 do -- search specIndex
-                if GetSpecializationInfoForClassID(classID, specIndex) == single_class_and_spec then
-                  if Private.talent_types_specific[classFile] and Private.talent_types_specific[classFile][specIndex] then
-                    return Private.talent_types_specific[classFile][specIndex]
-                  end
-                  break
-                end
-              end
-              break
-            end
-          end
-        end
-      end
-      if single_class and single_spec
-      and Private.talent_types_specific[single_class]
-      and Private.talent_types_specific[single_class][single_spec]
-      then
-        return Private.talent_types_specific[single_class][single_spec]
-      else
-        return Private.talent_types
       end
     elseif WeakAuras.IsWrathClassic() then
       return Private.talentInfo[single_class]
@@ -1049,6 +998,19 @@ function Private.checkForSingleLoadCondition(trigger, name, validateFn)
 end
 
 Private.load_prototype = {
+  -- Each entry
+  --   name: name of argument for load function/option for options/setting in saved data
+  --   Options data
+  --     display: name to be displayed in the options
+  --     type: type to be used for the options
+  --     width: width in the options
+  --     hidden: whether the option is shown in the options, defaults to false
+  --   Load Function Data
+  --     enable: whether the test should be tested or not, defaults to true
+  --     test: overrides the default test
+  --     init: whether the argument should be a function parameter or not. "arg" for yes. Defaults to no argument
+  --     events: the events on which the test must be reevaluated
+  --     optional: whether the test is relevant for the options classification between loaded and unloaded, defaults to false
   args = {
     {
       name = "combat",
@@ -1081,7 +1043,7 @@ Private.load_prototype = {
       name = "warmode",
       display = L["War Mode Active"],
       type = "tristate",
-      init = "arg",
+      init = WeakAuras.IsRetail() and "arg" or nil,
       width = WeakAuras.normalWidth,
       optional = true,
       enable = WeakAuras.IsRetail(),
@@ -1093,13 +1055,13 @@ Private.load_prototype = {
       display = L["Never"],
       type = "toggle",
       width = WeakAuras.normalWidth,
-      init = "false",
+      test = "false",
     },
     {
       name = "petbattle",
       display = L["In Pet Battle"],
       type = "tristate",
-      init = "arg",
+      init = WeakAuras.IsRetail() and "arg" or nil,
       width = WeakAuras.normalWidth,
       optional = true,
       enable = WeakAuras.IsRetail(),
@@ -1120,7 +1082,7 @@ Private.load_prototype = {
       name = "vehicleUi",
       display = L["Has Vehicle UI"],
       type = "tristate",
-      init = "arg",
+      init = WeakAuras.IsWrathOrRetail() and "arg" or nil,
       width = WeakAuras.normalWidth,
       optional = true,
       enable = WeakAuras.IsWrathOrRetail(),
@@ -1138,22 +1100,22 @@ Private.load_prototype = {
     },
     {
       name = "player",
-      hidden = true,
       init = "arg",
-      test = "true"
+      enable = false,
+      hidden = true
     },
     {
       name = "realm",
-      hidden = true,
       init = "arg",
-      test = "true"
+      enable = false,
+      hidden = true
     },
     {
       name = "namerealm",
       display = L["Player Name/Realm"],
       type = "string",
       test = "nameRealmChecker:Check(player, realm)",
-      preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+      preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
       desc = constants.nameRealmFilterDesc,
     },
     {
@@ -1161,7 +1123,7 @@ Private.load_prototype = {
       display = L["|cFFFF0000Not|r Player Name/Realm"],
       type = "string",
       test = "not nameRealmIgnoreChecker:Check(player, realm)",
-      preamble = "local nameRealmIgnoreChecker = WeakAuras.ParseNameCheck(%q)",
+      preamble = "local nameRealmIgnoreChecker = Private.ExecEnv.ParseNameCheck(%q)",
       desc = constants.nameRealmFilterDesc,
     },
     {
@@ -1169,51 +1131,16 @@ Private.load_prototype = {
       display = L["Player Class"],
       type = "multiselect",
       values = "class_types",
-      init = "arg"
-    },
-    {
-      name = "spec",
-      display = L["Talent Specialization"],
-      type = "multiselect",
-      values = function(trigger)
-        return function()
-          local min_specs = 4;
-          local single_class = Private.checkForSingleLoadCondition(trigger, "class")
-          -- If that is not the case, see if it is on single-select
-          if((not single_class) and trigger.use_class and trigger.class and trigger.class.single) then
-            single_class = trigger.class.single
-          end
-
-          if (trigger.use_class == nil) then -- no class selected, fallback to current class
-            single_class = select(2, UnitClass("player"));
-          end
-
-          -- If a single specific class was found, load the specific list for it
-          if(single_class) then
-            return WeakAuras.spec_types_specific[single_class];
-          else
-            -- List 4 specs if no class is specified, but if any multi-selected classes have less than 4 specs, list 3 instead
-            if (min_specs < 3) then
-              return Private.spec_types_2;
-            elseif(min_specs < 4) then
-              return Private.spec_types_3;
-            else
-              return Private.spec_types;
-            end
-          end
-        end
-      end,
-      init = "arg",
-      enable = WeakAuras.IsRetail(),
-      hidden = not WeakAuras.IsRetail(),
-      events = {"PLAYER_TALENT_UPDATE"}
+      init = not WeakAuras.IsRetail() and "arg" or nil,
+      enable = not WeakAuras.IsRetail(),
+      hidden = WeakAuras.IsRetail(),
     },
     {
       name = "class_and_spec",
       display = L["Class and Specialization"],
       type = "multiselect",
       values = "spec_types_all",
-      init = "arg",
+      init = WeakAuras.IsRetail() and "arg" or nil,
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
       events = {"PLAYER_TALENT_UPDATE"}
@@ -1223,106 +1150,174 @@ Private.load_prototype = {
       display = L["Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = "WeakAuras.CheckTalentByIndex(%d, %d)",
-      enableTest = function(...)
-        return WeakAuras.CheckTalentByIndex(...) ~= nil
+      test = WeakAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      enableTest = function(trigger, talent, arg)
+        if WeakAuras.IsRetail() then
+          local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+          if specId and type(Private.talentInfo[specId]) == "table" then
+            for _, v in ipairs(Private.talentInfo[specId]) do
+              if talent == v[2] then
+                return true
+              end
+            end
+          end
+        else
+          return WeakAuras.CheckTalentByIndex(talent, arg) ~= nil
+        end
       end,
+      multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
+        local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
+          return Private.talentInfo[specId][key][2]
+        end
+      end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or {"PLAYER_TALENT_UPDATE"},
+        or (WeakAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
       inverse = function(load)
         -- Check for multi select!
-        return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
+        return WeakAuras.IsClassicOrBCC() and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
       end,
-      extraOption = (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and {
+      extraOption = WeakAuras.IsClassicOrBCC() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end
       },
-      control = WeakAuras.IsWrathClassic() and "WeakAurasMiniTalent" or nil,
-      multiNoSingle = WeakAuras.IsWrathClassic(), -- no single mode
-      multiTristate = WeakAuras.IsWrathClassic(), -- values can be true/false/nil
-      multiAll = WeakAuras.IsWrathClassic(), -- require all tests
-      orConjunctionGroup  = WeakAuras.IsWrathClassic() and "talent",
-      multiUseControlWhenFalse = WeakAuras.IsWrathClassic(),
+      control = WeakAuras.IsWrathOrRetail() and "WeakAurasMiniTalent" or nil,
+      multiNoSingle = WeakAuras.IsWrathOrRetail(), -- no single mode
+      multiTristate = WeakAuras.IsWrathOrRetail(), -- values can be true/false/nil
+      multiAll = WeakAuras.IsWrathOrRetail(), -- require all tests
+      orConjunctionGroup = WeakAuras.IsWrathOrRetail() and "talent",
+      multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
       enable = function(trigger)
-        local class = Private.checkForSingleLoadCondition(trigger, "class")
         return WeakAuras.IsClassicOrBCC()
-            or WeakAuras.IsRetail()
-            or (WeakAuras.IsWrathClassic() and class ~= nil)
-      end
+            or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+            or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
+      end,
+      hidden = function(trigger)
+        return not (
+            WeakAuras.IsClassicOrBCC()
+            or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+            or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
+      end,
     },
     {
       name = "talent2",
-      display = WeakAuras.IsWrathClassic() and L["Or Talent"] or L["And Talent"],
+      display = WeakAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = "WeakAuras.CheckTalentByIndex(%d, %d)",
-      enableTest = function(...)
-        return WeakAuras.CheckTalentByIndex(...) ~= nil
+      test = WeakAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      enableTest = function(trigger, talent, arg)
+        if WeakAuras.IsRetail() then
+          local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+          if specId and type(Private.talentInfo[specId]) == "table" then
+            for _, v in ipairs(Private.talentInfo[specId]) do
+              if talent == v[2] then
+                return true
+              end
+            end
+          end
+        else
+          return WeakAuras.CheckTalentByIndex(talent, arg) ~= nil
+        end
       end,
+      multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
+        local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
+          return Private.talentInfo[specId][key][2]
+        end
+      end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or {"PLAYER_TALENT_UPDATE"},
+        or (WeakAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
       inverse = function(load)
-        return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
+        return WeakAuras.IsClassicOrBCC() and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
       end,
-      extraOption = (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and {
+      extraOption = WeakAuras.IsClassicOrBCC() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end,
       },
-      control = WeakAuras.IsWrathClassic() and "WeakAurasMiniTalent" or nil,
-      multiNoSingle = WeakAuras.IsWrathClassic(),
-      multiTristate = WeakAuras.IsWrathClassic(),
-      multiAll = WeakAuras.IsWrathClassic(),
-      orConjunctionGroup  = WeakAuras.IsWrathClassic() and "talent",
-      multiUseControlWhenFalse = WeakAuras.IsWrathClassic(),
+      control = WeakAuras.IsWrathOrRetail() and "WeakAurasMiniTalent" or nil,
+      multiNoSingle = WeakAuras.IsWrathOrRetail(), -- no single mode
+      multiTristate = WeakAuras.IsWrathOrRetail(), -- values can be true/false/nil
+      multiAll = WeakAuras.IsWrathOrRetail(), -- require all tests
+      orConjunctionGroup  = WeakAuras.IsWrathOrRetail() and "talent",
+      multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
       enable = function(trigger)
-        local class = Private.checkForSingleLoadCondition(trigger, "class")
         return (trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
           WeakAuras.IsClassicOrBCC()
-          or WeakAuras.IsRetail()
-          or (WeakAuras.IsWrathClassic() and class ~= nil)
+          or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+          or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         )
-      end
+      end,
+      hidden = function(trigger)
+        return not((trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
+          WeakAuras.IsClassicOrBCC()
+          or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+          or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
+        )
+      end,
     },
     {
       name = "talent3",
-      display = WeakAuras.IsWrathClassic() and L["Or Talent"] or L["And Talent"],
+      display = WeakAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = "WeakAuras.CheckTalentByIndex(%d, %d)",
-      enableTest = function(...)
-        return WeakAuras.CheckTalentByIndex(...) ~= nil
+      test = WeakAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      enableTest = function(trigger, talent, arg)
+        if WeakAuras.IsRetail() then
+          local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+          if specId and type(Private.talentInfo[specId]) == "table" then
+            for _, v in ipairs(Private.talentInfo[specId]) do
+              if talent == v[2] then
+                return true
+              end
+            end
+          end
+        else
+          return WeakAuras.CheckTalentByIndex(talent, arg) ~= nil
+        end
       end,
+      multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
+        local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
+          return Private.talentInfo[specId][key][2]
+        end
+      end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or {"PLAYER_TALENT_UPDATE"},
+        or (WeakAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
       inverse = function(load)
-        return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
+        return WeakAuras.IsClassicOrBCC() and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
       end,
-      extraOption = (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and {
+      extraOption = WeakAuras.IsClassicOrBCC() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end,
       },
-      control = WeakAuras.IsWrathClassic() and "WeakAurasMiniTalent" or nil,
-      multiNoSingle = WeakAuras.IsWrathClassic(),
-      multiTristate = WeakAuras.IsWrathClassic(),
-      multiAll = WeakAuras.IsWrathClassic(),
-      orConjunctionGroup  = WeakAuras.IsWrathClassic() and "talent",
-      multiUseControlWhenFalse = WeakAuras.IsWrathClassic(),
+      control = WeakAuras.IsWrathOrRetail() and "WeakAurasMiniTalent" or nil,
+      multiNoSingle = WeakAuras.IsWrathOrRetail(), -- no single mode
+      multiTristate = WeakAuras.IsWrathOrRetail(), -- values can be true/false/nil
+      multiAll = WeakAuras.IsWrathOrRetail(), -- require all tests
+      orConjunctionGroup  = WeakAuras.IsWrathOrRetail() and "talent",
+      multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
       enable = function(trigger)
-        local class = Private.checkForSingleLoadCondition(trigger, "class")
         return ((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
           WeakAuras.IsClassicOrBCC()
-          or WeakAuras.IsRetail()
-          or (WeakAuras.IsWrathClassic() and class ~= nil)
+          or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+          or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         )
+      end,
+      hidden = function(trigger)
+        return not(((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
+          WeakAuras.IsClassicOrBCC()
+          or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+          or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
+        ))
       end
     },
     {
@@ -1397,16 +1392,6 @@ Private.load_prototype = {
       showExactOption = true
     },
     {
-      name = "covenant",
-      display = L["Player Covenant"],
-      type = "multiselect",
-      values = "covenant_types",
-      init = "arg",
-      enable = WeakAuras.IsRetail(),
-      hidden = not WeakAuras.IsRetail(),
-      events = {"COVENANT_CHOSEN"}
-    },
-    {
       name = "race",
       display = L["Player Race"],
       type = "multiselect",
@@ -1431,7 +1416,7 @@ Private.load_prototype = {
       name = "effectiveLevel",
       display = L["Player Effective Level"],
       type = "number",
-      init = "arg",
+      init = WeakAuras.IsRetail() and "arg" or nil,
       desc = L["The effective level differs from the level in e.g. Time Walking dungeons."],
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
@@ -1442,24 +1427,22 @@ Private.load_prototype = {
       display = L["Zone Name"],
       type = "string",
       init = "arg",
-      preamble = "local checker = WeakAuras.ParseStringCheck(%q)",
+      preamble = "local checker = Private.ExecEnv.ParseStringCheck(%q)",
       test = "checker:Check(zone)",
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
       desc = L["Supports multiple entries, separated by commas. Escape ',' with \\"]
     },
     {
       name = "zoneId",
+      enable = false,
       hidden = true,
-      init = "arg",
-      test = "true",
-      enable = not WeakAuras.IsClassic(),
+      init = not WeakAuras.IsClassic() and "arg" or nil,
     },
     {
       name = "zonegroupId",
+      enable = false,
       hidden = true,
-      init = "arg",
-      test = "true",
-      enable = not WeakAuras.IsClassic(),
+      init = not WeakAuras.IsClassic() and "arg" or nil,
     },
     {
       name = "zoneIds",
@@ -1469,7 +1452,7 @@ Private.load_prototype = {
       hidden = WeakAuras.IsClassic(),
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
       desc = get_zoneId_list,
-      preamble = "local zoneChecker = WeakAuras.ParseZoneCheck(%q)",
+      preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
       test = "zoneChecker:Check(zoneId, zonegroupId)"
     },
     {
@@ -1495,7 +1478,7 @@ Private.load_prototype = {
       display = L["Instance Difficulty"],
       type = "multiselect",
       values = "difficulty_types",
-      init = "arg",
+      init = not WeakAuras.IsClassic() and "arg" or nil,
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
       events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
@@ -1514,7 +1497,7 @@ Private.load_prototype = {
       display = WeakAuras.IsWrathClassic() and L["Assigned Role"] or L["Spec Role"],
       type = "multiselect",
       values = "role_types",
-      init = "arg",
+      init = WeakAuras.IsWrathOrRetail() and "arg" or nil,
       enable = WeakAuras.IsWrathOrRetail(),
       hidden = not WeakAuras.IsWrathOrRetail(),
       events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
@@ -1524,26 +1507,28 @@ Private.load_prototype = {
       display = L["Raid Role"],
       type = "multiselect",
       values = "raid_role_types",
-      init = "arg",
+      init = WeakAuras.IsClassicOrBCCOrWrath() and "arg" or nil,
       enable = WeakAuras.IsClassicOrBCCOrWrath(),
       hidden = WeakAuras.IsRetail(),
       events = {"PLAYER_ROLES_ASSIGNED"}
     },
     {
       name = "group_leader",
-      display = WeakAuras.newFeatureString .. L["Group Leader"],
-      type = "toggle",
+      display = WeakAuras.newFeatureString .. L["Group Leader/Assist"],
+      type = "multiselect",
       init = "arg",
       events = {"PARTY_LEADER_CHANGED", "GROUP_ROSTER_UPDATE"},
       width = WeakAuras.doubleWidth,
+      values = "group_member_types",
+      test = "Private.ExecEnv.CheckGroupMemberType(%s, group_leader)"
     },
     {
       name = "affixes",
       display = L["Mythic+ Affix"],
       type = "multiselect",
       values = "mythic_plus_affixes",
-      init = "arg",
-      test = "WeakAuras.CheckMPlusAffixIds(%d, affixes)",
+      init = WeakAuras.IsRetail() and "arg" or nil,
+      test = "Private.ExecEnv.CheckMPlusAffixIds(%d, affixes)",
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
       events = {"CHALLENGE_MODE_START", "CHALLENGE_MODE_COMPLETED"},
@@ -1559,7 +1544,7 @@ Private.load_prototype = {
       name = "itemtypeequipped",
       display = L["Item Type Equipped"],
       type = "multiselect",
-      test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))",
+      test = "IsEquippedItemType(Private.ExecEnv.GetItemSubClassInfo(%s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       values = "item_weapon_types"
     },
@@ -1569,10 +1554,7 @@ Private.load_prototype = {
       type = "string",
       test = "WeakAuras.CheckForItemBonusId(%q)",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
-      desc = function()
-        return WeakAuras.GetLegendariesBonusIds()
-               .. "\n\n" .. L["Supports multiple entries, separated by commas"]
-      end
+      desc = L["Supports multiple entries, separated by commas"]
     },
     {
       name = "not_item_bonusid_equipped",
@@ -1580,10 +1562,7 @@ Private.load_prototype = {
       type = "string",
       test = "not WeakAuras.CheckForItemBonusId(%q)",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
-      desc = function()
-        return WeakAuras.GetLegendariesBonusIds()
-               .. "\n\n" .. L["Supports multiple entries, separated by commas"]
-      end
+      desc = L["Supports multiple entries, separated by commas"]
     }
   }
 };
@@ -1842,11 +1821,11 @@ Private.event_prototypes = {
         display = L["Unit Name/Realm"],
         desc = constants.nameRealmFilterDesc,
         type = "string",
-        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(name, realm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.name, state.realm)
@@ -2058,16 +2037,27 @@ Private.event_prototypes = {
         ret = ret .. [=[
           local friendshipRank, friendshipMaxRank
           if factionID then
-            local friendID, friendRep, friendMaxRep, _, _, _, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
-            if (friendID ~= nil) then
-              standing = friendTextLevel
-              if nextFriendThreshold then
-                bottomValue, topValue, earnedValue = friendThreshold, nextFriendThreshold, friendRep
+            local repInfo = factionID and C_GossipInfo.GetFriendshipReputation(factionID)
+            if repInfo and repInfo.friendshipFactionID > 0 then
+              standing = repInfo.reaction
+              if repInfo.nextThreshold then
+                bottomValue, topValue, earnedValue = repInfo.reactionThreshold, repInfo.nextThreshold, repInfo.standing
               else
                 -- max rank, make it look like a full bar
                 bottomValue, topValue, earnedValue = 0, 1, 1
               end
-              friendshipRank, friendshipMaxRank = GetFriendshipReputationRanks(factionID)
+              local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
+              if rankInfo.maxLevel > 0 then
+                friendshipRank, friendshipMaxRank = rankInfo.currentLevel, rankInfo.maxLevel
+              else
+                friendshipRank, friendshipMaxRank = 1, 1
+              end
+            elseif C_Reputation.IsMajorFaction(factionID) then
+              local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
+              local isCapped = C_MajorFactions.HasMaximumRenown(factionID)
+              bottomValue, topValue = 0, majorFactionData.renownLevelThreshold
+              earnedValue = isCapped and majorFactionData.renownLevelThreshold or majorFactionData.renownReputationEarned or 0
+              standing = RENOWN_LEVEL_LABEL .. majorFactionData.renownLevel
             end
 
             if C_Reputation.IsFactionParagon(factionID) then
@@ -2517,11 +2507,11 @@ Private.event_prototypes = {
         name = "namerealm",
         display = L["Unit Name/Realm"],
         type = "string",
-        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(name, realm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.name, state.realm)
@@ -2855,7 +2845,7 @@ Private.event_prototypes = {
         name = "powertype",
         display = L["Power Type"],
         type = "select",
-        values = function() return not WeakAuras.IsRetail() and Private.power_types or Private.power_types_with_stagger end,
+        values = "power_types",
         init = "unitPowerType",
         test = "true",
         store = true,
@@ -3020,11 +3010,11 @@ Private.event_prototypes = {
         name = "namerealm",
         display = L["Unit Name/Realm"],
         type = "string",
-        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(name, realm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.name, state.realm)
@@ -3327,11 +3317,11 @@ Private.event_prototypes = {
         name = "namerealm",
         display = L["Unit Name/Realm"],
         type = "string",
-        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(unitname, unitrealm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.unitname, state.unitrealm)
@@ -3522,10 +3512,10 @@ Private.event_prototypes = {
         values = "combatlog_flags_check_type",
         init = "arg",
         store = true,
-        test = "WeakAuras.CheckCombatLogFlags(sourceFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlags(sourceFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlags(state.sourceFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlags(state.sourceFlags, needle);
         end
       },
       {
@@ -3533,10 +3523,10 @@ Private.event_prototypes = {
         display = L["Source Reaction"],
         type = "select",
         values = "combatlog_flags_check_reaction",
-        test = "WeakAuras.CheckCombatLogFlagsReaction(sourceFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlagsReaction(sourceFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlagsReaction(state.sourceFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsReaction(state.sourceFlags, needle);
         end
       },
       {
@@ -3544,10 +3534,10 @@ Private.event_prototypes = {
         display = L["Source Object Type"],
         type = "select",
         values = "combatlog_flags_check_object_type",
-        test = "WeakAuras.CheckCombatLogFlagsObjectType(sourceFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlagsObjectType(sourceFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlagsObjectType(state.sourceFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsObjectType(state.sourceFlags, needle);
         end
       },
       {
@@ -3557,10 +3547,10 @@ Private.event_prototypes = {
         values = "combatlog_raid_mark_check_type",
         init = "arg",
         store = true,
-        test = "WeakAuras.CheckRaidFlags(sourceRaidFlags, %q)",
+        test = "Private.ExecEnv.CheckRaidFlags(sourceRaidFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckRaidFlags(state.sourceRaidFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckRaidFlags(state.sourceRaidFlags, needle);
         end
       },
       {
@@ -3634,10 +3624,10 @@ Private.event_prototypes = {
         values = "combatlog_flags_check_type",
         init = "arg",
         store = true,
-        test = "WeakAuras.CheckCombatLogFlags(destFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlags(destFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlags(state.destFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlags(state.destFlags, needle);
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -3648,10 +3638,10 @@ Private.event_prototypes = {
         display = L["Destination Reaction"],
         type = "select",
         values = "combatlog_flags_check_reaction",
-        test = "WeakAuras.CheckCombatLogFlagsReaction(destFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlagsReaction(destFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlagsReaction(state.destFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsReaction(state.destFlags, needle);
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -3662,10 +3652,10 @@ Private.event_prototypes = {
         display = L["Destination Object Type"],
         type = "select",
         values = "combatlog_flags_check_object_type",
-        test = "WeakAuras.CheckCombatLogFlagsObjectType(destFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlagsObjectType(destFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlagsObjectType(state.destFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsObjectType(state.destFlags, needle);
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -3683,10 +3673,10 @@ Private.event_prototypes = {
         values = "combatlog_raid_mark_check_type",
         init = "arg",
         store = true,
-        test = "WeakAuras.CheckRaidFlags(destRaidFlags, %q)",
+        test = "Private.ExecEnv.CheckRaidFlags(destRaidFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckRaidFlags(state.destRaidFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckRaidFlags(state.destRaidFlags, needle);
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -4152,7 +4142,7 @@ Private.event_prototypes = {
         showOnCheck
       );
 
-      if (not trigger.use_trackcharge or not trigger.trackcharge) then
+      if (not trigger.use_trackcharge or not trigger.trackcharge or trigger.trackcharge == "") then
         ret = ret .. [=[
           if (state.expirationTime ~= expirationTime) then
             state.expirationTime = expirationTime;
@@ -4216,7 +4206,7 @@ Private.event_prototypes = {
             state.progressType = 'timed';
           end
         ]=];
-        local trackedCharge = tonumber(trigger.trackcharge or 1) or 1;
+        local trackedCharge = tonumber(trigger.trackcharge) or 1;
         ret = ret .. ret2:format(trackedCharge - 1);
       end
       if(trigger.use_remaining and trigger.genericShowOn ~= "showOnReady") then
@@ -4227,7 +4217,7 @@ Private.event_prototypes = {
             local remainingModRate = remaining / (modRate or 1);
             local remainingCheck = %s;
             if(remainingModRate >= remainingCheck and remainingModRate > 0) then
-              WeakAuras.ScheduleScan(expirationTime - remainingCheck * (modRate or 1));
+              Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck * (modRate or 1));
             end
           end
         ]];
@@ -4281,7 +4271,7 @@ Private.event_prototypes = {
             end
 
             if trigger.genericShowOn ~= "showOnReady" and trigger.track ~= "cooldown" then
-              if trigger.use_trackcharge and trigger.trackcharge then
+              if trigger.use_trackcharge and trigger.trackcharge ~= "" then
                 if text ~= "" then text = text .. "; " end
                 text = text .. L["Tracking Charge %i"]:format(trigger.trackcharge)
               end
@@ -4613,12 +4603,12 @@ Private.event_prototypes = {
         type = "select",
         values = "charges_change_type",
         init = "arg",
-        test = "WeakAuras.CheckChargesDirection(direction, %q)",
+        test = "Private.ExecEnv.CheckChargesDirection(direction, %q)",
         store = true,
         conditionType = "select",
         conditionValues = "charges_change_condition_type";
         conditionTest = function(state, needle)
-          return state and state.show and state.direction and WeakAuras.CheckChargesDirection(state.direction, needle)
+          return state and state.show and state.direction and Private.ExecEnv.CheckChargesDirection(state.direction, needle)
         end,
       },
       {
@@ -4694,7 +4684,7 @@ Private.event_prototypes = {
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
           if(remaining >= remainingCheck and remaining > 0) then
-            WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+            Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck);
           end
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
@@ -4862,7 +4852,7 @@ Private.event_prototypes = {
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
           if(remaining >= remainingCheck and remaining > 0) then
-            WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+            Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck);
           end
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
@@ -5191,7 +5181,7 @@ Private.event_prototypes = {
                 remainingTime = bar.expirationTime - GetTime() + extendTimer
               end
               if remainingTime %s triggerRemaining then
-                WeakAuras.CopyBarToState(bar, states, cloneId, extendTimer)
+                Private.ExecEnv.CopyBarToState(bar, states, cloneId, extendTimer)
               else
                 local state = states[cloneId]
                 if state and state.show then
@@ -5200,10 +5190,10 @@ Private.event_prototypes = {
                 end
               end
               if remainingTime >= triggerRemaining and not bar.paused then
-                WeakAuras.ScheduleDbmCheck(bar.expirationTime - triggerRemaining + extendTimer)
+                Private.ExecEnv.ScheduleDbmCheck(bar.expirationTime - triggerRemaining + extendTimer)
               end
             else
-              WeakAuras.CopyBarToState(bar, states, cloneId, extendTimer)
+              Private.ExecEnv.CopyBarToState(bar, states, cloneId, extendTimer)
             end
           end
 
@@ -5212,7 +5202,7 @@ Private.event_prototypes = {
             or event == "DBM_TimerPause"
             or event == "DBM_TimerResume"
             then
-              if WeakAuras.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
+              if Private.ExecEnv.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                 local bar = WeakAuras.GetDBMTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -5226,7 +5216,7 @@ Private.event_prototypes = {
               end
             elseif event == "DBM_TimerUpdate" then
               for id, bar in pairs(WeakAuras.GetAllDBMTimers()) do
-                if WeakAuras.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
+                if Private.ExecEnv.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                   copyOrSchedule(bar, id)
                 else
                   local state = states[id]
@@ -5242,7 +5232,7 @@ Private.event_prototypes = {
             elseif event == "DBM_TimerForce" then
               wipe(states)
               for id, bar in pairs(WeakAuras.GetAllDBMTimers()) do
-                if WeakAuras.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
+                if Private.ExecEnv.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                   copyOrSchedule(bar, cloneId)
                 end
               end
@@ -5250,7 +5240,7 @@ Private.event_prototypes = {
           else
             if event == "DBM_TimerStart" or event == "DBM_TimerUpdate" then
               if extendTimer ~= 0 then
-                if WeakAuras.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
+                if Private.ExecEnv.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                   local bar = WeakAuras.GetDBMTimerById(id)
                   WeakAuras.ScheduleDbmCheck(bar.expirationTime + extendTimer)
                 end
@@ -5464,7 +5454,7 @@ Private.event_prototypes = {
                 remainingTime = bar.expirationTime - GetTime() + extendTimer
               end
               if remainingTime %s triggerRemaining then
-                WeakAuras.CopyBigWigsTimerToState(bar, states, cloneId, extendTimer)
+                Private.ExecEnv.CopyBigWigsTimerToState(bar, states, cloneId, extendTimer)
               else
                 local state = states[cloneId]
                 if state and state.show then
@@ -5473,10 +5463,10 @@ Private.event_prototypes = {
                 end
               end
               if remainingTime >= triggerRemaining and not bar.paused then
-                WeakAuras.ScheduleBigWigsCheck(bar.expirationTime - triggerRemaining + extendTimer)
+                Private.ExecEnv.ScheduleBigWigsCheck(bar.expirationTime - triggerRemaining + extendTimer)
               end
             else
-              WeakAuras.CopyBigWigsTimerToState(bar, states, cloneId, extendTimer)
+              Private.ExecEnv.CopyBigWigsTimerToState(bar, states, cloneId, extendTimer)
             end
           end
 
@@ -5485,7 +5475,7 @@ Private.event_prototypes = {
             or event == "BigWigs_PauseBar"
             or event == "BigWigs_ResumeBar"
             then
-              if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
+              if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                 local bar = WeakAuras.GetBigWigsTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -5499,14 +5489,14 @@ Private.event_prototypes = {
               end
             elseif event == "BigWigs_Timer_Update" then
               for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
+                if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   copyOrSchedule(bar, id)
                 end
               end
             elseif event == "BigWigs_Timer_Force" then
               wipe(states)
               for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
+                if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   copyOrSchedule(bar, id)
                 end
               end
@@ -5514,9 +5504,9 @@ Private.event_prototypes = {
           else
             if event == "BigWigs_StartBar" then
               if extendTimer ~= 0 then
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
+                if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   local bar = WeakAuras.GetBigWigsTimerById(id)
-                  WeakAuras.ScheduleBigWigsCheck(bar.expirationTime + extendTimer)
+                  Private.ExecEnv.ScheduleBigWigsCheck(bar.expirationTime + extendTimer)
                 end
               end
             end
@@ -5677,7 +5667,7 @@ Private.event_prototypes = {
         local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
 
         if triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0 then
-          WeakAuras.ScheduleScan(expirationTime - triggerRemaining, "SWING_TIMER_UPDATE")
+          Private.ExecEnv.ScheduleScan(expirationTime - triggerRemaining, "SWING_TIMER_UPDATE")
         end
       ]=];
       return ret:format(
@@ -5953,7 +5943,7 @@ Private.event_prototypes = {
     type = "unit",
     events = function()
       local events
-      if WeakAuras.IsClassicOrBCCOrWrath() then
+      if WeakAuras.IsClassicOrBCC() then
         events = {
           "CHARACTER_POINTS_CHANGED",
           "SPELLS_CHANGED"
@@ -5964,54 +5954,33 @@ Private.event_prototypes = {
           "SPELLS_CHANGED",
           "PLAYER_TALENT_UPDATE"
         }
-      else
-        events = { "PLAYER_TALENT_UPDATE" }
+      elseif WeakAuras.IsRetail() then
+        events = { "TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE" }
       end
       return {
         ["events"] = events
       }
     end,
-    force_events = WeakAuras.IsRetail() and "PLAYER_TALENT_UPDATE" or "CHARACTER_POINTS_CHANGED",
+    force_events = (WeakAuras.IsRetail() and "TRAIT_CONFIG_UPDATED") or "CHARACTER_POINTS_CHANGED",
     name = L["Talent Known"],
     init = function(trigger)
       local inverse = trigger.use_inverse;
       if (trigger.use_talent) then
         -- Single selection
         local index = trigger.talent and trigger.talent.single;
-        local tier, column
-        if WeakAuras.IsClassicOrBCCOrWrath() then
-          tier = index and ceil(index / MAX_NUM_TALENTS)
-          column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
-        else
-          tier = index and ceil(index / 3)
-          column = index and ((index - 1) % 3 + 1)
-        end
-
+        local tier = index and ceil(index / MAX_NUM_TALENTS)
+        local column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
         local ret = [[
           local tier = %s;
           local column = %s;
-        ]]
-        if WeakAuras.IsClassicOrBCCOrWrath() then
-          ret = ret .. [[
-          local active, _, rank
-          _, _, _, _, rank  = GetTalentInfo(tier, column)
-          active = rank > 0
-          ]]
-        else
-          if trigger.use_onlySelected then
-            ret = ret .. [[
-            local active, _, activeName, activeIcon, selected, known
-            _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-            active = selected
-            ]]
-          else
-            ret = ret .. [[
-            local active, _, activeName, activeIcon, selected, known
-            _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-            active = selected or known
-            ]]
+          local active = false
+          local name, icon, _, _, rank = GetTalentInfo(tier, column)
+          if rank > 0 then
+            active = true;
+            activeName = name;
+            activeIcon = icon;
           end
-        end
+        ]]
         if (inverse) then
           ret = ret .. [[
           active = not (active);
@@ -6021,60 +5990,75 @@ Private.event_prototypes = {
       elseif (trigger.use_talent == false) then
         if (trigger.talent.multi) then
           local ret = [[
-            local tier
-            local column
             local active = false;
             local activeIcon;
             local activeName;
+            local _
           ]]
-          for index in pairs(trigger.talent.multi) do
-            local tier, column
-            if WeakAuras.IsClassicOrBCCOrWrath() then
-              tier = index and ceil(index / MAX_NUM_TALENTS)
-              column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
-            else
-              tier = index and ceil(index / 3)
-              column = index and ((index - 1) % 3 + 1)
-            end
-            local ret2 = [[
-              if (not active) then
-                tier = %s
-                column = %s
+          if WeakAuras.IsRetail() then
+            ret = ret .. [[
+              local index
+              local firstLoop = true
             ]]
+          else
+            ret = ret .. [[
+              local tier
+              local column
+            ]]
+          end
+          for index, value in pairs(trigger.talent.multi) do
             if WeakAuras.IsClassicOrBCCOrWrath() then
-              ret2 = ret2 .. [[
-                local name, icon, _, _, rank  = GetTalentInfo(tier, column)
-                if rank > 0 then
-                  active = true;
-                  activeName = name;
-                  activeIcon = icon;
+              local tier = index and ceil(index / MAX_NUM_TALENTS)
+              local column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
+              local ret2 = [[
+                if (not active) then
+                  tier = %s
+                  column = %s
+                  local name, icon, _, _, rank = GetTalentInfo(tier, column)
+                  if rank > 0 then
+                    active = true;
+                    activeName = name;
+                    activeIcon = icon;
+                  end
                 end
               ]]
-            else
-              if trigger.use_onlySelected then
-                ret2 = ret2 .. [[
-                  local _, name, icon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-                  if (selected) then
-                    active = true;
-                    activeName = name;
-                    activeIcon = icon;
+              ret = ret .. ret2:format(tier, column)
+            elseif WeakAuras.IsRetail() then
+              local ret2 = [[
+                local spellId = %s
+                local shouldBeActive = %s
+                local hasTalent = IsPlayerSpell(spellId)
+                if spellId then
+                  activeName, _, activeIcon = GetSpellInfo(spellId)
+                end
+                if hasTalent then
+                  if shouldBeActive then
+                    if firstLoop then
+                      active = true
+                    else
+                      active = active and true
+                    end
+                  else
+                    active = false
                   end
-                ]]
-              else
-                ret2 = ret2 .. [[
-                  local _, name, icon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-                  if (selected or known) then
-                    active = true;
-                    activeName = name;
-                    activeIcon = icon;
+                  firstLoop = false
+                elseif hasTalent == false then
+                  if shouldBeActive then
+                    active = false
+                  else
+                    if firstLoop then
+                      active = true
+                    else
+                      active = active and true
+                    end
                   end
-                ]]
-              end
+                  firstLoop = false
+                else
+                  -- nil case means talent index in data is not known for this class/spec
+                end
+              ]]
+              ret = ret .. ret2:format(index, value and "true" or "false")
             end
-            ret2 = ret2 .. [[
-              end
-            ]]
-            ret = ret .. ret2:format(tier, column);
           end
           if (inverse) then
             ret = ret .. [[
@@ -6088,35 +6072,103 @@ Private.event_prototypes = {
     end,
     args = {
       {
+        name = "class",
+        display = L["Class"],
+        type = "select",
+        init = "select(2, UnitClass('player'))",
+        values = "class_types",
+        store = true,
+        conditionType = "select",
+        required = true,
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
+        reloadOptions = true,
+      },
+      {
+        name = "spec",
+        display = L["Talent Specialization"],
+        type = "select",
+        init = "WeakAuras.IsRetail() and GetSpecialization()",
+        required = true,
+        values = function(trigger)
+          return WeakAuras.spec_types_specific[trigger.class]
+        end,
+        enable = function(trigger)
+          if WeakAuras.IsRetail() and trigger.use_class and trigger.class then
+            return true
+          else
+            return false
+          end
+        end,
+        reloadOptions = true,
+      },
+      {
         name = "talent",
         display = L["Talent"],
         type = "multiselect",
-        values = function()
+        values = function(trigger)
           local class = select(2, UnitClass("player"));
-          local spec =  WeakAuras.IsRetail() and GetSpecialization();
-          if(Private.talent_types_specific[class] and  Private.talent_types_specific[class][spec]) then
-            return Private.talent_types_specific[class][spec];
-          elseif not WeakAuras.IsRetail() and Private.talent_types_specific[class] then
-            return Private.talent_types_specific[class];
+          if WeakAuras.IsRetail() then
+            local classId
+            for i = 1, GetNumClasses() do
+              if select(2, GetClassInfo(i)) == trigger.class then
+                classId = i
+              end
+            end
+            if classId and trigger.spec then
+              local specId = GetSpecializationInfoForClassID(classId, trigger.spec)
+              if specId and Private.talentInfo[specId] then
+                return Private.talentInfo[specId]
+              end
+            end
+            return {}
           else
-            return Private.talent_types;
+            if Private.talent_types_specific[class] then
+              return Private.talent_types_specific[class];
+            else
+              return Private.talent_types;
+            end
+          end
+        end,
+        multiUseControlWhenFalse = WeakAuras.IsRetail(),
+        multiAll = WeakAuras.IsRetail(),
+        multiNoSingle = WeakAuras.IsRetail(),
+        multiTristate = WeakAuras.IsRetail(), -- values can be true/false/nil
+        control = WeakAuras.IsRetail() and "WeakAurasMiniTalent" or nil,
+        multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
+          local classId
+          for i = 1, GetNumClasses() do
+            if select(2, GetClassInfo(i)) == trigger.class then
+              classId = i
+            end
+          end
+          if classId and trigger.spec then
+            local specId = GetSpecializationInfoForClassID(classId, trigger.spec)
+            if specId and Private.talentInfo[specId] and Private.talentInfo[specId][key] then
+              return Private.talentInfo[specId][key][2]
+            end
+          end
+        end or nil,
+        enable = function(trigger)
+          if WeakAuras.IsRetail() then
+            if trigger.use_class and trigger.class and trigger.use_spec and trigger.spec then
+              return true
+            else
+              return false
+            end
+          else
+            return true
           end
         end,
         test = "active",
       },
       {
-        name = "onlySelected",
-        display = L["Only if selected"],
-        type = "boolean",
-        test = "true",
-        enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail(),
-      },
-      {
         name = "inverse",
         display = L["Inverse"],
         type = "toggle",
-        test = "true"
+        test = "true",
+        enable = not WeakAuras.IsRetail(),
+        hidden = WeakAuras.IsRetail(),
       },
       {
         hidden = true,
@@ -6310,7 +6362,7 @@ Private.event_prototypes = {
           local _, totemName, startTime, duration, icon = GetTotemInfo(totemType);
           active = (startTime and startTime ~= 0);
 
-          if not WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
+          if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
             active = false;
           end
 
@@ -6323,7 +6375,7 @@ Private.event_prototypes = {
             local expirationTime = startTime and (startTime + duration) or 0;
             local remainingTime = expirationTime - GetTime()
             if (remainingTime >= remainingCheck) then
-              WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+              Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck);
             end
             active = checkActive(remainingTime);
           end
@@ -6344,7 +6396,7 @@ Private.event_prototypes = {
           for i = 1, 5 do
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
             if ((startTime and startTime ~= 0) and
-                WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
+              Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
             ) then
               found = true;
             end
@@ -6364,14 +6416,14 @@ Private.event_prototypes = {
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
             active = (startTime and startTime ~= 0);
 
-            if not WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
+            if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
               active = false;
             end
             if (active and remainingCheck) then
               local expirationTime = startTime and (startTime + duration) or 0;
               local remainingTime = expirationTime - GetTime()
               if (remainingTime >= remainingCheck) then
-                WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+                Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck);
               end
               active = checkActive(remainingTime);
             end
@@ -6652,7 +6704,7 @@ Private.event_prototypes = {
         local found = expirationTime and nameCheck and stackCheck and remainingCheck
 
         if(triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0) then
-          WeakAuras.ScheduleScan(expirationTime - triggerRemaining, "TENCH_UPDATE");
+          Private.ExecEnv.ScheduleScan(expirationTime - triggerRemaining, "TENCH_UPDATE");
         end
 
         if not found then
@@ -7027,7 +7079,7 @@ Private.event_prototypes = {
           local remaining = expirationTime - GetTime();
           local remainingCheck = %s;
           if(remaining >= remainingCheck and remaining > 0) then
-            WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+            Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck);
           end
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
@@ -7271,7 +7323,7 @@ Private.event_prototypes = {
         display = L["Item Type"],
         type = "multiselect",
         values = "item_weapon_types",
-        test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))"
+        test = "IsEquippedItemType(Private.ExecEnv.GetItemSubClassInfo(%s))"
       },
     },
     automaticrequired = true
@@ -7314,10 +7366,7 @@ Private.event_prototypes = {
         store = "true",
         test = "true",
         required = true,
-        desc = function()
-          return WeakAuras.GetLegendariesBonusIds()
-          .. "\n\n" .. L["Supports multiple entries, separated by commas"]
-        end,
+        desc = L["Supports multiple entries, separated by commas"],
         conditionType = "number",
       },
       {
@@ -7387,6 +7436,7 @@ Private.event_prototypes = {
     events = {
       ["events"] = {"PLAYER_EQUIPMENT_CHANGED"}
     },
+    internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD"},
     force_events = "PLAYER_EQUIPMENT_CHANGED",
     name = L["Item Set Equipped"],
     automaticrequired = true,
@@ -7789,6 +7839,11 @@ Private.event_prototypes = {
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_INTERRUPTED")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
+      if WeakAuras.IsRetail() then
+        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_START_FAKE")
+        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_UPDATE_FAKE")
+        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_STOP_FAKE")
+      end
       if WeakAuras.IsClassic() and unit ~= "player" then
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_START", WeakAuras.ScanUnitEvents)
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_DELAYED", WeakAuras.ScanUnitEvents) -- only for player
@@ -7843,29 +7898,56 @@ Private.event_prototypes = {
         local smart = %s
         local remainingCheck = %s
         local inverseTrigger = %s
+        local showChargedDuration = %s
+        local empowered = false
+        local stage = 0
+        local stagesData = {}
 
-        local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining, _
+        local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining, _, stageTotal
 
         spell, _, icon, startTime, endTime, _, _, interruptible, spellId = WeakAuras.UnitCastingInfo(unit)
         if spell then
           castType = "cast"
         else
-          spell, _, icon, startTime, endTime, _, interruptible, spellId = WeakAuras.UnitChannelInfo(unit)
+          spell, _, icon, startTime, endTime, _, interruptible, spellId, _, stageTotal = WeakAuras.UnitChannelInfo(unit)
           if spell then
             castType = "channel"
+            if stageTotal and stageTotal > 0 then
+              empowered = true
+
+              local lastFinish = 0
+              for i = 1, stageTotal do
+                stagesData[i] = {
+                  start = lastFinish,
+                  finish = lastFinish + GetUnitEmpowerStageDuration(unit, i - 1) / 1000
+                }
+                lastFinish = stagesData[i].finish
+                if startTime / 1000 + lastFinish <= GetTime() then
+                  stage = i
+                end
+                if Round(startTime/1000) == Round(GetTime()) then
+                  Private.ExecEnv.ScheduleCastCheck(startTime / 1000 + lastFinish, unit)
+                end
+              end
+            end
           end
+        end
+        if empowered and showChargedDuration then
+          endTime = endTime + GetUnitEmpowerHoldAtMaxTime(unit)
         end
         interruptible = not interruptible
         expirationTime = endTime and endTime > 0 and (endTime / 1000) or 0
         remaining = expirationTime - GetTime()
 
         if remainingCheck and remaining >= remainingCheck and remaining > 0 then
-          WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck, unit)
+          Private.ExecEnv.ScheduleCastCheck(expirationTime - remainingCheck, unit)
         end
       ]=];
       ret = ret:format(trigger.unit == "group" and "true" or "false",
                         trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
-                        trigger.use_inverse and "true" or "false");
+                        trigger.use_inverse and "true" or "false",
+                        trigger.use_showChargedDuration and "true" or "false"
+                      );
 
       ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
 
@@ -7897,7 +7979,7 @@ Private.event_prototypes = {
         enable = function(trigger) return not trigger.use_inverse end,
         conditionType = "number",
         showExactOption = true,
-        test = "WeakAuras.CompareSpellIds(spellId, %s, %s)",
+        test = "Private.ExecEnv.CompareSpellIds(spellId, %s, %s)",
         store = true,
       },
       {
@@ -7925,6 +8007,51 @@ Private.event_prototypes = {
         store = true,
         conditionType = "bool",
         hidden = WeakAuras.IsBCC()
+      },
+      {
+        name = "empowered",
+        display = L["Empowered"],
+        type = "tristate",
+        enable = WeakAuras.IsRetail(),
+        store = true,
+        conditionType = "bool",
+        hidden = not WeakAuras.IsRetail()
+      },
+      {
+        name = "showChargedDuration",
+        display = L["Show charged duration for empowered casts"],
+        type = "toggle",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail()
+      },
+      {
+        name = "stage",
+        display = L["Current Stage"],
+        type = "number",
+        enable = WeakAuras.IsRetail(),
+        store = true,
+        conditionType = "number",
+        hidden = not WeakAuras.IsRetail()
+      },
+      {
+        name = "stageTotal",
+        display = L["Total Stages"],
+        type = "number",
+        enable = WeakAuras.IsRetail(),
+        store = true,
+        conditionType = "number",
+        hidden = not WeakAuras.IsRetail()
+      },
+      {
+        name = "charged",
+        display = L["Charged Empowered Cast"],
+        hidden = true,
+        init = "stage == stageTotal",
+        test = "true",
+        enable = WeakAuras.IsRetail(),
+        store = true,
+        type = "toggle",
+        conditionType = "bool",
       },
       {
         name = "remaining",
@@ -7977,7 +8104,7 @@ Private.event_prototypes = {
       {
         name = "autoHide",
         hidden = true,
-        init = "true",
+        init = "not empowered",
         test = "true",
         store = true
       },
@@ -8117,11 +8244,11 @@ Private.event_prototypes = {
         name = "sourceNameRealm",
         display = L["Source Unit Name/Realm"],
         type = "string",
-        preamble = "local sourceNameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local sourceNameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "sourceNameRealmChecker:Check(sourceName, sourceRealm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.sourceName, state.sourceRealm)
@@ -8165,11 +8292,11 @@ Private.event_prototypes = {
         name = "destNameRealm",
         display = L["Name/Realm of Caster's Target"],
         type = "string",
-        preamble = "local destNameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local destNameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "destNameRealmChecker:Check(destName, destRealm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.destName, state.destRealm)
@@ -8208,6 +8335,13 @@ Private.event_prototypes = {
       {
         hidden = true,
         test = "WeakAuras.UnitExistsFixed(unit, smart) and ((not inverseTrigger and spell) or (inverseTrigger and not spell)) and specificUnitCheck"
+      },
+      {
+        name = "stagesData",
+        hidden = true,
+        test = "true",
+        store = true,
+        init = "stagesData",
       }
     },
     overlayFuncs = {
@@ -8221,6 +8355,46 @@ Private.event_prototypes = {
           return trigger.use_showLatency and trigger.unit == "player"
         end
       },
+      {
+        name = L["Empowered 1"],
+        func = function(trigger, state)
+          if not state.stageTotal or state.stageTotal < 1 then return 0, 0 end
+          return state.duration - state.stagesData[1].start, state.duration - state.stagesData[1].finish
+        end,
+        enable = WeakAuras.IsRetail
+      },
+      {
+        name = L["Empowered 2"],
+        func = function(trigger, state)
+          if not state.stageTotal or state.stageTotal < 2 then return 0, 0 end
+          return state.duration - state.stagesData[2].start, state.duration - state.stagesData[2].finish
+        end,
+        enable = WeakAuras.IsRetail
+      },
+      {
+        name = L["Empowered 3"],
+        func = function(trigger, state)
+          if not state.stageTotal or state.stageTotal < 3 then return 0, 0 end
+          return state.duration - state.stagesData[3].start, state.duration - state.stagesData[3].finish
+        end,
+        enable = WeakAuras.IsRetail
+      },
+      {
+        name = L["Empowered 4"],
+        func = function(trigger, state)
+          if not state.stageTotal or state.stageTotal < 4 then return 0, 0 end
+          return state.duration - state.stagesData[4].start, state.duration - state.stagesData[4].finish
+        end,
+        enable = WeakAuras.IsRetail
+      },
+      {
+        name = L["Empowered 5"],
+        func = function(trigger, state)
+          if not state.stageTotal or state.stageTotal < 5 then return 0, 0 end
+          return state.duration - state.stagesData[5].start, state.duration - state.stagesData[5].finish
+        end,
+        enable = WeakAuras.IsRetail
+      }
     },
     automaticrequired = true,
   },
@@ -8410,6 +8584,26 @@ Private.event_prototypes = {
         display = L["Armor Peneration Percent"],
         type = "number",
         init = "GetArmorPenetration()",
+        store = true,
+        conditionType = "number",
+        enable = WeakAuras.IsWrathClassic(),
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
+        name = "resiliencerating",
+        display = L["Resilience Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
+        store = true,
+        enable = WeakAuras.IsWrathClassic(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
+        name = "resiliencepercent",
+        display = L["Resilience Percent"],
+        type = "number",
+        init = "GetCombatRatingBonus(CR_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
         store = true,
         conditionType = "number",
         enable = WeakAuras.IsWrathClassic(),
@@ -8864,7 +9058,7 @@ Private.event_prototypes = {
         display = L["Group Type"],
         type = "multiselect",
         values = "group_types",
-        init = "WeakAuras.GroupType()",
+        init = "Private.ExecEnv.GroupType()",
       },
       {
         name = "instance_size",

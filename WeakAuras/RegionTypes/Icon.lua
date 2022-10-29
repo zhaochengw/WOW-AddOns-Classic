@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local L = WeakAuras.L
@@ -26,7 +27,7 @@ local default = {
   zoom = 0,
   keepAspectRatio = false,
   frameStrata = 1,
-  cooldown = false,
+  cooldown = true,
   cooldownTextDisabled = false,
   cooldownSwipe = true,
   cooldownEdge = false,
@@ -187,7 +188,11 @@ local function create(parent, data)
   region.regionType = "icon"
   region:SetMovable(true);
   region:SetResizable(true);
-  region:SetMinResize(1, 1);
+  if region.SetResizeBounds then
+    region:SetResizeBounds(1, 1)
+  else
+    region:SetMinResize(1, 1)
+  end
 
   function region.UpdateInnerOuterSize()
     local width = region.width * math.abs(region.scalex);
@@ -255,6 +260,10 @@ local function create(parent, data)
   cooldown:SetDrawBling(false)
   cooldown.SetDrawSwipeOrg = cooldown.SetDrawSwipe
   cooldown.SetDrawSwipe = function() end
+
+  if not OmniCC and ElvUI and ElvUI[1] and ElvUI[1].CooldownEnabled and ElvUI[1].RegisterCooldown and ElvUI[1]:CooldownEnabled() then
+    ElvUI[1]:RegisterCooldown(cooldown, "WeakAuras");
+  end
 
   local SetFrameLevel = region.SetFrameLevel;
 
@@ -329,8 +338,7 @@ local function modify(parent, region, data)
     end
 
     if region.MSQGroup then
-      region.MSQGroup:RemoveButton(button)
-      region.MSQGroup:AddButton(button, {Icon = icon, Cooldown = cooldown}, "WA_Aura", true)
+      region.MSQGroup:ReSkin(button)
     end
 
     local ulx, uly, llx, lly, urx, ury, lrx, lry = GetTexCoord(region, texWidth, aspectRatio)
@@ -381,6 +389,8 @@ local function modify(parent, region, data)
     cooldown:SetHideCountdownNumbers(cooldownTextDisabled);
     if OmniCC and OmniCC.Cooldown and OmniCC.Cooldown.SetNoCooldownCount then
       OmniCC.Cooldown.SetNoCooldownCount(cooldown, cooldownTextDisabled)
+    elseif ElvUI and ElvUI[1] and ElvUI[1].CooldownEnabled and ElvUI[1].ToggleCooldown and ElvUI[1]:CooldownEnabled() then
+      ElvUI[1]:ToggleCooldown(cooldown, not cooldownTextDisabled);
     end
   end
   region:SetHideCountdownNumbers(data.cooldownTextDisabled)

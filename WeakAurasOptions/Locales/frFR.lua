@@ -19,7 +19,6 @@ local L = WeakAuras.L
 	--[[Translation missing --]]
 	L["%d |4aura:auras; modified"] = "%d |4aura:auras; modified"
 	L["%i auras selected"] = "%i auras sélectionnées"
-	L["%i Matches"] = "%i Correspondances"
 	--[[Translation missing --]]
 	L["%s - %i. Trigger"] = "%s - %i. Trigger"
 	--[[Translation missing --]]
@@ -87,6 +86,8 @@ local L = WeakAuras.L
 	L["%s Name Function"] = "%s Name Function"
 	--[[Translation missing --]]
 	L["%s Stacks Function"] = "%s Stacks Function"
+	--[[Translation missing --]]
+	L["%s stores around %s KB of data"] = "%s stores around %s KB of data"
 	L["%s Texture"] = "%s texture"
 	--[[Translation missing --]]
 	L["%s Texture Function"] = "%s Texture Function"
@@ -141,7 +142,6 @@ local L = WeakAuras.L
 |cffff0000Note|r: Without a direct relationship to actual unitIDs, results may vary.
 
 |cffffff00*|r Yellow Unit settings can match multiple units and will default to being active even while no affected units are found without a Unit Count or Match Count setting.]=]
-	L["1 Match"] = "1 Correspondance"
 	L["A 20x20 pixels icon"] = "Une icône de 20x20 pixels"
 	L["A 32x32 pixels icon"] = "Une icône de 32x32 pixels"
 	L["A 40x40 pixels icon"] = "Une icône de 40x40 pixels"
@@ -226,7 +226,6 @@ Off Screen]=]
 	--[[Translation missing --]]
 	L["Aura received from: %s"] = "Aura received from: %s"
 	L["Aura Type"] = "Type de l'aura"
-	L["Aura(s)"] = "Aura(s)"
 	--[[Translation missing --]]
 	L["Aura: '%s'"] = "Aura: '%s'"
 	L["Author Options"] = "Options de l'Auteur"
@@ -270,7 +269,6 @@ Off Screen]=]
 	L["Bottom Right"] = "Bas droit"
 	L["Bracket Matching"] = "Crochet Correspondant"
 	L["Browse Wago, the largest collection of auras."] = "Parcourez Wago, la plus grande collection d'auras."
-	L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."] = "Il peut s'agir d'un nom ou d'un identifiant d'unité (par exemple groupe1). Un nom ne fonctionne que pour les joueurs amis de votre groupe."
 	L["Can be a UID (e.g., party1)."] = "Peut être un UID (par exemple, groupe1)."
 	--[[Translation missing --]]
 	L["Can set to 0 if Columns * Width equal File Width"] = "Can set to 0 if Columns * Width equal File Width"
@@ -291,6 +289,8 @@ Off Screen]=]
 	L["Class"] = "Classe"
 	--[[Translation missing --]]
 	L["Clear Debug Logs"] = "Clear Debug Logs"
+	--[[Translation missing --]]
+	L["Clear Saved Data"] = "Clear Saved Data"
 	L["Clip Overlays"] = "Superposition de l'attache "
 	--[[Translation missing --]]
 	L["Clipped by Progress"] = "Clipped by Progress"
@@ -323,7 +323,6 @@ Off Screen]=]
 	L["Constant Factor"] = "Facteur constant"
 	L["Control-click to select multiple displays"] = "Ctrl-Clic pour sélectionner plusieurs affichages"
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "Contrôle la position et la configuration de plusieurs affichages en même temps"
-	L["Convert to New Aura Trigger"] = "Convertir au nouveau déclencheur d'aura"
 	L["Convert to..."] = "Convertir en..."
 	--[[Translation missing --]]
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."
@@ -372,6 +371,10 @@ Plusieurs évènements peuvent être spécifiés avec des virgules ou des espace
 |cFF4444FFPar exemple:|r
 UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
 ]=]
+	--[[Translation missing --]]
+	L["Custom Trigger: Ignore Lua Errors on OPTIONS event"] = "Custom Trigger: Ignore Lua Errors on OPTIONS event"
+	--[[Translation missing --]]
+	L["Custom Trigger: Send fake events instead of STATUS event"] = "Custom Trigger: Send fake events instead of STATUS event"
 	L["Custom Untrigger"] = "Désactivation personnalisée"
 	L["Custom Variables"] = "Variables personnalisées"
 	L["Debuff Type"] = "Type d'affaiblissement"
@@ -451,7 +454,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
 	--[[Translation missing --]]
 	L["Enemy nameplate(s) found"] = "Enemy nameplate(s) found"
 	L["Enter a Spell ID"] = "Entrer un ID de sort"
-	L["Enter an aura name, partial aura name, or spell id"] = "Entrez un nom d'aura, nom d'aura partiel ou ID de sort"
 	L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."] = "Saisissez un nom d'aura, un nom d'aura partiel ou un ID de sort. L'ID d'un sort correspondra à tous les sorts portant le même nom."
 	L["Enter Author Mode"] = "Entrer en Mode Auteur"
 	--[[Translation missing --]]
@@ -600,7 +602,6 @@ Si le nombre entré est decimal (ex. 0.5), une fraction (ex. 1/2), ou un pourcen
 	L["Group Icon"] = "Icône du groupe"
 	--[[Translation missing --]]
 	L["Group key"] = "Group key"
-	L["Group Member Count"] = "Nombre de membres du groupe"
 	--[[Translation missing --]]
 	L["Group Options"] = "Group Options"
 	--[[Translation missing --]]
@@ -621,7 +622,6 @@ Si le nombre entré est decimal (ex. 0.5), une fraction (ex. 1/2), ou un pourcen
 	L["Hide on"] = "Cacher à"
 	L["Hide this group's children"] = "Cacher les enfants de ce groupe"
 	L["Hide Timer Text"] = "Masquer le texte du minuteur"
-	L["Hide When Not In Group"] = "Cacher quand on n'est pas dans le groupe"
 	L["Horizontal Align"] = "Aligner horizontalement"
 	L["Horizontal Bar"] = "Barre horizontale"
 	L["Hostility"] = "Hostilité"
@@ -654,10 +654,8 @@ Si cette case est cochée, ce séparateur inclura du texte. Sinon, ce sera juste
 	L["If unchecked, then this space will fill the entire line it is on in User Mode."] = "Si cette case n'est pas cochée, cet espace remplira toute la ligne sur laquelle il se trouve en mode utilisateur."
 	L["Ignore Dead"] = "Ignorer la mort"
 	L["Ignore Disconnected"] = "Ignorer les déconnectés"
-	L["Ignore Lua Errors on OPTIONS event"] = "Ignorer les erreurs Lua dans les OPTIONS de l’événement"
 	L["Ignore out of checking range"] = "Ignorer hors de la plage de vérification"
 	L["Ignore Self"] = "Ignorer soi-même"
-	L["Ignore self"] = "Ignorer soi-même"
 	L["Ignore updates"] = "Ignorer les mises à jours"
 	L["Ignored"] = "Ignoré"
 	L["Ignored Aura Name"] = "Ignorer par nom d'aura"
@@ -790,7 +788,6 @@ Seule une unique valeur peut être choisie]=]
 	L["Not Loaded"] = "Non chargé"
 	--[[Translation missing --]]
 	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "Note: Automated Messages to SAY and YELL are blocked outside of Instances."
-	L["Note: The legacy buff trigger is now permanently disabled. It will be removed in the near future."] = "Remarque : le déclencheur de buff hérités est désormais désactivé de façon permanente. Il sera supprimé dans un avenir proche."
 	--[[Translation missing --]]
 	L["Npc ID"] = "Npc ID"
 	L["Number of Entries"] = "Nombre d'entrées"
@@ -805,9 +802,7 @@ Seule une unique valeur peut être choisie]=]
 	L["On Show"] = "A l'affichage"
 	--[[Translation missing --]]
 	L["Only Match auras cast by a player (not an npc)"] = "Only Match auras cast by a player (not an npc)"
-	L["Only match auras cast by people other than the player"] = "Ne considérer que les auras lancées par d'autres que le joueur"
 	L["Only match auras cast by people other than the player or his pet"] = "uniquement les auras lancées par des personnes autres que le joueur ou son animal de compagnie"
-	L["Only match auras cast by the player"] = "Ne considérer que les auras lancées par le joueur"
 	L["Only match auras cast by the player or his pet"] = "correspond à des auras lancés uniquement par le joueur ou son animal de compagnie"
 	L["Operator"] = "Opérateur"
 	L["Option %i"] = "Option %i"
@@ -907,6 +902,8 @@ Seule une unique valeur peut être choisie]=]
 	L["Same"] = "Le même"
 	--[[Translation missing --]]
 	L["Same texture as Foreground"] = "Same texture as Foreground"
+	--[[Translation missing --]]
+	L["Saved Data"] = "Saved Data"
 	L["Scale"] = "Échelle"
 	L["Search"] = "Chercher"
 	--[[Translation missing --]]
@@ -930,7 +927,6 @@ Seule une unique valeur peut être choisie]=]
 	--[[Translation missing --]]
 	L["Show \"Edge\""] = "Show \"Edge\""
 	L["Show \"Swipe\""] = "Afficher le \"balayage\""
-	L["Show all matches (Auto-clone)"] = "Montrer toutes correspondances (Auto-Clone)"
 	--[[Translation missing --]]
 	L["Show and Clone Settings"] = "Show and Clone Settings"
 	L["Show Border"] = "Afficher l'encadrement"
@@ -940,7 +936,6 @@ Seule une unique valeur peut être choisie]=]
 	L["Show Icon"] = "Afficher l'icône"
 	--[[Translation missing --]]
 	L["Show If Unit Does Not Exist"] = "Show If Unit Does Not Exist"
-	L["Show If Unit Is Invalid"] = "Afficher Si l'Unité Est Invalide"
 	--[[Translation missing --]]
 	L["Show Matches for"] = "Show Matches for"
 	--[[Translation missing --]]
@@ -1014,7 +1009,6 @@ Seule une unique valeur peut être choisie]=]
 	L["Start Collapsed"] = "Start Collapsed"
 	--[[Translation missing --]]
 	L["Start of %s"] = "Start of %s"
-	L["Stealable"] = "Volable"
 	--[[Translation missing --]]
 	L["Step Size"] = "Step Size"
 	--[[Translation missing --]]
@@ -1130,13 +1124,10 @@ It might not work correctly with your version!]=]
 	L["Url: %s"] = "Url: %s"
 	L["Use Custom Color"] = "Utiliser une couleur personnalisée"
 	L["Use Display Info Id"] = "Utiliser les informations d'identifiant de l'affichage"
-	L["Use Full Scan (High CPU)"] = "Utiliser Scan Complet (CPU élevé)"
-	L["Use nth value from tooltip:"] = "Utilisez la nième valeur de l'info-bulle:"
 	L["Use SetTransform"] = "Utiliser SetTransform"
 	L["Use Texture"] = "Utiliser une texture"
-	L["Use tooltip \"size\" instead of stacks"] = "Utiliser la \"taille\" de l'infobulle plutôt que la pile"
-	L["Used in auras:"] = "Utilisé dans les auras:"
 	L["Used in Auras:"] = "Utilisé(e) dans les Auras:"
+	L["Used in auras:"] = "Utilisé dans les auras:"
 	--[[Translation missing --]]
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "Uses UnitIsVisible() to check if in range. This is polled every second."
 	L["Value %i"] = "Valeur %i"
@@ -1164,8 +1155,8 @@ It might not work correctly with your version!]=]
 	L["X Offset"] = "Décalage X"
 	L["X Rotation"] = "Rotation X"
 	L["X Scale"] = "Echelle X"
-	L["x-Offset"] = "x-Décalage"
 	L["X-Offset"] = "Décalage X"
+	L["x-Offset"] = "x-Décalage"
 	L["Y Offset"] = "Décalage Y"
 	L["Y Rotation"] = "Rotation Y"
 	L["Y Scale"] = "Echelle Y"
