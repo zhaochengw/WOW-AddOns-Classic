@@ -1,3 +1,3 @@
-# 10.5.6 (2022-10-19)
+# 11.0.3 (2022-10-27)
 
-* Added Rank 2 of Silenced effect of Counterspell (Mage) to Auras widget as CC aura for Wrath Classic [Comment #6416].
+* Fixed a bug that occured when the target highlight color alpha was set below 0,7 as the Dragonflight API is more strict with valid transparency values [Issue #573].
