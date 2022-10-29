@@ -1,9 +1,9 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Better Vendor Price
 ## Notes: Vendor Price display with stack price information (|cFF99E5FF/bvp config|r)
-## Notes: Shadowlands Eternity's End edition
+## Notes: Dragonflight edition
 ## Author: MooreaTV moorea@ymail.com
-## Version: v1.17.03
+## Version: v1.17.04
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: betterVendorPriceSaved
