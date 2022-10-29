@@ -17,6 +17,8 @@ L["AUCTION_TOOLTIP_TOOLTIP_HEADER"] = "Auktion Tooltip Infos"
 L["AUCTION_TOOLTIP_TOOLTIP_TEXT"] = "Zeigt den Auktionspreis im Tooltip an."
 L["AUCTIONATOR"] = "Auctionator"
 L["AUTHOR_HEADER"] = "Author"
+--[[Translation missing --]]
+L["BID_EXISTING_ON_OWNED_AUCTION"] = "Someone has bid on this auction so cancelling will cost you your deposit and:"
 L["BID_ONLY_AVAILABLE"] = "nur bieten verfügbar"
 L["BID_PRICE"] = "Gebotspreis"
 L["BIDDER"] = "Bieter"
@@ -77,12 +79,9 @@ L["CONFIG_CHAT_LOG_TOOLTIP_TEXT"] = "Wenn diese Option deaktiviert ist, werden k
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT"] = "Gewinn statt Herstellungskosten anzeigen"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = "Die Herstellungskosten zeigen Gewinn an"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = "Wenn das Auktionshaus geöffnet ist, zeigt der Handwerksbildschirm die Kosten für das Herstellen eines Gegenstands. Aktiviere diese Option, um stattdessen den Gewinn anzuzeigen."
---[[Translation missing --]]
-L["CONFIG_CRAFTING_INFO_SHOW"] = "Show crafting costs in the crafting view"
---[[Translation missing --]]
-L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Crafting screen extra info"
---[[Translation missing --]]
-L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "The crafting screen will show the cost of crafting an item. Disable this option to not show the crafting costs."
+L["CONFIG_CRAFTING_INFO_SHOW"] = "Herstellungskosten in der Handwerkansicht anzeigen"
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Handwerksbildschirm zusätzliche Infos"
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "Der Handwerksbildschirm zeigt die Kosten für das Erstellen eines Gegenstands an. Deaktiviere diese Option, um die Handwerkskosten nicht anzuzeigen."
 L["CONFIG_DEBUG"] = "Zeige Debugmeldungen an."
 L["CONFIG_DEBUG_TOOLTIP_HEADER"] = "Auctionator Debug"
 L["CONFIG_DEBUG_TOOLTIP_TEXT"] = "Wird von den Entwicklern verwendet, um Debugmeldungen im Chat auszugeben."
@@ -92,6 +91,8 @@ L["CONFIG_ENCHANT_TOOLTIP"] = "Zeige Enzauberungsinfos an (nur WoD, Legion, BfA 
 L["CONFIG_FULL_SCAN_STEP_SIZE"] = "Schrittgröße für vollständigen Scan"
 L["CONFIG_LIFO_CATEGORY"] = "Verkaufen: Gegenstände"
 L["CONFIG_MAIL_TOOLTIP"] = "Zeige Infos im Briefkasten an."
+--[[Translation missing --]]
+L["CONFIG_MILL_TOOLTIP"] = "Show mill value for herbs from inscription in tooltips"
 L["CONFIG_NOT_LIFO_CATEGORY"] = "Verkaufen: Ausrüstung/Haustiere"
 L["CONFIG_PET_TOOLTIP"] = "Zeige Haustier Infos an."
 L["CONFIG_PROFILE_CATEGORY"] = "Profile"
@@ -182,8 +183,7 @@ L["COPY_NO_LIST_SELECTED"] = "Gegenstand kann nicht kopiert werden. Keine Einkau
 L["COPY_TEXT_HEADER"] = "Text kopieren"
 L["COPY_TO_LIST"] = "Gegenstand in die aktive Einkaufsliste kopieren"
 L["CRAFTED_LEVEL"] = "Hergestellte Stufe"
---[[Translation missing --]]
-L["CRAFTING_INFO"] = "Crafting Info"
+L["CRAFTING_INFO"] = "Herstellungsinfos"
 L["CREATE"] = "Neu"
 L["CREATE_LIST_DIALOG"] = "Name der neuen Einkaufsliste eingeben:"
 L["CURRENT"] = "Aktuell"
@@ -262,6 +262,12 @@ L["MAIL_TOOLTIP_TOOLTIP_HEADER"] = "Briefkasten Tooltip Infos"
 L["MAIL_TOOLTIP_TOOLTIP_TEXT"] = "Zeigt Auctionator-Informationen zu Gegenständen im Briefkasten an."
 L["MAX"] = "max."
 L["MAX_COLON_X"] = "max: %s"
+--[[Translation missing --]]
+L["MILL"] = "Mill"
+--[[Translation missing --]]
+L["MILL_TOOLTIP_TOOLTIP_HEADER"] = "Mill Tooltip Information"
+--[[Translation missing --]]
+L["MILL_TOOLTIP_TOOLTIP_TEXT"] = "Show inscription milling estimated value in tooltip on mouseover."
 L["MIN"] = "min."
 L["MONTH_1"] = "Januar"
 L["MONTH_10"] = "Oktober"

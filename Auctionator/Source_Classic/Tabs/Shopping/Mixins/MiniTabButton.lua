@@ -1,21 +1,20 @@
 local MIN_TAB_WIDTH = 70;
 local TAB_PADDING = 20;
 
-AuctionatorMiniTabButtonMixin = {}
+AuctionatorShoppingListsMiniTabButtonMixinMixin = {}
 
-function AuctionatorMiniTabButtonMixin:OnLoad()
+function AuctionatorShoppingListsMiniTabButtonMixinMixin:OnLoad()
   self.LeftDisabled:SetPoint("TOPLEFT")
   self.deselectedTextY = 6
   self.selectedTextY = 2
 end
 
-function AuctionatorMiniTabButtonMixin:OnShow()
+function AuctionatorShoppingListsMiniTabButtonMixinMixin:OnShow()
   local absoluteSize = nil
   PanelTemplates_TabResize(self, TAB_PADDING, absoluteSize, MIN_TAB_WIDTH)
 end
 
-function AuctionatorMiniTabButtonMixin:OnClick()
-  PanelTemplates_Tab_OnClick(self, self:GetParent())
+function AuctionatorShoppingListsMiniTabButtonMixinMixin:OnClick()
   self:GetParent():SetView(self:GetID())
 
   PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)

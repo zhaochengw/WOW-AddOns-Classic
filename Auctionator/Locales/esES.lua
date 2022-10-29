@@ -19,6 +19,8 @@ L["AUCTION_TOOLTIP_TOOLTIP_TEXT"] = "Mostrar información sobre herramientas de 
 L["AUCTIONATOR"] = "Auctionator"
 L["AUTHOR_HEADER"] = "Autor"
 --[[Translation missing --]]
+L["BID_EXISTING_ON_OWNED_AUCTION"] = "Someone has bid on this auction so cancelling will cost you your deposit and:"
+--[[Translation missing --]]
 L["BID_ONLY_AVAILABLE"] = "bid only available"
 L["BID_PRICE"] = "Precio de pujar"
 L["BIDDER"] = "Licitador"
@@ -96,6 +98,8 @@ L["CONFIG_ENCHANT_TOOLTIP"] = "Mostrar información sobre herramientas de encant
 L["CONFIG_FULL_SCAN_STEP_SIZE"] = "Tamaño de paso de escaneo completo"
 L["CONFIG_LIFO_CATEGORY"] = "Vendiendo"
 L["CONFIG_MAIL_TOOLTIP"] = "Mostrar información sobre herramientas del buzón"
+--[[Translation missing --]]
+L["CONFIG_MILL_TOOLTIP"] = "Show mill value for herbs from inscription in tooltips"
 L["CONFIG_NOT_LIFO_CATEGORY"] = "Equipo/Mascotas"
 L["CONFIG_PET_TOOLTIP"] = "Mostrar información sobre herramientas de mascotas"
 L["CONFIG_PROFILE_CATEGORY"] = "Perfil"
@@ -296,6 +300,12 @@ L["MAIL_TOOLTIP_TOOLTIP_TEXT"] = [=[Muestra información del subastador para los
 ]=]
 L["MAX"] = "Máximo"
 L["MAX_COLON_X"] = "Máx: %s"
+--[[Translation missing --]]
+L["MILL"] = "Mill"
+--[[Translation missing --]]
+L["MILL_TOOLTIP_TOOLTIP_HEADER"] = "Mill Tooltip Information"
+--[[Translation missing --]]
+L["MILL_TOOLTIP_TOOLTIP_TEXT"] = "Show inscription milling estimated value in tooltip on mouseover."
 L["MIN"] = "Minimo"
 L["MONTH_1"] = "Enero"
 L["MONTH_10"] = "Octubre"

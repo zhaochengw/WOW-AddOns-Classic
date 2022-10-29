@@ -17,6 +17,7 @@ L["AUCTION_TOOLTIP_TOOLTIP_HEADER"] = "Prix à la vente dans les infobulles"
 L["AUCTION_TOOLTIP_TOOLTIP_TEXT"] = "Inclus les prix à la vente dans les infobulles"
 L["AUCTIONATOR"] = "Auctionator"
 L["AUTHOR_HEADER"] = "Auteur"
+L["BID_EXISTING_ON_OWNED_AUCTION"] = "Quelqu'un a déjà fait une offre sur cette enchère. Si vous annulez, vous perdrez votre dépôt et votre argent :"
 L["BID_ONLY_AVAILABLE"] = "offre uniquement disponible"
 L["BID_PRICE"] = "Prix de l'enchère"
 L["BIDDER"] = "Encherisseur"
@@ -78,12 +79,9 @@ L["CONFIG_CRAFTING_COST_SHOW_PROFIT"] = "Profit au lieu du coût de production"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = "Profit au lieu du coût de production"
 L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = [=[Lorsque l'hôtel des ventes est ouvert, la fenêtre d'artisanat indique le coût de production des objets.
 Cette option affiche le profit réalisable à la place.]=]
---[[Translation missing --]]
-L["CONFIG_CRAFTING_INFO_SHOW"] = "Show crafting costs in the crafting view"
---[[Translation missing --]]
-L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Crafting screen extra info"
---[[Translation missing --]]
-L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "The crafting screen will show the cost of crafting an item. Disable this option to not show the crafting costs."
+L["CONFIG_CRAFTING_INFO_SHOW"] = "Afficher les coûts de fabrication dans la vue de fabrication"
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Informations supplémentaires sur l'écran de fabrication"
+L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "L'écran de fabrication affichera le coût de confection d'un objet. Désactivez cette option pour ne pas afficher les coûts de confection.."
 L["CONFIG_DEBUG"] = "Afficher le rendu du débogage"
 L["CONFIG_DEBUG_TOOLTIP_HEADER"] = "Auctionator Debug"
 L["CONFIG_DEBUG_TOOLTIP_TEXT"] = "Ceci est utilisé par les responsables de la maintenance pour envoyer des messages de débogage dans la fenêtrede discussion."
@@ -93,6 +91,7 @@ L["CONFIG_ENCHANT_TOOLTIP"] = "Afficher les prix du désenchantement (WoD, Legio
 L["CONFIG_FULL_SCAN_STEP_SIZE"] = "Taille de l'étape du scan complet"
 L["CONFIG_LIFO_CATEGORY"] = "Vente"
 L["CONFIG_MAIL_TOOLTIP"] = "Afficher les prix à la consultation du courrier"
+L["CONFIG_MILL_TOOLTIP"] = "Afficher la valeur du broyage pour les herbes de la calligraphie dans les infobulles"
 L["CONFIG_NOT_LIFO_CATEGORY"] = "Vente : Équipement / Mascottes"
 L["CONFIG_PET_TOOLTIP"] = "Afficher les prix des mascottes"
 L["CONFIG_PROFILE_CATEGORY"] = "Profils"
@@ -183,8 +182,7 @@ L["COPY_NO_LIST_SELECTED"] = "Impossible de copier l'objet. Aucune liste d'achat
 L["COPY_TEXT_HEADER"] = "Copier le texte"
 L["COPY_TO_LIST"] = "Copier l'objet vers la liste d'achats active"
 L["CRAFTED_LEVEL"] = "Niveau de profession"
---[[Translation missing --]]
-L["CRAFTING_INFO"] = "Crafting Info"
+L["CRAFTING_INFO"] = "Informations sur la fabrication"
 L["CREATE"] = "Créer"
 L["CREATE_LIST_DIALOG"] = "Entrer le nom de la nouvelle liste d'achats :"
 L["CURRENT"] = "Actuel"
@@ -263,6 +261,10 @@ L["MAIL_TOOLTIP_TOOLTIP_HEADER"] = "Prix dans les info-bulles du courrier"
 L["MAIL_TOOLTIP_TOOLTIP_TEXT"] = "Inclu les prix à la vente dans les info-bulles du courrier."
 L["MAX"] = "Max"
 L["MAX_COLON_X"] = "Max : %s"
+L["MILL"] = "Calligraphie"
+L["MILL_TOOLTIP_TOOLTIP_HEADER"] = " Informations dans l'info-bulle pour la calligraphie"
+L["MILL_TOOLTIP_TOOLTIP_TEXT"] = [=[Afficher la valeur estimée du broyage pour la calligraphie dans l'infobulle au passage de la souris.
+]=]
 L["MIN"] = "Min"
 L["MONTH_1"] = "Janvier"
 L["MONTH_10"] = "Octobre"

@@ -17,6 +17,8 @@ L["AUCTION_TOOLTIP_TOOLTIP_HEADER"] = "Informações de Leilão na Caixa de Text
 L["AUCTION_TOOLTIP_TOOLTIP_TEXT"] = "Mostrar informações de leilão na caixa de texto quando o mouse passar sobre o iten."
 L["AUCTIONATOR"] = "Auctionator"
 L["AUTHOR_HEADER"] = "Autor"
+--[[Translation missing --]]
+L["BID_EXISTING_ON_OWNED_AUCTION"] = "Someone has bid on this auction so cancelling will cost you your deposit and:"
 L["BID_ONLY_AVAILABLE"] = "lance apenas disponível"
 L["BID_PRICE"] = "Lance atual"
 L["BIDDER"] = "Licitante"
@@ -100,6 +102,8 @@ L["CONFIG_ENCHANT_TOOLTIP"] = "Mostrar caixa de texto para encantamentos (WoD, L
 L["CONFIG_FULL_SCAN_STEP_SIZE"] = "Tamanho do \"passo\" da varredura total"
 L["CONFIG_LIFO_CATEGORY"] = "Vendendo"
 L["CONFIG_MAIL_TOOLTIP"] = "Mostrar caixa de texto de correio"
+--[[Translation missing --]]
+L["CONFIG_MILL_TOOLTIP"] = "Show mill value for herbs from inscription in tooltips"
 L["CONFIG_NOT_LIFO_CATEGORY"] = "Venda: Equipamento/Bichos de estimação"
 L["CONFIG_PET_TOOLTIP"] = "Mostrar caixa de texto para bichos de estimação"
 L["CONFIG_PROFILE_CATEGORY"] = "Perfil"
@@ -299,6 +303,12 @@ L["MAIL_TOOLTIP_TOOLTIP_TEXT"] = "Mostra informações do Auctionator para itens
 L["MAX"] = "Máximo"
 L["MAX_COLON_X"] = [=[Máx.: %s
 ]=]
+--[[Translation missing --]]
+L["MILL"] = "Mill"
+--[[Translation missing --]]
+L["MILL_TOOLTIP_TOOLTIP_HEADER"] = "Mill Tooltip Information"
+--[[Translation missing --]]
+L["MILL_TOOLTIP_TOOLTIP_TEXT"] = "Show inscription milling estimated value in tooltip on mouseover."
 L["MIN"] = "Mínimo"
 L["MONTH_1"] = "Janeiro"
 L["MONTH_10"] = "Outubro"

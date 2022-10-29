@@ -1,6 +1,8 @@
 # Auctionator
 
-## [9.2.47](https://github.com/Auctionator/Auctionator/tree/9.2.47) (2022-10-16)
-[Full Changelog](https://github.com/Auctionator/Auctionator/compare/9.2.46...9.2.47) 
+## [10.0.2](https://github.com/Auctionator/Auctionator/tree/10.0.2) (2022-10-27)
+[Full Changelog](https://github.com/Auctionator/Auctionator/compare/10.0.1...10.0.2) 
 
-- Shopping: Fix autocomplete in search box for koKR  
+- Mainline: Revert simplify click hook as it broke the shortcut for a user  
+- [Fixes #1248] Mainline: CraftingInfo: Error when no recipe selected  
+- Classic: Work around Blizzard search API ignoring quality parameter  

@@ -19,6 +19,8 @@ L["AUCTION_TOOLTIP_TOOLTIP_HEADER"] = "경매 툴팁 정보"
 L["AUCTION_TOOLTIP_TOOLTIP_TEXT"] = "마우스를 위로  가져갔을 때 경매 정보를 표시하기"
 L["AUCTIONATOR"] = "옥셔네이터"
 L["AUTHOR_HEADER"] = "만든사람"
+--[[Translation missing --]]
+L["BID_EXISTING_ON_OWNED_AUCTION"] = "Someone has bid on this auction so cancelling will cost you your deposit and:"
 L["BID_ONLY_AVAILABLE"] = "입찰만 가능"
 L["BID_PRICE"] = "입찰가"
 L["BIDDER"] = "입찰자"
@@ -94,6 +96,8 @@ L["CONFIG_ENCHANT_TOOLTIP"] = "인챈트 툴팁을 표시합니다(드군, 군�
 L["CONFIG_FULL_SCAN_STEP_SIZE"] = "애드온 설치 시 튕기는 현상이 발생하면 숫자를 줄이세요"
 L["CONFIG_LIFO_CATEGORY"] = "판매: 일반"
 L["CONFIG_MAIL_TOOLTIP"] = "우체통 툴팁을 표시함"
+--[[Translation missing --]]
+L["CONFIG_MILL_TOOLTIP"] = "Show mill value for herbs from inscription in tooltips"
 L["CONFIG_NOT_LIFO_CATEGORY"] = "판매: 장비/펫"
 L["CONFIG_PET_TOOLTIP"] = "툴팁에 펫 가격 표시"
 L["CONFIG_PROFILE_CATEGORY"] = "프로필"
@@ -203,8 +207,7 @@ L["COPY_NO_LIST_SELECTED"] = "아이템을 복사할 수 없습니다. 선택한
 L["COPY_TEXT_HEADER"] = "글 복사하기"
 L["COPY_TO_LIST"] = "활성화된 구매 목록을 아이템 복사"
 L["CRAFTED_LEVEL"] = "제작 레벨"
---[[Translation missing --]]
-L["CRAFTING_INFO"] = "Crafting Info"
+L["CRAFTING_INFO"] = "제작 정보"
 L["CREATE"] = "목록 생성"
 L["CREATE_LIST_DIALOG"] = "새로운 목록을 생성합니다."
 L["CURRENT"] = "현재"
@@ -251,10 +254,8 @@ L["FINISHED_PROCESSING"] = "불러오기 완료"
 L["FULL_SCAN_ALTERNATE_FAILED"] = "일반 검색 실패"
 L["FULL_SCAN_BUTTON"] = "전체 검색"
 L["FULL_SCAN_FAILED"] = "전체 검색 실패"
---[[Translation missing --]]
-L["FULL_SCAN_FAILED_REPLICATE"] = "Full scan (replicate mode) failed to complete."
---[[Translation missing --]]
-L["FULL_SCAN_FAILED_SUMMARY"] = "Full scan (summary mode) failed to complete."
+L["FULL_SCAN_FAILED_REPLICATE"] = "전체 검사(복제 모드)를 완료하지 못했습니다."
+L["FULL_SCAN_FAILED_SUMMARY"] = "전체 검사(요약 모드)를 완료하지 못했습니다."
 L["FULL_SCAN_IN_PROGRESS"] = "전체 검색 진행 중."
 L["GEAR_VENDOR_PRICE_MULTIPLIER"] = "상점에 판매하는 가격의 배수로 장비를 판매"
 L["HIDE"] = "숨기기"
@@ -285,6 +286,12 @@ L["MAIL_TOOLTIP_TOOLTIP_HEADER"] = "우체통 툴팁"
 L["MAIL_TOOLTIP_TOOLTIP_TEXT"] = "우체통에 있는 아이템에 대한 경매 정보를 마우스를 올려 확인 할 수 있습니다."
 L["MAX"] = "최대"
 L["MAX_COLON_X"] = "최대: %s"
+--[[Translation missing --]]
+L["MILL"] = "Mill"
+--[[Translation missing --]]
+L["MILL_TOOLTIP_TOOLTIP_HEADER"] = "Mill Tooltip Information"
+--[[Translation missing --]]
+L["MILL_TOOLTIP_TOOLTIP_TEXT"] = "Show inscription milling estimated value in tooltip on mouseover."
 L["MIN"] = "최소"
 L["MONTH_1"] = "1월"
 L["MONTH_10"] = "10월"
@@ -560,7 +567,7 @@ L["TOO_BIG_PERCENTAGE"] = "%%는 100이거나 그 이하여야 합니다. (입�
 L["TOO_MANY_SEARCH_RESULTS"] = "검색 결과가 너무 많습니다. 제한된 결과만 표시됩니다."
 L["TOO_SMALL_PERCENTAGE"] = "%%는 0이거나 그 이상이여야 합니다. (입력값:%s)"
 L["TOTAL_ITEMS_COLORED"] = "전체 |cFFAAAAFF %s 개s|r"
-L["TOTAL_ON_SALE"] = "총 판매량: %s"
+L["TOTAL_ON_SALE"] = "총 판매: %s"
 --[[Translation missing --]]
 L["TOTAL_PENDING"] = "(%s pending)"
 L["TOTAL_PRICE"] = "전체 판매가"

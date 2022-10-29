@@ -17,6 +17,8 @@ L["AUCTION_TOOLTIP_TOOLTIP_HEADER"] = "Tooltip Informazioni Aste"
 L["AUCTION_TOOLTIP_TOOLTIP_TEXT"] = "Mostra informazioni asta nel tooltip al passaggio del mouse."
 L["AUCTIONATOR"] = "Auctionator"
 L["AUTHOR_HEADER"] = "Autore"
+--[[Translation missing --]]
+L["BID_EXISTING_ON_OWNED_AUCTION"] = "Someone has bid on this auction so cancelling will cost you your deposit and:"
 L["BID_ONLY_AVAILABLE"] = "disponibile solo l'offerta"
 L["BID_PRICE"] = "Prezzo Offerta"
 L["BIDDER"] = "Offerente"
@@ -93,6 +95,8 @@ L["CONFIG_ENCHANT_TOOLTIP"] = "Mostra tooltip per incantamenti (solo per Legion,
 L["CONFIG_FULL_SCAN_STEP_SIZE"] = "Dimensione voci scansione completa"
 L["CONFIG_LIFO_CATEGORY"] = "Vendita"
 L["CONFIG_MAIL_TOOLTIP"] = "Visualizza il tooltips della casella postale."
+--[[Translation missing --]]
+L["CONFIG_MILL_TOOLTIP"] = "Show mill value for herbs from inscription in tooltips"
 L["CONFIG_NOT_LIFO_CATEGORY"] = "Equipaggiamento/Mascotte"
 L["CONFIG_PET_TOOLTIP"] = "Mostra tooltip Mascotte"
 L["CONFIG_PROFILE_CATEGORY"] = "Profilo"
@@ -262,6 +266,12 @@ L["MAIL_TOOLTIP_TOOLTIP_HEADER"] = "Tooltips Cassetta Postale"
 L["MAIL_TOOLTIP_TOOLTIP_TEXT"] = "Visualizza le informazioni di Auctionator per gli oggetti nella casetta postale al passaggio del mouse."
 L["MAX"] = "Max"
 L["MAX_COLON_X"] = "Max: %s"
+--[[Translation missing --]]
+L["MILL"] = "Mill"
+--[[Translation missing --]]
+L["MILL_TOOLTIP_TOOLTIP_HEADER"] = "Mill Tooltip Information"
+--[[Translation missing --]]
+L["MILL_TOOLTIP_TOOLTIP_TEXT"] = "Show inscription milling estimated value in tooltip on mouseover."
 L["MIN"] = "Min"
 L["MONTH_1"] = "Gennaio"
 L["MONTH_10"] = "Ottobre"
