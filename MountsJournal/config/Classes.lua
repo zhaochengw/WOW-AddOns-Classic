@@ -257,6 +257,11 @@ do
 			},
 			{
 				key = "useMacroAlways",
+				childs = {
+					{
+						key = "useMacroOnlyCanFly",
+					},
+				}
 			},
 		},
 	}

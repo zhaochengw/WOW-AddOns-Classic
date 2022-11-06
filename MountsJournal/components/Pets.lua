@@ -1,4 +1,4 @@
-local GetNumCompanions, GetCompanionInfo, CallCompanion, random = GetNumCompanions, GetCompanionInfo, CallCompanion, random
+local GetNumCompanions, GetCompanionInfo, CallCompanion, random, InCombatLockdown, IsFlying, IsMounted, UnitHasVehicleUI, UnitChannelInfo, IsStealthed, UnitIsGhost, GetSpellCooldown = GetNumCompanions, GetCompanionInfo, CallCompanion, random, InCombatLockdown, IsFlying, IsMounted, UnitHasVehicleUI, UnitChannelInfo, IsStealthed, UnitIsGhost, GetSpellCooldown
 local mounts, util = MountsJournal, MountsJournalUtil
 local pets = CreateFrame("FRAME")
 mounts.pets = pets

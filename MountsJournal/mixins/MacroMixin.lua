@@ -211,7 +211,7 @@ function macroFrame:PLAYER_LOGIN()
 			and not self.sFlags.isSubmerged
 			and not self.sFlags.isMounted
 			and not self.sFlags.inVehicle
-			and (self.classConfig.useMacroAlways
+			and (self.classConfig.useMacroAlways and not self.classConfig.useMacroOnlyCanFly
 			     or not self.magicBroom and (GetUnitSpeed("player") > 0
 			                                 or IsFalling()))
 			then
@@ -394,7 +394,8 @@ function macroFrame:getMacro()
 			macro = "/dismount"
 		end
 	-- CLASSMACRO
-	elseif self.macro and (self.class == "DRUID" and self.classConfig.useMacroAlways
+	elseif self.macro and (self.class == "DRUID" and self.classConfig.useMacroAlways and (not self.classConfig.useMacroOnlyCanFly
+	                                                                                      or self.sFlags.canUseFlying)
 	                       or not self.magicBroom and (self.sFlags.isIndoors
 	                       	                           or GetUnitSpeed("player") > 0
 	                       	                           or IsFalling()))

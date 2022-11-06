@@ -103,6 +103,7 @@ L["DRUID_USELASTDRUIDFORM"] = "Вернуть последнюю форму пр
 L["DRUID_USETRAVELIFCANTFLY"] = "Использовать %s вместо макроса если персонаж не может летать"
 -- L["DRUID_USEDRUIDFORMSPECIALIZATION"] = "Return a specialization form"
 L["DRUID_USEMACROALWAYS"] = "Использовать этот макрос вместо средств передвижения"
+L["DRUID_USEMACROONLYCANFLY"] = "Только если персонаж может летать"
 L["Summonable Battle Pet"] = "Призываемый питомец"
 L["Summon Random Battle Pet"] = "Призвать случайного питомца"
 L["No Battle Pet"] = "Нет питомца"
