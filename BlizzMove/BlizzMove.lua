@@ -401,8 +401,8 @@ do
 			local text = sharedText .. 'Copy the text from this popup window, and report it to the addon author.\n\nBad anchor connections for "' .. frameName .. '":\n';
 			for _, info in pairs(result) do
 				text = text .. string__format(
-					'\n\n"%s" is outside anchor family, but referenced by "%s" (created in "%s")',
-					info.targetName, info.name, info.source
+					'\n\n"%s" is outside anchor family, but referenced by "%s" (created in "%s", and "%s" respectively)',
+					info.targetName, info.name, info.targetSource, info.source
 				);
 			end
 			DebugModule:GetMainFrame(text):Show();
@@ -531,10 +531,7 @@ do
 			newScale = parentScale;
 		end
 
-		if (BlizzMove.DB.saveScaleStrategy == 'permanent') then
-			BlizzMove.DB.scales[frameData.storage.frameName] = newScale;
-		end
-
+		BlizzMove.DB.scales[frameData.storage.frameName] = newScale;
 		frame:SetScale(newScale);
 		BlizzMove:DebugPrint("SetFrameScale:", frameData.storage.frameName, string__format("%.2f %.2f %.2f", frameScale, frame:GetScale(), GetFrameScale(frame)));
 
@@ -804,6 +801,29 @@ do
 		local clampHeight = (frame:GetHeight() - clampDistance) or 0;
 
 		frame:SetClampRectInsets(clampWidth, -clampWidth, -clampHeight, clampHeight);
+	end
+end
+
+------------------------------------------------------------------------------------------------------
+--- Secure Global Hook Handlers
+------------------------------------------------------------------------------------------------------
+local OnUpdateScaleForFit;
+do
+	function OnUpdateScaleForFit(frame)
+		if not BlizzMove.FrameData[frame] or not BlizzMove.FrameData[frame].storage or BlizzMove.FrameData[frame].storage.disabled then return; end
+
+		BlizzMove:DebugPrint("OnUpdateScaleForFit:", BlizzMove.FrameData[frame].storage.frameName);
+
+		if InCombatLockdown() and frame:IsProtected() then
+			BlizzMove:AddToCombatLockdownQueue(OnUpdateScaleForFit, frame);
+			BlizzMove:DebugPrint('Adding to combatLockdownQueue: OnUpdateScaleForFit - ', BlizzMove.FrameData[frame].storage.frameName);
+
+			return;
+		end
+
+		if(BlizzMove.DB.scales[BlizzMove.FrameData[frame].storage.frameName]) then
+			SetFrameScale(frame, BlizzMove.DB.scales[BlizzMove.FrameData[frame].storage.frameName]);
+		end
 	end
 end
 
@@ -1091,6 +1111,7 @@ do
 			self:RegisterChatCommand('bm'..command, function(message) self:OnSlashCommand(command..' '..message); end);
 		end
 		self:ProcessFrames(self.name);
+		self:SecureHook('UpdateScaleForFit', OnUpdateScaleForFit);
 	end
 
 	function BlizzMove:OnSlashCommand(message)
@@ -1122,8 +1143,8 @@ do
 					local text = 'Bad anchor connections for "' .. arg2 .. '":\n';
 					for _, info in pairs(result) do
 						text = text .. string__format(
-							'\n\n"%s" is outside anchor family, but referenced by "%s" (created in "%s")',
-							info.targetName, info.name, info.source
+							'\n\n"%s" is outside anchor family, but referenced by "%s" (created in "%s", and "%s" respectively)',
+							info.targetName, info.name, info.targetSource, info.source
 						);
 					end
 					DebugModule:GetMainFrame(text):Show();
@@ -1210,12 +1231,16 @@ do
 
 			if self.gameVersion >= 100000 then
 				-- fix anchor family connection issues with the combined bag
-				self:RawHook("UpdateContainerFrameAnchors", function()
-					for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
-						frame:ClearAllPoints();
+				local skipHook = false
+				self:SecureHook(ContainerFrameSettingsManager, "GetBagsShown", function()
+					if skipHook then return end
+					skipHook = true
+					local bags = ContainerFrameSettingsManager:GetBagsShown()
+					for _, bag in pairs(bags or {}) do
+						bag:ClearAllPoints()
 					end
-					self.hooks.UpdateContainerFrameAnchors();
-				end, true);
+					skipHook = false
+				end);
 			end
 		end
 	end
