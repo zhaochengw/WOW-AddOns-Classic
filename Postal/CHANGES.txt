@@ -1,16 +1,20 @@
 ------------------------------------------------------------------------
-r529 | Zimzarina | 2022-09-09 17:24:21 +0000 (Fri, 09 Sep 2022) | 1 line
+r542 | Zimzarina | 2022-11-04 17:12:51 +0000 (Fri, 04 Nov 2022) | 1 line
 Changed paths:
-   M /trunk/Modules/QuickAttach.lua
-   M /trunk/Postal.lua
+   M /trunk/Modules/Rake.lua
 
-Updated to support WotLK.
+Fixed issue #306 where an incorrect summary of gold received in mail occurs when you close the mailbox by walking away.  Also, moved Rake.lua to fully use the new event system in WoW 10.0 release.
 ------------------------------------------------------------------------
-r528 | Zimzarina | 2022-09-09 05:17:22 +0000 (Fri, 09 Sep 2022) | 1 line
+r541 | Zimzarina | 2022-11-03 16:20:40 +0000 (Thu, 03 Nov 2022) | 1 line
 Changed paths:
-   M /trunk/Postal.toc
-   A /trunk/Postal_Wrath.toc
+   M /trunk/Modules/Rake.lua
 
-TOC Update for Retail.  Added new TOC file for Wrath Of The Lich King.
+
+------------------------------------------------------------------------
+r540 | Zimzarina | 2022-11-02 18:03:26 +0000 (Wed, 02 Nov 2022) | 1 line
+Changed paths:
+   M /trunk/Modules/Rake.lua
+
+Improved Rake close event handling.
 ------------------------------------------------------------------------
 
