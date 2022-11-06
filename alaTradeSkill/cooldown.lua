@@ -1,50 +1,49 @@
 --[[--
 	by ALA @ 163UI
 --]]--
-
-local __addon__, __namespace__ = ...;
-local __db__ = __namespace__.__db__;
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
 -->		upvalue
 	local rawget = rawget;
 	local next = next;
 	local tremove, wipe = table.remove, table.wipe;
 	local GetServerTime, GetTime = GetServerTime, GetTime;
+	local CreateFrame = CreateFrame;
 
 	local _G = _G;
+
+-->
+	local DataAgent = DT.DataAgent;
+
+-->
+MT.BuildEnv("cooldown");
 -->
 
-
-local GetSpellModifiedCooldown = __ala_meta__.GetSpellModifiedCooldown;
-
-
-local VAR = nil;
-
+local GetSpellModifiedCooldown = MT.GetTradeSkillSpellModifiedCooldown;
 
 local F = CreateFrame('FRAME');
 F:SetScript("OnEvent", function(self, event, ...)
 	return self[event](...);
 end);
 
-
--->		****************
-__namespace__:BuildEnv("cooldown");
--->		****
-
-
-local T_TradeSkill_CooldownList = __db__.T_TradeSkill_CooldownList;
+local T_TradeSkill_CooldownList = DataAgent.T_TradeSkill_CooldownList;
 
 for pid, list in next, T_TradeSkill_CooldownList do
 	for index = #list, 1, -1 do
 		local data = list[index];
-		data[2] = data[2] or __db__.get_learn_rank_by_sid(data[1]);
+		data[2] = data[2] or DataAgent.get_learn_rank_by_sid(data[1]);
 		if data[2] == nil then
 			tremove(list, index);
 		end
 	end
 end
 
-local function F_CheckCooldown(pid, var)
+function MT.CheckCooldown(pid, var)
 	local list = T_TradeSkill_CooldownList[pid];
 	if list ~= nil then
 		local cool = var[3];
@@ -72,16 +71,14 @@ local function F_CheckCooldown(pid, var)
 end
 
 function F.BAG_UPDATE_COOLDOWN(...)
-	for pid = __db__.DBMINPID, __db__.DBMAXPID do
-		local var = rawget(VAR, pid);
-		if var and __db__.is_pid(pid) then
-			F_CheckCooldown(pid, var);
+	for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
+		local var = rawget(VT.VAR, pid);
+		if var and DataAgent.is_pid(pid) then
+			MT.CheckCooldown(pid, var);
 		end
 	end
 end
 
-__namespace__.F_CheckCooldown = F_CheckCooldown;
-function __namespace__.init_cooldown()
-	VAR = __namespace__.VAR;
+MT.RegisterOnInit('cooldown', function(LoggedIn)
 	F:RegisterEvent("BAG_UPDATE_COOLDOWN");
-end
+end);

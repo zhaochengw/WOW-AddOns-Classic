@@ -1,25 +1,28 @@
 --[[--
 	by ALA @ 163UI
 --]]--
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
-local __addon__, __namespace__ = ...;
 
 -->		upvalue
-	local strsplit = string.split;
+	local strsplit, format = string.split, string.format;
 	local tonumber = tonumber;
-	local GetRealmName = GetRealmName;
-	local UnitFactionGroup = UnitFactionGroup;
 -->
 
 
 -->		****
-__namespace__:BuildEnv("aux-addon");
+MT.BuildEnv("aux-addon");
 -->		****
 
 
 local mod = {  };
 
-local key = format('%s|%s', GetRealmName(), UnitFactionGroup('player'));
+local key = format('%s|%s', CT.SELFREALM, CT.SELFFACTION);
 local history = nil;
 function mod.F_QueryPriceByName(name, num)
 	return nil;
@@ -61,6 +64,6 @@ function mod.F_QueryPriceByID(id, num)
 end
 
 
-__namespace__.F_AuctionModCallback("aux-addon", function()
-	__namespace__.F_AddAuctionMod("aux-addon", mod);
+MT.RegsiterAuctionModOnLoad("aux-addon", function()
+	MT.AddAuctionMod("aux-addon", mod);
 end);

@@ -6,20 +6,21 @@ if WOW_PROJECT_ID ~= WOW_PROJECT_WRATH_CLASSIC then
 	return;
 end
 
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
-local __addon__, __namespace__ = ...;
-__namespace__.__db__ = {  };
-local __db__ = __namespace__.__db__;
+local DataAgent = DT.DataAgent;
 
-__db__.__DataVersion = 220904;
+DataAgent.__DataVersion = 220904;
 
-__db__.FACTIONGROUP = UnitFactionGroup('player');
-__db__.ISHORDE = __db__.FACTIONGROUP == "HORDE";
-__db__.CURPHASE = 1;
-__db__.MAXPHASE = 4;
-__db__.MAXRANK = 450;
-__db__.DBMINPID = 1;
-__db__.DBMAXPID = 16;
+DataAgent.CURPHASE = 1;
+DataAgent.MAXPHASE = 4;
+DataAgent.MAXRANK = 450;
+DataAgent.DBMINPID = 1;
+DataAgent.DBMAXPID = 16;
 
 --[==[--
 	by ALA @ 163UI
@@ -110,6 +111,8 @@ __db__.DBMAXPID = 16;
 					72953[52023]
 				69412深渊碎裂: 多产出物成本无法计算，设置为无产出物
 		Hide	67790
+	##	2022-11-01
+		Mod		56473[Spec]:20219侏儒工程
 --]==]--
 
 local bitclass = {
@@ -124,7 +127,7 @@ local bitclass = {
 	["WARLOCK"] = 256,
 	["DRUID"] = 1024,
 };
-__db__.UCLASSBIT = bitclass[UnitClassBase('player')];
+DataAgent.USELFCLASSBIT = bitclass[CT.SELFCLASS];
 
 --[==[
 	--	P1	NAXX Eternity Obsidian
@@ -144,6 +147,7 @@ __db__.UCLASSBIT = bitclass[UnitClassBase('player')];
 	龙鳞制皮	10656	= { 35575, 35576, 35577, 35580, 35582, 35584, 36076, 36079, }	--	10619, 10650, 24654, 24655, 
 	元素制皮	10658	= { 35589, 35590, 35591, 36074, 36077, }	--	10630, 10632, 
 	侏儒工程学	20219	= { 12759, 12895, 12897, 12899, 12902, 12903, 12905, 12906, 12907, 23096, 23129, 23489, 30568, 30569, 30570, 30574, 30575, 36955, }
+					WLK = { 56473, }
 	地精工程学	20222	= { 8895, 12715, 12716, 12717, 12718, 12754, 12755, 12758, 12760, 12908, 13240, 23078, 23486, 30558, 30560, 30563, 30565, 30566, 36954, }
 					WLK	= { 56514, }
 	魔焰裁缝	26797	= { 26752, 26753, 26754, }
@@ -156,7 +160,7 @@ __db__.UCLASSBIT = bitclass[UnitClassBase('player')];
 					WLK	= { 54220, 56519, 60354, 60355, 60356, 60357, 60365, 60366, 62410, }
 --]==]
 
-__db__.T_TradeSkill_ID = {
+DataAgent.T_TradeSkill_ID = {
 	[1] = 3273,		--	FirstAid
 	[2] = 2018,		--	Blacksmithing
 	[3] = 2108,		--	Leatherworking
@@ -174,7 +178,7 @@ __db__.T_TradeSkill_ID = {
 	[15] = 25229,	--	Jewelcrafting	--	2.0
 	[16] = 45357,	--	Inscription		--	3.0
 };
-__db__.T_TradeSkill_Texture = {
+DataAgent.T_TradeSkill_Texture = {
 	[1] = "Interface\\Icons\\spell_holy_sealofsacrifice",
 	[2] = "Interface\\Icons\\trade_blacksmithing",
 	[3] = "Interface\\Icons\\trade_leatherworking",
@@ -192,7 +196,7 @@ __db__.T_TradeSkill_Texture = {
 	[15] = 134071,
 	[16] = 237171,
 };
-__db__.T_TradeSkill_CheckID = {		--	[pid] = p_check_sid
+DataAgent.T_TradeSkill_CheckID = {		--	[pid] = p_check_sid
 	[1] = 3273,		--	FirstAid
 	[2] = 2018,		--	Blacksmithing
 	[3] = 2108,		--	Leatherworking
@@ -210,7 +214,7 @@ __db__.T_TradeSkill_CheckID = {		--	[pid] = p_check_sid
 	[15] = 25229,	--	Jewelcrafting	--	2.0
 	[16] = 45357,	--	Inscription		--	3.0
 };
-__db__.T_TradeSkill_HasUI = {		--	[pid] = bool
+DataAgent.T_TradeSkill_HasUI = {		--	[pid] = bool
 	[1] = true,		--	FirstAid
 	[2] = true,		--	Blacksmithing
 	[3] = true,		--	Leatherworking
@@ -2525,7 +2529,7 @@ local T_Recipe_Data = {
 	[56470] = { nil, 1, 9, 56470, 41146, 425, 430, 432, 435, 1, 1, { 39683, 36920, 36921, }, { 1, 1, 1, }, true, 150000, },
 	[56472] = { nil, 1, 9, 56472, 40768, 425, 430, 432, 435, 1, 1, { 36913, 35623, }, { 8, 8, }, true, 150000, },
 	[56469] = { nil, 1, 9, 56469, 41121, 425, 430, 435, 440, 1, 1, { 41163, 36913, 35622, 35623, }, { 2, 8, 2, 2, }, true, 150000, },
-	[56473] = { nil, 1, 9, 56473, 40895, 425, 430, 435, 440, 1, 1, { 41163, 34052, 39681, }, { 6, 2, 2, }, true, 150000, },
+	[56473] = { nil, 1, 9, 56473, 40895, 425, 430, 435, 440, 1, 1, { 41163, 34052, 39681, }, { 6, 2, 2, }, true, 150000, nil, nil, nil, nil, 20219, },
 	[55252] = { nil, 1, 9, 55252, 40769, 427, 427, 427, 427, 5, 5, { 36913, }, { 10, }, },
 	[56478] = { nil, 1, 9, 56478, 41167, 430, 435, 445, 455, 1, 1, { 36913, 36927, }, { 10, 2, }, true, 200000, },
 	[67790] = { nil, 1, 9, 67790, 48933, 435, 435, 440, 445, 1, 1, { 39683, 35623, 36860, 35622, 39681, 42546, }, { 2, 2, 2, 2, 10, 5, }, },
@@ -3929,7 +3933,7 @@ local T_Recipe_Data = {
 	[56045] = { nil, 1, -1,  56045,  37700,   0,   0,   0,   0,  10,  10, { 35623, }, { 1, }, },	--	永恒空气
 	[49234] = { nil, 1, -1,  49234,  35623,   0,   0,   0,   0,   1,   1, { 37700, }, { 10, }, },	--	永恒空气
 };
-__db__.T_Recipe_Data = T_Recipe_Data;
+DataAgent.T_Recipe_Data = T_Recipe_Data;
 -- local T_TradeSkill_RecipeList = {  };	--	[pid] = { sid }
 -- for sid, info in next, T_Recipe_Data do
 -- 	local pid = info[3];
@@ -4453,12 +4457,12 @@ local T_TradeSkill_RecipeList = {	--	[pid] = { sid }
 		63190,
 		63191,
 		63192,
-		__db__.ISHORDE and 67130 or 67091,
-		__db__.ISHORDE and 67131 or 67092,
-		__db__.ISHORDE and 67132 or 67093,
-		__db__.ISHORDE and 67133 or 67094,
-		__db__.ISHORDE and 67134 or 67095,
-		__db__.ISHORDE and 67135 or 67096,
+		CT.SELFISHORDE and 67130 or 67091,
+		CT.SELFISHORDE and 67131 or 67092,
+		CT.SELFISHORDE and 67132 or 67093,
+		CT.SELFISHORDE and 67133 or 67094,
+		CT.SELFISHORDE and 67134 or 67095,
+		CT.SELFISHORDE and 67135 or 67096,
 		70562,
 		70563,
 		70565,
@@ -4987,14 +4991,14 @@ local T_TradeSkill_RecipeList = {	--	[pid] = { sid }
 		63199,
 		63200,
 		63201,
-		__db__.ISHORDE and 67136 or 67080,
-		__db__.ISHORDE and 67137 or 67081,
-		__db__.ISHORDE and 67138 or 67082,
-		__db__.ISHORDE and 67143 or 67083,
-		__db__.ISHORDE and 67140 or 67084,
-		__db__.ISHORDE and 67141 or 67085,
-		__db__.ISHORDE and 67142 or 67086,
-		__db__.ISHORDE and 67139 or 67087,
+		CT.SELFISHORDE and 67136 or 67080,
+		CT.SELFISHORDE and 67137 or 67081,
+		CT.SELFISHORDE and 67138 or 67082,
+		CT.SELFISHORDE and 67143 or 67083,
+		CT.SELFISHORDE and 67140 or 67084,
+		CT.SELFISHORDE and 67141 or 67085,
+		CT.SELFISHORDE and 67142 or 67086,
+		CT.SELFISHORDE and 67139 or 67087,
 		70554,
 		70555,
 		70556,
@@ -5882,10 +5886,10 @@ local T_TradeSkill_RecipeList = {	--	[pid] = { sid }
 		63204,
 		63205,
 		63206,
-		__db__.ISHORDE and 67144 or 67064,
-		__db__.ISHORDE and 67145 or 67065,
-		__db__.ISHORDE and 67146 or 67066,
-		__db__.ISHORDE and 67147 or 67079,
+		CT.SELFISHORDE and 67144 or 67064,
+		CT.SELFISHORDE and 67145 or 67065,
+		CT.SELFISHORDE and 67146 or 67066,
+		CT.SELFISHORDE and 67147 or 67079,
 		70550,
 		70551,
 		70552,
@@ -6195,7 +6199,7 @@ local T_TradeSkill_RecipeList = {	--	[pid] = { sid }
 		72953,
 		56479,
 		60874,
-		__db__.ISHORDE and 60866 or 60867,
+		CT.SELFISHORDE and 60866 or 60867,
 		68067,
 	},
 	[10] = {
@@ -7605,7 +7609,7 @@ local T_TradeSkill_RecipeList = {	--	[pid] = { sid }
 		49234,
 	},
 };
-__db__.T_TradeSkill_RecipeList = T_TradeSkill_RecipeList;
+DataAgent.T_TradeSkill_RecipeList = T_TradeSkill_RecipeList;
 
 local T_TradeSkill_Spec2Pid = {  };
 for sid, info in next, T_Recipe_Data do
@@ -7614,10 +7618,10 @@ for sid, info in next, T_Recipe_Data do
 		T_TradeSkill_Spec2Pid[spec] = info[index_pid];
 	end
 end
-__db__.T_TradeSkill_Spec2Pid = T_TradeSkill_Spec2Pid;
+DataAgent.T_TradeSkill_Spec2Pid = T_TradeSkill_Spec2Pid;
 
 --	[pid] = { { sid, [overrided rank], } }
-__db__.T_TradeSkill_CooldownList = {
+DataAgent.T_TradeSkill_CooldownList = {
 	[3] = {
 		-- { 19566, 250, },	--	筛盐器
 	},
@@ -7650,7 +7654,7 @@ __db__.T_TradeSkill_CooldownList = {
 	},
 };
 
-__db__.T_PriceSpellBlackList = {
+DataAgent.T_PriceSpellBlackList = {
 --	炼金
 	[3577] = 1,		--	点铁成金	3577
 	[11480] = 1,	--	转化秘银	6037
@@ -7711,7 +7715,7 @@ __db__.T_PriceSpellBlackList = {
 	[42613] = 1,	--	转化连结水晶
 	[28021] = 1,	--	奥法之尘	--	奥术水晶>>奥法之尘
 };
-__db__.T_PriceItemBlackList = {
+DataAgent.T_PriceItemBlackList = {
 --	炼金
 	--	元素精华
 	[7078] = 1,
@@ -7759,7 +7763,7 @@ __db__.T_PriceItemBlackList = {
 	[22448] = 1,	--	小块棱光碎片
 };
 
-__db__.T_MaterialVendorPrice = {
+DataAgent.T_MaterialVendorPrice = {
 	--	BLACKSMITHING	ENGINEERING
 	[5956] = 18,		-- 铁匠之锤
 	[2901] = 81,		-- 矿工锄
@@ -7903,7 +7907,7 @@ __db__.T_MaterialVendorPrice = {
 	37	Mechagnome				Mechagnome				Alliance	Alliance,
 ]==]
 
-__db__.T_RaceBonus = {
+DataAgent.T_RaceBonus = {
 	--	Gnome
 	[7] = {
 		[9] = 15,

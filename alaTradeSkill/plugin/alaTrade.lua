@@ -1,22 +1,26 @@
 --[[--
 	by ALA @ 163UI
 --]]--
-
-local __addon__, __namespace__ = ...;
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
 
 -->		****
-__namespace__:BuildEnv("alaTrade");
+MT.BuildEnv("alaTrade");
 -->		****
 
 
-__namespace__.F_AuctionModCallback("alaTrade", function()
-	local merc = __ala_meta__.merc;
+MT.RegsiterAuctionModOnLoad("alaTrade", function()
+	local merc = VT.__super.merc;
 	if merc ~= nil then
 		local mod = {  };
 		mod.F_QueryPriceByName = merc.F_QueryPriceByName or merc.query_ah_price_by_name;
 		mod.F_QueryPriceByID = merc.F_QueryPriceByID or merc.query_ah_price_by_id;
 		mod.F_OnDBUpdate = merc.F_OnDBUpdate or merc.add_cache_callback;
-		__namespace__.F_AddAuctionMod("alaTrade", mod);
+		MT.AddAuctionMod("alaTrade", mod);
 	end
 end);

@@ -1,10 +1,12 @@
 --[[--
 	by ALA @ 163UI
 --]]--
-
-local __addon__, __namespace__ = ...;
-local __db__ = __namespace__.__db__;
-local L = __namespace__.L;
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
 -->		upvalue
 	local next = next;
@@ -19,33 +21,22 @@ local L = __namespace__.L;
 	local GetSpellInfo = GetSpellInfo;
 	local GetItemInfo = GetItemInfo;
 	local IsSpellKnown = IsSpellKnown;
-	local C_Timer_After = C_Timer.After;
 	local IsInRaid = IsInRaid;
 	local IsInGroup = IsInGroup;
 
-
 	local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS;
 
+	local CreateFrame = CreateFrame;
 	local _G = _G;
-	--[[
-		local UnitRace = UnitRace;
-		local CreateFrame = CreateFrame;
-	]]
+
 -->
+	local DataAgent = DT.DataAgent;
+	local l10n = CT.l10n;
+	local USELFCLASSBIT = DataAgent.USELFCLASSBIT;
 
-
-local CURPHASE = __db__.CURPHASE;
-local UCLASSBIT = __db__.UCLASSBIT;
-
-local BIG_NUMBER = 4294967295;
-local PLAYER_RACE, PLAYER_RACE_FILE, PLAYER_RACE_ID = UnitRace('player');
-local LOCALE = GetLocale();
-local PATCHVERSION, BUILDNUMBER, BUILDDATE, TOCVERSION = GetBuildInfo();
-
-local _noop_, _log_, _error_ = __namespace__._noop_, __namespace__._log_, __namespace__._error_;
-
-
----->	index
+-->
+MT.BuildEnv("db");
+-->		predef
 	local index_validated = 1;
 	local index_phase = 2;
 	local index_pid = 3;
@@ -87,30 +78,23 @@ local _noop_, _log_, _error_ = __namespace__._noop_, __namespace__._log_, __name
 	local index_i_name_lower = 10;
 	local index_i_link_lower = 11;
 	local index_i_string = 12;
-----
-
+-->		db
 local F = CreateFrame('FRAME');
 F:SetScript("OnEvent", function(self, event, ...)
 	return self[event](...);
 end);
-function __db__:FireEvent(event, ...)
+function DataAgent:FireEvent(event, ...)
 	local func = F[event];
 	if func ~= nil then
 		return func(...);
 	end
 end
 
-
--->		****************
-__namespace__:BuildEnv("db");
--->		****************
-
-
 -->		Define
 --	Constant
-local T_CharRaceBonus = __db__.T_RaceBonus[PLAYER_RACE_ID] or {  };
+local T_CharRaceBonus = DataAgent.T_RaceBonus[CT.SELFRACEID] or {  };
 --	Recipe Data
-local T_Recipe_Data = __db__.T_Recipe_Data;
+local T_Recipe_Data = DataAgent.T_Recipe_Data;
 --[[	T_Recipe_Data[sid] = {
 			1_validated, 2_phase, 3_pid, 4_sid, 5_cid,
 			6_learn, 7_yellow, 8_green, 9_grey,
@@ -119,15 +103,15 @@ local T_Recipe_Data = __db__.T_Recipe_Data;
 		}
 --]]
 --
-local T_TradeSkill_ID = __db__.T_TradeSkill_ID;
+local T_TradeSkill_ID = DataAgent.T_TradeSkill_ID;
 --[[auto]]local T_TradeSkill_Name = {  };								--	[pid] = prof_name
 --[[auto]]local T_TradeSkill_Hash = {  };								--	[prof_name] = pid
-local T_TradeSkill_Texture = __db__.T_TradeSkill_Texture;
-local T_TradeSkill_CheckID = __db__.T_TradeSkill_CheckID;	--	[pid] = p_check_sid
+local T_TradeSkill_Texture = DataAgent.T_TradeSkill_Texture;
+local T_TradeSkill_CheckID = DataAgent.T_TradeSkill_CheckID;	--	[pid] = p_check_sid
 --[[auto]]local T_TradeSkill_CheckName = {  };						--	[pid] = p_check_sname
-local T_TradeSkill_HasUI = __db__.T_TradeSkill_HasUI;		--	[pid] = bool
-local T_TradeSkill_Spec2Pid = __db__.T_TradeSkill_Spec2Pid;
-local T_TradeSkill_RecipeList = __db__.T_TradeSkill_RecipeList;
+local T_TradeSkill_HasUI = DataAgent.T_TradeSkill_HasUI;		--	[pid] = bool
+local T_TradeSkill_Spec2Pid = DataAgent.T_TradeSkill_Spec2Pid;
+local T_TradeSkill_RecipeList = DataAgent.T_TradeSkill_RecipeList;
 --	Hash
 --[[auto]]local T_sname2sid = {  };		--	[pid][sname] = { sid }
 local T_cis2sid = {  };			--	[cid] = { sid }
@@ -149,12 +133,12 @@ local T_Temp_pid = {  };
 --
 local function LF_HashTradeSkill(pid, pname, pname_lower)
 	T_TradeSkill_Name[pid] = pname;
-	if L.extra_skill_name[pid] == nil then
+	if l10n.extra_skill_name[pid] == nil then
 		T_TradeSkill_Hash[pname] = pid;
 		T_TradeSkill_Hash[pname_lower] = pid;
 	else
-		T_TradeSkill_Hash[L.extra_skill_name[pid]] = pid;
-		T_TradeSkill_Hash[strlower(L.extra_skill_name[pid])] = pid;
+		T_TradeSkill_Hash[l10n.extra_skill_name[pid]] = pid;
+		T_TradeSkill_Hash[strlower(l10n.extra_skill_name[pid])] = pid;
 	end
 end
 local function LF_HashSpell(sid, sname, sname_lower)
@@ -219,14 +203,11 @@ local function LF_CacheItem(iid)
 		T_ItemData[iid] = iinfo;
 		T_Temp_ItemHash[iid] = nil;
 		return iinfo;
-	-- else
-		-- RequestLoadItemDataByID(iid);
-		-- _error_("SPELL_DATA_LOAD_RESULT#1", iid);
 	end
 end
 -->		preload
 local _SPre, _IPre = 0, 0;		--	dev
-if __namespace__.__is_dev then
+if VT.__is_dev then
 	local _RequestLoadSpellData = RequestLoadSpellData;
 	RequestLoadSpellData = function(...)
 		_SPre = _SPre + 1;
@@ -270,25 +251,18 @@ function F.SPELL_DATA_LOAD_RESULT(sid, success)
 		end
 		--	trade skill recipe & spec
 		LF_CacheSpell(sid);
-	-- else
-		-- local info = T_Recipe_Data[sid];
-		-- RequestLoadSpellData(sid);
-		-- _error_("SPELL_DATA_LOAD_RESULT#0", sid);
 	end
 end
 function F.ITEM_DATA_LOAD_RESULT(iid, success)
 	if success and T_Temp_ItemHash[iid] then
 		LF_CacheItem(iid);
-	-- else
-		-- RequestLoadItemDataByID(iid);
-		-- _error_("SPELL_DATA_LOAD_RESULT#0", iid);
 	end
 end
 
 local function LF_RequestSpell()
 	local completed = true;
 	local maxonce = IsInRaid() and 500 or (IsInGroup() and 1000 or 10000);
-	for pid = __db__.DBMINPID, __db__.DBMAXPID do
+	for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 		if T_TradeSkill_Name[pid] == nil then
 			local sid = T_TradeSkill_ID[pid];
 			if sid ~= nil then
@@ -303,7 +277,7 @@ local function LF_RequestSpell()
 			end
 		end
 	end
-	for pid = __db__.DBMINPID, __db__.DBMAXPID do
+	for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 		local sid = T_TradeSkill_CheckID[pid];
 		if T_SpellData[sid] == nil then
 			RequestLoadSpellData(sid);
@@ -350,18 +324,18 @@ local function LF_PreloadSpell()
 	else
 		LN_Limited_RequestSpell = LN_Limited_RequestSpell + 1;
 		if LN_Limited_RequestSpell >= 10 then
-			_error_("LF_PreloadSpell#0", LN_Limited_RequestSpell);
+			MT.Error("LF_PreloadSpell#0", LN_Limited_RequestSpell);
 			F:UnregisterEvent("SPELL_DATA_LOAD_RESULT");
 		else
 			F:RegisterEvent("SPELL_DATA_LOAD_RESULT");	--	Events registered before loading screen went out may not work well. So reg here everytime.
-			C_Timer_After(2.0, LF_PreloadSpell);
+			MT.After(2.0, LF_PreloadSpell);
 			return;
 		end
 	end
-	__namespace__:FireEvent("USER_EVENT_SPELL_DATA_LOADED");
+	MT.FireCallback("USER_EVENT_SPELL_DATA_LOADED");
 	LB_PreloadSpellFinished = true;
 	if LB_PreloadItemFinished then
-		__namespace__:FireEvent("USER_EVENT_DATA_LOADED");
+		MT.FireCallback("USER_EVENT_DATA_LOADED");
 	end
 end
 
@@ -425,23 +399,23 @@ local function LF_PreloadItem()
 	else
 		LN_Limited_RequestItem = LN_Limited_RequestItem + 1;
 		if LN_Limited_RequestItem >= 10 then
-			_error_("LF_PreloadItem#0", LN_Limited_RequestItem);
+			MT.Error("LF_PreloadItem#0", LN_Limited_RequestItem);
 			F:UnregisterEvent("ITEM_DATA_LOAD_RESULT");
 		else
 			F:RegisterEvent("ITEM_DATA_LOAD_RESULT");	--	Events registered before loading screen went out may not work well. So reg here everytime.
-			C_Timer_After(2.0, LF_PreloadItem);
+			MT.After(2.0, LF_PreloadItem);
 			return;
 		end
 	end
-	__namespace__:FireEvent("USER_EVENT_ITEM_DATA_LOADED");
+	MT.FireCallback("USER_EVENT_ITEM_DATA_LOADED");
 	LB_PreloadItemFinished = true;
 	if LB_PreloadSpellFinished then
-		__namespace__:FireEvent("USER_EVENT_DATA_LOADED");
+		MT.FireCallback("USER_EVENT_DATA_LOADED");
 	end
 end
 --
 local function _LoadSavedVar()
-	for pid = __db__.DBMINPID, __db__.DBMAXPID do
+	for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 		local sid = T_TradeSkill_ID[pid];
 		local sinfo = T_SpellData[sid];
 		if sinfo ~= nil then
@@ -464,7 +438,7 @@ function F.LEARNED_SPELL_IN_TAB(id, tab, isGuild)
 	local pid = T_TradeSkill_Spec2Pid[id];
 	if pid ~= nil and T_IsSpecLearned[id] ~= true then
 		T_IsSpecLearned[id] = true;
-		__namespace__.F_uiMarkToUpdate(pid);
+		MT.MarkSkillToUpdate(pid);
 	end
 end
 function F.SPELLS_CHANGED()
@@ -472,21 +446,21 @@ function F.SPELLS_CHANGED()
 		local val = IsSpellKnown(spec) and true or nil;
 		if T_IsSpecLearned[spec] ~= val then
 			T_IsSpecLearned[spec] = val;
-			__namespace__.F_uiMarkToUpdate(pid);
+			MT.MarkSkillToUpdate(pid);
 		end
 	end
 end
-__namespace__:AddCallback("USER_EVENT_DATA_LOADED", function()
+MT.AddCallback("USER_EVENT_DATA_LOADED", function()
 	if LB_PreloadSpellFinished and LB_PreloadItemFinished then
-		for pid = __db__.DBMINPID, __db__.DBMAXPID do
+		for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 			local n1, n2 = T_TradeSkill_Name[pid], T_TradeSkill_CheckName[pid];
 			if n1 ~= nil and n2 ~= nil then
 				T_TradeSkill_SameSkillName[n1] = n2;
 				T_TradeSkill_SameSkillName[n2] = n1;
 			end
 		end
-		if __namespace__.__is_dev then
-			_error_("Preload", _SPre, _IPre);
+		if VT.__is_dev then
+			MT.Debug("Preload", _SPre, _IPre);
 		end
 	end
 end);
@@ -494,15 +468,15 @@ end);
 -->		Query
 --	GET TABLE
 	--	| T_TradeSkill_CheckID{ [pid] = p_check_sid }
-	function __db__.table_tradeskill_check_id()
+	function DataAgent.table_tradeskill_check_id()
 		return T_TradeSkill_CheckID;
 	end
 	--	| T_TradeSkill_CheckName{ [pid] = p_check_sname }
-	function __db__.table_tradeskill_check_name()
+	function DataAgent.table_tradeskill_check_name()
 		return T_TradeSkill_CheckName;
 	end
 --	INSERT RECIPE DB
-	function __db__.insert_info(sid, info)
+	function DataAgent.insert_info(sid, info)
 		if T_Recipe_Data[sid] == nil then
 			T_Recipe_Data[sid] = info;
 			local pid = info[index_pid];
@@ -532,64 +506,64 @@ end);
 	end
 --	QUERY RECIPE DB
 	--	pid | is_tradeskill
-	function __db__.is_pid(pid)
+	function DataAgent.is_pid(pid)
 		return pid ~= nil and T_TradeSkill_ID[pid] ~= nil;
 	end
 	--	pname | pid
-	function __db__.get_pid_by_pname(pname)
+	function DataAgent.get_pid_by_pname(pname)
 		if pname ~= nil then
 			return T_TradeSkill_Hash[pname];
 		end
 	end
 	--	pid | pname
-	function __db__.get_pname_by_pid(pid)
+	function DataAgent.get_pname_by_pid(pid)
 		if pid ~= nil then
 			return T_TradeSkill_Name[pid];
 		end
 	end
 	--	pid | ptexture
-	function __db__.get_texture_by_pid(pid)
+	function DataAgent.get_texture_by_pid(pid)
 		if pid ~= nil then
 			return T_TradeSkill_Texture[pid];
 		end
 	end
 	--	pid | has_win
-	function __db__.is_pid_has_win(pid)
-		if __db__.is_pid(pid) then
+	function DataAgent.is_pid_has_win(pid)
+		if DataAgent.is_pid(pid) then
 			return T_TradeSkill_HasUI[pid];
 		end
 	end
 	--	pid | check_id
-	function __db__.get_check_id_by_pid(pid)
+	function DataAgent.get_check_id_by_pid(pid)
 		if pid ~= nil then
 			return T_TradeSkill_CheckID[pid];
 		end
 	end
 	--	pid | check_name
-	function __db__.get_check_name_by_pid(pid)
+	function DataAgent.get_check_name_by_pid(pid)
 		if pid ~= nil then
 			return T_TradeSkill_CheckName[pid];
 		end
 	end
 	--	sid | is_tradeskill
-	function __db__.is_tradeskill_sid(sid)
+	function DataAgent.is_tradeskill_sid(sid)
 		return sid ~= nil and T_Recipe_Data[sid] ~= nil;
 	end
 	--	pid | list{ sid, }
-	function __db__.get_list_by_pid(pid)
+	function DataAgent.get_list_by_pid(pid)
 		if pid ~= nil then
 			return T_TradeSkill_RecipeList[pid];
 		end
 	end
 	--	<query_T_Recipe_Data
 	--	sid | info{  }
-	function __db__.get_info_by_sid(sid)
+	function DataAgent.get_info_by_sid(sid)
 		if sid ~= nil then
 			return T_Recipe_Data[sid];
 		end
 	end
 	--	sid | phase
-	function __db__.get_phase_by_sid(sid)
+	function DataAgent.get_phase_by_sid(sid)
 		if sid ~= nil then
 			local info = T_Recipe_Data[sid];
 			if info ~= nil then
@@ -598,7 +572,7 @@ end);
 		end
 	end
 	--	sid | pid
-	function __db__.get_pid_by_sid(sid)
+	function DataAgent.get_pid_by_sid(sid)
 		if sid ~= nil then
 			local info = T_Recipe_Data[sid];
 			if info ~= nil then
@@ -607,7 +581,7 @@ end);
 		end
 	end
 	--	sid | cid
-	function __db__.get_cid_by_sid(sid)
+	function DataAgent.get_cid_by_sid(sid)
 		if sid ~= nil then
 			local info = T_Recipe_Data[sid];
 			if info ~= nil then
@@ -616,7 +590,7 @@ end);
 		end
 	end
 	--	sid | learn_rank
-	function __db__.get_learn_rank_by_sid(sid)
+	function DataAgent.get_learn_rank_by_sid(sid)
 		if sid ~= nil then
 			local info = T_Recipe_Data[sid];
 			if info ~= nil then
@@ -625,7 +599,7 @@ end);
 		end
 	end
 	--	sid | learn_rank, yellow_rank, green_rank, grey_rank
-	function __db__.get_difficulty_rank_list_by_sid(sid)
+	function DataAgent.get_difficulty_rank_list_by_sid(sid)
 		if sid ~= nil then
 			local info = T_Recipe_Data[sid];
 			if info ~= nil then
@@ -639,17 +613,17 @@ end);
 		end
 	end
 	--	sid | text"[[red ]yellow green grey]"
-	function __db__.get_difficulty_rank_list_text_by_sid(sid, tipbonus)
+	function DataAgent.get_difficulty_rank_list_text_by_sid(sid, tipbonus)
 		if sid ~= nil then
-			local red, yellow, green, grey, bonus = __db__.get_difficulty_rank_list_by_sid(sid);
+			local red, yellow, green, grey, bonus = DataAgent.get_difficulty_rank_list_by_sid(sid);
 			if (red == nil and yellow == nil and green == nil and grey == nil) or (red <= 0 and yellow <= 0 and green <= 0 and grey <= 0) then
 				return "";
 			end
 			if bonus and tipbonus then
 				-- if red < yellow then
-					return "|cffff8f00" .. red .. "|r |cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r |cff00ff00*" .. PLAYER_RACE .. " " .. bonus .. "*|r";
+					return "|cffff8f00" .. red .. "|r |cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r |cff00ff00*" .. CT.SELFRACE .. " " .. bonus .. "*|r";
 				-- else
-					-- return "|cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r |cff00ff00*" .. PLAYER_RACE .. " " .. bonus .. "*|r";
+					-- return "|cffffff00" .. yellow .. "|r |cff8fff00" .. green .. "|r |cff8f8f8f" .. grey .. "|r |cff00ff00*" .. CT.SELFRACE .. " " .. bonus .. "*|r";
 				-- end
 			else
 				-- if red < yellow then
@@ -662,7 +636,7 @@ end);
 		return "";
 	end
 	--	sid | difficulty	--	rank: red-1, yellow-2, green-3, grey-4
-	function __db__.get_difficulty_rank_by_sid(sid, cur)
+	function DataAgent.get_difficulty_rank_by_sid(sid, cur)
 		if sid ~= nil then
 			local info = T_Recipe_Data[sid];
 			if info ~= nil then
@@ -680,10 +654,10 @@ end);
 				end
 			end
 		end
-		return BIG_NUMBER;
+		return CT.BIGNUMBER;
 	end
 	--	sid | avg_made, min_made, max_made
-	function __db__.get_num_made_by_sid(sid)
+	function DataAgent.get_num_made_by_sid(sid)
 		if sid ~= nil then
 			local info = T_Recipe_Data[sid];
 			if info ~= nil then
@@ -693,7 +667,7 @@ end);
 		end
 	end
 	--	sid | reagent_ids{  }, reagent_nums{  }
-	function __db__.get_reagents_by_sid(sid)
+	function DataAgent.get_reagents_by_sid(sid)
 		if sid ~= nil then
 			local info = T_Recipe_Data[sid];
 			if info ~= nil then
@@ -703,7 +677,7 @@ end);
 	end
 	--	query_T_Recipe_Data>
 	--	pid, sname | num, pids{  }
-	function __db__.get_sid_by_pid_sname(pid, sname)
+	function DataAgent.get_sid_by_pid_sname(pid, sname)
 		if pid ~= nil and sname ~= nil then
 			local pt = T_sname2sid[pid];
 			if pt ~= nil then
@@ -716,9 +690,9 @@ end);
 		return 0;
 	end
 	--	pid, sname, cid | sid
-	function __db__.get_sid_by_pid_sname_cid(pid, sname, cid)
+	function DataAgent.get_sid_by_pid_sname_cid(pid, sname, cid)
 		if pid ~= nil and sname ~= nil and cid ~= nil then
-			local nsids, sids = __db__.get_sid_by_pid_sname(pid, sname);
+			local nsids, sids = DataAgent.get_sid_by_pid_sname(pid, sname);
 			local index_xid = pid == 10 and index_sid or index_cid;
 			if nsids > 0 then
 				for index = 1, #sids do
@@ -732,11 +706,11 @@ end);
 		end
 	end
 	--	cid | is_tradeskill
-	function __db__.is_tradeskill_cid(cid)
+	function DataAgent.is_tradeskill_cid(cid)
 		return cid ~= nil and T_cis2sid[cid] ~= nil;
 	end
 	--	cid | nsids, sids{  }
-	function __db__.get_sid_by_cid(cid)
+	function DataAgent.get_sid_by_cid(cid)
 		if cid ~= nil then
 			local sids = T_cis2sid[cid];
 			if sids ~= nil then
@@ -746,7 +720,7 @@ end);
 		return 0;
 	end
 	--	pid, cid | nsids, sids{  }
-	function __db__.get_sid_by_pid_cid(pid, cid)
+	function DataAgent.get_sid_by_pid_cid(pid, cid)
 		if pid ~= nil and cid ~= nil then
 			local p = T_cidpid2sid[pid];
 			if p ~= nil then
@@ -758,18 +732,18 @@ end);
 		end
 		return 0;
 	end
-	function __db__.get_sid_by_rid(rid)
+	function DataAgent.get_sid_by_rid(rid)
 		if rid ~= nil then
 			return T_rid2sid[rid];
 		end
 	end
-	function __db__.get_sid_by_reagent(iid)
+	function DataAgent.get_sid_by_reagent(iid)
 		if iid ~= nil then
 			return T_material2sid[iid];
 		end
 	end
 --	QUERY OBJ INFO
-	function __db__.__spell_info(sid)
+	function DataAgent.__spell_info(sid)
 		if sid ~= nil then
 			local sinfo = T_SpellData[sid];
 			if sinfo == nil then
@@ -779,38 +753,38 @@ end);
 			end
 		end
 	end
-	function __db__.spell_name(sid)
-		local sinfo = __db__.__spell_info(sid);
+	function DataAgent.spell_name(sid)
+		local sinfo = DataAgent.__spell_info(sid);
 		if sinfo ~= nil then
 			return sinfo[1];
 		end
 	end
-	function __db__.spell_name_lower(sid)
-		local sinfo = __db__.__spell_info(sid);
+	function DataAgent.spell_name_lower(sid)
+		local sinfo = DataAgent.__spell_info(sid);
 		if sinfo ~= nil then
 			return sinfo[2];
 		end
 	end
-	function __db__.spell_link(sid)
-		local sinfo = __db__.__spell_info(sid);
+	function DataAgent.spell_link(sid)
+		local sinfo = DataAgent.__spell_info(sid);
 		if sinfo ~= nil then
 			return sinfo[3];
 		end
 	end
-	function __db__.spell_link_lower(sid)
-		local sinfo = __db__.__spell_info(sid);
+	function DataAgent.spell_link_lower(sid)
+		local sinfo = DataAgent.__spell_info(sid);
 		if sinfo ~= nil then
 			return sinfo[4];
 		end
 	end
-	function __db__.spell_string(sid)
-		local sinfo = __db__.__spell_info(sid);
+	function DataAgent.spell_string(sid)
+		local sinfo = DataAgent.__spell_info(sid);
 		if sinfo ~= nil then
 			return sinfo[5];
 		end
 	end
 	--
-	function __db__.__item_info(iid)
+	function DataAgent.__item_info(iid)
 		if iid ~= nil then
 			local iinfo = T_ItemData[iid];
 			if iinfo == nil then
@@ -820,136 +794,136 @@ end);
 			end
 		end
 	end
-	function __db__.item_info(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_info(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return unpack(iinfo);
 		end
 	end
-	function __db__.item_name(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_name(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_name];
 		end
 	end
-	function __db__.item_link(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_link(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_link];
 		end
 	end
-	function __db__.item_rarity(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_rarity(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_rarity];
 		end
 	end
-	function __db__.item_loc(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_loc(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_loc];
 		end
 	end
-	function __db__.item_icon(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_icon(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_icon];
 		end
 	end
-	function __db__.item_sellPrice(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_sellPrice(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_sellPrice];
 		end
 	end
-	function __db__.item_typeID(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_typeID(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_typeID];
 		end
 	end
-	function __db__.item_subTypeID(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_subTypeID(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_subTypeID];
 		end
 	end
-	function __db__.item_bindType(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_bindType(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_bindType];
 		end
 	end
-	function __db__.item_name_lower(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_name_lower(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_name];
 		end
 	end
-	function __db__.item_link_lower(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_link_lower(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_link];
 		end
 	end
-	function __db__.item_string(iid)
-		local iinfo = __db__.__item_info(iid);
+	function DataAgent.item_string(iid)
+		local iinfo = DataAgent.__item_info(iid);
 		if iinfo ~= nil then
 			return iinfo[index_i_string];
 		end
 	end
 	--	secure
-	function __db__.spell_name_s(sid)
-		return __db__.spell_name(sid) or ("spellId:" .. sid);
+	function DataAgent.spell_name_s(sid)
+		return DataAgent.spell_name(sid) or ("spellId:" .. sid);
 	end
-	function __db__.spell_link_s(sid)
-		return __db__.spell_link(sid) or ("spellId:" .. sid);
+	function DataAgent.spell_link_s(sid)
+		return DataAgent.spell_link(sid) or ("spellId:" .. sid);
 	end
-	function __db__.spell_string_s(sid)
-		return __db__.spell_string(sid) or ("spellId:" .. sid);
+	function DataAgent.spell_string_s(sid)
+		return DataAgent.spell_string(sid) or ("spellId:" .. sid);
 	end
-	function __db__.item_name_s(iid)
-		return __db__.item_name(iid) or ("itemId:" .. iid);
+	function DataAgent.item_name_s(iid)
+		return DataAgent.item_name(iid) or ("itemId:" .. iid);
 	end
-	function __db__.item_link_s(iid)
-		return __db__.item_link(iid) or ("itemId:" .. iid);
+	function DataAgent.item_link_s(iid)
+		return DataAgent.item_link(iid) or ("itemId:" .. iid);
 	end
-	function __db__.item_string_s(iid)
-		return __db__.item_string(iid) or ("itemId:" .. iid);
+	function DataAgent.item_string_s(iid)
+		return DataAgent.item_string(iid) or ("itemId:" .. iid);
 	end
 --	MISC
-	function __db__.is_spec_learned(spec)
+	function DataAgent.is_spec_learned(spec)
 		return T_IsSpecLearned[spec];
 	end
-	function __db__.is_name_same_skill(name1, name2)
+	function DataAgent.is_name_same_skill(name1, name2)
 		return name1 == name2 or name1 == T_TradeSkill_SameSkillName[name2];
 	end
 --	pid, list, check_hash, phase, rank, rankOffset, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe | list{ sid, }
 local function FilterAdd(list, sid, class, spec, filterClass, filterSpec)
-	if (class == nil or not filterClass or bitband(class, UCLASSBIT) ~= 0) and (spec == nil or not filterSpec or T_IsSpecLearned[spec]) then
+	if (class == nil or not filterClass or bitband(class, USELFCLASSBIT) ~= 0) and (spec == nil or not filterSpec or T_IsSpecLearned[spec]) then
 		list[#list + 1] = sid;
 	end
 end
-function __db__.get_ordered_list(pid, list, check_hash, phase, rank, rankOffset, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe)
+function DataAgent.get_ordered_list(pid, list, check_hash, phase, rank, rankOffset, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe)
 	if pid == nil then
-		_log_("__db__.get_ordered_list|cff00ff00#1L1|r");
+		MT.Debug("DataAgent.get_ordered_list|cff00ff00#1L1|r");
 		if not donot_wipe then
 			wipe(list);
 		end
-		for pid = __db__.DBMINPID, __db__.DBMAXPID do
+		for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 			if T_TradeSkill_RecipeList[pid] ~= nil then
-				__db__.get_ordered_list(pid, list, check_hash, phase, rank, rankOffset, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, true);
+				DataAgent.get_ordered_list(pid, list, check_hash, phase, rank, rankOffset, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, true);
 			end
 		end
 	elseif T_TradeSkill_RecipeList[pid] ~= nil then
-		_log_("__db__.get_ordered_list|cff00ff00#1L2|r", pid);
+		MT.Debug("DataAgent.get_ordered_list|cff00ff00#1L2|r", pid);
 		local recipe = T_TradeSkill_RecipeList[pid];
 		if not donot_wipe then
 			wipe(list);
 		end
-		phase = phase or CURPHASE;
+		phase = phase or DataAgent.CURPHASE;
 		rankOffset = (rankOffset ~= nil and rankOffset > 0) and rankOffset or nil;
-		local notlowerphase = phase >= CURPHASE;
+		local notlowerphase = phase >= DataAgent.CURPHASE;
 		if check_hash ~= nil and rank ~= nil then
 			local bonus = T_CharRaceBonus[pid] or 0;
 			if showKnown and showUnkown then
@@ -1443,14 +1417,127 @@ function __db__.get_ordered_list(pid, list, check_hash, phase, rank, rankOffset,
 			end
 		end
 	else
-		_log_("__db__.get_ordered_list|cff00ff00#1L3|r", pid);
+		MT.Debug("DataAgent.get_ordered_list|cff00ff00#1L3|r", pid);
 	end
 	return list;
 end
 -->
 
-function __namespace__.init_db()
-	for pid = __db__.DBMINPID, __db__.DBMAXPID do
+-->		Known Recipes & Automatically Generate recipe info
+DataAgent.LearnedRecipesHash = {  };
+function DataAgent.MarkKnown(sid, GUID)
+	local list = DataAgent.LearnedRecipesHash[sid];
+	if list == nil then
+		list = {  };
+		DataAgent.LearnedRecipesHash[sid] = list;
+	end
+	list[GUID] = 1;
+end
+function DataAgent.CancelMarkKnown(sid, GUID)
+	local list = DataAgent.LearnedRecipesHash[sid];
+	if list ~= nil then
+		list[GUID] = nil;
+		for _ in next, list do
+			return;
+		end
+		DataAgent.LearnedRecipesHash[sid] = nil;
+	end
+end
+local T_DynamicCreatedSID = {  };
+function DataAgent.DynamicCreateInfo(Frame, pid, cur_rank, index, sid, srank)
+	--------------.-PHA-PID-----SID-----CID-LEARN--Y--GREEN-GREY-MIN--MAX---------R-------N--TRAINER-PRICE-RECIPE-QUEST-OBJ-CLASS-SPEC
+	--------------1--2---3-------4-------5----6----7----8----9---10---11---------12------13---14-------15-----16---17---18---19----20
+	--[~[
+	local difficulty_rank = CT.T_RankIndex[srank];
+	if T_DynamicCreatedSID[sid] == nil then
+		local info = DataAgent.get_info_by_sid(sid);
+		if info == nil then
+			local cid = Frame.F_GetRecipeItemID(index);
+			local minMade, maxMade = Frame.F_GetRecipeNumMade(index);
+			local info = { nil, 1, pid, sid, cid, cur_rank, cur_rank, cur_rank, cur_rank, minMade, maxMade, {  }, {  }, };
+			if difficulty_rank == 0 then
+				info[index_learn_rank] = cur_rank + 1;
+				info[index_yellow_rank] = cur_rank + 1;
+				info[index_green_rank] = cur_rank + 1;
+				info[index_grey_rank] = cur_rank + 1;
+			elseif difficulty_rank == 1 then
+				info[index_learn_rank] = cur_rank;
+				info[index_yellow_rank] = cur_rank + 1;
+				info[index_green_rank] = cur_rank + 1;
+				info[index_grey_rank] = cur_rank + 1;
+			elseif difficulty_rank == 2 then
+				info[index_learn_rank] = cur_rank;
+				info[index_yellow_rank] = cur_rank;
+				info[index_green_rank] = cur_rank + 1;
+				info[index_grey_rank] = cur_rank + 1;
+			elseif difficulty_rank == 3 then
+				info[index_learn_rank] = cur_rank;
+				info[index_yellow_rank] = cur_rank;
+				info[index_green_rank] = cur_rank;
+				info[index_grey_rank] = cur_rank + 1;
+			elseif difficulty_rank == 4 then
+				info[index_learn_rank] = cur_rank;
+				info[index_yellow_rank] = cur_rank;
+				info[index_green_rank] = cur_rank;
+				info[index_grey_rank] = cur_rank;
+			else
+				return;
+			end
+			local numReagents = Frame.F_GetRecipeNumReagents(index);
+			if numReagents > 0 then
+				local ids = info[index_reagents_id];
+				local cts = info[index_reagents_count];
+				for i = 1, numReagents do
+					local id = Frame.F_GetRecipeReagentID(index, i);
+					local name, texture, req, has = Frame.F_GetRecipeReagentInfo(index, i);
+					if id ~= nil and req ~= nil then
+						ids[i] = id;
+						cts[i] = req;
+					else
+						return;
+					end
+				end
+			end
+			T_DynamicCreatedSID[sid] = info;
+			return DataAgent.insert_info(sid, info);
+		end
+	else
+		local info = T_DynamicCreatedSID[sid];
+		if difficulty_rank == 0 then
+			info[index_learn_rank] = cur_rank + 1;
+			info[index_yellow_rank] = cur_rank + 1;
+			info[index_green_rank] = cur_rank + 1;
+			info[index_grey_rank] = cur_rank + 1;
+		elseif difficulty_rank == 1 then
+			info[index_learn_rank] = cur_rank;
+			info[index_yellow_rank] = cur_rank + 1;
+			info[index_green_rank] = cur_rank + 1;
+			info[index_grey_rank] = cur_rank + 1;
+		elseif difficulty_rank == 2 then
+			info[index_learn_rank] = cur_rank;
+			info[index_yellow_rank] = cur_rank;
+			info[index_green_rank] = cur_rank + 1;
+			info[index_grey_rank] = cur_rank + 1;
+		elseif difficulty_rank == 3 then
+			info[index_learn_rank] = cur_rank;
+			info[index_yellow_rank] = cur_rank;
+			info[index_green_rank] = cur_rank;
+			info[index_grey_rank] = cur_rank + 1;
+		elseif difficulty_rank == 4 then
+			info[index_learn_rank] = cur_rank;
+			info[index_yellow_rank] = cur_rank;
+			info[index_green_rank] = cur_rank;
+			info[index_grey_rank] = cur_rank;
+		else
+			return;
+		end
+	end
+	--]]
+end
+-->
+
+MT.RegisterOnInit('db', function(LoggedIn)
+	for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 		local list = T_TradeSkill_RecipeList[pid];
 		if list ~= nil then
 			T_sname2sid[pid] = {  };
@@ -1546,16 +1633,15 @@ function __namespace__.init_db()
 			T_Recipe_Data[sid] = nil;
 		end
 	end
-	local CACHE = __namespace__.CACHE;
-	local cache = CACHE[LOCALE];
-	if cache == nil or cache.__WoWVersion == nil or cache.__WoWVersion < TOCVERSION or cache.__DataVersion == nil or cache.__DataVersion < __db__.__DataVersion then
+	local cache = VT.CACHE[CT.LOCALE];
+	if cache == nil or cache.__WoWVersion == nil or cache.__WoWVersion < CT.TOCVERSION or cache.__DataVersion == nil or cache.__DataVersion < DataAgent.__DataVersion then
 		cache = { S = T_SpellData, I = T_ItemData, };
-		CACHE[LOCALE] = cache;
+		VT.CACHE[CT.LOCALE] = cache;
 	else
 		T_SpellData, T_ItemData = cache.S, cache.I;
 	end
-	cache.__WoWVersion = TOCVERSION;
-	cache.__DataVersion = __db__.__DataVersion;
+	cache.__WoWVersion = CT.TOCVERSION;
+	cache.__DataVersion = DataAgent.__DataVersion;
 	_LoadSavedVar();
 	LF_PreloadSpell();
 	LF_PreloadItem();
@@ -1564,4 +1650,5 @@ function __namespace__.init_db()
 	end
 	F:RegisterEvent("LEARNED_SPELL_IN_TAB");
 	F:RegisterEvent("SPELLS_CHANGED");
-end
+end);
+-->

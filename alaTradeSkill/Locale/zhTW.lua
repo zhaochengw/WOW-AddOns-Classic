@@ -2,11 +2,14 @@
 	by ALA @ 163UI
 --]]--
 
-if GetLocale() ~= "zhTW" then
+local __addon, __private = ...;
+local CT = __private.CT;
+
+if CT.LOCALE ~= "zhTW" then
 	return;
 end
-
-local __addon__, __namespace__ = ...;
+local l10n = CT.l10n;
+l10n.LOCALE = "zhTW";
 
 -->	fix for ptr
 	local LE_ITEM_CLASS_CONSUMABLE = LE_ITEM_CLASS_CONSUMABLE or 0;
@@ -103,105 +106,103 @@ local __addon__, __namespace__ = ...;
 	local LE_ITEM_MISCELLANEOUS_MOUNT = LE_ITEM_MISCELLANEOUS_MOUNT or 5;
 -->
 
-local L = {
-	extra_skill_name = {  },
-};
-__namespace__.L = L;
+l10n.extra_skill_name = {  };
 
 --
-L["OK"] = "确定";
-L["Search"] = "搜索";
-L["OVERRIDE_OPEN"] = "打开搜索";
-L["OVERRIDE_CLOSE"] = "关闭搜索";
-L["ADD_FAV"] = "添加收藏";
-L["SUB_FAV"] = "取消收藏";
-L["QUERY_WHO_CAN_CRAFT_IT"] = "谁会做它？";
+l10n["OK"] = "确定";
+l10n["Search"] = "搜索";
+l10n["OVERRIDE_OPEN"] = "打开搜索";
+l10n["OVERRIDE_CLOSE"] = "关闭搜索";
+l10n["ADD_FAV"] = "添加收藏";
+l10n["SUB_FAV"] = "取消收藏";
+l10n["QUERY_WHO_CAN_CRAFT_IT"] = "谁会做它？";
 --
-L["showUnkown"] = "未学";
-L["showKnown"] = "已学";
-L["showHighRank"] = "高等级";
-L["filterClass"] = UnitClass('player');
-L["filterSpec"] = "专精";
-L["showItemInsteadOfSpell"] = "物品";
-L["showRank"] = "等级";
-L["haveMaterials"] = "材料";
-L["showUnkownTip"] = "显示还没学会的配方";
-L["showKnownTip"] = "显示已经学会的配方";
-L["showHighRankTip"] = "显示高等级的配方";
-L["filterClassTip"] = "是否过滤掉" .. UnitClass('player') .. "不能学到的配方";
-L["filterSpecTip"] = "是否过滤掉当前专精不能学到的配方";
-L["showItemInsteadOfSpellTip"] = "鼠标提示显示物品而不是技能";
-L["showRankTip"] = "显示难度等级";
+l10n["showUnkown"] = "未学";
+l10n["showKnown"] = "已学";
+l10n["showHighRank"] = "高等级";
+l10n["filterClass"] = CT.SELFLCLASS;
+l10n["filterSpec"] = "专精";
+l10n["showItemInsteadOfSpell"] = "物品";
+l10n["showRank"] = "等级";
+l10n["haveMaterials"] = "材料";
+l10n["showUnkownTip"] = "显示还没学会的配方";
+l10n["showKnownTip"] = "显示已经学会的配方";
+l10n["showHighRankTip"] = "显示高等级的配方";
+l10n["filterClassTip"] = "是否过滤掉" .. CT.SELFLCLASS .. "不能学到的配方";
+l10n["filterSpecTip"] = "是否过滤掉当前专精不能学到的配方";
+l10n["showItemInsteadOfSpellTip"] = "鼠标提示显示物品而不是技能";
+l10n["showRankTip"] = "显示难度等级";
 --
-L["PROFIT_SHOW_COST_ONLY"] = "只显示成本";
+l10n["PROFIT_SHOW_COST_ONLY"] = "只显示成本";
 --
-L["LABEL_RANK_LEVEL"] = "\124cffff7f00技能等级: \124r";
-L["LABEL_GET_FROM"] = "\124cffff7f00来源: \124r";
-L["quest"] = "任务";
-L["item"] = "物品";
-L["object"] = "物品";
-L["trainer"] = "训练师";
-L["quest_reward"] = "任务奖励";
-L["quest_accepted_from"] = "开始于";
-L["sold_by"] = "出售";
-L["dropped_by"] = "掉落自";
-L["world_drop"] = "世界掉落";
-L["dropped_by_mod_level"] = "怪物等级";
-L["tradable"] = "可交易";
-L["non_tradable"] = "不可交易";
-L["elite"] = "精英";
-L["phase"] = "阶段";
-L["unknown area"] = "未知区域";
-L["NOT_AVAILABLE_FOR_PLAYER'S_FACTION"] = "不适用于当前角色阵营";
-L["AVAILABLE_IN_PHASE_"] = "开放于阶段: ";
-L["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00帐号角色状态: \124r";
-L["LABEL_USED_AS_MATERIAL_IN"] = "\124cffff7f00用于制造: \124r";
-L["RECIPE_LEARNED"] = "\124cff00ff00已学\124r";
-L["RECIPE_NOT_LEARNED"] = "\124cffff0000未学\124r";
+l10n["LABEL_RANK_LEVEL"] = "\124cffff7f00技能等级: \124r";
+l10n["LABEL_GET_FROM"] = "\124cffff7f00来源: \124r";
+l10n["quest"] = "任务";
+l10n["item"] = "物品";
+l10n["object"] = "物品";
+l10n["trainer"] = "训练师";
+l10n["quest_reward"] = "任务奖励";
+l10n["quest_accepted_from"] = "开始于";
+l10n["sold_by"] = "出售";
+l10n["dropped_by"] = "掉落自";
+l10n["world_drop"] = "世界掉落";
+l10n["dropped_by_mod_level"] = "怪物等级";
+l10n["tradable"] = "可交易";
+l10n["non_tradable"] = "不可交易";
+l10n["elite"] = "精英";
+l10n["phase"] = "阶段";
+l10n["unknown area"] = "未知区域";
+l10n["NOT_AVAILABLE_FOR_PLAYER'S_FACTION"] = "不适用于当前角色阵营";
+l10n["AVAILABLE_IN_PHASE_"] = "开放于阶段: ";
+l10n["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00帐号角色状态: \124r";
+l10n["LABEL_USED_AS_MATERIAL_IN"] = "\124cffff7f00用于制造: \124r";
+l10n["RECIPE_LEARNED"] = "\124cff00ff00已学\124r";
+l10n["RECIPE_NOT_LEARNED"] = "\124cffff0000未学\124r";
 
-L["PRINT_MATERIALS: "] = "材料: ";
-L["PRICE_UNK"] = "未知";
-L["AH_PRICE"] = "\124cff00ff00价格\124r";
-L["VENDOR_RPICE"] = "\124cffffaf00商人\124r";
-L["COST_PRICE"] = "\124cffff7f00成本\124r";
-L["COST_PRICE_KNOWN"] = "\124cffff0000已缓存成本\124r";
-L["UNKOWN_PRICE"] = "\124cffff0000未知价格\124r";
-L["BOP"] = "\124cffff7f7f拾取绑定\124r";
-L["PRICE_DIFF+"] = "\124cff00ff00差价\124r";
-L["PRICE_DIFF-"] = "\124cffff0000差价\124r";
-L["PRICE_DIFF0"] = "持平";
-L["PRICE_DIFF_AH+"] = "\124cff00ff00AH5%\124r";
-L["PRICE_DIFF_AH-"] = "\124cffff0000AH5%\124r";
-L["PRICE_DIFF_AH0"] = "AH";
-L["PRICE_DIFF_INFO+"] = "\124cff00ff00利润\124r";
-L["PRICE_DIFF_INFO-"] = "\124cffff0000亏损\124r";
-L["CRAFT_INFO"] = "\124cffff7f00商业技能制造信息: \124r";
-L["ITEMS_UNK"] = "项未知";
-L["NEED_UPDATE"] = "\124cffff0000!!需要刷新!!\124r";
+l10n["PRINT_MATERIALS: "] = "材料: ";
+l10n["PRICE_UNK"] = "未知";
+l10n["AH_PRICE"] = "\124cff00ff00价格\124r";
+l10n["VENDOR_RPICE"] = "\124cffffaf00商人\124r";
+l10n["COST_PRICE"] = "\124cffff7f00成本\124r";
+l10n["COST_PRICE_KNOWN"] = "\124cffff0000已缓存成本\124r";
+l10n["UNKOWN_PRICE"] = "\124cffff0000未知价格\124r";
+l10n["BOP"] = "\124cffff7f7f拾取绑定\124r";
+l10n["PRICE_DIFF+"] = "\124cff00ff00差价\124r";
+l10n["PRICE_DIFF-"] = "\124cffff0000差价\124r";
+l10n["PRICE_DIFF0"] = "持平";
+l10n["PRICE_DIFF_AH+"] = "\124cff00ff00AH5%\124r";
+l10n["PRICE_DIFF_AH-"] = "\124cffff0000AH5%\124r";
+l10n["PRICE_DIFF_AH0"] = "AH";
+l10n["PRICE_DIFF_INFO+"] = "\124cff00ff00利润\124r";
+l10n["PRICE_DIFF_INFO-"] = "\124cffff0000亏损\124r";
+l10n["CRAFT_INFO"] = "\124cffff7f00商业技能制造信息: \124r";
+l10n["CRAFTED_BY"] = "\124cffff7f00可由以下角色制作: \124r";
+l10n["ITEMS_UNK"] = "项未知";
+l10n["NEED_UPDATE"] = "\124cffff0000!!需要刷新!!\124r";
 --
-L["TIP_SEARCH_NAME_ONLY_INFO"] = "\124cffffffff只搜索名字，而不是物品链接\124r";
-L["haveMaterialsTip"] = "只显示有足够材料的配方";
-L["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffff我想赚点零花钱! \124r";
+l10n["TIP_SEARCH_NAME_ONLY_INFO"] = "\124cffffffff只搜索名字，而不是物品链接\124r";
+l10n["haveMaterialsTip"] = "只显示有足够材料的配方";
+l10n["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffff我想赚点零花钱! \124r";
 --
-L["BOARD_LOCK"] = "锁定";
-L["BOARD_CLOSE"] = "关闭";
-L["BOARD_TIP"] = "显示帐号下角色的商业技能冷却时间，鼠标右击锁定或关闭";
-L["COLORED_FORMATTED_TIME_LEN"] = {
+l10n["BOARD_LOCK"] = "锁定";
+l10n["BOARD_CLOSE"] = "关闭";
+l10n["BOARD_TIP"] = "显示帐号下角色的商业技能冷却时间，鼠标右击锁定或关闭";
+l10n["COLORED_FORMATTED_TIME_LEN"] = {
 	"\124cff%.2x%.2x00%d天%02d时%02d分%02d秒\124r",
 	"\124cff%.2x%.2x00%d时%02d分%02d秒\124r",
 	"\124cff%.2x%.2x00%d分%02d秒\124r",
 	"\124cff%.2x%.2x00%d秒\124r",
 };
-L["COOLDOWN_EXPIRED"] = "\124cff00ff00冷却结束\124r";
+l10n["COOLDOWN_EXPIRED"] = "\124cff00ff00冷却结束\124r";
 --
-L["EXPLORER_TITLE"] = "ALA @ 网易有爱 \124cff00ff00wowui.w.163.com\124r";
-L.EXPLORER_SET = {
+l10n["EXPLORER_TITLE"] = "ALA @ 网易有爱 \124cff00ff00wowui.w.163.com\124r";
+l10n.EXPLORER_SET = {
 	skill = "技能",
 	type = "物品类型",
 	subType = "子类型",
 	eqLoc = "装备部位",
 };
-L.ITEM_TYPE_LIST = {
+l10n.ITEM_TYPE_LIST = {
 	[LE_ITEM_CLASS_CONSUMABLE] = "消耗品",				--	0	Consumable
 	[LE_ITEM_CLASS_CONTAINER] = "容器",					--	1	Container
 	[LE_ITEM_CLASS_WEAPON] = "武器",					--	2	Weapon
@@ -222,7 +223,7 @@ L.ITEM_TYPE_LIST = {
 	[LE_ITEM_CLASS_BATTLEPET] = "战斗宠物",				--	17	Battle Pets
 	[LE_ITEM_CLASS_WOW_TOKEN] = "WoW Token",			--	18	WoW Token
 };
-L.ITEM_SUB_TYPE_LIST = {
+l10n.ITEM_SUB_TYPE_LIST = {
 	[LE_ITEM_CLASS_CONSUMABLE] = {			--	0	Consumable
 		[0] = "消耗品",				--	Explosives and Devices
 		[1] = "药水",				--	Potion
@@ -429,7 +430,7 @@ L.ITEM_SUB_TYPE_LIST = {
 		[0] = "WoW Token",		--	WoW Token
 	},
 };
-L.ITEM_EQUIP_LOC = {
+l10n.ITEM_EQUIP_LOC = {
 	[0] = "弹药",
 	[1] = "头部",
 	[2] = "颈部",
@@ -452,9 +453,9 @@ L.ITEM_EQUIP_LOC = {
 	[21] = "单手武器",
 	[22] = "双手武器",
 };
-L["EXPLORER_CLEAR_FILTER"] = "\124cff00ff00清除\124r";
+l10n["EXPLORER_CLEAR_FILTER"] = "\124cff00ff00清除\124r";
 --
-L.SLASH_NOTE = {
+l10n.SLASH_NOTE = {
 	["expand"] = "加宽窗口",
 	["blz_style"] = "暴雪风格",
 	["bg_color"] = "点击设置背景颜色",
@@ -478,17 +479,17 @@ L.SLASH_NOTE = {
 	["first_auction_mod"] = "首选拍卖插件",
 	["first_auction_mod:*"] = "自动选择",
 };
-L.ALPHA = "透明度";
-L.CHAR_LIST = "角色列表";
-L.CHAR_DEL = "删除角色";
-L["INVALID_COMMANDS"] = "无效命令参数，使用\124cff00ff00true、1、on、enable\124r 或者 \124cffff0000false、0、off、disable\124r.";
-L.TooltipLines = {
+l10n.ALPHA = "透明度";
+l10n.CHAR_LIST = "角色列表";
+l10n.CHAR_DEL = "删除角色";
+l10n["INVALID_COMMANDS"] = "无效命令参数，使用\124cff00ff00true、1、on、enable\124r 或者 \124cffff0000false、0、off、disable\124r.";
+l10n.TooltipLines = {
 	"左键打开浏览器",
 	"右键打开设置",
 };
 
 --
-L.ENCHANT_FILTER = {
+l10n.ENCHANT_FILTER = {
 	INVTYPE_CLOAK = "披風",
 	INVTYPE_CHEST = "胸甲",
 	INVTYPE_WRIST = "護腕",
@@ -499,8 +500,8 @@ L.ENCHANT_FILTER = {
 	NONE = "沒有匹配的附魔",
 };
 
-L.ENCHANT_FILTER.INVTYPE_ROBE = L.ENCHANT_FILTER.INVTYPE_CHEST;
-L.ENCHANT_FILTER.INVTYPE_2HWEAPON = L.ENCHANT_FILTER.INVTYPE_WEAPON;
-L.ENCHANT_FILTER.INVTYPE_WEAPONMAINHAND = L.ENCHANT_FILTER.INVTYPE_WEAPON;
-L.ENCHANT_FILTER.INVTYPE_WEAPONOFFHAND = L.ENCHANT_FILTER.INVTYPE_WEAPON;
+l10n.ENCHANT_FILTER.INVTYPE_ROBE = l10n.ENCHANT_FILTER.INVTYPE_CHEST;
+l10n.ENCHANT_FILTER.INVTYPE_2HWEAPON = l10n.ENCHANT_FILTER.INVTYPE_WEAPON;
+l10n.ENCHANT_FILTER.INVTYPE_WEAPONMAINHAND = l10n.ENCHANT_FILTER.INVTYPE_WEAPON;
+l10n.ENCHANT_FILTER.INVTYPE_WEAPONOFFHAND = l10n.ENCHANT_FILTER.INVTYPE_WEAPON;
 

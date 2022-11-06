@@ -1,10 +1,12 @@
 --[[--
 	by ALA @ 163UI
 --]]--
-
-local __addon__, __namespace__ = ...;
-local __db__ = __namespace__.__db__;
-local L = __namespace__.L;
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
 -->		upvalue
 	local next = next;
@@ -13,26 +15,17 @@ local L = __namespace__.L;
 	local max = math.max;
 	local format = string.format;
 
-	local C_Timer_After = C_Timer.After;
 	local C_Map_GetAreaInfo = C_Map.GetAreaInfo;
-	local UnitFactionGroup = UnitFactionGroup;
 	local IsAddOnLoaded = IsAddOnLoaded;
 
 	local _G = _G;
-	--[[
-		local GetLocale = GetLocale;
-	]]
 -->
+	local DataAgent = DT.DataAgent;
+	local l10n = CT.l10n;
 
-
-local CURPHASE = __db__.CURPHASE;
-local LOCALE = GetLocale();
-
-
-local AuctionMod = nil;
--- local MTSL_DATA = nil;
-
----->	index
+-->
+MT.BuildEnv("MissingTradeSkillsList");
+-->		predef
 	local index_validated = 1;
 	local index_phase = 2;
 	local index_pid = 3;
@@ -74,13 +67,9 @@ local AuctionMod = nil;
 	local index_i_name_lower = 10;
 	local index_i_link_lower = 11;
 	local index_i_string = 12;
-----
+-->
 
-
--->		****
-__namespace__:BuildEnv("MissingTradeSkillsList");
--->		****
-
+-- local MTSL_DATA = nil;
 
 --	mtsl
 local LT_MTSL_LocaleKey = {
@@ -106,7 +95,7 @@ local LT_MTSL_SkillName = {
 	[10] = "Enchanting",
 	[15] = "Jewelcrafting",
 };
-local MTSL_LOCALE = LT_MTSL_LocaleKey[LOCALE] or LT_MTSL_LocaleKey.enUS;
+local MTSL_LOCALE = LT_MTSL_LocaleKey[CT.LOCALE] or LT_MTSL_LocaleKey.enUS;
 local LF_MTSL_SetQuest;
 local LF_MTSL_SetItem;
 local LF_MTSL_SetObject;
@@ -178,10 +167,10 @@ LF_MTSL_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, sta
 								line = line .. "Lv" .. xp_level.min;
 							end
 							if xp_level.is_elite > 0 then
-								line = line .. L["elite"];
+								line = line .. l10n["elite"];
 							end
 						end
-						line = line .. " [" .. C_Map_GetAreaInfo(nv.zone_id) or L["unknown area"];
+						line = line .. " [" .. C_Map_GetAreaInfo(nv.zone_id) or l10n["unknown area"];
 						local location = nv.location;
 						if location and location.x ~= "-" and location.y ~= "-" then
 							line = line .. " " .. location.x .. ", " .. location.y .. "]";
@@ -189,8 +178,8 @@ LF_MTSL_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, sta
 							line = line .. "]";
 						end
 						local phase = nv.phase;
-						if phase and phase > CURPHASE then
-							line = line .. " " .. L["phase"] .. phase;
+						if phase and phase > DataAgent.CURPHASE then
+							line = line .. " " .. l10n["phase"] .. phase;
 						end
 						Tip:AddDoubleLine(label, line);
 						local special_action = nv.special_action;
@@ -208,7 +197,7 @@ LF_MTSL_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, sta
 					end
 				end
 				if not got_one_data then
-					Tip:AddDoubleLine(" ", L["sold_by"] .. ": |cffff0000unknown|r, npcID: " .. uid);
+					Tip:AddDoubleLine(" ", l10n["sold_by"] .. ": |cffff0000unknown|r, npcID: " .. uid);
 				end
 				Tip:Show();
 			end
@@ -229,20 +218,20 @@ LF_MTSL_SetQuest = function(Tip, pid, qid, label, stack_size)
 						if name then
 							line = line .. qv.name[MTSL_LOCALE] .. "]";
 						else
-							line = line .. "|cffffff00" .. L["quest"] .. "|r ID: " .. qid .. "]";
+							line = line .. "|cffffff00" .. l10n["quest"] .. "|r ID: " .. qid .. "]";
 						end
 						local min_xp_level = qv.min_xp_level;
 						if min_xp_level then
 							line = line .. "Lv" .. min_xp_level;
 						end
 						local phase = qv.phase;
-						if phase and phase > CURPHASE then
-							line = line .. " " .. L["phase"] .. phase;
+						if phase and phase > DataAgent.CURPHASE then
+							line = line .. " " .. l10n["phase"] .. phase;
 						end
-						Tip:AddDoubleLine(label, L["quest_reward"] .. ": |cffffff00" .. line .. "|r");
+						Tip:AddDoubleLine(label, l10n["quest_reward"] .. ": |cffffff00" .. line .. "|r");
 						if qv.npcs then
 							for _, uid in next, qv.npcs do
-								LF_MTSL_SetUnit(Tip, pid, uid, " ", UnitFactionGroup('player') == "Alliance", L["quest_accepted_from"], "|r", stack_size + 1);
+								LF_MTSL_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, l10n["quest_accepted_from"], "|r", stack_size + 1);
 							end
 						end
 						if qv.items then
@@ -272,7 +261,7 @@ LF_MTSL_SetQuest = function(Tip, pid, qid, label, stack_size)
 					end
 				end
 				if not got_one_data then
-					Tip:AddDoubleLine(label, "|cffffff00" .. L["quest"] .. "|r ID: " .. qid);
+					Tip:AddDoubleLine(label, "|cffffff00" .. l10n["quest"] .. "|r ID: " .. qid);
 				end
 			end
 			Tip:Show();
@@ -281,20 +270,20 @@ LF_MTSL_SetQuest = function(Tip, pid, qid, label, stack_size)
 end
 LF_MTSL_SetItem = function(Tip, pid, iid, label, stack_size)
 	if stack_size <= 8 then
-		local _, line, _, _, _, _, _, _, bind = __db__.item_info(iid);
+		local _, line, _, _, _, _, _, _, bind = DataAgent.item_info(iid);
 		if not line then
-			line = "|cffffffff" .. L["item"] .. "|r ID: " .. iid;
+			line = "|cffffffff" .. l10n["item"] .. "|r ID: " .. iid;
 		end
 		if bind ~= 1 and bind ~= 4 then
-			line = line .. "(|cff00ff00" .. L["tradable"] .. "|r)";
-			if AuctionMod ~= nil then
-				local price = AuctionMod.F_QueryPriceByID(iid);
+			line = line .. "(|cff00ff00" .. l10n["tradable"] .. "|r)";
+			if VT.AuctionMod ~= nil then
+				local price = VT.AuctionMod.F_QueryPriceByID(iid);
 				if price and price > 0 then
-					line = line .. " |cff00ff00AH|r " .. __namespace__.F_GetMoneyString(price);
+					line = line .. " |cff00ff00AH|r " .. MT.GetMoneyString(price);
 				end
 			end
 		else
-			line = line .. "(|cffff0000" .. L["non_tradable"] .. "|r)";
+			line = line .. "(|cffff0000" .. l10n["non_tradable"] .. "|r)";
 		end
 		Tip:AddDoubleLine(label, line);
 		if MTSL_DATA then
@@ -306,23 +295,23 @@ LF_MTSL_SetItem = function(Tip, pid, iid, label, stack_size)
 						local vendors = iv.vendors;
 						if vendors then
 							for _, uid in next, vendors.sources do
-								LF_MTSL_SetUnit(Tip, pid, uid, " ", UnitFactionGroup('player') == "Alliance", L["sold_by"], "|r", stack_size + 1);
+								LF_MTSL_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, l10n["sold_by"], "|r", stack_size + 1);
 							end
 						end
 						local drops = iv.drops;
 						if drops then
 							if drops.sources then
 								for _, uid in next, drops.sources do
-									LF_MTSL_SetUnit(Tip, pid, uid, " ", UnitFactionGroup('player') ~= "Alliance", L["dropped_by"], "|r", stack_size + 1);
+									LF_MTSL_SetUnit(Tip, pid, uid, " ", not CT.SELFISALLIANCE, l10n["dropped_by"], "|r", stack_size + 1);
 								end
 							end
 							local range = drops.range;
 							if range then
 								if range.min_xp_level and range.max_xp_level then
 									local line = range.min_xp_level .. "-" .. range.max_xp_level;
-									Tip:AddDoubleLine(" ", L["world_drop"] .. ": |cffff0000" .. L["dropped_by_mod_level"] .. line .. "|r");
+									Tip:AddDoubleLine(" ", l10n["world_drop"] .. ": |cffff0000" .. l10n["dropped_by_mod_level"] .. line .. "|r");
 								else
-									Tip:AddDoubleLine(" ", L["world_drop"]);
+									Tip:AddDoubleLine(" ", l10n["world_drop"]);
 								end
 							end
 						end
@@ -388,7 +377,7 @@ LF_MTSL_SetObject = function(Tip, pid, oid, label, stack_size)
 				for _, ov in next, objects do
 					if ov.id == oid then
 						got_one_data = true;
-						local line = ov.name[MTSL_LOCALE] or ("|cffffffff" .. L["object"] .. "|r ID: " .. oid);
+						local line = ov.name[MTSL_LOCALE] or ("|cffffffff" .. l10n["object"] .. "|r ID: " .. oid);
 						line = line .. " [" .. C_Map_GetAreaInfo(ov.zone_id);
 						local location = ov.location;
 						if location and location.x ~= "-" and location.y ~= "-" then
@@ -397,10 +386,10 @@ LF_MTSL_SetObject = function(Tip, pid, oid, label, stack_size)
 							line = line .. "]";
 						end
 						local phase = ov.phase;
-						if phase and phase > CURPHASE then
-							line = line .. " " .. L["phase"] .. phase;
+						if phase and phase > DataAgent.CURPHASE then
+							line = line .. " " .. l10n["phase"] .. phase;
 						end
-						Tip:AddDoubleLine(label, L["object"] .. ": |cffffffff" .. line .. "|r");
+						Tip:AddDoubleLine(label, l10n["object"] .. ": |cffffffff" .. line .. "|r");
 						local special_action = ov.special_action;
 						if special_action then
 							local sav = MTSL_DATA["special_actions"][special_action];
@@ -415,7 +404,7 @@ LF_MTSL_SetObject = function(Tip, pid, oid, label, stack_size)
 					end
 				end
 				if not got_one_data then
-					Tip:AddDoubleLine(label, "|cffffffff" .. L["object"] .. "|r ID: " .. oid);
+					Tip:AddDoubleLine(label, "|cffffffff" .. l10n["object"] .. "|r ID: " .. oid);
 				end
 				Tip:Show();
 			end
@@ -423,10 +412,10 @@ LF_MTSL_SetObject = function(Tip, pid, oid, label, stack_size)
 	end
 end
 local function LF_MTSL_SetSpellTip(Tip, sid)
-	local info = __db__.get_info_by_sid(sid);
+	local info = DataAgent.get_info_by_sid(sid);
 	if info then
 		if info[index_trainer] then			-- trainer
-			Tip:AddDoubleLine(L["LABEL_GET_FROM"], "|cffff00ff" .. L["trainer"] .. "|r");
+			Tip:AddDoubleLine(l10n["LABEL_GET_FROM"], "|cffff00ff" .. l10n["trainer"] .. "|r");
 			Tip:Show();
 		end
 		local pid = info[index_pid];
@@ -434,24 +423,24 @@ local function LF_MTSL_SetSpellTip(Tip, sid)
 		if rids then				-- recipe
 			for index = 1, #rids do
 				local rid = rids[index];
-				LF_MTSL_SetItem(Tip, pid, rid, L["LABEL_GET_FROM"], 1);
+				LF_MTSL_SetItem(Tip, pid, rid, l10n["LABEL_GET_FROM"], 1);
 			end
 		end
 		local qids = info[index_quest];
 		if qids then			-- quests
 			for index = 1, #qids do
 				local qid = qids[index];
-				LF_MTSL_SetQuest(Tip, pid, qid, L["LABEL_GET_FROM"], 1);
+				LF_MTSL_SetQuest(Tip, pid, qid, l10n["LABEL_GET_FROM"], 1);
 			end
 		end
 		local oid = info[index_object];
 		if oid ~= nil then			-- objects
 			if type(oid) == 'table' then
 				for _, oid in next, oid do
-					LF_MTSL_SetObject(Tip, pid, oid, L["LABEL_GET_FROM"], 1);
+					LF_MTSL_SetObject(Tip, pid, oid, l10n["LABEL_GET_FROM"], 1);
 				end
 			else
-				LF_MTSL_SetObject(Tip, pid, oid, L["LABEL_GET_FROM"], 1);
+				LF_MTSL_SetObject(Tip, pid, oid, l10n["LABEL_GET_FROM"], 1);
 			end
 		end
 		--
@@ -486,14 +475,14 @@ local function LF_MTSL_SetSpellTip(Tip, sid)
 end
 
 
-function __namespace__.toggle_mtsl(hide)
+function MT.MTSL_Toggle(hide)
 end
-function __namespace__.hide_mtsl(val)
+function MT.MTSL_Hide(val)
 end
 
 
 local function callback()
-	__namespace__:FireEvent("RECIPESOURCE_MOD_LOADED", {
+	MT.FireCallback("RECIPESOURCE_MOD_LOADED", {
 		-- MTSL_DATA = _G.MTSL_DATA;
 		SetSpell = LF_MTSL_SetSpellTip,
 		SetItem = LF_MTSL_SetItem,
@@ -501,16 +490,10 @@ local function callback()
 		SetObject = LF_MTSL_SetObject,
 		SetQuest = LF_MTSL_SetQuest,
 	});
-	__namespace__:AddCallback("AUCTION_MOD_LOADED", function(mod)
-		if mod ~= nil then
-			AuctionMod = mod;
-		end
-	end);
-	local SET = __namespace__.SET;
-	if SET ~= nil then
-		C_Timer_After(1.0, function() __namespace__.hide_mtsl(SET.hide_mtsl); end);
+	if VT.SET ~= nil then
+		MT.After(1.0, function() MT.MTSL_Hide(VT.SET.hide_mtsl); end);
 	end
-	function __namespace__.toggle_mtsl(hide)
+	function MT.MTSL_Toggle(hide)
 		if hide then
 			MTSLUI_TOGGLE_BUTTON.ui_frame:SetAlpha(0);
 			MTSLUI_TOGGLE_BUTTON.ui_frame:EnableMouse(false);
@@ -527,15 +510,15 @@ local function callback()
 			-- MTSLUI_MISSING_TRADESKILLS_FRAME.ui_frame:Show();
 		end
 	end
-	function __namespace__.hide_mtsl(val)
-		__namespace__.toggle_mtsl(val);
+	function MT.MTSL_Hide(val)
+		MT.MTSL_Toggle(val);
 	end
 end
-__namespace__:AddAddOnCallback("MissingTradeSkillsList", callback);
-__namespace__:AddAddOnCallback("MissingTradeSkillsList_TBC", callback);
+MT.RegisterOnAddOnLoaded("MissingTradeSkillsList", callback);
+MT.RegisterOnAddOnLoaded("MissingTradeSkillsList_TBC", callback);
 
-__namespace__:AddAddOnCallback("MissingTradeSkillsList_TBC_Data", function()
-	__namespace__:FireEvent("RECIPESOURCE_MOD_LOADED", {
+MT.RegisterOnAddOnLoaded("MissingTradeSkillsList_TBC_Data", function()
+	MT.FireCallback("RECIPESOURCE_MOD_LOADED", {
 		-- MTSL_DATA = _G.MTSL_DATA;
 		SetSpell = LF_MTSL_SetSpellTip,
 		SetItem = LF_MTSL_SetItem,
@@ -543,10 +526,5 @@ __namespace__:AddAddOnCallback("MissingTradeSkillsList_TBC_Data", function()
 		SetObject = LF_MTSL_SetObject,
 		SetQuest = LF_MTSL_SetQuest,
 	});
-	__namespace__:AddCallback("AUCTION_MOD_LOADED", function(mod)
-		if mod ~= nil then
-			AuctionMod = mod;
-		end
-	end);
 end);
 

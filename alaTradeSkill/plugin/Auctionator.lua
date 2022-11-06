@@ -1,8 +1,13 @@
 --[[--
 	by ALA @ 163UI
 --]]--
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
-local __addon__, __namespace__ = ...;
 
 -->		upvalue
 	local GetItemInfo = GetItemInfo;
@@ -10,7 +15,7 @@ local __addon__, __namespace__ = ...;
 
 
 -->		****
-__namespace__:BuildEnv("Auctionator");
+MT.BuildEnv("Auctionator");
 -->		****
 
 
@@ -63,7 +68,7 @@ function mod.F_QueryPriceByID(id, num)
 end
 
 
-__namespace__.F_AuctionModCallback("Auctionator", function()
+MT.RegsiterAuctionModOnLoad("Auctionator", function()
 	if Auctionator ~= nil and Auctionator.API ~= nil and Auctionator.API.v1 ~= nil then
 		local Get = Auctionator.API.v1.GetAuctionPriceByItemID;
 		if Get ~= nil then
@@ -93,5 +98,5 @@ __namespace__.F_AuctionModCallback("Auctionator", function()
 			mod.F_OnDBUpdate = Atr_RegisterFor_DBupdated;
 		end
 	end
-	__namespace__.F_AddAuctionMod("Auctionator", mod);
+	MT.AddAuctionMod("Auctionator", mod);
 end);

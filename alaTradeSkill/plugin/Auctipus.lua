@@ -1,8 +1,13 @@
 --[[--
 	by ALA @ 163UI
 --]]--
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
-local __addon__, __namespace__ = ...;
 
 -->		upvalue
 	local GetItemInfo = GetItemInfo;
@@ -10,7 +15,7 @@ local __addon__, __namespace__ = ...;
 
 
 -->		****
-__namespace__:BuildEnv("Auctipus");
+MT.BuildEnv("Auctipus");
 -->		****
 
 
@@ -38,6 +43,6 @@ function mod.F_QueryPriceByID(id, num)
 end
 
 
-__namespace__.F_AuctionModCallback("Auctipus", function()
-	__namespace__.F_AddAuctionMod("Auctipus", mod);
+MT.RegsiterAuctionModOnLoad("Auctipus", function()
+	MT.AddAuctionMod("Auctipus", mod);
 end);

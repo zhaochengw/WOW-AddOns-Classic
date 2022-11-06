@@ -7,16 +7,18 @@
 -->
     <include file = "libs\libs.xml" />
 
+    <script file = "init.lua" />
+
     <include file = "Locale\Locale.xml" />
     <include file = "Data\Data.xml" />
 
-    <script file = "main.lua" />
     <script file = "db.lua" />
     <script file = "ui.lua" />
     <script file = "tooltip.lua" />
     <script file = "cooldown.lua" />
     <script file = "communication.lua" />
-    <script file = "minor.lua" />
+    <script file = "misc.lua" />
+    <script file = "setting.lua" />
 
     <include file = "plugin\plugin.xml" />
     <!-- <include file = "Bindings.xml" /> -->

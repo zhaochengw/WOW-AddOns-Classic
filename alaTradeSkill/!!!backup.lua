@@ -2,18 +2,15 @@
 	by ALA @ 163UI
 --]]--
 
-local __addon__, __namespace__ = ...;
-local __db__ = __namespace__.__db__;
-local L = __namespace__.L;
+local __addon, __private = ...;
+local DataAgent = DT.DataAgent;
+local l10n = CT.l10n;
 
-
-local CURPHASE = __db__.CURPHASE;
-local LOCALE = GetLocale();
-local T_uiFrames = __namespace__.T_uiFrames;
+local T_uiFrames = __private.T_uiFrames;
 
 
 -->		****
-__namespace__:BuildEnv("external");
+MT.BuildEnv("external");
 -->		****
 
 do	--	supreme craft
@@ -31,20 +28,20 @@ do	--	supreme craft
 		UNIT_SPELLCAST_INTERRUPTED: unitTarget, castGUID, spellID
 		UNIT_SPELLCAST_INTERRUPTED: unitTarget, castGUID, spellID
 	]==]
-		function __namespace__.ui_supremeListButton_OnEnter(self)
+		function __private.ui_supremeListButton_OnEnter(self)
 			local frame = self.frame;
 			local sid = self.list[self:GetDataIndex()];
 			if type(sid) == 'table' then
 				sid = sid[1];
 			end
-			-- local pid = __db__.get_pid_by_pname(frame.pname());
-			local pid = self.flag or __db__.get_pid_by_sid(sid);
+			-- local pid = DataAgent.get_pid_by_pname(frame.pname());
+			local pid = self.flag or DataAgent.get_pid_by_sid(sid);
 			if pid then
-				local set = SET[pid];
+				local set = VT.SET[pid];
 				mouse_focus_sid = sid;
 				mouse_focus_phase = set.phase;
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-				local info = __db__.get_info_by_sid(sid);
+				local info = DataAgent.get_info_by_sid(sid);
 				if info then
 					if set.showItemInsteadOfSpell and info[index_cid] then
 						GameTooltip:SetItemByID(info[index_cid]);
@@ -52,23 +49,23 @@ do	--	supreme craft
 						GameTooltip:SetSpellByID(sid);
 					end
 					local phase = info[index_phase];
-					if phase > CURPHASE then
-						GameTooltip:AddLine("|cffff0000" .. L["AVAILABLE_IN_PHASE_"] .. phase .. "|r");
+					if phase > DataAgent.CURPHASE then
+						GameTooltip:AddLine("|cffff0000" .. l10n["AVAILABLE_IN_PHASE_"] .. phase .. "|r");
 					end
 					GameTooltip:Show();
 				else
 					GameTooltip:SetSpellByID(sid);
 				end
-				local text = __db__.get_difficulty_rank_list_text_by_sid(sid, true);
+				local text = DataAgent.get_difficulty_rank_list_text_by_sid(sid, true);
 				if text then
-					GameTooltip:AddDoubleLine(L["LABEL_RANK_LEVEL"], text);
+					GameTooltip:AddDoubleLine(l10n["LABEL_RANK_LEVEL"], text);
 					GameTooltip:Show();
 				end
 				local data = frame.hash[sid];
 				if pid == 'explorer' then
 					local hash = explorer_hash[sid];
 					if hash then
-						local str = L["RECIPE_LEARNED"] .. ": ";
+						local str = l10n["RECIPE_LEARNED"] .. ": ";
 						local index = 0;
 						for GUID, _ in next, hash do
 							if index ~= 0 and index % 3 == 0 then
@@ -91,15 +88,15 @@ do	--	supreme craft
 					data = data and data[PLAYER_GUID];
 				end
 				if not data then
-					__namespace__.ui_set_tooltip_mtsl(sid);
+					__private.ui_set_tooltip_mtsl(sid);
 				end
 			end
 		end
-		function __namespace__.ui_supremeListButton_OnLeave(self)
+		function __private.ui_supremeListButton_OnLeave(self)
 			mouse_focus_sid = nil;
 			button_info_OnLeave(self);
 		end
-		function __namespace__.ui_supremeListButton_OnClick(self, button)
+		function __private.ui_supremeListButton_OnClick(self, button)
 			local frame = self.frame;
 			local sid = self.list[self:GetDataIndex()];
 			if type(sid) == 'table' then
@@ -108,7 +105,7 @@ do	--	supreme craft
 			local data = frame.hash[sid];
 			if button == "LeftButton" then
 				if IsShiftKeyDown() then
-					__namespace__.F_HandleShiftClick(self.flag or __db__.get_pid_by_sid(sid), sid);
+					MT.HandleShiftClick(self.flag or DataAgent.get_pid_by_sid(sid), sid);
 				elseif IsAltKeyDown() then
 					local text1 = nil;
 					local text2 = nil;
@@ -117,9 +114,9 @@ do	--	supreme craft
 						if n and n > 0 then
 							local m1, m2 = frame.recipe_num_made(data);
 							if m1 == m2 then
-								text1 = frame.recipe_link(data) .. "x" .. m1 .. L["PRINT_MATERIALS: "];
+								text1 = frame.recipe_link(data) .. "x" .. m1 .. l10n["PRINT_MATERIALS: "];
 							else
-								text1 = frame.recipe_link(data) .. "x" .. m1 .. "-" .. m2 .. L["PRINT_MATERIALS: "];
+								text1 = frame.recipe_link(data) .. "x" .. m1 .. "-" .. m2 .. l10n["PRINT_MATERIALS: "];
 							end
 							text2 = "";
 							if n > 4 then
@@ -133,23 +130,23 @@ do	--	supreme craft
 							end
 						end
 					else
-						local info = __db__.get_info_by_sid(sid);
+						local info = DataAgent.get_info_by_sid(sid);
 						local cid = info[index_cid];
 						if info then
 							if cid then
-								text1 = __db__.item_link_s(cid) .. "x" .. (info[index_num_made_min] == info[index_num_made_max] and info[index_num_made_min] or (info[index_num_made_min] .. "-" .. info[index_num_made_max])) .. L["PRINT_MATERIALS: "];
+								text1 = DataAgent.item_link_s(cid) .. "x" .. (info[index_num_made_min] == info[index_num_made_max] and info[index_num_made_min] or (info[index_num_made_min] .. "-" .. info[index_num_made_max])) .. l10n["PRINT_MATERIALS: "];
 							else
-								text1 = __db__.spell_name_s(sid) .. L["PRINT_MATERIALS: "];
+								text1 = DataAgent.spell_name_s(sid) .. l10n["PRINT_MATERIALS: "];
 							end
 							text2 = "";
 							local rinfo = info[index_reagents_id];
 							if #rinfo > 4 then
 								for i = 1, #rinfo do
-									text2 = text2 .. __db__.item_name_s(rinfo[i]) .. "x" .. info[index_reagents_count][i];
+									text2 = text2 .. DataAgent.item_name_s(rinfo[i]) .. "x" .. info[index_reagents_count][i];
 								end
 							else
 								for i = 1, #rinfo do
-									text2 = text2 .. __db__.item_link_s(rinfo[i]) .. "x" .. info[index_reagents_count][i];
+									text2 = text2 .. DataAgent.item_link_s(rinfo[i]) .. "x" .. info[index_reagents_count][i];
 								end
 							end
 						end
@@ -162,9 +159,9 @@ do	--	supreme craft
 						-- ChatEdit_InsertLink(text1 .. " " .. text2, false);
 					end
 				elseif IsControlKeyDown() then
-					local cid = __db__.get_cid_by_sid(sid);
+					local cid = DataAgent.get_cid_by_sid(sid);
 					if cid then
-						local link = __db__.item_link(cid);
+						local link = DataAgent.item_link(cid);
 						if link then
 							DressUpItemLink(link);
 						end
@@ -193,8 +190,8 @@ do	--	supreme craft
 				end
 			elseif button == "RightButton" then
 				frame.searchEdit:ClearFocus();
-				local pid = __db__.get_pid_by_sid(sid);
-				if FAV[sid] then
+				local pid = DataAgent.get_pid_by_sid(sid);
+				if VT.FAV[sid] then
 					list_drop_sub_fav.para[1] = frame;
 					list_drop_sub_fav.para[2] = pid;
 					list_drop_sub_fav.para[3] = sid;
@@ -211,7 +208,7 @@ do	--	supreme craft
 				ALADROP(self, "BOTTOMLEFT", list_drop_meta);
 			end
 		end
-		function __namespace__.ui_CreateSupremeListButton(parent, index, buttonHeight)
+		function __private.ui_CreateSupremeListButton(parent, index, buttonHeight)
 			local frame = parent:GetParent():GetParent();
 
 			local button = CreateFrame("BUTTON", nil, parent);
@@ -227,7 +224,7 @@ do	--	supreme craft
 			local del = CreateFrame("BUTTON", nil, button);
 			del:SetSize(buttonHeight / 2, buttonHeight / 2);
 			del:SetPoint("LEFT", 4, 0);
-			__namespace__.ui_ModernButton(del, nil, ui_style.texture_modern_button_close);
+			__private.ui_ModernButton(del, nil, ui_style.texture_modern_button_close);
 			del:SetScript("OnClick", frame.del);
 			button.del = del;
 
@@ -273,14 +270,14 @@ do	--	supreme craft
 			local up = CreateFrame("BUTTON", nil, button);
 			up:SetSize(buttonHeight / 2 - 3, buttonHeight / 2 - 3);
 			up:SetPoint("TOPRIGHT", -4, -2);
-			__namespace__.ui_ModernButton(up, nil, ui_style.texture_modern_arrow_up);
+			__private.ui_ModernButton(up, nil, ui_style.texture_modern_arrow_up);
 			up:SetScript("OnClick", frame.change_order_up);
 			button.up = up;
 
 			local down = CreateFrame("BUTTON", nil, button);
 			down:SetSize(buttonHeight / 2 - 3, buttonHeight / 2 - 3);
 			down:SetPoint("BOTTOMRIGHT", -4, 2);
-			__namespace__.ui_ModernButton(down, nil, ui_style.texture_modern_arrow_down);
+			__private.ui_ModernButton(down, nil, ui_style.texture_modern_arrow_down);
 			down:SetScript("OnClick", frame.change_order_down);
 			button.down = down;
 
@@ -294,10 +291,10 @@ do	--	supreme craft
 			quality_glow:Show();
 			button.quality_glow = quality_glow;
 
-			button:SetScript("OnEnter", __namespace__.ui_supremeListButton_OnEnter);
-			button:SetScript("OnLeave", __namespace__.ui_supremeListButton_OnLeave);
+			button:SetScript("OnEnter", __private.ui_supremeListButton_OnEnter);
+			button:SetScript("OnLeave", __private.ui_supremeListButton_OnLeave);
 			button:RegisterForClicks("AnyUp");
-			button:SetScript("OnClick", __namespace__.ui_supremeListButton_OnClick);
+			button:SetScript("OnClick", __private.ui_supremeListButton_OnClick);
 			button:RegisterForDrag("LeftButton");
 			button:SetScript("OnHide", ALADROP);
 
@@ -305,23 +302,23 @@ do	--	supreme craft
 
 			return button;
 		end
-		function __namespace__.ui_SetSupremeListButton(button, data_index)
+		function __private.ui_SetSupremeListButton(button, data_index)
 			local frame = button.frame;
 			local list = frame.list;
 			local hash = frame.hash;
 			if data_index <= #list then
-				local pid = __db__.get_pid_by_pname(frame.pname());
+				local pid = DataAgent.get_pid_by_pname(frame.pname());
 				if pid then
-					local set = SET[pid];
+					local set = VT.SET[pid];
 					local sid = list[data_index];
-					local cid = __db__.get_cid_by_sid(sid);
+					local cid = DataAgent.get_cid_by_sid(sid);
 					local data = hash[sid];
 					if data then
 						local name, rank, num = frame.recipe_info(data);
 						if name and rank ~= 'header' then
 							button:Show();
 							button:SetBackdropColor(unpack(ui_style.listButtonBackdropColor_Enabled));
-							local quality = cid and __db__.item_rarity(cid);
+							local quality = cid and DataAgent.item_rarity(cid);
 							button.icon:SetTexture(frame.recipe_icon(data));
 							button.icon:SetVertexColor(1.0, 1.0, 1.0, 1.0);
 							if num > 0 then
@@ -331,7 +328,7 @@ do	--	supreme craft
 							end
 							button.title:SetTextColor(unpack(rank_color[rank_index[rank]] or ui_style.color_white));
 							if set.showRank then
-								button.note:SetText(__db__.get_difficulty_rank_list_text_by_sid(sid, false));
+								button.note:SetText(DataAgent.get_difficulty_rank_list_text_by_sid(sid, false));
 							else
 								button.note:SetText("");
 							end
@@ -342,7 +339,7 @@ do	--	supreme craft
 							else
 								button.quality_glow:Hide();
 							end
-							if FAV[sid] then
+							if VT.FAV[sid] then
 								button.star:Show();
 							else
 								button.star:Hide();
@@ -357,29 +354,29 @@ do	--	supreme craft
 						end
 					else
 						button:Show();
-						if SET.colored_rank_for_unknown then
+						if VT.SET.colored_rank_for_unknown then
 							button:SetBackdropColor(unpack(ui_style.listButtonBackdropColor_Disabled));
 						else
 							button:SetBackdropColor(unpack(ui_style.listButtonBackdropColor_Enabled));
 						end
 						local _, quality, icon;
 						if cid then
-							_, _, quality, _, icon = __db__.item_info(cid);
+							_, _, quality, _, icon = DataAgent.item_info(cid);
 						else
 							quality = nil;
 							icon = ICON_FOR_NO_CID;
 						end
 						button.icon:SetTexture(icon);
 						button.icon:SetVertexColor(1.0, 0.0, 0.0, 1.0);
-						button.title:SetText(__db__.spell_name_s(sid));
-						if SET.colored_rank_for_unknown then
-							local var = rawget(VAR, pid);
-							button.title:SetTextColor(unpack(rank_color[__db__.get_difficulty_rank_by_sid(sid, var and var.cur_rank or 0)] or ui_style.color_white));
+						button.title:SetText(DataAgent.spell_name_s(sid));
+						if VT.SET.colored_rank_for_unknown then
+							local var = rawget(VT.VAR, pid);
+							button.title:SetTextColor(unpack(rank_color[DataAgent.get_difficulty_rank_by_sid(sid, var and var.cur_rank or 0)] or ui_style.color_white));
 						else
 							button.title:SetTextColor(1.0, 0.0, 0.0, 1.0);
 						end
 						if set.showRank then
-							button.note:SetText(__db__.get_difficulty_rank_list_text_by_sid(sid, false));
+							button.note:SetText(DataAgent.get_difficulty_rank_list_text_by_sid(sid, false));
 						else
 							button.note:SetText("");
 						end
@@ -390,7 +387,7 @@ do	--	supreme craft
 						else
 							button.quality_glow:Hide();
 						end
-						if FAV[sid] then
+						if VT.FAV[sid] then
 							button.star:Show();
 						else
 							button.star:Hide();
@@ -398,7 +395,7 @@ do	--	supreme craft
 						button:Deselect();
 					end
 					if GetMouseFocus() == button then
-						__namespace__.ui_skillListButton_OnEnter(button);
+						__private.ui_skillListButton_OnEnter(button);
 					end
 					if button.prev_sid ~= sid then
 						ALADROP(button);
@@ -439,15 +436,15 @@ do	--	supreme craft
 			end);
 			supreme:SetScript("OnHide", function(self)
 			end);
-			supreme.list = SET.supreme_list;
+			supreme.list = VT.SET.supreme_list;
 			supreme.hooked_frame = hooked_frame;
 			supreme.frame = hooked_frame.frame;
 			hooked_frame.supreme = supreme;
 
-			local scroll = ALASCR(supreme, nil, nil, ui_style.supremeListButtonHeight, __namespace__.ui_CreateSupremeListButton, __namespace__.ui_SetSupremeListButton);
+			local scroll = ALASCR(supreme, nil, nil, ui_style.supremeListButtonHeight, __private.ui_CreateSupremeListButton, __private.ui_SetSupremeListButton);
 			scroll:SetPoint("BOTTOMLEFT", 4, 0);
 			scroll:SetPoint("TOPRIGHT", - 4, - 28);
-			__namespace__.ui_ModifyALAScrollFrame(scroll);
+			__private.ui_ModifyALAScrollFrame(scroll);
 			supreme.scroll = scroll;
 
 			local call = CreateFrame("BUTTON", nil, hooked_frame, "UIPanelButtonTemplate");
@@ -457,12 +454,12 @@ do	--	supreme craft
 			call:SetScript("OnClick", function(self)
 				if supreme:IsShown() then
 					supreme:Hide();
-					call:SetText(L["OVERRIDE_OPEN"]);
-					SET.show_supreme = false;
+					call:SetText(l10n["OVERRIDE_OPEN"]);
+					VT.SET.show_supreme = false;
 				else
 					supreme:Show();
-					call:SetText(L["OVERRIDE_CLOSE"]);
-					SET.show_supreme = true;
+					call:SetText(l10n["OVERRIDE_CLOSE"]);
+					VT.SET.show_supreme = true;
 					supreme.F_Update();
 				end
 			end);

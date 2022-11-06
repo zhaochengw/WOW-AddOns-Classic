@@ -2,12 +2,16 @@
 	by ALA @ 163UI
 --]]--
 do return end	--	no need to do this
-
-local __addon__, __namespace__ = ...;
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
 
 -->		****
-__namespace__:BuildEnv("ElvUI");
+MT.BuildEnv("ElvUI");
 -->		****
 
 
@@ -26,6 +30,6 @@ local function LF_Skin_ElvUI(addon, frame)
 end
 
 
-__namespace__:AddAddOnCallback("ElvUI", function()
-	__namespace__:FireEvent("UI_MOD_LOADED", { Skin = LF_Skin_ElvUI, });
+MT.RegisterOnAddOnLoaded("ElvUI", function()
+	MT.FireCallback("UI_MOD_LOADED", { Skin = LF_Skin_ElvUI, });
 end);

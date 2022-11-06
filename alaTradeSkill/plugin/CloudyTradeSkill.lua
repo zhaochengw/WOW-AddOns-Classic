@@ -1,18 +1,22 @@
 --[[--
 	by ALA @ 163UI
 --]]--
-
-local __addon__, __namespace__ = ...;
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
 
 -->		****
-__namespace__:BuildEnv("CloudyTradeSkill");
+MT.BuildEnv("CloudyTradeSkill");
 -->		****
 
 
 local function LF_Skin_CloudyTradeSkill(addon, frame)
 	if frame ~= nil then
-		C_Timer.After(1.0, function()
+		MT.After(1.0, function()
 			local opt = _G["CTSOption-TradeSkillFrame"];
 			if opt ~= nil then
 				if frame.call ~= nil then
@@ -25,6 +29,6 @@ local function LF_Skin_CloudyTradeSkill(addon, frame)
 end
 
 
-__namespace__:AddAddOnCallback("CloudyTradeSkill", function()
-	__namespace__:FireEvent("UI_MOD_LOADED", { Skin = LF_Skin_CloudyTradeSkill, });
+MT.RegisterOnAddOnLoaded("CloudyTradeSkill", function()
+	MT.FireCallback("UI_MOD_LOADED", { Skin = LF_Skin_CloudyTradeSkill, });
 end);

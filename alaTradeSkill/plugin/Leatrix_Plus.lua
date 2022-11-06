@@ -1,19 +1,23 @@
 --[[--
 	by ALA @ 163UI
 --]]--
-
-local __addon__, __namespace__ = ...;
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
 
 -->		****
-__namespace__:BuildEnv("Leatrix_Plus");
+MT.BuildEnv("Leatrix_Plus");
 -->		****
 
 
-__namespace__:AddAddOnCallback("Leatrix_Plus", function()
+MT.RegisterOnAddOnLoaded("Leatrix_Plus", function()
 	if LeaPlusDB ~= nil then
 		LeaPlusDB["EnhanceProfessions"] = "Off";
 	end
-	__namespace__.F_uiFrameFixSkillList();
+	MT.FrameFixSkillList();
 end);
 

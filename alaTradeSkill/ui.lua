@@ -2,13 +2,11 @@
 	by ALA @ 163UI
 --]]--
 ----------------------------------------------------------------------------------------------------
-local _G = _G;
-local __ala_meta__ = _G.__ala_meta__;
-local uireimp = __ala_meta__.uireimp;
-
-local __addon__, __namespace__ = ...;
-local __db__ = __namespace__.__db__;
-local L = __namespace__.L;
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
 -->		upvalue
 	local pcall = pcall;
@@ -23,7 +21,6 @@ local L = __namespace__.L;
 
 	local max = math.max;
 	local min = math.min;
-	local floor = math.floor;
 	local strsub = string.sub;
 	local strlower = string.lower;
 	local strupper = string.upper;
@@ -36,9 +33,6 @@ local L = __namespace__.L;
 	local sort = table.sort;
 	local wipe = table.wipe;
 
-
-	local C_Timer_After = C_Timer.After;
-	local C_Timer_NewTicker = C_Timer.NewTicker;
 	local CreateFrame = CreateFrame;
 	local GetMouseFocus = GetMouseFocus;
 	local IsShiftKeyDown = IsShiftKeyDown;
@@ -66,38 +60,18 @@ local L = __namespace__.L;
 	local GameTooltip = GameTooltip;
 	local UIParent = UIParent;
 	local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend;
+	local UISpecialFrames = UISpecialFrames;
 
 	local _G = _G;
-	--[[
-		local GetLocale = GetLocale;
-		local BNGetInfo = BNGetInfo;
-		local UISpecialFrames = UISpecialFrames;
-		local UIParent = UIParent;
-		SystemFont_Shadow_Med1
-	]]
+	local SystemFont_Shadow_Med1 = SystemFont_Shadow_Med1;
+
 -->
+	local DataAgent = DT.DataAgent;
+	local l10n = CT.l10n;
 
-
-local CURPHASE = __db__.CURPHASE;
-local MAXPHASE = __db__.MAXPHASE;
-
-local BIG_NUMBER = 4294967295;
-local ICON_FOR_NO_CID = 135913;
-local PERIODIC_UPDATE_PERIOD = 1.0;
-local MAXIMUM_VAR_UPDATE_PERIOD = 4.0;
-local PLAYER_GUID = UnitGUID('player');
-local PLAYER_REALM_ID = tonumber(GetRealmID());
-local LOCALE = GetLocale();
-
-local _noop_, _log_, _error_ = __namespace__._noop_, __namespace__._log_, __namespace__._error_;
-local T_uiFrames = {  };
-
-
-local AVAR, VAR, SET, FAV = nil, nil, nil, nil;
-local AuctionMod = nil;
-
-
-----	index
+-->
+MT.BuildEnv("ui");
+-->		predef
 	local index_validated = 1;
 	local index_phase = 2;
 	local index_pid = 3;
@@ -139,7 +113,10 @@ local AuctionMod = nil;
 	local index_i_name_lower = 10;
 	local index_i_link_lower = 11;
 	local index_i_string = 12;
-----
+-->
+local ICON_FOR_NO_CID = 135913;
+local PERIODIC_UPDATE_PERIOD = 1.0;
+local MAXIMUM_VAR_UPDATE_PERIOD = 4.0;
 local F = CreateFrame('FRAME');
 F:SetScript("OnEvent", function(self, event, ...)
 	return self[event](...);
@@ -147,27 +124,26 @@ end);
 
 local SkillTip = GameTooltip;	--	CreateFrame('GAMETOOLTIP', "_TradeSkillTooltip", UIParent, "GameTooltipTemplate");
 
-local TEXTURE_PATH = [[Interface\AddOns\alaTradeSkill\Media\Textures\]];
 local T_UIDefinition = {
 	texture_white = [[Interface\Buttons\WHITE8X8]],
 	texture_unk = [[Interface\Icons\inv_misc_questionmark]],
 	texture_highlight = [[Interface\Buttons\UI-Common-MouseHilight]],
 	texture_triangle = [[Interface\Transmogrify\Transmog-Tooltip-Arrow]],
-	texture_color_select = TEXTURE_PATH .. [[ColorSelect]],
-	texture_alpha_ribbon = TEXTURE_PATH .. [[AlphaRibbon]],
+	texture_color_select = CT.TEXTUREPATH .. [[ColorSelect]],
+	texture_alpha_ribbon = CT.TEXTUREPATH .. [[AlphaRibbon]],
 	texture_config = [[Interface\Buttons\UI-OptionsButton]],
-	texture_explorer = TEXTURE_PATH .. [[explorer]],
-	texture_toggle = TEXTURE_PATH .. [[UI]],
+	texture_explorer = CT.TEXTUREPATH .. [[explorer]],
+	texture_toggle = CT.TEXTUREPATH .. [[UI]],
 
-	texture_modern_arrow_down = TEXTURE_PATH .. [[ArrowDown]],
-	texture_modern_arrow_up = TEXTURE_PATH .. [[ArrowUp]],
-	texture_modern_arrow_left = TEXTURE_PATH .. [[ArrowLeft]],
-	texture_modern_arrow_right = TEXTURE_PATH .. [[ArrowRight]],
-	texture_modern_button_minus = TEXTURE_PATH .. [[MinusButton]],
-	texture_modern_button_plus = TEXTURE_PATH .. [[PlusButton]],
-	texture_modern_button_close = TEXTURE_PATH .. [[Close]],
-	texture_modern_check_button_border = TEXTURE_PATH .. [[CheckButtonBorder]],
-	texture_modern_check_button_center = TEXTURE_PATH .. [[CheckButtonCenter]],
+	texture_modern_arrow_down = CT.TEXTUREPATH .. [[ArrowDown]],
+	texture_modern_arrow_up = CT.TEXTUREPATH .. [[ArrowUp]],
+	texture_modern_arrow_left = CT.TEXTUREPATH .. [[ArrowLeft]],
+	texture_modern_arrow_right = CT.TEXTUREPATH .. [[ArrowRight]],
+	texture_modern_button_minus = CT.TEXTUREPATH .. [[MinusButton]],
+	texture_modern_button_plus = CT.TEXTUREPATH .. [[PlusButton]],
+	texture_modern_button_close = CT.TEXTUREPATH .. [[Close]],
+	texture_modern_check_button_border = CT.TEXTUREPATH .. [[CheckButtonBorder]],
+	texture_modern_check_button_center = CT.TEXTUREPATH .. [[CheckButtonCenter]],
 
 	color_white = { 1.0, 1.0, 1.0, 1.0, },
 
@@ -222,29 +198,10 @@ local T_UIDefinition = {
 
 	charListButtonHeight = 20,
 };
-local T_RankColor = {
-	[0] = { 1.0, 0.0, 0.0, 1.0, },
-	[1] = { 1.0, 0.5, 0.35, 1.0, },
-	[2] = { 1.0, 1.0, 0.25, 1.0, },
-	[3] = { 0.25, 1.0, 0.25, 1.0, },
-	[4] = { 0.5, 0.5, 0.5, 1.0, },
-	[BIG_NUMBER] = { 0.0, 0.0, 0.0, 1.0, },
-};
-local T_RankIndex = {
-	['difficult'] = 0,
-	['optimal'] = 1,
-	['medium'] = 2,
-	['easy'] = 3,
-	['trivial'] = 4,
-};
-
-
--->		****************
-__namespace__:BuildEnv("ui");
--->		****************
-
 
 local LT_SharedMethod = {  };
+local T_ExplorerStat = { skill = {  }, type = {  }, subType = {  }, eqLoc = {  }, };
+
 
 function LT_SharedMethod.ButtonInfoOnEnter(self)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -262,133 +219,20 @@ function LT_SharedMethod.ButtonInfoOnLeave(self)
 	end
 end
 
-local T_LearnedRecipesHash = {  };
-local T_ExplorerStat = { skill = {  }, type = {  }, subType = {  }, eqLoc = {  }, };
-function LT_SharedMethod.MarkKnown(sid, GUID)
-	local list = T_LearnedRecipesHash[sid];
-	if list == nil then
-		list = {  };
-		T_LearnedRecipesHash[sid] = list;
-	end
-	list[GUID] = 1;
-end
-function LT_SharedMethod.CancelMarkKnown(sid, GUID)
-	local list = T_LearnedRecipesHash[sid];
-	if list ~= nil then
-		list[GUID] = nil;
-		for _ in next, list do
-			return;
-		end
-		T_LearnedRecipesHash[sid] = nil;
-	end
-end
-local T_DynamicCreatedSID = {  };
-function LT_SharedMethod.DynamicCreateInfo(Frame, pid, cur_rank, index, sid, srank)
-	--------------.-PHA-PID-----SID-----CID-LEARN--Y--GREEN-GREY-MIN--MAX---------R-------N--TRAINER-PRICE-RECIPE-QUEST-OBJ-CLASS-SPEC
-	--------------1--2---3-------4-------5----6----7----8----9---10---11---------12------13---14-------15-----16---17---18---19----20
-	--[~[
-	local difficulty_rank = T_RankIndex[srank];
-	if T_DynamicCreatedSID[sid] == nil then
-		local info = __db__.get_info_by_sid(sid);
-		if info == nil then
-			local cid = Frame.F_GetRecipeItemID(index);
-			local minMade, maxMade = Frame.F_GetRecipeNumMade(index);
-			local info = { nil, 1, pid, sid, cid, cur_rank, cur_rank, cur_rank, cur_rank, minMade, maxMade, {  }, {  }, };
-			if difficulty_rank == 0 then
-				info[index_learn_rank] = cur_rank + 1;
-				info[index_yellow_rank] = cur_rank + 1;
-				info[index_green_rank] = cur_rank + 1;
-				info[index_grey_rank] = cur_rank + 1;
-			elseif difficulty_rank == 1 then
-				info[index_learn_rank] = cur_rank;
-				info[index_yellow_rank] = cur_rank + 1;
-				info[index_green_rank] = cur_rank + 1;
-				info[index_grey_rank] = cur_rank + 1;
-			elseif difficulty_rank == 2 then
-				info[index_learn_rank] = cur_rank;
-				info[index_yellow_rank] = cur_rank;
-				info[index_green_rank] = cur_rank + 1;
-				info[index_grey_rank] = cur_rank + 1;
-			elseif difficulty_rank == 3 then
-				info[index_learn_rank] = cur_rank;
-				info[index_yellow_rank] = cur_rank;
-				info[index_green_rank] = cur_rank;
-				info[index_grey_rank] = cur_rank + 1;
-			elseif difficulty_rank == 4 then
-				info[index_learn_rank] = cur_rank;
-				info[index_yellow_rank] = cur_rank;
-				info[index_green_rank] = cur_rank;
-				info[index_grey_rank] = cur_rank;
-			else
-				return;
-			end
-			local numReagents = Frame.F_GetRecipeNumReagents(index);
-			if numReagents > 0 then
-				local ids = info[index_reagents_id];
-				local cts = info[index_reagents_count];
-				for i = 1, numReagents do
-					local id = Frame.F_GetRecipeReagentID(index, i);
-					local name, texture, req, has = Frame.F_GetRecipeReagentInfo(index, i);
-					if id ~= nil and req ~= nil then
-						ids[i] = id;
-						cts[i] = req;
-					else
-						return;
-					end
-				end
-			end
-			T_DynamicCreatedSID[sid] = info;
-			return __db__.insert_info(sid, info);
-		end
-	else
-		local info = T_DynamicCreatedSID[sid];
-		if difficulty_rank == 0 then
-			info[index_learn_rank] = cur_rank + 1;
-			info[index_yellow_rank] = cur_rank + 1;
-			info[index_green_rank] = cur_rank + 1;
-			info[index_grey_rank] = cur_rank + 1;
-		elseif difficulty_rank == 1 then
-			info[index_learn_rank] = cur_rank;
-			info[index_yellow_rank] = cur_rank + 1;
-			info[index_green_rank] = cur_rank + 1;
-			info[index_grey_rank] = cur_rank + 1;
-		elseif difficulty_rank == 2 then
-			info[index_learn_rank] = cur_rank;
-			info[index_yellow_rank] = cur_rank;
-			info[index_green_rank] = cur_rank + 1;
-			info[index_grey_rank] = cur_rank + 1;
-		elseif difficulty_rank == 3 then
-			info[index_learn_rank] = cur_rank;
-			info[index_yellow_rank] = cur_rank;
-			info[index_green_rank] = cur_rank;
-			info[index_grey_rank] = cur_rank + 1;
-		elseif difficulty_rank == 4 then
-			info[index_learn_rank] = cur_rank;
-			info[index_yellow_rank] = cur_rank;
-			info[index_green_rank] = cur_rank;
-			info[index_grey_rank] = cur_rank;
-		else
-			return;
-		end
-	end
-	--]]
-end
-
-
 --	Update
 	function LT_SharedMethod.ProfitFilterList(Frame, list, only_cost)
 		local sid_list = Frame.list;
 		wipe(list);
-		if AuctionMod ~= nil then
-			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+		if VT.AuctionMod ~= nil then
+			local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 			if only_cost and Frame.flag ~= 'explorer' then
-				local var = rawget(VAR, pid);
+				local var = rawget(VT.VAR, pid);
 				local cur_rank = var and var.cur_rank or 0;
 				for index = 1, #sid_list do
 					local sid = sid_list[index];
-					local price_a_product, price_a_material, price_a_material_known, missing = __namespace__.F_GetPriceInfoBySID(SET[pid].phase, sid, __db__.get_num_made_by_sid(sid), nil);
+					local price_a_product, price_a_material, price_a_material_known, missing = MT.GetPriceInfoBySID(VT.SET[pid].phase, sid, DataAgent.get_num_made_by_sid(sid), nil);
 					if price_a_material then
-						list[#list + 1] = { sid, price_a_material, __db__.get_difficulty_rank_by_sid(sid, cur_rank), };
+						list[#list + 1] = { sid, price_a_material, DataAgent.get_difficulty_rank_by_sid(sid, cur_rank), };
 					end
 				end
 				sort(list, function(v1, v2)
@@ -403,7 +247,7 @@ end
 			else
 				for index = 1, #sid_list do
 					local sid = sid_list[index];
-					local price_a_product, price_a_material, price_a_material_known, missing = __namespace__.F_GetPriceInfoBySID(SET[pid].phase, sid, __db__.get_num_made_by_sid(sid), nil);
+					local price_a_product, price_a_material, price_a_material_known, missing = MT.GetPriceInfoBySID(VT.SET[pid].phase, sid, DataAgent.get_num_made_by_sid(sid), nil);
 					if price_a_product and price_a_material then
 						if price_a_product > price_a_material then
 							list[#list + 1] = { sid, price_a_product - price_a_material, };
@@ -418,11 +262,11 @@ end
 	function LT_SharedMethod.UpdateProfitFrame(Frame)
 		local ProfitFrame = Frame.ProfitFrame;
 		if ProfitFrame:IsVisible() then
-			_log_("UpdateProfitFrame|cff00ff00#1L1|r");
+			MT.Debug("UpdateProfitFrame|cff00ff00#1L1|r");
 			local list = ProfitFrame.list;
-			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+			local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 			if ProfitFrame.CostOnlyCheck then
-				local only_cost = SET[pid].PROFIT_SHOW_COST_ONLY;
+				local only_cost = VT.SET[pid].PROFIT_SHOW_COST_ONLY;
 				LT_SharedMethod.ProfitFilterList(Frame, list, only_cost);
 				ProfitFrame.CostOnlyCheck:SetChecked(only_cost);
 			else
@@ -433,11 +277,11 @@ end
 		end
 	end
 	function LT_SharedMethod.ProcessTextFilter(list, searchText, searchNameOnly)
-		local item_func = searchNameOnly and __db__.item_name_lower or __db__.item_link_lower;
-		local spell_func = searchNameOnly and __db__.spell_name_lower or __db__.spell_link_lower;
+		local item_func = searchNameOnly and DataAgent.item_name_lower or DataAgent.item_link_lower;
+		local spell_func = searchNameOnly and DataAgent.spell_name_lower or DataAgent.spell_link_lower;
 		for index = #list, 1, -1 do
 			local sid = list[index];
-			local info = __db__.get_info_by_sid(sid);
+			local info = DataAgent.get_info_by_sid(sid);
 			if info ~= nil then
 				local removed = true;
 				local cid = info[index_cid];
@@ -490,11 +334,11 @@ end
 			local NotInspecting = not IsTradeSkillLinked();
 			Frame:F_LayoutOnShow();
 			local skillName, cur_rank, max_rank = Frame.F_GetSkillInfo();
-			local pid = __db__.get_pid_by_pname(skillName);
+			local pid = DataAgent.get_pid_by_pname(skillName);
 			Frame.flag = pid;
 			if pid ~= nil then
-				local set = SET[pid];
-				local var = VAR[pid];
+				local set = VT.SET[pid];
+				local var = VT.VAR[pid];
 				local update_var = var.update or Frame.prev_pid ~= pid or var.cur_rank ~= cur_rank or Frame.update;
 				if not update_var then
 					local t = GetTime();
@@ -509,15 +353,15 @@ end
 				Frame.HaveMaterialsCheck:SetChecked(set.haveMaterials);
 				if set.shown then
 					Frame:Show();
-					Frame.ToggleButton:SetText(L["OVERRIDE_CLOSE"]);
+					Frame.ToggleButton:SetText(l10n["OVERRIDE_CLOSE"]);
 				else
 					Frame:Hide();
-					Frame.ToggleButton:SetText(L["OVERRIDE_OPEN"]);
+					Frame.ToggleButton:SetText(l10n["OVERRIDE_OPEN"]);
 				end
-				if SET.show_call then
+				if VT.SET.show_call then
 					Frame.ToggleButton:Show();
 				end
-				if __namespace__.__is_wlk then
+				if CT.ISWLK then
 					if pid == 10 then
 						Frame.FilterDropdown:Show();
 					else
@@ -531,7 +375,7 @@ end
 						local sids = var[1];
 						local hash = var[2];
 						if update_var then
-							_log_("UpdateFrame|cff00ff00#1L1|r");
+							MT.Debug("UpdateFrame|cff00ff00#1L1|r");
 							local num = Frame.F_GetRecipeNumAvailable();
 							if num <= 0 then
 								-- Frame.mute_update = false;
@@ -539,7 +383,7 @@ end
 							end
 							var.cur_rank = cur_rank;
 							for index = 1, #sids do
-								LT_SharedMethod.CancelMarkKnown(sids[index], PLAYER_GUID);
+								DataAgent.CancelMarkKnown(sids[index], CT.SELFGUID);
 							end
 							wipe(sids);
 							wipe(hash);
@@ -550,41 +394,41 @@ end
 									if sid == nil then
 										local cid = Frame.F_GetRecipeItemID(index);
 										if cid ~= nil then
-											local sid = __db__.get_sid_by_pid_sname_cid(pid, sname, cid);
-											local info = __db__.get_info_by_sid(sid);
+											local sid = DataAgent.get_sid_by_pid_sname_cid(pid, sname, cid);
+											local info = DataAgent.get_info_by_sid(sid);
 											if info ~= nil then
 												if hash[sid] ~= nil then
-													_error_("UpdateFrame#0E3", pid .. "#" .. cid .. "#" .. sname .. "#" .. sid);
+													MT.Debug("UpdateFrame#0E3", pid .. "#" .. cid .. "#" .. sname .. "#" .. sid);
 												else
 													sids[#sids + 1] = sid;
 													hash[sid] = index;
 													if NotInspecting then
-														LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
+														DataAgent.MarkKnown(sid, CT.SELFGUID);
 													end
 												end
 												if index == Frame.F_GetSelection() then
 													Frame.selected_sid = sid;
 												end
 											else
-												_error_("UpdateFrame#0E2", pid .. "#" .. cid .. "#" .. sname, sid or "_NIL");
+												MT.Debug("UpdateFrame#0E2", pid .. "#" .. cid .. "#" .. sname, sid or "_NIL");
 											end
 										else
-											_error_("UpdateFrame#0E1", pid .. "#" .. sname);
+											MT.Debug("UpdateFrame#0E1", pid .. "#" .. sname);
 										end
 									else
 										sids[#sids + 1] = sid;
 										hash[sid] = index;
+										DataAgent.DynamicCreateInfo(Frame, pid, cur_rank, index, sid, srank);
 										if NotInspecting then
-											LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
+											DataAgent.MarkKnown(sid, CT.SELFGUID);
 										end
-										LT_SharedMethod.DynamicCreateInfo(Frame, pid, cur_rank, index, sid, srank);
 									end
 								end
 							end
 							var.update = nil;
 							Frame.update = nil;
 						else
-							_log_("UpdateFrame|cff00ff00#1L2|r");
+							MT.Debug("UpdateFrame|cff00ff00#1L2|r");
 						end
 						if #sids > 0 then
 							if Frame.prev_pid ~= pid then
@@ -603,7 +447,7 @@ end
 							Frame.prev_pid = pid;
 							Frame.hash = hash;
 							local list = Frame.list;
-							__db__.get_ordered_list(pid, list, hash, set.phase, cur_rank, set.rankoffset, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, set.filterClass, set.filterSpec);
+							DataAgent.get_ordered_list(pid, list, hash, set.phase, cur_rank, set.rankoffset, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, set.filterClass, set.filterSpec);
 							if set.haveMaterials then
 								for i = #list, 1, -1 do
 									local sid = list[i];
@@ -617,7 +461,7 @@ end
 								local C_top = 1;
 								for index = 1, #list do
 									local sid = list[index];
-									if FAV[sid] ~= nil then
+									if VT.FAV[sid] ~= nil then
 										tremove(list, index);
 										tinsert(list, C_top, sid);
 										C_top = C_top + 1;
@@ -626,7 +470,7 @@ end
 							end
 							local searchText = set.searchText;
 							if searchText ~= nil then
-								LT_SharedMethod.FrameFilterList(Frame, SET.regular_exp, list, searchText, set.searchNameOnly);
+								LT_SharedMethod.FrameFilterList(Frame, VT.SET.regular_exp, list, searchText, set.searchNameOnly);
 							else
 								Frame:F_SearchEditValid();
 							end
@@ -637,13 +481,13 @@ end
 							Frame:F_RefreshRankOffset();
 							LT_SharedMethod.UpdateProfitFrame(Frame);
 							set.update = nil;
-							__namespace__:FireEvent("USER_EVENT_RECIPE_LIST_UPDATE");
+							MT.FireCallback("USER_EVENT_RECIPE_LIST_UPDATE");
 						else
 							var.update = true;
 							-- Frame.mute_update = false;
 						end
 					else
-						_log_("UpdateFrame|cff00ff00#2L1|r");
+						MT.Debug("UpdateFrame|cff00ff00#2L1|r");
 						if #var[1] > 0 then
 							Frame.ScrollFrame:Update();
 							if Frame.ProfitFrame:IsShown() then
@@ -661,7 +505,7 @@ end
 						local sids = var[1];
 						local hash = var[2];
 						if update_var then
-							_log_("UpdateFrame|cff00ff00#1L1|r");
+							MT.Debug("UpdateFrame|cff00ff00#1L1|r");
 							local num = Frame.F_GetRecipeNumAvailable();
 							if num <= 0 then
 								-- Frame.mute_update = false;
@@ -675,29 +519,29 @@ end
 									if sid == nil then
 										local cid = Frame.F_GetRecipeItemID(index);
 										if cid ~= nil then
-											local sid = __db__.get_sid_by_pid_sname_cid(pid, sname, cid);
-											local info = __db__.get_info_by_sid(sid);
+											local sid = DataAgent.get_sid_by_pid_sname_cid(pid, sname, cid);
+											local info = DataAgent.get_info_by_sid(sid);
 											if info ~= nil then
 												if hash[sid] == nil then
 													sids[#sids + 1] = sid;
 													hash[sid] = index;
 													if NotInspecting then
-														LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
+														DataAgent.MarkKnown(sid, CT.SELFGUID);
 													end
 												end
 											else
-												_error_("UpdateFrame#0E2", pid .. "#" .. cid .. "#" .. sname);
+												MT.Debug("UpdateFrame#0E2", pid .. "#" .. cid .. "#" .. sname);
 											end
 										else
-											_error_("UpdateFrame#0E1", pid .. "#" .. sname);
+											MT.Debug("UpdateFrame#0E1", pid .. "#" .. sname);
 										end
 									else
 										sids[#sids + 1] = sid;
 										hash[sid] = index;
 										if NotInspecting then
-											LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
+											DataAgent.MarkKnown(sid, CT.SELFGUID);
 										end
-										LT_SharedMethod.DynamicCreateInfo(Frame, pid, cur_rank, index, sid, srank);
+										DataAgent.DynamicCreateInfo(Frame, pid, cur_rank, index, sid, srank);
 									end
 								end
 							end
@@ -706,7 +550,10 @@ end
 						end
 					end
 				end
-				__namespace__.F_CheckCooldown(pid, var);
+				MT.CheckCooldown(pid, var);
+				if update_var then
+					Frame.PortraitButton:F_Update();
+				end
 			else
 				Frame:Hide();
 				Frame.ToggleButton:Hide();
@@ -749,27 +596,27 @@ end
 		local T_Filter = {
 			{
 				"type",
-				__db__.item_typeID,
+				DataAgent.item_typeID,
 			},
 			{
 				"subType",
-				__db__.item_subTypeID,
+				DataAgent.item_subTypeID,
 			},
 			{
 				"eqLoc",
 				function(iid)
-					local loc = __db__.item_loc(iid);
+					local loc = DataAgent.item_loc(iid);
 					return loc and T_EquipLoc2ID[loc];
 				end,
 			},
 		};
 	function LT_SharedMethod.ExplorerFilterList(Frame, stat, filter, searchText, searchNameOnly, list, check_hash, phase, rank, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list)
-		__db__.get_ordered_list(filter.skill, list, check_hash, phase, rank, nil, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list);
+		DataAgent.get_ordered_list(filter.skill, list, check_hash, phase, rank, nil, rankReversed, showKnown, showUnkown, showHighRank, filterClass, filterSpec, donot_wipe_list);
 		do
 			local C_top = 1;
 			for index = 1, #list do
 				local sid = list[index];
-				if FAV[sid] then
+				if VT.FAV[sid] then
 					tremove(list, index);
 					tinsert(list, C_top, sid);
 					C_top = C_top + 1;
@@ -784,7 +631,7 @@ end
 			if val and func then
 				for index = #list, 1, -1 do
 					local sid = list[index];
-					local cid = __db__.get_cid_by_sid(sid);
+					local cid = DataAgent.get_cid_by_sid(sid);
 					if cid then
 						if func(cid) ~= val then
 							tremove(list, index);
@@ -796,7 +643,7 @@ end
 			end
 		end
 		if searchText ~= nil then
-			LT_SharedMethod.FrameFilterList(Frame, SET.regular_exp, list, searchText, searchNameOnly)
+			LT_SharedMethod.FrameFilterList(Frame, VT.SET.regular_exp, list, searchText, searchNameOnly)
 		else
 			Frame:F_SearchEditValid();
 		end
@@ -811,15 +658,15 @@ end
 			wipe(eqLoc_hash);
 			for index = 1, #list do
 				local sid = list[index];
-				local info = __db__.get_info_by_sid(sid);
+				local info = DataAgent.get_info_by_sid(sid);
 				if info ~= nil then
 					local pid = info[index_pid];
-					skill_hash[pid] = T_LearnedRecipesHash[sid] or {  };
+					skill_hash[pid] = DataAgent.LearnedRecipesHash[sid] or {  };
 					local cid = info[index_cid];
 					if cid then
-						local _type = __db__.item_typeID(cid);
-						local _subType = __db__.item_subTypeID(cid);
-						local _eqLoc = __db__.item_loc(cid);
+						local _type = DataAgent.item_typeID(cid);
+						local _subType = DataAgent.item_subTypeID(cid);
+						local _eqLoc = DataAgent.item_loc(cid);
 						local _eqLid = T_EquipLoc2ID[_eqLoc];
 						type_hash[_type] = 1;
 						subType_hash[_subType] = 1;
@@ -834,11 +681,11 @@ end
 	end
 	function LT_SharedMethod.UpdateExplorerFrame(Frame, update_list)
 		if Frame:IsVisible() then
-			local set = SET.explorer;
+			local set = VT.SET.explorer;
 			local hash = Frame.hash;
 			local list = Frame.list;
 			if update_list then
-				_log_("UpdateExplorerFrame|cff00ff00#1L1|r");
+				MT.Debug("UpdateExplorerFrame|cff00ff00#1L1|r");
 				if set.showProfit then
 					Frame.ProfitFrame:Show();
 				else
@@ -854,7 +701,7 @@ end
 											list, hash, set.phase, nil, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, set.filterClass, set.filterSpec);
 				LT_SharedMethod.UpdateProfitFrame(Frame);
 			else
-				_log_("UpdateExplorerFrame|cff00ff00#1L2|r");
+				MT.Debug("UpdateExplorerFrame|cff00ff00#1L2|r");
 			end
 			Frame.ScrollFrame:SetNumValue(#list);
 			Frame.ScrollFrame:Update();
@@ -933,13 +780,13 @@ end
 		end
 		--	style
 		function LT_SharedMethod.StyleModernBackdrop(Frame)
-			uireimp._SetBackdrop(Frame, T_UIDefinition.modernFrameBackdrop);
-			uireimp._SetBackdropColor(Frame, unpack(SET.bg_color));
+			VT.__uireimp._SetBackdrop(Frame, T_UIDefinition.modernFrameBackdrop);
+			VT.__uireimp._SetBackdropColor(Frame, unpack(VT.SET.bg_color));
 		end
 		function LT_SharedMethod.StyleBLZBackdrop(Frame)
-			uireimp._SetBackdrop(Frame, T_UIDefinition.blzFrameBackdrop);
-			uireimp._SetBackdropColor(Frame, 1.0, 1.0, 1.0, 1.0);
-			uireimp._SetBackdropBorderColor(Frame, 1.0, 1.0, 1.0, 1.0);
+			VT.__uireimp._SetBackdrop(Frame, T_UIDefinition.blzFrameBackdrop);
+			VT.__uireimp._SetBackdropColor(Frame, 1.0, 1.0, 1.0, 1.0);
+			VT.__uireimp._SetBackdropBorderColor(Frame, 1.0, 1.0, 1.0, 1.0);
 		end
 		function LT_SharedMethod.StyleModernButton(Button, bak, texture)
 			if Button.Left then
@@ -967,7 +814,7 @@ end
 			htex = htex or Button:SetHighlightTexture(T_UIDefinition.texture_unk) or Button:GetHighlightTexture();
 			dtex = dtex or Button:SetDisabledTexture(T_UIDefinition.texture_unk) or Button:GetDisabledTexture();
 			if texture then
-				uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+				VT.__uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 				Button:SetNormalTexture(texture);
 				Button:SetPushedTexture(texture);
 				Button:SetHighlightTexture(texture);
@@ -981,7 +828,7 @@ end
 				htex:SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
 				dtex:SetVertexColor(unpack(T_UIDefinition.textureButtonColorDisabled));
 			else
-				uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 0.25, 0.75, 1.0, 1.0, 0.25);
+				VT.__uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 0.25, 0.75, 1.0, 1.0, 0.25);
 				Button:SetPushedTextOffset(0.0, 0.0);
 				if ntex then ntex:SetColorTexture(unpack(T_UIDefinition.modernColorButtonColorNormal)); end
 				if ptex then ptex:SetColorTexture(unpack(T_UIDefinition.modernColorButtonColorPushed)); end
@@ -1005,7 +852,7 @@ end
 				Button:SetHighlightTexture(bak[3]);
 				Button:SetDisabledTexture(bak[4]);
 			end
-			uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+			VT.__uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 			Button:SetPushedTextOffset(1.55, -1.55);
 			local ntex = Button:GetNormalTexture();
 			local ptex = Button:GetPushedTexture();
@@ -1022,13 +869,13 @@ end
 				local obj = regions[index];
 				if strupper(obj:GetObjectType()) == 'TEXTURE' then
 					obj._Show = obj._Show or obj.Show;
-					obj.Show = _noop_;
+					obj.Show = MT.noop;
 					obj:Hide();
 				end
 			end
 			--
 			local bar = ScrollFrame.ScrollBar;
-			uireimp._SetSimpleBackdrop(bar, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.25, 1.0);
+			VT.__uireimp._SetSimpleBackdrop(bar, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.25, 1.0);
 			local thumb = bar:GetThumbTexture();
 			if thumb == nil then
 				bar:SetThumbTexture([[Interface\Buttons\UI-ScrollBar-Knob]]);
@@ -1069,7 +916,7 @@ end
 				local obj = regions[index];
 				if strupper(obj:GetObjectType()) == 'TEXTURE' then
 					obj._Show = obj._Show or obj.Show;
-					obj.Show = _noop_;
+					obj.Show = MT.noop;
 					obj:Hide();
 					-- if obj._Show then
 					-- 	obj.Show = obj._Show;
@@ -1079,7 +926,7 @@ end
 			end
 			--
 			local bar = ScrollFrame.ScrollBar;
-			uireimp._SetSimpleBackdrop(bar, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.5, 0.5);
+			VT.__uireimp._SetSimpleBackdrop(bar, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.5, 0.5);
 			bar:SetThumbTexture([[Interface\Buttons\UI-ScrollBar-Knob]]);
 			bar:GetThumbTexture():SetWidth(bar:GetWidth());
 			local up = bar.ScrollUpButton;
@@ -1123,7 +970,7 @@ end
 			Button:GetDisabledTexture():SetAllPoints();
 			Dropdown:SetScale(0.9);
 			Dropdown._SetHeight = Dropdown.SetHeight;
-			Dropdown.SetHeight = _noop_;
+			Dropdown.SetHeight = MT.noop;
 			Dropdown:_SetHeight(22);
 		end
 		function LT_SharedMethod.StyleModernDropDownMenu(Dropdown)
@@ -1133,7 +980,7 @@ end
 			Dropdown.Left:Hide();
 			Dropdown.Middle:Hide();
 			Dropdown.Right:Hide();
-			uireimp._SetSimpleBackdrop(Dropdown, 0, 1, 0.0, 0.0, 0.0, 0.25, 0.75, 1.0, 1.0, 0.25);
+			VT.__uireimp._SetSimpleBackdrop(Dropdown, 0, 1, 0.0, 0.0, 0.0, 0.25, 0.75, 1.0, 1.0, 0.25);
 			local Button = Dropdown.Button;
 			Button:SetSize(17, 16);
 			Button:SetNormalTexture(T_UIDefinition.texture_modern_arrow_down);
@@ -1149,7 +996,7 @@ end
 			Dropdown.Left:Show();
 			Dropdown.Middle:Show();
 			Dropdown.Right:Show();
-			uireimp._SetSimpleBackdrop(Dropdown, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+			VT.__uireimp._SetSimpleBackdrop(Dropdown, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 			local Button = Dropdown.Button;
 			Button:SetSize(24, 24);
 			Button:SetNormalTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up]]);
@@ -1169,14 +1016,14 @@ end
 					obj:Hide();
 				end
 			end
-			uireimp._SetSimpleBackdrop(EditBox, 0, 1, 0.0, 0.0, 0.0, 0.25, 0.75, 1.0, 1.0, 0.25);
+			VT.__uireimp._SetSimpleBackdrop(EditBox, 0, 1, 0.0, 0.0, 0.0, 0.25, 0.75, 1.0, 1.0, 0.25);
 		end
 		function LT_SharedMethod.StyleBLZEditBox(EditBox)
 			local regions = { EditBox:GetRegions() };
 			for index = 1, #regions do
 				regions[index]:Show();
 			end
-			uireimp._SetSimpleBackdrop(EditBox, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+			VT.__uireimp._SetSimpleBackdrop(EditBox, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		end
 		function LT_SharedMethod.StyleModernCheckButton(CheckButton)
 			CheckButton:SetNormalTexture(T_UIDefinition.texture_modern_check_button_border);
@@ -1254,7 +1101,7 @@ end
 			local HighlightTexture = Button:GetHighlightTexture();
 			if HighlightTexture then
 				HighlightTexture._SetTexture = HighlightTexture._SetTexture or HighlightTexture.SetTexture;
-				HighlightTexture.SetTexture = _noop_;
+				HighlightTexture.SetTexture = MT.noop;
 			end
 			--
 			Button._SetDisabledTexture = Button._SetDisabledTexture or Button.SetDisabledTexture;
@@ -1358,7 +1205,7 @@ end
 		SearchEditBoxNote:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize);
 		SearchEditBoxNote:SetTextColor(1.0, 1.0, 1.0, 0.5);
 		SearchEditBoxNote:SetPoint("LEFT", 4, 0);
-		SearchEditBoxNote:SetText(L["Search"]);
+		SearchEditBoxNote:SetText(l10n["Search"]);
 		SearchEditBoxNote:Show();
 
 		local SearchEditBoxCancel = CreateFrame('BUTTON', nil, SearchEditBox);
@@ -1377,7 +1224,7 @@ end
 		SearchEditBoxOKText:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize);
 		SearchEditBoxOKText:SetTextColor(1.0, 1.0, 1.0, 0.5);
 		SearchEditBoxOKText:SetPoint("CENTER");
-		SearchEditBoxOKText:SetText(L["OK"]);
+		SearchEditBoxOKText:SetText(l10n["OK"]);
 
 		SearchEditBoxOK:SetFontString(SearchEditBoxOKText);
 		SearchEditBoxOK:SetPushedTextOffset(0, -1);
@@ -1392,29 +1239,29 @@ end
 		SearchEditBoxNameOnly:SetHitRectInsets(0, 0, 0, 0);
 		SearchEditBoxNameOnly:Show();
 		SearchEditBoxNameOnly:SetChecked(false);
-		SearchEditBoxNameOnly.info_lines = { L["TIP_SEARCH_NAME_ONLY_INFO"], };
+		SearchEditBoxNameOnly.info_lines = { l10n["TIP_SEARCH_NAME_ONLY_INFO"], };
 		SearchEditBoxNameOnly:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 		SearchEditBoxNameOnly:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
 		SearchEditBoxNameOnly:SetScript("OnClick", function(self)
-			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+			local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 			if pid ~= nil then
-				__namespace__.F_ChangeSetWithUpdate(SET[pid], "searchNameOnly", self:GetChecked());
+				MT.ChangeSetWithUpdate(VT.SET[pid], "searchNameOnly", self:GetChecked());
 			end
 			Frame.F_Update();
 		end);
 		Frame.SearchEditBoxNameOnly = SearchEditBoxNameOnly;
 
 		function Frame:F_Search(text)
-			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+			local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 			if pid ~= nil then
 				if text == "" then
-					__namespace__.F_ChangeSetWithUpdate(SET[pid], "searchText", nil);
+					MT.ChangeSetWithUpdate(VT.SET[pid], "searchText", nil);
 					if not SearchEditBox:HasFocus() then
 						SearchEditBoxNote:Show();
 					end
 					SearchEditBoxCancel:Hide();
 				else
-					__namespace__.F_ChangeSetWithUpdate(SET[pid], "searchText", text);
+					MT.ChangeSetWithUpdate(VT.SET[pid], "searchText", text);
 					SearchEditBoxCancel:Show();
 					SearchEditBoxNote:Hide();
 				end
@@ -1422,9 +1269,9 @@ end
 			Frame.F_Update();
 		end
 		function Frame:F_RefreshSearchEdit(pid)
-			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+			local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 			if pid ~= nil then
-				local searchText = SET[pid].searchText or "";
+				local searchText = VT.SET[pid].searchText or "";
 				if SearchEditBox:GetText() ~= searchText then
 					SearchEditBox:SetText(searchText);
 				end
@@ -1466,39 +1313,34 @@ end
 	--	list button handler
 		local T_SkillListDropList = {
 			AddFav = {
-				handler = function(_, Frame, pid, sid)
-					SET[pid].update = true;
-					FAV[sid] = 1;
-					Frame.F_Update();
+				handler = function(_, _, param)
+					VT.SET[param[2]].update = true;
+					VT.FAV[param[3]] = 1;
+					param[1].F_Update();
 				end,
-				text = L["ADD_FAV"],
-				para = {  },
+				text = l10n["ADD_FAV"],
+				param = {  },
 			},
 			SubFav = {
-				handler = function(_, Frame, pid, sid)
-					SET[pid].update = true;
-					FAV[sid] = nil;
-					Frame.F_Update();
+				handler = function(_, _, param)
+					VT.SET[param[2]].update = true;
+					VT.FAV[param[3]] = nil;
+					param[1].F_Update();
 				end,
-				text = L["SUB_FAV"],
-				para = {  },
+				text = l10n["SUB_FAV"],
+				param = {  },
 			},
 			QueryWhoCanCraftIt = {
-				handler = function(_, Frame, pid, sid)
-					__namespace__.F_cmmQuerySpell(sid);
+				handler = function(_, _, param)
+					MT.CommQuerySpell(param[3]);
 				end,
-				text = L["QUERY_WHO_CAN_CRAFT_IT"],
-				para = {  },
+				text = l10n["QUERY_WHO_CAN_CRAFT_IT"],
+				param = {  },
 			},
 		};
 		local T_SkillListDropMeta = {
-			handler = _noop_,
-			elements = {
-			},
+			num = 0,
 		};
-		if select(2, _G.BNGetInfo()) == 'alex#516722' or select(2, _G.BNGetInfo()) == '单酒窝#51637' then
-			T_SkillListDropMeta.elements[2] = T_SkillListDropList.QueryWhoCanCraftIt;
-		end
 	--
 	function LT_SharedMethod.SkillListButton_OnEnter(self)
 		local Frame = self.Frame;
@@ -1506,12 +1348,12 @@ end
 		if type(sid) == 'table' then
 			sid = sid[1];
 		end
-		local pid = self.flag or __db__.get_pid_by_sid(sid);
+		local pid = self.flag or DataAgent.get_pid_by_sid(sid);
 		if pid ~= nil then
-			local set = SET[pid];
+			local set = VT.SET[pid];
 			SkillTip.__phase = set.phase;
 			SkillTip:SetOwner(self, "ANCHOR_RIGHT");
-			local info = __db__.get_info_by_sid(sid);
+			local info = DataAgent.get_info_by_sid(sid);
 			if info ~= nil then
 				if set.showItemInsteadOfSpell and info[index_cid] then
 					SkillTip:SetItemByID(info[index_cid]);
@@ -1519,23 +1361,23 @@ end
 					SkillTip:SetSpellByID(sid);
 				end
 				local phase = info[index_phase];
-				if phase > CURPHASE then
-					SkillTip:AddLine("|cffff0000" .. L["AVAILABLE_IN_PHASE_"] .. phase .. "|r");
+				if phase > DataAgent.CURPHASE then
+					SkillTip:AddLine("|cffff0000" .. l10n["AVAILABLE_IN_PHASE_"] .. phase .. "|r");
 				end
 				SkillTip:Show();
 			else
 				SkillTip:SetSpellByID(sid);
 			end
-			local text = __db__.get_difficulty_rank_list_text_by_sid(sid, true);
+			local text = DataAgent.get_difficulty_rank_list_text_by_sid(sid, true);
 			if text ~= nil then
-				SkillTip:AddDoubleLine(L["LABEL_RANK_LEVEL"], text);
+				SkillTip:AddDoubleLine(l10n["LABEL_RANK_LEVEL"], text);
 				SkillTip:Show();
 			end
 			local data = Frame.hash[sid];
 			if pid == 'explorer' then
-				local hash = T_LearnedRecipesHash[sid];
+				local hash = DataAgent.LearnedRecipesHash[sid];
 				if hash then
-					local str = L["RECIPE_LEARNED"] .. ": ";
+					local str = l10n["RECIPE_LEARNED"] .. ": ";
 					local index = 0;
 					for GUID, _ in next, hash do
 						if index ~= 0 and index % 3 == 0 then
@@ -1555,10 +1397,10 @@ end
 					SkillTip:Show();
 				else
 				end
-				data = data and data[PLAYER_GUID];
+				data = data and data[CT.SELFGUID];
 			end
 			if data == nil then
-				__namespace__.F_TooltipAddSource(SkillTip, sid);
+				MT.TooltipAddSource(SkillTip, sid);
 			end
 		end
 	end
@@ -1574,18 +1416,18 @@ end
 		local data = Frame.hash[sid];
 		if button == "LeftButton" then
 			if IsShiftKeyDown() then
-				__namespace__.F_HandleShiftClick(self.flag or __db__.get_pid_by_sid(sid), sid);
+				MT.HandleShiftClick(self.flag or DataAgent.get_pid_by_sid(sid), sid);
 			elseif IsAltKeyDown() then
 				local text1 = nil;
 				local text2 = nil;
-				if data and __db__.T_TradeSkill_ID[Frame.flag] ~= nil then
+				if data and DataAgent.T_TradeSkill_ID[Frame.flag] ~= nil then
 					local n = Frame.F_GetRecipeNumReagents(data);
 					if n and n > 0 then
 						local m1, m2 = Frame.F_GetRecipeNumMade(data);
 						if m1 == m2 then
-							text1 = Frame.F_GetRecipeItemLink(data) .. "x" .. m1 .. L["PRINT_MATERIALS: "];
+							text1 = Frame.F_GetRecipeItemLink(data) .. "x" .. m1 .. l10n["PRINT_MATERIALS: "];
 						else
-							text1 = Frame.F_GetRecipeItemLink(data) .. "x" .. m1 .. "-" .. m2 .. L["PRINT_MATERIALS: "];
+							text1 = Frame.F_GetRecipeItemLink(data) .. "x" .. m1 .. "-" .. m2 .. l10n["PRINT_MATERIALS: "];
 						end
 						text2 = "";
 						if n > 4 then
@@ -1599,23 +1441,23 @@ end
 						end
 					end
 				else
-					local info = __db__.get_info_by_sid(sid);
+					local info = DataAgent.get_info_by_sid(sid);
 					local cid = info[index_cid];
 					if info ~= nil then
 						if cid then
-							text1 = __db__.item_link_s(cid) .. "x" .. (info[index_num_made_min] == info[index_num_made_max] and info[index_num_made_min] or (info[index_num_made_min] .. "-" .. info[index_num_made_max])) .. L["PRINT_MATERIALS: "];
+							text1 = DataAgent.item_link_s(cid) .. "x" .. (info[index_num_made_min] == info[index_num_made_max] and info[index_num_made_min] or (info[index_num_made_min] .. "-" .. info[index_num_made_max])) .. l10n["PRINT_MATERIALS: "];
 						else
-							text1 = __db__.spell_name_s(sid) .. L["PRINT_MATERIALS: "];
+							text1 = DataAgent.spell_name_s(sid) .. l10n["PRINT_MATERIALS: "];
 						end
 						text2 = "";
 						local rinfo = info[index_reagents_id];
 						if #rinfo > 4 then
 							for i = 1, #rinfo do
-								text2 = text2 .. __db__.item_name_s(rinfo[i]) .. "x" .. info[index_reagents_count][i];
+								text2 = text2 .. DataAgent.item_name_s(rinfo[i]) .. "x" .. info[index_reagents_count][i];
 							end
 						else
 							for i = 1, #rinfo do
-								text2 = text2 .. __db__.item_link_s(rinfo[i]) .. "x" .. info[index_reagents_count][i];
+								text2 = text2 .. DataAgent.item_link_s(rinfo[i]) .. "x" .. info[index_reagents_count][i];
 							end
 						end
 					end
@@ -1628,9 +1470,9 @@ end
 					-- ChatEdit_InsertLink(text1 .. " " .. text2, false);
 				end
 			elseif IsControlKeyDown() then
-				local cid = __db__.get_cid_by_sid(sid);
+				local cid = DataAgent.get_cid_by_sid(sid);
 				if cid then
-					local link = __db__.item_link(cid);
+					local link = DataAgent.item_link(cid);
 					if link then
 						DressUpItemLink(link);
 					end
@@ -1659,28 +1501,34 @@ end
 			end
 		elseif button == "RightButton" then
 			Frame.SearchEditBox:ClearFocus();
-			local pid = __db__.get_pid_by_sid(sid);
-			if FAV[sid] then
-				T_SkillListDropList.SubFav.para[1] = Frame;
-				T_SkillListDropList.SubFav.para[2] = pid;
-				T_SkillListDropList.SubFav.para[3] = sid;
-				T_SkillListDropMeta.elements[1] = T_SkillListDropList.SubFav;
+			local pid = DataAgent.get_pid_by_sid(sid);
+			if VT.FAV[sid] then
+				T_SkillListDropList.SubFav.param[1] = Frame;
+				T_SkillListDropList.SubFav.param[2] = pid;
+				T_SkillListDropList.SubFav.param[3] = sid;
+				T_SkillListDropMeta[1] = T_SkillListDropList.SubFav;
 			else
-				T_SkillListDropList.AddFav.para[1] = Frame;
-				T_SkillListDropList.AddFav.para[2] = pid;
-				T_SkillListDropList.AddFav.para[3] = sid;
-				T_SkillListDropMeta.elements[1] = T_SkillListDropList.AddFav;
+				T_SkillListDropList.AddFav.param[1] = Frame;
+				T_SkillListDropList.AddFav.param[2] = pid;
+				T_SkillListDropList.AddFav.param[3] = sid;
+				T_SkillListDropMeta[1] = T_SkillListDropList.AddFav;
 			end
-			T_SkillListDropList.QueryWhoCanCraftIt.para[1] = Frame;
-			T_SkillListDropList.QueryWhoCanCraftIt.para[2] = pid;
-			T_SkillListDropList.QueryWhoCanCraftIt.para[3] = sid;
-			ALADROP(self, "BOTTOMLEFT", T_SkillListDropMeta);
+			if CT.BNTAG == 'alex#516722' or CT.BNTAG == '单酒窝#51637' then
+				T_SkillListDropMeta[2] = T_SkillListDropList.QueryWhoCanCraftIt;
+				T_SkillListDropMeta.num = 2;
+			else
+				T_SkillListDropMeta.num = 1;
+			end
+			T_SkillListDropList.QueryWhoCanCraftIt.param[1] = Frame;
+			T_SkillListDropList.QueryWhoCanCraftIt.param[2] = pid;
+			T_SkillListDropList.QueryWhoCanCraftIt.param[3] = sid;
+			VT.__menulib.ShowMenu(self, "BOTTOMLEFT", T_SkillListDropMeta);
 		end
 	end
 	function LT_SharedMethod.ProfitCreateSkillListButton(parent, index, buttonHeight)
 		local Button = CreateFrame('BUTTON', nil, parent);
 		Button:SetHeight(buttonHeight);
-		uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+		VT.__uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		Button:SetHighlightTexture(T_UIDefinition.texture_white);
 		Button:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.listButtonHighlightColor));
 		Button:EnableMouse(true);
@@ -1739,7 +1587,7 @@ end
 		Button:RegisterForClicks("AnyUp");
 		Button:SetScript("OnClick", LT_SharedMethod.SkillListButton_OnClick);
 		Button:RegisterForDrag("LeftButton");
-		Button:SetScript("OnHide", ALADROP);
+		Button:SetScript("OnHide", VT.__menulib.ShowMenu);
 
 		function Button:Select()
 			SelectionGlow:Show();
@@ -1762,24 +1610,24 @@ end
 		if data_index <= #list then
 			local val = list[data_index];
 			local sid = val[1];
-			local cid = __db__.get_cid_by_sid(sid);
+			local cid = DataAgent.get_cid_by_sid(sid);
 			local data = hash[sid];
 			if data ~= nil then
 				if Frame.flag == 'explorer' then
 					Button:Show();
 					local _, quality, icon;
 					if cid ~= nil then
-						_, _, quality, _, icon = __db__.item_info(cid);
+						_, _, quality, _, icon = DataAgent.item_info(cid);
 					else
 						quality = nil;
 						icon = ICON_FOR_NO_CID;
 					end
-					uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
+					VT.__uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
 					Button.Icon:SetTexture(icon);
 					Button.Icon:SetVertexColor(1.0, 1.0, 1.0, 1.0);
-					Button.Title:SetText(__db__.spell_name_s(sid));
+					Button.Title:SetText(DataAgent.spell_name_s(sid));
 					Button.Title:SetTextColor(0.0, 1.0, 0.0, 1.0);
-					Button.Note:SetText(__namespace__.F_GetMoneyString(val[2]));
+					Button.Note:SetText(MT.GetMoneyString(val[2]));
 					if quality ~= nil then
 						local r, g, b, code = GetItemQualityColor(quality);
 						Button.QualityGlow:SetVertexColor(r, g, b);
@@ -1787,7 +1635,7 @@ end
 					else
 						Button.QualityGlow:Hide();
 					end
-					if FAV[sid] ~= nil then
+					if VT.FAV[sid] ~= nil then
 						Button.Star:Show();
 					else
 						Button.Star:Hide();
@@ -1797,10 +1645,10 @@ end
 					local name, rank, num = Frame.F_GetRecipeInfo(data);
 					if name ~= nil and rank ~= 'header' then
 						Button:Show();
-						uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
+						VT.__uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
 						local _, quality, icon;
 						if cid ~= nil then
-							_, _, quality, _, icon = __db__.item_info(cid);
+							_, _, quality, _, icon = DataAgent.item_info(cid);
 						else
 							quality = nil;
 							icon = ICON_FOR_NO_CID;
@@ -1812,8 +1660,8 @@ end
 						else
 							Button.Title:SetText(name);
 						end
-						Button.Title:SetTextColor(unpack(T_RankColor[T_RankIndex[rank]] or T_UIDefinition.color_white));
-						Button.Note:SetText(__namespace__.F_GetMoneyString(val[2]));
+						Button.Title:SetTextColor(unpack(CT.T_RankColor[CT.T_RankIndex[rank]] or T_UIDefinition.color_white));
+						Button.Note:SetText(MT.GetMoneyString(val[2]));
 						if quality ~= nil then
 							local r, g, b, code = GetItemQualityColor(quality);
 							Button.QualityGlow:SetVertexColor(r, g, b);
@@ -1821,7 +1669,7 @@ end
 						else
 							Button.QualityGlow:Hide();
 						end
-						if FAV[sid] ~= nil then
+						if VT.FAV[sid] ~= nil then
 							Button.Star:Show();
 						else
 							Button.Star:Hide();
@@ -1840,30 +1688,30 @@ end
 				end
 			else
 				Button:Show();
-				if SET.colored_rank_for_unknown and Frame.flag ~= 'explorer' then
-					uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.5, 0.25, 0.25, 0.5);
+				if VT.SET.colored_rank_for_unknown and Frame.flag ~= 'explorer' then
+					VT.__uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.5, 0.25, 0.25, 0.5);
 				else
-					uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
+					VT.__uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
 				end
 				local _, quality, icon;
 				if cid ~= nil then
-					_, _, quality, _, icon = __db__.item_info(cid);
+					_, _, quality, _, icon = DataAgent.item_info(cid);
 				else
 					quality = nil;
 					icon = ICON_FOR_NO_CID;
 				end
 				Button.Icon:SetTexture(icon);
 				Button.Icon:SetVertexColor(1.0, 0.0, 0.0, 1.0);
-				Button.Title:SetText(__db__.spell_name_s(sid));
-				if SET.colored_rank_for_unknown and Frame.flag ~= 'explorer' then
-					local pid = __db__.get_pid_by_sid(sid);
-					local var = rawget(VAR, pid);
+				Button.Title:SetText(DataAgent.spell_name_s(sid));
+				if VT.SET.colored_rank_for_unknown and Frame.flag ~= 'explorer' then
+					local pid = DataAgent.get_pid_by_sid(sid);
+					local var = rawget(VT.VAR, pid);
 					local cur_rank = var and var.cur_rank or 0;
-					Button.Title:SetTextColor(unpack(T_RankColor[__db__.get_difficulty_rank_by_sid(sid, cur_rank)] or T_UIDefinition.color_white));
+					Button.Title:SetTextColor(unpack(CT.T_RankColor[DataAgent.get_difficulty_rank_by_sid(sid, cur_rank)] or T_UIDefinition.color_white));
 				else
 					Button.Title:SetTextColor(1.0, 0.0, 0.0, 1.0);
 				end
-				Button.Note:SetText(__namespace__.F_GetMoneyString(val[2]));
+				Button.Note:SetText(MT.GetMoneyString(val[2]));
 				if quality ~= nil then
 					local r, g, b, code = GetItemQualityColor(quality);
 					Button.QualityGlow:SetVertexColor(r, g, b);
@@ -1871,7 +1719,7 @@ end
 				else
 					Button.QualityGlow:Hide();
 				end
-				if FAV[sid] ~= nil then
+				if VT.FAV[sid] ~= nil then
 					Button.Star:Show();
 				else
 					Button.Star:Hide();
@@ -1882,12 +1730,12 @@ end
 				LT_SharedMethod.SkillListButton_OnEnter(Button);
 			end
 			if Button.prev_sid ~= sid then
-				ALADROP(Button);
+				VT.__menulib.ShowMenu(Button);
 				Button.prev_sid = sid;
 			end
 			Button.val = val;
 		else
-			ALADROP(Button);
+			VT.__menulib.ShowMenu(Button);
 			Button:Hide();
 			Button.val = nil;
 		end
@@ -1895,12 +1743,12 @@ end
 --
 --	SkillFrame
 	local function LF_BLZSkillListButton_OnEnter(self)
-		if SET.default_skill_button_tip then
+		if VT.SET.default_skill_button_tip then
 			local Frame = self.Frame;
 			local index = self:GetID();
 			local link = Frame.F_GetRecipeItemLink(index) or (Frame.F_GetRecipeSpellLink ~= nil and Frame.F_GetRecipeSpellLink(index)) or nil;
 			if link ~= nil then
-				SkillTip.__phase = CURPHASE;
+				SkillTip.__phase = DataAgent.CURPHASE;
 				SkillTip:SetOwner(self, "ANCHOR_RIGHT");
 				SkillTip:SetHyperlink(link);
 				SkillTip:Show();
@@ -1912,7 +1760,7 @@ end
 	local function LF_CreateSkillListButton(parent, index, buttonHeight)
 		local Button = CreateFrame('BUTTON', nil, parent);
 		Button:SetHeight(buttonHeight);
-		uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+		VT.__uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
 		Button:SetHighlightTexture(T_UIDefinition.texture_white);
 		Button:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.listButtonHighlightColor));
 		Button:EnableMouse(true);
@@ -1977,7 +1825,7 @@ end
 		Button:RegisterForClicks("AnyUp");
 		Button:SetScript("OnClick", LT_SharedMethod.SkillListButton_OnClick);
 		Button:RegisterForDrag("LeftButton");
-		Button:SetScript("OnHide", ALADROP);
+		Button:SetScript("OnHide", VT.__menulib.ShowMenu);
 
 		function Button:Select()
 			SelectionGlow:Show();
@@ -1999,33 +1847,33 @@ end
 		local hash = Frame.hash;
 		if data_index <= #list then
 			local sid = list[data_index];
-			local pid = Frame.flag or __db__.get_pid_by_sid(sid);
-			local set = SET[pid];
-			local cid = __db__.get_cid_by_sid(sid);
+			local pid = Frame.flag or DataAgent.get_pid_by_sid(sid);
+			local set = VT.SET[pid];
+			local cid = DataAgent.get_cid_by_sid(sid);
 			local data = hash[sid];
 			if data ~= nil then
 				local name, rank, num = Frame.F_GetRecipeInfo(data);
 				if name ~= nil and rank ~= 'header' then
 					Button:Show();
-					uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
-					local quality = cid and __db__.item_rarity(cid);
+					VT.__uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
+					local quality = cid and DataAgent.item_rarity(cid);
 					Button.Icon:SetTexture(Frame.F_GetRecipeIcon(data));
 					Button.Icon:SetVertexColor(1.0, 1.0, 1.0, 1.0);
 					Button.Title:SetWidth(0);
 					Button.Title:SetText(name);
-					Button.Title:SetTextColor(unpack(T_RankColor[T_RankIndex[rank]] or T_UIDefinition.color_white));
+					Button.Title:SetTextColor(unpack(CT.T_RankColor[CT.T_RankIndex[rank]] or T_UIDefinition.color_white));
 					if num > 0 then
 						if Button.Title:GetWidth() > 150 then
 							Button.Title:SetWidth(150);
 						end
 						Button.Num:SetText("[" .. num .. "]");
-						Button.Num:SetTextColor(unpack(T_RankColor[T_RankIndex[rank]] or T_UIDefinition.color_white));
+						Button.Num:SetTextColor(unpack(CT.T_RankColor[CT.T_RankIndex[rank]] or T_UIDefinition.color_white));
 					else
 						Button.Title:SetWidth(160);
 						Button.Num:SetText(nil);
 					end
 					if set.showRank then
-						Button.Note:SetText(__db__.get_difficulty_rank_list_text_by_sid(sid, false));
+						Button.Note:SetText(DataAgent.get_difficulty_rank_list_text_by_sid(sid, false));
 					else
 						Button.Note:SetText("");
 					end
@@ -2036,7 +1884,7 @@ end
 					else
 						Button.QualityGlow:Hide();
 					end
-					if FAV[sid] ~= nil then
+					if VT.FAV[sid] ~= nil then
 						Button.Star:Show();
 					else
 						Button.Star:Hide();
@@ -2051,30 +1899,30 @@ end
 				end
 			else
 				Button:Show();
-				if SET.colored_rank_for_unknown then
-					uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.5, 0.25, 0.25, 0.5);
+				if VT.SET.colored_rank_for_unknown then
+					VT.__uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.5, 0.25, 0.25, 0.5);
 				else
-					uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
+					VT.__uireimp._SetSimpleBackdropCenter(Button, 0, 1, 0.0, 0.0, 0.0, 1.0);
 				end
 				local _, quality, icon;
 				if cid ~= nil then
-					_, _, quality, _, icon = __db__.item_info(cid);
+					_, _, quality, _, icon = DataAgent.item_info(cid);
 				else
 					quality = nil;
 					icon = ICON_FOR_NO_CID;
 				end
 				Button.Icon:SetTexture(icon);
 				Button.Icon:SetVertexColor(1.0, 0.0, 0.0, 1.0);
-				Button.Title:SetText(__db__.spell_name_s(sid));
-				if SET.colored_rank_for_unknown then
-					local var = rawget(VAR, pid);
-					Button.Title:SetTextColor(unpack(T_RankColor[__db__.get_difficulty_rank_by_sid(sid, var and var.cur_rank or 0)] or T_UIDefinition.color_white));
+				Button.Title:SetText(DataAgent.spell_name_s(sid));
+				if VT.SET.colored_rank_for_unknown then
+					local var = rawget(VT.VAR, pid);
+					Button.Title:SetTextColor(unpack(CT.T_RankColor[DataAgent.get_difficulty_rank_by_sid(sid, var and var.cur_rank or 0)] or T_UIDefinition.color_white));
 				else
 					Button.Title:SetTextColor(1.0, 0.0, 0.0, 1.0);
 				end
 				Button.Num:SetText(nil);
 				if set.showRank then
-					Button.Note:SetText(__db__.get_difficulty_rank_list_text_by_sid(sid, false));
+					Button.Note:SetText(DataAgent.get_difficulty_rank_list_text_by_sid(sid, false));
 				else
 					Button.Note:SetText("");
 				end
@@ -2085,7 +1933,7 @@ end
 				else
 					Button.QualityGlow:Hide();
 				end
-				if FAV[sid] ~= nil then
+				if VT.FAV[sid] ~= nil then
 					Button.Star:Show();
 				else
 					Button.Star:Hide();
@@ -2096,17 +1944,17 @@ end
 				LT_SharedMethod.SkillListButton_OnEnter(Button);
 			end
 			if Button.prev_sid ~= sid then
-				ALADROP(Button);
+				VT.__menulib.ShowMenu(Button);
 				Button.prev_sid = sid;
 			end
 		else
-			ALADROP(Button);
+			VT.__menulib.ShowMenu(Button);
 			Button:Hide();
 		end
 	end
 	local function F_FrameUpdatePriceInfo(Frame)
 		local T_PriceInfoInFrame = Frame.T_PriceInfoInFrame;
-		if AuctionMod ~= nil and SET.show_tradeskill_frame_price_info then
+		if VT.AuctionMod ~= nil and VT.SET.show_tradeskill_frame_price_info then
 			local sid = Frame.selected_sid;
 			if sid == nil or sid <= 0 then
 				T_PriceInfoInFrame[1]:SetText(nil);
@@ -2114,51 +1962,51 @@ end
 				T_PriceInfoInFrame[3]:SetText(nil);
 				return;
 			end
-			local info = __db__.get_info_by_sid(sid);
+			local info = DataAgent.get_info_by_sid(sid);
 			if info ~= nil then
 				local pid = info[index_pid];
-				local nMade = __db__.get_num_made_by_sid(sid);
-				local price_a_product, _, price_a_material, unk_in, cid = __namespace__.F_GetPriceInfoBySID(SET[pid].phase, sid, nMade);
+				local nMade = DataAgent.get_num_made_by_sid(sid);
+				local price_a_product, _, price_a_material, unk_in, cid = MT.GetPriceInfoBySID(VT.SET[pid].phase, sid, nMade);
 				if price_a_material > 0 then
 					T_PriceInfoInFrame[2]:SetText(
-						L["COST_PRICE"] .. ": " ..
-						(unk_in > 0 and (__namespace__.F_GetMoneyString(price_a_material) .. " (|cffff0000" .. unk_in .. L["ITEMS_UNK"] .. "|r)") or __namespace__.F_GetMoneyString(price_a_material))
+						l10n["COST_PRICE"] .. ": " ..
+						(unk_in > 0 and (MT.GetMoneyString(price_a_material) .. " (|cffff0000" .. unk_in .. l10n["ITEMS_UNK"] .. "|r)") or MT.GetMoneyString(price_a_material))
 					);
 				else
 					T_PriceInfoInFrame[2]:SetText(
-						L["COST_PRICE"] .. ": " ..
-						"|cffff0000" .. L["PRICE_UNK"] .. "|r"
+						l10n["COST_PRICE"] .. ": " ..
+						"|cffff0000" .. l10n["PRICE_UNK"] .. "|r"
 					);
 				end
 
 				if cid ~= nil then
-					-- local price_a_product = AuctionMod.F_QueryPriceByID(cid);
-					local price_v_product = __db__.item_sellPrice(info[index_cid]);
+					-- local price_a_product = VT.AuctionMod.F_QueryPriceByID(cid);
+					local price_v_product = DataAgent.item_sellPrice(info[index_cid]);
 					-- local minMade, maxMade = Frame.num_made(index);
 					-- local nMade = (minMade + maxMade) / 2;
 					-- price_a_product = price_a_product and price_a_product * nMade;
 					price_v_product = price_v_product and price_v_product * nMade;
 					if price_a_product and price_a_product > 0 then
 						T_PriceInfoInFrame[1]:SetText(
-							L["AH_PRICE"] .. ": " ..
-							__namespace__.F_GetMoneyString(price_a_product) .. " (" .. L["VENDOR_RPICE"] .. (price_v_product and __namespace__.F_GetMoneyString(price_v_product) or L["NEED_UPDATE"]) .. ")"
+							l10n["AH_PRICE"] .. ": " ..
+							MT.GetMoneyString(price_a_product) .. " (" .. l10n["VENDOR_RPICE"] .. (price_v_product and MT.GetMoneyString(price_v_product) or l10n["NEED_UPDATE"]) .. ")"
 						);
 						if price_a_material > 0 then
 							local diff = price_a_product - price_a_material;
 							local diffAH = price_a_product * 0.95 - price_a_material;
 							if diff > 0 then
 								if diffAH > 0 then
-									T_PriceInfoInFrame[3]:SetText(L["PRICE_DIFF+"] .. ": " .. __namespace__.F_GetMoneyString(diff) .. " (" .. L["PRICE_DIFF_AH+"] .. " " .. __namespace__.F_GetMoneyString(diffAH) .. ")");
+									T_PriceInfoInFrame[3]:SetText(l10n["PRICE_DIFF+"] .. ": " .. MT.GetMoneyString(diff) .. " (" .. l10n["PRICE_DIFF_AH+"] .. " " .. MT.GetMoneyString(diffAH) .. ")");
 								elseif diffAH < 0 then
-									T_PriceInfoInFrame[3]:SetText(L["PRICE_DIFF+"] .. ": " .. __namespace__.F_GetMoneyString(diff) .. " (" .. L["PRICE_DIFF_AH-"] .. " " .. __namespace__.F_GetMoneyString(-diffAH) .. ")");
+									T_PriceInfoInFrame[3]:SetText(l10n["PRICE_DIFF+"] .. ": " .. MT.GetMoneyString(diff) .. " (" .. l10n["PRICE_DIFF_AH-"] .. " " .. MT.GetMoneyString(-diffAH) .. ")");
 								else
-									T_PriceInfoInFrame[3]:SetText(L["PRICE_DIFF+"] .. ": " .. __namespace__.F_GetMoneyString(diff) .. " (" .. L["PRICE_DIFF_AH0"] .. " " .. L["PRICE_DIFF0"] .. ")");
+									T_PriceInfoInFrame[3]:SetText(l10n["PRICE_DIFF+"] .. ": " .. MT.GetMoneyString(diff) .. " (" .. l10n["PRICE_DIFF_AH0"] .. " " .. l10n["PRICE_DIFF0"] .. ")");
 								end
 							elseif diff < 0 then
-								T_PriceInfoInFrame[3]:SetText(L["PRICE_DIFF-"] .. ": " .. __namespace__.F_GetMoneyString(-diff) .. " (" .. L["PRICE_DIFF_AH-"] .. " " .. __namespace__.F_GetMoneyString(-diffAH) .. ")");
+								T_PriceInfoInFrame[3]:SetText(l10n["PRICE_DIFF-"] .. ": " .. MT.GetMoneyString(-diff) .. " (" .. l10n["PRICE_DIFF_AH-"] .. " " .. MT.GetMoneyString(-diffAH) .. ")");
 							else
 								if diffAH < 0 then
-									T_PriceInfoInFrame[3]:SetText(L["PRICE_DIFF0"] .. " (" .. L["PRICE_DIFF_AH-"] .. " " .. __namespace__.F_GetMoneyString(-diffAH) .. ")");
+									T_PriceInfoInFrame[3]:SetText(l10n["PRICE_DIFF0"] .. " (" .. l10n["PRICE_DIFF_AH-"] .. " " .. MT.GetMoneyString(-diffAH) .. ")");
 								else
 								end
 							end
@@ -2166,16 +2014,16 @@ end
 							T_PriceInfoInFrame[3]:SetText(nil);
 						end
 					else
-						local bindType = __db__.item_bindType(cid);
+						local bindType = DataAgent.item_bindType(cid);
 						if bindType == 1 or bindType == 4 then
 							T_PriceInfoInFrame[1]:SetText(
-								L["AH_PRICE"] .. ": " ..
-								L["BOP"] .. " (" .. L["VENDOR_RPICE"] .. (price_v_product and __namespace__.F_GetMoneyString(price_v_product) or L["NEED_UPDATE"]) .. ")"
+								l10n["AH_PRICE"] .. ": " ..
+								l10n["BOP"] .. " (" .. l10n["VENDOR_RPICE"] .. (price_v_product and MT.GetMoneyString(price_v_product) or l10n["NEED_UPDATE"]) .. ")"
 							);
 						else
 							T_PriceInfoInFrame[1]:SetText(
-								L["AH_PRICE"] .. ": " ..
-								"|cffff0000" .. L["PRICE_UNK"] .. "|r (" .. L["VENDOR_RPICE"] .. (price_v_product and __namespace__.F_GetMoneyString(price_v_product) or L["NEED_UPDATE"]) .. ")"
+								l10n["AH_PRICE"] .. ": " ..
+								"|cffff0000" .. l10n["PRICE_UNK"] .. "|r (" .. l10n["VENDOR_RPICE"] .. (price_v_product and MT.GetMoneyString(price_v_product) or l10n["NEED_UPDATE"]) .. ")"
 							);
 						end
 						T_PriceInfoInFrame[3]:SetText(nil);
@@ -2193,8 +2041,8 @@ end
 		end
 	end
 	local function F_FrameUpdateRankInfo(Frame)
-		if SET.show_tradeskill_frame_rank_info then
-			Frame.RankInfoInFrame:SetText(__db__.get_difficulty_rank_list_text_by_sid(Frame.selected_sid, true));
+		if VT.SET.show_tradeskill_frame_rank_info then
+			Frame.RankInfoInFrame:SetText(DataAgent.get_difficulty_rank_list_text_by_sid(Frame.selected_sid, true));
 		else
 			Frame.RankInfoInFrame:SetText(nil);
 		end
@@ -2288,7 +2136,7 @@ end
 			LT_SharedMethod.StyleBLZScrollFrame(Frame.HookedDetailFrame);
 			local HookedRankFrame = Frame.HookedRankFrame;
 			HookedRankFrame.Border:Show();
-			uireimp._SetSimpleBackdrop(HookedRankFrame, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+			VT.__uireimp._SetSimpleBackdrop(HookedRankFrame, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 			Frame.PortraitBorder:Show();
 			local T_HookedFrameWidgets = Frame.T_HookedFrameWidgets;
 			local T_HookedFrameButtons = T_HookedFrameWidgets.T_HookedFrameButtons;
@@ -2405,7 +2253,7 @@ end
 			LT_SharedMethod.StyleModernScrollFrame(Frame.HookedDetailFrame);
 			local HookedRankFrame = Frame.HookedRankFrame;
 			HookedRankFrame.Border:Hide();
-			uireimp._SetSimpleBackdrop(HookedRankFrame, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.25, 1.0);
+			VT.__uireimp._SetSimpleBackdrop(HookedRankFrame, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.25, 1.0);
 			Frame.PortraitBorder:Hide();
 			local T_HookedFrameWidgets = Frame.T_HookedFrameWidgets;
 			local T_HookedFrameButtons = T_HookedFrameWidgets.T_HookedFrameButtons;
@@ -2529,18 +2377,18 @@ end
 		end
 
 		local function LF_ToggleFrame()
-			local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+			local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 			if Frame:IsShown() then
 				Frame:Hide();
-				Frame.ToggleButton:SetText(L["OVERRIDE_OPEN"]);
+				Frame.ToggleButton:SetText(l10n["OVERRIDE_OPEN"]);
 				if pid ~= nil then
-					SET[pid].shown = false;
+					VT.SET[pid].shown = false;
 				end
 			else
 				Frame:Show();
-				Frame.ToggleButton:SetText(L["OVERRIDE_CLOSE"]);
+				Frame.ToggleButton:SetText(l10n["OVERRIDE_CLOSE"]);
 				if pid ~= nil then
-					SET[pid].shown = true;
+					VT.SET[pid].shown = true;
 				end
 				Frame.update = true;
 				Frame.F_Update();
@@ -2558,7 +2406,7 @@ end
 					-- Frame.HookedScrollFrame:Hide();
 					Frame.F_ClearFilter();
 					for name, func in next, Frame.T_DisabledFunc do
-						_G[name] = _noop_;
+						_G[name] = MT.noop;
 					end
 				end);
 				Frame:SetScript("OnHide", function(Frame)
@@ -2575,14 +2423,14 @@ end
 					end
 					Frame:SetScript("OnEvent", function(Frame, event, _1, ...)
 						Frame.update = true;
-						__namespace__.F_ScheduleDelayCall(Frame.F_Update);
+						MT._TimerStart(Frame.F_Update, 0.2, 1);
 					end);
 				end
-				C_Timer_NewTicker(PERIODIC_UPDATE_PERIOD, Frame.F_Update);
+				MT._TimerStart(Frame.F_Update, PERIODIC_UPDATE_PERIOD);
 				Frame.list = {  };
 				Frame.prev_var_update_time = GetTime() - MAXIMUM_VAR_UPDATE_PERIOD;
 
-				local ScrollFrame = ALASCR(Frame, nil, nil, T_UIDefinition.skillListButtonHeight, LF_CreateSkillListButton, LF_SetSkillListButton);
+				local ScrollFrame = VT.__scrolllib.CreateScrollFrame(Frame, nil, nil, T_UIDefinition.skillListButtonHeight, LF_CreateSkillListButton, LF_SetSkillListButton);
 				ScrollFrame:SetPoint("BOTTOMLEFT", 4, 0);
 				ScrollFrame:SetPoint("TOPRIGHT", -4, -28);
 				LT_SharedMethod.ModifyALAScrollFrame(ScrollFrame);
@@ -2615,7 +2463,7 @@ end
 					local name = obj:GetName();
 					if obj ~= meta.HookedPortrait and strupper(obj:GetObjectType()) == 'TEXTURE' then
 						obj._Show = obj.Show;
-						obj.Show = _noop_;
+						obj.Show = MT.noop;
 						obj:Hide();
 					end
 				end
@@ -2651,25 +2499,25 @@ end
 				RankOffsetSlider:SetObeyStepOnDrag(true);
 				RankOffsetSlider:HookScript("OnValueChanged", function(self, value, userInput)
 					if userInput then
-						local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+						local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 						if pid ~= nil then
-							local set = SET[pid];
-							local var = VAR[pid];
+							local set = VT.SET[pid];
+							local var = VT.VAR[pid];
 							value = value + 0.5; value = value - value % 1.0;
 							value = value - var.cur_rank;
 							value = value + 0.1; value = value - value % 5.0 + 5;
 							set.rankoffset = value;
 							Frame.update = true;
-							__namespace__.F_ScheduleDelayCall(Frame.F_Update);
+							MT._TimerStart(Frame.F_Update, 0.2, 1);
 						end
 					end
 				end);
 				Frame.RankOffsetSlider = RankOffsetSlider;
 				function Frame:F_RefreshRankOffset()
-					local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+					local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 					if pid ~= nil then
-						local set = SET[pid];
-						local var = VAR[pid];
+						local set = VT.SET[pid];
+						local var = VT.VAR[pid];
 						Frame.RankOffsetSlider:SetMinMaxValues(1, var.max_rank ~= nil and var.max_rank > 1 and var.max_rank or 75);
 						if set.rankoffset ~= nil and set.rankoffset > 0 then
 							Frame.RankOffsetButton:SetText("+" .. set.rankoffset);
@@ -2854,9 +2702,9 @@ end
 			end
 			Frame.F_Expand = LF_FrameExpand;
 			Frame.F_FixSkillList = LF_FrameFixSkillList;
-			Frame.F_BlzStyle = LF_FrameBlzStyle;
+			Frame.F_SetStyle = LF_FrameBlzStyle;
 			if meta.T_ToggleOnSkill == nil then
-				Frame.F_ToggleOnSkill = _noop_;
+				Frame.F_ToggleOnSkill = MT.noop;
 			else
 				function Frame:F_ToggleOnSkill(val)
 					val = not val;
@@ -2870,39 +2718,49 @@ end
 
 		do	--	PortraitButton
 			local T_PortraitDropMeta = {
-				handler = function(_, Frame, name)
-					if name == '@explorer' then
-						__namespace__.F_uiToggleFrame("EXPLORER");
-					elseif name == '@config' then
-						__namespace__.F_uiToggleFrame("CONFIG");
+				handler = function(_, _, param)
+					if param[2] == '@explorer' then
+						MT.ToggleFrame("EXPLORER");
+					elseif param[2] == '@config' then
+						MT.ToggleFrame("CONFIG");
 					else
-						CastSpellByName(name);
+						CastSpellByName(param[2]);
 					end
 				end,
-				elements = {  },
+				num = 0,
 			};
 			local PortraitButton = CreateFrame('BUTTON', nil, HookedFrame);
 			PortraitButton:SetSize(42, 42);
 			PortraitButton:SetPoint("CENTER", meta.HookedPortrait);
 			PortraitButton:RegisterForClicks("AnyUp");
 			PortraitButton:SetScript("OnClick", function(self)
-				ALADROP(self, "BOTTOM", T_PortraitDropMeta);
+				VT.__menulib.ShowMenu(self, "BOTTOM", T_PortraitDropMeta);
 			end);
 			function PortraitButton:F_Update()
-				local elements = T_PortraitDropMeta.elements;
-				wipe(elements);
+				T_PortraitDropMeta.num = 0;
 				local pname = Frame.F_GetSkillName();
-				for pid = __db__.DBMINPID, __db__.DBMAXPID do
-					if rawget(VAR, pid) ~= nil and __db__.is_pid_has_win(pid) then
-						local name = __db__.get_check_name_by_pid(pid);
+				for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
+					if rawget(VT.VAR, pid) ~= nil and DataAgent.is_pid_has_win(pid) then
+						local name = DataAgent.get_check_name_by_pid(pid);
 						if name ~= nil and name ~= pname then
-							local element = { text = name, para = { Frame, name, }, };
-							elements[#elements + 1] = element;
+							T_PortraitDropMeta.num = T_PortraitDropMeta.num + 1;
+							T_PortraitDropMeta[T_PortraitDropMeta.num] = {
+								text = name,
+								param = { Frame, name, },
+							};
 						end
 					end
 				end
-				elements[#elements + 1] = { text = "explorer", para = { Frame, '@explorer', }, };
-				elements[#elements + 1] = { text = "config", para = { Frame, '@config', }, };
+				T_PortraitDropMeta.num = T_PortraitDropMeta.num + 1;
+				T_PortraitDropMeta[T_PortraitDropMeta.num] = {
+					text = "explorer",
+					param = { Frame, '@explorer', },
+				};
+				T_PortraitDropMeta.num = T_PortraitDropMeta.num + 1;
+				T_PortraitDropMeta[T_PortraitDropMeta.num] = {
+					text = "config",
+					param = { Frame, '@config', },
+				};
 			end
 			Frame.PortraitButton = PortraitButton;
 		end
@@ -2931,11 +2789,11 @@ end
 				Tab:EnableMouse(true);
 				Tab:SetScript("OnClick", function(TabFrame)
 					local pname = TabFrame.pname;
-					if pname ~= nil and not __db__.is_name_same_skill(pname, Frame.F_GetSkillName()) then
+					if pname ~= nil and not DataAgent.is_name_same_skill(pname, Frame.F_GetSkillName()) then
 						if pname == '@explorer' then
-							__namespace__.F_uiToggleFrame("EXPLORER");
+							MT.ToggleFrame("EXPLORER");
 						elseif pname == '@config' then
-							__namespace__.F_uiToggleFrame("CONFIG");
+							MT.ToggleFrame("CONFIG");
 						elseif pname == '@toggle' then
 							LF_ToggleFrame();
 						else
@@ -2995,12 +2853,12 @@ end
 			end
 			function TabFrame:F_Update()
 				local numSkill = 0;
-				for pid = __db__.DBMINPID, __db__.DBMAXPID do
-					if rawget(VAR, pid) ~= nil and __db__.is_pid_has_win(pid) then
-						local pname = __db__.get_check_name_by_pid(pid);
+				for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
+					if rawget(VT.VAR, pid) ~= nil and DataAgent.is_pid_has_win(pid) then
+						local pname = DataAgent.get_check_name_by_pid(pid);
 						if pname ~= nil then
 							numSkill = numSkill + 1;
-							TabFrame:F_SetTab(numSkill, pname, __db__.get_texture_by_pid(pid));
+							TabFrame:F_SetTab(numSkill, pname, DataAgent.get_texture_by_pid(pid));
 						end
 					end
 				end
@@ -3042,19 +2900,19 @@ end
 			ToggleButton:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -24, -6);
 			ToggleButton:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 			ToggleButton:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
-			ToggleButton.info_lines = { L["TIP_PROFIT_FRAME_CALL_INFO"] };
+			ToggleButton.info_lines = { l10n["TIP_PROFIT_FRAME_CALL_INFO"] };
 			ToggleButton:SetScript("OnClick", function(self)
-				if AuctionMod ~= nil then
-					local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+				if VT.AuctionMod ~= nil then
+					local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 					if ProfitFrame:IsShown() then
 						ProfitFrame:Hide();
 						if pid ~= nil then
-							SET[pid].showProfit = false;
+							VT.SET[pid].showProfit = false;
 						end
 					else
 						ProfitFrame:Show();
 						if pid ~= nil then
-							SET[pid].showProfit = true;
+							VT.SET[pid].showProfit = true;
 						end
 					end
 				end
@@ -3062,7 +2920,7 @@ end
 			ProfitFrame.ToggleButton = ToggleButton;
 
 			ProfitFrame:SetScript("OnShow", function(ProfitFrame)
-				if AuctionMod ~= nil then
+				if VT.AuctionMod ~= nil then
 					LT_SharedMethod.UpdateProfitFrame(Frame);
 					ToggleButton:SetNormalTexture([[Interface\Buttons\UI-GroupLoot-Coin-DOWN]]);
 					ToggleButton:SetPushedTexture([[Interface\Buttons\UI-GroupLoot-Coin-UP]]);
@@ -3075,7 +2933,7 @@ end
 				ToggleButton:SetPushedTexture([[Interface\Buttons\UI-GroupLoot-Coin-DOWN]]);
 			end);
 
-			local ScrollFrame = ALASCR(ProfitFrame, nil, nil, T_UIDefinition.skillListButtonHeight, LT_SharedMethod.ProfitCreateSkillListButton, LT_SharedMethod.ProfitSetSkillListButton);
+			local ScrollFrame = VT.__scrolllib.CreateScrollFrame(ProfitFrame, nil, nil, T_UIDefinition.skillListButtonHeight, LT_SharedMethod.ProfitCreateSkillListButton, LT_SharedMethod.ProfitSetSkillListButton);
 			ScrollFrame:SetPoint("BOTTOMLEFT", 4, 8);
 			ScrollFrame:SetPoint("TOPRIGHT", -8, -28);
 			ProfitFrame.ScrollFrame = ScrollFrame;
@@ -3088,13 +2946,13 @@ end
 			local Text = ProfitFrame:CreateFontString(nil, "ARTWORK");
 			Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "OUTLINE");
 			Text:SetPoint("LEFT", CostOnlyCheck, "CENTER", 10, 0);
-			Text:SetText(L["PROFIT_SHOW_COST_ONLY"]);
+			Text:SetText(l10n["PROFIT_SHOW_COST_ONLY"]);
 			CostOnlyCheck.Text = Text;
 			CostOnlyCheck:SetScript("OnClick", function(self)
 				local checked = self:GetChecked();
-				local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+				local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 				if pid ~= nil then
-					SET[pid].PROFIT_SHOW_COST_ONLY = checked;
+					VT.SET[pid].PROFIT_SHOW_COST_ONLY = checked;
 					LT_SharedMethod.UpdateProfitFrame(Frame);
 				end
 			end);
@@ -3104,9 +2962,9 @@ end
 			CloseButton:SetSize(32, 32);
 			CloseButton:SetPoint("CENTER", ProfitFrame, "TOPRIGHT", -18, -14);
 			CloseButton:SetScript("OnClick", function()
-				local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+				local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 				if pid ~= nil then
-					SET[pid].showProfit = false;
+					VT.SET[pid].showProfit = false;
 				end
 				ProfitFrame:Hide();
 			end);
@@ -3136,16 +2994,16 @@ end
 			ToggleButton:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
 			ToggleButton:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -4, -6);
 			ToggleButton:SetScript("OnClick", function(self)
-				local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+				local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 				if SetFrame:IsShown() then
 					Frame:F_HideSetFrame();
 					if pid ~= nil then
-						SET[pid].showSet = false;
+						VT.SET[pid].showSet = false;
 					end
 				else
 					Frame:F_ShowSetFrame(true);
 					if pid ~= nil then
-						SET[pid].showSet = true;
+						VT.SET[pid].showSet = true;
 					end
 				end
 			end);
@@ -3169,7 +3027,7 @@ end
 				CheckButton:SetChecked(false);
 				local Text = SetFrame:CreateFontString(nil, "ARTWORK");
 				Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "OUTLINE");
-				Text:SetText(L[key]);
+				Text:SetText(l10n[key]);
 				CheckButton.Text = Text;
 				Text:SetPoint("LEFT", CheckButton, "RIGHT", 0, 0);
 				if index % 4 == 1 then
@@ -3183,23 +3041,23 @@ end
 				end
 				if index == 1 or index == 2 or index == 3 or index == 4 or index == 5 or index == 8 then
 					CheckButton:SetScript("OnClick", function(self)
-						local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+						local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 						if pid ~= nil then
-							__namespace__.F_ChangeSetWithUpdate(SET[pid], key, self:GetChecked());
+							MT.ChangeSetWithUpdate(VT.SET[pid], key, self:GetChecked());
 						end
 						Frame.F_Update();
 					end);
 				else
 					CheckButton:SetScript("OnClick", function(self)
-						local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+						local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 						if pid ~= nil then
-							__namespace__.F_ChangeSetWithUpdate(SET[pid], key, self:GetChecked());
+							MT.ChangeSetWithUpdate(VT.SET[pid], key, self:GetChecked());
 						end
 						Frame.ScrollFrame:Update();
 					end);
 				end
 				CheckButton.key = key;
-				local TipText = L[key .. "Tip"];
+				local TipText = l10n[key .. "Tip"];
 				if TipText ~= nil then
 					CheckButton:SetScript("OnEnter", function(self)
 						TipInfo:SetText(TipText);
@@ -3217,7 +3075,7 @@ end
 			PhaseSlider:SetPoint("LEFT", 4, 0);
 			PhaseSlider:SetPoint("RIGHT", -4, 0);
 			PhaseSlider:SetHeight(16);
-			PhaseSlider:SetMinMaxValues(1, MAXPHASE)
+			PhaseSlider:SetMinMaxValues(1, DataAgent.MAXPHASE);
 			PhaseSlider:SetValueStep(1);
 			PhaseSlider:SetObeyStepOnDrag(true);
 			PhaseSlider.Text:ClearAllPoints();
@@ -3227,22 +3085,22 @@ end
 			PhaseSlider.High:ClearAllPoints();
 			PhaseSlider.High:SetPoint("TOPRIGHT", PhaseSlider, "BOTTOMRIGHT", -4, 3);
 			PhaseSlider.Low:SetText("|cff00ff001|r");
-			PhaseSlider.High:SetText("|cffff0000" .. MAXPHASE .. "|r");
+			PhaseSlider.High:SetText("|cffff0000" .. DataAgent.MAXPHASE .. "|r");
 			PhaseSlider:HookScript("OnValueChanged", function(self, value, userInput)
 				if userInput then
-					local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+					local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 					if pid ~= nil then
-						__namespace__.F_ChangeSetWithUpdate(SET[pid], "phase", value);
+						MT.ChangeSetWithUpdate(VT.SET[pid], "phase", value);
 						Frame.F_Update();
 					end
 				end
-				self.Text:SetText("|cffffff00" .. L["phase"] .. "|r " .. value);
+				self.Text:SetText("|cffffff00" .. l10n["phase"] .. "|r " .. value);
 			end);
 			SetFrame.PhaseSlider = PhaseSlider;
 
 			function Frame:F_ShowSetFrame(show)
 				local SetFrame = Frame.SetFrame;
-				if SET.show_tab then
+				if VT.SET.show_tab then
 					SetFrame:ClearAllPoints();
 					SetFrame:SetPoint("LEFT", Frame.TextureBackground);
 					-- SetFrame:SetPoint("RIGHT", Frame);
@@ -3261,10 +3119,10 @@ end
 				SetFrame:Hide();
 			end
 			function Frame:F_RefreshSetFrame()
-				local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+				local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 				if pid ~= nil then
 					local SetFrame = Frame.SetFrame;
-					local set = SET[pid];
+					local set = VT.SET[pid];
 					for index = 1, #SetFrame.T_CheckButtons do
 						local CheckButton = SetFrame.T_CheckButtons[index];
 						CheckButton:SetChecked(set[CheckButton.key]);
@@ -3282,13 +3140,13 @@ end
 			HaveMaterialsCheck:SetChecked(false);
 			HaveMaterialsCheck:SetPoint("CENTER", Frame, "TOPRIGHT", -54, -14);
 			HaveMaterialsCheck:SetScript("OnClick", function(self)
-				local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+				local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 				if pid ~= nil then
-					__namespace__.F_ChangeSetWithUpdate(SET[pid], "haveMaterials", self:GetChecked());
+					MT.ChangeSetWithUpdate(VT.SET[pid], "haveMaterials", self:GetChecked());
 				end
 				Frame.F_Update();
 			end);
-			HaveMaterialsCheck.info_lines = { L["haveMaterialsTip"], };
+			HaveMaterialsCheck.info_lines = { l10n["haveMaterialsTip"], };
 			HaveMaterialsCheck:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 			HaveMaterialsCheck:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
 			Frame.HaveMaterialsCheck = HaveMaterialsCheck;
@@ -3326,7 +3184,7 @@ end
 					if index ~= nil then
 						Frame.selected_sid = 
 							Frame.F_GetRecipeSpellID ~= nil and Frame.F_GetRecipeSpellID(index) or
-							__db__.get_sid_by_pid_sname_cid(__db__.get_pid_by_pname(Frame.F_GetSkillName()), Frame.F_GetRecipeInfo(index), Frame.F_GetRecipeItemID(index));
+							DataAgent.get_sid_by_pid_sname_cid(DataAgent.get_pid_by_pname(Frame.F_GetSkillName()), Frame.F_GetRecipeInfo(index), Frame.F_GetRecipeItemID(index));
 					end
 				end
 				if prev_sid ~= Frame.selected_sid then
@@ -3335,7 +3193,7 @@ end
 					T_PriceInfoInFrame[2]:SetText(nil);
 					T_PriceInfoInFrame[3]:SetText(nil);
 				end
-				C_Timer_After(0.5, LF_DelayUpdateInfoInFrame);
+				MT.After(0.5, LF_DelayUpdateInfoInFrame);
 			end
 			hooksecurefunc(Frame.T_FunctionName.F_SetSelection, LF_OnSelection);
 			Frame.F_OnSelection = LF_OnSelection;
@@ -3345,18 +3203,18 @@ end
 		end
 
 		ALA_HOOK_ChatEdit_InsertLink(function(link, addon)
-			if Frame:IsVisible() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+			if Frame:IsVisible() and addon ~= __addon and not (BrowseName ~= nil and BrowseName:IsVisible()) then
 				local name, _, _, _, _, _, _, _, loc = GetItemInfo(link);
 				if name ~= nil and name ~= "" then
-					local pid = Frame.flag or __db__.get_pid_by_pname(Frame.F_GetSkillName());
+					local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 					Frame.SearchEditBox:ClearFocus();
 					if pid == 10 and loc and loc ~= "" then
 						local id = tonumber(strmatch(link, "item:(%d+)"));
 						if id ~= 11287 and id ~= 11288 and id ~= 11289 and id ~= 11290 then
-							if L.ENCHANT_FILTER[loc] ~= nil then
-								Frame:F_Search(L.ENCHANT_FILTER[loc]);
+							if l10n.ENCHANT_FILTER[loc] ~= nil then
+								Frame:F_Search(l10n.ENCHANT_FILTER[loc]);
 							else
-								Frame:F_Search(L.ENCHANT_FILTER.NONE);
+								Frame:F_Search(l10n.ENCHANT_FILTER.NONE);
 							end
 						else
 							Frame:F_Search(name);
@@ -3369,7 +3227,7 @@ end
 			end
 		end);
 		ALA_HOOK_ChatEdit_InsertName(function(name, addon)
-			if Frame:IsVisible() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+			if Frame:IsVisible() and addon ~= __addon and not (BrowseName ~= nil and BrowseName:IsVisible()) then
 				if name ~= nil and name ~= "" then
 					Frame.SearchEditBox:SetText(name);
 					Frame.SearchEditBox:ClearFocus();
@@ -3384,19 +3242,18 @@ end
 			LT_SharedMethod.UpdateProfitFrame(Frame);
 			Frame:F_FrameUpdatePriceInfo();
 		end
-		-- if AuctionMod ~= nil and AuctionMod.F_OnDBUpdate ~= nil then
-		-- 	AuctionMod.F_OnDBUpdate(callback);
+		-- if VT.AuctionMod ~= nil and VT.AuctionMod.F_OnDBUpdate ~= nil then
+		-- 	VT.AuctionMod.F_OnDBUpdate(callback);
 		-- end
-		__namespace__:AddCallback("AUCTION_MOD_LOADED", function(mod)
+		MT.AddCallback("AUCTION_MOD_LOADED", function(mod)
 			if mod ~= nil then
-				AuctionMod = mod;
 				if mod.F_OnDBUpdate then
 					mod.F_OnDBUpdate(callback);
 				end
 				-- callback();
 			end
 		end);
-		__namespace__:AddCallback("UI_MOD_LOADED", function(mod)
+		MT.AddCallback("UI_MOD_LOADED", function(mod)
 			if mod ~= nil and mod.Skin ~= nil then
 				mod.Skin(addon, Frame);
 			end
@@ -3411,34 +3268,33 @@ end
 		--
 		Frame.TabFrame:F_Update();
 		Frame.PortraitButton:F_Update();
-		Frame:F_Expand(SET.expand);
-		Frame:F_FixSkillList(SET.expand);
-		Frame:F_BlzStyle(SET.blz_style, true);
-		if SET.show_call then
+		Frame:F_Expand(VT.SET.expand);
+		Frame:F_FixSkillList(VT.SET.expand);
+		Frame:F_SetStyle(VT.SET.blz_style, true);
+		if VT.SET.show_call then
 			Frame.ToggleButton:Show();
 		else
 			Frame.ToggleButton:Hide();
 		end
-		if SET.show_tab then
+		if VT.SET.show_tab then
 			Frame.TabFrame:Show();
 		else
 			Frame.TabFrame:Hide();
 		end
-		if SET.portrait_button then
+		if VT.SET.portrait_button then
 			Frame.PortraitButton:Show();
 		else
 			Frame.PortraitButton:Hide();
 		end
 		--
-		local ticker = nil;
-		ticker = C_Timer_NewTicker(0.1, function()
+		local function Ticker()
 			if Frame.HookedPortrait:GetTexture() == nil then
 				SetPortraitTexture(Frame.HookedPortrait, "player");
 			else
-				ticker:Cancel();
-				ticker = nil;
+				MT._TimerHalt(Ticker);
 			end
-		end);
+		end
+		MT._TimerStart(Ticker, 0.1);
 	end
 --
 local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
@@ -3594,13 +3450,13 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 			SetTradeSkillSubClassFilter(0, 1, 1);
 			UIDropDownMenu_SetSelectedID(TradeSkillSubClassDropDown, 1);
 			SetTradeSkillInvSlotFilter(0, 1, 1);
-			if __namespace__.__is_bcc or __namespace__.__is_wlk then
+			if CT.ISBCC or CT.ISWLK then
 				SetTradeSkillItemNameFilter(nil);
 				SetTradeSkillItemLevelFilter(0, 0);
 			end
 			UIDropDownMenu_SetSelectedID(TradeSkillInvSlotDropDown, 1);
 			ExpandTradeSkillSubClass(0);
-			if __namespace__.__is_bcc or __namespace__.__is_wlk then
+			if CT.ISBCC or CT.ISWLK then
 				TradeSkillFrameAvailableFilterCheckButton:SetChecked(false);
 			end
 			if TradeSkillCollapseAllButton ~= nil then
@@ -3612,14 +3468,14 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 
 		F_GetSkillName = GetTradeSkillLine,
 		F_GetSkillInfo = GetTradeSkillLine,
-		-- F_GetSkillInfo = function(...) return GetTradeSkillLine(...), __db__.MAXRANK, __db__.MAXRANK; end,
+		-- F_GetSkillInfo = function(...) return GetTradeSkillLine(...), DataAgent.MAXRANK, DataAgent.MAXRANK; end,
 			--	skillName, cur_rank, max_rank
 
 		F_GetRecipeNumAvailable = GetNumTradeSkills,
 		F_GetRecipeInfo = GetTradeSkillInfo,
 			--	skillName, difficult & header, numAvailable, isExpanded = GetTradeSkillInfo(skillIndex)
-		F_GetRecipeSpellID = __namespace__.__is_wlk and function(arg1) local link = GetTradeSkillRecipeLink(arg1); return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil; end or nil,
-		F_GetRecipeSpellLink = __namespace__.__is_wlk and GetTradeSkillRecipeLink or nil;
+		F_GetRecipeSpellID = CT.ISWLK and function(arg1) local link = GetTradeSkillRecipeLink(arg1); return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil; end or nil,
+		F_GetRecipeSpellLink = CT.ISWLK and GetTradeSkillRecipeLink or nil;
 		F_GetRecipeItemID = function(arg1) local link = GetTradeSkillItemLink(arg1); return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil; end,
 		F_GetRecipeItemLink = GetTradeSkillItemLink,
 		F_GetRecipeIcon = GetTradeSkillIcon,
@@ -3643,7 +3499,7 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		},
 
 		F_WithDisabledFrame = function(self, func)
-			if __namespace__.__is_bcc or __namespace__.__is_wlk then
+			if CT.ISBCC or CT.ISWLK then
 				func(TradeSkillFrameAvailableFilterCheckButton);
 				func(TradeSearchInputBox);
 				TradeSearchInputBox:ClearFocus();
@@ -3674,58 +3530,57 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		},
 	};
 	local Frame = LF_HookFrame(addon, meta);
-	T_uiFrames[addon] = Frame;
+	VT.UIFrames[addon] = Frame;
 	--
-	if __namespace__.__is_bcc or __namespace__.__is_wlk then
+	if CT.ISBCC or CT.ISWLK then
 		TradeSkillFrameAvailableFilterCheckButton:ClearAllPoints();
 		TradeSkillFrameAvailableFilterCheckButton:SetPoint("TOPLEFT", TradeSkillFrame, "TOPLEFT", 68, -56);
 	end
 	TradeSkillExpandButtonFrame:Hide();
 	--
-	if __namespace__.__is_wlk then
-	local ENCHANT_FILTER = L.ENCHANT_FILTER;
+	if CT.ISWLK then
+	local ENCHANT_FILTER = l10n.ENCHANT_FILTER;
 	--	Dropdown Filter
-		local T_CraftFrameFilterMeta = {
-			handler = function(_, key)
+		local T_TradeSkillFrameFilterMeta = {
+			handler = function(_, _, key)
 				local text = ENCHANT_FILTER[key];
 				if text ~= nil then
 					Frame:F_Search(text);
 				end
 			end,
-			elements = {
-				{	--	"披风"
-					text = ENCHANT_FILTER.INVTYPE_CLOAK,
-					para = { "INVTYPE_CLOAK", },
-				},
-				{	--	"胸甲"
-					text = ENCHANT_FILTER.INVTYPE_CHEST,
-					para = { "INVTYPE_CHEST", },
-				},
-				{	--	"护腕"
-					text = ENCHANT_FILTER.INVTYPE_WRIST,
-					para = { "INVTYPE_WRIST", },
-				},
-				{	--	"手套"
-					text = ENCHANT_FILTER.INVTYPE_HAND,
-					para = { "INVTYPE_HAND", },
-				},
-				{	--	"靴"
-					text = ENCHANT_FILTER.INVTYPE_FEET,
-					para = { "INVTYPE_FEET", },
-				},
-				{	--	"武器"
-					text = ENCHANT_FILTER.INVTYPE_WEAPON,
-					para = { "INVTYPE_WEAPON", },
-				},
-				{	--	"盾牌"
-					text = ENCHANT_FILTER.INVTYPE_SHIELD,
-					para = { "INVTYPE_SHIELD", },
-				},
-				-- {	--	"没有匹配的附魔"
-				-- 	text = ENCHANT_FILTER.NONE,
-				-- 	para = { "NONE", },
-				-- },
+			num = 7,
+			{	--	"披风"
+				text = ENCHANT_FILTER.INVTYPE_CLOAK,
+				param = "INVTYPE_CLOAK",
 			},
+			{	--	"胸甲"
+				text = ENCHANT_FILTER.INVTYPE_CHEST,
+				param = "INVTYPE_CHEST",
+			},
+			{	--	"护腕"
+				text = ENCHANT_FILTER.INVTYPE_WRIST,
+				param = "INVTYPE_WRIST",
+			},
+			{	--	"手套"
+				text = ENCHANT_FILTER.INVTYPE_HAND,
+				param = "INVTYPE_HAND",
+			},
+			{	--	"靴"
+				text = ENCHANT_FILTER.INVTYPE_FEET,
+				param = "INVTYPE_FEET",
+			},
+			{	--	"武器"
+				text = ENCHANT_FILTER.INVTYPE_WEAPON,
+				param = "INVTYPE_WEAPON",
+			},
+			{	--	"盾牌"
+				text = ENCHANT_FILTER.INVTYPE_SHIELD,
+				param = "INVTYPE_SHIELD",
+			},
+			-- {	--	"没有匹配的附魔"
+			-- 	text = ENCHANT_FILTER.NONE,
+			-- 	param = "NONE",
+			-- },
 		};
 		local FilterDropdown = CreateFrame('BUTTON', nil, Frame);
 		FilterDropdown:SetSize(16, 16);
@@ -3739,7 +3594,7 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		FilterDropdown:GetHighlightTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 		FilterDropdown:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
 		FilterDropdown:SetScript("OnClick", function(self, button)
-			ALADROP(self, "BOTTOMRIGHT", T_CraftFrameFilterMeta);
+			VT.__menulib.ShowMenu(self, "BOTTOMRIGHT", T_TradeSkillFrameFilterMeta);
 		end);
 
 		-- Frame.SearchEditBoxOK:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -46, -6);
@@ -3784,7 +3639,7 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		Frame.EventDriver = EventDriver;
 		Frame:HookScript("OnShow", function()
 			if TradeSkillFrame:IsShown() then
-				__namespace__.F_ScheduleDelayCall(LF_ProcessTradeTargetItemLink);
+				MT._TimerStart(LF_ProcessTradeTargetItemLink, 0.2, 1);
 			end
 		end);
 	end
@@ -3918,24 +3773,24 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 		F_GetSelection = GetCraftSelectionIndex,
 		-- expand = ExpandCraftSkillLine,
 		-- collapse = CollapseCraftSkillLine,
-		F_ClearFilter = (__namespace__.__is_bcc or __namespace__.__is_wlk) and function()
+		F_ClearFilter = (CT.ISBCC or CT.ISWLK) and function()
 			CraftOnlyShowMakeable(false);
 			CraftFrameAvailableFilterCheckButton:SetChecked(false);
 			SetCraftFilter(1);
 			UIDropDownMenu_SetSelectedID(CraftFrameFilterDropDown, 1);
-		end or _noop_,
+		end or MT.noop,
 		-- F_DoTradeCraft = DoCraft,
 		F_CloseSkill = CloseCraft,
 
 		F_GetSkillName = GetCraftName,
 		F_GetSkillInfo = GetCraftDisplaySkillLine,
-		-- F_GetSkillInfo = function(...) return GetCraftDisplaySkillLine(...), __db__.MAXRANK, __db__.MAXRANK; end,
+		-- F_GetSkillInfo = function(...) return GetCraftDisplaySkillLine(...), DataAgent.MAXRANK, DataAgent.MAXRANK; end,
 			--	skillName, cur_rank, max_rank
 
 		F_GetRecipeNumAvailable = GetNumCrafts,
 		F_GetRecipeInfo = function(arg1) local _1, _2, _3, _4, _5, _6, _7 = GetCraftInfo(arg1); return _1, _3, _4, _5, _6, _7; end,
 			--	craftName, craftSubSpellName(""), difficult, numAvailable, isExpanded, trainingPointCost, requiredLevel = GetCraftInfo(index)
-		F_GetRecipeSpellID = __namespace__.__is_wlk and function(arg1) local link = GetCraftRecipeLink(arg1); return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil; end or nil,
+		F_GetRecipeSpellID = CT.ISWLK and function(arg1) local link = GetCraftRecipeLink(arg1); return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil; end or nil,
 		F_GetRecipeItemID = function(arg1) local link = GetCraftItemLink(arg1); return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil; end,
 		F_GetRecipeItemLink = GetCraftItemLink,
 		F_GetRecipeIcon = GetCraftIcon,
@@ -3958,7 +3813,7 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 		},
 
 		F_WithDisabledFrame = function(self, func)
-			if __namespace__.__is_bcc or __namespace__.__is_wlk then
+			if CT.ISBCC or CT.ISWLK then
 				func(CraftFrameAvailableFilterCheckButton);
 				func(CraftFrameFilterDropDown);
 			end
@@ -3983,9 +3838,9 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 		},
 	};
 	local Frame = LF_HookFrame(addon, meta);
-	T_uiFrames[addon] = Frame;
+	VT.UIFrames[addon] = Frame;
 	--
-	if __namespace__.__is_bcc or __namespace__.__is_wlk then
+	if CT.ISBCC or CT.ISWLK then
 		CraftFrameAvailableFilterCheckButton:ClearAllPoints();
 		CraftFrameAvailableFilterCheckButton:SetPoint("TOPLEFT", CraftFrame, "TOPLEFT", 68, -56);
 		CraftFrameAvailableFilterCheckButton:SetSize(20, 20);
@@ -3993,49 +3848,48 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 		CraftFrameFilterDropDown:SetPoint("RIGHT", CraftFrame, "TOPLEFT", 359, -82);
 	end
 	--
-	local ENCHANT_FILTER = L.ENCHANT_FILTER;
+	local ENCHANT_FILTER = l10n.ENCHANT_FILTER;
 	--	Dropdown Filter
 		local T_CraftFrameFilterMeta = {
-			handler = function(_, key)
+			handler = function(_, _, key)
 				local text = ENCHANT_FILTER[key];
 				if text ~= nil then
 					Frame:F_Search(text);
 				end
 			end,
-			elements = {
-				{	--	"披风"
-					text = ENCHANT_FILTER.INVTYPE_CLOAK,
-					para = { "INVTYPE_CLOAK", },
-				},
-				{	--	"胸甲"
-					text = ENCHANT_FILTER.INVTYPE_CHEST,
-					para = { "INVTYPE_CHEST", },
-				},
-				{	--	"护腕"
-					text = ENCHANT_FILTER.INVTYPE_WRIST,
-					para = { "INVTYPE_WRIST", },
-				},
-				{	--	"手套"
-					text = ENCHANT_FILTER.INVTYPE_HAND,
-					para = { "INVTYPE_HAND", },
-				},
-				{	--	"靴"
-					text = ENCHANT_FILTER.INVTYPE_FEET,
-					para = { "INVTYPE_FEET", },
-				},
-				{	--	"武器"
-					text = ENCHANT_FILTER.INVTYPE_WEAPON,
-					para = { "INVTYPE_WEAPON", },
-				},
-				{	--	"盾牌"
-					text = ENCHANT_FILTER.INVTYPE_SHIELD,
-					para = { "INVTYPE_SHIELD", },
-				},
-				-- {	--	"没有匹配的附魔"
-				-- 	text = ENCHANT_FILTER.NONE,
-				-- 	para = { "NONE", },
-				-- },
+			num = 7,
+			{	--	"披风"
+				text = ENCHANT_FILTER.INVTYPE_CLOAK,
+				param = "INVTYPE_CLOAK",
 			},
+			{	--	"胸甲"
+				text = ENCHANT_FILTER.INVTYPE_CHEST,
+				param = "INVTYPE_CHEST",
+			},
+			{	--	"护腕"
+				text = ENCHANT_FILTER.INVTYPE_WRIST,
+				param = "INVTYPE_WRIST",
+			},
+			{	--	"手套"
+				text = ENCHANT_FILTER.INVTYPE_HAND,
+				param = "INVTYPE_HAND",
+			},
+			{	--	"靴"
+				text = ENCHANT_FILTER.INVTYPE_FEET,
+				param = "INVTYPE_FEET",
+			},
+			{	--	"武器"
+				text = ENCHANT_FILTER.INVTYPE_WEAPON,
+				param = "INVTYPE_WEAPON",
+			},
+			{	--	"盾牌"
+				text = ENCHANT_FILTER.INVTYPE_SHIELD,
+				param = "INVTYPE_SHIELD",
+			},
+			-- {	--	"没有匹配的附魔"
+			-- 	text = ENCHANT_FILTER.NONE,
+			-- 	param = "NONE",
+			-- },
 		};
 		local FilterDropdown = CreateFrame('BUTTON', nil, Frame);
 		FilterDropdown:SetSize(16, 16);
@@ -4049,7 +3903,7 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 		FilterDropdown:GetHighlightTexture():SetTexCoord(6 / 32, 26 / 32, 6 / 32, 26 / 32);
 		FilterDropdown:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
 		FilterDropdown:SetScript("OnClick", function(self, button)
-			ALADROP(self, "BOTTOMRIGHT", T_CraftFrameFilterMeta);
+			VT.__menulib.ShowMenu(self, "BOTTOMRIGHT", T_CraftFrameFilterMeta);
 		end);
 
 		-- Frame.SearchEditBoxOK:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -46, -6);
@@ -4092,7 +3946,7 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 		Frame.EventDriver = EventDriver;
 		Frame:HookScript("OnShow", function()
 			if CraftFrame:IsShown() then
-				__namespace__.F_ScheduleDelayCall(LF_ProcessTradeTargetItemLink);
+				MT._TimerStart(LF_ProcessTradeTargetItemLink, 0.2, 1);
 			end
 		end);
 	--
@@ -4102,7 +3956,7 @@ end
 	local function LF_ExplorerCreateSkillListButton(parent, index, buttonHeight)
 		local Button = CreateFrame('BUTTON', nil, parent);
 		Button:SetHeight(buttonHeight);
-		uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+		VT.__uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
 		Button:SetHighlightTexture(T_UIDefinition.texture_white);
 		Button:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.listButtonHighlightColor));
 		Button:EnableMouse(true);
@@ -4161,7 +4015,7 @@ end
 		Button:RegisterForClicks("AnyUp");
 		Button:SetScript("OnClick", LT_SharedMethod.SkillListButton_OnClick);
 		Button:RegisterForDrag("LeftButton");
-		Button:SetScript("OnHide", ALADROP);
+		Button:SetScript("OnHide", VT.__menulib.ShowMenu);
 
 		function Button:Select()
 			SelectionGlow:Show();
@@ -4183,17 +4037,17 @@ end
 		local hash = Frame.hash;
 		if data_index <= #list then
 			local sid = list[data_index];
-			local cid = __db__.get_cid_by_sid(sid);
+			local cid = DataAgent.get_cid_by_sid(sid);
 			Button:Show();
 			local _, quality, icon;
 			if cid then
-				_, _, quality, _, icon = __db__.item_info(cid);
+				_, _, quality, _, icon = DataAgent.item_info(cid);
 			else
 				quality = nil;
 				icon = ICON_FOR_NO_CID;
 			end
 			Button.Icon:SetTexture(icon);
-			Button.Title:SetText(__db__.spell_name_s(sid));
+			Button.Title:SetText(DataAgent.spell_name_s(sid));
 			if hash[sid] then
 				Button.Icon:SetVertexColor(1.0, 1.0, 1.0, 1.0);
 				Button.Title:SetTextColor(0.0, 1.0, 0.0, 1.0);
@@ -4201,9 +4055,9 @@ end
 				Button.Icon:SetVertexColor(1.0, 0.0, 0.0, 1.0);
 				Button.Title:SetTextColor(1.0, 0.0, 0.0, 1.0);
 			end
-			local set = SET.explorer;
+			local set = VT.SET.explorer;
 			if set.showRank then
-				Button.Note:SetText(__db__.get_difficulty_rank_list_text_by_sid(sid, false));
+				Button.Note:SetText(DataAgent.get_difficulty_rank_list_text_by_sid(sid, false));
 			else
 				Button.Note:SetText("");
 			end
@@ -4214,7 +4068,7 @@ end
 			else
 				Button.QualityGlow:Hide();
 			end
-			if FAV[sid] then
+			if VT.FAV[sid] then
 				Button.Star:Show();
 			else
 				Button.Star:Hide();
@@ -4224,19 +4078,19 @@ end
 			end
 			Button:Deselect();
 			if Button.prev_sid ~= sid then
-				ALADROP(Button);
+				VT.__menulib.ShowMenu(Button);
 				Button.prev_sid = sid;
 			end
 		else
-			ALADROP(Button);
+			VT.__menulib.ShowMenu(Button);
 			Button:Hide();
 		end
 	end
 	--	set button handler
-		--	L.ITEM_TYPE_LIST
-		--	L.ITEM_SUB_TYPE_LIST
-		local index_bound = { skill = { __db__.DBMINPID, __db__.DBMAXPID, }, type = { BIG_NUMBER, -1, }, subType = {  }, eqLoc = { BIG_NUMBER, -1, }, };
-		for index, _ in next, L.ITEM_TYPE_LIST do
+		--	l10n.ITEM_TYPE_LIST
+		--	l10n.ITEM_SUB_TYPE_LIST
+		local index_bound = { skill = { DataAgent.DBMINPID, DataAgent.DBMAXPID, }, type = { CT.BIGNUMBER, -1, }, subType = {  }, eqLoc = { CT.BIGNUMBER, -1, }, };
+		for index, _ in next, l10n.ITEM_TYPE_LIST do
 			if index < index_bound.type[1] then
 				index_bound.type[1] = index;
 			end
@@ -4244,14 +4098,14 @@ end
 				index_bound.type[2] = index;
 			end
 		end
-		for index1, sub in next, L.ITEM_SUB_TYPE_LIST do
+		for index1, sub in next, l10n.ITEM_SUB_TYPE_LIST do
 			if index1 < index_bound.type[1] then
 				index_bound.type[1] = index1;
 			end
 			if index1 > index_bound.type[2] then
 				index_bound.type[2] = index1;
 			end
-			index_bound.subType[index1] = { BIG_NUMBER, -BIG_NUMBER, };
+			index_bound.subType[index1] = { CT.BIGNUMBER, -CT.BIGNUMBER, };
 			for index2, _ in next, sub do
 				if index2 < index_bound.subType[index1][1] then
 					index_bound.subType[index1][1] = index2;
@@ -4261,7 +4115,7 @@ end
 				end
 			end
 		end
-		for index, _ in next, L.ITEM_EQUIP_LOC do
+		for index, _ in next, l10n.ITEM_EQUIP_LOC do
 			if index < index_bound.eqLoc[1] then
 				index_bound.eqLoc[1] = index;
 			end
@@ -4271,18 +4125,18 @@ end
 		end
 		----
 		local T_ExplorerSetMeta = {
-			handler = function(_, Frame, key, val)
-				SET.explorer.filter[key] = val;
-				if key == 'type' then
-					SET.explorer.filter.subType = nil;
+			handler = function(_, _, param)
+				VT.SET.explorer.filter[param[2]] = param[3];
+				if param[2] == 'type' then
+					VT.SET.explorer.filter.subType = nil;
 				end
-				Frame.F_Update();
+				param[1].F_Update();
 			end,
-			elements = {  },
+			num = 0,
 		};
 		local function F_ExplorerSetFrameDropdown_OnClick(self)
 			local key = self.key;
-			local set = SET.explorer;
+			local set = VT.SET.explorer;
 			local filter = set.filter;
 			local bound = nil;
 			if key == 'subType' then
@@ -4311,37 +4165,52 @@ end
 			else
 				stat_list = T_ExplorerStat;
 			end
-			local elements = T_ExplorerSetMeta.elements;
-			wipe(elements);
-			elements[1] = { text = L["EXPLORER_CLEAR_FILTER"], para = { Frame, key, nil, }, };
+			T_ExplorerSetMeta[1] = { text = l10n["EXPLORER_CLEAR_FILTER"], param = { Frame, key, nil, }, };
+			T_ExplorerSetMeta.num = 1;
 			local stat = stat_list[key];
 			if key == 'skill' then
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						elements[#elements + 1] = { text = __db__.get_pname_by_pid(index), para = { Frame, key, index, }, };
+						T_ExplorerSetMeta.num = T_ExplorerSetMeta.num + 1;
+						T_ExplorerSetMeta[T_ExplorerSetMeta.num] = {
+							text = DataAgent.get_pname_by_pid(index),
+							param = { Frame, key, index, },
+						};
 					end
 				end
 			elseif key == 'type' then
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						elements[#elements + 1] = { text = L.ITEM_TYPE_LIST[index], para = { Frame, key, index, }, };
+						T_ExplorerSetMeta.num = T_ExplorerSetMeta.num + 1;
+						T_ExplorerSetMeta[T_ExplorerSetMeta.num] = {
+							text = l10n.ITEM_TYPE_LIST[index],
+							param = { Frame, key, index, },
+						};
 					end
 				end
 			elseif key == 'subType' then
 				local key0 = filter.type;
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						elements[#elements + 1] = { text = L.ITEM_SUB_TYPE_LIST[key0][index], para = { Frame, key, index, }, };
+						T_ExplorerSetMeta.num = T_ExplorerSetMeta.num + 1;
+						T_ExplorerSetMeta[T_ExplorerSetMeta.num] = {
+							text = l10n.ITEM_SUB_TYPE_LIST[key0][index],
+							param = { Frame, key, index, },
+						};
 					end
 				end
 			elseif key == 'eqLoc' then
 				for index = bound[1], bound[2] do
 					if stat[index] then
-						elements[#elements + 1] = { text = L.ITEM_EQUIP_LOC[index], para = { Frame, key, index, }, };
+						T_ExplorerSetMeta.num = T_ExplorerSetMeta.num + 1;
+						T_ExplorerSetMeta[T_ExplorerSetMeta.num] = {
+							text = l10n.ITEM_EQUIP_LOC[index],
+							param = { Frame, key, index, },
+						};
 					end
 				end
 			end
-			ALADROP(self, "BOTTOMRIGHT", T_ExplorerSetMeta);
+			VT.__menulib.ShowMenu(self, "BOTTOMRIGHT", T_ExplorerSetMeta);
 		end
 	--
 	local function LF_ExplorerBlzStyle(Frame, blz_style, loading)
@@ -4440,15 +4309,15 @@ local function LF_CreateExplorerFrame()
 			LT_SharedMethod.UpdateExplorerFrame(Frame, true);
 		end
 		Frame.list = {  };
-		Frame.hash = T_LearnedRecipesHash;
+		Frame.hash = DataAgent.LearnedRecipesHash;
 		Frame.flag = 'explorer';
 
 		local Title = Frame:CreateFontString(nil, "ARTWORK");
 		Title:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize);
 		Title:SetPoint("CENTER", Frame, "TOP", 0, -16);
-		Title:SetText(L["EXPLORER_TITLE"]);
+		Title:SetText(l10n["EXPLORER_TITLE"]);
 
-		local ScrollFrame = ALASCR(Frame, nil, nil, T_UIDefinition.skillListButtonHeight, LF_ExplorerCreateSkillListButton, LF_ExplorerSetSkillListButton);
+		local ScrollFrame = VT.__scrolllib.CreateScrollFrame(Frame, nil, nil, T_UIDefinition.skillListButtonHeight, LF_ExplorerCreateSkillListButton, LF_ExplorerSetSkillListButton);
 		ScrollFrame:SetPoint("BOTTOMLEFT", 6, 12);
 		ScrollFrame:SetPoint("TOPRIGHT", -10, -56);
 		Frame.ScrollFrame = ScrollFrame;
@@ -4463,7 +4332,7 @@ local function LF_CreateExplorerFrame()
 
 		LT_SharedMethod.ModifyALAScrollFrame(ScrollFrame);
 
-		Frame.F_BlzStyle = LF_ExplorerBlzStyle;
+		Frame.F_SetStyle = LF_ExplorerBlzStyle;
 	end
 
 	do	--	search_box
@@ -4494,22 +4363,22 @@ local function LF_CreateExplorerFrame()
 		ToggleButton:SetPoint("TOPRIGHT", Frame, "TOPRIGHT", -30, -32);
 		ToggleButton:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 		ToggleButton:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
-		ToggleButton.info_lines = { L["TIP_PROFIT_FRAME_CALL_INFO"] };
+		ToggleButton.info_lines = { l10n["TIP_PROFIT_FRAME_CALL_INFO"] };
 		ToggleButton:SetScript("OnClick", function(self)
-			if AuctionMod ~= nil then
+			if VT.AuctionMod ~= nil then
 				if ProfitFrame:IsShown() then
 					ProfitFrame:Hide();
-					SET.explorer.showProfit = false;
+					VT.SET.explorer.showProfit = false;
 				else
 					ProfitFrame:Show();
-					SET.explorer.showProfit = true;
+					VT.SET.explorer.showProfit = true;
 				end
 			end
 		end);
 		ProfitFrame.ToggleButton = ToggleButton;
 
 		ProfitFrame:SetScript("OnShow", function(self)
-			if AuctionMod ~= nil then
+			if VT.AuctionMod ~= nil then
 				LT_SharedMethod.UpdateProfitFrame(Frame);
 				ToggleButton:SetNormalTexture([[Interface\Buttons\UI-GroupLoot-Coin-DOWN]]);
 				ToggleButton:SetPushedTexture([[Interface\Buttons\UI-GroupLoot-Coin-UP]]);
@@ -4522,7 +4391,7 @@ local function LF_CreateExplorerFrame()
 			ToggleButton:SetPushedTexture([[Interface\Buttons\UI-GroupLoot-Coin-DOWN]]);
 		end);
 
-		local ScrollFrame = ALASCR(ProfitFrame, nil, nil, T_UIDefinition.skillListButtonHeight, LT_SharedMethod.ProfitCreateSkillListButton, LT_SharedMethod.ProfitSetSkillListButton);
+		local ScrollFrame = VT.__scrolllib.CreateScrollFrame(ProfitFrame, nil, nil, T_UIDefinition.skillListButtonHeight, LT_SharedMethod.ProfitCreateSkillListButton, LT_SharedMethod.ProfitSetSkillListButton);
 		ScrollFrame:SetPoint("BOTTOMLEFT", 4, 8);
 		ScrollFrame:SetPoint("TOPRIGHT", -8, -28);
 		ProfitFrame.ScrollFrame = ScrollFrame;
@@ -4535,11 +4404,11 @@ local function LF_CreateExplorerFrame()
 		-- local Text = ProfitFrame:CreateFontString(nil, "ARTWORK");
 		-- Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "OUTLINE");
 		-- Text:SetPoint("LEFT", CostOnlyCheck, "RIGHT", 2, 0);
-		-- Text:SetText(L["PROFIT_SHOW_COST_ONLY"]);
+		-- Text:SetText(l10n["PROFIT_SHOW_COST_ONLY"]);
 		-- CostOnlyCheck.Text = Text;
 		-- CostOnlyCheck:SetScript("OnClick", function(self)
 		-- 	local checked = self:GetChecked();
-		-- 	SET.explorer.PROFIT_SHOW_COST_ONLY = checked;
+		-- 	VT.SET.explorer.PROFIT_SHOW_COST_ONLY = checked;
 		-- 	LT_SharedMethod.UpdateProfitFrame(Frame);
 		-- end);
 		-- ProfitFrame.CostOnlyCheck = CostOnlyCheck;
@@ -4548,7 +4417,7 @@ local function LF_CreateExplorerFrame()
 		CloseButton:SetSize(32, 32);
 		CloseButton:SetPoint("CENTER", ProfitFrame, "TOPRIGHT", -18, -14);
 		CloseButton:SetScript("OnClick", function()
-			SET.explorer.showProfit = false;
+			VT.SET.explorer.showProfit = false;
 			ProfitFrame:Hide();
 		end);
 		ProfitFrame.CloseButton = CloseButton;
@@ -4582,11 +4451,11 @@ local function LF_CreateExplorerFrame()
 		ToggleButton:SetScript("OnClick", function(self)
 			if SetFrame:IsShown() then
 				SetFrame:Hide();
-				SET.explorer.showSet = false;
+				VT.SET.explorer.showSet = false;
 				self:GetNormalTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
 			else
 				SetFrame:Show();
-				SET.explorer.showSet = true;
+				VT.SET.explorer.showSet = true;
 				self:GetNormalTexture():SetVertexColor(0.75, 0.75, 0.75, 1.0);
 			end
 		end);
@@ -4611,7 +4480,7 @@ local function LF_CreateExplorerFrame()
 
 			local Text = SetFrame:CreateFontString(nil, "ARTWORK");
 			Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "OUTLINE");
-			Text:SetText(L[key]);
+			Text:SetText(l10n[key]);
 			Text:SetPoint("LEFT", CheckButton, "RIGHT", 0, 0);
 			CheckButton.Text = Text;
 
@@ -4626,17 +4495,17 @@ local function LF_CreateExplorerFrame()
 			end
 			if index == 1 or index == 2 then
 				CheckButton:SetScript("OnClick", function(self)
-					SET.explorer[key] = self:GetChecked()
+					VT.SET.explorer[key] = self:GetChecked()
 					Frame.F_Update();
 				end);
 			else
 				CheckButton:SetScript("OnClick", function(self)
-					SET.explorer[key] = self:GetChecked()
+					VT.SET.explorer[key] = self:GetChecked()
 					Frame.ScrollFrame:Update();
 				end);
 			end
 			CheckButton.key = key;
-			local TipText = L[key .. "Tip"];
+			local TipText = l10n[key .. "Tip"];
 			if TipText ~= nil then
 				CheckButton:SetScript("OnEnter", function(self)
 					TipInfo:SetText(TipText);
@@ -4667,7 +4536,7 @@ local function LF_CreateExplorerFrame()
 
 			local Label = SetFrame:CreateFontString(nil, "ARTWORK");
 			Label:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "OUTLINE");
-			Label:SetText(L.EXPLORER_SET[key]);
+			Label:SetText(l10n.EXPLORER_SET[key]);
 			Label:SetPoint("LEFT", Dropdown, "RIGHT", 0, 0);
 			Dropdown.Label = Label;
 
@@ -4680,7 +4549,7 @@ local function LF_CreateExplorerFrame()
 			Cancel:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
 			Cancel:SetPoint("TOP", Dropdown, "BOTTOM", 0, -1);
 			Cancel:SetScript("OnClick", function(self)
-				local filter = SET.explorer.filter;
+				local filter = VT.SET.explorer.filter;
 				if filter[key] ~= nil then
 					filter[key] = nil;
 					if key == 'type' then
@@ -4694,7 +4563,7 @@ local function LF_CreateExplorerFrame()
 
 			local Text = SetFrame:CreateFontString(nil, "ARTWORK");
 			Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "OUTLINE");
-			Text:SetText(L[key]);
+			Text:SetText(l10n[key]);
 			Text:SetPoint("LEFT", Cancel, "RIGHT", 2, 0);
 			Text:SetVertexColor(0.0, 1.0, 0.0, 1.0);
 			Dropdown.Text = Text;
@@ -4720,7 +4589,7 @@ local function LF_CreateExplorerFrame()
 		PhaseSlider:SetPoint("LEFT", 4, 0);
 		PhaseSlider:SetPoint("RIGHT", -4, 0);
 		PhaseSlider:SetHeight(20);
-		PhaseSlider:SetMinMaxValues(1, MAXPHASE)
+		PhaseSlider:SetMinMaxValues(1, DataAgent.MAXPHASE);
 		PhaseSlider:SetValueStep(1);
 		PhaseSlider:SetObeyStepOnDrag(true);
 		PhaseSlider.Text:ClearAllPoints();
@@ -4730,18 +4599,18 @@ local function LF_CreateExplorerFrame()
 		PhaseSlider.High:ClearAllPoints();
 		PhaseSlider.High:SetPoint("TOPRIGHT", PhaseSlider, "BOTTOMRIGHT", -4, 3);
 		PhaseSlider.Low:SetText("|cff00ff001|r");
-		PhaseSlider.High:SetText("|cffff0000" .. MAXPHASE .. "|r");
+		PhaseSlider.High:SetText("|cffff0000" .. DataAgent.MAXPHASE .. "|r");
 		PhaseSlider:HookScript("OnValueChanged", function(self, value, userInput)
 			if userInput then
-				SET.explorer.phase = value;
+				VT.SET.explorer.phase = value;
 				Frame.F_Update();
 			end
-			self.Text:SetText("|cffffff00" .. L["phase"] .. "|r " .. value);
+			self.Text:SetText("|cffffff00" .. l10n["phase"] .. "|r " .. value);
 		end);
 		SetFrame.PhaseSlider = PhaseSlider;
 
 		function Frame:F_RefreshSetFrame()
-			local set = SET.explorer;
+			local set = VT.SET.explorer;
 			for index = 1, #T_CheckButtons do
 				local CheckButton = T_CheckButtons[index];
 				CheckButton:SetChecked(set[CheckButton.key]);
@@ -4751,7 +4620,7 @@ local function LF_CreateExplorerFrame()
 				T_Dropdowns[1].Text:SetText("-");
 				T_Dropdowns[1].Cancel:Hide();
 			else
-				T_Dropdowns[1].Text:SetText(__db__.get_pname_by_pid(filter.skill));
+				T_Dropdowns[1].Text:SetText(DataAgent.get_pname_by_pid(filter.skill));
 				T_Dropdowns[1].Cancel:Show();
 			end
 			if filter.type == nil then
@@ -4760,13 +4629,13 @@ local function LF_CreateExplorerFrame()
 				T_Dropdowns[2].Cancel:Hide();
 				T_Dropdowns[3].Cancel:Hide();
 			else
-				T_Dropdowns[2].Text:SetText(L.ITEM_TYPE_LIST[filter.type]);
+				T_Dropdowns[2].Text:SetText(l10n.ITEM_TYPE_LIST[filter.type]);
 				T_Dropdowns[2].Cancel:Show();
 				if filter.subType == nil then
 					T_Dropdowns[3].Text:SetText("-");
 					T_Dropdowns[3].Cancel:Hide();
 				else
-					T_Dropdowns[3].Text:SetText(L.ITEM_SUB_TYPE_LIST[filter.type][filter.subType]);
+					T_Dropdowns[3].Text:SetText(l10n.ITEM_SUB_TYPE_LIST[filter.type][filter.subType]);
 					T_Dropdowns[3].Cancel:Show();
 				end
 			end
@@ -4774,7 +4643,7 @@ local function LF_CreateExplorerFrame()
 				T_Dropdowns[4].Text:SetText("-");
 				T_Dropdowns[4].Cancel:Hide();
 			else
-				T_Dropdowns[4].Text:SetText(L.ITEM_EQUIP_LOC[filter.eqLoc]);
+				T_Dropdowns[4].Text:SetText(l10n.ITEM_EQUIP_LOC[filter.eqLoc]);
 				T_Dropdowns[4].Cancel:Show();
 			end
 			PhaseSlider:SetValue(set.phase);
@@ -4783,7 +4652,7 @@ local function LF_CreateExplorerFrame()
 	end
 
 	ALA_HOOK_ChatEdit_InsertLink(function(link, addon)
-		if Frame:IsShown() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+		if Frame:IsShown() and addon ~= __addon and not (BrowseName ~= nil and BrowseName:IsVisible()) then
 			local name = GetItemInfo(link);
 			if name and name ~= "" then
 				Frame.SearchEditBox:SetText(name);
@@ -4794,7 +4663,7 @@ local function LF_CreateExplorerFrame()
 		end
 	end);
 	ALA_HOOK_ChatEdit_InsertName(function(name, addon)
-		if Frame:IsShown() and addon ~= __addon__ and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+		if Frame:IsShown() and addon ~= __addon and not (BrowseName ~= nil and BrowseName:IsVisible()) then
 			if name and name ~= "" then
 				Frame.SearchEditBox:SetText(name);
 				Frame.SearchEditBox:ClearFocus();
@@ -4808,14 +4677,13 @@ local function LF_CreateExplorerFrame()
 		Frame.ScrollFrame:Update();
 		LT_SharedMethod.UpdateProfitFrame(Frame);
 	end
-	-- if AuctionMod ~= nil and AuctionMod.F_OnDBUpdate ~= nil then
-	-- 	AuctionMod.F_OnDBUpdate(callback);
+	-- if VT.AuctionMod ~= nil and VT.AuctionMod.F_OnDBUpdate ~= nil then
+	-- 	VT.AuctionMod.F_OnDBUpdate(callback);
 	-- end
-	__namespace__:AddCallback("AUCTION_MOD_LOADED", function(mod)
+	MT.AddCallback("AUCTION_MOD_LOADED", function(mod)
 		if mod ~= nil then
-			AuctionMod = mod;
-			if AuctionMod.F_OnDBUpdate then
-				AuctionMod.F_OnDBUpdate(callback);
+			if mod.F_OnDBUpdate then
+				mod.F_OnDBUpdate(callback);
 			end
 			-- callback();
 		end
@@ -4825,24 +4693,22 @@ local function LF_CreateExplorerFrame()
 end
 --	Board
 	local T_BoardDropMeta = {
-		handler = _noop_,
-		elements = {
-			{
-				handler = function()
-					SET.lock_board = true;
-					T_uiFrames["BOARD"]:F_Lock();
-				end,
-				para = {  },
-				text = L["BOARD_LOCK"],
-			},
-			{
-				handler = function()
-					SET.show_board = false;
-					T_uiFrames["BOARD"]:Hide();
-				end,
-				para = {  },
-				text = L["BOARD_CLOSE"],
-			},
+		num = 2,
+		{
+			handler = function()
+				VT.SET.lock_board = true;
+				VT.UIFrames["BOARD"]:F_Lock();
+			end,
+			param = {  },
+			text = l10n["BOARD_LOCK"],
+		},
+		{
+			handler = function()
+				VT.SET.show_board = false;
+				VT.UIFrames["BOARD"]:Hide();
+			end,
+			param = {  },
+			text = l10n["BOARD_CLOSE"],
 		},
 	};
 	local function LF_FormatTime(sec)
@@ -4857,32 +4723,35 @@ end
 			g = p * 255;
 		end
 		--
-		local d = floor(sec / 86400);
+		local d = sec / 86400;
+		d = d - d % 1.0;
 		sec = sec % 86400;
-		local h = floor(sec / 3600);
+		local h = sec / 3600;
+		h = h - h % 1.0;
 		sec = sec % 3600;
-		local m = floor(sec / 60);
+		local m = sec / 60;
+		m = m - m % 1.0;
 		sec = sec % 60;
 		if d > 0 then
-			return format(L["COLORED_FORMATTED_TIME_LEN"][1], r, g, d, h, m, sec);
+			return format(l10n["COLORED_FORMATTED_TIME_LEN"][1], r, g, d, h, m, sec);
 		elseif h > 0 then
-			return format(L["COLORED_FORMATTED_TIME_LEN"][2], r, g, h, m, sec);
+			return format(l10n["COLORED_FORMATTED_TIME_LEN"][2], r, g, h, m, sec);
 		elseif m > 0 then
-			return format(L["COLORED_FORMATTED_TIME_LEN"][3], r, g, m, sec);
+			return format(l10n["COLORED_FORMATTED_TIME_LEN"][3], r, g, m, sec);
 		else
-			return format(L["COLORED_FORMATTED_TIME_LEN"][4], r, g, sec);
+			return format(l10n["COLORED_FORMATTED_TIME_LEN"][4], r, g, sec);
 		end
 	end
 	local function LF_CalendarSetHeader(sid)			--	tex, coord, title, color
-		return __db__.get_texture_by_pid(__db__.get_pid_by_sid(sid)), nil, __db__.spell_name_s(sid), nil;
+		return DataAgent.get_texture_by_pid(DataAgent.get_pid_by_sid(sid)), nil, DataAgent.spell_name_s(sid), nil;
 	end
 	local function LF_CalendarSetLine(sid, GUID)		--	tex, coord, title, color_title, cool, color_cool
 		local lClass, class, lRace, race, sex, name = GetPlayerInfoByGUID(GUID);
 		local cool;
 		do
-			local pid = __db__.get_pid_by_sid(sid);
+			local pid = DataAgent.get_pid_by_sid(sid);
 			if pid ~= nil then
-				local VAR = AVAR[GUID];
+				local VAR = VT.AVAR[GUID];
 				if VAR ~= nil then
 					local var = rawget(VAR, pid);
 					if var ~= nil then
@@ -4895,10 +4764,10 @@ end
 									if diff > 0 then
 										cool = LF_FormatTime(diff);
 									else
-										cool = L["COOLDOWN_EXPIRED"];
+										cool = l10n["COOLDOWN_EXPIRED"];
 									end
 								else
-									cool = L["COOLDOWN_EXPIRED"];
+									cool = l10n["COOLDOWN_EXPIRED"];
 								end
 							end
 						end
@@ -4921,14 +4790,14 @@ end
 		end
 	end
 	local function LF_UpdateBoard()
-		local Frame = T_uiFrames["BOARD"];
+		local Frame = VT.UIFrames["BOARD"];
 		if Frame:IsShown() then
 			Frame:F_Clear();
-			for GUID, VAR in next, AVAR do
+			for GUID, VAR in next, VT.AVAR do
 				local add_label = true;
-				for pid = __db__.DBMINPID, __db__.DBMAXPID do
+				for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 					local var = rawget(VAR, pid);
-					if var and __db__.is_pid(pid) then
+					if var and DataAgent.is_pid(pid) then
 						local cool = var[3];
 						if cool and next(cool) ~= nil then
 							if add_label then
@@ -4942,25 +4811,25 @@ end
 									Frame:F_AddLine(nil, GUID);
 								end
 							end
-							local texture = __db__.get_texture_by_pid(pid);
+							local texture = DataAgent.get_texture_by_pid(pid);
 							if var.cur_rank and var.max_rank then
-								Frame:F_AddLine("|T" .. (texture or T_UIDefinition.texture_unk) .. ":12:12:0:0|t " .. (__db__.get_pname_by_pid(pid) or ""), nil, var.cur_rank .. " / " .. var.max_rank);
+								Frame:F_AddLine("|T" .. (texture or T_UIDefinition.texture_unk) .. ":12:12:0:0|t " .. (DataAgent.get_pname_by_pid(pid) or ""), nil, var.cur_rank .. " / " .. var.max_rank);
 							else
-								Frame:F_AddLine("|T" .. (texture or T_UIDefinition.texture_unk) .. ":12:12:0:0|t " .. (__db__.get_pname_by_pid(pid) or ""));
+								Frame:F_AddLine("|T" .. (texture or T_UIDefinition.texture_unk) .. ":12:12:0:0|t " .. (DataAgent.get_pname_by_pid(pid) or ""));
 							end
 							for sid, c in next, cool do
-								local texture = __db__.item_icon(__db__.get_cid_by_sid(sid));
-								local sname = "|T" .. (texture or T_UIDefinition.texture_unk) .. ":12:12:0:0|t " .. __db__.spell_name_s(sid);
+								local texture = DataAgent.item_icon(DataAgent.get_cid_by_sid(sid));
+								local sname = "|T" .. (texture or T_UIDefinition.texture_unk) .. ":12:12:0:0|t " .. DataAgent.spell_name_s(sid);
 								if c > 0 then
 									local diff = c - GetServerTime();
 									if diff > 0 then
 										Frame:F_AddLine(sname, nil, LF_FormatTime(diff));
 									else
 										cool[sid] = -1;
-										Frame:F_AddLine(sname, nil, L["COOLDOWN_EXPIRED"]);
+										Frame:F_AddLine(sname, nil, l10n["COOLDOWN_EXPIRED"]);
 									end
 								else
-									Frame:F_AddLine(sname, nil, L["COOLDOWN_EXPIRED"]);
+									Frame:F_AddLine(sname, nil, l10n["COOLDOWN_EXPIRED"]);
 								end
 							end
 						end
@@ -4969,15 +4838,15 @@ end
 			end
 			Frame:F_Update();
 		end
-		local cal = __ala_meta__.cal;
+		local cal = VT.__super.cal;
 		if cal then
 			cal.ext_Reset();
-			for pid, list in next, __db__.T_TradeSkill_CooldownList do
-				if __db__.is_pid(pid) then
+			for pid, list in next, DataAgent.T_TradeSkill_CooldownList do
+				if DataAgent.is_pid(pid) then
 					for index = 1, #list do
 						local data = list[index];
 						local add_label = true;
-						for GUID, VAR in next, AVAR do
+						for GUID, VAR in next, VT.AVAR do
 							local var = rawget(VAR, pid);
 							if var then
 								local cool = var[3];
@@ -4999,7 +4868,7 @@ end
 local function LF_CreateBoard()
 	local Frame = CreateFrame('FRAME', nil, UIParent);
 	Frame:SetClampedToScreen(true);
-	if LOCALE == 'zhCN' or LOCALE == 'zhTW' or LOCALE == 'koKR' then
+	if CT.LOCALE == 'zhCN' or CT.LOCALE == 'zhTW' or CT.LOCALE == 'koKR' then
 		Frame:SetWidth(260);
 	else
 		Frame:SetWidth(320);
@@ -5009,17 +4878,17 @@ local function LF_CreateBoard()
 	-- Frame:RegisterForDrag("LeftButton");
 	function Frame:F_Lock()
 		self:EnableMouse(false);
-		uireimp._SetSimpleBackdrop(self, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+		VT.__uireimp._SetSimpleBackdrop(self, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	end
 	function Frame:F_Unlock()
 		self:EnableMouse(true);
-		uireimp._SetSimpleBackdrop(self, 0, 1, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5);
+		VT.__uireimp._SetSimpleBackdrop(self, 0, 1, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5);
 	end
 	Frame:SetScript("OnMouseDown", function(self, button)
 		if button == "LeftButton" then
 			self:StartMoving();
 		else
-			ALADROP(self, "BOTTOMLEFT", T_BoardDropMeta);
+			VT.__menulib.ShowMenu(self, "BOTTOMLEFT", T_BoardDropMeta);
 		end
 	end);
 	Frame:SetScript("OnMouseUp", function(self, button)
@@ -5031,7 +4900,7 @@ local function LF_CreateBoard()
 				pos[index] = val:GetName();
 			end
 		end
-		SET.board_pos = pos;
+		VT.SET.board_pos = pos;
 	end);
 	Frame:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 	Frame:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
@@ -5088,22 +4957,22 @@ local function LF_CreateBoard()
 		self:SetHeight(h);
 		self:SetClampRectInsets(200, -200, 16 - h, h - 16);
 	end
-	Frame.info_lines = { L["BOARD_TIP"], };
+	Frame.info_lines = { l10n["BOARD_TIP"], };
 	Frame.T_Lines = {  };
 	Frame.curLine = 0;
-	C_Timer_NewTicker(1.0, LF_UpdateBoard);
-	if SET.show_board then
+	MT._TimerStart(LF_UpdateBoard, 1.0);
+	if VT.SET.show_board then
 		Frame:Show();
 	else
 		Frame:Hide();
 	end
-	if SET.lock_board then
+	if VT.SET.lock_board then
 		Frame:F_Lock();
 	else
 		Frame:F_Unlock();
 	end
-	if SET.board_pos then
-		Frame:SetPoint(unpack(SET.board_pos));
+	if VT.SET.board_pos then
+		Frame:SetPoint(unpack(VT.SET.board_pos));
 	else
 		Frame:SetPoint("TOP", 0, -20);
 	end
@@ -5111,36 +4980,34 @@ local function LF_CreateBoard()
 end
 --	Config
 	local T_CharListDrop_Del = {
-		text = L.CHAR_DEL,
-		para = {  },
+		text = l10n.CHAR_DEL,
+		param = {  },
 	};
 	local T_CharListDropMeta = {
-		handler = function(_, index, Frame)
-			__namespace__.F_DelChar(index);
-			Frame.ScrollFrame:Update();
+		handler = function(_, _, param)
+			MT.DelChar(param[1]);
+			param[2].ScrollFrame:Update();
 		end,
-		elements = {
-			T_CharListDrop_Del,
-		},
+		T_CharListDrop_Del,
 	};
 	local function LF_ConfigCharListButton_OnClick(self, button)
-		local list = SET.char_list;
+		local list = VT.SET.char_list;
 		local data_index = self:GetDataIndex();
 		if data_index <= #list then
 			local key = list[data_index];
-			if key ~= PLAYER_GUID then
-				T_CharListDrop_Del.para[1] = data_index;
-				T_CharListDrop_Del.para[2] = self.Frame;
-				ALADROP(self, "BOTTOM", T_CharListDropMeta);
+			if key ~= CT.SELFGUID then
+				T_CharListDrop_Del.param[1] = data_index;
+				T_CharListDrop_Del.param[2] = self.Frame;
+				VT.__menulib.ShowMenu(self, "BOTTOM", T_CharListDropMeta);
 			end
 		end
 	end
 	local function LF_ConfigCharListButton_OnEnter(self)
-		local list = SET.char_list;
+		local list = VT.SET.char_list;
 		local data_index = self:GetDataIndex();
 		if data_index <= #list then
 			local key = list[data_index];
-			local VAR = AVAR[key];
+			local VAR = VT.AVAR[key];
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 			local lClass, class, lRace, race, sex, name, realm = GetPlayerInfoByGUID(key);
 			if name and class then
@@ -5158,9 +5025,9 @@ end
 				GameTooltip:AddLine(key, 1.0, 1.0, 1.0);
 			end
 			local add_blank = true;
-			for pid = __db__.DBMINPID, __db__.DBMAXPID do
+			for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 				local var = rawget(VAR, pid);
-				if var and __db__.is_pid(pid) then
+				if var and DataAgent.is_pid(pid) then
 					if add_blank then
 						GameTooltip:AddLine(" ");
 						add_blank = false;
@@ -5170,9 +5037,9 @@ end
 						right = (right or "") .. "/" .. var.max_rank;
 					end
 					if right then
-						GameTooltip:AddDoubleLine("    " .. (__db__.get_pname_by_pid(pid) or pid), right .. "    ", 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
+						GameTooltip:AddDoubleLine("    " .. (DataAgent.get_pname_by_pid(pid) or pid), right .. "    ", 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
 					else
-						GameTooltip:AddLine("    " .. (__db__.get_pname_by_pid(pid) or pid), 1.0, 1.0, 1.0);
+						GameTooltip:AddLine("    " .. (DataAgent.get_pname_by_pid(pid) or pid), 1.0, 1.0, 1.0);
 					end
 				end
 			end
@@ -5187,7 +5054,7 @@ end
 	local function LF_ConfigCreateCharListButton(parent, index, buttonHeight)
 		local Button = CreateFrame('BUTTON', nil, parent);
 		Button:SetHeight(buttonHeight);
-		uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+		VT.__uireimp._SetSimpleBackdrop(Button, 0, 1, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
 		Button:SetHighlightTexture(T_UIDefinition.texture_white);
 		Button:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.listButtonHighlightColor));
 		Button:EnableMouse(true);
@@ -5227,10 +5094,10 @@ end
 		return Button;
 	end
 	local function LF_ConfigSetCharListButton(Button, data_index)
-		local list = SET.char_list;
+		local list = VT.SET.char_list;
 		if data_index <= #list then
 			local key = list[data_index];
-			local VAR = AVAR[key];
+			local VAR = VT.AVAR[key];
 			local lClass, class, lRace, race, sex, name, realm = GetPlayerInfoByGUID(key);
 			if name and class then
 				class = strupper(class);
@@ -5296,9 +5163,9 @@ end
 	end
 	local function LF_ConfigDrop_OnClick(self)
 		if type(self.meta) == 'function' then
-			ALADROP(self, "BOTTOM", self.meta());
+			VT.__menulib.ShowMenu(self, "BOTTOM", self.meta());
 		else
-			ALADROP(self, "BOTTOM", self.meta);
+			VT.__menulib.ShowMenu(self, "BOTTOM", self.meta);
 		end
 	end 
 	local function LF_ConfigCreateDrop(parent, key, text, meta)
@@ -5410,7 +5277,7 @@ end
 			end
 		end
 		Button:SetScript("OnClick", function(self)
-			backup = SET[self.key];
+			backup = VT.SET[self.key];
 			-- ColorPickerFrame.Alpha:Show();
 			ColorPickerFrame.func = Button.func;
 			ColorPickerFrame.hasOpacity = true;
@@ -5465,7 +5332,7 @@ local function LF_CreateConfigFrame()
 		end
 	end);
 	tinsert(UISpecialFrames, "ALATRADESKILL_SETTING_UI_C");
-	uireimp._SetSimpleBackdrop(SettingUIFreeContainer, 0, 1, 0.05, 0.05, 0.05, 1.0, 0.0, 0.0, 0.0, 1.0);
+	VT.__uireimp._SetSimpleBackdrop(SettingUIFreeContainer, 0, 1, 0.05, 0.05, 0.05, 1.0, 0.0, 0.0, 0.0, 1.0);
 	--
 	local Close = CreateFrame('BUTTON', nil, SettingUIFreeContainer);
 	Close:SetSize(20, 20);
@@ -5476,13 +5343,13 @@ local function LF_CreateConfigFrame()
 	end);
 	Close:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 	Close:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
-	Close.info_lines = { L.CLOSE, };
+	Close.info_lines = { l10n.CLOSE, };
 	SettingUIFreeContainer.Close = Close;
 	--
 	SettingUIInterfaceOptionsFrameContainer = CreateFrame('FRAME');
 	SettingUIInterfaceOptionsFrameContainer:Hide();
 	SettingUIInterfaceOptionsFrameContainer:SetSize(1, 1);
-	SettingUIInterfaceOptionsFrameContainer.name = __addon__;
+	SettingUIInterfaceOptionsFrameContainer.name = __addon;
 	SettingUIInterfaceOptionsFrameContainer:SetScript("OnShow", function(self)
 		SettingUIFreeContainer:Hide();
 		Frame:_Show();
@@ -5503,7 +5370,7 @@ local function LF_CreateConfigFrame()
 	Frame._IsShown = Frame.IsShown;
 	function Frame:Show()
 		if InterfaceOptionsFrame:IsShown() then
-			InterfaceOptionsFrame_OpenToCategory(__addon__);
+			InterfaceOptionsFrame_OpenToCategory(__addon);
 		else
 			SettingUIFreeContainer:Show();
 		end
@@ -5521,8 +5388,8 @@ local function LF_CreateConfigFrame()
 	--
 	local T_SetWidgets = {  };
 	local px, py, h = 0, 0, 1;
-	for index = 1, #__namespace__.T_SetCommandList do
-		local cmd = __namespace__.T_SetCommandList[index];
+	for index = 1, #VT.SetCommandList do
+		local cmd = VT.SetCommandList[index];
 		if px >= 1 then
 			px = 0;
 			py = py + h;
@@ -5530,13 +5397,13 @@ local function LF_CreateConfigFrame()
 		end
 		local key = cmd[3];
 		if cmd[1] == 'bool' then
-			local CheckButton = LF_ConfigCreateCheckButton(Frame, key, L.SLASH_NOTE[key], cmd[8]);
+			local CheckButton = LF_ConfigCreateCheckButton(Frame, key, l10n.SLASH_NOTE[key], cmd[8]);
 			CheckButton:SetPoint("TOPLEFT", Frame, "TOPLEFT", 10 + 150 * px, -25 - 25 * py);
 			T_SetWidgets[key] = CheckButton;
 			px = px + 1;
 			h = max(h, 1);
 		elseif cmd[7] == 'drop' then
-			local Dropdown = LF_ConfigCreateDrop(Frame, key, L.SLASH_NOTE[key], cmd[8]);
+			local Dropdown = LF_ConfigCreateDrop(Frame, key, l10n.SLASH_NOTE[key], cmd[8]);
 			Dropdown:SetPoint("TOPLEFT", Frame, "TOPLEFT", 10 + 150 * px, -25 - 25 * py);
 			T_SetWidgets[key] = Dropdown;
 			px = px + 1;
@@ -5547,7 +5414,7 @@ local function LF_CreateConfigFrame()
 				py = py + h;
 				h = 1;
 			end
-			local Slider = LF_ConfigCreateSlider(Frame, key, L.SLASH_NOTE[key], cmd[9][1], cmd[9][2], cmd[9][3], cmd[8]);
+			local Slider = LF_ConfigCreateSlider(Frame, key, l10n.SLASH_NOTE[key], cmd[9][1], cmd[9][2], cmd[9][3], cmd[8]);
 			Slider:SetPoint("TOPLEFT", Frame, "TOPLEFT", 10 + 150 * px, -25 - 25 * py);
 			T_SetWidgets[key] = Slider;
 			px = px + 2;
@@ -5562,19 +5429,19 @@ local function LF_CreateConfigFrame()
 				local exkey = extra[3];
 				children_key[exkey] = val;
 				if extra[7] == 'bool' then
-					local CheckButton = LF_ConfigCreateCheckButton(Frame, exkey, L.SLASH_NOTE[exkey], extra[8]);
+					local CheckButton = LF_ConfigCreateCheckButton(Frame, exkey, l10n.SLASH_NOTE[exkey], extra[8]);
 					CheckButton:SetPoint("LEFT", father.Right, "RIGHT", 20, 0);
 					T_SetWidgets[exkey] = CheckButton;
 				elseif extra[7] == 'drop' then
-					local Dropdown = LF_ConfigCreateDrop(Frame, exkey, L.SLASH_NOTE[exkey], extra[8]);
+					local Dropdown = LF_ConfigCreateDrop(Frame, exkey, l10n.SLASH_NOTE[exkey], extra[8]);
 					Dropdown:SetPoint("LEFT", father.Right, "RIGHT", 20, 0);
 					T_SetWidgets[exkey] = Dropdown;
 				elseif extra[7] == 'slider' then
-					local Slider = LF_ConfigCreateSlider(Frame, exkey, L.SLASH_NOTE[exkey], extra[9][1], extra[9][2], extra[9][3], extra[8]);
+					local Slider = LF_ConfigCreateSlider(Frame, exkey, l10n.SLASH_NOTE[exkey], extra[9][1], extra[9][2], extra[9][3], extra[8]);
 					Slider:SetPoint("LEFT", father.Right, "RIGHT", 20, 0);
 					T_SetWidgets[exkey] = Slider;
 				elseif extra[7] == 'color4' then
-					local color4 = LF_ConfigCreateColor4(Frame, exkey, L.SLASH_NOTE[exkey], extra[8]);
+					local color4 = LF_ConfigCreateColor4(Frame, exkey, l10n.SLASH_NOTE[exkey], extra[8]);
 					color4:SetPoint("LEFT", father.Right, "RIGHT", 40, 0);
 					T_SetWidgets[exkey] = color4;
 				end
@@ -5589,7 +5456,7 @@ local function LF_CreateConfigFrame()
 	end
 	do	--	character list
 		local CharList = CreateFrame('FRAME', nil, Frame);
-		uireimp._SetSimpleBackdrop(CharList, 0, 1, 0.05, 0.05, 0.05, 1.0, 0.0, 0.0, 0.0, 1.0);
+		VT.__uireimp._SetSimpleBackdrop(CharList, 0, 1, 0.05, 0.05, 0.05, 1.0, 0.0, 0.0, 0.0, 1.0);
 		CharList:SetSize(240, 400);
 		CharList:SetPoint("BOTTOMLEFT", Frame, "BOTTOMRIGHT", 2, 0);
 		CharList:EnableMouse(true);
@@ -5603,17 +5470,17 @@ local function LF_CreateConfigFrame()
 		-- end);
 		CharList:Hide();
 
-		local ScrollFrame = ALASCR(CharList, nil, nil, T_UIDefinition.charListButtonHeight, LF_ConfigCreateCharListButton, LF_ConfigSetCharListButton);
+		local ScrollFrame = VT.__scrolllib.CreateScrollFrame(CharList, nil, nil, T_UIDefinition.charListButtonHeight, LF_ConfigCreateCharListButton, LF_ConfigSetCharListButton);
 		ScrollFrame:SetPoint("BOTTOMLEFT", 4, 12);
 		ScrollFrame:SetPoint("TOPRIGHT", -4, -24);
 		CharList.ScrollFrame = ScrollFrame;
-		ScrollFrame:SetNumValue(#SET.char_list);
+		ScrollFrame:SetNumValue(#VT.SET.char_list);
 
 		CharList:SetScript("OnShow", function(self)
-			T_uiFrames["CONFIG"].CharListToggleButton:F_SetStatusTexture(true);
+			VT.UIFrames["CONFIG"].CharListToggleButton:F_SetStatusTexture(true);
 		end);
 		CharList:SetScript("OnHide", function(self)
-			T_uiFrames["CONFIG"].CharListToggleButton:F_SetStatusTexture(false);
+			VT.UIFrames["CONFIG"].CharListToggleButton:F_SetStatusTexture(false);
 		end);
 		Frame.CharList = CharList;
 
@@ -5652,23 +5519,23 @@ local function LF_CreateConfigFrame()
 		Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "NORMAL");
 		Text:SetPoint("RIGHT", ToggleButton, "LEFT", -2, 0);
 		Text:SetVertexColor(1.0, 1.0, 1.0, 1.0);
-		Text:SetText(L.CHAR_LIST);
+		Text:SetText(l10n.CHAR_LIST);
 		ToggleButton.Text = Text;
 
 		function CharList:F_Update()
-			self.ScrollFrame:SetNumValue(#SET.char_list);
+			self.ScrollFrame:SetNumValue(#VT.SET.char_list);
 			self.ScrollFrame:Update();
 		end
 	end
 	function Frame:F_Refresh()
 		for key, obj in next, T_SetWidgets do
-			obj:SetVal(SET[key]);
+			obj:SetVal(VT.SET[key]);
 			local children_key = obj.children_key;
 			if children_key then
 				for exkey, val in next, children_key do
 					local obj2 = T_SetWidgets[exkey];
 					if obj2 then
-						if SET[key] == val then
+						if VT.SET[key] == val then
 							obj2:Show();
 						else
 							obj2:Hide();
@@ -5690,13 +5557,13 @@ local function LF_CreateConfigFrame()
 end
 
 
-function __namespace__.F_uiMarkToUpdate(pid)
-	SET[pid].update = true;
+function MT.MarkSkillToUpdate(pid)
+	VT.SET[pid].update = true;
 end
 
 -->		external
-	function __namespace__.F_uiToggleFrame(key, val)
-		local Frame = T_uiFrames[key];
+	function MT.ToggleFrame(key, val)
+		local Frame = VT.UIFrames[key];
 		if Frame ~= nil then
 			if Frame:IsShown() or val == false then
 				Frame:Hide();
@@ -5707,8 +5574,8 @@ end
 			end
 		end
 	end
-	function __namespace__.F_uiToggleFrameCall(val)
-		local TFrame = T_uiFrames["BLIZZARD_TRADESKILLUI"];
+	function MT.ToggleFrameCall(val)
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
 		if TFrame ~= nil then
 			if val then
 				TFrame.ToggleButton:Show();
@@ -5716,7 +5583,7 @@ end
 				TFrame.ToggleButton:Hide();
 			end
 		end
-		local CFrame = T_uiFrames["BLIZZARD_CRAFTUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
 			if val then
 				CFrame.ToggleButton:Show();
@@ -5725,8 +5592,8 @@ end
 			end
 		end
 	end
-	function __namespace__.F_uiToggleFrameTab(val)
-		local TFrame = T_uiFrames["BLIZZARD_TRADESKILLUI"];
+	function MT.ToggleFrameTab(val)
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
 		if TFrame ~= nil then
 			if val then
 				TFrame.TabFrame:Show();
@@ -5735,7 +5602,7 @@ end
 			end
 			TFrame:F_ShowSetFrame(false);
 		end
-		local CFrame = T_uiFrames["BLIZZARD_CRAFTUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
 			if val then
 				CFrame.TabFrame:Show();
@@ -5745,8 +5612,8 @@ end
 			CFrame:F_ShowSetFrame(false);
 		end
 	end
-	function __namespace__.F_uiToggleFramePortraitButton(val)
-		local TFrame = T_uiFrames["BLIZZARD_TRADESKILLUI"];
+	function MT.ToggleFramePortraitButton(val)
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
 		if TFrame ~= nil then
 			if val then
 				TFrame.PortraitButton:Show();
@@ -5754,7 +5621,7 @@ end
 				TFrame.PortraitButton:Hide();
 			end
 		end
-		local CFrame = T_uiFrames["BLIZZARD_CRAFTUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
 			if val then
 				CFrame.PortraitButton:Show();
@@ -5763,29 +5630,29 @@ end
 			end
 		end
 	end
-	function __namespace__.F_uiLockBoard(val)
+	function MT.LockBoard(val)
 		if val then
-			T_uiFrames["BOARD"]:F_Lock();
+			VT.UIFrames["BOARD"]:F_Lock();
 		else
-			T_uiFrames["BOARD"]:F_Unlock();
+			VT.UIFrames["BOARD"]:F_Unlock();
 		end
 	end
-	function __namespace__.F_uiUpdateAllFrames()
-		local TFrame = T_uiFrames["BLIZZARD_TRADESKILLUI"];
+	function MT.UpdateAllFrames()
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
 		if TFrame ~= nil then
 			TFrame:F_Update();
 		end
-		local CFrame = T_uiFrames["BLIZZARD_CRAFTUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
 			CFrame:F_Update();
 		end
-		local EFrame = T_uiFrames["EXPLORER"];
+		local EFrame = VT.UIFrames["EXPLORER"];
 		if EFrame ~= nil then
 			EFrame:F_Update();
 		end
 	end
-	function __namespace__.F_uiRefreshAllFrames()
-		local TFrame = T_uiFrames["BLIZZARD_TRADESKILLUI"];
+	function MT.RefreshAllFrames()
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
 		if TFrame ~= nil then
 			TFrame.ScrollFrame:Update();
 			local ProfitFrame = TFrame.ProfitFrame;
@@ -5793,7 +5660,7 @@ end
 				ProfitFrame.ScrollFrame:Update();
 			end
 		end
-		local CFrame = T_uiFrames["BLIZZARD_CRAFTUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
 			CFrame.ScrollFrame:Update();
 			local ProfitFrame = CFrame.ProfitFrame;
@@ -5801,7 +5668,7 @@ end
 				ProfitFrame.ScrollFrame:Update();
 			end
 		end
-		local EFrame = T_uiFrames["EXPLORER"];
+		local EFrame = VT.UIFrames["EXPLORER"];
 		if EFrame ~= nil then
 			EFrame.ScrollFrame:Update();
 			local ProfitFrame = EFrame.ProfitFrame;
@@ -5810,59 +5677,59 @@ end
 			end
 		end
 	end
-	function __namespace__.F_uiRefreshFramesStyle(loading)
-		local TFrame = T_uiFrames["BLIZZARD_TRADESKILLUI"];
+	function MT.RefreshFramesStyle(loading)
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
 		if TFrame ~= nil then
-			TFrame:F_BlzStyle(SET.blz_style, loading);
+			TFrame:F_SetStyle(VT.SET.blz_style, loading);
 		end
-		local CFrame = T_uiFrames["BLIZZARD_CRAFTUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
-			CFrame:F_BlzStyle(SET.blz_style, loading);
+			CFrame:F_SetStyle(VT.SET.blz_style, loading);
 		end
-		local EFrame = T_uiFrames["EXPLORER"];
+		local EFrame = VT.UIFrames["EXPLORER"];
 		if EFrame ~= nil then
-			EFrame:F_BlzStyle(SET.blz_style, loading);
+			EFrame:F_SetStyle(VT.SET.blz_style, loading);
 		end
 	end
-	function __namespace__.F_uiRefreshConfigFrame()
-		T_uiFrames["CONFIG"]:F_Refresh();
+	function MT.RefreshConfigFrame()
+		VT.UIFrames["CONFIG"]:F_Refresh();
 	end
-	function __namespace__.F_uiToggleFrameExpand(val)
-		local TFrame = T_uiFrames["BLIZZARD_TRADESKILLUI"];
+	function MT.ToggleFrameExpand(val)
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
 		if TFrame ~= nil then
 			TFrame:F_Expand(val);
 		end
-		local CFrame = T_uiFrames["BLIZZARD_CRAFTUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
 			CFrame:F_Expand(val);
 		end
 	end
-	function __namespace__.F_uiFrameFixSkillList()
-		local TFrame = T_uiFrames["BLIZZARD_TRADESKILLUI"];
+	function MT.FrameFixSkillList()
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
 		if TFrame ~= nil then
-			TFrame:F_FixSkillList(SET.expand);
+			TFrame:F_FixSkillList(VT.SET.expand);
 		end
-		local CFrame = T_uiFrames["BLIZZARD_CRAFTUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
-			CFrame:F_FixSkillList(SET.expand);
+			CFrame:F_FixSkillList(VT.SET.expand);
 		end
 	end
-	function __namespace__.F_uiToggleFrameRankInfo(val)
-		local TFrame = T_uiFrames["BLIZZARD_TRADESKILLUI"];
+	function MT.ToggleFrameRankInfo(val)
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
 		if TFrame ~= nil then
 			TFrame:F_FrameUpdateRankInfo();
 		end
-		local CFrame = T_uiFrames["BLIZZARD_CRAFTUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
 			CFrame:F_FrameUpdateRankInfo();
 		end
 	end
-	function __namespace__.F_uiToggleFramePriceInfo(val)
-		local TFrame = T_uiFrames["BLIZZARD_TRADESKILLUI"];
+	function MT.ToggleFramePriceInfo(val)
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
 		if TFrame ~= nil then
 			TFrame:F_FrameUpdatePriceInfo();
 		end
-		local CFrame = T_uiFrames["BLIZZARD_CRAFTUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
 			CFrame:F_FrameUpdatePriceInfo();
 		end
@@ -5875,41 +5742,41 @@ function F.SKILL_LINES_CHANGED()	--	Donot process at the first trigger. Do it af
 	end
 	F.scheduled_SKILL_LINES_CHANGED = true;
 	--
-	C_Timer_After(1.0, function()
+	MT.After(1.0, function()
 		F.scheduled_SKILL_LINES_CHANGED = nil;
 		F.SKILL_LINES_CHANGED = function()
-			-- local check_id = __db__.table_tradeskill_check_id();
-			-- for pid = __db__.DBMINPID, __db__.DBMAXPID do
+			-- local check_id = DataAgent.table_tradeskill_check_id();
+			-- for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 			-- 	local cpid = check_id[pid];
 			-- 	if cpid ~= nil then
 			-- 		if not IsSpellKnown(cpid) then
-			-- 			rawset(VAR, pid, nil);
+			-- 			rawset(VT.VAR, pid, nil);
 			-- 		end
 			-- 	end
 			-- end
-			local check_name = __db__.table_tradeskill_check_name();
-			for pid = __db__.DBMINPID, __db__.DBMAXPID do
+			local check_name = DataAgent.table_tradeskill_check_name();
+			for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 				local cpname = check_name[pid];
 				if cpname ~= nil then
 					if GetSpellInfo(cpname) == nil then
-						rawset(VAR, pid, nil);
+						rawset(VT.VAR, pid, nil);
 					end
 				end
 			end
 			for index = 1, GetNumSkillLines() do
 				local pname, header, expanded, cur_rank, _, _, max_rank  = GetSkillLineInfo(index);
 				if not header then
-					local pid = __db__.get_pid_by_pname(pname);
+					local pid = DataAgent.get_pid_by_pname(pname);
 					if pid ~= nil then
-						local var = VAR[pid];
+						local var = VT.VAR[pid];
 						var.update = true;
 						var.cur_rank, var.max_rank = cur_rank, max_rank;
-						__namespace__.F_CheckCooldown(pid, var);
+						MT.CheckCooldown(pid, var);
 					end
 				end
 			end
-			local TFrame = T_uiFrames.Blizzard_TradeSkillUI;
-			local CFrame = T_uiFrames.Blizzard_CraftUI;
+			local TFrame = VT.UIFrames.Blizzard_TradeSkillUI;
+			local CFrame = VT.UIFrames.Blizzard_CraftUI;
 			if TFrame then
 				TFrame.TabFrame:F_Update();
 				TFrame.PortraitButton:F_Update();
@@ -5923,50 +5790,49 @@ function F.SKILL_LINES_CHANGED()	--	Donot process at the first trigger. Do it af
 	end);
 end
 function F.NEW_RECIPE_LEARNED(sid)
-	local pid = __db__.get_pid_by_sid(sid);
+	local pid = DataAgent.get_pid_by_sid(sid);
 	if pid ~= nil then
-		local var = VAR[pid];
+		local var = VT.VAR[pid];
 		var.update = true;
 		var[1][#var[1] + 1] = sid;
 		var[2][sid] = -1;
-		LT_SharedMethod.MarkKnown(sid, PLAYER_GUID);
-		__namespace__:FireEvent("USER_EVENT_RECIPE_LIST_UPDATE");
+		DataAgent.MarkKnown(sid, CT.SELFGUID);
+		MT.FireCallback("USER_EVENT_RECIPE_LIST_UPDATE");
 	end
 end
 
 
-function __namespace__.init_ui()
-	AVAR, VAR, SET, FAV = __namespace__.AVAR, __namespace__.VAR, __namespace__.SET, __namespace__.FAV;
-	for GUID, VAR in next, AVAR do
-		if VAR.realm_id == PLAYER_REALM_ID then
-			for pid = __db__.DBMINPID, __db__.DBMAXPID do
+MT.RegisterOnInit('ui', function(LoggedIn)
+	for GUID, VAR in next, VT.AVAR do
+		if VAR.realm_id == CT.SELFREALMID then
+			for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 				local var = rawget(VAR, pid);
-				if var and __db__.is_pid(pid) then
+				if var and DataAgent.is_pid(pid) then
 					local list = var[1];
 					for index = 1, #list do
-						LT_SharedMethod.MarkKnown(list[index], GUID);
+						DataAgent.MarkKnown(list[index], GUID);
 					end
 				end
 			end
 		end
 	end
 	local _;
-	_, T_uiFrames["EXPLORER"] = __namespace__.F_SafeCall(LF_CreateExplorerFrame);
-	_, T_uiFrames["CONFIG"] = __namespace__.F_SafeCall(LF_CreateConfigFrame);
-	_, T_uiFrames["BOARD"] = __namespace__.F_SafeCall(LF_CreateBoard);
+	_, VT.UIFrames["EXPLORER"] = MT.SafeCall(LF_CreateExplorerFrame);
+	_, VT.UIFrames["CONFIG"] = MT.SafeCall(LF_CreateConfigFrame);
+	_, VT.UIFrames["BOARD"] = MT.SafeCall(LF_CreateBoard);
 	F:RegisterEvent("SKILL_LINES_CHANGED");
 	F:RegisterEvent("NEW_RECIPE_LEARNED");
-	__namespace__.F_HookTooltip(SkillTip);
-	__namespace__:AddCallback("USER_EVENT_DATA_LOADED", function()
+	MT.HookTooltip(SkillTip);
+	MT.AddCallback("USER_EVENT_DATA_LOADED", function()
 		F.SKILL_LINES_CHANGED();
-		local TFrame = T_uiFrames["BLIZZARD_TRADESKILLUI"];
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
 		if TFrame ~= nil then
 			if TFrame:IsShown() then
 				TFrame.F_OnSelection();
 			end
 			TFrame.TabFrame:F_Update();
 		end
-		local CFrame = T_uiFrames["BLIZZARD_CRAFTUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
 			if CFrame:IsShown() then
 				CFrame.F_OnSelection();
@@ -5974,14 +5840,9 @@ function __namespace__.init_ui()
 			CFrame.TabFrame:F_Update();
 		end
 	end);
-	__namespace__:AddCallback("USER_EVENT_RECIPE_LIST_UPDATE", __namespace__.F_uiUpdateAllFrames);
-	__namespace__:AddCallback("AUCTION_MOD_LOADED", function(mod)
-		if mod ~= nil then
-			AuctionMod = mod;
-		end
-	end);
-	__namespace__:AddAddOnCallback("BLIZZARD_TRADESKILLUI", LF_AddOnCallback_Blizzard_TradeSkillUI);
-	if not __namespace__.__is_wlk then
-		__namespace__:AddAddOnCallback("BLIZZARD_CRAFTUI", LF_AddOnCallback_Blizzard_CraftUI);
+	MT.AddCallback("USER_EVENT_RECIPE_LIST_UPDATE", MT.UpdateAllFrames);
+	MT.RegisterOnAddOnLoaded("BLIZZARD_TRADESKILLUI", LF_AddOnCallback_Blizzard_TradeSkillUI);
+	if not CT.ISWLK then
+		MT.RegisterOnAddOnLoaded("BLIZZARD_CRAFTUI", LF_AddOnCallback_Blizzard_CraftUI);
 	end
-end
+end);

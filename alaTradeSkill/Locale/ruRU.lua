@@ -2,11 +2,14 @@
 	by ALA @ 163UI
 --]]--
 
-if GetLocale() ~= "ruRU" then
+local __addon, __private = ...;
+local CT = __private.CT;
+
+if CT.LOCALE ~= "ruRU" then
 	return;
 end
-
-local __addon__, __namespace__ = ...;
+local l10n = CT.l10n;
+l10n.LOCALE = "ruRU";
 
 -->	fix for ptr
 	local LE_ITEM_CLASS_CONSUMABLE = LE_ITEM_CLASS_CONSUMABLE or 0;
@@ -103,105 +106,103 @@ local __addon__, __namespace__ = ...;
 	local LE_ITEM_MISCELLANEOUS_MOUNT = LE_ITEM_MISCELLANEOUS_MOUNT or 5;
 -->
 
-local L = {
-	extra_skill_name = {  },
-};
-__namespace__.L = L;
+l10n.extra_skill_name = {  };
 
 --
-L["OK"] = "OK";
-L["Search"] = "Search";
-L["OVERRIDE_OPEN"] = "Open";
-L["OVERRIDE_CLOSE"] = "Close";
-L["ADD_FAV"] = "Favorite";
-L["SUB_FAV"] = "Unfavorite";
-L["QUERY_WHO_CAN_CRAFT_IT"] = "Who can craft it ?";
+l10n["OK"] = "OK";
+l10n["Search"] = "Search";
+l10n["OVERRIDE_OPEN"] = "Open";
+l10n["OVERRIDE_CLOSE"] = "Close";
+l10n["ADD_FAV"] = "Favorite";
+l10n["SUB_FAV"] = "Unfavorite";
+l10n["QUERY_WHO_CAN_CRAFT_IT"] = "Who can craft it ?";
 --
-L["showUnkown"] = "Unknown";
-L["showKnown"] = "Known";
-L["showHighRank"] = "HighRank";
-L["filterClass"] = UnitClass('player');
-L["filterSpec"] = "MySpec";
-L["showItemInsteadOfSpell"] = "ItemTip";
-L["showRank"] = "Rank";
-L["haveMaterials"] = "haveMaterials";
-L["showUnkownTip"] = "Show unlearned recipes";
-L["showKnownTip"] = "Show learned recipes";
-L["showHighRankTip"] = "Show recipes of higher rank";
-L["filterClassTip"] = "Hide recipes unavailable to" .. UnitClass('player');
-L["filterSpecTip"] = "Hide recipes unavailable to current specialization";
-L["showItemInsteadOfSpellTip"] = "Show item in tip instead of spell";
-L["showRankTip"] = "Show color of difficulty";
+l10n["showUnkown"] = "Unknown";
+l10n["showKnown"] = "Known";
+l10n["showHighRank"] = "HighRank";
+l10n["filterClass"] = CT.SELFLCLASS;
+l10n["filterSpec"] = "MySpec";
+l10n["showItemInsteadOfSpell"] = "ItemTip";
+l10n["showRank"] = "Rank";
+l10n["haveMaterials"] = "haveMaterials";
+l10n["showUnkownTip"] = "Show unlearned recipes";
+l10n["showKnownTip"] = "Show learned recipes";
+l10n["showHighRankTip"] = "Show recipes of higher rank";
+l10n["filterClassTip"] = "Hide recipes unavailable to" .. CT.SELFLCLASS;
+l10n["filterSpecTip"] = "Hide recipes unavailable to current specialization";
+l10n["showItemInsteadOfSpellTip"] = "Show item in tip instead of spell";
+l10n["showRankTip"] = "Show color of difficulty";
 --
-L["PROFIT_SHOW_COST_ONLY"] = "Show cost only";
+l10n["PROFIT_SHOW_COST_ONLY"] = "Show cost only";
 --
-L["LABEL_RANK_LEVEL"] = "\124cffff7f00Rank: \124r";
-L["LABEL_GET_FROM"] = "\124cffff7f00Get from: \124r";
-L["quest"] = "Quest";
-L["item"] = "Item";
-L["object"] = "Object";
-L["trainer"] = "Trainer";
-L["quest_reward"] = "Quest reward";
-L["quest_accepted_from"] = "Quest given by";
-L["sold_by"] = "Sold by";
-L["dropped_by"] = "Dropped by";
-L["world_drop"] = "World drop";
-L["dropped_by_mod_level"] = "Mob Lv";
-L["tradable"] = "Tradable";
-L["non_tradable"] = "Non-tradable";
-L["elite"] = "Elite";
-L["phase"] = "Phase";
-L["unknown area"] = "Unknown area";
-L["NOT_AVAILABLE_FOR_PLAYER'S_FACTION"] = "Not available for player's faction";
-L["AVAILABLE_IN_PHASE_"] = "Available in phase ";
-L["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00Status of characters:\124r";
-L["LABEL_USED_AS_MATERIAL_IN"] = "\124cffff7f00Used to craft: \124r";
-L["RECIPE_LEARNED"] = "\124cff00ff00Learned\124r";
-L["RECIPE_NOT_LEARNED"] = "\124cffff0000Not learned\124r";
+l10n["LABEL_RANK_LEVEL"] = "\124cffff7f00Rank: \124r";
+l10n["LABEL_GET_FROM"] = "\124cffff7f00Get from: \124r";
+l10n["quest"] = "Quest";
+l10n["item"] = "Item";
+l10n["object"] = "Object";
+l10n["trainer"] = "Trainer";
+l10n["quest_reward"] = "Quest reward";
+l10n["quest_accepted_from"] = "Quest given by";
+l10n["sold_by"] = "Sold by";
+l10n["dropped_by"] = "Dropped by";
+l10n["world_drop"] = "World drop";
+l10n["dropped_by_mod_level"] = "Mob Lv";
+l10n["tradable"] = "Tradable";
+l10n["non_tradable"] = "Non-tradable";
+l10n["elite"] = "Elite";
+l10n["phase"] = "Phase";
+l10n["unknown area"] = "Unknown area";
+l10n["NOT_AVAILABLE_FOR_PLAYER'S_FACTION"] = "Not available for player's faction";
+l10n["AVAILABLE_IN_PHASE_"] = "Available in phase ";
+l10n["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00Status of characters:\124r";
+l10n["LABEL_USED_AS_MATERIAL_IN"] = "\124cffff7f00Used to craft: \124r";
+l10n["RECIPE_LEARNED"] = "\124cff00ff00Learned\124r";
+l10n["RECIPE_NOT_LEARNED"] = "\124cffff0000Not learned\124r";
 
-L["PRINT_MATERIALS: "] = "Needs: ";
-L["PRICE_UNK"] = "Unknown";
-L["AH_PRICE"] = "\124cff00ff00AH\124r";
-L["VENDOR_RPICE"] = "\124cffffaf00Vendor\124r";
-L["COST_PRICE"] = "\124cffff7f00Cost\124r";
-L["COST_PRICE_KNOWN"] = "\124cffff0000Known Material\124r";
-L["UNKOWN_PRICE"] = "\124cffff0000Unkown\124r";
-L["BOP"] = "\124cffff7f7fBOP\124r";
-L["PRICE_DIFF+"] = "\124cff00ff00Diff\124r";
-L["PRICE_DIFF-"] = "\124cffff0000Diff\124r";
-L["PRICE_DIFF0"] = "The same";
-L["PRICE_DIFF_AH+"] = "\124cff00ff00AH5%\124r";
-L["PRICE_DIFF_AH-"] = "\124cffff0000AH5%\124r";
-L["PRICE_DIFF_AH0"] = "AH";
-L["PRICE_DIFF_INFO+"] = "\124cff00ff00+\124r";
-L["PRICE_DIFF_INFO-"] = "\124cffff0000-\124r";
-L["CRAFT_INFO"] = "\124cffff7f00Craft info: \124r";
-L["ITEMS_UNK"] = "items unk";
-L["NEED_UPDATE"] = "\124cffff0000!!Need refresh!!\124r";
+l10n["PRINT_MATERIALS: "] = "Needs: ";
+l10n["PRICE_UNK"] = "Unknown";
+l10n["AH_PRICE"] = "\124cff00ff00AH\124r";
+l10n["VENDOR_RPICE"] = "\124cffffaf00Vendor\124r";
+l10n["COST_PRICE"] = "\124cffff7f00Cost\124r";
+l10n["COST_PRICE_KNOWN"] = "\124cffff0000Known Material\124r";
+l10n["UNKOWN_PRICE"] = "\124cffff0000Unkown\124r";
+l10n["BOP"] = "\124cffff7f7fBOP\124r";
+l10n["PRICE_DIFF+"] = "\124cff00ff00Diff\124r";
+l10n["PRICE_DIFF-"] = "\124cffff0000Diff\124r";
+l10n["PRICE_DIFF0"] = "The same";
+l10n["PRICE_DIFF_AH+"] = "\124cff00ff00AH5%\124r";
+l10n["PRICE_DIFF_AH-"] = "\124cffff0000AH5%\124r";
+l10n["PRICE_DIFF_AH0"] = "AH";
+l10n["PRICE_DIFF_INFO+"] = "\124cff00ff00+\124r";
+l10n["PRICE_DIFF_INFO-"] = "\124cffff0000-\124r";
+l10n["CRAFT_INFO"] = "\124cffff7f00Craft info: \124r";
+l10n["CRAFTED_BY"] = "\124cffff7f00Crafted by: \124r";
+l10n["ITEMS_UNK"] = "items unk";
+l10n["NEED_UPDATE"] = "\124cffff0000!!Need refresh!!\124r";
 --
-L["TIP_SEARCH_NAME_ONLY_INFO"] = "\124cffffffSearch name instead of hyperlink\124r";
-L["haveMaterialsTip"] = "Show recipes that u have enough materials";
-L["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffffEarn some money! \124r";
+l10n["TIP_SEARCH_NAME_ONLY_INFO"] = "\124cffffffSearch name instead of hyperlink\124r";
+l10n["haveMaterialsTip"] = "Show recipes that u have enough materials";
+l10n["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffffEarn some money! \124r";
 --
-L["BOARD_LOCK"] = "LOCK";
-L["BOARD_CLOSE"] = "CLOSE";
-L["BOARD_TIP"] = "Show cooldown of tradeskill among account. Right-click to toggle or lock";
-L["COLORED_FORMATTED_TIME_LEN"] = {
+l10n["BOARD_LOCK"] = "LOCK";
+l10n["BOARD_CLOSE"] = "CLOSE";
+l10n["BOARD_TIP"] = "Show cooldown of tradeskill among account. Right-click to toggle or lock";
+l10n["COLORED_FORMATTED_TIME_LEN"] = {
 	"\124cff%.2x%.2x00%dd %02dh %02dm %02ds\124r",
 	"\124cff%.2x%.2x00%dh %02dm %02ds\124r",
 	"\124cff%.2x%.2x00%dm %02ds\124r",
 	"\124cff%.2x%.2x00%ds\124r",
 };
-L["COOLDOWN_EXPIRED"] = "\124cff00ff00Available\124r";
+l10n["COOLDOWN_EXPIRED"] = "\124cff00ff00Available\124r";
 --
-L["EXPLORER_TITLE"] = "ALA @ 163UI";
-L.EXPLORER_SET = {
+l10n["EXPLORER_TITLE"] = "ALA @ 163UI";
+l10n.EXPLORER_SET = {
 	skill = "Skill",
 	type = "Type",
 	subType = "SubType",
 	eqLoc = "EqLoc",
 };
-L.ITEM_TYPE_LIST = {
+l10n.ITEM_TYPE_LIST = {
 	[LE_ITEM_CLASS_CONSUMABLE] = "Consumable",				--	0	Consumable
 	[LE_ITEM_CLASS_CONTAINER] = "Container",				--	1	Container
 	[LE_ITEM_CLASS_WEAPON] = "Weapon",						--	2	Weapon
@@ -222,7 +223,7 @@ L.ITEM_TYPE_LIST = {
 	[LE_ITEM_CLASS_BATTLEPET] = "Battle Pets",				--	17	Battle Pets
 	[LE_ITEM_CLASS_WOW_TOKEN] = "WoW Token",				--	18	WoW Token
 };
-L.ITEM_SUB_TYPE_LIST = {
+l10n.ITEM_SUB_TYPE_LIST = {
 	[LE_ITEM_CLASS_CONSUMABLE] = {			--	0	Consumable
 		[0] = "Consumable", 
 		[1] = "Potion", 
@@ -429,7 +430,7 @@ L.ITEM_SUB_TYPE_LIST = {
 		[0] = "WoW Token",
 	},
 };
-L.ITEM_EQUIP_LOC = {
+l10n.ITEM_EQUIP_LOC = {
 	[0] = "Ammo",
 	[1] = "Head",
 	[2] = "Neck",
@@ -452,9 +453,9 @@ L.ITEM_EQUIP_LOC = {
 	[21] = "One-Hand",
 	[22] = "Two-Handed",
 };
-L["EXPLORER_CLEAR_FILTER"] = "\124cff00ff00Clear\124r";
+l10n["EXPLORER_CLEAR_FILTER"] = "\124cff00ff00Clear\124r";
 --
-L.SLASH_NOTE = {
+l10n.SLASH_NOTE = {
 	["expand"] = "Expand frame",
 	["blz_style"] = "Blizzard style",
 	["bg_color"] = "Click to set Color of Background",
@@ -478,17 +479,17 @@ L.SLASH_NOTE = {
 	["first_auction_mod"] = "Use this auction addon first",
 	["first_auction_mod:*"] = "Auto",
 };
-L.ALPHA = "Alpha";
-L.CHAR_LIST = "Character list";
-L.CHAR_DEL = "Del character";
-L["INVALID_COMMANDS"] = "Invalid commonds. Use \124cff00ff00true, 1, on, enable\124r or \124cffff0000false, 0, off, disable\124r instead.";
-L.TooltipLines = {
+l10n.ALPHA = "Alpha";
+l10n.CHAR_LIST = "Character list";
+l10n.CHAR_DEL = "Del character";
+l10n["INVALID_COMMANDS"] = "Invalid commonds. Use \124cff00ff00true, 1, on, enable\124r or \124cffff0000false, 0, off, disable\124r instead.";
+l10n.TooltipLines = {
 	"Left Click: Open Explorer",
 	"Right Click: Open SettingUI",
 };
 
 --
-L.ENCHANT_FILTER = {
+l10n.ENCHANT_FILTER = {
 	INVTYPE_CLOAK = "плаща",
 	INVTYPE_CHEST = "нагрудника",
 	INVTYPE_WRIST = "браслетов",
@@ -499,8 +500,8 @@ L.ENCHANT_FILTER = {
 	NONE = "No matched enchating recipe",
 };
 
-L.ENCHANT_FILTER.INVTYPE_ROBE = L.ENCHANT_FILTER.INVTYPE_CHEST;
-L.ENCHANT_FILTER.INVTYPE_2HWEAPON = L.ENCHANT_FILTER.INVTYPE_WEAPON;
-L.ENCHANT_FILTER.INVTYPE_WEAPONMAINHAND = L.ENCHANT_FILTER.INVTYPE_WEAPON;
-L.ENCHANT_FILTER.INVTYPE_WEAPONOFFHAND = L.ENCHANT_FILTER.INVTYPE_WEAPON;
+l10n.ENCHANT_FILTER.INVTYPE_ROBE = l10n.ENCHANT_FILTER.INVTYPE_CHEST;
+l10n.ENCHANT_FILTER.INVTYPE_2HWEAPON = l10n.ENCHANT_FILTER.INVTYPE_WEAPON;
+l10n.ENCHANT_FILTER.INVTYPE_WEAPONMAINHAND = l10n.ENCHANT_FILTER.INVTYPE_WEAPON;
+l10n.ENCHANT_FILTER.INVTYPE_WEAPONOFFHAND = l10n.ENCHANT_FILTER.INVTYPE_WEAPON;
 

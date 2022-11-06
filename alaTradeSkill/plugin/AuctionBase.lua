@@ -1,30 +1,32 @@
 --[[--
 	by ALA @ 163UI
 --]]--
-
-local __addon__, __namespace__ = ...;
-local __db__ = __namespace__.__db__;
-local L = __namespace__.L;
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
 -->		upvalue
 	local next = next;
 	local strmatch = string.match;
 	local RequestLoadItemDataByID = RequestLoadItemDataByID or C_Item.RequestLoadItemDataByID;
 	local GetItemInfo = GetItemInfo;
+	local CreateFrame = CreateFrame;
+
 -->
+	local DataAgent = DT.DataAgent;
+	local l10n = CT.l10n;
 
-local SET = nil;
+-->
+MT.BuildEnv("AuctionBase");
+-->
 local F = CreateFrame('FRAME');
-
-
--->		****
-__namespace__:BuildEnv("AuctionBase");
--->		****
-
 
 local AuctionBase = {  };
 
-local T_MaterialVendorPrice = __db__.T_MaterialVendorPrice;
+local T_MaterialVendorPrice = DataAgent.T_MaterialVendorPrice;
 local T_MaterialVendorPriceByName = {  };
 local function LF_CacheItem(id)
 	local name = GetItemInfo(id);
@@ -97,8 +99,8 @@ end
 local T_AuctionList = {  };
 local T_AuctionDrop = {
 	["*"] = {
-		text = L.SLASH_NOTE["first_auction_mod:*"],
-		para = { "*", },
+		text = l10n.SLASH_NOTE["first_auction_mod:*"],
+		para = "*",
 	},
 };
 local T_AuctionModList = {  };
@@ -113,51 +115,51 @@ local T_AliasList = {
 	F_QueryPriceByID = "query_ah_price_by_id",
 	F_OnDBUpdate = "add_cache_callback",
 };
-local function handler(_, addon)
-	if addon ~= SET.first_auction_mod then
-		SET.first_auction_mod = addon;
+local function handler(_, _, addon)
+	if addon ~= VT.SET.first_auction_mod then
+		VT.SET.first_auction_mod = addon;
 		if T_AuctionModList[addon] ~= nil then
-			__namespace__:FireEvent("AUCTION_MOD_LOADED", T_AuctionModList[addon]);
+			MT.FireCallback("AUCTION_MOD_LOADED", T_AuctionModList[addon]);
 		end
 	end
 end
 local function __onshow(Button)
 	Button.Text:SetText(">> |cff00ff00" .. (Button.Text:GetText() or "") .. "|r <<");
 end
-function __namespace__.F_GetAuctionListDropMeta()
-	local meta = {
-		handler = handler,
-		elements = {  },
-	};
+local T_AuctionModListDropMeta = {
+	handler = handler,
+	num = 0,
+};
+function MT.GetAuctionModListDropMeta()
 	local pos = 1;
-	if SET.first_auction_mod == "*" or T_AuctionDrop[SET.first_auction_mod] == nil then
+	if VT.SET.first_auction_mod == "*" or T_AuctionDrop[VT.SET.first_auction_mod] == nil then
 		local v = T_AuctionDrop["*"];
 		v.__onshow = __onshow;
-		meta.elements[1] = v;
-		pos = 2;
+		T_AuctionModListDropMeta[1] = v;
+		T_AuctionModListDropMeta.num = 1;
 	else
-		local v = T_AuctionDrop[SET.first_auction_mod];
+		local v = T_AuctionDrop[VT.SET.first_auction_mod];
 		v.__onshow = __onshow;
-		meta.elements[1] = v;
+		T_AuctionModListDropMeta[1] = v;
 		local v = T_AuctionDrop["*"];
 		v.__onshow = nil;
-		meta.elements[2] = v;
-		pos = 3;
+		T_AuctionModListDropMeta[2] = v;
+		T_AuctionModListDropMeta.num = 2;
 	end
 	for index = 1, #T_AuctionList do
 		local addon = T_AuctionList[index];
-		if addon ~= SET.first_auction_mod then
+		if addon ~= VT.SET.first_auction_mod then
 			local v = T_AuctionDrop[addon];
 			if v ~= nil then
 				v.__onshow = nil;
-				meta.elements[pos] = v;
-				pos = pos + 1;
+				T_AuctionModListDropMeta.num = T_AuctionModListDropMeta.num + 1;
+				T_AuctionModListDropMeta[T_AuctionModListDropMeta.num] = v;
 			end
 		end
 	end
-	return meta;
+	return T_AuctionModListDropMeta;
 end
-function __namespace__.F_AddAuctionMod(id, mod)
+function MT.AddAuctionMod(id, mod)
 	for key, val in next, AuctionBase do
 		local alias = T_AliasList[key];
 		mod[key] = mod[key] or mod[alias] or val;
@@ -166,25 +168,24 @@ function __namespace__.F_AddAuctionMod(id, mod)
 		T_AuctionModList[#T_AuctionModList + 1] = id;
 	end
 	T_AuctionModList[id] = mod;
-	if id == SET.first_auction_mod or T_AuctionModList[SET.first_auction_mod] == nil then
-		__namespace__:FireEvent("AUCTION_MOD_LOADED", mod);
+	if id == VT.SET.first_auction_mod or T_AuctionModList[VT.SET.first_auction_mod] == nil then
+		MT.FireCallback("AUCTION_MOD_LOADED", mod);
 	end
 end
-function __namespace__.F_GetAuctionMod()
+function MT.GetAuctionMod()
 	return T_AuctionModList[T_AuctionModList[1]];
 end
-function __namespace__.F_AuctionModCallback(addon, callback)
+function MT.RegsiterAuctionModOnLoad(addon, callback)
 	if T_AuctionList[addon] == nil then
 		local index = #T_AuctionList + 1;
 		T_AuctionList[index] = addon;
 		T_AuctionList[addon] = index;
 		T_AuctionDrop[addon] = {
 			text = addon,
-			para = { addon, },
+			param = addon,
 		};
 	end
-	__namespace__:AddAddOnCallback(addon, callback);
+	MT.RegisterOnAddOnLoaded(addon, callback);
 end
-function __namespace__.init_auctionmod()
-	SET = __namespace__.SET;
-end
+MT.RegisterOnInit('AuctionBase', function(LoggedIn)
+end);

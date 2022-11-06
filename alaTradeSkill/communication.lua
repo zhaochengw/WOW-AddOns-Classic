@@ -1,9 +1,12 @@
 --[[--
 	by ALA @ 163UI
 --]]--
-
-local __addon__, __namespace__ = ...;
-local __db__ = __namespace__.__db__;
+----------------------------------------------------------------------------------------------------
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
 -->		upvalue
 	local tonumber = tonumber;
@@ -18,15 +21,11 @@ local __db__ = __namespace__.__db__;
 	local format = string.format;
 	local wipe = table.wipe;
 
-	local GetRealmName = GetRealmName;
-	local UnitGUID = UnitGUID;
-	local UnitName = UnitName;
 	local CreateFrame = CreateFrame;
 	local IsInGuild = IsInGuild;
 	local GetPlayerInfoByGUID = GetPlayerInfoByGUID;
 	local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
 	local GetServerTime = GetServerTime;
-	local C_Timer_NewTicker = C_Timer.NewTicker;
 
 	local RegisterAddonMessagePrefix = RegisterAddonMessagePrefix or C_ChatInfo.RegisterAddonMessagePrefix;
 	local IsAddonMessagePrefixRegistered = IsAddonMessagePrefixRegistered or C_ChatInfo.IsAddonMessagePrefixRegistered;
@@ -35,8 +34,13 @@ local __db__ = __namespace__.__db__;
 	local SendAddonMessageLogged = SendAddonMessageLogged or C_ChatInfo.SendAddonMessageLogged;
 
 	local _G = _G;
--->
 
+-->
+	local DataAgent = DT.DataAgent;
+
+-->
+MT.BuildEnv("communication");
+-->
 
 local ADDON_PREFIX = "ALATSK";
 local ADDON_MSG_CONTROL_CODE_LEN = 6;
@@ -50,14 +54,6 @@ local ADDON_MSG_REPLY_SKILL_RECIPES = "_r_src";
 local ADDON_MSG_BROADCAST_BEGIN = "_p_beg";
 local ADDON_MSG_BROADCAST_BODY = "_p_bod";
 local ADDON_MSG_BROADCAST_END = "_p_end";
-local PLAYER_REALM_NAME = GetRealmName();
-local PLAYER_GUID = UnitGUID('player');
-local PLAYER_NAME = UnitName('player');
-
-local _noop_, _log_, _error_ = __namespace__._noop_, __namespace__._log_, __namespace__._error_;
-
-
-local AVAR, VAR, CMM = nil, nil, nil, nil, nil;
 
 
 local F = CreateFrame('FRAME');
@@ -66,68 +62,43 @@ F:SetScript("OnEvent", function(self, event, ...)
 end);
 
 
--->		****************
-__namespace__:BuildEnv("communication");
--->		****************
-
-
 local T_QueuedMessageGuild = {  };
 local T_QueuedMessageWhisper = {  };
 
-local __index = function(t1, k1)
-	local temp1 = {  };
-	t[k1] = temp1;
-	return temp1;
+local _metamethod__index = function(t, k)
+	local temp = {  };
+	t[k] = temp;
+	return temp;
 end
-local __call = function(t1, k1)
-	local temp1 = rawget(t1, k1);
-	if temp1 then
-		wipe(temp1);
+local _metamethod__call = function(t, k)
+	local temp = rawget(t, k);
+	if temp then
+		wipe(temp);
 	else
-		temp1 = t1[k1];
+		temp = t[k];
 	end
-	return temp1;
+	return temp;
 end
 local T_QueriedCache = setmetatable({  }, {
 	__index = function(t, k)
 		local temp = setmetatable({  }, {
-			__index = function(t1, k1)
-				local temp1 = {  };
-				t[k1] = temp1;
-				return temp1;
-			end,
-			__call = function(t1, k1)
-				local temp1 = rawget(t1, k1);
-				if temp1 then
-					wipe(temp1);
-				else
-					temp1 = t1[k1];
-				end
-				return temp1;
-			end,
+			__index = _metamethod__index,
+			__call = _metamethod__call,
 		});
 		t[k] = temp;
 		return temp;
 	end,
-	__call = function(t, k)
-		local temp = rawget(t, k);
-		if temp then
-			wipe(temp);
-		else
-			temp = t[k];
-		end
-		return temp;
-	end
+	__call = _metamethod__call,
 });
 
 local function LF_FormatMessage(header)	--	head#pid:cur:max
 	local msg = header;
 	local valid = false;
-	for pid = __db__.DBMINPID, __db__.DBMAXPID do
-		local var = rawget(VAR, pid);
-		if var and __db__.is_pid(pid) then
+	for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
+		local var = rawget(VT.VAR, pid);
+		if var and DataAgent.is_pid(pid) then
 			if var.cur_rank and var.max_rank then
-				msg = msg .. "#" .. PLAYER_GUID .. "#" .. pid .. ":" .. var.cur_rank .. ":" .. var.max_rank;
+				msg = msg .. "#" .. CT.SELFGUID .. "#" .. pid .. ":" .. var.cur_rank .. ":" .. var.max_rank;
 				valid = true;
 			end
 		end
@@ -162,7 +133,7 @@ end
 function F.CHAT_MSG_ADDON(prefix, msg, channel, sender, target, zoneChannelID, localID, name, instanceID)
 	if prefix == ADDON_PREFIX then
 		local name, realm = strsplit("-", sender);
-		if name and (realm == nil or realm == "" or realm == PLAYER_REALM_NAME) then
+		if name and (realm == nil or realm == "" or realm == CT.SELFREALM) then
 			local control_code = strsub(msg, 1, ADDON_MSG_CONTROL_CODE_LEN);
 			local body = strsub(msg, ADDON_MSG_CONTROL_CODE_LEN + 2, - 1);
 			if body == "" then
@@ -176,10 +147,10 @@ function F.CHAT_MSG_ADDON(prefix, msg, channel, sender, target, zoneChannelID, l
 			else--]]if control_code == ADDON_MSG_SKILL_BROADCAST or control_code == ADDON_MSG_REPLY_SKILL then
 				local _, _, GUID, val = strfind(body, "^([^#^:]+)#(.+)$");
 				if GUID then
-					local cmm = CMM[GUID];
+					local cmm = VT.CMM[GUID];
 					if cmm == nil then
 						cmm = {  };
-						CMM[GUID] = cmm;
+						VT.CMM[GUID] = cmm;
 					end
 					local data = { strsplit("#", val) };
 					for index = 1, #data do
@@ -194,14 +165,14 @@ function F.CHAT_MSG_ADDON(prefix, msg, channel, sender, target, zoneChannelID, l
 					end
 				end
 			elseif control_code == ADDON_MSG_QUERY_RECIPE then
-				if name ~= PLAYER_NAME then
+				if name ~= CT.SELFNAME then
 					local sid = tonumber(body);
 					if sid then
-						local pid = __db__.get_pid_by_sid(sid);
+						local pid = DataAgent.get_pid_by_sid(sid);
 						if pid then
-							local reply = PLAYER_GUID;
+							local reply = CT.SELFGUID;
 							local found = false;
-							for GUID, VAR in next, AVAR do
+							for GUID, VAR in next, VT.AVAR do
 								local var = rawget(VAR, pid);
 								if var and var[2] and var[2][sid] then
 									reply = reply .. "#" .. GUID;
@@ -218,8 +189,8 @@ function F.CHAT_MSG_ADDON(prefix, msg, channel, sender, target, zoneChannelID, l
 				local _, _, sid, rGUID, val = strfind(body, "^([0-9]+)#([^#]+)#(.+)$");
 				if sid then
 					sid = tonumber(sid);
-					if sid and __db__.is_tradeskill_sid(sid) then
-						local cid = __db__.get_cid_by_sid(sid);
+					if sid and DataAgent.is_tradeskill_sid(sid) then
+						local cid = DataAgent.get_cid_by_sid(sid);
 						local result = T_QueriedCache[sid](rGUID);
 						local data = { strsplit("#", val) };
 						local output = LF_GetPlayerLink(rGUID);
@@ -239,7 +210,7 @@ function F.CHAT_MSG_ADDON(prefix, msg, channel, sender, target, zoneChannelID, l
 							end
 						end
 						if ok then
-							local link = cid and (__db__.item_link_s(cid)) or __namespace__.F_GetSkillLink(sid);
+							local link = cid and (DataAgent.item_link_s(cid)) or MT.GetSkillLink(sid);
 							if link then
 								print(link, output);
 							end
@@ -257,7 +228,7 @@ function F.CHAT_MSG_ADDON(prefix, msg, channel, sender, target, zoneChannelID, l
 end
 F.CHAT_MSG_ADDON_LOGGED = F.CHAT_MSG_ADDON;
 
-function __namespace__.F_cmmQuerySpell(sid)
+function MT.CommQuerySpell(sid)
 	local t = GetServerTime();
 	if IsInGuild() then
 		SendAddonMessage(ADDON_PREFIX, ADDON_MSG_QUERY_RECIPE .. "#" .. sid, "GUILD");
@@ -277,30 +248,29 @@ local function LF_cmmBroadcast(pid, list, channel, target)
 	T_QueuedMessageGuild[#T_QueuedMessageGuild + 1] = ADDON_MSG_BROADCAST_END .. "#" .. pid;
 end
 
-function __namespace__.init_communication()
-	AVAR, VAR, CMM = __namespace__.AVAR, __namespace__.VAR, __namespace__.CMM;
+MT.RegisterOnInit('communication', function(LoggedIn)
 	if RegisterAddonMessagePrefix(ADDON_PREFIX) then
 		F:RegisterEvent("CHAT_MSG_ADDON");
 		F:RegisterEvent("CHAT_MSG_ADDON_LOGGED");
-		-- C_Timer_NewTicker(0.1, function()
+		-- MT._TimerStart(0.1, function()
 		-- 	if IsInGuild() then
 		-- 		local work = tremove(T_QueuedMessageGuild, 1);
 		-- 		if work then
 		-- 			SendAddonMessage(ADDON_PREFIX, work, "GUILD");
 		-- 		end
 		-- 	end
-		-- end);
-		-- C_Timer_NewTicker(0.02, function()
+		-- end, 0.1);
+		-- MT._TimerStart(0.02, function()
 		-- 	if IsInGuild() then
 		-- 		local work = tremove(T_QueuedMessageWhisper, 1);
 		-- 		if work then
 		-- 			SendAddonMessage(ADDON_PREFIX, work[1], "GUILD", work[2]);
 		-- 		end
 		-- 	end
-		-- end);
-		-- C_Timer_NewTicker(60.0, LF_Broadcast);
+		-- end, 0.02);
+		-- MT._TimerStart(LF_Broadcast, 60.0);
 	else
-		_error_("RegisterAddonMessagePrefix", ADDON_PREFIX);
+		MT.Error("RegisterAddonMessagePrefix", ADDON_PREFIX);
 	end
-end
+end);
 

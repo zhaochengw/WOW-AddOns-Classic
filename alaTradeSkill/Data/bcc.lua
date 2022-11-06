@@ -6,20 +6,21 @@ if WOW_PROJECT_ID ~= WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 	return;
 end
 
+local __addon, __private = ...;
+local MT = __private.MT;
+local CT = __private.CT;
+local VT = __private.VT;
+local DT = __private.DT;
 
-local __addon__, __namespace__ = ...;
-__namespace__.__db__ = {  };
-local __db__ = __namespace__.__db__;
+local DataAgent = DT.DataAgent;
 
-__db__.__DataVersion = 211227;
+DataAgent.__DataVersion = 211227;
 
-__db__.FACTIONGROUP = UnitFactionGroup('player');
-__db__.ISHORDE = __db__.FACTIONGROUP == "HORDE";
-__db__.CURPHASE = 5;
-__db__.MAXPHASE = 5;
-__db__.MAXRANK = 375;
-__db__.DBMINPID = 1;
-__db__.DBMAXPID = 15;
+DataAgent.CURPHASE = 5;
+DataAgent.MAXPHASE = 5;
+DataAgent.MAXRANK = 375;
+DataAgent.DBMINPID = 1;
+DataAgent.DBMAXPID = 15;
 
 --[==[--
 	by ALA @ 163UI
@@ -74,7 +75,7 @@ local bitclass = {
 	["WARLOCK"] = 256,
 	["DRUID"] = 1024,
 };
-__db__.UCLASSBIT = bitclass[UnitClassBase('player')];
+DataAgent.USELFCLASSBIT = bitclass[CT.SELFCLASS];
 
 --[==[
 	--	P1	KLZ GLR MSLD
@@ -102,7 +103,7 @@ __db__.UCLASSBIT = bitclass[UnitClassBase('player')];
 	药剂大师	28677
 --]==]
 
-__db__.T_TradeSkill_ID = {
+DataAgent.T_TradeSkill_ID = {
 	[1] = 3273,		--	FirstAid
 	[2] = 2018,		--	Blacksmithing
 	[3] = 2108,		--	Leatherworking
@@ -119,7 +120,7 @@ __db__.T_TradeSkill_ID = {
 	[14] = 5149,	--	Beast Training	--	UNUSED	--	Hunter
 	[15] = 25229,	--	Jewelcrafting
 };
-__db__.T_TradeSkill_Texture = {
+DataAgent.T_TradeSkill_Texture = {
 	[1] = "Interface\\Icons\\spell_holy_sealofsacrifice",
 	[2] = "Interface\\Icons\\trade_blacksmithing",
 	[3] = "Interface\\Icons\\trade_leatherworking",
@@ -136,7 +137,7 @@ __db__.T_TradeSkill_Texture = {
 	[14] = 132162,
 	[15] = 134071,
 };
-__db__.T_TradeSkill_CheckID = {		--	[pid] = p_check_sid
+DataAgent.T_TradeSkill_CheckID = {		--	[pid] = p_check_sid
 	[1] = 3273,		--	FirstAid
 	[2] = 2018,		--	Blacksmithing
 	[3] = 2108,		--	Leatherworking
@@ -153,7 +154,7 @@ __db__.T_TradeSkill_CheckID = {		--	[pid] = p_check_sid
 	[14] = 5149,	--	Beast Training	--	UNUSED	--	Hunter
 	[15] = 25229,	--	Jewelcrafting
 };
-__db__.T_TradeSkill_HasUI = {		--	[pid] = bool
+DataAgent.T_TradeSkill_HasUI = {		--	[pid] = bool
 	[1] = true,		--	FirstAid
 	[2] = true,		--	Blacksmithing
 	[3] = true,		--	Leatherworking
@@ -2386,7 +2387,7 @@ local T_Recipe_Data = {
 	[42022] = { nil, 1, -1,  42022,  32601,   0,   0,   0,   0,   1,   1, { 32569, }, { 10, }, },
 
 };
-__db__.T_Recipe_Data = T_Recipe_Data;
+DataAgent.T_Recipe_Data = T_Recipe_Data;
 -- local T_TradeSkill_RecipeList = {  };	--	[pid] = { sid }
 -- for sid, info in next, T_Recipe_Data do
 -- 	local pid = info[3];
@@ -4604,7 +4605,7 @@ local T_TradeSkill_RecipeList = {	--	[pid] = { sid }
 		42022,
 	},
 };
-__db__.T_TradeSkill_RecipeList = T_TradeSkill_RecipeList;
+DataAgent.T_TradeSkill_RecipeList = T_TradeSkill_RecipeList;
 
 local T_TradeSkill_Spec2Pid = {  };
 for sid, info in next, T_Recipe_Data do
@@ -4613,9 +4614,9 @@ for sid, info in next, T_Recipe_Data do
 		T_TradeSkill_Spec2Pid[spec] = info[index_pid];
 	end
 end
-__db__.T_TradeSkill_Spec2Pid = T_TradeSkill_Spec2Pid;
+DataAgent.T_TradeSkill_Spec2Pid = T_TradeSkill_Spec2Pid;
 
-__db__.T_TradeSkill_CooldownList = {
+DataAgent.T_TradeSkill_CooldownList = {
 	[3] = {
 		-- { 19566, 250, },	--	筛盐器
 	},
@@ -4635,7 +4636,7 @@ __db__.T_TradeSkill_CooldownList = {
 	},
 };
 
-__db__.T_PriceSpellBlackList = {
+DataAgent.T_PriceSpellBlackList = {
 --	炼金
 	--	元素精华
 	[17559] = 1,	--	7078
@@ -4665,7 +4666,7 @@ __db__.T_PriceSpellBlackList = {
 --	附魔
 	[42613] = 1,	--	转化连结水晶
 };
-__db__.T_PriceItemBlackList = {
+DataAgent.T_PriceItemBlackList = {
 --	炼金
 	--	元素精华
 	[7078] = 1,
@@ -4695,7 +4696,7 @@ __db__.T_PriceItemBlackList = {
 	[22448] = 1,	--	小块棱光碎片
 };
 
-__db__.T_MaterialVendorPrice = {
+DataAgent.T_MaterialVendorPrice = {
 	--	BLACKSMITHING	ENGINEERING
 	-- [5956] = 18,		-- 铁匠之锤
 	-- [2901] = 81,		-- 矿工锄
@@ -4816,7 +4817,7 @@ __db__.T_MaterialVendorPrice = {
 	37	Mechagnome				Mechagnome				Alliance	Alliance,
 ]==]
 
-__db__.T_RaceBonus = {
+DataAgent.T_RaceBonus = {
 	--	Gnome
 	[7] = {
 		[9] = 15,
@@ -4832,6 +4833,6 @@ __db__.T_RaceBonus = {
 };
 
 
-if __db__.CURPHASE >= 4 then
+if DataAgent.CURPHASE >= 4 then
 	T_Recipe_Data[47280][index_cid] = 191061;
 end
