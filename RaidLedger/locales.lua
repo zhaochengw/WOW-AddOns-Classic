@@ -65,6 +65,7 @@ L["Hammer Price"] = true
 L["Hide locked items"] = true
 L["Import from ledger"] = true
 L["In Raid Only"] = true
+L["Input Outstanding Amount"] = true
 L["is bought in"] = true
 L["Item added"] = true
 L["Last used"] = true
@@ -81,6 +82,7 @@ L["owes"] = true
 L["Pause"] = true
 L["Per Member"] = true
 L["Per Member credit"] = true
+L["Popup outstanding input dialog"] = true
 L["Raid Frame Button"] = true
 L["Raid Ledger"] = true
 L["Remove all records?"] = true
@@ -183,6 +185,8 @@ L["Feedback"] = "Feedback"
 L["Import from ledger"] = "Aus dem Buch importieren"
 L["In Raid Only"] = "Nur im Raid"
 --[[Translation missing --]]
+--[[ L["Input Outstanding Amount"] = "Input Outstanding Amount"--]] 
+--[[Translation missing --]]
 --[[ L["is bought in"] = "is bought in"--]] 
 L["Item added"] = "Item hinzugefügt"
 L["Last used"] = "Letztes Mal benutzt"
@@ -206,6 +210,8 @@ L["Other"] = "Andere"
 --[[ L["Pause"] = "Pause"--]] 
 L["Per Member"] = "Pro Teilnehmer"
 L["Per Member credit"] = "Teilnehmerguthaben"
+--[[Translation missing --]]
+--[[ L["Popup outstanding input dialog"] = "Popup outstanding input dialog"--]] 
 --[[Translation missing --]]
 --[[ L["Raid Frame Button"] = "Raid Frame Button"--]] 
 L["Raid Ledger"] = "Raid Kassenbuch"
@@ -345,6 +351,8 @@ elseif locale == 'esES' then
 --[[Translation missing --]]
 --[[ L["In Raid Only"] = "In Raid Only"--]] 
 --[[Translation missing --]]
+--[[ L["Input Outstanding Amount"] = "Input Outstanding Amount"--]] 
+--[[Translation missing --]]
 --[[ L["is bought in"] = "is bought in"--]] 
 --[[Translation missing --]]
 --[[ L["Item added"] = "Item added"--]] 
@@ -376,6 +384,8 @@ elseif locale == 'esES' then
 --[[ L["Per Member"] = "Per Member"--]] 
 --[[Translation missing --]]
 --[[ L["Per Member credit"] = "Per Member credit"--]] 
+--[[Translation missing --]]
+--[[ L["Popup outstanding input dialog"] = "Popup outstanding input dialog"--]] 
 --[[Translation missing --]]
 --[[ L["Raid Frame Button"] = "Raid Frame Button"--]] 
 --[[Translation missing --]]
@@ -535,6 +545,8 @@ elseif locale == 'esMX' then
 --[[Translation missing --]]
 --[[ L["In Raid Only"] = "In Raid Only"--]] 
 --[[Translation missing --]]
+--[[ L["Input Outstanding Amount"] = "Input Outstanding Amount"--]] 
+--[[Translation missing --]]
 --[[ L["is bought in"] = "is bought in"--]] 
 --[[Translation missing --]]
 --[[ L["Item added"] = "Item added"--]] 
@@ -566,6 +578,8 @@ elseif locale == 'esMX' then
 --[[ L["Per Member"] = "Per Member"--]] 
 --[[Translation missing --]]
 --[[ L["Per Member credit"] = "Per Member credit"--]] 
+--[[Translation missing --]]
+--[[ L["Popup outstanding input dialog"] = "Popup outstanding input dialog"--]] 
 --[[Translation missing --]]
 --[[ L["Raid Frame Button"] = "Raid Frame Button"--]] 
 --[[Translation missing --]]
@@ -704,6 +718,8 @@ L["Hide locked items"] = "Cacher les items verrouillés"
 --[[Translation missing --]]
 --[[ L["In Raid Only"] = "In Raid Only"--]] 
 --[[Translation missing --]]
+--[[ L["Input Outstanding Amount"] = "Input Outstanding Amount"--]] 
+--[[Translation missing --]]
 --[[ L["is bought in"] = "is bought in"--]] 
 L["Item added"] = "Objet ajouté"
 --[[Translation missing --]]
@@ -730,6 +746,8 @@ L["Other"] = "Autre"
 L["Pause"] = "Pause"
 L["Per Member"] = "Par Membre"
 L["Per Member credit"] = "Crédit par membre"
+--[[Translation missing --]]
+--[[ L["Popup outstanding input dialog"] = "Popup outstanding input dialog"--]] 
 --[[Translation missing --]]
 --[[ L["Raid Frame Button"] = "Raid Frame Button"--]] 
 --[[Translation missing --]]
@@ -872,6 +890,8 @@ elseif locale == 'itIT' then
 --[[Translation missing --]]
 --[[ L["In Raid Only"] = "In Raid Only"--]] 
 --[[Translation missing --]]
+--[[ L["Input Outstanding Amount"] = "Input Outstanding Amount"--]] 
+--[[Translation missing --]]
 --[[ L["is bought in"] = "is bought in"--]] 
 --[[Translation missing --]]
 --[[ L["Item added"] = "Item added"--]] 
@@ -903,6 +923,8 @@ elseif locale == 'itIT' then
 --[[ L["Per Member"] = "Per Member"--]] 
 --[[Translation missing --]]
 --[[ L["Per Member credit"] = "Per Member credit"--]] 
+--[[Translation missing --]]
+--[[ L["Popup outstanding input dialog"] = "Popup outstanding input dialog"--]] 
 --[[Translation missing --]]
 --[[ L["Raid Frame Button"] = "Raid Frame Button"--]] 
 --[[Translation missing --]]
@@ -1016,6 +1038,8 @@ L["Hammer Price"] = "낙찰가"
 L["Hide locked items"] = "잠금 아이템 감추기"
 L["Import from ledger"] = "장부에서 가져오기"
 L["In Raid Only"] = "공격대에서만"
+--[[Translation missing --]]
+--[[ L["Input Outstanding Amount"] = "Input Outstanding Amount"--]] 
 L["is bought in"] = "구매함"
 L["Item added"] = "장부에 등록"
 L["Last used"] = "마지막 사용됨"
@@ -1036,6 +1060,8 @@ L["Other"] = "기타"
 L["Pause"] = "정지"
 L["Per Member"] = "개인당"
 L["Per Member credit"] = "개인당"
+--[[Translation missing --]]
+--[[ L["Popup outstanding input dialog"] = "Popup outstanding input dialog"--]] 
 L["Raid Frame Button"] = "공격대 프레임 버튼"
 L["Raid Ledger"] = "공격대 장부"
 L["Remove all records?"] = "경고: 모든 기록이 삭제됩니다."
@@ -1165,6 +1191,8 @@ elseif locale == 'ptBR' then
 --[[Translation missing --]]
 --[[ L["In Raid Only"] = "In Raid Only"--]] 
 --[[Translation missing --]]
+--[[ L["Input Outstanding Amount"] = "Input Outstanding Amount"--]] 
+--[[Translation missing --]]
 --[[ L["is bought in"] = "is bought in"--]] 
 --[[Translation missing --]]
 --[[ L["Item added"] = "Item added"--]] 
@@ -1196,6 +1224,8 @@ elseif locale == 'ptBR' then
 --[[ L["Per Member"] = "Per Member"--]] 
 --[[Translation missing --]]
 --[[ L["Per Member credit"] = "Per Member credit"--]] 
+--[[Translation missing --]]
+--[[ L["Popup outstanding input dialog"] = "Popup outstanding input dialog"--]] 
 --[[Translation missing --]]
 --[[ L["Raid Frame Button"] = "Raid Frame Button"--]] 
 --[[Translation missing --]]
@@ -1308,6 +1338,8 @@ L["Hammer Price"] = "Окончательная цена"
 L["Hide locked items"] = "Скрыть заблокированные предметы"
 L["Import from ledger"] = "Импорт из книги учета"
 L["In Raid Only"] = "Только в Рейде"
+--[[Translation missing --]]
+--[[ L["Input Outstanding Amount"] = "Input Outstanding Amount"--]] 
 L["is bought in"] = "покупается в"
 L["Item added"] = "Пункт добавлен"
 L["Last used"] = "Последнее использование"
@@ -1328,6 +1360,8 @@ L["Other"] = "Другое"
 L["Pause"] = "Пауза"
 L["Per Member"] = "на одного члена"
 L["Per Member credit"] = "По заслугам участника"
+--[[Translation missing --]]
+--[[ L["Popup outstanding input dialog"] = "Popup outstanding input dialog"--]] 
 L["Raid Frame Button"] = "Кнопка окна Рейда"
 L["Raid Ledger"] = "Рейдовая книга"
 L["Remove all records?"] = "Удалить все записи?"
@@ -1409,6 +1443,7 @@ L["Hammer Price"] = "成交价格"
 L["Hide locked items"] = "隐藏锁定物品"
 L["Import from ledger"] = "从账本中提取"
 L["In Raid Only"] = "仅团队中"
+L["Input Outstanding Amount"] = "输入未结清金额"
 L["is bought in"] = "流拍"
 L["Item added"] = "已添加物品"
 L["Last used"] = "上次使用"
@@ -1425,6 +1460,7 @@ L["owes"] = "有"
 L["Pause"] = "暂停"
 L["Per Member"] = "平均每人"
 L["Per Member credit"] = "平均每人收入"
+L["Popup outstanding input dialog"] = "自动弹出欠款记录框"
 L["Raid Frame Button"] = "团队面板按钮"
 L["Raid Ledger"] = "金团账本"
 L["Remove all records?"] = "确定清空所有记录?"
@@ -1505,6 +1541,7 @@ L["Hammer Price"] = "成交價格"
 L["Hide locked items"] = "隱藏鎖定物品"
 L["Import from ledger"] = "從賬本中提取"
 L["In Raid Only"] = "僅團隊中"
+L["Input Outstanding Amount"] = "輸入未結清金額"
 L["is bought in"] = "流拍"
 L["Item added"] = "已添加物品"
 L["Last used"] = "上次使用"
@@ -1521,6 +1558,7 @@ L["owes"] = "有"
 L["Pause"] = "暫停"
 L["Per Member"] = "平均每人"
 L["Per Member credit"] = "平均每人收入"
+L["Popup outstanding input dialog"] = "自動彈出欠款記錄框"
 L["Raid Frame Button"] = "團隊面板按鈕"
 L["Raid Ledger"] = "金團賬本"
 L["Remove all records?"] = "確定清空所有記錄?"

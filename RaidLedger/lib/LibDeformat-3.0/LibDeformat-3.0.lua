@@ -6,7 +6,7 @@ Description: A library to convert a post-formatted string back to its original a
 License: MIT
 ]]
 local _, ADDONSELF = ...
--- local MAJOR, MINOR = "ScrollingTable", tonumber("1662378845") or 40300;
+-- local MAJOR, MINOR = "ScrollingTable", tonumber("1667117187") or 40300;
 -- local lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR);
 -- if not lib then
 -- 	return; -- Already loaded and no upgrade necessary.
