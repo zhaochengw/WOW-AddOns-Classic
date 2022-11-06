@@ -75,11 +75,19 @@ L["CONFIG_CANCELLING_TEXT"] = "Options liées à l'onglet Annulation."
 L["CONFIG_CHAT_LOG"] = "Afficher vos mises en vente dans la fenêtre de discussion"
 L["CONFIG_CHAT_LOG_TOOLTIP_HEADER"] = "Notification de mise en vente dans la fenêtre de discussion"
 L["CONFIG_CHAT_LOG_TOOLTIP_TEXT"] = "Un message résumant les informations de vos mises en vente sera ajouté dans la fenêtre de discussion."
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT"] = "Profit au lieu du coût de production"
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = "Profit au lieu du coût de production"
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = [=[Lorsque l'hôtel des ventes est ouvert, la fenêtre d'artisanat indique le coût de production des objets.
-Cette option affiche le profit réalisable à la place.]=]
 L["CONFIG_CRAFTING_INFO_SHOW"] = "Afficher les coûts de fabrication dans la vue de fabrication"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST"] = "Show reagent costs from auction house and vendors"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST_TOOLTIP_HEADER"] = "Crafting Info Show Cost"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST_TOOLTIP_TEXT"] = "Enable this option to see the cost of crafting a specific recipe when viewing it."
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT"] = "Show profit from crafting with auction house and vendor reagents"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT_TOOLTIP_HEADER"] = "Crafting Info Show Profit"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT_TOOLTIP_TEXT"] = "Enable this option to see the profit of crafting a specific recipe when viewing it."
 L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Informations supplémentaires sur l'écran de fabrication"
 L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "L'écran de fabrication affichera le coût de confection d'un objet. Désactivez cette option pour ne pas afficher les coûts de confection.."
 L["CONFIG_DEBUG"] = "Afficher le rendu du débogage"
@@ -91,7 +99,7 @@ L["CONFIG_ENCHANT_TOOLTIP"] = "Afficher les prix du désenchantement (WoD, Legio
 L["CONFIG_FULL_SCAN_STEP_SIZE"] = "Taille de l'étape du scan complet"
 L["CONFIG_LIFO_CATEGORY"] = "Vente"
 L["CONFIG_MAIL_TOOLTIP"] = "Afficher les prix à la consultation du courrier"
-L["CONFIG_MILL_TOOLTIP"] = "Afficher la valeur du broyage pour les herbes de la calligraphie dans les infobulles"
+L["CONFIG_MILL_TOOLTIP"] = "Affiche la valeur du broyage des herbes de la calligraphie dans les infobulles"
 L["CONFIG_NOT_LIFO_CATEGORY"] = "Vente : Équipement / Mascottes"
 L["CONFIG_PET_TOOLTIP"] = "Afficher les prix des mascottes"
 L["CONFIG_PROFILE_CATEGORY"] = "Profils"
@@ -176,6 +184,7 @@ L["CONFIRM"] = "Confirmer"
 L["CONFIRM_POST_BELOW_VENDOR"] = "Vous pouvez faire plus d'or en vendant ceci à un vendeur. Êtes-vous sur de vouloir publier à ce prix?"
 L["CONFIRM_POST_LOW_PRICE"] = "Le prix de %s semble un peu bas. Êtes-vous sûr de vouloir publier à ce prix?"
 L["CONFIRM_POST_PRICE_DROP"] = "Le prix unitaire de %s à une baisse de prix importante. Êtes-vous sûr de vouloir vendre à ce prix ?"
+L["CONFIRM_X_TOTAL_PRICE_X"] = "Confirmer %s, prix total %s"
 L["CONTRIBUTORS_HEADER"] = "Contributeurs"
 L["COPY_ITEM_ADDED"] = "%s copié vers %s"
 L["COPY_NO_LIST_SELECTED"] = "Impossible de copier l'objet. Aucune liste d'achats sélectionnée."
@@ -263,7 +272,7 @@ L["MAX"] = "Max"
 L["MAX_COLON_X"] = "Max : %s"
 L["MILL"] = "Calligraphie"
 L["MILL_TOOLTIP_TOOLTIP_HEADER"] = " Informations dans l'info-bulle pour la calligraphie"
-L["MILL_TOOLTIP_TOOLTIP_TEXT"] = [=[Afficher la valeur estimée du broyage pour la calligraphie dans l'infobulle au passage de la souris.
+L["MILL_TOOLTIP_TOOLTIP_TEXT"] = [=[Affiche la valeur estimée du broyage de la calligraphie dans l'infobulle au passage de la souris.
 ]=]
 L["MIN"] = "Min"
 L["MONTH_1"] = "Janvier"
@@ -284,6 +293,7 @@ L["NEW_SHOPPING_LIST"] = "+ Nouvelle liste d'achats"
 L["NEXT_SCAN_MESSAGE"] = "Une analyse complète pourra être lancée dans %s minute(s) et %s seconde(s)"
 L["NO_ITEM_INFO_SPECIFIED"] = "Aucune info d'objet n'a été précisée."
 L["NO_LIST"] = "Pas de liste"
+L["NO_LONGER_AVAILABLE"] = "N'est plus disponible"
 L["NO_RESULTS"] = "Aucun résultat trouvé."
 L["NONE"] = "Aucun"
 L["NONE_LEFT"] = "Aucun restant"

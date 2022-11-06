@@ -62,6 +62,7 @@ function AuctionatorBuyAuctionsDataProviderMixin:SetUpEvents()
 
   Auctionator.EventBus:Register( self, {
     Auctionator.Buying.Events.AuctionFocussed,
+    Auctionator.Buying.Events.StacksUpdated,
   })
 end
 
@@ -127,6 +128,9 @@ function AuctionatorBuyAuctionsDataProviderMixin:ReceiveEvent(eventName, eventDa
     for _, entry in ipairs(self.results) do
       entry.isSelected = entry == eventData
     end
+    self.onUpdate()
+  elseif eventName == Auctionator.Buying.Events.StacksUpdated and self:IsShown() then
+    self.onUpdate()
   end
 end
 
@@ -143,6 +147,11 @@ function AuctionatorBuyAuctionsDataProviderMixin:RefreshQuery()
     Auctionator.EventBus:Register(self, BUY_EVENTS)
     Auctionator.AH.QueryAuctionItems(self.query)
   end
+end
+
+function AuctionatorBuyAuctionsDataProviderMixin:EndAnyQuery()
+  Auctionator.AH.AbortQuery()
+  Auctionator.EventBus:Unregister(self, BUY_EVENTS)
 end
 
 function AuctionatorBuyAuctionsDataProviderMixin:ImportAdditionalResults(results)

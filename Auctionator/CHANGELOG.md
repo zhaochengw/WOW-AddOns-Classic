@@ -1,8 +1,9 @@
 # Auctionator
 
-## [10.0.2](https://github.com/Auctionator/Auctionator/tree/10.0.2) (2022-10-27)
-[Full Changelog](https://github.com/Auctionator/Auctionator/compare/10.0.1...10.0.2) 
+## [10.0.7](https://github.com/Auctionator/Auctionator/tree/10.0.7) (2022-11-04)
+[Full Changelog](https://github.com/Auctionator/Auctionator/compare/10.0.6...10.0.7) 
 
-- Mainline: Revert simplify click hook as it broke the shortcut for a user  
-- [Fixes #1248] Mainline: CraftingInfo: Error when no recipe selected  
-- Classic: Work around Blizzard search API ignoring quality parameter  
+- Classic: Buy: Abort load all results when changing tabs  
+- Classic: Cancelling: Cancel undercut scan when changing tabs  
+- Crafting Info: Remove unneeded extra visibility checks  
+- Fix error caused by TSM hiding the crafting window  

@@ -78,11 +78,20 @@ L["CONFIG_CANCELLING_TEXT"] = "취소하기 탭의 설정을 변경합니다."
 L["CONFIG_CHAT_LOG"] = "경매를 시작할 때 채팅창에 표시"
 L["CONFIG_CHAT_LOG_TOOLTIP_HEADER"] = "채팅창 설정"
 L["CONFIG_CHAT_LOG_TOOLTIP_TEXT"] = "경매시작 시 채팅창에 표시합니다."
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT"] = "제작 비용 대신 수익 표시"
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = "제작 비용 수익 표시"
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = "경매장을 열면 제작 화면에 아이템 제작 비용이 표시됩니다. 대신 수익금을 표시하려면 이 옵션을 활성화하십시오."
 --[[Translation missing --]]
 L["CONFIG_CRAFTING_INFO_SHOW"] = "Show crafting costs in the crafting view"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST"] = "Show reagent costs from auction house and vendors"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST_TOOLTIP_HEADER"] = "Crafting Info Show Cost"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST_TOOLTIP_TEXT"] = "Enable this option to see the cost of crafting a specific recipe when viewing it."
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT"] = "Show profit from crafting with auction house and vendor reagents"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT_TOOLTIP_HEADER"] = "Crafting Info Show Profit"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT_TOOLTIP_TEXT"] = "Enable this option to see the profit of crafting a specific recipe when viewing it."
 --[[Translation missing --]]
 L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Crafting screen extra info"
 --[[Translation missing --]]
@@ -201,6 +210,8 @@ L["CONFIRM"] = "확인"
 L["CONFIRM_POST_BELOW_VENDOR"] = "상인에게 판매하면 더 많은 금을 벌 수 있습니다. 정말 그 가격에 게시할까요?"
 L["CONFIRM_POST_LOW_PRICE"] = "%s의 가격이 약간 낮아 보입니다. 정말 그 가격에 게시할까요?"
 L["CONFIRM_POST_PRICE_DROP"] = "%s의 단가는 큰 가격 하락입니다. 정말 그 가격에 게시할까요?"
+--[[Translation missing --]]
+L["CONFIRM_X_TOTAL_PRICE_X"] = "Confirm %s, total price %s"
 L["CONTRIBUTORS_HEADER"] = "기증자"
 L["COPY_ITEM_ADDED"] = "%s 을 %s 로 복사"
 L["COPY_NO_LIST_SELECTED"] = "아이템을 복사할 수 없습니다. 선택한 구매 목록이 없습니다"
@@ -311,6 +322,8 @@ L["NEW_SHOPPING_LIST"] = "+ 새로운 구매 목록"
 L["NEXT_SCAN_MESSAGE"] = "전체 검색은 %s분 %s초 후 시작됩니다."
 L["NO_ITEM_INFO_SPECIFIED"] = "아이템 정보가 지정되지 않았습니다."
 L["NO_LIST"] = "목록 없음"
+--[[Translation missing --]]
+L["NO_LONGER_AVAILABLE"] = "No longer available"
 L["NO_RESULTS"] = "결과가 없습니다."
 L["NONE"] = "없음"
 L["NONE_LEFT"] = "아무것도 없음"

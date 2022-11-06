@@ -76,10 +76,19 @@ L["CONFIG_CANCELLING_TEXT"] = "Optionen zum Ändern des Verhaltens des Unterbote
 L["CONFIG_CHAT_LOG"] = "Zeige deine neuen Auktionen im Chat"
 L["CONFIG_CHAT_LOG_TOOLTIP_HEADER"] = "Auktions Chat Log"
 L["CONFIG_CHAT_LOG_TOOLTIP_TEXT"] = "Wenn diese Option deaktiviert ist, werden keine Informationen für neu erstellte Auktionen im Chat angezeigt."
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT"] = "Gewinn statt Herstellungskosten anzeigen"
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = "Die Herstellungskosten zeigen Gewinn an"
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = "Wenn das Auktionshaus geöffnet ist, zeigt der Handwerksbildschirm die Kosten für das Herstellen eines Gegenstands. Aktiviere diese Option, um stattdessen den Gewinn anzuzeigen."
 L["CONFIG_CRAFTING_INFO_SHOW"] = "Herstellungskosten in der Handwerkansicht anzeigen"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST"] = "Show reagent costs from auction house and vendors"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST_TOOLTIP_HEADER"] = "Crafting Info Show Cost"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST_TOOLTIP_TEXT"] = "Enable this option to see the cost of crafting a specific recipe when viewing it."
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT"] = "Show profit from crafting with auction house and vendor reagents"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT_TOOLTIP_HEADER"] = "Crafting Info Show Profit"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT_TOOLTIP_TEXT"] = "Enable this option to see the profit of crafting a specific recipe when viewing it."
 L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Handwerksbildschirm zusätzliche Infos"
 L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "Der Handwerksbildschirm zeigt die Kosten für das Erstellen eines Gegenstands an. Deaktiviere diese Option, um die Handwerkskosten nicht anzuzeigen."
 L["CONFIG_DEBUG"] = "Zeige Debugmeldungen an."
@@ -177,6 +186,8 @@ L["CONFIRM"] = "Bestätigen"
 L["CONFIRM_POST_BELOW_VENDOR"] = "Du kannst mehr Gold machen, um dies an einen Händler zu verkaufen. Bist du sicher, dass du zu diesem Preis erstellen möchtest?"
 L["CONFIRM_POST_LOW_PRICE"] = "Der Preis von %s sieht etwas niedrig aus. Bist du sicher, dass du zu diesem Preis erstellen möchtest?"
 L["CONFIRM_POST_PRICE_DROP"] = "Der Einheitspreis von %s ist ein großer Preissturz. Bist du sicher, dass du zu diesem Preis erstellen möchtest?"
+--[[Translation missing --]]
+L["CONFIRM_X_TOTAL_PRICE_X"] = "Confirm %s, total price %s"
 L["CONTRIBUTORS_HEADER"] = "Mitwirkende"
 L["COPY_ITEM_ADDED"] = "Kopierte %s in %s"
 L["COPY_NO_LIST_SELECTED"] = "Gegenstand kann nicht kopiert werden. Keine Einkaufsliste ausgewählt"
@@ -287,6 +298,8 @@ L["NEW_SHOPPING_LIST"] = "+ Neue Einkaufsliste"
 L["NEXT_SCAN_MESSAGE"] = "Der nächste vollständige Scan ist erst in %s Minuten and %s Sekunden möglich."
 L["NO_ITEM_INFO_SPECIFIED"] = "Es wurden keine Gegenstandsinformationen angegeben."
 L["NO_LIST"] = "Keine Liste"
+--[[Translation missing --]]
+L["NO_LONGER_AVAILABLE"] = "No longer available"
 L["NO_RESULTS"] = "Keine Ergebnisse gefunden."
 L["NONE"] = "Kein"
 L["NONE_LEFT"] = "Keins übrig"

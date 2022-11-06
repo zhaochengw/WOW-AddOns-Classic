@@ -80,14 +80,20 @@ L["CONFIG_CANCELLING_TEXT"] = "Opções para configurar o funcionamento da aba d
 L["CONFIG_CHAT_LOG"] = "Mostra novos leilões no chat"
 L["CONFIG_CHAT_LOG_TOOLTIP_HEADER"] = "Registro do Chat de Leilão"
 L["CONFIG_CHAT_LOG_TOOLTIP_TEXT"] = "Se esta opção estiver desabilitada seus leilões não serão escaneados para achar novos leilões."
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT"] = [=[Mostre lucro em vez de custo de criação
-]=]
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_HEADER"] = [=[Custo de Criação Mostrar Lucro
-]=]
-L["CONFIG_CRAFTING_COST_SHOW_PROFIT_TOOLTIP_TEXT"] = [=[Quando a Casa de Leilões estiver aberta, a tela de criação mostrará o custo de criação de um item. Ative esta opção para mostrar o lucro.
-]=]
 --[[Translation missing --]]
 L["CONFIG_CRAFTING_INFO_SHOW"] = "Show crafting costs in the crafting view"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST"] = "Show reagent costs from auction house and vendors"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST_TOOLTIP_HEADER"] = "Crafting Info Show Cost"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_COST_TOOLTIP_TEXT"] = "Enable this option to see the cost of crafting a specific recipe when viewing it."
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT"] = "Show profit from crafting with auction house and vendor reagents"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT_TOOLTIP_HEADER"] = "Crafting Info Show Profit"
+--[[Translation missing --]]
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT_TOOLTIP_TEXT"] = "Enable this option to see the profit of crafting a specific recipe when viewing it."
 --[[Translation missing --]]
 L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Crafting screen extra info"
 --[[Translation missing --]]
@@ -206,6 +212,8 @@ L["CONFIRM_POST_BELOW_VENDOR"] = [=[Você pode ganhar mais ouro vendendo isso pa
 L["CONFIRM_POST_LOW_PRICE"] = [=[O preço de %s parece um pouco baixo. Tem certeza de que deseja postar a esse preço?
 ]=]
 L["CONFIRM_POST_PRICE_DROP"] = "O preço unitário de %s é uma grande queda de preço. Tem certeza de que deseja postar a esse preço?"
+--[[Translation missing --]]
+L["CONFIRM_X_TOTAL_PRICE_X"] = "Confirm %s, total price %s"
 L["CONTRIBUTORS_HEADER"] = "Contribuidores"
 L["COPY_ITEM_ADDED"] = [=[Copiou %s para %s
 ]=]
@@ -332,6 +340,8 @@ L["NO_ITEM_INFO_SPECIFIED"] = [=[Nenhuma informação do item foi especificada.
 ]=]
 L["NO_LIST"] = [=[sem lista
 ]=]
+--[[Translation missing --]]
+L["NO_LONGER_AVAILABLE"] = "No longer available"
 L["NO_RESULTS"] = "Nenhum resultado encontrado."
 L["NONE"] = "Nenhum"
 L["NONE_LEFT"] = [=[Nenhum restante

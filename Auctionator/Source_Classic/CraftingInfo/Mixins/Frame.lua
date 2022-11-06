@@ -16,8 +16,6 @@ function AuctionatorCraftingInfoFrameMixin:OnLoad()
     end
   end)
   Auctionator.API.v1.RegisterForDBUpdate(AUCTIONATOR_L_REAGENT_SEARCH, function()
-    self:ShowIfRelevant()
-
     if self:IsVisible() then
       self:UpdateTotal()
     end
@@ -30,7 +28,7 @@ end
 
 function AuctionatorCraftingInfoFrameMixin:ShowIfRelevant()
   self:SetShown(Auctionator.Config.Get(Auctionator.Config.Options.CRAFTING_INFO_SHOW) and GetTradeSkillSelectionIndex() ~= 0 and self:IsAnyReagents())
-  if self:IsShown() then
+  if self:IsVisible() then
     self.SearchButton:SetShown(AuctionFrame ~= nil and AuctionFrame:IsShown())
 
     self:SetPoint(unpack(self.originalDescriptionPoint))
@@ -48,7 +46,9 @@ function AuctionatorCraftingInfoFrameMixin:IsAnyReagents()
 end
 
 function AuctionatorCraftingInfoFrameMixin:UpdateTotal()
-  self.Total:SetText(Auctionator.CraftingInfo.GetInfoText())
+  local infoText, lines = Auctionator.CraftingInfo.GetInfoText()
+  self.Total:SetText(infoText)
+  self:SetHeight(16 * lines)
 end
 
 function AuctionatorCraftingInfoFrameMixin:SearchButtonClicked()
@@ -58,7 +58,6 @@ function AuctionatorCraftingInfoFrameMixin:SearchButtonClicked()
 end
 
 function AuctionatorCraftingInfoFrameMixin:OnEvent(...)
-  self:ShowIfRelevant()
   if self:IsVisible() then
     self:UpdateTotal()
   end

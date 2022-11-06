@@ -2,6 +2,7 @@ AuctionatorDataProviderMixin = {}
 
 function AuctionatorDataProviderMixin:OnLoad()
   self.results = {}
+  self.cachedResults = {}
   self.insertedKeys = {}
   self.entriesToProcess = {}
   self.processCountPerUpdate = 200
@@ -27,12 +28,17 @@ function AuctionatorDataProviderMixin:OnUpdate(elapsed)
 end
 
 function AuctionatorDataProviderMixin:Reset()
+   -- Last set of results passed to self.onUpdate. Used to avoid errors with out
+   -- of range indexes if :GetEntry is called before the OnUpdate fires.
+  self.cachedResults = self.results or {}
+
   self.results = {}
   self.insertedKeys = {}
   self.entriesToProcess = {}
   self.processingIndex = 0
 
   self.searchCompleted = false
+  self:SetDirty()
 end
 
 -- Derive: This will be used to help with sorting and filtering unique entries
@@ -56,6 +62,7 @@ function AuctionatorDataProviderMixin:ClearSort()
   table.sort(self.results, function(left, right)
     return left.sortingIndex < right.sortingIndex
   end)
+  self:SetDirty()
 end
 
 
@@ -93,11 +100,11 @@ end
 function AuctionatorDataProviderMixin:GetEntryAt(index)
   -- Auctionator.Debug.Message("INDEX", index)
 
-  return self.results[index]
+  return self.cachedResults[index]
 end
 
 function AuctionatorDataProviderMixin:GetCount()
-  return #self.results
+  return #self.cachedResults
 end
 
 function AuctionatorDataProviderMixin:SetOnEntryProcessedCallback(onEntryProcessedCallback)
@@ -147,16 +154,16 @@ end
 -- client.
 function AuctionatorDataProviderMixin:CheckForEntriesToProcess()
   if #self.entriesToProcess == 0 then
-    if not self.announcedCompletion and self.searchCompleted then
-      self.announcedCompletion = true
-      self.onSearchEnded()
-    end
-
     if self.isDirty then
+      self.cachedResults = self.results
       self.onUpdate(self.results)
       self.isDirty = false
     end
 
+    if not self.announcedCompletion and self.searchCompleted then
+      self.announcedCompletion = true
+      self.onSearchEnded()
+    end
     return
   end
 
@@ -196,13 +203,14 @@ function AuctionatorDataProviderMixin:CheckForEntriesToProcess()
     resetQueue = true
   end
 
+  self.cachedResults = self.results
+  self.onUpdate(self.results)
+  self.isDirty = false
+
   if resetQueue and self.searchCompleted then
     self.onSearchEnded()
     self.announcedCompletion = true
   end
-
-  self.onUpdate(self.results)
-  self.isDirty = false
 end
 
 local function WrapCSVParameter(parameter)
