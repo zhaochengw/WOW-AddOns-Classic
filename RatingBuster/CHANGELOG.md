@@ -1,7 +1,6 @@
 # RatingBuster
 
-## [1.5.17](https://github.com/raethkcj/RatingBuster/tree/1.5.17) (2022-10-20)
-[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/1.5.16...1.5.17) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
+## [1.6.1](https://github.com/raethkcj/RatingBuster/tree/1.6.1) (2022-10-31)
+[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/1.6.0...1.6.1) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
 
-- Improve deDE armor penetration patterns (Fixes #111)  
-- Improve attack power breakdowns  
+- Nil check (fixes #115)  

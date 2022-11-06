@@ -163,8 +163,6 @@ L["PreScanPatterns"] = {
 	["^(%d+) Rüstung$"] = "ARMOR",
 	["Verstärkte %(%+(%d+) Rüstung%)"] = "ARMOR_BUFF",
 	["Mana Regeneration (%d+) alle 5 Sek%.$"] = "MANA_REG",
-	["^%+?%d+ %- (%d+) .-[Ss]chaden$"] = "MAX_DAMAGE",
-	["^%(([%d%.]+) Schaden pro Sekunde%)$"] = "DPS",
 	-- These fail DeepScan in deDE because of the commas
 	["Anlegen: Erhöht Eure Chance, einen kritischen Treffer durch Zauber zu erzielen, um (%d)%%\."] = "SPELL_CRIT",
 	["Anlegen: Erhöht Eure Chance, einen kritischen Treffer zu erzielen, um (%d)%%\."] = "CRIT",
@@ -483,7 +481,7 @@ D["StatIDToName"] = {
 	["HEALTH_REG"] = {HEALTH.." Regeneration", "HP5"},
 	["MANA_REG"] = {MANA.." Regeneration", "MP5"},
 
-	["MAX_DAMAGE"] = {"Maximalschaden", "Max Schaden"},
+	["AVERAGE_DAMAGE"] = {"Average Damage", "Avg Dmg"},
 	["DPS"] = {"Schaden pro Sekunde", "DPS"},
 
 	["DEFENSE_RATING"] = {COMBAT_RATING_NAME2, COMBAT_RATING_NAME2}, -- COMBAT_RATING_NAME2 = "Defense Rating"

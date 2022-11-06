@@ -186,8 +186,6 @@ L["PreScanPatterns"] = {
 	["每5秒回复(%d+)点法力值。$"] = "MANA_REG",
 	["每5秒回复(%d+)点法力值$"] = "MANA_REG",
 	["每5秒回复(%d+)点生命值。$"] = "HEALTH_REG",
-	["^%+?%d+ %- (%d+).-伤害$"] = "MAX_DAMAGE",
-	["^（每秒伤害([%d%.]+)）$"] = "DPS",
 	-- Exclude
 	["^(%d+)格.-包"] = false, -- # of slots and bag type
 	["^(%d+)格.-袋"] = false, -- # of slots and bag type
@@ -569,7 +567,7 @@ D["StatIDToName"] = {
 	["HEALTH_REG"] = {"生命恢复", "HP5"},
 	["MANA_REG"] = {"法力恢复", "MP5"},
 
-	["MAX_DAMAGE"] = {"最大伤害", "大伤"},
+	["AVERAGE_DAMAGE"] = {"Average Damage", "Avg Dmg"},
 	["DPS"] = {"每秒伤害", "DPS"},
 
 	["DEFENSE_RATING"] = {COMBAT_RATING_NAME2, COMBAT_RATING_NAME2}, -- COMBAT_RATING_NAME2 = "Defense Rating"

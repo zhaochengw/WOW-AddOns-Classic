@@ -24,7 +24,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RatingBuster")
 RatingBuster = LibStub("AceAddon-3.0"):NewAddon("RatingBuster", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 RatingBuster.title = "Rating Buster"
 --@non-debug@
-RatingBuster.version = "1.5.17"
+RatingBuster.version = "1.6.1"
 --@end-non-debug@
 --[==[@debug@
 RatingBuster.version = "(development)"
@@ -207,7 +207,7 @@ local options = {
 			name = L["Set level"],
 			desc = L["Set the level used in calculations (0 = your level)"],
 			min = 0,
-			max = 73, -- set to level cap + 3
+			max = GetMaxPlayerLevel(),
 			step = 1,
 		},
 		rating = {
@@ -703,24 +703,15 @@ local options = {
 							name = L["Sum Expertise"],
 							desc = L["Expertise <- Expertise Rating"],
 						},
-						sumWeaponMaxDamage = {
+						sumWeaponAverageDamage = {
 							type = 'toggle',
-							name = L["Sum Weapon Max Damage"],
-							desc = L["Weapon Max Damage Summary"],
+							name = L["Sum Weapon Average Damage"],
+							desc = L["Weapon Average Damage Summary"],
 						},
-						--[[
-						weapondps = {
-						type = 'toggle',
-						name = L["Sum Weapon DPS"],
-						desc = L["Weapon DPS Summary"],
-						get = function()
-							return profileDB.sumWeaponDPS
-						end,
-						set = function(v)
-						profileDB.sumWeaponDPS = v
-						-- clear cache
-						clearCache()
-						end,
+						sumWeaponDPS = {
+							type = 'toggle',
+							name = L["Sum Weapon DPS"],
+							desc = L["Weapon DPS Summary"],
 						},
 						--]]
 						sumIgnoreArmor = {
@@ -1118,7 +1109,7 @@ local defaults = {
 		sumDodgeNeglect = false,
 		sumParryNeglect = false,
 		sumBlockNeglect = false,
-		sumWeaponMaxDamage = false,
+		sumWeaponAverageDamage = false,
 		sumWeaponDPS = false,
 		sumIgnoreArmor = false, -- new
 		-- Spell
@@ -1184,6 +1175,7 @@ local defaults = {
 
 -- Class specific settings
 if class == "DEATHKNIGHT" then
+	defaults.profile.sumWeaponAverageDamage = true
 	defaults.profile.sumAvoidance = true
 	defaults.profile.sumArmor = true
 	defaults.profile.sumMP = false
@@ -1229,6 +1221,7 @@ elseif class == "MAGE" then
 	defaults.profile.showDodgeFromAgi = false
 	defaults.profile.ratingSpell = true
 elseif class == "PALADIN" then
+	defaults.profile.sumWeaponAverageDamage = true
 	defaults.profile.sumAvoidance = true
 	defaults.profile.sumArmor = true
 	defaults.profile.sumHit = true
@@ -1252,6 +1245,7 @@ elseif class == "PRIEST" then
 	defaults.profile.showDodgeFromAgi = false
 	defaults.profile.ratingSpell = true
 elseif class == "ROGUE" then
+	defaults.profile.sumWeaponAverageDamage = true
 	defaults.profile.sumMP = false
 	defaults.profile.sumMP5 = false
 	defaults.profile.sumAP = true
@@ -1262,6 +1256,7 @@ elseif class == "ROGUE" then
 	defaults.profile.showSpellCritFromInt = false
 	defaults.profile.ratingPhysical = true
 elseif class == "SHAMAN" then
+	defaults.profile.sumWeaponAverageDamage = true
 	defaults.profile.sumSpellDmg = true
 	defaults.profile.sumSpellHit = true
 	defaults.profile.sumSpellCrit = true
@@ -1279,6 +1274,7 @@ elseif class == "WARLOCK" then
 	defaults.profile.showDodgeFromAgi = false
 	defaults.profile.ratingSpell = true
 elseif class == "WARRIOR" then
+	defaults.profile.sumWeaponAverageDamage = true
 	defaults.profile.sumAvoidance = true
 	defaults.profile.sumArmor = true
 	defaults.profile.sumMP = false
@@ -1527,6 +1523,7 @@ local processedDodge, processedParry, processedMissed
 -- Utilities for checking nested recipes
 local ITEM_MIN_LEVEL_PATTERN = ITEM_MIN_LEVEL:gsub("%%d", "%%d+")
 local BIND_TRADE_PATTERN = BIND_TRADE_TIME_REMAINING:gsub("%%s", ".*")
+local BEGIN_ITEM_SPELL_TRIGGER_ONUSE = "^" .. ITEM_SPELL_TRIGGER_ONUSE
 local colorPrecision = 0.0001
 local AreColorsEqual = function(a, b)
 	return math.abs(a.r - b.r) < colorPrecision
@@ -1595,22 +1592,34 @@ function RatingBuster.ProcessTooltip(tooltip, name, link)
 		local fontString = _G[tipTextLeft..i]
 		local text = fontString:GetText()
 		if text then
-			if isRecipe and not tooltip.rb_processed_nested_recipe and i > 5 then
+			if isRecipe and not tooltip.rb_processed_nested_recipe then
 				-- Workaround to detect nested items from recipes
-				-- Check if any line after the 5th either
-				-- a) matches any uncommon or higher item quality color (and is not BIND_TRADE_PATTERN)
-				-- b) has a minimum required level
-				local color = CreateColor(fontString:GetTextColor())
+				-- Check if any line is:
+				-- a) Fourth or higher and:
+				--	1) Matches any uncommon or higher item quality color
+				--	2) Is neither BIND_TRADE_PATTERN nor ITEM_SPELL_TRIGGER_ONUSE
+				-- b) Sixth or higher and:
+				--	1) Has a minimum required level
+				--
+				--	Items to test:
+				--	Classic/TBC [Grimoire of Blood Pact (Rank 2)] 16322
+				--	TBC/Wrath [Design: Glinting Pyrestone] 32306
 				local quality = false
-				for j = Enum.ItemQuality.Good, Enum.ItemQuality.Heirloom do
-					if AreColorsEqual(ITEM_QUALITY_COLORS[j].color, color)
-					and not (j == Enum.ItemQuality.Heirloom and text:match(BIND_TRADE_PATTERN)) then
-						quality = true
-						break
+				if i > 3 then
+					local color = CreateColor(fontString:GetTextColor())
+					for j = Enum.ItemQuality.Good, Enum.ItemQuality.Heirloom do
+						if AreColorsEqual(ITEM_QUALITY_COLORS[j].color, color)
+						and not (
+							(j == Enum.ItemQuality.Heirloom and text:match(BIND_TRADE_PATTERN))
+							or (j == Enum.ItemQuality.Good and text:match(BEGIN_ITEM_SPELL_TRIGGER_ONUSE))
+						) then
+							quality = true
+							break
+						end
 					end
 				end
 				if quality
-				or text:find(ITEM_MIN_LEVEL_PATTERN)
+				or i > 5 and text:find(ITEM_MIN_LEVEL_PATTERN)
 				then
 					tooltip.rb_processed_nested_recipe = true
 				end
@@ -2312,10 +2321,6 @@ local function RemoveBlizzardItemComparisons(tooltip)
 					if previousFontString:GetText():find("^%s*") then
 						RemoveFontString(previousFontString)
 					end
-				elseif isBlizzardComparison then
-					if not text:find("^|cffff2020%-") and not text:find("^|cff00ff00%+") then
-						isBlizzardComparison = false
-					end
 				end
 
 				if isBlizzardComparison then
@@ -2697,12 +2702,20 @@ local summaryCalcData = {
 		end,
 		ispercent = true,
 	},
-	-- Weapon Max Damage - MAX_DAMAGE
+	-- Weapon Average Damage - MIN_DAMAGE, MAX_DAMAGE
 	{
-		option = "sumWeaponMaxDamage",
-		name = "MAX_DAMAGE",
+		option = "sumWeaponAverageDamage",
+		name = "AVERAGE_DAMAGE",
 		func = function(sum)
-			return sum["MAX_DAMAGE"]
+			return (sum["MIN_DAMAGE"] + sum["MAX_DAMAGE"]) / 2
+		end,
+	},
+	-- Weapon DPS - DPS
+	{
+		option = "sumWeaponDPS",
+		name = "DPS",
+		func = function(sum)
+			return sum["DPS"]
 		end,
 	},
 	-- Ignore Armor - IGNORE_ARMOR

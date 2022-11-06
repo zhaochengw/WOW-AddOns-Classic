@@ -166,8 +166,6 @@ L["PreScanPatterns"] = {
 	["Renforcé %(%+(%d+) Armure%)"] = "ARMOR_BONUS",
 	["^Équipé\194\160: Rend (%d+) points de vie toutes les 5 seco?n?d?e?s?%.?$"]= "HEAL_REG",
 	["^Équipé\194\160: Rend (%d+) points de mana toutes les 5 seco?n?d?e?s?%.?$"]= "MANA_REG",
-	["^Dégâts : %+?%d+ %- (%d+)$"] = "MAX_DAMAGE",
-	["^%(([%d%,]+) dégâts par seconde%)$"] = "DPS",
 	--["Lunette %(%+(%d+) points? de dégâts?%)"] = "RANGED_AP",
 	-- Exclude
 	["^(%d+) Slot"] = false, -- Set Name (0/9)
@@ -539,7 +537,7 @@ D["StatIDToName"] = {
 	["HEALTH_REG"] = {"Régén. vie (combat)", "Régén. vie (combat)"},
 	["MANA_REG"] = {"Régén. mana (incantation)", "Régén. mana (incantation)"},
 
-	["MAX_DAMAGE"] = {"Dégâts maximum", "Dégâts Max"},
+	["AVERAGE_DAMAGE"] = {"Average Damage", "Avg Dmg"},
 	["DPS"] = {"Dégâts par seconde", "DPS"},
 
 	["DEFENSE_RATING"] = {"Score de défense", "Défense"},

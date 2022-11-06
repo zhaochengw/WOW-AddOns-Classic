@@ -202,8 +202,6 @@ L["PreScanPatterns"] = {
 	["^(%d+) Armor$"] = "ARMOR",
 	["Reinforced %(%+(%d+) Armor%)"] = "ARMOR_BONUS",
 	["Mana Regen (%d+) per 5 sec%.$"] = "MANA_REG",
-	["^%+?%d+ %- (%d+) .-Damage$"] = "MAX_DAMAGE",
-	["^%(([%d%.]+) damage per second%)$"] = "DPS",
 	-- Exclude
 	["^(%d+) Slot"] = false, -- Set Name (0/9)
 	["^[%a '%-]+%((%d+)/%d+%)$"] = false, -- Set Name (0/9)
@@ -466,7 +464,8 @@ L["StatIDLookup"] = {
 	["Increases your expertise rating"] = {"EXPERTISE_RATING"},
 	["armor penetration rating"] = {"ARMOR_PENETRATION_RATING"}, -- gems
 	["Increases armor penetration rating"] = {"ARMOR_PENETRATION_RATING"},
-	["Increases your armor penetration rating"] = {"ARMOR_PENETRATION_RATING"}, -- ID:43178
+	["Increases your armor penetration rating"] = {"ARMOR_PENETRATION_RATING"}, -- Anarchy ID:39420
+	["increases your armor penetration"] = {"ARMOR_PENETRATION_RATING"}, -- Ring of Foul Mojo ID:43178
 
 	-- Exclude
 	["sec"] = false,
@@ -546,7 +545,7 @@ D["StatIDToName"] = {
 	["HEALTH_REG"] = {HEALTH.." Regen", "HP5"},
 	["MANA_REG"] = {MANA.." Regen", "MP5"},
 
-	["MAX_DAMAGE"] = {"Max Damage", "Max Dmg"},
+	["AVERAGE_DAMAGE"] = {"Average Damage", "Avg Dmg"},
 	["DPS"] = {"Damage Per Second", "DPS"},
 
 	["DEFENSE_RATING"] = {COMBAT_RATING_NAME2, COMBAT_RATING_NAME2}, -- COMBAT_RATING_NAME2 = "Defense Rating"

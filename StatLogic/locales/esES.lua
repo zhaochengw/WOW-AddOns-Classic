@@ -162,8 +162,6 @@ L["PreScanPatterns"] = {
 	["regen. de maná (%d+) p. cada 5 s%.$"] = "MANA_REG",
 	["Restaura (%d+) p. de maná cada 5 s%.?$"]= "MANA_REG",
 	["Restaura (%d+) p. de maná cada 5 s de todos los miembros del grupo que estén a 30 m%.?$"]= "MANA_REG",
-	["^%+?%d+ %- (%d+) .-[Dd]año$"] = "MAX_DAMAGE",
-	["^%(([%d%,]+) daño por segundo%)$"] = "DPS",
 	-- Exclude
 	["^(%d+) Slot"] = false, -- Set Name (0/9)
 	["^[%a '%-]+%((%d+)/%d+%)$"] = false, -- Set Name (0/9)
@@ -500,7 +498,7 @@ D["StatIDToName"] = {
 	["HEALTH_REG"] = {HEALTH.." Regen", "HP5"},
 	["MANA_REG"] = {MANA.." Regen", "MP5"},
 
-	["MAX_DAMAGE"] = {"Max Damage", "Max Dmg"},
+	["AVERAGE_DAMAGE"] = {"Average Damage", "Avg Dmg"},
 	["DPS"] = {"Damage Per Second", "DPS"},
 
 	["DEFENSE_RATING"] = {COMBAT_RATING_NAME2, COMBAT_RATING_NAME2}, -- COMBAT_RATING_NAME2 = "Defense Rating"
