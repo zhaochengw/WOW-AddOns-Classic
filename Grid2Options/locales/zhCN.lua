@@ -96,9 +96,29 @@ L["LOW"] = "低"
 L["MEDIUM"] = "中间的"
 L["HIGH"] = "高"
 
+-- L["Layout Disposition"] = ""
+-- L["Layout Look&Feel"] = ""
+-- L["Frames Look&Feel"] = ""
+-- L["Default Settings"] = ""
+-- L["Groups Orientation"] = ""
+-- L['Header Types'] = ""
+-- L["Players"] = ""
+-- L["Pets"] = ""
+-- L["Units per Column"] = ""
+-- L["Hide Empty Units"] = ""
+-- L["Hide frames of non-existant units."] = ""
+-- L["Adjust the width percent of each unit's frame."] = ""
+-- L["Adjust the height percent of each unit's frame."] = ""
+-- L["Adjust the default units per column for this group type."] = ""
+
 -- minimap icon
 L["Minimap Icon"] = "小地图图标"
 L["Show Minimap Icon"] = "显示小地图图标"
+
+-- icon textures zoom
+-- L["Icon Textures Zoom"] = ""
+-- L["Zoom In buffs and debuffs icon textures"] = ""
+-- L["Enable this option to hide the default blizzard border of buffs and debuffs Icons."] = ""
 
 --blink
 L["Misc"] = "杂项"
@@ -122,8 +142,8 @@ L["When duration<1sec"] = "当持续时间小于1秒"
 
 -- misc
 L["Blizzard Raid Frames"] = "暴雪团队框架"
--- L["Hide Blizzard Raid Frames on Startup"] = ""
 L["Hide Blizzard Raid Frames"] = "隐藏暴雪团队框架"
+-- L["Hide Blizzard Party Frames"] = ""
 
 -- debugging & maintenance
 L["debugging"] = "除错"
@@ -1357,7 +1377,10 @@ L["You can include a descriptive prefix using separators \"@#>\""] = "你可以�
 -- L["Load the status only if the unit belong to the specified class."] = ""
 -- L["Unit Role"] = ""
 -- L["Load the status only if the unit has the specified role."] = ""
---
+-- L["Unit Is Pet"] = ""
+-- L["Yes"] = ""
+-- L["No"] = ""
+
 -- L["Select layouts for different Raid types."] = ""
 -- L["Use Blizzard Unit Frames"] = ""
 -- L["Disable this option to use custom unit frames instead of blizzard frames. This fixes some bugs in blizzard code, but units cannot join/leave the roster while in combat."] = ""

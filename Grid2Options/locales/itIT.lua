@@ -96,9 +96,29 @@ L["Resets the layout frame's position and anchor."] = "Reset del layout, della p
 -- L["MEDIUM"] = ""
 -- L["HIGH"] = ""
 
+-- L["Layout Disposition"] = ""
+-- L["Layout Look&Feel"] = ""
+-- L["Frames Look&Feel"] = ""
+-- L["Default Settings"] = ""
+-- L["Groups Orientation"] = ""
+-- L['Header Types'] = ""
+-- L["Players"] = ""
+-- L["Pets"] = ""
+-- L["Units per Column"] = ""
+-- L["Hide Empty Units"] = ""
+-- L["Hide frames of non-existant units."] = ""
+-- L["Adjust the width percent of each unit's frame."] = ""
+-- L["Adjust the height percent of each unit's frame."] = ""
+-- L["Adjust the default units per column for this group type."] = ""
+
 -- minimap icon
 -- L["Minimap Icon"] = ""
 -- L["Show Minimap Icon"] = ""
+
+-- icon textures zoom
+-- L["Icon Textures Zoom"] = ""
+-- L["Zoom In buffs and debuffs icon textures"] = ""
+-- L["Enable this option to hide the default blizzard border of buffs and debuffs Icons."] = ""
 
 --blink
 L["Misc"] = "Varie"
@@ -122,8 +142,8 @@ L["When duration<1sec"] = "Quando la durata<1sec"
 
 -- misc
 L["Blizzard Raid Frames"] = "Raid Frames Blizzard"
-L["Hide Blizzard Raid Frames on Startup"] = "Nascondi i Raid Frames Blizzard all'avvio"
--- L["Hide Blizzard Raid Frames"] = ""
+L["Hide Blizzard Raid Frames"] = "Nascondi i Raid Frames Blizzard"
+L["Hide Blizzard Party Frames"] = "Nascondi i Party Frames Blizzard"
 
 -- debugging & maintenance
 L["debugging"] = "debugging"
@@ -1357,7 +1377,10 @@ L["You can include a descriptive prefix using separators \"@#>\""] = "Puoi inclu
 -- L["Load the status only if the unit belong to the specified class."] = ""
 -- L["Unit Role"] = ""
 -- L["Load the status only if the unit has the specified role."] = ""
---
+-- L["Unit Is Pet"] = ""
+-- L["Yes"] = ""
+-- L["No"] = ""
+
 -- L["Select layouts for different Raid types."] = ""
 -- L["Use Blizzard Unit Frames"] = ""
 -- L["Disable this option to use custom unit frames instead of blizzard frames. This fixes some bugs in blizzard code, but units cannot join/leave the roster while in combat."] = ""

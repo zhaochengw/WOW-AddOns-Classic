@@ -96,9 +96,29 @@ L["LOW"] = "낮음 (LOW)"
 L["MEDIUM"] = "중간 (MEDIUM)"
 L["HIGH"] = "높음 (HIGH)"
 
+-- L["Layout Disposition"] = ""
+-- L["Layout Look&Feel"] = ""
+-- L["Frames Look&Feel"] = ""
+-- L["Default Settings"] = ""
+-- L["Groups Orientation"] = ""
+-- L['Header Types'] = ""
+-- L["Players"] = ""
+-- L["Pets"] = ""
+-- L["Units per Column"] = ""
+-- L["Hide Empty Units"] = ""
+-- L["Hide frames of non-existant units."] = ""
+-- L["Adjust the width percent of each unit's frame."] = ""
+-- L["Adjust the height percent of each unit's frame."] = ""
+-- L["Adjust the default units per column for this group type."] = ""
+
 -- minimap icon
 L["Minimap Icon"] = "미니맵 아이콘"
 L["Show Minimap Icon"] = "미니맵 아이콘 표시"
+
+-- icon textures zoom
+-- L["Icon Textures Zoom"] = ""
+-- L["Zoom In buffs and debuffs icon textures"] = ""
+-- L["Enable this option to hide the default blizzard border of buffs and debuffs Icons."] = ""
 
 --blink
 L["Misc"] = "기타"
@@ -122,8 +142,8 @@ L["When duration<1sec"] = "지속시간이<1초일때"
 
 -- misc
 L["Blizzard Raid Frames"] = "블리자드 공격대 창"
-L["Hide Blizzard Raid Frames on Startup"] = "불러올때 블리자드 공격대 창 숨김"
 L["Hide Blizzard Raid Frames"] = "블리자드 공격대 창 숨김"
+-- L["Hide Blizzard Party Frames"] = ""
 
 -- debugging & maintenance
 L["debugging"] = "디버깅"
@@ -1357,6 +1377,9 @@ L["Unit Class"] = "유닛 직업"
 L["Load the status only if the unit belong to the specified class."] = "해당 유닛 직업인 경우만 불러오기"
 -- L["Unit Role"] = ""
 -- L["Load the status only if the unit has the specified role."] = ""
+-- L["Unit Is Pet"] = ""
+-- L["Yes"] = ""
+-- L["No"] = ""
 
 L["Select layouts for different Raid types."] = "공격대 유형에 따라 배치 선택"
 L["Use Blizzard Unit Frames"] = "Blizzard 유닛 프레임 사용"

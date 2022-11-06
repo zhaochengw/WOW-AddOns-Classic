@@ -96,9 +96,29 @@ L["LOW"] = true
 L["MEDIUM"] = true
 L["HIGH"] = true
 
+L["Layout Disposition"] = true
+L["Layout Look&Feel"] = true
+L["Frames Look&Feel"] = true
+L["Default Settings"] = true
+L["Groups Orientation"] = true
+L['Header Types'] = true
+L["Players"] = true
+L["Pets"] = true
+L["Units per Column"] = true
+L["Hide Empty Units"] = true
+L["Hide frames of non-existant units."] = true
+L["Adjust the width percent of each unit's frame."] = true
+L["Adjust the height percent of each unit's frame."] = true
+L["Adjust the default units per column for this group type."] = true
+
 -- minimap icon
 L["Minimap Icon"] = true
 L["Show Minimap Icon"] = true
+
+-- icon textures zoom
+L["Icon Textures Zoom"] = true
+L["Zoom In buffs and debuffs icon textures"] = true
+L["Enable this option to hide the default blizzard border of buffs and debuffs Icons."] = true
 
 --blink
 L["Misc"] = true
@@ -122,8 +142,8 @@ L["When duration<1sec"] = true
 
 -- misc
 L["Blizzard Raid Frames"] = true
-L["Hide Blizzard Raid Frames on Startup"] = true
 L["Hide Blizzard Raid Frames"] = true
+L["Hide Blizzard Party Frames"] = true
 
 -- debugging & maintenance
 L["debugging"] = true
@@ -1357,6 +1377,7 @@ L["Unit Class"] = true
 L["Load the status only if the unit belong to the specified class."] = true
 L["Unit Role"] = true
 L["Load the status only if the unit has the specified role."] = true
+L["Unit Is Pet"] = true
 
 L["Select layouts for different Raid types."] = true
 L["Use Blizzard Unit Frames"] = true

@@ -96,9 +96,29 @@ L["LOW"] = "BAJO"
 L["MEDIUM"] = "MEDIO"
 L["HIGH"] = "ALTO"
 
+L["Layout Disposition"] = "Diseño: Disposición"
+L["Layout Look&Feel"] = "Diseño: Apariencia"
+L["Frames Look&Feel"] = "Celdas: Apariencia"
+L["Default Settings"] = "Opciones Predeterminadas"
+L["Groups Orientation"] = "Orientación Grupos"
+L['Header Types'] = "Tipo de Cabeceras"
+L["Players"] = "Jugadores"
+L["Pets"] = "Mascotas"
+L["Units per Column"] = "Unidades/Col"
+L["Hide Empty Units"] = "Ocultar Unidades Vacias"
+L["Hide frames of non-existant units."] = "Oculta las unidades cuando no existen."
+L["Adjust the width percent of each unit's frame."] = "Ajusta el ancho de cada celda como porcentaje."
+L["Adjust the height percent of each unit's frame."] = "Ajusta la altura de cada celda como porcentaje."
+L["Adjust the default units per column for this group type."] = "Ajusta las unidades por columna predeterminadas para este tipo de grupo."
+
 -- minimap icon
 L["Minimap Icon"] = "Minimapa Icono"
 L["Show Minimap Icon"] = "Mostrar Icono en el Minimap"
+
+-- icon textures zoom
+L["Icon Textures Zoom"] = "Ampliar texturas de los iconos"
+L["Zoom In buffs and debuffs icon textures"] = "Ampliar las texturas de los iconos de buffs y debuffs"
+L["Enable this option to hide the default blizzard border of buffs and debuffs Icons."] = "Activa estas opción para ocultar el borde predeterminado de los buffs y debuffs."
 
 --blink
 L["Misc"] = "Varios"
@@ -122,8 +142,8 @@ L["When duration<1sec"] = "Si duracion < 1 segundo"
 
 -- misc
 L["Blizzard Raid Frames"] = "Marcos de banda de Blizzard"
-L["Hide Blizzard Raid Frames on Startup"] = "Ocultar marcos da banda de Blizzard al inicio"
 L["Hide Blizzard Raid Frames"] = "Ocultar marcos de banda de Blizzard"
+L["Hide Blizzard Party Frames"] = "Ocultar marcos de grupo de Blizzard"
 
 -- debugging & maintenance
 L["debugging"] = "debugging"
@@ -1357,6 +1377,9 @@ L["Unit Class"] = "Unidad: Clase"
 L["Load the status only if the unit belong to the specified class."] = "Carga el estado solo si la unidad pertenece a la clase indicada."
 L["Unit Role"] = "Unidad: Rol"
 L["Load the status only if the unit has the specified role."] = "Carga el estado solo si la unidad ejerce el rol indicado."
+L["Unit Is Pet"] = "Unidad: Es Mascota"
+L["Yes"] = "Si"
+L["No"] = "No"
 
 L["Select layouts for different Raid types."] = "Elige los diseños para diferentes tipos de raid."
 L["Use Blizzard Unit Frames"] = "Usar Marcos de Unidades de Blizzard"

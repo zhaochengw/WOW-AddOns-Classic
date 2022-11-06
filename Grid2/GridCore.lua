@@ -22,7 +22,7 @@ Grid2.isVanilla = versionCli<20000
 Grid2.isTBC     = versionCli>=20000 and versionCli<30000
 Grid2.isWrath   = versionCli>=30000 and versionCli<40000
 Grid2.isWoW90   = versionCli>=90000
-Grid2.isDevelop = versionToc=='2.0.60'
+Grid2.isDevelop = versionToc=='2.0.63'
 Grid2.versionstring = "Grid2 v"..(Grid2.isDevelop and 'Dev' or versionToc)
 
 -- build error check
@@ -30,7 +30,7 @@ local isRetailBuild = true
 --@non-retail@
 isRetailBuild = false
 --@end-non-retail@
-if isRetailBuild~=(WOW_PROJECT_ID==WOW_PROJECT_MAINLINE) and versionToc~='2.0.60' then
+if isRetailBuild~=(WOW_PROJECT_ID==WOW_PROJECT_MAINLINE) and versionToc~='2.0.63' then
 	C_Timer.After(3, function() Grid2:Print(string.format("Error, this version of Grid2 was packaged for World of Warcraft %s. Please install the correct version !!!", isRetailBuild and 'Retail' or 'Classic')) end)
 end
 
@@ -145,6 +145,8 @@ function Grid2:OnInitialize()
 
 	self:InitializeOptions()
 
+	self:UpdateBlizzardFrames()
+
 	self.OnInitialize = nil
 end
 
@@ -161,7 +163,7 @@ function Grid2:OnEnable()
 	if not self.isClassic then -- only retail
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 	end
-	if self.versionCli>=30000 then -- wotlk of superior
+	if self.versionCli>=30000 then -- wotlk or superior
 		self:RegisterEvent("PLAYER_ROLES_ASSIGNED")
 	end
 
