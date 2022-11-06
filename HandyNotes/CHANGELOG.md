@@ -1,6 +1,6 @@
 # HandyNotes
 
-## [v1.6.9](https://github.com/Nevcairiel/HandyNotes/tree/v1.6.9) (2022-10-25)
-[Full Changelog](https://github.com/Nevcairiel/HandyNotes/compare/v1.6.8...v1.6.9) [Previous Releases](https://github.com/Nevcairiel/HandyNotes/releases)
+## [v1.6.10](https://github.com/Nevcairiel/HandyNotes/tree/v1.6.10) (2022-10-31)
+[Full Changelog](https://github.com/Nevcairiel/HandyNotes/compare/v1.6.9...v1.6.10) [Previous Releases](https://github.com/Nevcairiel/HandyNotes/releases)
 
-- Update TOC for 10.0  
+- Clamp alpha into the 0..1 range to avoid errors from misbehaving plugins  
