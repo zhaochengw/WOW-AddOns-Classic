@@ -16,6 +16,16 @@ if ML.isLegacy then
   end
 end
 
+function ML:ShowConfigPanel(p)
+    -- Show config panel
+    -- used to be/need InterfaceOptionsList_DisplayPanel(BVP.optionsPanel)
+    -- also used to need InterfaceOptionsFrame which is gone in dragonflight
+    if InterfaceOptionsFrame ~= nil then
+      InterfaceOptionsFrame:Show()
+    end
+    InterfaceOptionsFrame_OpenToCategory(p) -- gets our name selected
+end
+
 ML.id = 0
 function ML:NextId()
   self.id = self.id + 1

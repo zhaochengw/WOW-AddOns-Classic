@@ -29,4 +29,4 @@ Releases detail/changes are on https://github.com/mooreatv/PixelPerfectAlign/rel
 
 Screenshots etc on https://www.curseforge.com/wow/addons/pixel-perfect-align/screenshots
 
-Works on all Blizzard client versions (SL, Classic, Wrath...)
+Works on all Blizzard client versions (Dragonflight, Classic, Wrath...)
