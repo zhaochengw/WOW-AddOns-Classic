@@ -64,7 +64,7 @@ AddSpellName("FrostShock", 49236, 49235, 25464, 10473, 10472, 8058, 8056)
 AddSpellName("FlameShock", 49233, 49232, 29228, 25457, 10448, 10447, 8053, 8052, 8050)
 AddSpellName("EarthShock", 49231, 49230, 25454, 10414, 10413, 10412, 8046, 8045, 8044, 8042)
 
-AddSpellName("HammerOfWrath", 48806, 48805, 27180, 24274, 24239, 24275)
+AddSpellName("HammerOfWrath", 48806, 48805, 27180, 24239, 24274, 24275)
 AddSpellName("Exorcism", 48801, 48800, 27138, 10314, 10313, 10312, 5615, 5614, 879)
 
 AddSpellName("ShadowBolt", 47809, 47808, 27209, 25307, 11661, 11660, 11659, 7641, 1106, 1088, 705, 695, 686)
@@ -111,6 +111,15 @@ function f:PLAYER_LOGIN()
     if true then
         self:RegisterEvent("SPELLS_CHANGED")
         self:SPELLS_CHANGED()
+
+        self:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
+        -- In case of button swaps for macros it goes like
+        -- ACTIONBAR_SLOT_CHANGED 77
+        -- ACTIONBAR_SLOT_CHANGED 78
+        -- ACTIONBAR_UPDATE_COOLDOWN -- UPDATE_COOLDOWN always finishing the chain of button updates
+        -- So only when detecting this pattern buttons are reactivated. Because normal ACTIONBAR_UPDATE_COOLDOWN happens all the time
+        self:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
+        self:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
 
         local bars = {"ActionButton","MultiBarBottomLeftButton","MultiBarBottomRightButton","MultiBarLeftButton","MultiBarRightButton"}
         for _,bar in ipairs(bars) do
@@ -282,6 +291,32 @@ function f:Activate(spellName, actID, duration, keepExpiration)
         state.expirationTime = duration and GetTime() + duration
     end
 end
+
+local slotJustChanged = false
+function f:ACTIONBAR_SLOT_CHANGED()
+    slotJustChanged = true
+end
+function f:ACTIONBAR_UPDATE_COOLDOWN()
+    if slotJustChanged then
+        return f:ReactivateButtons()
+    end
+    slotJustChanged = false
+end
+function f:UPDATE_BONUS_ACTIONBAR()
+    return f:ReactivateButtons()
+end
+function f:ReactivateButtons()
+    local now = GetTime()
+    for spellName, states in pairs(activations) do
+        for actID, state in pairs(states) do
+            if state.active and state.expirationTime > now then
+                local highestRankSpellID = findHighestRank(spellName)
+                self:FanoutEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW", highestRankSpellID)
+            end
+        end
+    end
+end
+
 function f:Deactivate(spellName, actID)
     local states = activations[spellName]
     if not states then return end
