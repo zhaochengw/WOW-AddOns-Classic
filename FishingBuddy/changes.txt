@@ -1,0 +1,114 @@
+Version 0.7.8
+- A compatibility fix for Fast Loot addons (thanks Zilom!)
+
+Version 0.7.7
+- Fix buff check comparison error
+
+Version 0.7.6
+- Let's try separate versions for Classic and Crusade
+
+Version 0.7.5.5
+- Let's try that again, shall we?
+
+Version 0.7.5.4
+- Use a consistent version of LibTourist while I figure out BCC vs. Classic
+
+Version 0.7.5.3
+- Latest version of LibBabble-SubZone
+
+Version 0.7.5.2
+- Process the TOC files *after* we collect all the files for the addon
+
+Version 0.7.5.1
+- Process the metadata and create the appropriate TOC files for Classic (thanks bsmorga! )
+
+Version 0.7.5
+- Again with the max lure issue (thanks again bolerro619!)
+- Move out of beta since it's the only version at the moment.
+
+Version 0.7.4 Beta 5
+- Fix max lure issue (thanks again bolerro619!)
+
+Version 0.7.4 Beta 4
+- Add Burning Crusade TOC entry
+- Fix Outland fishing level for Classic
+
+Version 0.7.4 Beta 3
+- Update to latest LibTouristClassic
+
+Version 0.7.4 Beta 2
+- Actually working Burning Crusdae version
+
+Version 0.7.4 Beta 1
+- Minimal working Burning Crusdae version
+
+Version 0.7.3 Beta 11
+- Update TOC
+
+Version 0.7.3 Beta 10
+- Fixed the Retail secure button change that breaks Classic secure buttons
+
+Version 0.7.3 Beta 9
+- Fix debugging that leaked from retail
+- Clicking is broken again, sigh.
+
+Version 0.7.3 Beta 8
+- Update fishing library
+
+Version 0.7.3 Beta 7
+- LibTourist classic almost but not quite exactly
+
+Version 0.7.3 Beta 6
+- Fix a bug in fishing mode management
+
+Version 0.7.3 Beta 5
+- Update libraries
+
+Version 0.7.3 Beta 4
+- More fishing level fixes
+
+Version 0.7.3 Beta 3
+- Update HereBeDragons
+
+Version 0.7.3 Beta 2
+- Update LibTouristClassic
+
+Version 0.7.3 Beta 1
+- Update LibBabble-SubZone
+
+Version 0.7.2 Beta 2
+- Make TownsfolkTracker an optional dependency so that it loads before us (and we can fix it)
+
+Version 0.7.2 Beta 1
+- Option to fix issue with TownsfolkTracker and older HereBeDragons
+
+Version 0.7.1 Beta 1
+- Fix globals leaks and other code foos
+
+Version 0.7 Beta 4
+- Find the lure bonus correctly
+- Outfit display working
+- Fix casting bug when no pole equipped
+- Update support libraries
+
+Version 0.6 Beta 2
+- Fishing Skill levels should be correct (thank you, LibTourist!)
+- More code changes and bug fixes
+
+Version 0.5
+- Batteries included version, outfit manager and broker
+
+Version 0.4
+- Make sure we know the name of the Fishing skill
+- Don't do fishing stuff if the toon doesn't know Fishing yet
+
+Version 0.3
+- More removal of non-Classic things
+- Lures should now work correctly (at least until you hit skill level 75 :-)
+
+Version 0.2
+- Options are now more in line with Classic
+
+Version 0.1
+- An initial, very rough, Classic version
+

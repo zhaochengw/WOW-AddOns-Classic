@@ -1,0 +1,8 @@
+<Bindings>
+	<!-- window commands -->
+	<Binding name="TOGGLEFISHINGBUDDY_OUT">
+		if ( keystate == "down" ) then
+			ToggleFishingBuddyFrame("FishingOutfitFrame");
+		end
+	</Binding>
+</Bindings>

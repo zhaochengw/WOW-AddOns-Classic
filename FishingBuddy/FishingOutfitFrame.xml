@@ -1,0 +1,120 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Include file="ODF\OutfitDisplayFrame.xml"/>
+	<Script file="FBOLoc\localization.lua"/>
+	<Script file="FBOLoc\localization.de.lua"/>
+	<Script file="FBOLoc\localization.es.lua"/>
+	<Script file="FBOLoc\localization.fr.lua"/>
+	<Script file="FBOLoc\localization.zhTW.lua"/>
+	<Script file="FBOLoc\localization.zhCN.lua"/>
+	<Script file="FishingOutfitFrame.lua"/>
+	<GameTooltip name="FishingOutfitTooltip" frameStrata="TOOLTIP" hidden="true" inherits="GameTooltipTemplate">
+		<Scripts>
+			<OnLoad>
+				self:SetOwner(UIParent, "ANCHOR_NONE");
+			</OnLoad>
+		</Scripts>
+	</GameTooltip>
+	<Button name="FishingOutfitFrameLabel" hidden="false" virtual="true">
+		<Size>
+			<AbsDimension x="90" y="16"/>
+		</Size>
+		<ButtonText name="$parentText" justifyH="LEFT">
+			<Size>
+				<AbsDimension x="0" y="0"/>
+			</Size>
+			<Anchors>
+				<Anchor point="LEFT">
+					<Offset>
+						<AbsDimension x="3" y="0"/>
+					</Offset>
+				</Anchor>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GameFontNormalSmall"/>
+		<Scripts>
+			<OnEnter>
+				if ( self.tooltip ) then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText(self.tooltip, nil, nil, nil, nil, 1);
+					GameTooltip:Show();
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
+	</Button>
+
+	<Frame name="FishingOutfitFrameTab" setAllPoints="true" enableMouse="true" parent="FishingBuddyFrame" hidden="true">
+		<Frames>
+			<Button parentKey="Switch" inherits="UIPanelButtonTemplate" text="">
+				<Size>
+					<AbsDimension x="160" y="21"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="0" y="-32"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+					    FB_OutfitFrame.Button_OnClick();
+					</OnClick>
+					<OnEnter>
+						GameTooltip:SetText(FB_ODFConstants.SWITCHOUTFIT_INFO);
+						GameTooltip:Show();
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<Frame parentKey="Update" hidden="true">
+				<Scripts>
+					<OnUpdate>
+						FB_OutfitFrame.Update(self, elapsed);
+					</OnUpdate>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="Outfit" name="FBOutfitFrame" inherits="OutfitDisplayFrame">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="FishingBuddyFrameInset" relativePoint="TOPLEFT" />
+					<Anchor point="BOTTOMRIGHT" relativeTo="FishingBuddyFrameInset" relativePoint="BOTTOMRIGHT" />
+				</Anchors>
+				<Frames>
+					<Button name="FishingOutfitSkill" inherits="FishingOutfitFrameLabel">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="FBOutfitFrameMainHandSlotCheckBox" relativePoint="LEFT">
+								<Offset>
+									<AbsDimension x="-10" y="33"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="FishingOutfitStyle" inherits="FishingOutfitFrameLabel">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="FishingOutfitSkill" relativePoint="BOTTOMLEFT"/>
+						</Anchors>
+					</Button>
+				</Frames>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				FB_OutfitFrame.OnLoad(self);
+			</OnLoad>
+			<OnShow>
+				FB_OutfitFrame.OnShow(self);
+			</OnShow>
+			<OnHide>
+				FB_OutfitFrame.OnHide(self);
+			</OnHide>
+			<OnMouseWheel>
+				return;
+			</OnMouseWheel>
+		</Scripts>
+	</Frame>
+</Ui>
