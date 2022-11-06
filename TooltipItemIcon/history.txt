@@ -1,5 +1,9 @@
 Version history:
 
+1.796
+- TOC update for 10.0.0 pre-patch
+- Fix for error from Currency tab in Wrath
+
 1.795
 - Fix for Equipment Manager in Wrath
 

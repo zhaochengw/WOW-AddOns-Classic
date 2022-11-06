@@ -509,7 +509,12 @@ local function HookCurrencyToken(frame, currency)
 		return
 	end
 	-- here currency is an index into your own currency list
-	if C_CurrencyInfo then
+	if GetCurrencyListInfo then
+		local _, _, _, _, _, _, icon = GetCurrencyListInfo(currency)
+		if icon then
+			texpath = icon
+		end
+	elseif C_CurrencyInfo and C_CurrencyInfo.GetCurrencyListInfo then
 		local info = C_CurrencyInfo.GetCurrencyListInfo(currency)
 		if info then
 			texpath = info.iconFileID
