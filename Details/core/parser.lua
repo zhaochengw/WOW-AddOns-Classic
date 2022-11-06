@@ -8,10 +8,6 @@
 	local isTBC = DetailsFramework.IsTBCWow()
 	local isWOTLK = DetailsFramework.IsWotLKWow()
 
-	Details.UnregisteredTokens = {}
-	Details.IgnoredDamageEvents = {}
-	Details.RogueRaceCache = {}
-
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
 
@@ -595,6 +591,7 @@
 
 		_detalhes:Msg(hitLine .. targetLine)
 		_detalhes.WhoAggroTimer = nil
+		Details.bossTargetAtPull = nil
 	end
 
 	local lastRecordFound = {id = 0, diff = 0, combatTime = 0}
@@ -661,14 +658,12 @@
 		if (who_serial == "") then
 			if (who_flags and bitBand(who_flags, OBJECT_TYPE_PETS) ~= 0) then --� um pet
 				--pets must have a serial
-				Details.IgnoredDamageEvents[#Details.IgnoredDamageEvents+1] = {"INVALID SERIAL", token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand, isreflected}
 				return
 			end
 		end
 
 		if (not alvo_name) then
 			--no target name, just quit
-			Details.IgnoredDamageEvents[#Details.IgnoredDamageEvents+1] = {"INVALID TARGET", token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand, isreflected}
 			return
 
 		elseif (not who_name) then
@@ -680,7 +675,6 @@
 
 		--check if the spell isn't in the backlist
 		if (damage_spells_to_ignore[spellid]) then
-			Details.IgnoredDamageEvents[#Details.IgnoredDamageEvents+1] = {"SPELL IGNORED", token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand, isreflected}
 			return
 		end
 
@@ -939,6 +933,11 @@
 					(not _detalhes.in_group and who_flags and bitBand(who_flags, AFFILIATION_GROUP) ~= 0)
 				)
 			) then
+				--avoid Fel Armor and Undulating Maneuvers to start a combat
+				if ((spellid == 387846 or spellid == 352561) and who_name == _detalhes.playername) then
+					return
+				end
+
 				if (_detalhes.encounter_table.id and _detalhes.encounter_table["start"] >= GetTime() - 3 and _detalhes.announce_firsthit.enabled) then
 					local link
 					if (spellid <= 10) then
@@ -953,6 +952,7 @@
 
 					_detalhes.WhoAggroTimer = C_Timer.NewTimer(0.1, who_aggro)
 					_detalhes.WhoAggroTimer.HitBy = "|cFFFFFF00First Hit|r: " .. (link or "") .. " from " .. (who_name or "Unknown")
+					print("debug:", _detalhes.WhoAggroTimer.HitBy)
 				end
 
 				_detalhes:EntrarEmCombate(who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags)
@@ -4846,6 +4846,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	end
 
 	function _detalhes:CallWipe (from_slash)
+		Details:Msg("Wipe has been called by your raid leader.")
+
 		if (_detalhes.wipe_called) then
 			if (from_slash) then
 				return _detalhes:Msg(Loc ["STRING_WIPE_ERROR1"])
@@ -5070,6 +5072,14 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			_detalhes:Msg("(debug) |cFFFFFF00ENCOUNTER_START|r event triggered.")
 		end
 
+		if (not isWOTLK) then
+			C_Timer.After(1, function()
+				if (C_CVar.GetCVar("AdvancedCombatLogging") == "1") then
+					Details:Msg("you have Advanced Combat Logging enabled, your numbers might be different of other players (bug in the game).")
+				end
+			end)
+		end
+
 		_detalhes.latest_ENCOUNTER_END = _detalhes.latest_ENCOUNTER_END or 0
 		if (_detalhes.latest_ENCOUNTER_END + 10 > GetTime()) then
 			return
@@ -5088,7 +5098,17 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end
 
 		if (not _detalhes.WhoAggroTimer and _detalhes.announce_firsthit.enabled) then
-			_detalhes.WhoAggroTimer = C_Timer.NewTimer(0.5, who_aggro)
+			_detalhes.WhoAggroTimer = C_Timer.NewTimer(0.1, who_aggro)
+			for i = 1, 5 do
+				local boss = UnitExists("boss" .. i)
+				if (boss) then
+					local targetName = UnitName ("boss" .. i .. "target")
+					if (targetName and type(targetName) == "string") then
+						Details.bossTargetAtPull = targetName
+						break
+					end
+				end
+			end
 		end
 
 		if (IsInGuild() and IsInRaid() and _detalhes.announce_damagerecord.enabled and _detalhes.StorageLoaded) then
@@ -5230,11 +5250,13 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 	function _detalhes.parser_functions:PLAYER_REGEN_DISABLED(...)
 		C_Timer.After(0, function()
-			if (UnitExists("boss1")) then
-				local bossTarget = UnitName("boss1target")
-				Details.bossTargetAtPull = bossTarget
-			else
-				Details.bossTargetAtPull = nil
+			if (not Details.bossTargetAtPull) then
+				if (UnitExists("boss1")) then
+					local bossTarget = UnitName("boss1target")
+					if (bossTarget) then
+						Details.bossTargetAtPull = bossTarget
+					end
+				end
 			end
 		end)
 
@@ -5930,9 +5952,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		local func = token_list[token]
 		if (func) then
 			return func(nil, token, time, who_serial, who_name, who_flags, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)
-		else
-			Details.UnregisteredTokens[token] = {time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12}
-			return
 		end
 	end
 
@@ -6075,12 +6094,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 				if (auto_regen_power_specs[_detalhes.cached_specs[UnitGUID("raid" .. i)]]) then
 					auto_regen_cache[name] = auto_regen_power_specs[_detalhes.cached_specs[UnitGUID("raid" .. i)]]
-				end
-
-				local _, class = UnitClass("raid"..i)
-				if (class == "ROGUE") then
-					local _, race = UnitRace("raid"..i)
-					Details.RogueRaceCache[name] = race
 				end
 			end
 

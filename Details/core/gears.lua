@@ -60,6 +60,7 @@ end
 	
 		local current_enabled_state = _detalhes.chat_tab_embed.enabled
 		local current_name = _detalhes.chat_tab_embed.tab_name
+		local current_is_single = _detalhes.chat_tab_embed.single_window
 	
 		tab_name = tab_name or _detalhes.chat_tab_embed.tab_name
 		if (is_enabled == nil) then
@@ -92,6 +93,15 @@ end
 						_detalhes.chat_tab_embed.w1_pos = pos
 					end
 				end
+				local window2 = _detalhes:GetInstance(2)
+				if (window2) then
+					window2:SaveMainWindowPosition()
+					if (window2.libwindow) then
+						local pos = window2:CreatePositionTable()
+						_detalhes.chat_tab_embed.w2_pos = pos
+					end
+				end
+			elseif (not is_single and current_is_single) then
 				local window2 = _detalhes:GetInstance(2)
 				if (window2) then
 					window2:SaveMainWindowPosition()
@@ -253,9 +263,12 @@ end
 		local window2 = _detalhes:GetInstance(2)
 		
 		if (second_window) then
+			window2:UngroupInstance()
 			window2.baseframe:ClearAllPoints()
 			window2.baseframe:SetParent(UIParent)
 			window2.rowframe:SetParent(UIParent)
+			window2.rowframe:ClearAllPoints()
+			window2.windowSwitchButton:SetParent(UIParent)
 			window2.baseframe:SetPoint("center", UIParent, "center", 200, 0)
 			window2.rowframe:SetPoint("center", UIParent, "center", 200, 0)
 			window2:LockInstance (false)
@@ -267,10 +280,11 @@ end
 			end
 			return
 		end
-		
+		window1:UngroupInstance();
 		window1.baseframe:ClearAllPoints()
 		window1.baseframe:SetParent(UIParent)
 		window1.rowframe:SetParent(UIParent)
+		window1.windowSwitchButton:SetParent(UIParent)
 		window1.baseframe:SetPoint("center", UIParent, "center")
 		window1.rowframe:SetPoint("center", UIParent, "center")
 		window1:LockInstance (false)
@@ -282,9 +296,12 @@ end
 		end
 		
 		if (not _detalhes.chat_tab_embed.single_window and window2) then
+			
+			window2:UngroupInstance()
 			window2.baseframe:ClearAllPoints()
 			window2.baseframe:SetParent(UIParent)
 			window2.rowframe:SetParent(UIParent)
+			window2.windowSwitchButton:SetParent(UIParent);
 			window2.baseframe:SetPoint("center", UIParent, "center", 200, 0)
 			window2.rowframe:SetPoint("center", UIParent, "center", 200, 0)
 			window2:LockInstance (false)
@@ -300,7 +317,7 @@ end
 	function _detalhes.chat_embed:GetTab (tabname)
 		tabname = tabname or _detalhes.chat_tab_embed.tab_name
 		for i = 1, 20 do
-			local tabtext = _G ["ChatFrame" .. i .. "TabText"]
+			local tabtext = _G ["ChatFrame" .. i .. "Tab"]
 			if (tabtext) then
 				if (tabtext:GetText() == tabname) then
 					return _G ["ChatFrame" .. i], _G ["ChatFrame" .. i .. "Tab"], _G ["ChatFrame" .. i .. "Background"], i
@@ -1899,7 +1916,7 @@ function ilvl_core:CalcItemLevel (unitid, guid, shout)
 		unitid = unitid [1]
 	end
 
-	if (unitid and CanInspect(unitid) and UnitPlayerControlled(unitid) and CheckInteractDistance(unitid, CONST_INSPECT_ACHIEVEMENT_DISTANCE)) then
+	if (unitid and UnitPlayerControlled(unitid) and CheckInteractDistance(unitid, CONST_INSPECT_ACHIEVEMENT_DISTANCE) and CanInspect(unitid)) then
 
 		--16 = all itens including main and off hand
 		local item_amount = 16
@@ -2377,6 +2394,71 @@ function Details:DecompressData (data, dataType)
 	end
 end
 
+Details.specToRole = {
+	--DRUID
+	[102] = "DAMAGER", --BALANCE
+	[103] = "DAMAGER", --FERAL DRUID
+	[105] = "HEALER", --RESTORATION
+
+	--HUNTER
+	[253] = "DAMAGER", --BM
+	[254] = "DAMAGER", --MM
+	[255] = "DAMAGER", --SURVIVOR
+
+	--MAGE
+	[62] = "DAMAGER", --ARCANE
+	[64] = "DAMAGER", --FROST
+	[63] = "DAMAGER", ---FIRE
+
+	--PALADIN
+	[70] = "DAMAGER", --RET
+	[65] = "HEALER", --HOLY
+	[66] = "TANK", --PROT
+
+	--PRIEST
+	[257] = "HEALER", --HOLY
+	[256] = "HEALER", --DISC
+	[258] = "DAMAGER", --SHADOW
+
+	--ROGUE
+	[259] = "DAMAGER", --ASSASSINATION
+	[260] = "DAMAGER", --COMBAT
+	[261] = "DAMAGER", --SUB
+
+	--SHAMAN
+	[262] = "DAMAGER", --ELEMENTAL
+	[263] = "DAMAGER", --ENHAN
+	[264] = "HEALER", --RESTO
+
+	--WARLOCK
+	[265] = "DAMAGER", --AFF
+	[266] = "DAMAGER", --DESTRO
+	[267] = "DAMAGER", --DEMO
+
+	--WARRIOR
+	[71] = "DAMAGER", --ARMS
+	[72] = "DAMAGER", --FURY
+	[73] = "TANK", --PROT
+	
+	--DK
+	[250] = "TANK", --Blood
+	[251] = "DAMAGER", --Frost
+	[252] = "DAMAGER", --Unholy
+
+	--MONK
+	[268] = "TANK", -- Brewmaster Monk
+	[269] = "DAMAGER", -- Windwalker Monk
+	[270] = "HEALER", -- Mistweaver Monk
+
+	--DH
+	[577] = "DAMAGER", -- Havoc Demon Hunter
+	[581] = "TANK", -- Vengeance Demon Hunter
+
+	--EVOKER
+	[1467] = "DAMAGER", --Devastation Evoker
+	[1468] = "HEALER", --Preservation Evoker		
+}
+
 --oldschool talent tree
 if (DetailsFramework.IsWotLKWow()) then
 	local talentWatchClassic = CreateFrame("frame")
@@ -2523,59 +2605,6 @@ if (DetailsFramework.IsWotLKWow()) then
 			end
 		end
 	end
-
-	Details.specToRole = {
-		--DRUID
-		[102] = "DAMAGER", --BALANCE
-		[103] = "DAMAGER", --FERAL DRUID
-		[105] = "HEALER", --RESTORATION
-	
-		--HUNTER
-		[253] = "DAMAGER", --BM
-		[254] = "DAMAGER", --MM
-		[255] = "DAMAGER", --SURVIVOR
-	
-		--MAGE
-		[62] = "DAMAGER", --ARCANE
-		[64] = "DAMAGER", --FROST
-		[63] = "DAMAGER", ---FIRE
-	
-		--PALADIN
-		[70] = "DAMAGER", --RET
-		[65] = "HEALER", --HOLY
-		[66] = "TANK", --PROT
-	
-		--PRIEST
-		[257] = "HEALER", --HOLY
-		[256] = "HEALER", --DISC
-		[258] = "DAMAGER", --SHADOW
-	
-		--ROGUE
-		[259] = "DAMAGER", --ASSASSINATION
-		[260] = "DAMAGER", --COMBAT
-		[261] = "DAMAGER", --SUB
-	
-		--SHAMAN
-		[262] = "DAMAGER", --ELEMENTAL
-		[263] = "DAMAGER", --ENHAN
-		[264] = "HEALER", --RESTO
-	
-		--WARLOCK
-		[265] = "DAMAGER", --AFF
-		[266] = "DAMAGER", --DESTRO
-		[267] = "DAMAGER", --DEMO
-	
-		--WARRIOR
-		[71] = "DAMAGER", --ARMS
-		[72] = "DAMAGER", --FURY
-		[73] = "TANK", --PROT
-		
-		--Death Knight
-		[250] = "TANK", --Blood
-		[251] = "DAMAGER", --Frost
-		[252] = "DAMAGER", --Unholy
-		
-	}
 
 	function _detalhes:GetRoleFromSpec (specId, unitGUID)
 		if (specId == 103) then --feral druid
