@@ -1,3 +1,4 @@
-# 11.0.3 (2022-10-27)
+# 11.0.6 (2022-11-04)
 
-* Fixed a bug that occured when the target highlight color alpha was set below 0,7 as the Dragonflight API is more strict with valid transparency values [Issue #573].
+* Fixed a bug with custom styles for nameplates where the nameplate style wasn't correctly reset after a trigger was no longer active (e.g., after the aura triggering the style expired).
+* Upgrade integrated libraries (LibSharedMedia v10.0.0, LibCustomGlow 1.0.3-4-g357b944) [Comment #6591].
