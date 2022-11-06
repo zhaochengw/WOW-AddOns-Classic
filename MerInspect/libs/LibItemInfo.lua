@@ -88,7 +88,7 @@ function lib:GetUnitItemLevel(unit, stats)
     local total, maxlevel = 0, 0
     local level, mainhand, offhand, ranged
     for i = 1, 15 do
-        if (i ~= 4) then
+        if (i ~= 4) then-- 衬衫
             level = self:GetUnitItemIndexLevel(unit, i, stats)
             if (level > 0) then
                 total = total + level
@@ -96,14 +96,14 @@ function lib:GetUnitItemLevel(unit, stats)
             end
         end
     end
-    mainhand = self:GetUnitItemIndexLevel(unit, 16, stats)
-    offhand = self:GetUnitItemIndexLevel(unit, 17, stats)
-    ranged = self:GetUnitItemIndexLevel(unit, 18, stats)
+    mainhand = self:GetUnitItemIndexLevel(unit, 16, stats)-- 主手
+    offhand = self:GetUnitItemIndexLevel(unit, 17, stats)--副手
+    ranged = self:GetUnitItemIndexLevel(unit, 18, stats)-- 圣物，图腾
     if (mainhand <= 0 and ranged <= 0 and ranged <= 0) then
     elseif (mainhand > 0 and offhand > 0) then
         total = total + mainhand + offhand
-    --elseif (mainhand > 0 and ranged > 0) then
-    --    total = total + mainhand + ranged
+    elseif (mainhand > 0 and ranged > 0) then
+        total = total + mainhand + ranged
     elseif (offhand > 0 and ranged > 0) then
         total = total + offhand + ranged
     else
