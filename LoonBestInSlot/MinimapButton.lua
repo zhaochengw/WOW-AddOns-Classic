@@ -25,8 +25,8 @@ function LBIS:RegisterMiniMap()
 
             OnTooltipShow = function (tooltip)
                 tooltip:AddLine (LBIS.L["Loon Best In Slot"]);
-                tooltip:AddLine("|cFF9CD6DE"..LBIS.L["Left-Click"].."|r: "..LBIS.L["Open Browser Window"]);
-                tooltip:AddLine("|cFF9CD6DE"..LBIS.L["Right-Click"].."|r: "..LBIS.L["Open Settings"]);
+                tooltip:AddLine("|cFF9CD6DE"..LBIS.L["Left Click"].."|r: "..LBIS.L["Open Browser Window"]);
+                tooltip:AddLine("|cFF9CD6DE"..LBIS.L["Right Click"].."|r: "..LBIS.L["Open Settings"]);
             end,
         })
         

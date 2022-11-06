@@ -169,7 +169,7 @@ if GetLocale() == "ruRU" then
   LBIS.L["Krystallus"] = "Кристаллус";
   LBIS.L["Lavanthor"] = "Лавантор";
   LBIS.L["Leatherworking"] = "Кожевничество";
---  LBIS.L["Left-Click"] = "";
+  LBIS.L["Left Click"] = "ЛКМ";
 --  LBIS.L["Legacy"] = "";
   LBIS.L["Legs"] = "Ноги";
   LBIS.L["Ley-Guardian Eregos"] = "Хранитель энергии Эрегос";
@@ -235,7 +235,7 @@ if GetLocale() == "ruRU" then
   LBIS.L["Retribution"] = "Возмездие";
   LBIS.L["Return My Remains"] = "Вернуть мои останки";
   LBIS.L["Revered"] = "Почтение";
---  LBIS.L["Right-Click"] = "";
+  LBIS.L["Right Click"] = "ПКМ";
   LBIS.L["Ring"] = "Палец";
   LBIS.L["Salramm the Fleshcrafter"] = "Салрамм Плоторез";
   LBIS.L["Sapphiron"] = "Сапфирон";

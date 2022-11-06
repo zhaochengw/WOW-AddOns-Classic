@@ -169,7 +169,7 @@ if GetLocale() == "zhTW" then
   LBIS.L["Krystallus"] = "克利斯托魯斯";
   LBIS.L["Lavanthor"] = "拉方索";
   LBIS.L["Leatherworking"] = "製皮";
---  LBIS.L["Left-Click"] = "";
+  LBIS.L["Left Click"] = "左鍵";
 --  LBIS.L["Legacy"] = "";
   LBIS.L["Legs"] = "腿部";
   LBIS.L["Ley-Guardian Eregos"] = "地脈守護者伊瑞茍斯";
@@ -235,7 +235,7 @@ if GetLocale() == "zhTW" then
   LBIS.L["Retribution"] = "懲戒";
   LBIS.L["Return My Remains"] = "交回我的殘骸";
   LBIS.L["Revered"] = "崇敬";
---  LBIS.L["Right-Click"] = "";
+  LBIS.L["Right Click"] = "右鍵";
   LBIS.L["Ring"] = "手指";
   LBIS.L["Salramm the Fleshcrafter"] = "『血肉工匠』塞歐朗姆";
   LBIS.L["Sapphiron"] = "薩菲隆";

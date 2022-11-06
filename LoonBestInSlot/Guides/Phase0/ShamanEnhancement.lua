@@ -86,6 +86,7 @@ LBIS:AddItem(spec, "45085", LBIS.L["Main Hand"], "BIS") --Titansteel Spellblade
 LBIS:AddItem(spec, "41384", LBIS.L["Main Hand"], "BIS") --Titansteel Guardian
 LBIS:AddItem(spec, "41383", LBIS.L["Main Hand"], "BIS") --Titansteel Bonecrusher
 LBIS:AddItem(spec, "37693", LBIS.L["Main Hand"], "Alt") --Greed
+LBIS:AddItem(spec, "44192", LBIS.L["Main Hand"], "Alt") --Stalactite Chopper
 LBIS:AddItem(spec, "34331", LBIS.L["Main Hand"], "Alt") --Hand of the Deceiver
 
 LBIS:AddItem(spec, "40704", LBIS.L["Off Hand"], "BIS") --Pride

@@ -169,7 +169,7 @@ if GetLocale() == "esMX" then
   LBIS.L["Krystallus"] = "Krystallus";
   LBIS.L["Lavanthor"] = "Lavanthor";
   LBIS.L["Leatherworking"] = "Peletería";
---  LBIS.L["Left-Click"] = "";
+  LBIS.L["Left Click"] = "Clic Izquierdo";
 --  LBIS.L["Legacy"] = "";
   LBIS.L["Legs"] = "Piernas";
   LBIS.L["Ley-Guardian Eregos"] = "Guardián-Ley Eregos";
@@ -235,7 +235,7 @@ if GetLocale() == "esMX" then
   LBIS.L["Retribution"] = "Reprensión";
   LBIS.L["Return My Remains"] = "Devuelve mis restos";
   LBIS.L["Revered"] = "Reverenciado";
---  LBIS.L["Right-Click"] = "";
+  LBIS.L["Right Click"] = "Clic Derecho";
   LBIS.L["Ring"] = "Anillo";
   LBIS.L["Salramm the Fleshcrafter"] = "Salramm el Modelador de carne";
   LBIS.L["Sapphiron"] = "Sapphiron";

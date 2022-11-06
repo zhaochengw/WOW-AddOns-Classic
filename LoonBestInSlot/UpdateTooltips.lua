@@ -32,29 +32,31 @@ local function buildExtraTip(tooltip, entry)
 	local hunterCount, dkCount, rogueCount = 0, 0, 0;
 
 	for k, v in pairs(entry) do
-		local classSpec = LBIS.ClassSpec[k]
-		if classSpec.Class == LBIS.L["Warrior"] and (classSpec.Spec == LBIS.L["Fury"] or classSpec.Spec == LBIS.L["Arms"]) then
-			warriorDpsCount = warriorDpsCount + 1;
-		end
+		if LBISSettings.Tooltip[k] and isInEnabledPhase(v.PhaseList) then
+			local classSpec = LBIS.ClassSpec[k]
+			if classSpec.Class == LBIS.L["Warrior"] and (classSpec.Spec == LBIS.L["Fury"] or classSpec.Spec == LBIS.L["Arms"]) then
+				warriorDpsCount = warriorDpsCount + 1;
+			end
 
-		if classSpec.Class == LBIS.L["Warlock"] then
-			warlockCount = warlockCount + 1;
-		end
+			if classSpec.Class == LBIS.L["Warlock"] then
+				warlockCount = warlockCount + 1;
+			end
 
-		if classSpec.Class == LBIS.L["Mage"] then
-			mageCount = mageCount + 1;
-		end
+			if classSpec.Class == LBIS.L["Mage"] then
+				mageCount = mageCount + 1;
+			end
 
-		if classSpec.Class == LBIS.L["Hunter"] then
-			hunterCount = hunterCount + 1;
-		end
+			if classSpec.Class == LBIS.L["Hunter"] then
+				hunterCount = hunterCount + 1;
+			end
 
-		if classSpec.Class == LBIS.L["Death Knight"] then
-			dkCount = dkCount + 1;
-		end
+			if classSpec.Class == LBIS.L["Death Knight"] then
+				dkCount = dkCount + 1;
+			end
 		
-		if classSpec.Class == LBIS.L["Rogue"] then
-			rogueCount = rogueCount + 1;
+			if classSpec.Class == LBIS.L["Rogue"] then
+				rogueCount = rogueCount + 1;
+			end
 		end
 	end
 	

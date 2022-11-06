@@ -169,7 +169,7 @@ if GetLocale() == "koKR" then
   LBIS.L["Krystallus"] = "크리스탈루스";
   LBIS.L["Lavanthor"] = "라반토르";
   LBIS.L["Leatherworking"] = "가죽세공";
-  LBIS.L["Left-Click"] = "마우스 왼쪽 클릭";
+  LBIS.L["Left Click"] = "마우스 왼쪽 클릭";
   LBIS.L["Legacy"] = "유산";
   LBIS.L["Legs"] = "다리";
   LBIS.L["Ley-Guardian Eregos"] = "지맥 수호자 에레고스";
@@ -235,7 +235,7 @@ if GetLocale() == "koKR" then
   LBIS.L["Retribution"] = "징벌";
   LBIS.L["Return My Remains"] = "유골 돌려주기";
   LBIS.L["Revered"] = "매우 우호적";
-  LBIS.L["Right-Click"] = "마우스 오른쪽 클릭";
+  LBIS.L["Right Click"] = "마우스 오른쪽 클릭";
   LBIS.L["Ring"] = "손가락";
   LBIS.L["Salramm the Fleshcrafter"] = "살덩이창조자 살람";
   LBIS.L["Sapphiron"] = "사피론";

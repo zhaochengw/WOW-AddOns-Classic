@@ -169,7 +169,7 @@ if GetLocale() == "deDE" then
   LBIS.L["Krystallus"] = "Krystallus";
   LBIS.L["Lavanthor"] = "Lavanthor";
   LBIS.L["Leatherworking"] = "Lederverarbeitung";
---  LBIS.L["Left-Click"] = "";
+  LBIS.L["Left Click"] = "Linksklick";
 --  LBIS.L["Legacy"] = "";
   LBIS.L["Legs"] = "Beine";
   LBIS.L["Ley-Guardian Eregos"] = "Leywächter Eregos";
@@ -235,7 +235,7 @@ if GetLocale() == "deDE" then
   LBIS.L["Retribution"] = "Vergeltung";
   LBIS.L["Return My Remains"] = "Bringt meine Überreste zurück";
   LBIS.L["Revered"] = "Respektvoll";
---  LBIS.L["Right-Click"] = "";
+  LBIS.L["Right Click"] = "Rechtsklick";
   LBIS.L["Ring"] = "Finger";
   LBIS.L["Salramm the Fleshcrafter"] = "Salramm der Fleischformer";
   LBIS.L["Sapphiron"] = "Saphiron";
@@ -343,7 +343,7 @@ if GetLocale() == "deDE" then
 --  LBIS.L["Wintergrasp Marks"] = "";
 --  LBIS.L["Wintergrasp Quartermaster"] = "";
   LBIS.L["World Drop"] = "Welt Drop";
---  LBIS.L["World Drop (Skoll)"] = "";
+  LBIS.L["World Drop (Skoll)"] = "Welt Drop (Skoll)";
   LBIS.L["Wrist"] = "Handgelenke";
   LBIS.L["Xevozz"] = "Xevozz";
   LBIS.L["Zul'Drak"] = "Zul'Drak";
