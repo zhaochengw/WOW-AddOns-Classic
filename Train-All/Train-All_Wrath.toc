@@ -1,0 +1,9 @@
+## Interface: 30400
+## Title: TrainAll
+## Version: 10.0.0
+## Notes: Adds a Train All button to the Profession trainer UI
+## Author: Andols
+
+## X-Curse-Project-ID: 101201
+
+TrainAll.lua
