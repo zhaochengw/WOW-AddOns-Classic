@@ -191,8 +191,8 @@ else
         if (name and expirationTime > 0) then
             auraDuration:Show()
         elseif (name and expirationTime == 0) then
-            auraDuration:SetText("|cff00ff00N/A|r");
-            auraDuration:Show();
+            auraDuration:SetText("|cff00ff00N/A|r")
+            auraDuration:Show()
         end
     end
 
