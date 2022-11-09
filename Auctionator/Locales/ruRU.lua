@@ -508,6 +508,7 @@ L["TRANSLATORS_HELP"] = "Пожалуйста, помогите перевест
 L["TRANSLATORS_ITALIAN"] = "Итальянский"
 L["TRANSLATORS_KOREAN"] = "Корейский"
 L["TRANSLATORS_LATIN_SPANISH"] = "Латиноамериканский"
+L["TRANSLATORS_ROMANIAN_INFO"] = "Румынский (доступен отдельно)"
 L["TRANSLATORS_RUSSIAN"] = "Русский"
 L["TRANSLATORS_SIMPLIFIED_CHINESE"] = "Китайский"
 L["TRANSLATORS_SPANISH"] = "Испанский"

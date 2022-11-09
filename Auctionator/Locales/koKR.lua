@@ -592,6 +592,8 @@ L["TRANSLATORS_HELP"] = "번역을 도와주세요!"
 L["TRANSLATORS_ITALIAN"] = "이탈리아어"
 L["TRANSLATORS_KOREAN"] = "한국어"
 L["TRANSLATORS_LATIN_SPANISH"] = "스페인어 (라틴아메리카)"
+--[[Translation missing --]]
+L["TRANSLATORS_ROMANIAN_INFO"] = "Romanian (available separately)"
 L["TRANSLATORS_RUSSIAN"] = "러시아어"
 L["TRANSLATORS_SIMPLIFIED_CHINESE"] = "중국어 간체"
 L["TRANSLATORS_SPANISH"] = "스페인어"

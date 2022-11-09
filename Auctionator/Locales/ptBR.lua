@@ -630,6 +630,8 @@ L["TRANSLATORS_HELP"] = "Por favor, ajude a traduzir!"
 L["TRANSLATORS_ITALIAN"] = "Italiano"
 L["TRANSLATORS_KOREAN"] = "Koreano"
 L["TRANSLATORS_LATIN_SPANISH"] = "Espanhol Latino Americano"
+--[[Translation missing --]]
+L["TRANSLATORS_ROMANIAN_INFO"] = "Romanian (available separately)"
 L["TRANSLATORS_RUSSIAN"] = "Russo"
 L["TRANSLATORS_SIMPLIFIED_CHINESE"] = "Chinês Simplificado"
 L["TRANSLATORS_SPANISH"] = "Espanhol"
