@@ -106,7 +106,7 @@ end
 function WeakAuras.split(input)
   input = input or "";
   local ret = {};
-  local split, element = true;
+  local split, element = true, nil
   split = input:find("[,%s]");
   while(split) do
     element, input = input:sub(1, split-1), input:sub(split+1);
@@ -762,6 +762,7 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
 end
 
 function Private.ScanEventsWatchedTrigger(id, watchedTriggernums)
+  if #watchedTriggernums == 0 then return end
   Private.StartProfileAura(id);
   Private.ActivateAuraEnvironment(id);
   local updateTriggerState = false
@@ -1414,10 +1415,10 @@ function GenericTrigger.Add(data, region)
               else
                 tinsert(trigger_events, event)
               end
-              if trigger.custom_type == "status" or trigger.custom_type == "stateupdate" then
-                force_events = data.information.forceEvents or "STATUS"
-              end
             end
+          end
+          if trigger.custom_type == "status" or trigger.custom_type == "stateupdate" then
+            force_events = data.information.forceEvents or "STATUS"
           end
           if (trigger.custom_type == "stateupdate") then
             statesParameter = "full";
@@ -1688,6 +1689,7 @@ do
     Private.StartProfileSystem("generictrigger swing");
     local now = GetTime()
     if event == "UNIT_ATTACK_SPEED" then
+      --- @type number?, number?
       local mainSpeedNew, offSpeedNew = UnitAttackSpeed("player")
       offSpeedNew = offSpeedNew or 0
       if lastSwingMain then
@@ -1826,7 +1828,7 @@ do
   local function GetRuneDuration()
     local runeDuration = -100;
     for id, _ in pairs(runes) do
-      local startTime, duration = GetRuneCooldown(id);
+      local _, duration = GetRuneCooldown(id);
       duration = duration or 0;
       runeDuration = duration > 0 and duration or runeDuration
     end
@@ -3097,7 +3099,7 @@ do
     if event == "BigWigs_Message" then
       WeakAuras.ScanEvents("BigWigs_Message", ...)
     elseif event == "BigWigs_StartBar" then
-      local addon, spellId, text, duration, icon = ...
+      local addon, spellId, text, duration, icon, isCD = ...
       local now = GetTime()
       local expirationTime = now + duration
 
@@ -3110,6 +3112,7 @@ do
       bar.duration = duration
       bar.expirationTime = expirationTime
       bar.icon = icon
+      bar.isCooldown = isCD or false
       local BWColorModule = BigWigs:GetPlugin("Colors")
       bar.bwBarColor = BWColorModule:GetColorTable("barColor", addon, spellId)
       bar.bwTextColor = BWColorModule:GetColorTable("barText", addon, spellId)
@@ -3135,7 +3138,7 @@ do
     elseif event == "BigWigs_PauseBar" then
       local addon, text = ...
       local bar = bars[text]
-      if bar then
+      if bar and not bar.paused then
         bar.paused = true
         bar.remaining = bar.expirationTime - GetTime()
         WeakAuras.ScanEvents("BigWigs_PauseBar", text)
@@ -3147,7 +3150,7 @@ do
     elseif event == "BigWigs_ResumeBar" then
       local addon, text = ...
       local bar = bars[text]
-      if bar then
+      if bar and bar.paused then
         bar.paused = nil
         bar.expirationTime = GetTime() + (bar.remaining or 0)
         bar.remaining = nil
@@ -3223,9 +3226,10 @@ do
     end
     state.paused = bar.paused
     state.remaining = bar.remaining
+    state.isCooldown = bar.isCooldown
   end
 
-  function Private.ExecEnv.BigWigsTimerMatches(id, message, operator, spellId, count, cast)
+  function Private.ExecEnv.BigWigsTimerMatches(id, message, operator, spellId, count, cast, cooldown)
     if not bars[id] then
       return false
     end
@@ -3254,6 +3258,9 @@ do
       return false
     end
     if cast ~= nil and v.cast ~= cast then
+      return false
+    end
+    if cooldown ~= nil and v.isCooldown ~= cooldown then
       return false
     end
     return true
@@ -3344,9 +3351,11 @@ do
   local oh = GetInventorySlotInfo("SecondaryHandSlot")
 
   local mh_name, mh_shortenedName, mh_exp, mh_dur, mh_charges, mh_EnchantID;
+  --- @type string?
   local mh_icon = GetInventoryItemTexture("player", mh) or "Interface\\Icons\\INV_Misc_QuestionMark"
 
   local oh_name, oh_shortenedName, oh_exp, oh_dur, oh_charges, oh_EnchantID;
+  --- @type string?
   local oh_icon = GetInventoryItemTexture("player", oh) or "Interface\\Icons\\INV_Misc_QuestionMark"
 
   local tenchFrame = nil

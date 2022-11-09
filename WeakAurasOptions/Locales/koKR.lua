@@ -57,7 +57,7 @@ local L = WeakAuras.L
 	--[[Translation missing --]]
 	L["%s - Trigger Logic"] = "%s - Trigger Logic"
 	L["%s %s, Lines: %d, Frequency: %0.2f, Length: %d, Thickness: %d"] = "%s %s, 라인: %d, 빈도: %0.2f, 길이: %d, 두께: %d"
-	L["%s %s, Particles: %d, Frequency: %0.2f, Scale: %0.2f"] = "%s %s, 파티클: %d, 빈도: %0.2f, 비율: %0.2f"
+	L["%s %s, Particles: %d, Frequency: %0.2f, Scale: %0.2f"] = "%s %s, 입자: %d, 빈도: %0.2f, 비율: %0.2f"
 	--[[Translation missing --]]
 	L["%s %u. Overlay Function"] = "%s %u. Overlay Function"
 	L["%s Alpha: %d%%"] = "%s 투명도: %d%%"
@@ -93,7 +93,7 @@ local L = WeakAuras.L
 	L["%s|cFFFF0000custom|r texture with |cFFFF0000%s|r blend mode%s%s"] = "%s|cFFFF0000사용자|r 텍스쳐 with |cFFFF0000%s|r 혼합 모드%s%s"
 	L["(Right click to rename)"] = [=[(우클릭하여 이름변경)
 ]=]
-	L["|c%02x%02x%02x%02xCustom Color|r"] = "|c%02x%02x%02x%02x사용자 설정 색상|r"
+	L["|c%02x%02x%02x%02xCustom Color|r"] = "|c%02x%02x%02x%02x사용자 정의 색상|r"
 	L["|cff999999Triggers tracking multiple units will default to being active even while no affected units are found without a Unit Count or Match Count setting applied.|r"] = "|cff999999여러 유닛을 추적하는 활성 조건은 유닛 수 또는 일치 횟수 설정이 적용되지 않고 영향을 받는 유닛이 발견되지 않더라도 기본으로 활성화됩니다.|r"
 	L["|cFFE0E000Note:|r This sets the description only on '%s'"] = "|cFFE0E000참고:|r '%s'에만 설명을 지정합니다."
 	L["|cFFE0E000Note:|r This sets the URL on all selected auras"] = "|cFFE0E000참고:|r 선택한 모든 오라에 URL을 지정합니다"
@@ -120,7 +120,22 @@ local L = WeakAuras.L
 • |cffffff00Multi-target|r attempts to use the Combat Log events, rather than unitID, to track affected units.
 |cffff0000Note|r: Without a direct relationship to actual unitIDs, results may vary.
 
-|cffffff00*|r Yellow Unit settings can match multiple units and will default to being active even while no affected units are found without a Unit Count or Match Count setting.]=] ] = "• |cff00ff00플레이어|r, |cff00ff00대상|r, |cff00ff00주시대상|r 및 |cff00ff00소환수|r는 개별 유닛ID에 직접 대응합니다. • |cff00ff00특정 유닛|r으로 감시할 유효한 특정 유닛ID를 제공할 수 있습니다. |cffff0000참고|r: 게임은 모든 유효한 유닛ID에 대해 이벤트를 발생시키지 않으므로 이 활성 조건으로 일부를 추적할 수 없습니다. • |cffffff00파티|r, |cffffff00공격대|r, |cffffff00우두머리|r, |cffffff00투기장|r 및 |cffffff00이름표|r는 해당 unitID 여러 개와 일치할 수 있습니다. • |cffffff00스마트 그룹|r은 현재 그룹 유형에 맞게 조정되어 단독일 때는 \"플레이어\"만, 파티에서는 \"파티\" 유닛(\"플레이어\" 포함) 또는 공격대에서는 \"공격대\" 유닛과 일치합니다. • |cffffff00다중 대상|r은 영향을 받는 유닛을 추적하기 위해 유닛ID가 아닌 전투 기록 이벤트를 사용하려고 시도합니다. |cffff0000참고|r: 실제 유닛ID와 직접 관계가 없으면 결과가 다를 수 있습니다. |cffffff00*|r 노란색 유닛 설정은 여러 유닛과 일치할 수 있으며 유닛 수 또는 일치 횟수 설정 없이 영향을 받는 유닛이 발견되지 않더라도 기본으로 활성화됩니다."
+|cffffff00*|r Yellow Unit settings can match multiple units and will default to being active even while no affected units are found without a Unit Count or Match Count setting.]=] ] = [=[• |cff00ff00플레이어|r, |cff00ff00대상|r, |cff00ff00주시대상|r 및 |cff00ff00소환수|r는 개별 유닛ID에 직접 대응합니다.
+
+• |cff00ff00특정 유닛|r으로 감시할 유효한 특정 유닛ID를 제공할 수 있습니다.
+
+|cffff0000참고|r: 게임은 모든 유효한 유닛ID에 대해 이벤트를 발생시키지 않으므로 이 활성 조건으로 일부를 추적할 수 없습니다.
+
+• |cffffff00파티|r, |cffffff00공격대|r, |cffffff00우두머리|r, |cffffff00투기장|r 및 |cffffff00이름표|r는 해당 유닛ID 여러 개와 일치할 수 있습니다.
+
+• |cffffff00스마트 그룹|r은 현재 그룹 유형에 맞게 조정되어 혼자일 때는 "플레이어"만 파티에서는 "파티" 유닛("플레이어" 포함), 공격대에서는 "공격대" 유닛과 일치합니다.
+
+• |cffffff00다중 대상|r은 영향을 받는 유닛을 추적하기 위해 유닛ID가 아닌 전투 기록 이벤트를 사용하려고 시도합니다.
+
+|cffff0000참고|r: 실제 유닛ID와 직접 관계가 없으면 결과가 다를 수 있습니다.
+
+
+|cffffff00*|r 노란색 유닛 설정은 여러 유닛과 일치할 수 있으며 유닛 수 또는 일치 횟수 설정 없이 영향을 받는 유닛이 발견되지 않더라도 기본으로 활성화됩니다.]=]
 	L["A 20x20 pixels icon"] = "20x20 픽셀 아이콘"
 	L["A 32x32 pixels icon"] = "32x32 픽셀 아이콘"
 	L["A 40x40 pixels icon"] = "40x40 픽셀 아이콘"
@@ -131,10 +146,8 @@ local L = WeakAuras.L
 Enable this setting if you want this timer to be hidden, or when using a WeakAuras text to display the timer]=] ] = "타이머가 기본 인터페이스 설정(일부 애드온은 무시함)에 따라 자동으로 표시됩니다. 이 타이머를 숨기거나 WeakAuras 문자를 사용하여 타이머를 표시할 때 이 설정을 켜세요."
 	L["A Unit ID (e.g., party1)."] = "유닛 ID (예, party1)."
 	L["Actions"] = "동작"
-	--[[Translation missing --]]
-	L["Active Aura Filters and Info"] = "Active Aura Filters and Info"
-	--[[Translation missing --]]
-	L["Actual Spec"] = "Actual Spec"
+	L["Active Aura Filters and Info"] = "활성 효과 필터 및 정보"
+	L["Actual Spec"] = "실제 전문화"
 	L["Add"] = "추가"
 	L["Add %s"] = "%s 추가"
 	L["Add a new display"] = "새로운 디스플레이 추가"
@@ -223,8 +236,7 @@ Off Screen]=] ] = "Aura가 화면 밖에 있음"
 	L["Bar Texture"] = "바 텍스쳐"
 	L["Big Icon"] = "큰 아이콘"
 	L["Blend Mode"] = "혼합 모드"
-	--[[Translation missing --]]
-	L["Blizzard Cooldown Reduction"] = "Blizzard Cooldown Reduction"
+	L["Blizzard Cooldown Reduction"] = "블리자드 재사용 대기시간 감소"
 	L["Blue Rune"] = "푸른색 룬"
 	L["Blue Sparkle Orb"] = "푸른 불꽃 구슬"
 	L["Border"] = "테두리"
@@ -272,8 +284,7 @@ Off Screen]=] ] = "Aura가 화면 밖에 있음"
 	L["Collapse"] = "접기"
 	L["Collapse all loaded displays"] = "불러온 모든 디스플레이 접기"
 	L["Collapse all non-loaded displays"] = "불러오지 않은 모든 디스플레이 접기"
-	--[[Translation missing --]]
-	L["Collapse all pending Import"] = "Collapse all pending Import"
+	L["Collapse all pending Import"] = "보류 중인 모든 가져오기 접기"
 	L["Collapsible Group"] = "접을 수 있는 그룹"
 	L["color"] = "색상"
 	L["Color"] = "색상"
@@ -294,8 +305,7 @@ Off Screen]=] ] = "Aura가 화면 밖에 있음"
 	L["Control-click to select multiple displays"] = "Ctrl+클릭 - 여러 디스플레이 선택"
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "여러 디스플레이의 위치 및 구성을 동시에 조절합니다"
 	L["Convert to..."] = "변환하기..."
-	--[[Translation missing --]]
-	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."
+	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "재사용 대기시간 감소는 실시간 초를 표시하는 대신 초의 지속 시간을 바꿉니다."
 	L["Copy"] = "복사"
 	L["Copy settings..."] = "설정 복사..."
 	L["Copy to all auras"] = "모든 aura에 복사"
@@ -303,18 +313,15 @@ Off Screen]=] ] = "Aura가 화면 밖에 있음"
 	L["Could not parse '%s'. Expected a table."] = "Could not parse '%s'. Expected a table."
 	L["Count"] = "횟수"
 	L["Counts the number of matches over all units."] = "모든 유닛에 대해 일치 횟수를 계산합니다."
-	--[[Translation missing --]]
-	L["Counts the number of matches per unit."] = "Counts the number of matches per unit."
-	--[[Translation missing --]]
-	L["Create a Copy"] = "Create a Copy"
-	L["Creating buttons: "] = "버튼 생성:"
+	L["Counts the number of matches per unit."] = "유닛당 일치 횟수를 계산합니다."
+	L["Create a Copy"] = "사본 생성"
+	L["Creating buttons: "] = "버튼 생성 중:"
 	L["Creating options: "] = "옵션 생성:"
 	L["Crop X"] = "X 자르기"
 	L["Crop Y"] = "Y 자르기"
 	L["Custom"] = "사용자 정의"
 	L["Custom Anchor"] = "사용자 앵커"
-	--[[Translation missing --]]
-	L["Custom Check"] = "Custom Check"
+	L["Custom Check"] = "사용자 정의 확인"
 	L["Custom Code"] = "사용자 정의 코드"
 	L["Custom Code Viewer"] = "사용자 정의 코드 뷰어"
 	L["Custom Color"] = "사용자 정의 색상"
@@ -338,10 +345,8 @@ UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 
 |cFF4444FF예제:|r
 UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED]=]
-	--[[Translation missing --]]
-	L["Custom Trigger: Ignore Lua Errors on OPTIONS event"] = "Custom Trigger: Ignore Lua Errors on OPTIONS event"
-	--[[Translation missing --]]
-	L["Custom Trigger: Send fake events instead of STATUS event"] = "Custom Trigger: Send fake events instead of STATUS event"
+	L["Custom Trigger: Ignore Lua Errors on OPTIONS event"] = "사용자 정의 활성 조건: OPTIONS 이벤트에서 Lua 오류 무시"
+	L["Custom Trigger: Send fake events instead of STATUS event"] = "사용자 정의 활성 조건: STATUS 이벤트 대신 가짜 이벤트 보내기"
 	L["Custom Untrigger"] = "사용자 정의 비활성 조건"
 	L["Custom Variables"] = "사용자 정의 변수"
 	L["Debuff Type"] = "약화 효과 유형"
@@ -387,14 +392,17 @@ UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Dynamic Information"] = "유동적 정보"
 	L["Dynamic information from first active trigger"] = "첫 번째 활성화된 활성 조건의 유동적 정보"
 	L["Dynamic information from Trigger %i"] = "활성 조건 %i의 유동적 정보"
-	L["Dynamic text tooltip"] = [=[이 문자를 유동적으로 만들 수 있는 특별 코드들입니다:
+	L["Dynamic text tooltip"] = [=[이 문자를 동적으로 만들 수 있는 몇 가지 특별 코드입니다:
 
-|cFFFF0000%p|r - 진행 - 타이머의 남은 시간, 또는 비-타이머 값
-|cFFFF0000%t|r - 전체 - 타이머의 최대 지속시간, 또는 최대 비-타이머 값
-|cFFFF0000%n|r - 이름 - 디스플레이의 이름 (보통 오라 이름), 또는 유동적 이름이 없을 때 디스플레이의 ID
-|cFFFF0000%i|r - 아이콘 - 디스플레이와 연관된 아이콘
-|cFFFF0000%s|r - 중첩 - 오라의 중첩 횟수 (보통)
-|cFFFF0000%c|r - 사용자 설정 - 표시할 string 값을 반환하는 사용자 설정 Lua 함수 정의를 허용합니다]=]
+|cFFFF0000%p|r - 진행 - 타이머의 남은 시간 또는 타이머 아닌 값
+|cFFFF0000%t|r - 전체 - 타이머의 최대 지속시간 또는 타이머 아닌 최댓값
+|cFFFF0000%n|r - 이름 - 디스플레이(보통 효과 이름) 이름 또는 동적 이름이 없는 경우 디스플레이 ID
+|cFFFF0000%i|r - 아이콘 - 디스플레이와 관련된 아이콘
+|cFFFF0000%s|r - 중첩 - (보통) 효과의 중첩 횟수
+|cFFFF0000%c|r - 사용자 정의 - 문자열 값 목록을 반환하는 사용자 정의 Lua 함수를 정의할 수 있습니다. %c1|1은;는; 반환된 첫 번째 값으로, %c2|1은;는; 두 번째 값 등으로 대체됩니다.
+|cFFFF0000%%|r - % - 백분율 기호를 표시하려면
+
+기본으로 동적 정보를 통해 선택한 활성 조건의 정보가 표시됩니다. 특정 활성 조건의 정보는 예를 들어 %2.p를 통해 표시될 수 있습니다.]=]
 	--[[Translation missing --]]
 	L["Ease Strength"] = "Ease Strength"
 	--[[Translation missing --]]
@@ -439,9 +447,8 @@ UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Exact Spell Match"] = "정확한 주문 일치"
 	L["Expand"] = "확장"
 	L["Expand all loaded displays"] = "불러온 모든 디스플레이 확장"
-	L["Expand all non-loaded displays"] = "불러오지 않은 모드 디스플레이 확장"
-	--[[Translation missing --]]
-	L["Expand all pending Import"] = "Expand all pending Import"
+	L["Expand all non-loaded displays"] = "불러오지 않은 모든 디스플레이 확장"
+	L["Expand all pending Import"] = "보류 중인 모든 가져오기 확장"
 	L["Expansion is disabled because this group has no children"] = "이 그룹에 자식이 없어 확장이 비활성되었습니다"
 	L["Export debug table..."] = "디버그 테이블 내보내기..."
 	L["Export..."] = "내보내기..."
@@ -466,10 +473,8 @@ UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Fetch Raid Mark Information"] = "Fetch Raid Mark Information"
 	L["Fetch Role Information"] = "역할 정보 가져오기"
 	L["Fetch Tooltip Information"] = "툴팁 정보 가져오기"
-	--[[Translation missing --]]
-	L["File Height"] = "File Height"
-	--[[Translation missing --]]
-	L["File Width"] = "File Width"
+	L["File Height"] = "파일 높이"
+	L["File Width"] = "파일 너비"
 	L["Filter based on the spell Name string."] = "주문 이름 문자열 기반으로 필터링합니다."
 	--[[Translation missing --]]
 	L["Filter by Arena Spec"] = "Filter by Arena Spec"
@@ -495,8 +500,7 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Foreground Color"] = "전경 색상"
 	L["Foreground Texture"] = "전경 텍스쳐"
 	L["Format"] = "형식"
-	--[[Translation missing --]]
-	L["Format for %s"] = "Format for %s"
+	L["Format for %s"] = "%s의 형식"
 	L["Found a Bug?"] = "버그를 발견했습니까?"
 	L["Frame"] = "프레임"
 	--[[Translation missing --]]
@@ -509,8 +513,7 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Frame Strata"] = "프레임 우선순위"
 	--[[Translation missing --]]
 	L["Frame Width"] = "Frame Width"
-	--[[Translation missing --]]
-	L["Frequency"] = "Frequency"
+	L["Frequency"] = "빈도"
 	--[[Translation missing --]]
 	L["Full Circle"] = "Full Circle"
 	L["Get Help"] = "도움 받기"
@@ -620,17 +623,13 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Import a display from an encoded string"] = "암호화된 문자열에서 디스플레이 가져오기"
 	--[[Translation missing --]]
 	L["Import as Copy"] = "Import as Copy"
-	--[[Translation missing --]]
-	L["Import has no UID, cannot be matched to existing auras."] = "Import has no UID, cannot be matched to existing auras."
+	L["Import has no UID, cannot be matched to existing auras."] = "가져오기에는 UID가 없으며 기존 효과와 일치시킬 수 없습니다."
 	L["Importing"] = "가져오기"
 	L["Importing %s"] = "%s 가져오기"
-	--[[Translation missing --]]
-	L["Importing a group with %s child auras."] = "Importing a group with %s child auras."
-	--[[Translation missing --]]
-	L["Importing a stand-alone aura."] = "Importing a stand-alone aura."
+	L["Importing a group with %s child auras."] = "자식 효과가 %s개 있는 그룹을 가져오는 중입니다."
+	L["Importing a stand-alone aura."] = "독립형 효과를 가져오는 중입니다."
 	L["Importing...."] = "가져오는 중...."
-	--[[Translation missing --]]
-	L["Include Pets"] = "Include Pets"
+	L["Include Pets"] = "소환수 포함"
 	--[[Translation missing --]]
 	L["Incompatible changes to group region types detected"] = "Incompatible changes to group region types detected"
 	--[[Translation missing --]]
@@ -667,8 +666,7 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Length of |cFFFF0000%s|r"] = "Length of |cFFFF0000%s|r"
 	--[[Translation missing --]]
 	L["Limit"] = "Limit"
-	--[[Translation missing --]]
-	L["Lines & Particles"] = "Lines & Particles"
+	L["Lines & Particles"] = "라인 & 입자"
 	--[[Translation missing --]]
 	L["Linked aura: "] = "Linked aura: "
 	L["Load"] = "불러오기"
@@ -800,9 +798,8 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Raid Role"] = "공격대 역할"
 	--[[Translation missing --]]
 	L["Range in yards"] = "Range in yards"
-	--[[Translation missing --]]
-	L["Ready for Install"] = "Ready for Install"
-	L["Ready for Update"] = "업데이트 준비"
+	L["Ready for Install"] = "설치 준비 완료"
+	L["Ready for Update"] = "업데이트 준비 완료"
 	L["Re-center X"] = "내부 X 좌표"
 	L["Re-center Y"] = "내부 Y 좌표"
 	--[[Translation missing --]]
@@ -973,8 +970,7 @@ It might not work correctly!]=] ] = "이 효과는 월드 오브 워크래프트
 It might not work correctly with your version!]=] ] = "이 효과는 최신 버전 WeakAuras로 생성되었습니다. 현 보유 버전에서 제대로 작동하지 않을 수 있습니다!"
 	L["This display is currently loaded"] = "이 디스플레이는 불러온 상태입니다"
 	L["This display is not currently loaded"] = "이 디스플레이는 불러오지 않았습니다"
-	--[[Translation missing --]]
-	L["This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."] = "This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."
+	L["This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."] = "이렇게 하면 디버그 로그를 수집할 수 있습니다. 사용자 정의 코드는 DebugPrint 기능을 통해 로그에 디버그 정보를 추가할 수 있습니다."
 	--[[Translation missing --]]
 	L["This is a modified version of your aura, |cff9900FF%s.|r"] = "This is a modified version of your aura, |cff9900FF%s.|r"
 	--[[Translation missing --]]
