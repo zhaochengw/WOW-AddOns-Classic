@@ -66,27 +66,6 @@ function addon:EnableAddon()
 		end
 	end
 	
-	-- ElvUI (Author: Elv22, TukUI fork)
-	-- https://www.tukui.org/about.php?ui=elvui
-	-- Since there are so many different forks/modifications of ElvUI out there.  Just do it without using IsAddOnLoaded()
-	local barID = 1
-	while _G["ElvUI_Bar"..barID] do
-		for	_,button in next,_G["ElvUI_Bar"..barID].buttons,nil do
-			button:SetAttribute("unit2", "player")
-		end
-		barID = barID+1
-	end
-	
-	-- Tukui (Author: Elv22, TukUI fork)
-	-- https://www.tukui.org
-	-- Since there are so many different forks/modifications of Tukui out there.  Just do it without using IsAddOnLoaded()
-	for id=1, 12 do
-		local button = _G["ActionButton"..id]
-		if button ~= nil then
-			button:SetAttribute("unit2", "player")
-		end
-	end
-	
 	local ver = GetAddOnMetadata(ADDON_NAME,"Version") or '1.0'
 	DEFAULT_CHAT_FRAME:AddMessage(string.format("|cFF99CC33%s|r [v|cFF20ff20%s|r] loaded", ADDON_NAME, ver or "1.0"))
 end
