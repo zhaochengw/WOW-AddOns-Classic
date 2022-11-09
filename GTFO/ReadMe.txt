@@ -1765,3 +1765,8 @@ Change Log:
 * Added Dragonflight spells (world)
 * Added Wrath spells for Old Kingdom
 * Added Legion spells for Return to Karazhan
+
+4.69.1
+* Updated for patch 10.0
+* Added SL spells for Torghast
+* Added DF spells for Neltharus
