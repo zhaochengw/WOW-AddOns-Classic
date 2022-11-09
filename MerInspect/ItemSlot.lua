@@ -193,7 +193,7 @@ local function ChatItemSlot(Hyperlink)
             end
         end
         if (quality == 6 and class == WEAPON) then gem = "" end
-        Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h[("..slot.."):"..name.."]|h"..gem)
+        Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h[("..level..":"..slot.."):"..name.."]|h"..gem)
         Caches[Hyperlink] = Hyperlink
     end
     return Hyperlink
