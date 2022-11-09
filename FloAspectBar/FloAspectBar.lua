@@ -6,7 +6,12 @@
 -- Constants
 -------------------------------------------------------------------------------
 
-local VERSION = "2.1.0"
+local VERSION
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+	VERSION = "8.3.27"
+elseif WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
+	VERSION = "1.13.27"
+end
 
 -------------------------------------------------------------------------------
 -- Variables
@@ -22,11 +27,11 @@ local ACTIVE_OPTIONS = FLOASPECTBAR_OPTIONS[1];
 -- Ugly
 local changingSpec = false;
 
---local GetSpecialization = GetSpecialization;
-if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
-  GetSpecialization = function ()
-    return 1
-  end
+local GetSpecialization = GetSpecialization;
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
+	GetSpecialization = function ()
+		return 1
+	end
 end
 
 -------------------------------------------------------------------------------
@@ -36,107 +41,108 @@ end
 -- Executed on load, calls general set-up functions
 function FloAspectBar_OnLoad(self)
 
-  -- Class-based setup, abort if not supported
-  local temp, classFileName = UnitClass("player");
-  classFileName = strupper(classFileName);
+	-- Class-based setup, abort if not supported
+	local temp, classFileName = UnitClass("player");
+	classFileName = strupper(classFileName);
 
-  local classSpells = FLO_ASPECT_SPELLS[classFileName];
-  if classSpells == nil then
-    return;
-  end
+	local classSpells = FLO_ASPECT_SPELLS[classFileName];
+	if classSpells == nil then
+		return;
+	end
 
-  if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
-    self.hideCooldowns = true;
-  end
+	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
+		self.hideCooldowns = true;
+	end
 
-  -- Store the spell list for later
-  self.availableSpells = classSpells;
-  if self.availableSpells == nil then
-    return;
-  end
+	-- Store the spell list for later
+	self.availableSpells = classSpells;
+	if self.availableSpells == nil then
+		return;
+	end
 
-  self.spells = {};
-  self.SetupSpell = FloAspectBar_SetupSpell;
-  self.OnSetup = FloAspectBar_OnSetup;
-  self.UpdateState = FloAspectBar_UpdateState;
-  self.menuHooks = { SetPosition = FloAspectBar_SetPosition, SetBorders = FloAspectBar_SetBorders };
-  self:EnableMouse(1);
-  PetActionBarFrame:EnableMouse(false);
+	self.spells = {};
+	self.SetupSpell = FloAspectBar_SetupSpell;
+	self.OnSetup = FloAspectBar_OnSetup;
+	self.UpdateState = FloAspectBar_UpdateState;
+	self.menuHooks = { SetPosition = FloAspectBar_SetPosition, SetBorders = FloAspectBar_SetBorders };
+	self:EnableMouse(1);
+	PetActionBarFrame:EnableMouse(false);
 
-  if SHOW_WELCOME then
-    DEFAULT_CHAT_FRAME:AddMessage( "FloAspectBar "..VERSION.." loaded." );
-    SHOW_WELCOME = nil;
+	if SHOW_WELCOME then
+		DEFAULT_CHAT_FRAME:AddMessage( "FloAspectBar "..VERSION.." loaded." );
+		SHOW_WELCOME = nil;
 
-    SLASH_FLOASPECTBAR1 = "/floaspectbar";
-    SLASH_FLOASPECTBAR2 = "/fab";
-    SlashCmdList["FLOASPECTBAR"] = FloAspectBar_ReadCmd;
+		SLASH_FLOASPECTBAR1 = "/floaspectbar";
+		SLASH_FLOASPECTBAR2 = "/fab";
+		SlashCmdList["FLOASPECTBAR"] = FloAspectBar_ReadCmd;
 
-    self:RegisterEvent("ADDON_LOADED");
-    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
-      self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
-    end
-    self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED");
-  end
+		self:RegisterEvent("ADDON_LOADED");
+		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+			self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");
+		end
+		self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED");
+	end
 
-  self:RegisterEvent("LEARNED_SPELL_IN_TAB");
-  self:RegisterEvent("CHARACTER_POINTS_CHANGED");
-  self:RegisterEvent("SPELLS_CHANGED");
-  self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
-  self:RegisterEvent("ACTIONBAR_UPDATE_USABLE");
-  self:RegisterEvent("UNIT_AURA");
-  self:RegisterEvent("UPDATE_BINDINGS");
-  self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+	self:RegisterEvent("LEARNED_SPELL_IN_TAB");
+	self:RegisterEvent("CHARACTER_POINTS_CHANGED");
+	self:RegisterEvent("SPELLS_CHANGED");
+	self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
+	self:RegisterEvent("ACTIONBAR_UPDATE_USABLE");
+	self:RegisterEvent("UNIT_AURA");
+	self:RegisterEvent("UPDATE_BINDINGS");
+	self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 end
 
 function FloAspectBar_OnEvent(self, event, arg1, ...)
 
-  if event == "LEARNED_SPELL_IN_TAB" or event == "CHARACTER_POINTS_CHANGED" or event == "SPELLS_CHANGED" then
-    if not changingSpec then
-      if GetSpecialization() ~= FLOASPECTBAR_OPTIONS.active then
-        FloAspectBar_CheckTalentGroup(GetSpecialization());
-      else
-        FloLib_Setup(self);
-      end
-    end
-  elseif event == "ADDON_LOADED" and arg1 == "FloAspectBar" then
-    FloAspectBar_CheckTalentGroup(FLOASPECTBAR_OPTIONS.active);
+	if event == "LEARNED_SPELL_IN_TAB" or event == "CHARACTER_POINTS_CHANGED" or event == "SPELLS_CHANGED" then
+		if not changingSpec then
+			if GetSpecialization() ~= FLOASPECTBAR_OPTIONS.active then
+				FloAspectBar_CheckTalentGroup(GetSpecialization());
+			else
+				FloLib_Setup(self);
+			end
+		end
 
-    -- Hook the UIParent_ManageFramePositions function
-    hooksecurefunc("UIParent_ManageFramePositions", FloAspectBar_UpdatePosition);
-    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
-      hooksecurefunc("SetSpecialization", function(specIndex, isPet) if not isPet then changingSpec = true end end);
-    end
-    FloLib_UpdateBindings(self, "SHAPESHIFT");
+	elseif event == "ADDON_LOADED" and arg1 == "FloAspectBar" then
+		FloAspectBar_CheckTalentGroup(FLOASPECTBAR_OPTIONS.active);
 
-  elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-    if arg1 == "player" then
-      FloLib_StartTimer(self, ...);
-    end
+		-- Hook the UIParent_ManageFramePositions function
+		hooksecurefunc("UIParent_ManageFramePositions", FloAspectBar_UpdatePosition);
+		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+			hooksecurefunc("SetSpecialization", function(specIndex, isPet) if not isPet then changingSpec = true end end);
+		end
+		FloLib_UpdateBindings(self, "SHAPESHIFT");
 
-  elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
-    local _, spellId = ...;
-    local spellName = GetSpellInfo(spellId);
-    if arg1 == "player" and (spellName == FLOLIB_ACTIVATE_SPEC) then
-      changingSpec = false;
-    end
+	elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
+		if arg1 == "player" then
+			FloLib_StartTimer(self, ...);
+		end
 
-  elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
-    local spec = GetSpecialization();
-    if arg1 == "player" and FLOASPECTBAR_OPTIONS.active ~= spec then
-      FloAspectBar_TalentGroupChanged(spec);
-    end
+	elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
+		local _, spellId = ...;
+		local spellName = GetSpellInfo(spellId);
+		if arg1 == "player" and (spellName == FLOLIB_ACTIVATE_SPEC) then
+			changingSpec = false;
+		end
 
-  elseif event == "UPDATE_BINDINGS" then
-    FloLib_UpdateBindings(self, "SHAPESHIFT");
+	elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
+		local spec = GetSpecialization();
+		if arg1 == "player" and FLOASPECTBAR_OPTIONS.active ~= spec then
+			FloAspectBar_TalentGroupChanged(spec);
+		end
 
-  elseif event == "UNIT_AURA" then
-    if arg1 == PlayerFrame.unit then
-      FloLib_UpdateState(self);
-    end
+	elseif event == "UPDATE_BINDINGS" then
+		FloLib_UpdateBindings(self, "SHAPESHIFT");
 
-  else
-    FloLib_UpdateState(self);
-  end
+	elseif event == "UNIT_AURA" then
+		if arg1 == PlayerFrame.unit then
+			FloLib_UpdateState(self);
+		end
+
+	else
+		FloLib_UpdateState(self);
+	end
 end
 
 function FloAspectBar_TalentGroupChanged(grp)
