@@ -844,9 +844,6 @@ L["Hellfire Towers"] = "Hellfire Towers";
 L["Terokkar Towers"] = "Terokkar Towers";
 L["Nagrand Halaa"] = "Nagrand Halaa";
 
-L["wintergraspTimer"] = "Wintergrasp";
-L["wintergraspWarning"] = "Wintergrasp resets in %s";
-
 L["wintergraspChat10Title"] = "Wintergrasp 10 Minutes";
 L["wintergraspChat10Desc"] = "Print a msg in chat when 10 minutes left on Wintergrasp spirit towers.";
 

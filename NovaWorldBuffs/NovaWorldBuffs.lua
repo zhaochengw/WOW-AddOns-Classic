@@ -5539,6 +5539,10 @@ function NWB:updateMinimapButton(tooltip, frame)
 			if (C_QuestLog.IsQuestFlaggedCompleted(11503)) then
 				table.insert(completedQuests, "|cFF9CD6DE" .. L["Nagrand Halaa"] .. ":  |cFF00C800Completed|r" .. ".");
 			end
+			--Wintergrasp.
+			--if (C_QuestLog.IsQuestFlaggedCompleted(13183)) then
+			--	table.insert(completedQuests, "|cFF9CD6DE" .. L["Victory in Wintergrasp"] .. ":  |cFF00C800Completed|r" .. ".");
+			--end
 		else
 			if (C_QuestLog.IsQuestFlaggedCompleted(10106)) then
 				table.insert(completedQuests, "|cFF9CD6DE" .. L["Hellfire Towers"] .. ": |cFF00C800Completed|r" .. ".");
@@ -7639,7 +7643,7 @@ local function getNextDmfCalender()
 							local zone;
 							if (event.iconTexture == 235448) then
 								zone = "Elwynn Forest";
-							elseif (event.iconTexture == 235453) then
+							elseif (event.iconTexture == 235455) then
 								zone = "Outlands";
 							else
 								zone = "Mulgore";
@@ -7656,7 +7660,7 @@ local function getNextDmfCalender()
 							local zone;
 							if (event.iconTexture == 235446) then
 								zone = "Elwynn Forest";
-							elseif (event.iconTexture == 235455) then
+							elseif (event.iconTexture == 235453) then
 								zone = "Outlands";
 							else
 								zone = "Mulgore";

@@ -94,6 +94,9 @@ local filterTypeLocales = {
 		--Timer msgs.
 		["A new %s buff can be dropped now"] = true, --EN "newBuffCanBeDropped".
 		["%s resets in %s"] = true, --EN "buffResetsIn".
+		["Terokkar Forest towers reset in %s"] = true,
+		["Wintergrasp resets in %s"] = true,
+		["Wintergrasp starts in %s"] = true,
 		--CN
 		["一个新的 %s buff 现在可以取得"] = true,
 		["%s 重置于 %s后."] = true,
