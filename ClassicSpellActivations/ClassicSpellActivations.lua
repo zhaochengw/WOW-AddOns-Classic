@@ -133,7 +133,7 @@ function f:PLAYER_LOGIN()
             ns.UpdateOverlayGlow(self)
         end)
 
-        local LAB = LibStub("LibActionButton-1.0", true) -- Bartener support
+        local LAB = LibStub and LibStub("LibActionButton-1.0", true) -- Bartener support
         if LAB then
             LBG = LibStub("LibButtonGlow-1.0", true)
             self:RegisterForActivations(LAB.eventFrame)
@@ -142,7 +142,7 @@ function f:PLAYER_LOGIN()
             end)
         end
 
-        local LAB2 = LibStub("LibActionButton-1.0-ElvUI", true) -- ElvUI support
+        local LAB2 = LibStub and LibStub("LibActionButton-1.0-ElvUI", true) -- ElvUI support
         if LAB2 then
             LCG = LibStub("LibCustomGlow-1.0", true)
             self:RegisterForActivations(LAB2.eventFrame)
@@ -309,7 +309,7 @@ function f:ReactivateButtons()
     local now = GetTime()
     for spellName, states in pairs(activations) do
         for actID, state in pairs(states) do
-            if state.active and state.expirationTime > now then
+            if state.active and (state.expirationTime == nil or state.expirationTime > now) then
                 local highestRankSpellID = findHighestRank(spellName)
                 self:FanoutEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW", highestRankSpellID)
             end
