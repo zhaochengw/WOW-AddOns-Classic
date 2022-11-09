@@ -1,20 +1,16 @@
 ------------------------------------------------------------------------
-r542 | Zimzarina | 2022-11-04 17:12:51 +0000 (Fri, 04 Nov 2022) | 1 line
+r545 | Zimzarina | 2022-11-07 21:25:44 +0000 (Mon, 07 Nov 2022) | 2 lines
 Changed paths:
-   M /trunk/Modules/Rake.lua
+   M /trunk/Modules/TradeBlock.lua
 
-Fixed issue #306 where an incorrect summary of gold received in mail occurs when you close the mailbox by walking away.  Also, moved Rake.lua to fully use the new event system in WoW 10.0 release.
-------------------------------------------------------------------------
-r541 | Zimzarina | 2022-11-03 16:20:40 +0000 (Thu, 03 Nov 2022) | 1 line
-Changed paths:
-   M /trunk/Modules/Rake.lua
-
+Updated TradeBlock.lua to fully use the new event system for WoW 10.0 release. This will fix issue #307 and #308.
 
 ------------------------------------------------------------------------
-r540 | Zimzarina | 2022-11-02 18:03:26 +0000 (Wed, 02 Nov 2022) | 1 line
+r544 | Zimzarina | 2022-11-07 19:29:09 +0000 (Mon, 07 Nov 2022) | 2 lines
 Changed paths:
-   M /trunk/Modules/Rake.lua
+   M /trunk/Postal.lua
 
-Improved Rake close event handling.
+Updated Postal.lua to fully use the new event system for WoW 10.0 release.
+
 ------------------------------------------------------------------------
 
