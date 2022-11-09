@@ -1,4 +1,4 @@
--- $Id: Config.lua 374 2022-01-26 14:33:01Z arithmandar $
+-- $Id: Config.lua 414 2022-11-04 04:35:10Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -360,7 +360,9 @@ local function openOptions()
 	InterfaceOptionsFrame_OpenToCategory(addon.optionsFrames.Profiles)
 	InterfaceOptionsFrame_OpenToCategory(addon.optionsFrames.Profiles) -- yes, run twice to force the tre get expanded
 	InterfaceOptionsFrame_OpenToCategory(addon.optionsFrames.General)
-	InterfaceOptionsFrame:Raise()
+	if InterfaceOptionsFrame then
+		InterfaceOptionsFrame:Raise()
+	end
 end
 
 function addon:OpenOptions() 
