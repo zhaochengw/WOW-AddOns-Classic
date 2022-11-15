@@ -186,7 +186,7 @@ local options = {
 							order = 0.51,
 						},
 						supportersLabel = {
-							name = "                Become a Patron",
+							name = "                |cff00ff00Become a Patron",
 							type = "description",
 							width = "normal",
 							fontSize = "medium",

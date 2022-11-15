@@ -121,6 +121,17 @@ function KT_RemoveQuestWatch(questID)
 	KT:Event_QUEST_WATCH_LIST_CHANGED(questID)
 end
 
+function KT_SanitizeQuestList()
+	local questInfo, questLogIndex
+	for i = #dbChar.trackedQuests, 1, -1 do
+		questInfo = dbChar.trackedQuests[i]
+		questLogIndex = GetQuestLogIndexByID(questInfo.id)
+		if not questLogIndex or questLogIndex <= 0 then
+			tremove(dbChar.trackedQuests, i)
+		end
+	end
+end
+
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile

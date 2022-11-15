@@ -235,22 +235,23 @@ end
 
 local function EnumQuestWatchData(func)
 	local questWatchInfoList = {}
-	local questID, questLogIndex
+	local questInfo, questLogIndex
 
 	--cache the questWatchInfo
 	for i = 1, KT_GetNumQuestWatches() do
-		questID = KT_GetQuestListInfo(i).id
-		questLogIndex = GetQuestLogIndexByID(questID)
-		assert(questLogIndex > 0, KT.Debug("idx = "..i.."\ntrackedQuests = "..KT.PrintTable(KT.db.char.trackedQuests)))
-		questWatchInfoList[i] = { KT_GetQuestWatchInfo(questLogIndex) };
+		questInfo = KT_GetQuestListInfo(i)
+		questLogIndex = GetQuestLogIndexByID(questInfo.id)
+		if questLogIndex and questLogIndex > 0 then
+			questWatchInfoList[i] = { KT_GetQuestWatchInfo(questLogIndex) }
+		else
+			questWatchInfoList[i] = {}
+		end
 	end
 
 	KT.Filters:QuestSort(questWatchInfoList)
 
 	for _, orderingFlag in ipairs(questTrackerOrderingFlags) do
 		for i = 1, KT_GetNumQuestWatches() do
-			questID = KT_GetQuestListInfo(i).id
-			questLogIndex = GetQuestLogIndexByID(questID)
 			if EnumQuestWatchDataHelper(func, orderingFlag.flagIndex, questWatchInfoList[i]) then
 				return
 			end

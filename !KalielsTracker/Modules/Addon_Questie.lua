@@ -57,7 +57,7 @@ local function SetHooks()
             local questID = KT.GetIDByQuestLogIndex(questLogIndex)
             local quest = QuestieDB:GetQuest(questID)
 
-            if quest.sourceItemId then
+            if quest and quest.sourceItemId then
                 for bag = 0, NUM_BAG_SLOTS do
                     for slot = 1, GetContainerNumSlots(bag) do
                         local itemTexture, itemCount, _, _, _, _, itemLink, _, _, itemID = GetContainerItemInfo(bag, slot)
@@ -82,7 +82,7 @@ local function SetHooks()
             local questID = KT.GetIDByQuestLogIndex(questLogIndex)
             local quest = QuestieDB:GetQuest(questID)
 
-            if quest.sourceItemId then
+            if quest and quest.sourceItemId then
                 local itemName = GetItemInfo(quest.sourceItemId)
                 result = IsItemInRange(itemName, "target")
                 if result == true then
@@ -184,6 +184,7 @@ end
 
 local function HasMapData(quest)
     local result = false
+    if not quest then return result end
     if quest:IsComplete() == 1 then
         if quest.Finisher then
             result = true
@@ -235,6 +236,7 @@ end
 local function GetQuestZones(questID)
     local zones = {}
     local quest = QuestieDB:GetQuest(questID)
+    if not quest then return zones end
     if quest:IsComplete() == 0 then
         if quest.Objectives then
             for _, objective in pairs(quest.Objectives) do
@@ -288,7 +290,7 @@ end
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
-    self.isLoaded = (KT:CheckAddOn("Questie", "7.2.1") and db.addonQuestie)
+    self.isLoaded = (KT:CheckAddOn("Questie", "7.4.5") and db.addonQuestie)
 end
 
 function M:OnEnable()

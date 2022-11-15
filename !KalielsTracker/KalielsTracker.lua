@@ -1839,12 +1839,5 @@ function KT:OnEnable()
 		self.db.global.version = self.version
 	end
 
-	if KT_GetNumQuestWatches() > 0 then
-		for k, quest in ipairs(dbChar.trackedQuests) do
-			local questLogIndex = GetQuestLogIndexByID(quest.id)
-			if not questLogIndex or questLogIndex <= 0 then
-				tremove(dbChar.trackedQuests, k)
-			end
-		end
-	end
+	KT_SanitizeQuestList()
 end

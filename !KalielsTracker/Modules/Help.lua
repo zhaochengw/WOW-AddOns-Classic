@@ -241,16 +241,18 @@ local function SetupTutorials()
 			shineRight = 6,
 		},
 		{	-- 9
-			text = cTitle.."         What's NEW in version |r|cffffffff3.2.1|r\n\n"..
-					"- ADDED - Sanitization of tracked Quests\n"..
-					"- ADDED - Debug code for better identification of some errors\n"..
-					"- IMPROVED - Options - \"Clear Tracker Data\" button\n"..
-					"- FIXED - Auto Filters not initialized for Questie zones\n"..
-					"- FIXED - Error when quest has an unsupported type\n"..
-					"- UPDATED - Addon support - Questie 7.2.1\n"..
-					"- UPDATED - Addon support - ElvUI 12.91\n"..
-					"- UPDATED - Help\n"..
-					"- UPDATED - Help - Supporters\n\n"..
+			text = cTitle.."         What's NEW|r\n\n"..
+					cTitle.."Version 3.2.3|r\n"..
+					"- IMPROVED - Sanitization of tracked Quests\n"..
+					"- UPDATED - Addon support - ElvUI 13.01\n"..
+					"- UPDATED - Help - Supporters (Patreon)\n\n"..
+					cTitle.."Version 3.2.2|r\n"..
+					"- FIXED - Error when auto turn-in quests (but still not ideal)\n"..
+					"- FIXED - Error when the quest is not in the Questie database\n"..
+					"- UPDATED - Addon support - Questie 7.4.5\n"..
+					"- UPDATED - Addon support - ElvUI 13.00, Tukui 20.33\n"..
+					"- UPDATED - Help - Supporters (Patreon)\n"..
+					"- UPDATED - Libs\n\n"..
 
 					cTitle.."WoW 3.4.0 - Known issues w/o solution|r\n"..
 					"- Clicking on tracked quests or achievements has no response during combat.\n"..
@@ -314,12 +316,16 @@ local function SetupTutorials()
 			text = cTitle.."         Become a Patron|r\n\n"..
 					"If you like "..KT.title..", support me on |cfff34a54Patreon|r.\n\n"..
 					"Click on button  |T"..helpPath.."help_patreon:20:154:1:0:256:32:0:156:0:20|t  on CurseForge addon page.\n\n"..
-					"After 10 years of working on an addon, I'm launching Patreon. It's created as\na compensation for the amount "..
+					"After 10 years of working on an addon, I started Patreon. It's created as\na compensation for the amount "..
 					"of time that addon development requires.\n\n"..
 					"                                    Many thanks to all supporters  |T"..helpPath.."help_patreon:16:16:0:0:256:32:157:173:0:16|t\n\n"..
 					cTitle.."Patrons|r\n"..
 					SetFormatedPatronName("Legendary", "Zayah", "Vek'nilash")..
+					SetFormatedPatronName("Epic", "Squishses", "Area 52")..
+					SetFormatedPatronName("Uncommon", "Flex (drantor)")..
 					SetFormatedPatronName("Uncommon", "Kyle Fuller")..
+					SetFormatedPatronName("Uncommon", "Pablo Sebastián Molina Silva")..
+					SetFormatedPatronName("Uncommon", "Semy", "Ravencrest")..
 					SetFormatedPatronName("Uncommon", "Torresman", "Drak'thul")..
 					SetFormatedPatronName("Uncommon", "Xeelee", "Razorfen")..
 					SetFormatedPatronName("Common", "Darren Divecha")..
