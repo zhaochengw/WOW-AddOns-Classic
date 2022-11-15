@@ -1,0 +1,15 @@
+## Interface: 30400
+## Title: AckisRecipeList_QuickScan
+## Notes: Provides a LibDataBroker plugin for quick access to professions under Ackis Recipe List.
+## Author: Torhal
+## Version: 7.3.0.1
+## X-Date: 2017-09-23T7:19:56Z
+## X-Category: Plugins: Data Broker
+## Dependencies: AckisRecipeList
+## LoadWith: AckisRecipeList
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+
+QuickScan.lua
