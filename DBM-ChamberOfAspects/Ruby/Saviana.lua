@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Saviana", "DBM-ChamberOfAspects", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221102181724")
+mod:SetRevision("20221115053415")
 mod:SetCreatureID(39747)
 mod:SetEncounterID(1149)
 mod:SetModelID(31577)
