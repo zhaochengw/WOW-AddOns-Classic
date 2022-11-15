@@ -24,7 +24,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RatingBuster")
 RatingBuster = LibStub("AceAddon-3.0"):NewAddon("RatingBuster", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 RatingBuster.title = "Rating Buster"
 --@non-debug@
-RatingBuster.version = "1.6.1"
+RatingBuster.version = "1.6.3"
 --@end-non-debug@
 --[==[@debug@
 RatingBuster.version = "(development)"
@@ -52,7 +52,7 @@ end
 local _
 local _, class = UnitClass("player")
 local calcLevel, playerLevel
-local profileDB -- Initialized in :OnInitialize()
+local profileDB, globalDB -- Initialized in :OnInitialize()
 
 
 -- Localize globals
@@ -1331,9 +1331,7 @@ do
 		options.args.stat.args[mod:lower()].args[key] = option
 	end
 
-	local f = CreateFrame("Frame")
-	f:RegisterEvent("SPELLS_CHANGED")
-	f:SetScript("OnEvent", function()
+	local function GenerateStatModOptions()
 		for statMod, cases in pairs(StatLogic.StatModTable[class]) do
 			local add = StatLogic.StatModInfo[statMod].add
 			local mod = StatLogic.StatModInfo[statMod].mod
@@ -1394,7 +1392,25 @@ do
 
 		options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(RatingBuster.db)
 		options.args.profiles.order = 4
+	end
 
+	local f = CreateFrame("Frame")
+	f:RegisterEvent("SPELLS_CHANGED")
+	f:SetScript("OnEvent", function()
+		if StatLogic:TalentCacheExists() then
+			GenerateStatModOptions()
+		else
+			-- Talents are not guaranteed to exist on SPELLS_CHANGED,
+			-- and there is no definite event for when they will exist.
+			-- Recheck every 1 second after SPELLS_CHANGED until they exist.
+			local ticker
+			ticker = C_Timer.NewTicker(1, function()
+				if StatLogic:TalentCacheExists() then
+					GenerateStatModOptions()
+					ticker:Cancel()
+				end
+			end)
+		end
 		f:UnregisterEvent("SPELLS_CHANGED")
 	end)
 end
