@@ -16,6 +16,7 @@ local EnchantParts = {
     [1] = { 1, HEADSLOT },
     [3] = { 1, SHOULDERSLOT },
     [5]  = { 1, CHESTSLOT },
+    --[6]  = { 1, WAISTLOT },
     [7] = { 1, LEGSSLOT },
     [8]  = { 1, FEETSLOT },
     [9]  = { 1, WRISTSLOT },

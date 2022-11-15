@@ -9,6 +9,10 @@ local LibItemInfo = LibStub:GetLibrary("LibItemInfo.1000")
 
 local guids, inspecting = {}, false
 
+if not InspectTalentFrameSpentPoints 
+then InspectTalentFrameSpentPoints = CreateFrame("FRAME") end
+
+
 -- Global API
 function GetInspectInfo(unit, timelimit, checkhp)
     local guid = UnitGUID(unit)

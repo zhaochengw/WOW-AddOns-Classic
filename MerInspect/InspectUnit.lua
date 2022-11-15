@@ -57,10 +57,10 @@ local function GetInspectItemListFrame(parent)
         frame.title:SetPoint("TOPLEFT", frame, "TOPLEFT", 66, -18)
         frame.level = frame:CreateFontString(nil, "ARTWORK", itemfont)
         frame.level:SetPoint("TOPLEFT", frame, "TOPLEFT", 66, -42)
-        frame.level:SetFont(frame.level:GetFont(), 12, "THINOUTLINE")
+        frame.level:SetFont(frame.level:GetFont(), 14, "THINOUTLINE")
         
         local itemframe
-        local fontsize = locale:sub(1,2) == "zh" and 12 or 9
+        local fontsize = locale:sub(1,2) == "zh" and 14 or 9
         local backdrop = {
             bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
             edgeFile = "Interface\\Buttons\\WHITE8X8",
@@ -95,7 +95,7 @@ local function GetInspectItemListFrame(parent)
             itemframe.levelString:SetPoint("LEFT", itemframe.label, "RIGHT", 4, 0)
             itemframe.levelString:SetJustifyH("RIGHT")
             itemframe.itemString = itemframe:CreateFontString(nil, "ARTWORK", itemfont)
-            itemframe.itemString:SetFont(itemframe.itemString:GetFont(), 13, "NONE")
+            itemframe.itemString:SetFont(itemframe.itemString:GetFont(), 14, "NONE")
             itemframe.itemString:SetHeight(16)
             itemframe.itemString:SetPoint("LEFT", itemframe.levelString, "RIGHT", 2, 0)
             itemframe:SetScript("OnEnter", function(self)
