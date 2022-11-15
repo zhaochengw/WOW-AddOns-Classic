@@ -90,6 +90,8 @@ AddSpellName("Starfire", 48465, 48464, 26986, 25298, 9876, 9875, 8951, 8950, 894
 AddSpellName("Wrath", 48461, 48459, 26985, 26984, 9912, 8905, 6780, 5180, 5179, 5178, 5177, 5176)
 AddSpellName("GreaterHeal", 48063, 48062, 25314, 25213, 25210, 10965, 10964, 10963, 2060)
 
+AddSpellName("HowlingBlast", 51411, 51410, 51409, 49184)
+
 
 local function OnAuraStateChange(conditionFunc, actions)
     local state = -1
@@ -1147,3 +1149,39 @@ if APILevel == 3 then
     end
 
 end
+
+
+-----------------
+-- DEATHKNIGHT
+-----------------
+
+if APILevel == 3 then
+    local CheckFreezingFog = OnAuraStateChange(function() return FindAura("player", 59052, "HELPFUL") end,
+        function(present, duration)
+            if present then
+                f:Activate("HowlingBlast", "FreezingFog", duration, true)
+            else
+                f:Deactivate("HowlingBlast", "FreezingFog")
+            end
+        end
+    )
+
+    ns.configs.DEATHKNIGHT = function(self)
+        self:SetScript("OnUpdate", self.timerOnUpdate)
+        local hasRime = IsPlayerSpell(49188) or IsPlayerSpell(56822) or IsPlayerSpell(59057)
+        if hasRime then
+            self:RegisterUnitEvent("UNIT_AURA", "player")
+            self:SetScript("OnUpdate", self.timerOnUpdate)
+            self.UNIT_AURA = function(self, event, unit)
+                if hasRime then
+                    CheckFreezingFog()
+                end
+            end
+        else
+            self:SetScript("OnUpdate", nil)
+            self:UnregisterEvent("UNIT_AURA")
+        end
+    end
+
+end
+
