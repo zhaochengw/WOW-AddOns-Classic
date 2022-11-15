@@ -1,0 +1,31 @@
+## Interface: 30400
+## Title: Saved! Classic
+## Version: 3.0.5
+## X-Curse-Project-ID: 357612
+
+## Notes-koKR: 인스턴스 귀속 정보 및 골드, 경험치 한눈에 보기
+## Notes: List instances, money, exps and customizable
+## Notes-zhCN: 列出角色，副本，金币，经验和其他信息
+## SavedVariables: SavedClassicDB
+## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3
+## DefaultState: enabled
+
+#@no-lib-strip@
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
+#@end-no-lib-strip@
+
+Locale\enUS.lua
+Locale\koKR.lua
+Locale\ruRU.lua
+Locale\zhCN.lua
+
+SavedClassic.lua
