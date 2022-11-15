@@ -1,4 +1,4 @@
--- $Id: WorldMap.lua 419 2022-11-12 07:24:19Z arithmandar $
+-- $Id: WorldMapButtonMixin.lua 419 2022-11-12 07:24:19Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -56,39 +56,33 @@ else
 	-- n/a
 end
 
-local WorldMap = {}
+AtlasWorldMapButtonMixin = {}
 
-addon.WorldMap = WorldMap
-
-local function createButton()
-	local KButtons = LibStub("Krowi_WorldMapButtons-1.4")
-	WorldMap.Button = KButtons:Add("AtlasWorldMapButtonTemplate", "BUTTON")
-end
-
-function addon:WorldMapButtonSelectMap()
-	local mapID = WorldMapFrame:GetMapID() or 0
-	local profile = addon.db.profile
-
-	for type_k, type_v in pairs(ATLAS_DROPDOWNS) do
-		for zone_k, zone_v in pairs(type_v) do
-			local AtlasWorldMapID = AtlasMaps[zone_v].WorldMapID
-			local AtlasMapFaction = AtlasMaps[zone_v].Faction
-			if (AtlasWorldMapID and AtlasWorldMapID == mapID) then
-				if (AtlasMapFaction and AtlasMapFaction == ATLAS_PLAYER_FACTION) then
-					profile.options.dropdowns.module = type_k
-					profile.options.dropdowns.zone = zone_k
-				else
-					profile.options.dropdowns.module = type_k
-					profile.options.dropdowns.zone = zone_k
-				end
-				Atlas_Refresh()
-				return
-			end
-		end
+function AtlasWorldMapButtonMixin:OnLoad()
+	if (WoWRetail) then
+		self:SetFrameStrata("HIGH")
+	else
+		self:SetFrameStrata("TOOLTIP")
 	end
 end
 
-do
-	createButton()
+function AtlasWorldMapButtonMixin:OnEnter()
+	GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+	GameTooltip:SetText(ATLAS_CLICK_TO_OPEN, nil, nil, nil, nil, 1)
 end
+
+function AtlasWorldMapButtonMixin:OnLeave()
+	GameTooltip:Hide()
+end
+
+function AtlasWorldMapButtonMixin:OnClick()
+	addon:WorldMapButtonSelectMap()
+	ToggleFrame(WorldMapFrame)
+	addon:Toggle()
+end
+
+function AtlasWorldMapButtonMixin:Refresh()
+	
+end
+
 

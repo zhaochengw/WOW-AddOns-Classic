@@ -1,4 +1,4 @@
-$Id: ChangeLog.txt 417 2022-11-06 14:15:58Z arithmandar $
+$Id: ChangeLog.txt 421 2022-11-12 12:11:58Z arithmandar $
 Atlas, a World of Warcraft instance map browser
 Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert at gmail dot com>
 Copyright 2010 - Lothaer <lothayer at gmail dot com>, Atlas Team
@@ -14,6 +14,10 @@ Known Issues:
 ==============
 = Change Log =
 ==============
+
+v1.52.01 (Nov. 12, 2022)
+------------------------
+- Migrate WorldMap Atlas button to use Krowi_WorldMapButtons
 
 v1.52.00 (Nov. 06, 2022)
 ------------------------

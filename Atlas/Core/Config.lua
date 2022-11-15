@@ -1,4 +1,4 @@
--- $Id: Config.lua 414 2022-11-04 04:35:10Z arithmandar $
+-- $Id: Config.lua 419 2022-11-12 07:24:19Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -265,9 +265,9 @@ local function getOptions()
 									set = function(info, value)
 										addon.db.profile.options.worldMapButton = value
 										if (addon.db.profile.options.worldMapButton) then
-											AtlasToggleFromWorldMap:Show()
+											addon.WorldMap.Button:Show()
 										else
-											AtlasToggleFromWorldMap:Hide()
+											addon.WorldMap.Button:Hide()
 										end
 									end,
 								},
