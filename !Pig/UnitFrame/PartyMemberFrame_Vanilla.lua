@@ -63,34 +63,9 @@ local function Update_BUFF(id,arg1)
 end
 ----创建扩展信息框架
 local function DuiyouFrame_Open()
-	-- function PartyFrameMixin:UpdatePartyFrames()
-	-- 	local showPartyFrames = ShouldShowPartyFrames();
-	-- 	for memberFrame in self.PartyMemberFramePool:EnumerateActive() do
-	-- 		if showPartyFrames then
-	-- 			memberFrame:Show();
-	-- 			memberFrame:UpdateMember();
-	-- 		else
-	-- 			memberFrame:Hide();
-	-- 		end
-	-- 	end
-
-	-- 	self:UpdatePartyMemberBackground();
-	-- 	self:UpdatePaddingAndLayout();
-	-- end
-	-- local showPartyFrames = ShouldShowPartyFrames();
-	-- print(showPartyFrames)
-	-- 	for memberFrame in self.PartyMemberFramePool:EnumerateActive() do
-	-- 		print(memberFrame)
-	-- 		-- if showPartyFrames then
-	-- 		-- 	memberFrame:Show();
-	-- 		-- 	memberFrame:UpdateMember();
-	-- 		-- else
-	-- 		-- 	memberFrame:Hide();
-	-- 		-- end
-	-- 	end
-	if PartyPIG1 then return end
+	if PartyMemberFrame1.zhiye then return end
 	for id = 1, MAX_PARTY_MEMBERS, 1 do
-		local Party = CreateFrame("Frame", "PartyPIG"..id, PartyFrame);
+		local Party=_G["PartyMemberFrame"..id]
 		----队友职业图标
 		Party.zhiye = CreateFrame("Button", nil, Party);
 		Party.zhiye:SetFrameLevel(5)
@@ -151,8 +126,8 @@ local function DuiyouFrame_Open()
 			if not IsInRaid() then Update_HP(self,arg1) end
 		end)
 		--位面图标移位
-		--_G["PartyMemberFrame"..id.."NotPresentIcon"]:ClearAllPoints()
-		--_G["PartyMemberFrame"..id.."NotPresentIcon"]:SetPoint("LEFT",Party.HP,"RIGHT",0,0);
+		_G["PartyMemberFrame"..id.."NotPresentIcon"]:ClearAllPoints()
+		_G["PartyMemberFrame"..id.."NotPresentIcon"]:SetPoint("LEFT",Party.HP,"RIGHT",0,0);
 		--队友buff常驻显示
 		for j = 1, UFP_MAX_PARTY_BUFFS, 1 do  --BUFF
 			Party.buff = CreateFrame("Button", "Party"..id.."Buff"..j, Party);
@@ -180,8 +155,8 @@ local function DuiyouFrame_Open()
 	        end)
 	    end
 	    --改动系统DEBUFF位置
-		--_G["PartyMemberFrame"..id.."Debuff1"]:ClearAllPoints();
-		--_G["PartyMemberFrame"..id.."Debuff1"]:SetPoint("TOPRIGHT", _G["PartyMemberFrame"..id], "TOPRIGHT", 50, 8);
+		_G["PartyMemberFrame"..id.."Debuff1"]:ClearAllPoints();
+		_G["PartyMemberFrame"..id.."Debuff1"]:SetPoint("TOPRIGHT", _G["PartyMemberFrame"..id], "TOPRIGHT", 50, 8);
 
 	    --队友目标
 		Party.mubiao = CreateFrame("Button", nil, Party, "SecureActionButtonTemplate")
@@ -201,9 +176,9 @@ local function DuiyouFrame_Open()
 		end)
 	end
 	--隐藏系统自带队友buff鼠标提示
-	-- hooksecurefunc("PartyMemberBuffTooltip_Update", function(self)
-	--     PartyMemberBuffTooltip:Hide();
-	-- end)
+	hooksecurefunc("PartyMemberBuffTooltip_Update", function(self)
+	    PartyMemberBuffTooltip:Hide();
+	end)
 	---
 	local function Update_Level_ALL(id)
 		local Party=_G["PartyMemberFrame"..id].Level

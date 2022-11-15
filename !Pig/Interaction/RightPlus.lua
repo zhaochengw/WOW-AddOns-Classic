@@ -5,6 +5,7 @@ local gsub = _G.string.gsub
 local find = _G.string.find
 local sub = _G.string.sub
 local match = _G.string.match
+local ADD_Frame=addonTable.ADD_Frame
 ------------------------------------------------------
 fuFrame.RP = fuFrame:CreateLine()
 fuFrame.RP:SetColorTexture(0.8,0.8,0.8,0.5)
@@ -1476,12 +1477,12 @@ local kaishijishuxulie = {{1,4},{5,7},{8,11},{12,15},{16,19}}
 local function Update_zhuangbei(index,invData)
 	for i=1,#invData do
 		local fID = (kaishijishuxulie[index][1]-1)+i
-		local invFff = _G["yuanchengDuixiang_item_"..fID]
+		local invFff = _G["yuancheng_wupin_item_"..fID]
 		if invData[i]~="0" then
 			local itemName,itemLink,itemQuality,itemLevel,itemMinLevel,itemType,itemSubType,itemStackCount,itemEquipLoc,itemTexture= GetItemInfo("item:"..invData[i]) 
 			invFff:SetNormalTexture(itemTexture)
 			if fID~=4 and fID~=19 then
-				_G["zbBuwei_"..fID].itemlink:SetText(itemLink)
+				_G["yuancheng_zbBuwei_"..fID].itemlink:SetText(itemLink)
 				if PIG['ShowPlus']['zhuangbeiLV']=="ON" then
 					if itemLevel and itemLevel>0 then
 						invFff.LV:SetText(itemLevel)
@@ -1499,7 +1500,7 @@ local function Update_zhuangbei(index,invData)
 			invFff:SetNormalTexture("")
 			invFff.LV:SetText()
 			if i~=4 and i~=19 then
-				_G["zbBuwei_"..fID].itemlink:SetText("|cff666666无|r")
+				_G["yuancheng_zbBuwei_"..fID].itemlink:SetText("|cff666666无|r")
 			end
 			invFff:SetScript("OnEnter", function (self)
 				GameTooltip:ClearLines();
@@ -1570,11 +1571,11 @@ local function Show_YcUI()
 	yuanchengDuixiang_UI.Portrait_TEX:SetTexCoord(0,1,0,1);
 	yuanchengDuixiang_UI.biaoti.t1:SetText("|cffFFFF00正在获取目标信息...|r");
 	for i=1,19 do
-		local fujiframe = _G["yuanchengDuixiang_item_"..i]
+		local fujiframe = _G["yuancheng_wupin_item_"..i]
 		fujiframe:SetNormalTexture("")
 		fujiframe.LV:SetText()
 		if i~=4 and i~=19 then
-			_G["zbBuwei_"..i].itemlink:SetText()
+			_G["yuancheng_zbBuwei_"..i].itemlink:SetText()
 		end
 		fujiframe:SetScript("OnEnter", function (self)
 			GameTooltip:ClearLines();
@@ -1676,15 +1677,6 @@ local function Show_RightF(listName)
 	Pig_RightFUI:Show();
 end
 --------------------
-local yuanchengDuixiang = CreateFrame("Frame", "yuanchengDuixiang_UI", UIParent,"BackdropTemplate");
-yuanchengDuixiang:SetSize(360,444);
-yuanchengDuixiang:SetPoint("CENTER", UIParent, "CENTER", -300, 100)
-yuanchengDuixiang:SetMovable(true)
-yuanchengDuixiang:SetUserPlaced(false)
-yuanchengDuixiang:SetClampedToScreen(true)
-yuanchengDuixiang:SetFrameLevel(210)
-yuanchengDuixiang:Hide();
-tinsert(UISpecialFrames,"yuanchengDuixiang_UI");
 local function RightPlus_Open()
 	local fujiF=UIParent
 	if Pig_RightFUI then return end
@@ -1771,100 +1763,9 @@ local function RightPlus_Open()
     fuFrame.xiayiRPSlider.Text:SetText(PIG['ChatFrame']['xiayijuli']);
 	fuFrame.xiayiRPSlider:SetValue(PIG['ChatFrame']['xiayijuli']);
 	--远程查看装备天赋===========================
-	local BKdangeW=CharacterHeadSlot:GetWidth()+5
-	yuanchengDuixiang.Portrait_BG = yuanchengDuixiang:CreateTexture(nil, "BORDER");
-	yuanchengDuixiang.Portrait_BG:SetTexture("interface/buttons/iconborder-glowring.blp");
-	yuanchengDuixiang.Portrait_BG:SetSize(57,57);
-	yuanchengDuixiang.Portrait_BG:SetPoint("TOPLEFT",yuanchengDuixiang,"TOPLEFT",11,-7.8);
-	yuanchengDuixiang.Portrait_BG:SetDrawLayer("BORDER", -2)
-	yuanchengDuixiang.Portrait_BGmask = yuanchengDuixiang:CreateMaskTexture()
-	yuanchengDuixiang.Portrait_BGmask:SetAllPoints(yuanchengDuixiang.Portrait_BG)
-	yuanchengDuixiang.Portrait_BGmask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-	yuanchengDuixiang.Portrait_BG:AddMaskTexture(yuanchengDuixiang.Portrait_BGmask)
-	yuanchengDuixiang.Portrait_TEX = yuanchengDuixiang:CreateTexture(nil, "BORDER");
-	yuanchengDuixiang.Portrait_TEX:SetDrawLayer("BORDER", -1)
-	yuanchengDuixiang.Portrait_TEX:SetAllPoints(yuanchengDuixiang.Portrait_BG)
-	yuanchengDuixiang.TOPLEFT = yuanchengDuixiang:CreateTexture(nil, "BORDER");
-	yuanchengDuixiang.TOPLEFT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-l1.blp");
-	yuanchengDuixiang.TOPLEFT:SetPoint("TOPLEFT", yuanchengDuixiang, "TOPLEFT",0, 0);
-	yuanchengDuixiang.TOPRIGHT = yuanchengDuixiang:CreateTexture(nil, "BORDER");
-	yuanchengDuixiang.TOPRIGHT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-r1.blp");
-	yuanchengDuixiang.TOPRIGHT:SetPoint("TOPLEFT", yuanchengDuixiang.TOPLEFT, "TOPRIGHT",0, 0);
-	yuanchengDuixiang.BOTTOMLEFT = yuanchengDuixiang:CreateTexture(nil, "BORDER");
-	yuanchengDuixiang.BOTTOMLEFT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-bottomleft.blp");
-	yuanchengDuixiang.BOTTOMLEFT:SetPoint("TOPLEFT", yuanchengDuixiang.TOPLEFT, "BOTTOMLEFT",0, 0);
-	yuanchengDuixiang.BOTTOMRIGHT = yuanchengDuixiang:CreateTexture(nil, "BORDER");
-	yuanchengDuixiang.BOTTOMRIGHT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-bottomright.blp");
-	yuanchengDuixiang.BOTTOMRIGHT:SetPoint("TOPLEFT", yuanchengDuixiang.BOTTOMLEFT, "TOPRIGHT",0, 0);
-
-	yuanchengDuixiang.biaoti = CreateFrame("Frame", nil, yuanchengDuixiang)
-	yuanchengDuixiang.biaoti:SetPoint("TOPLEFT", yuanchengDuixiang, "TOPLEFT",72, -14);
-	yuanchengDuixiang.biaoti:SetPoint("TOPRIGHT", yuanchengDuixiang, "TOPRIGHT",-36, -1);
-	yuanchengDuixiang.biaoti:SetHeight(20);
-	yuanchengDuixiang.biaoti:EnableMouse(true)
-	yuanchengDuixiang.biaoti:RegisterForDrag("LeftButton")
-	yuanchengDuixiang.biaoti:SetScript("OnDragStart",function()
-	    yuanchengDuixiang:StartMoving();
-	    yuanchengDuixiang:SetUserPlaced(false)
-	end)
-	yuanchengDuixiang.biaoti:SetScript("OnDragStop",function()
-	    yuanchengDuixiang:StopMovingOrSizing()
-	    yuanchengDuixiang:SetUserPlaced(false)
-	end)
-	yuanchengDuixiang.biaoti.t = yuanchengDuixiang:CreateFontString();
-	yuanchengDuixiang.biaoti.t:SetPoint("CENTER", yuanchengDuixiang.biaoti, "CENTER", 2, -1);
-	yuanchengDuixiang.biaoti.t:SetFontObject(GameFontNormal);
-	yuanchengDuixiang.biaoti.t:SetTextColor(1, 1, 1, 1);
-
-	yuanchengDuixiang.biaoti.t1 = yuanchengDuixiang:CreateFontString();
-	yuanchengDuixiang.biaoti.t1:SetPoint("CENTER", yuanchengDuixiang.biaoti, "CENTER", 2, -30);
-	yuanchengDuixiang.biaoti.t1:SetFontObject(GameFontNormal);
-
-	yuanchengDuixiang.Close = CreateFrame("Button",nil,yuanchengDuixiang, "UIPanelCloseButton");
-	yuanchengDuixiang.Close:SetSize(32,32);
-	yuanchengDuixiang.Close:SetPoint("TOPRIGHT",yuanchengDuixiang,"TOPRIGHT",-3.2,-8.6);
-	local zhuangbeishunxuID = {1,2,3,15,5,4,19,9,10,6,7,8,11,12,13,14,16,17,18}
-	for i=1,#zhuangbeishunxuID do
-		yuanchengDuixiang.item = CreateFrame("Button", "yuanchengDuixiang_item_"..zhuangbeishunxuID[i], yuanchengDuixiang, "TruncatedButtonTemplate");
-		yuanchengDuixiang.item:SetHighlightTexture(130718);
-		yuanchengDuixiang.item:SetSize(BKdangeW-4,BKdangeW-4);
-		if i<17 then
-			if i==1 then
-				yuanchengDuixiang.item:SetPoint("TOPLEFT",yuanchengDuixiang,"TOPLEFT",20,-74);
-			elseif i==9 then
-				yuanchengDuixiang.item:SetPoint("TOPLEFT",yuanchengDuixiang,"TOPLEFT",305,-74);
-			else
-				yuanchengDuixiang.item:SetPoint("TOP", _G["yuanchengDuixiang_item_"..(zhuangbeishunxuID[i-1])], "BOTTOM", 0, -3);
-			end
-		else
-			if i==17 then
-				yuanchengDuixiang.item:SetPoint("TOPLEFT",yuanchengDuixiang,"TOPLEFT",121,-385);
-			else
-				yuanchengDuixiang.item:SetPoint("LEFT", _G["yuanchengDuixiang_item_"..(zhuangbeishunxuID[i-1])], "RIGHT", 3, 0);
-			end
-		end
-		yuanchengDuixiang.item.LV = yuanchengDuixiang.item:CreateFontString();
-		yuanchengDuixiang.item.LV:SetPoint("TOPRIGHT", yuanchengDuixiang.item, "TOPRIGHT", 0,-1);
-		yuanchengDuixiang.item.LV:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
-	end
-	local zhuangbeizhanshiID = {1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18}
-	local buweiName = {HEADSLOT,NECKSLOT,SHOULDERSLOT,CHESTSLOT,WAISTSLOT,LEGSSLOT,FEETSLOT,WRISTSLOT,HANDSSLOT,FINGER0SLOT,FINGER1SLOT,TRINKET0SLOT,TRINKET1SLOT,BACKSLOT,MAINHANDSLOT,SECONDARYHANDSLOT,RANGEDSLOT}
-	for i=1,#zhuangbeizhanshiID do
-		local zbBuwei = CreateFrame("Frame", "zbBuwei_"..zhuangbeizhanshiID[i], yuanchengDuixiang,"BackdropTemplate");
-		zbBuwei:SetSize(40,17);
-		if i==1 then
-			zbBuwei:SetPoint("TOPLEFT",yuanchengDuixiang,"TOPLEFT",60,-80);
-		else
-			zbBuwei:SetPoint("TOPLEFT",_G["zbBuwei_"..(zhuangbeizhanshiID[i-1])],"BOTTOMLEFT",0,0);
-		end
-		zbBuwei.itembuwei = zbBuwei:CreateFontString();
-		zbBuwei.itembuwei:SetPoint("RIGHT",zbBuwei,"RIGHT",0,0);
-		zbBuwei.itembuwei:SetFontObject(GameFontNormal);
-		zbBuwei.itembuwei:SetText(buweiName[i])
-		zbBuwei.itemlink = zbBuwei:CreateFontString();
-		zbBuwei.itemlink:SetPoint("LEFT",zbBuwei.itembuwei,"RIGHT",0,0);
-		zbBuwei.itemlink:SetFontObject(GameFontNormal);
-	end
+	local yuanchengDuixiang=ADD_Frame("yuanchengDuixiang_UI",UIParent,360,444,"CENTER",UIParent,"CENTER",-300, 120,true,false,true,true,true)
+	local ADD_CharacterFrame=addonTable.ADD_CharacterFrame
+	ADD_CharacterFrame(yuanchengDuixiang,"yuancheng",360)
 
 	--天赋----------------------------
 	yuanchengDuixiang.TalentF = CreateFrame("Frame", nil, yuanchengDuixiang,"BackdropTemplate");

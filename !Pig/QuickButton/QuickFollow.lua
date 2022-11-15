@@ -91,6 +91,7 @@ local function Classes_Gensui_B(Booleans)
 		if Gensui_B_UI then Gensui_B_UI:SetChecked(false) end
 		fuFrame.gensuiF.B_Open:SetChecked(false);
 		PIG_print("没有检测到跟随宏")
+		PIG_Per["QuickFollow"]["beidongOpen"]=false
 		return
 	end
 	if Booleans then
@@ -227,7 +228,7 @@ local function QuickButton_Gensui()
 	gensuiB.Text:ClearAllPoints();
 	gensuiB.Text:SetTextColor(1, 1, 0, 0.8);
 	gensuiB.Text:SetPoint("TOP",gensuiB,"TOP",0,4);
-	gensuiB.tooltip = "|cffffFF00动态切换宏跟随目标|r\n|cff00FFFF创建宏以后，可以根据接收到指令修改宏内的跟随目标！|r\n注意跟随还是需要手动点击宏！";
+	gensuiB.tooltip = "|cffffFF00动态切换宏跟随目标|r\n|cff00FFFF创建宏以后，可以根据接收到指令修改宏内的跟随目标(在插件设置创建宏)|r\n注意跟随还是需要手动点击宏！";
 	gensuiB:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			fuFrame.gensuiF.B_Open:SetChecked(true)
@@ -571,7 +572,7 @@ local function ADD_QuickButton_QuickFollow()
 		local function Classes_Gensui_B_yanchi()
 			Classes_Gensui_B(true)
 		end
-		C_Timer.After(0,Classes_Gensui_B_yanchi)
+		C_Timer.After(3,Classes_Gensui_B_yanchi)
 	end
 end
 addonTable.ADD_QuickButton_QuickFollow = ADD_QuickButton_QuickFollow

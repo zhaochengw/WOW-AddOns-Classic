@@ -47,7 +47,7 @@ local function SellBuy_ADD()
 		end
 		SellBuy.F.Tablist.Tex = SellBuy.F.Tablist:CreateTexture(nil, "BORDER");
 		SellBuy.F.Tablist.Tex:SetTexture("interface/helpframe/helpframetab-inactive.blp");
-		SellBuy.F.Tablist.Tex:SetRotation(1.5707964, 0.5, 0.5)
+		PIGRotation(SellBuy.F.Tablist.Tex, 90);
 		SellBuy.F.Tablist.Tex:SetPoint("CENTER", SellBuy.F.Tablist, "CENTER", 0,0);
 		SellBuy.F.Tablist.title = SellBuy.F.Tablist:CreateFontString();
 		SellBuy.F.Tablist.title:SetPoint("CENTER", SellBuy.F.Tablist, "CENTER", 8,0);
@@ -227,6 +227,6 @@ addonTable.AutoSellBuy_SellBuy = function()
 		addonTable.FastDiuqi()
 		addonTable.SellPlus()
 		addonTable.BuyPlus()
-		addonTable.Open_ADD()
+		addonTable.FastOpen()
 	end
 end

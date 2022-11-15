@@ -99,96 +99,126 @@ fuFrame.ActionBar_bili_Slider:SetScript('OnValueChanged', function(self)
 	ActionBar_bili_gengxin()
 end)
 --==============================================
----姿态条/变形条
-local function StanceBar_yidong()
-	if not InCombatLockdown()==true then
-		if StanceBarFrame then
-			if SHOW_MULTI_ACTIONBAR_4 and SHOW_MULTI_ACTIONBAR_3 and SHOW_MULTI_ACTIONBAR_1 then
-				StanceBarFrame:ClearAllPoints()
-				StanceBarFrame:SetMovable(true)
-				StanceBarFrame:SetPoint("BOTTOMLEFT", MultiBarLeftButton1,"TOPLEFT", 20, 2)
-				StanceBarFrame:SetUserPlaced(true)
-			else
-				if SHOW_MULTI_ACTIONBAR_1 then
-					StanceBarFrame:ClearAllPoints()
-					StanceBarFrame:SetMovable(true)
-					StanceBarFrame:SetPoint("BOTTOMLEFT", MultiBarBottomLeft,"TOPLEFT", 20, 1)
-					StanceBarFrame:SetUserPlaced(true)
-				else
-					StanceBarFrame:ClearAllPoints()
-					StanceBarFrame:SetMovable(true)
-					if ReputationWatchBar and ReputationWatchBar:IsShown() then
-						StanceBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 9)
-					else
-						StanceBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 0)
-					end
-					StanceBarFrame:SetUserPlaced(true)
-				end
-			end
-		end
-	end
-end
-----宠物动作条
-local function PetActionBar_yidong()
-	if not InCombatLockdown()==true then
-		if PetActionBarFrame then
-			if tocversion<30000 then
-				if SHOW_MULTI_ACTIONBAR_4 and SHOW_MULTI_ACTIONBAR_3 and SHOW_MULTI_ACTIONBAR_1 then
-					PetActionBarFrame:ClearAllPoints()
-					PetActionBarFrame:SetMovable(true)
-					PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 84)
-					PetActionBarFrame:SetUserPlaced(true)
-				else
-					if SHOW_MULTI_ACTIONBAR_1 then
-						PetActionBarFrame:ClearAllPoints()
-						PetActionBarFrame:SetMovable(true)
-						PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 40)
-						PetActionBarFrame:SetUserPlaced(true)
-					else
-						PetActionBarFrame:ClearAllPoints()
-						PetActionBarFrame:SetMovable(true)
-						PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 0)
-						PetActionBarFrame:SetUserPlaced(true)
-					end
-				end
-			else
-				if SHOW_MULTI_ACTIONBAR_4 and SHOW_MULTI_ACTIONBAR_3 and SHOW_MULTI_ACTIONBAR_1 then
-					PetActionBarFrame:ClearAllPoints()
-					PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 84)
-				else
-					if SHOW_MULTI_ACTIONBAR_1 then
-						PetActionBarFrame:ClearAllPoints()
-						PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 42)
-					else
-						PetActionBarFrame:ClearAllPoints()
-						PetActionBarFrame:SetPoint("BOTTOMLEFT", MainMenuBar,"TOPLEFT", 30, 2)
-					end
-				end
-			end
-		end
-	end
-end
 --竖动作栏-------
-local function PigUI_ActionBar_up()
-	for i=1, 12 do
-		_G["MultiBarLeftButton"..i]:ClearAllPoints();
-		_G["MultiBarLeftButton"..i]:SetPoint("BOTTOM",_G["MultiBarBottomLeftButton"..i],"TOP",0,6);
-		_G["MultiBarRightButton"..i]:ClearAllPoints();
-		_G["MultiBarRightButton"..i]:SetPoint("BOTTOM",_G["MultiBarBottomRightButton"..i],"TOP",0,6);
+if not IsXPUserDisabled then
+	function IsXPUserDisabled() return false end
+end
+local function GetExpWatched()
+	local name, reaction, min, max, value, factionID = GetWatchedFactionInfo();
+	local newLevel = UnitLevel("player");
+	local showXP = newLevel < GetMaxPlayerLevel() and not IsXPUserDisabled();
+	if name then
+		return showXP,true
+	else
+		return showXP,false
 	end
-	--其他姿态/宠物动作条
-	hooksecurefunc ("StanceBar_Update",function()
-		StanceBar_yidong()
+end
+local function PigUI_ActionBar_up()
+	local function Pig_MultiBar_Update()
+		if not InCombatLockdown() then
+			for i=1, 12 do
+				_G["MultiBarLeftButton"..i]:ClearAllPoints();
+				_G["MultiBarLeftButton"..i]:SetPoint("BOTTOM",_G["MultiBarBottomLeftButton"..i],"TOP",0,6);
+				_G["MultiBarRightButton"..i]:ClearAllPoints();
+				_G["MultiBarRightButton"..i]:SetPoint("BOTTOM",_G["MultiBarBottomRightButton"..i],"TOP",0,6);
+			end
+			VerticalMultiBarsContainer:SetSize(0, 0);
+		end
+	end
+	Pig_MultiBar_Update()
+
+	local function StanceBar_Update(self)
+		if self:IsShown() then
+			if SHOW_MULTI_ACTIONBAR_1 or SHOW_MULTI_ACTIONBAR_2 or SHOW_MULTI_ACTIONBAR_3 or SHOW_MULTI_ACTIONBAR_4 then		
+				if SHOW_MULTI_ACTIONBAR_4 and SHOW_MULTI_ACTIONBAR_3 and SHOW_MULTI_ACTIONBAR_1 then
+					if not self:IsUserPlaced() then
+						if InCombatLockdown() then
+							self:RegisterEvent("PLAYER_REGEN_ENABLED");
+							PIG_print("部分移动会在战斗结束后执行")
+						else
+							local point, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
+							self:SetMovable(true)
+							self:SetPoint("BOTTOMLEFT", self:GetParent(),"TOPLEFT", xOfs, yOfs+42)
+							self:SetUserPlaced(true)
+						end 
+					end
+				else
+					self:SetMovable(true)
+					self:SetUserPlaced(false)
+					self:SetMovable(false)
+				end
+			end
+		end
+	end
+	StanceBar_Update(StanceBarFrame)
+	StanceBarFrame:HookScript("OnEvent", function (self,event)
+		if event=="PLAYER_REGEN_ENABLED" then
+			if SHOW_MULTI_ACTIONBAR_4 and SHOW_MULTI_ACTIONBAR_3 and SHOW_MULTI_ACTIONBAR_1 then
+				if not self:IsUserPlaced() then
+					local point, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
+					self:SetMovable(true)
+					self:SetPoint("BOTTOMLEFT", self:GetParent(),"TOPLEFT", xOfs, yOfs+42)
+					self:SetUserPlaced(true)
+				end
+			end
+			self:UnregisterEvent("PLAYER_REGEN_ENABLED");
+		end
 	end);
-	hooksecurefunc("PetActionBar_Update",function()
-		PetActionBar_yidong()
+	
+	-- hooksecurefunc("UIParent_ManageFramePositions",function()
+
+	-- end);
+	-- hooksecurefunc("UIParent_UpdateTopFramePositions",function()
+
+	-- end);
+	local function PetBar_Update(self)
+		if self:IsShown() then
+			if InCombatLockdown() then return end
+			if SHOW_MULTI_ACTIONBAR_1 or SHOW_MULTI_ACTIONBAR_2 or SHOW_MULTI_ACTIONBAR_3 or SHOW_MULTI_ACTIONBAR_4 then
+				local showXP,showRep = GetExpWatched()
+				self:SetMovable(true)
+				if SHOW_MULTI_ACTIONBAR_4 and SHOW_MULTI_ACTIONBAR_3 and SHOW_MULTI_ACTIONBAR_1 then
+					if showXP and showRep then
+						self:SetPoint("BOTTOMLEFT", self:GetParent(),"TOPLEFT", PETACTIONBAR_XPOS, 96)
+					elseif showXP or showRep then
+						self:SetPoint("BOTTOMLEFT", self:GetParent(),"TOPLEFT", PETACTIONBAR_XPOS, 86)
+					else
+						self:SetPoint("BOTTOMLEFT", self:GetParent(),"TOPLEFT", PETACTIONBAR_XPOS, 84)
+					end	
+				else
+					if SHOW_MULTI_ACTIONBAR_1 then
+						if showXP and showRep then
+							self:SetPoint("BOTTOMLEFT", self:GetParent(),"TOPLEFT", PETACTIONBAR_XPOS, 54)
+						elseif showXP or showRep then
+							self:SetPoint("BOTTOMLEFT", self:GetParent(),"TOPLEFT", PETACTIONBAR_XPOS, 45)
+						else
+							self:SetPoint("BOTTOMLEFT", self:GetParent(),"TOPLEFT", PETACTIONBAR_XPOS, 42)
+						end
+					else
+						if showXP and showRep then
+							self:SetPoint("BOTTOMLEFT", self:GetParent(),"TOPLEFT", PETACTIONBAR_XPOS, 12)
+						elseif showXP or showRep then
+							self:SetPoint("BOTTOMLEFT", self:GetParent(),"TOPLEFT", PETACTIONBAR_XPOS, 4)
+						else
+							self:SetPoint("BOTTOMLEFT", self:GetParent(),"TOPLEFT", PETACTIONBAR_XPOS, 0)
+						end
+					end
+				end
+				self:SetUserPlaced(true)
+			end
+		end
+	end
+
+	hooksecurefunc("MainMenuBar_UpdateExperienceBars",function(newLevel)
+		StanceBar_Update(StanceBarFrame)
+		PetBar_Update(PetActionBarFrame)
 	end);
-	hooksecurefunc ("MultiActionBar_Update",function()
-		StanceBar_yidong()
-		PetActionBar_yidong()
+	hooksecurefunc("MultiActionBar_Update",function()	
+		Pig_MultiBar_Update()
+		StanceBar_Update(StanceBarFrame)
+		PetBar_Update(PetActionBarFrame)
 	end);
 end
-
 ---------------------
 fuFrame.ActionBar = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
 fuFrame.ActionBar:SetSize(30,32);
@@ -200,22 +230,22 @@ fuFrame.ActionBar:SetScript("OnClick", function ()
 	if fuFrame.ActionBar:GetChecked() then
 		PIG['PigUI']['ActionBar']="ON";
 		PigUI_ActionBar_up();
-		StanceBar_yidong()
-		PetActionBar_yidong()
 	else
 		PIG['PigUI']['ActionBar']="OFF";
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
-
+----
+fuFrame:HookScript("OnShow", function ()
+	if PIG['PigUI']['ActionBar']=="ON" then
+		fuFrame.ActionBar:SetChecked(true);
+	end
+end);
 ----------------------------------------------
 addonTable.PigUI_ActionBar = function()
 	PigUI_ShhijiuIcon();
-	if PIG['PigUI']['ActionBar']=="ON" then
-		fuFrame.ActionBar:SetChecked(true);
-		PigUI_ActionBar_up();
-		StanceBar_yidong()
-		PetActionBar_yidong()
-	end
 	ActionBar_bili_gengxin()
+	if PIG['PigUI']['ActionBar']=="ON" then
+		PigUI_ActionBar_up();
+	end
 end

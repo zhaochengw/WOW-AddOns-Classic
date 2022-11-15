@@ -67,19 +67,30 @@ local function Pig_AFK()
 		local LIKAIMSG=string.format(MARKED_AFK_MESSAGE,DEFAULT_AFK_MESSAGE)
 		ModelUI:RegisterEvent("CHAT_MSG_AFK");
 		ModelUI:RegisterEvent("CHAT_MSG_SYSTEM");
+		ModelUI:RegisterEvent("PLAYER_REGEN_DISABLED");
 		ModelUI:SetScript("OnEvent", function(self,event,arg1)
-			if arg1==LIKAIMSG then
-				SetCVar("cameraYawMoveSpeed",6)
-				UIParent:Hide()
-				ModelUI:Show()
-				MoveViewLeftStart()
-				ModelUI.pxulie=1
-				weizhibiandong()
-			elseif arg1==CLEARED_AFK then
-				SetCVar("cameraYawMoveSpeed",180)
-				ModelUI:Hide()
-				UIParent:Show()
-				MoveViewLeftStop()
+			if event=="PLAYER_REGEN_DISABLED" then
+				if not InCombatLockdown() then
+					SetCVar("cameraYawMoveSpeed",180)--旋转速度
+					ModelUI:Hide()
+					UIParent:Show()
+					MoveViewLeftStop()
+				end
+			end
+			if not InCombatLockdown() then
+				if arg1==LIKAIMSG then
+					SetCVar("cameraYawMoveSpeed",6)
+					UIParent:Hide()
+					ModelUI:Show()
+					MoveViewLeftStart()
+					ModelUI.pxulie=1
+					weizhibiandong()
+				elseif arg1==CLEARED_AFK then
+					SetCVar("cameraYawMoveSpeed",180)
+					ModelUI:Hide()
+					UIParent:Show()
+					MoveViewLeftStop()
+				end
 			end
 		end)
 	end

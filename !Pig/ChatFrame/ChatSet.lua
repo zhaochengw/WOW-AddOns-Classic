@@ -22,10 +22,10 @@ local ChatFrame_QuickChat_Open=addonTable.ChatFrame_QuickChat_Open
 fuFrame.QuickChat = ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",Xpianyi,chushiY,"快捷切换频道按钮","在聊天栏增加一排频道快捷切换按钮，可快速切换频道！")
 fuFrame.QuickChat:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['QuickChat']="ON";
+		PIG["ChatFrame"]["QuickChat"]="ON";
 		ChatFrame_QuickChat_Open(QuickChat_maodianList)
 	else
-		PIG['ChatFrame']['QuickChat']="OFF";
+		PIG["ChatFrame"]["QuickChat"]="OFF";
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
@@ -33,10 +33,10 @@ end);
 fuFrame.QuickChat_nil = ADD_Checkbutton(nil,fuFrame,-100,"LEFT",fuFrame.QuickChat,"RIGHT",350,0,"无边框模式","频道快捷切换按钮无边框模式！")
 fuFrame.QuickChat_nil:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['wubiankuang']="ON";
+		PIG["ChatFrame"]["wubiankuang"]="ON";
 		Pig_Options_RLtishi_UI:Show()
 	else
-		PIG['ChatFrame']['wubiankuang']="OFF";
+		PIG["ChatFrame"]["wubiankuang"]="OFF";
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
@@ -48,7 +48,7 @@ local function QuickChat_maodian_Up()
 	local info = UIDropDownMenu_CreateInfo()
 	info.func = QuickChat_maodian.SetValue
 	for i=1,#QuickChat_maodianID,1 do
-	    info.text, info.arg1, info.checked = QuickChat_maodianListCN[i], QuickChat_maodianID[i], QuickChat_maodianID[i] == PIG['ChatFrame']['QuickChat_maodian'];
+	    info.text, info.arg1, info.checked = QuickChat_maodianListCN[i], QuickChat_maodianID[i], QuickChat_maodianID[i] == PIG["ChatFrame"]['QuickChat_maodian'];
 		UIDropDownMenu_AddButton(info)
 	end 
 end
@@ -74,7 +74,7 @@ function QuickChat_maodian:SetValue(newValueqk)
 		end
 		ChatFrame1EditBox:Hide();
 	end
-	PIG['ChatFrame']['QuickChat_maodian'] = newValueqk;
+	PIG["ChatFrame"]['QuickChat_maodian'] = newValueqk;
 	CloseDropDownMenus()
 end
 fuFrame.xian0 = fuFrame:CreateLine()
@@ -86,7 +86,7 @@ fuFrame.xian0:SetEndPoint("TOPRIGHT",0,-48)
 --/console SET portal "TW"    /console SET profanityFilter "0" 
 local yuyanguolv = CreateFrame("FRAME")
 yuyanguolv:SetScript("OnEvent", function(self) --（关闭语言过滤器）
-	if PIG['ChatFrame']['Guolv']=="ON" then
+	if PIG["ChatFrame"]["Guolv"]=="ON" then
 		if GetCVar("portal") == "CN" then
 			ConsoleExec("portal TW") 
 			SetCVar("profanityFilter", "0") 
@@ -117,22 +117,22 @@ fuFrame.Guolv_title1:SetFontObject(GameFontNormal);
 fuFrame.Guolv_title1:SetText('***更改后需重新登录游戏生效***')
 fuFrame.Guolv:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['Guolv']="ON";
+		PIG["ChatFrame"]["Guolv"]="ON";
 		yuyanguolv:RegisterEvent("ADDON_LOADED") 
 	else
-		PIG['ChatFrame']['Guolv']="OFF";
+		PIG["ChatFrame"]["Guolv"]="OFF";
 		yuyanguolv:UnregisterEvent("ADDON_LOADED") 
 	end
 end);
 
 --输入框光标优化
 local function ChatFrame_AltEX_Open()
-	if PIG['ChatFrame']['AltEX']=="ON" then
+	if PIG["ChatFrame"]["AltEX"]=="ON" then
 		for i = 1, NUM_CHAT_WINDOWS do
 			_G["ChatFrame"..i.."EditBox"]:SetAltArrowKeyMode(false) --只按方向键即可控制输入框光标 
 		end
 	end
-	if PIG['ChatFrame']['AltEX']=="OFF" then
+	if PIG["ChatFrame"]["AltEX"]=="OFF" then
 		for i = 1, NUM_CHAT_WINDOWS do
 			_G["ChatFrame"..i.."EditBox"]:SetAltArrowKeyMode(true) --只按方向键即可控制输入框光标 
 		end
@@ -142,21 +142,21 @@ end
 fuFrame.AltEX = ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.xian0,"TOPLEFT",Xpianyi,Ypianyi*1+chushiY,"输入框光标优化","只按方向键即可控制输入框光标，正常系统是需要按住ALT键才可移动光标")
 fuFrame.AltEX:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['AltEX']="ON";	
+		PIG["ChatFrame"]["AltEX"]="ON";	
 	else
-		PIG['ChatFrame']['AltEX']="OFF";
+		PIG["ChatFrame"]["AltEX"]="OFF";
 	end
 	ChatFrame_AltEX_Open();
 end);
 
 --移除聊天文字渐隐
 local function ChatFrame_Jianyin_Open()
-	if PIG['ChatFrame']['Jianyin']=="ON" then
+	if PIG["ChatFrame"]["Jianyin"]=="ON" then
 		for i = 1, NUM_CHAT_WINDOWS do
 			_G["ChatFrame"..i]:SetFading(false)
 		end
 	end
-	if PIG['ChatFrame']['Jianyin']=="OFF" then
+	if PIG["ChatFrame"]["Jianyin"]=="OFF" then
 		for i = 1, NUM_CHAT_WINDOWS do
 			_G["ChatFrame"..i]:SetFading(true) 
 		end
@@ -166,9 +166,9 @@ end
 fuFrame.Jianyin = ADD_Checkbutton(nil,fuFrame,-120,"LEFT",fuFrame.AltEX,"RIGHT",250,0,"关闭聊天栏文字渐隐","移除聊天栏文字渐隐效果！")
 fuFrame.Jianyin:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['Jianyin']="ON";	
+		PIG["ChatFrame"]["Jianyin"]="ON";	
 	else
-		PIG['ChatFrame']['Jianyin']="OFF";
+		PIG["ChatFrame"]["Jianyin"]="OFF";
 	end
 	ChatFrame_Jianyin_Open();
 end);
@@ -274,26 +274,26 @@ end
 fuFrame.MinMaxB = ADD_Checkbutton(nil,fuFrame,-150,"TOPLEFT",fuFrame.AltEX,"BOTTOMLEFT",0,chushiY,"添加放大缩小字体按钮","在聊天栏右上方添加放大缩小字体按钮！")
 fuFrame.MinMaxB:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['MinMaxB']="ON";
+		PIG["ChatFrame"]["MinMaxB"]="ON";
 		ChatFrame_MinMaxB_Open();		
 	else
-		PIG['ChatFrame']['MinMaxB']="OFF";
+		PIG["ChatFrame"]["MinMaxB"]="OFF";
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
 
 --设置聊天字体大小
 local function PigUI_ChatFrame_FontSize_Open()
-	ChatFrame_WINDOWS_Size(PIG['ChatFrame']['FontSize_value'])
+	ChatFrame_WINDOWS_Size(PIG["ChatFrame"]['FontSize_value'])
 end
 -----------------------
 fuFrame.FontSize = ADD_Checkbutton(nil,fuFrame,-120,"LEFT",fuFrame.MinMaxB,"RIGHT",250,0,"自动设置聊天字体:","开启后将在每次登录时恢复聊天字体大小为设置值，如果想自定义单独聊天窗字体大小请关闭此选项。")
 fuFrame.FontSize:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['FontSize']="ON";
+		PIG["ChatFrame"]["FontSize"]="ON";
 		PigUI_ChatFrame_FontSize_Open()
 	else
-		PIG['ChatFrame']['FontSize']="OFF";
+		PIG["ChatFrame"]["FontSize"]="OFF";
 	end
 end);
 --字号下拉菜单
@@ -305,7 +305,7 @@ local function ChatFontSize_Up()
 	local info = UIDropDownMenu_CreateInfo()
 	info.func = fuFrame.ChatFontSize.SetValue
 	for i=1,#ChatFontSizeList,1 do
-	    info.text, info.arg1, info.checked = ChatFontSizeList[i].."pt", ChatFontSizeList[i], ChatFontSizeList[i] == PIG['ChatFrame']['FontSize_value'];
+	    info.text, info.arg1, info.checked = ChatFontSizeList[i].."pt", ChatFontSizeList[i], ChatFontSizeList[i] == PIG["ChatFrame"]['FontSize_value'];
 		UIDropDownMenu_AddButton(info)
 	end 
 end
@@ -317,7 +317,7 @@ function fuFrame.ChatFontSize:SetValue(newValue)
 	if ChatFrame99 then
 		FCF_SetChatWindowFontSize(nil, ChatFrame99, newValue);
 	end
-	PIG['ChatFrame']['FontSize_value'] = newValue;
+	PIG["ChatFrame"]['FontSize_value'] = newValue;
 	CloseDropDownMenus()
 end
 -------------------------
@@ -331,29 +331,31 @@ local linktypes = {item = true, enchant = true, spell = true, quest = true, unit
 local function linkEnter(self, linkData, link)
 	local linktype = linkData:match("^([^:]+)")
 	if linktype and linktypes[linktype] then
+		GameTooltip:ClearLines();
 		GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
 		GameTooltip:SetHyperlink(link)
 		GameTooltip:Show()
 	end
 end
 local function linkLeave()
+	GameTooltip:ClearLines();
 	GameTooltip:Hide()
 end
 local function chat_SHow()
 	for i = 1, NUM_CHAT_WINDOWS do
 		local frame = _G["ChatFrame"..i]
-		frame:SetScript("OnHyperlinkEnter", linkEnter)
-		frame:SetScript("OnHyperlinkLeave", linkLeave)
+		frame:HookScript("OnHyperlinkEnter", linkEnter)
+		frame:HookScript("OnHyperlinkLeave", linkLeave)
 	end
 end
 
 fuFrame.shubiaohuaguo = ADD_Checkbutton(nil,fuFrame,-120,"TOPLEFT",fuFrame.xian1,"TOPLEFT",Xpianyi,chushiY,"鼠标划过链接直接显示","鼠标指向聊天栏物品链接直接显示属性框，正常需要点击链接。")
 fuFrame.shubiaohuaguo:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['zhixiangShow']="ON";
+		PIG["ChatFrame"]["zhixiangShow"]="ON";
 		chat_SHow()
 	else
-		PIG['ChatFrame']['zhixiangShow']="OFF";
+		PIG["ChatFrame"]["zhixiangShow"]="OFF";
 		Pig_Options_RLtishi_UI:Show();
 	end
 end);
@@ -411,10 +413,10 @@ end
 fuFrame.jingjianpindaoname = ADD_Checkbutton(nil,fuFrame,-90,"TOPLEFT",fuFrame.xian1,"TOPLEFT",Xpianyi,Ypianyi*1+chushiY,"精简频道名","精简频道名称，例：[寻求组队]变为[组]！")
 fuFrame.jingjianpindaoname:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['jingjian']="ON";
+		PIG["ChatFrame"]["jingjian"]="ON";
 		JingjianPindaoNameFun()
 	else
-		PIG['ChatFrame']['jingjian']="OFF";
+		PIG["ChatFrame"]["jingjian"]="OFF";
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
@@ -428,10 +430,10 @@ end
 fuFrame.Bianju = ADD_Checkbutton(nil,fuFrame,-120,"LEFT",fuFrame.jingjianpindaoname,"RIGHT",250,0,"移除聊天窗口的边距","移除聊天窗口的系统默认边距，使之可以移动到屏幕最边缘！")
 fuFrame.Bianju:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['Bianju']="ON";
+		PIG["ChatFrame"]["Bianju"]="ON";
 		ChatFrame_Bianju_Open();
 	else
-		PIG['ChatFrame']['Bianju']="OFF";
+		PIG["ChatFrame"]["Bianju"]="OFF";
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
@@ -448,10 +450,10 @@ fuFrame.JoinPig = ADD_Checkbutton(nil,fuFrame,-120,"TOPLEFT",fuFrame.jingjianpin
 fuFrame.JoinPig.haoshi=0
 fuFrame.JoinPig:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['JoinPindao']="ON";
+		PIG["ChatFrame"]["JoinPindao"]="ON";
 		JoinPIG("PIG")
 	else
-		PIG['ChatFrame']['JoinPindao']="OFF";
+		PIG["ChatFrame"]["JoinPindao"]="OFF";
 	end
 end);
 -------------
@@ -517,8 +519,9 @@ local function chaxunxiayipindao(currChatType,self)
 end
 ChatFrame1EditBox:HookScript("OnKeyDown",function(self,key)
 	if key=="TAB" then
-		if PIG['ChatFrame']['TABqiehuanOpen'] then
+		if PIG["ChatFrame"]["TABqiehuanOpen"] then
 			local pig_currChatType = self:GetAttribute("chatType")
+			if pig_currChatType=="WHISPER" then return end
 			if pig_currChatType then
 				if pig_currChatType=="CHANNEL" then
 					local channelTargetID = self:GetAttribute("channelTarget")
@@ -543,9 +546,9 @@ local TABchatName = "TAB切换频道|cff00ff00(只会在下方选中的频道之
 fuFrame.TABchat = ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.xian2,"TOPLEFT",Xpianyi,chushiY,TABchatName,"激活输入栏时候可以用TAB切换频道")
 fuFrame.TABchat:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['ChatFrame']['TABqiehuanOpen']=true;
+		PIG["ChatFrame"]["TABqiehuanOpen"]=true;
 	else
-		PIG['ChatFrame']['TABqiehuanOpen']=false;
+		PIG["ChatFrame"]["TABqiehuanOpen"]=false;
 	end
 end);
 local function TABchatPindao()
@@ -585,10 +588,10 @@ local function TABchatPindao()
 			end
 		end
 		local function zhixingshauxingouxuan(g)
-			if PIG['ChatFrame']["TABqiehuanList"][chatpindaoList[g][2]]=="Y" then
+			if PIG["ChatFrame"]["TABqiehuanList"][chatpindaoList[g][2]]=="Y" then
 				_G["Pig_TABpindao"..g]:SetChecked(true);
 				table.insert(TABpindaoList,chatpindaoList[g][2])
-			elseif PIG['ChatFrame']["TABqiehuanList"][chatpindaoList[g][2]]=="N" then
+			elseif PIG["ChatFrame"]["TABqiehuanList"][chatpindaoList[g][2]]=="N" then
 				_G["Pig_TABpindao"..g]:SetChecked(false);
 			else
 				if MorenqiehuanYN[chatpindaoList[g][2]] then
@@ -600,9 +603,9 @@ local function TABchatPindao()
 		zhixingshauxingouxuan(i)
 		TABpindao:SetScript("OnClick", function (self)
 			if self:GetChecked() then
-				PIG['ChatFrame']['TABqiehuanList'][chatpindaoList[i][2]]="Y"
+				PIG["ChatFrame"]["TABqiehuanList"][chatpindaoList[i][2]]="Y"
 			else
-				PIG['ChatFrame']['TABqiehuanList'][chatpindaoList[i][2]]="N"
+				PIG["ChatFrame"]["TABqiehuanList"][chatpindaoList[i][2]]="N"
 			end
 			TABpindaoList={}
 			for g=1,#chatpindaoList do
@@ -659,9 +662,9 @@ local function zhanlianhuiche()
 				zhanlian:SetPoint("LEFT",_G["Pig_pindaozhanlian"..(i-1)],"RIGHT",80,0);
 			end
 		end
-		if PIG['ChatFrame']['chatZhanlian'][chatpindaoList[i][2]]==1 then
+		if PIG["ChatFrame"]["chatZhanlian"][chatpindaoList[i][2]]==1 then
 			ChatTypeInfo[chatpindaoList[i][2]]["sticky"]=1
-		elseif PIG['ChatFrame']['chatZhanlian'][chatpindaoList[i][2]]==0 then
+		elseif PIG["ChatFrame"]["chatZhanlian"][chatpindaoList[i][2]]==0 then
 			ChatTypeInfo[chatpindaoList[i][2]]["sticky"]=0
 		end
 		if ChatTypeInfo[chatpindaoList[i][2]]["sticky"]==1 then
@@ -672,10 +675,10 @@ local function zhanlianhuiche()
 		zhanlian:SetScript("OnClick", function (self)
 			if self:GetChecked() then
 				ChatTypeInfo[chatpindaoList[i][2]]["sticky"]=1
-				PIG['ChatFrame']['chatZhanlian'][chatpindaoList[i][2]]=1
+				PIG["ChatFrame"]["chatZhanlian"][chatpindaoList[i][2]]=1
 			else
 				ChatTypeInfo[chatpindaoList[i][2]]["sticky"]=0
-				PIG['ChatFrame']['chatZhanlian'][chatpindaoList[i][2]]=0
+				PIG["ChatFrame"]["chatZhanlian"][chatpindaoList[i][2]]=0
 			end
 		end);
 	end
@@ -768,62 +771,66 @@ YCHQADMINf:SetScript("OnEvent", function(self,event,arg1,arg2,arg3,arg4,arg5)
 	end
 end)
 ----------
+local function JoinPigChannel_add()
+	JoinPIG("寻求组队")
+	if PIG["ChatFrame"]["JoinPindao"]=="ON" then
+		JoinPIG("PIG")
+	end
+	addonTable.Update_ChatBut_icon()
+	colorClass()
+	TABchatPindao()
+	zhanlianhuiche()
+end
 local function JoinPigChannel()
 	fuFrame.JoinPig.haoshi=fuFrame.JoinPig.haoshi+1	
-	local morenName= "综合"
-	local morenchannel = GetChannelName(morenName)
-	if morenchannel and GetChannelName(morenchannel) > 0 then
-		JoinPIG("寻求组队")
-		if PIG['ChatFrame']['JoinPindao']=="ON" then
-			JoinPIG("PIG")
-		end
-		addonTable.Update_ChatBut_icon()
-		colorClass()
-		TABchatPindao()
-		zhanlianhuiche()
+	local channels = {GetChannelList()}
+	if #channels > 0 then
+		JoinPigChannel_add()
 	else
-		if fuFrame.JoinPig.haoshi<10 then
+		if fuFrame.JoinPig.haoshi<6 then
 			C_Timer.After(1, JoinPigChannel)
+		else
+			JoinPigChannel_add()
 		end
 	end
 end
 --
 fuFrame:HookScript("OnShow", function ()
-	UIDropDownMenu_SetText(QuickChat_maodian, QuickChat_maodianListCN[PIG['ChatFrame']['QuickChat_maodian']])--设定下拉默认选中
+	UIDropDownMenu_SetText(QuickChat_maodian, QuickChat_maodianListCN[PIG["ChatFrame"]['QuickChat_maodian']])--设定下拉默认选中
 	UIDropDownMenu_Initialize(QuickChat_maodian, QuickChat_maodian_Up)--初始化下拉
-	if PIG['ChatFrame']['QuickChat']=="ON" then
+	if PIG["ChatFrame"]["QuickChat"]=="ON" then
 		fuFrame.QuickChat:SetChecked(true);
 	end
-	if PIG['ChatFrame']['wubiankuang']=="ON" then
+	if PIG["ChatFrame"]["wubiankuang"]=="ON" then
 		fuFrame.QuickChat_nil:SetChecked(true);
 	end
-	if PIG['ChatFrame']['JoinPindao']=="ON" then
+	if PIG["ChatFrame"]["JoinPindao"]=="ON" then
 		fuFrame.JoinPig:SetChecked(true);
 	end
-	if PIG['ChatFrame']['jingjian']=="ON" then
+	if PIG["ChatFrame"]["jingjian"]=="ON" then
 		fuFrame.jingjianpindaoname:SetChecked(true);
 	end
-	if PIG['ChatFrame']['Guolv']=="ON" then
+	if PIG["ChatFrame"]["Guolv"]=="ON" then
 		fuFrame.Guolv:SetChecked(true);
 	end
-	if PIG['ChatFrame']['AltEX']=="ON" then
+	if PIG["ChatFrame"]["AltEX"]=="ON" then
 		fuFrame.AltEX:SetChecked(true);
 	end
-	if PIG['ChatFrame']['Jianyin']=="ON" then
+	if PIG["ChatFrame"]["Jianyin"]=="ON" then
 		fuFrame.Jianyin:SetChecked(true);
 	end
-	if PIG['ChatFrame']['zhixiangShow']=="ON" then
+	if PIG["ChatFrame"]["zhixiangShow"]=="ON" then
 		fuFrame.shubiaohuaguo:SetChecked(true);
 	end
-	UIDropDownMenu_SetText(fuFrame.ChatFontSize, PIG['ChatFrame']['FontSize_value'].."pt")
+	UIDropDownMenu_SetText(fuFrame.ChatFontSize, PIG["ChatFrame"]['FontSize_value'].."pt")
 	UIDropDownMenu_Initialize(fuFrame.ChatFontSize, ChatFontSize_Up)
-	if PIG['ChatFrame']['FontSize']=="ON" then
+	if PIG["ChatFrame"]["FontSize"]=="ON" then
 		fuFrame.FontSize:SetChecked(true);
 	end
-	if PIG['ChatFrame']['MinMaxB']=="ON" then
+	if PIG["ChatFrame"]["MinMaxB"]=="ON" then
 		fuFrame.MinMaxB:SetChecked(true);
 	end
-	if PIG['ChatFrame']['Bianju']=="ON" then
+	if PIG["ChatFrame"]["Bianju"]=="ON" then
 		fuFrame.Bianju:SetChecked(true);
 	end
 	if GetCVar("chatClassColorOverride")=="0" then
@@ -831,42 +838,42 @@ fuFrame:HookScript("OnShow", function ()
 	elseif GetCVar("chatClassColorOverride")=="1" then
 		fuFrame.colorClass:SetChecked(false);
 	end
-	if PIG['ChatFrame']['TABqiehuanOpen'] then
+	if PIG["ChatFrame"]["TABqiehuanOpen"] then
 		fuFrame.TABchat:SetChecked(true);
 	end
 end);
 --=====================================
 addonTable.ChatFrame_Set = function()
-	PIG['ChatFrame']['wubiankuang']=PIG['ChatFrame']['wubiankuang'] or addonTable.Default['ChatFrame']['wubiankuang']
-	PIG['ChatFrame']['chatZhanlian']=PIG['ChatFrame']['chatZhanlian'] or addonTable.Default['ChatFrame']['chatZhanlian']
-	PIG['ChatFrame']['TABqiehuanOpen']=PIG['ChatFrame']['TABqiehuanOpen'] or addonTable.Default['ChatFrame']['TABqiehuanOpen']
-	PIG['ChatFrame']['TABqiehuanList']=PIG['ChatFrame']['TABqiehuanList'] or addonTable.Default['ChatFrame']['TABqiehuanList']
+	PIG["ChatFrame"]["wubiankuang"]=PIG["ChatFrame"]["wubiankuang"] or addonTable.Default["ChatFrame"]["wubiankuang"]
+	PIG["ChatFrame"]["chatZhanlian"]=PIG["ChatFrame"]["chatZhanlian"] or addonTable.Default["ChatFrame"]["chatZhanlian"]
+	PIG["ChatFrame"]["TABqiehuanOpen"]=PIG["ChatFrame"]["TABqiehuanOpen"] or addonTable.Default["ChatFrame"]["TABqiehuanOpen"]
+	PIG["ChatFrame"]["TABqiehuanList"]=PIG["ChatFrame"]["TABqiehuanList"] or addonTable.Default["ChatFrame"]["TABqiehuanList"]
 	C_Timer.After(2.8, JoinPigChannel);
-	if PIG['ChatFrame']['QuickChat']=="ON" then
+	if PIG["ChatFrame"]["QuickChat"]=="ON" then
 		ChatFrame_QuickChat_Open(QuickChat_maodianList)
 	end
-	if PIG['ChatFrame']['Guolv']=="ON" then
+	if PIG["ChatFrame"]["Guolv"]=="ON" then
 		yuyanguolv:RegisterEvent("ADDON_LOADED") 
 	end
-	if PIG['ChatFrame']['AltEX']=="ON" then
+	if PIG["ChatFrame"]["AltEX"]=="ON" then
 		ChatFrame_AltEX_Open();
 	end
-	if PIG['ChatFrame']['Jianyin']=="ON" then
+	if PIG["ChatFrame"]["Jianyin"]=="ON" then
 		ChatFrame_Jianyin_Open();
 	end
-	if PIG['ChatFrame']['zhixiangShow']=="ON" then
+	if PIG["ChatFrame"]["zhixiangShow"]=="ON" then
 		chat_SHow()
 	end
-	if PIG['ChatFrame']['FontSize']=="ON" then
+	if PIG["ChatFrame"]["FontSize"]=="ON" then
 		PigUI_ChatFrame_FontSize_Open()
 	end
-	if PIG['ChatFrame']['MinMaxB']=="ON" then
+	if PIG["ChatFrame"]["MinMaxB"]=="ON" then
 		ChatFrame_MinMaxB_Open();
 	end
-	if PIG['ChatFrame']['Bianju']=="ON" then
+	if PIG["ChatFrame"]["Bianju"]=="ON" then
 		ChatFrame_Bianju_Open();
 	end
-	if PIG['ChatFrame']['jingjian']=="ON" then
+	if PIG["ChatFrame"]["jingjian"]=="ON" then
 		JingjianPindaoNameFun()
 	end
 end

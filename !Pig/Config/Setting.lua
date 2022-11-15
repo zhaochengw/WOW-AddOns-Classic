@@ -1,8 +1,51 @@
 local _, addonTable = ...;
-
---///////////////////////////////////////////
+-------
 local fuFrame=List_R_F_1_12
-
+--载入默认配置
+local function Config_Default()
+	PIG = PIG or addonTable.Default;
+	for k,v in pairs(addonTable.Default) do
+		if v==nil then
+			PIG[k] = addonTable.Default[k]
+		end
+		if type(v)=="table" then
+			for kk,vv in pairs(v) do
+				if vv==nil then
+					PIG[k][kk] = addonTable.Default[k][kk]
+				end
+				if type(kk)~="number" and type(vv)=="table" then
+					for kkk,vvv in pairs(vv) do
+						if vvv==nil then
+							PIG[k][kk][kkk] = addonTable.Default[k][kk][kkk]
+						end
+					end
+				end
+			end
+		end
+	end
+	PIG_Per = PIG_Per or addonTable.Default_Per;
+	for k,v in pairs(addonTable.Default_Per) do
+		if v==nil then
+			PIG_Per[k] = addonTable.Default_Per[k]
+		end
+		if type(v)=="table" then
+			for kk,vv in pairs(v) do
+				if vv==nil then
+					PIG_Per[k][kk] = addonTable.Default_Per[k][kk]
+				end
+				if type(kk)~="number" and type(vv)=="table" then
+					for kkk,vvv in pairs(vv) do
+						if vvv==nil then
+							PIG_Per[k][kk][kkk] =addonTable.Default_Per[k][kk][kkk]
+						end
+					end
+				end
+			end
+		end
+	end
+end
+addonTable.Config_Default=Config_Default
+--------------
 local Config_Name ={"常用配置","调试配置","PIG",};
 local Config_ID ={"AllNO","Default","PIG"};
 local Config_SM ={

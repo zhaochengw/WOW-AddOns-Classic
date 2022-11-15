@@ -81,6 +81,7 @@ local function ADD_Invite()
 		for i=1,#invite.TND do
 			invite.renshu={0,0};
 			for ii=1,#invite.classes_Name[i] do
+				INVshujuY[i][ii]=INVshujuY[i][ii] or 0
 				_G[invite.TND[i].."_mubiao_E_"..ii]:SetText(INVshujuY[i][ii])
 				_G[invite.TND[i].."_yizu_"..ii]:SetText(shishirenshu[i][ii])
 				if shishirenshu[i][ii]<INVshujuY[i][ii] then

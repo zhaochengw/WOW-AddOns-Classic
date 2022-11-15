@@ -287,7 +287,7 @@ local function ADD_QuickBut_Jilu()
 			end
 			Pindaolist.Tex = Pindaolist:CreateTexture(nil, "BORDER");
 			Pindaolist.Tex:SetTexture("interface/paperdollinfoframe/ui-character-inactivetab.blp");
-			Pindaolist.Tex:SetRotation(3.1415927, 0.5, 0.5)
+			PIGRotation(Pindaolist.Tex, 180)
 			--Pindaolist.Tex:SetSize(TabWidth*1.16,TabHeight*1.3);
 			Pindaolist.Tex:SetPoint("BOTTOM", Pindaolist, "BOTTOM", 0,0);
 			Pindaolist.title = Pindaolist:CreateFontString();
@@ -491,7 +491,7 @@ local function ADD_QuickBut_Jilu()
 			liaotianneirong.Scroll.up:SetSize(butWWW,butHHH);
 			liaotianneirong.Scroll.up:SetPoint("BOTTOM",liaotianneirong.Scroll.down,"TOP",0,6);
 			liaotianneirong.Scroll.shuaxin = CreateFrame("Button","liaotianneirong_shuaxin"..id.."_UI",liaotianneirong.Scroll, "UIMenuButtonStretchTemplate");
-			liaotianneirong.Scroll.shuaxin:SetHighlightTexture(nil);
+			liaotianneirong.Scroll.shuaxin:SetHighlightTexture(0);
 			liaotianneirong.Scroll.shuaxin:SetSize(butWWW-4,butHHH-4);
 			liaotianneirong.Scroll.shuaxin:SetPoint("BOTTOM",liaotianneirong.Scroll.up,"TOP",-0.4,40);
 			liaotianneirong.Scroll.shuaxin.highlight = liaotianneirong.Scroll.shuaxin:CreateTexture(nil, "HIGHLIGHT");
@@ -517,10 +517,10 @@ local function ADD_QuickBut_Jilu()
 			liaotianneirong.Scroll.kaishi:SetPushedTexture("interface/chatframe/ui-chaticon-scrollend-down.blp")
 			liaotianneirong.Scroll.kaishi:SetSize(butWWW,butHHH);
 			liaotianneirong.Scroll.kaishi:SetPoint("BOTTOM",liaotianneirong.Scroll.shuaxin,"TOP",0,50);
-			local buttonTTTT=liaotianneirong.Scroll.kaishi:GetNormalTexture() 
-			buttonTTTT:SetRotation(3.1415927, 0.5, 0.5)
-			local buttonTTTTT=liaotianneirong.Scroll.kaishi:GetPushedTexture() 
-			buttonTTTTT:SetRotation(3.1415927, 0.5, 0.5)
+			local buttonNormal=liaotianneirong.Scroll.kaishi:GetNormalTexture() 
+			PIGRotation(buttonNormal, 180)
+			local buttonPushed=liaotianneirong.Scroll.kaishi:GetPushedTexture() 
+			PIGRotation(buttonPushed, 180)
 
 			liaotianneirong.Scroll.del = CreateFrame("Button","liaotianneirong_del"..id.."_UI",liaotianneirong.Scroll, "TruncatedButtonTemplate");
 			liaotianneirong.Scroll.del:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square");

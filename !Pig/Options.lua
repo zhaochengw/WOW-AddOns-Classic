@@ -69,6 +69,7 @@ Pig_Options.RF:SetBackdrop( {edgeFile = "Interface/Tooltips/UI-Tooltip-Border",e
 Pig_Options.RF:SetSize(OptionsW*0.76-18, OptionsH-100)
 Pig_Options.RF:SetPoint("TOPRIGHT", Pig_Options, "TOPRIGHT", -20, -60)
 ------
+
 local Tab_L={"基础","功能"};
 local Tab_LW,Tab_LH,Tab_JG=50,28,16
 local LF_W,LF_H=Pig_Options.LF:GetWidth()-6,Pig_Options.LF:GetHeight();
@@ -148,9 +149,10 @@ for i=1, #Tab_L, 1 do
 	TAB.TexTishi = TAB:CreateTexture(nil, "BORDER");
 	TAB.TexTishi:SetTexture("interface/vehicles/arrow.blp");
 	TAB.TexTishi:SetBlendMode("ADD")
-	TAB.TexTishi:SetRotation(-3.1415927, 0.5, 0.5)
+	PIGRotation(TAB.TexTishi, 180)
 	TAB.TexTishi:SetPoint("LEFT", TAB, "RIGHT", 4,-6);
 	TAB.TexTishi:Hide();
+
 	TAB.t = TAB:CreateFontString();
 	TAB.t:SetPoint("TOP", TAB, "TOP", 0,-12);
 	TAB.t:SetFontObject(GameFontNormal);
@@ -179,7 +181,7 @@ end
 
 --左边选项内容
 local Tab_L_List={
-	{"交互增强","聊天增强","战斗辅助","头像增强","显示增强","界面布局","快捷按钮栏","小地图/地图","游戏内置设置","试验功能","开发工具","配 置","关 于"},
+	{"交互增强","聊天增强","战斗辅助","头像增强","显示增强","界面布局","快捷按钮栏","小地图/地图","游戏参数设置","露露缇娅","开发工具","配 置","关 于"},
 	{"背包整合","拍卖增强","额外动作条","快捷跟随","输出提示","技能监控","售卖助手","专业 C D","时空之门","开团助手","带本助手","离开屏保"},
 }
 local List_ButH = 24
@@ -338,7 +340,7 @@ end)
 -- PIG_AddOnPanel.cancel = function (self) SC_ChaChingPanel_CancelOrLoad();  end;
 --子页内容
 local Pigtxt={
-	["BT"]="|cff00ff00本插件为|r|cff00FFFF<猪猪加油|r [服务器:凤凰之神-部落]>|cff00ff00定制插件|r|cffffff00(已公开分享)|r\n|cffFF0000(本插件完全免费,网络购物平台出售皆为骗子)。|r",	
+	["BT"]="|cff00ff00本插件为|r|cff00FFFF<猪猪加油|r [服务器:凤凰之神-部落]>|cff00ff00定制插件|r|cffffff00(已公开分享)|r\n|cffFF0000(本插件完全免费,网络购物平台出售的皆为骗子)。|r",	
 	["YY"]="玩家交流\124cff00ff00YY频道113213\124r",
 	["QQ"]="QQ群\124cff00ff0027397148\124r,2群\124cff00ff00117883385\124r",
 }
@@ -425,6 +427,16 @@ Version_tishi:SetScript("OnEvent",function(self, event, arg1, arg2, arg3, arg4, 
 	end
 end)
 ----
+--/run print( GetMouseFocus():GetName() )
+-- 		local editBox = ChatEdit_ChooseBoxForSend();
+-- 		if editBox:HasFocus() then			
+-- 			editBox:SetText(caijiannr);
+-- 			editBox:HighlightText()
+-- 		else
+-- 			ChatEdit_ActivateChat(editBox)
+-- 			editBox:Insert(caijiannr)
+-- 			editBox:HighlightText()
+-- 		end
 -- local ButtonXX = CreateFrame("Button","ButtonXX_UI",UIParent, "UIPanelButtonTemplate");
 -- ButtonXX:SetSize(100,29);
 -- ButtonXX:SetPoint("CENTER",UIParent,"CENTER",0,-2);

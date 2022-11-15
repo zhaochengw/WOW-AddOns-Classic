@@ -316,7 +316,6 @@ end);
 addonTable.AHPlus = function()
 	PIG.AHPlus=PIG.AHPlus or addonTable.Default.AHPlus
 	PIG.AHPlus.Tokens=PIG.AHPlus.Tokens or addonTable.Default.AHPlus.Tokens
-	PIG.AHPlus.AHtooltip=PIG.AHPlus.AHtooltip or addonTable.Default.AHPlus.AHtooltip
 	PIG.AHPlus.DaojiTime=PIG.AHPlus.DaojiTime or addonTable.Default.AHPlus.DaojiTime
 	huoquhuizhangjiageG()
 	if PIG.AHPlus.Open then

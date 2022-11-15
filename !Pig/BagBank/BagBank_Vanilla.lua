@@ -3,9 +3,9 @@ local gsub = _G.string.gsub
 local find = _G.string.find
 local fuFrame=List_R_F_2_1
 local ADD_Frame=addonTable.ADD_Frame
+local _, _, _, tocversion = GetBuildInfo()
 --==========================================
 local yinhangmorengezishu={}
-local _, _, _, tocversion = GetBuildInfo()
 if tocversion<20000 then
 	yinhangmorengezishu={24,6}
 else
@@ -15,27 +15,40 @@ yinhangmorengezishu.banknum=yinhangmorengezishu[1]+yinhangmorengezishu[2]*36
 ----==============
 local QualityColor=addonTable.QualityColor
 local bagID = {0,1,2,3,4}
-bagID.meihang=8
+if tocversion<20000 then
+	bagID.meihang=8
+else
+	bagID.meihang=10
+end
 bagID.suofang=1
 local bankID = {-1,5,6,7,8,9,10,11}
-bankID.meihang=14
+if tocversion<20000 then
+	bankID.meihang=14
+else
+	bankID.meihang=16
+end
 bankID.suofang=1
 local zhengliIcon="interface/containerframe/bags.blp"	
 local BagdangeW=ContainerFrame1Item1:GetWidth()+5
 ----
-local function shuaxinKEYweizhi(frame, size, id)
+local function shuaxinKEYweizhi(frame)
 	local name = frame:GetName();
-	_G[name.."Portrait"]:Show();
+	frame.PortraitButton:Hide();
+	frame.Portrait:Show();
 	_G[name.."CloseButton"]:Show();
-	if IsBagOpen(0) or IsBagOpen(1) or IsBagOpen(2) or IsBagOpen(3) or IsBagOpen(4) then
-	else
-		BAGheji_UI:Hide()
-	end
+	frame:SetParent(UIParent);
 	frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -560, 300);
 end
+local function Update_BAGFrame_WidthHeight(new_hangshu)
+	BAGheji_UI:SetWidth(BagdangeW*bagID.meihang+34)
+	if new_hangshu then
+		BAGheji_UI:SetHeight(BagdangeW*new_hangshu+106);
+	end
+end
 local function shuaxinBAGweizhi(frame, size, id)
-	frame:SetParent(BAGheji_UI)
+	frame:SetHeight(0);
 	frame:SetToplevel(false)
+	frame:SetParent(BAGheji_UI)
 	frame.PortraitButton:Hide();
 	frame.Portrait:Hide();
 	local name = frame:GetName();
@@ -50,7 +63,7 @@ local function shuaxinBAGweizhi(frame, size, id)
 		paishuID,kongbuID=0,0
 		_G[name.."MoneyFrame"]:Show()
 		_G[name.."MoneyFrame"]:ClearAllPoints();
-		_G[name.."MoneyFrame"]:SetPoint("TOPRIGHT", BAGheji_UI.moneyframe, "TOPRIGHT", 6, -5);
+		_G[name.."MoneyFrame"]:SetPoint("TOPRIGHT", BAGheji_UI.moneyframe, "TOPRIGHT", 6, -4);
 		_G[name.."MoneyFrame"]:SetParent(BAGheji_UI);
 		local function ADDshowEV(fameFF)
 				fameFF:SetScript("OnEnter", function (self)
@@ -115,12 +128,11 @@ local function shuaxinBAGweizhi(frame, size, id)
 	local NEWsize=size-shang_yushu
 	local hangShu=math.ceil(NEWsize/bagID.meihang)
 	local new_kongyu,new_hangshu=hangShu*bagID.meihang-NEWsize,hangShu+shang_hang
-	local Fid=IsBagOpen(id)
 	for slot=1,size do
 		local itemF = _G[name.."Item"..slot]
 		itemF:ClearAllPoints();
 		if slot==1 then
-			itemF:SetPoint("TOPRIGHT", BAGheji_UI.wupin, "TOPRIGHT", -(new_kongyu*BagdangeW)-6, -(new_hangshu*BagdangeW)+38);
+			itemF:SetPoint("TOPRIGHT", BAGheji_UI.wupin, "TOPRIGHT", -(new_kongyu*BagdangeW)-5, -(new_hangshu*BagdangeW)+36);
 			_G[name.."PortraitButton"]:ClearAllPoints();
 			_G[name.."PortraitButton"]:SetPoint("TOPLEFT", BAGheji_UI, "TOPRIGHT", 0, -(42*id)-60);
 		else
@@ -133,10 +145,13 @@ local function shuaxinBAGweizhi(frame, size, id)
 			end
 		end
 	end
-	frame:SetHeight(0);
-	BAGheji_UI:SetHeight(BagdangeW*new_hangshu+88);
+	Update_BAGFrame_WidthHeight(new_hangshu)
 end
 ---------------------
+local function Update_BankFrame_Height(hangallgao)
+	BankFrame:SetWidth(BagdangeW*bankID.meihang+36)
+	BankFrame:SetHeight(hangallgao+106);
+end
 local qishihang=math.ceil(yinhangmorengezishu[1]/bankID.meihang)--行数
 local qishikongyu=qishihang*bankID.meihang-yinhangmorengezishu[1]--空余
 local function shuaxinBANKweizhi(frame, size, id)
@@ -152,7 +167,8 @@ local function shuaxinBANKweizhi(frame, size, id)
 	_G[name.."Name"]:Hide();
 	_G[name.."CloseButton"]:Hide();
 	frame:SetHeight(0);
-	frame:SetFrameStrata("HIGH")
+	frame:SetToplevel(false)
+	frame:SetParent(BankSlotsFrame);
 	local function jisuanzongshu(id)
 		if id==5 then
 			return yinhangmorengezishu[1]
@@ -181,14 +197,13 @@ local function shuaxinBANKweizhi(frame, size, id)
 	local NEWsize=size-shang_yushu
 	local hangShu=math.ceil(NEWsize/bankID.meihang)
 	local new_kongyu,new_hangshu=hangShu*bankID.meihang-NEWsize,hangShu+shang_hang
-	local Fid=IsBagOpen(id)
 	for slot=1,size do
 		local itemF = _G[name.."Item"..slot]
 		itemF:ClearAllPoints();
 		if slot==1 then
-			itemF:SetPoint("TOPRIGHT", BankSlotsFrame, "TOPRIGHT", -new_kongyu*BagdangeW-14, -new_hangshu*BagdangeW-38);
+			itemF:SetPoint("TOPRIGHT", BankSlotsFrame, "TOPRIGHT", -new_kongyu*BagdangeW-14, -new_hangshu*BagdangeW-34);
 			_G[name.."PortraitButton"]:ClearAllPoints();
-			_G[name.."PortraitButton"]:SetPoint("TOPLEFT", BankFrameP_UI, "TOPRIGHT", 0, -(42*(id-4))-18);
+			_G[name.."PortraitButton"]:SetPoint("TOPLEFT", BankSlotsFrame, "TOPRIGHT", 0, -(42*(id-4))-18);
 		else
 			local yushu=math.fmod((slot+new_kongyu-1),bankID.meihang)
 			local itemFshang = _G[name.."Item"..(slot-1)]
@@ -201,16 +216,11 @@ local function shuaxinBANKweizhi(frame, size, id)
 	end
 	local ZONGGEZI=GetContainerNumSlots(5)+GetContainerNumSlots(6)+GetContainerNumSlots(7)+GetContainerNumSlots(8)+GetContainerNumSlots(9)+GetContainerNumSlots(10)+GetContainerNumSlots(11)+yinhangmorengezishu[1]
 	local hangShuALL=math.ceil(ZONGGEZI/bankID.meihang)
-	local gaoduvvv=hangShuALL*BagdangeW+96
-	BankFrame:SetHeight(gaoduvvv);
-	BankFrameP_UI:SetHeight(gaoduvvv);
+	local gaoduvvv=hangShuALL*BagdangeW
+	Update_BankFrame_Height(gaoduvvv)
 end
 -------------------
 local function zhegnheBANK_Open()
-	BankFrameP_UI.biaoti.t:SetText();
-	for i=1,yinhangmorengezishu.banknum do
-		_G["BankFrameP_UI_wupin_item_"..i]:Hide();
-	end
 	local BKregions = {BankFrame:GetRegions()}
 	for i=1,#BKregions do
 		if not BKregions[i]:GetName() then
@@ -237,7 +247,7 @@ local function zhegnheBANK_Open()
 	for i = 1, yinhangmorengezishu[1] do
 		_G["BankFrameItem"..i]:ClearAllPoints();
 		if i==1 then
-			_G["BankFrameItem"..i]:SetPoint("TOPLEFT", BankSlotsFrame, "TOPLEFT", 20, -76);
+			_G["BankFrameItem"..i]:SetPoint("TOPLEFT", BankSlotsFrame, "TOPLEFT", 26, -76);
 		else
 			local yushu=math.fmod(i-1,bankID.meihang)
 			if yushu==0 then
@@ -255,13 +265,11 @@ local function zhegnheBANK_Open()
 	BankFramePurchaseButtonText:SetPoint("RIGHT", BankFramePurchaseButton, "RIGHT", -8, 0);
 	BankFrameDetailMoneyFrame:ClearAllPoints();
 	BankFrameDetailMoneyFrame:SetPoint("RIGHT", BankFramePurchaseButtonText, "LEFT", 6, -1);
-	BankCloseButton:SetPoint("CENTER", BankFrame, "TOPRIGHT", -16, -24);
-	BankFrameMoneyFrame:SetPoint("BOTTOMRIGHT", BankFrame, "BOTTOMRIGHT", -10, -3);
-	BankFrame:SetWidth(BagdangeW*bankID.meihang+30)
+	BankCloseButton:SetPoint("CENTER", BankFrame, "TOPRIGHT", -11, -22);
+	BankFrameMoneyFrame:SetPoint("BOTTOMRIGHT", BankFrame, "BOTTOMRIGHT", -10, 11);
 	local hangShuALL=math.ceil(yinhangmorengezishu[1]/bankID.meihang)
-	local gaoduvvv=hangShuALL*BagdangeW+96
-	BankFrame:SetHeight(gaoduvvv);
-	BankFrameP_UI:SetHeight(gaoduvvv);
+	local gaoduvvv=hangShuALL*BagdangeW
+	Update_BankFrame_Height(gaoduvvv)
 end
 ----保存离线数据-----
 local function SAVE_lixian_data(bagID, slot,wupinshujuinfo)
@@ -291,6 +299,10 @@ local function SAVE_C()
 	PIG['zhegnheBAG']["lixian"][PIG_renwuming]["C"] = wupinshujuinfo
 end
 local function SAVE_BAG()
+	-- local raceName, raceFile, raceID = UnitRace("player")
+	-- local _, classId = UnitClassBase("player");
+	-- local level = UnitLevel("player")
+	-- ItemInfo = ItemInfo.."&"..level.."-"..raceID.."-"..classId
 	local wupinshujuinfo = {}
 	for f=1,#bagID do
 		for ff=1,GetContainerNumSlots(bagID[f]) do
@@ -301,40 +313,41 @@ local function SAVE_BAG()
 	PIG['zhegnheBAG']["lixian"][PIG_renwuming]["G"] = GetMoney();
 end
 local function SAVE_bank()
-	local wupinshujuinfo = {}
-	for f=1,#bankID do
-		if f==1 then
-			wupinshujuinfo.allnum=yinhangmorengezishu[1]
-		else
-			wupinshujuinfo.allnum=GetContainerNumSlots(bankID[f])
+	if BankFrame:IsShown() then
+		local wupinshujuinfo = {}
+		for f=1,#bankID do
+			if f==1 then
+				wupinshujuinfo.allnum=yinhangmorengezishu[1]
+			else
+				wupinshujuinfo.allnum=GetContainerNumSlots(bankID[f])
+			end
+			for ff=1,wupinshujuinfo.allnum do
+				SAVE_lixian_data(bankID[f], ff,wupinshujuinfo)
+			end
 		end
-		for ff=1,wupinshujuinfo.allnum do
-			SAVE_lixian_data(bankID[f], ff,wupinshujuinfo)
-		end
+		PIG['zhegnheBAG']["lixian"][PIG_renwuming]["BANK"] = wupinshujuinfo
 	end
-	PIG['zhegnheBAG']["lixian"][PIG_renwuming]["BANK"] = wupinshujuinfo
 end
 --离线显示
 local function Show_lixian_data(frameF,renwu,shuju,meihang,zongshu)
 	if shuju=="BANK" then
-		frameF.Portrait_TEX:SetTexture(130899)
 		frameF.biaoti.t:SetText(renwu..' 的银行');
 	elseif shuju=="BAG" then
 		frameF.biaoti.t:SetText(renwu.." 的背包");
 	elseif shuju=="C" then
 		frameF.biaoti.t:SetText(renwu);
 	end
-	local framename=frameF:GetName()
+	local gogengName=frameF:GetName()
 	if PIG['zhegnheBAG']["wupinLV"] then
 		for i=1,zongshu do
-			local frameX=_G[framename.."_wupin_item_"..i]
+			local frameX=_G[gogengName.."_wupin_item_"..i]
 			frameX:Hide();
 			frameX.LV:SetText()
 		end
 	end
 	local zongshu=#PIG['zhegnheBAG']["lixian"][renwu][shuju]
 	for i=1,zongshu do
-		local frameX=_G[framename.."_wupin_item_"..i]
+		local frameX=_G[gogengName.."_wupin_item_"..i]
 		frameX:Show();
 		local itemLink = PIG['zhegnheBAG']["lixian"][renwu][shuju][i][2]
 		if itemLink then
@@ -391,14 +404,20 @@ local function Show_lixian_data(frameF,renwu,shuju,meihang,zongshu)
 		end
 	end
 	if shuju~="C" then
-		local zongkuandu=meihang*BagdangeW+16
-		if shuju=="BANK" then
-			frameF.hhhh=math.ceil(zongshu/meihang)*(BagdangeW+2)+84
-			frameF:SetSize(zongkuandu,frameF.hhhh)
-			frameF.Close:Show()
-		elseif shuju=="BAG" then
-			frameF.hhhh=math.ceil(zongshu/meihang)*(BagdangeW+2)+84
-			frameF:SetSize(zongkuandu,frameF.hhhh)
+		local zongkuandu=meihang*BagdangeW+32
+		frameF.hhhh=math.ceil(zongshu/meihang)*(BagdangeW)+102
+		frameF:SetSize(zongkuandu,frameF.hhhh)
+		if shuju=="BAG" then
+			for gg=2,164 do
+				local yushu=math.fmod((gg-1),meihang)
+				local framegg = _G["lixianBAG_UI_wupin_item_"..gg]
+				framegg:ClearAllPoints();
+				if yushu==0 then
+					framegg:SetPoint("TOPLEFT", _G["lixianBAG_UI_wupin_item_"..(gg-meihang)], "BOTTOMLEFT", 0, -4);
+				else
+					framegg:SetPoint("LEFT", _G["lixianBAG_UI_wupin_item_"..(gg-1)], "RIGHT", 4, 0);
+				end
+			end
 		end
 	end
 	frameF:Show()
@@ -599,6 +618,7 @@ end)
 
 --===========================================
 local XWidth, XHeight =CharacterHeadSlot:GetWidth(),CharacterHeadSlot:GetHeight()
+local ADD_BagBankBGtex=addonTable.ADD_BagBankBGtex
 --------
 local function zhegnhe_Open()
 	if BAGheji_UI then return end
@@ -650,8 +670,24 @@ local function zhegnhe_Open()
 		    famrr.ranse:Hide()
 		end
 	end
+	if PIG['zhegnheBAG']["JunkShow"] then
+		for f=1,#bagID do
+			local baogeshu=GetContainerNumSlots(bagID[f])
+			for slot=1,baogeshu do
+				local framef = _G["ContainerFrame"..(bagID[f]+1).."Item"..slot]
+				function framef:UpdateJunkItem(quality, noValue)
+					self.JunkIcon:Hide();
+					local itemLocation = ItemLocation:CreateFromBagAndSlot(self:GetBagID(), self:GetID());
+					if C_Item.DoesItemExist(itemLocation) then
+						local isJunk = quality == Enum.ItemQuality.Poor and not noValue;
+						self.JunkIcon:SetShown(isJunk);
+					end
+				end
+			end
+		end
+	end
 	------
-	local BAGheji=ADD_Frame("BAGheji_UI",UIParent,BagdangeW*bagID.meihang+28,200,"CENTER",UIParent,"CENTER",420,-10,true,false,true,true,true)
+	local BAGheji=ADD_Frame("BAGheji_UI",UIParent,200,200,"CENTER",UIParent,"CENTER",420,-10,true,false,true,true,true)
 	BAGheji:SetScale(bagID.suofang)
 	BAGheji:SetToplevel(true)
 	BAGheji:HookScript("OnHide",function()
@@ -666,85 +702,17 @@ local function zhegnhe_Open()
 		BAGheji.Portrait_TEX = BAGheji:CreateTexture(nil, "BORDER");
 		BAGheji.Portrait_TEX:SetSize(30,30);
 		BAGheji.Portrait_TEX:SetPoint("TOPLEFT",BAGheji,"TOPLEFT",14,-13);
-	else
-		BAGheji.Bg = BAGheji:CreateTexture(nil, "BORDER");
-		BAGheji.Bg:SetTexture("interface/framegeneral/ui-background-rock.blp");
-		BAGheji.Bg:SetPoint("TOPLEFT", BAGheji, "TOPLEFT",4, -2);
-		BAGheji.Bg:SetPoint("BOTTOMRIGHT", BAGheji, "BOTTOMRIGHT", -2, 6);
-		BAGheji.Bg:SetDrawLayer("BORDER", 1)
-		BAGheji.topbg = BAGheji:CreateTexture(nil, "BACKGROUND");
-		BAGheji.topbg:SetTexture(374157);
-		BAGheji.topbg:SetPoint("TOPLEFT", BAGheji, "TOPLEFT",58, -1);
-		BAGheji.topbg:SetPoint("TOPRIGHT", BAGheji, "TOPRIGHT",-20, -1);
-		BAGheji.topbg:SetTexCoord(0,0.2890625,0,0.421875,1.359809994697571,0.2890625,1.359809994697571,0.421875);
-		BAGheji.topbg:SetHeight(20);
-		BAGheji.topbg:SetDrawLayer("BORDER", 2)
+	else	
 		BAGheji.Portrait_TEX = BAGheji:CreateTexture(nil, "BORDER");
-		BAGheji.Portrait_TEX:SetSize(55,55);
-		BAGheji.Portrait_TEX:SetPoint("TOPLEFT",BAGheji,"TOPLEFT",1,4);
+		BAGheji.Portrait_TEX:SetSize(56,56);
+		BAGheji.Portrait_TEX:SetPoint("TOPLEFT",BAGheji,"TOPLEFT",10,-5);
 		BAGheji.Portrait_TEX:SetDrawLayer("BORDER", 2)
-
-		BAGheji.TOPLEFT = BAGheji:CreateTexture(nil, "BORDER");
-		BAGheji.TOPLEFT:SetTexture("interface/framegeneral/ui-frame.blp");
-		BAGheji.TOPLEFT:SetPoint("TOPLEFT", BAGheji, "TOPLEFT",-10, 10);
-		BAGheji.TOPLEFT:SetTexCoord(0.0078125,0.0078125,0.0078125,0.6171875,0.6171875,0.0078125,0.6171875,0.6171875);
-		BAGheji.TOPLEFT:SetSize(78,78);
-		BAGheji.TOPLEFT:SetDrawLayer("BORDER", 3)
-		BAGheji.TOPRIGHT = BAGheji:CreateTexture(nil, "BORDER");
-		BAGheji.TOPRIGHT:SetTexture(374156);
-		BAGheji.TOPRIGHT:SetPoint("TOPRIGHT", BAGheji, "TOPRIGHT",0, 0);
-		BAGheji.TOPRIGHT:SetTexCoord(0.6328125,0.0078125,0.6328125,0.265625,0.890625,0.0078125,0.890625,0.265625);
-		BAGheji.TOPRIGHT:SetSize(33,33);
-		BAGheji.TOPRIGHT:SetDrawLayer("BORDER", 3)
-		BAGheji.TOP = BAGheji:CreateTexture(nil, "BORDER");
-		BAGheji.TOP:SetTexture(374157);
-		BAGheji.TOP:SetPoint("TOPLEFT", BAGheji.TOPLEFT, "TOPRIGHT",0, -10);
-		BAGheji.TOP:SetPoint("BOTTOMRIGHT", BAGheji.TOPRIGHT, "BOTTOMLEFT", 0, 5);
-		BAGheji.TOP:SetTexCoord(0,0.4375,0,0.65625,1.08637285232544,0.4375,1.08637285232544,0.65625);
-		BAGheji.TOP:SetDrawLayer("BORDER", 3)
-
-		BAGheji.BOTTOMLEFT = BAGheji:CreateTexture(nil, "BORDER");
-		BAGheji.BOTTOMLEFT:SetTexture(374156);
-		BAGheji.BOTTOMLEFT:SetPoint("BOTTOMLEFT", BAGheji, "BOTTOMLEFT",-2, 0);
-		BAGheji.BOTTOMLEFT:SetTexCoord(0.0078125,0.6328125,0.0078125,0.7421875,0.1171875,0.6328125,0.1171875,0.7421875);
-		BAGheji.BOTTOMLEFT:SetSize(14,14);
-		BAGheji.BOTTOMLEFT:SetDrawLayer("BORDER", 3)
-
-		BAGheji.BOTTOMRIGHT = BAGheji:CreateTexture(nil, "BORDER");
-		BAGheji.BOTTOMRIGHT:SetTexture(374156);
-		BAGheji.BOTTOMRIGHT:SetPoint("BOTTOMRIGHT", BAGheji, "BOTTOMRIGHT",0, 0);
-		BAGheji.BOTTOMRIGHT:SetTexCoord(0.1328125,0.8984375,0.1328125,0.984375,0.21875,0.8984375,0.21875,0.984375);
-		BAGheji.BOTTOMRIGHT:SetSize(11,11);
-		BAGheji.BOTTOMRIGHT:SetDrawLayer("BORDER", 3)
-
-		BAGheji.LEFT = BAGheji:CreateTexture(nil, "BORDER");
-		BAGheji.LEFT:SetTexture(374153);
-		BAGheji.LEFT:SetTexCoord(0.359375,0,0.359375,1.42187488079071,0.609375,0,0.609375,1.42187488079071);
-		BAGheji.LEFT:SetPoint("TOPLEFT", BAGheji.TOPLEFT, "BOTTOMLEFT",8.04, 0);
-		BAGheji.LEFT:SetPoint("BOTTOMLEFT", BAGheji.BOTTOMLEFT, "TOPLEFT", 0, 0);
-		BAGheji.LEFT:SetWidth(16);
-		BAGheji.LEFT:SetDrawLayer("BORDER", 3)
-
-		BAGheji.RIGHT = BAGheji:CreateTexture(nil, "BORDER");
-		BAGheji.RIGHT:SetTexture(374153);
-		BAGheji.RIGHT:SetTexCoord(0.171875,0,0.171875,1.5703125,0.328125,0,0.328125,1.5703125);
-		BAGheji.RIGHT:SetPoint("TOPRIGHT", BAGheji.TOPRIGHT, "BOTTOMRIGHT",0.8, 0);
-		BAGheji.RIGHT:SetPoint("BOTTOMRIGHT", BAGheji.BOTTOMRIGHT, "TOPRIGHT", 0, 0);
-		BAGheji.RIGHT:SetWidth(10);
-		BAGheji.RIGHT:SetDrawLayer("BORDER", 3)
-
-		BAGheji.BOTTOM = BAGheji:CreateTexture(nil, "BORDER");
-		BAGheji.BOTTOM:SetTexture(374157);
-		BAGheji.BOTTOM:SetTexCoord(0,0.203125,0,0.2734375,1.425781607627869,0.203125,1.425781607627869,0.2734375);
-		BAGheji.BOTTOM:SetPoint("BOTTOMLEFT", BAGheji.BOTTOMLEFT, "BOTTOMRIGHT",0, -0);
-		BAGheji.BOTTOM:SetPoint("BOTTOMRIGHT", BAGheji.BOTTOMRIGHT, "BOTTOMLEFT", 0, 0);
-		BAGheji.BOTTOM:SetHeight(9);
-		BAGheji.BOTTOM:SetDrawLayer("BORDER", 3)
+		ADD_BagBankBGtex(BAGheji,"BAGheji_")
 	end
 	SetPortraitTexture(BAGheji.Portrait_TEX, "player")
 	--------------------------
 	BAGheji.biaoti = CreateFrame("Frame", nil, BAGheji)
-	BAGheji.biaoti:SetPoint("TOPLEFT", BAGheji, "TOPLEFT",58, -1);
+	BAGheji.biaoti:SetPoint("TOPLEFT", BAGheji, "TOPLEFT",68, -13);
 	BAGheji.biaoti:SetPoint("TOPRIGHT", BAGheji, "TOPRIGHT",-26, -1);
 	BAGheji.biaoti:SetHeight(20);
 	BAGheji.biaoti:EnableMouse(true)
@@ -756,13 +724,13 @@ local function zhegnhe_Open()
 	    BAGheji:StopMovingOrSizing()
 	end)
 	BAGheji.biaoti.t = BAGheji.biaoti:CreateFontString();
-	BAGheji.biaoti.t:SetPoint("CENTER", BAGheji.biaoti, "CENTER", 4, -1);
+	BAGheji.biaoti.t:SetPoint("CENTER", BAGheji.biaoti, "CENTER", 4, 0);
 	BAGheji.biaoti.t:SetFontObject(GameFontNormal);
 	BAGheji.biaoti.t:SetText(PIG_renwuming);
 
 	BAGheji.Close = CreateFrame("Button",nil,BAGheji, "UIPanelCloseButton");
-	BAGheji.Close:SetSize(30,30);
-	BAGheji.Close:SetPoint("TOPRIGHT",BAGheji,"TOPRIGHT",3,3);
+	BAGheji.Close:SetSize(32,32);
+	BAGheji.Close:SetPoint("TOPRIGHT",BAGheji,"TOPRIGHT",4,-7);
 	BAGheji.Close:HookScript("OnClick",  function (self)
 		CloseAllBags()
 	end);
@@ -773,19 +741,19 @@ local function zhegnhe_Open()
 		BAGheji.Portrait:SetSize(41,41);
 		BAGheji.Portrait:SetPoint("CENTER",BAGheji.Portrait_TEX,"CENTER",0,-2);
 	else
-		BAGheji.Portrait:SetSize(70,70);
+		BAGheji.Portrait:SetSize(66,66);
 		BAGheji.Portrait:SetPoint("CENTER",BAGheji.Portrait_TEX,"CENTER",0,-4);
 	end
 	BAGheji.Portrait:RegisterForClicks("LeftButtonUp","RightButtonUp")
 	BAGheji.menuFrame = CreateFrame("Frame", nil, BAGheji.Portrait, "UIDropDownMenuTemplate")
 	BAGheji.Portrait:SetScript("OnClick",  function (self,button)
-		if BankFrame:IsShown() then return end
 		if button=="LeftButton" then
+			if BankFrame:IsShown() then return end
 			PlaySoundFile(567463, "Master")
-			if BankFrameP_UI:IsShown() then
-				BankFrameP_UI:Hide()
+			if lixianBank_UI:IsShown() then
+				lixianBank_UI:Hide()
 			else
-				Show_lixian_data(BankFrameP_UI,PIG_renwuming,"BANK",bankID.meihang,yinhangmorengezishu.banknum)
+				Show_lixian_data(lixianBank_UI,PIG_renwuming,"BANK",bankID.meihang,yinhangmorengezishu.banknum)
 			end
 		else
 			local menu = {}
@@ -797,9 +765,9 @@ local function zhegnhe_Open()
 						text = KucunName[kk],arg1 = k,arg2 = kk,notCheckable = true;
 						func = function(self,arg1,arg2)
 							if arg2=="BANK" then
-								Show_lixian_data(BankFrameP_UI,arg1,"BANK",bankID.meihang,yinhangmorengezishu.banknum)
+								Show_lixian_data(lixianBank_UI,arg1,"BANK",bankID.meihang,yinhangmorengezishu.banknum)
 							elseif arg2=="C" then
-								Show_lixian_data(juesezhuangbei_UI,arg1,"C",nil,19)
+								Show_lixian_data(lixianC_UI,arg1,"C",nil,19)
 							elseif arg2=="BAG" then
 								Show_lixian_data(lixianBAG_UI,arg1,"BAG",bagID.meihang,164)
 							end
@@ -830,12 +798,12 @@ local function zhegnhe_Open()
 
 	BAGheji.biaoti.shezhi = CreateFrame("Button",nil,BAGheji.biaoti);
 	BAGheji.biaoti.shezhi:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
-	BAGheji.biaoti.shezhi:SetSize(17,17);
-	BAGheji.biaoti.shezhi:SetPoint("TOPRIGHT",BAGheji.biaoti,"TOPRIGHT",-6,-3);
+	BAGheji.biaoti.shezhi:SetSize(18,18);
+	BAGheji.biaoti.shezhi:SetPoint("TOPRIGHT",BAGheji.biaoti,"TOPRIGHT",-8,-1);
 	BAGheji.biaoti.shezhi.Tex = BAGheji.biaoti.shezhi:CreateTexture(nil,"OVERLAY");
 	BAGheji.biaoti.shezhi.Tex:SetTexture("interface/gossipframe/bindergossipicon.blp");
 	BAGheji.biaoti.shezhi.Tex:SetPoint("CENTER", 0, 0);
-	BAGheji.biaoti.shezhi.Tex:SetSize(17,17);
+	BAGheji.biaoti.shezhi.Tex:SetSize(18,18);
 	local caihemeihang =10
 	local BAG_shezhi = {"垃圾物品提示","显示装备等级","装备品质染色","其他角色数量","交易时打开背包","打开拍卖行时打开背包","简洁风格","战利品放入左边包","反向整理"}
 	local peizhiV = {
@@ -978,11 +946,13 @@ local function zhegnhe_Open()
 		CloseDropDownMenus()
 		for id=0,4 do
 			local Fid=IsBagOpen(id)
-			local frame = _G["ContainerFrame"..Fid]
-			local size = GetContainerNumSlots(id)
-			shuaxinBAGweizhi(frame, size, id)
+			if Fid then 
+				local frame = _G["ContainerFrame"..Fid]
+				local size = GetContainerNumSlots(id)
+				shuaxinBAGweizhi(frame, size, id)
+			end
 		end
-		BAGheji_UI:SetWidth(BagdangeW*bagID.meihang+28);
+		Update_BAGFrame_WidthHeight()
 	end
 	UIDropDownMenu_SetText(BAGheji.biaoti.shezhi.F.hangNUM, bagID.meihang)
 	--缩放
@@ -1049,12 +1019,12 @@ local function zhegnhe_Open()
 
 	BAGheji.Search = CreateFrame('EditBox', nil, BAGheji, "BagSearchBoxTemplate");
 	BAGheji.Search:SetSize(120,24);
-	BAGheji.Search:SetPoint("TOPLEFT",BAGheji,"TOPLEFT",76,-28);
+	BAGheji.Search:SetPoint("TOPLEFT",BAGheji,"TOPLEFT",78,-38);
 
 	BAGheji.AutoSort = CreateFrame("Button",nil,BAGheji, "TruncatedButtonTemplate");
 	BAGheji.AutoSort:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square");
 	BAGheji.AutoSort:SetSize(24,24);
-	BAGheji.AutoSort:SetPoint("TOPRIGHT",BAGheji,"TOPRIGHT",-80,-27);
+	BAGheji.AutoSort:SetPoint("TOPRIGHT",BAGheji,"TOPRIGHT",-80,-39);
 	BAGheji.AutoSort.Tex = BAGheji.AutoSort:CreateTexture(nil, "BORDER");
 	BAGheji.AutoSort.Tex:SetTexture(zhengliIcon);
 	BAGheji.AutoSort.Tex:SetTexCoord(0.168,0.27,0.837,0.934);
@@ -1079,46 +1049,7 @@ local function zhegnhe_Open()
 		SortBagsPIG()
 	end);
 	--分类设置
-	BAGheji.fenlei = CreateFrame("Button",nil,BAGheji, "TruncatedButtonTemplate");
-	BAGheji.fenlei:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
-	BAGheji.fenlei:SetSize(18,18);
-	BAGheji.fenlei:SetPoint("TOPRIGHT",BAGheji,"TOPRIGHT",-10,-30);
-	BAGheji.fenlei.Tex = BAGheji.fenlei:CreateTexture(nil, "BORDER");
-	BAGheji.fenlei.Tex:SetTexture("interface/chatframe/chatframeexpandarrow.blp");
-	BAGheji.fenlei.Tex:SetSize(18,18);
-	BAGheji.fenlei.Tex:SetPoint("CENTER",BAGheji.fenlei,"CENTER",2,0);
-	BAGheji.fenlei:SetScript("OnMouseDown", function (self)
-		self.Tex:SetPoint("CENTER",BAGheji.fenlei,"CENTER",3,-1);
-	end);
-	BAGheji.fenlei:SetScript("OnMouseUp", function (self)
-		self.Tex:SetPoint("CENTER",BAGheji.fenlei,"CENTER",2,0);
-	end);
-	BAGheji.fenlei.show=false
-	BAGheji.fenlei:SetScript("OnClick",  function (self)
-		if BAGheji.fenlei.show then
-			BAGheji.fenlei.show=false
-			self.Tex:SetRotation(0, 0.4, 0.5)
-			for vb=1,5 do
-				_G["ContainerFrame"..vb.."PortraitButton"]:Hide()
-			end
-		else
-			BAGheji.fenlei.show=true
-			self.Tex:SetRotation(-3.1415926, 0.4, 0.5)
-			local bagicon={
-				133633,
-				CharacterBag0SlotIconTexture:GetTexture(),
-				CharacterBag1SlotIconTexture:GetTexture(),
-				CharacterBag2SlotIconTexture:GetTexture(),
-				CharacterBag3SlotIconTexture:GetTexture(),
-			}
-			for vb=1,5 do
-				local fameXX = _G["ContainerFrame"..vb.."PortraitButton"]
-				fameXX.ICONpig:SetTexture(bagicon[vb]);
-				fameXX:Show()
-			end
-		end
-	end);
-	for vb=1,5 do
+	for vb=1,13 do
 		local fameXX = _G["ContainerFrame"..vb.."PortraitButton"]
 		fameXX.ICONpig = fameXX:CreateTexture(nil, "BORDER");
 		fameXX.ICONpig:SetTexture();
@@ -1155,10 +1086,56 @@ local function zhegnhe_Open()
 			end
 		end);
 	end
+
+	BAGheji.fenlei = CreateFrame("Button",nil,BAGheji, "TruncatedButtonTemplate");
+	BAGheji.fenlei:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
+	BAGheji.fenlei:SetSize(18,18);
+	BAGheji.fenlei:SetPoint("TOPRIGHT",BAGheji,"TOPRIGHT",-10,-42);
+	BAGheji.fenlei.Tex = BAGheji.fenlei:CreateTexture(nil, "BORDER");
+	BAGheji.fenlei.Tex:SetTexture("interface/chatframe/chatframeexpandarrow.blp");
+	BAGheji.fenlei.Tex:SetSize(18,18);
+	BAGheji.fenlei.Tex:SetPoint("CENTER",BAGheji.fenlei,"CENTER",2,0);
+	BAGheji.fenlei:SetScript("OnMouseDown", function (self)
+		self.Tex:SetPoint("CENTER",BAGheji.fenlei,"CENTER",3,-1);
+	end);
+	BAGheji.fenlei:SetScript("OnMouseUp", function (self)
+		self.Tex:SetPoint("CENTER",BAGheji.fenlei,"CENTER",2,0);
+	end);
+	BAGheji.fenlei.show=false
+	BAGheji.fenlei:SetScript("OnClick",  function (self)
+		if BAGheji.fenlei.show then
+			BAGheji.fenlei.show=false
+			self.Tex:SetRotation(0, 0.4, 0.5)
+			for vb=1,#bagID do
+				local Fid=IsBagOpen(bagID[vb])
+				if Fid then
+					_G["ContainerFrame"..Fid.."PortraitButton"]:Hide()
+				end
+			end
+		else
+			BAGheji.fenlei.show=true
+			self.Tex:SetRotation(-3.1415926, 0.4, 0.5)
+			local bagicon={
+				133633,
+				CharacterBag0SlotIconTexture:GetTexture(),
+				CharacterBag1SlotIconTexture:GetTexture(),
+				CharacterBag2SlotIconTexture:GetTexture(),
+				CharacterBag3SlotIconTexture:GetTexture(),
+			}
+			for vb=1,#bagID do
+				local Fid=IsBagOpen(bagID[vb])
+				if Fid then
+					local fameXX = _G["ContainerFrame"..Fid.."PortraitButton"]
+					fameXX.ICONpig:SetTexture(bagicon[bagID[vb]+1]);
+					fameXX:Show()
+				end
+			end
+		end
+	end);
 	---物品显示区域
 	BAGheji.wupin = CreateFrame("Frame", nil, BAGheji,"BackdropTemplate")
-	BAGheji.wupin:SetPoint("TOPLEFT", BAGheji, "TOPLEFT",10, -56);
-	BAGheji.wupin:SetPoint("BOTTOMRIGHT", BAGheji, "BOTTOMRIGHT", -10, 26);
+	BAGheji.wupin:SetPoint("TOPLEFT", BAGheji, "TOPLEFT",20, -68);
+	BAGheji.wupin:SetPoint("BOTTOMRIGHT", BAGheji, "BOTTOMRIGHT", -8, 30);
 	BAGheji.wupin:EnableMouse(true)
 
 	local Mkuandu,Mgaodu = 8,22
@@ -1167,42 +1144,18 @@ local function zhegnhe_Open()
 	BAGheji.moneyframe:SetPoint("BOTTOMRIGHT", BAGheji, "BOTTOMRIGHT", -8, 5)
 	if not PIG['zhegnheBAG']["JianjieMOD"] then
 		BAGheji.wupin:SetBackdrop( { bgFile = "interface/framegeneral/ui-background-marble.blp" });
-		BAGheji.moneyframe.l = BAGheji.moneyframe:CreateTexture(nil, "BORDER");
-		BAGheji.moneyframe.l:SetTexture("interface/common/moneyframe.blp");
-		BAGheji.moneyframe.l:SetTexCoord(0.95,1,0,0.31);
-		BAGheji.moneyframe.l:SetSize(Mkuandu,Mgaodu);
-		BAGheji.moneyframe.l:SetPoint("LEFT", BAGheji.moneyframe, "LEFT", 0, 0)
-		BAGheji.moneyframe.R = BAGheji.moneyframe:CreateTexture(nil, "BORDER");
-		BAGheji.moneyframe.R:SetTexture("interface/common/moneyframe.blp");
-		BAGheji.moneyframe.R:SetTexCoord(0,0.05,0,0.31);
-		BAGheji.moneyframe.R:SetSize(Mkuandu,Mgaodu);
-		BAGheji.moneyframe.R:SetPoint("RIGHT", BAGheji.moneyframe, "RIGHT", 0, 0)
-		BAGheji.moneyframeC = BAGheji.moneyframe:CreateTexture(nil, "BORDER");
-		BAGheji.moneyframeC:SetTexture("interface/common/moneyframe.blp");
-		BAGheji.moneyframeC:SetTexCoord(0.1,0.9,0.314,0.621);
-		BAGheji.moneyframeC:SetPoint("TOPLEFT", BAGheji.moneyframe.l, "TOPRIGHT", 0, 0)
-		BAGheji.moneyframeC:SetPoint("BOTTOMRIGHT", BAGheji.moneyframe.R, "BOTTOMLEFT", 0, 0)
 	end
 
 	--离线背包================================
-	local lixianBAG=ADD_Frame("lixianBAG_UI",UIParent,400,200,"CENTER",UIParent,"CENTER",0,100,true,false,true,true,true)
+	local lixianBAG=ADD_Frame("lixianBAG_UI",UIParent,200,200,"CENTER",UIParent,"CENTER",0,100,true,false,true,true,true)
 	lixianBAG:SetUserPlaced(false)
 	lixianBAG:SetFrameLevel(110)
-	lixianBAG.Bg = lixianBAG:CreateTexture(nil, "BACKGROUND");
-	lixianBAG.Bg:SetTexture("interface/framegeneral/ui-background-rock.blp");
-	lixianBAG.Bg:SetPoint("TOPLEFT", lixianBAG, "TOPLEFT",2, -2);
-	lixianBAG.Bg:SetPoint("BOTTOMRIGHT", lixianBAG, "BOTTOMRIGHT", -2, 2);
-	lixianBAG.topbg = lixianBAG:CreateTexture(nil, "BACKGROUND");
-	lixianBAG.topbg:SetTexture(374157);
-	lixianBAG.topbg:SetPoint("TOPLEFT", lixianBAG, "TOPLEFT",58, -1);
-	lixianBAG.topbg:SetPoint("TOPRIGHT", lixianBAG, "TOPRIGHT",-20, -1);
-	lixianBAG.topbg:SetTexCoord(0,0.2890625,0,0.421875,1.359809994697571,0.2890625,1.359809994697571,0.421875);
-	lixianBAG.topbg:SetHeight(20);
+	ADD_BagBankBGtex(lixianBAG,"lixianBAG_")
 
 	lixianBAG.Portrait_BG = lixianBAG:CreateTexture(nil, "BORDER");
 	lixianBAG.Portrait_BG:SetTexture("interface/buttons/iconborder-glowring.blp");
 	lixianBAG.Portrait_BG:SetSize(56,56);
-	lixianBAG.Portrait_BG:SetPoint("TOPLEFT",lixianBAG,"TOPLEFT",0,4.6);
+	lixianBAG.Portrait_BG:SetPoint("TOPLEFT",lixianBAG,"TOPLEFT",10,-6);
 	lixianBAG.Portrait_BG:SetDrawLayer("BORDER", -2)
 	lixianBAG.Portrait_BGmask = lixianBAG:CreateMaskTexture()
 	lixianBAG.Portrait_BGmask:SetAllPoints(lixianBAG.Portrait_BG)
@@ -1212,60 +1165,10 @@ local function zhegnhe_Open()
 	lixianBAG.Portrait_TEX:SetTexture(130899)
 	lixianBAG.Portrait_TEX:SetDrawLayer("BORDER", -1)
 	lixianBAG.Portrait_TEX:SetAllPoints(lixianBAG.Portrait_BG)
-
-	lixianBAG.TOPLEFT = lixianBAG:CreateTexture(nil, "BORDER");
-	lixianBAG.TOPLEFT:SetTexture("interface/framegeneral/ui-frame.blp");
-	lixianBAG.TOPLEFT:SetPoint("TOPLEFT", lixianBAG, "TOPLEFT",-10, 10);
-	lixianBAG.TOPLEFT:SetTexCoord(0.0078125,0.0078125,0.0078125,0.6171875,0.6171875,0.0078125,0.6171875,0.6171875);
-	lixianBAG.TOPLEFT:SetSize(78,78);
-	lixianBAG.TOPRIGHT = lixianBAG:CreateTexture(nil, "BORDER");
-	lixianBAG.TOPRIGHT:SetTexture(374156);
-	lixianBAG.TOPRIGHT:SetPoint("TOPRIGHT", lixianBAG, "TOPRIGHT",0, 0);
-	lixianBAG.TOPRIGHT:SetTexCoord(0.6328125,0.0078125,0.6328125,0.265625,0.890625,0.0078125,0.890625,0.265625);
-	lixianBAG.TOPRIGHT:SetSize(33,33);
-	lixianBAG.TOP = lixianBAG:CreateTexture(nil, "BORDER");
-	lixianBAG.TOP:SetTexture(374157);
-	lixianBAG.TOP:SetPoint("TOPLEFT", lixianBAG.TOPLEFT, "TOPRIGHT",0, -10);
-	lixianBAG.TOP:SetPoint("BOTTOMRIGHT", lixianBAG.TOPRIGHT, "BOTTOMLEFT", 0, 5);
-	lixianBAG.TOP:SetTexCoord(0,0.4375,0,0.65625,1.08637285232544,0.4375,1.08637285232544,0.65625);
-
-	lixianBAG.BOTTOMLEFT = lixianBAG:CreateTexture(nil, "BORDER");
-	lixianBAG.BOTTOMLEFT:SetTexture(374156);
-	lixianBAG.BOTTOMLEFT:SetPoint("BOTTOMLEFT", lixianBAG, "BOTTOMLEFT",-2, 0);
-	lixianBAG.BOTTOMLEFT:SetTexCoord(0.0078125,0.6328125,0.0078125,0.7421875,0.1171875,0.6328125,0.1171875,0.7421875);
-	lixianBAG.BOTTOMLEFT:SetSize(14,14);
-
-	lixianBAG.BOTTOMRIGHT = lixianBAG:CreateTexture(nil, "BORDER");
-	lixianBAG.BOTTOMRIGHT:SetTexture(374156);
-	lixianBAG.BOTTOMRIGHT:SetPoint("BOTTOMRIGHT", lixianBAG, "BOTTOMRIGHT",0, 0);
-	lixianBAG.BOTTOMRIGHT:SetTexCoord(0.1328125,0.8984375,0.1328125,0.984375,0.21875,0.8984375,0.21875,0.984375);
-	lixianBAG.BOTTOMRIGHT:SetSize(11,11);
-
-	lixianBAG.LEFT = lixianBAG:CreateTexture(nil, "BORDER");
-	lixianBAG.LEFT:SetTexture(374153);
-	lixianBAG.LEFT:SetTexCoord(0.359375,0,0.359375,1.42187488079071,0.609375,0,0.609375,1.42187488079071);
-	lixianBAG.LEFT:SetPoint("TOPLEFT", lixianBAG.TOPLEFT, "BOTTOMLEFT",8.04, 0);
-	lixianBAG.LEFT:SetPoint("BOTTOMLEFT", lixianBAG.BOTTOMLEFT, "TOPLEFT", 0, 0);
-	lixianBAG.LEFT:SetWidth(16);
-
-	lixianBAG.RIGHT = lixianBAG:CreateTexture(nil, "BORDER");
-	lixianBAG.RIGHT:SetTexture(374153);
-	lixianBAG.RIGHT:SetTexCoord(0.171875,0,0.171875,1.5703125,0.328125,0,0.328125,1.5703125);
-	lixianBAG.RIGHT:SetPoint("TOPRIGHT", lixianBAG.TOPRIGHT, "BOTTOMRIGHT",0.8, 0);
-	lixianBAG.RIGHT:SetPoint("BOTTOMRIGHT", lixianBAG.BOTTOMRIGHT, "TOPRIGHT", 0, 0);
-	lixianBAG.RIGHT:SetWidth(10);
-
-	lixianBAG.BOTTOM = lixianBAG:CreateTexture(nil, "BORDER");
-	lixianBAG.BOTTOM:SetTexture(374157);
-	lixianBAG.BOTTOM:SetTexCoord(0,0.203125,0,0.2734375,1.425781607627869,0.203125,1.425781607627869,0.2734375);
-	lixianBAG.BOTTOM:SetPoint("BOTTOMLEFT", lixianBAG.BOTTOMLEFT, "BOTTOMRIGHT",0, -0);
-	lixianBAG.BOTTOM:SetPoint("BOTTOMRIGHT", lixianBAG.BOTTOMRIGHT, "BOTTOMLEFT", 0, 0);
-	lixianBAG.BOTTOM:SetHeight(9);
-
 	--------------------------
 	lixianBAG.biaoti = CreateFrame("Frame", nil, lixianBAG)
-	lixianBAG.biaoti:SetPoint("TOPLEFT", lixianBAG, "TOPLEFT",58, -1);
-	lixianBAG.biaoti:SetPoint("TOPRIGHT", lixianBAG, "TOPRIGHT",-26, -1);
+	lixianBAG.biaoti:SetPoint("TOPLEFT", lixianBAG, "TOPLEFT",68, -13);
+	lixianBAG.biaoti:SetPoint("TOPRIGHT", lixianBAG, "TOPRIGHT",-28, -1);
 	lixianBAG.biaoti:SetHeight(20);
 	lixianBAG.biaoti:EnableMouse(true)
 	lixianBAG.biaoti:RegisterForDrag("LeftButton")
@@ -1278,17 +1181,17 @@ local function zhegnhe_Open()
 	    lixianBAG:SetUserPlaced(false)
 	end)
 	lixianBAG.biaoti.t = lixianBAG:CreateFontString();
-	lixianBAG.biaoti.t:SetPoint("CENTER", lixianBAG.topbg, "CENTER", 4, -1);
+	lixianBAG.biaoti.t:SetPoint("CENTER", lixianBAG.topbg, "CENTER", 4, 0);
 	lixianBAG.biaoti.t:SetFontObject(GameFontNormal);
 
 	lixianBAG.Close = CreateFrame("Button",nil,lixianBAG, "UIPanelCloseButton");
-	lixianBAG.Close:SetSize(30,30);
-	lixianBAG.Close:SetPoint("TOPRIGHT",lixianBAG,"TOPRIGHT",3,3);
+	lixianBAG.Close:SetSize(32,32);
+	lixianBAG.Close:SetPoint("TOPRIGHT",lixianBAG,"TOPRIGHT",5,-6);
 
 	lixianBAG.wupin = CreateFrame("Frame", nil, lixianBAG,"BackdropTemplate")
 	lixianBAG.wupin:SetBackdrop( { bgFile = "interface/framegeneral/ui-background-marble.blp" });
-	lixianBAG.wupin:SetPoint("TOPLEFT", lixianBAG, "TOPLEFT",10, -56);
-	lixianBAG.wupin:SetPoint("BOTTOMRIGHT", lixianBAG, "BOTTOMRIGHT", -10, 26);
+	lixianBAG.wupin:SetPoint("TOPLEFT", lixianBAG, "TOPLEFT",20, -66);
+	lixianBAG.wupin:SetPoint("BOTTOMRIGHT", lixianBAG, "BOTTOMRIGHT", -10, 29);
 	lixianBAG.wupin:EnableMouse(true)
 	for i=1,164 do
 		lixianBAG.wupin.item = CreateFrame("Button", "lixianBAG_UI_wupin_item_"..i, lixianBAG.wupin, "SecureActionButtonTemplate");
@@ -1299,9 +1202,9 @@ local function zhegnhe_Open()
 		else
 			local yushu=math.fmod((i-1),bagID.meihang)
 			if yushu==0 then
-				lixianBAG.wupin.item:SetPoint("TOPLEFT", _G["lixianBAG_UI_wupin_item_"..(i-bagID.meihang)], "BOTTOMLEFT", 0, -2);
+				lixianBAG.wupin.item:SetPoint("TOPLEFT", _G["lixianBAG_UI_wupin_item_"..(i-bagID.meihang)], "BOTTOMLEFT", 0, -4);
 			else
-				lixianBAG.wupin.item:SetPoint("LEFT", _G["lixianBAG_UI_wupin_item_"..(i-1)], "RIGHT", 2, 0);
+				lixianBAG.wupin.item:SetPoint("LEFT", _G["lixianBAG_UI_wupin_item_"..(i-1)], "RIGHT", 4, 0);
 			end
 		end
 		lixianBAG.wupin.item:Hide();
@@ -1312,250 +1215,16 @@ local function zhegnhe_Open()
 		lixianBAG.wupin.item.shuliang:SetPoint("BOTTOMRIGHT", lixianBAG.wupin.item, "BOTTOMRIGHT", -4,2);
 		lixianBAG.wupin.item.shuliang:SetFontObject(TextStatusBarText);
 	end
-	--已装备物品================================
-	local juesezhuangbei=ADD_Frame("juesezhuangbei_UI",UIParent,360,444,"CENTER",UIParent,"CENTER",-100, 100,true,false,true,true,true)
-	juesezhuangbei:SetUserPlaced(false)
-	juesezhuangbei:SetFrameLevel(130)
-	juesezhuangbei.Portrait_BG = juesezhuangbei:CreateTexture(nil, "BORDER");
-	juesezhuangbei.Portrait_BG:SetTexture("interface/buttons/iconborder-glowring.blp");
-	juesezhuangbei.Portrait_BG:SetSize(57,57);
-	juesezhuangbei.Portrait_BG:SetPoint("TOPLEFT",juesezhuangbei,"TOPLEFT",11,-7.8);
-	juesezhuangbei.Portrait_BG:SetDrawLayer("BORDER", -2)
-	juesezhuangbei.Portrait_BGmask = juesezhuangbei:CreateMaskTexture()
-	juesezhuangbei.Portrait_BGmask:SetAllPoints(juesezhuangbei.Portrait_BG)
-	juesezhuangbei.Portrait_BGmask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-	juesezhuangbei.Portrait_BG:AddMaskTexture(juesezhuangbei.Portrait_BGmask)
-	juesezhuangbei.Portrait_TEX = juesezhuangbei:CreateTexture(nil, "BORDER");
-	juesezhuangbei.Portrait_TEX:SetTexture(130899)
-	juesezhuangbei.Portrait_TEX:SetDrawLayer("BORDER", -1)
-	juesezhuangbei.Portrait_TEX:SetAllPoints(juesezhuangbei.Portrait_BG)
-	juesezhuangbei.TOPLEFT = juesezhuangbei:CreateTexture(nil, "BORDER");
-	juesezhuangbei.TOPLEFT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-l1.blp");
-	juesezhuangbei.TOPLEFT:SetPoint("TOPLEFT", juesezhuangbei, "TOPLEFT",0, 0);
-	juesezhuangbei.TOPRIGHT = juesezhuangbei:CreateTexture(nil, "BORDER");
-	juesezhuangbei.TOPRIGHT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-r1.blp");
-	juesezhuangbei.TOPRIGHT:SetPoint("TOPLEFT", juesezhuangbei.TOPLEFT, "TOPRIGHT",0, 0);
-	juesezhuangbei.BOTTOMLEFT = juesezhuangbei:CreateTexture(nil, "BORDER");
-	juesezhuangbei.BOTTOMLEFT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-bottomleft.blp");
-	juesezhuangbei.BOTTOMLEFT:SetPoint("TOPLEFT", juesezhuangbei.TOPLEFT, "BOTTOMLEFT",0, 0);
-	juesezhuangbei.BOTTOMRIGHT = juesezhuangbei:CreateTexture(nil, "BORDER");
-	juesezhuangbei.BOTTOMRIGHT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-bottomright.blp");
-	juesezhuangbei.BOTTOMRIGHT:SetPoint("TOPLEFT", juesezhuangbei.BOTTOMLEFT, "TOPRIGHT",0, 0);
+	--离线装备================
+	local CzhuangbeiName = "lixianC_UI"
+	local lixianC=ADD_Frame(CzhuangbeiName,UIParent,360,444,"CENTER",UIParent,"CENTER",-100, 100,true,false,true,true,true)
+	lixianC:SetUserPlaced(false)
+	lixianC:SetFrameLevel(130)
+	local ADD_CharacterFrame=addonTable.ADD_CharacterFrame
+	ADD_CharacterFrame(lixianC,CzhuangbeiName,360)
 
-	juesezhuangbei.biaoti = CreateFrame("Frame", nil, juesezhuangbei)
-	juesezhuangbei.biaoti:SetPoint("TOPLEFT", juesezhuangbei, "TOPLEFT",72, -14);
-	juesezhuangbei.biaoti:SetPoint("TOPRIGHT", juesezhuangbei, "TOPRIGHT",-36, -1);
-	juesezhuangbei.biaoti:SetHeight(20);
-	juesezhuangbei.biaoti:EnableMouse(true)
-	juesezhuangbei.biaoti:RegisterForDrag("LeftButton")
-	juesezhuangbei.biaoti:SetScript("OnDragStart",function()
-	    juesezhuangbei:StartMoving();
-	    juesezhuangbei:SetUserPlaced(false)
-	end)
-	juesezhuangbei.biaoti:SetScript("OnDragStop",function()
-	    juesezhuangbei:StopMovingOrSizing()
-	    juesezhuangbei:SetUserPlaced(false)
-	end)
-	juesezhuangbei.biaoti.t = juesezhuangbei:CreateFontString();
-	juesezhuangbei.biaoti.t:SetPoint("CENTER", juesezhuangbei.biaoti, "CENTER", 2, -1);
-	juesezhuangbei.biaoti.t:SetFontObject(GameFontNormal);
-	juesezhuangbei.biaoti.t:SetTextColor(1, 1, 1, 1);
 
-	juesezhuangbei.Close = CreateFrame("Button",nil,juesezhuangbei, "UIPanelCloseButton");
-	juesezhuangbei.Close:SetSize(32,32);
-	juesezhuangbei.Close:SetPoint("TOPRIGHT",juesezhuangbei,"TOPRIGHT",-3.2,-8.6);
-	local zhuangbeishunxuID = {1,2,3,15,5,4,19,9,10,6,7,8,11,12,13,14,16,17,18}
-	for i=1,#zhuangbeishunxuID do
-		juesezhuangbei.item = CreateFrame("Button", "juesezhuangbei_UI_wupin_item_"..zhuangbeishunxuID[i], juesezhuangbei, "SecureActionButtonTemplate");
-		juesezhuangbei.item:SetHighlightTexture(130718);
-		juesezhuangbei.item:SetSize(BagdangeW-4,BagdangeW-4);
-		if i<17 then
-			if i==1 then
-				juesezhuangbei.item:SetPoint("TOPLEFT",juesezhuangbei,"TOPLEFT",20,-74);
-			elseif i==9 then
-				juesezhuangbei.item:SetPoint("TOPLEFT",juesezhuangbei,"TOPLEFT",305,-74);
-			else
-				juesezhuangbei.item:SetPoint("TOP", _G["juesezhuangbei_UI_wupin_item_"..(zhuangbeishunxuID[i-1])], "BOTTOM", 0, -3);
-			end
-		else
-			if i==17 then
-				juesezhuangbei.item:SetPoint("TOPLEFT",juesezhuangbei,"TOPLEFT",121,-385);
-			else
-				juesezhuangbei.item:SetPoint("LEFT", _G["juesezhuangbei_UI_wupin_item_"..(zhuangbeishunxuID[i-1])], "RIGHT", 3, 0);
-			end
-		end
-		juesezhuangbei.item.LV = juesezhuangbei.item:CreateFontString();
-		juesezhuangbei.item.LV:SetPoint("TOPRIGHT", juesezhuangbei.item, "TOPRIGHT", 0,-1);
-		juesezhuangbei.item.LV:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
-	end
-	
-	---银行================================
-	local BankFrameP=ADD_Frame("BankFrameP_UI",UIParent,bankID.meihang*BagdangeW+16,210,"TOPLEFT", BankFrame, "TOPLEFT", 9, -12,true,false,true,true,true)
-	BankFrameP:SetUserPlaced(false)
-	BankFrameP:SetFrameLevel(120)
-	BankFrameP.Close = CreateFrame("Button",nil,BankFrameP, "UIPanelCloseButton");
-	BankFrameP.Close:SetSize(30,30);
-	BankFrameP.Close:SetPoint("TOPRIGHT",BankFrameP,"TOPRIGHT",4,3);
-	BankFrameP.Close:Hide();
-	BankFrameP:HookScript("OnHide",function()
-		CloseBankFrame();
-	end)
-
-	BankFrameP.Bg = BankFrameP:CreateTexture(nil, "BACKGROUND");
-	BankFrameP.Bg:SetTexture("interface/framegeneral/ui-background-rock.blp");
-	BankFrameP.Bg:SetPoint("TOPLEFT", BankFrameP, "TOPLEFT",2, -2);
-	BankFrameP.Bg:SetPoint("BOTTOMRIGHT", BankFrameP, "BOTTOMRIGHT", -2, 2);
-	BankFrameP.topbg = BankFrameP:CreateTexture(nil, "BACKGROUND");
-	BankFrameP.topbg:SetTexture(374157);
-	BankFrameP.topbg:SetPoint("TOPLEFT", BankFrameP, "TOPLEFT",58, -1);
-	BankFrameP.topbg:SetPoint("TOPRIGHT", BankFrameP, "TOPRIGHT",-20, -1);
-	BankFrameP.topbg:SetTexCoord(0,0.2890625,0,0.421875,1.359809994697571,0.2890625,1.359809994697571,0.421875);
-	BankFrameP.topbg:SetHeight(20);
-	BankFrameP.biaoti = CreateFrame("Frame", nil, BankFrameP)
-	BankFrameP.biaoti:SetPoint("TOPLEFT", BankFrameP, "TOPLEFT",58, -1);
-	BankFrameP.biaoti:SetPoint("TOPRIGHT", BankFrameP, "TOPRIGHT",-26, -1);
-	BankFrameP.biaoti:SetHeight(20);
-	BankFrameP.biaoti:EnableMouse(true)
-	BankFrameP.biaoti:RegisterForDrag("LeftButton")
-	BankFrameP.biaoti.t = BankFrameP.biaoti:CreateFontString();
-	BankFrameP.biaoti.t:SetPoint("CENTER", BankFrameP.biaoti, "CENTER", 8, -1);
-	BankFrameP.biaoti.t:SetFontObject(GameFontNormal);
-	BankFrameP.biaoti.t:SetText('银行');
-	BankFrameP.biaoti:SetScript("OnDragStart",function()
-	    BankFrameP:StartMoving();
-	    BankFrameP:SetUserPlaced(false)
-	end)
-	BankFrameP.biaoti:SetScript("OnDragStop",function()
-	    BankFrameP:StopMovingOrSizing()
-	    BankFrameP:SetUserPlaced(false)
-	end)
-
-	BankFrameP.Portrait_BG = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.Portrait_BG:SetTexture("interface/buttons/iconborder-glowring.blp");
-	BankFrameP.Portrait_BG:SetSize(55,55);
-	BankFrameP.Portrait_BG:SetPoint("TOPLEFT",BankFrameP,"TOPLEFT",1,4);
-	BankFrameP.Portrait_BG:SetDrawLayer("BORDER", -2)
-	BankFrameP.Portrait_BGmask = BankFrameP:CreateMaskTexture()
-	BankFrameP.Portrait_BGmask:SetAllPoints(BankFrameP.Portrait_BG)
-	BankFrameP.Portrait_BGmask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-	BankFrameP.Portrait_BG:AddMaskTexture(BankFrameP.Portrait_BGmask)
-	BankFrameP.Portrait_TEX = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.Portrait_TEX:SetAllPoints(BankFrameP.Portrait_BG)
-	BankFrameP.Portrait_TEX:SetDrawLayer("BORDER", -1)
-
-	BankFrameP.TOPLEFT = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.TOPLEFT:SetTexture("interface/framegeneral/ui-frame.blp");
-	BankFrameP.TOPLEFT:SetPoint("TOPLEFT", BankFrameP, "TOPLEFT",-10, 10);
-	BankFrameP.TOPLEFT:SetTexCoord(0.0078125,0.0078125,0.0078125,0.6171875,0.6171875,0.0078125,0.6171875,0.6171875);
-	BankFrameP.TOPLEFT:SetSize(78,78);
-	BankFrameP.TOPRIGHT = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.TOPRIGHT:SetTexture(374156);
-	BankFrameP.TOPRIGHT:SetPoint("TOPRIGHT", BankFrameP, "TOPRIGHT",0, 0);
-	BankFrameP.TOPRIGHT:SetTexCoord(0.6328125,0.0078125,0.6328125,0.265625,0.890625,0.0078125,0.890625,0.265625);
-	BankFrameP.TOPRIGHT:SetSize(33,33);
-	BankFrameP.TOP = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.TOP:SetTexture(374157);
-	BankFrameP.TOP:SetPoint("TOPLEFT", BankFrameP.TOPLEFT, "TOPRIGHT",0, -10);
-	BankFrameP.TOP:SetPoint("BOTTOMRIGHT", BankFrameP.TOPRIGHT, "BOTTOMLEFT", 0, 5);
-	BankFrameP.TOP:SetTexCoord(0,0.4375,0,0.65625,1.08637285232544,0.4375,1.08637285232544,0.65625);
-
-	BankFrameP.BOTTOMLEFT = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.BOTTOMLEFT:SetTexture(374156);
-	BankFrameP.BOTTOMLEFT:SetPoint("BOTTOMLEFT", BankFrameP, "BOTTOMLEFT",-2, 0);
-	BankFrameP.BOTTOMLEFT:SetTexCoord(0.0078125,0.6328125,0.0078125,0.7421875,0.1171875,0.6328125,0.1171875,0.7421875);
-	BankFrameP.BOTTOMLEFT:SetSize(14,14);
-
-	BankFrameP.BOTTOMRIGHT = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.BOTTOMRIGHT:SetTexture(374156);
-	BankFrameP.BOTTOMRIGHT:SetPoint("BOTTOMRIGHT", BankFrameP, "BOTTOMRIGHT",0, 0);
-	BankFrameP.BOTTOMRIGHT:SetTexCoord(0.1328125,0.8984375,0.1328125,0.984375,0.21875,0.8984375,0.21875,0.984375);
-	BankFrameP.BOTTOMRIGHT:SetSize(11,11);
-
-	BankFrameP.LEFT = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.LEFT:SetTexture(374153);
-	BankFrameP.LEFT:SetTexCoord(0.359375,0,0.359375,1.42187488079071,0.609375,0,0.609375,1.42187488079071);
-	BankFrameP.LEFT:SetPoint("TOPLEFT", BankFrameP.TOPLEFT, "BOTTOMLEFT",8.04, 0);
-	BankFrameP.LEFT:SetPoint("BOTTOMLEFT", BankFrameP.BOTTOMLEFT, "TOPLEFT", 0, 0);
-	BankFrameP.LEFT:SetWidth(16);
-
-	BankFrameP.RIGHT = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.RIGHT:SetTexture(374153);
-	BankFrameP.RIGHT:SetTexCoord(0.171875,0,0.171875,1.5703125,0.328125,0,0.328125,1.5703125);
-	BankFrameP.RIGHT:SetPoint("TOPRIGHT", BankFrameP.TOPRIGHT, "BOTTOMRIGHT",0.8, 0);
-	BankFrameP.RIGHT:SetPoint("BOTTOMRIGHT", BankFrameP.BOTTOMRIGHT, "TOPRIGHT", 0, 0);
-	BankFrameP.RIGHT:SetWidth(10);
-
-	BankFrameP.BOTTOM = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.BOTTOM:SetTexture(374157);
-	BankFrameP.BOTTOM:SetTexCoord(0,0.203125,0,0.2734375,1.425781607627869,0.203125,1.425781607627869,0.2734375);
-	BankFrameP.BOTTOM:SetPoint("BOTTOMLEFT", BankFrameP.BOTTOMLEFT, "BOTTOMRIGHT",0, -0);
-	BankFrameP.BOTTOM:SetPoint("BOTTOMRIGHT", BankFrameP.BOTTOMRIGHT, "BOTTOMLEFT", 0, 0);
-	BankFrameP.BOTTOM:SetHeight(9);
-
-	local Mkuandu,Mgaodu = 8,22
-	BankFrameP.R = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.R:SetTexture("interface/common/moneyframe.blp");
-	BankFrameP.R:SetTexCoord(0,0.05,0,0.31);
-	BankFrameP.R:SetSize(Mkuandu,Mgaodu);
-	BankFrameP.R:SetPoint("BOTTOMRIGHT", BankFrameP, "BOTTOMRIGHT", -5, 6)
-	BankFrameP.l = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.l:SetTexture("interface/common/moneyframe.blp");
-	BankFrameP.l:SetTexCoord(0.95,1,0,0.31);
-	BankFrameP.l:SetSize(Mkuandu,Mgaodu);
-	BankFrameP.l:SetPoint("RIGHT", BankFrameP.R, "LEFT", -160, 0)
-	BankFrameP.C = BankFrameP:CreateTexture(nil, "BORDER");
-	BankFrameP.C:SetTexture("interface/common/moneyframe.blp");
-	BankFrameP.C:SetTexCoord(0.1,0.9,0.314,0.621);
-	BankFrameP.C:SetPoint("TOPLEFT", BankFrameP.l, "TOPRIGHT", 0, 0)
-	BankFrameP.C:SetPoint("BOTTOMRIGHT", BankFrameP.R, "BOTTOMLEFT", 0, 0)
-	----------
-	BankFrameP.wupin = CreateFrame("Frame", nil, BankFrameP,"BackdropTemplate")
-	BankFrameP.wupin:SetBackdrop( { bgFile = "interface/framegeneral/ui-background-marble.blp" });
-	BankFrameP.wupin:SetPoint("TOPLEFT", BankFrameP, "TOPLEFT",6, -58);
-	BankFrameP.wupin:SetPoint("BOTTOMRIGHT", BankFrameP, "BOTTOMRIGHT", -6, 26);
-	BankFrameP.wupin:EnableMouse(true)
-	for i=1,yinhangmorengezishu.banknum do
-		BankFrameP.wupin.item = CreateFrame("Button", "BankFrameP_UI_wupin_item_"..i, BankFrameP.wupin, "SecureActionButtonTemplate");
-		BankFrameP.wupin.item:SetHighlightTexture(130718);
-		BankFrameP.wupin.item:SetSize(BagdangeW-2,BagdangeW-2);
-		if i==1 then
-			BankFrameP.wupin.item:SetPoint("TOPLEFT",BankFrameP.wupin,"TOPLEFT",4,0);
-		else
-			local yushu=math.fmod((i-1),bankID.meihang)
-			if yushu==0 then
-				BankFrameP.wupin.item:SetPoint("TOPLEFT", _G["BankFrameP_UI_wupin_item_"..(i-bankID.meihang)], "BOTTOMLEFT", 0, -4);
-			else
-				BankFrameP.wupin.item:SetPoint("LEFT", _G["BankFrameP_UI_wupin_item_"..(i-1)], "RIGHT", 2, 0);
-			end
-		end
-		BankFrameP.wupin.item:Hide();
-		if PIG['zhegnheBAG']["wupinLV"] then
-			BankFrameP.wupin.item.LV = BankFrameP.wupin.item:CreateFontString();
-			BankFrameP.wupin.item.LV:SetPoint("TOPRIGHT", BankFrameP.wupin.item, "TOPRIGHT", 0,-1);
-			BankFrameP.wupin.item.LV:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
-		end
-		BankFrameP.wupin.item.shuliang = BankFrameP.wupin.item:CreateFontString();
-		BankFrameP.wupin.item.shuliang:SetPoint("BOTTOMRIGHT", BankFrameP.wupin.item, "BOTTOMRIGHT", -4,2);
-		BankFrameP.wupin.item.shuliang:SetFontObject(TextStatusBarText);
-	end
-	--系统银行UI增加========================
-	BankFrame.biaoti = CreateFrame("Frame", nil, BankFrame)
-	BankFrame.biaoti:SetPoint("TOPLEFT", BankFrame, "TOPLEFT",58, -1);
-	BankFrame.biaoti:SetPoint("TOPRIGHT", BankFrame, "TOPRIGHT",-26, -1);
-	BankFrame.biaoti:SetHeight(20);
-	BankFrame.biaoti:EnableMouse(true)
-	BankFrame.biaoti:RegisterForDrag("LeftButton")
-	BankFrame:SetMovable(true)
-	BankFrame:SetUserPlaced(false)
-	BankFrame:SetClampedToScreen(true)
-	BankFrame.biaoti:SetScript("OnDragStart",function()
-	    BankFrame:StartMoving();
-	    BankFrame:SetUserPlaced(false)
-	end)
-	BankFrame.biaoti:SetScript("OnDragStop",function()
-	    BankFrame:StopMovingOrSizing()
-	    BankFrame:SetUserPlaced(false)
-	end)
+	---系统银行处理
 	BankFrame.AutoSort = CreateFrame("Button",nil,BankFrame, "TruncatedButtonTemplate");
 	BankFrame.AutoSort:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square");
 	BankFrame.AutoSort:SetSize(24,24);
@@ -1581,7 +1250,6 @@ local function zhegnhe_Open()
 		PlaySoundFile(567463, "Master")
 		SortBankBagsPIG()
 	end);
-
 	--分类设置
 	BankSlotsFrame.fenlei = CreateFrame("Button",nil,BankSlotsFrame, "TruncatedButtonTemplate");
 	BankSlotsFrame.fenlei:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
@@ -1598,88 +1266,130 @@ local function zhegnhe_Open()
 		self.Tex:SetPoint("CENTER",BankSlotsFrame.fenlei,"CENTER",2,0);
 	end);
 	BankSlotsFrame.fenlei.show=false
+	local bagicon={BankSlotsFrame.Bag1.icon,BankSlotsFrame.Bag2.icon,BankSlotsFrame.Bag3.icon,BankSlotsFrame.Bag4.icon,BankSlotsFrame.Bag5.icon,BankSlotsFrame.Bag6.icon,}
+	if tocversion>19999 then
+		table.insert(bagicon, BankSlotsFrame.Bag7.icon);
+	end
 	BankSlotsFrame.fenlei:SetScript("OnClick",  function (self)
 		if BankSlotsFrame.fenlei.show then
 			BankSlotsFrame.fenlei.show=false
 			self.Tex:SetRotation(0, 0.4, 0.5)
-			for vb=6,yinhangmorengezishu[2]+5 do
-				_G["ContainerFrame"..vb.."PortraitButton"]:Hide()
+			for vb=2,#bankID do
+				local Fid=IsBagOpen(bankID[vb])
+				if Fid then
+					_G["ContainerFrame"..Fid.."PortraitButton"]:Hide()
+				end
 			end
 		else
 			BankSlotsFrame.fenlei.show=true
 			self.Tex:SetRotation(-3.1415926, 0.4, 0.5)
-			local bagicon={BankSlotsFrame.Bag1.icon,BankSlotsFrame.Bag2.icon,BankSlotsFrame.Bag3.icon,BankSlotsFrame.Bag4.icon,BankSlotsFrame.Bag5.icon,BankSlotsFrame.Bag6.icon,}
-			if tocversion>19999 then
-				table.insert(bagicon, BankSlotsFrame.Bag7.icon);
-			end
-			for vb=6,yinhangmorengezishu[2]+5 do
-				local fameXX = _G["ContainerFrame"..vb.."PortraitButton"]
-				fameXX.ICONpig:SetTexture(bagicon[vb-5]:GetTexture());
-				fameXX:Show()
+			for vb=2,#bankID do
+				local Fid=IsBagOpen(bankID[vb])
+				if Fid then
+					local fameXX = _G["ContainerFrame"..Fid.."PortraitButton"]
+					fameXX.ICONpig:SetTexture(bagicon[bankID[vb]-4]:GetTexture());
+					fameXX:Show()
+				end
 			end
 		end
-	end);
-	for vb=6,yinhangmorengezishu[2]+5 do
-		local fameXX = _G["ContainerFrame"..vb.."PortraitButton"]
-		fameXX.ICONpig = fameXX:CreateTexture(nil, "BORDER");
-		fameXX.ICONpig:SetTexture();
-		fameXX.ICONpig:SetSize(25,25);
-		fameXX.ICONpig:SetPoint("TOPLEFT",fameXX,"TOPLEFT",7,-7);
-		fameXX.BGpig = fameXX:CreateTexture(nil, "ARTWORK");
-		fameXX.BGpig:SetTexture("Interface/Minimap/MiniMap-TrackingBorder");
-		fameXX.BGpig:SetSize(70,70);
-		fameXX.BGpig:SetPoint("TOPLEFT",fameXX,"TOPLEFT",0,0);
-		fameXX:SetScript("OnEnter", function (self)
-			local fujikj = self:GetParent()
-			local hh = {fujikj:GetChildren()} 
-			for _,v in pairs(hh) do
-				local Vname = v:GetName()
-				if Vname then
-					local cunzai = Vname:find("Item")
-					if cunzai then
-						v.BattlepayItemTexture:Show()
-					end
-				end
-			end
-		end);
-		fameXX:SetScript("OnLeave", function (self)
-			local fujikj = self:GetParent()
-			local hh = {fujikj:GetChildren()} 
-			for _,v in pairs(hh) do
-				local Vname = v:GetName()
-				if Vname then
-					local cunzai = Vname:find("Item")
-					if cunzai then
-						v.BattlepayItemTexture:Hide()
-					end
-				end
-			end
-		end);
-	end
-	-------
-	BankFrame:HookScript("OnShow", function()
-		BankFrameP:Show()
-	end);
-	BankFrame:HookScript("OnHide", function(self)
-		BankFrameP:Hide()
-		BankFrameP.Close:Hide()
 	end);
 	BankSlotsFrame:HookScript("OnHide", function(self)
 		self.fenlei.show=false
 		self.fenlei.Tex:SetRotation(0, 0.4, 0.5)
 	end);
+	---
+	ADD_BagBankBGtex(BankFrame,"pig_BankFrame_")
+	--物品显示区域
+	BankSlotsFrame.wupin = CreateFrame("Frame", nil, BankSlotsFrame,"BackdropTemplate")
+	BankSlotsFrame.wupin:SetPoint("TOPLEFT", BankSlotsFrame, "TOPLEFT",21, -70);
+	BankSlotsFrame.wupin:SetPoint("BOTTOMRIGHT", BankSlotsFrame, "BOTTOMRIGHT", -10, 30);
+	BankSlotsFrame.wupin:EnableMouse(true)
+	BankSlotsFrame.wupin:SetBackdrop( { bgFile = "interface/framegeneral/ui-background-marble.blp" });
+	---离线银行========
+	local lixianBank=ADD_Frame("lixianBank_UI",UIParent,500,210,"TOPLEFT", UIParent, "TOPLEFT",8, -104,true,false,true,true,true)
+	lixianBank:SetUserPlaced(false)
+	--lixianBank:SetToplevel(true)
+	lixianBank.Close = CreateFrame("Button",nil,lixianBank, "UIPanelCloseButton");
+	lixianBank.Close:SetSize(32,32);
+	lixianBank.Close:SetPoint("TOPRIGHT",lixianBank,"TOPRIGHT",5,-7);
+	ADD_BagBankBGtex(lixianBank,"pig_lixianBank_")
+
+	lixianBank.Portrait_BG = lixianBank:CreateTexture(nil, "BORDER");
+	lixianBank.Portrait_BG:SetTexture("interface/buttons/iconborder-glowring.blp");
+	lixianBank.Portrait_BG:SetSize(55,55);
+	lixianBank.Portrait_BG:SetPoint("TOPLEFT",lixianBank,"TOPLEFT",12,-6);
+	lixianBank.Portrait_BG:SetDrawLayer("BORDER", -2)
+	lixianBank.Portrait_BGmask = lixianBank:CreateMaskTexture()
+	lixianBank.Portrait_BGmask:SetAllPoints(lixianBank.Portrait_BG)
+	lixianBank.Portrait_BGmask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+	lixianBank.Portrait_BG:AddMaskTexture(lixianBank.Portrait_BGmask)
+	lixianBank.Portrait_TEX = lixianBank:CreateTexture(nil, "BORDER");
+	lixianBank.Portrait_TEX:SetAllPoints(lixianBank.Portrait_BG)
+	lixianBank.Portrait_TEX:SetDrawLayer("BORDER", -1)
+	lixianBank.Portrait_TEX:SetTexture(130899)
+	-- ----------
+	lixianBank.biaoti = CreateFrame("Frame", nil, lixianBank)
+	lixianBank.biaoti:SetPoint("TOPLEFT", lixianBank, "TOPLEFT",68, -13);
+	lixianBank.biaoti:SetPoint("TOPRIGHT", lixianBank, "TOPRIGHT",-24, -13);
+	lixianBank.biaoti:SetHeight(20);
+	lixianBank.biaoti:EnableMouse(true)
+	lixianBank.biaoti:RegisterForDrag("LeftButton")
+	lixianBank.biaoti.t = lixianBank.biaoti:CreateFontString();
+	lixianBank.biaoti.t:SetPoint("CENTER", lixianBank.biaoti, "CENTER", 8, 0);
+	lixianBank.biaoti.t:SetFontObject(GameFontNormal);
+	lixianBank.biaoti.t:SetText('银行');
+	lixianBank.biaoti:SetScript("OnDragStart",function()
+	    lixianBank:StartMoving();
+	    lixianBank:SetUserPlaced(false)
+	end)
+	lixianBank.biaoti:SetScript("OnDragStop",function()
+	    lixianBank:StopMovingOrSizing()
+	    lixianBank:SetUserPlaced(false)
+	end)
+	lixianBank.wupin = CreateFrame("Frame", nil, lixianBank,"BackdropTemplate")
+	lixianBank.wupin:SetBackdrop( { bgFile = "interface/framegeneral/ui-background-marble.blp" });
+	lixianBank.wupin:SetPoint("TOPLEFT", lixianBank, "TOPLEFT",20, -68);
+	lixianBank.wupin:SetPoint("BOTTOMRIGHT", lixianBank, "BOTTOMRIGHT", -8, 30);
+	lixianBank.wupin:EnableMouse(true)
+	for i=1,yinhangmorengezishu.banknum do
+		lixianBank.wupin.item = CreateFrame("Button", "lixianBank_UI_wupin_item_"..i, lixianBank.wupin, "SecureActionButtonTemplate");
+		lixianBank.wupin.item:SetHighlightTexture(130718);
+		lixianBank.wupin.item:SetSize(BagdangeW-4,BagdangeW-4);
+		if i==1 then
+			lixianBank.wupin.item:SetPoint("TOPLEFT",lixianBank.wupin,"TOPLEFT",4,-4);
+		else
+			local yushu=math.fmod((i-1),bankID.meihang)
+			if yushu==0 then
+				lixianBank.wupin.item:SetPoint("TOPLEFT", _G["lixianBank_UI_wupin_item_"..(i-bankID.meihang)], "BOTTOMLEFT", 0, -4);
+			else
+				lixianBank.wupin.item:SetPoint("LEFT", _G["lixianBank_UI_wupin_item_"..(i-1)], "RIGHT", 4, 0);
+			end
+		end
+		lixianBank.wupin.item:Hide();
+		if PIG['zhegnheBAG']["wupinLV"] then
+			lixianBank.wupin.item.LV = lixianBank.wupin.item:CreateFontString();
+			lixianBank.wupin.item.LV:SetPoint("TOPRIGHT", lixianBank.wupin.item, "TOPRIGHT", 0,-1);
+			lixianBank.wupin.item.LV:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
+		end
+		lixianBank.wupin.item.shuliang = lixianBank.wupin.item:CreateFontString();
+		lixianBank.wupin.item.shuliang:SetPoint("BOTTOMRIGHT", lixianBank.wupin.item, "BOTTOMRIGHT", -4,2);
+		lixianBank.wupin.item.shuliang:SetFontObject(TextStatusBarText);
+	end
+	BankFrame:HookScript("OnShow", function ()
+		lixianBank:Hide()
+	end)
 	---------------
 	BankFrame:RegisterEvent("BAG_UPDATE_DELAYED")
 	BankFrame:HookScript("OnEvent", function (self,event,arg1)
 		if event=="PLAYERBANKSLOTS_CHANGED" then
-			C_Timer.After(0.4,SAVE_bank)
 			if PIG['zhegnheBAG']["wupinLV"] then
 				shuaxinyinhangMOREN(arg1)
 			end
 			if PIG['zhegnheBAG']["wupinRanse"] then shuaxinyinhangMOREN_ranse(arg1) end
+			C_Timer.After(0.4,SAVE_bank)
 		end
 		if event=="BAG_UPDATE_DELAYED" then
-			if BankFrameP_UI:IsShown() then
+			if lixianBank_UI:IsShown() then
 				OpenBag(5);OpenBag(6);OpenBag(7);OpenBag(8);OpenBag(9);OpenBag(10);OpenBag(11);	
 			end
 		end
@@ -1687,7 +1397,6 @@ local function zhegnhe_Open()
 			SetPortraitTexture(BAGheji.Portrait_TEX, "player")
 			zhegnheBANK_Open()
 			OpenBag(5);OpenBag(6);OpenBag(7);OpenBag(8);OpenBag(9);OpenBag(10);OpenBag(11);	
-			C_Timer.After(0.4,SAVE_bank)
 			if PIG['zhegnheBAG']["wupinLV"] then
 				for i=1,yinhangmorengezishu[1] do
 					shuaxinyinhangMOREN(i)
@@ -1698,6 +1407,7 @@ local function zhegnhe_Open()
 					shuaxinyinhangMOREN_ranse(i) 
 				end
 			end
+			C_Timer.After(0.4,SAVE_bank)
 		end
 	end)
 	---------------------
@@ -1731,9 +1441,9 @@ local function zhegnhe_Open()
 			end
 			if BankFrame:IsShown() then
 				if arg1>4 then
-					C_Timer.After(0.4,SAVE_bank)
 					if PIG['zhegnheBAG']["wupinLV"] then Bag_Item_lv(nil, nil, arg1) end
 					if PIG['zhegnheBAG']["wupinRanse"] then Bag_Item_Ranse(nil, nil, arg1) end
+					C_Timer.After(0.4,SAVE_bank)
 				end
 			end
 		end
@@ -1742,13 +1452,12 @@ local function zhegnhe_Open()
 		SAVE_BAG()
 		BAGheji_UI:RegisterEvent("BAG_UPDATE")
 	end
-	--C_Timer.After(6,zhixingbaocunCMD)
-	C_Timer.After(10,zhixingbaocunCMD)
+	C_Timer.After(8,zhixingbaocunCMD)
 	---------------------
 	hooksecurefunc("ContainerFrame_GenerateFrame", function(frame, size, id)
 		--print(id)
 		if id==-2 then
-			shuaxinKEYweizhi(frame, size, id)
+			shuaxinKEYweizhi(frame)
 		end
 
 		if id>=0 and id<5 then
@@ -1768,13 +1477,19 @@ local function zhegnhe_Open()
 	if tocversion>30000 then
 		hooksecurefunc("ManageBackpackTokenFrame", function(backpack)
 			BackpackTokenFrame:ClearAllPoints();
-			BackpackTokenFrame:SetPoint("TOPRIGHT", BAGheji_UI.moneyframe, "TOPLEFT", 0, 5);
+			BackpackTokenFrame:SetPoint("TOPRIGHT", BAGheji_UI.moneyframe, "TOPLEFT", -4, 5);
 			BackpackTokenFrame:SetParent(BAGheji_UI);
 			local regions = { BackpackTokenFrame:GetRegions() }
 			for gg=1,#regions do
 				regions[gg]:Hide()
 				--regions[gg]:SetTexCoord(0.05,0.8,0,0.74);
 			end	
+			if (not backpack) then
+				backpack = GetBackpackFrame();
+			end
+			if backpack then
+				backpack:SetHeight(0);
+			end
 		end)
 	end
 	MainMenuBarBackpackButton:SetScript("OnClick", function(self, button)
@@ -1826,12 +1541,12 @@ local function zhegnhe_Open()
 	ToggleBackpack= function() --背包按键打开
 		if ( IsOptionFrameOpen() ) then
 			return;
-		end
+		end	
 		if ( IsBagOpen(0) ) then
 			for i=1,#bagID do
-				local x = IsBagOpen(bagID[i]);
-				if x then
-					local frame = _G["ContainerFrame"..x];
+				local Fid = IsBagOpen(bagID[i]);
+				if Fid then
+					local frame = _G["ContainerFrame"..Fid];
 					if ( frame:IsShown() ) then
 						frame:Hide();
 						EventRegistry:TriggerEvent("ContainerFrame.CloseBackpack");
@@ -1841,9 +1556,14 @@ local function zhegnhe_Open()
 					end
 				end
 			end
+			CloseBag(-2);
 			BAGheji:Hide()
 		else
-			CloseBag(-2);
+			local Fid=IsBagOpen(-2)
+			if Fid then 	
+				local frameff = _G["ContainerFrame"..Fid]
+				frameff:Hide();
+			end
 			ToggleBag(0);ToggleBag(1);ToggleBag(2);ToggleBag(3);ToggleBag(4);
 			if ( ManageBackpackTokenFrame ) then
 				BackpackTokenFrame_Update();
@@ -1861,8 +1581,8 @@ local function zhegnhe_Open()
 	UIParent:HookScript("OnHide", function(self)
 		BAGheji:Hide()
 		lixianBAG:Hide()
-		juesezhuangbei:Hide()
-		BankFrameP:Hide()
+		lixianC:Hide()
+		lixianBank:Hide()
 	end)
 end
 --==========================================================

@@ -111,6 +111,7 @@ addonTable.PIG = {
 		["xianshiNeirong"] = "ON",
 	},
 	["ChatFrame"] = {
+		["zhixiangShow"]="OFF",
 		["Jianyin"] = "OFF",
 		["Bianju"] = "ON",
 		["AltEX"] = "OFF",

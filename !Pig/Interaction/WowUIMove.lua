@@ -1,6 +1,7 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_1
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --////移动暴雪UI////////
 local function yidongOpen()
     --角色UI
@@ -338,6 +339,18 @@ local function TalentFrame_ADD()
     PlayerTalentFrame.biaoti:SetScript("OnDragStop",function()
         PlayerTalentFrame:StopMovingOrSizing()
     end)
+    PlayerTalentFrame.yulanTF=ADD_Checkbutton(nil,PlayerTalentFrame,-40,"TOPLEFT",PlayerTalentFrame,"TOPLEFT",72,-14,"预览模式","点击天赋时可先预览，确定后再执行结果")
+    PlayerTalentFrame.yulanTF:SetSize(24,24);
+    local yulankaiqi = GetCVar("previewTalents")
+    if yulankaiqi=="1" then PlayerTalentFrame.yulanTF:SetChecked(true) end
+    PlayerTalentFrame.yulanTF:SetScript("OnClick", function (self)
+        if self:GetChecked() then
+            SetCVar("previewTalents","1")
+        else
+            SetCVar("previewTalents","0")
+        end
+        InterfaceOptionsDisplayPanelPreviewTalentChanges_SetFunc()
+    end);
 end
 local function TalentFrameYD_Open()
     if IsAddOnLoaded("Blizzard_TalentUI") then
@@ -417,11 +430,7 @@ local function ZhuanyeFrameYD_Open()
     end
 end
 ---------------------
-fuFrame.yidongUI = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.yidongUI:SetSize(30,32);
-fuFrame.yidongUI:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",300,-20);
-fuFrame.yidongUI.Text:SetText("解锁系统界面UI");
-fuFrame.yidongUI.tooltip = "解锁系统的角色/法术书/天赋/任务/好友/专业/附魔界面，使其可以自由移动！";
+fuFrame.yidongUI=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",300,-20,"解锁系统界面UI","解锁系统的角色/法术书/天赋/任务/好友/专业/附魔界面，使其可以自由移动")
 fuFrame.yidongUI:SetScript("OnClick", function (self)
     if self:GetChecked() then
         PIG['FramePlus']['yidongUI']="ON";

@@ -1186,8 +1186,22 @@ local function ADD_Item()
 	end
 	--======================================================
 	local function zhixingtianjia(itemLink,LOOT_itemNO,shiquname,itemQuality,itemTexture,itemID)
-						--1时间/2物品/3数量/4拾取人/5品质/6icon/7已拍卖/8成交人/9成交价/10成交时间/11ID/12交易倒计时/13通报结束/14欠款
-		local iteminfo={GetServerTime(),itemLink,LOOT_itemNO,shiquname,itemQuality,itemTexture,0,"无",0,0,itemID,true,true,0};
+		local iteminfo={
+			GetServerTime(),--1时间
+			itemLink,--2物品
+			LOOT_itemNO,--3数量
+			shiquname,--4拾取人
+			itemQuality,--5品质
+			itemTexture,--6icon
+			0,--7已拍卖
+			"无",--8成交人
+			0,--9成交价
+			0,--10成交时间
+			itemID,--11
+			true,--12已提醒交易倒计时
+			true,--13通报已结束
+			0,--14欠款
+		};
 		table.insert(PIG["RaidRecord"]["ItemList"],iteminfo);
 		UpdateItem(Item_Scroll_UI);
 	end

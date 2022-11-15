@@ -83,27 +83,30 @@ local function add_RsettingFrame()
 	--拾取物品倒计时
 	local function ITEMTimetishi()
 		if PIG["RaidRecord"]["Kaiqi"]=="ON" and PIG["RaidRecord"]["Rsetting"]["jiaoyidaojishi"]=="ON" then
-			if #PIG["RaidRecord"]["ItemList"]>0 then
-				for i=1,#PIG["RaidRecord"]["ItemList"],1 do
-					if PIG["RaidRecord"]["ItemList"][i][8]~="无" then--已有成交人
-						PIG["RaidRecord"]["ItemList"][i][13]=false;
-						addonTable.RaidRecord_UpdateItem(Item_Scroll_UI);
-					else
-						if PIG["RaidRecord"]["ItemList"][i][13] then
-							local yijingguoqu=GetServerTime()-PIG["RaidRecord"]["ItemList"][i][1];
-							if yijingguoqu>7200 then
-								PIG["RaidRecord"]["ItemList"][i][13]=false;	
-								addonTable.RaidRecord_UpdateItem(Item_Scroll_UI);
-							elseif yijingguoqu>6600 then
-								if PIG["RaidRecord"]["ItemList"][i][12] then
-									if UnitIsGroupLeader("player", "LE_PARTY_CATEGORY_HOME") and IsInRaid("LE_PARTY_CATEGORY_HOME") then
-										SendChatMessage("提示：未成交物品"..PIG["RaidRecord"]["ItemList"][i][2].."可交易时间不足10分钟，请确认物品归属(预估时间仅供参考)！","RAID", nil);
-										PIG["RaidRecord"]["ItemList"][i][12]=false;
-										addonTable.RaidRecord_UpdateItem(Item_Scroll_UI);
+			if not PIG["RaidRecord"]["instanceName"][1] then return end
+			if PIG["RaidRecord"]["instanceName"][1]<43200 then
+				if #PIG["RaidRecord"]["ItemList"]>0 then
+					for i=1,#PIG["RaidRecord"]["ItemList"],1 do
+						if PIG["RaidRecord"]["ItemList"][i][8]~="无" or PIG["RaidRecord"]["ItemList"][i][9]>0 or PIG["RaidRecord"]["ItemList"][i][14]>0 then--已有成交人/收款/欠款
+							PIG["RaidRecord"]["ItemList"][i][13]=false;
+							addonTable.RaidRecord_UpdateItem(Item_Scroll_UI);
+						else
+							if PIG["RaidRecord"]["ItemList"][i][13] then
+								local yijingguoqu=GetServerTime()-PIG["RaidRecord"]["ItemList"][i][1];
+								if yijingguoqu>7200 then
+									PIG["RaidRecord"]["ItemList"][i][13]=false;	
+									addonTable.RaidRecord_UpdateItem(Item_Scroll_UI);
+								elseif yijingguoqu>6600 then
+									if PIG["RaidRecord"]["ItemList"][i][12] then
+										if UnitIsGroupLeader("player", "LE_PARTY_CATEGORY_HOME") and IsInRaid("LE_PARTY_CATEGORY_HOME") then
+											SendChatMessage("提示：未成交物品"..PIG["RaidRecord"]["ItemList"][i][2].."可交易时间不足10分钟，请确认物品归属(预估时间仅供参考)！","RAID", nil);
+											PIG["RaidRecord"]["ItemList"][i][12]=false;
+											addonTable.RaidRecord_UpdateItem(Item_Scroll_UI);
+										end
 									end
 								end
-							end
-						end	
+							end	
+						end
 					end
 				end
 			end

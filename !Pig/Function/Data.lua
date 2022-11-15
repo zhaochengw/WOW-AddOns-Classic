@@ -9,6 +9,13 @@ end
 function PIG_print(msg)
 	print("|cff00FFFF!Pig:|r|cffFFFF00"..msg.."！|r");
 end
+----
+local OLD_SetRotation=SetRotation
+function PIGRotation(self,dushu)
+	local angle = math.rad(dushu)
+	self:SetRotation(angle)
+end
+---
 if tocversion<40000 then
 	PIG_InviteUnit=InviteUnit
 else

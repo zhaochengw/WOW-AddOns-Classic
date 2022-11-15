@@ -1,12 +1,6 @@
 -------------<猪猪加油定制插件>---562314------------
---反和谐：打开 魔兽根目录\_classic_\WTF\config.wtf加一句命令：SET overrideArchive "0"
 --================================================
 local addonName, addonTable = ...;
---------------------------------------------
-local function Config_Default()
-	PIG = PIG or addonTable.Default;
-	PIG_Per = PIG_Per or addonTable.Default_Per;
-end
 --=======ReloadUI重载命令注册为/RL=====
 SLASH_RELOAD1 = '/rl'
 SlashCmdList.RELOAD = ReloadUI
@@ -17,12 +11,12 @@ SLASH_PIG3 = "/PIG"
 SlashCmdList["PIG"] = function()
 	Pig_OptionsUI:Show();
 end
-local feifaPlayers=addonTable.feifaPlayers
 --================================================
 local AAAAA = CreateFrame("Frame")        
 AAAAA:RegisterEvent("ADDON_LOADED")
 AAAAA:SetScript("OnEvent",function(self, event, arg1)
 	if arg1 == addonName then
+		local feifaPlayers=addonTable.feifaPlayers
 		local name= UnitName("player")
 		for i=1,#feifaPlayers do
 			if name==feifaPlayers[i] then
@@ -39,7 +33,7 @@ AAAAA:SetScript("OnEvent",function(self, event, arg1)
 				return
 			end
 		end
-		Config_Default()--载入配置
+		addonTable.Config_Default()
 		------------------
 		addonTable.Map_MiniMap()
 		addonTable.Map_WorldMap()
@@ -107,7 +101,7 @@ AAAAA:SetScript("OnEvent",function(self, event, arg1)
 		addonTable.QuickButtonUpdate()
 		addonTable.Map_ShouNaBut()
 		--
-		addonTable.Test_AutoLOOT()
+		addonTable.Rurutia()
 		------------------------------
    		print("|cff00FFFF"..arg1.."载入成功，/pig或小地图按钮设置|r|cffFF0000(本插件完全免费,网络购物平台出售皆为骗子)。|r");
     end  

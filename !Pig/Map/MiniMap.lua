@@ -476,7 +476,7 @@ fuFrame.MinimapButF.ADDFrame.E:SetScript("OnEditFocusLost", function(self)
 	fuFrame.MinimapButF.ADDFrame.err:SetText("");
 end);
 addonTable.feifaPlayers = {"嘟叫兽","姬神秀","安静的局八盖","Forever","小亚雯","天启丨残雪","乄秃灬兄","祺灬莹",
-	"睿瑞睿睿","张三风","批批勒马脲杯","迷光","二丶黑"
+	"睿瑞睿睿","张三风","批批勒马脲杯","迷光","二丶黑","达瓦达瓦是是"
 }
 ----
 fuFrame.MinimapButF.ADDFrame.YES:SetScript("OnClick", function ()

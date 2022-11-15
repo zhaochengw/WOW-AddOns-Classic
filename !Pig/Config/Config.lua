@@ -19,7 +19,7 @@ addonTable.Default = {
 	},
 	["QuickButton"]={
 		["Open"] = true,
-		["Point"]={"BOTTOM","BOTTOM",0,200},
+		["Point"]={"BOTTOM","BOTTOM",200,200},
 		["bili"]=0.8,
 		["suoding"]=false,
 		["Lushi"]=true,
@@ -43,7 +43,7 @@ addonTable.Default = {
 	["PlaneInvite"]={
 		["Kaiqi"] = "ON",
 		["AddBut"] = "ON",
-		["zidongjieshou"]="ON",
+		["zidongjieshou"]="OFF",
 		["WeimianList"]={},
 	},
 	["ShowPlus"] = {
@@ -111,6 +111,7 @@ addonTable.Default = {
 		["xianshiNeirong"] = "OFF",
 	},
 	["ChatFrame"] = {
+		["zhixiangShow"]="OFF",
 		["Jianyin"] = "OFF",
 		["Bianju"] = "OFF",
 		["AltEX"] = "OFF",

@@ -106,6 +106,8 @@ local function ADD_QuickButton_AutoEquip()
 			end
 			--
 			AutoEquip:SetScript("OnClick", function(self,button)
+				local kaiqiq=GetCVar("equipmentManager")
+				if kaiqiq=="0" then PIG_print("请先打开系统的装备管理功能") return end
 				if button=="LeftButton" then
 					if AutoEquipList:IsShown() then
 						AutoEquipList:Hide()

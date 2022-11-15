@@ -181,6 +181,199 @@ local function ADD_Biaoti(self)
 	self.TexR:SetWidth(5)
 end
 addonTable.ADD_Biaoti=ADD_Biaoti
+--角色装备界面
+local function ADD_CharacterFrame(self,uiname,uiWidth)	
+	self.Portrait_BG = self:CreateTexture(nil, "BORDER");
+	self.Portrait_BG:SetTexture("interface/buttons/iconborder-glowring.blp");
+	self.Portrait_BG:SetSize(57,57);
+	self.Portrait_BG:SetPoint("TOPLEFT",self,"TOPLEFT",11,-7.8);
+	self.Portrait_BG:SetDrawLayer("BORDER", -2)
+	self.Portrait_BGmask = self:CreateMaskTexture()
+	self.Portrait_BGmask:SetAllPoints(self.Portrait_BG)
+	self.Portrait_BGmask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+	self.Portrait_BG:AddMaskTexture(self.Portrait_BGmask)
+	self.Portrait_TEX = self:CreateTexture(nil, "BORDER");
+	self.Portrait_TEX:SetTexture(130899)
+	self.Portrait_TEX:SetDrawLayer("BORDER", -1)
+	self.Portrait_TEX:SetAllPoints(self.Portrait_BG)
+	self.TOPLEFT = self:CreateTexture(nil, "BORDER");
+	self.TOPLEFT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-l1.blp");
+	self.TOPLEFT:SetPoint("TOPLEFT", self, "TOPLEFT",0, 0);
+	self.TOPRIGHT = self:CreateTexture(nil, "BORDER");
+	self.TOPRIGHT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-r1.blp");
+	self.TOPRIGHT:SetPoint("TOPLEFT", self.TOPLEFT, "TOPRIGHT",0, 0);
+	self.BOTTOMLEFT = self:CreateTexture(nil, "BORDER");
+	self.BOTTOMLEFT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-bottomleft.blp");
+	self.BOTTOMLEFT:SetPoint("TOPLEFT", self.TOPLEFT, "BOTTOMLEFT",0, 0);
+	self.BOTTOMRIGHT = self:CreateTexture(nil, "BORDER");
+	self.BOTTOMRIGHT:SetTexture("interface/paperdollinfoframe/ui-character-charactertab-bottomright.blp");
+	self.BOTTOMRIGHT:SetPoint("TOPLEFT", self.BOTTOMLEFT, "TOPRIGHT",0, 0);
+
+	self.biaoti = CreateFrame("Frame", nil, self)
+	self.biaoti:SetPoint("TOPLEFT", self, "TOPLEFT",72, -14);
+	self.biaoti:SetPoint("TOPRIGHT", self, "TOPRIGHT",-36, -1);
+	self.biaoti:SetHeight(20);
+	self.biaoti:EnableMouse(true)
+	self.biaoti:RegisterForDrag("LeftButton")
+	self.biaoti:SetScript("OnDragStart",function()
+	    self:StartMoving();
+	    self:SetUserPlaced(false)
+	end)
+	self.biaoti:SetScript("OnDragStop",function()
+	    self:StopMovingOrSizing()
+	    self:SetUserPlaced(false)
+	end)
+	self.biaoti.t = self:CreateFontString();
+	self.biaoti.t:SetPoint("CENTER", self.biaoti, "CENTER", 2, -1);
+	self.biaoti.t:SetFontObject(GameFontNormal);
+	self.biaoti.t:SetTextColor(1, 1, 1, 1);
+
+	self.biaoti.t1 = self:CreateFontString();
+	self.biaoti.t1:SetPoint("CENTER", self.biaoti, "CENTER", 2, -30);
+	self.biaoti.t1:SetFontObject(GameFontNormal);
+
+	self.Close = CreateFrame("Button",nil,self, "UIPanelCloseButton");
+	self.Close:SetSize(32,32);
+	self.Close:SetPoint("TOPRIGHT",self,"TOPRIGHT",-3.2,-8.6);
+	local zhuangbeishunxuID = {1,2,3,15,5,4,19,9,10,6,7,8,11,12,13,14,16,17,18}
+	for i=1,#zhuangbeishunxuID do
+		self.item = CreateFrame("Button", uiname.."_wupin_item_"..zhuangbeishunxuID[i], self, "SecureActionButtonTemplate");
+		self.item:SetHighlightTexture(130718);
+		self.item:SetSize(uiWidth*0.105,uiWidth*0.105);
+		if i<17 then
+			if i==1 then
+				self.item:SetPoint("TOPLEFT",self,"TOPLEFT",20,-74);
+			elseif i==9 then
+				self.item:SetPoint("TOPLEFT",self,"TOPLEFT",305,-74);
+			else
+				self.item:SetPoint("TOP", _G[uiname.."_wupin_item_"..(zhuangbeishunxuID[i-1])], "BOTTOM", 0, -3);
+			end
+		else
+			if i==17 then
+				self.item:SetPoint("TOPLEFT",self,"TOPLEFT",121,-385);
+			else
+				self.item:SetPoint("LEFT", _G[uiname.."_wupin_item_"..(zhuangbeishunxuID[i-1])], "RIGHT", 4, 0);
+			end
+		end
+		self.item.LV = self.item:CreateFontString();
+		self.item.LV:SetPoint("TOPRIGHT", self.item, "TOPRIGHT", 0,-1);
+		self.item.LV:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
+	end
+	local zhuangbeizhanshiID = {1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18}
+	local buweiName = {HEADSLOT,NECKSLOT,SHOULDERSLOT,CHESTSLOT,WAISTSLOT,LEGSSLOT,FEETSLOT,WRISTSLOT,HANDSSLOT,FINGER0SLOT,FINGER1SLOT,TRINKET0SLOT,TRINKET1SLOT,BACKSLOT,MAINHANDSLOT,SECONDARYHANDSLOT,RANGEDSLOT}
+	for i=1,#zhuangbeizhanshiID do
+		local zbBuwei = CreateFrame("Frame", uiname.."_zbBuwei_"..zhuangbeizhanshiID[i], self,"BackdropTemplate");
+		zbBuwei:SetSize(40,17);
+		if i==1 then
+			zbBuwei:SetPoint("TOPLEFT",self,"TOPLEFT",60,-80);
+		else
+			zbBuwei:SetPoint("TOPLEFT",_G[uiname.."_zbBuwei_"..(zhuangbeizhanshiID[i-1])],"BOTTOMLEFT",0,0);
+		end
+		zbBuwei.itembuwei = zbBuwei:CreateFontString();
+		zbBuwei.itembuwei:SetPoint("RIGHT",zbBuwei,"RIGHT",0,0);
+		zbBuwei.itembuwei:SetFontObject(GameFontNormal);
+		zbBuwei.itembuwei:SetText(buweiName[i])
+		zbBuwei.itemlink = zbBuwei:CreateFontString();
+		zbBuwei.itemlink:SetPoint("LEFT",zbBuwei.itembuwei,"RIGHT",0,0);
+		zbBuwei.itemlink:SetFontObject(GameFontNormal);
+	end
+end
+addonTable.ADD_CharacterFrame=ADD_CharacterFrame
+local function ADD_BagBankBGtex(self,texname)
+	self.Bg = self:CreateTexture(texname.."Bg", "BACKGROUND");
+	self.Bg:SetTexture("interface/framegeneral/ui-background-rock.blp");
+	self.Bg:SetPoint("TOPLEFT", self, "TOPLEFT",14, -13);
+	self.Bg:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -3, 5);
+	self.Bg:SetDrawLayer("BACKGROUND", -1)
+	self.topbg = self:CreateTexture(texname.."topbg", "BACKGROUND");
+	self.topbg:SetTexture(374157);
+	self.topbg:SetPoint("TOPLEFT", self, "TOPLEFT",68, -13);
+	self.topbg:SetPoint("TOPRIGHT", self, "TOPRIGHT",-24, -13);
+	self.topbg:SetTexCoord(0,0.2890625,0,0.421875,1.359809994697571,0.2890625,1.359809994697571,0.421875);
+	self.topbg:SetHeight(20);
+	self.TOPLEFT = self:CreateTexture(texname.."TOPLEFT", "BORDER");
+	self.TOPLEFT:SetTexture("interface/framegeneral/ui-frame.blp");
+	self.TOPLEFT:SetPoint("TOPLEFT", self, "TOPLEFT",0, 0);
+	self.TOPLEFT:SetTexCoord(0.0078125,0.0078125,0.0078125,0.6171875,0.6171875,0.0078125,0.6171875,0.6171875);
+	self.TOPLEFT:SetSize(78,78);
+	self.TOPRIGHT = self:CreateTexture(texname.."TOPRIGHT", "BORDER");
+	self.TOPRIGHT:SetTexture(374156);
+	self.TOPRIGHT:SetPoint("TOPRIGHT", self, "TOPRIGHT",0, -10);
+	self.TOPRIGHT:SetTexCoord(0.6328125,0.0078125,0.6328125,0.265625,0.890625,0.0078125,0.890625,0.265625);
+	self.TOPRIGHT:SetSize(33,33);
+	self.TOP = self:CreateTexture(texname.."TOP", "BORDER");
+	self.TOP:SetTexture(374157);
+	self.TOP:SetPoint("TOPLEFT", self.TOPLEFT, "TOPRIGHT",0, -10);
+	self.TOP:SetPoint("BOTTOMRIGHT", self.TOPRIGHT, "BOTTOMLEFT", 0, 4);
+	self.TOP:SetTexCoord(0,0.4375,0,0.65625,1.08637285232544,0.4375,1.08637285232544,0.65625);
+	self.BOTTOMLEFT = self:CreateTexture(texname.."BOTTOMLEFT", "BORDER");
+	self.BOTTOMLEFT:SetTexture(374156);
+	self.BOTTOMLEFT:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT",8, 0);
+	self.BOTTOMLEFT:SetTexCoord(0.0078125,0.6328125,0.0078125,0.7421875,0.1171875,0.6328125,0.1171875,0.7421875);
+	self.BOTTOMLEFT:SetSize(14,14);
+
+	self.BOTTOMRIGHT = self:CreateTexture(texname.."BOTTOMRIGHT", "BORDER");
+	self.BOTTOMRIGHT:SetTexture(374156);
+	self.BOTTOMRIGHT:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT",0, 0);
+	self.BOTTOMRIGHT:SetTexCoord(0.1328125,0.8984375,0.1328125,0.984375,0.21875,0.8984375,0.21875,0.984375);
+	self.BOTTOMRIGHT:SetSize(11,11);
+
+	self.LEFT = self:CreateTexture(texname.."LEFT", "BORDER");
+	self.LEFT:SetTexture(374153);
+	self.LEFT:SetTexCoord(0.359375,0,0.359375,1.42187488079071,0.609375,0,0.609375,1.42187488079071);
+	self.LEFT:SetPoint("TOPLEFT", self.TOPLEFT, "BOTTOMLEFT",8, 0);
+	self.LEFT:SetPoint("BOTTOMLEFT", self.BOTTOMLEFT, "TOPLEFT", 0, 0);
+	self.LEFT:SetWidth(16);
+
+	self.RIGHT = self:CreateTexture(texname.."RIGHT", "BORDER");
+	self.RIGHT:SetTexture(374153);
+	self.RIGHT:SetTexCoord(0.171875,0,0.171875,1.5703125,0.328125,0,0.328125,1.5703125);
+	self.RIGHT:SetPoint("TOPRIGHT", self.TOPRIGHT, "BOTTOMRIGHT",0.8, 0);
+	self.RIGHT:SetPoint("BOTTOMRIGHT", self.BOTTOMRIGHT, "TOPRIGHT", 0, 0);
+	self.RIGHT:SetWidth(10);
+
+	self.BOTTOM = self:CreateTexture(texname.."BOTTOM", "BORDER");
+	self.BOTTOM:SetTexture(374157);
+	self.BOTTOM:SetTexCoord(0,0.203125,0,0.2734375,1.425781607627869,0.203125,1.425781607627869,0.2734375);
+	self.BOTTOM:SetPoint("BOTTOMLEFT", self.BOTTOMLEFT, "BOTTOMRIGHT",0, -0);
+	self.BOTTOM:SetPoint("BOTTOMRIGHT", self.BOTTOMRIGHT, "BOTTOMLEFT", 0, 0);
+	self.BOTTOM:SetHeight(9);
+	local Mkuandu,Mgaodu = 8,22
+	self.MoneyFrame_R = self:CreateTexture(texname.."MoneyFrame_R", "BORDER");
+	self.MoneyFrame_R:SetTexture("interface/common/moneyframe.blp");
+	self.MoneyFrame_R:SetTexCoord(0,0.05,0,0.31);
+	self.MoneyFrame_R:SetSize(Mkuandu,Mgaodu);
+	self.MoneyFrame_R:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -8, 7)
+	self.MoneyFrame_l = self:CreateTexture(texname.."MoneyFrame_L", "BORDER");
+	self.MoneyFrame_l:SetTexture("interface/common/moneyframe.blp");
+	self.MoneyFrame_l:SetTexCoord(0.95,1,0,0.31);
+	self.MoneyFrame_l:SetSize(Mkuandu,Mgaodu);
+	self.MoneyFrame_l:SetPoint("RIGHT", self.MoneyFrame_R, "LEFT", -160, 0)
+	self.MoneyFrame_C = self:CreateTexture(texname.."MoneyFrame_C", "BORDER");
+	self.MoneyFrame_C:SetTexture("interface/common/moneyframe.blp");
+	self.MoneyFrame_C:SetTexCoord(0.1,0.9,0.314,0.621);
+	self.MoneyFrame_C:SetPoint("TOPLEFT", self.MoneyFrame_l, "TOPRIGHT", 0, 0)
+	self.MoneyFrame_C:SetPoint("BOTTOMRIGHT", self.MoneyFrame_R, "BOTTOMLEFT", 0, 0)
+
+	self:SetMovable(true)
+	self:SetUserPlaced(false)
+	self:SetClampedToScreen(true)
+	self.biaoti = CreateFrame("Frame", nil, self)
+	self.biaoti:SetPoint("TOPLEFT", self, "TOPLEFT",68, -13);
+	self.biaoti:SetPoint("TOPRIGHT", self, "TOPRIGHT",-24, -13);
+	self.biaoti:SetHeight(20);
+	self.biaoti:EnableMouse(true)
+	self.biaoti:RegisterForDrag("LeftButton")
+	self.biaoti:SetScript("OnDragStart",function()
+	    self:StartMoving();
+	    self:SetUserPlaced(false)
+	end)
+	self.biaoti:SetScript("OnDragStop",function()
+	    self:StopMovingOrSizing()
+	    self:SetUserPlaced(false)
+	end)
+end
+addonTable.ADD_BagBankBGtex=ADD_BagBankBGtex
 --创建按钮
 local function ADD_Button(GnName,UIName,fuFrame,Width,Height,Point,fuPoint,rPoint,PointX,PointY)
 	local frame = CreateFrame("Button", UIName, fuFrame, "UIPanelButtonTemplate");  
@@ -303,3 +496,33 @@ local function ADD_QuickButton(QkBut,Tooltip,Icon,Template)
 	return butFrame
 end
 addonTable.ADD_QuickButton=ADD_QuickButton
+--创建下拉
+local function ADD_DownMenu(fujiF,biaoti,CVarsV,Width,Point,PointX,PointY,VVV,Vname)
+	local frameX = CreateFrame("FRAME", nil, fujiF, "UIDropDownMenuTemplate")
+	frameX:SetPoint("TOPLEFT",Point,"TOPLEFT",PointX,PointY)
+	UIDropDownMenu_SetWidth(frameX, Width)
+	UIDropDownMenu_Initialize(frameX, function(self)
+		local info = UIDropDownMenu_CreateInfo()
+		info.func = self.SetValue
+		local NewVvv= tonumber(GetCVar(CVarsV))
+		for i=1,#VVV,1 do
+			local lisvv= tonumber(VVV[i])
+		    info.text, info.arg1, info.checked = Vname[VVV[i]], VVV[i], tonumber(VVV[i]) == NewVvv;
+			UIDropDownMenu_AddButton(info)
+		end 
+	end)
+	local shezhiVV= tonumber(GetCVar(CVarsV))
+	local shezhiVV= tostring(shezhiVV)
+	UIDropDownMenu_SetText(frameX, Vname[shezhiVV])
+	function frameX:SetValue(newValue)
+		UIDropDownMenu_SetText(frameX, Vname[newValue])
+		SetCVar(CVarsV,newValue)
+		CloseDropDownMenus()
+	end
+	frameX.t = frameX:CreateFontString();
+	frameX.t:SetPoint("RIGHT",frameX,"LEFT",10,2);
+	frameX.t:SetFontObject(GameFontNormal);
+	frameX.t:SetText(biaoti);
+	return frameX
+end
+addonTable.ADD_DownMenu=ADD_DownMenu

@@ -282,14 +282,14 @@ local function errottishi()
 end
 local function errotFUN(msg)
 	--print(msg)
-	local stack = debugstack(3) or "--"
-	local logrizhi = debuglocals(3) or "--"
+	local stack = debugstack(3) or "无"
+	local logrizhi = debuglocals(3) or "无"
 	local time = GetServerTime()
 	local hejishu=#bencierrinfo
 	Bugshouji.cuowushu = 1
 	for i=hejishu,1,-1 do
 		if bencierrinfo[i][1]==msg then
-			Bugshouji.cuowushu =Bugshouji.cuowushu+bencierrinfo[i][5]
+			Bugshouji.cuowushu = Bugshouji.cuowushu+bencierrinfo[i][5]
 			table.remove(bencierrinfo,i);
 			break
 		end
@@ -326,7 +326,7 @@ Bugshouji:RegisterEvent("MACRO_ACTION_BLOCKED");
 Bugshouji:RegisterEvent("PLAYER_LOGIN")
 Bugshouji:RegisterEvent("PLAYER_LOGOUT");
 Bugshouji:RegisterEvent("ADDON_LOADED")
-Bugshouji:SetScript("OnEvent", function(self,event,arg1,arg2)
+Bugshouji:SetScript("OnEvent", function(self,event,arg1,arg2,arg3,arg4)
 	if event=="ADDON_LOADED" then
 		C_Timer.After(3,del_ErrorInfo)
 		Bugshouji:UnregisterEvent("ADDON_LOADED")
@@ -339,8 +339,8 @@ Bugshouji:SetScript("OnEvent", function(self,event,arg1,arg2)
 		end
 	elseif event=="ADDON_ACTION_FORBIDDEN" or event=="ADDON_ACTION_BLOCKED" then
 		local msg = "["..event.."] 插件< "..arg1.." >尝试调用保护功能< "..arg2.." >"
-		local stack = ""
-		local logrizhi = ""
+		local stack = debugstack(3) or "无"
+		local logrizhi = debuglocals(3) or "无"
 		local time = GetServerTime()
 		local hejishu=#bencierrinfo
 		Bugshouji.cuowushu = 1
@@ -356,8 +356,8 @@ Bugshouji:SetScript("OnEvent", function(self,event,arg1,arg2)
 		errottishi()
 	elseif event=="MACRO_ACTION_FORBIDDEN" or event=="MACRO_ACTION_BLOCKED" then
 		local msg = "["..event.."] 宏尝试调用保护功能<"..arg1..">"
-		local stack = ""
-		local logrizhi = ""
+		local stack = debugstack(3) or "无"
+		local logrizhi = debuglocals(3) or "无"
 		local time = GetServerTime()
 		local hejishu=#bencierrinfo
 		Bugshouji.cuowushu = 1

@@ -71,7 +71,7 @@ local function ADD_RaidR_UI()
 		end
 		Tablist.Tex = Tablist:CreateTexture(nil, "BORDER");
 		Tablist.Tex:SetTexture("interface/paperdollinfoframe/ui-character-inactivetab.blp");
-		Tablist.Tex:SetRotation(3.1415927, 0.5, 0.5)
+		PIGRotation(Tablist.Tex, 180)
 		Tablist.Tex:SetPoint("BOTTOM", Tablist, "BOTTOM", 0,0);
 		Tablist.title = Tablist:CreateFontString();
 		Tablist.title:SetPoint("BOTTOM", Tablist, "BOTTOM", 0,5);

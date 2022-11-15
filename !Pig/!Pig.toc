@@ -1,10 +1,10 @@
-﻿## Interface: 90207
+﻿## Interface: 100000
 ## Title: !Pig-|cffFF00FF[toolbox]|r
 ## Title-zhCN: !Pig-|cffFF00FF[猪猪加油]|r
 ## Notes: Some tools
 ## Notes-zhCN: |cffFF8C00一些小工具|r  |cffFF00FF[猪猪加油祝你游戏愉快]|r
 ## Author: geligasi
-## Version: 4.9.6
+## Version: 4.9.8
 ## SavedVariables: PIG
 ## SavedVariablesPerCharacter: PIG_Per
 Error.lua
@@ -35,5 +35,5 @@ SpellCD\SpellCD.xml
 RaidRecord\RaidRecord.xml
 FarmRecord\FarmRecord.xml
 AFK\AFK.xml
-Test\Test.xml
+Rurutia\Rurutia.xml
 !Pig.lua

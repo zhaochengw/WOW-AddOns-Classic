@@ -111,6 +111,7 @@ addonTable.AllNO = {
 		["xianshiNeirong"] = "ON",
 	},
 	["ChatFrame"] = {
+		["zhixiangShow"]="OFF",
 		["Jianyin"] = "ON",
 		["Bianju"] = "ON",
 		["AltEX"] = "ON",

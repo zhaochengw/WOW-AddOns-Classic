@@ -1,6 +1,7 @@
 ﻿local _, addonTable = ...;
 local fuFrame=List_R_F_1_4
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ---------------------------------
 local function MubiaoFrame_Open()
 	if UFP_Targetzhiyetubiao then return end
@@ -55,7 +56,12 @@ local function MubiaoFrame_Open()
 	TargetFrame.zhiyetubiao:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 119, 3);
 	TargetFrame.zhiyetubiao:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight");
 	TargetFrame.zhiyetubiao:Hide()
-	if tocversion>40000 then TargetFrame.zhiyetubiao:SetFrameLevel(505) end
+	if tocversion>90000 then
+		TargetFrame.zhiyetubiao:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 144, 4);
+		TargetFrame.zhiyetubiao:SetFrameLevel(505)
+	else
+		TargetFrame.zhiyetubiao:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 119, 3);
+	end
 
 	TargetFrame.zhiyetubiao.Border = TargetFrame.zhiyetubiao:CreateTexture(nil, "OVERLAY");
 	TargetFrame.zhiyetubiao.Border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder");
@@ -82,7 +88,11 @@ local function MubiaoFrame_Open()
 	--目标种族/生物类型
 	TargetFrame.mubiaoLX = CreateFrame("Frame", nil, TargetFrame);
 	TargetFrame.mubiaoLX:SetSize(68,18);
-	TargetFrame.mubiaoLX:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 52, -3);
+	if tocversion>90000 then
+		TargetFrame.mubiaoLX:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 64, -3);
+	else
+		TargetFrame.mubiaoLX:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 52, -3);
+	end
 	TargetFrame.mubiaoLX.title = TargetFrame.mubiaoLX:CreateFontString();
 	TargetFrame.mubiaoLX.title:SetPoint("RIGHT", TargetFrame.mubiaoLX, "RIGHT", 0, 0);
 	TargetFrame.mubiaoLX.title:SetFont(GameFontNormal:GetFont(), 14.4, "OUTLINE");
@@ -200,13 +210,17 @@ local function MubiaoFrame_Open()
 	else
 		TargetFrame:HookScript("OnEvent", function (self,event,arg1)
 			if event=="PLAYER_TARGET_CHANGED" or event=="UNIT_THREAT_LIST_UPDATE" or event=="UNIT_THREAT_SITUATION_UPDATE" then
-				TargetFrameNumericalThreat:SetPoint("BOTTOM",TargetFrame,"TOP",-84,-22);
+				TargetFrame.threatNumericIndicator:SetPoint("BOTTOM",TargetFrame.TargetFrameContent.TargetFrameContentMain.ReputationColor,"TOP",-42,0);
 			end
 		end)
 	end
 	--目标生命百分比
 	TargetFrame.mubiaoHP=CreateFrame("Frame",nil,TargetFrame);
-	TargetFrame.mubiaoHP:SetPoint("RIGHT",TargetFrame,"LEFT",5,-2);
+	if tocversion>90000 then
+		TargetFrame.mubiaoHP:SetPoint("RIGHT",TargetFrame,"LEFT",24,-2);
+	else
+		TargetFrame.mubiaoHP:SetPoint("RIGHT",TargetFrame,"LEFT",5,-2);
+	end
 	TargetFrame.mubiaoHP:SetSize(49,22);
 	TargetFrame.mubiaoHP.title = TargetFrame.mubiaoHP:CreateFontString();
 	TargetFrame.mubiaoHP.title:SetPoint("TOPRIGHT", TargetFrame.mubiaoHP, "TOPRIGHT", 0, 0);
@@ -233,7 +247,6 @@ fuFrame.MubiaoLINE:SetThickness(1);
 fuFrame.MubiaoLINE:SetStartPoint("TOPLEFT",2,-150)
 fuFrame.MubiaoLINE:SetEndPoint("TOPRIGHT",-2,-150)
 ---
-local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local Mubiaotooltip = "增强目标头像，显示血量/血量百分比/仇恨值/仇恨高亮/目标职业/生物种类！\r|cff00FFFF小提示：|r\r目标职业图标可以点击，左击观察/右击交易"
 fuFrame.Mubiao=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.MubiaoLINE,"TOPLEFT",20,-20,"目标头像增强",Mubiaotooltip)
 fuFrame.Mubiao:SetScript("OnClick", function (self)
@@ -350,9 +363,13 @@ end);
 --------
 local function ADD_yisu_Open()
 	TargetFrame.yisuF=CreateFrame("Frame",nil,TargetFrame);
-	TargetFrame.yisuF:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 192, -58);
 	TargetFrame.yisuF:SetSize(49,18);
-	if tocversion>40000 then TargetFrame.yisuF:SetFrameLevel(505) end
+	if tocversion>90000 then
+		TargetFrame.yisuF:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 206, -38);
+		TargetFrame.yisuF:SetFrameLevel(505)
+	else
+		TargetFrame.yisuF:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 192, -58);
+	end
 	TargetFrame.yisuF.Tex = TargetFrame.yisuF:CreateTexture("Frame_Texture_UI", "ARTWORK");
 	TargetFrame.yisuF.Tex:SetTexture("interface/icons/ability_rogue_sprint.blp");
 	TargetFrame.yisuF.Tex:SetSize(16,16);

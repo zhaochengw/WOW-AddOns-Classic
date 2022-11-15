@@ -210,19 +210,44 @@ local function ADD_Plane_Frame()
 		fuFrame.jieshoushuju:Show()
 	end);
 	
-	-----------------------
-	local Tooltip= "自动接受玩家位面申请(未组队且不在副本时)\n|cff00FF00我为人人，人人为我。请不要做精致的利己主义者。|r";
+	-------------------------
+	local Tooltip= "|cffFFFF00当双方都打开此选项时可以直接申请组队，如只有一方打开则只能密语申请对方组队。|r";
 	fuFrame.PIGPlane_zudui =ADD_Checkbutton(nil,fuFrame,-120,"TOPLEFT",fuFrame,"TOPLEFT",420,-2,"|cff00FF00自动接受玩家位面申请(单人且不在副本时)|r",Tooltip)
 	fuFrame.PIGPlane_zudui:SetScript("OnClick", function (self)
+		local offtiem = PIG['PlaneInvite']['offtime'] or 0
+		local shengyu = GetServerTime()-offtiem
+		if shengyu<86400 then
+			local chazhi = 86400-shengyu
+			local hours = floor(mod(chazhi, 86400)/3600)
+			local minutes = math.ceil(mod(chazhi,3600)/60)
+			print("|cff00FFFF!Pig:|r|cffFFFF00位面通道充能中...(剩余"..hours.."时"..minutes.."分)！|r")
+			self:SetChecked(false)
+			return 
+		end
 		if self:GetChecked() then
 			PIG['PlaneInvite']['zidongjieshou']="ON";
 		else
-			PIG['PlaneInvite']['zidongjieshou']="OFF";
+			StaticPopup_Show("OPEN_WEIMIANSHENQING");
 		end
 	end);
 	if PIG['PlaneInvite']['zidongjieshou']=="ON" then
 		fuFrame.PIGPlane_zudui:SetChecked(true);
 	end
+	StaticPopupDialogs["OPEN_WEIMIANSHENQING"] = {
+		text = "|cff00FFFF!Pig时空之门-位面：|r\n确定关闭自动接受玩家位面申请吗？\n\n|cffff0000注意你在24小时内只能开关一次，并且将无法自动申请玩家邀请你，只能通过密语联系对方。|r\n\n",
+		button1 = "确定关闭",
+		button2 = "取消关闭",
+		OnAccept = function()
+			PIG['PlaneInvite']['zidongjieshou']="OFF";
+			PIG['PlaneInvite']['offtime']=GetServerTime();
+		end,
+		OnCancel = function()
+			fuFrame.PIGPlane_zudui:SetChecked(true)
+		end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+	}
 	fuFrame.PIGPlane_zudui.help = fuFrame.PIGPlane_zudui:CreateFontString();
 	fuFrame.PIGPlane_zudui.help:SetPoint("TOPLEFT", fuFrame.PIGPlane_zudui, "BOTTOMLEFT", 10, 0);
 	fuFrame.PIGPlane_zudui.help:SetFontObject(GameFontNormal);
@@ -471,7 +496,11 @@ local function ADD_Plane_Frame()
 					if Open=="Y" and autoinv=="Y" then
 						kjframe.autoinv:SetText("|cff00FF00是|r");
 					else
-						kjframe.autoinv:SetText("|cffFF0000否|r");
+						if Open=="Y" and autoinv~="Y" then
+							kjframe.autoinv:SetText("|cffFF0000否|r");
+						else
+							kjframe.autoinv:SetText("|cff333333勿扰|r");
+						end
 					end
 					---
 					local function DisableFrame(YN)
@@ -500,9 +529,18 @@ local function ADD_Plane_Frame()
 						else
 							kjframe.miyu:Enable()
 							if Open=="Y" and autoinv=="Y" then
-								kjframe.miyu:SetText("请求换位面");
+								if PIG['PlaneInvite']['zidongjieshou']=="ON" then
+									kjframe.miyu:SetText("请求换位面");
+								else
+									kjframe.miyu:SetText("密语");
+								end
 							else
-								kjframe.miyu:SetText("密语");
+								if Open=="Y" and autoinv~="Y" then
+									kjframe.miyu:SetText("密语");
+								else
+									kjframe.miyu:Disable()
+									kjframe.miyu:SetText("勿扰");
+								end
 							end
 						end
 					end	

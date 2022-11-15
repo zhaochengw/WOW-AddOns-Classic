@@ -242,23 +242,12 @@ end
 addonTable.ADD_QuickButton_PlaneInvite=ADD_QuickButton_PlaneInvite
 ---
 OptionsModF_PlaneInvite:SetScript("OnClick", function (self)
-	local offtiem = PIG['PlaneInvite']['offtime'] or 0
-	local shengyu = GetServerTime()-offtiem
-	if shengyu<86400 then
-		local chazhi = 86400-shengyu
-		local hours = floor(mod(chazhi, 86400)/3600)
-		local minutes = math.ceil(mod(chazhi,3600)/60)
-		print("|cff00FFFF!Pig:|r|cffFFFF00时空之门充能中...(剩余"..hours.."时"..minutes.."分)！|r")
-		self:SetChecked(false)
-		return 
-	end
 	if self:GetChecked() then
 		PIG['PlaneInvite']['Kaiqi']="ON";
 		Options_PlaneInvite:Enable();
 		ADD_PlaneInviteFrame()
 	else
 		PIG['PlaneInvite']['Kaiqi']="OFF";
-		PIG['PlaneInvite']['offtime']=GetServerTime();
 		Options_PlaneInvite:Disable();
 		Pig_Options_RLtishi_UI:Show()
 	end

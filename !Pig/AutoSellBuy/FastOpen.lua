@@ -3,7 +3,7 @@ local _, addonTable = ...;
 local hang_Height,hang_NUM  = 30, 14;
 local FrameLevel=addonTable.SellBuyFrameLevel
 ----//////////////////
-local function Open_ADD()
+local function FastOpen()
 	PIG["AutoSellBuy"]["Openlist"]=PIG["AutoSellBuy"]["Openlist"] or addonTable.Default["AutoSellBuy"]["Openlist"]
 	local fuFrame = SpllBuy_TabFrame_4
 	local Width = fuFrame:GetWidth()-20;
@@ -211,24 +211,28 @@ local function Open_ADD()
 
 	---
 	local function Open_Item(self)
-		local shujuy =PIG["AutoSellBuy"]["Openlist"]
-		for arg1=0,4 do			
-			local xx=GetContainerNumSlots(arg1)
-			for k=1,xx do	
-				local texture, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1, k);
-				for i=1,#shujuy do
-					if itemID==shujuy[i][3] then
-						if InCombatLockdown() then PIG_print("请在脱战后使用") end
-						self:SetAttribute("item", itemLink)
-						return
+		if InCombatLockdown() then
+			PIG_print("请在脱战后使用")
+		else
+			local shujuy =PIG["AutoSellBuy"]["Openlist"]
+			for arg1=0,4 do			
+				local xx=GetContainerNumSlots(arg1)
+				for k=1,xx do	
+					local texture, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1, k);
+					for i=1,#shujuy do
+						if itemID==shujuy[i][3] then
+							
+							self:SetAttribute("item", itemLink)
+							return
+						end
 					end
 				end
 			end
+			PIG_print("没有需打开物品")
 		end
-		PIG_print("没有需打开物品")
 	end
 	addonTable.Open_Item = Open_Item
-	fuFrame.yijiandakai = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate,SecureActionButtonTemplate");
+	fuFrame.yijiandakai = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");
 	fuFrame.yijiandakai:SetSize(100,22);
 	fuFrame.yijiandakai:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",100,-40);
 	fuFrame.yijiandakai:SetText("手动开启");
@@ -243,4 +247,4 @@ local function Open_ADD()
 	end
 end
 -- --==============================
-addonTable.Open_ADD = Open_ADD
+addonTable.FastOpen = FastOpen

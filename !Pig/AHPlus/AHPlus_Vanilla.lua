@@ -54,7 +54,7 @@ local function ADD_AHPlus()
 	local OLD_QueryAuctionItems = QueryAuctionItems	
 	QueryAuctionItems = function(...)
 		local text, minLevel, maxLevel, page, usable, rarity, allxiazai, exactMatch, filterData =...
-		if PIG.AHPlus.exactMatch or maichuxunjia then
+		if PIG.AHPlus.exactMatch or AuctionFrame.maichuxunjia then
 			local exactMatch = true
 			return OLD_QueryAuctionItems(text, minLevel, maxLevel, page, usable, rarity, allxiazai, exactMatch, filterData)
 		else
@@ -1289,7 +1289,6 @@ end);
 addonTable.AHPlus = function()
 	PIG.AHPlus=PIG.AHPlus or addonTable.Default.AHPlus
 	PIG.AHPlus.Tokens=PIG.AHPlus.Tokens or addonTable.Default.AHPlus.Tokens
-	PIG.AHPlus.AHtooltip=PIG.AHPlus.AHtooltip or addonTable.Default.AHPlus.AHtooltip
 	huoquhuizhangjiageG()
 	if PIG.AHPlus.Open then
 		ITEM_QUALITY_COLORS[-1]={ r = 0, g = 0, b = 0, hex = "", color = 0 };
