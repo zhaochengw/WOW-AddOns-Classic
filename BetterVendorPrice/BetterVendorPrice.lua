@@ -28,7 +28,7 @@ local L = BVP.L
 -- BVP.debug = 9 -- to debug before saved variables are loaded
 
 BVP.slashCmdName = "bvp"
-BVP.addonHash = "8bc8f98"
+BVP.addonHash = "1b555d2"
 BVP.savedVarName = "betterVendorPriceSaved"
 
 -- default value
@@ -74,12 +74,12 @@ function BVP.Slash(arg) -- can't be a : because used directly as slash command
   if cmd == "v" then
     -- version
     BVP:PrintDefault("BetterVendorPrice " .. BVP.manifestVersion ..
-                       " (8bc8f98) by MooreaTv (moorea@ymail.com)")
+                       " (1b555d2) by MooreaTv (moorea@ymail.com)")
   elseif cmd == "b" then
     local subText = L["Please submit on discord or on https://|cFF99E5FFbit.ly/vendorbug|r  or email"]
     BVP:PrintDefault(L["Better Vendor Price bug report open: "] .. subText)
     -- base molib will add version and date/timne
-    BVP:BugReport(subText, "8bc8f98\n\n" .. L["Bug report from slash command"])
+    BVP:BugReport(subText, "1b555d2\n\n" .. L["Bug report from slash command"])
   elseif cmd == "c" then
     BVP:ShowConfigPanel(BVP.optionsPanel)
   elseif BVP:StartsWith(arg, "debug") then
@@ -118,7 +118,7 @@ function BVP:CreateOptionsPanel()
   BVP.optionsPanel = p
   p:addText(L["Better Vendor Price options"], "GameFontNormalLarge"):Place()
   p:addText(L["These options let you control the behavior of BetterVendorPrice"] .. " " .. BVP.manifestVersion ..
-              " 8bc8f98"):Place()
+              " 1b555d2"):Place()
   p:addText(L["Get Auction House DataBase (|cFF99E5FFAHDB|r) v0.12 or newer to see auction information on the toolip!"])
     :Place(0, 16)
 
@@ -204,6 +204,10 @@ function BVP:CreateOptionsPanel()
 end
 
 function BVP.ToolTipHook(t)
+  if t.GetItem == nil then
+    BVP:Debug(1, "No GetItem for %", t:GetName())
+    return
+  end
   local name, link = t:GetItem()
   if not link then
     BVP:Debug(1, "No item link for % on %", name, t:GetName())
@@ -299,8 +303,13 @@ function BVP.ToolTipHook(t)
   return true
 end
 
-GameTooltip:HookScript("OnTooltipSetItem", BVP.ToolTipHook)
-ItemRefTooltip:HookScript("OnTooltipSetItem", BVP.ToolTipHook)
+if TooltipDataProcessor ~= nil then
+  -- Dragonflight "revamp"
+  TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, BVP.ToolTipHook)
+else
+  GameTooltip:HookScript("OnTooltipSetItem", BVP.ToolTipHook)
+  ItemRefTooltip:HookScript("OnTooltipSetItem", BVP.ToolTipHook)
+end
 
 --
 BVP:Debug("bvp main file loaded")

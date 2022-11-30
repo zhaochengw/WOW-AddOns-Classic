@@ -1,9 +1,9 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: Better Vendor Price
 ## Notes: Vendor Price display with stack price information (|cFF99E5FF/bvp config|r)
 ## Notes: Dragonflight edition
 ## Author: MooreaTV moorea@ymail.com
-## Version: v1.17.05
+## Version: v1.18.01
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: betterVendorPriceSaved
