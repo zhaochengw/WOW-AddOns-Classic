@@ -260,6 +260,8 @@ L["EXPORT_AS"] = "Exportar cómo:"
 L["EXPORT_RESULTS"] = "Exportar resultados"
 L["EXPORT_STRING"] = "Cadena para compartir"
 L["EXPORT_WHISPER"] = "Susurrar a"
+--[[Translation missing --]]
+L["EXTENDED_SEARCH_ACTIVE_TEXT"] = "%extended search active%"
 L["FAVOURITES"] = "Favoritos"
 L["FETCHING_ITEM_INFO"] = "Obteniendo información del objeto ..."
 L["FINISHED_PROCESSING"] = "Finalizado el procesamiento de %s objetos."
@@ -350,6 +352,7 @@ L["POST"] = "Publicar"
 --[[Translation missing --]]
 L["POST_ATTEMPT_FAILED"] = "Your last post attempt didn't work. Try again."
 L["PRICE"] = "Precio"
+L["PRICE_HISTORY"] = "Historial de precios"
 L["PRICE_INCREASE_WARNING"] = "Precio aumentado en %s, esperando %ss"
 L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "Habilitar la configuración por personaje"
 L["PROFILE_TOGGLE_TOOLTIP_TEXT"] = "Los cambios en la configuración de Auctionator solo afectan a este personaje."
@@ -362,6 +365,8 @@ L["PROSPECT_TOOLTIP_TOOLTIP_TEXT"] = "Show jewelcrafting prospecting estimated v
 L["PURCHASED_X_XX"] = "Compró %s x%s"
 L["QUANTITY"] = "Cantidad"
 L["REAGENT_SEARCH"] = "Búsqueda de componentes"
+--[[Translation missing --]]
+L["REAGENTS_VALUE_COLON"] = "Reagents Value:"
 L["REALM_HISTORY"] = "Historia del reino"
 L["RECENT_SEARCHES"] = "Búsquedas recientes"
 L["REFRESH"] = "Actualizar"
@@ -404,6 +409,46 @@ L["SHOPPING_TAB"] = "Compras"
 L["SHOPPING_TAB_HEADER_2"] = "Auctionator - Compras"
 L["SKIP"] = "Omitir"
 L["SORT"] = "Ordenar"
+--[[Translation missing --]]
+L["SPLASH_100015_ALL_VERSIONS_1"] = "Autocomplete search terms when searching in the Shopping tab."
+--[[Translation missing --]]
+L["SPLASH_100015_ALL_VERSIONS_2"] = "Quick search terms are immediately editable in the Shopping tab after a search."
+--[[Translation missing --]]
+L["SPLASH_100015_ALL_VERSIONS_3"] = "Option to preserve last selected duration in the Selling tab."
+--[[Translation missing --]]
+L["SPLASH_100015_ALL_VERSIONS_4"] = "Both crafting cost and profit can be displayed simultaneously in the crafting views."
+--[[Translation missing --]]
+L["SPLASH_100015_ALL_VERSIONS_5"] = "Scroll areas have been reworked to be smoother."
+--[[Translation missing --]]
+L["SPLASH_100015_ALL_VERSIONS_6"] = "General bugfixes and compatibility changes for WoW."
+--[[Translation missing --]]
+L["SPLASH_100015_ALL_VERSIONS_HEADER"] = "Recent features for all versions"
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_1"] = "Warning when posting with a massive undercut (50% or more) to reduce mistakes."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_2"] = "New optional \"Top?\" column in the Shopping tab to see if your auction is top for an item."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_3"] = "Prospecting ore estimated values as an optional tooltip."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_4"] = "Milling herb estimated values as an optional tooltip."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_5"] = "Shows posting history as an extra option in an item's price history view."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_6"] = "In the Selling tab removed extra scan after posting an item."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_7"] = "Option to prevent the post button going grey/disabled and to allow attempts to post immediately, with no-cost retries on failure."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_HEADER"] = "Recent features for Classic"
+--[[Translation missing --]]
+L["SPLASH_100015_DESCRIPTION"] = "Lots of improvements, including compatibility with Dragonflight"
+--[[Translation missing --]]
+L["SPLASH_100015_RETAIL_1"] = "Crafting cost and profit updates based on the reagents and quality selected."
+--[[Translation missing --]]
+L["SPLASH_100015_RETAIL_2"] = "Selling tab has an expanded prices view with historical prices available in a separate tab. Reverting to the split screen view is available as an option."
+--[[Translation missing --]]
+L["SPLASH_100015_RETAIL_3"] = "Reagents value on the auction house is shown when listing a crafting order."
+--[[Translation missing --]]
+L["SPLASH_100015_RETAIL_HEADER"] = "Recent features for Retail"
 L["SPLASH_830_BUGS_1"] = "Por favor únete a nosotros en el servidor de discord de Auctionator %s"
 L["SPLASH_830_BUGS_2"] = "Por favor reporta los errores en Github %s"
 L["SPLASH_830_BUGS_3"] = "Somos más activos en Discord, y no tomamos informes de errores en Curseforge o foros de Auctionator"
@@ -578,8 +623,7 @@ L["TRANSLATORS_HELP"] = "Por favor ayuda a traducir!"
 L["TRANSLATORS_ITALIAN"] = "Italiano"
 L["TRANSLATORS_KOREAN"] = "Coreano"
 L["TRANSLATORS_LATIN_SPANISH"] = "Español latinoamericano"
---[[Translation missing --]]
-L["TRANSLATORS_ROMANIAN_INFO"] = "Romanian (available separately)"
+L["TRANSLATORS_ROMANIAN_INFO"] = "Rumano (disponible por separado)"
 L["TRANSLATORS_RUSSIAN"] = "Ruso"
 L["TRANSLATORS_SIMPLIFIED_CHINESE"] = "Chino simplificado"
 L["TRANSLATORS_SPANISH"] = "Español"

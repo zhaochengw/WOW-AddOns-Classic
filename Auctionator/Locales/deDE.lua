@@ -17,8 +17,7 @@ L["AUCTION_TOOLTIP_TOOLTIP_HEADER"] = "Auktion Tooltip Infos"
 L["AUCTION_TOOLTIP_TOOLTIP_TEXT"] = "Zeigt den Auktionspreis im Tooltip an."
 L["AUCTIONATOR"] = "Auctionator"
 L["AUTHOR_HEADER"] = "Author"
---[[Translation missing --]]
-L["BID_EXISTING_ON_OWNED_AUCTION"] = "Someone has bid on this auction so cancelling will cost you your deposit and:"
+L["BID_EXISTING_ON_OWNED_AUCTION"] = "Jemand hat auf diese Auktion geboten. Wenn die Auktion storniert wird, kostet das die geleistete Anzahlung und:"
 L["BID_ONLY_AVAILABLE"] = "nur bieten verfügbar"
 L["BID_PRICE"] = "Gebotspreis"
 L["BIDDER"] = "Bieter"
@@ -77,18 +76,14 @@ L["CONFIG_CHAT_LOG"] = "Zeige deine neuen Auktionen im Chat"
 L["CONFIG_CHAT_LOG_TOOLTIP_HEADER"] = "Auktions Chat Log"
 L["CONFIG_CHAT_LOG_TOOLTIP_TEXT"] = "Wenn diese Option deaktiviert ist, werden keine Informationen für neu erstellte Auktionen im Chat angezeigt."
 L["CONFIG_CRAFTING_INFO_SHOW"] = "Herstellungskosten in der Handwerkansicht anzeigen"
---[[Translation missing --]]
-L["CONFIG_CRAFTING_INFO_SHOW_COST"] = "Show reagent costs from auction house and vendors"
+L["CONFIG_CRAFTING_INFO_SHOW_COST"] = "Reagenzienkosten von Auktionshäusern und Händlern anzeigen"
 --[[Translation missing --]]
 L["CONFIG_CRAFTING_INFO_SHOW_COST_TOOLTIP_HEADER"] = "Crafting Info Show Cost"
---[[Translation missing --]]
-L["CONFIG_CRAFTING_INFO_SHOW_COST_TOOLTIP_TEXT"] = "Enable this option to see the cost of crafting a specific recipe when viewing it."
---[[Translation missing --]]
-L["CONFIG_CRAFTING_INFO_SHOW_PROFIT"] = "Show profit from crafting with auction house and vendor reagents"
+L["CONFIG_CRAFTING_INFO_SHOW_COST_TOOLTIP_TEXT"] = "Diese Option aktivieren, um die Kosten für die Herstellung eines bestimmten Rezepts zu sehen, wenn es angezeigt wird."
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT"] = "Gewinne aus der Herstellung mit Auktionshaus- und Händlerreagenzien anzeigen"
 --[[Translation missing --]]
 L["CONFIG_CRAFTING_INFO_SHOW_PROFIT_TOOLTIP_HEADER"] = "Crafting Info Show Profit"
---[[Translation missing --]]
-L["CONFIG_CRAFTING_INFO_SHOW_PROFIT_TOOLTIP_TEXT"] = "Enable this option to see the profit of crafting a specific recipe when viewing it."
+L["CONFIG_CRAFTING_INFO_SHOW_PROFIT_TOOLTIP_TEXT"] = "Diese Option aktivieren, um den Gewinn aus der Herstellung eines bestimmten Rezepts zu sehen, wenn es ansehen wird."
 L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_HEADER"] = "Handwerksbildschirm zusätzliche Infos"
 L["CONFIG_CRAFTING_INFO_SHOW_TOOLTIP_TEXT"] = "Der Handwerksbildschirm zeigt die Kosten für das Erstellen eines Gegenstands an. Deaktiviere diese Option, um die Handwerkskosten nicht anzuzeigen."
 L["CONFIG_DEBUG"] = "Zeige Debugmeldungen an."
@@ -183,11 +178,10 @@ L["CONFIG_UNDERCUT_SCAN_NOT_LIFO_TOOLTIP_HEADER"] = "Unterboten-Scan für Ausrü
 L["CONFIG_UNDERCUT_SCAN_NOT_LIFO_TOOLTIP_TEXT"] = "Lasse diese Option aktiviert, um Auktionen für Haustiere und Ausrüstung einzuschließen, wenn der Unterboten-Scan verwenden wird. Schalten diese Option aus, um Haustiere und Ausrüstung auszuschließen."
 L["CONFIG_VENDOR_TOOLTIP"] = "Zeige Händlerinfos an."
 L["CONFIRM"] = "Bestätigen"
-L["CONFIRM_POST_BELOW_VENDOR"] = "Du kannst mehr Gold machen, um dies an einen Händler zu verkaufen. Bist du sicher, dass du zu diesem Preis erstellen möchtest?"
+L["CONFIRM_POST_BELOW_VENDOR"] = "Du kannst mehr Gold machen, indem du dies an einen Händler verkaufst. Bist du sicher, dass du zu diesem Preis erstellen möchtest?"
 L["CONFIRM_POST_LOW_PRICE"] = "Der Preis von %s sieht etwas niedrig aus. Bist du sicher, dass du zu diesem Preis erstellen möchtest?"
 L["CONFIRM_POST_PRICE_DROP"] = "Der Einheitspreis von %s ist ein großer Preissturz. Bist du sicher, dass du zu diesem Preis erstellen möchtest?"
---[[Translation missing --]]
-L["CONFIRM_X_TOTAL_PRICE_X"] = "Confirm %s, total price %s"
+L["CONFIRM_X_TOTAL_PRICE_X"] = "Bestätigen %s, Gesamtpreis %s"
 L["CONTRIBUTORS_HEADER"] = "Mitwirkende"
 L["COPY_ITEM_ADDED"] = "Kopierte %s in %s"
 L["COPY_NO_LIST_SELECTED"] = "Gegenstand kann nicht kopiert werden. Keine Einkaufsliste ausgewählt"
@@ -235,6 +229,7 @@ L["EXPORT_AS"] = "Exportieren als:"
 L["EXPORT_RESULTS"] = "Ergebnisse exportieren"
 L["EXPORT_STRING"] = "Teilbare Zeichenfolge"
 L["EXPORT_WHISPER"] = "Flüstern an: "
+L["EXTENDED_SEARCH_ACTIVE_TEXT"] = "%erweiterte Suche aktiv%"
 L["FAVOURITES"] = "Favoriten"
 L["FETCHING_ITEM_INFO"] = "Rufe Daten ab..."
 L["FINISHED_PROCESSING"] = "%s Gegenstände verarbeitet."
@@ -273,8 +268,7 @@ L["MAIL_TOOLTIP_TOOLTIP_HEADER"] = "Briefkasten Tooltip Infos"
 L["MAIL_TOOLTIP_TOOLTIP_TEXT"] = "Zeigt Auctionator-Informationen zu Gegenständen im Briefkasten an."
 L["MAX"] = "max."
 L["MAX_COLON_X"] = "max: %s"
---[[Translation missing --]]
-L["MILL"] = "Mill"
+L["MILL"] = "Mahlen"
 --[[Translation missing --]]
 L["MILL_TOOLTIP_TOOLTIP_HEADER"] = "Mill Tooltip Information"
 --[[Translation missing --]]
@@ -298,8 +292,7 @@ L["NEW_SHOPPING_LIST"] = "+ Neue Einkaufsliste"
 L["NEXT_SCAN_MESSAGE"] = "Der nächste vollständige Scan ist erst in %s Minuten and %s Sekunden möglich."
 L["NO_ITEM_INFO_SPECIFIED"] = "Es wurden keine Gegenstandsinformationen angegeben."
 L["NO_LIST"] = "Keine Liste"
---[[Translation missing --]]
-L["NO_LONGER_AVAILABLE"] = "No longer available"
+L["NO_LONGER_AVAILABLE"] = "Nicht mehr verfügbar"
 L["NO_RESULTS"] = "Keine Ergebnisse gefunden."
 L["NONE"] = "Kein"
 L["NONE_LEFT"] = "Keins übrig"
@@ -316,6 +309,7 @@ L["PET_TOOLTIP_TOOLTIP_TEXT"] = "Zeigt den Auktionspreis für Haustierkäfige im
 L["POST"] = "Auktion erstellen"
 L["POST_ATTEMPT_FAILED"] = "Dein letzter Auktionerstellungsversuch hat nicht funktioniert. Versuch es nochmal."
 L["PRICE"] = "Preis"
+L["PRICE_HISTORY"] = "Preisentwicklung"
 L["PRICE_INCREASE_WARNING"] = "Preis um %s erhöht, warte auf %ss"
 L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "Aktiviere Einstellungen pro Charakter"
 L["PROFILE_TOGGLE_TOOLTIP_TEXT"] = "Änderungen an den Auktionatoreinstellungen wirken sich nur auf diesen Charakter aus."
@@ -326,6 +320,7 @@ L["PROSPECT_TOOLTIP_TOOLTIP_TEXT"] = "Zeigt für Juwelierkunst die Aussicht beim
 L["PURCHASED_X_XX"] = "Gekauft %s x%s"
 L["QUANTITY"] = "Menge"
 L["REAGENT_SEARCH"] = "Reagenzien-Suche"
+L["REAGENTS_VALUE_COLON"] = "Reagenzienwert:"
 L["REALM_HISTORY"] = "Realm Verlauf"
 L["RECENT_SEARCHES"] = "Aktuelle Suchen"
 L["REFRESH"] = "Aktualisierung"
@@ -366,6 +361,40 @@ L["SHOPPING_TAB"] = "Einkaufen"
 L["SHOPPING_TAB_HEADER_2"] = "Auctionator - Einkaufen"
 L["SKIP"] = "Überspringen"
 L["SORT"] = "Sortieren"
+L["SPLASH_100015_ALL_VERSIONS_1"] = "Autovervollständigung von Suchbegriffen bei der Suche in der Registerkarte Einkaufen."
+L["SPLASH_100015_ALL_VERSIONS_2"] = "Die Begriffe der Schnellsuche können nach einer Suche sofort in der Registerkarte Einkaufen bearbeitet werden."
+L["SPLASH_100015_ALL_VERSIONS_3"] = "Option zur Übernahme der zuletzt gewählten Dauer in der Registerkarte Verkaufen."
+--[[Translation missing --]]
+L["SPLASH_100015_ALL_VERSIONS_4"] = "Both crafting cost and profit can be displayed simultaneously in the crafting views."
+L["SPLASH_100015_ALL_VERSIONS_5"] = "Die Bildlaufbereiche wurden verbessert und laufen nun flüssiger."
+L["SPLASH_100015_ALL_VERSIONS_6"] = "Allgemeine Bugfixes und Kompatibilitätsanpassungen für WoW."
+L["SPLASH_100015_ALL_VERSIONS_HEADER"] = "Neue Funktionen für alle Versionen"
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_1"] = "Warning when posting with a massive undercut (50% or more) to reduce mistakes."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_2"] = "New optional \"Top?\" column in the Shopping tab to see if your auction is top for an item."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_3"] = "Prospecting ore estimated values as an optional tooltip."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_4"] = "Milling herb estimated values as an optional tooltip."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_5"] = "Shows posting history as an extra option in an item's price history view."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_6"] = "In the Selling tab removed extra scan after posting an item."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_7"] = "Option to prevent the post button going grey/disabled and to allow attempts to post immediately, with no-cost retries on failure."
+--[[Translation missing --]]
+L["SPLASH_100015_CLASSIC_HEADER"] = "Recent features for Classic"
+--[[Translation missing --]]
+L["SPLASH_100015_DESCRIPTION"] = "Lots of improvements, including compatibility with Dragonflight"
+--[[Translation missing --]]
+L["SPLASH_100015_RETAIL_1"] = "Crafting cost and profit updates based on the reagents and quality selected."
+--[[Translation missing --]]
+L["SPLASH_100015_RETAIL_2"] = "Selling tab has an expanded prices view with historical prices available in a separate tab. Reverting to the split screen view is available as an option."
+--[[Translation missing --]]
+L["SPLASH_100015_RETAIL_3"] = "Reagents value on the auction house is shown when listing a crafting order."
+--[[Translation missing --]]
+L["SPLASH_100015_RETAIL_HEADER"] = "Recent features for Retail"
 L["SPLASH_830_BUGS_1"] = "Besuche uns auf dem Auctionator Discord-Server %s"
 L["SPLASH_830_BUGS_2"] = "Fehler bitte über Github melden %s"
 L["SPLASH_830_BUGS_3"] = "Wir sind am aktivsten auf Discord und nehmen keine Fehlerberichte über Curseforge oder Auctionatorforen auf."
@@ -522,8 +551,7 @@ L["TRANSLATORS_HELP"] = "Bitte unterstützt beim Übersetzen!"
 L["TRANSLATORS_ITALIAN"] = "Italienisch"
 L["TRANSLATORS_KOREAN"] = "Koreanisch"
 L["TRANSLATORS_LATIN_SPANISH"] = "Lateinamerikanisch"
---[[Translation missing --]]
-L["TRANSLATORS_ROMANIAN_INFO"] = "Romanian (available separately)"
+L["TRANSLATORS_ROMANIAN_INFO"] = "Rumänisch (separat verfügbar)"
 L["TRANSLATORS_RUSSIAN"] = "Russisch"
 L["TRANSLATORS_SIMPLIFIED_CHINESE"] = "Chinesisch vereinfacht"
 L["TRANSLATORS_SPANISH"] = "Spanisch"
