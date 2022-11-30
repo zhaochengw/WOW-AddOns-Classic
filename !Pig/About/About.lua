@@ -1,7 +1,7 @@
 local _, addonTable = ...;
 
 ---------------------------------------------------
-local fuFrame=List_R_F_1_13
+local fuFrame=List_R_F_1_14
 local Pigtxt=addonTable.Pigtxt
 ------
 fuFrame.top = fuFrame:CreateFontString();

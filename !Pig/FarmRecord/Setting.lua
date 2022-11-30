@@ -3,8 +3,9 @@ local gsub = _G.string.gsub
 local find = _G.string.find
 local ADD_Frame=addonTable.ADD_Frame
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
+local PIGDownMenu=addonTable.PIGDownMenu
 local _, _, _, tocversion = GetBuildInfo()
---============带本助手-设置====================
+--带本助手-设置====================
 local daibenData=addonTable.daibenData
 local Width,DHeight,biaotiH= daibenData.Width,daibenData.DHeight,daibenData.biaotiH
 local WowWidth= daibenData.WowWidth
@@ -47,23 +48,18 @@ local function ADD_settingUI(Width,WowWidth,WowHeight)
 	fuFrame.F.mudidiT:SetPoint("TOPLEFT",fuFrame.F,"TOPLEFT",5,-7);
 	fuFrame.F.mudidiT:SetFontObject(GameFontNormal);
 	fuFrame.F.mudidiT:SetText("选择副本:");
-	fuFrame.F.mudidi = CreateFrame("FRAME", nil, fuFrame.F, "UIDropDownMenuTemplate")
-	fuFrame.F.mudidi:SetPoint("LEFT",fuFrame.F.mudidiT,"RIGHT",-54,-2)
-	fuFrame.F.mudidi.Left:Hide();
-	fuFrame.F.mudidi.Middle:Hide();
-	fuFrame.F.mudidi.Right:Hide();
-	UIDropDownMenu_SetWidth(fuFrame.F.mudidi, 180)
-	local NewInstanceList = {{"无","无"}}
-	for i=1,#InstanceList do
-		table.insert(NewInstanceList,InstanceList[i])
-	end
-	local function chushihuaxiala(self, level, menuList)
-		local info = UIDropDownMenu_CreateInfo()
+	fuFrame.F.mudidi=PIGDownMenu(nil,{170,24},fuFrame.F,{"LEFT",fuFrame.F.mudidiT,"RIGHT", 0,0})
+	function fuFrame.F.mudidi:PIGDownMenu_Update_But(self, level, menuList)
+		local NewInstanceList = {{"无","无"}}
+		for i=1,#InstanceList do
+			table.insert(NewInstanceList,InstanceList[i])
+		end
+		local info = {}
 		if (level or 1) == 1 then
-			for i=1,#NewInstanceList do
+			for i=1,#NewInstanceList,1 do
 				info.text= NewInstanceList[i][1]
 				if i==1 then
-					info.func = self.SetValue
+					info.func = self.PIGDownMenu_SetValue
 					info.arg1= NewInstanceList[i][2];
 					info.hasArrow = false
 					info.checked = info.arg1 == PIG_Per["daiben"]["fubenName"]
@@ -79,18 +75,20 @@ local function ADD_settingUI(Width,WowWidth,WowHeight)
 					info.checked = xuanzhongzai
 					info.menuList, info.hasArrow = data2, true
 				end
-				UIDropDownMenu_AddButton(info)
+				fuFrame.F.mudidi:PIGDownMenu_AddButton(info)
 			end
 		else
-			info.func = self.SetValue
+			info.func = self.PIGDownMenu_SetValue
 			for ii=1, #menuList do
 				local inname = menuList[ii]
 				info.text, info.arg1= inname, inname;
 				info.checked = info.arg1 == PIG_Per["daiben"]["fubenName"]
-				UIDropDownMenu_AddButton(info, level)
+				fuFrame.F.mudidi:PIGDownMenu_AddButton(info, level)
 			end
 		end
 	end
+	fuFrame.F.mudidi:PIGDownMenu_SetText(PIG_Per["daiben"]["fubenName"])
+
 	local function EditBoxBG_Hide()
 		for id = 1, 4, 1 do
 			local ff = _G["Danjialist_"..id]
@@ -120,8 +118,8 @@ local function ADD_settingUI(Width,WowWidth,WowHeight)
 		end
 	end
 	local function gengxinDanjiaV(fbName)
-		PIG_Per.daiben.LV_danjia[fbName]=PIG_Per.daiben.LV_danjia[fbName] or {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}
-		local jiageinfo = PIG_Per.daiben.LV_danjia[fbName]
+		PIG_Per["daiben"]["LV_danjia"][fbName]=PIG_Per["daiben"]["LV_danjia"][fbName] or {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}
+		local jiageinfo = PIG_Per["daiben"]["LV_danjia"][fbName]
 		for id = 1, 4, 1 do
 			local ff = _G["Danjialist_"..id]
 			ff.V1:SetText("");
@@ -138,10 +136,10 @@ local function ADD_settingUI(Width,WowWidth,WowHeight)
 		end
 	end
 	local Update_jizhangData=addonTable.Update_jizhangData
-	function fuFrame.F.mudidi:SetValue(NewfbName)
-		UIDropDownMenu_SetText(fuFrame.F.mudidi, NewfbName)
-		PIG_Per.daiben.fubenName= NewfbName;
-		if NewfbName=="无" then
+	function fuFrame.F.mudidi:PIGDownMenu_SetValue(value,arg1,arg2)
+		fuFrame.F.mudidi:PIGDownMenu_SetText(value)
+		PIG_Per["daiben"]["fubenName"]=arg1
+		if arg1=="无" then
 			fuFrame.F.danjiaF.XG:Hide();
 			PIG_Per.daiben.autohuifu=false
 			daiben_UI.yesno.Tex:SetTexture("interface/common/indicator-red.blp");
@@ -149,9 +147,9 @@ local function ADD_settingUI(Width,WowWidth,WowHeight)
 		else
 			fuFrame.F.danjiaF.XG:Show();
 		end
-		gengxinDanjiaV(NewfbName)
+		gengxinDanjiaV(arg1)
 		Update_jizhangData(true)
-		CloseDropDownMenus()
+		PIGCloseDropDownMenus()
 	end
 	--单价设置
 	local danjiaWW,danjiaHH = fuFrame.F:GetWidth()/2+30,120
@@ -179,7 +177,7 @@ local function ADD_settingUI(Width,WowWidth,WowHeight)
 	end)
 	fuFrame.F.danjiaF.XG = CreateFrame("Button",nil,fuFrame.F.danjiaF, "UIPanelButtonTemplate");  
 	fuFrame.F.danjiaF.XG:SetSize(60,20);
-	fuFrame.F.danjiaF.XG:SetPoint("LEFT",fuFrame.F.mudidi,"RIGHT",-16,2);
+	fuFrame.F.danjiaF.XG:SetPoint("LEFT",fuFrame.F.mudidi,"RIGHT",0,0);
 	fuFrame.F.danjiaF.XG:SetText("编辑");
 	fuFrame.F.danjiaF.XG:Hide();
 	fuFrame.F.danjiaF.XG:SetScript("OnClick", function (self)
@@ -590,61 +588,58 @@ local function ADD_settingUI(Width,WowWidth,WowHeight)
 		hideOnEscape = true,
 	}
 	fuFrame.F:HookScript("OnShow", function(self)
-		local cpset = PIG_Per.daiben
-		UIDropDownMenu_Initialize(fuFrame.F.mudidi, chushihuaxiala)
-		local old_fbName=cpset.fubenName;
-		UIDropDownMenu_SetText(fuFrame.F.mudidi, old_fbName)
+		local old_fbName=PIG_Per["daiben"]["fubenName"];
 		if old_fbName~="无" then
 			fuFrame.F.danjiaF.XG:Show()
 			fuFrame.F.danjiaF.XG:SetText("编辑")
 			gengxinDanjiaV(old_fbName)
 		end
 		EditBoxBG_Hide()
-		if cpset.CZ_timejisha then
+		if PIG_Per["daiben"]["CZ_timejisha"] then
 			fuFrame.F.CZ_timejisha:SetChecked(true);
 		end
-		if cpset.CZ_expSw then
+		if PIG_Per["daiben"]["CZ_expSw"] then
 			fuFrame.F.CZ_expSw:SetChecked(true);
 		end
-		if cpset.CZ_yueyuci then
+		if PIG_Per["daiben"]["CZ_yueyuci"] then
 			fuFrame.F.CZ_yueyuci:SetChecked(true);
 		end
-		if cpset.CZ_jiuwei then
+		if PIG_Per["daiben"]["CZ_jiuwei"] then
 			fuFrame.F.CZ_jiuwei:SetChecked(true);
 		end
-		if cpset.SDdanjia then
+		if PIG_Per["daiben"]["SDdanjia"] then
 			fuFrame.F.SDdanjia:SetChecked(true);
 		end
-		if cpset.CBbukouG then
+		if PIG_Per["daiben"]["CBbukouG"] then
 			fuFrame.F.CBbukouG:SetChecked(true);
 		end
-		if cpset.HideYue then
+		if PIG_Per["daiben"]["HideYue"] then
 			fuFrame.F.HideYue:SetChecked(true);
 		end
-		if cpset.autohuifu_danjia then
+		if PIG_Per["daiben"]["autohuifu_danjia"] then
 			fuFrame.F.autohuifu_danjia:SetChecked(true);
 		end
-		if cpset.autohuifu_lv then
+		if PIG_Per["daiben"]["autohuifu_lv"] then
 			fuFrame.F.autohuifu_lv:SetChecked(true);
 		end
-		if cpset.autohuifu_inv then
+		if PIG_Per["daiben"]["autohuifu_inv"] then
 			fuFrame.F.autohuifu_inv:SetChecked(true);
 		end
-		if cpset.bangdingUI then
+		if PIG_Per["daiben"]["bangdingUI"] then
 			fuFrame.F.bangdingUI:SetChecked(true);
 		end
-		if PIG_Per.daiben.shoudongMOD then
+		if PIG_Per["daiben"]["shoudongMOD"] then
 			fuFrame.F.shoudongMOD:SetChecked(true);
 		end
-		fuFrame.F.autohuifu_NR:SetText(cpset.autohuifu_NR)
-		fuFrame.F.autohuifu_invCMD:SetText(cpset.autohuifu_invCMD)
+		fuFrame.F.autohuifu_NR:SetText(PIG_Per["daiben"]["autohuifu_NR"])
+		fuFrame.F.autohuifu_invCMD:SetText(PIG_Per["daiben"]["autohuifu_invCMD"])
 
 		fuFrame.F.guanjianzineirong="";
-		for i=1,#cpset.autohuifu_key do
-			if i~=#cpset.autohuifu_key then
-				fuFrame.F.guanjianzineirong=fuFrame.F.guanjianzineirong..cpset.autohuifu_key[i].."，"
+		for i=1,#PIG_Per["daiben"]["autohuifu_key"] do
+			if i~=#PIG_Per["daiben"]["autohuifu_key"] then
+				fuFrame.F.guanjianzineirong=fuFrame.F.guanjianzineirong..PIG_Per["daiben"]["autohuifu_key"][i].."，"
 			else
-				fuFrame.F.guanjianzineirong=fuFrame.F.guanjianzineirong..cpset.autohuifu_key[i]
+				fuFrame.F.guanjianzineirong=fuFrame.F.guanjianzineirong..PIG_Per["daiben"]["autohuifu_key"][i]
 			end
 		end
 		fuFrame.F.guanjiazi_E:SetText(fuFrame.F.guanjianzineirong)

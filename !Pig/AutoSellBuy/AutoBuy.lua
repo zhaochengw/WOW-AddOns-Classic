@@ -1,7 +1,9 @@
 local _, addonTable = ...;
 --================================
+local _, _, _, tocversion = GetBuildInfo()
 local hang_Height,hang_NUM  = 30, 14;
 local FrameLevel=addonTable.SellBuyFrameLevel
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 -- --滚动更新目录
 local function gengxinBuylist(self)
 	for id = 1, hang_NUM do
@@ -58,19 +60,31 @@ end
 --------------------------------
 local function jisuanBAGshuliang(QitemID)
 	local zongjiBAGitemCount=0
-	for bag = 0, 4 do
-		for slot = 1, GetContainerNumSlots(bag) do
-			local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID= GetContainerItemInfo(bag, slot);
-			if itemID then
-				if QitemID==itemID then
-					zongjiBAGitemCount=zongjiBAGitemCount+itemCount
+	if tocversion<100000 then
+		for bag = 0, 4 do
+			for slot = 1, GetContainerNumSlots(bag) do
+				local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID= GetContainerItemInfo(bag, slot);
+				if itemID then
+					if QitemID==itemID then
+						zongjiBAGitemCount=zongjiBAGitemCount+itemCount
+					end
+				end
+			end
+		end
+	else
+		for bag = 0, 4 do
+			for slot = 1, C_Container.GetContainerNumSlots(bag) do
+				local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID= C_Container.GetContainerItemInfo(bag, slot);
+				if itemID then
+					if QitemID==itemID then
+						zongjiBAGitemCount=zongjiBAGitemCount+itemCount
+					end
 				end
 			end
 		end
 	end
 	return zongjiBAGitemCount
 end
---addonTable.jisuanBAGshuliang=jisuanBAGshuliang
 ---------------------------------
 local function zidonggoumai()
 	if ( MerchantFrame:IsVisible() and MerchantFrame.selectedTab == 1 ) then
@@ -181,7 +195,6 @@ local function SellBuy_ADD()
 		-------
 		Buy.Cont = CreateFrame('EditBox', nil, Buy,"InputBoxInstructionsTemplate");
 		Buy.Cont:SetSize(36,28);
-		--Buy.Cont:SetBackdrop({ bgFile = "interface/common/common-input-border.blp",insets = {left = -3,right = -0,top = 2,bottom = -13}})
 		Buy.Cont:SetPoint("RIGHT", Buy, "RIGHT", 0,0);
 		Buy.Cont:SetFontObject(ChatFontNormal);
 		Buy.Cont:SetAutoFocus(false);
@@ -228,46 +241,34 @@ local function SellBuy_ADD()
 	fuFrame.Buy.ADD:SetPoint("TOPLEFT",fuFrame.Buy,"TOPLEFT",0,0);
 	fuFrame.Buy.ADD:SetPoint("BOTTOMRIGHT",fuFrame.Buy,"BOTTOMRIGHT",0,0);
 	---
-	fuFrame.Buy.ADD.iteminfo={};
 	fuFrame.Buy:RegisterEvent("ITEM_LOCK_CHANGED");
-	fuFrame.Buy:SetScript("OnEvent",function (self,event,arg1,arg2)
-		if arg1 and arg2 then
-			if CursorHasItem() then
-				local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1,arg2);
-				if itemID then
-					local _,_,_,_,_,_,_,itemStackCount= GetItemInfo(itemID) 
-					fuFrame.Buy.ADD.iteminfo={icon, itemLink, itemID,itemStackCount,itemStackCount,};
-					fuFrame.Buy.ADD:SetFrameLevel(FrameLevel+8);
-				end
-			end
+	fuFrame.Buy:SetScript("OnEvent",function (self)
+		if self:IsShown() then
+			self.ADD:SetFrameLevel(FrameLevel+8);
 		end
 	end);
-	fuFrame.Buy.ADD:SetScript("OnMouseUp", function ()
+	fuFrame.Buy.ADD:SetScript("OnMouseUp", function (self)
 		if CursorHasItem() then
+			local NewType, ItemID, ItemLink= GetCursorInfo()
 			for i=1,#PIG_Per['AutoSellBuy']['BuyList'] do
-				if fuFrame.Buy.ADD.iteminfo[3]==PIG_Per['AutoSellBuy']['BuyList'][i][3] then
+				if ItemLink==PIG_Per['AutoSellBuy']['BuyList'][i][2] then
 					print("|cff00FFFF!Pig:|r|cffffFF00物品已在目录内！|r");
 					ClearCursor();
-					fuFrame.Buy.ADD.iteminfo={};
-					fuFrame.Buy.ADD:SetFrameLevel(FrameLevel);
+					self:SetFrameLevel(FrameLevel);
 					return
 				end			
 			end
-			table.insert(PIG_Per['AutoSellBuy']['BuyList'], fuFrame.Buy.ADD.iteminfo);
+			local icon = select(5,GetItemInfoInstant(ItemLink))
+			local itemStackCount= select(8,GetItemInfo(ItemLink))
+			table.insert(PIG_Per['AutoSellBuy']['BuyList'], {icon,ItemLink,ItemID,itemStackCount,itemStackCount});
 			ClearCursor();
-			fuFrame.Buy.ADD.iteminfo={};
 			gengxinBuylist(fuFrame.Buy.Scroll)
 		end
-		fuFrame.Buy.ADD:SetFrameLevel(FrameLevel);
+		self:SetFrameLevel(FrameLevel);
 	end);
 
 	-- --===========================================================
-	fuFrame.BuyCheck = CreateFrame("CheckButton",nil,fuFrame, "ChatConfigCheckButtonTemplate");
-	fuFrame.BuyCheck:SetSize(28,30);
-	fuFrame.BuyCheck:SetHitRectInsets(0,-68,0,0);
-	fuFrame.BuyCheck:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-30);
-	fuFrame.BuyCheck.Text:SetText("自动购买");
-	fuFrame.BuyCheck.tooltip = "打开商人界面自动购买下方目录指定物品！";
+	fuFrame.BuyCheck = ADD_Checkbutton(nil,fuFrame,-68,"TOPLEFT",fuFrame,"TOPLEFT",20,-30,"自动购买", "打开商人界面自动购买下方目录指定物品！")
 	fuFrame.BuyCheck:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG_Per["AutoSellBuy"]["BuyOpen"]="ON";
@@ -283,9 +284,6 @@ local function SellBuy_ADD()
 		end
 	end);
 	----
-	PIG_Per["AutoSellBuy"]=PIG_Per["AutoSellBuy"] or addonTable.Default_Per["AutoSellBuy"]
-	PIG_Per["AutoSellBuy"]["BuyOpen"]=PIG_Per["AutoSellBuy"]["BuyOpen"] or addonTable.Default_Per["AutoSellBuy"]["BuyOpen"]
-	PIG_Per['AutoSellBuy']['BuyList']=PIG_Per['AutoSellBuy']['BuyList'] or addonTable.Default_Per['AutoSellBuy']['BuyList'];
 	if PIG_Per["AutoSellBuy"]["BuyOpen"]=="ON" then
 		fuFrame.BuyCheck:SetChecked(true);
 	end

@@ -2,6 +2,7 @@ local addonName, addonTable = ...;
 local gsub = _G.string.gsub 
 local find = _G.string.find
 local _, _, _, tocversion = GetBuildInfo()
+local PIGDownMenu=addonTable.PIGDownMenu
 -- ----------------------------------
 local CDWMinfo=addonTable.CDWMinfo
 local SQPindao = CDWMinfo["pindao"]
@@ -119,36 +120,30 @@ local function ADD_Chedui_Frame()
 	
 	fuFrame.xuanzhong1="全部"
 	local huodongLXlist={"全部","副本","PVP","任务","喝茶","其他"}
-	fuFrame.Fenlai_1 = CreateFrame("FRAME", nil, fuFrame, "UIDropDownMenuTemplate")
-	fuFrame.Fenlai_1:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",0,-18)
+	fuFrame.Fenlai_1=PIGDownMenu(nil,{80,24},fuFrame,{"TOPLEFT",fuFrame,"TOPLEFT", 6,-18})
 	fuFrame.Fenlai_1:Hide()
-	UIDropDownMenu_SetWidth(fuFrame.Fenlai_1, 80)
-	local function jiazaifenlei_1(self)
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = self.SetValue
+	fuFrame.Fenlai_1:PIGDownMenu_SetText(fuFrame.xuanzhong1)
+	function fuFrame.Fenlai_1:PIGDownMenu_Update_But(self)
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
 		for i=1,#huodongLXlist,1 do
-			info.text, info.arg1, info.checked = huodongLXlist[i], huodongLXlist[i], huodongLXlist[i] == fuFrame.xuanzhong1;
-			UIDropDownMenu_AddButton(info)
+		    info.text, info.arg1, info.arg2 = huodongLXlist[i], huodongLXlist[i], huodongLXlist[i]
+		    info.checked = huodongLXlist[i]==fuFrame.xuanzhong1
+			fuFrame.Fenlai_1:PIGDownMenu_AddButton(info)
 		end 
 	end
-	function fuFrame.Fenlai_1:SetValue(newValue)
-		UIDropDownMenu_SetText(fuFrame.Fenlai_1, newValue)
-		fuFrame.xuanzhong1=newValue
-		CloseDropDownMenus()
-		if #PIG_CD.JieshouInfo>0 then
-			fuFrame.gengxinhang(fuFrame.NR.Scroll)
-		end
+	function fuFrame.Fenlai_1:PIGDownMenu_SetValue(value,arg1,arg2)
+		fuFrame.Fenlai_1:PIGDownMenu_SetText(value)
+		fuFrame.xuanzhong1=arg1
+		PIGCloseDropDownMenus()
 	end
-	UIDropDownMenu_SetText(fuFrame.Fenlai_1, fuFrame.xuanzhong1)
+
 	fuFrame.Fenlai_1.T = fuFrame.Fenlai_1:CreateFontString();
-	fuFrame.Fenlai_1.T:SetPoint("BOTTOMLEFT",fuFrame.Fenlai_1,"TOPLEFT",20,0);
+	fuFrame.Fenlai_1.T:SetPoint("BOTTOMLEFT",fuFrame.Fenlai_1,"TOPLEFT",2,2);
 	fuFrame.Fenlai_1.T:SetFontObject(GameFontNormal);
 	fuFrame.Fenlai_1.T:SetText("车队类型");
 	---2
 	fuFrame.xuanzhong2="全部"
-	fuFrame.Fenlai_2 = CreateFrame("FRAME", nil, fuFrame, "UIDropDownMenuTemplate")
-	fuFrame.Fenlai_2:SetPoint("LEFT",fuFrame.Fenlai_1,"RIGHT",0,0)
-	UIDropDownMenu_SetWidth(fuFrame.Fenlai_2, 170)
 	local NewInstanceList = {{"全部","全部"}}
 	for i=1,#InstanceList do
 		table.insert(NewInstanceList,InstanceList[i])
@@ -187,17 +182,53 @@ local function ADD_Chedui_Frame()
 			end
 		end
 	end
-	function fuFrame.Fenlai_2:SetValue(newValue)
-		UIDropDownMenu_SetText(fuFrame.Fenlai_2, newValue)
-		fuFrame.xuanzhong2=newValue
-		CloseDropDownMenus()
+	fuFrame.Fenlai_2=PIGDownMenu(nil,{170,24},fuFrame,{"LEFT",fuFrame.Fenlai_1,"RIGHT",10,0})
+	function fuFrame.Fenlai_2:PIGDownMenu_Update_But(self, level, menuList)
+		local info = {}
+		if (level or 1) == 1 then
+			for i=1,#NewInstanceList do
+				info.text= NewInstanceList[i][1]
+				if i==1 then
+					info.func = self.PIGDownMenu_SetValue
+					info.arg1= NewInstanceList[i][2];
+					info.hasArrow = false
+					info.checked = info.arg1 == fuFrame.xuanzhong2
+				else
+					local xuanzhongzai=false
+					local data2=InstanceID[NewInstanceList[i][2]][NewInstanceList[i][3]]
+					for x=1,#data2 do
+						if data2[x]==fuFrame.xuanzhong2 then
+							xuanzhongzai = true
+							break
+						end
+					end
+					info.checked = xuanzhongzai
+					info.menuList, info.hasArrow = data2, true
+				end
+				fuFrame.Fenlai_2:PIGDownMenu_AddButton(info)
+			end
+		else
+			info.func = self.SetValue
+			for ii=1, #menuList do
+				info.func = self.PIGDownMenu_SetValue
+				local inname = menuList[ii]
+				info.text, info.arg1= inname, inname;
+				info.checked = info.arg1 == fuFrame.xuanzhong2
+				fuFrame.Fenlai_2:PIGDownMenu_AddButton(info,level)
+			end
+		end
+	end
+	function fuFrame.Fenlai_2:PIGDownMenu_SetValue(value,arg1,arg2)
+		fuFrame.Fenlai_2:PIGDownMenu_SetText(value)
+		fuFrame.xuanzhong2=arg1
 		if #PIG_CD.JieshouInfo>0 then
 			fuFrame.gengxinhang(fuFrame.NR.Scroll)
 		end
+		PIGCloseDropDownMenus()
 	end
-	UIDropDownMenu_SetText(fuFrame.Fenlai_2, fuFrame.xuanzhong2)
+	fuFrame.Fenlai_2:PIGDownMenu_SetText(fuFrame.xuanzhong2)
 	fuFrame.Fenlai_2.T = fuFrame.Fenlai_2:CreateFontString();
-	fuFrame.Fenlai_2.T:SetPoint("BOTTOMLEFT",fuFrame.Fenlai_2,"TOPLEFT",20,0);
+	fuFrame.Fenlai_2.T:SetPoint("BOTTOMLEFT",fuFrame.Fenlai_2,"TOPLEFT",2,2);
 	fuFrame.Fenlai_2.T:SetFontObject(GameFontNormal);
 	fuFrame.Fenlai_2.T:SetText("副本筛选");
 	-----
@@ -417,7 +448,7 @@ local function ADD_Chedui_Frame()
 		liebiao.miyu.Font:SetFont(ChatFontNormal:GetFont(), 10);
 		liebiao.miyu:SetScript("OnClick", function(self)
 			local name = self:GetParent().Name.nametxt
-			local qingqiuMSG = UnitLevel("player").."~级，申请上车！", "WHISPER";
+			local qingqiuMSG = UnitLevel("player")..shenqingMSG;
 			SendChatMessage(qingqiuMSG, "WHISPER", nil, name);
 			PIG_CD.JieshouInfo[self:GetID()][4]=true
 			fuFrame.gengxinhang(fuFrame.NR.Scroll)
@@ -503,10 +534,5 @@ local function ADD_Chedui_Frame()
 			fuFrame.shuaxinBUT.err:SetText("未获取到车队信息，请稍后再试!");
 		end
 	end
-	-----------
-	fuFrame:SetScript("OnShow", function (self)
-		UIDropDownMenu_Initialize(fuFrame.Fenlai_1, jiazaifenlei_1)
-		UIDropDownMenu_Initialize(fuFrame.Fenlai_2, jiazaifenlei_2)
-	end)
 end
 addonTable.ADD_Chedui_Frame=ADD_Chedui_Frame

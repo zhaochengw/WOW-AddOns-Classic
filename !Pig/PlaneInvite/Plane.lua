@@ -1,9 +1,10 @@
 local addonName, addonTable = ...;
+local match = _G.string.match
 ----------------------------------
 local CDWMinfo=addonTable.CDWMinfo
 local SQPindao = CDWMinfo["pindao"]
 local qingqiumsg = CDWMinfo["Plane"]
-local shenqingMSG = "SQHWM";
+local shenqingMSG = "SQHWM_499";
 ------
 local biaotou='!Pig-Plane';
 local PIG_WB={}
@@ -15,7 +16,7 @@ PlaneFFFFF:RegisterEvent("CHAT_MSG_CHANNEL");
 PlaneFFFFF:RegisterEvent("CHAT_MSG_ADDON");
 PlaneFFFFF:RegisterEvent("PLAYER_TARGET_CHANGED"); 
 PlaneFFFFF:RegisterEvent("PLAYER_ENTERING_WORLD");   
-PlaneFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_,_,arg9)
+PlaneFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, arg3, _, arg5,_,_,_,arg9)
 	if event=="PLAYER_ENTERING_WORLD" then	
 		PIG_WB.realm = GetRealmName()
 	end
@@ -82,19 +83,22 @@ PlaneFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_,
 		end
 	end
 
-	if event=="CHAT_MSG_ADDON" and arg1 == biaotou then
-		table.insert(PIG_WB.JieshouInfo, {arg2,arg5,GetServerTime()});
-	end
-
-	if PIG['PlaneInvite']['Kaiqi']=="ON" and PIG['PlaneInvite']['zidongjieshou']=="ON" then
-		local inInstance, instanceType =IsInInstance()
-		local zuduizhong =IsInGroup("LE_PARTY_CATEGORY_HOME");
-		if not inInstance and not zuduizhong then
-			if event=="CHAT_MSG_ADDON" and arg1 == biaotou then
-				if arg2 == shenqingMSG then
-					PIG_InviteUnit(arg5)
+	if event=="CHAT_MSG_ADDON" and arg1 == biaotou and arg3 == "WHISPER" then
+		local banhanshenqing =arg2:match("SQHWM")
+		if banhanshenqing then
+			if PIG['PlaneInvite']['Kaiqi']=="ON" and PIG['PlaneInvite']['zidongjieshou']=="ON" then
+				local inInstance, instanceType =IsInInstance()
+				local zuduizhong =IsInGroup("LE_PARTY_CATEGORY_HOME");
+				if not inInstance and not zuduizhong then
+					if arg2 == shenqingMSG then
+						PIG_InviteUnit(arg5)
+					else
+						SendChatMessage("无法接受你的位面申请,!Pig版本过低", "WHISPER", nil, arg5);
+					end
 				end
 			end
+		else
+			table.insert(PIG_WB.JieshouInfo, {arg2,arg5,GetServerTime()});
 		end
 	end
 end)
@@ -104,7 +108,6 @@ local ADD_jindutiaoBUT=addonTable.ADD_jindutiaoBUT
 local ADD_Biaoti=addonTable.ADD_Biaoti
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local function ADD_Plane_Frame()
-	PIG['PlaneInvite']['WeimianList']=PIG['PlaneInvite']['WeimianList'] or addonTable.Default['PlaneInvite']['WeimianList']
 	local fufufuFrame=PlaneInvite_UI
 	local fuFrame=PlaneInviteFrame_3;
 	local Width,Height=fuFrame:GetWidth(),fuFrame:GetHeight();
@@ -113,7 +116,7 @@ local function ADD_Plane_Frame()
 	fuFrame.zijiweimian:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",10,-8);
 	fuFrame.zijiweimian:SetFontObject(ChatFontNormal);
 	fuFrame.zijiweimian:SetTextColor(0,250/255,154/255, 1);
-	fuFrame.zijiweimian:SetText("你的位面ID:");
+	fuFrame.zijiweimian:SetText("你的区域ID:");
 	fuFrame.zijiweimianID = fuFrame:CreateFontString();
 	fuFrame.zijiweimianID:SetPoint("TOPLEFT", fuFrame.zijiweimian, "BOTTOMLEFT", 0, -6);
 	fuFrame.zijiweimianID:SetFontObject(ChatFontNormal);
@@ -121,7 +124,7 @@ local function ADD_Plane_Frame()
 	fuFrame.daojishiJG =PIG['PlaneInvite']['Weimiandaojishi'] or 0;
 	fuFrame.morenjiange=300
 	local jindutiaoWW = 156
-	fuFrame.jieshoushuju,fuFrame.shuaxinBUT=ADD_jindutiaoBUT(fuFrame,jindutiaoWW,"获取位面信息",180,0)
+	fuFrame.jieshoushuju,fuFrame.shuaxinBUT=ADD_jindutiaoBUT(fuFrame,jindutiaoWW,"获取位面信息",160,0)
 
 	fuFrame.shuaxinBUT:HookScript("OnShow", function (self)
 		if #PIG_WB.JieshouInfo>0 then
@@ -326,6 +329,7 @@ local function ADD_Plane_Frame()
 		liebiao.Name.T:SetTextColor(0,250/255,154/255, 1);
 		liebiao.Name:SetScript("OnMouseUp", function(self,button)
 			local name = self.T:GetText()
+			if name=="匿名" then return end
 			local editBox = ChatEdit_ChooseBoxForSend();
 			local hasText = editBox:GetText()
 			if editBox:HasFocus() then
@@ -491,56 +495,47 @@ local function ADD_Plane_Frame()
 					kjframe.Weimian:SetText(weimianID);
 					--
 					kjframe.Name.T:SetText(PIG_WB.JieshouInfo[dangqian][2]);
+					--
 					local weizhi = C_Map.GetMapInfo(MapID).name
 					kjframe.Weizhi:SetText(weizhi);
-					if Open=="Y" and autoinv=="Y" then
-						kjframe.autoinv:SetText("|cff00FF00是|r");
-					else
-						if Open=="Y" and autoinv~="Y" then
-							kjframe.autoinv:SetText("|cffFF0000否|r");
+
+					local function DisableFrame(fujiK,Open,autoinv)
+						fujiK.miyu:Show()
+						fujiK.Weimian:SetTextColor(0,250/255,154/255, 1);
+						fujiK.Name.T:SetTextColor(0,250/255,154/255, 1);
+						fujiK.Weizhi:SetTextColor(0,250/255,154/255, 1);
+						fujiK.autoinv:SetTextColor(0,250/255,154/255, 1);
+						if Open=="Y" then
+							if autoinv=="Y" then
+								fujiK.autoinv:SetText("|cff00FF00是|r")
+							else
+								fujiK.autoinv:SetText("|cffFF0000否|r");
+							end
 						else
-							kjframe.autoinv:SetText("|cff333333勿扰|r");
+							fujiK.miyu:Hide()
+							fujiK.Name.T:SetText("匿名");
+							fujiK.autoinv:SetText("");
+							fujiK.Weimian:SetTextColor(0.5,0.5,0.5, 0.4);
+							fujiK.Name.T:SetTextColor(0.5,0.5,0.5, 0.4);
+							fujiK.Weizhi:SetTextColor(0.5,0.5,0.5, 0.4);
+							fujiK.autoinv:SetTextColor(0.5,0.5,0.5, 0.4);
 						end
 					end
-					---
-					local function DisableFrame(YN)
-						if YN then
-							kjframe.Weimian:SetTextColor(0,250/255,154/255, 1);
-							kjframe.Name.T:SetTextColor(0,250/255,154/255, 1);
-							kjframe.Weizhi:SetTextColor(0,250/255,154/255, 1);
-							kjframe.autoinv:SetTextColor(0,250/255,154/255, 1);
-						else
-							kjframe.Weimian:SetTextColor(1,1,1, 0.4);
-							kjframe.Name.T:SetTextColor(1,1,1, 0.4);
-							kjframe.Weizhi:SetTextColor(1,1,1, 0.4);
-							kjframe.autoinv:SetTextColor(1,1,1, 0.4);
-						end
-					end
+					DisableFrame(kjframe,Open,autoinv)
 					local weimianID_ziji = panduanweimianID(tonumber(PIG_WB.weimianID))
 					if weimianID~="？" and weimianID_ziji~="？" and weimianID==weimianID_ziji then
-						DisableFrame(false)
 						kjframe.miyu:Disable()
 						kjframe.miyu:SetText("同位面");
 					else
-						DisableFrame(true)
 						if PIG_WB.JieshouInfo[dangqian][4] then
 							kjframe.miyu:Disable()
 							kjframe.miyu:SetText("已发送请求");
 						else
 							kjframe.miyu:Enable()
-							if Open=="Y" and autoinv=="Y" then
-								if PIG['PlaneInvite']['zidongjieshou']=="ON" then
-									kjframe.miyu:SetText("请求换位面");
-								else
-									kjframe.miyu:SetText("密语");
-								end
+							if autoinv=="Y" and PIG['PlaneInvite']['zidongjieshou']=="ON" then
+								kjframe.miyu:SetText("请求换位面");
 							else
-								if Open=="Y" and autoinv~="Y" then
-									kjframe.miyu:SetText("密语");
-								else
-									kjframe.miyu:Disable()
-									kjframe.miyu:SetText("勿扰");
-								end
+								kjframe.miyu:SetText("密语");
 							end
 						end
 					end	

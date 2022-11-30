@@ -35,7 +35,7 @@ local function ADD_QuickBut_Roll()
 	RollF.biaoti_title = RollF.biaoti:CreateFontString();
 	RollF.biaoti_title:SetPoint("TOP", RollF.biaoti, "TOP", 0, -10);
 	RollF.biaoti_title:SetFontObject(GameFontNormal);
-	RollF.biaoti_title:SetText("Roll点物品");
+	RollF.biaoti_title:SetText("Roll点记录");
 	--关闭按钮
 	RollF.CloseF = CreateFrame("Frame", nil, RollF,"BackdropTemplate")
 	RollF.CloseF:SetBackdrop({
@@ -272,16 +272,16 @@ local function ADD_QuickBut_Roll()
 
 	---------
 	local fuFrame=QuickChatFFF_UI
-	fuFrame.biankuang="UIMenuButtonStretchTemplate"
-	if PIG['ChatFrame']['wubiankuang']=="ON" then
-		fuFrame.biankuang="TruncatedButtonTemplate"
-	end
-	--ROLL--
 	local Width,Height,jiangejuli = 24,24,0;
-	fuFrame.ROLL = CreateFrame("Button",nil,fuFrame, fuFrame.biankuang); 
+	local ziframe = {fuFrame:GetChildren()}
+	if PIG["ChatFrame"]["QuickChat_style"]==1 then
+		fuFrame.ROLL = CreateFrame("Button",nil,fuFrame, "TruncatedButtonTemplate"); 
+	elseif PIG["ChatFrame"]["QuickChat_style"]==2 then
+		fuFrame.ROLL = CreateFrame("Button",nil,fuFrame, "UIMenuButtonStretchTemplate"); 
+	end
 	fuFrame.ROLL:SetSize(Width,Height);
 	fuFrame.ROLL:SetFrameStrata("LOW")
-	fuFrame.ROLL:SetPoint("LEFT",guanjianzi_UI,"RIGHT",jiangejuli,0);
+	fuFrame.ROLL:SetPoint("LEFT",fuFrame,"LEFT",#ziframe*Width,0);
 	fuFrame.ROLL:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 	fuFrame.ROLL.Tex = fuFrame.ROLL:CreateTexture(nil, "BORDER");
 	fuFrame.ROLL.Tex:SetTexture("interface/buttons/ui-grouploot-dice-up.blp");
@@ -292,6 +292,17 @@ local function ADD_QuickBut_Roll()
 	end);
 	fuFrame.ROLL:SetScript("OnMouseUp", function (self)
 		self.Tex:SetPoint("CENTER",0,-1);
+	end);
+	fuFrame.ROLL:SetScript("OnEnter", function (self)	
+		GameTooltip:ClearLines();
+		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT",0,0);
+		GameTooltip:SetText("|cff00FFff左键-|r|cffFFFF00Roll点\n|cff00FFff右键-|r|cffFFFF00Roll点记录|r");
+		GameTooltip:Show();
+		GameTooltip:FadeOut()
+	end);
+	fuFrame.ROLL:SetScript("OnLeave", function (self)
+		GameTooltip:ClearLines();
+		GameTooltip:Hide() 
 	end);
 	fuFrame.ROLL:SetScript("OnClick", function(self, event)
 		if event=="RightButton" then

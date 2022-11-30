@@ -5,6 +5,7 @@ local _, _, _, tocversion = GetBuildInfo()
 local CombatCycle=addonTable.CombatCycle
 local spellNUM=CombatCycle.spellNUM
 local Huoqu_Class_Update=CombatCycle.Huoqu_Class_Update
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ---
 local function ADD_CombatCycle()
 	if CombatCycle_UI then return end
@@ -87,12 +88,7 @@ local function ADD_CombatCycle()
 	CombatCycle_Update()
 end
 ------------
-fuFrame.zhiyexunhuan = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.zhiyexunhuan:SetSize(30,30);
-fuFrame.zhiyexunhuan:SetHitRectInsets(0,-80,0,0);
-fuFrame.zhiyexunhuan:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-20);
-fuFrame.zhiyexunhuan.Text:SetText("启用输出技能提示");
-fuFrame.zhiyexunhuan.tooltip = "在屏幕上显示职业输出技能提示";
+fuFrame.zhiyexunhuan = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"启用输出技能提示","在屏幕上显示职业输出技能提示")
 fuFrame.zhiyexunhuan:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG_Per.CombatCycle.Open=true;
@@ -102,12 +98,7 @@ fuFrame.zhiyexunhuan:SetScript("OnClick", function (self)
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
-fuFrame.suoding = CreateFrame("CheckButton", nil, fuFrame.zhiyexunhuan, "ChatConfigCheckButtonTemplate");
-fuFrame.suoding:SetSize(30,30);
-fuFrame.suoding:SetHitRectInsets(0,-60,0,0);
-fuFrame.suoding:SetPoint("LEFT",fuFrame.zhiyexunhuan,"RIGHT",180,0);
-fuFrame.suoding.Text:SetText("锁定位置");
-fuFrame.suoding.tooltip = "开启后将锁定位置使其无法拖动";
+fuFrame.suoding = ADD_Checkbutton(nil,fuFrame,-60,"LEFT",fuFrame.zhiyexunhuan,"RIGHT",180,0,"锁定位置","开启后将锁定位置使其无法拖动")
 fuFrame.suoding:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG_Per.CombatCycle.suoding=true;
@@ -117,12 +108,7 @@ fuFrame.suoding:SetScript("OnClick", function (self)
 		CombatCycle_UI.yidong:Show()
 	end
 end);
-fuFrame.zhandouzhong = CreateFrame("CheckButton", nil, fuFrame.zhiyexunhuan, "ChatConfigCheckButtonTemplate");
-fuFrame.zhandouzhong:SetSize(30,30);
-fuFrame.zhandouzhong:SetHitRectInsets(0,-80,0,0);
-fuFrame.zhandouzhong:SetPoint("LEFT",fuFrame.suoding,"RIGHT",120,0);
-fuFrame.zhandouzhong.Text:SetText("只在战斗中提示");
-fuFrame.zhandouzhong.tooltip = "开启后将只在战斗中提示";
+fuFrame.zhandouzhong = ADD_Checkbutton(nil,fuFrame,-80,"LEFT",fuFrame.suoding,"RIGHT",120,0,"只在战斗中提示","开启后将只在战斗中提示")
 fuFrame.zhandouzhong:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG_Per.CombatCycle.zhandouzhong=true;
@@ -287,7 +273,6 @@ fuFrame:SetScript("OnShow", function (self)
 end);
 ------------------------
 addonTable.CombatCycle = function()
-	PIG_Per.CombatCycle=PIG_Per.CombatCycle or addonTable.Default_Per.CombatCycle
 	if PIG_Per.CombatCycle.Open then
 		if tocversion>90000 then
 			ADD_CombatCycle()

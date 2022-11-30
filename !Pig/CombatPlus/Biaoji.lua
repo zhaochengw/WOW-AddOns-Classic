@@ -1,6 +1,7 @@
 ﻿local _, addonTable = ...;
 local fuFrame=List_R_F_1_3
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ----快速标记按钮------
 local biaojiW=20;
 local biaojiH=20;
@@ -81,19 +82,9 @@ fuFrame.Biaojiline:SetThickness(1);
 fuFrame.Biaojiline:SetStartPoint("TOPLEFT",3,-340)
 fuFrame.Biaojiline:SetEndPoint("TOPRIGHT",-3,-340)
 
-fuFrame.Biaoji = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.Biaoji:SetSize(30,32);
-fuFrame.Biaoji:SetHitRectInsets(0,-100,0,0);
-fuFrame.Biaoji:SetPoint("TOPLEFT",fuFrame.Biaojiline,"TOPLEFT",17,-10);
-fuFrame.Biaoji.Text:SetText("快速标记按钮");
-fuFrame.Biaoji.tooltip = "在屏幕上显示快速标记按钮！";
+fuFrame.Biaoji = ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.Biaojiline,"TOPLEFT",17,-10,"快速标记按钮","在屏幕上显示快速标记按钮")
 
-fuFrame.BiaojiYD = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.BiaojiYD:SetSize(30,32);
-fuFrame.BiaojiYD:SetHitRectInsets(0,-80,0,0);
-fuFrame.BiaojiYD:SetPoint("LEFT",fuFrame.Biaoji,"RIGHT",150,0);
-fuFrame.BiaojiYD.Text:SetText("锁定位置");
-fuFrame.BiaojiYD.tooltip = "锁定快速标记按钮位置，使其无法移动！";
+fuFrame.BiaojiYD =ADD_Checkbutton(nil,fuFrame,-80,"LEFT",fuFrame.Biaoji,"RIGHT",150,0,"锁定位置","锁定快速标记按钮位置，使其无法移动")
 fuFrame.BiaojiYD:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.CombatPlus.Biaoji.Yidong=true;
@@ -103,12 +94,7 @@ fuFrame.BiaojiYD:SetScript("OnClick", function (self)
 		mubiaobiaoji.yidong:Show()
 	end
 end);
-fuFrame.AUTOSHOW= CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.AUTOSHOW:SetSize(30,32);
-fuFrame.AUTOSHOW:SetHitRectInsets(0,-100,0,0);
-fuFrame.AUTOSHOW:SetPoint("LEFT",fuFrame.BiaojiYD,"RIGHT",150,0);
-fuFrame.AUTOSHOW.Text:SetText("智能显示/隐藏");
-fuFrame.AUTOSHOW.tooltip = "当你没有标记权限时隐藏快捷标记按钮";
+fuFrame.AUTOSHOW= ADD_Checkbutton(nil,fuFrame,-80,"LEFT",fuFrame.BiaojiYD,"RIGHT",150,0,"智能显示/隐藏","当你没有标记权限时隐藏快捷标记按钮")
 fuFrame.AUTOSHOW:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.CombatPlus.Biaoji.AutoShow=true;
@@ -146,7 +132,6 @@ fuFrame:HookScript("OnShow", function (self)
 end);
 --=====================================
 addonTable.CombatPlus_Biaoji = function()
-	PIG.CombatPlus.Biaoji=PIG.CombatPlus.Biaoji or addonTable.Default.CombatPlus.Biaoji
 	if PIG.CombatPlus.Biaoji.Open then
 		Mubiaokuaisubiaoji_Open();
 		if PIG.CombatPlus.Biaoji.Yidong then

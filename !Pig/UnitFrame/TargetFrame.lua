@@ -273,7 +273,7 @@ local function ADD_TOTOT_Open()
 	if InCombatLockdown() then
 		fuF.TTT:RegisterEvent("PLAYER_REGEN_ENABLED");
 	else
-		fuF:SetPoint("BOTTOMRIGHT", TargetFrame, "BOTTOMRIGHT", 6, -20);
+		--fuF:SetPoint("BOTTOMRIGHT", TargetFrame, "BOTTOMRIGHT", 6, -20);
 		RegisterUnitWatch(fuF.TTT)
 	end
 
@@ -406,7 +406,6 @@ fuFrame:HookScript("OnShow", function (self)
 end);
 --=====================================
 addonTable.UnitFrame_TargetFrame = function()
-	PIG.UnitFrame=PIG.UnitFrame or addonTable.Default.UnitFrame
 	if PIG.UnitFrame.TargetFrame.Plus then
 		MubiaoFrame_Open();
 	end

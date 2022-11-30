@@ -669,12 +669,6 @@ local function ChatFrame_LOOT_YN()
 	end
 end
 addonTable.PigUI_ChatFrame = function()
-	PIG['PigUI']['ChatFrame_Width_value']=PIG['PigUI']['ChatFrame_Width_value'] or addonTable.Default['PigUI']['ChatFrame_Width_value']
-	PIG['PigUI']['ChatFrame_Point_X']=PIG['PigUI']['ChatFrame_Point_X'] or addonTable.Default['PigUI']['ChatFrame_Point_X']
-	PIG['PigUI']['ChatFrame_Point_Y']=PIG['PigUI']['ChatFrame_Point_Y'] or addonTable.Default['PigUI']['ChatFrame_Point_Y']
-	PIG['PigUI']['ChatFrame_Loot_Width_value']=PIG['PigUI']['ChatFrame_Loot_Width_value'] or addonTable.Default['PigUI']['ChatFrame_Loot_Width_value']
-	PIG['PigUI']['ChatFrame_Loot_Point_X']=PIG['PigUI']['ChatFrame_Loot_Point_X'] or addonTable.Default['PigUI']['ChatFrame_Loot_Point_X']
-	PIG['PigUI']['ChatFrame_Loot_Point_Y']=PIG['PigUI']['ChatFrame_Loot_Point_Y'] or addonTable.Default['PigUI']['ChatFrame_Loot_Point_Y']
 	C_Timer.After(1, ChatFrame_Width);
 	C_Timer.After(1, ChatFrame_Height);
 	C_Timer.After(1, ChatFrame_Point_X)

@@ -211,18 +211,17 @@ local function ADD_buzhu()
 		self.Tex:SetPoint("CENTER",4,0);
 	end);
 	fuFrame.bobaobuzhu_T:SetScript("OnClick", function()
-		local xuanzhongName =addonTable.xuanzhongName;
 		for x=1,#PIG["RaidRecord"]["Raidinfo"] do
 			for xx=1,#PIG["RaidRecord"]["Raidinfo"][x] do
 				if PIG["RaidRecord"]["Raidinfo"][x][xx][5]=="坦克补助" then
-					SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", xuanzhongName, nil);
+					SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", RaidR_UI.xuanzhongChat, nil);
 				end
 			end
 		end
 		for x=1,#PIG["RaidRecord"]["Raidinfo"] do
 			for xx=1,#PIG["RaidRecord"]["Raidinfo"][x] do
 				if PIG["RaidRecord"]["Raidinfo"][x][xx][5]=="其他补助" then
-					SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", xuanzhongName, nil);
+					SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", RaidR_UI.xuanzhongChat, nil);
 				end
 			end
 		end
@@ -552,11 +551,10 @@ local function ADD_buzhu()
 		fuFrame.bobaobuzhu_N.Tex:SetPoint("CENTER",4,0);
 	end);
 	fuFrame.bobaobuzhu_N:SetScript("OnClick", function()
-		local xuanzhongName =addonTable.xuanzhongName;
 		for x=1,#PIG["RaidRecord"]["Raidinfo"] do
 			for xx=1,#PIG["RaidRecord"]["Raidinfo"][x] do
 				if PIG["RaidRecord"]["Raidinfo"][x][xx][5]=="治疗补助" then
-					SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", xuanzhongName, nil);
+					SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", RaidR_UI.xuanzhongChat, nil);
 				end
 			end
 		end

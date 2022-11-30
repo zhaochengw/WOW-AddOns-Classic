@@ -1,8 +1,11 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_2_7
+local _, _, _, tocversion = GetBuildInfo()
 --===============================
 local ADD_Frame=addonTable.ADD_Frame
 local ADD_Modbutton=addonTable.ADD_Modbutton
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
+
 local GnName,GnUI = "售卖助手","SellBuy_UI";
 local FrameLevel=20
 addonTable.SellBuyFrameLevel=FrameLevel
@@ -30,10 +33,23 @@ local function SellBuy_ADD()
 	SellBuy.biaoti.title:SetFontObject(GameFontNormal);
 	SellBuy.biaoti.title:SetText("Pig"..GnName);
 	--关闭按钮
-	SellBuy.CloseF=ADD_Frame(nil,SellBuy,28,28,"TOPRIGHT", SellBuy, "TOPRIGHT", -6, -6,false,true,false,false,false,"BG7")
-	SellBuy.Close = CreateFrame("Button",nil,SellBuy, "UIPanelCloseButton");  
-	SellBuy.Close:SetSize(30,30);
-	SellBuy.Close:SetPoint("CENTER", SellBuy.CloseF, "CENTER", 1, 0);
+	SellBuy.CloseF=ADD_Frame(nil,SellBuy,28,28,"TOPRIGHT", SellBuy, "TOPRIGHT", -6, -6,false,true,false,false,false,"BG7") 
+	SellBuy.CloseF.Close = CreateFrame("Button",nil, SellBuy.CloseF);
+	SellBuy.CloseF.Close:SetSize(26,26);
+	SellBuy.CloseF.Close:SetPoint("CENTER", 0,0);
+	SellBuy.CloseF.Close.Tex = SellBuy.CloseF.Close:CreateTexture();
+	SellBuy.CloseF.Close.Tex:SetTexture("interface/common/voicechat-muted.blp");
+	SellBuy.CloseF.Close.Tex:SetPoint("CENTER");
+	SellBuy.CloseF.Close.Tex:SetSize(14,14);
+	SellBuy.CloseF.Close:SetScript("OnMouseDown", function (self)
+		self.Tex:SetPoint("CENTER",1.5,-1.5);
+	end);
+	SellBuy.CloseF.Close:SetScript("OnMouseUp", function (self)
+		self.Tex:SetPoint("CENTER");
+	end);
+	SellBuy.CloseF.Close:SetScript("OnClick", function (self)
+		SellBuy:Hide()
+	end);
 	--内容显示框架
 	SellBuy.F=ADD_Frame(nil,SellBuy,Width,Height-biaotiH+6,"TOP",SellBuy,"TOP",0,-biaotiH+6,false,true,false,false,false,"BG7")
 	-- ----
@@ -140,7 +156,6 @@ local function ADD_QuickButton_AutoSellBuy()
 	if PIG['QuickButton']['Open'] and PIG["AutoSellBuy"]["Kaiqi"]=="ON" and PIG["AutoSellBuy"]["AddBut"]=="ON" then
 		local QkBut = "QkBut_AutoSellBuy"
 		if _G[QkBut] then return end
-		local FastDiuqi_DelItem=addonTable.FastDiuqi_DelItem
 		local Icon=134409
 		local Tooltip = "左击-|cff00FFFF丢弃指定物品|r\n右击-|cff00FFFF打开"..GnName.."|r"
 		local QkBut=ADD_QuickButton(QkBut,Tooltip,Icon)
@@ -151,7 +166,7 @@ local function ADD_QuickButton_AutoSellBuy()
 		QkBut.Height:Hide()
 		QkBut:SetScript("OnClick", function(self,button)
 			if button=="LeftButton" then
-				FastDiuqi_DelItem()
+				Pig_DelItem()
 			else
 				if _G[GnUI]:IsShown() then
 					_G[GnUI]:Hide();
@@ -217,9 +232,6 @@ OptionsModF_AutoSellBuy.ADD:SetScript("OnClick", function (self)
 end);
 ---===========================================
 addonTable.AutoSellBuy_SellBuy = function()
-	PIG["AutoSellBuy"]=PIG["AutoSellBuy"] or addonTable.Default["AutoSellBuy"]
-	PIG["AutoSellBuy"]["Kaiqi"]=PIG["AutoSellBuy"]["Kaiqi"] or addonTable.Default["AutoSellBuy"]["Kaiqi"]
-	PIG["AutoSellBuy"]["AddBut"]=PIG["AutoSellBuy"]["AddBut"] or addonTable.Default["AutoSellBuy"]["AddBut"]
 	if PIG["AutoSellBuy"]["Kaiqi"]=="ON" then
 		OptionsModF_AutoSellBuy:SetChecked(true);
 		Options_SellBuy:Enable();

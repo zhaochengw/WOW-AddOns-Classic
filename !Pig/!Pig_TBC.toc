@@ -4,7 +4,7 @@
 ## Notes: Some tools
 ## Notes-zhCN: |cffFF8C00一些小工具|r  |cffFF00FF[猪猪加油祝你游戏愉快]|r
 ## Author: geligasi
-## Version: 4.9.8
+## Version: 5.0.3
 ## SavedVariables: PIG
 ## SavedVariablesPerCharacter: PIG_Per
 Error.lua
@@ -35,5 +35,6 @@ SpellCD\SpellCD_TBC.xml
 RaidRecord\RaidRecord_TBC.xml
 FarmRecord\FarmRecord_TBC.xml
 AFK\AFK_TBC.xml
+Sponsorship\Sponsorship_TBC.xml
 Rurutia\Rurutia_TBC.xml
 !Pig.lua

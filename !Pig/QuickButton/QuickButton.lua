@@ -96,7 +96,6 @@ local PigMacroCount_QK=0
 local function QuickButton_Spell()
 	local GnUI = "Zhushou_UI"
 	if _G[GnUI] then return end
-	PIG_Per['QuickButton']['ActionInfo']=PIG_Per['QuickButton']['ActionInfo'] or {}
 	local loadingButInfo=addonTable.loadingButInfo
 	local Update_PostClick=addonTable.Update_PostClick
 	local Cursor_Fun=addonTable.Cursor_Fun
@@ -424,10 +423,17 @@ fuFrame.QuickButtonOpen.CZPoint:SetScript("OnLeave", function ()
 	GameTooltip:ClearLines();
 	GameTooltip:Hide() 
 end);
+local function CZweizhiQK()
+	if tocversion<100000 then
+		QuickButtonUI:SetPoint(PIG['QuickButton']['Point'][1],UIParent,PIG['QuickButton']['Point'][2],PIG['QuickButton']['Point'][3],PIG['QuickButton']['Point'][4]);
+	else
+		QuickButtonUI:SetPoint(PIG['QuickButton']['Point'][1],UIParent,PIG['QuickButton']['Point'][2],PIG['QuickButton']['Point'][3]-200,PIG['QuickButton']['Point'][4]+90);
+	end
+end
 fuFrame.QuickButtonOpen.CZPoint:SetScript("OnClick", function ()
 	QuickButtonUI:ClearAllPoints();
 	PIG['QuickButton']['Point']=addonTable.Default['QuickButton']['Point'];
-	QuickButtonUI:SetPoint(PIG['QuickButton']['Point'][1],UIParent,PIG['QuickButton']['Point'][2],PIG['QuickButton']['Point'][3],PIG['QuickButton']['Point'][4]);
+	CZweizhiQK()
 end)
 -------
 fuFrame.QuickButtonOpen.suoding=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame.QuickButtonOpen,"TOPLEFT",200,0,"锁定位置","锁定快捷按钮位置，并隐藏拖拽图标")
@@ -475,9 +481,7 @@ fuFrame.QuickButtonOpen.suofangdaxiao_Slider:SetScript('OnValueChanged', functio
 end)
 ---------
 addonTable.QuickButton = function()
-	PIG['QuickButton']=PIG['QuickButton'] or addonTable.Default['QuickButton']
-	PIG_Per['QuickButton']=PIG_Per['QuickButton'] or addonTable.Default_Per['QuickButton']
-	QuickButtonUI:SetPoint(PIG['QuickButton']['Point'][1],UIParent,PIG['QuickButton']['Point'][2],PIG['QuickButton']['Point'][3],PIG['QuickButton']['Point'][4]);
+	CZweizhiQK()
 	QuickButtonUI:SetScale(PIG['QuickButton']['bili']);
 	fuFrame.QuickButtonOpen.suofangdaxiao_Slider:SetValue(PIG['QuickButton']['bili']);
 	fuFrame.QuickButtonOpen.suofangdaxiao_Slider.Text:SetText(PIG['QuickButton']['bili']);

@@ -188,6 +188,57 @@ local function ADD_RaidR_UI()
 	RaidR.xiafangF.Jing_RS_V = RaidR.xiafangF:CreateFontString();
 	RaidR.xiafangF.Jing_RS_V:SetPoint("LEFT",RaidR.xiafangF.Jing_RS,"RIGHT",0,0);
 	RaidR.xiafangF.Jing_RS_V:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
+	--分G计算方式提示
+	RaidR.xiafangF.jisuantishi = CreateFrame("Frame", nil, RaidR.xiafangF);
+	RaidR.xiafangF.jisuantishi:SetSize(22,22);
+	RaidR.xiafangF.jisuantishi:SetPoint("BOTTOMLEFT",RaidR.xiafangF.lian,"BOTTOMLEFT",130,7);
+	RaidR.xiafangF.jisuantishi.Texture = RaidR.xiafangF.jisuantishi:CreateTexture(nil, "BORDER");
+	RaidR.xiafangF.jisuantishi.Texture:SetTexture("interface/dialogframe/dialogalerticon.blp");
+	RaidR.xiafangF.jisuantishi.Texture:SetSize(34,36);
+	RaidR.xiafangF.jisuantishi.Texture:SetPoint("CENTER",RaidR.xiafangF.jisuantishi,"CENTER",0,0);
+	local jisuanguize = {
+		"分G人数：团队总人数-不分G人数+双工人数",
+		"每人应得：净收入÷分G人数=每人应得数",
+		"半工工资：每人应得工资扣除一半为半工实发数",
+		"全工工资(无半工)：每人应得数即为实发数",
+		"全工工资(有半工)：每人应得+(半工扣款×半工人数)/(分G人数-半工人数)=全工实发数",
+		"双工工资：全工工资×2",
+	}
+	RaidR.xiafangF.jisuantishi:SetScript("OnEnter", function (self)
+		GameTooltip:ClearLines();
+		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT",0,0);
+		GameTooltip:AddLine("分G计算规则:")
+		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[1].."\124r")
+		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[2].."\124r")
+		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[3].."\124r")
+		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[4].."\124r")
+		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[5].."\124r")
+		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[6].."\124r")
+		GameTooltip:AddLine("\124cff00ffff左键点击发送上方分G规则\124r")
+		GameTooltip:AddLine("关于半工扣款分配给其他成员的说明：个人认为因为你没有做到应有的事，\n导致其他人员工作量增加，所以你的扣款均分给其他人是合理且公平的。")
+		GameTooltip:AddLine("\124cff00ffff右键点击发送半工扣款说明\124r")
+		GameTooltip:Show();
+	end);
+	RaidR.xiafangF.jisuantishi:SetScript("OnLeave", function ()
+		GameTooltip:ClearLines();
+		GameTooltip:Hide() 
+	end);
+	RaidR.xiafangF.jisuantishi:SetScript("OnMouseDown", function (self)
+		self.Texture:SetPoint("CENTER",RaidR.xiafangF.jisuantishi,"CENTER",-1,-1);
+	end);
+	RaidR.xiafangF.jisuantishi:SetScript("OnMouseUp", function (self,button)
+		self.Texture:SetPoint("CENTER",RaidR.xiafangF.jisuantishi,"CENTER",0,0);
+		if button=="LeftButton" then
+			SendChatMessage("=======本团分G计算规则========", RaidR_UI.xuanzhongChat, nil);
+			for i=1,#jisuanguize do
+				SendChatMessage(jisuanguize[i], RaidR_UI.xuanzhongChat, nil);
+			end
+		else
+			SendChatMessage("====半工不等于全工一半说明====", RaidR_UI.xuanzhongChat, nil);
+			SendChatMessage("注意区分每人应得和实发数，半工为应得一半非实发一半", RaidR_UI.xuanzhongChat, nil);
+			SendChatMessage("团队因为你没有做到应有的事,导致其他人员工作量增加,所以你的扣款均分给其他人是合理且公平的", RaidR_UI.xuanzhongChat, nil);
+		end
+	end);
 	--更新收入
 	local function UpdateG()
 		--物品

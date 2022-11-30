@@ -1,6 +1,8 @@
 local _, addonTable = ...;
 local gsub = _G.string.gsub 
 local find = _G.string.find
+local PIGDownMenu=addonTable.PIGDownMenu
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --=====组队助手=================================
 local ADD_Frame=addonTable.ADD_Frame
 local function ADD_Invite()
@@ -32,7 +34,7 @@ local function ADD_Invite()
 	RaidR_UI.xiafangF.zudui.tex:Hide()
 	------------------
 	local invite=ADD_Frame("invite_UI",RaidR_UI,Width-22,Height-100,"TOP",RaidR_UI,"TOP",0,-18,true,false,false,false,false,"BG6")
-	invite:SetFrameLevel(10);
+	invite:SetFrameLevel(RaidR_UI:GetFrameLevel()+30);
 
 	invite.Close = CreateFrame("Button",nil,invite, "UIPanelCloseButton");  
 	invite.Close:SetSize(34,34);
@@ -185,32 +187,28 @@ local function ADD_Invite()
 	invite.renyuannpeizhiinfo:SetText(" ");
 	--
 	local fubenMoshi ={10,15,20,25,40};
-	invite.renyuannpeizhiinfo_D = CreateFrame("FRAME", nil, invite, "UIDropDownMenuTemplate")
-	invite.renyuannpeizhiinfo_D:SetPoint("LEFT",invite.renyuannpeizhiinfo,"RIGHT",-19,-3)
-	UIDropDownMenu_SetWidth(invite.renyuannpeizhiinfo_D, 100)
-	UIDropDownMenu_SetText(invite.renyuannpeizhiinfo_D, "导入预设")
-
-	local function renyuannpeizhiinfo_Up()
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = invite.renyuannpeizhiinfo_D.SetValue
+	invite.renyuannpeizhiinfo_D=PIGDownMenu(nil,{100,24},invite,{"LEFT",invite.renyuannpeizhiinfo,"RIGHT", 0,0})
+	invite.renyuannpeizhiinfo_D:PIGDownMenu_SetText("导入预设")
+	function invite.renyuannpeizhiinfo_D:PIGDownMenu_Update_But(self)
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
 		for i=1,#fubenMoshi,1 do
-		    info.text, info.arg1 = "导入"..fubenMoshi[i].."人预设", fubenMoshi[i];
+		    info.text, info.arg1 = "导入"..fubenMoshi[i].."人预设", fubenMoshi[i]
 		    info.notCheckable = true;
-			UIDropDownMenu_AddButton(info)
+			invite.renyuannpeizhiinfo_D:PIGDownMenu_AddButton(info)
 		end 
 	end
-	function invite.renyuannpeizhiinfo_D:SetValue(newValue)
-		PIG["RaidRecord"]["Invite"]["dangqianrenshu"]=invite.morenrenshu[newValue]
-		UIDropDownMenu_SetText(invite.renyuannpeizhiinfo_D, "导入预设")
-		PIG["RaidRecord"]["Invite"]["dangqianpeizhi"]=newValue;
-		print("|cff00FFFF!Pig:|r|cffFFFF00已导入|r"..newValue.."|cffFFFF00人预设配置！|r");
-		CloseDropDownMenus();
+	function invite.renyuannpeizhiinfo_D:PIGDownMenu_SetValue(value,arg1,arg2)
+		PIG["RaidRecord"]["Invite"]["dangqianrenshu"]=invite.morenrenshu[arg1]
+		PIG["RaidRecord"]["Invite"]["dangqianpeizhi"]=arg1;
+		print("|cff00FFFF!Pig:|r|cffFFFF00已导入|r"..arg1.."|cffFFFF00人预设配置！|r");
 		UpdatePlayersINFO();
+		PIGCloseDropDownMenus()
 	end
 	--====================================================================
 	--总人数
 	invite.zongrenshuX = invite:CreateFontString();
-	invite.zongrenshuX:SetPoint("LEFT",invite.renyuannpeizhiinfo_D,"RIGHT",-12,3);
+	invite.zongrenshuX:SetPoint("LEFT",invite.renyuannpeizhiinfo_D,"RIGHT",2,0);
 	invite.zongrenshuX:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
 	invite.zongrenshuX:SetText("\124cff00FF00总人数：\124r");
 	invite.yizuzongrenshuX_V = invite:CreateFontString();
@@ -247,12 +245,8 @@ local function ADD_Invite()
 		PIG["RaidRecord"]["Invite"]["jinzuZhiling"]=self:GetText();
 	end);
 	--无限制邀请
-	invite.INV_wuxianzhiyaoqing = CreateFrame("CheckButton", nil, invite, "ChatConfigCheckButtonTemplate");
-	invite.INV_wuxianzhiyaoqing:SetSize(28,28);
-	invite.INV_wuxianzhiyaoqing:SetHitRectInsets(0,0,0,0);
-	invite.INV_wuxianzhiyaoqing:SetPoint("LEFT",invite.jinzuzhiling_E,"RIGHT",8,-1);
-	invite.INV_wuxianzhiyaoqing.Text:SetText("无限制");
-	invite.INV_wuxianzhiyaoqing.tooltip = "收到邀请指令后不再判断职业职责，将直接邀请进组|cff00FF00(注意人数限制功能依然生效，到达人数后将自动停止邀请)|r。";
+	local INV_wuxianzhiyaoqingtooltip = "收到邀请指令后不再判断职业职责，将直接邀请进组|cff00FF00(注意人数限制功能依然生效，到达人数后将自动停止邀请)|r。";
+	invite.INV_wuxianzhiyaoqing = ADD_Checkbutton(nil,invite,-10,"LEFT",invite.jinzuzhiling_E,"RIGHT",8,-1,"无限制",INV_wuxianzhiyaoqingtooltip)
 	invite.INV_wuxianzhiyaoqing:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG["RaidRecord"]["Invite"]["wutiaojianjINV"]="ON";
@@ -283,48 +277,66 @@ local function ADD_Invite()
 	invite.kaituanhanhua_E:SetScript("OnEnterPressed", function(self) 
 		self:ClearFocus() 
 	end);
-	---==============================================================================================
-	local pindaolist ={{"YELL","GUILD"},{"综合","寻求组队","大脚世界频道"}};
-	local pindaolist1 ={{"大喊","公会"},{"综合","寻求组队","大脚世界频道"}};
+	---===============================================
 	--喊话频道
-	invite.hanhuaxuanzexiala = CreateFrame("FRAME", nil, invite, "UIDropDownMenuTemplate")
-	invite.hanhuaxuanzexiala:SetPoint("LEFT",invite.kaituanNameFFF,"RIGHT",-16,-1.6)
-	UIDropDownMenu_SetWidth(invite.hanhuaxuanzexiala, 58)
-	UIDropDownMenu_SetText(invite.hanhuaxuanzexiala, "频道")--默认
-	local function hanhuaxuanzexiala_Up()
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = invite.hanhuaxuanzexiala.SetValue
-		local pindaomuluheji={}
-		local pindaomuluheji_YN={}
-		for i=1,#pindaolist1 do
-			for ii=1,#pindaolist1[i] do
-				table.insert(pindaomuluheji,pindaolist1[i][ii]);
-				table.insert(pindaomuluheji_YN,PIG["RaidRecord"]["Invite"]["hanhuapindao"][i][ii]);	
+	local paichupindaolist ={"说","悄悄话","战网密语","团队","团队通知","队伍聊天","表情","战场","交易","本地防务","世界防务"};
+	invite.hanhuaxuanzexiala=PIGDownMenu(nil,{70,24},invite,{"LEFT",invite.kaituanNameFFF,"RIGHT", 0,0})
+	invite.hanhuaxuanzexiala:PIGDownMenu_SetText("频道")
+	invite.hanhuaxuanzexiala.chatpindaoList={}
+	local function huoqupindaoxulie()
+		local chatpindao = {GetChatWindowMessages(1)}
+		local chatpindaoList = {}
+		for i=1,#chatpindao do
+			local Namechia =_G[chatpindao[i].."_MESSAGE"]
+			if Namechia then
+				invite.bushipaichupindao=true
+				for ii=1,#paichupindaolist do
+					if Namechia==paichupindaolist[ii] then
+						invite.bushipaichupindao=false
+						break
+					end	
+				end
+				if invite.bushipaichupindao then
+					table.insert(chatpindaoList,{Namechia,chatpindao[i]})
+				end
 			end
 		end
-		for i=1,#pindaomuluheji,1 do
-		    info.text, info.arg1 = pindaomuluheji[i], pindaomuluheji[i];
-		    info.checked=pindaomuluheji_YN[i]
-		    info.isNotRadio = true;
-			UIDropDownMenu_AddButton(info)
+		local channels = {GetChannelList()}
+		for i = 1, #channels, 3 do
+			local id, name, disabled = channels[i], channels[i+1], channels[i+2]
+			invite.bushipaichupindao=true
+			for ii=1,#paichupindaolist do
+				if name==paichupindaolist[ii] then
+					invite.bushipaichupindao=false
+					break
+				end	
+			end
+			if invite.bushipaichupindao then
+				table.insert(chatpindaoList,{name,id})
+			end
+		end
+		invite.hanhuaxuanzexiala.chatpindaoList=chatpindaoList
+	end
+	function invite.hanhuaxuanzexiala:PIGDownMenu_Update_But(self)
+		huoqupindaoxulie()
+		local chatpindaoList=self.chatpindaoList
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
+		for i=1,#chatpindaoList,1 do
+		    info.text, info.arg1 = chatpindaoList[i][1], chatpindaoList[i][2]
+		    info.checked = PIG["RaidRecord"]["Invite"]["hanhuapindao"][chatpindaoList[i][1]]
+		    info.isNotRadio=true
+			invite.hanhuaxuanzexiala:PIGDownMenu_AddButton(info)
 		end 
 	end
 	--喊话宏
 	local function NEWhanhuahong()
+		huoqupindaoxulie()
+		local chatpindaoList =invite.hanhuaxuanzexiala.chatpindaoList
 		local yijiarupindaolist ={};
-		local channel1 = {GetChannelList()};
-		for i=1,#channel1 do
-			for ii=1,#pindaolist[2] do
-				if PIG["RaidRecord"]["Invite"]["hanhuapindao"][2][ii] ==true then
-					if channel1[i]==pindaolist[2][ii] then
-						table.insert(yijiarupindaolist,channel1[i-1]);
-					end
-				end
-			end
-		end
-		for s=1,#pindaolist[1] do
-			if PIG["RaidRecord"]["Invite"]["hanhuapindao"][1][s] ==true then
-				table.insert(yijiarupindaolist,pindaolist[1][s]);
+		for i=1,#chatpindaoList do
+			if PIG["RaidRecord"]["Invite"]["hanhuapindao"][chatpindaoList[i][1]] then
+				table.insert(yijiarupindaolist,chatpindaoList[i][2]);
 			end
 		end
 		local macroSlot = GetMacroIndexByName("!Pig")
@@ -344,6 +356,14 @@ local function ADD_Invite()
 			EditMacro(macroSlot, nil, nil, hanhuaneirong1)
 		end
 	end
+	function invite.hanhuaxuanzexiala:PIGDownMenu_SetValue(value,arg1,arg2,checked)
+		PIG["RaidRecord"]["Invite"]["hanhuapindao"][value]=checked
+		local macroSlot = GetMacroIndexByName("!Pig")
+		if macroSlot>0 then
+			NEWhanhuahong()
+		end
+		PIGCloseDropDownMenus()
+	end
 	--
 	invite.kaituanhanhua_E:SetScript("OnEditFocusLost", function(self)
 		PIG["RaidRecord"]["Invite"]["kaituanName"]=self:GetText();
@@ -352,40 +372,33 @@ local function ADD_Invite()
 			NEWhanhuahong()
 		end
 	end);
-	function invite.hanhuaxuanzexiala:SetValue(pindaoNameVVV)
-		for x=1,#pindaolist1 do
-			for xx=1,#pindaolist1[x] do
-				if pindaoNameVVV==pindaolist1[x][xx] then
-					if PIG["RaidRecord"]["Invite"]["hanhuapindao"][x][xx]==true then
-						PIG["RaidRecord"]["Invite"]["hanhuapindao"][x][xx]=false
-					elseif PIG["RaidRecord"]["Invite"]["hanhuapindao"][x][xx]==false then
-						PIG["RaidRecord"]["Invite"]["hanhuapindao"][x][xx]=true
-					end
-				end
-			end
-		end
-		local macroSlot = GetMacroIndexByName("!Pig")
-		if macroSlot>0 then
-			NEWhanhuahong()
-		end
-		CloseDropDownMenus();
-	end
 	----
 	invite.New_hong = CreateFrame("Button",nil,invite, "UIPanelButtonTemplate");  
 	invite.New_hong:SetSize(100,24);
-	invite.New_hong:SetPoint("LEFT",invite.hanhuaxuanzexiala,"RIGHT",-5,2);
-	invite.New_hong:SetText('创建喊话宏');
-	invite.New_hong:SetScript("OnClick", function ()
+	invite.New_hong:SetPoint("LEFT",invite.hanhuaxuanzexiala,"RIGHT",2,2);
+	invite.New_hong:SetScript("OnShow", function (self)
 		local macroSlot = GetMacroIndexByName("!Pig")
 		if macroSlot>0 then
-			StaticPopup_Show ("CHUANGJIANHONGPIG");
+			self:SetText("更新喊话宏");
 		else
-			local global, perChar = GetNumMacros()
-			if global<120 then
+			self:SetText("创建喊话宏");
+		end
+	end)
+	invite.New_hong:SetScript("OnClick", function (self)
+		if self:GetText()=="创建喊话宏" then
+			local macroSlot = GetMacroIndexByName("!Pig")
+			if macroSlot>0 then
 				StaticPopup_Show ("CHUANGJIANHONGPIG");
 			else
-				print("|cff00FFFF!Pig:|r|cffFFFF00你的宏数量已达最大值120，请删除一些再尝试。|r");
+				local global, perChar = GetNumMacros()
+				if global<120 then
+					StaticPopup_Show ("CHUANGJIANHONGPIG");
+				else
+					print("|cff00FFFF!Pig:|r|cffFFFF00你的宏数量已达最大值120，请删除一些再尝试。|r");
+				end
 			end
+		else
+			NEWhanhuahong()
 		end
 	end)
 	StaticPopupDialogs["CHUANGJIANHONGPIG"] = {
@@ -951,8 +964,8 @@ local function ADD_Invite()
 			invite.classes_Name[i]=invite.clName[i]
 		end
 		chuangjianFrame()
-		UIDropDownMenu_Initialize(invite.renyuannpeizhiinfo_D, renyuannpeizhiinfo_Up)
-		UIDropDownMenu_Initialize(invite.hanhuaxuanzexiala, hanhuaxuanzexiala_Up)
+		--UIDropDownMenu_Initialize(invite.renyuannpeizhiinfo_D, renyuannpeizhiinfo_Up)
+		--UIDropDownMenu_Initialize(invite.hanhuaxuanzexiala, hanhuaxuanzexiala_Up)
 	end
 end
 addonTable.ADD_Invite = ADD_Invite;

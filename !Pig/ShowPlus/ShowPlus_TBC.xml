@@ -1,4 +1,4 @@
 <Ui>
 	<Script file="BuffTime_Vanilla.lua" />
-	<Script file="Tooltip.lua" />
+	<Script file="Tooltip_Vanilla.lua" />
 </Ui>

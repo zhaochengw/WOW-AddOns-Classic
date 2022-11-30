@@ -1,5 +1,5 @@
 <Ui>
 	<Script file="Data.lua" />
 	<Script file="MiniMap.lua" />
-	<Script file="WorldMap.lua" />
+	<Script file="WorldMap_Vanilla.lua" />
 </Ui>

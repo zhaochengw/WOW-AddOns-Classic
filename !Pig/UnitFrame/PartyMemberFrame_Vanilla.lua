@@ -1,6 +1,7 @@
 ﻿local _, addonTable = ...;
 local fuFrame=List_R_F_1_4
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --==============================================================================
 --///队友头像框架增强//////////////////////////////
 local UFP_MAX_PARTY_BUFFS = 16;
@@ -260,7 +261,6 @@ fuFrame.DuiyouLINE:SetThickness(1);
 fuFrame.DuiyouLINE:SetStartPoint("TOPLEFT",2,-300)
 fuFrame.DuiyouLINE:SetEndPoint("TOPRIGHT",-2,-300)
 -----
-local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local Duiyoutooltip = "增强队友头像，显示额外血量框架，常驻显示队友BUFF，显示队友目标等！\r|cff00FFFF小提示：|r\r队友职业图标可以点击，左击观察/右击交易。"
 fuFrame.Duiyou=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame.DuiyouLINE,"TOPLEFT",20,-20,"队友头像增强",Duiyoutooltip)
 fuFrame.Duiyou:SetScript("OnClick", function (self)
@@ -280,7 +280,6 @@ fuFrame:HookScript("OnShow", function (self)
 end);
 --=====================================
 addonTable.UnitFrame_PartyMemberFrame = function()
-	PIG.UnitFrame=PIG.UnitFrame or addonTable.Default.UnitFrame
 	if PIG.UnitFrame.PartyMemberFrame.Plus then
 		DuiyouFrame_Open();
 	end

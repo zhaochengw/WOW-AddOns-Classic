@@ -1,6 +1,7 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_1
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --////自动对话
 local function yanchizhixing()
 	--交任务
@@ -115,7 +116,8 @@ local function zidongduihua(self,event)
 					end
 				end
 			else
-				local numOptions = C_GossipInfo.GetNumOptions() --NPC对话选项
+				local options = C_GossipInfo.GetOptions() --NPC对话选项
+				local numOptions = #options
 				local kejierenwu = C_GossipInfo.GetNumActiveQuests() --返回此 NPC 提供的任务（您尚未参与）的数量
 				local jiaofurenwu = C_GossipInfo.GetNumAvailableQuests() --返回你最终应该交给这个 NPC 的活动任务的数量。
 				local zongjirenwu=kejierenwu+jiaofurenwu
@@ -123,7 +125,7 @@ local function zidongduihua(self,event)
 					yanchizhixing()
 				else
 					if numOptions==1 then
-						C_GossipInfo.SelectOption(1)
+						C_GossipInfo.SelectOption(options[1].gossipOptionID)
 					end
 				end
 			end
@@ -134,12 +136,7 @@ end
 local zidongduihuaFFF = CreateFrame("Frame")
 zidongduihuaFFF:SetScript("OnEvent", zidongduihua)
 --自动对话
-fuFrame.AutoDialogue = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.AutoDialogue:SetSize(30,32);
-fuFrame.AutoDialogue:SetHitRectInsets(0,-100,0,0);
-fuFrame.AutoDialogue:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",300,-60);
-fuFrame.AutoDialogue.Text:SetText("自动对话");
-fuFrame.AutoDialogue.tooltip = "当NPC只有一个对话选项时自动激活选项！";
+fuFrame.AutoDialogue = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",300,-60,"自动对话","当NPC只有一个对话选项时自动激活选项")
 fuFrame.AutoDialogue:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['Interaction']['AutoDialogue']="ON";
@@ -149,12 +146,7 @@ fuFrame.AutoDialogue:SetScript("OnClick", function (self)
 	end
 end);
 --自动接任务
-fuFrame.AutoJierenwu = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.AutoJierenwu:SetSize(30,32);
-fuFrame.AutoJierenwu:SetHitRectInsets(0,-100,0,0);
-fuFrame.AutoJierenwu:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-100);
-fuFrame.AutoJierenwu.Text:SetText("自动接任务");
-fuFrame.AutoJierenwu.tooltip = "和NPC对话时自动接任务！";
+fuFrame.AutoJierenwu = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-100,"自动接任务","和NPC对话时自动接任务")
 fuFrame.AutoJierenwu:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['Interaction']['AutoJierenwu']="ON";
@@ -169,12 +161,7 @@ fuFrame.AutoJierenwu:SetScript("OnClick", function (self)
 	end
 end);
 --自动交任务
-fuFrame.AutoJiaorenwu = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.AutoJiaorenwu:SetSize(30,32);
-fuFrame.AutoJiaorenwu:SetHitRectInsets(0,-100,0,0);
-fuFrame.AutoJiaorenwu:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",300,-100);
-fuFrame.AutoJiaorenwu.Text:SetText("自动交任务");
-fuFrame.AutoJiaorenwu.tooltip = "和NPC对话时自动交任务！";
+fuFrame.AutoJiaorenwu = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",300,-100,"自动交任务","和NPC对话时自动交任务")
 fuFrame.AutoJiaorenwu:SetScript("OnClick", function ()
 	if fuFrame.AutoJiaorenwu:GetChecked() then
 		PIG['Interaction']['AutoJiaorenwu']="ON";
@@ -200,12 +187,7 @@ zidongjieshouzuduiyaoqingFFF:SetScript("OnEvent", function(self, event, arg1, ar
 		StaticPopup_Hide("RESURRECT")
 	end
 end)
-fuFrame.zidongjieshouyaoqing = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.zidongjieshouyaoqing:SetSize(30,32);
-fuFrame.zidongjieshouyaoqing:SetHitRectInsets(0,-100,0,0);
-fuFrame.zidongjieshouyaoqing:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-140);
-fuFrame.zidongjieshouyaoqing.Text:SetText("自动接受组队邀请");
-fuFrame.zidongjieshouyaoqing.tooltip = "自动接受组队邀请！";
+fuFrame.zidongjieshouyaoqing = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-140,"自动接受组队邀请","自动接受组队邀请")
 fuFrame.zidongjieshouyaoqing:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['Interaction']['AutoJyaoqing']="ON";
@@ -216,12 +198,7 @@ fuFrame.zidongjieshouyaoqing:SetScript("OnClick", function (self)
 	end
 end);
 ----自动接收组队邀请
-fuFrame.zidongFuhuo = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.zidongFuhuo:SetSize(30,32);
-fuFrame.zidongFuhuo:SetHitRectInsets(0,-100,0,0);
-fuFrame.zidongFuhuo:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",300,-140);
-fuFrame.zidongFuhuo.Text:SetText("自动接受复活");
-fuFrame.zidongFuhuo.tooltip = "自动接受复活！";
+fuFrame.zidongFuhuo = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",300,-140,"自动接受复活","自动接受复活")
 fuFrame.zidongFuhuo:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['Interaction']['AutoFuhuo']="ON";
@@ -233,12 +210,6 @@ fuFrame.zidongFuhuo:SetScript("OnClick", function (self)
 end);
 --------------------
 addonTable.Interaction_AutoDialogue = function()
-	PIG['Interaction']['AutoDialogue']=PIG['Interaction']['AutoDialogue'] or addonTable.Default['Interaction']['AutoDialogue']
-	PIG['Interaction']['AutoJierenwu']=PIG['Interaction']['AutoJierenwu'] or addonTable.Default['Interaction']['AutoJierenwu']
-	PIG['Interaction']['AutoJiaorenwu']=PIG['Interaction']['AutoJiaorenwu'] or addonTable.Default['Interaction']['AutoJiaorenwu']
-	PIG['Interaction']['AutoJyaoqing']=PIG['Interaction']['AutoJyaoqing'] or addonTable.Default['Interaction']['AutoJyaoqing']
-	PIG['Interaction']['AutoFuhuo']=PIG['Interaction']['AutoFuhuo'] or addonTable.Default['Interaction']['AutoFuhuo']
-	PIG['Interaction']['AutoLOOTqwueren']=PIG['Interaction']['AutoLOOTqwueren'] or addonTable.Default['Interaction']['AutoLOOTqwueren']
 	if PIG['Interaction']['AutoDialogue']=="ON" or PIG['Interaction']['AutoJierenwu']=="ON" or PIG['Interaction']['AutoJiaorenwu']=="ON" then
 		zidongduihuaFFF:RegisterEvent("GOSSIP_SHOW")
 		zidongduihuaFFF:RegisterEvent("QUEST_DETAIL")

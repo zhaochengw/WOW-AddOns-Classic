@@ -1,51 +1,47 @@
 ﻿local _, addonTable = ...;
 local fuFrame=List_R_F_1_6
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 -------------------------------------------------
 ----隐藏鹰标
 local function PigUI_ShhijiuIcon()
-	if PIG['PigUI']['ShhijiuIcon']=="ON" then
+	if PIG["PigUI"]["Hide_shijiu"]=="ON" then
 		fuFrame.HideShijiu:SetChecked(true);
 		MainMenuBarRightEndCap:Hide();--隐藏右侧鹰标 
 		MainMenuBarLeftEndCap:Hide();--隐藏左侧鹰标 
-	elseif PIG['PigUI']['ShhijiuIcon']=="OFF" then
+	elseif PIG["PigUI"]["Hide_shijiu"]=="OFF" then
 		fuFrame.HideShijiu:SetChecked(false);
-		MainMenuBarRightEndCap:Show();--隐藏右侧鹰标 
-		MainMenuBarLeftEndCap:Show();--隐藏左侧鹰标 
+		MainMenuBarRightEndCap:Show();
+		MainMenuBarLeftEndCap:Show();
 	end
 end
-fuFrame.HideShijiu = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.HideShijiu:SetSize(30,32);
-fuFrame.HideShijiu:SetHitRectInsets(0,-100,0,0);
-fuFrame.HideShijiu:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",10,-10);
-fuFrame.HideShijiu.Text:SetText("隐藏狮鹫图标");
-fuFrame.HideShijiu.tooltip = "隐藏动作条两边的狮鹫图标。";
+fuFrame.HideShijiu = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",10,-10,"隐藏狮鹫图标","隐藏动作条两边的狮鹫图标")
 fuFrame.HideShijiu:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['PigUI']['ShhijiuIcon']="ON";
+		PIG["PigUI"]["Hide_shijiu"]="ON";
 	else
-		PIG['PigUI']['ShhijiuIcon']="OFF";
+		PIG["PigUI"]["Hide_shijiu"]="OFF";
 	end
 	PigUI_ShhijiuIcon()
 end);
 --===================================
 --主动作条缩放比例
 local function ActionBar_bili_gengxin()
-	fuFrame.ActionBar_bili_Slider:SetValue(PIG['PigUI']['ActionBar_bili_value']*10);
-	fuFrame.ActionBar_bili_Slider.Text:SetText(PIG['PigUI']['ActionBar_bili_value']);
-	if PIG['PigUI']['ActionBar_bili']=="ON" then
+	fuFrame.ActionBar_bili_Slider:SetValue(PIG["PigUI"]["ActionBar_bili_value"]*10);
+	fuFrame.ActionBar_bili_Slider.Text:SetText(PIG["PigUI"]["ActionBar_bili_value"]);
+	if PIG["PigUI"]["ActionBar_bili"]=="ON" then
 		fuFrame.ActionBar_bili_Slider:Enable();
 		fuFrame.ActionBar_bili_Slider.Low:SetTextColor(1, 1, 1, 1);
 		fuFrame.ActionBar_bili_Slider.High:SetTextColor(1, 1, 1, 1);
 		fuFrame.ActionBar_bili_Slider.Text:SetTextColor(1, 1, 1, 1);
 		fuFrame.ActionBar_bili_ck:SetChecked(true);
-		MainMenuBar:SetScale(PIG['PigUI']['ActionBar_bili_value']);
-		VerticalMultiBarsContainer:SetScale(PIG['PigUI']['ActionBar_bili_value']);
+		MainMenuBar:SetScale(PIG["PigUI"]["ActionBar_bili_value"]);
+		VerticalMultiBarsContainer:SetScale(PIG["PigUI"]["ActionBar_bili_value"]);
 		for i=1, 12 do
-			_G["MultiBarLeftButton"..i]:SetScale(PIG['PigUI']['ActionBar_bili_value'])
-			--_G["MultiBarRightButton"..i]:SetScale(PIG['PigUI']['ActionBar_bili_value'])
+			_G["MultiBarLeftButton"..i]:SetScale(PIG["PigUI"]["ActionBar_bili_value"])
+			--_G["MultiBarRightButton"..i]:SetScale(PIG["PigUI"]["ActionBar_bili_value"])
 		end
-	elseif PIG['PigUI']['ActionBar_bili']=="OFF" then
+	elseif PIG["PigUI"]["ActionBar_bili"]=="OFF" then
 		fuFrame.ActionBar_bili_ck:SetChecked(false);
 		fuFrame.ActionBar_bili_Slider:Disable();
 		fuFrame.ActionBar_bili_Slider.Low:SetTextColor(0.8, 0.8, 0.8, 0.5);
@@ -53,17 +49,12 @@ local function ActionBar_bili_gengxin()
 		fuFrame.ActionBar_bili_Slider.Text:SetTextColor(0.8, 0.8, 0.8, 0.5);
 	end
 end
-fuFrame.ActionBar_bili_ck = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.ActionBar_bili_ck:SetSize(30,32);
-fuFrame.ActionBar_bili_ck:SetHitRectInsets(0,-80,0,0);
-fuFrame.ActionBar_bili_ck:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",280,-50);
-fuFrame.ActionBar_bili_ck.Text:SetText("缩放动作条:");
-fuFrame.ActionBar_bili_ck.tooltip = "启用缩放动作条,注意此设置和系统高级里面的UI缩放不同，只调整动作条比例.";
+fuFrame.ActionBar_bili_ck = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",280,-50,"缩放动作条","启用缩放动作条,注意此设置和系统高级里面的UI缩放不同，只调整动作条比例")
 fuFrame.ActionBar_bili_ck:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['PigUI']['ActionBar_bili']="ON";	
+		PIG["PigUI"]["ActionBar_bili"]="ON";	
 	else
-		PIG['PigUI']['ActionBar_bili']="OFF";
+		PIG["PigUI"]["ActionBar_bili"]="OFF";
 		Pig_Options_RLtishi_UI:Show()
 	end
 	ActionBar_bili_gengxin()
@@ -95,7 +86,7 @@ fuFrame.ActionBar_bili_Slider:SetScript("OnMouseWheel", function(self, arg1)
 end)
 fuFrame.ActionBar_bili_Slider:SetScript('OnValueChanged', function(self)
 	local Newval = (self:GetValue()/10)
-	PIG['PigUI']['ActionBar_bili_value']=Newval;
+	PIG["PigUI"]["ActionBar_bili_value"]=Newval;
 	ActionBar_bili_gengxin()
 end)
 --==============================================
@@ -220,24 +211,19 @@ local function PigUI_ActionBar_up()
 	end);
 end
 ---------------------
-fuFrame.ActionBar = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.ActionBar:SetSize(30,32);
-fuFrame.ActionBar:SetHitRectInsets(0,-100,0,0);
-fuFrame.ActionBar:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",10,-50);
-fuFrame.ActionBar.Text:SetText("移动右边动作条");
-fuFrame.ActionBar.tooltip = "移动右边竖向动作条到下方动作条之上。";
+fuFrame.ActionBar = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",10,-50,"移动右边动作条","移动右边竖向动作条到下方动作条之上")
 fuFrame.ActionBar:SetScript("OnClick", function ()
 	if fuFrame.ActionBar:GetChecked() then
-		PIG['PigUI']['ActionBar']="ON";
+		PIG["PigUI"]["ActionBar"]="ON";
 		PigUI_ActionBar_up();
 	else
-		PIG['PigUI']['ActionBar']="OFF";
+		PIG["PigUI"]["ActionBar"]="OFF";
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
 ----
 fuFrame:HookScript("OnShow", function ()
-	if PIG['PigUI']['ActionBar']=="ON" then
+	if PIG["PigUI"]["ActionBar"]=="ON" then
 		fuFrame.ActionBar:SetChecked(true);
 	end
 end);
@@ -245,7 +231,7 @@ end);
 addonTable.PigUI_ActionBar = function()
 	PigUI_ShhijiuIcon();
 	ActionBar_bili_gengxin()
-	if PIG['PigUI']['ActionBar']=="ON" then
+	if PIG["PigUI"]["ActionBar"]=="ON" then
 		PigUI_ActionBar_up();
 	end
 end

@@ -1,0 +1,309 @@
+local _, addonTable = ...;
+local fuFrame=List_R_F_1_5
+local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
+----------------
+-- local function PlayerTalentFrame_GetBranchTexture_Pig(tianfuID)
+-- 	local branchTexture = _G["PlayerTalentFrameBranch"..tianfuID.."_"..PlayerTalentFrame.textureIndex];
+-- 	PlayerTalentFrame.textureIndex = PlayerTalentFrame.textureIndex + 1;
+-- 	if ( not branchTexture ) then
+-- 		message("Not enough branch textures");
+-- 	else
+-- 		branchTexture:Show();
+-- 		return branchTexture;
+-- 	end
+-- end
+-- local function PlayerTalentFrame_SetBranchTexture_Pig(tier, column, texCoords, xOffset, yOffset,tianfuID)
+-- 	local branchTexture = PlayerTalentFrame_GetBranchTexture_Pig(tianfuID);
+-- 	branchTexture:SetTexCoord(texCoords[1], texCoords[2], texCoords[3], texCoords[4]);
+-- 	branchTexture:SetPoint("TOPLEFT", _G["PlayerTalentFrameScrollChildFrame"..tianfuID], "TOPLEFT", xOffset, yOffset);
+-- end
+-- local function PlayerTalentFrame_GetArrowTexture_Pig(tianfuID)
+-- 	local arrowTexture = _G["PlayerTalentFrameArrow"..tianfuID.."_"..PlayerTalentFrame.arrowIndex];
+-- 	PlayerTalentFrame.arrowIndex = PlayerTalentFrame.arrowIndex + 1;
+-- 	if ( not arrowTexture ) then
+-- 		message("Not enough arrow textures");
+-- 	else
+-- 		arrowTexture:Show();
+-- 		return arrowTexture;
+-- 	end
+-- end
+-- local function PlayerTalentFrame_SetArrowTexture_Pig(tier, column, texCoords, xOffset, yOffset,tianfuID)
+-- 	local arrowTexture = PlayerTalentFrame_GetArrowTexture_Pig(tianfuID);
+-- 	arrowTexture:SetTexCoord(texCoords[1], texCoords[2], texCoords[3], texCoords[4]);
+-- 	arrowTexture:SetPoint("TOPLEFT", _G["PlayerTalentFrameArrowFrame"..tianfuID], "TOPLEFT", xOffset, yOffset);
+-- end
+-- local function PlayerTalentFrame_Update_Pig(tianfuID)
+-- 	-- local tab, name, iconTexture, pointsSpent, button;
+-- 	-- local numTabs = GetNumTalentTabs();
+-- 	-- for i=1, MAX_TALENT_TABS do
+-- 	-- 	tab = _G["PlayerTalentFrameTab"..i];
+-- 	-- 	if ( i <= numTabs ) then
+-- 	-- 		name, iconTexture, pointsSpent = GetTalentTabInfo(i);
+-- 	-- 		if ( i == tianfuID ) then
+-- 	-- 			-- If tab is the selected tab set the points spent info
+-- 	-- 			PlayerTalentFrameSpentPoints:SetText(MASTERY_POINTS_SPENT:format(name).." "..HIGHLIGHT_FONT_COLOR_CODE..pointsSpent..FONT_COLOR_CODE_CLOSE);
+-- 	-- 			PlayerTalentFrame.pointsSpent = pointsSpent;
+-- 	-- 		end
+-- 	-- 		tab:SetText(name);
+-- 	-- 		PanelTemplates_TabResize(tab, 10);
+-- 	-- 		tab:Show();
+-- 	-- 	else
+-- 	-- 		tab:Hide();
+-- 	-- 	end
+-- 	-- end
+-- 	-- PanelTemplates_SetNumTabs(PlayerTalentFrame, numTabs);
+-- 	-- PanelTemplates_UpdateTabs(PlayerTalentFrame);
+
+-- 	-- Setup Frame
+-- 	--SetPortraitTexture(PlayerTalentFramePortrait, "player");
+-- 	--PlayerTalentFrame_UpdateTalentPoints();
+-- 	-- local talentTabName = GetTalentTabInfo(tianfuID);
+-- 	-- local base;
+-- 	-- local name, texture, points, fileName = GetTalentTabInfo(tianfuID);
+-- 	-- if ( talentTabName ) then
+-- 	-- 	base = "Interface\\TalentFrame\\"..fileName.."-";
+-- 	-- else
+-- 	-- 	-- temporary default for classes without talents poor guys
+-- 	-- 	base = "Interface\\TalentFrame\\MageFire-";
+-- 	-- end
+	
+-- 	-- PlayerTalentFrameBackgroundTopLeft:SetTexture(base.."TopLeft");
+-- 	-- PlayerTalentFrameBackgroundTopRight:SetTexture(base.."TopRight");
+-- 	-- PlayerTalentFrameBackgroundBottomLeft:SetTexture(base.."BottomLeft");
+-- 	-- PlayerTalentFrameBackgroundBottomRight:SetTexture(base.."BottomRight");
+-- 	local name, iconTexture, pointsSpent = GetTalentTabInfo(tianfuID);
+-- 	local numTalents = GetNumTalents(tianfuID);
+-- 	PlayerTalentFrame_ResetBranches();
+-- 	local forceDesaturated, tierUnlocked;
+-- 	for i=1, MAX_NUM_TALENTS do
+-- 		button = _G["PlayerTalentFrameTalent"..tianfuID.."_"..i];
+-- 		if ( i <= numTalents ) then
+-- 			-- Set the button info
+-- 			local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo(tianfuID, i);
+-- 			_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."Rank"]:SetText(rank);
+-- 			SetTalentButtonLocation(button, tier, column);
+-- 			TALENT_BRANCH_ARRAY[tier][column].id = button:GetID();
+			
+-- 			-- If player has no talent points then show only talents with points in them
+-- 			if ( (PlayerTalentFrame.talentPoints <= 0 and rank == 0)  ) then
+-- 				forceDesaturated = 1;
+-- 			else
+-- 				forceDesaturated = nil;
+-- 			end
+
+-- 			-- If the player has spent at least 5 talent points in the previous tier
+-- 			if ( ( (tier - 1) * 5 <= pointsSpent ) ) then
+-- 				tierUnlocked = 1;
+-- 			else
+-- 				tierUnlocked = nil;
+-- 			end
+-- 			SetItemButtonTexture(button, iconTexture);
+			
+-- 			-- Talent must meet prereqs or the player must have no points to spend
+-- 			if ( PlayerTalentFrame_SetPrereqs(tier, column, forceDesaturated, tierUnlocked, GetTalentPrereqs(tianfuID, i)) and available ) then
+-- 				SetItemButtonDesaturated(button, nil);
+				
+-- 				if ( rank < maxRank ) then
+-- 					-- Rank is green if not maxed out
+-- 					_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."Slot"]:SetVertexColor(0.1, 1.0, 0.1);
+-- 					_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."Rank"]:SetTextColor(GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b);
+-- 				else
+-- 					_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."Slot"]:SetVertexColor(1.0, 0.82, 0);
+-- 					_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."Rank"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+-- 				end
+-- 				_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."RankBorder"]:Show();
+-- 				_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."Rank"]:Show();
+-- 			else
+-- 				SetItemButtonDesaturated(button, 1, 0.65, 0.65, 0.65);
+-- 				_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."Slot"]:SetVertexColor(0.5, 0.5, 0.5);
+-- 				if ( rank == 0 ) then
+-- 					_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."RankBorder"]:Hide();
+-- 					_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."Rank"]:Hide();
+-- 				else
+-- 					_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."RankBorder"]:SetVertexColor(0.5, 0.5, 0.5);
+-- 					_G["PlayerTalentFrameTalent"..tianfuID.."_"..i.."Rank"]:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+-- 				end
+-- 			end
+			
+-- 			button:Show();
+-- 		else	
+-- 			button:Hide();
+-- 		end
+-- 	end
+-- 	--local branchTexture = PlayerTalentFrame_GetBranchTexture();
+-- 	--print(branchTexture)
+-- 	-- Draw the prerq branches
+-- 	local node;
+-- 	local textureIndex = 1;
+-- 	local xOffset, yOffset;
+-- 	local texCoords;
+-- 	-- Variable that decides whether or not to ignore drawing pieces
+-- 	local ignoreUp;
+-- 	local tempNode;
+-- 	PlayerTalentFrame_ResetBranchTextureCount();
+-- 	PlayerTalentFrame_ResetArrowTextureCount();
+-- 	for i=1, MAX_NUM_TALENT_TIERS do
+-- 		for j=1, NUM_TALENT_COLUMNS do
+-- 			node = TALENT_BRANCH_ARRAY[i][j];
+			
+-- 			-- Setup offsets
+-- 			xOffset = ((j - 1) * 63) + INITIAL_TALENT_OFFSET_X + 2;
+-- 			yOffset = -((i - 1) * 63) - INITIAL_TALENT_OFFSET_Y - 2;
+		
+-- 			if ( node.id ) then
+-- 				-- Has talent
+-- 				if ( node.up ~= 0 ) then
+-- 					if ( not ignoreUp ) then
+-- 						PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["up"][node.up], xOffset, yOffset + TALENT_BUTTON_SIZE,tianfuID);
+-- 					else
+-- 						ignoreUp = nil;
+-- 					end
+-- 				end
+-- 				if ( node.down ~= 0 ) then
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["down"][node.down], xOffset, yOffset - TALENT_BUTTON_SIZE + 1,tianfuID);
+-- 				end
+-- 				if ( node.left ~= 0 ) then
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["left"][node.left], xOffset - TALENT_BUTTON_SIZE, yOffset,tianfuID);
+-- 				end
+-- 				if ( node.right ~= 0 ) then
+-- 					-- See if any connecting branches are gray and if so color them gray
+-- 					tempNode = TALENT_BRANCH_ARRAY[i][j+1];	
+-- 					if ( tempNode.left ~= 0 and tempNode.down < 0 ) then
+-- 						PlayerTalentFrame_SetBranchTexture_Pig(i, j-1, TALENT_BRANCH_TEXTURECOORDS["right"][tempNode.down], xOffset + TALENT_BUTTON_SIZE, yOffset,tianfuID);
+-- 					else
+-- 						PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["right"][node.right], xOffset + TALENT_BUTTON_SIZE + 1, yOffset,tianfuID);
+-- 					end
+					
+-- 				end
+-- 				-- Draw arrows
+-- 				if ( node.rightArrow ~= 0 ) then
+-- 					PlayerTalentFrame_SetArrowTexture_Pig(i, j, TALENT_ARROW_TEXTURECOORDS["right"][node.rightArrow], xOffset + TALENT_BUTTON_SIZE/2 + 5, yOffset,tianfuID);
+-- 				end
+-- 				if ( node.leftArrow ~= 0 ) then
+-- 					PlayerTalentFrame_SetArrowTexture_Pig(i, j, TALENT_ARROW_TEXTURECOORDS["left"][node.leftArrow], xOffset - TALENT_BUTTON_SIZE/2 - 5, yOffset,tianfuID);
+-- 				end
+-- 				if ( node.topArrow ~= 0 ) then
+-- 					PlayerTalentFrame_SetArrowTexture_Pig(i, j, TALENT_ARROW_TEXTURECOORDS["top"][node.topArrow], xOffset, yOffset + TALENT_BUTTON_SIZE/2 + 5,tianfuID);
+-- 				end
+-- 			else
+-- 				-- Doesn"t have a talent
+-- 				if ( node.up ~= 0 and node.left ~= 0 and node.right ~= 0 ) then
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["tup"][node.up], xOffset , yOffset,tianfuID);
+-- 				elseif ( node.down ~= 0 and node.left ~= 0 and node.right ~= 0 ) then
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["tdown"][node.down], xOffset , yOffset,tianfuID);
+-- 				elseif ( node.left ~= 0 and node.down ~= 0 ) then
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["topright"][node.left], xOffset , yOffset,tianfuID);
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["down"][node.down], xOffset , yOffset - 32,tianfuID);
+-- 				elseif ( node.left ~= 0 and node.up ~= 0 ) then
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["bottomright"][node.left], xOffset , yOffset,tianfuID);
+-- 				elseif ( node.left ~= 0 and node.right ~= 0 ) then
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["right"][node.right], xOffset + TALENT_BUTTON_SIZE, yOffset,tianfuID);
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["left"][node.left], xOffset + 1, yOffset,tianfuID);
+-- 				elseif ( node.right ~= 0 and node.down ~= 0 ) then
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["topleft"][node.right], xOffset , yOffset,tianfuID);
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["down"][node.down], xOffset , yOffset - 32,tianfuID);
+-- 				elseif ( node.right ~= 0 and node.up ~= 0 ) then
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["bottomleft"][node.right], xOffset , yOffset,tianfuID);
+-- 				elseif ( node.up ~= 0 and node.down ~= 0 ) then
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["up"][node.up], xOffset , yOffset,tianfuID);
+-- 					PlayerTalentFrame_SetBranchTexture_Pig(i, j, TALENT_BRANCH_TEXTURECOORDS["down"][node.down], xOffset , yOffset - 32,tianfuID);
+-- 					ignoreUp = 1;
+-- 				end
+-- 			end
+-- 		end
+-- 		_G["PlayerTalentFrameScrollFrame"..tianfuID]:UpdateScrollChildRect();
+-- 	end
+-- 	-- Hide any unused branch textures
+-- 	print(PlayerTalentFrame_GetBranchTextureCount())
+-- 	for i=PlayerTalentFrame_GetBranchTextureCount(), MAX_NUM_BRANCH_TEXTURES do
+-- 		_G["PlayerTalentFrameBranch"..tianfuID.."_"..i]:Hide();
+-- 	end
+-- 	-- Hide and unused arrowl textures
+-- 	for i=PlayerTalentFrame_GetArrowTextureCount(), MAX_NUM_ARROW_TEXTURES do
+-- 		_G["PlayerTalentFrameArrow"..tianfuID.."_"..i]:Hide();
+-- 	end
+-- end
+-- local function TalentFrame_ADD()
+-- 	--UIPanelWindows["PlayerTalentFrame"].with=
+-- 	local gundongWW,gundongHH = 380,630
+-- 	local old_PlayerTalentFrame_Update=PlayerTalentFrame_Update
+-- 	PlayerTalentFrame_Update=function()
+-- 		old_PlayerTalentFrame_Update()
+-- 		PlayerTalentFrame_Update_Pig(2)
+-- 		PlayerTalentFrame_Update_Pig(3)
+-- 	end
+-- 	for tianfuxulie=2,3 do
+-- 		local list_Scroll = CreateFrame("ScrollFrame","PlayerTalentFrameScrollFrame"..tianfuxulie,PlayerTalentFrame, "UIPanelScrollFrameTemplate");  
+-- 		list_Scroll:SetSize(gundongWW-88,gundongHH-180);
+-- 		if tianfuxulie==2 then
+-- 			list_Scroll:SetPoint("TOPLEFT",PlayerTalentFrameScrollFrame,"TOPRIGHT",0,0);
+-- 		else
+-- 			list_Scroll:SetPoint("TOPLEFT",_G["PlayerTalentFrameScrollFrame"..(tianfuxulie-1)],"TOPRIGHT",0,0);
+-- 		end
+-- 		_G["PlayerTalentFrameScrollFrame"..tianfuxulie.."ScrollBar"]:Hide()
+-- 		local regions = {list_Scroll:GetRegions()}
+-- 		for i=1,#regions do
+-- 			regions[i]:Hide()
+-- 		end
+-- 		list_Scroll.ScrollChild = CreateFrame("Frame", "PlayerTalentFrameScrollChildFrame"..tianfuxulie, list_Scroll)
+-- 		list_Scroll.ScrollChild:SetWidth(list_Scroll:GetWidth())
+-- 		list_Scroll.ScrollChild:SetHeight(50) 
+-- 		list_Scroll:SetScrollChild(list_Scroll.ScrollChild)
+-- 		for i=1,30 do
+-- 			local Texture = list_Scroll.ScrollChild:CreateTexture("PlayerTalentFrameBranch"..tianfuxulie.."_"..i, "BACKGROUND","TalentBranchTemplate");
+-- 		end
+-- 		for i=1,20 do
+-- 			local ButtonUI = CreateFrame("Button","PlayerTalentFrameTalent"..tianfuxulie.."_"..i,list_Scroll.ScrollChild, "TalentButtonTemplate",i);
+-- 		end
+-- 		local FrameUI = CreateFrame("Frame", "PlayerTalentFrameArrowFrame"..tianfuxulie, list_Scroll.ScrollChild);
+-- 		FrameUI:SetAllPoints(list_Scroll.ScrollChild)
+-- 		for i=1,30 do
+-- 			local Texture = FrameUI:CreateTexture("PlayerTalentFrameArrow"..tianfuxulie.."_"..i, "OVERLAY","TalentArrowTemplate");
+-- 		end
+-- 	end
+-- 	--------
+-- 	PlayerTalentFrame:SetSize(gundongWW*3-220,gundongHH);
+-- 	PlayerTalentFrameScrollFrame:SetSize(gundongWW-88,gundongHH-180);
+-- 	PlayerTalentFrameScrollFrameScrollBar:Hide()
+-- 	local regions = {PlayerTalentFrameScrollFrame:GetRegions()}
+-- 	for i=1,#regions do
+-- 		regions[i]:Hide()
+-- 	end
+-- 	PlayerTalentFrameScrollFrame:ClearAllPoints();
+-- 	PlayerTalentFrameScrollFrame:SetPoint("TOPLEFT",PlayerTalentFrame,"TOPLEFT",10,-70);
+-- 	--PlayerTalentFrameCancelButton:ClearAllPoints();
+-- 	--PlayerTalentFrameCancelButton:SetPoint("BOTTOMRIGHT",PlayerTalentFrame,"BOTTOMRIGHT",-34,82);
+-- end
+
+-- local function TalentFrame_Open()
+-- 	if IsAddOnLoaded("Blizzard_CraftUI") then
+-- 		TalentFrame_ADD()
+-- 	else
+-- 		local tianfuFrame = CreateFrame("FRAME")
+-- 		tianfuFrame:RegisterEvent("ADDON_LOADED")
+-- 		tianfuFrame:SetScript("OnEvent", function(self, event, arg1)
+-- 		    if arg1 == "Blizzard_TalentUI" then
+-- 		        TalentFrame_ADD()
+-- 		        tianfuFrame:UnregisterEvent("ADDON_LOADED")
+-- 		    end
+-- 		end)
+-- 	end
+-- end
+-- fuFrame.TalentFrame=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",20,-100,"扩展天赋面板","在一页显示三系天赋")
+-- fuFrame.TalentFrame:SetScript("OnClick", function (self)
+-- 	if self:GetChecked() then
+-- 		PIG["FramePlus"]["ExtFrame_Talent"]="ON";
+-- 		TalentFrame_Open()
+-- 	else
+-- 		PIG["FramePlus"]["ExtFrame_Talent"]="OFF";
+-- 		Pig_Options_RLtishi_UI:Show()
+-- 	end
+-- end);
+--=====================================
+addonTable.FramePlus_TalentFrame = function()
+	-- if PIG["FramePlus"]["ExtFrame_Talent"]=="ON" then
+	-- 	fuFrame.TalentFrame:SetChecked(true);
+	-- 	TalentFrame_Open()
+	-- end
+end

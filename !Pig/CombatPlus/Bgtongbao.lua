@@ -1,6 +1,7 @@
 local _, addonTable = ...;
 ----------
 local fuFrame=List_R_F_1_3
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ----------战场通报按钮
 local function CombatPlus_BGtongbao_Open()
 	if BGanniuUI==nil then
@@ -30,9 +31,9 @@ local function CombatPlus_BGtongbao_Open()
 		end);
 		BGanniu:RegisterEvent("PLAYER_ENTERING_WORLD");
 		BGanniu:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-		BGanniu:SetScript("OnEvent", function ()
-			local zoneName = GetZoneText();
-			if zoneName=="阿拉希盆地" or zoneName=="战歌峡谷" or zoneName=="奥特兰克山谷" or zoneName=="风暴之眼" or zoneName=="远古海滩" then
+		BGanniu:SetScript("OnEvent", function ()		
+			local inInstance, instanceType =IsInInstance()
+			if inInstance and instanceType=="pvp" then
 				BGanniu:Show()
 			else
 				BGanniu:Hide()
@@ -41,20 +42,14 @@ local function CombatPlus_BGtongbao_Open()
 	end
 end
 ---------------------
-fuFrame.BGtongbao = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.BGtongbao:SetSize(30,32);
-fuFrame.BGtongbao:SetHitRectInsets(0,-100,0,0);
-fuFrame.BGtongbao:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-80);
-fuFrame.BGtongbao.Text:SetText("战场快捷通报按钮");
-fuFrame.BGtongbao.tooltip = "在动作条上方增加战场快捷通报按钮,点击可以通报当前位置来犯人数，对方来了三个人攻击，就点击三次。右键报告位置安全。注意战场外不显示！";
+local BGtooltip = "在动作条上方增加战场快捷通报按钮,点击可以通报当前位置来犯人数，对方来了三个人攻击，就点击三次。右键报告位置安全。注意战场外不显示"
+fuFrame.BGtongbao = ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",20,-80,"战场快捷通报按钮",BGtooltip)
 fuFrame.BGtongbao:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['CombatPlus']['BGtongbao']="ON";
-		fuFrame.CZPoint:Show()
 		CombatPlus_BGtongbao_Open();
 	else
 		PIG['CombatPlus']['BGtongbao']="OFF";
-		fuFrame.CZPoint:Hide()
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
@@ -62,7 +57,6 @@ end);
 fuFrame.CZPoint = CreateFrame("Button",nil,fuFrame);
 fuFrame.CZPoint:SetSize(22,22);
 fuFrame.CZPoint:SetPoint("LEFT",fuFrame.BGtongbao.Text,"RIGHT",16,-1);
-fuFrame.CZPoint:Hide()
 fuFrame.CZPoint.highlight = fuFrame.CZPoint:CreateTexture(nil, "HIGHLIGHT");
 fuFrame.CZPoint.highlight:SetTexture("interface/buttons/ui-common-mousehilight.blp");
 fuFrame.CZPoint.highlight:SetBlendMode("ADD")
@@ -91,14 +85,15 @@ fuFrame.CZPoint:SetScript("OnLeave", function ()
 	GameTooltip:Hide() 
 end);
 fuFrame.CZPoint:SetScript("OnClick", function ()
-	BGanniuUI:ClearAllPoints();
-	BGanniuUI:SetPoint("BOTTOM",UIParent,"BOTTOM",100,260);
+	if BGanniuUI then
+		BGanniuUI:ClearAllPoints();
+		BGanniuUI:SetPoint("BOTTOM",UIParent,"BOTTOM",100,260);
+	end
 end)
 --=====================================
 addonTable.CombatPlus_BGtongbao = function()
 	if PIG['CombatPlus']['BGtongbao']=="ON" then
 		fuFrame.BGtongbao:SetChecked(true);
-		fuFrame.CZPoint:Show()
 		CombatPlus_BGtongbao_Open();
 	end
 end

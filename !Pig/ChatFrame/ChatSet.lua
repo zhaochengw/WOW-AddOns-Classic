@@ -4,6 +4,7 @@ local gsub = _G.string.gsub
 local match = _G.string.match --查找是否包含
 local _, _, _, tocversion = GetBuildInfo()
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
+local PIGDownMenu=addonTable.PIGDownMenu
 -------------------------------------------
 fuFrame.Scroll = CreateFrame("ScrollFrame",nil,fuFrame, "UIPanelScrollFrameTemplate");  
 fuFrame.Scroll:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",6,-6);
@@ -29,43 +30,31 @@ fuFrame.QuickChat:SetScript("OnClick", function (self)
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
----
-fuFrame.QuickChat_nil = ADD_Checkbutton(nil,fuFrame,-100,"LEFT",fuFrame.QuickChat,"RIGHT",350,0,"无边框模式","频道快捷切换按钮无边框模式！")
-fuFrame.QuickChat_nil:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG["ChatFrame"]["wubiankuang"]="ON";
-		Pig_Options_RLtishi_UI:Show()
-	else
-		PIG["ChatFrame"]["wubiankuang"]="OFF";
-		Pig_Options_RLtishi_UI:Show()
-	end
-end);
----快捷条锚点
-local QuickChat_maodian = CreateFrame("FRAME", "QuickChat_maodian_UI", fuFrame, "UIDropDownMenuTemplate")
-QuickChat_maodian:SetPoint("LEFT",fuFrame.QuickChat.Text,"RIGHT",-10,-2)
-UIDropDownMenu_SetWidth(QuickChat_maodian, 158)
-local function QuickChat_maodian_Up()
-	local info = UIDropDownMenu_CreateInfo()
-	info.func = QuickChat_maodian.SetValue
-	for i=1,#QuickChat_maodianID,1 do
-	    info.text, info.arg1, info.checked = QuickChat_maodianListCN[i], QuickChat_maodianID[i], QuickChat_maodianID[i] == PIG["ChatFrame"]['QuickChat_maodian'];
-		UIDropDownMenu_AddButton(info)
+
+fuFrame.QuickChat_maodian =PIGDownMenu(nil,{160,nil},fuFrame.QuickChat,{"LEFT",fuFrame.QuickChat.Text,"RIGHT",10,-2})
+function fuFrame.QuickChat_maodian:PIGDownMenu_Update_But(self)
+	local info = {}
+	info.func = self.PIGDownMenu_SetValue
+	for i=1,#QuickChat_maodianListCN,1 do
+	    info.text, info.arg1, info.checked = QuickChat_maodianListCN[i], i, i == PIG["ChatFrame"]['QuickChat_maodian']
+		fuFrame.QuickChat_maodian:PIGDownMenu_AddButton(info)
 	end 
 end
-function QuickChat_maodian:SetValue(newValueqk)
-	UIDropDownMenu_SetText(QuickChat_maodian, QuickChat_maodianListCN[newValueqk])
+function fuFrame.QuickChat_maodian:PIGDownMenu_SetValue(value,arg1,arg2)
+	fuFrame.QuickChat_maodian:PIGDownMenu_SetText(value)
+	PIG["ChatFrame"]['QuickChat_maodian']=arg1
 	if QuickChatFFF_UI then
 		QuickChatFFF_UI:ClearAllPoints();
-		QuickChatFFF_UI:SetPoint(QuickChat_maodianList[newValueqk][1],ChatFrame1,QuickChat_maodianList[newValueqk][2],QuickChat_maodianList[newValueqk][3],QuickChat_maodianList[newValueqk][4]);
+		QuickChatFFF_UI:SetPoint(QuickChat_maodianList[arg1][1],ChatFrame1,QuickChat_maodianList[arg1][2],QuickChat_maodianList[arg1][3],QuickChat_maodianList[arg1][4]);
 		--下移输入框
 		ChatFrame1EditBox:Show();
-		if newValueqk==1 then
+		if arg1==1 then
 			ChatFrame1EditBox:ClearAllPoints();
 			ChatFrame1EditBox:SetPoint("BOTTOMLEFT",ChatFrame1,"TOPLEFT",-5,-0);
 			ChatFrame1EditBox:SetPoint("BOTTOMRIGHT",ChatFrame1,"TOPRIGHT",5,-0);
 			guanjianzi_UI.F:SetPoint("BOTTOMRIGHT",DEFAULT_CHAT_FRAME,"TOPRIGHT",2,56);
 			guanjianzi_UI.F:SetPoint("BOTTOMLEFT",DEFAULT_CHAT_FRAME,"TOPLEFT",-3,56);
-		elseif newValueqk==2 then
+		elseif arg1==2 then
 			ChatFrame1EditBox:ClearAllPoints();
 			ChatFrame1EditBox:SetPoint("TOPLEFT",ChatFrame1,"BOTTOMLEFT",-5,-23);
 			ChatFrame1EditBox:SetPoint("TOPRIGHT",ChatFrame1,"BOTTOMRIGHT",5,-23);
@@ -74,9 +63,26 @@ function QuickChat_maodian:SetValue(newValueqk)
 		end
 		ChatFrame1EditBox:Hide();
 	end
-	PIG["ChatFrame"]['QuickChat_maodian'] = newValueqk;
-	CloseDropDownMenus()
+	PIGCloseDropDownMenus()
 end
+---
+local QuickChat_style = {"样式1","样式2"};
+fuFrame.QuickChat_style =PIGDownMenu(nil,{80,nil},fuFrame.QuickChat,{"LEFT",fuFrame.QuickChat_maodian,"RIGHT",30,0})
+function fuFrame.QuickChat_style:PIGDownMenu_Update_But(self)
+	local info = {}
+	info.func = self.PIGDownMenu_SetValue
+	for i=1,#QuickChat_style,1 do
+	    info.text, info.arg1, info.checked = QuickChat_style[i], i, i == PIG["ChatFrame"]["QuickChat_style"]
+		fuFrame.QuickChat_style:PIGDownMenu_AddButton(info)
+	end 
+end
+function fuFrame.QuickChat_style:PIGDownMenu_SetValue(value,arg1,arg2)
+	fuFrame.QuickChat_style:PIGDownMenu_SetText(value)
+	PIG["ChatFrame"]["QuickChat_style"]=arg1
+	Pig_Options_RLtishi_UI:Show()
+	PIGCloseDropDownMenus()
+end
+------------
 fuFrame.xian0 = fuFrame:CreateLine()
 fuFrame.xian0:SetColorTexture(0.8,0.8,0.8,0.5)
 fuFrame.xian0:SetThickness(1);
@@ -297,28 +303,26 @@ fuFrame.FontSize:SetScript("OnClick", function (self)
 	end
 end);
 --字号下拉菜单
-fuFrame.ChatFontSize = CreateFrame("FRAME", nil, fuFrame, "UIDropDownMenuTemplate")
-fuFrame.ChatFontSize:SetPoint("LEFT",fuFrame.FontSize.Text,"RIGHT",-16,-4)
-UIDropDownMenu_SetWidth(fuFrame.ChatFontSize, 64)
-
-local function ChatFontSize_Up()
-	local info = UIDropDownMenu_CreateInfo()
-	info.func = fuFrame.ChatFontSize.SetValue
+fuFrame.ChatFontSize=PIGDownMenu(nil,{65,24},fuFrame,{"LEFT",fuFrame.FontSize.Text,"RIGHT",0,0})
+function fuFrame.ChatFontSize:PIGDownMenu_Update_But(self)
+	local info = {}
+	info.func = self.PIGDownMenu_SetValue
 	for i=1,#ChatFontSizeList,1 do
-	    info.text, info.arg1, info.checked = ChatFontSizeList[i].."pt", ChatFontSizeList[i], ChatFontSizeList[i] == PIG["ChatFrame"]['FontSize_value'];
-		UIDropDownMenu_AddButton(info)
+	    info.text, info.arg1 = ChatFontSizeList[i].."pt", ChatFontSizeList[i]
+	    info.checked = ChatFontSizeList[i]==PIG["ChatFrame"]['FontSize_value']
+		fuFrame.ChatFontSize:PIGDownMenu_AddButton(info)
 	end 
 end
-function fuFrame.ChatFontSize:SetValue(newValue)
-	UIDropDownMenu_SetText(fuFrame.ChatFontSize, newValue.."pt")
+function fuFrame.ChatFontSize:PIGDownMenu_SetValue(value,arg1,arg2)
+	fuFrame.ChatFontSize:PIGDownMenu_SetText(value)
+	PIG["ChatFrame"]['FontSize_value']=arg1
 	for id=1,NUM_CHAT_WINDOWS,1 do
-		FCF_SetChatWindowFontSize(nil, _G["ChatFrame"..id], newValue);
+		FCF_SetChatWindowFontSize(nil, _G["ChatFrame"..id], arg1);
 	end
 	if ChatFrame99 then
-		FCF_SetChatWindowFontSize(nil, ChatFrame99, newValue);
+		FCF_SetChatWindowFontSize(nil, ChatFrame99, arg1);
 	end
-	PIG["ChatFrame"]['FontSize_value'] = newValue;
-	CloseDropDownMenus()
+	PIGCloseDropDownMenus()
 end
 -------------------------
 fuFrame.xian1 = fuFrame:CreateLine()
@@ -521,7 +525,7 @@ ChatFrame1EditBox:HookScript("OnKeyDown",function(self,key)
 	if key=="TAB" then
 		if PIG["ChatFrame"]["TABqiehuanOpen"] then
 			local pig_currChatType = self:GetAttribute("chatType")
-			if pig_currChatType=="WHISPER" then return end
+			if pig_currChatType=="WHISPER" or pig_currChatType=="BN_WHISPER" then return end
 			if pig_currChatType then
 				if pig_currChatType=="CHANNEL" then
 					local channelTargetID = self:GetAttribute("channelTarget")
@@ -721,9 +725,8 @@ YCHQADMINf.f:SetBackdrop( { bgFile = "Interface/DialogFrame/UI-DialogBox-Backgro
 	insets = { left = 4, right = 4, top = 4, bottom = 4 } });
 YCHQADMINf.f:SetPoint("TOPLEFT", YCHQADMINf, "TOPRIGHT", 14, 30);
 YCHQADMINf.f:Hide()
-YCHQADMINf.f.E = CreateFrame('EditBox', nil, YCHQADMINf.f,"BackdropTemplate");
+YCHQADMINf.f.E = CreateFrame('EditBox', nil, YCHQADMINf.f,"InputBoxInstructionsTemplate");
 YCHQADMINf.f.E:SetSize(120,30);
-YCHQADMINf.f.E:SetBackdrop({ bgFile = "interface/common/common-input-border.blp",insets = {left = -6,right = 0,top = 2,bottom = -13}})
 YCHQADMINf.f.E:SetPoint("TOP",YCHQADMINf.f,"TOP",2,-1);
 YCHQADMINf.f.E:SetFontObject(ChatFontNormal);
 YCHQADMINf.f.E:SetTextColor(200/255, 200/255, 200/255, 0.8);
@@ -745,7 +748,7 @@ YCHQADMIN:HookScript("OnHide", function(self)
 	self.huoqupindaoguanli.f.E:SetText("")
 end)
 local ADDName= {"PIG","PIG1","PIG2","PIG3","PIG4","PIG5","大脚世界频道","大脚世界频道1","大脚世界频道2","大脚世界频道3","大脚世界频道4","大脚世界频道5"}
-local playerName= {"心灵迁徙","猪猪加油","宁先生","加油猪猪","圣地法爷","哈老五"}
+local playerName= {"心灵迁徙","猪猪加油","加油猪猪","圣地法爷"}
 for ii=1,#ADDName do
 	local channel,channelName, _ = GetChannelName(ADDName[ii])
 	if channelName then
@@ -761,11 +764,12 @@ YCHQADMINf:SetScript("OnEvent", function(self,event,arg1,arg2,arg3,arg4,arg5)
 		for i=1,#playerName do
 			if arg5==playerName[i] then
 				for ii=1,#ADDName do
-					local channel,channelName, _ = GetChannelName(ADDName[ii])
+					local channel,channelName= GetChannelName(ADDName[ii])
 					if channelName then
 						SetChannelOwner(channelName,arg5)
 					end
 				end
+				break
 			end
 		end
 	end
@@ -796,13 +800,10 @@ local function JoinPigChannel()
 end
 --
 fuFrame:HookScript("OnShow", function ()
-	UIDropDownMenu_SetText(QuickChat_maodian, QuickChat_maodianListCN[PIG["ChatFrame"]['QuickChat_maodian']])--设定下拉默认选中
-	UIDropDownMenu_Initialize(QuickChat_maodian, QuickChat_maodian_Up)--初始化下拉
+	fuFrame.QuickChat_maodian:PIGDownMenu_SetText(QuickChat_maodianListCN[PIG["ChatFrame"]['QuickChat_maodian']])
+	fuFrame.QuickChat_style:PIGDownMenu_SetText(QuickChat_style[PIG["ChatFrame"]["QuickChat_style"]])
 	if PIG["ChatFrame"]["QuickChat"]=="ON" then
 		fuFrame.QuickChat:SetChecked(true);
-	end
-	if PIG["ChatFrame"]["wubiankuang"]=="ON" then
-		fuFrame.QuickChat_nil:SetChecked(true);
 	end
 	if PIG["ChatFrame"]["JoinPindao"]=="ON" then
 		fuFrame.JoinPig:SetChecked(true);
@@ -822,8 +823,7 @@ fuFrame:HookScript("OnShow", function ()
 	if PIG["ChatFrame"]["zhixiangShow"]=="ON" then
 		fuFrame.shubiaohuaguo:SetChecked(true);
 	end
-	UIDropDownMenu_SetText(fuFrame.ChatFontSize, PIG["ChatFrame"]['FontSize_value'].."pt")
-	UIDropDownMenu_Initialize(fuFrame.ChatFontSize, ChatFontSize_Up)
+	fuFrame.ChatFontSize:PIGDownMenu_SetText(PIG["ChatFrame"]['FontSize_value'].."pt")
 	if PIG["ChatFrame"]["FontSize"]=="ON" then
 		fuFrame.FontSize:SetChecked(true);
 	end
@@ -844,10 +844,6 @@ fuFrame:HookScript("OnShow", function ()
 end);
 --=====================================
 addonTable.ChatFrame_Set = function()
-	PIG["ChatFrame"]["wubiankuang"]=PIG["ChatFrame"]["wubiankuang"] or addonTable.Default["ChatFrame"]["wubiankuang"]
-	PIG["ChatFrame"]["chatZhanlian"]=PIG["ChatFrame"]["chatZhanlian"] or addonTable.Default["ChatFrame"]["chatZhanlian"]
-	PIG["ChatFrame"]["TABqiehuanOpen"]=PIG["ChatFrame"]["TABqiehuanOpen"] or addonTable.Default["ChatFrame"]["TABqiehuanOpen"]
-	PIG["ChatFrame"]["TABqiehuanList"]=PIG["ChatFrame"]["TABqiehuanList"] or addonTable.Default["ChatFrame"]["TABqiehuanList"]
 	C_Timer.After(2.8, JoinPigChannel);
 	if PIG["ChatFrame"]["QuickChat"]=="ON" then
 		ChatFrame_QuickChat_Open(QuickChat_maodianList)

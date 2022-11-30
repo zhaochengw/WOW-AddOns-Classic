@@ -582,7 +582,7 @@ local function ADD_RaidInfo()
 	--冻结人员信息
 	RaidR_UI.xiafangF.huoquRaidInfo = CreateFrame("Button","huoquRaidInfo_UI",RaidR_UI.xiafangF, "UIPanelButtonTemplate");
 	RaidR_UI.xiafangF.huoquRaidInfo:SetSize(110,28);
-	RaidR_UI.xiafangF.huoquRaidInfo:SetPoint("TOPLEFT",RaidR_UI.xiafangF.Jing_RS,"BOTTOMLEFT",0,-6);
+	RaidR_UI.xiafangF.huoquRaidInfo:SetPoint("BOTTOMLEFT",RaidR_UI.xiafangF.lian,"BOTTOMLEFT",6,6);
 	RaidR_UI.xiafangF.huoquRaidInfo:SetText('冻结人员信息');
 	RaidR_UI.xiafangF.huoquRaidInfo:SetMotionScriptsWhileDisabled(true)
 	RaidR_UI.xiafangF.huoquRaidInfo:SetScript("OnEnter", function (self)

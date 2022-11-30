@@ -4,6 +4,8 @@ local find = _G.string.find
 local match = _G.string.match
 local sub = _G.string.sub 
 local hang_Height,hang_NUM  = 34, 12;
+local PIGDownMenu=addonTable.PIGDownMenu
+--------------------------------------------
 local function ADD_Item()
 	local fuFrame = TablistFrame_1_UI
 	local Width,Height  = fuFrame:GetWidth(), fuFrame:GetHeight();
@@ -41,15 +43,14 @@ local function ADD_Item()
 	---显示过滤
 	local guolvlist = {"全部","已成交","未成交","有欠款"}
 	local guolvlist_dangqianmoshi = "全部"
-	fuFrame.ShowGuolv = CreateFrame("FRAME", nil, fuFrame, "UIDropDownMenuTemplate")
-	fuFrame.ShowGuolv:SetPoint("LEFT",item_biaoti_1,"RIGHT",-14,-2)
-	UIDropDownMenu_SetWidth(fuFrame.ShowGuolv, 80)
-	local function ShowGuolv_Up()
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = fuFrame.ShowGuolv.SetValue
+	fuFrame.ShowGuolv=PIGDownMenu(nil,{80,24},fuFrame,{"LEFT",item_biaoti_1,"RIGHT", 0,0})
+	function fuFrame.ShowGuolv:PIGDownMenu_Update_But(self)
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
 		for i=1,#guolvlist,1 do
-		    info.text, info.arg1, info.checked= guolvlist[i], guolvlist[i], guolvlist[i] == guolvlist_dangqianmoshi;
-			UIDropDownMenu_AddButton(info)
+		    info.text, info.arg1 = guolvlist[i], guolvlist[i]
+		    info.checked = guolvlist[i]==guolvlist_dangqianmoshi
+			fuFrame.ShowGuolv:PIGDownMenu_AddButton(info)
 		end 
 	end
 	--
@@ -91,7 +92,7 @@ local function ADD_Item()
 		self.Tex:SetPoint("CENTER",4,0);
 	end);
 	fuFrame.bobaoItem:SetScript("OnClick", function()
-		local xuanzhongName =addonTable.xuanzhongName;
+		local xuanzhongName =RaidR_UI.xuanzhongChat
 		local ItemS = PIG["RaidRecord"]["ItemList"];
 		local ItemsNum = #ItemS;
 	    if ItemsNum>0 then
@@ -325,13 +326,12 @@ local function ADD_Item()
 	end
 	addonTable.RaidRecord_UpdateItem=UpdateItem;
 	----------
-	function fuFrame.ShowGuolv:SetValue(newValueqk)
-		UIDropDownMenu_SetText(fuFrame.ShowGuolv, newValueqk)
-		guolvlist_dangqianmoshi = newValueqk
+	function fuFrame.ShowGuolv:PIGDownMenu_SetValue(value,arg1,arg2)
+		fuFrame.ShowGuolv:PIGDownMenu_SetText(value)
+		guolvlist_dangqianmoshi=arg1
 		UpdateItem(Item_Scroll_UI);
-		CloseDropDownMenus()
+		PIGCloseDropDownMenus()
 	end
-
 	--刷新选择框角色
 	local function UpdateChengjiaorenxuanze()
 		if xuanzeChengjiaoren_UI:IsShown() then
@@ -929,7 +929,7 @@ local function ADD_Item()
 	Paimai:SetSize(Width-300, Height);
 	Paimai:SetPoint("TOPRIGHT",fuFrame,"TOPRIGHT",0,0);
 	Paimai:EnableMouse(true);
-	Paimai:SetFrameLevel(10);
+	Paimai:SetFrameLevel(RaidR_UI:GetFrameLevel()+6);
 	Paimai:Hide();
 	Paimai.zhedangpaimaibut = CreateFrame("Frame", nil, Paimai);
 	Paimai.zhedangpaimaibut:SetSize(38, Height);
@@ -971,96 +971,92 @@ local function ADD_Item()
 	Paimai.nr.T1:SetFont(ChatFontNormal:GetFont(), 16, "OUTLINE");
 	Paimai.nr.T1:SetText("起拍价：");
 	---起拍价
-	local jiagelist,morenqiV = {1,2,3,4,5,6,7,8,9},1;
-	Paimai.nr.qipaijia0 = CreateFrame("FRAME", nil, Paimai.nr, "UIDropDownMenuTemplate")
-	Paimai.nr.qipaijia0:SetPoint("LEFT",Paimai.nr.T1,"RIGHT", -10,-4)
-	UIDropDownMenu_SetWidth(Paimai.nr.qipaijia0, 50)
-	local function qipaijia0_Up()
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = Paimai.nr.qipaijia0.SetValue
+	local jiagelist = {1,2,3,4,5,6,7,8,9}
+	Paimai.nr.qipaijia0=PIGDownMenu(nil,{60,24},Paimai.nr,{"LEFT",Paimai.nr.T1,"RIGHT", 0,0})
+	Paimai.nr.qipaijia0.morenqiV=1
+	function Paimai.nr.qipaijia0:PIGDownMenu_Update_But(self)
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
 		for i=1,#jiagelist,1 do
-		    info.text, info.arg1, info.checked = jiagelist[i], jiagelist[i],jiagelist[i] == morenqiV;
-			UIDropDownMenu_AddButton(info)
+		    info.text, info.arg1 = jiagelist[i], jiagelist[i]
+		    info.checked = jiagelist[i]==Paimai.nr.qipaijia0.morenqiV
+			Paimai.nr.qipaijia0:PIGDownMenu_AddButton(info)
 		end 
 	end
-	function Paimai.nr.qipaijia0:SetValue(newValue)
-		UIDropDownMenu_SetText(Paimai.nr.qipaijia0, newValue)	
-		morenqiV=newValue
-		CloseDropDownMenus()--关闭下拉
+	function Paimai.nr.qipaijia0:PIGDownMenu_SetValue(value,arg1,arg2)
+		Paimai.nr.qipaijia0:PIGDownMenu_SetText(value)
+		Paimai.nr.qipaijia0.morenqiV=arg1
+		PIGCloseDropDownMenus()
 	end
+	
 	--起拍单位
-	local danwei,danweiV,morendanweiV = {"十","百","千","万","十万","百万"},{"0","00","000","0000","00000","000000"},"000";
-	Paimai.nr.qipaijia1 = CreateFrame("FRAME", nil, Paimai.nr, "UIDropDownMenuTemplate")
-	Paimai.nr.qipaijia1:SetPoint("LEFT",Paimai.nr.qipaijia0,"RIGHT",-30,0)
-	UIDropDownMenu_SetWidth(Paimai.nr.qipaijia1, 60)
-
-	local function qipaijia1_Up()
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = Paimai.nr.qipaijia1.SetValue
+	local danweiV ={"0","00","000","0000","00000","000000"}
+	local danweiName ={["0"]="十",["00"]="百",["000"]="千",["0000"]="万",["00000"]="十万",["000000"]="百万"}
+	Paimai.nr.qipaijia1=PIGDownMenu(nil,{80,24},Paimai.nr,{"LEFT",Paimai.nr.qipaijia0,"RIGHT", 0,0})
+	Paimai.nr.qipaijia1.value="000"
+	function Paimai.nr.qipaijia1:PIGDownMenu_Update_But(self)
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
 		for i=1,#danweiV,1 do
-		    info.text, info.arg1, info.checked = danwei[i], danweiV[i], danweiV[i] == morendanweiV;
-			UIDropDownMenu_AddButton(info)
+		    info.text, info.arg1 = danweiName[danweiV[i]], danweiV[i]
+		    info.checked = danweiV[i]==Paimai.nr.qipaijia1.value
+			Paimai.nr.qipaijia1:PIGDownMenu_AddButton(info)
 		end 
 	end
-	function Paimai.nr.qipaijia1:SetValue(newValue)
-		for i=1,#danweiV,1 do
-			if newValue==danweiV[i] then
-				UIDropDownMenu_SetText(Paimai.nr.qipaijia1, danwei[i]);
-			end
-		end
-		morendanweiV=newValue;
-		CloseDropDownMenus();
+	function Paimai.nr.qipaijia1:PIGDownMenu_SetValue(value,arg1,arg2)
+		Paimai.nr.qipaijia1:PIGDownMenu_SetText(value)
+		Paimai.nr.qipaijia1.value=arg1
+		PIGCloseDropDownMenus()
 	end
+	
 	--单次加价----------------------------------------
 	Paimai.nr.T2 = Paimai.nr:CreateFontString();
 	Paimai.nr.T2:SetPoint("TOPLEFT", Paimai.nr, "TOPLEFT", 40,-150);
 	Paimai.nr.T2:SetFont(ChatFontNormal:GetFont(), 16, "OUTLINE");
 	Paimai.nr.T2:SetText("单次最低加价：");
 	---选择单次加价
-	local dancilist,dancimorenqiV = {1,2,3,4,5,6,7,8,9},1;
-	Paimai.nr.dancijia0 = CreateFrame("FRAME", nil, Paimai.nr, "UIDropDownMenuTemplate")
-	Paimai.nr.dancijia0:SetPoint("LEFT",Paimai.nr.T2,"RIGHT",-10,-4)
-	UIDropDownMenu_SetWidth(Paimai.nr.dancijia0, 50)
-	local function dancijia0_Up()
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = Paimai.nr.dancijia0.SetValue
-		for i=1,#dancilist,1 do
-		    info.text, info.arg1, info.checked = dancilist[i], dancilist[i],dancilist[i] == dancimorenqiV;
-			UIDropDownMenu_AddButton(info)
+	Paimai.nr.dancijia0=PIGDownMenu(nil,{60,24},Paimai.nr,{"LEFT",Paimai.nr.T2,"RIGHT", 0,0})
+	Paimai.nr.dancijia0.morenqiV=1
+	function Paimai.nr.dancijia0:PIGDownMenu_Update_But(self)
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
+		for i=1,#jiagelist,1 do
+		    info.text, info.arg1 = jiagelist[i], jiagelist[i]
+		    info.checked = jiagelist[i]==Paimai.nr.dancijia0.morenqiV
+			Paimai.nr.dancijia0:PIGDownMenu_AddButton(info)
 		end 
 	end
-	function Paimai.nr.dancijia0:SetValue(newValue)
-		UIDropDownMenu_SetText(Paimai.nr.dancijia0, newValue)	
-		dancimorenqiV=newValue
-		CloseDropDownMenus()--关闭下拉
+	function Paimai.nr.dancijia0:PIGDownMenu_SetValue(value,arg1,arg2)
+		Paimai.nr.dancijia0:PIGDownMenu_SetText(value)
+		Paimai.nr.dancijia0.morenqiV=arg1
+		PIGCloseDropDownMenus()
 	end
-
+	
 	--选择单次加价单位
-	local dancidanwei,dancidanweiV,dancimorendanweiV = {"十","百","千","万","十万","百万"},{"0","00","000","0000","00000","000000"},"00";
-	Paimai.nr.dancijia1 = CreateFrame("FRAME", nil, Paimai.nr, "UIDropDownMenuTemplate")
-	Paimai.nr.dancijia1:SetPoint("LEFT",Paimai.nr.dancijia0,"RIGHT",-30,0)
-	UIDropDownMenu_SetWidth(Paimai.nr.dancijia1, 60)
-
-	local function dancijia1_Up()
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = Paimai.nr.dancijia1.SetValue
+	Paimai.nr.dancijia1=PIGDownMenu(nil,{80,24},Paimai.nr,{"LEFT",Paimai.nr.dancijia0,"RIGHT", 0,0})
+	Paimai.nr.dancijia1.value="00"
+	function Paimai.nr.dancijia1:PIGDownMenu_Update_But(self)
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
 		for i=1,#danweiV,1 do
-		    info.text, info.arg1, info.checked = dancidanwei[i], dancidanweiV[i], dancidanweiV[i] == dancimorendanweiV;
-			UIDropDownMenu_AddButton(info)
+		    info.text, info.arg1 = danweiName[danweiV[i]], danweiV[i]
+		    info.checked = danweiV[i]==Paimai.nr.dancijia1.value
+			Paimai.nr.dancijia1:PIGDownMenu_AddButton(info)
 		end 
 	end
-	function Paimai.nr.dancijia1:SetValue(newValue)
-		for i=1,#dancidanweiV,1 do
-			if newValue==dancidanweiV[i] then
-				UIDropDownMenu_SetText(Paimai.nr.dancijia1, dancidanwei[i]);
-			end
-		end
-		dancimorendanweiV=newValue;
-		CloseDropDownMenus();
+	function Paimai.nr.dancijia1:PIGDownMenu_SetValue(value,arg1,arg2)
+		Paimai.nr.dancijia1:PIGDownMenu_SetText(value)
+		Paimai.nr.dancijia1.value=arg1
+		PIGCloseDropDownMenus()
 	end
-
+	
+	Paimai.nr:HookScript("OnShow", function ()
+		Paimai.nr.qipaijia0:PIGDownMenu_SetText(Paimai.nr.qipaijia0.morenqiV)
+		Paimai.nr.qipaijia1:PIGDownMenu_SetText(danweiName[Paimai.nr.qipaijia1.value])
+		Paimai.nr.dancijia0:PIGDownMenu_SetText(Paimai.nr.dancijia0.morenqiV)
+		Paimai.nr.dancijia1:PIGDownMenu_SetText(danweiName[Paimai.nr.dancijia1.value])
+	end)
 	--手动倒计时按钮
-	local fayanpindao="RAID";
 	local daojishi_SS=nil;
 	Paimai.nr.T5 = Paimai.nr:CreateFontString();
 	Paimai.nr.T5:SetPoint("TOPLEFT", Paimai.nr, "TOPLEFT", 100,-188);
@@ -1073,11 +1069,11 @@ local function ADD_Item()
 	Paimai.nr.daojishi:SetScript("OnClick", function ()
 		if daojishi_SS>0 then
 			Paimai.nr.T5:SetText(daojishi_SS);
-			SendChatMessage("拍卖结束倒计时："..daojishi_SS.."秒。", fayanpindao, nil);
+			SendChatMessage("拍卖结束倒计时："..daojishi_SS.."秒。", RaidR_UI.xuanzhongChat, nil);
 			daojishi_SS=daojishi_SS-1;
 		elseif daojishi_SS==0 then
 			Paimai.nr.T5:SetText(daojishi_SS);
-			SendChatMessage("拍卖结束倒计时："..daojishi_SS.."秒。", fayanpindao, nil);
+			SendChatMessage("拍卖结束倒计时："..daojishi_SS.."秒。", RaidR_UI.xuanzhongChat, nil);
 			local wupin =Paimai.nr.item_link:GetText();
 			Paimai.nr.daojishi:Disable();
 			Paimai.nr.YES:SetText("拍卖完成");
@@ -1120,13 +1116,17 @@ local function ADD_Item()
 			Paimai.nr.YES:Disable();
 			daojishi_SS=5;
 			Paimai.nr.T5:SetText(daojishi_SS);
-			local paimaiwupinxinxi="开始拍卖:"..wupin[2]..",数量:"..wupin[3].."。起拍价:"..morenqiV..morendanweiV..
-			"G。单次最低加价："..dancimorenqiV..dancimorendanweiV.."G。";
-			SendChatMessage(paimaiwupinxinxi, fayanpindao, nil);
+			local qipaishuV=Paimai.nr.qipaijia0:PIGDownMenu_GetText()
+			local qipaidanweiV=Paimai.nr.qipaijia1:PIGDownMenu_GetValue()
+			local dancishuV=Paimai.nr.dancijia0:PIGDownMenu_GetText()
+			local dancidanweiV=Paimai.nr.dancijia1:PIGDownMenu_GetValue()
+			local paimaiwupinxinxi="开始拍卖:"..wupin[2]..",数量:"..wupin[3].."。起拍价:"..qipaishuV..qipaidanweiV..
+			"G。单次最低加价："..dancishuV..dancidanweiV.."G。";
+			SendChatMessage(paimaiwupinxinxi, RaidR_UI.xuanzhongChat, nil);
 		elseif Paimai.nr.YES:GetText()=="拍卖完成" then
 			Paimai.nr.YES:SetText("开始拍卖");
 			Paimai.nr.T5:SetText();
-			SendChatMessage(wupin[2].."拍卖已结束。", fayanpindao, nil);
+			SendChatMessage(wupin[2].."拍卖已结束。", RaidR_UI.xuanzhongChat, nil);
 			PIG["RaidRecord"]["ItemList"][wupinhang][7]=1;--记录拍卖成功
 			UpdateItem(Item_Scroll);
 			Paimai.nr.daojishi_RL:Hide();
@@ -1145,7 +1145,7 @@ local function ADD_Item()
 		if Paimai.nr.YES:GetText()~="开始拍卖" then
 			local wupinhang =tonumber(Paimai.nr.bianjiID:GetText());
 			local wupin =PIG["RaidRecord"]["ItemList"][wupinhang]
-			SendChatMessage(wupin[2].."拍卖非正常终止。", fayanpindao, nil);
+			SendChatMessage(wupin[2].."拍卖非正常终止。", RaidR_UI.xuanzhongChat, nil);
 		end
 		Paimai.nr.YES:SetText("开始拍卖");
 		Paimai.nr.YES:Enable();
@@ -1163,26 +1163,20 @@ local function ADD_Item()
 	RaidR_UI.xiafangF.pinzhiguolv:SetText("\124cff00FF00最低记录品质：\124r");
 
 	local pinzhiName,pinzhiV = {"普通","\124cff1eff00优秀\124r","\124cff0070dd精良\124r","\124cffa335ee史诗\124r","\124cffff8000传说\124r","\124cffe6cc80神器\124r"},{1,2,3,4,5,6};
-	RaidR_UI.xiafangF.D = CreateFrame("FRAME", nil, RaidR_UI.xiafangF, "UIDropDownMenuTemplate")
-	RaidR_UI.xiafangF.D:SetPoint("LEFT",RaidR_UI.xiafangF.pinzhiguolv,"RIGHT",-16,-2)
-	UIDropDownMenu_SetWidth(RaidR_UI.xiafangF.D, 80)
-
-	local function pinzhiguolv_Up()
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = RaidR_UI.xiafangF.D.SetValue
-		for i=1,#pinzhiV,1 do
-		    info.text, info.arg1, info.checked = pinzhiName[i], pinzhiV[i], pinzhiV[i] == PIG["RaidRecord"]["pinzhimoren"];
-			UIDropDownMenu_AddButton(info)
+	RaidR_UI.xiafangF.D=PIGDownMenu(nil,{80,24},RaidR_UI.xiafangF,{"LEFT",RaidR_UI.xiafangF.pinzhiguolv,"RIGHT", 0,0})
+	function RaidR_UI.xiafangF.D:PIGDownMenu_Update_But(self)
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
+		for i=1,#pinzhiName,1 do
+		    info.text, info.arg1 = pinzhiName[i], i
+		    info.checked = i==PIG["RaidRecord"]["pinzhimoren"]
+			RaidR_UI.xiafangF.D:PIGDownMenu_AddButton(info)
 		end 
 	end
-	function RaidR_UI.xiafangF.D:SetValue(newValue)
-		for i=1,#pinzhiV,1 do
-			if newValue==pinzhiV[i] then
-				UIDropDownMenu_SetText(RaidR_UI.xiafangF.D, pinzhiName[i]);
-			end
-		end
-		PIG["RaidRecord"]["pinzhimoren"]=newValue;
-		CloseDropDownMenus();
+	function RaidR_UI.xiafangF.D:PIGDownMenu_SetValue(value,arg1,arg2)
+		RaidR_UI.xiafangF.D:PIGDownMenu_SetText(value)
+		PIG["RaidRecord"]["pinzhimoren"]=arg1
+		PIGCloseDropDownMenus()
 	end
 	--======================================================
 	local function zhixingtianjia(itemLink,LOOT_itemNO,shiquname,itemQuality,itemTexture,itemID)
@@ -1289,18 +1283,8 @@ local function ADD_Item()
 		end
 	end);
 	fuFrame:HookScript("OnShow", function ()
-		UIDropDownMenu_Initialize(fuFrame.ShowGuolv, ShowGuolv_Up)
-		UIDropDownMenu_SetText(fuFrame.ShowGuolv, guolvlist_dangqianmoshi)
-		UIDropDownMenu_SetText(RaidR_UI.xiafangF.D, pinzhiName[PIG["RaidRecord"]["pinzhimoren"]])
-		UIDropDownMenu_Initialize(RaidR_UI.xiafangF.D, pinzhiguolv_Up)
-		UIDropDownMenu_SetText(Paimai.nr.qipaijia0, morenqiV)
-		UIDropDownMenu_Initialize(Paimai.nr.qipaijia0, qipaijia0_Up)
-		UIDropDownMenu_SetText(Paimai.nr.qipaijia1, "千")
-		UIDropDownMenu_Initialize(Paimai.nr.qipaijia1, qipaijia1_Up)
-		UIDropDownMenu_SetText(Paimai.nr.dancijia0, dancimorenqiV)
-		UIDropDownMenu_Initialize(Paimai.nr.dancijia0, dancijia0_Up)
-		UIDropDownMenu_SetText(Paimai.nr.dancijia1, "百")
-		UIDropDownMenu_Initialize(Paimai.nr.dancijia1, dancijia1_Up)
+		fuFrame.ShowGuolv:PIGDownMenu_SetText(guolvlist_dangqianmoshi)
+		RaidR_UI.xiafangF.D:PIGDownMenu_SetText(pinzhiName[PIG["RaidRecord"]["pinzhimoren"]])
 		UpdateItem(Item_Scroll_UI);
 	end)
 end

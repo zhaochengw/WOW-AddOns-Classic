@@ -1,0 +1,414 @@
+local _, addonTable = ...;
+local fuFrame=List_R_F_1_5
+local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
+----------------
+-- local function PlayerTalentFrame_GetBranchTexture_Pig(tianfuID)
+-- 	local branchTexture = _G["PlayerTalentFrameBranch"..tianfuID.."_"..PlayerTalentFrame.textureIndex];
+-- 	PlayerTalentFrame.textureIndex = PlayerTalentFrame.textureIndex + 1;
+-- 	if ( not branchTexture ) then
+-- 		message("Not enough branch textures");
+-- 	else
+-- 		branchTexture:Show();
+-- 		return branchTexture;
+-- 	end
+-- end
+-- local function PlayerTalentFrame_SetBranchTexture_Pig(tier, column, texCoords, xOffset, yOffset,tianfuID)
+-- 	local branchTexture = PlayerTalentFrame_GetBranchTexture_Pig(tianfuID);
+-- 	branchTexture:SetTexCoord(texCoords[1], texCoords[2], texCoords[3], texCoords[4]);
+-- 	branchTexture:SetPoint("TOPLEFT", _G["PlayerTalentFrameScrollChildFrame"..tianfuID], "TOPLEFT", xOffset, yOffset);
+-- end
+-- local function PlayerTalentFrame_GetArrowTexture_Pig(tianfuID)
+-- 	local arrowTexture = _G["PlayerTalentFrameArrow"..tianfuID.."_"..PlayerTalentFrame.arrowIndex];
+-- 	PlayerTalentFrame.arrowIndex = PlayerTalentFrame.arrowIndex + 1;
+-- 	if ( not arrowTexture ) then
+-- 		message("Not enough arrow textures");
+-- 	else
+-- 		arrowTexture:Show();
+-- 		return arrowTexture;
+-- 	end
+-- end
+-- local function PlayerTalentFrame_SetArrowTexture_Pig(tier, column, texCoords, xOffset, yOffset,tianfuID)
+-- 	local arrowTexture = PlayerTalentFrame_GetArrowTexture_Pig(tianfuID);
+-- 	arrowTexture:SetTexCoord(texCoords[1], texCoords[2], texCoords[3], texCoords[4]);
+-- 	arrowTexture:SetPoint("TOPLEFT", _G["PlayerTalentFrameArrowFrame"..tianfuID], "TOPLEFT", xOffset, yOffset);
+-- end
+-- hooksecurefunc("SetTalentButtonLocation", function(button, tier, column)
+-- 	local point, relativeTo, relativePoint, xOfs, yOfs = button:GetPoint()
+-- 	button:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs+6*(tier));
+-- end)
+-- local function TalentFrame_Update_Pig(TalentFrame)
+-- 	if ( not TalentFrame ) then
+-- 		return;
+-- 	end
+
+-- 	if ( TalentFrame.updateFunction ) then
+-- 		TalentFrame.updateFunction();
+-- 	end
+
+-- 	local talentFrameName = TalentFrame:GetName();
+-- 	PanelTemplates_SetTab(TalentFrame, 1);--pig
+-- 	local selectedTab = PanelTemplates_GetSelectedTab(TalentFrame);
+-- 	local preview = GetCVarBool("previewTalents");
+
+-- 	-- get active talent group
+-- 	local isActiveTalentGroup;
+-- 	if ( TalentFrame.inspect ) then
+-- 		-- even though we have inspection data for more than one talent group, we're only showing one for now
+-- 		isActiveTalentGroup = true;
+-- 	else
+-- 		isActiveTalentGroup = TalentFrame.talentGroup == GetActiveTalentGroup(TalentFrame.inspect, TalentFrame.pet);
+-- 	end
+-- 	-- Setup Frame
+-- 	local base;
+-- 	local base2;
+-- 	local base3;
+-- 	local name, icon, pointsSpent, background, previewPointsSpent = GetTalentTabInfo(selectedTab, TalentFrame.inspect, TalentFrame.pet, TalentFrame.talentGroup);
+-- 	local name, icon, pointsSpent, background, previewPointsSpent = GetTalentTabInfo(selectedTab, TalentFrame.inspect, TalentFrame.pet, TalentFrame.talentGroup);
+-- 	local name, icon, pointsSpent, background, previewPointsSpent = GetTalentTabInfo(selectedTab, TalentFrame.inspect, TalentFrame.pet, TalentFrame.talentGroup);
+-- 	if ( name ) then
+-- 		base = "Interface\\TalentFrame\\"..background.."-";
+-- 	else
+-- 		-- temporary default for classes without talents poor guys
+-- 		base = "Interface\\TalentFrame\\MageFire-";
+-- 	end
+
+-- 	-- desaturate the background if this isn't the active talent group
+-- 	local backgroundPiece = _G[talentFrameName.."BackgroundTopLeft"];
+-- 	backgroundPiece:SetTexture(base.."TopLeft");
+-- 	SetDesaturation(backgroundPiece, not isActiveTalentGroup);
+-- 	backgroundPiece = _G[talentFrameName.."BackgroundTopRight"];
+-- 	backgroundPiece:SetTexture(base.."TopRight");
+-- 	SetDesaturation(backgroundPiece, not isActiveTalentGroup);
+-- 	backgroundPiece = _G[talentFrameName.."BackgroundBottomLeft"];
+-- 	backgroundPiece:SetTexture(base.."BottomLeft");
+-- 	SetDesaturation(backgroundPiece, not isActiveTalentGroup);
+-- 	backgroundPiece = _G[talentFrameName.."BackgroundBottomRight"];
+-- 	backgroundPiece:SetTexture(base.."BottomRight");
+-- 	SetDesaturation(backgroundPiece, not isActiveTalentGroup);
+-- 	local backgroundPiece2 = _G[talentFrameName2.."BackgroundTopLeft"];
+-- 	backgroundPiece2:SetTexture(base.."TopLeft");
+-- 	SetDesaturation(backgroundPiece2, not isActiveTalentGroup);
+-- 	backgroundPiece2 = _G[talentFrameName2.."BackgroundTopRight"];
+-- 	backgroundPiece2:SetTexture(base.."TopRight");
+-- 	SetDesaturation(backgroundPiece2, not isActiveTalentGroup);
+-- 	backgroundPiece2 = _G[talentFrameName2.."BackgroundBottomLeft"];
+-- 	backgroundPiece2:SetTexture(base.."BottomLeft");
+-- 	SetDesaturation(backgroundPiece2, not isActiveTalentGroup);
+-- 	backgroundPiece2 = _G[talentFrameName2.."BackgroundBottomRight"];
+-- 	backgroundPiece2:SetTexture(base.."BottomRight");
+-- 	SetDesaturation(backgroundPiece2, not isActiveTalentGroup);
+-- 	local backgroundPiece3 = _G[talentFrameName3.."BackgroundTopLeft"];
+-- 	backgroundPiece3:SetTexture(base.."TopLeft");
+-- 	SetDesaturation(backgroundPiece3, not isActiveTalentGroup);
+-- 	backgroundPiece3 = _G[talentFrameName3.."BackgroundTopRight"];
+-- 	backgroundPiece3:SetTexture(base.."TopRight");
+-- 	SetDesaturation(backgroundPiece3, not isActiveTalentGroup);
+-- 	backgroundPiece3 = _G[talentFrameName3.."BackgroundBottomLeft"];
+-- 	backgroundPiece3:SetTexture(base.."BottomLeft");
+-- 	SetDesaturation(backgroundPiece3, not isActiveTalentGroup);
+-- 	backgroundPiece3 = _G[talentFrameName3.."BackgroundBottomRight"];
+-- 	backgroundPiece3:SetTexture(base.."BottomRight");
+-- 	SetDesaturation(backgroundPiece3, not isActiveTalentGroup);
+
+-- 	local numTalents = GetNumTalents(selectedTab, TalentFrame.inspect, TalentFrame.pet);
+-- 	-- Just a reminder error if there are more talents than available buttons
+-- 	if ( numTalents > MAX_NUM_TALENTS ) then
+-- 		message("Too many talents in talent frame!");
+-- 	end
+-- 	-- get unspent talent points
+-- 	local unspentPoints = TalentFrame_UpdateTalentPoints(TalentFrame);
+-- 	-- compute tab points spent if any
+-- 	local tabPointsSpent;
+-- 	if ( TalentFrame.pointsSpent and TalentFrame.previewPointsSpent ) then
+-- 		tabPointsSpent = TalentFrame.pointsSpent + TalentFrame.previewPointsSpent;
+-- 	else
+-- 		tabPointsSpent = 0;
+-- 	end
+
+-- 	TalentFrame_ResetBranches(TalentFrame);
+-- 	---------
+
+-- 	local talentFrameTalentName = talentFrameName.."Talent";
+-- 	local talentFrameTalentName2 = talentFrameName.."Talent2_";
+-- 	local talentFrameTalentName3 = talentFrameName.."Talent3_";
+-- 	local forceDesaturated, tierUnlocked;
+-- 	for i=1, MAX_NUM_TALENTS do
+-- 		local buttonName = talentFrameTalentName..i;
+-- 		local buttonName2 = talentFrameTalentName2..i;
+-- 		local buttonName3 = talentFrameTalentName3..i;
+-- 		local button = _G[buttonName];
+-- 		local button2 = _G[buttonName2];
+-- 		local button3 = _G[buttonName3];
+-- 		if ( i <= numTalents ) then
+-- 			-- Set the button info
+-- 			local name, iconTexture, tier, column, rank, maxRank, isExceptional, meetsPrereq, previewRank, meetsPreviewPrereq =
+-- 				GetTalentInfo(selectedTab, i, TalentFrame.inspect, TalentFrame.pet, TalentFrame.talentGroup);
+-- 			if ( name ) then
+-- 				local displayRank;
+-- 				if ( preview ) then
+-- 					displayRank = previewRank;
+-- 				else
+-- 					displayRank = rank;
+-- 				end
+
+-- 				_G[buttonName.."Rank"]:SetText(displayRank);
+-- 				_G[buttonName2.."Rank"]:SetText(displayRank);
+-- 				_G[buttonName3.."Rank"]:SetText(displayRank);
+-- 				SetTalentButtonLocation(button, tier, column);
+-- 				SetTalentButtonLocation(button2, tier, column);
+-- 				SetTalentButtonLocation(button3, tier, column);
+-- 				TalentFrame.TALENT_BRANCH_ARRAY[tier][column].id = button:GetID();
+			
+-- 				-- If player has no talent points or this is the inactive talent group then show only talents with points in them
+-- 				if ( (unspentPoints <= 0 or not isActiveTalentGroup) and displayRank == 0 ) then
+-- 				forceDesaturated = 1;
+-- 			else
+-- 				forceDesaturated = nil;
+-- 			end
+
+-- 			-- is this talent's tier unlocked?
+-- 			if ( ((tier - 1) * (TalentFrame.pet and PET_TALENTS_PER_TIER or PLAYER_TALENTS_PER_TIER) <= tabPointsSpent) ) then
+-- 				tierUnlocked = 1;
+-- 			else
+-- 				tierUnlocked = nil;
+-- 			end
+
+-- 			SetItemButtonTexture(button, iconTexture);
+-- 			SetItemButtonTexture(button2, iconTexture);
+-- 			SetItemButtonTexture(button3, iconTexture);
+-- 			-- Talent must meet prereqs or the player must have no points to spend
+-- 			local prereqsSet =
+-- 				TalentFrame_SetPrereqs(TalentFrame, tier, column, forceDesaturated, tierUnlocked, preview,
+-- 				GetTalentPrereqs(selectedTab, i, TalentFrame.inspect, TalentFrame.pet, TalentFrame.talentGroup));
+-- 			if ( prereqsSet and ((preview and meetsPreviewPrereq) or (not preview and meetsPrereq)) ) then
+-- 				SetItemButtonDesaturated(button, nil);
+-- 				SetItemButtonDesaturated(button2, nil);
+-- 				SetItemButtonDesaturated(button3, nil);
+
+-- 				if ( displayRank < maxRank ) then
+-- 				-- Rank is green if not maxed out
+-- 					_G[buttonName.."Slot"]:SetVertexColor(0.1, 1.0, 0.1);
+-- 					_G[buttonName.."Rank"]:SetTextColor(GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b);
+-- 					_G[buttonName2.."Slot"]:SetVertexColor(0.1, 1.0, 0.1);
+-- 					_G[buttonName2.."Rank"]:SetTextColor(GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b);
+-- 					_G[buttonName3.."Slot"]:SetVertexColor(0.1, 1.0, 0.1);
+-- 					_G[buttonName3.."Rank"]:SetTextColor(GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b);
+-- 				else
+-- 					_G[buttonName.."Slot"]:SetVertexColor(1.0, 0.82, 0);
+-- 					_G[buttonName.."Rank"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+-- 					_G[buttonName2.."Slot"]:SetVertexColor(1.0, 0.82, 0);
+-- 					_G[buttonName2.."Rank"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+-- 					_G[buttonName3.."Slot"]:SetVertexColor(1.0, 0.82, 0);
+-- 					_G[buttonName3.."Rank"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+-- 				end
+-- 				_G[buttonName.."RankBorder"]:Show();
+-- 				_G[buttonName.."Rank"]:Show();
+-- 				_G[buttonName2.."RankBorder"]:Show();
+-- 				_G[buttonName2.."Rank"]:Show();
+-- 				_G[buttonName3.."RankBorder"]:Show();
+-- 				_G[buttonName3.."Rank"]:Show();
+-- 			else
+-- 				SetItemButtonDesaturated(button, 1, 0.65, 0.65, 0.65);
+-- 				_G[buttonName.."Slot"]:SetVertexColor(0.5, 0.5, 0.5);
+-- 				SetItemButtonDesaturated(button2, 1, 0.65, 0.65, 0.65);
+-- 				_G[buttonName2.."Slot"]:SetVertexColor(0.5, 0.5, 0.5);
+-- 				SetItemButtonDesaturated(button3, 1, 0.65, 0.65, 0.65);
+-- 				_G[buttonName3.."Slot"]:SetVertexColor(0.5, 0.5, 0.5);
+-- 				if ( rank == 0 ) then
+-- 						_G[buttonName.."RankBorder"]:Hide();
+-- 						_G[buttonName.."Rank"]:Hide();
+-- 						_G[buttonName2.."RankBorder"]:Hide();
+-- 						_G[buttonName2.."Rank"]:Hide();
+-- 						_G[buttonName3.."RankBorder"]:Hide();
+-- 						_G[buttonName3.."Rank"]:Hide();
+-- 				else
+-- 						_G[buttonName.."RankBorder"]:SetVertexColor(0.5, 0.5, 0.5);
+-- 						_G[buttonName.."Rank"]:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+-- 						_G[buttonName2.."RankBorder"]:SetVertexColor(0.5, 0.5, 0.5);
+-- 						_G[buttonName2.."Rank"]:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+-- 						_G[buttonName3.."RankBorder"]:SetVertexColor(0.5, 0.5, 0.5);
+-- 						_G[buttonName3.."Rank"]:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+-- 				end
+-- 			end
+-- 			button:Show();
+-- 			button2:Show();
+-- 			button3:Show();
+-- 			else
+-- 				button:Hide();
+-- 				button2:Hide();
+-- 				button3:Hide();
+-- 			end
+-- 		else	
+-- 			button:Hide();
+-- 			button2:Hide();
+-- 			button3:Hide();
+-- 		end
+-- 	end
+
+-- 	-- Draw the prereq branches
+-- 	local node;
+-- 	local textureIndex = 1;
+-- 	local xOffset, yOffset;
+-- 	local texCoords;
+-- 	-- Variable that decides whether or not to ignore drawing pieces
+-- 	local ignoreUp;
+-- 	local tempNode;
+-- 	TalentFrame_ResetBranchTextureCount(TalentFrame);
+-- 	TalentFrame_ResetArrowTextureCount(TalentFrame);
+-- 	for i=1, MAX_NUM_TALENT_TIERS do
+-- 		for j=1, NUM_TALENT_COLUMNS do
+-- 			node = TalentFrame.TALENT_BRANCH_ARRAY[i][j];
+			
+-- 			-- Setup offsets
+-- 			xOffset = ((j - 1) * 63) + INITIAL_TALENT_OFFSET_X + 2;
+-- 			yOffset = -((i - 1) * 63) - INITIAL_TALENT_OFFSET_Y - 2+i*6;
+		
+-- 			if ( node.id ) then
+-- 				-- Has talent
+-- 				if ( node.up ~= 0 ) then
+-- 					if ( not ignoreUp ) then
+-- 						TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["up"][node.up], xOffset, yOffset + TALENT_BUTTON_SIZE, TalentFrame);
+-- 					else
+-- 						ignoreUp = nil;
+-- 					end
+-- 				end
+-- 				if ( node.down ~= 0 ) then
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["down"][node.down], xOffset, yOffset - TALENT_BUTTON_SIZE + 1, TalentFrame);
+-- 				end
+-- 				if ( node.left ~= 0 ) then
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["left"][node.left], xOffset - TALENT_BUTTON_SIZE, yOffset, TalentFrame);
+-- 				end
+-- 				if ( node.right ~= 0 ) then
+-- 					-- See if any connecting branches are gray and if so color them gray
+-- 					tempNode = TalentFrame.TALENT_BRANCH_ARRAY[i][j+1];	
+-- 					if ( tempNode.left ~= 0 and tempNode.down < 0 ) then
+-- 						TalentFrame_SetBranchTexture(i, j-1, TALENT_BRANCH_TEXTURECOORDS["right"][tempNode.down], xOffset + TALENT_BUTTON_SIZE, yOffset, TalentFrame);
+-- 					else
+-- 						TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["right"][node.right], xOffset + TALENT_BUTTON_SIZE + 1, yOffset, TalentFrame);
+-- 					end
+					
+-- 				end
+-- 				-- Draw arrows
+-- 				if ( node.rightArrow ~= 0 ) then
+-- 					TalentFrame_SetArrowTexture(i, j, TALENT_ARROW_TEXTURECOORDS["right"][node.rightArrow], xOffset + TALENT_BUTTON_SIZE/2 + 5, yOffset, TalentFrame);
+-- 				end
+-- 				if ( node.leftArrow ~= 0 ) then
+-- 					TalentFrame_SetArrowTexture(i, j, TALENT_ARROW_TEXTURECOORDS["left"][node.leftArrow], xOffset - TALENT_BUTTON_SIZE/2 - 5, yOffset, TalentFrame);
+-- 				end
+-- 				if ( node.topArrow ~= 0 ) then
+-- 					TalentFrame_SetArrowTexture(i, j, TALENT_ARROW_TEXTURECOORDS["top"][node.topArrow], xOffset, yOffset + TALENT_BUTTON_SIZE/2 + 5, TalentFrame);
+-- 				end
+-- 			else
+-- 				-- Doesn't have a talent
+-- 				if ( node.up ~= 0 and node.left ~= 0 and node.right ~= 0 ) then
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["tup"][node.up], xOffset , yOffset, TalentFrame);
+-- 				elseif ( node.down ~= 0 and node.left ~= 0 and node.right ~= 0 ) then
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["tdown"][node.down], xOffset , yOffset, TalentFrame);
+-- 				elseif ( node.left ~= 0 and node.down ~= 0 ) then
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["topright"][node.left], xOffset , yOffset, TalentFrame);
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["down"][node.down], xOffset , yOffset - 32, TalentFrame);
+-- 				elseif ( node.left ~= 0 and node.up ~= 0 ) then
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["bottomright"][node.left], xOffset , yOffset, TalentFrame);
+-- 				elseif ( node.left ~= 0 and node.right ~= 0 ) then
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["right"][node.right], xOffset + TALENT_BUTTON_SIZE, yOffset, TalentFrame);
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["left"][node.left], xOffset + 1, yOffset, TalentFrame);
+-- 				elseif ( node.right ~= 0 and node.down ~= 0 ) then
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["topleft"][node.right], xOffset , yOffset, TalentFrame);
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["down"][node.down], xOffset , yOffset - 32, TalentFrame);
+-- 				elseif ( node.right ~= 0 and node.up ~= 0 ) then
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["bottomleft"][node.right], xOffset , yOffset, TalentFrame);
+-- 				elseif ( node.up ~= 0 and node.down ~= 0 ) then
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["up"][node.up], xOffset , yOffset, TalentFrame);
+-- 					TalentFrame_SetBranchTexture(i, j, TALENT_BRANCH_TEXTURECOORDS["down"][node.down], xOffset , yOffset - 32, TalentFrame);
+-- 					ignoreUp = 1;
+-- 				end
+-- 			end
+-- 		end
+-- 	end
+-- 	-- Hide any unused branch textures
+-- 	for i=TalentFrame_GetBranchTextureCount(TalentFrame), MAX_NUM_BRANCH_TEXTURES do
+-- 		_G[talentFrameName.."Branch"..i]:Hide();
+-- 	end
+-- 	-- Hide and unused arrowl textures
+-- 	for i=TalentFrame_GetArrowTextureCount(TalentFrame), MAX_NUM_ARROW_TEXTURES do
+-- 		_G[talentFrameName.."Arrow"..i]:Hide();
+-- 	end
+-- end
+
+-- local function TalentFrame_ADD()
+-- 	--UIPanelWindows["PlayerTalentFrame"].with=
+-- 	local gundongWW,gundongHH = 290, 640
+-- 	local old_TalentFrame_Update=TalentFrame_Update
+-- 	TalentFrame_Update=function(self)
+-- 		TalentFrame_Update_Pig(self)
+-- 	end
+
+-- 	for tianfuxulie=2,3 do
+-- 		local list_Scroll = CreateFrame("ScrollFrame","PlayerTalentFrameScrollFrame"..tianfuxulie,PlayerTalentFrame, "UIPanelScrollFrameTemplate");  
+-- 		list_Scroll:SetSize(gundongWW,gundongHH);
+-- 		list_Scroll:SetScale(0.76);
+-- 		if tianfuxulie==2 then
+-- 			list_Scroll:SetPoint("TOPLEFT",PlayerTalentFrameScrollFrame,"TOPRIGHT",0,0);
+-- 		else
+-- 			list_Scroll:SetPoint("TOPLEFT",_G["PlayerTalentFrameScrollFrame"..(tianfuxulie-1)],"TOPRIGHT",0,0);
+-- 		end
+-- 		_G["PlayerTalentFrameScrollFrame"..tianfuxulie.."ScrollBar"]:Hide()
+-- 		local listScrollChild = CreateFrame("Frame", "PlayerTalentFrameScrollChildFrame"..tianfuxulie, list_Scroll)
+-- 		listScrollChild:SetWidth(list_Scroll:GetWidth())
+-- 		listScrollChild:SetHeight(50) 
+-- 		list_Scroll:SetScrollChild(listScrollChild)
+-- 		for i=1,30 do
+-- 			local Branch = listScrollChild:CreateTexture("PlayerTalentFrameBranch"..tianfuxulie.."_"..i, "BACKGROUND","TalentBranchTemplate");
+-- 		end
+-- 		for i=1,MAX_NUM_TALENTS do
+-- 			local TalentBut = CreateFrame("Button","PlayerTalentFrameTalent"..tianfuxulie.."_"..i,listScrollChild, "TalentButtonTemplate",i);
+-- 		end
+-- 		local ArrowFrame = CreateFrame("Frame", "PlayerTalentFrameArrowFrame"..tianfuxulie, listScrollChild);
+-- 		ArrowFrame:SetAllPoints(listScrollChild)
+-- 		for i=1,30 do
+-- 			local Arrow = ArrowFrame:CreateTexture("PlayerTalentFrameArrow"..tianfuxulie.."_"..i, "OVERLAY","TalentArrowTemplate");
+-- 		end
+-- 	end
+-- 	--------
+-- 	PlayerTalentFrame:SetSize(gundongWW*3,gundongHH-80);
+-- 	PlayerTalentFrameScrollFrame:SetScale(0.76);
+-- 	PlayerTalentFrameScrollFrameScrollBar:Hide()
+-- 	PlayerTalentFrameScrollFrameBackgroundTop:Hide()
+-- 	PlayerTalentFrameScrollFrameBackgroundBottom:Hide()
+-- 	PlayerTalentFrameScrollFrame:ClearAllPoints();
+-- 	PlayerTalentFrameScrollFrame:SetPoint("TOPLEFT",PlayerTalentFrame,"TOPLEFT",24,-84);
+-- 	PlayerTalentFrameScrollFrame:SetSize(gundongWW,gundongHH);
+-- end
+
+-- local function TalentFrame_Open()
+-- 	if IsAddOnLoaded("Blizzard_TalentUI") then
+-- 		TalentFrame_ADD()
+-- 	else
+-- 		local tianfuFrame = CreateFrame("FRAME")
+-- 		tianfuFrame:RegisterEvent("ADDON_LOADED")
+-- 		tianfuFrame:SetScript("OnEvent", function(self, event, arg1)
+-- 		    if arg1 == "Blizzard_TalentUI" then
+-- 		        TalentFrame_ADD()
+-- 		        tianfuFrame:UnregisterEvent("ADDON_LOADED")
+-- 		    end
+-- 		end)
+-- 	end
+-- end
+-- fuFrame.TalentFrame=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",20,-100,"扩展天赋面板","在一页显示三系天赋")
+-- fuFrame.TalentFrame:SetScript("OnClick", function (self)
+-- 	if self:GetChecked() then
+-- 		PIG["FramePlus"]["ExtFrame_Talent"]="ON";
+-- 		TalentFrame_Open()
+-- 	else
+-- 		PIG["FramePlus"]["ExtFrame_Talent"]="OFF";
+-- 		Pig_Options_RLtishi_UI:Show()
+-- 	end
+-- end);
+--=====================================
+addonTable.FramePlus_TalentFrame = function()
+	-- if PIG["FramePlus"]["ExtFrame_Talent"]=="ON" then
+	-- 	fuFrame.TalentFrame:SetChecked(true);
+	-- 	TalentFrame_Open()
+	-- end
+end

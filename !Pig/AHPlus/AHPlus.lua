@@ -1,5 +1,6 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_2_2
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ----------------------------------
 local function huoquhuizhangjiageG()
 	local marketPrice = C_WowTokenPublic.GetCurrentMarketPrice();
@@ -31,6 +32,7 @@ local function ADD_AHPlus()
 	AuctionHouseFrame.History:SetSize(120,18);
 	AuctionHouseFrame.History:SetPoint("TOPRIGHT",AuctionHouseFrame,"TOPRIGHT",-100,-2);
 	AuctionHouseFrame.History:SetText("缓存价格");
+	AuctionHouseFrame.History:SetFrameLevel(510)
 	---
 	AuctionHouseFrame.huancunUI = CreateFrame("Frame", nil, AuctionHouseFrame,"BackdropTemplate");
 	local HCUI = AuctionHouseFrame.huancunUI
@@ -81,18 +83,18 @@ local function ADD_AHPlus()
 		end
 		for i=1,#AHlinshiInfoList do
 			--print(AHlinshiInfoList[i][1])
-			local name=AHlinshiInfoList[i][1]
+			local nameID=AHlinshiInfoList[i][17]
 			local xianzaidanjia = AHlinshiInfoList[i][10]/AHlinshiInfoList[i][3]
-	   		if PIG.AHPlus.Data[FWQrealm][name] then
-	   			if PIG.AHPlus.Data[FWQrealm][name][2] then
-	   				if xianzaidanjia>0 and xianzaidanjia<PIG.AHPlus.Data[FWQrealm][name][1] then
-	   					PIG.AHPlus.Data[FWQrealm][name][1]=xianzaidanjia
+	   		if PIG.AHPlus.Data[FWQrealm][nameID] then
+	   			if PIG.AHPlus.Data[FWQrealm][nameID][2] then
+	   				if xianzaidanjia>0 and xianzaidanjia<PIG.AHPlus.Data[FWQrealm][nameID][1] then
+	   					PIG.AHPlus.Data[FWQrealm][nameID][1]=xianzaidanjia
 	   				end
 	   			else
-	   				PIG.AHPlus.Data[FWQrealm][name]={xianzaidanjia,true,GetServerTime()}
+	   				PIG.AHPlus.Data[FWQrealm][nameID]={xianzaidanjia,true,GetServerTime()}
 	   			end
 	   		else
-	   			PIG.AHPlus.Data[FWQrealm][name]={xianzaidanjia,true,GetServerTime()}
+	   			PIG.AHPlus.Data[FWQrealm][nameID]={xianzaidanjia,true,GetServerTime()}
 	   		end
 		end
 		--
@@ -226,12 +228,8 @@ AuctionFramejiazai:SetScript("OnEvent", function(self, event, arg1)
 	end
 end)
 ------------
-fuFrame.AHOpen = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.AHOpen:SetSize(30,30);
-fuFrame.AHOpen:SetHitRectInsets(0,-80,0,0);
-fuFrame.AHOpen:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-20);
-fuFrame.AHOpen.Text:SetText("启用拍卖增强");
-fuFrame.AHOpen.tooltip = "在拍卖行界面增加一个缓存单价按钮，时光徽章界面显示历史价格";
+local tooltipAHOpen="在拍卖行浏览列表显示一口价，和涨跌百分比。界面增加一个缓存单价按钮，时光徽章界面显示历史价格";
+fuFrame.AHOpen =ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"启用拍卖增强",tooltipAHOpen)
 fuFrame.AHOpen:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.AHPlus.Open=true;
@@ -248,12 +246,7 @@ fuFrame.AHOpen:SetScript("OnClick", function (self)
 	end
 end);
 --
-fuFrame.AHtooltip = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.AHtooltip:SetSize(30,30);
-fuFrame.AHtooltip:SetHitRectInsets(0,-80,0,0);
-fuFrame.AHtooltip:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-80);
-fuFrame.AHtooltip.Text:SetText("鼠标提示AH价钱");
-fuFrame.AHtooltip.tooltip = "鼠标提示AH价钱（AH没有价格的物品不会提示）";
+fuFrame.AHtooltip =ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-80,"鼠标提示AH价钱","鼠标提示AH价钱（AH没有价格的物品不会提示）")
 fuFrame.AHtooltip:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.AHPlus.AHtooltip=true;
@@ -261,19 +254,21 @@ fuFrame.AHtooltip:SetScript("OnClick", function (self)
 		PIG.AHPlus.AHtooltip=false;
 	end
 end);
-GameTooltip:HookScript("OnTooltipSetItem", function(self)
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
 	if PIG.AHPlus.Open and PIG.AHPlus.AHtooltip then
-		local name, link = self:GetItem()
-		if link then
-			local  bindType = select(14, GetItemInfo(link))
-			if bindType~=1 then
-				local FWQrealm = GetRealmName()
-				if PIG.AHPlus.Data[FWQrealm] and PIG.AHPlus.Data[FWQrealm][name] then
-					local jiluTime = PIG.AHPlus.Data[FWQrealm][name][3] or 1660000000
-					local jiluTime = date("%m-%d %H:%M",jiluTime)
-					self:AddDoubleLine("拍卖单价("..jiluTime.."):",GetMoneyString(PIG.AHPlus.Data[FWQrealm][name][1]))
-				else
-					self:AddDoubleLine("拍卖单价(尚未缓存):","--")
+		if tooltip == GameTooltip then	
+			local ItemID = data["id"]
+			if ItemID then
+				local  bubangding = select(14, GetItemInfo(ItemID))--非绑定
+				if bindType~=1 then
+					local FWQrealm = GetRealmName()
+					if PIG.AHPlus.Data[FWQrealm] and PIG.AHPlus.Data[FWQrealm][ItemID] then
+						local jiluTime = PIG.AHPlus.Data[FWQrealm][ItemID][3] or 1660000000
+						local jiluTime = date("%m-%d %H:%M",jiluTime)
+						tooltip:AddDoubleLine("拍卖单价("..jiluTime.."):",GetMoneyString(PIG.AHPlus.Data[FWQrealm][ItemID][1]))
+					else
+						tooltip:AddDoubleLine("拍卖单价(尚未缓存):","--")
+					end
 				end
 			end
 		end
@@ -314,9 +309,6 @@ fuFrame:SetScript("OnShow", function (self)
 end);
 ------------------------
 addonTable.AHPlus = function()
-	PIG.AHPlus=PIG.AHPlus or addonTable.Default.AHPlus
-	PIG.AHPlus.Tokens=PIG.AHPlus.Tokens or addonTable.Default.AHPlus.Tokens
-	PIG.AHPlus.DaojiTime=PIG.AHPlus.DaojiTime or addonTable.Default.AHPlus.DaojiTime
 	huoquhuizhangjiageG()
 	if PIG.AHPlus.Open then
 		AuctionFramejiazai:RegisterEvent("ADDON_LOADED")

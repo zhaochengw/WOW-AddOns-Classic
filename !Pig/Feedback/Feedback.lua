@@ -1,9 +1,10 @@
 local _, addonTable = ...;
 local gsub = _G.string.gsub 
 local find = _G.string.find
-local fuFrame=List_R_F_1_11
+local fuFrame=List_R_F_1_12
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local ADD_Button=addonTable.ADD_Button
+local PIGDownMenu=addonTable.PIGDownMenu
 --///////////////////////////////////////////
 fuFrame.NPCID = ADD_Button("获取目标GUID",nil,fuFrame,114,24,"TOPLEFT",fuFrame,"TOPLEFT",20,-20)
 fuFrame.NPCID:SetScript("OnClick", function (self)
@@ -91,25 +92,24 @@ local taintlist = {"0","1","2","11"}
 local taintlistmenu = {["0"]="不记录任何内容",["1"]="记录被阻止的操作",
 	["2"]="记录被阻止的操作/全局变量",["11"]="记录被阻止的操作/全局变量/条目(PTR/Beta)",
 }
-fuFrame.taintLog = CreateFrame("FRAME", nil, fuFrame, "UIDropDownMenuTemplate")
-fuFrame.taintLog:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",110,-250)
-UIDropDownMenu_SetWidth(fuFrame.taintLog,380)
+fuFrame.taintLog=PIGDownMenu(nil,{350,24},fuFrame,{"BOTTOMLEFT",fuFrame,"BOTTOMLEFT",80,10})
 fuFrame.taintLog.tishi = fuFrame.taintLog:CreateFontString();
-fuFrame.taintLog.tishi:SetPoint("RIGHT", fuFrame.taintLog, "LEFT", 10, 2);
+fuFrame.taintLog.tishi:SetPoint("RIGHT", fuFrame.taintLog, "LEFT", 0, 0);
 fuFrame.taintLog.tishi:SetFontObject(GameFontNormal);
-fuFrame.taintLog.tishi:SetText("污染记录功能");
-local function taintLogxiala(self)
-	local info = UIDropDownMenu_CreateInfo()
-	info.func = self.SetValue
+fuFrame.taintLog.tishi:SetText("污染日志");
+function fuFrame.taintLog:PIGDownMenu_Update_But(self)
+	local info = {}
+	info.func = self.PIGDownMenu_SetValue
 	for i=1,#taintlist,1 do
-	    info.text, info.arg1, info.checked = taintlistmenu[taintlist[i]], taintlist[i], taintlist[i] == GetCVar("taintLog");
-		UIDropDownMenu_AddButton(info)
+	    info.text, info.arg1 = taintlistmenu[taintlist[i]], taintlist[i]
+	    info.checked = taintlist[i]==GetCVar("taintLog")
+		fuFrame.taintLog:PIGDownMenu_AddButton(info)
 	end 
 end
-function fuFrame.taintLog:SetValue(newValue)
-	UIDropDownMenu_SetText(fuFrame.taintLog, taintlistmenu[newValue])
-	SetCVar("taintLog", newValue)
-	CloseDropDownMenus()
+function fuFrame.taintLog:PIGDownMenu_SetValue(value,arg1,arg2)
+	fuFrame.taintLog:PIGDownMenu_SetText(value)
+	SetCVar("taintLog", arg1)
+	PIGCloseDropDownMenus()
 end
 -----------------
 fuFrame:SetScript("OnShow", function()
@@ -121,12 +121,11 @@ fuFrame:SetScript("OnShow", function()
 	if PIG["Error"]["ErrorTishi"] then
 		fuFrame.tishiCK:SetChecked(true)
 	end
-	UIDropDownMenu_Initialize(fuFrame.taintLog, taintLogxiala)
-	UIDropDownMenu_SetText(fuFrame.taintLog, taintlistmenu[GetCVar("taintLog")])
+	fuFrame.taintLog:PIGDownMenu_SetText(taintlistmenu[GetCVar("taintLog")])
 end);
 ---创建常用3宏
 local hongNameList = {["RL"]={"/Reload",132096},["FST"]={"/fstack",132089},["EVE"]={"/eventtrace",132092}}
-fuFrame.New_hong = ADD_Button("创建宏",nil,fuFrame,100,24,"TOPLEFT",fuFrame,"TOPLEFT",20,-400)
+fuFrame.New_hong = ADD_Button("创建FWR",nil,fuFrame,100,24,"LEFT",fuFrame.taintLog,"RIGHT",20,0)
 fuFrame.New_hong:SetScript("OnClick", function ()
 	for k,v in pairs(hongNameList) do
 		local macroSlot = GetMacroIndexByName(k)

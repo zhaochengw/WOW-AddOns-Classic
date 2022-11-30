@@ -6,6 +6,7 @@ local find = _G.string.find
 local sub = _G.string.sub
 local match = _G.string.match
 local ADD_Frame=addonTable.ADD_Frame
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ------------------------------------------------------
 fuFrame.RP = fuFrame:CreateLine()
 fuFrame.RP:SetColorTexture(0.8,0.8,0.8,0.5)
@@ -1622,11 +1623,15 @@ local function null_info()
 	end
 end
 local function FasongqingqiuYC(fullnameX)
-	C_ChatInfo.SendAddonMessage(biaotou,YCinfo.shenqing, "WHISPER", fullnameX)
-	yuanchengDuixiang_UI.biaoti.t:SetText(fullnameX);
-	Show_YcUI()
-	yuanchengDuixiang_UI.fanhuiYN=false
-	C_Timer.After(2,null_info)
+	if yuanchengDuixiang_UI then
+		C_ChatInfo.SendAddonMessage(biaotou,YCinfo.shenqing, "WHISPER", fullnameX)
+		yuanchengDuixiang_UI.biaoti.t:SetText(fullnameX);
+		Show_YcUI()
+		yuanchengDuixiang_UI.fanhuiYN=false
+		C_Timer.After(2,null_info)
+	else
+		PIG_print("请打开右键增强远程查看玩家装备")
+	end
 end
 addonTable.YCchaokanzhuangbei=FasongqingqiuYC
 
@@ -1663,7 +1668,7 @@ local function ClickGongNeng(menuName)
 	DropDownList1:Hide()
 end
 -----------
-local caidanW,caidanH,zongHang=86,20,5
+local caidanW,caidanH,zongHang=86,18,5
 local function Show_RightF(listName)
 	for i=1,zongHang do
 		_G["RightF_TAB_"..i]:Hide();
@@ -1675,6 +1680,8 @@ local function Show_RightF(listName)
 	end
 	Pig_RightFUI:SetHeight(caidanH*num+12);
 	Pig_RightFUI:Show();
+	-- Pig_RightFUI.showTimer = UIDROPDOWNMENU_SHOW_TIME;
+	-- Pig_RightFUI.isCounting = 1;
 end
 --------------------
 local function RightPlus_Open()
@@ -1691,13 +1698,39 @@ local function RightPlus_Open()
 		insets = { left = 4, right = 4, top = 4, bottom = 4 } });
 	PigRightF:SetBackdropBorderColor(Biankuang1,Biankuang2,Biankuang3,Biankuang4);
 	PigRightF:SetBackdropColor(beijing1,beijing2,beijing3,beijing4);
-	PigRightF:SetSize(caidanW,caidanH*zongHang+12);
+	PigRightF:SetSize(caidanW,caidanH*zongHang+16);
 	PigRightF:SetPoint("TOPLEFT",DropDownList1,"TOPRIGHT",-2,0);
 	PigRightF:Hide();
 	PigRightF:SetFrameStrata("FULLSCREEN_DIALOG")
-	DropDownList1:HookScript("OnHide", function()
-    	C_Timer.After(0.6,function() PigRightF:Hide() end)
+	DropDownList1:HookScript("OnHide", function(self)
+		PigRightF:Hide()
+		DropDownList1.RF = nil;
     end)
+    DropDownList1:SetScript("OnUpdate", function(self, elapsed)
+    		if ( self.shouldRefresh ) then
+				UIDropDownMenu_RefreshDropDownSize(self);
+				self.shouldRefresh = false;
+			end
+			if DropDownList1.RF then
+				return;
+			end
+			if ( not self.showTimer or not self.isCounting ) then
+				return;
+			elseif ( self.showTimer < 0 ) then
+				self:Hide();
+				self.showTimer = nil;
+				self.isCounting = nil;
+			else
+				self.showTimer = self.showTimer - elapsed;
+			end
+	end)
+    PigRightF:HookScript("OnEnter", function (self)
+    	DropDownList1.RF = true;
+	end)
+	PigRightF:HookScript("OnLeave", function (self)
+		DropDownList1.RF = nil;
+	end)
+	---
     PigRightF.listName={}
 	PigRightF.listName2={}
     if tocversion<40000 then
@@ -1709,34 +1742,39 @@ local function RightPlus_Open()
     end
 	------
 	for i=1,zongHang do
-		PigRightF.TAB = CreateFrame("Frame", "RightF_TAB_"..i, PigRightF);
-		PigRightF.TAB:SetSize(caidanW,caidanH);
+		PigRightF.TAB = CreateFrame("Button", "RightF_TAB_"..i, PigRightF);
+		PigRightF.TAB:SetSize(caidanW-8,caidanH);
 		if i==1 then
 			PigRightF.TAB:SetPoint("TOPLEFT", PigRightF, "TOPLEFT", 4, -6);
 		else
 			PigRightF.TAB:SetPoint("TOPLEFT", _G["RightF_TAB_"..(i-1)], "BOTTOMLEFT", 0, 0);
 		end
+
 		PigRightF.TAB.Title = PigRightF.TAB:CreateFontString();
 		PigRightF.TAB.Title:SetPoint("LEFT", PigRightF.TAB, "LEFT", 6, 0);
 		PigRightF.TAB.Title:SetFontObject(GameFontNormal);
 		PigRightF.TAB.Title:SetTextColor(1,1,1, 1);
 		PigRightF.TAB.highlight1 = PigRightF.TAB:CreateTexture(nil, "BORDER");
 		PigRightF.TAB.highlight1:SetTexture("interface/buttons/ui-listbox-highlight.blp");
-		PigRightF.TAB.highlight1:SetPoint("CENTER", PigRightF.TAB, "CENTER", -3,0);
-		PigRightF.TAB.highlight1:SetSize(70,16);
+		PigRightF.TAB.highlight1:SetPoint("CENTER", PigRightF.TAB, "CENTER", 0,0);
+		PigRightF.TAB.highlight1:SetSize(caidanW-8,caidanH);
 		PigRightF.TAB.highlight1:SetAlpha(0.9);
 		PigRightF.TAB.highlight1:Hide();
-		PigRightF.TAB:SetScript("OnEnter", function(self)
+		PigRightF.TAB:HookScript("OnEnter", function (self)
 			self.highlight1:Show()
-		end);
-		PigRightF.TAB:SetScript("OnLeave", function(self)
+			DropDownList1.RF = true;
+		end)
+		PigRightF.TAB:HookScript("OnLeave", function (self)
 			self.highlight1:Hide()
-		end);
+			DropDownList1.RF = nil;
+		end)
 		PigRightF.TAB:SetScript("OnMouseDown", function(self)
 			self.Title:SetPoint("LEFT", self, "LEFT", 7.4, -1.4);
 		end);
 		PigRightF.TAB:SetScript("OnMouseUp", function(self)
 			self.Title:SetPoint("LEFT", self, "LEFT", 6, 0);
+		end);
+		PigRightF.TAB:SetScript("OnClick", function(self)
 			ClickGongNeng(self.Title:GetText())
 		end);
 	end
@@ -1919,12 +1957,7 @@ local function RightPlus_Open()
 end
 
 ---------------------
-fuFrame.RightPlus = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.RightPlus:SetSize(30,32);
-fuFrame.RightPlus:SetHitRectInsets(0,-80,0,0);
-fuFrame.RightPlus:SetPoint("TOPLEFT",fuFrame.RP,"TOPLEFT",20,-10);
-fuFrame.RightPlus.Text:SetText("右键增强");
-fuFrame.RightPlus.tooltip = "增强交互时右键功能，例如点击聊天栏玩家名/查询页玩家名！";
+fuFrame.RightPlus = ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame.RP,"TOPLEFT",20,-10,"右键增强","增强交互时右键功能，例如点击聊天栏玩家名/查询页玩家名")
 fuFrame.RightPlus:SetScript("OnClick", function (self)
     if self:GetChecked() then
         PIG['ChatFrame']['RightPlus']="ON";
@@ -2079,7 +2112,6 @@ yuanchangchakanFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, a
 end)
 --=====================================
 addonTable.Interaction_RightPlus = function()
-	PIG['ChatFrame']['xiayijuli']=PIG['ChatFrame']['xiayijuli'] or addonTable.Default['ChatFrame']['xiayijuli']
     if PIG['ChatFrame']['RightPlus']=="ON" then
         fuFrame.RightPlus:SetChecked(true);
         RightPlus_Open();

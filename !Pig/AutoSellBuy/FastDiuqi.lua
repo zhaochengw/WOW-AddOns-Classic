@@ -1,34 +1,45 @@
 local _, addonTable = ...;
 --=============================
+local _, _, _, tocversion = GetBuildInfo()
 local hang_Height,hang_NUM  = 30, 14;
 local FrameLevel=addonTable.SellBuyFrameLevel
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ----//////////////////
 function Pig_DelItem()
 	if QkBut_AutoSellBuy then
 		QkBut_AutoSellBuy.Height:Hide();
 	end
 	if #PIG["FastDiuqi"]>0 then
-		for i=0,4 do
-			local xx=GetContainerNumSlots(i) 
-			for j=1,xx do
-				for k=1,#PIG["FastDiuqi"] do
-					if GetContainerItemID(i,j)==PIG["FastDiuqi"][k][3] then
-						PickupContainerItem(i,j);
-						DeleteCursorItem(i,j);
+		if tocversion<100000 then
+			for i=0,4 do
+				local xx=GetContainerNumSlots(i) 
+				for j=1,xx do
+					for k=1,#PIG["FastDiuqi"] do
+						if GetContainerItemLink(i,j)==PIG["FastDiuqi"][k][2] then
+							PickupContainerItem(i,j);
+							DeleteCursorItem(i,j);
+						end
 					end
-				end
-			end 
+				end 
+			end
+		else
+			for i=0,4 do
+				local xx=C_Container.GetContainerNumSlots(i) 
+				for j=1,xx do
+					for k=1,#PIG["FastDiuqi"] do
+						if C_Container.GetContainerItemLink(i,j)==PIG["FastDiuqi"][k][2] then
+							PickupContainerItem(i,j);
+							DeleteCursorItem(i,j);
+						end
+					end
+				end 
+			end
 		end
+		PIG_print("没有需丢弃物品")
+	else
+		PIG_print("丢弃目录为空,右键设置");
 	end
 end
-local function DelItem()
-	if #PIG["FastDiuqi"]==0 then
-		print("\124cff00FFFF!Pig（一键丢弃）：\124cffffFF00丢弃目录为空，右键打开设置添加物品！\124r");
-		return
-	end
-	Pig_DelItem()
-end
-addonTable.FastDiuqi_DelItem = DelItem
 -------
 local function FastDiuqi_ADD()
 	local fuFrame = SpllBuy_TabFrame_1
@@ -78,6 +89,7 @@ local function FastDiuqi_ADD()
 		    for id = 1, hang_NUM do
 		    	local dangqianH = id+offset;
 		    	if PIG["FastDiuqi"][dangqianH] then
+		    		local x = 1
 			    	_G["DelH_hang"..id].item.icon:SetTexture(PIG["FastDiuqi"][dangqianH][1]);
 					_G["DelH_hang"..id].item.link:SetText(PIG["FastDiuqi"][dangqianH][2]);
 					_G["DelH_hang"..id].item:Show();
@@ -154,64 +166,66 @@ local function FastDiuqi_ADD()
 	fuFrame.FastDiuqi.ADD:SetPoint("BOTTOMRIGHT",fuFrame.FastDiuqi,"BOTTOMRIGHT",-0,0);
 	---
 	fuFrame.FastDiuqi:RegisterEvent("ITEM_LOCK_CHANGED");
-	fuFrame.FastDiuqi.ADD.iteminfo={};
-	fuFrame.FastDiuqi:SetScript("OnEvent",function (self,event,arg1,arg2)
-		if arg1 and arg2 then
-			if CursorHasItem() then
-				local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1,arg2);
-				fuFrame.FastDiuqi.ADD.iteminfo={icon, itemLink, itemID};
-				fuFrame.FastDiuqi.ADD:SetFrameLevel(FrameLevel+8);
-			end
+	fuFrame.FastDiuqi:SetScript("OnEvent",function (self)
+		if self:IsShown() then
+			self.ADD:SetFrameLevel(FrameLevel+8);
 		end
 	end);
-	fuFrame.FastDiuqi.ADD:SetScript("OnMouseUp", function ()
+	fuFrame.FastDiuqi.ADD:SetScript("OnMouseUp", function (self)
 		if CursorHasItem() then
+			local NewType, TtemID, Itemlink= GetCursorInfo()
 			for i=1,#PIG["FastDiuqi"] do
-				if fuFrame.FastDiuqi.ADD.iteminfo[3]==PIG["FastDiuqi"][i][3] then
+				if Itemlink==PIG["FastDiuqi"][i][2] then
 					print("|cff00FFFF!Pig:|r|cffffFF00物品已在目录内！|r");
 					ClearCursor();
-					fuFrame.FastDiuqi.ADD.iteminfo={};
-					fuFrame.FastDiuqi.ADD:SetFrameLevel(FrameLevel);
+					self:SetFrameLevel(FrameLevel);
 					return
 				end			
 			end
-			table.insert(PIG["FastDiuqi"], fuFrame.FastDiuqi.ADD.iteminfo);
+			local icon = select(5,GetItemInfoInstant(Itemlink))
+			table.insert(PIG["FastDiuqi"], {icon,Itemlink,TtemID});
 			ClearCursor();
-			fuFrame.FastDiuqi.ADD.iteminfo={};
 			gengxinDEL(fuFrame.FastDiuqi.Scroll);
 		end
-		fuFrame.FastDiuqi.ADD:SetFrameLevel(FrameLevel);
+		self:SetFrameLevel(FrameLevel);
 	end);
-	fuFrame.FastDiuqi:SetScript("OnShow", function()
-		gengxinDEL(fuFrame.FastDiuqi.Scroll);
+	fuFrame.FastDiuqi:SetScript("OnShow", function(self)
+		gengxinDEL(self.Scroll);
 	end)
-
 	
 	local zidongkaishidiuqiFFF = CreateFrame("Frame");
 	zidongkaishidiuqiFFF:RegisterEvent("BAG_UPDATE");
 	zidongkaishidiuqiFFF:SetScript("OnEvent", function(self,event,arg1)
 		if PIG['AutoSellBuy']['diuqitishi']=="ON" then
-			local bnum=GetContainerNumSlots(arg1)
-			for l=1,bnum do
-				for kk=1,#PIG["FastDiuqi"] do
-					if GetContainerItemID(arg1,l)==PIG["FastDiuqi"][kk][3] then
-						if QkBut_AutoSellBuy then
-							QkBut_AutoSellBuy.Height:Show();
+			if tocversion<100000 then
+				local bnum=GetContainerNumSlots(arg1)
+				for l=1,bnum do
+					for kk=1,#PIG["FastDiuqi"] do
+						if GetContainerItemLink(arg1,l)==PIG["FastDiuqi"][kk][2] then
+							if QkBut_AutoSellBuy then
+								QkBut_AutoSellBuy.Height:Show();
+							end
 						end
 					end
 				end
-			end	
+			else
+				local bnum=C_Container.GetContainerNumSlots(arg1)
+				for l=1,bnum do
+					for kk=1,#PIG["FastDiuqi"] do
+						if C_Container.GetContainerItemLink(arg1,l)==PIG["FastDiuqi"][kk][2] then
+							if QkBut_AutoSellBuy then
+								QkBut_AutoSellBuy.Height:Show();
+							end
+						end
+					end
+				end
+			end
 		end
 	end);
 
 
 	----
-	fuFrame.tishidiuqi = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-	fuFrame.tishidiuqi:SetSize(28,30);
-	fuFrame.tishidiuqi:SetHitRectInsets(0,-68,0,0);
-	fuFrame.tishidiuqi:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-10);
-	fuFrame.tishidiuqi.Text:SetText("提示丢弃");
-	fuFrame.tishidiuqi.tooltip = "有可丢弃物品将会在快捷按钮提示!|r";
+	fuFrame.tishidiuqi = ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",20,-10,"提示丢弃", "有可丢弃物品将会在快捷按钮提示")
 	fuFrame.tishidiuqi:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG['AutoSellBuy']['diuqitishi']="ON";

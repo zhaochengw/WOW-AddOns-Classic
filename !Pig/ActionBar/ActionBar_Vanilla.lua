@@ -2,6 +2,7 @@ local addonName, addonTable = ...;
 -------
 local fuFrame = List_R_F_2_3
 local _, _, _, tocversion = GetBuildInfo()
+local PIGDownMenu=addonTable.PIGDownMenu
 --=======================================
 local anniugeshu,anniujiange=12,6;
 local zongshu =4;
@@ -131,7 +132,7 @@ local function ADD_ActionBar(index)
 	if _G[barName..index] then return end
 	local ActionW = ActionButton1:GetWidth()
 	local Pig_bar = CreateFrame("Frame", barName..index, UIParent)
-	Pig_bar:SetSize(10,ActionW)
+	Pig_bar:SetSize(14,ActionW+4)
 	Pig_bar:SetPoint("CENTER",UIParent,"CENTER",-200,-200+index*50);
 	Pig_bar:SetMovable(true)
 	Pig_bar:SetClampedToScreen(true)	
@@ -141,16 +142,20 @@ local function ADD_ActionBar(index)
 		Pig_bar:SetScale(PIG['PigUI']['ActionBar_bili_value']);
 	end
 	Pig_bar.yidong = CreateFrame("Frame", nil, Pig_bar,"BackdropTemplate")
-	Pig_bar.yidong:SetBackdrop({edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 6,})
+	Pig_bar.yidong:SetBackdrop({
+		bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, edgeSize = 6
+	});
+	Pig_bar.yidong:SetBackdropColor(0.4, 0.4, 0.4, 0.5);
 	Pig_bar.yidong:SetAllPoints(Pig_bar)
 	Pig_bar.yidong:EnableMouse(true)
 	Pig_bar.yidong:RegisterForDrag("LeftButton")
 	if PIG_Per["PigAction"]["Look"][index]=="ON" then Pig_bar.yidong:Hide() end
-	Pig_bar.yidong.t = Pig_bar.yidong:CreateFontString();
-	Pig_bar.yidong.t:SetPoint("LEFT", Pig_bar.yidong, "LEFT", 0.8, 0);
-	Pig_bar.yidong.t:SetFontObject(GameFontNormal);
-	Pig_bar.yidong.t:SetTextColor(0.8, 0.8, 0.8, 0.6);
-	Pig_bar.yidong.t:SetText(index);
+	Pig_bar.yidong.title = Pig_bar.yidong:CreateFontString();
+	Pig_bar.yidong.title:SetAllPoints(Pig_bar.yidong)
+	Pig_bar.yidong.title:SetFont(ChatFontNormal:GetFont(), 11)
+	Pig_bar.yidong.title:SetTextColor(0.6, 0.6, 0.6, 1)
+	Pig_bar.yidong.title:SetText("拖\n"..index.."\n动")
+
 	Pig_bar.yidong:SetScript("OnDragStart",function()
 		Pig_bar:StartMoving()
 	end)
@@ -503,22 +508,29 @@ for index=1,zongshu do
 			end
 		end
 	end);
-	kaiqiewaidongzuotiao.ShowHide = CreateFrame("FRAME", nil, kaiqiewaidongzuotiao, "UIDropDownMenuTemplate")
-	kaiqiewaidongzuotiao.ShowHide:SetPoint("TOPLEFT",kaiqiewaidongzuotiao.lookdongzuotiao,"BOTTOMLEFT",14,0)
-	UIDropDownMenu_SetWidth(kaiqiewaidongzuotiao.ShowHide, 120)
-	function kaiqiewaidongzuotiao.ShowHide:SetValue(newValue)
+	kaiqiewaidongzuotiao.ShowHide=PIGDownMenu(nil,{120,24},kaiqiewaidongzuotiao,{"TOPLEFT",kaiqiewaidongzuotiao.lookdongzuotiao,"BOTTOMLEFT",0,0})
+	function kaiqiewaidongzuotiao.ShowHide:PIGDownMenu_Update_But(self)
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
+		for i=1,#Showtiaojian,1 do
+		    info.text, info.arg1 = Showtiaojian[i], i
+		    info.checked = i==PIG_Per['PigAction']['ShowTJ'][index]
+			kaiqiewaidongzuotiao.ShowHide:PIGDownMenu_AddButton(info)
+		end 
+	end
+	function kaiqiewaidongzuotiao.ShowHide:PIGDownMenu_SetValue(value,arg1,arg2)
 		if InCombatLockdown()  then 
 			print("|cff00FFFF!Pig:|r|cffFFFF00请在脱战后改变隐藏条件。|r");
 			return 
 		end
-		UIDropDownMenu_SetText(kaiqiewaidongzuotiao.ShowHide, Showtiaojian[newValue])
-		PIG_Per['PigAction']['ShowTJ'][index] = newValue;
-		CloseDropDownMenus()
+		kaiqiewaidongzuotiao.ShowHide:PIGDownMenu_SetText(value)
+		PIG_Per['PigAction']['ShowTJ'][index] = arg1;
 		if PIG_Per["PigAction"]["Open"][index]=="ON" then
 			for id=1,anniugeshu do
-				ShowHideEvent(_G[barName..index.."_But"..id],newValue)
+				ShowHideEvent(_G[barName..index.."_But"..id],arg1)
 			end
 		end
+		PIGCloseDropDownMenus()
 	end
 end
 -----------
@@ -575,22 +587,11 @@ fuFrame:HookScript("OnShow", function (self)
 		if PIG_Per["PigAction"]["Look"][index]=="ON" then
 			ckfame.lookdongzuotiao:SetChecked(true)
 		end
-		UIDropDownMenu_Initialize(ckfame.ShowHide, function(self)
-			local info = UIDropDownMenu_CreateInfo()
-			info.func = self.SetValue
-			for ii=1,#Showtiaojian,1 do
-			    info.text, info.arg1, info.checked = Showtiaojian[ii], ii, ii == PIG_Per['PigAction']['ShowTJ'][index];
-				UIDropDownMenu_AddButton(info)
-			end 
-		end)
-		UIDropDownMenu_SetText(ckfame.ShowHide, Showtiaojian[PIG_Per['PigAction']['ShowTJ'][index]])
+		ckfame.ShowHide:PIGDownMenu_SetText(Showtiaojian[PIG_Per['PigAction']['ShowTJ'][index]])
 	end
 end);
 -------------------------
 addonTable.Pig_Action = function()
-	PIG_Per["PigAction"]=PIG_Per["PigAction"] or addonTable.Default_Per["PigAction"]
-	PIG_Per['PigAction']['ActionInfo']=PIG_Per['PigAction']['ActionInfo'] or {}
-	PIG_Per['PigAction']['ShowTJ']=PIG_Per['PigAction']['ShowTJ'] or {1,1,1,1}
 	for index=1,zongshu do
 		if PIG_Per["PigAction"]["Open"][index]=="ON" then
 			ADD_ActionBar(index)

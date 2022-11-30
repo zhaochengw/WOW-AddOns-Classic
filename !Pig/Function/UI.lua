@@ -46,7 +46,7 @@ local function ADD_Frame(UIName,fuFrame,Width,Height,PointZi,Point,PointFu,Point
 		frame.TOPLEFT:SetTexture(374156);
 		frame.TOPLEFT:SetPoint("TOPLEFT", frame, "TOPLEFT",-6, 1);
 		frame.TOPLEFT:SetTexCoord(0.6328125,0.28125,0.6328125,0.53125,0.8828125,0.28125,0.8828125,0.53125);
-		frame.TOPLEFT:SetSize(33,33);
+		frame.TOPLEFT:SetSize(33,34);
 		frame.TOPRIGHT = frame:CreateTexture(nil, "BORDER");
 		frame.TOPRIGHT:SetTexture(374156);
 		frame.TOPRIGHT:SetPoint("TOPRIGHT", frame, "TOPRIGHT",0, 1);
@@ -64,10 +64,10 @@ local function ADD_Frame(UIName,fuFrame,Width,Height,PointZi,Point,PointFu,Point
 		frame.BOTTOMRIGHT:SetSize(11,11);
 		frame.TOP = frame:CreateTexture(nil, "BORDER");
 		frame.TOP:SetTexture(374157);
-		frame.TOP:SetTexCoord(0.00,0.44,0.00,0.66,3.57,0.44,3.57,0.66);
+		frame.TOP:SetTexCoord(0,0.4375,0,0.65625,1,0.4375,1,0.65625);
 		frame.TOP:SetPoint("TOPLEFT", frame.TOPLEFT, "TOPRIGHT",0, 0)
 		frame.TOP:SetPoint("TOPRIGHT", frame.TOPRIGHT, "TOPLEFT",0, 0);
-		frame.TOP:SetHeight(29.6);
+		frame.TOP:SetHeight(29);
 		frame.LEFT = frame:CreateTexture(nil, "BORDER");
 		frame.LEFT:SetTexture(374153);
 		frame.LEFT:SetTexCoord(0.36,0.00,0.36,2.29,0.61,0.00,0.61,2.29);
@@ -233,8 +233,13 @@ local function ADD_CharacterFrame(self,uiname,uiWidth)
 	self.biaoti.t1:SetFontObject(GameFontNormal);
 
 	self.Close = CreateFrame("Button",nil,self, "UIPanelCloseButton");
-	self.Close:SetSize(32,32);
-	self.Close:SetPoint("TOPRIGHT",self,"TOPRIGHT",-3.2,-8.6);
+	if tocversion<100000 then
+		self.Close:SetSize(32,32);
+		self.Close:SetPoint("TOPRIGHT",self,"TOPRIGHT",-3.2,-8.6);
+	else
+		self.Close:SetSize(24,24);
+		self.Close:SetPoint("TOPRIGHT",self,"TOPRIGHT",-8,-14);
+	end
 	local zhuangbeishunxuID = {1,2,3,15,5,4,19,9,10,6,7,8,11,12,13,14,16,17,18}
 	for i=1,#zhuangbeishunxuID do
 		self.item = CreateFrame("Button", uiname.."_wupin_item_"..zhuangbeishunxuID[i], self, "SecureActionButtonTemplate");
@@ -401,6 +406,7 @@ local function ADD_Checkbutton(frameName,fuFrame,fanwei,Point,fuPoint,rPoint,Poi
 	return frame
 end
 addonTable.ADD_Checkbutton=ADD_Checkbutton
+--local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --创建功能开启按钮
 local function ADD_ModCheckbutton(GnName,Tooltip,fuFrame,Cfanwei,ID)
 	local frame = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
@@ -496,33 +502,3 @@ local function ADD_QuickButton(QkBut,Tooltip,Icon,Template)
 	return butFrame
 end
 addonTable.ADD_QuickButton=ADD_QuickButton
---创建下拉
-local function ADD_DownMenu(fujiF,biaoti,CVarsV,Width,Point,PointX,PointY,VVV,Vname)
-	local frameX = CreateFrame("FRAME", nil, fujiF, "UIDropDownMenuTemplate")
-	frameX:SetPoint("TOPLEFT",Point,"TOPLEFT",PointX,PointY)
-	UIDropDownMenu_SetWidth(frameX, Width)
-	UIDropDownMenu_Initialize(frameX, function(self)
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = self.SetValue
-		local NewVvv= tonumber(GetCVar(CVarsV))
-		for i=1,#VVV,1 do
-			local lisvv= tonumber(VVV[i])
-		    info.text, info.arg1, info.checked = Vname[VVV[i]], VVV[i], tonumber(VVV[i]) == NewVvv;
-			UIDropDownMenu_AddButton(info)
-		end 
-	end)
-	local shezhiVV= tonumber(GetCVar(CVarsV))
-	local shezhiVV= tostring(shezhiVV)
-	UIDropDownMenu_SetText(frameX, Vname[shezhiVV])
-	function frameX:SetValue(newValue)
-		UIDropDownMenu_SetText(frameX, Vname[newValue])
-		SetCVar(CVarsV,newValue)
-		CloseDropDownMenus()
-	end
-	frameX.t = frameX:CreateFontString();
-	frameX.t:SetPoint("RIGHT",frameX,"LEFT",10,2);
-	frameX.t:SetFontObject(GameFontNormal);
-	frameX.t:SetText(biaoti);
-	return frameX
-end
-addonTable.ADD_DownMenu=ADD_DownMenu

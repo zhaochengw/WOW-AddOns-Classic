@@ -15,7 +15,8 @@ addonTable.Default = {
 		["DaojiTime"] = 0,
 	},
 	["daiben"]={
-		["Point"]={"CENTER","CENTER",0,200}
+		["Point"]={"CENTER","CENTER",0,200},
+		["hanhua_pindao"]={},
 	},
 	["QuickButton"]={
 		["Open"] = true,
@@ -50,7 +51,6 @@ addonTable.Default = {
 		["ItemSell"] = "OFF",
 		["ItemLevel"] = "OFF",
 		["SpellID"] = "OFF",
-		["zhuangbeiLV"]="OFF",
 	},
 	["zhegnheBAG"]={
 		["BAGkongyu"]="OFF",
@@ -62,12 +62,14 @@ addonTable.Default = {
 		["lixian"] = {},
 		["SortBag_Config"]=true,
 		["qitashulaing"]=false,
+		["qitajinbi"]=true,
 		["wupinLV"]=false,
 		["JunkShow"]=true,
 		["BAGmeihangshu"]=8,
 		["BAGmeihangshu_retail"]=10,
 		["jiaoyiOpen"]=true,
 		["AHOpen"]=true,
+		["wupinRanse"]=true,
 	},
 	["AutoSellBuy"] = {
 		["AutoRepair"] = "OFF",
@@ -101,11 +103,11 @@ addonTable.Default = {
 		["ChatFrame_Point_X"] = 35,
 		["ChatFrame_Point_Y"] = 80,
 		["ChatFrame_Loot"] = "OFF",
-		["ChatFrame_Loot_Width"] = "ON",
+		["ChatFrame_Loot_Width"] = "OFF",
 		["ChatFrame_Loot_Width_value"] = 350,
-		["ChatFrame_Loot_Height"] = "ON",
+		["ChatFrame_Loot_Height"] = "OFF",
 		["ChatFrame_Loot_Height_value"] = 180,
-		["ChatFrame_Loot_Point"] = "ON",
+		["ChatFrame_Loot_Point"] = "OFF",
 		["ChatFrame_Loot_Point_X"] = 26,
 		["ChatFrame_Loot_Point_Y"] = 8,
 		["xianshiNeirong"] = "OFF",
@@ -117,7 +119,7 @@ addonTable.Default = {
 		["AltEX"] = "OFF",
 		["Guolv"] = "OFF",
 		["QuickChat"] = "OFF",
-		["wubiankuang"]= "OFF",
+		["QuickChat_style"]=1,
 		["QuickChat_maodian"] = 2,
 		["MinMaxB"] = "OFF",
 		["RightPlus"] = "OFF",
@@ -145,8 +147,8 @@ addonTable.Default = {
 		["tianshu"]=7,
 		["jiluinfo"]={
 			["WHISPER"]={["kaiguan"]="ON",["tixing"]="ON",["neirong"]={}},
-			["PARTY"]={["kaiguan"]="OFF",["tixing"]="OFF",["neirong"]={}},
-			["RAID"]={["kaiguan"]="OFF",["tixing"]="OFF",["neirong"]={}},
+			["PARTY"]={["kaiguan"]="ON",["tixing"]="OFF",["neirong"]={}},
+			["RAID"]={["kaiguan"]="ON",["tixing"]="OFF",["neirong"]={}},
 		},
 	},
 	["CombatPlus"] = {
@@ -171,60 +173,15 @@ addonTable.Default = {
 		},
 	},
 	["MinimapBpaichu"] = {
-		"MiniMapTrackingFrame", -- [1]
-		"MiniMapMeetingStoneFrame", -- [2]
-		"MiniMapMailFrame", -- [3]
-		"MiniMapBattlefieldFrame", -- [4]
-		"MiniMapWorldMapButton", -- [5]
-		"MiniMapPing", -- [6]
-		"MinimapBackdrop", -- [7]
-		"MinimapZoomIn", -- [8]
-		"MinimapZoomOut", -- [9]
-		"BookOfTracksFrame", -- [10]
-		"GatherNote", -- [11]
-		"FishingExtravaganzaMini", -- [12]
-		"MiniNotePOI", -- [13]
-		"RecipeRadarMinimapIcon", -- [14]
-		"FWGMinimapPOI", -- [15]
-		"CartographerNotesPOI", -- [16]
-		"MBB_MinimapButtonFrame", -- [17]
-		"EnhancedFrameMinimapButton", -- [18]
-		"GFW_TrackMenuFrame", -- [19]
-		"GFW_TrackMenuButton", -- [20]
-		"TDial_TrackingIcon", -- [21]
-		"TDial_TrackButton", -- [22]
-		"MiniMapTracking", -- [23]
-		"GatherMatePin", -- [24]
-		"HandyNotesPin", -- [25]
-		"TimeManagerClockButton", -- [26]
-		"GameTimeFrame", -- [27]
-		"DA_Minimap", -- [28]
-		"ElvConfigToggle", -- [29]
-		"MiniMapInstanceDifficulty", -- [30]
-		"MinimapZoneTextButton", -- [31]
-		"GuildInstanceDifficulty", -- [32]
-		"MiniMapVoiceChatFrame", -- [33]
-		"MiniMapRecordingButton", -- [34]
-		"QueueStatusMinimapButton", -- [35]
-		"GatherArchNote", -- [36]
-		"ZGVMarker", -- [37]
-		"QuestPointerPOI", -- [38]
-		"poiMinimap", -- [39]
-		"MiniMapLFGFrame", -- [40]
-		"PremadeFilter_MinimapButton", -- [41]
-		"QuestieFrame", -- [42]
-		"Guidelime", -- [43]
-		"MiniMapBattlefieldFrame", -- [44]
-		"LibDBIcon10_BugSack", -- [45]
-		"MinimapButton_PigUI", -- [46]
-		"MinimapLayerFrame", -- [46]
-		"NWBNaxxMarkerMini", -- [46]
-		"NWBMini", -- [46]
 	},
 	["FramePlus"] = {
+		["ExtFrame_Talent"] = "OFF",
 		["ExtFrame_Zhuanye"] = "OFF",
 		["ExtFrame_ZhuanyeQKBUT"]=false,
 		["ExtFrame_Renwu"] = "OFF",
+		["CharacterFrame_LV"]="OFF",
+		["CharacterFrame_shuxing"]="OFF",
+		["CharacterFrame_zhuangbeList"]="OFF",
 		["CharacterFrame_Juese"] = "OFF",
 		["CharacterFrame_naijiu"] = "OFF",
 		["CharacterFrame_ranse"] = "OFF",
@@ -260,7 +217,7 @@ addonTable.Default = {
 		["jiaoyizengqiang"]=false,
 	},
 	["SkillFBCD"] = {
-		["Open"] = "OFF",
+		["Open"] = "ON",
 		["AddBut"] = "ON",
 		["SkillCD"] = {
 		},
@@ -296,7 +253,7 @@ addonTable.Default = {
 			["kaituanName"]="[Pig]开团助手测试喊话....",
 			["jinzuZhiling"]="888",
 			["wutiaojianjINV"]="OFF",
-			["hanhuapindao"]={{false,false,false,false,false},{false,true,true,false,false,false,false}},
+			["hanhuapindao"]={},
 			["shijianjiange"]=300,
 			["PlayersInfo"] = {},
 			["linshiInfo"] = {},
@@ -396,6 +353,7 @@ addonTable.Default = {
 			["fubenwai"] = "OFF",
 			["wurenben"] = "OFF",
 			["jiaoyijilu"] = "ON",
+			["jiaoyitonggao"] = "ON",
 			["zidonghuifuYY"]="OFF",
 			["YYguanjianzi"]={"YY","yy","歪歪"},
 			["YYneirong"]="YY频道:113213,组人不易,请耐心等待",
@@ -574,6 +532,7 @@ addonTable.Default_Per = {
 		["Open"] = {"OFF","OFF","OFF","OFF"},
 		["Look"] = {"OFF","OFF","OFF","OFF"},
 		["Pailie"] = {1,1,1,1},
+		["ShowTJ"] = {1,1,1,1},
 		["ActionInfo"] = {},
 	},
 	["QuickButton"]={
@@ -594,7 +553,6 @@ addonTable.Default_Per = {
 		["autohuifu_invCMD"] = "666",
 		["autohuifu_key"]= {"有位","消费","有坑","多少","价格"},
 		["fubenName"]="无",
-		["hanhua_pindao"]={{true,false,false,false,false},{false,false,false,false,false,false,false}},
 		["hanhua_lv"]=true,
 		["hanhua_danjia"]=false,
 		["hanhuaMSG"] = "[Pig]带本助手喊话测试....",

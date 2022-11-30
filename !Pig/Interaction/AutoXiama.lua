@@ -1,5 +1,6 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_1
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --////自动站立下马///////////////////////
 local errList = {[SPELL_FAILED_NOT_MOUNTED] = true,[ERR_ATTACK_MOUNTED] = true,[ERR_TAXIPLAYERALREADYMOUNTED] = true,	}
 
@@ -18,12 +19,7 @@ end
 local zidongxiama = CreateFrame("Frame")
 zidongxiama:SetScript("OnEvent", zidongxiamashijian)
 
-fuFrame.AutoDown = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.AutoDown:SetSize(30,32);
-fuFrame.AutoDown:SetHitRectInsets(0,-100,0,0);
-fuFrame.AutoDown:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-60);
-fuFrame.AutoDown.Text:SetText("自动下马/站立");
-fuFrame.AutoDown.tooltip = "自动下马/站立！";
+fuFrame.AutoDown = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-60,"自动下马/站立","自动下马/站立")
 fuFrame.AutoDown:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['Interaction']['AutoDown']="ON";

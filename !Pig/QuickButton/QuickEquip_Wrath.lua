@@ -28,7 +28,6 @@ local zhuangbeixilieID={
 }
 --创建快捷按钮
 local function ADD_QuickButton_AutoEquip()
-	PIG_Per['QuickButton']['AutoEquipInfo']=PIG_Per['QuickButton']['AutoEquipInfo'] or {}
 	if PIG['QuickButton']['Open'] then
 		fuFrame.AutoEquip:Enable()
 		if PIG['QuickButton']['AutoEquip'] then

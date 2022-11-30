@@ -12,7 +12,7 @@ local function ADD_History()
 	RaidR_UI.xiafangF.History:SetText("历史记录");
 	----
 	local History=ADD_Frame("History_UI",RaidR_UI,Width-22,Height-100,"TOP",RaidR_UI,"TOP",0,-18,true,false,false,false,false,"BG6")
-	History:SetFrameLevel(10);
+	History:SetFrameLevel(RaidR_UI:GetFrameLevel()+20);
 
 	History.Close = CreateFrame("Button",nil,History, "UIPanelCloseButton");  
 	History.Close:SetSize(34,34);

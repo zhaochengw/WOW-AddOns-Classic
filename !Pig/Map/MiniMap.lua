@@ -1,5 +1,8 @@
 local addonName, addonTable = ...;
 local fuFrame=List_R_F_1_8
+local _, _, _, tocversion = GetBuildInfo()
+local PIGDownMenu=addonTable.PIGDownMenu
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ----------------------------------------------------------
 local ShouNaButHeji={};
 local function gengxinMBweizhi(newValue)
@@ -47,15 +50,76 @@ local function gengxinMBweizhi(newValue)
 		end
 	end
 end
+local paichulist = {
+	"MiniMapTrackingFrame",
+	"MiniMapMeetingStoneFrame",
+	"MiniMapMailFrame",
+	"MiniMapBattlefieldFrame",
+	"MiniMapWorldMapButton",
+	"MiniMapPing",
+	"MinimapBackdrop",
+	"MinimapZoomIn",
+	"MinimapZoomOut",
+	"BookOfTracksFrame",
+	"GatherNote",
+	"FishingExtravaganzaMini",
+	"MiniNotePOI",
+	"RecipeRadarMinimapIcon",
+	"FWGMinimapPOI",
+	"CartographerNotesPOI",
+	"MBB_MinimapButtonFrame",
+	"EnhancedFrameMinimapButton",
+	"GFW_TrackMenuFrame",
+	"GFW_TrackMenuButton",
+	"TDial_TrackingIcon",
+	"TDial_TrackButton",
+	"MiniMapTracking",
+	"GatherMatePin",
+	"HandyNotesPin",
+	"TimeManagerClockButton",
+	"GameTimeFrame",
+	"DA_Minimap",
+	"ElvConfigToggle",
+	"MiniMapInstanceDifficulty",
+	"MinimapZoneTextButton",
+	"GuildInstanceDifficulty",
+	"MiniMapVoiceChatFrame",
+	"MiniMapRecordingButton",
+	"QueueStatusMinimapButton",
+	"GatherArchNote",
+	"ZGVMarker",
+	"QuestPointerPOI",
+	"poiMinimap",
+	"MiniMapLFGFrame",
+	"PremadeFilter_MinimapButton",
+	"QuestieFrame",
+	"Guidelime",
+	"MiniMapBattlefieldFrame",
+	"LibDBIcon10_BugSack",
+	"MinimapButton_PigUI",
+	"MinimapLayerFrame",
+	"NWBNaxxMarkerMini",
+	"NWBMini",
+	"SexyMapCustomBackdrop",
+	"SexyMapCoordFrame",
+	"SexyMapPingFrame",
+	"SexyMapZoneTextButton",
+}
 local function Other_ShouNaBut()
 	local children = { Minimap:GetChildren() };
-	local paichulist = PIG["MinimapBpaichu"];
+	local NewPaichulist = {}
+	for i=1,10 do
+		table.insert(NewPaichulist,"Spy_MapNoteList_mini"..i)
+	end
+	for i=1,#paichulist do
+		table.insert(NewPaichulist,paichulist[i])
+	end
 	for i=1,#children do
 		if children[i]:GetName() then
 			--print(children[i]:GetName())
 			local shifouzaiguolvliebiao = true;
-			for ii=1,#paichulist do
-					local cunzai=string.match(children[i]:GetName(),paichulist[ii])
+			for ii=1,#NewPaichulist do
+					local cunzai=string.match(children[i]:GetName(),NewPaichulist[ii])
 					if cunzai then
 						shifouzaiguolvliebiao = false;
 					end
@@ -81,6 +145,13 @@ end
 --小地图按钮--==============================
 local function MinimapButton_Pig_Open()
 	if MinimapButton_PigUI==nil then
+		if tocversion<100000 then
+			Minimap.chushipianyi = 52
+			Minimap.zhijing = 80
+		else
+			Minimap.chushipianyi = 82
+			Minimap.zhijing = 110
+		end
 		local fujikname = UIParent
 		if PIG.Map.MinimapShouNa_BS then
 			fujikname = Minimap
@@ -101,7 +172,11 @@ local function MinimapButton_Pig_Open()
 		MinimapButton_Pig.Icon = MinimapButton_Pig:CreateTexture(nil, "ARTWORK");
 		MinimapButton_Pig.Icon:SetTexture(132311);
 		MinimapButton_Pig.Icon:SetSize(23,23);
-		MinimapButton_Pig.Icon:SetPoint("CENTER", 0, 1);
+		if tocversion<100000 then
+			MinimapButton_Pig.Icon:SetPoint("CENTER", 0, 1);
+		else
+			MinimapButton_Pig.Icon:SetPoint("CENTER", 0.8, 0);
+		end
 		MinimapButton_Pig.error = MinimapButton_Pig:CreateTexture(nil, "OVERLAY");
 		MinimapButton_Pig.error:SetTexture("interface/common/voicechat-muted.blp");
 		MinimapButton_Pig.error:SetSize(19,19);
@@ -124,7 +199,7 @@ local function MinimapButton_Pig_Open()
 		local function YDButtonP()
 			local weizhiXY = PIG.Map.MinimapPos
 			MinimapButton_Pig:ClearAllPoints();
-			MinimapButton_Pig:SetPoint("TOPLEFT","Minimap","TOPLEFT",52-(80*cos(weizhiXY)),(80*sin(weizhiXY))-52)
+			MinimapButton_Pig:SetPoint("TOPLEFT","Minimap","TOPLEFT",Minimap.chushipianyi-(Minimap.zhijing*cos(weizhiXY)),(Minimap.zhijing*sin(weizhiXY))-Minimap.chushipianyi)
 		end
 
 		local function YDButtonP_OnUpdate()
@@ -224,11 +299,7 @@ local function MinimapButton_Pig_Open()
 	end
 end
 ------------
-fuFrame.Minimap_but = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.Minimap_but:SetSize(30,32);
-fuFrame.Minimap_but:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-20);
-fuFrame.Minimap_but.Text:SetText("显示小地图按钮");
-fuFrame.Minimap_but.tooltip = "显示插件的小地图按钮。";
+fuFrame.Minimap_but = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"显示小地图按钮","显示插件的小地图按钮")
 fuFrame.Minimap_but:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		fuFrame.Minimap_but_SN:Enable();
@@ -244,12 +315,9 @@ fuFrame.Minimap_but:SetScript("OnClick", function (self)
 	end
 end);
 -----------
-fuFrame.Minimap_but_BS = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.Minimap_but_BS:SetSize(30,32);
-fuFrame.Minimap_but_BS:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",300,-20);
-fuFrame.Minimap_but_BS.Text:SetText("允许被收纳");
+local ctooltip = "开启后小地图按钮将可以被其他插件收纳。|cffFF0000(注意和下方收纳小地图按钮功能只能选一)|r";
+fuFrame.Minimap_but_BS = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",300,-20,"允许被收纳",ctooltip)
 fuFrame.Minimap_but_BS:SetMotionScriptsWhileDisabled(true) 
-fuFrame.Minimap_but_BS.tooltip = "开启后小地图按钮将可以被其他插件收纳。|cffFF0000(注意和下方收纳小地图按钮功能只能选一)|r";
 fuFrame.Minimap_but_BS:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Map.MinimapShouNa_BS=true;
@@ -261,13 +329,10 @@ fuFrame.Minimap_but_BS:SetScript("OnClick", function (self)
 		MinimapButton_PigUI:SetParent(UIParent)
 	end
 end);
-----收纳功能
-fuFrame.Minimap_but_SN = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.Minimap_but_SN:SetSize(30,32);
+--收纳功能
+local xtooltip = "开启后将收纳其他插件的小地图按钮到单独界面，左键点击本插件小地图按钮可查看已收纳按钮！|cffFF0000(注意和上方允许被收纳只能选一)|r";
+fuFrame.Minimap_but_SN = ADD_Checkbutton(nil,fuFrame,-120,"TOPLEFT",fuFrame,"TOPLEFT",20,-70,"收纳其他插件小地图按钮",xtooltip)
 fuFrame.Minimap_but_SN:SetMotionScriptsWhileDisabled(true) 
-fuFrame.Minimap_but_SN:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-70);
-fuFrame.Minimap_but_SN.Text:SetText("收纳其他插件小地图按钮");
-fuFrame.Minimap_but_SN.tooltip = "开启后将收纳其他插件的小地图按钮到单独界面，左键点击本插件小地图按钮可查看已收纳按钮！|cffFF0000(注意和上方允许被收纳只能选一)|r";
 fuFrame.Minimap_but_SN:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Map.MinimapShouNa=true;
@@ -279,27 +344,25 @@ fuFrame.Minimap_but_SN:SetScript("OnClick", function (self)
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
--- --收纳小地图按钮每行数目
+--收纳小地图按钮每行数目
 local meihangshuxiala = {1,2,3,4,5,6,7,8,9,10};
-local Smeihangshu = CreateFrame("FRAME", "Smeihangshu_UI", fuFrame, "UIDropDownMenuTemplate")
-Smeihangshu:SetPoint("LEFT",fuFrame.Minimap_but_SN.Text,"RIGHT",2,-2)
-UIDropDownMenu_SetWidth(Smeihangshu, 140)
-
-local function Smeihangshu_Up()
-	local info = UIDropDownMenu_CreateInfo()
-	info.func = Smeihangshu.SetValue
+fuFrame.Smeihangshu=PIGDownMenu(nil,{140,24},fuFrame,{"LEFT",fuFrame.Minimap_but_SN.Text,"RIGHT",0,0})
+function fuFrame.Smeihangshu:PIGDownMenu_Update_But(self)
+	local info = {}
+	info.func = self.PIGDownMenu_SetValue
 	for i=1,#meihangshuxiala,1 do
-	    info.text, info.arg1, info.checked = meihangshuxiala[i].."个", meihangshuxiala[i], meihangshuxiala[i] == PIG.Map.MinimapShouNa_hang;
-		UIDropDownMenu_AddButton(info)
+	    info.text, info.arg1 = meihangshuxiala[i].."个", meihangshuxiala[i]
+	    info.checked = meihangshuxiala[i]==PIG["Map"]["MinimapShouNa_hang"]
+		fuFrame.Smeihangshu:PIGDownMenu_AddButton(info)
 	end 
 end
-function Smeihangshu:SetValue(newValue)
-	UIDropDownMenu_SetText(Smeihangshu, "每行按钮数:"..newValue.."个")
-	PIG.Map.MinimapShouNa_hang = newValue;
+function fuFrame.Smeihangshu:PIGDownMenu_SetValue(value,arg1,arg2)
+	fuFrame.Smeihangshu:PIGDownMenu_SetText("每行按钮数:"..value)
+	PIG["Map"]["MinimapShouNa_hang"]=arg1
 	if fuFrame.Minimap_but_SN:GetChecked() and fuFrame.Minimap_but:GetChecked() then
-		gengxinMBweizhi(newValue)
+		gengxinMBweizhi(arg1)
 	end
-	CloseDropDownMenus()
+	PIGCloseDropDownMenus()
 end
 --=======================================
 fuFrame.MinimapButF = CreateFrame("Frame", nil, fuFrame,"BackdropTemplate")
@@ -504,8 +567,7 @@ fuFrame.MinimapButF.ADDFrame.NO:SetScript("OnClick", function ()
 end);
 
 fuFrame:HookScript("OnShow", function ()
-	UIDropDownMenu_SetText(Smeihangshu, "每行按钮数:"..PIG.Map.MinimapShouNa_hang.."个")
-	UIDropDownMenu_Initialize(Smeihangshu, Smeihangshu_Up)
+	fuFrame.Smeihangshu:PIGDownMenu_SetText("每行按钮数:"..PIG["Map"]["MinimapShouNa_hang"].."个")
 	if PIG.Map.MinimapBut then
 		fuFrame.Minimap_but:SetChecked(true);
 	end

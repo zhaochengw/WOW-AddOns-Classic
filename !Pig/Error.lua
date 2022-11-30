@@ -2,13 +2,14 @@ local addonName, addonTable = ...;
 local gsub = _G.string.gsub 
 local find = _G.string.find
 local ADD_Frame=addonTable.ADD_Frame
+local _, _, _, tocversion = GetBuildInfo()
 -----------------
 local Pig_seterrorhandler=seterrorhandler
 local bencierrinfo={}
 --------------------------------
 local WWW,HHH = 600,380
 local biaotiW = 25
-local Bugshouji = CreateFrame("Frame", "Bugshouji_UI", fuFrame,"BackdropTemplate");
+local Bugshouji = CreateFrame("Frame", "Bugshouji_UI", UIParent,"BackdropTemplate");
 Bugshouji:SetSize(WWW,HHH);
 Bugshouji:SetPoint("CENTER",UIParent,"CENTER",0,0);
 Bugshouji:EnableMouse(true)
@@ -41,9 +42,14 @@ end)
 Bugshouji.Moving:SetScript("OnDragStop",function()
     Bugshouji:StopMovingOrSizing()
 end)
-Bugshouji.Close = CreateFrame("Button",nil,Bugshouji, "UIPanelCloseButton");  
-Bugshouji.Close:SetSize(34,34);
-Bugshouji.Close:SetPoint("TOPRIGHT",Bugshouji,"TOPRIGHT",4,4);
+Bugshouji.Close = CreateFrame("Button",nil,Bugshouji, "UIPanelCloseButton");
+if tocversion<100000 then
+	Bugshouji.Close:SetSize(34,34);
+	Bugshouji.Close:SetPoint("TOPRIGHT",Bugshouji,"TOPRIGHT",4,4);
+else
+	Bugshouji.Close:SetSize(22,22);
+	Bugshouji.Close:SetPoint("TOPRIGHT",Bugshouji,"TOPRIGHT",-1,-2);
+end 
 Bugshouji.Time = Bugshouji:CreateFontString();
 Bugshouji.Time:SetPoint("TOPLEFT",Bugshouji,"TOPLEFT",10,-5);
 Bugshouji.Time:SetFontObject(GameFontNormal);

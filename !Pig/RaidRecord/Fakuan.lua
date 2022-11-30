@@ -71,10 +71,9 @@ local function ADD_fakuan()
 		fuFrame.bobaobut.Tex:SetPoint("CENTER",4,0);
 	end);
 	fuFrame.bobaobut:SetScript("OnClick", function()
-		local xuanzhongName =addonTable.xuanzhongName;
 		for j=1,#PIG["RaidRecord"]["fakuan"] do
 			if PIG["RaidRecord"]["fakuan"][j][4]~="无" then
-				SendChatMessage("["..PIG["RaidRecord"]["fakuan"][j][1].."]-"..PIG["RaidRecord"]["fakuan"][j][4].."-收入："..PIG["RaidRecord"]["fakuan"][j][2]+PIG["RaidRecord"]["fakuan"][j][3].."G", xuanzhongName, nil);
+				SendChatMessage("["..PIG["RaidRecord"]["fakuan"][j][1].."]-"..PIG["RaidRecord"]["fakuan"][j][4].."-收入："..PIG["RaidRecord"]["fakuan"][j][2]+PIG["RaidRecord"]["fakuan"][j][3].."G", RaidR_UI.xuanzhongChat, nil);
 			end
 		end
 	end)

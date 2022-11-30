@@ -102,13 +102,27 @@ local function huoqu_Skill()
 			table.insert(yixueSkill,jinengxinxi)
 		end
 	end
-	for Bagid=0,4,1 do
-		local numberOfSlots = GetContainerNumSlots(Bagid);
-		for i=1,numberOfSlots,1 do
-			for ii=1,#Pig_ItemID,1 do
-				if GetContainerItemID(Bagid, i)==Pig_ItemID[ii][3] then--有物品
-					local Itemxinxi={Pig_ItemID[ii][1],Pig_ItemID[ii][2],Pig_ItemID[ii][3]};
-					table.insert(yixueSkill,Itemxinxi)
+	if tocversion<100000 then
+		for Bagid=0,4,1 do
+			local numberOfSlots = GetContainerNumSlots(Bagid);
+			for i=1,numberOfSlots,1 do
+				for ii=1,#Pig_ItemID,1 do
+					if GetContainerItemID(Bagid, i)==Pig_ItemID[ii][3] then--有物品
+						local Itemxinxi={Pig_ItemID[ii][1],Pig_ItemID[ii][2],Pig_ItemID[ii][3]};
+						table.insert(yixueSkill,Itemxinxi)
+					end
+				end
+			end
+		end
+	else
+		for Bagid=0,4,1 do
+			local numberOfSlots = C_Container.GetContainerNumSlots(Bagid);
+			for i=1,numberOfSlots,1 do
+				for ii=1,#Pig_ItemID,1 do
+					if C_Container.GetContainerItemID(Bagid, i)==Pig_ItemID[ii][3] then--有物品
+						local Itemxinxi={Pig_ItemID[ii][1],Pig_ItemID[ii][2],Pig_ItemID[ii][3]};
+						table.insert(yixueSkill,Itemxinxi)
+					end
 				end
 			end
 		end
@@ -206,36 +220,6 @@ local function gengxin_Skill(self)
 			end
 		end
 	end
-end
---
-local tishiframepig
-local function xianshitishi()
-	if not InCombatLockdown() then
-		local youlengquewancCD=false;
-		local shujuyaun = PIG["SkillFBCD"]["SkillCD"]
-		for i=1,#shujuyaun,1 do
-			if #shujuyaun[i][2]>0 then
-				for ii=1,#shujuyaun[i][2],1 do
-					if shujuyaun[i][2][ii][5] then
-						if shujuyaun[i][2][ii][5]~=0 then
-							local sitng=shujuyaun[i][2][ii][4]+shujuyaun[i][2][ii][5]-GetTime();
-							if sitng<=0 then
-								youlengquewancCD=true;
-							end
-						else
-							youlengquewancCD=true;
-						end
-					end
-				end
-			end
-		end
-		if youlengquewancCD then 
-			tishiframepig:Show(); 
-		else
-			tishiframepig:Hide();
-		end
-	end
-	C_Timer.After(2,xianshitishi);
 end
 --===========================================================================
 --获取副本CD
@@ -413,19 +397,6 @@ local function Add_Skill_CD()
 		SK_list.time:SetPoint("LEFT", SK_list.name, "RIGHT", 0, 0);
 		SK_list.time:SetFontObject(ChatFontNormal);
 	end
-	--小地图提示图标
-	GameTimeFrame.CDtishi = GameTimeFrame:CreateTexture(nil, "OVERLAY");
-	GameTimeFrame.CDtishi:SetTexture("interface/common/help-i.blp");
-	GameTimeFrame.CDtishi:SetSize(40,40);
-	GameTimeFrame.CDtishi:SetPoint("CENTER",GameTimeFrame,"CENTER",0,0);
-	GameTimeFrame.CDtishi:Hide();
-	if tocversion<30000 then
-		tishiframepig=GameTimeFrame.CDtishi
-	else
-		tishiframepig=GameTimeCalendarInvitesGlow
-	end
-	C_Timer.After(4,xianshitishi);
-
 	--副本CD列表===================================================
 	zhuanyeCD.fubenCD=ADD_Frame(GnUI,zhuanyeCD,(Width-48)/2,Height-70,"TOPRIGHT", zhuanyeCD, "TOPRIGHT", -24, -40,false,true,false,false,false,"BG3")
 	zhuanyeCD.fubenCD.titleR = zhuanyeCD.fubenCD:CreateFontString();
@@ -514,14 +485,28 @@ local function Add_Skill_CD()
 							for kk=1,#shujuyuan[k][2],1 do
 								if shujuyuan[k][2][kk][1]==arg3 then
 									local function gengxinSPCD3()
-										for Bagid=0,4,1 do
-											local numberOfSlots = GetContainerNumSlots(Bagid);
-											for sol=1,numberOfSlots,1 do
-												if GetContainerItemID(Bagid, sol)==Pig_ItemID[i][3] then
-													local startTime, duration = GetContainerItemCooldown(Bagid, sol)
-													shujuyuan[k][2][kk][4] =startTime;
-													shujuyuan[k][2][kk][5] =duration;
-													gengxin_Skill(zhuanyeCD.SkillCD.Scroll);
+										if tocversion<100000 then
+											for Bagid=0,4,1 do
+												local numberOfSlots = GetContainerNumSlots(Bagid);
+												for sol=1,numberOfSlots,1 do
+													if GetContainerItemID(Bagid, sol)==Pig_ItemID[i][3] then
+														local startTime, duration = GetContainerItemCooldown(Bagid, sol)
+														shujuyuan[k][2][kk][4] =startTime;
+														shujuyuan[k][2][kk][5] =duration;
+														gengxin_Skill(zhuanyeCD.SkillCD.Scroll);
+													end
+												end
+											end
+										else
+											for Bagid=0,4,1 do
+												local numberOfSlots = C_Container.GetContainerNumSlots(Bagid);
+												for sol=1,numberOfSlots,1 do
+													if C_Container.GetContainerItemID(Bagid, sol)==Pig_ItemID[i][3] then
+														local startTime, duration = C_Container.GetContainerItemCooldown(Bagid, sol)
+														shujuyuan[k][2][kk][4] =startTime;
+														shujuyuan[k][2][kk][5] =duration;
+														gengxin_Skill(zhuanyeCD.SkillCD.Scroll);
+													end
 												end
 											end
 										end
@@ -577,26 +562,6 @@ local function Add_Skill_CD()
 		huoqu_Skill()
 		gengxin_Skill(zhuanyeCD.SkillCD.Scroll);
 	end)
-	local function jihuobangdingrili_Open()
-	    if IsAddOnLoaded("Blizzard_Calendar") then
-	        zhuanyeCD:Show()
-	    else
-	        local maoxianFRAME = CreateFrame("FRAME")
-	        maoxianFRAME:RegisterEvent("ADDON_LOADED")
-	        maoxianFRAME:SetScript("OnEvent", function(self, event, arg1)
-	            if arg1 == "Blizzard_Calendar" then
-	            	zhuanyeCD:SetPoint("TOPLEFT", CalendarFrame, "TOPRIGHT", 0, -18);
-	                CalendarFrame:HookScript("OnShow", function()
-						zhuanyeCD:Show()
-					end);
-					CalendarFrame:HookScript("OnHide", function()
-						zhuanyeCD:Hide()
-					end);
-	                maoxianFRAME:UnregisterEvent("ADDON_LOADED")
-	            end
-	        end)
-	    end
-	end
 end
 --===============================
 local ADD_ModCheckbutton =addonTable.ADD_ModCheckbutton
@@ -621,6 +586,11 @@ local function ADD_QuickButton_SkillfubenCD()
 		local Icon=133735
 		local Tooltip = "点击-|cff00FFFF打开"..GnName.."监控|r"
 		local QkBut=ADD_QuickButton(QkBut,Tooltip,Icon)
+		QkBut.Height = QkBut:CreateTexture(nil, "OVERLAY");
+		QkBut.Height:SetTexture(130724);
+		QkBut.Height:SetBlendMode("ADD");
+		QkBut.Height:SetAllPoints(QkBut)
+		QkBut.Height:Hide()
 		QkBut:SetScript("OnClick", function(self,button)
 			if _G[GnUI]:IsShown() then
 				_G[GnUI]:Hide();
@@ -629,6 +599,38 @@ local function ADD_QuickButton_SkillfubenCD()
 				_G[GnUI]:Show();
 			end
 		end);
+		--提示图标
+		local function xianshitishi()
+			if not InCombatLockdown() then
+				local youlengquewancCD=false;
+				local shujuyaun = PIG["SkillFBCD"]["SkillCD"]
+				for i=1,#shujuyaun,1 do
+					if #shujuyaun[i][2]>0 then
+						for ii=1,#shujuyaun[i][2],1 do
+							if shujuyaun[i][2][ii][5] then
+								if shujuyaun[i][2][ii][5]~=0 then
+									local sitng=shujuyaun[i][2][ii][4]+shujuyaun[i][2][ii][5]-GetTime();
+									if sitng<=0 then
+										youlengquewancCD=true;
+										break
+									end
+								else
+									youlengquewancCD=true;
+									break
+								end
+							end
+						end
+					end
+				end
+				if youlengquewancCD then 
+					QkBut.Height:Show(); 
+				else
+					QkBut.Height:Hide();
+				end
+			end
+			C_Timer.After(10,xianshitishi);
+		end
+		C_Timer.After(10,xianshitishi);
 	end
 end
 addonTable.ADD_QuickButton_SkillfubenCD=ADD_QuickButton_SkillfubenCD

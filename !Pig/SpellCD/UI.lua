@@ -228,9 +228,6 @@ StaticPopupDialogs["PIG_Reload_UI"] = {
 }
 --=====================================
 addonTable.Spell_CD_JK = function()
-	PIG_Per['SpellJK']=PIG_Per['SpellJK'] or addonTable.Default_Per['SpellJK']
-	PIG_Per['SpellJK']['Kaiqi']=PIG_Per['SpellJK']['Kaiqi'] or addonTable.Default_Per['SpellJK']['Kaiqi']
-	PIG_Per['SpellJK']['AddBut']=PIG_Per['SpellJK']['AddBut'] or addonTable.Default_Per['SpellJK']['AddBut']
 	if PIG_Per['SpellJK']['Kaiqi']=="ON" then
 		OptionsModF_Spell_JK:SetChecked(true);
 		Options_Spell_CD:Enable();

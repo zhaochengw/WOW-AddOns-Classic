@@ -3,6 +3,7 @@ local gsub = _G.string.gsub
 local ADD_Frame=addonTable.ADD_Frame
 local ADD_Button=addonTable.ADD_Button
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
+local _, _, _, tocversion = GetBuildInfo()
 ---===================================
 local Pig_Options=ADD_Frame("Pig_OptionsUI",UIParent,800, 540,"CENTER",UIParent,"CENTER",0,0,true,false,true,true,true)
 Pig_Options:SetBackdrop({bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
@@ -32,9 +33,14 @@ Pig_Options.TOPT.title = Pig_Options.TOPT:CreateFontString();
 Pig_Options.TOPT.title:SetPoint("TOP", Pig_Options.TOPT, "TOP", 0, -17);
 Pig_Options.TOPT.title:SetFontObject(GameFontNormal);
 
-Pig_Options.Close = CreateFrame("Button",nil,Pig_Options, "UIPanelCloseButton");  
-Pig_Options.Close:SetSize(32,32);
-Pig_Options.Close:SetPoint("TOPRIGHT", Pig_Options, "TOPRIGHT", -30, 14);
+Pig_Options.Close = CreateFrame("Button",nil,Pig_Options, "UIPanelCloseButton");
+if tocversion<100000 then
+	Pig_Options.Close:SetSize(32,32);
+	Pig_Options.Close:SetPoint("TOPRIGHT", Pig_Options, "TOPRIGHT", -30, 14);
+else
+	Pig_Options.Close:SetSize(25,25);
+	Pig_Options.Close:SetPoint("TOPRIGHT", Pig_Options, "TOPRIGHT", -30, 11);
+end 
 Pig_Options.C = Pig_Options:CreateTexture(nil, "ARTWORK")
 Pig_Options.C:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
 Pig_Options.C:SetTexCoord(0.31, 0.67, 0, 0.66)
@@ -60,7 +66,6 @@ Pig_Options.LF:SetPoint("TOPLEFT", Pig_Options, "TOPLEFT", 20, -60)
 Pig_Options.LF.TopEdge:Hide()
 Pig_Options.LF.TopRR = Pig_Options.LF:CreateTexture(nil, "BORDER");
 Pig_Options.LF.TopRR:SetTexture("interface/optionsframe/ui-optionsframe-spacer.blp");
-Pig_Options.LF.TopRR:SetAlpha(0.6);
 Pig_Options.LF.TopRR:SetWidth(6);
 Pig_Options.LF.TopRR:SetPoint("TOPRIGHT", Pig_Options.LF, "TOPRIGHT", -12,8);
 --右侧内容
@@ -138,12 +143,10 @@ for i=1, #Tab_L, 1 do
 	TAB.TexR:SetPoint("LEFT", TAB.TexL, "RIGHT", 0,0);
 	TAB.TexBot = TAB:CreateTexture(nil, "BORDER");
 	TAB.TexBot:SetTexture("interface/optionsframe/ui-optionsframe-spacer.blp");
-	TAB.TexBot:SetAlpha(0.6);
 	TAB.TexBot:SetWidth(Tab_LW+4);
 	TAB.TexBot:SetPoint("BOTTOM", TAB, "BOTTOM", 0,-8);
 	TAB.TexRR = TAB:CreateTexture(nil, "BORDER");
 	TAB.TexRR:SetTexture("interface/optionsframe/ui-optionsframe-spacer.blp");
-	TAB.TexRR:SetAlpha(0.6);
 	TAB.TexRR:SetWidth(Tab_JG-4);
 	TAB.TexRR:SetPoint("BOTTOMLEFT", TAB, "BOTTOMRIGHT", 2,-8);
 	TAB.TexTishi = TAB:CreateTexture(nil, "BORDER");
@@ -181,7 +184,7 @@ end
 
 --左边选项内容
 local Tab_L_List={
-	{"交互增强","聊天增强","战斗辅助","头像增强","显示增强","界面布局","快捷按钮栏","小地图/地图","游戏参数设置","露露缇娅","开发工具","配 置","关 于"},
+	{"交互增强","聊天增强","战斗辅助","头像增强","显示增强","界面布局","快捷按钮栏","小地图/地图","游戏参数设置","测试功能","露露缇娅","开发工具","配 置","关 于"},
 	{"背包整合","拍卖增强","额外动作条","快捷跟随","输出提示","技能监控","售卖助手","专业 C D","时空之门","开团助手","带本助手","离开屏保"},
 }
 local List_ButH = 24
@@ -274,12 +277,20 @@ QuickButton:SetMovable(true)
 QuickButton:SetClampedToScreen(true)
 QuickButton:Hide()
 QuickButton.yidong = CreateFrame("Frame", nil, QuickButton,"BackdropTemplate")
-QuickButton.yidong:SetBackdrop({edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 6,})
-QuickButton.yidong:SetBackdropBorderColor(0, 1, 1, 0.8);
-QuickButton.yidong:SetSize(10,ActionW)
+QuickButton.yidong:SetBackdrop({
+	bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, edgeSize = 6
+});
+QuickButton.yidong:SetBackdropColor(0.4, 0.4, 0.4, 0.5);
+QuickButton.yidong:SetBackdropBorderColor(1, 1, 1, 1);
+QuickButton.yidong:SetSize(14,ActionW+4)
 QuickButton.yidong:SetPoint("LEFT", QuickButton, "LEFT", 0, 0);
 QuickButton.yidong:EnableMouse(true)
 QuickButton.yidong:RegisterForDrag("LeftButton")
+QuickButton.yidong.title = QuickButton.yidong:CreateFontString();
+QuickButton.yidong.title:SetAllPoints(QuickButton.yidong)
+QuickButton.yidong.title:SetFont(ChatFontNormal:GetFont(), 11)
+QuickButton.yidong.title:SetTextColor(0.6, 0.6, 0.6, 1)
+QuickButton.yidong.title:SetText("拖\n动")
 QuickButton.yidong:SetScript("OnDragStart",function()
 	QuickButton:StartMoving()
 end)
@@ -290,12 +301,13 @@ QuickButton.yidong:SetScript("OnDragStop",function()
 	PIG['QuickButton']['Point']={point, relativePoint, xOfs, yOfs};
 end)
 QuickButton.nr = CreateFrame("Frame", nil, QuickButton,"BackdropTemplate");
-QuickButton.nr:SetBackdrop({bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, tileSize = 0, edgeSize = 6,insets = { left = 0, right = 0, top = 0, bottom = 0 }});
+QuickButton.nr:SetBackdrop({
+	bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, edgeSize = 6
+});
 QuickButton.nr:SetBackdropColor(0.4, 0.4, 0.4, 0.5);
 QuickButton.nr:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.5);
 QuickButton.nr:SetSize(ActionW*10,ActionW+4);
-QuickButton.nr:SetPoint("LEFT",QuickButton,"LEFT",12,0);
-
+QuickButton.nr:SetPoint("LEFT",QuickButton,"LEFT",14,0);
 
 --界面选项插件菜单==============================================================
 local PIG_AddOn = {};
@@ -365,7 +377,7 @@ Pig_Options.tishi.Tex:SetTexture("interface/helpframe/helpicon-reportabuse.blp")
 Pig_Options.tishi.Tex:SetSize(30,30);
 Pig_Options.tishi.Tex:SetPoint("RIGHT",Pig_Options.tishi.txt,"LEFT", 0, 0);
 Pig_Options.tishi.Button = CreateFrame("Button",nil,Pig_Options.tishi, "UIPanelButtonTemplate");  
-Pig_Options.tishi.Button:SetSize(64,28);
+Pig_Options.tishi.Button:SetSize(64,24);
 Pig_Options.tishi.Button:SetPoint("LEFT",Pig_Options.tishi.txt,"RIGHT",0,0);
 Pig_Options.tishi.Button:SetText("重载UI");
 local buttonFont=Pig_Options.tishi.Button:GetFontString()
@@ -428,32 +440,18 @@ Version_tishi:SetScript("OnEvent",function(self, event, arg1, arg2, arg3, arg4, 
 end)
 ----
 --/run print( GetMouseFocus():GetName() )
--- 		local editBox = ChatEdit_ChooseBoxForSend();
--- 		if editBox:HasFocus() then			
--- 			editBox:SetText(caijiannr);
--- 			editBox:HighlightText()
--- 		else
--- 			ChatEdit_ActivateChat(editBox)
--- 			editBox:Insert(caijiannr)
--- 			editBox:HighlightText()
--- 		end
 -- local ButtonXX = CreateFrame("Button","ButtonXX_UI",UIParent, "UIPanelButtonTemplate");
 -- ButtonXX:SetSize(100,29);
 -- ButtonXX:SetPoint("CENTER",UIParent,"CENTER",0,-2);
 -- ButtonXX:SetText("GetTexture");
 -- ButtonXX:SetScript("OnClick", function(self, button)
 -- 		-- local hh = {TargetFrameToT:GetChildren()} 
-
--- 		--local fffff = HelpFrameInsetInsetTopBorder
--- 		--local fffff = HelpFrameInsetInsetLeftBorder
--- 		-- local fffff = HelpFrameInsetInsetRightBorder
--- 		--local fffff = HelpFrameInsetInsetBottomBorder
--- 		--local fffff = HelpFrameInsetInsetBotLeftCorner
--- 		local fffff = HelpFrameTopRightCorner
+-- 		local fffff = HelpFrameTopLeftCorner
+-- 		--local fffff = HelpFrameTopBorder
 -- 		local Icon = fffff:GetTexture()
 -- 		print(Icon)
 -- 		local zipboap = {fffff:GetTexCoord()}
--- 		print(fffff:GetTexCoord())
+-- 		--print(fffff:GetTexCoord())
 -- 		local kuandu =fffff:GetWidth()
 -- 		local gaodu =fffff:GetHeight()
 -- 		print(kuandu,gaodu)

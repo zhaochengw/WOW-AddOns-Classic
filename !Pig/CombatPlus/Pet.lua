@@ -1,5 +1,6 @@
 local _, addonTable = ...;
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --=======================================
 local fuFrame=List_R_F_1_3
 ----开关宠物嘲讽技能提示-进入副本提示关宠物嘲讽技能低吼
@@ -86,11 +87,8 @@ local function CombatPlus_PetTishi()
 	end
 end
 ----------
-fuFrame.PetTishi = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.PetTishi:SetSize(30,32);
-fuFrame.PetTishi:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",300,-140);
-fuFrame.PetTishi.Text:SetText("宠物嘲讽开关提示");
-fuFrame.PetTishi.tooltip = "在宠物嘲讽技能上方增加一个提示按钮，副本内提示关闭宠物嘲讽/副本外提示开启！\r|cffFFff00（只对有宠物职业生效）|r";
+local Pettooltip = "在宠物嘲讽技能上方增加一个提示按钮，副本内提示关闭宠物嘲讽/副本外提示开启！\r|cffFFff00（只对有宠物职业生效）|r";
+fuFrame.PetTishi = ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",300,-140,"宠物嘲讽开关提示",Pettooltip)
 fuFrame.PetTishi:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['CombatPlus']['PetTishi']="ON";

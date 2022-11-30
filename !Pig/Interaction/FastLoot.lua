@@ -1,8 +1,8 @@
 local _, addonTable= ...;
+local _, _, _, tocversion = GetBuildInfo()
 -------------------
 local fuFrame=List_R_F_1_1
---------
-local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --------------
 --//快速拾取（不显示拾取界面）/////////--
 -- local shiqushike = 0
@@ -270,12 +270,7 @@ function PIG_AutoLoot:OnInit()
     internal._frame:SetScript("OnEvent", function(_,event,...) internal._frame[event](self, ...) end);
 end
 --===========================================
-fuFrame.AutolootCK = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.AutolootCK:SetSize(30,32);
-fuFrame.AutolootCK:SetHitRectInsets(0,-100,0,0);
-fuFrame.AutolootCK:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-20);
-fuFrame.AutolootCK.Text:SetText("快速拾取");
-fuFrame.AutolootCK.tooltip = "加快拾取速度(在队长分配不起作用),只在怀旧服有效。";
+fuFrame.AutolootCK = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"快速拾取","加快拾取速度(在队长分配不起作用),只在怀旧服有效。")
 fuFrame.AutolootCK:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['Interaction']['Autoloot']="ON";
@@ -290,7 +285,6 @@ end);
 
 --------------------
 addonTable.Interaction_FastLoot = function()
-	PIG['Interaction']=PIG['Interaction'] or addonTable.Default['Interaction']
     if tocversion<40000 then 
         if PIG['Interaction']['Autoloot']=="ON" then
             fuFrame.AutolootCK:SetChecked(true);

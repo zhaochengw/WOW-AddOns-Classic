@@ -1,5 +1,7 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_3
+local PIGDownMenu=addonTable.PIGDownMenu
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ----------------------------------
 --进入战斗时自动切换到1号动作栏
 local zidongfanyeFFFF = CreateFrame("Frame")
@@ -7,11 +9,7 @@ zidongfanyeFFFF:HookScript("OnEvent", function()
 	ChangeActionBarPage(1);
 end)
 ---------------------
-fuFrame.AutoFanye = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.AutoFanye:SetSize(30,32);
-fuFrame.AutoFanye:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",300,-80);
-fuFrame.AutoFanye.Text:SetText("进战斗时自动切换动作栏");
-fuFrame.AutoFanye.tooltip = "进入战斗后自动切换到1号动作栏！";
+fuFrame.AutoFanye = ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",300,-80,"进战斗时自动切换动作栏","进入战斗后自动切换到1号动作栏")
 fuFrame.AutoFanye:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['CombatPlus']['ActionBar_AutoFanye']="ON";
@@ -185,12 +183,8 @@ fuFrame.linec1:SetThickness(1);
 fuFrame.linec1:SetStartPoint("TOPLEFT",2,-190)
 fuFrame.linec1:SetEndPoint("TOPRIGHT",-2,-190)
 ---
-fuFrame.CombatTimeCK = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.CombatTimeCK:SetSize(30,30);
-fuFrame.CombatTimeCK:SetPoint("TOPLEFT",fuFrame.linec1,"TOPLEFT",20,-10);
-fuFrame.CombatTimeCK:SetHitRectInsets(0,-60,0,0);
-fuFrame.CombatTimeCK.Text:SetText("战斗计时");
-fuFrame.CombatTimeCK.tooltip = "在游戏界面启用一个显示战斗时间的框架\n|cff00FF00副本内：\n左边本次进本的战斗总用时，右边为本次战斗用时。|r\n|cff00FF00副本外：\n只显示本次战斗用时。|r";
+local BGtooltip = "在游戏界面启用一个显示战斗时间的框架\n|cff00FF00副本内：\n左边本次进本的战斗总用时，右边为本次战斗用时。|r\n|cff00FF00副本外：\n只显示本次战斗用时。|r";
+fuFrame.CombatTimeCK = ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame.linec1,"TOPLEFT",20,-10,"战斗计时",BGtooltip)
 fuFrame.CombatTimeCK:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['CombatPlus']["CombatTime"]=true
@@ -247,24 +241,26 @@ fuFrame.zitimiaobian = fuFrame:CreateFontString();
 fuFrame.zitimiaobian:SetPoint("LEFT",fuFrame.CBTPoint,"RIGHT",10,0);
 fuFrame.zitimiaobian:SetFontObject(GameFontNormal);
 fuFrame.zitimiaobian:SetText("字体描边");
-local ChatFontList = {"无","OUTLINE","THICKOUTLINE","MONOCHROME"};
-fuFrame.zitimiaobianD = CreateFrame("FRAME", nil, fuFrame, "UIDropDownMenuTemplate")
-fuFrame.zitimiaobianD:SetPoint("LEFT",fuFrame.zitimiaobian,"RIGHT",-11,-3)
-UIDropDownMenu_SetWidth(fuFrame.zitimiaobianD, 120)
-local function jiazaixialaimude(self)
-	local info = UIDropDownMenu_CreateInfo()
-	info.func = self.SetValue
-	for i=1,#ChatFontList,1 do
-	    info.text, info.arg1, info.checked = ChatFontList[i], ChatFontList[i], ChatFontList[i] == PIG['CombatPlus']["Miaobian"];
-		UIDropDownMenu_AddButton(info)
-	end
+
+local FontMiaobiaoList = {"无","OUTLINE","THICKOUTLINE","MONOCHROME"};
+fuFrame.zitimiaobianD=PIGDownMenu(nil,{140,24},fuFrame,{"LEFT",fuFrame.zitimiaobian,"RIGHT",0,0})
+function fuFrame.zitimiaobianD:PIGDownMenu_Update_But(self)
+	local info = {}
+	info.func = self.PIGDownMenu_SetValue
+	for i=1,#FontMiaobiaoList,1 do
+	    info.text, info.arg1 = FontMiaobiaoList[i], FontMiaobiaoList[i]
+	    info.checked = FontMiaobiaoList[i]==PIG['CombatPlus']["Miaobian"]
+		fuFrame.zitimiaobianD:PIGDownMenu_AddButton(info)
+	end 
 end
-function fuFrame.zitimiaobianD:SetValue(newValue)
-	PIG['CombatPlus']["Miaobian"] = newValue;
-	UIDropDownMenu_SetText(fuFrame.zitimiaobianD, newValue)
-	CombatTime_UI.T0:SetFont(TextStatusBarText:GetFont(), 16,newValue)
-	CombatTime_UI.T1:SetFont(TextStatusBarText:GetFont(), 16,newValue)
-	CloseDropDownMenus()
+function fuFrame.zitimiaobianD:PIGDownMenu_SetValue(value,arg1,arg2)
+	fuFrame.zitimiaobianD:PIGDownMenu_SetText(value)
+	PIG['CombatPlus']["Miaobian"]=arg1
+	if CombatTime_UI then
+		CombatTime_UI.T0:SetFont(TextStatusBarText:GetFont(), 16,arg1)
+		CombatTime_UI.T1:SetFont(TextStatusBarText:GetFont(), 16,arg1)
+	end
+	PIGCloseDropDownMenus()
 end
 ----
 fuFrame.BGcaizhi = fuFrame:CreateFontString();
@@ -272,45 +268,42 @@ fuFrame.BGcaizhi:SetPoint("LEFT",fuFrame.zitimiaobianD,"RIGHT",10,3);
 fuFrame.BGcaizhi:SetFontObject(GameFontNormal);
 fuFrame.BGcaizhi:SetText("背景材质");
 local BGList={"无","材质1","材质2"}
-fuFrame.BGcaizhiD = CreateFrame("FRAME", nil, fuFrame, "UIDropDownMenuTemplate")
-fuFrame.BGcaizhiD:SetPoint("LEFT",fuFrame.BGcaizhi,"RIGHT",-11,-3)
-UIDropDownMenu_SetWidth(fuFrame.BGcaizhiD, 80)
-local function jiazaixialaimudeBG(self)
-	local info = UIDropDownMenu_CreateInfo()
-	info.func = self.SetValue
+fuFrame.BGcaizhiD=PIGDownMenu(nil,{80,24},fuFrame,{"LEFT",fuFrame.BGcaizhi,"RIGHT",0,0})
+function fuFrame.BGcaizhiD:PIGDownMenu_Update_But(self)
+	local info = {}
+	info.func = self.PIGDownMenu_SetValue
 	for i=1,#BGList,1 do
-	    info.text, info.arg1, info.checked = BGList[i], i, i == PIG['CombatPlus']["Beijing"];
-		UIDropDownMenu_AddButton(info)
-	end
+	    info.text, info.arg1 = BGList[i], i
+	    info.checked = i==PIG['CombatPlus']["Beijing"]
+		fuFrame.BGcaizhiD:PIGDownMenu_AddButton(info)
+	end 
 end
-function fuFrame.BGcaizhiD:SetValue(newValue)
-	PIG['CombatPlus']["Beijing"] = newValue;
-	UIDropDownMenu_SetText(fuFrame.BGcaizhiD, BGList[newValue])
-	if newValue==1 then
-		CombatTime_UI.Texture:Hide()
-		CombatTime_UI:SetBackdrop(nil)
-	elseif newValue==2 then
-		CombatTime_UI.Texture:Hide()
-		CombatTime_UI:SetBackdrop({
-			bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 
-			edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-			tile = true, tileSize = 0, edgeSize = 4,insets = { left = 0, right = 0, top = 0, bottom = 0 }});
-		CombatTime_UI:SetBackdropColor(0, 0, 0, 0.6);
-		CombatTime_UI:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.8);
-	elseif newValue==3 then
-		CombatTime_UI:SetBackdrop(nil)
-		CombatTime_UI.Texture:Show()
+function fuFrame.BGcaizhiD:PIGDownMenu_SetValue(value,arg1,arg2)
+	fuFrame.BGcaizhiD:PIGDownMenu_SetText(value)
+	PIG['CombatPlus']["Beijing"]=arg1
+	if CombatTime_UI then
+		if arg1==1 then
+			CombatTime_UI.Texture:Hide()
+			CombatTime_UI:SetBackdrop(nil)
+		elseif arg1==2 then
+			CombatTime_UI.Texture:Hide()
+			CombatTime_UI:SetBackdrop({
+				bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 
+				edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
+				tile = true, tileSize = 0, edgeSize = 4,insets = { left = 0, right = 0, top = 0, bottom = 0 }});
+			CombatTime_UI:SetBackdropColor(0, 0, 0, 0.6);
+			CombatTime_UI:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.8);
+		elseif arg1==3 then
+			CombatTime_UI:SetBackdrop(nil)
+			CombatTime_UI.Texture:Show()
+		end
 	end
-	CloseDropDownMenus()
+	PIGCloseDropDownMenus()
 end
 -----------------
 addonTable.CombatPlus_TimeOpen = function()
-	PIG['CombatPlus']["Miaobian"]=PIG['CombatPlus']["Miaobian"] or addonTable.Default['CombatPlus']["Miaobian"]
-	UIDropDownMenu_Initialize(fuFrame.zitimiaobianD, jiazaixialaimude)
-	UIDropDownMenu_SetText(fuFrame.zitimiaobianD, PIG['CombatPlus']["Miaobian"])
-	PIG['CombatPlus']["Beijing"]=PIG['CombatPlus']["Beijing"] or addonTable.Default['CombatPlus']["Beijing"]
-	UIDropDownMenu_Initialize(fuFrame.BGcaizhiD, jiazaixialaimudeBG)
-	UIDropDownMenu_SetText(fuFrame.BGcaizhiD, BGList[PIG['CombatPlus']["Beijing"]])
+	fuFrame.zitimiaobianD:PIGDownMenu_SetText(PIG['CombatPlus']["Miaobian"])
+	fuFrame.BGcaizhiD:PIGDownMenu_SetText(BGList[PIG['CombatPlus']["Beijing"]])
 	if PIG['CombatPlus']["CombatTime"] then
 		fuFrame.CombatTimeCK:SetChecked(true);
 		fuFrame.CBTPoint:Show()

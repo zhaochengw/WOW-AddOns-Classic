@@ -3,15 +3,17 @@ local gsub = _G.string.gsub
 local find = _G.string.find
 local _, _, _, tocversion = GetBuildInfo()
 local ADD_Frame=addonTable.ADD_Frame
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
+local PIGDownMenu=addonTable.PIGDownMenu
 -----------------------------------------
 local function ADD_QuickBut_Jilu()
 		local miyuP={}
 		miyuP.zijirealm = GetRealmName()
 		local jilupindaoID={"PARTY","RAID"};
-		PIG['Chatjilu']["jiluinfo"]=PIG['Chatjilu']["jiluinfo"] or addonTable.Default['Chatjilu']["jiluinfo"]
-		local baocuntianshu=PIG['Chatjilu']["tianshu"];
+		PIG["Chatjilu"]["jiluinfo"]=PIG["Chatjilu"]["jiluinfo"] or addonTable.Default["Chatjilu"]["jiluinfo"]
+		local baocuntianshu=PIG["Chatjilu"]["tianshu"];
 		for i=1,#jilupindaoID do
-			local shujuyaun=PIG['Chatjilu']["jiluinfo"][jilupindaoID[i]]["neirong"];
+			local shujuyaun=PIG["Chatjilu"]["jiluinfo"][jilupindaoID[i]]["neirong"];
 			if #shujuyaun>0 then
 				if #shujuyaun[1]>0 then
 					for ii=#shujuyaun[1], 1, -1 do
@@ -27,7 +29,7 @@ local function ADD_QuickBut_Jilu()
 		end
 		
 		--密语
-		local miyushuju=PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"];
+		local miyushuju=PIG["Chatjilu"]["jiluinfo"]["WHISPER"]["neirong"];
 		if #miyushuju>0 then
 			for k,v in pairs(miyushuju[2]) do
 				for i=#v,1,-1 do
@@ -132,12 +134,12 @@ local function ADD_QuickBut_Jilu()
 			pindaoxuanzeC.tooltip = "记录"..jilupindaoName[j].."频道聊天信息";
 			pindaoxuanzeC:SetScript("OnClick", function (self)
 				if self:GetChecked() then
-					PIG['Chatjilu']["jiluinfo"][jilupindaoID[j]]["kaiguan"]="ON";
+					PIG["Chatjilu"]["jiluinfo"][jilupindaoID[j]]["kaiguan"]="ON";
 					for jj=1,#jilupindaoEvent[j] do
 						huoquliaotianjiluFFF:RegisterEvent(jilupindaoEvent[j][jj]);
 					end
 				else
-					PIG['Chatjilu']["jiluinfo"][jilupindaoID[j]]["kaiguan"]="OFF";
+					PIG["Chatjilu"]["jiluinfo"][jilupindaoID[j]]["kaiguan"]="OFF";
 					for jj=1,#jilupindaoEvent[j] do
 						huoquliaotianjiluFFF:UnregisterEvent(jilupindaoEvent[j][jj]);
 					end
@@ -151,32 +153,27 @@ local function ADD_QuickBut_Jilu()
 		ChatjiluMianban.baocuntianchu:SetText("保存时间");
 		-- --
 		local baocuntianshulist ={7,31,180,365};
-		local baocuntianshulistN ={"一周","一月","半年","一年"};
-		ChatjiluMianban.tianshuxiala = CreateFrame("FRAME", "ChatjiluMianban_tianshuxiala_UI", ChatjiluMianban, "UIDropDownMenuTemplate")
-		ChatjiluMianban.tianshuxiala:SetPoint("LEFT",ChatjiluMianban.baocuntianchu,"RIGHT",-16,-3)
-		UIDropDownMenu_SetWidth(ChatjiluMianban.tianshuxiala, 66)
-		local function baocuntianshulist_Up()
-			local info = UIDropDownMenu_CreateInfo()
-			info.func = ChatjiluMianban_tianshuxiala_UI.SetValue
+		local baocuntianshulistN ={[7]="一周",[31]="一月",[180]="半年",[365]="一年"};
+		ChatjiluMianban.tianshuxiala=PIGDownMenu(nil,{70,24},ChatjiluMianban,{"LEFT",ChatjiluMianban.baocuntianchu,"RIGHT", 0,0})
+		function ChatjiluMianban.tianshuxiala:PIGDownMenu_Update_But(self)
+			local info = {}
+			info.func = self.PIGDownMenu_SetValue
 			for i=1,#baocuntianshulist,1 do
-				info.text, info.arg1 = baocuntianshulistN[i], baocuntianshulist[i];
-			   	info.checked=baocuntianshulist[i]==PIG['Chatjilu']["tianshu"];
-				UIDropDownMenu_AddButton(info)
+			    info.text, info.arg1, info.arg2 = baocuntianshulistN[baocuntianshulist[i]], baocuntianshulist[i], baocuntianshulist[i]
+			    info.checked = baocuntianshulist[i]==PIG["Chatjilu"]["tianshu"]
+				ChatjiluMianban.tianshuxiala:PIGDownMenu_AddButton(info)
 			end 
 		end
-		function ChatjiluMianban_tianshuxiala_UI:SetValue(DaynewValue)
-			for i=1,#baocuntianshulist,1 do
-				if DaynewValue==baocuntianshulist[i] then
-					UIDropDownMenu_SetText(ChatjiluMianban_tianshuxiala_UI, baocuntianshulistN[i])
-				end
-			end 
-			PIG['Chatjilu']["tianshu"]=DaynewValue;
-			CloseDropDownMenus();
+		function ChatjiluMianban.tianshuxiala:PIGDownMenu_SetValue(value,arg1,arg2)
+			ChatjiluMianban.tianshuxiala:PIGDownMenu_SetText(value)
+			PIG["Chatjilu"]["tianshu"]=arg1
+			PIGCloseDropDownMenus()
 		end
+	
 		ChatjiluMianban.qingkong = CreateFrame("Button",nil,ChatjiluMianban, "UIPanelButtonTemplate");
 		ChatjiluMianban.qingkong:SetSize(90,22);
 		ChatjiluMianban.qingkong:SetPoint("TOPRIGHT",ChatjiluMianban,"TOPRIGHT",-10,-34);
-		ChatjiluMianban.qingkong:SetText('清空重置');
+		ChatjiluMianban.qingkong:SetText("清空记录");
 		ChatjiluMianban.qingkong:SetScript("OnClick", function (self)
 			StaticPopup_Show ("QINGKONGLIAOTIANJILU");
 		end);
@@ -189,6 +186,18 @@ local function ADD_QuickBut_Jilu()
 		ChatjiluMianban.nr.tishiliulan:SetPoint("CENTER",ChatjiluMianban.nr,"CENTER",0,0);
 		ChatjiluMianban.nr.tishiliulan:SetFontObject(GameFontNormal);
 		ChatjiluMianban.nr.tishiliulan:SetText("点击上方频道标签浏览聊天记录");
+		-------
+		ChatjiluMianban:HookScript("OnShow", function (self)
+			ChatjiluMianban.tianshuxiala:PIGDownMenu_SetText(baocuntianshulistN[PIG["Chatjilu"]["tianshu"]])
+			for j=1,#jilupindaoID do
+				if PIG["Chatjilu"]["jiluinfo"][jilupindaoID[j]]["kaiguan"]=="ON" then
+					_G["pindaoxuanzeC_"..j.."_UI"]:SetChecked(true);
+				elseif PIG["Chatjilu"]["jiluinfo"][jilupindaoID[j]]["kaiguan"]=="OFF" then
+					_G["pindaoxuanzeC_"..j.."_UI"]:SetChecked(false);
+				end
+			end
+		end);
+							
 		-------------
 		local hang_Width,hang_Height,hang_NUM  = ChatjiluMianban.nr:GetWidth()*0.14-30, 20, 17;
 		local function CHATgengxinhang1(self)
@@ -201,8 +210,8 @@ local function ADD_QuickBut_Jilu()
 						_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetTextColor(0,250/255,154/255, 1);
 						_G["riqi_list_TAB_highlight1_"..nn.."_"..i]:Hide();
 					end
-					if #PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"]>0 then
-					    local ItemsNum = #PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"][1];
+					if #PIG["Chatjilu"]["jiluinfo"][laiyuan]["neirong"]>0 then
+					    local ItemsNum = #PIG["Chatjilu"]["jiluinfo"][laiyuan]["neirong"][1];
 					    FauxScrollFrame_Update(self, ItemsNum, hang_NUM, hang_Height);
 					    local offset = FauxScrollFrame_GetOffset(self);
 					    for i = 1, hang_NUM do
@@ -210,7 +219,7 @@ local function ADD_QuickBut_Jilu()
 							if dangqian>0 then
 								_G["riqi_list_TAB_"..nn.."_"..i]:Show()
 								_G["riqi_list_TAB_"..nn.."_"..i]:SetID(dangqian)
-								_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetText(date("%Y-%m-%d",PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"][1][dangqian]*86400));
+								_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetText(date("%Y-%m-%d",PIG["Chatjilu"]["jiluinfo"][laiyuan]["neirong"][1][dangqian]*86400));
 								local yijihuohang=_G["liaotianneirong_shuaxin"..nn.."_UI"]:GetID()
 								if dangqian==yijihuohang then
 									_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetTextColor(1,1,1, 1);
@@ -232,8 +241,8 @@ local function ADD_QuickBut_Jilu()
 							_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetTextColor(0,250/255,154/255, 1);
 							_G["riqi_list_TAB_highlight1_"..nn.."_"..i]:Hide();
 						end
-						if #PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"]>0 then
-						    local ItemsNum = #PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"][1];
+						if #PIG["Chatjilu"]["jiluinfo"][laiyuan]["neirong"]>0 then
+						    local ItemsNum = #PIG["Chatjilu"]["jiluinfo"][laiyuan]["neirong"][1];
 						    FauxScrollFrame_Update(self, ItemsNum, hang_NUM, hang_Height);
 						    local offset = FauxScrollFrame_GetOffset(self);
 						    for i = 1, hang_NUM do
@@ -241,7 +250,7 @@ local function ADD_QuickBut_Jilu()
 								if dangqian>0 then
 									_G["riqi_list_TAB_"..nn.."_"..i]:Show()
 									_G["riqi_list_TAB_"..nn.."_"..i]:SetID(dangqian)
-									_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetText(date("%Y-%m-%d",PIG['Chatjilu']["jiluinfo"][laiyuan]["neirong"][1][dangqian]*86400));
+									_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetText(date("%Y-%m-%d",PIG["Chatjilu"]["jiluinfo"][laiyuan]["neirong"][1][dangqian]*86400));
 									local yijihuohang=_G["liaotianneirong_shuaxin"..nn.."_UI"]:GetID()
 									if dangqian==yijihuohang then
 										_G["riqi_list_TAB_Title_"..nn.."_"..i]:SetTextColor(1,1,1, 1);
@@ -252,15 +261,14 @@ local function ADD_QuickBut_Jilu()
 						end
 				end
 		end
-		
 		---
 		StaticPopupDialogs["QINGKONGLIAOTIANJILU"] = {
-			text = "确定要清空所有记录并重置配置吗？",
+			text = "确定要清空所有记录和配置吗？",
 			button1 = "确定",
 			button2 = "取消",
 			OnAccept = function()
 				for i=1,#jilupindaoID do
-					PIG['Chatjilu']["jiluinfo"][jilupindaoID[i]]["neirong"]={}
+					PIG["Chatjilu"]["jiluinfo"][jilupindaoID[i]]["neirong"]={}
 					_G["liaotianneirong_shuaxin"..i.."_UI"]:SetID(0)
 					if i==1 then
 				    	CHATgengxinhang1(_G["riqi_list_Scroll_"..i.."_UI"]);
@@ -371,7 +379,7 @@ local function ADD_QuickBut_Jilu()
 			    end
 			end)
 			local function zairuliaotianINFO(self,id)
-					local laiyuan=PIG['Chatjilu']["jiluinfo"][jilupindaoID[id]]["neirong"];
+					local laiyuan=PIG["Chatjilu"]["jiluinfo"][jilupindaoID[id]]["neirong"];
 					local jilulist=laiyuan[2][self:GetID()];
 					for x=1,#jilulist do
 						local Event =jilulist[x][1];
@@ -381,7 +389,7 @@ local function ADD_QuickBut_Jilu()
 						local info5 =jilulist[x][5];
 						for i=1,#QuickChat_biaoqingName do
 							if info4_jiluxiaoxineirong:find(QuickChat_biaoqingName[i][1]) then
-								info4_jiluxiaoxineirong = info4_jiluxiaoxineirong:gsub(QuickChat_biaoqingName[i][1], "\124T" .. QuickChat_biaoqingName[i][2] .. ":" ..(PIG['ChatFrame']['FontSize_value']+2) .. "\124t");
+								info4_jiluxiaoxineirong = info4_jiluxiaoxineirong:gsub(QuickChat_biaoqingName[i][1], "\124T" .. QuickChat_biaoqingName[i][2] .. ":" ..(PIG["ChatFrame"]["FontSize_value"]+2) .. "\124t");
 							end
 						end
 						local textCHATINFO="";
@@ -623,10 +631,9 @@ local function ADD_QuickBut_Jilu()
 			dangtianzonghangshu:SetPoint("TOP",liaotianneirong.Scroll,"BOTTOM",0,-10);
 			dangtianzonghangshu:SetFontObject(GameFontNormal);
 		end
-
 		---根据启用注册事件
 		for i=1,#jilupindaoID do
-			if PIG['Chatjilu']["jiluinfo"][jilupindaoID[i]]["kaiguan"]=="ON" then
+			if PIG["Chatjilu"]["jiluinfo"][jilupindaoID[i]]["kaiguan"]=="ON" then
 				for jj=1,#jilupindaoEvent[i] do
 					huoquliaotianjiluFFF:RegisterEvent(jilupindaoEvent[i][jj]);
 				end
@@ -640,7 +647,7 @@ local function ADD_QuickBut_Jilu()
 							local YYDAY=floor(xiaoxiTime/60/60/24)
 							local localizedClass, englishClass = GetPlayerInfoByGUID(arg12)
 							local rPerc, gPerc, bPerc, argbHex = GetClassColor(englishClass);
-							local shujuyuanPR=PIG['Chatjilu']["jiluinfo"][jilupindaoID[i]]["neirong"]
+							local shujuyuanPR=PIG["Chatjilu"]["jiluinfo"][jilupindaoID[i]]["neirong"]
 							if #shujuyuanPR>0 then
 								local yijingcunzairiqi=false
 								for f=#shujuyuanPR[1], 1, -1 do
@@ -655,7 +662,7 @@ local function ADD_QuickBut_Jilu()
 									table.insert(shujuyuanPR[2], {{event,xiaoxiTime,arg5,arg1,argbHex}});
 								end
 							else
-								PIG['Chatjilu']["jiluinfo"][jilupindaoID[i]]["neirong"]={
+								PIG["Chatjilu"]["jiluinfo"][jilupindaoID[i]]["neirong"]={
 									{YYDAY},{{{event,xiaoxiTime,arg5,arg1,argbHex}}}
 								}
 							end
@@ -705,7 +712,7 @@ local function ADD_QuickBut_Jilu()
 				miyijiluF.shezhiF:Hide();
 			else
 				miyijiluF.shezhiF:Show();
-				if PIG['Chatjilu']["jiluinfo"]["WHISPER"]["tixing"]=="ON" then
+				if PIG["Chatjilu"]["jiluinfo"]["WHISPER"]["tixing"]=="ON" then
 					miyijiluF.shezhiF.tixing:SetChecked(true)
 				else
 					miyijiluF.shezhiF.tixing:SetChecked(false)
@@ -741,17 +748,12 @@ local function ADD_QuickBut_Jilu()
 			miyijiluF.shezhiF:Hide()
 		end)
 
-		miyijiluF.shezhiF.tixing = CreateFrame("CheckButton", nil, miyijiluF.shezhiF, "ChatConfigCheckButtonTemplate");
-		miyijiluF.shezhiF.tixing:SetSize(28,30);
-		miyijiluF.shezhiF.tixing:SetHitRectInsets(0,-60,0,0);
-		miyijiluF.shezhiF.tixing:SetPoint("TOPLEFT", miyijiluF.shezhiF, "TOPLEFT", 8,-10);
-		miyijiluF.shezhiF.tixing.Text:SetText("来密语提醒");
-		miyijiluF.shezhiF.tixing.tooltip = "收到密语时频道切换按钮里面的图标会闪动";
+		miyijiluF.shezhiF.tixing = ADD_Checkbutton(nil,miyijiluF.shezhiF,-60,"TOPLEFT", miyijiluF.shezhiF, "TOPLEFT", 8,-10,"来密语提醒","收到密语时频道切换按钮里面的图标会闪动")
 		miyijiluF.shezhiF.tixing:SetScript("OnClick", function (self)
 			if self:GetChecked() then
-				PIG['Chatjilu']["jiluinfo"]["WHISPER"]["tixing"]="ON" 
+				PIG["Chatjilu"]["jiluinfo"]["WHISPER"]["tixing"]="ON" 
 			else
-				PIG['Chatjilu']["jiluinfo"]["WHISPER"]["tixing"]="OFF" 
+				PIG["Chatjilu"]["jiluinfo"]["WHISPER"]["tixing"]="OFF" 
 			end
 		end)
 		---重置密语记录
@@ -907,7 +909,7 @@ local function ADD_QuickBut_Jilu()
 			for id = 1, hang_NUM do
 		    	_G["MSGhang_"..id]:Hide();
 		    end
-		    local shuju=PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]
+		    local shuju=PIG["Chatjilu"]["jiluinfo"]["WHISPER"]["neirong"]
 			if #shuju>0 then
 				local ItemsNum = #shuju[1];
 				FauxScrollFrame_Update(self, ItemsNum, hang_NUM, hang_Height);
@@ -948,7 +950,7 @@ local function ADD_QuickBut_Jilu()
 			button1 = "确定",
 			button2 = "取消",
 			OnAccept = function()
-				PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"] = addonTable.Default['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"];
+				PIG["Chatjilu"]["jiluinfo"]["WHISPER"]["neirong"] = addonTable.Default["Chatjilu"]["jiluinfo"]["WHISPER"]["neirong"];
 				gengxinhang(miyijiluF.F.Scroll)
 			end,
 			timeout = 0,
@@ -986,7 +988,7 @@ local function ADD_QuickBut_Jilu()
 				miyijiluF.nr.Scroll:Clear()
 
 				local idxx=self.del:GetID()
-				local shuju=PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]
+				local shuju=PIG["Chatjilu"]["jiluinfo"]["WHISPER"]["neirong"]
 				local Aname = shuju[1][idxx][1];
 				shuju[1][idxx][3]=false
 				
@@ -1108,7 +1110,7 @@ local function ADD_QuickBut_Jilu()
 			end);
 			hang.del:SetScript("OnClick", function (self)
 				local idid=self:GetID()
-				local shuju=PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]	
+				local shuju=PIG["Chatjilu"]["jiluinfo"]["WHISPER"]["neirong"]	
 				table.removekey(shuju[2],shuju[1][idid][1])
 				table.remove(shuju[1],idid);
 				gengxinhang(miyijiluF.F.Scroll)
@@ -1135,7 +1137,7 @@ local function ADD_QuickBut_Jilu()
 		huoquliaotianjiluFFF:HookScript("OnEvent", function (self,event,arg1,arg2,arg3,arg4,arg5,_,_,_,_,_,_,arg12)
 			if not miyuP.zijirealm then miyuP.zijirealm = GetRealmName() end
 			if event=="CHAT_MSG_WHISPER" then
-				if PIG['Chatjilu']["jiluinfo"]["WHISPER"]["tixing"]=="ON" and youNEWxiaoxinlai==false and not miyijiluF_UI:IsShown() then
+				if PIG["Chatjilu"]["jiluinfo"]["WHISPER"]["tixing"]=="ON" and youNEWxiaoxinlai==false and not miyijiluF_UI:IsShown() then
 					youNEWxiaoxinlai=true 
 					miyuMGStishi() 
 				end
@@ -1161,7 +1163,7 @@ local function ADD_QuickBut_Jilu()
 				else
 					miyuP.miyuren=arg5
 				end
-				local huancunshuju=PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]
+				local huancunshuju=PIG["Chatjilu"]["jiluinfo"]["WHISPER"]["neirong"]
 				if #huancunshuju>0 then
 					local yijingcunzairiqi=false
 					for f=#huancunshuju[1], 1, -1 do
@@ -1181,7 +1183,7 @@ local function ADD_QuickBut_Jilu()
 						huancunshuju[2][miyuP.miyuren]={{event,xiaoxiTime,arg1}}
 					end
 				else
-					PIG['Chatjilu']["jiluinfo"]["WHISPER"]["neirong"]={
+					PIG["Chatjilu"]["jiluinfo"]["WHISPER"]["neirong"]={
 						{{miyuP.miyuren,englishClass,true}},{[miyuP.miyuren]={{event,xiaoxiTime,arg1}}}
 					}
 				end
@@ -1281,20 +1283,32 @@ local function ADD_QuickBut_Jilu()
 			self.hilight:Hide();
 		end);
 		---================================
-		--按钮
-		fuFrame.biankuang="UIMenuButtonStretchTemplate"
-		if PIG['ChatFrame']['wubiankuang']=="ON" then
-			fuFrame.biankuang="TruncatedButtonTemplate"
-		end
+
 		local Width,Height,jiangejuli = 24,24,4;
-		fuFrame.ChatJilu = CreateFrame("Button",nil,fuFrame, fuFrame.biankuang); 
+		local ziframe = {fuFrame:GetChildren()}
+		if PIG["ChatFrame"]["QuickChat_style"]==1 then
+			fuFrame.ChatJilu = CreateFrame("Button",nil,fuFrame, "TruncatedButtonTemplate"); 
+		elseif PIG["ChatFrame"]["QuickChat_style"]==2 then
+			fuFrame.ChatJilu = CreateFrame("Button",nil,fuFrame, "UIMenuButtonStretchTemplate"); 
+		end
 		fuFrame.ChatJilu:SetSize(Width,Height);
 		fuFrame.ChatJilu:SetFrameStrata("LOW")
-		fuFrame.ChatJilu:SetPoint("LEFT",fuFrame.CHANNEL_4,"RIGHT",jiangejuli,0);
+		fuFrame.ChatJilu:SetPoint("LEFT",fuFrame,"LEFT",#ziframe*Width,0);
 		fuFrame.ChatJilu.Tex = fuFrame.ChatJilu:CreateTexture(nil, "BORDER");
 		fuFrame.ChatJilu.Tex:SetTexture("interface/chatframe/ui-chatwhispericon.blp");
 		fuFrame.ChatJilu.Tex:SetPoint("CENTER",0,0);
 		fuFrame.ChatJilu.Tex:SetSize(Width-6,Height-4);
+		fuFrame.ChatJilu:SetScript("OnEnter", function (self)	
+			GameTooltip:ClearLines();
+			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT",0,0);
+			GameTooltip:SetText("|cff00FFff左键-|r|cffFFFF00私聊记录\n|cff00FFff右键-|r|cffFFFF00队伍团队记录|r");
+			GameTooltip:Show();
+			GameTooltip:FadeOut()
+		end);
+		fuFrame.ChatJilu:SetScript("OnLeave", function (self)
+			GameTooltip:ClearLines();
+			GameTooltip:Hide() 
+		end);
 		fuFrame.ChatJilu:SetScript("OnMouseDown", function (self)
 			self.Tex:SetPoint("CENTER",1,-1);
 		end);
@@ -1317,19 +1331,6 @@ local function ADD_QuickBut_Jilu()
 				if ChatjiluMianban:IsShown() then
 					ChatjiluMianban:Hide()
 				else
-					for i=1,#baocuntianshulist,1 do
-						if PIG['Chatjilu']["tianshu"]==baocuntianshulist[i] then
-							UIDropDownMenu_SetText(ChatjiluMianban_tianshuxiala_UI, baocuntianshulistN[i])
-						end
-					end
-					UIDropDownMenu_Initialize(ChatjiluMianban_tianshuxiala_UI, baocuntianshulist_Up)--初始化
-					for j=1,#jilupindaoID do
-						if PIG['Chatjilu']["jiluinfo"][jilupindaoID[j]]["kaiguan"]=="ON" then
-							_G["pindaoxuanzeC_"..j.."_UI"]:SetChecked(true);
-						elseif PIG['Chatjilu']["jiluinfo"][jilupindaoID[j]]["kaiguan"]=="OFF" then
-							_G["pindaoxuanzeC_"..j.."_UI"]:SetChecked(false);
-						end
-					end
 					ChatjiluMianban:SetFrameLevel(70)
 					ChatjiluMianban:Show()	
 				end

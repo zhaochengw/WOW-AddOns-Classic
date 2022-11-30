@@ -1,5 +1,6 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_5
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ---BUFF/DEBUFF框架精确时间=======================
 local function BuffTimeFrame_Open()
 	local function zijiBUFF()
@@ -85,11 +86,7 @@ local function BuffTimeFrame_Open()
 	hooksecurefunc("AuraButton_UpdateDuration", zijiDEBUFF);
 end
 
-fuFrame.BuffTime = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.BuffTime:SetSize(30,32);
-fuFrame.BuffTime:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-60);
-fuFrame.BuffTime.Text:SetText("BUFF时间增强");
-fuFrame.BuffTime.tooltip = "增强自身BUFF/DEBUFF时间效果，精确到分秒！";
+fuFrame.BuffTime = ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",20,-60,"BUFF时间增强","增强自身BUFF/DEBUFF时间效果，精确到分秒")
 fuFrame.BuffTime:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['FramePlus']['BuffTime']="ON";

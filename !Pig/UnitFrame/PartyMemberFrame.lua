@@ -305,7 +305,6 @@ fuFrame:HookScript("OnShow", function (self)
 end);
 --=====================================
 addonTable.UnitFrame_PartyMemberFrame = function()
-	PIG.UnitFrame=PIG.UnitFrame or addonTable.Default.UnitFrame
 	if PIG.UnitFrame.PartyMemberFrame.Plus then
 		DuiyouFrame_Open();
 	end

@@ -35,7 +35,7 @@ local function ADD_jindutiaoBUT(fuFrame,jindutiaoWW,butTXT,PointX,PointyY)
 	jieshoushuju.jindu:SetSize(jindutiaoWW,16);
 	jieshoushuju.jindu:SetPoint("LEFT",jieshoushuju,"LEFT",2,0);
 	jieshoushuju.edg = CreateFrame("Frame", nil, jieshoushuju,"BackdropTemplate");
-	jieshoushuju.edg:SetBackdrop( { edgeFile = "Interface/Tooltips/UI-Tooltip-Border",edgeSize = 14,});
+	jieshoushuju.edg:SetBackdrop( { edgeFile = "Interface/Tooltips/UI-Tooltip-Border",edgeSize = 10,});
 	jieshoushuju.edg:SetBackdropBorderColor(0, 1, 1, 0.9);
 	jieshoushuju.edg:SetAllPoints(jieshoushuju)
 	jieshoushuju.edg.t = jieshoushuju.edg:CreateFontString();
@@ -264,8 +264,6 @@ OptionsModF_PlaneInvite.ADD:SetScript("OnClick", function (self)
 end);
 --------------------------------------------
 addonTable.PlaneInvite = function()
-	PIG['PlaneInvite']=PIG['PlaneInvite'] or addonTable.Default['PlaneInvite']
-	PIG['PlaneInvite']['Kaiqi']=PIG['PlaneInvite']['Kaiqi'] or addonTable.Default['PlaneInvite']['Kaiqi']
 	if PIG['PlaneInvite']['Kaiqi']=="ON" then
 		OptionsModF_PlaneInvite:SetChecked(true);
 		Options_PlaneInvite:Enable();

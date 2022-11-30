@@ -1,4 +1,5 @@
 <Ui>
 	<Script file="ExtFrame.lua" />
 	<Script file="CharacterFrame_Vanilla.lua" />
+	<Script file="TalentFrame_Wrath.lua" />
 </Ui>

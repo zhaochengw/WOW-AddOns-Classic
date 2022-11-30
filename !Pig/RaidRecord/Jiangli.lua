@@ -67,10 +67,9 @@ local function ADD_jiangli()
 		fuFrame.bobaobut.Tex:SetPoint("CENTER",4,0);
 	end);
 	fuFrame.bobaobut:SetScript("OnClick", function()
-		local xuanzhongName =addonTable.xuanzhongName;
 		for b=1,#PIG["RaidRecord"]["jiangli"] do
 			if PIG["RaidRecord"]["jiangli"][b][3]~="无" then
-				SendChatMessage("["..PIG["RaidRecord"]["jiangli"][b][1].."]-"..PIG["RaidRecord"]["jiangli"][b][3].."-支出："..PIG["RaidRecord"]["jiangli"][b][2].."G", xuanzhongName, nil);
+				SendChatMessage("["..PIG["RaidRecord"]["jiangli"][b][1].."]-"..PIG["RaidRecord"]["jiangli"][b][3].."-支出："..PIG["RaidRecord"]["jiangli"][b][2].."G", RaidR_UI.xuanzhongChat, nil);
 			end
 		end
 	end)

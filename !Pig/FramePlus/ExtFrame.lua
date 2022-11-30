@@ -32,7 +32,7 @@ local function RenwuFrame_Open()
 		QuestLogFrame:HookScript('OnShow', function()
 			gengxinLVQR()
 		end)
-		UIPanelWindows["QuestLogFrame"] = {area = "override", pushable = 0, xoffset = -16, yoffset = 12, bottomClampOverride = 140 + 12, width = 714, height = 487, whileDead = 1}
+		UIPanelWindows["QuestLogFrame"].width = 714
 		--缩放任务框架以匹配新纹理
 		QuestLogFrame:SetWidth(714)
 		QuestLogFrame:SetHeight(487)
@@ -131,7 +131,7 @@ end);
 --专业界面扩展/////////////////////////////////////////////
 local function TradeSkillFunc()
 	if TRADE_SKILLS_DISPLAYED==8 then			
-			UIPanelWindows["TradeSkillFrame"] = {area = "override", pushable = 1, xoffset = -16, yoffset = 12, bottomClampOverride = 140 + 12, width = 714, height = 487, whileDead = 1}	
+			UIPanelWindows["TradeSkillFrame"].width = 714	
 			TradeSkillFrame:SetWidth(713)
 			TradeSkillFrame:SetHeight(487)
 
@@ -260,7 +260,7 @@ end
 --附魔框架扩展/////////////////////////////////////////////
 local function CraftFunc()
 	if CRAFTS_DISPLAYED==8 then  
-		UIPanelWindows["CraftFrame"] = {area = "override", pushable = 1, xoffset = -16, yoffset = 12, bottomClampOverride = 140 + 12, width = 714, height = 487, whileDead = 1}
+		UIPanelWindows["CraftFrame"].width = 714
 		--重新设置附魔框架大小
 		CraftFrame:SetWidth(713)
 		CraftFrame:SetHeight(487)
@@ -417,7 +417,7 @@ local function huoqu_Skill_ID()
 			local offset, numSlots = select(3, GetSpellTabInfo(i))
 			for j = offset+1, offset+numSlots do
 				local spellName, _ ,spellID=GetSpellBookItemName(j, BOOKTYPE_SPELL)
-				--print(spellName,spellID)
+				---print(spellName,spellID)
 				for x=1, #Skill_List do
 					if spellName==Skill_List[x] then
 						table.insert(Skill_List_NEW[1],{spellID,Skill_jichuID[spellName]})
@@ -457,21 +457,13 @@ local function ADD_Skill_QK()
 		TradeSkillFrame.But.NormalTexture:SetAlpha(0);
 		if F<5 then
 			if F==1 then
-				if tocversion>90000 then
-					TradeSkillFrame.But:SetPoint("TOPLEFT",TradeSkillFrame,"TOPRIGHT",2,-46);
-				else
-					TradeSkillFrame.But:SetPoint("TOPLEFT",TradeSkillFrame,"TOPRIGHT",-33,-46);
-				end
+				TradeSkillFrame.But:SetPoint("TOPLEFT",TradeSkillFrame,"TOPRIGHT",-33,-46);
 			else
 				TradeSkillFrame.But:SetPoint("TOP", _G["Skill_Button_"..(F-1)], "BOTTOM", 0, -16);
 			end
 		else
 			if F==5 then
-				if tocversion>90000 then
-					TradeSkillFrame.But:SetPoint("BOTTOMLEFT",TradeSkillFrame,"BOTTOMRIGHT",2,64);
-				else
-					TradeSkillFrame.But:SetPoint("BOTTOMLEFT",TradeSkillFrame,"BOTTOMRIGHT",-33,64);
-				end
+				TradeSkillFrame.But:SetPoint("BOTTOMLEFT",TradeSkillFrame,"BOTTOMRIGHT",-33,64);
 			else
 				TradeSkillFrame.But:SetPoint("BOTTOM",_G["Skill_Button_"..(F-1)],"TOP",0,16);
 			end
@@ -486,10 +478,7 @@ local function ADD_Skill_QK()
 		TradeSkillFrame.But.Border:SetPoint("LEFT",TradeSkillFrame.But,"LEFT",-2,-4);
 		TradeSkillFrame.But.Border:SetDrawLayer("BACKGROUND", -8)
 		TradeSkillFrame.But:RegisterEvent("TRADE_SKILL_CLOSE")
-		if tocversion>90000 then
-		else
-			TradeSkillFrame.But:RegisterEvent("CRAFT_CLOSE")
-		end
+		TradeSkillFrame.But:RegisterEvent("CRAFT_CLOSE")
 		TradeSkillFrame.But:RegisterEvent("ACTIONBAR_UPDATE_STATE");
 		TradeSkillFrame.But:HookScript("OnEvent", function(self)
 			Update_State(self)
@@ -523,21 +512,13 @@ local function ADD_Craft_QK()
 		CraftFrame.But.NormalTexture:SetAlpha(0);
 		if F<5 then
 			if F==1 then
-				if tocversion>90000 then
-					CraftFrame.But:SetPoint("TOPLEFT",CraftFrame,"TOPRIGHT",2,-46);
-				else
-					CraftFrame.But:SetPoint("TOPLEFT",CraftFrame,"TOPRIGHT",-33,-46);
-				end
+				CraftFrame.But:SetPoint("TOPLEFT",CraftFrame,"TOPRIGHT",-33,-46);
 			else
 				CraftFrame.But:SetPoint("TOP", _G["Craft_Button_"..(F-1)], "BOTTOM", 0, -16);
 			end
 		else
 			if F==5 then
-				if tocversion>90000 then
-					CraftFrame.But:SetPoint("BOTTOMLEFT",CraftFrame,"BOTTOMRIGHT",2,64);
-				else
-					CraftFrame.But:SetPoint("BOTTOMLEFT",CraftFrame,"BOTTOMRIGHT",-33,64);
-				end
+				CraftFrame.But:SetPoint("BOTTOMLEFT",CraftFrame,"BOTTOMRIGHT",-33,64);
 			else
 				CraftFrame.But:SetPoint("BOTTOM",_G["Craft_Button_"..(F-1)],"TOP",0,16);
 			end
@@ -552,10 +533,7 @@ local function ADD_Craft_QK()
 		CraftFrame.But.Border:SetPoint("LEFT",CraftFrame.But,"LEFT",-2,-4);
 		CraftFrame.But.Border:SetDrawLayer("BACKGROUND", -8)
 		CraftFrame.But:RegisterEvent("TRADE_SKILL_CLOSE")
-		if tocversion>90000 then
-		else
-			CraftFrame.But:RegisterEvent("CRAFT_CLOSE")
-		end
+		CraftFrame.But:RegisterEvent("CRAFT_CLOSE")
 		CraftFrame.But:RegisterEvent("ACTIONBAR_UPDATE_STATE");
 		CraftFrame.But:HookScript("OnEvent", function(self)
 			Update_State(self)
@@ -580,52 +558,123 @@ local function ADD_Craft_QK()
 	end
 end
 local function ZhuanyeQKBUT_Open()
-	if IsAddOnLoaded("Blizzard_TradeSkillUI") then
-		huoqu_Skill_ID()
-		ADD_Skill_QK()
-	else
-		local zhuanyeQuickQH = CreateFrame("FRAME")
-		zhuanyeQuickQH:RegisterEvent("ADDON_LOADED")
-		zhuanyeQuickQH:SetScript("OnEvent", function(self, event, arg1)
-			if arg1 == "Blizzard_TradeSkillUI" then
-				huoqu_Skill_ID()
-				if InCombatLockdown() then
-					zhuanyeQuickQH:RegisterEvent("PLAYER_REGEN_ENABLED")
-				else
+	if tocversion<100000 then
+		if IsAddOnLoaded("Blizzard_TradeSkillUI") then
+			huoqu_Skill_ID()
+			ADD_Skill_QK()
+		else
+			local zhuanyeQuickQH = CreateFrame("FRAME")
+			zhuanyeQuickQH:RegisterEvent("ADDON_LOADED")
+			zhuanyeQuickQH:SetScript("OnEvent", function(self, event, arg1)
+				if arg1 == "Blizzard_TradeSkillUI" then
+					huoqu_Skill_ID()
+					if InCombatLockdown() then
+						zhuanyeQuickQH:RegisterEvent("PLAYER_REGEN_ENABLED")
+					else
+						ADD_Skill_QK()
+					end
+					zhuanyeQuickQH:UnregisterEvent("ADDON_LOADED")
+				end
+				if event=="PLAYER_REGEN_ENABLED" then
 					ADD_Skill_QK()
+					zhuanyeQuickQH:UnregisterEvent("PLAYER_REGEN_ENABLED")
 				end
-				zhuanyeQuickQH:UnregisterEvent("ADDON_LOADED")
-			end
-			if event=="PLAYER_REGEN_ENABLED" then
-				ADD_Skill_QK()
-				zhuanyeQuickQH:UnregisterEvent("PLAYER_REGEN_ENABLED")
-			end
-		end)
-	end
-	if IsAddOnLoaded("Blizzard_CraftUI") then
-		huoqu_Skill_ID()
-		ADD_Craft_QK()
-	else
-		local fumoQuickQH = CreateFrame("FRAME")
-		fumoQuickQH:RegisterEvent("ADDON_LOADED")
-		fumoQuickQH:SetScript("OnEvent", function(self, event, arg1)
-			if arg1 == "Blizzard_CraftUI" then
-				huoqu_Skill_ID()
-				if InCombatLockdown() then
-					fumoQuickQH:RegisterEvent("PLAYER_REGEN_ENABLED")
-				else
+			end)
+		end
+		if IsAddOnLoaded("Blizzard_CraftUI") then
+			huoqu_Skill_ID()
+			ADD_Craft_QK()
+		else
+			local fumoQuickQH = CreateFrame("FRAME")
+			fumoQuickQH:RegisterEvent("ADDON_LOADED")
+			fumoQuickQH:SetScript("OnEvent", function(self, event, arg1)
+				if arg1 == "Blizzard_CraftUI" then
+					huoqu_Skill_ID()
+					if InCombatLockdown() then
+						fumoQuickQH:RegisterEvent("PLAYER_REGEN_ENABLED")
+					else
+						ADD_Craft_QK()
+					end
+					fumoQuickQH:UnregisterEvent("ADDON_LOADED")
+				end
+				if event=="PLAYER_REGEN_ENABLED" then
 					ADD_Craft_QK()
+					fumoQuickQH:UnregisterEvent("PLAYER_REGEN_ENABLED")
 				end
-				fumoQuickQH:UnregisterEvent("ADDON_LOADED")
+			end)
+		end
+	else
+		if Skill_Button_1 then return end
+		local Update_State=addonTable.Update_State
+		for F=1, 7 do
+			local But = CreateFrame("CheckButton", "Skill_Button_"..F, ProfessionsFrame, "SecureActionButtonTemplate");
+			But:SetSize(Width,Height);
+			if F<5 then
+				if F==1 then
+					But:SetPoint("BOTTOMLEFT",ProfessionsFrame,"TOPLEFT",300,0);
+				else
+					But:SetPoint("LEFT", _G["Skill_Button_"..(F-1)], "RIGHT", 16, 0);
+				end
+			else
+				if F==5 then
+					But:SetPoint("BOTTOMRIGHT",ProfessionsFrame,"TOPRIGHT",-133,0);
+				else
+					But:SetPoint("RIGHT",_G["Skill_Button_"..(F-1)],"LEFT",-16,0);
+				end
 			end
-			if event=="PLAYER_REGEN_ENABLED" then
-				ADD_Craft_QK()
-				fumoQuickQH:UnregisterEvent("PLAYER_REGEN_ENABLED")
-			end
-		end)
+			But:RegisterForClicks("AnyUp");
+			But:SetAttribute("type", "spell");
+			But:Hide();
+			--
+			But.Border = But:CreateTexture(nil, "BACKGROUND");
+			But.Border:SetTexture(136831);
+			PIGRotation(But.Border,90)
+			But.Border:SetPoint("BOTTOMLEFT",But,"BOTTOMLEFT",-11,-2);
+			But.Border:SetDrawLayer("BACKGROUND", -8)
+			
+			But.icon = But:CreateTexture(nil, "BORDER");
+			But.icon:SetAllPoints(But)
+			-----------
+			But.CheckedTexture = But:CreateTexture(nil, "ARTWORK");
+			But.CheckedTexture:SetAtlas("UI-HUD-ActionBar-IconFrame-Mouseover");
+			But.CheckedTexture:SetSize(Width+4,Height+4);
+			But.CheckedTexture:SetPoint("CENTER",But,"CENTER",0,0);
+			But.CheckedTexture:Hide()
+
+			But:RegisterEvent("TRADE_SKILL_CLOSE")
+			But:RegisterEvent("ACTIONBAR_UPDATE_STATE");
+			But:HookScript("OnEvent", function(self)
+				if IsCurrentSpell(self.SimID) then
+					self:SetChecked(true)
+					self.CheckedTexture:Show()
+					return
+				end
+				self.CheckedTexture:Hide()
+				self:SetChecked(false)
+			end)
+		end
+		huoqu_Skill_ID()
+		for F=1, #Skill_List_NEW[1] do
+			local fujiK = _G["Skill_Button_"..F]
+			fujiK.Type="spell"
+			fujiK.SimID=Skill_List_NEW[1][F][1]
+			fujiK.icon:SetTexture(GetSpellTexture(Skill_List_NEW[1][F][1]));
+			fujiK:SetAttribute("spell", Skill_List_NEW[1][F][1]);
+			fujiK:Show();
+		end
+		for F=1, #Skill_List_NEW[2] do
+			local FF = F+4;
+			local fujiK = _G["Skill_Button_"..FF]
+			fujiK.Type="spell"
+			fujiK.SimID=Skill_List_NEW[2][F][1]
+			fujiK.icon:SetTexture(GetSpellTexture(Skill_List_NEW[2][F][1]));
+			fujiK:SetAttribute("spell", Skill_List_NEW[2][F][1]);
+			fujiK:Show();
+		end
 	end
 end
-fuFrame.QuickQH=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",300,-60,"专业快速切换按钮","在专业界面右侧显示便捷切换专业按钮")
+
+fuFrame.QuickQH=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",300,-60,"专业快速切换按钮","在专业界面显示便捷切换专业按钮")
 fuFrame.QuickQH:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['FramePlus']['ExtFrame_ZhuanyeQKBUT']=true;

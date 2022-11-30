@@ -1,6 +1,7 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_3
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --////动作条技能图标显示施法材料数量////////
 local function UpdateCount(actionButton)
     local text = actionButton.Count
@@ -16,11 +17,7 @@ local function UpdateCount(actionButton)
 end
 
 ---------------------
-fuFrame.Cailiao = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.Cailiao:SetSize(30,32);
-fuFrame.Cailiao:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",300,-20);
-fuFrame.Cailiao.Text:SetText("动作条施法材料数量提示(60)");
-fuFrame.Cailiao.tooltip = "在动作条上显示需要施法材料技能材料数量！";
+fuFrame.Cailiao = ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",300,-20,"动作条施法材料数量提示(60)","在动作条上显示需要施法材料技能材料数量")
 if tocversion>19999 then
     fuFrame.Cailiao:Disable() fuFrame.Cailiao.Text:SetTextColor(0.4, 0.4, 0.4, 1) 
 end

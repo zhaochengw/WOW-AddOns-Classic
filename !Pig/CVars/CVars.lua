@@ -211,7 +211,6 @@ fuFrame:SetScript("OnShow", function()
 end);
 --==============================================
 addonTable.PigCVars = function()
-	PIG['CVars']=PIG['CVars'] or addonTable.Default['CVars']
 	local function chaoyuanshijujihuo()
 		for i=1,#CVarsList do	
 			if CVarsList[i][2]=="cameraDistanceMaxZoomFactor" then

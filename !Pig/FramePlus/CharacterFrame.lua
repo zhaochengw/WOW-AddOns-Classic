@@ -1,6 +1,7 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_5
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --================================================
 fuFrame.juesexinxikz1 = fuFrame:CreateLine()
 fuFrame.juesexinxikz1:SetColorTexture(1,1,1,0.4)
@@ -37,18 +38,25 @@ local function shuxingFrame_Open()
 	PaperDollItemsFrame:HookScript("OnShow",function (self,event)
 		PaperDollItemsFrame.repaircost=0
 		for id=1,#naijiubuweiID do
-			local hasItem,_,cost = PIGtooltip:SetInventoryItem("player", naijiubuweiID[id])
-			PaperDollItemsFrame.repaircost=PaperDollItemsFrame.repaircost+cost
+			--local hasItem,_,cost = PIGtooltip:C_TooltipInfo.SetInventoryItem("player", naijiubuweiID[id])
+			-- local dataxxx = C_TooltipInfo.GetInventoryItem("player", naijiubuweiID[id])
+			-- for k,v in pairs(dataxxx) do
+			-- 	print(k,v)
+			-- 	for kk,vv in pairs(v) do
+			-- 		print(kk,vv)
+			-- 		for kkk,vvv in pairs(vv) do
+			-- 			print(kkk,vvv)
+			-- 		end
+			-- 	end
+			-- end
+			--PaperDollItemsFrame.repaircost=PaperDollItemsFrame.repaircost+cost
 		end
 		PaperDollItemsFrame.xiuli.G:SetText(GetCoinTextureString(PaperDollItemsFrame.repaircost))
 	end)
 end
+
 ------
-fuFrame.Juese = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.Juese:SetSize(30,32);
-fuFrame.Juese:SetPoint("TOPLEFT",fuFrame.juesexinxikz1,"TOPLEFT",20,-20);
-fuFrame.Juese.Text:SetText("显示修理费");
-fuFrame.Juese.tooltip = "角色面板显示修理费用";
+fuFrame.Juese =ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame.juesexinxikz1,"TOPLEFT",20,-20,"显示修理费","角色面板显示修理费用")
 fuFrame.Juese:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['FramePlus']['CharacterFrame_Juese']="ON";
@@ -105,11 +113,7 @@ local function ADD_naijiuV()
 	end)
 end
 -----------------------
-fuFrame.naijiuzhi = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.naijiuzhi:SetSize(30,32);
-fuFrame.naijiuzhi:SetPoint("TOPLEFT",fuFrame.juesexinxikz1,"TOPLEFT",300,-20);
-fuFrame.naijiuzhi.Text:SetText("显示装备耐久");
-fuFrame.naijiuzhi.tooltip = "角色面板显示装备耐久剩余值";
+fuFrame.naijiuzhi = ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame.juesexinxikz1,"TOPLEFT",300,-20,"显示装备耐久","角色面板显示装备耐久剩余值")
 fuFrame.naijiuzhi:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['FramePlus']["CharacterFrame_naijiu"]="ON";
@@ -189,12 +193,7 @@ local function ADD_guancha()
 end   
 
 ------------
-fuFrame.zhuangbeiLV = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.zhuangbeiLV:SetSize(30,32);
-fuFrame.zhuangbeiLV:SetHitRectInsets(0,-100,0,0);
-fuFrame.zhuangbeiLV:SetPoint("TOPLEFT",fuFrame.juesexinxikz1,"TOPLEFT",20,-60);
-fuFrame.zhuangbeiLV.Text:SetText("显示装等");
-fuFrame.zhuangbeiLV.tooltip = "显示装备等级，背包银行物品需要显示装等请在背包内设置！";
+fuFrame.zhuangbeiLV = ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame.juesexinxikz1,"TOPLEFT",20,-60,"显示装等","显示装备等级，背包银行物品需要显示装等请在背包内设置")
 fuFrame.zhuangbeiLV:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['ShowPlus']['zhuangbeiLV']="ON";
@@ -270,12 +269,7 @@ local function ADD_guancha_ranse()
 	C_Timer.After(0.4,shuaxin_guancha)
 end 
 ------------------
-fuFrame.pinzhiranse = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.pinzhiranse:SetSize(30,32);
-fuFrame.pinzhiranse:SetHitRectInsets(0,-100,0,0);
-fuFrame.pinzhiranse:SetPoint("TOPLEFT",fuFrame.juesexinxikz1,"TOPLEFT",300,-60);
-fuFrame.pinzhiranse.Text:SetText("根据品质染色边框");
-fuFrame.pinzhiranse.tooltip = "根据品质染色边框";
+fuFrame.pinzhiranse = ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame.juesexinxikz1,"TOPLEFT",300,-60,"根据品质染色边框","根据品质染色边框")
 fuFrame.pinzhiranse:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['FramePlus']['CharacterFrame_ranse']="ON";
@@ -291,9 +285,25 @@ fuFrame.pinzhiranse:SetScript("OnClick", function (self)
 end);
 --------------------
 PaperDollFrame:HookScript("OnEvent", function(self,event,arg1)
+	if event=="PLAYER_ENTERING_WORLD" then
+		if PIG['FramePlus']['CharacterFrame_Juese']=="ON" then
+			shuxingFrame_Open()
+		end
+		if PIG['FramePlus']['CharacterFrame_ranse']=="ON" then
+			add_ranseUI()
+		end
+		if PIG['ShowPlus']['zhuangbeiLV']=="ON" then
+			ADD_LVT()
+		end
+		if PIG['FramePlus']["CharacterFrame_naijiu"]=="ON" then
+			ADD_naijiuV()
+		end
+	end
 	if event=="ADDON_LOADED" and arg1=="Blizzard_InspectUI" then
 		if PIG['ShowPlus']['zhuangbeiLV']=="ON" then ADD_guancha()  end
 		if PIG['FramePlus']['CharacterFrame_ranse']=="ON" then ADD_guancha_ranse() end
+		PaperDollFrame:UnregisterEvent("ADDON_LOADED")
+		PaperDollFrame:RegisterEvent("INSPECT_READY");
 	end
 	if event=="INSPECT_READY" then
 		if PIG['ShowPlus']['zhuangbeiLV']=="ON" then 
@@ -313,28 +323,22 @@ PaperDollFrame:HookScript("OnEvent", function(self,event,arg1)
 	end
 end);
 --=====================================
-addonTable.FramePlus_CharacterFrame = function()
+fuFrame:HookScript("OnShow", function(self,event,arg1)
 	if PIG['FramePlus']['CharacterFrame_Juese']=="ON" then
 		fuFrame.Juese:SetChecked(true);
-		shuxingFrame_Open()
 	end
-	PIG["ShowPlus"] = PIG["ShowPlus"] or addonTable.Default["ShowPlus"]
-	PIG['ShowPlus']['zhuangbeiLV']=PIG['ShowPlus']['zhuangbeiLV'] or addonTable.Default['ShowPlus']['zhuangbeiLV']
 	if PIG['FramePlus']['CharacterFrame_ranse']=="ON" then
 		fuFrame.pinzhiranse:SetChecked(true);
-		add_ranseUI()
-		PaperDollFrame:RegisterEvent("INSPECT_READY");
-		PaperDollFrame:RegisterEvent("ADDON_LOADED")
 	end
 	if PIG['ShowPlus']['zhuangbeiLV']=="ON" then
 		fuFrame.zhuangbeiLV:SetChecked(true);
-		ADD_LVT()
-		PaperDollFrame:RegisterEvent("INSPECT_READY");
-		PaperDollFrame:RegisterEvent("ADDON_LOADED")
 	end
 	if PIG['FramePlus']["CharacterFrame_naijiu"]=="ON" then
 		fuFrame.naijiuzhi:SetChecked(true);
-		ADD_naijiuV()
-		PaperDollFrame:RegisterEvent("UNIT_MODEL_CHANGED");
+	end
+end)
+addonTable.FramePlus_CharacterFrame = function()
+	if PIG['ShowPlus']['zhuangbeiLV']=="ON" or PIG['FramePlus']['CharacterFrame_ranse']=="ON" then
+		PaperDollFrame:RegisterEvent("ADDON_LOADED")
 	end
 end

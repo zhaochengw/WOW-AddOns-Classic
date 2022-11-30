@@ -1,6 +1,7 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_1
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 -------
 local function jiaoyizengqiang_Open()
 	local fujiF = TradeFrame
@@ -51,12 +52,7 @@ local function jiaoyizengqiang_Open()
 	end);
 end
 --==========================================================
-fuFrame.jiaoyizengqiang = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.jiaoyizengqiang:SetSize(30,32);
-fuFrame.jiaoyizengqiang:SetHitRectInsets(0,-100,0,0);
-fuFrame.jiaoyizengqiang:SetPoint("TOPLEFT",fuFrame.RP,"TOPLEFT",20,-50);
-fuFrame.jiaoyizengqiang.Text:SetText("交易面板提示");
-fuFrame.jiaoyizengqiang.tooltip = "在交易面板显示对方职业和等级！";
+fuFrame.jiaoyizengqiang = ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame.RP,"TOPLEFT",20,-50,"交易面板提示","在交易面板显示对方职业和等级")
 fuFrame.jiaoyizengqiang:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Interaction.jiaoyizengqiang=true;

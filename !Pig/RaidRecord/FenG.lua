@@ -1,28 +1,20 @@
 local _, addonTable = ...;
 local gsub = _G.string.gsub 
 local find = _G.string.find
---=====分G助手==============================
 local ADD_Frame=addonTable.ADD_Frame
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
+local PIGDownMenu=addonTable.PIGDownMenu
+--=====分G助手==============================
 local function ADD_fenG()
 	local Width,Height  = RaidR_UI:GetWidth(), RaidR_UI:GetHeight();
 	local duiwu_Width,duiwu_Height,duiwujiange=186,28,10;
 	----
 	local fenG=ADD_Frame("fenG_UI",RaidR_UI,Width-22,Height-100,"TOP",RaidR_UI,"TOP",0,-18,true,false,false,false,false,"BG6")
-	fenG:SetFrameLevel(10);
+	fenG:SetFrameLevel(RaidR_UI:GetFrameLevel()+10);
 
 	fenG.Close = CreateFrame("Button",nil,fenG, "UIPanelCloseButton");  
 	fenG.Close:SetSize(34,34);
 	fenG.Close:SetPoint("TOPRIGHT",fenG,"TOPRIGHT",2.4,3);
-	fenG.line = fenG:CreateLine()
-	fenG.line:SetColorTexture(1,1,1,0.3)
-	fenG.line:SetThickness(1);
-	fenG.line:SetStartPoint("LEFT",4,-duiwu_Height*5.5)
-	fenG.line:SetEndPoint("RIGHT",-2,-duiwu_Height*5.5)
-	fenG.line1 = fenG:CreateLine()
-	fenG.line1:SetColorTexture(1,1,1,0.3)
-	fenG.line1:SetThickness(1);
-	fenG.line1:SetStartPoint("LEFT",4,-duiwu_Height*6.8)
-	fenG.line1:SetEndPoint("RIGHT",-2,-duiwu_Height*6.8)
 
 	--计算分G
 	local zhizeIcon = {{0.01,0.26,0.26,0.51},{0.27,0.52,0,0.25},{0.01,0.26,0,0.25}};
@@ -386,7 +378,42 @@ local function ADD_fenG()
 			duiwuF.list.Players.G:Hide();
 		end
 	end
-	--=========================================
+	fenG.line = fenG:CreateLine()
+	fenG.line:SetColorTexture(1,1,1,0.3)
+	fenG.line:SetThickness(1);
+	fenG.line:SetStartPoint("LEFT",4,-duiwu_Height*5.5)
+	fenG.line:SetEndPoint("RIGHT",-2,-duiwu_Height*5.5)
+	--显示玩家分G数-----
+	fenG.XianshiJine = CreateFrame("Button",nil,fenG, "TruncatedButtonTemplate"); 
+	fenG.XianshiJine:SetNormalTexture("interface/icons/ability_warrior_revenge.blp"); 
+	fenG.XianshiJine:SetSize(16,16);
+	fenG.XianshiJine:SetPoint("BOTTOMRIGHT",fenG.line,"BOTTOMRIGHT",-4,2);
+	fenG.XianshiJine.Down = fenG.XianshiJine:CreateTexture(nil, "OVERLAY");
+	fenG.XianshiJine.Down:SetTexture(130839);
+	fenG.XianshiJine.Down:SetSize(16.2,16.2);
+	fenG.XianshiJine.Down:SetPoint("CENTER");
+	fenG.XianshiJine.Down:Hide();
+	fenG.XianshiJine:SetScript("OnMouseDown", function (self)
+		self.Down:Show();
+	end);
+	fenG.XianshiJine:SetScript("OnMouseUp", function (self)
+		self.Down:Hide();
+		for x=1,8 do
+			for xx=1,5 do
+				if _G["duiwu_"..x.."_"..xx]:IsShown() then
+					if _G["duiwu_"..x.."_"..xx].Players.G:IsShown() then
+						_G["duiwu_"..x.."_"..xx].Players.G:Hide()
+					else
+						_G["duiwu_"..x.."_"..xx].Players.G:Show()
+					end
+				end
+			end
+		end
+	end);
+	fenG:SetScript("OnShow", function ()
+		jisuanfenGData();
+	end)
+	--==========================================
 	--分G人数设置
 	fenG.rensh_ALL = fenG:CreateFontString();
 	fenG.rensh_ALL:SetPoint("TOPLEFT",fenG,"TOPLEFT",20,-(Height-170));
@@ -475,6 +502,12 @@ local function ADD_fenG()
 	fenG.renshu_buzhu_LR_V:SetPoint("LEFT",fenG.renshu_buzhu_LR_t,"RIGHT",0,0);
 	fenG.renshu_buzhu_LR_V:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
 	fenG.renshu_buzhu_LR_V:SetText(0);
+	-----------------
+	fenG.line1 = fenG:CreateLine()
+	fenG.line1:SetColorTexture(1,1,1,0.3)
+	fenG.line1:SetThickness(1);
+	fenG.line1:SetStartPoint("LEFT",4,-duiwu_Height*6.8)
+	fenG.line1:SetEndPoint("RIGHT",-2,-duiwu_Height*6.8)
 	---人均收入
 	fenG.renjunshouru = fenG:CreateFontString();
 	fenG.renjunshouru:SetPoint("TOPLEFT",fenG,"TOPLEFT",20,-(Height-132));
@@ -500,13 +533,12 @@ local function ADD_fenG()
 	fenG.renjunshouru_2_V:SetPoint("LEFT",fenG.renjunshouru_2 ,"RIGHT",0,0);
 	fenG.renjunshouru_2_V:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
 	fenG.renjunshouru_2_V:SetText(0);
-	---==================================================
-	--广播分配信息
-	local xuanzhongName = "RAID";
-	addonTable.xuanzhongName=xuanzhongName;
+	---广播分配信息==================================================
+	RaidR_UI.xuanzhongChat = "RAID";
 	fenG.guangbo = CreateFrame("Button",nil,fenG, "UIPanelButtonTemplate");  
 	fenG.guangbo:SetSize(116,28);
-	fenG.guangbo:SetPoint("TOPLEFT",fenG,"TOPLEFT",Width-300,-(Height-138));
+	fenG.guangbo:SetPoint("TOPLEFT",fenG,"TOPLEFT",480,-(Height-138));
+	fenG.guangbo:SetText("·发送到");
 	fenG.guangbo.Font=fenG.guangbo:GetFontString()
 	fenG.guangbo.Font:SetFont(ChatFontNormal:GetFont(), 13);
 	fenG.guangbo.Font:SetTextColor(1, 1, 1, 1);
@@ -523,14 +555,14 @@ local function ADD_fenG()
 	end);
 	fenG.guangbo:SetScript("OnClick", function ()
 		local liupaichupin={};
-		SendChatMessage("========收支明细========", xuanzhongName, nil);
+		SendChatMessage("========收支明细========", RaidR_UI.xuanzhongChat, nil);
 		local ItemSLsit = PIG["RaidRecord"]["ItemList"];
 		for id=1,#ItemSLsit do
 			if ItemSLsit[id][9]>0 or ItemSLsit[id][14]>0 then
 				if ItemSLsit[id][14]>0 then
-					SendChatMessage(ItemSLsit[id][2].."x"..ItemSLsit[id][3].." 收入："..ItemSLsit[id][9]+ItemSLsit[id][14].."G(买方<"..ItemSLsit[id][8]..">尚欠"..ItemSLsit[id][14]..")", xuanzhongName, nil);
+					SendChatMessage(ItemSLsit[id][2].."x"..ItemSLsit[id][3].." 收入："..ItemSLsit[id][9]+ItemSLsit[id][14].."G(买方<"..ItemSLsit[id][8]..">尚欠"..ItemSLsit[id][14]..")", RaidR_UI.xuanzhongChat, nil);
 				else
-					SendChatMessage(ItemSLsit[id][2].."x"..ItemSLsit[id][3].." 收入："..ItemSLsit[id][9].."G(买方<"..ItemSLsit[id][8]..">)", xuanzhongName, nil);
+					SendChatMessage(ItemSLsit[id][2].."x"..ItemSLsit[id][3].." 收入："..ItemSLsit[id][9].."G(买方<"..ItemSLsit[id][8]..">)", RaidR_UI.xuanzhongChat, nil);
 				end
 			else
 				if PIG["RaidRecord"]["Rsetting"]["liupaibobao"]=="ON" then
@@ -540,7 +572,7 @@ local function ADD_fenG()
 		end
 		if #liupaichupin>0 then
 			if PIG["RaidRecord"]["Rsetting"]["liupaibobao"]=="ON" then
-				SendChatMessage("以下为流拍物品：", xuanzhongName, nil);
+				SendChatMessage("以下为流拍物品：", RaidR_UI.xuanzhongChat, nil);
 				--流派每行物品数
 				local LPnum = 3
 				for l=1,math.ceil(#liupaichupin/LPnum) do
@@ -551,7 +583,7 @@ local function ADD_fenG()
 								textmsgIiem=textmsgIiem..liupaichupin[ll];
 							end
 						end
-						SendChatMessage(textmsgIiem, xuanzhongName, nil);
+						SendChatMessage(textmsgIiem, RaidR_UI.xuanzhongChat, nil);
 					else
 						local textmsgIiem1="";
 						for ll=(l-1)*LPnum+1,l*LPnum do
@@ -559,7 +591,7 @@ local function ADD_fenG()
 								textmsgIiem1=textmsgIiem1..liupaichupin[ll];
 							end
 						end
-						SendChatMessage(textmsgIiem1, xuanzhongName, nil);
+						SendChatMessage(textmsgIiem1, RaidR_UI.xuanzhongChat, nil);
 					end
 					textmsgIiem=nil;textmsgIiem1=nil;
 				end
@@ -570,32 +602,32 @@ local function ADD_fenG()
 			for x=1,#PIG["RaidRecord"]["Raidinfo"] do
 				for xx=1,#PIG["RaidRecord"]["Raidinfo"][x] do
 					if PIG["RaidRecord"]["Raidinfo"][x][xx][5]=="坦克补助" then
-						SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", xuanzhongName, nil);
+						SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", RaidR_UI.xuanzhongChat, nil);
 					end
 				end
 			end
 			for x=1,#PIG["RaidRecord"]["Raidinfo"] do
 				for xx=1,#PIG["RaidRecord"]["Raidinfo"][x] do
 					if PIG["RaidRecord"]["Raidinfo"][x][xx][5]=="治疗补助" then
-						SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", xuanzhongName, nil);
+						SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", RaidR_UI.xuanzhongChat, nil);
 					end
 				end
 			end
 			for x=1,#PIG["RaidRecord"]["Raidinfo"] do
 				for xx=1,#PIG["RaidRecord"]["Raidinfo"][x] do
 					if PIG["RaidRecord"]["Raidinfo"][x][xx][5]=="其他补助" then
-						SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", xuanzhongName, nil);
+						SendChatMessage("["..PIG["RaidRecord"]["Raidinfo"][x][xx][5].."]-"..PIG["RaidRecord"]["Raidinfo"][x][xx][4].."-支出："..PIG["RaidRecord"]["Raidinfo"][x][xx][6].."G", RaidR_UI.xuanzhongChat, nil);
 					end
 				end
 			end
 			for j=1,#PIG["RaidRecord"]["fakuan"] do
 				if PIG["RaidRecord"]["fakuan"][j][4]~="无" then
-					SendChatMessage("["..PIG["RaidRecord"]["fakuan"][j][1].."]-"..PIG["RaidRecord"]["fakuan"][j][4].."-收入："..PIG["RaidRecord"]["fakuan"][j][2]+PIG["RaidRecord"]["fakuan"][j][3].."G", xuanzhongName, nil);
+					SendChatMessage("["..PIG["RaidRecord"]["fakuan"][j][1].."]-"..PIG["RaidRecord"]["fakuan"][j][4].."-收入："..PIG["RaidRecord"]["fakuan"][j][2]+PIG["RaidRecord"]["fakuan"][j][3].."G", RaidR_UI.xuanzhongChat, nil);
 				end
 			end
 			for b=1,#PIG["RaidRecord"]["jiangli"] do
 				if PIG["RaidRecord"]["jiangli"][b][3]~="无" then
-					SendChatMessage("["..PIG["RaidRecord"]["jiangli"][b][1].."]-"..PIG["RaidRecord"]["jiangli"][b][3].."-支出："..PIG["RaidRecord"]["jiangli"][b][2].."G", xuanzhongName, nil);
+					SendChatMessage("["..PIG["RaidRecord"]["jiangli"][b][1].."]-"..PIG["RaidRecord"]["jiangli"][b][3].."-支出："..PIG["RaidRecord"]["jiangli"][b][2].."G", RaidR_UI.xuanzhongChat, nil);
 				end
 			end
 		end
@@ -620,7 +652,7 @@ local function ADD_fenG()
 			hejifayanxianMSG=hejifayanxianMSG.."奖励支出:"..jiangli_ZC.."G,";
 		end
 		hejifayanxianMSG=hejifayanxianMSG.."净收入:"..Jing_RS.."G,";
-		SendChatMessage(hejifayanxianMSG, xuanzhongName, nil);
+		SendChatMessage(hejifayanxianMSG, RaidR_UI.xuanzhongChat, nil);
 		--
 		local shourumingxi="";
 		if fenG.renjunshouru_V:GetText()~=nil and tonumber(fenG.renjunshouru_V:GetText())>0 then
@@ -632,114 +664,56 @@ local function ADD_fenG()
 		if fenG.renjunshouru_2_V:GetText()~=nil and tonumber(fenG.renjunshouru_2_V:GetText())>0 then
 			shourumingxi=shourumingxi.."半工:"..fenG.renjunshouru_2_V:GetText().."G(人数"..fenG.renshu_fenGbili_1_V:GetText()..")";
 		end
-		SendChatMessage(shourumingxi, xuanzhongName, nil);
-		SendChatMessage("=《!Pig开团助手为你服务》=", xuanzhongName, nil);
+		SendChatMessage(shourumingxi, RaidR_UI.xuanzhongChat, nil);
+		SendChatMessage("=《!Pig开团助手为你服务》=", RaidR_UI.xuanzhongChat, nil);
 	end);
-	local pindaoName = {"发送到团队","发送到说话","发送到队伍","发送到公会"};
+	local pindaoName = {["RAID"]="|cffFF7F00团队|r",["SAY"]="|cffFFFFFF说话|r",["PARTY"]="|cffAAAAFF队伍|r",["GUILD"]="|cff40FF40公会|r"};
 	local pindaoID = {"RAID","SAY","PARTY","GUILD"};
-	fenG.guangbo_dow = CreateFrame("FRAME", nil, fenG, "UIDropDownMenuTemplate")
-	fenG.guangbo_dow:SetPoint("LEFT",fenG.guangbo,"RIGHT",-72,-3)
-	fenG.guangbo_dow.Left:Hide();
-	fenG.guangbo_dow.Middle:Hide();
-	fenG.guangbo_dow.Right:Hide();
-	UIDropDownMenu_SetWidth(fenG.guangbo_dow, 58)
-	UIDropDownMenu_Initialize(fenG.guangbo_dow, function(self)
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = self.SetValue
-		for ii=1, #pindaoID do
-			info.text, info.arg1, info.checked = pindaoName[ii], pindaoID[ii], pindaoID[ii] == xuanzhongName;
-			UIDropDownMenu_AddButton(info)
-		end
-	end)
-	function fenG.guangbo_dow:SetValue(newValue)
-		xuanzhongName =newValue;
-		addonTable.xuanzhongName=newValue;
+	fenG.guangbo_dow=PIGDownMenu(nil,{68,24},fenG,{"LEFT",fenG.guangbo,"RIGHT", -50,0})
+	fenG.guangbo_dow:SetBackdrop(nil)
+	function fenG.guangbo_dow:PIGDownMenu_Update_But(self)
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
 		for i=1,#pindaoID,1 do
-			if newValue==pindaoID[i] then
-				fenG.guangbo:SetText("·"..pindaoName[i]);
-			end
-		end
-		CloseDropDownMenus()
+		    info.text, info.arg1, info.arg2 = pindaoName[pindaoID[i]], pindaoID[i], pindaoID[i]
+		    info.checked = pindaoID[i]==RaidR_UI.xuanzhongChat
+			fenG.guangbo_dow:PIGDownMenu_AddButton(info)
+		end 
 	end
-	fenG.guangbo:SetText("·发送到团队");
-	--分G计算方式提示
-	fenG.jisuantishi = CreateFrame("Frame", nil, fenG);
-	fenG.jisuantishi:SetSize(22,22);
-	fenG.jisuantishi:SetPoint("TOPLEFT",fenG,"TOPLEFT",Width-140,-(Height-137));
-	fenG.jisuantishi.Texture = fenG.jisuantishi:CreateTexture(nil, "BORDER");
-	fenG.jisuantishi.Texture:SetTexture("interface/dialogframe/dialogalerticon.blp");
-	fenG.jisuantishi.Texture:SetSize(36,36);
-	fenG.jisuantishi.Texture:SetPoint("CENTER",fenG.jisuantishi,"CENTER",0,0);
-	local jisuanguize = {
-		"分G人数：团队总人数-不分G人数+双工人数",
-		"每人应得：净收入÷分G人数=每人应得数",
-		"半工工资：每人应得工资扣除一半为半工实发数",
-		"全工工资(无半工)：每人应得数即为实发数",
-		"全工工资(有半工)：每人应得+(半工扣款×半工人数)/(分G人数-半工人数)=全工实发数",
-		"双工工资：全工工资×2",
-	}
-	fenG.jisuantishi:SetScript("OnEnter", function (self)
-		GameTooltip:ClearLines();
-		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT",0,0);
-		GameTooltip:AddLine("分G计算规则")
-		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[1].."\124r")
-		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[2].."\124r")
-		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[3].."\124r")
-		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[4].."\124r")
-		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[5].."\124r")
-		GameTooltip:AddLine("\124cff00ff00"..jisuanguize[6].."\124r")
-		GameTooltip:AddLine("\124cff00ffff点击发送上方分G规则\124r")
-		GameTooltip:AddLine("关于半工扣款分配给其他成员的说明：个人认为因为你没有做到应有的事，\n导致其他人员工作量增加，所以你的扣款均分给其他人是合理且公平的。")
-		GameTooltip:Show();
-	end);
-	fenG.jisuantishi:SetScript("OnLeave", function ()
-		GameTooltip:ClearLines();
-		GameTooltip:Hide() 
-	end);
-	fenG.jisuantishi:SetScript("OnMouseDown", function (self)
-		self.Texture:SetPoint("CENTER",fenG.jisuantishi,"CENTER",-1,-1);
-	end);
-	fenG.jisuantishi:SetScript("OnMouseUp", function (self)
-		self.Texture:SetPoint("CENTER",fenG.jisuantishi,"CENTER",0,0);
-		SendChatMessage("=======本团分G计算规则========", xuanzhongName, nil);
-		for i=1,#jisuanguize do
-			SendChatMessage(jisuanguize[i], xuanzhongName, nil);
-		end
-	end);
-	-----显示玩家分G数-----
-	fenG.XianshiJine = CreateFrame("Button",nil,fenG, "TruncatedButtonTemplate"); 
-	fenG.XianshiJine:SetNormalTexture("interface/icons/ability_warrior_revenge.blp"); 
-	fenG.XianshiJine:SetSize(16,16);
-	fenG.XianshiJine:SetPoint("BOTTOMRIGHT",fenG,"BOTTOMRIGHT",-4,5);
-	fenG.XianshiJine.Down = fenG.XianshiJine:CreateTexture(nil, "OVERLAY");
-	fenG.XianshiJine.Down:SetTexture(130839);
-	fenG.XianshiJine.Down:SetSize(16.2,16.2);
-	fenG.XianshiJine.Down:SetPoint("CENTER");
-	fenG.XianshiJine.Down:Hide();
-	fenG.XianshiJine:SetScript("OnMouseDown", function (self)
-		self.Down:Show();
-	end);
-	fenG.XianshiJine:SetScript("OnMouseUp", function (self)
-		self.Down:Hide();
-		for x=1,8 do
-			for xx=1,5 do
-				if _G["duiwu_"..x.."_"..xx]:IsShown() then
-					if _G["duiwu_"..x.."_"..xx].Players.G:IsShown() then
-						_G["duiwu_"..x.."_"..xx].Players.G:Hide()
-					else
-						_G["duiwu_"..x.."_"..xx].Players.G:Show()
-					end
-				end
-			end
-		end
-	end);
-	fenG:SetScript("OnShow", function ()
-		jisuanfenGData();
-	end)
+	function fenG.guangbo_dow:PIGDownMenu_SetValue(value,arg1,arg2)
+		fenG.guangbo_dow:PIGDownMenu_SetText(value)
+		RaidR_UI.xuanzhongChat=arg1
+		PIGCloseDropDownMenus()
+	end
+	fenG.guangbo_dow:PIGDownMenu_SetText(pindaoName[RaidR_UI.xuanzhongChat])
 	----==============================================================
+	fenG.liupaibobao = ADD_Checkbutton(nil,fenG,-10,"LEFT",fenG.guangbo,"RIGHT",40,0,"流拍","开启后,发送拍卖结果时会播报流拍物品")
+	fenG.liupaibobao:SetScript("OnClick", function (self)
+		if self:GetChecked() then
+			PIG["RaidRecord"]["Rsetting"]["liupaibobao"]="ON";
+		else
+			PIG["RaidRecord"]["Rsetting"]["liupaibobao"]="OFF";
+		end
+	end);
+	--
+	fenG.bobaomingxi = ADD_Checkbutton(nil,fenG,-10,"LEFT",fenG.liupaibobao,"RIGHT",50,0,"明细","开启后,发送拍卖结果时会播报补助/罚款/奖励明细")
+	fenG.bobaomingxi:SetScript("OnClick", function (self)
+		if self:GetChecked() then
+			PIG["RaidRecord"]["Rsetting"]["bobaomingxi"]="ON";
+		else
+			PIG["RaidRecord"]["Rsetting"]["bobaomingxi"]="OFF";
+		end
+	end);
+	if PIG["RaidRecord"]["Rsetting"]["liupaibobao"]=="ON" then
+		fenG.liupaibobao:SetChecked(true);
+	end
+	if PIG["RaidRecord"]["Rsetting"]["bobaomingxi"]=="ON" then
+		fenG.bobaomingxi:SetChecked(true);
+	end
+	-----------
 	RaidR_UI.xiafangF.fenG_BUT = CreateFrame("Button","fenG_BUT_UI",RaidR_UI.xiafangF, "UIPanelButtonTemplate");  
 	RaidR_UI.xiafangF.fenG_BUT:SetSize(80,28);
-	RaidR_UI.xiafangF.fenG_BUT:SetPoint("LEFT",huoquRaidInfo_UI,"RIGHT",38,0);
+	RaidR_UI.xiafangF.fenG_BUT:SetPoint("BOTTOMLEFT",RaidR_UI.xiafangF.lian,"BOTTOMLEFT",156,6);
 	RaidR_UI.xiafangF.fenG_BUT:SetText("分G助手");
 	RaidR_UI.xiafangF.fenG_BUT:SetMotionScriptsWhileDisabled(true)
 	RaidR_UI.xiafangF.fenG_BUT:SetScript("OnEnter", function (self)

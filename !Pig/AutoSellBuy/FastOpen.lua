@@ -2,9 +2,10 @@ local _, addonTable = ...;
 --=============================
 local hang_Height,hang_NUM  = 30, 14;
 local FrameLevel=addonTable.SellBuyFrameLevel
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
+local _, _, _, tocversion = GetBuildInfo()
 ----//////////////////
 local function FastOpen()
-	PIG["AutoSellBuy"]["Openlist"]=PIG["AutoSellBuy"]["Openlist"] or addonTable.Default["AutoSellBuy"]["Openlist"]
 	local fuFrame = SpllBuy_TabFrame_4
 	local Width = fuFrame:GetWidth()-20;
 	--滚动框架
@@ -41,13 +42,27 @@ local function FastOpen()
 	local function Open_Tishi()
 		if QkBut_AutoSellBuy_Open then
 			if PIG['AutoSellBuy']['zidongKaiqi']=="ON" then
-				for bag=0,4 do
-					local bnum=GetContainerNumSlots(bag)
-					for l=1,bnum do
-						for kk=1,#PIG["AutoSellBuy"]["Openlist"] do
-							if GetContainerItemID(bag,l)==PIG["AutoSellBuy"]["Openlist"][kk][3] then
-								QkBut_AutoSellBuy_Open.Height:Show();
-								return
+				if tocversion<100000 then
+					for bag=0,4 do
+						local bnum=GetContainerNumSlots(bag)
+						for l=1,bnum do
+							for kk=1,#PIG["AutoSellBuy"]["Openlist"] do
+								if GetContainerItemLink(bag,l)==PIG["AutoSellBuy"]["Openlist"][kk][2] then
+									QkBut_AutoSellBuy_Open.Height:Show();
+									return
+								end
+							end
+						end
+					end
+				else
+					for bag=0,4 do
+						local bnum=C_Container.GetContainerNumSlots(bag)
+						for l=1,bnum do
+							for kk=1,#PIG["AutoSellBuy"]["Openlist"] do
+								if C_Container.GetContainerItemLink(bag,l)==PIG["AutoSellBuy"]["Openlist"][kk][2] then
+									QkBut_AutoSellBuy_Open.Height:Show();
+									return
+								end
 							end
 						end
 					end
@@ -151,35 +166,29 @@ local function FastOpen()
 	fuFrame.Open.ADD:SetPoint("BOTTOMRIGHT",fuFrame.Open,"BOTTOMRIGHT",-0,0);
 	---
 	fuFrame.Open:RegisterEvent("ITEM_LOCK_CHANGED");
-	fuFrame.Open.ADD.iteminfo={};
-	fuFrame.Open:SetScript("OnEvent",function (self,event,arg1,arg2)
-		if arg1 and arg2 then
-			if CursorHasItem() then
-				local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1,arg2);
-				fuFrame.Open.ADD.iteminfo={icon, itemLink, itemID};
-				fuFrame.Open.ADD:SetFrameLevel(FrameLevel+8);
-			end
+	fuFrame.Open:SetScript("OnEvent",function (self)
+		if self:IsShown() then
+			self.ADD:SetFrameLevel(FrameLevel+8);
 		end
 	end);
-	fuFrame.Open.ADD:SetScript("OnMouseUp", function ()
+	fuFrame.Open.ADD:SetScript("OnMouseUp", function (self)
 		if CursorHasItem() then
-			local shujuy =PIG["AutoSellBuy"]["Openlist"]
-			for i=1,#shujuy do
-				if fuFrame.Open.ADD.iteminfo[3]==shujuy[i][3] then
+			local NewType, TtemID, Itemlink= GetCursorInfo()
+			for i=1,#PIG["AutoSellBuy"]["Openlist"] do
+				if Itemlink==PIG["AutoSellBuy"]["Openlist"][i][2] then
 					print("|cff00FFFF!Pig:|r|cffffFF00物品已在目录内！|r");
 					ClearCursor();
-					fuFrame.Open.ADD.iteminfo={};
-					fuFrame.Open.ADD:SetFrameLevel(FrameLevel);
+					self:SetFrameLevel(FrameLevel);
 					return
 				end			
 			end
-			table.insert(PIG["AutoSellBuy"]["Openlist"], fuFrame.Open.ADD.iteminfo);
+			local icon = select(5,GetItemInfoInstant(Itemlink))
+			table.insert(PIG["AutoSellBuy"]["Openlist"], {icon,Itemlink,TtemID});
 			ClearCursor();
-			fuFrame.Open.ADD.iteminfo={};
 			gengxinDEL(fuFrame.Open.Scroll);
 			Open_Tishi()
 		end
-		fuFrame.Open.ADD:SetFrameLevel(FrameLevel);
+		self:SetFrameLevel(FrameLevel);
 	end);
 	fuFrame.Open:SetScript("OnShow", function()
 		gengxinDEL(fuFrame.Open.Scroll);
@@ -192,12 +201,7 @@ local function FastOpen()
 		Open_Tishi()
 	end);
 
-	fuFrame.zidongKaiqi = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-	fuFrame.zidongKaiqi:SetSize(28,30);
-	fuFrame.zidongKaiqi:SetHitRectInsets(0,-72,0,0);
-	fuFrame.zidongKaiqi:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-10);
-	fuFrame.zidongKaiqi.Text:SetText("提示打开");
-	fuFrame.zidongKaiqi.tooltip = "有可打开物品（例如：箱/盒/袋/蚌壳）将会在快捷按钮提示!|r";
+	fuFrame.zidongKaiqi = ADD_Checkbutton(nil,fuFrame,-68,"TOPLEFT",fuFrame,"TOPLEFT",20,-10,"提示打开", "有可打开物品（例如：箱/盒/袋/蚌壳）将会在快捷按钮提示")
 	fuFrame.zidongKaiqi:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG['AutoSellBuy']['zidongKaiqi']="ON";
@@ -215,20 +219,38 @@ local function FastOpen()
 			PIG_print("请在脱战后使用")
 		else
 			local shujuy =PIG["AutoSellBuy"]["Openlist"]
-			for arg1=0,4 do			
-				local xx=GetContainerNumSlots(arg1)
-				for k=1,xx do	
-					local texture, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(arg1, k);
-					for i=1,#shujuy do
-						if itemID==shujuy[i][3] then
-							
-							self:SetAttribute("item", itemLink)
-							return
+			if #shujuy>0 then
+				if tocversion<100000 then
+					for arg1=0,4 do			
+						local xx=GetContainerNumSlots(arg1)
+						for k=1,xx do	
+							local itemLink = GetContainerItemLink(arg1, k);
+							for i=1,#shujuy do
+								if itemLink==shujuy[i][2] then		
+									self:SetAttribute("item", itemLink)
+									return
+								end
+							end
+						end
+					end
+				else
+					for arg1=0,4 do			
+						local xx=C_Container.GetContainerNumSlots(arg1)
+						for k=1,xx do	
+							local itemLink = C_Container.GetContainerItemLink(arg1, k);
+							for i=1,#shujuy do
+								if itemLink==shujuy[i][2] then		
+									self:SetAttribute("item", itemLink)
+									return
+								end
+							end
 						end
 					end
 				end
-			end
-			PIG_print("没有需打开物品")
+				PIG_print("没有需打开物品")
+			else
+				PIG_print("打开目录为空,右键设置")
+			end	
 		end
 	end
 	addonTable.Open_Item = Open_Item

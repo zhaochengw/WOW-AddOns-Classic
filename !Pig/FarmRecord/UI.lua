@@ -9,6 +9,8 @@ local _, _, _, tocversion = GetBuildInfo()
 --===============================
 local ADD_Frame=addonTable.ADD_Frame
 local ADD_Modbutton=addonTable.ADD_Modbutton
+local PIGDownMenu=addonTable.PIGDownMenu
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local GnName,GnUI = "带本助手","daiben_UI";
 local FrameLevel=1
 local Options_Daibenzhushou = ADD_Modbutton(GnName,GnUI,FrameLevel,6)
@@ -138,8 +140,8 @@ local function ADD_daibenUI()
 
 	--喊话
 	daiben.hanhuajiange =10;
-	daiben.xuanzhongpindaoshu =0;
 	daiben.hanhuadaojishi =0;
+	----
 	local pindaolist ={{"SAY","YELL","GUILD"},{"综合","寻求组队","大脚世界频道"}};
 	local pindaolist1 ={{"说","大喊","公会"},{"综合","寻求组队","大脚世界频道"}};
 	local suijizifu ={",",".","!",";","，","。","！","；"};
@@ -157,97 +159,100 @@ local function ADD_daibenUI()
 			daiben.hanren:SetText("喊话");
 		end
 	end
-
-	daiben.hanren:SetScript("OnClick", function (self)
-		self:Disable();
-		daiben.hanhuadaojishi=daiben.hanhuajiange*daiben.xuanzhongpindaoshu
-		self:SetText("喊话("..daiben.hanhuadaojishi..")");
-		hanhuadaojishiTime()
-		self.nr=PIG_Per.daiben.hanhuaMSG;
-		if PIG_Per.daiben.hanhua_lv and IsInGroup() then
-			self.nr=self.nr..",".."队伍LV("..huoquduiwLV()..")"
-		end
-		if PIG_Per.daiben.hanhua_danjia and PIG_Per.daiben.fubenName~="无" then
-			self.nr=self.nr..","..huoquLVdanjia()
-		end
-		--固定频道（说喊公会）
-		for s=1,#pindaolist[1] do
-			if PIG_Per.daiben.hanhua_pindao[1][s]==true then
-				local suijishu=random(1, 8)
-				self.nr=self.nr..suijizifu[suijishu]
-				SendChatMessage(self.nr,pindaolist[1][s],nil)
-			end
-		end
-		--序号频道（综合组队）
-		local yijiarupindaolist ={};
-		local channel1 = {GetChannelList()};
-		for i=1,#channel1 do
-			for ii=1,#pindaolist[2] do
-				if PIG_Per.daiben.hanhua_pindao[2][ii]==true then
-					if channel1[i]==pindaolist[2][ii] then
-						table.insert(yijiarupindaolist,channel1[i-1]);
-					end
+	daiben.hanren.chatpindaoList={}
+	local paichupindaolist ={"悄悄话","战网密语","团队","团队通知","队伍聊天","表情","战场","交易","本地防务","世界防务"};
+	local function huoqupindaoxulie()
+		local chatpindao = {GetChatWindowMessages(1)}
+		local chatpindaoList = {}
+		for i=1,#chatpindao do
+			local Namechia =_G[chatpindao[i].."_MESSAGE"]
+			if Namechia then
+				daiben.hanren.bushipaichupindao=true
+				for ii=1,#paichupindaolist do
+					if Namechia==paichupindaolist[ii] then
+						daiben.hanren.bushipaichupindao=false
+						break
+					end	
+				end
+				if daiben.hanren.bushipaichupindao then
+					table.insert(chatpindaoList,{Namechia,chatpindao[i],"Y"})
 				end
 			end
 		end
-		for i=1,#yijiarupindaolist do
-			local suijishu=random(1, 8)
-			self.nr=self.nr..suijizifu[suijishu]
-			SendChatMessage(self.nr,"CHANNEL",nil,yijiarupindaolist[i])
+		local channels = {GetChannelList()}
+		for i = 1, #channels, 3 do
+			local id, name, disabled = channels[i], channels[i+1], channels[i+2]
+			daiben.hanren.bushipaichupindao=true
+			for ii=1,#paichupindaolist do
+				if name==paichupindaolist[ii] then
+					daiben.hanren.bushipaichupindao=false
+					break
+				end	
+			end
+			if daiben.hanren.bushipaichupindao then
+				table.insert(chatpindaoList,{name,"CHANNEL",id})
+			end
+		end
+		daiben.hanren.chatpindaoList=chatpindaoList
+	end
+	daiben.hanren:SetScript("OnClick", function (self)
+		huoqupindaoxulie()
+		local chatpindaoList=self.chatpindaoList
+		local keyongpindaokkk = {}
+		for i=1,#chatpindaoList do
+			if PIG["daiben"]["hanhua_pindao"][chatpindaoList[i][1]] then
+				table.insert(keyongpindaokkk,{chatpindaoList[i][2],chatpindaoList[i][3]})
+			end
+		end
+		local keyongshu = #keyongpindaokkk
+		if keyongshu>0 then
+			self.nr=PIG_Per["daiben"]["hanhuaMSG"]
+			if PIG_Per["daiben"]["hanhua_lv"] and IsInGroup() then
+				self.nr=self.nr..",".."队伍LV("..huoquduiwLV()..")"
+			end
+			if PIG_Per["daiben"]["hanhua_danjia"] and PIG_Per["daiben"]["fubenName"]~="无" then
+				self.nr=self.nr..","..huoquLVdanjia()
+			end
+			for x=1,#keyongpindaokkk do
+				local suijishu=random(1, 8)
+				self.nr=self.nr..suijizifu[suijishu]
+				if keyongpindaokkk[x][1]=="CHANNEL" then
+					SendChatMessage(self.nr,keyongpindaokkk[x][1],nil,keyongpindaokkk[x][2])
+				else
+					SendChatMessage(self.nr,keyongpindaokkk[x][1])
+				end
+			end
+			self:Disable();
+			daiben.hanhuadaojishi=daiben.hanhuajiange*keyongshu
+			self:SetText("喊话("..daiben.hanhuadaojishi..")");
+			hanhuadaojishiTime()
 		end
 	end);
 	--喊话频道
-	daiben.hanren.xialai = CreateFrame("FRAME", nil, daiben.hanren, "UIDropDownMenuTemplate")
-	daiben.hanren.xialai:SetPoint("LEFT",daiben.hanren,"RIGHT",-25,-3)
-	daiben.hanren.xialai.Left:Hide();
-	daiben.hanren.xialai.Middle:Hide();
-	daiben.hanren.xialai.Right:Hide();
-	UIDropDownMenu_SetWidth(daiben.hanren.xialai, 12)
-	function daiben.hanren.xialai:SetValue(pindaoNameV,pindaoNameVV)
-		local peizhiD = PIG_Per.daiben.hanhua_pindao
-		for x=1,#pindaolist do
-			for xx=1,#pindaolist[x] do
-				if pindaoNameV==pindaolist[x][xx] then
-					if pindaoNameVV==true then
-						peizhiD[x][xx]=false
-					elseif pindaoNameVV==false then
-						peizhiD[x][xx]=true
-					end
-				end
-			end
-		end
-		daiben.xuanzhongpindaoshu =0;
-		for x=1,#pindaolist do
-			for xx=1,#pindaolist[x] do
-				if peizhiD[x][xx]==true then
-					daiben.xuanzhongpindaoshu =daiben.xuanzhongpindaoshu+1;
-				end
-			end
-		end
-		CloseDropDownMenus();
+	daiben.hanren.xialai=PIGDownMenu(nil,{22,24},daiben.hanren,{"LEFT",daiben.hanren,"RIGHT", 0,0})
+	daiben.hanren.xialai:SetBackdrop(nil)
+	daiben.hanren.xialai.Text:Hide()
+	function daiben.hanren.xialai:PIGDownMenu_Update_But(self)
+		huoqupindaoxulie()
+		local chatpindaoList=daiben.hanren.chatpindaoList
+		local info = {}
+		info.func = self.PIGDownMenu_SetValue
+		for i=1,#chatpindaoList,1 do
+		    info.text, info.arg1 = chatpindaoList[i][1], chatpindaoList[i][2]
+		    info.checked = PIG["daiben"]["hanhua_pindao"][chatpindaoList[i][1]]
+		    info.isNotRadio=true
+			daiben.hanren.xialai:PIGDownMenu_AddButton(info)
+		end 
 	end
-	UIDropDownMenu_Initialize(daiben.hanren.xialai, function(self)
-		daiben.xuanzhongpindaoshu =0;
-		local info = UIDropDownMenu_CreateInfo()
-		info.func = self.SetValue
-		local peizhiD = PIG_Per.daiben.hanhua_pindao
-		for i=1,#pindaolist do
-			for ii=1,#pindaolist[i] do
-				info.text, info.arg1, info.arg2 = pindaolist1[i][ii], pindaolist[i][ii],peizhiD[i][ii];
-			    info.checked=peizhiD[i][ii]
-			    if peizhiD[i][ii]==true then
-			    	daiben.xuanzhongpindaoshu =daiben.xuanzhongpindaoshu+1;
-			    end
-			    info.isNotRadio = true;
-				UIDropDownMenu_AddButton(info)
-			end
-		end
-	end)
+	function daiben.hanren.xialai:PIGDownMenu_SetValue(value,arg1,arg2,checked)
+		PIG["daiben"]["hanhua_pindao"][value]=checked
+		PIGCloseDropDownMenus()
+	end
 	--编辑内容
 	daiben.hanren.bianjiHanhua = CreateFrame("Button",nil,daiben.hanren, "TruncatedButtonTemplate");
 	daiben.hanren.bianjiHanhua:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp");
 	daiben.hanren.bianjiHanhua:SetSize(biaotiH-2,biaotiH-2);
-	daiben.hanren.bianjiHanhua:SetPoint("LEFT",daiben.hanren.xialai,"RIGHT",-20,3);
+	daiben.hanren.bianjiHanhua:SetPoint("LEFT",daiben.hanren.xialai,"RIGHT",0,0);
 	daiben.hanren.bianjiHanhua.Tex = daiben.hanren.bianjiHanhua:CreateTexture(nil, "BORDER");
 	daiben.hanren.bianjiHanhua.Tex:SetTexture("interface/buttons/ui-guildbutton-publicnote-up.blp");
 	daiben.hanren.bianjiHanhua.Tex:SetPoint("CENTER");
@@ -278,12 +283,7 @@ local function ADD_daibenUI()
 	daiben.hanren.bianjiHanhua.F.hanhuaneirong_E:SetMaxLetters(110);
 	daiben.hanren.bianjiHanhua.F.hanhuaneirong_E:SetTextColor(1, 1, 1, 0.7);
 	---
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji = CreateFrame("CheckButton", nil, daiben.hanren.bianjiHanhua.F, "ChatConfigCheckButtonTemplate");
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji:SetSize(28,28);
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji:SetPoint("LEFT",daiben.hanren.bianjiHanhua.F.hanhuaneirong,"RIGHT",6,-1);
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji:SetHitRectInsets(0,-40,0,0);
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji.Text:SetText("喊话队伍等级");
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji.tooltip = "喊话内容附带现有队伍成员等级，坑位数。";
+	daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji = ADD_Checkbutton(nil,daiben.hanren.bianjiHanhua.F,-40,"LEFT",daiben.hanren.bianjiHanhua.F.hanhuaneirong,"RIGHT",6,-1,"喊话队伍等级","喊话内容附带现有队伍成员等级，坑位数")
 	daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji_T = daiben.hanren.bianjiHanhua.F:CreateFontString("daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji_T_UI");
 	daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji_T:SetPoint("TOPRIGHT", daiben.hanren.bianjiHanhua.F.hanhuaneirongFFF, "BOTTOMRIGHT", 0,0);
 	daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji_T:SetFont(ChatFontNormal:GetFont(), 12, "OUTLINE");
@@ -333,12 +333,8 @@ local function ADD_daibenUI()
 			PIG_Per.daiben.hanhua_lv=false
 		end
 	end);
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia = CreateFrame("CheckButton", nil, daiben.hanren.bianjiHanhua.F, "ChatConfigCheckButtonTemplate");
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia:SetSize(28,28);
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia:SetPoint("LEFT",daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji,"RIGHT",110,-1);
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia:SetHitRectInsets(0,-20,0,0);
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia.Text:SetText("喊话价格");
-	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia.tooltip = "喊话内容附带已设置的等级范围和单价\n谨慎使用，可能会被别人举报是刷子";
+	local tooltiplv = "喊话内容附带已设置的等级范围和单价\n谨慎使用，可能会被别人举报是刷子";
+	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia = ADD_Checkbutton(nil,daiben.hanren.bianjiHanhua.F,-40,"LEFT",daiben.hanren.bianjiHanhua.F.hanhuaneirong_dengji,"RIGHT",110,-1,"喊话价格",tooltiplv)
 	daiben.hanren.bianjiHanhua.F.hanhuaneirong_LVdanjia:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG_Per.daiben.hanhua_danjia=true
@@ -1243,7 +1239,6 @@ local function ADD_daibenUI()
 	end)
 	--记时内容===========
 	local function TimeInfo_Update()
-		if not daiben.TimeF:IsShown() then return end
 		local shujudata = PIG_Per.daiben.Timelist
 		local shujudataNum = #shujudata+1
 		for i=1, 5 do
@@ -1292,10 +1287,6 @@ local function ADD_daibenUI()
 			
 		end
 		daiben.TimeF.cishu:SetText(PIG_Per.daiben.shuabenshu);
-	end
-	local function DS_TimeInfo_Update()
-		TimeInfo_Update()
-		C_Timer.After(1,DS_TimeInfo_Update)
 	end
 	------
 	daiben.TimeF.timexian1 = daiben.TimeF:CreateLine()
@@ -1941,6 +1932,14 @@ local function ADD_daibenUI()
 		whileDead = true,
 		hideOnEscape = true,
 	}
+	local function DS_TimeInfo_Update()
+		if PIG_Per.daiben.Open then
+			if daiben.TimeF:IsVisible() then
+				TimeInfo_Update()
+			end
+		end
+		C_Timer.After(1,DS_TimeInfo_Update)
+	end
 	DS_TimeInfo_Update()
 	---
 	function daiben:shoudongbobaoEXP(timedata,duiyuan)
@@ -2354,8 +2353,6 @@ OptionsModF_daiben.CZPoint:SetScript("OnClick", function ()
 end)
 --=====================================
 addonTable.daiben = function()
-	PIG.daiben=PIG.daiben or addonTable.Default.daiben
-	PIG_Per.daiben = PIG_Per.daiben or addonTable.Default_Per.daiben
 	if PIG_Per.daiben.Open then
 		OptionsModF_daiben:SetChecked(true);
 		Options_Daibenzhushou:Enable();

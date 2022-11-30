@@ -1,131 +1,136 @@
 local addonName, addonTable = ...;
+local _, _, _, tocversion = GetBuildInfo()
 local MapData={}
-MapData.zoneData = {
-	-- -- 东部王国
-	-- [1416] = { min = 27, max = 39, minFish = "130"},
-	-- [1417] = { min = 30, max = 40, minFish = "130" },
-	-- [1418] = { min = 36, max = 45 },
-	-- [1419] = { min = 46, max = 63 },
-	-- [1428] = { min = 50, max = 59, minFish = "330" },
-	-- [1430] = { min = 50, max = 60, minFish = "330" },
-	-- [1426] = { min =  1, max = 12, minFish = "1", faction = "Alliance" },
-	-- [1431] = { min = 10, max = 30, minFish = "55" },
-	-- [1423] = { min = 54, max = 59, minFish = "330" },
-	-- [1429] = { min =  1, max = 10, minFish = "1", faction = "Alliance" },
-	-- [1424] = { min = 20, max = 31, minFish = "100-155" },
-	-- [1432] = { min = 10, max = 18, minFish = "10-80", faction = "Alliance" },
-	-- [1433] = { min = 15, max = 25, minFish = "50-125" },
-	-- [1427] = { min = 43, max = 56, minFish = "215-280" },
-	-- [1421] = { min = 10, max = 20, minFish = "10-100", faction = "Horde" },
-	-- [1434] = { min = 30, max = 50, minFish = "150-250" },
-	-- [1435] = { min = 36, max = 43, minFish = "180-215" },
-	-- [1425] = { min = 41, max = 49, minFish = "205-245" },
-	-- [1420] = { min =  1, max = 12, minFish = "1-20", faction = "Horde" },
-	-- [1436] = { min =  9, max = 18, minFish = "10-80", faction = "Alliance" },
-	-- [1422] = { min = 46, max = 57, minFish = "230-285" },
-	-- [1437] = { min = 20, max = 30, minFish = "100-150" },
+if tocversion<20000 then
+	MapData.zoneData = {
+		-- 东部王国
+		[1416] = { min = 27, max = 39, minFish = "130"},
+		[1417] = { min = 30, max = 40, minFish = "130" },
+		[1418] = { min = 36, max = 45 },
+		[1419] = { min = 46, max = 63 },
+		[1428] = { min = 50, max = 59, minFish = "330" },
+		[1430] = { min = 50, max = 60, minFish = "330" },
+		[1426] = { min =  1, max = 12, minFish = "1", faction = "Alliance" },
+		[1431] = { min = 10, max = 30, minFish = "55" },
+		[1423] = { min = 54, max = 59, minFish = "330" },
+		[1429] = { min =  1, max = 10, minFish = "1", faction = "Alliance" },
+		[1424] = { min = 20, max = 31, minFish = "100-155" },
+		[1432] = { min = 10, max = 18, minFish = "10-80", faction = "Alliance" },
+		[1433] = { min = 15, max = 25, minFish = "50-125" },
+		[1427] = { min = 43, max = 56, minFish = "215-280" },
+		[1421] = { min = 10, max = 20, minFish = "10-100", faction = "Horde" },
+		[1434] = { min = 30, max = 50, minFish = "150-250" },
+		[1435] = { min = 36, max = 43, minFish = "180-215" },
+		[1425] = { min = 41, max = 49, minFish = "205-245" },
+		[1420] = { min =  1, max = 12, minFish = "1-20", faction = "Horde" },
+		[1436] = { min =  9, max = 18, minFish = "10-80", faction = "Alliance" },
+		[1422] = { min = 46, max = 57, minFish = "230-285" },
+		[1437] = { min = 20, max = 30, minFish = "100-150" },
 
-	-- -- 卡利姆多
-	-- [1440] = { min = 19, max = 30, minFish = "90-150" }, 						-- Ashenvale
-	-- [1447] = { min = 42, max = 55, minFish = "210-275" }, 						-- Azshara
-	-- [1439] = { min = 11, max = 19, minFish = "10-90", faction = "Alliance" }, 	-- Darkshore
-	-- [1443] = { min = 30, max = 39, minFish = "150-195" }, 						-- Desolace
-	-- [1411] = { min =  1, max = 10, minFish = "1-10", faction = "Horde" }, 		-- Durotar
-	-- [1445] = { min = 36, max = 61, minFish = "180-305" }, 
-	-- [1448] = { min = 47, max = 54, minFish = "55" },					
-	-- [1444] = { min = 41, max = 60, minFish = "205-300" }, 						-- Feralas
-	-- [1450] = { min = 15, max = 15, minFish = "无" }, 							-- Moonglade
-	-- [1412] = { min =  1, max = 10, minFish = "1-10", faction = "Horde" }, 		-- Mulgore
-	-- [1451] = { min = 55, max = 59, minFish = "275-295" }, 						-- Silithus
-	-- [1442] = { min = 15, max = 25, minFish = "50-125" }, 						-- Stonetalon Mountains
-	-- [1446] = { min = 40, max = 50, minFish = "200-250" }, 						-- Tanaris
-	-- [1438] = { min =  1, max = 11, minFish = "1-10", faction = "Alliance" }, 	-- Teldrassil
-	-- [1413] = { min = 10, max = 33, minFish = "10-165", faction = "Horde" }, 		-- The Barrens
-	-- [1441] = { min = 24, max = 35, minFish = "120-175" }, 						-- Thousand Needles
-	-- [1449] = { min = 48, max = 55, minFish = "240-275" }, 						-- Un'Goro Crater
-	-- [1452] = { min = 55, max = 60, minFish = "275-300" },  						-- Winterspring
+		-- 卡利姆多
+		[1440] = { min = 19, max = 30, minFish = "90-150" }, 
+		[1447] = { min = 42, max = 55, minFish = "210-275" }, 
+		[1439] = { min = 11, max = 19, minFish = "10-90", faction = "Alliance" },
+		[1443] = { min = 30, max = 39, minFish = "150-195" }, 
+		[1411] = { min =  1, max = 10, minFish = "1-10", faction = "Horde" }, 
+		[1445] = { min = 36, max = 61, minFish = "180-305" }, 
+		[1448] = { min = 47, max = 54, minFish = "55" },					
+		[1444] = { min = 41, max = 60, minFish = "205-300" }, 
+		[1450] = { min = 15, max = 15, minFish = "无" },
+		[1412] = { min =  1, max = 10, minFish = "1-10", faction = "Horde" },
+		[1451] = { min = 55, max = 59, minFish = "275-295" },
+		[1442] = { min = 15, max = 25, minFish = "50-125" },
+		[1446] = { min = 40, max = 50, minFish = "200-250" },
+		[1438] = { min =  1, max = 11, minFish = "1-10", faction = "Alliance" },
+		[1413] = { min = 10, max = 33, minFish = "10-165", faction = "Horde" }, 
+		[1441] = { min = 24, max = 35, minFish = "120-175" },
+		[1449] = { min = 48, max = 55, minFish = "240-275" },
+		[1452] = { min = 55, max = 60, minFish = "275-300" },
+	}
+else
+	MapData.zoneData = {
+		--东部王国
+		[1416] = {min = 30, max = 40, minFish = "130",},
+		[1417] = {min = 30, max = 40, minFish = "130",},
+		[1418] = {min = 35, max = 45},
+		[1419] = {min = 45, max = 55},
+		[1428] = {min = 50, max = 58, minFish = "330",},
+		[1430] = {min = 55, max = 60, minFish = "330",},
+		[1426] = {min = 1, max = 10, minFish = "1", faction = "Alliance"},
+		[1431] = {min = 18, max = 30, minFish = "55",},
+		[1423] = {min = 53, max = 60, minFish = "330",},
+		[1429] = {min = 1, max = 10, minFish = "1",faction = "Alliance"},
+		[1424] = {min = 20, max = 30, minFish = "55",},
+		[1455] = {minFish = 1,},
+		[1432] = {min = 10,max = 20, minFish = "1",faction = "Alliance"},
+		[1433] = {min = 15, max = 25, minFish = "55",},
+		[1427] = {min = 43, max = 50},
+		[1421] = {min = 10, max = 20, minFish = "1",faction = "Horde"},
+		[1453] = {minFish = 1,},
+		[1434] = {min = 30, max = 45, minFish = "130 (205)",},
+		[1435] = {min = 35, max = 45, minFish = "130",},
+		[1425] = {min = 40, max = 50, minFish = "205",},
+		[1420] = {min = 1, max = 10, minFish = "1",faction = "Horde"},
+		[1458] = {minFish = 1,},
+		[1436] = {min = 10, max = 20, minFish = "1",faction = "Alliance"},
+		[1422] = {min = 51, max = 58, minFish = "205",},
+		[1437] = {min = 20, max = 30, minFish = "55",},
 
-	--东部王国
-	[1416] = {min = 30, max = 40, minFish = "130",},
-	[1417] = {min = 30, max = 40, minFish = "130",},
-	[1418] = {min = 35, max = 45},
-	[1419] = {min = 45, max = 55},
-	[1428] = {min = 50, max = 58, minFish = "330",},
-	[1430] = {min = 55, max = 60, minFish = "330",},
-	[1426] = {min = 1, max = 10, minFish = "1", faction = "Alliance"},
-	[1431] = {min = 18, max = 30, minFish = "55",},
-	[1423] = {min = 53, max = 60, minFish = "330",},
-	[1429] = {min = 1, max = 10, minFish = "1",faction = "Alliance"},
-	[1424] = {min = 20, max = 30, minFish = "55",},
-	[1455] = {minFish = 1,},
-	[1432] = {min = 10,max = 20, minFish = "1",faction = "Alliance"},
-	[1433] = {min = 15, max = 25, minFish = "55",},
-	[1427] = {min = 43, max = 50},
-	[1421] = {min = 10, max = 20, minFish = "1",faction = "Horde"},
-	[1453] = {minFish = 1,},
-	[1434] = {min = 30, max = 45, minFish = "130 (205)",},
-	[1435] = {min = 35, max = 45, minFish = "130",},
-	[1425] = {min = 40, max = 50, minFish = "205",},
-	[1420] = {min = 1, max = 10, minFish = "1",faction = "Horde"},
-	[1458] = {minFish = 1,},
-	[1436] = {min = 10, max = 20, minFish = "1",faction = "Alliance"},
-	[1422] = {min = 51, max = 58, minFish = "205",},
-	[1437] = {min = 20, max = 30, minFish = "55",},
+		-- 卡利姆多
+		[1440] = {min = 18, max = 30, minFish = "55",},
+		[1447] = {min = 45, max = 55, minFish = "205 (330)",},
+		[1439] = {min = 10, max = 20, minFish = "1",faction = "Alliance"},
+		[1457] = {minFish = 1,},
+		[1443] = {min = 30, max = 40, minFish = "130",},
+		[1411] = {min = 1, max = 10, minFish = "1",faction = "Horde"},
+		[1445] = {min = 35, max = 45, minFish = "130",},
+		[1448] = {min = 48, max = 55, minFish = "205",},
+		[1444] = {min = 40, max = 50, minFish = "205 (330)",},
+		[1450] = {minFish = 205,},
+		[1412] = {min = 1, max = 10, minFish = "1",faction = "Horde"},
+		[1454] = {minFish = 1,},
+		[1451] = {min = 55, max = 60, minFish = "330",},
+		[1442] = {min = 15, max = 27, minFish = "55",},
+		[1446] = {min = 40, max = 50, minFish = "205",},
+		[1438] = {min = 1, max = 10, minFish = "1",faction = "Alliance"},
+		[1413] = {min = 10, max = 25, minFish = "1",faction = "Horde"},
+		[1441] = {min = 25, max = 35, minFish = "130",},
+		[1456] = {minFish = 1,},
+		[1449] = {min = 48, max = 55, minFish = "205",},
+		[1452] = {min = 55, max = 60, minFish = "330",},
 
-	-- 卡利姆多
-	[1440] = {min = 18, max = 30, minFish = "55",},
-	[1447] = {min = 45, max = 55, minFish = "205 (330)",},
-	[1439] = {min = 10, max = 20, minFish = "1",faction = "Alliance"},
-	[1457] = {minFish = 1,},
-	[1443] = {min = 30, max = 40, minFish = "130",},
-	[1411] = {min = 1, max = 10, minFish = "1",faction = "Horde"},
-	[1445] = {min = 35, max = 45, minFish = "130",},
-	[1448] = {min = 48, max = 55, minFish = "205",},
-	[1444] = {min = 40, max = 50, minFish = "205 (330)",},
-	[1450] = {minFish = 205,},
-	[1412] = {min = 1, max = 10, minFish = "1",faction = "Horde"},
-	[1454] = {minFish = 1,},
-	[1451] = {min = 55, max = 60, minFish = "330",},
-	[1442] = {min = 15, max = 27, minFish = "55",},
-	[1446] = {min = 40, max = 50, minFish = "205",},
-	[1438] = {min = 1, max = 10, minFish = "1",faction = "Alliance"},
-	[1413] = {min = 10, max = 25, minFish = "1",faction = "Horde"},
-	[1441] = {min = 25, max = 35, minFish = "130",},
-	[1456] = {minFish = 1,},
-	[1449] = {min = 48, max = 55, minFish = "205",},
-	[1452] = {min = 55, max = 60, minFish = "330",},
+		-- 外域1945
+		[1949] = {min = 65, max = 70,},
+		[1944] = {min = 58, max = 70, minFish = "280",},
+		[1951] = {min = 64, max = 70, minFish = "280 (380) (395)",},
+		[1953] = {min = 66, max = 70, minFish = "380",},
+		[1948] = {min = 67, max = 70, minFish = "280",},
+		[1952] = {min = 62, max = 70, minFish = "355 (405)",},
+		[1946] = {min = 60, max = 63, minFish = "305 (355)",},
 
-	-- 外域1945
-	[1949] = {min = 65, max = 70,},
-	[1944] = {min = 58, max = 70, minFish = "280",},
-	[1951] = {min = 64, max = 70, minFish = "280 (380) (395)",},
-	[1953] = {min = 66, max = 70, minFish = "380",},
-	[1948] = {min = 67, max = 70, minFish = "280",},
-	[1952] = {min = 62, max = 70, minFish = "355 (405)",},
-	[1946] = {min = 60, max = 63, minFish = "305 (355)",},
+		[1954] = {min = 1, max = 70, minFish = "1" },	--银月城
+		[1941] = {min = 1, max = 14, minFish = "1" }, --永歌森林
+		[1942] = {min = 8, max = 24, minFish = "1" }, --幽魂之地
+		[1947] = {min = 1, max = 70, minFish = "1"},--埃索达
+		[1943] = {min = 1, max = 14, minFish = "1" }, --秘蓝岛
+		[1950] = {min = 8, max = 24, minFish = "1" },--秘血岛
+		[1955] = {min = 1, max = 70, },	--沙塔斯
+		[1957] = {min = 69, max = 70, minFish = "355" }, --奎尔丹纳斯岛
 
-	[1954] = {min = 1, max = 70, minFish = "1" },	--银月城
-	[1941] = {min = 1, max = 14, minFish = "1" }, --永歌森林
-	[1942] = {min = 8, max = 24, minFish = "1" }, --幽魂之地
-	[1947] = {min = 1, max = 70, minFish = "1"},--埃索达
-	[1943] = {min = 1, max = 14, minFish = "1" }, --秘蓝岛
-	[1950] = {min = 8, max = 24, minFish = "1" },--秘血岛
-	[1955] = {min = 1, max = 70, },	--沙塔斯
-	[1957] = {min = 69, max = 70, minFish = "355" }, --奎尔丹纳斯岛
-
-	-- 诺森德
-	[114] = {min = 70, max = 72, minFish = "380 (475)",},
-	[119] = {min = 75, max = 80, minFish = "430 (525)",},
-	[118] = {min = 77, max = 80,},
-	[120] = {min = 73, max = 77,},
-	[121] = {min = 73, max = 77,},
-	[116] = {min = 73, max = 75, minFish = "380 (475)",},
-	[117] = {min = 68, max = 72, minFish = "380 (475)",},
-	[115] = {min = 71, max = 80, minFish = "380 (475)",},
-	[127] = {min = 80, max = 80, minFish = "405 (500)",},
-	[123] = {min = 80, max = 80, minFish = "430 (525)",},
-		
-}
+		-- 诺森德
+		[114] = {min = 70, max = 72, minFish = "380 (475)",},
+		[119] = {min = 75, max = 80, minFish = "430 (525)",},
+		[118] = {min = 77, max = 80,},
+		[120] = {min = 73, max = 77,},
+		[121] = {min = 73, max = 77,},
+		[116] = {min = 73, max = 75, minFish = "380 (475)",},
+		[117] = {min = 68, max = 72, minFish = "380 (475)",},
+		[115] = {min = 71, max = 80, minFish = "380 (475)",},
+		[127] = {min = 80, max = 80, minFish = "405 (500)",},
+		[123] = {min = 80, max = 80, minFish = "430 (525)",},
+			
+	}
+end
 MapData.Reveal = {
 	[1194] = {["128:110:464:33"] = "271427", ["160:120:413:476"] = "2212659", ["160:190:474:384"] = "271426", ["190:180:462:286"] = "271440", ["190:200:327:60"] = "271439", ["200:240:549:427"] = "271437", ["210:160:427:78"] = "271428", ["215:215:355:320"] = "271443", ["220:230:432:170"] = "271421", ["230:230:301:189"] = "271422", ["445:160:244:0"] = "271435, 271442",},
 	[1200] = {["128:120:473:260"] = "272185", ["128:155:379:242"] = "272178", ["128:205:303:307"] = "272176", ["170:128:458:369"] = "272180", ["185:128:291:0"] = "272172", ["205:128:395:0"] = "272179", ["205:230:502:16"] = "272169", ["210:180:255:214"] = "272181", ["215:240:428:80"] = "272177", ["225:235:532:238"] = "272186", ["256:190:523:356"] = "272170", ["256:200:367:303"] = "272173", ["280:240:249:59"] = "272187, 272171", ["470:243:270:425"] = "272168, 272165",},

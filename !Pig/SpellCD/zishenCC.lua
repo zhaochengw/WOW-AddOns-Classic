@@ -2,6 +2,7 @@ local _, addonTable = ...;
 local gsub = _G.string.gsub
 local sub = _G.string.sub
 local find = _G.string.find
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ---------.
 local tabID = 2;
 local tabName = _G["SpellJK.F_TAB_"..tabID].title:GetText();
@@ -437,7 +438,7 @@ fuFrame:SetScript("OnHide", function(self)
 	self.list.add:Hide();
 end)
 --========================================================
-fuFrame.Open = CreateFrame("CheckButton", nil,fuFrame, "ChatConfigCheckButtonTemplate");
+fuFrame.Open = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",10,-4,"启用"..tabName.."监控","")
 fuFrame.Open:SetSize(30,30);
 fuFrame.Open:SetHitRectInsets(0,-80,0,0);
 fuFrame.Open:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",10,-4);

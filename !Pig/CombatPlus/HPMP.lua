@@ -1,6 +1,7 @@
 ﻿local _, addonTable = ...;
 local _, _, _, tocversion = GetBuildInfo()
 local fuFrame=List_R_F_1_3
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ---------------------------------
 local www,hhh,bianju = 100,16,2
 local RuneW=www/6
@@ -225,12 +226,7 @@ fuFrame.zituanLINE:SetThickness(1);
 fuFrame.zituanLINE:SetStartPoint("TOPLEFT",2,-240)
 fuFrame.zituanLINE:SetEndPoint("TOPRIGHT",-2,-240)
 ---
-fuFrame.ziyuantiao = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.ziyuantiao:SetSize(30,32);
-fuFrame.ziyuantiao:SetHitRectInsets(0,-100,0,0);
-fuFrame.ziyuantiao:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-250);
-fuFrame.ziyuantiao.Text:SetText("显示角色资源条");
-fuFrame.ziyuantiao.tooltip = "在角色下方显示一个血量资源条";
+fuFrame.ziyuantiao = ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",20,-250,"显示角色资源条","在人物附近显示一个血量资源条")
 if tocversion>39999 then fuFrame.ziyuantiao:Disable() fuFrame.ziyuantiao.Text:SetTextColor(0.4, 0.4, 0.4, 1); end
 fuFrame.ziyuantiao:SetScript("OnClick", function (self)
 	if self:GetChecked() then
@@ -256,12 +252,7 @@ fuFrame.ziyuantiao:SetScript("OnClick", function (self)
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
-fuFrame.zhandouwaiHide = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.zhandouwaiHide:SetSize(30,32);
-fuFrame.zhandouwaiHide:SetHitRectInsets(0,-100,0,0);
-fuFrame.zhandouwaiHide:SetPoint("LEFT",fuFrame.ziyuantiao,"RIGHT",180,0);
-fuFrame.zhandouwaiHide.Text:SetText("脱战后隐藏");
-fuFrame.zhandouwaiHide.tooltip = "脱战后隐藏血量资源条";
+fuFrame.zhandouwaiHide = ADD_Checkbutton(nil,fuFrame,-80,"LEFT",fuFrame.ziyuantiao,"RIGHT",180,0,"脱战后隐藏","脱战后隐藏血量资源条")
 fuFrame.zhandouwaiHide:Disable()
 fuFrame.zhandouwaiHide:SetScript("OnClick", function (self)
 	if self:GetChecked() then
@@ -276,12 +267,7 @@ fuFrame.zhandouwaiHide:SetScript("OnClick", function (self)
 		HPMPtiao_UI:UnregisterEvent("PLAYER_REGEN_ENABLED");
 	end
 end);
-fuFrame.xianshishuzhi = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.xianshishuzhi:SetSize(30,32);
-fuFrame.xianshishuzhi:SetHitRectInsets(0,-100,0,0);
-fuFrame.xianshishuzhi:SetPoint("LEFT",fuFrame.zhandouwaiHide,"RIGHT",160,0);
-fuFrame.xianshishuzhi.Text:SetText("显示数值");
-fuFrame.xianshishuzhi.tooltip = "显示数值";
+fuFrame.xianshishuzhi = ADD_Checkbutton(nil,fuFrame,-80,"LEFT",fuFrame.zhandouwaiHide,"RIGHT",160,0,"显示数值","显示数值")
 fuFrame.xianshishuzhi:Disable()
 fuFrame.xianshishuzhi:SetScript("OnClick", function (self)
 	if self:GetChecked() then
@@ -446,9 +432,6 @@ fuFrame.hpmpPoint:SetScript("OnClick", function ()
 end)
 --=====================================
 addonTable.CombatPlus_HPMPziyuan = function()
-	PIG['CombatPlus']['suofangbili']=PIG['CombatPlus']['suofangbili'] or addonTable.Default['CombatPlus']['suofangbili']
-	PIG['CombatPlus']['Xpianyi']=PIG['CombatPlus']['Xpianyi'] or addonTable.Default['CombatPlus']['Xpianyi']
-	PIG['CombatPlus']['Ypianyi']=PIG['CombatPlus']['Ypianyi'] or addonTable.Default['CombatPlus']['Ypianyi']
 	if PIG['CombatPlus']['ziyuantiao'] then
 		fuFrame.ziyuantiao:SetChecked(true);
 		if fuFrame.ziyuantiao:IsEnabled() then

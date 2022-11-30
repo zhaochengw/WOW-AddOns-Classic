@@ -61,12 +61,8 @@ local function ADD_AHPlus()
 			return OLD_QueryAuctionItems(text, minLevel, maxLevel, page, usable, rarity, allxiazai, exactMatch, filterData)
 		end
 	end
-	AuctionFrameBrowse.exact = CreateFrame("CheckButton", nil, AuctionFrameBrowse, "ChatConfigCheckButtonTemplate");
+	AuctionFrameBrowse.exact =ADD_Checkbutton(nil,AuctionFrameBrowse,-20,"TOPLEFT",AuctionFrameBrowse,"TOPLEFT",530,-13,"精确查找","选中后查找结果将精确匹配关键字")
 	AuctionFrameBrowse.exact:SetSize(24,24);
-	AuctionFrameBrowse.exact:SetPoint("TOPLEFT",AuctionFrameBrowse,"TOPLEFT",530,-13);
-	AuctionFrameBrowse.exact:SetHitRectInsets(0,-10,0,0);
-	AuctionFrameBrowse.exact.tooltip = "选中后查找结果将精确匹配关键字";
-	AuctionFrameBrowse.exact.Text:SetText("精确查找");
 	AuctionFrameBrowse.exact.Text:SetTextColor(0, 1, 0, 0.8);
 	AuctionFrameBrowse.exact:SetScript("OnClick", function (self)
 		if self:GetChecked() then
@@ -1127,12 +1123,7 @@ local function ADD_AHPlus()
 		SellListF:Hide()
 	end)
 	--压价按钮
-	AuctionFrameAuctions.yajingbiao = CreateFrame("CheckButton", nil, AuctionFrameAuctions, "ChatConfigCheckButtonTemplate");
-	AuctionFrameAuctions.yajingbiao:SetSize(24,24);
-	AuctionFrameAuctions.yajingbiao:SetPoint("TOPLEFT",AuctionFrameAuctions,"TOPLEFT",70,-286);
-	AuctionFrameAuctions.yajingbiao:SetHitRectInsets(0,-10,0,0);
-	AuctionFrameAuctions.yajingbiao.tooltip = "选中后压一口价同时压竞标价";
-	AuctionFrameAuctions.yajingbiao.Text:SetText("同时压竞标价");
+	AuctionFrameAuctions.yajingbiao =ADD_Checkbutton(nil,AuctionFrameAuctions,-20,"TOPLEFT",AuctionFrameAuctions,"TOPLEFT",70,-286,"同时压竞标价","选中后压一口价同时压竞标价")
 	AuctionFrameAuctions.yajingbiao.Text:SetTextColor(0, 1, 0, 0.8);
 	AuctionFrameAuctions.yajingbiao:SetScript("OnClick", function (self)
 		if self:GetChecked() then
@@ -1199,12 +1190,8 @@ AuctionFramejiazai:SetScript("OnEvent", function(self, event, arg1)
 	end
 end)
 ------------
-fuFrame.AHOpen = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.AHOpen:SetSize(30,30);
-fuFrame.AHOpen:SetHitRectInsets(0,-80,0,0);
-fuFrame.AHOpen:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-20);
-fuFrame.AHOpen.Text:SetText("启用拍卖增强");
-fuFrame.AHOpen.tooltip = "启用拍卖增强";
+local tooltipAHOpen="在拍卖行浏览列表显示一口价，和涨跌百分比。界面增加一个缓存单价按钮，时光徽章界面显示历史价格";
+fuFrame.AHOpen =ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"启用拍卖增强",tooltipAHOpen)
 fuFrame.AHOpen:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.AHPlus.Open=true;
@@ -1221,12 +1208,7 @@ fuFrame.AHOpen:SetScript("OnClick", function (self)
 	end
 end);
 --
-fuFrame.AHtooltip = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.AHtooltip:SetSize(30,30);
-fuFrame.AHtooltip:SetHitRectInsets(0,-80,0,0);
-fuFrame.AHtooltip:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-80);
-fuFrame.AHtooltip.Text:SetText("鼠标提示AH价钱");
-fuFrame.AHtooltip.tooltip = "鼠标提示AH价钱（AH没有价格的物品不会提示）";
+fuFrame.AHtooltip =ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-80,"鼠标提示AH价钱","鼠标提示AH价钱（AH没有价格的物品不会提示）")
 fuFrame.AHtooltip:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.AHPlus.AHtooltip=true;
@@ -1287,8 +1269,6 @@ fuFrame:SetScript("OnShow", function (self)
 end);
 ------------------------
 addonTable.AHPlus = function()
-	PIG.AHPlus=PIG.AHPlus or addonTable.Default.AHPlus
-	PIG.AHPlus.Tokens=PIG.AHPlus.Tokens or addonTable.Default.AHPlus.Tokens
 	huoquhuizhangjiageG()
 	if PIG.AHPlus.Open then
 		ITEM_QUALITY_COLORS[-1]={ r = 0, g = 0, b = 0, hex = "", color = 0 };

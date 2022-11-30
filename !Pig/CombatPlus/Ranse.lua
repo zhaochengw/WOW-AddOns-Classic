@@ -1,6 +1,7 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_3
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --///动作条按键范围着色/////////////
 local function CombatPlus_ActionBar_Ranse_Open()
 	if fuFrame.Ranse:IsEnabled() then
@@ -34,11 +35,7 @@ local function CombatPlus_ActionBar_Ranse_Open()
 	end
 end
 ---------------------
-fuFrame.Ranse = CreateFrame("CheckButton", nil, fuFrame, "ChatConfigCheckButtonTemplate");
-fuFrame.Ranse:SetSize(30,32);
-fuFrame.Ranse:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-20);
-fuFrame.Ranse.Text:SetText("动作条按键范围着色");
-fuFrame.Ranse.tooltip = "根据技能范围染色动作条按键颜色！";
+fuFrame.Ranse = ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"动作条按键范围着色","根据技能范围染色动作条按键颜色")
 fuFrame.Ranse:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG['CombatPlus']['ActionBar_Ranse']="ON";

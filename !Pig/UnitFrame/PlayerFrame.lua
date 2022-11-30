@@ -1,6 +1,7 @@
 ﻿local _, addonTable = ...;
 local fuFrame=List_R_F_1_4
 local _, _, _, tocversion = GetBuildInfo()
+local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --角色和宠物血量数字透明度---------------
 local function ZishenFrame_Open()
 	if PlayerFrame.ICON then return end
@@ -31,18 +32,18 @@ local function ZishenFrame_Open()
 	--人物血量蓝量信息
 	PlayerFrame.ziji = CreateFrame("Frame", "zijiEFrameUI", PlayerFrame,"BackdropTemplate");
 	PlayerFrame.ziji:SetBackdrop({bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-						tile = true, tileSize = 0, edgeSize = 16, insets = { left = 3, right = 3, top = 3, bottom = 3 }});
-	PlayerFrame.ziji:SetBackdropBorderColor(1, 1, 1, 0.8);
+						tile = true, tileSize = 0, edgeSize = 8, insets = { left = 1, right = 1, top = 1, bottom = 1 }});
+	PlayerFrame.ziji:SetBackdropBorderColor(0, 1, 1, 0.4);
 	PlayerFrame.ziji:SetWidth(70);
-	PlayerFrame.ziji:SetPoint("TOPLEFT", PlayerFrame, "TOPRIGHT", -6, -19.6);
-	PlayerFrame.ziji:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMRIGHT", -6, 32);
+	PlayerFrame.ziji:SetPoint("TOPLEFT", PlayerFrame, "TOPRIGHT", -20, -26);
+	PlayerFrame.ziji:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMRIGHT", -20, 26);
 	if not PIG.UnitFrame.PlayerFrame.HPFF then
 		PlayerFrame.ziji:Hide();
 	end	
 	---------------
 	PlayerFrame.ziji.title1 = PlayerFrame.ziji:CreateFontString();--血量
 	PlayerFrame.ziji.title1:SetPoint("CENTER", PlayerFrame.ziji, "CENTER", 0, 0);
-	PlayerFrame.ziji.title1:SetFontObject(ChatFontNormal);
+	PlayerFrame.ziji.title1:SetFont(ChatFontNormal:GetFont(), 16,"OUTLINE")
 	PlayerFrame.ziji.title1:SetTextColor(0,1,0,1);
 
 	PlayerFrame.ziji.title2 = PlayerFrame.ziji:CreateFontString();--血量百分比
@@ -129,7 +130,7 @@ local function ZishenFrame_Open()
 	--拾取方式
 	PlayerFrame.lootF = CreateFrame("Frame", nil, PlayerFrame);
 	PlayerFrame.lootF:SetSize(20,44);
-	PlayerFrame.lootF:SetPoint("TOPLEFT", PlayerFrame, "TOPLEFT", 19, -58);
+	PlayerFrame.lootF:SetPoint("TOPLEFT", PlayerFrame, "TOPLEFT", 5, -20);
 	PlayerFrame.lootF.loot = PlayerFrame.lootF:CreateFontString();
 	PlayerFrame.lootF.loot:SetWidth(20);
 	PlayerFrame.lootF.loot:SetPoint("TOP", PlayerFrame.lootF, "TOP", 0, 0);
@@ -195,30 +196,29 @@ local function ZishenFrame_Open()
 	end)
 end
 local function HideHPMPTT()
-	PlayerFrameHealthBarText:SetAlpha(0.1);
-	PlayerFrameManaBarText:SetAlpha(0.1);
-	PetFrameHealthBarText:SetAlpha(0.1);
-	PetFrameManaBarText:SetAlpha(0.1);
+	local function shuaxintoumingdu(toumingdu)
+		PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar.HealthBarText:SetAlpha(toumingdu);
+		PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar.ManaBarText:SetAlpha(toumingdu);
+		PetFrameHealthBar.TextString:SetAlpha(toumingdu);
+		PetFrameManaBar.TextString:SetAlpha(toumingdu);
+	end
+	shuaxintoumingdu(0.1)
 	local function xianHPMP() 
-		PlayerFrameHealthBarText:SetAlpha(1);PlayerFrameManaBarText:SetAlpha(1);
-		PetFrameHealthBarText:SetAlpha(1);PetFrameManaBarText:SetAlpha(1);
+		shuaxintoumingdu(1)
 	end
 	local function yinHPMP()
-		PlayerFrameHealthBarText:SetAlpha(0.1);PlayerFrameManaBarText:SetAlpha(0.1);
-		PetFrameHealthBarText:SetAlpha(0.1);PetFrameManaBarText:SetAlpha(0.1);
+		shuaxintoumingdu(0.1)
 	end
-	PlayerFrameHealthBar:HookScript("OnEnter",xianHPMP);
-	PlayerFrameManaBar:HookScript("OnEnter", xianHPMP)
+	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:HookScript("OnEnter",xianHPMP);
+	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:HookScript("OnLeave", yinHPMP)
+	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar:HookScript("OnEnter", xianHPMP)
+	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar:HookScript("OnLeave", yinHPMP)
 	PetFrameHealthBar:HookScript("OnEnter", xianHPMP) 
-	PetFrameManaBar:HookScript("OnEnter", xianHPMP)
-	PlayerFrameHealthBar:HookScript("OnLeave", yinHPMP)
-	PlayerFrameManaBar:HookScript("OnLeave", yinHPMP)
 	PetFrameHealthBar:HookScript("OnLeave", yinHPMP)
+	PetFrameManaBar:HookScript("OnEnter", xianHPMP)
 	PetFrameManaBar:HookScript("OnLeave", yinHPMP)
 end
 --------------------
-local ADD_Checkbutton=addonTable.ADD_Checkbutton
---
 fuFrame.Ziji=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"自身头像增强","在系统默认头像上增加耐久/移速/拾取方式提示！")
 fuFrame.Ziji:SetScript("OnClick", function (self)
 	if self:GetChecked() then
@@ -300,7 +300,6 @@ fuFrame:HookScript("OnShow", function (self)
 end);
 --=====================================
 addonTable.UnitFrame_PlayerFrame = function()
-	PIG.UnitFrame=PIG.UnitFrame or addonTable.Default.UnitFrame
 	if PIG.UnitFrame.PlayerFrame.Plus then
 		ZishenFrame_Open();
 		if PIG.UnitFrame.PlayerFrame.HPFF then

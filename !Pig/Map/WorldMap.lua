@@ -18,80 +18,50 @@ local function MouseXY()
 	return cx, cy
 end
 ----------
-local function WorldMap_Wind()
-	UIPanelWindows["WorldMapFrame"] = nil
-	table.insert(UISpecialFrames, "WorldMapFrame")
-	WorldMapFrame.IsMaximized = function() return false end
-	WorldMapFrame.HandleUserActionToggleSelf = function()
-		if WorldMapFrame:IsShown() then WorldMapFrame:Hide() else WorldMapFrame:Show() end
-	end
-	WorldMapFrame:SetMovable(true)
-	WorldMapFrame:RegisterForDrag("LeftButton")
-
-	WorldMapFrame:SetScript("OnDragStart", function(self)
-		self:StartMoving()
-	end)
-	WorldMapFrame:SetScript("OnDragStop", function(self)
-		self:StopMovingOrSizing()
-		self:SetUserPlaced(false)
-	end)
-	---
-	local Width,Height=800,618;--1004 689
-	WorldMapFrame:SetSize(Width,Height);
-	WorldMapFrame:SetFrameStrata("HIGH")
-	WorldMapFrame.BorderFrame:SetFrameStrata("LOW")
-	WorldMapFrame.BorderFrame:SetScale(0.78)
-	WorldMapFrame.BorderFrame:SetPoint("TOPLEFT", WorldMapFrame, "TOPLEFT", 0, -14)
-	WorldMapFrame.BorderFrame:SetPoint("BOTTOMRIGHT", WorldMapFrame, "BOTTOMRIGHT", 0, 0)
-	WorldMapFrame.BlackoutFrame:SetFrameStrata("LOW")
-	WorldMapFrame.BlackoutFrame:Hide()
-	WorldMapFrameCloseButton:ClearAllPoints();
-	WorldMapFrameCloseButton:SetPoint("TOPRIGHT", WorldMapFrame, "TOPRIGHT", 4, -12)
-	WorldMapFrameCloseButton:SetScale(0.86)
-	WorldMapMagnifyingGlassButton:ClearAllPoints();
-	WorldMapMagnifyingGlassButton:SetPoint("TOPLEFT", WorldMapFrame, "TOPLEFT", 10, -70)
-	WorldMapZoneMinimapDropDown:SetScale(0.86)
-	WorldMapContinentDropDown:SetScale(0.86)
-	WorldMapZoneDropDown:SetScale(0.86)
-	WorldMapZoomOutButton:SetScale(0.86)
-	WorldMapContinentDropDown:SetPoint("TOP", WorldMapFrame, "TOP", -40, -50)
-end
 local function WorldMap_XY()
-	WorldMapFrame.zuobiaoX = WorldMapFrame:CreateFontString();
-	WorldMapFrame.zuobiaoX:SetPoint("BOTTOM", WorldMapFrame, "BOTTOM", -200, 9);
-	WorldMapFrame.zuobiaoX:SetFontObject(GameFontNormal);
-	WorldMapFrame.zuobiaoX:SetText('玩家 X:');
+	WorldMapScrollChild.zuobiaoX = WorldMapScrollChild:CreateFontString();
+	WorldMapScrollChild.zuobiaoX:SetPoint("TOP", WorldMapScrollChild, "TOP", -200, -2);
+	WorldMapScrollChild.zuobiaoX:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	WorldMapScrollChild.zuobiaoX:SetTextColor(0, 1, 0, 1);
+	WorldMapScrollChild.zuobiaoX:SetText('玩家 X:');
 
-	WorldMapFrame.zuobiaoXV = WorldMapFrame:CreateFontString();
-	WorldMapFrame.zuobiaoXV:SetPoint("LEFT", WorldMapFrame.zuobiaoX, "RIGHT", 0, 0);
-	WorldMapFrame.zuobiaoXV:SetFont(GameFontNormal:GetFont(), 14,"OUTLINE")
+	WorldMapScrollChild.zuobiaoXV = WorldMapScrollChild:CreateFontString();
+	WorldMapScrollChild.zuobiaoXV:SetPoint("LEFT", WorldMapScrollChild.zuobiaoX, "RIGHT", 0, 0);
+	WorldMapScrollChild.zuobiaoXV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	WorldMapScrollChild.zuobiaoXV:SetTextColor(1, 1, 0, 1);
 
-	WorldMapFrame.zuobiaoY = WorldMapFrame:CreateFontString();
-	WorldMapFrame.zuobiaoY:SetPoint("LEFT", WorldMapFrame.zuobiaoX, "RIGHT", 50, 0);
-	WorldMapFrame.zuobiaoY:SetFontObject(GameFontNormal);
-	WorldMapFrame.zuobiaoY:SetText('Y:');
-	WorldMapFrame.zuobiaoYV = WorldMapFrame:CreateFontString();
-	WorldMapFrame.zuobiaoYV:SetPoint("LEFT", WorldMapFrame.zuobiaoY, "RIGHT", 0, 0);
-	WorldMapFrame.zuobiaoYV:SetFont(GameFontNormal:GetFont(), 14,"OUTLINE")
+	WorldMapScrollChild.zuobiaoY = WorldMapScrollChild:CreateFontString();
+	WorldMapScrollChild.zuobiaoY:SetPoint("LEFT", WorldMapScrollChild.zuobiaoX, "RIGHT", 50, 0);
+	WorldMapScrollChild.zuobiaoY:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	WorldMapScrollChild.zuobiaoY:SetTextColor(0, 1, 0, 1);
+	WorldMapScrollChild.zuobiaoY:SetText('Y:');
+	WorldMapScrollChild.zuobiaoYV = WorldMapScrollChild:CreateFontString();
+	WorldMapScrollChild.zuobiaoYV:SetPoint("LEFT", WorldMapScrollChild.zuobiaoY, "RIGHT", 0, 0);
+	WorldMapScrollChild.zuobiaoYV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	WorldMapScrollChild.zuobiaoYV:SetTextColor(1, 1, 0, 1);
 
-	WorldMapFrame.shubiaoX = WorldMapFrame:CreateFontString();
-	WorldMapFrame.shubiaoX:SetPoint("BOTTOM", WorldMapFrame, "BOTTOM", 100, 9);
-	WorldMapFrame.shubiaoX:SetFontObject(GameFontNormal);
-	WorldMapFrame.shubiaoX:SetText('鼠标 X:');
+	WorldMapScrollChild.shubiaoX = WorldMapScrollChild:CreateFontString();
+	WorldMapScrollChild.shubiaoX:SetPoint("TOP", WorldMapScrollChild, "TOP", 100, -2);
+	WorldMapScrollChild.shubiaoX:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	WorldMapScrollChild.shubiaoX:SetTextColor(0, 1, 0, 1);
+	WorldMapScrollChild.shubiaoX:SetText('鼠标 X:');
 
-	WorldMapFrame.shubiaoXV = WorldMapFrame:CreateFontString();
-	WorldMapFrame.shubiaoXV:SetPoint("LEFT", WorldMapFrame.shubiaoX, "RIGHT", 0, 0);
-	WorldMapFrame.shubiaoXV:SetFont(GameFontNormal:GetFont(), 14,"OUTLINE")
+	WorldMapScrollChild.shubiaoXV = WorldMapScrollChild:CreateFontString();
+	WorldMapScrollChild.shubiaoXV:SetPoint("LEFT", WorldMapScrollChild.shubiaoX, "RIGHT", 0, 0);
+	WorldMapScrollChild.shubiaoXV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	WorldMapScrollChild.shubiaoXV:SetTextColor(1, 1, 0, 1);
 
-	WorldMapFrame.shubiaoY = WorldMapFrame:CreateFontString();
-	WorldMapFrame.shubiaoY:SetPoint("LEFT", WorldMapFrame.shubiaoX, "RIGHT", 50, 0);
-	WorldMapFrame.shubiaoY:SetFontObject(GameFontNormal);
-	WorldMapFrame.shubiaoY:SetText('Y:');
-	WorldMapFrame.shubiaoYV = WorldMapFrame:CreateFontString();
-	WorldMapFrame.shubiaoYV:SetPoint("LEFT", WorldMapFrame.shubiaoY, "RIGHT", 0, 0);
-	WorldMapFrame.shubiaoYV:SetFont(GameFontNormal:GetFont(), 14,"OUTLINE")
+	WorldMapScrollChild.shubiaoY = WorldMapScrollChild:CreateFontString();
+	WorldMapScrollChild.shubiaoY:SetPoint("LEFT", WorldMapScrollChild.shubiaoX, "RIGHT", 50, 0);
+	WorldMapScrollChild.shubiaoY:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	WorldMapScrollChild.shubiaoY:SetTextColor(0, 1, 0, 1);
+	WorldMapScrollChild.shubiaoY:SetText('Y:');
+	WorldMapScrollChild.shubiaoYV = WorldMapScrollChild:CreateFontString();
+	WorldMapScrollChild.shubiaoYV:SetPoint("LEFT", WorldMapScrollChild.shubiaoY, "RIGHT", 0, 0);
+	WorldMapScrollChild.shubiaoYV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	WorldMapScrollChild.shubiaoYV:SetTextColor(1, 1, 0, 1);
 
-	WorldMapFrame:HookScript("OnUpdate", function(self)
+	WorldMapScrollChild:HookScript("OnUpdate", function(self)
 		local mapinfo = C_Map.GetBestMapForUnit("player"); 
 		if not mapinfo then return end
 		local pos = C_Map.GetPlayerMapPosition(mapinfo,"player");
@@ -108,76 +78,6 @@ local function WorldMap_XY()
 			self.shubiaoYV:SetText(yyy);
 		end
 	end);
-end
-local function WorldMap_LVSkill()
-	local floor = math.floor
-	local format = string.format
-	local zoneData=MapData.zoneData
-	local AreaLabel_OnUpdate = function(self)
-		self:SetScale(0.6)
-		self:ClearLabel(MAP_AREA_LABEL_TYPE.AREA_NAME)
-		local map = self.dataProvider:GetMap()
-		if (map:IsCanvasMouseFocus()) then
-			local name, description, descriptionColor
-			local mapID = map:GetMapID()
-			local normalizedCursorX, normalizedCursorY = MouseXY()
-			local positionMapInfo = C_Map.GetMapInfoAtPosition(mapID, normalizedCursorX, normalizedCursorY)	
-			if (positionMapInfo and (positionMapInfo.mapID ~= mapID)) then
-				name = positionMapInfo.name
-				local playerMinLevel, playerMaxLevel, playerminFish, playerFaction
-				--local playerMinLevel, playerMaxLevel, petMinLevel, petMaxLevel = C_Map.GetMapLevels(positionMapInfo.mapID)
-				if (zoneData[positionMapInfo.mapID]) then
-					playerMinLevel = zoneData[positionMapInfo.mapID].min
-					playerMaxLevel = zoneData[positionMapInfo.mapID].max
-					playerminFish = zoneData[positionMapInfo.mapID].minFish
-					playerFaction = zoneData[positionMapInfo.mapID].faction
-				end
-				if (playerFaction) then 
-					local englishFaction, localizedFaction = UnitFactionGroup("player")
-					if (playerFaction == "Alliance") then 
-						description = format(FACTION_CONTROLLED_TERRITORY, FACTION_ALLIANCE) 
-					elseif (playerFaction == "Horde") then 
-						description = format(FACTION_CONTROLLED_TERRITORY, FACTION_HORDE) 
-					end 
-					if (englishFaction == playerFaction) then 
-						description = "|cff00FF00" .. description .. "|r"
-					else
-						description = "|cffFF0000" .. description .. "|r"
-					end 
-				end
-				if (name and playerMinLevel and playerMaxLevel and (playerMinLevel > 0) and (playerMaxLevel > 0)) then
-					local playerLevel = UnitLevel("player")
-					local colorbb="|cffFFFF00"
-					if (playerLevel < playerMinLevel) then
-						colorbb="|cffFF0000"
-					elseif (playerLevel > playerMaxLevel+2) then
-						colorbb="|cff808080"
-					elseif (playerLevel > playerMaxLevel) then
-						colorbb="|cff00FF00"
-					end
-					if PIG.Map.WorldMapLV then
-						name = name..colorbb.." ("..playerMinLevel.."-"..playerMaxLevel..")|r"
-					end
-					if PIG.Map.WorldMapSkill then
-						if playerminFish then
-							name = name.."\n渔点|cff00FFFF("..playerminFish..")|r"
-						end
-					end
-				end
-			else
-				name = MapUtil.FindBestAreaNameAtMouse(mapID, normalizedCursorX, normalizedCursorY)
-			end
-			if name then
-				self:SetLabel(MAP_AREA_LABEL_TYPE.AREA_NAME, name, description)
-			end
-		end
-		self:EvaluateLabels()
-	end
-	for provider in next, WorldMapFrame.dataProviders do
-		if provider.setAreaLabelCallback then
-			provider.Label:HookScript("OnUpdate", AreaLabel_OnUpdate)
-		end
-	end
 end
 local function WorldMap_Miwu()
 	---战争迷雾
@@ -270,25 +170,6 @@ local function WorldMap_Miwu()
 		pin.overlayTexturePool.resetterFunc = TexturePool_ResetVertexColor
 	end
 end
-local function WorldMap_Plus()
-	if PIG.Map.WorldMapPlus then
-		fuFrame.WorldMapPIG.Wind:Enable()
-		fuFrame.WorldMapPIG.XY:Enable()
-		fuFrame.WorldMapPIG.LV:Enable()
-		fuFrame.WorldMapPIG.Skill:Enable()
-		fuFrame.WorldMapPIG.Miwu:Enable()
-	else
-		fuFrame.WorldMapPIG.Wind:Disable()
-		fuFrame.WorldMapPIG.XY:Disable()
-		fuFrame.WorldMapPIG.LV:Disable()
-		fuFrame.WorldMapPIG.Skill:Disable()
-		fuFrame.WorldMapPIG.Miwu:Disable()
-	end
-	if PIG.Map.WorldMapWind then WorldMap_Wind() end
-	if PIG.Map.WorldMapXY then WorldMap_XY() end
-	if PIG.Map.WorldMapLV or PIG.Map.WorldMapSkill then WorldMap_LVSkill() end
-	if PIG.Map.WorldMapMiwu then WorldMap_Miwu() end
-end
 ------------
 fuFrame.WorldMapPIG = CreateFrame("Frame", nil, fuFrame,"BackdropTemplate")
 fuFrame.WorldMapPIG:SetBackdrop( {
@@ -300,29 +181,13 @@ fuFrame.WorldMapPIG:SetBackdropColor(0, 0, 0, 0.8);
 fuFrame.WorldMapPIG:SetBackdropBorderColor(0.5, 0.5, 0.5, 1);
 fuFrame.WorldMapPIG:SetPoint("TOPLEFT", fuFrame, "TOPLEFT", 300, -138)
 fuFrame.WorldMapPIG:SetPoint("BOTTOMRIGHT", fuFrame, "BOTTOMRIGHT", -10, 10)
------------
-fuFrame.WorldMapPIG.Open = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",40,25,"世界地图增强","世界地图增强")
-fuFrame.WorldMapPIG.Open:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG.Map.WorldMapPlus=true;	
-	else
-		PIG.Map.WorldMapPlus=false;
-		Pig_Options_RLtishi_UI:Show()
-	end
-	WorldMap_Plus()
-end);
 --==================================================
-fuFrame.WorldMapPIG.Wind = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-20,"窗口化世界地图","窗口化世界地图并使其可以拖动")
-fuFrame.WorldMapPIG.Wind:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG.Map.WorldMapWind=true;
-		WorldMap_Wind()
-	else
-		PIG.Map.WorldMapWind=false;
-		Pig_Options_RLtishi_UI:Show()
-	end
-end);
-fuFrame.WorldMapPIG.XY = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-60,"显示玩家坐标","显示玩家在地图坐标")
+fuFrame.WorldMapPIG.Open = fuFrame.WorldMapPIG:CreateFontString();
+fuFrame.WorldMapPIG.Open:SetPoint("BOTTOM",fuFrame.WorldMapPIG,"TOP",0,0);
+fuFrame.WorldMapPIG.Open:SetFontObject(GameFontNormal);
+fuFrame.WorldMapPIG.Open:SetText("世界地图增强");
+-----------
+fuFrame.WorldMapPIG.XY = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-20,"显示玩家坐标","显示玩家在地图坐标")
 fuFrame.WorldMapPIG.XY:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Map.WorldMapXY=true;
@@ -332,27 +197,8 @@ fuFrame.WorldMapPIG.XY:SetScript("OnClick", function (self)
 		Pig_Options_RLtishi_UI:Show()
 	end
 end);
-fuFrame.WorldMapPIG.LV = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-100,"显示等级范围","显示地图的等级范围")
-fuFrame.WorldMapPIG.LV:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG.Map.WorldMapLV=true;
-		WorldMap_LVSkill()
-	else
-		PIG.Map.WorldMapLV=false;
-		Pig_Options_RLtishi_UI:Show()
-	end
-end);
-fuFrame.WorldMapPIG.Skill = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-140,"显示钓鱼技能要求","显示地图的钓鱼技能最低要求")
-fuFrame.WorldMapPIG.Skill:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG.Map.WorldMapSkill=true;
-		WorldMap_LVSkill()
-	else
-		PIG.Map.WorldMapSkill=false;
-		Pig_Options_RLtishi_UI:Show()
-	end
-end);
-fuFrame.WorldMapPIG.Miwu = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-180,"去除战争迷雾","去除地图战争迷雾")
+fuFrame.WorldMapPIG.Miwu = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",20,-60,"去除战争迷雾","去除地图战争迷雾")
+fuFrame.WorldMapPIG.Miwu:Hide()
 fuFrame.WorldMapPIG.Miwu:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG.Map.WorldMapMiwu=true;
@@ -364,33 +210,8 @@ fuFrame.WorldMapPIG.Miwu:SetScript("OnClick", function (self)
 end);
 -----------
 fuFrame:HookScript("OnShow", function ()
-	if PIG.Map.WorldMapPlus and fuFrame.WorldMapPIG.Open:IsEnabled() then
-		fuFrame.WorldMapPIG.Wind:Enable()
-		fuFrame.WorldMapPIG.XY:Enable()
-		fuFrame.WorldMapPIG.LV:Enable()
-		fuFrame.WorldMapPIG.Skill:Enable()
-		fuFrame.WorldMapPIG.Miwu:Enable()
-	else
-		fuFrame.WorldMapPIG.Wind:Disable()
-		fuFrame.WorldMapPIG.XY:Disable()
-		fuFrame.WorldMapPIG.LV:Disable()
-		fuFrame.WorldMapPIG.Skill:Disable()
-		fuFrame.WorldMapPIG.Miwu:Disable()
-	end
-	if PIG.Map.WorldMapPlus then
-		fuFrame.WorldMapPIG.Open:SetChecked(true);
-	end
-	if PIG.Map.WorldMapWind then 
-		fuFrame.WorldMapPIG.Wind:SetChecked(true)
-	end
 	if PIG.Map.WorldMapXY then 
 		fuFrame.WorldMapPIG.XY:SetChecked(true)
-	end
-	if PIG.Map.WorldMapLV then 
-		fuFrame.WorldMapPIG.LV:SetChecked(true)
-	end
-	if PIG.Map.WorldMapSkill then 
-		fuFrame.WorldMapPIG.Skill:SetChecked(true)
 	end
 	if PIG.Map.WorldMapMiwu then 
 		fuFrame.WorldMapPIG.Miwu:SetChecked(true)
@@ -398,11 +219,6 @@ fuFrame:HookScript("OnShow", function ()
 end);
 --==============================================
 addonTable.Map_WorldMap = function()
-    if tocversion>50000 then
-    	fuFrame.WorldMapPIG.Open:Disable()
-    else
-		if PIG.Map.WorldMapPlus then
-			WorldMap_Plus()
-		end
-	end
+	if PIG.Map.WorldMapXY then WorldMap_XY() end
+	--if PIG.Map.WorldMapMiwu then WorldMap_Miwu() end
 end
