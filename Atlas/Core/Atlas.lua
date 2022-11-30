@@ -1,4 +1,4 @@
--- $Id: Atlas.lua 419 2022-11-12 07:24:19Z arithmandar $
+-- $Id: Atlas.lua 425 2022-11-20 02:14:21Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -643,7 +643,8 @@ function Atlas_OnEvent(self, event, ...)
 	if (event=="ADDON_LOADED" and (arg1=="Atlas" or arg1=="Blizzard_EncounterJournal")) then
 		--Blizzard_EncounterJournal
 		if (IsAddOnLoaded("Blizzard_EncounterJournal") and IsAddOnLoaded("Atlas")) then
-			addon:EncounterJournal_Binding()
+			-- Added Atlas button to Encounter Journal
+			--addon:EncounterJournal_Binding()
 		end
 	end
 

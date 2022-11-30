@@ -1,28 +1,12 @@
--- $Id: AreaIDs.lua 423 2022-11-19 07:32:44Z arithmandar $
 --[[
-
-	Atlas, a World of Warcraft instance map browser
-	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert at gmail dot com>
-	Copyright 2010 - Lothaer <lothayer at gmail dot com>, Atlas Team
-	Copyright 2011 ~ 2022 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
-
-	This file is part of Atlas.
-
-	Atlas is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
-
-	Atlas is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Atlas; if not, write to the Free Software
-	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
---]]
+$Id: AreaToUIMapID.lua 258 2022-11-20 01:52:01Z arithmandar $
+Name: LibBabble-SubZone-3.0
+Maintainers: arith
+Last updated by: $Author: arithmandar $
+Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
+Dependencies: None
+License: MIT
+]]
 -- ----------------------------------------------------------------------------
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
@@ -34,7 +18,7 @@ local _G = getfenv(0)
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
-local FOLDER_NAME, private = ...
+local _, private = ...
 
 local MapData = {}
 
@@ -8557,3 +8541,4 @@ MapData.AreaToID = {
 	["Azure Vault (delete me)"] = 14618,
 }
 private.MapData = MapData
+

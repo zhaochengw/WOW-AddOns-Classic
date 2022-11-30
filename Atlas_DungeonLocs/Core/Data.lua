@@ -1,4 +1,4 @@
--- $Id: Data.lua 102 2022-08-27 09:58:37Z arithmandar $
+-- $Id: Data.lua 108 2022-11-19 08:22:41Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -177,6 +177,7 @@ data.maps = {
 		{ WHIT.."11) "..BZ["Gnomeregan"]..ALC["Comma"].._RED..BZ["Dun Morogh"], 10011 },
 		{ WHIT.."12) "..BZ["The Abyssal Maw"]..ALC["Comma"].._RED..BZ["Abyssal Depths"], 10012 },
 		{ WHIT.."13) "..BZ["Uldaman"]..ALC["Comma"].._RED..BZ["Badlands"], 10013 },
+		{ WHIT..INDENT..BZ["Uldaman: Legacy of Tyr"] },
 		{ WHIT.."14) "..BZ["Blackrock Mountain"]..ALC["Comma"].._RED..BZ["Searing Gorge"]..ALC["Slash"]..BZ["Burning Steppes"], 10014 },
 		{ WHIT..INDENT..BZ["Blackrock Caverns"] },
 		{ WHIT..INDENT..BZ["Blackrock Depths"] },
@@ -418,6 +419,17 @@ data.maps = {
 		ZoneName = { BZ["Zereth Mortis"] },
 		{ WHIT.." 1) "..BZ["Sepulcher of the First Ones"]..GREY..ALC["Comma"].._RED..BZ["Zereth Mortis"], 10001 },
 	},
+	DLDragonIsles = {
+		ZoneName = { BZ["Dragon Isles"] },
+		{ WHIT.." 1) "..BZ["Algeth'ar Academy"]..GREY..ALC["Comma"].._RED..BZ["Thaldraszus"], 10001 },
+		{ WHIT.." 2) "..BZ["Halls of Infusion"]..GREY..ALC["Comma"].._RED..BZ["Thaldraszus"], 10002 },
+		{ WHIT.." 3) "..BZ["Vault of the Incarnates"]..GREY..ALC["Comma"].._RED..BZ["Thaldraszus"], 10003 },
+		{ WHIT.." 4) "..BZ["The Azure Vault"]..GREY..ALC["Comma"].._RED..BZ["The Azure Span"], 10004 },
+		{ WHIT.." 5) "..BZ["Brackenhide Hollow"]..GREY..ALC["Comma"].._RED..BZ["The Azure Span"], 10005 },
+		{ WHIT.." 6) "..BZ["The Nokhud Offensive"]..GREY..ALC["Comma"].._RED..BZ["Ohn'ahran Plains"], 10006 },
+		{ WHIT.." 7) "..BZ["Neltharus"]..GREY..ALC["Comma"].._RED..BZ["The Waking Shores"], 10007 },
+		{ WHIT.." 8) "..BZ["Ruby Life Pools"]..GREY..ALC["Comma"].._RED..BZ["The Waking Shores"], 10008 },
+	},
 }
 
 --[[ /////////////////////////////////////////
@@ -569,7 +581,15 @@ data.coords = {
 		{ 8, 10008, 82, 256 },
 		{ 9, 10009, 73, 268 },
 	},
-	DLZerethMortis = {
-		{ 1, 10001, 424, 236 },
+	DLDragonIsles = {
+		{ 1, 10001, 397, 228 },
+		{ 2, 10002, 405, 264 },
+		{ 3, 10003, 442, 257 },
+		{ 4, 10004, 278, 440 },
+		{ 5, 10005, 184, 406 },
+		{ 6, 10006, 242, 282 },
+		{ 7, 10007, 233, 200 },
+		{ 8, 10008, 317, 229 },
 	},
+
 }

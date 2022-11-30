@@ -17,6 +17,15 @@ See the examples below on how to use the library.
 ### Wrath Classic
 `frameStrata="TOOLTIP"`
 
+There is an additional change for Wrath Classic when ElvUI is installed and the smaller world map is enabled. This is because ElvUI resets the `FrameStrata` to `HIGH` which would hide the button behind the map itself. I'm not sure if I should incorporate this in the library itself or let each addon handle this on its own.
+```lua
+local engine = unpack(ElvUI);
+local worldMapModule = engine:GetModule("WorldMap");
+hooksecurefunc(worldMapModule, "SetSmallWorldMap", function()
+    addon.GUI.WorldMapButton:SetFrameStrata("TOOLTIP");
+end);
+```
+
 ## Adding the button to the world map
 ```lua
 local addonName, addon = ...;

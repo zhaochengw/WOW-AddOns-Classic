@@ -1,4 +1,4 @@
--- $Id: WorldMap.lua 419 2022-11-12 07:24:19Z arithmandar $
+-- $Id: WorldMap.lua 423 2022-11-19 07:32:44Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -32,7 +32,6 @@
 local _G = getfenv(0)
 local pairs, tonumber = _G.pairs, _G.tonumber
 -- Libraries
-local GameTooltip = _G.GameTooltip
 local GetBuildInfo = _G.GetBuildInfo
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
