@@ -771,43 +771,43 @@ do	--	SLASH
 	end
 end
 
-local extern_setting = {  };
-__private.extern_setting = extern_setting;
+local SettingMethd = {  };
+__private.SettingMethd = SettingMethd;
 do	--	EXTERN SETTING
-	function extern_setting.toggle_tradeskill_frame_rank(on)
+	function SettingMethd.Toggle_TradeSkillFrameRank(on)
 		VT.SET.show_tradeskill_frame_rank_info = on;
 		MT.OnSettingChanged('show_tradeskill_frame_rank_info', on);
 	end
-	function extern_setting.toggle_tradeskill_frame_price_info(on)
+	function SettingMethd.Toggle_TradeSkillFramePriceInfo(on)
 		VT.SET.show_tradeskill_frame_price_info = on;
 		MT.OnSettingChanged('show_tradeskill_frame_price_info', on);
 	end
-	function extern_setting.toggle_tradeskill_tip_craft_spell_price(on)
+	function SettingMethd.Toggle_TradeSkillSpellTipPrice(on)
 		VT.SET.show_tradeskill_tip_craft_spell_price = on;
 	end
-	function extern_setting.toggle_tradeskill_tip_craft_item_price(on)
+	function SettingMethd.Toggle_TradeSkillItemTipPrice(on)
 		VT.SET.show_tradeskill_tip_craft_item_price = on;
 	end
-	function extern_setting.toggle_tradeskill_tip_recipe_price(on)
+	function SettingMethd.Toggle_TradeSkillRecipeTipPrice(on)
 		VT.SET.show_tradeskill_tip_recipe_price = on;
 	end
-	function extern_setting.toggle_tradeskill_tip_recipe_account_learned(on)
+	function SettingMethd.Toggle_TradeSkillRecipeTipAccountLearned(on)
 		VT.SET.show_tradeskill_tip_recipe_account_learned = on;
 	end
-	function extern_setting.toggle_tradeskill_board_shown(on)
+	function SettingMethd.Toggle_TradeSkillBoardShown(on)
 		VT.SET.show_board = on;
 		MT.ToggleFrame("BOARD", on);
 	end
-	function extern_setting.toggle_tradeskill_board_lock(on)
+	function SettingMethd.Toggle_TradeSkillBoardLock(on)
 		VT.SET.lock_board = on;
 		MT.LockBoard(on);
 	end
-	function extern_setting.toggle_tradeskill_blz_style(on)
+	function SettingMethd.Toggle_TradeSkillFrameStyle(on)
 		VT.SET.blz_style = on;
 		MT.RefreshFramesStyle();
 	end
 
-	function extern_setting.set_tradeskill_bg_color(r, g, b, a)
+	function SettingMethd.Set_TradeSkillFrameBgColor(r, g, b, a)
 		VT.SET.bg_color[1] = r or VT.SET.bg_color[1];
 		VT.SET.bg_color[2] = g or VT.SET.bg_color[2];
 		VT.SET.bg_color[3] = b or VT.SET.bg_color[3];
@@ -815,51 +815,29 @@ do	--	EXTERN SETTING
 		MT.OnSettingChanged('bg_color', VT.SET.bg_color);
 	end
 
-	function extern_setting.get_tradeskill_frame_price_info()
+	function SettingMethd.GetVar_TradeSkillFramePriceInfo()
 		return VT.SET.show_tradeskill_frame_price_info;
 	end
-	function extern_setting.get_tradeskill_tip_craft_spell_price()
+	function SettingMethd.GetVar_TradeSkillSpellTipPrice()
 		return VT.SET.show_tradeskill_tip_craft_spell_price;
 	end
-	function extern_setting.get_tradeskill_tip_craft_item_price()
+	function SettingMethd.GetVar_TradeSkillItemTipPrice()
 		return VT.SET.show_tradeskill_tip_craft_item_price;
 	end
-	function extern_setting.get_tradeskill_tip_recipe_price()
+	function SettingMethd.GetVar_TradeSkillRecipeTipPrice()
 		return VT.SET.show_tradeskill_tip_recipe_price;
 	end
-	function extern_setting.get_tradeskill_tip_recipe_account_learned()
+	function SettingMethd.GetVar_TradeSkillRecipeTipAccountLearned()
 		return VT.SET.show_tradeskill_tip_recipe_account_learned;
 	end
-	function extern_setting.get_tradeskill_board_shown()
+	function SettingMethd.GetVar_TradeSkillBoardShown()
 		return VT.SET.show_board;
 	end
-	function extern_setting.get_tradeskill_board_lock()
+	function SettingMethd.GetVar_TradeSkillBoardLocked()
 		return VT.SET.lock_board;
 	end
-	function extern_setting.get_tradeskill_blz_style()
+	function SettingMethd.GetVar_TradeSkillFrameStyle()
 		return VT.SET.blz_style;
-	end
-
-	if select(2, _G.GetAddOnInfo('\33\33\33\49\54\51\85\73\33\33\33')) then
-		_G._163_tradeskill_frame_price_toggle = extern_setting.toggle_tradeskill_frame_price_info;
-		_G._163_tradeskill_tip_craft_spell_price_toggle = extern_setting.toggle_tradeskill_tip_craft_spell_price;
-		_G._163_tradeskill_tip_craft_item_toggle = extern_setting.toggle_tradeskill_tip_craft_item_price;
-		_G._163_tradeskill_tip_recipe_toggle = extern_setting.toggle_tradeskill_tip_recipe_price;
-		_G._163_tradeskill_tip_recipe_account_learned_toggle = extern_setting.toggle_tradeskill_tip_recipe_account_learned;
-		_G._163_tradeskill_board_shown_toggle = extern_setting.toggle_tradeskill_board_shown;
-		_G._163_tradeskill_board_lock_toggle = extern_setting.toggle_tradeskill_board_lock;
-		_G._163_tradeskill_board_blz_style_toggle = extern_setting.toggle_tradeskill_blz_style;
-
-		_G._163_tradeskill_bg_color_set = extern_setting.set_tradeskill_bg_color;
-
-		_G._163_tradeskill_frame_price_get = extern_setting.get_tradeskill_frame_price_info;
-		_G._163_tradeskill_tip_craft_spell_price_get = extern_setting.get_tradeskill_tip_craft_spell_price;
-		_G._163_tradeskill_tip_crafted_item_get = extern_setting.get_tradeskill_tip_craft_item_price;
-		_G._163_tradeskill_tip_recipe_get = extern_setting.get_tradeskill_tip_recipe_price;
-		_G._163_tradeskill_tip_recipe_account_learned_get = extern_setting.get_tradeskill_tip_recipe_account_learned;
-		_G._163_tradeskill_board_shown_get = extern_setting.get_tradeskill_board_shown;
-		_G._163_tradeskill_board_lock_get = extern_setting.get_tradeskill_board_lock;
-		_G._163_tradeskill_blz_style_get = extern_setting.get_tradeskill_blz_style;
 	end
 end
 
@@ -890,6 +868,8 @@ MT.RegisterOnInit('setting', function(LoggedIn)
 	end
 	EnableAddOn("MissingTradeSkillsList_TBC_Data");
 	LoadAddOn("MissingTradeSkillsList_TBC_Data");
+end);
+MT.RegisterOnLogin('setting', function(LoggedIn)
 	local LibStub = _G.LibStub;
 	if LibStub ~= nil then
 		local LDI = LibStub("LibDBIcon-1.0", true);

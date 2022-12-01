@@ -1548,12 +1548,20 @@ end
 		Title:SetJustifyH("LEFT");
 		Button.Title = Title;
 
+		local Num = Button:CreateFontString(nil, "OVERLAY");
+		Num:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, T_UIDefinition.frameFontOutline);
+		Num:SetPoint("LEFT", Title, "RIGHT", 2, 0);
+		-- Num:SetWidth(160);
+		Num:SetMaxLines(1);
+		Num:SetJustifyH("LEFT");
+		Button.Num = Num;
+
 		local Note = Button:CreateFontString(nil, "ARTWORK");
 		Note:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, T_UIDefinition.frameFontOutline);
 		Note:SetPoint("RIGHT", -4, 0);
 		Button.Note = Note;
 
-		Title:SetPoint("RIGHT", Note, "LEFT", -4, 0);
+		-- Title:SetPoint("RIGHT", Note, "LEFT", -4, 0);
 
 		local QualityGlow = Button:CreateTexture(nil, "ARTWORK");
 		QualityGlow:SetTexture([[Interface\Buttons\UI-ActionButton-Border]]);
@@ -1655,12 +1663,19 @@ end
 						end
 						Button.Icon:SetTexture(Frame.F_GetRecipeIcon(data));
 						Button.Icon:SetVertexColor(1.0, 1.0, 1.0, 1.0);
-						if num > 0 then
-							Button.Title:SetText(name .. " [" .. num .. "]");
-						else
-							Button.Title:SetText(name);
-						end
+						Button.Title:SetWidth(0);
+						Button.Title:SetText(name);
 						Button.Title:SetTextColor(unpack(CT.T_RankColor[CT.T_RankIndex[rank]] or T_UIDefinition.color_white));
+						if num > 0 then
+							if Button.Title:GetWidth() > 130 then
+								Button.Title:SetWidth(130);
+							end
+							Button.Num:SetText("[" .. num .. "]");
+							Button.Num:SetTextColor(unpack(CT.T_RankColor[CT.T_RankIndex[rank]] or T_UIDefinition.color_white));
+						else
+							Button.Title:SetWidth(150);
+							Button.Num:SetText(nil);
+						end
 						Button.Note:SetText(MT.GetMoneyString(val[2]));
 						if quality ~= nil then
 							local r, g, b, code = GetItemQualityColor(quality);
@@ -1702,6 +1717,7 @@ end
 				end
 				Button.Icon:SetTexture(icon);
 				Button.Icon:SetVertexColor(1.0, 0.0, 0.0, 1.0);
+				Button.Title:SetWidth(0);
 				Button.Title:SetText(DataAgent.spell_name_s(sid));
 				if VT.SET.colored_rank_for_unknown and Frame.flag ~= 'explorer' then
 					local pid = DataAgent.get_pid_by_sid(sid);
@@ -1711,6 +1727,7 @@ end
 				else
 					Button.Title:SetTextColor(1.0, 0.0, 0.0, 1.0);
 				end
+				Button.Num:SetText(nil);
 				Button.Note:SetText(MT.GetMoneyString(val[2]));
 				if quality ~= nil then
 					local r, g, b, code = GetItemQualityColor(quality);

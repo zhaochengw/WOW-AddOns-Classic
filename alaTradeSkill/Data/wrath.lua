@@ -7787,7 +7787,7 @@ DataAgent.T_MaterialVendorPrice = {
 	[3372] = 40,		-- 铅瓶
 	[8925] = 500,		-- 水晶瓶
 	[18256] = 4000,		-- 灌魔之瓶
-	[40411] = 50000,	-- 魔化瓶
+	[40411] = 10000,	-- 魔化瓶
 	--	ENCHANGING
 	[6217] = 124,		-- 铜棒
 	[4470] = 38,		-- 普通木柴
@@ -7818,6 +7818,7 @@ DataAgent.T_MaterialVendorPrice = {
 	--	COOKING
 	[159] = 5,			-- 清凉的泉水
 	[1179] = 125,		-- 冰镇牛奶
+	[27860] = 1280,		-- 清洁的德拉诺之水
 	[2678] = 2,			-- 甜香料
 	[30817] = 5,		-- 面粉
 	[2692] = 40,		-- 辣椒
@@ -7924,3 +7925,22 @@ DataAgent.T_RaceBonus = {
 
 T_Recipe_Data[15628][index_spec] = 20222;	--	地精工程学续费礼包开出
 T_Recipe_Data[15633][index_spec] = 20219;	--	侏儒工程学续费礼包开出
+
+local WLK_EpicGem = {
+	[36919] = true,
+	[36922] = true,
+	[36925] = true,
+	[36928] = true,
+	[36931] = true,
+	[36934] = true,
+};
+for id, info in next, T_Recipe_Data do
+	if info[index_pid] == 15 then
+		for _, item in next, info[index_reagents_id] do
+			if WLK_EpicGem[item] then
+				info[index_phase] = 2;
+				break;
+			end
+		end
+	end
+end
