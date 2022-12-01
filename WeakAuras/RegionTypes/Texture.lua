@@ -13,9 +13,8 @@ local default = {
   blendMode = "BLEND",
   textureWrapMode = "CLAMPTOBLACKADDITIVE",
   rotation = 0,
-  discrete_rotation = 0,
+  legacyZoomOut = false,
   mirror = false,
-  rotate = true,
   selfPoint = "CENTER",
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
@@ -99,53 +98,43 @@ local function modify(parent, region, data)
   region.scalex = 1;
   region.scaley = 1;
   region.texture:SetBlendMode(data.blendMode);
-  --region.texture:SetRotation((data.rotation / 180) * math.pi);
+  region.texture:SetRotation((data.rotation / 180) * math.pi)
 
-  local function GetRotatedPoints(degrees)
-    local angle = rad(135 - degrees);
-    local vx = math.cos(angle);
-    local vy = math.sin(angle);
+  region.mirror = data.mirror
+
+  local function GetLegacyFullRotateTexCoord()
+    local angle = rad(135)
+    local vx = math.cos(angle)
+    local vy = math.sin(angle)
 
     return 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy
   end
-
-  region.mirror = data.mirror
 
   local function DoTexCoord()
     local mirror_h, mirror_v = region.mirror_h, region.mirror_v;
     if(region.mirror) then
       mirror_h = not mirror_h;
     end
-    local ulx,uly , llx,lly , urx,ury , lrx,lry;
-    if(data.rotate) then
-      ulx,uly , llx,lly , urx,ury , lrx,lry = GetRotatedPoints(region.rotation);
-    else
-      if(data.discrete_rotation == 0 or data.discrete_rotation == 360) then
-        ulx,uly , llx,lly , urx,ury , lrx,lry = 0,0 , 0,1 , 1,0 , 1,1;
-      elseif(data.discrete_rotation == 90) then
-        ulx,uly , llx,lly , urx,ury , lrx,lry = 1,0 , 0,0 , 1,1 , 0,1;
-      elseif(data.discrete_rotation == 180) then
-        ulx,uly , llx,lly , urx,ury , lrx,lry = 1,1 , 1,0 , 0,1 , 0,0;
-      elseif(data.discrete_rotation == 270) then
-        ulx,uly , llx,lly , urx,ury , lrx,lry = 0,1 , 1,1 , 0,0 , 1,0;
-      end
+    local ulx,uly , llx,lly , urx,ury , lrx,lry = 0,0, 0,1, 1,0, 1,1
+    if data.legacyZoomOut and not region.texture.IsAtlas then
+      ulx,uly , llx,lly , urx,ury , lrx,lry = GetLegacyFullRotateTexCoord()
     end
     if(mirror_h) then
       if(mirror_v) then
-        region.texture:SetTexCoord(lrx,lry , urx,ury , llx,lly , ulx,uly);
+        region.texture:SetTexCoord(lrx,lry, urx,ury, llx,lly, ulx,uly)
       else
-        region.texture:SetTexCoord(urx,ury , lrx,lry , ulx,uly , llx,lly);
+        region.texture:SetTexCoord(urx,ury, lrx,lry, ulx,uly, llx,lly)
       end
     else
       if(mirror_v) then
-        region.texture:SetTexCoord(llx,lly , ulx,uly , lrx,lry , urx,ury);
+        region.texture:SetTexCoord(llx,lly, ulx,uly, lrx,lry, urx,ury)
       else
-        region.texture:SetTexCoord(ulx,uly , llx,lly , urx,ury , lrx,lry);
+        region.texture:SetTexCoord(ulx,uly, llx,lly, urx,ury, lrx,lry)
       end
     end
   end
 
-  region.rotation = data.rotation;
+  region.rotation = data.rotation
   DoTexCoord();
 
   function region:Scale(scalex, scaley)
@@ -186,7 +175,7 @@ local function modify(parent, region, data)
 
   function region:Update()
     if region.state.texture then
-      WeakAuras.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode);
+      WeakAuras.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode)
     end
   end
 
@@ -223,18 +212,15 @@ local function modify(parent, region, data)
     region.texture:SetDesaturated(b);
   end
 
-  if(data.rotate) then
-    function region:Rotate(degrees)
-      region.rotation = degrees;
-      DoTexCoord();
-    end
+  function region:Rotate(degrees)
+    region.rotation = degrees
+    region.texture:SetRotation((degrees / 180) * math.pi)
+  end
 
-    function region:GetRotation()
-      return region.rotation;
-    end
-  else
-    region.Rotate = nil;
-    region.GetRotation = nil;
+  region:Rotate(data.rotation)
+
+  function region:GetRotation()
+    return region.rotation
   end
 
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);

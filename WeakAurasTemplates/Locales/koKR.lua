@@ -32,7 +32,7 @@ local L = WeakAuras.L
 	L["Always shows the aura."] = "효과를 항상 표시합니다."
 	L["Back"] = "뒤로"
 	L["Basic Show On Cooldown"] = "재사용 대기 중 표시"
-	L["Basic Show On Ready"] = "준비완료 시 표시"
+	L["Basic Show On Ready"] = "준비 완료 시 표시"
 	L["Bloodlust/Heroism"] = "피의 욕망/영웅심"
 	L["buff"] = "강화 효과"
 	L["Buffs"] = "강화 효과"
@@ -97,13 +97,11 @@ local L = WeakAuras.L
 	L["Show Cooldown and Action Queued"] = "Show Cooldown and Action Queued"
 	L["Show Cooldown and Buff"] = "재사용 대기시간 및 강화 효과 표시"
 	L["Show Cooldown and Buff and Check for Target"] = "재사용 대기시간과 강화 효과 표시 및 대상 확인"
-	--[[Translation missing --]]
-	L["Show Cooldown and Buff and Check Usable"] = "Show Cooldown and Buff and Check Usable"
+	L["Show Cooldown and Buff and Check Usable"] = "재사용 대기시간과 강화 효과 표시 및 사용 가능 확인"
 	L["Show Cooldown and Check for Target"] = "재사용 대기시간 표시 및 대상 확인"
 	--[[Translation missing --]]
 	L["Show Cooldown and Check for Target & Proc Tracking"] = "Show Cooldown and Check for Target & Proc Tracking"
-	--[[Translation missing --]]
-	L["Show Cooldown and Check Usable"] = "Show Cooldown and Check Usable"
+	L["Show Cooldown and Check Usable"] = "재사용 대기시간 표시 및 사용 가능 확인"
 	--[[Translation missing --]]
 	L["Show Cooldown and Check Usable & Target"] = "Show Cooldown and Check Usable & Target"
 	--[[Translation missing --]]

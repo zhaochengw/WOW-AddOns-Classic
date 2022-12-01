@@ -189,7 +189,6 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Align"] = "Alinear"
 	L["Alignment"] = "Alineamiento"
 	L["All of"] = "Todo"
-	L["Allow Full Rotation"] = "Permitir Rotación Total"
 	L["Alpha"] = "Transparencia"
 	L["Anchor"] = "Anclaje"
 	L["Anchor Point"] = "Punto de Anclaje"
@@ -247,6 +246,8 @@ Off Screen]=]
 	L["Aura Name"] = "Aura Name"
 	--[[Translation missing --]]
 	L["Aura Name Pattern"] = "Aura Name Pattern"
+	--[[Translation missing --]]
+	L["Aura Order"] = "Aura Order"
 	--[[Translation missing --]]
 	L["Aura received from: %s"] = "Aura received from: %s"
 	--[[Translation missing --]]
@@ -389,6 +390,8 @@ Off Screen]=]
 	--[[Translation missing --]]
 	L["Convert to..."] = "Convert to..."
 	--[[Translation missing --]]
+	L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."] = "Cooldown Numbers might be added by WoW. You can configure these in the game settings."
+	--[[Translation missing --]]
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."
 	--[[Translation missing --]]
 	L["Copy"] = "Copy"
@@ -483,7 +486,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
 	L["Disabled"] = "Desactivado"
 	--[[Translation missing --]]
 	L["Disallow Entry Reordering"] = "Disallow Entry Reordering"
-	L["Discrete Rotation"] = "Rotación Discreta"
 	L["Display"] = "Mostrar"
 	--[[Translation missing --]]
 	L["Display Name"] = "Display Name"
@@ -896,6 +898,8 @@ Con |cFF00CC00>= 0|r se activará siempre.]=]
 	--[[Translation missing --]]
 	L["Left HUD position"] = "Left HUD position"
 	--[[Translation missing --]]
+	L["Legacy Zoom Out"] = "Legacy Zoom Out"
+	--[[Translation missing --]]
 	L["Length"] = "Length"
 	--[[Translation missing --]]
 	L["Length of |cFFFF0000%s|r"] = "Length of |cFFFF0000%s|r"
@@ -1159,6 +1163,8 @@ Sólo un valor coincidente puede ser escogido.]=]
 	L["Rotate In"] = "Rotar"
 	L["Rotate Out"] = "Rotar"
 	L["Rotate Text"] = "Rotar Texto"
+	--[[Translation missing --]]
+	L["Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."] = "Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."
 	L["Rotation"] = "Rotación"
 	--[[Translation missing --]]
 	L["Rotation Mode"] = "Rotation Mode"
@@ -1336,9 +1342,15 @@ Sólo un valor coincidente puede ser escogido.]=]
 	L["Texture"] = "Textura"
 	L["Texture Info"] = "Información de Textura"
 	--[[Translation missing --]]
+	L["Texture Rotation"] = "Texture Rotation"
+	--[[Translation missing --]]
 	L["Texture Settings"] = "Texture Settings"
 	--[[Translation missing --]]
 	L["Texture Wrap"] = "Texture Wrap"
+	--[[Translation missing --]]
+	L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"] = "The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"
+	--[[Translation missing --]]
+	L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"] = "The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"
 	L["The duration of the animation in seconds."] = "Duración de la animación (en segundos)."
 	--[[Translation missing --]]
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = "The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."
@@ -1465,6 +1477,8 @@ It might not work correctly with your version!]=]
 	L["Used in Auras:"] = "Used in Auras:"
 	--[[Translation missing --]]
 	L["Used in auras:"] = "Used in auras:"
+	--[[Translation missing --]]
+	L["Uses Texture Coordinates to rotate the texture."] = "Uses Texture Coordinates to rotate the texture."
 	--[[Translation missing --]]
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "Uses UnitIsVisible() to check if in range. This is polled every second."
 	--[[Translation missing --]]

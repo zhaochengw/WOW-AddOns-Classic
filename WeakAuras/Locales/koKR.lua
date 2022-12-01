@@ -251,6 +251,14 @@ L["Caster's Target"] = "시전자의 대상"
 L["Cataclysm"] = "대격변"
 L["Ceil"] = "천장"
 L["Center"] = "중앙"
+--[[Translation missing --]]
+L["Center, then alternating bottom and top"] = "Center, then alternating bottom and top"
+--[[Translation missing --]]
+L["Center, then alternating left and right"] = "Center, then alternating left and right"
+--[[Translation missing --]]
+L["Center, then alternating right and left"] = "Center, then alternating right and left"
+--[[Translation missing --]]
+L["Center, then alternating top and bottom"] = "Center, then alternating top and bottom"
 L["Centered Horizontal"] = "수평 중앙"
 --[[Translation missing --]]
 L["Centered Horizontal, then Centered Vertical"] = "Centered Horizontal, then Centered Vertical"
@@ -318,8 +326,7 @@ L["Conditions"] = "조건"
 L["Contains"] = "포함"
 L["Continuously update Movement Speed"] = "이동 속도 계속 업데이트"
 L["Cooldown"] = "재사용 대기시간"
---[[Translation missing --]]
-L["Cooldown bars show time before an ability is ready to be use, BigWigs prefix them with '~'"] = "Cooldown bars show time before an ability is ready to be use, BigWigs prefix them with '~'"
+L["Cooldown bars show time before an ability is ready to be use, BigWigs prefix them with '~'"] = "재사용 대기시간 바는 능력을 사용할 준비가 되기까지의 시간을 표시하며 BigWigs는 '~'를 접두사로 붙입니다."
 L["Cooldown Progress (Item)"] = "재사용 대기시간 진행 (아이템)"
 L["Cooldown Progress (Slot)"] = "재사용 대기시간 진행 상황 (아이템 칸)"
 L["Cooldown Ready Event"] = "재사용 준비 이벤트"
@@ -1160,7 +1167,7 @@ L["Seconds"] = "초"
 L[ [=[Secure frame detected. Find more information:
 https://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames]=] ] = [=[Secure frame detected. Find more information:
 https://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames]=]
-L["Select Frame"] = "프레임 선택"
+L["Select Frame"] = "선택 프레임"
 --[[Translation missing --]]
 L["Separator"] = "Separator"
 L["Set IDs can be found on websites such as classic.wowhead.com/item-sets"] = "세트 ID는 classic.wowhead.com/item-sets와 같은 웹사이트에서 찾을 수 있습니다."

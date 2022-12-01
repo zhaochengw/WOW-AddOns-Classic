@@ -136,7 +136,6 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Align"] = "Выравнивание"
 	L["Alignment"] = "Выравнивание"
 	L["All of"] = "И (все условия)"
-	L["Allow Full Rotation"] = "Разрешить полное вращение"
 	L["Alpha"] = "Прозрачность"
 	L["Anchor"] = "Крепление"
 	L["Anchor Point"] = "Точка крепления"
@@ -176,6 +175,8 @@ Off Screen]=] ] = [=[Индикация за
 пределами экрана]=]
 	L["Aura Name"] = "Название эффекта"
 	L["Aura Name Pattern"] = "Образец названия эффекта"
+	--[[Translation missing --]]
+	L["Aura Order"] = "Aura Order"
 	L["Aura received from: %s"] = "Индикация получена от: %s"
 	L["Aura Type"] = "Тип эффекта"
 	L["Aura: '%s'"] = "Индикация: %s"
@@ -262,6 +263,8 @@ Off Screen]=] ] = [=[Индикация за
 	L["Control-click to select multiple displays"] = "Ctrl-клик для выбора нескольких индикаций"
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "Управляет позиционированием и настройкой нескольких индикаций одновременно"
 	L["Convert to..."] = "Преобразовать в ..."
+	--[[Translation missing --]]
+	L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."] = "Cooldown Numbers might be added by WoW. You can configure these in the game settings."
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "Сокращение восстановления изменяет продолжительность секунд  вместо отображения секунд реального времени."
 	L["Copy"] = "Копия"
 	L["Copy settings..."] = "Копировать настройки из ..."
@@ -319,7 +322,6 @@ UNIT_POWER  UNIT_AURA, PLAYER_TARGET_CHANGED]=]
 	L["Differences"] = "Различия"
 	L["Disabled"] = "Выключен"
 	L["Disallow Entry Reordering"] = "Запретить изменение порядка записей"
-	L["Discrete Rotation"] = "Дискретный поворот"
 	L["Display"] = "Отображение"
 	L["Display Name"] = "Отображаемое имя"
 	L["Display Text"] = "Отображаемый текст"
@@ -569,6 +571,8 @@ Can use \ to escape -.]=] ] = [=[Формат записи: Имя, Имя-Иг�
 	L["Left"] = "Слева"
 	L["Left 2 HUD position"] = "Позиция 2-го левого HUD"
 	L["Left HUD position"] = "Позиция левого HUD"
+	--[[Translation missing --]]
+	L["Legacy Zoom Out"] = "Legacy Zoom Out"
 	L["Length"] = "Длина"
 	L["Length of |cFFFF0000%s|r"] = "Длина %s"
 	L["Limit"] = "Лимит"
@@ -724,6 +728,8 @@ Can use \ to escape -.]=] ] = [=[Формат записи: Имя, Имя-Иг�
 	L["Rotate Out"] = [=[Поворот из
 (исходного положения)]=]
 	L["Rotate Text"] = "Повернуть текст"
+	--[[Translation missing --]]
+	L["Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."] = "Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."
 	L["Rotation"] = "Поворот"
 	L["Rotation Mode"] = "Режим вращения"
 	L["Row Space"] = "Отступ между строками"
@@ -829,8 +835,14 @@ Can use \ to escape -.]=] ] = [=[Формат записи: Имя, Имя-Иг�
 	L["Text Settings"] = "Настройки текста"
 	L["Texture"] = "Текстура"
 	L["Texture Info"] = "Информация о текстуре"
+	--[[Translation missing --]]
+	L["Texture Rotation"] = "Texture Rotation"
 	L["Texture Settings"] = "Настройки текстуры"
 	L["Texture Wrap"] = "Обтекание текстурой"
+	--[[Translation missing --]]
+	L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"] = "The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"
+	--[[Translation missing --]]
+	L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"] = "The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"
 	L["The duration of the animation in seconds."] = "Длительность анимации в секундах."
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = [=[Длительность анимации в секундах.
 Конечная анимация не начнет отображаться, пока индикация не будет нормально скрыта  (должен сработать детриггер).]=]
@@ -908,6 +920,8 @@ It might not work correctly with your version!]=] ] = [=[Индикация бы
 	L["Use Texture"] = "Использовать текстуру"
 	L["Used in Auras:"] = "Использовано в индикациях:"
 	L["Used in auras:"] = "Использовано в индикациях:"
+	--[[Translation missing --]]
+	L["Uses Texture Coordinates to rotate the texture."] = "Uses Texture Coordinates to rotate the texture."
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "Проверка выполняется при помощи функции UnitIsVisible(), указывающей, может ли клиент игры видеть объект. Не определяет, находится ли единица в поле зрения. Опрос происходит каждую секунду."
 	L["Value %i"] = "Значение %i"
 	L["Values are in normalized rgba format."] = "Значения представлены в нормализованном формате RGBA (от 0 до 1)."

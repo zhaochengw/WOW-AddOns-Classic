@@ -189,7 +189,6 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Align"] = "Alinhar"
 	L["Alignment"] = "Alinhamento"
 	L["All of"] = "Todos"
-	L["Allow Full Rotation"] = "Habilitar rotação completa"
 	L["Alpha"] = "Transparência"
 	L["Anchor"] = "Âncora"
 	L["Anchor Point"] = "Ponto da âncora"
@@ -229,6 +228,8 @@ WeakAuras → Opções → Opções ]=]
 Off Screen]=] ] = "Aura está fora da tela"
 	L["Aura Name"] = "Nome da Aura"
 	L["Aura Name Pattern"] = "Padrão de nome da aura"
+	--[[Translation missing --]]
+	L["Aura Order"] = "Aura Order"
 	--[[Translation missing --]]
 	L["Aura received from: %s"] = "Aura received from: %s"
 	L["Aura Type"] = "Tipo de Aura"
@@ -346,6 +347,8 @@ Off Screen]=] ] = "Aura está fora da tela"
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "Controla o posicionamento e a configuração de múltiplos displays ao mesmo tempo"
 	L["Convert to..."] = "Converter para..."
 	--[[Translation missing --]]
+	L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."] = "Cooldown Numbers might be added by WoW. You can configure these in the game settings."
+	--[[Translation missing --]]
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."
 	--[[Translation missing --]]
 	L["Copy"] = "Copy"
@@ -424,7 +427,6 @@ Off Screen]=] ] = "Aura está fora da tela"
 	L["Disabled"] = "Desabilitar"
 	--[[Translation missing --]]
 	L["Disallow Entry Reordering"] = "Disallow Entry Reordering"
-	L["Discrete Rotation"] = "Rotação discreta"
 	L["Display"] = "Mostruário"
 	--[[Translation missing --]]
 	L["Display Name"] = "Display Name"
@@ -809,6 +811,8 @@ Can use \ to escape -.]=]
 	--[[Translation missing --]]
 	L["Left HUD position"] = "Left HUD position"
 	--[[Translation missing --]]
+	L["Legacy Zoom Out"] = "Legacy Zoom Out"
+	--[[Translation missing --]]
 	L["Length"] = "Length"
 	--[[Translation missing --]]
 	L["Length of |cFFFF0000%s|r"] = "Length of |cFFFF0000%s|r"
@@ -1057,6 +1061,8 @@ Can use \ to escape -.]=]
 	L["Rotate In"] = "Girar para dentro"
 	L["Rotate Out"] = "Girar para fora"
 	L["Rotate Text"] = "Girar o texto"
+	--[[Translation missing --]]
+	L["Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."] = "Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."
 	L["Rotation"] = "Rotação"
 	--[[Translation missing --]]
 	L["Rotation Mode"] = "Rotation Mode"
@@ -1227,9 +1233,15 @@ Can use \ to escape -.]=]
 	L["Texture"] = "Textura"
 	--[[Translation missing --]]
 	L["Texture Info"] = "Texture Info"
+	--[[Translation missing --]]
+	L["Texture Rotation"] = "Texture Rotation"
 	L["Texture Settings"] = "Configurações da Textura"
 	--[[Translation missing --]]
 	L["Texture Wrap"] = "Texture Wrap"
+	--[[Translation missing --]]
+	L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"] = "The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"
+	--[[Translation missing --]]
+	L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"] = "The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"
 	--[[Translation missing --]]
 	L["The duration of the animation in seconds."] = "The duration of the animation in seconds."
 	--[[Translation missing --]]
@@ -1366,6 +1378,8 @@ It might not work correctly with your version!]=]
 	L["Used in Auras:"] = "Used in Auras:"
 	--[[Translation missing --]]
 	L["Used in auras:"] = "Used in auras:"
+	--[[Translation missing --]]
+	L["Uses Texture Coordinates to rotate the texture."] = "Uses Texture Coordinates to rotate the texture."
 	--[[Translation missing --]]
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "Uses UnitIsVisible() to check if in range. This is polled every second."
 	--[[Translation missing --]]

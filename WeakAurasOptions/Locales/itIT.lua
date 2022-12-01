@@ -212,7 +212,6 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Alignment"] = "Allineamento"
 	--[[Translation missing --]]
 	L["All of"] = "All of"
-	L["Allow Full Rotation"] = "Permetti Rotazione Completa"
 	L["Alpha"] = "Alfa"
 	L["Anchor"] = "Ancora"
 	L["Anchor Point"] = "Punto di ancoraggio"
@@ -254,6 +253,8 @@ Off Screen]=] ] = [=[Aura is
 Off Screen]=]
 	L["Aura Name"] = "Nome Aura"
 	L["Aura Name Pattern"] = "Schema del Nome Aura"
+	--[[Translation missing --]]
+	L["Aura Order"] = "Aura Order"
 	--[[Translation missing --]]
 	L["Aura received from: %s"] = "Aura received from: %s"
 	L["Aura Type"] = "Tipo di aura"
@@ -381,6 +382,8 @@ Off Screen]=]
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "Controls the positioning and configuration of multiple displays at the same time"
 	L["Convert to..."] = "Converti in..."
 	--[[Translation missing --]]
+	L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."] = "Cooldown Numbers might be added by WoW. You can configure these in the game settings."
+	--[[Translation missing --]]
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."
 	L["Copy"] = "Copia"
 	--[[Translation missing --]]
@@ -473,8 +476,6 @@ Off Screen]=]
 	L["Disabled"] = "Disabilitato"
 	--[[Translation missing --]]
 	L["Disallow Entry Reordering"] = "Disallow Entry Reordering"
-	--[[Translation missing --]]
-	L["Discrete Rotation"] = "Discrete Rotation"
 	--[[Translation missing --]]
 	L["Display"] = "Display"
 	--[[Translation missing --]]
@@ -907,6 +908,8 @@ Can use \ to escape -.]=]
 	--[[Translation missing --]]
 	L["Left HUD position"] = "Left HUD position"
 	--[[Translation missing --]]
+	L["Legacy Zoom Out"] = "Legacy Zoom Out"
+	--[[Translation missing --]]
 	L["Length"] = "Length"
 	--[[Translation missing --]]
 	L["Length of |cFFFF0000%s|r"] = "Length of |cFFFF0000%s|r"
@@ -1199,6 +1202,8 @@ Can use \ to escape -.]=]
 	--[[Translation missing --]]
 	L["Rotate Text"] = "Rotate Text"
 	--[[Translation missing --]]
+	L["Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."] = "Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."
+	--[[Translation missing --]]
 	L["Rotation"] = "Rotation"
 	--[[Translation missing --]]
 	L["Rotation Mode"] = "Rotation Mode"
@@ -1407,9 +1412,15 @@ Can use \ to escape -.]=]
 	--[[Translation missing --]]
 	L["Texture Info"] = "Texture Info"
 	--[[Translation missing --]]
+	L["Texture Rotation"] = "Texture Rotation"
+	--[[Translation missing --]]
 	L["Texture Settings"] = "Texture Settings"
 	--[[Translation missing --]]
 	L["Texture Wrap"] = "Texture Wrap"
+	--[[Translation missing --]]
+	L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"] = "The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"
+	--[[Translation missing --]]
+	L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"] = "The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"
 	--[[Translation missing --]]
 	L["The duration of the animation in seconds."] = "The duration of the animation in seconds."
 	--[[Translation missing --]]
@@ -1554,6 +1565,8 @@ It might not work correctly with your version!]=]
 	L["Used in Auras:"] = "Used in Auras:"
 	--[[Translation missing --]]
 	L["Used in auras:"] = "Used in auras:"
+	--[[Translation missing --]]
+	L["Uses Texture Coordinates to rotate the texture."] = "Uses Texture Coordinates to rotate the texture."
 	--[[Translation missing --]]
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "Uses UnitIsVisible() to check if in range. This is polled every second."
 	--[[Translation missing --]]

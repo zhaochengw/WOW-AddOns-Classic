@@ -23,37 +23,30 @@ local L = WeakAuras.L
 	L["%s - %i. Trigger"] = "%s - %i. Trigger"
 	--[[Translation missing --]]
 	L["%s - Alpha Animation"] = "%s - Alpha Animation"
-	--[[Translation missing --]]
-	L["%s - Color Animation"] = "%s - Color Animation"
+	L["%s - Color Animation"] = "%s - Animation couleur"
 	--[[Translation missing --]]
 	L["%s - Condition Custom Chat %s"] = "%s - Condition Custom Chat %s"
 	--[[Translation missing --]]
 	L["%s - Condition Custom Check %s"] = "%s - Condition Custom Check %s"
 	--[[Translation missing --]]
 	L["%s - Condition Custom Code %s"] = "%s - Condition Custom Code %s"
-	--[[Translation missing --]]
-	L["%s - Custom Anchor"] = "%s - Custom Anchor"
+	L["%s - Custom Anchor"] = "%s - Ancre personnalisée"
 	--[[Translation missing --]]
 	L["%s - Custom Grow"] = "%s - Custom Grow"
 	--[[Translation missing --]]
 	L["%s - Custom Sort"] = "%s - Custom Sort"
 	--[[Translation missing --]]
 	L["%s - Custom Text"] = "%s - Custom Text"
-	--[[Translation missing --]]
-	L["%s - Finish"] = "%s - Finish"
-	--[[Translation missing --]]
-	L["%s - Finish Action"] = "%s - Finish Action"
-	--[[Translation missing --]]
-	L["%s - Finish Custom Text"] = "%s - Finish Custom Text"
+	L["%s - Finish"] = "%s - Terminer"
+	L["%s - Finish Action"] = "%s - Termine l'action"
+	L["%s - Finish Custom Text"] = "%s - Finir le texte personnalisé"
 	--[[Translation missing --]]
 	L["%s - Init Action"] = "%s - Init Action"
 	--[[Translation missing --]]
 	L["%s - Main"] = "%s - Main"
 	L["%s - Option #%i has the key %s. Please choose a different option key."] = "%s - L'option #%i est attribuée à la touche %s. Veuillez choisir une touche différente."
-	--[[Translation missing --]]
-	L["%s - Rotate Animation"] = "%s - Rotate Animation"
-	--[[Translation missing --]]
-	L["%s - Scale Animation"] = "%s - Scale Animation"
+	L["%s - Rotate Animation"] = "%s - Rotation de l'animation"
+	L["%s - Scale Animation"] = "%s - Animation de l'échelle"
 	--[[Translation missing --]]
 	L["%s - Start"] = "%s - Start"
 	--[[Translation missing --]]
@@ -148,10 +141,8 @@ local L = WeakAuras.L
 	L["A 48x48 pixels icon"] = "Une icône de 48x48 pixels"
 	L["A 64x64 pixels icon"] = "Une icône de 64x64 pixels"
 	L["A group that dynamically controls the positioning of its children"] = "Un groupe qui contrôle dynamiquement le positionnement de ses enfants"
-	--[[Translation missing --]]
 	L[ [=[A timer will automatically be displayed according to default Interface Settings (overridden by some addons).
-Enable this setting if you want this timer to be hidden, or when using a WeakAuras text to display the timer]=] ] = [=[A timer will automatically be displayed according to default Interface Settings (overridden by some addons).
-Enable this setting if you want this timer to be hidden, or when using a WeakAuras text to display the timer]=]
+Enable this setting if you want this timer to be hidden, or when using a WeakAuras text to display the timer]=] ] = "Une minuterie sera automatiquement affichée selon les paramètres d'interface par défaut (remplacés par certains addons). Activez ce paramètre si vous souhaitez que le minuteur soit masqué, ou si vous utilisez plutôt un texte WeakAuras pour afficher le minuteur."
 	L["A Unit ID (e.g., party1)."] = "Un ID d'unité (par exemple, groupe1)."
 	L["Actions"] = "Actions"
 	--[[Translation missing --]]
@@ -180,7 +171,6 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Align"] = "Aligner"
 	L["Alignment"] = "Alignement"
 	L["All of"] = "Tous vos"
-	L["Allow Full Rotation"] = "Permettre une rotation complète"
 	L["Alpha"] = "Opacité"
 	L["Anchor"] = "Ancrage"
 	L["Anchor Point"] = "Point d'ancrage"
@@ -223,6 +213,8 @@ Off Screen]=] ] = [=[Aura is
 Off Screen]=]
 	L["Aura Name"] = "Nom de l'aura"
 	L["Aura Name Pattern"] = "Modèle de Nom de l'Aura"
+	--[[Translation missing --]]
+	L["Aura Order"] = "Aura Order"
 	--[[Translation missing --]]
 	L["Aura received from: %s"] = "Aura received from: %s"
 	L["Aura Type"] = "Type de l'aura"
@@ -325,6 +317,8 @@ Off Screen]=]
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "Contrôle la position et la configuration de plusieurs affichages en même temps"
 	L["Convert to..."] = "Convertir en..."
 	--[[Translation missing --]]
+	L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."] = "Cooldown Numbers might be added by WoW. You can configure these in the game settings."
+	--[[Translation missing --]]
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."
 	L["Copy"] = "Copier"
 	L["Copy settings..."] = "Copier les paramètres..."
@@ -397,7 +391,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
 	L["Disabled"] = "Désactivé"
 	--[[Translation missing --]]
 	L["Disallow Entry Reordering"] = "Disallow Entry Reordering"
-	L["Discrete Rotation"] = "Rotation individuelle"
 	L["Display"] = "Affichage"
 	L["Display Name"] = "Nom de l'affichage"
 	L["Display Text"] = "Texte d'affichage"
@@ -713,6 +706,8 @@ Si cette case est cochée, ce séparateur inclura du texte. Sinon, ce sera juste
 	L["Left"] = "Gauche"
 	L["Left 2 HUD position"] = "Position ATH Gauche 2"
 	L["Left HUD position"] = "Position ATH Gauche"
+	--[[Translation missing --]]
+	L["Legacy Zoom Out"] = "Legacy Zoom Out"
 	L["Length"] = "Longueur"
 	--[[Translation missing --]]
 	L["Length of |cFFFF0000%s|r"] = "Length of |cFFFF0000%s|r"
@@ -892,6 +887,8 @@ Seule une unique valeur peut être choisie]=]
 	L["Rotate In"] = "Rotation entrante"
 	L["Rotate Out"] = "Rotation sortante"
 	L["Rotate Text"] = "Tourner le texte"
+	--[[Translation missing --]]
+	L["Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."] = "Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."
 	L["Rotation"] = "Rotation"
 	L["Rotation Mode"] = "Mode de rotation"
 	--[[Translation missing --]]
@@ -1030,8 +1027,14 @@ Seule une unique valeur peut être choisie]=]
 	L["Text Settings"] = "Paramètres du texte"
 	L["Texture"] = "Texture"
 	L["Texture Info"] = "Info Texture"
+	--[[Translation missing --]]
+	L["Texture Rotation"] = "Texture Rotation"
 	L["Texture Settings"] = "Paramètres de la texture"
 	L["Texture Wrap"] = "Enveloppe de texture"
+	--[[Translation missing --]]
+	L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"] = "The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"
+	--[[Translation missing --]]
+	L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"] = "The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"
 	L["The duration of the animation in seconds."] = "La durée de l'animation en secondes."
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = "La durée de l'animation en secondes. L'animation de fin ne commence qu'après le moment où l'affichage est normalement caché."
 	L["The type of trigger"] = "Le type de déclencheur"
@@ -1128,6 +1131,8 @@ It might not work correctly with your version!]=]
 	L["Use Texture"] = "Utiliser une texture"
 	L["Used in Auras:"] = "Utilisé(e) dans les Auras:"
 	L["Used in auras:"] = "Utilisé dans les auras:"
+	--[[Translation missing --]]
+	L["Uses Texture Coordinates to rotate the texture."] = "Uses Texture Coordinates to rotate the texture."
 	--[[Translation missing --]]
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "Uses UnitIsVisible() to check if in range. This is polled every second."
 	L["Value %i"] = "Valeur %i"

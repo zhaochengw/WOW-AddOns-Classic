@@ -211,7 +211,6 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Align"] = "Ausrichtung"
 	L["Alignment"] = "Ausrichtung"
 	L["All of"] = "Alles von"
-	L["Allow Full Rotation"] = "Erlaubt eine vollständige Rotation"
 	L["Alpha"] = "Transparenz"
 	L["Anchor"] = "Anker"
 	L["Anchor Point"] = "Ankerpunkt"
@@ -257,6 +256,8 @@ Off Screen]=] ] = [=[Aura is
 Off Screen]=]
 	L["Aura Name"] = "Auraname"
 	L["Aura Name Pattern"] = "Aura Namensmuster"
+	--[[Translation missing --]]
+	L["Aura Order"] = "Aura Order"
 	--[[Translation missing --]]
 	L["Aura received from: %s"] = "Aura received from: %s"
 	L["Aura Type"] = "Auratyp"
@@ -376,6 +377,8 @@ Off Screen]=]
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "Eine Gruppe, die die Position und Konfiguration ihrer Kinder kontrolliert"
 	L["Convert to..."] = "Konvertieren zu..."
 	--[[Translation missing --]]
+	L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."] = "Cooldown Numbers might be added by WoW. You can configure these in the game settings."
+	--[[Translation missing --]]
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."
 	L["Copy"] = "Kopieren"
 	L["Copy settings..."] = "Einstellungen kopieren..."
@@ -453,7 +456,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Disabled"] = "Deaktiviert"
 	--[[Translation missing --]]
 	L["Disallow Entry Reordering"] = "Disallow Entry Reordering"
-	L["Discrete Rotation"] = "Rotation um x90°"
 	L["Display"] = "Anzeige"
 	L["Display Name"] = "Anzeigename"
 	L["Display Text"] = "Anzeigetext"
@@ -809,6 +811,8 @@ Falls die Zahl als Dezimalzahl (z.B. 0.5), Bruch (z.B. 1/2) oder Prozentsatz (z.
 	--[[Translation missing --]]
 	L["Left 2 HUD position"] = "Left 2 HUD position"
 	L["Left HUD position"] = "Linke HUD Position"
+	--[[Translation missing --]]
+	L["Legacy Zoom Out"] = "Legacy Zoom Out"
 	L["Length"] = "Länge"
 	--[[Translation missing --]]
 	L["Length of |cFFFF0000%s|r"] = "Length of |cFFFF0000%s|r"
@@ -1031,6 +1035,8 @@ Nur ein Wert kann ausgewählt werden.]=]
 	L["Rotate In"] = "Nach innen rotieren"
 	L["Rotate Out"] = "Nach außen rotieren"
 	L["Rotate Text"] = "Text rotieren"
+	--[[Translation missing --]]
+	L["Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."] = "Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."
 	L["Rotation"] = "Rotation"
 	L["Rotation Mode"] = "Rotationsmodus"
 	L["Row Space"] = "Zeilenabstand"
@@ -1182,9 +1188,15 @@ Nur ein Wert kann ausgewählt werden.]=]
 	L["Texture"] = "Textur"
 	L["Texture Info"] = "Texturinfo"
 	--[[Translation missing --]]
+	L["Texture Rotation"] = "Texture Rotation"
+	--[[Translation missing --]]
 	L["Texture Settings"] = "Texture Settings"
 	--[[Translation missing --]]
 	L["Texture Wrap"] = "Texture Wrap"
+	--[[Translation missing --]]
+	L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"] = "The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"
+	--[[Translation missing --]]
+	L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"] = "The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"
 	L["The duration of the animation in seconds."] = "Die Dauer der Animation in Sekunden."
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = "Die Dauer der Animation in Sekunden. Die Endanimation erscheint erst zum Zeitpunkt des Ausblendens."
 	L["The type of trigger"] = "Auslösertyp"
@@ -1297,6 +1309,8 @@ It might not work correctly with your version!]=]
 	L["Used in Auras:"] = "Used in Auras:"
 	--[[Translation missing --]]
 	L["Used in auras:"] = "Used in auras:"
+	--[[Translation missing --]]
+	L["Uses Texture Coordinates to rotate the texture."] = "Uses Texture Coordinates to rotate the texture."
 	--[[Translation missing --]]
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "Uses UnitIsVisible() to check if in range. This is polled every second."
 	--[[Translation missing --]]

@@ -38,16 +38,13 @@ L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00f
 |cffffff00*|r Yellow Unit settings will create clones for each matching unit while this trigger is providing Dynamic Info to the Aura.]=] ] = [=[• |cff00ff00Joueur|r, |cff00ff00Cible|r, |cff00ff00Focalisation|r, and |cff00ff00Animal de compagnie|r 
 correspondent directement à ces identifiants d'unités individuelles. • |cff00ff00Unité spécifique|r vous permet de fournir un identifiant d'unité spécifique valide à surveiller. |cffff0000Note|r : Le jeu ne déclenchera pas d'événements pour tous les identifiants d'unités valides, ce qui rendra certains d'entre eux non traçables par ce déclencheur. • |cffffff00Groupe|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arène|r, et |cffffff00Nameplate|r peut correspondre à plusieurs identifiant d'unité. • Le |cffffff00groupe intelligent|r s'adapte à votre type de groupe actuel, en ne faisant correspondre que le "joueur" en solo, les unités du "groupe" (y compris le "joueur") dans un groupe ou les unités du "raid" dans un raid. |cffffff00*|r Les paramètres de l'unité jaune créeront des clones pour chaque unité correspondante pendant que ce déclencheur fournit des informations dynamiques à l'Aura.]=]
 L["10 Man Raid"] = "Raid 10 Joueurs"
---[[Translation missing --]]
-L["10 Player Raid"] = "10 Player Raid"
+L["10 Player Raid"] = "Raid à 10 joueurs"
 L["10 Player Raid (Heroic)"] = "Raid 10 Joueurs (Héroïque)"
 L["10 Player Raid (Normal)"] = "Raid 10 Joueurs (Normal)"
 L["20 Man Raid"] = "Raid 20 Joueurs"
---[[Translation missing --]]
-L["20 Player Raid"] = "20 Player Raid"
+L["20 Player Raid"] = "Raid à 20 joueurs"
 L["25 Man Raid"] = "Raid 25 Joueurs"
---[[Translation missing --]]
-L["25 Player Raid"] = "25 Player Raid"
+L["25 Player Raid"] = "Raid à 25 joueurs"
 L["25 Player Raid (Heroic)"] = "Raid 25 Joueurs (Héroïque)"
 L["25 Player Raid (Normal)"] = "Raid 25 Joueurs (Normal)"
 L["40 Man Raid"] = "Raid 40 Personnes"
@@ -278,6 +275,14 @@ L["Caster's Target"] = "Cible du Lanceur de sort"
 L["Cataclysm"] = "Cataclysm"
 L["Ceil"] = "Cellule"
 L["Center"] = "Centre"
+--[[Translation missing --]]
+L["Center, then alternating bottom and top"] = "Center, then alternating bottom and top"
+--[[Translation missing --]]
+L["Center, then alternating left and right"] = "Center, then alternating left and right"
+--[[Translation missing --]]
+L["Center, then alternating right and left"] = "Center, then alternating right and left"
+--[[Translation missing --]]
+L["Center, then alternating top and bottom"] = "Center, then alternating top and bottom"
 L["Centered Horizontal"] = "Centré horizontalement"
 --[[Translation missing --]]
 L["Centered Horizontal, then Centered Vertical"] = "Centered Horizontal, then Centered Vertical"
