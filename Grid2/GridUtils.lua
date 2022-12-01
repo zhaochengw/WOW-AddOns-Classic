@@ -10,10 +10,6 @@ local pairs = pairs
 local tonumber = tonumber
 local tremove = table.remove
 
--- Dummy function
-function Grid2.Dummy()
-end
-
 -- Fetch LibSharedMedia resources
 function Grid2:MediaFetch(mediatype, key, def)
 	return (key and media:Fetch(mediatype, key)) or (def and media:Fetch(mediatype, def))
@@ -306,24 +302,24 @@ do
 		if class == 'DRUID' then
 			func = function()
 				dispel.Magic  = IsPlayerSpell(88423)
-				dispel.Curse  = IsPlayerSpell(88423) or IsPlayerSpell(2782)
-				dispel.Poison = IsPlayerSpell(88423) or IsPlayerSpell(2782)
+				dispel.Curse  = IsPlayerSpell(392378) or IsPlayerSpell(2782)
+				dispel.Poison = IsPlayerSpell(392378) or IsPlayerSpell(2782)
 			end
 		elseif class == 'PALADIN' then
 			func = function()
 				dispel.Magic   = IsPlayerSpell(4987)
-				dispel.Disease = IsPlayerSpell(4987) or IsPlayerSpell(213644)
-				dispel.Poison  = IsPlayerSpell(4987) or IsPlayerSpell(213644)
+				dispel.Disease = IsPlayerSpell(393024) or IsPlayerSpell(213644)
+				dispel.Poison  = IsPlayerSpell(393024) or IsPlayerSpell(213644)
 			end
 		elseif class == 'PRIEST' then
 			func = function()
 				dispel.Magic   = IsPlayerSpell(527)
-				dispel.Disease = IsPlayerSpell(527) or IsPlayerSpell(213634)
+				dispel.Disease = IsPlayerSpell(390632) or IsPlayerSpell(213634)
 			end
 		elseif class == 'SHAMAN' then
 			func = function(self, event)
 				dispel.Magic = IsPlayerSpell(77130)
-				dispel.Curse = IsPlayerSpell(77130) or IsPlayerSpell(51886)
+				dispel.Curse = IsPlayerSpell(383016) or IsPlayerSpell(51886)
 			end
 		elseif class == 'MAGE' then
 			func = function()
@@ -336,8 +332,8 @@ do
 		elseif class == 'MONK' then
 			func = function()
 				dispel.Magic   = IsPlayerSpell(115450)
-				dispel.Disease = IsPlayerSpell(115450) or IsPlayerSpell(218164)
-				dispel.Poison  = IsPlayerSpell(115450) or IsPlayerSpell(218164)
+				dispel.Disease = IsPlayerSpell(388874) or IsPlayerSpell(218164)
+				dispel.Poison  = IsPlayerSpell(388874) or IsPlayerSpell(218164)
 			end
 		elseif class == 'EVOKER' then
 			func = function()
@@ -374,12 +370,12 @@ end
 -- Enable or disable profiles per specialization
 function Grid2:EnableProfilesPerSpec(enabled)
 	local db = self.profiles.char
-	if not enabled ~= not (db[1] and db.enabled) and not self.isClassic then
+	if not enabled ~= not (db[1] and db.enabled) and self.versionCli>=30000 then
 		wipe(db)
 		db.enabled = enabled or nil
 		if enabled then
 			local pro = self.db:GetCurrentProfile()
-			for i=1,GetNumSpecializations() or 0 do
+			for i=1,self.GetNumSpecializations() or 0 do
 				db[i] = pro
 			end
 		end
@@ -463,6 +459,7 @@ do
 	local function HideRaidFrames()
 		if not CompactRaidFrameManager then return end
 		local function HideFrames()
+			CompactRaidFrameManager:SetAlpha(0)
 			CompactRaidFrameManager:UnregisterAllEvents()
 			CompactRaidFrameContainer:UnregisterAllEvents()
 			if not InCombatLockdown() then

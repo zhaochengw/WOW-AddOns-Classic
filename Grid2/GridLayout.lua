@@ -502,6 +502,7 @@ function Grid2Layout:UpdateHeaders()
 	end
 end
 
+-- Used from Grid2Options
 function Grid2Layout:RefreshLayout()
 	self:ReloadLayout(true)
 end
@@ -517,12 +518,12 @@ function Grid2Layout:ReloadLayout(force)
 	if layoutName ~= self.layoutName or (self.layoutHasAuto and maxPlayers ~= self.instMaxPlayers) or force or self.forceReload then
 		self.forceReload = force
 		if not Grid2:RunSecure(3, self, "ReloadLayout") then
-			self.forceReload    = nil
 			self.partyType      = partyType
 			self.instType       = instType
 			self.instMaxPlayers = maxPlayers
 			self.instMaxGroups  = math.ceil( maxPlayers/5 )
 			self:LoadLayout( layoutName )
+			self.forceReload    = nil
 		end
 		return true
 	end
@@ -666,7 +667,7 @@ function Grid2Layout:FixHeaderAttributes(header, index)
 			header:SetAttribute("groupFilter", groupFilter)
 		end
 		if header:GetAttribute("strictFiltering") then
-			groupFilter = groupFilter .. ",DEATHKNIGHT,DEMONHUNTER,DRUID,HUNTER,MAGE,MONK,PALADIN,PRIEST,ROGUE,SHAMAN,WARLOCK,WARRIOR"
+			groupFilter = groupFilter .. ",DEATHKNIGHT,DEMONHUNTER,DRUID,HUNTER,MAGE,MONK,PALADIN,PRIEST,ROGUE,SHAMAN,WARLOCK,WARRIOR,EVOKER"
 			header:SetAttribute("groupFilter", groupFilter)
 		end
 	end
@@ -722,7 +723,7 @@ end
 
 function Grid2Layout:UpdateFramesSizeForHeader(header)
 	local w, h = self:GetFramesSizeForHeader(header)
-	if w~=header.frameWidth or h~=header.frameHeight then
+	if w~=header.frameWidth or h~=header.frameHeight or self.forceReload then -- forceReload => theme or profile changed, we need to Layout frames because icon/text sizes could change
 		header.frameWidth, header.frameHeight = w, h
 		for _,frame in ipairs(header) do
 			frame:Layout()
@@ -868,7 +869,7 @@ function Grid2Layout:SetupDetachedHeader(header, setupIndex)
 	if isDetached ~= header.wasDetached then
 		local frameBack = header.frameBack
 		header.wasDetached = isDetached
-		header:SetMovable(isDetached)
+		header:SetMovable(not not isDetached)
 		if isDetached then
 			frameBack = frameBack or CreateFrame("Frame", nil, header, BackdropTemplateMixin and "BackdropTemplate" or nil)
 			frameBack.header = header

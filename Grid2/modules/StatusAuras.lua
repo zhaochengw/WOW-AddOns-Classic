@@ -87,7 +87,7 @@ do
 				if cnt==0 then cnt = 1 end
 				for s in next, statuses do
 					local mine = s.isMine
-					if mine==false or mine==myUnits[cas] then
+					if (mine==false or mine==myUnits[cas]) and s.seen~=1 then
 						if exp~=s.exp[u] or s.cnt[u]~=cnt or val[s.vId]~=s.val[u] or s.spells then
 							s.seen, s.idx[u], s.tex[u], s.cnt[u], s.dur[u], s.exp[u], s.val[u], s.tkr[u] = 1, i, tex, cnt, dur, exp, val[s.vId], 1
 						else
@@ -485,6 +485,9 @@ do
 	local function GetDuration(self, unit)
 		return self.dur[unit]
 	end
+	local function GetDurationMissing()
+		return
+	end
 	local function GetPercentHealth(self, unit)
 		local m = UnitHealthMax(unit)
 		return m>0 and (self.val[unit] or 0) / m or 0
@@ -592,6 +595,7 @@ do
 			self.missingTexture = spell and select(3,GetSpellInfo(spell)) or "Interface\\ICONS\\Achievement_General"
 			self.GetIcon  = GetIconMissing
 			self.GetCount = GetCountMissing
+			self.GetDuration = GetDurationMissing
 			self.GetExpirationTime = GetExpirationTimeMissing
 			if self.filtered then
 				self.IsActive = blinkThreshold and IsInactiveBlinkFilter or IsInactiveFilter
@@ -603,6 +607,7 @@ do
 			self.stacks = dbx.enableStacks
 			self.GetIcon  = GetIcon
 			self.GetCount = GetCount
+			self.GetDuration = GetDuration
 			self.GetExpirationTime = GetExpirationTime
 			if blinkThreshold then
 				if blinkThreshold>0 then -- blink/glow active after some time threshold
@@ -674,7 +679,6 @@ do
 		status.tkr = {}
 		status.Refresh     = Refresh
 		status.Reset       = Reset
-		status.GetDuration = GetDuration
 		status.GetCountMax = GetCountMax
 		status.UpdateDB    = UpdateDB
 		status.OnEnable    = OnEnable
