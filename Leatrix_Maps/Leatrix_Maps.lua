@@ -1,6 +1,6 @@
 ﻿
 	----------------------------------------------------------------------
-	-- 	Leatrix Maps 3.0.53 (15th November 2022)
+	-- 	Leatrix Maps 3.0.62 (30th November 2022)
 	----------------------------------------------------------------------
 
 	-- 10:Func, 20:Comm, 30:Evnt, 40:Panl
@@ -12,7 +12,7 @@
 	local LeaMapsLC, LeaMapsCB, LeaDropList, LeaConfigList = {}, {}, {}, {}
 
 	-- Version
-	LeaMapsLC["AddonVer"] = "3.0.53"
+	LeaMapsLC["AddonVer"] = "3.0.62"
 
 	-- Get locale table
 	local void, Leatrix_Maps = ...
@@ -27,6 +27,9 @@
 				print(L["LEATRIX MAPS: WRONG VERSION INSTALLED!"])
 			end)
 			return
+		end
+		if gametocversion == 30401 then
+			LeaMapsLC.NewPatch = true
 		end
 	end
 
@@ -1177,6 +1180,14 @@
 
 			if LeaMapsLC["NoMapBorder"] == "On" then
 
+				-- Reposition Krowi's World Map Buttons if installed
+				if LibStub("Krowi_WorldMapButtons-1.4", true) then
+					local lib = LibStub:GetLibrary("Krowi_WorldMapButtons-1.4")
+					if lib and lib.SetOffsets then
+						lib:SetOffsets(40, 0)
+					end
+				end
+
 				-- Hide border frame
 				WorldMapFrame.BorderFrame:Hide()
 
@@ -1369,10 +1380,10 @@
 				-- Northrend
 				-- Zone levels: https://www.wowhead.com/wotlk/zones/levels-68-80
 				-- Fishing levels: https://www.wowhead.com/wotlk/guides/fishing-profession-overview#fishing-table-by-zone
-				--[[Borean Tundra]]			[114] = {minLevel = 70, 	maxLevel = 72,		minFish = "380 (475)",},
+				--[[Borean Tundra]]			[114] = {minLevel = 68, 	maxLevel = 72,		minFish = "380 (475)",},
 				--[[Scolazar Basin]]		[119] = {minLevel = 75, 	maxLevel = 80,		minFish = "430 (525)",},
 				--[[Icecrown]]				[118] = {minLevel = 77, 	maxLevel = 80,},
-				--[[The Storm Peaks]]		[120] = {minLevel = 73, 	maxLevel = 77,},
+				--[[The Storm Peaks]]		[120] = {minLevel = 77, 	maxLevel = 80,},
 				--[[Zul'Drak]]				[121] = {minLevel = 73, 	maxLevel = 77,},
 				--[[Grizzly Hills]]			[116] = {minLevel = 73, 	maxLevel = 75,		minFish = "380 (475)",},
 				--[[Howling Fjord]]			[117] = {minLevel = 68, 	maxLevel = 72,		minFish = "380 (475)",},
@@ -2011,31 +2022,31 @@
 								-- Override travel textures
 								if pinInfo[1] == "TravelA" then
 									pin.Texture:SetTexture("Interface\\AddOns\\Leatrix_Maps\\Leatrix_Maps.blp")
-									pin.Texture:SetTexCoord(0, 0.125, 0.5, 1)
+									pin.Texture:SetTexCoord(0, 0.25, 0.75, 1)
 									pin.Texture:SetSize(32, 32)
 									pin.HighlightTexture:SetTexture("Interface\\AddOns\\Leatrix_Maps\\Leatrix_Maps.blp")
-									pin.HighlightTexture:SetTexCoord(0, 0.125, 0.5, 1)
+									pin.HighlightTexture:SetTexCoord(0, 0.25, 0.75, 1)
 									pin.HighlightTexture:SetSize(32, 32)
 								elseif pinInfo[1] == "TravelH" then
 									pin.Texture:SetTexture("Interface\\AddOns\\Leatrix_Maps\\Leatrix_Maps.blp")
 									pin.HighlightTexture:SetTexture("Interface\\AddOns\\Leatrix_Maps\\Leatrix_Maps.blp")
-									pin.Texture:SetTexCoord(0.125, 0.25, 0.5, 1)
+									pin.Texture:SetTexCoord(0.25, 0.5, 0.75, 1)
 									pin.Texture:SetSize(32, 32)
-									pin.HighlightTexture:SetTexCoord(0.125, 0.25, 0.5, 1)
+									pin.HighlightTexture:SetTexCoord(0.25, 0.5, 0.75, 1)
 									pin.HighlightTexture:SetSize(32, 32)
 								elseif pinInfo[1] == "TravelN" then
 									pin.Texture:SetTexture("Interface\\AddOns\\Leatrix_Maps\\Leatrix_Maps.blp")
 									pin.HighlightTexture:SetTexture("Interface\\AddOns\\Leatrix_Maps\\Leatrix_Maps.blp")
-									pin.Texture:SetTexCoord(0.25, 0.375, 0.5, 1)
+									pin.Texture:SetTexCoord(0.5, 0.75, 0.75, 1)
 									pin.Texture:SetSize(32, 32)
-									pin.HighlightTexture:SetTexCoord(0.25, 0.375, 0.5, 1)
+									pin.HighlightTexture:SetTexCoord(0.5, 0.75, 0.75, 1)
 									pin.HighlightTexture:SetSize(32, 32)
 								elseif pinInfo[1] == "Dunraid" then
 									pin.Texture:SetTexture("Interface\\AddOns\\Leatrix_Maps\\Leatrix_Maps.blp")
 									pin.HighlightTexture:SetTexture("Interface\\AddOns\\Leatrix_Maps\\Leatrix_Maps.blp")
-									pin.Texture:SetTexCoord(0.375, 0.5, 0.5, 1)
+									pin.Texture:SetTexCoord(0.75, 1, 0.75, 1)
 									pin.Texture:SetSize(32, 32)
-									pin.HighlightTexture:SetTexCoord(0.375, 0.5, 0.5, 1)
+									pin.HighlightTexture:SetTexCoord(0.75, 1, 0.75, 1)
 									pin.HighlightTexture:SetSize(32, 32)
 								elseif pinInfo[1] == "Spirit" then
 									pin.Texture:SetSize(20, 20)
@@ -2956,9 +2967,9 @@
 
 		-- Set skinned button textures
 		mbtn:SetNormalTexture("Interface\\AddOns\\Leatrix_Maps\\Leatrix_Maps.blp")
-		mbtn:GetNormalTexture():SetTexCoord(0.5, 1, 0, 0.5)
+		mbtn:GetNormalTexture():SetTexCoord(0, 1, 0.25, 0.5)
 		mbtn:SetHighlightTexture("Interface\\AddOns\\Leatrix_Maps\\Leatrix_Maps.blp")
-		mbtn:GetHighlightTexture():SetTexCoord(0, 0.5, 0, 0.5)
+		mbtn:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.25)
 
 		-- Hide the default textures
 		mbtn:HookScript("OnShow", function() mbtn.Left:Hide(); mbtn.Middle:Hide(); mbtn.Right:Hide() end)
@@ -3514,14 +3525,24 @@
 	end
 
 	-- Add slash commands
-	_G.SLASH_Leatrix_Maps1 = "/ltm"
-	_G.SLASH_Leatrix_Maps2 = "/leamaps"
+	if not LeaMapsLC.NewPatch then
+		_G.SLASH_Leatrix_Maps1 = "/ltm"
+		_G.SLASH_Leatrix_Maps2 = "/leamaps"
+	end
+
 	SlashCmdList["Leatrix_Maps"] = function(self)
 		-- Run slash command function
 		SlashFunc(self)
 		-- Redirect tainted variables
 		RunScript('ACTIVE_CHAT_EDIT_BOX = ACTIVE_CHAT_EDIT_BOX')
 		RunScript('LAST_ACTIVE_CHAT_EDIT_BOX = LAST_ACTIVE_CHAT_EDIT_BOX')
+	end
+
+	-- Replacement for broken slash command system
+	if LeaMapsLC.NewPatch then
+		function leamaps(self)
+			SlashFunc(self or "")
+		end
 	end
 
 	----------------------------------------------------------------------

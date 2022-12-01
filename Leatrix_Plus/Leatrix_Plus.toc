@@ -8,11 +8,11 @@
 ## Notes-zhCN: 哆啦A梦的百宝袋
 ## Notes-zhTW: 哆啦A夢的百寶袋
 
-## Version: 3.0.54
+## Version: 3.0.62
 ## Author: Leatrix
 ## SavedVariables: LeaPlusDB
 
-## OptionalDeps: ElvUI, Glass
+## OptionalDeps: Leatrix_enUS, ElvUI, Glass
 
 ## X-Curse-Project-ID: 463863
 
@@ -21,4 +21,5 @@ Leatrix_Plus_Locale.lua
 Leatrix_Plus_Media.lua
 Leatrix_Plus_Flight_Alliance.lua
 Leatrix_Plus_Flight_Horde.lua
+Leatrix_Plus_Edit.xml
 Leatrix_Plus.lua
