@@ -1770,3 +1770,7 @@ Change Log:
 * Updated for patch 10.0
 * Added SL spells for Torghast
 * Added DF spells for Neltharus
+
+4.69.2
+* Updated for patch 10.0.2
+* Added DF spells for Uldaman: Legacy of Tyr
