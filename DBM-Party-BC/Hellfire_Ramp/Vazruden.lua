@@ -1,6 +1,6 @@
 local mod	= DBM:NewMod(529, "DBM-Party-BC", 1, 248)
 
-mod:SetRevision("20221029204055")
+mod:SetRevision("20221129003558")
 mod:SetCreatureID(17537, 17307)
 mod:SetEncounterID(1892)
 mod:SetBossHPInfoToHighest()

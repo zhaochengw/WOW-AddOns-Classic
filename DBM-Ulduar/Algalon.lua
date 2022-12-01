@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal"
 
-mod:SetRevision("20221115053415")
+mod:SetRevision("20221124043300")
 mod:SetCreatureID(32871)
 mod:SetEncounterID(1130)
 mod:DisableEEKillDetection()--EE always fires wipe
@@ -22,8 +22,8 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_REMOVED 64412",
 	"RAID_BOSS_EMOTE",
 --	"CHAT_MSG_MONSTER_YELL",
-	"UNIT_SPELLCAST_SUCCEEDED boss1",
-	"UNIT_HEALTH boss1"
+	"UNIT_SPELLCAST_SUCCEEDED",
+	"UNIT_HEALTH"
 )
 
 --TODO, when wrath servers come out, FirstPull might be needed again, if boss unit Ids aren't enabled on WoTLK servers
@@ -143,26 +143,41 @@ function mod:UNIT_HEALTH(uId)
 end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 65311 then--Supermassive Fail (fires when he becomes actually active)
+	if spellId == 65311 and self:AntiSpam(5, 1) then--Supermassive Fail (fires when he becomes actually active)
 		timerNextCollapsingStar:Start(16)
 		timerCDCosmicSmash:Start(26)
 		announcePreBigBang:Schedule(80)
 		timerNextBigBang:Start(90)
 		enrageTimer:Start(360)
-	elseif spellId == 65256 then--Self Stun (phase 2)
+		self:SendSync("Supermassive")
+	elseif spellId == 65256 and self:AntiSpam(5, 2) then--Self Stun (phase 2)
 		self:SetStage(2)
 		self.vb.warned_preP2 = true
 		timerNextCollapsingStar:Stop()
 		warnPhase2:Show()
+		self:SendSync("Phase2")
 	end
 end
 
 function mod:OnSync(msg, guid)
+	if not self:IsInCombat() then return end
 	if msg == "lowhealth" and guid and not warnedLowHP[guid] then
 		warnedLowHP[guid] = true
 		if self:AntiSpam(2.5, 1) then
 			specwarnStarLow:Show()
 			specwarnStarLow:Play("aesoon")
 		end
+	elseif msg == "Supermassive" and self:AntiSpam(5, 1) then
+		timerNextCollapsingStar:Start(16)
+		timerCDCosmicSmash:Start(26)
+		announcePreBigBang:Schedule(80)
+		timerNextBigBang:Start(90)
+		enrageTimer:Start(360)
+	elseif msg == "Phase2" and self:AntiSpam(5, 2) then
+		self:SetStage(2)
+		self.vb.warned_preP2 = true
+		timerNextCollapsingStar:Stop()
+		warnPhase2:Show()
+		self:SendSync("Phase2")
 	end
 end

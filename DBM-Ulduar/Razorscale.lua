@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Razorscale", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221115053415")
+mod:SetRevision("20221124043300")
 mod:SetCreatureID(33186)
 mod:SetEncounterID(1139)
 mod:SetModelID(28787)
@@ -16,7 +16,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_MISSED 64733 64704",
 	"CHAT_MSG_MONSTER_YELL",
 	"RAID_BOSS_EMOTE",
-	"UNIT_SPELLCAST_SUCCEEDED boss1"
+	"UNIT_SPELLCAST_SUCCEEDED"
 )
 
 --TODO, fuse armor taunt/swap warnings
@@ -118,7 +118,7 @@ end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
-	if (spellId == 64733 or spellId == 64704) and destGUID == UnitGUID("player") and self:AntiSpam() and not self:IsTrivial() then
+	if (spellId == 64733 or spellId == 64704) and destGUID == UnitGUID("player") and self:AntiSpam(5, 1) and not self:IsTrivial() then
 		specWarnDevouringFlame:Show()
 		specWarnDevouringFlame:Play("runaway")
 	end
@@ -158,7 +158,15 @@ function mod:CHAT_MSG_MONSTER_YELL(msg, mob)
 end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 64821 then--Fuse Armor
+	if spellId == 64821 and self:AntiSpam(5, 2) then--Fuse Armor
+		timerFuseArmorCD:Start()
+		self:SendSync("FuseArmor")
+	end
+end
+
+function mod:OnSync(event, args)
+	if not self:IsInCombat() then return end
+	if event == "FuseArmor" and self:AntiSpam(5, 2) then
 		timerFuseArmorCD:Start()
 	end
 end

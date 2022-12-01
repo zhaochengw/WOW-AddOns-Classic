@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Kologarn", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221115053415")
+mod:SetRevision("20221124043300")
 mod:SetCreatureID(32930)--, 32933, 32934
 mod:SetEncounterID(1137)
 mod:SetModelID(28638)
@@ -19,7 +19,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_MISSED 63783 63982 63346 63976",
 	"RAID_BOSS_WHISPER",
 	"UNIT_DIED",
-	"UNIT_SPELLCAST_SUCCEEDED boss1"
+	"UNIT_SPELLCAST_SUCCEEDED"
 )
 
 --NOTE: Two crunch armors are setup to appear in gui twice on purpose, because they are very different mechanically. One is meant to be ignored and one is meant to be tank swap
@@ -122,7 +122,7 @@ function mod:UNIT_DIED(args)
 end
 
 function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
-	if (spellId == 63346 or spellId == 63976) and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
+	if (spellId == 63346 or spellId == 63976) and destGUID == UnitGUID("player") and self:AntiSpam(2, 3) then
 		specWarnEyebeam:Show()
 	end
 end
@@ -150,9 +150,20 @@ function mod:OnTranscriptorSync(msg, targetName)
 end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 63983 then--Arm Sweep
+	if spellId == 63983 and self:AntiSpam(5, 1) then--Arm Sweep
 		timerNextShockwave:Start()
-	elseif spellId == 63342 then--Focused Eyebeam Summon Trigger
+		self:SendSync("Shockwave")
+	elseif spellId == 63342 and self:AntiSpam(5, 2) then--Focused Eyebeam Summon Trigger
+		timerNextEyebeam:Start()
+		self:SendSync("Eyebeam")
+	end
+end
+
+function mod:OnSync(event, args)
+	if not self:IsInCombat() then return end
+	if event == "Shockwave" and self:AntiSpam(5, 1) then
+		timerNextShockwave:Start()
+	elseif event == "Eyebeam" and self:AntiSpam(5, 2) then
 		timerNextEyebeam:Start()
 	end
 end

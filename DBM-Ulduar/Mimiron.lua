@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Mimiron", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221115053415")
+mod:SetRevision("20221124043300")
 mod:SetCreatureID(33432)
 mod:SetEncounterID(1138)
 mod:DisableESCombatDetection()
@@ -20,8 +20,8 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 63666 65026 64529 62997",
 	"SPELL_AURA_REMOVED 64529 62997",
 	"SPELL_SUMMON 63811",
-	"UNIT_SPELLCAST_CHANNEL_STOP boss1 boss2 boss3 boss4",
-	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2 boss3 boss4",
+	"UNIT_SPELLCAST_CHANNEL_STOP",
+	"UNIT_SPELLCAST_SUCCEEDED",
 	"CHAT_MSG_LOOT"
 )
 
@@ -201,7 +201,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 34098 then--ClearAllDebuffs
+	if spellId == 34098 and self:AntiSpam(5, 1) then--ClearAllDebuffs
 		self:SetStage(0)
 		if self.vb.phase == 2 then
 			timerNextShockblast:Stop()
@@ -233,21 +233,60 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			timerNextP3Wx2LaserBarrage:Start(59.8)
 			timerNextShockblast:Start(81)
 		end
-	elseif spellId == 64402 or spellId == 65034 then--P2, P4 Rocket Strike
+		self:SendSync("StageChange")
+	elseif (spellId == 64402 or spellId == 65034) and self:AntiSpam(5, 2) then--P2, P4 Rocket Strike
 		warnRocketStrike:Show()
 		warnRocketStrike:Play("watchstep")
 		timerRocketStrikeCD:Start()
+		self:SendSync("RocketStrike")
 	end
 end
 
 function mod:OnSync(event, args)
+	if not self:IsInCombat() then return end
 	if event == "SpinUpFail" then
 		self.vb.is_spinningUp = false
 		timerSpinUp:Cancel()
 		timerP3Wx2LaserBarrageCast:Cancel()
 		timerNextP3Wx2LaserBarrage:Cancel()
 		warnP3Wx2LaserBarrage:Cancel()
-	elseif event == "LootMsg" and args and self:AntiSpam(2, 1) then
+	elseif event == "StageChange" and self:AntiSpam(5, 1) then
+		self:SetStage(0)
+		if self.vb.phase == 2 then
+			timerNextShockblast:Stop()
+			timerProximityMines:Stop()
+			timerFlameSuppressant:Stop()
+			--timerNextFlameSuppressant:Stop()
+			timerPlasmaBlastCD:Stop()
+			timerP1toP2:Start()
+			if self.Options.RangeFrame then
+				DBM.RangeCheck:Hide()
+			end
+			timerRocketStrikeCD:Start(63)
+			timerNextP3Wx2LaserBarrage:Start(78)
+			if self.vb.hardmode then
+				timerNextFrostBomb:Start(94)
+			end
+		elseif self.vb.phase == 3 then
+			timerP3Wx2LaserBarrageCast:Stop()
+			timerNextP3Wx2LaserBarrage:Stop()
+			timerNextFrostBomb:Stop()
+			timerRocketStrikeCD:Stop()
+			timerP2toP3:Start()
+		elseif self.vb.phase == 4 then
+			timerP3toP4:Start()
+			if self.vb.hardmode then
+				timerNextFrostBomb:Start(32)
+			end
+			timerRocketStrikeCD:Start(50)
+			timerNextP3Wx2LaserBarrage:Start(59.8)
+			timerNextShockblast:Start(81)
+		end
+	elseif event == "RocketStrike" and self:AntiSpam(5, 2) then
+		warnRocketStrike:Show()
+		warnRocketStrike:Play("watchstep")
+		timerRocketStrikeCD:Start()
+	elseif event == "LootMsg" and args and self:AntiSpam(2, 3) then
 		lootannounce:Show(args)
 	end
 end
