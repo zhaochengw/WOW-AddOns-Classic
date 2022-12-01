@@ -14,7 +14,6 @@ local GetAddOnInfo = _G.GetAddOnInfo;
 local GetAddOnMetadata = _G.GetAddOnMetadata;
 
 local BlizzMove = LibStub('AceAddon-3.0'):GetAddon('BlizzMove');
---local BlizzMove = LibStub('AceAddon-3.0'):GetAddon('BlizzMove'):GetModule('Debug');
 if not BlizzMove then return ; end
 
 --- @class BlizzMove_Debug
@@ -85,7 +84,10 @@ function Module:BuildAnchorTree()
 
     local frame = EnumerateFrames();
     while frame do
-        for i = 1, frame.GetNumPoints and frame:GetNumPoints() or 0 do
+        local isForbidden = frame.IsForbidden and frame:IsForbidden();
+        local isRestricted = not isForbidden and frame.IsAnchoringRestricted and frame:IsAnchoringRestricted();
+        local numPoints = not isRestricted and frame.GetNumPoints and frame:GetNumPoints() or 0;
+        for i = 1, numPoints do
             local relativeTo = select(2, frame:GetPoint(i));
             if not relativeTo then
                 relativeTo = frame.GetParent and frame:GetParent() or UIParent;
@@ -190,7 +192,6 @@ local ignoredFrames = {
     CommunitiesTicketManagerDialog = true, -- popup frame, not sure if we want to move it
     CompactRaidFrameManager = true, -- does not behave like a window
     EventTrace = true, -- movable by default
-    EventTrace = true, -- movable by default
     GMChatFrame = true, -- movable by default
     GMChatStatusFrame = true, -- popup frame
     GuideFrame = true, -- not sure what it is
@@ -217,7 +218,8 @@ function Module:DumpTopLevelFrames()
     end
     for _, addon in pairs(BlizzMoveAPI:GetRegisteredAddOns()) do
         LoadAddOn(addon);
-        for _, frame in pairs(BlizzMoveAPI:GetRegisteredFrames(addon)) do
+        for _, frameName in pairs(BlizzMoveAPI:GetRegisteredFrames(addon)) do
+            local frame = BlizzMove:GetFrameFromName(frameName);
             registeredFrames[frame] = true;
         end
     end
