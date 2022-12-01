@@ -1,9 +1,9 @@
 ## Interface: 30400
 ## Title: Postal
-## Version: v3.8.7
-## X-Build: 545
-## X-ReleaseDate: 2022-11-07T21:25:44Z
-## X-Revision: 545
+## Version: v3.9.2
+## X-Build: 565
+## X-ReleaseDate: 2022-11-28T17:46:59Z
+## X-Revision: 565
 ## Author: Xinhuan
 ## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb, Jonny aka The_Original_Manbot
 ## X-Category: Mail
