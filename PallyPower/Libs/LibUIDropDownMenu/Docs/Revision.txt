@@ -1,7 +1,25 @@
-$Id: Revision.txt 104 2022-08-22 16:12:11Z arithmandar $
+$Id: Revision.txt 113 2022-11-17 17:08:49Z arithmandar $
 
 Revision History:
 =================
+
+v4.16.10000046689 (2022/11/18)
+------------------------------
+- Fixing tagging error
+
+v4.15.10000046689 (2022/11/18)
+------------------------------
+- Toc update to support WoW 10.0.2
+- Updated lib:UIDropDownMenu_JustifyText()
+
+v4.14.10000046455 (2022/11/04)
+------------------------------
+- minor bug fix for menu icon onclick
+
+v4.13.10000046366 (2022/11/03)
+-----------------------------
+- Toc update to support WoW 10.0.0
+- function sync with build 46366
 
 v4.12.9020745161 (2022/08/23)
 -----------------------------
