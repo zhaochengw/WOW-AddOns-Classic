@@ -1,5 +1,5 @@
 ## Interface: 11403
-## Version: v10.0.1
+## Version: v10.0.2
 ## Title: BugSack
 ## Notes: Toss those bugs inna sack.
 ## Notes-deDE: Werft den Fehler in einen Sack.
