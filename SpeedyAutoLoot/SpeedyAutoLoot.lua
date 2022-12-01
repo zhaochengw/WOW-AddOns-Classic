@@ -2,7 +2,7 @@ local addonName, AutoLoot = ...;
 
 local Settings = {};
 local internal = {
-  _frame = CreateFrame("frame"),
+  _frame = CreateFrame("frame", nil, UIParent),
   lootThreshold = 10,
   isItemLocked = false,
   isLooting = false,
@@ -26,7 +26,7 @@ function AutoLoot:ProcessLootItem(itemLink, itemQuantity)
   for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS do
     local free, bagFamily = GetContainerNumFreeSlots(i);
     if i == 5 then
-      if itemClassID == Enum.ItemClass.Tradegoods and free > 0 then
+      if free > 0 and itemClassID == Enum.ItemClass.Tradegoods then
         return true;
       end
       break;
@@ -39,12 +39,9 @@ function AutoLoot:ProcessLootItem(itemLink, itemQuantity)
   end
 
   local inventoryItemCount = GetItemCount(itemLink);
-  if inventoryItemCount > 0 then
-    if itemStackSize > 1 then
-      local remainingSpace = (itemStackSize - inventoryItemCount) % itemStackSize;
-      if remainingSpace >= itemQuantity then
-        return true;
-      end
+  if inventoryItemCount > 0 and itemStackSize > 1 then
+    if ((itemStackSize - inventoryItemCount) % itemStackSize) >= itemQuantity then
+      return true;
     end
   end
 
@@ -61,6 +58,9 @@ function AutoLoot:LootSlot(slot)
     LootSlot(slot);
     if internal.isClassic then
       internal.slotsLooted[slot] = true;
+--[[       if not IsInGroup() and internal.bindConfirm[slot] then
+        ConfirmLootSlot(slot)
+      end ]]
     end
     return true;
   end
@@ -105,11 +105,22 @@ function AutoLoot:OnSlotChanged(slot)
   end
 end
 
+--[[ function AutoLoot:OnSlotCleared(slot)
+  if internal.isLooting then
+    if internal.slotsLooted[slot] then
+      internal.slotCleared[slot] = true;
+    end
+  end
+end ]]
+
 function AutoLoot:OnLootClosed()
   internal.isLooting = false;
   internal.isHidden = true;
   internal.isItemLocked = false;
-  wipe(internal.slotsLooted);
+  if self.isClassic then
+    wipe(internal.slotsLooted);
+    --wipe(internal.bindConfirm)
+  end
   self:ResetLootFrame();
   -- Workaround for TSM Destroy issue
   if TSMDestroyBtn and TSMDestroyBtn:IsVisible() then
@@ -126,8 +137,10 @@ function AutoLoot:OnErrorMessage(...)
   end
 end
 
-function AutoLoot:OnBindConfirm()
+function AutoLoot:OnBindConfirm(slot)
+  --internal.bindConfirm[slot] = true
   if internal.isLooting and internal.isHidden then
+    --self:LootSlot(slot)
     self:ShowLootFrame(true);
   end
 end
@@ -152,16 +165,27 @@ function AutoLoot:AnchorLootFrame()
   if GetCVarBool("lootUnderMouse") then
     local x, y = GetCursorPosition();
     f:ClearAllPoints();
-    x = x / f:GetEffectiveScale();
-    y = y / f:GetEffectiveScale();
-    f:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x - 40, y + 20);
-    f:GetCenter();
+
+    if LE_EXPANSION_LEVEL_CURRENT >= internal.Dragonflight then
+      x = x / (f:GetEffectiveScale()) - 30;
+      y = math.max((y / f:GetEffectiveScale()) + 50, 350);
+      f:SetPoint("TOPLEFT", nil, "BOTTOMLEFT", x, y);
+    else
+      x = x / f:GetEffectiveScale();
+      y = y / f:GetEffectiveScale();
+      f:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x - 40, y + 20);
+      f:GetCenter();
+    end
     f:Raise();
   else
+    if LE_EXPANSION_LEVEL_CURRENT >= internal.Dragonflight then
+      f:ApplySystemAnchor();
+    else
       f:ClearAllPoints();
       f:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 20, -125);
     end
-  f:Show()
+  end
+  --f:Show()
 end
 
 function AutoLoot:ShowLootFrame(delayed)
@@ -169,19 +193,20 @@ function AutoLoot:ShowLootFrame(delayed)
   if internal.ElvUI then
     internal.ShowElvUILootFrame();
   elseif LootFrame:IsEventRegistered("LOOT_OPENED") then
-    if LE_EXPANSION_LEVEL_CURRENT < internal.Dragonflight then
+    --if LE_EXPANSION_LEVEL_CURRENT < internal.Dragonflight then
       LootFrame:SetParent(UIParent);
       LootFrame:SetFrameStrata("HIGH");
+      self:AnchorLootFrame();
       if delayed then
         self:AnchorLootFrame();
       end
-    end
+    --end
   end
 end
 
 function AutoLoot:ResetLootFrame()
   if not internal.ElvUI and LootFrame:IsEventRegistered("LOOT_OPENED") then
-    if LE_EXPANSION_LEVEL_CURRENT >= internal.Dragonflight then return end
+    --if LE_EXPANSION_LEVEL_CURRENT >= internal.Dragonflight then return end
     LootFrame:SetParent(internal._frame);
   end
 end
@@ -224,9 +249,22 @@ function AutoLoot:OnInit()
   self:RegisterEvent("LOOT_OPENED", self.OnLootReady);
   self:RegisterEvent("LOOT_CLOSED", self.OnLootClosed);
   self:RegisterEvent("UI_ERROR_MESSAGE", self.OnErrorMessage);
+  --self:RegisterEvent("LOOT_SLOT_CLEARED", self.OnSlotCleared);
+  if not internal.ElvUI and LootFrame:IsEventRegistered("LOOT_OPENED") then
+    if LE_EXPANSION_LEVEL_CURRENT >= internal.Dragonflight then
+      hooksecurefunc(LootFrame, "UpdateShownState", function(self)
+        if self.isInEditMode then
+          self:SetParent(UIParent)
+        else
+          self:SetParent(internal._frame)
+        end
+      end);
+    end
+  end
 
   if internal.isClassic then
     self:RegisterEvent("LOOT_BIND_CONFIRM", self.OnBindConfirm);
+
 --[[     self:RegisterEvent("GROUP_LEFT", self.OnGroupLeft);
     self:RegisterEvent("GROUP_JOINED", self.OnGroupJoined);
     -- group events don't fire on a /reload and probably also not when you login while already in a group

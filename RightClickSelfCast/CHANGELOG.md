@@ -1,6 +1,6 @@
 # RightClickSelfCast
 
-## [v4.3](https://github.com/Xruptor/RightClickSelfCast/tree/v4.3) (2022-11-10)
-[Full Changelog](https://github.com/Xruptor/RightClickSelfCast/compare/v4.2...v4.3) [Previous Releases](https://github.com/Xruptor/RightClickSelfCast/releases)
+## [v4.4](https://github.com/Xruptor/RightClickSelfCast/tree/v4.4) (2022-11-15)
+[Full Changelog](https://github.com/Xruptor/RightClickSelfCast/compare/v4.3...v4.4) [Previous Releases](https://github.com/Xruptor/RightClickSelfCast/releases)
 
-- Added support for the addons at the Wago.io website.  
+- Updated the TOC to the latest version to support Dragonflight 10.0.2  
