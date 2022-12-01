@@ -5,6 +5,7 @@
 	local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 	local _tempo = time()
 	local _
+	local addonName, Details222 = ...
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
@@ -364,6 +365,8 @@
 			Details:CatchRaidDebuffUptime ("DEBUFF_UPTIME_IN")
 			Details:UptadeRaidMembersCache()
 
+			Details222.TimeCapture.StartCombatTimer(Details.tabela_vigente)
+
 			--we already have boss information? build .is_boss table
 			if (Details.encounter_table.id and Details.encounter_table ["start"] >= GetTime() - 3 and not Details.encounter_table ["end"]) then
 				local encounter_table = Details.encounter_table
@@ -478,6 +481,8 @@
 			Details:CatchRaidBuffUptime ("BUFF_UPTIME_OUT")
 			Details:CatchRaidDebuffUptime ("DEBUFF_UPTIME_OUT")
 			Details:CloseEnemyDebuffsUptime()
+
+			Details222.TimeCapture.StopCombat()
 
 			--check if this isn't a boss and try to find a boss in the segment
 			if (not Details.tabela_vigente.is_boss) then
@@ -1584,14 +1589,38 @@
 			Details.tooltip.icon_size.W = Details.tooltip.line_height
 			Details.tooltip.icon_size.H = Details.tooltip.line_height
 
+			--[[spark options
+			["SparkTexture"] = true,
+			["SparkHeightOffset"] = true,
+			["SparkWidthOffset"] = true,
+			["SparkHeight"] = true,
+			["SparkWidth"] = true,
+			["SparkAlpha"] = true,
+			["SparkColor"] = true,
+			["SparkPositionXOffset"] = true,
+			["SparkPositionYOffset"] = true,
+			--]]
+
+			useSpark = true
+			--GameCooltip:SetOption("SparkHeightOffset", 6)
+			GameCooltip:SetOption("SparkTexture", [[Interface\Buttons\WHITE8X8]])
+			GameCooltip:SetOption("SparkWidth", 1)
+			GameCooltip:SetOption("SparkHeight", 20)
+			GameCooltip:SetOption("SparkColor", Details.tooltip.divisor_color)
+			GameCooltip:SetOption("SparkAlpha", 0.15)
+			GameCooltip:SetOption("SparkPositionXOffset", 5)
+			--GameCooltip:SetOption("SparkAlpha", 0.3)
+			--GameCooltip:SetOption("SparkPositionXOffset", -2)
+
 			value = value or 100
 
 			if (not side) then
-				local r, g, b, a = unpack(Details.tooltip.background)
-				GameCooltip:AddStatusBar (value, 1, r, g, b, a, useSpark, {value = 100, color = {.21, .21, .21, 0.8}, texture = [[Interface\AddOns\Details\images\bar_serenity]]})
+				local r, g, b, a = unpack(Details.tooltip.bar_color)
+				local rBG, gBG, bBG, aBG = unpack(Details.tooltip.background)
+				GameCooltip:AddStatusBar (value, 1, r, g, b, a, useSpark, {value = 100, color = {rBG, gBG, bBG, aBG}, texture = [[Interface\AddOns\Details\images\bar_serenity]]})
 
 			else
-				GameCooltip:AddStatusBar (value, 2, unpack(Details.tooltip.background))
+				GameCooltip:AddStatusBar (value, 2, unpack(Details.tooltip.bar_color))
 			end
 		end
 
@@ -1629,7 +1658,7 @@
 			GameCooltip:Reset()
 			GameCooltip:SetType ("tooltip")
 
-			GameCooltip:SetOption("StatusBarTexture", [[Interface\AddOns\Details\images\bar_background]])
+			GameCooltip:SetOption("StatusBarTexture", [[Interface\AddOns\Details\images\bar_background_dark]])
 
 			GameCooltip:SetOption("TextSize", Details.tooltip.fontsize)
 			GameCooltip:SetOption("TextFont",  Details.tooltip.fontface)

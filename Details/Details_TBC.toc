@@ -25,6 +25,7 @@ indent.lua
 core\util.lua
 API.lua
 
+functions\private.lua
 functions\profiles.lua
 functions\hooks.lua
 functions\bossmods.lua
@@ -56,6 +57,7 @@ functions\plater.lua
 functions\deathmenu.lua
 functions\macros.lua
 functions\testbars.lua
+functions\warcraftlogs.lua
 
 core\timemachine.lua
 

@@ -2,6 +2,7 @@
 
 local _detalhes = 		_G._detalhes
 local _
+local addonName, Details222 = ...
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
@@ -55,6 +56,10 @@ local _
 		end
 	end
 	
+	function container_habilidades:ListActors()
+		return pairs(self._ActorTable)
+	end
+
 	function container_habilidades:ListActors()
 		return pairs(self._ActorTable)
 	end

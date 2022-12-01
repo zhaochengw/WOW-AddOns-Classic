@@ -1,16 +1,16 @@
-tag d8c07e343f99678ef49b14772a4f20ee9b999b6a Details.DF.Wrath.10259.146
+tag 95470c7db59056ec08167c848961d9079c21ea37 Details.DF.Wrath.10304.147
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Wed Nov 2 20:42:10 2022 -0300
+Date:	Mon Nov 28 15:24:44 2022 -0300
 
-commit 32e0a5b8dfbcee5710e6d7b4fcec771e2964585e
+commit 4b3237f809684fd51fd5f5e3cef427c1fb34ba3d
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Wed Nov 2 20:41:43 2022 -0300
+Date:   Mon Nov 28 15:24:03 2022 -0300
 
-    Removed the encounter_start message from Wrath
+    pkgmeta for compare tab replacement
 
-commit c48d032c1676bc5c4789fb12396a3d22a28a2d01
+commit 2c7559de05a22f1f9e5066915a2b4f595b9b6a65
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Wed Nov 2 20:08:36 2022 -0300
+Date:   Mon Nov 28 15:21:41 2022 -0300
 
-    Fix for some error involving gradient color
+    Merge Crushing Blow (warrior)
 
