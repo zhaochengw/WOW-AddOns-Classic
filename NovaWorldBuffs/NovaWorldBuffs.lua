@@ -11045,6 +11045,8 @@ function NWB:setCurrentLayerText(unit)
 			end
 			NWB.currentLayer = count;
 			NWB_CurrentLayer = count;
+			local me = UnitName("player");
+			NWB.hasL[me .. "-" .. GetRealmName()] = tostring(count);
 			NWB.lastKnownLayer = count;
 			NWB.lastKnownLayerID = k;
 			if ((GetServerTime() - NWB.lastJoinedGroup) > NWB.lastJoinedGroupCooldown) then
@@ -11917,6 +11919,8 @@ function NWB:recalcMinimapLayerFrame(zoneID, event, unit)
 				end
 				NWB.currentLayer = count;
 				NWB_CurrentLayer = count;
+				local me = UnitName("player");
+				NWB.hasL[me .. "-" .. GetRealmName()] = tostring(count);
 				NWB.lastKnownLayer = count;
 				NWB.lastKnownLayerID = k;
 				NWB.lastKnownLayerTime = GetServerTime();
@@ -11961,6 +11965,8 @@ function NWB:recalcMinimapLayerFrame(zoneID, event, unit)
 							MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 12);
 							foundBackup = true;
 							NWB_CurrentLayer = backupCount;
+							local me = UnitName("player");
+							NWB.hasL[me .. "-" .. GetRealmName()] = tostring(backupCount);
 							if (NWB.currentLayerShared ~= backupCount) then
 								NWB:sendL(backupCount, "recalc minimap backup");
 								NWB.currentLayerShared = backupCount;
