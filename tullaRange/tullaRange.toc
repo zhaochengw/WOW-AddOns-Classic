@@ -1,7 +1,7 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: tullaRange
 ## Author: Tuller
 ## Notes: Out of range coloring based on RedRange
-## Version: 10.0.2
+## Version: 10.0.3
 ## SavedVariables: TULLARANGE_COLORS
 tullaRange.lua
