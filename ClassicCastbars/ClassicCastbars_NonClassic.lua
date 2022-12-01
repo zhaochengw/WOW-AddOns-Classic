@@ -160,15 +160,16 @@ function addon:BindCurrentCastData(castbar, unitID, isChanneled)
     castbar._data = castbar._data or {}
     local cast = castbar._data
 
-    local spellName, iconTexturePath, startTimeMS, endTimeMS, notInterruptible, spellID, _
+    local spellName, iconTexturePath, startTimeMS, endTimeMS, castID, notInterruptible, spellID, _
     if not isChanneled then
-        spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, _, notInterruptible, spellID = UnitCastingInfo(unitID)
+        spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, castID, notInterruptible, spellID = UnitCastingInfo(unitID)
     else
         spellName, _, iconTexturePath, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo(unitID)
     end
 
     if not spellName then return end
 
+    cast.castID = castID
     cast.maxValue = (endTimeMS - startTimeMS) / 1000
     cast.endTime = endTimeMS / 1000
     cast.spellName = spellName
@@ -394,14 +395,16 @@ function addon:UNIT_SPELLCAST_INTERRUPTED(unitID)
     castbar._data = nil
 end
 
-function addon:UNIT_SPELLCAST_SUCCEEDED(unitID)
+function addon:UNIT_SPELLCAST_SUCCEEDED(unitID, castID)
     local castbar = activeFrames[unitID]
     if not castbar then return end
 
     if not castbar.isTesting then
-        if castbar._data then
-            castbar._data.isCastComplete = true
-            if castbar._data.isChanneled then return end -- _SUCCEEDED triggered every tick for channeled
+        local data = castbar._data
+        if data then
+            if not data.isChanneled and data.castID ~= castID then return end
+            data.isCastComplete = true
+            if data.isChanneled then return end -- _SUCCEEDED triggered every tick for channeled
         end
         self:HideCastbar(castbar, unitID)
     end
@@ -531,7 +534,11 @@ function addon:PLAYER_LOGIN()
     end
 
     if self.db.player.enabled then
-        self:SkinPlayerCastbar()
+        if WOW_PROJECT_ID ~= 1 then
+            self:SkinPlayerCastbar()
+        else
+            self.db.player.enabled = false
+        end
     end
 
     self:DisableBlizzardCastbar("target", self.db.target.enabled)

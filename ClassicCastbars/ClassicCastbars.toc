@@ -3,7 +3,7 @@
 ## Notes: Adds customizable castbars to various unitframes.
 ## SavedVariables: ClassicCastbarsDB
 ## SavedVariablesPerCharacter: ClassicCastbarsCharDB
-## Version: v1.5.1
+## Version: v1.5.2
 ## X-Curse-Project-ID: 322865
 ## X-Wago-ID: vEGPdkG1
 

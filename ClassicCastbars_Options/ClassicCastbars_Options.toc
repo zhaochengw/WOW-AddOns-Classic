@@ -1,7 +1,7 @@
 ## Interface: 30400
 ## Title: ClassicCastbars_Options
 ## Notes: Configuration for ClassicCastbars. Type /castbars for options.
-## Version: v1.5.1
+## Version: v1.5.2
 ## Dependencies: ClassicCastbars
 ## LoadOnDemand: 1
 
