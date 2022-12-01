@@ -142,7 +142,6 @@ if GetLocale() == "koKR" then
   LBIS.L["Icecrown"] = "얼음왕관";
   LBIS.L["Icecrown Citadel"] = "얼음왕관 성채";
   LBIS.L["Ichoron"] = "이코론";
-  LBIS.L["Idol"] = "우상";
   LBIS.L["Ingvar the Plunderer"] = "약탈자 잉그바르";
   LBIS.L["Inscription"] = "주문각인";
   LBIS.L["Instructor Razuvious"] = "훈련교관 라주비어스";
@@ -173,7 +172,6 @@ if GetLocale() == "koKR" then
   LBIS.L["Legacy"] = "유산";
   LBIS.L["Legs"] = "다리";
   LBIS.L["Ley-Guardian Eregos"] = "지맥 수호자 에레고스";
-  LBIS.L["Libram"] = "성서";
   LBIS.L["Lillehoff"] = "릴리 호프 <호디르의 후예 병참장교>";
   LBIS.L["Loatheb"] = "로데브";
   LBIS.L["Loken"] = "로켄";
@@ -221,6 +219,7 @@ if GetLocale() == "koKR" then
   LBIS.L["PreRaid"] = "레이드 이전";
   LBIS.L["Prince Keleseth"] = "공작 켈레세스";
   LBIS.L["Prince Taldaram"] = "공작 탈다람";
+--  LBIS.L["Priority"] = "";
   LBIS.L["Profession"] = "전문 기술";
   LBIS.L["Protection"] = "방어/보호";
   LBIS.L["Purkom (Venture Cove)"] = "푸르콤 <투자개발회사 주화 교환원>";
@@ -228,8 +227,7 @@ if GetLocale() == "koKR" then
   LBIS.L["PvP Vendor"] = "PvP 상인";
   LBIS.L["Quartermasters"] = "병참장교";
   LBIS.L["Quest"] = "퀘스트";
-  LBIS.L["Ranged"] = "원거리 장비";
-  LBIS.L["Relic"] = "유물";
+  LBIS.L["Ranged/Relic"] = "원거리 장비/유물";
   LBIS.L["Reputation"] = "평판";
   LBIS.L["Restoration"] = "복원/회복";
   LBIS.L["Retribution"] = "징벌";
@@ -246,10 +244,10 @@ if GetLocale() == "koKR" then
   LBIS.L["Shadow"] = "암흑";
   LBIS.L["Shadowmoon Valley"] = "어둠달 골짜기";
   LBIS.L["Shattrath City"] = "샤트라스";
-  LBIS.L["Shield"] = "방패";
   LBIS.L["Sholazar Basin"] = "숄라자르 분지";
   LBIS.L["Shoulder"] = "어깨";
   LBIS.L["Show Minimap Button"] = "미니맵 버튼 보이기";
+--  LBIS.L["Show Priority"] = "";
   LBIS.L["Show Tooltip"] = "직업 툴팁 표시";
   LBIS.L["Sjonnir The Ironshaper"] = "무쇠구체자 쇼니르";
   LBIS.L["Skadi the Ruthless"] = "학살자 스카디";
@@ -310,7 +308,6 @@ if GetLocale() == "koKR" then
   LBIS.L["Tiny Titanium Lockbox"] = "작은 티타늄 금고";
   LBIS.L["Tirion's Gambit"] = "티리온의 계략";
   LBIS.L["Token"] = "토큰";
-  LBIS.L["Totem"] = "토템";
   LBIS.L["Transmute"] = "변환식";
   LBIS.L["Trash Drop"] = "일반 드롭";
   LBIS.L["Trash Mobs"] = "일반몹";
@@ -336,7 +333,6 @@ if GetLocale() == "koKR" then
   LBIS.L["Veteran Crusader Aliocha Segard"] = "십자군 고참병 알료샤 세가르 <은빛십자군 병참장교>";
   LBIS.L["Volkhan"] = "볼칸";
   LBIS.L["Waist"] = "허리";
-  LBIS.L["Wand"] = "마법봉";
   LBIS.L["Wanted: Ragemane's Flipper"] = "현상 수배: 맹위갈기의 물갈퀴";
   LBIS.L["Warsong Gulch Marks"] = "전쟁노래 협곡 명예 훈장";
   LBIS.L["Wintergrasp"] = "겨울손아귀 호수";

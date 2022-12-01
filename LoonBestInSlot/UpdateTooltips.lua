@@ -25,14 +25,13 @@ local function isInEnabledPhase(phaseText)
 	return showTooltip;
 end
 
-local function buildExtraTip(tooltip, entry)
+local function buildItemTooltip(tooltip, entry, combinedTooltip, foundPriority)
 
-	local combinedTooltip = {};
 	local mageCount, warriorDpsCount, warlockCount = 0, 0, 0;
 	local hunterCount, dkCount, rogueCount = 0, 0, 0;
 
 	for k, v in pairs(entry) do
-		if LBISSettings.Tooltip[k] and isInEnabledPhase(v.PhaseList) then
+		if LBISSettings.Tooltip[k] and isInEnabledPhase(v.PhaseList) and foundPriority[k] == nil then
 			local classSpec = LBIS.ClassSpec[k]
 			if classSpec.Class == LBIS.L["Warrior"] and (classSpec.Spec == LBIS.L["Fury"] or classSpec.Spec == LBIS.L["Arms"]) then
 				warriorDpsCount = warriorDpsCount + 1;
@@ -60,9 +59,8 @@ local function buildExtraTip(tooltip, entry)
 		end
 	end
 	
-	local showTooltip = false;
 	for k, v in pairs(entry) do
-		if LBISSettings.Tooltip[k] and isInEnabledPhase(v.PhaseList) then
+		if LBISSettings.Tooltip[k] and isInEnabledPhase(v.PhaseList) and foundPriority[k] == nil then
 			local classSpec = LBIS.ClassSpec[k]
 			local foundMatch = false;
 
@@ -86,13 +84,45 @@ local function buildExtraTip(tooltip, entry)
 
 			if not foundMatch then
 				table.insert(combinedTooltip, { Class = classSpec.Class, Spec = classSpec.Spec, Bis = v.Bis, Phase = v.Phase })
-				showTooltip = true;
 			end
+		end
+	end
+end
+
+local function buildPriorityTooltip(tooltip, priorityEntry, combinedTooltip)
+
+	local foundPriority = {}
+	local showTooltip = false;
+	if LBISSettings.ShowPriority and priorityEntry ~= nil then
+		for k, v in pairs(priorityEntry) do
 		
+			local classSpec = LBIS.ClassSpec[k]
+			foundPriority[k] = true;
+				
+			table.insert(combinedTooltip, { Class = classSpec.Class, Spec = classSpec.Spec, Bis = "PRIORITY", Phase = "#"..v })
 		end
 	end
 
-	if showTooltip then
+	return foundPriority;
+end
+
+local function onTooltipSetItem(tooltip, itemLink, quantity)
+    if not itemLink then return end
+    
+	local combinedTooltip = {};
+	local itemString = string.match(itemLink, "item[%-?%d:]+")
+	local itemId = tonumber(({ strsplit(":", itemString) })[2])
+	
+	local foundPriority = {};
+	if LBIS.PriorityList.Items[itemId] then
+		foundPriority = buildPriorityTooltip(tooltip, LBIS.PriorityList.Items[itemId], combinedTooltip)
+	end
+
+	if LBIS.Items[itemId] then
+		buildItemTooltip(tooltip, LBIS.Items[itemId], combinedTooltip, foundPriority)
+	end
+
+	if #combinedTooltip > 0 then
 		local r,g,b = .9,.8,.5
 		LibExtraTip:AddLine(tooltip," ",r,g,b,true)
 		LibExtraTip:AddLine(tooltip,LBIS.L["# Best for:"],r,g,b,true)
@@ -108,20 +138,9 @@ local function buildExtraTip(tooltip, entry)
             LibExtraTip:AddDoubleLine(tooltip, classfontstring .. " " .. v.Class .. " " .. v.Spec, v.Bis, color.r, color.g, color.b, color.r, color.g, color.b, true)
         else
             LibExtraTip:AddDoubleLine(tooltip, classfontstring .. " " .. v.Class .. " " .. v.Spec, v.Bis.." "..string.gsub(v.Phase, "0", "P"), color.r, color.g, color.b, color.r, color.g, color.b, true)
-        end		
-	end	
-end
-
-local function onTooltipSetItem(tooltip, itemLink, quantity)
-    if not itemLink then return end
-    
-	local itemString = string.match(itemLink, "item[%-?%d:]+")
-	local itemId = ({ strsplit(":", itemString) })[2]
-
-	if LBIS.Items[itemId] then
-		buildExtraTip(tooltip, LBIS.Items[itemId])
+        end
 	end
-end  
+end
 
 LBIS:RegisterEvent("PLAYER_ENTERING_WORLD" , function ()
 	LBIS.EventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")

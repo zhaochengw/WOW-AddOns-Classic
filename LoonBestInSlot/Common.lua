@@ -3,6 +3,21 @@ function LBIS:PreCacheItems()
 
     LBIS.AllItemsCached = true;
 
+    for prioSpec in pairs(LBISPrioritySettings) do
+        for prioSlot in pairs(LBISPrioritySettings[prioSpec]) do
+            local itemCount = 1;
+            for _, itemId in pairs(LBISPrioritySettings[prioSpec][prioSlot]) do                
+
+                if LBIS.PriorityList.Items[itemId] == nil then
+                    LBIS.PriorityList.Items[itemId] = {};
+                end
+
+                LBIS.PriorityList.Items[itemId][prioSpec] = itemCount;
+                itemCount = itemCount + 1;
+            end
+        end
+    end
+
     for itemId, _ in pairs(LBIS.Items) do
 
         if itemId and itemId ~= 0 then
@@ -47,9 +62,7 @@ function LBIS:TableLength(T)
   return count
 end
 
-function LBIS:GetItemInfo(itemIdString, returnFunc)
-
-    local itemId = tonumber(itemIdString);
+function LBIS:GetItemInfo(itemId, returnFunc)
 
     if not itemId or itemId <= 0 then
         returnFunc({ Name = nil, Link = nil, Quality = nil, Type = nil, SubType = nil, Texture = nil });
@@ -87,9 +100,7 @@ function LBIS:GetItemInfo(itemIdString, returnFunc)
 end
 
 
-function LBIS:GetSpellInfo(spellIdString, returnFunc)
-
-    local spellId = tonumber(spellIdString);
+function LBIS:GetSpellInfo(spellId, returnFunc)
 
     if not spellId or spellId <= 0 then
         returnFunc({ Name = nil, Link = nil, Quality = nil, Type = nil, SubType = nil, Texture = nil });
@@ -128,11 +139,12 @@ local itemIsOnEnter = false;
 ---     items (Table): String table of the dropdown options.
 ---     defaultVal (String): String value for the dropdown to default to (empty otherwise).
 ---     changeFunc (Function): A custom function to be called, after selecting a dropdown option.
-function LBIS:CreateDropdown(opts)
+function LBIS:CreateDropdown(opts, width_override)
     local dropdown_name = '$parent_' .. opts['name'] .. '_dropdown'
     local menu_items = opts['items'] or {}
     local title_text = opts['title'] or ''
     local dropdown_width = 0
+    width_override = width_override or 9999;
     local default_val = opts['defaultVal'] or ''
     local change_func = opts['changeFunc'] or function (dropdown_val) end
 
@@ -142,7 +154,7 @@ function LBIS:CreateDropdown(opts)
     for _, item in pairs(menu_items) do -- Sets the dropdown width to the largest item string width.
         dd_title:SetText(item)
         local text_width = dd_title:GetStringWidth() + 20
-        if text_width > dropdown_width then
+        if text_width > dropdown_width and text_width <= width_override then
             dropdown_width = text_width
         end
     end

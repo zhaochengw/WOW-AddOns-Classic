@@ -43,7 +43,7 @@ LBIS:AddEnchant(spec1, "47901", LBIS.L["Feet"]) --Enchant Boots - Tuskarr's Vita
 
 LBIS:AddEnchant(spec1, "27968", LBIS.L["Main Hand"]) --Enchant Weapon - Major Intellect
 
-LBIS:AddEnchant(spec1, "60653", LBIS.L["Shield"]) --Enchant Shield - Greater Intellect
+LBIS:AddEnchant(spec1, "60653", LBIS.L["Off Hand"]) --Enchant Shield - Greater Intellect
 
 LBIS:AddEnchant(spec1, "44636", LBIS.L["Ring"]) --Enchant Ring - Greater Spellpower
 

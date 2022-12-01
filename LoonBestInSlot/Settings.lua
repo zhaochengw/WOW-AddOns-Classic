@@ -6,6 +6,7 @@ LBISSettingsDefault =
 	SelectedSourceType = LBIS.L["All"], 
 	SelectedZone = LBIS.L["All"], 
 	SelectedZoneNumber = LBIS.L["All"],
+	ShowPriority = false,
 	minimap = { 
 		hide = false, 
 		minimapPos = 180
@@ -45,7 +46,13 @@ LBISSettingsDefault =
 	},
 	PhaseTooltip = {
 		[LBIS.L["PreRaid"]] = true,
-		[LBIS.L["Phase 1"]] = true
+		[LBIS.L["Phase 1"]] = true,
+		--[LBIS.L["Phase 2"]] = true,
+		--[LBIS.L["Phase 3"]] = true,
+		--[LBIS.L["Phase 4"]] = true,
+		--[LBIS.L["Phase 5"]] = true
+	},
+	PriorityList = {
 	}
 };
 
@@ -440,7 +447,7 @@ local lbis_options = {
 		},
 		spacer2 = {
 			type = "header",
-			name = LBIS.L["Show Tooltip"],
+			name = "",
 			width = "full",
 			order = 39,
 		},
@@ -461,6 +468,21 @@ local lbis_options = {
 			set = function(info, val) LBISSettings.PhaseTooltip[LBIS.L["Phase 1"]] = val end,
 			width = 1.1,
 			order = 41,
+		},
+		spacer2 = {
+			type = "header",
+			name = "",
+			width = "full",
+			order = 42,
+		},
+		show = {
+			type = "toggle",
+			name = "*BETA*:"..LBIS.L["Show Priority"],
+			desc = "*BETA*:"..LBIS.L["Show Priority"],
+			get = function(info) return LBISSettings.ShowPriority end,
+			set = function(info, val) LBISSettings.ShowPriority = val end,
+			width = 1.1,
+			order = 43,
 		},
 	}
 };
@@ -484,6 +506,7 @@ end
 function LBIS:CreateSettings()
 
 	LBISSettings = CopyDefaults(LBISSettingsDefault, LBISSettings);
+	LBISPrioritySettings = LBISPrioritySettings or {};
 
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("Loon Best In Slot", lbis_options, nil)
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Loon Best In Slot"):SetParent(InterfaceOptionsFramePanelContainer)

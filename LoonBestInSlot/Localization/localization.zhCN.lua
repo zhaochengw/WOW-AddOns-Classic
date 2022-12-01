@@ -142,7 +142,6 @@ if GetLocale() == "zhCN" then
   LBIS.L["Icecrown"] = "冰冠冰川";
   LBIS.L["Icecrown Citadel"] = "冰冠堡垒";
   LBIS.L["Ichoron"] = "艾库隆";
-  LBIS.L["Idol"] = "神像";
   LBIS.L["Ingvar the Plunderer"] = "劫掠者因格瓦尔";
   LBIS.L["Inscription"] = "铭文";
   LBIS.L["Instructor Razuvious"] = "教官拉苏维奥斯";
@@ -173,7 +172,6 @@ if GetLocale() == "zhCN" then
 --  LBIS.L["Legacy"] = "";
   LBIS.L["Legs"] = "腿部";
   LBIS.L["Ley-Guardian Eregos"] = "魔网守护者埃雷苟斯";
-  LBIS.L["Libram"] = "圣契";
 --  LBIS.L["Lillehoff"] = "";
   LBIS.L["Loatheb"] = "洛欧塞布";
   LBIS.L["Loken"] = "洛肯";
@@ -221,6 +219,7 @@ if GetLocale() == "zhCN" then
 --  LBIS.L["PreRaid"] = "";
   LBIS.L["Prince Keleseth"] = "凯雷塞斯王子";
   LBIS.L["Prince Taldaram"] = "塔达拉姆王子";
+--  LBIS.L["Priority"] = "";
 --  LBIS.L["Profession"] = "";
   LBIS.L["Protection"] = "防护";
 --  LBIS.L["Purkom (Venture Cove)"] = "";
@@ -228,8 +227,7 @@ if GetLocale() == "zhCN" then
 --  LBIS.L["PvP Vendor"] = "";
 --  LBIS.L["Quartermasters"] = "";
   LBIS.L["Quest"] = "任务";
-  LBIS.L["Ranged"] = "远程";
-  LBIS.L["Relic"] = "圣物";
+  LBIS.L["Ranged/Relic"] = "远程/圣物";
   LBIS.L["Reputation"] = "声望";
   LBIS.L["Restoration"] = "恢复";
   LBIS.L["Retribution"] = "惩戒";
@@ -246,10 +244,10 @@ if GetLocale() == "zhCN" then
   LBIS.L["Shadow"] = "暗影";
   LBIS.L["Shadowmoon Valley"] = "影月谷";
   LBIS.L["Shattrath City"] = "沙塔斯城";
-  LBIS.L["Shield"] = "盾牌";
   LBIS.L["Sholazar Basin"] = "索拉查盆地";
   LBIS.L["Shoulder"] = "肩部";
 --  LBIS.L["Show Minimap Button"] = "";
+--  LBIS.L["Show Priority"] = "";
 --  LBIS.L["Show Tooltip"] = "";
   LBIS.L["Sjonnir The Ironshaper"] = "塑铁者斯约尼尔";
   LBIS.L["Skadi the Ruthless"] = "残忍的斯卡迪";
@@ -310,7 +308,6 @@ if GetLocale() == "zhCN" then
 --  LBIS.L["Tiny Titanium Lockbox"] = "";
 --  LBIS.L["Tirion's Gambit"] = "";
 --  LBIS.L["Token"] = "";
-  LBIS.L["Totem"] = "图腾";
 --  LBIS.L["Transmute"] = "";
 --  LBIS.L["Trash Drop"] = "";
   LBIS.L["Trash Mobs"] = "小怪";
@@ -336,7 +333,6 @@ if GetLocale() == "zhCN" then
 --  LBIS.L["Veteran Crusader Aliocha Segard"] = "";
   LBIS.L["Volkhan"] = "沃尔坎";
   LBIS.L["Waist"] = "腰部";
-  LBIS.L["Wand"] = "魔杖";
   LBIS.L["Wanted: Ragemane's Flipper"] = "悬赏：怒鬃的鳍肢";
 --  LBIS.L["Warsong Gulch Marks"] = "";
   LBIS.L["Wintergrasp"] = "冬拥湖";

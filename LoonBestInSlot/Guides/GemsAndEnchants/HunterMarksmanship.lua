@@ -45,7 +45,7 @@ LBIS:AddEnchant(spec1, "60707", LBIS.L["Main Hand"]) --Enchant Weapon - Superior
 LBIS:AddEnchant(spec1, "60691", LBIS.L["Two Hand"]) --Enchant 2H Weapon - Massacre
 LBIS:AddEnchant(spec1, "59619", LBIS.L["Two Hand"]) --Enchant Weapon - Accuracy
 
-LBIS:AddEnchant(spec1, "41167", LBIS.L["Ranged"]) --Heartseeker Scope
+LBIS:AddEnchant(spec1, "41167", LBIS.L["Ranged/Relic"]) --Heartseeker Scope
 
 LBIS:AddEnchant(spec1, "44645", LBIS.L["Ring"]) --Enchant Ring - Assault
 

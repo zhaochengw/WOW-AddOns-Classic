@@ -95,4 +95,37 @@
 	<Script file="Phase1\WarriorFury.lua" />
 	<Script file="Phase1\WarriorArms.lua" />
 	<Script file="Phase1\WarriorProtection.lua" />
+
+	<!--<Script file="Phase2\DeathKnightBlood.lua" />
+	<Script file="Phase2\DeathKnightFrost.lua" />
+	<Script file="Phase2\DeathKnightUnholy.lua" />
+	<Script file="Phase2\DruidBalance.lua" />
+	<Script file="Phase2\DruidBear.lua" />
+	<Script file="Phase2\DruidCat.lua" />
+	<Script file="Phase2\DruidRestoration.lua" />
+	<Script file="Phase2\HunterBeastMastery.lua" />
+	<Script file="Phase2\HunterMarksmanship.lua" />
+	<Script file="Phase2\HunterSurvival.lua" />
+	<Script file="Phase2\MageFrost.lua" />
+	<Script file="Phase2\MageFire.lua" />
+	<Script file="Phase2\MageArcane.lua" />
+	<Script file="Phase2\PaladinHoly.lua" />
+	<Script file="Phase2\PaladinRetribution.lua" />
+	<Script file="Phase2\PaladinProtection.lua" />
+	<Script file="Phase2\PriestHoly.lua" />
+	<Script file="Phase2\PriestDiscipline.lua" />
+	<Script file="Phase2\PriestShadow.lua" />
+	<Script file="Phase2\RogueAssassination.lua" />
+	<Script file="Phase2\RogueSubtlety.lua" />
+	<Script file="Phase2\RogueCombat.lua" />
+	<Script file="Phase2\ShamanElemental.lua" />
+	<Script file="Phase2\ShamanEnhancement.lua" />
+	<Script file="Phase2\ShamanRestoration.lua" />
+	<Script file="Phase2\WarlockAffliction.lua" />
+	<Script file="Phase2\WarlockDemonology.lua" />
+	<Script file="Phase2\WarlockDestruction.lua" />
+	<Script file="Phase2\WarriorFury.lua" />
+	<Script file="Phase2\WarriorArms.lua" />
+	<Script file="Phase2\WarriorProtection.lua" />-->
+	
 </Ui>

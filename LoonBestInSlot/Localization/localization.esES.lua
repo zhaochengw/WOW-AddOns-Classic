@@ -142,7 +142,6 @@ if GetLocale() == "esES" then
   LBIS.L["Icecrown"] = "Corona de Hielo";
   LBIS.L["Icecrown Citadel"] = "Ciudadela de la Corona de Hielo";
   LBIS.L["Ichoron"] = "Icoron";
-  LBIS.L["Idol"] = "Ídolo";
   LBIS.L["Ingvar the Plunderer"] = "Ingvar the Plunderer";
   LBIS.L["Inscription"] = "Inscripción";
   LBIS.L["Instructor Razuvious"] = "Instructor Razuvious";
@@ -173,7 +172,6 @@ if GetLocale() == "esES" then
 --  LBIS.L["Legacy"] = "";
   LBIS.L["Legs"] = "Piernas";
   LBIS.L["Ley-Guardian Eregos"] = "Guardian-Ley Eregos";
-  LBIS.L["Libram"] = "Tratado";
 --  LBIS.L["Lillehoff"] = "";
   LBIS.L["Loatheb"] = "Loatheb";
   LBIS.L["Loken"] = "Loken";
@@ -221,6 +219,7 @@ if GetLocale() == "esES" then
   LBIS.L["PreRaid"] = "Pre Banda";
   LBIS.L["Prince Keleseth"] = "Príncipe Keleseth";
   LBIS.L["Prince Taldaram"] = "Príncipe Taldaram";
+--  LBIS.L["Priority"] = "";
   LBIS.L["Profession"] = "Profession";
   LBIS.L["Protection"] = "Protección";
 --  LBIS.L["Purkom (Venture Cove)"] = "";
@@ -228,8 +227,7 @@ if GetLocale() == "esES" then
   LBIS.L["PvP Vendor"] = "Proveedor JcJ";
 --  LBIS.L["Quartermasters"] = "";
   LBIS.L["Quest"] = "Misión";
-  LBIS.L["Ranged"] = "Rango";
-  LBIS.L["Relic"] = "Reliquia";
+  LBIS.L["Ranged/Relic"] = "Rango/Reliquia";
   LBIS.L["Reputation"] = "Reputación";
   LBIS.L["Restoration"] = "Recuperación";
   LBIS.L["Retribution"] = "Reprensión";
@@ -246,10 +244,10 @@ if GetLocale() == "esES" then
   LBIS.L["Shadow"] = "Sombra";
   LBIS.L["Shadowmoon Valley"] = "Valle Sombraluna";
   LBIS.L["Shattrath City"] = "Ciudad de Shattrath";
-  LBIS.L["Shield"] = "Escudo";
   LBIS.L["Sholazar Basin"] = "Cuenca de Sholazar";
   LBIS.L["Shoulder"] = "Espalda";
   LBIS.L["Show Minimap Button"] = "Botón Mostrar minimapa";
+--  LBIS.L["Show Priority"] = "";
   LBIS.L["Show Tooltip"] = "Mostrar Descripción Emergente";
   LBIS.L["Sjonnir The Ironshaper"] = "Sjonnir el afilador";
   LBIS.L["Skadi the Ruthless"] = "Skadi el Despiadado";
@@ -310,7 +308,6 @@ if GetLocale() == "esES" then
 --  LBIS.L["Tiny Titanium Lockbox"] = "";
 --  LBIS.L["Tirion's Gambit"] = "";
   LBIS.L["Token"] = "Ficha";
-  LBIS.L["Totem"] = "Tótem";
   LBIS.L["Transmute"] = "Transmutar";
   LBIS.L["Trash Drop"] = "Bote de basura";
   LBIS.L["Trash Mobs"] = "Bichos";
@@ -336,7 +333,6 @@ if GetLocale() == "esES" then
 --  LBIS.L["Veteran Crusader Aliocha Segard"] = "";
   LBIS.L["Volkhan"] = "Volkhan";
   LBIS.L["Waist"] = "Cintura";
-  LBIS.L["Wand"] = "Varita";
   LBIS.L["Wanted: Ragemane's Flipper"] = "Se busca: Aleta de Crines de Ira";
   LBIS.L["Warsong Gulch Marks"] = "Marcas de la Quebrada Grito de Guerra";
   LBIS.L["Wintergrasp"] = "Conquista del Invierno";

@@ -16,12 +16,7 @@ itemSlotOrder[LBIS.L["Trinket"]] = 11;
 itemSlotOrder[LBIS.L["Main Hand"]] = 12;
 itemSlotOrder[LBIS.L["Off Hand"]] = 13;
 itemSlotOrder[LBIS.L["Two Hand"]] = 14;
-itemSlotOrder[LBIS.L["Shield"]] = 15;
-itemSlotOrder[LBIS.L["Ranged"]] = 16;
-itemSlotOrder[LBIS.L["Wand"]] = 17;
-itemSlotOrder[LBIS.L["Totem"]] = 18;
-itemSlotOrder[LBIS.L["Idol"]] = 19;
-itemSlotOrder[LBIS.L["Libram"]] = 20;
+itemSlotOrder[LBIS.L["Ranged/Relic"]] = 15;
 
 local function itemSortFunction(table, k1, k2)
 
@@ -79,7 +74,7 @@ local function createItemRow(f, specEnchant, specEnchantSource)
         st:SetPoint("BOTTOMLEFT", b, "BOTTOMRIGHT", 2, 2);
         
         if tonumber(specEnchantSource.DesignId) > 0 and tonumber(specEnchantSource.DesignId) < 99999 then
-            LBIS:GetItemInfo(specEnchantSource.DesignId, function(designItem)
+            LBIS:GetItemInfo(tonumber(specEnchantSource.DesignId), function(designItem)
 
                 if designItem.Name == nil then
                     return;
@@ -125,6 +120,15 @@ local function createItemRow(f, specEnchant, specEnchantSource)
             createItemRowInternal(f, item, specEnchant, specEnchantSource);
         end);
     end
+            
+    -- even if we are reusing, it may not be in the same order
+    local _, count = string.gsub(specEnchantSource.Source, "/", "")
+    if count > 1 then
+        count = count - 1;
+    else 
+        count = 0;
+    end
+    return (46 + (count * 10));
 end
     
 function LBIS.EnchantList:UpdateItems()    
@@ -144,13 +148,13 @@ function LBIS.EnchantList:UpdateItems()
 
         for enchantId, specEnchant in LBIS:spairs(specEnchants, itemSortFunction) do
         
-            local specEnchantSource = LBIS.EnchantSources[tonumber(specEnchant.Id)];
+            local specEnchantSource = LBIS.EnchantSources[specEnchant.Id];
     
             if specEnchantSource == nil then
                 LBIS:Error("Missing Enchant source: ", specEnchant);
             else
                 if IsInSlot(specEnchant) then
-                    point = LBIS.BrowserWindow:CreateItemRow(specEnchant, specEnchantSource, point, createItemRow)
+                    point = LBIS.BrowserWindow:CreateItemRow(specEnchant, specEnchantSource, LBISSettings.SelectedSpec.."_"..specEnchantSource.Name.."_"..specEnchant.Id, point, createItemRow)
                 end
             end
         end

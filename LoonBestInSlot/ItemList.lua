@@ -19,13 +19,7 @@ itemSlotOrder[LBIS.L["Trinket"]] = 11;
 itemSlotOrder[LBIS.L["Main Hand"]] = 12;
 itemSlotOrder[LBIS.L["Off Hand"]] = 13;
 itemSlotOrder[LBIS.L["Two Hand"]] = 14;
-itemSlotOrder[LBIS.L["Shield"]] = 15;
-itemSlotOrder[LBIS.L["Ranged"]] = 16;
-itemSlotOrder[LBIS.L["Wand"]] = 17;
-itemSlotOrder[LBIS.L["Totem"]] = 18;
-itemSlotOrder[LBIS.L["Idol"]] = 19;
-itemSlotOrder[LBIS.L["Libram"]] = 20;
-itemSlotOrder[LBIS.L["Relic"]] = 21;
+itemSlotOrder[LBIS.L["Ranged/Relic"]] = 15;
 
 local function itemSortFunction(table, k1, k2)
 
@@ -76,7 +70,6 @@ alSources["arena"] = LBIS.L["Arena Points"];
 alSources["EmblemOfValor"] = LBIS.L["Emblem of Valor"];
 alSources["EmblemOfHeroism"] = LBIS.L["Emblem of Heroism"];
 
-
 local function getVendorText(vendorText, sourceLocationText)
     local sourceText;
     local source1, source1Amount, source2, source2Amount, source3, source3Amount = strsplit(":", vendorText)
@@ -107,15 +100,6 @@ local function printSource(itemId, specItemSource, dl)
     local sourceText = specItemSource.Source;
     local sourceNumberText = specItemSource.SourceNumber;
     local sourceLocationText = specItemSource.SourceLocation;
-
-    --if VendorPrice ~= nil then
-    --    local vendorText = VendorPrice.GetVendorPriceForItem(tonumber(itemId));
-        
-    --    if vendorText ~= nil then
-    --        dl:SetText(getVendorText(vendorText, sourceLocationText))
-	--		return
-    --    end
-    --end
 
     local sourceText1, sourceText2, sourceText3 = strsplit("/", sourceText);
     local sourceNumberText1, sourceNumberText2, sourceNumberText3 = strsplit("/", sourceNumberText);
@@ -364,6 +348,15 @@ local function createItemRow(f, specItem, specItemSource)
             ot:SetPoint("TOPRIGHT", -2, -6);
         end
     end);
+
+    -- even if we are reusing, it may not be in the same order
+    local _, count = string.gsub(specItemSource.Source, "/", "")
+    if count > 1 then
+        count = count - 1;
+    else 
+        count = 0;
+    end
+    return (46 + (count * 10));
 end
 
 function LBIS.ItemList:UpdateItems()
@@ -376,20 +369,20 @@ function LBIS.ItemList:UpdateItems()
     LBIS.BrowserWindow:UpdateItemsForSpec(function(point)
         
         local specItems = LBIS.SpecItems[LBIS.SpecToName[LBISSettings.SelectedSpec]];
-               
+        
         if specItems == nil then
             LBIS.BrowserWindow.Window.Unavailable:Show();
         end
 
         for itemId, specItem in LBIS:spairs(specItems, itemSortFunction) do
             
-            local specItemSource = LBIS.ItemSources[tonumber(specItem.Id)];
+            local specItemSource = LBIS.ItemSources[specItem.Id];
 
             if specItemSource == nil then
                 LBIS:Error("Missing item source: ", specItem);
             else
                 if IsInSlot(specItem) and IsInPhase(specItem, specItemSource) and IsInSource(specItemSource) and IsInZone(specItemSource) and IsNotInClassic(specItemSource) then
-                    point = LBIS.BrowserWindow:CreateItemRow(specItem, specItemSource, point, createItemRow);
+                    point = LBIS.BrowserWindow:CreateItemRow(specItem, specItemSource, LBISSettings.SelectedSpec.."_"..specItemSource.Name.."_"..specItem.Id, point, createItemRow);
                 end
             end
         end

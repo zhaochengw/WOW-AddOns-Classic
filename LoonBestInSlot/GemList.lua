@@ -45,7 +45,7 @@ local function createItemRow(f, specGem, specGemSource)
         t:SetPoint("TOPLEFT", b, "TOPRIGHT", 2, -2);
         
         if tonumber(specGemSource.DesignId) > 0 and tonumber(specGemSource.DesignId) < 99999 then
-            LBIS:GetItemInfo(specGemSource.DesignId, function(designItem)
+            LBIS:GetItemInfo(tonumber(specGemSource.DesignId), function(designItem)
 
                 if designItem.Name == nil then
                     return;
@@ -81,6 +81,15 @@ local function createItemRow(f, specGem, specGemSource)
             dl:SetPoint("TOPLEFT", d, "BOTTOMLEFT", 0, -5);            
         end
     end);
+    
+    -- even if we are reusing, it may not be in the same order
+    local _, count = string.gsub(specGemSource.Source, "/", "")
+    if count > 1 then
+        count = count - 1;
+    else 
+        count = 0;
+    end
+    return (46 + (count * 10));
 end
 
 function LBIS.GemList:UpdateItems()
@@ -100,12 +109,12 @@ function LBIS.GemList:UpdateItems()
 
         for gemId, specGem in LBIS:spairs(specGems, itemSortFunction) do
         
-            local specGemSource = LBIS.GemSources[tonumber(specGem.Id)];
+            local specGemSource = LBIS.GemSources[specGem.Id];
     
             if specGemSource == nil then
                 LBIS:Error("Missing gem source: ", specGem);
             else
-                point = LBIS.BrowserWindow:CreateItemRow(specGem, specGemSource, point, createItemRow)
+                point = LBIS.BrowserWindow:CreateItemRow(specGem, specGemSource, LBISSettings.SelectedSpec.."_"..specGemSource.Name.."_"..specGem.Id, point, createItemRow)
             end
         end
     end);

@@ -36,6 +36,7 @@ LBIS:AddEnchant(spec1, "47672", LBIS.L["Back"]) --Formula: Enchant Cloak - Might
 LBIS:AddEnchant(spec1, "44591", LBIS.L["Back"]) --Formula: Enchant Cloak - Titanweave
 LBIS:AddEnchant(spec1, "60663", LBIS.L["Back"]) --Enchant Cloak - Major Agility
 
+LBIS:AddEnchant(spec1, "47900", LBIS.L["Chest"]) --Enchant Chest - Super Health
 LBIS:AddEnchant(spec1, "50963", LBIS.L["Chest"]) --Heavy Borean Armor Kit
 LBIS:AddEnchant(spec1, "60692", LBIS.L["Chest"]) --Formula: Enchant Chest - Powerful Stats
 LBIS:AddEnchant(spec1, "47766", LBIS.L["Chest"]) --Formula: Enchant Chest - Greater Defense

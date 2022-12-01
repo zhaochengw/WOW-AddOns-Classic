@@ -53,5 +53,5 @@ LBIS:AddEnchant(spec1, "62202", LBIS.L["Off Hand"]) --Titanium Plating
 LBIS:AddEnchant(spec1, "34009", LBIS.L["Off Hand"]) --Enchant Shield - Major Stamina
 LBIS:AddEnchant(spec1, "60692", LBIS.L["Off Hand"]) --Enchant Shield - Defense
 
-LBIS:AddEnchant(spec1, "41167", LBIS.L["Ranged"]) --Heartseeker Scope
+LBIS:AddEnchant(spec1, "41167", LBIS.L["Ranged/Relic"]) --Heartseeker Scope
 

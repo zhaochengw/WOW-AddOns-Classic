@@ -3,11 +3,12 @@ LBIS.BrowserWindow = {
     CompareTooltip = {}
 }
 
-function LBIS.BrowserWindow:OpenWindow()
+function LBIS.BrowserWindow:OpenWindow(tabName)
     LBIS:BuildItemCache()
     if not LBIS.BrowserWindow.Window then
         LBIS.BrowserWindow:CreateBrowserWindow();
     end
+    open_tab = tabName;
     LBIS.BrowserWindow:RefreshItems();
     LBIS.BrowserWindow.Window:Show();
 end
@@ -20,23 +21,33 @@ function LBIS.BrowserWindow:ToggleWindow()
     end
 end
 
+local priorityListTabButton;
 local open_tab = "ItemList";
-function LBIS.BrowserWindow:RefreshItems()
+function LBIS.BrowserWindow:RefreshItems()    
+
+    if LBISSettings.ShowPriority then
+        priorityListTabButton:Show()
+    else
+        priorityListTabButton:Hide()
+    end
+
     if open_tab == "ItemList" then
         LBIS.ItemList:UpdateItems();
     elseif open_tab == "GemList" then
         LBIS.GemList:UpdateItems();
     elseif open_tab == "EnchantList" then
-        LBIS.EnchantList:UpdateItems();
+        LBIS.EnchantList:UpdateItems();        
+    elseif open_tab == "PriorityList" then
+        LBIS.PriorityList:UpdateItems();
     end
 end
 
 local failedLoad = false;
 local deleted_windows = {};
-function LBIS.BrowserWindow:CreateItemRow(specItem, specItemSource, point, rowFunc)
+function LBIS.BrowserWindow:CreateItemRow(specItem, specItemSource, frameName, point, rowFunc)
     local window = LBIS.BrowserWindow.Window;
     local spacing = 1;
-    local name = LBISSettings.SelectedSpec.."_"..specItemSource.Name.."_"..specItem.Id;
+    local name = frameName;
     local f, l = nil, nil;
     local reusing = false;
     
@@ -55,23 +66,16 @@ function LBIS.BrowserWindow:CreateItemRow(specItem, specItemSource, point, rowFu
     if not reusing then        
         f = CreateFrame("Frame", name, window.Container);
 
-        rowFunc(f, specItem, specItemSource);
+        local rowHeight = rowFunc(f, specItem, specItemSource);
         
         l = f:CreateLine();
         l:SetColorTexture(1,1,1,0.5);
         l:SetThickness(1);
         l:SetStartPoint("BOTTOMLEFT",5, 0);
         l:SetEndPoint("BOTTOMRIGHT",-5, 0);
+        f:SetSize(window.ScrollFrame:GetWidth(), rowHeight);
     end
-    -- even if we are reusing, it may not be in the same order
-    local _, count = string.gsub(specItemSource.Source, "/", "")
-    if count > 1 then
-        count = count - 1;
-    else 
-        count = 0;
-    end
-    local rowHeight = (46 + (count * 10));
-    f:SetSize(window.ScrollFrame:GetWidth(), rowHeight);
+
     f:ClearAllPoints();
     f:SetPoint("TOPLEFT", window.Container, 0, point);
     
@@ -179,7 +183,20 @@ function createTabs(window, content)
         LBIS.BrowserWindow:RefreshItems();
     end);
 
-    PanelTemplates_SetNumTabs(content, 3);
+
+    priorityListTabButton = CreateFrame("Button", "ContainerTab4", window, "CharacterFrameTabButtonTemplate")
+    local priorityListTabString = priorityListTabButton:CreateFontString("PriorityListTabText", "OVERLAY", "GameFontNormalSmall");
+    priorityListTabString:SetPoint("CENTER", priorityListTabButton, "CENTER", 0, 3);
+    priorityListTabString:SetText(LBIS.L["Priority"]);
+    priorityListTabButton:SetPoint("LEFT", enchantListTabButton, "RIGHT", -16, 0);
+    priorityListTabButton:SetScript("OnClick", function(self)
+        PanelTemplates_SetTab(content, 4);
+        open_tab = "PriorityList";
+    
+        LBIS.BrowserWindow:RefreshItems();
+    end);
+
+    PanelTemplates_SetNumTabs(content, 4);
     PanelTemplates_SetTab(content, 1);
 end
 
@@ -210,22 +227,22 @@ function createDropDowns(window)
             LBIS.BrowserWindow:RefreshItems();
         end
     }
-    window.SpecDropDown = LBIS:CreateDropdown(spec_opts);
-    window.SpecDropDown:SetPoint("TOPLEFT", window, 30, -28);      
+    window.SpecDropDown = LBIS:CreateDropdown(spec_opts, 140);
+    window.SpecDropDown:SetPoint("TOPLEFT", window, 20, -28);      
 
     local slot_opts = {
         ['name']='slot',
         ['parent']=window,
         ['title']='Slot:',
-        ['items']= { LBIS.L["All"], LBIS.L["Head"], LBIS.L["Shoulder"], LBIS.L["Back"], LBIS.L["Chest"], LBIS.L["Wrist"], LBIS.L["Hands"], LBIS.L["Waist"], LBIS.L["Legs"], LBIS.L["Feet"], LBIS.L["Neck"], LBIS.L["Ring"], LBIS.L["Trinket"], LBIS.L["Main Hand"], LBIS.L["Off Hand"], LBIS.L["Two Hand"], LBIS.L["Shield"], LBIS.L["Ranged"], LBIS.L["Wand"], LBIS.L["Totem"], LBIS.L["Idol"], LBIS.L["Libram"], LBIS.L["Relic"] },        
+        ['items']= { LBIS.L["All"], LBIS.L["Head"], LBIS.L["Shoulder"], LBIS.L["Back"], LBIS.L["Chest"], LBIS.L["Wrist"], LBIS.L["Hands"], LBIS.L["Waist"], LBIS.L["Legs"], LBIS.L["Feet"], LBIS.L["Neck"], LBIS.L["Ring"], LBIS.L["Trinket"], LBIS.L["Main Hand"], LBIS.L["Off Hand"], LBIS.L["Two Hand"], LBIS.L["Ranged/Relic"] },        
         ['defaultVal']=LBISSettings.SelectedSlot,
         ['changeFunc']=function(dropdown_frame, dropdown_val)
             LBISSettings.SelectedSlot = dropdown_val;
             LBIS.BrowserWindow:RefreshItems()
         end
     }
-    window.SlotDropDown = LBIS:CreateDropdown(slot_opts);
-    window.SlotDropDown:SetPoint("TOPLEFT", window, 210, -28);
+    window.SlotDropDown = LBIS:CreateDropdown(slot_opts, 150);
+    window.SlotDropDown:SetPoint("TOPLEFT", window, 200, -28);
 
     local phase_opts = {
         ['name']='phase',
@@ -238,38 +255,41 @@ function createDropDowns(window)
             LBIS.BrowserWindow:RefreshItems();
         end
     }
-    window.PhaseDropDown = LBIS:CreateDropdown(phase_opts);
-    window.PhaseDropDown:SetPoint("TOPLEFT", window, 350, -28);
+    window.PhaseDropDown = LBIS:CreateDropdown(phase_opts, 115);
+    window.PhaseDropDown:SetPoint("TOPLEFT", window, 340, -28);
 
     local source_opts = {
         ['name']='source',
         ['parent']=window,
         ['title']='Source:',
-        ['items']= { LBIS.L["All"], LBIS.L["Drop"], LBIS.L["Profession"], LBIS.L["Reputation"], LBIS.L["Dungeon Token"], LBIS.L["Vendor"], LBIS.L["Quest"], LBIS.L["PvP"], LBIS.L["Transmute"] },
+        ['items']= { LBIS.L["All"], LBIS.L["Drop"], LBIS.L["Profession"], LBIS.L["Reputation"], LBIS.L["Dungeon Token"], LBIS.L["Vendor"], LBIS.L["Quest"], LBIS.L["PvP"] },
         ['defaultVal']= LBISSettings.SelectedSourceType,
         ['changeFunc']=function(dropdown_frame, dropdown_val)
             LBISSettings.SelectedSourceType = dropdown_val;
             LBIS.BrowserWindow:RefreshItems();
         end
     }
-    window.SourceDropDown = LBIS:CreateDropdown(source_opts);
-    window.SourceDropDown:SetPoint("TOPLEFT", window, 475, -28);
+    window.SourceDropDown = LBIS:CreateDropdown(source_opts, 155);
+    window.SourceDropDown:SetPoint("TOPLEFT", window, 455, -28);
 
     local zone_opts = {
         ['name']='zone',
         ['parent']=window,
         ['title']='Raid:',
         ['items']= { LBIS.L["All"], LBIS.L["Naxxramas (10)"], LBIS.L["Naxxramas (25)"], LBIS.L["The Eye of Eternity (10)"], LBIS.L["The Eye of Eternity (25)"], 
-        LBIS.L["Vault of Archavon (10)"], LBIS.L["Vault of Archavon (25)"], LBIS.L["The Obsidian Sanctum (10)"], LBIS.L["The Obsidian Sanctum (25)"]},
-        --, LBIS.L["Ulduar"], LBIS.L["Trial of the Crusader"], LBIS.L["Onyxia's Lair'"], LBIS.L["Icecrown Citadel"], LBIS.L["The Ruby Sanctum"]
+            LBIS.L["Vault of Archavon (10)"], LBIS.L["Vault of Archavon (25)"], LBIS.L["The Obsidian Sanctum (10)"], LBIS.L["The Obsidian Sanctum (25)"]},
+            --LBIS.L["Ulduar (10)"], LBIS.L["Ulduar (25)"], 
+            --LBIS.L["Trial of the Crusader (10)"], LBIS.L["Trial of the Crusader (25)"], LBIS.L["Onyxia's Lair (10)"], LBIS.L["Onyxia's Lair (25)"], 
+            --LBIS.L["Icecrown Citadel (10)"], LBIS.L["Icecrown Citadel (25)"],
+            --LBIS.L["The Ruby Sanctum (10)"], LBIS.L["The Ruby Sanctum (25)"]},
         ['defaultVal']= LBISSettings.SelectedZone,
         ['changeFunc']=function(dropdown_frame, dropdown_val)
             LBISSettings.SelectedZone = dropdown_val;
             LBIS.BrowserWindow:RefreshItems();
         end
     }
-    window.RaidDropDown = LBIS:CreateDropdown(zone_opts);
-    window.RaidDropDown:SetPoint("TOPLEFT", window, 625, -28);
+    window.RaidDropDown = LBIS:CreateDropdown(zone_opts, 160);
+    window.RaidDropDown:SetPoint("TOPLEFT", window, 600, -28);
 
 end
 

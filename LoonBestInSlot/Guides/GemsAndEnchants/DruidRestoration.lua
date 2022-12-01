@@ -3,8 +3,8 @@ local spec2 = LBIS:RegisterSpec(LBIS.L["Druid"], LBIS.L["Restoration"], "2")
 local spec3 = LBIS:RegisterSpec(LBIS.L["Druid"], LBIS.L["Restoration"], "3")
 local spec4 = LBIS:RegisterSpec(LBIS.L["Druid"], LBIS.L["Restoration"], "4")
 
-LBIS:AddGem(spec1, "41333", "3", "True") --Ember Skyflare Diamond
 LBIS:AddGem(spec1, "41401", "3", "True") --Insightful Earthsiege Diamond
+LBIS:AddGem(spec1, "41333", "3", "True") --Ember Skyflare Diamond
 LBIS:AddGem(spec1, "39998", "3", "False") --Runed Scarlet Ruby
 LBIS:AddGem(spec1, "40051", "3", "False") --Reckless Monarch Topaz
 LBIS:AddGem(spec1, "40017", "3", "False") --Quick Autumn's Glow
