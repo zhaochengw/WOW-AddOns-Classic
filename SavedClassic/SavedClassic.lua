@@ -3,7 +3,7 @@ SavedClassic = LibStub("AceAddon-3.0"):NewAddon(addonName, "AceEvent-3.0")
 
 SavedClassic.name = addonName
 --SavedClassic.version = GetAddOnMetadata(addonName, "Version")
-SavedClassic.version = "3.0.5"
+SavedClassic.version = "3.0.7"
 
 local L = LibStub("AceLocale-3.0"):GetLocale(addonName, true)
 
@@ -97,6 +97,26 @@ setmetatable(SavedClassic.currencies, { __index =
             return nil
         end }
 )
+
+SavedClassic.abbr = {}
+SavedClassic.abbr.heroic = {
+    [C_Map.GetAreaInfo(4494)] = L["TOK"],
+    [C_Map.GetAreaInfo(4277)] = L[ "AN"],
+    [C_Map.GetAreaInfo(4196)] = L["DTK"],
+    [C_Map.GetAreaInfo(4416)] = L["Gun"],
+    [C_Map.GetAreaInfo(4272)] = L["HoL"],
+    [C_Map.GetAreaInfo(4264)] = L["HoS"],
+    [C_Map.GetAreaInfo(4100)] = L["CoS"],
+    [C_Map.GetAreaInfo(4265)] = L["Nex"],
+    [C_Map.GetAreaInfo(4228)] = L["Ocu"],
+    [C_Map.GetAreaInfo(4415)] = L[ "VH"],
+    [C_Map.GetAreaInfo(206 )] = L[ "UK"],
+    [C_Map.GetAreaInfo(1196)] = L[ "UP"],
+    [C_Map.GetAreaInfo(4723)] = L["ToC"],
+    [C_Map.GetAreaInfo(4820)] = L["HoR"],
+    [C_Map.GetAreaInfo(4813)] = L["PoS"],
+    [C_Map.GetAreaInfo(4809)] = L["FoS"],
+}
 
 local _TranslationTable = {
     ["color"    ] = function(_, option, color) return (color and color ~= "") and "|cff"..color or "|r" end,
@@ -273,7 +293,7 @@ function SavedClassic:InitPlayerDB()
             playerdb.info1_1 = "\n["..L["color"].."/00ff00]■["..L["color"].."] [["..L["level"].."/ffffff]:["..L["name"].."]] ["..L["color"].."/ffffff](["..L["zone"].."]: ["..L["subzone"].."])["..L["color"].."]"
         end
         playerdb.info2_1 = "   ["..L["color"].."/cc66ff]["..L["expCur"].."]/["..L["expMax"].."] (["..L["exp%"].."]%)["..L["color"].."] ["..L["color"].."/66ccff]+["..L["expRest"].."] (["..L["expRest%"].."]%)["..L["color"].."]"
-		playerdb.info2_2 = "["..L["color"].."/ffffff]["..L["currency"]..":"..L["justice"].."]["..L["currency"]..":"..L["honor"].."]["..L["color"].."]"
+        playerdb.info2_2 = "["..L["color"].."/ffffff]["..L["currency"]..":"..L["justice"].."]["..L["currency"]..":"..L["honor"].."]["..L["color"].."]"
     else
         if class == "WARLOCK" then
             playerdb.info1_1 = "\n["..L["color"].."/00ff00]■["..L["color"].."] [["..L["name"].."]] ["..L["item"]..":6265/cc66cc] ["..L["color"].."/ffffff](["..L["zone"].."]: ["..L["subzone"].."])["..L["color"].."]"
@@ -281,7 +301,7 @@ function SavedClassic:InitPlayerDB()
             playerdb.info1_1 = "\n["..L["color"].."/00ff00]■["..L["color"].."] [["..L["name"].."]] ["..L["color"].."/ffffff](["..L["zone"].."]: ["..L["subzone"].."])["..L["color"].."]"
         end
         playerdb.info2_1 = "   ["..L["color"].."/ffffff]["..L["currency"]..":"..L["valor"].."] ["..L["currency"]..":"..L["heroism"].."] [".. L["currency"]..":"..L["arena"].."] [".. L["currency"]..":"..L["honor"].."]["..L["color"].."]"
-		playerdb.info2_2 = ""
+        playerdb.info2_2 = ""
     end
 
     playerdb.info3 = true
@@ -549,26 +569,58 @@ function SavedClassic:ShowInstanceInfo(tooltip, character)
 
     db.raids = db.raids or {}
     if db.info3 then
-        for i = 1, #db.raids do
-            local instance = db.raids[i]
-            local remain = SecondsToTime(instance.reset - time())
-            if remain and ( remain ~= "" ) then
-                local line3_1 = self:TranslateInstance(db.info3_1, instance)
-                local line3_2 = self:TranslateInstance(db.info3_2, instance)
-                tooltip:AddDoubleLine(line3_1, line3_2)
+        if db.info3oneline then
+            local raidList = {}
+            for i = 1, #db.raids do
+                local instance = db.raids[i]
+                local remain = SecondsToTime(instance.reset - time())
+                if remain and ( remain ~= "" ) then
+                    raidList[instance.name] = raidList[instance.name] or {}
+                    table.insert(raidList[instance.name], instance.difficultyName)
+                end
+            end
+            local oneline
+            for k,v in pairs(raidList) do
+                oneline = "   "..k.." ("..v[1]..(v[2] and ", "..v[2] or "")..")"
+                tooltip:AddLine(oneline)
+            end
+        else
+            for i = 1, #db.raids do
+                local instance = db.raids[i]
+                local remain = SecondsToTime(instance.reset - time())
+                if remain and ( remain ~= "" ) then
+                    local line3_1 = self:TranslateInstance(db.info3_1, instance)
+                    local line3_2 = self:TranslateInstance(db.info3_2, instance)
+                    tooltip:AddDoubleLine(line3_1, line3_2)
+                end
             end
         end
     end
 
     db.heroics = db.heroics or {}
-    if db["info4"] then
-        for i = 1, #db.heroics do
-            local instance = db.heroics[i]
-            local remain = SecondsToTime(instance.reset - time())
-            if remain and ( remain ~= "" ) then
-                local line4_1 = self:TranslateInstance(db.info4_1, instance)
-                local line4_2 = self:TranslateInstance(db.info4_2, instance)
-                tooltip:AddDoubleLine(line4_1, line4_2)
+    if db.info4 then
+        if db.info4oneline then
+            local oneline = ""
+            for i = 1, #db.heroics do
+                local instance = db.heroics[i]
+                local remain = SecondsToTime(instance.reset - time())
+                if remain and ( remain ~= "" ) then
+                    oneline = oneline.." "..(self.abbr.heroic[instance.name] or instance.name)
+                end
+            end
+            if oneline ~= "" then
+                oneline = oneline:gsub("^ ","") -- trim leading space
+                tooltip:AddLine("|cffffff99   "..oneline.."|r")
+            end
+        else
+            for i = 1, #db.heroics do
+                local instance = db.heroics[i]
+                local remain = SecondsToTime(instance.reset - time())
+                if remain and ( remain ~= "" ) then
+                    local line4_1 = self:TranslateInstance(db.info4_1, instance)
+                    local line4_2 = self:TranslateInstance(db.info4_2, instance)
+                    tooltip:AddDoubleLine(line4_1, line4_2)
+                end
             end
         end
     end
@@ -718,11 +770,11 @@ function SavedClassic:BuildOptions()
             if not currency.icon then
                 local name, _, icon = GetCurrencyInfo(id)
                 currency.name = name
-				if id == 1901 then
-					currency.icon = "|T"..icon..":14:14:::14:14:8:0:8:0|t"
-				else
-					currency.icon = "|T"..icon..":14:14|t"
-				end
+                if id == 1901 then
+                    currency.icon = "|T"..icon..":14:14:::14:14:8:0:8:0|t"
+                else
+                    currency.icon = "|T"..icon..":14:14|t"
+                end
             end
             if currency.name then
                 currencyTooltipText = currencyTooltipText.."\n"..currency.icon..currency.altName.."("..id.."): "..currency.name
@@ -917,8 +969,12 @@ function SavedClassic:BuildOptions()
                     info3 = {
                         name = L["Lines of raid instances"],
                         type = "toggle",
-                        width = "full",
-                        order = 31
+                        order = 30
+                    },
+                    info3oneline = {
+                        name = L["Show in one-line"],
+                        type = "toggle",
+                        order = 31,
                     },
                     info3_1 = {
                         name = L["Left"],
@@ -948,8 +1004,12 @@ function SavedClassic:BuildOptions()
                     info4 = {
                         name = L["Lines of heroic instances"],
                         type = "toggle",
-                        width = "full",
-                        order = 31
+                        order = 30,
+                    },
+                    info4oneline = {
+                        name = L["Show in one-line"],
+                        type = "toggle",
+                        order = 31,
                     },
                     info4_1 = {
                         name = L["Left"],

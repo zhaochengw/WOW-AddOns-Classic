@@ -52,6 +52,7 @@ L["Desc_Inst"] = "|cff00ff00■|r |cffccaa00使用方法 - 副本信息|r|n"
     .."|cffccaa00[instID]|r 副本 ID|n"
 L["Tooltip - Heroic instances"] = "提示 - 英雄本信息"
 L["Lines of heroic instances"] = "英雄本信息行"
+L["Show in one-line"] = "单行显示"
 
 L["Select character"] = "选择角色"
 L["Reset selected character"] = "重置选择的角色"
@@ -110,5 +111,21 @@ L["IoC"     ] = true
 L["shard"   ] = true
 L["venture" ] = true
 L["justice" ] = true
-
+-- Heroic dungeon names, abbrs
+L["TOK"] = true
+L[ "AN"] = true
+L["DTK"] = true
+L["Gun"] = true
+L["HoL"] = true
+L["HoS"] = true
+L["CoS"] = true
+L["Nex"] = true
+L["Ocu"] = true
+L[ "VH"] = true
+L[ "UK"] = true
+L[ "UP"] = true
+L["ToC"] = true
+L["HoR"] = true
+L["PoS"] = true
+L["FoS"] = true
 end

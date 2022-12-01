@@ -52,6 +52,7 @@ L["Desc_Inst"] = "|cff00ff00■|r |cffccaa00Использование - Инф�
     .."|cffccaa00[instID]|r ID подземелья|n"
 L["Tooltip - Heroic instances"] = true
 L["Lines of heroic instances"] = true
+L["Show in one-line"] = "Показать в одну строку"
 
 L["Select character"] = "Выбор персонажа"
 L["Reset selected character"] = "Сбросить выбранного персонажа"
@@ -110,5 +111,21 @@ L["IoC"     ] = true
 L["shard"   ] = true
 L["venture" ] = true
 L["justice" ] = true
-
+-- Heroic dungeon names, abbrs
+L["TOK"] = true
+L[ "AN"] = true
+L["DTK"] = true
+L["Gun"] = true
+L["HoL"] = true
+L["HoS"] = true
+L["CoS"] = true
+L["Nex"] = true
+L["Ocu"] = true
+L[ "VH"] = true
+L[ "UK"] = true
+L[ "UP"] = true
+L["ToC"] = true
+L["HoR"] = true
+L["PoS"] = true
+L["FoS"] = true
 end
