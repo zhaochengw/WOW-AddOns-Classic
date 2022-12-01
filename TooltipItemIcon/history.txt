@@ -1,5 +1,17 @@
 Version history:
 
+1.80
+- Fix for ItemRefTooltip close button clashing with icon in 'inside' or 'title' mode
+- Code cleanup
+
+1.798 (Beta)
+- Fix for missing GetItem and GetSpell methods where tooltips did not inherit GameTooltipTemplate
+- Fix for double icons in Inside or Title mode where tooltip has multiple hooks affecting one event
+
+1.797 (Beta)
+- TOC update for 10.0.2
+- Initial changes for removed Tooltip scripts and new Tooltip API
+
 1.796
 - TOC update for 10.0.0 pre-patch
 - Fix for error from Currency tab in Wrath
