@@ -878,6 +878,9 @@ t[31358] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Dawnstone Crab"],
+	learnedAt = 370,
 }
 t[31359] = {
 	name = L["Design: Enduring Deep Peridot"],
@@ -886,6 +889,9 @@ t[31359] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Enduring Deep Peridot"],
+	learnedAt = 315,
 }
 t[31361] = {
 	name = L["Pattern: Cobrahide Leg Armor"],
@@ -1115,6 +1121,9 @@ t[23142] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Enduring Deep Peridot"],
+	learnedAt = 315,
 }
 t[23619] = {
 	name = L["Plans: Felsteel Shield Spike"],
@@ -1150,6 +1159,9 @@ t[24180] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Dawnstone Crab"],
+	learnedAt = 370,
 }
 t[25825] = {
 	name = L["Footman's Longsword"],
@@ -1718,6 +1730,9 @@ t[23130] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Teardrop Blood Garnet"],
+	learnedAt = 300,
 }
 t[23131] = {
 	name = L["Design: Bold Blood Garnet"],
@@ -1726,6 +1741,9 @@ t[23131] = {
 	buyPrice = 50000,
 	sellPrice = 12500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Bold Blood Garnet"],
+	learnedAt = 305,
 }
 t[23135] = {
 	name = L["Design: Inscribed Flame Spessarite"],
@@ -1734,6 +1752,9 @@ t[23135] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Inscribed Flame Spessarite"],
+	learnedAt = 300,
 }
 t[23137] = {
 	name = L["Design: Glinting Flame Spessarite"],
@@ -1742,6 +1763,9 @@ t[23137] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Glinting Flame Spessarite"],
+	learnedAt = 315,
 }
 t[23140] = {
 	name = L["Design: Radiant Deep Peridot"],
@@ -1750,6 +1774,9 @@ t[23140] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Radiant Deep Peridot"],
+	learnedAt = 300,
 }
 t[23141] = {
 	name = L["Design: Jagged Deep Peridot"],
@@ -1758,6 +1785,9 @@ t[23141] = {
 	buyPrice = 50000,
 	sellPrice = 12500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Jagged Deep Peridot"],
+	learnedAt = 305,
 }
 t[23144] = {
 	name = L["Design: Glowing Shadow Draenite"],
@@ -1766,6 +1796,9 @@ t[23144] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Glowing Shadow Draenite"],
+	learnedAt = 300,
 }
 t[23147] = {
 	name = L["Design: Sovereign Shadow Draenite"],
@@ -1774,6 +1807,9 @@ t[23147] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Sovereign Shadow Draenite"],
+	learnedAt = 325,
 }
 t[23148] = {
 	name = L["Design: Brilliant Golden Draenite"],
@@ -1782,6 +1818,9 @@ t[23148] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Brilliant Golden Draenite"],
+	learnedAt = 300,
 }
 t[23151] = {
 	name = L["Design: Rigid Golden Draenite"],
@@ -1790,6 +1829,9 @@ t[23151] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Rigid Golden Draenite"],
+	learnedAt = 325,
 }
 t[23152] = {
 	name = L["Design: Solid Azure Moonstone"],
@@ -1798,6 +1840,9 @@ t[23152] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Solid Azure Moonstone"],
+	learnedAt = 300,
 }
 t[23153] = {
 	name = L["Design: Sparkling Azure Moonstone"],
@@ -1806,6 +1851,9 @@ t[23153] = {
 	buyPrice = 50000,
 	sellPrice = 12500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Sparkling Azure Moonstone"],
+	learnedAt = 305,
 }
 t[28291] = {
 	name = L["Design: Smooth Golden Draenite"],
@@ -1814,6 +1862,9 @@ t[28291] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Smooth Golden Draenite"],
+	learnedAt = 325,
 }
 t[28596] = {
 	name = L["Design: Bright Blood Garnet"],
@@ -1822,6 +1873,9 @@ t[28596] = {
 	buyPrice = 50000,
 	sellPrice = 12500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Bright Blood Garnet"],
+	learnedAt = 305,
 }
 t[4357] = {
 	name = L["Rough Blasting Powder"],
@@ -3131,6 +3185,9 @@ t[23134] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Delicate Blood Garnet"],
+	learnedAt = 325,
 }
 t[23136] = {
 	name = L["Design: Luminous Flame Spessarite"],
@@ -3139,6 +3196,9 @@ t[23136] = {
 	buyPrice = 50000,
 	sellPrice = 12500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Luminous Flame Spessarite"],
+	learnedAt = 305,
 }
 t[23146] = {
 	name = L["Design: Shifting Shadow Draenite"],
@@ -3147,6 +3207,9 @@ t[23146] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Shifting Shadow Draenite"],
+	learnedAt = 315,
 }
 t[23150] = {
 	name = L["Design: Thick Golden Draenite"],
@@ -3155,6 +3218,9 @@ t[23150] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Thick Golden Draenite"],
+	learnedAt = 315,
 }
 t[23155] = {
 	name = L["Design: Lustrous Azure Moonstone"],
@@ -3163,6 +3229,9 @@ t[23155] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Lustrous Azure Moonstone"],
+	learnedAt = 325,
 }
 t[23874] = {
 	name = L["Schematic: Elemental Seaforium Charge"],
@@ -3182,6 +3251,9 @@ t[24178] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Pendant of the Null Rune"],
+	learnedAt = 360,
 }
 t[24314] = {
 	name = L["Pattern: Bag of Jewels"],
@@ -3234,6 +3306,9 @@ t[25908] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Swift Skyfire Diamond"],
+	learnedAt = 365,
 }
 t[28274] = {
 	name = L["Formula: Enchant Cloak - Spell Penetration"],
@@ -3333,6 +3408,9 @@ t[33156] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Crimson Sun"],
+	learnedAt = 360,
 }
 t[33305] = {
 	name = L["Design: Don Julio's Heart"],
@@ -3341,6 +3419,9 @@ t[33305] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Don Julio's Heart"],
+	learnedAt = 360,
 }
 t[33622] = {
 	name = L["Design: Relentless Earthstorm Diamond"],
@@ -3349,6 +3430,9 @@ t[33622] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Relentless Earthstorm Diamond"],
+	learnedAt = 365,
 }
 t[24544] = {
 	name = L["Gladiator's Plate Chestpiece"],
@@ -10023,6 +10107,9 @@ t[33783] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Steady Talasite"],
+	learnedAt = 350,
 }
 t[32453] = {
 	name = L["Star's Tears"],
@@ -14418,6 +14505,9 @@ t[24208] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Mystic Dawnstone"],
+	learnedAt = 350,
 }
 t[28915] = {
 	name = L["Reins of the Dark Riding Talbuk"],
@@ -14566,6 +14656,9 @@ t[24183] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Nightseye Panther"],
+	learnedAt = 370,
 }
 t[24417] = {
 	name = L["Scout's Arrow"],
@@ -14821,6 +14914,9 @@ t[31402] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["The Natural Ward"],
+	learnedAt = 375,
 }
 t[31804] = {
 	name = L["Cenarion Expedition Tabard"],
@@ -17435,6 +17531,9 @@ t[35502] = {
 	buyPrice = 150000,
 	sellPrice = 37500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Eternal Earthstorm Diamond"],
+	learnedAt = 370,
 }
 t[35505] = {
 	name = L["Design: Ember Skyfire Diamond"],
@@ -17443,6 +17542,9 @@ t[35505] = {
 	buyPrice = 150000,
 	sellPrice = 37500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Ember Skyfire Diamond"],
+	learnedAt = 370,
 }
 t[35695] = {
 	name = L["Design: Figurine - Empyrean Tortoise"],
@@ -17451,6 +17553,9 @@ t[35695] = {
 	buyPrice = 250000,
 	sellPrice = 62500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Empyrean Tortoise"],
+	learnedAt = 375,
 }
 t[35696] = {
 	name = L["Design: Figurine - Khorium Boar"],
@@ -17459,6 +17564,9 @@ t[35696] = {
 	buyPrice = 250000,
 	sellPrice = 62500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Khorium Boar"],
+	learnedAt = 375,
 }
 t[35697] = {
 	name = L["Design: Figurine - Crimson Serpent"],
@@ -17467,6 +17575,9 @@ t[35697] = {
 	buyPrice = 250000,
 	sellPrice = 62500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Crimson Serpent"],
+	learnedAt = 375,
 }
 t[35698] = {
 	name = L["Design: Figurine - Shadowsong Panther"],
@@ -17475,6 +17586,9 @@ t[35698] = {
 	buyPrice = 250000,
 	sellPrice = 62500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Shadowsong Panther"],
+	learnedAt = 375,
 }
 t[35699] = {
 	name = L["Design: Figurine - Seaspray Albatross"],
@@ -17483,6 +17597,9 @@ t[35699] = {
 	buyPrice = 250000,
 	sellPrice = 62500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Seaspray Albatross"],
+	learnedAt = 375,
 }
 t[35708] = {
 	name = L["Design: Regal Nightseye"],
@@ -17491,6 +17608,9 @@ t[35708] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Regal Nightseye"],
+	learnedAt = 350,
 }
 t[35752] = {
 	name = L["Recipe: Guardian's Alchemist Stone"],
@@ -17543,6 +17663,9 @@ t[35766] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Steady Seaspray Emerald"],
+	learnedAt = 375,
 }
 t[35767] = {
 	name = L["Design: Reckless Pyrestone"],
@@ -17551,6 +17674,9 @@ t[35767] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Reckless Pyrestone"],
+	learnedAt = 375,
 }
 t[35768] = {
 	name = L["Design: Quick Lionseye"],
@@ -17559,6 +17685,9 @@ t[35768] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Quick Lionseye"],
+	learnedAt = 375,
 }
 t[35769] = {
 	name = L["Design: Forceful Seaspray Emerald"],
@@ -17567,6 +17696,9 @@ t[35769] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Forceful Seaspray Emerald"],
+	learnedAt = 375,
 }
 t[34887] = {
 	name = L["Angelista's Revenge"],
@@ -18079,6 +18211,9 @@ t[35238] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Balanced Shadowsong Amethyst"],
+	learnedAt = 375,
 }
 t[35239] = {
 	name = L["Design: Glowing Shadowsong Amethyst"],
@@ -18087,6 +18222,9 @@ t[35239] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Glowing Shadowsong Amethyst"],
+	learnedAt = 375,
 }
 t[35240] = {
 	name = L["Design: Infused Shadowsong Amethyst"],
@@ -18095,6 +18233,9 @@ t[35240] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Infused Shadowsong Amethyst"],
+	learnedAt = 375,
 }
 t[35241] = {
 	name = L["Design: Royal Shadowsong Amethyst"],
@@ -18103,6 +18244,9 @@ t[35241] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Royal Shadowsong Amethyst"],
+	learnedAt = 375,
 }
 t[35242] = {
 	name = L["Design: Shifting Shadowsong Amethyst"],
@@ -18111,6 +18255,9 @@ t[35242] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Shifting Shadowsong Amethyst"],
+	learnedAt = 375,
 }
 t[35243] = {
 	name = L["Design: Sovereign Shadowsong Amethyst"],
@@ -18119,6 +18266,9 @@ t[35243] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Sovereign Shadowsong Amethyst"],
+	learnedAt = 375,
 }
 t[35244] = {
 	name = L["Design: Bold Crimson Spinel"],
@@ -18127,6 +18277,9 @@ t[35244] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Bold Crimson Spinel"],
+	learnedAt = 375,
 }
 t[35245] = {
 	name = L["Design: Bright Crimson Spinel"],
@@ -18135,6 +18288,9 @@ t[35245] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Bright Crimson Spinel"],
+	learnedAt = 375,
 }
 t[35246] = {
 	name = L["Design: Delicate Crimson Spinel"],
@@ -18143,6 +18299,9 @@ t[35246] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Delicate Crimson Spinel"],
+	learnedAt = 375,
 }
 t[35247] = {
 	name = L["Design: Flashing Crimson Spinel"],
@@ -18151,6 +18310,9 @@ t[35247] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Flashing Crimson Spinel"],
+	learnedAt = 375,
 }
 t[35248] = {
 	name = L["Design: Runed Crimson Spinel"],
@@ -18159,6 +18321,9 @@ t[35248] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Runed Crimson Spinel"],
+	learnedAt = 375,
 }
 t[35249] = {
 	name = L["Design: Subtle Crimson Spinel"],
@@ -18167,6 +18332,9 @@ t[35249] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Subtle Crimson Spinel"],
+	learnedAt = 375,
 }
 t[35250] = {
 	name = L["Design: Teardrop Crimson Spinel"],
@@ -18175,6 +18343,9 @@ t[35250] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Teardrop Crimson Spinel"],
+	learnedAt = 375,
 }
 t[35251] = {
 	name = L["Design: Dazzling Seaspray Emerald"],
@@ -18183,6 +18354,9 @@ t[35251] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Dazzling Seaspray Emerald"],
+	learnedAt = 375,
 }
 t[35252] = {
 	name = L["Design: Enduring Seaspray Emerald"],
@@ -18191,6 +18365,9 @@ t[35252] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Enduring Seaspray Emerald"],
+	learnedAt = 375,
 }
 t[35253] = {
 	name = L["Design: Jagged Seaspray Emerald"],
@@ -18199,6 +18376,9 @@ t[35253] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Jagged Seaspray Emerald"],
+	learnedAt = 375,
 }
 t[35254] = {
 	name = L["Design: Radiant Seaspray Emerald"],
@@ -18207,6 +18387,9 @@ t[35254] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Radiant Seaspray Emerald"],
+	learnedAt = 375,
 }
 t[35255] = {
 	name = L["Design: Brilliant Lionseye"],
@@ -18215,6 +18398,9 @@ t[35255] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Brilliant Lionseye"],
+	learnedAt = 375,
 }
 t[35256] = {
 	name = L["Design: Gleaming Lionseye"],
@@ -18223,6 +18409,9 @@ t[35256] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Gleaming Lionseye"],
+	learnedAt = 375,
 }
 t[35257] = {
 	name = L["Design: Great Lionseye"],
@@ -18231,6 +18420,9 @@ t[35257] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Great Lionseye"],
+	learnedAt = 375,
 }
 t[35258] = {
 	name = L["Design: Mystic Lionseye"],
@@ -18239,6 +18431,9 @@ t[35258] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Mystic Lionseye"],
+	learnedAt = 375,
 }
 t[35259] = {
 	name = L["Design: Rigid Lionseye"],
@@ -18247,6 +18442,9 @@ t[35259] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Rigid Lionseye"],
+	learnedAt = 375,
 }
 t[35260] = {
 	name = L["Design: Smooth Lionseye"],
@@ -18255,6 +18453,9 @@ t[35260] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Smooth Lionseye"],
+	learnedAt = 375,
 }
 t[35261] = {
 	name = L["Design: Thick Lionseye"],
@@ -18263,6 +18464,9 @@ t[35261] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Thick Lionseye"],
+	learnedAt = 375,
 }
 t[35262] = {
 	name = L["Design: Lustrous Empyrean Sapphire"],
@@ -18271,6 +18475,9 @@ t[35262] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Lustrous Empyrean Sapphire"],
+	learnedAt = 375,
 }
 t[35263] = {
 	name = L["Design: Solid Empyrean Sapphire"],
@@ -18279,6 +18486,9 @@ t[35263] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Solid Empyrean Sapphire"],
+	learnedAt = 375,
 }
 t[35264] = {
 	name = L["Design: Sparkling Empyrean Sapphire"],
@@ -18287,6 +18497,9 @@ t[35264] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Sparkling Empyrean Sapphire"],
+	learnedAt = 375,
 }
 t[35265] = {
 	name = L["Design: Stormy Empyrean Sapphire"],
@@ -18295,6 +18508,9 @@ t[35265] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Stormy Empyrean Sapphire"],
+	learnedAt = 375,
 }
 t[35266] = {
 	name = L["Design: Glinting Pyrestone"],
@@ -18303,6 +18519,9 @@ t[35266] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Glinting Pyrestone"],
+	learnedAt = 375,
 }
 t[35267] = {
 	name = L["Design: Inscribed Pyrestone"],
@@ -18311,6 +18530,9 @@ t[35267] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Inscribed Pyrestone"],
+	learnedAt = 375,
 }
 t[35268] = {
 	name = L["Design: Luminous Pyrestone"],
@@ -18319,6 +18541,9 @@ t[35268] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Luminous Pyrestone"],
+	learnedAt = 375,
 }
 t[35269] = {
 	name = L["Design: Potent Pyrestone"],
@@ -18327,6 +18552,9 @@ t[35269] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Potent Pyrestone"],
+	learnedAt = 375,
 }
 t[35270] = {
 	name = L["Design: Veiled Pyrestone"],
@@ -18335,6 +18563,9 @@ t[35270] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Veiled Pyrestone"],
+	learnedAt = 375,
 }
 t[35271] = {
 	name = L["Design: Wicked Pyrestone"],
@@ -18343,6 +18574,9 @@ t[35271] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Wicked Pyrestone"],
+	learnedAt = 375,
 }
 t[35322] = {
 	name = L["Design: Quick Dawnstone"],
@@ -18351,6 +18585,9 @@ t[35322] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Quick Dawnstone"],
+	learnedAt = 350,
 }
 t[35323] = {
 	name = L["Design: Reckless Noble Topaz"],
@@ -18359,6 +18596,9 @@ t[35323] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Reckless Noble Topaz"],
+	learnedAt = 350,
 }
 t[35325] = {
 	name = L["Design: Forceful Talasite"],
@@ -18367,6 +18607,9 @@ t[35325] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Forceful Talasite"],
+	learnedAt = 350,
 }
 t[37504] = {
 	name = L["Design: Purified Shadowsong Amethyst"],
@@ -18375,6 +18618,9 @@ t[37504] = {
 	buyPrice = 500000,
 	sellPrice = 125000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Purified Shadowsong Amethyst"],
+	learnedAt = 375,
 }
 t[34431] = {
 	name = L["Lightbringer Bands"],
@@ -22758,6 +23004,9 @@ t[23145] = {
 	buyPrice = 50000,
 	sellPrice = 12500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Royal Shadow Draenite"],
+	learnedAt = 305,
 }
 t[23149] = {
 	name = L["Design: Gleaming Golden Draenite"],
@@ -22766,6 +23015,9 @@ t[23149] = {
 	buyPrice = 50000,
 	sellPrice = 12500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Gleaming Golden Draenite"],
+	learnedAt = 305,
 }
 t[23601] = {
 	name = L["Plans: Flamebane Bracers"],
@@ -22818,6 +23070,9 @@ t[24177] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Pendant of Shadow's End"],
+	learnedAt = 360,
 }
 t[24293] = {
 	name = L["Pattern: Silver Spellthread"],
@@ -23033,6 +23288,9 @@ t[23133] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Runed Blood Garnet"],
+	learnedAt = 315,
 }
 t[23143] = {
 	name = L["Design: Dazzling Deep Peridot"],
@@ -23041,6 +23299,9 @@ t[23143] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Dazzling Deep Peridot"],
+	learnedAt = 325,
 }
 t[23597] = {
 	name = L["Plans: Enchanted Adamantite Belt"],
@@ -23093,6 +23354,9 @@ t[24176] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Pendant of Withering"],
+	learnedAt = 360,
 }
 t[24292] = {
 	name = L["Pattern: Mystic Spellthread"],
@@ -24237,6 +24501,9 @@ t[24182] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Talasite Owl"],
+	learnedAt = 370,
 }
 t[25904] = {
 	name = L["Design: Insightful Earthstorm Diamond"],
@@ -24245,6 +24512,9 @@ t[25904] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Insightful Earthstorm Diamond"],
+	learnedAt = 365,
 }
 t[28273] = {
 	name = L["Formula: Enchant Gloves - Major Healing"],
@@ -24350,6 +24620,9 @@ t[30826] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Ring of Arcane Shielding"],
+	learnedAt = 360,
 }
 t[31354] = {
 	name = L["Recipe: Flask of the Titans"],
@@ -24388,6 +24661,9 @@ t[33155] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Kailee's Rose"],
+	learnedAt = 360,
 }
 t[33159] = {
 	name = L["Design: Blood of Amber"],
@@ -24396,6 +24672,9 @@ t[33159] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Blood of Amber"],
+	learnedAt = 360,
 }
 t[35330] = {
 	name = L["Dreadweave Leggings"],
@@ -24517,6 +24796,9 @@ t[23138] = {
 	buyPrice = 60000,
 	sellPrice = 15000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Potent Flame Spessarite"],
+	learnedAt = 325,
 }
 t[24175] = {
 	name = L["Design: Pendant of Thawing"],
@@ -24525,6 +24807,9 @@ t[24175] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Pendant of Thawing"],
+	learnedAt = 360,
 }
 t[24179] = {
 	name = L["Design: Felsteel Boar"],
@@ -24533,6 +24818,9 @@ t[24179] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Felsteel Boar"],
+	learnedAt = 370,
 }
 t[29199] = {
 	name = L["Arcanum of Shadow Warding"],
@@ -24654,6 +24942,9 @@ t[33157] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Falling Star"],
+	learnedAt = 360,
 }
 t[34200] = {
 	name = L["Pattern: Quiver of a Thousand Feathers"],
@@ -26577,6 +26868,9 @@ t[20854] = {
 	buyPrice = 1800,
 	sellPrice = 450,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Amulet of the Moon"],
+	learnedAt = 110,
 }
 t[20856] = {
 	name = L["Design: Heavy Golden Necklace of Battle"],
@@ -26585,6 +26879,9 @@ t[20856] = {
 	buyPrice = 1500,
 	sellPrice = 375,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Heavy Golden Necklace of Battle"],
+	learnedAt = 150,
 }
 t[20975] = {
 	name = L["Design: The Jade Eye"],
@@ -26593,6 +26890,9 @@ t[20975] = {
 	buyPrice = 2500,
 	sellPrice = 625,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["The Jade Eye"],
+	learnedAt = 170,
 }
 t[21948] = {
 	name = L["Design: Opal Necklace of Impact"],
@@ -26601,6 +26901,9 @@ t[21948] = {
 	buyPrice = 7500,
 	sellPrice = 1875,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Opal Necklace of Impact"],
+	learnedAt = 250,
 }
 t[285] = {
 	name = L["Scalemail Vest"],
@@ -28249,6 +28552,9 @@ t[24174] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Pendant of Frozen Flame"],
+	learnedAt = 360,
 }
 t[24181] = {
 	name = L["Design: Living Ruby Serpent"],
@@ -28257,6 +28563,9 @@ t[24181] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Living Ruby Serpent"],
+	learnedAt = 370,
 }
 t[25910] = {
 	name = L["Design: Enigmatic Skyfire Diamond"],
@@ -28265,6 +28574,9 @@ t[25910] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Enigmatic Skyfire Diamond"],
+	learnedAt = 365,
 }
 t[28272] = {
 	name = L["Formula: Enchant Gloves - Major Spellpower"],
@@ -28381,6 +28693,9 @@ t[33158] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Stone of Blades"],
+	learnedAt = 360,
 }
 t[33160] = {
 	name = L["Design: Facet of Eternity"],
@@ -28389,6 +28704,9 @@ t[33160] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Facet of Eternity"],
+	learnedAt = 360,
 }
 t[35328] = {
 	name = L["Dreadweave Gloves"],
@@ -28730,6 +29048,9 @@ t[21941] = {
 	buyPrice = 5000,
 	sellPrice = 1250,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Black Pearl Panther"],
+	learnedAt = 215,
 }
 t[21943] = {
 	name = L["Design: Truesilver Crab"],
@@ -28738,6 +29059,9 @@ t[21943] = {
 	buyPrice = 6000,
 	sellPrice = 1500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Truesilver Crab"],
+	learnedAt = 225,
 }
 t[1710] = {
 	name = L["Greater Healing Potion"],
@@ -28907,6 +29231,9 @@ t[20973] = {
 	buyPrice = 2000,
 	sellPrice = 500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Blazing Citrine Ring"],
+	learnedAt = 150,
 }
 t[6369] = {
 	name = L["Recipe: Rockscale Cod"],
@@ -29185,6 +29512,9 @@ t[21957] = {
 	buyPrice = 13500,
 	sellPrice = 3375,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Necklace of the Diamond Tower"],
+	learnedAt = 305,
 }
 t[8846] = {
 	name = L["Gromsblood"],
@@ -29287,6 +29617,9 @@ t[20855] = {
 	buyPrice = 1500,
 	sellPrice = 375,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Wicked Moonstone Ring"],
+	learnedAt = 125,
 }
 t[6054] = {
 	name = L["Recipe: Shadow Protection Potion"],
@@ -30897,6 +31230,9 @@ t[20970] = {
 	buyPrice = 1500,
 	sellPrice = 375,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Pendant of the Agate Shield"],
+	learnedAt = 120,
 }
 t[6068] = {
 	name = L["Recipe: Shadow Oil"],
@@ -31284,6 +31620,9 @@ t[21952] = {
 	buyPrice = 10000,
 	sellPrice = 2500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Emerald Crown of Destruction"],
+	learnedAt = 275,
 }
 t[22310] = {
 	name = L["Pattern: Cenarion Herb Bag"],
@@ -32380,6 +32719,9 @@ t[21954] = {
 	buyPrice = 10000,
 	sellPrice = 2500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Ring of Bitter Shadows"],
+	learnedAt = 285,
 }
 t[22999] = {
 	name = L["Tabard of the Argent Dawn"],
@@ -33180,6 +33522,9 @@ t[41568] = {
 	buyPrice = 20000,
 	sellPrice = 5000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Seer's Dark Jade"],
+	learnedAt = 350,
 }
 t[41574] = {
 	name = L["Design: Defender's Shadow Crystal"],
@@ -33188,6 +33533,9 @@ t[41574] = {
 	buyPrice = 20000,
 	sellPrice = 5000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Defender's Shadow Crystal"],
+	learnedAt = 350,
 }
 t[44049] = {
 	name = L["Freshly-Speared Emperor Salmon"],
@@ -33389,6 +33737,9 @@ t[41722] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Glimmering Monarch Topaz"],
+	learnedAt = 390,
 }
 t[42185] = {
 	name = L["Pattern: Mysterious Bag"],
@@ -33544,6 +33895,9 @@ t[41726] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Guardian's Twilight Opal"],
+	learnedAt = 390,
 }
 t[42187] = {
 	name = L["Pattern: Brilliant Spellthread"],
@@ -33707,6 +34061,9 @@ t[41562] = {
 	buyPrice = 20000,
 	sellPrice = 5000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Deadly Huge Citrine"],
+	learnedAt = 350,
 }
 t[41721] = {
 	name = L["Design: Wicked Monarch Topaz"],
@@ -33715,6 +34072,9 @@ t[41721] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Wicked Monarch Topaz"],
+	learnedAt = 390,
 }
 t[41725] = {
 	name = L["Design: Glowing Twilight Opal"],
@@ -33723,6 +34083,9 @@ t[41725] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Glowing Twilight Opal"],
+	learnedAt = 390,
 }
 t[42183] = {
 	name = L["Pattern: Abyssal Bag"],
@@ -34145,6 +34508,9 @@ t[41720] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Smooth Autumn's Glow"],
+	learnedAt = 390,
 }
 t[42184] = {
 	name = L["Pattern: Glacial Bag"],
@@ -34343,6 +34709,9 @@ t[41567] = {
 	buyPrice = 20000,
 	sellPrice = 5000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Vivid Dark Jade"],
+	learnedAt = 350,
 }
 t[41724] = {
 	name = L["Design: Sundered Forest Emerald"],
@@ -34351,6 +34720,9 @@ t[41724] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Sundered Forest Emerald"],
+	learnedAt = 390,
 }
 t[44065] = {
 	name = L["Oracle Secret Solution"],
@@ -34439,6 +34811,9 @@ t[41561] = {
 	buyPrice = 20000,
 	sellPrice = 5000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Reckless Huge Citrine"],
+	learnedAt = 350,
 }
 t[41723] = {
 	name = L["Design: Jagged Forest Emerald"],
@@ -34447,6 +34822,9 @@ t[41723] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Jagged Forest Emerald"],
+	learnedAt = 390,
 }
 t[44064] = {
 	name = L["Nepeta Leaf"],
@@ -35093,6 +35471,9 @@ t[21942] = {
 	buyPrice = 6000,
 	sellPrice = 1500,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Ruby Crown of Restoration"],
+	learnedAt = 225,
 }
 t[13288] = {
 	name = L["Pattern: Raptor Hide Belt"],
@@ -36350,6 +36731,9 @@ t[20971] = {
 	buyPrice = 1500,
 	sellPrice = 375,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Heavy Iron Knuckles"],
+	learnedAt = 125,
 }
 t[3703] = {
 	name = L["Southshore Stout"],
@@ -37407,6 +37791,9 @@ t[31401] = {
 	buyPrice = 120000,
 	sellPrice = 30000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["The Frozen Eye"],
+	learnedAt = 375,
 }
 t[33124] = {
 	name = L["Pattern: Cloak of Darkness"],
@@ -37459,6 +37846,9 @@ t[46897] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Enduring Eye of Zul"],
+	learnedAt = 450,
 }
 t[46898] = {
 	name = L["Design: Steady Eye of Zul"],
@@ -37467,6 +37857,9 @@ t[46898] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Steady Eye of Zul"],
+	learnedAt = 450,
 }
 t[46899] = {
 	name = L["Design: Vivid Eye of Zul"],
@@ -37475,6 +37868,9 @@ t[46899] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Vivid Eye of Zul"],
+	learnedAt = 450,
 }
 t[46900] = {
 	name = L["Design: Dazzling Eye of Zul"],
@@ -37483,6 +37879,9 @@ t[46900] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Dazzling Eye of Zul"],
+	learnedAt = 450,
 }
 t[46901] = {
 	name = L["Design: Jagged Eye of Zul"],
@@ -37491,6 +37890,9 @@ t[46901] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Jagged Eye of Zul"],
+	learnedAt = 450,
 }
 t[46902] = {
 	name = L["Design: Timeless Eye of Zul"],
@@ -37499,6 +37901,9 @@ t[46902] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Timeless Eye of Zul"],
+	learnedAt = 450,
 }
 t[46903] = {
 	name = L["Design: Seer's Eye of Zul"],
@@ -37507,6 +37912,9 @@ t[46903] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Seer's Eye of Zul"],
+	learnedAt = 450,
 }
 t[46904] = {
 	name = L["Design: Forceful Eye of Zul"],
@@ -37515,6 +37923,9 @@ t[46904] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Forceful Eye of Zul"],
+	learnedAt = 450,
 }
 t[46905] = {
 	name = L["Design: Misty Eye of Zul"],
@@ -37523,6 +37934,9 @@ t[46905] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Misty Eye of Zul"],
+	learnedAt = 450,
 }
 t[46906] = {
 	name = L["Design: Sundered Eye of Zul"],
@@ -37531,6 +37945,9 @@ t[46906] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Sundered Eye of Zul"],
+	learnedAt = 450,
 }
 t[46907] = {
 	name = L["Design: Shining Eye of Zul"],
@@ -37539,6 +37956,9 @@ t[46907] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Shining Eye of Zul"],
+	learnedAt = 450,
 }
 t[46908] = {
 	name = L["Design: Tense Eye of Zul"],
@@ -37547,6 +37967,9 @@ t[46908] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Tense Eye of Zul"],
+	learnedAt = 450,
 }
 t[46909] = {
 	name = L["Design: Lambent Eye of Zul"],
@@ -37555,6 +37978,9 @@ t[46909] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Lambent Eye of Zul"],
+	learnedAt = 450,
 }
 t[46910] = {
 	name = L["Design: Intricate Eye of Zul"],
@@ -37563,6 +37989,9 @@ t[46910] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Intricate Eye of Zul"],
+	learnedAt = 450,
 }
 t[46911] = {
 	name = L["Design: Radiant Eye of Zul"],
@@ -37571,6 +38000,9 @@ t[46911] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Radiant Eye of Zul"],
+	learnedAt = 450,
 }
 t[46912] = {
 	name = L["Design: Energized Eye of Zul"],
@@ -37579,6 +38011,9 @@ t[46912] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Energized Eye of Zul"],
+	learnedAt = 450,
 }
 t[46913] = {
 	name = L["Design: Shattered Eye of Zul"],
@@ -37587,6 +38022,9 @@ t[46913] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Shattered Eye of Zul"],
+	learnedAt = 450,
 }
 t[46914] = {
 	name = L["Design: Opaque Eye of Zul"],
@@ -37595,6 +38033,9 @@ t[46914] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Opaque Eye of Zul"],
+	learnedAt = 450,
 }
 t[46915] = {
 	name = L["Design: Turbid Eye of Zul"],
@@ -37603,6 +38044,9 @@ t[46915] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Turbid Eye of Zul"],
+	learnedAt = 450,
 }
 t[46916] = {
 	name = L["Design: Runed Cardinal Ruby"],
@@ -37611,6 +38055,9 @@ t[46916] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Runed Cardinal Ruby"],
+	learnedAt = 450,
 }
 t[46917] = {
 	name = L["Design: Bold Cardinal Ruby"],
@@ -37619,6 +38066,9 @@ t[46917] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Bold Cardinal Ruby"],
+	learnedAt = 450,
 }
 t[46918] = {
 	name = L["Design: Delicate Cardinal Ruby"],
@@ -37627,6 +38077,9 @@ t[46918] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Delicate Cardinal Ruby"],
+	learnedAt = 450,
 }
 t[46919] = {
 	name = L["Design: Bright Cardinal Ruby"],
@@ -37635,6 +38088,9 @@ t[46919] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Bright Cardinal Ruby"],
+	learnedAt = 450,
 }
 t[46920] = {
 	name = L["Design: Precise Cardinal Ruby"],
@@ -37643,6 +38099,9 @@ t[46920] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Precise Cardinal Ruby"],
+	learnedAt = 450,
 }
 t[46921] = {
 	name = L["Design: Fractured Cardinal Ruby"],
@@ -37651,6 +38110,9 @@ t[46921] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Fractured Cardinal Ruby"],
+	learnedAt = 450,
 }
 t[46922] = {
 	name = L["Design: Subtle Cardinal Ruby"],
@@ -37659,6 +38121,9 @@ t[46922] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Subtle Cardinal Ruby"],
+	learnedAt = 450,
 }
 t[46923] = {
 	name = L["Design: Flashing Cardinal Ruby"],
@@ -37667,6 +38132,9 @@ t[46923] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Flashing Cardinal Ruby"],
+	learnedAt = 450,
 }
 t[46924] = {
 	name = L["Design: Solid Majestic Zircon"],
@@ -37675,6 +38143,9 @@ t[46924] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Solid Majestic Zircon"],
+	learnedAt = 450,
 }
 t[46925] = {
 	name = L["Design: Sparkling Majestic Zircon"],
@@ -37683,6 +38154,9 @@ t[46925] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Sparkling Majestic Zircon"],
+	learnedAt = 450,
 }
 t[46926] = {
 	name = L["Design: Stormy Majestic Zircon"],
@@ -37691,6 +38165,9 @@ t[46926] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Stormy Majestic Zircon"],
+	learnedAt = 450,
 }
 t[46927] = {
 	name = L["Design: Lustrous Majestic Zircon"],
@@ -37699,6 +38176,9 @@ t[46927] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Lustrous Majestic Zircon"],
+	learnedAt = 450,
 }
 t[46928] = {
 	name = L["Design: Rigid King's Amber"],
@@ -37707,6 +38187,9 @@ t[46928] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Rigid King's Amber"],
+	learnedAt = 450,
 }
 t[46929] = {
 	name = L["Design: Smooth King's Amber"],
@@ -37715,6 +38198,9 @@ t[46929] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Smooth King's Amber"],
+	learnedAt = 450,
 }
 t[46930] = {
 	name = L["Design: Brilliant King's Amber"],
@@ -37723,6 +38209,9 @@ t[46930] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Brilliant King's Amber"],
+	learnedAt = 450,
 }
 t[46931] = {
 	name = L["Design: Thick King's Amber"],
@@ -37731,6 +38220,9 @@ t[46931] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Thick King's Amber"],
+	learnedAt = 450,
 }
 t[46932] = {
 	name = L["Design: Mystic King's Amber"],
@@ -37739,6 +38231,9 @@ t[46932] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Mystic King's Amber"],
+	learnedAt = 450,
 }
 t[46933] = {
 	name = L["Design: Quick King's Amber"],
@@ -37747,6 +38242,9 @@ t[46933] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Quick King's Amber"],
+	learnedAt = 450,
 }
 t[46934] = {
 	name = L["Design: Balanced Dreadstone"],
@@ -37755,6 +38253,9 @@ t[46934] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Balanced Dreadstone"],
+	learnedAt = 450,
 }
 t[46935] = {
 	name = L["Design: Sovereign Dreadstone"],
@@ -37763,6 +38264,9 @@ t[46935] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Sovereign Dreadstone"],
+	learnedAt = 450,
 }
 t[46936] = {
 	name = L["Design: Glowing Dreadstone"],
@@ -37771,6 +38275,9 @@ t[46936] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Glowing Dreadstone"],
+	learnedAt = 450,
 }
 t[46937] = {
 	name = L["Design: Purified Dreadstone"],
@@ -37779,6 +38286,9 @@ t[46937] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Purified Dreadstone"],
+	learnedAt = 450,
 }
 t[46938] = {
 	name = L["Design: Shifting Dreadstone"],
@@ -37787,6 +38297,9 @@ t[46938] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Shifting Dreadstone"],
+	learnedAt = 450,
 }
 t[46939] = {
 	name = L["Design: Royal Dreadstone"],
@@ -37795,6 +38308,9 @@ t[46939] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Royal Dreadstone"],
+	learnedAt = 450,
 }
 t[46940] = {
 	name = L["Design: Regal Dreadstone"],
@@ -37803,6 +38319,9 @@ t[46940] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Regal Dreadstone"],
+	learnedAt = 450,
 }
 t[46941] = {
 	name = L["Design: Defender's Dreadstone"],
@@ -37811,6 +38330,9 @@ t[46941] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Defender's Dreadstone"],
+	learnedAt = 450,
 }
 t[46942] = {
 	name = L["Design: Guardian's Dreadstone"],
@@ -37819,6 +38341,9 @@ t[46942] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Guardian's Dreadstone"],
+	learnedAt = 450,
 }
 t[46943] = {
 	name = L["Design: Mysterious Dreadstone"],
@@ -37827,6 +38352,9 @@ t[46943] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Mysterious Dreadstone"],
+	learnedAt = 450,
 }
 t[46944] = {
 	name = L["Design: Puissant Dreadstone"],
@@ -37835,6 +38363,9 @@ t[46944] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Puissant Dreadstone"],
+	learnedAt = 450,
 }
 t[46945] = {
 	name = L["Design: Infused Dreadstone"],
@@ -37843,6 +38374,9 @@ t[46945] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Infused Dreadstone"],
+	learnedAt = 450,
 }
 t[46946] = {
 	name = L["Design: Tenuous Dreadstone"],
@@ -37851,6 +38385,9 @@ t[46946] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Tenuous Dreadstone"],
+	learnedAt = 450,
 }
 t[46947] = {
 	name = L["Design: Luminous Ametrine"],
@@ -37859,6 +38396,9 @@ t[46947] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Luminous Ametrine"],
+	learnedAt = 450,
 }
 t[46948] = {
 	name = L["Design: Inscribed Ametrine"],
@@ -37867,6 +38407,9 @@ t[46948] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Inscribed Ametrine"],
+	learnedAt = 450,
 }
 t[46949] = {
 	name = L["Design: Deadly Ametrine"],
@@ -37875,6 +38418,9 @@ t[46949] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Deadly Ametrine"],
+	learnedAt = 450,
 }
 t[46950] = {
 	name = L["Design: Potent Ametrine"],
@@ -37883,6 +38429,9 @@ t[46950] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Potent Ametrine"],
+	learnedAt = 450,
 }
 t[46951] = {
 	name = L["Design: Veiled Ametrine"],
@@ -37891,6 +38440,9 @@ t[46951] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Veiled Ametrine"],
+	learnedAt = 450,
 }
 t[46952] = {
 	name = L["Design: Durable Ametrine"],
@@ -37899,6 +38451,9 @@ t[46952] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Durable Ametrine"],
+	learnedAt = 450,
 }
 t[46953] = {
 	name = L["Design: Etched Ametrine"],
@@ -37907,6 +38462,9 @@ t[46953] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Etched Ametrine"],
+	learnedAt = 450,
 }
 t[46956] = {
 	name = L["Design: Pristine Ametrine"],
@@ -37915,6 +38473,9 @@ t[46956] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Pristine Ametrine"],
+	learnedAt = 450,
 }
 t[47007] = {
 	name = L["Design: Reckless Ametrine"],
@@ -37923,6 +38484,9 @@ t[47007] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Reckless Ametrine"],
+	learnedAt = 450,
 }
 t[47008] = {
 	name = L["Design: Glinting Ametrine"],
@@ -37931,6 +38495,9 @@ t[47008] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Glinting Ametrine"],
+	learnedAt = 450,
 }
 t[47010] = {
 	name = L["Design: Accurate Ametrine"],
@@ -37939,6 +38506,9 @@ t[47010] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Accurate Ametrine"],
+	learnedAt = 450,
 }
 t[47011] = {
 	name = L["Design: Wicked Ametrine"],
@@ -37947,6 +38517,9 @@ t[47011] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Wicked Ametrine"],
+	learnedAt = 450,
 }
 t[47012] = {
 	name = L["Design: Glimmering Ametrine"],
@@ -37955,6 +38528,9 @@ t[47012] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Glimmering Ametrine"],
+	learnedAt = 450,
 }
 t[47015] = {
 	name = L["Design: Champion's Ametrine"],
@@ -37963,6 +38539,9 @@ t[47015] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Champion's Ametrine"],
+	learnedAt = 450,
 }
 t[47016] = {
 	name = L["Design: Empowered Ametrine"],
@@ -37971,6 +38550,9 @@ t[47016] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Empowered Ametrine"],
+	learnedAt = 450,
 }
 t[47017] = {
 	name = L["Design: Stalwart Ametrine"],
@@ -37979,6 +38561,9 @@ t[47017] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Stalwart Ametrine"],
+	learnedAt = 450,
 }
 t[47018] = {
 	name = L["Design: Resplendent Ametrine"],
@@ -37987,6 +38572,9 @@ t[47018] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Resplendent Ametrine"],
+	learnedAt = 450,
 }
 t[47019] = {
 	name = L["Design: Fierce Ametrine"],
@@ -37995,6 +38583,9 @@ t[47019] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Fierce Ametrine"],
+	learnedAt = 450,
 }
 t[47020] = {
 	name = L["Design: Deft Ametrine"],
@@ -38003,6 +38594,9 @@ t[47020] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Deft Ametrine"],
+	learnedAt = 450,
 }
 t[47021] = {
 	name = L["Design: Lucent Ametrine"],
@@ -38011,6 +38605,9 @@ t[47021] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Lucent Ametrine"],
+	learnedAt = 450,
 }
 t[47022] = {
 	name = L["Design: Resolute Ametrine"],
@@ -38019,6 +38616,9 @@ t[47022] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Resolute Ametrine"],
+	learnedAt = 450,
 }
 t[47023] = {
 	name = L["Design: Stark Ametrine"],
@@ -38027,6 +38627,9 @@ t[47023] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Stark Ametrine"],
+	learnedAt = 450,
 }
 t[49112] = {
 	name = L["Design: Nightmare Tear"],
@@ -38035,6 +38638,9 @@ t[49112] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Nightmare Tear"],
+	learnedAt = 450,
 }
 t[33448] = {
 	name = L["Runic Mana Potion"],
@@ -38075,6 +38681,9 @@ t[41576] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Bold Scarlet Ruby"],
+	learnedAt = 390,
 }
 t[41577] = {
 	name = L["Design: Delicate Scarlet Ruby"],
@@ -38083,6 +38692,9 @@ t[41577] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Delicate Scarlet Ruby"],
+	learnedAt = 390,
 }
 t[41578] = {
 	name = L["Design: Flashing Scarlet Ruby"],
@@ -38091,6 +38703,9 @@ t[41578] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Flashing Scarlet Ruby"],
+	learnedAt = 390,
 }
 t[41579] = {
 	name = L["Design: Quick Autumn's Glow"],
@@ -38099,6 +38714,9 @@ t[41579] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Quick Autumn's Glow"],
+	learnedAt = 390,
 }
 t[41580] = {
 	name = L["Design: Rigid Autumn's Glow"],
@@ -38107,6 +38725,9 @@ t[41580] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Rigid Autumn's Glow"],
+	learnedAt = 390,
 }
 t[41581] = {
 	name = L["Design: Lustrous Sky Sapphire"],
@@ -38115,6 +38736,9 @@ t[41581] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Lustrous Sky Sapphire"],
+	learnedAt = 390,
 }
 t[41582] = {
 	name = L["Design: Glinting Monarch Topaz"],
@@ -38123,6 +38747,9 @@ t[41582] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Glinting Monarch Topaz"],
+	learnedAt = 390,
 }
 t[41686] = {
 	name = L["Design: Potent Monarch Topaz"],
@@ -38131,6 +38758,9 @@ t[41686] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Potent Monarch Topaz"],
+	learnedAt = 390,
 }
 t[41687] = {
 	name = L["Design: Stark Monarch Topaz"],
@@ -38139,6 +38769,9 @@ t[41687] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Stark Monarch Topaz"],
+	learnedAt = 390,
 }
 t[41688] = {
 	name = L["Design: Veiled Monarch Topaz"],
@@ -38147,6 +38780,9 @@ t[41688] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Veiled Monarch Topaz"],
+	learnedAt = 390,
 }
 t[41689] = {
 	name = L["Design: Luminous Monarch Topaz"],
@@ -38155,6 +38791,9 @@ t[41689] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Luminous Monarch Topaz"],
+	learnedAt = 390,
 }
 t[41690] = {
 	name = L["Design: Reckless Monarch Topaz"],
@@ -38163,6 +38802,9 @@ t[41690] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Reckless Monarch Topaz"],
+	learnedAt = 390,
 }
 t[41692] = {
 	name = L["Design: Energized Forest Emerald"],
@@ -38171,6 +38813,9 @@ t[41692] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Energized Forest Emerald"],
+	learnedAt = 390,
 }
 t[41693] = {
 	name = L["Design: Forceful Forest Emerald"],
@@ -38179,6 +38824,9 @@ t[41693] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Forceful Forest Emerald"],
+	learnedAt = 390,
 }
 t[41694] = {
 	name = L["Design: Intricate Forest Emerald"],
@@ -38187,6 +38835,9 @@ t[41694] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Intricate Forest Emerald"],
+	learnedAt = 390,
 }
 t[41696] = {
 	name = L["Design: Lambent Forest Emerald"],
@@ -38195,6 +38846,9 @@ t[41696] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Lambent Forest Emerald"],
+	learnedAt = 390,
 }
 t[41697] = {
 	name = L["Design: Enduring Forest Emerald"],
@@ -38203,6 +38857,9 @@ t[41697] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Enduring Forest Emerald"],
+	learnedAt = 390,
 }
 t[41698] = {
 	name = L["Design: Vivid Forest Emerald"],
@@ -38211,6 +38868,9 @@ t[41698] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Vivid Forest Emerald"],
+	learnedAt = 390,
 }
 t[41699] = {
 	name = L["Design: Seer's Forest Emerald"],
@@ -38219,6 +38879,9 @@ t[41699] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Seer's Forest Emerald"],
+	learnedAt = 390,
 }
 t[41701] = {
 	name = L["Design: Royal Twilight Opal"],
@@ -38227,6 +38890,9 @@ t[41701] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Royal Twilight Opal"],
+	learnedAt = 390,
 }
 t[41702] = {
 	name = L["Design: Puissant Twilight Opal"],
@@ -38235,6 +38901,9 @@ t[41702] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Puissant Twilight Opal"],
+	learnedAt = 390,
 }
 t[41703] = {
 	name = L["Design: Regal Twilight Opal"],
@@ -38243,6 +38912,9 @@ t[41703] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Regal Twilight Opal"],
+	learnedAt = 390,
 }
 t[41704] = {
 	name = L["Design: Chaotic Skyflare Diamond"],
@@ -38251,6 +38923,9 @@ t[41704] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Chaotic Skyflare Diamond"],
+	learnedAt = 420,
 }
 t[41705] = {
 	name = L["Design: Effulgent Skyflare Diamond"],
@@ -38259,6 +38934,9 @@ t[41705] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Effulgent Skyflare Diamond"],
+	learnedAt = 420,
 }
 t[41706] = {
 	name = L["Design: Ember Skyflare Diamond"],
@@ -38267,6 +38945,9 @@ t[41706] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Ember Skyflare Diamond"],
+	learnedAt = 420,
 }
 t[41707] = {
 	name = L["Design: Revitalizing Skyflare Diamond"],
@@ -38275,6 +38956,9 @@ t[41707] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Revitalizing Skyflare Diamond"],
+	learnedAt = 420,
 }
 t[41708] = {
 	name = L["Design: Insightful Earthsiege Diamond"],
@@ -38283,6 +38967,9 @@ t[41708] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Insightful Earthsiege Diamond"],
+	learnedAt = 420,
 }
 t[41709] = {
 	name = L["Design: Invigorating Earthsiege Diamond"],
@@ -38291,6 +38978,9 @@ t[41709] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Invigorating Earthsiege Diamond"],
+	learnedAt = 420,
 }
 t[41710] = {
 	name = L["Design: Relentless Earthsiege Diamond"],
@@ -38299,6 +38989,9 @@ t[41710] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Relentless Earthsiege Diamond"],
+	learnedAt = 420,
 }
 t[41711] = {
 	name = L["Design: Trenchant Earthsiege Diamond"],
@@ -38307,6 +39000,9 @@ t[41711] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Trenchant Earthsiege Diamond"],
+	learnedAt = 420,
 }
 t[41719] = {
 	name = L["Design: Subtle Scarlet Ruby"],
@@ -38315,6 +39011,9 @@ t[41719] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Subtle Scarlet Ruby"],
+	learnedAt = 390,
 }
 t[41747] = {
 	name = L["Design: Shifting Twilight Opal"],
@@ -38323,6 +39022,9 @@ t[41747] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Shifting Twilight Opal"],
+	learnedAt = 390,
 }
 t[42138] = {
 	name = L["Design: Solid Sky Sapphire"],
@@ -38331,6 +39033,9 @@ t[42138] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Solid Sky Sapphire"],
+	learnedAt = 390,
 }
 t[42225] = {
 	name = L["Dragon's Eye"],
@@ -38347,6 +39052,9 @@ t[42298] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Bold Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42299] = {
 	name = L["Design: Bright Dragon's Eye"],
@@ -38355,6 +39063,9 @@ t[42299] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Bright Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42300] = {
 	name = L["Design: Brilliant Dragon's Eye"],
@@ -38363,6 +39074,9 @@ t[42300] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Brilliant Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42301] = {
 	name = L["Design: Delicate Dragon's Eye"],
@@ -38371,6 +39085,9 @@ t[42301] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Delicate Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42302] = {
 	name = L["Design: Flashing Dragon's Eye"],
@@ -38379,6 +39096,9 @@ t[42302] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Flashing Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42303] = {
 	name = L["Design: Fractured Dragon's Eye"],
@@ -38387,6 +39107,9 @@ t[42303] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Fractured Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42304] = {
 	name = L["Design: Lustrous Dragon's Eye"],
@@ -38395,6 +39118,9 @@ t[42304] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Lustrous Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42305] = {
 	name = L["Design: Mystic Dragon's Eye"],
@@ -38403,6 +39129,9 @@ t[42305] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Mystic Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42306] = {
 	name = L["Design: Precise Dragon's Eye"],
@@ -38411,6 +39140,9 @@ t[42306] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Precise Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42307] = {
 	name = L["Design: Quick Dragon's Eye"],
@@ -38419,6 +39151,9 @@ t[42307] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Quick Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42308] = {
 	name = L["Design: Rigid Dragon's Eye"],
@@ -38427,6 +39162,9 @@ t[42308] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Rigid Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42309] = {
 	name = L["Design: Runed Dragon's Eye"],
@@ -38435,6 +39173,9 @@ t[42309] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Runed Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42310] = {
 	name = L["Design: Smooth Dragon's Eye"],
@@ -38443,6 +39184,9 @@ t[42310] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Smooth Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42311] = {
 	name = L["Design: Solid Dragon's Eye"],
@@ -38451,6 +39195,9 @@ t[42311] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Solid Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42312] = {
 	name = L["Design: Sparkling Dragon's Eye"],
@@ -38459,6 +39206,9 @@ t[42312] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Sparkling Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42313] = {
 	name = L["Design: Stormy Dragon's Eye"],
@@ -38467,6 +39217,9 @@ t[42313] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Stormy Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42314] = {
 	name = L["Design: Subtle Dragon's Eye"],
@@ -38475,6 +39228,9 @@ t[42314] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Subtle Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42315] = {
 	name = L["Design: Thick Dragon's Eye"],
@@ -38483,6 +39239,9 @@ t[42315] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Thick Dragon's Eye"],
+	learnedAt = 370,
 }
 t[42648] = {
 	name = L["Design: Titanium Impact Band"],
@@ -38491,6 +39250,9 @@ t[42648] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Titanium Impact Band"],
+	learnedAt = 430,
 }
 t[42649] = {
 	name = L["Design: Titanium Earthguard Ring"],
@@ -38499,6 +39261,9 @@ t[42649] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Titanium Earthguard Ring"],
+	learnedAt = 430,
 }
 t[42650] = {
 	name = L["Design: Titanium Spellshock Ring"],
@@ -38507,6 +39272,9 @@ t[42650] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Titanium Spellshock Ring"],
+	learnedAt = 430,
 }
 t[42651] = {
 	name = L["Design: Titanium Impact Choker"],
@@ -38515,6 +39283,9 @@ t[42651] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Titanium Impact Choker"],
+	learnedAt = 440,
 }
 t[42652] = {
 	name = L["Design: Titanium Earthguard Chain"],
@@ -38523,6 +39294,9 @@ t[42652] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Titanium Earthguard Chain"],
+	learnedAt = 440,
 }
 t[42653] = {
 	name = L["Design: Titanium Spellshock Necklace"],
@@ -38531,6 +39305,9 @@ t[42653] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Titanium Spellshock Necklace"],
+	learnedAt = 440,
 }
 t[43317] = {
 	name = L["Design: Ring of Earthen Might"],
@@ -38539,6 +39316,9 @@ t[43317] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Ring of Earthen Might"],
+	learnedAt = 420,
 }
 t[43318] = {
 	name = L["Design: Ring of Scarlet Shadows"],
@@ -38547,6 +39327,9 @@ t[43318] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Ring of Scarlet Shadows"],
+	learnedAt = 420,
 }
 t[43319] = {
 	name = L["Design: Windfire Band"],
@@ -38555,6 +39338,9 @@ t[43319] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Windfire Band"],
+	learnedAt = 420,
 }
 t[43320] = {
 	name = L["Design: Ring of Northern Tears"],
@@ -38563,6 +39349,9 @@ t[43320] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Ring of Northern Tears"],
+	learnedAt = 420,
 }
 t[43485] = {
 	name = L["Design: Savage Titanium Ring"],
@@ -38571,6 +39360,9 @@ t[43485] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Savage Titanium Ring"],
+	learnedAt = 420,
 }
 t[43497] = {
 	name = L["Design: Savage Titanium Band"],
@@ -38579,6 +39371,9 @@ t[43497] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Savage Titanium Band"],
+	learnedAt = 420,
 }
 t[43597] = {
 	name = L["Design: Titanium Frostguard Ring"],
@@ -38587,6 +39382,9 @@ t[43597] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Titanium Frostguard Ring"],
+	learnedAt = 420,
 }
 t[23817] = {
 	name = L["Schematic: Titanium Toolbox"],
@@ -42468,6 +43266,9 @@ t[41718] = {
 	buyPrice = 40000,
 	sellPrice = 10000,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Runed Scarlet Ruby"],
+	learnedAt = 390,
 }
 t[42188] = {
 	name = L["Pattern: Sapphire Spellthread"],
@@ -48420,6 +49221,9 @@ t[41559] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Mystic Sun Crystal"],
+	learnedAt = 350,
 }
 t[41560] = {
 	name = L["Design: Stormy Chalcedony"],
@@ -48428,6 +49232,9 @@ t[41560] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Stormy Chalcedony"],
+	learnedAt = 350,
 }
 t[41563] = {
 	name = L["Design: Durable Huge Citrine"],
@@ -48436,6 +49243,9 @@ t[41563] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Durable Huge Citrine"],
+	learnedAt = 350,
 }
 t[41564] = {
 	name = L["Design: Empowered Huge Citrine"],
@@ -48444,6 +49254,9 @@ t[41564] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Empowered Huge Citrine"],
+	learnedAt = 350,
 }
 t[41565] = {
 	name = L["Design: Lucent Huge Citrine"],
@@ -48452,6 +49265,9 @@ t[41565] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Lucent Huge Citrine"],
+	learnedAt = 350,
 }
 t[41566] = {
 	name = L["Design: Resplendent Huge Citrine"],
@@ -48460,6 +49276,9 @@ t[41566] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Resplendent Huge Citrine"],
+	learnedAt = 350,
 }
 t[41569] = {
 	name = L["Design: Shattered Dark Jade"],
@@ -48468,6 +49287,9 @@ t[41569] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Shattered Dark Jade"],
+	learnedAt = 350,
 }
 t[41570] = {
 	name = L["Design: Tense Dark Jade"],
@@ -48476,6 +49298,9 @@ t[41570] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Tense Dark Jade"],
+	learnedAt = 350,
 }
 t[41571] = {
 	name = L["Design: Turbid Dark Jade"],
@@ -48484,6 +49309,9 @@ t[41571] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Turbid Dark Jade"],
+	learnedAt = 350,
 }
 t[41572] = {
 	name = L["Design: Steady Dark Jade"],
@@ -48492,6 +49320,9 @@ t[41572] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Steady Dark Jade"],
+	learnedAt = 350,
 }
 t[41573] = {
 	name = L["Design: Opaque Dark Jade"],
@@ -48500,6 +49331,9 @@ t[41573] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Opaque Dark Jade"],
+	learnedAt = 350,
 }
 t[41575] = {
 	name = L["Design: Mysterious Shadow Crystal"],
@@ -48508,6 +49342,9 @@ t[41575] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Mysterious Shadow Crystal"],
+	learnedAt = 350,
 }
 t[40879] = {
 	name = L["Deadly Gladiator's Girdle of Triumph"],
@@ -51506,6 +52343,9 @@ t[41727] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Mystic Autumn's Glow"],
+	learnedAt = 390,
 }
 t[41728] = {
 	name = L["Design: Stormy Sky Sapphire"],
@@ -51514,6 +52354,9 @@ t[41728] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Stormy Sky Sapphire"],
+	learnedAt = 390,
 }
 t[41730] = {
 	name = L["Design: Durable Monarch Topaz"],
@@ -51522,6 +52365,9 @@ t[41730] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Durable Monarch Topaz"],
+	learnedAt = 390,
 }
 t[41732] = {
 	name = L["Design: Empowered Monarch Topaz"],
@@ -51530,6 +52376,9 @@ t[41732] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Empowered Monarch Topaz"],
+	learnedAt = 390,
 }
 t[41733] = {
 	name = L["Design: Lucent Monarch Topaz"],
@@ -51538,6 +52387,9 @@ t[41733] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Lucent Monarch Topaz"],
+	learnedAt = 390,
 }
 t[41734] = {
 	name = L["Design: Resplendent Monarch Topaz"],
@@ -51546,6 +52398,9 @@ t[41734] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Resplendent Monarch Topaz"],
+	learnedAt = 390,
 }
 t[41735] = {
 	name = L["Design: Shattered Forest Emerald"],
@@ -51554,6 +52409,9 @@ t[41735] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Shattered Forest Emerald"],
+	learnedAt = 390,
 }
 t[41736] = {
 	name = L["Design: Tense Forest Emerald"],
@@ -51562,6 +52420,9 @@ t[41736] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Tense Forest Emerald"],
+	learnedAt = 390,
 }
 t[41737] = {
 	name = L["Design: Turbid Forest Emerald"],
@@ -51570,6 +52431,9 @@ t[41737] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Turbid Forest Emerald"],
+	learnedAt = 390,
 }
 t[41738] = {
 	name = L["Design: Steady Forest Emerald"],
@@ -51578,6 +52442,9 @@ t[41738] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Steady Forest Emerald"],
+	learnedAt = 390,
 }
 t[41739] = {
 	name = L["Design: Opaque Forest Emerald"],
@@ -51586,6 +52453,9 @@ t[41739] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Opaque Forest Emerald"],
+	learnedAt = 390,
 }
 t[41740] = {
 	name = L["Design: Mysterious Twilight Opal"],
@@ -51594,6 +52464,9 @@ t[41740] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Mysterious Twilight Opal"],
+	learnedAt = 390,
 }
 t[41742] = {
 	name = L["Design: Enigmatic Skyflare Diamond"],
@@ -51602,6 +52475,9 @@ t[41742] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Enigmatic Skyflare Diamond"],
+	learnedAt = 420,
 }
 t[41743] = {
 	name = L["Design: Forlorn Skyflare Diamond"],
@@ -51610,6 +52486,9 @@ t[41743] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Forlorn Skyflare Diamond"],
+	learnedAt = 420,
 }
 t[41744] = {
 	name = L["Design: Impassive Skyflare Diamond"],
@@ -51618,6 +52497,9 @@ t[41744] = {
 	buyPrice = 0,
 	sellPrice = 0,
 	reqLevel = 0,
+	profession = L["Jewelcrafting"],
+	teaches = L["Impassive Skyflare Diamond"],
+	learnedAt = 420,
 }
 t[44066] = {
 	name = L["Kharmaa's Grace"],
@@ -51778,6 +52660,222 @@ t[41731] = {
 	buyPrice = 11000,
 	sellPrice = 550,
 	reqLevel = 75,
+}
+t[42444] = {
+	name = L["Savage Gladiator's War Edge"],
+	quality = 3,
+	icon = "inv_axe_03",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42448] = {
+	name = L["Savage Gladiator's Touch of Defeat"],
+	quality = 3,
+	icon = "inv_wand_27",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42511] = {
+	name = L["Savage Gladiator's Baton of Light"],
+	quality = 3,
+	icon = "inv_wand_27",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42517] = {
+	name = L["Savage Gladiator's Piercing Touch"],
+	quality = 3,
+	icon = "inv_wand_27",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42574] = {
+	name = L["Savage Gladiator's Idol of Resolve"],
+	quality = 3,
+	icon = "inv_relics_idolofhealth",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42575] = {
+	name = L["Savage Gladiator's Idol of Steadfastness"],
+	quality = 3,
+	icon = "inv_relics_idolofhealth",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42576] = {
+	name = L["Savage Gladiator's Idol of Tenacity"],
+	quality = 3,
+	icon = "spell_nature_naturetouchgrow",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42593] = {
+	name = L["Savage Gladiator's Totem of Indomitability"],
+	quality = 3,
+	icon = "spell_nature_slowingtotem",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42594] = {
+	name = L["Savage Gladiator's Totem of Survival"],
+	quality = 3,
+	icon = "spell_nature_slowingtotem",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42595] = {
+	name = L["Savage Gladiator's Totem of the Third Wind"],
+	quality = 3,
+	icon = "spell_frost_summonwaterelemental",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42611] = {
+	name = L["Savage Gladiator's Libram of Fortitude"],
+	quality = 3,
+	icon = "inv_relics_libramofhope",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42612] = {
+	name = L["Savage Gladiator's Libram of Justice"],
+	quality = 3,
+	icon = "inv_misc_book_07",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42618] = {
+	name = L["Savage Gladiator's Sigil of Strife"],
+	quality = 3,
+	icon = "inv_shield_56",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42449] = {
+	name = L["Hateful Gladiator's War Edge"],
+	quality = 4,
+	icon = "inv_axe_03",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42501] = {
+	name = L["Hateful Gladiator's Touch of Defeat"],
+	quality = 4,
+	icon = "inv_wand_27",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42512] = {
+	name = L["Hateful Gladiator's Baton of Light"],
+	quality = 4,
+	icon = "inv_wand_27",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42518] = {
+	name = L["Hateful Gladiator's Piercing Touch"],
+	quality = 4,
+	icon = "inv_wand_27",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42577] = {
+	name = L["Hateful Gladiator's Idol of Tenacity"],
+	quality = 4,
+	icon = "spell_nature_naturetouchgrow",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42582] = {
+	name = L["Hateful Gladiator's Idol of Steadfastness"],
+	quality = 4,
+	icon = "inv_relics_idolofhealth",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42587] = {
+	name = L["Hateful Gladiator's Idol of Resolve"],
+	quality = 4,
+	icon = "inv_relics_idolofhealth",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42596] = {
+	name = L["Hateful Gladiator's Totem of the Third Wind"],
+	quality = 4,
+	icon = "spell_frost_summonwaterelemental",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42601] = {
+	name = L["Hateful Gladiator's Totem of Survival"],
+	quality = 4,
+	icon = "spell_nature_slowingtotem",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42606] = {
+	name = L["Hateful Gladiator's Totem of Indomitability"],
+	quality = 4,
+	icon = "spell_nature_slowingtotem",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42613] = {
+	name = L["Hateful Gladiator's Libram of Justice"],
+	quality = 4,
+	icon = "inv_misc_book_07",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42619] = {
+	name = L["Hateful Gladiator's Sigil of Strife"],
+	quality = 4,
+	icon = "inv_shield_56",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[42851] = {
+	name = L["Hateful Gladiator's Libram of Fortitude"],
+	quality = 4,
+	icon = "inv_misc_book_07",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 80,
+}
+t[18664] = {
+	name = L["A Treatise on Military Ranks"],
+	quality = 1,
+	icon = "inv_misc_book_08",
+	buyPrice = 100,
+	sellPrice = 25,
+	reqLevel = 0,
 }
 t[2555] = {
 	name = L["true"],
@@ -57934,4 +59032,1096 @@ t[46108] = {
 	profession = L["Inscription"],
 	teaches = L["Rituals of the New Moon"],
 	learnedAt = 350,
+}
+t[41783] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Purified Twilight Opal"],
+	learnedAt = 390,
+}
+t[41784] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Sovereign Twilight Opal"],
+	learnedAt = 390,
+}
+t[41789] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Inscribed Monarch Topaz"],
+	learnedAt = 390,
+}
+t[41818] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Accurate Monarch Topaz"],
+	learnedAt = 390,
+}
+t[41817] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Fractured Scarlet Ruby"],
+	learnedAt = 390,
+}
+t[41777] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Etched Monarch Topaz"],
+	learnedAt = 390,
+}
+t[41787] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Thundering Skyflare Diamond"],
+	learnedAt = 420,
+}
+t[41820] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Defender's Twilight Opal"],
+	learnedAt = 390,
+}
+t[41790] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Precise Scarlet Ruby"],
+	learnedAt = 390,
+}
+t[41819] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Radiant Forest Emerald"],
+	learnedAt = 390,
+}
+t[41797] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Austere Earthsiege Diamond"],
+	learnedAt = 420,
+}
+t[41782] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Shining Forest Emerald"],
+	learnedAt = 390,
+}
+t[41780] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Champion's Monarch Topaz"],
+	learnedAt = 390,
+}
+t[41778] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Resolute Monarch Topaz"],
+	learnedAt = 390,
+}
+t[41788] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Beaming Earthsiege Diamond"],
+	learnedAt = 420,
+}
+t[41779] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Stalwart Monarch Topaz"],
+	learnedAt = 390,
+}
+t[41785] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Tenuous Twilight Opal"],
+	learnedAt = 390,
+}
+t[21940] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Golden Hare"],
+	learnedAt = 200,
+}
+t[41791] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Thick Autumn's Glow"],
+	learnedAt = 390,
+}
+t[23154] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Stormy Azure Moonstone"],
+	learnedAt = 315,
+}
+t[41786] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Destructive Skyflare Diamond"],
+	learnedAt = 420,
+}
+t[41781] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Misty Forest Emerald"],
+	learnedAt = 390,
+}
+t[20976] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Citrine Pendant of Golden Healing"],
+	learnedAt = 190,
+}
+t[41407] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Relentless Earthsiege Diamond"],
+	learnedAt = 440,
+}
+t[25909] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Mystical Skyfire Diamond"],
+	learnedAt = 365,
+}
+t[21947] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Gem Studded Band"],
+	learnedAt = 250,
+}
+t[41794] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Deadly Monarch Topaz"],
+	learnedAt = 390,
+}
+t[41408] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Austere Earthsiege Diamond"],
+	learnedAt = 440,
+}
+t[41798] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Bracing Earthsiege Diamond"],
+	learnedAt = 420,
+}
+t[41799] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Eternal Earthsiege Diamond"],
+	learnedAt = 420,
+}
+t[41793] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Fierce Monarch Topaz"],
+	learnedAt = 390,
+}
+t[41403] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Insightful Earthsiege Diamond"],
+	learnedAt = 440,
+}
+t[31871] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Balanced Shadow Draenite"],
+	learnedAt = 325,
+}
+t[20974] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Jade Pendant of Blasting"],
+	learnedAt = 160,
+}
+t[21945] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["The Aquamarine Ward"],
+	learnedAt = 245,
+}
+t[41409] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Persistent Earthsiege Diamond"],
+	learnedAt = 440,
+}
+t[24167] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Living Ruby Pendant"],
+	learnedAt = 355,
+}
+t[24169] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Eye of the Night"],
+	learnedAt = 360,
+}
+t[24196] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Runed Living Ruby"],
+	learnedAt = 350,
+}
+t[41792] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Deft Monarch Topaz"],
+	learnedAt = 390,
+}
+t[24172] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Coronet of Verdant Flame"],
+	learnedAt = 370,
+}
+t[24170] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Embrace of the Dawn"],
+	learnedAt = 365,
+}
+t[24200] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Sparkling Star of Elune"],
+	learnedAt = 350,
+}
+t[24213] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Inscribed Noble Topaz"],
+	learnedAt = 350,
+}
+t[24195] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Teardrop Living Ruby"],
+	learnedAt = 350,
+}
+t[31873] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Veiled Flame Spessarite"],
+	learnedAt = 325,
+}
+t[31870] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Great Golden Draenite"],
+	learnedAt = 325,
+}
+t[21949] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Ruby Serpent"],
+	learnedAt = 260,
+}
+t[41796] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Infused Twilight Opal"],
+	learnedAt = 390,
+}
+t[24163] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Heavy Felsteel Ring"],
+	learnedAt = 345,
+}
+t[21955] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Black Diamond Crab"],
+	learnedAt = 300,
+}
+t[21944] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Truesilver Boar"],
+	learnedAt = 235,
+}
+t[41420] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Ember Skyflare Diamond"],
+	learnedAt = 440,
+}
+t[41423] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Thundering Skyflare Diamond"],
+	learnedAt = 440,
+}
+t[25907] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Destructive Skyfire Diamond"],
+	learnedAt = 365,
+}
+t[24214] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Potent Noble Topaz"],
+	learnedAt = 350,
+}
+t[31878] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Veiled Noble Topaz"],
+	learnedAt = 350,
+}
+t[41419] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Destructive Skyflare Diamond"],
+	learnedAt = 440,
+}
+t[41422] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Swift Skyflare Diamond"],
+	learnedAt = 440,
+}
+t[34221] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Chaotic Skyfire Diamond"],
+	learnedAt = 365,
+}
+t[32411] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Thundering Skyfire Diamond"],
+	learnedAt = 365,
+}
+t[24204] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Smooth Dawnstone"],
+	learnedAt = 350,
+}
+t[24217] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Enduring Talasite"],
+	learnedAt = 350,
+}
+t[41795] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Timeless Forest Emerald"],
+	learnedAt = 390,
+}
+t[41413] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Revitalizing Skyflare Diamond"],
+	learnedAt = 440,
+}
+t[41406] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Powerful Earthsiege Diamond"],
+	learnedAt = 440,
+}
+t[32307] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Veiled Pyrestone"],
+	learnedAt = 375,
+}
+t[24220] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Jagged Talasite"],
+	learnedAt = 350,
+}
+t[35307] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Rigid Dawnstone"],
+	learnedAt = 350,
+}
+t[24193] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Bold Living Ruby"],
+	learnedAt = 350,
+}
+t[21959] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Blood Crown"],
+	learnedAt = 325,
+}
+t[25888] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Primal Stone Statue"],
+	learnedAt = 300,
+}
+t[21951] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Cut Azerothian Diamond"],
+	learnedAt = 275,
+}
+t[41418] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Chaotic Skyflare Diamond"],
+	learnedAt = 440,
+}
+t[41421] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Enigmatic Skyflare Diamond"],
+	learnedAt = 440,
+}
+t[32311] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Dazzling Seaspray Emerald"],
+	learnedAt = 375,
+}
+t[31876] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Balanced Nightseye"],
+	learnedAt = 350,
+}
+t[24215] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Luminous Noble Topaz"],
+	learnedAt = 350,
+}
+t[24194] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Delicate Living Ruby"],
+	learnedAt = 350,
+}
+t[35533] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Amulet of Flowing Life"],
+	learnedAt = 365,
+}
+t[20972] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Silver Rose Pendant"],
+	learnedAt = 145,
+}
+t[32277] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Delicate Crimson Spinel"],
+	learnedAt = 375,
+}
+t[25906] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Brutal Earthstorm Diamond"],
+	learnedAt = 365,
+}
+t[24164] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Delicate Eternium Ring"],
+	learnedAt = 355,
+}
+t[24202] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Stormy Star of Elune"],
+	learnedAt = 350,
+}
+t[24216] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Glinting Noble Topaz"],
+	learnedAt = 350,
+}
+t[24206] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Gleaming Dawnstone"],
+	learnedAt = 350,
+}
+t[24207] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Thick Dawnstone"],
+	learnedAt = 350,
+}
+t[35305] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Runed Living Ruby"],
+	learnedAt = 350,
+}
+t[24219] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Dazzling Talasite"],
+	learnedAt = 350,
+}
+t[31874] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Wicked Flame Spessarite"],
+	learnedAt = 325,
+}
+t[21956] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Dark Iron Scorpid"],
+	learnedAt = 300,
+}
+t[41414] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Effulgent Skyflare Diamond"],
+	learnedAt = 440,
+}
+t[41417] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Impassive Skyflare Diamond"],
+	learnedAt = 440,
+}
+t[24171] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Chain of the Twilight Owl"],
+	learnedAt = 365,
+}
+t[25905] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Tenacious Earthstorm Diamond"],
+	learnedAt = 365,
+}
+t[31875] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Great Dawnstone"],
+	learnedAt = 350,
+}
+t[24192] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Bright Living Ruby"],
+	learnedAt = 350,
+}
+t[31879] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Wicked Noble Topaz"],
+	learnedAt = 350,
+}
+t[35535] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Hard Khorium Choker"],
+	learnedAt = 365,
+}
+t[24197] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Subtle Living Ruby"],
+	learnedAt = 350,
+}
+t[35764] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Steady Seaspray Emerald"],
+	learnedAt = 375,
+}
+t[32296] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Great Lionseye"],
+	learnedAt = 375,
+}
+t[32286] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Solid Empyrean Sapphire"],
+	learnedAt = 375,
+}
+t[32274] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Bold Crimson Spinel"],
+	learnedAt = 375,
+}
+t[24162] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Arcane Khorium Band"],
+	learnedAt = 365,
+}
+t[24158] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Khorium Band of Shadows"],
+	learnedAt = 350,
+}
+t[35538] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Ring of Flowing Life"],
+	learnedAt = 365,
+}
+t[24201] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Lustrous Star of Elune"],
+	learnedAt = 350,
+}
+t[35200] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Hard Khorium Band"],
+	learnedAt = 365,
+}
+t[35202] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Amulet of Flowing Life"],
+	learnedAt = 365,
+}
+t[35203] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Hard Khorium Choker"],
+	learnedAt = 365,
+}
+t[24205] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Rigid Dawnstone"],
+	learnedAt = 350,
+}
+t[41410] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Trenchant Earthsiege Diamond"],
+	learnedAt = 440,
+}
+t[41411] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Invigorating Earthsiege Diamond"],
+	learnedAt = 440,
+}
+t[41415] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Tireless Skyflare Diamond"],
+	learnedAt = 440,
+}
+t[41405] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Eternal Earthsiege Diamond"],
+	learnedAt = 440,
+}
+t[32293] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Gleaming Lionseye"],
+	learnedAt = 375,
+}
+t[32304] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Potent Pyrestone"],
+	learnedAt = 375,
+}
+t[32305] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Luminous Pyrestone"],
+	learnedAt = 375,
+}
+t[32284] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Subtle Crimson Spinel"],
+	learnedAt = 375,
+}
+t[32295] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Mystic Lionseye"],
+	learnedAt = 375,
+}
+t[32306] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Glinting Pyrestone"],
+	learnedAt = 375,
+}
+t[32285] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Flashing Crimson Spinel"],
+	learnedAt = 375,
+}
+t[32297] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Sovereign Shadowsong Amethyst"],
+	learnedAt = 375,
+}
+t[32308] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Wicked Pyrestone"],
+	learnedAt = 375,
+}
+t[32287] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Sparkling Empyrean Sapphire"],
+	learnedAt = 375,
+}
+t[32298] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Shifting Shadowsong Amethyst"],
+	learnedAt = 375,
+}
+t[32309] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Enduring Seaspray Emerald"],
+	learnedAt = 375,
+}
+t[32288] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Lustrous Empyrean Sapphire"],
+	learnedAt = 375,
+}
+t[32299] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Balanced Shadowsong Amethyst"],
+	learnedAt = 375,
+}
+t[32310] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Radiant Seaspray Emerald"],
+	learnedAt = 375,
+}
+t[32289] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Stormy Empyrean Sapphire"],
+	learnedAt = 375,
+}
+t[32300] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Infused Shadowsong Amethyst"],
+	learnedAt = 375,
+}
+t[32290] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Brilliant Lionseye"],
+	learnedAt = 375,
+}
+t[32301] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Glowing Shadowsong Amethyst"],
+	learnedAt = 375,
+}
+t[32312] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Jagged Seaspray Emerald"],
+	learnedAt = 375,
+}
+t[32291] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Smooth Lionseye"],
+	learnedAt = 375,
+}
+t[35762] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Reckless Pyrestone"],
+	learnedAt = 375,
+}
+t[32302] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Royal Shadowsong Amethyst"],
+	learnedAt = 375,
+}
+t[32281] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Teardrop Crimson Spinel"],
+	learnedAt = 375,
+}
+t[32303] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Inscribed Pyrestone"],
+	learnedAt = 375,
+}
+t[25902] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Powerful Earthstorm Diamond"],
+	learnedAt = 365,
+}
+t[24165] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Blazing Eternium Band"],
+	learnedAt = 365,
+}
+t[24168] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Braided Eternium Chain"],
+	learnedAt = 360,
+}
+t[35306] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Bright Living Ruby"],
+	learnedAt = 350,
+}
+t[35198] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Loop of Forged Power"],
+	learnedAt = 365,
+}
+t[35304] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Solid Star of Elune"],
+	learnedAt = 350,
+}
+t[35536] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Loop of Forged Power"],
+	learnedAt = 365,
+}
+t[21958] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Arcanite Sword Pendant"],
+	learnedAt = 315,
+}
+t[41404] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Bracing Earthsiege Diamond"],
+	learnedAt = 440,
+}
+t[41416] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Forlorn Skyflare Diamond"],
+	learnedAt = 440,
+}
+t[32283] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Bright Crimson Spinel"],
+	learnedAt = 375,
+}
+t[32294] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Thick Lionseye"],
+	learnedAt = 375,
+}
+t[35765] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Forceful Seaspray Emerald"],
+	learnedAt = 375,
+}
+t[32292] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Rigid Lionseye"],
+	learnedAt = 375,
+}
+t[35763] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Quick Lionseye"],
+	learnedAt = 375,
+}
+t[34689] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Chaotic Skyfire Diamond"],
+	learnedAt = 365,
+}
+t[25903] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Bracing Earthstorm Diamond"],
+	learnedAt = 365,
+}
+t[32412] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Relentless Earthstorm Diamond"],
+	learnedAt = 365,
+}
+t[24161] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Khorium Band of Leaves"],
+	learnedAt = 360,
+}
+t[24159] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Khorium Band of Frost"],
+	learnedAt = 355,
+}
+t[24160] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Khorium Inferno Band"],
+	learnedAt = 355,
+}
+t[24166] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Thick Felsteel Necklace"],
+	learnedAt = 355,
+}
+t[24209] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Sovereign Nightseye"],
+	learnedAt = 350,
+}
+t[35537] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Pendant of Sunfire"],
+	learnedAt = 365,
+}
+t[24199] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Solid Star of Elune"],
+	learnedAt = 350,
+}
+t[35199] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Ring of Flowing Life"],
+	learnedAt = 365,
+}
+t[24212] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Royal Nightseye"],
+	learnedAt = 350,
+}
+t[35201] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Pendant of Sunfire"],
+	learnedAt = 365,
+}
+t[24203] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Brilliant Dawnstone"],
+	learnedAt = 350,
+}
+t[24218] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Radiant Talasite"],
+	learnedAt = 350,
+}
+t[21953] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Figurine - Emerald Owl"],
+	learnedAt = 285,
+}
+t[41412] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Beaming Earthsiege Diamond"],
+	learnedAt = 440,
+}
+t[32282] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Runed Crimson Spinel"],
+	learnedAt = 375,
+}
+t[24173] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Circlet of Arcane Might"],
+	learnedAt = 370,
+}
+t[24198] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Flashing Living Ruby"],
+	learnedAt = 350,
+}
+t[24210] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Shifting Nightseye"],
+	learnedAt = 350,
+}
+t[31877] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Infused Nightseye"],
+	learnedAt = 350,
+}
+t[35534] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Hard Khorium Band"],
+	learnedAt = 365,
+}
+t[24211] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Glowing Nightseye"],
+	learnedAt = 350,
+}
+t[31872] = {
+	name = L["true"],
+	profession = L["Jewelcrafting"],
+	teaches = L["Infused Shadow Draenite"],
+	learnedAt = 325,
 }
