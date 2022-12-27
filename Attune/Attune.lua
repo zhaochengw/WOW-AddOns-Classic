@@ -8,9 +8,9 @@
 --
 -------------------------------------------------------------------------
 
--- Done in 308
---  Added support Korean and Chinese languages
---  Fixed an issue in German and French localizations
+-- Done in 309
+--  Optim to event handling (Thanks @RoadBlock!)
+
 
 -------------------------------------------------------------------------
 -- ADDON VARIABLES
@@ -119,6 +119,15 @@ local attunelocal_inactivity = 60*60*24*30		-- number of seconds to account for 
 local attunelocal_achieveDelayDone = false		-- Wait a few seconds to avoid the barrage of achieves when one first logs in
 
 local patch = 0
+
+-- This is to work around the fact that xpcall is quite costly and drops framerate when spammed for lots of little events
+-- Thanks @RoadBlock for this 
+local cleu_parser = CreateFrame("Frame")
+cleu_parser.OnEvent = function(frame, event, ...)
+    Attune.COMBAT_LOG_EVENT_UNFILTERED(Attune,event,...)
+end
+cleu_parser:SetScript("OnEvent", cleu_parser.OnEvent)
+-- End of xpcall workaround
 
 
 local IsQuestFlaggedCompleted = _G.IsQuestFlaggedCompleted or C_QuestLog.IsQuestFlaggedCompleted  -- This is to handle the changes in TBC (C_QuestLog)
@@ -537,7 +546,6 @@ function Attune:OnEnable()
 	Attune:RegisterComm(attunelocal_syncprefix)
 
 	self:RegisterEvent("CHAT_MSG_ADDON")
-	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self:RegisterEvent("PLAYER_LEVEL_UP")
 	self:RegisterEvent("QUEST_ACCEPTED")
 	self:RegisterEvent("QUEST_TURNED_IN")
@@ -547,6 +555,8 @@ function Attune:OnEnable()
 	self:RegisterEvent("QUEST_DETAIL")
 	self:RegisterEvent("ACHIEVEMENT_EARNED")
 	
+	--self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	cleu_parser:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		
 	_, _, _, patch	 = GetBuildInfo()
 	
