@@ -421,7 +421,10 @@ function ns.CheckRevenge(eventType, isSrcPlayer, isDstPlayer, ...)
             if eventType == "SWING_MISSED" then
                 missedType = select(1, ...)
             elseif eventType == "SPELL_MISSED" then
-                missedType = select(4, ...)
+                -- missedType = select(4, ...)
+                local spellID, _
+                spellID, _, _, missedType = select(1, ...)
+                if spellID == 53739 or spellID == 42463 then return end -- Ignore Seal of Vengeance
             end
             if missedType == "BLOCK" or missedType == "DODGE" or missedType == "PARRY" then
                 f:Activate("Revenge", "Parry", 5)
