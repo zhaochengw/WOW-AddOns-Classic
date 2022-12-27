@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Razorscale", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221124043300")
+mod:SetRevision("20221215074731")
 mod:SetCreatureID(33186)
 mod:SetEncounterID(1139)
 mod:SetModelID(28787)
@@ -64,7 +64,7 @@ function mod:FlameTarget(targetname, uId)
 end
 
 function mod:OnCombatStart(delay)
-	enrageTimer:Start(-delay)
+	enrageTimer:Start(self:IsClassic() and 600 or 900-delay)
 	combattime = GetTime()
 	if self:IsClassic() and self:IsDifficulty("normal10") then
 		warnTurretsReadySoon:Schedule(53-delay)

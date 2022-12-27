@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("IronCouncil", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221124043300")
+mod:SetRevision("20221215074731")
 mod:SetCreatureID(32867, 32927, 32857)
 mod:SetEncounterID(1140)
 mod:DisableEEKillDetection()--Fires for first one dying not last
@@ -101,7 +101,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(63490, 62269) then		-- Rune of Death
 		warnRuneofDeath:Show()
-		timerRuneofDeath:Start()
+		timerRuneofDeath:Start(self:IsClassic() and 30 or 47)
 	elseif args:IsSpellID(64321, 61974) then	-- Rune of Power
 		self:BossTargetScanner(32927, "RuneTarget", 0.1, 16, true, true)--Scan only boss unitIDs, scan only hostile targets
 		timerRuneofPower:Start()
@@ -131,7 +131,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self:IsClassic() and self:IsDifficulty("normal10") then
 			timerOverwhelmingPower:Start(60, args.destName)
 		else
-			timerOverwhelmingPower:Start(35, args.destName)
+			timerOverwhelmingPower:Start(self:IsClassic() and 25 or 35, args.destName)
 		end
 		if self.Options.SetIconOnOverwhelmingPower then
 			self:SetIcon(args.destName, 8)

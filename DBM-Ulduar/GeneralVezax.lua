@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("GeneralVezax", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221124043300")
+mod:SetRevision("20221215074731")
 mod:SetCreatureID(33271)
 mod:SetEncounterID(1134)
 mod:SetModelID(28548)
@@ -18,7 +18,7 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, log, detect, and cancel hardmode timer when any vapors get broken
-local warnShadowCrash			= mod:NewTargetAnnounce(62660, 4)
+local warnShadowCrash			= mod:NewTargetNoFilterAnnounce(62660, 4)
 local warnLeechLife				= mod:NewTargetNoFilterAnnounce(63276, 3)
 local warnSaroniteVapor			= mod:NewCountAnnounce(63337, 2)
 
@@ -41,7 +41,7 @@ local timerEnrage				= mod:NewBerserkTimer(600)
 local timerSurgeofDarkness		= mod:NewBuffActiveTimer(10, 62662, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerNextSurgeofDarkness	= mod:NewCDTimer(61.7, 62662, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerSaroniteVapors		= mod:NewNextCountTimer(30, 63322, nil, nil, nil, 5)
-local timerShadowCrashCD		= mod:NewCDTimer(12, 62660, nil, "Ranged", nil, 3)
+local timerShadowCrashCD		= mod:NewCDTimer(10, 62660, nil, "Ranged", nil, 3)
 local timerLifeLeech			= mod:NewTargetTimer(10, 63276, nil, false, 2, 3)
 local timerLifeLeechCD			= mod:NewCDTimer(20.4, 63276, nil, nil, nil, 3)
 local timerHardmode				= mod:NewTimer(189, "hardmodeSpawn", nil, nil, nil, 1)
@@ -62,14 +62,9 @@ function mod:ShadowCrashTarget(targetname, uId)
 		specWarnShadowCrash:Show()
 		specWarnShadowCrash:Play("runaway")
 		yellShadowCrash:Yell()
-	elseif targetname then
-		if uId then
-			local inRange = CheckInteractDistance(uId, 2)
-			if inRange then
-				specWarnShadowCrashNear:Show(targetname)
-				specWarnShadowCrashNear:Play("runaway")
-			end
-		end
+	elseif self:CheckNearby(10, targetname) then
+		specWarnShadowCrashNear:Show(targetname)
+		specWarnShadowCrashNear:Play("runaway")
 	else
 		warnShadowCrash:Show(targetname)
 	end
@@ -119,8 +114,12 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 62660 then		-- Shadow Crash
-		self:BossTargetScanner(33271, "ShadowCrashTarget", 0.05, 20)
-		timerShadowCrashCD:Start()
+		self:BossTargetScanner(args.sourceGUID, "ShadowCrashTarget", 0.05, 20)
+		local timer = 10--Blizzard confirmed it's a 10-15 second variable timer on final version of fight (ie retail)
+		if self:IsClassic() then
+			timer = self:IsDifficulty("normal25") and 7 or 10
+		end
+		timerShadowCrashCD:Start(timer)
 	elseif args.spellId == 63276 then	-- Mark of the Faceless
 		if self.Options.SetIconOnLifeLeach then
 			self:SetIcon(args.destName, 7, 10)
@@ -131,17 +130,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 			specWarnLifeLeechYou:Show()
 			specWarnLifeLeechYou:Play("runout")
 			yellLifeLeech:Yell()
+		elseif self:CheckNearby(13, args.destName) then--Can't use 15, only 13 or 18
+			specWarnLifeLeechNear:Show(args.destName)
+			specWarnLifeLeechNear:Play("runaway")
 		else
-			local uId = DBM:GetRaidUnitId(args.destName)
-			if uId then
-				local inRange = CheckInteractDistance(uId, 2)
-				if inRange then
-					specWarnLifeLeechNear:Show(args.destName)
-					specWarnLifeLeechNear:Play("runaway")
-				else
-					warnLeechLife:Show(args.destName)
-				end
-			end
+			warnLeechLife:Show(args.destName)
 		end
 	elseif args.spellId == 63364 then
 		specWarnAnimus:Show()

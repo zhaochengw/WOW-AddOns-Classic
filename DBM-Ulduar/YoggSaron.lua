@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("YoggSaron", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221124043300")
+mod:SetRevision("20221215074731")
 mod:SetCreatureID(33288)
 mod:SetEncounterID(1143)
 mod:SetModelID(28817)
@@ -10,13 +10,16 @@ mod:SetUsedIcons(8, 7, 6, 2, 1)
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 64059 64189 63138",
-	"SPELL_CAST_SUCCESS 64144 64465",
+	"SPELL_CAST_SUCCESS 64144 64465 64167 64163",
 	"SPELL_SUMMON 62979",
-	"SPELL_AURA_APPLIED 63802 63830 63881 64126 64125 63138 63894 64167 64163 64465",
+	"SPELL_AURA_APPLIED 63802 63830 63881 64126 64125 63138 63894 64465",
 	"SPELL_AURA_REMOVED 63802 63894 64167 64163 63830 63138 63881 64465",
 	"SPELL_AURA_REMOVED_DOSE 63050"
 )
 
+--TODO, add Dominate Mind casts by guardians to classic wrath
+--TODO, add drain life timer to wrath classic
+--The cast frequency of Drain Life cast by Immortal Guardians and Marked Immortal guardians has been reduced from 20-30 seconds to 10 seconds
 local warnMadness 					= mod:NewCastAnnounce(64059, 2)
 local warnSqueeze					= mod:NewTargetNoFilterAnnounce(64125, 3)
 local warnFervor					= mod:NewTargetAnnounce(63138, 4)
@@ -63,6 +66,7 @@ mod:AddSetIconOption("SetIconOnFervorTarget", 63802, false, false, {7})
 mod:AddSetIconOption("SetIconOnBrainLinkTarget", 63802, true, false, {1, 2})
 mod:AddSetIconOption("SetIconOnBeacon", 64465, true, true, {1, 2, 3, 4, 5, 6, 7, 8})
 mod:AddInfoFrameOption(63050)
+mod:AddNamePlateOption("NPAuraOnBeacon", 64465, true)
 
 local brainLinkTargets = {}
 local SanityBuff = DBM:GetSpellInfo(63050)
@@ -84,11 +88,17 @@ function mod:OnCombatStart(delay)
 		DBM.InfoFrame:SetHeader(SanityBuff)
 		DBM.InfoFrame:Show(30, "playerdebuffstacks", 63050, 2)--Sorted lowest first (highest first is default of arg not given)
 	end
+	if self.Options.NPAuraOnBeacon then
+		DBM:FireEvent("BossMod_EnableHostileNameplates")
+	end
 end
 
 function mod:OnCombatEnd()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
+	end
+	if self.Options.NPAuraOnBeacon then
+		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
 end
 
@@ -137,8 +147,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnEmpowerSoon:Schedule(40)
 	elseif args:IsSpellID(64167, 64163) and self:AntiSpam(3, 3) then	-- Lunatic Gaze
 		timerLunaricGaze:Start()
-		brainportal:Start(60)
-		warnBrainPortalSoon:Schedule(55)
+		if self:IsClassic() then
+			brainportal:Start(90)
+			warnBrainPortalSoon:Schedule(85)
+		else
+			brainportal:Start(60)
+			warnBrainPortalSoon:Schedule(55)
+		end
 	end
 end
 
@@ -203,18 +218,24 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:SetStage(2)
 		--timerMaladyCD:Start(13)--VERIFY ME
 		--timerBrainLinkCD:Start(19)--VERIFY ME
-		brainportal:Start(25)
-		warnBrainPortalSoon:Schedule(20)
+		if self:IsClassic() then
+			brainportal:Start(60)
+			warnBrainPortalSoon:Schedule(55)
+		else
+			brainportal:Start(25)
+			warnBrainPortalSoon:Schedule(20)
+		end
 		warnP2:Show()
-	elseif args:IsSpellID(64167, 64163) then	-- Lunatic Gaze (reduces sanity)
-		timerLunaricGaze:Start()
 	elseif args.spellId == 64465 then
 		if self.Options.SetIconOnBeacon then
-			self:ScanForMobs(args.destGUID, 2, self.vb.beaconIcon, 1, nil, 10, "SetIconOnBeacon")
+			self:ScanForMobs(args.destGUID, 2, self.vb.beaconIcon, 1, nil, 12, "SetIconOnBeacon", true)
 		end
 		self.vb.beaconIcon = self.vb.beaconIcon - 1
 		if self.vb.beaconIcon == 0 then
 			self.vb.beaconIcon = 8
+		end
+		if self.Options.NPAuraOnBeacon then
+			DBM.Nameplate:Show(true, args.destGUID, args.spellId, nil, 10)
 		end
 	end
 end
@@ -232,7 +253,10 @@ function mod:SPELL_AURA_REMOVED(args)
 		self:SetIcon(args.destName, 0)
 	elseif args.spellId == 64465 then
 		if self.Options.SetIconOnBeacon then
-			self:ScanForMobs(args.destGUID, 2, 0, 1, nil, 12, "SetIconOnBeacon")
+			self:ScanForMobs(args.destGUID, 2, 0, 1, nil, 12, "SetIconOnBeacon", true)
+		end
+		if self.Options.NPAuraOnBeacon then
+			DBM.Nameplate:Hide(true, args.destGUID, args.spellId)
 		end
 	end
 end
@@ -255,10 +279,10 @@ function mod:OnSync(msg)
 		--timerMaladyCD:Cancel()
 		--timerBrainLinkCD:Cancel()
 		timerEmpower:Start()
-		if self.vb.numberOfPlayers == 1 then
+--		if self.vb.numberOfPlayers == 1 then
 			timerMadness:Cancel()
 			specWarnMadnessOutNow:Cancel()
-		end
+--		end
 		warnP3:Show()
 		warnEmpowerSoon:Schedule(40)
 		timerNextDeafeningRoar:Start(30)
