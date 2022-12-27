@@ -1,4 +1,4 @@
--- $Id: EJLoot.lua 374 2022-01-26 14:33:01Z arithmandar $
+-- $Id: EJLoot.lua 429 2022-12-03 10:36:26Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -672,4 +672,9 @@ function Atlas_EncounterJournal_InitLootSlotFilter(self, level)
 			LibDD:UIDropDownMenu_AddButton(info);
 		end
 	end
+end
+
+function Atlas_EncounterJournal_ButtonOnClick(self, object)
+	LibDD:ToggleDropDownMenu(1, nil, object, self, 5, 0);
+	PlaySound(852);
 end

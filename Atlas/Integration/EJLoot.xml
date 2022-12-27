@@ -1,4 +1,4 @@
-<!-- $Id: EJLoot.xml 374 2022-01-26 14:33:01Z arithmandar $ -->
+<!-- $Id: EJLoot.xml 429 2022-12-03 10:36:26Z arithmandar $ -->
 <!--
 
 	Atlas, a World of Warcraft instance map browser
@@ -355,8 +355,7 @@
 					<Button name="$parentFilterToggle" parentKey="filter" text="GEAR_FILTER" inherits="AtlasEJButtonTemplate">
 						<Scripts>
 							<OnClick>
-								L_ToggleDropDownMenu(1, nil, self:GetParent().lootFilter, self, 5, 0);
-								PlaySound(852);
+								Atlas_EncounterJournal_ButtonOnClick(self, self:GetParent().lootFilter);
 							</OnClick>
 							<OnLoad inherit="prepend">
 								self:SetPoint("TOPLEFT", self:GetParent():GetParent(), "TOPRIGHT", -380, -0);
@@ -369,8 +368,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								L_ToggleDropDownMenu(1, nil, self:GetParent().lootSlotFilter, self, 5, 0);
-								PlaySound(852);
+								Atlas_EncounterJournal_ButtonOnClick(self, self:GetParent().lootSlotFilter);
 							</OnClick>
 							<OnLoad inherit="prepend">
 								self:SetPoint("TOPLEFT", self:GetParent():GetParent(), "TOPRIGHT", -270, -0);
@@ -384,8 +382,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								L_ToggleDropDownMenu(1, nil, self:GetParent().difficultyDD, self, 5, 0);
-								PlaySound(856);
+								Atlas_EncounterJournal_ButtonOnClick(self, self:GetParent().difficultyDD);
 							</OnClick>
 							<OnLoad inherit="prepend">
 								self:SetPoint("TOPLEFT", self:GetParent():GetParent(), "TOPRIGHT", -160, -0);
