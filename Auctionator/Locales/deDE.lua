@@ -182,6 +182,8 @@ L["CONFIRM_POST_BELOW_VENDOR"] = "Du kannst mehr Gold machen, indem du dies an e
 L["CONFIRM_POST_LOW_PRICE"] = "Der Preis von %s sieht etwas niedrig aus. Bist du sicher, dass du zu diesem Preis erstellen möchtest?"
 L["CONFIRM_POST_PRICE_DROP"] = "Der Einheitspreis von %s ist ein großer Preissturz. Bist du sicher, dass du zu diesem Preis erstellen möchtest?"
 L["CONFIRM_X_TOTAL_PRICE_X"] = "Bestätigen %s, Gesamtpreis %s"
+--[[Translation missing --]]
+L["CONTINUE"] = "Continue"
 L["CONTRIBUTORS_HEADER"] = "Mitwirkende"
 L["COPY_ITEM_ADDED"] = "Kopierte %s in %s"
 L["COPY_NO_LIST_SELECTED"] = "Gegenstand kann nicht kopiert werden. Keine Einkaufsliste ausgewählt"
@@ -311,6 +313,8 @@ L["POST_ATTEMPT_FAILED"] = "Dein letzter Auktionerstellungsversuch hat nicht fun
 L["PRICE"] = "Preis"
 L["PRICE_HISTORY"] = "Preisentwicklung"
 L["PRICE_INCREASE_WARNING"] = "Preis um %s erhöht, warte auf %ss"
+--[[Translation missing --]]
+L["PRICE_INCREASE_WARNING_2"] = "Price increased by %s. Do you want to continue?"
 L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "Aktiviere Einstellungen pro Charakter"
 L["PROFILE_TOGGLE_TOOLTIP_TEXT"] = "Änderungen an den Auktionatoreinstellungen wirken sich nur auf diesen Charakter aus."
 L["PROFIT_COLON"] = "Gewinn:"
@@ -531,7 +535,11 @@ L["STARTING_PRICE_PERCENTAGE"] = "Startpreis"
 L["STARTING_PRICE_PERCENTAGE_SUFFIX"] = "% des Stapelspreises"
 L["STARTING_PRICE_PERCENTAGE_TOOLTIP_HEADER"] = "Startgebotspreis"
 L["STARTING_PRICE_PERCENTAGE_TOOLTIP_TEXT"] = "Der Prozentsatz des Startpreises wird verwendet, um den Standardpreis für alle eingestellten Auktionen festzulegen. Wenn dieser Wert zum Beispiel auf 95 gesetzt wird, dann wird der Gebotspreis für einen 10er-Stapel auf 9s50c festgelegt."
+--[[Translation missing --]]
+L["STOP"] = "Stop"
 L["TEMPORARY_LOWER_CASE"] = "temporär"
+--[[Translation missing --]]
+L["TIER"] = "Tier"
 L["TIME_LEFT"] = "Verbleibende Zeit"
 L["TIME_LEFT_H"] = "Restzeit (h)"
 L["TO_CRAFT_COLON"] = "Zum herstellen:"

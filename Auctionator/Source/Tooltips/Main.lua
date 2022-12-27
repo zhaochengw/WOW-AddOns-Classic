@@ -5,7 +5,7 @@ local waitingForPricing = false
 -- Auctionator.Config.Options.SHIFT_STACK_TOOLTIPS: true to show stack price when [shift] is down
 -- Auctionator.Config.Options.AUCTION_TOOLTIPS: true if should show auction tips
 function Auctionator.Tooltip.ShowTipWithPricing(tooltipFrame, itemLink, itemCount)
-  if waitingForPricing then
+  if waitingForPricing or Auctionator.Database == nil then
     return
   end
   -- Keep this commented out unless testing please.
@@ -44,8 +44,7 @@ function Auctionator.Tooltip.ShowTipWithPricingDBKey(tooltipFrame, dbKeys, itemL
 
   local itemInfo = { GetItemInfo(itemLink) };
   if (#itemInfo) ~= 0 then
-    local bindType = itemInfo[Auctionator.Constants.ITEM_INFO.BIND_TYPE]
-    cannotAuction = bindType == LE_ITEM_BIND_ON_ACQUIRE or bindType == LE_ITEM_BIND_QUEST;
+    cannotAuction = Auctionator.Utilities.IsBound(itemInfo)
     local sellPrice = itemInfo[Auctionator.Constants.ITEM_INFO.SELL_PRICE]
 
     if Auctionator.Utilities.IsVendorable(itemInfo) then
@@ -115,7 +114,7 @@ end
 -- count
 local isMultiplePricesPending = false
 function Auctionator.Tooltip.ShowTipWithMultiplePricing(tooltipFrame, itemEntries)
-  if isMultiplePricesPending then
+  if isMultiplePricesPending or Auctionator.Database == nil then
     return
   end
   isMultiplePricesPending = true
@@ -156,7 +155,9 @@ end
 
 function Auctionator.Tooltip.AddVendorTip(tooltipFrame, vendorPrice, countString)
   if Auctionator.Config.Get(Auctionator.Config.Options.VENDOR_TOOLTIPS) and vendorPrice > 0 then
-    GameTooltip_ClearMoney(tooltipFrame) -- Remove default price
+    if Auctionator.Constants.IsClassic then
+      GameTooltip_ClearMoney(tooltipFrame) -- Remove default price
+    end
 
     tooltipFrame:AddDoubleLine(
       L("VENDOR") .. countString,

@@ -5,76 +5,75 @@ AUCTIONATOR_LOCALES.ptBR = function()
 L["ADD_ITEM"] = "Adicionar Item"
 L["ADD_TERM_TO_LIST_DIALOG"] = "Escreva o termo de busca a ser adicionado:"
 L["ALREADY_PURCHASED_X"] = "Já comprou %s"
-L["ALT_LEFT_CLICK"] = "Alt Clique Esquerdo"
-L["ALT_RIGHT_CLICK"] = "Alt Clique Direito"
+L["ALT_LEFT_CLICK"] = "ALT + Clique Esquerdo"
+L["ALT_RIGHT_CLICK"] = "ALT + Clique Direito"
 L["ANY_LOWER"] = "qualquer"
 L["ANY_UPPER"] = "Qualquer"
 L["AUCTION"] = "Leilão"
 L["AUCTION_DURATION_12"] = "12 Horas"
 L["AUCTION_DURATION_24"] = "24 Horas"
 L["AUCTION_DURATION_48"] = "48 Horas"
-L["AUCTION_TOOLTIP_TOOLTIP_HEADER"] = "Informações de Leilão na Caixa de Texto"
-L["AUCTION_TOOLTIP_TOOLTIP_TEXT"] = "Mostrar informações de leilão na caixa de texto quando o mouse passar sobre o iten."
+L["AUCTION_TOOLTIP_TOOLTIP_HEADER"] = "Informações de Leilão na dica"
+L["AUCTION_TOOLTIP_TOOLTIP_TEXT"] = "Mostra as informações de leilão na dica quando passar o mouse sobre um item."
 L["AUCTIONATOR"] = "Auctionator"
 L["AUTHOR_HEADER"] = "Autor"
---[[Translation missing --]]
-L["BID_EXISTING_ON_OWNED_AUCTION"] = "Someone has bid on this auction so cancelling will cost you your deposit and:"
-L["BID_ONLY_AVAILABLE"] = "lance apenas disponível"
+L["BID_EXISTING_ON_OWNED_AUCTION"] = "Alguém deu um lance neste leilão, portanto, cancelar custará seu depósito e:"
+L["BID_ONLY_AVAILABLE"] = "apenas lance disponível"
 L["BID_PRICE"] = "Lance atual"
 L["BIDDER"] = "Licitante"
 L["BIDDING_AUCTION_INFO"] = "%s com um lance inicial de %s"
 L["BRACKETS_X_EACH"] = "(%s cada)"
-L["BUG_REPORT"] = "Comunicar um erro"
-L["BUG_TOOLTIP_HEADER"] = "Comunicar um bug no Github"
-L["BUG_TOOLTIP_TEXT"] = "Se você encontrar um error enquanto usa o Auctionator, por favor comunique no Github. Por favor tente fornecer uma quantidade de detalhes suficiente para que possamos reproduzir o bug! Usar os addons !BugGrabber e BugSak ajudarão também."
+L["BUG_REPORT"] = "Reportar um Erro"
+L["BUG_TOOLTIP_HEADER"] = "Reportar um Erro no Github"
+L["BUG_TOOLTIP_TEXT"] = "Se você encontrar um erro ao usar o Auctionator, reporte no Github. Forneça detalhes suficientes para que possamos reproduzí-lo. Usar os AddOns !BugGrabber e BugSack também nos ajudará."
 L["BUY"] = "Comprar"
 L["BUY_STACK"] = "Comprar pilha"
 L["BUYING"] = "Comprando"
 L["BUYING_X_FOR_X"] = [=[Comprando %s por %s
 ]=]
-L["BUYOUT_AUCTION_INFO"] = "%s preço fixo de %s"
+L["BUYOUT_AUCTION_INFO"] = "%s compra de %s"
 L["BUYOUT_PRICE"] = "Preço de Compra"
 L["CANCEL"] = "Cancelar"
-L["CANCEL_SEARCH"] = [=[Cancelar pesquisa
+L["CANCEL_SEARCH"] = [=[Cancelar
 ]=]
-L["CANCEL_UNDERCUT"] = "Cancelar Subcotação"
+L["CANCEL_UNDERCUT"] = "Cancelar"
 L["CANCELLING_TAB"] = "Cancelar"
 L["CANCELLING_TAB_HEADER"] = "Auctionator - Cancelar"
 L["CANNOT_AUCTION"] = "Não é possível leiloar"
 L["CHAIN_BUY"] = [=[Compra em cadeia
 ]=]
-L["CHAIN_BUY_TOOLTIP_HEADER"] = [=[Compras múltiplas em cadeia
+L["CHAIN_BUY_TOOLTIP_HEADER"] = [=[Múltiplas compras em cadeia
 ]=]
-L["CHAIN_BUY_TOOLTIP_TEXT"] = "Quando terminar de comprar com o preço atual e o tamanho da pilha, selecione o próximo preço e o tamanho da pilha."
-L["CLASSIC_SUPPORT_ERROR"] = "Esta versão do Auctionator NÃO TEM suporte para a versão Classic. Coisas vão dar errado e não vão funcinar."
+L["CHAIN_BUY_TOOLTIP_TEXT"] = "Ao finalizar a compra pelo preço atual e tamanho da pilha, selecione o próximo preço e tamanho da pilha."
+L["CLASSIC_SUPPORT_ERROR"] = "Esta versão do Auctionator NÃO POSSUI suporte para o WoW Classic. Pode ocorrer erros e não funcionar corretamente."
 L["CLOSE"] = "Fechar"
 L["CONFIG_ADVANCED_CATEGORY"] = "Avançado"
-L["CONFIG_ADVANCED_TEXT"] = "Olhe aqui apenas se você souber oque você está fazendo"
-L["CONFIG_ALTERNATE_SCAN"] = "Use o modo alternativo de varredura mais lento sempre"
-L["CONFIG_ALTERNATE_SCAN_HEADER"] = "Modo de Varredura Alternativo"
-L["CONFIG_ALTERNATE_SCAN_TEXT"] = "O modo rápido de varredura pode causar perde de conexão em servidores sobrecarregados. Essa opção use um método de varredura mais lento e com menos chance de causar uma perda de conexão."
-L["CONFIG_AUCTION_TOOLTIP"] = "Mostrar caixa de texto de leilão."
-L["CONFIG_AUTO_LIST_SEARCH"] = "Automaticamente escanear itens da lista de compras."
-L["CONFIG_AUTO_LIST_SEARCH_TOOLTIP_HEADER"] = "Procura Automática de Listas"
-L["CONFIG_AUTO_LIST_SEARCH_TOOLTIP_TEXT"] = "Quando uma lista é selecionada, automaticamente escanear leiões que contém itens da lista. Quando essa opção está desabilitada, você pode escanear a lista inteira quando você seleciona o botão \"Procurar\" na barra de navegação da Lista de Compras."
-L["CONFIG_AUTOSCAN"] = "Rodar varredura automática quando a Casa de Leilões é aberta."
-L["CONFIG_AUTOSCAN_INTERVAL"] = "Definir quantos minutos entre cada varredura automática"
-L["CONFIG_AUTOSCAN_INTERVAL_HEADER"] = "Intervalo entre varredura automáticas"
-L["CONFIG_AUTOSCAN_INTERVAL_TOOLTIP_HEADER"] = "Intevalo Entre Varreduras Automáticas"
-L["CONFIG_AUTOSCAN_INTERVAL_TOOLTIP_TEXT"] = "Por padrão, a varredura automática não acontece todas as vezes que você abre a Casa de Leilões. Ela espera até um certo intervalo de tempo ter passado desde a última varredura."
-L["CONFIG_AUTOSCAN_TOOLTIP_HEADER"] = "Varredura automática"
-L["CONFIG_AUTOSCAN_TOOLTIP_TEXT"] = "Rodar uma varredura completa quando a casa de leilões é acessada. Quando não selecionado, você pode fazer uma varredura completa clicando o botão \"Varredura Completa\" na casa de leilões."
+L["CONFIG_ADVANCED_TEXT"] = "Vasculhe aqui apenas se souber o que está fazendo."
+L["CONFIG_ALTERNATE_SCAN"] = "Use o modo de verificação mais lento alternativo por padrão"
+L["CONFIG_ALTERNATE_SCAN_HEADER"] = "Modo de Verificação Alternativo"
+L["CONFIG_ALTERNATE_SCAN_TEXT"] = "O modo de verificação rápida pode causar desconexões em servidores lotados. Essa opção usa um método de verificação mais lento e com menor probabilidade de desconexão."
+L["CONFIG_AUCTION_TOOLTIP"] = "Mostrar dica de leilão."
+L["CONFIG_AUTO_LIST_SEARCH"] = "Verificar automaticamente itens da lista de compras."
+L["CONFIG_AUTO_LIST_SEARCH_TOOLTIP_HEADER"] = "Pesquisa de lista automática"
+L["CONFIG_AUTO_LIST_SEARCH_TOOLTIP_TEXT"] = "Quando uma lista é selecionada, verifica automaticamente a casa de leilões em busca dos itens da lista. Quando esta opção está desativada, você pode verificar a lista inteira ao selecionar o botão 'Pesquisar' na barra lateral da Lista de Compras."
+L["CONFIG_AUTOSCAN"] = "Executar verificação automática quando a Casa de Leilões for aberta."
+L["CONFIG_AUTOSCAN_INTERVAL"] = "Defina quantos minutos entre cada verificação automática"
+L["CONFIG_AUTOSCAN_INTERVAL_HEADER"] = "Intervalo entre verificações automáticas"
+L["CONFIG_AUTOSCAN_INTERVAL_TOOLTIP_HEADER"] = "Intevalo entre verificações automáticas"
+L["CONFIG_AUTOSCAN_INTERVAL_TOOLTIP_TEXT"] = "Por padrão, não serão realizadas verificações sempre que a Casa de Leilão for aberta. Haverá um intervalo predefinido entre cada verificação."
+L["CONFIG_AUTOSCAN_TOOLTIP_HEADER"] = "Verificação automática"
+L["CONFIG_AUTOSCAN_TOOLTIP_TEXT"] = "Executa uma verificação completa ao abrir a Casa de Leilões. Se desmarcado, você poderá executar uma verificação completa clicando em 'Verificação Completa' na Casa de Leilões."
 L["CONFIG_BAG"] = "Bolsa"
 L["CONFIG_BAG_COLLAPSED"] = "As seções da bolsa começam fechadas (necessário recarregar)"
 L["CONFIG_BAG_COLLAPSED_TOOLTIP_HEADER"] = "Bolsa começa fechada"
 L["CONFIG_BAG_COLLAPSED_TOOLTIP_TEXT"] = "As seções da lista de itens da bolsa começarão fechadas, ao invés de aberta."
 L["CONFIG_BAG_SHOW_SELLING_BAG"] = "Mostra a lista de itens da bolsa (necessário recarregar)"
-L["CONFIG_BAG_SHOW_SELLING_BAG_TOOLTIP_HEADER"] = "Listagem de Items da Bolsa"
-L["CONFIG_BAG_SHOW_SELLING_BAG_TOOLTIP_TEXT"] = "Se essa opção estiver desativada, o painel de items da bolsa será escondido."
+L["CONFIG_BAG_SHOW_SELLING_BAG_TOOLTIP_HEADER"] = "Listagem de Itens da Bolsa"
+L["CONFIG_BAG_SHOW_SELLING_BAG_TOOLTIP_TEXT"] = "Se desmarcado, o painel de itens da bolsa ficará oculto."
 L["CONFIG_BASIC_OPTIONS_CATEGORY"] = "Opções Básicas"
 L["CONFIG_BASIC_OPTIONS_TEXT"] = "Opções básicas para ativar recursos no Auctionator."
-L["CONFIG_CANCEL_UNDERCUT_SHORTCUT"] = "Atalho para cancelar a próxima subcotação que for encontrada é"
-L["CONFIG_CANCEL_UNDERCUT_SHORTCUT_TOOLTIP_TEXT"] = "Clique e depois use a tecla desejada para o atalho. Esse atalho de teclado só está ativo na aba de cancelamento, não vai afetar quaisquer outros atalhos para a mesma tecla."
+L["CONFIG_CANCEL_UNDERCUT_SHORTCUT"] = "Atalho para cancelar a próxima desvalorização:"
+L["CONFIG_CANCEL_UNDERCUT_SHORTCUT_TOOLTIP_TEXT"] = "Clique e atribua uma tecla para o atalho. Esse atalho do teclado só estará ativo na aba 'Cancelar' e não afetará nenhum outro atalho vinculado nas mesmas teclas."
 L["CONFIG_CANCELLING_CATEGORY"] = "Cancelando"
 L["CONFIG_CANCELLING_TEXT"] = "Opções para configurar o funcionamento da aba de Cancelamento"
 L["CONFIG_CHAT_LOG"] = "Mostra novos leilões no chat"
@@ -214,6 +213,8 @@ L["CONFIRM_POST_LOW_PRICE"] = [=[O preço de %s parece um pouco baixo. Tem certe
 L["CONFIRM_POST_PRICE_DROP"] = "O preço unitário de %s é uma grande queda de preço. Tem certeza de que deseja postar a esse preço?"
 --[[Translation missing --]]
 L["CONFIRM_X_TOTAL_PRICE_X"] = "Confirm %s, total price %s"
+--[[Translation missing --]]
+L["CONTINUE"] = "Continue"
 L["CONTRIBUTORS_HEADER"] = "Contribuidores"
 L["COPY_ITEM_ADDED"] = [=[Copiou %s para %s
 ]=]
@@ -342,8 +343,7 @@ L["NO_ITEM_INFO_SPECIFIED"] = [=[Nenhuma informação do item foi especificada.
 ]=]
 L["NO_LIST"] = [=[sem lista
 ]=]
---[[Translation missing --]]
-L["NO_LONGER_AVAILABLE"] = "No longer available"
+L["NO_LONGER_AVAILABLE"] = "Não está mais disponível"
 L["NO_RESULTS"] = "Nenhum resultado encontrado."
 L["NONE"] = "Nenhum"
 L["NONE_LEFT"] = [=[Nenhum restante
@@ -362,10 +362,10 @@ L["PET_TOOLTIP_TOOLTIP_TEXT"] = "Mostrar informações do Auctionator para bicho
 L["POST"] = "Postar"
 L["POST_ATTEMPT_FAILED"] = "Sua última tentativa de postagem não funcionou. Tente novamente."
 L["PRICE"] = "Preço"
---[[Translation missing --]]
-L["PRICE_HISTORY"] = "Price History"
+L["PRICE_HISTORY"] = "Histórico de Preços"
 L["PRICE_INCREASE_WARNING"] = [=[Preço aumentado em %s, aguardando %ss
 ]=]
+L["PRICE_INCREASE_WARNING_2"] = "Preço aumentado em %s. Deseja continuar?"
 L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "Ativar definições específicas para cada personagem"
 L["PROFILE_TOGGLE_TOOLTIP_TEXT"] = "Faz mudanças para as configurações do Auctionator afetar apenas este personagem."
 L["PROFIT_COLON"] = [=[Lucro:
@@ -377,11 +377,9 @@ L["PURCHASED_X_XX"] = [=[Comprado %s x%s
 ]=]
 L["QUANTITY"] = "Quantidade"
 L["REAGENT_SEARCH"] = "Pesquisa de Reagente"
---[[Translation missing --]]
-L["REAGENTS_VALUE_COLON"] = "Reagents Value:"
+L["REAGENTS_VALUE_COLON"] = "Valor dos Reagentes:"
 L["REALM_HISTORY"] = "Histórico do Servidor"
-L["RECENT_SEARCHES"] = [=[pesquisas recentes
-]=]
+L["RECENT_SEARCHES"] = "Pesquisas Recentes"
 L["REFRESH"] = "Atualizar"
 L["REMOVE_FAVOURITE"] = "Remover Favorito"
 L["RENAME"] = "Renomear"
@@ -655,7 +653,10 @@ L["STARTING_PRICE_PERCENTAGE_TOOLTIP_HEADER"] = [=[Preço inicial do lance
 ]=]
 L["STARTING_PRICE_PERCENTAGE_TOOLTIP_TEXT"] = [=[A porcentagem do preço inicial será usada para definir o valor do lance padrão usado para quaisquer leilões publicados. Por exemplo, definir isso para 95, para um preço de pilha de 10 segundos, definirá o preço de oferta para 9s50c.
 ]=]
+--[[Translation missing --]]
+L["STOP"] = "Stop"
 L["TEMPORARY_LOWER_CASE"] = "temporário"
+L["TIER"] = "Qualidade"
 L["TIME_LEFT"] = "Tempo Restante"
 L["TIME_LEFT_H"] = "Tempo restante (h)"
 L["TO_CRAFT_COLON"] = "Para Criar:"
@@ -674,10 +675,9 @@ L["TRANSLATORS_GERMAN"] = "Alemão"
 L["TRANSLATORS_HEADER"] = "Tradutores"
 L["TRANSLATORS_HELP"] = "Por favor, ajude a traduzir!"
 L["TRANSLATORS_ITALIAN"] = "Italiano"
-L["TRANSLATORS_KOREAN"] = "Koreano"
+L["TRANSLATORS_KOREAN"] = "Coreano"
 L["TRANSLATORS_LATIN_SPANISH"] = "Espanhol Latino Americano"
---[[Translation missing --]]
-L["TRANSLATORS_ROMANIAN_INFO"] = "Romanian (available separately)"
+L["TRANSLATORS_ROMANIAN_INFO"] = "Romeno (disponível separadamente)"
 L["TRANSLATORS_RUSSIAN"] = "Russo"
 L["TRANSLATORS_SIMPLIFIED_CHINESE"] = "Chinês Simplificado"
 L["TRANSLATORS_SPANISH"] = "Espanhol"

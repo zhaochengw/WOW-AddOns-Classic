@@ -181,8 +181,7 @@ L["CONFIG_SELLING_SPLIT_PANELS_TOOLTIP_HEADER"] = "분할 패널 보기"
 L["CONFIG_SELLING_SPLIT_PANELS_TOOLTIP_TEXT"] = "Normally the historical prices are on a tab inside the Selling tab, instead this makes the current prices always visible, but the historical prices show as a panel below them."
 L["CONFIG_SELLING_TBC_ALL_ITEMS"] = "모든 아이템에 대한 기본 게시 설정을 지정하는 옵션입니다."
 L["CONFIG_SELLING_TEXT"] = "판매하기 탭의 설정을 변경합니다."
---[[Translation missing --]]
-L["CONFIG_SHOPPING_ALWAYS_LOAD_MORE"] = "Always load all available results."
+L["CONFIG_SHOPPING_ALWAYS_LOAD_MORE"] = "항상 사용 가능한 모든 결과를 불러옵니다."
 L["CONFIG_SHOPPING_ALWAYS_LOAD_MORE_TOOLTIP_HEADER"] = "항상 더 불러오기"
 --[[Translation missing --]]
 L["CONFIG_SHOPPING_ALWAYS_LOAD_MORE_TOOLTIP_TEXT"] = "While still getting an accurate minimum price some pages are skipped to speed up the shopping search. This prevents any pages from being skipped and ensures all possible results display."
@@ -208,6 +207,8 @@ L["CONFIRM_POST_LOW_PRICE"] = "%s의 가격이 약간 낮아 보입니다. 정�
 L["CONFIRM_POST_PRICE_DROP"] = "%s의 단가는 큰 가격 하락입니다. 정말 그 가격에 게시할까요?"
 --[[Translation missing --]]
 L["CONFIRM_X_TOTAL_PRICE_X"] = "Confirm %s, total price %s"
+--[[Translation missing --]]
+L["CONTINUE"] = "Continue"
 L["CONTRIBUTORS_HEADER"] = "기증자"
 L["COPY_ITEM_ADDED"] = "%s 을 %s 로 복사"
 L["COPY_NO_LIST_SELECTED"] = "아이템을 복사할 수 없습니다. 선택한 구매 목록이 없습니다"
@@ -339,9 +340,10 @@ L["POST"] = "경매 시작"
 --[[Translation missing --]]
 L["POST_ATTEMPT_FAILED"] = "Your last post attempt didn't work. Try again."
 L["PRICE"] = "가격"
---[[Translation missing --]]
-L["PRICE_HISTORY"] = "Price History"
+L["PRICE_HISTORY"] = "가격 기록"
 L["PRICE_INCREASE_WARNING"] = "가격 %s 오름, %s초 대기 중"
+--[[Translation missing --]]
+L["PRICE_INCREASE_WARNING_2"] = "Price increased by %s. Do you want to continue?"
 L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "캐릭터별 설정 사용"
 L["PROFILE_TOGGLE_TOOLTIP_TEXT"] = "캐릭터 별 옥셔네이터 설정을 적용합니다."
 L["PROFIT_COLON"] = "수익:"
@@ -407,8 +409,7 @@ L["SPLASH_100015_ALL_VERSIONS_4"] = "Both crafting cost and profit can be displa
 L["SPLASH_100015_ALL_VERSIONS_5"] = "Scroll areas have been reworked to be smoother."
 --[[Translation missing --]]
 L["SPLASH_100015_ALL_VERSIONS_6"] = "General bugfixes and compatibility changes for WoW."
---[[Translation missing --]]
-L["SPLASH_100015_ALL_VERSIONS_HEADER"] = "Recent features for all versions"
+L["SPLASH_100015_ALL_VERSIONS_HEADER"] = "모든 버전의 최신 기능"
 --[[Translation missing --]]
 L["SPLASH_100015_CLASSIC_1"] = "Warning when posting with a massive undercut (50% or more) to reduce mistakes."
 --[[Translation missing --]]
@@ -423,18 +424,15 @@ L["SPLASH_100015_CLASSIC_5"] = "Shows posting history as an extra option in an i
 L["SPLASH_100015_CLASSIC_6"] = "In the Selling tab removed extra scan after posting an item."
 --[[Translation missing --]]
 L["SPLASH_100015_CLASSIC_7"] = "Option to prevent the post button going grey/disabled and to allow attempts to post immediately, with no-cost retries on failure."
---[[Translation missing --]]
-L["SPLASH_100015_CLASSIC_HEADER"] = "Recent features for Classic"
---[[Translation missing --]]
-L["SPLASH_100015_DESCRIPTION"] = "Lots of improvements, including compatibility with Dragonflight"
+L["SPLASH_100015_CLASSIC_HEADER"] = "클래식의 최신 기능"
+L["SPLASH_100015_DESCRIPTION"] = "용군단과의 호환성을 포함한 많은 개선 사항"
 --[[Translation missing --]]
 L["SPLASH_100015_RETAIL_1"] = "Crafting cost and profit updates based on the reagents and quality selected."
 --[[Translation missing --]]
 L["SPLASH_100015_RETAIL_2"] = "Selling tab has an expanded prices view with historical prices available in a separate tab. Reverting to the split screen view is available as an option."
 --[[Translation missing --]]
 L["SPLASH_100015_RETAIL_3"] = "Reagents value on the auction house is shown when listing a crafting order."
---[[Translation missing --]]
-L["SPLASH_100015_RETAIL_HEADER"] = "Recent features for Retail"
+L["SPLASH_100015_RETAIL_HEADER"] = "본섭의 최신 기능"
 L["SPLASH_830_BUGS_1"] = "옥셔네이터 디스코드 서버에 참가하세요. %s"
 L["SPLASH_830_BUGS_2"] = "오류가 발생하면 깃헙으로 알려주세요. %s"
 L["SPLASH_830_BUGS_3"] = "디스코드가 활성화되어 있으니 curseforge 혹은 옥셔네이터 포럼에 오류를 올리지 말아주세요."
@@ -503,26 +501,21 @@ L["SPLASH_902_FEATURES_1"] = "판매 탭의 새로운 \"내 기록\" 부분에�
 L["SPLASH_902_FEATURES_HEADER"] = "새로운 기능"
 L["SPLASH_903_DESCRIPTION"] = "버그수정 하나 및 몇 가지 새로운 기능입니다."
 L["SPLASH_903_FEATURES_1"] = "새로운 \"결과 내보내기\" 버튼이 쇼핑 탭에 추가되어 현재 검색 결과를 Excel로 가져오기에 적합한 CSV 형식으로 내보낼 수 있습니다."
---[[Translation missing --]]
-L["SPLASH_903_FEATURES_2"] = "Favourite items in the Selling tab now stay visible even if they are no longer in your bag. This update resets your favourites list."
+L["SPLASH_903_FEATURES_2"] = "판매하기 탭의 즐겨찾기 아이템은 더 이상 가방에 없어도 계속 표시됩니다. 이 업데이트는 즐겨찾기 목록을 재설정합니다."
 L["SPLASH_903_FEATURES_HEADER"] = "기능"
 L["SPLASH_904_DESCRIPTION"] = "버그 수정 및 새로운 기록 보기"
---[[Translation missing --]]
-L["SPLASH_904_FEATURES_1"] = "Right-clicking on a result in the Shopping tab will now open a dialog showing its price history."
+L["SPLASH_904_FEATURES_1"] = "쇼핑 탭에서 결과를 우클릭하면 가격 기록을 보여주는 대화 상자가 열립니다."
 L["SPLASH_904_FEATURES_HEADER"] = "기능"
 L["SPLASH_905_DESCRIPTION"] = "버그 수정 및 사소한 시각적 변경 사항"
 --[[Translation missing --]]
 L["SPLASH_905_UPDATES_1"] = "Smoother interactions in the Cancelling tab."
 L["SPLASH_905_UPDATES_HEADER"] = "업데이트"
 L["SPLASH_907_DESCRIPTION"] = "몇 가지 새로운 기능과 일반적인 버그수정입니다."
---[[Translation missing --]]
-L["SPLASH_907_FEATURES_1"] = "Gear with item levels of at least 168 are now differentiated in tooltip auction prices."
---[[Translation missing --]]
-L["SPLASH_907_FEATURES_2"] = "A new \"Skip\" button will show to skip posting the current item when the option \"Automatically select the next item in your bag\" is on."
+L["SPLASH_907_FEATURES_1"] = "아이템 레벨이 168 이상인 장비는 이제 툴팁 경매 가격에서 차별화됩니다."
+L["SPLASH_907_FEATURES_2"] = "\"가방에서 다음 아이템 자동 선택\" 옵션이 켜져 있을 때 현재 아이템 게시를 건너뛰기 위해 새로운 \"건너뛰기\" 버튼이 표시됩니다."
 --[[Translation missing --]]
 L["SPLASH_907_FEATURES_3"] = "New keybinding options added for posting, skipping and cancelling. For example you can now set the space key to post or cancel, without impacting any other bindings. Find them in the \"Selling: Shortcuts\" and \"Cancelling\" options."
---[[Translation missing --]]
-L["SPLASH_907_FEATURES_4"] = "The Cancelling tab has a new search box."
+L["SPLASH_907_FEATURES_4"] = "취소하기 탭에 새 검색 상자가 있습니다."
 L["SPLASH_907_FEATURES_HEADER"] = "기능"
 --[[Translation missing --]]
 L["SPLASH_907_UNANNOUNCED_1"] = "An optional \"Seller(s)\" column (to see who is selling the auctions) has been added to the Selling tab. To activate it right-click a column header (e.g. \"Owned?\") in the current auctions listings."
@@ -607,7 +600,11 @@ L["STARTING_PRICE_PERCENTAGE"] = "시작 가격"
 L["STARTING_PRICE_PERCENTAGE_SUFFIX"] = "묶음 가격 %"
 L["STARTING_PRICE_PERCENTAGE_TOOLTIP_HEADER"] = "입찰 시작가"
 L["STARTING_PRICE_PERCENTAGE_TOOLTIP_TEXT"] = "시작 가격 비율은 게시된 경매에 사용되는 기본 입찰 금액을 설정하는 데 사용됩니다. 예를 들어 95실버로 설정한다면 10실버 묶음 가격의 경우 입찰 가격이 9실버 50코퍼로 설정됩니다."
+--[[Translation missing --]]
+L["STOP"] = "Stop"
 L["TEMPORARY_LOWER_CASE"] = "임시"
+--[[Translation missing --]]
+L["TIER"] = "Tier"
 L["TIME_LEFT"] = "남은 시간"
 L["TIME_LEFT_H"] = "남은 시간(시)"
 L["TO_CRAFT_COLON"] = "다음의 재료:"
