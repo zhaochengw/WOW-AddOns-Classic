@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 30400
 ## Title: tdGUI
 ## Author: DengSir
 ## Version: 80000.02
