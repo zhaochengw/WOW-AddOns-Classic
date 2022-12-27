@@ -275,7 +275,7 @@ function KT.Events.ENCOUNTER_END(self, _, _, _, size)
     end
 end
 
-GameTooltip:HookScript("OnTooltipSetUnit", function(self)
+local function tooltip_enhancer(self)
     if not KT.Global.TOOLTIP then return end
     local _, unit = self:GetUnit()
     if not unit then return end
@@ -296,7 +296,13 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
         self:AddLine(("ID = %d"):format(id))
     end
     self:Show()
-end)
+end
+
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, tooltip_enhancer)
+else
+    GameTooltip:HookScript("OnTooltipSetUnit", tooltip_enhancer)
+end
 
 function KT:ToggleLoadMessage()
     self.Global.LOAD_MESSAGE = not self.Global.LOAD_MESSAGE
