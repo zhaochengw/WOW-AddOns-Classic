@@ -179,6 +179,26 @@ GTFO.SpellID["146919"] = {
 	trivialPercent = 0;
 };
 
+GTFO.SpellID["397785"] = {
+  --desc = "Wash Away (Wise Mari)";
+  sound = 1;
+};
+
+GTFO.SpellID["397799"] = {
+  --desc = "Corrupted Vortex (Wise Mari)";
+  sound = 1;
+};
+
+GTFO.SpellID["398301"] = {
+  --desc = "Flames of Doubt (Shambling Infester)";
+  sound = 1;
+};
+
+GTFO.SpellID["396003"] = {
+  --desc = "Terrorial Display (The Songbird Queen)";
+  sound = 1;
+};
+
 -- *********************
 -- * Scarlet Cathedral *
 -- *********************
