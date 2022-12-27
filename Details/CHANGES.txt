@@ -1,16 +1,22 @@
-tag 95470c7db59056ec08167c848961d9079c21ea37 Details.DF.Wrath.10304.147
+tag 08a643d81e8d53ff6537f828b214aa7b623646f5 Details.DF.Wrath.10337.148
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Mon Nov 28 15:24:44 2022 -0300
+Date:	Thu Dec 15 11:48:23 2022 -0300
 
-commit 4b3237f809684fd51fd5f5e3cef427c1fb34ba3d
+commit 8d93d677ca54f67ec87aeb9922525a5e9344b146
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Nov 28 15:24:03 2022 -0300
+Date:   Thu Dec 15 11:47:58 2022 -0300
 
-    pkgmeta for compare tab replacement
+    Fixed an issue with open raid library
 
-commit 2c7559de05a22f1f9e5066915a2b4f595b9b6a65
+commit 55f21591198166ac1010089eb4619254828349f7
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon Nov 28 15:21:41 2022 -0300
+Date:   Wed Dec 14 08:06:39 2022 -0300
 
-    Merge Crushing Blow (warrior)
+    Framework update
+
+commit 6542699b750f9ad8507ab56c5d92da030b91df4d
+Author: Tercio Jose <terciob19@hotmail.com>
+Date:   Tue Dec 13 08:32:16 2022 -0300
+
+    don't print the class played time if the played time is already in the chat window
 

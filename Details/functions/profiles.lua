@@ -1364,6 +1364,12 @@ local default_global_data = {
 		slash_me_used = false,
 		trinket_data = {},
 
+		merge_pet_abilities = false,
+		merge_player_abilities = false,
+
+		played_class_time = true,
+		check_stuttering = true,
+
 	--spell category feedback
 		spell_category_savedtable = {},
 		spell_category_latest_query = 0,
@@ -1437,7 +1443,7 @@ local default_global_data = {
 		},
 
 	--auras (wa auras created from the aura panel)
-		details_auras = {},
+		details_auras = {}, --deprecated due to major security wa code revamp
 
 	--ilvl
 		item_level_pool = {},
@@ -1461,7 +1467,7 @@ local default_global_data = {
 		npcid_pool = {},
 
 	--aura creation frame libwindow
-		createauraframe = {},
+		createauraframe = {}, --deprecated
 
 	--min health done on the death report
 		deathlog_healingdone_min = 1,

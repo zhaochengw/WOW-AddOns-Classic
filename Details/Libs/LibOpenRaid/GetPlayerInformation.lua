@@ -20,6 +20,10 @@ local CONST_BTALENT_VERSION_COVENANTS = 9
 local CONST_SPELLBOOK_CLASSSPELLS_TABID = 2
 local CONST_SPELLBOOK_GENERAL_TABID = 1
 
+local GetItemInfo = GetItemInfo
+local GetItemStats = GetItemStats
+local GetInventoryItemLink = GetInventoryItemLink
+
 local isTimewalkWoW = function()
     local _, _, _, buildInfo = GetBuildInfo()
     if (buildInfo < 40000) then
@@ -83,6 +87,20 @@ end
 function openRaidLib.GetBorrowedTalentVersion()
     if (IsShadowlands()) then
         return CONST_BTALENT_VERSION_COVENANTS
+    end
+end
+
+local getDragonflightTalentsExportedString = function()
+    local exportStream = ExportUtil.MakeExportDataStream()
+	local configId = C_ClassTalents.GetActiveConfigID()
+    if (configId) then
+        local configInfo = C_Traits.GetConfigInfo(configId)
+	    local currentSpecID = PlayerUtil.GetCurrentSpecID()
+        local treeInfo = C_Traits.GetTreeInfo(configId, configInfo.treeIDs[1])
+        local treeHash = C_Traits.GetTreeHash(treeInfo.ID)
+        local serializationVersion = C_Traits.GetLoadoutSerializationVersion()
+
+        
     end
 end
 
@@ -312,6 +330,8 @@ function openRaidLib.GearManager.GetPlayerGemsAndEnchantInfo()
     --hold equipmentSlotId of equipments without an enchant
     local slotsWithoutEnchant = {}
 
+    local gearWithEnchantIds = {}
+
     for equipmentSlotId = 1, 17 do
         local itemLink = GetInventoryItemLink("player", equipmentSlotId)
         if (itemLink) then
@@ -322,34 +342,20 @@ function openRaidLib.GearManager.GetPlayerGemsAndEnchantInfo()
             --enchant
                 --check if the slot can receive enchat and if the equipment has an enchant
                 local enchantAttribute = LIB_OPEN_RAID_ENCHANT_SLOTS[equipmentSlotId]
-                if (enchantAttribute) then --this slot can receive an enchat
+                local nEnchantId = 0
 
-                    --check if this slot is relevant for the class, some slots can have enchants only for Agility which won't matter for Priests as an example
-                    --if the value is an integer it points to an attribute (int, dex, str), otherwise it's true (boolean)
-                    local slotIsRelevant = true
-                    if (type(enchantAttribute) == "number") then
-                        if (specMainAttribute ~= enchantAttribute) then
-                            slotIsRelevant = false
-                        end
+                if (enchantAttribute) then --this slot can receive an enchant
+                    if (enchantId and enchantId ~= "") then
+                        local number = tonumber(enchantId)
+                        nEnchantId = number
+                        gearWithEnchantIds[#gearWithEnchantIds+1] = nEnchantId
+                    else
+                        gearWithEnchantIds[#gearWithEnchantIds+1] = 0
                     end
 
-                    if (slotIsRelevant) then
-                        --does the slot has any enchant?
-                        if (not enchantId or enchantId == "0" or enchantId == "") then
-                            slotsWithoutEnchant[#slotsWithoutEnchant+1] = equipmentSlotId
-                        else
-                            --convert to integer
-                            local enchantIdInt = tonumber(enchantId)
-                            if (enchantIdInt) then
-                                --does the enchant is relevent for the character?
-                                if (not LIB_OPEN_RAID_ENCHANT_IDS[enchantIdInt]) then
-                                    slotsWithoutEnchant[#slotsWithoutEnchant+1] = equipmentSlotId
-                                end
-                            else
-                                --the enchat has an invalid id
-                                slotsWithoutEnchant[#slotsWithoutEnchant+1] = equipmentSlotId
-                            end
-                        end
+                    --6400 and above is dragonflight enchantId number space
+                    if (nEnchantId < 6300 and not LIB_OPEN_RAID_DEATHKNIGHT_RUNEFORGING_ENCHANT_IDS[nEnchantId]) then
+                        slotsWithoutEnchant[#slotsWithoutEnchant+1] = equipmentSlotId
                     end
                 end
 
@@ -367,7 +373,7 @@ function openRaidLib.GearManager.GetPlayerGemsAndEnchantInfo()
                             slotsWithoutGems[#slotsWithoutGems+1] = equipmentSlotId
 
                         --check if the gem is not a valid gem (deprecated gem)
-                        elseif (not LIB_OPEN_RAID_GEM_IDS[gemId]) then
+                        elseif (gemId < 180000) then
                             slotsWithoutGems[#slotsWithoutGems+1] = equipmentSlotId
                         end
                     end
@@ -376,6 +382,60 @@ function openRaidLib.GearManager.GetPlayerGemsAndEnchantInfo()
     end
 
     return slotsWithoutGems, slotsWithoutEnchant
+end
+
+function openRaidLib.GearManager.BuildPlayerEquipmentList()
+    local equipmentList = {}
+    local debug
+    for equipmentSlotId = 1, 17 do
+        local itemLink = GetInventoryItemLink("player", equipmentSlotId)
+        if (itemLink) then
+            local itemStatsTable = {}
+            local itemID, enchantID, gemID1, gemID2, gemID3, gemID4, suffixID, uniqueID, linkLevel, specializationID, modifiersMask, itemContext = select(2, strsplit(":", itemLink))
+            itemID = tonumber(itemID)
+
+            local effectiveILvl, isPreview, baseILvl = GetDetailedItemLevelInfo(itemLink)
+            if (not effectiveILvl) then
+                openRaidLib.mainControl.scheduleUpdatePlayerData()
+                effectiveILvl = 0
+                openRaidLib.__errors[#openRaidLib.__errors+1] = "Fail to get Item Level: " .. (itemID or "invalid itemID") .. " " .. (itemLink and itemLink:gsub("|H", "") or "invalid itemLink")
+            end
+
+            GetItemStats(itemLink, itemStatsTable)
+            local gemSlotsAvailable = itemStatsTable and itemStatsTable.EMPTY_SOCKET_PRISMATIC or 0
+
+            local noPrefixItemLink = itemLink : gsub("^|c%x%x%x%x%x%x%x%x|Hitem", "")
+            local linkTable = {strsplit(":", noPrefixItemLink)}
+            local numModifiers = linkTable[14]
+            numModifiers = numModifiers and tonumber(numModifiers) or 0
+
+            for i = #linkTable, 14 + numModifiers + 1, -1 do
+                tremove(linkTable, i)
+            end
+
+            local newItemLink = table.concat(linkTable, ":")
+            newItemLink = newItemLink
+            equipmentList[#equipmentList+1] = {equipmentSlotId, gemSlotsAvailable, effectiveILvl, newItemLink}
+
+            if (equipmentSlotId == 2) then
+                debug = {itemLink:gsub("|H", ""), newItemLink}
+            end
+        end
+    end
+
+    --[[ debug
+    local str = ""
+    for i = 1, #equipmentList do
+        local t = equipmentList[i]
+        local s = t[1] .. "," .. t[2] .. "," .. t[3] .. "," .. t[4]
+        str = str .. s
+    end
+
+    table.insert(debug, str)
+    dumpt(debug)
+    --]]
+
+    return equipmentList
 end
 
 local playerHasPetOfNpcId = function(npcId)
