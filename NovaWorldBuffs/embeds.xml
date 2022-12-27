@@ -19,4 +19,9 @@
   <Include file="Lib\LibSerialize-1.0.0\LibSerialize.lua"/>
   <Include file="Lib\LibCandyBar-3.0\lib.xml"/>
   <Include file="Lib\LibDurability\LibDurability.xml"/>
+  <ScrollFrame name="NWB_InputScrollFrameTemplate" inherits="InputScrollFrameTemplate" virtual="true">
+	<KeyValues>
+      <KeyValue key="maxLetters" value="0" type="number"/>
+    </KeyValues>
+  </ScrollFrame>
 </Ui>

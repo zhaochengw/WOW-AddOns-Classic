@@ -1,8 +1,8 @@
-## Interface: 30400
+## Interface: 11307
 ## Title: Private Tailor Tag (玩家标签)
 ## Notes: 给玩家添加标签，标签只对自己可见
 ## Author: 千古
-## Version: 0.0.2
+## Version: 0.0.1
 ## SavedVariables: PlayTagDB
 ## SavedVariablesPerCharacter:
 

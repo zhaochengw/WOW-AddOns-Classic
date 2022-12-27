@@ -1,5 +1,5 @@
 ## Interface: 30400
-## Version: v10.0.0
+## Version: v10.0.2
 ## LoadOnDemand: 1
 ## Title: Lib: Sink-2.0
 ## Notes: Library that handles chat output.

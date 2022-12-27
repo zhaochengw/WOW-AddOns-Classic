@@ -1,3 +1,6 @@
+### 2.2.7
+- Loot window will properly show items that are rolled for
+
 ### 2.2.6
 - fix error
 

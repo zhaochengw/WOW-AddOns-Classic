@@ -1074,6 +1074,15 @@ MT.BuildEnv('UI');
 					return;
 				end
 				MT.UI.TreeUpdate(Frame, Frame.CurTreeIndex, true);
+				local PScale = UIParent:GetEffectiveScale();
+				local FScale = Frame:GetEffectiveScale();
+				if Frame:GetRight() * FScale <= UIParent:GetLeft() * PScale + 16 then
+					Frame:ClearAllPoints();
+					Frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMLEFT", Frame:GetBottom() * FScale / PScale, 16 * FScale / PScale);
+				elseif Frame:GetLeft() * FScale >= UIParent:GetRight() * PScale - 16 then
+					Frame:ClearAllPoints();
+					Frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMRIGHT", Frame:GetBottom() * FScale / PScale, -16 * FScale / PScale);
+				end
 			end
 		end
 		function MT.UI.TreeNodeLight(Node)
@@ -3417,6 +3426,7 @@ MT.BuildEnv('UI');
 		local function Frame_OnSizeChanged(Frame, width, height)
 			width = Frame:GetWidth();
 			height = Frame:GetHeight();
+			Frame:SetClampRectInsets(width * 0.75, -width * 0.75, -height * 0.75, height * 0.75);
 			--	BG 0,512;0,360
 			local ratio = height / width;
 			if ratio > 360 / 512 then
@@ -3555,6 +3565,7 @@ MT.BuildEnv('UI');
 			Frame:EnableMouse(true);
 			Frame:SetMovable(true);
 			Frame:SetResizable(true);
+			Frame:SetClampedToScreen(true);
 
 			Frame:Hide();
 

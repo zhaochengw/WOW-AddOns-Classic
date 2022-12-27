@@ -16,28 +16,28 @@ SPY est un addon qui vous avertit de la présence de joueurs ennemis à proximit
 ]]
 
 L["SpyDescription2"] = [[
-|cffffd000Liste des ennemis à proximité|cffffffff
+|cffffd000 Liste des ennemis à proximité |cffffffff
 Affiche les joueurs ennemis qui ont été détectés à proximité. Les joueurs sont retirés de la liste s'ils n'ont pas été détectés après un certain temps.
 
-|cffffd000Liste des dernières heures|cffffffff
+|cffffd000 Liste des dernières heures |cffffffff
 Affiche tous les ennemis qui ont été détectés au cours de la dernière heure.
 
-|cffffd000Liste des joueurs à ignorer|cffffffff
+|cffffd000 Liste des joueurs à ignorer |cffffffff
 Les joueurs qui sont ajoutés à la liste d'ignorés ne seront pas signalés par Spy. Vous pouvez ajouter et supprimer des joueurs de cette liste en utilisant le menu déroulant du bouton ou en maintenant la touche Ctrl enfoncée tout en cliquant sur le bouton.
 
-|cffffd000Liste des Tuer à vue|cffffffff
+|cffffd000 Liste des Tuer à vue |cffffffff
 Les joueurs de votre liste \"Tuer à vue\" déclenchent une alarme lorsqu'ils sont détectés. Vous pouvez ajouter et supprimer des joueurs de cette liste en utilisant le menu déroulant du bouton ou en maintenant la touche Maj enfoncée tout en cliquant sur le bouton. Le menu déroulant peut également être utilisé pour définir les raisons pour lesquelles vous avez ajouté quelqu'un à la liste "Tuer à vue". Si vous voulez entrer un raison spécifique qui n'est pas dans la liste, utilisez le bouton "Entrez votre propre raison ..." dans la liste "Autre".
 
 ]]
 
 L["SpyDescription3"] = [[
-|cffffd000Statistics Window|cffffffff
+|cffffd000 Statistics Window |cffffffff
 The Statistics Window contains a list of all enemy encounters which can be sorted by name, level, guild, wins, losses and the last time an enemy was detected. It also provides the ability to search for a specific enemy by name or guild and has filters to show only enemies that are marked as Kill on Sight, with a Win/Loss or entered Reasons. 
 
-|cffffd000Kill On Sight Button|cffffffff
+|cffffd000 Kill On Sight Button |cffffffff
 If enabled, this button will be located on the enemy players target frame. Clicking on this button will add/remove the enemy target to/from the Kill On Sight list. Right clicking on the button will allow you to enter Kill on Sight reasons.
 
-|cffffd000Auteur: Slipjack|cffffffff
+|cffffd000 Auteur:|cffffffff Slipjack
 ]]
 
 -- General Settings
@@ -77,6 +77,7 @@ L["Hall of Ancient Paths"] = "Hall des Voies antiques"
 L["Sanctum of the Sages"] = "Sanctum des Sages"
 L["Rustbolt"] = "Mécarouille"
 L["Oribos"] = "Oribos"
+L["Valdrakken"] = "Valdrakken"
 
 -- Display
 L["DisplayOptions"] = "Affichage"
@@ -125,6 +126,7 @@ L["TooltipDisplayLastSeenDescription"] = "Choisir cette option pour afficher la 
 L["DisplayListData"] = "Sélectionnez les données ennemies à afficher"
 L["Name"] = "Nom"
 L["Class"] = "Classe"
+L["Rank"] = "Rang"
 L["SelectFont"] = "Choisir une police"
 L["SelectFontDescription"] = "Sélectionnez une police pour la fenêtre SPY."
 L["RowHeight"] = "Sélectionner la hauteur de ligne"
@@ -290,20 +292,20 @@ L["Won"] = "Victoire"
 L["Lost"] = "Défaite"
 L["Time"] = "Temps"	
 L["List"] = "Liste"
-L["Filter"] = "filtre"
+L["Filter"] = "Filtrer"
 L["Show Only"] = "Afficher seulement"
-L["Realm"] = "Realm"
+L["Realm"] = "Royaume"
 L["KOS"] = "TAV"
 L["Won/Lost"] = "Victoire/Défaite"
 L["Reason"] = "Raison"	 
 L["HonorKills"] = "l'honneur tue"
-L["PvPDeaths"] = "Décès JcJ"
+L["PvPDeaths"] = "JcJ Morts"
 
 -- Output Messages
-L["VersionCheck"] = "|cffc41e3aAttention! La mauvaise version de Spy est installée. Cette version est pour Burning Crusade Classic."
+L["VersionCheck"] = "|cffc41e3aAttention! La mauvaise version de Spy est installée. Cette version est pour Wrath of the Lich King - Classic."
 L["SpyEnabled"] = "|cff9933ffAddon SPY activé"
 L["SpyDisabled"] = "|cff9933ffAddon SPY désactivé. Taper |cffffffff/spy show|cff9933ff pour l'activer"
-L["UpgradeAvailable"] = "|cff9933ffUne nouvelle version de Spy est disponible. Elle peut être téléchargée à partir de:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-tbc"
+L["UpgradeAvailable"] = "|cff9933ffUne nouvelle version de Spy est disponible. Elle peut être téléchargée à partir de:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk"
 L["AlertStealthTitle"] = "Joueur furtif détecté!"
 L["AlertKOSTitle"] = "Joueur Tuer à vue détecté!"
 L["AlertKOSGuildTitle"] = "Guilde Tuer à vue détecté!"
@@ -471,6 +473,7 @@ L["WARRIOR"] = "Guerrier"
 L["DEATHKNIGHt"] =" Chevalier de la mort "
 L["MONK"] = "Moine"
 L["DEMONHUNTER"] = "Chasseur de démons"
+L["EVOKER"] = "Évocateur"
 
 --++ Race descriptions
 L["Human"] = "Humain"
@@ -496,6 +499,7 @@ L["Kul Tiran"] = "Kultirassien"
 L["Zandalari Troll"] = "Troll zandalari"
 L["Mechagnome"] = "Mécagnome"
 L["Vulpera"] = "Vulpérin"
+L["Dracthyr"] = "Dracthyr"
  
 -- Capacités stealth
 L["Stealth"] = "Camouflage"
@@ -516,6 +520,7 @@ L["MinimapClassTextWARRIOR"] = "|cffc69b6d"
 L["MinimapClassTextDEATHKNIGHT"] = "|cffc41e3a"
 L["MinimapClassTextMONK"] = "|cff00ff96"
 L["MinimapClassTextDEMONHUNTER"] = "|cffa330c9"
+L["MinimapClassTextEVOKER"] = "|cff33937f"
 
 Spy_IgnoreList = {
 

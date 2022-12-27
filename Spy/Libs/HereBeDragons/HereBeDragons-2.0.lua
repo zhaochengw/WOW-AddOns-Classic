@@ -1,6 +1,6 @@
 -- HereBeDragons is a data API for the World of Warcraft mapping system
 
-local MAJOR, MINOR = "HereBeDragons-2.0", 9
+local MAJOR, MINOR = "HereBeDragons-2.0", 22
 assert(LibStub, MAJOR .. " requires LibStub")
 
 local HereBeDragons, oldversion = LibStub:NewLibrary(MAJOR, MINOR)
@@ -15,7 +15,10 @@ HereBeDragons.worldMapData     = HereBeDragons.worldMapData or {}
 HereBeDragons.transforms       = HereBeDragons.transforms or {}
 HereBeDragons.callbacks        = HereBeDragons.callbacks or CBH:New(HereBeDragons, nil, nil, false)
 
-local WoWClassic = select(4, GetBuildInfo()) < 20000
+local WOW_INTERFACE_VER = select(4, GetBuildInfo())
+local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+local WoWBC = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) and WOW_INTERFACE_VER >= 20500 and WOW_INTERFACE_VER < 30000
+local WoWWrath = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) and WOW_INTERFACE_VER >= 30400 and WOW_INTERFACE_VER < 40000
 
 -- Data Constants
 local COSMIC_MAP_ID = 946
@@ -58,16 +61,29 @@ local instanceIDOverrides = {
     -- Legion
     [1478] = 1220, -- Temple of Elune Scenario (Val'Sharah)
     [1495] = 1220, -- Protection Paladin Artifact Scenario (Stormheim)
-    [1498] = 1220, -- Havoc Demon Hunter Artifact Scenario (Suramar)
     [1502] = 1220, -- Dalaran Underbelly
     [1533] = 0,    -- Karazhan Artifact Scenario
+    [1539] = 0,    -- Arm Warrior Artifact Tirisfal Scenario
     [1612] = 1220, -- Feral Druid Artifact Scenario (Suramar)
     [1626] = 1220, -- Suramar Withered Scenario
     [1662] = 1220, -- Suramar Invasion Scenario
+    -- BfA
+    [2213] = 0,    -- Horrific Vision of Stormwind
+    [2241] = 1,    -- Uldum N'zoth assault
+    [2274] = 1,    -- Uldum N'zoth Minor Vision
+    [2275] = 870,  -- Vale of Eternal Blossoms N'zoth Minor Vision
 }
 
+local dynamicInstanceIDOverrides = {}
+instanceIDOverrides = setmetatable(instanceIDOverrides, { __index = dynamicInstanceIDOverrides })
+
+local function overrideInstance(instance) return instanceIDOverrides[instance] or instance end
+
+-- debug only
+HereBeDragons.___DIIDO = dynamicInstanceIDOverrides
+
 -- gather map info, but only if this isn't an upgrade (or the upgrade version forces a re-map)
-if not oldversion or oldversion < 7 then
+if not oldversion or oldversion < 21 then
     -- wipe old data, if required, otherwise the upgrade path isn't triggered
     if oldversion then
         wipe(mapData)
@@ -77,14 +93,35 @@ if not oldversion or oldversion < 7 then
 
     -- map transform data extracted from UIMapAssignment.db2 (see HereBeDragons-Scripts on GitHub)
     -- format: instanceID, newInstanceID, minY, maxY, minX, maxX, offsetY, offsetX
-    local transformData = {
-        { 530, 0, 4800, 16000, -10133.3, -2666.67, -2400, 2400 },
-        { 530, 1, -6933.33, 533.33, -16000, -8000, 10133.3, 17600 },
-        { 732, 0, -3200, 533.3, -533.3, 2666.7, -611.8, 3904.3 },
-        { 1064, 870, 5391, 8148, 3518, 7655, -2134.2, -2286.6 },
-        { 1208, 1116, -2666, -2133, -2133, -1600, 10210, 2410 },
-        { 1460, 1220, -1066.7, 2133.3, 0, 3200, -2333.9, 966.7 },
-    }
+    local transformData
+    if WoWClassic then
+        transformData = {}
+    elseif WoWBC then
+        transformData = {
+            { 530, 0, 4800, 16000, -10133.3, -2666.67, -2400, 2662.8 },
+            { 530, 1, -6933.33, 533.33, -16000, -8000, 10339.7, 17600 },
+        }
+    elseif WoWWrath then
+        transformData = {
+            { 530, 0, 4800, 16000, -10133.3, -2666.67, -2400, 2662.8 },
+            { 530, 1, -6933.33, 533.33, -16000, -8000, 10339.7, 17600 },
+            { 609, 0, -10000, 10000, -10000, 10000, 0, 0 },
+        }
+    else
+        transformData = {
+            { 530, 1, -6933.33, 533.33, -16000, -8000, 9916, 17600 },
+            { 530, 0, 4800, 16000, -10133.3, -2666.67, -2400, 2400 },
+            { 732, 0, -3200, 533.3, -533.3, 2666.7, -611.8, 3904.3 },
+            { 1014, 870, 3200, 5333.3, 1066.7, 2666.7, 0, 0 },
+            { 1064, 870, 5391, 8148, 3518, 7655, -2134.2, -2286.6 },
+            { 1208, 1116, -2666, -2133, -2133, -1600, 10210.7, 2411.4 },
+            { 1460, 1220, -1066.7, 2133.3, 0, 3200, -2333.9, 966.7 },
+            { 1498, 1220, -533.3, 2133.3, 3733.3, 5866.7, 0, 0 },
+            { 1545, 1220, -2666.7, 0, 4800, 8000, 0, -0 },
+            { 1599, 1, 4800, 5866.7, -4266.7, -3200, -490.6, -0.4 },
+            { 1609, 571, 6400, 8533.3, -1600, 533.3, 512.8, 545.3 },
+        }
+    end
 
     local function processTransforms()
         for _, transform in pairs(transformData) do
@@ -179,16 +216,24 @@ if not oldversion or oldversion < 7 then
 
         -- data for the azeroth world map
         if WoWClassic then
-            worldMapData[0] = { 44688.53, 29795.11, 32601.04, 9894.93 }
-            worldMapData[1] = { 44878.66, 29916.10, 8723.96, 14824.53 }
+            worldMapData[0] = { 44688.53, 29795.11, 32601.04,  9894.93 }
+            worldMapData[1] = { 44878.66, 29916.10,  8723.96, 14824.53 }
+        elseif WoWBC then
+            worldMapData[0] = { 44688.53, 29791.24, 32681.47, 11479.44 }
+            worldMapData[1] = { 44878.66, 29916.10,  8723.96, 14824.53 }
+        elseif WoWWrath then
+            worldMapData[0] = { 48033.24, 32020.8, 36867.97, 14848.84 }
+            worldMapData[1] = { 47908.72, 31935.28, 8552.61, 18467.83 }
+            worldMapData[571] = { 47662.7, 31772.19, 25198.53, 11072.07 }
         else
             worldMapData[0] = { 76153.14, 50748.62, 65008.24, 23827.51 }
-            worldMapData[1] = { 77803.77, 51854.98, 13157.6, 28030.61 }
+            worldMapData[1] = { 77621.13, 51854.98, 18576.47, 28030.61 }
             worldMapData[571] = { 71773.64, 50054.05, 36205.94, 12366.81 }
             worldMapData[870] = { 67710.54, 45118.08, 33565.89, 38020.67 }
             worldMapData[1220] = { 82758.64, 55151.28, 52943.46, 24484.72 }
             worldMapData[1642] = { 77933.3, 51988.91, 44262.36, 32835.1 }
             worldMapData[1643] = { 76060.47, 50696.96, 55384.8, 25774.35 }
+            worldMapData[2444] = { 111420.37, 74283, 86088.21, 15682.4 }
         end
     end
 
@@ -206,7 +251,7 @@ if not oldversion or oldversion < 7 then
         fixupZones()
 
         -- try to fill in holes in the map list
-        for i = 1, 2000 do
+        for i = 1, 2500 do
             if not mapData[i] then
                 local mapInfo = C_Map.GetMapInfo(i)
                 if mapInfo and mapInfo.name then
@@ -231,20 +276,27 @@ local function applyCoordinateTransforms(x, y, instanceID)
             end
         end
     end
-    if instanceIDOverrides[instanceID] then
-        instanceID = instanceIDOverrides[instanceID]
-    end
-    return x, y, instanceID
+    return x, y, overrideInstance(instanceID)
 end
 
 local StartUpdateTimer
-local function UpdateCurrentPosition()
+local function UpdateCurrentPosition(instanceCheck)
     -- retrieve current zone
     local uiMapID = C_Map.GetBestMapForUnit("player")
 
+    -- try to override the instance if possible
+    if instanceCheck then
+        local _x, _y, instance = HereBeDragons:GetPlayerWorldPosition()
+        if instance and instance ~= -1 and mapData[uiMapID] and mapData[uiMapID].instance ~= instance and uiMapID ~= -1 and not instanceIDOverrides[instance] and not instanceIDOverrides[mapData[uiMapID].instance] then
+            dynamicInstanceIDOverrides[instance] = mapData[uiMapID].instance
+        end
+    end
+
     if uiMapID ~= currentPlayerUIMapID then
-        -- update upvalues and signal callback
+        -- update location upvalues
         currentPlayerUIMapID, currentPlayerUIMapType = uiMapID, mapData[uiMapID] and mapData[uiMapID].mapType or 0
+
+        -- signal callback
         HereBeDragons.callbacks:Fire("PlayerZoneChanged", currentPlayerUIMapID, currentPlayerUIMapType)
     end
 
@@ -275,7 +327,7 @@ function StartUpdateTimer()
 end
 
 local function OnEvent(frame, event, ...)
-    UpdateCurrentPosition()
+    UpdateCurrentPosition(true)
 end
 
 HereBeDragons.eventFrame:SetScript("OnEvent", OnEvent)
@@ -285,11 +337,6 @@ HereBeDragons.eventFrame:RegisterEvent("ZONE_CHANGED")
 HereBeDragons.eventFrame:RegisterEvent("ZONE_CHANGED_INDOORS")
 HereBeDragons.eventFrame:RegisterEvent("NEW_WMO_CHUNK")
 HereBeDragons.eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-
--- if we're loading after entering the world (ie. on demand), update position now
-if IsLoggedIn() then
-    UpdateCurrentPosition()
-end
 
 --- Return the localized zone name for a given uiMapID
 -- @param uiMapID uiMapID of the zone
@@ -329,7 +376,7 @@ function HereBeDragons:GetWorldCoordinatesFromZone(x, y, zone)
     local width, height, left, top = data[1], data[2], data[3], data[4]
     x, y = left - width * x, top - height * y
 
-    return x, y, data.instance
+    return x, y, overrideInstance(data.instance)
 end
 
 --- Convert local/point coordinates to world coordinates in yards. The coordinates have to come from the Azeroth World Map
@@ -390,7 +437,7 @@ end
 local function TranslateAzerothWorldMapCoordinates(self, x, y, oZone, dZone, allowOutOfBounds)
     if (oZone ~= WORLD_MAP_ID and not mapData[oZone]) or (dZone ~= WORLD_MAP_ID and not mapData[dZone]) then return nil, nil end
     -- determine the instance we're working with
-    local instance = (oZone == WORLD_MAP_ID) and mapData[dZone].instance or mapData[oZone].instance
+    local instance = overrideInstance((oZone == WORLD_MAP_ID) and mapData[dZone].instance or mapData[oZone].instance)
     if not worldMapData[instance] then return nil, nil end
 
     if oZone == WORLD_MAP_ID then
@@ -419,7 +466,7 @@ function HereBeDragons:TranslateZoneCoordinates(x, y, oZone, dZone, allowOutOfBo
     if not xCoord then return nil, nil end
 
     local data = mapData[dZone]
-    if not data or data.instance ~= instance then return nil, nil end
+    if not data or overrideInstance(data.instance) ~= instance then return nil, nil end
 
     return self:GetZoneCoordinatesFromWorld(xCoord, yCoord, dZone, allowOutOfBounds)
 end
@@ -492,7 +539,7 @@ end
 function HereBeDragons:GetUnitWorldPosition(unitId)
     -- get the current position
     local y, x, _z, instanceID = UnitPosition(unitId)
-    if not x or not y then return nil, nil, instanceIDOverrides[instanceID] or instanceID end
+    if not x or not y then return nil, nil, overrideInstance(instanceID) end
 
     -- return transformed coordinates
     return applyCoordinateTransforms(x, y, instanceID)
@@ -504,7 +551,7 @@ end
 function HereBeDragons:GetPlayerWorldPosition()
     -- get the current position
     local y, x, _z, instanceID = UnitPosition("player")
-    if not x or not y then return nil, nil, instanceIDOverrides[instanceID] or instanceID end
+    if not x or not y then return nil, nil, overrideInstance(instanceID) end
 
     -- return transformed coordinates
     return applyCoordinateTransforms(x, y, instanceID)
@@ -531,4 +578,10 @@ function HereBeDragons:GetPlayerZonePosition(allowOutOfBounds)
         return x, y, currentPlayerUIMapID, currentPlayerUIMapType
     end
     return nil, nil, nil, nil
+end
+
+-- if we're loading after entering the world (ie. on demand), update position now
+-- This needs to remain at the bottom of the library to ensure all functions are loaded before they are needed
+if IsLoggedIn() then
+    UpdateCurrentPosition(true)
 end

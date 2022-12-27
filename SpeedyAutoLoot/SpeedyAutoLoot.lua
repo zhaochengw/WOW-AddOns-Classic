@@ -129,7 +129,7 @@ function AutoLoot:OnLootClosed()
 end
 
 function AutoLoot:OnErrorMessage(...)
-  if tContains(({ERR_INV_FULL,ERR_ITEM_MAX_COUNT}), select(2,...)) then
+  if tContains(({ERR_INV_FULL,ERR_ITEM_MAX_COUNT,ERR_LOOT_ROLL_PENDING}), select(2,...)) then
     if internal.isLooting and internal.isHidden then
       self:ShowLootFrame(true);
       self:PlayInventoryFullSound();

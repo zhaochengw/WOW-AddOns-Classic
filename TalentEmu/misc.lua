@@ -31,10 +31,6 @@ MT.BuildEnv('MISC');
 -->		predef
 -->		MISC
 	--
-	if select(2, GetAddOnInfo('\33\33\33\49\54\51\85\73\33\33\33')) then
-		_G._163_ALAEMU_SETCONFIG = MT.SetConfig;
-		_G._163_ALAEMU_GETCONFIG = MT.GetConfig;
-	end
 	--	popup
 
 		VT.__popuplib.add_meta("EMU_INSPECT", {

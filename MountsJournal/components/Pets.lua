@@ -1,4 +1,4 @@
-local GetNumCompanions, GetCompanionInfo, CallCompanion, random, InCombatLockdown, IsFlying, IsMounted, UnitHasVehicleUI, UnitChannelInfo, IsStealthed, UnitIsGhost, GetSpellCooldown = GetNumCompanions, GetCompanionInfo, CallCompanion, random, InCombatLockdown, IsFlying, IsMounted, UnitHasVehicleUI, UnitChannelInfo, IsStealthed, UnitIsGhost, GetSpellCooldown
+local GetNumCompanions, GetCompanionInfo, CallCompanion, random, InCombatLockdown, IsFlying, IsMounted, UnitHasVehicleUI, UnitCastingInfo, UnitChannelInfo, IsStealthed, UnitIsGhost, GetSpellCooldown = GetNumCompanions, GetCompanionInfo, CallCompanion, random, InCombatLockdown, IsFlying, IsMounted, UnitHasVehicleUI, UnitCastingInfo, UnitChannelInfo, IsStealthed, UnitIsGhost, GetSpellCooldown
 local mounts, util = MountsJournal, MountsJournalUtil
 local pets = CreateFrame("FRAME")
 mounts.pets = pets
@@ -87,6 +87,7 @@ do
 		elseif IsFlying()
 			or IsMounted()
 			or UnitHasVehicleUI("player")
+			or UnitCastingInfo("player")
 			or UnitChannelInfo("player")
 			or IsStealthed()
 			or UnitIsGhost("player")

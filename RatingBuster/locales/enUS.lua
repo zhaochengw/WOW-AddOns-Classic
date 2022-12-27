@@ -532,7 +532,7 @@ L["numberPatterns"] = {
 	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat",}, -- [發光的暗影卓奈石] +6法術傷害及5耐力
 }
 L["separators"] = {
-	"/", " and ", ",", "%. ", " for ", "&", ":"
+	"/", " and ", ",", "%. ", " for ", "&", ":", "\n"
 }
 --[[ Rating ID
 CR_WEAPON_SKILL = 1;
@@ -546,19 +546,13 @@ CR_HIT_SPELL = 8;
 CR_CRIT_MELEE = 9;
 CR_CRIT_RANGED = 10;
 CR_CRIT_SPELL = 11;
-CR_HIT_TAKEN_MELEE = 12;
-CR_HIT_TAKEN_RANGED = 13;
-CR_HIT_TAKEN_SPELL = 14;
-CR_CRIT_TAKEN_MELEE = 15;
-CR_CRIT_TAKEN_RANGED = 16;
-CR_CRIT_TAKEN_SPELL = 17;
+CR_RESILIENCE_CRIT_TAKEN = 15;
+CR_RESILIENCE_PLAYER_DAMAGE_TAKEN = 16;
 CR_HASTE_MELEE = 18;
 CR_HASTE_RANGED = 19;
 CR_HASTE_SPELL = 20;
-CR_WEAPON_SKILL_MAINHAND = 21;
-CR_WEAPON_SKILL_OFFHAND = 22;
-CR_WEAPON_SKILL_RANGED = 23;
 CR_EXPERTISE = 24;
+CR_ARMOR_PENETRATION = 25;
 --
 SPELL_STAT1_NAME = "Strength"
 SPELL_STAT2_NAME = "Agility"
@@ -568,6 +562,8 @@ SPELL_STAT5_NAME = "Spirit"
 --]]
 L["statList"] = {
 	{pattern = "lowers intellect of target", id = nil}, -- Brain Hacker
+	{pattern = "reduces an enemy's armor", id = nil}, -- Annihilator
+
 	{pattern = string.lower(SPELL_STAT1_NAME), id = SPELL_STAT1_NAME}, -- Strength
 	{pattern = string.lower(SPELL_STAT2_NAME), id = SPELL_STAT2_NAME}, -- Agility
 	{pattern = string.lower(SPELL_STAT3_NAME), id = SPELL_STAT3_NAME}, -- Stamina
@@ -597,7 +593,7 @@ L["statList"] = {
 	{pattern = "ranged hit rating", id = CR_HIT_RANGED},
 	{pattern = "hit rating", id = CR_HIT},
 
-	{pattern = "resilience", id = CR_CRIT_TAKEN_MELEE}, -- resilience is implicitly a rating
+	{pattern = "resilience", id = CR_RESILIENCE_CRIT_TAKEN}, -- resilience is implicitly a rating
 
 	{pattern = "spell haste rating", id = CR_HASTE_SPELL},
 	{pattern = "ranged haste rating", id = CR_HASTE_RANGED},
@@ -633,6 +629,7 @@ L["$value to be Dodged/Parried"] = true
 L["$value to be Crit"] = true
 L["$value Crit Dmg Taken"] = true
 L["$value DOT Dmg Taken"] = true
+L["$value Dmg Taken"] = true
 L["$value% Parry"] = true
 -- for hit rating showing both physical and spell conversions
 -- (+1.21%, S+0.98%)

@@ -1,4 +1,4 @@
-﻿## Interface: 11307
+## Interface: 30400
 ## Title: |cFFBF00FF[H]|r zTip
 ## Notes: Enhance GameTooltip
 ## Title-zhCN: |cFFBF00FF[H]|r zTip(修改版)

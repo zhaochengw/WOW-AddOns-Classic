@@ -103,6 +103,7 @@ L["DRUID_USELASTDRUIDFORM"] = "Remettre la précédente forme en descendant de l
 L["DRUID_USETRAVELIFCANTFLY"] = "Utiliser %s au lieu de la macro si le personnage ne peut voler"
 -- L["DRUID_USEDRUIDFORMSPECIALIZATION"] = "Return a specialization form"
 L["DRUID_USEMACROALWAYS"] = "Utiliser cette macro au lieu des montures"
+-- L["DRUID_USEMACROONLYCANFLY"] = ""
 L["Summonable Battle Pet"] = "Compagnons de bataille invocable"
 L["Summon Random Battle Pet"] = "Invoquer un compagnon de bataille au hasard"
 L["No Battle Pet"] = "Pas de compagnon de bataille"

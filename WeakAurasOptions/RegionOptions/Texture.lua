@@ -27,10 +27,9 @@ local function createOptions(id, data)
         OptionsPrivate.OpenTexturePicker(data, {}, {
           texture = "texture",
           color = "color",
-          auraRotation = "rotation",
           mirror = "mirror",
           blendMode = "blendMode"
-        }, OptionsPrivate.Private.texture_types);
+        }, OptionsPrivate.Private.texture_types, nil, true)
       end,
       imageWidth = 24,
       imageHeight = 24,
@@ -68,6 +67,27 @@ local function createOptions(id, data)
       order = 5,
       values = OptionsPrivate.Private.blend_types
     },
+    mirror = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Mirror"],
+      order = 6
+    },
+    textureWrapMode = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Texture Wrap"],
+      order = 7,
+      values = OptionsPrivate.Private.texture_wrap_types,
+      hidden = IsAtlas(data.texture)
+    },
+    rotate = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Allow Full Rotation"],
+      order = 8,
+      hidden = IsAtlas(data.texture)
+    },
     rotation = {
       type = "range",
       control = "WeakAurasSpinBox",
@@ -77,29 +97,19 @@ local function createOptions(id, data)
       max = 360,
       step = 1,
       bigStep = 3,
-      order = 6,
-    },
-    mirror = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Mirror"],
-      order = 7,
-    },
-    legacyZoomOut = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Legacy Zoom Out"],
-      desc = L["Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."],
-      order = 8,
-      hidden = IsAtlas(data.texture)
-    },
-    textureWrapMode = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Texture Wrap"],
       order = 9,
-      values = OptionsPrivate.Private.texture_wrap_types,
-      hidden = IsAtlas(data.texture)
+      hidden = function() return not (data.rotate and not IsAtlas(data.texture)) end,
+    },
+    discrete_rotation = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      width = WeakAuras.normalWidth,
+      name = L["Discrete Rotation"],
+      min = 0,
+      max = 360,
+      step = 90,
+      order = 10,
+      hidden = function() return not (not data.rotate or IsAtlas(data.texture)) end,
     },
     endHeader = {
       type = "header",
@@ -133,26 +143,46 @@ end
 
 local function modifyThumbnail(parent, region, data, fullModify, size)
   size = size or 30;
+  local scale;
   if(data.height > data.width) then
-    local scale = data.width / data.height;
-    region.texture:SetWidth(scale * size)
+    scale = size/data.height;
+    region.texture:SetWidth(scale * data.width);
     region.texture:SetHeight(size);
   else
-    local scale = data.height / data.width;
-    region.texture:SetWidth(size)
-    region.texture:SetHeight(scale * size)
+    scale = size/data.width;
+    region.texture:SetWidth(size);
+    region.texture:SetHeight(scale * data.height);
   end
 
   WeakAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
   region.texture:SetVertexColor(data.color[1], data.color[2], data.color[3], data.color[4]);
-  region.texture:SetBlendMode(data.blendMode)
-  region.texture:SetRotation((data.rotation / 180) * math.pi)
+  region.texture:SetBlendMode(data.blendMode);
 
-  local ulx,uly, llx,lly, urx,ury, lrx,lry = 0,0, 0,1, 1,0, 1,1
-  if(data.mirror) then
-    region.texture:SetTexCoord(urx,ury, lrx,lry, ulx,uly, llx,lly)
+  if region.texture.IsAtlas then
+    return
+  end
+  local ulx,uly , llx,lly , urx,ury , lrx,lry;
+  if(data.rotate) then
+    local angle = rad(135 - data.rotation);
+    local vx = math.cos(angle);
+    local vy = math.sin(angle);
+
+    ulx,uly , llx,lly , urx,ury , lrx,lry = 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy;
   else
-    region.texture:SetTexCoord(ulx,uly, llx,lly, urx,ury, lrx,lry)
+    if(data.discrete_rotation == 0 or data.discrete_rotation == 360) then
+      ulx,uly , llx,lly , urx,ury , lrx,lry = 0,0 , 0,1 , 1,0 , 1,1;
+    elseif(data.discrete_rotation == 90) then
+      ulx,uly , llx,lly , urx,ury , lrx,lry = 1,0 , 0,0 , 1,1 , 0,1;
+    elseif(data.discrete_rotation == 180) then
+      ulx,uly , llx,lly , urx,ury , lrx,lry = 1,1 , 1,0 , 0,1 , 0,0;
+    elseif(data.discrete_rotation == 270) then
+      ulx,uly , llx,lly , urx,ury , lrx,lry = 0,1 , 1,1 , 0,0 , 1,0;
+    end
+  end
+  if(data.mirror) then
+    region.texture:SetTexCoord(urx,ury , lrx,lry , ulx,uly , llx,lly);
+  else
+    region.texture:SetTexCoord(ulx,uly , llx,lly , urx,ury , lrx,lry);
   end
 end
 
@@ -168,7 +198,7 @@ local function createIcon()
   };
 
   local thumbnail = createThumbnail();
-  modifyThumbnail(UIParent, thumbnail, data, nil, 36)
+  modifyThumbnail(UIParent, thumbnail, data, nil, 50);
 
   return thumbnail;
 end

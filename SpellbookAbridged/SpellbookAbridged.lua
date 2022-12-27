@@ -327,7 +327,15 @@ function SBA_OptionButton_OnDragStop(self)
 end
 
 function AutoUpRankButton_OnClick()
-	
+	if AutoUpRankButton:GetChecked() then
+		for i = 1, GetNumSpellTabs() do
+			local _, _, offset, numSlots = GetSpellTabInfo(i)
+			for j = offset+1, offset+numSlots do
+				local spellType, spellID = GetSpellBookItemInfo(j, BOOKTYPE_SPELL)
+				SpellBookAbridged_AutoUpRank(spellID);
+			end
+		end
+	end
 end
 
 -- Functions for Configuration Frame

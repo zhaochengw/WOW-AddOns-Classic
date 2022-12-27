@@ -70,7 +70,7 @@ aboutConfig:SetScript("OnShow", function(self)
 	translators:SetText(L["Localization Translators:"])
 
 	local langs, last = {
-		{"deDE", "SlayerEGT, Asraael, Flammenengel92, isatis2109, fredundaunted"},
+		{"deDE", "SlayerEGT, Asraael, Flammenengel92, isatis2109, scienetic, fredundaunted"},
 		{"esMX", "Pedrorco"},
 		{"frFR", "6urvan, Asraael, okaboo, Braincell1980, macumbafeh"},
 		{"ptBR", "LutzPS"},

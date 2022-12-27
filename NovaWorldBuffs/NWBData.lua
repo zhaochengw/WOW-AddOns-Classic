@@ -27,6 +27,10 @@ local c = addon.c;
 local version = GetAddOnMetadata("NovaWorldBuffs", "Version") or 9999;
 local L = LibStub("AceLocale-3.0"):GetLocale("NovaWorldBuffs");
 local time, elapsed = 0, 0;
+local NWBLFrame;
+local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots;
+local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots;
+
 --TBC compatibility.
 local IsQuestFlaggedCompleted = IsQuestFlaggedCompleted;
 if (C_QuestLog.IsQuestFlaggedCompleted) then
@@ -180,6 +184,12 @@ function NWB:OnCommReceived(commPrefix, string, distribution, sender)
 			--NWB:debug("npcwalking inc", sender, data);
 			local type, layer = strsplit(" ", data, 2);
 			NWB:doNpcWalkingMsg(type, layer, sender);
+		elseif ((cmd == "lb" or cmd == "l") and distribution == "GUILD") then
+			--NWB:debug("npcwalking inc", sender, data);
+			local zoneID, buffs = strsplit(" ", data, 2);
+			NWB:receivedLayerBuffs(zoneID, buffs);
+		elseif (cmd == "rlb" and distribution == "GUILD") then
+			NWB:sendLayerBuffs();
 		end
 	end
 	if (tonumber(remoteVersion) < 2.35) then
@@ -254,7 +264,7 @@ function NWB:sendComm(distribution, string, target, prio, useOldSerializer)
 		target = nil;
 	end
 	local data, serialized;
-	--Disable sending with old serializer 21 aug 2012, remove receiving old serialized data in a later update.
+	--Disable sending with old serializer 21 aug 2021, remove receiving old serialized data in a later update.
 	--if (useOldSerializer) then
 		--For settings to older versions.
 	--	serialized = NWB.serializerOld:Serialize(string);
@@ -400,13 +410,116 @@ function NWB:sendSettings(distribution, target, prio)
 	--NWB:sendSettingsOld(distribution, target, prio);
 end
 
+--Send layer buffs.
+local lastLayerBuffs = 0;
+NWB.layerBuffSpells = {
+	--spellID -> icon.
+};
+if (NWB.isWrath) then
+	NWB.layerBuffSpells[57940] = 237021; --Essence of Wintergrasp.
+end
+
+local function getLayerBuffData(zoneID)
+	local buffString;
+	local layerBuffSpells = NWB.layerBuffSpells;
+	local count = 0;
+	for i = 1, 40 do
+		local _, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i);
+		if (spellID and layerBuffSpells[spellID]) then
+			count = count + 1;
+			if (count == 1) then
+				buffString = spellID;
+			else
+				buffString = buffString .. " " .. spellID;
+			end
+		end
+	end
+	if (buffString) then
+		--Record our own buffs also.
+		NWB:receivedLayerBuffs(zoneID, buffString);
+	end
+	return buffString;
+end
+
+function NWB:sendLayerBuffs(zoneID)
+	if (not next(NWB.layerBuffSpells)) then
+		return;
+	end
+	if (GetTime() < lastLayerBuffs + 10) then
+		return;
+	end
+	if (not zoneID) then
+		zoneID = NWB:getCurrentLayerZoneID();
+		if (not zoneID or zoneID == 0) then
+			return;
+		end
+	end
+	local buffString = getLayerBuffData(zoneID);
+	if (not buffString) then
+		return;
+	end
+	if (NWB:isClassicCheck()) then
+		lastLayerBuffs = GetTime();
+		NWB:sendComm("GUILD", "lb " .. version .. " " .. self.k() .. " " .. zoneID .. buffString);
+	end
+end
+
+function NWB:receivedLayerBuffs(zoneID, buffs)
+	if (not zoneID or not tonumber(zoneID) or not buffs or not next(NWB.layerBuffSpells)) then
+		return;
+	end
+	--NWB:debug("received layer buffs 1", zoneID, 2, buffs);
+	zoneID = tonumber(zoneID);
+	local buffTable = {};
+	for spellID in string.gmatch(buffs, "%w+") do
+		if (tonumber(spellID)) then
+			table.insert(buffTable, tonumber(spellID));
+		end
+	end
+	if (not NWB.data.layerBuffs[zoneID]) then
+		NWB.data.layerBuffs[zoneID] = {};
+	end
+	local layerBuffSpells = NWB.layerBuffSpells;
+	for _, spellID in pairs(buffTable) do
+		if (layerBuffSpells[spellID]) then
+			NWB.data.layerBuffs[zoneID][spellID] = GetServerTime();
+		end
+	end
+end
+
+function NWB:isWintergraspBuffLayer(zoneID)
+	--If timestamp is from current spawn time.
+	if (zoneID and NWB.layerBuffSpells[57940]) then
+		if (NWB.data.layerBuffs[zoneID]) then
+			local wintergrasp, wintergraspTime = NWB:getWintergraspData();
+			local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
+			local secondsLeft = endTime - GetServerTime();
+			for spellID, timestamp in pairs(NWB.data.layerBuffs[zoneID]) do
+				--if (spellID == 57940 and GetServerTime() - timestamp < 600) then --Old version was if buff seen in last 10mins, less reliable for small guilds.
+				if (spellID == 57940 and timestamp < endTime and timestamp > (endTime - 9900)) then
+					return true;
+				end
+			end
+		end
+	end
+end
+
 function NWB:sendL(l, type)
 	if (UnitInBattleground("player") or NWB:isInArena() or not IsInGuild()) then
 		return;
 	end
+	local zoneID, buffString = "", "";
+	if (next(NWB.layerBuffSpells)) then
+		local zoneIDTemp = NWB:getLayerZoneID(l);
+		local buffStringTemp = getLayerBuffData(zoneIDTemp);
+		if (zoneIDTemp and buffStringTemp) then
+			zoneID = " " .. zoneIDTemp;
+			buffString = " " .. buffStringTemp;
+		end
+	end
 	if (NWB.db.global.guildL) then
 		--NWB:debug("sending layer", l, type);
-		NWB:sendComm("GUILD", "l " .. version .. "-" .. l .. " " .. self.k());
+		NWB:sendComm("GUILD", "l " .. version .. "-" .. l .. " " .. self.k() .. zoneID .. buffString);
 	end
 end
 
@@ -2181,6 +2294,19 @@ function NWB:trimTimerLog()
 			table.remove(NWB.data.timerLog, i);
 		end
 	end
+	if (NWB.data.layerBuffs and next(NWB.data.layerBuffs)) then
+		for k, v in pairs(NWB.data.layerBuffs) do
+			--Remove layerbuff data older than a day.
+			for kk, vv in pairs(v) do
+				if (GetServerTime() - vv > 86400) then
+					NWB.data.layerBuffs[k][kk] = nil;
+				end
+			end
+			if (not next(NWB.data.layerBuffs[k])) then
+				NWB.data.layerBuffs[k] = nil;
+			end
+		end
+	end
 end
 
 function NWB:resetTimerLog()
@@ -2198,7 +2324,7 @@ function NWB:cleanupSettingsData()
 	end
 end
 
-local NWBTimerLogFrame = CreateFrame("ScrollFrame", "NWBTimerLogFrame", UIParent, NWB:addBackdrop("InputScrollFrameTemplate"));
+local NWBTimerLogFrame = CreateFrame("ScrollFrame", "NWBTimerLogFrame", UIParent, NWB:addBackdrop("NWB_InputScrollFrameTemplate"));
 NWBTimerLogFrame:Hide();
 NWBTimerLogFrame:SetToplevel(true);
 NWBTimerLogFrame:SetMovable(true);
@@ -2228,7 +2354,7 @@ NWBTimerLogFrame:HookScript("OnUpdate", function(self, arg)
 		timerLogUpdateTime = GetServerTime();
 	end
 end)
-NWBTimerLogFrame.fs = NWBTimerLogFrame:CreateFontString("NWBTimerLogFrameFS", "HIGH");
+NWBTimerLogFrame.fs = NWBTimerLogFrame:CreateFontString("NWBTimerLogFrameFS", "ARTWORK");
 NWBTimerLogFrame.fs:SetPoint("TOP", 0, -0);
 NWBTimerLogFrame.fs:SetFont(NWB.regionFont, 14);
 NWBTimerLogFrame.fs:SetText("|cFFFFFF00NovaWorldBuffs Timer Log|r");
@@ -2245,7 +2371,7 @@ NWBTimerLogDragFrame.tooltip:SetPoint("CENTER", NWBTimerLogDragFrame, "TOP", 0, 
 NWBTimerLogDragFrame.tooltip:SetFrameStrata("TOOLTIP");
 NWBTimerLogDragFrame.tooltip:SetFrameLevel(9);
 NWBTimerLogDragFrame.tooltip:SetAlpha(.8);
-NWBTimerLogDragFrame.tooltip.fs = NWBTimerLogDragFrame.tooltip:CreateFontString("NWBTimerLogDragTooltipFS", "HIGH");
+NWBTimerLogDragFrame.tooltip.fs = NWBTimerLogDragFrame.tooltip:CreateFontString("NWBTimerLogDragTooltipFS", "ARTWORK");
 NWBTimerLogDragFrame.tooltip.fs:SetPoint("CENTER", 0, 0.5);
 NWBTimerLogDragFrame.tooltip.fs:SetFont(NWB.regionFont, 12);
 NWBTimerLogDragFrame.tooltip.fs:SetText("Hold to drag");
@@ -2344,7 +2470,7 @@ function NWB:openTimerLogFrame()
 		NWBTimerLogFrame:SetHeight(300);
 		NWBTimerLogFrame:SetWidth(590);
 		local fontSize = false
-		NWBTimerLogFrame.EditBox:SetFont(NWB.regionFont, 14);
+		NWBTimerLogFrame.EditBox:SetFont(NWB.regionFont, 14, "");
 		NWBTimerLogFrame.EditBox:SetWidth(NWBTimerLogFrame:GetWidth() - 30);
 		NWBTimerLogFrame:Show();
 		NWB:recalcTimerLogFrame();
@@ -3105,7 +3231,7 @@ function NWB:getBagSlots()
 	return freeSlots, totalSlots;
 end
 
-local NWBLFrame = CreateFrame("ScrollFrame", "NWBLFrame", UIParent, NWB:addBackdrop("InputScrollFrameTemplate"));
+NWBLFrame = CreateFrame("ScrollFrame", "NWBLFrame", UIParent, NWB:addBackdrop("NWB_InputScrollFrameTemplate"));
 NWBLFrame:Hide();
 NWBLFrame:SetToplevel(true);
 NWBLFrame:SetMovable(true);
@@ -3135,7 +3261,7 @@ NWBLFrame:HookScript("OnUpdate", function(self, arg)
 		NWB:recalcLFrame();
 	end
 end)
-NWBLFrame.fs = NWBLFrame:CreateFontString("NWBLFrameFS", "HIGH");
+NWBLFrame.fs = NWBLFrame:CreateFontString("NWBLFrameFS", "ARTWORK");
 NWBLFrame.fs:SetPoint("TOP", 0, -0);
 NWBLFrame.fs:SetFont(NWB.regionFont, 14);
 NWBLFrame.fs:SetText("|cFFFFFF00Guild Layers|r");
@@ -3152,7 +3278,7 @@ NWBLDragFrame.tooltip:SetPoint("CENTER", NWBLDragFrame, "TOP", 0, 12);
 NWBLDragFrame.tooltip:SetFrameStrata("TOOLTIP");
 NWBLDragFrame.tooltip:SetFrameLevel(9);
 NWBLDragFrame.tooltip:SetAlpha(.8);
-NWBLDragFrame.tooltip.fs = NWBLDragFrame.tooltip:CreateFontString("NWBLDragTooltipFS", "HIGH");
+NWBLDragFrame.tooltip.fs = NWBLDragFrame.tooltip:CreateFontString("NWBLDragTooltipFS", "ARTWORK");
 NWBLDragFrame.tooltip.fs:SetPoint("CENTER", 0, 0.5);
 NWBLDragFrame.tooltip.fs:SetFont(NWB.regionFont, 12);
 NWBLDragFrame.tooltip.fs:SetText("Hold to drag");
@@ -3235,6 +3361,7 @@ NWBLFrameRefreshButton:SetScript("OnHide", function(self)
 	end
 end)
 
+local lastOpenLayerFrame = 0;
 function NWB:openLFrame()
 	NWBLFrame.fs:SetFont(NWB.regionFont, 14);
 	if (NWBLFrame:IsShown()) then
@@ -3246,7 +3373,7 @@ function NWB:openLFrame()
 		NWBLFrame:SetHeight(400);
 		NWBLFrame:SetWidth(400);
 		local fontSize = false
-		NWBLFrame.EditBox:SetFont(NWB.regionFont, 14);
+		NWBLFrame.EditBox:SetFont(NWB.regionFont, 14, "");
 		NWBLFrame.EditBox:SetWidth(NWBLFrame:GetWidth() - 30);
 		NWBLFrame:Show();
 		NWB:recalcLFrame();
@@ -3263,6 +3390,12 @@ function NWB:openLFrame()
 			NWBLFrame:SetFrameStrata("DIALOG")
 		else
 			NWBLFrame:SetFrameStrata("HIGH")
+		end
+		if (next(NWB.layerBuffSpells)) then
+			if (GetServerTime() - lastOpenLayerFrame > 5) then
+				NWB:sendComm("GUILD", "rlb " .. version .. " " .. self.k() .. " send");
+				lastOpenLayerFrame = GetServerTime();
+			end
 		end
 	end
 end
@@ -3305,8 +3438,28 @@ function NWB:recalcLFrame()
 		end
 		local found;
 		local text = "";
+		local layerBuffSpells = NWB.layerBuffSpells;
 		for layer, data in NWB:pairsByKeys(sorted) do
-			text = text .. "|cff00ff00[Layer " .. layer .. "]|r\n";
+			local zoneText, wintergraspTexture, buffTextures = "", "", " ";
+			local zoneID = NWB:getLayerZoneID(layer);
+			if (zoneID) then
+				zoneText = " |cFF989898(" .. zoneID .. ")|r";
+				if (NWB:isWintergraspBuffLayer(zoneID, "guildframe")) then
+					wintergraspTexture = " " .. "|T237021:12:12|t";
+				end
+				if (NWB.data.layerBuffs[zoneID]) then
+					for spellID, timestamp in pairs(NWB.data.layerBuffs[zoneID]) do
+						--Wintergrasp buff is calced seperately.
+						if (spellID ~= 57940) then
+							if (layerBuffSpells[spellID] and GetServerTime() - timestamp < 600) then
+								local icon = layerBuffSpells[spellID];
+								buffTextures = buffTextures .. " " .. "|T" .. icon .. ":12:12|t";
+							end
+						end
+					end
+				end
+			end
+			text = text .. "|cff00ff00[Layer " .. layer .. "]|r " .. zoneText .. " " .. wintergraspTexture .. buffTextures .. "\n";
 			for k, v in NWB:pairsByKeys(data) do
 				found = true;
 				local _, _, _, classColor = GetClassColor(v.class);
@@ -3896,7 +4049,7 @@ function NWB:createTerokkarMarker(type, data, layer, count)
 			--Worldmap marker.
 			local obj = CreateFrame("Frame", type .. layer .. "NWBTerokkarMap", WorldMapFrame);
 			obj.name = data.name;
-			local bg = obj:CreateTexture(nil, "MEDIUM");
+			local bg = obj:CreateTexture(nil, "ARTWORK");
 			bg:SetTexture(data.icon);
 			bg:SetTexCoord(0.1, 0.6, 0.1, 0.6);
 			bg:SetAllPoints(obj);
@@ -4020,7 +4173,7 @@ function NWB:createTerokkarMarker(type, data, layer, count)
 			--Worldmap marker.
 			local obj = CreateFrame("Frame", type .. "NWBTerokkarMap", WorldMapFrame);
 			obj.name = data.name;
-			local bg = obj:CreateTexture(nil, "MEDIUM");
+			local bg = obj:CreateTexture(nil, "ARTWORK");
 			bg:SetTexture(data.icon);
 			bg:SetTexCoord(0.1, 0.6, 0.1, 0.6);
 			bg:SetAllPoints(obj);
@@ -4986,7 +5139,7 @@ end
 function NWB:createShatDailyMarkers()
 	if (not _G["NWBDailyMap"]) then
 		local obj = CreateFrame("Frame", "NWBDailyMap", WorldMapFrame);
-		local bg = obj:CreateTexture(nil, "MEDIUM");
+		local bg = obj:CreateTexture(nil, "ARTWORK");
 		bg:SetTexture("Interface\\AddOns\\NovaWorldBuffs\\Media\\portalgreen");
 		bg:SetAllPoints(obj);
 		obj.texture = bg;
@@ -5053,7 +5206,7 @@ function NWB:createShatDailyMarkers()
 	end
 	if (not _G["NWBHeroicMap"]) then
 		local obj = CreateFrame("Frame", "NWBHeroicMap", WorldMapFrame);
-		local bg = obj:CreateTexture(nil, "MEDIUM");
+		local bg = obj:CreateTexture(nil, "ARTWORK");
 		bg:SetTexture("Interface\\AddOns\\NovaWorldBuffs\\Media\\portalred");
 		bg:SetAllPoints(obj);
 		obj.texture = bg;
@@ -5131,3 +5284,73 @@ function NWB:createShatDailyMarkers()
 				125, 65 / 100, 97 / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
 	end
 end
+
+local auraCache = {};
+local lastAuraLayerBuffs = 0;
+local function buffGained(spellID, spellName)
+	--Only send on wintergrasp gained, only the following line would need changing to add more if we ever ended up needing to track other buffs from.
+	--if (layerBuffSpells[spellID]) then
+	if (spellID == 57940) then
+		if (GetServerTime() - lastAuraLayerBuffs > 300 and GetServerTime() - lastZoneChange > 10) then
+			local wintergrasp, wintergraspTime = NWB:getWintergraspData();
+			--Between 2h50m and 2h15 time left until next WG the buffs may show up (can be after 2h15m but this window is big enough for most cases.
+			--Someone may have the frame open waiting to see a buff so send the data, only send when new buff is applied and only once per 5mins and only in this short window.
+			--In most cases a player will only send this once per 3h wg.
+			local endTime = NWB:getWintergraspEndTime(wintergrasp, wintergraspTime);
+			local secondsLeft = endTime - GetServerTime();
+			if (secondsLeft < 10200 and secondsLeft > 8100) then
+				NWB:debug("sending unit aura layerBuffs");
+				NWB:sendLayerBuffs();
+				lastAuraLayerBuffs = GetServerTime();
+			end
+		end
+	end
+end
+
+--[[local function buffFaded(spellID, spellName)
+
+end]]
+
+local firstAuraRun = true;
+local function updateAuras(loadAuras)
+	--Very basic, all we want is a cache of our own buffs, no debuffs and no duration data required.
+	local auras = {};
+	local serverTime = GetServerTime();
+	for i = 1, 60 do
+		local name, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i);
+		if (name) then
+			auras[spellID] = name;
+			if (not firstAuraRun and not loadAuras) then
+				if (not auraCache[spellID]) then
+					buffGained(spellID, name);
+				end
+			end
+		else
+			--End loop when no buff is found.
+			break;
+		end
+	end
+	--[[if (not firstAuraRun and not loadAuras) then
+		for k, v in pairs(auraCache) do
+			if (not auras[k]) then
+				buffFaded(k, v);
+			end
+		end
+	end]]
+	auraCache = auras;
+	firstAuraRun = nil;
+end
+
+local f = CreateFrame("Frame", "NWBAuras");
+f:RegisterEvent("PLAYER_ENTERING_WORLD");
+f:RegisterEvent("UNIT_AURA");
+f:SetScript('OnEvent', function(self, event, ...)
+	if (event == "UNIT_AURA") then
+		local unit = ...;
+		if (unit == "player") then
+			updateAuras();
+		end
+	elseif (event == "PLAYER_ENTERING_WORLD") then
+		updateAuras(true);
+	end
+end)

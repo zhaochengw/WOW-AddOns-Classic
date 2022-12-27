@@ -1,3 +1,3 @@
-# 11.1.3 (2022-11-28)
+# 11.1.6 (2022-12-22)
 
-* Fixed a Lua error with tooltip scanning for unit roles, levels or guilds that occured when there was no valid tooltip data [Issue #596].
+* Removed a debug message from Auras widget [GH-372].

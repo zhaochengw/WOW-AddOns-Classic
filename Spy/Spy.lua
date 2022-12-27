@@ -7,7 +7,7 @@ local fonts = SM:List("font")
 local _
 
 Spy = LibStub("AceAddon-3.0"):NewAddon("Spy", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0", "AceTimer-3.0")
-Spy.Version = "3.0.2"
+Spy.Version = "3.1.0"
 Spy.DatabaseVersion = "1.1"
 Spy.Signature = "[Spy]"
 Spy.ButtonLimit = 15
@@ -171,6 +171,7 @@ Spy.options = {
 --						["Magni's Encampment"] = L["Magni's Encampment"],
 --						["Rustbolt"] = L["Rustbolt"],
 --						["Oribos"] = L["Oribos"],
+--						["Valdrakken"] = L["Valdrakken"],
 					},
 				},
 				ShowOnDetection = {
@@ -384,11 +385,12 @@ Spy.options = {
 					type = 'select',
 					order = 12,
 					values = {
-						["NameLevelClass"] = L["Name"].." / "..L["Level"].." / "..L["Class"],
-						["NameLevelGuild"] = L["Name"].." / "..L["Level"].." / "..L["Guild"],
-						["NameLevelOnly"] = L["Name"].." / "..L["Level"],
-						["NameGuild"] = L["Name"].." / "..L["Guild"],
-						["NameOnly"] = L["Name"],
+						["1NameLevelClass"] = L["Name"].." / "..L["Level"].." / "..L["Class"],
+						["2NameLevelGuild"] = L["Name"].." / "..L["Level"].." / "..L["Guild"],
+						["3NameLevelOnly"] = L["Name"].." / "..L["Level"],
+--						["4NamePvPRank"] = L["Name"].." / "..L["Rank"], -- Classic
+						["5NameGuild"] = L["Name"].." / "..L["Guild"],
+						["6NameOnly"] = L["Name"],
 					},
 					get = function()
 						return Spy.db.profile.DisplayListData
@@ -769,6 +771,7 @@ Spy.options = {
 --								["Dark Iron Dwarf"] = L["Dark Iron Dwarf"],
 --								["Kul Tiran"] = L["Kul Tiran"],
 --								["Mechagnome"] = L["Mechagnome"],
+--								["Dracthyr"] = L["Dracthyr"],
 							},
 							Horde = {
 								["None"] = L["None"],
@@ -784,6 +787,7 @@ Spy.options = {
 --								["Mag'har Orc"] = L["Mag'har Orc"],
 --								["Zandalari Troll"] = L["Zandalari Troll"],
 --								["Vulpera"] = L["Vulpera"],
+--								["Dracthyr"] = L["Dracthyr"],
 							},
 						}
 						if Spy.EnemyFactionName == "Alliance" then
@@ -1336,6 +1340,7 @@ local Default_Profile = {
 				["DEATHKNIGHT"] = { r = 0.77, g = 0.12, b = 0.23, a = 0.6 },
 --				["MONK"] = { r = 0.00, g = 1.00, b = 0.60, a = 0.6 },
 --				["DEMONHUNTER"] = { r = 0.64, g = 0.19, b = 0.79, a = 0.6 },
+--				["EVOKER"] = { r = 0.20, g = 0.58, b = 0.50, a = 0.6 },
 				["PET"] = { r = 0.09, g = 0.61, b = 0.55, a = 0.6 },
 				["MOB"] = { r = 0.58, g = 0.24, b = 0.63, a = 0.6 },
 				["UNKNOWN"] = { r = 0.1, g = 0.1, b = 0.1, a = 0.6 },
@@ -1400,7 +1405,7 @@ local Default_Profile = {
 		DisplayWinLossStatistics=true,
 		DisplayKOSReason=true,
 		DisplayLastSeen=true,
-		DisplayListData="NameLevelClass",
+		DisplayListData="1NameLevelClass",
 		ShowOnDetection=true,
 		HideSpy=false,
 --		ShowOnlyPvPFlagged=false,
@@ -1448,6 +1453,7 @@ local Default_Profile = {
 --			["Magni's Encampment"] = false,
 --			["Rustbolt"] = false,
 --			["Oribos"] = false,
+--			["Valdrakken"] = false,
 		},
 	},
 }
@@ -1628,7 +1634,6 @@ function Spy:SetupOptions()
 	self.optionsFrames.About = ACD3:AddToBlizOptions("Spy", L["About"], L["Spy Option"], "About")
 	self.optionsFrames.DisplayOptions = ACD3:AddToBlizOptions("Spy", L["DisplayOptions"], L["Spy Option"], "DisplayOptions")
 	self.optionsFrames.AlertOptions = ACD3:AddToBlizOptions("Spy", L["AlertOptions"], L["Spy Option"], "AlertOptions")
---	self.optionsFrames.ListOptions = ACD3:AddToBlizOptions("Spy", L["ListOptions"], L["Spy Option"], "ListOptions")
 	self.optionsFrames.MapOptions = ACD3:AddToBlizOptions("Spy", L["MapOptions"], L["Spy Option"], "MapOptions")
 	self.optionsFrames.DataOptions = ACD3:AddToBlizOptions("Spy", L["DataOptions"], L["Spy Option"], "DataOptions")
 
@@ -1781,7 +1786,8 @@ function Spy:OnInitialize()
 		["WARRIOR"] = true,
 		["DEATHKNIGHT"] = true,
 --		["MONK"] = true,
---		["DEMONHUNTER"] = true
+--		["DEMONHUNTER"] = true,
+--		["EVOKER"] = true,
 	}
 
 	Spy.ValidRaces = {
@@ -1808,6 +1814,7 @@ function Spy:OnInitialize()
 --		["ZandalariTroll"] = true,
 --		["Mechagnome"] = true,
 --		["Vulpera"] = true,
+--		["Dracthyr"] = true,
 	}
 
 	local acedb = LibStub:GetLibrary("AceDB-3.0")
@@ -1861,6 +1868,9 @@ function Spy:ChannelNoticeEvent(_, chStatus, _, _, Channel)
 		if InFilteredZone then
 			Spy.EnabledInZone = false
 		end
+																																		   
+							
+	 
 --		if (zone == L["Silithus"] and (subZone == L["Hall of Ancient Paths"] or L["Sanctum of the Sages"]) or zone == L["Chamber of Heart"]) then
 --			Spy.EnabledInZone = false
 --		end

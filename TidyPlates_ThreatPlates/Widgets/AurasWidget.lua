@@ -338,6 +338,7 @@ local CROWD_CONTROL_SPELLS_RETAIL = {
   -- [6343] = PC_SNARE,        -- Thunder Clap
   -- [199042] = LOC_STUN,      -- Thunderstruck (PvP, Blizzard) -- Removed as CC as its uptime is to high.
   [199085] = LOC_STUN,      -- Warpath (PvP, Blizzard)
+  [385954] = LOC_STUN,      -- Shield Charge
 
   ---------------------------------------------------------------------------------------------------
   -- Monk
@@ -457,8 +458,9 @@ local CROWD_CONTROL_SPELLS_WRATH_CLASSIC = {
     [49011] = LOC_SLEEP,                     -- Rank 5
     [49012] = LOC_SLEEP,                     -- Rank 6
   [3355] = LOC_INCAPACITATE,               -- Freezing Trap Effect
-    [14308] = LOC_SLEEP,                     -- Rank 2
-    [14309] = LOC_SLEEP,                     -- Rank 3
+    [14308] = LOC_INCAPACITATE,              -- Rank 2
+    [14309] = LOC_INCAPACITATE,              -- Rank 3
+  [60210] = LOC_INCAPACITATE,              -- Freezing Arrow
 
   ---------------------------------------------------------------------------------------------------
   -- Mage
@@ -545,7 +547,7 @@ local CROWD_CONTROL_SPELLS_WRATH_CLASSIC = {
     [9485] = LOC_INCAPACITATE,               -- Rank 2
     [10955] = LOC_INCAPACITATE,              -- Rank 3
   [15487] = LOC_SLEEP,                     -- Silence
-
+  [64044] = LOC_STUN,                      -- Psychic Horror
 
   ---------------------------------------------------------------------------------------------------
   -- Rogue
@@ -1473,6 +1475,7 @@ local function ProcessAllUnitAurasClassic(unitid, effect)
       aura.auraInstanceID = i
 
       unit_auras[#unit_auras + 1] = aura
+      -- Addon.Logging.Debug("Aura:", aura.name, "=> ID:", aura.spellId)
     else
       break
     end
@@ -1502,13 +1505,14 @@ else
           aura.isStealable, aura.nameplateShowPersonal, aura.spellId, aura.canApplyAura, aura.isBossAura, _, aura.nameplateShowAll =
           UnitAuraBySlot(unitid, slots[i])
       
-        local unit_aura_info = GetAuraDataBySlot(unitid, slots[i])   
-        if unit_aura_info then
-          aura.auraInstanceID = unit_aura_info.auraInstanceID
-          aura.UnitAuraInfo = unit_aura_info
-        end
-
-        unit_auras[#unit_auras + 1] = aura
+          local unit_aura_info = GetAuraDataBySlot(unitid, slots[i])   
+          if unit_aura_info then
+            aura.auraInstanceID = unit_aura_info.auraInstanceID
+            aura.UnitAuraInfo = unit_aura_info
+          end
+          
+          unit_auras[#unit_auras + 1] = aura
+          --Addon.Logging.Debug("Aura:", aura.name, "=> ID:", aura.spellId)
       end
     until continuation_token == nil
 

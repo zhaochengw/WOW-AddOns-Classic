@@ -735,4 +735,16 @@ NWB.companionCreatures = {
 	[194795] = "Fishspeaker Irtusk",
 	[32641] = "Drix Blackwrench", --Tundra mount.
 	[32642] = "Mojodishu", --Tundra mount.
+	[31727] = "Grunt Grikee", --Borean/Howling zepplin NPC's sometimes spawn with a diff zoneID such as barrens.
+	[31720] = "Crewman Shubbscoop",
+	[31723] = "Crewman Barrowswizzle",
+	[31726] = "Grunt Gritch",
+	[31725] = "Sky-Captain LaFontaine",
+	[31724] = "Crewman Paltertop",
+	[31704] = "Crewman Spinwheel",
+	[31705] = "Crewman Coilspan",
+	[31706] = "Crewman Stembolt",
+	[31715] = "Deathguard Hicks",
+	[31716] = "Sky-Captain Cryoflight",
+	[31708] = "Deathguard Barth",
 }

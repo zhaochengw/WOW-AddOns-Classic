@@ -797,7 +797,7 @@ function journal:init()
 	modelControl.rotateLeftButton.icon:SetTexCoord(.01562500, .26562500, .28906250, .41406250)
 	modelControl.rotateRightButton.icon:SetTexCoord(.57812500, .82812500, .28906250, .41406250)
 	modelControl.rotateUpButton.icon:SetTexCoord(.01562500, .26562500, .28906250, .41406250)
-	modelControl.rotateUpButton.icon:SetRotation(-math.pi / 1.6, .5, .43)
+	modelControl.rotateUpButton.icon:SetRotation(-math.pi / 1.6, CreateVector2D(.5, .43))
 	modelControl.rotateDownButton.icon:SetTexCoord(.57812500, .82812500, .41406250, .28906250)
 	modelControl.rotateDownButton.icon:SetRotation(-math.pi / 1.6)
 

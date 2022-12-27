@@ -77,6 +77,7 @@ L["Hall of Ancient Paths"] = "고대 길의 전당"
 L["Sanctum of the Sages"] = "현자의 성소"
 L["Rustbolt"] = "녹슨나사"
 L["Oribos"] = "오리보스"
+L["Valdrakken"] = "발드라켄"
 
 -- Display
 L["DisplayOptions"] = "디스플레이"
@@ -125,6 +126,7 @@ L["TooltipDisplayLastSeenDescription"] = "적 플레이어 툴팁에 마지막�
 L["DisplayListData"] = "표시 할 적의 데이터를 선택하십시오"
 L["Name"] = "이름"
 L["Class"] = "직업"
+L["Rank"] = "등급"
 L["SelectFont"] = "폰트 설정"
 L["SelectFontDescription"] = "Spy 창의 폰트를 선택하세요."
 L["RowHeight"] = "열 높이 설정"
@@ -292,7 +294,7 @@ L["Time"] = "시간"
 L["List"] = "표식"
 L["Filter"] = "검색"
 L["Show Only"] = "필터"
-L["Realm"] = "Realm"
+L["Realm"] = "서버"
 L["KOS"] = "살생부"
 L["Won/Lost"] = "승/패"
 L["Reason"] = "이유"	 
@@ -300,10 +302,10 @@ L["HonorKills"] = "명예 킬"
 L["PvPDeaths"] = "PvP 죽음"
 
 -- Output Messages
-L["VersionCheck"] = "|cffc41e3a경고! 잘못된 Spy 버전이 설치되었습니다. 이 버전은 Burning Crusade Classic 용입니다."
+L["VersionCheck"] = "|cffc41e3a경고! 잘못된 Spy 버전이 설치되었습니다. 이 버전은 Wrath of the Lich King - Classic 용입니다."
 L["SpyEnabled"] = "|cff9933ffSpy 애드온이 활성화되었습니다.."
 L["SpyDisabled"] = "|cff9933ffSpy 애드온이 비활성화되었습니다. |cffffffff/spy show|cff9933ff 을 입력해 활성화 시키십시오."
-L["UpgradeAvailable"] = "|cff9933ffA Spy의 새로운 버전을 사용할 수 있습니다. 다운로드 주소:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-tbc"
+L["UpgradeAvailable"] = "|cff9933ffA Spy의 새로운 버전을 사용할 수 있습니다. 다운로드 주소:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk"
 L["AlertStealthTitle"] = "은신한 적이 탐지되었습니다!"
 L["AlertKOSTitle"] = "살생부 명단의 적이 탐지되었습니다!"
 L["AlertKOSGuildTitle"] = "살생부 명단의 적 길드가 탐지되었습니다!"
@@ -471,6 +473,7 @@ L["WARRIOR"] = "전사"
 L["DEATHKNIGHT"] = "죽음의 기사"
 L["MONK"] = "수도사"
 L["DEMONHUNTER"] = "악마사냥꾼"
+L["EVOKER"] = "기원사"
 
 -- Race descriptions
 L["Human"] = "인간"
@@ -496,6 +499,7 @@ L["Kul Tiran"] = "쿨 티란"
 L["Zandalari Troll"] = "잔달라 트롤"
 L["Mechagnome"] = "기계노움"
 L["Vulpera"] = "불페라"
+L["Dracthyr"] = "드랙티르"
 
 -- Stealth abilities
 L["Stealth"] = "은신"
@@ -516,472 +520,7 @@ L["MinimapClassTextWARRIOR"] = "|cffc69b6d"
 L["MinimapClassTextDEATHKNIGHT"] = "|cffc41e3a"
 L["MinimapClassTextMONK"] = "|cff00ff96"
 L["MinimapClassTextDEMONHUNTER"] = "|cffa330c9"
-
-				   
-														   
-														 
-															
-														   
-
-					  
-														 
-												
-															
-										   
-											  
-											
-														
-													 
-														
-											  
-											  
-											   
-													 
-											
-														   
-														 
-															
-												  
-													  
-												  
-										   
-											   
-														
-														
-														
-												   
-										 
-														 
-													 
-													  
-													 
-														 
-
-						
-													  
-											
-												   
-													  
-												 
-													   
-											 
-												   
-															   
-											 
-											 
-											 
-														  
-													  
-													   
-												
-													
-												
-											 
-											 
-												   
-													
-													
-													   
-													
-													
-												
-												 
-											 
-													   
-												   
-													
-													   
-													  
-														  
-											 
-														   
-					  
-														  
-													   
-												 
-													   
-																
-						 
-													   
-													
-													   
-													
-													   
-													
-													   
-														  
-												
-												  
-														
-														   
-													
-														   
-														   
-													 
-													 
-													 
-														
-													 
-														
-													 
-														   
-													 
-														
-													 
-											  
-													 
-													 
-													 
-													 
-											  
-													 
-													 
-													 
-													   
-											  
-													 
-													 
-														
-															
-													 
-													 
-													 
-													 
-														
-					   
-													 
-													 
-											  
-											  
-													 
-														
-													 
-					   
-											  
-												  
-												  
-												  
-												  
-												  
-													 
-										   
-													  
-													  
-												   
-											   
-														  
-											
-											   
-											
-													  
-													  
-																   
-																
-																
-																
-													  
-												  
-												   
-												   
-														  
-												   
-																   
-																	
-													  
-														  
-																	
-																 
-																 
-																 
-															 
-																	
-																	 
-														 
-														  
-												 
-											
-											
-					 
-													  
-													  
-												   
-												   
-											
-															 
-											
-													  
-						  
-														
-														
-											  
-													 
-														   
-														
-											  
-													  
-											   
-														 
-												  
-													  
-														 
-														 
-														 
-														 
-															
-													  
-															
-														 
-													  
-													  
-											   
-														 
-													  
-													  
-						
-												  
-														 
-													  
-														 
-													  
-											   
-						 
-													
-														  
-															   
-											 
-														
-														
-													 
-											  
-												 
-														
-														
-														
-											  
-														
-														
-														
-												 
-													 
-														
-											  
-														
-														
-													 
-													 
-													 
-														
-													 
-													 
-													 
-					   
-														
-														   
-														
-											  
-											  
-														
-						
-											
-													  
-													  
-											
-											
-											   
-												  
-											
-													  
-												
-													
-												
-													
-												   
-											 
-											 
-												 
-											 
-														
-														
-											 
-											 
-													
-														
-													   
-													
-													
-											 
-														
-											 
-													
-											 
-					  
-													   
-											 
-													   
-											 
-												   
-												   
-															 
-												   
-						 
-													   
-													
-													   
-													
-													   
-													   
-													   
-													   
-													 
-														
-														
-														
-														
-															   
-											  
-														
-													 
-														
-													 
-														
-															   
-														 
-															
-												 
-													 
-														
-															
-														
-														
-														   
-															
-											  
-														
-													 
-														
-														
-														   
-															
-													 
-														
-														
-					   
-													 
-														   
-															
-														
-						  
-														
-											  
-														
-													 
-											  
-														
-														
-														
-											  
-																	 
-													  
-															   
-														 
-															
-														 
-														 
-														 
-																	 
-														 
-												   
-													  
-															
-																  
-														 
-													  
-													  
-														 
-																
-											   
-																  
-													  
-														 
-															   
-																  
-														 
-														 
-																  
-																  
-														 
-														 
-															   
-														 
-														 
-														 
-														 
-																  
-																  
-														 
-																  
-																
-												  
-																  
-																	 
-																	 
-														 
-														 
-														 
-																	 
-																	 
-						
-													  
-													  
-														 
-														 
-													  
-														 
-											   
-														 
-														 
-						  
-													 
-														
-															
-											  
-											  
-													
-												 
-													  
-													  
-															
-											   
-											   
-													  
-														 
-											   
-														 
-													  
-													  
-													 
-											   
-														 
-														 
-														 
-													  
-													  
-											   
-											   
-															
-													 
-													  
-														 
-						
-														 
-															
-														 
-														 
-														 
-													  
-														 
-															
-  
+L["MinimapClassTextEVOKER"] = "|cff33937f"
 
 Spy_IgnoreList = {
 	["우체통"]=true, 

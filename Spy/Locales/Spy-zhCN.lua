@@ -77,6 +77,7 @@ L["Hall of Ancient Paths"] = "远古通路大厅"
 L["Sanctum of the Sages"] = "贤者圣殿"
 L["Rustbolt"] = "锈栓镇"
 L["Oribos"] = "奥利波斯"
+L["Valdrakken"] = "瓦德拉肯"
  
 -- Display
 L["DisplayOptions"] = "显示"
@@ -125,6 +126,7 @@ L["TooltipDisplayLastSeenDescription"] = "设置在鼠标提示中显示上次�
 L["DisplayListData"] = "选择要显示的敌人数据"
 L["Name"] = "名称"
 L["Class"] = "职业"
+L["Rank"] = "级别"
 L["SelectFont"] = "选择字体"
 L["SelectFontDescription"] = "为Spy选择字体。"
 L["RowHeight"] = "选择列高"
@@ -292,7 +294,7 @@ L["Time"] = "时间"
 L["List"] = "列表"
 L["Filter"] = "过滤"
 L["Show Only"] = "仅显示"
-L["Realm"] = "Realm"
+L["Realm"] = "服务器"
 L["KOS"] = "KOS即视击杀"
 L["Won/Lost"] = "胜/负"
 L["Reason"] = "原因"   
@@ -300,10 +302,10 @@ L["HonorKills"] = "荣誉击杀"
 L["PvPDeaths"] = "PvP 死亡"
  
 -- Output Messages
-L["VersionCheck"] = "|cffc41e3a警告！ 安装了错误的Spy版本。 此版本适用于 Burning Crusade Classic。"
+L["VersionCheck"] = "|cffc41e3a警告！ 安装了错误的Spy版本。 此版本适用于 Wrath of the Lich King - Classic。"
 L["SpyEnabled"] = "|cff9933ffSpy 侦测敌方玩家插件已启动。"
 L["SpyDisabled"] = "|cff9933ffSpy 侦测敌方玩家插件已关闭。 输入 |cffffffff/spy show|cff9933ff 启动插件。"
-L["UpgradeAvailable"] = "|cff9933ff新版Spy 侦测敌方玩家 已有新的版本。 可以从这里下载新版本：\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-tbc"
+L["UpgradeAvailable"] = "|cff9933ff新版Spy 侦测敌方玩家 已有新的版本。 可以从这里下载新版本：\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk"
 L["AlertStealthTitle"] = "侦测到潜行敌人！"
 L["AlertKOSTitle"] = "侦测到KOS敌对玩家！"
 L["AlertKOSGuildTitle"] = "侦测到KOS敌对公会！"
@@ -471,6 +473,7 @@ L["WARRIOR"] = "戰士"
 L["DEATHKNIGHT"] = "死亡騎士"
 L["MONK"] = "武僧"
 L["DEMONHUNTER"] = "惡魔獵人"
+L["EVOKER"] = "唤魔师"
 
 -- Race descriptions
 L["Human"] = "人类"
@@ -496,6 +499,7 @@ L["Kul Tiran"] = "库尔提拉斯人"
 L["Zandalari Troll"] = "赞达拉巨魔"
 L["Mechagnome"] = "机械侏儒"
 L["Vulpera"] = "狐人"
+L["Dracthyr"] = "龙希尔"
 
 -- Stealth abilities
 L["Stealth"] = "潜行"
@@ -516,472 +520,7 @@ L["MinimapClassTextWARRIOR"] = "|cffc69b6d"
 L["MinimapClassTextDEATHKNIGHT"] = "|cffc41e3a"
 L["MinimapClassTextMONK"] = "|cff00ff96"
 L["MinimapClassTextDEMONHUNTER"] = "|cffa330c9"
-
-				   
-														   
-														 
-															
-														   
-
-					  
-											   
-											   
-														   
-												 
-										   
-										 
-													   
-												 
-												 
-										   
-										   
-											
-											  
-											
-													
-												  
-												 
-												 
-											
-											
-										   
-											   
-												 
-													   
-												 
-												  
-										 
-													 
-												 
-												  
-												 
-													 
- 
-						
-												  
-											
-											   
-												  
-												
-												   
-											 
-											 
-															
-											 
-											 
-											 
-												   
-											 
-												   
-											 
-												   
-											 
-											 
-											 
-											 
-												
-											 
-												   
-											 
-												   
-												   
-												
-											 
-												   
-											 
-												   
-												   
-											 
-												   
-											 
-												   
-					  
-												   
-												   
-											 
-												   
-															   
-						 
-												   
-												   
-												   
-												   
-												   
-												   
-												   
-												   
-												   
-													
-													
-													
-													
-													
-													
-													
-													
-											  
-												 
-													
-													
-													
-													
-													
-													
-													
-											  
-													
-													
-													
-														  
-													
-														  
-													
-													
-											  
-												 
-													
-													
-													
-													
-													
-											  
-													
-													
-													
-					   
-													
-											  
-											  
-											  
-													
-													
-													
-					   
-											  
-											  
-											  
-											  
-												 
-											  
-												 
-											  
-												  
-											   
-												  
-												  
-														
-											   
-											   
-											
-														
-												  
-														
-														   
-														
-														
-														
-											
-												  
-											   
-														
-											   
-														   
-														
-											   
-														
-														   
-															  
-														   
-														   
-														   
-															  
-														   
-												  
-														   
-														
-											   
-											   
-					 
-												  
-											   
-											   
-												  
-												  
-												  
-											
-												  
-						  
-												 
-													
-											  
-												 
-													   
-													
-												 
-												  
-											   
-													 
-												  
-													 
-													 
-													 
-													 
-													 
-													 
-													 
-												  
-													 
-													 
-													 
-												  
-													 
-													 
-													 
-						
-											   
-													 
-												  
-													 
-													 
-											   
-						 
-													  
-											 
-													  
-												
-													
-													
-													
-												 
-													
-													
-													
-													
-												 
-													
-													
-														  
-											  
-													
-													
-													
-													
-													
-													
-													
-													
-													
-													
-												 
-													   
-					   
-													
-													
-													
-											  
-													
-													
-						
-											
-											
-												  
-											
-											
-											
-											
-											
-											 
-											 
-											 
-											 
-											 
-											 
-											 
-											 
-											 
-											 
-												   
-												   
-											 
-											 
-												   
-												   
-											 
-												   
-											 
-												   
-												   
-											 
-												
-												   
-					  
-												   
-											 
-												   
-											 
-											 
-												   
-											 
-											 
-						 
-												
-												
-												   
-												
-												   
-												   
-												   
-												   
-													
-													
-													
-														  
-													
-														  
-												 
-													
-													
-													
-													
-														  
-													   
-													
-													
-												 
-													
-														  
-													
-													
-													
-													
-														  
-											  
-													
-												 
-													
-													
-													
-													
-												 
-														  
-														  
-					   
-											  
-													
-														  
-													
-						  
-													
-											  
-												 
-													
-												 
-													
-													
-													
-												 
-															  
-													 
-														   
-													 
-													 
-													 
-												  
-													 
-															  
-												  
-													 
-													 
-													 
-															  
-														   
-													 
-													 
-													 
-														   
-												  
-															  
-													 
-													 
-														   
-															  
-													 
-														   
-														
-														
-														
-													 
-													 
-														   
-														
-													 
-													 
-															  
-															  
-													 
-															  
-														   
-												  
-															  
-															  
-															  
-													 
-													 
-														   
-															  
-															  
-						
-													 
-													 
-													 
-													 
-													 
-													 
-											   
-													 
-													 
-						  
-													
-													
-													
-											  
-											  
-													
-											  
-													 
-													 
-													 
-											   
-											   
-											   
-													 
-											   
-													 
-													 
-											   
-												  
-													 
-													 
-											   
-													 
-											   
-													 
-											   
-											   
-													 
-												  
-											   
-											   
-						
-													 
-													 
-													 
-													 
-													 
-											   
-													 
-													 
-  
+L["MinimapClassTextEVOKER"] = "|cff33937f"
 
 Spy_IgnoreList = {
 	["邮箱"]=true, ["Shred Master Mk1"]=true, ["Scrap-O-Matic 1000"]=true,

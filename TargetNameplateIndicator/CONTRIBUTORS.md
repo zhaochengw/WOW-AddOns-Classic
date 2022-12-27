@@ -1,0 +1,40 @@
+Texture contributors:
+- Reticule - Red targeting reticule - Dridzt
+- RedArrow - Red arrow pointing downwards - DohNotAgain
+- NeonReticule - Neon version of the reticule - mezmorizedck
+- NeonRedArrow - Neon version of the red arrow - mezmorizedck
+- RedChevronArrow - Red inverted triple chevron - OligoFriends
+- PaleRedChevronArrow - Pale red version of the chevron - OligoFriends
+- arrow_tip_green - Green 3D arrow - OligoFriends
+- arrow_tip_red - Red 3D arrow - OligoFriends
+- skull - Skull and crossbones - OligoFriends
+- circles_target - Red concentric circles in the style of a target - OligoFriends
+- red_star - Red star with gold outline - OligoFriends
+- greenarrowtarget - Neon green arrow with a red target - mezmorizedck
+- BlueArrow - Blue arrow pointing downwards - Imithat
+- bluearrow1 - Abstract style blue arrow pointing downwards - Imithat
+- gearsofwar - Gears of War logo - Imithat
+- malthael - Malthael (Diablo) logo - Imithat
+- NewRedArrow - Red arrow pointing downwards, same style as BlueArrow - Imithat
+- NewSkull - Skull with gas mask - Imithat
+- PurpleArrow - Abstract style purple arrow pointing downwards - Imithat
+- Shield - Kite shield with sword and crossed spears/polearms - Imithat
+- NeonGreenArrow - Green version of the neon red arrow - Nokiya420
+- Q_FelFlamingSkull - Fel green flaming skull - ContinuousQ
+- Q_RedFlamingSkull - Red flaming skull - ContinuousQ
+- Q_ShadowFlamingSkull - Shadow purple flaming skull - ContinuousQ
+- Q_GreenGPS - Green map pin/GPS symbol - ContinuousQ
+- Q_RedGPS - Red map pin/GPS symbol - ContinuousQ
+- Q_WhiteGPS - White map pin/GPS symbol - ContinuousQ
+- Q_GreenTarget - Green target arrow - ContinuousQ
+- Q_RedTarget - Red target arrow - ContinuousQ
+- Q_WhiteTarget - White target arrow - ContinuousQ
+- Hunters_Mark - Red Hunter's Mark Arrow - thisguyyouknow
+- Arrows_Towards - Red Arrows Towards Nameplate - Inokis
+- Arrows_Away - Red Arrows Away From Nameplate - Inokis
+- Arrows_SelfTowards - Blue Arrows Towards Nameplate - Inokis
+- Arrows_SelfAway - Blue Arrows Away From Nameplate - Inokis
+- Arrows_FriendTowards - Green Arrows Towards Nameplate - Inokis
+- Arrows_FriendAway - Green Arrows Away From Nameplate - Inokis
+- Arrows_FocusTowards - Yellow Arrows Towards Nameplate - Inokis
+- Arrows_FocusAway - Yellow Arrows Away From Nameplate - Inokis

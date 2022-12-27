@@ -1,4 +1,4 @@
-## Interface: 20504
+## Interface: 30400
 ## Title: ClassicHealPrediction
 ## Notes: Adds heal prediction to the Blizzard unit/raid frames and nameplates
 ## Version: v1.8.2

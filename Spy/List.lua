@@ -22,6 +22,7 @@ function Spy:RefreshCurrentList(player, source)
 			local level = "??"
 			local class = "UNKNOWN"
 			local guild = "??"
+--			local rank = 0
 			local opacity = 1
 
 			local playerData = SpyPerCharDB.PlayerData[data.player]
@@ -38,21 +39,25 @@ function Spy:RefreshCurrentList(player, source)
 				if playerData.guild then
 					guild = playerData.guild
 				end
+--				if playerData.rank then
+--					rank = playerData.rank
+--				end
 			end
 			
-			if Spy.db.profile.DisplayListData == "NameLevelClass" then
+			if Spy.db.profile.DisplayListData == "1NameLevelClass" then
 				description = level.." "
 				if L[class] and type(L[class]) == "string" then
 					description = description..L[class]
 				end
-			elseif Spy.db.profile.DisplayListData == "NameLevelGuild" then
+			elseif Spy.db.profile.DisplayListData == "2NameLevelGuild" then
 				description = level.." "..guild
-			elseif Spy.db.profile.DisplayListData == "NameLevelOnly" then
+			elseif Spy.db.profile.DisplayListData == "3NameLevelOnly" then
 				description = level.." "
-			elseif Spy.db.profile.DisplayListData == "NameGuild" then
-					description = guild
+			elseif Spy.db.profile.DisplayListData == "4NamePvPRank" then
+				description = L["Rank"].." "..rank
+			elseif Spy.db.profile.DisplayListData == "5NameGuild" then
+				description = guild
 			end
-			
 			if mode == 1 and Spy.InactiveList[data.player] then
 				opacity = 0.5
 			end
@@ -356,7 +361,12 @@ function Spy:UpdatePlayerStatus(name, class, level, race, guild, isEnemy, isGues
 end
 
 function Spy:RemovePlayerData(name)
-	SpyPerCharDB.PlayerData[name] = nil
+	local playerData = SpyPerCharDB.PlayerData[name]
+		if ((playerData.loses == nil) and (playerData.wins == nil)) then
+			SpyPerCharDB.PlayerData[name] = nil
+		else
+			playerData.isEnemy = false
+		end
 end
 
 function Spy:AddIgnoreData(name)
@@ -738,14 +748,16 @@ function Spy:PurgeUndetectedData()
 	for player in pairs(SpyPerCharDB.PlayerData) do
 		local playerData = SpyPerCharDB.PlayerData[player]
 		if Spy.db.profile.PurgeWinLossData then
-			if not playerData.time or (currentTime - playerData.time) > timeout or not playerData.isEnemy then
+--			if not playerData.time or (currentTime - playerData.time) > timeout or not playerData.isEnemy then
+			if not playerData.time or (currentTime - playerData.time) > timeout then
 				Spy:RemoveIgnoreData(player)
 				Spy:RemoveKOSData(player)
 				SpyPerCharDB.PlayerData[player] = nil
 			end
 		else
 			if ((playerData.loses == nil) and (playerData.wins == nil)) then
-				if not playerData.time or (currentTime - playerData.time) > timeout or not playerData.isEnemy then
+--				if not playerData.time or (currentTime - playerData.time) > timeout or not playerData.isEnemy then
+				if not playerData.time or (currentTime - playerData.time) > timeout then
 					Spy:RemoveIgnoreData(player)
 					if Spy.db.profile.PurgeKoS then
 						Spy:RemoveKOSData(player)
@@ -907,7 +919,7 @@ function Spy:ButtonClicked(self, button)
 			else
 				if not InCombatLockdown() then
 					self:SetAttribute("macrotext", "/targetexact "..name)
-				end	
+				end
 			end
 		elseif button == "RightButton" then
 			Spy:BarDropDownOpen(self)

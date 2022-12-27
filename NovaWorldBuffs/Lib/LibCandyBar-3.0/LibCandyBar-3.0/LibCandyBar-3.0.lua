@@ -1,3 +1,4 @@
+--@curseforge-project-slug: libcandybar-3-0@
 --- **LibCandyBar-3.0** provides elegant timerbars with icons for use in addons.
 -- It is based of the original ideas of the CandyBar and CandyBar-2.0 library.
 -- In contrary to the earlier libraries LibCandyBar-3.0 provides you with a timerbar object with a simple API.
@@ -14,13 +15,13 @@
 -- @class file
 -- @name LibCandyBar-3.0
 
-local GetTime, floor, next, wipe = GetTime, floor, next, wipe
+local GetTime, floor, next = GetTime, floor, next
 local CreateFrame, error, setmetatable, UIParent = CreateFrame, error, setmetatable, UIParent
 
 if not LibStub then error("LibCandyBar-3.0 requires LibStub.") end
 local cbh = LibStub:GetLibrary("CallbackHandler-1.0")
 if not cbh then error("LibCandyBar-3.0 requires CallbackHandler-1.0") end
-local lib = LibStub:NewLibrary("LibCandyBar-3.0", 97) -- Bump minor on changes
+local lib = LibStub:NewLibrary("LibCandyBar-3.0", 100) -- Bump minor on changes
 if not lib then return end
 lib.callbacks = lib.callbacks or cbh:New(lib)
 local cb = lib.callbacks
@@ -49,8 +50,8 @@ local SetWidth, SetHeight, SetSize = lib.dummyFrame.SetWidth, lib.dummyFrame.Set
 
 local function stopBar(bar)
 	bar.updater:Stop()
-	if bar.data then wipe(bar.data) end
-	if bar.funcs then wipe(bar.funcs) end
+	bar.data = nil
+	bar.funcs = nil
 	bar.running = nil
 	bar.paused = nil
 	bar:Hide()
@@ -373,13 +374,15 @@ end
 function barPrototype:Pause()
 	if not self.paused then
 		self.updater:Pause()
-		self.paused = true
+		self.paused = GetTime()
 	end
 end
 --- Resumes a paused bar
 function barPrototype:Resume()
 	if self.paused then
-		self.exp = GetTime() + self.remaining
+		local t = GetTime()
+		self.exp = t + self.remaining
+		self.start = self.start + (t-self.paused)
 		self.updater:Play()
 		self.paused = nil
 	end
@@ -432,20 +435,20 @@ function lib:New(texture, width, height)
 		bg:SetAllPoints()
 		bar.candyBarBackground = bg
 
-		local backdrop = CreateFrame("Frame", nil, bar, BackdropTemplateMixin and "BackdropTemplate") -- Used by bar stylers for backdrops
+		local backdrop = CreateFrame("Frame", nil, bar, "BackdropTemplate") -- Used by bar stylers for backdrops
 		backdrop:SetFrameLevel(0)
 		bar.candyBarBackdrop = backdrop
 
-		local iconBackdrop = CreateFrame("Frame", nil, bar, BackdropTemplateMixin and "BackdropTemplate") -- Used by bar stylers for backdrops
+		local iconBackdrop = CreateFrame("Frame", nil, bar, "BackdropTemplate") -- Used by bar stylers for backdrops
 		iconBackdrop:SetFrameLevel(0)
 		bar.candyBarIconFrameBackdrop = iconBackdrop
 
-		local duration = statusbar:CreateFontString(nil, "OVERLAY", GameFontHighlightSmallOutline)
+		local duration = statusbar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmallOutline")
 		duration:SetPoint("TOPLEFT", statusbar, "TOPLEFT", 2, 0)
 		duration:SetPoint("BOTTOMRIGHT", statusbar, "BOTTOMRIGHT", -2, 0)
 		bar.candyBarDuration = duration
 
-		local label = statusbar:CreateFontString(nil, "OVERLAY", GameFontHighlightSmallOutline)
+		local label = statusbar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmallOutline")
 		label:SetPoint("TOPLEFT", statusbar, "TOPLEFT", 2, 0)
 		label:SetPoint("BOTTOMRIGHT", statusbar, "BOTTOMRIGHT", -2, 0)
 		bar.candyBarLabel = label
@@ -461,6 +464,8 @@ function lib:New(texture, width, height)
 		barCache[bar] = nil
 	end
 
+	bar:SetFrameStrata("MEDIUM")
+	bar:SetFrameLevel(100) -- Lots of room to create above or below this level
 	bar.candyBarBar:SetStatusBarTexture(texture)
 	bar.candyBarBackground:SetTexture(texture)
 	bar.width = width

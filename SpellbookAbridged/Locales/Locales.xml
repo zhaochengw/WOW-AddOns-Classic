@@ -5,5 +5,4 @@
 	<Include file="esES.lua"/>
 	<Include file="frFR.lua"/>
 	<Include file="ruRU.lua"/>
-	<Include file="zhCN.lua"/>
 </Ui>

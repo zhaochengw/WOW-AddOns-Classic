@@ -77,6 +77,7 @@ L["Hall of Ancient Paths"] = "Cámara de Sendas Ancestrales"
 L["Sanctum of the Sages"] = "Sagrario de los Sabios"
 L["Rustbolt"] = "Pernoóxido"
 L["Oribos"] = "Oribos"
+L["Valdrakken"] = "Valdrakken"
 
 -- Display
 L["DisplayOptions"] = "Display"
@@ -125,6 +126,7 @@ L["TooltipDisplayLastSeenDescription"] = "Set this to display the last known tim
 L["DisplayListData"] = "Seleccionar datos del enemigo para mostrar"
 L["Name"] = "Nombre"
 L["Class"] = "Clase"
+L["Rank"] = "Rango"
 L["SelectFont"] = "Select a Font"
 L["SelectFontDescription"] = "Select a Font for the Spy Window."
 L["RowHeight"] = "Select the Row Height"
@@ -292,18 +294,18 @@ L["Time"] = "Time"
 L["List"] = "List"
 L["Filter"] = "Filter"
 L["Show Only"] = "Show Only"
-L["Realm"] = "Realm"
+L["Realm"] = "Reino"
 L["KOS"] = "KOS"
 L["Won/Lost"] = "Won/Lost"
 L["Reason"] = "Reason"	 
 L["HonorKills"] = "Honor Kills"
-L["PvPDeaths"] = "PvP Deaths"
+L["PvPDeaths"] = "JcJ Muertes"
 
 -- Output messages
-L["VersionCheck"] = "|cffc41e3a¡Advertencia! La versión incorrecta de Spy está instalada. Esta versión es para Burning Crusade Classic."
+L["VersionCheck"] = "|cffc41e3a ¡Advertencia! La versión incorrecta de Spy está instalada. Esta versión es para Wrath of the Lich King - Classic."
 L["SpyEnabled"] = "|cff9933ffSpy addon enabled."
 L["SpyDisabled"] = "|cff9933ffSpy addon disabled. Type |cffffffff/spy show|cff9933ff to enable."
-L["UpgradeAvailable"] = "|cff9933ffA new version of Spy is available. It can be downloaded from:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-tbc"
+L["UpgradeAvailable"] = "|cff9933ffA new version of Spy is available. It can be downloaded from:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk"
 L["AlertStealthTitle"] = "Stealth player detected!"
 L["AlertKOSTitle"] = "Kill On Sight player detected!"
 L["AlertKOSGuildTitle"] = "Kill On Sight player guild detected!"
@@ -471,6 +473,7 @@ L["WARRIOR"] = "Guerrero"
 L["DEATHKNIGHT"] = "Caballero de la muerte"
 L["MONK"] = "Monje"
 L["DEMONHUNTER"] = "Cazador de demonios"
+L["EVOKER"] = "Evocador"
 
 -- Race descriptions
 L["Human"] = "Humano"
@@ -496,6 +499,7 @@ L["Kul Tiran"] = "Ciudadano de Kul Tiras"
 L["Zandalari Troll"] = "Trol Zandalari"
 L["Mechagnome"] = "Mecagnomo"
 L["Vulpera"] = "Vulpera"
+L["Dracthyr"] = "Dracthyr"
  
 -- Stealth abilities
 L["Stealth"] = "Sigilo"
@@ -516,8 +520,8 @@ L["MinimapClassTextWARRIOR"] = "|cffc69b6d"
 L["MinimapClassTextDEATHKNIGHT"] = "|cffc41e3a"
 L["MinimapClassTextMONK"] = "|cff00ff96"
 L["MinimapClassTextDEMONHUNTER"] = "|cffa330c9"
+L["MinimapClassTextEVOKER"] = "|cff33937f"
 
 Spy_IgnoreList = {
 
 };
- 

@@ -2,12 +2,11 @@
 ## Title: Spellbook Abridged
 ## Notes: A Spellbook Filter to reduce clutter from multiple ranks of the same spell.
 ## Author: LBXZero, Artscout375
-## Version: 2.6.5
+## Version: 2.6.6
 ## SavedVariablesPerCharacter: SpellBookAbridgedOptions
 
 Libs\AceLocale-3.0\AceLocale-3.0.xml
 Locales\enUS.lua
-Locales\zhCN.lua
 Locales\ruRU.lua
 SpellbookAbridged.xml
 
