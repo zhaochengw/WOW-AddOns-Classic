@@ -1,3 +1,12 @@
+3.0.70 - 21st December 2022
+- Maintenance update.
+
+3.0.65 - 5th December 2022
+- Fixed frame border issue with 'Use default map'.
+
+3.0.64 - 5th December 2022
+- Adjusted world map frame strata.
+
 3.0.62 - 30th November 2022
 - Reformatted the texture file.
 
