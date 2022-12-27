@@ -5,7 +5,8 @@ local find = _G.string.find
 local sub = _G.string.sub 
 local upper = _G.string.upper
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 --===============================
 local function fengeguanjianzi(str,delimiter)
     local dLen = string.len(delimiter)

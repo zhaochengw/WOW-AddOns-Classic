@@ -1,25 +1,59 @@
 local addonName, addonTable = ...;
+local L =addonTable.locale
 local _, _, _, tocversion = GetBuildInfo()
 local fuFrame=List_R_F_2_9
 ---------------------------------
 local ADD_Frame=addonTable.ADD_Frame
 local ADD_Biaoti=addonTable.ADD_Biaoti
-local ADD_Modbutton=addonTable.ADD_Modbutton
-local GnName,GnUI = "时空之门","PlaneInvite_UI";
+local Create = addonTable.Create
+local PIGModbutton=Create.PIGModbutton
+local GnName,GnUI = L["INVITE_NAME"],"PlaneInvite_UI";
 local FrameLevel=40
-local Options_PlaneInvite = ADD_Modbutton(GnName,GnUI,FrameLevel,4)
-----
-local SQPindao = {
-	["pindao"]="寻求组队",["Leisure"]="请求活动信息",["Plane"]="请求位面信息",["Chedui"]="请求车队信息",
+local Options_PlaneInvite = PIGModbutton(GnName,GnUI,FrameLevel,4)
+-----------
+local CDWMinfo = {
+	["pindao"] ="PIG",["Leisure"]="INVITE_LEISURE",["Plane"]="INVITE_LAYER",["Chedui"]="INVITE_LFG",
 }
-addonTable.CDWMinfo=SQPindao
+local zijianpindaoMAX=5
+function CDWMinfo.panduanshifouPIG(chname)
+	if chname==CDWMinfo["pindao"] then return true end
+	for xx=1,zijianpindaoMAX do
+		local newpindaoname = CDWMinfo["pindao"]..xx
+		if chname==newpindaoname then return true end
+	end
+	return false
+end
+local function huoqubianhao(Name)
+	local channel,channelName= GetChannelName(Name)
+	if channelName then
+		return channel
+	else
+		return 0
+	end
+end
+function CDWMinfo.huoqukeyongPIG(chname)
+	local cunzaihao = huoqubianhao(chname)
+	if cunzaihao>0 then
+		return cunzaihao
+	else
+		for x=1,5 do
+			local newpindaoname = chname..x
+			local cunzaihao = huoqubianhao(newpindaoname)
+			if cunzaihao>0 then
+				return cunzaihao
+			end
+		end
+	end
+	return 0
+end
+addonTable.CDWMinfo = CDWMinfo
+-------------
 local function guolvqingqiuMSG(self,event,arg1,...)
-	--print(event,arg1)
-	if arg1==SQPindao["Leisure"] then
+	if arg1==CDWMinfo["Leisure"] then
 		return true;
-	elseif arg1==SQPindao["Plane"] then
+	elseif arg1==CDWMinfo["Plane"] then
     	return true;
-    elseif arg1==SQPindao["Chedui"] then
+    elseif arg1==CDWMinfo["Chedui"] then
     	return true;
 	end
 end
@@ -41,7 +75,7 @@ local function ADD_jindutiaoBUT(fuFrame,jindutiaoWW,butTXT,PointX,PointyY)
 	jieshoushuju.edg.t = jieshoushuju.edg:CreateFontString();
 	jieshoushuju.edg.t:SetPoint("CENTER",jieshoushuju.edg,"CENTER",0,0);
 	jieshoushuju.edg.t:SetFont(GameFontNormal:GetFont(), 12,"OUTLINE")
-	jieshoushuju.edg.t:SetText("正在接收数据...");
+	jieshoushuju.edg.t:SetText(L["INVITE_RECEIVEDATA"]);
 	------
 	local shuaxinChedui = CreateFrame("Button",nil,fuFrame, "UIPanelButtonTemplate");  
 	shuaxinChedui:SetSize(136,24);
@@ -78,6 +112,11 @@ local function ADD_PlaneInviteFrame()
 	PlaneInvite.help.tex:SetTexture("interface/friendsframe/reportspamicon.blp");
 	PlaneInvite.help.tex:SetSize(26,26);
 	PlaneInvite.help.tex:SetPoint("TOPLEFT",PlaneInvite.help,"TOPLEFT",1.4,-3);
+	PlaneInvite.tishifengxian = PlaneInvite:CreateFontString();
+	PlaneInvite.tishifengxian:SetPoint("TOPLEFT",PlaneInvite,"TOPLEFT",300,-28);
+	PlaneInvite.tishifengxian:SetFontObject(ChatFontNormal);
+	PlaneInvite.tishifengxian:SetTextColor(1,0,0, 1);
+	PlaneInvite.tishifengxian:SetText(L["INVITE_WARNING"]);
 	-----
 	PlaneInvite.tline = PlaneInvite:CreateLine()
 	PlaneInvite.tline:SetColorTexture(0.9,0.9,0.9,0.3)
@@ -88,7 +127,7 @@ local function ADD_PlaneInviteFrame()
 	PlaneInvite.NR=ADD_Frame(nil,PlaneInvite,Width-9,Height-56,"BOTTOM",PlaneInvite,"BOTTOM",-0.6,4,false,true,false,false,false)
 	--TAB
 	local TabWidth,TabHeight = 110,26;
-	local TabName = {"候车","车队","位面"};
+	local TabName = {L["INVITE_LEISURE"],L["INVITE_CHEDUI"],L["INVITE_PLANE"]};
 	for id=1,#TabName do
 		local Tablist = CreateFrame("Button","PlaneInviteTAB_"..id,PlaneInvite, "TruncatedButtonTemplate",id);
 		Tablist:SetSize(TabWidth,TabHeight);
@@ -157,50 +196,32 @@ local function ADD_PlaneInviteFrame()
 			_G["PlaneInviteFrame_"..id]:Show();
 		end
 	end
-	--3.4.0-以后必须加入队伍查找器
-	if tocversion<30000 then
-		PlaneInvite.yijiaru=true
-	elseif tocversion<40000 then
-		local function gengxinbut1()
-			if (C_LFGList.HasActiveEntryInfo()) then
-				PlaneInvite.yijiaru=true
-				PlaneInvite.jiaruchazhaoqi:SetText("离开队伍查找器");
-			else
-				PlaneInvite.yijiaru=false
-				PlaneInvite.jiaruchazhaoqi:SetText("加入队伍查找器");
-			end
+	--必须加入PIG频道获取
+	local huoqukeyongPIG=CDWMinfo.huoqukeyongPIG
+	local function gengxinbut1()
+		local PIGxulieID =huoqukeyongPIG(CDWMinfo["pindao"])
+		if PIGxulieID>0 then
+			PlaneInvite.jiaruchazhaoqi:Disable()
+			PlaneInvite.jiaruchazhaoqi:SetText(L["INVITE_LFG_LEAVE"]);
+		else
 			PlaneInvite.jiaruchazhaoqi:Enable()
-			LFGListingFrame:RegisterEvent("LFG_LIST_ACTIVE_ENTRY_UPDATE");
+			PlaneInvite.jiaruchazhaoqi:SetText(L["INVITE_LFG_JOIN"]);
 		end
-		PlaneInvite.jiaruchazhaoqi = CreateFrame("Button",nil,PlaneInvite, "UIPanelButtonTemplate");  
-		PlaneInvite.jiaruchazhaoqi:SetSize(140,23);
-		PlaneInvite.jiaruchazhaoqi:SetPoint("TOPLEFT",PlaneInvite,"TOPLEFT",10,-24);
-		PlaneInvite.jiaruchazhaoqi:SetFrameLevel(PlaneInvite.jiaruchazhaoqi:GetFrameLevel()+2)
-		PlaneInvite.jiaruchazhaoqi:HookScript("OnShow", function (self)
-			gengxinbut1()
-		end)
-
-		PlaneInvite.jiaruchazhaoqi:SetScript("OnClick", function (self)
-			self:Disable()
-			LFGListingFrame:UnregisterEvent("LFG_LIST_ACTIVE_ENTRY_UPDATE");
-			if (C_LFGList.HasActiveEntryInfo()) then
-				--LFGListingFrame.dirty = false;
-				--PENDING_LISTING_UPDATE = true;
-				LFGListingFrame:RemoveListing()
-			else
-				--LFGListingFrame.dirty = true;
-				--PENDING_LISTING_UPDATE = true;
-				C_LFGList.CreateListing({1064}, false);
-			end
-		end)
-		PlaneInvite:RegisterEvent("LFG_LIST_ACTIVE_ENTRY_UPDATE");
-		--PlaneInvite:RegisterEvent("LFG_LIST_SEARCH_RESULT_UPDATED");--搜索
-		PlaneInvite:HookScript("OnEvent", function(self,event)
-			C_Timer.After(0.6,gengxinbut1)
-		end)
-	else
-		PlaneInvite.yijiaru=true
 	end
+	PlaneInvite.jiaruchazhaoqi = CreateFrame("Button",nil,PlaneInvite, "UIPanelButtonTemplate");  
+	PlaneInvite.jiaruchazhaoqi:SetSize(140,20);
+	PlaneInvite.jiaruchazhaoqi:SetPoint("TOPLEFT",PlaneInvite,"TOPLEFT",10,-24);
+	PlaneInvite.jiaruchazhaoqi:SetFrameLevel(PlaneInvite.jiaruchazhaoqi:GetFrameLevel()+2)
+	PlaneInvite.jiaruchazhaoqi:Disable()
+	PlaneInvite.jiaruchazhaoqi:HookScript("OnShow", function (self)
+		gengxinbut1()
+	end)
+	PlaneInvite.jiaruchazhaoqi:SetScript("OnClick", function (self)
+		JoinPermanentChannel("PIG", nil, DEFAULT_CHAT_FRAME:GetID(), 1);
+		ChatFrame_AddChannel(DEFAULT_CHAT_FRAME, "PIG")
+		ChatFrame_RemoveMessageGroup(DEFAULT_CHAT_FRAME, "CHANNEL")
+		gengxinbut1()
+	end)
 	------------------------------
 	addonTable.ADD_Leisure_Frame()
 	addonTable.ADD_Chedui_Frame()
@@ -263,7 +284,7 @@ OptionsModF_PlaneInvite.ADD:SetScript("OnClick", function (self)
 	end
 end);
 --------------------------------------------
-addonTable.PlaneInvite = function()
+addonTable.Invite = function()
 	if PIG['PlaneInvite']['Kaiqi']=="ON" then
 		OptionsModF_PlaneInvite:SetChecked(true);
 		Options_PlaneInvite:Enable();

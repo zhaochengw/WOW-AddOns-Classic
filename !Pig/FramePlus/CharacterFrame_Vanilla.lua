@@ -391,7 +391,7 @@ fuFrame.pinzhiranse:SetScript("OnClick", function (self)
 end);
 -------------------
 local zhuangbeizhanshiID = {1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18}
-local buweiName = {HEADSLOT,NECKSLOT,SHOULDERSLOT,CHESTSLOT,WAISTSLOT,LEGSSLOT,FEETSLOT,WRISTSLOT,HANDSSLOT,FINGER0SLOT,FINGER1SLOT,TRINKET0SLOT,TRINKET1SLOT,BACKSLOT,MAINHANDSLOT,SECONDARYHANDSLOT,RANGEDSLOT}
+local buweiName = {HEADSLOT,NECKSLOT,SHOULDERSLOT,CHESTSLOT,WAISTSLOT,LEGSSLOT,FEETSLOT.."部",WRISTSLOT,HANDSSLOT.."部",FINGER0SLOT,FINGER1SLOT,TRINKET0SLOT,TRINKET1SLOT,BACKSLOT,MAINHANDSLOT,SECONDARYHANDSLOT,RANGEDSLOT}
 local function add_zhuangbeList()
 	if PaperDollFrame.ZBLsit then return end
 	PaperDollFrame.ZBLsit = CreateFrame("Frame", nil, PaperDollFrame,"BackdropTemplate");
@@ -409,15 +409,16 @@ local function add_zhuangbeList()
 	if GearManagerDialog then
 		GearManagerDialog:SetFrameLevel(10)
 	end
-	-- 
+
+	local zblbzitidaxiao = 14
 	PaperDollFrame.ZBLsit.pingjunLV = PaperDollFrame.ZBLsit:CreateFontString();
-	PaperDollFrame.ZBLsit.pingjunLV:SetPoint("TOPLEFT",PaperDollFrame.ZBLsit,"TOPLEFT",8,-8);
-	PaperDollFrame.ZBLsit.pingjunLV:SetFont(GameFontNormal:GetFont(), 15)
-	PaperDollFrame.ZBLsit.pingjunLV:SetTextColor(1,215/255,0, 0.9);
+	PaperDollFrame.ZBLsit.pingjunLV:SetPoint("TOPLEFT",PaperDollFrame.ZBLsit,"TOPLEFT",3,-6);
+	PaperDollFrame.ZBLsit.pingjunLV:SetFont(ChatFontNormal:GetFont(), zblbzitidaxiao+1)
+	PaperDollFrame.ZBLsit.pingjunLV:SetTextColor(0,1,1,0.8);
 	PaperDollFrame.ZBLsit.pingjunLV:SetText("平均装等:")
 	PaperDollFrame.ZBLsit.pingjunLV_V = PaperDollFrame.ZBLsit:CreateFontString();
 	PaperDollFrame.ZBLsit.pingjunLV_V:SetPoint("LEFT",PaperDollFrame.ZBLsit.pingjunLV,"RIGHT",4,0);
-	PaperDollFrame.ZBLsit.pingjunLV_V:SetFont(ChatFontNormal:GetFont(), 15)
+	PaperDollFrame.ZBLsit.pingjunLV_V:SetFont(ChatFontNormal:GetFont(), zblbzitidaxiao+2)
 
 	local function jisuanzongzhuangdeng(data)
 		local zongjizhuangdengall = 0
@@ -432,17 +433,22 @@ local function add_zhuangbeList()
 				local newmaxWWWW = kuandu
 				local zhuangdenginfo = {}
 				for i = 1, #zhuangbeizhanshiID do
+					local fujikk = _G["CZBLsitInspect"..zhuangbeizhanshiID[i]]
 					local itemLink=GetInventoryItemLink("target", zhuangbeizhanshiID[i])
 					if itemLink then
-						_G["CZBLsitInspect"..zhuangbeizhanshiID[i]].itemlink:SetText(itemLink)
+						fujikk.itemlink:SetText(itemLink)
+						fujikk.itembuwei:SetTextColor(0, 1, 1, 0.8);
+						fujikk.itembuweiF:SetBackdropBorderColor(0, 1, 1, 0.5)
 						local effectiveILvl = GetDetailedItemLevelInfo(itemLink)
 						table.insert(zhuangdenginfo,effectiveILvl)
-						local width = _G["CZBLsitInspect"..zhuangbeizhanshiID[i]].itemlink:GetStringWidth()+44
+						local width = fujikk.itemlink:GetStringWidth()+44
 						if width>newmaxWWWW then
 							newmaxWWWW = width
 						end	
 					else
-						_G["CZBLsitInspect"..zhuangbeizhanshiID[i]].itemlink:SetText("|cff555555无|r")
+						fujikk.itembuwei:SetTextColor(0.5, 0.5, 0.5,0.8);
+						fujikk.itembuweiF:SetBackdropBorderColor(0.5, 0.5, 0.5,0.5)
+						fujikk.itemlink:SetText("|cff555555无|r")
 					end
 				end
 				local pingjunLvl = jisuanzongzhuangdeng(zhuangdenginfo)
@@ -454,17 +460,22 @@ local function add_zhuangbeList()
 				local newmaxWWWW = kuandu
 				local zhuangdenginfo = {}
 				for i = 1, #zhuangbeizhanshiID do
+					local fujikk = _G["CZBLsit"..zhuangbeizhanshiID[i]]
 					local itemLink=GetInventoryItemLink("player", zhuangbeizhanshiID[i])
-					if itemLink then
-						_G["CZBLsit"..zhuangbeizhanshiID[i]].itemlink:SetText(itemLink)
+					if itemLink then	
+						fujikk.itemlink:SetText(itemLink)
+						fujikk.itembuwei:SetTextColor(0, 1, 1, 0.8);
+						fujikk.itembuweiF:SetBackdropBorderColor(0, 1, 1, 0.5)
 						local effectiveILvl = GetDetailedItemLevelInfo(itemLink)
 						table.insert(zhuangdenginfo,effectiveILvl)
-						local width = _G["CZBLsit"..zhuangbeizhanshiID[i]].itemlink:GetStringWidth()+44
+						local width = fujikk.itemlink:GetStringWidth()+44
 						if width>newmaxWWWW then
 							newmaxWWWW = width
 						end	
 					else
-						_G["CZBLsit"..zhuangbeizhanshiID[i]].itemlink:SetText("|cff555555无|r")
+						fujikk.itembuwei:SetTextColor(0.5, 0.5, 0.5,0.8);
+						fujikk.itembuweiF:SetBackdropBorderColor(0.5, 0.5, 0.5,0.5)
+						fujikk.itemlink:SetText("|cff555555无|r")
 					end
 				end
 				local pingjunLvl = jisuanzongzhuangdeng(zhuangdenginfo)
@@ -474,28 +485,32 @@ local function add_zhuangbeList()
 			end
 		end
 	end
-	
+	local iwww,ihhh = 33,15
 	for i=1,#zhuangbeizhanshiID do
 		local clsit = CreateFrame("Frame", "CZBLsit"..zhuangbeizhanshiID[i], PaperDollFrame.ZBLsit);
-		clsit:SetSize(2,17);
+		clsit:SetSize(4,ihhh);
 		if i==1 then
-			clsit:SetPoint("TOPLEFT",PaperDollFrame.ZBLsit,"TOPLEFT",32,-26);
+			clsit:SetPoint("TOPLEFT",PaperDollFrame.ZBLsit,"TOPLEFT",36,-28);
 		else
-			clsit:SetPoint("TOPLEFT",_G["CZBLsit"..(zhuangbeizhanshiID[i-1])],"BOTTOMLEFT",0,0);
+			clsit:SetPoint("TOPLEFT",_G["CZBLsit"..(zhuangbeizhanshiID[i-1])],"BOTTOMLEFT",0,-4);
 		end
-		clsit.itembuwei = clsit:CreateFontString();
-		clsit.itembuwei:SetPoint("RIGHT",clsit,"LEFT",0,0);
-		clsit.itembuwei:SetFont(ChatFontNormal:GetFont(), 13)
-		clsit.itembuwei:SetTextColor(0, 1, 1,0.9);
+
+        clsit.itembuweiF = CreateFrame("Frame", nil, clsit,"BackdropTemplate")
+        clsit.itembuweiF:SetSize(iwww,ihhh+2)
+        clsit.itembuweiF:SetPoint("RIGHT",clsit,"LEFT",0,0)
+        clsit.itembuweiF:SetBackdrop({edgeFile = "Interface/Buttons/WHITE8X8", edgeSize = 1})
+		clsit.itembuwei = clsit.itembuweiF:CreateFontString();
+		clsit.itembuwei:SetPoint("CENTER",0,0.6)
+		clsit.itembuwei:SetFont(ChatFontNormal:GetFont(), zblbzitidaxiao-1)
 		clsit.itembuwei:SetText(buweiName[i])
 		clsit.itemlink = clsit:CreateFontString();
 		clsit.itemlink:SetPoint("LEFT",clsit,"RIGHT",0,0);
-		clsit.itemlink:SetFont(ChatFontNormal:GetFont(), 13,"OUTLINE")
+		clsit.itemlink:SetFont(ChatFontNormal:GetFont(), zblbzitidaxiao)
 	end
 	PaperDollFrame.ZBLsit.Taozhuang = PaperDollFrame.ZBLsit:CreateFontString();
 	PaperDollFrame.ZBLsit.Taozhuang:SetPoint("TOPLEFT",_G["CZBLsit"..zhuangbeizhanshiID[#zhuangbeizhanshiID]].itembuwei,"BOTTOMLEFT",0,-10);
-	PaperDollFrame.ZBLsit.Taozhuang:SetFont(ChatFontNormal:GetFont(), 13)
-	PaperDollFrame.ZBLsit.Taozhuang:SetTextColor(0, 1, 1, 0.9);
+	PaperDollFrame.ZBLsit.Taozhuang:SetFont(ChatFontNormal:GetFont(), zblbzitidaxiao)
+	PaperDollFrame.ZBLsit.Taozhuang:SetTextColor(0, 1, 1, 0.8);
 	PaperDollFrame.ZBLsit.Taozhuang:SetText("套装：")
 	Update_zhuangbeiList()
 	PaperDollFrame:HookScript("OnShow",function ()
@@ -514,34 +529,37 @@ local function add_zhuangbeList()
 		InspectPaperDollFrame.ZBLsit:SetPoint("TOPLEFT", InspectPaperDollFrame, "TOPRIGHT",pianyiX,pianyiY);
 		-- 
 		InspectPaperDollFrame.ZBLsit.pingjunLV = InspectPaperDollFrame.ZBLsit:CreateFontString();
-		InspectPaperDollFrame.ZBLsit.pingjunLV:SetPoint("TOPLEFT",InspectPaperDollFrame.ZBLsit,"TOPLEFT",8,-8);
-		InspectPaperDollFrame.ZBLsit.pingjunLV:SetFont(GameFontNormal:GetFont(), 15)
-		InspectPaperDollFrame.ZBLsit.pingjunLV:SetTextColor(1,215/255,0, 0.9);
+		InspectPaperDollFrame.ZBLsit.pingjunLV:SetPoint("TOPLEFT",InspectPaperDollFrame.ZBLsit,"TOPLEFT",3,-6);
+		InspectPaperDollFrame.ZBLsit.pingjunLV:SetFont(ChatFontNormal:GetFont(), zblbzitidaxiao+1)
+		InspectPaperDollFrame.ZBLsit.pingjunLV:SetTextColor(0, 1, 1, 0.8);
 		InspectPaperDollFrame.ZBLsit.pingjunLV:SetText("平均装等:")
 		InspectPaperDollFrame.ZBLsit.pingjunLV_V = InspectPaperDollFrame.ZBLsit:CreateFontString();
 		InspectPaperDollFrame.ZBLsit.pingjunLV_V:SetPoint("LEFT",InspectPaperDollFrame.ZBLsit.pingjunLV,"RIGHT",4,0);
-		InspectPaperDollFrame.ZBLsit.pingjunLV_V:SetFont(ChatFontNormal:GetFont(), 15)
+		InspectPaperDollFrame.ZBLsit.pingjunLV_V:SetFont(ChatFontNormal:GetFont(), zblbzitidaxiao+2)
 		for i=1,#zhuangbeizhanshiID do
 			local clsit = CreateFrame("Frame", "CZBLsitInspect"..zhuangbeizhanshiID[i], InspectPaperDollFrame.ZBLsit);
-			clsit:SetSize(2,17);
+			clsit:SetSize(4,ihhh);
 			if i==1 then
-				clsit:SetPoint("TOPLEFT",InspectPaperDollFrame.ZBLsit,"TOPLEFT",32,-26);
+				clsit:SetPoint("TOPLEFT",InspectPaperDollFrame.ZBLsit,"TOPLEFT",36,-28);
 			else
-				clsit:SetPoint("TOPLEFT",_G["CZBLsitInspect"..(zhuangbeizhanshiID[i-1])],"BOTTOMLEFT",0,0);
+				clsit:SetPoint("TOPLEFT",_G["CZBLsitInspect"..(zhuangbeizhanshiID[i-1])],"BOTTOMLEFT",0,-4);
 			end
-			clsit.itembuwei = clsit:CreateFontString();
-			clsit.itembuwei:SetPoint("RIGHT",clsit,"LEFT",0,0);
-			clsit.itembuwei:SetFont(ChatFontNormal:GetFont(), 13)
-			clsit.itembuwei:SetTextColor(0, 1, 1,0.9);
+			clsit.itembuweiF = CreateFrame("Frame", nil, clsit,"BackdropTemplate")
+	        clsit.itembuweiF:SetSize(iwww,ihhh+2)
+	        clsit.itembuweiF:SetPoint("RIGHT",clsit,"LEFT",0,0)
+	        clsit.itembuweiF:SetBackdrop({edgeFile = "Interface/Buttons/WHITE8X8", edgeSize = 1})
+			clsit.itembuwei = clsit.itembuweiF:CreateFontString();
+			clsit.itembuwei:SetPoint("CENTER",0,0.6)
+			clsit.itembuwei:SetFont(ChatFontNormal:GetFont(), zblbzitidaxiao-1)
 			clsit.itembuwei:SetText(buweiName[i])
 			clsit.itemlink = clsit:CreateFontString();
 			clsit.itemlink:SetPoint("LEFT",clsit,"RIGHT",0,0);
-			clsit.itemlink:SetFont(ChatFontNormal:GetFont(), 13,"OUTLINE")
+			clsit.itemlink:SetFont(ChatFontNormal:GetFont(), zblbzitidaxiao)
 		end
 		InspectPaperDollFrame.ZBLsit.Taozhuang = InspectPaperDollFrame.ZBLsit:CreateFontString();
 		InspectPaperDollFrame.ZBLsit.Taozhuang:SetPoint("TOPLEFT",_G["CZBLsitInspect"..zhuangbeizhanshiID[#zhuangbeizhanshiID]].itembuwei,"BOTTOMLEFT",0,-10);
-		InspectPaperDollFrame.ZBLsit.Taozhuang:SetFont(ChatFontNormal:GetFont(), 13)
-		InspectPaperDollFrame.ZBLsit.Taozhuang:SetTextColor(0, 1, 1, 0.9);
+		InspectPaperDollFrame.ZBLsit.Taozhuang:SetFont(ChatFontNormal:GetFont(), zblbzitidaxiao)
+		InspectPaperDollFrame.ZBLsit.Taozhuang:SetTextColor(0, 1, 1, 0.8);
 		InspectPaperDollFrame.ZBLsit.Taozhuang:SetText("套装：")
 	end
 	if IsAddOnLoaded("Blizzard_InspectUI") then
@@ -599,55 +617,56 @@ local function shuxing_Open()
 	end
 	---近战---------------------
 	local fuji = PaperDollFrame.shuxing
-	fuji.ad=ADD_FontString(fuji,"近战属性",GameFontNormal,15,{"TOPLEFT",fuji,"TOPLEFT",4,-8},{1,215/255,0})
-	fuji.ad1=ADD_FontString(fuji,"近战命中率:",ChatFontNormal,12,{"TOPLEFT",fuji.ad,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.ad1V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.ad1,"RIGHT",2,0},{1,1,1})
-	fuji.ad2=ADD_FontString(fuji,"近战暴击率:",ChatFontNormal,12,{"TOPLEFT",fuji.ad1,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.ad2V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.ad2,"RIGHT",2,0},{1,1,1})
+	local zihaoid = 12.4
+	fuji.ad=ADD_FontString(fuji,"近战属性",ChatFontNormal,zihaoid+2.6,{"TOPLEFT",fuji,"TOPLEFT",4,-6},{1,1,0})
+	fuji.ad1=ADD_FontString(fuji,"近战命中率:",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.ad,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.ad1V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.ad1,"RIGHT",2,0},{1,1,1})
+	fuji.ad2=ADD_FontString(fuji,"近战暴击率:",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.ad1,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.ad2V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.ad2,"RIGHT",2,0},{1,1,1})
 	---远程---------------------
-	fuji.adyc=ADD_FontString(fuji,"远程属性",GameFontNormal,15,{"TOPLEFT",fuji.ad2,"BOTTOMLEFT",0,-8},{1,215/255})
-	fuji.adyc1=ADD_FontString(fuji,"远程命中率:",ChatFontNormal,12,{"TOPLEFT",fuji.adyc,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.adyc1V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.adyc1,"RIGHT",2,0},{1,1,1})
-	fuji.adyc2=ADD_FontString(fuji,"远程暴击率:",ChatFontNormal,12,{"TOPLEFT",fuji.adyc1,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.adyc2V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.adyc2,"RIGHT",2,0},{1,1,1})
+	fuji.adyc=ADD_FontString(fuji,"远程属性",ChatFontNormal,zihaoid+2.6,{"TOPLEFT",fuji.ad2,"BOTTOMLEFT",0,-8},{0,1,0})
+	fuji.adyc1=ADD_FontString(fuji,"远程命中率:",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.adyc,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.adyc1V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.adyc1,"RIGHT",2,0},{1,1,1})
+	fuji.adyc2=ADD_FontString(fuji,"远程暴击率:",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.adyc1,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.adyc2V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.adyc2,"RIGHT",2,0},{1,1,1})
 	---法系------------------
-	fuji.ap=ADD_FontString(fuji,"法系属性",GameFontNormal,15,{"TOPLEFT",fuji.adyc2,"BOTTOMLEFT",0,-8},{1,215/255})
-	fuji.ap1=ADD_FontString(fuji,"法术命中率:",ChatFontNormal,12,{"TOPLEFT",fuji.ap,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.ap1V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.ap1,"RIGHT",2,0},{1,1,1})
-	fuji.ap2=ADD_FontString(fuji,"法系暴击率:",ChatFontNormal,12,{"TOPLEFT",fuji.ap1,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.ap2V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.ap2,"RIGHT",2,0},{1,1,1})
-	fuji.ap3=ADD_FontString(fuji,"5秒回蓝(脱战):",ChatFontNormal,12,{"TOPLEFT",fuji.ap2,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.ap3V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.ap3,"RIGHT",2,0},{1,1,1})
-	fuji.ap4=ADD_FontString(fuji,"5秒回蓝(战斗):",ChatFontNormal,12,{"TOPLEFT",fuji.ap3,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.ap4V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.ap4,"RIGHT",2,0},{1,1,1})
+	fuji.ap=ADD_FontString(fuji,"法系属性",ChatFontNormal,zihaoid+2.6,{"TOPLEFT",fuji.adyc2,"BOTTOMLEFT",0,-8},{0,1,1})
+	fuji.ap1=ADD_FontString(fuji,"法术命中率:",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.ap,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.ap1V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.ap1,"RIGHT",2,0},{1,1,1})
+	fuji.ap2=ADD_FontString(fuji,"法系暴击率:",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.ap1,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.ap2V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.ap2,"RIGHT",2,0},{1,1,1})
+	fuji.ap3=ADD_FontString(fuji,"5秒回蓝(脱战):",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.ap2,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.ap3V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.ap3,"RIGHT",2,0},{1,1,1})
+	fuji.ap4=ADD_FontString(fuji,"5秒回蓝(战斗):",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.ap3,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.ap4V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.ap4,"RIGHT",2,0},{1,1,1})
 	---伤害加成------------------
-	fuji.jc=ADD_FontString(fuji,"伤害加成",GameFontNormal,15,{"TOPLEFT",fuji.ap4,"BOTTOMLEFT",0,-8},{1,215/255})
-	fuji.jc1=ADD_FontString(fuji,"物伤加成:",ChatFontNormal,12,{"TOPLEFT",fuji.jc,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.jc1V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.jc1,"RIGHT",2,0},{1,1,1})
-	fuji.jc2=ADD_FontString(fuji,"治疗加成:",ChatFontNormal,12,{"TOPLEFT",fuji.jc1,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.jc2V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.jc2,"RIGHT",2,0},{1,1,1})
-	fuji.jc3=ADD_FontString(fuji,"法伤加成(冰霜):",ChatFontNormal,12,{"TOPLEFT",fuji.jc2,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.jc3V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.jc3,"RIGHT",2,0},{1,1,1})
-	fuji.jc4=ADD_FontString(fuji,"法伤加成(火焰):",ChatFontNormal,12,{"TOPLEFT",fuji.jc3,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.jc4V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.jc4,"RIGHT",2,0},{1,1,1})
-	fuji.jc5=ADD_FontString(fuji,"法伤加成(奥术):",ChatFontNormal,12,{"TOPLEFT",fuji.jc4,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.jc5V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.jc5,"RIGHT",2,0},{1,1,1})
-	fuji.jc6=ADD_FontString(fuji,"法伤加成(暗影):",ChatFontNormal,12,{"TOPLEFT",fuji.jc5,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.jc6V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.jc6,"RIGHT",2,0},{1,1,1})
-	fuji.jc7=ADD_FontString(fuji,"法伤加成(自然):",ChatFontNormal,12,{"TOPLEFT",fuji.jc6,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.jc7V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.jc7,"RIGHT",2,0},{1,1,1})
-	fuji.jc8=ADD_FontString(fuji,"法伤加成(神圣):",ChatFontNormal,12,{"TOPLEFT",fuji.jc7,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.jc8V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.jc8,"RIGHT",2,0},{1,1,1})
+	fuji.jc=ADD_FontString(fuji,"伤害加成",ChatFontNormal,zihaoid+2.6,{"TOPLEFT",fuji.ap4,"BOTTOMLEFT",0,-8},{1,0.27,0})
+	fuji.jc1=ADD_FontString(fuji,"物伤加成:",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.jc,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.jc1V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.jc1,"RIGHT",2,0},{1,1,1})
+	fuji.jc2=ADD_FontString(fuji,"治疗加成:",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.jc1,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.jc2V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.jc2,"RIGHT",2,0},{1,1,1})
+	fuji.jc3=ADD_FontString(fuji,"法伤加成(冰霜):",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.jc2,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.jc3V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.jc3,"RIGHT",2,0},{1,1,1})
+	fuji.jc4=ADD_FontString(fuji,"法伤加成(火焰):",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.jc3,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.jc4V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.jc4,"RIGHT",2,0},{1,1,1})
+	fuji.jc5=ADD_FontString(fuji,"法伤加成(奥术):",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.jc4,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.jc5V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.jc5,"RIGHT",2,0},{1,1,1})
+	fuji.jc6=ADD_FontString(fuji,"法伤加成(暗影):",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.jc5,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.jc6V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.jc6,"RIGHT",2,0},{1,1,1})
+	fuji.jc7=ADD_FontString(fuji,"法伤加成(自然):",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.jc6,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.jc7V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.jc7,"RIGHT",2,0},{1,1,1})
+	fuji.jc8=ADD_FontString(fuji,"法伤加成(神圣):",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.jc7,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.jc8V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.jc8,"RIGHT",2,0},{1,1,1})
 	---防御---------------------
-	fuji.fy=ADD_FontString(fuji,"防御属性",GameFontNormal,15,{"TOPLEFT",fuji.jc8,"BOTTOMLEFT",0,-8},{1,215/255})
-	fuji.fy1=ADD_FontString(fuji,"闪避几率:",ChatFontNormal,12,{"TOPLEFT",fuji.fy,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.fy1V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.fy1,"RIGHT",2,0},{1,1,1})
-	fuji.fy2=ADD_FontString(fuji,"招架几率:",ChatFontNormal,12,{"TOPLEFT",fuji.fy1,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.fy2V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.fy2,"RIGHT",2,0},{1,1,1})
-	fuji.fy3=ADD_FontString(fuji,"格挡几率:",ChatFontNormal,12,{"TOPLEFT",fuji.fy2,"BOTTOMLEFT",0,-2},{0,1,1})
-	fuji.fy3V=ADD_FontString(fuji,"",ChatFontNormal,12,{"LEFT",fuji.fy3,"RIGHT",2,0},{1,1,1})
+	fuji.fy=ADD_FontString(fuji,"防御属性",ChatFontNormal,zihaoid+2.6,{"TOPLEFT",fuji.jc8,"BOTTOMLEFT",0,-8},{1,0.84,0})
+	fuji.fy1=ADD_FontString(fuji,"闪避几率:",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.fy,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.fy1V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.fy1,"RIGHT",2,0},{1,1,1})
+	fuji.fy2=ADD_FontString(fuji,"招架几率:",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.fy1,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.fy2V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.fy2,"RIGHT",2,0},{1,1,1})
+	fuji.fy3=ADD_FontString(fuji,"格挡几率:",ChatFontNormal,zihaoid,{"TOPLEFT",fuji.fy2,"BOTTOMLEFT",0,-2},{0.53,0.8,0.98})
+	fuji.fy3V=ADD_FontString(fuji,"",ChatFontNormal,zihaoid,{"LEFT",fuji.fy3,"RIGHT",2,0},{1,1,1})
 	--
-	fuji.shuoming=ADD_FontString(fuji,"命中统计不包含天赋加成",ChatFontNormal,12,{"TOPLEFT",fuji.fy3,"BOTTOMLEFT",0,-12},{1, 1, 0})
+	fuji.shuoming=ADD_FontString(fuji,"命中统计不包含天赋加成",ChatFontNormal,zihaoid-0.4,{"TOPLEFT",fuji.fy3,"BOTTOMLEFT",0,-8},{1,0.9,0})
 	-----------
 	local function Round(num)    
 	    local mult = 10^(2);

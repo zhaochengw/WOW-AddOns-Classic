@@ -48,16 +48,16 @@ local function shoumailaji()
 		else
 			for bag = 0, 4 do
 				for slot = 1, C_Container.GetContainerNumSlots(bag) do
-					local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID= C_Container.GetContainerItemInfo(bag, slot);
-					if itemID then
-						if noValue==false then
+					local ItemInfo= C_Container.GetContainerItemInfo(bag, slot);
+					if ItemInfo then
+						if ItemInfo.hasNoValue==false then
 							if fuFrame.AutoSellLJ:GetChecked() then
-								if quality==0 then
+								if ItemInfo.quality==0 then
 									local shifouzaipaichumuluYN=true
 									if shifouzaipaichumuluYN then
-										local name, link, rarity, level, minLevel, itemtype, subType, stackCount, equipLoc, icon, sellPrice = GetItemInfo(itemID);
-										fuFrame.shoumaiG = sellPrice*itemCount+fuFrame.shoumaiG;
-										UseContainerItem(bag, slot);
+										local name, link, rarity, level, minLevel, itemtype, subType, stackCount, equipLoc, icon, sellPrice = GetItemInfo(ItemInfo.hyperlink);
+										fuFrame.shoumaiG = sellPrice*ItemInfo.stackCount+fuFrame.shoumaiG;
+										C_Container.UseContainerItem(bag, slot);
 										print("|cFF7FFFAA出售|r: " ..link);
 										fuFrame.shoumaiShuliang = fuFrame.shoumaiShuliang+1
 									end
@@ -66,10 +66,10 @@ local function shoumailaji()
 							--非灰
 							if fuFrame.AutoSell_feihui:GetChecked() then
 								for i=1,#PIG['AutoSellBuy']['AutoSell_List'] do
-									if itemLink==PIG['AutoSellBuy']['AutoSell_List'][i][2] then
-										local name, link, rarity, level, minLevel, itemtype, subType, stackCount, equipLoc, icon, sellPrice = GetItemInfo(itemID);
-										fuFrame.shoumaiG = sellPrice*itemCount+fuFrame.shoumaiG;
-										UseContainerItem(bag, slot);
+									if ItemInfo.hyperlink==PIG['AutoSellBuy']['AutoSell_List'][i][2] then
+										local name, link, rarity, level, minLevel, itemtype, subType, stackCount, equipLoc, icon, sellPrice = GetItemInfo(ItemInfo.hyperlink);
+										fuFrame.shoumaiG = sellPrice*ItemInfo.stackCount+fuFrame.shoumaiG;
+										C_Container.UseContainerItem(bag, slot);
 										print("|cFF7FFFAA出售|r: " ..link);
 										fuFrame.shoumaiShuliang = fuFrame.shoumaiShuliang+1
 									end
@@ -86,18 +86,6 @@ local function shoumailaji()
 		if fuFrame.shoumaiShuliang>=12 then 
 			C_Timer.After(1,shoumailaji) 
 		end
-	end
-end
---出售按钮
-local function SellPlus_Open()
-	if button_Sell_UI==nil then
-		local button_Sell = CreateFrame("Button","button_Sell_UI",MerchantFrame, "UIPanelButtonTemplate");  
-		button_Sell:SetSize(80,28);
-		button_Sell:SetPoint("TOPLEFT",MerchantFrame,"TOPLEFT",60,-26);
-		button_Sell:SetText("卖东西");
-		button_Sell:SetScript("OnClick", function ()
-			shoumailaji()
-		end)
 	end
 end
 -----------
@@ -259,6 +247,17 @@ local function sell_add()
 		gengxinMulu(fuFrame.Sell.Scroll)
 	end)
 	---------------------------
+	local function SellPlus_Open()
+		if button_Sell_UI==nil then
+			local button_Sell = CreateFrame("Button","button_Sell_UI",MerchantFrame, "UIPanelButtonTemplate");  
+			button_Sell:SetSize(80,28);
+			button_Sell:SetPoint("TOPLEFT",MerchantFrame,"TOPLEFT",60,-26);
+			button_Sell:SetText("卖东西");
+			button_Sell:SetScript("OnClick", function ()
+				shoumailaji()
+			end)
+		end
+	end
 	fuFrame.SellPlus = ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",20,-10,"出售按钮", "在商人界面增加一个卖东西按钮（可以点击卖出灰色物品和下方目录内的物品）")
 	fuFrame.SellPlus:SetScript("OnClick", function ()
 		if fuFrame.SellPlus:GetChecked() then
@@ -269,15 +268,28 @@ local function sell_add()
 			Pig_Options_RLtishi_UI:Show()
 		end
 	end);
+	if PIG['AutoSellBuy']['SellPlus']=="ON" then
+		fuFrame.SellPlus:SetChecked(true);
+		SellPlus_Open();
+	end
 	--自动卖垃圾
+	local function AutoSell_Open()
+		MerchantFrame:HookScript("OnShow",function (self,event)
+			shoumailaji()
+		end);
+	end
 	fuFrame.AutoSellLJ = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",160,-10,"自动卖垃圾", "打开商人界面自动售卖垃圾(灰色)物品")
 	fuFrame.AutoSellLJ:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG['AutoSellBuy']['AutoSell']="ON";
+			AutoSell_Open()
 		else
 			PIG['AutoSellBuy']['AutoSell']="OFF";
 		end
 	end);
+	if PIG['AutoSellBuy']['AutoSell']=="ON" then
+		fuFrame.AutoSellLJ:SetChecked(true)
+	end
 	--自动售卖
 	fuFrame.AutoSell_feihui = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-36,"自动卖下方目录物品", "开启后将自动卖下方目录内的物品")
 	fuFrame.AutoSell_feihui:SetScript("OnClick", function (self)
@@ -287,24 +299,12 @@ local function sell_add()
 			PIG['AutoSellBuy']['AutoSell_Open']="OFF";
 		end
 	end);
-	------------------------
-	MerchantFrame:HookScript("OnEvent",function (self,event)
-		if event=="MERCHANT_SHOW" then
-			shoumailaji()
-		end
-	end);
-	-----------
+
 	if PIG['AutoSellBuy']['AutoSell_Open']=="ON" then
-		fuFrame.AutoSell_feihui:SetChecked(true);
+		fuFrame.AutoSell_feihui:SetChecked(true)
 	end
-	PIG['AutoSellBuy']['SellPlus']=PIG['AutoSellBuy']['SellPlus'] or addonTable.Default['AutoSellBuy']['SellPlus'];
-	if PIG['AutoSellBuy']['SellPlus']=="ON" then
-		fuFrame.SellPlus:SetChecked(true);
-		SellPlus_Open();
-	end
-	PIG['AutoSellBuy']['AutoSell']=PIG['AutoSellBuy']['AutoSell'] or addonTable.Default['AutoSellBuy']['AutoSell'];
-	if PIG['AutoSellBuy']['AutoSell']=="ON" then
-		fuFrame.AutoSellLJ:SetChecked(true);
+	if PIG['AutoSellBuy']['AutoSell']=="ON" or PIG['AutoSellBuy']['AutoSell_Open']=="ON" then
+		AutoSell_Open()
 	end
 end
 --===============================================

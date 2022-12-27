@@ -227,10 +227,6 @@ end
 -- end
 
 function PIG_AutoLoot:OnAddonLoaded(name)
-	if IsInGroup() then 
-		local lootmethod = GetLootMethod();
-		if lootmethod=="master" then return end
-	end
     if name == addonName then
         SpeedyAutoLootDB = SpeedyAutoLootDB or {};
         Settings = SpeedyAutoLootDB;
@@ -293,7 +289,6 @@ addonTable.Interaction_FastLoot = function()
             --LootF:RegisterEvent("LOOT_READY")
         end
     else
-        fuFrame.AutolootCK:Disable();
-        fuFrame.AutolootCK.Text:SetTextColor(0.4, 0.4, 0.4, 1) 
+    	PIGDisable(fuFrame.AutolootCK)
     end
 end

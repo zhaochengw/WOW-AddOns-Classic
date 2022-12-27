@@ -4,6 +4,8 @@ local match = _G.string.match
 local CDWMinfo=addonTable.CDWMinfo
 local SQPindao = CDWMinfo["pindao"]
 local qingqiumsg = CDWMinfo["Plane"]
+local panduanshifouPIG = CDWMinfo.panduanshifouPIG
+local huoqukeyongPIG = CDWMinfo.huoqukeyongPIG
 local shenqingMSG = "SQHWM_499";
 ------
 local biaotou='!Pig-Plane';
@@ -62,21 +64,23 @@ PlaneFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, arg3, _, arg5,_
 		if PIG_WB.WeimianInfo then
 			local inInstance, instanceType =IsInInstance()
 			if not inInstance then
-				if arg9==SQPindao and arg1==qingqiumsg then
-					if arg5 ~= GetUnitName("player", true) then
-						local kaiguanzhuangtai = "^N^N"
-						if PIG['PlaneInvite']['Kaiqi']=="ON" then
-							kaiguanzhuangtai="^Y"
-						else
-							kaiguanzhuangtai="^N"
+				if panduanshifouPIG(arg9) then
+					if arg1==qingqiumsg then
+						if arg5 ~= GetUnitName("player", true) then
+							local kaiguanzhuangtai = "^N^N"
+							if PIG['PlaneInvite']['Kaiqi']=="ON" then
+								kaiguanzhuangtai="^Y"
+							else
+								kaiguanzhuangtai="^N"
+							end
+							if PIG['PlaneInvite']['zidongjieshou']=="ON" then
+								kaiguanzhuangtai=kaiguanzhuangtai.."^Y"
+							else
+								kaiguanzhuangtai=kaiguanzhuangtai.."^N"
+							end
+							local SMessage=PIG_WB.WeimianInfo..kaiguanzhuangtai
+							C_ChatInfo.SendAddonMessage(biaotou,SMessage,"WHISPER",arg5)
 						end
-						if PIG['PlaneInvite']['zidongjieshou']=="ON" then
-							kaiguanzhuangtai=kaiguanzhuangtai.."^Y"
-						else
-							kaiguanzhuangtai=kaiguanzhuangtai.."^N"
-						end
-						local SMessage=PIG_WB.WeimianInfo..kaiguanzhuangtai
-						C_ChatInfo.SendAddonMessage(biaotou,SMessage,"WHISPER",arg5)
 					end
 				end
 			end
@@ -108,7 +112,6 @@ local ADD_jindutiaoBUT=addonTable.ADD_jindutiaoBUT
 local ADD_Biaoti=addonTable.ADD_Biaoti
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local function ADD_Plane_Frame()
-	local fufufuFrame=PlaneInvite_UI
 	local fuFrame=PlaneInviteFrame_3;
 	local Width,Height=fuFrame:GetWidth(),fuFrame:GetHeight();
 	-----------------
@@ -150,11 +153,7 @@ local function ADD_Plane_Frame()
 			self:Disable()
 		else
 			self:SetText(self.anTXT);
-			if fufufuFrame.yijiaru then
-				self:Enable()
-			else
-				self:Disable()
-			end	
+			self:Enable()
 		end
 	end);
 
@@ -185,25 +184,15 @@ local function ADD_Plane_Frame()
 			StaticPopup_Show ("XIANHUOQUZIJIWEIMIAN") 
 			return 
 		end
-		local pindaolheji = {GetChannelList()};
-		pindaolheji.yijiaruPIG=true
-		pindaolheji.PIGID=0
-		for i=1,#pindaolheji do
-			if pindaolheji[i]==SQPindao then
-				pindaolheji.PIGID=pindaolheji[i-1]
-				pindaolheji.yijiaruPIG=false
-				break
-			end
-		end
-		if pindaolheji.yijiaruPIG then
+		self.PIGID=huoqukeyongPIG(SQPindao)
+		if self.PIGID==0 then
 			print("|cff00FFFF!Pig:|r|cffFFFF00请先加入"..SQPindao.."频道获取位面信息！|r")
 			return
 		end
-
 		fuFrame.shuaxinBUT.anTXT="更新位面信息"
 		self:Disable();
 		PIG_WB.JieshouInfo={};
-		SendChatMessage(qingqiumsg,"CHANNEL",nil,pindaolheji.PIGID)
+		SendChatMessage(qingqiumsg,"CHANNEL",nil,self.PIGID)
 
 		fuFrame.daojishiJG =GetServerTime();
 		PIG['PlaneInvite']['Weimiandaojishi']=fuFrame.daojishiJG

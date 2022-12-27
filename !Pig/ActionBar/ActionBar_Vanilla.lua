@@ -2,7 +2,8 @@ local addonName, addonTable = ...;
 -------
 local fuFrame = List_R_F_2_3
 local _, _, _, tocversion = GetBuildInfo()
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 --=======================================
 local anniugeshu,anniujiange=12,6;
 local zongshu =4;

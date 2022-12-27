@@ -46,7 +46,7 @@ local CVarsList = {
 	--{"聊天栏显示职业颜色","chatClassColorOverride","0","1","聊天框发言的玩家姓名会根据职业染色",false},
 	{"显示目标所有增减益","noBuffDebuffFilterOnTarget","1","0","开启后目标所有增减益都会显示在目标头像，关闭则只显示自己施加的效果",false},
 	{"显示姓名板","nameplateShowOnlyNames","0","1","显示姓名板，正式服需要显示战斗外姓名版需要打开-界面-名字-显示所有姓名版",true},
-	{"姓名板锁定在屏幕内","clampTargetNameplateToScreen","1","0","姓名板锁定在屏幕内",false},
+	{"选中姓名板锁定在屏幕内","clampTargetNameplateToScreen","1","0","姓名板锁定在屏幕内",false},
 	{"友方姓名板职业颜色","ShowClassColorInFriendlyNameplate","1","0","根据友方职业颜色染色姓名板",true},
 	{"敌方姓名板职业颜色","ShowClassColorInNameplate","1","0","根据敌方职业颜色染色姓名板",true},
 	---
@@ -72,13 +72,13 @@ local CVarsList = {
 	{"仅战场中高亮","findYourselfInBG","1","0","仅在战场中高亮显示自身角色，高亮模式请在下方设置",false},
 	{"仅战场战斗中高亮","findYourselfInBGOnlyInCombat","1","0","仅在战场中高亮显示自身角色，高亮模式请在下方设置",false},	
 }
---print(GetCVarInfo("clampTargetNameplateToScreen"))
+--print(GetCVarInfo("nameplateOtherTopInset"))
 for i=1,#CVarsList do
 	local miaodian = {_G["CVarsCB_"..(i-1)],0,-30}
 	if i==1 then
 		miaodian = {fuFrame.nr,10,-10}
 	elseif CVarsList[i][1]=="按下按键时施法" then
-		miaodian = {_G["CVarsCB_"..(i-1)],0,-50}
+		miaodian = {_G["CVarsCB_"..(i-1)],0,-150}
 	elseif CVarsList[i][1]=="禁止同步键位到服务器" then
 		miaodian = {_G["CVarsCB_"..(i-1)],0,-50}
 	elseif CVarsList[i][1]=="显示你对目标伤害信息" then
@@ -143,7 +143,9 @@ local function ADD_Slider(GnName,UIName,fuFrame,Width,Height,PointZi,Point,Point
 	Slider.t:SetText(GnName);
 	return Slider
 end
-local function ShowmorenV(self,CVarName,text,textName)
+local function ShowmorenV(self,CVarName,text,textName,beishu)
+	local beishu=beishu or 10
+	local sishewuru = 5/beishu
 	local shezhiVV= tonumber(GetCVar(CVarName))
 	local shezhiVV= tostring(shezhiVV)
 	self:SetValue(shezhiVV);
@@ -159,15 +161,15 @@ local function ShowmorenV(self,CVarName,text,textName)
 	self:HookScript('OnValueChanged', function(self)
 		self.Valuepig=self:GetValue()
 		if self:GetValueStep()<1 then
-			self.Valuepig = self.Valuepig*10
-			self.Valuepig = floor(self.Valuepig+0.5)/10
+			self.Valuepig = self.Valuepig*beishu
+			self.Valuepig = floor(self.Valuepig+sishewuru)/beishu
 		else
 			self.Valuepig = tostring(self.Valuepig)
 		end
 		if text and textName then
 			self.Text:SetText(textName[self.Valuepig]..text.."("..self.Valuepig..")");
 		elseif text then
-			self.Text:SetText(self.Valuepig.."倍");
+			self.Text:SetText(self.Valuepig..text);
 		elseif textName then
 			self.Text:SetText(textName[self.Valuepig].."("..self.Valuepig..")");
 		else
@@ -176,6 +178,16 @@ local function ShowmorenV(self,CVarName,text,textName)
 		SetCVar(CVarName,self.Valuepig)
 	end)
 end
+--
+fuFrame.nr.nameShowjuli = fuFrame.nr:CreateFontString();
+fuFrame.nr.nameShowjuli:SetPoint("TOPLEFT",fuFrame.nr,"TOPLEFT",10,-190);
+fuFrame.nr.nameShowjuli:SetFontObject(GameFontNormal);
+fuFrame.nr.nameShowjuli:SetText("姓名板锁定在屏幕内显示距离");
+
+local nameplateTop = ADD_Slider("顶部距离",nil,fuFrame.nr,100,16,"TOPLEFT",fuFrame.nr.nameShowjuli,"BOTTOMLEFT",90,-16,0,0.2,0.01)
+ShowmorenV(nameplateTop,"nameplateOtherTopInset","%屏幕尺寸",nil,100)
+local nameplateBottom = ADD_Slider("底部距离",nil,fuFrame.nr,100,16,"TOPLEFT",fuFrame.nr.nameShowjuli,"BOTTOMLEFT",90,-66,0,0.2,0.01)
+ShowmorenV(nameplateBottom,"nameplateOtherBottomInset","%屏幕尺寸",nil,100)
 --
 local fudonginfo = ADD_Slider("浮动信息大小",nil,fuFrame.nr,100,16,"TOPLEFT",fuFrame.nr,"TOPLEFT",410,-110,1,3,0.1)
 ShowmorenV(fudonginfo,"WorldTextScale","倍")

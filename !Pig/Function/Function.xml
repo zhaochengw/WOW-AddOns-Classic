@@ -1,5 +1,0 @@
-<Ui>
-	<Script file="Data.lua" />
-	<Script file="UI.lua" />
-	<Script file="DownMenu.lua" />
-</Ui>

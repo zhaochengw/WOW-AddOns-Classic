@@ -1,7 +1,8 @@
 local addonName, addonTable = ...;
 local fuFrame=List_R_F_1_8
 local _, _, _, tocversion = GetBuildInfo()
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ----------------------------------------------------------
 local ShouNaButHeji={};
@@ -104,6 +105,8 @@ local paichulist = {
 	"SexyMapCoordFrame",
 	"SexyMapPingFrame",
 	"SexyMapZoneTextButton",
+	"ElvUI_MinimapHolder",
+	"MinimapPanel",
 }
 local function Other_ShouNaBut()
 	local children = { Minimap:GetChildren() };
@@ -143,21 +146,15 @@ addonTable.Map_ShouNaBut = function()
 end
 
 --小地图按钮--==============================
-local function MinimapButton_Pig_Open()
+local www,hhh = 33,33
+local function MinimapButton_Pig_Open(laiyuan)
 	if MinimapButton_PigUI==nil then
-		if tocversion<100000 then
-			Minimap.chushipianyi = 52
-			Minimap.zhijing = 80
-		else
-			Minimap.chushipianyi = 82
-			Minimap.zhijing = 110
-		end
 		local fujikname = UIParent
 		if PIG.Map.MinimapShouNa_BS then
 			fujikname = Minimap
 		end
 		local MinimapButton_Pig = CreateFrame("Button","MinimapButton_PigUI",fujikname); 
-		MinimapButton_Pig:SetSize(33,33);
+		MinimapButton_Pig:SetSize(www,hhh);
 		MinimapButton_Pig:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 0, 0);
 		MinimapButton_Pig:SetMovable(true)
 		MinimapButton_Pig:EnableMouse(true)
@@ -171,11 +168,12 @@ local function MinimapButton_Pig_Open()
 		MinimapButton_Pig.Border:SetPoint("TOPLEFT", 0, 0);
 		MinimapButton_Pig.Icon = MinimapButton_Pig:CreateTexture(nil, "ARTWORK");
 		MinimapButton_Pig.Icon:SetTexture(132311);
-		MinimapButton_Pig.Icon:SetSize(23,23);
 		if tocversion<100000 then
+			MinimapButton_Pig.Icon:SetSize(www-10,hhh-10);
 			MinimapButton_Pig.Icon:SetPoint("CENTER", 0, 1);
 		else
-			MinimapButton_Pig.Icon:SetPoint("CENTER", 0.8, 0);
+			MinimapButton_Pig.Icon:SetSize(www-11,hhh-11);
+			MinimapButton_Pig.Icon:SetPoint("CENTER", 0.9, -0.4);
 		end
 		MinimapButton_Pig.error = MinimapButton_Pig:CreateTexture(nil, "OVERLAY");
 		MinimapButton_Pig.error:SetTexture("interface/common/voicechat-muted.blp");
@@ -184,9 +182,9 @@ local function MinimapButton_Pig_Open()
 		MinimapButton_Pig.error:SetPoint("CENTER", 0, 0);
 		MinimapButton_Pig.error:Hide();
 
-		MinimapButton_Pig:SetScript("OnEnter", function()
+		MinimapButton_Pig:SetScript("OnEnter", function(self)
 			GameTooltip:ClearLines();
-			GameTooltip:SetOwner(MinimapButton_Pig, "ANCHOR_TOPRIGHT",0,0);
+			GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT",-24,0);
 			GameTooltip:AddLine("|cffFF00FF!Pig|r-"..GetAddOnMetadata(addonName, "Version"))
 			GameTooltip:AddLine("左击-|cff00FFFF展开小地图按钮|r\r右击-|cff00FFFF设置|r\rShift+左击-|cff00FFFF打开错误报告|r")
 			GameTooltip:Show();
@@ -195,36 +193,61 @@ local function MinimapButton_Pig_Open()
 			GameTooltip:ClearLines();
 			GameTooltip:Hide() 
 		end);
-
-		local function YDButtonP()
-			local weizhiXY = PIG.Map.MinimapPos
+		
+		local function YDButtonP(weizhiXY)
+			local banjing = MinimapButton_Pig.banjing
+			local pianyi =MinimapButton_Pig.pianyi
 			MinimapButton_Pig:ClearAllPoints();
-			MinimapButton_Pig:SetPoint("TOPLEFT","Minimap","TOPLEFT",Minimap.chushipianyi-(Minimap.zhijing*cos(weizhiXY)),(Minimap.zhijing*sin(weizhiXY))-Minimap.chushipianyi)
+			MinimapButton_Pig:SetPoint("TOPLEFT",Minimap,"TOPLEFT",pianyi-2-(banjing*cos(weizhiXY)),(banjing*sin(weizhiXY))-pianyi)
+			PIG.Map.MinimapPos=weizhiXY
 		end
-
-		local function YDButtonP_OnUpdate()
+		local function YDButtonP_ElvUI(xpos,ypos)
+			MinimapButton_Pig:ClearAllPoints();	
+			MinimapButton_Pig:SetPoint("TOPLEFT",Minimap,"TOPLEFT",xpos,ypos)
+			PIG.Map.MinimapPos_ElvUI={xpos,ypos}
+		end
+		local function YDButtonP_OnUpdate()	
+			local banjing = MinimapButton_Pig.banjing
 			local xpos,ypos = GetCursorPosition()
+			local UIScale = UIParent:GetScale()
 			local xmin,ymin = Minimap:GetLeft(), Minimap:GetBottom()
-			local xpos = xmin-xpos/UIParent:GetScale()+70 
-			local ypos = ypos/UIParent:GetScale()-ymin-70
-			PIG.Map.MinimapPos = math.deg(math.atan2(ypos,xpos))
-			YDButtonP()
+			if ElvUI then
+				local xpos = xpos/UIScale-xmin
+				local ypos = ypos/UIScale-ymin
+				local MinimapWidth = MinimapButton_Pig:GetWidth()
+				local wwwvvv = -MinimapWidth*0.5+11		
+				if xpos<wwwvvv then
+					xpos=wwwvvv
+				end
+				local banjingX = banjing-MinimapWidth*0.5-12
+				if xpos>banjingX then
+					xpos=banjingX
+				end
+				local MinimapHeight = MinimapButton_Pig:GetHeight()
+				local hhhvvv = MinimapHeight*0.5+10
+				if ypos<hhhvvv then
+					ypos=hhhvvv
+				end
+				local banjingY = banjing-MinimapHeight*0.5+10
+				if ypos>banjingY then
+					ypos=banjingY
+				end
+				local ypos = ypos-banjing
+				YDButtonP_ElvUI(xpos,ypos)
+			else
+				local xpos = xmin-xpos/UIScale+banjing
+				local ypos = ypos/UIScale-ymin-banjing
+				YDButtonP(math.deg(math.atan2(ypos,xpos)))
+			end
 		end
 
 		local MinimapButton_PigYD = CreateFrame("Frame", nil);
 		MinimapButton_PigYD:Hide();
-		MinimapButton_PigYD:SetScript("OnUpdate",YDButtonP_OnUpdate)
-		MinimapButton_Pig:SetScript("OnDragStart", function()
-			MinimapButton_Pig:LockHighlight();MinimapButton_PigYD:Show();
-		end)
-		MinimapButton_Pig:SetScript("OnDragStop", function()
-			MinimapButton_Pig:UnlockHighlight();MinimapButton_PigYD:Hide();
-		end)
-		YDButtonP();
 		MinimapButton_Pig:SetScript("OnClick", function(event, button)
+			GameTooltip:Hide()
 			if button=="LeftButton" then
 				if IsShiftKeyDown() then
-					Bugshouji_UI:Show()
+					Bugcollect_UI:Show()
 					MinimapButton_PigUI.error:Hide();
 				else
 					if PIG.Map.MinimapShouNa then
@@ -256,17 +279,87 @@ local function MinimapButton_Pig_Open()
 				end
 			end
 		end)
+		Minimap:RegisterEvent("PLAYER_LOGIN")
+		local function zhucetuodong()
+			MinimapButton_PigYD:SetScript("OnUpdate",YDButtonP_OnUpdate)
+			MinimapButton_Pig:SetScript("OnDragStart", function()
+				MinimapButton_Pig:LockHighlight();MinimapButton_PigYD:Show();
+			end)
+			MinimapButton_Pig:SetScript("OnDragStop", function()
+				MinimapButton_Pig:UnlockHighlight();MinimapButton_PigYD:Hide();
+			end)
+		end
+		local function MinimapButton_Pig_Point()
+			if ElvUI then
+				MinimapButton_Pig:SetHighlightTexture("Interface/Buttons/ButtonHilight-Square");
+				MinimapButton_Pig.Border:Hide()
+				MinimapButton_Pig.Icon:SetTexCoord(0.1,0.9,0.1,0.9)
+				local mode = 1
+				if mode == 1 then--固定位置
+					local function ElvUIPoint()
+						if MinimapPanel then
+							MinimapButton_Pig:ClearAllPoints();	
+							MinimapButton_Pig:SetPoint("TOPLEFT",MinimapPanel,"TOPLEFT",0.8,-0.6)
+							MinimapButton_Pig:SetPoint("BOTTOMLEFT",MinimapPanel,"BOTTOMLEFT",0,0.6)
+							local hhhh = MinimapPanel:GetHeight()	
+							MinimapButton_Pig:SetWidth(hhhh-1.2);
+							MinimapButton_Pig.Icon:SetAllPoints(MinimapButton_Pig)
+							local wwww = MinimapPanel:GetWidth()	
+							local DataTextwww = (wwww-hhhh-2)*0.5
+							if MinimapPanel_DataText1 then
+								MinimapPanel_DataText1:SetWidth(DataTextwww)
+								MinimapPanel_DataText1:SetPoint("LEFT",MinimapPanel,"LEFT",hhhh,0)
+								MinimapPanel_DataText2:SetWidth(DataTextwww)
+							end
+						end
+					end
+					C_Timer.After(0.1,ElvUIPoint)
+					C_Timer.After(1,ElvUIPoint)
+				elseif mode == 2 then--拖动模式
+					zhucetuodong()
+					MinimapButton_Pig:SetSize(www-10,hhh-10);
+					MinimapButton_Pig.Icon:SetSize(www-10,hhh-10);	
+					if tocversion<20000 then
+						PIG.Map.MinimapPos_ElvUI=PIG.Map.MinimapPos_ElvUI or {32.63,-152}
+					elseif tocversion<40000 then
+						PIG.Map.MinimapPos_ElvUI=PIG.Map.MinimapPos_ElvUI or {32.63,-197.76}
+					else
+						PIG.Map.MinimapPos_ElvUI=PIG.Map.MinimapPos_ElvUI or {32.63,-152}
+					end
+					local banjing = Minimap:GetWidth()
+					MinimapButton_Pig.banjing=banjing
+					YDButtonP_ElvUI(PIG.Map.MinimapPos_ElvUI[1],PIG.Map.MinimapPos_ElvUI[2])
+				end
+			else
+				zhucetuodong()
+				if tocversion<100000 then
+					MinimapButton_Pig.pianyi = 56
+				else
+					MinimapButton_Pig.pianyi = 82
+				end
+				local banjing = Minimap:GetWidth()*0.5+8
+				MinimapButton_Pig.banjing=banjing
+				YDButtonP(PIG.Map.MinimapPos);
+			end
+		end
+		if laiyuan=="Check" then MinimapButton_Pig_Point() end
+		Minimap:SetScript("OnEvent", function(self,event)
+			if event=="PLAYER_LOGIN" then
+				MinimapButton_Pig_Point()
+				self:UnregisterEvent("PLAYER_LOGIN");
+			end
+		end)
 		--Collect Button
+		local Backdropinfo={bgFile = "interface/chatframe/chatframebackground.blp",
+			edgeFile = "Interface/Buttons/WHITE8X8", edgeSize = 1,}
 		MinimapButton_Pig.Snf = CreateFrame("Frame", nil, MinimapButton_Pig,"BackdropTemplate");
-		MinimapButton_Pig.Snf:SetBackdrop({
-		    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-		    edgeFile = "interface/friendsframe/ui-toast-border.blp",
-		    tile = true,tileSize = 32,edgeSize = 8,
-		    insets = { left = 3, right = 3, top = 3, bottom = 3 }
-		})
+		MinimapButton_Pig.Snf:SetBackdrop(Backdropinfo)
+		MinimapButton_Pig.Snf:SetBackdropColor(0.2, 0.2, 0.2, 1);
+		MinimapButton_Pig.Snf:SetBackdropBorderColor(0, 0, 0, 1);
 		MinimapButton_Pig.Snf:SetSize(200, 100)
-		MinimapButton_Pig.Snf:SetPoint("TOPRIGHT", MinimapButton_PigUI, "BOTTOMLEFT", 0, 25)
+		MinimapButton_Pig.Snf:SetPoint("TOPRIGHT", MinimapButton_PigUI, "BOTTOMLEFT", -2, 25)
 		MinimapButton_Pig.Snf:Hide();
+
 		MinimapButton_Pig.Snf.tishi = MinimapButton_Pig.Snf:CreateFontString();
 		MinimapButton_Pig.Snf.tishi:SetPoint("TOPLEFT", MinimapButton_Pig.Snf, "TOPLEFT", 6, -6);
 		MinimapButton_Pig.Snf.tishi:SetPoint("BOTTOMRIGHT", MinimapButton_Pig.Snf, "BOTTOMRIGHT", -6, 6);
@@ -275,37 +368,37 @@ local function MinimapButton_Pig_Open()
 		MinimapButton_Pig.Snf.tishi:Hide();
 
 		MinimapButton_Pig.Snf:SetScript("OnUpdate", function(self, ssss)
-			if MinimapButton_Pig.Snf.zhengzaixianshi==nil then
+			if self.zhengzaixianshi==nil then
 				return;
 			else
-				if MinimapButton_Pig.Snf.zhengzaixianshi==true then
-					if MinimapButton_Pig.Snf.xiaoshidaojishi<= 0 then
-						MinimapButton_Pig.Snf:Hide();
-						MinimapButton_Pig.Snf.zhengzaixianshi = nil;
+				if self.zhengzaixianshi==true then
+					if self.xiaoshidaojishi<= 0 then
+						self:Hide();
+						self.zhengzaixianshi = nil;
 					else
-						MinimapButton_Pig.Snf.xiaoshidaojishi = MinimapButton_Pig.Snf.xiaoshidaojishi - ssss;	
+						self.xiaoshidaojishi = self.xiaoshidaojishi - ssss;	
 					end
 				end
 			end
-
 		end)
-		MinimapButton_Pig.Snf:SetScript("OnEnter", function()
-			MinimapButton_Pig.Snf.zhengzaixianshi = nil;
+		MinimapButton_Pig.Snf:SetScript("OnEnter", function(self)
+			self.zhengzaixianshi = nil;
 		end)
-		MinimapButton_Pig.Snf:SetScript("OnLeave", function()
-			MinimapButton_Pig.Snf.xiaoshidaojishi = 1.5;
-			MinimapButton_Pig.Snf.zhengzaixianshi = true;
+		MinimapButton_Pig.Snf:SetScript("OnLeave", function(self)
+			self.xiaoshidaojishi = 1.5;
+			self.zhengzaixianshi = true;
 		end)
 	end
 end
 ------------
+addonTable.Minimap_but_Checkbut=Minimap_but_Checkbut
 fuFrame.Minimap_but = ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"显示小地图按钮","显示插件的小地图按钮")
 fuFrame.Minimap_but:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		fuFrame.Minimap_but_SN:Enable();
 		fuFrame.Minimap_but_BS:Enable();
 		PIG.Map.MinimapBut=true;
-		MinimapButton_Pig_Open()
+		MinimapButton_Pig_Open("Check")
 		if fuFrame.Minimap_but_SN:GetChecked() then
 			Other_ShouNaBut()
 		end
@@ -514,7 +607,7 @@ fuFrame.MinimapButF.ADDFrame.text0:SetFont(ChatFontNormal:GetFont(), 1, "OUTLINE
 fuFrame.MinimapButF.ADDFrame.text1 = fuFrame.MinimapButF.ADDFrame:CreateFontString();
 fuFrame.MinimapButF.ADDFrame.text1:SetPoint("TOP", fuFrame.MinimapButF.ADDFrame, "TOP", 0,-18);
 fuFrame.MinimapButF.ADDFrame.text1:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
-fuFrame.MinimapButF.ADDFrame.text1:SetText("添加禁止插件收纳的按钮");
+fuFrame.MinimapButF.ADDFrame.text1:SetText("添加禁止插件收纳的按钮\n|cffFFFF00注意是插件小地图按钮名\n不是插件名/fstack查看按钮名|r");
 fuFrame.MinimapButF.ADDFrame.YES = CreateFrame("Button",nil,fuFrame.MinimapButF.ADDFrame, "UIPanelButtonTemplate");  
 fuFrame.MinimapButF.ADDFrame.YES:SetSize(60,28);
 fuFrame.MinimapButF.ADDFrame.YES:SetPoint("TOP",fuFrame.MinimapButF.ADDFrame,"TOP",-50,-110);
@@ -522,7 +615,7 @@ fuFrame.MinimapButF.ADDFrame.YES:SetText("添加");
 ----
 fuFrame.MinimapButF.ADDFrame.E = CreateFrame('EditBox', nil, fuFrame.MinimapButF.ADDFrame, "InputBoxInstructionsTemplate");
 fuFrame.MinimapButF.ADDFrame.E:SetSize(220,hang_Height);
-fuFrame.MinimapButF.ADDFrame.E:SetPoint("TOP",fuFrame.MinimapButF.ADDFrame,"TOP",0,-46);
+fuFrame.MinimapButF.ADDFrame.E:SetPoint("TOP",fuFrame.MinimapButF.ADDFrame,"TOP",0,-66);
 fuFrame.MinimapButF.ADDFrame.E:SetFontObject(ChatFontNormal);
 fuFrame.MinimapButF.ADDFrame.E:SetMaxLetters(50)
 fuFrame.MinimapButF.ADDFrame.E:SetScript("OnEscapePressed", function(self) 

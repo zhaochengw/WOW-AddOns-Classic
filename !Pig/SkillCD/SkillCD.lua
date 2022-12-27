@@ -4,10 +4,11 @@ local fuFrame=List_R_F_2_8
 local _, _, _, tocversion = GetBuildInfo()
 --=======================================
 local ADD_Frame=addonTable.ADD_Frame
-local ADD_Modbutton=addonTable.ADD_Modbutton
+local Create = addonTable.Create
+local PIGModbutton=Create.PIGModbutton
 local GnName,GnUI = "专业CD","zhuanyeCDUI";
 local FrameLevel=10
-local Options_zhuanyeCD = ADD_Modbutton(GnName,GnUI,FrameLevel,3)
+local Options_zhuanyeCD = PIGModbutton(GnName,GnUI,FrameLevel,3)
 --/////专业技能/副本CD监控////////////////
 local Pig_SkillID={}
 local Pig_ItemID={}

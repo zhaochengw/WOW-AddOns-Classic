@@ -38,7 +38,7 @@ local QuickChat_biaoqingName = {
 };
 addonTable.QuickChat_biaoqingName=QuickChat_biaoqingName
 ---更新按钮的屏蔽状态
-local zijianpindaoMAX = 8
+local zijianpindaoMAX = 5
 local function Update_ChatBut_icon()
 	if PIG['ChatFrame']['QuickChat']=="ON" then
 		local chaozhaopindao = {
@@ -202,7 +202,37 @@ local function ADD_chatbut(fuF,pdtype,name,chatID,Color)
 	end
 	return chatbut
 end
-local function ChatFrame_QuickChat_Open(QuickChat_maodianList)
+---下移输入框=======	
+--GetCVar("chatStyle")=="im"/"classic"
+local function Update_QuickChatEditBox(arg1)
+	local arg1=arg1 or PIG['ChatFrame']['QuickChat_maodian']
+	if QuickChatFFF_UI then
+		QuickChatFFF_UI:ClearAllPoints();	
+		if arg1==1 then	
+			QuickChatFFF_UI:SetPoint("BOTTOMLEFT",ChatFrame1,"TOPLEFT",0,28);
+			ChatFrame99:SetPoint("BOTTOMRIGHT",ChatFrame1,"TOPRIGHT",2,56);
+			ChatFrame99:SetPoint("BOTTOMLEFT",ChatFrame1,"TOPLEFT",-3,56);
+			for i=1,NUM_CHAT_WINDOWS do
+				local fujichat = _G["ChatFrame"..i]
+				fujichat.editBox:ClearAllPoints();
+				fujichat.editBox:SetPoint("BOTTOMLEFT",fujichat,"TOPLEFT",-5,-24);
+				fujichat.editBox:SetPoint("BOTTOMRIGHT",fujichat,"TOPRIGHT",5,-24);
+			end
+		elseif arg1==2 then
+			QuickChatFFF_UI:SetPoint("TOPLEFT",ChatFrame1,"BOTTOMLEFT",-2,-4);
+			ChatFrame99:SetPoint("BOTTOMRIGHT",ChatFrame1,"TOPRIGHT",2,28);
+			ChatFrame99:SetPoint("BOTTOMLEFT",ChatFrame1,"TOPLEFT",-3,28);
+			for i=1,NUM_CHAT_WINDOWS do
+				local fujichat = _G["ChatFrame"..i]
+				fujichat.editBox:ClearAllPoints();
+				fujichat.editBox:SetPoint("TOPLEFT",fujichat,"BOTTOMLEFT",-5,-23);
+				fujichat.editBox:SetPoint("TOPRIGHT",fujichat,"BOTTOMRIGHT",5,-23);
+			end
+		end	
+	end
+end
+addonTable.Update_QuickChatEditBox=Update_QuickChatEditBox
+local function ChatFrame_QuickChat_Open()
 	if QuickChatFFF_UI==nil then
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", tihuanliaotianxinxineirong)
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", tihuanliaotianxinxineirong)
@@ -224,8 +254,21 @@ local function ChatFrame_QuickChat_Open(QuickChat_maodianList)
 		-----------------------
 		local QuickChatFFF = CreateFrame("Frame", "QuickChatFFF_UI", UIParent);
 		QuickChatFFF:SetSize(Width,Height);
-		QuickChatFFF:SetPoint(QuickChat_maodianList[PIG['ChatFrame']['QuickChat_maodian']][1],ChatFrame1,QuickChat_maodianList[PIG['ChatFrame']['QuickChat_maodian']][2],QuickChat_maodianList[PIG['ChatFrame']['QuickChat_maodian']][3],QuickChat_maodianList[PIG['ChatFrame']['QuickChat_maodian']][4]);
 		QuickChatFFF:SetFrameStrata("LOW")
+		local function Hidebeijing(editBox)
+			if ( editBox.disableActivate or ( GetCVar("chatStyle") == "classic" and not editBox.isGM ) ) then	
+			else
+				if ( not editBox.isGM ) then
+					editBox:SetAlpha(0.1);
+				end
+			end
+		end
+		hooksecurefunc("ChatEdit_DeactivateChat", function(editBox)
+			Hidebeijing(editBox)
+		end)
+		hooksecurefunc("ChatEdit_SetLastActiveWindow", function(editBox)
+			Hidebeijing(editBox)
+		end)
 		-------
 		QuickChatFFF.biaoqing = ADD_chatbut(QuickChatFFF,"bq")
 
@@ -337,21 +380,12 @@ local function ChatFrame_QuickChat_Open(QuickChat_maodianList)
 		QuickChatFFF.CHANNEL_2 = ADD_chatbut(QuickChatFFF,"CHANNEL","组","寻求组队",{0.888, 0.668, 0.668})
 		QuickChatFFF.CHANNEL_3 = ADD_chatbut(QuickChatFFF,"CHANNEL","P","PIG",{102/255,1,204/255})
 		QuickChatFFF.CHANNEL_4 = ADD_chatbut(QuickChatFFF,"CHANNEL","世","大脚世界频道",{0.888, 0.668, 0.668})
-		---下移输入框=======
-		if PIG['ChatFrame']['QuickChat_maodian']==1 then
-			ChatFrame1EditBox:ClearAllPoints();
-			ChatFrame1EditBox:SetPoint("BOTTOMLEFT",ChatFrame1,"TOPLEFT",-5,-0);
-			ChatFrame1EditBox:SetPoint("BOTTOMRIGHT",ChatFrame1,"TOPRIGHT",5,-0);
-		elseif PIG['ChatFrame']['QuickChat_maodian']==2 then
-			ChatFrame1EditBox:ClearAllPoints();
-			ChatFrame1EditBox:SetPoint("TOPLEFT",ChatFrame1,"BOTTOMLEFT",-5,-23);
-			ChatFrame1EditBox:SetPoint("TOPRIGHT",ChatFrame1,"BOTTOMRIGHT",5,-23);
-		end
 		--
 		addonTable.ADD_QuickBut_Jilu()
 		addonTable.ADD_QuickBut_Keyword()
 		addonTable.ADD_QuickBut_Roll()
 		addonTable.ADD_QuickBut_jiuwei()
+		Update_QuickChatEditBox(PIG['ChatFrame']['QuickChat_maodian'])
 		Update_ChatBut_icon()
 	end
 end

@@ -3,13 +3,14 @@ local fuFrame=List_R_F_2_7
 local _, _, _, tocversion = GetBuildInfo()
 --===============================
 local ADD_Frame=addonTable.ADD_Frame
-local ADD_Modbutton=addonTable.ADD_Modbutton
+local Create = addonTable.Create
+local PIGModbutton=Create.PIGModbutton
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 
 local GnName,GnUI = "售卖助手","SellBuy_UI";
 local FrameLevel=20
 addonTable.SellBuyFrameLevel=FrameLevel
-local Options_SellBuy = ADD_Modbutton(GnName,GnUI,FrameLevel,2)
+local Options_SellBuy = PIGModbutton(GnName,GnUI,FrameLevel,2)
 ------------------------------------------------
 local Width,Height,biaotiH  = 300, 550, 34;
 local TabWidth,TabHeight = 30,70;

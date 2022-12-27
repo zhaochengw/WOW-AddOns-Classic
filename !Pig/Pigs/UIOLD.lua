@@ -1,6 +1,5 @@
 local addonName, addonTable = ...;
 local _, _, _, tocversion = GetBuildInfo()
--------------
 --创建框架
 local function ADD_Frame(UIName,fuFrame,Width,Height,PointZi,Point,PointFu,PointX,PointY,EnableMouse,Show,Movable,ToScreen,ESCOFF,Backdrop)
 	local frame = CreateFrame("Frame", UIName, fuFrame,"BackdropTemplate");
@@ -30,7 +29,7 @@ local function ADD_Frame(UIName,fuFrame,Width,Height,PointZi,Point,PointFu,Point
 			tile = false, tileSize = 0, edgeSize = 18, 
 			insets = { left = 4, right = 4, top = 4, bottom = 4 } });
 		frame:SetBackdropBorderColor(1, 1, 1, 0.4);
-	elseif Backdrop=="BG2" then
+	elseif Backdrop=="BG2" then--有头像背景
 		frame.BG = frame:CreateTexture(nil, "BACKGROUND");
 		frame.BG:SetTexture("interface/framegeneral/ui-background-rock.blp");
 		frame.BG:SetPoint("TOPLEFT", frame, "TOPLEFT",2, -23);
@@ -309,7 +308,7 @@ local function ADD_BagBankBGtex(self,texname)
 	self.TOP = self:CreateTexture(texname.."TOP", "BORDER");
 	self.TOP:SetTexture(374157);
 	self.TOP:SetPoint("TOPLEFT", self.TOPLEFT, "TOPRIGHT",0, -10);
-	self.TOP:SetPoint("BOTTOMRIGHT", self.TOPRIGHT, "BOTTOMLEFT", 0, 4);
+	self.TOP:SetPoint("BOTTOMRIGHT", self.TOPRIGHT, "BOTTOMLEFT", 0, 5);
 	self.TOP:SetTexCoord(0,0.4375,0,0.65625,1.08637285232544,0.4375,1.08637285232544,0.65625);
 	self.BOTTOMLEFT = self:CreateTexture(texname.."BOTTOMLEFT", "BORDER");
 	self.BOTTOMLEFT:SetTexture(374156);
@@ -426,40 +425,7 @@ local function ADD_ModCheckbutton(GnName,Tooltip,fuFrame,Cfanwei,ID)
 	return frame
 end
 addonTable.ADD_ModCheckbutton=ADD_ModCheckbutton
---创建功能设置界面顶部按钮
-local function ADD_Modbutton(GnName,GnUI,FrameLevel,ID)
-	local frame= CreateFrame("Button",nil,Pig_OptionsUI, "UIPanelButtonTemplate");  
-	frame:SetSize(88,28);
-	frame:SetPoint("TOPLEFT",Pig_OptionsUI,"TOPLEFT",190+(100*(ID-1)),-24);
-	frame:SetText(GnName);
-	frame:Disable();
-	frame:SetMotionScriptsWhileDisabled(true)
-	frame:SetScript("OnClick", function ()
-		if _G[GnUI]:IsShown() then
-			_G[GnUI]:Hide();
-		else
-			_G[GnUI]:SetFrameLevel(FrameLevel)
-			_G[GnUI]:Show();
-			Pig_OptionsUI:Hide();
-		end
-	end);
-	frame:SetScript("OnEnter", function (self)
-		GameTooltip:ClearLines();
-		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT",0,0);
-		if not self:IsEnabled() then
-			GameTooltip:AddLine(GnName.."尚未启用，请在功能内启用")
-			LF_TAB_2.TexTishi:Show()
-		end
-		GameTooltip:Show();
-	end);
-	frame:SetScript("OnLeave", function ()
-		GameTooltip:ClearLines();
-		GameTooltip:Hide()
-		LF_TAB_2.TexTishi:Hide()
-	end);
-	return frame
-end
-addonTable.ADD_Modbutton=ADD_Modbutton
+
 --新建快捷按钮栏按钮
 local function ADD_QuickButton(QkBut,Tooltip,Icon,Template)
 	Template=Template or "SecureHandlerClickTemplate"

@@ -2,10 +2,11 @@ local _, addonTable = ...;
 local fuFrame=List_R_F_2_10
 --================================
 local ADD_Frame=addonTable.ADD_Frame
-local ADD_Modbutton=addonTable.ADD_Modbutton
+local Create = addonTable.Create
+local PIGModbutton=Create.PIGModbutton
 local GnName,GnUI = "开团助手","RaidR_UI";
 local FrameLevel=50
-local Options_Kaituanzhushou = ADD_Modbutton(GnName,GnUI,FrameLevel,5)
+local Options_Kaituanzhushou = PIGModbutton(GnName,GnUI,FrameLevel,5)
 ----------------------------------------------------
 local function ADD_RaidR_UI()
 	if RaidR_UI then return end

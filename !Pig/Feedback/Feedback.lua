@@ -4,7 +4,8 @@ local find = _G.string.find
 local fuFrame=List_R_F_1_12
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local ADD_Button=addonTable.ADD_Button
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 --///////////////////////////////////////////
 fuFrame.NPCID = ADD_Button("获取目标GUID",nil,fuFrame,114,24,"TOPLEFT",fuFrame,"TOPLEFT",20,-20)
 fuFrame.NPCID:SetScript("OnClick", function (self)
@@ -52,7 +53,7 @@ end);
 fuFrame.errorUI = ADD_Button("错误报告",nil,fuFrame,120,24,"TOPLEFT",fuFrame,"TOPLEFT",20,-180)
 fuFrame.errorUI:SetScript("OnClick", function (self)
 	Pig_OptionsUI:Hide()
-	Bugshouji_UI:Show()
+	Bugcollect_UI:Show()
 end);
 --
 fuFrame.tishi = fuFrame:CreateFontString();
@@ -71,7 +72,7 @@ fuFrame.tishiCK:SetScript("OnClick", function (self)
 end);
 ---------
 local CVarsList = {
-	{"打开系统LUA错误提示","scriptErrors","1","0","打开系统的LUA错误提示功能，对插件不了解请勿开启！！！",false},
+	{"打开系统LUA错误提示","scriptErrors","1","0","打开系统的LUA错误提示功能，非调试插件情况下请不要开启",false},
 }
 for i=1,#CVarsList do
 	local miaodian = {fuFrame,20,-290}

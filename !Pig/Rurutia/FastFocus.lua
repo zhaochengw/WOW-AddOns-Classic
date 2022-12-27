@@ -1,7 +1,8 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_11.F
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 ---快速焦点
 local UnitFrame = {
 	PlayerFrame,

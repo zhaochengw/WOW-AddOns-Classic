@@ -1,7 +1,11 @@
 local addonName, addonTable = ...;
+local Create = addonTable.Create
 -----------------------
+local Backdropinfo={bgFile = "interface/chatframe/chatframebackground.blp",
+	edgeFile = "Interface/AddOns/!Pig/Pigs/Pig_Border.blp", edgeSize = 6,}
 local ListName,List1Width,ButHeight="PIGDownList",300,16
 local listshumu = 30
+---
 function PIGCloseDropDownMenus(level)
 	if ( not level ) then
 		level = 1;
@@ -25,7 +29,6 @@ local function PIGDownMenu_StopCounting(frame)
 		frame.isCounting = nil;
 	end
 end
-
 local function PIGDownMenu_OnUpdate(self, elapsed)
 	if ( not self.showTimer or not self.isCounting ) then
 		return;
@@ -40,12 +43,9 @@ end
 ----
 for i=1,UIDROPDOWNMENU_MAXLEVELS do
 	local PIGDownList = CreateFrame("Button", ListName..i, UIParent,"BackdropTemplate",i);
-	PIGDownList:SetBackdrop(
-		{bgFile = "interface/characterframe/ui-party-background.blp",
-		edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-		edgeSize = 10,insets = { left = 1.8, right = 1.8, top = 1.8, bottom = 1.8 }
-	});
-	PIGDownList:SetBackdropBorderColor(0, 1, 1, 0.8);
+	PIGDownList:SetBackdrop(Backdropinfo)
+	PIGDownList:SetBackdropColor(0.1, 0.1, 0.1, 1);
+	PIGDownList:SetBackdropBorderColor(0, 0, 0, 1);
 	PIGDownList:Hide()
 	PIGDownList:SetClampedToScreen(true)
 	PIGDownList:SetFrameStrata("FULLSCREEN_DIALOG")
@@ -155,7 +155,7 @@ for i=1,UIDROPDOWNMENU_MAXLEVELS do
 	end
 end
 --------------
-local function PIGDownMenu(gnName,SizeWH,fuFrame,Point,EasyMenu)
+function Create.PIGDownMenu(gnName,SizeWH,fuFrame,Point,EasyMenu)
 	local DownMenu = CreateFrame("Frame", gnName, fuFrame,"BackdropTemplate");
 	DownMenu.EasyMenu=EasyMenu
 	if EasyMenu=="EasyMenu" or EasyMenu=="DJEasyMenu" then	
@@ -165,13 +165,9 @@ local function PIGDownMenu(gnName,SizeWH,fuFrame,Point,EasyMenu)
 	else
 		local Width,Height=SizeWH[1],SizeWH[2]
 		local Height=Height or 24
-		DownMenu:SetBackdrop(
-			{bgFile = "interface/characterframe/ui-party-background.blp",
-			edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-			edgeSize = 10,insets = { left = 1.8, right = 1.8, top = 1.8, bottom = 1.8 }
-		});
-		DownMenu:SetBackdropBorderColor(0, 1, 1, 0.8);
-
+		DownMenu:SetBackdrop(Backdropinfo)
+		DownMenu:SetBackdropColor(0.1, 0.1, 0.1, 1);
+		DownMenu:SetBackdropBorderColor(0, 0, 0, 1);
 		DownMenu:SetSize(Width,Height);
 		DownMenu:SetPoint(Point[1],Point[2],Point[3],Point[4],Point[5]);
 		DownMenu:HookScript("OnHide", function(self)
@@ -305,4 +301,3 @@ local function PIGDownMenu(gnName,SizeWH,fuFrame,Point,EasyMenu)
 	end
 	return DownMenu
 end
-addonTable.PIGDownMenu=PIGDownMenu

@@ -2,11 +2,14 @@ local addonName, addonTable = ...;
 local gsub = _G.string.gsub 
 local find = _G.string.find
 local _, _, _, tocversion = GetBuildInfo()
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 -- ----------------------------------
 local CDWMinfo=addonTable.CDWMinfo
 local SQPindao = CDWMinfo["pindao"]
 local qingqiumsg = CDWMinfo["Chedui"]
+local panduanshifouPIG = CDWMinfo.panduanshifouPIG
+local huoqukeyongPIG = CDWMinfo.huoqukeyongPIG
 local shenqingMSG = "级，申请上车！"
 ----
 local biaotou='!Pig-Chedui';
@@ -23,43 +26,45 @@ CheduiFFFFF:RegisterEvent("CHAT_MSG_WHISPER");
 CheduiFFFFF:SetScript("OnEvent",function(self, event, arg1, arg2, _, _, arg5,_,_,_,arg9)
 	if PIG_Per.daiben.Open and PIG_Per.daiben.autohuifu then
 		if event=="CHAT_MSG_CHANNEL" then
-			if arg9==SQPindao and arg1==qingqiumsg then
-				local mudidi=PIG_Per.daiben.fubenName
-				if mudidi~="无" then
-					local _, englishClass, _ = UnitClass("player");
-					PIG_CD.cheduixinxi=mudidi.."~"..englishClass.."~"
-					--队伍LV
-					if IsInGroup()  then
-						if IsInRaid() then
-							local numSubgroupMembers = GetNumGroupMembers()
-							PIG_CD.duiwuLV=numSubgroupMembers.."/40^"
-							-- for id=1,numSubgroupMembers do
-							--  	local lvvv = UnitLevel("Raid"..id);
-							-- 	PIG_CD.duiwuLV=PIG_CD.duiwuLV..lvvv.."^"
-							-- end
-							PIG_CD.cheduixinxi=PIG_CD.cheduixinxi..PIG_CD.duiwuLV.."团队模式~"
-						else
-							local numSubgroupMembers = GetNumSubgroupMembers()
-							PIG_CD.duiwuLV=(numSubgroupMembers+1).."/5^"
-							for id=1,numSubgroupMembers do
-								local lvvv = UnitLevel("Party"..id);
-								if id==numSubgroupMembers then
-									PIG_CD.duiwuLV=PIG_CD.duiwuLV..lvvv
-								else
-									PIG_CD.duiwuLV=PIG_CD.duiwuLV..lvvv.."^"
+			if panduanshifouPIG(arg9) then
+				if arg1==qingqiumsg then
+					local mudidi=PIG_Per.daiben.fubenName
+					if mudidi~="无" then
+						local _, englishClass, _ = UnitClass("player");
+						PIG_CD.cheduixinxi=mudidi.."~"..englishClass.."~"
+						--队伍LV
+						if IsInGroup()  then
+							if IsInRaid() then
+								local numSubgroupMembers = GetNumGroupMembers()
+								PIG_CD.duiwuLV=numSubgroupMembers.."/40^"
+								-- for id=1,numSubgroupMembers do
+								--  	local lvvv = UnitLevel("Raid"..id);
+								-- 	PIG_CD.duiwuLV=PIG_CD.duiwuLV..lvvv.."^"
+								-- end
+								PIG_CD.cheduixinxi=PIG_CD.cheduixinxi..PIG_CD.duiwuLV.."团队模式~"
+							else
+								local numSubgroupMembers = GetNumSubgroupMembers()
+								PIG_CD.duiwuLV=(numSubgroupMembers+1).."/5^"
+								for id=1,numSubgroupMembers do
+									local lvvv = UnitLevel("Party"..id);
+									if id==numSubgroupMembers then
+										PIG_CD.duiwuLV=PIG_CD.duiwuLV..lvvv
+									else
+										PIG_CD.duiwuLV=PIG_CD.duiwuLV..lvvv.."^"
+									end
 								end
+								PIG_CD.cheduixinxi=PIG_CD.cheduixinxi..PIG_CD.duiwuLV.."~"
 							end
-							PIG_CD.cheduixinxi=PIG_CD.cheduixinxi..PIG_CD.duiwuLV.."~"
+						else
+							PIG_CD.cheduixinxi=PIG_CD.cheduixinxi.."1/5~"
 						end
-					else
-						PIG_CD.cheduixinxi=PIG_CD.cheduixinxi.."1/5~"
+						---票价
+						local min,max=huoquLVminmax()
+						PIG_CD.cheduixinxi=PIG_CD.cheduixinxi..min.."^"..max.."~"
+						local danjiaxinxi=huoquLVdanjia()
+						PIG_CD.cheduixinxi=PIG_CD.cheduixinxi..danjiaxinxi..PIG_Per.daiben.autohuifu_NR;
+						C_ChatInfo.SendAddonMessage(biaotou,PIG_CD.cheduixinxi,"WHISPER",arg5)
 					end
-					---票价
-					local min,max=huoquLVminmax()
-					PIG_CD.cheduixinxi=PIG_CD.cheduixinxi..min.."^"..max.."~"
-					local danjiaxinxi=huoquLVdanjia()
-					PIG_CD.cheduixinxi=PIG_CD.cheduixinxi..danjiaxinxi..PIG_Per.daiben.autohuifu_NR;
-					C_ChatInfo.SendAddonMessage(biaotou,PIG_CD.cheduixinxi,"WHISPER",arg5)
 				end
 			end
 		end
@@ -114,7 +119,6 @@ local ADD_Frame=addonTable.ADD_Frame
 local ADD_Biaoti=addonTable.ADD_Biaoti
 local ADD_jindutiaoBUT=addonTable.ADD_jindutiaoBUT
 local function ADD_Chedui_Frame()
-	local fufufuFrame=PlaneInvite_UI
 	local fuFrame=PlaneInviteFrame_2;
 	local Width,Height=fuFrame:GetWidth(),fuFrame:GetHeight();	
 	
@@ -261,12 +265,8 @@ local function ADD_Chedui_Frame()
 			self:SetText(self.anTXT.."("..chazhiV..")");
 			self:Disable()
 		else
-			self:SetText(self.anTXT);
-			if fufufuFrame.yijiaru then
-				self:Enable()
-			else
-				self:Disable()
-			end	
+			self:SetText(self.anTXT)
+			self:Enable()
 		end
 	end);
 	--
@@ -284,24 +284,14 @@ local function ADD_Chedui_Frame()
 	
 	fuFrame.shuaxinBUT:SetScript("OnClick", function (self)
 		fuFrame.shuaxinBUT.anTXT="更新车队信息"
-		local pindaolheji = {GetChannelList()};
-		pindaolheji.yijiaruPIG=true
-		pindaolheji.PIGID=0
-		for i=1,#pindaolheji do
-			if pindaolheji[i]==SQPindao then
-				pindaolheji.PIGID=pindaolheji[i-1]
-				pindaolheji.yijiaruPIG=false
-				break
-			end
-		end
-		if pindaolheji.yijiaruPIG then
+		self.PIGID=huoqukeyongPIG(SQPindao)
+		if self.PIGID==0 then
 			print("|cff00FFFF!Pig:|r|cffFFFF00请先加入"..SQPindao.."频道获取车队信息！|r")
 			return
 		end
-
 		self:Disable();
 		PIG_CD.JieshouInfo={};
-		SendChatMessage(qingqiumsg,"CHANNEL",nil,pindaolheji.PIGID)
+		SendChatMessage(qingqiumsg,"CHANNEL",nil,self.PIGID)
 		fuFrame.daojishiJG =GetServerTime();
 		PIG['PlaneInvite']['Cheduidaojishi']=fuFrame.daojishiJG
 

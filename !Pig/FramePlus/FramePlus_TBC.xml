@@ -2,4 +2,5 @@
 	<Script file="ExtFrame.lua" />
 	<Script file="CharacterFrame_Vanilla.lua" />
 	<Script file="TalentFrame_Vanilla.lua" />
+	<Script file="Options.lua" />
 </Ui>

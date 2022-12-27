@@ -1,6 +1,7 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_3
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ----------------------------------
 --进入战斗时自动切换到1号动作栏

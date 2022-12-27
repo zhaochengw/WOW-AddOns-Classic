@@ -4,7 +4,8 @@ local find = _G.string.find
 local fuFrame=List_R_F_2_1
 local ADD_Frame=addonTable.ADD_Frame
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 local _, _, _, tocversion = GetBuildInfo()
 --==========================================
 local yinhangmorengezishu={}
@@ -347,17 +348,17 @@ local function Show_lixian_data(frameF,renwu,shuju,meihang,zongshu)
 			frameF.biaoti.t1:SetText("等级/种族/职业未更新");
 		end
 	end
-	local gogengName=frameF:GetName()
+	local framename=frameF:GetName()
 	if PIG["zhegnheBAG"]["wupinLV"] then
 		for i=1,zongshu do
-			local frameX=_G[gogengName.."_wupin_item_"..i]
+			local frameX=_G[framename.."_wupin_item_"..i]
 			frameX:Hide();
 			frameX.LV:SetText()
 		end
 	end
 	local zongshu=#PIG["zhegnheBAG"]["lixian"][renwu][shuju]
 	for i=1,zongshu do
-		local frameX=_G[gogengName.."_wupin_item_"..i]
+		local frameX=_G[framename.."_wupin_item_"..i]
 		frameX:Show();
 		local itemLink = PIG["zhegnheBAG"]["lixian"][renwu][shuju][i][2]
 		if itemLink then
@@ -402,6 +403,9 @@ local function Show_lixian_data(frameF,renwu,shuju,meihang,zongshu)
 					end
 				end
 			else
+				if i~=4 and i~=19 then
+					_G[framename.."_zbBuwei_"..i].itemlink:SetText(itemLink)
+				end
 				if PIG['ShowPlus']['zhuangbeiLV']=="ON" then
 					local effectiveILvl = GetDetailedItemLevelInfo(itemLink)
 					if effectiveILvl and effectiveILvl>0 then

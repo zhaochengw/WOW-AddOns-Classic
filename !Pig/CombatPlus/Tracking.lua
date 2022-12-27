@@ -1,50 +1,56 @@
 local _, addonTable = ...;
 -----------------------------------
 local fuFrame=List_R_F_1_3
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local _, _, _, tocversion = GetBuildInfo()
 ----------------------------------
 local function CombatPlus_Zhuizong()
 	if Zhuizong_UI then return end
-
 	local Width,Height = 33,33;
-
 	local Zhuizong = CreateFrame("Frame", "Zhuizong_UI", UIParent);
 	Zhuizong:SetSize(Width,Height);
-	Zhuizong:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -15, 0);
+	Zhuizong:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -24, -24);
 
-	Zhuizong.Border_Se = Zhuizong:CreateTexture(nil, "BORDER");
-	Zhuizong.Border_Se:SetTexture("interface/common/ui-searchbox-icon.blp");
-	Zhuizong.Border_Se:SetSize(Width*0.6,Height*0.6);
-	Zhuizong.Border_Se:SetPoint("CENTER",Zhuizong,"CENTER",3,-3);
-	Zhuizong.Border_Se:Hide()
+	Zhuizong.search = Zhuizong:CreateTexture(nil, "BORDER");
+	Zhuizong.search:SetTexture("interface/common/ui-searchbox-icon.blp");
+	Zhuizong.search:SetSize(Width*0.6,Height*0.6);
+	Zhuizong.search:SetPoint("CENTER",Zhuizong,"CENTER",3,-3);
+	Zhuizong.search:Hide()
 
 	Zhuizong.Border = Zhuizong:CreateTexture(nil, "BORDER");
 	Zhuizong.Border:SetTexture("Interface/Minimap/MiniMap-TrackingBorder");
 	Zhuizong.Border:SetPoint("TOPLEFT",Zhuizong,"TOPLEFT",0,0);
 	Zhuizong.Border:Hide()
-	
+
 	Zhuizong:RegisterEvent("PLAYER_ENTERING_WORLD");
 	Zhuizong:RegisterEvent("SPELL_UPDATE_COOLDOWN");
-	Zhuizong:SetScript("OnEvent", function ()
+	Zhuizong:HookScript("OnEvent", function(self,event,arg1)
+		if event=="PLAYER_ENTERING_WORLD" then
+			if ElvUI then
+				Zhuizong.Border:SetAlpha(0)
+				Zhuizong:SetSize(Width-6,Height-6);
+				Zhuizong:ClearAllPoints();
+				Zhuizong:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 0, 0);
+			end
+		end
 		if GetTrackingTexture() then
 			MiniMapTrackingFrame:Show()
 			MiniMapTrackingIcon:SetTexture(GetTrackingTexture())
 			Zhuizong.Border:Hide()
-			Zhuizong.Border_Se:Hide()
+			Zhuizong.search:Hide()
 		else
 			Zhuizong.Border:Show()
-			Zhuizong.Border_Se:Show()
+			Zhuizong.search:Show()
 		end
 	end)
 	Zhuizong.xiala=PIGDownMenu(nil,{wwgg,hhgg},Zhuizong,{"TOPLEFT",Zhuizong, "CENTER", -80,-10},"EasyMenu")
 	Zhuizong.xiala.Button:HookScript("OnClick", function(self, button)
-		if button=="LeftButton" then
-		else
+		if button=="RightButton" then
 			CancelTrackingBuff();
 			Zhuizong.Border:Show()
-			Zhuizong.Border_Se:Show()
+			Zhuizong.search:Show()
 		end
 	end)
 	function Zhuizong.xiala:PIGDownMenu_Update_But(self, level, menuList)

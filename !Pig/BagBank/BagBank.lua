@@ -5,7 +5,8 @@ local sub = _G.string.sub  --截取
 local fuFrame=List_R_F_2_1
 local ADD_Frame=addonTable.ADD_Frame
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 --==========================================
 local yinhangmorengezishu={28,7}
 yinhangmorengezishu.banknum=yinhangmorengezishu[1]+yinhangmorengezishu[2]*36
@@ -128,12 +129,10 @@ local function zhegnheBANK_Open()
 end
 ----保存离线数据-----
 local function SAVE_lixian_data(bagID, slot,wupinshujuinfo)
-	local itemID = C_Container.GetContainerItemID(bagID, slot)
-	if itemID then
-		local ContainerItemInfo= C_Container.GetContainerItemInfo(bagID, slot)
-		local itemCount = ContainerItemInfo["stackCount"]
-		local itemName,itemLink,itemQuality,itemLevel,itemMinLevel,itemType,itemSubType,itemStackCount,itemEquipLoc,itemTexture,sellPrice,classID = GetItemInfo(itemID);
-		local wupinxinxi={itemID,itemLink,itemCount,itemStackCount,false}
+	local ItemInfo= C_Container.GetContainerItemInfo(bagID, slot)
+	if ItemInfo then
+		local itemStackCount,itemEquipLoc,itemTexture,sellPrice,classID = select(8,GetItemInfo(ItemInfo.hyperlink))
+		local wupinxinxi={ItemInfo.itemID,ItemInfo.hyperlink,ItemInfo.stackCount,itemStackCount,false}
 		if classID==2 or classID==4 then
 			wupinxinxi[5]=true
 		end
@@ -253,6 +252,9 @@ local function Show_lixian_data(frameF,renwu,shuju,meihang,zongshu)
 					end
 				end
 			else
+				if i~=4 and i~=19 then
+					_G[framename.."_zbBuwei_"..i].itemlink:SetText(itemLink)
+				end
 				if PIG['ShowPlus']['zhuangbeiLV']=="ON" then
 					local effectiveILvl = GetDetailedItemLevelInfo(itemLink)
 					if effectiveILvl and effectiveILvl>0 then
@@ -379,7 +381,7 @@ local function Bag_Item_Ranse(frame, size, id)
 	end
 end
 --其他角色数量
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(self)
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
 	if not PIG['zhegnheBAG']["qitashulaing"] then return end
 	if tooltip == GameTooltip then
 		local itemID = data["id"]
@@ -459,13 +461,13 @@ TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(self
 			if yiyouwupinjuese>0 then
 				renwuWupinshu.hejishu=0
 				for i=1,yiyouwupinjuese do
-					self:AddDoubleLine(renwuWupinshu[i][1],renwuWupinshu[i][2])
+					GameTooltip:AddDoubleLine(renwuWupinshu[i][1],renwuWupinshu[i][2])
 					renwuWupinshu.hejishu=renwuWupinshu.hejishu+renwuWupinshu[i][3]
 				end
 				if yiyouwupinjuese>1 then
-					self:AddDoubleLine("|cff00FF00所有角色|r","|cff00FF00合计:|r|cffFFFFFF"..renwuWupinshu.hejishu)
+					GameTooltip:AddDoubleLine("|cff00FF00所有角色|r","|cff00FF00合计:|r|cffFFFFFF"..renwuWupinshu.hejishu)
 				end
-				self:Show()
+				GameTooltip:Show()
 			end
 		end
 	end

@@ -62,7 +62,11 @@ local function ADD_QuickBut_jiuwei()
 			DoReadyCheck()
 		else
 			local inGroup = IsInGroup();
-			if inGroup then daojishikaiguai() end
+			if inGroup then
+				if fuFrame.kaiguaidaojishi==5 then
+					daojishikaiguai()
+				end
+			end
 		end
 	end);
 end

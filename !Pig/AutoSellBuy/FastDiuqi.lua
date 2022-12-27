@@ -23,19 +23,18 @@ function Pig_DelItem()
 				end 
 			end
 		else
-			for i=0,4 do
+			for i=0,5 do
 				local xx=C_Container.GetContainerNumSlots(i) 
 				for j=1,xx do
 					for k=1,#PIG["FastDiuqi"] do
 						if C_Container.GetContainerItemLink(i,j)==PIG["FastDiuqi"][k][2] then
-							PickupContainerItem(i,j);
+							C_Container.PickupContainerItem(i,j);
 							DeleteCursorItem(i,j);
 						end
 					end
 				end 
 			end
 		end
-		PIG_print("没有需丢弃物品")
 	else
 		PIG_print("丢弃目录为空,右键设置");
 	end
@@ -173,7 +172,7 @@ local function FastDiuqi_ADD()
 	end);
 	fuFrame.FastDiuqi.ADD:SetScript("OnMouseUp", function (self)
 		if CursorHasItem() then
-			local NewType, TtemID, Itemlink= GetCursorInfo()
+			local NewType, itemID, Itemlink= GetCursorInfo()
 			for i=1,#PIG["FastDiuqi"] do
 				if Itemlink==PIG["FastDiuqi"][i][2] then
 					print("|cff00FFFF!Pig:|r|cffffFF00物品已在目录内！|r");
@@ -183,7 +182,7 @@ local function FastDiuqi_ADD()
 				end			
 			end
 			local icon = select(5,GetItemInfoInstant(Itemlink))
-			table.insert(PIG["FastDiuqi"], {icon,Itemlink,TtemID});
+			table.insert(PIG["FastDiuqi"], {icon,Itemlink,itemID});
 			ClearCursor();
 			gengxinDEL(fuFrame.FastDiuqi.Scroll);
 		end

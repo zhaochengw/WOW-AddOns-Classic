@@ -1,14 +1,17 @@
 ﻿## Interface: 20504
 ## Title: !Pig-|cffFF00FF[toolbox]|r
 ## Title-zhCN: !Pig-|cffFF00FF[猪猪加油]|r
+## Title-zhTW: !Pig-|cffFF00FF[豬豬加油]|r
 ## Notes: Some tools
 ## Notes-zhCN: |cffFF8C00一些小工具|r  |cffFF00FF[猪猪加油祝你游戏愉快]|r
+## Notes-zhTW: |cffFF8C00一些小工具|r  |cffFF00FF[豬豬加油祝你遊戲愉快]|r
 ## Author: geligasi
-## Version: 5.0.3
+## Version: 5.1.0
 ## SavedVariables: PIG
 ## SavedVariablesPerCharacter: PIG_Per
+Localization\Localization.xml
 Error.lua
-Function\Function.xml
+Pigs\Pigs.xml
 Options.lua
 Config\Config_TBC.xml
 Feedback\Feedback_TBC.xml
@@ -28,7 +31,7 @@ CombatPlus\CombatPlus_TBC.xml
 CombatCycle\CombatCycle_TBC.xml
 ChatFrame\ChatFrame_TBC.xml
 ActionBar\ActionBar_TBC.xml
-PlaneInvite\PlaneInvite_TBC.xml
+Invite\Invite_TBC.xml
 AutoSellBuy\AutoSellBuy_TBC.xml
 SkillCD\SkillCD_TBC.xml
 SpellCD\SpellCD_TBC.xml

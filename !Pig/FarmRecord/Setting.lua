@@ -3,7 +3,8 @@ local gsub = _G.string.gsub
 local find = _G.string.find
 local ADD_Frame=addonTable.ADD_Frame
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 local _, _, _, tocversion = GetBuildInfo()
 --带本助手-设置====================
 local daibenData=addonTable.daibenData

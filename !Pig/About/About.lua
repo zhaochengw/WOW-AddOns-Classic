@@ -6,25 +6,25 @@ local Pigtxt=addonTable.Pigtxt
 ------
 fuFrame.top = fuFrame:CreateFontString();
 fuFrame.top:SetPoint("TOP",fuFrame,"TOP",0,-14);
-fuFrame.top:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
+fuFrame.top:SetFont(ChatFontNormal:GetFont(), 18, "OUTLINE");
 fuFrame.top:SetText(Pigtxt.BT);
-fuFrame.line = fuFrame:CreateLine()
-fuFrame.line:SetColorTexture(1,1,1,0.3)
-fuFrame.line:SetThickness(1);
-fuFrame.line:SetStartPoint("TOPLEFT",3,-50)
-fuFrame.line:SetEndPoint("TOPRIGHT",-3,-50)
+fuFrame.fenge = fuFrame:CreateLine()
+fuFrame.fenge:SetColorTexture(1,1,1,0.3)
+fuFrame.fenge:SetThickness(1);
+fuFrame.fenge:SetStartPoint("TOPLEFT",3,-84)
+fuFrame.fenge:SetEndPoint("TOPRIGHT",-3,-84)
 fuFrame.top1 = fuFrame:CreateFontString();
-fuFrame.top1:SetPoint("TOP",fuFrame,"TOP",0,-68);
+fuFrame.top1:SetPoint("TOP",fuFrame,"TOP",0,-100);
 fuFrame.top1:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
-fuFrame.top1:SetText(Pigtxt.YY..Pigtxt.QQ);
+fuFrame.top1:SetText("|cffFFff00玩家交流: |r"..Pigtxt.YY.."   "..Pigtxt.QQ);
 --===========================================
-fuFrame.fengexian = fuFrame:CreateLine()
-fuFrame.fengexian:SetColorTexture(1,1,1,0.3)
-fuFrame.fengexian:SetThickness(1);
-fuFrame.fengexian:SetStartPoint("TOPLEFT",3,-100)
-fuFrame.fengexian:SetEndPoint("TOPRIGHT",-3,-100)
+fuFrame.fenge5 = fuFrame:CreateLine()
+fuFrame.fenge5:SetColorTexture(1,1,1,0.3)
+fuFrame.fenge5:SetThickness(1);
+fuFrame.fenge5:SetStartPoint("TOPLEFT",3,-130)
+fuFrame.fenge5:SetEndPoint("TOPRIGHT",-3,-130)
 fuFrame.mingxie = fuFrame:CreateFontString();
-fuFrame.mingxie:SetPoint("TOP",fuFrame.fengexian,"BOTTOM",0,-8);
+fuFrame.mingxie:SetPoint("TOP",fuFrame.fenge5,"BOTTOM",0,-8);
 fuFrame.mingxie:SetFont(ChatFontNormal:GetFont(), 18, "OUTLINE");
 fuFrame.mingxie:SetText("\124cffFFff00特别鸣谢:\124r");
 fuFrame.mingxie1 = fuFrame:CreateFontString();

@@ -1,7 +1,8 @@
 local _, addonTable = ...;
 local gsub = _G.string.gsub 
 local find = _G.string.find
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --=====组队助手=================================
 local ADD_Frame=addonTable.ADD_Frame
@@ -277,30 +278,13 @@ local function ADD_Invite()
 	invite.kaituanhanhua_E:SetScript("OnEnterPressed", function(self) 
 		self:ClearFocus() 
 	end);
-	---===============================================
-	--喊话频道
-	local paichupindaolist ={"说","悄悄话","战网密语","团队","团队通知","队伍聊天","表情","战场","交易","本地防务","世界防务"};
+	--喊话频道==========
+	local paichupindaolist ={"交易","本地防务","世界防务","服务"};
 	invite.hanhuaxuanzexiala=PIGDownMenu(nil,{70,24},invite,{"LEFT",invite.kaituanNameFFF,"RIGHT", 0,0})
 	invite.hanhuaxuanzexiala:PIGDownMenu_SetText("频道")
 	invite.hanhuaxuanzexiala.chatpindaoList={}
 	local function huoqupindaoxulie()
-		local chatpindao = {GetChatWindowMessages(1)}
-		local chatpindaoList = {}
-		for i=1,#chatpindao do
-			local Namechia =_G[chatpindao[i].."_MESSAGE"]
-			if Namechia then
-				invite.bushipaichupindao=true
-				for ii=1,#paichupindaolist do
-					if Namechia==paichupindaolist[ii] then
-						invite.bushipaichupindao=false
-						break
-					end	
-				end
-				if invite.bushipaichupindao then
-					table.insert(chatpindaoList,{Namechia,chatpindao[i]})
-				end
-			end
-		end
+		local chatpindaoList = {{"说","SAY"},{"大喊","YELL"},{"公会","GUILD"}}
 		local channels = {GetChannelList()}
 		for i = 1, #channels, 3 do
 			local id, name, disabled = channels[i], channels[i+1], channels[i+2]

@@ -71,40 +71,39 @@ local function add_RsettingFrame()
 	end);
 	--拾取物品倒计时
 	local function ITEMTimetishi()
-		if PIG["RaidRecord"]["Kaiqi"]=="ON" and PIG["RaidRecord"]["Rsetting"]["jiaoyidaojishi"]=="ON" then
-			if PIG["RaidRecord"]["instanceName"][1] then
-				if GetServerTime()-PIG["RaidRecord"]["instanceName"][1]<43200 then
-					if #PIG["RaidRecord"]["ItemList"]>0 then
-						for i=1,#PIG["RaidRecord"]["ItemList"],1 do
-							if PIG["RaidRecord"]["ItemList"][i][8]~="无" or PIG["RaidRecord"]["ItemList"][i][9]>0 or PIG["RaidRecord"]["ItemList"][i][14]>0 then--已有成交人/收款/欠款
-								PIG["RaidRecord"]["ItemList"][i][13]=false;
-								addonTable.RaidRecord_UpdateItem(Item_Scroll_UI);
-							else
+		if not InCombatLockdown() then
+			if PIG["RaidRecord"]["Kaiqi"]=="ON" and PIG["RaidRecord"]["Rsetting"]["jiaoyidaojishi"]=="ON" then
+				if PIG["RaidRecord"]["instanceName"][1] then
+					if GetServerTime()-PIG["RaidRecord"]["instanceName"][1]<43200 then
+						if #PIG["RaidRecord"]["ItemList"]>0 then
+							for i=1,#PIG["RaidRecord"]["ItemList"],1 do
 								if PIG["RaidRecord"]["ItemList"][i][13] then
-									local yijingguoqu=GetServerTime()-PIG["RaidRecord"]["ItemList"][i][1];
-									if yijingguoqu>7200 then
-										PIG["RaidRecord"]["ItemList"][i][13]=false;	
-										addonTable.RaidRecord_UpdateItem(Item_Scroll_UI);
-									elseif yijingguoqu>6600 then
-										if PIG["RaidRecord"]["ItemList"][i][12] then
-											if UnitIsGroupLeader("player", "LE_PARTY_CATEGORY_HOME") and IsInRaid("LE_PARTY_CATEGORY_HOME") then
-												SendChatMessage("提示：未成交物品"..PIG["RaidRecord"]["ItemList"][i][2].."可交易时间不足10分钟，请确认物品归属(预估时间仅供参考)！","RAID", nil);
-												PIG["RaidRecord"]["ItemList"][i][12]=false;
-												addonTable.RaidRecord_UpdateItem(Item_Scroll_UI);
+									if PIG["RaidRecord"]["ItemList"][i][8]~="无" or PIG["RaidRecord"]["ItemList"][i][9]>0 or PIG["RaidRecord"]["ItemList"][i][14]>0 then--已有成交人/收款/欠款
+										PIG["RaidRecord"]["ItemList"][i][13]=false;
+									else
+										local yijingguoqu=GetServerTime()-PIG["RaidRecord"]["ItemList"][i][1];
+										if yijingguoqu>7200 then
+											PIG["RaidRecord"]["ItemList"][i][13]=false;	
+										elseif yijingguoqu>6600 then
+											if PIG["RaidRecord"]["ItemList"][i][12] then
+												if UnitIsGroupLeader("player", "LE_PARTY_CATEGORY_HOME") and IsInRaid("LE_PARTY_CATEGORY_HOME") then
+													SendChatMessage("提示：未成交物品"..PIG["RaidRecord"]["ItemList"][i][2].."可交易时间不足10分钟，请确认物品归属(预估时间仅供参考)！","RAID", nil);
+													PIG["RaidRecord"]["ItemList"][i][12]=false;
+												end
 											end
-										end
+										end	
 									end
-								end	
+								end
 							end
 						end
 					end
-				end
-			end	
+				end	
+			end
 		end
-		C_Timer.After(3,ITEMTimetishi);
+		C_Timer.After(30,ITEMTimetishi);
 	end
 	ITEMTimetishi();
-	RsettingF.jiaoyidaojishi = ADD_Checkbutton(nil,RsettingF,-80,"TOPLEFT",RsettingF,"TOPLEFT",260,-100,"交易倒计时通告","启用后，物品可交易时间低于10分钟将会在团队频道提示，预估时间仅供参考")
+	RsettingF.jiaoyidaojishi = ADD_Checkbutton(nil,RsettingF,-80,"TOPLEFT",RsettingF,"TOPLEFT",260,-100,"可交易倒计时通告","启用后，物品可交易时间低于10分钟将会在团队频道提示，预估时间仅供参考\n注意此通告不会在战斗中执行")
 	RsettingF.jiaoyidaojishi:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG["RaidRecord"]["Rsetting"]["jiaoyidaojishi"]="ON";
@@ -240,6 +239,7 @@ local function add_RsettingFrame()
 	end)
 	local  function jiaoyijiluFun()
 		if PIG["RaidRecord"]["Kaiqi"]=="ON" and PIG["RaidRecord"]["Rsetting"]["jiaoyijilu"]=="ON" then
+			PIGEnable(RsettingF.jiaoyitonggao)
 			jiaoyijiluFFFF:RegisterEvent("UI_INFO_MESSAGE");--交易信息
 			jiaoyijiluFFFF:RegisterEvent("TRADE_SHOW");
 			jiaoyijiluFFFF:RegisterEvent("TRADE_CLOSED");
@@ -250,6 +250,7 @@ local function add_RsettingFrame()
 			jiaoyijiluFFFF:RegisterEvent("TRADE_TARGET_ITEM_CHANGED");
 			jiaoyijiluFFFF:RegisterEvent("TRADE_ACCEPT_UPDATE");--当玩家和目标接受按钮的状态更改时触发。
 		else
+			PIGDisable(RsettingF.jiaoyitonggao)
 			jiaoyijiluFFFF:UnregisterEvent("UI_INFO_MESSAGE");--交易信息
 			jiaoyijiluFFFF:UnregisterEvent("TRADE_SHOW");
 			jiaoyijiluFFFF:UnregisterEvent("TRADE_CLOSED");
@@ -261,7 +262,6 @@ local function add_RsettingFrame()
 			jiaoyijiluFFFF:UnregisterEvent("TRADE_ACCEPT_UPDATE");--当玩家和目标接受按钮的状态更改时触发。
 		end
 	end
-	jiaoyijiluFun();
 	------------
 	RsettingF.jiaoyijilu = ADD_Checkbutton(nil,RsettingF,-80,"TOPLEFT",RsettingF,"TOPLEFT",20,-150,"记录装备交易","开启后,交易拾取目录内的物品将会自动填入收入金额及成交人。一次交易多件商品只会记录成交人需手动输入每件商品收入价\n|cff00ff00（其他已安装本插件的玩家也会收到此次交易信息）|r")
 	RsettingF.jiaoyijilu:SetScript("OnClick", function (self)
@@ -280,6 +280,7 @@ local function add_RsettingFrame()
 			PIG["RaidRecord"]["Rsetting"]["jiaoyitonggao"]="OFF";
 		end
 	end);
+	jiaoyijiluFun();
 	----===================================================
 	RsettingF.CCXXX = RsettingF:CreateLine()
 	RsettingF.CCXXX:SetColorTexture(1,1,1,0.3)

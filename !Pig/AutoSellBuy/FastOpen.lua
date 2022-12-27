@@ -195,13 +195,12 @@ local function FastOpen()
 	end)
 
 	--===================
-	local xukaisuo = {4632,4633,4634,4636,4637,4638,5758,5759,5760,6354,6355,6712,12033,13875,13918,16882,16883,16884,16885,29569,31952};
 	local zidongOpenXXXX = CreateFrame("Frame");
 	zidongOpenXXXX:SetScript("OnEvent", function(self,event,arg1)
 		Open_Tishi()
 	end);
 
-	fuFrame.zidongKaiqi = ADD_Checkbutton(nil,fuFrame,-68,"TOPLEFT",fuFrame,"TOPLEFT",20,-10,"提示打开", "有可打开物品（例如：箱/盒/袋/蚌壳）将会在快捷按钮提示")
+	fuFrame.zidongKaiqi = ADD_Checkbutton(nil,fuFrame,-68,"TOPLEFT",fuFrame,"TOPLEFT",20,-10,"提示打开", "背包内有已设置的物品将会在快捷按钮提示")
 	fuFrame.zidongKaiqi:SetScript("OnClick", function (self)
 		if self:GetChecked() then
 			PIG['AutoSellBuy']['zidongKaiqi']="ON";

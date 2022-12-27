@@ -74,10 +74,10 @@ local function jisuanBAGshuliang(QitemID)
 	else
 		for bag = 0, 4 do
 			for slot = 1, C_Container.GetContainerNumSlots(bag) do
-				local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID= C_Container.GetContainerItemInfo(bag, slot);
-				if itemID then
-					if QitemID==itemID then
-						zongjiBAGitemCount=zongjiBAGitemCount+itemCount
+				local ItemInfo= C_Container.GetContainerItemInfo(bag, slot);
+				if ItemInfo then
+					if QitemID==ItemInfo.itemID then
+						zongjiBAGitemCount=zongjiBAGitemCount+ItemInfo.stackCount
 					end
 				end
 			end
@@ -276,17 +276,14 @@ local function SellBuy_ADD()
 			PIG_Per["AutoSellBuy"]["BuyOpen"]="OFF";
 		end
 	end);
-	MerchantFrame:HookScript("OnEvent",function (self,event)
-		if event=="MERCHANT_SHOW" then
-			if fuFrame.BuyCheck:GetChecked() then
-				zidonggoumai();
-			end
-		end
-	end);
-	----
 	if PIG_Per["AutoSellBuy"]["BuyOpen"]=="ON" then
 		fuFrame.BuyCheck:SetChecked(true);
 	end
+	MerchantFrame:HookScript("OnShow",function (self,event)
+		if fuFrame.BuyCheck:GetChecked() then
+			zidonggoumai();
+		end
+	end);
 end
 -----------------------------------------------
 addonTable.BuyPlus = SellBuy_ADD

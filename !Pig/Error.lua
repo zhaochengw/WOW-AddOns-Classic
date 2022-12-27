@@ -1,129 +1,210 @@
 local addonName, addonTable = ...;
-local gsub = _G.string.gsub 
-local find = _G.string.find
-local ADD_Frame=addonTable.ADD_Frame
-local _, _, _, tocversion = GetBuildInfo()
+local L =addonTable.locale
 -----------------
-local Pig_seterrorhandler=seterrorhandler
 local bencierrinfo={}
 --------------------------------
 local WWW,HHH = 600,380
 local biaotiW = 25
-local Bugshouji = CreateFrame("Frame", "Bugshouji_UI", UIParent,"BackdropTemplate");
-Bugshouji:SetSize(WWW,HHH);
-Bugshouji:SetPoint("CENTER",UIParent,"CENTER",0,0);
-Bugshouji:EnableMouse(true)
-Bugshouji:SetMovable(true)
-Bugshouji:SetClampedToScreen(true)
-Bugshouji:Hide()
-tinsert(UISpecialFrames,"Bugshouji_UI");
-Bugshouji:SetBackdrop({bgFile = "interface/raidframe/ui-raidframe-groupbg.blp", 
-	edgeFile = "interface/glues/common/textpanel-border.blp", 
-	tile = false, tileSize = 0, edgeSize = 20,insets = { left = 4, right = 4, top = 2, bottom = 4 }});
-Bugshouji:SetFrameStrata("HIGH")
+local Backdropinfo={bgFile = "interface/chatframe/chatframebackground.blp",
+	edgeFile = "Interface/AddOns/!Pig/Pigs/Pig_Border.blp", edgeSize = 6,}
+local function PIGSetBackdrop(self,but)
+	self:SetBackdrop(Backdropinfo)
+	if but then
+		self:SetBackdropColor(0.2, 0.2, 0.2, 1);
+	else
+		self:SetBackdropColor(0.08, 0.08, 0.08, 0.9);
+	end
+	self:SetBackdropBorderColor(0, 0, 0, 1);
+end
+local function ADD_Button(Text,UIName,fuF,WH,Point)
+	local But = CreateFrame("Button", UIName, fuF,"BackdropTemplate");
+	PIGSetBackdrop(But,true)
+	But:SetSize(WH[1],WH[2]);
+	But:SetPoint(Point[1],Point[2],Point[3],Point[4],Point[5]);
+	hooksecurefunc(But, "Enable", function(self)
+		self.Text:SetTextColor(1, 0.843, 0, 1);
+	end)
+	hooksecurefunc(But, "Disable", function(self)
+		self.Text:SetTextColor(0.5, 0.5, 0.5, 1);
+	end)
+	But:HookScript("OnEnter", function(self)
+		if self:IsEnabled() then
+			self:SetBackdropBorderColor(0,0.8,1, 0.9);
+		end
+	end);
+	But:HookScript("OnLeave", function(self)
+		if self:IsEnabled() then
+			self:SetBackdropBorderColor(0, 0, 0, 1);
+		end
+	end);
+	But:HookScript("OnMouseDown", function(self)
+		if self:IsEnabled() then
+			self.Text:SetPoint("CENTER", 1.5, -1.5);
+		end
+	end);
+	But:HookScript("OnMouseUp", function(self)
+		if self:IsEnabled() then
+			self.Text:SetPoint("CENTER", 0, 0);
+		end
+	end);
+	But.Text = But:CreateFontString();
+	But.Text:SetPoint("CENTER", 0, 0);
+	But.Text:SetFont(ChatFontNormal:GetFont(), 13)
+	But.Text:SetTextColor(1, 0.843, 0, 1);
+	But.Text:SetText(Text);
+	return But
+end
 
-Bugshouji.Moving = CreateFrame("Frame", nil, Bugshouji);
-Bugshouji.Moving:SetSize(WWW-60,biaotiW);
-Bugshouji.Moving:SetPoint("TOP",Bugshouji,"TOP",0,-2);
-Bugshouji.Moving:EnableMouse(true)
-Bugshouji.Moving:RegisterForDrag("LeftButton")
-Bugshouji.Moving.qingkong = CreateFrame("Button",nil,Bugshouji.Moving, "UIPanelButtonTemplate");
-Bugshouji.Moving.qingkong:SetSize(60,20);
-Bugshouji.Moving.qingkong:SetPoint("TOPRIGHT",Bugshouji.Moving,"TOPRIGHT",-20,-1);
-Bugshouji.Moving.qingkong:SetText('清空');
-Bugshouji.Moving.qingkong:SetScript("OnClick", function (self)
+local function ADD_TabBut(Text,UIName,fuF,WH,Point,id)
+	local But = CreateFrame("Button", UIName, fuF,"BackdropTemplate",id);
+	But.Show=false;
+	PIGSetBackdrop(But,true)
+	But:SetSize(WH[1],WH[2]);
+	But:SetPoint(Point[1],Point[2],Point[3],Point[4],Point[5]);
+	hooksecurefunc(But, "Enable", function(self)
+		self.Text:SetTextColor(1, 0.843, 0, 1);
+	end)
+	hooksecurefunc(But, "Disable", function(self)
+		self.Text:SetTextColor(0.5, 0.5, 0.5, 1);
+	end)
+	But:HookScript("OnEnter", function(self)
+		if self:IsEnabled() and not self.Show then
+			self:SetBackdropBorderColor(0,0.8,1, 1);
+		end
+	end);
+	But:HookScript("OnLeave", function(self)
+		if self:IsEnabled() and not self.Show then
+			self:SetBackdropBorderColor(0, 0, 0, 1);
+		end
+	end);
+	But:HookScript("OnMouseDown", function(self)
+		if self:IsEnabled() and not self.Show then
+			self.Text:SetPoint("CENTER", 1.5, -1.5);
+		end
+	end);
+	But:HookScript("OnMouseUp", function(self)
+		if self:IsEnabled() and not self.Show then
+			self.Text:SetPoint("CENTER", 0, 0);
+		end
+	end);
+	But.Text = But:CreateFontString();
+	But.Text:SetPoint("CENTER", 0, 0);
+	But.Text:SetFont(ChatFontNormal:GetFont(), 13)
+	But.Text:SetTextColor(1, 0.843, 0, 1);
+	But.Text:SetText(Text);
+	function But:selected()
+		self.Show=true;
+		self.Text:SetTextColor(1, 1, 1, 1);
+		self:SetBackdropColor(0.3098,0.262745,0.0353, 1);
+		self:SetBackdropBorderColor(1, 1, 0, 1);	
+	end
+	return But
+end
+----
+local Bugcollect = CreateFrame("Frame", "Bugcollect_UI", UIParent,"BackdropTemplate");
+PIGSetBackdrop(Bugcollect)
+Bugcollect:SetSize(WWW,HHH);
+Bugcollect:SetPoint("CENTER",0,0);
+Bugcollect:EnableMouse(true)
+Bugcollect:SetMovable(true)
+Bugcollect:SetClampedToScreen(true)
+Bugcollect:SetFrameStrata("HIGH")
+Bugcollect:Hide()
+tinsert(UISpecialFrames,"Bugcollect_UI");
+
+Bugcollect.Moving = CreateFrame("Frame", nil, Bugcollect);
+Bugcollect.Moving:SetSize(WWW-60,biaotiW);
+Bugcollect.Moving:SetPoint("TOP",Bugcollect,"TOP",0,0);
+Bugcollect.Moving:EnableMouse(true)
+Bugcollect.Moving:RegisterForDrag("LeftButton")
+Bugcollect.Moving:SetScript("OnDragStart",function()
+    Bugcollect:StartMoving();
+end)
+Bugcollect.Moving:SetScript("OnDragStop",function()
+    Bugcollect:StopMovingOrSizing()
+end)
+Bugcollect.Moving.qingkong = ADD_Button(L["ERROR_CLEAR"],nil,Bugcollect.Moving,{60,20},{"TOPRIGHT",Bugcollect.Moving,"TOPRIGHT",-80,-2.8})
+Bugcollect.Moving.qingkong:SetScript("OnClick", function (self)
 	PIG["Error"]["ErrorInfo"]={}
 	bencierrinfo={}
-	Bugshouji:qingkongERR()
+	Bugcollect:qingkongERR()
 end);
-Bugshouji.Moving:SetScript("OnDragStart",function()
-    Bugshouji:StartMoving();
-end)
-Bugshouji.Moving:SetScript("OnDragStop",function()
-    Bugshouji:StopMovingOrSizing()
-end)
-Bugshouji.Close = CreateFrame("Button",nil,Bugshouji, "UIPanelCloseButton");
-if tocversion<100000 then
-	Bugshouji.Close:SetSize(34,34);
-	Bugshouji.Close:SetPoint("TOPRIGHT",Bugshouji,"TOPRIGHT",4,4);
-else
-	Bugshouji.Close:SetSize(22,22);
-	Bugshouji.Close:SetPoint("TOPRIGHT",Bugshouji,"TOPRIGHT",-1,-2);
-end 
-Bugshouji.Time = Bugshouji:CreateFontString();
-Bugshouji.Time:SetPoint("TOPLEFT",Bugshouji,"TOPLEFT",10,-5);
-Bugshouji.Time:SetFontObject(GameFontNormal);
-Bugshouji.biaoti = Bugshouji:CreateFontString();
-Bugshouji.biaoti:SetPoint("TOP",Bugshouji,"TOP",0,-5);
-Bugshouji.biaoti:SetFontObject(GameFontNormal);
-Bugshouji.xxX = Bugshouji:CreateLine()
-Bugshouji.xxX:SetColorTexture(1,1,1,0.3)
-Bugshouji.xxX:SetThickness(2);
-Bugshouji.xxX:SetStartPoint("TOPLEFT",5,-biaotiW)
-Bugshouji.xxX:SetEndPoint("TOPRIGHT",-3,-biaotiW)
+Bugcollect.Close = CreateFrame("Button",nil,Bugcollect);
+Bugcollect.Close:SetHighlightTexture("interface/buttons/ui-common-mousehilight.blp")
+Bugcollect.Close:SetSize(24,24);
+Bugcollect.Close:SetPoint("TOPRIGHT",Bugcollect,"TOPRIGHT",0,0);
+Bugcollect.Close.Tex = Bugcollect.Close:CreateTexture(nil, "BORDER");
+Bugcollect.Close.Tex:SetTexture("interface/common/voicechat-muted.blp");
+Bugcollect.Close.Tex:SetSize(Bugcollect.Close:GetWidth()-8,Bugcollect.Close:GetHeight()-8);
+Bugcollect.Close.Tex:SetPoint("CENTER",0,0);
+Bugcollect.Close:SetScript("OnMouseDown", function (self)
+	self.Tex:SetPoint("CENTER",-1.5,-1.5);
+end);
+Bugcollect.Close:SetScript("OnMouseUp", function (self)
+	self.Tex:SetPoint("CENTER");
+end);
+Bugcollect.Close:SetScript("OnClick", function (self)
+	self:GetParent():Hide()
+end);
+
+Bugcollect.Time = Bugcollect.Moving:CreateFontString();
+Bugcollect.Time:SetPoint("TOPLEFT",Bugcollect,"TOPLEFT",10,-5);
+Bugcollect.Time:SetFontObject(GameFontNormal);
+Bugcollect.biaoti = Bugcollect.Moving:CreateFontString();
+Bugcollect.biaoti:SetPoint("TOP",Bugcollect,"TOP",0,-6);
+Bugcollect.biaoti:SetFont(ChatFontNormal:GetFont(), 14)
+Bugcollect.biaoti:SetTextColor(1,0.843,0)
 ---显示区域
-Bugshouji.NR = CreateFrame("Frame", nil, Bugshouji);
-Bugshouji.NR:SetSize(WWW-20,HHH-biaotiW-10);
-Bugshouji.NR:SetPoint("TOP",Bugshouji.xxX,"TOP",0,-4);
+Bugcollect.NR = CreateFrame("Frame", nil, Bugcollect,"BackdropTemplate");
+Bugcollect.NR:SetBackdrop(Backdropinfo)
+Bugcollect.NR:SetBackdropColor(0.14, 0.14, 0.14, 0.8);
+Bugcollect.NR:SetBackdropBorderColor(0, 0, 0, 1);
+Bugcollect.NR:SetSize(WWW,HHH-biaotiW*2);
+Bugcollect.NR:SetPoint("TOP",Bugcollect,"TOP",0,-biaotiW);
 ----------
-Bugshouji.NR.scroll = CreateFrame("ScrollFrame", nil, Bugshouji.NR, "UIPanelScrollFrameTemplate")
-Bugshouji.NR.scroll:SetPoint("TOPLEFT", Bugshouji.NR, "TOPLEFT", 0, 0)
-Bugshouji.NR.scroll:SetPoint("BOTTOMRIGHT", Bugshouji.NR, "BOTTOMRIGHT", -20, 30)
+Bugcollect.NR.scroll = CreateFrame("ScrollFrame", nil, Bugcollect.NR, "UIPanelScrollFrameTemplate")
+Bugcollect.NR.scroll:SetPoint("TOPLEFT", Bugcollect.NR, "TOPLEFT", 6, -2)
+Bugcollect.NR.scroll:SetPoint("BOTTOMRIGHT", Bugcollect.NR, "BOTTOMRIGHT", -24, 6)
 
-Bugshouji.NR.textArea = CreateFrame("EditBox", nil, Bugshouji.NR.scroll)
-Bugshouji.NR.textArea:SetTextColor(.8, .8, .8, 1)
-Bugshouji.NR.textArea:SetAutoFocus(false)
-Bugshouji.NR.textArea:SetMultiLine(true)
-Bugshouji.NR.textArea:SetFontObject(GameFontHighlightSmall)
-Bugshouji.NR.textArea:SetMaxLetters(99999)
-Bugshouji.NR.textArea:EnableMouse(true)
-Bugshouji.NR.textArea:SetScript("OnEscapePressed", Bugshouji.NR.textArea.ClearFocus)
-Bugshouji.NR.textArea:SetWidth(WWW-40)
+Bugcollect.NR.textArea = CreateFrame("EditBox", nil, Bugcollect.NR.scroll)
+Bugcollect.NR.textArea:SetTextColor(0.9, 0.9, 0.9, 1)
+Bugcollect.NR.textArea:SetAutoFocus(false)
+Bugcollect.NR.textArea:SetMultiLine(true)
+Bugcollect.NR.textArea:SetFontObject(GameFontHighlightSmall)
+Bugcollect.NR.textArea:SetMaxLetters(99999)
+Bugcollect.NR.textArea:EnableMouse(true)
+Bugcollect.NR.textArea:SetScript("OnEscapePressed", Bugcollect.NR.textArea.ClearFocus)
+Bugcollect.NR.textArea:SetWidth(WWW-30)
 
-Bugshouji.NR.scroll:SetScrollChild(Bugshouji.NR.textArea)
+Bugcollect.NR.scroll:SetScrollChild(Bugcollect.NR.textArea)
 --------------
-Bugshouji.prevZ = CreateFrame("Button",nil,Bugshouji, "UIPanelButtonTemplate");
-Bugshouji.prevZ:SetSize(34,22);
-Bugshouji.prevZ:SetPoint("BOTTOMLEFT",Bugshouji,"BOTTOMLEFT",10,8);
-Bugshouji.prevZ:SetText("《");
-Bugshouji.prevZ:Disable()
-
-Bugshouji.prev = CreateFrame("Button",nil,Bugshouji, "UIPanelButtonTemplate");
-Bugshouji.prev:SetSize(90,22);
-Bugshouji.prev:SetPoint("BOTTOM",Bugshouji,"BOTTOM",-130,8);
-Bugshouji.prev:SetText("上一条");
-Bugshouji.prev:Disable()
-
-Bugshouji.next = CreateFrame("Button",nil,Bugshouji, "UIPanelButtonTemplate");
-Bugshouji.next:SetSize(90,22);
-Bugshouji.next:SetPoint("BOTTOM",Bugshouji,"BOTTOM",130,8);
-Bugshouji.next:SetText("下一条");
-Bugshouji.next:Disable()
-
-Bugshouji.nextZ = CreateFrame("Button",nil,Bugshouji, "UIPanelButtonTemplate");
-Bugshouji.nextZ:SetSize(34,22);
-Bugshouji.nextZ:SetPoint("BOTTOMRIGHT",Bugshouji,"BOTTOMRIGHT",-10,8);
-Bugshouji.nextZ:SetText("》");
-Bugshouji.nextZ:Disable()
+Bugcollect.prevZ = ADD_Button("《 ",nil,Bugcollect,{30,20},{"BOTTOMLEFT",Bugcollect,"BOTTOMLEFT",10,3})
+Bugcollect.prevZ:Disable()
+Bugcollect.prev = ADD_Button(L["ERROR_PREVIOUS"],nil,Bugcollect,{90,20},{"BOTTOM",Bugcollect,"BOTTOM",-130,3})
+Bugcollect.prev:Disable()
+Bugcollect.next = ADD_Button(L["ERROR_NEXT"],nil,Bugcollect,{90,20},{"BOTTOM",Bugcollect,"BOTTOM",130,3})
+Bugcollect.next:Disable()
+Bugcollect.nextZ = ADD_Button(" 》",nil,Bugcollect,{30,20},{"BOTTOMRIGHT",Bugcollect,"BOTTOMRIGHT",-10,3})
+Bugcollect.nextZ:Disable()
 ------------
-function Bugshouji:qingkongERR()
-	Bugshouji.prev:Disable()
-	Bugshouji.next:Disable()
-	Bugshouji.prevZ:Disable()
-	Bugshouji.nextZ:Disable()
-	Bugshouji.Time:SetText("");
-	Bugshouji.biaoti:SetText("没有错误发生");
-	Bugshouji.NR.textArea:SetText("")
+function Bugcollect:qingkongERR()
+	Bugcollect.prev:Disable()
+	Bugcollect.next:Disable()
+	Bugcollect.prevZ:Disable()
+	Bugcollect.nextZ:Disable()
+	Bugcollect.Time:SetText("");
+	Bugcollect.biaoti:SetText(L["ERROR_EMPTY"]);
+	Bugcollect.NR.textArea:SetText("")
 end
 ----------------------
 local function xianshixinxi(id)
-	if Bugshouji_UI:IsShown() then
-		Bugshouji:qingkongERR()
+	if Bugcollect_UI:IsShown() then
+		Bugcollect:qingkongERR()
 		local shujuyuan = {}
-		if BugshoujiTAB_1.Show then
+		if BugcollectTAB_1.Show then
 			shujuyuan.ly=bencierrinfo
 			shujuyuan.num=#shujuyuan.ly
-		elseif BugshoujiTAB_2.Show then
+		elseif BugcollectTAB_2.Show then
 			shujuyuan.ly=PIG["Error"]["ErrorInfo"]
 			shujuyuan.num=#shujuyuan.ly
 		end
@@ -134,137 +215,90 @@ local function xianshixinxi(id)
 		local stack=shujuyuan.ly[id][3]
 		local logrizhi=shujuyuan.ly[id][4]
 		local cuowushu=shujuyuan.ly[id][5]
-		Bugshouji.Time:SetText(time);
-		Bugshouji.biaoti:SetText(id.."/"..shujuyuan.num);
+		Bugcollect.Time:SetText(time);
+		Bugcollect.biaoti:SetText(id.."/"..shujuyuan.num);
 		if cuowushu>1 then
-			Bugshouji.NR.textArea:SetText(cuowushu.."× "..msg.."\n"..stack.."\n"..logrizhi)
+			Bugcollect.NR.textArea:SetText(cuowushu.."× "..msg.."\n"..stack.."\n"..logrizhi)
 		else
-			Bugshouji.NR.textArea:SetText(msg.."\n"..stack.."\n"..logrizhi)
+			Bugcollect.NR.textArea:SetText(msg.."\n"..stack.."\n"..logrizhi)
 		end
-		Bugshouji.prev.id=id
-		Bugshouji.next.id=id
+		Bugcollect.prev.id=id
+		Bugcollect.next.id=id
 		if shujuyuan.num>1 then
 			if id==1 then
-				Bugshouji.prevZ:Disable()
-				Bugshouji.prev:Disable()
-				Bugshouji.next:Enable()
-				Bugshouji.nextZ:Enable()
+				Bugcollect.prevZ:Disable()
+				Bugcollect.prev:Disable()
+				Bugcollect.next:Enable()
+				Bugcollect.nextZ:Enable()
 			elseif shujuyuan.num==id then
-				Bugshouji.next:Disable()
-				Bugshouji.nextZ:Disable()
-				Bugshouji.prev:Enable()
-				Bugshouji.prevZ:Enable()
+				Bugcollect.next:Disable()
+				Bugcollect.nextZ:Disable()
+				Bugcollect.prev:Enable()
+				Bugcollect.prevZ:Enable()
 			else
-				Bugshouji.prev:Enable()
-				Bugshouji.next:Enable()
-				Bugshouji.prevZ:Enable()
-				Bugshouji.nextZ:Enable()
+				Bugcollect.prev:Enable()
+				Bugcollect.next:Enable()
+				Bugcollect.prevZ:Enable()
+				Bugcollect.nextZ:Enable()
 			end
 		else	
-			Bugshouji.prev:Disable()
-			Bugshouji.next:Disable()
-			Bugshouji.prevZ:Disable()
-			Bugshouji.nextZ:Disable()
+			Bugcollect.prev:Disable()
+			Bugcollect.next:Disable()
+			Bugcollect.prevZ:Disable()
+			Bugcollect.nextZ:Disable()
 		end
 	end
 end
 local function kaishiShow()
-	if BugshoujiTAB_1.Show then
+	if BugcollectTAB_1.Show then
 		local tablenum = #bencierrinfo
 		xianshixinxi(tablenum)
-	elseif BugshoujiTAB_2.Show then
+	elseif BugcollectTAB_2.Show then
 		local tablenum = #PIG["Error"]["ErrorInfo"]
 		xianshixinxi(tablenum)
 	end
 end
 -----
-local TabWidth,TabHeight = 110,26;
-local TabName = {"本次错误","之前错误"};
+local TabWidth,TabHeight = 110,24;
+local TabName = {L["ERROR_CURRENT"],L["ERROR_OLD"]};
 for id=1,#TabName do
-	local Tablist = CreateFrame("Button","BugshoujiTAB_"..id,Bugshouji, "TruncatedButtonTemplate",id);
-	Tablist:SetSize(TabWidth,TabHeight);
-	if id==1 then
-		Tablist:SetPoint("TOPLEFT", Bugshouji, "BOTTOMLEFT", 30,5);
-	else
-		Tablist:SetPoint("LEFT", _G["BugshoujiTAB_"..(id-1)], "RIGHT", 20,0);
+	local Point = {"TOPLEFT", Bugcollect, "BOTTOMLEFT", 30,0}
+	if id>1 then
+		Point = {"LEFT", _G["BugcollectTAB_"..(id-1)], "RIGHT", 20,0}
 	end
-	Tablist.Tex = Tablist:CreateTexture(nil, "BORDER");
-	Tablist.Tex:SetTexture("interface/paperdollinfoframe/ui-character-inactivetab.blp");
-	Tablist.Tex:SetPoint("TOP", Tablist, "TOP", 0,0);
-	Tablist.title = Tablist:CreateFontString();
-	Tablist.title:SetPoint("CENTER", Tablist, "CENTER", 0,0);
-	Tablist.title:SetFontObject(GameFontNormalSmall);
-	Tablist.title:SetText(TabName[id]);
-	Tablist.highlight = Tablist:CreateTexture(nil, "BORDER");
-	Tablist.highlight:SetTexture("interface/paperdollinfoframe/ui-character-tab-highlight.blp");
-	Tablist.highlight:SetBlendMode("ADD")
-	Tablist.highlight:SetPoint("CENTER", Tablist.title, "CENTER", 0,0);
-	Tablist.highlight:SetSize(TabWidth-12,TabHeight+4);
-	Tablist.highlight:Hide();
-	Tablist:SetScript("OnEnter", function (self)
-		if self.Show==false then
-			self.title:SetTextColor(1, 1, 1, 1);
-			self.highlight:Show();
-		end
-	end);
-	Tablist:SetScript("OnLeave", function (self)
-		if self.Show==false then
-			self.title:SetTextColor(1, 215/255, 0, 1);
-		end
-		self.highlight:Hide();
-	end);
-	Tablist:SetScript("OnMouseDown", function (self)
-		if self.Show==false then
-			self.title:SetPoint("CENTER", self, "CENTER", 1.5, -1.5);
-		end
-	end);
-	Tablist:SetScript("OnMouseUp", function (self)
-		if self.Show==false then
-			self.title:SetPoint("CENTER", self, "CENTER", 0, 0);
-		end
-	end);
-	-- ---------
+	local Tablist = ADD_TabBut(TabName[id],"BugcollectTAB_"..id,Bugcollect,{TabWidth,TabHeight},Point,id)
 	Tablist:SetScript("OnClick", function (self)
 		for x=1,#TabName do
-			local fagg=_G["BugshoujiTAB_"..x]
-			fagg.Tex:SetTexture("interface/paperdollinfoframe/ui-character-inactivetab.blp");
-			fagg.Tex:SetPoint("TOP", fagg, "TOP", 0,0);
-			fagg.title:SetTextColor(1, 215/255, 0, 1);
+			local fagg=_G["BugcollectTAB_"..x]
 			fagg.Show=false;
+			fagg.Text:SetTextColor(1, 0.843, 0, 1);
+			fagg:SetBackdropColor(0.2, 0.2, 0.2, 1);
+			fagg:SetBackdropBorderColor(0, 0, 0, 1);
 		end
-		self.Tex:SetTexture("interface/paperdollinfoframe/ui-character-activetab.blp");
-		self.Tex:SetPoint("TOP", self, "TOP", 0,1);
-		self.title:SetTextColor(1, 1, 1, 1);
-		self.highlight:Hide();
-		self.Show=true;
+		self:selected()
 		kaishiShow()
 	end);
 	---
-	Tablist.Show=false;
 	if id==1 then
-		Tablist.Tex:SetTexture("interface/paperdollinfoframe/ui-character-activetab.blp");
-		Tablist.Tex:SetPoint("TOP", Tablist, "TOP", 0,1);
-		Tablist.title:SetTextColor(1, 1, 1, 1);
-		Tablist.highlight:Hide();
-		Tablist.Show=true;
+		Tablist:selected()
 	end
 end
 -------
-Bugshouji.prevZ:SetScript("OnClick", function(self, button)
+Bugcollect.prevZ:SetScript("OnClick", function(self, button)
 	local newid = 1
 	xianshixinxi(newid)
 end)
-Bugshouji.prev:SetScript("OnClick", function(self, button)
+Bugcollect.prev:SetScript("OnClick", function(self, button)
 	local newid = self.id-1
 	xianshixinxi(newid)
 end)
-Bugshouji.next:SetScript("OnClick", function(self, button)
+Bugcollect.next:SetScript("OnClick", function(self, button)
 	local newid = self.id+1
 	xianshixinxi(newid)
 end)
-Bugshouji.nextZ:SetScript("OnClick", function(self, button)
+Bugcollect.nextZ:SetScript("OnClick", function(self, button)
 	for x=1,#TabName do
-		if _G["BugshoujiTAB_"..x].Show then
+		if _G["BugcollectTAB_"..x].Show then
 			if x==1 then
 				xianshixinxi(#bencierrinfo)
 			elseif x==2 then
@@ -274,13 +308,13 @@ Bugshouji.nextZ:SetScript("OnClick", function(self, button)
 	end
 end)
 ----------------
-Bugshouji:SetScript("OnShow", function(self)
+Bugcollect:SetScript("OnShow", function(self)
 	self:SetFrameLevel(99)
 	kaishiShow()
 end)
 ----错误处理FUN
 local function errottishi()
-	if Bugshouji.yijiazai then
+	if Bugcollect.yijiazai then
 		if PIG["Error"]["ErrorTishi"] and MinimapButton_PigUI then
 			MinimapButton_PigUI.error:Show();
 		end
@@ -288,23 +322,24 @@ local function errottishi()
 end
 local function errotFUN(msg)
 	--print(msg)
-	local stack = debugstack(3) or "无"
-	local logrizhi = debuglocals(3) or "无"
+	local stack = debugstack(3) or "null"
+	local logrizhi = debuglocals(3) or "null"
 	local time = GetServerTime()
 	local hejishu=#bencierrinfo
-	Bugshouji.cuowushu = 1
+	Bugcollect.cuowushu = 1
 	for i=hejishu,1,-1 do
 		if bencierrinfo[i][1]==msg then
-			Bugshouji.cuowushu = Bugshouji.cuowushu+bencierrinfo[i][5]
+			Bugcollect.cuowushu = Bugcollect.cuowushu+bencierrinfo[i][5]
 			table.remove(bencierrinfo,i);
 			break
 		end
 	end
-	table.insert(bencierrinfo, {msg,time,stack,logrizhi,Bugshouji.cuowushu});
+	table.insert(bencierrinfo, {msg,time,stack,logrizhi,Bugcollect.cuowushu});
 	xianshixinxi(#bencierrinfo)
 	errottishi()
 end
 UIParent:UnregisterEvent("LUA_WARNING")
+local Pig_seterrorhandler=seterrorhandler
 Pig_seterrorhandler(errotFUN);
 function seterrorhandler() end
 --========================================================
@@ -317,64 +352,64 @@ local function del_ErrorInfo()
 			end
 		end
 	end
-	Bugshouji.yijiazai=true
+	Bugcollect.yijiazai=true
 	if #bencierrinfo>0 then	
 		errottishi()
 	end
 end
 --
-
-Bugshouji:RegisterEvent("LUA_WARNING")
-Bugshouji:RegisterEvent("ADDON_ACTION_FORBIDDEN");
-Bugshouji:RegisterEvent("ADDON_ACTION_BLOCKED");
-Bugshouji:RegisterEvent("MACRO_ACTION_FORBIDDEN");
-Bugshouji:RegisterEvent("MACRO_ACTION_BLOCKED");
-Bugshouji:RegisterEvent("PLAYER_LOGIN")
-Bugshouji:RegisterEvent("PLAYER_LOGOUT");
-Bugshouji:RegisterEvent("ADDON_LOADED")
-Bugshouji:SetScript("OnEvent", function(self,event,arg1,arg2,arg3,arg4)
+Bugcollect:RegisterEvent("LUA_WARNING")
+Bugcollect:RegisterEvent("ADDON_ACTION_FORBIDDEN");
+Bugcollect:RegisterEvent("ADDON_ACTION_BLOCKED");
+Bugcollect:RegisterEvent("MACRO_ACTION_FORBIDDEN");
+Bugcollect:RegisterEvent("MACRO_ACTION_BLOCKED");
+Bugcollect:RegisterEvent("PLAYER_LOGIN")
+Bugcollect:RegisterEvent("PLAYER_LOGOUT");
+Bugcollect:RegisterEvent("ADDON_LOADED")
+Bugcollect:SetScript("OnEvent", function(self,event,arg1,arg2)
 	if event=="ADDON_LOADED" then
+		--if event=="ADDON_LOADED" and arg1==addonName then
 		C_Timer.After(3,del_ErrorInfo)
-		Bugshouji:UnregisterEvent("ADDON_LOADED")
+		Bugcollect:UnregisterEvent("ADDON_LOADED")
 	elseif event=="PLAYER_LOGIN" then
-		--Pig_seterrorhandler(errotFUN);
+		--C_Timer.After(3,del_ErrorInfo)
 	elseif event=="PLAYER_LOGOUT" then
 		local hejishu=#bencierrinfo
 		for i=1,hejishu do
 			table.insert(PIG["Error"]["ErrorInfo"], bencierrinfo[i]);
 		end
 	elseif event=="ADDON_ACTION_FORBIDDEN" or event=="ADDON_ACTION_BLOCKED" then
-		local msg = "["..event.."] 插件< "..arg1.." >尝试调用保护功能< "..arg2.." >"
-		local stack = debugstack(3) or "无"
-		local logrizhi = debuglocals(3) or "无"
+		local msg = "["..event.."] "..L["ERROR_ADDON"].."< "..arg1.." >"..L["ERROR_ERROR1"].."< "..arg2.." >"
+		local stack = debugstack(3) or "null"
+		local logrizhi = debuglocals(3) or "null"
 		local time = GetServerTime()
 		local hejishu=#bencierrinfo
-		Bugshouji.cuowushu = 1
+		Bugcollect.cuowushu = 1
 		for i=hejishu,1,-1 do
 			if bencierrinfo[i][1]==msg then
-				Bugshouji.cuowushu =Bugshouji.cuowushu+bencierrinfo[i][5]
+				Bugcollect.cuowushu =Bugcollect.cuowushu+bencierrinfo[i][5]
 				table.remove(bencierrinfo,i);
 				break
 			end
 		end
-		table.insert(bencierrinfo, {msg,time,stack,logrizhi,Bugshouji.cuowushu});
+		table.insert(bencierrinfo, {msg,time,stack,logrizhi,Bugcollect.cuowushu});
 		xianshixinxi(#bencierrinfo)
 		errottishi()
 	elseif event=="MACRO_ACTION_FORBIDDEN" or event=="MACRO_ACTION_BLOCKED" then
-		local msg = "["..event.."] 宏尝试调用保护功能<"..arg1..">"
-		local stack = debugstack(3) or "无"
-		local logrizhi = debuglocals(3) or "无"
+		local msg = "["..event.."] "..L["ERROR_ERROR2"].."<"..arg1..">"
+		local stack = debugstack(3) or "null"
+		local logrizhi = debuglocals(3) or "null"
 		local time = GetServerTime()
 		local hejishu=#bencierrinfo
-		Bugshouji.cuowushu = 1
+		Bugcollect.cuowushu = 1
 		for i=hejishu,1,-1 do
 			if bencierrinfo[i][1]==msg then
-				Bugshouji.cuowushu =Bugshouji.cuowushu+bencierrinfo[i][5]
+				Bugcollect.cuowushu =Bugcollect.cuowushu+bencierrinfo[i][5]
 				table.remove(bencierrinfo,i);
 				break
 			end
 		end
-		table.insert(bencierrinfo, {msg,time,stack,logrizhi,Bugshouji.cuowushu});
+		table.insert(bencierrinfo, {msg,time,stack,logrizhi,Bugcollect.cuowushu});
 		xianshixinxi(#bencierrinfo)
 		errottishi()
 	elseif event=="LUA_WARNING" then
@@ -386,5 +421,5 @@ SLASH_PER1 = "/per"
 SLASH_PER2 = "/Per"
 SLASH_PER3 = "/PER"
 SlashCmdList["PER"] = function()
-	Bugshouji_UI:Show();
+	Bugcollect_UI:Show();
 end

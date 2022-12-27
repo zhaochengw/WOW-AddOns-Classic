@@ -4,7 +4,8 @@ local find = _G.string.find
 local _, _, _, tocversion = GetBuildInfo()
 local ADD_Frame=addonTable.ADD_Frame
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 -----------------------------------------
 local function ADD_QuickBut_Jilu()
 		local miyuP={}

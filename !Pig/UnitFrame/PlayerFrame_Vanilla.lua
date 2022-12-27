@@ -42,8 +42,8 @@ local function ZishenFrame_Open()
 	end	
 	---------------
 	PlayerFrame.ziji.title1 = PlayerFrame.ziji:CreateFontString();--血量
-	PlayerFrame.ziji.title1:SetPoint("CENTER", PlayerFrame.ziji, "CENTER", 0, 1);
-	PlayerFrame.ziji.title1:SetFont(ChatFontNormal:GetFont(), 16,"OUTLINE")
+	PlayerFrame.ziji.title1:SetPoint("CENTER", PlayerFrame.ziji, "CENTER", 0, 0);
+	PlayerFrame.ziji.title1:SetFont(ChatFontNormal:GetFont(), 15,"OUTLINE")
 	PlayerFrame.ziji.title1:SetTextColor(0,1,0,1);
 
 	PlayerFrame.ziji.title2 = PlayerFrame.ziji:CreateFontString();--血量百分比

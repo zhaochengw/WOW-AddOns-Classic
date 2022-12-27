@@ -4,7 +4,8 @@ local find = _G.string.find
 local match = _G.string.match
 local sub = _G.string.sub 
 local hang_Height,hang_NUM  = 34, 12;
-local PIGDownMenu=addonTable.PIGDownMenu
+local Create=addonTable.Create
+local PIGDownMenu=Create.PIGDownMenu
 --------------------------------------------
 local function ADD_Item()
 	local fuFrame = TablistFrame_1_UI
@@ -138,6 +139,7 @@ local function ADD_Item()
 	fuFrame.lineT:SetEndPoint("TOPRIGHT",-4,-28)
 	--//////物品显示目录//////////////////////////////////////////////
 	local function UpdateItem(self)
+		if not fuFrame:IsVisible() then return end
 		for line = 1, hang_NUM do
 			local ifufame = _G["Item_hang_"..line.."_UI"]
 			ifufame:Hide();
@@ -449,7 +451,6 @@ local function ADD_Item()
 		Item_hang.Shiquzhe:SetPoint("LEFT", Item_hang, "LEFT", 320,1);
 		Item_hang.Shiquzhe:SetFont(ChatFontNormal:GetFont(), 13.4, "OUTLINE");
 		---------
-
 		Item_hang.chengjiao = CreateFrame("Frame", nil, Item_hang);
 		Item_hang.chengjiao:SetSize(70, hang_Height);
 		Item_hang.chengjiao:SetPoint("LEFT", Item_hang, "LEFT", 420,0);
@@ -519,7 +520,7 @@ local function ADD_Item()
 			UpdateItem(Item_Scroll_UI);
 		end);
 
-		-----欠款-----
+		---欠款-----
 		Item_hang.Qiankuan = CreateFrame("Frame", nil, Item_hang);
 		Item_hang.Qiankuan:SetSize(70, hang_Height);
 		Item_hang.Qiankuan:SetPoint("LEFT", Item_hang, "LEFT", 510,0);
@@ -803,7 +804,6 @@ local function ADD_Item()
 			local fengeshux=tishi_UI.nr.chaif.Slider:GetValue()
 			if hejishuju[bianjiIDX][3]>1 then
 				hejishuju[bianjiIDX][3]=hejishuju[bianjiIDX][3]-fengeshux
-				--1时间/2物品/3数量/4拾取人/5品质/6icon/7已拍卖/8成交人/9成交价/10成交时间/11ID/12交易倒计时/13通报结束/14欠款
 				local item1=hejishuju[bianjiIDX][1]
 				local item2=hejishuju[bianjiIDX][2]
 				local item4=hejishuju[bianjiIDX][4]

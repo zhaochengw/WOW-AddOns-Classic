@@ -23,31 +23,29 @@ fuFrame.GonghuiRepair:SetScript("OnClick", function (self)
 	end
 end);
 
-MerchantFrame:HookScript("OnEvent",function (self,event)
-	if event=="MERCHANT_SHOW" then
-		if fuFrame.AutoRepair:GetChecked() then
-			if CanMerchantRepair() then --NPC是否可以修理
-				local cost = GetRepairAllCost()--修理金额
-				if cost > 0 then
-					if fuFrame.GonghuiRepair:IsEnabled() and fuFrame.GonghuiRepair:GetChecked() and IsInGuild() then
-							local PIGguildMoney = GetGuildBankWithdrawMoney()--玩家的公会提取额度
-							if PIGguildMoney > GetGuildBankMoney() then --公会金额小于提取金额
-								PIGguildMoney = GetGuildBankMoney()
-							end
-							if PIGguildMoney >= cost and CanGuildBankRepair() then
-								RepairAllItems(true);
-								print("|cFF00ffff!Pig|r本次[公会]修理花费：" .. GetCoinTextureString(cost));	
-								return
-							end
-					end
-					----
-					local money = GetMoney()--自身金钱
-					if money >= cost then
-						RepairAllItems()
-						print("|cFF00ffff!Pig|r本次修理花费：" .. GetCoinTextureString(cost));
-					else
-						print("|cFFff0000!Pig|r自动修理失败：你没有足够的钱");
-					end
+MerchantFrame:HookScript("OnShow",function (self,event)
+	if fuFrame.AutoRepair:GetChecked() then
+		if CanMerchantRepair() then --NPC是否可以修理
+			local cost = GetRepairAllCost()--修理金额
+			if cost > 0 then
+				if fuFrame.GonghuiRepair:IsEnabled() and fuFrame.GonghuiRepair:GetChecked() and IsInGuild() then
+						local PIGguildMoney = GetGuildBankWithdrawMoney()--玩家的公会提取额度
+						if PIGguildMoney > GetGuildBankMoney() then --公会金额小于提取金额
+							PIGguildMoney = GetGuildBankMoney()
+						end
+						if PIGguildMoney >= cost and CanGuildBankRepair() then
+							RepairAllItems(true);
+							print("|cFF00ffff!Pig|r本次[公会]修理花费：" .. GetCoinTextureString(cost));	
+							return
+						end
+				end
+				----
+				local money = GetMoney()--自身金钱
+				if money >= cost then
+					RepairAllItems()
+					print("|cFF00ffff!Pig|r本次修理花费：" .. GetCoinTextureString(cost));
+				else
+					print("|cFFff0000!Pig|r自动修理失败：你没有足够的钱");
 				end
 			end
 		end

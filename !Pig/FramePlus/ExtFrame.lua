@@ -4,133 +4,115 @@ local _, _, _, tocversion = GetBuildInfo()
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 --任务界面扩展--------------------
 local function RenwuFrame_Open()
-	-- 显示任务等级
-	if QUESTS_DISPLAYED==6 then 
-		local function gengxinLVQR()
+	if tocversion<40000 then
+		local function gengxinLVQR()--显示任务等级
 			local numEntries, numQuests = GetNumQuestLogEntries();
 			if (numEntries == 0) then return end
 			for i = 1, QUESTS_DISPLAYED, 1 do
 				local questIndex = i + FauxScrollFrame_GetOffset(QuestLogListScrollFrame);		
 				if (questIndex <= numEntries) then
-					local questLogTitle = _G["QuestLogTitle"..i]
-					local questCheck = _G["QuestLogTitle"..i.."Check"]
 					local title, level, _, isHeader = GetQuestLogTitle(questIndex)
-					if isHeader then
-						questLogTitle:SetText(title)
-						QuestLogDummyText:SetText(title)
-					else
-						questLogTitle:SetText(" ["..level.."]"..title)
+					if not isHeader then
 						QuestLogDummyText:SetText(" ["..level.."]"..title)
+						if tocversion<30000 then
+							local questLogTitle = _G["QuestLogTitle"..i.."NormalText"]
+							local questCheck = _G["QuestLogTitle"..i.."Check"]
+							questLogTitle:SetText(" ["..level.."]"..title)
+							questCheck:SetPoint("LEFT", questLogTitle, "LEFT", QuestLogDummyText:GetWidth()+2, 0);
+						elseif tocversion<40000 then
+							local questLogbut = _G["QuestLogListScrollFrameButton"..i]
+							questLogbut.normalText:SetText(" ["..level.."]"..title)
+							local TitleWWW =QuestLogDummyText:GetWidth()
+							questLogbut.normalText:SetWidth(TitleWWW+16)
+							questLogbut.check:SetPoint("LEFT", questLogbut.normalText, "RIGHT", -16, 0);	
+						end		
 					end
-					questCheck:SetPoint("LEFT", questLogTitle, "LEFT", QuestLogDummyText:GetWidth()+24, 0);
 				end  
 			end
 		end
-		QuestLogListScrollFrame:HookScript("OnVerticalScroll", function(self, offset)
+		QuestLogListScrollFrame:HookScript("OnMouseWheel", function()
 		    gengxinLVQR()
 		end)
-		QuestLogFrame:HookScript('OnShow', function()
+		hooksecurefunc("QuestLog_Update", function()
 			gengxinLVQR()
 		end)
-		UIPanelWindows["QuestLogFrame"].width = 714
-		--缩放任务框架以匹配新纹理
-		QuestLogFrame:SetWidth(714)
-		QuestLogFrame:SetHeight(487)
+		if tocversion<30000 then
+			if QUESTS_DISPLAYED==6 then 
+				local xssdadas = 714
+				UIPanelWindows["QuestLogFrame"].width = xssdadas
+				--缩放任务框架以匹配新纹理
+				QuestLogFrame:SetWidth(xssdadas)
+				QuestLogFrame:SetHeight(487)
 
-		--任务日志标题移到中间
-		QuestLogTitleText:ClearAllPoints();
-		QuestLogTitleText:SetPoint("TOP", QuestLogFrame, "TOP", 0, -18);
+				--任务日志标题移到中间
+				QuestLogTitleText:ClearAllPoints();
+				QuestLogTitleText:SetPoint("TOP", QuestLogFrame, "TOP", 0, -18);
 
-		-- 任务详细说明移到右边，并增加高度
-		QuestLogDetailScrollFrame:ClearAllPoints();
-		QuestLogDetailScrollFrame:SetPoint("TOPLEFT", QuestLogListScrollFrame,"TOPRIGHT", 30, 0);
-		QuestLogDetailScrollFrame:SetHeight(335);
+				-- 任务详细说明移到右边，并增加高度
+				QuestLogDetailScrollFrame:ClearAllPoints();
+				QuestLogDetailScrollFrame:SetPoint("TOPLEFT", QuestLogListScrollFrame,"TOPRIGHT", 30, 0);
+				QuestLogDetailScrollFrame:SetHeight(335);
 
-		-- 任务目录增加高度
-		QuestLogListScrollFrame:SetHeight(335);
+				-- 任务目录增加高度
+				QuestLogListScrollFrame:SetHeight(335);
 
-		-- 增加可显示任务目录数
-		local oldQuestsDisplayed = QUESTS_DISPLAYED;
-		QUESTS_DISPLAYED = QUESTS_DISPLAYED + 16;
-		for i = oldQuestsDisplayed + 1, QUESTS_DISPLAYED do
-		    local button = CreateFrame("Button", "QuestLogTitle" .. i, QuestLogFrame, "QuestLogTitleButtonTemplate");
-		    button:SetID(i);
-		    button:Hide();
-		    button:ClearAllPoints();
-		    button:SetPoint("TOPLEFT", getglobal("QuestLogTitle" .. (i-1)), "BOTTOMLEFT", 0, 1);
+				-- 增加可显示任务目录数
+				local oldQuestsDisplayed = QUESTS_DISPLAYED;
+				QUESTS_DISPLAYED = QUESTS_DISPLAYED + 16;
+				for i = oldQuestsDisplayed + 1, QUESTS_DISPLAYED do
+				    local button = CreateFrame("Button", "QuestLogTitle" .. i, QuestLogFrame, "QuestLogTitleButtonTemplate");
+				    button:SetID(i);
+				    button:Hide();
+				    button:ClearAllPoints();
+				    button:SetPoint("TOPLEFT", _G["QuestLogTitle" .. (i-1)], "BOTTOMLEFT", 0, 1);
+				end
+
+				--更换纹理
+				local regions = { QuestLogFrame:GetRegions() }
+				regions[3]:SetTexture("Interface\\QUESTFRAME\\UI-QuestLogDualPane-Left")
+				regions[3]:SetSize(512,512)
+
+				regions[4]:ClearAllPoints()
+				regions[4]:SetPoint("TOPLEFT", regions[3], "TOPRIGHT", 0, 0)
+				regions[4]:SetTexture("Interface\\QUESTFRAME\\UI-QuestLogDualPane-Right")
+				regions[4]:SetSize(256,512)
+
+				regions[5]:Hide()
+				regions[6]:Hide()
+				--调整放弃任务按钮大小位置
+				QuestLogFrameAbandonButton:SetSize(110, 21)
+				QuestLogFrameAbandonButton:SetText(ABANDON_QUEST_ABBREV)
+				QuestLogFrameAbandonButton:ClearAllPoints()
+				QuestLogFrameAbandonButton:SetPoint("BOTTOMLEFT", QuestLogFrame, "BOTTOMLEFT", 17, 54)
+				--调整共享任务按钮大小
+				QuestFramePushQuestButton:SetSize(100, 21)
+				QuestFramePushQuestButton:SetText(SHARE_QUEST_ABBREV)
+				QuestFramePushQuestButton:ClearAllPoints()
+				QuestFramePushQuestButton:SetPoint("LEFT", QuestLogFrameAbandonButton, "RIGHT", -3, 0)
+				-- 增加显示地图按钮
+				local logMapButton = CreateFrame("Button", "logMapButton_UI", QuestLogFrame, "UIPanelButtonTemplate")
+				logMapButton:SetText("显示地图")
+				logMapButton:ClearAllPoints()
+				logMapButton:SetPoint("LEFT", QuestFramePushQuestButton, "RIGHT", -3, 0)
+				logMapButton:SetSize(100, 21)
+				logMapButton:SetScript("OnClick", ToggleWorldMap)
+				-- 调整没有任务文字提示位置
+				QuestLogNoQuestsText:ClearAllPoints();
+				QuestLogNoQuestsText:SetPoint("TOP", QuestLogListScrollFrame, 0, -90);
+				--隐藏没有任务时纹理
+				local txset = { EmptyQuestLogFrame:GetRegions();}
+				txset[1]:Hide();
+				txset[2]:Hide();
+				txset[3]:Hide();
+				txset[4]:Hide();
+			end
 		end
-		for i = 1, QUESTS_DISPLAYED do
-			_G["QuestLogTitle"..i]:HookScript("PostClick", function()
-					local questIndex = i + FauxScrollFrame_GetOffset(QuestLogListScrollFrame);		
-					local _, _, _, isHeader = GetQuestLogTitle(questIndex)
-					if isHeader then
-						C_Timer.After(0.001,gengxinLVQR)
-					else
-			    		gengxinLVQR()
-			    	end
-			end)
-		end
-		QuestLogFrame:HookScript("OnEvent", function(self,event, arg1)
-			gengxinLVQR()
-		end)
-
-		--更换纹理
-		local regions = { QuestLogFrame:GetRegions() }
-		regions[3]:SetTexture("Interface\\QUESTFRAME\\UI-QuestLogDualPane-Left")
-		regions[3]:SetSize(512,512)
-
-		regions[4]:ClearAllPoints()
-		regions[4]:SetPoint("TOPLEFT", regions[3], "TOPRIGHT", 0, 0)
-		regions[4]:SetTexture("Interface\\QUESTFRAME\\UI-QuestLogDualPane-Right")
-		regions[4]:SetSize(256,512)
-
-		regions[5]:Hide()
-		regions[6]:Hide()
-		--调整放弃任务按钮大小位置
-		QuestLogFrameAbandonButton:SetSize(110, 21)
-		QuestLogFrameAbandonButton:SetText(ABANDON_QUEST_ABBREV)
-		QuestLogFrameAbandonButton:ClearAllPoints()
-		QuestLogFrameAbandonButton:SetPoint("BOTTOMLEFT", QuestLogFrame, "BOTTOMLEFT", 17, 54)
-		--调整共享任务按钮大小
-		QuestFramePushQuestButton:SetSize(100, 21)
-		QuestFramePushQuestButton:SetText(SHARE_QUEST_ABBREV)
-		QuestFramePushQuestButton:ClearAllPoints()
-		QuestFramePushQuestButton:SetPoint("LEFT", QuestLogFrameAbandonButton, "RIGHT", -3, 0)
-		-- 增加显示地图按钮
-		local logMapButton = CreateFrame("Button", "logMapButton_UI", QuestLogFrame, "UIPanelButtonTemplate")
-		logMapButton:SetText("显示地图")
-		logMapButton:ClearAllPoints()
-		logMapButton:SetPoint("LEFT", QuestFramePushQuestButton, "RIGHT", -3, 0)
-		logMapButton:SetSize(100, 21)
-		logMapButton:SetScript("OnClick", ToggleWorldMap)
-		-- 调整没有任务文字提示位置
-		QuestLogNoQuestsText:ClearAllPoints();
-		QuestLogNoQuestsText:SetPoint("TOP", QuestLogListScrollFrame, 0, -90);
-		--隐藏没有任务时纹理
-		local txset = { EmptyQuestLogFrame:GetRegions();}
-		txset[1]:Hide();
-		txset[2]:Hide();
-		txset[3]:Hide();
-		txset[4]:Hide();
 	end
 end
----------------------
-fuFrame.Renwu=ADD_Checkbutton(nil,fuFrame,-100,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"任务界面扩展","扩展任务界面为两列；左边任务列表，右边任务详情！")
-if tocversion>90000 then
-	fuFrame.Renwu:Disable() fuFrame.Renwu.Text:SetTextColor(0.4, 0.4, 0.4, 1) 
-end
-fuFrame.Renwu:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG['FramePlus']['ExtFrame_Renwu']="ON";
-		RenwuFrame_Open();
-	else
-		PIG['FramePlus']['ExtFrame_Renwu']="OFF";
-		Pig_Options_RLtishi_UI:Show()
-	end
-end);
+addonTable.RenwuFrame_Open=RenwuFrame_Open
 --专业界面扩展/////////////////////////////////////////////
 local function TradeSkillFunc()
-	if TRADE_SKILLS_DISPLAYED==8 then			
+	if TRADE_SKILLS_DISPLAYED==8 then	
 			UIPanelWindows["TradeSkillFrame"].width = 714	
 			TradeSkillFrame:SetWidth(713)
 			TradeSkillFrame:SetHeight(487)
@@ -232,8 +214,7 @@ local function TradeSkillFunc()
 				--regions[2]:Hide()
 				regions[5]:Hide()
 				regions[6]:Hide()
-				-- regions[7]:Hide()--标题
-
+				--regions[7]:Hide()--标题
 				--regions[8]:Hide()
 				regions[9]:Hide()
 
@@ -244,7 +225,7 @@ local function TradeSkillFunc()
 				regions[4]:SetPoint("TOPLEFT", regions[3], "TOPRIGHT", 0, 0)
 				regions[4]:SetTexture("Interface\\QUESTFRAME\\UI-QuestLogDualPane-Right")
 				regions[4]:SetSize(256, 512)
-			end
+			end		
 			--调整配方列表底部纹理
 			TradeSkillFrame.RecipeInset = TradeSkillFrame:CreateTexture(nil, "ARTWORK")
 			TradeSkillFrame.RecipeInset:SetSize(304, 361)
@@ -255,6 +236,14 @@ local function TradeSkillFunc()
 			TradeSkillFrame.DetailsInset:SetSize(302, 339)
 			TradeSkillFrame.DetailsInset:SetPoint("TOPLEFT", TradeSkillFrame, "TOPLEFT", 348, -72)
 			TradeSkillFrame.DetailsInset:SetTexture("Interface\\ACHIEVEMENTFRAME\\UI-GuildAchievement-Parchment-Horizontal-Desaturated")
+			TradeSkillFrame:HookScript("OnShow", function(self)
+				if ElvUI then
+					TradeSkillInvSlotDropDown:ClearAllPoints()
+					TradeSkillInvSlotDropDown:SetPoint("TOPLEFT", TradeSkillFrame, "TOPLEFT", 498, -30)
+					self.backdrop:SetPoint("TOPLEFT",self,"TOPLEFT",0,0);
+					self.backdrop:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",-32,42);
+				end	
+			end); 
 	end
 end
 --附魔框架扩展/////////////////////////////////////////////
@@ -386,20 +375,7 @@ local function ZhuanyeFrame_Open()
 		end)
 	end
 end
---
-fuFrame.Zhuanye=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",300,-20,"专业界面扩展","扩展专业技能界面为两列；左边配方列表，右边配方详情")
-if tocversion>90000 then
-	fuFrame.Zhuanye:Disable() fuFrame.Zhuanye.Text:SetTextColor(0.4, 0.4, 0.4, 1) 
-end
-fuFrame.Zhuanye:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG['FramePlus']['ExtFrame_Zhuanye']="ON";
-		ZhuanyeFrame_Open();
-	else
-		PIG['FramePlus']['ExtFrame_Zhuanye']="OFF";
-		Pig_Options_RLtishi_UI:Show()
-	end
-end);
+addonTable.ZhuanyeFrame_Open=ZhuanyeFrame_Open
 -----------------------
 local Width,Height = 32,32;
 local Skill_List = {'烹饪', '急救', '裁缝', '熔炼', '采矿技能', '工程学', '锻造', '附魔', '制皮', '炼金术',"珠宝加工","铭文","符文熔铸"};
@@ -452,35 +428,35 @@ local function ADD_Skill_QK()
 	if Skill_Button_1 then return end
 	local Update_State=addonTable.Update_State
 	for F=1, 7 do
-		TradeSkillFrame.But = CreateFrame("CheckButton", "Skill_Button_"..F, TradeSkillFrame, "SecureActionButtonTemplate,ActionButtonTemplate");
-		TradeSkillFrame.But:SetSize(Width,Height);
-		TradeSkillFrame.But.NormalTexture:SetAlpha(0);
+		local But = CreateFrame("CheckButton", "Skill_Button_"..F, TradeSkillFrame, "SecureActionButtonTemplate,ActionButtonTemplate");
+		But:SetSize(Width,Height);
+		But.NormalTexture:SetAlpha(0);
 		if F<5 then
 			if F==1 then
-				TradeSkillFrame.But:SetPoint("TOPLEFT",TradeSkillFrame,"TOPRIGHT",-33,-46);
+				But:SetPoint("TOPLEFT",TradeSkillFrame,"TOPRIGHT",-33,-46);
 			else
-				TradeSkillFrame.But:SetPoint("TOP", _G["Skill_Button_"..(F-1)], "BOTTOM", 0, -16);
+				But:SetPoint("TOP", _G["Skill_Button_"..(F-1)], "BOTTOM", 0, -16);
 			end
 		else
 			if F==5 then
-				TradeSkillFrame.But:SetPoint("BOTTOMLEFT",TradeSkillFrame,"BOTTOMRIGHT",-33,64);
+				But:SetPoint("BOTTOMLEFT",TradeSkillFrame,"BOTTOMRIGHT",-33,64);
 			else
-				TradeSkillFrame.But:SetPoint("BOTTOM",_G["Skill_Button_"..(F-1)],"TOP",0,16);
+				But:SetPoint("BOTTOM",_G["Skill_Button_"..(F-1)],"TOP",0,16);
 			end
 		end
-		TradeSkillFrame.But:RegisterForClicks("AnyUp");
-		TradeSkillFrame.But:SetAttribute("type", "spell");
-		TradeSkillFrame.But:Hide();
+		But:RegisterForClicks("AnyUp");
+		But:SetAttribute("type", "spell");
+		But:Hide();
 		-----------
-		TradeSkillFrame.But.Border = TradeSkillFrame.But:CreateTexture(nil, "BACKGROUND");
-		TradeSkillFrame.But.Border:SetTexture(136831);
-		TradeSkillFrame.But.Border:SetSize(Width*1.9,Height*1.9);
-		TradeSkillFrame.But.Border:SetPoint("LEFT",TradeSkillFrame.But,"LEFT",-2,-4);
-		TradeSkillFrame.But.Border:SetDrawLayer("BACKGROUND", -8)
-		TradeSkillFrame.But:RegisterEvent("TRADE_SKILL_CLOSE")
-		TradeSkillFrame.But:RegisterEvent("CRAFT_CLOSE")
-		TradeSkillFrame.But:RegisterEvent("ACTIONBAR_UPDATE_STATE");
-		TradeSkillFrame.But:HookScript("OnEvent", function(self)
+		But.Border = But:CreateTexture(nil, "BACKGROUND");
+		But.Border:SetTexture(136831);
+		But.Border:SetSize(Width*1.9,Height*1.9);
+		But.Border:SetPoint("LEFT",But,"LEFT",-2,-4);
+		But.Border:SetDrawLayer("BACKGROUND", -8)
+		But:RegisterEvent("TRADE_SKILL_CLOSE")
+		But:RegisterEvent("CRAFT_CLOSE")
+		But:RegisterEvent("ACTIONBAR_UPDATE_STATE");
+		But:HookScript("OnEvent", function(self)
 			Update_State(self)
 		end)
 	end
@@ -501,41 +477,49 @@ local function ADD_Skill_QK()
 		fujiK:SetAttribute("spell", Skill_List_NEW[2][F][1]);
 		fujiK:Show();
 	end
+	TradeSkillFrame:HookScript("OnShow", function(self)
+		if ElvUI then
+			for F=1, 7 do
+				_G["Skill_Button_"..F].Border:Hide()
+			end
+			Skill_Button_5:SetPoint("BOTTOMLEFT",TradeSkillFrame,"BOTTOMRIGHT",-33,90);
+		end	
+	end);
 end
 ---
 local function ADD_Craft_QK()
 	if Craft_Button_1 then return end
 	local Update_State=addonTable.Update_State
 	for F=1, 7 do
-		CraftFrame.But = CreateFrame("CheckButton", "Craft_Button_"..F, CraftFrame, "SecureActionButtonTemplate,ActionButtonTemplate");
-		CraftFrame.But:SetSize(Width,Height);
-		CraftFrame.But.NormalTexture:SetAlpha(0);
+		local But = CreateFrame("CheckButton", "Craft_Button_"..F, CraftFrame, "SecureActionButtonTemplate,ActionButtonTemplate");
+		But:SetSize(Width,Height);
+		But.NormalTexture:SetAlpha(0);
 		if F<5 then
 			if F==1 then
-				CraftFrame.But:SetPoint("TOPLEFT",CraftFrame,"TOPRIGHT",-33,-46);
+				But:SetPoint("TOPLEFT",CraftFrame,"TOPRIGHT",-33,-46);
 			else
-				CraftFrame.But:SetPoint("TOP", _G["Craft_Button_"..(F-1)], "BOTTOM", 0, -16);
+				But:SetPoint("TOP", _G["Craft_Button_"..(F-1)], "BOTTOM", 0, -16);
 			end
 		else
 			if F==5 then
-				CraftFrame.But:SetPoint("BOTTOMLEFT",CraftFrame,"BOTTOMRIGHT",-33,64);
+				But:SetPoint("BOTTOMLEFT",CraftFrame,"BOTTOMRIGHT",-33,64);
 			else
-				CraftFrame.But:SetPoint("BOTTOM",_G["Craft_Button_"..(F-1)],"TOP",0,16);
+				But:SetPoint("BOTTOM",_G["Craft_Button_"..(F-1)],"TOP",0,16);
 			end
 		end
-		CraftFrame.But:RegisterForClicks("AnyUp");
-		CraftFrame.But:SetAttribute("type", "spell");
-		CraftFrame.But:Hide();
+		But:RegisterForClicks("AnyUp");
+		But:SetAttribute("type", "spell");
+		But:Hide();
 		-----------
-		CraftFrame.But.Border = CraftFrame.But:CreateTexture(nil, "BACKGROUND");
-		CraftFrame.But.Border:SetTexture(136831);
-		CraftFrame.But.Border:SetSize(Width*1.9,Height*1.9);
-		CraftFrame.But.Border:SetPoint("LEFT",CraftFrame.But,"LEFT",-2,-4);
-		CraftFrame.But.Border:SetDrawLayer("BACKGROUND", -8)
-		CraftFrame.But:RegisterEvent("TRADE_SKILL_CLOSE")
-		CraftFrame.But:RegisterEvent("CRAFT_CLOSE")
-		CraftFrame.But:RegisterEvent("ACTIONBAR_UPDATE_STATE");
-		CraftFrame.But:HookScript("OnEvent", function(self)
+		But.Border = But:CreateTexture(nil, "BACKGROUND");
+		But.Border:SetTexture(136831);
+		But.Border:SetSize(Width*1.9,Height*1.9);
+		But.Border:SetPoint("LEFT",But,"LEFT",-2,-4);
+		But.Border:SetDrawLayer("BACKGROUND", -8)
+		But:RegisterEvent("TRADE_SKILL_CLOSE")
+		But:RegisterEvent("CRAFT_CLOSE")
+		But:RegisterEvent("ACTIONBAR_UPDATE_STATE");
+		But:HookScript("OnEvent", function(self)
 			Update_State(self)
 		end)
 	end
@@ -556,6 +540,14 @@ local function ADD_Craft_QK()
 		fujiK:SetAttribute("spell", Skill_List_NEW[2][F][1]);
 		fujiK:Show();
 	end
+	CraftFrame:HookScript("OnShow", function(self)
+		if ElvUI then
+			for F=1, 7 do
+				_G["Craft_Button_"..F].Border:Hide()
+			end
+			Craft_Button_5:SetPoint("BOTTOMLEFT",CraftFrame,"BOTTOMRIGHT",-33,90);
+		end	
+	end);
 end
 local function ZhuanyeQKBUT_Open()
 	if tocversion<100000 then
@@ -671,35 +663,13 @@ local function ZhuanyeQKBUT_Open()
 			fujiK:SetAttribute("spell", Skill_List_NEW[2][F][1]);
 			fujiK:Show();
 		end
+		ProfessionsFrame:HookScript("OnShow", function(self)
+			if ElvUI then
+				for F=1, 7 do
+					_G["Skill_Button_"..F].Border:Hide()
+				end
+			end	
+		end); 
 	end
 end
-
-fuFrame.QuickQH=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",300,-60,"专业快速切换按钮","在专业界面显示便捷切换专业按钮")
-fuFrame.QuickQH:SetScript("OnClick", function (self)
-	if self:GetChecked() then
-		PIG['FramePlus']['ExtFrame_ZhuanyeQKBUT']=true;
-		ZhuanyeQKBUT_Open();
-	else
-		PIG['FramePlus']['ExtFrame_ZhuanyeQKBUT']=false;
-		Pig_Options_RLtishi_UI:Show()
-	end
-end);
---=====================================
-addonTable.FramePlus_ExtFrame = function()
-	if PIG['FramePlus']['ExtFrame_Renwu']=="ON" then
-		fuFrame.Renwu:SetChecked(true);
-		if fuFrame.Renwu:IsEnabled() then
-			RenwuFrame_Open();
-		end
-	end
-	if PIG['FramePlus']['ExtFrame_Zhuanye']=="ON" then
-		fuFrame.Zhuanye:SetChecked(true);
-		if fuFrame.Zhuanye:IsEnabled() then
-			ZhuanyeFrame_Open();
-		end
-	end
-	if PIG['FramePlus']['ExtFrame_ZhuanyeQKBUT'] then
-		fuFrame.QuickQH:SetChecked(true);
-		ZhuanyeQKBUT_Open();
-	end
-end
+addonTable.ZhuanyeQKBUT_Open=ZhuanyeQKBUT_Open

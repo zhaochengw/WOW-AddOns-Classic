@@ -2,11 +2,12 @@ local _, addonTable = ...;
 ---------.
 local fuFrame=List_R_F_2_6
 --=============================================================
-local ADD_Modbutton=addonTable.ADD_Modbutton
+local Create = addonTable.Create
+local PIGModbutton=Create.PIGModbutton
 local ADD_Frame=addonTable.ADD_Frame
 local GnName,GnUI = "技能监控","SpellJK_UI";
 local FrameLevel=30
-local Options_Spell_CD = ADD_Modbutton(GnName,GnUI,FrameLevel,1)
+local Options_Spell_CD = PIGModbutton(GnName,GnUI,FrameLevel,1)
 --==========================
 local Width,Height=660,500
 local SpellJK=ADD_Frame("SpellJK_UI",UIParent,Width,Height,"CENTER",UIParent,"CENTER",0,50,true,false,true,true,true,"BG2")
