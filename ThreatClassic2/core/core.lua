@@ -45,6 +45,9 @@ local screenHeight          = floor(GetScreenHeight())
 local lastCheckStatusTime   = 0
 local callCheckStatus       = false
 
+local lastUpdateSizeTime    = 0
+local scheduleUpdateSize    = nil
+
 local announcedOutdated     = false
 local announcedIncompatible = false
 
@@ -81,6 +84,7 @@ local LSM = LibStub("LibSharedMedia-3.0")
 LSM:Register("sound", "You Will Die!", [[Sound\Creature\CThun\CThunYouWillDie.ogg]])
 LSM:Register("sound", "Omen: Aoogah!", [[Interface\AddOns\ThreatClassic2\aoogah.ogg]])
 LSM:Register("sound", "TC2: Bell", [[Sound/Doodad/BellTollAlliance.ogg]])
+LSM:Register("sound", "Yogg Laughing", [[Sound\Creature\YoggSaron\UR_YoggSaron_Slay01.ogg]])
 LSM:Register("font", "NotoSans SemiCondensedBold", [[Interface\AddOns\ThreatClassic2\media\NotoSans-SemiCondensedBold.ttf]])
 LSM:Register("font", "Standard Text Font", _G.STANDARD_TEXT_FONT) -- register so it's usable as a default in config
 LSM:Register("statusbar", "TC2 Default", [[Interface\ChatFrame\ChatFrameBackground]]) -- register so it's usable as a default in config
@@ -136,7 +140,7 @@ local function CreateStatusBar(parent, header)
     bar:SetMinMaxValues(0, 100)
     -- Backdrop
     local backdrop = {
-        bgFile = LSM:Fetch("statusbar", C.backdrop.bgTexture),
+        bgFile = LSM:Fetch("statusbar", C.backdrop.texture),
         tile = C.backdrop.tile,
         tileSize = C.backdrop.tileSize,
         insets = {
@@ -147,15 +151,12 @@ local function CreateStatusBar(parent, header)
         },
     }
     bar:SetBackdrop(backdrop)
-    bar:SetBackdropColor(unpack(C.backdrop.bgColor)) -- hide backdrop area. this backdrop is just for the edge
+    bar:SetBackdropColor(unpack(C.backdrop.color))
     bar:SetBackdropBorderColor(0, 0, 0, 0) -- no edge on regular backdrop
     -- Edge
     CreateEdgeBackdrop(bar, C.backdrop)
 
     if not header then
-        -- BG
-        bar.bg = bar:CreateTexture(nil, "BACKGROUND", nil, -6)
-        bar.bg:SetAllPoints(bar)
         -- ignite indicator
         bar.ignite = bar:CreateTexture(nil, "OVERLAY")
         bar.ignite:SetPoint("LEFT", bar, 4, 0)
@@ -311,7 +312,6 @@ function TC2:UpdateThreatBars()
             bar:SetValue(data.threatPercent)
             local color = GetColor(data.unit, data.isTanking, hasActiveIgnite)
             bar:SetStatusBarColor(unpack(color))
-            bar.bg:SetVertexColor(color[1] * C.bar.colorMod, color[2] * C.bar.colorMod, color[3] * C.bar.colorMod, C.bar.alpha)
 
             bar:Show()
         else
@@ -339,8 +339,6 @@ function TC2:UpdateThreatBars()
                     bar:SetValue(data.threatPercent)
                     local color = GetColor(data.unit, data.isTanking, hasActiveIgnite)
                     bar:SetStatusBarColor(unpack(color))
-                    bar.bg:SetVertexColor(color[1] * C.bar.colorMod, color[2] * C.bar.colorMod, color[3] * C.bar.colorMod, C.bar.alpha)
-
                     bar:Show()
                     break
                 end
@@ -521,10 +519,10 @@ function TC2:FlashScreen()
             elapsed = self.elapsed + elapsed
             if elapsed < 2.6 then
                 local alpha = elapsed % 1.3
-                if alpha < 0.15 then
-                    self:SetAlpha(alpha / 0.15)
-                elseif alpha < 0.9 then
-                    self:SetAlpha(1 - (alpha - 0.15) / 0.6)
+                if alpha < 0.2 then
+                    self:SetAlpha(alpha / 0.2)
+                elseif alpha < 0.79 then
+                    self:SetAlpha(1 - (alpha - 0.2) / 0.6)
                 else
                     self:SetAlpha(0)
                 end
@@ -566,27 +564,46 @@ local function OnDragStop(f)
 end
 
 local function UpdateSize(f)
-    C.frame.width = f:GetWidth() - 2
-    C.frame.height = f:GetHeight()
-
-    TC2:SetBarCount()
-
-    for i = 1, 40 do
-        if i <= C.bar.count and TC2.threatData[i] then
-            TC2.bars[i]:Show()
-        else
-            TC2.bars[i]:Hide()
+    -- rate limit update size so resizing doesn't lag
+    if(GetTime() < lastUpdateSizeTime + 0.01) then
+        if not scheduleUpdateSize then
+            scheduleUpdateSize = C_Timer.NewTimer(0.02, function() UpdateSize(f) end)
         end
-    end
+    else
+        -- reset rate limiter
+        lastUpdateSizeTime = GetTime()
+        if scheduleUpdateSize then
+            scheduleUpdateSize:Cancel()
+            scheduleUpdateSize = nil
+        end
 
-    TC2:UpdateFrame()
+        -- start updating size
+        C.frame.width = f:GetWidth() - 2
+        C.frame.height = f:GetHeight()
+
+        TC2:SetBarCount()
+
+        for i = 1, 40 do
+            if i <= C.bar.count and TC2.threatData[i] then
+                TC2.bars[i]:Show()
+            else
+                TC2.bars[i]:Hide()
+            end
+        end
+
+        TC2:UpdateFrame()
+    end
 end
 
 local function OnResizeStart(f)
     TC2.frame.header:SetMovable(false)
     f = f:GetParent()
-    f:SetMinResize(64, C.bar.height)
-    f:SetMaxResize(512, 1024)
+    if f.SetResizeBounds then -- WoW 10.0
+        f:SetResizeBounds(64, C.bar.height, 512, 1024)
+    else
+        f:SetMinResize(64, C.bar.height)
+        f:SetMaxResize(512, 1024)
+    end
     TC2.sizing = true
     f:SetScript("OnSizeChanged", UpdateSize)
     f:StartSizing()
@@ -681,7 +698,7 @@ end
 function TC2:UpdateBars()
     -- get up-to-date backdrop and edgeBackdrop settings
     local backdrop = {
-        bgFile = LSM:Fetch("statusbar", C.backdrop.bgTexture),
+        bgFile = LSM:Fetch("statusbar", C.backdrop.texture),
         tile = C.backdrop.tile,
         tileSize = C.backdrop.tileSize,
         insets = {
@@ -709,7 +726,7 @@ function TC2:UpdateBars()
         local bar = self.bars[i]
 
         bar:SetBackdrop(backdrop)
-        bar:SetBackdropColor(unpack(C.backdrop.bgColor))
+        bar:SetBackdropColor(unpack(C.backdrop.color))
         bar:SetBackdropBorderColor(0,0,0,0)
         bar.edgeBackdrop:SetBackdrop(edgeBackdrop)
         bar.edgeBackdrop:SetBackdropColor(0,0,0,0)
@@ -733,8 +750,6 @@ function TC2:UpdateBars()
 
         bar:SetStatusBarTexture(LSM:Fetch("statusbar", C.bar.texture))
 
-        -- BG
-        bar.bg:SetTexture(LSM:Fetch("statusbar", C.bar.texture))
         -- ignite
         bar.ignite:SetSize(C.igniteIndicator.size, C.igniteIndicator.size)
         bar.ignite:Hide()
@@ -1436,16 +1451,16 @@ TC2.configTable = {
                             name = L.backdrop,
                             type = "header",
                         },
-                        backdropBgColor = {
+                        backdropColor = {
                             order = 12,
-                            name = L.backdrop_bgColor,
+                            name = L.backdrop_color,
                             type = "color",
                             hasAlpha = true,
                             get = function(info)
-                                return unpack(C.backdrop.bgColor)
+                                return unpack(C.backdrop.color)
                             end,
                             set = function(info, r, g, b, a)
-                                local cfg = C.backdrop.bgColor
+                                local cfg = C.backdrop.color
                                 cfg[1] = r
                                 cfg[2] = g
                                 cfg[3] = b
@@ -1453,17 +1468,17 @@ TC2.configTable = {
                                 TC2:UpdateFrame()
                             end,
                         },
-                        backdropBgTexture = {
+                        backdropTexture = {
                             order = 13,
-                            name = L.backdrop_bgTexture,
+                            name = L.backdrop_texture,
                             type = "select",
                             dialogControl = 'LSM30_Statusbar',
                             values = AceGUIWidgetLSMlists.statusbar,
                             get = function(info)
-                                return C.backdrop.bgTexture
+                                return C.backdrop.texture
                             end,
                             set = function(info, value)
-                                C.backdrop.bgTexture = value
+                                C.backdrop.texture = value
                                 TC2:UpdateFrame()
                             end,
                         },

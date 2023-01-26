@@ -398,8 +398,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
 	L["Disabled"] = "Désactivé"
 	--[[Translation missing --]]
 	L["Disallow Entry Reordering"] = "Disallow Entry Reordering"
-	--[[Translation missing --]]
-	L["Discrete Rotation"] = "Discrete Rotation"
 	L["Display"] = "Affichage"
 	L["Display Name"] = "Nom de l'affichage"
 	L["Display Text"] = "Texte d'affichage"
@@ -457,7 +455,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
 	L["End of %s"] = "Fin de %s"
 	--[[Translation missing --]]
 	L["Enemy nameplate(s) found"] = "Enemy nameplate(s) found"
-	L["Enter a Spell ID"] = "Entrer un ID de sort"
+	--[[Translation missing --]]
+	L["Enter a Spell ID. You can use the addon idTip to determine spell ids."] = "Enter a Spell ID. You can use the addon idTip to determine spell ids."
 	L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."] = "Saisissez un nom d'aura, un nom d'aura partiel ou un ID de sort. L'ID d'un sort correspondra à tous les sorts portant le même nom."
 	L["Enter Author Mode"] = "Entrer en Mode Auteur"
 	--[[Translation missing --]]
@@ -743,6 +742,8 @@ Si cette case est cochée, ce séparateur inclura du texte. Sinon, ce sera juste
 	L["Matches the height setting of a horizontal bar or width for a vertical bar."] = "Correspond au paramètre de hauteur d'une barre horizontale ou de largeur pour une barre verticale."
 	L["Max"] = "Max"
 	L["Max Length"] = "Longueur max"
+	--[[Translation missing --]]
+	L["Media Type"] = "Media Type"
 	L["Medium Icon"] = "Icône moyenne"
 	L["Message"] = "Message"
 	L["Message Prefix"] = "Préfixe du message"
@@ -907,6 +908,8 @@ Seule une unique valeur peut être choisie]=]
 	--[[Translation missing --]]
 	L["Row Width"] = "Row Width"
 	L["Rows"] = "Lignes"
+	--[[Translation missing --]]
+	L["Run on..."] = "Run on..."
 	L["Same"] = "Le même"
 	--[[Translation missing --]]
 	L["Same texture as Foreground"] = "Same texture as Foreground"
@@ -1189,6 +1192,14 @@ It might not work correctly with your version!]=]
 	L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "Vous êtes sur le point de supprimer %d aura(s). |cFFFF0000Cela ne peut pas être annulé !|r Voulez-vous continuer ?"
 	--[[Translation missing --]]
 	L["You are about to delete a trigger. |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "You are about to delete a trigger. |cFFFF0000This cannot be undone!|r Would you like to continue?"
+	--[[Translation missing --]]
+	L[ [=[You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.
+
+WeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered.]=] ] = [=[You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.
+
+WeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered.]=]
+	--[[Translation missing --]]
+	L["You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."] = "You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."
 	--[[Translation missing --]]
 	L["Your Saved Snippets"] = "Your Saved Snippets"
 	L["Z Offset"] = "Décalage Z"

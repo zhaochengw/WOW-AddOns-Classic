@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## X-Min-Interface: 20501
 ## X-Min-Interface-Wrath: 30400
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Temple of Ahn'Qiraj|r

@@ -75,6 +75,7 @@ function Details.options.SetCurrentInstanceAndRefresh(instance)
             sectionFrame:RefreshOptions()
         end
     end
+    Details.options.UpdateAutoHideSettings(instance)
 end
 
 function Details.options.UpdateAutoHideSettings(instance)
@@ -1641,7 +1642,7 @@ do
                     editInstanceSetting(currentInstance, "InstanceRefreshRows")
                     afterUpdate()
                 end,
-                min = 0,
+                min = -10,
                 max = 125,
                 step = 1,
                 name = string.format(Loc["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET"], 1),
@@ -1656,7 +1657,7 @@ do
                     editInstanceSetting(currentInstance, "InstanceRefreshRows")
                     afterUpdate()
                 end,
-                min = 0,
+                min = -10,
                 max = 75,
                 step = 1,
                 name = string.format(Loc["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET"], 2),
@@ -1671,7 +1672,7 @@ do
                     editInstanceSetting(currentInstance, "InstanceRefreshRows")
                     afterUpdate()
                 end,
-                min = 0,
+                min = -10,
                 max = 50,
                 step = 1,
                 name = string.format(Loc["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET"], 3),
@@ -4027,19 +4028,35 @@ do
                 icontexcoords = {1, 0, 0, 1},
             },
 
-            {--import profile
-                type = "execute",
-                func = function(self)
-                    _detalhes:ShowImportWindow("", function(profileString)
+--[=[
+                    function(profileString)
                         if (type(profileString) ~= "string" or string.len(profileString) < 2) then
                             return
                         end
                         
                         --prompt text panel returns what the user inserted in the text field in the first argument
                         DF:ShowTextPromptPanel(Loc["STRING_OPTIONS_IMPORT_PROFILE_NAME"] .. ":", function(newProfileName)
-                            Details:ImportProfile (profileString, newProfileName)
+                            Details:ImportProfile (profileString, newProfileName, importAutoRunCode)
                         end)
-                    end, Loc["STRING_OPTIONS_IMPORT_PROFILE_PASTE"])
+                    end
+--]=]
+
+            {--import profile
+                type = "execute",
+                func = function(self)
+                    local importConfirmationCallback = function(profileString)
+                        if (type(profileString) ~= "string" or string.len(profileString) < 2) then
+                            return
+                        end
+
+                        --prompt text panel returns what the user inserted in the text field in the first argument
+                        local askForNewProfileName = function(newProfileName, importAutoRunCode)
+                            Details:ImportProfile(profileString, newProfileName, importAutoRunCode, true)
+                        end
+                        Details.ShowImportProfileConfirmation(Loc["STRING_OPTIONS_IMPORT_PROFILE_NAME"] .. ":", askForNewProfileName)
+                    end
+
+                    Details:ShowImportWindow("", importConfirmationCallback, Loc["STRING_OPTIONS_IMPORT_PROFILE_PASTE"])
                 end,
                 name = Loc["STRING_OPTIONS_IMPORT_PROFILE"],
                 icontexture = [[Interface\BUTTONS\UI-GuildButton-OfficerNote-Up]],

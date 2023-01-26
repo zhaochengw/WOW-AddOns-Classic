@@ -1,9 +1,13 @@
 local mod	= DBM:NewMod("Hodir", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221215074731")
+mod:SetRevision("20230124053113")
 mod:SetCreatureID(32845,32926)
-mod:SetEncounterID(1135)
+if not mod:IsClassic() then
+	mod:SetEncounterID(1135)
+else
+	mod:SetEncounterID(751)
+end
 mod:SetModelID(28743)
 mod:SetUsedIcons(1, 2)
 
@@ -29,12 +33,7 @@ local enrageTimer			= mod:NewBerserkTimer(475)
 local timerFlashFreeze		= mod:NewCastTimer(9, 61968, nil, nil, nil, 2)
 local timerFrozenBlows		= mod:NewBuffActiveTimer(20, 63512, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.HEALER_ICON)
 local timerFlashFrCD		= mod:NewCDTimer(50, 61968, nil, nil, nil, 2)
-local timerAchieve
-if WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1) then
-	timerAchieve = mod:NewAchievementTimer(179, 12347)
-else
-	timerAchieve = mod:NewAchievementTimer(120, 3182)
-end
+local timerAchieve			= mod:NewTimer(50, "TimerHardmode", "132597", nil, nil, 0)
 
 mod:AddSetIconOption("SetIconOnStormCloud", 65123, true, false, {1, 2})
 
@@ -42,7 +41,7 @@ mod.vb.stormCloudIcon = 1
 
 function mod:OnCombatStart(delay)
 	enrageTimer:Start(-delay)
-	timerAchieve:Start()
+	timerAchieve:Start(self:IsClassic() and 120 or 179-delay)
 	timerFlashFrCD:Start(-delay)
 	self.vb.stormCloudIcon = 1
 end

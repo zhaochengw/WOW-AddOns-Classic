@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: Grid2 |cd2ff7d0aRaidDebuffs Options|r
 ## Title-esES: Grid2 |cd2ff7d0aRaidDebuffs Opciones|r
 ## Notes: Load on demand Options for Grid2RaidDebuffs.
@@ -6,7 +6,7 @@
 ## Author: Michael
 ## Dependencies: Grid2, Grid2RaidDebuffs
 ## LoadOnDemand: 1
-## Version: 2.0.73
+## Version: 2.1.1
 
 Grid2RaidDebuffsOptions.lua
 OptionsGeneral.lua

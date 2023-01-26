@@ -747,4 +747,5 @@ NWB.companionCreatures = {
 	[31715] = "Deathguard Hicks",
 	[31716] = "Sky-Captain Cryoflight",
 	[31708] = "Deathguard Barth",
+	[196534] = "Hoplet", --6 month sub.
 }

@@ -262,15 +262,15 @@ function SwitcherTracking:TimerFeedback()
       	
 		end
 		
-		local count = GetNumTrackingTypes();
+		local count = C_Minimap.GetNumTrackingTypes();
 		local name, rank, icon, castTime, minRange, maxRange = GetSpellInfo(personalTrackingId)		
 		--print ("track:",personalTrackingId,name)
 			for i=1,count do 
-				local name_t, texture, active, category = GetTrackingInfo(i);
+				local name_t, textureFileID, active, type, subType, spellID = C_Minimap.GetTrackingInfo(i);
 						
 					if name_t == name then
 					--DEFAULT_CHAT_FRAME:AddMessage(name.." ("..category..")"..i);
-					SetTracking(i,true);
+					C_Minimap.SetTracking(i,true);
 					end
 			
 			end
@@ -302,13 +302,13 @@ function SwitcherTracking:GetType1(info)
 end
 
 function SwitcherTracking:GetCurrentTracking()
-    local count = GetNumTrackingTypes();
+    local count = C_Minimap.GetNumTrackingTypes();
     for i=1,count do 
-        local name, texture, active, category = GetTrackingInfo(i);
-	--print(name, texture, active, category)
-	if category == "spell" then
-            -- DEFAULT_CHAT_FRAME:AddMessage("Tracking Info ID: "..i.." and name: "..name.." and category:"..category);
-            --print("Tracking Info ID: ",i," and name: ",name," and category:",category);
+        local name, textureFileID, active, type, subType, spellID = C_Minimap.GetTrackingInfo(i);
+	--print(name, textureFileID, active, type, subType, spellID)
+	if type == "spell" then
+            -- DEFAULT_CHAT_FRAME:AddMessage("Tracking Info ID: "..i.." and name: "..name.." and type:"..type);
+            --print("Tracking Info ID: ",i," and name: ",name," and type:",type);
 			if active == true then
 	        return name
 			
@@ -319,9 +319,9 @@ function SwitcherTracking:GetCurrentTracking()
 end
 
 function SwitcherTracking:FindTrackingID(checkme)
-    local count = GetNumTrackingTypes();
+    local count = C_Minimap.GetNumTrackingTypes();
     for i=1,count do 
-        local name, texture, active, category = GetTrackingInfo(i);
+        local name, textureFileID, active, type, subType, spellID = C_Minimap.GetTrackingInfo(i);
         if checkme == name then
 	    return i
         end

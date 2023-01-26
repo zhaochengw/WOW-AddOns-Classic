@@ -1,7 +1,7 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: RightClickSelfCast
 ## Author: Xruptor
-## Version:  4.4
+## Version:  4.6
 ## X-Curse-Project-ID: 22070
 ## X-WoWI-ID: 15049
 ## X-Wago-ID: nQN5YENB

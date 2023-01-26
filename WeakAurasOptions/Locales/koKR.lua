@@ -161,7 +161,7 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Add Option"] = "옵션 추가"
 	L["Add Overlay"] = "오버레이 추가"
 	L["Add Property Change"] = "속성 변경 추가"
-	L["Add Snippet"] = "스니핏 추가"
+	L["Add Snippet"] = "스니펫 추가"
 	L["Add Sub Option"] = "하위 옵션 추가"
 	L["Add to group %s"] = "그룹 %s에 추가"
 	L["Add to new Dynamic Group"] = "새 유동적 그룹에 추가"
@@ -173,8 +173,7 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Align"] = "정렬"
 	L["Alignment"] = "정렬"
 	L["All of"] = "다음 모두"
-	--[[Translation missing --]]
-	L["Allow Full Rotation"] = "Allow Full Rotation"
+	L["Allow Full Rotation"] = "전체 회전 허용"
 	L["Alpha"] = "투명도"
 	L["Anchor"] = "고정시키기"
 	L["Anchor Point"] = "고정 지점"
@@ -276,7 +275,7 @@ Off Screen]=] ] = "Aura가 화면 밖에 있음"
 	L["Chat Message"] = "대화 메시지"
 	L["Chat with WeakAuras experts on our Discord server."] = "우리의 디스코드 서버에서 WeakAuras 전문가들과 대화하세요."
 	L["Check On..."] = "확인..."
-	L["Check out our wiki for a large collection of examples and snippets."] = "방대한 예제와 스니핏 모음을 보려면 위키를 확인하세요."
+	L["Check out our wiki for a large collection of examples and snippets."] = "방대한 예제와 스니펫 모음을 보려면 위키를 확인하세요."
 	L["Children:"] = "자식:"
 	L["Choose"] = "선택"
 	L["Class"] = "직업"
@@ -313,8 +312,7 @@ Off Screen]=] ] = "Aura가 화면 밖에 있음"
 	L["Control-click to select multiple displays"] = "Ctrl+클릭 - 여러 디스플레이 선택"
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "여러 디스플레이의 위치 및 구성을 동시에 조절합니다"
 	L["Convert to..."] = "변환하기..."
-	--[[Translation missing --]]
-	L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."] = "Cooldown Numbers might be added by WoW. You can configure these in the game settings."
+	L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."] = "재사용 대기시간 숫자는 WoW에서 추가할 수 있습니다. 게임 설정에서 이를 구성할 수 있습니다."
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "재사용 대기시간 감소는 실시간 초를 표시하는 대신 초의 지속 시간을 바꿉니다."
 	L["Copy"] = "복사"
 	L["Copy settings..."] = "설정 복사..."
@@ -379,8 +377,6 @@ UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Disabled"] = "비활성화됨"
 	--[[Translation missing --]]
 	L["Disallow Entry Reordering"] = "Disallow Entry Reordering"
-	--[[Translation missing --]]
-	L["Discrete Rotation"] = "Discrete Rotation"
 	L["Display"] = "디스플레이"
 	L["Display Name"] = "디스플레이 이름"
 	L["Display Text"] = "디스플레이 문자"
@@ -442,7 +438,8 @@ UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["End of %s"] = "%s의 끝"
 	--[[Translation missing --]]
 	L["Enemy nameplate(s) found"] = "Enemy nameplate(s) found"
-	L["Enter a Spell ID"] = "주문 ID 입력"
+	--[[Translation missing --]]
+	L["Enter a Spell ID. You can use the addon idTip to determine spell ids."] = "Enter a Spell ID. You can use the addon idTip to determine spell ids."
 	L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."] = "효과 이름, 효과의 부분 이름, 또는 주문 ID를 입력하세요. 주문 ID는 이름이 같은 모든 주문과 일치됩니다."
 	L["Enter Author Mode"] = "작성자 모드 시작"
 	L["Enter in a value for the tick's placement."] = "틱의 배치 값을 입력합니다."
@@ -698,6 +695,8 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Matches the height setting of a horizontal bar or width for a vertical bar."] = "Matches the height setting of a horizontal bar or width for a vertical bar."
 	L["Max"] = "최대"
 	L["Max Length"] = "최대 길이"
+	--[[Translation missing --]]
+	L["Media Type"] = "Media Type"
 	L["Medium Icon"] = "보통 아이콘"
 	L["Message"] = "메시지"
 	L["Message Prefix"] = "메시지 접두사"
@@ -708,8 +707,7 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Model"] = "모델"
 	L["Model %s"] = "모델 %s"
 	L["Model Settings"] = "모델 설정"
-	--[[Translation missing --]]
-	L["ModelPaths could not be loaded, the addon is %s"] = "ModelPaths could not be loaded, the addon is %s"
+	L["ModelPaths could not be loaded, the addon is %s"] = "ModelPaths를 불러올 수 없습니다. 애드온은 %s입니다."
 	L["Move Above Group"] = "그룹 위로 이동"
 	L["Move Below Group"] = "그룹 아래로 이동"
 	L["Move Down"] = "아래로 이동"
@@ -798,7 +796,7 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Preferred Match"] = "Preferred Match"
 	--[[Translation missing --]]
 	L["Premade Auras"] = "Premade Auras"
-	L["Premade Snippets"] = "미리 만들어진 스니핏"
+	L["Premade Snippets"] = "미리 만든 스니펫"
 	L["Preset"] = "프리셋"
 	L["Press Ctrl+C to copy"] = "복사하려면 Ctrl+C를 누르세요"
 	L["Press Ctrl+C to copy the URL"] = "URL을 복사하려면 Ctrl+C를 누르세요"
@@ -850,6 +848,8 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Row Space"] = "행 간격"
 	L["Row Width"] = "행 넓이"
 	L["Rows"] = "행"
+	--[[Translation missing --]]
+	L["Run on..."] = "Run on..."
 	L["Same"] = "동일한"
 	--[[Translation missing --]]
 	L["Same texture as Foreground"] = "Same texture as Foreground"
@@ -916,7 +916,7 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Slider Step Size"] = "슬라이더 간격 크기"
 	L["Small Icon"] = "작은 아이콘"
 	L["Smooth Progress"] = "부드러운 진행"
-	L["Snippets"] = "스니핏"
+	L["Snippets"] = "스니펫"
 	--[[Translation missing --]]
 	L["Soft Max"] = "Soft Max"
 	--[[Translation missing --]]
@@ -954,8 +954,7 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Sub Option %i"] = "하위 옵션 %i"
 	--[[Translation missing --]]
 	L["Swipe Overlay Settings"] = "Swipe Overlay Settings"
-	--[[Translation missing --]]
-	L["Templates could not be loaded, the addon is %s"] = "Templates could not be loaded, the addon is %s"
+	L["Templates could not be loaded, the addon is %s"] = "템플릿을 불러올 수 없습니다. 애드온은 %s입니다."
 	L["Temporary Group"] = "임시 그룹"
 	L["Text"] = "문자"
 	L["Text %s"] = "문자 %s"
@@ -963,8 +962,7 @@ Can use \ to escape -.]=] ] = "필터 형식: '이름', '이름-서버', '-서�
 	L["Text Settings"] = "문자 설정"
 	L["Texture"] = "텍스쳐"
 	L["Texture Info"] = "텍스쳐 정보"
-	--[[Translation missing --]]
-	L["Texture Rotation"] = "Texture Rotation"
+	L["Texture Rotation"] = "텍스처 회전"
 	L["Texture Settings"] = "텍스쳐 설정"
 	L["Texture Wrap"] = "텍스쳐 줄바꿈"
 	--[[Translation missing --]]
@@ -1058,8 +1056,7 @@ It might not work correctly with your version!]=] ] = "이 효과는 최신 버�
 	L["Use Texture"] = "텍스쳐 사용"
 	L["Used in Auras:"] = "사용되는 효과:"
 	L["Used in auras:"] = "사용되는 효과:"
-	--[[Translation missing --]]
-	L["Uses Texture Coordinates to rotate the texture."] = "Uses Texture Coordinates to rotate the texture."
+	L["Uses Texture Coordinates to rotate the texture."] = "텍스처 좌표를 사용하여 텍스처를 회전합니다."
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "사정 거리를 확인하는 데 UnitIsVisible() 함수를 사용합니다. 매 초마다 확인합니다."
 	L["Value %i"] = "값 %i"
 	L["Values are in normalized rgba format."] = "값은 정규화된 rgba 형식입니다."
@@ -1095,7 +1092,15 @@ It might not work correctly with your version!]=] ] = "이 효과는 최신 버�
 	L["You already have this group/aura. Importing will create a duplicate."] = "이미 이 그룹/효과가 있습니다. 가져오면 복제본이 생성됩니다."
 	L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "aura %d개를 삭제하려고 합니다. |cFFFF0000이는 취소할 수 없습니다!|r 계속할까요?"
 	L["You are about to delete a trigger. |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "활성 조건을 삭제하려고 합니다. |cFFFF0000취소할 수 없습니다!|r 계속할까요?"
-	L["Your Saved Snippets"] = "저장된 스니핏"
+	--[[Translation missing --]]
+	L[ [=[You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.
+
+WeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered.]=] ] = [=[You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.
+
+WeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered.]=]
+	--[[Translation missing --]]
+	L["You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."] = "You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."
+	L["Your Saved Snippets"] = "저장된 스니펫"
 	L["Z Offset"] = "Z 좌표"
 	L["Z Rotation"] = "Z 회전"
 	L["Zoom"] = "확대"

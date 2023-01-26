@@ -66,8 +66,8 @@
 		},
 		--[[Tirisfal Glades]] [1420] = {
 			{"Dungeon", 82.6, 33.8, L["Scarlet Monastery"], L["Dungeon"], dnTex, 30, 40, 20, 28, 80}, -- sum cap was 44
-			{"TravelH", 60.7, 58.8, L["Zeppelin to"] .. " " .. L["Orgrimmar"] .. ", " .. L["Durotar"], nil, fHTex, nil, nil},
-			{"TravelH", 61.9, 59.1, L["Zeppelin to"] .. " " .. L["Grom'gol Base Camp"] .. ", " .. L["Stranglethorn Vale"], nil, fHTex, nil, nil},
+			{"TravelH", 60.7, 58.8, L["Zeppelin to"] .. " " .. L["Orgrimmar"] .. ", " .. L["Durotar"], nil, fHTex, nil, nil, nil, nil, nil, 0, 1411},
+			{"TravelH", 61.9, 59.1, L["Zeppelin to"] .. " " .. L["Grom'gol Base Camp"] .. ", " .. L["Stranglethorn Vale"], nil, fHTex, nil, nil, nil, nil, nil, 0, 1434},
 			{"Spirit", 30.8, 64.9, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 56.2, 49.4, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 79.0, 41.0, L["Spirit Healer"], nil, spTex, nil, nil},
@@ -76,7 +76,7 @@
 			{"Arrow", 83.4, 70.6, L["Western Plaguelands"], L["The Bulwark"], arTex, nil, nil, nil, nil, nil, 4.7, 1422},
 			{"Arrow", 61.9, 65.0, L["Undercity"], nil, arTex, nil, nil, nil, nil, nil, 3, 1458},
 			{"Arrow", 54.9, 72.7, L["Silverpine Forest"], nil, arTex, nil, nil, nil, nil, nil, 3, 1421},
-			{"TravelH", 59.1, 59.0, L["Zeppelin to"] .. " " .. L["Vengeance Landing"] .. ", " .. L["Howling Fjord"], nil, fHTex, nil, nil},
+			{"TravelH", 59.1, 59.0, L["Zeppelin to"] .. " " .. L["Vengeance Landing"] .. ", " .. L["Howling Fjord"], nil, fHTex, nil, nil, nil, nil, nil, 0, 117},
 			{"FlightH", 83.6, 69.9, L["The Bulwark"] .. ", " .. L["Tirisfal Glades"], nil, tHTex, nil, nil},
 			{"Arrow", 51, 71.4, L["Undercity"], L["Sewers"], arTex, nil, nil, nil, nil, nil, 3.0, 1458},
 		},
@@ -207,9 +207,9 @@
 			{"FlightA", 38.2, 4.0, L["Rebel Camp"] .. ", " .. L["Stranglethorn Vale"], nil, tATex, nil, nil},
 			{"FlightH", 26.9, 77.1, L["Booty Bay"] .. ", " .. L["Stranglethorn Vale"], nil, tHTex, nil, nil},
 			{"FlightH", 32.5, 29.4, L["Grom'gol Base Camp"] .. ", " .. L["Stranglethorn Vale"], nil, tHTex, nil, nil},
-			{"TravelN", 25.9, 73.1, L["Boat to"] .. " " .. L["Ratchet"] .. ", " .. L["The Barrens"], nil, fNTex, nil, nil},
-			{"TravelH", 31.4, 30.2, L["Zeppelin to"] .. " " .. L["Orgrimmar"] .. ", " .. L["Durotar"], nil, fHTex, nil, nil},
-			{"TravelH", 31.6, 29.1, L["Zeppelin to"] .. " " .. L["Undercity"] .. ", " .. L["Tirisfal Glades"], nil, fHTex, nil, nil},
+			{"TravelN", 25.9, 73.1, L["Boat to"] .. " " .. L["Ratchet"] .. ", " .. L["The Barrens"], nil, fNTex, nil, nil, nil, nil, nil, 0, 1413},
+			{"TravelH", 31.4, 30.2, L["Zeppelin to"] .. " " .. L["Orgrimmar"] .. ", " .. L["Durotar"], nil, fHTex, nil, nil, nil, nil, nil, 0, 1411},
+			{"TravelH", 31.6, 29.1, L["Zeppelin to"] .. " " .. L["Undercity"] .. ", " .. L["Tirisfal Glades"], nil, fHTex, nil, nil, nil, nil, nil, 0, 1420},
 			{"Spirit", 38.4, 9.0, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 30.4, 73.3, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Arrow", 39.2, 6.5, L["Duskwood"], nil, arTex, nil, nil, nil, nil, nil, 0, 1431},
@@ -230,8 +230,8 @@
 		},
 		--[[Wetlands]] [1437] = {
 			{"FlightA", 9.5, 59.7, L["Menethil Harbor"] .. ", " .. L["Wetlands"], nil, tATex, nil, nil},
-			{"TravelA", 5.0, 63.5, L["Boat to"] .. " " .. L["Theramore Isle"] .. ", " .. L["Dustwallow Marsh"], nil, fATex, nil, nil},
-			{"TravelA", 4.6, 57.1, L["Boat to"] .. " " .. L["Valgarde"] .. ", " .. L["Howling Fjord"], nil, fATex, nil, nil},
+			{"TravelA", 5.0, 63.5, L["Boat to"] .. " " .. L["Theramore Isle"] .. ", " .. L["Dustwallow Marsh"], nil, fATex, nil, nil, nil, nil, nil, 0, 1445},
+			{"TravelA", 4.6, 57.1, L["Boat to"] .. " " .. L["Valgarde"] .. ", " .. L["Howling Fjord"], nil, fATex, nil, nil, nil, nil, nil, 0, 117},
 			{"Spirit", 11.0, 43.8, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 49.3, 41.8, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Arrow", 51.3, 10.3, L["Arathi Highlands"], L["Thandol Span"], arTex, nil, nil, nil, nil, nil, 0, 1417},
@@ -240,24 +240,24 @@
 		--[[Stormwind City]] [1453] = {
 			{"Dungeon", 52.4, 70.0, L["The Stockade"], L["Dungeon"], dnTex, 23, 29, 15, 21, 80}, -- sum cap was 29
 			{"FlightA", 71.0, 72.5, L["Trade District"] .. ", " .. L["Stormwind"], nil, tATex, nil, nil},
-			{"TravelA", 66.4, 34.1, L["Tram to"] .. " " .. L["Tinker Town"] .. ", " .. L["Ironforge"], nil, fATex, nil, nil},
+			{"TravelA", 66.4, 34.1, L["Tram to"] .. " " .. L["Tinker Town"] .. ", " .. L["Ironforge"], nil, fATex, nil, nil, nil, nil, nil, 0, 1455},
 			{"Arrow", 74.7, 93.4, L["Elwynn Forest"], nil, arTex, nil, nil, nil, nil, nil, 3.8, 1429},
-			{"TravelA", 22.5, 56.1, L["Boat to"] .. " " .. L["Auberdine"] .. ", " .. L["Darkshore"], nil, fATex, nil, nil},
-			{"TravelA", 18.1, 25.5, L["Boat to"] .. " " .. L["Valiance Keep"] .. ", " .. L["Borean Tundra"], nil, fATex, nil, nil},
-			{"TravelA", 49.0, 87.3, L["Blasted Lands"], L["Portal"], pATex},
+			{"TravelA", 22.5, 56.1, L["Boat to"] .. " " .. L["Auberdine"] .. ", " .. L["Darkshore"], nil, fATex, nil, nil, nil, nil, nil, 0, 1439},
+			{"TravelA", 18.1, 25.5, L["Boat to"] .. " " .. L["Valiance Keep"] .. ", " .. L["Borean Tundra"], nil, fATex, nil, nil, nil, nil, nil, 0, 114},
+			{"TravelA", 49.0, 87.3, L["Blasted Lands"], L["Portal"], pATex, nil, nil, nil, nil, nil, 0, 1419},
 		},
 		--[[Ironforge]] [1455] = {
 			{"FlightA", 55.5, 47.8, L["The Great Forge"] .. ", " .. L["Ironforge"], nil, tATex, nil, nil},
-			{"TravelA", 73.0, 50.2, L["Tram to"] .. " " .. L["Dwarven District"] .. ", " .. L["Stormwind"], nil, fATex, nil, nil},
+			{"TravelA", 73.0, 50.2, L["Tram to"] .. " " .. L["Dwarven District"] .. ", " .. L["Stormwind"], nil, fATex, nil, nil, nil, nil, nil, 0, 1453},
 			{"Arrow", 21.9, 77.5, L["Dun Morogh"], nil, arTex, nil, nil, nil, nil, nil, 2.2, 1426},
-			{"TravelA", 27.3, 7.1, L["Blasted Lands"], L["Portal"], pATex},
+			{"TravelA", 27.3, 7.1, L["Blasted Lands"], L["Portal"], pATex, nil, nil, nil, nil, nil, 0, 1419},
 		},
 		--[[Undercity]] [1458] = {
 			{"FlightH", 63.3, 48.5, L["Trade Quarter"] .. ", " .. L["Undercity"], nil, tHTex, nil, nil},
 			{"Spirit", 67.9, 14.0, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Arrow", 66.2, 5.2, L["Tirisfal Glades"], nil, arTex, nil, nil, nil, nil, nil, 0, 1420},
-			{"TravelH", 54.9, 11.3, L["Silvermoon City"], L["Orb of Translocation"]},
-			{"TravelH", 85.3, 17.0, L["Blasted Lands"], L["Portal"], pHTex},
+			{"TravelH", 54.9, 11.3, L["Silvermoon City"], L["Orb of Translocation"], nil, nil, nil, nil, nil, nil, 0, 1954},
+			{"TravelH", 85.3, 17.0, L["Blasted Lands"], L["Portal"], pHTex, nil, nil, nil, nil, nil, 0, 1419},
 			{"Arrow", 46.7, 44.3, L["Sewers"], L["Leads to Tirisfal Glades"], arTex, nil, nil, nil, nil, nil, 1.6},
 			{"Arrow", 15.1, 31.9, L["Tirisfal Glades"], nil, arTex, nil, nil, nil, nil, nil, 6.1, 1420},
 		},
@@ -290,7 +290,7 @@
 			{"Arrow", 77.7, 6.3, L["Eversong Woods"], nil, arTex, nil, nil, nil, nil, nil, 6.2, 1941},
 		},
 		--[[Silvermoon City]] [1954] = {
-			{"TravelH", 49.5, 14.8, L["Undercity"], L["Orb of Translocation"]},
+			{"TravelH", 49.5, 14.8, L["Undercity"], L["Orb of Translocation"], nil, nil, nil, nil, nil, nil, 0, 1458},
 			{"Arrow", 72.6, 85.9, L["Eversong Woods"], nil, arTex, nil, nil, nil, nil, nil, 3.2, 1941},
 		},
 
@@ -299,16 +299,16 @@
 		----------------------------------------------------------------------
 
 		--[[Durotar]] [1411] = {
-			{"TravelH", 50.9, 13.9, L["Zeppelin to"] .. " " .. L["Undercity"] .. ", " .. L["Tirisfal Glades"], nil, fHTex, nil, nil, nil, nil},
-			{"TravelH", 50.6, 12.6, L["Zeppelin to"] .. " " .. L["Grom'gol Base Camp"] .. ", " .. L["Stranglethorn Vale"], nil, fHTex, nil, nil, nil, nil},
+			{"TravelH", 50.9, 13.9, L["Zeppelin to"] .. " " .. L["Undercity"] .. ", " .. L["Tirisfal Glades"], nil, fHTex, nil, nil, nil, nil, nil, 0, 1420},
+			{"TravelH", 50.6, 12.6, L["Zeppelin to"] .. " " .. L["Grom'gol Base Camp"] .. ", " .. L["Stranglethorn Vale"], nil, fHTex, nil, nil, nil, nil, nil, 0, 1434},
 			{"Spirit", 47.4, 17.9, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 53.5, 44.5, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 44.2, 69.4, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 57.2, 73.3, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Arrow", 35.1, 42.4, L["The Barrens"], nil, arTex, nil, nil, nil, nil, nil, 1.5, 1413},
 			{"Arrow", 45.5, 12.3, L["Orgrimmar"], nil, arTex, nil, nil, nil, nil, nil, 0, 1454},
-			{"TravelH", 41.4, 17.8, L["Zeppelin to"] .. " " .. L["Warsong Hold"] .. ", " .. L["Borean Tundra"], nil, fHTex, nil, nil},
-			{"TravelH", 41.4, 18.7, L["Zeppelin to"] .. " " .. L["Thunder Bluff"] .. ", " .. L["Orgrimmar"], nil, fHTex, nil, nil},
+			{"TravelH", 41.4, 17.8, L["Zeppelin to"] .. " " .. L["Warsong Hold"] .. ", " .. L["Borean Tundra"], nil, fHTex, nil, nil, nil, nil, nil, 0, 114},
+			{"TravelH", 41.4, 18.7, L["Zeppelin to"] .. " " .. L["Thunder Bluff"] .. ", " .. L["Mulgore"], nil, fHTex, nil, nil, nil, nil, nil, 0, 1456},
 		},
 		--[[Mulgore]] [1412] = {
 			{"Spirit", 46.5, 55.5, L["Spirit Healer"], nil, spTex, nil, nil},
@@ -322,7 +322,7 @@
 			{"FlightN", 63.1, 37.2, L["Ratchet"] .. ", " .. L["The Barrens"], nil, tNTex, nil, nil},
 			{"FlightH", 51.5, 30.3, L["The Crossroads"] .. ", " .. L["The Barrens"], nil, tHTex, nil, nil},
 			{"FlightH", 44.4, 59.2, L["Camp Taurajo"] .. ", " .. L["The Barrens"], nil, tHTex, nil, nil},
-			{"TravelN", 63.7, 38.6, L["Boat to"] .. " " .. L["Booty Bay"] .. ", " .. L["Stranglethorn Vale"], nil, fNTex, nil, nil, nil, nil},
+			{"TravelN", 63.7, 38.6, L["Boat to"] .. " " .. L["Booty Bay"] .. ", " .. L["Stranglethorn Vale"], nil, fNTex, nil, nil, nil, nil, nil, 0, 1434},
 			{"Spirit", 50.7, 32.6, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 60.2, 39.7, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 45.3, 61.0, L["Spirit Healer"], nil, spTex, nil, nil},
@@ -337,7 +337,7 @@
 		},
 		--[[Teldrassil]] [1438] = {
 			{"FlightA", 58.4, 94.0, L["Rut'theran Village"] .. ", " .. L["Teldrassil"], nil, tATex, nil, nil},
-			{"TravelA", 54.9, 96.8, L["Boat to"] .. " " .. L["Auberdine"] .. ", " .. L["Darkshore"], nil, fATex, nil, nil, nil, nil},
+			{"TravelA", 54.9, 96.8, L["Boat to"] .. " " .. L["Auberdine"] .. ", " .. L["Darkshore"], nil, fATex, nil, nil, nil, nil, nil, 0, 1439},
 			{"Spirit", 58.7, 42.3, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 56.2, 63.3, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Arrow", 36.2, 54.4, L["Darnassus"], nil, arTex, nil, nil, nil, nil, nil, 1.5, 1457},
@@ -346,9 +346,9 @@
 		},
 		--[[Darkshore]] [1439] = {
 			{"FlightA", 36.3, 45.6, L["Auberdine"] .. ", " .. L["Darkshore"], nil, tATex, nil, nil},
-			{"TravelA", 32.4, 43.8, L["Boat to"] .. " " .. L["Stormwind City"] .. ", " .. L["Elwynn Forest"], nil, fATex, nil, nil, nil, nil},
-			{"TravelA", 33.2, 40.1, L["Boat to"] .. " " .. L["Rut'theran Village"] .. ", " .. L["Teldrassil"], nil, fATex, nil, nil, nil, nil},
-			{"TravelA", 30.7, 41.0, L["Boat to"] .. " " .. L["Valaar's Berth"] .. ", " .. L["Azuremyst Isle"], nil, fATex, nil, nil},
+			{"TravelA", 32.4, 43.8, L["Boat to"] .. " " .. L["Stormwind City"] .. ", " .. L["Elwynn Forest"], nil, fATex, nil, nil, nil, nil, nil, 0, 1453},
+			{"TravelA", 33.2, 40.1, L["Boat to"] .. " " .. L["Rut'theran Village"] .. ", " .. L["Teldrassil"], nil, fATex, nil, nil, nil, nil, nil, 0, 1438},
+			{"TravelA", 30.7, 41.0, L["Boat to"] .. " " .. L["Valaar's Berth"] .. ", " .. L["Azuremyst Isle"], nil, fATex, nil, nil, nil, nil, nil, 0, 1943},
 			{"Spirit", 41.8, 36.6, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 43.6, 92.4, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Arrow", 43.3, 94.0, L["Ashenvale"], nil, arTex, nil, nil, nil, nil, nil, 4, 1440},
@@ -406,8 +406,8 @@
 			{"Dungeon", 60.3, 30.2, L["Dire Maul (West)"], L["Dungeon"], dnTex, 57, 60, 45, 54, 80}, -- sum cap was 61
 			{"Dungeon", 64.8, 30.2, L["Dire Maul (East)"], L["Dungeon"], dnTex, 55, 58, 45, 54, 80}, -- sum cap was 61
 			{"Dungeon", 77.1, 36.9, L["Dire Maul (East) (side entrance)"], L["Dungeon (requires Crescent Key)"], dnTex, 55, 58, 45, 54, 80}, -- sum cap was 61
-			{"TravelA", 43.3, 42.8, L["Boat to"] .. " " .. L["Feathermoon Stronghold"] .. ", " .. L["Feralas"], nil, fATex, nil, nil},
-			{"TravelA", 31.0, 39.8, L["Boat to"] .. " " .. L["The Forgotten Coast"] .. ", " .. L["Feralas"], nil, fATex, nil, nil},
+			{"TravelA", 43.3, 42.8, L["Boat to"] .. " " .. L["Feathermoon Stronghold"] .. ", " .. L["Feralas"], nil, fATex, nil, nil, nil, nil, nil, 0, 1444},
+			{"TravelA", 31.0, 39.8, L["Boat to"] .. " " .. L["The Forgotten Coast"] .. ", " .. L["Feralas"], nil, fATex, nil, nil, nil, nil, nil, 0, 1444},
 			{"Spirit", 31.8, 48.2, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 54.8, 48.1, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 73.0, 44.5, L["Spirit Healer"], nil, spTex, nil, nil},
@@ -419,7 +419,7 @@
 			{"FlightA", 67.5, 51.3, L["Theramore Isle"] .. ", " .. L["Dustwallow Marsh"], nil, tATex, nil, nil},
 			{"FlightH", 35.6, 31.9, L["Brackenwall Village"] .. ", " .. L["Dustwallow Marsh"], nil, tHTex, nil, nil},
 			{"FlightN", 42.8, 72.5, L["Mudsprocket"] .. ", " .. L["Dustwallow Marsh"], nil, tNTex, nil, nil},
-			{"TravelA", 71.6, 56.4, L["Boat to"] .. " " .. L["Menethil Harbor"] .. ", " .. L["Wetlands"], nil, fATex, nil, nil, nil, nil},
+			{"TravelA", 71.6, 56.4, L["Boat to"] .. " " .. L["Menethil Harbor"] .. ", " .. L["Wetlands"], nil, fATex, nil, nil, nil, nil, nil, 0, 1437},
 			{"Spirit", 39.5, 31.4, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 46.6, 57.1, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 41.2, 74.4, L["Spirit Healer"], nil, spTex, nil, nil},
@@ -491,20 +491,20 @@
 			{"FlightH", 45.1, 63.9, L["Valley of Strength"] .. ", " .. L["Orgrimmar"], nil, tHTex, nil, nil},
 			{"Arrow", 52.4, 83.7, L["Durotar"], nil, arTex, nil, nil, nil, nil, nil, 3, 1411},
 			{"Arrow", 18.1, 60.6, L["The Barrens"], L["Southfury River"], arTex, nil, nil, nil, nil, nil, 2.1, 1413},
-			{"TravelH", 38.1, 85.7, L["Blasted Lands"], L["Portal"], pHTex},
+			{"TravelH", 38.1, 85.7, L["Blasted Lands"], L["Portal"], pHTex, nil, nil, nil, nil, nil, 0, 1419},
 		},
 		--[[Thunder Bluff]] [1456] = {
 			{"FlightH", 47.0, 49.8, L["Central Mesa"] .. ", " .. L["Thunder Bluff"], nil, tHTex, nil, nil},
 			{"Spirit", 56.7, 19.1, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Arrow", 35.7, 62.8, L["Mulgore"], "South", arTex, nil, nil, nil, nil, nil, 2.0, 1412},
 			{"Arrow", 51.3, 31.3, L["Mulgore"], "North", arTex, nil, nil, nil, nil, nil, 5.7, 1412},
-			{"TravelH", 23.2, 13.5, L["Blasted Lands"], L["Portal"], pHTex},
-			{"TravelH", 15.2, 25.7, L["Zeppelin to"] .. " " .. L["Orgrimmar"] .. ", " .. L["Durotar"], nil, fHTex, nil, nil},
+			{"TravelH", 23.2, 13.5, L["Blasted Lands"], L["Portal"], pHTex, nil, nil, nil, nil, nil, 0, 1419},
+			{"TravelH", 15.2, 25.7, L["Zeppelin to"] .. " " .. L["Orgrimmar"] .. ", " .. L["Durotar"], nil, fHTex, nil, nil, nil, nil, nil, 0, 1411},
 		},
 		--[[Darnassus]] [1457] = {
 			{"Spirit", 77.7, 25.9, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Arrow", 30.3, 41.4, L["Teldrassil"], L["Rut'Theran Village"], arTex, nil, nil, nil, nil, nil, 1.5, 1438},
-			{"TravelA", 40.5, 81.7, L["Blasted Lands"], L["Portal"], pATex},
+			{"TravelA", 40.5, 81.7, L["Blasted Lands"], L["Portal"], pATex, nil, nil, nil, nil, nil, 0, 1419},
 			{"Arrow", 84.8, 37.8, L["Teldrassil"], nil, arTex, nil, nil, nil, nil, nil, 5.5, 1438},
 		},
 		--[[The Exodar]] [1947] = {
@@ -514,7 +514,7 @@
 		},
 		--[[Azuremyst Isle]] [1943] = {
 			{"FlightA", 31.9, 46.4, L["The Exodar"] .. ", " .. L["Azuremyst Isle"], nil, tATex, nil, nil},
-			{"TravelA", 20.3, 54.2, L["Boat to"] .. " " .. L["Auberdine"] .. ", " .. L["Darkshore"], nil, fATex, nil, nil},
+			{"TravelA", 20.3, 54.2, L["Boat to"] .. " " .. L["Auberdine"] .. ", " .. L["Darkshore"], nil, fATex, nil, nil, nil, nil, nil, 0, 1439},
 			{"Spirit", 39.2, 19.7, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 47.2, 55.7, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Spirit", 77.7, 48.8, L["Spirit Healer"], nil, spTex, nil, nil},
@@ -576,8 +576,8 @@
 			{"Spirit", 68.7, 27.1, L["Spirit Healer"], nil, spTex, nil, nil},
 			{"Arrow", 40.3, 85.9, L["Terokkar Forest"], L["Razorthorn Trail"], arTex, nil, nil, nil, nil, nil, 2.7, 1952},
 			{"Arrow", 6.7, 50.4, L["Zangarmarsh"], nil, arTex, nil, nil, nil, nil, nil, 1.6, 1946},
-			{"TravelA", 88.6, 52.8, L["Stormwind City"], L["Portal"], pATex},
-			{"TravelH", 88.6, 47.7, L["Orgrimmar"], L["Portal"], pHTex},
+			{"TravelA", 88.6, 52.8, L["Stormwind City"], L["Portal"], pATex, nil, nil, nil, nil, nil, 0, 1453},
+			{"TravelH", 88.6, 47.7, L["Orgrimmar"], L["Portal"], pHTex, nil, nil, nil, nil, nil, 0, 1454},
 			{"Arrow", 89.8, 50.2, L["Blasted Lands"], L["The Dark Portal"], arTex, nil, nil, nil, nil, nil, 4.7, 1419},
 		},
 		--[[Nagrand]] [1951] = {
@@ -624,11 +624,11 @@
 		},
 		--[[Shattrath City]] [1955] = {
 			{"FlightN", 64.1, 41.1, L["Shattrath City"] .. ", " .. L["Terokkar Forest"], nil, tNTex, nil, nil},
-			{"TravelN", 48.5, 42.0, L["Isle of Quel'Danas"], L["Portal"], pNTex},
+			{"TravelN", 48.5, 42.0, L["Isle of Quel'Danas"], L["Portal"], pNTex, nil, nil, nil, nil, nil, 0, 1957},
 			{"TravelA", 55.8, 36.5, L["Alliance Cities"], L["Darnassus"] .. ", " .. L["Stormwind"] .. ", " .. L["Ironforge"], pATex},
 			{"TravelH", 52.2, 52.9, L["Horde Cities"], L["Thunder Bluff"] .. ", " .. L["Orgrimmar"] .. ", " .. L["Undercity"], pHTex},
-			{"TravelA", 59.6, 46.7, L["The Exodar"], L["Portal"], pATex},
-			{"TravelH", 59.2, 48.4, L["Silvermoon City"], L["Portal"], pHTex},
+			{"TravelA", 59.6, 46.7, L["The Exodar"], L["Portal"], pATex, nil, nil, nil, nil, nil, 0, 1947},
+			{"TravelH", 59.2, 48.4, L["Silvermoon City"], L["Portal"], pHTex, nil, nil, nil, nil, nil, 0, 1954},
 			{"Arrow", 62.3, 7.9, L["Terokkar Forest"], nil, arTex, nil, nil, nil, nil, nil, 6.1, 1952},
 			{"Arrow", 79.0, 57.5, L["Terokkar Forest"], nil, arTex, nil, nil, nil, nil, nil, 4, 1952},
 			{"Arrow", 23.0, 49.5, L["Nagrand"], L["Aldor"], arTex, nil, nil, nil, nil, nil, 1.9, 1951},
@@ -696,7 +696,9 @@
 				dnTex, 69, 80},
 			{"Arrow", 52.5, 7.6, L["Sholazar Basin"], nil, arTex, nil, nil, nil, nil, nil, 6.1, 119},
 			{"Arrow", 93.4, 35.7, L["Dragonblight"], nil, arTex, nil, nil, nil, nil, nil, 4.9, 115},
-			{"TravelN", 78.9, 53.7, L["Boat to"] .. " " .. L["Moa'ki Harbor"] .. ", " .. L["Dragonblight"], nil, fNTex, nil, nil},
+			{"TravelN", 78.9, 53.7, L["Boat to"] .. " " .. L["Moa'ki Harbor"] .. ", " .. L["Dragonblight"], nil, fNTex, nil, nil, nil, nil, nil, 0, 115},
+			{"TravelA", 59.7, 69.4, L["Boat to"] .. " " .. L["Stormwind"] .. ", " .. L["Elwynn Forest"], nil, fATex, nil, nil, nil, nil, nil, 0, 1453},
+			{"TravelH", 41.4, 53.6, L["Zeppelin to"] .. " " .. L["Orgrimmar"] .. ", " .. L["Durotar"], nil, fHTex, nil, nil, nil, nil, nil, 0, 1411},
 		},
 
 		--[[Crystalsong Forest]] [127] = {
@@ -707,13 +709,17 @@
 			{"Arrow", 70.4, 35.7, L["The Storm Peaks"], nil, arTex, nil, nil, nil, nil, nil, 5.9, 120},
 			{"Arrow", 93.2, 58.4, L["Zul'Drak"], nil, arTex, nil, nil, nil, nil, nil, 4.6, 121},
 			{"Arrow", 85.7, 44.7, L["The Storm Peaks"], nil, arTex, nil, nil, nil, nil, nil, 0.3, 120},
+			{"TravelN", 15.7, 42.5, L["Dalaran"], L["Teleport Crystal"], pNTex, nil, nil, nil, nil, nil, 0, 125},
+			{"Arrow", 36.4, 37.6, L["Dalaran"], nil, arTex, nil, nil, nil, nil, nil, 1.5, 125},
 		},
 
 		--[[Dalaran]] [125] = {
 			{"FlightN", 72.2, 45.8, L["Dalaran"], nil, tNTex, nil, nil}, -- Aludane Whitecloud
-			{"Dungeon", 66.8, 68.2, L["The Violet Hold"], L["Dungeon"], dnTex, 75, 77, 73},
+			{"Dungeon", 66.8, 68.2, L["The Violet Hold"], L["Dungeon"], dnTex, 75, 77, 73, nil, nil, 0, 168},
 			{"TravelA", 37.8, 62.2, L["Portals"], L["Stormwind"] .. ", " .. L["Ironforge"] .. ", " .. L["Darnassus"] .. ", " .. L["Exodar"] .. ", " .. L["Shattrath"], pATex},
 			{"TravelH", 57.8, 24.5, L["Portals"], L["Orgrimmar"] .. ", " .. L["Undercity"] .. ", " .. L["Shattrath"] .. ", " .. L["Thunder Bluff"] .. ", " .. L["Silvermoon"], pHTex},
+			{"TravelN", 56.0, 46.8, L["Crystalsong Forest"], L["Teleport Crystal"], pNTex, nil, nil, nil, nil, nil, 0, 127},
+			{"Arrow", 80.9, 46.6, L["Crystalsong Forest"], nil, arTex, nil, nil, nil, nil, nil, 4.6, 127},
 		},
 
 		--[[Dragonblight]] [115] = {
@@ -729,7 +735,7 @@
 				L["The Ruby Sanctum"] .. " (80) (" .. L["req"] .. ": 80) (" .. L["sum"] .. ": 80)" .. "|n" ..
 				L["The Obsidian Sanctum"] .. " (80) (" .. L["req"] .. ": 80) (" .. L["sum"] .. ": 80)",
 				rdTex, 80, 80},
-			{"Raid", 87.4, 51.1, L["Naxxramas"], L["Raid"], rdTex, 80, 80, 77, 77, 80},
+			{"Raid", 87.4, 51.1, L["Naxxramas"], L["Raid"], rdTex, 80, 80, 77, 77, 80, 0, 162},
 			{"Dungeon", 26.2, 49.6,
 				L["Azjol-Nerub"], L["Azjol-Nerub"]  .. " (72-74) (" .. L["req"] .. ": 70) (" .. L["sum"] .. ": 70-80)" .. "|n" ..
 				L["The Old Kingdom"]  .. " (73-75) (" .. L["req"] .. ": 71) (" .. L["sum"] .. ": 70-80)",
@@ -738,8 +744,8 @@
 			{"Arrow", 88.8, 24.4, L["Zul'Drak"], nil, arTex, nil, nil, nil, nil, nil, 5.6, 121},
 			{"Arrow", 61.1, 10.5, L["Crystalsong Forest"], nil, arTex, nil, nil, nil, nil, nil, 5.6, 127},
 			{"Arrow", 12.4, 55.7, L["Borean Tundra"], nil, arTex, nil, nil, nil, nil, nil, 1.9, 114},
-			{"TravelN", 49.6, 78.4, L["Boat to"] .. " " .. L["Kamagua"] .. ", " .. L["Howling Fjord"], nil, fNTex, nil, nil},
-			{"TravelN", 47.9, 78.7, L["Boat to"] .. " " .. L["Unu'pe"] .. ", " .. L["Borean Tundra"], nil, fNTex, nil, nil},
+			{"TravelN", 49.6, 78.4, L["Boat to"] .. " " .. L["Kamagua"] .. ", " .. L["Howling Fjord"], nil, fNTex, nil, nil, nil, nil, nil, 0, 117},
+			{"TravelN", 47.9, 78.7, L["Boat to"] .. " " .. L["Unu'pe"] .. ", " .. L["Borean Tundra"], nil, fNTex, nil, nil, nil, nil, nil, 0, 114},
 		},
 
 		--[[Grizzly Hills]] [116] = {
@@ -747,7 +753,7 @@
 			{"FlightA", 59.9, 26.7, L["Westfall Brigade"] .. ", " .. L["Grizzly Hills"], nil, tATex, nil, nil}, -- Samuel Clearbook
 			{"FlightH", 65.0, 46.9, L["Camp Oneqwah"] .. ", " .. L["Grizzly Hills"], nil, tHTex, nil, nil}, -- Makki Wintergale
 			{"FlightH", 22.0, 64.4, L["Conquest Hold"] .. ", " .. L["Grizzly Hills"], nil, tHTex, nil, nil}, -- Kragh
-			{"Dungeon", 17.5, 27.0, L["Drak'Tharon Keep"], L["Dungeon"], dnTex, 74, 76, 72, 72, 80},
+			{"Dungeon", 17.5, 27.0, L["Drak'Tharon Keep"], L["Dungeon"], dnTex, 74, 76, 72, 72, 80, 0, 160},
 			{"Arrow", 9.8, 66.8, L["Dragonblight"], nil, arTex, nil, nil, nil, nil, nil, 1.6, 115},
 			{"Arrow", 9.6, 31.8, L["Dragonblight"], nil, arTex, nil, nil, nil, nil, nil, 1.6, 115},
 			{"Arrow", 34, 81.2, L["Howling Fjord"], nil, arTex, nil, nil, nil, nil, nil, 3.3, 117},
@@ -767,12 +773,14 @@
 			{"FlightH", 52.0, 67.4, L["New Agamand"] .. ", " .. L["Howling Fjord"], nil, tHTex, nil, nil}, -- Tobias Sarkhoff
 			{"FlightH", 79.0, 29.7, L["Vengeance Landing"] .. ", " .. L["Howling Fjord"], nil, tHTex, nil, nil}, -- Bat Handler Adeline
 			{"FlightN", 24.7, 57.8, L["Kamagua"] .. ", " .. L["Howling Fjord"], nil, tNTex, nil, nil}, -- Kip Trawlskip
-			{"Dungeon", 58.8, 48.3, L["Utgarde Keep"], L["Dungeon"]  .. " (" .. L["req"] .. ": 67) (" .. L["sum"] .. ": 68-80)", dnTex, 69, 72},
-			{"Dungeon", 57.3, 46.8, L["Utgarde Pinnacle"], L["Dungeon"]  .. " (" .. L["req"] .. ": 75) (" .. L["sum"] .. ": 78-80)", dnTex, 79, 80},
+			{"Dungeon", 58.8, 48.3, L["Utgarde Keep"], L["Dungeon"]  .. " (" .. L["req"] .. ": 67) (" .. L["sum"] .. ": 68-80)", dnTex, 69, 72, nil, nil, nil, 0, 133},
+			{"Dungeon", 57.3, 46.8, L["Utgarde Pinnacle"], L["Dungeon"]  .. " (" .. L["req"] .. ": 75) (" .. L["sum"] .. ": 78-80)", dnTex, 79, 80, nil, nil, nil, 0, 137},
 			{"Arrow", 24.7, 11.4, L["Grizzly Hills"], nil, arTex, nil, nil, nil, nil, nil, 0.3, 116},
 			{"Arrow", 53.7, 2.7, L["Grizzly Hills"], nil, arTex, nil, nil, nil, nil, nil, 0.0, 116},
 			{"Arrow", 72.9, 2.9, L["Grizzly Hills"], nil, arTex, nil, nil, nil, nil, nil, 0.7, 116},
-			{"TravelN", 23.5, 57.8, L["Boat to"] .. " " .. L["Moa'ki Harbor"] .. ", " .. L["Dragonblight"], nil, fNTex, nil, nil},
+			{"TravelN", 23.5, 57.8, L["Boat to"] .. " " .. L["Moa'ki Harbor"] .. ", " .. L["Dragonblight"], nil, fNTex, nil, nil, nil, nil, nil, 0, 115},
+			{"TravelA", 61.3, 62.6, L["Boat to"] .. " " .. L["Menethil Harbor"] .. ", " .. L["Wetlands"], nil, fATex, nil, nil, nil, nil, nil, 0, 1437},
+			{"TravelH", 77.7, 28.3, L["Zeppelin to"] .. " " .. L["Undercity"] .. ", " .. L["Tirisfal Glades"], nil, fHTex, nil, nil, nil, nil, nil, 0, 1420},
 		},
 
 		--[[Icecrown]] [118] = {
@@ -781,14 +789,14 @@
 			{"FlightN", 79.3, 72.3, L["Crusaders' Pinnacle"] .. ", " .. L["Icecrown"], nil, tNTex, nil, nil}, -- Penumbrius
 			{"FlightN", 19.3, 47.8, L["Death's Rise"] .. ", " .. L["Icecrown"], nil, tNTex, nil, nil}, -- Dreadwind
 			{"FlightN", 43.8, 24.4, L["The Shadow Vault"] .. ", " .. L["Icecrown"], nil, tNTex, nil, nil}, -- Morlia Doomwing
-			{"Raid", 53.3, 85.5, L["Icecrown Citadel"], L["Raid"], rdTex, 80, 80, 80},
+			{"Raid", 53.3, 85.5, L["Icecrown Citadel"], L["Raid"], rdTex, 80, 80, 80, nil, nil, 0, 186},
 			{"Dungeon", 52.6, 89.4, L["The Frozen Halls"],
 				L["The Forge of Souls"] .. " (80) (" .. L["req"] .. ": 78)" .. "|n" ..
 				L["The Pit of Saron"] .. " (80) (" .. L["req"] .. ": 78)" .. "|n" ..
 				L["The Halls of Reflection"] .. " (80) (" .. L["req"] .. ": 78)",
 			dnTex, 80, 80},
-			{"Dungeon", 74.2, 20.5, L["Trial of the Champion"], L["Dungeon"], dnTex, 80, 80, 80},
-			{"Raid", 75.1, 21.8, L["Trial of the Crusader"], L["Raid"], rdTex, 80, 80, 80},
+			{"Dungeon", 74.2, 20.5, L["Trial of the Champion"], L["Dungeon"], dnTex, 80, 80, 80, nil, nil, 0, 171},
+			{"Raid", 75.1, 21.8, L["Trial of the Crusader"], L["Raid"], rdTex, 80, 80, 80, nil, nil, 0, 172},
 			{"Arrow", 89.2, 82.2, L["Crystalsong Forest"], nil, arTex, nil, nil, nil, nil, nil, 3.4, 127},
 			{"Arrow", 80.7, 24.9, L["The Storm Peaks"], L["Head southeast from here and go up the mountain."], arTex, nil, nil, nil, nil, nil, 4.7, 120},
 		},
@@ -807,9 +815,9 @@
 			{"FlightN", 62.6, 60.9, L["Dun Nifflelem"] .. ", " .. L["The Storm Peaks"], nil, tNTex, nil, nil}, -- Halvdan
 			{"FlightN", 44.5, 28.2, L["Ulduar"] .. ", " .. L["The Storm Peaks"], nil, tNTex, nil, nil}, -- Shavalius the Fancy
 			{"FlightN", 30.6, 36.3, L["Bouldercrag's Refuge"] .. ", " .. L["The Storm Peaks"], nil, tNTex, nil, nil}, -- Breck Rockbrow
-			{"Dungeon", 39.6, 26.9, L["Halls of Stone"], L["Dungeon"], dnTex, 77, 79, 73, 75, 80},
-			{"Dungeon", 45.4, 21.4, L["Halls of Lightning"], L["Dungeon"], dnTex, 78, 80, 75, 75, 80},
-			{"Raid", 41.6, 17.8, L["Ulduar"], L["Raid"], rdTex, 80, 80, 80, 75, 80},
+			{"Dungeon", 39.6, 26.9, L["Halls of Stone"], L["Dungeon"], dnTex, 77, 79, 73, 75, 80, 0, 140},
+			{"Dungeon", 45.4, 21.4, L["Halls of Lightning"], L["Dungeon"], dnTex, 78, 80, 75, 75, 80, 0, 138},
+			{"Raid", 41.6, 17.8, L["Ulduar"], L["Raid"], rdTex, 80, 80, 80, 75, 80, 0, 147},
 			{"Arrow", 30.4, 93.8, L["Crystalsong Forest"], nil, arTex, nil, nil, nil, nil, nil, 2.4, 127},
 			{"Arrow", 37.8, 90.2, L["Crystalsong Forest"], nil, arTex, nil, nil, nil, nil, nil, 3.6, 127},
 			{"Arrow", 22.2, 36.4, L["Icecrown"], L["Head down the mountain from here."], arTex, nil, nil, nil, nil, nil, 2.1, 118},
@@ -818,7 +826,7 @@
 		--[[Wintergrasp]] [123] = {
 			{"FlightA", 72.0, 31.0, L["Valiance Landing Camp"] .. ", " .. L["Wintergrasp"], nil, tATex, nil, nil}, -- Arzo Safeflight
 			{"FlightH", 21.6, 34.9, L["Warsong Camp"] .. ", " .. L["Wintergrasp"], nil, tHTex, nil, nil}, -- Herzo Safeflight
-			{"Raid", 50.5, 16.4, L["Vault of Archavon"], L["Raid"], rdTex, 80, 80, 80, 80, 80},
+			{"Raid", 50.5, 16.4, L["Vault of Archavon"], L["Raid"], rdTex, 80, 80, 80, 80, 80, 0, 156},
 		},
 
 		--[[Zul'Drak (*)]] [121] = {
@@ -827,9 +835,9 @@
 			{"FlightN", 41.6, 64.4, L["The Argent Stand"] .. ", " .. L["Zul'Drak"], nil, tNTex, nil, nil}, -- Gurric
 			{"FlightN", 70.5, 23.3, L["Gundrak"] .. ", " .. L["Zul'Drak"], nil, tNTex, nil, nil}, -- Rafae
 			{"FlightN", 60.0, 56.7, L["Zim'Torga"] .. ", " .. L["Zul'Drak"], nil, tNTex, nil, nil}, -- Maaka
-			{"Dungeon", 29.0, 83.9, L["Drak'Tharon Keep"], L["Dungeon"], dnTex, 74, 76, 72, 72, 80},
-			{"Dungeon", 76.2, 21.1, L["Gundrak"], L["Dungeon"], dnTex, 76, 78, 73, 74, 80},
-			{"Dungeon", 81.2, 28.9, L["Gundrak (rear entrance)"], L["Dungeon"], dnTex, 76, 78, 73, 74, 80},
+			{"Dungeon", 29.0, 83.9, L["Drak'Tharon Keep"], L["Dungeon"], dnTex, 74, 76, 72, 72, 80, 0, 160},
+			{"Dungeon", 76.2, 21.1, L["Gundrak"], L["Dungeon"], dnTex, 76, 78, 73, 74, 80, 0, 153},
+			{"Dungeon", 81.2, 28.9, L["Gundrak (rear entrance)"], L["Dungeon"], dnTex, 76, 78, 73, 74, 80, 0, 161},
 			{"Arrow", 71.2, 78.3, L["Grizzly Hills"], nil, arTex, nil, nil, nil, nil, nil, 4.0, 116},
 			{"Arrow", 55.2, 91, L["Grizzly Hills"], nil, arTex, nil, nil, nil, nil, nil, 3.8, 116},
 			{"Arrow", 29, 87.1, L["Grizzly Hills"], L["Drak'Tharon Keep"], arTex, nil, nil, nil, nil, nil, 3.2, 116},

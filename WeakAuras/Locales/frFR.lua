@@ -27,6 +27,8 @@ L["|cffeda55fRight-Click|r to toggle performance profiling window."] = "|cffeda5
 L["|cffeda55fShift-Click|r to pause addon execution."] = "|cffeda55fMaj-Clic|r Pour suspendre l'exécution de l'addon."
 L["|cFFFF0000Not|r Item Bonus Id Equipped"] = "ID du bonus de l'objet |cFFFF0000non|r équipé"
 L["|cFFFF0000Not|r Player Name/Realm"] = "|cFFFF0000Not|r Nom du joueur / serveur"
+--[[Translation missing --]]
+L["|cFFFF0000Not|r Spell Known"] = "|cFFFF0000Not|r Spell Known"
 L["|cFFffcc00Extra Options:|r %s"] = "|cFFffcc00Options supplémentaires :|r %s"
 L["|cFFffcc00Extra Options:|r None"] = "|cFFffcc00Options supplémentaires :|r Aucun"
 L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.
@@ -264,6 +266,8 @@ L["Buffed/Debuffed"] = "Amélioré/Affaiblit"
 --[[Translation missing --]]
 L["Burning Crusade"] = "Burning Crusade"
 L["Buru the Gorger"] = "Buru Grandgosier"
+--[[Translation missing --]]
+L["Callback function"] = "Callback function"
 L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] = "Peut être utilisé pour par exemple vérifier si l'unité \"boss1target\" est la même que \"player\"."
 L["Cancel"] = "Annuler"
 --[[Translation missing --]]
@@ -648,6 +652,8 @@ L["Flex Raid"] = "Raid Dynamique"
 L["Flip"] = "Retourner"
 L["Floor"] = "Plancher"
 L["Focus"] = "Focalisation"
+--[[Translation missing --]]
+L["Font"] = "Font"
 L["Font Size"] = "Taille de Police"
 --[[Translation missing --]]
 L["Forbidden function or table: %s"] = "Forbidden function or table: %s"
@@ -1035,8 +1041,14 @@ E.g. 1;2;1;2;2.5;3]=]
 --[[Translation missing --]]
 L["Max Char "] = "Max Char "
 L["Max Charges"] = "Charges Max"
+--[[Translation missing --]]
+L["Max Health"] = "Max Health"
+--[[Translation missing --]]
+L["Max Power"] = "Max Power"
 L["Maximum"] = "Maximum"
 L["Maximum Estimate"] = "Estimation Maximale"
+--[[Translation missing --]]
+L["Media"] = "Media"
 L["Medium"] = "Moyen"
 --[[Translation missing --]]
 L["Melee Haste (%)"] = "Melee Haste (%)"
@@ -1541,6 +1553,8 @@ L["Star Shake"] = "Star Shake"
 --[[Translation missing --]]
 L["Start Now"] = "Start Now"
 L["Status"] = "Statut"
+--[[Translation missing --]]
+L["Status Bar"] = "Status Bar"
 L["Stolen"] = "Volé"
 L["Stop"] = "Arrêter"
 L["Strength"] = "Force"
@@ -1599,6 +1613,8 @@ L["Text-to-speech"] = "Text-to-speech"
 L["Texture Function"] = "Texture Function"
 --[[Translation missing --]]
 L["Texture Function (fallback state)"] = "Texture Function (fallback state)"
+--[[Translation missing --]]
+L["Texture Rotation"] = "Texture Rotation"
 --[[Translation missing --]]
 L["Thaddius"] = "Thaddius"
 --[[Translation missing --]]

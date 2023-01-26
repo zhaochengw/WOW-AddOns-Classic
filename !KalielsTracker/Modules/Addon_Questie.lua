@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2022, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2023, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -59,12 +59,12 @@ local function SetHooks()
 
             if quest and quest.sourceItemId then
                 for bag = 0, NUM_BAG_SLOTS do
-                    for slot = 1, GetContainerNumSlots(bag) do
-                        local itemTexture, itemCount, _, _, _, _, itemLink, _, _, itemID = GetContainerItemInfo(bag, slot)
-                        if quest.sourceItemId == itemID then
-                            link = itemLink
-                            item = itemTexture
-                            charges = itemCount
+                    for slot = 1, C_Container.GetContainerNumSlots(bag) do
+                        local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
+                        if itemInfo and quest.sourceItemId == itemInfo.itemID then
+                            link = itemInfo.hyperlink
+                            item = itemInfo.iconFileID
+                            charges = itemInfo.stackCount
                             showItemWhenComplete = false
                             break
                         end
@@ -290,7 +290,7 @@ end
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
-    self.isLoaded = (KT:CheckAddOn("Questie", "7.4.5") and db.addonQuestie)
+    self.isLoaded = (KT:CheckAddOn("Questie", "7.4.10") and db.addonQuestie)
 end
 
 function M:OnEnable()

@@ -1631,12 +1631,14 @@
 
 -- /run local a,b=Details.tooltip.header_statusbar,0.3;a[1]=b;a[2]=b;a[3]=b;a[4]=0.8;
 
-		function Details:AddTooltipSpellHeaderText (headerText, headerColor, amount, iconTexture, L, R, T, B, separator)
-
+		function Details:AddTooltipSpellHeaderText (headerText, headerColor, amount, iconTexture, L, R, T, B, separator, iconSize)
 			if (separator and separator == true) then
 				GameCooltip:AddLine ("", "", nil, nil, 1, 1, 1, 1, 8)
-
 				return
+			end
+
+			if (type(iconSize) ~= "number") then
+				iconSize = 14
 			end
 
 			if (Details.tooltip.show_amount) then
@@ -1646,7 +1648,7 @@
 			end
 
 			if (iconTexture) then
-				GameCooltip:AddIcon (iconTexture, 1, 1, 14, 14, L or 0, R or 1, T or 0, B or 1)
+				GameCooltip:AddIcon (iconTexture, 1, 1, iconSize, iconSize, L or 0, R or 1, T or 0, B or 1)
 			end
 		end
 
@@ -1727,16 +1729,10 @@
 					local avatar = NickTag:GetNicknameTable (objeto.serial, true)
 					if (avatar and not Details.ignore_nicktag) then
 						if (avatar [2] and avatar [4] and avatar [1]) then
-							GameCooltip:SetBannerImage (1, avatar [2], 80, 40, avatarPoint, avatarTexCoord, nil) --overlay [2] avatar path
-							GameCooltip:SetBannerImage (2, avatar [4], 200, 55, backgroundPoint, avatar [5], avatar [6]) --background
-							GameCooltip:SetBannerText (1, (not Details.ignore_nicktag and avatar [1]) or objeto.nome, textPoint, avatarTextColor, 14, SharedMedia:Fetch ("font", Details.tooltip.fontface)) --text [1] nickname
+							GameCooltip:SetBannerImage (1, 1, avatar [2], 80, 40, avatarPoint, avatarTexCoord, nil) --overlay [2] avatar path
+							GameCooltip:SetBannerImage (1, 2, avatar [4], 200, 55, backgroundPoint, avatar [5], avatar [6]) --background
+							GameCooltip:SetBannerText (1, 1, (not Details.ignore_nicktag and avatar [1]) or objeto.nome, textPoint, avatarTextColor, 14, SharedMedia:Fetch ("font", Details.tooltip.fontface)) --text [1] nickname
 						end
-					else
-						--if (Details.remove_realm_from_name and objeto.displayName:find("%*")) then
-						--	GameCooltip:SetBannerImage (1, [[Interface\AddOns\Details\images\background]], 20, 30, avatarPoint, avatarTexCoord, {0, 0, 0, 0}) --overlay [2] avatar path
-						--	GameCooltip:SetBannerImage (2, [[Interface\PetBattles\Weather-BurntEarth]], 160, 30, {{"bottomleft", "topleft", 0, -5}, {"bottomright", "topright", 0, -5}}, {0.12, 0.88, 1, 0}, {0, 0, 0, 0.1}) --overlay [2] avatar path {0, 0, 0, 0}
-						--	GameCooltip:SetBannerText (1, objeto.nome, {"left", "left", 11, -8}, {1, 1, 1, 0.7}, 10, SharedMedia:Fetch ("font", Details.tooltip.fontface)) --text [1] nickname
-						--end
 					end
 				end
 

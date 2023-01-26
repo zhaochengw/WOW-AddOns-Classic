@@ -1,18 +1,23 @@
 local mod	= DBM:NewMod("YoggSaron", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221215074731")
+mod:SetRevision("20230124053113")
 mod:SetCreatureID(33288)
-mod:SetEncounterID(1143)
+if not mod:IsClassic() then
+	mod:SetEncounterID(1143)
+else
+	mod:SetEncounterID(756)
+end
 mod:SetModelID(28817)
 mod:RegisterCombat("combat_yell", L.YellPull)
 mod:SetUsedIcons(8, 7, 6, 2, 1)
+mod:SetHotfixNoticeRev(20230122000000)
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 64059 64189 63138",
 	"SPELL_CAST_SUCCESS 64144 64465 64167 64163",
 	"SPELL_SUMMON 62979",
-	"SPELL_AURA_APPLIED 63802 63830 63881 64126 64125 63138 63894 64465",
+	"SPELL_AURA_APPLIED 63802 63830 63881 64126 64125 63138 63894 64465 63042",
 	"SPELL_AURA_REMOVED 63802 63894 64167 64163 63830 63138 63881 64465",
 	"SPELL_AURA_REMOVED_DOSE 63050"
 )
@@ -32,6 +37,7 @@ local warnSanity 					= mod:NewAnnounce("WarningSanity", 3, 63050, nil, nil, nil
 local warnBrainLink 				= mod:NewTargetAnnounce(63802, 3)
 local warnBrainPortalSoon			= mod:NewAnnounce("WarnBrainPortalSoon", 2, 57687)
 local warnEmpowerSoon				= mod:NewSoonAnnounce(64465, 4)
+local warnDominateMind				= mod:NewTargetNoFilterAnnounce(63042, 3)--Pre nerf mind control
 
 local specWarnBrainLink 			= mod:NewSpecialWarningYou(63802, nil, nil, nil, 1, 2)
 local specWarnSanity 				= mod:NewSpecialWarning("SpecWarnSanity", nil, nil, nil, 1, nil, nil, nil, 63050)--Warning, no voice pack support
@@ -47,12 +53,12 @@ local timerFervor					= mod:NewTargetTimer(15, 63138, nil, false, 2)
 --local timerMaladyCD				= mod:NewCDTimer(18.1, 63830, nil, nil, nil, 3)
 --local timerBrainLinkCD			= mod:NewCDTimer(32, 63802, nil, nil, nil, 3)
 local brainportal					= mod:NewTimer(20, "NextPortal", 57687, nil, nil, 5)
-local timerLunaricGaze				= mod:NewCastTimer(4, 64163, nil, nil, nil, 2)
+local timerLunaricGaze				= mod:NewCastTimer(4, 64163, nil, nil, 2, 5)
 local timerNextLunaricGaze			= mod:NewCDTimer(8.5, 64163, nil, nil, nil, 2)
-local timerEmpower					= mod:NewCDTimer(46, 64465, nil, nil, nil, 3)
-local timerEmpowerDuration			= mod:NewBuffActiveTimer(10, 64465, nil, nil, nil, 3)
+local timerShadowBeaconCD			= mod:NewCDTimer(46, 64465, nil, nil, nil, 3)
+local timerShadowBeacon				= mod:NewBuffActiveTimer(10, 64465, nil, nil, nil, 3)
 local timerMadness 					= mod:NewCastTimer(60, 64059, nil, nil, nil, 5)
-local timerCastDeafeningRoar		= mod:NewCastTimer(2.3, 64189, nil, nil, nil, 2)
+local timerCastDeafeningRoar		= mod:NewCastTimer(2.3, 64189, nil, nil, 2, 5)
 local timerNextDeafeningRoar		= mod:NewNextTimer(30, 64189, nil, nil, nil, 2)
 local timerAchieve
 if WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1) then
@@ -142,17 +148,21 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 64144 and self:GetUnitCreatureId(args.sourceGUID) == 33966 then
 		warnCrusherTentacleSpawned:Show()
 	elseif args.spellId == 64465 and self:AntiSpam(3, 4) then
-		timerEmpower:Start()
-		timerEmpowerDuration:Start()
+		timerShadowBeaconCD:Start()
+		timerShadowBeacon:Start()
 		warnEmpowerSoon:Schedule(40)
 	elseif args:IsSpellID(64167, 64163) and self:AntiSpam(3, 3) then	-- Lunatic Gaze
-		timerLunaricGaze:Start()
-		if self:IsClassic() then
-			brainportal:Start(90)
-			warnBrainPortalSoon:Schedule(85)
-		else
-			brainportal:Start(60)
-			warnBrainPortalSoon:Schedule(55)
+		--In stages less than 3, it can be used to detect brain portals withoute emote because skulls in brain room cast this on spawn
+		if self.vb.phase < 3 then
+			if self:IsClassic() then
+				brainportal:Start(90)
+				warnBrainPortalSoon:Schedule(85)
+			else
+				brainportal:Start(60)
+				warnBrainPortalSoon:Schedule(55)
+			end
+		else--P3 yogg casts
+			timerLunaricGaze:Start()
 		end
 	end
 end
@@ -222,21 +232,23 @@ function mod:SPELL_AURA_APPLIED(args)
 			brainportal:Start(60)
 			warnBrainPortalSoon:Schedule(55)
 		else
-			brainportal:Start(25)
-			warnBrainPortalSoon:Schedule(20)
+			brainportal:Start(10.5)
+			warnBrainPortalSoon:Schedule(5.5)
 		end
 		warnP2:Show()
 	elseif args.spellId == 64465 then
-		if self.Options.SetIconOnBeacon then
-			self:ScanForMobs(args.destGUID, 2, self.vb.beaconIcon, 1, nil, 12, "SetIconOnBeacon", true)
-		end
-		self.vb.beaconIcon = self.vb.beaconIcon - 1
-		if self.vb.beaconIcon == 0 then
+		if self:AntiSpam(5, 5) then
 			self.vb.beaconIcon = 8
 		end
+		if self.Options.SetIconOnBeacon then
+			self:ScanForMobs(args.destGUID, 2, self.vb.beaconIcon, 1, nil, 8, "SetIconOnBeacon", true, nil, nil, true)
+		end
+		self.vb.beaconIcon = self.vb.beaconIcon - 1
 		if self.Options.NPAuraOnBeacon then
 			DBM.Nameplate:Show(true, args.destGUID, args.spellId, nil, 10)
 		end
+	elseif args.spellId == 63042 then
+		warnDominateMind:CombinedShow(1, args.destName)
 	end
 end
 
@@ -247,13 +259,13 @@ function mod:SPELL_AURA_REMOVED(args)
 		self:SetIcon(args.destName, 0)
 	elseif args.spellId == 63894 then		-- Shadowy Barrier removed from Yogg-Saron (start p3)
 		self:SendSync("Phase3")			-- Sync this because you don't get it in your combat log if you are in brain room.
-	elseif args:IsSpellID(64167, 64163) and self:AntiSpam(3, 2) then	-- Lunatic Gaze
+	elseif args:IsSpellID(64167, 64163) and self:AntiSpam(3, 2) and self.vb.phase == 3 then	-- Lunatic Gaze
 		timerNextLunaricGaze:Start()
 	elseif args:IsSpellID(63830, 63881) and self.Options.SetIconOnFearTarget then   -- Malady of the Mind (Death Coil)
 		self:SetIcon(args.destName, 0)
 	elseif args.spellId == 64465 then
 		if self.Options.SetIconOnBeacon then
-			self:ScanForMobs(args.destGUID, 2, 0, 1, nil, 12, "SetIconOnBeacon", true)
+			self:ScanForMobs(args.destGUID, 2, 0, 1, nil, 8, "SetIconOnBeacon", true, nil, nil, true)
 		end
 		if self.Options.NPAuraOnBeacon then
 			DBM.Nameplate:Hide(true, args.destGUID, args.spellId)
@@ -272,13 +284,13 @@ function mod:SPELL_AURA_REMOVED_DOSE(args)
 end
 
 function mod:OnSync(msg)
-	if msg == "Phase3" then
+	if msg == "Phase3" and self.vb.phase < 3 then
 		self:SetStage(3)
 		brainportal:Cancel()
 		warnBrainPortalSoon:Cancel()
 		--timerMaladyCD:Cancel()
 		--timerBrainLinkCD:Cancel()
-		timerEmpower:Start()
+--		timerShadowBeaconCD:Start()--Cast on phasing, even though no mobs up yet, starting initial CD that way
 --		if self.vb.numberOfPlayers == 1 then
 			timerMadness:Cancel()
 			specWarnMadnessOutNow:Cancel()

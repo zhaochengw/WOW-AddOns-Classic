@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(422, "DBM-Party-Vanilla", 7, 231)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221129003558")
+mod:SetRevision("20230120015511")
 mod:SetCreatureID(7800)
 mod:SetEncounterID(382)
 
@@ -20,7 +20,7 @@ function mod:OnCombatStart(delay)
 	timerKnockAwayCD:Start(1-delay)
 end
 
-function mod:SPELL_CAST_SUCESS(args)
+function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(10101, 11130) then
 		warningKnockAway:Show()
 		timerKnockAwayCD:Start()

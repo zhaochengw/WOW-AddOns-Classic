@@ -6,7 +6,7 @@ end
 
 
 -- INTERFACE
-Lang["Credits"] = "Muchas gracias a mi hermandad |cffffd100<Divine Heresy>|r por su apoyo y comprensión mientras probaba el addon y mi agradecimiento a |cffffd100Bushido @ Pyrewood Village|r por la ayuda con la TBC!\n\n También, muchas, muchas, gracias a los traductores :\n  - Traducción Alemana: |cffffd100Sumaya @ Razorfen DE|r\n  - Traducción Rusa: |cffffd100Greymarch Guild @ Flamegor RU|r\n  - Traducción Española: |cffffd100Coyu @ Pyrewood Village EU|r\n  - Traducción China (simp.): |cffffd100ly395842562|r y |cffffd100Icyblade|r\n  - Traducción China (trad.): |cffffd100DayZ|r @ Ivus TW|r\n  - Traducción coreana: |cffffd100Drix @ Azshara KR|r\n\n/Hug de Cixi/Gaya @ Remulos Horde"
+Lang["Credits"] = "Muchas gracias a mi hermandad |cffffd100<Divine Heresy>|r por su apoyo y comprensión mientras probaba el addon y mi agradecimiento a |cffffd100RoadBlock|r y |cffffd100Bushido|r por la ayuda!\n\n También, muchas, muchas, gracias a los traductores :\n  - Traducción Alemana: |cffffd100Sumaya @ Razorfen DE|r\n  - Traducción Rusa: |cffffd100Greymarch Guild @ Flamegor RU|r\n  - Traducción Española: |cffffd100Coyu @ Pyrewood Village EU|r\n  - Traducción China (simp.): |cffffd100ly395842562|r y |cffffd100Icyblade|r\n  - Traducción China (trad.): |cffffd100DayZ|r @ Ivus TW|r\n  - Traducción coreana: |cffffd100Drix @ Azshara KR|r\n\n/Hug de Cixi/Gaya @ Remulos Horde"
 Lang["Mini"] = "Mini"
 Lang["Maxi"] = "Maxi"
 Lang["Version"] = "Attune v##VERSION## de Cixi@Remulos"

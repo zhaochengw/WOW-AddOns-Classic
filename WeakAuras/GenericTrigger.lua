@@ -58,6 +58,7 @@ local tinsert, tconcat, wipe = table.insert, table.concat, wipe
 local tostring, pairs, type = tostring, pairs, type
 local error, setmetatable = error, setmetatable
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo;
+local GetItemCooldown = GetItemCooldown or (C_Container and C_Container.GetItemCooldown) or nil
 
 -- WoW APIs
 local IsPlayerMoving = IsPlayerMoving
@@ -96,7 +97,7 @@ function WeakAuras.UnitExistsFixed(unit, smart)
     return nameplateExists[unit]
   end
   if smart and IsInRaid() then
-    if unit:sub(1, 5) == "party" or unit == "player" then
+    if unit:sub(1, 5) == "party" or unit == "player" or unit == "pet" then
       return false
     end
   end
@@ -899,6 +900,9 @@ function HandleEvent(frame, event, arg1, arg2, ...)
       Private.CheckCooldownReady();
       Private.StopProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
       Private.PreShowModels()
+      if WeakAuras.IsRetail() then
+        Private.CheckTalentsForLoad("WA_DELAYED_PLAYER_ENTERING_WORLD")
+      end
     end,
     0.8);  -- Data not available
 
@@ -2007,7 +2011,7 @@ do
     cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
     cdReadyFrame:RegisterEvent("SPELL_UPDATE_CHARGES");
     cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
-    cdReadyFrame:RegisterEvent("BAG_UPDATE_COOLDOWN");
+    cdReadyFrame:RegisterEvent("BAG_UPDATE_DELAYED");
     cdReadyFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
     cdReadyFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
     cdReadyFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
@@ -2061,7 +2065,7 @@ do
             end
           end
         end
-      elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN" or event == "PLAYER_EQUIPMENT_CHANGED") then
+      elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_DELAYED" or event == "PLAYER_EQUIPMENT_CHANGED") then
         Private.CheckItemSlotCooldowns();
       end
       Private.StopProfileSystem("generictrigger cd tracking");
@@ -2349,7 +2353,7 @@ do
 
     local chargesChanged = spellCharges[id] ~= charges or spellCounts[id] ~= spellCount
                            or spellChargesMax[id] ~= maxCharges
-    local chargesDifference = (charges or spellCount or 0) - (spellCharges[id] or spellCount or 0)
+    local chargesDifference = (charges or spellCount or 0) - (spellCharges[id] or spellCounts[id] or 0)
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
     spellCounts[id] = spellCount
@@ -2399,10 +2403,6 @@ do
   end
 
   function Private.CheckItemCooldowns()
-    -- TODO remove this once fixed on WOTLK PTR
-    if WeakAuras.IsWrathClassic() and GetItemCooldown == nil then
-      return
-    end
     for id, _ in pairs(items) do
       local startTime, duration, enabled = GetItemCooldown(id);
       if (duration == 0) then
@@ -2609,10 +2609,6 @@ do
   end
 
   function WeakAuras.WatchItemCooldown(id)
-    -- TODO remove this once fixed on WOTLK PTR
-    if WeakAuras.IsWrathClassic() and GetItemCooldown == nil then
-      return
-    end
     if not(cdReadyFrame) then
       Private.InitCooldownReady();
     end
@@ -3375,7 +3371,8 @@ function WeakAuras.GetSpellCost(powerTypeToCheck)
   if spellID then
     local costTable = GetSpellPowerCost(spellID);
     for _, costInfo in pairs(costTable) do
-      if costInfo.type == powerTypeToCheck then
+      -- When there is no required aura for a power cost, the API returns an aura ID of 0 and false for hasRequiredAura despite being valid.
+      if costInfo.type == powerTypeToCheck and (costInfo.requiredAuraID == 0 or costInfo.hasRequiredAura) then
         return costInfo.cost;
       end
     end
@@ -3419,11 +3416,12 @@ do
                   if arg.field == "leftText" then
                     local text = arg.stringVal;
                     if(text) then
-                      local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+.+%)$");
+                      -- Format based on ITEM_ENCHANT_TIME_LEFT_MIN, ITEM_ENCHANT_TIME_LEFT_SEC
+                      local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+%D.+%)$");
                       if(name and name ~= "") then
                         return name, shortenedName;
                       end
-                      _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.+%）$");
+                      _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+%D.+%）$");
                       if(name and name ~= "") then
                         return name, shortenedName;
                       end
@@ -3443,11 +3441,11 @@ do
             if(v:GetObjectType() == "FontString") then
               local text = v:GetText();
               if(text) then
-                local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+.+%)$");
+                local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+%D+%)$");
                 if(name and name ~= "") then
                   return name, shortenedName;
                 end
-                _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.+%）$");
+                _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.%D%）$");
                 if(name and name ~= "") then
                   return name, shortenedName;
                 end
@@ -3565,7 +3563,7 @@ do
   end
 
   function WeakAuras.GetCastLatency()
-    return castLatencyFrame.timeDiff
+    return castLatencyFrame and castLatencyFrame.timeDiff or 0
   end
 
 end

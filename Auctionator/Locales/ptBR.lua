@@ -142,8 +142,8 @@ L["CONFIG_SELLING_CONFIRM_LOW_PRICE"] = [=[Confirme o lançamento de itens a um 
 ]=]
 L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_HEADER"] = [=[Confirmar lançamento de preço baixo
 ]=]
-L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_TEXT"] = [=[Permite remover a caixa de diálogo de confirmação que aparece ao postar um item a um preço excepcionalmente baixo.
-]=]
+--[[Translation missing --]]
+L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_TEXT_2"] = "Adds a confirmation dialog that appears when posting an item at an unusually low price."
 L["CONFIG_SELLING_DEFAULT_QUANTITY_SUFFIX"] = "Coloque 0 para a quantidade máxima"
 L["CONFIG_SELLING_DEFAULT_QUANTITY_TOOLTIP_HEADER"] = "Quantidade Padrão de Postagem"
 L["CONFIG_SELLING_DEFAULT_QUANTITY_TOOLTIP_TEXT"] = "Isto permite você alterar a quantidade padrão quando posta um item. Coloque 0 para usar a quantidade máxima."
@@ -655,6 +655,8 @@ L["STARTING_PRICE_PERCENTAGE_TOOLTIP_TEXT"] = [=[A porcentagem do preço inicial
 ]=]
 --[[Translation missing --]]
 L["STOP"] = "Stop"
+--[[Translation missing --]]
+L["STOP_LOADING_NOW"] = "Stop loading now"
 L["TEMPORARY_LOWER_CASE"] = "temporário"
 L["TIER"] = "Qualidade"
 L["TIME_LEFT"] = "Tempo Restante"

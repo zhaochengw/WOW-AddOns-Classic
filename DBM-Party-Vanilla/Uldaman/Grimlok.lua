@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(472, "DBM-Party-Vanilla", 18, 239)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221129003558")
+mod:SetRevision("20230120015511")
 mod:SetCreatureID(4854)
 mod:SetEncounterID(553)
 
@@ -10,7 +10,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 8292 12167",
 	"SPELL_CAST_SUCCESS 6742",
-	"SPELL_AURA_APPLIED 6742 9906"
+	"SPELL_AURA_APPLIED 6742 9906 3636"
 )
 
 local warningBloodlust				= mod:NewTargetNoFilterAnnounce(6742, 3)

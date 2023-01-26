@@ -3,7 +3,7 @@ SavedClassic = LibStub("AceAddon-3.0"):NewAddon(addonName, "AceEvent-3.0")
 
 SavedClassic.name = addonName
 --SavedClassic.version = GetAddOnMetadata(addonName, "Version")
-SavedClassic.version = "3.0.7"
+SavedClassic.version = "3.0.9"
 
 local L = LibStub("AceLocale-3.0"):GetLocale(addonName, true)
 
@@ -58,8 +58,8 @@ SavedClassic.currencies = {
     [1]   = { altName = L["gold"    ], icon = "|TInterface/MoneyFrame/UI-GoldIcon:14:14:2:0|t"},   -- Gold
     [2]   = { altName = L["silver"  ], icon = "|TInterface/MoneyFrame/UI-SilverIcon:14:14:2:0|t" },   -- Silver
     [3]   = { altName = L["copper"  ], icon = "|TInterface/MoneyFrame/UI-CopperIcon:14:14:2:0|t" },   -- Copper
-    [1901]= { altName = L["honor"   ] },   -- Honor point
-    [1900]= { altName = L["arena"   ] },   -- Arena point
+    [1901]= { altName = L["honor"   ] }, -- Honor point
+    [1900]= { altName = L["arena"   ] }, -- Arena point
     [61]  = { altName = L["jewel"   ] }, -- Dalaran Jewelcrafter's Token Wrath of the Lich King  3.0.2
     [81]  = { altName = L["cook"    ] }, -- Epicurean's Award    Miscellaneous   3.1.0
     [101] = { altName = L["heroism" ] }, -- Emblem of Heroism    Dungeon and Raid    3.1.0
@@ -116,6 +116,16 @@ SavedClassic.abbr.heroic = {
     [C_Map.GetAreaInfo(4820)] = L["HoR"],
     [C_Map.GetAreaInfo(4813)] = L["PoS"],
     [C_Map.GetAreaInfo(4809)] = L["FoS"],
+}
+SavedClassic.abbr.raid = {
+    [C_Map.GetAreaInfo(3456)] = L["Naxx"],
+    [C_Map.GetAreaInfo(4493)] = L["OS"],
+    [C_Map.GetAreaInfo(4500)] = L["EoE"],
+    [C_Map.GetAreaInfo(4273)] = L["ULD"],
+    [C_Map.GetAreaInfo(4722)] = L["ToC"],
+    [C_Map.GetAreaInfo(4812)] = L["ICC"],
+    [C_Map.GetAreaInfo(4987)] = L["RS"],
+    [C_Map.GetAreaInfo(4603)] = L["VoA"],
 }
 
 local _TranslationTable = {
@@ -255,13 +265,17 @@ function SavedClassic:OnDisable()
 end
 
 function SavedClassic:SetOrder()
-    -- db for ordered list
+    local db = self.db.realm[player]
     self.order = { }
     for k, v in pairs(self.db.realm) do
         table.insert(self.order, { name = v.name, level = v.level })
     end
     table.sort(self.order,
         function(a,b)
+            if db.currentFirst then
+                if a.name == player then return true end
+                if b.name == player then return false end
+            end
             local al = a.level or 0
             local bl = b.level or 0
             if al == bl then
@@ -300,7 +314,7 @@ function SavedClassic:InitPlayerDB()
         else
             playerdb.info1_1 = "\n["..L["color"].."/00ff00]■["..L["color"].."] [["..L["name"].."]] ["..L["color"].."/ffffff](["..L["zone"].."]: ["..L["subzone"].."])["..L["color"].."]"
         end
-        playerdb.info2_1 = "   ["..L["color"].."/ffffff]["..L["currency"]..":"..L["valor"].."] ["..L["currency"]..":"..L["heroism"].."] [".. L["currency"]..":"..L["arena"].."] [".. L["currency"]..":"..L["honor"].."]["..L["color"].."]"
+        playerdb.info2_1 = "   ["..L["color"].."/ffffff]["..L["currency"]..":"..L["conquest"].."] ["..L["currency"]..":"..L["valor"].."] [".. L["currency"]..":"..L["arena"].."] [".. L["currency"]..":"..L["honor"].."]["..L["color"].."]"
         playerdb.info2_2 = ""
     end
 
@@ -574,15 +588,19 @@ function SavedClassic:ShowInstanceInfo(tooltip, character)
             for i = 1, #db.raids do
                 local instance = db.raids[i]
                 local remain = SecondsToTime(instance.reset - time())
+                local name = self.abbr.raid[instance.name] or instance.name
                 if remain and ( remain ~= "" ) then
-                    raidList[instance.name] = raidList[instance.name] or {}
-                    table.insert(raidList[instance.name], instance.difficultyName)
+                    raidList[name] = raidList[name] or {}
+                    table.insert(raidList[name], instance.difficultyName)
                 end
             end
-            local oneline
-            for k,v in pairs(raidList) do
-                oneline = "   "..k.." ("..v[1]..(v[2] and ", "..v[2] or "")..")"
-                tooltip:AddLine(oneline)
+            local oneline = ""
+            for name, v in pairs(raidList) do
+                oneline = oneline.." "..name.."("..v[1]..(v[2] and "/"..v[2] or "")..")"
+            end
+            if oneline ~= "" then
+                oneline = oneline:gsub("^ ","") -- trim leading space
+                tooltip:AddLine("   "..oneline)
             end
         else
             for i = 1, #db.raids do
@@ -874,6 +892,15 @@ function SavedClassic:BuildOptions()
                         max = GetMaxPlayerLevel(),
                         step = 1,
                         order = 131
+                    },
+                    currentFirst = {
+                        name = L["Show current chracter first"],
+                        type = "toggle",
+                        set = function(info, value)
+                            db[info[#info]] = value
+                            self:SetOrder()
+                        end,
+                        order = 141
                     },
                 }
             },

@@ -1,5 +1,11 @@
 Version history:
 
+1.82
+- TOC updates for 3.4.1 & 10.0.5
+
+1.81
+- Reorder load sequence for Retail - do not register TooltipDataProcessor until after Saved Variables have been processed
+
 1.80
 - Fix for ItemRefTooltip close button clashing with icon in 'inside' or 'title' mode
 - Code cleanup

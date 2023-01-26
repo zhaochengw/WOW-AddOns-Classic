@@ -49,6 +49,8 @@ local defaults = {
                 [316099] = true, -- Unstable Affliction
                 [342938] = true, -- Unstable Affliction
                 [34914] = true, -- Vampiric Touch
+				[383005] = true, -- Chrono Loop
+				[375901] = true, -- Mindgames
             },
             inRaid = {
                 hide = false,
@@ -276,10 +278,14 @@ if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
         },
         [1467] = { -- Devastation Evoker
             Poison = true,
+            Disease = function() return IsUsableSpell(GetSpellInfo(374251)) end,
+            Curse = function() return IsUsableSpell(GetSpellInfo(374251)) end,
         },
         [1468] = { -- Preservation Evoker
             Magic = true,
             Poison = true,
+            Disease = function() return IsUsableSpell(GetSpellInfo(374251)) end,
+            Curse = function() return IsUsableSpell(GetSpellInfo(374251)) end,
         },
         [577] = {
             Magic = function() return GetSpellInfo(205604) end, -- Reverse Magic
@@ -445,6 +451,15 @@ local GetAnchor = {
         if not frame then return end
         if frame.ClassIcon then
             return frame.ClassIcon, frame
+        else
+            return frame, frame, true
+        end
+    end,
+    PitBull = function(anchor)
+        local frame = _G[anchor]
+        if not frame then return end
+        if frame.Portrait and frame.Portrait:IsShown() then
+            return frame.Portrait, frame
         else
             return frame, frame, true
         end
@@ -704,6 +719,19 @@ local anchors = {
             arena5 = "sArenaEnemyFrame5",
         },
     },
+    ["Pitbull"] = {
+        func = GetAnchor.PitBull,
+        units = {
+            player = "PitBull4_Frames_Player",
+            pet = "PitBull4_Frames_Player's pet",
+            target = "PitBull4_Frames_Target",
+            focus = "PitBull4_Frames_Focus",
+            party1 = "PitBull4_Groups_PartyUnitButton1",
+            party2 = "PitBull4_Groups_PartyUnitButton2",
+            party3 = "PitBull4_Groups_PartyUnitButton3",
+            party4 = "PitBull4_Groups_PartyUnitButton4",
+        },
+    },
     ["Cell"] = {
         noPortait = true,
         alignLeft = true,
@@ -922,16 +950,21 @@ function BigDebuffs:AttachUnitFrame(unit)
     if frame.anchor then
         if frame.blizzard then
             -- Blizzard Frame
-            if frame.anchor.SetDrawLayer then frame.anchor:SetDrawLayer("BACKGROUND") end
+			if frame.anchor.SetDrawLayer then frame.anchor:SetDrawLayer("BACKGROUND") end
             local parent = frame.anchor.portrait and frame.anchor.portrait:GetParent() or frame.anchor:GetParent()
             frame:SetParent(parent)
-            frame:SetFrameLevel(parent:GetFrameLevel())
+            if unit == "player" then
+				frame:SetFrameLevel(parent:GetFrameLevel() + 1)
+			else
+				frame:SetFrameLevel(parent:GetFrameLevel())
+			end
 
             if frame.anchor.portrait then
                 frame.anchor.portrait:SetDrawLayer("BACKGROUND")
             elseif frame.anchor.SetDrawLayer then
                 frame.anchor:SetDrawLayer("BACKGROUND")
             end
+
             frame.cooldown:SetSwipeTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMaskSmall")
         else
             frame:SetParent(frame.parent and frame.parent or frame.anchor)
@@ -1304,16 +1337,6 @@ function BigDebuffs:AddBigDebuffs(frame)
 end
 
 local pending = {}
-local function checkFrame(frame)
-    if not issecurevariable(frame, "action") and not InCombatLockdown() then
-        frame.action = nil
-        frame:SetAttribute("action");
-    end
-end
-
-for _, frame in ipairs(ActionBarButtonEventsFrame.frames) do
-    if frame.UpdateAction then hooksecurefunc(frame, "UpdateAction", checkFrame) end
-end
 
 hooksecurefunc("CompactUnitFrame_UpdateAll", function(frame)
 	if not BigDebuffs.db.profile then return end
@@ -2041,9 +2064,13 @@ if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
             for i = 1, #debuffs do -- math.min maybe?
                 if index <= self.db.profile.raidFrames.maxDebuffs then
                     if not frame.BigDebuffs[index] then break end
-                    frame.BigDebuffs[index].baseSize = frame:GetHeight() * debuffs[i][2] * 0.01
+                    local frameHeight = frame:GetHeight()
+                    frame.BigDebuffs[index].baseSize = frameHeight * debuffs[i][2] * 0.01
                     local debuffFrame = frame.BigDebuffs[index];
                     debuffFrame.spellId = debuffs[i][1].spellId;
+                    if not debuffFrame.maxHeight then
+                        debuffFrame.maxHeight = frameHeight;
+                    end
                     CompactUnitFrame_UtilSetDebuff(debuffFrame, debuffs[i][1])
                     frame.BigDebuffs[index].cooldown:SetSwipeColor(0, 0, 0, 0.7)
                     index = index + 1

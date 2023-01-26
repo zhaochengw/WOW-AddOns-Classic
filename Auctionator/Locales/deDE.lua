@@ -121,7 +121,8 @@ L["CONFIG_SELLING_CANCEL_SHORTCUT"] = "auf eine eigene Auktion, bricht diese ab"
 L["CONFIG_SELLING_CATEGORY"] = "Verkaufen"
 L["CONFIG_SELLING_CONFIRM_LOW_PRICE"] = "Bestätige die Erstellung von Gegenständen zu einem ungewöhnlich niedrigen Preis"
 L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_HEADER"] = "Bestätige den niedrigen Preis des Erstellens"
-L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_TEXT"] = "Ermöglicht den Bestätigungsdialog zu beseitigen, das beim Erstellen eines Gegenstands zu einem ungewöhnlich niedrigen Preis angezeigt wird."
+--[[Translation missing --]]
+L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_TEXT_2"] = "Adds a confirmation dialog that appears when posting an item at an unusually low price."
 L["CONFIG_SELLING_DEFAULT_QUANTITY_SUFFIX"] = "Für die maximale Menge auf 0 setzen"
 L["CONFIG_SELLING_DEFAULT_QUANTITY_TOOLTIP_HEADER"] = "Standardmenge beim Erstellen von Auktionen"
 L["CONFIG_SELLING_DEFAULT_QUANTITY_TOOLTIP_TEXT"] = "Hier kann die Standardmenge der zu verkaufenden Gegenstände angepasst werden. Bei 0 wird die maximal verfügbare Menge genommen."
@@ -182,8 +183,7 @@ L["CONFIRM_POST_BELOW_VENDOR"] = "Du kannst mehr Gold machen, indem du dies an e
 L["CONFIRM_POST_LOW_PRICE"] = "Der Preis von %s sieht etwas niedrig aus. Bist du sicher, dass du zu diesem Preis erstellen möchtest?"
 L["CONFIRM_POST_PRICE_DROP"] = "Der Einheitspreis von %s ist ein großer Preissturz. Bist du sicher, dass du zu diesem Preis erstellen möchtest?"
 L["CONFIRM_X_TOTAL_PRICE_X"] = "Bestätigen %s, Gesamtpreis %s"
---[[Translation missing --]]
-L["CONTINUE"] = "Continue"
+L["CONTINUE"] = "Fortsetzen"
 L["CONTRIBUTORS_HEADER"] = "Mitwirkende"
 L["COPY_ITEM_ADDED"] = "Kopierte %s in %s"
 L["COPY_NO_LIST_SELECTED"] = "Gegenstand kann nicht kopiert werden. Keine Einkaufsliste ausgewählt"
@@ -313,8 +313,7 @@ L["POST_ATTEMPT_FAILED"] = "Dein letzter Auktionerstellungsversuch hat nicht fun
 L["PRICE"] = "Preis"
 L["PRICE_HISTORY"] = "Preisentwicklung"
 L["PRICE_INCREASE_WARNING"] = "Preis um %s erhöht, warte auf %ss"
---[[Translation missing --]]
-L["PRICE_INCREASE_WARNING_2"] = "Price increased by %s. Do you want to continue?"
+L["PRICE_INCREASE_WARNING_2"] = "Der Preis erhöhte sich um %s. Möchtest du weiter machen?"
 L["PROFILE_TOGGLE_TOOLTIP_HEADER"] = "Aktiviere Einstellungen pro Charakter"
 L["PROFILE_TOGGLE_TOOLTIP_TEXT"] = "Änderungen an den Auktionatoreinstellungen wirken sich nur auf diesen Charakter aus."
 L["PROFIT_COLON"] = "Gewinn:"
@@ -387,18 +386,15 @@ L["SPLASH_100015_CLASSIC_5"] = "Shows posting history as an extra option in an i
 L["SPLASH_100015_CLASSIC_6"] = "In the Selling tab removed extra scan after posting an item."
 --[[Translation missing --]]
 L["SPLASH_100015_CLASSIC_7"] = "Option to prevent the post button going grey/disabled and to allow attempts to post immediately, with no-cost retries on failure."
---[[Translation missing --]]
-L["SPLASH_100015_CLASSIC_HEADER"] = "Recent features for Classic"
---[[Translation missing --]]
-L["SPLASH_100015_DESCRIPTION"] = "Lots of improvements, including compatibility with Dragonflight"
+L["SPLASH_100015_CLASSIC_HEADER"] = "Aktuelle Funktionen für Classic"
+L["SPLASH_100015_DESCRIPTION"] = "Viele Verbesserungen, einschließlich Kompatibilität mit Dragonflight"
 --[[Translation missing --]]
 L["SPLASH_100015_RETAIL_1"] = "Crafting cost and profit updates based on the reagents and quality selected."
 --[[Translation missing --]]
 L["SPLASH_100015_RETAIL_2"] = "Selling tab has an expanded prices view with historical prices available in a separate tab. Reverting to the split screen view is available as an option."
 --[[Translation missing --]]
 L["SPLASH_100015_RETAIL_3"] = "Reagents value on the auction house is shown when listing a crafting order."
---[[Translation missing --]]
-L["SPLASH_100015_RETAIL_HEADER"] = "Recent features for Retail"
+L["SPLASH_100015_RETAIL_HEADER"] = "Aktuelle Funktionen für Retail"
 L["SPLASH_830_BUGS_1"] = "Besuche uns auf dem Auctionator Discord-Server %s"
 L["SPLASH_830_BUGS_2"] = "Fehler bitte über Github melden %s"
 L["SPLASH_830_BUGS_3"] = "Wir sind am aktivsten auf Discord und nehmen keine Fehlerberichte über Curseforge oder Auctionatorforen auf."
@@ -535,11 +531,10 @@ L["STARTING_PRICE_PERCENTAGE"] = "Startpreis"
 L["STARTING_PRICE_PERCENTAGE_SUFFIX"] = "% des Stapelspreises"
 L["STARTING_PRICE_PERCENTAGE_TOOLTIP_HEADER"] = "Startgebotspreis"
 L["STARTING_PRICE_PERCENTAGE_TOOLTIP_TEXT"] = "Der Prozentsatz des Startpreises wird verwendet, um den Standardpreis für alle eingestellten Auktionen festzulegen. Wenn dieser Wert zum Beispiel auf 95 gesetzt wird, dann wird der Gebotspreis für einen 10er-Stapel auf 9s50c festgelegt."
---[[Translation missing --]]
 L["STOP"] = "Stop"
+L["STOP_LOADING_NOW"] = "Hört jetzt auf zu laden"
 L["TEMPORARY_LOWER_CASE"] = "temporär"
---[[Translation missing --]]
-L["TIER"] = "Tier"
+L["TIER"] = "Reihe"
 L["TIME_LEFT"] = "Verbleibende Zeit"
 L["TIME_LEFT_H"] = "Restzeit (h)"
 L["TO_CRAFT_COLON"] = "Zum herstellen:"

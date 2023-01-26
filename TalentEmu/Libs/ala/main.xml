@@ -7,6 +7,7 @@
 -->
 
 	<script file = "main.lua" />
+	<script file = "FuckUBlizz.lua" />
 	<script file = "uiimp.lua" />
 	<script file = "autostyle.lua" />
 	<script file = "serializer.lua" />

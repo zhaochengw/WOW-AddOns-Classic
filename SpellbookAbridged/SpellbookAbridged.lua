@@ -237,11 +237,11 @@ function SpellBookAbridged_OnEvent(self, event, ...)
 		-- Player enters combat.  Protected functions don't work and will cause errors if the Spellbook is open.
 		-- Current Solution, close the spellbook when this is detected.
 		SpellBookFrame:Hide();
-		SpellBookFrame:SetParent("SpellBookFrameAbridged");
+		SpellBookFrame:SetParent(SpellBookFrameAbridged);
 	
 	elseif (event == "PLAYER_REGEN_ENABLED") then
 		-- Player leaves combat.  Restore spellbook functionality
-		SpellBookFrame:SetParent("UIParent");
+		SpellBookFrame:SetParent(UIParent);
 
 	elseif (event == "LEARNED_SPELL_IN_TAB") then
 		-- Auto UpRank Function

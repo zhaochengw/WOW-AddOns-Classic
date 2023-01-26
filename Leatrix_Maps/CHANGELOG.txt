@@ -1,5 +1,15 @@
-3.0.70 - 21st December 2022
+3.0.92 - 23rd January 2023
 - Maintenance update.
+
+3.0.84 - 19th January 2023
+- For 'Show points of interest', clicking a travel icon or a portal icon will now show the destination map.  Clicking a dungeon or raid icon on a Northrend map will now show the dungeon map (as long as there is only one dungeon or raid assigned to the icon).  Added zeppelin and boat icons to the Borean Tundra and Howling Fjord maps.  Added a Dalaran teleport crystal icon and a zone crossing icon to the Dalaran and Crystalsong Forest maps.
+
+3.0.83 - 18th January 2023
+- Updated for game version 3.4.1.
+- Due to problems with Blizzard's slash command system in 3.4.1, the /ltm command has been replaced with /run leamaps().  If you wish to pass a parameter, enter it in quotes between the brackets.
+
+3.0.78 - 8th January 2023
+- PTR (3.4.1): The interface options panel now shows /run leamaps() instead of /ltm.
 
 3.0.65 - 5th December 2022
 - Fixed frame border issue with 'Use default map'.

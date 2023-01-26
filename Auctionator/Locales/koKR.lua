@@ -134,7 +134,8 @@ L["CONFIG_SELLING_CANCEL_SHORTCUT"] = "본인것이면 경매 취소"
 L["CONFIG_SELLING_CATEGORY"] = "판매하기"
 L["CONFIG_SELLING_CONFIRM_LOW_PRICE"] = "몹시 저렴한 아이템 게시 확인"
 L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_HEADER"] = "낮은 가격 게시 확인"
-L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_TEXT"] = "전에 없이 저렴한 가격으로 항목을 게시할 때 표시되는 확인 대화 상자를 제거할 수 있습니다."
+--[[Translation missing --]]
+L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_TEXT_2"] = "Adds a confirmation dialog that appears when posting an item at an unusually low price."
 L["CONFIG_SELLING_DEFAULT_QUANTITY_SUFFIX"] = "판매 갯수 설정"
 L["CONFIG_SELLING_DEFAULT_QUANTITY_TOOLTIP_HEADER"] = "판매 갯수 설정"
 L["CONFIG_SELLING_DEFAULT_QUANTITY_TOOLTIP_TEXT"] = "경매장에 물건을 판매할 때 기본 갯수를 설정합니다. (ex. 현재 가진 영약이 40개일 경우 4를 입력하면 경매장에 올릴 때 4개를 자동으로 올립니다, 0일 경우 40개 모두 판매합니다.)"
@@ -602,6 +603,8 @@ L["STARTING_PRICE_PERCENTAGE_TOOLTIP_HEADER"] = "입찰 시작가"
 L["STARTING_PRICE_PERCENTAGE_TOOLTIP_TEXT"] = "시작 가격 비율은 게시된 경매에 사용되는 기본 입찰 금액을 설정하는 데 사용됩니다. 예를 들어 95실버로 설정한다면 10실버 묶음 가격의 경우 입찰 가격이 9실버 50코퍼로 설정됩니다."
 --[[Translation missing --]]
 L["STOP"] = "Stop"
+--[[Translation missing --]]
+L["STOP_LOADING_NOW"] = "Stop loading now"
 L["TEMPORARY_LOWER_CASE"] = "임시"
 --[[Translation missing --]]
 L["TIER"] = "Tier"

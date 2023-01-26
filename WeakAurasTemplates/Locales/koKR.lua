@@ -44,8 +44,7 @@ local L = WeakAuras.L
 	L["Charge Tracking"] = "충전량 추적"
 	L["cooldown"] = "재사용 대기시간"
 	L["Cooldown Tracking"] = "재사용 대기시간 추적"
-	--[[Translation missing --]]
-	L["Cooldowns"] = "Cooldowns"
+	L["Cooldowns"] = "재사용 대기시간"
 	L["Create Auras"] = "aura 생성"
 	L["debuff"] = "약화 효과"
 	L["Debuffs"] = "약화 효과"

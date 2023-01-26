@@ -1,8 +1,9 @@
 # Grid2
 
-## [2.0.73](https://github.com/michaelnpsp/Grid2/tree/2.0.73) (2022-12-04)
-[Full Changelog](https://github.com/michaelnpsp/Grid2/compare/2.0.72...2.0.73) [Previous Releases](https://github.com/michaelnpsp/Grid2/releases)
+## [2.1.1](https://github.com/michaelnpsp/Grid2/tree/2.1.1) (2023-01-18)
+[Full Changelog](https://github.com/michaelnpsp/Grid2/compare/2.1.0...2.1.1) [Previous Releases](https://github.com/michaelnpsp/Grid2/releases)
 
-- Added "Halls of Infusion" dungeon raid debuffs.  
-    Added some world bosses raid debuffs.  
-- Wrath: Added some missing bosses and raid debuffs for Naxxramas in the Wotlk module.  
+- Wotlk: TOC Updated  
+- Wrath: Removed toggleForVehicle workaround (github issue #98)  
+- Retail: Added evoker dream breath spell in new auras suggestion list.  
+- Fixing an issue with disabled border indicators (github issue #94)  

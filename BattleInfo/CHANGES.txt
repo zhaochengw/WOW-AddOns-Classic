@@ -1,10 +1,28 @@
-lightweight tag 5c1fca56a462c575ace07f81c7917638ce5ed9b0 v2.5.0-v3.4.0
+lightweight tag 9e3d6fc886dc049c1ff9a35bb1e8b67f8568c8fe v2.6.0-v3.4.1
 Author:	Boshi Lian <farmer1992@gmail.com>
-Date:	Mon Sep 5 05:03:40 2022 -0700
+Date:	Mon Jan 23 02:04:03 2023 -0800
 
-commit 5c1fca56a462c575ace07f81c7917638ce5ed9b0
+commit 9e3d6fc886dc049c1ff9a35bb1e8b67f8568c8fe
 Author: Boshi Lian <farmer1992@gmail.com>
-Date:   Mon Sep 5 05:03:40 2022 -0700
+Date:   Mon Jan 23 02:04:03 2023 -0800
 
-    disable quick join
+    bump ver
+
+commit 2903f0b6422608ee22befbf9b635c0012d747944
+Author: Jason Economou <economou@users.noreply.github.com>
+Date:   Tue Jan 17 10:21:00 2023 -0500
+
+    Track stats for Strand of the Ancients/Isle of Conquest
+
+commit 2903f0b6422608ee22befbf9b635c0012d747944
+Author: Jason Economou <economou@users.noreply.github.com>
+Date:   Tue Jan 17 10:21:00 2023 -0500
+
+    Track stats for Strand of the Ancients/Isle of Conquest
+
+commit 8ad826b82f19744c2b749bc1751a9f271cf46bbe
+Author: Jason Economou <economou@users.noreply.github.com>
+Date:   Tue Jan 17 10:20:03 2023 -0500
+
+    Separate stats into columns of 3 BGs each
 

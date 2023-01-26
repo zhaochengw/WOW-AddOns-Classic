@@ -57,7 +57,10 @@ local GridLayoutHeaderClass = {
 	end,
 	template = function(self, dbx, insecure)
 		if dbx.type=='custom' then
-			return 'Grid2InsecureGroupCustomHeaderTemplate'
+			return  (dbx.unitsFilter=='player' and 'Grid2InsecureGroupPlayerHeaderTemplate' ) or
+				    (dbx.unitsFilter=='target' and 'Grid2InsecureGroupTargetHeaderTemplate' ) or
+				    (dbx.unitsFilter=='focus'  and 'Grid2InsecureGroupFocusHeaderTemplate'  ) or
+					'Grid2InsecureGroupCustomHeaderTemplate'
 		elseif insecure or (dbx.nameList and (dbx.roleFilter or dbx.groupFilter)) then
 			return dbx.type=='pet' and 'Grid2InsecureGroupPetHeaderTemplate' or 'Grid2InsecureGroupHeaderTemplate'
 		else
@@ -394,7 +397,7 @@ end
 -- reload text indicators db (because text indicators have a special testMode to display header index)
 function Grid2Layout:ReloadTextIndicatorsDB()
 	for _,indicator in Grid2:IterateIndicators('text') do
-		indicator:LoadDB()
+		indicator:UpdateDB()
 	end
 end
 
@@ -599,8 +602,9 @@ end
 do
 	local template = { type = 'custom', detachHeader = true }
 	local headers = { -- headerName, units/column, unitsFilter
+		{ 'self',   1, 'player' },
 		{ 'target', 1, 'target' },
-		{ 'focus',  1, 'focus' },
+		{ 'focus',  1, 'focus'  },
 		{ 'boss',   8, 'boss1,boss2,boss3,boss4,boss5,boss6,boss7,boss8' },
 	}
 	function Grid2Layout:AddSpecialHeaders()
@@ -626,7 +630,7 @@ function Grid2Layout:SetHeaderProperties(header, dbx, setupIndex, headerName)
 	local p = self.db.profile
 	header.dbx = dbx
 	header.headerType = dbx.type or 'player' -- player, pet, custom
-	header.headerName = headerName or header.headerType -- player, pet, target, focus, boss, custom
+	header.headerName = headerName or header.headerType -- player, pet, self, target, focus, boss, custom
 	header.wasDetached = header.isDetached
 	header.isDetached = setupIndex>1 and (dbx.detachHeader or p.detachedHeaders=='player' or p.detachedHeaders==header.headerType) or nil
 	header.groupHorizontal = GetSetupValue( header.isDetached, p.groupHorizontals[header.headerName], p.horizontal )
@@ -892,7 +896,7 @@ function Grid2Layout:SetupDetachedHeader(header, setupIndex)
 		frameBack:ClearAllPoints()
 		frameBack:SetPoint('TOPLEFT', header, 'TOPLEFT', -Spacing, Spacing )
 		frameBack:SetPoint('BOTTOMRIGHT', header, 'BOTTOMRIGHT', Spacing, -Spacing )
-		frameBack:SetFrameLevel( header:GetFrameLevel() - 1 )
+		frameBack:SetFrameLevel(0)
 		frameBack:Hide()
 		self.layoutHasDetached = true
 	end

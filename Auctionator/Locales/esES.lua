@@ -137,7 +137,7 @@ L["CONFIG_SELLING_CONFIRM_LOW_PRICE"] = "Confirm posting items at an unusually l
 --[[Translation missing --]]
 L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_HEADER"] = "Confirm Posting Low Price"
 --[[Translation missing --]]
-L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_TEXT"] = "Lets you remove the confirmation dialog that appears when posting an item at an unusually low price."
+L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_TEXT_2"] = "Adds a confirmation dialog that appears when posting an item at an unusually low price."
 L["CONFIG_SELLING_DEFAULT_QUANTITY_SUFFIX"] = "Establecer en 0 para la cantidad máxima"
 L["CONFIG_SELLING_DEFAULT_QUANTITY_TOOLTIP_HEADER"] = "Cantidad de contabilización predeterminada"
 L["CONFIG_SELLING_DEFAULT_QUANTITY_TOOLTIP_TEXT"] = "Esto le permite cambiar la cantidad predeterminada utilizada al publicar un objeto. Ajústelo a 0 para usar la cantidad máxima posible."
@@ -609,6 +609,8 @@ L["STARTING_PRICE_PERCENTAGE_TOOLTIP_HEADER"] = "Precio inicial de oferta"
 L["STARTING_PRICE_PERCENTAGE_TOOLTIP_TEXT"] = "El porcentaje del precio inicial se utilizará para establecer el monto de oferta predeterminado utilizado para cualquier subasta publicada. Por ejemplo, establecer esto en 95, para un precio de 10 plata por pila, establecerá el precio de oferta en 9p50c."
 --[[Translation missing --]]
 L["STOP"] = "Stop"
+--[[Translation missing --]]
+L["STOP_LOADING_NOW"] = "Stop loading now"
 L["TEMPORARY_LOWER_CASE"] = "temporal"
 --[[Translation missing --]]
 L["TIER"] = "Tier"

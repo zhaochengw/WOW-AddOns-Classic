@@ -4986,11 +4986,11 @@ function NWB:updateMinimapButton(tooltip, frame)
 					end
 				end
 			end
-			if (NWB:isWintergraspBuffLayer(zoneID, "minimap")) then
+			if (NWB:isWintergraspBuffLayer(k, "minimap")) then
 				wintergraspTexture = " " .. "|T237021:12:12|t";
 			end
-			if (NWB.data.layerBuffs[zoneID]) then
-				for spellID, timestamp in pairs(NWB.data.layerBuffs[zoneID]) do
+			--[[if (NWB.data.layerBuffs[k]) then
+				for spellID, timestamp in pairs(NWB.data.layerBuffs[k]) do
 					--Wintergrasp buff is calced seperately.
 					if (spellID ~= 57940) then
 						if (layerBuffSpells[spellID] and GetServerTime() - timestamp < 600) then
@@ -4999,7 +4999,7 @@ function NWB:updateMinimapButton(tooltip, frame)
 						end
 					end
 				end
-			end
+			end]]
 			tooltip:AddLine("|cff00ff00[Layer " .. count .. "]|r  |cFF989898(zone " .. k .. ") " .. wintergraspTexture .. buffTextures .. "|r");
 			if (NWB.isClassic or (not NWB.db.global.hideMinimapBuffTimers
 					and not (NWB.db.global.disableBuffTimersMaxBuffLevel and UnitLevel("player") > 64))) then
@@ -10145,7 +10145,7 @@ function NWB:recalclayerFrame(isLogon, copyPaste)
 			--NWBlayerFrame.EditBox:Insert("\n|cff00ff00[Layer " .. count .. "]|r  |cFF989898(zone " .. k .. ")|r\n");
 			local wintergraspTextures, buffTextures = "", "";
 			if (NWB:isWintergraspBuffLayer(k, "layerFrame")) then
-				wintergraspTexture = " " .. "|T237021:12:12|t";
+				wintergraspTextures = " " .. "|T237021:12:12|t";
 			end
 			if (NWB.data.layerBuffs[k]) then
 				for spellID, timestamp in pairs(NWB.data.layerBuffs[k]) do

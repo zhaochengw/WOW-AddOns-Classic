@@ -463,8 +463,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Disabled"] = "Deaktiviert"
 	--[[Translation missing --]]
 	L["Disallow Entry Reordering"] = "Disallow Entry Reordering"
-	--[[Translation missing --]]
-	L["Discrete Rotation"] = "Discrete Rotation"
 	L["Display"] = "Anzeige"
 	L["Display Name"] = "Anzeigename"
 	L["Display Text"] = "Anzeigetext"
@@ -529,7 +527,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	--[[Translation missing --]]
 	L["Enemy nameplate(s) found"] = "Enemy nameplate(s) found"
 	--[[Translation missing --]]
-	L["Enter a Spell ID"] = "Enter a Spell ID"
+	L["Enter a Spell ID. You can use the addon idTip to determine spell ids."] = "Enter a Spell ID. You can use the addon idTip to determine spell ids."
 	--[[Translation missing --]]
 	L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."] = "Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."
 	--[[Translation missing --]]
@@ -852,6 +850,8 @@ Falls die Zahl als Dezimalzahl (z.B. 0.5), Bruch (z.B. 1/2) oder Prozentsatz (z.
 	L["Max"] = "Max"
 	--[[Translation missing --]]
 	L["Max Length"] = "Max Length"
+	--[[Translation missing --]]
+	L["Media Type"] = "Media Type"
 	L["Medium Icon"] = "Mittelgroßes Symbol"
 	L["Message"] = "Nachricht"
 	L["Message Prefix"] = "Nachrichtenprefix"
@@ -1054,6 +1054,8 @@ Nur ein Wert kann ausgewählt werden.]=]
 	L["Row Width"] = "Zeilenbreite"
 	--[[Translation missing --]]
 	L["Rows"] = "Rows"
+	--[[Translation missing --]]
+	L["Run on..."] = "Run on..."
 	L["Same"] = "Gleich"
 	--[[Translation missing --]]
 	L["Same texture as Foreground"] = "Same texture as Foreground"
@@ -1371,6 +1373,14 @@ It might not work correctly with your version!]=]
 	L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "Du bist im Begriff %d Aura/Auren zu löschen. |cFFFF0000Das Löschen kann nicht rückgängig gemacht werden!|r Willst du fortfahren?"
 	--[[Translation missing --]]
 	L["You are about to delete a trigger. |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "You are about to delete a trigger. |cFFFF0000This cannot be undone!|r Would you like to continue?"
+	--[[Translation missing --]]
+	L[ [=[You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.
+
+WeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered.]=] ] = [=[You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.
+
+WeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered.]=]
+	--[[Translation missing --]]
+	L["You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."] = "You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."
 	--[[Translation missing --]]
 	L["Your Saved Snippets"] = "Your Saved Snippets"
 	L["Z Offset"] = "Z-Versatz"

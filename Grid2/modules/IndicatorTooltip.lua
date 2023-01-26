@@ -26,7 +26,7 @@ local function OnFrameEnter(frame)
 		if tooltipOOC and not InCombatLockdown() then
 			Tooltip:Display(unit, Tooltip)
 		elseif tooltipCheck() then
-			local status = Tooltip:GetCurrentStatus(unit)
+			local status = Tooltip:GetCurrentStatus(unit, frame)
 			if status or tooltipDefault then
 				Tooltip:Display(unit, status or Tooltip)
 			end
@@ -79,7 +79,7 @@ function Tooltip:OnSuspend()
 	Grid2Frame:SetEventHook( 'OnLeave', OnFrameLeave, false )
 end
 
-function Tooltip:LoadDB()
+function Tooltip:UpdateDB()
 	local dbx  = self.dbx
 	tooltipOOC = dbx.displayUnitOOC
 	tooltipDefault = dbx.showDefault

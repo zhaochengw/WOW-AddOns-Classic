@@ -313,7 +313,8 @@ function func.pdf_CreateMenu(direction)
 		local name, _, quality, _, _, _, _, _, _, t = GetItemInfo(var.pdf_list[i]);
 		button:SetNormalTexture(t);
 		button:SetPushedTexture(t);
-		button.glow:SetVertexColor(GetItemQualityColor(quality));
+		local r, g, b, h = GetItemQualityColor(quality);
+		button.glow:SetVertexColor(r, g, b);
 		button.glow:Show();
 		button:Show();
 	end
@@ -390,8 +391,8 @@ function func.pdf_EventHandler_OnUpdate(self, elasped)
 				wipe(var.pdf_list);
 				local slotHash = SlotInfo[slot];
 				for i = var.isBankOpened and -1 or 0, var.isBankOpened and 11 or 4 do
-					for j = 1, GetContainerNumSlots(i) do
-						local link = GetContainerItemLink(i, j);
+					for j = 1, C_Container.GetContainerNumSlots(i) do
+						local link = C_Container.GetContainerItemLink(i, j);
 						if link and IsEquippableItem(link) then
 							local loc = select(9, GetItemInfo(link));
 							if slotHash[loc] then
@@ -1906,13 +1907,13 @@ function func.takeoff(slot, not_take_off_dur0)
 		return;
 	end
 	for i = 0, 4 do
-		for j = 1, GetContainerNumSlots(i) do
+		for j = 1, C_Container.GetContainerNumSlots(i) do
 			local cache_index = i * 100 + j;
 			if not var.cache[cache_index] then
-				local link = GetContainerItemLink(i, j);
+				local link = C_Container.GetContainerItemLink(i, j);
 				if not link then
 					PickupInventoryItem(slot);
-					-- PickupContainerItem(i, j);
+					-- C_Container.PickupContainerItem(i, j);
 					if i == 0 then
 						PutItemInBackpack();
 					else
@@ -1981,17 +1982,18 @@ function func.equipItem2(item1, item2, slot1, slot2)
 	if equipped1 and equipped2 then
 		return;
 	end
+	--[==[
 	for i = var.isBankOpened and -1 or 0, var.isBankOpened and 11 or 4 do
-		for j = 1, GetContainerNumSlots(i) do
+		for j = 1, C_Container.GetContainerNumSlots(i) do
 			if equipped1 and equipped2 then
 				return;
 			end
-			local link = GetContainerItemLink(i, j);
+			local link = C_Container.GetContainerItemLink(i, j);
 			if not equipped1 and (link and link == item1) then
 				var.itemLoc:SetBagAndSlot(i, j);
 				if not_checkBound1 or C_Item.IsBound(var.itemLoc) then
 					-- tinsert(var.bagItemCache1, true);
-					PickupContainerItem(i, j);
+					C_Container.PickupContainerItem(i, j);
 					EquipCursorItem(slot1);
 					equipped1 = true;
 					-- return;
@@ -2004,7 +2006,7 @@ function func.equipItem2(item1, item2, slot1, slot2)
 				var.itemLoc:SetBagAndSlot(i, j);
 				if not_checkBound2 or C_Item.IsBound(var.itemLoc) then
 					-- tinsert(var.bagItemCache1, true);
-					PickupContainerItem(i, j);
+					C_Container.PickupContainerItem(i, j);
 					EquipCursorItem(slot2);
 					equipped2 = true;
 					-- return;
@@ -2016,6 +2018,7 @@ function func.equipItem2(item1, item2, slot1, slot2)
 			end
 		end
 	end
+	--]==]
 	-- EquipItemByName(item, slot);
 	if not equipped2 or not equipped1 then
 		if id1 == ID2 and id1 ~= ID1 then
@@ -2036,47 +2039,66 @@ function func.equipItem2(item1, item2, slot1, slot2)
 	if equipped1 and equipped2 then
 		return;
 	end
-	for i = var.isBankOpened and -1 or 0, var.isBankOpened and 11 or 4 do
-		for j = 1, GetContainerNumSlots(i) do
-			if equipped1 and equipped2 then
-				return;
-			end
-			local id = GetContainerItemID(i, j);
-			if not equipped1 and (id and id == ID1) then
-				var.itemLoc:SetBagAndSlot(i, j);
-				if not_checkBound1 or C_Item.IsBound(var.itemLoc) then
-					-- tinsert(var.bagItemCache1, true);
-					PickupContainerItem(i, j);
-					EquipCursorItem(slot1);
-					equipped1 = true;
-					-- return;
-				else
-					tinsert(var.bagItemCache1, i);
-					tinsert(var.bagItemCache1, j);
-					-- tinsert(var.bagItemCache1, false);
+	if not equipped1 then
+		for i = var.isBankOpened and -1 or 0, var.isBankOpened and 11 or 4 do
+			for j = 1, C_Container.GetContainerNumSlots(i) do
+				local id = C_Container.GetContainerItemID(i, j);
+				if id and id == ID1 then
+					var.itemLoc:SetBagAndSlot(i, j);
+					if not_checkBound1 or C_Item.IsBound(var.itemLoc) then
+						-- tinsert(var.bagItemCache1, true);
+						C_Container.PickupContainerItem(i, j);
+						EquipCursorItem(slot1);
+						equipped1 = true;
+						_G.print("Equip", slot1, id);
+						-- return;
+						if equipped2 then
+							return;
+						else
+							break;
+						end
+					else
+						tinsert(var.bagItemCache1, i);
+						tinsert(var.bagItemCache1, j);
+						-- tinsert(var.bagItemCache1, false);
+					end
 				end
-			elseif not equipped2 and (id and id == ID2) then
-				var.itemLoc:SetBagAndSlot(i, j);
-				if not_checkBound2 or C_Item.IsBound(var.itemLoc) then
-					-- tinsert(var.bagItemCache1, true);
-					PickupContainerItem(i, j);
-					EquipCursorItem(slot2);
-					equipped2 = true;
-					-- return;
-				else
-					tinsert(var.bagItemCache2, i);
-					tinsert(var.bagItemCache2, j);
-					-- tinsert(var.bagItemCache1, false);
+			end
+		end
+	end
+	if not equipped2 then
+		for i = var.isBankOpened and -1 or 0, var.isBankOpened and 11 or 4 do
+			for j = 1, C_Container.GetContainerNumSlots(i) do
+				local id = C_Container.GetContainerItemID(i, j);
+				if id and id == ID2 then
+					var.itemLoc:SetBagAndSlot(i, j);
+					if not_checkBound2 or C_Item.IsBound(var.itemLoc) then
+						-- tinsert(var.bagItemCache1, true);
+						C_Container.PickupContainerItem(i, j);
+						EquipCursorItem(slot2);
+						equipped2 = true;
+						_G.print("Equip", slot2, id);
+						-- return;
+						if equipped1 then
+							return;
+						else
+							break;
+						end
+					else
+						tinsert(var.bagItemCache2, i);
+						tinsert(var.bagItemCache2, j);
+						-- tinsert(var.bagItemCache1, false);
+					end
 				end
 			end
 		end
 	end
 	if not equipped1 and #var.bagItemCache1 > 0 then
-		PickupContainerItem(var.bagItemCache1[1], var.bagItemCache1[2]);
+		C_Container.PickupContainerItem(var.bagItemCache1[1], var.bagItemCache1[2]);
 		EquipCursorItem(slot1);
 	end
 	if not equipped2 and #var.bagItemCache2 > 0 then
-		PickupContainerItem(var.bagItemCache2[1], var.bagItemCache2[2]);
+		C_Container.PickupContainerItem(var.bagItemCache2[1], var.bagItemCache2[2]);
 		EquipCursorItem(slot2);
 	end
 end
@@ -2092,13 +2114,13 @@ function func.equipItem(item, slot)
 	local bindType = select(14,GetItemInfo(ID));
 	local not_checkBound = not (bindType == 2 or bindType == 3);
 	for i = var.isBankOpened and -1 or 0, var.isBankOpened and 11 or 4 do
-		for j = 1, GetContainerNumSlots(i) do
-			local link = GetContainerItemLink(i, j);
+		for j = 1, C_Container.GetContainerNumSlots(i) do
+			local link = C_Container.GetContainerItemLink(i, j);
 			if link and link == item then
 				var.itemLoc:SetBagAndSlot(i, j);
 				if not_checkBound or C_Item.IsBound(var.itemLoc) then
 					-- tinsert(var.bagItemCache1, true);
-					PickupContainerItem(i, j);
+					C_Container.PickupContainerItem(i, j);
 					EquipCursorItem(slot);
 					return;
 				else
@@ -2110,13 +2132,13 @@ function func.equipItem(item, slot)
 		end
 	end
 	for i = var.isBankOpened and -1 or 0, var.isBankOpened and 11 or 4 do
-		for j = 1, GetContainerNumSlots(i) do
-			local id = GetContainerItemID(i, j);
+		for j = 1, C_Container.GetContainerNumSlots(i) do
+			local id = C_Container.GetContainerItemID(i, j);
 			if id and id == ID then
 				var.itemLoc:SetBagAndSlot(i, j);
 				if not_checkBound or C_Item.IsBound(var.itemLoc) then
 					-- tinsert(var.bagItemCache1, true);
-					PickupContainerItem(i, j);
+					C_Container.PickupContainerItem(i, j);
 					EquipCursorItem(slot);
 					return;
 				else
@@ -2145,7 +2167,7 @@ function func.equipItem(item, slot)
 	-- end
 	EquipItemByName(item, slot);
 	if #var.bagItemCache1 > 0 then
-		PickupContainerItem(var.bagItemCache1[1], var.bagItemCache1[2]);
+		C_Container.PickupContainerItem(var.bagItemCache1[1], var.bagItemCache1[2]);
 		EquipCursorItem(slot);
 	end
 end
@@ -2298,8 +2320,8 @@ function func.check(index)
 			return T, true;
 		end
 		for i = var.isBankOpened and -1 or 0, var.isBankOpened and 11 or 4 do
-			for j = 1, GetContainerNumSlots(i) do
-				local id = GetContainerItemID(i, j);
+			for j = 1, C_Container.GetContainerNumSlots(i) do
+				local id = C_Container.GetContainerItemID(i, j);
 				if id then
 					local loc = select(9, GetItemInfo(id));
 					local slots = loc2Slot[loc];

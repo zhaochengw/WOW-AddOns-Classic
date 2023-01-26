@@ -1,6 +1,6 @@
 ## Interface: 20504
 ## Author: Lag
-## Version: v3.0.7
+## Version: v3.1.0
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
 
@@ -21,7 +21,7 @@
 ## Notes-esMX: AtlasLoot tablas de botín de Fabricados
 ## Notes-frFR: Tables de butin des objets d'artisanat
 ## Notes-itIT: AtlasLoot loot tables of Crafting Items
-## Notes-koKR: 전문 기술 아이템의 AtlasLoot 전리품 테이블
+## Notes-koKR: L["Notes-Crafting"] = "전문 기술 아이템의 AtlasLoot 전리품 테이블"
 ## Notes-ptBR: Tabelas de saque de manufaturados de AtlasLoot
 ## Notes-ruRU: Таблицы добычи AtlasLoot для профессий.
 ## Notes-zhCN: AtlasLoot专业制作物品列表

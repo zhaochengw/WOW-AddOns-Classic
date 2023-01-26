@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2022, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2023, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -242,19 +242,14 @@ local function SetupTutorials()
 		},
 		{	-- 9
 			text = cTitle.."         What's NEW|r\n\n"..
-					cTitle.."Version 3.2.3|r\n"..
-					"- IMPROVED - Sanitization of tracked Quests\n"..
-					"- UPDATED - Addon support - ElvUI 13.01\n"..
+					cTitle.."Version 3.3.0|r\n"..
+					"- ADDED - Support for WoW 3.4.1\n"..
+					"- FIXED - Error when displaying Notification messages\n"..
+					"- UPDATED - Addon support - Questie 7.4.10\n"..
+					"- UPDATED - Addon support - ElvUI 13.21, Tukui 20.37\n"..
 					"- UPDATED - Help - Supporters (Patreon)\n\n"..
-					cTitle.."Version 3.2.2|r\n"..
-					"- FIXED - Error when auto turn-in quests (but still not ideal)\n"..
-					"- FIXED - Error when the quest is not in the Questie database\n"..
-					"- UPDATED - Addon support - Questie 7.4.5\n"..
-					"- UPDATED - Addon support - ElvUI 13.00, Tukui 20.33\n"..
-					"- UPDATED - Help - Supporters (Patreon)\n"..
-					"- UPDATED - Libs\n\n"..
 
-					cTitle.."WoW 3.4.0 - Known issues w/o solution|r\n"..
+					cTitle.."WoW 3.4.1 - Known issues w/o solution|r\n"..
 					"- Clicking on tracked quests or achievements has no response during combat.\n"..
 					"- Header buttons Q and A don't work during combat.\n\n"..
 
@@ -322,6 +317,7 @@ local function SetupTutorials()
 					cTitle.."Patrons|r\n"..
 					SetFormatedPatronName("Legendary", "Zayah", "Vek'nilash")..
 					SetFormatedPatronName("Epic", "Squishses", "Area 52")..
+					SetFormatedPatronName("Uncommon", "Charles Howarth")..
 					SetFormatedPatronName("Uncommon", "Flex (drantor)")..
 					SetFormatedPatronName("Uncommon", "Kyle Fuller")..
 					SetFormatedPatronName("Uncommon", "Pablo Sebastián Molina Silva")..

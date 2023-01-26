@@ -33,6 +33,7 @@ GTFO.SpellID["390326"] = {
 
 GTFO.SpellID["372339"] = {
   --desc = "Lava";
+  category = "Lava";
   sound = 1;
 };
 
@@ -104,9 +105,22 @@ GTFO.SpellID["393467"] = {
   sound = 1;
 };
 
-GTFO.SpellID["377840"] = {
-  --desc = "Temporal Shock (Eon's Fringe)";
-  sound = 2;
+GTFO.SpellID["377853"] = {
+  --desc = "Unstable Time (Eon's Fringe)";
+  applicationOnly = true;
+  soundFunction = function() 
+	local stacks = GTFO_DebuffStackCount("player", 377853);
+	if (UnitOnTaxi("player")) then
+		-- Don't alert when flying through this area on a flight path
+		return 0;
+	elseif (stacks > 45) then
+		-- Get teleported out at 49 stacks (98% movement reduction)
+		return 1;
+	elseif (stacks == 1 or stacks % 10 == 0 or stacks >= 40) then
+		-- Getting close to being teleported out
+		return 2;
+	end
+  end;
 };
 
 GTFO.SpellID["385355"] = {
@@ -167,6 +181,26 @@ GTFO.SpellID["388379"] = {
   sound = 1;
 };
 
+GTFO.SpellID["377838"] = {
+  --desc = "Slowing Sands";
+  sound = 1;
+};
+
+GTFO.SpellID["393562"] = {
+  --desc = "Lava Pool (Zhurtan the Riverboiler)";
+  sound = 1; -- Ground AOE spawned by a mob, not be ignored like other "lava pools"
+};
+
+GTFO.SpellID["393753"] = {
+  --desc = "Languid Bloom (Taresh)";
+  sound = 1;
+};
+
+GTFO.SpellID["389287"] = {
+  --desc = "Glacial Storm (Liskanoth)";
+  applicationOnly = true;
+  sound = 1;
+};
 
 --- *******************
 --- * Ruby Life Pools *
@@ -228,6 +262,17 @@ GTFO.SpellID["373973"] = {
 
 GTFO.SpellID["372820"] = {
   --desc = "Scorched Earth (Kokia Blazehoof)";
+  sound = 1;
+};
+
+GTFO.SpellID["392019"] = {
+  --desc = "Magma Eruption (Bazual)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["389366"] = {
+  --desc = "Magma Eruption (Bazual)";
   sound = 1;
 };
 
@@ -566,6 +611,12 @@ GTFO.SpellID["392563"] = {
   tankSound = 0;
 };
 
+GTFO.SpellID["393784"] = {
+  --desc = "Magma Breath (Iskakx)";
+  sound = 1;
+  tankSound = 0;
+};
+
 GTFO.SpellID["382458"] = {
   --desc = "Resonant Aftermath (Terros)";
   sound = 1;
@@ -594,6 +645,7 @@ GTFO.SpellID["371514"] = {
 GTFO.SpellID["372055"] = {
   --desc = "Icy Ground (Sennarth)";
   sound = 2;
+  category = "IcyGround";
 };
 
 GTFO.SpellID["371836"] = {
@@ -681,6 +733,13 @@ GTFO.SpellID["391711"] = {
   negatingDebuffSpellID = 391696;
 };
 
+GTFO.SpellID["373535"] = {
+  --desc = "Lightning Crash (Kurog Grimtotem)";
+  applicationOnly = true;
+  minimumStacks = 2;
+  sound = 4;
+};
+
 GTFO.SpellID["375883"] = {
   --desc = "Greatstaff's Wrath (Broodkeeper Diurna)";
   sound = 1;
@@ -688,6 +747,23 @@ GTFO.SpellID["375883"] = {
 
 GTFO.SpellID["379419"] = {
   --desc = "Empowered Greatstaff's Wrath (Broodkeeper Diurna)";
+  sound = 1;
+};
+
+GTFO.SpellID["375883"] = {
+  --desc = "Greatstaff's Wrath (Broodkeeper Diurna)";
+  sound = 1;
+};
+
+GTFO.SpellID["375873"] = {
+  --desc = "Wildfire (Broodkeeper Diurna)";
+  applicationOnly = true;
+  minimumStacks = 1;
+  sound = 1;
+};
+
+GTFO.SpellID["375578"] = {
+  --desc = "Flame Sentry (Dragonspawn Flamebender)";
   sound = 1;
 };
 
@@ -705,6 +781,24 @@ GTFO.SpellID["394583"] = {
 GTFO.SpellID["392196"] = {
   --desc = "Scattered Charge (Raszageth)";
   sound = 4;
+};
+
+GTFO.SpellID["388659"] = {
+	--desc = "Tempest Wing (Raszageth)";
+	test = true;
+	soundFunction = function() 
+		-- Alert if hit more than 5 times
+		if (not GTFO.VariableStore.TempestWing) then
+			GTFO.VariableStore.TempestWing = 0;
+		end
+		if (GTFO.VariableStore.TempestWing == 0) then
+			GTFO_AddEvent("ResetTempestWingCounter", 5, function() GTFO.VariableStore.TempestWing = 0; end);
+		end
+		GTFO.VariableStore.TempestWing = GTFO.VariableStore.TempestWing + 1;
+		if (GTFO.VariableStore.TempestWing > 5) then
+			return 1;
+		end
+	end;
 };
 
 end

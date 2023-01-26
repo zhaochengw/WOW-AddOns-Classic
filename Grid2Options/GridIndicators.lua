@@ -58,7 +58,7 @@ do
 	local function DeleteIndicatorReal(indicator)
 		local name = indicator.name
 		Grid2Options.LI[name] = nil
-		Grid2Frame:WithAllFrames(indicator, "Disable")
+		indicator:DisableAllFrames()
 		Grid2:DbSetIndicator(name,nil)
 		if indicator.dbx.sideKick then
 			Grid2:DbSetIndicator(indicator.dbx.sideKick.name, nil)
@@ -138,10 +138,7 @@ do
 			-- Create runtime indicator
 			local setupFunc = Grid2.setupFunc[dbx.type]
 			local indicator = setupFunc(newIndicatorName, dbx)
-			Grid2Frame:WithAllFrames(function (f)
-				indicator:Create(f)
-				indicator:Layout(f)
-			end)
+			Grid2Options:CreateIndicatorFrames(indicator)
 			-- Create indicator options
 			newIndicatorValues.name = ""
 			Grid2Options:MakeIndicatorOptions(indicator)
@@ -375,12 +372,13 @@ function Grid2Options:RegisterIndicatorOptions(type, isCreatable, funcMakeOption
 end
 
 -- Insert options of a indicator in AceConfigTable
-function Grid2Options:AddIndicatorOptions(indicator, statusOptions, layoutOptions, colorOptions)
+function Grid2Options:AddIndicatorOptions(indicator, statusOptions, layoutOptions, colorOptions, loadOptions)
 	local options = self.indicatorsOptions[indicator.name].args; wipe(options)
 	self:MakeIndicatorTitleOptions(options, indicator)
-	if statusOptions then options["statuses"] = { type = "group", order = 10, name = L["statuses"], args = statusOptions } end
-	if colorOptions  then options["colors"]   = { type = "group", order = 20, name = L["Colors"],	args = colorOptions  } end
-	if layoutOptions then options["layout"]   = { type = "group", order = 30, name = L["Layout"],	args = layoutOptions } end
+	if statusOptions then options.statuses = { type = "group", order = 10, name = L["statuses"], args = statusOptions } end
+	if colorOptions  then options.colors   = { type = "group", order = 20, name = L["Colors"],	 args = colorOptions  } end
+	if layoutOptions then options.layout   = { type = "group", order = 40, name = L["Layout"],	 args = layoutOptions } end
+	if loadOptions   then options.load     = { type = "group", order = 30, name = L["Load"],     args = loadOptions   } end
 end
 
 -- Don't remove options param (openmanager hooks this function and needs this parameter)

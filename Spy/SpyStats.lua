@@ -14,6 +14,7 @@ local PAGE_SIZE = 34
 local TAB_PLAYER = 1
 local VIEW_PLAYER_HISTORY = 1
 local COLOR_NORMAL = {1, 1, 1}
+local COLOR_SAME_FACTION = {0, 1, 0}
 local COLOR_KOS = {1, 0, 0}
 
 GUI.ListFrameLines = {
@@ -89,9 +90,9 @@ function SpyStats:Show()
     SpyStatsWinsLosesCheckbox:SetChecked(false)
     SpyStatsReasonCheckbox:SetChecked(false)
 	local HonorKills, _, HighestRank = GetPVPLifetimeStats("player")
-	SpyStatsHonorKillsText:SetText(L["HonorKills"]..":  "..HonorKills)
---	SpyStatsHonorKillsText:SetText(L["HonorKills"]..":  "..GetStatistic(588))
---	SpyStatsPvPDeathsText:SetText(L["PvPDeaths"]..":  "..GetStatistic(1501))
+--	SpyStatsHonorKillsText:SetText(L["HonorKills"]..":  "..HonorKills)
+	SpyStatsHonorKillsText:SetText(L["HonorKills"]..":  "..GetStatistic(588))
+	SpyStatsPvPDeathsText:SetText(L["PvPDeaths"]..":  "..GetStatistic(1501))
     SpyStatsFrame:Show()
     self:Recalulate()
     self:ScheduleRepeatingTimer("Refresh", 1)
@@ -234,7 +235,9 @@ function SpyStats:Refresh()
             local r, g, b
             if unit.kos and (age < 60) then
                 r, g, b = unpack(COLOR_KOS)
-            else
+            elseif unit.faction and unit.faction == Spy.FactionName then
+                r, g, b = unpack(COLOR_SAME_FACTION)
+			else
                 r, g, b = unpack(COLOR_NORMAL)
             end
 

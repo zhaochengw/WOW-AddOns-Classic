@@ -29,6 +29,8 @@ L["|cffeda55fShift-Click|r to pause addon execution."] = "|cffeda55fShift-Click|
 L["|cFFFF0000Not|r Item Bonus Id Equipped"] = "|cFFFF0000Not|r Item Bonus Id Equipped"
 --[[Translation missing --]]
 L["|cFFFF0000Not|r Player Name/Realm"] = "|cFFFF0000Not|r Player Name/Realm"
+--[[Translation missing --]]
+L["|cFFFF0000Not|r Spell Known"] = "|cFFFF0000Not|r Spell Known"
 L["|cFFffcc00Extra Options:|r %s"] = [=[|cFFffcc00Opções Extra:|r %s
 
 ]=]
@@ -285,6 +287,8 @@ L["Buffed/Debuffed"] = "Buffado/Debuffado"
 --[[Translation missing --]]
 L["Burning Crusade"] = "Burning Crusade"
 L["Buru the Gorger"] = "Buru, o Banqueteador"
+--[[Translation missing --]]
+L["Callback function"] = "Callback function"
 L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] = "Pode ser usado, por exemplo, para checar se \"chefe1alvo\" é o mesmo que \"jogador\"."
 L["Cancel"] = "Cancelar"
 --[[Translation missing --]]
@@ -773,6 +777,8 @@ L["Floor"] = "Floor"
 --[[Translation missing --]]
 L["Focus"] = "Focus"
 --[[Translation missing --]]
+L["Font"] = "Font"
+--[[Translation missing --]]
 L["Font Size"] = "Font Size"
 --[[Translation missing --]]
 L["Forbidden function or table: %s"] = "Forbidden function or table: %s"
@@ -1256,9 +1262,15 @@ L["Max Char "] = "Max Char "
 --[[Translation missing --]]
 L["Max Charges"] = "Max Charges"
 --[[Translation missing --]]
+L["Max Health"] = "Max Health"
+--[[Translation missing --]]
+L["Max Power"] = "Max Power"
+--[[Translation missing --]]
 L["Maximum"] = "Maximum"
 --[[Translation missing --]]
 L["Maximum Estimate"] = "Maximum Estimate"
+--[[Translation missing --]]
+L["Media"] = "Media"
 --[[Translation missing --]]
 L["Medium"] = "Medium"
 --[[Translation missing --]]
@@ -1925,6 +1937,8 @@ L["Star Shake"] = "Star Shake"
 --[[Translation missing --]]
 L["Start Now"] = "Start Now"
 L["Status"] = "Estado"
+--[[Translation missing --]]
+L["Status Bar"] = "Status Bar"
 L["Stolen"] = "Roubado"
 --[[Translation missing --]]
 L["Stop"] = "Stop"
@@ -1997,6 +2011,8 @@ L["Text-to-speech"] = "Text-to-speech"
 L["Texture Function"] = "Texture Function"
 --[[Translation missing --]]
 L["Texture Function (fallback state)"] = "Texture Function (fallback state)"
+--[[Translation missing --]]
+L["Texture Rotation"] = "Texture Rotation"
 --[[Translation missing --]]
 L["Thaddius"] = "Thaddius"
 --[[Translation missing --]]

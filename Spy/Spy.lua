@@ -7,7 +7,7 @@ local fonts = SM:List("font")
 local _
 
 Spy = LibStub("AceAddon-3.0"):NewAddon("Spy", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0", "AceTimer-3.0")
-Spy.Version = "3.1.0"
+Spy.Version = "3.1.2"
 Spy.DatabaseVersion = "1.1"
 Spy.Signature = "[Spy]"
 Spy.ButtonLimit = 15
@@ -1868,7 +1868,6 @@ function Spy:ChannelNoticeEvent(_, chStatus, _, _, Channel)
 		if InFilteredZone then
 			Spy.EnabledInZone = false
 		end
-																																		   
 							
 	 
 --		if (zone == L["Silithus"] and (subZone == L["Hall of Ancient Paths"] or L["Sanctum of the Sages"]) or zone == L["Chamber of Heart"]) then
@@ -1971,6 +1970,7 @@ function Spy:PlayerTargetEvent()
 			local race = select(1,UnitRace("target"))
 			local level = tonumber(UnitLevel("target"))
 			local guild = GetGuildInfo("target")
+			local faction = select(1,UnitFactionGroup("target"))
 			local guess = false
 			if level == Spy.Skull then
 				if playerData and playerData.level then
@@ -1990,7 +1990,7 @@ function Spy:PlayerTargetEvent()
 --				level = nil
 			end
 			
-			Spy:UpdatePlayerData(name, class, level, race, guild, true, guess)
+			Spy:UpdatePlayerData(name, class, level, race, guild, faction, true, guess)
 			if Spy.EnabledInZone then
 				Spy:AddDetected(name, time(), learnt)
 			end
@@ -2014,6 +2014,7 @@ function Spy:PlayerMouseoverEvent()
 			local race = select(1,UnitRace("mouseover"))
 			local level = tonumber(UnitLevel("mouseover"))
 			local guild = GetGuildInfo("mouseover")
+			local faction = select(1,UnitFactionGroup("mouseover"))
 			local guess = false
 			if level == Spy.Skull then
 				if playerData and playerData.level then
@@ -2033,7 +2034,7 @@ function Spy:PlayerMouseoverEvent()
 --				level = nil
 			end
 
-			Spy:UpdatePlayerData(name, class, level, race, guild, true, guess)
+			Spy:UpdatePlayerData(name, class, level, race, guild, faction, true, guess)
 			if Spy.EnabledInZone then
 				Spy:AddDetected(name, time(), learnt)
 			end
@@ -2057,6 +2058,7 @@ function Spy:NamePlateEvent(_, unit)
 			local race = select(1,UnitRace(unit))
 			local level = tonumber(UnitLevel(unit))
 			local guild = GetGuildInfo(unit)
+			local faction = select(1,UnitFactionGroup(unit))
 			local guess = false
 			if level == Spy.Skull then
 				if playerData and playerData.level then
@@ -2076,7 +2078,7 @@ function Spy:NamePlateEvent(_, unit)
 --				level = nil
 			end
 
-			Spy:UpdatePlayerData(name, class, level, race, guild, true, guess)
+			Spy:UpdatePlayerData(name, class, level, race, guild, faction, true, guess)
 			if Spy.EnabledInZone then
 				Spy:AddDetected(name, time(), learnt)
 			end
@@ -2120,7 +2122,7 @@ timestamp, event, hideCaster, srcGUID, srcName, srcFlags, sourceRaidFlags, dstGU
 					learnt, playerData = Spy:ParseUnitAbility(true, event, srcName, class, race, arg12, arg13)
 				end
 				if not learnt then
-					detected = Spy:UpdatePlayerData(srcName, class, nil, race, nil, true, nil)
+					detected = Spy:UpdatePlayerData(srcName, class, nil, race, nil, nil, true, nil)
 				end
 
 				if detected then
@@ -2135,6 +2137,7 @@ timestamp, event, hideCaster, srcGUID, srcName, srcFlags, sourceRaidFlags, dstGU
 
 				if dstGUID == UnitGUID("player") then
 					Spy.LastAttack = srcName
+					Spy.LastAttackTime = GetTime()
 				end
 			end
 		end
@@ -2157,7 +2160,7 @@ timestamp, event, hideCaster, srcGUID, srcName, srcFlags, sourceRaidFlags, dstGU
 					learnt, playerData = Spy:ParseUnitAbility(false, event, dstName, class, race, arg12, arg13)
 				end
 				if not learnt then
-					detected = Spy:UpdatePlayerData(dstName, class, nil, race, nil, true, nil)
+					detected = Spy:UpdatePlayerData(dstName, class, nil, race, nil, nil, true, nil)
 				end
 				if detected then
 					Spy:AddDetected(dstName, timestamp, learnt)
@@ -2218,7 +2221,7 @@ function Spy:LeftCombatEvent()
 end
 
 function Spy:PlayerDeadEvent()
-	if Spy.LastAttack then
+	if (Spy.LastAttack and (GetTime() - Spy.LastAttackTime) < .5 ) then
 		local playerData = SpyPerCharDB.PlayerData[Spy.LastAttack]
 		if playerData then
 			if not playerData.loses then

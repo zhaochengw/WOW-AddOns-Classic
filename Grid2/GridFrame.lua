@@ -11,82 +11,17 @@ local C_Timer_After = C_Timer.After
 local SecureButton_GetModifiedUnit = SecureButton_GetModifiedUnit
 local Grid2Frame
 
--- bugfix: wrath toggleForVehicle bug workaround
--- https://github.com/Stanzilla/WoWUIBugs/issues/274
-local fix_tfv_enabled, FixToggleForVehicleBugTargeting
-if Grid2.isWrath then
-	local vehicle_instances = {
-		[616] = true, -- malygos raid
-		[578] = true, -- oculus dungeon
-		-- [603] = true, -- ulduar, test
-		-- [571] = true, -- northend, test
-	}
-	local gsub = string.gsub
-	local format = string.format
-	local UnitHasVehicleUI = UnitHasVehicleUI
-	local SecureButton_GetModifiedUnit_Orig = SecureButton_GetModifiedUnit
-	local SecureButton_GetModifiedAttribute = SecureButton_GetModifiedAttribute
-	-- this blizzard api function is bugged (it does not swap players with pets) so we have to replace it
-	local function SecureButton_GetModifiedUnit_Patched(self)
-		local unit = SecureButton_GetModifiedAttribute(self, 'unit')
-		if unit then
-			local hadPet = strfind(unit,'pet')
-			local noPet = (hadPet==nil and unit) or (unit=='pet' and 'player') or gsub(unit, 'pet(%d)', '%1')
-			local noPetNoTarget, hadTarget = gsub(noPet, 'target', '')
-			if UnitHasVehicleUI(noPetNoTarget) and
-			   SecureButton_GetModifiedAttribute(self, 'toggleForVehicle') and
-			   noPetNoTarget == gsub( gsub( gsub( noPetNoTarget,'^mouseover','' ), '^focus','' ) ,'^arena%d','' )
-			then
-				if hadPet then
-					unit = noPet
-				elseif hadTarget == 0 or SecureButton_GetModifiedAttribute(self, 'allowVehicleTarget')  then
-					unit = gsub( gsub(unit, '^player', 'pet'), '^([%a]+)([%d]+)', '%1pet%2')
-				end
-			end
-			return unit
-		end
-	end
-	-- we have to use a macro for targeting but only on players, because pets units can be created in combat and we cannot set macros while in combat
-	-- this ugly workaround should work in malygos because players are not targetable while mounted on the drakos, but this does not work on other
-	-- vehicles if the player is targetable while is mounted on the vehicle. The macro targets the player pet if the player is not targetable.
-	function FixToggleForVehicleBugTargeting(self, unit)
-		if unit then
-			if not strfind(unit,'pet') and unit~=self.click_unit and SecureButton_GetModifiedAttribute(self,"toggleForVehicle") then
-				local pet = unit=='player' and 'pet' or gsub(unit,'^([%a]+)([%d]+)','%1pet%2')
-				self:SetAttribute('*type1', 'macro')
-				self:SetAttribute('*macrotext1', format('/tar [@%s,help][@%s,help][@%s]', unit, pet, unit) )
-				self.click_unit = unit
-			end
-		elseif self:GetAttribute('*macrotext1') then
-			self:SetAttribute('*type1', 'target')
-			self:SetAttribute('*macrotext1', nil)
-			self.click_unit = nil
-		end
-	end
-	-- Enable/Disable toggleForVehicle bug workaround, called from GridRoster.lua when zone changed
-	function Grid2:RefreshToggleForVehicleWorkaround(instID)
-	   local enabled = vehicle_instances[instID]
-		if enabled ~= fix_tfv_enabled then
-			SecureButton_GetModifiedUnit = enabled and SecureButton_GetModifiedUnit_Patched or SecureButton_GetModifiedUnit_Orig
-			Grid2Frame:WithAllFrames(function (f)
-				FixToggleForVehicleBugTargeting(f, enabled and f.unit or nil)
-			end)
-			fix_tfv_enabled = enabled
-			self:Debug( "WotLK ToggleForVehicle Bug Workaround:", enabled and "enabled!" or "disabled!" )
-		end
-	end
-end
-
 --{{{ Registered unit frames tracking
 local frames_of_unit = setmetatable({}, { __index = function (self, key)
 	local result = {}
 	self[key] = result
 	return result
 end})
-local unit_of_frame = {}
+local activatedFrames = {}  -- only frames assigned to an unit: activatedFrames[frame] = unit
+local registeredFrames = {} -- all frames created used and unused: registeredFrames[frameName] = frame
 
 function Grid2:SetFrameUnit(frame, unit)
-	local prev_unit = unit_of_frame[frame]
+	local prev_unit = activatedFrames[frame]
 	if prev_unit then
 		local frames = frames_of_unit[prev_unit]
 		frames[frame] = nil
@@ -102,7 +37,8 @@ function Grid2:SetFrameUnit(frame, unit)
 		end
 		frames[frame] = true
 	end
-	unit_of_frame[frame] = unit
+	activatedFrames[frame] = unit
+	frame.unit = unit
 end
 
 function Grid2:GetUnitFrames(unit)
@@ -114,7 +50,6 @@ function Grid2:UpdateFramesOfUnit(unit)
 		local old, new = frame.unit, SecureButton_GetModifiedUnit(frame)
 		if old ~= new then
 			Grid2:SetFrameUnit(frame, new)
-			frame.unit = new
 		end
 		frame:UpdateIndicators()
 	end
@@ -150,16 +85,12 @@ function GridFrameEvents:OnAttributeChanged(name, value)
 			local unit = SecureButton_GetModifiedUnit(self)
 			if old_unit ~= unit then
 				Grid2Frame:Debug("updated", self:GetName(), name, value, unit, '<=', old_unit)
-				self.unit = unit
 				Grid2:SetFrameUnit(self, unit)
 				self:UpdateIndicators()
-				if fix_tfv_enabled then FixToggleForVehicleBugTargeting(self,value) end
 			end
 		elseif old_unit then
 			Grid2Frame:Debug("removed", self:GetName(), name, old_unit)
-			self.unit = nil
 			Grid2:SetFrameUnit(self, nil)
-			if fix_tfv_enabled then FixToggleForVehicleBugTargeting(self) end
 		end
 	end
 end
@@ -193,9 +124,8 @@ local function GridFrame_Init(frame, width, height)
 		frame:SetAttribute("initial-width", width)
 		frame:SetAttribute("initial-height", height)
 	end
-	frame:RegisterForClicks("AnyUp")
+	frame:RegisterForClicks( Grid2Frame.mouseClickType or "AnyUp" )
 	if Clique then Clique:UpdateRegisteredClicks(frame) end
-	frame.menu = Grid2Frame.RightClickUnitMenu
 	frame.container = frame:CreateTexture()
 	frame:CreateIndicators()
 	frame:Layout()
@@ -217,7 +147,11 @@ function GridFramePrototype:Layout()
 	-- external border controlled by the border indicator
 	local r,g,b,a = self:GetBackdropBorderColor()
 	Grid2:SetFrameBackdrop( self, frameBackdrop )
-	if r then self:SetBackdropBorderColor(r, g, b, a) end
+	if r then
+		self:SetBackdropBorderColor(r, g, b, a)
+	else
+		self:SetBackdropBorderColor(0, 0, 0, 0)
+	end
 	-- inner border color (sure that is the inner border)
 	local cf = dbx.frameColor
 	self:SetBackdropColor( cf.r, cf.g, cf.b, cf.a )
@@ -243,7 +177,10 @@ function GridFramePrototype:Layout()
 	-- Adjust indicators position to the new size
 	local indicators = Grid2:GetIndicatorsEnabled()
 	for i=1,#indicators do
-		indicators[i]:Layout(self)
+		local indicator = indicators[i]
+		if indicator:GetFrame(self) then
+			indicator:Layout(self)
+		end
 	end
 end
 
@@ -260,10 +197,12 @@ end
 function GridFramePrototype:CreateIndicators()
 	local indicators = Grid2:GetIndicatorsSorted()
 	for i=1,#indicators do
-		indicators[i]:Create(self)
+		local indicator = indicators[i]
+		if indicator:CanCreate(self) then
+			indicator:Create(self)
+		end
 	end
 end
-
 --}}}
 
 --{{{ Grid2Frame
@@ -303,10 +242,10 @@ Grid2Frame.defaultDB = {
 function Grid2Frame:OnModuleInitialize()
 	self.dba = self.db
 	self.db = { global = self.dba.global, profile = self.dba.profile, shared = self.dba.profile }
-	self.registeredFrames = {}
 end
 
 function Grid2Frame:OnModuleEnable()
+	self.mouseClickType = Grid2.db.global.clickOnMouseDown and "AnyDown" or "AnyUp"
 	if Grid2.versionCli>=30000 then
 		self:RegisterEvent("UNIT_ENTERED_VEHICLE")
 		self:RegisterEvent("UNIT_EXITED_VEHICLE")
@@ -364,7 +303,7 @@ function Grid2Frame:RefreshIndicators(update)
 				else
 					Grid2:WakeUpIndicator(indicator)
 				end
-			elseif not s1 and update and indicator.UpdateDB then
+			elseif not s1 and update then
 				indicator:UpdateDB()
 			end
 		end
@@ -373,17 +312,17 @@ end
 
 function Grid2Frame:RegisterFrame(frame)
 	GridFrame_Init(frame, GridFrame_GetInitialSize(frame))
-	self.registeredFrames[frame:GetName()] = frame
+	registeredFrames[frame:GetName()] = frame
 end
 
 function Grid2Frame:CreateIndicators()
-	for _, frame in next, self.registeredFrames do
+	for _, frame in next, registeredFrames do
 		frame:CreateIndicators()
 	end
 end
 
 function Grid2Frame:UpdateIndicators()
-	for _, frame in next, self.registeredFrames do
+	for frame in next, activatedFrames do
 		frame:UpdateIndicators()
 	end
 end
@@ -408,12 +347,12 @@ do
 	local type, with = type, {}
 	with["table"] = function(self, object, func, ...)
 		if type(func) == "string" then func = object[func] end
-		for _, frame in next, self.registeredFrames do
+		for _, frame in next, registeredFrames do
 			func(object, frame, ...)
 		end
 	end
 	with["function"] = function(self, func, ...)
-		for _, frame in next, self.registeredFrames do
+		for _, frame in next, registeredFrames do
 			func(frame, ...)
 		end
 	end
@@ -429,12 +368,10 @@ end
 
 -- Event handlers
 function Grid2Frame:UpdateFrameUnits()
-	for _, frame in next, self.registeredFrames do
-		local old_unit = frame.unit
+	for frame, old_unit in next, activatedFrames do
 		local unit = SecureButton_GetModifiedUnit(frame)
 		if old_unit ~= unit then
 			Grid2:SetFrameUnit(frame, unit)
-			frame.unit = unit
 			frame:UpdateIndicators()
 		end
 	end
@@ -449,7 +386,6 @@ function Grid2Frame:UNIT_ENTERED_VEHICLE(event, unit)
 			local old, new = frame.unit, SecureButton_GetModifiedUnit(frame)
 			if old ~= new then
 				Grid2:SetFrameUnit(frame, new)
-				frame.unit = new
 				if UnitExists(new) and (event==nil or strfind(UnitGUID(new),'^Vehicle')) then -- new is a player or is a vehicle pet
 					frame:UpdateIndicators()
 				else -- only for pets: pet unit does not exist or exists but is not a vehicle yet
@@ -469,4 +405,6 @@ _G.Grid2Frame = Grid2Frame
 -- Allow other modules/addons to easily modify the grid unit frames
 Grid2Frame.Prototype = GridFramePrototype
 -- Allow other modules to access the variable for speed optimization
-Grid2.frames_of_unit = frames_of_unit
+Grid2Frame.frames_of_unit = frames_of_unit
+Grid2Frame.activatedFrames = activatedFrames
+Grid2Frame.registeredFrames = registeredFrames

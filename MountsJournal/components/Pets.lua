@@ -95,7 +95,7 @@ do
 			or isAuraApplied()
 		then
 			self:stopTicker()
-			self:UnregisterEvent("PLAYER_STARTED_MOVING")
+			self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 			self:RegisterEvent("PLAYER_STARTED_MOVING")
 		else
 			self:UnregisterEvent("PLAYER_STARTED_MOVING")

@@ -1,6 +1,6 @@
 ﻿
 	----------------------------------------------------------------------
-	-- 	Leatrix Maps 3.0.70 (21st December 2022)
+	-- 	Leatrix Maps 3.0.92 (23rd January 2023)
 	----------------------------------------------------------------------
 
 	-- 10:Func, 20:Comm, 30:Evnt, 40:Panl
@@ -12,7 +12,7 @@
 	local LeaMapsLC, LeaMapsCB, LeaDropList, LeaConfigList = {}, {}, {}, {}
 
 	-- Version
-	LeaMapsLC["AddonVer"] = "3.0.70"
+	LeaMapsLC["AddonVer"] = "3.0.92"
 
 	-- Get locale table
 	local void, Leatrix_Maps = ...
@@ -27,9 +27,6 @@
 				print(L["LEATRIX MAPS: WRONG VERSION INSTALLED!"])
 			end)
 			return
-		end
-		if gametocversion == 30401 then
-			LeaMapsLC.NewPatch = true
 		end
 	end
 
@@ -2635,7 +2632,7 @@
 			subTitle:ClearAllPoints()
 			subTitle:SetPoint("BOTTOM", 0, 72)
 
-			local slashTitle = LeaMapsLC:MakeTx(interPanel, "/ltm", 0, 0)
+			local slashTitle = LeaMapsLC:MakeTx(interPanel, "/run leamaps()", 0, 0)
 			slashTitle:SetFont(slashTitle:GetFont(), 72)
 			slashTitle:ClearAllPoints()
 			slashTitle:SetPoint("BOTTOM", subTitle, "TOP", 0, 40)
@@ -2696,7 +2693,7 @@
 
 		-- Show first run message
 		if not LeaMapsDB["FirstRunMessageSeen"] then
-			LeaMapsLC:Print(L["Enter"] .. " |cff00ff00" .. "/ltm" .. "|r " .. L["or click the minimap button to open Leatrix Maps."])
+			LeaMapsLC:Print(L["Enter"] .. " |cff00ff00" .. "/run leamaps()" .. "|r " .. L["or click the minimap button to open Leatrix Maps."])
 			LeaMapsDB["FirstRunMessageSeen"] = true
 		end
 
@@ -3509,13 +3506,13 @@
 				-- Show available commands
 				LeaMapsLC:Print("Leatrix Maps" .. "|n")
 				LeaMapsLC:Print(L["WC"] .. " " .. LeaMapsLC["AddonVer"] .. "|n|n")
-				LeaMapsLC:Print("/ltm reset - Reset the panel position.")
-				LeaMapsLC:Print("/ltm wipe - Wipe all settings and reload.")
-				LeaMapsLC:Print("/ltm help - Show this information.")
+				LeaMapsLC:Print('/run leamaps("reset") - Reset the panel position.')
+				LeaMapsLC:Print('/run leamaps("wipe") - Wipe all settings and reload.')
+				LeaMapsLC:Print('/run leamaps("help") - Show this information.')
 				return
 			else
 				-- Invalid command entered
-				LeaMapsLC:Print("Invalid command.  Enter /ltm help for help.")
+				LeaMapsLC:Print('Invalid command.  Enter /run leamaps("help") for help.')
 				return
 			end
 		else
@@ -3532,10 +3529,9 @@
 	end
 
 	-- Add slash commands
-	if not LeaMapsLC.NewPatch then
-		_G.SLASH_Leatrix_Maps1 = "/ltm"
-		_G.SLASH_Leatrix_Maps2 = "/leamaps"
-	end
+	-- _G.SLASH_Leatrix_Maps1 = "/ltm"
+	-- _G.SLASH_Leatrix_Maps2 = "/leamaps"
+	_G.SLASH_Leatrix_Maps1 = "/ztm" -- temp
 
 	SlashCmdList["Leatrix_Maps"] = function(self)
 		-- Run slash command function
@@ -3546,10 +3542,8 @@
 	end
 
 	-- Replacement for broken slash command system
-	if LeaMapsLC.NewPatch then
-		function leamaps(self)
-			SlashFunc(self or "")
-		end
+	function leamaps(self)
+		SlashFunc(self or "")
 	end
 
 	----------------------------------------------------------------------

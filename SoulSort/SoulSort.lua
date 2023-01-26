@@ -248,16 +248,16 @@ end
 
 function SS_PreCalculateSort()
 	for sourceBag=0,4 do
-		for sourceSlot=GetContainerNumSlots(sourceBag),1,-1 do 
+		for sourceSlot=C_Container.GetContainerNumSlots(sourceBag),1,-1 do 
 			if not SS_IsShardDeleted(sourceBag, sourceSlot) then
-				if GetContainerItemID(sourceBag, sourceSlot) == SoulShardItemID then
+				if C_Container.GetContainerItemID(sourceBag, sourceSlot) == SoulShardItemID then
 					local slotFound = false
 					for destinationBag=4,0,-1 do 
-						for destinationSlot=1,GetContainerNumSlots(destinationBag) do
+						for destinationSlot=1,C_Container.GetContainerNumSlots(destinationBag) do
 							if SS_IsSameSlot(sourceBag, sourceSlot, destinationBag, destinationSlot) then
 								slotFound = true
 								break
-							elseif GetContainerItemID(destinationBag, destinationSlot) ~= SoulShardItemID then
+							elseif C_Container.GetContainerItemID(destinationBag, destinationSlot) ~= SoulShardItemID then
 								if SS_SlotIsNotTaken(destinationBag, destinationSlot) then
 									SS_AddToSwapList(sourceBag, sourceSlot, destinationBag, destinationSlot)
 									slotFound = true
@@ -277,16 +277,16 @@ end
 
 function SS_PreCalculateSort_Reverse()
 	for sourceBag=0,4 do
-		for sourceSlot=GetContainerNumSlots(sourceBag),1,-1 do 
+		for sourceSlot=C_Container.GetContainerNumSlots(sourceBag),1,-1 do 
 			if not SS_IsShardDeleted(sourceBag, sourceSlot) then
-				if GetContainerItemID(sourceBag, sourceSlot) == SoulShardItemID then
+				if C_Container.GetContainerItemID(sourceBag, sourceSlot) == SoulShardItemID then
 					local slotFound = false
 					for destinationBag=4,0,-1 do 
-						for destinationSlot=GetContainerNumSlots(destinationBag),1,-1 do
+						for destinationSlot=C_Container.GetContainerNumSlots(destinationBag),1,-1 do
 							if SS_IsSameSlot(sourceBag, sourceSlot, destinationBag, destinationSlot) then
 								slotFound = true
 								break
-							elseif GetContainerItemID(destinationBag, destinationSlot) ~= SoulShardItemID then
+							elseif C_Container.GetContainerItemID(destinationBag, destinationSlot) ~= SoulShardItemID then
 								if SS_SlotIsNotTaken(destinationBag, destinationSlot) then
 									SS_AddToSwapList(sourceBag, sourceSlot, destinationBag, destinationSlot)
 									slotFound = true
@@ -306,8 +306,8 @@ end
 
 function SS_ExecuteSort()
 	for i=0,SwapListCount-1 do
-		PickupContainerItem(SwapList[i].sourceBag, SwapList[i].sourceSlot)
-		PickupContainerItem(SwapList[i].destinationBag, SwapList[i].destinationSlot)
+		C_Container.PickupContainerItem(SwapList[i].sourceBag, SwapList[i].sourceSlot)
+		C_Container.PickupContainerItem(SwapList[i].destinationBag, SwapList[i].destinationSlot)
 		--print("Swapping:", SwapList[i].sourceBag, SwapList[i].sourceSlot, SwapList[i].destinationBag, SwapList[i].destinationSlot)
 	end
 end
@@ -359,10 +359,10 @@ function SS_DeleteExcessShards()
 	local deletedShards = 0
 	local numShards = 0
 	for bag=4,0,-1 do 
-		for slot=GetContainerNumSlots(bag),1,-1 do
-			if GetContainerItemID(bag, slot) == SoulShardItemID then
+		for slot=C_Container.GetContainerNumSlots(bag),1,-1 do
+			if C_Container.GetContainerItemID(bag, slot) == SoulShardItemID then
 				if numShards >= SoulSortOptions.MaxShards then
-					PickupContainerItem(bag, slot)
+					C_Container.PickupContainerItem(bag, slot)
 					_, cursorItemID = GetCursorInfo()
 					if cursorItemID == SoulShardItemID then
 						DeleteCursorItem()
@@ -390,15 +390,15 @@ function SS_CalculateAutoSize()
 	local count = 0
 	hasSoulBag = false
 	for bag=1,4 do
-		bagName = GetBagName(bag)
+		bagName = C_Container.GetBagName(bag)
 		if bagName and SS_IsSoulBag(bagName) then
 			hasSoulBag = true
-			count = count + GetContainerNumSlots(bag)
+			count = count + C_Container.GetContainerNumSlots(bag)
 		end
 	end
 	if not hasSoulBag then
 		for bag=4,1,-1 do
-			numSlots = GetContainerNumSlots(bag)
+			numSlots = C_Container.GetContainerNumSlots(bag)
 			if numSlots > 0 then
 				count = numSlots
 				break
@@ -419,8 +419,8 @@ end
 function SS_GetSoulShardsCount()	
 	local numShardsTotal = 0
 	for bag=0,4 do 
-		for slot=1,GetContainerNumSlots(bag) do
-			if GetContainerItemID(bag, slot) == SoulShardItemID then
+		for slot=1,C_Container.GetContainerNumSlots(bag) do
+			if C_Container.GetContainerItemID(bag, slot) == SoulShardItemID then
 				numShardsTotal = numShardsTotal+1
 			end
 		end
@@ -434,11 +434,11 @@ function SS_UpdateShardCount()
 	end
 	if SoulSortOptions.ShowCounterPerBag then
 		for bag=0,4 do 
-			bagName = GetBagName(bag)
+			bagName = C_Container.GetBagName(bag)
 			if bagName and not SS_IsSoulBag(bagName) then
 				local numShards = 0
-				for slot=1,GetContainerNumSlots(bag) do
-					if GetContainerItemID(bag, slot) == SoulShardItemID then
+				for slot=1,C_Container.GetContainerNumSlots(bag) do
+					if C_Container.GetContainerItemID(bag, slot) == SoulShardItemID then
 						numShards = numShards+1
 					end
 				end

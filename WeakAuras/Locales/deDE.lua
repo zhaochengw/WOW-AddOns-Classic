@@ -38,6 +38,8 @@ L["|cFFFF0000Not|r Item Bonus Id Equipped"] = "|cFFFF0000Not|r Item Bonus Id Equ
 --[[Translation missing --]]
 L["|cFFFF0000Not|r Player Name/Realm"] = "|cFFFF0000Not|r Player Name/Realm"
 --[[Translation missing --]]
+L["|cFFFF0000Not|r Spell Known"] = "|cFFFF0000Not|r Spell Known"
+--[[Translation missing --]]
 L["|cFFffcc00Extra Options:|r %s"] = "|cFFffcc00Extra Options:|r %s"
 --[[Translation missing --]]
 L["|cFFffcc00Extra Options:|r None"] = "|cFFffcc00Extra Options:|r None"
@@ -311,6 +313,8 @@ L["Buffed/Debuffed"] = "Buffed/Debuffed"
 L["Burning Crusade"] = "Burning Crusade"
 --[[Translation missing --]]
 L["Buru the Gorger"] = "Buru the Gorger"
+--[[Translation missing --]]
+L["Callback function"] = "Callback function"
 L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] = "Kann genutzt werden um z.B zu checken ob \"Ziel\" dieselbe Einheit ist wie \"Spieler\""
 L["Cancel"] = "Abbrechen"
 --[[Translation missing --]]
@@ -737,6 +741,8 @@ L["Flex Raid"] = "Flexibler Schlachtzug"
 L["Flip"] = "Umdrehen"
 L["Floor"] = "Flur"
 L["Focus"] = "Fokus"
+--[[Translation missing --]]
+L["Font"] = "Font"
 L["Font Size"] = "Schriftgröße"
 --[[Translation missing --]]
 L["Forbidden function or table: %s"] = "Forbidden function or table: %s"
@@ -1152,9 +1158,15 @@ E.g. 1;2;1;2;2.5;3]=]
 L["Max Char "] = "Max Char "
 --[[Translation missing --]]
 L["Max Charges"] = "Max Charges"
+--[[Translation missing --]]
+L["Max Health"] = "Max Health"
+--[[Translation missing --]]
+L["Max Power"] = "Max Power"
 L["Maximum"] = "Maximum"
 --[[Translation missing --]]
 L["Maximum Estimate"] = "Maximum Estimate"
+--[[Translation missing --]]
+L["Media"] = "Media"
 --[[Translation missing --]]
 L["Medium"] = "Medium"
 --[[Translation missing --]]
@@ -1746,6 +1758,8 @@ L["Star Shake"] = "Star Shake"
 --[[Translation missing --]]
 L["Start Now"] = "Start Now"
 L["Status"] = "Status"
+--[[Translation missing --]]
+L["Status Bar"] = "Status Bar"
 L["Stolen"] = "Gestohlen (STOLEN)"
 L["Stop"] = "Stopp"
 L["Strength"] = "Stärke"
@@ -1811,6 +1825,8 @@ L["Text-to-speech"] = "Text-to-speech"
 L["Texture Function"] = "Texture Function"
 --[[Translation missing --]]
 L["Texture Function (fallback state)"] = "Texture Function (fallback state)"
+--[[Translation missing --]]
+L["Texture Rotation"] = "Texture Rotation"
 --[[Translation missing --]]
 L["Thaddius"] = "Thaddius"
 --[[Translation missing --]]

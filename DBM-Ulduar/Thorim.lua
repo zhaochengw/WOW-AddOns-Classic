@@ -1,9 +1,13 @@
 local mod	= DBM:NewMod("Thorim", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221215074731")
+mod:SetRevision("20230124053113")
 mod:SetCreatureID(32865)
-mod:SetEncounterID(1141)
+if not mod:IsClassic() then
+	mod:SetEncounterID(1141)
+else
+	mod:SetEncounterID(752)
+end
 mod:SetModelID(28977)
 mod:SetUsedIcons(7)
 
@@ -13,7 +17,7 @@ mod:RegisterKill("yell", L.YellKill)
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 62042 62130 62526 62527",
 	"SPELL_CAST_SUCCESS 62042 62466 62130",
-	"SPELL_DAMAGE 62017",
+	"SPELL_DAMAGE 62017 62466",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -109,7 +113,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnLightningCharge:Show()
 		timerLightningCharge:Start()
 	elseif args.spellId == 62130 then
-		timerUnbalancingStrike:Start(self:IsClassic() and 20 or 25)
+		timerUnbalancingStrike:Start(self:IsClassic() and 15 or 25)
 	end
 end
 

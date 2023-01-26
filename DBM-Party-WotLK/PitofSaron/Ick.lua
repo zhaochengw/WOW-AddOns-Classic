@@ -2,7 +2,7 @@ local mod	= DBM:NewMod(609, "DBM-Party-WotLK", 15, 278)
 local L		= mod:GetLocalizedStrings()
 
 
-mod:SetRevision("20220724021612")
+mod:SetRevision("20230117072216")
 mod:SetCreatureID(36476)
 mod:SetEncounterID(2001)
 mod:SetUsedIcons(8)
@@ -10,7 +10,7 @@ mod:SetUsedIcons(8)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 68987 68989",
+	"SPELL_CAST_START 68987 68989 69012",
 	"SPELL_AURA_APPLIED 69029",
 	"SPELL_AURA_REMOVED 69029",
 	"SPELL_PERIODIC_DAMAGE 69024",

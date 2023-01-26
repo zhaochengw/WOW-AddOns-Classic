@@ -6,6 +6,10 @@ if not AL then return end
 AL["--- or ---"] = "--- o ---"
 AL["%s will finish loading after combat."] = "%s terminará cargando después de combate."
 AL["(%d) Set:"] = "(%d) Conjunto:"
+--[[Translation missing --]]
+--[[ AL["(obsolete)"] = "(obsolete)"--]] 
+--[[Translation missing --]]
+--[[ AL["(owned)"] = "(owned)"--]] 
 AL["/al - Open the AtlasLoot window."] = "/al - Abre la ventana AtlasLoot."
 AL["/al mmb - Toggle MiniMapButton"] = "/al mmb -  Alternar MiniMapaBotón"
 AL["/al options - Open AtlasLoot Options window."] = "/al options - Abre ventana de Opciones de AtlasLoot"
@@ -42,6 +46,8 @@ AL["Add sound into chat"] = "Añade sonido al chat"
 --[[ AL["Alliance Vanguard"] = "Alliance Vanguard"--]] 
 AL["Alt + Left Click"] = "Alt + Clic Izquierdo"
 --[[Translation missing --]]
+--[[ AL["Alt + Right Click"] = "Alt + Right Click"--]] 
+--[[Translation missing --]]
 --[[ AL["Anub'Rekhan"] = "Anub'Rekhan"--]] 
 AL["AQ opening"] = "Apertura de AQ"
 --[[Translation missing --]]
@@ -56,7 +62,13 @@ AL["Bought with..."] = "Comprado con..."
 AL["Bow"] = "Arco"
 --[[Translation missing --]]
 --[[ AL["Brutal %s"] = "Brutal %s"--]] 
+--[[Translation missing --]]
+--[[ AL["Cancel"] = "Cancel"--]] 
+--[[Translation missing --]]
+--[[ AL["Change item note"] = "Change item note"--]] 
 AL["Chat Link"] = "Enlace de Chat"
+--[[Translation missing --]]
+--[[ AL["Chat-Link"] = "Chat-Link"--]] 
 --[[Translation missing --]]
 --[[ AL["Classic"] = "Classic"--]] 
 AL["Click to open Atlas instance map."] = "Haz clic para abrir el mapa de instancias de Atlas."
@@ -82,6 +94,8 @@ AL["Droprate:"] = "Prob. de conseguirse: "
 AL["Dungeons and Raids"] = "Mazmorras y Bandas"
 --[[Translation missing --]]
 --[[ AL["Enhancements"] = "Enhancements"--]] 
+--[[Translation missing --]]
+--[[ AL["Enter a note for %s"] = "Enter a note for %s"--]] 
 AL["Factions"] = "Facciones"
 AL["Favourites"] = "Favoritos"
 AL["Fishing Pole"] = "Caña de pescar"
@@ -117,6 +131,8 @@ AL["Honor Hold"] = "Bastión del Honor"
 --[[Translation missing --]]
 --[[ AL["Horde Expedition"] = "Horde Expedition"--]] 
 --[[Translation missing --]]
+--[[ AL["Import done!"] = "Import done!"--]] 
+--[[Translation missing --]]
 --[[ AL["Instructor Razuvious"] = "Instructor Razuvious"--]] 
 --[[Translation missing --]]
 --[[ AL["Item level:"] = "Item level:"--]] 
@@ -131,6 +147,8 @@ AL["Kurenai"] = "Kurenai"
 AL["Lady Falther'ess"] = "Lady Falther'ess"
 AL["L-Click"] = "Clic-Izquierdo"
 AL["Left Click"] = "Clic Izquierdo"
+--[[Translation missing --]]
+--[[ AL["List received. Click link again to import!"] = "List received. Click link again to import!"--]] 
 AL["Lists"] = "Listas"
 --[[Translation missing --]]
 --[[ AL["Loatheb"] = "Loatheb"--]] 
@@ -140,6 +158,8 @@ AL["Loot"] = "Botín"
 --[[Translation missing --]]
 --[[ AL["Maexxna"] = "Maexxna"--]] 
 AL["Main"] = "Principal"
+--[[Translation missing --]]
+--[[ AL["Malformed link"] = "Malformed link"--]] 
 AL["Middle Click"] = "Clic Central"
 AL["Misc"] = "Varios"
 AL["Model"] = "Modelo"
@@ -173,10 +193,14 @@ AL["Quest"] = "Misión"
 AL["Quest objective."] = "Objetivo de misión."
 AL["Reagent for..."] = "Componente para..."
 --[[Translation missing --]]
+--[[ AL["Received unexpected favourite list '%s' (expected '%s')"] = "Received unexpected favourite list '%s' (expected '%s')"--]] 
+--[[Translation missing --]]
 --[[ AL["Recipe"] = "Recipe"--]] 
 AL["Regen"] = "Regeneración"
 AL["Remove item from list"] = "Quitar objeto de la lista"
 AL["Reputation"] = "Reputación"
+--[[Translation missing --]]
+--[[ AL["Requesting favorite list from %s ..."] = "Requesting favorite list from %s ..."--]] 
 AL["Required module %s is currently disabled."] = "Módulo requerido %s es desactivado."
 AL["Required module %s is not installed."] = "Módulo requerido %s no es instalado."
 --[[Translation missing --]]
@@ -189,6 +213,8 @@ AL["Right-click to close Atlas window."] = "Clic Derecho para cerrar la ventana 
 --[[ AL["Sapphiron"] = "Sapphiron"--]] 
 --[[Translation missing --]]
 --[[ AL["Savage %s"] = "Savage %s"--]] 
+--[[Translation missing --]]
+--[[ AL["Save"] = "Save"--]] 
 --[[Translation missing --]]
 --[[ AL["Scorn"] = "Scorn"--]] 
 AL["Select Module"] = "Seleccionar módulo"

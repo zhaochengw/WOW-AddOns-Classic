@@ -1,12 +1,10 @@
-lightweight tag 098294a364ffd90dac568ffd11d25936c847ffbe 3.4.0.1
+lightweight tag b99fc477aee6c106785716525f9f14bc6c812825 3.4.1.3
 Author:	LANCESTRE <lancetre@intenebris.org>
-Date:	Thu Sep 1 13:27:46 2022 +0200
+Date:	Thu Jan 19 10:18:33 2023 +0100
 
-commit 098294a364ffd90dac568ffd11d25936c847ffbe
+commit b99fc477aee6c106785716525f9f14bc6c812825
 Author: LANCESTRE <lancetre@intenebris.org>
-Date:   Thu Sep 1 13:27:46 2022 +0200
+Date:   Thu Jan 19 10:18:33 2023 +0100
 
     Update SwitcherTracking.toc
-    
-    Ready WOTLK
 

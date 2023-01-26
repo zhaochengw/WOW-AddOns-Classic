@@ -1,6 +1,6 @@
-## Interface: 30400
+## Interface: 30401
 ## Author: Lag
-## Version: v3.0.7
+## Version: v3.1.0
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
 

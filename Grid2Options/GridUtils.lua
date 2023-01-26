@@ -427,8 +427,10 @@ end
 
 -- Grid2Options:UpdateIndicatorDB()
 function Grid2Options:UpdateIndicatorDB(indicator)
-	if indicator and indicator.UpdateDB then
+	if indicator then
 		indicator:UpdateDB()
+		indicator:UpdateFilter()
+		indicator:UpdateHighlight()
 		self:UpdateIndicatorDB( indicator.sideKick )
 		self:UpdateIndicatorDB( Grid2:GetIndicatorByName(indicator.childName) )
 	end
@@ -442,14 +444,33 @@ end
 --  key > method defined inside indicator to be executed
 function Grid2Options:RefreshIndicator(indicator, method)
 	self:UpdateIndicatorDB(indicator)
-	if method == "Create" then
-		Grid2Frame:WithAllFrames(indicator, "Disable")
-		Grid2Frame:WithAllFrames(indicator, "Create")
-		Grid2Frame:WithAllFrames(indicator, 'Layout')
-	elseif method ~= 'Update' then
-		Grid2Frame:WithAllFrames(indicator, method)
+	if method then
+		if method == "Create" then
+			for _,f in next, Grid2Frame.registeredFrames do
+				if indicator:GetFrame(f) then
+					indicator:Disable(f)
+					indicator:Create(f)
+					indicator:Layout(f)
+				end
+			end
+		elseif method == 'Layout' then
+			indicator:LayoutAllFrames()
+		elseif method ~= 'Update' then
+			Grid2Frame:WithAllFrames(indicator, method)
+		end
 	end
 	Grid2Frame:UpdateIndicators()
+end
+
+-- Create or recreate indicator
+function Grid2Options:CreateIndicatorFrames(indicator)
+	for _,f in next, Grid2Frame.registeredFrames do
+		if indicator:CanCreate(f) then
+			indicator:Release(f)
+			indicator:Create(f)
+			indicator:Layout(f)
+		end
+	end
 end
 
 -- Update & Layout all enabled indicators of all frames
@@ -457,9 +478,9 @@ function Grid2Options:UpdateIndicators(typ)
 	for _, indicator in ipairs(Grid2:GetIndicatorsEnabled()) do
 		if indicator.parentName==nil and ( typ==nil or indicator.dbx.type == typ ) then
 			self:UpdateIndicatorDB(indicator)
-			Grid2Frame:WithAllFrames(indicator, 'Layout')
+			indicator:LayoutAllFrames()
 			if indicator.childName then
-				Grid2Frame:WithAllFrames( Grid2:GetIndicatorByName(indicator.childName), 'Layout' )
+				Grid2:GetIndicatorByName(indicator.childName):LayoutAllFrames()
 			end
 		end
 	end
@@ -533,6 +554,17 @@ do
 		return bars
 	end
 end
+
+-- Grid2Options.PLAYER_CLASSES
+-- Grid2Options.HEADER_TYPES
+Grid2Options.PLAYER_CLASSES = {}
+for class, translation in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+	local coord = CLASS_ICON_TCOORDS[class]
+	if coord then
+		Grid2Options.PLAYER_CLASSES[class] =	string.format("|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:%f:%f:%f:%f:0|t%s",coord[1]*256,coord[2]*256,coord[3]*256,coord[4]*256,translation)
+	end
+end
+Grid2Options.HEADER_TYPES = { player = L['Players'], pet = L['Pets'], boss = L['Bosses'], target = L['Target'], focus = L['Focus'], self = L['Player'] }
 
 -- Grid2Options:ConfirmDialog(), Grid2Options:ShowEditDialog()
 do

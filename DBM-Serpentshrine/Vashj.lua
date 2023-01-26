@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Vashj", "DBM-Serpentshrine")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221129003558")
+mod:SetRevision("20230120015511")
 mod:SetCreatureID(21212)
 mod:SetEncounterID(628, 2463)
 mod:SetModelID(20748)
@@ -13,7 +13,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 38280 38575 360327 38511",
-	"SPELL_AURA_REMOVED 38280 38132 38112",
+	"SPELL_AURA_REMOVED 38280 38132 38112 38511",
 	"SPELL_CAST_START 38253",
 	"SPELL_CAST_SUCCESS 38316 38511",
 	"UNIT_DIED",

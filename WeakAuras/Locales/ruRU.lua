@@ -28,6 +28,8 @@ L["|cffeda55fRight-Click|r to toggle performance profiling window."] = "|cFFEDA5
 L["|cffeda55fShift-Click|r to pause addon execution."] = "|cFFEDA55FShift-клик|r - приостановить выполнение аддона."
 L["|cFFFF0000Not|r Item Bonus Id Equipped"] = "ID бонуса надетого предмета |cFFFF0000НЕ|r"
 L["|cFFFF0000Not|r Player Name/Realm"] = "Имя / Игровой мир игрока |cFFFF0000НЕ|r"
+--[[Translation missing --]]
+L["|cFFFF0000Not|r Spell Known"] = "|cFFFF0000Not|r Spell Known"
 L["|cFFffcc00Extra Options:|r %s"] = "|cFFFFCC00Дополнительные параметры:|r %s"
 L["|cFFffcc00Extra Options:|r None"] = "|cFFFFCC00Дополнительные параметры:|r нет"
 --[[Translation missing --]]
@@ -236,6 +238,8 @@ L["Buff/Debuff"] = "Бафф / Дебафф"
 L["Buffed/Debuffed"] = "Есть бафф / дебафф"
 L["Burning Crusade"] = "Burning Crusade"
 L["Buru the Gorger"] = "Буру Ненасытный"
+--[[Translation missing --]]
+L["Callback function"] = "Callback function"
 L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] = [=[Используется для проверки того факта, что две единицы - одна и та же сущность, объект.
 Например: выбрав в качестве единицы игрока и указав для данного параметра значение "boss1target", можно определить, являетесь ли вы целью босса.]=]
 L["Cancel"] = "Отмена"
@@ -534,6 +538,8 @@ L["Flex Raid"] = "Гибкий рейд"
 L["Flip"] = "Кувырок"
 L["Floor"] = "Floor (к меньшему целому)"
 L["Focus"] = "Фокус"
+--[[Translation missing --]]
+L["Font"] = "Font"
 L["Font Size"] = "Размер шрифта"
 L["Forbidden function or table: %s"] = "Запрещённая функция или таблица: %s"
 L["Foreground"] = "Передний план"
@@ -802,8 +808,14 @@ E.g. 1;2;1;2;2.5;3]=] ] = [=[Совпадает с номером фазы в ж
 Например: 1, 2, 1, 2, 2.5, 3.]=]
 L["Max Char "] = "Макс. количество символов"
 L["Max Charges"] = "Макс. количество зарядов"
+--[[Translation missing --]]
+L["Max Health"] = "Max Health"
+--[[Translation missing --]]
+L["Max Power"] = "Max Power"
 L["Maximum"] = "Макс. значение"
 L["Maximum Estimate"] = "Макс. оценка"
+--[[Translation missing --]]
+L["Media"] = "Media"
 L["Medium"] = "Средний"
 --[[Translation missing --]]
 L["Melee Haste (%)"] = "Melee Haste (%)"
@@ -1191,6 +1203,8 @@ L["Standing"] = "Отношение"
 L["Star Shake"] = "Дрожь в виде звезды"
 L["Start Now"] = "Начать сейчас"
 L["Status"] = "Статус"
+--[[Translation missing --]]
+L["Status Bar"] = "Status Bar"
 L["Stolen"] = "Кража"
 L["Stop"] = "Остановить"
 L["Strength"] = "Сила"
@@ -1234,6 +1248,8 @@ L["Text"] = "Текст"
 L["Text-to-speech"] = "Текст в речь"
 L["Texture Function"] = "Функция текстуры"
 L["Texture Function (fallback state)"] = "Функция текстуры (резервное состояние)"
+--[[Translation missing --]]
+L["Texture Rotation"] = "Texture Rotation"
 L["Thaddius"] = "Таддиус"
 L["The aura has overwritten the global '%s', this might affect other auras."] = "Индикация перезаписала значение глобальной переменной %s. Это может повлиять как на другие индикации, так и на ваш интерфейс!"
 L["The Battle for Mount Hyjal"] = "Битва за гору Хиджал"

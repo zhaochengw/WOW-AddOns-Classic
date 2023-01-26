@@ -21,6 +21,7 @@ L["Show info"] = true
 L["per Character"] = true
 L["per Realm"] = true
 L["Hide info from level under"] = true
+L["Show current chracter first"] = true
 
 L["Tooltip - Character info."] = true
 L["Line 1 of char info."] = true
@@ -128,4 +129,13 @@ L["ToC"] = true
 L["HoR"] = true
 L["PoS"] = true
 L["FoS"] = true
+-- Raid abbrs
+L["Naxx"] = true
+L["OS"]   = true
+L["EoE"]  = true
+L["ULD"]  = true
+L["ToC"]  = true
+L["ICC"]  = true
+L["RS"]   = true
+L["VoA"]  = true
 end

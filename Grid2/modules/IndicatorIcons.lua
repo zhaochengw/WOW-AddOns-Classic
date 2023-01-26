@@ -8,7 +8,7 @@ local ipairs = ipairs
 local format = string.format
 
 local function Icon_Create(self, parent)
-	local f = self:CreateFrame("Frame", parent)
+	local f = self:Acquire("Frame", parent)
 	f.myIndicator = self
 	f.myFrame = parent
 	f.auras = f.auras or {}
@@ -103,8 +103,11 @@ local EnableDelayedUpdates = function()
 end
 
 -- Warning: This is an overrided indicator:Update() NOT the standard indicator:OnUpdate()
-local function Icon_Update(self, parent)
-	updates[#updates+1] = parent[self.name]
+local function Icon_Update(self, parent, unit)
+	local f = parent[self.name]
+	if f then
+		updates[#updates+1] = f
+	end
 end
 
 local function Icon_Layout(self, parent)
@@ -188,7 +191,7 @@ end
 
 local pointsX = { TOPLEFT =  1,	TOPRIGHT = -1, BOTTOMLEFT = 1, BOTTOMRIGHT = -1 }
 local pointsY = { TOPLEFT = -1, TOPRIGHT = -1, BOTTOMLEFT = 1, BOTTOMRIGHT =  1 }
-local function Icon_LoadDB(self)
+local function Icon_UpdateDB(self)
 	local dbx = self.dbx
 	local theme = Grid2Frame.db.profile
 	-- location
@@ -238,13 +241,13 @@ local function Icon_LoadDB(self)
 end
 
 Grid2.setupFunc["icons"] = function(indicatorKey, dbx)
-	local indicator = Grid2.indicators[indicatorKey] or Grid2.indicatorPrototype:new(indicatorKey)
-	indicator.dbx      = dbx
-	indicator.Create   = Icon_Create
-	indicator.Layout   = Icon_Layout
-	indicator.Disable  = Icon_Disable
-	indicator.Update   = Icon_Update
-	indicator.LoadDB   = Icon_LoadDB
+	local indicator = Grid2.indicatorPrototype:new(indicatorKey)
+	indicator.dbx       = dbx
+	indicator.Create    = Icon_Create
+	indicator.Layout    = Icon_Layout
+	indicator.Disable   = Icon_Disable
+	indicator.UpdateDB  = Icon_UpdateDB
+	indicator.UpdateO   = Icon_Update -- special case used by multibar and icons indicator
 	EnableDelayedUpdates()
 	Grid2:RegisterIndicator(indicator, { "icon", "icons" })
 	return indicator

@@ -1,22 +1,10 @@
-tag 08a643d81e8d53ff6537f828b214aa7b623646f5 Details.DF.Wrath.10337.148
+tag 576836a77c369bd5153404f245c2ec3ca342d799 Details.DF.Wrath.10409.148
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Thu Dec 15 11:48:23 2022 -0300
+Date:	Fri Jan 20 11:55:40 2023 -0300
 
-commit 8d93d677ca54f67ec87aeb9922525a5e9344b146
+commit 597dac46992bd96c1876af6f01dbdc080c980ac6
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu Dec 15 11:47:58 2022 -0300
+Date:   Fri Jan 20 11:55:06 2023 -0300
 
-    Fixed an issue with open raid library
-
-commit 55f21591198166ac1010089eb4619254828349f7
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Wed Dec 14 08:06:39 2022 -0300
-
-    Framework update
-
-commit 6542699b750f9ad8507ab56c5d92da030b91df4d
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Tue Dec 13 08:32:16 2022 -0300
-
-    don't print the class played time if the played time is already in the chat window
+    Spell list maintenance
 

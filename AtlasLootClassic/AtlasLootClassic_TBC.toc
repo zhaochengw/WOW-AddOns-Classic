@@ -1,6 +1,6 @@
 ## Interface: 20504
 ## Author: Lag
-## Version: v3.0.7
+## Version: v3.1.0
 ## SavedVariables: AtlasLootClassicDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDBIcon-1.0, LibDataBroker-1.1
 ## DefaultState: Enabled
@@ -24,7 +24,7 @@
 ## Notes-esMX: Muestra botines posibles de jefes
 ## Notes-frFR: Affiche les butins possibles des boss
 ## Notes-itIT: Shows the possible loot from the bosses
-## Notes-koKR: 보스로부터 획득가능한 전리품 표시
+## Notes-koKR: L["Notes-AtlasLoot"] = "보스로부터 획득가능한 전리품 표시"
 ## Notes-ptBR: Mostra o possível saque dos chefes
 ## Notes-ruRU: Показывает возможную добычу с боссов
 ## Notes-zhCN: 显示首领可能的掉落物品

@@ -6,7 +6,7 @@ end
 
 
 -- INTERFACE
-Lang["Credits"] = "非常感谢我的行会|cffffd100<Divine Heresy>|r在我测试插件时给予的支持和理解，并感谢|cffffd100Bushido @ Pyrewood Village|r在TBC上的帮助！\n\n 另外，非常感谢翻译人员：\n  - 德语翻译: |cffffd100Sumaya @ Razorfen DE|r\n  - 俄语翻译: |cffffd100Greymarch Guild @ Flamegor RU|r\n  - 西班牙语翻译: |cffffd100Coyu @ Pyrewood Village EU|r\n  - 简体中文翻译: |cffffd100ly395842562|r 和 |cffffd100Icyblade|r\n  - 繁体中文翻译: |cffffd100DayZ 三指打天下|r 和 |cffffd100薇兒 @ Ivus TW|r\n  - 韩语翻译: |cffffd100Drix @ Azshara KR|r\n\n/Hug 来自 Cixi/Gaya @ Remulos Horde"
+Lang["Credits"] = "非常感谢我的行会|cffffd100<Divine Heresy>|r在我测试插件时给予的支持和理解，并感谢|cffffd100RoadBlock|r 和 |cffffd100Bushido|r在上的帮助！\n\n 另外，非常感谢翻译人员：\n  - 德语翻译: |cffffd100Sumaya @ Razorfen DE|r\n  - 俄语翻译: |cffffd100Greymarch Guild @ Flamegor RU|r\n  - 西班牙语翻译: |cffffd100Coyu @ Pyrewood Village EU|r\n  - 简体中文翻译: |cffffd100ly395842562|r 和 |cffffd100Icyblade|r\n  - 繁体中文翻译: |cffffd100DayZ 三指打天下|r 和 |cffffd100薇兒 @ Ivus TW|r\n  - 韩语翻译: |cffffd100Drix @ Azshara KR|r\n\n/Hug 来自 Cixi/Gaya @ Remulos Horde"
 Lang["Mini"] = "缩小"
 Lang["Maxi"] = "放大"
 Lang["Version"] = "Attune v##VERSION## by Cixi@Remulos"

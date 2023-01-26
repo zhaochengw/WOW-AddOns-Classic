@@ -1,8 +1,8 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: Spellbook Abridged
 ## Notes: A Spellbook Filter to reduce clutter from multiple ranks of the same spell.
 ## Author: LBXZero, Artscout375
-## Version: 2.6.6
+## Version: 2.6.7
 ## SavedVariablesPerCharacter: SpellBookAbridgedOptions
 
 Libs\AceLocale-3.0\AceLocale-3.0.xml

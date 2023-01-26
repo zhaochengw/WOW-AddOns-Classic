@@ -12,7 +12,7 @@ local SetSizeMethods = { HORIZONTAL = "SetWidth", VERTICAL = "SetHeight" }
 local GetSizeMethods = { HORIZONTAL = "GetWidth", VERTICAL = "GetHeight" }
 
 local function Bar_CreateHH(self, parent)
-	local bar = self:CreateFrame("StatusBar", parent)
+	local bar = self:Acquire("StatusBar", parent)
 	bar.myIndicator = self
 	bar.myValues = {}
 	bar:SetStatusBarColor(0,0,0,0)
@@ -106,27 +106,29 @@ end
 local function Bar_Update(self, parent, unit, status)
 	if unit then
 		local bar = parent[self.name]
-		local values = bar.myValues
-		if status then
-			local index = self.priorities[status]
-			local value = status:GetPercent(unit) or 0
-			values[index] = value
-			if value>0 and index>bar.myMaxIndex then
-				bar.myMaxIndex = index -- Optimization to avoid updating bars with zero value
-			end
-			if index==1 then
-			   bar:SetMainBarValue(value)
-			end
-			if self.backAnchor or bar.myMaxIndex>1 then
+		if bar then
+			local values = bar.myValues
+			if status then
+				local index = self.priorities[status]
+				local value = status:GetPercent(unit) or 0
+				values[index] = value
+				if value>0 and index>bar.myMaxIndex then
+					bar.myMaxIndex = index -- Optimization to avoid updating bars with zero value
+				end
+				if index==1 then
+				   bar:SetMainBarValue(value)
+				end
+				if self.backAnchor or bar.myMaxIndex>1 then
+					updates[bar] = true
+				end
+			else -- update due a layout or groupType change not from a status notifying a change
+				for i, status in ipairs(self.statuses) do
+					values[i] = status:GetPercent(unit) or 0
+				end
+				bar.myMaxIndex = #self.statuses
+				bar:SetMainBarValue(values[1] or 0)
 				updates[bar] = true
 			end
-		else -- update due a layout or groupType change not from a status notifying a change
-			for i, status in ipairs(self.statuses) do
-				values[i] = status:GetPercent(unit) or 0
-			end
-			bar.myMaxIndex = #self.statuses
-			bar:SetMainBarValue(values[1] or 0)
-			updates[bar] = true
 		end
 	end
 end
@@ -206,7 +208,7 @@ local function Bar_Disable(self, parent)
 	bar:ClearAllPoints()
 end
 
-local function Bar_LoadDB(self)
+local function Bar_UpdateDB(self)
 	local dbx          = self.dbx
 	local l            = dbx.location
 	local theme        = Grid2Frame.db.profile
@@ -266,22 +268,27 @@ end
 
 local function BarColor_SetBarColor(self, parent, r, g, b, a)
 	local bar = parent[self.parentName]
-	bar:SetStatusBarColor(r, g, b, min(self.opacity,a or 1) )
-	local textures = bar.myCTextures
-	if textures then
-		for i=#textures,1,-1 do
-			local tex = textures[i]
-			tex:SetVertexColor( r, g, b, min(tex.myOpacity, a) )
+	if bar then
+		bar:SetStatusBarColor(r, g, b, min(self.opacity,a or 1) )
+		local textures = bar.myCTextures
+		if textures then
+			for i=#textures,1,-1 do
+				local tex = textures[i]
+				tex:SetVertexColor( r, g, b, min(tex.myOpacity, a) )
+			end
 		end
 	end
 end
 
 local function BarColor_SetBarColorInverted(self, parent, r, g, b, a)
-	local textures = parent[self.parentName].myTextures
-	textures[#textures]:SetVertexColor(r, g, b, a)
+	local bar = parent[self.parentName]
+	if bar then
+		local textures = bar.myTextures
+		textures[#textures]:SetVertexColor(r, g, b, a)
+	end
 end
 
-local function BarColor_LoadDB(self)
+local function BarColor_UpdateDB(self)
 	local dbx = self.dbx
 	self.SetBarColor = dbx.invertColor and BarColor_SetBarColorInverted or BarColor_SetBarColor
 	self.OnUpdate = dbx.textureColor.r and Grid2.Dummy or BarColor_OnUpdate
@@ -291,26 +298,25 @@ end
 --- }}}
 
 local function Create(indicatorKey, dbx)
-	local Bar = Grid2.indicators[indicatorKey] or Grid2.indicatorPrototype:new(indicatorKey)
+	local Bar = Grid2.indicatorPrototype:new(indicatorKey)
 	Bar.dbx = dbx
 	-- Hack to caculate status index fast: statuses[priorities[status]] == status
-	Bar.sortStatuses   = function (a,b) return Bar.priorities[a] < Bar.priorities[b] end
-	Bar.Create         = Bar_CreateHH
-	Bar.SetOrientation = Bar_SetOrientation
-	Bar.Disable        = Bar_Disable
-	Bar.Layout         = Bar_Layout
-	Bar.Update         = Bar_Update
-	Bar.LoadDB         = Bar_LoadDB
+	Bar.sortStatuses    = function (a,b) return Bar.priorities[a] < Bar.priorities[b] end
+	Bar.Create          = Bar_CreateHH
+	Bar.SetOrientation  = Bar_SetOrientation
+	Bar.Disable         = Bar_Disable
+	Bar.Layout          = Bar_Layout
+	Bar.UpdateDB        = Bar_UpdateDB
+	Bar.UpdateO         = Bar_Update -- special case used by multibar and icons indicator
 	Grid2:RegisterIndicator(Bar, { "percent" })
 	EnableDelayedUpdates()
 
-	local colorKey      = indicatorKey .. "-color"
-	local BarColor      = Grid2.indicators[colorKey] or Grid2.indicatorPrototype:new(colorKey)
+	local BarColor      = Grid2.indicatorPrototype:new(indicatorKey.."-color")
 	BarColor.dbx        = dbx
 	BarColor.parentName = indicatorKey
 	BarColor.Create     = Grid2.Dummy
 	BarColor.Layout     = Grid2.Dummy
-	BarColor.LoadDB     = BarColor_LoadDB
+	BarColor.UpdateDB   = BarColor_UpdateDB
 	Grid2:RegisterIndicator(BarColor, { "color" })
 	Bar.sideKick = BarColor
 

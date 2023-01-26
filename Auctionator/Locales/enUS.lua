@@ -500,7 +500,7 @@ AUCTIONATOR_LOCALES.enUS = function()
   L["CONFIG_SELLING_SHOW_BID_PRICE_TOOLTIP_TEXT"] = "Controls whether the bid price option appears when posting an item."
   L["CONFIG_SELLING_CONFIRM_LOW_PRICE"] = "Confirm posting items at an unusually low price"
   L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_HEADER"] = "Confirm Posting Low Price"
-  L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_TEXT"] = "Lets you remove the confirmation dialog that appears when posting an item at an unusually low price."
+  L["CONFIG_SELLING_CONFIRM_LOW_PRICE_TOOLTIP_TEXT_2"] = "Adds a confirmation dialog that appears when posting an item at an unusually low price."
   L["CONFIG_SELLING_SPLIT_PANELS"] = "Show split panel view between current prices and historical prices"
   L["CONFIG_SELLING_SPLIT_PANELS_TOOLTIP_HEADER"] = "Split Panels View"
   L["CONFIG_SELLING_SPLIT_PANELS_TOOLTIP_TEXT"] = "Normally the historical prices are on a tab inside the Selling tab, instead this makes the current prices always visible, but the historical prices show as a panel below them."
@@ -607,6 +607,7 @@ AUCTIONATOR_LOCALES.enUS = function()
   L["CHAIN_BUY_TOOLTIP_HEADER"] = "Chain multiple purchases"
   L["CHAIN_BUY_TOOLTIP_TEXT"] = "When finished purchasing at the current price and stack size select the next price and stack size."
   L["LOAD_HIGHER_PRICES"] = "Load higher prices"
+  L["STOP_LOADING_NOW"] = "Stop loading now"
   L["LOAD_MORE_RESULTS"] = "Load more results"
 
   L["CONFIG_SHOPPING_ALWAYS_LOAD_MORE"] = "Always load all available results."

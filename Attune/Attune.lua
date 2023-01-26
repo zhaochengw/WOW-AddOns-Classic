@@ -8,8 +8,11 @@
 --
 -------------------------------------------------------------------------
 
--- Done in 309
---  Optim to event handling (Thanks @RoadBlock!)
+-- Done in 311
+--  ToC update for Phase 2
+--  Updated Ace Libraries		
+--  fix to an AceGUI widget (label)		- Thanks RoadBlock!
+--  Added a DK icon >.<
 
 
 -------------------------------------------------------------------------
@@ -1895,7 +1898,11 @@ function Attune_Frame()
 	--attunelocal_frame.frame:SetHeight(Attune_DB.height)
 	--attunelocal_frame.frame:SetWidth(Attune_DB.width)
 
-	attunelocal_frame.frame:SetMinResize(1010, 550)
+	if attunelocal_frame.frame.SetResizeBounds then
+		attunelocal_frame.frame:SetResizeBounds(1010, 550)
+	else
+		attunelocal_frame.frame:SetMinResize(1010, 550)
+	end
 	attunelocal_frame.frame:SetFrameStrata("HIGH")
 
 
@@ -4755,6 +4762,7 @@ function Attune_Icons(what, gender)
 	if (what == "SHAMAN") 	then icon = "Interface\\Icons\\spell_nature_bloodlust" end
 	if (what == "WARLOCK") then icon = "Interface\\Icons\\spell_nature_drowsy" end
 	if (what == "WARRIOR") then icon = "Interface\\Icons\\inv_sword_27" end
+	if (what == "DEATHKNIGHT") then icon = "Interface\\Icons\\Spell_deathknight_classicon" end
 	if (what == "UNKNOWN") then icon = "Interface\\Icons\\Inv_misc_questionmark" end
 	
 	local g = 'male'
@@ -4934,7 +4942,11 @@ function Attune_RaidPlannerFrame()
 	attunelocal_raidframe:SetWidth(1020)
 	attunelocal_raidframe:SetLayout("Flow")
 	
-	attunelocal_raidframe.frame:SetMinResize(620, 620)
+	if attunelocal_raidframe.frame.SetResizeBounds then
+		attunelocal_raidframe.frame:SetResizeBounds(620, 620)
+	else
+		attunelocal_raidframe.frame:SetMinResize(620, 620)
+	end
 	attunelocal_raidframe.frame:SetFrameStrata("HIGH")
 
 	

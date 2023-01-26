@@ -1,14 +1,14 @@
 local mod = DBM:NewMod(533, "DBM-Party-BC", 16, 249)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20221129003558")
+mod:SetRevision("20230120015511")
 mod:SetCreatureID(24664)
 mod:SetEncounterID(1894)
 mod:SetModelID(22906)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 36819",
+	"SPELL_CAST_START 36819 44224",
 	"SPELL_CAST_SUCCESS 44194 36819",
 	"SPELL_AURA_APPLIED 46165",
 	"SPELL_AURA_REMOVED 46165",

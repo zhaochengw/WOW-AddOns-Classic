@@ -67,7 +67,7 @@ function journal:init()
 	setmetatable(mounts.defFilters.tags.tags, filtersMeta)
 
 	-- BACKGROUND FRAME
-	self.bgFrame = CreateFrame("FRAME", "MountsJournalBackground", self.CollectionsJournal, "MJMountJournalFrameTemplate")
+	self.bgFrame = CreateFrame("FRAME", "MountsJournalBackground", nil, "MJMountJournalFrameTemplate")
 	local scale = self.bgFrame:GetEffectiveScale()
 	local x, y = mounts.config.journalPosX, mounts.config.journalPosY
 	if x then

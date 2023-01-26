@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Malacrass", "DBM-ZulAman")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221129003558")
+mod:SetRevision("20230120015511")
 mod:SetCreatureID(24239)
 mod:SetEncounterID(1193, 2486)
 mod:SetZone()
@@ -9,7 +9,7 @@ mod:SetZone()
 mod:RegisterCombat("combat_yell", L.YellPull)
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 43501 43421 43442",
+	"SPELL_AURA_APPLIED 43501 43421 43442 43440 43429",
 	"SPELL_CAST_START 43548 43451 43431",
 	"SPELL_CAST_SUCCESS 43383 43429",
 	"SPELL_SUMMON 43436"

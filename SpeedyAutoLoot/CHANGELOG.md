@@ -1,3 +1,6 @@
+### 2.2.8
+- Version update for Wrath
+
 ### 2.2.7
 - Loot window will properly show items that are rolled for
 

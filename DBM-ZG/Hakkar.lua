@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Hakkar", "DBM-ZG", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221129003558")
+mod:SetRevision("20230120015511")
 mod:SetCreatureID(14834)
 mod:SetEncounterID(793)
 mod:SetHotfixNoticeRev(20200419000000)--2020, 04, 19
@@ -164,7 +164,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args.spellId == 20475 then
+	if args.spellId == 24328 then
 		if args:IsPlayer() then
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Hide()

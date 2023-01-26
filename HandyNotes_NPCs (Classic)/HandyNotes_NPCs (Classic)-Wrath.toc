@@ -1,6 +1,6 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: HandyNotes: NPCs (Classic)
-## Version: 1.32c
+## Version: 1.33a
 ## Notes: Shows locations of various npcs
 ## Author: Cali
 ## X-Curse-Project-ID: 340222

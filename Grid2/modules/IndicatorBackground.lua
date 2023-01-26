@@ -6,6 +6,10 @@ local cr, cg, cb, ca = 0, 0, 0, 1
 Background.Create = Grid2.Dummy
 Background.Layout = Grid2.Dummy
 
+function Background:GetFrame(parent)
+	return parent.content
+end
+
 function Background:Disable(parent)
 	parent.container:SetVertexColor(0,0,0,0)
 end
@@ -18,7 +22,7 @@ function Background:OnUpdate(parent, unit, status)
 	end
 end
 
-function Background:LoadDB()
+function Background:UpdateDB()
 	local c = Grid2Frame.db.profile.frameContentColor
 	cr, cg, cb, ca = c.r, c.g, c.b, c.a
 end

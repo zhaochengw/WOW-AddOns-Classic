@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## X-Min-Interface: 80000
 ## X-Min-Interface-Wrath: 30400
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Ulduar|r
@@ -20,7 +20,7 @@
 ## X-DBM-Mod-Sort: 903
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-DBM-Mod-MinExpansion: 2
-## Version: fae3a44
+## Version: fadcc26
 
 localization.en.lua
 localization.de.lua

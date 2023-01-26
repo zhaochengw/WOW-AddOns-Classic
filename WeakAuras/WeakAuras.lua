@@ -1,7 +1,7 @@
 --- @type string, Private
 local AddonName, Private = ...
 
-local internalVersion = 61
+local internalVersion = 64
 
 -- Lua APIs
 local insert = table.insert
@@ -2618,7 +2618,12 @@ local function validateUserConfig(data, options, config)
       local optionClass = Private.author_option_classes[option.type]
       if optionClass ~= "group" then
         local option = options[authorOptionKeys[key]]
-        if type(value) ~= type(option.default) then
+        if option.type == "media" then
+          -- sounds can be number or string, other kinds of media can only be string
+          if type(value) ~= "string" and (type(value) ~= "number" or option.mediaType ~= "sound") then
+            config[key] = option.default
+          end
+        elseif type(value) ~= type(option.default) then
           -- if type mismatch then we know that it can't be right
           if type(option.default) ~= "table" then
             config[key] = option.default
@@ -3378,7 +3383,7 @@ local function actionGlowStart(actions, frame, id)
       actions.glow_thickness,
       actions.glow_XOffset,
       actions.glow_YOffset,
-      actions.glow_border,
+      actions.glow_border and true or false,
       id
     )
   elseif actions.glow_type == "ACShine" then
@@ -4260,6 +4265,8 @@ local function startStopTimers(id, cloneId, triggernum, state)
 end
 
 local function ApplyStateToRegion(id, cloneId, region, parent)
+  -- Force custom text function to be run again
+  region.values.lastCustomTextUpdate = nil
   region:Update();
 
   region.subRegionEvents:Notify("Update", region.state, region.states)
@@ -4615,7 +4622,7 @@ local function nextState(char, state)
   return state
 end
 
-local function ContainsPlaceHolders(textStr, symbolFunc)
+local function ContainsPlaceHolders(textStr, symbolFunc, checkDoublePercent)
   if not textStr then
     return false
   end
@@ -4624,13 +4631,17 @@ local function ContainsPlaceHolders(textStr, symbolFunc)
   local state = 0
   local currentPos = 1
   local start = 1
+  local containsDoublePercent = false
   while currentPos <= endPos do
     local char = string.byte(textStr, currentPos);
     local nextState = nextState(char, state)
 
     if state == 1 then -- Last char was a %
-      if char == 123 then
+      if char == 123 then -- {
         start = currentPos + 1
+      elseif char == 37 then -- %
+        containsDoublePercent = true
+        start = currentPos
       else
         start = currentPos
       end
@@ -4654,6 +4665,9 @@ local function ContainsPlaceHolders(textStr, symbolFunc)
     end
   end
 
+  if checkDoublePercent then
+    return containsDoublePercent
+  end
   return false
 end
 
@@ -4682,7 +4696,7 @@ function Private.ContainsPlaceHolders(textStr, toCheck)
 end
 
 function Private.ContainsAnyPlaceHolders(textStr)
-  return ContainsPlaceHolders(textStr, function(symbol) return true end)
+  return ContainsPlaceHolders(textStr, function(symbol) return true end, true)
 end
 
 local function ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates, formatters)
@@ -4714,6 +4728,7 @@ local function ValueForSymbol(symbol, region, customFunc, regionState, regionSta
         return tostring(value) or ""
       end
     end
+    return ""
   else
     local value = (useHiddenStates or regionState.show) and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState, formatters[symbol]);
     return value or ""
@@ -4736,6 +4751,9 @@ function Private.ReplacePlaceHolders(textStr, region, customFunc, useHiddenState
   if (endPos == 2) then
     if string.byte(textStr, 1) == 37 then
       local symbol = string.sub(textStr, 2)
+      if symbol == "%" then
+        return "%" -- Double % input
+      end
       local value = ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates, formatters);
       if (value) then
         textStr = tostring(value);
@@ -4759,7 +4777,7 @@ function Private.ReplacePlaceHolders(textStr, region, customFunc, useHiddenState
         end
       end
     elseif state == 1 then -- Percent Start State
-      if char == 123 then
+      if char == 123 then -- { sign
         start = currentPos + 1
       else
         start = currentPos

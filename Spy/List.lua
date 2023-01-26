@@ -285,30 +285,32 @@ function Spy:ClearList()
 	end	
 end
 
-function Spy:AddPlayerData(name, class, level, race, guild, isEnemy, isGuess)
+function Spy:AddPlayerData(name, class, level, race, guild, faction, isEnemy, isGuess)
 	local info = {}
 	info.name = name  --++ added to normalize data
 	info.class = class
 	if type(level) == "number" then info.level = level end
 	info.race = race
 	info.guild = guild
+	info.faction = faction
 	info.isEnemy = isEnemy
 	info.isGuess = isGuess
 	SpyPerCharDB.PlayerData[name] = info
 	return SpyPerCharDB.PlayerData[name]
 end
 
-function Spy:UpdatePlayerData(name, class, level, race, guild, isEnemy, isGuess)
+function Spy:UpdatePlayerData(name, class, level, race, guild, faction, isEnemy, isGuess)
 	local detected = true
 	local playerData = SpyPerCharDB.PlayerData[name]
 	if not playerData then
-		playerData = Spy:AddPlayerData(name, class, level, race, guild, isEnemy, isGuess)
+		playerData = Spy:AddPlayerData(name, class, level, race, guild, faction, isEnemy, isGuess)
 	else
 		if name ~= nil then playerData.name = name end  
 		if class ~= nil then playerData.class = class end
 		if type(level) == "number" then playerData.level = level end
 		if race ~= nil then playerData.race = race end
 		if guild ~= nil then playerData.guild = guild end
+		if faction ~= nil then playerData.faction = faction end
 		if isEnemy ~= nil then playerData.isEnemy = isEnemy end
 		if isGuess ~= nil then playerData.isGuess = isGuess end
 	end
@@ -342,16 +344,17 @@ function Spy:UpdatePlayerData(name, class, level, race, guild, isEnemy, isGuess)
 	return detected
 end
 
-function Spy:UpdatePlayerStatus(name, class, level, race, guild, isEnemy, isGuess)
+function Spy:UpdatePlayerStatus(name, class, level, race, guild, faction, isEnemy, isGuess)
 	local playerData = SpyPerCharDB.PlayerData[name]
 	if not playerData then
-		playerData = Spy:AddPlayerData(name, class, level, race, guild, isEnemy, isGuess)
+		playerData = Spy:AddPlayerData(name, class, level, race, guild, faction, isEnemy, isGuess)
 	else
 		if name ~= nil then playerData.name = name end  
 		if class ~= nil then playerData.class = class end
 		if type(level) == "number" then playerData.level = level end
 		if race ~= nil then playerData.race = race end
 		if guild ~= nil then playerData.guild = guild end
+		if faction ~= nil then playerData.faction = faction end
 		if isEnemy ~= nil then playerData.isEnemy = isEnemy end
 		if isGuess ~= nil then playerData.isGuess = isGuess end
 	end
@@ -704,8 +707,8 @@ function Spy:ToggleKOSPlayer(kos, player)
 		Spy:AddKOSData(player)
 		Spy:RemoveIgnoreData(player)
 		if player ~= SpyPerCharDB.PlayerData[name] then
---			Spy:UpdatePlayerData(player, nil, nil, nil, nil, true, nil)
-			Spy:UpdatePlayerStatus(player, nil, nil, nil, nil, true, nil)
+--			Spy:UpdatePlayerData(player, nil, nil, nil, nil, nil, true, nil)
+			Spy:UpdatePlayerStatus(player, nil, nil, nil, nil, nil, true, nil)
 			SpyPerCharDB.PlayerData[player].kos = 1
 		end	
 		if Spy.db.profile.EnableSound then
@@ -839,7 +842,7 @@ function Spy:RegenerateKOSListFromCentral()
 				if not SpyDB.removeKOSData[Spy.RealmName][Spy.FactionName][player] then
 					local playerData = SpyPerCharDB.PlayerData[player]
 					if not playerData then
-						playerData = Spy:AddPlayerData(player, class, level, race, guild, isEnemy, isGuess)
+						playerData = Spy:AddPlayerData(player, class, level, race, guild, faction, isEnemy, isGuess)
 					end
 					local kosPlayerData = characterKosData[player]
 					if kosPlayerData.time and (not playerData.time or (playerData.time and playerData.time < kosPlayerData.time)) then
@@ -855,6 +858,9 @@ function Spy:RegenerateKOSListFromCentral()
 						end
 						if kosPlayerData.guild then
 							playerData.guild = kosPlayerData.guild
+						end
+						if kosPlayerData.faction then
+							playerData.faction = kosPlayerData.faction
 						end
 						if kosPlayerData.isEnemy then
 							playerData.isEnemy = kosPlayerData.isEnemy
@@ -965,7 +971,7 @@ function Spy:ParseMinimapTooltip(tooltip)
 					newTooltip = newTooltip.."\r"..text.."|r"..desc
 				end	
 				if not SpyPerCharDB.IgnoreData[name] and not Spy.InInstance then
-					local detected = Spy:UpdatePlayerData(name, nil, nil, nil, nil, true, nil)
+					local detected = Spy:UpdatePlayerData(name, nil, nil, nil, nil, nil, true, nil)
 					if detected and Spy.db.profile.MinimapDetection then
 						Spy:AddDetected(name, time(), false)
 					end
@@ -1038,7 +1044,7 @@ function Spy:ParseUnitAbility(analyseSpell, event, player, class, race, spellId,
 			end
 		end
 
-		Spy:UpdatePlayerData(player, class, level, race, nil, isEnemy, isGuess)
+		Spy:UpdatePlayerData(player, class, level, race, nil, nil, isEnemy, isGuess)
 		return learnt, playerData
 	end
 	return learnt, nil
@@ -1048,7 +1054,7 @@ function Spy:ParseUnitDetails(player, class, level, race, zone, subZone, mapX, m
 	if player then
 		local playerData = SpyPerCharDB.PlayerData[player]
 		if not playerData then
-			playerData = Spy:AddPlayerData(player, class, level, race, guild, true, true)
+			playerData = Spy:AddPlayerData(player, class, level, race, guild, nil, true, true)
 		else
 			if not playerData.class then playerData.class = class end
 			if level then
@@ -1187,7 +1193,7 @@ function Spy:AppendUnitKoS()
 		if kosName then	
 			local playerData = SpyPerCharDB.PlayerData[kosName]
 			if not playerData then 
-				Spy:UpdatePlayerData(kosName, nil, nil, nil, nil, true, nil) 
+				Spy:UpdatePlayerData(kosName, nil, nil, nil, nil, nil, true, nil) 
 				SpyPerCharDB.PlayerData[kosName].kos = 1
 				SpyPerCharDB.PlayerData[kosName].time = value
 			end

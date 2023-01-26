@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Cookie", "DBM-Party-Vanilla", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221129003558")
+mod:SetRevision("20230120015511")
 mod:SetCreatureID(645)
 --mod:SetEncounterID(1144)
 

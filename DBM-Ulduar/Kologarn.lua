@@ -1,9 +1,13 @@
 local mod	= DBM:NewMod("Kologarn", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221215074731")
+mod:SetRevision("20230124053113")
 mod:SetCreatureID(32930)--, 32933, 32934
-mod:SetEncounterID(1137)
+if not mod:IsClassic() then
+	mod:SetEncounterID(1137)
+else
+	mod:SetEncounterID(749)
+end
 mod:SetModelID(28638)
 mod:SetUsedIcons(5, 6, 7, 8)
 mod:SetMinSyncRevision(20191109000000)
@@ -152,20 +156,18 @@ function mod:OnTranscriptorSync(msg, targetName)
 end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 63983 and self:AntiSpam(5, 1) then--Arm Sweep
-		timerNextShockwave:Start()
+	if spellId == 63983 then--Arm Sweep
 		self:SendSync("Shockwave")
-	elseif spellId == 63342 and self:AntiSpam(5, 2) then--Focused Eyebeam Summon Trigger
-		timerNextEyebeam:Start()
+	elseif spellId == 63342 then--Focused Eyebeam Summon Trigger
 		self:SendSync("Eyebeam")
 	end
 end
 
 function mod:OnSync(event, args)
 	if not self:IsInCombat() then return end
-	if event == "Shockwave" and self:AntiSpam(5, 1) then
+	if event == "Shockwave" then
 		timerNextShockwave:Start()
-	elseif event == "Eyebeam" and self:AntiSpam(5, 2) then
+	elseif event == "Eyebeam" then
 		timerNextEyebeam:Start()
 	end
 end

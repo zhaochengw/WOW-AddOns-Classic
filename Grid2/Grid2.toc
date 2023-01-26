@@ -1,7 +1,7 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: Grid2
 ## Author: Pastamancer & Maia, Jerry, Toadkiller
-## Version: 2.0.73
+## Version: 2.1.1
 ## Notes: A modular, lightweight and screen-estate saving grid of party/raid unit frames
 ## Notes-esES: Marcos de unidades de raid compactos y ligeros.
 ## Notes-ruRU: Модульный, легкий, отображающий на экране область группы/рейда в виде сетки.
@@ -43,6 +43,7 @@ GridFrame.lua
 GridLayout.lua
 GridLayoutLayouts.lua
 GridIndicator.lua
+GridIndicatorLoad.lua
 GridIndicatorEffects.lua
 GridStatus.lua
 GridStatusLoad.lua

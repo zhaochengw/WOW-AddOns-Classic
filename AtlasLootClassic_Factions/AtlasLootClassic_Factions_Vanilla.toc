@@ -1,6 +1,6 @@
 ## Interface: 11403
 ## Author: Lag
-## Version: v3.0.7
+## Version: v3.1.0
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
 
@@ -21,7 +21,7 @@
 ## Notes-esMX: AtlasLoot tablas de botín de Facciones
 ## Notes-frFR: Tables de butin des factions
 ## Notes-itIT: AtlasLoot loot tables from Factions
-## Notes-koKR: 진영의 AtlasLoot 전리품 테이블
+## Notes-koKR: L["Notes-Factions"] = "진영의 AtlasLoot 전리품 테이블"
 ## Notes-ptBR: Tabelas de saque AtlasLoot das Facções
 ## Notes-ruRU: Таблицы добычи AtlasLoot для фракций.
 ## Notes-zhCN: AtlasLoot 阵营掉落列表

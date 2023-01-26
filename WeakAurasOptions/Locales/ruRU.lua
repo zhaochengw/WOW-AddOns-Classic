@@ -326,8 +326,6 @@ UNIT_POWER  UNIT_AURA, PLAYER_TARGET_CHANGED]=]
 	L["Differences"] = "Различия"
 	L["Disabled"] = "Выключен"
 	L["Disallow Entry Reordering"] = "Запретить изменение порядка записей"
-	--[[Translation missing --]]
-	L["Discrete Rotation"] = "Discrete Rotation"
 	L["Display"] = "Отображение"
 	L["Display Name"] = "Отображаемое имя"
 	L["Display Text"] = "Отображаемый текст"
@@ -378,7 +376,8 @@ UNIT_POWER  UNIT_AURA, PLAYER_TARGET_CHANGED]=]
 	L["End Angle"] = "Конечный угол"
 	L["End of %s"] = "Конец группы \"%s\""
 	L["Enemy nameplate(s) found"] = "Индикаторы здоровья противников"
-	L["Enter a Spell ID"] = "Введите ID заклинания"
+	--[[Translation missing --]]
+	L["Enter a Spell ID. You can use the addon idTip to determine spell ids."] = "Enter a Spell ID. You can use the addon idTip to determine spell ids."
 	L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."] = [=[Введите название эффекта, часть его имени или ID заклинания.
 
 Указание ID не обеспечивает нахождение (или исключение) единственного результата, поскольку сопоставление эффектов всё равно происходит по названию заклинания, заданного этим ID.
@@ -599,6 +598,8 @@ Can use \ to escape -.]=] ] = [=[Формат записи: Имя, Имя-Иг�
 	L["Matches the height setting of a horizontal bar or width for a vertical bar."] = "Совпадает с высотой горизонтальной полосы или с шириной вертикальной полосы"
 	L["Max"] = "Макс. значение"
 	L["Max Length"] = "Максимальная длина"
+	--[[Translation missing --]]
+	L["Media Type"] = "Media Type"
 	L["Medium Icon"] = "Средняя иконка"
 	L["Message"] = "Сообщение"
 	L["Message Prefix"] = "Префикс сообщения"
@@ -742,6 +743,8 @@ Can use \ to escape -.]=] ] = [=[Формат записи: Имя, Имя-Иг�
 	L["Row Space"] = "Отступ между строками"
 	L["Row Width"] = "Ширина строки"
 	L["Rows"] = "Строки"
+	--[[Translation missing --]]
+	L["Run on..."] = "Run on..."
 	L["Same"] = "Такая же"
 	L["Same texture as Foreground"] = "Такая же текстура, что и на переднем плане"
 	L["Saved Data"] = "Сохраненные данные"
@@ -962,6 +965,14 @@ It might not work correctly with your version!]=] ] = [=[Индикация бы
 |cFFFF0000Это действие необратимо!|r Продолжить?]=]
 	L["You are about to delete a trigger. |cFFFF0000This cannot be undone!|r Would you like to continue?"] = [=[Вы собираетесь удалить триггер.
 |cFFFF0000Это действие необратимо!|r Продолжить?]=]
+	--[[Translation missing --]]
+	L[ [=[You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.
+
+WeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered.]=] ] = [=[You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.
+
+WeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered.]=]
+	--[[Translation missing --]]
+	L["You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."] = "You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."
 	L["Your Saved Snippets"] = "Ваши фрагменты кода"
 	L["Z Offset"] = "Смещение по Z"
 	L["Z Rotation"] = "Поворот по Z"

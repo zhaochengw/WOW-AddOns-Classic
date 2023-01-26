@@ -1,11 +1,11 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: Grid2 |cd3ff7d0aLDB|r
 ## Notes: Grid2 Databroker Launcher.
 ## Notes-esES: Lanzador del Grid2 (Databroker)
 ## Author: Michael
 ## Dependencies: Grid2
 ## OptionalDeps: LibDataBroker-1.1
-## Version: 2.0.73
+## Version: 2.1.1
 ## X-ReleaseDate: "$Date: 2011-04-14 23:42:17 -0700 (Tue, 14 Apr 2011) $"
 ## X-Category: Databroker
 ## X-Website: none

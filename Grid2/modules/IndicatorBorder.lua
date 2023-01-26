@@ -7,6 +7,10 @@ local cr, cg, cb, ca = 0, 0, 0, 0
 Border.Create = Grid2.Dummy
 Border.Layout = Grid2.Dummy
 
+function Border:GetFrame(parent)
+	return parent
+end
+
 function Border:OnUpdate(parent, unit, status)
 	if status then
 		parent:SetBackdropBorderColor(status:GetColor(unit))
@@ -19,7 +23,7 @@ function Border:Disable(parent)
 	parent:SetBackdropBorderColor(0,0,0,0)
 end
 
-function Border:LoadDB()
+function Border:UpdateDB()
 	local c = Grid2:MakeColor(Grid2Frame.db.profile.frameBorderColor, 'TRANSPARENT')
 	cr, cg, cb, ca = c.r, c.g, c.b, c.a
 end

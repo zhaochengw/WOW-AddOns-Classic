@@ -1,2 +1,2 @@
-- Update spell list
-- Bug fixes
+- Spell updates
+- Add PitBull support

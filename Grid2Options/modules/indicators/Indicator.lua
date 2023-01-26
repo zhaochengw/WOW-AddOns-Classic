@@ -295,10 +295,7 @@ do
 		RegisterIndicatorStatusesFromDatabase(newIndicator)
 		RegisterIndicatorStatusesFromDatabase(newIndicator.sideKick)
 		-- Recreate indicators in frame units
-		Grid2Frame:WithAllFrames(function (f)
-			newIndicator:Create(f)
-			newIndicator:Layout(f)
-		end)
+		Grid2Options:CreateIndicatorFrames(newIndicator)
 		-- Delete or Create associated text-color indicator in database
 		if oldType=="text" then
 			Grid2:DbSetIndicator(colorKey, nil)
@@ -644,27 +641,34 @@ do
 		dbx.glow_particlesScale = nil
 	end
 
+	local function WithAllScaleAnimations( indicator, func )
+		for _,f in next, Grid2Frame.registeredFrames do
+			local frame = indicator:GetBlinkFrame(f)
+			local anim = frame and frame.scaleAnim
+			if anim then func(anim) end
+		end
+	end
+
 	local function RefreshBlinkFrequencies(indicator, freq)
-		Grid2Frame:WithAllFrames(function (f)
-			local anim = indicator:GetBlinkFrame(f).blinkAnim
+		for _,f in next, Grid2Frame.registeredFrames do
+			local frame = indicator:GetBlinkFrame(f)
+			local anim = frame and frame.blinkAnim
 			if anim then anim.settings:SetDuration(1/freq) end
-		end)
+		end
 	end
 
 	local function RefreshIndicator(indicator)
-		Grid2Frame:WithAllFrames(function (f)
+		for _,f in next, Grid2Frame.registeredFrames do
 			local frame = indicator:GetBlinkFrame(f)
-			if frame.blinkAnim then	frame.blinkAnim:Stop() end -- cancel blink
-			for _, func in pairs(LCG.stopList) do -- cancel glow
-				func(frame); frame.__glowEnabled = nil
+			if frame then
+				if frame.blinkAnim then frame.blinkAnim:Stop() end -- cancel blink
+				for _, func in pairs(LCG.stopList) do -- cancel glow
+					func(frame); frame.__glowEnabled = nil
+				end
 			end
-		end)
-		Grid2:RefreshHighlight(indicator)
-		Grid2Frame:WithAllFrames(function(f)
-			if f.unit then
-				indicator:Update(f, f.unit)
-			end
-		end)
+		end
+		indicator:UpdateHighlight()
+		indicator:UpdateAllFrames()
 	end
 
 	function Grid2Options:MakeIndicatorHighlightEffectOptions(indicator, options)
@@ -689,7 +693,7 @@ do
 			order = 325,
 			name = L["Activation"],
 			desc = L["Select when to activate the highlight effect."],
-			get = function ()
+			get = function()
 				return indicator.dbx.highlightAlways and 1 or 2
 			end,
 			set = function (_, v)
@@ -841,13 +845,7 @@ do
 			set = function(_, v)
 				local point = self.pointMap[v]
 				indicator.dbx.animOrigin = point~='CENTER' and point or nil
-				Grid2Frame:WithAllFrames( function (f)
-					local anim = indicator:GetBlinkFrame(f).scaleAnim
-					if anim then
-						anim.grow:SetOrigin(point,0,0)
-						anim.shrink:SetOrigin(point,0,0)
-					end
-				end)
+				WithAllScaleAnimations( indicator, function(a) a.grow:SetOrigin(point,0,0); a.shrink:SetOrigin(point,0,0); end)
 			end,
 			hidden = function() return indicator.dbx.highlightType ~= -1 end,
 		}
@@ -862,13 +860,7 @@ do
 			get = function () return indicator.dbx.animScale or 1.5	end,
 			set = function (_, v)
 				indicator.dbx.animScale = v
-				Grid2Frame:WithAllFrames( function (f)
-					local anim = indicator:GetBlinkFrame(f).scaleAnim
-					if anim then
-						anim.grow:SetScale(v,v)
-						anim.shrink:SetScale(1/v,1/v)
-					end
-				end)
+				WithAllScaleAnimations( indicator, function(a) a.grow:SetScale(v,v); a.shrink:SetScale(1/v,1/v); end)
 			end,
 			hidden = function() return indicator.dbx.highlightType ~= -1 end,
 		}
@@ -884,16 +876,214 @@ do
 			get = function () return indicator.dbx.animDuration or 0.7 end,
 			set = function (_, v)
 				indicator.dbx.animDuration = v
-				Grid2Frame:WithAllFrames( function (f)
-					local anim = indicator:GetBlinkFrame(f).scaleAnim
-					if anim then
-						anim.grow:SetDuration(v/2)
-						anim.shrink:SetDuration(v/2)
-					end
-				end)
+				WithAllScaleAnimations( indicator, function(a) a.grow:SetDuration(v/2);	a.shrink:SetDuration(v/2); end)
 			end,
-			hidden = function() return indicator.dbx.highlightType  ~= -1 end,
+			hidden = function() return indicator.dbx.highlightType ~= -1 end,
 		}
+		return options
+	end
+end
+
+-- Grid2Options:MakeIndicatorLoadOptions(indicator, options)
+do
+	local function RefreshIndicator(indicator)
+		Grid2Options:UpdateIndicatorDB(indicator)
+		for _,f in next, Grid2Frame.registeredFrames do
+			local new = not not indicator:CanCreate(f)
+			local old = not not indicator:GetFrame(f)
+			if new~=old then
+				if new then
+					indicator:Create(f); indicator:Layout(f)
+				else
+					indicator:Release(f)
+				end
+			end
+		end
+		if indicator.childName then
+			RefreshIndicator( Grid2:GetIndicatorByName(indicator.childName) )
+		end
+		if not indicator.parentName then
+			Grid2Frame:UpdateIndicators()
+		end
+	end
+
+	local function SetFilterOptions( indicator, options, order, key, values, defValue, name, desc, isSingle, updateFunc )
+		local dbx    = indicator.dbx
+		local filter = dbx.load and dbx.load[key]
+		local multi  = filter and next(filter, next(filter))~=nil
+		options[key] = {
+			type = "toggle",
+			name = name,
+			desc = desc or name,
+			order = order,
+			get = function(info) return filter end,
+			set = function(info)
+				if multi or (isSingle and filter) then
+					multi, filter, dbx.load[key] = nil, nil, nil
+					if not next(dbx.load) then dbx.load = nil end
+				elseif filter and not isSingle then
+					multi = true
+				else
+					dbx.load = dbx.load or {}
+					filter = { [defValue] = true }
+					dbx.load[key] = filter
+				end
+				updateFunc(indicator)
+			end,
+			disabled = function() return indicator.parentName~=nil end,
+		}
+		options[key..'1'] = {
+			type = "select",
+			name = name,
+			order = order+1,
+			get = function() return filter and next(filter) end,
+			set = function(_,v)
+				wipe(filter)[v] = true
+				updateFunc(indicator)
+			end,
+			disabled = function() return not filter or indicator.parentName~=nil end,
+			hidden   = function() return multi end,
+			values   = values,
+		}
+		options[key..'2'] = {
+			type = "multiselect",
+			order = order+2,
+			name = name,
+			get = function(info, value) return filter[value] end,
+			set = function(info, value)
+				filter[value] = (not filter[value]) or nil
+				updateFunc(indicator)
+			end,
+			hidden = function() return not multi end,
+			disabled = function() return not filter or indicator.parentName~=nil end,
+			values = values,
+		}
+		options[key.."3"] = {
+			type = "description",
+			name = "",
+			order = order+3,
+		}
+	end
+
+	local SetFilterThemeOptions
+	do
+		local themesTable = {}
+
+		local function GetFilterState(name, suspended)
+			local count = 0
+			for index in pairs(themesTable) do
+				if not suspended[index][name] then count = count + 1 end
+			end
+			return (count>#themesTable and 0) or (count>1 and 2) or 1
+		end
+
+		local function RefreshThemes(name, suspended)
+			local names = Grid2.db.profile.themes.names
+			wipe(themesTable)
+			for i=0,#names do
+				themesTable[i] = names[i] or L['Default']
+			end
+			return GetFilterState(name, suspended)
+		end
+
+		local function ClearFilter(name, suspended)
+			for index in pairs(themesTable) do
+				suspended[index][name] = nil
+			end
+		end
+
+		local function SetSingle(name, suspended, theme)
+			for index in pairs(themesTable) do
+				suspended[index][name] = (theme~=index) or nil
+			end
+		end
+
+		function SetFilterThemeOptions( indicator, options, order)
+			local name = indicator.name
+			local suspended = Grid2.db.profile.themes.indicators
+			local state = RefreshThemes(name, suspended)
+			options.theme = {
+				type = "toggle",
+				name = L['Active Theme'],
+				desc = L["Load the indicator only for the specified themes."],
+				order = order,
+				get = function(info)
+					return state~=0
+				end,
+				set = function(info)
+					state = state<2 and state+1 or 0
+					if state==0 then
+						ClearFilter(name, suspended)
+					elseif state==1 then
+						SetSingle(name, suspended, Grid2.currentTheme or 0)
+					end
+					Grid2:RefreshTheme()
+				end,
+				disabled = function() return indicator.parentName~=nil end,
+				hidden = function() return Grid2Frame.dba.profile.extraThemes==nil end,
+			}
+			options.theme1 = {
+				type = "select",
+				name = L['Active Theme'],
+				order = order+1,
+				get = function()
+					if state==1 then
+						local index = #themesTable
+						while index>=0 and suspended[index][name] do index = index - 1 end
+						return index
+					end
+				end,
+				set = function(_,v)
+					SetSingle(name, suspended, v)
+					Grid2:RefreshTheme()
+				end,
+				disabled = function() return indicator.parentName~=nil or state~=1 end,
+				hidden   = function() return state==2 or Grid2Frame.dba.profile.extraThemes==nil end,
+				values   = themesTable,
+			}
+			options.theme2 = {
+				type = "multiselect",
+				order = order+2,
+				name = L['Active Theme'],
+				get = function(info, theme)
+					return not suspended[theme][name]
+				end,
+				set = function(info, theme)
+					suspended[theme][name] = (not suspended[theme][name]) or nil
+					Grid2:RefreshTheme()
+				end,
+				disabled = function() return indicator.parentName~=nil end,
+				hidden = function() return state~=2 or Grid2Frame.dba.profile.extraThemes==nil  end,
+				values = themesTable,
+			}
+			options.theme3 = {
+				type = "description",
+				name = "",
+				order = order+3,
+			}
+		end
+	end
+
+	function Grid2Options:MakeIndicatorLoadOptions(indicator, options)
+		SetFilterOptions( indicator, options, 10,
+			'playerClass',
+			self.PLAYER_CLASSES,
+			Grid2.playerClass,
+			L["Player Class"],
+			L["Load the indicator only if your toon belong to the specified class."],
+			false,
+			RefreshIndicator
+		)
+		SetFilterThemeOptions( indicator, options, 20 )
+		SetFilterOptions( indicator, options, 30,
+			'unitType',
+			self.HEADER_TYPES,
+			'player',
+			L["Unit Type"],
+			L["Load the indicator only for the specified unit types."],
+			false,
+			RefreshIndicator
+		)
 		return options
 	end
 end

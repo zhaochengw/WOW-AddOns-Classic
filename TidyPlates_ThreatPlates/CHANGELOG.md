@@ -1,3 +1,3 @@
-# 11.1.6 (2022-12-22)
+# 11.1.11 (2023-01-25)
 
-* Removed a debug message from Auras widget [GH-372].
+* Updated TOC version for WoW Patch 10.0.5.

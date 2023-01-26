@@ -11,7 +11,7 @@ local AlignPoints = Grid2.AlignPoints
 local defaultBackColor = { r=0, g=0, b=0, a=1 }
 
 local function Bar_CreateHH(self, parent)
-	local bar = self:CreateFrame("StatusBar", parent)
+	local bar = self:Acquire("StatusBar", parent)
 	bar.indicator = self
 	bar:SetStatusBarColor(0,0,0,0)
 	bar:SetMinMaxValues(0, 1)
@@ -19,6 +19,10 @@ local function Bar_CreateHH(self, parent)
 	if self.backColor then
 		bar.bgTex = bar.bgTex or bar:CreateTexture()
 	end
+end
+
+function Bar_CanCreateChild(self, parent)
+	return parent[self.parentName]~=nil
 end
 
 local function Bar_Layout(self, parent)
@@ -70,10 +74,6 @@ local function Bar_Layout(self, parent)
 	Bar:Show()
 end
 
-local function Bar_GetBlinkFrame(self, parent)
-	return parent[self.name]
-end
-
 local function Bar_SetValue(self, parent, value)
 	parent[self.name]:SetValue(value)
 end
@@ -88,10 +88,13 @@ local function Bar_SetValueParent(self, parent, value)
 end
 
 local function Bar_SetValueChild(self, parent, value)
-	local barChild = parent[self.name]
-	local parentValue = parent[self.parentName]:GetValue()
-	barChild:SetValue(value+parentValue>1 and 1-parentValue or value)
-	barChild.realValue = value
+	local parentIndicator = parent[self.parentName]
+	if parentIndicator then
+		local parentValue = parentIndicator:GetValue()
+		local barChild = parent[self.name]
+		barChild:SetValue(value+parentValue>1 and 1-parentValue or value)
+		barChild.realValue = value
+	end
 end
 
 --{{{ Bar OnUpdate
@@ -203,7 +206,7 @@ local function Bar_Disable(self, parent)
 	bar:ClearAllPoints()
 end
 
-local function Bar_LoadDB(self)
+local function Bar_UpdateDB(self)
 	local dbx = self.dbx
 	local theme = Grid2Frame.db.profile
 	local l = dbx.location
@@ -228,67 +231,73 @@ local function Bar_LoadDB(self)
 		local barParent = Grid2.indicators[dbx.anchorTo]
 		barParent.childName = self.name
 		barParent.SetValue  = Bar_SetValueParent
-		self.parentName     = dbx.anchorTo
 		self.SetValue       = Bar_SetValueChild
+		self.CanCreate      = Bar_CanCreateChild
+		self.parentName     = dbx.anchorTo
 		self.reverseFill    = barParent.reverseFill
 		self.orientation    = barParent.orientation
 	else
 		self.SetValue = Bar_SetValue
+		self.CanCreate = self.prototype.CanCreate
 		self.parentName = nil
 	end
 end
 
 local function BarColor_OnUpdate(self, parent, unit, status)
-	if status then
-		self:SetBarColor(parent, status:GetColor(unit))
-	else
-		self:SetBarColor(parent, 0, 0, 0, 0)
+	local bar = parent[self.parentName]
+	if bar then
+		if status then
+			local r, g, b, a = status:GetColor(unit)
+			bar:SetStatusBarColor(r, g, b, min(self.opacity, a or 1) )
+		else
+			bar:SetStatusBarColor(0,0,0,0)
+		end
 	end
 end
 
-local function BarColor_SetBarColor(self, parent, r, g, b, a)
-	parent[self.parentName]:SetStatusBarColor(r, g, b, min(self.opacity,a or 1) )
-end
-
-local function BarColor_SetBarColorInverted(self, parent, r, g, b, a)
-	local bar   = parent[self.parentName]
-	local color = self.backColor
-	bar:SetStatusBarColor(color.r, color.g, color.b, min(self.opacity, 0.8))
- 	if not self.dbx.anchorTo then
-		bar.bgTex:SetVertexColor(r, g, b, (a or 1)*color.a)
+local function BarColor_OnUpdateInverted(self, parent, unit, status)
+	local bar = parent[self.parentName]
+	if bar then
+		local r, g, b, a
+		if status then
+			r, g, b, a = status:GetColor(unit)
+		else
+			r, g, b, a = 0, 0, 0, 0
+		end
+		local c = self.backColor
+		bar:SetStatusBarColor(c.r, c.g, c.b, min(self.opacity, 0.8))
+		if not self.dbx.anchorTo then
+			bar.bgTex:SetVertexColor(r, g, b, (a or 1)*c.a)
+		end
 	end
 end
 
-local function BarColor_LoadDB(self)
-	if self.dbx.invertColor then
-		self.backColor   = self.dbx.backColor or defaultBackColor
-		self.SetBarColor = BarColor_SetBarColorInverted
-	else
-		self.SetBarColor = BarColor_SetBarColor
-	end
-	self.opacity = self.dbx.opacity or 1
+local function BarColor_UpdateDB(self)
+	local dbx = self.dbx
+	self.OnUpdate  = dbx.invertColor and BarColor_OnUpdateInverted or BarColor_OnUpdate
+	self.backColor = dbx.backColor or defaultBackColor
+	self.opacity   = dbx.opacity or 1
 end
 
 local function Create(indicatorKey, dbx)
-	local Bar = Grid2.indicators[indicatorKey] or Grid2.indicatorPrototype:new(indicatorKey)
+	local Bar = Grid2.indicatorPrototype:new(indicatorKey)
 	Bar.dbx            = dbx
 	Bar.Create         = Bar_CreateHH
-	Bar.GetBlinkFrame  = Bar_GetBlinkFrame
 	Bar.OnUpdate       = Bar_OnUpdate
 	Bar.SetOrientation = Bar_SetOrientation
 	Bar.Disable        = Bar_Disable
 	Bar.Layout         = Bar_Layout
-	Bar.LoadDB         = Bar_LoadDB
+	Bar.UpdateDB       = Bar_UpdateDB
+	Bar.GetBlinkFrame  = Bar.GetFrame
 	Grid2:RegisterIndicator(Bar, { "percent" } )
 
-	local colorKey      = indicatorKey .. "-color"
-	local BarColor      = Grid2.indicators[colorKey] or Grid2.indicatorPrototype:new(colorKey)
+	local BarColor      = Grid2.indicatorPrototype:new(indicatorKey.."-color")
 	BarColor.dbx        = dbx
 	BarColor.parentName = indicatorKey
 	BarColor.Create     = Grid2.Dummy
 	BarColor.Layout     = Grid2.Dummy
 	BarColor.OnUpdate   = BarColor_OnUpdate
-	BarColor.LoadDB     = BarColor_LoadDB
+	BarColor.UpdateDB   = BarColor_UpdateDB
 	Grid2:RegisterIndicator(BarColor, { "color" })
 
 	Bar.sideKick = BarColor

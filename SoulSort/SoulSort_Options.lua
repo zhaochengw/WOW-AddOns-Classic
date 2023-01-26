@@ -106,7 +106,7 @@ local optAutoMax = CreateCheckbox("optAutoMax", "Automatic", 32, 32, "LEFT", las
 if SS_IsClassicVersion() then
 	local optAutoSort = CreateCheckbox("optAutoSort", "Automatically sort Soul Shards after combat", 32, 32, "TOPLEFT", optMaxShards, "BOTTOMLEFT", 0, -30)
 else
-	local optAutoSort = CreateCheckbox("optAutoSort", "Automatically sort Soul Shards after combat (not supported in TBC, use \"/ss sort\" instead)", 32, 32, "TOPLEFT", optMaxShards, "BOTTOMLEFT", 0, -30)
+	local optAutoSort = CreateCheckbox("optAutoSort", "Automatically sort Soul Shards after combat (not supported in TBC/WOTLK, use \"/ss sort\")", 32, 32, "TOPLEFT", optMaxShards, "BOTTOMLEFT", 0, -30)
 end
 local optCounter = CreateCheckbox("optCounter", "Show Total Soul Shard count on Bag Bar", 32, 32, "TOPLEFT", lastItem, "BOTTOMLEFT", 0, 0)
 local optCounterPerBag = CreateCheckbox("optCounterPerBag", "Show Soul Shard count for non-Soul Bags", 32, 32, "TOPLEFT", lastItem, "BOTTOMLEFT", 0, 0)

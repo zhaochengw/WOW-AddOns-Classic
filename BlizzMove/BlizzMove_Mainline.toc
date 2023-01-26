@@ -1,10 +1,10 @@
-## Interface: 100002
+## Interface: 100005
 ## Title: BlizzMove
 ## Notes: Makes blizzard frames movable
 ## Author: Kiatra, zaCade, Numy - github.com/Kiatra/BlizzMove/
 ## X-WoWI-ID: 23875
 ## X-Curse-Project-ID: 17809
-## Version: v3.5.7
+## Version: v3.5.9
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
 ## SavedVariables: BlizzMoveDB

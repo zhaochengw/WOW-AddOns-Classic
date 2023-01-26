@@ -146,7 +146,7 @@ local function OnUpdate(_,update)
                     end)
                 elseif (v[2] == "item") then
                     getCooldownDetails = memoize(function()
-                        local start, duration, enabled = GetItemCooldown(i)
+                        local start, duration, enabled = C_Container.GetItemCooldown(i)
                         return {
                             name = GetItemInfo(i),
                             texture = v[3],
@@ -307,13 +307,6 @@ hooksecurefunc("UseInventoryItem", function(slot)
         watching[itemID] = {GetTime(),"item",texture}
     end
 end)
-hooksecurefunc("UseContainerItem", function(bag,slot)
-    local itemID = GetContainerItemID(bag, slot)
-    if (itemID) then
-        local texture = select(10, GetItemInfo(itemID))
-        watching[itemID] = {GetTime(),"item",texture}
-    end
-end)
 
 -------------------
 -- Options Frame --
@@ -461,7 +454,7 @@ function DCP:CreateOptionsFrame()
     spellnametext:SetPoint("TOPLEFT",pettext,"BOTTOMLEFT",0,-18)
     spellnametext:SetText("Show spell name:")
 
-    local spellnamecbt = CreateFrame("CheckButton","DCP_OptionsFrameSpellNameCheckButton",optionsframe,"OptionsCheckButtonTemplate")
+    local spellnamecbt = CreateFrame("CheckButton","DCP_OptionsFrameSpellNameCheckButton",optionsframe,"UICheckButtonTemplate")
     spellnamecbt:SetPoint("LEFT",spellnametext,"RIGHT",6,0)
     spellnamecbt:SetChecked(DCP_Saved.showSpellName)
     spellnamecbt:SetScript("OnClick", function(self)

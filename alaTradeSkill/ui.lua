@@ -188,7 +188,7 @@ local T_UIDefinition = {
 
 	frameFont = SystemFont_Shadow_Med1:GetFont(),	--	"Fonts\ARKai_T.ttf"
 	frameFontSize = min(select(2, SystemFont_Shadow_Med1:GetFont()) + 1, 15),
-	frameFontOutline = "NORMAL",
+	frameFontOutline = "",
 
 	tabSize = 24,
 	tabInterval = 2,
@@ -1635,6 +1635,7 @@ end
 					Button.Icon:SetVertexColor(1.0, 1.0, 1.0, 1.0);
 					Button.Title:SetText(DataAgent.spell_name_s(sid));
 					Button.Title:SetTextColor(0.0, 1.0, 0.0, 1.0);
+					Button.Title:SetWidth(230);
 					Button.Note:SetText(MT.GetMoneyString(val[2]));
 					if quality ~= nil then
 						local r, g, b, code = GetItemQualityColor(quality);
@@ -1667,13 +1668,13 @@ end
 						Button.Title:SetText(name);
 						Button.Title:SetTextColor(unpack(CT.T_RankColor[CT.T_RankIndex[rank]] or T_UIDefinition.color_white));
 						if num > 0 then
-							if Button.Title:GetWidth() > 130 then
-								Button.Title:SetWidth(130);
+							if Button.Title:GetWidth() > 210 then
+								Button.Title:SetWidth(210);
 							end
 							Button.Num:SetText("[" .. num .. "]");
 							Button.Num:SetTextColor(unpack(CT.T_RankColor[CT.T_RankIndex[rank]] or T_UIDefinition.color_white));
 						else
-							Button.Title:SetWidth(150);
+							Button.Title:SetWidth(230);
 							Button.Num:SetText(nil);
 						end
 						Button.Note:SetText(MT.GetMoneyString(val[2]));
@@ -1727,6 +1728,7 @@ end
 				else
 					Button.Title:SetTextColor(1.0, 0.0, 0.0, 1.0);
 				end
+				Button.Title:SetWidth(230);
 				Button.Num:SetText(nil);
 				Button.Note:SetText(MT.GetMoneyString(val[2]));
 				if quality ~= nil then
@@ -1937,6 +1939,7 @@ end
 				else
 					Button.Title:SetTextColor(1.0, 0.0, 0.0, 1.0);
 				end
+				Button.Title:SetWidth(160);
 				Button.Num:SetText(nil);
 				if set.showRank then
 					Button.Note:SetText(DataAgent.get_difficulty_rank_list_text_by_sid(sid, false));
@@ -2904,8 +2907,8 @@ end
 			ProfitFrame:SetFrameStrata("HIGH");
 			ProfitFrame:EnableMouse(true);
 			ProfitFrame:Hide();
-			ProfitFrame:SetSize(320, 320);
-			ProfitFrame:SetPoint("TOPLEFT", HookedFrame, "TOPRIGHT", -36, -68);
+			ProfitFrame:SetSize(400, 360);
+			ProfitFrame:SetPoint("TOPLEFT", HookedFrame, "TOPRIGHT", -30, -76);
 			ProfitFrame.list = {  };
 			Frame.ProfitFrame = ProfitFrame;
 
@@ -4365,7 +4368,7 @@ local function LF_CreateExplorerFrame()
 		ProfitFrame:SetFrameStrata("HIGH");
 		ProfitFrame:EnableMouse(true);
 		ProfitFrame:Hide();
-		ProfitFrame:SetWidth(320);
+		ProfitFrame:SetWidth(400);
 		ProfitFrame:SetPoint("TOPLEFT", Frame, "TOPRIGHT", 2, 0);
 		ProfitFrame:SetPoint("BOTTOMLEFT", Frame, "BOTTOMRIGHT", 2, 0);
 		ProfitFrame.list = {  };
@@ -5165,7 +5168,7 @@ end
 		CheckButton:Show();
 
 		local Text = CheckButton:CreateFontString(nil, "ARTWORK");
-		Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "NORMAL");
+		Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, T_UIDefinition.frameFontOutline);
 		Text:SetText(text);
 		Text:SetPoint("LEFT", CheckButton, "CENTER", 12, 0);
 		CheckButton.Text = Text;
@@ -5196,13 +5199,13 @@ end
 		Dropdown:GetHighlightTexture():SetVertexColor(0.0, 0.5, 1.0, 0.25);
 
 		local Label = Dropdown:CreateFontString(nil, "ARTWORK");
-		Label:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "NORMAL");
+		Label:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, T_UIDefinition.frameFontOutline);
 		Label:SetText(gsub(text, "%%[a-z]", ""));
 		Label:SetPoint("LEFT", Dropdown, "RIGHT", 0, 0);
 		Dropdown.Label = Label;
 
 		local Text = Dropdown:CreateFontString(nil, "ARTWORK");
-		Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "NORMAL");
+		Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, T_UIDefinition.frameFontOutline);
 		Text:SetPoint("TOPLEFT", Label, "BOTTOMLEFT", 0, -2);
 		Text:SetVertexColor(0.0, 1.0, 0.0, 1.0);
 		Dropdown.Text = Text;
@@ -5218,7 +5221,7 @@ end
 	local function LF_ConfigCreateSlider(parent, key, text, minVal, maxVal, step, OnValueChanged)
 		local Slider = CreateFrame('SLIDER', nil, parent, "OptionsSliderTemplate");
 		local Label = Slider:CreateFontString(nil, "ARTWORK");
-		Label:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "NORMAL");
+		Label:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, T_UIDefinition.frameFontOutline);
 		Label:SetText(gsub(text, "%%[a-z]", ""));
 		Slider:SetWidth(200);
 		Slider:SetHeight(20);
@@ -5265,11 +5268,11 @@ end
 		local valStr = Button:CreateTexture(nil, "OVERLAY");
 		valStr:SetAllPoints(true);
 		local left = Button:CreateFontString(nil, "ARTWORK");
-		left:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "NORMAL");
+		left:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, T_UIDefinition.frameFontOutline);
 		left:SetText(">>");
 		left:SetPoint("RIGHT", Button, "LEFT", -2, 0);
 		local Label = Button:CreateFontString(nil, "ARTWORK");
-		Label:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "NORMAL");
+		Label:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, T_UIDefinition.frameFontOutline);
 		Label:SetText("<<" .. gsub(text, "%%[a-z]", ""));
 		Label:SetPoint("LEFT", Button, "RIGHT", 2, 0);
 		Button.Label = Label;
@@ -5533,7 +5536,7 @@ local function LF_CreateConfigFrame()
 		Frame.CharListToggleButton = ToggleButton;
 
 		local Text = ToggleButton:CreateFontString(nil, "OVERLAY");
-		Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, "NORMAL");
+		Text:SetFont(T_UIDefinition.frameFont, T_UIDefinition.frameFontSize, T_UIDefinition.frameFontOutline);
 		Text:SetPoint("RIGHT", ToggleButton, "LEFT", -2, 0);
 		Text:SetVertexColor(1.0, 1.0, 1.0, 1.0);
 		Text:SetText(l10n.CHAR_LIST);

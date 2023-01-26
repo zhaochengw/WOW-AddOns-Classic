@@ -1,7 +1,7 @@
 ## Interface: 30401
 ## Title: MountsJournal
 ## Author: sfmict
-## Version: v3.4.26
+## Version: v3.4.27
 ## Notes: Improved Mounts Journal.
 ## Notes-ruRU: Улучшенный журнал средств передвижения.
 ## SavedVariables: MountsJournalDB

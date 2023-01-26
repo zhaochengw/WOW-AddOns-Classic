@@ -21,6 +21,7 @@ L["Show info"] = "显示信息"
 L["per Character"] = "单角色"
 L["per Realm"] = "单服务器"
 L["Hide info from level under"] = "低于等级隐藏信息"
+L["Show current chracter first"] = true
 
 L["Tooltip - Character info."] = "提示 - 角色信息"
 L["Line 1 of char info."] = "角色信息第一行"
@@ -128,4 +129,13 @@ L["ToC"] = true
 L["HoR"] = true
 L["PoS"] = true
 L["FoS"] = true
+-- Raid abbrs
+L["Naxx"] = true
+L["OS"]   = true
+L["EoE"]  = true
+L["ULD"]  = true
+L["ToC"]  = true
+L["ICC"]  = true
+L["RS"]   = true
+L["VoA"]  = true
 end

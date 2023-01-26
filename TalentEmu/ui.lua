@@ -1043,7 +1043,11 @@ MT.BuildEnv('UI');
 					TreeFrames[2].TreeLabel:Show();
 					TreeFrames[3].TreeLabel:Show();
 					Frame.TreeButtonsBar:Hide();
-					Frame:SetMinResize(TUISTYLE.FrameXSizeMin_Style1, TUISTYLE.FrameYSizeMin_Style1);
+					if Frame.SetResizeBounds ~= nil then
+						Frame:SetResizeBounds(TUISTYLE.FrameXSizeMin_Style1, TUISTYLE.FrameYSizeMin_Style1, 9999, 9999);
+					else
+						Frame:SetMinResize(TUISTYLE.FrameXSizeMin_Style1, TUISTYLE.FrameYSizeMin_Style1);
+					end
 
 					local scale = (Frame:GetHeight() - TUISTYLE.TreeFrameYToBorder * 2) / (TUISTYLE.TreeFrameYSize + TUISTYLE.FrameHeaderYSize + TUISTYLE.FrameFooterYSize);
 					Frame.TreeFrameScale = scale;
@@ -1065,7 +1069,11 @@ MT.BuildEnv('UI');
 					TreeFrames[2].TreeLabel:Hide();
 					TreeFrames[3].TreeLabel:Hide();
 					Frame.TreeButtonsBar:Show();
-					Frame:SetMinResize(TUISTYLE.FrameXSizeMin_Style2, TUISTYLE.FrameYSizeMin_Style2);
+					if Frame.SetResizeBounds ~= nil then
+						Frame:SetResizeBounds(TUISTYLE.FrameXSizeMin_Style2, TUISTYLE.FrameYSizeMin_Style2, 9999, 9999);
+					else
+						Frame:SetMinResize(TUISTYLE.FrameXSizeMin_Style2, TUISTYLE.FrameYSizeMin_Style2);
+					end
 
 					local scale = (Frame:GetHeight() - TUISTYLE.TreeFrameYToBorder * 2) / (TUISTYLE.TreeFrameYSize + TUISTYLE.FrameHeaderYSize + TUISTYLE.FrameFooterYSize);
 					Frame.TreeFrameScale = scale;
@@ -3538,7 +3546,11 @@ MT.BuildEnv('UI');
 			Frame.id = temp_id;
 
 			Frame:SetPoint("CENTER");
-			Frame:SetMinResize(TUISTYLE.FrameXSizeMin_Style1, TUISTYLE.FrameYSizeMin_Style1);
+			if Frame.SetResizeBounds ~= nil then
+				Frame:SetResizeBounds(TUISTYLE.FrameXSizeMin_Style1, TUISTYLE.FrameYSizeMin_Style1, 9999, 9999);
+			else
+				Frame:SetMinResize(TUISTYLE.FrameXSizeMin_Style1, TUISTYLE.FrameYSizeMin_Style1);
+			end
 			Frame:SetFrameStrata("HIGH");
 			VT.__uireimp._SetSimpleBackdrop(Frame, 0, 1, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 1.0);
 

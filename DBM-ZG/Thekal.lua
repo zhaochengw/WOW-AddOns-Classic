@@ -1,7 +1,7 @@
 local mod = DBM:NewMod("Thekal", "DBM-ZG", 1)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20221129003558")
+mod:SetRevision("20230120015511")
 mod:SetCreatureID(14509, 11348, 11347)
 mod:SetEncounterID(789)
 mod:SetBossHPInfoToHighest()
@@ -12,7 +12,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 24208",
 	"SPELL_AURA_APPLIED 21060 12540",
 	"SPELL_AURA_REMOVED 21060 12540",
-	"SPELL_SUMMON 24813",
+	"SPELL_SUMMON 24183",
 	"CHAT_MSG_MONSTER_EMOTE",
 	"CHAT_MSG_MONSTER_YELL"
 )

@@ -1,6 +1,6 @@
 ## Interface: 20504
 ## Author: Lag
-## Version: v3.0.7
+## Version: v3.1.0
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
 
@@ -21,7 +21,7 @@
 ## Notes-esMX: AtlasLoot tablas de botín de Calabozos y Bandas
 ## Notes-frFR: Tables de butin des donjons et raids
 ## Notes-itIT: AtlasLoot loot tables from Dungeons and Raids
-## Notes-koKR: 던전과 공격대의 AtlasLoot 전리품 테이블
+## Notes-koKR: L["Notes-DaR"] = "던전과 공격대의 AtlasLoot 전리품 테이블"
 ## Notes-ptBR: Tabelas de saque AtlasLoot de Masmorras e Raides
 ## Notes-ruRU: Таблицы добычи AtlasLoot для подземелий и рейдов.
 ## Notes-zhCN: AtlasLoot 地下城&团队副本掉落列表

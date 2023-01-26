@@ -1,11 +1,15 @@
 local Grid2 = Grid2
 local next = next
 local pairs = pairs
+local select = select
+local UnitClass = UnitClass
+local UnitIsVisible = UnitIsVisible
+local UnitIsConnected = UnitIsConnected
 
 local Portraits = {}
 
-local function Portrait_Create(self, parent)		
-	local frame = self:CreateFrame("Frame", parent) 
+local function Portrait_Create(self, parent)
+	local frame = self:Acquire("Frame", parent)
 	if self.dbx.portraitType == '3D' then
 		frame.portraitModel = frame.portraitModel or CreateFrame("PlayerModel" , nil, frame)
 	else
@@ -14,45 +18,55 @@ local function Portrait_Create(self, parent)
 	if self.dbx.backColor then
 		frame.portraitBack = frame.portraitBack or frame:CreateTexture(nil, "BACKGROUND")
 		frame.portraitBack:SetAllPoints()
-	end	
+	end
 end
 
 local function Portrait_OnUpdateClass(self, parent, unit)
 	local Portrait = parent[self.name]
-	local class = select(2, UnitClass(unit))
-	if class then
-		Portrait.portraitTexture:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
-		Portrait.portraitTexture:SetTexCoord(CLASS_ICON_TCOORDS[class][1], CLASS_ICON_TCOORDS[class][2], CLASS_ICON_TCOORDS[class][3], CLASS_ICON_TCOORDS[class][4])
-	else
-		Portrait.portraitTexture:SetTexture("")
+	if Portrait then
+		local class = select(2, UnitClass(unit))
+		if class then
+			Portrait.portraitTexture:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
+			Portrait.portraitTexture:SetTexCoord(CLASS_ICON_TCOORDS[class][1], CLASS_ICON_TCOORDS[class][2], CLASS_ICON_TCOORDS[class][3], CLASS_ICON_TCOORDS[class][4])
+		else
+			Portrait.portraitTexture:SetTexture('')
+		end
+		Portrait:Show()
 	end
 end
 
-local function Portrait_OnUpdate2D(self, parent, unit)
+local function Portrait_OnUpdate2D(self, parent, unit, status)
 	local Portrait = parent[self.name]
-	Portrait.portraitTexture:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	SetPortraitTexture(Portrait.portraitTexture, unit)
+	if Portrait then
+		Portrait.portraitTexture:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+		SetPortraitTexture(Portrait.portraitTexture, unit)
+		Portrait:Show()
+	end
 end
 
 local function Portrait_OnUpdate3D(self, parent, unit, event)
-	local Portrait = parent[self.name].portraitModel
-	if not UnitIsVisible(unit) or not UnitIsConnected(unit) then
-		Portrait:ClearModel()
-		Portrait:SetCamDistanceScale(0.25)
-		Portrait:SetPortraitZoom(0)
-		Portrait:SetPosition(0, 0, 0.25)
-		Portrait:SetModel([[Interface\Buttons\TalkToMeQuestionMark.m2]])
-		Portrait.guid = nil
-	else
-		local guid = UnitGUID(unit)
-		if guid ~= Portrait.guid or event == 'UNIT_MODEL_CHANGED' then
-			Portrait:SetCamDistanceScale(1)
-			Portrait:SetPortraitZoom(1)
-			Portrait:SetPosition(0, 0, 0)
+	local Root = parent[self.name]
+	if Root then
+		local Portrait = Root.portraitModel
+		if not UnitIsVisible(unit) or not UnitIsConnected(unit) then
 			Portrait:ClearModel()
-			Portrait:SetUnit(unit)
-			Portrait.guid = guid
-		end	
+			Portrait:SetCamDistanceScale(0.25)
+			Portrait:SetPortraitZoom(0)
+			Portrait:SetPosition(0, 0, 0.25)
+			Portrait:SetModel([[Interface\Buttons\TalkToMeQuestionMark.m2]])
+			Portrait.guid = nil
+		else
+			local guid = UnitGUID(unit)
+			if guid ~= Portrait.guid or event == 'UNIT_MODEL_CHANGED' then
+				Portrait:SetCamDistanceScale(1)
+				Portrait:SetPortraitZoom(1)
+				Portrait:SetPosition(0, 0, 0)
+				Portrait:ClearModel()
+				Portrait:SetUnit(unit)
+				Portrait.guid = guid
+			end
+		end
+		Root:Show()
 	end
 end
 
@@ -83,7 +97,7 @@ local function Portrait_Layout(self, parent)
 	if c then
 		Portrait.portraitBack:SetColorTexture(c.r, c.g, c.b, c.a)
 		Portrait.portraitBack:Show()
-	end	
+	end
 	Portrait:Show()
 end
 
@@ -106,18 +120,21 @@ local function Portrait_OnSuspend(self)
 end
 
 local function UpdatePortraits(event, unit)
-	for parent in next, Grid2:GetUnitFrames(unit) do
-		for indicator in pairs(Portraits) do
-			indicator:OnUpdate(parent, unit, event)
+	for indicator in pairs(Portraits) do
+		local filtered = indicator.filtered
+		for frame in next, Grid2:GetUnitFrames(unit) do
+			if not (filtered and filtered[frame]) then
+				indicator:OnUpdate(frame, unit, event)
+			end
 		end
 	end
 end
 
-local function Portrait_LoadDB(self)
+local function Portrait_UpdateDB(self)
 	self.OnUpdate = (self.dbx.portraitType == '3D' and Portrait_OnUpdate3D) or
 					(self.dbx.portraitType == 'class' and Portrait_OnUpdateClass) or
 					Portrait_OnUpdate2D
-	if not next(Portraits) then 
+	if not next(Portraits) then
 		Grid2:RegisterEvent("UNIT_PORTRAIT_UPDATE", UpdatePortraits)
 		Grid2:RegisterEvent("UNIT_MODEL_CHANGED", UpdatePortraits)
 	end
@@ -125,13 +142,13 @@ local function Portrait_LoadDB(self)
 end
 
 local function Create(indicatorKey, dbx)
-	local indicator = Grid2.indicators[indicatorKey] or Grid2.indicatorPrototype:new(indicatorKey)
+	local indicator = Grid2.indicatorPrototype:new(indicatorKey)
 	indicator.dbx = dbx
 	indicator.Create = Portrait_Create
 	indicator.Layout = Portrait_Layout
 	indicator.Disable = Portrait_Disable
 	indicator.OnSuspend = Portrait_OnSuspend
-	indicator.LoadDB = Portrait_LoadDB
+	indicator.UpdateDB = Portrait_UpdateDB
 	Grid2:RegisterIndicator(indicator, { "portrait" })
 	return indicator
 end

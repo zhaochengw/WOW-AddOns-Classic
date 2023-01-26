@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Golemagg", "DBM-MC", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221129003558")
+mod:SetRevision("20230120015511")
 mod:SetCreatureID(11988)--, 11672
 mod:SetEncounterID(670)
 mod:SetModelID(11986)
@@ -12,6 +12,7 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, quake not in combat log on classic?
+--TODO, verify spellid, it might be 20553
 local warnQuake		= mod:NewSpellAnnounce(19798)
 
 function mod:SPELL_CAST_SUCCESS(args)
