@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: Blizzard Raid Frames Fix
 ## Version: v1.3.2
 ## Authors: dev7355608

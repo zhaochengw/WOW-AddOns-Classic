@@ -9,6 +9,7 @@ LBIS:AddGem(spec1, "39998", "3", "False") --Runed Scarlet Ruby
 LBIS:AddGem(spec1, "40051", "3", "False") --Reckless Monarch Topaz
 LBIS:AddGem(spec1, "40017", "3", "False") --Quick Autumn's Glow
 LBIS:AddGem(spec1, "40026", "3", "False") --Purified Twilight Opal
+LBIS:AddGem(spec1, "40104", "3", "False") --Intricate Forest Emerald
 
 
 LBIS:AddEnchant(spec1, "50370", LBIS.L["Head"]) --Arcanum of Blissful Mending
@@ -25,8 +26,9 @@ LBIS:AddEnchant(spec1, "44592", LBIS.L["Hands"]) --Enchant Gloves - Exceptional 
 
 LBIS:AddEnchant(spec1, "41602", LBIS.L["Legs"]) --Brilliant Spellthread
 
-LBIS:AddEnchant(spec1, "44508", LBIS.L["Feet"]) --Enchant Boots - Greater Spirit
+LBIS:AddEnchant(spec1, "55016", LBIS.L["Feet"]) --Nitro Boosts
 LBIS:AddEnchant(spec1, "47901", LBIS.L["Feet"]) --Enchant Boots - Tuskarr's Vitality
+LBIS:AddEnchant(spec1, "44508", LBIS.L["Feet"]) --Enchant Boots - Greater Spirit
 
 LBIS:AddEnchant(spec1, "60714", LBIS.L["Main Hand"]) --Enchant Weapon - Mighty Spellpower
 LBIS:AddEnchant(spec1, "62948", LBIS.L["Main Hand"]) --Enchant Staff - Greater Spellpower

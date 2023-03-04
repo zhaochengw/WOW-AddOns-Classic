@@ -1,4 +1,4 @@
-<!-- $Id: Core.xml 330 2018-12-26 17:45:04Z arith $ -->
+<!-- $Id: Core.xml 400 2022-11-06 13:38:47Z arithmandar $ -->
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<!-- Main Window -->
@@ -432,7 +432,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="3" y="-12"/>
+							<AbsDimension x="0" y="-16"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -497,11 +497,12 @@
 					</Anchor>
 				</Anchors>
 			</Frame>
+
 			<Button name="$parentTab1" inherits="AccountantClassicTabTemplate" id="1" text="Session">
 				<Anchors>
 					<Anchor point="BOTTOMLEFT">
 						<Offset>
-							<AbsDimension x="5" y="-20"/>
+							<AbsDimension x="15" y="-20"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -510,7 +511,7 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="-15" y="0"/>
+							<AbsDimension x="5" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -519,7 +520,7 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="-15" y="-26"/>
+							<AbsDimension x="5" y="-32"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -528,7 +529,7 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="-15" y="0"/>
+							<AbsDimension x="5" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -537,7 +538,7 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentTab3" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="-15" y="0"/>
+							<AbsDimension x="5" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -546,7 +547,7 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentTab4" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="-15" y="0"/>
+							<AbsDimension x="5" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -555,7 +556,7 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentTab5" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="-15" y="0"/>
+							<AbsDimension x="5" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -564,7 +565,7 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentTab6" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="-15" y="0"/>
+							<AbsDimension x="5" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -573,7 +574,7 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentTab7" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="-15" y="0"/>
+							<AbsDimension x="5" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -582,7 +583,7 @@
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="$parentTab8" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="-15" y="0"/>
+							<AbsDimension x="5" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -591,7 +592,7 @@
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
 						<Offset>
-							<AbsDimension x="0" y="-20"/>
+							<AbsDimension x="-5" y="-20"/>
 						</Offset>
 					</Anchor>
 				</Anchors>

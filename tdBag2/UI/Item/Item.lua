@@ -12,7 +12,12 @@ local format = string.format
 ---- WOW
 local CreateFrame = CreateFrame
 local GetItemQualityColor = GetItemQualityColor
-local IsBattlePayItem = IsBattlePayItem
+local IsBattlePayItem = IsBattlePayItem or C_Container.IsBattlePayItem
+if not IsBattlePayItem then
+    IsBattlePayItem = function(bag, slot)
+        return false
+    end
+end
 
 local IsNewItem = C_NewItems.IsNewItem
 local RemoveNewItem = C_NewItems.RemoveNewItem
@@ -124,7 +129,7 @@ function Item:UpdateBorder()
         self.NewItemTexture:Hide()
     end
 
-    self.IconBorder:SetVertexColor(r, g, b, sets.glowAlpha)
+    self.IconBorder:SetVertexColor(r or 1, g or 1, b or 1, sets.glowAlpha)
     self.IconBorder:SetShown(r and not new)
     self.QuestBorder:SetShown(sets.iconQuestStarter and self:IsQuestStarter())
     self.JunkIcon:SetShown(sets.iconJunk and self:IsJunk())

@@ -1,4 +1,7 @@
 SwitcherTracking = LibStub("AceAddon-3.0"):NewAddon("SwitcherTracking", "AceTimer-3.0", "AceConsole-3.0")
+local icon = LibStub("LibDBIcon-1.0")
+local SwitcherTrackingLDB = LibStub("LibDataBroker-1.1", true)
+local addonName, ns = ...
 
 local trackingValues = {
     minerals = 'Find Minerals',
@@ -94,21 +97,54 @@ local options = {
             get = 'GetCastInterval',
             set = 'SetCastInterval',
             width = "full",
-        }
-    }
+        },
+		icon_minimap = {
+					type = "group",
+					name = "Minimap Icon",
+					desc = "Show/Hide Minimap Icon",
+					order = 10,
+					args = {
+						minimapHide = {
+							type = "toggle",
+							
+							name = "Show/Hide Minimap Icon",
+							desc = "Show/Hide icon on the Minimap",
+							get = function(info)
+								return not SwitcherTracking.db.profile.minimaphide
+								
+							end,
+							set = function(info, val)
+								if val then 
+								--icon:Show("SwitcherTracking")
+								SwitcherTracking:toogle_MinimapButton(val)								
+								else 
+								icon:Hide("SwitcherTracking")
+								end
+							SwitcherTracking.db.profile.minimaphide = not val
+							end,
+								
+		
+						order = 11,
+						}
+					
+					}
+		}
+	}
 }
 
 
 
 local defaults = {
-    profile  = {
+ 
+	profile  = {
         type1 = "minerals",
         type2 = "herbs",
-    }
+		minimaphide = true,
+	}
 }
 
 function SwitcherTracking:OnInitialize()
-    print('To Start witcherTracking, use /swt to enable. To change tracking types use /swt opt')
+    print('To Start switcherTracking, use /swt to enable. To change tracking types use /swt opt')
 
     self.db = LibStub("AceDB-3.0"):New("SwitcherTrackingCharDB", defaults, true)
 
@@ -122,6 +158,85 @@ function SwitcherTracking:OnInitialize()
     SwitcherTracking.type2 = "herbs";
     SwitcherTracking.castInterval = "2";
     SwitcherTracking.IS_RUNNING = false;
+	
+			--icon minimap
+		SwitcherTrackingLDB = SwitcherTrackingLDB:NewDataObject("SwitcherTracking", {
+		type = "launcher",
+		text = "SwitcherTracking",
+		icon = "Interface\\Icons\\ability_townwatch",
+		--icon = "Interface\\Icons\\Spell_nature_lightning",
+		OnClick = 	function(_, button)                
+--print(button)
+					if button == "LeftButton" then 
+						
+						if LibStub("AceConfigDialog-3.0").OpenFrames["SwitcherTracking"] then
+						LibStub("AceConfigDialog-3.0"):Close("SwitcherTracking")
+						else
+						LibStub("AceConfigDialog-3.0"):Open("SwitcherTracking")
+						--InterfaceOptionsFrame_OpenToCategory("Profiles")
+						end 
+						
+					end
+					
+					if button == "MiddleButton" then 
+						
+
+						InterfaceOptionsFrame_OpenToCategory("Profiles")
+		
+						
+					end		
+					
+					if button == "RightButton" then 
+							
+						SwitcherTracking:ToggleTracking();					
+								
+							
+						
+					end
+					
+					end,
+		OnTooltipShow = function(tt)
+						tt:AddLine("SwitcherTracking version  : |cffffff00".."3.4.1".."|r")
+						tt:AddLine("|cffffff00Click|Left to Hide/Show Options.")
+						tt:AddLine("|cffffff00Click|Right to launch the switch tracking.")
+						end,
+		})
+
+	
+	if SwitcherTracking.db.profile.minimaphide == not true then
+		icon:Register("SwitcherTracking", SwitcherTrackingLDB, SwitcherTracking.db.profile.minimapPos)
+		SwitcherTracking:RegisterChatCommand("SwitcherTracking", "CommandSwitcherTracking")
+		icon:Hide("SwitcherTracking")
+		icon:Hide("SwitcherTracking")
+		
+	end
+
+		
+	
+
+end
+------------------------------------------
+--- Show Hide Icon Minimap
+------------------------------------------
+function SwitcherTracking:toogle_MinimapButton(arg)	
+	--print("arg",arg)
+	if arg== true then
+
+		if icon:IsRegistered("SwitcherTracking") then
+		--print("registred",arg)
+		else
+		--print("Notregistred",arg)
+		icon:Register("SwitcherTracking", SwitcherTrackingLDB, SwitcherTracking.db.profile.minimapPos)
+		SwitcherTracking:RegisterChatCommand("SwitcherTracking", "CommandSwitcherTracking")		
+		end
+		icon:Show("SwitcherTracking")
+		
+	else
+		icon:Hide("SwitcherTracking")
+		
+	end
+
+
 end
 
 function SwitcherTracking:ChatCommand(input)

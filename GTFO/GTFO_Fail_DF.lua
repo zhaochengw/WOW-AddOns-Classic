@@ -650,6 +650,37 @@ GTFO.SpellID["390766"] = {
   sound = 3;
 };
 
+GTFO.SpellID["394165"] = {
+  --desc = "Self-Destruct (S.A.V.I.O.R.)";
+  sound = 3;
+};
+
+GTFO.SpellID["398261"] = {
+  --desc = "Avalanche Slam (Glakis, Winter's Wrath)";
+  sound = 3;
+};
+
+GTFO.SpellID["398668"] = {
+  --desc = "Guardian's Duty (Winter's Aegis)";
+  sound = 3;
+};
+
+GTFO.SpellID["398690"] = {
+  --desc = "Frozen Backdraft (Glakis, Winter's Wrath)";
+  sound = 3;
+};
+
+GTFO.SpellID["397730"] = {
+  --desc = "Crippling Cold (Glakis, Winter's Wrath)";
+  sound = 3;
+  negatingDebuffSpellID = 397700; -- Crippling Cold
+};
+
+GTFO.SpellID["395304"] = {
+  --desc = "Azure Catastrophe (Azure Pathfinder)";
+  sound = 3;
+};
+
 --- *******************
 --- * Ruby Life Pools *
 --- *******************

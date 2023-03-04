@@ -5,13 +5,11 @@ local spec4 = LBIS:RegisterSpec(LBIS.L["Paladin"], LBIS.L["Holy"], "4")
 
 LBIS:AddGem(spec1, "41401", "3", "True") --Insightful Earthsiege Diamond
 LBIS:AddGem(spec1, "40012", "3", "False") --Brilliant Autumn's Glow
-LBIS:AddGem(spec3, "40123", "4", "False") --Brilliant King's Amber
 LBIS:AddGem(spec1, "40017", "3", "False") --Quick Autumn's Glow
-LBIS:AddGem(spec3, "40128", "4", "False") --Quick King's Amber
 LBIS:AddGem(spec1, "42148", "4", "False") --Brilliant Dragon's Eye
 LBIS:AddGem(spec1, "42150", "4", "False") --Quick Dragon's Eye
-LBIS:AddGem(spec1, "40027", "3", "False") --Royal Twilight Opal
-LBIS:AddGem(spec1, "42702", "3", "False") --Enchanted Tear
+LBIS:AddGem(spec1, "45882", "4", "False") --Brilliant Stormjewel
+LBIS:AddGem(spec1, "40047", "3", "False") --Luminous Monarch Topaz
 LBIS:AddGem(spec1, "40094", "3", "False") --Dazzling Forest Emerald
 
 

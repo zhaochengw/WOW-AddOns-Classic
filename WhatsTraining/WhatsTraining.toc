@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: What's Training?
 ## Version: 4.0.5
 ## Author: Sveng

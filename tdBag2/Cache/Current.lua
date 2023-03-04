@@ -8,9 +8,20 @@ local select = select
 
 ---- WOW
 local GetBankSlotCost = GetBankSlotCost
-local GetContainerItemInfo = GetContainerItemInfo
-local GetContainerNumFreeSlots = GetContainerNumFreeSlots
-local GetContainerNumSlots = GetContainerNumSlots
+local GetContainerItemInfo = function(bag, slot)
+    if C_Container and C_Container.GetContainerItemInfo then
+        local info = C_Container.GetContainerItemInfo(bag, slot)
+        if info then
+            return info.iconFileID, info.stackCount, info.isLocked, info.quality, info.isReadable, info.hasLoot, info.hyperlink, info.isFiltered, info.hasNoValue, info.itemID, info.isBound
+        end
+    else
+        return _G.GetContainerItemInfo(bag, slot)
+    end
+end
+local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots
+local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
+local GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID
+local GetContainerItemLink = GetContainerItemLink or C_Container.GetContainerItemLink
 local GetCursorMoney = GetCursorMoney
 local GetInventoryItemID = GetInventoryItemID
 local GetInventoryItemLink = GetInventoryItemLink

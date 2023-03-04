@@ -1,4 +1,4 @@
-## Interface: 11403
+## Interface: 30401
 ## Title: TotemTimers
 ## Author:  Xianghar
 ## Version: 3.1.15

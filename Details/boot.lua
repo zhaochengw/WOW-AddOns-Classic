@@ -2,13 +2,16 @@
 --global name declaration
 --local _StartDebugTime = debugprofilestop() print(debugprofilestop() - _StartDebugTime)
 --test if the packager will deploy to wago
+
+--make an option to show death in the order of newest to oldest
+
 		_ = nil
 		_G._detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		local addonName, Details222 = ...
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10409
-		_detalhes.alpha_build_counter = 10409 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 10661
+		_detalhes.alpha_build_counter = 10661 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. " " .. _detalhes.build_counter
@@ -76,6 +79,9 @@
 		Details222.Segments = {}
 		Details222.Tables = {}
 		Details222.Mixins = {}
+		Details222.Cache = {}
+		Details222.Perf = {}
+		Details222.Cooldowns = {}
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --initialization stuff
@@ -83,24 +89,30 @@ local _
 
 do
 	local _detalhes = _G._detalhes
-
 	_detalhes.resize_debug = {}
 
-	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
-
-
-	--Fixed load errors on Wrath.
-	--Fixed enemy cast time in the death tooltip sometimes showing off time.
-	--Allow negative offsets on Aligned Text Columns (Flamanis).
-	--Remove multi-spec entries for shaman guessing (Flamanis).
-	--More Demon hunter abilities added to be merged (Flamanis).
-	--Added duck polymorph to Mage CCs (Flamanis).
-	--Fixed an issue with some options not updating when the window is selected at the bottom right corner of the options panel (Flamanis).
-
+	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 
 	local news = {
-		{"v10.0.2.10333.147", "Jan 04th, 2023"},
+		{"v10.0.5.10661.147", "Mar 1st, 2023"},
+		"Major fixes and updates on the Event Tracker feature (for streamers).",
+		"When trying to import a profile with a name that already exists, it'll rename it and import (Flamanis).",
+		"Ignoring Fodder to the Flame npcs (Flamanis).",
+		"Mythic plus overall segments now have the list of player deaths.",
 
+		{"v10.0.2.10333.147", "Feb 08th, 2023"},
+		"Fixed load errors on Wrath.",
+		"Fixed enemy cast time in the death tooltip sometimes showing off time.",
+		"Allow negative offsets on Aligned Text Columns (Flamanis).",
+		"Fixed Shaman and Warrior spec detection (Flamanis).",
+		"More Demon hunter abilities added to be merged (Flamanis).",
+		"Added duck polymorph to Mage CCs (Flamanis).",
+		"Fixed offline player showing as party members in the /keys panel and players from other realms not caching (Flamanis).",
+		"Fixed an issue with some options not updating when the window is selected at the bottom right corner of the options panel (Flamanis).",
+		"Fixed some issues with the breakdown window for 'Damage Taken' (Flamanis).",
+		"Fixed an issue where sometimes the 'Always Show Me' wouldn't show if the total bar is enabled (Ricodyn).",
+
+		{"v10.0.2.10333.147", "Jan 04th, 2023"},
 		"Enemy Cast (non-interrupted) now is shown in the death log.",
 		"Damage Done by Blessing of Winter and Summer now counts torward the paladin.",
 		"Tooltips for Mythic Dungeon segments in the segments menu, now brings more information about the combat.",
@@ -252,8 +264,9 @@ do
 				[2522] = true, --sepulcher of the first ones
 			}
 
-		--armazena os escudos - Shields information for absorbs
-			_detalhes.escudos = {}
+		--store shield information for absorbs
+			_detalhes.ShieldCache = {}
+
 		--armazena as fun��es dos frames - Frames functions
 			_detalhes.gump = _G ["DetailsFramework"]
 			function _detalhes:GetFramework()

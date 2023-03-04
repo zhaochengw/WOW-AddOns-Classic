@@ -5,9 +5,11 @@ Description: A library for the Fishing Buddy functions usable by plugins and oth
 Copyright (c) by Bob Schumaker
 Licensed under a Creative Commons "Attribution Non-Commercial Share Alike" License
 --]]
+local addonName, FBStorage = ...
+local  FBI = FBStorage
 
 local MAJOR_VERSION = "FishingBuddyApi-1.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 676 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 678 $"):match("%d+"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 
@@ -21,27 +23,7 @@ local FL = LibStub("LibFishing-1.0");
 -- 5.0.4 has a problem with a global "_"
 local _
 
--- Event handler support
-function FBAPI:RegisterHandlers(handlers)
-	FishingBuddy.RegisterHandlers(handlers);
-end
-
-function FBAPI:GetHandlers(what)
-	return FishingBuddy.GetHandlers(what);
-end
-
--- Settings support
-function FBAPI:GetSettingBool(setting)
-	return FishingBuddy.GetSettingBool(setting);
-end
-
-function FBAPI:GetSetting(setting)
-	return FishingBuddy.GetSetting(setting);
-end
-
-function FBAPI:GetDefault(setting)
-	return FishingBuddy.GetDefault(setting);
-end
+FBAPI.FBConstants = FBI.FBConstants;
 
 -- Identify Fishing Buddy
 function FBAPI:GetKey()
@@ -52,7 +34,7 @@ function FBAPI:GetKey()
 		-- generate a random key to identify this instance of the plugin
 		local n = 16 + random(4) + random(4);
 		key = "";
-		for idx=1,n do
+		for _=1,n do
 			key = key .. string.char(64+math.random(26));
 		end
 		FishingBuddy_Info["FishingBuddyKey"] = key;
@@ -77,36 +59,15 @@ end
 
 function FBAPI:ResetKey()
 	FishingBuddy_Info["FishingBuddyKey"] = nil;
-	local key = GetKey();
+	local key = self:GetKey();
 	if (FB_MergeDatabase) then
 		FB_MergeDatabase.key = key;
 	end
-	FishingBuddy.Message("Key reset.");
+	FBI:Message("Key reset.");
 	return key;
 end
 
 -- Miscellaneous functions
-function FBAPI:IsSwitchClick(setting)
-	if ( not setting ) then
-		setting = "ClickToSwitch";
-	end
-	local a = IsShiftKeyDown();
-	local b = FishingBuddy.GetSettingBool(setting);
-	return ( (a and (not b)) or ((not a) and b) );
-end
-
-function FBAPI:IsQuestFish(id)
-	return FishingBuddy.IsQuestFish(id);
-end
-
-function FBAPI:IsCountedFish(id)
-	return FishingBuddy.IsCountedFish(id);
-end
-
-function FBAPI:ReadyForFishing()
-	return FishingBuddy.ReadyForFishing();
-end
-
-function FBAPI:AreWeFishing()
-	return FishingBuddy.AreWeFishing();
+for _, apifunc in ipairs(FBI.APIFunctions) do
+	FBAPI[apifunc] = function(self, ...) return FBI[apifunc](FBI, ...); end;
 end

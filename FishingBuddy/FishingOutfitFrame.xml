@@ -87,7 +87,7 @@
 				<Frames>
 					<Button name="FishingOutfitSkill" inherits="FishingOutfitFrameLabel">
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="FBOutfitFrameMainHandSlotCheckBox" relativePoint="LEFT">
+							<Anchor point="BOTTOMLEFT" relativeTo="$parentMainHandSlot" relativePoint="TOPRIGHT">
 								<Offset>
 									<AbsDimension x="-10" y="33"/>
 								</Offset>

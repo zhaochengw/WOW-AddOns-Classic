@@ -1,5 +1,5 @@
 ﻿----------------------------------------------------------------------
--- 	Leatrix Plus 3.0.95 (26th January 2023)
+-- 	Leatrix Plus 3.0.114 (3rd March 2023)
 ----------------------------------------------------------------------
 
 --	01:Functns, 02:Locks, 03:Restart, 20:Live, 30:Isolated, 40:Player
@@ -19,7 +19,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "3.0.95"
+	LeaPlusLC["AddonVer"] = "3.0.114"
 
 	-- Get locale table
 	local void, Leatrix_Plus = ...
@@ -37,7 +37,7 @@
 		end
 	end
 
-	-- Check for ElvUI
+	-- Check for addons
 	if IsAddOnLoaded("ElvUI") then LeaPlusLC.ElvUI = unpack(ElvUI) end
 	if IsAddOnLoaded("Glass") then LeaPlusLC.Glass = true end
 
@@ -441,39 +441,38 @@
 		end
 	end
 
-	-- Check if a name is in your friends list or guild
-	function LeaPlusLC:FriendCheck(name)
+	-- Check if a name is in your friends list or guild (does not check realm as realm is unknown for some checks)
+	function LeaPlusLC:FriendCheck(name, guid)
+
+		-- Do nothing if name is empty (such as whispering from the Battle.net app)
+		if not name then return end
 
 		-- Update friends list
 		C_FriendList.ShowFriends()
 
+		-- Remove realm
+		name = strsplit("-", name, 2)
+
 		-- Check character friends
-		for i = 1, C_FriendList.GetNumOnlineFriends() do
-			-- Return true if name matches with or without realm
+		for i = 1, C_FriendList.GetNumFriends() do
+			-- Return true is character name matches and GUID matches if there is one (realm is not checked)
+			local friendInfo = C_FriendList.GetFriendInfoByIndex(i)
 			local charFriendName = C_FriendList.GetFriendInfoByIndex(i).name
-			if name == charFriendName or name == strsplit("-", charFriendName, 2) then
+			charFriendName = strsplit("-", charFriendName, 2)
+			if (name == charFriendName) and (guid and (guid == friendInfo.guid) or true) then
 				return true
 			end
-		end
-
-		-- Get realm name or set to player's own realm (same realm does not return realm)
-		local void, myRealm = UnitFullName(name)
-		if not myRealm or myRealm == "" then void, myRealm = UnitFullName("player") end
-		if not myRealm or myRealm == "" then return end
-
-		-- Add realm name to character name
-		if not string.find(name, "-") then
-			name = name .. "-" .. myRealm
 		end
 
 		-- Check Battle.net friends
 		local numfriends = BNGetNumFriends()
 		for i = 1, numfriends do
-			local numtoons = BNGetNumFriendGameAccounts(i)
+			local numtoons = C_BattleNet.GetFriendNumGameAccounts(i)
 			for j = 1, numtoons do
-				local void, toon, client, realm = BNGetFriendGameAccountInfo(i, j)
-				local toonname = toon .. "-" ..realm
-				if client == "WoW" and toonname == name then
+				local gameAccountInfo = C_BattleNet.GetFriendGameAccountInfo(i, j)
+				local characterName = gameAccountInfo.characterName
+				local client = gameAccountInfo.clientProgram
+				if client == "WoW" and characterName == name then
 					return true
 				end
 			end
@@ -483,13 +482,11 @@
 		if LeaPlusLC["FriendlyGuild"] == "On" then
 			local gCount = GetNumGuildMembers()
 			for i = 1, gCount do
-				local gName, void, void, void, void, void, void, void, gOnline, void, void, void, void, gMobile = GetGuildRosterInfo(i)
+				local gName, void, void, void, void, void, void, void, gOnline, void, void, void, void, gMobile, void, void, gGUID = GetGuildRosterInfo(i)
 				if gOnline and not gMobile then
-					local gCompare = gName
-					if not string.find(gName, "-") then
-						gCompare = gName .. "-" .. myRealm
-					end
-					if gCompare == name then
+					gName = strsplit("-", gName, 2)
+					-- Return true if character name matches including GUID if there is one
+					if (name == gName) and (guid and (guid == gGUID) or true) then
 						return true
 					end
 				end
@@ -858,6 +855,12 @@
 				-- Gyrocopters
 				["MuteGyrocopters"] = {
 
+					-- Mimiron's Head (sound/creature/mimironheadmount/)
+					"mimironheadmount_jumpend.ogg#595097",
+					"mimironheadmount_jumpstart.ogg#595103",
+					"mimironheadmount_run.ogg#555364",
+					"mimironheadmount_walk.ogg#595100",
+
 					-- sound/creature/gyrocopter/
 					"gyrocopterfly.ogg#551390",
 					"gyrocopterflyidle.ogg#551398",
@@ -872,11 +875,21 @@
 					"gyrocoptershuffleleftorright2.ogg#551382",
 					"gyrocoptershuffleleftorright3.ogg#551392",
 					"gyrocopterstallinair.ogg#551395",
+					"gyrocopterstallinairlong.ogg#551394",
+					"gyrocopterstallongroundlong.ogg#551393",
 					"gyrocopterstand.ogg#551383",
 					"gyrocopterstandvar1_a.ogg#551388",
 					"gyrocopterstandvar1_b.ogg#551397",
 					"gyrocopterstandvar1_bnew.ogg#551400",
 					"gyrocopterwalk.ogg#551401",
+
+					-- Gear shift sounds (sound/vehicles/)
+					"vehicle_airplane_gearshift_1.ogg#569846",
+					"vehicle_airplane_gearshift_2.ogg#598739",
+					"vehicle_airplane_gearshift_3.ogg#569851",
+					"vehicle_airplane_gearshift_4.ogg#598742",
+					"vehicle_airplane_gearshift_5.ogg#598733",
+					"vehicle_airplane_gearshift_6.ogg#569850",
 
 					-- sound/spells/
 					"summongyrocopter.ogg#568252",
@@ -913,6 +926,14 @@
 
 					-- sound/events/
 					"archaniteripper.ogg#567384",
+
+				},
+
+				-- Rhonin
+				["MuteRhonin"] = {
+
+					-- sound/creature/rhonin/ur_rhonin_event
+					"01.ogg#559130", "02.ogg#559131", "03.ogg#559126", "04.ogg#559128", "05.ogg#559133", "06.ogg#559129", "07.ogg#559132", "08.ogg#559127",
 
 				},
 
@@ -1027,6 +1048,7 @@
 			LeaPlusLC:MakeTx(SoundPanel, "Misc", 418, -72)
 			LeaPlusLC:MakeCB(SoundPanel, "MuteAdal", "A'dal", 418, -92, false, "If checked, A'dal in Shattrath City will be muted.")
 			LeaPlusLC:MakeCB(SoundPanel, "MuteRipper", "Ripper", 418, -112, false, "If checked, the Arcanite Ripper guitar sound will be muted.")
+			LeaPlusLC:MakeCB(SoundPanel, "MuteRhonin", "Rhonin", 418, -132, false, "If checked, Rhonin will be muted.")
 
 			-- Set click width for sounds checkboxes
 			for k, v in pairs(muteTable) do
@@ -1518,6 +1540,7 @@
 
 				-- Flightmaster
 				23859, 32571, 28574, 28674, 24795, 28615, 3310, 931, 29480, 1387, 25288, 26851, 18789, 10583, 26878, 11901, 12578, 11900, 20234, 26852, 26881, 27046, 2859, 26602, 10897, 6726, 4312, 26880, 18930, 6706, 16587, 16227, 6026, 4267, 2432, 8610, 28624, 18940, 26847, 1571, 27344, 7823, 28618, 1573, 18938, 8020, 22455, 22935, 4407, 1572, 13177, 8609, 18931, 4321, 2299, 16822, 20762, 12577, 26845, 12617, 17554, 26560, 23736, 4319, 21766, 18937, 19558, 12596, 18939, 7824, 3841, 2835, 28196, 15177, 19317, 18791, 2409, 22216, 8019, 22931, 19583, 2858, 3305, 28623, 18808, 22485, 20515, 18942, 18807, 18785, 2941, 19581, 11138, 4551, 26566, 4317, 10378, 21107, 11899, 26879, 18953, 2851, 3615, 352, 23612, 12740, 12636, 2861, 8018, 2226, 24851, 18788, 24366, 15178, 16189, 16192, 17555, 2995, 3838, 12616, 11139, 2389, 18809, 4314, 28197, 523,
+				37888, -- Added manually
 
 				-- Trainer
 				31238, 28701, 31247, 28697, 28699, 29631, 28746, 28705, 18988, 26989, 28703, 26953, 8126, 19186, 18987, 35093, 35135, 35133, 26992, 18911, 5482, 28693, 29156, 25277, 25099, 26986, 33676, 26905, 35100, 29233, 26972, 29513, 3494, 18773, 16583, 18753, 19778, 24868, 4752, 26990, 26991, 4732, 26982, 28742, 26975, 28698, 18774, 28694, 33682, 28706, 26956, 27001, 3399, 18993, 26976, 18990, 28700, 33680, 18751, 26964, 19775, 26974, 26997, 3026, 26955, 5159, 4552, 23734, 26999, 26969, 26994, 26980, 4586, 16253, 16588, 26912, 31084, 26907, 18991, 16280, 26960, 26915, 26987, 1430, 26962, 26954, 26910, 19252, 26914, 3028, 7406, 32474, 26963, 18802, 19052, 20914, 18775, 12042, 26988, 30721, 28702, 27000, 7954, 3690, 26998, 26981, 33614, 18779, 26993, 17637, 17634, 26906, 28958, 4772, 5493, 20500, 33613, 4773, 26951, 5518, 16823, 26958, 20511, 5938, 4210, 11869, 11868, 18749, 11865, 18777, 26903, 5174, 8736, 11557, 33638, 18747, 3067, 33610, 29505, 26977, 18772, 28696, 33617, 30722, 6251, 18752, 29194, 30713, 17110, 11867, 5491, 18771, 20791, 26952, 4218, 4753, 17246, 6297, 7944, 1651, 7953, 11870, 15501, 6707, 3332, 17204, 29514, 19185, 23128, 33679, 11017, 27703, 30706, 26995, 18755, 5885, 33611, 7866, 16676, 6286, 4568, 19540, 3064, 29195, 19187, 18776, 18748, 3355, 7867, 3032, 5161, 3412, 3352, 4217, 18018, 4606, 23127, 33615, 5513, 19180, 5511, 8306, 908, 11866, 4573, 925, 5127, 3324, 28472, 18754, 837, 2704, 19184, 28474, 3373, 26959, 28704, 30717, 928, 8146, 10993, 28956, 16681, 20407, 19063, 1218, 3036, 543, 375, 16646, 4156, 3136, 16773, 11074, 16621, 9584, 19539, 3347, 223, 11097, 3345, 6288, 987, 3401, 912, 5958, 7311, 8738, 26564, 1681, 7869, 7870, 461, 915, 985, 8128, 916, 3033, 16771, 16663, 957, 1346, 19341, 3365, 16499, 911, 13283, 29509, 2327, 3030, 5566, 17222, 3001, 5172, 33683, 33621, 3327, 895, 15400, 4258, 17215, 4211, 2367, 4165, 13417, 7871, 5564, 22477, 914, 2836, 16266, 2399, 7312, 1231, 14740, 1382, 11025, 11401, 5502, 2818, 5392, 3326, 3606, 5173, 13084, 17101, 30715, 4219, 4254, 11098, 17513, 11406, 376, 16653, 17509, 11072, 29196, 19340, 16633, 5880, 3967, 33608, 16662, 4215, 3047, 6291, 7946, 5515, 3181, 17520, 7231, 5113, 20124, 8144, 16755, 5506, 2798, 16277, 17481, 4212, 11073, 4588, 16669, 5144, 5149, 1701, 19251, 11031, 17482, 5165, 4576, 1473, 1317, 3137, 2329, 16721, 17219, 1458, 16684, 3607, 5957, 5690, 1355, 3963, 16667, 1229, 986, 3039, 5497, 27034, 3344, 3013, 3063, 28471, 2492, 27705, 913, 3357, 16719, 5166, 16679, 3034, 3354, 3706, 3041, 3007, 19576, 16728, 16658, 3009, 5114, 7232, 4598, 927, 20406, 5115, 5164, 6306, 16680, 2837, 3555, 3175, 8153, 30709, 5943, 514, 16647, 5505, 3171, 2857, 11052, 11029, 17483, 5495, 17844, 3406, 16651, 1632, 2390, 5148, 10090, 16367, 4593, 2129, 4609, 17488, 5498, 16774, 4214, 1470, 11037, 5492, 1404, 5499, 1292, 4591, 4583, 2834, 11397, 11096, 5137, 1386, 5496, 33618, 3173, 4163, 5171, 7088, 17212, 3040, 6295, 20125, 4160, 16660, 17484, 19369, 4611, 1676, 3353, 1234, 27704, 1411, 4138, 3170, 3038, 16640, 12961, 5941, 12032, 3045, 1226, 2489, 7089, 17442, 16752, 16726, 11177, 29506, 918, 5882, 15513, 10276, 5504, 4089, 5177, 3169, 6018, 5479, 4090, 23534, 1385, 5484, 2128, 4582, 23103, 4205, 16749, 17487, 5167, 16269, 5157, 17441, 16655, 11146, 11028, 3154, 3602, 2998, 17121, 3707, 3964, 3600, 16659, 16688, 3363, 1228, 12030, 12025, 16725, 16686, 16275, 16731, 1700, 377, 6287, 16366, 15283, 5939, 7949, 3065, 4900, 812, 16161, 4087, 1232, 17514, 11068, 17245, 16644, 16756, 8141, 16736, 3545, 2119, 7315, 3290, 16738, 3172, 16780, 3174, 16685, 5883, 17089, 5612, 9465, 4584, 4193, 3179, 10086, 5480, 4596, 3404, 5153, 4578, 5145, 4563, 4566, 16272, 17504, 16503, 7948, 3061, 331, 16160, 3604, 29507, 3597, 15284, 3044, 3605, 16654, 3066, 5150, 5146, 3328, 15285, 4567, 16729, 3155, 5567, 2391, 3407, 1383, 11026, 3004, 5516, 16500, 1246, 10088, 328, 16502, 30710, 5994, 1215, 8308, 17214, 2856, 16501, 2131, 4595, 17120, 3698, 11178, 1702, 5489, 4320, 16642, 3069, 3603, 10930, 11044, 6387, 459, 17005, 11081, 17511, 2114, 3046, 4204, 3594, 3153, 16712, 3060, 2627, 1699, 1466, 3622, 10277, 3557, 16675, 3059, 17983, 17519, 2124, 17510, 11066, 15279, 5501, 1901, 3043, 198, 17505, 7087, 33681, 11047, 3598, 11070, 4092, 2485, 4616, 1300, 16723, 5884, 3008, 11067, 2130, 4614, 2126, 3062, 3184, 11041, 3325, 17434, 11071, 3156, 5759, 5116, 2878, 18804, 16652, 3688, 16763, 17480, 2127, 7868, 3042, 16278, 3549, 3157, 10089, 2855, 4213, 16279, 11084, 5500, 5141, 10278, 3049, 5143, 16692, 10266, 1703, 5147, 11051, 11048, 1683, 11046, 16674, 3624, 3593, 17424, 4594, 3596, 16761, 4605, 3523, 4898, 6094, 2132, 3087, 3965, 11083, 2123, 2122, 3601, 6292, 1103, 4607, 4608, 3620, 4091, 15280, 4146, 5811, 2879, 988, 3306, 3484, 3703, 4564, 3704, 16273, 1680, 4159, 16724, 3185, 16276, 6289, 5117, 11049, 4565, 3595, 7230, 3403, 11042, 16672, 3011, 16271, 2326, 11065, 5517, 3031, 1241, 3478, 11050, 3048, 5695, 17122, 5784, 6014, 6290, 16648, 3408, 5142, 926, 8140, 6299, 19478, 21087, 16270, 3599, 8142, 917, 944, 16673, 460, 906,
@@ -3163,8 +3186,8 @@
 			cButton:SetSize(32, 32)
 
 			-- Create durability tables
-			local Slots = {"HeadSlot", "ShoulderSlot", "ChestSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "MainHandSlot", "SecondaryHandSlot"}
-			local SlotsFriendly = {INVTYPE_HEAD, INVTYPE_SHOULDER, INVTYPE_CHEST, INVTYPE_WRIST, INVTYPE_HAND, INVTYPE_WAIST, INVTYPE_LEGS, INVTYPE_FEET, INVTYPE_WEAPONMAINHAND, INVTYPE_WEAPONOFFHAND}
+			local Slots = {"HeadSlot", "ShoulderSlot", "ChestSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "MainHandSlot", "SecondaryHandSlot", "RangedSlot"}
+			local SlotsFriendly = {INVTYPE_HEAD, INVTYPE_SHOULDER, INVTYPE_CHEST, INVTYPE_WRIST, INVTYPE_HAND, INVTYPE_WAIST, INVTYPE_LEGS, INVTYPE_FEET, INVTYPE_WEAPONMAINHAND, INVTYPE_WEAPONOFFHAND, INVTYPE_RANGED}
 
 			-- Show durability status in tooltip or status line (tip or status)
 			local function ShowDuraStats(where)
@@ -5640,7 +5663,7 @@
 			local timeBuffer = 15
 
 			-- Create editbox
-			local editFrame = CreateFrame("ScrollFrame", nil, UIParent, "LeaPlusInputScrollFrameTemplate")
+			local editFrame = CreateFrame("ScrollFrame", nil, UIParent, "InputScrollFrameTemplate")
 
 			-- Set frame parameters
 			editFrame:ClearAllPoints()
@@ -5664,7 +5687,7 @@
 			editFrame.TopLeftTex:SetTexture(editFrame.TopRightTex:GetTexture()); editFrame.TopLeftTex:SetTexCoord(1, 0, 0, 1)
 
 			-- Create title bar
-			local titleFrame = CreateFrame("ScrollFrame", nil, editFrame, "LeaPlusInputScrollFrameTemplate")
+			local titleFrame = CreateFrame("ScrollFrame", nil, editFrame, "InputScrollFrameTemplate")
 			titleFrame:ClearAllPoints()
 			titleFrame:SetPoint("TOP", 0, 32)
 			titleFrame:SetSize(600, 24)
@@ -5741,10 +5764,8 @@
 			editBox:EnableKeyboard(false)
 			editBox:SetScript("OnKeyDown", function() end)
 
-			-- Load library
-			if not LibStub("LibCandyBar-3.0", true) then
-				Leatrix_Plus:LeaPlusCandyBar()
-			end
+			-- Load LibCandyBar
+			Leatrix_Plus:LeaPlusCandyBar()
 
 			-- Variables
 			local data = Leatrix_Plus["FlightData"]
@@ -6324,10 +6345,8 @@
 
 		if LeaPlusLC["FilterChatMessages"] == "On" then
 
-			-- Enable LibChatAnims only if needed
-			if not LibStub("LibChatAnims", true) then
-				Leatrix_Plus:LeaPlusLCA()
-			end
+			-- Load LibChatAnims
+			Leatrix_Plus:LeaPlusLCA()
 
 			-- Create configuration panel
 			local ChatFilterPanel = LeaPlusLC:CreatePanel("Filter chat messages", "ChatFilterPanel")
@@ -6925,7 +6944,7 @@
 			LeaPlusLC["DressupAnim"] = 0 -- Defined here since the setting is not saved
 			LeaPlusLC:MakeSL(DressUpFrame, "DressupAnim", "", 1, #animTable - 1, 1, 356, -92, "%.0f")
 			LeaPlusCB["DressupAnim"]:ClearAllPoints()
-			LeaPlusCB["DressupAnim"]:SetPoint("BOTTOM", 0, 112)
+			LeaPlusCB["DressupAnim"]:SetPoint("BOTTOM", -12, 112)
 			LeaPlusCB["DressupAnim"]:SetWidth(226)
 			LeaPlusCB["DressupAnim"]:SetFrameLevel(5)
 			LeaPlusCB["DressupAnim"]:HookScript("OnValueChanged", function(self, setting)
@@ -8839,8 +8858,8 @@
 						else
 							-- Otherwise, search for the required item
 							local name = GetAuctionSellItemInfo()
-							BrowseName:SetText(name)
-							QueryAuctionItems(name, 0, 0, 0, false, 0, false, true)
+							BrowseName:SetText('"' .. name .. '"')
+							AuctionFrameBrowse_Search() -- Workaround for quoted search from QueryAuctionItems(name, 0, 0, 0, false, 0, false, true)
 							AuctionFrameTab1:Click()
 						end
 					end
@@ -10078,6 +10097,9 @@
 				end
 			end)
 
+			-- Hide text to speech button
+			TextToSpeechButton:SetParent(tframe)
+
 		end
 
 		----------------------------------------------------------------------
@@ -10087,7 +10109,7 @@
 		if LeaPlusLC["RecentChatWindow"] == "On" and not LeaLockList["RecentChatWindow"] then
 
 			-- Create recent chat frame
-			local editFrame = CreateFrame("ScrollFrame", nil, UIParent, "LeaPlusInputScrollFrameTemplate")
+			local editFrame = CreateFrame("ScrollFrame", nil, UIParent, "InputScrollFrameTemplate")
 
 			-- Set frame parameters
 			editFrame:ClearAllPoints()
@@ -10111,7 +10133,7 @@
 			editFrame.TopLeftTex:SetTexture(editFrame.TopRightTex:GetTexture()); editFrame.TopLeftTex:SetTexCoord(1, 0, 0, 1)
 
 			-- Create title bar
-			local titleFrame = CreateFrame("ScrollFrame", nil, editFrame, "LeaPlusInputScrollFrameTemplate")
+			local titleFrame = CreateFrame("ScrollFrame", nil, editFrame, "InputScrollFrameTemplate")
 			titleFrame:ClearAllPoints()
 			titleFrame:SetPoint("TOP", 0, 32)
 			titleFrame:SetSize(600, 24)
@@ -10149,6 +10171,7 @@
 
 			-- Drag to resize
 			editFrame:SetResizable(true)
+			editFrame:SetResizeBounds(600, 170, 600, 560)
 
 			titleFrame:HookScript("OnMouseDown", function(self, btn)
 				if btn == "LeftButton" then
@@ -10260,6 +10283,7 @@
 						end
 
 						chatMessage = gsub(chatMessage, "|T.-|t", "") -- Remove textures
+						chatMessage = gsub(chatMessage, "|A.-|a", "") -- Remove atlases
 						editBox:Insert(chatMessage .. "|r|n")
 
 					end
@@ -12636,19 +12660,22 @@
 
 		if event == "CHAT_MSG_WHISPER" or event == "CHAT_MSG_BN_WHISPER" then
 			if (not UnitExists("party1") or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) and strlower(strtrim(arg1)) == strlower(LeaPlusLC["InvKey"]) then
-				if not LeaPlusLC:IsInLFGQueue() then -- Needed as invite can reset battleground queue timer
+				if not LeaPlusLC:IsInLFGQueue() then
 					if event == "CHAT_MSG_WHISPER" then
-						if LeaPlusLC:FriendCheck(strsplit("-", arg2, 2)) or LeaPlusLC["InviteFriendsOnly"] == "Off" then
+						local void, void, void, void, viod, void, void, void, void, guid = ...
+						if LeaPlusLC:FriendCheck(arg2, guid) or LeaPlusLC["InviteFriendsOnly"] == "Off" then
 							InviteUnit(arg2)
 						end
 					elseif event == "CHAT_MSG_BN_WHISPER" then
 						local presenceID = select(11, ...)
 						if presenceID and BNIsFriend(presenceID) then
-							local index = BNGetFriendIndex(presenceID);
+							local index = BNGetFriendIndex(presenceID)
 							if index then
-								local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID = BNGetFriendInfo(index);
-								if toonID then
-									BNInviteFriend(toonID);
+								local accountInfo = C_BattleNet.GetFriendAccountInfo(index)
+								local gameAccountInfo = accountInfo.gameAccountInfo
+								local gameAccountID = gameAccountInfo.gameAccountID
+								if gameAccountID then
+									BNInviteFriend(gameAccountID)
 								end
 							end
 						end
@@ -12663,8 +12690,8 @@
 		----------------------------------------------------------------------
 
 		if event == "DUEL_REQUESTED" and not LeaPlusLC:FriendCheck(arg1) then
-			CancelDuel();
-			StaticPopup_Hide("DUEL_REQUESTED");
+			CancelDuel()
+			StaticPopup_Hide("DUEL_REQUESTED")
 			return
 		end
 
@@ -12691,13 +12718,14 @@
 		end
 
 		----------------------------------------------------------------------
-		-- Block party invites
+		-- Block party invites and party from friends
 		----------------------------------------------------------------------
 
 		if event == "PARTY_INVITE_REQUEST" then
 
 			-- If a friend, accept if you're accepting friends and not in battleground queue
-			if (LeaPlusLC["AcceptPartyFriends"] == "On" and LeaPlusLC:FriendCheck(arg1)) then
+			local void, void, void, void, guid = ...
+			if (LeaPlusLC["AcceptPartyFriends"] == "On" and LeaPlusLC:FriendCheck(arg1, guid)) then
 				if not LeaPlusLC:IsInLFGQueue() then
 					AcceptGroup()
 					for i=1, STATICPOPUP_NUMDIALOGS do
@@ -12717,12 +12745,12 @@
 
 			-- If not a friend and you're blocking invites, decline
 			if LeaPlusLC["NoPartyInvites"] == "On" then
-				if LeaPlusLC:FriendCheck(arg1) then
+				if LeaPlusLC:FriendCheck(arg1, guid) then
 					return
 				else
-					DeclineGroup();
-					StaticPopup_Hide("PARTY_INVITE");
-					StaticPopup_Hide("PARTY_INVITE_XREALM");
+					DeclineGroup()
+					StaticPopup_Hide("PARTY_INVITE")
+					StaticPopup_Hide("PARTY_INVITE_XREALM")
 					return
 				end
 			end
@@ -14861,10 +14889,8 @@
 			elseif str == "camp" then
 				-- Camp
 				if not LeaPlusLC.NoCampFrame then
-					-- First time initialisation
-					if not LibStub("LibChatAnims", true) then
-						Leatrix_Plus:LeaPlusLCA()
-					end
+					-- Load LibChatAnims
+					Leatrix_Plus:LeaPlusLCA()
 					-- Chat filter
 					function LeaPlusLC.CampFilterFunc(self, event, msg)
 						if msg:match(_G["MARKED_AFK_MESSAGE"]:gsub("%%s", "%s-"))

@@ -20,9 +20,6 @@ local AceConfig = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfig then return end
 
---TODO: local cfgdlg = LibStub("AceConfigDialog-3.0", true)
---TODO: local cfgdrp = LibStub("AceConfigDropdown-3.0", true)
-
 -- Lua APIs
 local pcall, error, type, pairs = pcall, error, type, pairs
 

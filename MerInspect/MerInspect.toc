@@ -1,11 +1,11 @@
 ## Interface: 30400
 ## Title: MerInspect
-## Version: 1.0.3
-## Notes: Inspect Assiest
+## Version: 1.0.4
+## Notes: Inspect Assist
 ## Notes-zhCN: 观察助手
 ## Notes-zhTW: 觀察助手
 ## Author: M(Mermaid)
-## Thanks: Mermaid, 独孤傲雪, xLoki
+## X-Thanks: Mermaid, 独孤傲雪, xLoki
 ## SavedVariables: MerInspectDB
 
 libs\lib.xml

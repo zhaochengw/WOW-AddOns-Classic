@@ -1,100 +1,33 @@
 local spec = LBIS:RegisterSpec(LBIS.L["Shaman"], LBIS.L["Elemental"], "0")
 
-LBIS:AddItem(spec, "42555", LBIS.L["Head"], "BIS") --Electroflux Sight Enhancers
-LBIS:AddItem(spec, "34332", LBIS.L["Head"], "备选") --Cowl of Gul'dan
-LBIS:AddItem(spec, "37180", LBIS.L["Head"], "备选") --Battlemap Hide Helm
-LBIS:AddItem(spec, "37592", LBIS.L["Head"], "备选") --Brood Plague Helmet
+LBIS:AddItem(spec, "39594", LBIS.L["Head"], "BIS") --Heroes' Earthshatter Helm
 
-LBIS:AddItem(spec, "34390", LBIS.L["Shoulder"], "BIS") --Erupting Epaulets
-LBIS:AddItem(spec, "34208", LBIS.L["Shoulder"], "BIS Transmute") --Equilibrium Epaulets
-LBIS:AddItem(spec, "37875", LBIS.L["Shoulder"], "BIS") --Spaulders of the Violet Hold
-LBIS:AddItem(spec, "37673", LBIS.L["Shoulder"], "BIS") --Dark Runic Mantle
-LBIS:AddItem(spec, "31023", LBIS.L["Shoulder"], "备选") --Skyshatter Mantle
-LBIS:AddItem(spec, "31103", LBIS.L["Shoulder"], "备选") --Pauldrons of the Forgotten Protector
-LBIS:AddItem(spec, "37398", LBIS.L["Shoulder"], "备选") --Mantle of Discarded Ways
+LBIS:AddItem(spec, "40518", LBIS.L["Shoulder"], "BIS") --Valorous Earthshatter Shoulderpads
 
 LBIS:AddItem(spec, "41610", LBIS.L["Back"], "BIS") --Deathchill Cloak
-LBIS:AddItem(spec, "37291", LBIS.L["Back"], "备选") --Ancient Dragon Spirit Cape
-LBIS:AddItem(spec, "34242", LBIS.L["Back"], "备选") --Tattered Cape of Antonidas
-LBIS:AddItem(spec, "44167", LBIS.L["Back"], "备选") --Shroud of Dedicated Research
 
 LBIS:AddItem(spec, "39592", LBIS.L["Chest"], "BIS") --Heroes' Earthshatter Hauberk
-LBIS:AddItem(spec, "40611", LBIS.L["Chest"], "BIS") --Chestguard of the Lost Protector
-LBIS:AddItem(spec, "43461", LBIS.L["Chest"], "备选") --Revenant's Breastplate
-LBIS:AddItem(spec, "43410", LBIS.L["Chest"], "备选") --Moragg's Chestguard
-LBIS:AddItem(spec, "37256", LBIS.L["Chest"], "备选") --Scaled Armor of Drakos
-LBIS:AddItem(spec, "34229", LBIS.L["Chest"], "备选 Transmute") --Garments of Serene Shores
-LBIS:AddItem(spec, "34396", LBIS.L["Chest"], "备选") --Garments of Crashing Shores
-LBIS:AddItem(spec, "31017", LBIS.L["Chest"], "备选") --Skyshatter Breastplate
-LBIS:AddItem(spec, "31091", LBIS.L["Chest"], "备选") --Chestguard of the Forgotten Protector
 
 LBIS:AddItem(spec, "37788", LBIS.L["Wrist"], "BIS") --Limb Regeneration Bracers
-LBIS:AddItem(spec, "37884", LBIS.L["Wrist"], "BIS") --Azure Cloth Bindings
-LBIS:AddItem(spec, "34437", LBIS.L["Wrist"], "备选") --Skyshatter Bands
-LBIS:AddItem(spec, "34851", LBIS.L["Wrist"], "备选") --Bracers of the Forgotten Protector
-LBIS:AddItem(spec, "37725", LBIS.L["Wrist"], "备选") --Savage Wound Wrap
-LBIS:AddItem(spec, "32586", LBIS.L["Wrist"], "备选") --Bracers of Nimble Thought
 
-LBIS:AddItem(spec, "39593", LBIS.L["Hands"], "BIS") --Heroes' Earthshatter Gloves
-LBIS:AddItem(spec, "40614", LBIS.L["Hands"], "BIS") --Gloves of the Lost Protector
-LBIS:AddItem(spec, "37623", LBIS.L["Hands"], "备选") --Fiery Obelisk Handguards
-LBIS:AddItem(spec, "42113", LBIS.L["Hands"], "备选") --Spellweave Gloves
-LBIS:AddItem(spec, "34344", LBIS.L["Hands"], "备选") --Handguards of Defiled Worlds
-LBIS:AddItem(spec, "34350", LBIS.L["Hands"], "备选") --Gauntlets of the Ancient Shadowmoon
+LBIS:AddItem(spec, "40302", LBIS.L["Hands"], "BIS") --Benefactor's Gauntlets
 
 LBIS:AddItem(spec, "40696", LBIS.L["Waist"], "BIS") --Plush Sash of Guzbah
-LBIS:AddItem(spec, "44181", LBIS.L["Waist"], "备选") --Ghostflicker Waistband
-LBIS:AddItem(spec, "37643", LBIS.L["Waist"], "备选") --Sash of Blood Removal
-LBIS:AddItem(spec, "34542", LBIS.L["Waist"], "备选") --Skyshatter Cord
-LBIS:AddItem(spec, "34854", LBIS.L["Waist"], "备选") --Belt of the Forgotten Protector
-LBIS:AddItem(spec, "30038", LBIS.L["Waist"], "备选") --Belt of Blasting
 
-LBIS:AddItem(spec, "37695", LBIS.L["Legs"], "BIS") --Legguards of Nature's Power
-LBIS:AddItem(spec, "37791", LBIS.L["Legs"], "BIS") --Leggings of the Winged Serpent
-LBIS:AddItem(spec, "44931", LBIS.L["Legs"], "BIS") --Windripper Leggings
-LBIS:AddItem(spec, "34186", LBIS.L["Legs"], "备选") --Chain Links of the Tumultuous Storm
+LBIS:AddItem(spec, "40517", LBIS.L["Legs"], "BIS") --Valorous Earthshatter Kilt
 
-LBIS:AddItem(spec, "43469", LBIS.L["Feet"], "BIS") --Revenant's Treads
-LBIS:AddItem(spec, "44202", LBIS.L["Feet"], "BIS") --Sandals of Crimson Fury
-LBIS:AddItem(spec, "44930", LBIS.L["Feet"], "BIS") --Windripper Boots
-LBIS:AddItem(spec, "37654", LBIS.L["Feet"], "备选") --Sabatons of the Ages
-LBIS:AddItem(spec, "34566", LBIS.L["Feet"], "备选") --Skyshatter Treads
-LBIS:AddItem(spec, "34857", LBIS.L["Feet"], "备选") --Boots of the Forgotten Protector
+LBIS:AddItem(spec, "40519", LBIS.L["Feet"], "BIS") --Footsteps of Malygos
 
-LBIS:AddItem(spec, "42647", LBIS.L["Neck"], "BIS") --Titanium Spellshock Necklace
-LBIS:AddItem(spec, "34359", LBIS.L["Neck"], "备选") --Pendant of Sunfire
-LBIS:AddItem(spec, "40681", LBIS.L["Neck"], "备选") --Lattice Choker of Light
-LBIS:AddItem(spec, "37595", LBIS.L["Neck"], "备选") --Necklace of Taldaram
-LBIS:AddItem(spec, "43285", LBIS.L["Neck"], "备选") --Amulet of the Spell Flinger
+LBIS:AddItem(spec, "39472", LBIS.L["Neck"], "BIS") --Chain of Latent Energies
 
-LBIS:AddItem(spec, "40585", LBIS.L["Ring"], "BIS") --Signet of the Kirin Tor
-LBIS:AddItem(spec, "42644", LBIS.L["Ring"], "BIS") --Titanium Spellshock Ring
-LBIS:AddItem(spec, "43253", LBIS.L["Ring"], "BIS") --Ring of Northern Tears
-LBIS:AddItem(spec, "37694", LBIS.L["Ring"], "备选") --Band of Guile
-LBIS:AddItem(spec, "37192", LBIS.L["Ring"], "备选") --Annhylde's Ring
-LBIS:AddItem(spec, "34230", LBIS.L["Ring"], "备选") --Ring of Omnipotence
-LBIS:AddItem(spec, "34362", LBIS.L["Ring"], "备选") --Loop of Forged Power
+LBIS:AddItem(spec, "39389", LBIS.L["Ring"], "BIS") --Signet of the Malevolent
+LBIS:AddItem(spec, "40719", LBIS.L["Ring"], "BIS") --Band of Channeled Magic
 
-LBIS:AddItem(spec, "40682", LBIS.L["Trinket"], "BIS") --Sundial of the Exiled
 LBIS:AddItem(spec, "37873", LBIS.L["Trinket"], "BIS") --Mark of the War Prisoner
-LBIS:AddItem(spec, "42395", LBIS.L["Trinket"], "BIS") --Figurine - Twilight Serpent
-LBIS:AddItem(spec, "37660", LBIS.L["Trinket"], "备选") --Forge Ember
-LBIS:AddItem(spec, "32483", LBIS.L["Trinket"], "备选") --The Skull of Gul'dan
-LBIS:AddItem(spec, "34429", LBIS.L["Trinket"], "备选") --Shifting Naaru Sliver
+LBIS:AddItem(spec, "39229", LBIS.L["Trinket"], "BIS") --Embrace of the Spider
 
-LBIS:AddItem(spec, "41384", LBIS.L["Main Hand"], "BIS") --Titansteel Guardian
-LBIS:AddItem(spec, "45085", LBIS.L["Main Hand"], "BIS") --Titansteel Spellblade
-LBIS:AddItem(spec, "44173", LBIS.L["Main Hand"], "备选") --Flameheart Spell Scalpel
-LBIS:AddItem(spec, "37169", LBIS.L["Main Hand"], "备选") --War Mace of Unrequited Love
-LBIS:AddItem(spec, "44199", LBIS.L["Main Hand"], "备选") --Gavel of the Brewing Storm
-LBIS:AddItem(spec, "34336", LBIS.L["Main Hand"], "备选") --Sunflare
+LBIS:AddItem(spec, "39423", LBIS.L["Main Hand"], "BIS") --Hammer of the Astral Plane
 
 LBIS:AddItem(spec, "40698", LBIS.L["Off Hand"], "BIS") --Ward of the Violet Citadel
-LBIS:AddItem(spec, "40700", LBIS.L["Off Hand"], "BIS") --Protective Barricade of the Light
-LBIS:AddItem(spec, "38322", LBIS.L["Off Hand"], "备选") --Iron-bound Tome
-LBIS:AddItem(spec, "37061", LBIS.L["Off Hand"], "备选") --Tor's Crest
-LBIS:AddItem(spec, "30872", LBIS.L["Off Hand"], "备选") --Chronicle of Dark Secrets
-LBIS:AddItem(spec, "34179", LBIS.L["Off Hand"], "备选") --Heart of the Pit
 
-LBIS:AddItem(spec, "40708", LBIS.L["Ranged/Relic"], "BIS") --Totem of the Elemental Plane
-LBIS:AddItem(spec, "32330", LBIS.L["Ranged/Relic"], "备选") --Totem of Ancestral Guidance
+LBIS:AddItem(spec, "40267", LBIS.L["Ranged/Relic"], "BIS") --Totem of Hex

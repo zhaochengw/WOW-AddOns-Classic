@@ -14,9 +14,19 @@ local floor = math.floor
 local tDeleteItem = tDeleteItem
 
 ---- WOW
-local GetContainerItemInfo = GetContainerItemInfo
-local GetContainerNumFreeSlots = GetContainerNumFreeSlots
-local GetContainerNumSlots = GetContainerNumSlots
+local GetContainerItemInfo = function(bag, slot)
+    if C_Container and C_Container.GetContainerItemInfo then
+        local info = C_Container.GetContainerItemInfo(bag, slot)
+        if info then
+            return info.iconFileID, info.stackCount, info.isLocked, info.quality, info.isReadable, info.hasLoot, info.hyperlink, info.isFiltered, info.hasNoValue, info.itemID, info.isBound
+        end
+    else
+        return _G.GetContainerItemInfo(bag, slot)
+    end
+end
+local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots
+local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
+local GetContainerItemLink = GetContainerItemLink or C_Container.GetContainerItemLink
 local GetInventoryItemCount = GetInventoryItemCount
 local GetInventoryItemLink = GetInventoryItemLink
 local GetItemIcon = GetItemIcon

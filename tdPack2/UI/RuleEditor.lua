@@ -11,7 +11,7 @@ local floor = math.floor
 
 ---- WOW
 local CreateFrame = CreateFrame
-local GetContainerItemLink = GetContainerItemLink
+local GetContainerItemLink = GetContainerItemLink or C_Container.GetContainerItemLink
 local GetItemIcon = GetItemIcon
 
 ---@type ns

@@ -1,9 +1,12 @@
 -- Display the fish you're catching and/or have caught in a live display
+local _, FBStorage = ...
+local  FBI = FBStorage
+local FBConstants = FBI.FBConstants;
 
 -- 5.0.4 has a problem with a global "_" (see some for loops below)
 local _
 
-local GSB = FishingBuddy.GetSettingBool;
+local GSB = function(...) return FBI:GetSettingBool(...); end;
 
 local MAX_FISHINGWATCH_LINES = 1;
 local WATCHDRAGGER_SHOW_DELAY = 0.5;
@@ -11,17 +14,12 @@ local WATCHDRAGGER_SHOW_DELAY = 0.5;
 local ELAPSEDTIME_LINE = 1;
 local WATCHDRAGGER_FADE_TIME = 0.25;
 
-local zmto = FishingBuddy.ZoneMarkerTo;
-local zmex = FishingBuddy.ZoneMarkerEx;
-
 local ZoneFishingTime = 0;
 local TotalTimeFishing = nil;
 local CurLoc = GetLocale();
 
 local FL = LibStub("LibFishing-1.0");
 local LW = LibStub("LibWindow-1.1");
-
-local FBAPI = LibStub("FishingBuddyApi-1.0");
 
 local timerframe;
 
@@ -181,11 +179,11 @@ end
 
 function FWF:DisplayFishLine(fish, label, area)
     local line = nil;
-    local current_area, subzone = FishingBuddy.GetCurrentMapIdInfo();
+    local current_area, subzone = FBI:GetCurrentMapIdInfo();
     area = area or current_area
     for id,info in pairs(fish) do
         local havesome = GetItemCount(id);
-        local here = false
+        local here;
         if info.area then
             here = info.area == area;
         else
@@ -195,7 +193,7 @@ function FWF:DisplayFishLine(fish, label, area)
             here = info.subzone == subzone
         end
         if ( havesome > 0 and here) then
-            local _,_,_,_,_,name,_ = FishingBuddy.GetFishieRaw(id);
+            local _,_,_,_,_,name,_ = FBI:GetFishieRaw(id);
 
             name = self:ColorInfoString(info, name, havesome)
 
@@ -238,21 +236,20 @@ local function HideDraggerFrame()
     end
 end
 
-local function ResetWatcherFrame(update)
+function FBI:ResetWatcherFrame(update)
     FishingWatchFrame:ClearAllPoints();
     FishingWatchFrame:SetPoint("CENTER", "UIParent", "CENTER", 0, 0);
     if ( update ) then
-        FishingBuddy.WatchUpdate();
+        FBI.WatchUpdate();
     end
 end
-FishingBuddy.ResetWatcherFrame = ResetWatcherFrame;
 
-FishingBuddy.Commands[FBConstants.WATCHER] = {};
-FishingBuddy.Commands[FBConstants.WATCHER].help = FBConstants.WATCHER_HELP;
-FishingBuddy.Commands[FBConstants.WATCHER].func =
+FBI.Commands[FBConstants.WATCHER] = {};
+FBI.Commands[FBConstants.WATCHER].help = FBConstants.WATCHER_HELP;
+FBI.Commands[FBConstants.WATCHER].func =
     function(what)
         if ( what and ( what == FBConstants.RESET ) ) then
-            ResetWatcherFrame(true);
+            FBI:ResetWatcherFrame(true);
             return true;
         end
     end;
@@ -304,33 +301,33 @@ end
 
 -- build a single info entry for a given fish
 local function BuildInfoEntry(fishid, count)
-    local IsCountedFish = FishingBuddy.IsCountedFish;
-    local IsQuestFish = FishingBuddy.IsQuestFish;
-
     local fz = FishingBuddy_Info["FishingHoles"];
     local ff = FishingBuddy_Info["Fishies"];
     local hidden = FishingBuddy_Info["HiddenFishies"];
 
     local info = {};
     if ( not hidden[fishid] ) then
-        _, _, _, _, _, info.text, _ = FishingBuddy.GetFishie(fishid);
+        _, _, _, _, _, info.text, _ = FBI:GetFishie(fishid);
     end
-    info.quality = ff[fishid].quality or 0;
+    info.quality = 0
+    if ff[fishid] then
+        info.quality = ff[fishid].quality or 0
+    end
     info.current = 0;
     info.count = count;
-    if ( IsCountedFish(fishid) ) then
+    if ( FBI:IsCountedFish(fishid) ) then
         totalCount = totalCount + info.count;
         totalCurrent = totalCurrent + info.current or 0;
     else
         info.skipped = 1;
-        info.quest = IsQuestFish(fishid);
+        info.quest = FBI:IsQuestFish(fishid);
     end
     return info;
 end
 
 -- sort fishort, based on fishdata
 local function SortFishData(forcename)
-    if ( forcename or not FishingBuddy.GetSettingBool("SortByPercent") ) then
+    if ( forcename or not GSB("SortByPercent") ) then
         table.sort(fishsort, function(a,b) return fishdata[a].text < fishdata[b].text; end);
     else
         table.sort(fishsort, function(a,b) return fishdata[a].count and fishdata[b].count and fishdata[b].count<fishdata[a].count; end);
@@ -365,10 +362,10 @@ local function SetupLegionCoinCount()
 end
 
 local function DisplayLegionCoinCount()
-    local bZ, bS = FishingBuddy.GetCurrentMapIdInfo()
+    local bZ, bS = FBI:GetCurrentMapIdInfo()
     if (bZ == 1014 and bS == "The Eventide") then
         local done = 0
-        for id, info in pairs(legion_coins) do
+        for _,info in pairs(legion_coins) do
             if info.completed then
                 done = done + 1
             end
@@ -401,9 +398,9 @@ local function BuildCurrentData()
 
     SetupLegionCoinCount()
 
-    local zidm = FishingBuddy.GetCurrentZoneIndex(true);
+    local zidm = FBI:GetCurrentZoneIndex(true);
     local fz = FishingBuddy_Info["FishingHoles"];
-    local fszc = FishingBuddy.SZSchoolCounts;
+    local fszc = FBI.SZSchoolCounts;
     if ( fz and fz[zidm] ) then
         local sc = fszc[zidm];
         local ff = FishingBuddy_Info["Fishies"];
@@ -445,16 +442,16 @@ local function DisplaySkillWarning()
 end
 
 local function HandleZoneChange(self, _, ...)
-    if ( not FishingBuddy.IsLoaded() ) then
+    if ( not FBI:IsLoaded() ) then
         return;
     end
     fishsort = nil
     fishdata = nil;
-    FishingBuddy.WatchUpdate();
-    if ( FishingBuddy.ReadyForFishing() and TotalTimeFishing ) then
+    FBI:WatchUpdate();
+    if ( FBI:ReadyForFishing() and TotalTimeFishing ) then
         TotalTimeFishing = TotalTimeFishing + ZoneFishingTime;
         ZoneFishingTime = 0;
-        FishingBuddy.SetSetting("TotalTimeFishing", TotalTimeFishing);
+        FBI:SetSetting("TotalTimeFishing", TotalTimeFishing);
     end
 end
 
@@ -470,15 +467,15 @@ local WatchEvents = {};
 WatchEvents["UNIT_SPELLCAST_STOP"] = function()
     if ( FishingWatchFrame:IsVisible() ) then
         -- update the skill line if we have one
-        if ( FishingBuddy.GetSettingBool("WatchCurrentSkill") ) then
-            FishingBuddy.WatchUpdate();
+        if ( GSB("WatchCurrentSkill") ) then
+            FBI:WatchUpdate();
         end
     end
 end
 
 WatchEvents[FBConstants.ADD_FISHIE_EVT] = function(id, name, mapId, subzone, texture, quantity, quality, level, idx, poolhint)
     if ( FishingWatchFrame:IsVisible() ) then
-        local info = false
+        local info;
 
         if legion_coins and legion_coins[id] ~= nil then
             if not legion_coins[id].completed then
@@ -507,14 +504,14 @@ WatchEvents[FBConstants.ADD_FISHIE_EVT] = function(id, name, mapId, subzone, tex
 
         info.count = info.count + quantity;
         info.current = info.current + quantity;
-        if ( FishingBuddy.IsCountedFish(id) ) then
+        if ( FBI:IsCountedFish(id) ) then
             totalCount = totalCount + quantity;
             totalCurrent = totalCurrent + quantity;
             gotDiffs = true;
         end
         SortFishData();
 
-        FishingBuddy.WatchUpdate();
+        FBI:WatchUpdate();
     end
 end
 
@@ -557,8 +554,8 @@ WatchEvents["VARIABLES_LOADED"] = function()
     FishingWatchTab:SetText(FBConstants.NAME);
     PanelTemplates_TabResize(FishingWatchTab, 10);
 
-    FishingBuddy.OptionsFrame.HandleOptions(FBConstants.WATCHER_TAB, "Interface\\Icons\\Inv_Misc_Spyglass_03", WatcherOptions);
-    -- FishingBuddy.OptionsFrame.HandleOptions(nil, nil, InvisibleOptions);
+    FBI.OptionsFrame.HandleOptions(FBConstants.WATCHER_TAB, "Interface\\Icons\\Inv_Misc_Spyglass_03", WatcherOptions);
+    -- FBI.OptionsFrame.HandleOptions(nil, nil, InvisibleOptions);
 
     -- belt and suspenders
     if ( not FishingBuddy_Player["WatcherLocation"] ) then
@@ -583,34 +580,34 @@ WatchEvents["VARIABLES_LOADED"] = function()
 
     FL.RegisterCallback(FBConstants.ID, FL.PLAYER_SKILL_READY, function()
         if ( FishingWatchFrame:IsVisible() ) then
-            if ( FishingBuddy.GetSettingBool("WatchCurrentSkill") ) then
-                FishingBuddy.WatchUpdate();
+            if ( GSB("WatchCurrentSkill") ) then
+                FBI:WatchUpdate();
             end
         end
     end);
 end
 
-WatchEvents[FBConstants.FISHING_ENABLED_EVT] = function()
-    -- because we're us, this will just use the setting of "CaughtSoFar"
-    FL:SetCaughtSoFar();
-    TotalTimeFishing = FishingBuddy.GetSetting("TotalTimeFishing");
-    ZoneFishingTime = 0;
-    FishingBuddy.WatchUpdate();
+local function ShowWatcher()
+    if GSB("WatchFishies") and (not GSB("WatchOnlyWhenFishing") or FBI:AreWeFishing()) then
+        if ( not FishingWatchFrame:IsShown() ) then
+            FishingWatchFrame:Show();
+        end
+        return true
+    end
+    HideAway()
+    return false
 end
 
-WatchEvents[FBConstants.FISHING_DISABLED_EVT] = function(started)
-    HideAway();
-    ZoneFishingTime = ZoneFishingTime + GetTime() - started;
-    if (TotalTimeFishing) then
-        TotalTimeFishing = TotalTimeFishing + ZoneFishingTime;
-        ZoneFishingTime = 0;
-        FishingBuddy.SetSetting("TotalTimeFishing", TotalTimeFishing);
-    end
-    FishingBuddy.SetSetting("CaughtSoFar", FL:GetCaughtSoFar());
+local function StartWatching()
+    ShowWatcher()
+    FL:SetCaughtSoFar(FBI:GetSetting("CaughtSoFar"));
+    TotalTimeFishing = FBI:GetSetting("TotalTimeFishing");
+    ZoneFishingTime = 0;
+    FBI:WatchUpdate();
 end
 
 WatchEvents[FBConstants.OPT_UPDATE_EVT] = function(changed)
-    FishingBuddy.WatchUpdate();
+    FBI:WatchUpdate();
 end
 
 
@@ -642,10 +639,10 @@ local function DisplayFishingWorldQuests()
 
     local prof1, prof2, arch, fish, cook, firstAid = GetProfessions();
 
-    for mapId, name in pairs (legionmaps) do
+    for mapId,_ in pairs (legionmaps) do
         local taskInfo = GetQuestsForPlayerByMapID (mapId);
         if (taskInfo and #taskInfo > 0) then
-            for i, info in ipairs (taskInfo) do
+            for _,info in ipairs (taskInfo) do
                 local questID = info.questId;
                 if (HaveQuestData (questID)) then
                     local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = GetQuestTagInfo (questID)
@@ -680,7 +677,7 @@ local function DisplayPagleFish()
         return nil
     end
 
-    return FWF:DisplayFishLine(FishingBuddy.PagleFish, QUEST_COMPLETE)
+    return FWF:DisplayFishLine(FBI.PagleFish, QUEST_COMPLETE)
 end
 
 -- Handle display elapsed time in some reasonable fashion
@@ -701,16 +698,12 @@ local function DisplayedTime(elapsed)
 end
 
 -- Fish watcher functions
-local function NoShow()
-    return ((not GSB("WatchFishies")) or (GSB("WatchOnlyWhenFishing") and not FishingBuddy.AreWeFishing()));
-end
-
 local function UpdateTimerLine()
-    if ( not NoShow() and GSB("WatchElapsedTime") ) then
-        local StartedFishing = FishingBuddy.StartedFishing;
+    if ( ShowWatcher() and GSB("WatchElapsedTime") ) then
+        local StartedFishing = FBI.StartedFishing;
         if ( StartedFishing ) then
             if ( not TotalTimeFishing ) then
-                WatchEvents[FBConstants.FISHING_ENABLED_EVT]();
+                StartWatching();
             end
             local elapsed = math.floor(ZoneFishingTime + GetTime() - StartedFishing);
             local text = FBConstants.ELAPSED..": "..DisplayedTime(elapsed).."/"..DisplayedTime(math.floor(elapsed + TotalTimeFishing));
@@ -724,13 +717,13 @@ end
 
 local function UpdateZoneLine()
     if ( GSB("WatchCurrentZone") ) then
-        local zoneskill, _ = FL:GetFishingSkillLine(false, true);
+        local zoneskill, _ = FL:GetFishingSkillLine(false, true, false);
         return zoneskill
     end
 end
 
 local function UpdateTotalsLine()
-    if ( not NoShow() ) then
+    if ( ShowWatcher() ) then
         local totalpart = ": "..totalCount;
         local line;
         if ( gotDiffs ) then
@@ -751,8 +744,8 @@ local function UpdateTotalsLine()
 end
 
 local function UpdateFishieEntry(info)
-    local fishietext = FishingBuddy.StripRaw(info.text);
-    local dopercent = FishingBuddy.GetSettingBool("WatchFishPercent");
+    local fishietext = FBI:StripRaw(info.text);
+    local dopercent = FBI:GetSettingBool("WatchFishPercent");
     local amount = info.count;
     local totalAmount = totalCount;
     local currentonly = GSB("WatchCurrentOnly");
@@ -813,7 +806,7 @@ end
 
 local function UpdateFishCounts()
     local lines = {}
-    for idx,fishid in ipairs(fishsort) do
+    for _,fishid in ipairs(fishsort) do
         local info = fishdata[fishid];
         if (info) then
             if info.quality > 0 or not GSB("WatchHideTrash") then
@@ -848,19 +841,10 @@ local function UpdateCoinLines()
 end
 
 function FWF:WatchUpdate()
-    local noshow = NoShow();
-
-    if ( noshow ) then
-        HideAway();
+    if ( not ShowWatcher() ) then
         return;
     end
 
-    if ( not FishingWatchFrame:IsShown() ) then
-        FishingWatchFrame:Show();
-    end
-
-    local line;
-    local mapId, subzone = FishingBuddy.GetCurrentMapIdInfo();
     if ( not fishsort ) then
         BuildCurrentData();
     end
@@ -868,7 +852,7 @@ function FWF:WatchUpdate()
     self.current_line = 1;
     self.fishingWatchMaxWidth = 0;
     -- this uses an custom sorting function ordering by score descending
-    for priority,handlers in FL:spairs(FWF.Handlers) do
+    for _,handlers in FL:spairs(FWF.Handlers) do
         local do_last = false
         for _,handler in ipairs(handlers) do
             if handler.first then
@@ -897,7 +881,7 @@ function FWF:WatchUpdate()
     FishingWatchFrame:SetWidth(self.fishingWatchMaxWidth + 10);
 end
 
-FishingBuddy.WatchUpdate = function()
+function FBI:WatchUpdate()
     FWF:WatchUpdate()
 end
 
@@ -905,9 +889,8 @@ local function HideOnEscape()
     HideDraggerFrame();
 end
 
-local calopened = nil
 local function TimerUpdate()
-    if not NoShow() then
+    if ShowWatcher() then
         FWF:UpdateLine(ELAPSEDTIME_LINE, UpdateTimerLine())
     end
 end
@@ -916,7 +899,7 @@ local function TimerEvent(_, ...)
 end
 
 local WatWin = {}
-function WatWin:OnLoad()
+function FBEnvironment.Watcher_OnLoad(self)
     local _, _, _, classic = FL:WOWVersion();
     timerframe = CreateFrame("FRAME");
     timerframe:Hide();
@@ -942,7 +925,21 @@ function WatWin:OnLoad()
 
     tinsert(UISpecialFrames, "FishingWatchTab");
 
-    FishingBuddy.RegisterHandlers(WatchEvents);
+    EventRegistry:RegisterCallback(FBConstants.FISHING_ENABLED_EVT, StartWatching)
+    EventRegistry:RegisterCallback(FBConstants.FISHING_DISABLED_EVT, function()
+        HideAway();
+        if FBI.StartedFishing then
+            ZoneFishingTime = ZoneFishingTime + GetTime() - FBI.StartedFishing;
+        end
+        if (TotalTimeFishing) then
+            TotalTimeFishing = TotalTimeFishing + ZoneFishingTime;
+            ZoneFishingTime = 0;
+            FBI:SetSetting("TotalTimeFishing", TotalTimeFishing);
+        end
+        FBI:SetSetting("CaughtSoFar", FL:GetCaughtSoFar());
+    end)
+
+    FBI:RegisterHandlers(WatchEvents);
 
     FWF:RegisterLineHandler(UpdateTimerLine, 0, true)
     FWF:RegisterLineHandler(UpdateZoneLine, FWF.HEADER, true)
@@ -956,7 +953,7 @@ end
 
 local isDragging = nil;
 local hover;
-function WatWin:OnUpdate(elapsed)
+FBEnvironment.Watcher_OnUpdate = function(self, elapsed)
     if ( self:IsVisible() ) then
         UpdateWatcherPosition();
         if ( isDragging ) then
@@ -1005,7 +1002,7 @@ local function HiddenFishToggle(id)
     else
         FishingBuddy_Info["HiddenFishies"][id] = true;
     end;
-    FishingBuddy.WatchUpdate();
+    FBI:WatchUpdate();
 end
 
 -- save some memory by keeping one copy of each one
@@ -1021,7 +1018,7 @@ end
 FWF.MakeToggle = WatcherMakeToggle;
 
 local function WatchMenu_Initialize()
-    local zidm = FishingBuddy.GetCurrentZoneIndex(true);
+    local zidm = FBI:GetCurrentZoneIndex(true);
     local fz = FishingBuddy_Info["FishingHoles"];
     if ( fz and fz[zidm] ) then
         local ff = FishingBuddy_Info["Fishies"];
@@ -1045,17 +1042,17 @@ FWF.OnClick = function(self)
     end
 end
 
-FishingBuddy.Commands[FBConstants.CURRENT] = {};
-FishingBuddy.Commands[FBConstants.CURRENT].help = FBConstants.CURRENT_HELP;
-FishingBuddy.Commands[FBConstants.CURRENT].func =
+FBI.Commands[FBConstants.CURRENT] = {};
+FBI.Commands[FBConstants.CURRENT].help = FBConstants.CURRENT_HELP;
+FBI.Commands[FBConstants.CURRENT].func =
     function(what)
         if ( what and what == FBConstants.RESET) then
             totalCurrent = 0;
             fishdata = {};
-            FishingBuddy.WatchUpdate();
+            FBI:WatchUpdate();
             return true;
         end
     end;
 
-FishingBuddy.FWF = FWF;
-FishingBuddy.WatWin = WatWin;
+FBI.FWF = FWF;
+FBI.WatWin = WatWin;

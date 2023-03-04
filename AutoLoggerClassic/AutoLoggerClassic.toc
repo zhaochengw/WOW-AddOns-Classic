@@ -1,8 +1,8 @@
 ## Interface: 30400
 ## Title: AutoLoggerClassic
-## Notes: Automatically triggers combat logging on and off in raids.|nWLK fix by |cffCFB53B埃提耶什|cffFF0000<战火>|cff7F00FF卸甲
-## Author: cloudbells，WLK fix By 飞飞
-## Version: v2.1.1-tbcc-release
+## Notes: Automatically triggers combat logging on and off in raids.
+## Author: cloudbells
+## Version: v2.1.3-wotlkc-release
 ## SavedVariablesPerCharacter: ALCOptions
 ## X-WoWI-ID: 25314
 ## X-Curse-Project-ID: 341902

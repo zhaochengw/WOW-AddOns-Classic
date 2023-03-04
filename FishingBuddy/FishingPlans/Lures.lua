@@ -3,13 +3,17 @@
 -- With the Midnight Salmon lure, we now need to do
 -- funky things
 --
+local addonName, FBStorage = ...
+local  FBI = FBStorage
+local FBConstants = FBI.FBConstants;
+
 -- 5.0.4 has a problem with a global "_" (see some for loops below)
 local _
 
 local FL = LibStub("LibFishing-1.0");
 
-local GSB = FishingBuddy.GetSettingBool;
-local PLANS = FishingBuddy.FishingPlans;
+local GSB = function(...) return FBI:GetSettingBool(...); end;
+local PLANS = FBI.FishingPlans;
 
 local CurLoc = GetLocale();
 
@@ -76,7 +80,7 @@ function LureStateManager:ClearLastLure(checktime)
 end
 
 
-FishingBuddy.LureStateManager = LureStateManager
+FBI.LureStateManager = LureStateManager
 local LSM = LureStateManager
 
 local SALMON_LURE_ID = 165699;
@@ -120,7 +124,7 @@ local function PickLure()
             if ( NextLure and NextLure.id ) then
                 -- if the pole has an enchantment, we can assume it's got a lure on it (so far, anyway)
                 -- remove the main hand enchantment (since it's a fishing pole, we know what it is)
-                local startTime, duration, enable = GetItemCooldown(NextLure.id);
+                local startTime, duration, enable = C_Container.GetItemCooldown(NextLure.id);
                 if (startTime == 0) then
                     LSM:SetLastLure(NextLure)
                     return true, NextLure.id, NextLure.n;
@@ -146,8 +150,8 @@ end
 
 local LuringEvents = {}
 LuringEvents["VARIABLES_LOADED"] = function(started)
-    FishingBuddy.SetupSpecialItems({ [SALMON_LURE_ID] = SalmonLure }, false, true, true)
-    FishingBuddy.UpdateFluffOption(SALMON_LURE_ID, SalmonLure)
+    FBI:SetupSpecialItems({ [SALMON_LURE_ID] = SalmonLure }, false, true, true)
+    FBI:UpdateFluffOption(SALMON_LURE_ID, SalmonLure)
     PLANS:RegisterPlan(LurePlan)
 end
 
@@ -157,4 +161,4 @@ LuringEvents["UNIT_SPELLCAST_CHANNEL_START"] = function(unit, lineid, spellid)
     end
 end
 
-FishingBuddy.RegisterHandlers(LuringEvents);
+FBI:RegisterHandlers(LuringEvents);

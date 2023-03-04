@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: zBar3Config
 ## Notes: Load the config panel dynamically for zBar3.
 ## Title-zhCN: |CFFFF8000辅助|R 炽火动作条 设置模块

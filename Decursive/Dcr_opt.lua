@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.13) add-on for World of Warcraft UI
+    Decursive (v 2.7.9) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2022-11-28T00:39:32Z
+    This file was last updated on 2023-01-25T09:34:53Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -76,6 +76,7 @@ local GetNumPartyMembers= _G.GetNumSubgroupMembers;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
 local GetSpellInfo      = _G.GetSpellInfo;
+local GetSpecialization = _G.GetSpecialization or (GetActiveTalentGroup or function () return nil; end);
 local _;
 -- Default values for the option
 
@@ -672,8 +673,12 @@ local function GetStaticOptions ()
                         type = "select",
                         style = "dropdown",
                         name = L["OPT_AUTOHIDEMFS"],
-                        desc = L["OPT_AUTOHIDEMFS_DESC"] .. "\n\n" .. ("%s: %s\n%s: %s\n%s: %s"):format(D:ColorText(L["OPT_HIDEMFS_NEVER"], "FF88CCAA"), L["OPT_HIDEMFS_NEVER_DESC"], D:ColorText(L["OPT_HIDEMFS_SOLO"], "FF88CCAA"), L["OPT_HIDEMFS_SOLO_DESC"], D:ColorText(L["OPT_HIDEMFS_GROUP"], "FF88CCAA"), L["OPT_HIDEMFS_GROUP_DESC"]),
-                        values = {L["OPT_HIDEMFS_NEVER"], L["OPT_HIDEMFS_SOLO"], L["OPT_HIDEMFS_GROUP"]},
+                        desc = L["OPT_AUTOHIDEMFS_DESC"] .. "\n\n" .. ("%s: %s\n%s: %s\n%s: %s\n%s: %s"):format(
+                            D:ColorText(L["OPT_HIDEMFS_NEVER"], "FF88CCAA"), L["OPT_HIDEMFS_NEVER_DESC"]
+                            , D:ColorText(L["OPT_HIDEMFS_SOLO"], "FF88CCAA"), L["OPT_HIDEMFS_SOLO_DESC"]
+                            , D:ColorText(L["OPT_HIDEMFS_GROUP"], "FF88CCAA"), L["OPT_HIDEMFS_GROUP_DESC"]
+                            , D:ColorText(L["OPT_HIDEMFS_RAID"], "FF88CCAA"), L["OPT_HIDEMFS_RAID_DESC"]),
+                        values = {L["OPT_HIDEMFS_NEVER"], L["OPT_HIDEMFS_SOLO"], L["OPT_HIDEMFS_GROUP"], L["OPT_HIDEMFS_RAID"]},
                         order = 6,
                     },
                     HideLiveList = {
@@ -1763,7 +1768,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
-                                    "2.7.8.13", "John Wellesz", ("2022-12-13T11:47:22Z"):sub(1,10),
+                                    "2.7.9", "John Wellesz", ("2023-02-26T02:28:26Z"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
@@ -1840,6 +1845,13 @@ local function GetOptions()
     options.args.general.args.profiles.hidden = function() return not D:IsEnabled(); end;
     options.args.general.args.profiles.disabled = function() return D.Status.Combat or not D:IsEnabled(); end;
 
+    if DC.WOTLK or not DC.WOWC then
+        -- Add dual-spec support
+        local LibDualSpec = LibStub('LibDualSpec-1.0');
+        LibDualSpec:EnhanceDatabase(D.db, "DecursiveDB");
+        LibDualSpec:EnhanceOptions(options.args.general.args.profiles, D.db);
+    end
+
     return options;
 
 end
@@ -1876,7 +1888,8 @@ end
 
 
 function D:GetCureTypeStatus (Type)
-    return D.classprofile.CureOrder[Type] and D.classprofile.CureOrder[Type] > 0;
+    local cureOrder = self:GetCureOrderTable();
+    return cureOrder[Type] and cureOrder[Type] > 0;
 end
 
 local TypesToUName = {
@@ -1892,11 +1905,36 @@ local CureCheckBoxes = false;
 function D:SetCureCheckBoxNum (Type, checkBox)
     -- add the number in green before the name if we have a spell available and if we checked the box
     if (D:GetCureTypeStatus(Type)) then
-        checkBox.name = D:ColorText(D.classprofile.CureOrder[Type], "FF00FF00") .. " " .. L[TypesToUName[Type]];
+        checkBox.name = D:ColorText(D:GetCureOrderTable()[Type], "FF00FF00") .. " " .. L[TypesToUName[Type]];
     else
         checkBox.name = "  " .. L[TypesToUName[Type]];
     end
 
+end
+
+function D:GetCureOrderTable ()
+    local activeSpec = GetSpecialization();
+    local generalCureOrder = D.classprofile.CureOrder;
+
+    if not activeSpec or activeSpec == 5 then
+        --[==[@debug@
+        D:Debug("No active spec, returning general cure order table");
+        --@end-debug@]==]
+        return generalCureOrder;
+    else
+        local specCureOrder = "CureOrder-"..activeSpec;
+
+        if not D.classprofile[specCureOrder] then
+            D:Debug("Creating specific cureorder table ", specCureOrder, " for spec:", activeSpec);
+            D.classprofile[specCureOrder] = {};
+            self:tcopy(D.classprofile[specCureOrder], generalCureOrder)
+        end
+
+        --[==[@debug@
+        D:Debug("returning specific cure order table ", specCureOrder, " for spec:", activeSpec);
+        --@end-debug@]==]
+        return D.classprofile[specCureOrder];
+    end
 end
 
 function D:CheckCureOrder ()
@@ -1931,16 +1969,17 @@ function D:CheckCureOrder ()
     local GivenValues = {};
 
 
+    local cureOrder = self:GetCureOrderTable();
     -- add missing entries...
     for key, value in pairs(AuthorizedKeys) do
-        if not D.classprofile.CureOrder[key] then
-            D.classprofile.CureOrder[key] = false;
+        if not cureOrder[key] then
+            cureOrder[key] = false;
         end
     end
 
     -- Validate existing entries
     local WrongValue = 0;
-    for key, value in pairs(D.classprofile.CureOrder) do
+    for key, value in pairs(cureOrder) do
 
         if (AuthorizedKeys[key]) then -- is this a correct type ?
             if (AuthorizedValues[value] and not GivenValues[value]) then -- is this value authorized and not already given?
@@ -1949,11 +1988,11 @@ function D:CheckCureOrder ()
             elseif (value) then -- FALSE is the only value that can be given several times
                 D:Debug("Incoherent value for (key, value, Duplicate?)", key, value, GivenValues[value]);
 
-                D.classprofile.CureOrder[key] = -20 - WrongValue; -- if the value was wrong or already given to another type
+                cureOrder[key] = -20 - WrongValue; -- if the value was wrong or already given to another type
                 WrongValue = WrongValue + 1;
             end
         else
-            D.classprofile.CureOrder[key] = nil; -- remove it from the table
+            cureOrder[key] = nil; -- remove it from the table
         end
     end
 
@@ -1962,7 +2001,7 @@ end
 function D:SetCureOrder (ToChange)
 
 
-    local CureOrder = D.classprofile.CureOrder;
+    local CureOrder = self:GetCureOrderTable();
     local tmpTable = {};
     D:Debug("SetCureOrder called for prio ", CureOrder[ToChange]);
 
@@ -3206,10 +3245,9 @@ function D:SetMacroKey ( key )
 
 end
 
-
 function D:AutoHideShowMUFs ()
 
-   -- This function cannot do anything if we are fighting
+    -- This function cannot do anything if we are fighting
     if (InCombatLockdown()) then
         -- if we are fighting, postpone the call
         D:AddDelayedFunctionCall (
@@ -3221,19 +3259,22 @@ function D:AutoHideShowMUFs ()
     if D.profile.AutoHideMUFs == 1 then
         return false;
     else
-        -- if we want to hide the MUFs when in solo or not in raid
-        local InGroup = (GetNumRaidMembers() ~= 0 or (D.profile.AutoHideMUFs ~= 3 and GetNumPartyMembers() ~= 0) );
-        D:Debug("AutoHideShowMUFs, InGroup: ", InGroup);
+        local hideBecauseInSolo          = D.profile.AutoHideMUFs == 2 and GetNumRaidMembers() == 0 and GetNumPartyMembers() == 0
+        local hideBecauseInSoloOrParty   = D.profile.AutoHideMUFs == 3 and GetNumRaidMembers() == 0
+        local hideBecauseInRaids         = D.profile.AutoHideMUFs == 4 and GetNumRaidMembers() ~= 0
 
-        -- if we are not in such a group
-        if not InGroup then
+        local shouldHide = hideBecauseInSolo or hideBecauseInSoloOrParty or hideBecauseInRaids
+
+        -- local InGroup = (GetNumRaidMembers() ~= 0 or (D.profile.AutoHideMUFs ~= 3 and GetNumPartyMembers() ~= 0) );
+        D:Debug("AutoHideShowMUFs:", shouldHide, hideBecauseInSolo, hideBecauseInSoloOrParty, hideBecauseInRaids);
+
+        if shouldHide then
             -- if the frame is displayed
             if D.profile.ShowDebuffsFrame then
                 -- hide it
                 D:ShowHideDebuffsFrame ();
             end
         else
-            -- if we are in a group
             -- if the frame is not displayed
             if not D.profile.ShowDebuffsFrame then
                 -- show it
@@ -3271,6 +3312,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
-T._LoadedFiles["Dcr_opt.lua"] = "2.7.8.13";
+T._LoadedFiles["Dcr_opt.lua"] = "2.7.9";
 
 -- Closer

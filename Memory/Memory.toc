@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: |cFFBF00FF[H]|r Memory
 ## Notes: List Addons memory useage on Minimap time stamp
 ## Title-zhCN: |cFFBF00FF|r 插件内存占用)

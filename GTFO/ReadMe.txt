@@ -1853,7 +1853,12 @@ Change Log:
 * Added Legion spells for Court of Stars
 
 5.0.4
-* Updated for patch 10.0.2
 * Updated Wrath Classic TOC to 3.4.1
 * Added Dragonflight spells (world)
 * Added Dragonflight spells for Vault of the Incarnates
+
+5.0.5
+* Updated for patch 10.0.5
+* Added Dragonflight spells (world)
+* Added Wrath spells for Ulduar (thanks Furento)
+* Added Wrath spells (Heroic+) (thanks wazerFPS)

@@ -177,6 +177,8 @@ L["CONFIRM"] = "Conferma"
 L["CONFIRM_POST_BELOW_VENDOR"] = "Puoi fare più soldi vendendo questo oggetto ad un mercante. Sei sicuro di voler creare quest'asta con questo prezzo?"
 L["CONFIRM_POST_LOW_PRICE"] = "Il prezzo di %s sembra un po' troppo basso. Sei sicuro di voler creare quest'asta con questo prezzo?"
 L["CONFIRM_POST_PRICE_DROP"] = "Il prezzo unitorio di % ha subito un grosso crollo. Sei sicuro di creare un'asta con questo prezzo?"
+--[[Translation missing --]]
+L["CONFIRM_UNHIDE_ALL"] = "Are you sure you want to unhide all hidden items?"
 L["CONFIRM_X_TOTAL_PRICE_X"] = "Confarma %s, prezzo totale %s"
 L["CONTINUE"] = "Continua"
 L["CONTRIBUTORS_HEADER"] = "Contributi"

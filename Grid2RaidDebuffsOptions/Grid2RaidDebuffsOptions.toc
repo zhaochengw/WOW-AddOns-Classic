@@ -6,7 +6,7 @@
 ## Author: Michael
 ## Dependencies: Grid2, Grid2RaidDebuffs
 ## LoadOnDemand: 1
-## Version: 2.1.1
+## Version: 2.1.3
 
 Grid2RaidDebuffsOptions.lua
 OptionsGeneral.lua

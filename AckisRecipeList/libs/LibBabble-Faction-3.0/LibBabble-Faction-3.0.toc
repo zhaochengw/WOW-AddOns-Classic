@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## LoadOnDemand: 1
 ## Title: Lib: Babble-Faction-3.0
 ## Notes: A library to help with localization of factions.

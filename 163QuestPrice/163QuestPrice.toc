@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: 163QuestPrice
 ## Title-zhCN: |cff880303[有爱]|r 163任务奖励价格
 ## X-Vendor: NetEase

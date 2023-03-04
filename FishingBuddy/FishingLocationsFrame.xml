@@ -1,5 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
+	<Script file="FishingLocations.lua"/>
 	<Script file="FishingLocationsFrame.lua"/>
 	<Button name="FishingBuddyCollpaseAllTemplate" hidden="true" virtual="true">
 		<Size>
@@ -61,88 +62,103 @@
 		<NormalFont style="GameFontNormal" />
 	</Button>
 
-	<Button name="FishingLocationButtonTemplate" hidden="false" virtual="true">
-		<Size>
-			<AbsDimension x="263" y="16"/>
-		</Size>
-		<NormalTexture file="Interface\Buttons\UI-MinusButton-UP">
-			<Size>
-				<AbsDimension x="16" y="16"/>
-			</Size>
-			<Anchors>
-				<Anchor point="LEFT">
-					<Offset>
-						<AbsDimension x="3" y="0"/>
-					</Offset>
-				</Anchor>
-			</Anchors>
-		</NormalTexture>
-		<HighlightTexture name="$parentHighlight" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD">
-			<Size>
-				<AbsDimension x="16" y="16"/>
-			</Size>
-			<Anchors>
-				<Anchor point="LEFT">
-					<Offset>
-						<AbsDimension x="3" y="0"/>
-					</Offset>
-				</Anchor>
-			</Anchors>
-		</HighlightTexture>
-		<ButtonText name="$parentNormalText" nonspacewrap="true">
-			<Size>
-				<AbsDimension x="0" y="10"/>
-			</Size>
-			<Anchors>
-				<Anchor point="LEFT">
-					<Offset>
-						<AbsDimension x="20" y="0"/>
-					</Offset>
-				</Anchor>
-			</Anchors> 
-		</ButtonText>
-		<NormalFont style="GameFontNormalLeft"/>
-		<HighlightFont style="GameFontHighlightLeft"/>
-		<DisabledFont style="GameFontHighlightLeft"/>
+	<Button name="FishingLocationButtonTemplate" mixin="FishingLocationsMixin" hidden="false" virtual="true"> 
+		<Size y="20"/>
 		<Frames>
-			<Button name="$parentIcon" hidden="true">
-				<Size>
-					<AbsDimension x="16" y="16"/>
-				</Size>
+			<Frame parentKey="Container" setAllPoints="false">
 				<Anchors>
-					<Anchor point="LEFT">
-						<Offset>
-							<AbsDimension x="21" y="1"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="RIGHT" x="-10"/>
 				</Anchors>
+				<Size y="20"/>
+				<Frames>
+					<Button parentKey="ExpandOrCollapseButton">
+						<Size x="13" y="13"/>
+						<Anchors>
+							<Anchor point="LEFT" />
+						</Anchors>
+						<HitRectInsets>
+							<AbsInset left="1" right="-4" top="-2" bottom="-2"/>
+						</HitRectInsets>
+						<Scripts>
+							<OnClick>
+								FishingLocations:Toggle(self:GetParent():GetParent().index);
+							</OnClick>
+						</Scripts>
+						<NormalTexture file="Interface\Buttons\UI-MinusButton-UP">
+							<Size x="16" y="16"/>
+							<Anchors>
+								<Anchor point="LEFT" x="3" y="0"/>
+							</Anchors>
+						</NormalTexture>
+						<HighlightTexture parentKey="Highlight" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD">
+							<Size x="16" y="16"/>
+							<Anchors>
+								<Anchor point="LEFT" x="3" y="0"/>
+							</Anchors>
+						</HighlightTexture>
+					</Button>
+				</Frames>
 				<Layers>
 					<Layer level="BORDER">
-						<Texture name="$parentTexture"/>
+						<Texture parentKey="LocationLeft" file="Interface\Buttons\CollapsibleHeader">
+							<Size x="76" y="16"/>
+							<Anchors>
+								<Anchor point="LEFT" x="0" y="0"/>
+							</Anchors>
+							<TexCoords left="0.17578125" right="0.47265625" top="0.29687500" bottom="0.54687500"/>
+						</Texture>
+						<Texture parentKey="LocationRight" file="Interface\Buttons\CollapsibleHeader" >
+							<Size x="76" y="16"/>
+							<Anchors>
+								<Anchor point="RIGHT" x="0" y="0"/>
+							</Anchors>
+							<TexCoords left="0.17578125" right="0.47265625" top="0.01562500" bottom="0.26562500"/>
+						</Texture>
+						<Texture parentKey="LocationMiddle" file="Interface\Buttons\CollapsibleHeader">
+							<Size x="0" y="16"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.LocationLeft" relativePoint="RIGHT" x="-20" y="0"/>
+								<Anchor point="RIGHT" relativeKey="$parent.LocationRight" relativePoint="LEFT" x="20" y="0"/>
+							</Anchors>
+							<TexCoords left="0.48046875" right="0.98046875" top="0.01562500" bottom="0.26562500"/>
+						</Texture>
+						<Texture parentKey="Icon">
+							<Size x="15" y="15"/>
+							<Anchors>
+								<Anchor point="LEFT" />
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Name" inherits="GameFontHighlightSmall" justifyH="LEFT">
+							<Size y="10"/>
+							<Anchors>
+								<Anchor point="LEFT" relativeKey="$parent.Icon" relativePoint="RIGHT" x="3" y="0"/>
+								<Anchor point="RIGHT" x="0" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="Stripe" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="1" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="-1" y="0"/>
+							</Anchors>
+							<Color a=".08" r="1" g="1" b="1"/>
+						</Texture>
 					</Layer>
 				</Layers>
-			</Button>
+			</Frame>
 		</Frames>
 		<Scripts>
-			<OnLoad>
-				self:RegisterForClicks("LeftButtonDown", "RightButtonUp");
-			</OnLoad>
-			<OnEnter>
-				FishingBuddy.Locations.Button_OnEnter(self);
-			</OnEnter>
-			<OnLeave>
-				FishingBuddy.Locations.Button_OnLeave(self);
-			</OnLeave>
-			<OnClick>
-				FishingBuddy.Locations.Button_OnClick(self, button, down);
-			</OnClick>
+			<OnLoad method="OnLoad"/>
+			<OnClick method="OnClick"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
 		</Scripts>
 	</Button>
 
-	<Frame name="FishingLocationsFrame" setAllPoints="true" enableMouse="true" parent="FishingBuddyFrame" hidden="true">
-		<HitRectInsets>
-			<AbsInset left="0" right="30" top="0" bottom="45"/>
-		</HitRectInsets>
+	<Frame name="FishingLocationsFrame" setAllPoints="true" enableMouse="true" parent="FishingBuddyFrame" useParentLevel="true" hidden="true">
 		<Frames>
 			<Frame name="FishingBuddyLocationsMenu" inherits="UIDropDownMenuTemplate">
 				<Scripts>
@@ -157,373 +173,131 @@
 					<AbsDimension x="160" y="21"/>
 				</Size>
 				<Anchors>
-					<Anchor point="TOP">
-						<Offset>
-							<AbsDimension x="0" y="-24"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOP" x="32" y="-24" />
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						FishingBuddy.Locations.SwitchDisplay();
+						FBEnvironment.Locations_SwitchDisplay();
 					</OnClick>
 					<OnEnter>
-						FishingBuddy.Locations.SwitchButton_OnEnter();
+						FBEnvironment.SwitchButton_OnEnter();
 					</OnEnter>
 					<OnLeave>
 						GameTooltip:Hide();
 					</OnLeave>
 				</Scripts>
 			</Button>
-			<CheckButton name="FishingBuddyOptionSLZ" inherits="OptionsSmallCheckButtonTemplate">
+			<CheckButton name="FishingBuddyOptionSLZ" inherits="FishingBuddyCheckButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocationsSwitchButton" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="4"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeTo="FishingLocationsSwitchButton" relativePoint="BOTTOMLEFT" x="0" y="4" />
 				</Anchors>
 			</CheckButton>
-			<Frame name="FishingLocationExpandButtonFrame">
-				<Size>
-					<AbsDimension x="54" y="32"/>
-				</Size>
+			<Button parentKey="ExpandOrCollapseButton" hidden="true">
+				<Size x="13" y="13"/>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeTo="FishingBuddyFrameInset" relativePoint="TOPLEFT">
-						<Offset>
-							<AbsDimension x="-3" y="-9"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="LEFT" x="3" y="0"/>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset left="1" right="-4" top="-2" bottom="-2"/>
+				</HitRectInsets>
+				<Scripts>
+					<OnClick>
+						FBEnvironment.CollapseAllButton_OnClick()
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\Buttons\UI-MinusButton-UP">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT" x="3" y="0"/>
+					</Anchors>
+				</NormalTexture>
+				<HighlightTexture parentKey="Highlight" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="LEFT" x="3" y="0"/>
+					</Anchors>
+				</HighlightTexture>
+			</Button>
+			<Frame name="FishingLocationDetailFrame" enableMouse="true" hidden="true">
+				<Size x="212" y="203"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="ReputationFrame" relativePoint="TOPRIGHT" x="0" y="-28"/>
 				</Anchors>
 				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture name="FishingLocationExpandTabLeft" file="Interface\ClassTrainerFrame\UI-ClassTrainer-ExpandTab-Left">
-							<Size>
-								<AbsDimension x="10" y="32"/>
-							</Size>
+					<Layer level="ARTWORK">
+						<FontString name="FishingLocationDetailFrameName" inherits="GameFontNormal" justifyH="LEFT" nonspacewrap="true">
+							<Size x="160" y="0"/>
 							<Anchors>
-								<Anchor point="TOPLEFT"/>
+								<Anchor point="TOPLEFT" x="20" y="-21"/>
+							</Anchors>
+						</FontString>
+						<FontString name="FishingLocationDetailFrameDescription" inherits="ReputationDetailFont" justifyH="LEFT">
+							<Size x="170" y="0"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeTo="FishingLocationDetailFrameName" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+							</Anchors>
+						</FontString>
+						<Texture file="Interface\PaperDollInfoFrame\UI-Character-Reputation-DetailBackground">
+							<Size x="256" y="128"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="11" y="-11"/>
 							</Anchors>
 						</Texture>
-						<Texture name="FishingLocationExpandTabMiddle" file="Interface\QuestFrame\UI-QuestLogSortTab-Middle">
-							<Size>
-								<AbsDimension x="38" y="32"/>
-							</Size>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture name="FishingLocationDetailCorner" file="Interface\DialogFrame\UI-DialogBox-Corner">
+							<Size x="32" y="32"/>
 							<Anchors>
-								<Anchor point="LEFT" relativeTo="FishingLocationExpandTabLeft" relativePoint="RIGHT">
-									<Offset>
-										<AbsDimension x="0" y="6"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="TOPRIGHT" x="-6" y="-7"/>
 							</Anchors>
 						</Texture>
-						<Texture name="FishingLocationExpandTabRight" file="Interface\QuestFrame\UI-QuestLogSortTab-Right">
-							<Size>
-								<AbsDimension x="8" y="32"/>
-							</Size>
+						<Texture name="FishingLocationDetailDivider" file="Interface\DialogFrame\UI-DialogBox-Divider">
+							<Size x="256" y="32"/>
 							<Anchors>
-								<Anchor point="LEFT" relativeTo="FishingLocationExpandTabMiddle" relativePoint="RIGHT"/>
+								<Anchor point="TOPLEFT" x="9" y="-131"/>
 							</Anchors>
 						</Texture>
 					</Layer>
 				</Layers>
 				<Frames>
-					<Button name="FishingLocationsCollapseAllButton" hidden="false" inherits="FishingBuddyCollpaseAllTemplate">
-						<Size>
-							<AbsDimension x="40" y="22"/>
-						</Size>
+					<Frame parentKey="Border" inherits="DialogBorderTemplate"/>
+					<Button name="FishingLocationDetailCloseButton" inherits="UIPanelCloseButton">
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="FishingLocationExpandTabLeft" relativePoint="RIGHT">
-								<Offset>
-									<AbsDimension x="0" y="3"/>
-								</Offset>
-							</Anchor>
+							<Anchor point="TOPRIGHT" x="-7" y="-7"/>
 						</Anchors>
 						<Scripts>
-							<OnLoad>
-								self:SetFrameLevel(self:GetFrameLevel() + 1);
-								getglobal(self:GetName()):SetText(ALL);
-							</OnLoad>
 							<OnClick>
-								FishingLocationsCollapseAllButton_OnClick(self, button, down);
+								PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+								HideParentPanel(self);
 							</OnClick>
 						</Scripts>
 					</Button>
 				</Frames>
 			</Frame>
 
-			<ScrollFrame name="FishingLocsScrollFrame" hidden="false" inherits="FauxScrollFrameTemplate">
-				<Size>
-					<AbsDimension x="230" y="351"/>
-				</Size>
+			<Frame parentKey="ScrollBox" inherits="WowScrollBoxList" frameStrata="HIGH">
 				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="FishingBuddyFrameInset" relativePoint="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="-26" y="-7"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeKey="$parent.$parent.Inset" x="4" y="-4"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.$parent.Inset" x="-22" y="2"/>
 				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture name="FishingLocationsScrollBarTop" file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
-							<Size>
-								<AbsDimension x="31" y="256"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
-									<Offset>
-										<AbsDimension x="-2" y="5"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-							<TexCoords left="0" right="0.484375" top="0" bottom="1.0"/>
-						</Texture>
-						<Texture file="Interface\PaperDollInfoFrame\UI-Character-ScrollBar">
-							<Size>
-								<AbsDimension x="31" y="108"/>
-							</Size>
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT">
-									<Offset>
-										<AbsDimension x="-2" y="-2"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-							<TexCoords left="0.515625" right="1.0" top="0" bottom="0.4140625"/>
-						</Texture>
-					</Layer>
-				</Layers>
-				<Scripts>
-					<OnVerticalScroll>
-						GameTooltip:Hide();
-                        FauxScrollFrame_OnVerticalScroll(self, offset,
-						    FishingBuddy.Locations.FRAME_THINGIEHEIGHT, FishingBuddy.Locations.Update);
-					</OnVerticalScroll>
-				</Scripts>
-			</ScrollFrame>
-
-			<Frame name="FishingLocationHighlightFrame" hidden="true">
-				<Size>
-					<AbsDimension x="230" y="16"/>
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT"/>
-				</Anchors>
-				<Layers>
-					<Layer level="ARTWORK">
-						<Texture name="FishingLocationHighlight" file="Interface\Buttons\UI-Listbox-Highlight2"/>
-					</Layer>
-				</Layers>
 			</Frame>
 
-			<Button name="FishingLocations1" inherits="FishingLocationButtonTemplate" hidden="true" id="1">
+			<EventFrame parentKey="ScrollBar" inherits="WowTrimScrollBar" frameStrata="HIGH">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingBuddyFrameInset" relativePoint="TOPLEFT">
-						<Offset>
-							<AbsDimension x="8" y="8"/>
-						</Offset>
-					</Anchor>
+					<Anchor point="TOPLEFT" relativeKey="$parent.ScrollBox" relativePoint="TOPRIGHT" x="0" y="3"/>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.ScrollBox" relativePoint="BOTTOMRIGHT" x="3" y="-1"/>
 				</Anchors>
-			</Button>
-			<Button name="FishingLocations2" inherits="FishingLocationButtonTemplate" hidden="true" id="2">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations1" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations3" inherits="FishingLocationButtonTemplate" hidden="true" id="3">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations2" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations4" inherits="FishingLocationButtonTemplate" hidden="true" id="4">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations3" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations5" inherits="FishingLocationButtonTemplate" hidden="true" id="5">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations4" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations6" inherits="FishingLocationButtonTemplate" hidden="true" id="6">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations5" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations7" inherits="FishingLocationButtonTemplate" hidden="true" id="7">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations6" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations8" inherits="FishingLocationButtonTemplate" hidden="true" id="8">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations7" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations9" inherits="FishingLocationButtonTemplate" hidden="true" id="9">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations8" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations10" inherits="FishingLocationButtonTemplate" hidden="true" id="10">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations9" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations11" inherits="FishingLocationButtonTemplate" hidden="true" id="11">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations10" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations12" inherits="FishingLocationButtonTemplate" hidden="true" id="12">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations11" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations13" inherits="FishingLocationButtonTemplate" hidden="true" id="13">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations12" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations14" inherits="FishingLocationButtonTemplate" hidden="true" id="14">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations13" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations15" inherits="FishingLocationButtonTemplate" hidden="true" id="15">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations14" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations16" inherits="FishingLocationButtonTemplate" hidden="true" id="16">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations15" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations17" inherits="FishingLocationButtonTemplate" hidden="true" id="17">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations16" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations18" inherits="FishingLocationButtonTemplate" hidden="true" id="18">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations17" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations19" inherits="FishingLocationButtonTemplate" hidden="true" id="19">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations18" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations20" inherits="FishingLocationButtonTemplate" hidden="true" id="20">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations19" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations21" inherits="FishingLocationButtonTemplate" hidden="true" id="21">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations20" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
-			<Button name="FishingLocations22" inherits="FishingLocationButtonTemplate" hidden="true" id="22">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="FishingLocations21" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="0" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</Button>
+			</EventFrame>
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				FishingBuddy.Locations.OnLoad(self);
+				FBEnvironment.Locations_OnLoad(self);
 			</OnLoad>
 			<OnEvent>
-				FishingBuddy.Locations.OnEvent(self, event, ...);
+				FBEnvironment.Locations_OnEvent(self, event, ...);
 			</OnEvent>
 			<OnShow>
-				FishingBuddy.Locations.OnShow(self);
+				FBEnvironment.Locations_OnShow(self);
 			</OnShow>
 			<OnMouseWheel>
 				-- FishingLocationsFrame_OnMouseWheel(self, arg1);

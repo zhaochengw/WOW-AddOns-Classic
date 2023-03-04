@@ -6,12 +6,9 @@
 local LibEvent = LibStub:GetLibrary("LibEvent.7000")
 local LibSchedule = LibStub:GetLibrary("LibSchedule.7000")
 local LibItemInfo = LibStub:GetLibrary("LibItemInfo.1000")
+local LibGearScore = LibStub:GetLibrary("LibGearScore.1000")
 
 local guids, inspecting = {}, false
-
-if not InspectTalentFrameSpentPoints 
-then InspectTalentFrameSpentPoints = CreateFrame("FRAME") end
-
 
 -- Global API
 function GetInspectInfo(unit, timelimit, checkhp)
@@ -44,10 +41,13 @@ function ReInspect(unit)
     local data = guids[guid]
     if (not data) then return end
     local ilevel, weaponLevel, maxLevel = LibItemInfo:GetUnitItemLevel(unit)
+    local _, gsdata = LibGearScore:GetScore(guid)
     data.timer = time()
     data.ilevel = ilevel
     data.weaponLevel = weaponLevel
     data.maxLevel = maxLevel
+    data.gearscore = gsdata and gsdata.GearScore or nil
+    data.gscolor = gsdata and gsdata.Color or nil
     LibEvent:trigger("UNIT_REINSPECT_READY", data)
 end
 
@@ -104,6 +104,9 @@ LibEvent:attachEvent("INSPECT_READY", function(this, guid)
         onTimeout = function(self) inspecting = false end,
         onExecute = function(self)
             local ilevel, weaponLevel, maxLevel = LibItemInfo:GetUnitItemLevel(self.data.unit)
+            local _, gsdata = LibGearScore:GetScore(guid)
+            self.data.gearscore = gsdata and gsdata.GearScore or nil
+            self.data.gscolor = gsdata and gsdata.Color or nil
             self.data.timer = time()
             self.data.name = UnitName(self.data.unit)
             self.data.class = select(2, UnitClass(self.data.unit))

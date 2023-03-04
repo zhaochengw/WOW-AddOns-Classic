@@ -1,5 +1,5 @@
 local fadeInTime, fadeOutTime, maxAlpha, animScale, iconSize, holdTime, showSpellName, ignoredSpells, invertIgnored
-local cooldowns, animating, watching = { }, { }, { }
+local cooldowns, animating, watching, itemSpells = { }, { }, { }, { }
 local GetTime = GetTime
 
 local defaultSettings = {
@@ -122,6 +122,26 @@ local function InitializeSavedVariables()
     MergeTable(DCP_SavedPerCharacter, defaultSettingsPerCharacter)
 end
 
+local function TrackItemSpell(itemID)
+    local _, spellID = GetItemSpell(itemID)
+    if (spellID) then
+        itemSpells[spellID] = itemID
+        return true
+    else
+        return false
+    end
+end
+
+local function IsAnimatingCooldownByName(name)
+    for i, details in pairs(animating) do
+        if details[3] == name then
+            return true
+        end
+    end
+
+    return false
+end
+
 --------------------------
 -- Cooldown / Animation --
 --------------------------
@@ -187,9 +207,15 @@ local function OnUpdate(_,update)
         end
         for i,getCooldownDetails in pairs(cooldowns) do
             local cooldown = getCooldownDetails()
-            local remaining = cooldown.duration-(GetTime()-cooldown.start)
-            if (remaining <= 0) then
-                tinsert(animating, {cooldown.texture,cooldown.isPet,cooldown.name})
+            if cooldown.start then
+                local remaining = cooldown.duration-(GetTime()-cooldown.start)
+                if (remaining <= 0) then
+                    if not IsAnimatingCooldownByName(cooldown.name) then
+                        tinsert(animating, {cooldown.texture,cooldown.isPet,cooldown.name})
+                    end
+                    cooldowns[i] = nil
+                end
+            else
                 cooldowns[i] = nil
             end
         end
@@ -253,7 +279,15 @@ DCP:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 
 function DCP:UNIT_SPELLCAST_SUCCEEDED(unit,lineID,spellID)
     if (unit == "player") then
-        watching[spellID] = {GetTime(),"spell",spellID}
+        local itemID = itemSpells[spellID]
+        if (itemID) then
+            local texture = select(10, GetItemInfo(itemID))
+            watching[itemID] = {GetTime(),"item",texture}
+            itemSpells[spellID] = nil
+        else
+            watching[spellID] = {GetTime(),"spell",spellID}
+        end
+
         if (not self:IsMouseEnabled()) then
             self:SetScript("OnUpdate", OnUpdate)
         end
@@ -267,7 +301,7 @@ function DCP:COMBAT_LOG_EVENT_UNFILTERED()
         if (bit.band(sourceFlags,COMBATLOG_OBJECT_TYPE_PET) == COMBATLOG_OBJECT_TYPE_PET and bit.band(sourceFlags,COMBATLOG_OBJECT_AFFILIATION_MINE) == COMBATLOG_OBJECT_AFFILIATION_MINE) then
             local name = GetSpellInfo(spellID)
             local index = GetPetActionIndexByName(name)
-            if (index and not select(7,GetPetActionInfo(index))) then
+            if (index and not select(6,GetPetActionInfo(index))) then
                 watching[spellID] = {GetTime(),"pet",index}
             elseif (not index and spellID) then
                 watching[spellID] = {GetTime(),"spell",spellID}
@@ -292,9 +326,19 @@ function DCP:PLAYER_ENTERING_WORLD()
 end
 DCP:RegisterEvent("PLAYER_ENTERING_WORLD")
 
+function DCP:PLAYER_SPECIALIZATION_CHANGED(unit)
+    if (unit == "player") then
+        wipe(cooldowns)
+        wipe(watching)
+    end
+end
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+    DCP:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+end
+
 hooksecurefunc("UseAction", function(slot)
     local actionType,itemID = GetActionInfo(slot)
-    if (actionType == "item") then
+    if (actionType == "item" and not TrackItemSpell(itemID)) then
         local texture = GetActionTexture(slot)
         watching[itemID] = {GetTime(),"item",texture}
     end
@@ -302,8 +346,16 @@ end)
 
 hooksecurefunc("UseInventoryItem", function(slot)
     local itemID = GetInventoryItemID("player", slot);
-    if (itemID) then
+    if (itemID and not TrackItemSpell(itemID)) then
         local texture = GetInventoryItemTexture("player", slot)
+        watching[itemID] = {GetTime(),"item",texture}
+    end
+end)
+
+hooksecurefunc(C_Container, "UseContainerItem", function(bag,slot)
+    local itemID = C_Container.GetContainerItemID(bag, slot)
+    if (itemID and not TrackItemSpell(itemID)) then
+        local texture = select(10, GetItemInfo(itemID))
         watching[itemID] = {GetTime(),"item",texture}
     end
 end)

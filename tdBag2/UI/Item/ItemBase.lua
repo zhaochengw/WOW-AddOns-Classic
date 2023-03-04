@@ -14,6 +14,7 @@ local securecall = securecall
 
 ---- WOW
 local BankButtonIDToInvSlotID = BankButtonIDToInvSlotID
+local GetContainerItemQuestInfo = GetContainerItemQuestInfo or C_Container.GetContainerItemQuestInfo
 local CreateFrame = CreateFrame
 local CursorUpdate = CursorUpdate
 local GetItemInfo = GetItemInfo
@@ -269,7 +270,7 @@ function ItemBase:UpdateBorder()
     local sets = self.meta.sets
     local r, g, b = self:GetBorderColor()
 
-    self.IconBorder:SetVertexColor(r, g, b, sets.glowAlpha)
+    self.IconBorder:SetVertexColor(r or 1, g or 1, b or 1, sets.glowAlpha)
     self.IconBorder:SetShown(r)
     self.QuestBorder:SetShown(sets.iconQuestStarter and self:IsQuestStarter())
     self.JunkIcon:SetShown(sets.iconJunk and self:IsJunk())

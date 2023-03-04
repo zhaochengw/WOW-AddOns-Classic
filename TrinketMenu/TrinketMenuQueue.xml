@@ -147,7 +147,7 @@
 		</HighlightTexture>
 	</Button>
 
-	<Button name = "TrinketMenu_Tab2" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "饰品2" id = "2">
+	<Button name = "TrinketMenu_Tab2" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "Bottom" id = "2">
 		<Anchors>
 			<Anchor point = "TOPRIGHT" relativeTo = "TrinketMenu_Tab1" relativePoint = "TOPLEFT"/>
 		</Anchors>
@@ -161,7 +161,7 @@
 			</Anchor>
 		</Anchors>
 	</CheckButton>
-	<Button name = "TrinketMenu_Tab3" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "饰品1" id = "3">
+	<Button name = "TrinketMenu_Tab3" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "Top" id = "3">
 		<Anchors>
 			<Anchor point = "TOPRIGHT" relativeTo = "TrinketMenu_Tab2" relativePoint = "TOPLEFT"/>
 		</Anchors>
@@ -864,11 +864,6 @@
 					</OnShow>
 				</Scripts>
 			</Frame>
-			<Scripts>
-				<OnLoad>
-					self:OnBackdropLoaded()
-				</OnLoad>
-			</Scripts>
 		</Frames>
 	</Frame>
 </Ui>

@@ -178,7 +178,8 @@ L.BIG_WIGS						= "BigWigs"
 L.UPDATEREMINDER_HEADER				= "你的Deadly Boss Mod已經過期。\n你可以在Curse網站或是WOWI網站以及GitHub專案網頁下載到新版本%s (%s)"
 L.UPDATEREMINDER_FOOTER				= "按下" .. (IsMacClient() and "Cmd-C" or "Ctrl-C")  ..  "：複製下載網址到剪貼簿。"
 L.UPDATEREMINDER_FOOTER_GENERIC		= "按下" .. (IsMacClient() and "Cmd-C" or "Ctrl-C")  ..  "：複製網址到剪貼簿。"
-L.UPDATEREMINDER_DISABLE			= "警告:  你的DBM版本已大幅度的過期，DBM已被強制關閉並且無法使用直到更新為止。這是為了確保舊而不相容的程式碼不會對你而團隊夥伴造成低落的遊戲體驗。"
+L.UPDATEREMINDER_DISABLE			= "警告: 你的DBM版本已大幅度的過期並且無法與新版本相容，DBM已被強制關閉並且無法使用直到更新為止。這是為了確保舊而不相容的程式碼不會對你而團隊夥伴造成低落的遊戲體驗。"
+L.UPDATEREMINDER_DISABLETEST		= "警告: 你的DBM版本已大幅度的過期並且是在beta伺服器上測試，DBM已被強制關閉並且無法使用直到更新為止。這是為了確保未使用過期版本來生成測試反饋。"
 L.UPDATEREMINDER_HOTFIX				= "你的DBM版本會在這首領戰鬥有不準確的計時器或警告。這問題已被修正在新版正式版(或是更新到最新的測試版。)"
 L.UPDATEREMINDER_HOTFIX_ALPHA		= "您的DBM版本在此首領戰有些已知問題，將會在未來的正式版修正 (或是最新的測試版)"
 L.UPDATEREMINDER_MAJORPATCH			= "警告: 你的DBM已經過期，DBM已被禁用直到你更新至最新版，因為遊戲大改版。為了不讓舊的程式碼拖累遊戲體驗。請至curse、Wago、WoWI或是GitHub發佈頁下載最新版本的DBM。"
@@ -511,7 +512,9 @@ L.AUTO_YELL_ANNOUNCE_TEXT.repeaticon		= "{rt%%1$d}"
 L.AUTO_YELL_CUSTOM_FADE					= "%s已消退"
 L.AUTO_HUD_OPTION_TEXT					= "為$spell:%s顯示HudMap(不再作用)"
 L.AUTO_HUD_OPTION_TEXT_MULTI			= "為不同的機制顯示HudMap(不再作用)"
-L.AUTO_NAMEPLATE_OPTION_TEXT			= "為$spell:%s顯示姓名版光環"
+L.AUTO_NAMEPLATE_OPTION_TEXT			= "為$spell:%s顯示姓名版光環，使用在相容的名條插件或DBM"
+L.AUTO_NAMEPLATE_OPTION_TEXT_FORCED		= "為$spell:%s顯示姓名版光環，使用在DBM"
+
 L.AUTO_RANGE_OPTION_TEXT				= "為$spell:%2$s顯示距離框架(%1$s碼)"
 L.AUTO_RANGE_OPTION_TEXT_SHORT			= "顯示距離框架(%s碼)"
 L.AUTO_RRANGE_OPTION_TEXT				= "為$spell:%2$s顯示反色距離框架(%1$s碼)"--Reverse range frame (green when players in range, red when not)
@@ -570,6 +573,8 @@ L.DUR_CHECKING					= "檢測團隊裝備耐久度..."
 L.DUR_HEADER					= ""..L.DEADLY_BOSS_MODS.." - 裝備耐久度結果"
 L.DUR_ENTRY						= "%s:耐久度[%d百分比]/裝備損壞[%s]"
 L.LAG_FOOTER					= "無回應:%s"
+
+L.OVERRIDE_ACTIVATED			= "領隊已啟用此首領的配置覆蓋"
 
 --LDB
 L.LDB_TOOLTIP_HELP1				= "點擊開啟" .. L.DBM

@@ -18,6 +18,7 @@ local unpack = unpack
 local next = next
 
 local GetTime = GetTime
+local CreateColor = CreateColor
 
 local UnitGUID = UnitGUID
 local UnitCanAssist = UnitCanAssist
@@ -376,7 +377,7 @@ local function updateHealPrediction(frame, unit, cutoff, gradient, colorPalette,
         if a == 0 then
             myIncomingHeal1 = 0
         else
-            myHealPrediction1:SetGradientAlpha("VERTICAL", r2, g2, b2, a, r, g, b, a)
+            myHealPrediction1:SetGradient("VERTICAL", CreateColor(r2, g2, b2, a), CreateColor(r, g, b, a))
         end
 
         r, g, b, a, r2, g2, b2 = unpack(colors[colorPalette[2]])
@@ -384,7 +385,7 @@ local function updateHealPrediction(frame, unit, cutoff, gradient, colorPalette,
         if a == 0 then
             myIncomingHeal2 = 0
         else
-            myHealPrediction2:SetGradientAlpha("VERTICAL", r2, g2, b2, a, r, g, b, a)
+            myHealPrediction2:SetGradient("VERTICAL", CreateColor(r2, g2, b2, a), CreateColor(r, g, b, a))
         end
 
         r, g, b, a, r2, g2, b2 = unpack(colors[colorPalette[3]])
@@ -392,7 +393,7 @@ local function updateHealPrediction(frame, unit, cutoff, gradient, colorPalette,
         if a == 0 then
             otherIncomingHeal1 = 0
         else
-            otherHealPrediction1:SetGradientAlpha("VERTICAL", r2, g2, b2, a, r, g, b, a)
+            otherHealPrediction1:SetGradient("VERTICAL", CreateColor(r2, g2, b2, a), CreateColor(r, g, b, a))
         end
 
         r, g, b, a, r2, g2, b2 = unpack(colors[colorPalette[4]])
@@ -400,7 +401,7 @@ local function updateHealPrediction(frame, unit, cutoff, gradient, colorPalette,
         if a == 0 then
             otherIncomingHeal2 = 0
         else
-            otherHealPrediction2:SetGradientAlpha("VERTICAL", r2, g2, b2, a, r, g, b, a)
+            otherHealPrediction2:SetGradient("VERTICAL", CreateColor(r2, g2, b2, a), CreateColor(r, g, b, a))
         end
     else
         local r, g, b, a
@@ -1511,11 +1512,11 @@ local function ClassicHealPredictionFrame_OnLoad(self)
 
     for i, x in ipairs(
         {
-            {"显示其他人的治疗", HealComm.ALL_HEALS},
-            {"显示直接治疗", HealComm.DIRECT_HEALS},
-            {"显示HOT", HealComm.HOT_HEALS},
-            {"显示取消的治疗", HealComm.CHANNEL_HEALS},
-            {"显示Bomb Heal", HealComm.BOMB_HEALS}
+            {"Show healing of others", HealComm.ALL_HEALS},
+            {"Show direct healing", HealComm.DIRECT_HEALS},
+            {"Show healing over time", HealComm.HOT_HEALS},
+            {"Show channeled healing", HealComm.CHANNEL_HEALS},
+            {"Show bomb healing", HealComm.BOMB_HEALS}
         }
     ) do
         local text, flag = unpack(x)
@@ -1603,7 +1604,7 @@ local function ClassicHealPredictionFrame_OnLoad(self)
 
     sliderCheckBox:SetPoint("TOPLEFT", checkBoxes[#checkBoxes], "BOTTOMLEFT", 0, 0)
     sliderCheckBox.Text = _G[sliderCheckBoxName .. "Text"]
-    sliderCheckBox.Text:SetText("设定即将到来的治疗的阈值为...秒")
+    sliderCheckBox.Text:SetText("Set threshold for imminent healing to ... seconds")
     sliderCheckBox.Text:SetTextColor(1, 1, 1)
 
     slider:SetPoint("TOPLEFT", sliderCheckBox, "BOTTOMRIGHT", 0, -15)
@@ -1656,7 +1657,7 @@ local function ClassicHealPredictionFrame_OnLoad(self)
 
     sliderCheckBox2:SetPoint("TOPLEFT", checkBoxes[1], "BOTTOMLEFT", 0, -180)
     sliderCheckBox2.Text = _G[sliderCheckBoxName2 .. "Text"]
-    sliderCheckBox2.Text:SetText("如果过量治疗超过...最大生命百分比，则使用不同的颜色")
+    sliderCheckBox2.Text:SetText("Use different colors if overhealing exceeds ... percent of max health")
     sliderCheckBox2.Text:SetTextColor(1, 1, 1)
 
     slider2:SetPoint("TOPLEFT", sliderCheckBox2, "BOTTOMRIGHT", 0, -15)
@@ -1709,7 +1710,7 @@ local function ClassicHealPredictionFrame_OnLoad(self)
 
     sliderCheckBox3:SetPoint("TOPLEFT", sliderCheckBox2, "BOTTOMLEFT", 0, -50)
     sliderCheckBox3.Text = _G[sliderCheckBoxName3 .. "Text"]
-    sliderCheckBox3.Text:SetText("设定Raid框架中治疗过量最大百分比(最大生命值的百分比)")
+    sliderCheckBox3.Text:SetText("Set max overflow in raid frames to ... percent of max health")
     sliderCheckBox3.Text:SetTextColor(1, 1, 1)
 
     slider3:SetPoint("TOPLEFT", sliderCheckBox3, "BOTTOMRIGHT", 0, -15)
@@ -1762,7 +1763,7 @@ local function ClassicHealPredictionFrame_OnLoad(self)
 
     sliderCheckBox4:SetPoint("TOPLEFT", sliderCheckBox3, "BOTTOMLEFT", 0, -50)
     sliderCheckBox4.Text = _G[sliderCheckBoxName4 .. "Text"]
-    sliderCheckBox4.Text:SetText("设定单位框架中治疗过量最大百分比(最大生命值的百分比)")
+    sliderCheckBox4.Text:SetText("Set max overflow in unit frames to ... percent of max health")
     sliderCheckBox4.Text:SetTextColor(1, 1, 1)
 
     slider4:SetPoint("TOPLEFT", sliderCheckBox4, "BOTTOMRIGHT", 0, -15)
@@ -1811,7 +1812,7 @@ local function ClassicHealPredictionFrame_OnLoad(self)
     checkBox3 = CreateFrame("CheckButton", checkBoxName3, self, "OptionsCheckButtonTemplate")
     checkBox3:SetPoint("TOPLEFT", sliderCheckBox4, "BOTTOMLEFT", 0, -50)
     checkBox3.Text = _G[checkBoxName3 .. "Text"]
-    checkBox3.Text:SetText("我的治疗覆盖其他人的治疗")
+    checkBox3.Text:SetText("Overlay the healing of others with my healing")
     checkBox3.Text:SetTextColor(1, 1, 1)
 
     checkBox3:SetScript(
@@ -1827,7 +1828,7 @@ local function ClassicHealPredictionFrame_OnLoad(self)
     checkBox2 = CreateFrame("CheckButton", checkBoxName2, self, "OptionsCheckButtonTemplate")
     checkBox2:SetPoint("TOPLEFT", checkBox3, "BOTTOMLEFT", 0, 0)
     checkBox2.Text = _G[checkBoxName2 .. "Text"]
-    checkBox2.Text:SetText("在玩家框架显示我的法力预估消耗")
+    checkBox2.Text:SetText("Show my mana cost prediction in the player unit frame")
     checkBox2.Text:SetTextColor(1, 1, 1)
 
     checkBox2:SetScript(
@@ -1841,11 +1842,11 @@ local function ClassicHealPredictionFrame_OnLoad(self)
 
     for k, x in ipairs(
         {
-            {"团队框架:我的治疗", {1, 2, 3, 4}},
-            {"团队框架:其他人的治疗", {5, 6, 7, 8}},
-            {"单位框架:我的治疗", {9, 10, 11, 12}},
-            {"单位框架:其他人的治疗", {13, 14, 15, 16}},
-            {"单位框架:我的法力消耗", {17}}
+            {"Raid Frames: My healing", {1, 2, 3, 4}},
+            {"Raid Frames: Other healing", {5, 6, 7, 8}},
+            {"Unit Frames: My healing", {9, 10, 11, 12}},
+            {"Unit Frames: Other healing", {13, 14, 15, 16}},
+            {"Unit Frames: My mana cost", {17}}
         }
     ) do
         local text, slots = unpack(x)

@@ -8,7 +8,7 @@ local Unfit = LibStub('Unfit-1.0')
 local Lib = LibStub:NewLibrary('LibItemSearch-1.2', 24)
 if Lib then
 	Lib.Filters = {}
-	Lib.Scanner = LibItemSearchTooltipScanner or CreateFrame('GameTooltip', 'LibItemSearchTooltipScanner', UIParent, 'GameTooltipTemplate')
+	Lib.Scanner = LibItemSearchTooltipScanner or CreateFrame('GameTooltip', 'LibItemSearchTooltipScanner', nil, 'GameTooltipTemplate')
 	Lib.Scanner:RegisterEvent('GET_ITEM_INFO_RECEIVED')
 	Lib.Scanner:SetScript('OnEvent', function()
 		Lib.Filters.tipPhrases.keywords[FOLLOWERLIST_LABEL_CHAMPIONS:lower()] = Lib:TooltipLine('item:147556', 2)
@@ -52,7 +52,7 @@ end
 --[[ Internal API ]]--
 
 function Lib:TooltipLine(link, line)
-	self.Scanner:SetOwner(UIParent, 'ANCHOR_NONE')
+	self.Scanner:SetOwner(WorldFrame, 'ANCHOR_NONE')
 	self.Scanner:SetHyperlink(link)
 	return _G[self.Scanner:GetName() .. 'TextLeft' .. line]:GetText()
 end
@@ -274,7 +274,7 @@ Lib.Filters.tip = {
 
 	match = function(self, link, _, search)
 		if link:find('item:') then
-			Lib.Scanner:SetOwner(UIParent, 'ANCHOR_NONE')
+			Lib.Scanner:SetOwner(WorldFrame, 'ANCHOR_NONE')
 			Lib.Scanner:SetHyperlink(link)
 
 			for i = 1, Lib.Scanner:NumLines() do
@@ -308,7 +308,7 @@ Lib.Filters.tipPhrases = {
 			return cached
 		end
 
-		Lib.Scanner:SetOwner(UIParent, 'ANCHOR_NONE')
+		Lib.Scanner:SetOwner(WorldFrame, 'ANCHOR_NONE')
 		Lib.Scanner:SetHyperlink(link)
 
 		local matches = false

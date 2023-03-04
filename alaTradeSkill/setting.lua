@@ -174,10 +174,10 @@ MT.BuildEnv("setting");
 				cache = {  },
 			};
 			_G.alaTradeSkillSV = alaTradeSkillSV;
-		elseif alaTradeSkillSV._version < 211227.0 then
-			alaTradeSkillSV.cache = {  };
+		elseif alaTradeSkillSV._version < 230303.0 then
+			alaTradeSkillSV.cache = alaTradeSkillSV.cache or {  };
 		end
-		alaTradeSkillSV._version = 211227.0;
+		alaTradeSkillSV._version = 230303.0;
 		MT.MergeGlobal(alaTradeSkillSV);
 		VT.SET = alaTradeSkillSV.set;
 		for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
@@ -849,7 +849,7 @@ MT.RegisterBeforeInit('setting', function(LoggedIn)
 		if MT.SafeCall(LF_ModifySavedVariable) then
 			if type(fav) == 'table' then
 				VT.FAV = fav;
-				alaTradeSkillSV.fav = fav;
+				alaTradeSkillSV.fav = fav or {  };
 			end
 		else
 			MT.Error("|cffff0000alaTradeSkill fetal error");

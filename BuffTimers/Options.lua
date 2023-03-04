@@ -167,4 +167,9 @@ RegEvent("PLAYER_LOGIN", function()
         local b = createCheckbox(L["Always yellow text color"], "yellow_text", false)
         b:SetPoint("TOPLEFT", f, 15, nextpos())
     end
+
+    do
+        local b = createCheckbox(L["Add more colors to the timer"], "colored_text", false)
+        b:SetPoint("TOPLEFT", f, 15, nextpos())
+    end
 end)

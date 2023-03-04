@@ -88,14 +88,20 @@ local DT = __private.DT;
 		SpellListFrameXToBorder = 4,
 		SpellListFrameYToTop = 32,
 		SpellListFrameYToBottom = 32,
-		SpellListNodeHeight = 24;
+		SpellListNodeHeight = 24,
 
-		EquipmentFrameXSize = CT.BUILD == "CLASSIC" and 280 or 340;
-		EquipmentNodeSize = 38;
-		EquipmentNodeGap = 6;
-		EquipmentNodeXToBorder = 8;
-		EquipmentNodeYToBorder = 8;
-		EquipmentNodeTextGap = 4;
+		EquipmentFrameXSize = CT.BUILD == "CLASSIC" and 280 or 340,
+		EquipmentFrameXMaxSize = CT.BUILD == "CLASSIC" and 640 or 765,
+		EquipmentNodeSize = 38,
+		EquipmentNodeGap = 6,
+		EquipmentNodeXToBorder = 8,
+		EquipmentNodeYToBorder = 8,
+		EquipmentNodeTextGap = 4,
+		EquipmentNodeLayout = {
+			L = {  1,  2,  3, 15,  5, 19,  4,  9, },
+			R = { 10,  6,  7,  8, 11, 12, 13, 14, },
+			B = { 16, 17, 18,  0, },
+		},
 
 		GlyphFrameSize = 200,
 		MajorGlyphNodeSize = 64,
@@ -202,12 +208,12 @@ local DT = __private.DT;
 		CLASS_INDICATOR_COORD = { 4 / 64, 60 / 64, 5 / 64, 61 / 64, },
 		CLASS_INDICATOR_COLOR = { 0.0, 1.0, 0.0, 1.0, },
 
-		EQUIPMENT_TEXTURE = [[Interface\Buttons\Spell-Reset]];
-		EQUIPMENT_TEXTURE_COORD = { 6 / 64, 58 / 64, 6 / 64, 58 / 64, };
-		EQUIPMENT_GLOW = [[Interface\Buttons\UI-ActionButton-Border]];
-		EQUIPMENT_GLOW_COORD = { 0.25, 0.75, 0.25, 0.75, };
-		EQUIPMENT_HIGHLIGHT = [[Interface\Buttons\ActionbarFlyoutButton-FlyoutMidLeft]];
-		EQUIPMENT_HIGHLIGHT_COORD = { 8 / 32, 24 / 32, 8 / 64, 24 / 64, };
+		EQUIPMENT_TEXTURE = [[Interface\Buttons\Spell-Reset]],
+		EQUIPMENT_TEXTURE_COORD = { 6 / 64, 58 / 64, 6 / 64, 58 / 64, },
+		EQUIPMENT_GLOW = [[Interface\Buttons\UI-ActionButton-Border]],
+		EQUIPMENT_GLOW_COORD = { 0.25, 0.75, 0.25, 0.75, },
+		EQUIPMENT_HIGHLIGHT = [[Interface\Buttons\ActionbarFlyoutButton-FlyoutMidLeft]],
+		EQUIPMENT_HIGHLIGHT_COORD = { 8 / 32, 24 / 32, 8 / 64, 24 / 64, },
 		EQUIPMENT_EMPTY = {
 			[0] = [[Interface\Paperdoll\UI-PaperDoll-Slot-Ammo]],
 			[1] = [[Interface\Paperdoll\UI-PaperDoll-Slot-Head]],
@@ -229,7 +235,7 @@ local DT = __private.DT;
 			[17] = [[Interface\Paperdoll\UI-PaperDoll-Slot-SecondaryHand]],
 			[18] = [[Interface\Paperdoll\UI-PaperDoll-Slot-Ranged]],
 			[19] = [[Interface\Paperdoll\UI-PaperDoll-Slot-Tabard]],
-		};
+		},
 	};
 
 -->
@@ -1116,7 +1122,7 @@ MT.BuildEnv('UI');
 			Node.MaxVal:SetTextColor(TUISTYLE.IconTextMaxRankColor[1], TUISTYLE.IconTextMaxRankColor[2], TUISTYLE.IconTextMaxRankColor[3], TUISTYLE.IconTextMaxRankColor[4]);
 			Node.CurVal:SetTextColor(TUISTYLE.IconTextMaxRankColor[1], TUISTYLE.IconTextMaxRankColor[2], TUISTYLE.IconTextMaxRankColor[3], TUISTYLE.IconTextMaxRankColor[4]);
 		end
-		function MT.UI.TreeNodeActivate(Node)	--	Ligth Node when points increased from 0 instead of activated
+		function MT.UI.TreeNodeActivate(Node)	--	Light Node when points increased from 0 instead of activated
 			Node.active = true;
 			MT.UI.TreeNodeSetTextColorAvailable(Node);
 		end
@@ -1397,7 +1403,7 @@ MT.BuildEnv('UI');
 			local Tooltip1 = TooltipFrame.Tooltip1;
 			if Tooltip1:IsShown() then
 				--Tooltip1:Show();
-				TooltipFrame:SetWidth(Tooltip1:GetWidth() + 4);
+				TooltipFrame:SetWidth(Tooltip1:GetWidth());
 				TooltipFrame:SetHeight(TooltipFrame.Tooltip1LabelLeft:GetHeight() + Tooltip1:GetHeight() + TooltipFrame.Tooltip1FooterRight:GetHeight());
 				TooltipFrame:SetAlpha(1.0);
 				Tooltip1:SetAlpha(1.0);
@@ -1416,7 +1422,7 @@ MT.BuildEnv('UI');
 			if Tooltip1:IsShown() or Tooltip2:IsShown() then
 				--Tooltip1:Show();
 				--Tooltip2:Show();
-				TooltipFrame:SetWidth(max(Tooltip1:GetWidth(), Tooltip2:GetWidth()) + 2);
+				TooltipFrame:SetWidth(max(Tooltip1:GetWidth(), Tooltip2:GetWidth()));
 				TooltipFrame:SetHeight(TooltipFrame.Tooltip1LabelLeft:GetHeight() + Tooltip1:GetHeight() + TooltipFrame.Tooltip1FooterLeft:GetHeight() + TooltipFrame.Tooltip2LabelLeft:GetHeight() + Tooltip2:GetHeight() + TooltipFrame.Tooltip2FooterLeft:GetHeight() - 8);
 				TooltipFrame:SetAlpha(1.0);
 				Tooltip1:SetAlpha(1.0);
@@ -1434,6 +1440,7 @@ MT.BuildEnv('UI');
 			local Tooltip1FooterRight = TooltipFrame.Tooltip1FooterRight;
 
 			local Tooltip2LabelLeft = TooltipFrame.Tooltip2LabelLeft;
+			local Tooltip2LabelRight = TooltipFrame.Tooltip2LabelRight;
 			local Tooltip2 = TooltipFrame.Tooltip2;
 
 			local Tooltip2FooterLeft = TooltipFrame.Tooltip2FooterLeft;
@@ -1446,14 +1453,6 @@ MT.BuildEnv('UI');
 			TooltipFrame:SetAlpha(0.0);
 			if CurRank == 0 then
 				Tooltip1LabelLeft:Show();
-				--Tooltip1:Show();
-				Tooltip1FooterLeft:Show();
-				Tooltip1FooterRight:Show();
-				Tooltip2LabelLeft:Hide();
-				Tooltip2:Hide();
-				Tooltip2FooterLeft:Hide();
-				Tooltip2FooterRight:Hide();
-
 				Tooltip1LabelLeft:SetText(l10n.NextRank);
 				if Node.active then
 					Tooltip1LabelLeft:SetTextColor(TUISTYLE.IconToolTipNextRankColor[1], TUISTYLE.IconToolTipNextRankColor[2], TUISTYLE.IconToolTipNextRankColor[3], TUISTYLE.IconToolTipNextRankColor[4]);
@@ -1466,69 +1465,93 @@ MT.BuildEnv('UI');
 						Tooltip1LabelRight:SetText(format(l10n.ReqPoints, pts, reqPts, l10n.DATA[SpecID]));
 					end
 				end
-
+				--Tooltip1:Show();
 				Tooltip1:SetOwner(TooltipFrame, "ANCHOR_NONE");
 				Tooltip1:SetPoint("TOPLEFT", Tooltip1LabelLeft, "BOTTOMLEFT", 0, 6);
 				Tooltip1:SetSpellByID(spellTable[1]);
-				Tooltip1FooterRight:SetText(tostring(spellTable[1]));
 				Tooltip1:SetAlpha(0.0);
+				Tooltip1FooterLeft:Show();
+				Tooltip1FooterRight:Show();
+				Tooltip1FooterRight:SetText(tostring(spellTable[1]));
+
+				Tooltip2LabelLeft:Hide();
+				Tooltip2LabelRight:Hide();
+				Tooltip2:Hide();
+				Tooltip2FooterLeft:Hide();
+				Tooltip2FooterRight:Hide();
 
 				TooltipFrame.delay = CT.TOOLTIP_UPDATE_DELAY;
 				TooltipFrame:SetScript("OnUpdate", TooltipFrame_OnUpdate_Tooltip1);
 			elseif CurRank == MaxRank then
 				Tooltip1LabelLeft:Show();
-				--Tooltip1:Show();
-				Tooltip1FooterLeft:Show();
-				Tooltip1FooterRight:Show();
-				Tooltip2LabelLeft:Hide();
-				Tooltip2:Hide();
-				Tooltip2FooterLeft:Hide();
-				Tooltip2FooterRight:Hide();
-
-				Tooltip1LabelLeft:SetText(l10n.maxRMaxRanknk);
+				Tooltip1LabelLeft:SetText(l10n.MaxRank);
 				Tooltip1LabelLeft:SetTextColor(TUISTYLE.IconToolTipMaxRankColor[1], TUISTYLE.IconToolTipMaxRankColor[2], TUISTYLE.IconToolTipMaxRankColor[3], TUISTYLE.IconToolTipMaxRankColor[4]);
-				Tooltip1LabelRight:Hide();
-
+				Tooltip1LabelRight:Show();
+				Tooltip1LabelRight:SetText(CurRank .. "/" .. MaxRank);
+				Tooltip1LabelRight:SetTextColor(TUISTYLE.IconToolTipMaxRankColor[1], TUISTYLE.IconToolTipMaxRankColor[2], TUISTYLE.IconToolTipMaxRankColor[3], TUISTYLE.IconToolTipMaxRankColor[4]);
+				--Tooltip1:Show();
 				Tooltip1:SetOwner(TooltipFrame, "ANCHOR_NONE");
 				Tooltip1:SetPoint("TOPLEFT", Tooltip1LabelLeft, "BOTTOMLEFT", 0, 6);
 				Tooltip1:SetSpellByID(spellTable[MaxRank]);
-				Tooltip1FooterRight:SetText(tostring(spellTable[MaxRank]));
 				Tooltip1:SetAlpha(0.0);
+				Tooltip1FooterLeft:Show();
+				Tooltip1FooterRight:Show();
+				Tooltip1FooterRight:SetText(tostring(spellTable[MaxRank]));
+
+				Tooltip2LabelLeft:Hide();
+				Tooltip2LabelRight:Hide();
+				Tooltip2:Hide();
+				Tooltip2FooterLeft:Hide();
+				Tooltip2FooterRight:Hide();
 
 				TooltipFrame.delay = CT.TOOLTIP_UPDATE_DELAY;
 				TooltipFrame:SetScript("OnUpdate", TooltipFrame_OnUpdate_Tooltip1);
 			else
 				Tooltip1LabelLeft:Show();
-				--Tooltip1:Show();
-				Tooltip1FooterLeft:Show();
-				Tooltip1FooterRight:Show();
-				Tooltip2LabelLeft:Show();
-				--Tooltip2:Show();
-				Tooltip2FooterLeft:Show();
-				Tooltip2FooterRight:Show();
-
 				Tooltip1LabelLeft:SetText(l10n.CurRank);
 				Tooltip1LabelLeft:SetTextColor(TUISTYLE.IconToolTipCurRankColor[1], TUISTYLE.IconToolTipCurRankColor[2], TUISTYLE.IconToolTipCurRankColor[3], TUISTYLE.IconToolTipCurRankColor[4]);
-
+				Tooltip1LabelRight:Show();
+				Tooltip1LabelRight:SetText(CurRank .. "/" .. MaxRank);
+				Tooltip1LabelRight:SetTextColor(TUISTYLE.IconToolTipCurRankColor[1], TUISTYLE.IconToolTipCurRankColor[2], TUISTYLE.IconToolTipCurRankColor[3], TUISTYLE.IconToolTipCurRankColor[4]);
+				--Tooltip1:Show();
 				Tooltip1:SetOwner(TooltipFrame, "ANCHOR_NONE");
 				Tooltip1:SetPoint("TOPLEFT", Tooltip1LabelLeft, "BOTTOMLEFT", 0, 6);
 				Tooltip1:SetSpellByID(spellTable[CurRank]);
-				Tooltip1FooterRight:SetText(tostring(spellTable[CurRank]));
 				Tooltip1:SetAlpha(0.0);
+				Tooltip1FooterLeft:Show();
+				Tooltip1FooterRight:Show();
+				Tooltip1FooterRight:SetText(tostring(spellTable[CurRank]));
 
+				Tooltip2LabelLeft:Show();
 				Tooltip2LabelLeft:SetText(l10n.NextRank);
 				if Node.active then
-					Tooltip2LabelLeft:SetTextColor(TUISTYLE.IconToolTipNextRankColor[1], TUISTYLE.IconToolTipNextRankColor[2], TUISTYLE.IconToolTipNextRankColor[3], TUISTYLE.IconToolTipNextRankColor[4]);
-					Tooltip1LabelRight:Hide();
+					if CurRank + 1 == MaxRank then
+						Tooltip2LabelLeft:SetTextColor(TUISTYLE.IconToolTipMaxRankColor[1], TUISTYLE.IconToolTipMaxRankColor[2], TUISTYLE.IconToolTipMaxRankColor[3], TUISTYLE.IconToolTipMaxRankColor[4]);
+					else
+						Tooltip2LabelLeft:SetTextColor(TUISTYLE.IconToolTipNextRankColor[1], TUISTYLE.IconToolTipNextRankColor[2], TUISTYLE.IconToolTipNextRankColor[3], TUISTYLE.IconToolTipNextRankColor[4]);
+					end
 				else
 					Tooltip2LabelLeft:SetTextColor(TUISTYLE.IconToolTipNextRankDisabledColor[1], TUISTYLE.IconToolTipNextRankDisabledColor[2], TUISTYLE.IconToolTipNextRankDisabledColor[3], TUISTYLE.IconToolTipNextRankDisabledColor[4]);
 				end
-
+				Tooltip2LabelRight:Show();
+				Tooltip2LabelRight:SetText((CurRank + 1) .. "/" .. MaxRank);
+				if Node.active then
+					if CurRank + 1 == MaxRank then
+						Tooltip2LabelRight:SetTextColor(TUISTYLE.IconToolTipMaxRankColor[1], TUISTYLE.IconToolTipMaxRankColor[2], TUISTYLE.IconToolTipMaxRankColor[3], TUISTYLE.IconToolTipMaxRankColor[4]);
+					else
+						Tooltip2LabelRight:SetTextColor(TUISTYLE.IconToolTipNextRankColor[1], TUISTYLE.IconToolTipNextRankColor[2], TUISTYLE.IconToolTipNextRankColor[3], TUISTYLE.IconToolTipNextRankColor[4]);
+					end
+				else
+					Tooltip2LabelRight:SetTextColor(TUISTYLE.IconToolTipNextRankDisabledColor[1], TUISTYLE.IconToolTipNextRankDisabledColor[2], TUISTYLE.IconToolTipNextRankDisabledColor[3], TUISTYLE.IconToolTipNextRankDisabledColor[4]);
+				end
+				--Tooltip2:Show();
 				Tooltip2:SetOwner(TooltipFrame, "ANCHOR_NONE");
 				Tooltip2:SetPoint("TOPLEFT", Tooltip2LabelLeft, "BOTTOMLEFT", 0, 6);
 				Tooltip2:SetSpellByID(spellTable[CurRank + 1]);
-				Tooltip2FooterRight:SetText(tostring(spellTable[CurRank + 1]));
 				Tooltip2:SetAlpha(0.0);
+				Tooltip2FooterLeft:Show();
+				Tooltip2FooterRight:Show();
+				Tooltip2FooterRight:SetText(tostring(spellTable[CurRank + 1]));
 
 				TooltipFrame.delay = CT.TOOLTIP_UPDATE_DELAY;
 				TooltipFrame:SetScript("OnUpdate", TooltipFrame_OnUpdate_Tooltip12);
@@ -1616,16 +1639,43 @@ MT.BuildEnv('UI');
 				SideAnchorBottom:SetPoint("BOTTOMLEFT", SpellListFrameContainer, "BOTTOMRIGHT", 2, 0);
 			end
 		end
+		function MT.UI.EquipmentFrameContainerResize(EquipmentFrameContainer)
+			local TreeFrameScale = EquipmentFrameContainer.Frame.TreeFrameScale;
+			local EquipmentContainer = EquipmentFrameContainer.EquipmentContainer;
+			local EquipmentNodes = EquipmentContainer.EquipmentNodes;
+			local s = TUISTYLE.EquipmentNodeXToBorder * 2 + TUISTYLE.EquipmentNodeSize * 2 + TUISTYLE.EquipmentNodeTextGap * 2 + 8;
+			local v = TUISTYLE.EquipmentFrameXSize - s;
+			local L, R, B = TUISTYLE.EquipmentNodeLayout.L, TUISTYLE.EquipmentNodeLayout.R, TUISTYLE.EquipmentNodeLayout.B;
+			local n = min(#L, #R);
+			local m = -1;
+			for i = 1, n do
+				local l = EquipmentNodes[L[i]];
+				local r = EquipmentNodes[R[i]];
+				m = max(m, l.Ench:GetWidth() + r.Ench:GetWidth(), l.Name:GetWidth() + r.Gem:GetWidth(), l.Gem:GetWidth() + r.Name:GetWidth());
+			end
+			m = min(m, TUISTYLE.EquipmentFrameXMaxSize);
+			if m > v then
+				EquipmentContainer:SetWidth(m + s);
+				EquipmentFrameContainer:SetWidth((m + s) * TreeFrameScale);
+			else
+				EquipmentContainer:SetWidth(TUISTYLE.EquipmentFrameXSize);
+				EquipmentFrameContainer:SetWidth(TUISTYLE.EquipmentFrameXSize * TreeFrameScale);
+			end
+			EquipmentContainer:SetScale(TreeFrameScale);
+			if VT.__support_glyph then
+				EquipmentFrameContainer.GlyphContainer:SetScale(TreeFrameScale);
+			end
+		end
 		local EquipmentFrameDelayUpdateList = {  };
 		local function EquipmentFrameDelayUpdate()
 			for EquipmentContainer, EquData in next, EquipmentFrameDelayUpdateList do
 				EquipmentFrameDelayUpdateList[EquipmentContainer] = nil;
 				if EquipmentContainer.Frame:IsShown() then
-					MT.UI.EquipmentFrameUpdate(EquipmentContainer, EquData);
+					MT.UI.EquipmentContainerUpdate(EquipmentContainer, EquData);
 				end
 			end
 		end
-		function MT.UI.EquipmentFrameUpdate(EquipmentContainer, EquData)
+		function MT.UI.EquipmentContainerUpdate(EquipmentContainer, EquData)
 			local recache = false;
 			local EquipmentNodes = EquipmentContainer.EquipmentNodes;
 			for slot = 0, 19 do
@@ -1680,6 +1730,7 @@ MT.BuildEnv('UI');
 				EquipmentFrameDelayUpdateList[EquipmentContainer] = EquData;
 				MT._TimerStart(EquipmentFrameDelayUpdate, 0.5, 1);
 			end
+			MT.UI.EquipmentFrameContainerResize(EquipmentContainer.EquipmentFrameContainer);
 		end
 		function MT.UI.EquipmentFrameToggle(Frame)
 			local EquipmentFrameContainer = Frame.EquipmentFrameContainer;
@@ -1689,7 +1740,7 @@ MT.BuildEnv('UI');
 				EquipmentFrameContainer:Show();
 			end
 		end
-		function MT.UI.GlyphFrameUpdate(GlyphContainer, GlyData)
+		function MT.UI.GlyphContainerUpdate(GlyphContainer, GlyData)
 			local activeGroup = GlyphContainer.Frame.activeGroup;
 			local GlyphNodes = GlyphContainer.GlyphNodes;
 			if GlyData ~= nil and GlyData[activeGroup] ~= nil then
@@ -1801,10 +1852,16 @@ MT.BuildEnv('UI');
 			local Tooltip1FooterLeft = TooltipFrame:CreateFontString(nil, "ARTWORK", "GameTooltipText");
 			Tooltip1FooterLeft:SetPoint("TOPLEFT", Tooltip1, "BOTTOMLEFT", 12, 6);
 			local Tooltip1FooterRight = TooltipFrame:CreateFontString(nil, "ARTWORK", "GameTooltipText");
-			Tooltip1FooterRight:SetPoint("TOPRIGHT", Tooltip1, "BOTTOMRIGHT", -12, 6);
+			-- Tooltip1FooterRight:SetPoint("TOPRIGHT", Tooltip1, "BOTTOMRIGHT", -12, 6);
+			Tooltip1FooterRight:SetPoint("TOP", Tooltip1, "BOTTOM", 0, 6);
+			Tooltip1FooterRight:SetPoint("RIGHT", TooltipFrame, "RIGHT", -6, 0);
 
 			local Tooltip2LabelLeft = TooltipFrame:CreateFontString(nil, "ARTWORK", "GameTooltipHeaderText");
 			Tooltip2LabelLeft:SetPoint("TOPLEFT", Tooltip1FooterLeft, "BOTTOMLEFT", -12, -4);
+			local Tooltip2LabelRight = TooltipFrame:CreateFontString(nil, "ARTWORK", "GameTooltipHeaderText");
+			-- Tooltip2LabelRight:SetPoint("TOPRIGHT", Tooltip1FooterRight, "BOTTOMRIGHT", 0, -4);
+			Tooltip2LabelRight:SetPoint("TOP", Tooltip1FooterRight, "BOTTOM", 0, -4);
+			Tooltip2LabelRight:SetPoint("RIGHT", TooltipFrame, "RIGHT", -6, 0);
 			local Tooltip2Name = "Emu_Tooltip2" .. (MT.GetUnifiedTime() + 100) .. random(1000000, 10000000);
 			local Tooltip2 = CreateFrame('GAMETOOLTIP', Tooltip2Name, UIParent, "GameTooltipTemplate");
 			Tooltip2:SetPoint("TOPLEFT", Tooltip2LabelLeft, "BOTTOMLEFT", 0, 6);
@@ -1825,11 +1882,14 @@ MT.BuildEnv('UI');
 			local Tooltip2FooterLeft = TooltipFrame:CreateFontString(nil, "ARTWORK", "GameTooltipText");
 			Tooltip2FooterLeft:SetPoint("TOPLEFT", Tooltip2, "BOTTOMLEFT", 12, 6);
 			local Tooltip2FooterRight = TooltipFrame:CreateFontString(nil, "ARTWORK", "GameTooltipText");
-			Tooltip2FooterRight:SetPoint("TOPRIGHT", Tooltip2, "BOTTOMRIGHT", -12, 6);
+			-- Tooltip2FooterRight:SetPoint("TOPRIGHT", Tooltip2, "BOTTOMRIGHT", -12, 6);
+			Tooltip2FooterRight:SetPoint("TOP", Tooltip2, "BOTTOM", 0, 6);
+			Tooltip2FooterRight:SetPoint("RIGHT", TooltipFrame, "RIGHT", -6, 0);
 
-			Tooltip1LabelLeft:SetText("")
-			Tooltip1LabelRight:SetText("")
-			Tooltip2LabelLeft:SetText("")
+			Tooltip1LabelLeft:SetText("");
+			Tooltip1LabelRight:SetText("");
+			Tooltip2LabelLeft:SetText("");
+			Tooltip2LabelRight:SetText("");
 
 			Tooltip1FooterLeft:SetTextColor(0.25, 0.5, 1.0, 1.0);
 			Tooltip1FooterRight:SetTextColor(0.25, 0.5, 1.0, 1.0);
@@ -1849,6 +1909,7 @@ MT.BuildEnv('UI');
 			TooltipFrame.Tooltip1FooterRight = Tooltip1FooterRight;
 
 			TooltipFrame.Tooltip2LabelLeft = Tooltip2LabelLeft;
+			TooltipFrame.Tooltip2LabelRight = Tooltip2LabelRight;
 			TooltipFrame.Tooltip2 = Tooltip2;
 
 			TooltipFrame.Tooltip2FooterLeft = Tooltip2FooterLeft;
@@ -2045,7 +2106,7 @@ MT.BuildEnv('UI');
 
 			local SearchEdit = CreateFrame('EDITBOX', nil, SpellListFrame);
 			SearchEdit:SetSize(TUISTYLE.SpellListFrameXSize - 2 * TUISTYLE.SpellListFrameXToBorder - 36, 16);
-			SearchEdit:SetFont(GameFontHighlight:GetFont(), 10, "OUTLINE");
+			SearchEdit:SetFont(TUISTYLE.FrameFont, 10, "OUTLINE");
 			SearchEdit:SetAutoFocus(false);
 			SearchEdit:SetJustifyH("LEFT");
 			SearchEdit:Show();
@@ -2061,7 +2122,7 @@ MT.BuildEnv('UI');
 			SearchEditTexture:SetVertexColor(0.25, 0.25, 0.25);
 			SearchEdit.Texture = SearchEditTexture;
 			local SearchEditNote = SearchEdit:CreateFontString(nil, "OVERLAY");
-			SearchEditNote:SetFont(GameFontNormal:GetFont(), 12);
+			SearchEditNote:SetFont(TUISTYLE.FrameFont, 12);
 			SearchEditNote:SetTextColor(1.0, 1.0, 1.0, 0.5);
 			SearchEditNote:SetPoint("LEFT", 4, 0);
 			SearchEditNote:SetText(l10n.Search);
@@ -2090,7 +2151,7 @@ MT.BuildEnv('UI');
 			SearchEditOKTexture:SetBlendMode("ADD");
 			SearchEditOK.Texture = SearchEditOKTexture;
 			local SearchEditOKText = SearchEditOK:CreateFontString(nil, "OVERLAY");
-			SearchEditOKText:SetFont(GameFontHighlight:GetFont(), 12);
+			SearchEditOKText:SetFont(TUISTYLE.FrameFont, 12);
 			SearchEditOKText:SetTextColor(1.0, 1.0, 1.0, 0.5);
 			SearchEditOKText:SetPoint("CENTER");
 			SearchEditOKText:SetText(l10n["OK"]);
@@ -2121,7 +2182,7 @@ MT.BuildEnv('UI');
 			SpellListFrame.ShowAllSpell = ShowAllSpell;
 
 			local ShowAllSpellLabel = SpellListFrame:CreateFontString(nil, "ARTWORK");
-			ShowAllSpellLabel:SetFont(GameFontHighlight:GetFont(), 10, TUISTYLE.FrameFontOutline);
+			ShowAllSpellLabel:SetFont(TUISTYLE.FrameFont, 10, TUISTYLE.FrameFontOutline);
 			ShowAllSpellLabel:SetText(l10n.ShowAllSpell);
 			ShowAllSpell.Name = ShowAllSpellLabel;
 			ShowAllSpellLabel:SetPoint("RIGHT", ShowAllSpell, "LEFT", 0, 0);
@@ -2137,7 +2198,7 @@ MT.BuildEnv('UI');
 			CloseTexture:SetAlpha(0.75);
 			CloseTexture:SetBlendMode("ADD");
 			local CloseLabel = Close:CreateFontString(nil, "OVERLAY");
-			CloseLabel:SetFont(GameFontHighlight:GetFont(), 12);
+			CloseLabel:SetFont(TUISTYLE.FrameFont, 12);
 			CloseLabel:SetTextColor(1.0, 1.0, 1.0, 0.5);
 			CloseLabel:SetPoint("CENTER");
 			CloseLabel:SetText(l10n["Hide"]);
@@ -2150,7 +2211,7 @@ MT.BuildEnv('UI');
 			SpellListFrameContainer.Frame = Frame;
 			return SpellListFrame, SpellListFrameContainer;
 		end
-	--	EquipmentFrame & GlyphFrame
+	--	EquipmentContainer & GlyphContainer
 		local function EquipmentNode_OnEnter(Node)
 			if Node.link then
 				GameTooltip:SetOwner(Node, "ANCHOR_LEFT");
@@ -2176,12 +2237,12 @@ MT.BuildEnv('UI');
 				end
 			end
 		end
-		local function EquipmentFrame_OnShow(EquipmentFrame)
-			local Frame = EquipmentFrame.Frame;
+		local function EquipmentFrameContainer_OnShow(EquipmentFrameContainer)
+			local Frame = EquipmentFrameContainer.Frame;
 			if Frame.name ~= nil then
-				MT.UI.EquipmentFrameUpdate(Frame.EquipmentContainer, VT.TQueryCache[Frame.name].EquData);
+				MT.UI.EquipmentContainerUpdate(Frame.EquipmentContainer, VT.TQueryCache[Frame.name].EquData);
 				if VT.__support_glyph then
-					MT.UI.GlyphFrameUpdate(Frame.GlyphContainer, VT.TQueryCache[Frame.name].GlyData);
+					MT.UI.GlyphContainerUpdate(Frame.GlyphContainer, VT.TQueryCache[Frame.name].GlyData);
 				end
 			end
 		end
@@ -2204,21 +2265,16 @@ MT.BuildEnv('UI');
 			EquipmentFrameContainer:SetWidth(TUISTYLE.EquipmentFrameXSize);
 			VT.__uireimp._SetSimpleBackdrop(EquipmentFrameContainer, 0, 1, 0.0, 0.0, 0.0, 0.95, 0.0, 0.0, 0.0, 1.0);
 			EquipmentFrameContainer:Hide();
-			local EquipmentFrame = CreateFrame('FRAME', nil, EquipmentFrameContainer);
-			EquipmentFrame:SetWidth(TUISTYLE.EquipmentFrameXSize);
-			if VT.__support_glyph then
-				EquipmentFrame:SetPoint("TOP", EquipmentFrameContainer);
-			else
-				EquipmentFrame:SetPoint("CENTER", EquipmentFrameContainer);
-			end
-			EquipmentFrame:Show();
-			local EquipmentContainer = CreateFrame('FRAME', nil, EquipmentFrame);
-			if VT.__support_glyph then
-				EquipmentContainer:SetPoint("TOP", EquipmentFrame);
-			else
-				EquipmentContainer:SetPoint("CENTER", EquipmentFrame);
-			end
+			EquipmentFrameContainer:SetScript("OnShow", EquipmentFrameContainer_OnShow);
+			EquipmentFrameContainer.Frame = Frame;
+			--
+			local EquipmentContainer = CreateFrame('FRAME', nil, EquipmentFrameContainer);
 			EquipmentContainer:SetSize(TUISTYLE.EquipmentFrameXSize, TUISTYLE.EquipmentContainerYSize);
+			if VT.__support_glyph then
+				EquipmentContainer:SetPoint("TOP", EquipmentFrameContainer);
+			else
+				EquipmentContainer:SetPoint("CENTER", EquipmentFrameContainer);
+			end
 			EquipmentContainer:Show();
 			local EquipmentNodes = {  };
 			for slot = 0, 19 do
@@ -2244,29 +2300,27 @@ MT.BuildEnv('UI');
 				Node.Glow = Glow;
 
 				local ILvl = Node:CreateFontString(nil, "OVERLAY");
-				ILvl:SetFont(GameFontNormal:GetFont(), 13, "OUTLINE");
+				ILvl:SetFont(TUISTYLE.FrameFont, 13, "OUTLINE");
 				ILvl:SetPoint("BOTTOMRIGHT", Node, "BOTTOMRIGHT", 0, 2);
 				Node.ILvl = ILvl;
 
 				local Name = Node:CreateFontString(nil, "OVERLAY");
-				Name:SetFont(GameFontNormal:GetFont(), 13);
+				Name:SetFont(TUISTYLE.FrameFont, 13);
 				Node.Name = Name;
 
 				local Ench = Node:CreateFontString(nil, "OVERLAY");
-				Ench:SetFont(GameFontNormal:GetFont(), 13);
+				Ench:SetFont(TUISTYLE.FrameFont, 13);
 				Node.Ench = Ench;
 
 				local Gem = Node:CreateFontString(nil, "OVERLAY");
-				Gem:SetFont(GameFontNormal:GetFont(), 13);
+				Gem:SetFont(TUISTYLE.FrameFont, 13);
 				Node.Gem = Gem;
 
-				Node.EquipmentFrame = EquipmentFrame;
+				Node.EquipmentContainer = EquipmentContainer;
 				Node.slot = slot;
 				EquipmentNodes[slot] = Node;
 			end
-			local L = {  1,  2,  3, 15,  5, 19,  4,  9, };
-			local R = { 10,  6,  7,  8, 11, 12, 13, 14, };
-			local B = { 16, 17, 18,  0, };
+			local L, R, B = TUISTYLE.EquipmentNodeLayout.L, TUISTYLE.EquipmentNodeLayout.R, TUISTYLE.EquipmentNodeLayout.B;
 			for index, slot in next, L do
 				local Node = EquipmentNodes[slot];
 				Node:SetPoint("TOPLEFT", TUISTYLE.EquipmentNodeXToBorder, -TUISTYLE.EquipmentNodeYToBorder - (TUISTYLE.EquipmentNodeSize + TUISTYLE.EquipmentNodeGap) * (index - 1));
@@ -2296,23 +2350,17 @@ MT.BuildEnv('UI');
 					Node.Gem:SetPoint("BOTTOMLEFT", Node, "BOTTOMRIGHT", TUISTYLE.EquipmentNodeTextGap, 0);
 				end
 			end
-			EquipmentFrame:SetScript("OnShow", EquipmentFrame_OnShow);
 			EquipmentContainer.Frame = Frame;
+			EquipmentContainer.EquipmentFrameContainer = EquipmentFrameContainer;
 			EquipmentContainer.EquipmentNodes = EquipmentNodes;
-			EquipmentFrame.Frame = Frame;
-			EquipmentFrame.EquipmentContainer = EquipmentContainer;
-			EquipmentFrameContainer.Frame = Frame;
-			EquipmentFrameContainer.EquipmentFrame = EquipmentFrame;
 			EquipmentFrameContainer.EquipmentContainer = EquipmentContainer;
 			--
+			local GlyphContainer = nil;
 			if VT.__support_glyph then
-				local GlyphFrame = CreateFrame('FRAME', nil, EquipmentFrameContainer);
-				GlyphFrame:SetSize(TUISTYLE.GlyphFrameSize, TUISTYLE.GlyphFrameSize);
-				GlyphFrame:SetPoint("BOTTOM", EquipmentFrameContainer);
-				GlyphFrame:Show();
-				local GlyphContainer = CreateFrame('FRAME', nil, GlyphFrame);
-				GlyphContainer:SetPoint("BOTTOM", GlyphFrame, "BOTTOM", 0, 8);
+				GlyphContainer = CreateFrame('FRAME', nil, EquipmentFrameContainer);
+				GlyphContainer:SetPoint("BOTTOM", EquipmentFrameContainer);
 				GlyphContainer:SetSize(TUISTYLE.GlyphFrameSize, TUISTYLE.GlyphFrameSize);
+				GlyphContainer:Show();
 				local GlyphNodes = {  };
 				--[[
 							1
@@ -2335,7 +2383,7 @@ MT.BuildEnv('UI');
 					local R = TUISTYLE.GlyphFrameSize * 0.5 - size * 0.5 - 2;
 					local Node = CreateFrame('BUTTON', nil, GlyphContainer);
 					Node:SetSize(size, size);
-					Node:SetPoint("CENTER", GlyphContainer, "CENTER", R * sin360(def[2]), R * cos360(def[2]));
+					Node:SetPoint("CENTER", GlyphContainer, "CENTER", R * sin360(def[2]), R * cos360(def[2]) + TUISTYLE.EquipmentNodeXToBorder);
 					Node:SetScript("OnEnter", GlyphNode_OnEnter);
 					Node:SetScript("OnLeave", GlyphNode_OnLeave);
 					local Setting = Node:CreateTexture(nil, "ARTWORK");
@@ -2388,13 +2436,12 @@ MT.BuildEnv('UI');
 					GlyphNodes[index] = Node;
 				end
 				GlyphContainer.Frame = Frame;
+				GlyphContainer.EquipmentFrameContainer = EquipmentFrameContainer;
 				GlyphContainer.GlyphNodes = GlyphNodes;
-				EquipmentFrameContainer.Frame = Frame;
-				EquipmentFrameContainer.GlyphFrame = GlyphFrame;
 				EquipmentFrameContainer.GlyphContainer = GlyphContainer;
 			end
 			--
-			return EquipmentFrameContainer, EquipmentFrame, EquipmentContainer;
+			return EquipmentFrameContainer, EquipmentContainer, GlyphContainer;
 		end
 	--	TreeFrame
 		local function TreeNode_OnEnter(Node)
@@ -3452,14 +3499,15 @@ MT.BuildEnv('UI');
 			Frame.SideAnchorTop:SetScale(Frame.TreeFrameScale);
 			Frame.SideAnchorBottom:SetScale(Frame.TreeFrameScale);
 			Frame.SpellListFrameContainer:SetWidth(TUISTYLE.SpellListFrameXSize * Frame.TreeFrameScale);
-			Frame.EquipmentFrameContainer:SetWidth(TUISTYLE.EquipmentFrameXSize * Frame.TreeFrameScale);
 			Frame.SpellListFrame:SetScale(Frame.TreeFrameScale);
 			Frame.SpellListFrame:SetHeight(Frame:GetHeight() / Frame.TreeFrameScale);
-			Frame.EquipmentFrame:SetScale(Frame.TreeFrameScale);
-			Frame.EquipmentFrame:SetHeight(Frame:GetHeight() / Frame.TreeFrameScale);
-			if VT.__support_glyph then
-				Frame.GlyphFrame:SetScale(Frame.TreeFrameScale);
-			end
+			-- Frame.EquipmentFrameContainer:SetWidth(TUISTYLE.EquipmentFrameXSize * Frame.TreeFrameScale);
+			-- Frame.EquipmentContainer:SetScale(Frame.TreeFrameScale);
+			-- Frame.EquipmentContainer:SetHeight(Frame:GetHeight() / Frame.TreeFrameScale);
+			-- if VT.__support_glyph then
+			-- 	Frame.GlyphContainer:SetScale(Frame.TreeFrameScale);
+			-- end
+			MT.UI.EquipmentFrameContainerResize(Frame.EquipmentFrameContainer);
 		end
 		local function Frame_OnMouseDown(Frame, button)
 			if button == "LeftButton" then
@@ -3568,9 +3616,7 @@ MT.BuildEnv('UI');
 
 			Frame.TreeFrames = MT.UI.CreateTreeFrames(Frame);
 			Frame.SpellListFrame, Frame.SpellListFrameContainer = MT.UI.CreateSpellListFrame(Frame);
-			Frame.EquipmentFrameContainer, Frame.EquipmentFrame, Frame.EquipmentContainer = MT.UI.CreateEquipmentFrame(Frame);
-			Frame.GlyphFrame = Frame.EquipmentFrameContainer.GlyphFrame;
-			Frame.GlyphContainer = Frame.EquipmentFrameContainer.GlyphContainer;
+			Frame.EquipmentFrameContainer, Frame.EquipmentContainer, Frame.GlyphContainer = MT.UI.CreateEquipmentFrame(Frame);
 
 			MT.UI.CreateFrameSubObject(Frame);
 

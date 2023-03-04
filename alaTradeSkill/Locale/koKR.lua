@@ -272,7 +272,7 @@ l10n.ITEM_SUB_TYPE_LIST = {
 		[LE_ITEM_WEAPON_WAND] = "Wands", 					--	19
 		[LE_ITEM_WEAPON_FISHINGPOLE] = "Fishing Poles", 	--	20
 	},
-	[LE_ITEM_CLASS_GEM] = WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC and {					--	3	Gem
+	[LE_ITEM_CLASS_GEM] = not CT.ISCLASSIC and {					--	3	Gem
 		[LE_ITEM_GEM_RED] = "Red Gem",					--	0	--	Intellect
 		[LE_ITEM_GEM_BLUE] = "Blue Gem",				--	1	--	Agility
 		[LE_ITEM_GEM_YELLOW] = "Yellow Gem",				--	2	--	Strength

@@ -18,8 +18,6 @@ LBIS:AddEnchant(spec1, "50370", LBIS.L["Head"]) --Arcanum of Blissful Mending
 
 LBIS:AddEnchant(spec1, "50336", LBIS.L["Shoulder"]) --Greater Inscription of the Crag
 
-LBIS:AddEnchant(spec1, "55642", LBIS.L["Back"]) --Lightweave Embroidery
-LBIS:AddEnchant(spec1, "55769", LBIS.L["Back"]) --Darkglow Embroidery
 LBIS:AddEnchant(spec1, "63765", LBIS.L["Back"]) --Springy Arachnoweave
 LBIS:AddEnchant(spec1, "60609", LBIS.L["Back"]) --Enchant Cloak - Speed
 
@@ -29,6 +27,7 @@ LBIS:AddEnchant(spec1, "41611", LBIS.L["Waist"]) --Eternal Belt Buckle
 LBIS:AddEnchant(spec1, "54793", LBIS.L["Waist"]) --Frag Belt
 
 LBIS:AddEnchant(spec1, "44555", LBIS.L["Wrist"]) --Enchant Bracers - Exceptional Intellect
+LBIS:AddEnchant(spec1, "60767", LBIS.L["Wrist"]) --Enchant Bracers - Superior Spellpower
 
 LBIS:AddEnchant(spec1, "54999", LBIS.L["Hands"]) --Hyperspeed Accelerators
 LBIS:AddEnchant(spec1, "44592", LBIS.L["Hands"]) --Enchant Gloves - Exceptional Spellpower

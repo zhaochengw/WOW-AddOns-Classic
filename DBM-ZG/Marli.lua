@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Marli", "DBM-ZG", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230120015511")
+mod:SetRevision("20230218211048")
 mod:SetCreatureID(14510)
 mod:SetEncounterID(786)
 mod:RegisterCombat("combat")

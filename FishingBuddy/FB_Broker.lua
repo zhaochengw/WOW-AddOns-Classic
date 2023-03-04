@@ -2,40 +2,32 @@
 local FL = LibStub:GetLibrary("LibFishing-1.0")
 
 local FBAPI = LibStub("FishingBuddyApi-1.0", true);
+local FBConstants = FBAPI.FBConstants;
 
 -- Temporary, until we're pretty sure everyone has upgraded
 local function RegisterHandlers(...)
 	if (FBAPI) then
 		return FBAPI:RegisterHandlers(...);
-	elseif ( FishingBuddy and FishingBuddy.API ) then
-		return FishingBuddy.API.RegisterHandlers(...);
 	end
 end
 
 local function Do_OnClick(self, button)
-	if ( FishingBuddy and FishingBuddy.IsLoaded() ) then
+	if ( FBAPI and FBAPI:IsLoaded() ) then
 		if ( button == "LeftButton" ) then
-			if ( FishingBuddy.IsSwitchClick() ) then
-				FishingBuddy.Command(FBConstants.SWITCH)
+			if ( FBAPI:IsSwitchClick() ) then
+				FBAPI:Command(FBConstants.SWITCH)
 			else
-				FishingBuddy.Command("")
+				FBAPI:Command("")
 			end
 		else
-			local switchSetting = "ClickToSwitch";
-			local menu;
-			
-			if (FishingBuddy.GetDropDown) then
-				menu = FishingBuddy.GetDropDown(FBConstants.CLICKTOSWITCH_ONOFF, switchSetting)
-			else
-				menu = FB_Broker_Menu
-				if (not menu) then
-					menu = CreateFrame("FRAME", "FB_Broker_Menu", self, "UIDropDownMenuTemplate")
-					UIDropDownMenu_Initialize(menu,
-											  function()
-												FishingBuddy.MakeDropDown(FBConstants.CLICKTOSWITCH_ONOFF, switchSetting)
-											  end,
-											  "MENU")
-				end
+			local enu = FB_Broker_Menu
+			if (not menu) then
+				menu = CreateFrame("FRAME", "FB_Broker_Menu", self, "UIDropDownMenuTemplate")
+				UIDropDownMenu_Initialize(menu,
+											function()
+												FBAPI:MakeDropDown(FBConstants.CLICKTOSWITCH_ONOFF, "ClickToSwitch")
+											end,
+											"MENU")
 			end
 			menu.point = "TOPRIGHT"
 			menu.relativePoint = "CENTER"
@@ -59,8 +51,8 @@ f:RegisterEvent("VARIABLES_LOADED")
 
 function dataobj:OnTooltipShow()
     local hint
-    if ( FishingBuddy and FishingBuddy.IsLoaded() ) then
-		if ( FishingBuddy.IsSwitchClick() ) then
+    if ( FBAPI and FBAPI:IsLoaded() ) then
+		if ( FBAPI:IsSwitchClick() ) then
 			hint = FBConstants.TOOLTIP_HINTSWITCH
 		else
 			hint = FBConstants.TOOLTIP_HINTTOGGLE
@@ -73,7 +65,7 @@ function dataobj:OnTooltipShow()
 end
 
 function dataobj:UpdateSkill()
-	local isfishing = (FishingBuddy and FishingBuddy.AreWeFishing and FishingBuddy.AreWeFishing());
+	local isfishing = (FBAPI and FBAPI:AreWeFishing());
     local line = FL:GetFishingSkillLine(1, false, isfishing)
     local caughtSoFar, needed = FL:GetSkillUpInfo()
 	if ( needed and caughtSoFar ) then
@@ -85,13 +77,13 @@ end
 
 local FishingEvents = {};
 if ( FBConstants ) then
-	FishingEvents[FBConstants.FISHING_ENABLED_EVT] = function()
+	EventRegistry:RegisterCallback(FBConstants.FISHING_ENABLED_EVT, function()
 		f.dataobj:UpdateSkill()
-	end
+	end)
 	
-	FishingEvents[FBConstants.FISHING_DISABLED_EVT] = function(started)
+	EventRegistry:RegisterCallback(FBConstants.FISHING_DISABLED_EVT, function(started)
 		f.dataobj:UpdateSkill()
-	end
+	end)
 end
 
 FL.RegisterCallback('FB_Broker', FL.PLAYER_SKILL_READY, function()

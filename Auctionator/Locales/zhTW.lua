@@ -177,6 +177,8 @@ L["CONFIRM"] = "確認"
 L["CONFIRM_POST_BELOW_VENDOR"] = "賣給商人賺的錢還更多，是否確定要以這個價格張貼?"
 L["CONFIRM_POST_LOW_PRICE"] = "%s 的價格看起來有點低，是否確定要以這個價格張貼?"
 L["CONFIRM_POST_PRICE_DROP"] = "%s的單價是大幅降價。你確定要以這個價格發佈嗎？"
+--[[Translation missing --]]
+L["CONFIRM_UNHIDE_ALL"] = "Are you sure you want to unhide all hidden items?"
 L["CONFIRM_X_TOTAL_PRICE_X"] = "確認 %s，總價格 %s"
 L["CONTINUE"] = "繼續"
 L["CONTRIBUTORS_HEADER"] = "貢獻者"

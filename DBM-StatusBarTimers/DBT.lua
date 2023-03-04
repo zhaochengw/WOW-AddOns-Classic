@@ -575,7 +575,6 @@ end
 function DBT:CancelBar(id)
 	for bar in self:GetBarIterator() do
 		if id == bar.id then
-			bar.paused = nil
 			bar:Cancel()
 			return true
 		end
@@ -689,7 +688,7 @@ function barPrototype:SetElapsed(elapsed)
 		self:ResetAnimations()
 	-- Bar was small, or moving from small to large when time was removed
 	-- Also force reset animation but this time move it from small anchor into large one
-	elseif (not self.enlarged or self.moving == "enlarge") and self.timer <= enlargeTime then
+	elseif not self.paused and (not self.enlarged or self.moving == "enlarge") and self.timer <= enlargeTime then
 		self:ResetAnimations(true)
 	end
 	self:Update(0)
@@ -920,6 +919,7 @@ function barPrototype:Cancel()
 	DBT.bars[self] = nil
 	unusedBarObjects[self] = self
 	self.dead = true
+	self.paused = nil
 	DBT.numBars = DBT.numBars - 1
 end
 
@@ -1165,9 +1165,10 @@ do
 		if not DBT_AllPersistentOptions[DBM_UsedProfile] then
 			DBT_AllPersistentOptions[DBM_UsedProfile] = {}
 		end
-		DBT_AllPersistentOptions[DBM_UsedProfile]["DBM"] = self.DefaultOptions
+		local skin = self.Options.Skin
+		DBT_AllPersistentOptions[DBM_UsedProfile][skin] = self.DefaultOptions
 		self.Options = self.DefaultOptions
-		self:SetOption("Skin", "") -- Forces an UpdateBars and ApplyStyle
+		self:SetOption("Skin", skin) -- Forces an UpdateBars and ApplyStyle
 	end
 
 	function DBT:GetSkins()

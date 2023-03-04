@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Version: 2.09
 ## Title: GatherBot
 ## Author: Aoikaze

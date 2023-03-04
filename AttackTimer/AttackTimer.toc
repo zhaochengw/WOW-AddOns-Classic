@@ -1,4 +1,4 @@
-﻿## Interface: 30400
+## Interface: 30401
 ## Title: AttackTimer
 ## Title-zhCN: 攻击计时
 ## Title-zhTW: 攻擊計時

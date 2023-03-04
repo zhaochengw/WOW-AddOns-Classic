@@ -2,6 +2,21 @@ local L = LibStub("AceLocale-3.0"):NewLocale("SenderInfo", "zhCN");
 if (not L) then
 	return;
 end
+--[[
+en英文
+en_US英文(美国)
+es_ES西班牙文(西班牙)
+es_MX西班牙文(墨西哥)
+fr_FR法文(法国)
+pt_BR葡萄牙文(巴西)
+ru_RU俄文(俄罗斯)
+ko_KR朝鲜文(南朝鲜)
+zh_CN中文(中国)
+zh_HK中文(香港)
+zh_TW中文(台湾)
+]]
+
+
 
 L["测试标题"] = "测试标题";
 L["测试描述"] = "测试描述";

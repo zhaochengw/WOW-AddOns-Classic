@@ -2,7 +2,7 @@
 	<!-- window commands -->
 	<Binding name="TOGGLEFISHINGBUDDY_OUT">
 		if ( keystate == "down" ) then
-			ToggleFishingBuddyFrame("FishingOutfitFrame");
+			FBEnvironment.ToggleFishingBuddyFrame("FishingOutfitFrame");
 		end
 	</Binding>
 </Bindings>

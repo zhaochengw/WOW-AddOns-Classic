@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Doomwalker", "DBM-Outlands")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230120015511")
+mod:SetRevision("20230218211048")
 mod:SetCreatureID(17711)
 mod:SetModelID(21435)
 mod:EnableWBEngageSync()--Enable syncing engage in outdoors

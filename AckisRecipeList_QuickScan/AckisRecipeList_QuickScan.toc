@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: AckisRecipeList_QuickScan
 ## Notes: Provides a LibDataBroker plugin for quick access to professions under Ackis Recipe List.
 ## Author: Torhal

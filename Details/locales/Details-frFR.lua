@@ -1369,4 +1369,3 @@ L["STRING_WIPE_ERROR1"] = "un wipe a déjà été demandé."
 L["STRING_WIPE_ERROR2"] = "nous ne sommes pas dans une rencontre de raid."
 L["STRING_WIPE_ERROR3"] = "vous ne pouvez pas mettre fin à la rencontre."
 L["STRING_YES"] = "Oui"
-

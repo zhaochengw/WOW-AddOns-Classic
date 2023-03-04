@@ -2,6 +2,10 @@
 
 if ( Outfitter and Outfitter.OnLoad ) then
 
+local addonName, FBStorage = ...
+local  FBI = FBStorage
+local FBConstants = FBI.FBConstants;
+
 local FL = LibStub("LibFishing-1.0");
 
 -- 5.0.4 has a problem with a global "_" (see some for loops below)
@@ -15,7 +19,7 @@ local function OutfitterSwitch(outfitName)
 		vOut, vCat, _ = Outfitter:FindOutfitByName(sname);
 	end
 	if ( vOut ) then
-		local wasPole = FishingBuddy.ReadyForFishing();
+		local wasPole = FBI:ReadyForFishing();
 		if ( wasPole ) then
 			Outfitter:RemoveOutfit(vOut);
 		else
@@ -60,7 +64,7 @@ local function WaitForOutfitter()
 		end
 	end
 end
-FishingBuddy.OutfitManager.WaitForOutfitter = WaitForOutfitter;
+FBEnvironment.OutfitManager.WaitForOutfitter = WaitForOutfitter;
 
 local outfitterOutfitDone = false;
 local function OutfitterInitialize()
@@ -72,7 +76,7 @@ end
 
 -- calculate scores based on Outfitter
 local function StylePoints(outfit)
-	local isp = FishingBuddy.OutfitManager.ItemStylePoints;
+	local isp = FBEnvironment.OutfitManager.ItemStylePoints;
 	local points = 0;
 	if ( outfit )then
 		for slot in pairs(outfit.Items) do
@@ -86,7 +90,7 @@ end
 local function BonusPoints(outfit, vStatID)
 	local points = 0;
 	if ( outfit )then
-		for slot,item in pairs(outfit.Items) do
+		for _,item in pairs(outfit.Items) do
 			if ( item and item.Link ) then
 				points = points + FL:FishingBonusPoints(item.Link);
 			end
@@ -133,14 +137,15 @@ end
 
 local wasfishing = false;
 local OutfitterEvents = {};
-OutfitterEvents["PLAYER_REGEN_DISABLE"] = function()
-	if ( FishingBuddy.ReadyForFishing() ) then
+OutfitterEvents["PLAYER_REGEN_DISABLED"] = function()
+	if ( FBI:ReadyForFishing() ) then
 		local vOut,_,_ = Outfitter:FindOutfitByStatID("FISHING");
 		Outfitter:RemoveOutfit(vOut);
 	end
 end
 
-FishingBuddy.OutfitManager.RegisterManager("Outfitter",
+FBI:RegisterHandlers(OutfitterEvents)
+FBEnvironment.OutfitManager.RegisterManager("Outfitter",
 											 OutfitterInitialize,
 											 function(useme) end,
 											 OutfitterSwitch);

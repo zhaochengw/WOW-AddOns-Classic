@@ -40,11 +40,17 @@ local function Print(msg, r, g, b)
 end
 
 -- Based on code in QuickMountEquip
+local hooked_functions = {}
 local function SafeHookFunction(func, newfunc)
 	if ( type(newfunc) == "string" ) then
 		newfunc = _G[newfunc];
 	end
-	if ( _G[func] ~= newfunc ) then
+	if ( C_Container[func] ) then
+		if ( C_Container[func] ~= newfunc ) then
+			hooksecurefunc(C_Container, func, newfunc);
+			return true;
+		end
+	elseif _G[func] ~= newfunc then
 		hooksecurefunc(func, newfunc);
 		return true;
 	end
@@ -52,8 +58,8 @@ local function SafeHookFunction(func, newfunc)
 end
 
 local function GetSlotButton(button, slotName)
-	local parent = button:GetParent():GetName();
-	return _G[parent..slotName];
+	local parent = button:GetParent();
+	return parent[slotName];
 end
 
 local function IsBodySlotOneHanded(bodyslot)
@@ -72,7 +78,7 @@ local function IsItemOneHanded(item)
 end
 
 local function SmartCursorCanGoInSlot(button)
-	if ( button.forced or not CursorCanGoInSlot(button.slotid)) then
+	if ( button.forced or not button.slotid or not CursorCanGoInSlot(button.slotid)) then
 		return false;
 	end
 	local secondary = GetSlotButton(button, "SecondaryHandSlot");
@@ -90,23 +96,21 @@ local OD_Track_Slot = nil;
 -- whatever we think the user picked up, apply it to our stuff
 local function AcceptCursorItem(button)
 	local parent = button:GetParent();
-	local pname = parent:GetName();
 	local _,_,slotnames = FL:GetSlotInfo();
 	if ( not SmartCursorCanGoInSlot(button) ) then
 		button = nil;
 		for _,si in ipairs(slotnames) do
-			local temp = _G[pname..si.name];
+			local temp = parent[si.name];
 			if ( temp and SmartCursorCanGoInSlot(temp) ) then
 				button = temp;
 			end
 		end
 	end
-
 	if ( button ) then
 		local link, texture;
 		if ( OD_Track_Bag ) then
-			link = GetContainerItemLink(OD_Track_Bag, OD_Track_Slot);
-			texture = GetContainerItemInfo(OD_Track_Bag, OD_Track_Slot);
+			link = C_Container.GetContainerItemLink(OD_Track_Bag, OD_Track_Slot);
+			texture = C_Container.GetContainerItemInfo(OD_Track_Bag, OD_Track_Slot).iconFileID;
 		else
 			link = GetInventoryItemLink("player", OD_Track_Slot);
 			texture = GetInventoryItemTexture("player", OD_Track_Slot);
@@ -141,11 +145,11 @@ local function ODF_PickupInventoryItem(slot)
 	OD_Track_Slot = slot;
 end
 
-local function UpdateModel_ThisSlot(pname, model, idx)
+local function UpdateModel_ThisSlot(parent, model, idx)
 	local _,_,slotnames = FL:GetSlotInfo();
 	local slotName = slotnames[idx].name;
 	local slotID = slotnames[idx].id;
-	local what = _G[pname..slotName];
+	local what = parent[slotName];
 	local link = nil;
 	if ( what and what.used ) then
 		if ( not what.empty ) then
@@ -153,16 +157,9 @@ local function UpdateModel_ThisSlot(pname, model, idx)
 			model:TryOn(link, slotName);
 		end
 	else
-		local itemLocation = ItemLocation:CreateFromEquipmentSlot(slotID);
 		local link = GetInventoryItemLink("player", slotID)
-		if ( itemLocation and itemLocation:IsValid() ) then
-			local itemTransmogInfo = C_Item.GetCurrentItemTransmogInfo(itemLocation);
-			-- non-equippable items won't have an appearanceID
-			if itemTransmogInfo.appearanceID ~= Constants.Transmog.NoTransmogID then
-				model:SetItemTransmogInfo(itemTransmogInfo);
-			elseif ( C_Item.IsDressableItemByID(link) ) then
-				model:TryOn(link);
-			end
+		if ( link ) then
+			model:TryOn(link);
 		end
 	end
 end
@@ -189,19 +186,21 @@ local function FindOutfit(self, outfit)
 	local spots = { };
 	for slotName in pairs(outfit) do
         if ( outfit[slotName].used and not outfit[slotName].empty ) then
-            local skipcount = dups[outfit[slotName].item];
-			local bag, slot = FL:FindThisItem( outfit[slotName].item, skipcount );
-			if ( not bag and not slot ) then
-				spots = nil;
-				return nil;
-            else
-				spots[slotName] = { };
-				spots[slotName].bag = bag;
-				spots[slotName].slot = slot;
-            end
-            if skipcount > 0 then
-                dups[outfit[slotName].item] = skipcount - 1;
-            end
+			if outfit[slotName].item then
+				local skipcount = dups[outfit[slotName].item];
+				local bag, slot = FL:FindThisItem( outfit[slotName].item, skipcount );
+				if ( not bag and not slot ) then
+					spots = nil;
+					return nil;
+				else
+					spots[slotName] = { };
+					spots[slotName].bag = bag;
+					spots[slotName].slot = slot;
+				end
+				if skipcount > 0 then
+					dups[outfit[slotName].item] = skipcount - 1;
+				end
+			end
 		end
 	end
 	return spots;
@@ -210,7 +209,7 @@ end
 local function FreespaceCheck(bagtype)
 	local totalFree = 0;
 	for i = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-		freeSlots, bagFamily = GetContainerNumFreeSlots(i);
+		freeSlots, bagFamily = C_Container.GetContainerNumFreeSlots(i);
 		if ( bagFamily == 0 or (bagtype and bagFamily == bagtype)) then
 			totalFree = totalFree + freeSlots;
 		end
@@ -232,7 +231,7 @@ local function CheckSwitchWillFail(outfit)
 			check = nil;
 		end
 		if ( check and check.used ) then
-			if ( not check.empty ) then
+			if ( not check.empty and check.item ) then
 				local bag, slot = FL:FindThisItem( check.item );
 				if ( not bag and not slot ) then
 					missing = true;
@@ -315,11 +314,11 @@ local function FindEmptyBagSlot(family, skipbag, skipcount)
 		-- already modified skipcount)
 		if ( not skipbag or skipbag ~= i ) then
 			-- Make sure this bag can hold what we need
-			local freeSlots, bagType = GetContainerNumFreeSlots(i);
+			local freeSlots, bagType = C_Container.GetContainerNumFreeSlots(i);
 			if bagType and ( (family == 0) or (bit.band(bagType, family) > 0) ) then
 				if ( freeSlots > skipcount ) then
-					for j=GetContainerNumSlots(i),1,-1 do
-						if not GetContainerItemInfo(i,j) then
+					for j=C_Container.GetContainerNumSlots(i),1,-1 do
+						if not C_Container.GetContainerItemInfo(i,j) then
 							 if skipcount == 0 then return i, j, skipcount; end
 							 skipcount = skipcount - 1;
 						 end  -- if empty
@@ -343,17 +342,17 @@ local function FindLastEmptyBagSlot(link, skipcount, bag_affinity, slot_affinity
 
 	-- try to put the item in the requested affinity, if possible
 	if bag_affinity and slot_affinity and
-			not GetContainerItemInfo(bag_affinity, slot_affinity) then
+			not C_Container.GetContainerItemInfo(bag_affinity, slot_affinity) then
 		return bag_affinity, slot_affinity;
 	end
 
 	-- if we couldn't get the bag and slot we wanted, just try the same bag
 	if ( bag_affinity ) then
-		local freeSlots, bagType = GetContainerNumFreeSlots(bag_affinity);
+		local freeSlots, bagType = C_Container.GetContainerNumFreeSlots(bag_affinity);
 		if ( ((prefbag > 0) and (bit.band(prefbag, bagType) > 0)) or bagType == 0 ) then
 			if freeSlots > skipcount then
-				for j=GetContainerNumSlots(bag_affinity),1,-1 do
-					if not GetContainerItemInfo(bag_affinity,j) then
+				for j=C_Container.GetContainerNumSlots(bag_affinity),1,-1 do
+					if not C_Container.GetContainerItemInfo(bag_affinity,j) then
 						if skipcount == 0 then return bag_affinity,j; end
 						skipcount = skipcount - 1;
 					end -- if free space
@@ -417,7 +416,7 @@ local function IsItemLocked(bag, slot)
 	if not bag then
 		return IsInventoryItemLocked(slot);
 	else
-		local _,_,locked = GetContainerItemInfo(bag,slot);
+		local _,_,locked = C_Container.GetContainerItemInfo(bag,slot);
 		return locked;
 	end
 end
@@ -425,8 +424,8 @@ end
 local function IsAnyItemLocked()
 -- Checks all the bags and the equipped slots to see if any are still locked
 	for i = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-		for j=1,GetContainerNumSlots(i) do
-			local _,_,locked = GetContainerItemInfo(i,j);
+		for j=1,C_Container.GetContainerNumSlots(i) do
+			local _,_,locked = C_Container.GetContainerItemInfo(i,j);
 			if ( locked ) then
 				return true;
 			end
@@ -514,7 +513,7 @@ local function SwitchToBag(outfit, slotName, invslot, skipcount)
 		if ( dbag and dbag == bag_affinity ) then
 			outfitswap = swaplist_push(outfitswap, nil, invslot, dbag, dslot);
 			outfitswap.slowdown = true;
-			PerformSlowerSwap = true;
+			PerformSlowerSwap = true
 			skipcount = skipcount + 1;
 		end
 	end
@@ -574,7 +573,6 @@ local function SwitchOutfit(self, outfit)
 
 	-- need to check to see that we have enough room
     local old = MatchWornItems(outfit);
-    FishingBuddy.MatchWornItemsOutfit = old
 
 	PerformSlowerSwap = false;
 
@@ -759,9 +757,7 @@ function OutfitDisplayItemButton_OnEnter(self)
 	elseif ( self.tooltip ) then
 		GameTooltip:AddLine(self.tooltip);
 	else
-		local parentlen = string.len(self:GetParent():GetName())+1;
-		local slotName = strsub(self:GetName(), parentlen);
-		slotName = strsub(slotName, 1, string.len(slotName) - 4);
+		local slotName = self.slotname;
 		self.tooltip = slotName;
 		GameTooltip:AddLine(self.tooltip);
 	end
@@ -824,7 +820,7 @@ function OutfitDisplayItemButton_OnLoad(self)
 	self:RegisterForDrag("LeftButton");
 	self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 
-	if FL:IsRetail() or FL:IsVanilla() then
+	if FL:IsVanilla() then
 		self:RegisterEvent("CURSOR_UPDATE");
 	else
 		self:RegisterEvent("CURSOR_CHANGED");
@@ -878,11 +874,9 @@ function OutfitDisplayItemButton_Change(button)
 	OutfitDisplayItemButton_Draw(button);
 	-- handle two handed weapons
 	local parent = button:GetParent();
-	local pname = parent:GetName();
-	local parentlen = string.len(pname)+1;
-	local slotName = strsub(button:GetName(), parentlen);
+	local slotName = button.slotname;
 	if ( slotName == "MainHandSlot" ) then
-		local secondary = _G[pname.."SecondaryHandSlot"];
+		local secondary = parent["SecondaryHandSlot"];
 		if ( not button.used and secondary.forced ) then
 			ClearODFButton(secondary, false, false);
 		elseif ( button.used and not IsItemOneHanded(button.item) ) then
@@ -900,8 +894,7 @@ end
 
 -- override ShowHelm and ShowCloak
 function OutfitDisplayOverrideBox_OnLoad(self)
-	local parentlen = string.len(self:GetParent():GetName())+1;
-	self.slotName = strsub(self:GetName(), parentlen);
+	self.slotName = self:GetParent():GetName();
 end
 
 function OutfitDisplayOverrideBox_OnEnter(self)
@@ -931,14 +924,11 @@ function OutfitDisplayCheckBox_OnEnter(self)
 end
 
 function OutfitDisplayCheckBox_OnLoad(self)
-	local parentlen = string.len(self:GetParent():GetName())+1;
-	local name = strsub(self:GetName(), parentlen);
-	self.slotName = strsub(name, 1, -9);
+	self.slotName = self:GetParent():GetName()
 end
 
 function OutfitDisplayCheckBox_OnClick(self)
-	local pname = self:GetParent():GetName();
-	local button = _G[pname..self.slotName];
+	local button = self:GetParent();
 	ClearODFButton(button, self:GetChecked());
 	OutfitDisplayItemButton_Change(button);
 end
@@ -997,7 +987,6 @@ local function UpdateMessage(self, outfit)
 		end
 		if ( msg ) then
 			messages:SetText(msg);
-			messages:SetTextColor(1, 1, 1);
 			messages:Show();
 		else
 			messages:SetText("");
@@ -1007,8 +996,7 @@ local function UpdateMessage(self, outfit)
 end
 
 local function UpdateModel(self, button)
-	local pname = self:GetName();
-	local model = _G[pname.."Model"];
+	local model = self.Model;
 	local empty = false;
 	if ( not model ) then
 		return;
@@ -1020,7 +1008,7 @@ local function UpdateModel(self, button)
 	else
 		local _,_,slotnames = FL:GetSlotInfo();
 		for _,si in ipairs(slotnames) do
-			local what = _G[pname..si.name];
+			local what = self[si.name];
 			if ( what and what.empty ) then
 				empty = true;
 			end
@@ -1030,7 +1018,7 @@ local function UpdateModel(self, button)
 		model:Undress();
 	end
 	for i=18,1,-1 do
-		UpdateModel_ThisSlot(pname, model, i);
+		UpdateModel_ThisSlot(self, model, i);
 	end
 end
 
@@ -1112,8 +1100,7 @@ local function GetOutfit(self, puthere)
 end
 
 local function OutfitDisplayFrameModel_OnLoad(parent)
-	local pname = parent:GetName();
-	local model = _G[pname.."Model"];
+	local model = parent.Model;
 	if (model) then
 		Model_OnLoad(model);
 		local race, fileName = UnitRace("player");
@@ -1162,24 +1149,25 @@ local function OutfitDisplayFrame_OnEvent(self, event, ...)
 end
 
 local function OutfitDisplayFrame_OnLoad(self)
-	local temp = PickupContainerItem;
+	local temp = C_Container.PickupContainerItem;
 	if ( SafeHookFunction("PickupContainerItem", ODF_PickupContainerItem) ) then
 		SavedPickupContainerItem = temp;
 	end
 
-			temp = PickupInventoryItem;
+	temp = PickupInventoryItem;
 	if ( SafeHookFunction("PickupInventoryItem", ODF_PickupInventoryItem) ) then
 		SavedPickupInventoryItem = temp;
 	end
 
-	local parent = self:GetName();
-	local _,_,slotnames = FL:GetSlotInfo();
-	for _,si in ipairs(slotnames) do
-		local slotName = si.name;
-		local button = _G[parent..slotName];
-		button.tooltip = si.tooltip;
-		button.slotid = si.id;
-		OutfitDisplayItemButton_Draw(button);
+	local _,_,slotinfo = FL:GetSlotInfo();
+	for _, si in ipairs(slotinfo) do
+		local button = self[si.name]
+		if button then
+			button.tooltip = si.tooltip;
+			button.slotid = si.id;
+			button.slotname = si.name;
+			OutfitDisplayItemButton_Draw(button);
+		end
 	end
 
 	-- ITEM_LOCK_CHANGED gets invoked a lot -- let's optimize it
@@ -1211,3 +1199,5 @@ function ODFLib:InitFrame(frame)
 
 	return frame;
 end
+
+DressUpModelFrameMixin = {};

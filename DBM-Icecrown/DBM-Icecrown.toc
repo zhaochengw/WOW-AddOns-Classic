@@ -37,7 +37,7 @@
 ## X-Curse-Project-ID: 43970
 ## X-WoWI-ID: 21522
 ## X-Wago-ID: WqKQg7Nx
-## Version: fadcc26
+## Version: 48e6a76
 
 localization.en.lua
 localization.de.lua

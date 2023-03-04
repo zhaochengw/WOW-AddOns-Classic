@@ -1,4 +1,4 @@
-local addonName, addonTable = ...
+local addonName = ...
 
 --[[
 Name: RatingBuster
@@ -24,12 +24,12 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RatingBuster")
 RatingBuster = LibStub("AceAddon-3.0"):NewAddon("RatingBuster", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 RatingBuster.title = "Rating Buster"
 --@non-debug@
-RatingBuster.version = "1.6.6"
+RatingBuster.version = "1.7.5"
 --@end-non-debug@
 --[==[@debug@
 RatingBuster.version = "(development)"
 --@end-debug@]==]
-addonNameWithVersion = string.format("%s %s", addonName, RatingBuster.version)
+local addonNameWithVersion = string.format("%s %s", addonName, RatingBuster.version)
 RatingBuster.date = gsub("$Date: 2008-07-22 15:35:19 +0800 (星期二, 22 七月 2008) $", "^.-(%d%d%d%d%-%d%d%-%d%d).-$", "%1")
 
 -----------
@@ -54,9 +54,7 @@ local _, class = UnitClass("player")
 local calcLevel, playerLevel
 local profileDB, globalDB -- Initialized in :OnInitialize()
 
-
 -- Localize globals
-local _G = getfenv(0)
 local strfind = strfind
 local strsub = strsub
 local gsub = gsub
@@ -88,7 +86,7 @@ local GetBlockChance = GetBlockChance
 -- Slash Command Options --
 ---------------------------
 
-local function getOption(info, value)
+local function getOption(info)
 	if type(globalDB[info[#info]]) ~= "nil" then
 		return globalDB[info[#info]]
 	else
@@ -141,7 +139,7 @@ local function setGem(info, value)
 		RatingBuster:Print(L["Queried server for Gem: %s. Try again in 5 secs."]:format(value))
 	end
 end
-local function getColor(info, r, g, b)
+local function getColor(info)
 	local color = globalDB[info[#info]]
 	if not color then
 		color = profileDB[info[#info]]
@@ -238,7 +236,7 @@ local options = {
 				detailedConversionText = {
 					type = 'toggle',
 					name = L["Show detailed conversions text"],
-					desc = L["Show detailed text for Resiliance and Expertise conversions"],
+					desc = L["Show detailed text for Resilience and Expertise conversions"],
 				},
 				defBreakDown = {
 					type = 'toggle',
@@ -988,6 +986,48 @@ local options = {
 				},
 			},
 		},
+		alwaysBuffed = {
+			type = "group",
+			name = "AlwaysBuffed",
+			order = 4,
+			get = function(info)
+				local db = RatingBuster.db:GetNamespace("AlwaysBuffed")
+				return db.profile[info[#info]]
+			end,
+			set = function(info, v)
+				local db = RatingBuster.db:GetNamespace("AlwaysBuffed")
+				db.profile[info[#info]] = v
+				clearCache()
+				StatLogic:InvalidateEvent("UNIT_AURA", "player")
+			end,
+      args = {
+        description = {
+					type = "description",
+          name = L["Enables RatingBuster to calculate selected buff effects even if you don't really have them"],
+          order = 1,
+        },
+        description2 = {
+					type = "description",
+          name = " ",
+          order = 2,
+        },
+        [class] = {
+					type = "group",
+					dialogInline = true,
+          name = gsub(L["$class Self Buffs"], "$class", (UnitClass("player"))),
+          order = 5,
+					hidden = true,
+					args = {},
+        },
+        ALL = {
+					type = "group",
+					dialogInline = true,
+          name = L["Raid Buffs"],
+          order = 6,
+					args = {},
+        },
+      },
+		},
 	},
 }
 
@@ -1099,11 +1139,11 @@ local defaults = {
 		sumAP = false,
 		sumRAP = false,
 		sumHit = false,
-		sumHitRating = false, -- new
+		sumHitRating = false,
 		sumCrit = false,
-		sumCritRating = false, -- new
-		sumHaste = false, -- new
-		sumHasteRating = false, -- new
+		sumCritRating = false,
+		sumHaste = false,
+		sumHasteRating = false,
 		sumExpertise = false,
 		sumWeaponSkill = false,
 		sumDodgeNeglect = false,
@@ -1111,7 +1151,8 @@ local defaults = {
 		sumBlockNeglect = false,
 		sumWeaponAverageDamage = false,
 		sumWeaponDPS = false,
-		sumIgnoreArmor = false, -- new
+		sumIgnoreArmor = false,
+		sumArmorPenetration = false,
 		-- Spell
 		sumSpellDmg = false,
 		sumArcaneDmg = false,
@@ -1187,6 +1228,7 @@ if class == "DEATHKNIGHT" then
 	defaults.profile.sumExpertise = true
 	defaults.profile.showSpellCritFromInt = false
 	defaults.profile.ratingPhysical = true
+	defaults.profile.sumArmorPenetration = true
 elseif class == "DRUID" then
 	defaults.profile.sumAP = true
 	defaults.profile.sumHit = true
@@ -1202,16 +1244,19 @@ elseif class == "DRUID" then
 	defaults.profile.sumHealing = true
 	defaults.profile.ratingPhysical = true
 	defaults.profile.ratingSpell = true
+	defaults.profile.sumArmorPenetration = true
 elseif class == "HUNTER" then
 	defaults.profile.sumRAP = true
 	defaults.profile.sumHit = true
 	defaults.profile.sumCrit = true
 	defaults.profile.sumHaste = true
 	defaults.profile.showMP5FromInt = true -- Aspect of the Viper
+	defaults.profile.showRAPFromAgi = true
 	defaults.profile.showDodgeFromAgi = false
 	defaults.profile.showSpellCritFromInt = false
 	defaults.profile.showRAPFromInt = true
 	defaults.profile.ratingPhysical = true
+	defaults.profile.sumArmorPenetration = true
 elseif class == "MAGE" then
 	defaults.profile.sumSpellDmg = true
 	defaults.profile.sumSpellHit = true
@@ -1255,6 +1300,7 @@ elseif class == "ROGUE" then
 	defaults.profile.sumExpertise = true
 	defaults.profile.showSpellCritFromInt = false
 	defaults.profile.ratingPhysical = true
+	defaults.profile.sumArmorPenetration = true
 elseif class == "SHAMAN" then
 	defaults.profile.sumWeaponAverageDamage = true
 	defaults.profile.sumSpellDmg = true
@@ -1286,6 +1332,7 @@ elseif class == "WARRIOR" then
 	defaults.profile.sumExpertise = true
 	defaults.profile.showSpellCritFromInt = false
 	defaults.profile.ratingPhysical = true
+	defaults.profile.sumArmorPenetration = true
 end
 
 -- Generate options from expansion-specific StatModTables in StatLogic
@@ -1297,7 +1344,7 @@ do
 		["RANGED_AP"] = "RAP",
 	},
 	{
-		__index = function(table, statMod)
+		__index = function(_, statMod)
 			-- Remove underscores, PascalCase
 			return string.gsub(statMod, "[%W_]*(%w+)[%W_]*", function(word)
 				return word:lower():gsub("^%l", string.upper)
@@ -1345,7 +1392,7 @@ do
 					end
 					local source = ""
 					if case.buff then
-						source = case.buff
+						source = GetSpellInfo(case.buff)
 					elseif case.tab then
 						source = StatLogic:GetOrderedTalentInfo(case.tab, case.num)
 					elseif case.glyph then
@@ -1382,16 +1429,42 @@ do
 				addStatModOption(add, mod, sources)
 			end
 		end
+	end
 
-		RatingBuster.db = LibStub("AceDB-3.0"):New("RatingBusterDB", defaults, class)
-		RatingBuster.db.RegisterCallback(RatingBuster, "OnProfileChanged", "RefreshConfig")
-		RatingBuster.db.RegisterCallback(RatingBuster, "OnProfileCopied", "RefreshConfig")
-		RatingBuster.db.RegisterCallback(RatingBuster, "OnProfileReset", "RefreshConfig")
-		profileDB = RatingBuster.db.profile
-		globalDB = RatingBuster.db.global
+	-- Ignore Stat Mods that mostly exist for Tank Points
+	local ignoredStatMods = {
+		["MOD_DMG_TAKEN"] = true,
+		["ADD_DODGE"] = true,
+		["ADD_HIT_TAKEN"] = true,
+	}
+	local function GenerateAuraOptions()
+		for modType, modList in pairs(StatLogic.StatModTable) do
+			for modName, mods in pairs(modList) do
+				if not ignoredStatMods[modName] then
+					for _, mod in ipairs(mods) do
+						if mod.buff then
+							local name, _, icon = GetSpellInfo(mod.buff)
+							local option = {
+								type = 'toggle',
+								name = "|T"..icon..":25:25:-2:0|t"..name,
+							}
+							options.args.alwaysBuffed.args[modType].args[name] = option
+							options.args.alwaysBuffed.args[modType].hidden = false
 
-		options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(RatingBuster.db)
-		options.args.profiles.order = 4
+							-- If it's a spell the player knows, use the highest rank for the description
+							local spellId = mod.buff
+							if IsPlayerSpell(spellId) then
+								spellId = select(7,GetSpellInfo(name)) or spellId
+							end
+							local spell = Spell:CreateFromSpellID(spellId)
+							spell:ContinueOnSpellLoad(function()
+								option.desc = spell:GetSpellDescription()
+							end)
+						end
+					end
+				end
+			end
+		end
 	end
 
 	local f = CreateFrame("Frame")
@@ -1399,6 +1472,8 @@ do
 	f:SetScript("OnEvent", function()
 		if StatLogic:TalentCacheExists() then
 			GenerateStatModOptions()
+			GenerateAuraOptions()
+			RatingBuster:InitializeDatabase()
 		else
 			-- Talents are not guaranteed to exist on SPELLS_CHANGED,
 			-- and there is no definite event for when they will exist.
@@ -1407,6 +1482,8 @@ do
 			ticker = C_Timer.NewTicker(1, function()
 				if StatLogic:TalentCacheExists() then
 					GenerateStatModOptions()
+					GenerateAuraOptions()
+					RatingBuster:InitializeDatabase()
 					ticker:Cancel()
 				end
 			end)
@@ -1463,6 +1540,32 @@ function RatingBuster:OnInitialize()
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(addonNameWithVersion, addonName)
 end
 
+function RatingBuster:InitializeDatabase()
+	RatingBuster.db = LibStub("AceDB-3.0"):New("RatingBusterDB", defaults, class)
+	RatingBuster.db.RegisterCallback(RatingBuster, "OnProfileChanged", "RefreshConfig")
+	RatingBuster.db.RegisterCallback(RatingBuster, "OnProfileCopied", "RefreshConfig")
+	RatingBuster.db.RegisterCallback(RatingBuster, "OnProfileReset", "RefreshConfig")
+	profileDB = RatingBuster.db.profile
+	globalDB = RatingBuster.db.global
+
+	options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(RatingBuster.db)
+	options.args.profiles.order = 5
+
+	local LibDualSpec = LibStub('LibDualSpec-1.0', true)
+
+	if LibDualSpec then
+		LibDualSpec:EnhanceDatabase(RatingBuster.db, "RatingBusterDB")
+		LibDualSpec:EnhanceOptions(options.args.profiles, RatingBuster.db)
+	end
+
+	local always_buffed = RatingBuster.db:RegisterNamespace("AlwaysBuffed", {
+		profile = {
+			['*'] = false
+		}
+	})
+	StatLogic:SetupAuraInfo(always_buffed.profile)
+end
+
 SLASH_RATINGBUSTER1, SLASH_RATINGBUSTER2 = "/ratingbuster", "/rb"
 function SlashCmdList.RATINGBUSTER(input)
   if not input or input:trim() == "" then
@@ -1496,7 +1599,7 @@ end
 
 -- event = PLAYER_LEVEL_UP
 -- arg1 = New player level
-function RatingBuster:PLAYER_LEVEL_UP(event, newlevel)
+function RatingBuster:PLAYER_LEVEL_UP(_, newlevel)
 	playerLevel = newlevel
 	clearCache()
 end
@@ -1780,21 +1883,18 @@ function RatingBuster:SplitDoJoin(text, separatorTable, link, color)
 		local processedText = {}
 		local tempTable = {}
 		for _, t in ipairs(text) do
-			--self:Print(t[1])
 			copyTable(tempTable, separatorTable)
 			tinsert(processedText, self:SplitDoJoin(t, tempTable, link, color))
 		end
 		-- Join text
 		return (gsub(strjoin("@", unpack(processedText)), "@", sep))
 	else
-		--self:Print(cacheID)
 		return self:ProcessText(text, link, color)
 	end
 end
 
 
 function RatingBuster:ProcessText(text, link, color)
-	--self:Print(text)
 	-- Find and set color code (used to fix gem text color) pattern:|cxxxxxxxx
 	local currentColorCode = select(3, strfind(text, "(|c%x%x%x%x%x%x%x%x)")) or "|r"
 	-- Check if test has a matching pattern
@@ -2122,7 +2222,10 @@ function RatingBuster:ProcessText(text, link, color)
 							if tocversion >= 20400 then -- 2.4.0
 								local _, int = UnitStat("player", 4)
 								local _, spi = UnitStat("player", 5)
-								effect = value * GSM("ADD_MANA_REG_MOD_INT") + (StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel) - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)) * GSM("ADD_MANA_REG_MOD_NORMAL_MANA_REG")
+								effect = value * GSM("ADD_MANA_REG_MOD_INT")
+									+ (StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel)
+									- StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)) * GSM("ADD_MANA_REG_MOD_NORMAL_MANA_REG")
+									+ value * 15 * GSM("MOD_MANA") * GSM("ADD_MANA_REG_MOD_MANA") -- Replenishment
 							else
 								effect = value * GSM("ADD_MANA_REG_MOD_INT")
 							end
@@ -2135,7 +2238,10 @@ function RatingBuster:ProcessText(text, link, color)
 							if tocversion >= 20400 then -- 2.4.0
 								local _, int = UnitStat("player", 4)
 								local _, spi = UnitStat("player", 5)
-								effect = value * GSM("ADD_MANA_REG_MOD_INT") + StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel) - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)
+								effect = value * GSM("ADD_MANA_REG_MOD_INT")
+									+ StatLogic:GetNormalManaRegenFromSpi(spi, int + value, calcLevel)
+									- StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)
+									+ value * 15 * GSM("MOD_MANA") * GSM("ADD_MANA_REG_MOD_MANA") -- Replenishment
 							else
 								effect = value * GSM("ADD_MANA_REG_MOD_INT")
 							end
@@ -2232,12 +2338,9 @@ function RatingBuster:ProcessText(text, link, color)
 						-----------
 						-- Armor --
 						-----------
-						local statmod = 1
 						if profileDB.enableStatMods then
-							local finalArmor = StatLogic:GetFinalArmor(link, text, color)
-							if finalArmor then
-								value = finalArmor
-							end
+							local base, bonus = StatLogic:GetArmorDistribution(link, value, color)
+							value = base * GSM("MOD_ARMOR") + bonus
 						end
 						local infoTable = {}
 						local effect = value * GSM("ADD_AP_MOD_ARMOR") * GSM("MOD_AP")
@@ -2518,6 +2621,7 @@ local summaryCalcData = {
 				 + (sum["INT"] * GSM("ADD_MANA_REG_MOD_INT"))
 				 + (StatLogic:GetNormalManaRegenFromSpi(spi + sum["SPI"], int + sum["INT"], calcLevel)
 				 - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)) * GSM("ADD_MANA_REG_MOD_NORMAL_MANA_REG")
+				 + summaryFunc["MANA"](sum) * GSM("ADD_MANA_REG_MOD_MANA")
 			else
 				return sum["MANA_REG"]
 				 + (sum["INT"] * GSM("ADD_MANA_REG_MOD_INT"))
@@ -2537,6 +2641,7 @@ local summaryCalcData = {
 				 + (sum["INT"] * GSM("ADD_MANA_REG_MOD_INT"))
 				 + StatLogic:GetNormalManaRegenFromSpi(spi + sum["SPI"], int + sum["INT"], calcLevel)
 				 - StatLogic:GetNormalManaRegenFromSpi(spi, int, calcLevel)
+				 + summaryFunc["MANA"](sum) * GSM("ADD_MANA_REG_MOD_MANA")
 			else
 				return sum["MANA_REG"]
 				 + (sum["INT"] * GSM("ADD_MANA_REG_MOD_INT"))
@@ -3094,7 +3199,6 @@ local summaryCalcData = {
 			end
 			return parry + dodge + missed + block
 		end,
-		ispercent = true,
 	},
 	-- Crit Avoidance - RESILIENCE_RATING, DEFENSE
 	{
@@ -3163,7 +3267,6 @@ if tpSupport == true then
 		func = function(diffTable1)
 			-- Item type
 			local itemType = diffTable1.itemType
-			local right
 			-- Calculate current TankPoints
 			local tpSource = {}
 			local TP = TankPoints
@@ -3202,7 +3305,7 @@ if tpSupport == true then
 			TP:GetTankPoints(tpTable, TP_MELEE, forceShield)
 			-- Calculate tp difference
 			local diff = floor(tpTable.tankPoints[TP_MELEE]) - floor(TP.resultsTable.tankPoints[TP_MELEE])
-	
+
 			return diff
 		end,
 	})
@@ -3214,7 +3317,6 @@ if tpSupport == true then
 		func = function(diffTable1)
 			-- Item type
 			local itemType = diffTable1.itemType
-			local right
 			-- Calculate current TankPoints
 			local tpSource = {}
 			local TP = TankPoints
@@ -3253,7 +3355,7 @@ if tpSupport == true then
 			TP:GetTankPoints(tpTable, TP_MELEE, forceShield)
 			-- Calculate tp difference
 			local diff = tpTable.totalReduction[TP_MELEE] - TP.resultsTable.totalReduction[TP_MELEE]
-			
+
 			return diff * 100
 		end,
 	})
@@ -3305,7 +3407,7 @@ if tpSupport == true then
 			TP:GetTankPoints(tpTable, TP_MELEE, forceShield)
 			-- Calculate tp difference
 			local diff = tpTable.mobMissChance + tpTable.dodgeChance + tpTable.parryChance - TP.resultsTable.mobMissChance - TP.resultsTable.dodgeChance - TP.resultsTable.parryChance
-			
+
 			return diff * 100
 		end,
 	})
@@ -3317,7 +3419,7 @@ for _, calcData in pairs(summaryCalcData) do
 	summaryFunc[calcData.name] = calcData.func
 end
 
-function sumSortAlphaComp(a, b)
+local function sumSortAlphaComp(a, b)
 	return a[1] < b[1]
 end
 
@@ -3344,11 +3446,11 @@ end
 function RatingBuster:StatSummary(tooltip, name, link)
 	-- Hide stat summary for equipped items
 	if globalDB.sumIgnoreEquipped and IsEquippedItem(link) then return end
-	
+
 	-- Show stat summary only for highest level armor type and items you can use with uncommon quality and up
 	if globalDB.sumIgnoreUnused then
 		local _, _, itemRarity, _, _, _, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfo(link)
-		
+
 		-- Check rarity
 		if not itemRarity or itemRarity < 2 then
 			return
@@ -3358,33 +3460,29 @@ function RatingBuster:StatSummary(tooltip, name, link)
 		if classID == Enum.ItemClass.Armor and armorTypes[subclassID] and (not classArmorTypes[class][subclassID]) and itemEquipLoc ~= "INVTYPE_CLOAK" then
 			return
 		end
-		
+
 		-- Check for Red item types
 		local tName = tooltip:GetName()
 		if _G[tName.."TextRight3"]:GetText() and select(2, _G[tName.."TextRight3"]:GetTextColor()) < 0.2 then
-			--self:Print("TextRight3", select(2, _G[tName.."TextRight3"]:GetTextColor()))
 			return
 		end
 		if _G[tName.."TextRight4"]:GetText() and select(2, _G[tName.."TextRight4"]:GetTextColor()) < 0.2 then
-			--self:Print("TextRight4", select(2, _G[tName.."TextRight4"]:GetTextColor()))
 			return
 		end
 		if select(2, _G[tName.."TextLeft3"]:GetTextColor()) < 0.2 then
-			--self:Print("TextLeft3", select(2, _G[tName.."TextLeft3"]:GetTextColor()))
 			return
 		end
 		if select(2, _G[tName.."TextLeft4"]:GetTextColor()) < 0.2 then
-			--self:Print("TextLeft4", select(2, _G[tName.."TextLeft4"]:GetTextColor()))
 			return
 		end
 	end
-	
+
 	-- Ignore enchants and gems on items when calculating the stat summary
 	local red = profileDB.sumGemRed.gemID
 	local yellow = profileDB.sumGemYellow.gemID
 	local blue = profileDB.sumGemBlue.gemID
 	local meta = profileDB.sumGemMeta.gemID
-	
+
 	if globalDB.sumIgnoreEnchant then
 		link = StatLogic:RemoveEnchant(link)
 	end
@@ -3393,7 +3491,7 @@ function RatingBuster:StatSummary(tooltip, name, link)
 	else
 		link = StatLogic:BuildGemmedTooltip(link, red, yellow, blue, meta)
 	end
-	
+
 	-- Diff Display Style
 	-- Main Tooltip: tooltipLevel = 0
 	-- Compare Tooltip 1: tooltipLevel = 1
@@ -3436,14 +3534,14 @@ function RatingBuster:StatSummary(tooltip, name, link)
 	end
 
 	local numLines = tooltip:NumLines()
-	
+
 	-- Check Cache
 	if cache[id] and cache[id].numLines == numLines then
 		if table.maxn(cache[id]) == 0 then return end
 		WriteSummary(tooltip, cache[id])
 		return
 	end
-	
+
 	-------------------------
 	-- Build Summary Table --
 	local statData = {}
@@ -3452,10 +3550,10 @@ function RatingBuster:StatSummary(tooltip, name, link)
 	if not globalDB.calcSum then
 		statData.sum = nil
 	end
-	
+
 	-- Ignore bags
 	if not StatLogic:GetDiff(link) then return end
-	
+
 	-- Get Diff Data
 	if globalDB.calcDiff then
 		if globalDB.sumDiffStyle == "comp" then
@@ -3525,7 +3623,7 @@ function RatingBuster:StatSummary(tooltip, name, link)
 			tinsert(summary, entry)
 		end
 	end
-	
+
 	local calcSum = globalDB.calcSum
 	local calcDiff = globalDB.calcDiff
 	-- Weapon Skill - WEAPON_RATING
@@ -3580,7 +3678,7 @@ function RatingBuster:StatSummary(tooltip, name, link)
 			end
 		end
 	end
-	
+
 	local showZeroValueStat = profileDB.showZeroValueStat
 	------------------------
 	-- Build Output Table --
@@ -3736,17 +3834,8 @@ function RatingBuster:Bench(k)
 	local t1 = GetTime()
 	local link = GetInventoryItemLink("player", 12)
 	for i = 1, k, 1 do
-		---------------------------------------------------------------------------
-		--self:SplitDoJoin("+24 Agility/+4 Stamina, +4 Dodge and +4 Spell Crit/+5 Spirit", {"/", " and ", ","})
-		---------------------------------------------------------------------------
 		ItemRefTooltip:SetInventoryItem("player", 12)
 		RatingBuster.ProcessTooltip(ItemRefTooltip, link)
-		---------------------------------------------------------------------------
-		--ItemRefTooltip:SetScript("OnTooltipSetItem", function(frame, ...) RatingBuster:Print("OnTooltipSetItem") end)
-		----------------------------------------------------------------------
-		--local h = strjoin("", "test", "123")
-		--local h = "test".."123"
-		--------------------------------------------------------------------------------
 	end
 	return GetTime() - t1
 end

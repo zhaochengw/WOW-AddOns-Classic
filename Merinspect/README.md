@@ -1,12 +1,7 @@
-# MerInspect（观察助手）
+# MerInspect
+Wrath Classic Inspect improvement addon.
 
+## Also known as
+Published as [TinyInspect](https://www.curseforge.com/wow/addons/itemlevel-anywhere) on curseforge.
+Companion addon to TinyTooltip.
 
-Fix WotLK
-
-
-- 装备列表
-- 装备附魔信息
-- 装备宝石信息
-- 天赋信息
-- 属性统计
-- 聊天窗口装备信息增强

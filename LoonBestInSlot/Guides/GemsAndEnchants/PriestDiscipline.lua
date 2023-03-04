@@ -4,8 +4,8 @@ local spec3 = LBIS:RegisterSpec(LBIS.L["Priest"], LBIS.L["Discipline"], "3")
 local spec4 = LBIS:RegisterSpec(LBIS.L["Priest"], LBIS.L["Discipline"], "4")
 
 LBIS:AddGem(spec1, "41401", "3", "True") --Insightful Earthsiege Diamond
-LBIS:AddGem(spec1, "41333", "3", "True") --Ember Skyflare Diamond
 LBIS:AddGem(spec1, "42144", "4", "False") --Runed Dragon's Eye
+LBIS:AddGem(spec1, "45883", "4", "False") --Runed Stormjewel
 LBIS:AddGem(spec1, "39998", "3", "False") --Runed Scarlet Ruby
 LBIS:AddGem(spec1, "40027", "3", "False") --Royal Twilight Opal
 LBIS:AddGem(spec1, "40047", "3", "False") --Luminous Monarch Topaz

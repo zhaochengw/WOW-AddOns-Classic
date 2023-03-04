@@ -1,10 +1,10 @@
-lightweight tag 69bc183634021032eacc818e1d9edd72fa2e9b8c 9.0.8-WrathClassic
+lightweight tag f2a07d70793c17d2be6d536448dd6a68c837b501 10.0.1-Wrath
 Author:	Resike <resike@gmail.com>
-Date:	Wed Sep 14 21:28:38 2022 +0200
+Date:	Sat Jan 28 17:46:03 2023 +0100
 
-commit 69bc183634021032eacc818e1d9edd72fa2e9b8c
+commit f2a07d70793c17d2be6d536448dd6a68c837b501
 Author: Resike <resike@gmail.com>
-Date:   Wed Sep 14 21:28:38 2022 +0200
+Date:   Sat Jan 28 17:46:03 2023 +0100
 
     Wrath TOC
 

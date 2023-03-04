@@ -39,7 +39,7 @@ NWB.realm = GetRealmName();
 NWB.faction = UnitFactionGroup("player");
 NWB.maxBuffLevel = 63;
 NWB.loadTime = 0;
-NWB.limitLayerCount = 12;
+NWB.limitLayerCount = 10;
 NWB.sharedLayerBuffs = true;
 NWB.doLayerMsg = false;
 NWB.noGUID = false;
@@ -47,6 +47,8 @@ NWB.serializer = LibStub:GetLibrary("LibSerialize");
 NWB.serializerOld = LibStub:GetLibrary("AceSerializer-3.0");
 NWB.libDeflate = LibStub:GetLibrary("LibDeflate");
 NWB.acr = LibStub:GetLibrary("AceConfigRegistry-3.0");
+NWB.npcs = {};
+NWB.map = 0;
 local L = LibStub("AceLocale-3.0"):GetLocale("NovaWorldBuffs");
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1");
 NWB.LDBIcon = LibStub("LibDBIcon-1.0");
@@ -253,6 +255,23 @@ function NWB:printBuffTimers(isLogon)
 			end
 		end]]
 	end
+end
+
+--Map layer from capitals for buff drops etc to Dal or wherever the parent layer is started from.
+function NWB:mapLayerToParent(layer)
+	if (NWB.data.layers[layer]) then
+		return layer;
+	end
+	for k, v in pairs(NWB.data.layers) do
+		if (v.layerMap) then
+			for kk, vv in pairs(v.layerMap) do
+				if (kk == layer) then
+					return k;
+				end
+			end
+		end
+	end
+	return;
 end
 
 --Single line buff timers.
@@ -1564,6 +1583,11 @@ function NWB:combatLogEventUnfiltered(...)
 					and NWB.lastKnownLayer and NWB.lastKnownLayer > 0) then
 				layerNum = NWB.lastKnownLayer;
 			end
+			--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
+			zoneID = NWB:mapLayerToParent(zoneID);
+			if (not zoneID) then
+				return;
+			end
 			if (NWB.isLayered and zoneID and NWB.data.layers[zoneID]) then
 				NWB.data.layers[zoneID].onyNpcDied = GetServerTime();
 			end
@@ -1581,6 +1605,11 @@ function NWB:combatLogEventUnfiltered(...)
 			if (NWB.isLayered and NWB:checkLayerCount() and NWB.lastKnownLayerMapID and NWB.lastKnownLayerMapID > 0
 					and NWB.lastKnownLayer and NWB.lastKnownLayer > 0) then
 				layerNum = NWB.lastKnownLayer;
+			end
+			--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
+			zoneID = NWB:mapLayerToParent(zoneID);
+			if (not zoneID) then
+				return;
 			end
 			if (NWB.isLayered and zoneID and NWB.data.layers[zoneID]) then
 				NWB.data.layers[zoneID].nefNpcDied = GetServerTime();
@@ -1600,6 +1629,11 @@ function NWB:combatLogEventUnfiltered(...)
 					and NWB.lastKnownLayer and NWB.lastKnownLayer > 0) then
 				layerNum = NWB.lastKnownLayer;
 			end
+			--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
+			zoneID = NWB:mapLayerToParent(zoneID);
+			if (not zoneID) then
+				return;
+			end
 			if (NWB.isLayered and zoneID and NWB.data.layers[zoneID]) then
 				NWB.data.layers[zoneID].onyNpcDied = GetServerTime();
 			end
@@ -1618,6 +1652,11 @@ function NWB:combatLogEventUnfiltered(...)
 			if (NWB.isLayered and NWB:checkLayerCount() and NWB.lastKnownLayerMapID and NWB.lastKnownLayerMapID > 0
 					and NWB.lastKnownLayer and NWB.lastKnownLayer > 0) then
 				layerNum = NWB.lastKnownLayer;
+			end
+			--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
+			zoneID = NWB:mapLayerToParent(zoneID);
+			if (not zoneID) then
+				return;
 			end
 			if (NWB.isLayered and zoneID and NWB.data.layers[zoneID]) then
 				NWB.data.layers[zoneID].nefNpcDied = GetServerTime();
@@ -2202,6 +2241,11 @@ function NWB:setRendBuff(source, sender, zoneID, GUID, isAllianceAndLayered)
 		NWB:debug("failed rend timer validation", source);
 		return;
 	end
+	--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
+	zoneID = NWB:mapLayerToParent(zoneID);
+	if (not zoneID) then
+		return;
+	end
 	if (NWB.isLayered and tonumber(zoneID)) then
 		local count = 0;
 		for k, v in pairs(NWB.data.layers) do
@@ -2332,6 +2376,11 @@ function NWB:setOnyBuff(source, sender, zoneID, GUID, isSapped)
 		NWB:debug("failed ony timer validation", source);
 		return;
 	end
+	--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
+	zoneID = NWB:mapLayerToParent(zoneID);
+	if (not zoneID) then
+		return;
+	end
 	if (NWB.isLayered and tonumber(zoneID)) then
 		local count = 0;
 		for k, v in pairs(NWB.data.layers) do
@@ -2412,6 +2461,11 @@ function NWB:setNefBuff(source, sender, zoneID, GUID)
 	end
 	if (not NWB:validateNewTimer("nef", source)) then
 		NWB:debug("failed nef timer validation", source);
+		return;
+	end
+	--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
+	zoneID = NWB:mapLayerToParent(zoneID);
+	if (not zoneID) then
 		return;
 	end
 	if (NWB.isLayered and tonumber(zoneID)) then
@@ -3303,9 +3357,11 @@ function NWB:recordChronoData(trade)
 				if (itemID and itemID == 184937) then
 					found = true;
 					local startTime, duration, isEnabled = GetContainerItemCooldown(bag, slot);
-					local endTime = GetCooldownLeft(startTime, duration) + GetServerTime();
-					if (isEnabled == 1 and startTime > 0 and duration > 0) then
-						NWB.data.myChars[UnitName("player")].chronoCooldown = endTime;
+					if (startTime) then
+						local endTime = GetCooldownLeft(startTime, duration) + GetServerTime();
+						if (isEnabled == 1 and startTime > 0 and duration > 0) then
+							NWB.data.myChars[UnitName("player")].chronoCooldown = endTime;
+						end
 					end
 				end
 			end
@@ -3313,9 +3369,13 @@ function NWB:recordChronoData(trade)
 	end
 	if (not found) then
 		local startTime, duration, isEnabled = GetItemCooldown(184937);
-		local endTime = GetCooldownLeft(startTime, duration) + GetServerTime();
-		if (isEnabled == 1 and startTime > 0 and duration > 0) then
-			NWB.data.myChars[UnitName("player")].chronoCooldown = endTime;
+		--Why is startTime nil for some people since Ulduar patch? It should always be 0.
+		--Possibly only happens during loading screens.
+		if (startTime) then
+			local endTime = GetCooldownLeft(startTime, duration) + GetServerTime();
+			if (isEnabled == 1 and startTime > 0 and duration > 0) then
+				NWB.data.myChars[UnitName("player")].chronoCooldown = endTime;
+			end
 		end
 	end
 	NWB.data.myChars[UnitName("player")].chronoCount = (GetItemCount(184937) or 0);
@@ -3516,6 +3576,10 @@ end
 
 --Reset and enable all warning msgs for specified timer.
 function NWB:resetWarningTimers(type, layer)
+	layer = NWB:mapLayerToParent(layer);
+	if (not NWB.data.layers[layer]) then
+		return;
+	end
 	if (NWB.isLayered and layer) then
 		NWB.data.layers[layer][type .. "30"] = true;
 		NWB.data.layers[layer][type .. "15"] = true;
@@ -9787,7 +9851,7 @@ function NWB:createNewLayer(zoneID, GUID, isFromNpc)
 	if (GUID and GUID ~= "other" and GUID ~= "none") then
 		--Creating layers anywhere but from other users data requires npc validation here.
 		local unitType, _, _, _, zoneID, npcID = strsplit("-", GUID);
-		if (NWB.faction == "Horde") then
+		--[[if (NWB.faction == "Horde") then
 			if (not NWB.orgrimmarCreatures[tonumber(npcID)] or unitType ~= "Creature") then
 				NWB:debug("bad layer detected", unitType, zoneID, npcID);
 				return;
@@ -9797,6 +9861,10 @@ function NWB:createNewLayer(zoneID, GUID, isFromNpc)
 				NWB:debug("bad layer detected", unitType, zoneID, npcID);
 				return;
 			end
+		end]]
+		if (not NWB.npcs[tonumber(npcID)] or unitType ~= "Creature") then
+			NWB:debug("bad layer detected", unitType, zoneID, npcID);
+			return;
 		end
 		--Don' record layers for alliance if the NPC is attached to Elwynn Forest in the layermap, disabled for now for more testing.
 		--[[for k, v in pairs(NWB.data.layers) do
@@ -11110,13 +11178,16 @@ function NWB:setCurrentLayerText(unit)
 		NWB.lastTerokNPCID = npcID;
 	end
 	--This only works in capital cities past this point.
-	if (NWB.faction == "Horde" and (zone ~= 1454 or not npcID)) then
+	--[[if (NWB.faction == "Horde" and (zone ~= 1454 or not npcID)) then
 		NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg3"], "Orgrimmar") .. "|r");
 		return;
 	end
 	if (NWB.faction == "Alliance" and (zone ~= 1453 or not npcID)) then
 		NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg3"], "Stormwind") .. "|r");
 		return;
+	end]]
+	if (zone ~= NWB.map or not npcID) then
+		NWBlayerFrame.fs2:SetText("|cFF9CD6DE" .. string.format(L["layerMsg3"], "Capital") .. "|r");
 	end
 	if (unitType ~= "Creature" or NWB.companionCreatures[tonumber(npcID)]) then
 		if (NWB.faction == "Horde") then
@@ -11154,8 +11225,9 @@ function NWB:setCurrentLayerText(unit)
 			--if (v.rendTimer > 0 or v.onyTimer > 0 or v.nefTimer > 0) then
 				--NWB.data.layers[k].lastSeenNPC = GetServerTime();
 			--end
-			if (((NWB.faction == "Alliance" and zone == 1453 and NWB.stormwindCreatures[tonumber(npcID)])
-					or (NWB.faction == "Horde" and zone == 1454 and NWB.orgrimmarCreatures[tonumber(npcID)]))
+			--if (((NWB.faction == "Alliance" and zone == 1453 and NWB.stormwindCreatures[tonumber(npcID)])
+			--		or (NWB.faction == "Horde" and zone == 1454 and NWB.orgrimmarCreatures[tonumber(npcID)]))
+			if (zone == NWB.map and NWB.npcs[tonumber(npcID)]
 					and (GetServerTime() - NWB.lastJoinedGroup) > 600
 					and (GetServerTime() - NWB.lastZoneChange) > 30) then
 					--and NWB.lastCurrentZoneID ~= tonumber(zoneID)) then
@@ -11175,9 +11247,10 @@ function NWB:setCurrentLayerText(unit)
 			and tonumber(zoneID) and not NWB.data.layers[tonumber(zoneID)]) then
 		NWB:createNewLayer(tonumber(zoneID), GUID, true);
 	end]]
-	if (((NWB.faction == "Alliance" and zone == 1453 and NWB.stormwindCreatures[tonumber(npcID)])
-			or (NWB.faction == "Horde" and zone == 1454 and NWB.orgrimmarCreatures[tonumber(npcID)]))
-			and tonumber(zoneID)) then
+	--if (((NWB.faction == "Alliance" and zone == 1453 and NWB.stormwindCreatures[tonumber(npcID)])
+	--		or (NWB.faction == "Horde" and zone == 1454 and NWB.orgrimmarCreatures[tonumber(npcID)]))
+	--		and tonumber(zoneID)) then
+	if (zone == NWB.map and NWB.npcs[tonumber(npcID)] and tonumber(zoneID)) then
 		if (not NWB.data.layers[tonumber(zoneID)]) then
 			NWB:createNewLayer(tonumber(zoneID), GUID, true);
 		end
@@ -11306,7 +11379,10 @@ function NWB:mapCurrentLayer(unit)
 		return;
 	end
 	local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
-	if ((NWB.faction == "Alliance" and zone == 1453) or (NWB.faction == "Horde" and zone == 1454)) then
+	--if ((NWB.faction == "Alliance" and zone == 1453) or (NWB.faction == "Horde" and zone == 1454)) then
+	--	return;
+	--end
+	if (zone == NWB.map) then
 		return;
 	end
 	local GUID = UnitGUID(unit);
@@ -11391,6 +11467,7 @@ function NWB:mapCurrentLayer(unit)
 		return;
 	end
 	--Seeing if this fixes a bug with incorrect layer mapping.
+	-- TODO This should be tweaked and set to a sensible group join time after testing this dalaram layer version.
 	if (NWB.lastJoinedGroup > 0) then
 		--Never map new zones if group has been joined.
 		return;
@@ -11716,10 +11793,10 @@ function NWB:recalcLayerMapFrame()
 				text = text .. "  -|cffFFFF00No zones mapped for this layer yet.|r\n";
 			end
 			if (NWB.faction == "Horde") then
-				NWBLayerMapFrame.EditBox:Insert("\n|cff00ff00[Layer " .. count .. "]|r  |cff9CD6DE(Orgrimmar " .. k .. ")|r  "
+				NWBLayerMapFrame.EditBox:Insert("\n|cff00ff00[Layer " .. count .. "]|r  |cff9CD6DE(" .. NWB.mapName .. " " .. k .. ")|r  "
 						.. NWB.prefixColor .. "(" .. zoneCount .. " zones mapped)|r\n" .. text);
 			else
-				NWBLayerMapFrame.EditBox:Insert("\n|cff00ff00[Layer " .. count .. "]|r  |cff9CD6DE(Stormwind " .. k .. ")|r  "
+				NWBLayerMapFrame.EditBox:Insert("\n|cff00ff00[Layer " .. count .. "]|r  |cff9CD6DE(" .. NWB.mapName .. " " .. k .. ")|r  "
 						.. NWB.prefixColor .. "(" .. zoneCount .. " zones mapped)|r\n" .. text);
 			end
 		end
@@ -11739,11 +11816,11 @@ function NWB:resetLayerData()
 		NWB.data.tbcPDT = nil;
 		NWB.db.global.resetDailyData = false;
 	end
-	if (NWB.db.global.resetLayers13) then
+	if (NWB.db.global.resetLayers14) then
 		NWB:debug("resetting layer data");
 		NWB.data.layers = {};
 		NWB.data.layerMapBackups = {};
-		NWB.db.global.resetLayers13 = false;
+		NWB.db.global.resetLayers14 = false;
 	end
 end
 
@@ -12021,8 +12098,9 @@ function NWB:recalcMinimapLayerFrame(zoneID, event, unit)
 			end
 		end
 	end
-	if (foundLayer or (NWB.faction == "Horde" and zone == 1454)
-			or (NWB.faction == "Alliance" and zone == 1453)) then
+	--if (foundLayer or (NWB.faction == "Horde" and zone == 1454)
+	--		or (NWB.faction == "Alliance" and zone == 1453)) then
+	if (foundLayer or zone == NWB.map) then
 		if (NWB.currentLayer > 0) then
 			MinimapLayerFrame.fs:SetText(NWB.mmColor .. "Layer " .. NWB.lastKnownLayer);
 			MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 12);

@@ -1,95 +1,31 @@
 local spec = LBIS:RegisterSpec(LBIS.L["Druid"], LBIS.L["Bear"], "0")
 
-LBIS:AddItem(spec, "42550", LBIS.L["Head"], "BIS") --Weakness Spectralizers
-LBIS:AddItem(spec, "37293", LBIS.L["Head"], "备选") --Mask of the Watcher
-LBIS:AddItem(spec, "41675", LBIS.L["Head"], "备选") --Savage Gladiator's Dragonhide Helm
-LBIS:AddItem(spec, "43403", LBIS.L["Head"], "备选") --Shroud of Darkness
-LBIS:AddItem(spec, "34244", LBIS.L["Head"], "备选") --Duplicitous Guise
+LBIS:AddItem(spec, "39399", LBIS.L["Head"], "BIS") --Helm of the Vast Legions
 
-LBIS:AddItem(spec, "43481", LBIS.L["Shoulder"], "BIS") --Trollwoven Spaulders
-LBIS:AddItem(spec, "37593", LBIS.L["Shoulder"], "备选") --Sprinting Shoulderpads
-LBIS:AddItem(spec, "37139", LBIS.L["Shoulder"], "备选") --Spaulders of the Careless Thief
-LBIS:AddItem(spec, "41712", LBIS.L["Shoulder"], "备选") --Savage Gladiator's Dragonhide Spaulders
-LBIS:AddItem(spec, "35001", LBIS.L["Shoulder"], "备选") --Brutal Gladiator's Dragonhide Spaulders
+LBIS:AddItem(spec, "40494", LBIS.L["Shoulder"], "BIS") --Valorous Dreamwalker Shoulderpads
 
-LBIS:AddItem(spec, "43565", LBIS.L["Back"], "BIS 仇恨向") --Durable Nerubhide Cape
-LBIS:AddItem(spec, "43566", LBIS.L["Back"], "BIS 生存向") --Ice Striker's Cloak
-LBIS:AddItem(spec, "37840", LBIS.L["Back"], "备选") --Shroud of Reverberation
-LBIS:AddItem(spec, "43406", LBIS.L["Back"], "备选") --Cloak of the Gushing Wound
-LBIS:AddItem(spec, "42061", LBIS.L["Back"], "备选") --Hateful Gladiator's Cloak of Victory
+LBIS:AddItem(spec, "40722", LBIS.L["Back"], "BIS") --Platinum Mesh Cloak
 
-LBIS:AddItem(spec, "43590", LBIS.L["Chest"], "BIS 仇恨向") --Polar Vest
-LBIS:AddItem(spec, "39554", LBIS.L["Chest"], "BIS 仇恨向") --Heroes' Dreamwalker Raiments
-LBIS:AddItem(spec, "40612", LBIS.L["Chest"], "BIS 仇恨向") --Chestguard of the Lost Vanquisher
-LBIS:AddItem(spec, "41658", LBIS.L["Chest"], "备选") --Savage Gladiator's Dragonhide Robes
-LBIS:AddItem(spec, "34211", LBIS.L["Chest"], "备选") --Harness of Carnal Instinct
-LBIS:AddItem(spec, "37165", LBIS.L["Chest"], "备选") --Crystal-Infused Tunic
+LBIS:AddItem(spec, "43990", LBIS.L["Chest"], "BIS") --Blade-Scarred Tunic
 
-LBIS:AddItem(spec, "37183", LBIS.L["Wrist"], "BIS") --Bindings of the Tunneler
-LBIS:AddItem(spec, "37853", LBIS.L["Wrist"], "BIS") --Advanced Tooled-Leather Bands
-LBIS:AddItem(spec, "41830", LBIS.L["Wrist"], "备选") --Hateful Gladiator's Armwraps of Triumph
-LBIS:AddItem(spec, "34444", LBIS.L["Wrist"], "备选") --Thunderheart Wristguards
-LBIS:AddItem(spec, "34852", LBIS.L["Wrist"], "备选") --Bracers of the Forgotten Vanquisher
-LBIS:AddItem(spec, "37366", LBIS.L["Wrist"], "备选") --Drake-Champion's Bracers
-LBIS:AddItem(spec, "44203", LBIS.L["Wrist"], "备选") --Dragonfriend Bracers
+LBIS:AddItem(spec, "40738", LBIS.L["Wrist"], "BIS") --Wristwraps of the Cutthroat
 
-LBIS:AddItem(spec, "39557", LBIS.L["Hands"], "BIS") --Heroes' Dreamwalker Handgrips
-LBIS:AddItem(spec, "40615", LBIS.L["Hands"], "BIS") --Gloves of the Lost Vanquisher
-LBIS:AddItem(spec, "41770", LBIS.L["Hands"], "备选") --Savage Gladiator's Dragonhide Gloves
-LBIS:AddItem(spec, "37678", LBIS.L["Hands"], "备选") --Bile-Cured Gloves
-LBIS:AddItem(spec, "37846", LBIS.L["Hands"], "备选") --Charged-Bolt Grips
-LBIS:AddItem(spec, "37409", LBIS.L["Hands"], "备选") --Gilt-Edged Leather Gauntlets
+LBIS:AddItem(spec, "39299", LBIS.L["Hands"], "BIS") --Rapid Attack Gloves
 
-LBIS:AddItem(spec, "43591", LBIS.L["Waist"], "BIS 仇恨向") --Polar Cord
-LBIS:AddItem(spec, "37194", LBIS.L["Waist"], "BIS 仇恨向") --Sharp-Barbed Leather Belt
-LBIS:AddItem(spec, "40694", LBIS.L["Waist"], "备选") --Jorach's Crocolisk Skin Belt
-LBIS:AddItem(spec, "41827", LBIS.L["Waist"], "备选") --Hateful Gladiator's Belt of Triumph
-LBIS:AddItem(spec, "43484", LBIS.L["Waist"], "备选") --Trollwoven Girdle
+LBIS:AddItem(spec, "37194", LBIS.L["Waist"], "BIS") --Sharp-Barbed Leather Belt
 
-LBIS:AddItem(spec, "43286", LBIS.L["Legs"], "BIS") --Legguards of Swarming Attacks
-LBIS:AddItem(spec, "37644", LBIS.L["Legs"], "BIS") --Gored Hide Legguards
-LBIS:AddItem(spec, "41664", LBIS.L["Legs"], "备选") --Savage Gladiator's Dragonhide Legguards
-LBIS:AddItem(spec, "37374", LBIS.L["Legs"], "备选") --Ravenous Leggings of the Furbolg
-LBIS:AddItem(spec, "44179", LBIS.L["Legs"], "备选") --Mind-Expanding Leggings
-LBIS:AddItem(spec, "37890", LBIS.L["Legs"], "备选") --Chain Gang Legguards
+LBIS:AddItem(spec, "40493", LBIS.L["Legs"], "BIS") --Valorous Dreamwalker Legguards
 
-LBIS:AddItem(spec, "43592", LBIS.L["Feet"], "BIS 仇恨向") --Polar Boots
-LBIS:AddItem(spec, "44297", LBIS.L["Feet"], "BIS 仇恨向") --Boots of the Neverending Path
-LBIS:AddItem(spec, "44893", LBIS.L["Feet"], "备选 仇恨向") --Titan-Forged Boots of Triumph
-LBIS:AddItem(spec, "34573", LBIS.L["Feet"], "备选 仇恨向") --Thunderheart Treads
-LBIS:AddItem(spec, "34858", LBIS.L["Feet"], "备选 仇恨向") --Boots of the Forgotten Vanquisher
-LBIS:AddItem(spec, "41828", LBIS.L["Feet"], "备选 仇恨向") --Hateful Gladiator's Boots of Triumph
-LBIS:AddItem(spec, "37666", LBIS.L["Feet"], "备选 仇恨向") --Boots of the Whirling Mist
+LBIS:AddItem(spec, "40748", LBIS.L["Feet"], "BIS") --Boots of Captain Ellis
 
-LBIS:AddItem(spec, "42646", LBIS.L["Neck"], "BIS 仇恨向") --Titanium Earthguard Chain
-LBIS:AddItem(spec, "42645", LBIS.L["Neck"], "BIS 仇恨向") --Titanium Impact Choker
-LBIS:AddItem(spec, "40679", LBIS.L["Neck"], "备选") --Chained Military Gorget
-LBIS:AddItem(spec, "42021", LBIS.L["Neck"], "备选") --Hateful Gladiator's Pendant of Victory
-LBIS:AddItem(spec, "35680", LBIS.L["Neck"], "备选") --Amulet of Wills
+LBIS:AddItem(spec, "39246", LBIS.L["Neck"], "BIS") --Amulet of Autopsy
 
-LBIS:AddItem(spec, "43582", LBIS.L["Ring"], "BIS 仇恨向") --Titanium Frostguard Ring
-LBIS:AddItem(spec, "37784", LBIS.L["Ring"], "BIS 仇恨向") --Keystone Great-Ring
-LBIS:AddItem(spec, "40586", LBIS.L["Ring"], "BIS 仇恨向") --Band of the Kirin Tor
-LBIS:AddItem(spec, "42642", LBIS.L["Ring"], "BIS 仇恨向") --Titanium Impact Band
-LBIS:AddItem(spec, "42643", LBIS.L["Ring"], "备选 仇恨向") --Titanium Earthguard Ring
-LBIS:AddItem(spec, "37642", LBIS.L["Ring"], "备选 仇恨向") --Hemorrhaging Circle
-LBIS:AddItem(spec, "44935", LBIS.L["Ring"], "备选 仇恨向") --Ring of the Kirin Tor
+LBIS:AddItem(spec, "37784", LBIS.L["Ring"], "BIS") --Keystone Great-Ring
+LBIS:AddItem(spec, "43993", LBIS.L["Ring"], "BIS") --Greatring of Collision
 
-LBIS:AddItem(spec, "44063", LBIS.L["Trinket"], "BIS 仇恨向") --Figurine - Monarch Crab
-LBIS:AddItem(spec, "44253", LBIS.L["Trinket"], "BIS 仇恨向") --Darkmoon Card: Greatness
-LBIS:AddItem(spec, "42987", LBIS.L["Trinket"], "BIS 仇恨向") --Darkmoon Card: Greatness
-LBIS:AddItem(spec, "40767", LBIS.L["Trinket"], "BIS 仇恨向") --Sonic Booster
-LBIS:AddItem(spec, "42341", LBIS.L["Trinket"], "BIS") --Figurine - Ruby Hare
-LBIS:AddItem(spec, "37220", LBIS.L["Trinket"], "备选") --Essence of Gossamer
-LBIS:AddItem(spec, "44323", LBIS.L["Trinket"], "备选") --Indestructible Alchemist's Stone
-LBIS:AddItem(spec, "34473", LBIS.L["Trinket"], "备选") --Commendation of Kael'thas
-LBIS:AddItem(spec, "37638", LBIS.L["Trinket"], "备选") --Offering of Sacrifice
+LBIS:AddItem(spec, "37220", LBIS.L["Trinket"], "BIS") --Essence of Gossamer
+LBIS:AddItem(spec, "40767", LBIS.L["Trinket"], "BIS") --Sonic Booster
 
-LBIS:AddItem(spec, "37883", LBIS.L["Two Hand"], "BIS 仇恨向") --Staff of Trickery
-LBIS:AddItem(spec, "41257", LBIS.L["Two Hand"], "BIS 仇恨向") --Titansteel Destroyer
-LBIS:AddItem(spec, "37190", LBIS.L["Two Hand"], "备选") --Enraged Feral Staff
-LBIS:AddItem(spec, "43409", LBIS.L["Two Hand"], "备选") --Saliva Corroded Pike
-LBIS:AddItem(spec, "44174", LBIS.L["Two Hand"], "备选") --Stave of Shrouded Mysteries
+LBIS:AddItem(spec, "39422", LBIS.L["Two Hand"], "BIS") --Staff of the Plaguehound
 
 LBIS:AddItem(spec, "38365", LBIS.L["Ranged/Relic"], "BIS") --Idol of Perspicacious Attacks
-LBIS:AddItem(spec, "33509", LBIS.L["Ranged/Relic"], "备选") --Idol of Terror

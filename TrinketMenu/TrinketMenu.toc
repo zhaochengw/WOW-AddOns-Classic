@@ -1,6 +1,6 @@
-## Interface: 30400
-## Title: TrinketMenu 9.0.8
-## Version: 9.0.8
+## Interface: 30401
+## Title: TrinketMenu 10.0.1
+## Version: 10.0.1
 ## Author: Gello, Resike
 ## Notes: Addon to manage trinkets.
 ## SavedVariables: TrinketMenuOptions

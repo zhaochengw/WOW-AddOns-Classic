@@ -12,7 +12,7 @@
 ##X-Author-Server = Thunderlord US
 ## X-Donate: http://www.curseforge.com/projects/libaboutpanel/#w_donations
 
-## Interface: 30400
+## Interface: 30401
 ## Version: 1.43
 ## X-Revision: @project-revision@
 ## X-Date: 2009-12-18T22:27:31Z

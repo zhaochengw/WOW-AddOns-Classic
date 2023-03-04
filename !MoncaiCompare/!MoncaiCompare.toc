@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: MoncaiCompare
 ## Notes: Simple item compare tooltips
 ## Title-zhCN: |CFFFF8000辅助|R 装备比较

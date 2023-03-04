@@ -29,17 +29,27 @@ local tostring, format, strrep = tostring, string.format, string.rep
 local tonumber, band = tonumber, bit.band
 
 ---- WOW
-local GetContainerItemID = GetContainerItemID
-local GetContainerItemInfo = GetContainerItemInfo
-local GetContainerItemLink = GetContainerItemLink
-local GetContainerNumFreeSlots = GetContainerNumFreeSlots
-local GetContainerNumSlots = GetContainerNumSlots
+local GetContainerItemInfo = function(bag, slot)
+    if C_Container and C_Container.GetContainerItemInfo then
+        local info = C_Container.GetContainerItemInfo(bag, slot)
+        if info then
+            return info.iconFileID, info.stackCount, info.isLocked, info.quality, info.isReadable, info.hasLoot, info.hyperlink, info.isFiltered, info.hasNoValue, info.itemID, info.isBound
+        end
+    else
+        return _G.GetContainerItemInfo(bag, slot)
+    end
+end
+local GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID
+local GetContainerItemLink = GetContainerItemLink or C_Container.GetContainerItemLink
+local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots
+local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
+local ContainerIDToInventoryID = ContainerIDToInventoryID or C_Container.ContainerIDToInventoryID
+local PickupContainerItem = PickupContainerItem or C_Container.PickupContainerItem
 local GetCursorPosition = GetCursorPosition
 local GetItemFamily = GetItemFamily
 local GetItemIcon = GetItemIcon
 local GetItemInfoInstant = GetItemInfoInstant
 local GetItemQualityColor = GetItemQualityColor
-local PickupContainerItem = PickupContainerItem
 
 ---- UI
 local UIParent = UIParent

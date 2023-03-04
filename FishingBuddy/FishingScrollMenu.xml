@@ -22,50 +22,40 @@
 		<Scripts>
 			<OnClick>
 				<!-- This function will look for global functions with the name of the parent -->
-				FishingMenuButton_OnClick(self);
+				FBEnvironment.FishingMenuButton_OnClick(self);
 			</OnClick>
-		</Scripts>		
+		</Scripts>
 		<ButtonText name="$parentTitleText" inherits="GameFontNormalSmallLeft" justifyH="LEFT" parentKey="text">
             <Anchors>
                 <Anchor point="LEFT" relativeTo="$parentCheck" relativePoint="RIGHT">
                     <Offset x="3" y="0"/>
                 </Anchor>
             </Anchors>
-		</ButtonText>		
-		<HighlightTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alphaMode="ADD"/>	
-	</Button>		
+		</ButtonText>
+		<HighlightTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alphaMode="ADD"/>
+	</Button>
 
 	<Frame name="FishingMenuFrameTemplate" virtual="true">
 		<Layers>
 			<Layer level="ARTWORK">
-				<Texture name="$parentLeft" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
-					<Size>
-						<AbsDimension x="25" y="64"/>
-					</Size>
+				<Texture name="$parentLeft" parentKey="Left" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+					<Size x="25" y="64"/>
 					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="0" y="17"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="0" y="17"/>
 					</Anchors>
 					<TexCoords left="0" right="0.1953125" top="0" bottom="1"/>
 				</Texture>
-				<Texture name="$parentMiddle" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
-					<Size>
-						<AbsDimension x="115" y="64"/>
-					</Size>
+				<Texture name="$parentMiddle" parentKey="Middle" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+					<Size x="115" y="64"/>
 					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT"/>
+						<Anchor point="LEFT" relativeKey="$parent.Left" relativePoint="RIGHT"/>
 					</Anchors>
 					<TexCoords left="0.1953125" right="0.8046875" top="0" bottom="1"/>
 				</Texture>
-				<Texture name="$parentRight" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
-					<Size>
-						<AbsDimension x="25" y="64"/>
-					</Size>
+				<Texture name="$parentRight" parentKey="Right" file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+					<Size x="25" y="64"/>
 					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentMiddle" relativePoint="RIGHT"/>
+						<Anchor point="LEFT" relativeKey="$parent.Middle" relativePoint="RIGHT"/>
 					</Anchors>
 					<TexCoords left="0.8046875" right="1" top="0" bottom="1"/>
 				</Texture>
@@ -149,17 +139,6 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-					<BackgroundInsets>
-						<AbsInset left="11" right="12" top="12" bottom="11"/>
-					</BackgroundInsets>
-					<TileSize>
-						<AbsValue val="32"/>
-					</TileSize>
-					<EdgeSize>
-						<AbsValue val="32"/>
-					</EdgeSize>
-				</Backdrop>
 				<Frames>
 					<ScrollFrame name="$parentMenu" inherits="MinimalHybridScrollFrameTemplate">
 						<Anchors>
@@ -167,6 +146,13 @@
 								<Offset x="8" y="-12"/>
 							</Anchor>
 						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parentBG" setAllPoints="true">
+									<Color r="0" g="0" b="0" a="1.0"/>
+								</Texture>
+							</Layer>
+						</Layers>
 					</ScrollFrame>
 				</Frames>
 			</Frame>

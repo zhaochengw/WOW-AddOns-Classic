@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Author: karlsnyder, vallantv
 ## Version: 1.2.1
 ## Title: MinimapButtonBag

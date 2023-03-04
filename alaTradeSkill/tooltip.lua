@@ -568,9 +568,13 @@ local function LF_TooltipSetBuybackItem(Tooltip, index)
 	end
 end
 local function LF_TooltipSetBagItem(Tooltip, bag, slot)
-	local _, num, _, _, _, _, link, _, _, iid = GetContainerItemInfo(bag, slot);
-	if iid ~= nil then
-		LF_TooltipSetItemByID(Tooltip, iid);
+	-- local _, num, _, _, _, _, link, _, _, iid = GetContainerItemInfo(bag, slot);
+	-- if iid ~= nil then
+	-- 	LF_TooltipSetItemByID(Tooltip, iid);
+	-- end
+	local info = GetContainerItemInfo(bag, slot);
+	if info ~= nil and info.itemID ~= nil then
+		LF_TooltipSetItemByID(Tooltip, info.itemID);
 	end
 end
 local function LF_TooltipSetAuctionItem(Tooltip, type, index)
@@ -714,6 +718,10 @@ local function HookTooltip(Tooltip)
 		return;
 	end
 	LT_HookedTooltip[Tooltip] = true;
+	--
+	-- TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, OnTooltipSetItem);
+	-- TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, OnTooltipSetUnit);
+	-- TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, OnTooltipSetSpell);
 	--
 	hooksecurefunc(Tooltip, "SetHyperlink", LF_TooltipSetHyperlink);
 	hooksecurefunc(Tooltip, "SetSpellByID", LF_TooltipSetSpellByID);

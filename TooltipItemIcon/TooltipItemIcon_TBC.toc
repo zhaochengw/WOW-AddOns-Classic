@@ -7,7 +7,7 @@
 ## X-Release: Release
 ## X-Date: 25 January 2023
 
-## Interface: 20504
+## Interface: 30401
 
 ## X-Curse-Project-ID: 3608
 ## X-WoWI-ID: 11411

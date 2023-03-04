@@ -6,7 +6,7 @@ if not AL then return end
 -- Collections
 AL["'%s %s' Vendor"] = "'%s %s' 아이템"
 AL["%s Sets"] = "%s 세트"
-AL["'%s' Vendor"] = "휘장 / 문장 아이템"
+AL["'%s' Vendor"] = "%s 상인"
 AL["Abyssal Dukes"] = "심연의 군주들"
 AL["Abyssal Lords"] = "심연의 군주"
 AL["Abyssal Templars"] = "심연의 기사단"

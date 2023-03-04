@@ -1,10 +1,10 @@
-lightweight tag 1093a9f854525bdff643bddeb4dcb59f4300af72 v1.8.2
+lightweight tag 166c6cd9df432c69eba4141315d71115b8627e5f v1.8.4
 Author:	dev7355608 <dev7355608@gmail.com>
-Date:	Sun Sep 25 15:22:59 2022 +0200
+Date:	Wed Jan 18 14:56:15 2023 +0100
 
-commit 1093a9f854525bdff643bddeb4dcb59f4300af72
+commit 166c6cd9df432c69eba4141315d71115b8627e5f
 Author: dev7355608 <dev7355608@gmail.com>
-Date:   Sun Sep 25 15:22:59 2022 +0200
+Date:   Wed Jan 18 14:55:53 2023 +0100
 
-    Update interface version
+    Update for Wrath 3.4.1
 

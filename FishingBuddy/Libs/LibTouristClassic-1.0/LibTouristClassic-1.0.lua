@@ -8,6 +8,10 @@ Description: A library to provide information about zones and instances for WoW 
 License: MIT
 ]]
 
+if (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_WRATH_CLASSIC) then
+	return
+end
+
 local MAJOR_VERSION = "LibTouristClassic-1.0"
 local MINOR_VERSION = 90000 + tonumber(("$Revision: 248 $"):match("(%d+)"))
 

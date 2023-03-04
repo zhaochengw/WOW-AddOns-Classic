@@ -1,5 +1,5 @@
-## Interface: 30400
-## Version: v10.0.1
+## Interface: 30401
+## Version: v10.0.2
 ## LoadOnDemand: 1
 ## Title: Lib: LibCandyBar-3.0
 ## Notes: Timer bars with that extra sweetness.

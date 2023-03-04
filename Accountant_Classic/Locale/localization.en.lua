@@ -1,4 +1,4 @@
--- $Id: localization.en.lua 293 2018-03-15 13:44:58Z arith $ 
+-- $Id: localization.en.lua 396 2022-11-04 15:23:19Z arithmandar $ 
 
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
 local L = AceLocale:NewLocale("Accountant_Classic", "enUS", true, true);
@@ -45,7 +45,7 @@ L["Reset"] = "Reset"
 L["Options"] = "Options"
 L["Exit"] = "Exit"
 
--- Tabs
+-- Tabs' name
 L["This Session"] = "This Session"
 L["Today"] = "Today"
 L["Prv. Day"] = "Prv. Day"
@@ -57,6 +57,18 @@ L["This Year"] = "This Year"
 L["Prv. Year"] = "Prv. Year"
 L["Total"] = "Total"
 L["All Chars"] = "All Chars"
+-- Tabs' tooltip
+L["TT1"] = "This Session"
+L["TT2"] = "Today"
+L["TT3"] = "Yesterday"
+L["TT4"] = "This Week"
+L["TT5"] = "Last Week"
+L["TT6"] = "This Month"
+L["TT7"] = "Last Month"
+L["TT8"] = "This Year"
+L["TT9"] = "Last Year"
+L["TT10"] = "Total"
+L["TT11"] = "All Characters"
 
 -- Options
 L["Accountant Classic Options"] = "Accountant Classic Options"

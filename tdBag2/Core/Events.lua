@@ -9,7 +9,7 @@ local select = select
 local unpack = table.unpack or unpack
 
 ---- WOW
-local GetContainerNumSlots = GetContainerNumSlots
+local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
 
 ---- UI
 local BankFrame = BankFrame

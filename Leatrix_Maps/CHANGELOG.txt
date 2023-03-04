@@ -1,5 +1,14 @@
-3.0.92 - 23rd January 2023
+3.0.114 - 3rd March 2023
 - Maintenance update.
+
+3.0.110 - 25th February 2023
+- Fix for Krowi Map Buttons library 1.4.4.
+
+3.0.106 - 22nd February 2023
+- Fix for Krowi Map Buttons library 1.5.
+
+3.0.100 - 30th January 2023
+- Updated LibDBIcon.
 
 3.0.84 - 19th January 2023
 - For 'Show points of interest', clicking a travel icon or a portal icon will now show the destination map.  Clicking a dungeon or raid icon on a Northrend map will now show the dungeon map (as long as there is only one dungeon or raid assigned to the icon).  Added zeppelin and boat icons to the Borean Tundra and Howling Fjord maps.  Added a Dalaran teleport crystal icon and a zone crossing icon to the Dalaran and Crystalsong Forest maps.

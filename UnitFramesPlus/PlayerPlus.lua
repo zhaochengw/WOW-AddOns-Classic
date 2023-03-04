@@ -542,7 +542,8 @@ function UnitFramesPlus_PlayerPortrait()
                 -- elseif event == "UNIT_MODEL_CHANGED" or event == "UNIT_EXITED_VEHICLE" then
                 elseif event == "UNIT_MODEL_CHANGED" then
                     UnitFramesPlus_PlayerPortraitDisplayUpdate();
-                elseif event == "PLAYER_DEAD" then
+                --[[
+				elseif event == "PLAYER_DEAD" then
                     Player3DPortrait:SetLight(true, false, 0, 0, 0, 1.0, 1, 0.3, 0.3);
                 elseif event == "PLAYER_ALIVE" then
                     if UnitIsGhost("player") then
@@ -556,6 +557,7 @@ function UnitFramesPlus_PlayerPortrait()
                 --     Player3DPortrait:SetPortraitZoom(1);
                 --     Player3DPortrait:ClearModel();
                 --     Player3DPortrait:SetUnit("vehicle");
+				--]]
                 end
             end)
         elseif UnitFramesPlusDB["player"]["portraittype"] == 2 then
@@ -588,13 +590,15 @@ function UnitFramesPlus_PlayerPortraitDisplayUpdate()
         -- Player3DPortrait:SetPosition(0,0,0);
         Player3DPortrait:ClearModel();
         Player3DPortrait:SetUnit("player");
-        if UnitIsGhost("player") then
+        --[[
+		if UnitIsGhost("player") then
             Player3DPortrait:SetLight(true, false, 0, 0, 0, 1.0, 0.25, 0.25, 0.25);
         elseif UnitIsDead("player") then
             Player3DPortrait:SetLight(true, false, 0, 0, 0, 1.0, 1, 0.3, 0.3);
         else
             Player3DPortrait:SetLight(true, false, 0, 0, 0, 1.0, 1, 1, 1);
         end
+		--]]
     elseif UnitFramesPlusDB["player"]["portraittype"] == 2 then
         local IconCoord = CLASS_ICON_TCOORDS[select(2, UnitClass("player"))];
         if IconCoord then

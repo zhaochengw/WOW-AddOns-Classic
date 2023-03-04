@@ -148,7 +148,7 @@ elseif GetLocale() == "zhTW" then
     UFP_OP_Player_Coordinate = "顯示坐標";
     UFP_OP_Pet_Options = "寵物";
     UFP_OP_Pet_Target = "顯示寵物目標";
-    UFP_OP_Pet_TargetTmp = "暫時顯示 (方便調整)";
+    UFP_OP_Pet_TargetTmp = "暫時顯示 (供調整使用)";
     UFP_OP_Target_Options = "目標";
     UFP_OP_Target_BuffSize = "調整增益/減益圖示大小";
     UFP_OP_Target_MySize = "自己:";

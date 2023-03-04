@@ -158,7 +158,7 @@
 					<TexCoords left = ".875" right = "1" top = ".125" bottom = ".25"/>
 				</PushedTexture>
 			</Button>
-			<Button name = "TrinketMenu_Tab1" inherits = "TrinketMenu_TabTemplate" text = "设置" id = "1">
+			<Button name = "TrinketMenu_Tab1" inherits = "TrinketMenu_TabTemplate" text = "Options" id = "1">
 				<Anchors>
 					<Anchor point = "TOPRIGHT">
 						<Offset>

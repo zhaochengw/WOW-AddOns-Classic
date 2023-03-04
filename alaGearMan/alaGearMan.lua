@@ -1917,7 +1917,7 @@ function func.takeoff(slot, not_take_off_dur0)
 					if i == 0 then
 						PutItemInBackpack();
 					else
-						PutItemInBag(i + 19);
+						PutItemInBag(i + CONTAINER_BAG_OFFSET);
 					end
 					var.cache[cache_index] = true;
 					C_Timer.After(1.0, function() var.cache[cache_index] = nil; end);

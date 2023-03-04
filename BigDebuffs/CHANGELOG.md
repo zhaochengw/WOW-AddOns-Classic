@@ -1,2 +1,1 @@
-- Spell updates
-- Add PitBull support
+- Fix FPS stuttering issues

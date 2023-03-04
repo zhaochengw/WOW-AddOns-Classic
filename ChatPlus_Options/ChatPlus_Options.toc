@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: ChatPlus Options
 ## Title-zhCN: |CFFFF8000辅助|R 聊天增强 设置
 ## Title-zhTW: |CFFFF8000輔助|R 聊天增强 設置

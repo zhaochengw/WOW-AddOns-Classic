@@ -11,7 +11,7 @@ if __ala_meta__.TOC_VERSION < 30401 then
 	local ToPack = {
 		["C_Container"] = {
 			{ "GetBankBagSlotFlag", },
-			{ "GetContainerItemInfo", },
+			-- { "GetContainerItemInfo", },
 			{ "GetContainerItemLink", },
 			{ "GetContainerFreeSlots", },
 			{ "GetBagSlotFlag", },

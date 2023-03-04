@@ -584,7 +584,7 @@ MT.BuildEnv('RAIDTOOL');
 			Frame.GuildList = GuildList;
 
 			local GuildListLabel = Frame:CreateFontString(nil, "ARTWORK");
-			GuildListLabel:SetFont(GameFontHighlight:GetFont(), 12, TUISTYLE.RaidToolUIFontOutline);
+			GuildListLabel:SetFont(TUISTYLE.RaidToolUIFont, 12, TUISTYLE.RaidToolUIFontOutline);
 			GuildListLabel:SetText(l10n.GuildList);
 			GuildList.Name = GuildListLabel;
 			GuildListLabel:SetPoint("RIGHT", GuildList, "LEFT", 0, 0);

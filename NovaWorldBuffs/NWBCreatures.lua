@@ -506,6 +506,20 @@ NWB.stormwindCreatures = {
 	[1733] = "Zggi",
 }
 
+NWB.dalaranCreatures = {
+	[29255] = "Sunreaver Guardian Mage",
+	[29254] = "Silver Covenant Guardian Mage",
+	[35607] = "Reginald Arcfire",
+	[28675] = "Teller Rames",
+	[28677] = "Teller Hanners",
+	[28676] = "Teller Althiellis",
+	[30604] = "Teller Almeida",
+	[30605] = "Teller Gee",
+	[30607] = "Teller Plushner",
+	[32689] = "Adorean Lew",
+	[32690] = "Bitty Frostflinger",
+};
+
 NWB.companionCreatures = {
 	--Classic.
 	[9662] = "Sprite Darter Hatchling",
@@ -749,3 +763,25 @@ NWB.companionCreatures = {
 	[31708] = "Deathguard Barth",
 	[196534] = "Hoplet", --6 month sub.
 }
+
+if (NWB.isWrath) then
+	NWB.map = 125;
+	NWB.mapName = "Dalaran";
+	for k, v in pairs(NWB.dalaranCreatures) do
+		NWB.npcs[k] = v;
+	end
+else
+	if (NWB.faction == "Horde") then
+		NWB.map = 1454;
+		NWB.mapName = "Orgrimmar";
+		for k, v in pairs(NWB.orgrimmarCreatures) do
+			NWB.npcs[k] = v;
+		end
+	else
+		NWB.map = 1453;
+		NWB.mapName = "Stormwind";
+		for k, v in pairs(NWB.stormwindCreatures) do
+			NWB.npcs[k] = v;
+		end
+	end
+end

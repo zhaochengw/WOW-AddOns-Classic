@@ -207,6 +207,8 @@ L["CONFIRM_POST_BELOW_VENDOR"] = "상인에게 판매하면 더 많은 골드를
 L["CONFIRM_POST_LOW_PRICE"] = "%s의 가격이 약간 낮아 보입니다. 정말 그 가격에 게시할까요?"
 L["CONFIRM_POST_PRICE_DROP"] = "%s의 단가는 큰 가격 하락입니다. 정말 그 가격에 게시할까요?"
 --[[Translation missing --]]
+L["CONFIRM_UNHIDE_ALL"] = "Are you sure you want to unhide all hidden items?"
+--[[Translation missing --]]
 L["CONFIRM_X_TOTAL_PRICE_X"] = "Confirm %s, total price %s"
 --[[Translation missing --]]
 L["CONTINUE"] = "Continue"

@@ -416,7 +416,8 @@ function UnitFramesPlus_PartyPortrait()
                         end
                     elseif event == "UNIT_MODEL_CHANGED" or event == "UNIT_CONNECTION" or event == "UNIT_PHASE" then
                         UnitFramesPlus_PartyPortraitDisplayUpdate(id);
-                    elseif event == "UNIT_HEALTH_FREQUENT" then
+                    --[[
+					elseif event == "UNIT_HEALTH_FREQUENT" then
                         if (not UnitIsConnected("party"..id)) or UnitIsGhost("party"..id) then
                             _G["UFP_Party3DPortrait"..id]:SetLight(true, false, 0, 0, 0, 1.0, 0.25, 0.25, 0.25);
                         elseif UnitIsDead("party"..id) then
@@ -424,7 +425,8 @@ function UnitFramesPlus_PartyPortrait()
                         else
                             _G["UFP_Party3DPortrait"..id]:SetLight(true, false, 0, 0, 0, 1.0, 1, 1, 1);
                         end
-                    end
+					--]]
+					end
                 end)
             elseif UnitFramesPlusDB["party"]["portraittype"] == 2 then
                 _G["UFP_Party3DPortrait"..id]:Hide();
@@ -502,13 +504,15 @@ function UnitFramesPlus_PartyPortraitDisplayUpdate(id)
                 _G["UFP_Party3DPortrait"..id]:SetPosition(0,0,0);
                 _G["UFP_Party3DPortrait"..id]:ClearModel();
                 _G["UFP_Party3DPortrait"..id]:SetUnit("party"..id);
-                if (not UnitIsConnected("party"..id)) or UnitIsGhost("party"..id) then
+                --[[
+				if (not UnitIsConnected("party"..id)) or UnitIsGhost("party"..id) then
                     _G["UFP_Party3DPortrait"..id]:SetLight(true, false, 0, 0, 0, 1.0, 0.25, 0.25, 0.25);
                 elseif UnitIsDead("party"..id) then
                     _G["UFP_Party3DPortrait"..id]:SetLight(true, false, 0, 0, 0, 1.0, 1, 0.3, 0.3);
                 else
                     _G["UFP_Party3DPortrait"..id]:SetLight(true, false, 0, 0, 0, 1.0, 1, 1, 1);
                 end
+				--]]
             end
         elseif UnitFramesPlusDB["party"]["portraittype"] == 2 then
             local IconCoord = CLASS_ICON_TCOORDS[select(2, UnitClass("party"..id))];
@@ -670,11 +674,13 @@ function UnitFramesPlus_PartyPortraitIndicator()
                 -- end
             end)
 
-            _G["UFP_PartyPortraitIndicator"..id]:SetScript("OnUpdate", function(self, elapsed)
+            --[[
+			_G["UFP_PartyPortraitIndicator"..id]:SetScript("OnUpdate", function(self, elapsed)
                 -- if tonumber(GetCVar("useCompactPartyFrames")) ~= 1 then
                     CombatFeedback_OnUpdate(self, elapsed);
                 -- end
             end)
+			--]]
         end
     else
         for id = 1, MAX_PARTY_MEMBERS, 1 do

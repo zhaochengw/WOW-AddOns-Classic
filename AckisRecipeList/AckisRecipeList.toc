@@ -35,7 +35,7 @@
 ## Author: Torhal, Pompachomp, Ackis, Zhinjio, Jim-Bim
 ## X-Donate: http://www.wowace.com/addons/arl/pages/donations/
 
-## Interface: 30400
+## Interface: 30401
 ## X-Compatible-With: 30400
 ## Version: v2.01-14-gfc58e9f
 ## X-Revision: fc58e9f

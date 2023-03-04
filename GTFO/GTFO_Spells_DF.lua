@@ -202,6 +202,21 @@ GTFO.SpellID["389287"] = {
   sound = 1;
 };
 
+GTFO.SpellID["396050"] = {
+  --desc = "Freezing";
+  applicationOnly = true;
+  test = true;
+  soundFunction = function() 
+	local stacks = GTFO_DebuffStackCount("player", 396050);
+	if (stacks > 15) then
+		return 1;
+	elseif (stacks == 1 or stacks % 10 == 0 or stacks >= 40) then
+		-- Getting close to being teleported out
+		return 2;
+	end
+  end;
+};
+
 --- *******************
 --- * Ruby Life Pools *
 --- *******************

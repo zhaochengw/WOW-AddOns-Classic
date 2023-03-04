@@ -1,4 +1,4 @@
-## Interface: 100001
+## Interface: 30401
 ## Version: 1.0.17
 ## X-CompatibleWith: 80000
 ## Title: Lib: SpellRange-1.0

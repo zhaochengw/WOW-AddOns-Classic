@@ -9,31 +9,24 @@ local LibEvent = LibStub:GetLibrary("LibEvent.7000")
 
 local function GetInspectTalentInfo(unit)
     if (not GetTalentTabInfo) then return end
-    local isInspect = (unit ~= "player")
-    -- 获取当前 天赋 分组
-    local talentGroup=GetActiveTalentGroup(isInspect,false);
-    local _, name, point,bgFile, name1, name2, name3, point1, point2, point3,fileName1,fileName2,fileName3
-    --返回 名字，素材，总点数，背景图片
-    --入参 天赋页，是否目标，是否宠物，第几天赋（双天赋）
-	name1, _, point1, fileName1 = GetTalentTabInfo(1, isInspect,false,talentGroup)
-	name2, _, point2, fileName2 = GetTalentTabInfo(2, isInspect,false,talentGroup)
-	name3, _, point3, fileName3 = GetTalentTabInfo(3, isInspect,false,talentGroup)
-
-    
+    local isInspect = not UnitIsUnit(unit,"player")
+    local guid = UnitGUID(unit)
+    local unitType = strsplit("-",guid)
+    local isPet = unitType and unitType == "Pet" or false
+    local talentGroup = GetActiveTalentGroup(unit) or 1
+    local _, name, point, name1, name2, name3, point1, point2, point3
+	name1, _, point1 = GetTalentTabInfo(1, isInspect, isPet, talentGroup)
+	name2, _, point2 = GetTalentTabInfo(2, isInspect, isPet, talentGroup)
+	name3, _, point3 = GetTalentTabInfo(3, isInspect, isPet, talentGroup)
 	point = max(point1, point2, point3)
-
 	if point == point1 then
 		name = name1
-        bgFile=fileName1
 	elseif point == point2 then
 		name = name2
-        bgFile=fileName2
-
 	elseif point == point3 then
 		name = name3
-        bgFile=fileName3
 	end
-    return name, point, point1, point2, point3,bgFile
+    return name, point, point1, point2, point3
 end
 
 hooksecurefunc("ShowInspectItemListFrame", function(unit, parent, itemLevel, maxLevel)
@@ -46,26 +39,15 @@ hooksecurefunc("ShowInspectItemListFrame", function(unit, parent, itemLevel, max
         frame.specicon:SetAlpha(0.5)
         frame.specicon:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
         frame.spectext = frame:CreateFontString(nil, "BORDER")
-        frame.spectext:SetFont(UNIT_NAME_FONT, 11, "THINOUTLINE")
+        frame.spectext:SetFont(SystemFont_Outline_Small:GetFont(), 11, "THINOUTLINE")
         frame.spectext:SetPoint("BOTTOM", frame.specicon, "BOTTOM", 0, -7)
         frame.spectext:SetJustifyH("CENTER")
         --frame.spectext:SetAlpha(0.9)
-
-
-
-
     end
     local class = select(2, UnitClass(unit))
     local x1, x2, y1, y2 = unpack(CLASS_ICON_TCOORDS[strupper(class)])
     frame.specicon:SetTexCoord(x1, x2, y1, y2)
-    local name, point, point1, point2, point3,bgFile = GetInspectTalentInfo(unit)
-
-    --添加天赋背景
-    local bgFile   = string.format("Interface\\TalentFrame\\%s-TopLeft", bgFile)
-
-    
-    
-
+    local name, point, point1, point2, point3 = GetInspectTalentInfo(unit)
     if (not name and not point) then
         frame.spectext:SetText("")
     elseif (name and point > 0) then

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.13) add-on for World of Warcraft UI
+    Decursive (v 2.7.9) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["frFR.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "frFR");
 
 if not L then
-    T._LoadedFiles["frFR.lua"] = "2.7.8.13";
+    T._LoadedFiles["frFR.lua"] = "2.7.9";
     return;
 end
 
@@ -328,6 +328,8 @@ L["OPT_HIDEMFS_GROUP"] = "en solo ou en groupe"
 L["OPT_HIDEMFS_GROUP_DESC"] = "Masque la fenêtre lorsque vous n'êtes pas dans un groupe de raid."
 L["OPT_HIDEMFS_NEVER"] = "Ne jamais masquer"
 L["OPT_HIDEMFS_NEVER_DESC"] = "Ne jamais masquer la fenêtre automatiquement."
+L["OPT_HIDEMFS_RAID"] = "en raid"
+L["OPT_HIDEMFS_RAID_DESC"] = "Masque la fenêtre lorsque vous êtes dans un groupe de raid."
 L["OPT_HIDEMFS_SOLO"] = "en solo"
 L["OPT_HIDEMFS_SOLO_DESC"] = "Masque la fenêtre lorsque vous jouez en solo."
 L["OPT_HIDEMUFSHANDLE"] = "Chacher la poignée des Micro-Portraits"
@@ -506,4 +508,4 @@ L["UNSTABLERELEASE"] = "Version instable"
 
 
 
-T._LoadedFiles["frFR.lua"] = "2.7.8.13";
+T._LoadedFiles["frFR.lua"] = "2.7.9";

@@ -40,7 +40,11 @@ function RuleOption:OnSetup()
     Frame.portrait:SetMask([[Interface\Minimap\UI-Minimap-Background]])
     Frame.TitleText:SetText('tdPack2')
 
-    Frame:SetMinResize(337, 423)
+    if Frame.SetResizeBounds then
+        Frame:SetResizeBounds(337, 423)
+    else
+        Frame:SetMinResize(337, 423)
+    end
     Frame.Tabs = self.tabs
     Frame.selectedTab = 1
 

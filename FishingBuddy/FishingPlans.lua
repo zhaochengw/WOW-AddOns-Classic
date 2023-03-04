@@ -2,13 +2,16 @@
 --
 -- Let's make a plan that we can carry through with, allowing us to group
 -- item choices instead of handling each item separately.
+local addonName, FBStorage = ...
+local  FBI = FBStorage
+local FBConstants = FBI.FBConstants;
 
 -- 5.0.4 has a problem with a global "_" (see some for loops below)
 local _
 
 local FL = LibStub("LibFishing-1.0");
 
-local GSB = FishingBuddy.GetSettingBool
+local GSB = function(...) return FBI:GetSettingBool(...); end;
 local CurLoc = GetLocale();
 
 local FishingPlans = {}
@@ -65,12 +68,12 @@ function FishingPlans:HavePlans()
     return #self.planqueue > 0
 end
 
-function FishingPlans:HaveEntry(itemid, name, targetid)
+function FishingPlans:HaveEntry(itemid, name, itemtype)
     if itemid then
         for _, plan in ipairs(self.planqueue) do
             if (not itemid or plan.itemid == itemid) and
             (not name or plan.name == name) and
-            (not targetid or plan.targetid == targetid) then
+            (not itemtype or plan.itemtype == itemtype) then
                 return true
             end
         end
@@ -78,12 +81,12 @@ function FishingPlans:HaveEntry(itemid, name, targetid)
     return nil
 end
 
-function FishingPlans:AddEntry(itemid, name, targetid)
+function FishingPlans:AddEntry(itemid, name, itemtype)
     if itemid then
         tinsert(self.planqueue, {
             ["itemid"] = itemid,
             ["name"] = name,
-            ["targetid"] = targetid
+            ["itemtype"] = itemtype
         })
     end
 end
@@ -91,7 +94,7 @@ end
 function FishingPlans:GetPlan()
     if self:HavePlans() then
         local head = table.remove(self.planqueue, 1)
-        return true, head.itemid, head.name, head.targetid
+        return true, head.itemid, head.name, head.itemtype
     end
     -- return nil
 end
@@ -105,12 +108,9 @@ function FishingPlans:ExecutePlans(force)
     end
 end
 
-FishingBuddy.FishingPlans = FishingPlans
+FBI.FishingPlans = FishingPlans
 
-local PlanEvents = {}
-PlanEvents[FBConstants.FISHING_DISABLED_EVT] = function()
+EventRegistry:RegisterCallback(FBConstants.FISHING_DISABLED_EVT, function()
     FishingPlans.planqueue = {}
-end
-
-FishingBuddy.RegisterHandlers(PlanEvents);
+end)
 

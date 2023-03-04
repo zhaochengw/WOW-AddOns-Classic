@@ -9,10 +9,6 @@
 	<!-- Worn trinkets template -->
 	<CheckButton name = "TrinketMenuMainTrinketTemplate" inherits = "ActionButtonTemplate,SecureActionButtonTemplate" virtual = "true">
 		<Scripts>
-			<OnLoad>
-				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-				self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
-			</OnLoad>
 			<PostClick>
 				TrinketMenu.MainTrinket_OnClick(self)
 			</PostClick>
@@ -32,7 +28,12 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-				self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
+				if self.cooldown then
+					self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
+				end
+				if self.icon then
+					self.icon:SetAllPoints()
+				end
 			</OnLoad>
 			<PostClick>
 				TrinketMenu.MenuTrinket_OnClick(self)
@@ -80,7 +81,7 @@
 	<!-- MainFrame: Equipped Trinkets -->
 	<Frame name = "TrinketMenu_MainFrame" toplevel = "true" frameStrata = "BACKGROUND" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true" inherits = "TrinketMenuBackdropTemplate">
 		<Size>
-			<AbsDimension x = "91" y = "52" />
+			<AbsDimension x = "92" y = "52" />
 		</Size>
 		<KeyValues>
 			<KeyValue key = "backdropInfo" value = "TRINKETMENU_BACKDROP_16_16_4444" type = "global"/>
@@ -142,6 +143,22 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
+				<Scripts>
+					<OnLoad>
+						if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+							self:SetPoint("TOPLEFT", 4, -4)
+						else
+							self:SetPoint("TOPLEFT", 8, -8)
+						end
+						self:RegisterForClicks("LeftButtonDown", "LeftButtonUp", "RightButtonUp")
+						if self.cooldown then
+							self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
+						end
+						if self.icon then
+							self.icon:SetAllPoints()
+						end
+					</OnLoad>
+				</Scripts>
 			</CheckButton>
 			<Frame parent = "TrinketMenu_Trinket0" inherits = "TrinketMenuTimeTemplate"/>
 			<Frame parent = "TrinketMenu_Trinket0" inherits = "TrinketMenuQueueTemplate"/>
@@ -154,6 +171,22 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
+				<Scripts>
+					<OnLoad>
+						if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+							self:SetPoint("BOTTOMRIGHT", -3, 3)
+						else
+							self:SetPoint("BOTTOMRIGHT", -8, 8)
+						end
+						self:RegisterForClicks("LeftButtonDown", "LeftButtonUp", "RightButtonUp")
+						if self.cooldown then
+							self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
+						end
+						if self.icon then
+							self.icon:SetAllPoints()
+						end
+					</OnLoad>
+				</Scripts>
 			</CheckButton>
 			<Frame parent = "TrinketMenu_Trinket1" inherits = "TrinketMenuTimeTemplate"/>
 			<Frame parent = "TrinketMenu_Trinket1" inherits = "TrinketMenuQueueTemplate"/>
@@ -182,7 +215,7 @@
 	<!-- MenuFrame: Bagged Trinkets -->
 	<Frame name = "TrinketMenu_MenuFrame" toplevel = "true" frameStrata = "HIGH" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true" clampedToScreen = "true" inherits = "TrinketMenuBackdropTemplate">
 		<Size>
-			<AbsDimension x = "52" y = "91" />
+			<AbsDimension x = "52" y = "92" />
 		</Size>
 		<KeyValues>
 			<KeyValue key = "backdropInfo" value = "TRINKETMENU_BACKDROP_16_16_4444" type = "global"/>

@@ -94,8 +94,10 @@ MT.BuildEnv('TOOLTIP');
 		end
 	end
 	local function OnTalentDataRecv(name)
-		TipAddInfo(GameTooltip, name);
-		TipAddInfo(ItemRefTooltip, name);
+		if VT.SET.talents_in_tip then
+			TipAddInfo(GameTooltip, name);
+			TipAddInfo(ItemRefTooltip, name);
+		end
 	end
 	local function OnTooltipSetUnit(Tip)
 		if VT.SET.talents_in_tip then

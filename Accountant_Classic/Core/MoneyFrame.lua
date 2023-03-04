@@ -1,5 +1,5 @@
 --[[
-$Id: MoneyFrame.lua 393 2022-08-17 14:44:33Z arithmandar $
+$Id: MoneyFrame.lua 396 2022-11-04 15:23:19Z arithmandar $
 ]]-----------------------------------------------------------------------
 -- Upvalued Lua API.
 -----------------------------------------------------------------------
@@ -85,10 +85,11 @@ local function frame_OnEnter(self)
 		tooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", -10, 0)
 		GameTooltip_SetTitle(tooltip, "|cFFFFFFFF"..L["Accountant Classic"].." - "..L["This Session"])
 		GameTooltip_AddNormalLine(tooltip, amoney_str, true)
+		--[[
 		local tokenstr = addon:BackpackTokenFrame_Update()
 		if (tokenstr) then
 			GameTooltip_AddNormalLine(tooltip, tokenstr, true)
-		end
+		end]]
 		if (profile.showintrotip == true) then
 			GameTooltip_AddColoredLine(tooltip, "("..L["Left-click and drag to move this button.\nRight-Click to open Accountant Classic."]..")", GRAY_FONT_COLOR, true)
 		end

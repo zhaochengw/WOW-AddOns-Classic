@@ -52,7 +52,7 @@ L["Show Physical Hit/Haste"] = true
 L["Show Physical Hit/Haste from Hit/Haste Rating"] = true
 -- /rb rating detail
 L["Show detailed conversions text"] = true
-L["Show detailed text for Resiliance and Expertise conversions"] = true
+L["Show detailed text for Resilience and Expertise conversions"] = true
 -- /rb rating def
 L["Defense breakdown"] = true
 L["Convert Defense into Crit Avoidance, Hit Avoidance, Dodge, Parry and Block"] = true
@@ -474,6 +474,14 @@ L["Meta Socket"] = EMPTY_SOCKET_META
 -----------------------
 L["ItemLevel: "] = true
 L["ItemID: "] = true
+
+-------------------
+-- Always Buffed --
+-------------------
+L["Enables RatingBuster to calculate selected buff effects even if you don't really have them"] = true
+L["$class Self Buffs"] = true -- $class will be replaced with localized player class
+L["Raid Buffs"] = true
+
 -----------------------
 -- Matching Patterns --
 -----------------------
@@ -574,6 +582,7 @@ L["statList"] = {
 	{pattern = "block rating", id = CR_BLOCK}, -- block enchant: "+10 Shield Block Rating"
 	{pattern = "parry rating", id = CR_PARRY},
 
+	{pattern = "spell power", id = nil}, -- Shiffar's Nexus-Horn
 	{pattern = "spell critical strikes", id = nil}, -- Cyclone Regalia, Tirisfal Regalia
 	{pattern = "spell critical strike rating", id = CR_CRIT_SPELL},
 	{pattern = "spell critical hit rating", id = CR_CRIT_SPELL},

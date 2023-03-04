@@ -143,9 +143,9 @@ else
 		"BARBER_SHOP_COST_UPDATE",
 		-- LFG
 		"LFG_COMPLETION_REWARD",
-		-- VOID
-		"VOID_STORAGE_OPEN",
-		"VOID_STORAGE_CLOSE",
+		-- VOID -- removed after 10.0.0
+		-- "VOID_STORAGE_OPEN",
+		-- "VOID_STORAGE_CLOSE",
 		-- Transform
 		"TRANSMOGRIFY_OPEN",
 		"TRANSMOGRIFY_CLOSE",
@@ -188,11 +188,12 @@ else
 		"PLAYER_MONEY",
 	}
 	constants.logtypes = {
-		"VOID", "TRANSMO", "GARRISON", "LFG", "BARBER", "GUILD",
+	--	"VOID", 
+		"TRANSMO", "GARRISON", "LFG", "BARBER", "GUILD",
 		"TRAIN", "TAXI", "TRADE", "AH", "MERCH", "REPAIRS", "MAIL", "QUEST", "LOOT", "OTHER" 
 	}
 	constants.onlineData = {
-		["VOID"] =  	{ Title = VOID_STORAGE};
+	--	["VOID"] =  	{ Title = VOID_STORAGE};
 		["TRANSMO"] =	{ Title = TRANSMOGRIFY};
 		["GARRISON"] =	{ Title = GARRISON_LOCATION_TOOLTIP.." / "..ORDER_HALL_MISSIONS };
 		["LFG"] =	{ Title = L["LFD, LFR and Scen."]};
@@ -219,7 +220,6 @@ constants.ldbDisplayTypes = { "Total", "Session", "Day", "Week", "Month" }
 
 constants.dateformats = { "mm/dd/yy", "dd/mm/yy", "yy/mm/dd", }
 
-
 constants.tabText = {
 	L["This Session"],
 	L["Today"],
@@ -232,6 +232,19 @@ constants.tabText = {
 	L["Prv. Year"],
 	L["Total"],
 	L["All Chars"],
+}
+constants.tabTooltipText = {
+	L["TT1"],
+	L["TT2"],
+	L["TT3"],
+	L["TT4"],
+	L["TT5"],
+	L["TT6"],
+	L["TT7"],
+	L["TT8"],
+	L["TT9"],
+	L["TT10"],
+	L["TT11"],
 }
 
 

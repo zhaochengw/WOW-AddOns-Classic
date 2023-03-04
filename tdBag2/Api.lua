@@ -15,7 +15,7 @@ local unpack = unpack
 
 ---- WOW
 local C_Timer = C_Timer
-local ContainerIDToInventoryID = ContainerIDToInventoryID
+local ContainerIDToInventoryID = ContainerIDToInventoryID or C_Container.ContainerIDToInventoryID
 local GetScreenHeight = GetScreenHeight
 local GetScreenWidth = GetScreenWidth
 local PlaySound = PlaySound

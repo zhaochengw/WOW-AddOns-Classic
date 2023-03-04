@@ -96,7 +96,7 @@
 	<Script file="Phase1\WarriorArms.lua" />
 	<Script file="Phase1\WarriorProtection.lua" />
 
-	<!--<Script file="Phase2\DeathKnightBlood.lua" />
+	<Script file="Phase2\DeathKnightBlood.lua" />
 	<Script file="Phase2\DeathKnightFrost.lua" />
 	<Script file="Phase2\DeathKnightUnholy.lua" />
 	<Script file="Phase2\DruidBalance.lua" />
@@ -126,6 +126,38 @@
 	<Script file="Phase2\WarlockDestruction.lua" />
 	<Script file="Phase2\WarriorFury.lua" />
 	<Script file="Phase2\WarriorArms.lua" />
-	<Script file="Phase2\WarriorProtection.lua" />-->
-	
+	<Script file="Phase2\WarriorProtection.lua" />
+
+	<!--<Script file="Phase3\DeathKnightBlood.lua" />
+	<Script file="Phase3\DeathKnightFrost.lua" />
+	<Script file="Phase3\DeathKnightUnholy.lua" />
+	<Script file="Phase3\DruidBalance.lua" />
+	<Script file="Phase3\DruidBear.lua" />
+	<Script file="Phase3\DruidCat.lua" />
+	<Script file="Phase3\DruidRestoration.lua" />
+	<Script file="Phase3\HunterBeastMastery.lua" />
+	<Script file="Phase3\HunterMarksmanship.lua" />
+	<Script file="Phase3\HunterSurvival.lua" />
+	<Script file="Phase3\MageFrost.lua" />
+	<Script file="Phase3\MageFire.lua" />
+	<Script file="Phase3\MageArcane.lua" />
+	<Script file="Phase3\PaladinHoly.lua" />
+	<Script file="Phase3\PaladinRetribution.lua" />
+	<Script file="Phase3\PaladinProtection.lua" />
+	<Script file="Phase3\PriestHoly.lua" />
+	<Script file="Phase3\PriestDiscipline.lua" />
+	<Script file="Phase3\PriestShadow.lua" />
+	<Script file="Phase3\RogueAssassination.lua" />
+	<Script file="Phase3\RogueSubtlety.lua" />
+	<Script file="Phase3\RogueCombat.lua" />
+	<Script file="Phase3\ShamanElemental.lua" />
+	<Script file="Phase3\ShamanEnhancement.lua" />
+	<Script file="Phase3\ShamanRestoration.lua" />
+	<Script file="Phase3\WarlockAffliction.lua" />
+	<Script file="Phase3\WarlockDemonology.lua" />
+	<Script file="Phase3\WarlockDestruction.lua" />
+	<Script file="Phase3\WarriorFury.lua" />
+	<Script file="Phase3\WarriorArms.lua" />
+	<Script file="Phase3\WarriorProtection.lua" />-->
+
 </Ui>

@@ -1,6 +1,6 @@
 ## Interface: 11403
 ## Title: Fishing Buddy (Classic)
-## Version: 0.8.4
+## Version: 0.9.1
 ## X-Curse-Project-ID: 340577
 ## X-WoWI-ID: 25476
 ## Notes: Help with fishing related tasks -- clothing, fish information, etc.
@@ -14,20 +14,9 @@
 ## X-Date: July 21, 2005
 ## X-Help: FBConstants.HELPMSG
 Libs\Libs.xml
-localization.enUS.lua
-localization.deDE.lua
-localization.esES.lua
-localization.frFR.lua
-localization.itIT.lua
-localization.koKR.lua
-localization.ptBR.lua
-localization.ruRU.lua
-localization.zhTW.lua
-localization.zhCN.lua
-FishingSetup.lua
+locale\locale.xml
 FishingBuddy.xml
 FishingDatabase.lua
-FishingBuddyAPI.lua
 FishingBuddyFrame.xml
 FishingOptionsFrame.lua
 FishingScrollMenu.xml
@@ -40,6 +29,7 @@ FishingSchools.lua
 FishingAbout.lua
 FishingPlans.lua
 FishingPlans\Plans.xml
-FishingFluff.xml
+FishingFluff.lua
+FishingBuddyAPI.lua
 FB_Broker.lua
 FishingOutfitFrame.xml

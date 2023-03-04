@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: CritSound Options
 ## Title-zhTW: 爆擊音效 設置
 ## X-Repple: 辅助

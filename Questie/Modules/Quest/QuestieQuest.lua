@@ -632,7 +632,7 @@ function QuestieQuest:AddFinisher(quest)
 
             if finisher.waypoints then
                 for zone, waypoints in pairs(finisher.waypoints) do
-                    if (not ZoneDB:IsDungeonZone(zone)) then
+                    if (not ZoneDB.IsDungeonZone(zone)) then
                         if not finisherIcons[zone] and waypoints[1] and waypoints[1][1] and waypoints[1][1][1]  then
                             local data = {
                                 Id = questId,
@@ -1406,9 +1406,9 @@ do
     end
 end
 
-function QuestieQuest:DrawDailyQuest(questId)
-    local quest = QuestieDB:GetQuest(questId)
+function QuestieQuest.DrawDailyQuest(questId)
     if QuestieDB.IsDoable(questId) then
+        local quest = QuestieDB:GetQuest(questId)
         _QuestieQuest:DrawAvailableQuest(quest)
     end
 end

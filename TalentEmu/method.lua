@@ -2378,7 +2378,7 @@ MT.BuildEnv('METHOD');
 				for i = 1, #Frames do
 					Frames[i].objects.EquipmentFrameButton:Show();
 					if Frames[i].EquipmentFrameContainer:IsShown() then
-						MT.UI.GlyphFrameUpdate(Frames[i].GlyphContainer, cache.GlyData);
+						MT.UI.GlyphContainerUpdate(Frames[i].GlyphContainer, cache.GlyData);
 					end
 				end
 			end
@@ -2403,7 +2403,7 @@ MT.BuildEnv('METHOD');
 				for i = 1, #Frames do
 					Frames[i].objects.EquipmentFrameButton:Show();
 					if Frames[i].EquipmentFrameContainer:IsShown() then
-						MT.UI.EquipmentFrameUpdate(Frames[i].EquipmentContainer, cache.EquData);
+						MT.UI.EquipmentContainerUpdate(Frames[i].EquipmentContainer, cache.EquData);
 					end
 				end
 			end

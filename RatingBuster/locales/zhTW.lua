@@ -60,7 +60,7 @@ L["Show Physical Hit/Haste"] = "顯示物理命中/加速"
 L["Show Physical Hit/Haste from Hit/Haste Rating"] = "顯示命中/加速給的物理命中/加速"
 -- /rb rating detail
 L["Show detailed conversions text"] = "顯示詳細轉換文字"
-L["Show detailed text for Resiliance and Expertise conversions"] = "顯示韌性和熟練技能的詳細轉換文字"
+L["Show detailed text for Resilience and Expertise conversions"] = "顯示韌性和熟練技能的詳細轉換文字"
 -- /rb rating def
 L["Defense breakdown"] = "分析防禦"
 L["Convert Defense into Crit Avoidance Hit Avoidance, Dodge, Parry and Block"] = "將防禦分為避免致命、避免命中、閃躲、招架和格擋"
@@ -477,6 +477,14 @@ L["Meta Socket"] = EMPTY_SOCKET_META
 -----------------------
 L["ItemLevel: "] = "物品等級: "
 L["ItemID: "] = "物品編號: "
+
+-------------------
+-- Always Buffed --
+-------------------
+L["Enables RatingBuster to calculate selected buff effects even if you don't really have them"] = "指定常駐buff，就算身上沒有buff，RatingBuster也會當成有來計算"
+L["$class Self Buffs"] = "$class個人Buff"
+L["Raid Buffs"] = "團隊Buff"
+
 -----------------------
 -- Matching Patterns --
 -----------------------

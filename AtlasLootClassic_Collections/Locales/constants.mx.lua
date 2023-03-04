@@ -31,6 +31,8 @@ AL["Brightly Colored Egg"] = "Huevo de colores vivos"
 --[[ AL["Card Game Tabards"] = "Card Game Tabards"--]] 
 AL["Childrens Week"] = "Semana de los Niños"
 AL["Crimson Templar"] = "Templario Carmesí"
+--[[Translation missing --]]
+--[[ AL["Day of the Dead"] = "Day of the Dead"--]] 
 AL["Drops"] = "Despoja"
 AL["Dungeon Set %s"] = "Conjunto de Mazmorra %s"
 AL["Dungeon Sets"] = "Conjuntos de Mazmorra"
@@ -72,6 +74,8 @@ AL["Masks"] = "Máscaras"
 AL["Midsummer Festival"] = "Festival de Fuego del Solsticio de Verano"
 AL["Noblegarden"] = "Jardín Noble"
 AL["One-Handed Weapons"] = "Armas de una mano"
+--[[Translation missing --]]
+--[[ AL["Pilgrim's Bounty"] = "Pilgrim's Bounty"--]] 
 AL["Prince Skaldrenox"] = "Príncipe Skaldrenox"
 AL["Princess Tempestria"] = "Princesa Tempestria"
 AL["Ranged Weapons"] = "Armas a distancia"

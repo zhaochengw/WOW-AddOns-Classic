@@ -10,76 +10,21 @@
     <Frame name="FishingWatchFrame" frameStrata="LOW" toplevel="true" enableMouse="false" clampedToScreen="true" movable="true" parent="UIParent" hidden="true">
 		<Scripts>
 			<OnLoad>
-				FishingBuddy.WatWin.OnLoad(self);
+				FBEnvironment.Watcher_OnLoad(self);
 			</OnLoad>
 			<OnUpdate>
-				FishingBuddy.WatWin.OnUpdate(self, elapsed);
+				FBEnvironment.Watcher_OnUpdate(self, elapsed);
 			</OnUpdate>
 		</Scripts>
 		<Frames>
-			<Button name="FishingWatchTab" hidden="true">
-				<Size>
-					<AbsDimension x="64" y="32"/>
-				</Size>
+			<Button name="FishingWatchTab" inherits="OptionsFrameTabButtonTemplate" hidden="true">
+				<Size x="64" y="32"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="FishingWatchFrame" relativePoint="TOPLEFT">
 						<AbsDimension x="0" y="2"/>
 					</Anchor>
 				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture name="$parentLeft" file="Interface\ChatFrame\ChatFrameTab">
-							<Size>
-								<AbsDimension x="16" y="32"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT"/>
-							</Anchors>
-							<TexCoords left="0.0" right="0.25" top="0.0" bottom="1.0"/>
-						</Texture>
-						<Texture name="$parentMiddle" file="Interface\ChatFrame\ChatFrameTab">
-							<Size>
-								<AbsDimension x="44" y="32"/>
-							</Size>
-							<Anchors>
-								<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT"/>
-							</Anchors>
-							<TexCoords left="0.25" right="0.75" top="0.0" bottom="1.0"/>
-						</Texture>
-						<Texture name="$parentRight" file="Interface\ChatFrame\ChatFrameTab">
-							<Size>
-								<AbsDimension x="16" y="32"/>
-							</Size>
-							<Anchors>
-								<Anchor point="LEFT" relativeTo="$parentMiddle" relativePoint="RIGHT"/>
-							</Anchors>
-							<TexCoords left="0.75" right="1.0" top="0.0" bottom="1.0"/>
-						</Texture>
-					</Layer>
-				</Layers>
 				<Frames>
-					<Frame name="$parentFlash" hidden="true">
-						<Size>
-							<AbsDimension x="5" y="32"/>
-						</Size>
-						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parentLeft">
-								<Offset>
-									<AbsDimension x="0" y="-7"/>
-								</Offset>
-							</Anchor>
-							<Anchor point="RIGHT" relativeTo="$parentRight">
-								<Offset>
-									<AbsDimension x="0" y="-7"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Layers>
-							<Layer level="BACKGROUND">
-								<Texture file="Interface\PaperDollInfoFrame\UI-Character-Tab-Highlight" alphaMode="ADD" setAllPoints="true"/>
-							</Layer>
-						</Layers>
-					</Frame>
 					<Frame name="FishingBuddyWatcherMenu" inherits="UIDropDownMenuTemplate">
 						<Scripts>
 							<OnLoad>
@@ -88,33 +33,6 @@
 						</Scripts>
 					</Frame>
 				</Frames>
-				<ButtonText name="$parentText">
-					<Size>
-						<AbsDimension x="50" y="8"/>
-					</Size>
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT">
-							<Offset>
-								<AbsDimension x="0" y="-5"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</ButtonText>
-				<NormalFont style="GameFontNormalSmall"/>
-				<HighlightTexture file="Interface\PaperDollInfoFrame\UI-Character-Tab-Highlight" alphaMode="ADD">
-					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentLeft">
-							<Offset>
-								<AbsDimension x="0" y="-7"/>
-							</Offset>
-						</Anchor>
-						<Anchor point="RIGHT" relativeTo="$parentRight">
-							<Offset>
-								<AbsDimension x="0" y="-7"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</HighlightTexture>
 			</Button>
 			<Frame name="FishingWatchLineHolder">
 				<Size>

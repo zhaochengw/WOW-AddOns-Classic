@@ -59,7 +59,7 @@ L["Show Physical Hit/Haste"] = true
 L["Show Physical Hit/Haste from Hit/Haste Rating"] = true
 -- /rb rating detail
 L["Show detailed conversions text"] = "Mostrar texto detallado conversiones"
-L["Show detailed text for Resiliance and Expertise conversions"] = "Mostrar texto detallado de conversiones de Temple y Pericia"
+L["Show detailed text for Resilience and Expertise conversions"] = "Mostrar texto detallado de conversiones de Temple y Pericia"
 -- /rb rating def
 L["Defense breakdown"] = "Desglose Defensa"
 L["Convert Defense into Crit Avoidance Hit Avoidance, Dodge, Parry and Block"] = "Convierte Defensa en evitar Critico, evitar Golpe, Esquivar, Parar y Bloquear"
@@ -478,6 +478,14 @@ L["Meta Socket"] = EMPTY_SOCKET_META
 -----------------------
 L["ItemLevel: "] = "Nivel de objeto "
 L["ItemID: "] = "ItemID: "
+
+-------------------
+-- Always Buffed --
+-------------------
+L["Enables RatingBuster to calculate selected buff effects even if you don't really have them"] = true
+L["$class Self Buffs"] = true -- $class will be replaced with localized player class
+L["Raid Buffs"] = true
+
 -----------------------
 -- Matching Patterns --
 -----------------------

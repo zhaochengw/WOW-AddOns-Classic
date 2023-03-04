@@ -1,5 +1,5 @@
 --[[
-$Id: Core.lua 393 2022-08-17 14:44:33Z arithmandar $
+$Id: Core.lua 399 2022-11-06 13:25:42Z arithmandar $
 ]]
 --[[
  Accountant
@@ -289,7 +289,7 @@ local function arrangeAccountantClassicFrame()
 	f:SetAlpha(profile.alpha)
 	local point, relativeTo, relativePoint, ofsx, ofsy = unpack(profile.AcFramePoint)
 	f:ClearAllPoints()
-	f:SetParent("UIParent")
+	f:SetParent(UIParent)
 	f:SetPoint(point or "TOPLEFT", nil, relativePoint or "TOPLEFT", ofsx or 0, ofsy or -104)
 end
 
@@ -411,13 +411,21 @@ local function setLabels()
 end
 
 local function settleTabText()
-	local TabText = private.constants.tabText
-	for i = 1, AC_TABS do
-		_G["AccountantClassicFrameTab"..i]:SetText(TabText[i]);
-		PanelTemplates_TabResize(_G["AccountantClassicFrameTab"..i], 25);
+	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
+		local TabText = private.constants.tabText
+		for i = 1, AC_TABS do
+			local tab = _G["AccountantClassicFrameTab"..i]
+			tab:SetText(TabText[i]);
+			PanelTemplates_TabResize(tab, 25);
+		end
 	end
 
-	PanelTemplates_SetNumTabs(AccountantClassicFrame, AC_TABS);
+	if (WoWRetail) then
+		AccountantClassicFrame.numTabs = AC_TABS
+	else
+		PanelTemplates_SetNumTabs(AccountantClassicFrame, AC_TABS);
+	end
+		
 	PanelTemplates_SetTab(AccountantClassicFrame, AccountantClassicFrameTab1);
 	PanelTemplates_UpdateTabs(AccountantClassicFrame);
 end
@@ -1658,6 +1666,7 @@ function addon:CharacterRemovalProceed(server, character)
 	end
 end
 
+--[[
 function AccountantClassicTab_OnClick(self)
 	LibDD:CloseDropDownMenus()
 	PanelTemplates_SetTab(AccountantClassicFrame, self:GetID());
@@ -1665,7 +1674,7 @@ function AccountantClassicTab_OnClick(self)
 	PlaySound(841);
 	AccountantClassic_OnShow();
 end
-
+]]
 function addon:RepairAllItems(guildBankRepair)
 	if (not guildBankRepair) then
 		AC_LOGTYPE = "REPAIRS";
@@ -1934,6 +1943,7 @@ function addon:OnEnable()
 	AC_LASTMONEY = AC_CURRMONEY
 	
 	settleTabText()
+
 	addon:PopulateCharacterList()
 	
 	self:Refresh()
@@ -1976,3 +1986,46 @@ function AccountantClassic_ButtonOnClick()
 	end
 end
 
+AccountantClassicTabButtonMixin = {};
+
+function AccountantClassicTabButtonMixin:OnLoad()
+	local TabText = private.constants.tabText
+	local i = self:GetID()
+	
+	self:SetFrameLevel(self:GetFrameLevel() + 4);
+	self:RegisterEvent("DISPLAY_SIZE_CHANGED");
+	if (WoWRetail) then 
+		self.Text:SetText(TabText[i]);
+	end
+end
+
+function AccountantClassicTabButtonMixin:OnEvent(event, ...)
+	if self:IsVisible() then
+		PanelTemplates_TabResize(self, self:GetParent().tabPadding, nil, self:GetParent().minTabWidth, self:GetParent().maxTabWidth);
+	end
+end
+
+function AccountantClassicTabButtonMixin:OnShow()
+	PanelTemplates_TabResize(self, self:GetParent().tabPadding, nil, self:GetParent().minTabWidth, self:GetParent().maxTabWidth);
+end
+
+function AccountantClassicTabButtonMixin:OnEnter()
+	local TabTooltipText = private.constants.tabTooltipText
+	local i = self:GetID()
+	
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(TabTooltipText[i]);
+end
+
+function AccountantClassicTabButtonMixin:OnLeave()
+	GameTooltip_Hide();
+end
+
+function AccountantClassicTabButtonMixin:OnClick()
+	local id = self:GetID()
+	LibDD:CloseDropDownMenus()
+	PanelTemplates_SetTab(AccountantClassicFrame, id)
+	AC_CURRTAB = id
+	PlaySound(841)
+	AccountantClassic_OnShow()
+end

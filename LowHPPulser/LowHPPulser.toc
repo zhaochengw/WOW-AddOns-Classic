@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: Low HP Pulser
 ## Notes: Provides visual feedback when health and mana reach the defined percentages
 ## Title-zhCN: |CFF7FFF7F界面|R 低血量魔法视觉警报

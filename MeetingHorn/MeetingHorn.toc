@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: MeetingHorn
 ## Title-zhCN: 集结号
 ## Version: 1.8.4

@@ -5446,6 +5446,7 @@ local function CreateBlizzardSettings()
                 order = 30,
                 type = "toggle",
                 set = function(info, val)
+                  Addon.db.profile.BlizzardSettings.Names.ShowOnlyNames = val
                   SetCVarBoolTPTP(info, val)
                   ReloadUI()
                 end,
@@ -10434,7 +10435,7 @@ local function CreateOptionsTable()
   options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(Addon.db)
   options.args.profiles.order = 10000
 
-  if not Addon.IS_CLASSIC and not Addon.IS_TBC_CLASSIC and not Addon.IS_WRATH_CLASSIC then
+  if not Addon.IS_CLASSIC and not Addon.IS_TBC_CLASSIC then
     -- Add dual-spec support
     local LibDualSpec = LibStub("LibDualSpec-1.0", true)
     LibDualSpec:EnhanceDatabase(Addon.db, t.ADDON_NAME)

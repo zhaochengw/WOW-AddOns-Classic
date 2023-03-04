@@ -100,17 +100,12 @@ function ClassicStatsFrameTemplate_Onload(self)
     anchor = self.ResistanceCategory
     local colors = {{0.9,0.1,0.1},{0,0.9,0.3},{0,0.7,0.7},{1,0.3,0.9},{0.7,0,0.4},{0.9,0.5,0.1}}
     for i, key in ipairs({"ResistanceFire","ResistanceNature","ResistanceFrost","ResistanceArcane","ResistanceShadow","ResistanceHoly"}) do
-        
-   
         frame = CreateStatFrame(self, index, key)
         frame:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, 0)
         frame.Label:SetTextColor(unpack(colors[i]))
         anchor = frame
         index = index + 1
         keys = keys .. key .. ","
-            
-        
-
     end
     --记录固值的index值
     self.maxStaticIndex = index - 1

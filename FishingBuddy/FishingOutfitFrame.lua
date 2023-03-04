@@ -7,21 +7,11 @@ local DEFAULTUPDATE_WAIT = 0.1;
 local _;
 
 local FBAPI = LibStub("FishingBuddyApi-1.0");
-
--- Temporary, until we're pretty sure everyone has upgraded
-local function RegisterHandlers(...)
-	if (FBAPI) then
-		return FBAPI:RegisterHandlers(...);
-	else
-		return FishingBuddy.API.RegisterHandlers(...);
-	end
-end
+local FBConstants = FBAPI.FBConstants;
 
 -- set up
 FB_ODFConstants = {};
 FL:Translate("FB_OutfitDisplayFrame", FB_ODFTranslations, FB_ODFConstants);
-
-FishingBuddy.FB_ODFConstants = FB_ODFConstants;
 
 -- have to do this after we've done our translations
 local OutfitOptions = {};
@@ -58,7 +48,7 @@ FB_OutfitFrame = {};
 local IgnoredItems = {};
 
 local function StylePoints(outfit)
-	local isp = FishingBuddy.OutfitManager.ItemStylePoints;
+	local isp = FBEnvironment.OutfitManager.ItemStylePoints;
 	local points = 0;
 	if ( outfit )then
 		for slot in pairs(outfit) do
@@ -82,10 +72,9 @@ local function BonusPoints(outfit)
 	return points;
 end
 
-local GSB = FishingBuddy.GetSettingBool;
 local function GetSettingBool(setting)
-	if (GSB("OutfitDisplay")) then
-		return GSB(setting);
+	if (FBAPI:GetSettingBool("OutfitDisplay")) then
+		return FBAPI:GetSettingBool(setting);
 	end
 	-- return nil;
 end
@@ -205,7 +194,7 @@ local function MakeFishingOutfit()
 			local slotName = info.slotname;
 			outfit[slotName] = {};
 			outfit[slotName].item = item;
-			_, _, _, _, _, _, _, _, _, outfit[slotName].texture, _ = GetItemInfo(info.link);
+			outfit[slotName].texture = FL:GetItemInfoFields(info.link, FL.ITEM_ICON);
 			outfit[slotName].color = color;
 			outfit[slotName].name = name;
 			outfit[slotName].link = info.link;
@@ -271,7 +260,7 @@ local function UpdateStyleInfo(outfit)
 end
 
 local function MakeOutfitInfo(link)
-	local nm,_,_,_,_,_,_,_,tx,_ = FL:GetItemInfo(link);
+	local nm,tx = FL:GetItemInfoFields(link, FL.ITEM_NAME, FL.ITEM_ICON);
 	local color, item, _ = FL:SplitLink(link);
 	return { name=nm, color=color, item=item, texture=tx, used=true };
 end
@@ -283,11 +272,11 @@ local function FindFishingPoles()
 		tinsert(poles, MakeOutfitInfo(link));
 	end
 	for bag = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-		local numSlots = GetContainerNumSlots(bag);
+		local numSlots = C_Container.GetContainerNumSlots(bag);
 		if (numSlots > 0) then
 			-- check each slot in the bag
 			for slot=1, numSlots do
-				local link = GetContainerItemLink(bag, slot);
+				local link = C_Container.GetContainerItemLink(bag, slot);
 				if ( link ) then
 					if ( FL:IsFishingPole(link) ) then
 						tinsert(poles, MakeOutfitInfo(link));
@@ -302,7 +291,7 @@ end
 local function ODF_Initialize()
 	IgnoredItems = {};
 	IgnoredItems[118381] = true;
-	for item,_ in pairs(FishingBuddy.FishingHats) do
+	for item,_ in pairs(FBEnvironment.FishingHats) do
 		IgnoredItems[item] = true;
 	end
 
@@ -313,11 +302,11 @@ end
 -- the user has chosen us, make sure everything is set up the way we need
 local function ODF_Choose(useme)
 	if ( useme ) then
-		FishingBuddy.EnableSubFrame("ManagedOutfits");
-		FishingBuddy.ShowOptionsTab(FB_ODFConstants.OUTFITS_TAB);
+		FBEnvironment:EnableSubFrame("ManagedOutfits");
+		FBEnvironment:ShowOptionsTab(FB_ODFConstants.OUTFITS_TAB);
 	else
-		FishingBuddy.DisableSubFrame("ManagedOutfits");
-		FishingBuddy.HideOptionsTab(FB_ODFConstants.OUTFITS_TAB);
+		FBEnvironment:DisableSubFrame("ManagedOutfits");
+		FBEnvironment:HideOptionsTab(FB_ODFConstants.OUTFITS_TAB);
 	end
 end
 FB_OutfitFrame.Choose = ODF_Choose;
@@ -332,11 +321,11 @@ local wasfishing = false;
 -- We don't have the outfit display frame!
 local function ODF_Switch()
 	if (CursorHasItem()) then
-		FishingBuddy.UIError(FB_ODFConstants.CURSORBUSYMSG);
+		FBAPI:UIError(FB_ODFConstants.CURSORBUSYMSG);
 		return false;
 	end
 	if ( FishingOutfitFrameTab.Outfit:IsSwapping() ) then
-		FishingBuddy.UIError(OUTFITDISPLAYFRAME_TOOFASTMSG);
+		FBAPI:UIError(OUTFITDISPLAYFRAME_TOOFASTMSG);
 		return false;
 	end
 	
@@ -354,7 +343,7 @@ local function ODF_Switch()
 		end
 		
 		if ( msg ) then
-			FishingBuddy.UIError(msg);
+			FBAPI:UIError(msg);
 			return isfishing;
 		end
 		combatswitch = false;
@@ -374,7 +363,7 @@ local function ODF_Switch()
 		end
 
 		if ( msg ) then
-			FishingBuddy.UIError(msg);
+			FBAPI:UIError(msg);
 			return isfishing;
 		end
 		
@@ -383,7 +372,7 @@ local function ODF_Switch()
 
 		-- do we have an Ephemeral Pole?
 		if (GetItemCount(118381) > 0) then
-			local _, link, _, _, _, _, _, _, _, _, _ = GetItemInfo(118381) 
+			local link = FL:GetItemInfoFields(118381, FL.ITEM_LINK) 
 			outfit["MainHandSlot"] = MakeOutfitInfo(link);
 			outfit["SecondaryHandSlot"] = { used=true, forced=true, empty=true };
 		-- do we need to pick a random pole this time?
@@ -398,7 +387,7 @@ local function ODF_Switch()
 
 		-- 89401 Angler's Tabard
 		if (GetItemCount(89401) > 0 and GetSettingBool("UseTabard")) then
-			local _, link, _, _, _, _, _, _, _, _, _ = GetItemInfo(89401) 
+			local link = FL:GetItemInfoFields(89401, FL.ITEM_LINK) 
 			outfit["TabardSlot"] = MakeOutfitInfo(link);
 		else
 			outfit["TabardSlot"] = nil;
@@ -410,7 +399,7 @@ local function ODF_Switch()
 		end
 		return true; -- expect a fishing pole
 	else
-		FishingBuddy.UIError(FB_ODFConstants.NOOUTFITDEFINED);
+		FBAPI:UIError(FB_ODFConstants.NOOUTFITDEFINED);
 		return isfishing; -- expect whatever we had before
 	end
 end
@@ -428,7 +417,7 @@ end
 local function CustomTooltip(button)
   if ( button and button.item ) then
 	 local _,_, check, enchant = string.find(button.item, "^(%d+):(%d+)");
-	 local points = FishingBuddy.OutfitManager.ItemStylePoints(check, enchant);
+	 local points = FBEnvironment.OutfitManager.ItemStylePoints(check, enchant);
 	 if ( points > 0 ) then
 		 GameTooltip:AddLine(StyleString(true, points));
 	 end
@@ -471,7 +460,7 @@ FishingEvents["VARIABLES_LOADED"] = function()
 	-- Handle the override
 	LibStub("OutfitDisplay-1.0"):InitFrame(FishingOutfitFrameTab.Outfit);
 
-	FishingBuddy.OutfitManager.RegisterManager("OutfitDisplayFrame",
+	FBEnvironment.OutfitManager.RegisterManager("OutfitDisplayFrame",
 												ODF_Initialize,
 												ODF_Choose,
 												ODF_Switch);
@@ -489,7 +478,7 @@ FishingEvents["VARIABLES_LOADED"] = function()
 		["icon"] = 133153,
 		["options"] = OutfitOptions
 	}
-	FishingBuddy.CreateManagedFrameGroup(FB_ODFConstants.OUTFITS_TAB,
+	FBAPI:CreateManagedFrameGroup(FB_ODFConstants.OUTFITS_TAB,
 										FB_ODFConstants.OUTFITS_INFO,
 										"_OUT",
 										groups,
@@ -531,7 +520,7 @@ FB_OutfitFrame.OnLoad = function(self)
 	FishingOutfitFrameTab.Switch:SetText(FB_ODFConstants.SWITCHOUTFIT);
 	FishingOutfitFrameTab.Switch.tooltip = FB_ODFConstants.SWITCHOUTFIT_INFO;
 	self.CustomTooltip = CustomTooltip;
-	RegisterHandlers(FishingEvents);
+	FBAPI:RegisterHandlers(FishingEvents);
 
 	FishingOutfitFrameTab.Outfit.OutfitChanged = OutfitChanged;
 	FishingBuddyFrameCloseButton:SetFrameLevel(self:GetFrameLevel()+4)
@@ -547,35 +536,3 @@ FB_OutfitFrame.Button_OnClick = function()
 	ODF_Switch();
 end
 
-if ( FishingBuddy.Debugging ) then
-	-- outfit debugging functions
-	FishingBuddy.Commands["outfit"] = {};
-	FishingBuddy.Commands["outfit"].func =
-		function(what)
-		  if ( what and LibStub("OutfitDisplay-1.0") ) then
-			 if ( what == FBConstants.RESET ) then
-				SetWasWearing(nil);
-				KeepOutfit(nil);
-				FishingOutfitFrameTab.Outfit:SetOutfit({});
-			 elseif ( what == "wearing" ) then
-			 	FishingBuddy.Debug("===============");
-				FishingBuddy.Dump(GetWasWearing());
-			 elseif ( what == "dump" ) then
-				FishingBuddy.Debug("Outfit");
-				FishingBuddy.Dump(GetFishingOutfit());
-				FishingBuddy.Debug("Was Wearing");
-				FishingBuddy.Dump(GetWasWearing());
-				FishingBuddy.Debug("Outfit");
-				FishingBuddy.Dump(GetFishingOutfit());
-				FishingBuddy.Debug("Saved");
-				FishingBuddy.Dump(saved_outfit);
-			 end
-		  end
-		  return true;
-		end;
-
-	-- DEBUG
-	FB_OutfitFrame.GetFishingOutfit = GetFishingOutfit;
-	-- Debugging
-	FB_OutfitFrame.MakeFishingOutfit = MakeFishingOutfit;
-end

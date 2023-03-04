@@ -84,7 +84,7 @@ function StatLogic:argCheck(argument, number, ...)
 		arg[3] == t or
 		arg[4] == t or
 		arg[5] == t,
-		"Bad argument #"..tostring(number).." ("..validTypeString.." expected, got "..t..")"	
+		"Bad argument #"..tostring(number).." ("..validTypeString.." expected, got "..t..")"
 	)
 end
 
@@ -124,12 +124,12 @@ end
 
 local mt = getmetatable(tip)
 local tipExtension = {
-	__index = function(tip, i)
+	__index = function(tooltip, i)
 		if type(i) ~= "number" then
 			return mt.__index[i]
 		else
-			local textLeft = _G[tip:GetName().."TextLeft"..i]
-			tip[i] = textLeft
+			local textLeft = _G[tooltip:GetName().."TextLeft"..i]
+			tooltip[i] = textLeft
 			return textLeft
 		end
 	end
@@ -141,8 +141,35 @@ setmetatable(tipMiner, tipExtension)
 -- Local Variables --
 ---------------------
 -- Player info
-addonTable.playerClass = select(2, UnitClass("player"))
+addonTable.class = select(2, UnitClass("player"))
 addonTable.playerRace = select(2, UnitRace("player"))
+
+do
+	local ClassNameToID = {}
+
+	for i = 1, GetNumClasses(), 1 do
+		local _, classFile = GetClassInfo(i)
+		if classFile then
+			ClassNameToID[classFile] = i
+			ClassNameToID[i] = classFile
+		end
+	end
+
+	function StatLogic:GetClassIdOrName(class)
+		return ClassNameToID[class]
+	end
+end
+
+function StatLogic:ValidateClass(class)
+	if type(class) == "number" and StatLogic:GetClassIdOrName(class) then
+		-- if class is a class id, convert to class string
+		class = StatLogic:GetClassIdOrName(class)
+	elseif type(class) ~= "string" or not StatLogic:GetClassIdOrName(class) then
+		-- if class is not a string, or doesn't correspond to a class id, default to player class
+		class = addonTable.class
+	end
+	return class
+end
 
 -- Localize globals
 local _G = getfenv(0)
@@ -164,13 +191,11 @@ local tonumber = L.tonumber
 local loadstring = loadstring
 local GetInventoryItemLink = GetInventoryItemLink
 local unpack = unpack
-local GetLocale = GetLocale
 local IsUsableSpell = IsUsableSpell
 local UnitLevel = UnitLevel
 local UnitStat = UnitStat
 local GetShapeshiftForm = GetShapeshiftForm
 local GetShapeshiftFormInfo = GetShapeshiftFormInfo
-local GetShapeShiftFormID = GetShapeShiftFormID
 local GetTalentInfo = GetTalentInfo
 
 ---------------
@@ -223,20 +248,6 @@ local function del(t)
 	if t then
 		for k in pairs(t) do
 			t[k] = nil
-		end
-		setmetatable(t, nil)
-		pool[t] = true
-	end
-end
-
-local function delMulti(t)
-	if t then
-		for k in pairs(t) do
-			if type(t[k]) == "table" then
-				del(t[k])
-			else
-				t[k] = nil
-			end
 		end
 		setmetatable(t, nil)
 		pool[t] = true
@@ -338,7 +349,7 @@ end
 
 -- SetTip("item:3185:0:0:0:0:0:1957")
 function SetTip(item)
-	local name, link, _, _, reqLv, _, _, _, itemType = GetItemInfo(item)
+	local _, link = GetItemInfo(item)
 	ItemRefTooltip:ClearLines()
 	ItemRefTooltip:SetHyperlink(link)
 	ItemRefTooltip:Show()
@@ -353,24 +364,6 @@ local function StripGlobalStrings(text)
 	text = gsub(text, " ?%%%d?%.?%d?%$?[cdsgf]", "") -- delete "%d", "%s", "%c", "%g", "%2$d", "%.2f" and a space in front of it if found
 	-- So StripGlobalStrings(ITEM_SOCKET_BONUS) = "Socket Bonus:"
 	return text
-end
-
-local ClassNameToID = setmetatable({}, {
-	__index = function(t, k)
-		return 0
-	end
-})
-
-for i = 1, GetNumClasses(), 1 do
-	local _, classFile = GetClassInfo(i)
-	if classFile then
-		ClassNameToID[classFile] = i
-		ClassNameToID[i] = classFile
-	end
-end
-
-function StatLogic:GetClassIdOrName(class)
-	return ClassNameToID[class]
 end
 
 function StatLogic:GetStatNameFromID(stat)
@@ -513,18 +506,10 @@ local RatingIDToConvertedStat = {
 	"ARMOR_PENETRATION",
 }
 
-local function GetStanceIcon()
-	local currentStance = GetShapeshiftForm()
-	if currentStance ~= 0 then
-		return GetShapeshiftFormInfo(currentStance)
-	end
-end
-
 local function GetPlayerBuffRank(buff)
-	local spellID = select(10, AuraUtil.FindAuraByName(buff, "player"))
-	local rank = GetSpellSubtext(spellID)
-	if spellID then
-		return rank and tonumber(strmatch(rank, "(%d+)")) or 1
+	local rank = GetSpellSubtext(buff)
+	if rank then
+		return tonumber(strmatch(rank, "(%d+)")) or 1
 	end
 end
 
@@ -1118,6 +1103,68 @@ for _, statMod in ipairs(addedInfoMods) do
 end
 
 --------------------
+-- Unit Aura Cache --
+--------------------
+
+do
+	-- Aura Cache is a cache of our actual auras, wiped on UNIT_AURA
+	-- and not populated until we try to access it. This is for
+	-- performance during combat, when many auras will be updating,
+	-- but the user is unlikely to be checking item tooltips.
+	local aura_cache = {}
+
+	local needs_update = true
+	local f = CreateFrame("Frame")
+	f:RegisterUnitEvent("UNIT_AURA", "player")
+	f:SetScript("OnEvent", function()
+		wipe(aura_cache)
+		needs_update = true
+	end)
+
+	-- AuraInfo is a layer on top of aura_cache to hold Always Buffed settings.
+	local always_buffed_aura_info = {}
+	function StatLogic:SetupAuraInfo(always_buffed)
+		for _, modList in pairs(StatLogic.StatModTable) do
+			for _, mods in pairs(modList) do
+				for _, mod in ipairs(mods) do
+					if mod.buff then -- if we got a buff
+						local aura = {}
+						if not mod.tab and mod.rank then -- not a talent, so the rank is the buff rank
+							aura.rank = #(mod.rank)
+						end
+						aura.stacks = mod.buffStack or 1
+						always_buffed_aura_info[GetSpellInfo(mod.buff)] = aura
+					end
+				end
+			end
+		end
+
+		StatLogic.AuraInfo = setmetatable({}, {
+			__index = function(_, buff)
+				if always_buffed[buff] then
+					return always_buffed_aura_info[buff]
+				else
+					if needs_update then
+						local i = 1
+						repeat
+							local aura = {}
+							local name
+							name, _, aura.stacks, _, _, _, _, _, _, aura.spellId = UnitBuff("player", i)
+							if name then
+								aura_cache[name] = aura
+							end
+							i = i+1
+						until not name
+						needs_update = false
+					end
+					return aura_cache[buff]
+				end
+			end
+		})
+	end
+end
+
+--------------------
 -- Item Set Cache --
 --------------------
 
@@ -1137,6 +1184,10 @@ local equipped_sets = setmetatable({}, {
 		return equipped
 	end
 })
+
+--------------------
+-- Meta Gem Cache --
+--------------------
 
 local equipped_meta_gem
 
@@ -1170,7 +1221,7 @@ addonTable.StatModValidators = {
 	},
 	buff = {
 		validate = function(case)
-			return AuraUtil.FindAuraByName(case.buff, "player")
+			return StatLogic.AuraInfo[GetSpellInfo(case.buff)]
 		end,
 		events = {
 			["UNIT_AURA"] = "player",
@@ -1226,9 +1277,22 @@ addonTable.StatModCacheInvalidators = {}
 -- need to invalidate cache when they change
 addonTable.StatModCacheInvalidators["CHARACTER_POINTS_CHANGED"] = {}
 
+function StatLogic:InvalidateEvent(event, unit)
+	local key = event
+	if type(unit) == "string" then
+		key = event .. unit
+	end
+	local stats = addonTable.StatModCacheInvalidators[key]
+	if stats then
+		for _, stat in pairs(stats) do
+			StatModCache[stat] = nil
+		end
+	end
+end
+
 addonTable.RegisterValidatorEvents = function()
 	local f = CreateFrame("Frame")
-	for validatorType, validator in pairs(addonTable.StatModValidators) do
+	for _, validator in pairs(addonTable.StatModValidators) do
 		if validator.events then
 			for event, unit in pairs(validator.events) do
 				if type(unit) == "string" then
@@ -1245,24 +1309,15 @@ addonTable.RegisterValidatorEvents = function()
 	end
 
 	f:SetScript("OnEvent", function(self, event, unit)
-		local key = event
-		if type(unit) == "string" then
-			key = event .. unit
-		end
-		local stats = addonTable.StatModCacheInvalidators[key]
-		if stats then
-			for _, stat in pairs(stats) do
-				StatModCache[stat] = nil
-			end
-		end
+		StatLogic:InvalidateEvent(event, unit)
 	end)
 end
 
 local function ValidateStatMod(stat, school, case)
 	if school and not case[school] then return false, false end
 	local shouldCache = true
-	for k,v in pairs(case) do
-		local validator = addonTable.StatModValidators[k]
+	for validatorType in pairs(case) do
+		local validator = addonTable.StatModValidators[validatorType]
 		if validator then
 			if validator.events then
 				for event, unit in pairs(validator.events) do
@@ -1307,7 +1362,7 @@ do
 			temp[tab] = {}
 			local products = {}
 			for i = 1,GetNumTalents(tab) do
-				local name, _, tier, column = GetTalentInfo(tab,i)
+				local _, _, tier, column = GetTalentInfo(tab,i)
 				local product = (tier - 1) * 4 + column
 				temp[tab][product] = i
 				table.insert(products, product)
@@ -1379,12 +1434,6 @@ local GetStatModValue = function(stat, school, mod, case, initialValue)
 	return mod, shouldCache
 end
 
-local StatModCategories = {
-	addonTable.playerClass,
-	addonTable.playerRace,
-	"ALL",
-}
-
 function StatLogic:GetStatMod(stat, school)
 	local mod = StatModCache[stat]
 
@@ -1394,9 +1443,10 @@ function StatLogic:GetStatMod(stat, school)
 		mod = statModInfo.initialValue
 		-- if school is required for this statMod but not given
 		if statModInfo.school and not school then return mod end
-		for statModCategory, categoryTable in pairs(StatLogic.StatModTable) do
+		for _, categoryTable in pairs(StatLogic.StatModTable) do
 			if categoryTable[stat] then
 				for _, case in ipairs(categoryTable[stat]) do
+					local shouldCacheCase
 					mod, shouldCacheCase = GetStatModValue(stat, school, mod, case, statModInfo.initialValue)
 					if not shouldCacheCase then
 						-- If *any* cases should not be cached, don't cache this mod
@@ -1556,13 +1606,7 @@ end
 
 function StatLogic:GetAPPerStr(class)
 	assert(type(class)=="string" or type(class)=="number", "Expected string or number as arg #1 to GetAPPerStr, got "..type(class))
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	class = self:ValidateClass(class)
 	return addonTable.APPerStr[class], "AP"
 end
 
@@ -1591,15 +1635,9 @@ Examples:
 	StatLogic:GetAPFromStr(10, "WARRIOR")
 -----------------------------------]]
 function StatLogic:GetAPFromStr(str, class)
-	assert(type(str)=="number", "Expected number as arg #1 to GetAPFromStr, got "..type(class))
-	assert(type(str)=="string", "Expected string as arg #2 to GetAPFromStr, got "..type(class))
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	assert(type(str)=="number", "Expected number as arg #1 to GetAPFromStr, got "..type(str))
+	assert(type(class)=="string" or type(class)=="number", "Expected string or number as arg #2 to GetAPFromStr, got "..type(class))
+	class = self:ValidateClass(class)
 	-- Calculate
 	return str * addonTable.APPerStr[class], "AP"
 end
@@ -1628,20 +1666,14 @@ end
 -----------------------------------]]
 
 local BlockClasses = {
-	[ClassNameToID["WARRIOR"]] = true,
-	[ClassNameToID["PALADIN"]] = true,
-	[ClassNameToID["SHAMAN"]] = true,
+	["WARRIOR"] = true,
+	["PALADIN"] = true,
+	["SHAMAN"] = true,
 }
 
 function StatLogic:GetBlockValuePerStr(class)
 	assert(type(class)=="string" or type(class)=="number", "Expected string or number as arg #1 to GetBlockValuePerStr, got "..type(class))
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	class = self:ValidateClass(class)
 	local blockValue = BlockClasses[class] and BLOCK_PER_STRENGTH or 0
 	return blockValue, "BLOCK_VALUE"
 end
@@ -1675,13 +1707,7 @@ end
 function StatLogic:GetBlockValueFromStr(str, class)
 	assert(type(str)=="number", "Expected number as arg #1 to GetBlockValueFromStr, got "..type(str))
 	assert(type(class)=="string" or type(class)=="number", "Expected string or number as arg #2 to GetBlockValueFromStr, got "..type(class))
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	class = self:ValidateClass(class)
 	local blockValue = BlockClasses[class] and BLOCK_PER_STRENGTH or 0
 	-- Calculate
 	return str * blockValue, "BLOCK_VALUE"
@@ -1713,15 +1739,9 @@ end
 
 function StatLogic:GetAPPerAgi(class)
 	assert(type(class)=="string" or type(class)=="number", "Expected string or number as arg #1 to GetAPPerAgi, got "..type(class))
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	class = self:ValidateClass(class)
 	-- Check druid cat form
-	if (class == ClassNameToID["DRUID"]) and (GetShapeshiftFormID() == CAT_FORM) then		-- ["Cat Form"]
+	if class == "DRUID" and (GetShapeshiftFormID() == CAT_FORM) then		-- ["Cat Form"]
 		return 1, "AP"
 	end
 	return addonTable.APPerAgi[class], "AP"
@@ -1757,13 +1777,7 @@ function StatLogic:GetAPFromAgi(agi, class)
 	-- argCheck for invalid input
 	self:argCheck(agi, 2, "number")
 	self:argCheck(class, 3, "nil", "string", "number")
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	class = self:ValidateClass(class)
 	-- Calculate
 	return agi * addonTable.APPerAgi[class], "AP"
 end
@@ -1794,13 +1808,7 @@ end
 function StatLogic:GetRAPPerAgi(class)
 	-- argCheck for invalid input
 	self:argCheck(class, 2, "nil", "string", "number")
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	class = self:ValidateClass(class)
 	return addonTable.RAPPerAgi[class], "RANGED_AP"
 end
 
@@ -1834,13 +1842,7 @@ function StatLogic:GetRAPFromAgi(agi, class)
 	-- argCheck for invalid input
 	self:argCheck(agi, 2, "number")
 	self:argCheck(class, 3, "nil", "string", "number")
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	class = self:ValidateClass(class)
 	-- Calculate
 	return agi * addonTable.RAPPerAgi[class], "RANGED_AP"
 end
@@ -1870,13 +1872,7 @@ end
 function StatLogic:GetBaseDodge(class)
 	-- argCheck for invalid input
 	self:argCheck(class, 2, "nil", "string", "number")
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	class = self:ValidateClass(class)
 	return addonTable.BaseDodge[class], "DODGE"
 end
 
@@ -1901,10 +1897,9 @@ end
 
 function StatLogic:GetDodgePerAgi()
 	local _, agility = UnitStat("player", 2)
-	local class = ClassNameToID[addonTable.playerClass]
 	-- dodgeFromAgi is %
 	local dodgeFromAgi = GetDodgeChance() - self:GetStatMod("ADD_DODGE") - self:GetEffectFromRating(GetCombatRating(CR_DODGE), CR_DODGE, UnitLevel("player")) - self:GetEffectFromDefense(GetTotalDefense("player"), UnitLevel("player"))
-	return (dodgeFromAgi - addonTable.BaseDodge[class]) / agility, "DODGE"
+	return (dodgeFromAgi - addonTable.BaseDodge[addonTable.class]) / agility, "DODGE"
 end
 
 
@@ -1970,13 +1965,7 @@ function StatLogic:GetCritFromAgi(agi, class, level)
 	self:argCheck(agi, 2, "number")
 	self:argCheck(class, 3, "nil", "string", "number")
 	self:argCheck(level, 4, "nil", "number")
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	class = self:ValidateClass(class)
 	-- if level is invalid input, default to player level
 	if type(level) ~= "number" or level < 1 or level > GetMaxPlayerLevel() then
 		level = UnitLevel("player")
@@ -2019,13 +2008,7 @@ function StatLogic:GetSpellCritFromInt(int, class, level)
 	self:argCheck(int, 2, "number")
 	self:argCheck(class, 3, "nil", "string", "number")
 	self:argCheck(level, 4, "nil", "number")
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	class = self:ValidateClass(class)
 	-- if level is invalid input, default to player level
 	if type(level) ~= "number" or level < 1 or level > GetMaxPlayerLevel() then
 		level = UnitLevel("player")
@@ -2061,29 +2044,23 @@ end
 
 -- Numbers reverse engineered by Whitetooth@Cenarius(US) (hotdogee [at] gmail [dot] com)
 local HealthRegenPerSpi = {
-	[ClassNameToID["WARRIOR"]] = 0.5,
-	[ClassNameToID["PALADIN"]] = 0.125,
-	[ClassNameToID["HUNTER"]] = 0.125,
-	[ClassNameToID["ROGUE"]] = 0.333333,
-	[ClassNameToID["PRIEST"]] = 0.041667,
-	[ClassNameToID["DEATHKNIGHT"]] = 0.5,
-	[ClassNameToID["SHAMAN"]] = 0.071429,
-	[ClassNameToID["MAGE"]] = 0.041667,
-	[ClassNameToID["WARLOCK"]] = 0.045455,
-	[ClassNameToID["DRUID"]] = 0.0625,
+	["WARRIOR"] = 0.5,
+	["PALADIN"] = 0.125,
+	["HUNTER"] = 0.125,
+	["ROGUE"] = 0.333333,
+	["PRIEST"] = 0.041667,
+	["DEATHKNIGHT"] = 0.5,
+	["SHAMAN"] = 0.071429,
+	["MAGE"] = 0.041667,
+	["WARLOCK"] = 0.045455,
+	["DRUID"] = 0.0625,
 }
 
 function StatLogic:GetHealthRegenFromSpi(spi, class)
 	-- argCheck for invalid input
 	self:argCheck(spi, 2, "number")
 	self:argCheck(class, 3, "nil", "string", "number")
-	-- if class is a class string, convert to class id
-	if type(class) == "string" and ClassNameToID[strupper(class)] ~= nil then
-		class = ClassNameToID[strupper(class)]
-	-- if class is invalid input, default to player class
-	elseif type(class) ~= "number" or class < 1 or class > GetNumClasses() then
-		class = ClassNameToID[addonTable.playerClass]
-	end
+	class = self:ValidateClass(class)
 	-- Calculate
 	return spi * HealthRegenPerSpi[class] * 5, "HEALTH_REG_OUT_OF_COMBAT"
 end
@@ -2148,9 +2125,9 @@ function StatLogic:BuildGemmedTooltip(item, red, yellow, blue, meta)
 		return item
 	end
 	-- Check if item is in local cache
-	local name, link, _, _, reqLv, _, _, _, itemType = GetItemInfo(item)
+	local name, link = GetItemInfo(item)
 	if not name then return item end
-	
+
 	-- Check gemID
 	if not red or not tonumber(red) then red = 0 end
 	if not yellow or not tonumber(yellow) then yellow = 0 end
@@ -2173,7 +2150,7 @@ function StatLogic:BuildGemmedTooltip(item, red, yellow, blue, meta)
 	EmptySocketLookup[EMPTY_SOCKET_YELLOW] = yellow
 	EmptySocketLookup[EMPTY_SOCKET_BLUE] = blue
 	EmptySocketLookup[EMPTY_SOCKET_META] = meta
-	
+
 	-- Build socket list
 	local socketList = {}
 	-- Start parsing
@@ -2246,7 +2223,7 @@ function StatLogic:GetGemID(item)
 	end
 
 	-- Check if item is in local cache
-	local name, link, _, _, reqLv, _, _, _, itemType = GetItemInfo(item)
+	local name, link = GetItemInfo(item)
 	if not name then
 		if tonumber(itemID) then
 			-- Query server for item
@@ -2273,7 +2250,7 @@ function StatLogic:GetGemID(item)
 	end
 end
 
-local ConvertGenericRatings = function(table)
+local function ConvertGenericRatings(table)
 	for generic, ratings in pairs(StatLogic.GenericStatMap) do
 		local genericName = StatLogic:GetRatingIdOrName(generic)
 		if table[genericName] then
@@ -2290,7 +2267,7 @@ end
 -- Stat Summarization --
 -- ================== --
 --[[---------------------------------
-{	:GetSum(item, [table])
+{	:GetSum(item, [statTable])
 -------------------------------------
 -- Description
 	Calculates the sum of all stats for a specified item.
@@ -2299,7 +2276,7 @@ end
 			string - link or name of target item
 	 or number - itemID of target item
 	 or table - tooltip of target item
-	[table]
+	[statTable]
 			table - the sum of stat values are writen to this table if provided
 -- Returns
 	[sum]
@@ -2322,98 +2299,127 @@ end
 	StatLogic:GetSum("item:30538:3011:2739:2739:2739:0") -- [Midnight Legguards] with enchant and gems
 }
 -----------------------------------]]
-function StatLogic:GetSum(item, table)
-	-- Locale check
-	--if not D:HasLocale(GetLocale()) then return end
-	local _
-	-- Check item
-	if (type(item) == "string") or (type(item) == "number") then
-	elseif type(item) == "table" and type(item.GetItem) == "function" then
-		-- Get the link
-		_, item = item:GetItem()
-		if type(item) ~= "string" then return end
-	else
-		return
-	end
-	-- Check if item is in local cache
-	local name, link, _, _, reqLv, _, _, _, itemType = GetItemInfo(item)
-	if not name then return end
 
-	-- Clear table values
-	clearTable(table)
-	-- Initialize table
-	table = table or new()
-	setmetatable(table, statTableMetatable)
+do
+	local statTable, currentColor
 
-	tip:ClearLines() -- this is required or SetX won't work the second time its called
-	tip:SetHyperlink(link)
-
-	local numLines = tip:NumLines()
-
-	-- Get data from cache if available
-	if cache[link] and cache[link].numLines == numLines then
-		copyTable(table, cache[link])
-		return table
-	end
-
-	-- Set metadata
-	table.itemType = itemType
-	table.link = link
-	table.numLines = numLines
-
-	-- Don't scan Relics because they don't have general stats
-	if itemType == "INVTYPE_RELIC" then
-		cache[link] = copy(table)
-		return table
-	end
-
-	-- Start parsing
-	log(link)
-	for i = 2, tip:NumLines() do
-		local text = tip[i]:GetText()
-
-		-- Trim spaces
-		text = strtrim(text)
-		-- Strip color codes
-		if strsub(text, -2) == "|r" then
-			text = strsub(text, 1, -3)
+	local function AddStat(id, value, debugText)
+		if id == "ARMOR" then
+			local base, bonus = StatLogic:GetArmorDistribution(statTable.link, value, currentColor)
+			value = base
+			local bonusID = "ARMOR_BONUS"
+			statTable[bonusID] = (statTable[bonusID] or 0) + bonus
+			debugText = debugText..", ".."|cffffff59"..tostring(bonusID).."="..tostring(bonus)
 		end
-		if strfind(strsub(text, 1, 10), "|c%x%x%x%x%x%x%x%x") then
-			text = strsub(text, 11)
-		end
+		statTable[id] = (statTable[id] or 0) + tonumber(value)
+		return debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value)
+	end
 
-		local _, g, b = tip[i]:GetTextColor()
-		-----------------------
-		-- Whole Text Lookup --
-		-----------------------
-		-- Mainly used for enchants or stuff without numbers:
-		-- "Mithril Spurs"
-		local found
-		local idTable = L.WholeTextLookup[text]
+	local function ParseIDTable(idTable, text, value, scanner)
+		local found = false
 		if idTable == false then
 			found = true
-			log("|cffadadad".."  WholeText Exclude: "..text)
+			log("|cffadadad  ".. scanner .. " Exclude: "..text)
 		elseif idTable then
 			found = true
-			for id, value in pairs(L.WholeTextLookup[text]) do
-				-- sum stat
-				table[id] = (table[id] or 0) + value
-				log("|cffff5959".."  WholeText: ".."|cffffc259"..text..", ".."|cffffff59"..tostring(id).."="..tostring(value))
+			local debugText = "|cffff5959  ".. scanner .. ": |cffffc259"..text
+			if value then
+				for _, id in ipairs(idTable) do
+					debugText = AddStat(id, value, debugText)
+				end
+			else
+				-- WholeTextLookup
+				for id, presetValue in pairs(idTable) do
+					debugText = AddStat(id, presetValue, debugText)
+				end
 			end
+			log(debugText)
 		end
-		-- Fast Exclude --
-		-- Exclude obvious strings that do not need to be checked, also exclude lines that are not white and green and normal (normal for Frozen Wrath bonus)
-		if not (found or L.Exclude[text] or L.Exclude[strutf8sub(text, 1, L.ExcludeLen)] or strsub(text, 1, 1) == '"' or g < 0.8 or (b < 0.99 and b > 0.1)) then
-			--log(text.." = ")
-			-- Strip enchant time
-			-- ITEM_ENCHANT_TIME_LEFT_DAYS = "%s (%d day)";
-			-- ITEM_ENCHANT_TIME_LEFT_DAYS_P1 = "%s (%d days)";
-			-- ITEM_ENCHANT_TIME_LEFT_HOURS = "%s (%d hour)";
-			-- ITEM_ENCHANT_TIME_LEFT_HOURS_P1 = "%s (%d hrs)";
-			-- ITEM_ENCHANT_TIME_LEFT_MIN = "%s (%d min)"; -- Enchantment name, followed by the time left in minutes
-			-- ITEM_ENCHANT_TIME_LEFT_SEC = "%s (%d sec)"; -- Enchantment name, followed by the time left in seconds
-			--[[ Seems temp enchants such as mana oil can't be seen from item links, so commented out
-			if strfind(text, "%)") then
+		return found
+	end
+
+	function StatLogic:GetSum(item, oldStatTable)
+		local _
+		-- Check item
+		if (type(item) == "string") or (type(item) == "number") then
+		elseif type(item) == "table" and type(item.GetItem) == "function" then
+			-- Get the link
+			_, item = item:GetItem()
+			if type(item) ~= "string" then return end
+		else
+			return
+		end
+		-- Check if item is in local cache
+		local name, link, _, _, _, _, _, _, itemType = GetItemInfo(item)
+		if not name then return end
+
+		-- Clear table values
+		clearTable(oldStatTable)
+		-- Initialize statTable
+		statTable = oldStatTable or new()
+		setmetatable(statTable, statTableMetatable)
+
+		tip:ClearLines() -- this is required or SetX won't work the second time its called
+		tip:SetHyperlink(link)
+
+		local numLines = tip:NumLines()
+
+		-- Get data from cache if available
+		if cache[link] and cache[link].numLines == numLines then
+			copyTable(statTable, cache[link])
+			return statTable
+		end
+
+		-- Set metadata
+		statTable.itemType = itemType
+		statTable.link = link
+		statTable.numLines = numLines
+
+		-- Don't scan Relics because they don't have general stats
+		if itemType == "INVTYPE_RELIC" then
+			cache[link] = copy(statTable)
+			return statTable
+		end
+
+		-- Start parsing
+		log(link)
+		for i = 2, tip:NumLines() do
+			local text = tip[i]:GetText()
+
+			-- Trim spaces
+			text = strtrim(text)
+			-- Strip color codes
+			if strsub(text, -2) == "|r" then
+				text = strsub(text, 1, -3)
+			end
+			if strfind(strsub(text, 1, 10), "|c%x%x%x%x%x%x%x%x") then
+				text = strsub(text, 11)
+			end
+
+			currentColor = CreateColor(tip[i]:GetTextColor())
+			local _, g, b = currentColor:GetRGB()
+			-----------------------
+			-- Whole Text Lookup --
+			-----------------------
+			-- Mainly used for enchants or stuff without numbers:
+			-- "Mithril Spurs"
+			local found
+			local idTable = L.WholeTextLookup[text]
+			found = ParseIDTable(idTable, text, false, "WholeText")
+
+			-- Fast Exclude --
+			-- Exclude obvious strings that do not need to be checked, also exclude lines that are not white and green and normal (normal for Frozen Wrath bonus)
+			if not (found or L.Exclude[text] or L.Exclude[strutf8sub(text, 1, L.ExcludeLen)] or strsub(text, 1, 1) == '"' or g < 0.8 or (b < 0.99 and b > 0.1)) then
+				--log(text.." = ")
+				-- Strip enchant time
+				-- ITEM_ENCHANT_TIME_LEFT_DAYS = "%s (%d day)";
+				-- ITEM_ENCHANT_TIME_LEFT_DAYS_P1 = "%s (%d days)";
+				-- ITEM_ENCHANT_TIME_LEFT_HOURS = "%s (%d hour)";
+				-- ITEM_ENCHANT_TIME_LEFT_HOURS_P1 = "%s (%d hrs)";
+				-- ITEM_ENCHANT_TIME_LEFT_MIN = "%s (%d min)"; -- Enchantment name, followed by the time left in minutes
+				-- ITEM_ENCHANT_TIME_LEFT_SEC = "%s (%d sec)"; -- Enchantment name, followed by the time left in seconds
+				--[[ Seems temp enchants such as mana oil can't be seen from item links, so commented out
+				if strfind(text, "%)") then
 				log("test")
 				text = gsub(text, gsub(gsub(ITEM_ENCHANT_TIME_LEFT_DAYS, "%%s ", ""), "%%", "%%%%"), "")
 				text = gsub(text, gsub(gsub(ITEM_ENCHANT_TIME_LEFT_DAYS_P1, "%%s ", ""), "%%", "%%%%"), "")
@@ -2421,349 +2427,255 @@ function StatLogic:GetSum(item, table)
 				text = gsub(text, gsub(gsub(ITEM_ENCHANT_TIME_LEFT_HOURS_P1, "%%s ", ""), "%%", "%%%%"), "")
 				text = gsub(text, gsub(gsub(ITEM_ENCHANT_TIME_LEFT_MIN, "%%s ", ""), "%%", "%%%%"), "")
 				text = gsub(text, gsub(gsub(ITEM_ENCHANT_TIME_LEFT_SEC, "%%s ", ""), "%%", "%%%%"), "")
-			end
-			--]]
-			----------------------------
-			-- Single Plus Stat Check --
-			----------------------------
-			-- depending on locale, L.SinglePlusStatCheck may be
-			-- +19 Stamina = "^%+(%d+) ([%a ]+%a)$"
-			-- Stamina +19 = "^([%a ]+%a) %+(%d+)$"
-			-- +19 耐力 = "^%+(%d+) (.-)$"
-			if not found then
-				local _, _, value, statText = strfind(strutf8lower(text), L.SinglePlusStatCheck)
-				if value then
-					if tonumber(statText) then
-						value, statText = statText, value
-					end
-					local idTable = L.StatIDLookup[statText]
-					if idTable == false then
-						found = true
-						log("|cffadadad".."  SinglePlus Exclude: "..text)
-					elseif idTable then
-						found = true
-						local debugText = "|cffff5959".."  SinglePlus: ".."|cffffc259"..text
-						for _, id in ipairs(idTable) do
-							--log("  '"..value.."', '"..id.."'")
-							-- sum stat
-							table[id] = (table[id] or 0) + tonumber(value)
-							debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value)
+				end
+				--]]
+				----------------------------
+				-- Single Plus Stat Check --
+				----------------------------
+				-- depending on locale, L.SinglePlusStatCheck may be
+				-- +19 Stamina = "^%+(%d+) ([%a ]+%a)$"
+				-- Stamina +19 = "^([%a ]+%a) %+(%d+)$"
+				-- +19 耐力 = "^%+(%d+) (.-)$"
+				if not found then
+					local _, _, value, statText = strfind(strutf8lower(text), L.SinglePlusStatCheck)
+					if value then
+						if tonumber(statText) then
+							value, statText = statText, value
 						end
-						log(debugText)
-					else
-						-- pattern match but not found in L.StatIDLookup, keep looking
+						idTable = L.StatIDLookup[statText]
+						found = ParseIDTable(idTable, text, value, "SinglePlus")
 					end
 				end
-			end
-			-----------------------------
-			-- Single Equip Stat Check --
-			-----------------------------
-			-- depending on locale, L.SingleEquipStatCheck may be
-			-- "^Equip: (.-) by u?p? ?t?o? ?(%d+) ?(.-)%.$"
-			if not found then
-				local _, _, statText1, value, statText2 = strfind(text, L.SingleEquipStatCheck)
-				if value then
-					local statText = statText1..statText2
-					local idTable = L.StatIDLookup[strutf8lower(statText)]
-					if idTable == false then
-						found = true
-						log("|cffadadad".."  SingleEquip Exclude: "..text)
-					elseif idTable then
-						found = true
-						local debugText = "|cffff5959".."  SingleEquip: ".."|cffffc259"..text
-						for _, id in ipairs(idTable) do
-							--log("  '"..value.."', '"..id.."'")
-							-- sum stat
-							table[id] = (table[id] or 0) + tonumber(value)
-							debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value)
-						end
-						log(debugText)
-					else
-						-- pattern match but not found in L.StatIDLookup, keep looking
+				-----------------------------
+				-- Single Equip Stat Check --
+				-----------------------------
+				-- depending on locale, L.SingleEquipStatCheck may be
+				-- "^Equip: (.-) by u?p? ?t?o? ?(%d+) ?(.-)%.$"
+				if not found then
+					local _, _, statText1, value, statText2 = strfind(text, L.SingleEquipStatCheck)
+					if value then
+						local statText = statText1..statText2
+						idTable = L.StatIDLookup[strutf8lower(statText)]
+						found = ParseIDTable(idTable, text, value, "SingleEquip")
 					end
 				end
-			end
-			-- PreScan for special cases, that will fit wrongly into DeepScan
-			-- PreScan also has exclude patterns
-			if not found then
-				for pattern, id in pairs(L.PreScanPatterns) do
-					local value
-					found, _, value = strfind(text, pattern)
-					if found then
-						--found = true
-						if id ~= false then
-							local debugText = "|cffff5959".."  PreScan: ".."|cffffc259"..text
-							--log("  '"..value.."' = '"..id.."'")
-							-- sum stat
-							table[id] = (table[id] or 0) + tonumber(value)
-							debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value)
-							log(debugText)
-						else
-							log("|cffadadad".."  PreScan Exclude: "..text)
+				-- PreScan for special cases, that will fit wrongly into DeepScan
+				-- PreScan also has exclude patterns
+				if not found then
+					for pattern, id in pairs(L.PreScanPatterns) do
+						local value
+						found, _, value = strfind(text, pattern)
+						if found then
+							ParseIDTable(id and {id}, text, value, "PreScan")
+							break
 						end
-						break
 					end
 				end
-				if found then
 
-				end
-			end
-			--------------
-			-- DeepScan --
-			--------------
-			--[[
-			-- Strip trailing "."
-			["."] = ".",
-			["DeepScanSeparators"] = {
+				--------------
+				-- DeepScan --
+				--------------
+				--[[
+				-- Strip trailing "."
+				["."] = ".",
+				["DeepScanSeparators"] = {
 				"/", -- "+10 Defense Rating/+10 Stamina/+15 Block Value": ZG Enchant
 				" & ", -- "+26 Healing Spells & 2% Reduced Threat": Bracing Earthstorm Diamond ID:25897
 				", ", -- "+6 Spell Damage, +5 Spell Crit Rating": Potent Ornate Topaz ID: 28123
 				"%. ", -- "Equip: Increases attack power by 81 when fighting Undead. It also allows the acquisition of Scourgestones on behalf of the Argent Dawn.": Seal of the Dawn
-			},
-			["DeepScanWordSeparators"] = {
+				},
+				["DeepScanWordSeparators"] = {
 				" and ", -- "Critical Rating +6 and Dodge Rating +5": Assassin's Fire Opal ID:30565
-			},
-			["DeepScanPatterns"] = {
+				},
+				["DeepScanPatterns"] = {
 				"^(.-) by u?p? ?t?o? ?(%d+) ?(.-)$", -- "xxx by up to 22 xxx" (scan first)
 				"^(.-) ?%+(%d+) ?(.-)$", -- "xxx xxx +22" or "+22 xxx xxx" or "xxx +22 xxx" (scan 2ed)
 				"^(.-) ?([%d%.]+) ?(.-)$", -- 22.22 xxx xxx (scan last)
-			},
-			--]]
-			if not found then
-				-- Get a local copy
-				local text = text
-				-- Strip leading "Equip: ", "Socket Bonus: "
-				text = gsub(text, ITEM_SPELL_TRIGGER_ONEQUIP, "") -- ITEM_SPELL_TRIGGER_ONEQUIP = "Equip:";
-				text = gsub(text, StripGlobalStrings(ITEM_SOCKET_BONUS), "") -- ITEM_SOCKET_BONUS = "Socket Bonus: %s"; -- Tooltip tag for socketed item matched socket bonuses
-				-- Trim spaces
-				text = strtrim(text)
-				-- Strip trailing "."
-				if strutf8sub(text, -1) == L["."] then
-					text = strutf8sub(text, 1, -2)
-				end
-				-- Replace separators with @
-				for _, sep in ipairs(L.DeepScanSeparators) do
-					local repl = "@"
-					if type(sep) == "table" then
-						repl = sep.repl
-						sep = sep.pattern
-					end
-					if strfind(text, sep) then
-						log(repl)
-						text = gsub(text, sep, repl)
-					end
-				end
-				-- Split text using @
-				text = {strsplit("@", text)}
-				for i, text in ipairs(text) do
+				},
+				--]]
+				if not found then
+					-- Strip leading "Equip: ", "Socket Bonus: "
+					local sanitizedText = gsub(text, ITEM_SPELL_TRIGGER_ONEQUIP, "") -- ITEM_SPELL_TRIGGER_ONEQUIP = "Equip:";
+					sanitizedText = gsub(sanitizedText, StripGlobalStrings(ITEM_SOCKET_BONUS), "") -- ITEM_SOCKET_BONUS = "Socket Bonus: %s"; -- Tooltip tag for socketed item matched socket bonuses
 					-- Trim spaces
-					text = strtrim(text)
+					sanitizedText = strtrim(sanitizedText)
 					-- Strip trailing "."
-					if strutf8sub(text, -1) == L["."] then
-						text = strutf8sub(text, 1, -2)
+					if strutf8sub(sanitizedText, -1) == L["."] then
+						sanitizedText = strutf8sub(sanitizedText, 1, -2)
 					end
-					log("|cff008080".."S"..i..": ".."'"..text.."'")
-					-- Whole Text Lookup
-					local foundWholeText = false
-					local idTable = L.WholeTextLookup[text]
-					if idTable == false then
-						foundWholeText = true
-						found = true
-						log("|cffadadad".."  DeepScan WholeText Exclude: "..text)
-					elseif idTable then
-						foundWholeText = true
-						found = true
-						for id, value in pairs(L.WholeTextLookup[text]) do
-							-- sum stat
-							table[id] = (table[id] or 0) + value
-							log("|cffff5959".."  DeepScan WholeText: ".."|cffffc259"..text..", ".."|cffffff59"..tostring(id).."="..tostring(value))
+					-- Split the string into phrases between puncuation
+					-- Replace separators with @
+					for _, sep in ipairs(L.DeepScanSeparators) do
+						local repl = "@"
+						if type(sep) == "table" then
+							repl = sep.repl
+							sep = sep.pattern
 						end
-					else
-						-- pattern match but not found in L.WholeTextLookup, keep looking
-					end
-					-- Scan DualStatPatterns
-					if not foundWholeText then
-						for pattern, dualStat in pairs(L.DualStatPatterns) do
-							local lowered = strutf8lower(text)
-							local _, dEnd, value1, value2 = strfind(lowered, pattern)
-							value1 = value1 and tonumber(value1)
-							value2 = value2 and tonumber(value2)
-							if value1 and value2 then
-								foundWholeText = true
-								found = true
-								local debugText = "|cffff5959".."  DeepScan DualStat: ".."|cffffc259"..text
-								for _, id in ipairs(dualStat[1]) do
-									--log("  '"..value.."', '"..id.."'")
-									-- sum stat
-									table[id] = (table[id] or 0) + tonumber(value1)
-									debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value1)
-								end
-								for _, id in ipairs(dualStat[2]) do
-									--log("  '"..value.."', '"..id.."'")
-									-- sum stat
-									table[id] = (table[id] or 0) + tonumber(value2)
-									debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value2)
-								end
-								log(debugText)
-								if dEnd ~= string.len(lowered) then
-									foundWholeText = false
-									text = string.sub(text, dEnd + 1)
-								end
-								break
-							end
+						if strfind(sanitizedText, sep) then
+							log(repl)
+							sanitizedText = gsub(sanitizedText, sep, repl)
 						end
 					end
-					local foundDeepScan1 = false
-					if not foundWholeText then
-						local lowered = strutf8lower(text)
-						-- Pattern scan
-						for _, pattern in ipairs(L.DeepScanPatterns) do -- try all patterns in order
-							local _, _, statText1, value, statText2 = strfind(lowered, pattern)
-							if value then
-								local statText = statText1..statText2
-								local idTable = L.StatIDLookup[statText]
-								if idTable == false then
-									foundDeepScan1 = true
+					-- Split text using @
+					local phrases = {strsplit("@", sanitizedText)}
+					for j, phrase in ipairs(phrases) do
+						-- Trim spaces
+						phrase = strtrim(phrase)
+						-- Strip trailing "."
+						if strutf8sub(phrase, -1) == L["."] then
+							phrase = strutf8sub(phrase, 1, -2)
+						end
+						log("|cff008080".."S"..j..": ".."'"..phrase.."'")
+						-- Whole Text Lookup
+						local foundWholeText = false
+						idTable = L.WholeTextLookup[phrase]
+						found = ParseIDTable(idTable, phrase, false, "DeepScan WholeText")
+						foundWholeText = found
+
+						-- Scan DualStatPatterns
+						if not foundWholeText then
+							for pattern, dualStat in pairs(L.DualStatPatterns) do
+								local lowered = strutf8lower(phrase)
+								local _, dEnd, value1, value2 = strfind(lowered, pattern)
+								value1 = value1 and tonumber(value1)
+								value2 = value2 and tonumber(value2)
+								if value1 and value2 then
+									foundWholeText = true
 									found = true
-									log("|cffadadad".."  DeepScan Exclude: "..text)
-									break -- break out of pattern loop and go to the next separated text
-								elseif idTable then
-									foundDeepScan1 = true
-									found = true
-									local debugText = "|cffff5959".."  DeepScan: ".."|cffffc259"..text
-									for _, id in ipairs(idTable) do
+									local debugText = "|cffff5959".."  DeepScan DualStat: ".."|cffffc259"..phrase
+									for _, id in ipairs(dualStat[1]) do
 										--log("  '"..value.."', '"..id.."'")
 										-- sum stat
-										table[id] = (table[id] or 0) + tonumber(value)
-										debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value)
+										statTable[id] = (statTable[id] or 0) + tonumber(value1)
+										debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value1)
+									end
+									for _, id in ipairs(dualStat[2]) do
+										--log("  '"..value.."', '"..id.."'")
+										-- sum stat
+										statTable[id] = (statTable[id] or 0) + tonumber(value2)
+										debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value2)
 									end
 									log(debugText)
-									break -- break out of pattern loop and go to the next separated text
-								else
-									-- Not matching pattern
+									if dEnd ~= string.len(lowered) then
+										foundWholeText = false
+										phrase = string.sub(phrase, dEnd + 1)
+									end
+									break
 								end
 							end
 						end
-					end
-					-- If still not found, use the word separators to split the text
-					if not foundWholeText and not foundDeepScan1 then
-						-- Replace separators with @
-						for _, sep in ipairs(L.DeepScanWordSeparators) do
-							if strfind(text, sep) then
-								text = gsub(text, sep, "@")
-							end
-						end
-						-- Split text using @
-						text = {strsplit("@", text)}
-						for j, text in ipairs(text) do
-							-- Trim spaces
-							text = strtrim(text)
-							-- Strip trailing "."
-							if strutf8sub(text, -1) == L["."] then
-								text = strutf8sub(text, 1, -2)
-							end
-							log("|cff008080".."S"..i.."-"..j..": ".."'"..text.."'")
-							-- Whole Text Lookup
-							local foundWholeText = false
-							local idTable = L.WholeTextLookup[text]
-							if idTable == false then
-								foundWholeText = true
-								found = true
-								log("|cffadadad".."  DeepScan2 WholeText Exclude: "..text)
-							elseif idTable then
-								foundWholeText = true
-								found = true
-								for id, value in pairs(L.WholeTextLookup[text]) do
-									-- sum stat
-									table[id] = (table[id] or 0) + value
-									log("|cffff5959".."  DeepScan2 WholeText: ".."|cffffc259"..text..", ".."|cffffff59"..tostring(id).."="..tostring(value))
-								end
-							else
-								-- pattern match but not found in L.WholeTextLookup, keep looking
-							end
-							-- Scan DualStatPatterns
-							if not foundWholeText then
-								for pattern, dualStat in pairs(L.DualStatPatterns) do
-									local lowered = strutf8lower(text)
-									local _, _, value1, value2 = strfind(lowered, pattern)
-									if value1 and value2 then
-										foundWholeText = true
-										found = true
-										local debugText = "|cffff5959".."  DeepScan2 DualStat: ".."|cffffc259"..text
-										for _, id in ipairs(dualStat[1]) do
-											--log("  '"..value.."', '"..id.."'")
-											-- sum stat
-											table[id] = (table[id] or 0) + tonumber(value1)
-											debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value1)
-										end
-										for _, id in ipairs(dualStat[2]) do
-											--log("  '"..value.."', '"..id.."'")
-											-- sum stat
-											table[id] = (table[id] or 0) + tonumber(value2)
-											debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value2)
-										end
-										log(debugText)
+						local foundDeepScan1 = false
+						if not foundWholeText then
+							local lowered = strutf8lower(phrase)
+							-- Pattern scan
+							for _, pattern in ipairs(L.DeepScanPatterns) do -- try all patterns in order
+								local _, _, statText1, value, statText2 = strfind(lowered, pattern)
+								if value then
+									local statText = statText1..statText2
+									idTable = L.StatIDLookup[statText]
+									found = ParseIDTable(idTable, phrase, value, "DeepScan")
+									foundDeepScan1 = found
+									if found then
 										break
 									end
 								end
 							end
-							local foundDeepScan2 = false
-							if not foundWholeText then
-								local lowered = strutf8lower(text)
-								-- Pattern scan
-								for _, pattern in ipairs(L.DeepScanPatterns) do
-									local _, _, statText1, value, statText2 = strfind(lowered, pattern)
-									if value then
-										local statText = statText1..statText2
-										local idTable = L.StatIDLookup[statText]
-										if idTable == false then
-											foundDeepScan2 = true
+						end
+						-- If still not found, use the word separators to split the phrase
+						if not foundWholeText and not foundDeepScan1 then
+							-- Replace separators with @
+							for _, sep in ipairs(L.DeepScanWordSeparators) do
+								if strfind(phrase, sep) then
+									phrase = gsub(phrase, sep, "@")
+								end
+							end
+							-- Split phrase using @
+							local words = {strsplit("@", phrase)}
+							for k, word in ipairs(words) do
+								-- Trim spaces
+								word = strtrim(word)
+								-- Strip trailing "."
+								if strutf8sub(word, -1) == L["."] then
+									word = strutf8sub(word, 1, -2)
+								end
+								log("|cff008080".."S"..k.."-"..k..": ".."'"..word.."'")
+								-- Whole Text Lookup
+								foundWholeText = false
+								idTable = L.WholeTextLookup[word]
+								found = ParseIDTable(idTable, word, false, "DeepScan2 WholeText")
+								foundWholeText = found
+
+								-- Scan DualStatPatterns
+								if not foundWholeText then
+									for pattern, dualStat in pairs(L.DualStatPatterns) do
+										local lowered = strutf8lower(word)
+										local _, _, value1, value2 = strfind(lowered, pattern)
+										if value1 and value2 then
+											foundWholeText = true
 											found = true
-											log("|cffadadad".."  DeepScan2 Exclude: "..text)
-											break
-										elseif idTable then
-											foundDeepScan2 = true
-											found = true
-											local debugText = "|cffff5959".."  DeepScan2: ".."|cffffc259"..text
-											for _, id in ipairs(idTable) do
+											local debugText = "|cffff5959".."  DeepScan2 DualStat: ".."|cffffc259"..word
+											for _, id in ipairs(dualStat[1]) do
 												--log("  '"..value.."', '"..id.."'")
 												-- sum stat
-												table[id] = (table[id] or 0) + tonumber(value)
-												debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value)
+												statTable[id] = (statTable[id] or 0) + tonumber(value1)
+												debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value1)
+											end
+											for _, id in ipairs(dualStat[2]) do
+												--log("  '"..value.."', '"..id.."'")
+												-- sum stat
+												statTable[id] = (statTable[id] or 0) + tonumber(value2)
+												debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value2)
 											end
 											log(debugText)
 											break
-										else
-											-- pattern match but not found in L.StatIDLookup, keep looking
-											log("  DeepScan2 Lookup Fail: |cffffd4d4'"..statText.."'|r, pattern = |cff72ff59'"..pattern.."'")
 										end
 									end
-								end -- for
+								end
+								local foundDeepScan2 = false
+								if not foundWholeText then
+									local lowered = strutf8lower(word)
+									-- Pattern scan
+									for _, pattern in ipairs(L.DeepScanPatterns) do
+										local _, _, statText1, value, statText2 = strfind(lowered, pattern)
+										if value then
+											local statText = statText1..statText2
+											idTable = L.StatIDLookup[statText]
+											found = ParseIDTable(idTable, word, value, "DeepScan2")
+											foundDeepScan2 = found
+											if found then
+												break
+											else
+												-- pattern match but not found in L.StatIDLookup, keep looking
+												log("  DeepScan2 Lookup Fail: |cffffd4d4'"..statText.."'|r, pattern = |cff72ff59'"..pattern.."'")
+											end
+										end
+									end -- for
+								end
+								if not foundWholeText and not foundDeepScan2 then
+									log("  DeepScan2 Fail: |cffff0000'"..word.."'")
+								end
 							end
-							if not foundWholeText and not foundDeepScan2 then
-								log("  DeepScan2 Fail: |cffff0000'"..text.."'")
-							end
-						end
-					end -- if not foundWholeText and not foundDeepScan1 then
+						end -- if not foundWholeText and not foundDeepScan1 then
+					end
 				end
-			end
 
-			if not found then
-				log("  No Match: |cffff0000'"..text.."'")
-				if DEBUG and RatingBuster then
-					RatingBuster.db.profile.test = text
+				if not found then
+					log("  No Match: |cffff0000'"..text.."'")
+					if DEBUG and RatingBuster then
+						RatingBuster.db.profile.test = text
+					end
 				end
+			else
+				--log("Excluded: "..text)
 			end
-		else
-			--log("Excluded: "..text)
 		end
+
+		-- Tooltip scanning done, do post processing
+		ConvertGenericRatings(statTable)
+
+		cache[link] = copy(statTable)
+		return statTable
 	end
-
-	-- Tooltip scanning done, do post processing
-	ConvertGenericRatings(table)
-
-	cache[link] = copy(table)
-	return table
 end
 
 local colorPrecision = 0.0001
@@ -2774,7 +2686,7 @@ function StatLogic.AreColorsEqual(a, b)
 end
 
 local BONUS_ARMOR_COLOR = CreateColorFromHexString(GREENCOLORCODE:sub(3))
-function StatLogic:GetFinalArmor(item, text, color)
+function StatLogic:GetArmorDistribution(item, value, color)
 	-- Check item
 	if (type(item) == "string") or (type(item) == "number") then -- common case first
 	elseif type(item) == "table" and type(item.GetItem) == "function" then
@@ -2787,30 +2699,24 @@ function StatLogic:GetFinalArmor(item, text, color)
 	end
 	-- Check if item is in local cache
 	local name, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, _, armorSubclass = GetItemInfo(item)
-	if not name then return end
 
-	for pattern, id in pairs(L.PreScanPatterns) do
-		if id == "ARMOR" or id == "ARMOR_BONUS" then
-			local found, _, value = strfind(text, pattern)
-			if found then
-				value = tonumber(value)
-				local armor = value
-				local bonus_armor = 0
-				if addonTable.bonusArmorItemEquipLoc[itemEquipLoc] then
-					armor = 0
-					bonus_armor = value
-				elseif id == "ARMOR" and StatLogic.AreColorsEqual(color, BONUS_ARMOR_COLOR) and addonTable.baseArmorTable then
-					local qualityTable = addonTable.baseArmorTable[itemQuality]
-					local itemEquipLocTable = qualityTable and qualityTable[_G[itemEquipLoc]]
-					local armorSubclassTable = itemEquipLocTable and itemEquipLocTable[armorSubclass]
+	local armor = value
+	local bonus_armor = 0
+	if name then
+		if addonTable.bonusArmorItemEquipLoc and addonTable.bonusArmorItemEquipLoc[itemEquipLoc] then
+			armor = 0
+			bonus_armor = value
+		elseif StatLogic.AreColorsEqual(color, BONUS_ARMOR_COLOR) and addonTable.baseArmorTable then
+			local qualityTable = addonTable.baseArmorTable[itemQuality]
+			local itemEquipLocTable = qualityTable and qualityTable[_G[itemEquipLoc]]
+			local armorSubclassTable = itemEquipLocTable and itemEquipLocTable[armorSubclass]
 
-					armor = armorSubclassTable and armorSubclassTable[itemLevel] or armor
-					bonus_armor = value - armor
-				end
-				return armor * self:GetStatMod("MOD_ARMOR") + bonus_armor
-			end
+			armor = armorSubclassTable and armorSubclassTable[itemLevel] or armor
+			bonus_armor = value - armor
 		end
 	end
+
+	return armor, bonus_armor
 end
 
 --[[---------------------------------
@@ -2888,7 +2794,7 @@ local getSlotID = {
 }
 
 local function HasTitansGrip()
-	if addonTable.playerClass == "WARRIOR" then
+	if addonTable.class == "WARRIOR" then
 		local _, _, _, _, r = StatLogic:GetOrderedTalentInfo(2, 27)
 		return r > 0
 	end
@@ -3028,9 +2934,6 @@ end
 
 -- TODO 2.1.0: Use SetHyperlinkCompareItem in StatLogic:GetDiff
 function StatLogic:GetDiff(item, diff1, diff2, ignoreEnchant, ignoreGem, red, yellow, blue, meta)
-	-- Locale check
-	--if not D:HasLocale(GetLocale()) then return end
-
 	-- Get DiffID
 	local id, link, linkDiff1, linkDiff2 = self:GetDiffID(item, ignoreEnchant, ignoreGem, red, yellow, blue, meta)
 	if not id then return end
@@ -3049,7 +2952,7 @@ function StatLogic:GetDiff(item, diff1, diff2, ignoreEnchant, ignoreGem, red, ye
 	end
 
 	-- Get item sum, results are written into diff1 table
-	itemSum = self:GetSum(link)
+	local itemSum = self:GetSum(link)
 	if not itemSum then return end
 	local itemType = itemSum.itemType
 
@@ -3126,7 +3029,6 @@ end
 function StatLogic:Bench(k)
 	local t1 = GetTime()
 	local link = GetInventoryItemLink("player", 12)
-	local table = {}
 	--local GetItemInfo = _G["GetItemInfo"]
 	for i = 1, k, 1 do
 		---------------------------------------------------------------------------
@@ -3144,12 +3046,12 @@ end
 
 
 function StatLogic:PatternTest()
-	patternTable = {
+	local patternTable = {
 		"(%a[%a ]+%a) ?%d* ?%a* by u?p? ?t?o? ?(%d+) ?a?n?d? ?", -- xxx xxx by 22 (scan first)
 		"(%a[%a ]+) %+(%d+) ?a?n?d? ?", -- xxx xxx +22 (scan 2ed)
 		"(%d+) ([%a ]+) ?a?n?d? ?", -- 22 xxx xxx (scan last)
 	}
-	textTable = {
+	local textTable = {
 		"Spell Damage +6 and Spell Hit Rating +5",
 		"+3 Stamina, +4 Critical Strike Rating",
 		"+26 Healing Spells & 2% Reduced Threat",

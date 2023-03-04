@@ -1,5 +1,24 @@
-Decursive 2.7.8.13
-==================
+Decursive 2.7.9
+===============
+
+
+Decursive 2.7.9 (2023-02-25)
+----------------------------
+
+- Add support for by-specialization-profiles thanks to libDualSpec-1.0.
+
+- Keep specific curing order for each class specialization (instead of just for each class).
+
+- Add an option to hide Decursive's MUFs in raids.
+
+- Decursive text anchor can be moved again.
+
+- Do not report errors thrown in libraries embedded by Decursive on systems using '/' as directory separator.
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
+
 
 Decursive 2.7.8.13 (2022-12-13)
 -------------------------------
@@ -7,11 +26,6 @@ Decursive 2.7.8.13 (2022-12-13)
 - Cauterizing Flame is no longer considered better than Expunge.
 
 - Update CallBackHandler library to revision 8
-
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.8.12 (2022-11-28)

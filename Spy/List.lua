@@ -372,6 +372,10 @@ function Spy:RemovePlayerData(name)
 		end
 end
 
+function Spy:RemovePlayerDataFromStats(name)
+	SpyPerCharDB.PlayerData[name] = nil
+end
+
 function Spy:AddIgnoreData(name)
 	SpyPerCharDB.IgnoreData[name] = true
 end

@@ -212,6 +212,8 @@ L["CONFIRM_POST_LOW_PRICE"] = [=[O preço de %s parece um pouco baixo. Tem certe
 ]=]
 L["CONFIRM_POST_PRICE_DROP"] = "O preço unitário de %s é uma grande queda de preço. Tem certeza de que deseja postar a esse preço?"
 --[[Translation missing --]]
+L["CONFIRM_UNHIDE_ALL"] = "Are you sure you want to unhide all hidden items?"
+--[[Translation missing --]]
 L["CONFIRM_X_TOTAL_PRICE_X"] = "Confirm %s, total price %s"
 --[[Translation missing --]]
 L["CONTINUE"] = "Continue"

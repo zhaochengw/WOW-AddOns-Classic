@@ -7,7 +7,7 @@ local fonts = SM:List("font")
 local _
 
 Spy = LibStub("AceAddon-3.0"):NewAddon("Spy", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0", "AceTimer-3.0")
-Spy.Version = "3.1.2"
+Spy.Version = "3.1.4"
 Spy.DatabaseVersion = "1.1"
 Spy.Signature = "[Spy]"
 Spy.ButtonLimit = 15
@@ -2134,11 +2134,11 @@ timestamp, event, hideCaster, srcGUID, srcName, srcFlags, sourceRaidFlags, dstGU
 						Spy:AlertProwlPlayer(srcName)
 					end
 				end
+			end
 
-				if dstGUID == UnitGUID("player") then
-					Spy.LastAttack = srcName
-					Spy.LastAttackTime = GetTime()
-				end
+			if dstGUID == UnitGUID("player") then
+				Spy.LastAttack = srcName
+				Spy.LastAttackTime = GetTime()
 			end
 		end
 
@@ -2211,6 +2211,12 @@ timestamp, event, hideCaster, srcGUID, srcName, srcFlags, sourceRaidFlags, dstGU
 		if event == "SPELL_SUMMON" and srcName == Spy.CharacterName then
 			local petGUID = dstGUID
 			Spy.PetGUID[petGUID] = time()
+		end
+		if event == "ENVIRONMENTAL_DAMAGE" and dstGUID == UnitGUID("player") then
+--			local environmentalType = arg12
+--			local amount = arg13
+			Spy.LastAttack = nil		
+--			print(timestamp, "Ouch ", environmentalType, amount, " hurts!")
 		end		
 	end
 end
@@ -2221,13 +2227,17 @@ function Spy:LeftCombatEvent()
 end
 
 function Spy:PlayerDeadEvent()
-	if (Spy.LastAttack and (GetTime() - Spy.LastAttackTime) < .5 ) then
-		local playerData = SpyPerCharDB.PlayerData[Spy.LastAttack]
-		if playerData then
-			if not playerData.loses then
-				playerData.loses = 0
+	if Spy.LastAttack then
+		local timeDiff = GetTime() - Spy.LastAttackTime
+		if (timeDiff < .5 ) then
+--			print("Killed by ", Spy.LastAttack, " ", timeDiff, " seconds ago")
+			local playerData = SpyPerCharDB.PlayerData[Spy.LastAttack]
+			if playerData then
+				if not playerData.loses then
+					playerData.loses = 0
+				end
+				playerData.loses = playerData.loses + 1
 			end
-			playerData.loses = playerData.loses + 1
 		end
 	end
 end

@@ -218,6 +218,16 @@ GTFO.SpellID["62466"] = {
 	sound = 1;
 };
 
+GTFO.SpellID["62576"] = {
+	--desc = "Blizzard (Thorim 10)";
+	sound = 1;
+};
+
+GTFO.SpellID["62602"] = {
+	--desc = "Blizzard (Thorim 25)";
+	sound = 1;
+};
+
 GTFO.SpellID["62451"] = {
 	--desc = "Unstable Energy (Freya 10)";
 	sound = 1;
@@ -1248,6 +1258,14 @@ GTFO.SpellID["50229"] = {
 GTFO.SpellID["59323"] = {
 	--desc = "Whirlwind (Skadi the Ruthless - Utgarde Pinnacle)";
 	sound = 1;
+};
+
+-- WotLK Classic
+
+GTFO.SpellID["398140"] = {
+	--desc = "Icy Path (Defense Protocol Alpha - Heroic+)";
+	sound = 1;
+	ignoreApplication = true;
 };
 
 end

@@ -2,15 +2,15 @@
 	by ALA @ 163UI
 --]]--
 
-if WOW_PROJECT_ID ~= WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
-	return;
-end
-
 local __addon, __private = ...;
 local MT = __private.MT;
 local CT = __private.CT;
 local VT = __private.VT;
 local DT = __private.DT;
+
+if not CT.ISBCC then
+	return;
+end
 
 local DataAgent = DT.DataAgent;
 

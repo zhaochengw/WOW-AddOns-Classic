@@ -159,23 +159,20 @@ local needSlot = {1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18};
 ]]
 
 
-    --为了好看 所以进行了优化
-    --150一下 是绿色
-    --200一下 是蓝色
-    --213一下 是紫色
-    --213以上 是橙色
+--为了好看 所以进行了颜色优化
+--更新到WLK P2 奥杜尔
 local function GetEquipAverageLevelColour(level)
     
-    if level < 100 then
+    if level < 150 then --白
         return whiteColour;
-    elseif level < 150 then
+    elseif level < 210 then --绿
         return greenColour;
-    elseif level < 200 then
+    elseif level < 220 then -- 蓝
         return blueColour;
-    elseif level < 213 then
+    elseif level < 235 then -- 紫
         return violetColour;
     else
-        return orangeColour;
+        return orangeColour; -- 橙
     end
 
     return whiteColour;

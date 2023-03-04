@@ -1,0 +1,21 @@
+﻿## Author: Jordy141
+## Interface: 30401
+## Notes: Enhances shift-click interface at vendors.
+## Title: BuyEmAll Classic (3.4.1)
+## Version: 1.0.2
+## SavedVariablesPerCharacter: BEAConfirmToggle
+## LoadManagers: AddonLoader
+## X-LoadOn-Merchant: true
+## X-LoadOn-Slash: /buyemall
+
+Localization.deDE.lua
+Localization.enUS.lua
+Localization.esES.lua
+Localization.frFR.lua
+Localization.koKR.lua
+Localization.ptBR.lua
+Localization.ruRU.lua
+Localization.zhCN.lua
+Localization.zhTW.lua
+BuyEmAllClassic.lua
+BuyEmAllClassic.xml

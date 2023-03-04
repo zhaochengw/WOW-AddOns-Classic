@@ -1,3 +1,69 @@
+3.0.114 - 3rd March 2023
+- Added flight times.
+
+3.0.113 - 2nd March 2023
+- Added flight times.
+
+3.0.112 - 1st March 2023
+- Added flight times.
+
+3.0.111 - 28th February 2023
+- Added flight times.
+
+3.0.110 - 25th February 2023
+- Added flight times.
+
+3.0.109 - 22nd February 2023
+- For 'Mute game sounds' ('System'), added new sounds to the 'Gyrocopters' setting (including Mimiron's Head).
+- Added flight times.
+
+3.0.108 - 19th February 2023
+- Added flight times.
+
+3.0.107 - 12th February 2023
+- Added flight times.
+
+3.0.106 - 10th February 2023
+- Added flight times.
+
+3.0.105 - 8th February 2023
+- Added flight times.
+
+3.0.104 - 6th February 2023
+- Updated friend checking code for the options in the social menu to more closely match Dragonflight code.
+- For 'Recent chat window' ('Chat'), fixed an issue which caused texture atlases to break dragging and selecting messages.
+- For 'Show durability status' ('Interface'), fixed a bug which caused ranged weapons to be excluded.
+- Added flight times.
+
+3.0.103 - 5th February 2023
+- Added flight times.
+
+3.0.102 - 4th February 2023
+- For 'Mute game sounds' ('System'), you can now mute Rhonin.
+- For 'Hide chat buttons' ('Chat'), the text to speech configuration button will now be hidden.
+- Added flight times.
+
+3.0.101 - 2nd February 2023
+- Fixed a minor issue with 'Show auction controls' ('Interface') which caused the 'Find Item' button to only show one page of results.
+- Added flight times.  There are now 7954 flight times in Leatrix Plus for Wrath of the Lich King Classic.
+
+3.0.100 - 30th January 2023
+- Updated 'Recent chat window' ('Chat') code and 'Show flight times' ('Interface') code.
+- Added flight times.
+
+3.0.99 - 30th January 2023
+- Updated LibDBIcon.
+- Added flight times.
+
+3.0.98 - 29th January 2023
+- Added flight times.
+
+3.0.97 - 28th January 2023
+- Added flight times.
+
+3.0.96 - 27th January 2023
+- Added flight times.
+
 3.0.95 - 26th January 2023
 - Added flight times.
 

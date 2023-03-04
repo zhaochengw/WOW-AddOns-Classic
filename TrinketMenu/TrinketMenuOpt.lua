@@ -1,46 +1,45 @@
-﻿--[[ TrinketMenuOpt.lua : Options and sort window for TrinketMenu ]]
+--[[ TrinketMenuOpt.lua : Options and sort window for TrinketMenu ]]
 
 local _G, math, string, table = _G, math, string, table
 
 TrinketMenu.CheckOptInfo = {
-	{"ShowIcon", "ON", "小地图按钮", "显示或隐藏小地图按钮."},
-	{"SquareMinimap", "OFF", "方形小地图", "如果迷你地图是方形移动迷你地图按钮.", "ShowIcon"},
-	{"CooldownCount", "OFF", "冷却计时", "在按钮上显示剩余冷却时间."},
-	{"TooltipFollow", "OFF", "跟随鼠标", "提示信息跟随鼠标.", "ShowTooltips"},
-	{"KeepOpen", "OFF", "保持列表开启", "保持饰物列表始终开启."},
-	{"KeepDocked", "ON", "保持列表粘附", "保持饰物列表粘附在当前装备列表."},
-	{"Notify", "OFF", "可使用提示", "饰物冷却后提示玩家."},
-	{"DisableToggle", "OFF", "禁止开关", "止使用点击小地图按钮来控制列表的显示/隐藏.", "ShowIcon"},
-	{"NotifyChatAlso", "OFF", "在聊天窗口提示", "在饰物冷却结束后在聊天窗口也发出提示信息."},
-	{"Locked", "OFF", "锁定窗口", "不能移动,缩放,转动饰品列表."},
-	{"ShowTooltips", "ON", "显示提示信息", "显示提示信息."},
-	{"NotifyThirty", "ON", "三十秒提示", "在饰品冷却前三十秒时提示玩家."},
-	{"MenuOnShift", "OFF", "Shift显示列表", "只有按下Shift才会显示饰品选择列表."},
-	{"TinyTooltips", "OFF", "迷你提示", "简化饰品的提示信息变为只有名字, 用途, 冷却.", "ShowTooltips"},
-	{"SetColumns", "OFF", "设置列表列数", "设置饰品选择列表的列数.\n\n不选择此项 TrinketMenu 会自动排列."},
-	{"LargeCooldown", "ON", "大字体", "用更大的字体显示冷却时间.", "CooldownCount"},
-	{"ShowHotKeys", "ON", "显示快捷键", "在饰品上显示绑定的快捷键."},
-	{"StopOnSwap", "OFF", "被动饰品停止排队", "当换上一个被动饰品时停止自动排队.  选中这个选项时, 当一个可点击饰品通过 TrinketMenu 被手动换上时同样会停止自动排队. 当频繁标记饰品为优先时这个选项尤其有用"},
-	{"HideOnLoad", "OFF", "当配置载入时关闭", "当你载入一个配置时关闭这个窗口."},
-	{"RedRange", "OFF", "射程警告", "当有效目标在饰品的射程外时饰品变红警告.  例如, 侏儒死亡射线和侏儒捕网器."},
-	{"HidePetBattle", "ON", "宠物战斗时隐藏", "在宠物战斗时自动隐藏该窗口"},
-	{"MenuOnRight", "OFF", "右击菜单", "防止菜单出现除非一个警告饰品被右击.\n\n提示: 战斗中不能改变这个选项."}
+	{"ShowIcon", "ON", "Minimap Button", "Show or hide minimap button."},
+	{"SquareMinimap", "OFF", "Square Minimap", "Move minimap button as if around a square minimap.", "ShowIcon"},
+	{"CooldownCount", "OFF", "Cooldown Numbers", "Display time remaining on cooldowns ontop of the button."},
+	{"TooltipFollow", "OFF", "At Mouse", "Display all tooltips near the mouse.", "ShowTooltips"},
+	{"KeepOpen", "OFF", "Keep Menu Open", "Keep menu open at all times."},
+	{"KeepDocked", "ON", "Keep Menu Docked", "Keep menu docked at all times."},
+	{"Notify", "OFF", "Notify When Ready", "Sends an overhead notification when a trinket's cooldown is complete."},
+	{"DisableToggle", "OFF", "Disable Toggle", "Disables the minimap button's ability to toggle the trinket frame.", "ShowIcon"},
+	{"NotifyChatAlso", "OFF", "Notify Chat Also", "Sends notifications through chat also."},
+	{"Locked", "OFF", "Lock Windows", "Prevents the windows from being moved, resized or rotated."},
+	{"ShowTooltips", "ON", "Show Tooltips", "Shows tooltips."},
+	{"NotifyThirty", "ON", "Notify At 30 sec", "Sends an overhead notification when a trinket has 30 seconds left on cooldown."},
+	{"MenuOnShift", "OFF", "Menu On Shift", "Check this to prevent the menu appearing unless Shift is held."},
+	{"TinyTooltips", "OFF", "Tiny Tooltips", "Shrink trinket tooltips to only their name, charges and cooldown.", "ShowTooltips"},
+	{"SetColumns", "OFF", "Wrap at: ", "Define how many trinkets before the menu will wrap to the next row.\n\nUncheck to let TrinketMenu choose how to wrap the menu."},
+	{"LargeCooldown", "ON", "Large Numbers", "Display the cooldown time in a larger font.", "CooldownCount"},
+	{"ShowHotKeys", "ON", "Show Key Bindings", "Display the key bindings over the equipped trinkets."},
+	{"StopOnSwap", "OFF", "Stop Queue On Swap", "Swapping a passive trinket stops an auto queue.  Check this to also stop the auto queue when a clickable trinket is manually swapped in via TrinketMenu.  This will have the most use to those with frequent trinkets marked Priority."},
+	{"HideOnLoad", "OFF", "Close On Profile Load", "Check this to dismiss this window when you load a profile."},
+	{"RedRange", "OFF", "Red Out of Range", "Check this to red out worn trinkets that are out of range to a valid target.  ie, Gnomish Death Ray and Gnomish Net-O-Matic."},
+	{"HidePetBattle", "ON", "Hide in Pet Battles", "Check this auto hide the frame while in a pet battle."},
+	{"MenuOnRight", "OFF", "Menu On Right-Click", "Check this to prevent the menu from appearing until either worn trinket is right-clicked.\n\nNOTE: This setting CANNOT be changed while in combat."}
 }
 
 TrinketMenu.TooltipInfo = {
-	{"TrinketMenu_LockButton", "锁定窗口", "不能移动,缩放,转动饰品列表."},
-	{"TrinketMenu_Trinket0Check", "上面饰品栏自动排队", "选中这个选项会让饰品自动排队替换到上面的饰品栏.  你也可以Alt+点击饰品来开关自动排队."},
-	{"TrinketMenu_Trinket1Check", "下面饰品栏自动排队", "选中这个选项会让饰品自动排队替换到下面的饰品栏.  你也可以Alt+点击饰品来开关自动排队."},
-	{"TrinketMenu_SortPriority", "高优先权", "当选中这个选项时, 这个饰品会被第一时间装备上, 而不管装备着的饰品是否在冷却中.\n\n当没选中时, 这个饰品不会替换掉没有在冷却中的已装备饰品."},
-	{"TrinketMenu_SortDelay", "延迟替换", "设置一个饰品被替换的时间 (秒).  比如, 你需要20秒得到大地之击的20秒BUFF."},
-	{"TrinketMenu_SortKeepEquipped", "暂停自动排队", "选中这个选项,当这个饰品被装备时会暂停自动排队替换. 比如, 你有一个自动换装的插件在你骑马时把棍子上的胡萝卜装备上了."},
-	{"TrinketMenu_Profiles", "配置文件", "你可以载入或保存一个队列配置."},
-	{"TrinketMenu_Delete", "删除", "从列表中删这个饰品.  更下面的饰品完全不会影响.  这个选项仅仅用来保持列表的可控性. 提示: 你包包里的饰品将回到列表的最下面."},
-	{"TrinketMenu_ProfilesDelete", "删除配置", "移除这个配置Remove this profile."},
-	{"TrinketMenu_ProfilesLoad", "载入配置", "为选中饰品槽载入一个队列.  你也可以双击一个配置来载入它."},
-	{"TrinketMenu_ProfilesSave", "保存配置", "保存选中饰品槽的队列.  任一饰品槽都可以使用它."},
-	{"TrinketMenu_ProfileName", "配置名", "为这个配置输入一个名字.  保存后, 你可以载入给任一饰品槽."},
-	{"TrinketMenu_OptBindButton", "绑定饰品", "单击这里为你的上/下面饰品绑定一个热键."}
+	{"TrinketMenu_LockButton", "Lock Windows", "Prevents the windows from being moved, resized or rotated."},
+	{"TrinketMenu_Trinket0Check", "Top Trinket Auto Queue", "Check this to enable auto queue for this trinket slot.  You can also Alt+Click the trinket slot to toggle Auto Queue."},
+	{"TrinketMenu_Trinket1Check", "Bottom Trinket Auto Queue", "Check this to enable auto queue for this trinket slot.  You can also Alt+Click the trinket slot to toggle Auto Queue."},
+	{"TrinketMenu_SortPriority", "High Priority", "When checked, this trinket will be swapped in as soon as possible, whether the equipped trinket is on cooldown or not.\n\nWhen unchecked, this trinket will not equip over one already worn that's not on cooldown."},
+	{"TrinketMenu_SortDelay", "Swap Delay", "This is the time (in seconds) before a trinket will be swapped out.  ie, for Earthstrike you want 20 seconds to get the full 20 second effect of the buff."},
+	{"TrinketMenu_SortKeepEquipped", "Pause Queue", "Check this to suspend the auto queue while this trinket is equipped. ie, for Carrot on a Stick if you have a mod to auto-equip it to a slot with Auto Queue active."},
+	{"TrinketMenu_Profiles", "Profiles", "Here you can load or save auto queue profiles."},
+	{"TrinketMenu_Delete", "Delete", "Remove this trinket from the list.  Trinkets further down the list don't affect performance at all.  This option is merely to keep the list managable. Note: Trinkets in your bags will return to end of the list."},
+	{"TrinketMenu_ProfilesDelete", "Delete Profile", "Remove this profile."},
+	{"TrinketMenu_ProfilesLoad", "Load Profile", "Load a queue order for the selected trinket slot.  You can double-click a profile to load it also."},
+	{"TrinketMenu_ProfilesSave", "Save Profile", "Save the queue order from the selected trinket slot.  Either trinket slot can use saved profiles."},
+	{"TrinketMenu_ProfileName", "Profile Name", "Enter a name to call the profile.  When saved, you can load this profile to either trinket slot."}
 }
 
 function TrinketMenu.InitOptions()
@@ -304,12 +303,12 @@ end
 function TrinketMenu.SetCooldownFont(button)
 	local item = _G[button.."Time"]
 	if TrinketMenuOptions.LargeCooldown == "ON" then
-		item:SetFont("Fonts\\ARHei.TTF", 16, "OUTLINE")
+		item:SetFont("Fonts\\FRIZQT__.TTF", 16, "OUTLINE")
 		item:SetTextColor(1, .82, 0, 1)
 		item:ClearAllPoints()
 		item:SetPoint("CENTER", button, "CENTER")
 	else
-		item:SetFont("Fonts\\ARHei.TTF", 14, "OUTLINE")
+		item:SetFont("Fonts\\ARIALN.TTF", 14, "OUTLINE")
 		item:SetTextColor(1, 1, 1, 1)
 		item:ClearAllPoints()
 		item:SetPoint("BOTTOM", button, "BOTTOM")

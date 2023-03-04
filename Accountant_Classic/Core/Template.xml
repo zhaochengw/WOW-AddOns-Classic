@@ -1,14 +1,81 @@
-<!-- $Id: Template.xml 359 2020-11-22 15:30:56Z arith $ -->
+<!-- $Id: Template.xml 399 2022-11-06 13:25:42Z arithmandar $ -->
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 
 	<!-- Item Row Template -->
-	<Button name="AccountantClassicTabTemplate" inherits="CharacterFrameTabButtonTemplate" virtual="true">
+	<Button name="AccountantClassicTabTemplate" mixin="AccountantClassicTabButtonMixin" virtual="true">
+		<Size x="10" y="32"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="LeftActive" atlas="uiframe-activetab-left" useAtlasSize="true" parentArray="TabTextures">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-1"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="RightActive" atlas="uiframe-activetab-right" useAtlasSize="true" parentArray="TabTextures">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="8"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="MiddleActive" atlas="_uiframe-activetab-center" useAtlasSize="true" horizTile="true" parentArray="TabTextures">
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.LeftActive" relativePoint="RIGHT"/>
+						<Anchor point="RIGHT" relativeKey="$parent.RightActive" relativePoint="LEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="Left" atlas="uiframe-tab-left" useAtlasSize="true" parentArray="TabTextures">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-3"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="Right" atlas="uiframe-tab-right" useAtlasSize="true" parentArray="TabTextures">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="7"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="Middle" atlas="_uiframe-tab-center" useAtlasSize="true" horizTile="true" parentArray="TabTextures">
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.Left" relativePoint="RIGHT"/>
+						<Anchor point="RIGHT" relativeKey="$parent.Right" relativePoint="LEFT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture parentKey="LeftHighlight" atlas="uiframe-tab-left" useAtlasSize="true" alphaMode="ADD" alpha="0.4" parentArray="TabTextures">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Left"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="MiddleHighlight" atlas="_uiframe-tab-center" useAtlasSize="true" horizTile="true" alphaMode="ADD" alpha="0.4" parentArray="TabTextures">
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.Middle" relativePoint="LEFT"/>
+						<Anchor point="RIGHT" relativeKey="$parent.Middle" relativePoint="RIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="RightHighlight" atlas="uiframe-tab-right" useAtlasSize="true" alphaMode="ADD" alpha="0.4" parentArray="TabTextures">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.Right"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
 		<Scripts>
-			<OnClick>
-				AccountantClassicTab_OnClick(self);
-			</OnClick>
+			<OnLoad method="OnLoad"/>
+			<OnEvent method="OnEvent"/>
+			<OnShow method="OnShow"/>
+			<OnEnter method="OnEnter"/>
+			<OnLeave method="OnLeave"/>
+			<OnClick method="OnClick"/>
 		</Scripts>
+		<ButtonText parentKey="Text">
+			<Size x="0" y="10"/>
+			<Anchors>
+				<Anchor point="CENTER" x="0" y="2"/>
+			</Anchors>
+		</ButtonText>
+		<NormalFont style="GameFontNormalSmall"/>
+		<HighlightFont style="GameFontHighlightSmall"/>
+		<DisabledFont style="GameFontHighlightSmall"/>
 	</Button>
 
 	<!-- Text rows -->
@@ -17,59 +84,7 @@
 			<AbsDimension x="600" y="19"/>
 		</Size>
 		<Layers>
-			<Layer level="BACKGROUND">
-			<!--
-				<FontString name="$parentTitle" parentKey="Title" inherits="GameFontNormal">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
-							<Offset>
-								<AbsDimension x="3" y="-4"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-					<Scripts>
-						<OnEnter>
-							GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT");
-							GameTooltip:SetText(ACCLOC_RSTMNYFRM_TIP, nil, nil, nil, nil, 1);
-						</OnEnter>
-						<OnLeave>
-							GameTooltip:Hide();
-						</OnLeave>
-					</Scripts>
-				</FontString>
-			-->
-			<!--
-				<Button name="$parentDelete" inherits="UIPanelButtonTemplate">
-					<Anchors>
-						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
-							<Offset>
-								<AbsDimension x="3" y="-4"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</Button>
-			-->
-			<!--	
-				<FontString name="$parentIn" parentKey="In" inherits="NumberFontNormal">
-					<Anchors>
-						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
-							<Offset>
-								<AbsDimension x="436" y="-4"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentOut" parentKey="Out" inherits="NumberFontNormal">
-					<Anchors>
-						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
-							<Offset>
-								<AbsDimension x="597" y="-4"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-			-->
-			</Layer>
+			<Layer level="BACKGROUND"/>
 		</Layers>
 		<Frames>
 			<Button name="$parentTitle" parentKey="Title">
@@ -85,7 +100,7 @@
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
-						<FontString name="$parent_Text" parentKey="Text" inherits="GameFontNormal" wraponspaces="false" justifyH="LEFT">
+						<FontString name="$parent_Text" parentKey="Text" inherits="GameFontNormal" nonspacewrap="true" justifyH="LEFT">
 							<Size>
 								<AbsDimension x="280" y="19" />
 							</Size>
@@ -114,7 +129,7 @@
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
-						<FontString name="$parent_Text" parentKey="Text" inherits="NumberFontNormal" wraponspaces="false" justifyH="RIGHT">
+						<FontString name="$parent_Text" parentKey="Text" inherits="NumberFontNormal" nonspacewrap="true" justifyH="RIGHT">
 							<Size>
 								<AbsDimension x="160" y="19" />
 							</Size>
@@ -143,7 +158,7 @@
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
-						<FontString name="$parent_Text" parentKey="Text" inherits="NumberFontNormal" wraponspaces="false" justifyH="RIGHT">
+						<FontString name="$parent_Text" parentKey="Text" inherits="NumberFontNormal" nonspacewrap="true" justifyH="RIGHT">
 							<Size>
 								<AbsDimension x="160" y="19" />
 							</Size>

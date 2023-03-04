@@ -551,9 +551,11 @@ function UnitFramesPlus_FocusPortraitIndicator()
             end
         end)
 
-        FocusPortraitIndicator:SetScript("OnUpdate", function(self, elapsed)
+        --[[
+		FocusPortraitIndicator:SetScript("OnUpdate", function(self, elapsed)
             CombatFeedback_OnUpdate(self, elapsed);
         end)
+		--]]
     else
         FocusHitIndicator:Hide();
         if FocusPortraitIndicator:IsEventRegistered("UNIT_COMBAT") then
@@ -693,7 +695,8 @@ function UnitFramesPlus_FocusPortrait()
                     end
                 elseif event == "UNIT_MODEL_CHANGED" or event == "UNIT_CONNECTION" then
                     UnitFramesPlus_FocusPortraitDisplayUpdate();
-                elseif event == "UNIT_HEALTH_FREQUENT" then
+                --[[
+				elseif event == "UNIT_HEALTH_FREQUENT" then
                     if (not UnitIsConnected("focus")) or UnitIsGhost("focus") then
                         Focus3DPortrait:SetLight(true, false, 0, 0, 0, 1.0, 0.25, 0.25, 0.25);
                     elseif UnitIsDead("focus") then
@@ -701,7 +704,8 @@ function UnitFramesPlus_FocusPortrait()
                     else
                         Focus3DPortrait:SetLight(true, false, 0, 0, 0, 1.0, 1, 1, 1);
                     end
-                end
+                --]]
+				end				
             end)
         elseif UnitFramesPlusDB["focus"]["portraittype"] == 2 then
             Focus3DPortrait:Hide();
@@ -751,13 +755,15 @@ function UnitFramesPlus_FocusPortraitDisplayUpdate()
             Focus3DPortrait:SetPosition(0,0,0);
             Focus3DPortrait:ClearModel();
             Focus3DPortrait:SetUnit("focus");
-            if (not UnitIsConnected("focus")) or UnitIsGhost("focus") then
+            --[[
+			if (not UnitIsConnected("focus")) or UnitIsGhost("focus") then
                 Focus3DPortrait:SetLight(true, false, 0, 0, 0, 1.0, 0.25, 0.25, 0.25);
             elseif UnitIsDead("focus") then
                 Focus3DPortrait:SetLight(true, false, 0, 0, 0, 1.0, 1, 0.3, 0.3);
             else
                 Focus3DPortrait:SetLight(true, false, 0, 0, 0, 1.0, 1, 1, 1);
             end
+			--]]
         end
     elseif UnitFramesPlusDB["focus"]["portraittype"] == 2 then
         if UnitFramesPlusDB["focus"]["portraitnpcno"] == 1 and not UnitIsPlayer("focus") then

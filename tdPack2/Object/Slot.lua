@@ -8,7 +8,7 @@ local ns = select(2, ...)
 
 ---- WOW
 local InCombatLockdown = InCombatLockdown
-local PickupContainerItem = PickupContainerItem
+local PickupContainerItem = PickupContainerItem or C_Container.PickupContainerItem
 
 ---@class Slot: Base
 ---@field private bag number

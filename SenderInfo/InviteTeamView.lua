@@ -399,7 +399,7 @@ local function CreateTeamHelper()
     lessen:SetPoint("TOPLEFT",10,-10);
     lessen:SetSize(150,40);
     lessen:SetText("SenderInfo 缩小");
-    lessen:SetFrameLevel(99999);
+    --lessen:SetFrameLevel(99999);
     lessen:SetScript("OnClick",function ()
         
         if not panelLessen then

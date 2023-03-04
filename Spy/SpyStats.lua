@@ -90,7 +90,7 @@ function SpyStats:Show()
     SpyStatsWinsLosesCheckbox:SetChecked(false)
     SpyStatsReasonCheckbox:SetChecked(false)
 	local HonorKills, _, HighestRank = GetPVPLifetimeStats("player")
---	SpyStatsHonorKillsText:SetText(L["HonorKills"]..":  "..HonorKills)
+--	SpyStatsHonorKillsText:SetText(L["HonorKills"]..":  "..HonorKills) -- Classic
 	SpyStatsHonorKillsText:SetText(L["HonorKills"]..":  "..GetStatistic(588))
 	SpyStatsPvPDeathsText:SetText(L["PvPDeaths"]..":  "..GetStatistic(1501))
     SpyStatsFrame:Show()
@@ -389,7 +389,7 @@ function CreateStatsDropdown(node)
 			info.disabled = nil
 			info.text = L["RemoveFromStatsList"]
 			info.func = function() 
-				Spy:RemovePlayerData(unit.name)
+				Spy:RemovePlayerDataFromStats(unit.name)
 				SpyStats:Recalulate()
 			end 
 			info.value = nil
