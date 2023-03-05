@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Valithria", "DBM-Icecrown", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230228040551")
+mod:SetRevision("20230301053143")
 mod:SetCreatureID(36789)
 mod:SetEncounterID(mod:IsClassic() and 854 or 1098)
 mod:SetModelID(30318)

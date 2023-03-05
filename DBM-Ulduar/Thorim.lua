@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Thorim", "DBM-Ulduar")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230228040551")
+mod:SetRevision("20230301053143")
 mod:SetCreatureID(32865)
 if not mod:IsClassic() then
 	mod:SetEncounterID(1141)

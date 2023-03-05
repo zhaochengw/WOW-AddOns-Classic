@@ -39,7 +39,7 @@
 ## X-DBM-Mod-MapID: 615,724
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-DBM-Mod-MinExpansion: 2
-## Version: 48e6a76
+## Version: 8e3d785
 
 localization.en.lua
 localization.de.lua
