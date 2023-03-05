@@ -135,6 +135,21 @@ local ignore_white = {
     [3719] = 1, --  山地披风（南海镇任务）
 };
 
+local GetContainerItemInfo = function(bag, slot)
+    if C_Container and C_Container.GetContainerItemInfo then
+        local info = C_Container.GetContainerItemInfo(bag, slot)
+        if info then
+            return info.iconFileID, info.stackCount, info.isLocked, info.quality, info.isReadable, info.hasLoot, info.hyperlink, info.isFiltered, info.hasNoValue, info.itemID, info.isBound
+        end
+    else
+        return _G.GetContainerItemInfo(bag, slot)
+    end
+end
+
+local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
+local GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID
+local UseContainerItem = UseContainerItem or C_Container.UseContainerItem
+
 local function RegisterAutoRepairEvents()
 
     local held = nil;
