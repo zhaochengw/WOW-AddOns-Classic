@@ -1833,6 +1833,45 @@ if title ~= nil then
 	end
 end
 
+local _, title = GetAddOnInfo("tacotip");
+if title ~= nil then
+	if GetLocale() == "zhCN" then
+		FF_Nametacotip	= "tacotip鼠标提示增强";
+		FF_Desctacotip	= "tacotip鼠标提示信息增强";
+	elseif GetLocale() == "zhTW" then
+		FF_Nametacotip	= "tacotip滑鼠提示增強";
+		FF_Desctacotip	= "tacotip滑鼠提示資訊增強";
+	else
+		FF_Nametacotip	= "tacotip";
+		FF_Desctacotip	= "TacoTip (GearScore & Talents)";
+	end
+	if ( EarthFeature_AddButton ) then
+		EarthFeature_AddButton(
+			{
+				id= "tacotip";
+				tab= "ui";
+				name= FF_Nametacotip;
+				subtext= "tacotip";
+				tooltip = FF_Desctacotip;
+				icon= "Interface\\Icons\\Ability_Spy";
+				callback= function(button)
+					if not IsAddOnLoaded("tacotip") then
+						LoadAddOn("tacotip");
+					end
+					SlashCmdList["TACOTIP"]("");
+				end;
+				test = function()
+					if not IsAddOnLoaded("tacotip") and not IsAddOnLoadOnDemand("tacotip") then
+						return false;
+					else
+						return true;
+					end
+				end;
+			}
+		);
+	end
+end
+
 local _, title = GetAddOnInfo("MerInspect");
 if title ~= nil then
 	if GetLocale() == "zhCN" then
