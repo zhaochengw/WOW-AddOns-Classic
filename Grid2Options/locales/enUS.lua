@@ -602,6 +602,7 @@ L["Maximum value"] = true
 -- general statuses
 L["name"]= true
 L["mana"]= true
+L["manaalt"]= true
 L["power"]= true
 L["poweralt"]= true
 L["alpha"] = true
@@ -746,7 +747,7 @@ L["Demon"] = "Demon"
 L["Humanoid"] = "Humanoid"
 L["Elemental"] = "Elemental"
 
--- heal-current status
+-- health-current status
 L["Full Health"] = true
 L["Medium Health"] = true
 L["Low Health"] = true
@@ -758,12 +759,18 @@ L["Fast"] = true
 L["Instant"] = true
 L["Update frequency"] = true
 L["Select the health update frequency."] = true
+L["Add shields to health percent"] = true
 
 -- health-low status
 L["Use Health Percent"] = true
+L["Invert status activation"] = true
 
 -- mana
 L["Hide mana of non healer players"] = true
+L["Primary resource"] = true
+L["Secondary resource"] = true
+L["Mana visible when it is the primary resource."] = true
+L["Mana visible when it is not the primary resource, for example: druids in bear form or shadow priests."] = true
 
 -- range status
 L["Range"] = true
@@ -1325,6 +1332,13 @@ L["Select zero to use default Frame Height"] = true
 L["Are you sure?"] = true
 L["A Layout defines which unit frames will be displayed and the way in which they are arranged. Here you can set different layouts for each instance size."] = true
 L["Add instance size"] = true
+L["Bar"] = true
+L["Back"] = true
+L["Adjust"] = true
+L["Horizontal Tiles"] = true
+L["Vertical Tiles"] = true
+L["Repeat"] = true
+L["Mirror"] = true
 
 -- RaidDebuffsOptions
 L["[Custom Debuffs]"] = true

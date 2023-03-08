@@ -411,6 +411,10 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 					instance:RestoreMainWindowPosition()
 					instance:ReajustaGump()
 					--instance:SaveMainWindowPosition()
+					--Load StatusBarSaved values and options.
+					instance.StatusBarSaved = skin.StatusBarSaved or {options = {}}
+					instance.StatusBar.options = instance.StatusBarSaved.options
+					_detalhes.StatusBar:UpdateChilds (instance)
 					instance:ChangeSkin()
 
 				else
@@ -1042,7 +1046,7 @@ local default_profile = {
 				locked = false,
 				width = 250,
 				height = 300,
-				backdrop_color = {.16, .16, .16, .47},
+				backdrop_color = {0.1921, 0.1921, 0.1921, 0.3869},
 				show_title = true,
 				strata = "LOW",
 			},

@@ -46,6 +46,8 @@ end
 function indicator:Release(parent)
 	local f = parent[self.name]
 	if f then
+		local Destroy = self.Destroy
+		if Destroy then Destroy(self, parent, f) end
 		f:SetParent(nil)
 		f:ClearAllPoints()
 		f:Hide()
@@ -99,23 +101,22 @@ function indicator:UpdateDB()
 end
 
 function indicator:RegisterStatus(status, priority)
-	if not self.priorities[status] then
-		if not status.suspended then
-			self.statuses[#self.statuses + 1] = status
-			self.priorities[status] = priority
-			self:SortStatuses()
-			self:UpdateHighlight(status)
-		end
-		status:RegisterIndicator( self, priority, Grid2.suspendedIndicators[self.name] )
+	if not self.priorities[status] and not status.suspended then
+		self.statuses[#self.statuses + 1] = status
+		self.priorities[status] = priority
+		self:SortStatuses()
+		self:UpdateHighlight(status)
 	end
+	status:RegisterIndicator( self, priority, Grid2.suspendedIndicators[self.name] )	
 end
 
-function indicator:UnregisterStatus(status, priority)
-	if not self.priorities[status] then return end
-	self.priorities[status] = nil
-	tremove(self.statuses, self:GetStatusIndex(status))
-	self:SortStatuses()
-	status:UnregisterIndicator(self, priority)
+function indicator:UnregisterStatus(status, suspend)
+	if self.priorities[status] then
+		self.priorities[status] = nil
+		tremove(self.statuses, self:GetStatusIndex(status))
+		self:SortStatuses()
+	end	
+	status:UnregisterIndicator(self, suspend)
 end
 
 function indicator:GetStatusIndex(status)
@@ -131,15 +132,17 @@ function indicator:SortStatuses()
 end
 
 function indicator:SetStatusPriority(status, priority)
-	if not status.suspended then
-		self.priorities[status] = priority
-		self:SortStatuses()
-	end
-	status.priorities[self] = priority
+	if status then
+		if not status.suspended then
+			self.priorities[status] = priority
+			self:SortStatuses()
+		end
+		status.priorities[self] = priority
+	end	
 end
 
 function indicator:GetStatusPriority(status)
-	return status.priorities[self]
+	return status and status.priorities[self]
 end
 
 function indicator:GetCurrentStatus(unit)

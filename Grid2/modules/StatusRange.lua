@@ -24,7 +24,10 @@ local groupType
 local cache = {}
 local UnitRangeCheck
 local grouped_units = Grid2.grouped_units
-local playerClass = select(2, UnitClass("player"))
+local playerClass = Grid2.playerClass
+
+local friendlySpell -- friendly spell configured by the user (spell name)
+local hostileSpell  -- friendly spell configured by the user (spell name)
 
 local rezSpellID = ({ -- classic has the same spellIDs
 		DRUID       = 20484,
@@ -41,7 +44,7 @@ local rezSpell = rezSpellID and GetSpellInfo(rezSpellID)
 local rangeSpellID = ({
 		DRUID   = 774,
 		PALADIN = 19750,
-		PRIEST  = Grid2.isClassic and 2050  or 73325,
+		PRIEST  = Grid2.isClassic and 2050  or 2061,
 		SHAMAN  = Grid2.isClassic and 25357 or 77472,
 		MONK    = 115450,
 		EVOKER  = 361469,
@@ -78,6 +81,28 @@ local Ranges= {
 			return CheckInteractDistance(unit,4) -- 28y for enemies
 		end
 	end,
+	["spell"] = function(unit)
+		if not UnitPhaseReason(unit) then
+			if UnitIsFriend("player", unit) then
+				if UnitIsUnit(unit,'player') then
+					return true
+				elseif rezSpell and UnitIsDeadOrGhost(unit) then
+					return IsSpellInRange(rezSpell,unit)==1
+				elseif friendlySpell then
+					return IsSpellInRange(friendlySpell,unit)==1
+				end
+			elseif hostileSpell then
+				local range = IsSpellInRange(hostileSpell,unit)
+				if range then
+					return range==1
+				else
+					return CheckInteractDistance(unit,4) -- 28y for enemies
+				end
+			else	
+				return CheckInteractDistance(unit,4) -- 28y for enemies
+			end
+		end
+	end,
 }
 
 local function Update()
@@ -95,7 +120,7 @@ function Range:Grid_GroupTypeChanged(_, newGroupType)
 end
 
 function Range:Grid_PlayerSpecChanged()
-	if not tonumber(self.dbx.range) then -- If is not a number -> Using RangeSpell for the player class if available
+	if tonumber(self.dbx.range)==nil then -- If is not a number -> Using RangeSpell for the player class if available
 		self:UpdateDB()
 	end
 end
@@ -121,7 +146,6 @@ function Range:IsActive(unit)
 end
 
 function Range:OnEnable()
-	self:UpdateDB()
 	self:RegisterMessage("Grid_UnitUpdated")
 	self:RegisterMessage("Grid_UnitLeft")
 	self:RegisterMessage("Grid_PlayerSpecChanged")
@@ -142,11 +166,15 @@ end
 -- So we check if status.dbx.range stores a heal spell name (the value is not a number), and in this case the code loads the correct
 -- heal spell for the class (precalculated in rangeSpell variable) instead of the heal spell stored in config.
 function Range:UpdateDB()
-	curAlpha = self.dbx.default or 0.25
-	curRange = tonumber(self.dbx.range) or (rangeSpellID and IsSpellKnown(rangeSpellID) and 'heal') or 38
+	local dbx = self.dbx
+	local dbr = dbx.ranges and dbx.ranges[playerClass] or dbx
+	friendlySpell = dbr.friendlySpellID and GetSpellInfo(dbr.friendlySpellID)
+	hostileSpell  = dbr.hostileSpellID  and GetSpellInfo(dbr.hostileSpellID)
+	curRange = tonumber(dbr.range) or (dbr.range=='spell' and 'spell') or (rangeSpell and 'heal') or 38
 	UnitRangeCheck = Ranges[curRange] or Ranges[38]
+	curAlpha = dbx.default or 0.25
 	timer = timer or Grid2:CreateTimer( Update )
-	timer:SetDuration(self.dbx.elapsed or 0.25)
+	timer:SetDuration(dbx.elapsed or 0.25)
 end
 
 Range.GetColor = Grid2.statusLibrary.GetColor

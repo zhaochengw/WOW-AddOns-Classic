@@ -6,6 +6,7 @@ SavedClassic.name = addonName
 SavedClassic.version = "3.0.9"
 
 local L = LibStub("AceLocale-3.0"):GetLocale(addonName, true)
+local LibGearScore = LibStub("LibGearScore.1000", true)
 
 local MSG_PREFIX = "|cff00ff00■ |cffffaa00Saved!|r "
 local MSG_SUFFIX = " |cff00ff00■|r"
@@ -30,6 +31,8 @@ local dbDefault = {
             dqComplete = -1, dqMax = -1, dqReset = -1,
 
             lastUpdate = -1,
+            gearScore = -1,
+            gearAvgLevel = -1,
         }
     }
 }
@@ -163,6 +166,8 @@ local _TranslationTable = {
     ["dqCom"    ] = "dqComplete",
     ["dqMax"    ] = "dqMax",
     ["dqReset"  ] = "dqReset",
+    ["gearScore"] = "gearScore",
+    ["ilvl"]      = "gearAvgLevel",
     ["instName" ] = "name",
     ["instID"   ] = "id",
     ["difficulty"]= "difficultyName",
@@ -192,6 +197,8 @@ local _TranslationTable = {
         [L["dqCom"     ] ] = "dqCom",
         [L["dqMax"     ] ] = "dqMax",
         [L["dqReset"   ] ] = "dqReset",
+        [L["gs"        ] ] = "gearScore",
+        [L["ilvl"      ] ] = "gearAvgLevel",
         [L["instName"  ] ] = "instName",
         [L["instID"    ] ] = "instID",
         [L["difficulty"] ] = "difficulty",
@@ -243,6 +250,7 @@ function SavedClassic:OnInitialize()
     self:RegisterEvent("QUEST_TURNED_IN")
 
     self:RegisterEvent("CHAT_MSG_COMBAT_HONOR_GAIN", "CurrencyUpdate")
+    LibGearScore.RegisterCallback(self, "LibGearScore_Update")
 
     self.totalMoney = 0 -- Total money except current character
     for character, saved in pairs(self.db.realm) do
@@ -512,6 +520,16 @@ function SavedClassic:CurrencyUpdate()
 --  local _, db,justice, _, earnedThisWeek, weeklyMax, totalMax = GetCurrencyInfo(395)
 end
 
+function SavedClassic:LibGearScore_Update(event, guid, gearScore)
+    local db = self.db.realm[player]
+    local playerGUID = UnitGUID("player")
+    if guid == playerGUID and gearScore then
+        local color = gearScore.Color or CreateColor(0.62, 0.62, 0.62)
+        db.gearScore = color:WrapTextInColorCode(gearScore.GearScore or 0)
+        db.gearAvgLevel = gearScore.AvgItemLevel or 0
+    end
+end
+
 function SavedClassic:ShowInfoTooltip(tooltip)
     local mode = ""
     local db = self.db.realm[player]
@@ -591,7 +609,7 @@ function SavedClassic:ShowInstanceInfo(tooltip, character)
                 local name = self.abbr.raid[instance.name] or instance.name
                 if remain and ( remain ~= "" ) then
                     raidList[name] = raidList[name] or {}
-                    table.insert(raidList[name], instance.difficultyName)
+                    table.insert(raidList[name], ""..instance.difficultyName:gsub("[^0-9]*",""))
                 end
             end
             local oneline = ""

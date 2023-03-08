@@ -758,12 +758,18 @@ L["Fast"] = "Быстро"
 L["Instant"] = "мгновенно"
 L["Update frequency"] = "Частота обновления"
 L["Select the health update frequency."] = "Выберите частоту обновления здоровья."
+-- L["Add shields to health percent"] = ""
 
 -- health-low status
 L["Use Health Percent"] = "Использовать процент здоровья"
+-- L["Invert status activation"] = ""
 
 -- mana
 L["Hide mana of non healer players"] = "Скрыть ману игроков, не являющихся целителями"
+-- L["Primary resource"] = ""
+-- L["Secondary resource"] = ""
+-- L["Mana visible when it is the primary resource."] = ""
+-- L["Mana visible when it is not the primary resource, for example: druids in bear form or shadow priests."] = ""
 
 -- range status
 L["Range"] = "Расстояние"
@@ -1325,6 +1331,13 @@ L["You can include a descriptive prefix using separators \"@#>\""] = "Вы мо�
 -- L["Are you sure?"] = ""
 -- L["A Layout defines which unit frames will be displayed and the way in which they are arranged. Here you can set different layouts for each instance size."] = ""
 -- L["Add instance size"] = ""
+-- L["Bar"] = ""
+-- L["Back"] = ""
+-- L["Adjust"] = ""
+-- L["Horizontal Tiles"] = ""
+-- L["Vertical Tiles"] = ""
+-- L["Repeat"] = ""
+-- L["Mirror"] = ""
 
 -- RaidDebuffsOptions
 -- L["[Custom Debuffs]"] = ""

@@ -756,12 +756,18 @@ L["Frequent Updates"] = "Häufigere Aktualisierungen"
 -- L["Instant"] = ""
 -- L["Update frequency"] = ""
 -- L["Select the health update frequency."] = ""
+-- L["Add shields to health percent"] = ""
 
 -- health-low status
 -- L["Use Health Percent"] = ""
+-- L["Invert status activation"] = ""
 
 -- mana
 -- L["Hide mana of non healer players"] = ""
+-- L["Primary resource"] = ""
+-- L["Secondary resource"] = ""
+-- L["Mana visible when it is the primary resource."] = ""
+-- L["Mana visible when it is not the primary resource, for example: druids in bear form or shadow priests."] = ""
 
 -- range status
 L["Range"] = "Reichweite"
@@ -1323,6 +1329,13 @@ L["\"%s\" has sent you a profile configuration. Do you want to activate received
 -- L["Are you sure?"] = ""
 -- L["A Layout defines which unit frames will be displayed and the way in which they are arranged. Here you can set different layouts for each instance size."] = ""
 -- L["Add instance size"] = ""
+-- L["Bar"] = ""
+-- L["Back"] = ""
+-- L["Adjust"] = ""
+-- L["Horizontal Tiles"] = ""
+-- L["Vertical Tiles"] = ""
+-- L["Repeat"] = ""
+-- L["Mirror"] = ""
 
 -- RaidDebuffsOptions
 -- L["[Custom Debuffs]"] = ""

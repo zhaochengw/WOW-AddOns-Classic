@@ -758,12 +758,18 @@ L["Fast"] = "快"
 L["Instant"] = "立刻"
 L["Update frequency"] = "更新的频率"
 L["Select the health update frequency."] = "选择生命值更新频率"
+-- L["Add shields to health percent"] = ""
 
 -- health-low status
 L["Use Health Percent"] = "使用生命值的百分比"
+-- L["Invert status activation"] = ""
 
 -- mana
 L["Hide mana of non healer players"] = "隐藏非治疗玩家的法力条"
+-- L["Primary resource"] = ""
+-- L["Secondary resource"] = ""
+-- L["Mana visible when it is the primary resource."] = ""
+-- L["Mana visible when it is not the primary resource, for example: druids in bear form or shadow priests."] = ""
 
 -- range status
 L["Range"] = "距离"
@@ -1325,6 +1331,13 @@ L["You can include a descriptive prefix using separators \"@#>\""] = "你可以�
 -- L["Are you sure?"] = ""
 -- L["A Layout defines which unit frames will be displayed and the way in which they are arranged. Here you can set different layouts for each instance size."] = ""
 -- L["Add instance size"] = ""
+-- L["Bar"] = ""
+-- L["Back"] = ""
+-- L["Adjust"] = ""
+-- L["Horizontal Tiles"] = ""
+-- L["Vertical Tiles"] = ""
+-- L["Repeat"] = ""
+-- L["Mirror"] = ""
 
 -- RaidDebuffsOptions
 -- L["[Custom Debuffs]"] = ""

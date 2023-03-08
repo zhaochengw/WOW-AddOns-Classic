@@ -1,10 +1,9 @@
 # BuffTimers
 
-## [v1.9.4](https://github.com/sandervspl/BuffTimers/tree/v1.9.4) (2023-01-29)
-[Full Changelog](https://github.com/sandervspl/BuffTimers/compare/v1.9.3...v1.9.4) [Previous Releases](https://github.com/sandervspl/BuffTimers/releases)
+## [v1.9.5](https://github.com/sandervspl/BuffTimers/tree/v1.9.5) (2023-03-07)
+[Full Changelog](https://github.com/sandervspl/BuffTimers/compare/v1.9.4...v1.9.5) [Previous Releases](https://github.com/sandervspl/BuffTimers/releases)
 
-- Merge pull request #14 from ljosberinn/fix-retail-debuffs  
-    hook DebuffFrame.auraFrames too  
-- hook DebuffFrame.auraFrames too  
-    - dont call IsRetail() permanently  
-    - dont accidentally create globals  
+- Merge pull request #15 from qrpino/patch-1  
+    Update Locales.lua  
+- Update Locales.lua  
+    "Always yellow text color" and "Time Stamp Format" updated. Sounds more correct.  

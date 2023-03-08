@@ -26,6 +26,7 @@ local UnitIsGhost = UnitIsGhost
 local UnitIsFriend = UnitIsFriend
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitIsFeignDeath = UnitIsFeignDeath
+local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitHealthMax = UnitHealthMax
 local C_Timer_After = C_Timer.After
 local unit_is_valid = Grid2.roster_guids
@@ -40,7 +41,7 @@ local heals_timeband
 local heals_cache = setmetatable( {}, {__index = function() return 0 end} )
 
 local myheals_enabled = false
-local myheal_required = 0
+local myheals_required = 0
 local myheals_minimum = 1
 local myheals_multiplier = 1
 local myheals_bitflag
@@ -246,9 +247,34 @@ local function Health_Disable(status)
 end
 
 -- health-current status
-HealthCurrent.OnEnable  = Health_Enable
-HealthCurrent.OnDisable = Health_Disable
 HealthCurrent.IsActive  = Grid2.statusLibrary.IsActive
+
+local HealthCurrent_GetPercent
+
+local function HealthCurrent_ShieldUpdate(unit)
+	if unit_is_valid[unit] then
+		HealthCurrent:UpdateIndicators(unit)
+	end
+end	
+
+local function HealthCurrent_GetPercentTextShield(self, unit)
+	local m = UnitHealthMax(unit)
+	return fmt( "%.0f%%",  m == 0 and 0 or (UnitHealth(unit)+UnitGetTotalAbsorbs(unit))*100/m )
+end
+
+function HealthCurrent:OnEnable()
+	Health_Enable(self)
+	if self.addShield then
+		RegisterEvent( "UNIT_ABSORB_AMOUNT_CHANGED", HealthCurrent_ShieldUpdate )
+	end
+end
+
+function HealthCurrent:OnDisable()
+	Health_Disable(self)
+	if self.addShield then
+		UnregisterEvent( "UNIT_ABSORB_AMOUNT_CHANGED" )
+	end	
+end
 
 function HealthCurrent_GetPercent(self,unit)
 	local m = UnitHealthMax(unit)
@@ -288,17 +314,19 @@ function HealthCurrent:GetColor(unit)
 end
 
 function HealthCurrent:UpdateDB()
+	self.addShield = Grid2.isWoW90 and self.dbx.addPercentShield or nil
 	self.GetText = self.dbx.displayRawNumbers and self.GetText2 or self.GetText1
 	self.GetPercent = self.dbx.deadAsFullHealth and HealthCurrent_GetPercentDFH or HealthCurrent_GetPercent
+	self.GetPercentText= self.addShield and HealthCurrent_GetPercentTextShield or nil
 	self.color1 = Grid2:MakeColor(self.dbx.color1)
 	self.color2 = Grid2:MakeColor(self.dbx.color2)
 	self.color3 = Grid2:MakeColor(self.dbx.color3)
+	HealthCurrent_GetPercent = self.GetPercent
 	Health_UpdateStatuses()
 end
 
 local function CreateHealthCurrent(baseKey, dbx)
 	Grid2:RegisterStatus(HealthCurrent, {"percent", "text", "color"}, baseKey, dbx)
-	HealthCurrent:UpdateDB()
 	return HealthCurrent
 end
 
@@ -311,21 +339,33 @@ HealthLow.OnEnable  = Health_Enable
 HealthLow.OnDisable = Health_Disable
 HealthLow.GetColor  = Grid2.statusLibrary.GetColor
 
+local healthlow_threshold
+
 function HealthLow:IsActive1(unit)
-	return UnitExists(unit) and HealthCurrent:GetPercent(unit) < self.dbx.threshold
+	return UnitExists(unit) and HealthCurrent_GetPercent(self, unit) < healthlow_threshold
 end
 
 function HealthLow:IsActive2(unit)
-	return UnitExists(unit) and UnitHealth(unit) < self.dbx.threshold
+	return UnitExists(unit) and UnitHealth(unit) < healthlow_threshold
+end
+
+function HealthLow:IsInactive1(unit)
+	return not UnitExists(unit) or HealthCurrent_GetPercent(self, unit) >= healthlow_threshold
+end
+
+function HealthLow:IsInactive2(unit)
+	return not UnitExists(unit) or UnitHealth(unit) >= healthlow_threshold
 end
 
 function HealthLow:UpdateDB()
-	self.IsActive = self.dbx.threshold<=1 and self.IsActive1 or self.IsActive2
+	healthlow_threshold = self.dbx.threshold
+	self.IsActive = self.dbx.invert and  
+					(healthlow_threshold<=1 and self.IsInactive1 or self.IsInactive2) or
+					(healthlow_threshold<=1 and self.IsActive1 or self.IsActive2)
 end
 
 local function CreateHealthLow(baseKey, dbx)
 	Grid2:RegisterStatus(HealthLow, {"percent", "color"}, baseKey, dbx)
-	HealthLow:UpdateDB()
 	return HealthLow
 end
 
@@ -383,7 +423,6 @@ Grid2:DbSetStatusDefaultValue( "feign-death", {type = "feign-death", color1 = {r
 HealthDeficit.GetColor  = Grid2.statusLibrary.GetColor
 
 function HealthDeficit:OnEnable()
-	self:UpdateDB()
 	Health_Enable(self)
 	healthdeficit_enabled = self.dbx.addIncomingHeals~=nil
 	if healthdeficit_enabled and not Heals.enabled then
@@ -679,18 +718,21 @@ HealsInitialize = function()
 end
 
 HealsUpdateEvent = function(unit)
-	if unit then
-		local myheal = myheal_required>0 and UnitGetMyIncomingHeals(unit, "player") or 0
-		if myheals_enabled then
-			local heal = myheal>=myheals_minimum and myheal * myheals_multiplier or 0
+	if unit_is_valid[unit] then
+		local myheal = 0
+		if myheals_required>0 then
+			myheal = UnitGetMyIncomingHeals(unit, "player")
+			local heal = myheal>=myheals_minimum and myheal*myheals_multiplier or 0
 			if myheals_cache[unit] ~= heal then
 				myheals_cache[unit] = heal
-				MyHeals:UpdateIndicators(unit)
+				if myheals_enabled then
+					MyHeals:UpdateIndicators(unit)
+				end	
 			end
 		end
 		if heals_enabled or overheals_enabled then
 			local heal = HealsGetAmount(unit, myheal)
-			heal = heal>=heals_minimum and heal * heals_multiplier or 0
+			heal = heal>=heals_minimum and heal*heals_multiplier or 0
 			if heals_cache[unit] ~= heal then
 				heals_cache[unit] = heal
 				Heals:UpdateIndicators(unit)
@@ -710,17 +752,19 @@ local function ClearUnitHealCache(_, unit)
 	myheals_cache[unit] = nil
 end
 
-local function RegisterHealEvents(bitmask)
+local function RegisterHealEvents(bitmask, myheals)
 	if heals_required==0 then
 		RegisterEvent("UNIT_HEAL_PREDICTION", HealsUpdateEvent)
 		Grid2.RegisterMessage( Heals, "Grid_UnitLeft", ClearUnitHealCache )
 		Grid2.RegisterMessage( Heals, "Grid_UnitUpdated", ClearUnitHealCache )
 	end
-	heals_required = bit.bor(heals_required,bitmask) -- set specified bit
+	heals_required   = bit.bor(heals_required, bitmask or 0) -- set specified bit
+	myheals_required = bit.bor(myheals_required, myheals and bitmask or 0) -- set specified bit
 end
 
 local function UnregisterHealEvents(bitmask)
 	heals_required = bit.band(heals_required,7-bitmask) -- clear specified bit
+	myheals_required = bit.band(myheals_required,7-bitmask) -- clear specified bit
 	if heals_required==0 then
 		UnregisterEvent("UNIT_HEAL_PREDICTION")
 		Grid2.UnregisterMessage( Heals, "Grid_UnitLeft")
@@ -745,13 +789,9 @@ function Heals:UpdateDB()
 end
 
 function Heals:OnEnable()
-	self:UpdateDB()
-	RegisterHealEvents(1) -- set bit1
+	RegisterHealEvents(1, not self.dbx.includePlayerHeals and not HealComm) -- set bit1; if using HealCom library no need to substract myheals heals
 	if self.dbx.includeHealAbsorbs and not Grid2.isClassic then
 		RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", HealsUpdateEvent)
-	end
-	if not self.dbx.includePlayerHeals and not HealComm then -- if using HealCom library we do not need to substract player heals
-		myheal_required = bit.bor(myheal_required,1) -- set bit1
 	end
 	heals_enabled = true
 end
@@ -760,7 +800,6 @@ function Heals:OnDisable()
 	UnregisterHealEvents(1)
 	wipe(heals_cache)
 	heals_enabled = false
-	myheal_required = bit.band(myheal_required,2) -- clear bit1
 	if self.dbx.includeHealAbsorbs and not Grid2.isClassic then
 		UnregisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
 	end
@@ -804,15 +843,36 @@ Grid2:DbSetStatusDefaultValue( "heals-incoming", {type = "heals-incoming", inclu
 
 -- overhealing
 
+local GetOverHeals
+
+local function GetOverHealsPlayer(unit)
+	return heals_cache[unit]+UnitHealth(unit)-UnitHealthMax(unit)
+end
+
+local function GetOverHealsNoPlayer(unit)
+	return heals_cache[unit]+myheals_cache[unit]+UnitHealth(unit)-UnitHealthMax(unit)
+end
+
+local function GetOverHealsPercentPlayer(self, unit)
+	local m = UnitHealthMax(unit)
+	return m>0 and ( heals_cache[unit]+UnitHealth(unit)-m ) / m or 0
+end
+
+local function GetOverHealsPercentNoPlayer(self, unit)
+	local m = UnitHealthMax(unit)
+	return m>0 and ( heals_cache[unit]+myheals_cache[unit]+UnitHealth(unit)-m ) / m or 0
+end
+
 function OverHeals:UpdateDB()
 	overheals_minimum = self.dbx.minimum or 1
 	self.GetText = self.dbx.displayRawNumbers and self.GetText2 or self.GetText1
 end
 
 function OverHeals:OnEnable()
-	self:UpdateDB()
 	Health_Enable(self)
-	RegisterHealEvents(4) -- set bit3
+	RegisterHealEvents(4, not Heals.dbx.includePlayerHeals) -- set bit3
+	GetOverHeals = Heals.dbx.includePlayerHeals and GetOverHealsPlayer or GetOverHealsNoPlayer -- update setting here because OverHeals status can be created before Heals status
+	self.GetPercent = Heals.dbx.includePlayerHeals and GetOverHealsPercentPlayer or GetOverHealsPercentNoPlayer
 	overheals_enabled = true
 end
 
@@ -823,26 +883,21 @@ function OverHeals:OnDisable()
 end
 
 function OverHeals:IsActive(unit)
-	return heals_cache[unit]+UnitHealth(unit)-UnitHealthMax(unit)>=overheals_minimum
+	return GetOverHeals(unit)>=overheals_minimum
 end
 
 function OverHeals:GetText1(unit)
-	local h = heals_cache[unit]+UnitHealth(unit)-UnitHealthMax(unit)
+	local h = GetOverHeals(unit)
 	return h<1000 and fmt("+%d",h) or fmt("+%.1fk",h/1000)
 end
 
 function OverHeals:GetText2(unit)
-	return fmt("+%d", heals_cache[unit]+UnitHealth(unit)-UnitHealthMax(unit) )
+	return fmt("+%d", GetOverHeals(unit) )
 end
 
 OverHeals.GetText = GetText1
-
+OverHeals.GetPercent = GetOverHealsPercentPlayer
 OverHeals.GetColor = Grid2.statusLibrary.GetColor
-
-function OverHeals:GetPercent(unit)
-	local m = UnitHealthMax(unit)
-	return m>0 and ( heals_cache[unit]+UnitHealth(unit)-m ) / m or 0
-end
 
 local function Create(baseKey, dbx)
 	Grid2:RegisterStatus(OverHeals, {"color", "text", "percent"}, baseKey, dbx)
@@ -869,9 +924,7 @@ function MyHeals:UpdateDB()
 end
 
 function MyHeals:OnEnable()
-	self:UpdateDB()
-	RegisterHealEvents(2) -- set bit2
-	myheal_required = bit.bor(myheal_required,2) -- set bit2
+	RegisterHealEvents(2, true) -- set bit2
 	myheals_enabled = true
 end
 
@@ -879,7 +932,6 @@ function MyHeals:OnDisable()
 	UnregisterHealEvents(2) -- clear bit2
 	wipe(myheals_cache)
 	myheals_enabled = false
-	myheal_required = bit.band(myheal_required,1) -- clear bit2
 end
 
 function MyHeals:IsActive(unit)

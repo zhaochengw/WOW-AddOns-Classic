@@ -38,6 +38,7 @@ L["Desc_Char"] = "|cff00ff00■|r |cffccaa00Keywords for Character info|r|n"
     .."|cffccaa00[cooldown]|r Tradeskill cooldowns|n"
     .."|cffccaa00[dqCom] [dqMax]|r|n"
     .."|cffccaa00[dqReset]|r Time left until DQ reset|n"
+    .."|cffccaa00[gs] [ilvl]|r|n"
     .."|cffccaa00[color/######]|r Color starts(RGB code)|n|cffccaa00[color]|r Color ends|n"
     .."  attach /###### to apply color|n"
     .."|cffffeeaa(ex) |r|cffccaa00[color/ffffff]WHITE[color] =>|r |cffffffffWHITE|r|n   |cffccaa00[item:6265|cffcc3333/cc66cc|r] => |r|cffcc66cc".."|T"..GetItemIcon(6265)..":14:14|t12|r|n"
@@ -82,6 +83,8 @@ L["expRest%"  ] = true
 L["dqCom"     ] = true
 L["dqMax"     ] = true
 L["dqReset"   ] = true
+L["gs"        ] = true
+L["ilvl"      ] = true
 L["instName"  ] = true
 L["instID"    ] = true
 L["difficulty"] = true

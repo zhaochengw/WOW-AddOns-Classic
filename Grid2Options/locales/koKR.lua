@@ -758,12 +758,18 @@ L["Fast"] = "빠르게"
 L["Instant"] = "즉시"
 L["Update frequency"] = "업데이트 빈도"
 L["Select the health update frequency."] = "생명력 업데이트 빈도 선택"
+-- L["Add shields to health percent"] = ""
 
 -- health-low status
 L["Use Health Percent"] = "생명력 비율(%) 사용"
+-- L["Invert status activation"] = ""
 
 -- mana
 L["Hide mana of non healer players"] = "힐러가 아닌 경우 마나 숨김"
+-- L["Primary resource"] = ""
+-- L["Secondary resource"] = ""
+-- L["Mana visible when it is the primary resource."] = ""
+-- L["Mana visible when it is not the primary resource, for example: druids in bear form or shadow priests."] = ""
 
 -- range status
 L["Range"] = "거리"
@@ -1325,6 +1331,13 @@ L["Select zero to use default Frame Height"] = "0이면 기본 프레임 높이 
 L["Are you sure?"] = "확실한가요?"
 L["A Layout defines which unit frames will be displayed and the way in which they are arranged. Here you can set different layouts for each instance size."] = "배치는 유닛 프레임이 어떻게 정렬되고 표시되는지를 정의합니다. 이곳에서 각 인스턴스 크기별로 다른 배치를 설정할 수 있습니다"
 L["Add instance size"] = ""
+-- L["Bar"] = ""
+-- L["Back"] = ""
+-- L["Adjust"] = ""
+-- L["Horizontal Tiles"] = ""
+-- L["Vertical Tiles"] = ""
+-- L["Repeat"] = ""
+-- L["Mirror"] = ""
 
 -- RaidDebuffsOptions
 L["[Custom Debuffs]"] = "사용자 디버프"

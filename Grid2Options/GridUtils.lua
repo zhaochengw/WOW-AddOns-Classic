@@ -375,15 +375,17 @@ end
 
 -- checking that the status provides at least one of the required indicator types
 function Grid2Options:IsCompatiblePair(indicator, status)
-	for type, list in pairs(Grid2.indicatorTypes) do
-		if list[indicator.name] then
-			for _, s in Grid2:IterateStatuses(type) do
-				if s == status then
-					return type
+	if status.name~="/@@@test@@@/" then
+		for type, list in pairs(Grid2.indicatorTypes) do
+			if list[indicator.name] then
+				for _, s in Grid2:IterateStatuses(type) do
+					if s == status then
+						return type
+					end
 				end
 			end
 		end
-	end
+	end	
 end
 
 -- Grid2Options:GetAvailableStatusValues()
@@ -391,13 +393,8 @@ function Grid2Options:GetAvailableStatusValues(indicator, statusAvailable, statu
 	statusAvailable = statusAvailable or {}
 	wipe(statusAvailable)
 	for statusKey, status in Grid2:IterateStatuses() do
-		if self:IsCompatiblePair(indicator, status) and status.name~="test" then -- and not status.suspended then
+		if self:IsCompatiblePair(indicator, status) and not status.priorities[indicator] and not indicator.priorities[status] then 
 			statusAvailable[statusKey] = self.LocalizeStatus(status)
-		end
-	end
-	for _, status in ipairs(indicator.statuses) do
-		if status ~= statusToKeep then
-			statusAvailable[status.name] = nil
 		end
 	end
 	return statusAvailable
@@ -434,6 +431,17 @@ function Grid2Options:UpdateIndicatorDB(indicator)
 		self:UpdateIndicatorDB( indicator.sideKick )
 		self:UpdateIndicatorDB( Grid2:GetIndicatorByName(indicator.childName) )
 	end
+end
+
+-- Grid2Options:RefreshStatus()
+function Grid2Options:RefreshStatus(status)
+	status:RefreshLoad()
+end
+
+-- Grid2Options:LayoutFrames()
+function Grid2Options:LayoutFrames()
+	Grid2Frame:LayoutFrames(true)
+	Grid2Frame:UpdateIndicators()
 end
 
 -- Reload indicator database configuration and refresh the indicator frames.
@@ -561,7 +569,7 @@ Grid2Options.PLAYER_CLASSES = {}
 for class, translation in pairs(LOCALIZED_CLASS_NAMES_MALE) do
 	local coord = CLASS_ICON_TCOORDS[class]
 	if coord then
-		Grid2Options.PLAYER_CLASSES[class] =	string.format("|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:%f:%f:%f:%f:0|t%s",coord[1]*256,coord[2]*256,coord[3]*256,coord[4]*256,translation)
+		Grid2Options.PLAYER_CLASSES[class] = string.format("|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:%f:%f:%f:%f:0|t%s",coord[1]*256,coord[2]*256,coord[3]*256,coord[4]*256,translation)
 	end
 end
 Grid2Options.HEADER_TYPES = { player = L['Players'], pet = L['Pets'], boss = L['Bosses'], target = L['Target'], focus = L['Focus'], self = L['Player'] }

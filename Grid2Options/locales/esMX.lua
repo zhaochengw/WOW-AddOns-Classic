@@ -758,12 +758,18 @@ L["Fast"] = "Rapido"
 L["Instant"] = "Instantaneo"
 L["Update frequency"] = "Frecuencia de actualizaciones"
 L["Select the health update frequency."] = "Elige la frequencia de actualización de las vidas."
+L["Add shields to health percent"] = "Añade escudos al porcentaje de vida"
 
 -- health-low status
 L["Use Health Percent"] = "Usar Porcentajes"
+L["Invert status activation"] = "Invertir activacion del estado"
 
 -- mana
 L["Hide mana of non healer players"] = "Ocultar mana de jugadores no sanadores"
+L["Primary resource"] = "Recurso principal"
+L["Secondary resource"] = "Recurso secundario"
+L["Mana visible when it is the primary resource."] = "Mana visible cuando es el recurso principal."
+L["Mana visible when it is not the primary resource, for example: druids in bear form or shadow priests."] = "Mana visible cuando no es el recurso principal, por ejemplo: druidas en forma de oso o sacerdotes sombra."
 
 -- range status
 L["Range"] = "Rango"
@@ -1325,6 +1331,13 @@ L["Select zero to use default Frame Height"] = "Elige cero para usar el valor pr
 L["Are you sure?"] = "Estás seguro?"
 L["A Layout defines which unit frames will be displayed and the way in which they are arranged. Here you can set different layouts for each instance size."] = "Un diseño define que y como se mostraran las unidades. Aqui puedes seleccionar diferentes diseños para cada tamaño de instancia."
 L["Add instance size"] = "Añade tamaño instancia"
+L["Bar"] = "Barra"
+L["Back"] = "Fondo"
+L["Adjust"] = "Ajusta"
+L["Horizontal Tiles"] = "Horizontal Tiles"
+L["Vertical Tiles"] = "Vertical Tiles"
+L["Repeat"] = "Repite"
+L["Mirror"] = "Espejo"
 
 -- RaidDebuffsOptions
 L["[Custom Debuffs]"] = "[Debuffs Personalizados]"

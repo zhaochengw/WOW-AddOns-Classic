@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# WowAddOnStudio Solution File, Format Version 11.00
+VisualStudioVersion = 17.3.32922.545
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E6E1D386-69D8-4755-9E61-0950293915FC}") = "CharacterStatsWrath", "CharacterStatsWrath.wowproj", "{D9E83637-E974-4DE8-8DE4-135477BF5559}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Default|Any CPU = Default|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9E83637-E974-4DE8-8DE4-135477BF5559}.Default|Any CPU.ActiveCfg = Default|Any CPU
+		{D9E83637-E974-4DE8-8DE4-135477BF5559}.Default|Any CPU.Build.0 = Default|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5C1BC64A-DF1B-45E1-8E28-EAB1FC06FC41}
+	EndGlobalSection
+EndGlobal

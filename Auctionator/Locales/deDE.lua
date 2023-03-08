@@ -93,7 +93,7 @@ L["CONFIG_ENCHANT_TOOLTIP"] = "Zeige Enzauberungsinfos an (nur WoD, Legion, BfA 
 L["CONFIG_FULL_SCAN_STEP_SIZE"] = "Schrittgröße für vollständigen Scan"
 L["CONFIG_LIFO_CATEGORY"] = "Verkaufen: Gegenstände"
 L["CONFIG_MAIL_TOOLTIP"] = "Zeige Infos im Briefkasten an."
-L["CONFIG_MILL_TOOLTIP"] = "Zeige Mahlenwert für Kräuter aus Inschrift Infos an."
+L["CONFIG_MILL_TOOLTIP"] = "Zeige Infos für Kräutermahlenwert aus Inschrift an."
 L["CONFIG_NOT_LIFO_CATEGORY"] = "Verkaufen: Ausrüstung/Haustiere"
 L["CONFIG_PET_TOOLTIP"] = "Zeige Haustier Infos an."
 L["CONFIG_PROFILE_CATEGORY"] = "Profile"
@@ -243,7 +243,7 @@ L["HIDE"] = "Ausblenden"
 L["HISTORY"] = "Verlauf"
 L["IMPORT"] = "Importieren"
 L["INFO_TAB_HEADER"] = "Auctionator - Info"
-L["IS_TOP_COLUMN"] = "Oberste?"
+L["IS_TOP_COLUMN"] = "Spitze?"
 L["IS_UNDERCUT"] = "Unterboten?"
 L["ITEM_CLASS"] = "Gegenstandskategorie"
 L["ITEM_LEVEL"] = "Gegenstandsstufe"
@@ -268,10 +268,8 @@ L["MAIL_TOOLTIP_TOOLTIP_TEXT"] = "Zeigt Auctionator-Informationen zu Gegenständ
 L["MAX"] = "max."
 L["MAX_COLON_X"] = "max: %s"
 L["MILL"] = "Mahlen"
---[[Translation missing --]]
-L["MILL_TOOLTIP_TOOLTIP_HEADER"] = "Mill Tooltip Information"
---[[Translation missing --]]
-L["MILL_TOOLTIP_TOOLTIP_TEXT"] = "Show inscription milling estimated value in tooltip on mouseover."
+L["MILL_TOOLTIP_TOOLTIP_HEADER"] = "Mahlen Tooltip Infos"
+L["MILL_TOOLTIP_TOOLTIP_TEXT"] = "Zeigt die geschätzten Mahlenwerte für Inschrift im Tooltip an."
 L["MIN"] = "min."
 L["MONTH_1"] = "Januar"
 L["MONTH_10"] = "Oktober"
@@ -368,27 +366,18 @@ L["SPLASH_100015_ALL_VERSIONS_4"] = "Sowohl die Herstellungskosten als auch der 
 L["SPLASH_100015_ALL_VERSIONS_5"] = "Die Bildlaufbereiche wurden verbessert und laufen nun flüssiger."
 L["SPLASH_100015_ALL_VERSIONS_6"] = "Allgemeine Bugfixes und Kompatibilitätsanpassungen für WoW."
 L["SPLASH_100015_ALL_VERSIONS_HEADER"] = "Neue Funktionen für alle Versionen"
---[[Translation missing --]]
-L["SPLASH_100015_CLASSIC_1"] = "Warning when posting with a massive undercut (50% or more) to reduce mistakes."
---[[Translation missing --]]
-L["SPLASH_100015_CLASSIC_2"] = "New optional \"Top?\" column in the Shopping tab to see if your auction is top for an item."
---[[Translation missing --]]
-L["SPLASH_100015_CLASSIC_3"] = "Prospecting ore estimated values as an optional tooltip."
---[[Translation missing --]]
-L["SPLASH_100015_CLASSIC_4"] = "Milling herb estimated values as an optional tooltip."
---[[Translation missing --]]
-L["SPLASH_100015_CLASSIC_5"] = "Shows posting history as an extra option in an item's price history view."
---[[Translation missing --]]
-L["SPLASH_100015_CLASSIC_6"] = "In the Selling tab removed extra scan after posting an item."
---[[Translation missing --]]
-L["SPLASH_100015_CLASSIC_7"] = "Option to prevent the post button going grey/disabled and to allow attempts to post immediately, with no-cost retries on failure."
+L["SPLASH_100015_CLASSIC_1"] = "Warnung beim Erstellen mit einem massiven unterbieten (50% oder mehr), um Versehen zu vermindern."
+L["SPLASH_100015_CLASSIC_2"] = "Neue optionale \"Spitze?\" Spalte beim Einkaufen-Reiter, um zu sehen, ob deine Auktion für einen Gegenstand an der Spitze ist."
+L["SPLASH_100015_CLASSIC_3"] = "Aussichten von Erzschätzwerten als optionaler Tooltip."
+L["SPLASH_100015_CLASSIC_4"] = "Schätzwerte für das Mahlen der Kräuter als optionaler Tooltip."
+L["SPLASH_100015_CLASSIC_5"] = "Zeigt den Erstellungsverlauf als zusätzliche Option in der Preisverlaufsansicht eines Gegenstandes an."
+L["SPLASH_100015_CLASSIC_6"] = "Auf dem „Verkaufen“-Reiter wurde der zusätzliche Scan nach dem Erstellen eines Gegenstandes entfernt."
+L["SPLASH_100015_CLASSIC_7"] = "Eine Option, um zu verhindern, dass die Auktion erstellen-Schaltfläche grau/deaktiviert wird, um Versuche zu ermöglichen, sofort eine Auktion erstellen, mit kostenlosen Wiederholungsversuchen bei Fehlschlägen."
 L["SPLASH_100015_CLASSIC_HEADER"] = "Aktuelle Funktionen für Classic"
 L["SPLASH_100015_DESCRIPTION"] = "Viele Verbesserungen, einschließlich Kompatibilität mit Dragonflight"
 L["SPLASH_100015_RETAIL_1"] = "Aktualisierungen der Herstellungskosten und -gewinne basierend auf den ausgewählten Reagenzien und der Qualität."
---[[Translation missing --]]
-L["SPLASH_100015_RETAIL_2"] = "Selling tab has an expanded prices view with historical prices available in a separate tab. Reverting to the split screen view is available as an option."
---[[Translation missing --]]
-L["SPLASH_100015_RETAIL_3"] = "Reagents value on the auction house is shown when listing a crafting order."
+L["SPLASH_100015_RETAIL_2"] = "Der „Verkaufen“-Reiter verfügt über eine erweiterte Preisansicht mit historischen Preisen, die in einem separaten Reiter verfügbar sind. Die Rückkehr zur geteilten Bildschirmansicht ist optional verfügbar."
+L["SPLASH_100015_RETAIL_3"] = "Der Wert der Reagenzien im Auktionshaus wird angezeigt, wenn ein Handwerksauftrag eingestellt wird."
 L["SPLASH_100015_RETAIL_HEADER"] = "Aktuelle Funktionen für Retail"
 L["SPLASH_830_BUGS_1"] = "Besuche uns auf dem Auctionator Discord-Server %s"
 L["SPLASH_830_BUGS_2"] = "Fehler bitte über Github melden %s"

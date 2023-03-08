@@ -1,0 +1,16 @@
+lightweight tag 6f8afc2e59809017b877331f1d2b8c896e6c3f03 1.3.0
+Author:	drcrazy <hcb@wowhcb.ru>
+Date:	Fri Jan 13 02:32:33 2023 +0300
+
+commit 6f8afc2e59809017b877331f1d2b8c896e6c3f03
+Author: drcrazy <hcb@wowhcb.ru>
+Date:   Fri Jan 13 02:32:33 2023 +0300
+
+    Ulduar fixes and toc bump
+
+commit cfa673e3075287d4a0288a3160599d0792ea1f1d
+Author: drcrazy <hcb@wowhcb.ru>
+Date:   Fri Jan 13 02:12:44 2023 +0300
+
+    Fix for miss chance and ranged crit cap. Closes #1
+

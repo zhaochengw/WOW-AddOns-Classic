@@ -1,0 +1,14 @@
+tag d887963e455626d6f0b000318dd63d498cf002ad 1.0.r7
+Author:	Road-block <dridzt.addons@hotmail.com>
+Date:	Thu Jan 19 19:01:41 2023 +0200
+
+3.4.1 update
+
+commit d180f5388f684b3ed5b62c998efd843898e7f494
+Author: Road-block <dridzt.addons@hotmail.com>
+Date:   Thu Jan 19 18:58:40 2023 +0200
+
+    add a friendly :HeraldCheck(unit) method that returns pass/fail and failed slots
+    better cleanup when the instance replaces an older revision
+    up revision and update interface numbers for 3.4.1
+

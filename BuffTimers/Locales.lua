@@ -41,12 +41,13 @@ end
 -- Right now, everything has been translated by AI, so it might not be correct.
 --
 
+-- French translation by: qrpino
 if locale == "frFR" then
     L["BuffTimers"] = "BuffTimers"
     L["Show seconds"] = "Afficher les secondes"
     L["Show milliseconds below 5 seconds"] = "Afficher les millisecondes sous 5 secondes"
-    L["Always yellow text color"] = "Toujours la couleur jaune"
-    L["Time Stamp Format"] = "Format de l'heure"
+    L["Always yellow text color"] = "Couleur du texte toujours jaune"
+    L["Time Stamp Format"] = "Format de l'horodatage"
     L["Add more colors to the timer"] = "Ajouter plus de couleurs au minuteur"
 end
 

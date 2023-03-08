@@ -1,26 +1,61 @@
 local L = Grid2Options.L
 
-Grid2Options:RegisterStatusOptions("lowmana",  "mana", Grid2Options.MakeStatusColorThresholdOptions, {
-	titleIcon = "Interface\\Icons\\Inv_potion_86"
-})
-Grid2Options:RegisterStatusOptions("mana","mana",  function(self, status, options, optionParams)
+local CLASSES_MANA = { PRIEST = true, DRUID = true, MAGE = true,  WARLOCK = true, PALADIN = true, SHAMAN = true, MONK = true, EVOKER = true, HUNTER = Grid2.isClassic or nil }
+for class in pairs(CLASSES_MANA) do
+	CLASSES_MANA[class] = LOCALIZED_CLASS_NAMES_MALE[class]
+end
+
+local function ManaOptions(self, status, options, optionParams)
 	self:MakeStatusStandardOptions(status, options, optionParams)
-	self:MakeHeaderOptions(options, "Display")
-	options.showOnlyHealers = {
+	self:MakeHeaderOptions(options, "Display")	
+	options.display1 = {
 		type = "toggle",
-		order = 200,
-		width= "full",
-		name = L["Hide mana of non healer players"],
-		tristate = false,
-		get = function () return status.dbx.showOnlyHealers end,
-		set = function (_, v)
-			status.dbx.showOnlyHealers = v or nil
+		order = 110,
+		width = 'full',
+		name = L['Primary resource'],
+		desc = L["Mana visible when it is the primary resource."],
+		get = function () return (status.dbx.displayType or 0)~=2 end,
+		set = function (info, v)
+			if v then
+				status.dbx.displayType = 1
+			else
+				status.dbx.displayType = 2
+			end			
 			status:UpdateDB()
 			status:UpdateAllUnits()
 		end,
-	}
-end, {
-	titleIcon = "Interface\\Icons\\Inv_potion_72"
+	}	
+	options.display2 = {
+		type = "toggle",
+		order = 120,
+		width = 'full',
+		name = L['Secondary resource'],
+		desc = L["Mana visible when it is not the primary resource, for example: druids in bear form or shadow priests."],
+		get = function () return (status.dbx.displayType or 0)~=0 end,
+		set = function (info, v)
+			if v then
+				status.dbx.displayType = 1
+			else
+				status.dbx.displayType = false
+			end
+			status:UpdateDB()
+			status:UpdateAllUnits()
+		end,
+	}	
+end
+
+Grid2Options:RegisterStatusOptions("mana","mana",  ManaOptions, {
+	titleIcon = "Interface\\Icons\\Inv_potion_72",
+	unitFilter = true,
+})
+
+Grid2Options:RegisterStatusOptions("manaalt", "mana",  ManaOptions, {
+	titleIcon = "Interface\\Icons\\Inv_potion_72",
+	unitFilter = true,
+})
+
+Grid2Options:RegisterStatusOptions("lowmana",  "mana", Grid2Options.MakeStatusColorThresholdOptions, {
+	titleIcon = "Interface\\Icons\\Inv_potion_86"
 })
 
 Grid2Options:RegisterStatusOptions("poweralt", "mana", Grid2Options.MakeStatusColorOptions, {
@@ -48,5 +83,6 @@ Grid2Options:RegisterStatusOptions("power",    "mana", Grid2Options.MakeStatusCo
 	color10 = L["Pain"],
 	colorDesc10 = L["Pain"],
 	width = "full",
-	titleIcon = "Interface\\Icons\\Inv_potion_33"
+	titleIcon = "Interface\\Icons\\Inv_potion_33",
+	unitFilter = true,
 })
