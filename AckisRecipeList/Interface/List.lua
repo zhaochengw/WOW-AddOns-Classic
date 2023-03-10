@@ -1506,7 +1506,7 @@ do
 
 			fontSize = addon.db.profile.tooltip.acquire_fontsize + textSize
 
-			fontObj:SetFont(font, fontSize)
+			fontObj:SetFont(font, fontSize,"")
 			acquire_tip:SetFont(fontObj)
 		end
 
