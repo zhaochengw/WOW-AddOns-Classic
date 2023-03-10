@@ -20,6 +20,7 @@ L["Show minimap icon"] = true
 L["Show info"] = true
 L["per Character"] = true
 L["per Realm"] = true
+L["Show total gold"] = true
 L["Hide info from level under"] = true
 L["Show current chracter first"] = true
 

@@ -3,7 +3,7 @@ SavedClassic = LibStub("AceAddon-3.0"):NewAddon(addonName, "AceEvent-3.0")
 
 SavedClassic.name = addonName
 --SavedClassic.version = GetAddOnMetadata(addonName, "Version")
-SavedClassic.version = "3.0.9"
+SavedClassic.version = "3.1.1"
 
 local L = LibStub("AceLocale-3.0"):GetLocale(addonName, true)
 local LibGearScore = LibStub("LibGearScore.1000", true)
@@ -20,6 +20,7 @@ local dbDefault = {
         [player] = {
             frameX = 100,   frameY = 25,
             showInfoPer = "realm",
+            showTotalGold = true,
             hideLevelUnder = 1,
 
             default = true,
@@ -318,9 +319,9 @@ function SavedClassic:InitPlayerDB()
         playerdb.info2_2 = "["..L["color"].."/ffffff]["..L["currency"]..":"..L["justice"].."]["..L["currency"]..":"..L["honor"].."]["..L["color"].."]"
     else
         if class == "WARLOCK" then
-            playerdb.info1_1 = "\n["..L["color"].."/00ff00]■["..L["color"].."] [["..L["name"].."]] ["..L["item"]..":6265/cc66cc] ["..L["color"].."/ffffff](["..L["zone"].."]: ["..L["subzone"].."])["..L["color"].."]"
+            playerdb.info1_1 = "\n["..L["color"].."/00ff00]■["..L["color"].."] [["..L["name"].."]]["..L["gs"].."] ["..L["item"]..":6265/cc66cc] ["..L["color"].."/ffffff](["..L["zone"].."]: ["..L["subzone"].."])["..L["color"].."]"
         else
-            playerdb.info1_1 = "\n["..L["color"].."/00ff00]■["..L["color"].."] [["..L["name"].."]] ["..L["color"].."/ffffff](["..L["zone"].."]: ["..L["subzone"].."])["..L["color"].."]"
+            playerdb.info1_1 = "\n["..L["color"].."/00ff00]■["..L["color"].."] [["..L["name"].."]]["..L["gs"].."] ["..L["color"].."/ffffff](["..L["zone"].."]: ["..L["subzone"].."])["..L["color"].."]"
         end
         playerdb.info2_1 = "   ["..L["color"].."/ffffff]["..L["currency"]..":"..L["conquest"].."] ["..L["currency"]..":"..L["valor"].."] [".. L["currency"]..":"..L["arena"].."] [".. L["currency"]..":"..L["honor"].."]["..L["color"].."]"
         playerdb.info2_2 = ""
@@ -536,8 +537,11 @@ function SavedClassic:ShowInfoTooltip(tooltip)
     local realm = ""
     if db.showInfoPer == "realm" then realm = " - " .. GetRealmName() end
 
-    local totalGold = floor((self.totalMoney + db.currencyCount[0]) / 10000)
-    tooltip:AddDoubleLine(MSG_PREFIX .. realm .. MSG_SUFFIX, totalGold.. self.currencies[1].icon)
+    local totalGold = ""
+    if db.showTotalGold then
+        totalGold = floor((self.totalMoney + db.currencyCount[0]) / 10000).. self.currencies[1].icon
+    end
+    tooltip:AddDoubleLine(MSG_PREFIX .. realm .. MSG_SUFFIX, totalGold)
 
     self:SaveZone()
     self:QUEST_TURNED_IN()
@@ -902,6 +906,11 @@ function SavedClassic:BuildOptions()
                         },
                         style = "radio",
                         order = 121
+                    },
+                    showTotalGold = {
+                        name = L["Show total gold"],
+                        type = "toggle",
+                        order = 122,
                     },
                     hideLevelUnder = {
                         name = L["Hide info from level under"],

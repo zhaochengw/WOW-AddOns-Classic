@@ -20,6 +20,7 @@ L["Show minimap icon"] = "미니맵 아이콘 표시"
 L["Show info"] = "정보표시"
 L["per Character"] = "캐릭터별"
 L["per Realm"] = "서버별"
+L["Show total gold"] = "총 골드 표시"
 L["Hide info from level under"] = "다음 레벨 미만 감추기"
 L["Show current chracter first"] = "현재 캐릭터 가장 위에 표시"
 

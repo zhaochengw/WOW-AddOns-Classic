@@ -20,6 +20,7 @@ L["Show minimap icon"] = "Показать значок на миникарте"
 L["Show info"] = "Информационное окно"
 L["per Character"] = "По персонажу"
 L["per Realm"] = "По серверу"
+L["Show total gold"] = "показать общее золото"
 L["Hide info from level under"] = "Скрыть информацию с уровня ниже"
 L["Show current chracter first"] = true
 

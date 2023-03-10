@@ -20,6 +20,7 @@ L["Show minimap icon"] = "显示小地图按钮"
 L["Show info"] = "显示信息"
 L["per Character"] = "单角色"
 L["per Realm"] = "单服务器"
+L["Show total gold"] = "顯示總金"
 L["Hide info from level under"] = "低于等级隐藏信息"
 L["Show current chracter first"] = true
 
