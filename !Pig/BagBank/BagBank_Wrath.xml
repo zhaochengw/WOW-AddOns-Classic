@@ -1,4 +1,4 @@
 <Ui>
-	<Script file="AutoSort_Vanilla.lua" />
+	<Script file="AutoSort_Wrath.lua" />
 	<Script file="BagBank_Vanilla.lua" />
 </Ui>

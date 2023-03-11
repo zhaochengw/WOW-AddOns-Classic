@@ -99,7 +99,7 @@ local function MubiaoFrame_Open()
 	TargetFrame.mubiaoLX.title:SetTextColor(0,1,1,1);
 	--
 	TargetFrame:HookScript("OnEvent", function (self,event)
-		if event=="PLAYER_TARGET_CHANGED" then
+		if event=="PLAYER_ENTERING_WORLD" or event=="PLAYER_TARGET_CHANGED" then
 			--职业图标
 			if UnitIsPlayer("target") then --判断是否为玩家
 				local raceText = UnitRace("target");	
@@ -209,7 +209,7 @@ local function MubiaoFrame_Open()
 		end)
 	else
 		TargetFrame:HookScript("OnEvent", function (self,event,arg1)
-			if event=="PLAYER_TARGET_CHANGED" or event=="UNIT_THREAT_LIST_UPDATE" or event=="UNIT_THREAT_SITUATION_UPDATE" then
+			if event=="PLAYER_ENTERING_WORLD" or event=="PLAYER_TARGET_CHANGED" or event=="UNIT_THREAT_LIST_UPDATE" or event=="UNIT_THREAT_SITUATION_UPDATE" then
 				TargetFrame.threatNumericIndicator:SetPoint("BOTTOM",TargetFrame.TargetFrameContent.TargetFrameContentMain.ReputationColor,"TOP",-42,0);
 			end
 		end)
@@ -228,7 +228,7 @@ local function MubiaoFrame_Open()
 	TargetFrame.mubiaoHP.title:SetTextColor(1, 1, 0.47,1);
 	----------------------
 	TargetFrame:HookScript("OnEvent", function (self,event,arg1)
-		if event=="PLAYER_TARGET_CHANGED" or event=="UNIT_HEALTH" or event=="UNIT_AURA" then
+		if event=="PLAYER_ENTERING_WORLD" or event=="PLAYER_TARGET_CHANGED" or event=="UNIT_HEALTH" or event=="UNIT_AURA" then
 			local mubiaoH = UnitHealth("target")
 			local mubiaoHmax = UnitHealthMax("target")
 			local mubiaobaifenbi = math.ceil((mubiaoH/mubiaoHmax)*100);--目标血量百分比

@@ -1,4 +1,6 @@
 local _, addonTable = ...;
+local Create = addonTable.Create
+local PIGButton = Create.PIGButton
 -------
 local fuFrame=List_R_F_1_13
 --载入默认配置
@@ -55,14 +57,12 @@ local Config_SM ={
 };
 ---------
 for id=1,#Config_ID do
-	local Default_Button = CreateFrame("Button", "Default_Button_"..id, fuFrame, "UIPanelButtonTemplate");  
-	Default_Button:SetSize(120,30);
+	local Default_Button = PIGButton(Config_Name[id],"Default_Button_"..id,fuFrame,{120,26})
 	if id==1 then
 		Default_Button:SetPoint("TOPLEFT",fuFrame,"TOPLEFT",20,-20);
 	else
 		Default_Button:SetPoint("TOPLEFT",_G["Default_Button_"..(id-1)],"BOTTOMLEFT",0,-40);
 	end
-	Default_Button:SetText(Config_Name[id]);
 	Default_Button.title = Default_Button:CreateFontString();
 	Default_Button.title:SetPoint("LEFT", Default_Button, "RIGHT", 6, 0);
 	Default_Button.title:SetFontObject(GameFontNormal);

@@ -441,7 +441,7 @@ local function ADD_QuickButton(QkBut,Tooltip,Icon,Template)
 	butFrame:SetPoint("LEFT",fuFrame,"LEFT",(geshu-1)*(butW),0);
 	butFrame:SetScript("OnEnter", function (self)
 		GameTooltip:ClearLines();
-		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT",2,4);
+		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT",10,0);
 		GameTooltip:AddLine(Tooltip)
 		GameTooltip:Show();
 	end);

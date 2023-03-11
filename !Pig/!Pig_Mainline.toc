@@ -1,18 +1,19 @@
-﻿## Interface: 100002
+﻿## Interface: 100005
 ## Title: !Pig-|cffFF00FF[toolbox]|r
-## Title-zhCN: !Pig-|cffFF00FF[猪猪加油]|r
-## Title-zhTW: !Pig-|cffFF00FF[豬豬加油]|r
+## Title-zhCN: !Pig
+## Title-zhTW: !Pig
 ## Notes: Some tools
 ## Notes-zhCN: |cffFF8C00一些小工具|r  |cffFF00FF[猪猪加油祝你游戏愉快]|r
 ## Notes-zhTW: |cffFF8C00一些小工具|r  |cffFF00FF[豬豬加油祝你遊戲愉快]|r
 ## Author: geligasi
-## Version: 5.1.0
+## Version: 5.1.2
 ## SavedVariables: PIG
 ## SavedVariablesPerCharacter: PIG_Per
 Localization\Localization.xml
 Error.lua
 Pigs\Pigs.xml
-Options.lua
+OptionsUI.lua
+QuickButUI.lua
 Config\Config.xml
 Feedback\Feedback.xml
 CVars\CVars.xml

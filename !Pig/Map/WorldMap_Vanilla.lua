@@ -3,6 +3,8 @@ local _, _, _, tocversion = GetBuildInfo()
 local fuFrame=List_R_F_1_8
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local MapData=addonTable.MapData
+local Create=addonTable.Create
+local PIGFrame=Create.PIGFrame
 -------
 local WorldMapScrollChild = WorldMapFrame.ScrollContainer.Child
 local function MouseXY()
@@ -292,16 +294,10 @@ local function WorldMap_Plus()
 	if PIG.Map.WorldMapMiwu then WorldMap_Miwu() end
 end
 ------------
-fuFrame.WorldMapPIG = CreateFrame("Frame", nil, fuFrame,"BackdropTemplate")
-fuFrame.WorldMapPIG:SetBackdrop( {
-	bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 
-	edgeFile = "Interface/Tooltips/UI-Tooltip-Border",edgeSize = 12, 
-	insets = { left = 2, right = 2, top = 2, bottom = 2 } 
-});
-fuFrame.WorldMapPIG:SetBackdropColor(0, 0, 0, 0.8);
-fuFrame.WorldMapPIG:SetBackdropBorderColor(0.5, 0.5, 0.5, 1);
-fuFrame.WorldMapPIG:SetPoint("TOPLEFT", fuFrame, "TOPLEFT", 300, -138)
-fuFrame.WorldMapPIG:SetPoint("BOTTOMRIGHT", fuFrame, "BOTTOMRIGHT", -10, 10)
+fuFrame.WorldMapPIG = PIGFrame(fuFrame)
+fuFrame.WorldMapPIG:PIGSetBackdrop()
+fuFrame.WorldMapPIG:SetPoint("TOPLEFT", fuFrame, "TOPLEFT", 310, -138)
+fuFrame.WorldMapPIG:SetPoint("BOTTOMRIGHT", fuFrame, "BOTTOMRIGHT", -6, 6)
 -----------
 fuFrame.WorldMapPIG.Open = ADD_Checkbutton(nil,fuFrame.WorldMapPIG,-80,"TOPLEFT",fuFrame.WorldMapPIG,"TOPLEFT",40,25,"世界地图增强","世界地图增强")
 fuFrame.WorldMapPIG.Open:SetScript("OnClick", function (self)

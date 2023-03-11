@@ -1,7 +1,7 @@
 local _, addonTable = ...;
 local fuFrame=List_R_F_1_5
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
----BUFF/DEBUFF框架精确时间=======================
+---BUFF/DEBUFF框架精确时间====================
 local function BuffTimeFrame_Open()
 	local function Buff_OnUpdate(self)
 		local Duration=self.duration
@@ -24,21 +24,27 @@ local function BuffTimeFrame_Open()
 			Duration:SetFormattedText("|cff00FF00%dd%02dh|r",d,h);--大于一天
 		end
 	end
-
-	local function Buff_Update(self)
-		local zongbuffs = {self.AuraContainer:GetChildren()}
-		for i=1,#zongbuffs do 
-			local buffUI = zongbuffs[i].duration		
-			buffUI:Show();
-			buffUI:SetFormattedText("|cff00ff00N/A|r");
-			hooksecurefunc(zongbuffs[i], "UpdateDuration", function(self)
-				Buff_OnUpdate(self)
-			end)
+	local function Buff_Update(auras)
+		for ig=1,#auras do
+			local buffUI = auras[ig]
+			buffUI.duration:Show();
+			buffUI.duration:SetFormattedText("|cff00ff00N/A|r");
+			if buffUI:GetScript("OnUpdate") then
+				if not buffUI.success then
+					buffUI.success = buffUI:HookScript("OnUpdate", function(self)
+						Buff_OnUpdate(self)	
+					end)
+				end
+			else
+				buffUI.success=nil
+			end
 		end
 	end
-	hooksecurefunc(BuffFrame, "Update", function(self)
-		Buff_Update(self)
+	--
+	hooksecurefunc(BuffFrame.AuraContainer, "UpdateGridLayout", function()
+		Buff_Update(BuffFrame.auraFrames)
 	end)
+	--
 	local function Debuff_OnUpdate(self)
 		local Duration=self.duration
 		local timeLeft=self.timeLeft
@@ -58,19 +64,24 @@ local function BuffTimeFrame_Open()
 			Duration:SetFormattedText("|cffFFFF40%dd%02dh|r",d,h);--大于一天
 		end
 	end
-	local function Debuff_Update(self)
-		local zongbuffs = {self.AuraContainer:GetChildren()}
-		for i=1,#zongbuffs do 
-			local buffUI = zongbuffs[i].duration		
-			buffUI:Show();
-			buffUI:SetFormattedText("|cffFFFF40N/A|r");
-			hooksecurefunc(zongbuffs[i], "UpdateDuration", function(self)
-				Debuff_OnUpdate(self)
-			end)
+	local function Debuff_Update(auras)
+		for ig=1,#auras do
+			local buffUI = auras[ig]
+			buffUI.duration:Show();
+			buffUI.duration:SetFormattedText("|cff00ff00N/A|r");
+			if buffUI:GetScript("OnUpdate") then
+				if not buffUI.success then
+					buffUI.success = buffUI:HookScript("OnUpdate", function(self)
+						Debuff_OnUpdate(self)	
+					end)
+				end
+			else
+				buffUI.success=nil
+			end
 		end
 	end
-	hooksecurefunc(DebuffFrame, "Update", function(self)
-		Debuff_Update(self)
+	hooksecurefunc(DebuffFrame.AuraContainer, "UpdateGridLayout", function()
+		Buff_Update(DebuffFrame.auraFrames)
 	end)
 end
 
@@ -89,6 +100,6 @@ end);
 addonTable.CombatPlus_BuffTime = function()
 	if PIG['FramePlus']['BuffTime']=="ON" then
 		fuFrame.BuffTime:SetChecked(true);
-		BuffTimeFrame_Open();
+		BuffTimeFrame_Open()
 	end
 end

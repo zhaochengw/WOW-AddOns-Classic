@@ -3,6 +3,8 @@ local _, _, _, tocversion = GetBuildInfo()
 local fuFrame=List_R_F_1_8
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local MapData=addonTable.MapData
+local Create=addonTable.Create
+local PIGFrame=Create.PIGFrame
 -------
 local WorldMapScrollChild = WorldMapFrame.ScrollContainer.Child
 local function MouseXY()
@@ -19,57 +21,61 @@ local function MouseXY()
 end
 ----------
 local function WorldMap_XY()
-	WorldMapScrollChild.zuobiaoX = WorldMapScrollChild:CreateFontString();
-	WorldMapScrollChild.zuobiaoX:SetPoint("TOP", WorldMapScrollChild, "TOP", -200, -2);
-	WorldMapScrollChild.zuobiaoX:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
-	WorldMapScrollChild.zuobiaoX:SetTextColor(0, 1, 0, 1);
-	WorldMapScrollChild.zuobiaoX:SetText('玩家 X:');
+	local zuobiaoXYFFF = CreateFrame("Frame", nil, WorldMapScrollChild,"BackdropTemplate");
+	zuobiaoXYFFF:SetSize(600,32);
+	zuobiaoXYFFF:SetPoint("BOTTOM",WorldMapScrollChild,"BOTTOM",0,0);
+	zuobiaoXYFFF:SetFrameLevel(510)
+	zuobiaoXYFFF.zuobiaoX = zuobiaoXYFFF:CreateFontString();
+	zuobiaoXYFFF.zuobiaoX:SetPoint("BOTTOM", zuobiaoXYFFF, "BOTTOM", -200, 6);
+	zuobiaoXYFFF.zuobiaoX:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	zuobiaoXYFFF.zuobiaoX:SetTextColor(0, 1, 0, 1);
+	zuobiaoXYFFF.zuobiaoX:SetText('玩家 X:');
 
-	WorldMapScrollChild.zuobiaoXV = WorldMapScrollChild:CreateFontString();
-	WorldMapScrollChild.zuobiaoXV:SetPoint("LEFT", WorldMapScrollChild.zuobiaoX, "RIGHT", 0, 0);
-	WorldMapScrollChild.zuobiaoXV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
-	WorldMapScrollChild.zuobiaoXV:SetTextColor(1, 1, 0, 1);
+	zuobiaoXYFFF.zuobiaoXV = zuobiaoXYFFF:CreateFontString();
+	zuobiaoXYFFF.zuobiaoXV:SetPoint("LEFT", zuobiaoXYFFF.zuobiaoX, "RIGHT", 0, 0);
+	zuobiaoXYFFF.zuobiaoXV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	zuobiaoXYFFF.zuobiaoXV:SetTextColor(1, 1, 0, 1);
 
-	WorldMapScrollChild.zuobiaoY = WorldMapScrollChild:CreateFontString();
-	WorldMapScrollChild.zuobiaoY:SetPoint("LEFT", WorldMapScrollChild.zuobiaoX, "RIGHT", 50, 0);
-	WorldMapScrollChild.zuobiaoY:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
-	WorldMapScrollChild.zuobiaoY:SetTextColor(0, 1, 0, 1);
-	WorldMapScrollChild.zuobiaoY:SetText('Y:');
-	WorldMapScrollChild.zuobiaoYV = WorldMapScrollChild:CreateFontString();
-	WorldMapScrollChild.zuobiaoYV:SetPoint("LEFT", WorldMapScrollChild.zuobiaoY, "RIGHT", 0, 0);
-	WorldMapScrollChild.zuobiaoYV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
-	WorldMapScrollChild.zuobiaoYV:SetTextColor(1, 1, 0, 1);
+	zuobiaoXYFFF.zuobiaoY = zuobiaoXYFFF:CreateFontString();
+	zuobiaoXYFFF.zuobiaoY:SetPoint("LEFT", zuobiaoXYFFF.zuobiaoX, "RIGHT", 60, 0);
+	zuobiaoXYFFF.zuobiaoY:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	zuobiaoXYFFF.zuobiaoY:SetTextColor(0, 1, 0, 1);
+	zuobiaoXYFFF.zuobiaoY:SetText('Y:');
+	zuobiaoXYFFF.zuobiaoYV = zuobiaoXYFFF:CreateFontString();
+	zuobiaoXYFFF.zuobiaoYV:SetPoint("LEFT", zuobiaoXYFFF.zuobiaoY, "RIGHT", 0, 0);
+	zuobiaoXYFFF.zuobiaoYV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	zuobiaoXYFFF.zuobiaoYV:SetTextColor(1, 1, 0, 1);
 
-	WorldMapScrollChild.shubiaoX = WorldMapScrollChild:CreateFontString();
-	WorldMapScrollChild.shubiaoX:SetPoint("TOP", WorldMapScrollChild, "TOP", 100, -2);
-	WorldMapScrollChild.shubiaoX:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
-	WorldMapScrollChild.shubiaoX:SetTextColor(0, 1, 0, 1);
-	WorldMapScrollChild.shubiaoX:SetText('鼠标 X:');
+	zuobiaoXYFFF.shubiaoX = zuobiaoXYFFF:CreateFontString();
+	zuobiaoXYFFF.shubiaoX:SetPoint("BOTTOM", zuobiaoXYFFF, "BOTTOM", 100, 6);
+	zuobiaoXYFFF.shubiaoX:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	zuobiaoXYFFF.shubiaoX:SetTextColor(0, 1, 0, 1);
+	zuobiaoXYFFF.shubiaoX:SetText('鼠标 X:');
 
-	WorldMapScrollChild.shubiaoXV = WorldMapScrollChild:CreateFontString();
-	WorldMapScrollChild.shubiaoXV:SetPoint("LEFT", WorldMapScrollChild.shubiaoX, "RIGHT", 0, 0);
-	WorldMapScrollChild.shubiaoXV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
-	WorldMapScrollChild.shubiaoXV:SetTextColor(1, 1, 0, 1);
+	zuobiaoXYFFF.shubiaoXV = zuobiaoXYFFF:CreateFontString();
+	zuobiaoXYFFF.shubiaoXV:SetPoint("LEFT", zuobiaoXYFFF.shubiaoX, "RIGHT", 0, 0);
+	zuobiaoXYFFF.shubiaoXV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	zuobiaoXYFFF.shubiaoXV:SetTextColor(1, 1, 0, 1);
 
-	WorldMapScrollChild.shubiaoY = WorldMapScrollChild:CreateFontString();
-	WorldMapScrollChild.shubiaoY:SetPoint("LEFT", WorldMapScrollChild.shubiaoX, "RIGHT", 50, 0);
-	WorldMapScrollChild.shubiaoY:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
-	WorldMapScrollChild.shubiaoY:SetTextColor(0, 1, 0, 1);
-	WorldMapScrollChild.shubiaoY:SetText('Y:');
-	WorldMapScrollChild.shubiaoYV = WorldMapScrollChild:CreateFontString();
-	WorldMapScrollChild.shubiaoYV:SetPoint("LEFT", WorldMapScrollChild.shubiaoY, "RIGHT", 0, 0);
-	WorldMapScrollChild.shubiaoYV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
-	WorldMapScrollChild.shubiaoYV:SetTextColor(1, 1, 0, 1);
+	zuobiaoXYFFF.shubiaoY = zuobiaoXYFFF:CreateFontString();
+	zuobiaoXYFFF.shubiaoY:SetPoint("LEFT", zuobiaoXYFFF.shubiaoX, "RIGHT", 60, 0);
+	zuobiaoXYFFF.shubiaoY:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	zuobiaoXYFFF.shubiaoY:SetTextColor(0, 1, 0, 1);
+	zuobiaoXYFFF.shubiaoY:SetText('Y:');
+	zuobiaoXYFFF.shubiaoYV = zuobiaoXYFFF:CreateFontString();
+	zuobiaoXYFFF.shubiaoYV:SetPoint("LEFT", zuobiaoXYFFF.shubiaoY, "RIGHT", 0, 0);
+	zuobiaoXYFFF.shubiaoYV:SetFont(GameFontNormal:GetFont(), 18,"OUTLINE")
+	zuobiaoXYFFF.shubiaoYV:SetTextColor(1, 1, 0, 1);
 
-	WorldMapScrollChild:HookScript("OnUpdate", function(self)
+	zuobiaoXYFFF:HookScript("OnUpdate", function(self)
 		local mapinfo = C_Map.GetBestMapForUnit("player"); 
 		if not mapinfo then return end
 		local pos = C_Map.GetPlayerMapPosition(mapinfo,"player");
 		if not pos then return end
 		--local zuobiaoBB = C_Map.GetMapInfo(mapinfo).name, 
 		local zuobiaoXX,zuobiaoYY = math.ceil(pos.x*10000)/100, math.ceil(pos.y*10000)/100
-		self.zuobiaoXV:SetText(zuobiaoXX);
-		self.zuobiaoYV:SetText(zuobiaoYY);
+		zuobiaoXYFFF.zuobiaoXV:SetText(zuobiaoXX);
+		zuobiaoXYFFF.zuobiaoYV:SetText(zuobiaoYY);
 		local xxx, yyy = MouseXY()
 		if xxx and yyy then
 			local xxx =math.ceil(xxx*10000)/100
@@ -171,19 +177,13 @@ local function WorldMap_Miwu()
 	end
 end
 ------------
-fuFrame.WorldMapPIG = CreateFrame("Frame", nil, fuFrame,"BackdropTemplate")
-fuFrame.WorldMapPIG:SetBackdrop( {
-	bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 
-	edgeFile = "Interface/Tooltips/UI-Tooltip-Border",edgeSize = 12, 
-	insets = { left = 2, right = 2, top = 2, bottom = 2 } 
-});
-fuFrame.WorldMapPIG:SetBackdropColor(0, 0, 0, 0.8);
-fuFrame.WorldMapPIG:SetBackdropBorderColor(0.5, 0.5, 0.5, 1);
-fuFrame.WorldMapPIG:SetPoint("TOPLEFT", fuFrame, "TOPLEFT", 300, -138)
-fuFrame.WorldMapPIG:SetPoint("BOTTOMRIGHT", fuFrame, "BOTTOMRIGHT", -10, 10)
+fuFrame.WorldMapPIG = PIGFrame(fuFrame)
+fuFrame.WorldMapPIG:PIGSetBackdrop()
+fuFrame.WorldMapPIG:SetPoint("TOPLEFT", fuFrame, "TOPLEFT", 310, -138)
+fuFrame.WorldMapPIG:SetPoint("BOTTOMRIGHT", fuFrame, "BOTTOMRIGHT", -6, 6)
 --==================================================
 fuFrame.WorldMapPIG.Open = fuFrame.WorldMapPIG:CreateFontString();
-fuFrame.WorldMapPIG.Open:SetPoint("BOTTOM",fuFrame.WorldMapPIG,"TOP",0,0);
+fuFrame.WorldMapPIG.Open:SetPoint("BOTTOM",fuFrame.WorldMapPIG,"TOP",0,4);
 fuFrame.WorldMapPIG.Open:SetFontObject(GameFontNormal);
 fuFrame.WorldMapPIG.Open:SetText("世界地图增强");
 -----------

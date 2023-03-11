@@ -47,6 +47,9 @@ local function ADD_Button(Text,UIName,fuF,WH,Point)
 			self.Text:SetPoint("CENTER", 0, 0);
 		end
 	end);
+	But:HookScript("PostClick", function (self)
+		PlaySound(SOUNDKIT.IG_CHAT_EMOTE_BUTTON);
+	end)
 	But.Text = But:CreateFontString();
 	But.Text:SetPoint("CENTER", 0, 0);
 	But.Text:SetFont(ChatFontNormal:GetFont(), 13)
@@ -93,6 +96,7 @@ local function ADD_TabBut(Text,UIName,fuF,WH,Point,id)
 	But.Text:SetTextColor(1, 0.843, 0, 1);
 	But.Text:SetText(Text);
 	function But:selected()
+		PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB);
 		self.Show=true;
 		self.Text:SetTextColor(1, 1, 1, 1);
 		self:SetBackdropColor(0.3098,0.262745,0.0353, 1);
@@ -144,6 +148,7 @@ Bugcollect.Close:SetScript("OnMouseUp", function (self)
 	self.Tex:SetPoint("CENTER");
 end);
 Bugcollect.Close:SetScript("OnClick", function (self)
+	PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
 	self:GetParent():Hide()
 end);
 

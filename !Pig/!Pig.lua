@@ -11,12 +11,16 @@ SlashCmdList["PIG"] = function()
 	Pig_OptionsUI:Show();
 end
 --================================================
-local AAAAA = CreateFrame("Frame")        
-AAAAA:RegisterEvent("ADDON_LOADED")
-AAAAA:SetScript("OnEvent",function(self, event, arg1)
-	if arg1 == addonName then
-		addonTable.Config_Default()
-		------------------
+local PIGUI = CreateFrame("Frame")        
+PIGUI:RegisterEvent("ADDON_LOADED")
+PIGUI:RegisterEvent("PLAYER_LOGIN");
+PIGUI:SetScript("OnEvent",function(self, event, arg1)
+	if event=="ADDON_LOADED" and arg1 == addonName then
+		self:UnregisterEvent("ADDON_LOADED")
+		addonTable.Config_Default()	
+	end
+	if event=="PLAYER_LOGIN" then
+		--print(event,ElvUI)
 		addonTable.Map_MiniMap()
 		addonTable.Map_WorldMap()
 		addonTable.PigCVars()

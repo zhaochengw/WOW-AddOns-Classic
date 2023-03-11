@@ -53,6 +53,7 @@ function Create.PIGFrame(Parent,WH,Point,UIName,ESCOFF)
 			self.Tex:SetPoint("CENTER");
 		end);
 		self.Close:SetScript("OnClick", function (self)
+			PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
 			CloseUI:Hide()
 		end);
 	end

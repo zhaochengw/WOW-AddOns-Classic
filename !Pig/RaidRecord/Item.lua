@@ -1,12 +1,14 @@
 local _, addonTable = ...;
+local _, _, _, tocversion = GetBuildInfo()
 local gsub = _G.string.gsub 
 local find = _G.string.find
 local match = _G.string.match
-local sub = _G.string.sub 
-local hang_Height,hang_NUM  = 34, 12;
+local sub = _G.string.sub
+--
 local Create=addonTable.Create
 local PIGDownMenu=Create.PIGDownMenu
 --------------------------------------------
+local hang_Height,hang_NUM  = 34, 12;
 local function ADD_Item()
 	local fuFrame = TablistFrame_1_UI
 	local Width,Height  = fuFrame:GetWidth(), fuFrame:GetHeight();
@@ -1260,25 +1262,44 @@ local function ADD_Item()
 			zhixingtianjia(itemLink,LOOT_itemNO,shiquname,itemQuality,itemTexture,itemID)
 		end
 	end
-	local function shiqushijian(arg1,arg5)
-		if arg1:match("获得了")~=nil then
-			AddItem(arg1,arg5);
-		end
-	end
 	---注册事件
+	local function geshihuazifu(text)
+		local text = text:gsub("%%","")
+		local text = text:gsub("s","")
+		local text = text:gsub("x","")
+		local text = text:gsub("d","")
+		local text = text:gsub("。","")
+		local text = text:gsub(": ","")
+		local text = text:gsub("：","")
+		local text = text:gsub("%.","")
+		local text = text:gsub("。","")
+		return text
+	end			
+	local bendiT_1 = LOOT_ITEM_SELF--自身单个物品
+	local bendiT_2 = LOOT_ITEM_SELF_MULTIPLE--自身叠加物品
+	local bendiT_3 = LOOT_ITEM--他人单个物品
+	local bendiT_4 = LOOT_ITEM_MULTIPLE--他人叠加物品
+	local bendiT_1 = geshihuazifu(bendiT_1)
+	local bendiT_2 = geshihuazifu(bendiT_2)
+	local bendiT_3 = geshihuazifu(bendiT_3)
+	local bendiT_4 = geshihuazifu(bendiT_4)
 	fuFrame:RegisterEvent("CHAT_MSG_LOOT");
-	fuFrame:SetScript("OnEvent",function (self,event,arg1,arg2,arg3,arg4,arg5)
+	fuFrame:SetScript("OnEvent",function (self,event,arg1,arg2,arg3,arg4,arg5)	
+		if tocversion>100000 then
+			if not arg1:match(BATTLE_PET_LOOT_RECEIVED) then return end
+		else
+			if not arg1:match(bendiT_1) and not arg1:match(bendiT_2) and not arg1:match(bendiT_3) and not arg1:match(bendiT_4) then return end
+		end
 		local inInstance, instanceType = IsInInstance()
-		if arg1:match("战利品") then return end
 		if instanceType=="raid" then
-			shiqushijian(arg1,arg5)
+			AddItem(arg1,arg5)
 		elseif instanceType=="party" then
 			if PIG["RaidRecord"]["Rsetting"]["wurenben"]=="ON" then
-				shiqushijian(arg1,arg5)
+				AddItem(arg1,arg5)
 			end
 		elseif instanceType=="none" then
 			if PIG["RaidRecord"]["Rsetting"]["fubenwai"]=="ON" then
-				shiqushijian(arg1,arg5)
+				AddItem(arg1,arg5)
 			end
 		end
 	end);

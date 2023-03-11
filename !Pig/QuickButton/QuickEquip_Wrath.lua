@@ -1,4 +1,5 @@
 local _, addonTable = ...;
+local _, _, _, tocversion = GetBuildInfo()
 --------
 local fuFrame = List_R_F_1_7
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
@@ -54,6 +55,7 @@ local function ADD_QuickButton_AutoEquip()
 			
 			for i=1,anniushu do
 				local AutoEquip_but = CreateFrame("Button", "AutoEquip_but"..i, AutoEquipList)
+				AutoEquip_but:SetHighlightTexture(130718);
 				AutoEquip_but:SetSize(butW, butW)
 
 				AutoEquip_but.BGtex = AutoEquip_but:CreateTexture(nil, "BACKGROUND", nil, -1);
@@ -159,22 +161,43 @@ local function ADD_QuickButton_AutoEquip()
 					end
 					FrameOnUpdate.konggekaishi=0
 					FrameOnUpdate.konggelist={}
-					for bagID=0,4 do
-						local numberOfFreeSlots, bagType = GetContainerNumFreeSlots(bagID)
-						if numberOfFreeSlots>0 and bagType==0 then
-							for ff=1,GetContainerNumSlots(bagID) do
-								if GetContainerItemID(bagID, ff) then
-								else
-									table.insert(FrameOnUpdate.konggelist,{bagID,ff})
-									FrameOnUpdate.konggekaishi=FrameOnUpdate.konggekaishi+1
-									if FrameOnUpdate.konggekaishi==#FrameOnUpdate.hejilist then
-										break
+					if tocversion<100000 then
+						for bagID=0,4 do
+							local numberOfFreeSlots, bagType = GetContainerNumFreeSlots(bagID)
+							if numberOfFreeSlots>0 and bagType==0 then
+								for ff=1,GetContainerNumSlots(bagID) do
+									if GetContainerItemID(bagID, ff) then
+									else
+										table.insert(FrameOnUpdate.konggelist,{bagID,ff})
+										FrameOnUpdate.konggekaishi=FrameOnUpdate.konggekaishi+1
+										if FrameOnUpdate.konggekaishi==#FrameOnUpdate.hejilist then
+											break
+										end
 									end
 								end
 							end
+							if FrameOnUpdate.konggekaishi==#FrameOnUpdate.hejilist then
+								break
+							end
 						end
-						if FrameOnUpdate.konggekaishi==#FrameOnUpdate.hejilist then
-							break
+					else
+						for bagID=0,4 do
+							local numberOfFreeSlots, bagType = C_Container.GetContainerNumFreeSlots(bagID)
+							if numberOfFreeSlots>0 and bagType==0 then
+								for ff=1,C_Container.GetContainerNumSlots(bagID) do
+									if C_Container.GetContainerItemID(bagID, ff) then
+									else
+										table.insert(FrameOnUpdate.konggelist,{bagID,ff})
+										FrameOnUpdate.konggekaishi=FrameOnUpdate.konggekaishi+1
+										if FrameOnUpdate.konggekaishi==#FrameOnUpdate.hejilist then
+											break
+										end
+									end
+								end
+							end
+							if FrameOnUpdate.konggekaishi==#FrameOnUpdate.hejilist then
+								break
+							end
 						end
 					end
 					if #FrameOnUpdate.hejilist>0 then
@@ -185,7 +208,11 @@ local function ADD_QuickButton_AutoEquip()
 							local isLocked2 = IsInventoryItemLocked(FrameOnUpdate.hejilist[inv])
 							if not isLocked2 then
 								PickupInventoryItem(FrameOnUpdate.hejilist[inv])
-								PickupContainerItem(FrameOnUpdate.konggelist[inv][1], FrameOnUpdate.konggelist[inv][2])
+								if tocversion<100000 then
+									PickupContainerItem(FrameOnUpdate.konggelist[inv][1], FrameOnUpdate.konggelist[inv][2])
+								else
+									C_Container.PickupContainerItem(FrameOnUpdate.konggelist[inv][1], FrameOnUpdate.konggelist[inv][2])
+								end
 							end
 						end
 					end

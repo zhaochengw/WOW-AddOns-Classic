@@ -3,6 +3,7 @@ local fuFrame=List_R_F_1_8
 local _, _, _, tocversion = GetBuildInfo()
 local Create=addonTable.Create
 local PIGDownMenu=Create.PIGDownMenu
+local PIGFrame=Create.PIGFrame
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 ----------------------------------------------------------
 local ShouNaButHeji={};
@@ -147,7 +148,7 @@ end
 
 --小地图按钮--==============================
 local www,hhh = 33,33
-local function MinimapButton_Pig_Open(laiyuan)
+local function MinimapButton_Pig_Open()
 	if MinimapButton_PigUI==nil then
 		local fujikname = UIParent
 		if PIG.Map.MinimapShouNa_BS then
@@ -279,7 +280,7 @@ local function MinimapButton_Pig_Open(laiyuan)
 				end
 			end
 		end)
-		Minimap:RegisterEvent("PLAYER_LOGIN")
+
 		local function zhucetuodong()
 			MinimapButton_PigYD:SetScript("OnUpdate",YDButtonP_OnUpdate)
 			MinimapButton_Pig:SetScript("OnDragStart", function()
@@ -342,13 +343,8 @@ local function MinimapButton_Pig_Open(laiyuan)
 				YDButtonP(PIG.Map.MinimapPos);
 			end
 		end
-		if laiyuan=="Check" then MinimapButton_Pig_Point() end
-		Minimap:SetScript("OnEvent", function(self,event)
-			if event=="PLAYER_LOGIN" then
-				MinimapButton_Pig_Point()
-				self:UnregisterEvent("PLAYER_LOGIN");
-			end
-		end)
+		MinimapButton_Pig_Point()
+
 		--Collect Button
 		local Backdropinfo={bgFile = "interface/chatframe/chatframebackground.blp",
 			edgeFile = "Interface/Buttons/WHITE8X8", edgeSize = 1,}
@@ -458,24 +454,18 @@ function fuFrame.Smeihangshu:PIGDownMenu_SetValue(value,arg1,arg2)
 	PIGCloseDropDownMenus()
 end
 --=======================================
-fuFrame.MinimapButF = CreateFrame("Frame", nil, fuFrame,"BackdropTemplate")
-fuFrame.MinimapButF:SetBackdrop( {
-	bgFile = "Interface/DialogFrame/UI-DialogBox-Background", 
-	edgeFile = "Interface/Tooltips/UI-Tooltip-Border",edgeSize = 12, 
-	insets = { left = 2, right = 2, top = 2, bottom = 2 } 
-});
-fuFrame.MinimapButF:SetBackdropColor(0, 0, 0, 0.8);
-fuFrame.MinimapButF:SetBackdropBorderColor(0.5, 0.5, 0.5, 1);
-fuFrame.MinimapButF:SetPoint("TOPLEFT", fuFrame, "TOPLEFT", 10, -138)
-fuFrame.MinimapButF:SetPoint("BOTTOMRIGHT", fuFrame, "BOTTOMRIGHT", -294, 10)
+fuFrame.MinimapButF = PIGFrame(fuFrame)
+fuFrame.MinimapButF:PIGSetBackdrop()
+fuFrame.MinimapButF:SetPoint("TOPLEFT", fuFrame, "TOPLEFT", 6, -138)
+fuFrame.MinimapButF:SetPoint("BOTTOMRIGHT", fuFrame, "BOTTOMRIGHT", -320, 6)
 -----------
 local minishounapaichu="\124cff00ff00禁止收纳的小地图按钮目录\124r"
 fuFrame.MinimapButF.title = fuFrame.MinimapButF:CreateFontString();
-fuFrame.MinimapButF.title:SetPoint("BOTTOMLEFT",fuFrame.MinimapButF,"TOPLEFT",10,-0);
+fuFrame.MinimapButF.title:SetPoint("BOTTOMLEFT",fuFrame.MinimapButF,"TOPLEFT",10,4);
 fuFrame.MinimapButF.title:SetFontObject(GameFontNormal);
 fuFrame.MinimapButF.title:SetText(minishounapaichu);
 -----
-local hang_Height,hang_NUM  = 28, 10;
+local hang_Height,hang_NUM  = 29, 12;
 local Width = fuFrame.MinimapButF:GetWidth();
 local function gengxinMINIpaichu(self)
 	for id = 1, hang_NUM do
@@ -539,9 +529,6 @@ for id = 1, hang_NUM do
 	MINIpaichu.name:SetPoint("LEFT", MINIpaichu.del, "RIGHT", 8,0);
 	MINIpaichu.name:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
 end
-fuFrame.MinimapButF:SetScript("OnShow", function()
-	gengxinMINIpaichu(fuFrame.MinimapButF.Scroll);
-end)
 fuFrame.MinimapButF.DELF = CreateFrame("Frame", "MinimapDELFUI", fuFrame.MinimapButF,"BackdropTemplate");
 fuFrame.MinimapButF.DELF:SetBackdrop({bgFile = "interface/characterframe/ui-party-background.blp", 
 	edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
@@ -660,6 +647,7 @@ fuFrame.MinimapButF.ADDFrame.NO:SetScript("OnClick", function ()
 end);
 
 fuFrame:HookScript("OnShow", function ()
+	gengxinMINIpaichu(fuFrame.MinimapButF.Scroll);
 	fuFrame.Smeihangshu:PIGDownMenu_SetText("每行按钮数:"..PIG["Map"]["MinimapShouNa_hang"].."个")
 	if PIG.Map.MinimapBut then
 		fuFrame.Minimap_but:SetChecked(true);
@@ -673,7 +661,6 @@ fuFrame:HookScript("OnShow", function ()
 end);
 --==============================================
 addonTable.Map_MiniMap = function()
-	PIG.Map=PIG.Map or addonTable.Default.Map
 	if PIG.Map.MinimapBut then
 		MinimapButton_Pig_Open()
 	end

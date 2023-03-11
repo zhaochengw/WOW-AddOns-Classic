@@ -140,6 +140,7 @@ local function SAVE_lixian_data(bagID, slot,wupinshujuinfo)
 	end
 end
 local function SAVE_C()
+	if InCombatLockdown() then return end
 	local wupinshujuinfo = {}
 	for inv = 1, 19 do
 		local wupinxinxi={nil,nil,1}--1物品ID/2itemLink/3数量
@@ -154,6 +155,7 @@ local function SAVE_C()
 	PIG['zhegnheBAG']["lixian"][PIG_renwuming]["C"] = wupinshujuinfo
 end
 local function SAVE_BAG()
+	if InCombatLockdown() then return end
 	local wupinshujuinfo = {}
 	for f=1,#bagID do
 		for ff=1,C_Container.GetContainerNumSlots(bagID[f]) do
@@ -163,7 +165,8 @@ local function SAVE_BAG()
 	PIG['zhegnheBAG']["lixian"][PIG_renwuming]["BAG"] = wupinshujuinfo
 	PIG['zhegnheBAG']["lixian"][PIG_renwuming]["G"] = GetMoney();
 end
-local function SAVE_bank()
+local function SAVE_BANK()
+	if InCombatLockdown() then return end
 	local wupinshujuinfo = {}
 	for f=1,#bankID do
 		if f==1 then
@@ -644,10 +647,24 @@ local function zhegnhe_Open()
 	    end 
 	end
 
+	--设置按钮
 	ContainerFrameCombinedBags.shezhi = CreateFrame("Button",nil,ContainerFrameCombinedBags);
 	ContainerFrameCombinedBags.shezhi:SetHighlightTexture("Interface/Minimap/UI-Minimap-ZoomButton-Highlight");
 	ContainerFrameCombinedBags.shezhi:SetSize(32,32);
 	ContainerFrameCombinedBags.shezhi:SetPoint("TOPLEFT",ContainerFrameCombinedBags,"TOPLEFT",90,-30);
+	ContainerFrameCombinedBags.shezhi:SetScript("OnMouseDown", function (self)
+		self.Tex:SetPoint("CENTER",-1,-1);
+	end);
+	ContainerFrameCombinedBags.shezhi:SetScript("OnMouseUp", function (self)
+		self.Tex:SetPoint("CENTER");
+	end);
+	ContainerFrameCombinedBags.shezhi:SetScript("OnClick", function (self)
+		if self.F:IsShown() then
+			self.F:Hide()
+		else
+			self.F:Show()
+		end
+	end);
 
 	ContainerFrameCombinedBags.shezhi.Border = ContainerFrameCombinedBags.shezhi:CreateTexture(nil, "OVERLAY");
 	ContainerFrameCombinedBags.shezhi.Border:SetTexture("Interface/Minimap/MiniMap-TrackingBorder");
@@ -682,7 +699,6 @@ local function zhegnhe_Open()
 	ContainerFrameCombinedBags.shezhi.F:SetPoint("CENTER",UIParent,"CENTER",0,0);
 	ContainerFrameCombinedBags.shezhi.F:Hide()
 	ContainerFrameCombinedBags.shezhi.F:SetIgnoreParentScale(true)
-	ContainerFrameCombinedBags.shezhi.F:SetScale(0.8)
 	ContainerFrameCombinedBags.shezhi.F:SetFrameStrata("HIGH")
 	ContainerFrameCombinedBags.shezhi.F.COS = CreateFrame("Button",nil,ContainerFrameCombinedBags.shezhi.F,"UIPanelCloseButton");
 	ContainerFrameCombinedBags.shezhi.F.COS:SetSize(28,28);
@@ -783,42 +799,27 @@ local function zhegnhe_Open()
 		info.func = self.PIGDownMenu_SetValue
 		for i=1,#BAGsuofangbili,1 do
 		    info.text, info.arg1 = BAGsuofangbili[i], BAGsuofangbili[i]
-		    info.checked = BAGsuofangbili[i]==PIG["zhegnheBAG"]["BAGsuofangshu_suofang"]
+		    info.checked = BAGsuofangbili[i]==PIG["zhegnheBAG"]["BAGsuofangBili"]
 			ContainerFrameCombinedBags.shezhi.F.suofang:PIGDownMenu_AddButton(info)
 		end 
 	end
 	function ContainerFrameCombinedBags.shezhi.F.suofang:PIGDownMenu_SetValue(value,arg1,arg2)
 		ContainerFrameCombinedBags.shezhi.F.suofang:PIGDownMenu_SetText(value)
-		PIG["zhegnheBAG"]["BAGsuofangshu_suofang"] = arg1;
+		PIG["zhegnheBAG"]["BAGsuofangBili"] = arg1;
 		bagID.suofang = arg1;
 		ContainerFrameCombinedBags:SetScale(arg1)
 		PIGCloseDropDownMenus()
 	end
-	
-	--设置按钮
-	ContainerFrameCombinedBags.shezhi:SetScript("OnMouseDown", function (self)
-		self.Tex:SetPoint("CENTER",-1,-1);
-	end);
-	ContainerFrameCombinedBags.shezhi:SetScript("OnMouseUp", function (self)
-		self.Tex:SetPoint("CENTER");
-	end);
-	ContainerFrameCombinedBags.shezhi:SetScript("OnClick", function (self)
-		if self.F:IsShown() then
-			self.F:Hide()
-		else
-			self.F:Show()
-		end
-	end);
 
 	ContainerFrameCombinedBags.shezhi.F.CZpeizhi = CreateFrame("Button",nil,ContainerFrameCombinedBags.shezhi.F, "UIPanelButtonTemplate");
-	ContainerFrameCombinedBags.shezhi.F.CZpeizhi:SetSize(80,20);
+	ContainerFrameCombinedBags.shezhi.F.CZpeizhi:SetSize(60,20);
 	ContainerFrameCombinedBags.shezhi.F.CZpeizhi:SetPoint("BOTTOMRIGHT",ContainerFrameCombinedBags.shezhi.F,"BOTTOMRIGHT",-4,4);
-	ContainerFrameCombinedBags.shezhi.F.CZpeizhi:SetText("修复异常");
+	ContainerFrameCombinedBags.shezhi.F.CZpeizhi:SetText("重置");
 	ContainerFrameCombinedBags.shezhi.F.CZpeizhi:SetScript("OnClick", function(self, button)
 		StaticPopup_Show ("HUIFU_DEFAULT_BEIBAOZHENGHE");
 	end)
 	StaticPopupDialogs["HUIFU_DEFAULT_BEIBAOZHENGHE"] = {
-		text = "此操作将\124cffff0000重置\124r背包整合所有配置，\n需重载界面。确定重置?",
+		text = "此操作将\124cffff0000重置\124r背包/银行整合所有配置，\n需重载界面。确定重置?",
 		button1 = "确定",
 		button2 = "取消",
 		OnAccept = function()
@@ -842,9 +843,9 @@ local function zhegnhe_Open()
 		ContainerFrameCombinedBags.shezhi.F.hangNUM:PIGDownMenu_SetText(bagID.meihang)
 		ContainerFrameCombinedBags.shezhi.F.suofang:PIGDownMenu_SetText(bagID.suofang)
 	end)
-	---
-	local ADD_BagBankBGtex=addonTable.ADD_BagBankBGtex
+
 	--离线背包================================
+	local ADD_BagBankBGtex=addonTable.ADD_BagBankBGtex
 	local lixianBAG=ADD_Frame("lixianBAG_UI",UIParent,400,200,"CENTER",UIParent,"CENTER",-200,200,true,false,true,true,true)
 	lixianBAG:SetFrameLevel(110)
 	lixianBAG:SetUserPlaced(false)
@@ -1105,7 +1106,7 @@ local function zhegnhe_Open()
 	BankFrame:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
 	BankFrame:HookScript("OnEvent", function (self,event,arg1)
 		if event=="PLAYERBANKSLOTS_CHANGED" then
-			C_Timer.After(0.4,SAVE_bank)
+			C_Timer.After(0.4,SAVE_BANK)
 			if PIG['zhegnheBAG']["wupinLV"] then
 				shuaxinyinhangMOREN(arg1)
 			end
@@ -1127,7 +1128,7 @@ local function zhegnhe_Open()
 			for i=2,#bankID do
 				OpenBag(bankID[i])
 			end
-			C_Timer.After(0.4,SAVE_bank)
+			C_Timer.After(0.4,SAVE_BANK)
 			if PIG['zhegnheBAG']["wupinLV"] then
 				for i=1,yinhangmorengezishu[1] do
 					shuaxinyinhangMOREN(i)
@@ -1152,10 +1153,19 @@ local function zhegnhe_Open()
 		end
 	end)
 	------
-	ContainerFrameCombinedBags:RegisterEvent("PLAYER_ENTERING_WORLD");
-	ContainerFrameCombinedBags:RegisterUnitEvent("UNIT_MODEL_CHANGED","player")
-	ContainerFrameCombinedBags:RegisterEvent("AUCTION_HOUSE_SHOW")
-	ContainerFrameCombinedBags:HookScript("OnEvent", function(self,event,arg1)
+	hooksecurefunc("ContainerFrame_GenerateFrame", function(frame, size, id)
+		if id>=bankID[2] then
+			shuaxinBANKweizhi(frame, size, id)
+		end
+		if PIG['zhegnheBAG']["wupinLV"] then Bag_Item_lv(frame, size, id) end
+		if PIG['zhegnheBAG']["wupinRanse"] then Bag_Item_Ranse(frame, size, id) end
+	end)
+	---
+	local PIGCombinedBags = CreateFrame("Frame")
+	PIGCombinedBags:RegisterEvent("PLAYER_ENTERING_WORLD");
+	PIGCombinedBags:RegisterUnitEvent("UNIT_MODEL_CHANGED","player")
+	PIGCombinedBags:RegisterEvent("AUCTION_HOUSE_SHOW")
+	PIGCombinedBags:HookScript("OnEvent", function(self,event,arg1)
 		if event=="PLAYER_ENTERING_WORLD" then
 			local dangqianjusexinxi={["ClassN"]=0,["Race"]=0,["Lv"]=0,["G"]=0,["C"]={},["BAG"]={},["BANK"]={}}
 			for k,v in pairs(PIG["zhegnheBAG"]["lixian"]) do
@@ -1187,15 +1197,17 @@ local function zhegnhe_Open()
 		if event=="UNIT_MODEL_CHANGED" then
 			SAVE_C()
 		end	
-		if event=="BAG_UPDATE" then
+		if event=="BAG_UPDATE" then	
 			if arg1>=bagID[1] and arg1<=bagID[#bagID] then
-				C_Timer.After(0.4,SAVE_BAG)
-				if PIG['zhegnheBAG']["wupinLV"] then Bag_Item_lv(nil, nil, arg1) end
-				if PIG['zhegnheBAG']["wupinRanse"] then Bag_Item_Ranse(nil, nil, arg1) end
+				C_Timer.After(0.5,SAVE_BAG)
+				if ContainerFrame1Item1:IsVisible() then
+					if PIG['zhegnheBAG']["wupinLV"] then Bag_Item_lv(nil, nil, arg1) end
+					if PIG['zhegnheBAG']["wupinRanse"] then Bag_Item_Ranse(nil, nil, arg1) end
+				end
 			end
 			if BankFrame:IsShown() then
 				if arg1>=bankID[2] then
-					C_Timer.After(0.4,SAVE_bank)
+					C_Timer.After(0.5,SAVE_BANK)
 					if PIG['zhegnheBAG']["wupinLV"] then Bag_Item_lv(nil, nil, arg1) end
 					if PIG['zhegnheBAG']["wupinRanse"] then Bag_Item_Ranse(nil, nil, arg1) end
 				end
@@ -1204,20 +1216,12 @@ local function zhegnhe_Open()
 	end)
 	local function zhixingbaocunCMD()
 		SAVE_BAG()
-		ContainerFrameCombinedBags:RegisterEvent("BAG_UPDATE")
+		PIGCombinedBags:RegisterEvent("BAG_UPDATE")
 	end
-	C_Timer.After(6,zhixingbaocunCMD)
-	------
-	hooksecurefunc("ContainerFrame_GenerateFrame", function(frame, size, id)
-		if id>=bankID[2] then
-			shuaxinBANKweizhi(frame, size, id)
-		end
-		if PIG['zhegnheBAG']["wupinLV"] then Bag_Item_lv(frame, size, id) end
-		if PIG['zhegnheBAG']["wupinRanse"] then Bag_Item_Ranse(frame, size, id) end
-	end)
+	C_Timer.After(8,zhixingbaocunCMD)
 end
 --==========================================================
-fuFrame.combinedBags=ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"启用系统的背包整合","启用系统的背包整合")
+fuFrame.combinedBags=ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"启用背包整合(系统功能)","启用系统的背包整合功能")
 fuFrame.combinedBags:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		SetCVar("combinedBags",1)
@@ -1237,37 +1241,43 @@ fuFrame.beibaozhenghe:SetScript("OnClick", function (self)
 end);
 --背包剩余-------------
 local function gengxinbeibaoshengyugeshu()
-	local zongkongyu = MainMenuBarBackpackButton.Count:GetText() or "99"
-	local zongkongyu = zongkongyu:gsub("%(","")
-	local zongkongyu = zongkongyu:gsub("%)","")
-	if tonumber(zongkongyu)<10 then
+	if MainMenuBarBackpackButton.freeSlots<10 then
 		MainMenuBarBackpackButton.Count:SetTextColor(1, 0, 0, 1);
 	else
 		MainMenuBarBackpackButton.Count:SetTextColor(0, 1, 0, 1);
 	end
 end
 local function bigfontziti()
-	MainMenuBarBackpackButton.Count:SetFont(ChatFontNormal:GetFont(), 18, "OUTLINE");
-	gengxinbeibaoshengyugeshu()
+	if PIG["zhegnheBAG"]['BAGkongyu']=="ON" then
+		SetCVar("displayFreeBagSlots", "1")
+		MainMenuBarBackpackButton.Count:Show()
+		MainMenuBarBackpackButton.Count:SetFont(ChatFontNormal:GetFont(), 18, "OUTLINE");
+		gengxinbeibaoshengyugeshu()
+	else
+		SetCVar("displayFreeBagSlots", "0")
+		MainMenuBarBackpackButton.Count:Hide()
+	end
 end
 ----
 MainMenuBarBackpackButton:HookScript("OnEvent", function(self,event,arg1)
 	if PIG['zhegnheBAG']['BAGkongyu']=="ON" then
+		if event=="PLAYER_ENTERING_WORLD" then
+			bigfontziti()
+		end
 		if event=="BAG_UPDATE" then
 			gengxinbeibaoshengyugeshu()
 		end
 	end
 end);
 ----
-fuFrame.BAGkongyu=ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-100,"增大系统背包剩余空间数字","增大系统的背包剩余空间数字(大于等于10显示绿色,小于10显示红色)\n|cff00FF00系统已自带背包剩余空间显示，请在ESC菜单-界面-显示内打开|r")
+fuFrame.BAGkongyu=ADD_Checkbutton(nil,fuFrame,-80,"TOPLEFT",fuFrame,"TOPLEFT",20,-100,"显示背包剩余空间","在行囊显示背包剩余空间(大于等于10显示绿色,小于10显示红色)")
 fuFrame.BAGkongyu:SetScript("OnClick", function (self)
 	if self:GetChecked() then
-		PIG['zhegnheBAG']['BAGkongyu']="ON";
-		bigfontziti()
+		PIG['zhegnheBAG']['BAGkongyu']="ON";	
 	else
 		PIG['zhegnheBAG']['BAGkongyu']="OFF";
-		Pig_Options_RLtishi_UI:Show()
 	end
+	bigfontziti()
 end);
 fuFrame:HookScript("OnShow", function(self)
 	if GetCVar("combinedBags")=="1" then
@@ -1288,11 +1298,7 @@ addonTable.BagBank = function()
 	PIG_renwuming=Pname.."-"..GetRealmName()
 	if PIG['zhegnheBAG']["Open"]=="ON" then
 		bagID.meihang=PIG['zhegnheBAG']["BAGmeihangshu_retail"] or bagID.meihang
-		bagID.suofang=PIG['zhegnheBAG']["BAGsuofangshu_suofang"] or bagID.suofang
+		bagID.suofang=PIG['zhegnheBAG']["BAGsuofangBili"] or bagID.suofang
 		zhegnhe_Open()
-	end
-	--
-	if PIG['zhegnheBAG']['BAGkongyu']=="ON" then
-		bigfontziti()
 	end
 end

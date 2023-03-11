@@ -292,7 +292,7 @@ local function QuickButton_Gensui()
 	Qfff.nr:SetWidth(NewWidth);
 	Qfff:SetWidth(NewWidth+12);
 end
-fuFrame.QuickBut=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"添加<跟随开关>到快捷按钮栏","在快捷按钮栏显示跟随开关按钮")
+fuFrame.QuickBut=ADD_Checkbutton(nil,fuFrame,-60,"TOPLEFT",fuFrame,"TOPLEFT",20,-20,"添加<跟随开关>到快捷按钮栏","在快捷按钮栏显示跟随开关按钮\n|cff00FF00注意：此功能需先打开快捷按钮栏功能|r")
 fuFrame.QuickBut:SetScript("OnClick", function (self)
 	if self:GetChecked() then
 		PIG["QuickFollow"]["QuickBut"]=true;
@@ -572,9 +572,12 @@ end)
 ----------
 local function ADD_QuickButton_QuickFollow()
 	if PIG["QuickButton"]["Open"] then
+		fuFrame.QuickBut:Enable()
 		if PIG.QuickFollow.QuickBut then
 			QuickButton_Gensui()
 		end
+	else
+		fuFrame.QuickBut:Disable()
 	end
 	if PIG_Per["QuickFollow"]["beidongOpen"] then
 		if Gensui_B_UI then Gensui_B_UI:SetChecked(true) end

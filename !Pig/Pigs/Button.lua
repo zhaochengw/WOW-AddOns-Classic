@@ -13,7 +13,9 @@ function Create.PIGButton(Text,UIName,fuF,WH,Point)
 	local But = CreateFrame("Button", UIName, fuF,"BackdropTemplate");
 	Backdropset(But)
 	But:SetSize(WH[1],WH[2]);
-	But:SetPoint(Point[1],Point[2],Point[3],Point[4],Point[5]);
+	if Point then
+		But:SetPoint(Point[1],Point[2],Point[3],Point[4],Point[5]);
+	end
 	hooksecurefunc(But, "Enable", function(self)
 		self.Text:SetTextColor(1, 0.843, 0, 1);
 	end)
@@ -40,12 +42,20 @@ function Create.PIGButton(Text,UIName,fuF,WH,Point)
 			self.Text:SetPoint("CENTER", 0, 0);
 		end
 	end);
+	But:HookScript("PostClick", function (self)
+		PlaySound(SOUNDKIT.IG_CHAT_EMOTE_BUTTON);
+	end)
 	But.Text = But:CreateFontString();
 	But.Text:SetPoint("CENTER", 0, 0);
-	--But.Text:SetFontObject(GameFontNormal)
-	But.Text:SetFont(ChatFontNormal:GetFont(), 13)
+	But.Text:SetFontObject(ChatFontNormal)
 	But.Text:SetTextColor(1, 0.843, 0, 1);
-	But.Text:SetText(Text);
+	function But:SetText(TextN)
+		self.Text:SetText(TextN);
+	end
+	function But:GetText()
+		return self.Text:GetText();
+	end
+	But:SetText(Text)
 	return But
 end
 --创建功能设置界面顶部按钮
@@ -54,6 +64,7 @@ function Create.PIGModbutton(GnName,GnUI,FrameLevel,ID)
 	frame:Disable();
 	frame:SetMotionScriptsWhileDisabled(true)
 	frame:SetScript("OnClick", function ()
+		PlaySound(SOUNDKIT.IG_CHAT_EMOTE_BUTTON);
 		if _G[GnUI]:IsShown() then
 			_G[GnUI]:Hide();
 		else
@@ -114,14 +125,15 @@ function Create.PIGTabBut(Text,UIName,fuF,WH,Point,id)
 	end);
 	But.Text = But:CreateFontString()
 	But.Text:SetPoint("CENTER", 0, 0)
-	--But.Text:SetFontObject(GameFontNormal)
-	But.Text:SetFont(ChatFontNormal:GetFont(), 13)
+	But.Text:SetFontObject(ChatFontNormal)
 	But.Text:SetTextColor(1, 0.843, 0, 1)
 	But.Text:SetText(Text);
 	function But:Selected()
+		PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB);
 		self.Show=true;
 		self.Text:SetTextColor(1, 1, 1, 1)
-		self:SetBackdropColor(0.3098,0.262745,0.0353, 1)
+		--self:SetBackdropColor(0.3098,0.262745,0.0353, 1)
+		self:SetBackdropColor(0.32,0.1647,0.0353, 1)
 		self:SetBackdropBorderColor(1, 1, 0, 1)	
 	end
 	function But:NotSelected()

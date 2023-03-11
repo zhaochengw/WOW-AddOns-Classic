@@ -11,7 +11,9 @@ local Options_Kaituanzhushou = PIGModbutton(GnName,GnUI,FrameLevel,5)
 local function ADD_RaidR_UI()
 	if RaidR_UI then return end
 	local Width,Height,hang_Height,hang_NUM  = 820, 570, 34, 13;
-	local RaidR=ADD_Frame(GnUI,UIParent,Width, Height,"CENTER",UIParent,"CENTER",0,20,true,false,true,true,true,"BG5")
+	local RaidR=ADD_Frame(GnUI,UIParent,Width, Height,"CENTER",UIParent,"CENTER",0,20,true,false,false,true,true,"BG5")
+	RaidR:SetClampedToScreen(true)
+	RaidR:SetMovable(true)
 	--标题+拖拽按钮
 	RaidR.biaoti = CreateFrame("Frame", nil, RaidR)
 	RaidR.biaoti:SetSize(170, 46)

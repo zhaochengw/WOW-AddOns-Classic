@@ -18,16 +18,19 @@ Pig_Options.L:SetWidth(OptionsLFW);
 Pig_Options.L:SetPoint("TOPLEFT", Pig_Options, "TOPLEFT", 0, 0)
 Pig_Options.L:SetPoint("BOTTOMLEFT", Pig_Options, "BOTTOMLEFT", 0, 0)
 Pig_Options.L.top = PIGFrame(Pig_Options.L)
-Pig_Options.L.top:PIGSetBackdrop()
+--Pig_Options.L.top:PIGSetBackdrop()
 Pig_Options.L.top:SetHeight(40)
 Pig_Options.L.top:SetPoint("TOPLEFT", Pig_Options.L, "TOPLEFT", 2, -2)
 Pig_Options.L.top:SetPoint("TOPRIGHT", Pig_Options.L, "TOPRIGHT", 0, 0)
 Pig_Options.L.top:PIGSetMovable(Pig_Options)
 Pig_Options.L.top.title = Pig_Options.L.top:CreateFontString();
-Pig_Options.L.top.title:SetPoint("CENTER", Pig_Options.L.top, "CENTER", 0, 0);
-Pig_Options.L.top.title:SetFontObject(GameFontNormal);
-local benjibanbenhao=GetAddOnMetadata(addonName, "Version")
-Pig_Options.L.top.title:SetText("|cffFF00FF!Pig|r-"..benjibanbenhao);
+Pig_Options.L.top.title:SetPoint("LEFT", Pig_Options.L.top, "LEFT", 12, 2);
+Pig_Options.L.top.title:SetFont(GameFontNormal:GetFont(), 28)
+Pig_Options.L.top.title:SetText("|cffFF4500!Pig|r");
+Pig_Options.L.top.title1 = Pig_Options.L.top:CreateFontString();
+Pig_Options.L.top.title1:SetPoint("BOTTOMLEFT", Pig_Options.L.top.title, "BOTTOMRIGHT", 10, 0);
+Pig_Options.L.top.title1:SetFont(GameFontNormal:GetFont(), 15)
+Pig_Options.L.top.title1:SetText("|cffFF00FF猪猪加油|r");
 
 Pig_Options.L.F = PIGFrame(Pig_Options.L)
 Pig_Options.L.F:PIGSetBackdrop()
@@ -45,9 +48,15 @@ Pig_Options.R.top:SetPoint("TOPRIGHT", Pig_Options.R, "TOPRIGHT", -2, 0)
 Pig_Options.R.top:PIGSetBackdrop()
 Pig_Options.R.top:PIGSetMovable(Pig_Options)
 Pig_Options.R.top:PIGClose(25,25,Pig_Options)
-Pig_Options.R.top.title = Pig_Options.R.top:CreateFontString();
-Pig_Options.R.top.title:SetPoint("LEFT", Pig_Options.R.top, "LEFT", 6, 0);
-Pig_Options.R.top.title:SetFontObject(GameFontNormal);
+Pig_Options.R.top.Ver = CreateFrame("Frame", nil, Pig_Options.R.top)
+Pig_Options.R.top.Ver:SetPoint("TOPLEFT", Pig_Options.R.top, "TOPLEFT", 0, 0)
+Pig_Options.R.top.Ver:SetPoint("BOTTOMRIGHT", Pig_Options.R.top, "BOTTOMRIGHT", -30, 0)
+
+Pig_Options.R.top.Ver.PigVer = Pig_Options.R.top.Ver:CreateFontString();
+Pig_Options.R.top.Ver.PigVer:SetPoint("LEFT", Pig_Options.R.top.Ver, "LEFT", 6, 0);
+Pig_Options.R.top.Ver.PigVer:SetFontObject(ChatFontNormal);
+local benjibanbenhao=GetAddOnMetadata(addonName, "Version")
+Pig_Options.R.top.Ver.PigVer:SetText("|cffFFD700版本:|r |cff00FF00"..benjibanbenhao.."|r");
 
 Pig_Options.R.F = PIGFrame(Pig_Options.R)
 Pig_Options.R.F:PIGSetBackdrop()
@@ -135,46 +144,6 @@ for i=1, #Tab_L, 1 do
 		end
 	end
 end
-
---快捷按钮栏=================================
-local ActionW = ActionButton1:GetWidth()
-local QuickButton = CreateFrame("Frame", "QuickButtonUI", UIParent);
-QuickButton:SetSize(ActionW*10+12,ActionW);
-QuickButton:SetMovable(true)
-QuickButton:SetClampedToScreen(true)
-QuickButton:Hide()
-QuickButton.yidong = CreateFrame("Frame", nil, QuickButton,"BackdropTemplate")
-QuickButton.yidong:SetBackdrop({
-	bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, edgeSize = 6
-});
-QuickButton.yidong:SetBackdropColor(0.4, 0.4, 0.4, 0.5);
-QuickButton.yidong:SetBackdropBorderColor(1, 1, 1, 1);
-QuickButton.yidong:SetSize(14,ActionW+4)
-QuickButton.yidong:SetPoint("LEFT", QuickButton, "LEFT", 0, 0);
-QuickButton.yidong:EnableMouse(true)
-QuickButton.yidong:RegisterForDrag("LeftButton")
-QuickButton.yidong.title = QuickButton.yidong:CreateFontString();
-QuickButton.yidong.title:SetAllPoints(QuickButton.yidong)
-QuickButton.yidong.title:SetFont(ChatFontNormal:GetFont(), 11)
-QuickButton.yidong.title:SetTextColor(0.6, 0.6, 0.6, 1)
-QuickButton.yidong.title:SetText("拖\n动")
-QuickButton.yidong:SetScript("OnDragStart",function()
-	QuickButton:StartMoving()
-end)
-QuickButton.yidong:SetScript("OnDragStop",function()
-	QuickButton:StopMovingOrSizing()
-	QuickButton:SetUserPlaced(false)
-	local point, relativeTo, relativePoint, xOfs, yOfs = QuickButton:GetPoint()
-	PIG["QuickButton"]["Point"]={point, relativePoint, xOfs, yOfs};
-end)
-QuickButton.nr = CreateFrame("Frame", nil, QuickButton,"BackdropTemplate");
-QuickButton.nr:SetBackdrop({
-	bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border", tile = true, edgeSize = 6
-});
-QuickButton.nr:SetBackdropColor(0.4, 0.4, 0.4, 0.5);
-QuickButton.nr:SetBackdropBorderColor(0.4, 0.4, 0.4, 0.5);
-QuickButton.nr:SetSize(ActionW*10,ActionW+4);
-QuickButton.nr:SetPoint("LEFT",QuickButton,"LEFT",14,0);
 
 --界面选项插件菜单==============================================================
 local PIG_AddOn = {};

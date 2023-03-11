@@ -6,6 +6,7 @@ local ADD_QuickButton=addonTable.ADD_QuickButton
 --=======================================
 local GnUI = "AFK_UI"
 local function Pig_AFK()
+	SetCVar("cameraYawMoveSpeed",180)
 	PIG["AKF"]=PIG["AKF"] or addonTable.Default["AKF"]
 	if PIG["AKF"]["Open"] then
 		if AFKUI_UI then return end
@@ -22,15 +23,15 @@ local function Pig_AFK()
 		AFKUI:Hide()
 		AFKUI.info = AFKUI:CreateFontString();
 		AFKUI.info:SetPoint("CENTER", AFKUI, "CENTER", 0, 0);
-		AFKUI.info:SetFont(GameFontNormal:GetFont(), 30,"OUTLINE")
-		AFKUI.info:SetTextColor(0, 1, 1, 1);
+		AFKUI.info:SetFont(GameFontNormal:GetFont(), 28,"OUTLINE")
+		AFKUI.info:SetTextColor(1, 1, 0, 1);
 		local raceName, raceFile, raceID = UnitRace("player")
 		local name, realm = UnitName("player")
 		local zijirealm = GetRealmName()
-		AFKUI.info:SetText("<服务器>"..zijirealm.."   <种族>"..raceName.."   <玩家名>"..name);
+		AFKUI.info:SetText("|cff00FFFF服务器:|r"..zijirealm.."   |cff00FFFF种族:|r"..raceName.."   |cff00FFFF玩家名:|r"..name);
 		AFKUI.zhenying = AFKUI:CreateTexture()
 		AFKUI.zhenying:SetTexture(131148);
-		AFKUI.zhenying:SetSize(60,60);
+		AFKUI.zhenying:SetSize(50,50);
 		AFKUI.zhenying:SetPoint("RIGHT", AFKUI.info,"LEFT",-10, 0);
 		local englishFaction, _ = UnitFactionGroup("player")
 		if englishFaction=="Alliance" then

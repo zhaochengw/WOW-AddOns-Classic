@@ -9,8 +9,7 @@ local PIGModbutton=Create.PIGModbutton
 local GnName,GnUI = "专业CD","zhuanyeCDUI";
 local FrameLevel=10
 local Options_zhuanyeCD = PIGModbutton(GnName,GnUI,FrameLevel,3)
-local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
-local GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID
+
 --/////专业技能/副本CD监控////////////////
 local Pig_SkillID={}
 local Pig_ItemID={}
@@ -93,8 +92,8 @@ local function disp_time(time)
 end
 --获取当前所学专业数据
 local function huoqu_Skill()
-	local fullName, realmXXX = UnitFullName("player")
-	local className, classFilename, classId = UnitClass("player");
+	local fullName,realmXXX = Options_zhuanyeCD.fullName,Options_zhuanyeCD.realmXXX
+	local className, classFilename = UnitClass("player");
 	local rPerc, gPerc, bPerc, argbHex = GetClassColor(classFilename);
 	local renwuxinxi={fullName,realmXXX,{rPerc, gPerc, bPerc},"juese"};
 	----
@@ -224,12 +223,11 @@ local function gengxin_Skill(self)
 		end
 	end
 end
---===========================================================================
---获取副本CD
-local function huoqu_Fuben()---
-	local fullName= UnitName("player")
-	local realmXXX = GetRealmName()
-	local className, classFilename, classId = UnitClass("player");
+
+--获取副本CD===============================
+local function huoqu_Fuben()
+	local fullName,realmXXX = Options_zhuanyeCD.fullName,Options_zhuanyeCD.realmXXX
+	local className, classFilename = UnitClass("player");
 	local rPerc, gPerc, bPerc, argbHex = GetClassColor(classFilename);
 	local renwuxinxi={fullName,realmXXX,{rPerc, gPerc, bPerc},"juese"};
 	local fubenCDinfo={};
@@ -452,16 +450,47 @@ local function Add_Skill_CD()
 		fubenCD_list.name:SetPoint("LEFT", fubenCD_list.kong, "RIGHT", 0, 0);
 		fubenCD_list.name:SetFontObject(ChatFontNormal);
 	end
+	---更新专业CD
+	local function zhixingdakaigengxin()
+		local fullName,realmXXX = Options_zhuanyeCD.fullName,Options_zhuanyeCD.realmXXX
+		local shujuyuan = PIG["SkillFBCD"]["SkillCD"]
+		for x=1,#shujuyuan,1 do
+			if shujuyuan[x][1][1]..shujuyuan[x][1][2]==fullName..realmXXX then
+				for xx=1,#shujuyuan[x][2] do
+					local chazhaoName= GetSpellInfo(shujuyuan[x][2][xx][1])
+					for j=1,GetNumTradeSkills() do
+						local Skillname= GetTradeSkillInfo(j);
+						if Skillname==chazhaoName then
+							local cd = GetTradeSkillCooldown(j);
+							if cd then
+								shujuyuan[x][2][xx][4]=GetTime()
+								shujuyuan[x][2][xx][5]=cd
+							else
+								shujuyuan[x][2][xx][4]=0
+								shujuyuan[x][2][xx][5]=0
+							end
+							break
+						end
+					end
+				end
+				break
+			end
+		end
+	end
 	--注册CD监测事件
 	zhuanyeCDUI:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED","player");              
 	zhuanyeCDUI:RegisterEvent("UPDATE_INSTANCE_INFO");
+	zhuanyeCDUI:RegisterEvent(zhuanyejinengshuaxinshijian)
 	zhuanyeCDUI:SetScript("OnEvent", function(self,event,arg1,_,arg3)
+		if event==zhuanyejinengshuaxinshijian then
+			zhixingdakaigengxin()
+		end
 		if event=="UNIT_SPELLCAST_SUCCEEDED" then
+			local fullName,realmXXX = Options_zhuanyeCD.fullName,Options_zhuanyeCD.realmXXX
 			for s=1,#Pig_SkillID,1 do
 				if arg3==Pig_SkillID[s][1] then
 					local shujuyuan = PIG["SkillFBCD"]["SkillCD"]
 					for k=1,#shujuyuan,1 do
-						local fullName, realmXXX = UnitFullName("player")
 						if shujuyuan[k][1][1]..shujuyuan[k][1][2]==fullName..realmXXX then
 							for kk=1,#shujuyuan[k][2],1 do
 								if shujuyuan[k][2][kk][1]==arg3 then
@@ -481,7 +510,6 @@ local function Add_Skill_CD()
 			---
 			for i=1,#Pig_ItemID,1 do
 				if arg3==Pig_ItemID[i][1] then
-					local fullName, realmXXX = UnitFullName("player")
 					local shujuyuan = PIG["SkillFBCD"]["SkillCD"]
 					for k=1,#shujuyuan,1 do
 						if shujuyuan[k][1][1]..shujuyuan[k][1][2]==fullName..realmXXX then
@@ -526,38 +554,6 @@ local function Add_Skill_CD()
 			huoqu_Fuben()
 			gengxin_Fuben(zhuanyeCD.fubenCD.Scroll);
 		end
-	end)
-	---更新专业CD
-	local function zhixingdakaigengxin()
-		local fullName, realmXXX = UnitFullName("player")
-		local shujuyuan = PIG["SkillFBCD"]["SkillCD"]
-		for x=1,#shujuyuan,1 do
-			if shujuyuan[x][1][1]..shujuyuan[x][1][2]==fullName..realmXXX then
-				for xx=1,#shujuyuan[x][2] do
-					local chazhaoName= GetSpellInfo(shujuyuan[x][2][xx][1])
-					for j=1,GetNumTradeSkills() do
-						local Skillname= GetTradeSkillInfo(j);
-						if Skillname==chazhaoName then
-							local cd = GetTradeSkillCooldown(j);
-							if cd then
-								shujuyuan[x][2][xx][4]=GetTime()
-								shujuyuan[x][2][xx][5]=cd
-							else
-								shujuyuan[x][2][xx][4]=0
-								shujuyuan[x][2][xx][5]=0
-							end
-							break
-						end
-					end
-				end
-				break
-			end
-		end
-	end
-	local jiazaizhuanyeFrame = CreateFrame("FRAME")
-	jiazaizhuanyeFrame:RegisterEvent(zhuanyejinengshuaxinshijian)
-	jiazaizhuanyeFrame:SetScript("OnEvent", function(self, event, arg1)
-		zhixingdakaigengxin()
 	end)
 	--点击后显示/隐藏
 	zhuanyeCDUI:HookScript("OnShow", function ()
@@ -661,14 +657,28 @@ OptionsModF_Skill_FB.ADD:SetScript("OnClick", function (self)
 	end
 end);
 --=============================================
+local function GetNameRealmPig()
+	local fullName = UnitFullName("player")
+	local realmXXX = GetRealmName()	
+	return fullName,realmXXX
+end
+local function panduannamereal()
+	local fullName, realmXXX = GetNameRealmPig()
+	if fullName and realmXXX then
+		Options_zhuanyeCD.fullName=fullName
+		Options_zhuanyeCD.realmXXX=realmXXX
+		Add_Skill_CD()
+		C_Timer.After(6, huoqu_Skill)
+	else
+		C_Timer.After(1, panduannamereal)
+	end
+end
 addonTable.Skill_FuBen = function()
 	if PIG["SkillFBCD"]["Open"]=="ON" then
 		OptionsModF_Skill_FB:SetChecked(true);
 		if OptionsModF_Skill_FB:IsEnabled() then
 			Options_zhuanyeCD:Enable();
-			Add_Skill_CD()
-			C_Timer.After(3, huoqu_Skill)
-			C_Timer.After(6, huoqu_Skill)
+			panduannamereal()
 		end
 	end
 end

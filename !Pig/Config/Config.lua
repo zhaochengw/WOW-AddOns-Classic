@@ -67,6 +67,7 @@ addonTable.Default = {
 		["JunkShow"]=true,
 		["BAGmeihangshu"]=8,
 		["BAGmeihangshu_retail"]=10,
+		["BAGsuofangBili"]=1,
 		["jiaoyiOpen"]=true,
 		["AHOpen"]=true,
 		["wupinRanse"]=true,

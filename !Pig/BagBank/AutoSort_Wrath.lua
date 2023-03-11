@@ -14,7 +14,7 @@ function PIGBagBank.qiyongzidongzhengli()
 	function PIGBagBank.SortBags()
 		CONTAINERS = {unpack(BAG_CONTAINERS)}
 		for i = #CONTAINERS, 1, -1 do
-			if GetBagSlotFlag(i - 1, LE_BAG_FILTER_FLAG_IGNORE_CLEANUP) then
+			if C_Container.GetBagSlotFlag(CONTAINERS[i], LE_BAG_FILTER_FLAG_IGNORE_CLEANUP) then
 				tremove(CONTAINERS, i)
 			end
 		end
@@ -24,7 +24,7 @@ function PIGBagBank.qiyongzidongzhengli()
 	function PIGBagBank.SortBankBags()
 		CONTAINERS = {unpack(BANK_BAG_CONTAINERS)}
 		for i = #CONTAINERS, 1, -1 do
-			if GetBankBagSlotFlag(i - 1, LE_BAG_FILTER_FLAG_IGNORE_CLEANUP) then
+			if C_Container.GetBagSlotFlag(CONTAINERS[i], LE_BAG_FILTER_FLAG_IGNORE_CLEANUP) then
 				tremove(CONTAINERS, i)
 			end
 		end
@@ -36,7 +36,7 @@ function PIGBagBank.qiyongzidongzhengli()
 	end
 
 	function _G.SetSortBagsRightToLeft(enabled)
-		--PIG['zhegnheBAG']["SortBag_Config"] = enabled and 1 or nil
+		--_G.SortBagsRightToLeft = enabled and 1 or nil
 		if enabled==nil then
 			PIG['zhegnheBAG']["SortBag_Config"] = true
 		else
@@ -76,7 +76,7 @@ function PIGBagBank.qiyongzidongzhengli()
 		return t
 	end
 
-	local SPECIAL = set(5462, 9173, 11511, 13347, 32542, 33219, 38233, 40110, 43499, 198647)
+	local SPECIAL = set(5462, 9173, 11511, 13347, 32542, 33219, 38233, 40110, 43499, 43824, 198647)
 
 	local KEYS = set(9240, 11511, 12324, 12384, 13544, 16309, 17191, 20402)
 
@@ -90,13 +90,13 @@ function PIGBagBank.qiyongzidongzhengli()
 		},
 		-- arrow
 		{
-			containers = {2101, 5439, 7278, 11362, 3573, 3605, 7371, 8217, 2662, 19319, 18714, 29143, 29144, 34105, 34100,44448},
-			items = set(2512, 2514, 2515, 3029, 3030, 3031, 3464, 9399, 10579, 11285, 12654, 18042, 19316, 24412, 24417, 28053, 28056, 30319, 30611, 31737, 31949, 32760, 33803, 34581,41165,41586,52021),
+			containers = {2101, 5439, 7278, 11362, 3573, 3605, 7371, 8217, 2662, 19319, 18714, 29143, 29144, 34105, 34100},
+			items = set(2512, 2514, 2515, 3029, 3030, 3031, 3464, 9399, 10579, 11285, 12654, 18042, 19316, 24412, 24417, 28053, 28056, 30319, 30611, 31737, 31949, 32760, 33803, 34581),
 		},
 		-- bullet
 		{
-			containers = {2102, 5441, 7279, 11363, 3574, 3604, 7372, 8218, 2663, 19320, 29118, 34106, 34099,44447},
-			items = set(2516, 2519, 3033, 3465, 4960, 5568, 8067, 8068, 8069, 10512, 10513, 11284, 11630, 13377, 15997, 19317, 23772, 23773, 28060, 28061, 30612, 31735, 32761, 32882, 32883, 34582,41164,41584,52020),
+			containers = {2102, 5441, 7279, 11363, 3574, 3604, 7372, 8218, 2663, 19320, 29118, 34106, 34099},
+			items = set(2516, 2519, 3033, 3465, 4960, 5568, 8067, 8068, 8069, 10512, 10513, 11284, 11630, 13377, 15997, 19317, 23772, 23773, 28060, 28061, 30612, 31735, 32761, 32882, 32883, 34582),
 		},
 		-- ench
 		{
@@ -141,12 +141,12 @@ function PIGBagBank.qiyongzidongzhengli()
 		local function updateHandler()
 			if GetTime() - lastUpdate > 1 then
 				for _, container in pairs(BAG_CONTAINERS) do
-					for position = 1, GetContainerNumSlots(container) do
+					for position = 1, C_Container.GetContainerNumSlots(container) do
 						SetScanTooltip(container, position)
 					end
 				end
 				for _, container in pairs(BANK_BAG_CONTAINERS) do
-					for position = 1, GetContainerNumSlots(container) do
+					for position = 1, C_Container.GetContainerNumSlots(container) do
 						SetScanTooltip(container, position)
 					end
 				end
@@ -219,13 +219,13 @@ function PIGBagBank.qiyongzidongzhengli()
 	end
 
 	function Move(src, dst)
-		local texture, _, srcLocked = GetContainerItemInfo(src.container, src.position)
-		local _, _, dstLocked = GetContainerItemInfo(dst.container, dst.position)
+		local srcContainerInfo = C_Container.GetContainerItemInfo(src.container, src.position)
+		local dstContainerInfo = C_Container.GetContainerItemInfo(dst.container, dst.position)
 
-		if texture and not srcLocked and not dstLocked then
+		if srcContainerInfo and not srcContainerInfo.isLocked and (not dstContainerInfo or not dstContainerInfo.isLocked) then
 			ClearCursor()
-			PickupContainerItem(src.container, src.position)
-			PickupContainerItem(dst.container, dst.position)
+			C_Container.PickupContainerItem(src.container, src.position)
+			C_Container.PickupContainerItem(dst.container, dst.position)
 
 			if src.item == dst.item then
 				local count = min(src.count, itemStacks[dst.item] - dst.count)
@@ -318,7 +318,7 @@ function PIGBagBank.qiyongzidongzhengli()
 					for _, src in ipairs(model) do
 						if src.item == dst.targetItem
 							and src ~= dst
-							and not (dst.item and src.class and src.class ~= itemClasses[dst.item])
+							and not (dst.item and src.class and not itemClasses[dst.item][src.class])
 							and not (src.targetItem and src.item == src.targetItem and src.count <= src.targetCount)
 						then
 							rank[src] = abs(src.count - dst.targetCount + (dst.item == dst.targetItem and dst.count or 0))
@@ -385,33 +385,19 @@ function PIGBagBank.qiyongzidongzhengli()
 
 			for _, container in ipairs(CONTAINERS) do
 				local class = ContainerClass(container)
-				for position = 1, GetContainerNumSlots(container) do
+				for position = 1, C_Container.GetContainerNumSlots(container) do
 					local slot = {container=container, position=position, class=class}
 					local item = Item(container, position)
 					if item then
-						local _, count, locked = GetContainerItemInfo(container, position)
-						if locked then
+						local containerInfo = C_Container.GetContainerItemInfo(container, position)
+						if containerInfo and containerInfo.isLocked then
 							return false
 						end
 						slot.item = item
-						slot.count = count
-						counts[item] = (counts[item] or 0) + count
+						slot.count = containerInfo.stackCount
+						counts[item] = (counts[item] or 0) + containerInfo.stackCount
 					end
 					insert(model, slot)
-				end
-			end
-
-			local free = {}
-			for item, count in pairs(counts) do
-				local stacks = ceil(count / itemStacks[item])
-				free[item] = stacks
-				if itemClasses[item] then
-					free[itemClasses[item]] = (free[itemClasses[item]] or 0) + stacks
-				end
-			end
-			for _, slot in ipairs(model) do
-				if slot.class and free[slot.class] then
-					free[slot.class] = free[slot.class] - 1
 				end
 			end
 
@@ -424,16 +410,16 @@ function PIGBagBank.qiyongzidongzhengli()
 			for _, slot in ipairs(model) do
 				if slot.class then
 					for _, item in ipairs(items) do
-						if itemClasses[item] == slot.class and assign(slot, item) then
+						if itemClasses[item][slot.class] and assign(slot, item) then
 							break
 						end
 					end
-				else
+				end
+			end
+			for _, slot in ipairs(model) do
+				if not slot.class then
 					for _, item in ipairs(items) do
-						if (not itemClasses[item] or free[itemClasses[item]] > 0) and assign(slot, item) then
-							if itemClasses[item] then
-								free[itemClasses[item]] = free[itemClasses[item]] - 1
-							end
+						if assign(slot, item) then
 							break
 						end
 					end
@@ -443,9 +429,10 @@ function PIGBagBank.qiyongzidongzhengli()
 		end
 	end
 
+
 	function ContainerClass(container)
 		if container ~= 0 and container ~= BANK_CONTAINER then
-			local name = GetBagName(container)
+			local name = C_Container.GetBagName(container)
 			if name then
 				for class, info in pairs(CLASSES) do
 					for _, itemID in pairs(info.containers) do
@@ -459,7 +446,7 @@ function PIGBagBank.qiyongzidongzhengli()
 	end
 
 	function Item(container, position)
-		local link = GetContainerItemLink(container, position)
+		local link = C_Container.GetContainerItemLink(container, position)
 		if link then
 			local _, _, itemID, enchantID, suffixID, uniqueID = strfind(link, 'item:(%d+):(%d*):%d*:%d*:%d*:%d*:(%-?%d*):(%-?%d*)')
 			itemID = tonumber(itemID)
@@ -485,40 +472,44 @@ function PIGBagBank.qiyongzidongzhengli()
 
 			-- soul shards
 			elseif itemID == 6265 then
-				tinsert(sortKey, 12)
+				tinsert(sortKey, 13)
 
 			-- conjured items
 			elseif conjured then
-				tinsert(sortKey, 13)
+				tinsert(sortKey, 14)
 
 			-- soulbound items
 			elseif soulbound then
 				tinsert(sortKey, 5)
 
+			-- heirlooms
+			elseif quality == 7 then
+				tinsert(sortKey, 6)
+
 			-- reagents
 			elseif classId == 9 then
-				tinsert(sortKey, 6)
+				tinsert(sortKey, 7)
 
 			-- quest items
 			elseif bindType == 4 then
-				tinsert(sortKey, 8)
+				tinsert(sortKey, 9)
 
 			-- consumables
 			elseif usable and classId ~= 1 and classId ~= 2 and classId ~= 8 or classId == 4 then
-				tinsert(sortKey, 7)
+				tinsert(sortKey, 8)
 
 			-- higher quality
 			elseif quality > 1 then
-				tinsert(sortKey, 9)
+				tinsert(sortKey, 10)
 
 			-- common quality
 			elseif quality == 1 then
-				tinsert(sortKey, 10)
+				tinsert(sortKey, 11)
 				tinsert(sortKey, -sellPrice)
 
 			-- junk
 			elseif quality == 0 then
-				tinsert(sortKey, 11)
+				tinsert(sortKey, 12)
 				tinsert(sortKey, sellPrice)
 			end
 
@@ -538,10 +529,10 @@ function PIGBagBank.qiyongzidongzhengli()
 			itemStacks[key] = stack
 			itemSortKeys[key] = sortKey
 
+			itemClasses[key] = {}
 			for class, info in pairs(CLASSES) do
 				if info.items[itemID] then
-					itemClasses[key] = class
-					break
+					itemClasses[key][class] = true
 				end
 			end
 

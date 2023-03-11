@@ -68,11 +68,11 @@ local function ZishenFrame_Open()
 	end
 	local function dongtaixuelaingW(self)
 		if UnitHealthMax("player")>99999 or UnitPowerMax("player")>99999 then
-			PlayerFrame.ziji:SetWidth(100);
+			PlayerFrame.ziji:SetWidth(120);
 		elseif UnitHealthMax("player")>9999 or UnitPowerMax("player")>9999 then
-			PlayerFrame.ziji:SetWidth(90);
+			PlayerFrame.ziji:SetWidth(100);
 		elseif UnitHealthMax("player")>999 or UnitPowerMax("player")>999 then
-			PlayerFrame.ziji:SetWidth(80);
+			PlayerFrame.ziji:SetWidth(90);
 		end
 		local powerType = UnitPowerType("player")
 		local info = PowerBarColor[powerType]
@@ -82,19 +82,6 @@ local function ZishenFrame_Open()
 			PlayerFrame.ziji.title3:SetTextColor(info.r, info.g, info.b ,1)
 		end
 	end
-	C_Timer.After(2,dongtaixuelaingW)
-	------
-	PlayerFrame.ziji:RegisterEvent("PLAYER_ENTERING_WORLD");
-	PlayerFrame.ziji:RegisterUnitEvent("UNIT_HEALTH","player");
-	PlayerFrame.ziji:RegisterUnitEvent("UNIT_MAXHEALTH","player");
-	PlayerFrame.ziji:RegisterUnitEvent("UNIT_POWER_FREQUENT","player");
-	PlayerFrame.ziji:RegisterUnitEvent("UNIT_MAXPOWER","player");
-	PlayerFrame.ziji:HookScript("OnEvent", function (self,event)
-		shuaxinxueliangziji(self)
-		if event=="UNIT_MAXHEALTH" or event=="UNIT_MAXPOWER" then
-			dongtaixuelaingW()
-		end
-	end)
 	-- ---
 	local function naijiudushuaxin()
 		local zhuangbeinaijiuhezhi={0,0};
@@ -105,41 +92,38 @@ local function ZishenFrame_Open()
 				zhuangbeinaijiuhezhi[2]=zhuangbeinaijiuhezhi[2]+maximum;
 			end
 		end
-		local naijiubaifenbi=floor(zhuangbeinaijiuhezhi[1]/zhuangbeinaijiuhezhi[2]*100);
-		PlayerFrame.naijiu:SetText(naijiubaifenbi.."%");
-		if naijiubaifenbi>79 then
-			PlayerFrame.naijiu:SetTextColor(0,1,0, 1);
-		elseif  naijiubaifenbi>59 then
-			PlayerFrame.naijiu:SetTextColor(1,215/255,0, 1);
-		elseif  naijiubaifenbi>39 then
-			PlayerFrame.naijiu:SetTextColor(1,140/255,0, 1);
-		elseif  naijiubaifenbi>19 then
-			PlayerFrame.naijiu:SetTextColor(1,69/255,0, 1);
+		if zhuangbeinaijiuhezhi[1]>0 and zhuangbeinaijiuhezhi[2]>0 then
+			local naijiubaifenbi=floor(zhuangbeinaijiuhezhi[1]/zhuangbeinaijiuhezhi[2]*100);
+			PlayerFrame.naijiu:SetText(naijiubaifenbi.."%");
+			if naijiubaifenbi>79 then
+				PlayerFrame.naijiu:SetTextColor(0,1,0, 1);
+			elseif  naijiubaifenbi>59 then
+				PlayerFrame.naijiu:SetTextColor(1,215/255,0, 1);
+			elseif  naijiubaifenbi>39 then
+				PlayerFrame.naijiu:SetTextColor(1,140/255,0, 1);
+			elseif  naijiubaifenbi>19 then
+				PlayerFrame.naijiu:SetTextColor(1,69/255,0, 1);
+			else
+				PlayerFrame.naijiu:SetTextColor(1,0,0, 1);
+			end
 		else
-			PlayerFrame.naijiu:SetTextColor(1,0,0, 1);
+			PlayerFrame.naijiu:SetText("N/A");
 		end
 	end
-	PlayerFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY");--耐久变化
-	PlayerFrame:RegisterEvent("CONFIRM_XP_LOSS");--虚弱复活
-	PlayerFrame:RegisterEvent("UPDATE_INVENTORY_ALERTS");--耐久图标变化或其他
-	PlayerFrame:HookScript("OnEvent", function (self,event)
-		if event=="UPDATE_INVENTORY_DURABILITY" or event=="CONFIRM_XP_LOSS" or event=="UPDATE_INVENTORY_ALERTS" then
-			naijiudushuaxin()
-		end
-	end)
 	--拾取方式
-	PlayerFrame.lootF = CreateFrame("Frame", nil, PlayerFrame);
-	PlayerFrame.lootF:SetSize(20,44);
-	PlayerFrame.lootF:SetPoint("TOPLEFT", PlayerFrame, "TOPLEFT", 5, -20);
+	PlayerFrame.lootF = CreateFrame("Button", nil, PlayerFrame);
+	PlayerFrame.lootF:SetSize(24,80);
+	PlayerFrame.lootF:SetPoint("TOPLEFT", PlayerFrame, "TOPLEFT", 1, -20);
 	PlayerFrame.lootF.loot = PlayerFrame.lootF:CreateFontString();
-	PlayerFrame.lootF.loot:SetWidth(20);
-	PlayerFrame.lootF.loot:SetPoint("TOP", PlayerFrame.lootF, "TOP", 0, 0);
+	PlayerFrame.lootF.loot:SetPoint("TOPLEFT", PlayerFrame.lootF, "TOPLEFT", 0, 0);
+	PlayerFrame.lootF.loot:SetPoint("BOTTOMRIGHT", PlayerFrame.lootF, "BOTTOMRIGHT", 0, 0);
 	PlayerFrame.lootF.loot:SetFont(ChatFontNormal:GetFont(), 14, "OUTLINE");
 	PlayerFrame.lootF.loot:SetTextColor(0, 1, 0, 1);
+	PlayerFrame.lootF.loot:SetJustifyV("TOP")--垂直对齐
 	local function zhanlipinfenpei()
 		if tocversion<40000 then
 			local lootmethod, _, _ = GetLootMethod();
-			if IsInGroup()==true then 
+			if IsInGroup() then 
 				local lootmethod, _, _ = GetLootMethod();
 				if lootmethod=="freeforall" then 
 					PlayerFrame.lootF.loot:SetText("自由");
@@ -158,39 +142,65 @@ local function ZishenFrame_Open()
 				PlayerFrame.lootF.loot:SetText("未组队");
 			end
 		else
-			local specID = GetLootSpecialization()
+			local specID = GetLootSpecialization()--当前拾取专精
 			if specID>0 then
 				local _, name = GetSpecializationInfoByID(specID)
 				PlayerFrame.lootF.loot:SetText(name);
 			else
-				local specID = GetSpecialization()
-				local _, name = GetSpecializationInfo(specID)
-				PlayerFrame.lootF.loot:SetText(name);
+				local specIndex = GetSpecialization()--当前专精
+				local _, name = GetSpecializationInfo(specIndex)
+				PlayerFrame.lootF.loot:SetText(name.."\n*");
 			end
 		end
 	end
-	PlayerFrame.lootF:SetScript("OnMouseUp", function (self)
-		if tocversion<40000 then
-			local lootmethod, _, _ = GetLootMethod();
-			if lootmethod=="freeforall" then
-				SetLootMethod("master","player")
-				return
-			elseif lootmethod=="master" then
-				SetLootMethod("freeforall")
-				return
-			end
-			SetLootMethod("freeforall")
+	PlayerFrame.lootF.specIndex=1
+	local numSpecializations = GetNumSpecializations()--总专精数
+	PlayerFrame.lootF:SetScript("OnClick", function (self)
+		local specID = GetLootSpecialization()
+		if specID==0 then
+			self.specIndex = 1
+			local specID, name = GetSpecializationInfo(self.specIndex)
+			SetLootSpecialization(specID)
+		else
+			self.specIndex = self.specIndex+1
+			if self.specIndex>numSpecializations then
+				SetLootSpecialization(0)
+				self.specIndex = 0
+			else
+				local specID, name = GetSpecializationInfo(self.specIndex)
+				SetLootSpecialization(specID)
+			end	
 		end
+		zhanlipinfenpei()
 	end);
-	PlayerFrame.lootF:RegisterEvent("PLAYER_ENTERING_WORLD");
-	if tocversion<40000 then
-		PlayerFrame.lootF:RegisterEvent("GROUP_ROSTER_UPDATE");
-		PlayerFrame.lootF:RegisterEvent("PARTY_LOOT_METHOD_CHANGED");--战利品方法改变时触发
-	else
-		PlayerFrame.lootF:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED");
-	end
-	PlayerFrame.lootF:HookScript("OnEvent", function (self,event)
-		if event=="PLAYER_ENTERING_WORLD" or event=="GROUP_ROSTER_UPDATE" or event=="PARTY_LOOT_METHOD_CHANGED" or event=="PLAYER_LOOT_SPEC_UPDATED" then
+
+	------
+	PlayerFrame:RegisterUnitEvent("UNIT_HEALTH","player");
+	PlayerFrame:RegisterUnitEvent("UNIT_MAXHEALTH","player");
+	PlayerFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT","player");
+	PlayerFrame:RegisterUnitEvent("UNIT_MAXPOWER","player");
+
+	PlayerFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY");--耐久变化
+	PlayerFrame:RegisterEvent("CONFIRM_XP_LOSS");--虚弱复活
+	PlayerFrame:RegisterEvent("UPDATE_INVENTORY_ALERTS");--耐久图标变化或其他
+
+	PlayerFrame:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED");
+
+	PlayerFrame:HookScript("OnEvent", function (self,event)
+		if event=="PLAYER_ENTERING_WORLD" then
+			dongtaixuelaingW()
+			shuaxinxueliangziji(self.ziji)
+		end
+		if event=="UNIT_HEALTH" or event=="UNIT_POWER_FREQUENT" or event=="UNIT_MAXHEALTH" or event=="UNIT_MAXPOWER" then
+			shuaxinxueliangziji(self.ziji)
+		end
+		if event=="UNIT_MAXHEALTH" or event=="UNIT_MAXPOWER" then
+			dongtaixuelaingW()
+		end
+		if event=="PLAYER_ENTERING_WORLD" or event=="UPDATE_INVENTORY_DURABILITY" or event=="CONFIRM_XP_LOSS" or event=="UPDATE_INVENTORY_ALERTS" then
+			naijiudushuaxin()
+		end
+		if event=="PLAYER_ENTERING_WORLD" or event=="PLAYER_LOOT_SPEC_UPDATED" then
 			zhanlipinfenpei()
 		end
 	end)
@@ -266,7 +276,7 @@ end);
 -- end);
 local function zhixingYidong()
 	TargetFrame:ClearAllPoints();
-	TargetFrame:SetPoint("TOPLEFT",UIParent,"TOPLEFT",330,-4);
+	TargetFrame:SetPoint("TOPLEFT",UIParent,"TOPLEFT",350,-4);
 	TargetFrame:SetUserPlaced(true);
 end
 local Mubiao_youyiFF = CreateFrame("Frame")
