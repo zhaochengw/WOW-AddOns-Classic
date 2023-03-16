@@ -165,11 +165,11 @@ local function GetEquipAverageLevelColour(level)
     
     if level < 150 then --白
         return whiteColour;
-    elseif level < 210 then --绿
+    elseif level < 220 then --绿
         return greenColour;
-    elseif level < 220 then -- 蓝
+    elseif level < 230 then -- 蓝
         return blueColour;
-    elseif level < 235 then -- 紫
+    elseif level < 240 then -- 紫
         return violetColour;
     else
         return orangeColour; -- 橙

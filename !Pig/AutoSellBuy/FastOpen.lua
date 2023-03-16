@@ -4,6 +4,7 @@ local hang_Height,hang_NUM  = 30, 14;
 local FrameLevel=addonTable.SellBuyFrameLevel
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local _, _, _, tocversion = GetBuildInfo()
+
 ----//////////////////
 local function FastOpen()
 	local fuFrame = SpllBuy_TabFrame_4
@@ -42,7 +43,7 @@ local function FastOpen()
 	local function Open_Tishi()
 		if QkBut_AutoSellBuy_Open then
 			if PIG['AutoSellBuy']['zidongKaiqi']=="ON" then
-				if tocversion<100000 then
+				if tocversion<20000 then
 					for bag=0,4 do
 						local bnum=GetContainerNumSlots(bag)
 						for l=1,bnum do
@@ -219,7 +220,7 @@ local function FastOpen()
 		else
 			local shujuy =PIG["AutoSellBuy"]["Openlist"]
 			if #shujuy>0 then
-				if tocversion<100000 then
+				if tocversion<20000 then
 					for arg1=0,4 do			
 						local xx=GetContainerNumSlots(arg1)
 						for k=1,xx do	

@@ -1,4 +1,4 @@
-## Interface: 30401
+## Interface: 11403
 ## Title: tullaRange Config
 ## Notes: GUI based configuration for tullaRange
 ## Author: Tuller

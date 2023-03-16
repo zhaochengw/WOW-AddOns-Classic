@@ -1,1 +1,1 @@
-- Fix FPS stuttering issues
+- Spell updates

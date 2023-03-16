@@ -111,7 +111,7 @@ local function ADD_AHPlus()
 		BrowseLevelText:ClearAllPoints();
 		BrowseLevelText:SetPoint("TOPLEFT",AuctionFrameBrowse,"TOPLEFT",80,-40);
 		BrowseIsUsableText:ClearAllPoints();
-		BrowseIsUsableText:SetPoint("TOPLEFT",AuctionFrameBrowse,"TOPLEFT",300,-40);
+		BrowseIsUsableText:SetPoint("TOPLEFT",AuctionFrameBrowse,"TOPLEFT",300,-40)
 		BrowseShowOnCharacterText:ClearAllPoints();
 		BrowseShowOnCharacterText:SetPoint("LEFT",BrowseIsUsableText,"RIGHT",40,0);
 		BrowseSearchButton:ClearAllPoints();

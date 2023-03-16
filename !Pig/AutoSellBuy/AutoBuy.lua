@@ -4,6 +4,7 @@ local _, _, _, tocversion = GetBuildInfo()
 local hang_Height,hang_NUM  = 30, 14;
 local FrameLevel=addonTable.SellBuyFrameLevel
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
+
 -- --滚动更新目录
 local function gengxinBuylist(self)
 	for id = 1, hang_NUM do
@@ -60,7 +61,7 @@ end
 --------------------------------
 local function jisuanBAGshuliang(QitemID)
 	local zongjiBAGitemCount=0
-	if tocversion<100000 then
+	if tocversion<20000 then
 		for bag = 0, 4 do
 			for slot = 1, GetContainerNumSlots(bag) do
 				local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID= GetContainerItemInfo(bag, slot);

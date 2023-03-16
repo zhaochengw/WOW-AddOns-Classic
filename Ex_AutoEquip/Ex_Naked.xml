@@ -24,8 +24,8 @@
 					NakedObj.NakedInv = {};
 					for o=0,4 do
 						e[o] = 0;
-						for p=1,GetContainerNumSlots(o) do
-							if (not GetContainerItemInfo(o,p)) then
+						for p=1,C_Container.GetContainerNumSlots(o) do
+							if (not C_Container.GetContainerItemInfo(o,p)) then
 								e[o] = e[o]+1;
 							end; 
 						end;
@@ -59,7 +59,7 @@
 				SlashCmdList["DRESSED"] = function()
 					NakedObj.Nakie = false;
 					for o=0,4 do
-						for p=1,GetContainerNumSlots(o) do
+						for p=1,C_Container.GetContainerNumSlots(o) do
 							if (GetContainerItemLink(o,p)) then
 								local _,a = string.find(GetContainerItemLink(o,p),"|h",3);
 								local b = string.find(GetContainerItemLink(o,p),"|h",a);

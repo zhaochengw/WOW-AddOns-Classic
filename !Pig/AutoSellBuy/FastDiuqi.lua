@@ -4,13 +4,14 @@ local _, _, _, tocversion = GetBuildInfo()
 local hang_Height,hang_NUM  = 30, 14;
 local FrameLevel=addonTable.SellBuyFrameLevel
 local ADD_Checkbutton=addonTable.ADD_Checkbutton
+
 ----//////////////////
 function Pig_DelItem()
 	if QkBut_AutoSellBuy then
 		QkBut_AutoSellBuy.Height:Hide();
 	end
 	if #PIG["FastDiuqi"]>0 then
-		if tocversion<100000 then
+		if tocversion<20000 then
 			for i=0,4 do
 				local xx=GetContainerNumSlots(i) 
 				for j=1,xx do
@@ -196,7 +197,7 @@ local function FastDiuqi_ADD()
 	zidongkaishidiuqiFFF:RegisterEvent("BAG_UPDATE");
 	zidongkaishidiuqiFFF:SetScript("OnEvent", function(self,event,arg1)
 		if PIG['AutoSellBuy']['diuqitishi']=="ON" then
-			if tocversion<100000 then
+			if tocversion<20000 then
 				local bnum=GetContainerNumSlots(arg1)
 				for l=1,bnum do
 					for kk=1,#PIG["FastDiuqi"] do

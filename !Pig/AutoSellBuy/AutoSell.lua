@@ -11,7 +11,7 @@ local function shoumailaji()
 	if ( MerchantFrame:IsVisible() and MerchantFrame.selectedTab == 1 ) then
 		fuFrame.shoumaiG = 0;
 		fuFrame.shoumaiShuliang = 0;
-		if tocversion<100000 then
+		if tocversion<30000 then
 			for bag = 0, 4 do
 				for slot = 1, GetContainerNumSlots(bag) do
 					local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID= GetContainerItemInfo(bag, slot);

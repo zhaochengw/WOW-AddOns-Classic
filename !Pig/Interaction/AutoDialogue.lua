@@ -6,7 +6,7 @@ local ADD_Checkbutton=addonTable.ADD_Checkbutton
 local function yanchizhixing()
 	--交任务
 	if PIG['Interaction']['AutoJiaorenwu']=="ON" then
-		if tocversion<40000 then
+		if tocversion<30000 then
 			local activeQuestCount = GetNumActiveQuests();
 			local gossipActiveQuestCount = GetNumGossipActiveQuests();
 			local gossipActiveQuests = { GetGossipActiveQuests() };
@@ -40,7 +40,7 @@ local function yanchizhixing()
 	end
 	--接任务
 	if PIG['Interaction']['AutoJierenwu']=="ON" then
-		if tocversion<40000 then
+		if tocversion<30000 then
 			local availableQuestCount = GetNumAvailableQuests();
 			local gossipAvailableQuestCount = GetNumGossipAvailableQuests();
 			local gossipAvailableQuests = { GetGossipAvailableQuests() };
@@ -103,7 +103,7 @@ local function zidongduihua(self,event)
 	---对话
 	if PIG['Interaction']['AutoDialogue']=="ON" then
 		if event=="GOSSIP_SHOW" then
-			if tocversion<40000 then
+			if tocversion<30000 then
 				local numOptions = GetNumGossipOptions() --NPC对话选项
 				local kejierenwu = GetNumGossipActiveQuests() --返回此 NPC 提供的任务（您尚未参与）的数量
 				local jiaofurenwu = GetNumGossipAvailableQuests() --返回你最终应该交给这个 NPC 的活动任务的数量。

@@ -1,4 +1,4 @@
-## Interface: 30401
+## Interface: 11303
 ## Title: Lib: ClassicSpellActionCount-1.0
 ## Notes: Provides a function to get the current reagent count for spells
 ## Author: Ennea

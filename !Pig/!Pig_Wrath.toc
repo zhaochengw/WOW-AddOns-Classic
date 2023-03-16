@@ -6,7 +6,7 @@
 ## Notes-zhCN: |cffFF8C00一些小工具|r  |cffFF00FF[猪猪加油祝你游戏愉快]|r
 ## Notes-zhTW: |cffFF8C00一些小工具|r  |cffFF00FF[豬豬加油祝你遊戲愉快]|r
 ## Author: geligasi
-## Version: 5.1.2
+## Version: 5.1.4
 ## SavedVariables: PIG
 ## SavedVariablesPerCharacter: PIG_Per
 Localization\Localization.xml

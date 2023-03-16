@@ -24,7 +24,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RatingBuster")
 RatingBuster = LibStub("AceAddon-3.0"):NewAddon("RatingBuster", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 RatingBuster.title = "Rating Buster"
 --@non-debug@
-RatingBuster.version = "1.7.5"
+RatingBuster.version = "1.7.7"
 --@end-non-debug@
 --[==[@debug@
 RatingBuster.version = "(development)"

@@ -408,9 +408,9 @@ function ExAE_GetBagEmptyNums()
 	TotalBagEmptyNums = 0;
 	for bag = 0, 4 do
 		BagEmptyNums[bag] = 0;
-		totalSlots = GetContainerNumSlots(bag);
+		totalSlots = C_Container.GetContainerNumSlots(bag);
 		for slot=1, totalSlots do
-			if not GetContainerItemInfo(bag, slot) then
+			if not C_Container.GetContainerItemInfo(bag, slot) then
 				BagEmptyNums[bag] = BagEmptyNums[bag] + 1;
 				TotalBagEmptyNums = TotalBagEmptyNums + 1;
 			end
@@ -478,7 +478,7 @@ end
 
 function ExAE_IsSlotItemLocked(slot)
 	if ( slot.type == "container" ) then
-		local _, _, isLocked, _, _ = GetContainerItemInfo(slot.bagId, slot.slotId);
+		local _, _, isLocked, _, _ = C_Container.GetContainerItemInfo(slot.bagId, slot.slotId);
 		return isLocked;
 	elseif ( slot.type == "inventory" ) then
 		return IsInventoryItemLocked(slot.slotId);
@@ -496,7 +496,7 @@ end
 
 function ExAE_PickUpItem(slot)
 	if (slot.type == "container") then
-		PickupContainerItem(slot.bagId, slot.slotId)
+		C_Container.PickupContainerItem(slot.bagId, slot.slotId)
 	elseif (slot.type == "inventory") then
 		PickupInventoryItem(slot.slotId)
 	end
@@ -508,7 +508,7 @@ function ExAE_GetPlayerItems()
 	local bagIndex;
 	for bagIndex = 0, NUM_CONTAINER_FRAMES, 1 do
 		local slotIndex;
-		for slotIndex = 1, GetContainerNumSlots(bagIndex), 1 do
+		for slotIndex = 1, C_Container.GetContainerNumSlots(bagIndex), 1 do
 			local itemName, itemLinkId = ExAE_GetItemInfo("container", bagIndex, slotIndex);
 			if (itemName and itemLinkId) then
 				local slot = {};
@@ -587,7 +587,7 @@ end
 function ExAE_GetItemInfo(itemType, arg1, arg2)
 	if (itemType == "container") then
 		--arg1, 2 for bagId, slotId
-		local itemLink = GetContainerItemLink(arg1, arg2)
+		local itemLink = C_Container.GetContainerItemLink(arg1, arg2)
 		return ExAE_GetItemInfoByLink(itemLink)
 	elseif (itemType == "inventory") then
 		--arg1 for slotName

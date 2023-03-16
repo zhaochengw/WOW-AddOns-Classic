@@ -9,6 +9,30 @@ local PIGModbutton=Create.PIGModbutton
 local GnName,GnUI = "专业CD","zhuanyeCDUI";
 local FrameLevel=10
 local Options_zhuanyeCD = PIGModbutton(GnName,GnUI,FrameLevel,3)
+----
+local ContainerIDToInventoryID = ContainerIDToInventoryID or (C_Container and C_Container.ContainerIDToInventoryID)
+local GetContainerItemInfo=GetContainerItemInfo or (C_Container and C_Container.GetContainerItemInfo)
+local GetContainerItemID = GetContainerItemID or (C_Container and C_Container.GetContainerItemID)
+local GetContainerItemLink = GetContainerItemLink or (C_Container and C_Container.GetContainerItemLink)
+local GetContainerNumFreeSlots = GetContainerNumFreeSlots or (C_Container and C_Container.GetContainerNumFreeSlots)
+local GetContainerNumSlots = GetContainerNumSlots or (C_Container and C_Container.GetContainerNumSlots)
+local PickupContainerItem = PickupContainerItem or (C_Container and C_Container.PickupContainerItem)
+local SplitContainerItem = SplitContainerItem or (C_Container and C_Container.SplitContainerItem)
+local SortBags = SortBags or (C_Container and C_Container.SortBags)
+local SortBankBags = SortBankBags or (C_Container and C_Container.SortBankBags)
+local SortReagentBankBags = SortReagentBankBags or (C_Container and C_Container.SortReagentBankBags)
+local SetItemSearch = SetItemSearch or (C_Container and C_Container.SetItemSearch)
+local GetBagSlotFlag = GetBagSlotFlag or (C_Container and C_Container.GetBagSlotFlag)
+local SetBagSlotFlag = SetBagSlotFlag or (C_Container and C_Container.SetBagSlotFlag)
+local GetBankBagSlotFlag = GetBankBagSlotFlag or (C_Container and C_Container.GetBankBagSlotFlag)
+local SetBankBagSlotFlag = SetBankBagSlotFlag or (C_Container and C_Container.SetBankBagSlotFlag)
+local GetBackpackAutosortDisabled = GetBackpackAutosortDisabled or (C_Container and C_Container.GetBackpackAutosortDisabled)
+local GetBankAutosortDisabled = GetBankAutosortDisabled or (C_Container and C_Container.GetBankAutosortDisabled)
+local GetContainerItemCooldown = GetContainerItemCooldown or (C_Container and C_Container.GetContainerItemCooldown)
+local SetBackpackAutosortDisabled = SetBackpackAutosortDisabled or (C_Container and C_Container.SetBackpackAutosortDisabled)
+local SetInsertItemsLeftToRight = SetInsertItemsLeftToRight or (C_Container and C_Container.SetInsertItemsLeftToRight)
+local GetInsertItemsLeftToRight = GetInsertItemsLeftToRight or (C_Container and C_Container.GetInsertItemsLeftToRight)
+local UseContainerItem = UseContainerItem or (C_Container and C_Container.UseContainerItem)
 
 --/////专业技能/副本CD监控////////////////
 local Pig_SkillID={}
