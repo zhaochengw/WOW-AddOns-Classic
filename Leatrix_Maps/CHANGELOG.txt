@@ -1,6 +1,3 @@
-3.0.119 - 15th March 2023
-- Maintenance update.
-
 3.0.110 - 25th February 2023
 - Fix for Krowi Map Buttons library 1.4.4.
 

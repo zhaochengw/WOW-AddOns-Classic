@@ -70,6 +70,34 @@ local function createCheckbox(title, key, def)
     return b
 end
 
+local function createSlider(key, minValue, maxValue, valueStep, minText, maxText, title, textOnValueChanged, default)
+    local s = CreateFrame("Slider", f, f, "OptionsSliderTemplate")
+    s:SetOrientation("HORIZONTAL")
+    s:SetHeight(14)
+    s:SetWidth(160)
+    s:SetMinMaxValues(minValue, maxValue)
+    s:SetValueStep(valueStep)
+    s.Low:SetText(minText)
+    s.High:SetText(maxText)
+
+    local l = s:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    l:SetPoint("RIGHT", s, "LEFT", -20, 1)
+    l:SetText(title)
+    l:SetTextColor(1, 1, 1)
+
+    s:SetScript("OnValueChanged", function(self, value)
+        s.Text:SetText(textOnValueChanged(value))
+        SetConfig(key, value)
+    end)
+
+    RegisterKeyChangedCallback(key, function(v)
+        s:SetValue(v)
+    end)
+
+    triggerCallback(key, GetConfigOrDefault(key, default))
+    return s, l
+end
+
 RegEvent("PLAYER_LOGIN", function()
     f.default = function()
         for k, v in pairs(defs) do
@@ -129,33 +157,9 @@ RegEvent("PLAYER_LOGIN", function()
     end
 
     do
-        local key = "seconds_threshold"
-        local s = CreateFrame("Slider", f, f, "OptionsSliderTemplate")
-        s:SetOrientation('HORIZONTAL')
-        s:SetHeight(14)
-        s:SetWidth(160)
-        s:SetMinMaxValues(1, 120)
-        s:SetValueStep(1)
-        s.Low:SetText(SecondsToTime(60))
-        s.High:SetText(SecondsToTime(7200))
-
-        local l = s:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        l:SetPoint("RIGHT", s, "LEFT", -20, 1)
-        l:SetText(L["Show seconds below this time"])
-        l:SetTextColor(1, 1, 1)
-
+        local func = function (value) return SecondsToTime(value * 60) end
+        local s, l = createSlider("seconds_threshold", 1, 120, 1, SecondsToTime(60), SecondsToTime(7200), L["Show seconds below this time"], func, 30)
         s:SetPoint("TOPLEFT", f, 40 + l:GetStringWidth(), nextpos(45))
-
-        s:SetScript("OnValueChanged", function(self, value)
-            s.Text:SetText(SecondsToTime(value * 60))
-            SetConfig(key, value)
-        end)
-
-        RegisterKeyChangedCallback(key, function(v)
-            s:SetValue(v)
-        end)
-
-        triggerCallback(key, GetConfigOrDefault(key, 30))
     end
 
     do
@@ -171,5 +175,20 @@ RegEvent("PLAYER_LOGIN", function()
     do
         local b = createCheckbox(L["Add more colors to the timer"], "colored_text", false)
         b:SetPoint("TOPLEFT", f, 15, nextpos())
+    end
+
+    do
+        local b = createCheckbox(L["Customize text"], "customize_text", false)
+        b:SetPoint("TOPLEFT", f, 15, nextpos())
+    end
+
+    do
+        local s, l = createSlider("vertical_position", -100, 100, 1, "-100", "100", L["Text vertical position"], tostring, -34)
+        s:SetPoint("TOPLEFT", f, 40 + l:GetStringWidth(), nextpos(45))
+    end
+
+    do
+        local s, l = createSlider("font_size", 1, 100, 1, "1", "100", L["Text font size"], tostring, 14)
+        s:SetPoint("TOPLEFT", f, 40 + l:GetStringWidth(), nextpos(45))
     end
 end)

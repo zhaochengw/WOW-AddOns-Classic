@@ -221,8 +221,7 @@ function Addon:PLAYER_LOGIN(event)
 	-- register existing action buttons
 	-- the method varies between classic and shadowlands, as action buttons in
 	-- shadowlands use ActionBarActionButtonMixin
-	local ActionBarActionButtonMixin = _G.ActionBarActionButtonMixin
-
+	local ActionBarActionButtonMixin = ActionBarActionButtonDerivedMixin or ActionBarActionButtonMixin
 	if ActionBarActionButtonMixin then
 		local function actionButton_OnLoad(button)
 			button:SetScript("OnUpdate", nil)
@@ -532,3 +531,9 @@ end
 
 -- load the addon
 Addon:OnLoad()
+
+_G[AddonName .. '_Launch'] = function()
+	if LoadAddOn(AddonName .. '_Config') then
+		Settings.OpenToCategory(AddonName)
+	end
+end

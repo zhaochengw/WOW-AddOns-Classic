@@ -282,6 +282,8 @@ L["Charged Combo Point 3"] = "Заряженный анимой прием 3"
 L["Charged Combo Point 4"] = "Заряженный анимой прием 4"
 L["Charges"] = "Заряды"
 L["Charges Changed Event"] = "Изменение зарядов"
+--[[Translation missing --]]
+L["Charging"] = "Charging"
 L["Chat Frame"] = "Окно чата"
 L["Chat Message"] = "Сообщение в чат"
 --[[Translation missing --]]
@@ -331,6 +333,8 @@ L["Critical Rating"] = "Показатель крит. удара"
 L["Crowd Controlled"] = "Потеря контроля над персонажем"
 L["Crushing"] = "Сокрушительный удар"
 L["C'thun"] = "К'Тун"
+--[[Translation missing --]]
+L["Current Essence"] = "Current Essence"
 L["Current Experience"] = "Текущее количество опыта"
 L["Current Movement Speed (%)"] = "Текущая скорость движения"
 L["Current Stage"] = "Текущий этап"
@@ -393,6 +397,8 @@ L["Destination Reaction"] = "Реакция получателя"
 L["Destination Unit"] = "Получатель"
 L["Destination unit's raid mark index"] = "Метка получателя (индекс)"
 L["Destination unit's raid mark texture"] = "Метка получателя (иконка)"
+--[[Translation missing --]]
+L["Difficulty"] = "Difficulty"
 L["Disable Spell Known Check"] = "Отключить проверку, известно ли заклинание"
 L["Disabled Spell Known Check"] = "Проверка, известно ли заклинание, отключена"
 L["Disease"] = "Болезнь"
@@ -409,8 +415,7 @@ L["Down, then Centered Horizontal"] = "Вниз, затем по центру п
 L["Down, then Left"] = "Вниз, затем влево"
 L["Down, then Right"] = "Вниз, затем вправо"
 L["Dragonflight"] = "Dragonflight"
---[[Translation missing --]]
-L["Dragonriding"] = "Dragonriding"
+L["Dragonriding"] = "Верховая езда на драконах"
 L["Drain"] = "Вытягивание"
 L["Dropdown Menu"] = "Выпадающее меню"
 L["Dumping table"] = "Дамп таблицы"
@@ -466,6 +471,8 @@ L["Enrage"] = "Исступление"
 L["Enter static or relative values with %"] = "Введите абсолютное или относительное значение при помощи знака %"
 L["Entering"] = "Вход"
 L["Entering/Leaving Combat"] = "Вход / Выход из боя"
+--[[Translation missing --]]
+L["Entering/Leaving Encounter"] = "Entering/Leaving Encounter"
 L["Entry Order"] = "Порядок записей"
 L["Environment Type"] = "Тип окружения"
 L["Environmental"] = "Окружающий мир"
@@ -486,11 +493,20 @@ L["Error Frame"] = "Область вывода ошибок"
 L["ERROR in '%s' unknown or incompatible sub element type '%s'"] = "Ошибка в индикации %s. Внутренний элемент неизвестного или несовместимого типа %s."
 L["Error not receiving display information from %s"] = [=[Ошибка при получении информации об индикации 
 от %s]=]
+L["Essence"] = "Сущность"
+L["Essence #1"] = "Сущность #1"
+L["Essence #2"] = "Сущность #2"
+L["Essence #3"] = "Сущность #3"
+L["Essence #4"] = "Сущность #4"
+L["Essence #5"] = "Сущность #5"
+L["Essence #6"] = "Сущность #6"
 L["Evade"] = "Избегание"
 L["Event"] = "Событие"
 L["Event(s)"] = "События"
 L["Every Frame"] = "Каждый кадр"
 L["Every Frame (High CPU usage)"] = "Каждый кадр (высокая загрузка ЦП)"
+--[[Translation missing --]]
+L["Evoker Essence"] = "Evoker Essence"
 L["Experience (%)"] = "Опыт (%)"
 L["Expertise Bonus"] = "Бонус мастерства"
 L["Expertise Rating"] = "Рейтинг мастерства"
@@ -641,6 +657,8 @@ L["Icecrown Citadel"] = "Цитадель Ледяной Короны"
 L["Icon"] = "Иконка"
 L["Icon Function"] = "Функция иконки"
 L["Icon Function (fallback state)"] = "Функция иконки (резервное состояние)"
+--[[Translation missing --]]
+L["Id"] = "Id"
 L["If you require additional assistance, please open a ticket on GitHub or visit our Discord at https://discord.gg/weakauras!"] = "Если вам необходима дополнительная помощь, пожалуйста, откройте запрос на GitHub или посетите наш сервер в Discord по адресу https://discord.gg/weakauras."
 L["Ignis the Furnace Master"] = "Повелитель горнов Игнис"
 L["Ignore Dead"] = "Не учитывать мёртвые цели"
@@ -852,6 +870,8 @@ L["Note, that cross realm transmission is possible if you are on the same group"
 L["Note: Due to how complicated the swing timer behavior is and the lack of APIs from Blizzard, results are inaccurate in edge cases."] = "|cFFFFCC00Примечание.|r Из-за сложности поведения таймера Swing и отсутствия API со стороны Blizzard результаты в крайних случаях неточны."
 L["Note: 'Hide Alone' is not available in the new aura tracking system. A load option can be used instead."] = "|cFFFFCC00Предупреждение.|r Параметр \"Скрыть когда не в группе\" недоступен в новой версии триггера. Вместо него может быть использовано соответствующее условие на вкладке Загрузка."
 L["Note: The available text replacements for multi triggers match the normal triggers now."] = "|cFFFFCC00Примечение.|r Теперь для данного варианта триггера (несколько целей) доступны такие же шаблоны замены текста, как и для остальных."
+--[[Translation missing --]]
+L["Note: This trigger relies on the WoW API, which returns incorrect information in some cases."] = "Note: This trigger relies on the WoW API, which returns incorrect information in some cases."
 L["Note: This trigger type estimates the range to the hitbox of a unit. The actual range of friendly players is usually 3 yards more than the estimate. Range checking capabilities depend on your current class and known abilities as well as the type of unit being checked. Some of the ranges may also not work with certain NPCs.|n|n|cFFAAFFAAFriendly Units:|r %s|n|cFFFFAAAAHarmful Units:|r %s|n|cFFAAAAFFMiscellanous Units:|r %s"] = "|cFFFFCC00Примечание.|r Триггер оценивает (определяет приближённо) расстояние до хитбокса единицы. Фактическое расстояние до дружественных игроков обычно на 3 метра больше оценки. Возможности проверки дистанции зависят от вашего текущего класса, имеющихся способностей и от типа проверяемой единицы. Некоторые диапазоны могут не работать с отдельными NPC. |n|n|cFFAAFFAACоюзники:|r %s|n|cFFFFAAAAПротивники:|r %s|n|cFFAAAAFFПрочие цели:|r %s"
 L["Noth the Plaguebringer"] = "Нот Чумной"
 L["NPC"] = "NPC"
@@ -859,14 +879,60 @@ L["Npc ID"] = "ID NPC"
 L["Number"] = "Число"
 L["Number Affected"] = "Количество задействованных"
 L["Object"] = "Объект"
+--[[Translation missing --]]
+L[ [=[Occurrence of the event, reset when aura is unloaded
+Can be a range of values
+Can have multiple values separated by a comma or a space
+
+Examples:
+2nd 5th and 6th events: 2, 5, 6
+2nd to 6th: 2-6
+every 2 events: /2
+every 3 events starting from 2nd: 2/3
+every 3 events starting from 2nd and ending at 11th: 2-11/3
+
+Only if BigWigs shows it on it's bar]=] ] = [=[Occurrence of the event, reset when aura is unloaded
+Can be a range of values
+Can have multiple values separated by a comma or a space
+
+Examples:
+2nd 5th and 6th events: 2, 5, 6
+2nd to 6th: 2-6
+every 2 events: /2
+every 3 events starting from 2nd: 2/3
+every 3 events starting from 2nd and ending at 11th: 2-11/3
+
+Only if BigWigs shows it on it's bar]=]
+--[[Translation missing --]]
+L[ [=[Occurrence of the event, reset when aura is unloaded
+Can be a range of values
+Can have multiple values separated by a comma or a space
+
+Examples:
+2nd 5th and 6th events: 2, 5, 6
+2nd to 6th: 2-6
+every 2 events: /2
+every 3 events starting from 2nd: 2/3
+every 3 events starting from 2nd and ending at 11th: 2-11/3
+
+Only if DBM shows it on it's bar]=] ] = [=[Occurrence of the event, reset when aura is unloaded
+Can be a range of values
+Can have multiple values separated by a comma or a space
+
+Examples:
+2nd 5th and 6th events: 2, 5, 6
+2nd to 6th: 2-6
+every 2 events: /2
+every 3 events starting from 2nd: 2/3
+every 3 events starting from 2nd and ending at 11th: 2-11/3
+
+Only if DBM shows it on it's bar]=]
 L["Officer"] = "Офицер"
 L["Offset from progress"] = "Смещение от прогресса"
 L["Offset Timer"] = "Смещение таймера (с.)"
 L["Old Blizzard (2h | 3m | 10s | 2.4)"] = "Blizzard (старый):  2ч. | 3м. | 10с. | 2.4"
 L["On Cooldown"] = "Перезаряжается"
 L["On Taxi"] = "На транспорте"
-L["Only if BigWigs shows it on it's bar"] = "Только если BigWigs показывает его на полосе или в сообщении"
-L["Only if DBM shows it on it's bar"] = "Только если DBM показывает его на полосе или в сообщении"
 L["Only if on a different realm"] = "Только если из другого игр. мира"
 L["Only if Primary"] = "Только если основной"
 L["Onyxia"] = "Ониксия"
@@ -1082,6 +1148,10 @@ L["Show Heal Absorb"] = "Показать поглощение исцелени�
 L["Show Incoming Heal"] = "Показать поступающее исцеление (наложение)"
 L["Show Loss of Control"] = "Показать потерю контроля над персонажем"
 L["Show On"] = "Показать"
+--[[Translation missing --]]
+L["Show Override"] = "Show Override"
+--[[Translation missing --]]
+L["Show Override Spell"] = "Show Override Spell"
 L["Show Rested Overlay"] = "Показать дополнительный опыт после отдыха (наложение)"
 L["Shrink"] = "Сжатие"
 L["Silithid Royalty"] = "Силитидская знать"
@@ -1180,6 +1250,8 @@ L["String"] = "Строка"
 L["Subtract Cast"] = "Вычесть применение заклинания"
 L["Subtract Channel"] = "Вычесть поддержание заклинания"
 L["Subtract GCD"] = "Вычесть GCD"
+--[[Translation missing --]]
+L["Success"] = "Success"
 L["Sulfuron Harbinger"] = "Предвестник Сульфурон"
 L["Summon"] = "Призыв"
 L["Supports multiple entries, separated by commas"] = "Можно указать несколько значений, разделенных запятыми."
@@ -1200,8 +1272,8 @@ L["Talent"] = "Талант"
 L["Talent |cFFFF0000Not|r Known"] = "Талант |cFFFF0000НЕ|r известен"
 L["Talent |cFFFF0000Not|r Selected"] = "Талант |cFFFF0000НЕ|r выбран"
 L["Talent Known"] = "Талант известен"
-L["Talent selected"] = "Выбран талант"
 L["Talent Selected"] = "Талант выбран"
+L["Talent selected"] = "Выбран талант"
 L["Talent Specialization"] = "Специализация"
 L["Tanking And Highest"] = "Вы основная цель; макс. угроза"
 L["Tanking But Not Highest"] = "Вы основная цель; не макс. угроза"
@@ -1259,6 +1331,8 @@ L["Toravon the Ice Watcher"] = "Торавон Страж Льда"
 L["Torghast"] = "Торгаст"
 L["Total"] = "Всего"
 L["Total Duration"] = "Общее время"
+--[[Translation missing --]]
+L["Total Essence"] = "Total Essence"
 L["Total Experience"] = "Общее количество опыта"
 L["Total Match Count"] = "Количество совпадений"
 L["Total Stacks"] = "Общее количество стаков"

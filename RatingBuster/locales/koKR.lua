@@ -7,6 +7,7 @@ Translated by:
 
 local L = LibStub("AceLocale-3.0"):NewLocale("RatingBuster", "koKR")
 if not L then return end
+local StatLogic = LibStub("StatLogic")
 ----
 -- This file is coded in UTF-8
 -- If you don't have a editor that can save in UTF-8, I recommend Ultraedit
@@ -311,6 +312,24 @@ L["Crit Chance <- Crit Rating Agility, Weapon Skill Rating"] = "치명타율 <- 
 -- /rb sum stat haste
 L["Sum Haste"] = "공격 가속"
 L["Haste <- Haste Rating"] = "공격 가속 <- 공격 가속도"
+L["Sum Ranged Hit Chance"] = "원거리 적중률 합계"
+L["Ranged Hit Chance <- Hit Rating, Weapon Skill Rating, Ranged Hit Rating"] = "원거리 적중률 <- 적중도, 무기 숙련도, 원거리 적중도"
+-- /rb sum physical rangedhitrating
+L["Sum Ranged Hit Rating"] = "원거리 적중도 합계"
+L["Ranged Hit Rating Summary"] = "원거리 적중도 요약"
+-- /rb sum physical rangedcrit
+L["Sum Ranged Crit Chance"] = "원거리 치명타율 합계"
+L["Ranged Crit Chance <- Crit Rating, Agility, Weapon Skill Rating, Ranged Crit Rating"] = "원거리 치명타율 <- 치명타 적중도, 민첩성, 무기 숙련도, 치명타 적중도"
+-- /rb sum physical rangedcritrating
+L["Sum Ranged Crit Rating"] = "원거리 치명타 적중도 합계"
+L["Ranged Crit Rating Summary"] = "원거리 치명타 적중도 요약"
+-- /rb sum physical rangedhaste
+L["Sum Ranged Haste"] = "원거리 공격 가속율 합계"
+L["Ranged Haste <- Haste Rating, Ranged Haste Rating"] = "원거리 공격 가속율 <- 공격 가속도, 원거리 가속율"
+-- /rb sum physical rangedhasterating
+L["Sum Ranged Haste Rating"] = "원거리 공격 가속도 합계"
+L["Ranged Haste Rating Summary"] = "원거리 공격 가속도 요약"
+
 -- /rb sum stat critspell
 L["Sum Spell Crit Chance"] = "주문 극대화율"
 L["Spell Crit Chance <- Spell Crit Rating Intellect"] = "주문 극대화율 <- 주문 극대화 적중도, 지능"
@@ -582,22 +601,24 @@ L["statList"] = {
 	{pattern = "주문 극대화 적중도", id = CR_CRIT_SPELL},
 	{pattern = "주문의 극대화 적중도", id = CR_CRIT_SPELL},
 	{pattern = "원거리 치명타 적중도", id = CR_CRIT_RANGED},
-	{pattern = "치명타 적중도", id = CR_CRIT},
+	{pattern = "치명타 적중도", id = StatLogic.GenericStats.CR_CRIT},
 	{pattern = "근접 치명타 적중도", id = CR_CRIT_MELEE},
 
 	--		{pattern = "주문의 적중도", id = CR_HIT_SPELL},
 	{pattern = "주문 적중도", id = CR_HIT_SPELL},
 	{pattern = "원거리 적중도", id = CR_HIT_RANGED},
-	{pattern = "적중도", id = CR_HIT},
+	{pattern = "적중도", id = StatLogic.GenericStats.CR_HIT},
 
 	{pattern = "탄력도", id = CR_RESILIENCE_CRIT_TAKEN}, -- resilience is implicitly a rating
 
 	{pattern = "주문 시전 가속도", id = CR_HASTE_SPELL},
 	{pattern = "원거리 공격 가속도", id = CR_HASTE_RANGED},
-	{pattern = "공격 가속도", id = CR_HASTE},
-	{pattern = "가속도", id = CR_HASTE}, -- [Drums of Battle]
+	{pattern = "공격 가속도", id = StatLogic.GenericStats.CR_HASTE},
+	{pattern = "가속도", id = StatLogic.GenericStats.CR_HASTE}, -- [Drums of Battle]
 
 	{pattern = "숙련도", id = CR_EXPERTISE},
+
+	{pattern = string.lower(SPELL_STATALL), id = StatLogic.GenericStats.ALL_STATS},
 
 	{pattern = "방어구 관통력", id = CR_ARMOR_PENETRATION},	--armor penetration rating
 	{pattern = string.lower(ARMOR), id = ARMOR},

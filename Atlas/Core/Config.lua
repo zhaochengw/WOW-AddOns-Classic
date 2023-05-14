@@ -1,10 +1,10 @@
--- $Id: Config.lua 419 2022-11-12 07:24:19Z arithmandar $
+-- $Id: Config.lua 434 2023-03-28 14:39:00Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert at gmail dot com>
 	Copyright 2010 - Lothaer <lothayer at gmail dot com>, Atlas Team
-	Copyright 2011 ~ 2022 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
+	Copyright 2011 ~ 2023 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -28,9 +28,11 @@
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
 -- Functions
-local _G = getfenv(0);
+local _G = getfenv(0)
+local select = select
 local pairs = _G.pairs
 -- Libraries
+local GetBuildInfo = _G.GetBuildInfo
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
@@ -38,6 +40,21 @@ local FOLDER_NAME, private = ...
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name);
+
+-- Determine WoW TOC Version
+local WoWClassicEra, WoWClassicTBC, WoWWOTLKC, WoWRetail
+local wowversion  = select(4, GetBuildInfo())
+if wowversion < 20000 then
+	WoWClassicEra = true
+elseif wowversion < 30000 then 
+	WoWClassicTBC = true
+elseif wowversion < 40000 then 
+	WoWWOTLKC = true
+elseif wowversion > 90000 then
+	WoWRetail = true
+else
+	-- n/a
+end
 
 local AceConfigReg = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
@@ -264,12 +281,23 @@ local function getOptions()
 									end,
 									set = function(info, value)
 										addon.db.profile.options.worldMapButton = value
-										if (addon.db.profile.options.worldMapButton) then
-											addon.WorldMap.Button:Show()
+										if (WoWClassicEra) then
+											if (addon.db.profile.options.worldMapButton) then
+												AtlasToggleFromWorldMap:Show()
+											else
+												AtlasToggleFromWorldMap:Hide()
+											end
 										else
-											addon.WorldMap.Button:Hide()
+											if (addon.db.profile.options.worldMapButton) then
+												addon.WorldMap.Button:Show()
+											else
+												addon.WorldMap.Button:Hide()
+											end
 										end
 									end,
+--[[									disabled = function() 
+										if WoWClassicEra then return true end
+									end,]]
 								},
 
 								autoSelect = {

@@ -424,6 +424,7 @@ L["indicators management"] = "指标管理"
 L["Create new indicator"] = "添加新的指标"
 L["Delete Indicator"] = "删除指标"
 L["Rename Indicator"] = "重命名指示器"
+-- L["Highlight Indicator"] = ""
 L["Indicator Type"] = "指标类型"
 L["Icon"] = "图标"
 L["Max Icons"] = "最大图标"
@@ -436,6 +437,15 @@ L["Show Tooltip"] = "显示提示信息"
 L["Enable Advanced Tooltips"] = "启用更多提示信息"
 L["Display default unit tooltip when Out of Combat"] = "战斗结束时显示默认单位工具提示"
 
+-- L["First Aura"] = ""
+-- L["Select the index of the first private aura to display."] = ""
+-- L["Last Aura"] = ""
+-- L["Select the index of the last private aura to display."] = ""
+-- L["Enable Cooldown"] = ""
+-- L["Display a cooldown animation."] = ""
+-- L["Enable Numbers"] = ""
+-- L["Display cooldown numbers."] = ""
+
 -- indicator types
 L["icon"] = "图标"
 L["square"] = "正方形"
@@ -445,6 +455,7 @@ L["icons"] = "多图标"
 L["multibar"] = "多指示条"
 L["portrait"] = "肖像"
 -- L["glowborder"] = ""
+-- L["privateauras"] = ""
 
 -- indicators
 L["corner-top-left"] = "左上角"
@@ -625,6 +636,7 @@ L["offline"] = "离线"
 L["raid-icon-player"] = "团队标记图示：玩家"
 L["raid-icon-target"] = "团队标记图示：目标"
 L["range"] = "距离"
+-- L["rangealt"] = ""
 L["ready-check"] = "准备确认"
 L["role"] = "角色"
 L["dungeon-role"] = "地城角色"
@@ -641,7 +653,10 @@ L["pvp"] = "玩家对玩家"
 L["direction"] = "方向"
 L["resurrection"] = "复活"
 L["self"] = "自己 "
--- L["monk-stagger"] = ""
+L["boss-shields"] = "Boss护盾"
+L["my-heals-incoming"] = "我的-治疗-预估"
+L["boss-debuffs"] = "Boss-减益"
+-- L["unit-index"] = ""
 
 L["Curse"] = "诅咒"
 L["Poison"] = "毒"
@@ -653,12 +668,6 @@ L["raid-debuffs2"] = "团队减益（2）"
 L["raid-debuffs3"] = "团队减益（3）"
 L["raid-debuffs4"] = "团队减益（4）"
 L["raid-debuffs5"] = "团队减益（5）"
-
-L["boss-shields"] = "Boss护盾"
-L["my-heals-incoming"] = "我的-治疗-预估"
-L["boss-debuffs"] = "Boss-减益"
-
--- class specific buffs & debuffs statuses
 
 -- shaman
 L["EarthShield"] = "大地之盾"
@@ -698,6 +707,7 @@ L["PrayerOfHealing"] = "治疗祷言"
 L["EnvelopingMist"] = "氤氲之雾"
 L["RenewingMist"] = "复苏之雾"
 L["LifeCocoon"] = "作茧缚命"
+-- L["monk-stagger"] = ""
 
 -- mage
 L["FocusMagic"] = "魔法凝聚"
@@ -889,6 +899,11 @@ L["Hide Damagers"] = "隐藏伤害输出角色"
 
 -- combat status
 L["combat"] = "战斗"
+-- L["Active Out Of Combat"] = ""
+-- L["Enable this option to invert the status so it will become activated when the player is Out Of Combat."] = ""
+
+-- pvp status
+-- L["Hide inside Instances"] = ""
 
 -- summon status
 L["summon"] = "召唤"
@@ -898,6 +913,12 @@ L["Summon Accepted"] = "接受召唤"
 L["Player accepted the summon."] = "玩家接受召唤"
 L["Summon Declined"] = "拒绝召唤"
 L["Player declined the summon."] = "玩家拒绝召唤"
+
+-- unit-index status
+-- L["Enabled only for party units"] = ""
+-- L["Raid indexes will not be displayed."] = ""
+-- L["Enabled for player unit"] = ""
+-- L["Display a zero index for player unit while in party or raid."] = ""
 
 -- status descriptions
 L["highlights your target"] = "高亮你的目标"
@@ -1404,6 +1425,8 @@ L["You can include a descriptive prefix using separators \"@#>\""] = "你可以�
 -- L["Detach pets groups"] = ""
 -- L["Enable this option to detach the pets group, so pets group can be moved individually."] = ""
 -- L["Special units headers visibility."] = ""
+-- L["Display Player unit"] = ""
+-- L["Enable this option to display the player unit."] = ""
 -- L["Display Target unit"] = ""
 -- L["Enable this option to display the target unit."] = ""
 -- L["Display Focus unit"] = ""

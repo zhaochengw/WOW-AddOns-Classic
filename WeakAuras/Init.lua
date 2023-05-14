@@ -4,6 +4,8 @@ WeakAuras = {}
 WeakAuras.L = {}
 Private.frames = {}
 
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
+
 --- @alias uid string
 --- @alias auraId string
 
@@ -296,10 +298,9 @@ Private.frames = {}
 WeakAuras.normalWidth = 1.3
 WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
-
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "5.4.0"
-local buildTime = "20230315190941"
+local versionString = "5.5.3"
+local buildTime = "20230509132305"
 
 local flavorFromToc = GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
@@ -311,7 +312,7 @@ local flavorFromTocToNumber = {
 local flavor = flavorFromTocToNumber[flavorFromToc]
 
 --[==[@debug@
-if versionStringFromToc == "5.4.0" then
+if versionStringFromToc == "5.5.3" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
 end
@@ -325,6 +326,8 @@ WeakAuras.BuildInfo = select(4, GetBuildInfo())
 function WeakAuras.IsClassicEra()
   return flavor == 1
 end
+-- save compatibility with old auras
+WeakAuras.IsClassic = WeakAuras.IsClassicEra
 
 function WeakAuras.IsWrathClassic()
   return flavor == 3
@@ -341,7 +344,6 @@ end
 function WeakAuras.IsWrathOrRetail()
   return WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()
 end
-
 
 WeakAuras.prettyPrint = function(...)
   print("|cff9900ffWeakAuras:|r ", ...)
@@ -384,6 +386,34 @@ do
   end
   if WeakAuras.IsRetail() then
     tinsert(LibStubLibs, "LibSpecialization")
+    AddonCompartmentFrame:RegisterAddon({
+      text = AddonName,
+      icon = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon.blp",
+      registerForAnyClick = true,
+      notCheckable = true,
+      func = function(btn, arg1, arg2, checked, mouseButton)
+        if mouseButton == "LeftButton" then
+          if IsShiftKeyDown() then
+            if not (WeakAuras.IsOptionsOpen()) then
+              WeakAuras.Toggle()
+            end
+          else
+            WeakAuras.OpenOptions()
+          end
+        elseif mouseButton == "MiddleButton" then
+          WeakAuras.ToggleMinimap()
+        else
+          WeakAuras.RealTimeProfilingWindow:Toggle()
+        end
+      end,
+      funcOnEnter = function()
+        GameTooltip:SetOwner(AddonCompartmentFrame, "ANCHOR_TOPRIGHT")
+        GameTooltip:SetText(AddonName)
+        GameTooltip:AddLine(WeakAuras.L["|cffeda55fLeft-Click|r to toggle showing the main window."], 1, 1, 1, true)
+        GameTooltip:Show()
+        WeakAuras.GenerateTooltip(true)
+      end,
+    })
   end
   for _, lib in ipairs(StandAloneLibs) do
     if not lib then

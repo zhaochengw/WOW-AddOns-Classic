@@ -22,10 +22,11 @@
 ## Notes-ptBR: IU para o Deadly Boss Mods
 ## Notes-itIT: Interfaccia Grafica per Deadly Boss Mods
 ## Dependencies: DBM-Core
+## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: fe3e6f6
+## Version: 5249a11
 ## X-Website: https://deadlybossmods.com
 
 localization.en.lua

@@ -154,9 +154,33 @@ do
 
 		--/dump GetWeaponEnchantInfo()
 		LIB_OPEN_RAID_WEAPON_ENCHANT_IDS = {
-			--need update to dragonflight
-			[5400] = true, --flametongue
-			[5401] = true, --windfury
+			[5401] = {spell=33757}, -- Windfury
+			[5400] = {spell=318038}, -- Flametongue
+			[6498] = {spell=382021}, -- Earthliving
+			-- Runes, whetstones, weightstones
+			[6512] = {tier = 1, item=194823},
+			[6513] = {tier = 2, item=194823},
+			[6514] = {tier = 3, item=194823},
+
+			[6515] = {tier = 1, item=194826},
+			[6694] = {tier = 2, item=194826},
+			[6695] = {tier = 3, item=194826},
+
+			[6516] = {tier = 1, item=194820},
+			[6517] = {tier = 2, item=194820},
+			[6518] = {tier = 3, item=194820},
+
+			[6529] = {tier = 1, item=198162},
+			[6530] = {tier = 2, item=198162},
+			[6531] = {tier = 3, item=198162},
+
+			[6379] = {tier = 1, item=191940},
+			[6380] = {tier = 2, item=191940},
+			[6381] = {tier = 3, item=191940},
+
+			[6696] = {tier = 1, item=191945},
+			[6697] = {tier = 2, item=191945},
+			[6698] = {tier = 3, item=191945},
 		}
 
 		--buff spellId, the value of the food is the tier level
@@ -275,45 +299,45 @@ do
 			--maintanance: login into the new race and type /run Details.GenerateRacialSpellList()
 			--this command give a formated line to paste here
 
-			[312411] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 35, race = "Vulpera",	class = "",	type = 9}, --Bag of Tricks (Vulpera)
-			--[312370] = {cooldown = 600,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 35, race = "Vulpera",	class = "",	type = 9}, --Make Camp (Vulpera)
-			--[312372] = {cooldown = 3600,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 35, race = "Vulpera",	class = "",	type = 9}, --Return to Camp (Vulpera)
-			--[312425] = {cooldown = 300,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 35, race = "Vulpera",	class = "",	type = 9}, --Rummage Your Bag (Vulpera)
-			[274738] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 36, race = "MagharOrc",	class = "",	type = 9}, --Ancestral Call (MagharOrc)
-			--[292752] = {cooldown = 432000,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 31, race = "ZandalariTroll",	class = "",	type = 9}, --Embrace of the Loa (ZandalariTroll)
-			--[281954] = {cooldown = 900,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 31, race = "ZandalariTroll",	class = "",	type = 9}, --Pterrordax Swoop (ZandalariTroll)
-			[291944] = {cooldown = 150,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 31, race = "ZandalariTroll",	class = "",	type = 9}, --Regeneratin' (ZandalariTroll)
-			[255654] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 28, race = "HighmountainTauren",	class = "",	type = 9}, --Bull Rush (HighmountainTauren)
-			[260364] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 27, race = "Nightborne",	class = "",	type = 9}, --Arcane Pulse (Nightborne)
-			--[255661] = {cooldown = 600,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 27, race = "Nightborne",	class = "",	type = 9}, --Cantrips (Nightborne)
-			--[69046] = {cooldown = 1800,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 9, race = "Goblin",	class = "",	type = 9}, --Pack Hobgoblin (Goblin)
-			[69041] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 9, race = "Goblin",	class = "",	type = 9}, --Rocket Barrage (Goblin)
-			[69070] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 9, race = "Goblin",	class = "",	type = 9}, --Rocket Jump (Goblin)
-			[20549] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 6, race = "Tauren",	class = "",	type = 9}, --War Stomp (Tauren)
-			--[20577] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 5, race = "Scourge",	class = "",	type = 9}, --Cannibalize (Scourge)
-			[7744] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 5, race = "Scourge",	class = "",	type = 9}, --Will of the Forsaken (Scourge)
-			[20572] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 2, race = "Orc",	class = "",	type = 9}, --Blood Fury (Orc)
-			[312924] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 37, race = "Mechagnome",	class = "",	type = 9}, --Hyper Organic Light Originator (Mechagnome)
-			--[312890] = {cooldown = 0,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 37, race = "Mechagnome",	class = "",	type = 9}, --Skeleton Pinkie (Mechagnome)
-			[287712] = {cooldown = 150,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 32, race = "KulTiran",	class = "",	type = 9}, --Haymaker (KulTiran)
-			[265221] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 34, race = "DarkIronDwarf",	class = "",	type = 9}, --Fireblood (DarkIronDwarf)
-			--[265225] = {cooldown = 1800,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 34, race = "DarkIronDwarf",	class = "",	type = 9}, --Mole Machine (DarkIronDwarf)
-			--[259930] = {cooldown = 900,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 30, race = "LightforgedDraenei",	class = "",	type = 9}, --Forge of Light (LightforgedDraenei)
-			[255647] = {cooldown = 150,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 30, race = "LightforgedDraenei",	class = "",	type = 9}, --Light's Judgment (LightforgedDraenei)
-			[256948] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 29, race = "VoidElf",	class = "",	type = 9}, --Spatial Rift (VoidElf)
-			--[358733] = {cooldown = 1,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 52, race = "Dracthyr",	class = "",	type = 9}, --Glide (Dracthyr)
-			[368970] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 52, race = "Dracthyr",	class = "",	type = 9}, --Tail Swipe (Dracthyr)
-			[357214] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 52, race = "Dracthyr",	class = "",	type = 9}, --Wing Buffet (Dracthyr)
-			[107079] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 25, race = "Pandaren",	class = "",	type = 9}, --Quaking Palm (Pandaren)
-			[68992] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 22, race = "Worgen",	class = "",	type = 9}, --Darkflight (Worgen)
-			--[68996] = {cooldown = 1,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 22, race = "Worgen",	class = "",	type = 9}, --Two Forms (Worgen)
-			[26297] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 8, race = "Troll",	class = "",	type = 9}, --Berserking (Troll)
-			[20589] = {cooldown = 60,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 7, race = "Gnome",	class = "",	type = 9}, --Escape Artist (Gnome)
-			[232633] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 10, race = "BloodElf",	class = "",	type = 9}, --Arcane Torrent (BloodElf)
-			[59752] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 1, race = "Human",	class = "",	type = 9}, --Will to Survive (Human)
-			[20594] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 3, race = "Dwarf",	class = "",	type = 9}, --Stoneform (Dwarf)
-			[58984] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 4, race = "NightElf",	class = "",	type = 9}, --Shadowmeld (NightElf)
-			[59542] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = 11, race = "Draenei",	class = "",	type = 9}, --Gift of the Naaru (Draenei)
+			[312411] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[35] = true}, race = "Vulpera",	class = "",	type = 9}, --Bag of Tricks (Vulpera)
+			--[312370] = {cooldown = 600,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[35] = true}, race = "Vulpera",	class = "",	type = 9}, --Make Camp (Vulpera)
+			--[312372] = {cooldown = 3600,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[35] = true}, race = "Vulpera",	class = "",	type = 9}, --Return to Camp (Vulpera)
+			--[312425] = {cooldown = 300,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[35] = true}, race = "Vulpera",	class = "",	type = 9}, --Rummage Your Bag (Vulpera)
+			[274738] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[36] = true}, race = "MagharOrc",	class = "",	type = 9}, --Ancestral Call (MagharOrc)
+			--[292752] = {cooldown = 432000,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[31] = true}, race = "ZandalariTroll",	class = "",	type = 9}, --Embrace of the Loa (ZandalariTroll)
+			--[281954] = {cooldown = 900,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[31] = true}, race = "ZandalariTroll",	class = "",	type = 9}, --Pterrordax Swoop (ZandalariTroll)
+			[291944] = {cooldown = 150,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[31] = true}, race = "ZandalariTroll",	class = "",	type = 9}, --Regeneratin' (ZandalariTroll)
+			[255654] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[28] = true}, race = "HighmountainTauren",	class = "",	type = 9}, --Bull Rush (HighmountainTauren)
+			[260364] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[27] = true}, race = "Nightborne",	class = "",	type = 9}, --Arcane Pulse (Nightborne)
+			--[255661] = {cooldown = 600,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[27] = true}, race = "Nightborne",	class = "",	type = 9}, --Cantrips (Nightborne)
+			--[69046] = {cooldown = 1800,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[9] = true}, race = "Goblin",	class = "",	type = 9}, --Pack Hobgoblin (Goblin)
+			[69041] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[9] = true}, race = "Goblin",	class = "",	type = 9}, --Rocket Barrage (Goblin)
+			[69070] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[9] = true}, race = "Goblin",	class = "",	type = 9}, --Rocket Jump (Goblin)
+			[20549] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[6] = true}, race = "Tauren",	class = "",	type = 9}, --War Stomp (Tauren)
+			--[20577] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[5] = true}, race = "Scourge",	class = "",	type = 9}, --Cannibalize (Scourge)
+			[7744] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[5] = true}, race = "Scourge",	class = "",	type = 9}, --Will of the Forsaken (Scourge)
+			[20572] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[2] = true}, race = "Orc",	class = "",	type = 9}, --Blood Fury (Orc)
+			[312924] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[37] = true}, race = "Mechagnome",	class = "",	type = 9}, --Hyper Organic Light Originator (Mechagnome)
+			--[312890] = {cooldown = 0,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[37] = true}, race = "Mechagnome",	class = "",	type = 9}, --Skeleton Pinkie (Mechagnome)
+			[287712] = {cooldown = 150,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[32] = true}, race = "KulTiran",	class = "",	type = 9}, --Haymaker (KulTiran)
+			[265221] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[34] = true}, race = "DarkIronDwarf",	class = "",	type = 9}, --Fireblood (DarkIronDwarf)
+			--[265225] = {cooldown = 1800,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[34] = true}, race = "DarkIronDwarf",	class = "",	type = 9}, --Mole Machine (DarkIronDwarf)
+			--[259930] = {cooldown = 900,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[30] = true}, race = "LightforgedDraenei",	class = "",	type = 9}, --Forge of Light (LightforgedDraenei)
+			[255647] = {cooldown = 150,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[30] = true}, race = "LightforgedDraenei",	class = "",	type = 9}, --Light's Judgment (LightforgedDraenei)
+			[256948] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[29] = true}, race = "VoidElf",	class = "",	type = 9}, --Spatial Rift (VoidElf)
+			--[358733] = {cooldown = 1,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[52] = true, [70] = true}, race = "Dracthyr",	class = "",	type = 9}, --Glide (Dracthyr)
+			[368970] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[52] = true, [70] = true}, race = "Dracthyr",	class = "",	type = 9}, --Tail Swipe (Dracthyr)
+			[357214] = {cooldown = 90,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[52] = true, [70] = true}, race = "Dracthyr",	class = "",	type = 9}, --Wing Buffet (Dracthyr)
+			[107079] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[25] = true, [24] = true, [26] = true}, race = "Pandaren",	class = "",	type = 9}, --Quaking Palm (Pandaren)
+			[68992] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[22] = true}, race = "Worgen",	class = "",	type = 9}, --Darkflight (Worgen)
+			--[68996] = {cooldown = 1,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[22] = true}, race = "Worgen",	class = "",	type = 9}, --Two Forms (Worgen)
+			[26297] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[8] = true}, race = "Troll",	class = "",	type = 9}, --Berserking (Troll)
+			[20589] = {cooldown = 60,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[7] = true}, race = "Gnome",	class = "",	type = 9}, --Escape Artist (Gnome)
+			[232633] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[10] = true}, race = "BloodElf",	class = "",	type = 9}, --Arcane Torrent (BloodElf)
+			[59752] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[1] = true}, race = "Human",	class = "",	type = 9}, --Will to Survive (Human)
+			[20594] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[3] = true}, race = "Dwarf",	class = "",	type = 9}, --Stoneform (Dwarf)
+			[58984] = {cooldown = 120,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[4] = true}, race = "NightElf",	class = "",	type = 9}, --Shadowmeld (NightElf)
+			[59542] = {cooldown = 180,	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = {[11] = true}, race = "Draenei",	class = "",	type = 9}, --Gift of the Naaru (Draenei)
 
 			--interrupts
 			[6552] = {class = "WARRIOR", specs = {71, 72, 73}, cooldown = 15, silence = 4, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Pummel
@@ -367,6 +391,8 @@ do
 			[20066] = {cooldown = 15,	duration = 0,	specs = {},			talent = false,	charges = 1,	class = "PALADIN",	type = 8}, --Repentance
 			[4987] = {cooldown = 8,	duration = 0,		specs = {65},				talent = false,	charges = 1,	class = "PALADIN",	type = 7}, --Cleanse
 			[213644] = {cooldown = 8,	duration = 0,	specs = {66,70},			talent = false,	charges = 1,	class = "PALADIN",	type = 7}, --Cleanse Toxins
+			[389539] = {cooldown = 120,	duration = 20,	specs = {66},			talent = false,	charges = 1,	class = "PALADIN",	type = 2}, --Sentinel
+			[31935] = {cooldown = 13,	duration = 0,	specs = {66},			talent = false,	charges = 1,	class = "PALADIN",	type = 6}, --Avenger's Shield
 
 			--warrior
 			-- 71 - Arms
@@ -419,6 +445,12 @@ do
 			[48020] = {cooldown = 30,	duration = 0,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 5}, --Demonic Circle: Teleport
 			[386997] = {cooldown = 60,	duration = 8,	specs = {265},				talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Soul Rot
 			[6789] = {cooldown = 45,	duration = 0,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 8}, --Mortal Coil
+			[89808] = {cooldown = 15,	duration = 0,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 7, pet = 416}, --Singe Magic
+			[132411] = {cooldown = 15,	duration = 0,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 7,}, --Singe Magic (sacrifice)
+			[17767] = {cooldown = 120,	duration = 20,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 2, pet = 1860}, --Shadow Bulwark
+			[132413] = {cooldown = 120,	duration = 20,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 2,}, --Shadow Bulwark (sacrifice)
+			[6358] = {cooldown = 30,	duration = 30,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 8, pet = 184600}, --Seduction
+			[261589] = {cooldown = 30,	duration = 30,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 8}, --Seduction (Sacrifice)
 
 			--shaman
 			-- 262 - Elemental
@@ -453,6 +485,7 @@ do
 			[79206] = {cooldown = 120,   duration = 15,   specs = {262, 263, 264},  talent = false, charges = 1,    class = "SHAMAN",   type = 5}, --Spiritwalker's Grace
 			[383013] = {cooldown = 45,   duration = 6,   specs = {262, 263, 264},  	talent = false, charges = 1,    class = "SHAMAN",   type = 7}, --Poison Cleansing Totem
 			[305483] = {cooldown = 45,   duration = 5,   specs = {262, 263, 264},  	talent = false, charges = 1,    class = "SHAMAN",   type = 8}, --Lightning Lasso
+			[197214] = {cooldown = 40,   duration = 2,   specs = {262},  			talent = false, charges = 1,    class = "SHAMAN",   type = 8}, --Sundering
 
 			--monk
 			-- 268 - Brewmaster
@@ -510,7 +543,9 @@ do
 			[392060] = {cooldown = 60,	duration = 3,	specs = {},					talent = false,	charges = 1,	class = "HUNTER",	type = 8}, --Wailing Arrow
 			[781] =	{cooldown = 20,	duration = 0,		specs = {},					talent = false,	charges = 1,	class = "HUNTER",	type = 5}, --Disengage
 			[5384] = {cooldown = 30, duration = 0, 		specs = {}, 				talent = false, charges = 1, 	class = "HUNTER", 	type = 5}, --Feign Death
-			[186387] = {cooldown = 30, duration = 6, 		specs = {}, 				talent = false, charges = 1, 	class = "HUNTER", 	type = 8}, --Bursting Shot
+			[186387] = {cooldown = 30, duration = 6, 	specs = {},		 			talent = false, charges = 1, 	class = "HUNTER", 	type = 8}, --Bursting Shot
+			[236776] = {cooldown = 40, duration = 0, 	specs = {253, 254, 255},	talent = false, charges = 1, 	class = "HUNTER", 	type = 8}, --High Explosive Trap
+
 
 			--druid
 			-- 102 - Balance
@@ -537,16 +572,17 @@ do
 			[740] = {cooldown = 180,	duration = 8,	specs = {105},				talent = false,	charges = 1,	class = "DRUID",	type = 4}, --Tranquility
 			[132469] = {cooldown = 30,	duration = 0,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 8}, --Typhoon
 			[102793] = {cooldown = 60,	duration = 10,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 8}, --Ursol's Vortex
-			[124974] = {cooldown = 90,	duration = 0,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 3}, --Nature's Vigil
+			[124974] = {cooldown = 90,	duration = 0,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 4}, --Nature's Vigil
 			[77761] = {cooldown = 120,	duration = 8,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 5}, --Stampeding Roar
-			[106898] = {cooldown = 120,	duration = 8,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 5}, --Stampeding Roar
-			[77764] = {cooldown = 120,	duration = 8,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 5}, --Stampeding Roar
+			--[106898] = {cooldown = 120,	duration = 8,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 5}, --Stampeding Roar
+			--[77764] = {cooldown = 120,	duration = 8,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 5}, --Stampeding Roar
 			[5211] = {cooldown = 60,	duration = 0,	specs = {},			talent = false,	charges = 1,	class = "DRUID",	type = 8}, --Mighty Bash
 			[22570] = {cooldown = 20,	duration = 5,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 8}, --Maim
 			[88423] = {cooldown = 8,	duration = 0,	specs = {105},				talent = false,	charges = 1,	class = "DRUID",	type = 7}, --Nature's Cure
 			[2782] = {cooldown = 8,	duration = 0,		specs = {102, 103, 104},	talent = false,	charges = 1,	class = "DRUID",	type = 7}, --Remove Corruption
 			[102359] = {cooldown = 30,	duration = 30,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 8}, --Mass Entanglement
 			[205636] = {cooldown = 60,	duration = 10,	specs = {102},				talent = false,	charges = 1,	class = "DRUID",	type = 5}, --Force of Nature
+			[200851] = {cooldown = 60,	duration = 10,	specs = {104},				talent = false,	charges = 1,	class = "DRUID",	type = 2}, --Rage of the Sleeper
 
 			--death knight
 			-- 252 - Unholy
@@ -625,6 +661,7 @@ do
 			[157981] = {cooldown = 30,	duration = 6,	specs = {63},				talent = false,	charges = 1,	class = "MAGE",	type = 8}, --Blast Wave
 			[475] = {cooldown = 8,	duration = 0,	specs = {63, 64, 62},			talent = false,	charges = 1,	class = "MAGE",	type = 7}, --Remove Curse
 			[122] = {cooldown = 30,	duration = 6,	specs = {63, 64, 62},			talent = false,	charges = 1,	class = "MAGE",	type = 8}, --Frost Nova
+			[157980] = {cooldown = 25,	duration = 0,	specs = {62},				talent = false,	charges = 1,	class = "MAGE",	type = 8}, --Supernova
 
 			-- This needs more work to actually function
 			--[342245] = {cooldown = 60,	duration = 0,	specs = {},					talent = false,	charges = 1,	class = "MAGE",	type = 2}, --Alter Time
@@ -831,6 +868,8 @@ do
 			--[251523] = 19647, --wowhead list this spell as sibling spell
 			--[251922] = 19647, --wowhead list this spell as sibling spell
 			--axe toss (warlock pet)
+			[119905] = 89808, -- Singe Magic (warlock Imp) cast by Command Demon
+			[119907] = 17767, -- Shadow Bulwark (warlock Voidwalker) cast by Command Demon
 			[119914] = 89766, --"Uncategorized" on wowhead
 			[347008] = 89766, --"Uncategorized" on wowhead
 			--hex (shaman)

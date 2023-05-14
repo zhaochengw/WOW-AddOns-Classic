@@ -44,9 +44,9 @@ LBIS:AddItem(spec, "39759", LBIS.L["Waist"], "Alt") --Ablative Chitin Girdle
 
 LBIS:AddItem(spec, "45594", LBIS.L["Legs"], "BIS") --Legplates of the Endless Void
 LBIS:AddItem(spec, "46176", LBIS.L["Legs"], "Alt") --Conqueror's Aegis Legguards
+LBIS:AddItem(spec, "45295", LBIS.L["Legs"], "Alt") --Gilded Steel Legplates
 LBIS:AddItem(spec, "45267", LBIS.L["Legs"], "Alt") --Saronite Plated Legguards
 LBIS:AddItem(spec, "45384", LBIS.L["Legs"], "Alt") --Valorous Aegis Legguards
-LBIS:AddItem(spec, "45295", LBIS.L["Legs"], "Alt") --Gilded Steel Legplates
 LBIS:AddItem(spec, "40589", LBIS.L["Legs"], "Alt") --Legplates of Sovereignty
 LBIS:AddItem(spec, "45842", LBIS.L["Legs"], "Alt") --Wyrmguard Legplates
 

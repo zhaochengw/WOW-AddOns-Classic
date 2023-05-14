@@ -2,7 +2,7 @@ local mod	= DBM:NewMod("Horsemen", "DBM-Naxx", 4)
 local L		= mod:GetLocalizedStrings()
 local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 
-mod:SetRevision("20230301053143")
+mod:SetRevision("20230414072734")
 mod:SetCreatureID(16063, 16064, 16065, 30549)
 mod:SetEncounterID(1121)
 mod:SetModelID(10729)

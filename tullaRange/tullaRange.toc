@@ -1,8 +1,10 @@
-## Interface: 100005
+## Interface: 100100
 ## Title: tullaRange
 ## Author: Tuller
 ## Notes: Out of range coloring based on RedRange
 ## Notes-ruRU: Аддон, который позволяет полностью менять цвет кнопок действий
-## Version: 10.0.11
+## Version: 10.1.0
 ## SavedVariables: TULLARANGE_COLORS
+## IconTexture: Interface/Icons/Inv_misc_punchcards_red
+## AddonCompartmentFunc: tullaRange_Launch
 tullaRange.lua

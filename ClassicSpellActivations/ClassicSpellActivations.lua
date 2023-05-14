@@ -806,10 +806,26 @@ local CheckArtOfWar = OnAuraStateChange(function() return FindAura("player", 595
     end
 )
 
+
+-- 53672 -- Rank1
+-- 54149 -- Rank2
+local CheckInfusionOfLight = OnAuraStateChange(function() return FindAura("player", 54149, "HELPFUL") end,
+    function(present, duration)
+        if present then
+            f:Activate("FlashOfLight", "InfusionOfLight", duration, true)
+        else
+            f:Deactivate("FlashOfLight", "InfusionOfLight")
+        end
+    end
+)
+
+
+
 ns.configs.PALADIN = function(self)
     self:SetScript("OnUpdate", self.timerOnUpdate)
 
     local hasArtOfWar = IsPlayerSpell(53486) or IsPlayerSpell(53488)
+    local hasInfusionOfLight = IsPlayerSpell(53569) or IsPlayerSpell(53576)
 
     if APILevel <= 2 then
         if ns.findHighestRank("Exorcism") then
@@ -829,12 +845,15 @@ ns.configs.PALADIN = function(self)
         end
     end
 
-    if hasArtOfWar then
+    if hasArtOfWar or hasInfusionOfLight then
         self:RegisterUnitEvent("UNIT_AURA", "player")
         self:SetScript("OnUpdate", self.timerOnUpdate)
         self.UNIT_AURA = function(self, event, unit)
             if hasArtOfWar then
                 CheckArtOfWar()
+            end
+            if hasInfusionOfLight then
+                CheckInfusionOfLight()
             end
         end
     else

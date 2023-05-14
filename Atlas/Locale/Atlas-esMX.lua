@@ -1,10 +1,10 @@
--- $Id: Atlas-esMX.lua 374 2022-01-26 14:33:01Z arithmandar $
+-- $Id: Atlas-esMX.lua 431 2023-03-20 14:46:49Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert at gmail dot com>
 	Copyright 2010 - Lothaer <lothayer at gmail dot com>, Atlas Team
-	Copyright 2011 ~ 2022 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
+	Copyright 2011 ~ 2023 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -48,6 +48,11 @@ end
 
 
 if L then
+L[" 1/2"] = "1/2"
+L[" 2/2"] = "2/2"
+L["%s Dungeons"] = "%s Mazmorras"
+L["%s Instances"] = "%s Estancias"
+L["%s Raids"] = "%s Bandas"
 L["Adult"] = "Adulto"
 L["AKA"] = "AKA"
 L["Alexston Chrome <Tavern of Time>"] = "Alexston Cromo <La Taberna del Tiempo>"
@@ -59,6 +64,7 @@ L["Arcane Container"] = "Contenedor Arcano"
 L["Arms Warrior"] = "Guerrero Armas"
 L["ATLAS_BUTTON_CLOSE"] = "Cerrar"
 L["ATLAS_CLICK_TO_OPEN"] = "Click para abrir el mapa de Atlas."
+L["ATLAS_CLOSE_ATLASLOOT_WINDOW"] = "Click derecho para cerrar la ventana de AtlasLoot"
 L["ATLAS_COLLAPSE_BUTTON"] = "Click para cerrar el panel de Atlas's legend."
 L["ATLAS_DDL_CONTINENT"] = "Continente"
 L["ATLAS_DDL_CONTINENT_BROKENISLES"] = "Mazmorras de las Islas Abruptas"
@@ -67,9 +73,12 @@ L["ATLAS_DDL_CONTINENT_DEEPHOLM"] = "Mazmorras de Infralar"
 L["ATLAS_DDL_CONTINENT_DRAENOR"] = "Mazmorras de Draenor"
 L["ATLAS_DDL_CONTINENT_EASTERN"] = "Mazmorras de los Reinos del Este"
 L["ATLAS_DDL_CONTINENT_KALIMDOR"] = "Mazmorras de Kalimdor"
+L["ATLAS_DDL_CONTINENT_KULTIRAS"] = "Estancias de Kul Tiras"
+L["ATLAS_DDL_CONTINENT_NAZJATAR"] = "Estancias de Nazjatar"
 L["ATLAS_DDL_CONTINENT_NORTHREND"] = "Mazmorras de Rasganorte"
 L["ATLAS_DDL_CONTINENT_OUTLAND"] = "Mazmorras de Terrallende"
 L["ATLAS_DDL_CONTINENT_PANDARIA"] = "Mazmorras de Pandaria"
+L["ATLAS_DDL_CONTINENT_ZANDALAR"] = "Estancias de Zandalar"
 L["ATLAS_DDL_EXPANSION"] = "Expansión"
 L["ATLAS_DDL_EXPANSION_BC"] = "Mazmorras de Burning Crusade"
 L["ATLAS_DDL_EXPANSION_CATA"] = "Mazmorras de Cataclysm"

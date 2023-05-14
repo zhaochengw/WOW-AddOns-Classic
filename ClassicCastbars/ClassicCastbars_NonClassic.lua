@@ -1,14 +1,4 @@
-if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC then
-    return (_G.message or print)("[ERROR] You're using the vanilla version of ClassicCastbars on a non-vanilla client. Please download the correct version.") -- luacheck: ignore
-end
-
-local CLIENT_IS_TBC = _G.WOW_PROJECT_ID == (_G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5)
-
--- FIXME: WOW_PROJECT_ID is currently equal to TBC in wrath, this is a temp override fix until blizz adds the new constants
-local tocVersion = select(4, GetBuildInfo())
-if tocVersion >= 30400 and tocVersion < 40000 then
-    CLIENT_IS_TBC = false
-end
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return end
 
 local _, namespace = ...
 local PoolManager = namespace.PoolManager
@@ -16,6 +6,7 @@ local activeFrames = {}
 local activeGUIDs = {}
 local uninterruptibleList = namespace.uninterruptibleList
 local playerSilences = namespace.playerSilences
+local castImmunityBuffs = namespace.castImmunityBuffs
 
 local addon = CreateFrame("Frame", "ClassicCastbars")
 addon:RegisterEvent("PLAYER_LOGIN")
@@ -25,6 +16,9 @@ end)
 addon.AnchorManager = namespace.AnchorManager
 addon.defaultConfig = namespace.defaultConfig
 addon.activeFrames = activeFrames
+
+local CLIENT_IS_TBC = WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5)
+local CLIENT_IS_RETAIL = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 
 local GetSchoolString = _G.GetSchoolString
 local strformat = _G.string.format
@@ -38,20 +32,6 @@ local strsplit = _G.string.split
 local UnitAura = _G.UnitAura
 local next = _G.next
 
--- cast immunity auras that gives physical or magical interrupt protection
-local castImmunityBuffs = {
-    [GetSpellInfo(642)] = true, -- Divine Shield
-    [GetSpellInfo(498)] = true, -- Divine Protection
-}
-
-local _, playerClass = UnitClass("player")
-if playerClass == "WARRIOR" or playerClass == "ROGUE" or playerClass == "DRUID" then
-    castImmunityBuffs[GetSpellInfo(1022)] = true -- Blessing of Protection
-else
-    castImmunityBuffs[GetSpellInfo(41451)] = true -- Blessing of Spell Warding
-    castImmunityBuffs[GetSpellInfo(24021)] = true -- Anti Magic Shield
-end
-
 local castEvents = {
     "UNIT_SPELLCAST_START",
     "UNIT_SPELLCAST_STOP",
@@ -59,10 +39,14 @@ local castEvents = {
     "UNIT_SPELLCAST_SUCCEEDED",
     "UNIT_SPELLCAST_DELAYED",
     "UNIT_SPELLCAST_FAILED",
---    "UNIT_SPELLCAST_FAILED_QUIET",
     "UNIT_SPELLCAST_CHANNEL_START",
     "UNIT_SPELLCAST_CHANNEL_UPDATE",
     "UNIT_SPELLCAST_CHANNEL_STOP",
+    CLIENT_IS_RETAIL and "UNIT_SPELLCAST_INTERRUPTIBLE" or nil,
+    CLIENT_IS_RETAIL and "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" or nil,
+    --CLIENT_IS_RETAIL and "UNIT_SPELLCAST_EMPOWER_START" or nil,
+    --CLIENT_IS_RETAIL and "UNIT_SPELLCAST_EMPOWER_UPDATE" or nil,
+    --CLIENT_IS_RETAIL and "UNIT_SPELLCAST_EMPOWER_STOP" or nil,
 }
 
 function addon:GetFirstAvailableUnitIDByGUID(unitGUID)
@@ -101,58 +85,39 @@ function addon:GetCastbarFrameIfEnabled(unitID)
     end
 end
 
--- TODO: cleanup
-function addon:DisableBlizzardCastbar(unitID, disable)
-    if not disable then
-        if unitID == "target" then
-            for i = 1, #castEvents do
-                TargetFrameSpellBar:RegisterEvent(castEvents[i])
-            end
-            TargetFrameSpellBar.showCastbar = true
-        elseif unitID == "focus" then
-            for i = 1, #castEvents do
-                FocusFrameSpellBar:RegisterEvent(castEvents[i])
-            end
-            FocusFrameSpellBar.showCastbar = true
-        elseif self:GetUnitType(unitID) == "arena" then
-            for i = 1, 5 do
-                local frame = _G["ArenaEnemyFrame"..i.."CastingBar"]
-                if frame then
-                    frame.showCastbar = true
-                    for j = 1, #castEvents do
-                        frame:RegisterEvent(castEvents[j])
-                    end
-                end
-            end
-        end
-    else
-        if unitID == "target" then
-            TargetFrameSpellBar.showCastbar = false
-            TargetFrameSpellBar:SetAlpha(0)
-            TargetFrameSpellBar:SetValue(0)
-            TargetFrameSpellBar:Hide()
-            for i = 1, #castEvents do
-                TargetFrameSpellBar:UnregisterEvent(castEvents[i])
-            end
-        elseif unitID == "focus" then
-            FocusFrameSpellBar.showCastbar = false
-            FocusFrameSpellBar:SetAlpha(0)
-            FocusFrameSpellBar:SetValue(0)
-            FocusFrameSpellBar:Hide()
-            for i = 1, #castEvents do
-                FocusFrameSpellBar:UnregisterEvent(castEvents[i])
-            end
-        elseif self:GetUnitType(unitID) == "arena" then
-            for i = 1, 5 do
-                local frame = _G["ArenaEnemyFrame"..i.."CastingBar"]
-                if frame then
-                    frame.showCastbar = false
-                    for j = 1, #castEvents do
-                        frame:UnregisterEvent(castEvents[j])
-                    end
-                end
+local function HideBlizzardSpellbar(spellbar)
+    if spellbar.barType and spellbar.barType == "empowered" then return end -- dont hide empowered casts for now
+
+    local cfg = addon.db[addon:GetUnitType(spellbar.unit)]
+    if cfg and cfg.enabled then
+        spellbar:Hide()
+    end
+end
+
+function addon:DisableBlizzardCastbar()
+    if not self.isSpellbarsHooked then
+        self.isSpellbarsHooked = true
+        TargetFrameSpellBar:HookScript("OnShow", HideBlizzardSpellbar)
+        FocusFrameSpellBar:HookScript("OnShow", HideBlizzardSpellbar)
+    end
+
+    -- arena frames are load on demand, hook if available
+    if not self.isArenaSpellbarsHooked then
+        for i = 1, 5 do
+            local frame = _G["ArenaEnemyFrame"..i.."CastingBar"] or _G["ArenaEnemyMatchFrame"..i.."CastingBar"]
+            if frame then
+                frame:HookScript("OnShow", HideBlizzardSpellbar)
+                self.isArenaSpellbarsHooked = true
             end
         end
+    end
+end
+
+function addon:ADDON_LOADED(addonName)
+    if addonName == "Blizzard_ArenaUI" then
+        self:DisableBlizzardCastbar()
+        self:UnregisterEvent("ADDON_LOADED")
+        self.ADDON_LOADED = nil
     end
 end
 
@@ -442,7 +407,6 @@ function addon:UNIT_SPELLCAST_FAILED(unitID)
 
     castbar._data = nil
 end
-addon.UNIT_SPELLCAST_FAILED_QUIET = addon.UNIT_SPELLCAST_FAILED
 
 function addon:UNIT_SPELLCAST_CHANNEL_STOP(unitID)
     local castbar = activeFrames[unitID]
@@ -453,6 +417,30 @@ function addon:UNIT_SPELLCAST_CHANNEL_STOP(unitID)
     end
 
     castbar._data = nil
+end
+
+function addon:UNIT_SPELLCAST_INTERRUPTIBLE(unitID)
+    local castbar = self:GetCastbarFrameIfEnabled(unitID)
+    if not castbar then return end
+
+    castbar._data.isUninterruptible = true
+    if castbar._data.isChanneled then
+        self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Hack: Restart cast to update border shield
+    else
+        self:UNIT_SPELLCAST_START(unitID) -- Hack: Restart cast to update border shield
+    end
+end
+
+function addon:UNIT_SPELLCAST_NOT_INTERRUPTIBLE(unitID)
+    local castbar = self:GetCastbarFrameIfEnabled(unitID)
+    if not castbar then return end
+
+    castbar._data.isUninterruptible = false
+    if castbar._data.isChanneled then
+        self:UNIT_SPELLCAST_CHANNEL_START(unitID) -- Hack: Restart cast to update border shield
+    else
+        self:UNIT_SPELLCAST_START(unitID) -- Hack: Restart cast to update border shield
+    end
 end
 
 function addon:ToggleUnitEvents(shouldReset)
@@ -541,14 +529,12 @@ function addon:PLAYER_LOGIN()
         end
     end
 
-    self:DisableBlizzardCastbar("target", self.db.target.enabled)
-    self:DisableBlizzardCastbar("focus", self.db.focus.enabled)
-    self:DisableBlizzardCastbar("arena", self.db.arena.enabled)
-
     self.PLAYER_GUID = UnitGUID("player")
     self:ToggleUnitEvents()
+    self:DisableBlizzardCastbar()
     self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:RegisterEvent("ADDON_LOADED")
     self:UnregisterEvent("PLAYER_LOGIN")
     self.PLAYER_LOGIN = nil
 end
@@ -664,8 +650,11 @@ addon:SetScript("OnUpdate", function(self)
                 castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, 0)
             else
                 if castbar.fade and not castbar.fade:IsPlaying() and not castbar.isTesting then
-                    self:HideCastbar(castbar, unit, true)
-                    castbar._data = nil
+                    if castbar:GetAlpha() == 1 then -- sanity check
+                        castbar._data.isCastComplete = true
+                        self:HideCastbar(castbar, unit)
+                        castbar._data = nil
+                    end
                 end
             end
         end

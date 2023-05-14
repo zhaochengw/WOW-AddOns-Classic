@@ -1,10 +1,10 @@
--- $Id: Data-WOTLKC.lua 102 2022-08-27 09:58:37Z arithmandar $
+-- $Id: Data-WOTLKC.lua 110 2023-03-20 15:02:11Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbertat gmail dot com>
 	Copyright 2010 - Lothaer <lothayerat gmail dot com>, Atlas Team
-	Copyright 2011 ~ 2022 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
+	Copyright 2011 ~ 2023 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 

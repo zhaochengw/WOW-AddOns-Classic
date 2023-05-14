@@ -5,6 +5,7 @@
 ## Author: Tuller
 ## Dependencies: OmniCC
 ## LoadOnDemand: 1
+## IconTexture: Interface/Icons/spell_nature_timestop
 embeds.xml
 localization\localization.xml
 preview.lua

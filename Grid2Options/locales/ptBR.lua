@@ -424,6 +424,7 @@ L["Adjust background color and alpha."] = "Ajustar plano de fundo e transparenci
 -- L["Create new indicator"] = ""
 -- L["Delete Indicator"] = ""
 -- L["Rename Indicator"] = ""
+-- L["Highlight Indicator"] = ""
 -- L["Indicator Type"] = ""
 -- L["Icon"] = ""
 -- L["Max Icons"] = ""
@@ -436,6 +437,15 @@ L["Adjust background color and alpha."] = "Ajustar plano de fundo e transparenci
 -- L["Enable Advanced Tooltips"] = ""
 -- L["Display default unit tooltip when Out of Combat"] = ""
 
+-- L["First Aura"] = ""
+-- L["Select the index of the first private aura to display."] = ""
+-- L["Last Aura"] = ""
+-- L["Select the index of the last private aura to display."] = ""
+-- L["Enable Cooldown"] = ""
+-- L["Display a cooldown animation."] = ""
+-- L["Enable Numbers"] = ""
+-- L["Display cooldown numbers."] = ""
+
 -- indicator types
 -- L["icon"] = ""
 -- L["square"] = ""
@@ -445,6 +455,7 @@ L["Adjust background color and alpha."] = "Ajustar plano de fundo e transparenci
 -- L["multibar"] = ""
 -- L["portrait"] = ""
 -- L["glowborder"] = ""
+-- L["privateauras"] = ""
 
 -- indicators
 -- L["corner-top-left"] = ""
@@ -625,6 +636,7 @@ L["Adjust background color and alpha."] = "Ajustar plano de fundo e transparenci
 -- L["raid-icon-player"] = ""
 -- L["raid-icon-target"] = ""
 -- L["range"] = ""
+-- L["rangealt"] = ""
 -- L["ready-check"] = ""
 -- L["role"] = ""
 -- L["dungeon-role"] = ""
@@ -641,7 +653,10 @@ L["Adjust background color and alpha."] = "Ajustar plano de fundo e transparenci
 -- L["direction"] = ""
 -- L["resurrection"] = ""
 -- L["self"] = ""
--- L["monk-stagger"] = ""
+-- L["boss-shields"] = ""
+-- L["my-heals-incoming"] = ""
+-- L["boss-debuffs"] = ""
+-- L["unit-index"] = ""
 
 -- L["Curse"] = ""
 -- L["Poison"] = ""
@@ -653,12 +668,6 @@ L["Adjust background color and alpha."] = "Ajustar plano de fundo e transparenci
 -- L["raid-debuffs3"] = ""
 -- L["raid-debuffs4"] = ""
 -- L["raid-debuffs5"] = ""
-
--- L["boss-shields"] = ""
--- L["my-heals-incoming"] = ""
--- L["boss-debuffs"] = ""
-
--- class specific buffs & debuffs statuses
 
 -- shaman
 -- L["EarthShield"] = ""
@@ -698,6 +707,7 @@ L["Adjust background color and alpha."] = "Ajustar plano de fundo e transparenci
 -- L["EnvelopingMist"] = ""
 -- L["RenewingMist"] = ""
 -- L["LifeCocoon"] = ""
+-- L["monk-stagger"] = ""
 
 -- mage
 -- L["FocusMagic"] = ""
@@ -889,6 +899,11 @@ L["A resurrection spell has been casted on the unit"] = "A magia reviver esta se
 
 -- combat status
 -- L["combat"] = ""
+-- L["Active Out Of Combat"] = ""
+-- L["Enable this option to invert the status so it will become activated when the player is Out Of Combat."] = ""
+
+-- pvp status
+-- L["Hide inside Instances"] = ""
 
 -- summon status
 -- L["summon"] = ""
@@ -898,6 +913,12 @@ L["A resurrection spell has been casted on the unit"] = "A magia reviver esta se
 -- L["Player accepted the summon."] = ""
 -- L["Summon Declined"] = ""
 -- L["Player declined the summon."] = ""
+
+-- unit-index status
+-- L["Enabled only for party units"] = ""
+-- L["Raid indexes will not be displayed."] = ""
+-- L["Enabled for player unit"] = ""
+-- L["Display a zero index for player unit while in party or raid."] = ""
 
 -- status descriptions
 -- L["highlights your target"] = ""
@@ -1404,6 +1425,8 @@ L["A resurrection spell has been casted on the unit"] = "A magia reviver esta se
 -- L["Detach pets groups"] = ""
 -- L["Enable this option to detach the pets group, so pets group can be moved individually."] = ""
 -- L["Special units headers visibility."] = ""
+-- L["Display Player unit"] = ""
+-- L["Enable this option to display the player unit."] = ""
 -- L["Display Target unit"] = ""
 -- L["Enable this option to display the target unit."] = ""
 -- L["Display Focus unit"] = ""

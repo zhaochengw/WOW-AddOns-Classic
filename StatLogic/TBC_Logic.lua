@@ -1,4 +1,5 @@
 local addonName, addonTable = ...
+---@class StatLogic
 local StatLogic = LibStub:GetLibrary(addonName)
 
 -- Level 60 rating base
@@ -30,19 +31,17 @@ addonTable.RatingBase = {
 }
 addonTable.SetCRMax()
 
-StatLogic.GenericStatMap = {
-	[CR_HIT] = {
-		[CR_HIT_MELEE] = true,
-		[CR_HIT_RANGED] = true,
-	},
-	[CR_CRIT] = {
-		[CR_CRIT_MELEE] = true,
-		[CR_CRIT_RANGED] = true,
-	},
-	[CR_HASTE] = {
-		[CR_HASTE_MELEE] = true,
-		[CR_HASTE_RANGED] = true,
-	},
+StatLogic.GenericStatMap[StatLogic.GenericStats.CR_HIT] = {
+	CR_HIT_MELEE,
+	CR_HIT_RANGED,
+}
+StatLogic.GenericStatMap[StatLogic.GenericStats.CR_CRIT] = {
+	CR_CRIT_MELEE,
+	CR_CRIT_RANGED,
+}
+StatLogic.GenericStatMap[StatLogic.GenericStats.CR_HASTE] = {
+	CR_HASTE_MELEE,
+	CR_HASTE_RANGED,
 }
 
 --[[---------------------------------
@@ -50,18 +49,6 @@ StatLogic.GenericStatMap = {
 -------------------------------------
 -- Description
 	Calculates the mana regen per 5 seconds while NOT casting from spirit.
--- Args
-	spi
-			number - spirit
-	[int] - (defaults: PlayerInt)
-			number - intellect
-	[level] - (defaults: PlayerLevel)
-			number - player level used for calculation
--- Returns
-	[mp5nc]
-		number - mana regen per 5 seconds when out of combat
-	[statid]
-		string - "MANA_REG_NOT_CASTING"
 -- Remarks
 	Player class is no longer a parameter
 	ManaRegen(SPI, INT, LEVEL) = (0.001+SPI*BASE_REGEN[LEVEL]*(INT^0.5))*5
@@ -146,6 +133,12 @@ local BaseManaRegenPerSpi = {
 	[70] = 0.009327,
 }
 
+---@param spi integer
+---@param int? string Defaults to player class
+---@param level? integer Defaults to player level
+---@return number mp5nc Mana regen per 5 seconds when out of combat
+---@return string statid
+---@diagnostic disable-next-line:duplicate-set-field
 function StatLogic:GetNormalManaRegenFromSpi(spi, int, level)
 	-- argCheck for invalid input
 	self:argCheck(spi, 2, "number")

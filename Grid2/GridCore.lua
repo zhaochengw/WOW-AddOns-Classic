@@ -285,8 +285,23 @@ function Grid2:ReloadTheme(force)
 	end
 end
 
+-- Compartment icon
+function Grid2:InitializeCompartment()
+	if AddonCompartmentFrame and AddonCompartmentFrame.RegisterAddon then 
+		AddonCompartmentFrame:RegisterAddon({
+			text = "Grid2",
+			icon = "Interface\\AddOns\\Grid2\\media\\iconsmall.tga",
+			func = function() Grid2:OpenGrid2Options(); end,	
+			registerForAnyClick = true,
+			notCheckable = true,
+		})
+	end 
+	self.InitializeCompartment = nil
+end
+
 -- Options
 function Grid2:InitializeOptions()
+	self:InitializeCompartment()
 	self:RegisterChatCommand("grid2", "OnChatCommand")
 	self:RegisterChatCommand("gr2", "OnChatCommand")
 	local optionsFrame = CreateFrame( "Frame", nil, UIParent )

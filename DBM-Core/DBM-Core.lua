@@ -73,32 +73,33 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20230304025043"),
+	Revision = parseCurseDate("20230415074750"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
+local PForceDisable
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.0.31"
-	DBM.ReleaseRevision = releaseDate(2023, 3, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	DBM.ForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
-	fakeBWVersion, fakeBWHash = 265, "5c1ee43"
+	DBM.DisplayVersion = "10.0.36 alpha"
+	DBM.ReleaseRevision = releaseDate(2023, 4, 10) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	PForceDisable = 2--When this is incremented, trigger force disable regardless of major patch
+	fakeBWVersion, fakeBWHash = 270, "48070b1"
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.36"
-	DBM.ReleaseRevision = releaseDate(2023, 3, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	DBM.ForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
-	fakeBWVersion, fakeBWHash = 47, "ca1da33"
+	DBM.DisplayVersion = "1.14.38 alpha"
+	DBM.ReleaseRevision = releaseDate(2023, 4, 10) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	PForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
+	fakeBWVersion, fakeBWHash = 48, "9581348"
 elseif isBCC then
 	DBM.DisplayVersion = "2.6.0 alpha"--When TBC returns (and it will one day). It'll probably be game version 2.6
-	DBM.ReleaseRevision = releaseDate(2023, 3, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	DBM.ForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
-	fakeBWVersion, fakeBWHash = 47, "ca1da33"
+	DBM.ReleaseRevision = releaseDate(2023, 4, 10) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	PForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
+	fakeBWVersion, fakeBWHash = 48, "9581348"
 elseif isWrath then
-	DBM.DisplayVersion = "3.4.37"
-	DBM.ReleaseRevision = releaseDate(2023, 3, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	DBM.ForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
-	fakeBWVersion, fakeBWHash = 47, "ca1da33"
+	DBM.DisplayVersion = "3.4.39"
+	DBM.ReleaseRevision = releaseDate(2023, 4, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	PForceDisable = 1--When this is incremented, trigger force disable regardless of major patch
+	fakeBWVersion, fakeBWHash = 48, "9581348"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -464,7 +465,6 @@ end
 --[InstanceID]={level,zoneType}
 --zoneType: 1 = outdoor, 2 = dungeon, 3 = raid
 local instanceDifficultyBylevel
--- TODO: BCC support
 if isRetail then
 	instanceDifficultyBylevel = {
 		--World
@@ -475,7 +475,7 @@ if isRetail then
 		[1220]={45, 1},[1779]={45, 1},--Legion World bosses
 		[1643]={50, 1},[1642]={50, 1},[1718]={50, 1},[1943]={50, 1},[1876]={50, 1},[2105]={50, 1},[2111]={50, 1},[2275]={50, 1},--Bfa World bosses and warfronts
 		[2222]={60, 1},[2374]={60, 1},--Shadowlands World Bosses
-		[2444]={70, 1},[2512]={70, 1},[2574]={70, 1},--Dragonflight World Bosses
+		[2444]={70, 1},[2512]={70, 1},[2574]={70, 1},[2454]={70, 1},--Dragonflight World Bosses
 		--Raids
 		[509]={30, 3},[531]={30, 3},[469]={30, 3},[409]={30, 3},--Classic Raids
 		[564]={30, 3},[534]={30, 3},[532]={30, 3},[565]={30, 3},[544]={30, 3},[548]={30, 3},[580]={30, 3},[550]={30, 3},--BC Raids
@@ -486,7 +486,7 @@ if isRetail then
 		[1712]={50, 3},[1520]={50, 3},[1530]={50, 3},[1676]={50, 3},[1648]={50, 3},--Legion Raids (Set to 50 because 45 tuning makes them difficult even at 50)
 		[1861]={50, 3},[2070]={50, 3},[2096]={50, 3},[2164]={50, 3},[2217]={50, 3},--BfA Raids
 		[2296]={60, 3},[2450]={60, 3},[2481]={60, 3},--Shadowlands Raids (yes, only 3 kekw, seconded)
-		[2522]={70, 3},--Dragonflight Raids
+		[2522]={70, 3},[2569]={70, 3},--Dragonflight Raids
 		--Dungeons
 		[48]={30, 2},[230]={30, 2},[429]={30, 2},[389]={30, 2},[34]={30, 2},--Classic Dungeons
 		[540]={30, 2},[558]={30, 2},[556]={30, 2},[555]={30, 2},[542]={30, 2},[546]={30, 2},[545]={30, 2},[547]={30, 2},[553]={30, 2},[554]={30, 2},[552]={30, 2},[557]={30, 2},[269]={30, 2},[560]={30, 2},[543]={30, 2},[585]={30, 2},--BC Dungeons
@@ -567,6 +567,7 @@ local UnitGUID, UnitHealth, UnitHealthMax, UnitBuff, UnitDebuff, UnitAura = Unit
 local UnitExists, UnitIsDead, UnitIsFriend, UnitIsUnit = UnitExists, UnitIsDead, UnitIsFriend, UnitIsUnit
 --local UnitTokenFromGUID, UnitPercentHealthFromGUID = UnitTokenFromGUID, UnitPercentHealthFromGUID
 local GetSpellInfo, GetDungeonInfo, GetSpellTexture, GetSpellCooldown = GetSpellInfo, C_LFGInfo and C_LFGInfo.GetDungeonInfo or GetDungeonInfo, GetSpellTexture, GetSpellCooldown
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
 local EJ_GetEncounterInfo, EJ_GetCreatureInfo = EJ_GetEncounterInfo, EJ_GetCreatureInfo
 local EJ_GetSectionInfo, GetSectionIconFlags
 if C_EncounterJournal then
@@ -1034,12 +1035,12 @@ do
 
 		function registerSpellId(event, spellId)
 			if type(spellId) == "string" then--Something is screwed up, like SPELL_AURA_APPLIED DOSE
-				DBM:AddMsg("DBM RegisterEvents Error: "..spellId.." is not a number!")
+				DBM:Debug("DBM RegisterEvents Warning: "..spellId.." is not a number!")
 				return
 			end
 			local spellName = DBM:GetSpellInfo(spellId)
 			if spellId and not spellName then
-				DBM:AddMsg("DBM RegisterEvents Error: "..spellId.." spell id does not exist!")
+				DBM:Debug("DBM RegisterEvents Warning: "..spellId.." spell id does not exist!")
 				return
 			end
 			if not registeredSpellIds[event] then
@@ -1058,7 +1059,7 @@ do
 			if not registeredSpellIds[event] then return end
 			local spellName = DBM:GetSpellInfo(spellId)
 			if spellId and not spellName then
-				DBM:AddMsg("DBM unregisterSpellId Error: "..spellId.." spell id does not exist!")
+				DBM:Debug("DBM unregisterSpellId Warning: "..spellId.." spell id does not exist!")
 				return
 			end
 			local regName = isClassic and spellName or spellId
@@ -1136,8 +1137,7 @@ do
 
 	-- UNIT_* events are special: they can take 'parameters' like this: "UNIT_HEALTH boss1 boss2" which only trigger the event for the given unit ids
 	function DBM:RegisterEvents(...)
-		for i = 1, select("#", ...) do
-			local event = select(i, ...)
+		for _, event in ipairs({...}) do
 			-- spell events with special care.
 			if event:sub(0, 6) == "SPELL_" and event ~= "SPELL_NAME_UPDATE" or event:sub(0, 6) == "RANGE_" or event:sub(0, 6) == "SWING_" or event == "UNIT_DIED" or event == "UNIT_DESTROYED" or event == "PARTY_KILL" then
 				registerCLEUEvent(self, event)
@@ -1741,7 +1741,8 @@ do
 					"UNIT_HEALTH mouseover target focus player",--Is Frequent on retail, and _FREQUENT deleted
 					"CHALLENGE_MODE_RESET",
 					"PLAYER_SPECIALIZATION_CHANGED",
-					"SCENARIO_COMPLETED"
+					"SCENARIO_COMPLETED",
+					"GOSSIP_SHOW"
 				)
 			elseif isWrath then -- WoTLKC
 				self:RegisterEvents(
@@ -2709,8 +2710,8 @@ function DBM:IsTrivial(customLevel)
 	return false
 end
 
-function DBM:GetGossipID()
-	if self.Options.DontAutoGossip then return false end
+function DBM:GetGossipID(force)
+	if self.Options.DontAutoGossip and not force then return false end
 	local table = C_GossipInfo.GetOptions()
 	if table[1] then
 		if table[1].gossipOptionID then
@@ -2725,8 +2726,18 @@ end
 
 function DBM:SelectGossip(gossipOptionID, confirm)
 	if gossipOptionID and not self.Options.DontAutoGossip then
-		if C_GossipInfo.SelectOptionByIndex and gossipOptionID < 10 then--Using Index
-			C_GossipInfo.SelectOptionByIndex(gossipOptionID, "", confirm)
+		if gossipOptionID < 10 then--Using Index
+			if C_GossipInfo.SelectOptionByIndex then--10.0.7
+				C_GossipInfo.SelectOptionByIndex(gossipOptionID, "", confirm)
+			else--10.0.5
+				local options = C_GossipInfo.GetOptions()
+				if options and options[1] then
+					local realGossipOptionID = options[gossipOptionID] and options[gossipOptionID].gossipOptionID
+					if realGossipOptionID then
+						C_GossipInfo.SelectOption(realGossipOptionID, "", confirm)
+					end
+				end
+			end
 		else
 			C_GossipInfo.SelectOption(gossipOptionID, "", confirm)
 		end
@@ -3204,11 +3215,11 @@ do
 		self:UpdateWarningOptions()
 		self:UpdateSpecialWarningOptions()
 		self.Options.CoreSavedRevision = self.Revision
-		--Fix fonts if they are nil or set to any of standard font values
-		if not self.Options.WarningFont or (self.Options.WarningFont == "Fonts\\2002.TTF" or self.Options.WarningFont == "Fonts\\ARKai_T.ttf" or self.Options.WarningFont == "Fonts\\blei00d.TTF" or self.Options.WarningFont == "Fonts\\FRIZQT___CYR.TTF" or self.Options.WarningFont == "Fonts\\FRIZQT__.TTF") then
+		--Fix fonts if they are nil
+		if not self.Options.WarningFont then
 			self.Options.WarningFont = "standardFont"
 		end
-		if not self.Options.SpecialWarningFont or (self.Options.SpecialWarningFont == "Fonts\\2002.TTF" or self.Options.SpecialWarningFont == "Fonts\\ARKai_T.ttf" or self.Options.SpecialWarningFont == "Fonts\\blei00d.TTF" or self.Options.SpecialWarningFont == "Fonts\\FRIZQT___CYR.TTF" or self.Options.SpecialWarningFont == "Fonts\\FRIZQT__.TTF") then
+		if not self.Options.SpecialWarningFont then
 			self.Options.SpecialWarningFont = "standardFont"
 		end
 		--If users previous voice pack was not set to none, don't force change it to VEM, honor whatever it was set to before
@@ -3278,6 +3289,10 @@ do
 	local function throttledTalentCheck(self)
 		local lastSpecID = currentSpecID
 		self:SetCurrentSpecInfo()
+		if not InCombatLockdown() then
+			--Refresh entire spec table if not in combat
+			DBMExtraGlobal:rebuildSpecTable()
+		end
 		if currentSpecID ~= lastSpecID then--Don't fire specchanged unless spec actually has changed.
 			self:SpecChanged()
 			if isRetail and IsInGroup() then
@@ -4027,7 +4042,7 @@ do
 
 	local function SendVersion(guild)
 		if guild then
-			local message = ("%s\t%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion, tostring(DBM.ForceDisable))
+			local message = ("%s\t%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion, tostring(PForceDisable))
 			sendGuildSync(2, "GV", message)
 			return
 		end
@@ -4042,9 +4057,9 @@ do
 			VPVersion = "/ VP"..VoicePack..": v"..DBM.VoiceVersions[VoicePack]
 		end
 		if VPVersion then
-			sendSync(2, "V", ("%s\t%s\t%s\t%s\t%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion, GetLocale(), tostring(not DBM.Options.DontSetIcons), tostring(DBM.ForceDisable), VPVersion))
+			sendSync(2, "V", ("%s\t%s\t%s\t%s\t%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion, GetLocale(), tostring(not DBM.Options.DontSetIcons), tostring(PForceDisable), VPVersion))
 		else
-			sendSync(2, "V", ("%s\t%s\t%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion, GetLocale(), tostring(not DBM.Options.DontSetIcons), tostring(DBM.ForceDisable)))
+			sendSync(2, "V", ("%s\t%s\t%s\t%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion, GetLocale(), tostring(not DBM.Options.DontSetIcons), tostring(PForceDisable)))
 		end
 	end
 
@@ -4054,7 +4069,7 @@ do
 				if not checkEntry(newerVersionPerson, sender) then
 					newerVersionPerson[#newerVersionPerson + 1] = sender
 					DBM:Debug("Newer version detected from "..sender.." : Rev - "..revision..", Ver - "..version..", Rev Diff - "..(revision - DBM.Revision), 3)
-					if forceDisable > DBM.ForceDisable and not checkEntry(forceDisablePerson, sender) then
+					if forceDisable > PForceDisable and not checkEntry(forceDisablePerson, sender) then
 						forceDisablePerson[#forceDisablePerson + 1] = sender
 						DBM:Debug("Newer force disable detected from "..sender.." : Rev - "..forceDisable, 3)
 					end
@@ -4082,9 +4097,28 @@ do
 					AddMsg(DBM, L.UPDATEREMINDER_HEADER:match("([^\n]*)"))
 					AddMsg(DBM, L.UPDATEREMINDER_HEADER:match("\n(.*)"):format(displayVersion, showRealDate(version)))
 					showConstantReminder = 1
-				elseif #newerVersionPerson == 3 and updateNotificationDisplayed < 3 then--The following code requires at least THREE people to send that higher revision. That should be more than adaquate
+				elseif #newerVersionPerson >= 3 and updateNotificationDisplayed < 3 then--The following code requires at least THREE people to send that higher revision. That should be more than adaquate
 					--Disable if out of date and at least 3 players sent a higher forceDisable revision
 					if not testBuild and #forceDisablePerson == 3 then
+						-- Start days check
+						local curseDate = tostring(version)
+						local daysPerMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+						local year, month, day = curseDate:sub(1, 4), curseDate:sub(5, 6), curseDate:sub(7, 8)
+						if day + 2 > daysPerMonth[month] then
+							day = day + 2 - daysPerMonth[month]
+							month = month + 1
+						else
+							day = day + 2
+						end
+						if month > 12 then
+							month = 1
+							year = year + 1
+						end
+						local currentDateTable = date("*t")
+						if currentDateTable.year < year or currentDateTable.month < month or currentDateTable.day < day then
+							return
+						end
+						-- End days check
 						updateNotificationDisplayed = 3
 						DBM:ForceDisableSpam()
 						DBM:Disable(true)
@@ -4833,6 +4867,15 @@ do
 		--TINTERFACE\\ICONS\\ability_socererking_arcanewrath.blp:20|t You have been branded by |cFFF00000|Hspell:156238|h[Arcane Wrath]|h|r!"
 		if msg and msg ~= "" and IsInGroup() and not _G["BigWigs"] then
 			SendAddonMessage("Transcriptor", msg, IsInGroup(2) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")--Send any emote to transcriptor, even if no spellid
+		end
+	end
+
+	function DBM:GOSSIP_SHOW()
+		if not IsInInstance() then return end--Don't really care about it if not in a dungeon or raid
+		local cid = self:GetUnitCreatureId("npc") or 0
+		local gossipOptionID = self:GetGossipID(true)
+		if gossipOptionID then
+			self:Debug("GOSSIP_SHOW triggered with a gossip ID of "..gossipOptionID.." on creatureID "..cid)
 		end
 	end
 
@@ -6953,6 +6996,30 @@ function bossModPrototype:SetStage(stage)
 	end
 end
 
+--If args are passed, returns true or false
+--If no args given, just returns current stage and stage total
+--stage: stage value to checkf or true/false rules
+--checkType: 0 or nil for just current stage match, 1 for less than check, 2 for greater than check, 3 not equal check
+--useTotal: uses stage total instead of current
+function bossModPrototype:GetStage(stage, checkType, useTotal)
+	local currentStage, currentTotal = self.vb.phase or 0, self.vb.stageTotality or 0
+	if stage then
+		checkType = checkType or 0--Optional pass if just an exact match check
+		if (checkType == 0) and (useTotal and currentTotal or currentStage) == stage then
+			return true
+		elseif (checkType == 1) and (useTotal and currentTotal or currentStage) < stage then
+			return true
+		elseif (checkType == 2) and (useTotal and currentTotal or currentStage) > stage then
+			return true
+		elseif (checkType == 3) and (useTotal and currentTotal or currentStage) ~= stage then
+			return true
+		end
+		return false
+	else
+		return currentStage, currentTotal
+	end
+end
+
 function bossModPrototype:AffixEvent(eventType, stage, timeAdjust, spellDebit)
 	if self.inCombat then--Safety, in event mod manages to run any phase change calls out of combat/during a wipe we'll just safely ignore it
 		fireEvent("DBM_AffixEvent", self, self.id, eventType, self.multiEncounterPullDetection and self.multiEncounterPullDetection[1] or self.encounterId, stage or 1, timeAdjust, spellDebit)--Mod, modId, type (0 end, 1, begin, 2, timerExtend), Encounter Id (if available), stage, amount of time to extend to, spellDebit, whether to subtrack the previous extend arg from next timer
@@ -9048,6 +9115,7 @@ do
 		["moveto"] = "spell",
 		["jump"] = "spell",
 		["run"] = "spell",
+		["runcount"] = "spell",
 		["cast"] = "spell",
 		["lookaway"] = "spell",
 		["reflect"] = "target",
@@ -9336,6 +9404,7 @@ do
 --		["moveto"] = "spell",
 --		["jump"] = "spell",
 --		["run"] = "spell",
+--		["runcount"] = "spell",
 --		["cast"] = "spell",
 --		["lookaway"] = "spell",
 --		["reflect"] = "target",
@@ -9499,7 +9568,7 @@ do
 				if announceType == "target" or announceType == "targetcount" or announceType == "close" or announceType == "reflect" then
 					catType = "announceother"
 				--Directly affects you
-				elseif announceType == "you" or announceType == "youcount" or announceType == "youpos" or announceType == "move" or announceType == "dodge" or announceType == "dodgecount" or announceType == "moveaway" or announceType == "moveawaycount" or announceType == "keepmove" or announceType == "stopmove" or announceType == "run" or announceType == "stack" or announceType == "moveto" or announceType == "soak" or announceType == "soakcount" or announceType == "soakpos" then
+				elseif announceType == "you" or announceType == "youcount" or announceType == "youpos" or announceType == "move" or announceType == "dodge" or announceType == "dodgecount" or announceType == "moveaway" or announceType == "moveawaycount" or announceType == "keepmove" or announceType == "stopmove" or announceType == "run" or announceType == "runcount" or announceType == "stack" or announceType == "moveto" or announceType == "soak" or announceType == "soakcount" or announceType == "soakpos" then
 					catType = "announcepersonal"
 				--Things you have to do to fulfil your role
 				elseif announceType == "taunt" or announceType == "dispel" or announceType == "interrupt" or announceType == "interruptcount" or announceType == "switch" or announceType == "switchcount" then
@@ -9515,6 +9584,14 @@ do
 
 	function bossModPrototype:NewSpecialWarningSpell(spellId, optionDefault, ...)
 		return newSpecialWarning(self, "spell", spellId, nil, optionDefault, ...)
+	end
+
+	function bossModPrototype:NewSpecialWarningIncoming(spellId, optionDefault, ...)
+		return newSpecialWarning(self, "incoming", spellId, nil, optionDefault, ...)
+	end
+
+	function bossModPrototype:NewSpecialWarningIncomingCount(spellId, optionDefault, ...)
+		return newSpecialWarning(self, "incomingcount", spellId, nil, optionDefault, ...)
 	end
 
 	function bossModPrototype:NewSpecialWarningEnd(spellId, optionDefault, ...)
@@ -9639,6 +9716,10 @@ do
 
 	function bossModPrototype:NewSpecialWarningRun(spellId, optionDefault, optionName, optionVersion, runSound, ...)
 		return newSpecialWarning(self, "run", spellId, nil, optionDefault, optionName, optionVersion, runSound or 4, ...)
+	end
+
+	function bossModPrototype:NewSpecialWarningRunCount(spellId, optionDefault, optionName, optionVersion, runSound, ...)
+		return newSpecialWarning(self, "runcount", spellId, nil, optionDefault, optionName, optionVersion, runSound or 4, ...)
 	end
 
 	function bossModPrototype:NewSpecialWarningCast(spellId, optionDefault, ...)
@@ -10169,7 +10250,11 @@ do
 	--In past boss mods have always had to manually call Stop just to restart a timer, to avoid triggering false debug messages
 	--This function should simplify boss mod creation by allowing you to "Restart" a timer with one call in mod instead of 2
 	function timerPrototype:Restart(timer, ...)
-		self:Stop(...)
+		if self.type and (self.type == "cdcount" or self.type == "nextcount") and not self.allowdouble then
+			self:Stop()--Cleanup any count timers left over on a restart
+		else
+			self:Stop(...)
+		end
 		self:Unschedule(...)--Also unschedules not yet started timers that used timer:Schedule()
 		self:Start(timer, ...)
 	end
@@ -11274,8 +11359,32 @@ function bossModPrototype:EnableWBEngageSync()
 	end
 end
 
+--used for knowing if a specific mod is engaged
 function bossModPrototype:IsInCombat()
 	return self.inCombat
+end
+
+--Used for knowing if any person is in any kind of combat period
+function bossModPrototype:GroupInCombat()
+	local combatFound = false
+	--Any Boss engaged
+	if IsEncounterInProgress() then
+		combatFound = true
+	end
+	--Self in Combat
+	if InCombatLockdown() or UnitAffectingCombat("player") then
+		combatFound = true
+	end
+	--Any Other group member in combat
+	if not combatFound then
+		for uId in DBM:GetGroupMembers() do
+			if UnitAffectingCombat(uId) and not UnitIsDeadOrGhost(uId) then
+				combatFound = true
+				break
+			end
+		end
+	end
+	return combatFound
 end
 
 function bossModPrototype:IsAlive()

@@ -44,15 +44,20 @@ function LBIS.BrowserWindow:RefreshItems()
     end
 
     if LBISSettings.OpenTab == "ItemList" then
+        PanelTemplates_SetTab(LBIS.BrowserWindow.Window.Container, 1);
         LBIS.ItemList:UpdateItems();
     elseif LBISSettings.OpenTab == "GemList" then
+        PanelTemplates_SetTab(LBIS.BrowserWindow.Window.Container, 2);
         LBIS.GemList:UpdateItems();
     elseif LBISSettings.OpenTab == "EnchantList" then
+        PanelTemplates_SetTab(LBIS.BrowserWindow.Window.Container, 3);
         LBIS.EnchantList:UpdateItems();        
-    elseif LBISSettings.OpenTab == "CustomEditList" then
-        LBIS.CustomEditList:UpdateItems();
     elseif LBISSettings.OpenTab == "CustomItemList" then
+        PanelTemplates_SetTab(LBIS.BrowserWindow.Window.Container, 4);
         LBIS.CustomItemList:UpdateItems();
+    elseif LBISSettings.OpenTab == "CustomEditList" then
+        PanelTemplates_SetTab(LBIS.BrowserWindow.Window.Container, 5);
+        LBIS.CustomEditList:UpdateItems();
     end
 end
 

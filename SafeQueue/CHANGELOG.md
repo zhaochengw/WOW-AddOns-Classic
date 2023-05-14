@@ -1,1 +1,1 @@
-- Update retail compatibility
+- Update for latest patch

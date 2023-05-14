@@ -1,15 +1,14 @@
 local addonName, addonTable = ...
+---@class StatLogic
 local StatLogic = LibStub:GetLibrary(addonName)
 
 -- 3.1.0
 -- Haste Rating: Shamans, Paladins, Druids, and Death Knights now receive 30% more melee haste from Haste Rating.
-local ExtraHasteClasses = {
-	["PALADIN"] = true,
-	["DEATHKNIGHT"] = true,
-	["SHAMAN"] = true,
-	["DRUID"] = true,
-}
-local extraHaste = ExtraHasteClasses[addonTable.class] and 1.3 or 1
+StatLogic.ExtraHasteClasses["PALADIN"] = true
+StatLogic.ExtraHasteClasses["DEATHKNIGHT"] = true
+StatLogic.ExtraHasteClasses["SHAMAN"] = true
+StatLogic.ExtraHasteClasses["DRUID"] = true
+local extraHaste = StatLogic.ExtraHasteClasses[addonTable.class] and 1.3 or 1
 
 -- Level 60 rating base
 addonTable.RatingBase = {
@@ -41,22 +40,20 @@ addonTable.RatingBase = {
 }
 addonTable.SetCRMax()
 
-StatLogic.GenericStatMap = {
-	[CR_HIT] = {
-		[CR_HIT_MELEE] = true,
-		[CR_HIT_RANGED] = true,
-		[CR_HIT_SPELL] = true,
-	},
-	[CR_CRIT] = {
-		[CR_CRIT_MELEE] = true,
-		[CR_CRIT_RANGED] = true,
-		[CR_CRIT_SPELL] = true,
-	},
-	[CR_HASTE] = {
-		[CR_HASTE_MELEE] = true,
-		[CR_HASTE_RANGED] = true,
-		[CR_HASTE_SPELL] = true,
-	},
+StatLogic.GenericStatMap[StatLogic.GenericStats.CR_HIT] = {
+	CR_HIT_MELEE,
+	CR_HIT_RANGED,
+	CR_HIT_SPELL,
+}
+StatLogic.GenericStatMap[StatLogic.GenericStats.CR_CRIT] = {
+	CR_CRIT_MELEE,
+	CR_CRIT_RANGED,
+	CR_CRIT_SPELL,
+}
+StatLogic.GenericStatMap[StatLogic.GenericStats.CR_HASTE] = {
+	CR_HASTE_MELEE,
+	CR_HASTE_RANGED,
+	CR_HASTE_SPELL,
 }
 
 --[[---------------------------------
@@ -67,13 +64,6 @@ Notes:
 	* Calculates the mana regen per 5 seconds from spirit when out of 5 second rule for given intellect and level.
 	* Player class is no longer a parameter
 	* ManaRegen(SPI, INT, LEVEL) = (0.001+SPI*BASE_REGEN[LEVEL]*(INT^0.5))*5
-Arguments:
-	number - Spirit
-	[optional] number - Intellect. Default: player's intellect
-	[optional] number - Level used in calculations. Default: player's level
-Returns:
-	; mp5o5sr : number - Mana regen per 5 seconds when out of 5 second rule
-	; statid : string - "MANA_REG_NOT_CASTING"
 Example:
 	local mp5o5sr = StatLogic:GetNormalManaRegenFromSpi(1) -- GetNormalManaRegenPerSpi
 	local mp5o5sr = StatLogic:GetNormalManaRegenFromSpi(10, 15)
@@ -164,6 +154,12 @@ local BaseManaRegenPerSpi = {
 	[80] = 0.003345,
 }
 
+---@param spi integer
+---@param int? string Defaults to player class
+---@param level? integer Defaults to player level
+---@return number mp5nc Mana regen per 5 seconds when out of combat
+---@return string statid
+---@diagnostic disable-next-line:duplicate-set-field
 function StatLogic:GetNormalManaRegenFromSpi(spi, int, level)
 	-- argCheck for invalid input
 	self:argCheck(spi, 2, "number")

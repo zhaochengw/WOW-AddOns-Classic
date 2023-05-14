@@ -61,7 +61,6 @@ LBIS:AddItem(spec, "46096", LBIS.L["Ring"], "Alt") --Signet of Soft Lament
 
 LBIS:AddItem(spec, "40432", LBIS.L["Trinket"], "BIS") --Illustration of the Dragon Soul
 LBIS:AddItem(spec, "45535", LBIS.L["Trinket"], "BIS") --Show of Faith
-LBIS:AddItem(spec, "45308", LBIS.L["Trinket"], "Alt") --Eye of the Broodmother
 LBIS:AddItem(spec, "45929", LBIS.L["Trinket"], "Alt") --Sif's Remembrance
 LBIS:AddItem(spec, "46051", LBIS.L["Trinket"], "Alt") --Meteorite Crystal
 LBIS:AddItem(spec, "44255", LBIS.L["Trinket"], "Alt") --Darkmoon Card: Greatness
@@ -72,6 +71,7 @@ LBIS:AddItem(spec, "45612", LBIS.L["Main Hand"], "BIS") --Constellus
 LBIS:AddItem(spec, "45457", LBIS.L["Main Hand"], "Alt") --Staff of Endless Winter
 LBIS:AddItem(spec, "46035", LBIS.L["Main Hand"], "Alt") --Aesuga, Hand of the Ardent Champion
 LBIS:AddItem(spec, "45147", LBIS.L["Main Hand"], "Alt") --Guiding Star
+LBIS:AddItem(spec, "45527", LBIS.L["Main Hand"], "Alt") --Soulscribe
 LBIS:AddItem(spec, "40395", LBIS.L["Main Hand"], "Alt") --Torch of Holy Fire
 
 LBIS:AddItem(spec, "45617", LBIS.L["Off Hand"], "BIS") --Cosmos

@@ -424,6 +424,7 @@ L["indicator"] = "indicateur"
 -- L["Create new indicator"] = ""
 -- L["Delete Indicator"] = ""
 -- L["Rename Indicator"] = ""
+-- L["Highlight Indicator"] = ""
 -- L["Indicator Type"] = ""
 -- L["Icon"] = ""
 -- L["Max Icons"] = ""
@@ -436,6 +437,15 @@ L["Show Tooltip"] = "Affichage de la bulle d'aide"
 -- L["Enable Advanced Tooltips"] = ""
 -- L["Display default unit tooltip when Out of Combat"] = ""
 
+-- L["First Aura"] = ""
+-- L["Select the index of the first private aura to display."] = ""
+-- L["Last Aura"] = ""
+-- L["Select the index of the last private aura to display."] = ""
+-- L["Enable Cooldown"] = ""
+-- L["Display a cooldown animation."] = ""
+-- L["Enable Numbers"] = ""
+-- L["Display cooldown numbers."] = ""
+
 -- indicator types
 L["icon"] = "icône"
 L["square"] = "carré"
@@ -445,6 +455,7 @@ L["bar"] = "barre"
 -- L["multibar"] = ""
 -- L["portrait"] = ""
 -- L["glowborder"] = ""
+-- L["privateauras"] = ""
 
 -- indicators
 L["corner-top-left"] = "coin-haut-gauche"
@@ -625,6 +636,7 @@ L["offline"] = "déco"
 L["raid-icon-player"] = "joueur-icône-raid"
 L["raid-icon-target"] = "cible-icône-raid"
 L["range"] = "distance"
+-- L["rangealt"] = ""
 L["ready-check"] = "appel"
 L["role"] = "rôle"
 L["dungeon-role"] = "rôle-donjon"
@@ -641,7 +653,10 @@ L["pvp"] = "jcj"
 L["direction"] = "direction"
 L["resurrection"] = "résurrection"
 -- L["self"] = ""
--- L["monk-stagger"] = ""
+-- L["boss-shields"] = ""
+-- L["my-heals-incoming"] = ""
+-- L["boss-debuffs"] = ""
+-- L["unit-index"] = ""
 
 L["Curse"] = "Malédiction"
 L["Poison"] = "Poison"
@@ -649,16 +664,10 @@ L["Disease"] = "Maladie"
 L["Magic"] = "Magie"
 
 L["raid-debuffs"] = "débuffs-raid"
--- L["raid-debuffs2"] = ""
--- L["raid-debuffs3"] = ""
--- L["raid-debuffs4"] = ""
--- L["raid-debuffs5"] = ""
-
--- L["boss-shields"] = ""
--- L["my-heals-incoming"] = ""
--- L["boss-debuffs"] = ""
-
--- class specific buffs & debuffs statuses
+L["raid-debuffs2"] = "débuffs-raid2"
+L["raid-debuffs3"] = "débuffs-raid3"
+L["raid-debuffs4"] = "débuffs-raid4"
+L["raid-debuffs5"] = "débuffs-raid5"
 
 -- shaman
 L["EarthShield"] = "BouclierDeTerre"
@@ -698,6 +707,7 @@ L["SpiritOfRedemption"] = "EspritDeRédemption"
 -- L["EnvelopingMist"] = ""
 -- L["RenewingMist"] = ""
 -- L["LifeCocoon"] = ""
+-- L["monk-stagger"] = ""
 
 -- mage
 L["FocusMagic"] = "FocalisationDeLaMagie"
@@ -889,6 +899,11 @@ L["A resurrection spell has been casted on the unit"] = "Un sort de résurrectio
 
 -- combat status
 -- L["combat"] = ""
+-- L["Active Out Of Combat"] = ""
+-- L["Enable this option to invert the status so it will become activated when the player is Out Of Combat."] = ""
+
+-- pvp status
+-- L["Hide inside Instances"] = ""
 
 -- summon status
 -- L["summon"] = ""
@@ -898,6 +913,12 @@ L["A resurrection spell has been casted on the unit"] = "Un sort de résurrectio
 -- L["Player accepted the summon."] = ""
 -- L["Summon Declined"] = ""
 -- L["Player declined the summon."] = ""
+
+-- unit-index status
+-- L["Enabled only for party units"] = ""
+-- L["Raid indexes will not be displayed."] = ""
+-- L["Enabled for player unit"] = ""
+-- L["Display a zero index for player unit while in party or raid."] = ""
 
 -- status descriptions
 -- L["highlights your target"] = ""
@@ -1404,6 +1425,8 @@ L["\"%s\" has sent you a profile configuration. Do you want to activate received
 -- L["Detach pets groups"] = ""
 -- L["Enable this option to detach the pets group, so pets group can be moved individually."] = ""
 -- L["Special units headers visibility."] = ""
+-- L["Display Player unit"] = ""
+-- L["Enable this option to display the player unit."] = ""
 -- L["Display Target unit"] = ""
 -- L["Enable this option to display the target unit."] = ""
 -- L["Display Focus unit"] = ""

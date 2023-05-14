@@ -1,4 +1,13 @@
 ## LibFrameFade
+### v7
+- Add proper upgrade logic for disabling the library in Classic clients if migrating from v4- to v7+ at runtime.
+
+### v6
+- Repackage for proper Classic interface version support.
+
+### v5
+- Disabled functionality in Classic clients as UIFrameFade has been patched there for a long time now.
+
 ### v4
 - Reimplement UIFrameIsFading to return correct results for addons that need it.
   - This causes the UIFrameIsFading to always taint if called, however the function is unused by Blizzard in all current versions of the game.

@@ -82,6 +82,7 @@ LBIS:AddItem(spec, "44661", LBIS.L["Neck"], "Alt") --Wyrmrest Necklace of Power
 
 LBIS:AddItem(spec, "45495", LBIS.L["Ring"], "BIS") --Conductive Seal
 LBIS:AddItem(spec, "46046", LBIS.L["Ring"], "BIS") --Nebula Band
+LBIS:AddItem(spec, "46096", LBIS.L["Ring"], "Alt") --Signet of Soft Lament
 LBIS:AddItem(spec, "45297", LBIS.L["Ring"], "Alt") --Shimmering Seal
 LBIS:AddItem(spec, "45168", LBIS.L["Ring"], "Alt") --Pyrelight Circle
 LBIS:AddItem(spec, "45451", LBIS.L["Ring"], "Alt") --Frozen Loop

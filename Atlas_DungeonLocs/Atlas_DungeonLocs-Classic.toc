@@ -22,9 +22,9 @@
 # ## Notes: Dungeon Locations
 # ## Notes-zhTW: Atlas 地下城位置地圖插件，顯示各個地下城 (副本) 所在位置
 #@end-debug@
-## Version: v1.52.01
+## Version: v1.52.02
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2022-11-19T8:22:41Z
+## X-Date: 2023-03-20T15:02:11Z
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon at gmail.com
 ## X-Website: http://www.atlasmod.com

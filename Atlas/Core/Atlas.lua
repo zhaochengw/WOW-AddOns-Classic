@@ -1,10 +1,10 @@
--- $Id: Atlas.lua 425 2022-11-20 02:14:21Z arithmandar $
+-- $Id: Atlas.lua 434 2023-03-28 14:39:00Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
 	Copyright 2005 ~ 2010 - Dan Gilbert <dan.b.gilbert at gmail dot com>
 	Copyright 2010 - Lothaer <lothayer at gmail dot com>, Atlas Team
-	Copyright 2011 ~ 2022 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
+	Copyright 2011 ~ 2023 - Arith Hsu, Atlas Team <atlas.addon at gmail dot com>
 
 	This file is part of Atlas.
 
@@ -1995,10 +1995,18 @@ local function initialization()
 	end
 	
 	check_Modules()
-	if (profile.options.worldMapButton) then
-		addon.WorldMap.Button:Show()
+	if (WoWClassicEra) then
+		if (profile.options.worldMapButton) then
+			AtlasToggleFromWorldMap:Show()
+		else
+			AtlasToggleFromWorldMap:Hide()
+		end
 	else
-		addon.WorldMap.Button:Hide()
+		if (profile.options.worldMapButton) then
+			addon.WorldMap.Button:Show()
+		else
+			addon.WorldMap.Button:Hide()
+		end
 	end
 end
 
@@ -2040,9 +2048,17 @@ function addon:Refresh()
 	AtlasFrame:SetClampedToScreen(profile.options.frames.clamp)
 	AtlasFrameLarge:SetClampedToScreen(profile.options.frames.clamp)
 	AtlasFrameSmall:SetClampedToScreen(profile.options.frames.clamp)
-	if (profile.options.worldMapButton) then
-		addon.WorldMap.Button:Show()
+	if (WoWClassicEra) then
+		if (profile.options.worldMapButton) then
+			AtlasToggleFromWorldMap:Show()
+		else
+			AtlasToggleFromWorldMap:Hide()
+		end
 	else
-		addon.WorldMap.Button:Hide()
+		if (profile.options.worldMapButton) then
+			addon.WorldMap.Button:Show()
+		else
+			addon.WorldMap.Button:Hide()
+		end
 	end
 end

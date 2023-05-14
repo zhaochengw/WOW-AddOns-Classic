@@ -834,7 +834,7 @@ else
 end
 
 --- localization helpers
-ML.debugLocalization = true
+ML.debugLocalization = false
 
 -- returns the L array with meta suitable for
 -- https://authors.curseforge.com/knowledge-base/world-of-warcraft/531-localization-substitutions

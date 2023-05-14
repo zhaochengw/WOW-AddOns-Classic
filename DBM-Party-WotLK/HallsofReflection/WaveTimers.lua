@@ -1,7 +1,7 @@
 local mod = DBM:NewMod("HoRWaveTimer", "DBM-Party-WotLK", 16)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20221013055519")
+mod:SetRevision("20230414085833")
 mod:SetCreatureID(30658)
 
 mod:RegisterEvents(

@@ -1,0 +1,37 @@
+## Interface: 90207
+
+## Version: v9.5.1
+## Author: Gazmik Fizzwidget/datagutten
+## X-Website: http://fizzwidget.com/feedomatic
+## X-Appcast: http://fizzwidget.com/notes/feedomatic/feed
+## Title: Fizzwidget Feed-O-Matic
+## Notes: Helps a Hunter keep his pets well fed (and the food in his inventory under control).
+## X-Category: Hunter
+## SavedVariables: GFW_FeedOMatic_DB, FOM_Cooking, FOM_FoodLog
+## LoadManagers: AddonLoader
+## OptionalDeps: BM-utils
+## X-LoadOn-Class: Hunter
+## X-WoWI-ID: 25427
+## X-Wago-ID: qv63XBKb
+
+#@no-lib-strip@
+libs\LibStub\LibStub.lua
+Libs.xml
+#@end-no-lib-strip@
+
+addon\common.lua
+addon\utils.lua
+addon\food_log.lua
+addon\events.lua
+GFWUtils.lua
+addon\table_utils.lua
+
+LocaleSupport.lua
+localization.lua
+FOM_Foods.lua
+FOM_Foods_classic.lua
+FOM_Foods_wrath.lua
+FeedOMatic_Emotes.lua
+FOM_CookingScan.lua
+FeedOMatic.lua
+FeedOMatic.xml

@@ -57,6 +57,7 @@ NWB.latestRemoteVersion = version;
 NWB.prefixColor = "|cFFFF6900";
 local terokOffset = 2.7507;
 local GetGossipOptions = GetGossipOptions or C_GossipInfo.GetOptions;
+NWB.wgExpire = 259200;
 
 --Some notes on the change Blizzard just implemented to make layers share buffs.
 --The buff drop only works on both layers if each layer NPC is reset.
@@ -113,6 +114,7 @@ function NWB:OnInitialize()
 	self:logonCheckGuildMasterSetting();
 	self:createNaxxMarkers();
 	self:timerCleanup();
+	self:resetOldLockouts();
 	if (NWB.isTBC or NWB.isWrath) then
 		self:createTerokkarMarkers();
 		self:populateDailyData();
@@ -222,7 +224,7 @@ function NWB:printBuffTimers(isLogon)
 		NWB:print("|HNWBCustomLink:timers|h" .. L["layerMsg2"] .. "|h");
 	end
 	local timestamp, timeLeft, type = NWB:getDmfData();
-	if ((isLogon and NWB.db.global.logonDmfSpawn and (timeLeft > 0 and timeLeft < 21600)) or
+	if ((isLogon and NWB.db.global.logonDmfSpawn and (timeLeft and timeLeft > 0 and timeLeft < 21600)) or
 		(not isLogon and NWB.db.global.showDmfWb)) then	
 		local zone = NWB:getDmfZoneString();
 		local timeString = NWB:getDmfTimeString();
@@ -1194,18 +1196,35 @@ function NWB:monsterYell(...)
 		
 		skipStringCheck = true;
 	end
-	if ((name == L["Thrall"] or (name == L["Herald of Thrall"] and (not NWB.isLayered or NWB.faction == "Alliance")))
+	--if ((name == L["Thrall"] or (name == L["Herald of Thrall"] and (not NWB.isLayered or NWB.faction == "Alliance")))
+	if ((name == L["Thrall"] or name == L["Herald of Thrall"])
 			and (string.match(msg, L["Rend Blackhand, has fallen"]) or skipStringCheck)) then
 		--6 seconds between first rend yell and buff applied.
 		NWB.data.rendYell = GetServerTime();
 		NWB:doFirstYell("rend", layerNum);
 		--Send first yell msg to guild so people in org see it, needed because 1 person online only will send msg.
+		local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
 		NWB:sendYell("GUILD", "rend", nil, layerNum);
-		if  (name == L["Herald of Thrall"] and not NWB.isLayered) then
+		if  (name == L["Herald of Thrall"]) then
 			--If it was herald we may we in the barrens but not in crossraods to receive buff, set buff timer.
 			if (not NWB.isLayered) then
 				C_Timer.After(5, function()
 					NWB:setRendBuff("self", UnitName("player"));
+				end)
+			--[[elseif (NWB.isLayered and zone == 1413 and NWB.faction == "Alliance") then
+				--Testing tracking rend for alliance here by attaching it to the new layermap.
+				if (NWB.lastKnownLayerMapID and NWB.lastKnownLayerMapID > 0) then
+					C_Timer.After(5, function()
+						NWB:setRendBuff("self", UnitName("player"), NWB.lastKnownLayerMapID, nil, true);
+					end)
+				end]]
+			end
+		end
+		if (NWB.isLayered and (zone == 1454 or zone == 1413) and NWB.faction == "Alliance") then
+			--Testing tracking rend for alliance here by attaching it to the layermap.
+			if (NWB.lastKnownLayerMapID and NWB.lastKnownLayerMapID > 0) then
+				C_Timer.After(5, function()
+					NWB:setRendBuff("self", UnitName("player"), NWB.lastKnownLayerMapID, nil, true);
 				end)
 			end
 		end
@@ -1585,7 +1604,7 @@ function NWB:combatLogEventUnfiltered(...)
 			end
 			--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
 			zoneID = NWB:mapLayerToParent(zoneID);
-			if (not zoneID) then
+			if (NWB.isLayered and not zoneID) then
 				return;
 			end
 			if (NWB.isLayered and zoneID and NWB.data.layers[zoneID]) then
@@ -1608,7 +1627,7 @@ function NWB:combatLogEventUnfiltered(...)
 			end
 			--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
 			zoneID = NWB:mapLayerToParent(zoneID);
-			if (not zoneID) then
+			if (NWB.isLayered and not zoneID) then
 				return;
 			end
 			if (NWB.isLayered and zoneID and NWB.data.layers[zoneID]) then
@@ -1631,7 +1650,7 @@ function NWB:combatLogEventUnfiltered(...)
 			end
 			--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
 			zoneID = NWB:mapLayerToParent(zoneID);
-			if (not zoneID) then
+			if (NWB.isLayered and not zoneID) then
 				return;
 			end
 			if (NWB.isLayered and zoneID and NWB.data.layers[zoneID]) then
@@ -1655,7 +1674,7 @@ function NWB:combatLogEventUnfiltered(...)
 			end
 			--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
 			zoneID = NWB:mapLayerToParent(zoneID);
-			if (not zoneID) then
+			if (NWB.isLayered and not zoneID) then
 				return;
 			end
 			if (NWB.isLayered and zoneID and NWB.data.layers[zoneID]) then
@@ -1695,11 +1714,15 @@ function NWB:combatLogEventUnfiltered(...)
 			end
 		end]]
 		if (destName == UnitName("player") and spellName == L["Warchief's Blessing"]) then
+			--Getting duration fails if the target is mc'd.
+			--Was this failing for the entirety of classic and I didn't know?
+			--The backup set timer from the yell msgs was likely carrying the alliance rend timer.
 			local expirationTime = NWB:getBuffDuration(L["Warchief's Blessing"], 1);
 			local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
 			--If layered then you must be in org to set the right layer id, the barrens is disabled.
 			--if (expirationTime >= 3599.5 and (zone == 1454 or not NWB.isLayered) and unitType == "Creature") then
-			if (expirationTime >= (3599.5 - buffLag) and (zone == 1454 or not NWB.isLayered) and unitType == "Creature"
+			--print(expirationTime, zone, unitType, NWB.data.rendYell, NWB.data.rendYell2, sourceGUID, destGUID, GetServerTime(), NWB.lastKnownLayerMapID)
+			if (expirationTime >= (3599.5 - buffLag) and (zone == 1454 or (zone == 1413 and NWB.faction == "Alliance") or not NWB.isLayered) and unitType == "Creature"
 					and ((GetServerTime() - NWB.data.rendYell2) < yellTwoOffset or (GetServerTime() - NWB.data.rendYell) < yellOneOffset)) then
 				NWB:trackNewBuff(spellName, "rend", npcID);
 				NWB:playSound("soundsRendDrop", "rend");
@@ -2222,6 +2245,20 @@ f:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
+function NWB:getSingleLayer()
+	if (NWB.isLayered) then
+		local count = 0;
+		local layer;
+		for k, v in pairs(NWB.data.layers) do
+			count = count + 1;
+			layer = k;
+		end
+		if (count == 1) then
+			return layer;
+		end
+	end
+end
+
 local rendLastSet, onyLastSet, nefLastSet, zanLastSet = 0, 0, 0, 0;
 function NWB:setRendBuff(source, sender, zoneID, GUID, isAllianceAndLayered)
 	--Check if this addon has already set a timer a few seconds before another addon's comm.
@@ -2233,7 +2270,7 @@ function NWB:setRendBuff(source, sender, zoneID, GUID, isAllianceAndLayered)
 		NWB:debug("not in a valid zone to set rend timer");
 		return;
 	end
-	if (NWB.faction == "Alliance" and zone ~= 1453 and zone ~= 1413) then
+	if (NWB.faction == "Alliance" and zone ~= 1453 and zone ~= 1413 and zone ~= 1454) then
 		NWB:debug("not in a valid zone to set rend timer");
 		return;
 	end
@@ -2241,9 +2278,17 @@ function NWB:setRendBuff(source, sender, zoneID, GUID, isAllianceAndLayered)
 		NWB:debug("failed rend timer validation", source);
 		return;
 	end
+	local useSingleLayer = NWB:getSingleLayer();
+	if (NWB.isLayered and NWB.faction == "Alliance" and useSingleLayer) then
+		--Now that rend doesn't have a zoneID attached to what layer dropped it there's no need to even look for one.
+		--Just set alliance timer to the single layer if there is only one existing.
+		--Not doing ths for horde becaus it's still possible you can logon and not have the 2nd layer data that spawned while offline.
+		--(But even then it still probably doesn't matter really, people on diff layers will create timers at the same time for multiple layers anyway).
+		zoneID = useSingleLayer;
+	end
 	--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
 	zoneID = NWB:mapLayerToParent(zoneID);
-	if (not zoneID) then
+	if (NWB.isLayered and not zoneID) then
 		return;
 	end
 	if (NWB.isLayered and tonumber(zoneID)) then
@@ -2253,11 +2298,15 @@ function NWB:setRendBuff(source, sender, zoneID, GUID, isAllianceAndLayered)
 		end
 		if (count <= NWB.limitLayerCount) then
 			if (isAllianceAndLayered) then
-				if (not NWB.data.layers[NWB.lastKnownLayerMapID]) then
+				if (not NWB.data.layers[NWB.lastKnownLayerMapID] and not NWB.data.layers[zoneID]) then
 					NWB:print("Got rend buff but no layer ID was found.");
 					return;
-				elseif (NWB.lastKnownLayerMapID > 0) then
-					zoneID = NWB.lastKnownLayerMapID;
+				elseif (NWB.lastKnownLayerMapID > 0 or zoneID > 0) then
+					if (useSingleLayer) then
+						zoneID = useSingleLayer;
+					else
+						zoneID = NWB.lastKnownLayerMapID;
+					end
 					if (NWB.data.layers[zoneID]) then
 						NWB.data.layers[zoneID].rendTimer = GetServerTime();
 						NWB.data.layers[zoneID].rendTimerWho = sender;
@@ -2270,8 +2319,10 @@ function NWB:setRendBuff(source, sender, zoneID, GUID, isAllianceAndLayered)
 					return;
 				end
 			else
-				if (not NWB.data.layers[zoneID]) then
-					NWB:createNewLayer(zoneID, GUID);
+				if (GUID) then
+					if (not NWB.data.layers[zoneID]) then
+						NWB:createNewLayer(zoneID, GUID);
+					end
 				end
 				if (NWB.data.layers[zoneID]) then
 					NWB.data.layers[zoneID].rendTimer = GetServerTime();
@@ -2378,7 +2429,7 @@ function NWB:setOnyBuff(source, sender, zoneID, GUID, isSapped)
 	end
 	--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
 	zoneID = NWB:mapLayerToParent(zoneID);
-	if (not zoneID) then
+	if (NWB.isLayered and not zoneID) then
 		return;
 	end
 	if (NWB.isLayered and tonumber(zoneID)) then
@@ -2465,7 +2516,7 @@ function NWB:setNefBuff(source, sender, zoneID, GUID)
 	end
 	--If we're starting layer data from somewhere other than org/sw we need to get the right base zoneID.
 	zoneID = NWB:mapLayerToParent(zoneID);
-	if (not zoneID) then
+	if (NWB.isLayered and not zoneID) then
 		return;
 	end
 	if (NWB.isLayered and tonumber(zoneID)) then
@@ -3153,15 +3204,15 @@ end
 --Recalc time left on buffs we track.
 --We recalc it from current total played time vs total played we recorded at time of buff drop.
 function NWB:recalcBuffTimers()
+	if (not gotPlayedData) then
+		NWB:debug("no played data found");
+		return
+	end
 	if (NWB.data.myChars[UnitName("player")].buffs) then
 		for k, v in pairs(NWB.data.myChars[UnitName("player")].buffs) do
 			if (not v.timeLeft or not v.setTime) then
 				NWB.data.myChars[UnitName("player")].buffs[k] = nil;
 			else
-				if (not gotPlayedData) then
-					NWB:debug("no played data found");
-					return
-				end
 				if (not v.playedCacheSetAt) then
 					v.playedCacheSetAt = 0;
 				end
@@ -3577,7 +3628,7 @@ end
 --Reset and enable all warning msgs for specified timer.
 function NWB:resetWarningTimers(type, layer)
 	layer = NWB:mapLayerToParent(layer);
-	if (not NWB.data.layers[layer]) then
+	if (NWB.isLayered and not NWB.data.layers[layer]) then
 		return;
 	end
 	if (NWB.isLayered and layer) then
@@ -3648,6 +3699,9 @@ function NWB:getWintergraspData(layer) --local wintergrasp, wintergraspTime, win
 	end
 	if (NWB.data.wintergraspFaction) then
 		wintergraspFaction = NWB.data.wintergraspFaction;
+	end
+	if (wintergrasp < GetServerTime() - NWB.wgExpire) then
+		return 0, 0, 0;
 	end
 	local isCached;
 	--It's not always a 3 hour cycle, sometime it skips, sometimes it's been even 12 hours.
@@ -4545,7 +4599,7 @@ local englishBuffs = {
 }
 
 --Get seconds left on a buff by name.
-function NWB:getBuffDuration(buff, englishID)
+function NWB:getBuffDuration(buff, englishID) --/dump NWB:getBuffDuration("Fel Armor", 1)
 	for i = 1, 32 do
 		local name, _, _, _, _, expirationTime = UnitBuff("player", i);
 		if ((name and name == buff) or (englishID and name == englishBuffs[englishID])) then
@@ -6204,6 +6258,12 @@ function NWB:songflowerPicked(type, otherPlayer, flags)
 		if (not layer or layer == 0) then
 			layer = NWB.lastKnownLayerMapIDBackup;
 		end
+		local useSingleLayer = NWB:getSingleLayer();
+		if (not layer and NWB.isLayered) then
+			--If one layer exists only then just attach it even if we don't know which we're on.
+			layer = useSingleLayer;
+			layerNum = 1;
+		end
 		--NWB:debug(NWB.isLayered, NWB.layeredSongflowers, layer, layerNum, NWB:GetLayerCount(), NWB.lastKnownLayerMapID, NWB.lastKnownLayer);
 		if (NWB.isLayered and NWB.layeredSongflowers and layer and layer > 0) then
 			if (not layer or layer < 1) then
@@ -6272,7 +6332,7 @@ end
 local flowerMsg = 0;
 function NWB:doFlowerMsg(type, layer)
 	local layerMsg = "";
-	if (NWB.isLayered and tonumber(layer) and NWB.doLayerMsg) then
+	if (NWB.isLayered and layer and tonumber(layer) and NWB.doLayerMsg) then
 		layerMsg = " (Layer " .. layer .. ")";
 	end
 	if (type and (GetServerTime() - flowerMsg) > 10) then
@@ -7146,12 +7206,13 @@ function NWB:updateWorldbuffMarkers(type, layer)
 	  		_G[type .. layer .. "NWBWorldMap"].tooltip.fs:SetText("|CffDEDE42" .. _G[type .. layer .. "NWBWorldMap"].name);
 	  	end
 		local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
-		if (_G["nef" .. layer .. "NWBWorldMap"] and _G["nef" .. layer .. "NWBWorldMap"].noLayerFrame) then
+		--Disabled some of the clutter on world map now, don't need the details instructions anymore I think.
+		--[[if (_G["nef" .. layer .. "NWBWorldMap"] and _G["nef" .. layer .. "NWBWorldMap"].noLayerFrame) then
 			if (NWB.faction == "Horde" and zone == 1454) then
 				if (NWB.currentLayer > 0) then
-					local layerMsg = L["cityMapLayerMsgHorde"];
-					local layerString = "|cff00ff00[Layer " .. NWB.currentLayer .. "]|cff9CD6DE";
-					_G["nef" .. layer .. "NWBWorldMap"].fs2:SetText("|cff9CD6DE" .. string.format(layerMsg, layerString));
+					--local layerMsg = L["cityMapLayerMsgHorde"];
+					--local layerString = "|cff00ff00[Layer " .. NWB.currentLayer .. "]|cff9CD6DE";
+					--_G["nef" .. layer .. "NWBWorldMap"].fs2:SetText("|cff9CD6DE" .. string.format(layerMsg, layerString));
 					_G["nef" .. layer .. "NWBWorldMap"].noLayerFrame:Hide();
 				else
 					_G["nef" .. layer .. "NWBWorldMap"].fs2:SetText("");
@@ -7159,18 +7220,27 @@ function NWB:updateWorldbuffMarkers(type, layer)
 				end
 			elseif (NWB.faction == "Alliance" and zone == 1453) then
 				if (NWB.currentLayer > 0) then
-					local layerMsg = L["cityMapLayerMsgAlliance"];
-					local layerString = "|cff00ff00[Layer " .. NWB.currentLayer .. "]|cff9CD6DE";
-					_G["nef" .. layer .. "NWBWorldMap"].fs2:SetText("|cff9CD6DE" .. string.format(layerMsg, layerString));
+					--local layerMsg = L["cityMapLayerMsgAlliance"];
+					--local layerString = "|cff00ff00[Layer " .. NWB.currentLayer .. "]|cff9CD6DE";
+					--_G["nef" .. layer .. "NWBWorldMap"].fs2:SetText("|cff9CD6DE" .. string.format(layerMsg, layerString));
 					_G["nef" .. layer .. "NWBWorldMap"].noLayerFrame:Hide();
 				else
-					_G["nef" .. layer .. "NWBWorldMap"].fs2:SetText("");
-					_G["nef" .. layer .. "NWBWorldMap"].noLayerFrame:Show();
+					local mapID;
+					if (WorldMapFrame) then
+						mapID = WorldMapFrame:GetMapID();
+					end
+					if (mapID == 1413 or mapID == 1454) then
+						--Hide in the barrens or org for alliance.
+						_G["nef" .. layer .. "NWBWorldMap"].noLayerFrame:Hide();
+					else
+						_G["nef" .. layer .. "NWBWorldMap"].fs2:SetText("");
+						_G["nef" .. layer .. "NWBWorldMap"].noLayerFrame:Show();
+					end
 				end
 			else
 				_G["nef" .. layer .. "NWBWorldMap"].noLayerFrame:Show();
 			end
-		end
+		end]]
 		if (time > 0 and not npcKilled) then
 	    	return timeStringShort;
 	  	end
@@ -7252,6 +7322,11 @@ function NWB:createWorldbuffMarkersTable()
 				--["zanStv"] = {x = 11.0, y = 20.5, mapID = 1434, icon = "Interface\\Icons\\ability_creature_poison_05", name = L["Zandalar"]},
 			};
 		end
+	end
+	if (WorldMapFrame) then
+		hooksecurefunc(WorldMapFrame, "OnMapChanged", function()
+			NWB:refreshWorldbuffMarkers();
+		end)
 	end
 end
 
@@ -7345,7 +7420,7 @@ function NWB:createWorldbuffMarker(type, data, layer, count)
 				obj.noLayerFrame.fs = obj.noLayerFrame:CreateFontString(type .. "NWBWorldMapNoLayerFS", "ARTWORK");
 				obj.noLayerFrame.fs:SetPoint("CENTER", 0, 0);
 				obj.noLayerFrame.fs:SetFont(NWB.regionFont, 14);
-				obj.fs2 = obj:CreateFontString(type .. "NWBWorldMapBuffCmdFS", "ARTWORK");
+				obj.fs2 = obj:CreateFontString(type .. "NWBWorldMapLayerInfoFS", "ARTWORK");
 				obj.fs2:SetFont(NWB.regionFont, 14);
 				if (NWB.faction == "Horde") then
 					obj.fs:SetPoint("RIGHT", -180, 20);
@@ -7353,7 +7428,7 @@ function NWB:createWorldbuffMarker(type, data, layer, count)
 					obj.fs2:SetPoint("CENTER", -260, 80);
 					obj.noLayerFrame.fs:SetText("|cff9CD6DE" .. L["noLayerYetHorde"]);
 				else
-					obj.fs:SetPoint("RIGHT", -70, -35);
+					obj.fs:SetPoint("RIGHT", 0, -35);
 					obj.noLayerFrame:SetPoint("CENTER", obj, "CENTER",  -195, 20);
 					obj.fs2:SetPoint("CENTER", -195, 20);
 					obj.noLayerFrame.fs:SetText("|cff9CD6DE" .. L["noLayerYetAlliance"]);
@@ -7364,7 +7439,7 @@ function NWB:createWorldbuffMarker(type, data, layer, count)
 			end
 			if (type == "ony") then
 				--Attach layer text to ony frame.
-				obj.fsLayer = obj:CreateFontString(type .. "NWBWorldMapBuffCmdFS", "ARTWORK");
+				obj.fsLayer = obj:CreateFontString(type .. "NWBWorldMapLayerFS", "ARTWORK");
 				obj.fsLayer:SetPoint("TOP", 0, 35);
 				obj.fsLayer:SetFont(NWB.regionFont, 14);
 			end
@@ -7462,6 +7537,63 @@ function NWB:createWorldbuffMarker(type, data, layer, count)
 end
 
 function NWB:refreshWorldbuffMarkers()
+	local mapID = 0;
+	local hideFS;
+	if (NWB.isClassic) then
+		if (WorldMapFrame) then
+			mapID = WorldMapFrame:GetMapID();
+		end
+		if (NWB.faction == "Alliance") then
+			--For alliance we'll add timers to the barrens and org if they have rend option enabled.
+			--Easy way to do this is just alter the map pin table above.
+			if (mapID == 1413 and NWB.db.global.allianceEnableRend) then --The Barrens.
+				NWB.worldBuffMapMarkerTypes.rend = {x = 71.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+				NWB.worldBuffMapMarkerTypes.ony = {x = 79.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+				NWB.worldBuffMapMarkerTypes.nef = {x = 87.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+				hideFS = true;
+			elseif (mapID == 1454 and NWB.db.global.allianceEnableRend) then --Orgrimmar.
+				if (LOCALE_koKR or LOCALE_zhCN or LOCALE_zhTW) then
+					NWB.worldBuffMapMarkerTypes.rend = {x = 60.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+					NWB.worldBuffMapMarkerTypes.ony = {x = 68, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+					NWB.worldBuffMapMarkerTypes.nef = {x = 76.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+				else
+					NWB.worldBuffMapMarkerTypes.rend = {x = 59.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+					NWB.worldBuffMapMarkerTypes.ony = {x = 64.5, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+					NWB.worldBuffMapMarkerTypes.nef = {x = 70.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+				end
+				hideFS = true;
+			else
+				--Default, matches the table a few functions above.
+				if (LOCALE_koKR or LOCALE_zhCN or LOCALE_zhTW) then
+					NWB.worldBuffMapMarkerTypes.rend = {x = 71.5, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+					NWB.worldBuffMapMarkerTypes.ony = {x = 79.5, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+					NWB.worldBuffMapMarkerTypes.nef = {x = 87.5, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+				else
+					NWB.worldBuffMapMarkerTypes.rend = {x = 74.0, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+					NWB.worldBuffMapMarkerTypes.ony = {x = 79.5, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+					NWB.worldBuffMapMarkerTypes.nef = {x = 85.0, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+				end
+			end
+		else
+			if (mapID == 1413) then --The Barrens.
+				NWB.worldBuffMapMarkerTypes.rend = {x = 71.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+				NWB.worldBuffMapMarkerTypes.ony = {x = 79.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+				NWB.worldBuffMapMarkerTypes.nef = {x = 87.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+				hideFS = true;
+			else
+				--Default, matches the table a few functions above.
+				if (LOCALE_koKR or LOCALE_zhCN or LOCALE_zhTW) then
+					NWB.worldBuffMapMarkerTypes.rend = {x = 60.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+					NWB.worldBuffMapMarkerTypes.ony = {x = 68, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+					NWB.worldBuffMapMarkerTypes.nef = {x = 76.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+				else
+					NWB.worldBuffMapMarkerTypes.rend = {x = 59.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+					NWB.worldBuffMapMarkerTypes.ony = {x = 64.5, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+					NWB.worldBuffMapMarkerTypes.nef = {x = 70.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+				end
+			end
+		end
+	end
 	if (NWB.isLayered) then
 		local count = 0;
 		local offset = 0;
@@ -7487,8 +7619,14 @@ function NWB:refreshWorldbuffMarkers()
 				NWB.dragonLibPins:RemoveWorldMapIcon(k .. layer .. "NWBWorldMap", _G[k .. "NWBWorldMap"]);
 				if (NWB.db.global.showWorldMapMarkers and _G[k .. layer .. "NWBWorldMap"]) then
 					if (NWB.faction == "Horde") then
-						NWB.dragonLibPins:AddWorldMapIconMap(k .. layer .. "NWBWorldMap", _G[k .. layer .. "NWBWorldMap"], 
-								v.mapID, (v.x + 22) / 100, (v.y + 9 + offset) / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
+						if (mapID == 1413) then
+							--If barrens the org coord offset is too far right so only rend shows.
+							NWB.dragonLibPins:AddWorldMapIconMap(k .. layer .. "NWBWorldMap", _G[k .. layer .. "NWBWorldMap"], 
+								v.mapID, (v.x + 8) / 100, (v.y + 9 + offset) / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
+						else
+							NWB.dragonLibPins:AddWorldMapIconMap(k .. layer .. "NWBWorldMap", _G[k .. layer .. "NWBWorldMap"], 
+									v.mapID, (v.x + 22) / 100, (v.y + 9 + offset) / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
+						end
 					else
 						NWB.dragonLibPins:AddWorldMapIconMap(k .. layer .. "NWBWorldMap", _G[k .. layer .. "NWBWorldMap"], 
 								v.mapID, (v.x + 8) / 100, (v.y + 15 + offset) / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
@@ -7515,6 +7653,15 @@ function NWB:refreshWorldbuffMarkers()
 					_G[k .. layer .. "NWBWorldMap"].noLayerFrame:SetPoint("CENTER", _G[k .. layer .. "NWBWorldMap"], "CENTER",  -195, 20);
 					_G[k .. layer .. "NWBWorldMap"].fs2:SetPoint("CENTER", -195, 20);
 				end
+				--Hide fontstring when it's in the barrens or org for alliance.
+				if (hideFS and _G[k .. layer .. "NWBWorldMap"].fs) then
+					_G[k .. layer .. "NWBWorldMap"].fs:Hide();
+					if (_G[k .. layer .. "NWBWorldMap"].noLayerFrame) then
+						_G[k .. layer .. "NWBWorldMap"].noLayerFrame:Hide();
+					end
+				elseif (_G[k .. layer .. "NWBWorldMap"].fs) then
+					_G[k .. layer .. "NWBWorldMap"].fs:Show();
+				end
 			end
 			offset = offset - 10;
 		end
@@ -7524,8 +7671,13 @@ function NWB:refreshWorldbuffMarkers()
 				NWB.dragonLibPins:RemoveWorldMapIcon(k .. "NWBWorldMap", _G[k .. "NWBWorldMap"]);
 				if (NWB.db.global.showWorldMapMarkers and _G[k .. "NWBWorldMap"]) then
 					if (NWB.faction == "Horde") then
-						NWB.dragonLibPins:AddWorldMapIconMap(k .. "NWBWorldMap", _G[k .. "NWBWorldMap"], v.mapID,
+						if (mapID == 1413) then
+							NWB.dragonLibPins:AddWorldMapIconMap(k .. "NWBWorldMap", _G[k .. "NWBWorldMap"], v.mapID,
+									(v.x  + 8) / 100, (v.y + 9) / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
+						else
+							NWB.dragonLibPins:AddWorldMapIconMap(k .. "NWBWorldMap", _G[k .. "NWBWorldMap"], v.mapID,
 								(v.x  + 22) / 100, (v.y + 9) / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
+						end
 					else
 						NWB.dragonLibPins:AddWorldMapIconMap(k .. "NWBWorldMap", _G[k .. "NWBWorldMap"], v.mapID,
 								(v.x  + 8) / 100, (v.y + 15) / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
@@ -7538,6 +7690,12 @@ function NWB:refreshWorldbuffMarkers()
 					if (string.match(k, "zan") and not NWB.zand) then
 						--Temp debug.
 						NWB.dragonLibPins:RemoveWorldMapIcon(k .. "NWBWorldMap", _G[k .. "NWBWorldMap"]);
+					end
+					--Hide fontstring when it's in the barrens or org for alliance.
+					if (hideFS and _G[k .. "NWBWorldMap"].fs) then
+						_G[k .. "NWBWorldMap"].fs:Hide();
+					elseif (_G[k .. "NWBWorldMap"].fs) then
+						_G[k .. "NWBWorldMap"].fs:Show();
 					end
 				end
 			end
@@ -7565,6 +7723,12 @@ function NWB:refreshWorldbuffMarkers()
 				if (string.match(k, "zan") and not NWB.zand) then
 					--Temp debug.
 					NWB.dragonLibPins:RemoveWorldMapIcon(k .. "NWBWorldMap", _G[k .. "NWBWorldMap"]);
+				end
+				--Hide fontstring when it's in the barrens or org for alliance.
+				if (hideFS and _G[k .. "NWBWorldMap"].fs) then
+					_G[k .. "NWBWorldMap"].fs:Hide();
+				elseif (_G[k .. "NWBWorldMap"].fs) then
+					_G[k .. "NWBWorldMap"].fs:Show();
 				end
 			end
 		end
@@ -7665,16 +7829,7 @@ end
 --These are friday dates when construction starts, taken from the retail calendar.
 NWB.staticDmfDates = {};
 function NWB:setDmfDates()
-	if (NWB.isTBC or NWB.realmsTBC) then
-		NWB.staticDmfDates = {
-			[1] = {
-				day = 29,
-				month = 4,
-				year = 2022,
-				zone = "Outlands",
-			},
-		}
-	else
+	if (NWB.isClassic) then
 		NWB.staticDmfDates = {
 			--[[[1] = { --July 30th setup, August 1st start 2021.
 				day = 30,
@@ -7734,8 +7889,8 @@ local dmfTextures = {
 	--[235447] = "Days inbetween Elwynn",
 	[235446] = "End Elwynn",
 };
+
 --Timestamp, seconds left, type (start/end), zone.
---local dmfTimestampCache, dmfTimeLeftCache, dmfTypeCache, dmfZoneCache;
 local dmfCalenderCache = {
 	dmfTimestampCache = 0;
 	dmfTimeLeftCache = 0;
@@ -7744,9 +7899,6 @@ local dmfCalenderCache = {
 };
 
 local function getNextDmfCalender()
-	--if (not IsAddOnLoaded("Blizzard_Calendar")) then
-	--
-	--end
 	if (CalendarFrame and CalendarFrame:IsShown()) then
 		--Use cache if it's open so we don't change page while player is looking at it.
 		--Maybe there's a way to calc from current month without SetAbsMonth() updating the UI?
@@ -7754,23 +7906,16 @@ local function getNextDmfCalender()
 	end
 	local eventStart, eventEnd;
 	local nextStart, nextEnd = 0, 0;
-	--[[local now = date("*t", GetServerTime());
-	--Set's month offset calc from current month we're in.
-	C_Calendar.SetAbsMonth(now.month, now.year);
-	for month = 0, 2 do
-		for day = 1, 31 do
-			for eventIndex = 1, 3 do
-				local event = C_Calendar.GetDayEvent(month, day, eventIndex);]]
 	local now = C_DateAndTime.GetCurrentCalendarTime();
-	--Set's month offset calc from current month we're in.
+	--Record current month so we can subtract it from offsetTime.month so we always start at 0 but can +1 next month when needed too.
+	local month = now.month;
 	C_Calendar.SetAbsMonth(now.month, now.year);
 	for dayOffset = 0, 60 do
 		local offsetTime = C_DateAndTime.AdjustTimeByDays(now, dayOffset);
-		for eventIndex = 1, C_Calendar.GetNumDayEvents(offsetTime.month, offsetTime.monthDay) do
-			local event = C_Calendar.GetDayEvent(offsetTime.month, offsetTime.monthDay, eventIndex);
+		for eventIndex = 1, C_Calendar.GetNumDayEvents(offsetTime.month - month, offsetTime.monthDay) do
+			local event = C_Calendar.GetDayEvent(offsetTime.month - month, offsetTime.monthDay, eventIndex);
 			--Get next dmf start or end time, whichever is next after current time.
 			if (event and dmfTextures[event.iconTexture]) then
-			--if (event and event.title == "Darkmoon Faire") then
 				if (event.sequenceType == "START") then
 					--Fix date table structure so it works with time().
 					event.startTime.day = event.startTime.monthDay;
@@ -7824,7 +7969,9 @@ function NWB:getDmfStartEnd(month, nextYear, recalc)
 	--I may change this to realm names later instead, region may be unreliable with US client on EU region if that issue still exists.
 	if (NWB.realm == "Arugal" or NWB.realm == "Felstriker" or NWB.realm == "Remulos" or NWB.realm == "Yojamba") then
 		--OCE Sunday 12pm UTC reset time (4am monday server time).
-		dayOffset = 2; --2 days after friday (sunday).
+		--dayOffset = 2; --2 days after friday (sunday).
+		--Change this to saturday instead of of friday to try fix classic era calcs.
+		dayOffset = 1;
 		hourOffset = 18; -- 6pm.
 		validRegion = true;
 	elseif (NWB.realm == "Arcanite Reaper" or NWB.realm == "Old Blanchy" or NWB.realm == "Anathema" or NWB.realm == "Azuresong"
@@ -7832,34 +7979,40 @@ function NWB:getDmfStartEnd(month, nextYear, recalc)
 			or NWB.realm == "Thunderfury" or NWB.realm == "Atiesh" or NWB.realm == "Bigglesworth" or NWB.realm == "Blaumeux"
 			or NWB.realm == "Fairbanks" or NWB.realm == "Grobbulus" or NWB.realm == "Whitemane") then
 		--US west Sunday 11am UTC reset time (4am monday server time).
-		dayOffset = 2; --2 days after friday (sunday).
+		--dayOffset = 2; --2 days after friday (sunday).
+		dayOffset = 1;
 		hourOffset = 11; -- 11am.
 		validRegion = true;
 	elseif (region == 1) then
 		--US east + Latin Sunday 8am UTC reset time (4am monday server time).
-		dayOffset = 2; --2 days after friday (sunday).
+		--dayOffset = 2; --2 days after friday (sunday).
+		dayOffset = 1;
 		hourOffset = 8; -- 8am.
 		validRegion = true;
 	elseif (region == 2) then
 		--Korea 1am UTC monday (9am monday local) reset time.
 		--(TW seems to be region 2 for some reason also? Hopefully they have same DMF spawn).
 		--I can change it to server name based if someone from KR says this spawn time is wrong.
-		dayOffset = 3;
+		--dayOffset = 3;
+		dayOffset = 2;
 		hourOffset = 1;
 		validRegion = true;
 	elseif (region == 3) then
 		--EU Monday 4am UTC reset time.
-		dayOffset = 3; --3 days after friday (monday).
+		--dayOffset = 3; --3 days after friday (monday).
+		dayOffset = 2;
 		hourOffset = 2; -- 4am.
 		validRegion = true;
 	elseif (region == 4) then
 		--Taiwan 1am UTC monday (9am monday local) reset time.
-		dayOffset = 3;
+		--dayOffset = 3;
+		dayOffset = 2;
 		hourOffset = 1;
 		validRegion = true;
 	elseif (region == 5) then
 		--China 8pm UTC sunday (4am monday local) reset time.
-		dayOffset = 2;
+		--dayOffset = 2;
+		dayOffset = 1;
 		hourOffset = 20;
 		validRegion = true;
 	end
@@ -7879,13 +8032,28 @@ function NWB:getDmfStartEnd(month, nextYear, recalc)
 		data.year = data.year + 1;
 	end
 	local dmfStartDay;
-	for i = 1, 7 do
+	--[[for i = 1, 7 do
 		--Iterate the first 7 days in the month to find first friday.
 		local time = date("!*t", time({year = data.year, month = data.month, day = i}));
-		if (time.wday == 6) then
+		--if (time.wday == 6) then
+		--Change this saturday instead of of friday to try fix classic era calcs.
+		if (time.wday == 7) then
 			--If day of the week (wday) is 6 (friday) then set this as first friday of the month.
 			dmfStartDay = i;
 		end
+	end]]
+	--There was an issue with using the date table above for a single user, thier client couldn't get the first day of the month correct.
+	--It was correct using %w instead so we'll just go with that for now.
+	for i = 1, 7 do
+		--Iterate the first 7 days in the month to find first saturday.
+		if (date("%w", time({year = data.year, month = data.month, day = i})) == "6") then
+			--If day of the week (wday) is 6 (friday) then set this as first friday of the month.
+			dmfStartDay = i;
+		end
+	end
+	if (not dmfStartDay) then
+		--How is it possible this could fail to be found above? It was reported to have failed by a user.
+		return;
 	end
 	local timeTable = {year = data.year, month = data.month, day = dmfStartDay + dayOffset, hour = hourOffset, min = minOffset, sec = 0};
 	local dataNextStatic, lastStaticDmf = NWB:getNextStaticDate();
@@ -11045,7 +11213,9 @@ f:SetScript('OnEvent', function(self, event, ...)
 		NWB:setCurrentLayerText("mouseover");
 		NWB:mapCurrentLayer("mouseover");
 	elseif (event == "GROUP_JOINED") then
-		NWB:joinedGroupLayer();
+		if (GetNumGroupMembers() > 1) then
+			NWB:joinedGroupLayer();
+		end
 	elseif (event == "PLAYER_LOGIN") then
 		logonEnteringWorld = GetServerTime();
 		if (IsInGroup()) then
@@ -11102,6 +11272,7 @@ function NWB:joinedGroupLayer()
 	NWB.currentZoneID = 0;
 	NWB.lastCurrentZoneID = 0;
 	NWB.phaseCheck = nil;
+	NWB.lastKnownLayerID = 0;
 	--Block a new zoneid from being set for longer than the team join block is if it's the same zoneid they got earlier.
 	--IE not changed layer yet after joining group because of layer swap cooldown.
 	--This time should be a longer duration than lastJoinedGrop lockout below.
@@ -11428,8 +11599,6 @@ function NWB:mapCurrentLayer(unit)
 		--NWB:debug("recently joined group, not recording");
 		return;
 	end
-	--Only start mapping if we have come from org/stormwind and know our layer already.
-	--And only start mapping if we haven't joined a group since leaving org.
 	local foundOldID;
 	if (NWB.lastKnownLayerMapID < 1) then
 		--if ((GetServerTime() - NWB.lastJoinedGroup) > 180) then
@@ -11466,16 +11635,24 @@ function NWB:mapCurrentLayer(unit)
 		--Guards outside opposite factions city can record the wrong mapid if targeting before you enter.
 		return;
 	end
-	--Seeing if this fixes a bug with incorrect layer mapping.
-	-- TODO This should be tweaked and set to a sensible group join time after testing this dalaram layer version.
-	if (NWB.lastJoinedGroup > 0) then
-		--Never map new zones if group has been joined.
-		return;
+	if (NWB.isClassic) then
+		if ((GetServerTime() - NWB.lastJoinedGroup) < 180) then
+			NWB:recalcMinimapLayerFrame(zoneID);
+			return;
+		end
+	else
+		--Seeing if this fixes a bug with incorrect layer mapping.
+		-- TODO This should be tweaked and set to a sensible group join time after testing this dalaram layer version.
+		if (NWB.lastJoinedGroup > 0) then
+			--Never map new zones if group has been joined, but still show layer it will almost always still be accurate (just not accurate enough to map layers).
+			NWB:recalcMinimapLayerFrame(zoneID);
+			return;
+		end
 	end
 	if (NWB.phaseCheck ~= 0 and NWB.phaseCheck ~= zoneID) then
 		--NWB.phaseCheck is 0 when entering new zone and nil when joining a group.
 		--If we join a group then we must cross a zone border before we can record layer data.
-		--If we have a zoneID recorded for this zone and it suddenly changes then assume we got pushed off the later without a group join.
+		--If we have a zoneID recorded for this zone and it suddenly changes then assume we got pushed off the layer without a group join.
 		--Simulate a group join.
 		NWB:debug("Phase changed detected?");
 		NWB:joinedGroupLayer();
@@ -11531,6 +11708,8 @@ function NWB:mapCurrentLayer(unit)
 				--If zone is not mapped yet since server restart then add it.
 				if (zone == 1952) then
 					--1952 Terokkar.
+					--If it's Terokkar then only start mapping if we have come from org/stormwind and know our layer already.
+					--And only start mapping if we haven't joined a group since leaving org.
 					if (NWB.lastKnownLayerMapID_Mapping > 0) then
 						--Only map zones with timers if we have gotten our current layer from a capital city.
 						NWB:debug("mapped new timer zone to layer id", NWB.lastKnownLayerMapID_Mapping, "zoneid:", zoneID, "zone:", zone);
@@ -12135,6 +12314,12 @@ function NWB:recalcMinimapLayerFrame(zoneID, event, unit)
 							MinimapLayerFrame.fs:SetFont("Fonts\\ARIALN.ttf", 12);
 							foundBackup = true;
 							NWB_CurrentLayer = backupCount;
+							if (NWB.isClassic and (GetServerTime() - NWB.lastJoinedGroup) > 10) then
+								local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
+								if (zone ~= 1453 and zone ~= 1454) then
+									NWB.lastKnownLayerID = k;
+								end
+							end
 							local me = UnitName("player");
 							NWB.hasL[me .. "-" .. GetRealmName()] = tostring(backupCount);
 							if (NWB.currentLayerShared ~= backupCount) then

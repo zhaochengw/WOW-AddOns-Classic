@@ -20,10 +20,6 @@ Grid2Options:RegisterStatusOptions("target", "target", nil, {
 	titleIcon = Grid2.isClassic and "Interface\\Icons\\Ability_Hunter_SniperShot" or "Interface\\Icons\\Ability_hunter_mastermarksman",
 })
 
-Grid2Options:RegisterStatusOptions("pvp", "combat", nil, {
-	titleIcon = UnitFactionGroup("player") == "Horde" and  "Interface\\PVPFrame\\PVP-Currency-Horde" or "Interface\\PVPFrame\\PVP-Currency-Alliance"
-})
-
 Grid2Options:RegisterStatusOptions("self", "target", nil, {
 	titleIcon = "Interface\\Icons\\Inv_wand_12",
 })
@@ -74,8 +70,7 @@ Grid2Options:RegisterStatusOptions("vehicle", "misc", function(self, status, opt
 		get = function () return status.dbx.useClassColors end,
 		set = function (_, v)
 			status.dbx.useClassColors = v or nil
-			status:UpdateDB()
-			status:UpdateAllUnits()
+			status:Refresh()
 		end,
 	}
 end, {
@@ -83,3 +78,50 @@ end, {
 	titleIconCoords = {0.2,0.8,0.2,0.8},
 })
 
+Grid2Options:RegisterStatusOptions("pvp", "combat", function(self, status, options, optionParams)
+	self:MakeStatusColorOptions(status, options, optionParams)
+	self:MakeSpacerOptions(options, 30)
+	options.classcolors = {
+		type = "toggle",
+		name = L["Hide inside Instances"],
+		desc = L["Hide inside Instances"],
+		width = "full",
+		order = 35,
+		get = function () return not status.dbx.displayAlways end,
+		set = function (_, v)
+			status.dbx.displayAlways = not status.dbx.displayAlways or nil
+			status:Refresh()
+		end,
+	}
+end, {
+	titleIcon = UnitFactionGroup("player") == "Horde" and  "Interface\\PVPFrame\\PVP-Currency-Horde" or "Interface\\PVPFrame\\PVP-Currency-Alliance"
+})
+
+Grid2Options:RegisterStatusOptions("unit-index", "misc", function(self, status, options, optionParams)
+	options.partyUnits = {
+		type = "toggle",
+		name = L["Enabled only for party units"],
+		desc = L["Raid indexes will not be displayed."],
+		width = "full",
+		order = 10,
+		get = function () return status.dbx.partyUnits end,
+		set = function (_, v)
+			status.dbx.partyUnits = v or nil
+			status:Refresh()
+		end,
+	}
+	options.playerUnit = {
+		type = "toggle",
+		name = L["Enabled for player unit"],
+		desc = L["Display a zero index for player unit while in party or raid."],
+		width = "full",
+		order = 30,
+		get = function () return status.dbx.playerUnit end,
+		set = function (_, v)
+			status.dbx.playerUnit = v or nil
+			status:Refresh()
+		end,
+	}
+end, {
+	titleIcon = "Interface\\BUTTONS\\UI-GuildButton-PublicNote-Up"
+})

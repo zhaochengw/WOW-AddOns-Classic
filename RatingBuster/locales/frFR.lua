@@ -7,6 +7,7 @@ Translated by: Tixu@Curse, Silaor, renchap
 
 local L = LibStub("AceLocale-3.0"):NewLocale("RatingBuster", "frFR")
 if not L then return end
+local StatLogic = LibStub("StatLogic")
 L["RatingBuster Options"] = true
 ---------------------------
 -- Slash Command Options --
@@ -312,6 +313,23 @@ L["Crit Chance <- Crit Rating, Agility, Weapon Skill Rating"] = "Inclure le pour
 -- /rb sum stat haste
 L["Sum Haste"] = "Hâte"
 L["Haste <- Haste Rating"] = "Inclure le pourcentage de Hâte conféré par : le Score de hâte."
+L["Sum Ranged Hit Chance"] = true
+L["Ranged Hit Chance <- Hit Rating, Weapon Skill Rating, Ranged Hit Rating"] = true
+-- /rb sum physical rangedhitrating
+L["Sum Ranged Hit Rating"] = true
+L["Ranged Hit Rating Summary"] = true
+-- /rb sum physical rangedcrit
+L["Sum Ranged Crit Chance"] = true
+L["Ranged Crit Chance <- Crit Rating, Agility, Weapon Skill Rating, Ranged Crit Rating"] = true
+-- /rb sum physical rangedcritrating
+L["Sum Ranged Crit Rating"] = true
+L["Ranged Crit Rating Summary"] = true
+-- /rb sum physical rangedhaste
+L["Sum Ranged Haste"] = true
+L["Ranged Haste <- Haste Rating, Ranged Haste Rating"] = true
+-- /rb sum physical rangedhasterating
+L["Sum Ranged Haste Rating"] = true
+L["Ranged Haste Rating Summary"] = true
 -- /rb sum stat critspell
 L["Sum Spell Crit Chance"] = "Critiques des sorts"
 L["Spell Crit Chance <- Spell Crit Rating, Intellect"] = "Inclure le pourcentage de Coups critiques des sorts conféré par : Score de coup critique des sorts + Intelligence."
@@ -590,22 +608,24 @@ L["statList"] = {
 	{pattern = "score de critique à distance", id = CR_CRIT_RANGED},
 	{pattern = "score de coup critique à distance", id = CR_CRIT_RANGED},
 	{pattern = "score de toucher critique à distance", id = CR_CRIT_RANGED},
-	{pattern = "score de critique", id = CR_CRIT}, --ex : https://fr.tbc.wowhead.com/item=30565/opale-de-feu-dassassin
-	{pattern = "score de coup critique", id = CR_CRIT},
-	{pattern = "score de toucher critique", id = CR_CRIT},
+	{pattern = "score de critique", id = StatLogic.GenericStats.CR_CRIT}, --ex : https://fr.tbc.wowhead.com/item=30565/opale-de-feu-dassassin
+	{pattern = "score de coup critique", id = StatLogic.GenericStats.CR_CRIT},
+	{pattern = "score de toucher critique", id = StatLogic.GenericStats.CR_CRIT},
 
 	{pattern = "score de toucher des sorts", id = CR_HIT_SPELL},
 	{pattern = "score de toucher à distance", id = CR_HIT_RANGED},
-	{pattern = "score de toucher", id = CR_HIT},
+	{pattern = "score de toucher", id = StatLogic.GenericStats.CR_HIT},
 
 	{pattern = "résilience", id = CR_RESILIENCE_CRIT_TAKEN}, -- resilience is implicitly a rating
 
 	{pattern = "score de hâte des sorts", id = CR_HASTE_SPELL},
 	{pattern = "score de hâte à distance", id = CR_HASTE_RANGED},
-	{pattern = "score de hâte", id = CR_HASTE},
+	{pattern = "score de hâte", id = StatLogic.GenericStats.CR_HASTE},
 	{pattern = "score de hâte en mêlée", id = CR_HASTE_MELEE}, -- [Tambours de Bataille] "score de hâte en mêlée, à distance et avec les sorts" complete drums line
 	{pattern = "score d’expertise", id = CR_EXPERTISE},
 	{pattern = "score d'expertise", id = CR_EXPERTISE},
+
+	{pattern = string.lower(SPELL_STATALL), id = StatLogic.GenericStats.ALL_STATS},
 
 	{pattern = "pénétration d'armure", id = CR_ARMOR_PENETRATION},
 	{pattern = string.lower(ARMOR), id = ARMOR},

@@ -1,8 +1,11 @@
 local mod	= DBM:NewMod(608, "DBM-Party-WotLK", 15, 278)
 local L		= mod:GetLocalizedStrings()
 
+if not mod:IsClassic() then
+	mod.statTypes = "normal,heroic,timewalker"
+end
 
-mod:SetRevision("20220724021612")
+mod:SetRevision("20230414085833")
 mod:SetCreatureID(36494)
 mod:SetEncounterID(1999)
 mod:SetUsedIcons(8)
@@ -19,7 +22,7 @@ mod:RegisterEventsInCombat(
 )
 
 local warnForgeWeapon			= mod:NewSpellAnnounce(68785, 2)
-local warnDeepFreeze			= mod:NewTargetAnnounce(70381, 2)
+local warnDeepFreeze			= mod:NewTargetNoFilterAnnounce(70381, 2)
 local warnSaroniteRock			= mod:NewTargetAnnounce(68789, 3)
 
 local specWarnSaroniteRock		= mod:NewSpecialWarningYou(68789, nil, nil, nil, 1, 2)

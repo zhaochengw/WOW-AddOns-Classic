@@ -424,6 +424,7 @@ L["indicators management"] = "gestion de indicadores"
 L["Create new indicator"] = "Crear un nuevo indicador"
 L["Delete Indicator"] = "Borrar Indicador"
 L["Rename Indicator"] = "Renombrar Indicador"
+L["Highlight Indicator"] = "Resaltar Indicador"
 L["Indicator Type"] = "Tipo de Indicador"
 L["Icon"] = "Icono"
 L["Max Icons"] = "Maximo de iconos"
@@ -436,6 +437,15 @@ L["Show Tooltip"] = "Mostrar el Tooltip"
 L["Enable Advanced Tooltips"] = "Activar Tooltips Avanzados"
 L["Display default unit tooltip when Out of Combat"] = "Mostrar el Tooltip predeterminado estando Fuera de Combate"
 
+L["First Aura"] = "Primera Aura"
+L["Select the index of the first private aura to display."] = "Selecciona el indice de la primera aura privada a mostrar."
+L["Last Aura"] = "Ultima Aura"
+L["Select the index of the last private aura to display."] = "Selecciona el indice de la ultima aura privada a mostrar."
+L["Enable Cooldown"] = "Activar Cooldown"
+L["Display a cooldown animation."] = "Muestra una animacion para el cooldown."
+L["Enable Numbers"] = "Activar Numeros"
+L["Display cooldown numbers."] = "Muestra numeros para el cooldown."
+
 -- indicator types
 L["icon"] = "icono"
 L["square"] = "cuadrado"
@@ -445,6 +455,7 @@ L["icons"] = "iconos"
 L["multibar"] = "barras"
 L["portrait"] = "retrato"
 L["glowborder"] = "borde brillante"
+L["privateauras"] = "auras privadas"
 
 -- indicators
 L["corner-top-left"] = "esquina superior izquierda"
@@ -625,6 +636,7 @@ L["offline"] = "desconectado"
 L["raid-icon-player"] = "raid icono jugador"
 L["raid-icon-target"] = "raid icono objetivo"
 L["range"] = "rango"
+L["rangealt"] = "rango alternativo"
 L["ready-check"] = "comprobacion listos"
 L["role"] = "rol en raid"
 L["dungeon-role"] = "rol en mazmorra"
@@ -641,7 +653,10 @@ L["pvp"] = "pvp"
 L["direction"] = "direccion"
 L["resurrection"] = "resurreccion"
 L["self"] = "yo mismo"
-L["monk-stagger"] = "monje aplazamiento"
+L["boss-shields"] = "escudos de jefes"
+L["my-heals-incoming"] = "curas(mias)"
+L["boss-debuffs"] = "Debuffs de Jefes"
+L["unit-index"] = "indice unidad"
 
 L["Curse"] = "Maldicion"
 L["Poison"] = "Veneno"
@@ -653,12 +668,6 @@ L["raid-debuffs2"] = "Debuffs de Raid(2)"
 L["raid-debuffs3"] = "Debuffs de Raid(3)"
 L["raid-debuffs4"] = "Debuffs de Raid(4)"
 L["raid-debuffs5"] = "Debuffs de Raid(5)"
-
-L["boss-shields"] = "escudos de jefes"
-L["my-heals-incoming"] = "curas(mias)"
-L["boss-debuffs"] = "Debuffs de Jefes"
-
--- class specific buffs & debuffs statuses
 
 -- shaman
 L["EarthShield"] = "Escudo de tierra"
@@ -698,6 +707,7 @@ L["PrayerOfHealing"] = "Rezo de sanacion"
 L["EnvelopingMist"] = "Niebla envolvente"
 L["RenewingMist"] = "Niebla renovadora"
 L["LifeCocoon"] = "Crisalida vital"
+L["monk-stagger"] = "monje aplazamiento"
 
 -- mage
 L["FocusMagic"] = "Enfocar magia"
@@ -889,6 +899,11 @@ L["Hide Damagers"] = "Ocultar rol de Daño"
 
 -- combat status
 L["combat"] = "combate"
+L["Active Out Of Combat"] = "Activar Fuera de Combate"
+L["Enable this option to invert the status so it will become activated when the player is Out Of Combat."] = "Activa estas opcion para invertir el estado de modo que sea activado fuera de combate."
+
+-- pvp status
+L["Hide inside Instances"] = "Ocultar en Instancias"
 
 -- summon status
 L["summon"] = "invocacion"
@@ -898,6 +913,12 @@ L["Summon Accepted"] = "Invocacion Aceptada"
 L["Player accepted the summon."] = "El jugador ha aceptado la invocacion."
 L["Summon Declined"] = "Invocacion Cancelada"
 L["Player declined the summon."] = "El jugador no ha aceptado la invocacion."
+
+-- unit-index status
+L["Enabled only for party units"] = "Activado solo para unidades de grupo"
+L["Raid indexes will not be displayed."] = "No se mostrarán los indices de unidades de raid."
+L["Enabled for player unit"] = "Activado para la unidad del jugador"
+L["Display a zero index for player unit while in party or raid."] = "Muestra un indice cero para la unidad del jugador mientras está en grupo o raid."
 
 -- status descriptions
 L["highlights your target"] = "resalta tu objetivo"
@@ -1404,6 +1425,8 @@ L["Enable this option to detach unit frame groups, so each group can be moved in
 L["Detach pets groups"] = "Separar grupos de mascotas"
 L["Enable this option to detach the pets group, so pets group can be moved individually."] = "Activa esta opción para separar el grupo de mascotas de modo que el grupo se pueda posicionar individualmente."
 L["Special units headers visibility."] = "Visibilidad de unidades especiales."
+L["Display Player unit"] = "Muestra unidad para el Jugador"
+L["Enable this option to display the player unit."] = "Activa esta opción para mostrar una unidad para el Jugador."
 L["Display Target unit"] = "Muestra unidad para el Objetivo"
 L["Enable this option to display the target unit."] = "Activa esta opción para mostrar una unidad para el Objetivo."
 L["Display Focus unit"] = "Muestra unidad para el Foco"

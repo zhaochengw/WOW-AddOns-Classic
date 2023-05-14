@@ -57,6 +57,7 @@ LBIS:AddItem(spec, "40399", LBIS.L["Ring"], "Alt") --Signet of Manifested Pain
 LBIS:AddItem(spec, "45518", LBIS.L["Trinket"], "BIS") --Flare of the Heavens
 LBIS:AddItem(spec, "40255", LBIS.L["Trinket"], "BIS") --Dying Curse
 LBIS:AddItem(spec, "45466", LBIS.L["Trinket"], "Alt") --Scale of Fates
+LBIS:AddItem(spec, "45148", LBIS.L["Trinket"], "Alt") --Living Flame
 LBIS:AddItem(spec, "45308", LBIS.L["Trinket"], "Alt") --Eye of the Broodmother
 LBIS:AddItem(spec, "40432", LBIS.L["Trinket"], "Alt") --Illustration of the Dragon Soul
 

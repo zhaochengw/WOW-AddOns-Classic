@@ -23,7 +23,7 @@ local ACTIVE_OPTIONS = FLOASPECTBAR_OPTIONS[1];
 local changingSpec = false;
 
 --local GetSpecialization = GetSpecialization;
-if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
   GetSpecialization = function ()
     return 1
   end

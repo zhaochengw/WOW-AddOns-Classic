@@ -8,6 +8,7 @@ Translated by:
 
 local L = LibStub("AceLocale-3.0"):NewLocale("RatingBuster", "esES")
 if not L then return end
+local StatLogic = LibStub("StatLogic")
 ----
 -- This file is coded in UTF-8
 -- If you don't have a editor that can save in UTF-8, I recommend Ultraedit
@@ -315,6 +316,24 @@ L["Crit Chance <- Crit Rating Agility, Weapon Skill Rating"] = "prob. Critico <-
 -- /rb sum stat haste
 L["Sum Haste"] = "Res. Velocidad"
 L["Haste <- Haste Rating"] = "Velocidad <- Índice Velocidad"
+L["Sum Ranged Hit Chance"] = "Res. Prob. Golpe a Distancia"
+L["Ranged Hit Chance <- Hit Rating, Weapon Skill Rating, Ranged Hit Rating"] = true
+-- /rb sum physical rangedhitrating
+L["Sum Ranged Hit Rating"] = "Res. Indice Golpe a Distancia"
+L["Ranged Hit Rating Summary"] = true
+-- /rb sum physical rangedcrit
+L["Sum Ranged Crit Chance"] = "Res. Prob. Critico a Distancia"
+L["Ranged Crit Chance <- Crit Rating, Agility, Weapon Skill Rating, Ranged Crit Rating"] = true
+-- /rb sum physical rangedcritrating
+L["Sum Ranged Crit Rating"] = true
+L["Ranged Crit Rating Summary"] = true
+-- /rb sum physical rangedhaste
+L["Sum Ranged Haste"] = true
+L["Ranged Haste <- Haste Rating, Ranged Haste Rating"] = true
+-- /rb sum physical rangedhasterating
+L["Sum Ranged Haste Rating"] = true
+L["Ranged Haste Rating Summary"] = true
+
 -- /rb sum stat critspell
 L["Sum Spell Crit Chance"] = "Res. prob. Critico Hech."
 L["Spell Crit Chance <- Spell Crit Rating Intellect"] = "prob. Critico Hech. <- Índice Critico Hech., Intelecto"
@@ -584,22 +603,24 @@ L["statList"] = {
 	{pattern = "índice de golpe crítico con hechizos", id = CR_CRIT_SPELL},
 	{pattern = "índice de golpe crítico a distancia", id = CR_CRIT_RANGED},
 	{pattern = "índice de golpe crítico cuerpo a cuerpo", id = CR_CRIT_MELEE},
-	{pattern = "índice de golpe crítico", id = CR_CRIT},
+	{pattern = "índice de golpe crítico", id = StatLogic.GenericStats.CR_CRIT},
 
 	{pattern = "índice de golpe con hechizo", id = CR_HIT_SPELL},
 	{pattern = "índice de golpe a distancia", id = CR_HIT_RANGED},
 	{pattern = "índice de golpe cuerpo a cuerpo", id = CR_HIT_MELEE},
-	{pattern = "índice de golpe", id = CR_HIT},
+	{pattern = "índice de golpe", id = StatLogic.GenericStats.CR_HIT},
 
 	{pattern = "índice de temple", id = CR_RESILIENCE_CRIT_TAKEN}, -- resilience is implicitly a rating
 
 	{pattern = "índice de celeridad con hechizos", id = CR_HASTE_SPELL},
 	{pattern = "índice de celeridad a distancia", id = CR_HASTE_RANGED},
 	{pattern = "índice de celeridad con cuerpo a cuerpo", id = CR_HASTE_MELEE},
-	{pattern = "índice de celeridad", id = CR_HASTE},
-	{pattern = "Aumenta el índice de velocidad de lanzamiento de ataques y de ataque de los miembros del grupo cercanos", id = CR_HASTE}, -- [Drums of Battle]
+	{pattern = "índice de celeridad", id = StatLogic.GenericStats.CR_HASTE},
+	{pattern = "Aumenta el índice de velocidad de lanzamiento de ataques y de ataque de los miembros del grupo cercanos", id = StatLogic.GenericStats.CR_HASTE}, -- [Drums of Battle]
 
 	{pattern = "índice de pericia", id = CR_EXPERTISE},
+
+	{pattern = string.lower(SPELL_STATALL), id = StatLogic.GenericStats.ALL_STATS},
 
 	{pattern = "índice de penetración de armadura", id = CR_ARMOR_PENETRATION},
 	{pattern = string.lower(ARMOR), id = ARMOR},

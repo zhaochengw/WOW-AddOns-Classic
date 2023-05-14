@@ -8,8 +8,7 @@ L["[|cffffd200Enable|r/|cffffd200Disable|r] The Auto Buff Button or [|cffffd200E
 L["[|cffffd200Enable|r/|cffffd200Disable|r] The Drag Handle Button."] = "[|cffffd200启用|r/|cffffd200禁用|r]拖拽按钮"
 L["[|cffffd200Enable|r/|cffffd200Disable|r] The Player(s) or Class Buttons."] = "[|cffffd200启用|r/|cffffd200禁用|r] 玩家或职业按钮"
 L["[|cffffd200Enable|r/|cffffd200Disable|r] The Seal Button, Enable/Disable Righteous Fury or select the Seal you want to track."] = "[|cffffd200启用|r/|cffffd200禁用|r] 圣印按钮，启用/禁用 正义之怒或你想要监视的圣印。"
---[[Translation missing --]]
-L["[Enable/Disable] Class Buttons"] = "[Enable/Disable] Class Buttons"
+L["[Enable/Disable] Class Buttons"] = "[显示/隐藏] 职业按钮"
 L["[Enable/Disable] PallyPower"] = "[显示/隐藏] PallyPower"
 L["[Enable/Disable] PallyPower in Party"] = "当加入一个小队后显示/隐藏祝福施加窗口"
 L["[Enable/Disable] PallyPower while Solo"] = "当单独一人时显示/隐藏祝福施加窗口"
@@ -61,8 +60,7 @@ L["Free Assignment"] = "自由分配"
 L["FREE_ASSIGN_TOOLTIP"] = [=[允许其他没有团长或团队助理的人更改你负责的祝福
 （注：通常在团队中，要求祝福分配者有团队助理权限。）]=]
 L["Fully Buffed"] = "全部祝福"
---[[Translation missing --]]
-L["Hide Bench (by Subgroup)"] = "Hide Bench (by Subgroup)"
+L["Hide Bench (by Subgroup)"] = "隐藏替补（根据所在队伍）"
 L["Horizontal Left | Down"] = "水平向左 | 向下展开"
 L["Horizontal Left | Up"] = "水平向左 | 向上展开"
 L["Horizontal Right | Down"] = "水平向右 | 向下展开"
@@ -78,8 +76,7 @@ L["If you enable this option PallyPower will automatically over-write a Greater 
 L["If you enable this option PallyPower will automatically over-write a Greater Blessing with a Normal Blessing on players marked with the |cffffd200Main Tank|r role in the Blizzard Raid Panel. This is useful for spot buffing the |cffffd200Main Tank|r role with Blessing of Sanctuary."] = "If you enable this option PallyPower will automatically over-write a Greater Blessing with a Normal Blessing on players marked with the |cffffd200Main Tank|r role in the Blizzard Raid Panel. This is useful for spot buffing the |cffffd200Main Tank|r role with Blessing of Sanctuary."
 L["If you enable this option PallyPower will automatically over-write a Greater Blessing with a Normal Blessing on players marked with the |cffffd200Main Tank|r role in the Blizzard Raid Panel. This is useful to avoid blessing the |cffffd200Main Tank|r role with a Greater Blessing of Salvation."] = "启用后，PallyPower将自动以普通祝福覆盖暴雪面板中标记为|cffffd200主坦克|r的玩家的强效祝福。这将有效防止对|cffffd200主坦克|r角色施放强效拯救祝福。"
 L["If you enable this option, you will not be allowed to assign Blessing of Wisdom to Warriors or Rogues, and Blessing of Might to Mages, Warlocks, or Hunters."] = "启用后，将不会给战士或盗贼智慧祝福，不会给法师、术士和猎人力量祝福。"
---[[Translation missing --]]
-L["If you enable this option, you will not be allowed to assign Blessing of Wisdom to Warriors, Rogues, or Death Knights and Blessing of Might to Mages, Warlocks, or Hunters."] = "If you enable this option, you will not be allowed to assign Blessing of Wisdom to Warriors, Rogues, or Death Knights and Blessing of Might to Mages, Warlocks, or Hunters."
+L["If you enable this option, you will not be allowed to assign Blessing of Wisdom to Warriors, Rogues, or Death Knights and Blessing of Might to Mages, Warlocks, or Hunters."] = "启用后，将不会给战士、盗贼和死亡骑士智慧祝福，不会给法师、术士和猎人力量祝福。"
 L["LAYOUT_TOOLTIP"] = [=[垂直布局[左/右展开]
 水平布局[上/下展开]]=]
 L["Main PallyPower Settings"] = "PallyPower总设置"
@@ -111,14 +108,8 @@ L["Partially Buffed"] = "部分祝福"
 L["Player Buttons"] = "启用玩家按钮"
 L["PP_CLEAR_TOOLTIP"] = "清除所有为自己分配的祝福任务。"
 L["PP_REFRESH_TOOLTIP"] = "刷新自己、小队、团队所有骑士的祝福分配，天赋和王者印记数量。"
---[[Translation missing --]]
-L["Preset"] = "Preset"
---[[Translation missing --]]
-L["PRESET_TOOLTIP"] = [=[|cffffffff[Left-Click]|r Load the last saved Preset.
-
-|cffffffff[Shift-Left-Click]|r Save a preset 
-of all Greater and Normal Blessings 
-currently configured.]=]
+L["Preset"] = "预设"
+L["PRESET_TOOLTIP"] = "|cffffffff[左键点击]|r 读取最近保存的预设值. |cffffffff[Shift+左键]|r 保存当前设置为预设值."
 L["Raid only options"] = "团队选项"
 L["Refresh"] = "刷新"
 L["REPORT_CHANNEL_OPTION_TOOLTIP"] = [=[选择你想要广播祝福报告的频道:
@@ -140,20 +131,16 @@ L["Seal Button"] = "圣印按钮"
 L["Seal Tracker"] = "圣印监视器"
 L["Select the Aura you want to track"] = "选择你想监视的光环"
 L["Select the Greater Blessing assignment you wish to over-write on Main Assist: Druids / Paladins."] = "选择你希望覆盖到主坦上的强效祝福指派：德鲁伊/圣骑士"
---[[Translation missing --]]
-L["Select the Greater Blessing assignment you wish to over-write on Main Assist: Warriors / Death Knights."] = "Select the Greater Blessing assignment you wish to over-write on Main Assist: Warriors / Death Knights."
+L["Select the Greater Blessing assignment you wish to over-write on Main Assist: Warriors / Death Knights."] = "选择你想要用来覆盖战士坦克和死骑坦克的大祝福"
 L["Select the Greater Blessing assignment you wish to over-write on Main Assist: Warriors."] = "选择你希望覆盖到主坦克上的强效祝福指派：战士"
 L["Select the Greater Blessing assignment you wish to over-write on Main Tank: Druids / Paladins."] = "选择你希望覆盖到主坦克上的强效祝福指派：德鲁伊/圣骑士"
---[[Translation missing --]]
-L["Select the Greater Blessing assignment you wish to over-write on Main Tank: Warriors / Death Knights."] = "Select the Greater Blessing assignment you wish to over-write on Main Tank: Warriors / Death Knights."
+L["Select the Greater Blessing assignment you wish to over-write on Main Tank: Warriors / Death Knights."] = "选择你想要用来覆盖战士坦克和死骑坦克的大祝福"
 L["Select the Greater Blessing assignment you wish to over-write on Main Tank: Warriors."] = "选择你希望覆盖到主坦克上的强效祝福指派：战士"
 L["Select the Normal Blessing you wish to use to over-write the Main Assist: Druids / Paladins."] = "选择你希望覆盖到主坦克上的普通祝福指派：德鲁伊/圣骑士"
---[[Translation missing --]]
-L["Select the Normal Blessing you wish to use to over-write the Main Assist: Warriors / Death Knights."] = "Select the Normal Blessing you wish to use to over-write the Main Assist: Warriors / Death Knights."
+L["Select the Normal Blessing you wish to use to over-write the Main Assist: Warriors / Death Knights."] = "选择你想要用来覆盖战士坦克和死骑坦克的小祝福"
 L["Select the Normal Blessing you wish to use to over-write the Main Assist: Warriors."] = "选择你希望覆盖到主坦克上的普通祝福指派：战士"
 L["Select the Normal Blessing you wish to use to over-write the Main Tank: Druids / Paladins."] = "选择你希望覆盖到主坦克上的普通祝福指派: 德鲁伊/圣骑士"
---[[Translation missing --]]
-L["Select the Normal Blessing you wish to use to over-write the Main Tank: Warriors / Death Knights."] = "Select the Normal Blessing you wish to use to over-write the Main Tank: Warriors / Death Knights."
+L["Select the Normal Blessing you wish to use to over-write the Main Tank: Warriors / Death Knights."] = "选择你想要用来覆盖战士坦克和死骑坦克的小祝福"
 L["Select the Normal Blessing you wish to use to over-write the Main Tank: Warriors."] = "选择你希望覆盖到主坦克上的普通祝福指派：战士。"
 L["Select the Seal you want to track"] = "选择你想监视的圣印"
 L["Show Minimap Icon"] = "显示小地图图标"
@@ -173,10 +160,8 @@ L["Vertical Down | Left"] = "垂直向下 | 向左展开"
 L["Vertical Down | Right"] = "垂直向下 | 向右展开"
 L["Vertical Up | Left"] = "垂直向上 | 向左展开"
 L["Vertical Up | Right"] = "垂直向上 | 向右展开"
---[[Translation missing --]]
-L["Visibility Settings"] = "Visibility Settings"
+L["Visibility Settings"] = "可视性设置"
 L["Wait for Players"] = "启用等待玩家"
 L["What to buff with PallyPower"] = "使用PallyPower进行的buff"
---[[Translation missing --]]
-L["While you are in a Raid dungeon, hide any players outside of the usual subgroups for that dungeon. For example, if you are in a 10-player dungeon, any players in Group 3 or higher will be hidden."] = "While you are in a Raid dungeon, hide any players outside of the usual subgroups for that dungeon. For example, if you are in a 10-player dungeon, any players in Group 3 or higher will be hidden."
+L["While you are in a Raid dungeon, hide any players outside of the usual subgroups for that dungeon. For example, if you are in a 10-player dungeon, any players in Group 3 or higher will be hidden."] = "当你在一个团队副本中时，自动隐藏其他不在正常副本团队中的玩家。例如：当你在一个10人副本中时，其他在3队或者3队之后的玩家，会被隐藏"
 

@@ -88,6 +88,7 @@ LBIS:AddItem(spec, "45297", LBIS.L["Ring"], "BIS") --Shimmering Seal
 LBIS:AddItem(spec, "45168", LBIS.L["Ring"], "Alt") --Pyrelight Circle
 LBIS:AddItem(spec, "45691", LBIS.L["Ring"], "Alt") --Inscribed Signet of the Kirin Tor
 LBIS:AddItem(spec, "45451", LBIS.L["Ring"], "Alt") --Frozen Loop
+LBIS:AddItem(spec, "46096", LBIS.L["Ring"], "Alt") --Signet of Soft Lament
 LBIS:AddItem(spec, "45946", LBIS.L["Ring"], "Alt") --Fire Orchid Signet
 LBIS:AddItem(spec, "45113", LBIS.L["Ring"], "Alt") --Glowing Ring of Reclamation
 LBIS:AddItem(spec, "40399", LBIS.L["Ring"], "Alt") --Signet of Manifested Pain

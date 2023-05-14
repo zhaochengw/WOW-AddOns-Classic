@@ -128,6 +128,12 @@ L["CONFIG_SELLING_ALL_ITEMS_CATEGORY"] = "Venta: Todos los objetos"
 L["CONFIG_SELLING_AUTO_SELECT_NEXT"] = "Selecciona automáticamente el siguiente objeto de tu bolso"
 L["CONFIG_SELLING_AUTO_SELECT_NEXT_TOOLTIP_HEADER"] = "Selección automática de objetos"
 L["CONFIG_SELLING_AUTO_SELECT_NEXT_TOOLTIP_TEXT"] = "Al publicar, selecciona automáticamente el siguiente objeto en la vista de bolsa."
+--[[Translation missing --]]
+L["CONFIG_SELLING_AUTO_SELECT_STACK_REMAINDER"] = "Select any partial stacks that exist after posting all complete stacks."
+--[[Translation missing --]]
+L["CONFIG_SELLING_AUTO_SELECT_STACK_REMAINDER_TOOLTIP_HEADER"] = "Automatic partial stack selection"
+--[[Translation missing --]]
+L["CONFIG_SELLING_AUTO_SELECT_STACK_REMAINDER_TOOLTIP_TEXT"] = "When posting add the partial stack as the next item to post if it exists. This won't cause any further searches."
 L["CONFIG_SELLING_BAG_SELECT_SHORTCUT"] = "en un objeto en su bolsa lo pone en la pestaña Venta"
 L["CONFIG_SELLING_BUY_SHORTCUT"] = "en una subasta que no poseas lo comprará"
 L["CONFIG_SELLING_CANCEL_SHORTCUT"] = "en una subasta de su propiedad lo cancelará"
@@ -200,6 +206,12 @@ L["CONFIG_STACK_TOOLTIP"] = "Mostrar el precio de la pila al mantener 'shift'."
 L["CONFIG_TOOLTIPS_CATEGORY"] = "Información sobre herramientas"
 L["CONFIG_TOOLTIPS_TEXT"] = [=[Opciones para mostrar información relacionada con diferentes subastas en la información sobre herramientas del juego.
 ]=]
+--[[Translation missing --]]
+L["CONFIG_UNDERCUT_SCAN_MATCH_ILVL_VARIANTS"] = "For gear use item level and title when doing undercut checks"
+--[[Translation missing --]]
+L["CONFIG_UNDERCUT_SCAN_MATCH_ILVL_VARIANTS_TOOLTIP_HEADER"] = "Gear Use Item Level and Title"
+--[[Translation missing --]]
+L["CONFIG_UNDERCUT_SCAN_MATCH_ILVL_VARIANTS_TOOLTIP_TEXT"] = "Leave this on to match potential gear undercuts by item level and title, rather than by only item base type."
 L["CONFIG_UNDERCUT_SCAN_NOT_LIFO"] = "Incluye equipo y mascotas en escaneos de descuento"
 L["CONFIG_UNDERCUT_SCAN_NOT_LIFO_TOOLTIP_HEADER"] = "Escaneos de descuento de equipo/mascotas"
 L["CONFIG_UNDERCUT_SCAN_NOT_LIFO_TOOLTIP_TEXT"] = "Deje esto para incluir cualquier subasta de mascotas y equipo cuando use el escaneo de descuento. Desactívelo para excluir mascotas y equipo."
@@ -259,6 +271,8 @@ L["ENCHANT_TOOLTIP_TOOLTIP_TEXT"] = "Mostrar información de encantamiento en la
 L["ENGAGE_HEADER"] = "Iniciar con Auctionator"
 L["ERROR_REOPEN_AUCTION_HOUSE"] = "No se puede completar la acción, cierra y vuelva a abrir la casa de subastas."
 L["EXACT_SEARCH"] = "Búsqueda exacta"
+--[[Translation missing --]]
+L["EXPANSION"] = "Expansion"
 L["EXPORT"] = "Exportar"
 L["EXPORT_AS"] = "Exportar cómo:"
 L["EXPORT_RESULTS"] = "Exportar resultados"
@@ -279,6 +293,8 @@ L["GEAR_VENDOR_PRICE_MULTIPLIER"] = "Multiplicador de precio de vendedor de equi
 L["HIDE"] = "Ocultar"
 L["HISTORY"] = "Historial"
 L["IMPORT"] = "Importar"
+--[[Translation missing --]]
+L["IMPORTED"] = "Imported"
 L["INFO_TAB_HEADER"] = "Auctionator - Información"
 L["IS_TOP_COLUMN"] = "¿Parte superior?"
 L["IS_UNDERCUT"] = "¿Descontar?"

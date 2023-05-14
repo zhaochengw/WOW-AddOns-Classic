@@ -256,10 +256,10 @@ do
 		Value         = { type = "header", order = 90,  name = L["Value"] },
 		Text          = { type = "header", order = 95,  name = L["Text"] },
 		Misc          = { type = "header", order = 100, name = L["Misc"]        },
-		Highlights    = { type = "header", order = 110,  name = L["Highlight"], },
+		Highlights    = { type = "header", order = 110, name = L["Highlight"], },
 		Auras	      = { type = "header", order = 150, name = L["Auras"]       },
 		DebuffFilter  = { type = "header", order = 175, name = L["Filtered debuffs"] },
-		AurasExpanded = { type = "header", order = 300,  name = L["Display"] },
+		AurasExpanded = { type = "header", order = 300, name = L["Display"] },
 	}
 	function Grid2Options:MakeHeaderOptions( options, key )
 		options[ "header"..key ] = headers[key]
@@ -433,11 +433,6 @@ function Grid2Options:UpdateIndicatorDB(indicator)
 	end
 end
 
--- Grid2Options:RefreshStatus()
-function Grid2Options:RefreshStatus(status)
-	status:RefreshLoad()
-end
-
 -- Grid2Options:LayoutFrames()
 function Grid2Options:LayoutFrames()
 	Grid2Frame:LayoutFrames(true)
@@ -477,6 +472,21 @@ function Grid2Options:CreateIndicatorFrames(indicator)
 			indicator:Release(f)
 			indicator:Create(f)
 			indicator:Layout(f)
+		end
+	end
+end
+
+-- Register indicator statuses from database
+function Grid2Options:RegisterIndicatorStatuses(indicator)
+	if indicator then
+		local map = Grid2:DbGetValue("statusMap", indicator.name)
+		if map then
+			for statusKey, priority in pairs(map) do
+				local status = Grid2.statuses[statusKey]
+				if (status and tonumber(priority)) then
+					indicator:RegisterStatus(status, priority)
+				end
+			end
 		end
 	end
 end

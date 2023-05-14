@@ -424,6 +424,7 @@ L["indicators management"] = true
 L["Create new indicator"] = true
 L["Delete Indicator"] = true
 L["Rename Indicator"] = true
+L["Highlight Indicator"] = true
 L["Indicator Type"] = true
 L["Icon"] = true
 L["Max Icons"] = true
@@ -436,6 +437,15 @@ L["Show Tooltip"] = true
 L["Enable Advanced Tooltips"] = true
 L["Display default unit tooltip when Out of Combat"] = true
 
+L["First Aura"] = true
+L["Select the index of the first private aura to display."] = true
+L["Last Aura"] = true
+L["Select the index of the last private aura to display."] = true
+L["Enable Cooldown"] = true
+L["Display a cooldown animation."] = true
+L["Enable Numbers"] = true
+L["Display cooldown numbers."] = true
+
 -- indicator types
 L["icon"] = true
 L["square"] = true
@@ -445,6 +455,7 @@ L["icons"] = true
 L["multibar"] = true
 L["portrait"] = true
 L["glowborder"] = true
+L["privateauras"] = true
 
 -- indicators
 L["corner-top-left"]= true
@@ -626,6 +637,7 @@ L["offline"] = true
 L["raid-icon-player"] = true
 L["raid-icon-target"] = true
 L["range"] = true
+L["rangealt"] = true
 L["ready-check"] = true
 L["role"] = true
 L["dungeon-role"] = true
@@ -642,7 +654,10 @@ L["pvp"] = true
 L["direction"] = true
 L["resurrection"] = true
 L["self"] = true
-L["monk-stagger"] = true
+L["boss-shields"] = true
+L["my-heals-incoming"] = true
+L["boss-debuffs"] = true
+L["unit-index"] = true
 
 L["Curse"] = true
 L["Poison"] = true
@@ -654,12 +669,6 @@ L["raid-debuffs2"] = "Raid Debuffs(2)"
 L["raid-debuffs3"] = "Raid Debuffs(3)"
 L["raid-debuffs4"] = "Raid Debuffs(4)"
 L["raid-debuffs5"] = "Raid Debuffs(5)"
-
-L["boss-shields"] = true
-L["my-heals-incoming"] = true
-L["boss-debuffs"] = true
-
--- class specific buffs & debuffs statuses
 
 -- shaman
 L["EarthShield"] = true
@@ -699,6 +708,7 @@ L["PrayerOfHealing"]= true
 L["EnvelopingMist"]= true
 L["RenewingMist"]= true
 L["LifeCocoon"]= true
+L["monk-stagger"] = true
 
 -- mage
 L["FocusMagic"]= true
@@ -890,6 +900,11 @@ L["Hide Damagers"] = true
 
 -- combat status
 L["combat"] = true
+L["Active Out Of Combat"] = true
+L["Enable this option to invert the status so it will become activated when the player is Out Of Combat."] = true
+
+-- pvp status
+L["Hide inside Instances"] = true 
 
 -- summon status
 L["summon"] = true
@@ -899,6 +914,12 @@ L["Summon Accepted"] = true
 L["Player accepted the summon."] = true
 L["Summon Declined"] = true
 L["Player declined the summon."] = true
+
+-- unit-index status
+L["Enabled only for party units"] = true
+L["Raid indexes will not be displayed."] = true
+L["Enabled for player unit"] = true
+L["Display a zero index for player unit while in party or raid."] = true
 
 -- status descriptions
 L["highlights your target"] = true
@@ -1405,6 +1426,8 @@ L["Enable this option to detach unit frame groups, so each group can be moved in
 L["Detach pets groups"] = true
 L["Enable this option to detach the pets group, so pets group can be moved individually."] = true
 L["Special units headers visibility."] = true
+L["Display Player unit"] = true
+L["Enable this option to display the player unit."] = true
 L["Display Target unit"] = true
 L["Enable this option to display the target unit."] = true
 L["Display Focus unit"] = true

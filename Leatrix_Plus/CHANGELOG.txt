@@ -1,4 +1,39 @@
-3.0.119 - 15th March 2023
+3.0.131 - 10th May 2023
+- Added flight times.
+
+3.0.130 - 3rd May 2023
+- For 'Enhance tooltip' ('Interface'), fixed an issue with 'Hide health bar' which caused the health bar to not be hidden.
+- For 'Easy item destroy' ('System'), fixed an issue which caused a Lua error when clicking outside of the destroy confirmation.
+
+3.0.129 - 25th April 2023
+- Added flight times.
+
+3.0.128 - 22nd April 2023
+- Added flight times.
+
+3.0.127 - 19th April 2023
+- Added flight times.
+- Fixed /run leaplus("quest <id>") functionality.
+
+3.0.126 - 15th April 2023
+- Added flight times.
+
+3.0.125 - 2nd April 2023
+- Added flight times.
+
+3.0.124 - 31st March 2023
+- Added flight times.
+
+3.0.123 - 27th March 2023
+- Added flight times.
+
+3.0.122 - 26th March 2023
+- Added flight times.
+
+3.0.121 - 23rd March 2023
+- Added flight times.
+
+3.0.120 - 18th March 2023
 - Added flight times.
 
 3.0.118 - 13th March 2023

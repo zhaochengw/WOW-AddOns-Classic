@@ -1,8 +1,16 @@
-<a href="https://www.curseforge.com/wow/addons/krowis-world-map-buttons" alt="Curseforge">
-  <img src="https://img.shields.io/badge/Curseforge-Krowi's%20World%20Map%20Buttons-orange" />
+## Support me
+<a href="https://www.paypal.com/donate/?hosted_button_id=NYWTBA4XM6ZS6" alt="Paypal">
+  <img src="https://www.paypalobjects.com/en_US/BE/i/btn/btn_donateCC_LG.gif" />
 </a>
+<a href="https://www.patreon.com/Krowi" alt="Patreon">
+  <img src="https://raw.githubusercontent.com/codebard/patron-button-and-widgets-by-codebard/master/images/become_a_patron_button.png" />
+</a>
+<a href='https://ko-fi.com/E1E6G64LS' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 ## Purpose
+<a href="https://www.curseforge.com/wow/addons/krowis-world-map-buttons" alt="Curseforge">
+  <img src="https://img.shields.io/badge/Curseforge-Krowi's%20World%20Map%20Buttons-orange" />
+</a><br>
 This library was created to make adding buttons to the world map easier and less dependant on other addons.
 Using this library will add a button to the top right of the map window from right to left in the order the addons are loaded.
 When yours or other addon's buttons are hidden, the rest will shift to the right to fill the gap dynamically.
@@ -11,10 +19,10 @@ Supports both Retail and Wrath Classic. Classic and TBC Classic are not verified
 
 See the examples below on how to use the library.
 
-## Important
+<!-- ## Important
 ### Retail
 `frameStrata="HIGH"`
-### Wrath Classic
+### Wrath Classic (no longer required from v1.4.4)
 `frameStrata="TOOLTIP"`
 
 There is an additional change for Wrath Classic when ElvUI is installed and the smaller world map is enabled. This is because ElvUI resets the `FrameStrata` to `HIGH` which would hide the button behind the map itself. I'm not sure if I should incorporate this in the library itself or let each addon handle this on its own.
@@ -24,7 +32,7 @@ local worldMapModule = engine:GetModule("WorldMap");
 hooksecurefunc(worldMapModule, "SetSmallWorldMap", function()
     addon.GUI.WorldMapButton:SetFrameStrata("TOOLTIP");
 end);
-```
+``` -->
 
 ## Adding the button to the world map
 ```lua
@@ -37,9 +45,6 @@ addon.WorldMapButtons = LibStub("Krowi_WorldMapButtons-1.4"); -- Global world ma
 
 function worldMapButton.Load()
     worldMapButton = addon.WorldMapButtons:Add("KrowiAF_WorldMapButton_Template", "BUTTON");
-    if addon.IsWrathClassic() then
-        worldMapButton:SetFrameStrata("TOOLTIP");
-    end
     addon.GUI.WorldMapButton = worldMapButton;
 end
 ```

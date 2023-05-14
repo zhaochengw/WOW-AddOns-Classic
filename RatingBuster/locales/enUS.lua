@@ -5,8 +5,10 @@ Translated by:
 - Whitetooth (hotdogee [at] gmail [dot] com)
 ]]
 
+---@class RatingBusterLocale
 local L = LibStub("AceLocale-3.0"):NewLocale("RatingBuster", "enUS", true)
 L["RatingBuster Options"] = true
+local StatLogic = LibStub("StatLogic")
 ---------------------------
 -- Slash Command Options --
 ---------------------------
@@ -259,6 +261,8 @@ L["Choose basic stats for summary"] = true
 -- /rb sum physical
 L["Stat - Physical"] = true
 L["Choose physical damage stats for summary"] = true
+L["Ranged"] = true
+L["Weapon"] = true
 -- /rb sum spell
 L["Stat - Spell"] = true
 L["Choose spell damage and healing stats for summary"] = true
@@ -310,6 +314,24 @@ L["Crit Chance <- Crit Rating, Agility, Weapon Skill Rating"] = true
 -- /rb sum stat haste
 L["Sum Haste"] = true
 L["Haste <- Haste Rating"] = true
+L["Sum Ranged Hit Chance"] = true
+L["Ranged Hit Chance <- Hit Rating, Weapon Skill Rating, Ranged Hit Rating"] = true
+-- /rb sum physical rangedhitrating
+L["Sum Ranged Hit Rating"] = true
+L["Ranged Hit Rating Summary"] = true
+-- /rb sum physical rangedcrit
+L["Sum Ranged Crit Chance"] = true
+L["Ranged Crit Chance <- Crit Rating, Agility, Weapon Skill Rating, Ranged Crit Rating"] = true
+-- /rb sum physical rangedcritrating
+L["Sum Ranged Crit Rating"] = true
+L["Ranged Crit Rating Summary"] = true
+-- /rb sum physical rangedhaste
+L["Sum Ranged Haste"] = true
+L["Ranged Haste <- Haste Rating, Ranged Haste Rating"] = true
+-- /rb sum physical rangedhasterating
+L["Sum Ranged Haste Rating"] = true
+L["Ranged Haste Rating Summary"] = true
+
 -- /rb sum stat critspell
 L["Sum Spell Crit Chance"] = true
 L["Spell Crit Chance <- Spell Crit Rating, Intellect"] = true
@@ -589,26 +611,29 @@ L["statList"] = {
 	{pattern = "spell critical rating", id = CR_CRIT_SPELL},
 	{pattern = "spell crit rating", id = CR_CRIT_SPELL},
 	{pattern = "spell critical", id = CR_CRIT_SPELL},
-	{pattern = "ranged critical strike rating", id = CR_CRIT_RANGED},
+	{pattern = "ranged critical strike", id = CR_CRIT_RANGED},
 	{pattern = "ranged critical hit rating", id = CR_CRIT_RANGED},
 	{pattern = "ranged critical rating", id = CR_CRIT_RANGED},
 	{pattern = "ranged crit rating", id = CR_CRIT_RANGED},
-	{pattern = "critical strike rating", id = CR_CRIT},
-	{pattern = "critical hit rating", id = CR_CRIT},
-	{pattern = "critical rating", id = CR_CRIT},
-	{pattern = "crit rating", id = CR_CRIT},
+	{pattern = "critical strike rating", id = StatLogic.GenericStats.CR_CRIT},
+	{pattern = "critical hit rating", id = StatLogic.GenericStats.CR_CRIT},
+	{pattern = "critical rating", id = StatLogic.GenericStats.CR_CRIT},
+	{pattern = "crit rating", id = StatLogic.GenericStats.CR_CRIT},
 
 	{pattern = "spell hit rating", id = CR_HIT_SPELL},
 	{pattern = "ranged hit rating", id = CR_HIT_RANGED},
-	{pattern = "hit rating", id = CR_HIT},
+	{pattern = "hit rating", id = StatLogic.GenericStats.CR_HIT},
 
 	{pattern = "resilience", id = CR_RESILIENCE_CRIT_TAKEN}, -- resilience is implicitly a rating
 
 	{pattern = "spell haste rating", id = CR_HASTE_SPELL},
 	{pattern = "ranged haste rating", id = CR_HASTE_RANGED},
-	{pattern = "haste rating", id = CR_HASTE},
+	{pattern = "haste rating", id = StatLogic.GenericStats.CR_HASTE},
 
 	{pattern = "expertise rating", id = CR_EXPERTISE},
+
+	{pattern = string.lower(SPELL_STATALL), id = StatLogic.GenericStats.ALL_STATS},
+	{pattern = "health", id = nil}, -- Scroll of Enchant Chest - Health (prevents matching Armor)
 
 	{pattern = "armor penetration", id = CR_ARMOR_PENETRATION},
 	{pattern = string.lower(ARMOR), id = ARMOR},

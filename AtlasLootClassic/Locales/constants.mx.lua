@@ -90,6 +90,8 @@ AL["Factions"] = "Facciones"
 AL["Favourites"] = "Favoritos"
 AL["Fishing Pole"] = "Caña de pescar"
 AL["Fist Weapon"] = "Arma de puño"
+--[[Translation missing --]]
+--[[ AL["Furious %s"] = "Furious %s"--]] 
 AL["Global base list"] = "Lista basado en Mundial"
 AL["Global lists"] = "Listas Mundiales"
 --[[Translation missing --]]
@@ -187,6 +189,8 @@ AL["Reagent for..."] = "Componente para..."
 --[[Translation missing --]]
 --[[ AL["Recipe"] = "Recipe"--]] 
 AL["Regen"] = "Regeneración"
+--[[Translation missing --]]
+--[[ AL["Relentless %s"] = "Relentless %s"--]] 
 AL["Remove item from list"] = "Quitar objeto de la lista"
 AL["Reputation"] = "Reputación"
 --[[Translation missing --]]
@@ -266,3 +270,5 @@ AL["Vendor"] = "Vendedor"
 AL["Wand"] = "Varita"
 AL["Weapons"] = "Armas"
 AL["Wintersaber Trainers"] = "Entrenadores de Sableinvernales"
+--[[Translation missing --]]
+--[[ AL["Wrathful %s"] = "Wrathful %s"--]] 

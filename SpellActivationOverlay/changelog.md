@@ -1,5 +1,22 @@
 ## SpellActivationOverlay Changelog
 
+#### v0.9.0 (2022-05-01)
+
+- Support for Classic Era, although many WotLK spells and talents are missing
+- Mage's Heating Up effect is now hidden when the talent is lost e.g., respec
+- Fixed an issue where paladin and warrior buttons would sometimes not glow
+- The addon should now use a bit less CPU than before
+
+#### v0.8.4 (2022-04-28)
+
+- New SAO: Druid's Wrath of Elune (4p set bonus of PvP season 5-6-7-8)
+- New SAO: Druid's Elune's Wrath (4p set bonus of tier 8)
+- New SAO: Mage's Heating Up and Hot Streak at the same time
+- New GAB: Druid's Starfire button glows during Wrath of Elune
+- New GAB: Druid's Starfire button glows during Elune's Wrath
+
+Enter /sao to enable or disable these options
+
 #### v0.8.3 (2022-01-29)
 
 - Glowing buttons work again with ProjectAzilroka, after Ulduar patch

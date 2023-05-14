@@ -1,9 +1,10 @@
-## Interface: 100005
+## Interface: 100100
 ## Title: tullaRange Config
 ## Notes: GUI based configuration for tullaRange
 ## Author: Tuller
 ## Dependencies: tullaRange
 ## LoadOnDemand: 1
+## IconTexture: Interface/Icons/Inv_misc_punchcards_red
 localization\localization.xml
 widgets\widgets.xml
 colorOptions.lua

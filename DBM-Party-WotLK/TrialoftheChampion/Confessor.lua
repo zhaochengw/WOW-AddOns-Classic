@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(636, "DBM-Party-WotLK", 13, 284)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220920233058")
+mod:SetRevision("20230414085833")
 mod:SetCreatureID(34928)
 --mod:SetEncounterID(2023)--DO NOT ENABLE. Confessor and Eadric are both flagged as same encounterid ("Argent Champion")
 --
@@ -36,7 +36,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args.spellId == 66537 and not args:IsDestTypePlayer() then	-- Renew
 		if args.destName == L.name and self.vb.shielded then
 			-- nothing, she casted it on herself and you cant dispel
-			return
 		else
 			specwarnRenew:Show(args.destName)
 			specwarnRenew:Play("dispelboss")

@@ -1,10 +1,14 @@
-﻿$Id: Revision.txt 403 2022-11-19 02:47:42Z arithmandar $
+﻿$Id: Revision.txt 405 2023-03-20 15:14:52Z arithmandar $
 Known Issue(s):
 ===============
 - Some incomes were categorized into Unknown instead of corresponding group.
 
 Revision History:
 =================
+
+* v2.12.25 (Mar. 20, 2023)
+==========================
+- Toc update to support WoW 10.0.7 / 3.4.1
 
 * v2.12.24 (Nov. 19, 2022)
 ==========================

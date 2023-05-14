@@ -424,6 +424,7 @@ L["indicator"] = "指標"
 -- L["Create new indicator"] = ""
 -- L["Delete Indicator"] = ""
 -- L["Rename Indicator"] = ""
+-- L["Highlight Indicator"] = ""
 -- L["Indicator Type"] = ""
 -- L["Icon"] = ""
 -- L["Max Icons"] = ""
@@ -436,6 +437,15 @@ L["Show Tooltip"] = "顯示提示訊息"
 -- L["Enable Advanced Tooltips"] = ""
 -- L["Display default unit tooltip when Out of Combat"] = ""
 
+-- L["First Aura"] = ""
+-- L["Select the index of the first private aura to display."] = ""
+-- L["Last Aura"] = ""
+-- L["Select the index of the last private aura to display."] = ""
+-- L["Enable Cooldown"] = ""
+-- L["Display a cooldown animation."] = ""
+-- L["Enable Numbers"] = ""
+-- L["Display cooldown numbers."] = ""
+
 -- indicator types
 L["icon"] = "圖示"
 L["square"] = "正方形"
@@ -445,6 +455,7 @@ L["bar"] = "狀態條"
 -- L["multibar"] = ""
 -- L["portrait"] = ""
 -- L["glowborder"] = ""
+-- L["privateauras"] = ""
 
 -- indicators
 L["corner-top-left"] = "左上角"
@@ -625,6 +636,7 @@ L["offline"] = "離線"
 L["raid-icon-player"] = "團隊標記圖示：玩家"
 L["raid-icon-target"] = "團隊標記圖示：目標"
 L["range"] = "距離"
+-- L["rangealt"] = ""
 L["ready-check"] = "準備確認"
 L["role"] = "角色"
 L["dungeon-role"] = "地城角色"
@@ -641,7 +653,10 @@ L["pvp"] = "玩家對玩家"
 L["direction"] = "方向"
 L["resurrection"] = "復活"
 -- L["self"] = ""
--- L["monk-stagger"] = ""
+L["boss-shields"] = "頭目護盾"
+-- L["my-heals-incoming"] = ""
+-- L["boss-debuffs"] = ""
+-- L["unit-index"] = ""
 
 L["Curse"] = "詛咒"
 L["Poison"] = "毒"
@@ -654,11 +669,6 @@ L["raid-debuffs3"] = "團隊減益(3)"
 L["raid-debuffs4"] = "團隊減益(4)"
 L["raid-debuffs5"] = "團隊減益(5)"
 
-L["boss-shields"] = "頭目護盾"
--- L["my-heals-incoming"] = ""
--- L["boss-debuffs"] = ""
-
--- class specific buffs & debuffs statuses
 
 -- shaman
 L["EarthShield"] = "大地之盾"
@@ -698,6 +708,7 @@ L["PrayerOfHealing"] = "治療禱言"
 -- L["EnvelopingMist"] = ""
 -- L["RenewingMist"] = ""
 -- L["LifeCocoon"] = ""
+-- L["monk-stagger"] = ""
 
 -- mage
 L["FocusMagic"] = "魔法凝聚"
@@ -889,6 +900,11 @@ L["Hide Damagers"] = "隱藏傷害輸出角色"
 
 -- combat status
 -- L["combat"] = ""
+-- L["Active Out Of Combat"] = ""
+-- L["Enable this option to invert the status so it will become activated when the player is Out Of Combat."] = ""
+
+-- pvp status
+-- L["Hide inside Instances"] = ""
 
 -- summon status
 -- L["summon"] = ""
@@ -898,6 +914,12 @@ L["Hide Damagers"] = "隱藏傷害輸出角色"
 -- L["Player accepted the summon."] = ""
 -- L["Summon Declined"] = ""
 -- L["Player declined the summon."] = ""
+
+-- unit-index status
+-- L["Enabled only for party units"] = ""
+-- L["Raid indexes will not be displayed."] = ""
+-- L["Enabled for player unit"] = ""
+-- L["Display a zero index for player unit while in party or raid."] = ""
 
 -- status descriptions
 L["highlights your target"] = "高亮你的目標"
@@ -1404,6 +1426,8 @@ L["You can include a descriptive prefix using separators \"@#>\""] = "你可以�
 -- L["Detach pets groups"] = ""
 -- L["Enable this option to detach the pets group, so pets group can be moved individually."] = ""
 -- L["Special units headers visibility."] = ""
+-- L["Display Player unit"] = ""
+-- L["Enable this option to display the player unit."] = ""
 -- L["Display Target unit"] = ""
 -- L["Enable this option to display the target unit."] = ""
 -- L["Display Focus unit"] = ""

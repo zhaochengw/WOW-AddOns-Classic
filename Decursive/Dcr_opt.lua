@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9) add-on for World of Warcraft UI
+    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2023-01-25T09:34:53Z
+    This file was last updated on 2023-04-02T15:26:05Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -77,6 +77,7 @@ local InCombatLockdown  = _G.InCombatLockdown;
 local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
 local GetSpellInfo      = _G.GetSpellInfo;
 local GetSpecialization = _G.GetSpecialization or (GetActiveTalentGroup or function () return nil; end);
+local GetAddOnMetadata  = _G.C_AddOns and _G.C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata;
 local _;
 -- Default values for the option
 
@@ -1768,7 +1769,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
-                                    "2.7.9", "John Wellesz", ("2023-02-26T02:28:26Z"):sub(1,10),
+                                    "2.7.9.1", "John Wellesz", ("2023-04-02T21:35:33Z"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
@@ -3312,6 +3313,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
-T._LoadedFiles["Dcr_opt.lua"] = "2.7.9";
+T._LoadedFiles["Dcr_opt.lua"] = "2.7.9.1";
 
 -- Closer

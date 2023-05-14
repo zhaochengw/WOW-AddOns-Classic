@@ -1,8 +1,11 @@
 local mod	= DBM:NewMod(640, "DBM-Party-WotLK", 10, 285)
 local L		= mod:GetLocalizedStrings()
 
+if not mod:IsClassic() then
+	mod.statTypes = "normal,heroic,timewalker"
+end
 
-mod:SetRevision("20221006190430")
+mod:SetRevision("20230414085833")
 mod:SetCreatureID(23954)--23980 is no longer used like it was in wrath. Kept just to keep first death from ending fight early
 mod:SetMainBossID(23954)
 mod:SetEncounterID(2025)
@@ -11,13 +14,24 @@ mod.noBossDeathKill = true--Ignore death, since he dies twice
 mod:RegisterCombat("combat")
 mod:RegisterKill("yell", L.YellCombatEnd)--Yell seems removed on retail, but maybe it'll return in classic WoTLK. Although I doubt it. Classic viscidous removedd explode emote on retail AND classic
 
-mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 42723 42669 59706 59709 42708 42729 59708 59734",
-	"SPELL_AURA_APPLIED 42730 59735",
-	"SPELL_AURA_REMOVED 42730 59735",
-	"UNIT_DIED",
-	"UNIT_SPELLCAST_SUCCEEDED"
-)
+if mod:IsClassic() then
+	mod:RegisterEventsInCombat(
+		"SPELL_CAST_START 42723 42669 59706 59709 42708 42729 59708 59734",
+		"SPELL_AURA_APPLIED 42730 59735",
+		"SPELL_AURA_REMOVED 42730 59735",
+		"UNIT_DIED",
+		"UNIT_SPELLCAST_SUCCEEDED"
+	)
+else
+	mod.statTypes = "normal,heroic,timewalker"
+	mod:RegisterEventsInCombat(
+		"SPELL_CAST_START 42723 42669 59706 59709 42708 42729 59708 59734",
+		"SPELL_AURA_APPLIED 42730 59735",
+		"SPELL_AURA_REMOVED 42730 59735",
+		"UNIT_DIED",
+		"UNIT_SPELLCAST_SUCCEEDED boss1"
+	)
+end
 
 local warningWoeStrike	= mod:NewTargetNoFilterAnnounce(42730, 2, nil, "RemoveCurse", 2)
 
@@ -66,7 +80,11 @@ end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 42863 then -- Scourge Resurrection
-		self:SendSync("Stage2")
+		if self:IsClassic() then
+			self:SendSync("Stage2")
+		else
+			self:SetStage(2)
+		end
 	end
 end
 

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9) add-on for World of Warcraft UI
+    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["zhCN.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "zhCN");
 
 if not L then
-    T._LoadedFiles["zhCN.lua"] = "2.7.9";
+    T._LoadedFiles["zhCN.lua"] = "2.7.9.1";
     return;
 end;
 
@@ -329,6 +329,8 @@ L["OPT_HIDEMFS_GROUP"] = "单人或小队"
 L["OPT_HIDEMFS_GROUP_DESC"] = "不在团队中时隐藏微单元框体"
 L["OPT_HIDEMFS_NEVER"] = "从不自动隐藏"
 L["OPT_HIDEMFS_NEVER_DESC"] = "从不隐藏微单元框体窗口。"
+L["OPT_HIDEMFS_RAID"] = "在团队中"
+L["OPT_HIDEMFS_RAID_DESC"] = "当你在团队中时隐藏微单元框体窗口。"
 L["OPT_HIDEMFS_SOLO"] = "单人"
 L["OPT_HIDEMFS_SOLO_DESC"] = "在没有组队或者团队时隐藏微单元框体。"
 L["OPT_HIDEMUFSHANDLE"] = "隐藏微单元框体表头"
@@ -503,4 +505,4 @@ L["UNSTABLERELEASE"] = "不稳定版本"
 
 
 
-T._LoadedFiles["zhCN.lua"] = "2.7.9";
+T._LoadedFiles["zhCN.lua"] = "2.7.9.1";

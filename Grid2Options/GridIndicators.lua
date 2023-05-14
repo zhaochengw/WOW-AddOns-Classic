@@ -12,11 +12,13 @@ Grid2Options.indicatorIconPath = "Interface\\Addons\\Grid2Options\\media\\indica
 Grid2Options.indicatorTypes = {}
 
 -- Indicators sort order
-Grid2Options.indicatorTypesOrder= { tooltip = 1, alpha = 2, background = 3, border = 4, glowborder = 5, multibar = 6, bar = 7, text = 8, square = 9, shape = 10, icon = 11, icons = 12, portrait = 13 }
+Grid2Options.indicatorTypesOrder= { tooltip = 1, alpha = 2, background = 3, border = 4, glowborder = 5, multibar = 6, bar = 7, text = 8, square = 9, shape = 10, icon = 11, privateaura = 12, icons = 13, privateauras = 14, portrait = 15 }
 
 Grid2Options.indicatorTitleIconsOptions = {
-	size = 24, offsetx = -4, offsety = -2, anchor = 'TOPRIGHT',
-	{ image = "Interface\\AddOns\\Grid2Options\\media\\delete", tooltip = L["Delete this indicator"], func = function(info) Grid2Options:DeleteIndicatorConfirm( info.option.arg.indicator ) end },
+	size = 24, offsetx = -4, offsety = -3, anchor = 'TOPRIGHT', spacing = 5,
+	{ image = "Interface\\AddOns\\Grid2Options\\media\\delete", tooltip = L["Delete Indicator"],    func = function(info) Grid2Options:DeleteIndicatorConfirm( info.option.arg.indicator )  end },
+	{ image = "Interface\\AddOns\\Grid2Options\\media\\rename", tooltip = L["Rename Indicator"],    func = function(info) Grid2Options:RenameIndicatorConfirm( info.option.arg.indicator )  end },
+	{ image = "Interface\\AddOns\\Grid2Options\\media\\test",   tooltip = L["Highlight Indicator"], func = function(info) Grid2Options:ToggleIndicatorTestMode( info.option.arg.indicator ) end },
 }
 
 do
@@ -43,6 +45,7 @@ do
 		["TopRightCorner"] = true,
 		["BottomLeftCorner"] = true,
 		["BottomRightCorner"] = true,
+		["bar"] = true,
 	}
 	Grid2Options.indicatorBlacklistNames = indicator_name_blacklist
 
@@ -78,6 +81,10 @@ do
 		else
 			self:ConfirmDialog( L["Are you sure you want to delete this indicator ?"], function() DeleteIndicatorReal(indicator) end )
 		end
+	end
+
+	local function DeleteIndicator(info, name)
+		Grid2Options:DeleteIndicatorConfirm( Grid2.indicators[name] )
 	end
 
 	-- new values
@@ -132,6 +139,13 @@ do
 			elseif (newIndicatorValues.type == "shape") then
 				dbx.level = 6
 				dbx.size = defaults.shape.size
+			elseif (newIndicatorValues.type == "privateaura") then
+				dbx.level = 8
+				dbx.load = { unitType = { self = true, player = true } }
+			elseif (newIndicatorValues.type == "privateauras") then
+				dbx.level = 8
+				dbx.maxIcons = 2
+				dbx.load = { unitType = { self = true, player = true } }
 			end
 			Grid2:DbSetIndicator(newIndicatorName,dbx)
 			-- Create runtime indicator
@@ -144,8 +158,8 @@ do
 		end
 	end
 
-	local function NewIndicatorDisabled()
-		local name = Grid2Options:GetValidatedName(newIndicatorValues.name)
+	local function NewIndicatorDisabled(name_table)
+		local name = Grid2Options:GetValidatedName( type(name_table)=='string' and name_table or newIndicatorValues.name )
 		if name and name ~= "" and not Grid2.indicators[name] then
 			local _,frame = next(Grid2Frame.registeredFrames)
 			if frame then -- Check if the name is in use by any unit frame child object
@@ -175,36 +189,131 @@ do
 		return workTable
 	end
 
-	local function RenameIndicator(info, name)
-		Grid2Options:ShowEditDialog( "Rename Indicator:", Grid2Options.LI[name] or L[name], function(text)
-			local len = strlen(text)
-			if len>2 or len==0 then
-				Grid2Options.LI[name] = len>2 and text or nil
-				Grid2Options:MakeIndicatorOptions(Grid2.indicators[name])
-				Grid2Options:NotifyChange()
-			end
-		end)
+	local function RenameIndicatorReal(old_name, new_name)
+		local db = Grid2.db.profile
+		new_name = Grid2Options:GetValidatedName(new_name)
+		if not new_name then return end
+		-- destroy old indicator
+		local old_indicator = Grid2.indicators[old_name]
+		local old_sideKick  = old_indicator.sideKick
+		Grid2:UnregisterIndicator(old_indicator)
+		-- rename database stuff
+		db.indicators[new_name] = db.indicators[old_name]
+		db.indicators[old_name] = nil
+		db.statusMap[new_name]  = db.statusMap[old_name]
+		db.statusMap[old_name]  = nil
+		-- rename possible disabled indicator from themes
+		for _,t in pairs(Grid2.db.profile.themes.indicators) do
+			if t[old_name] then
+				t[new_name] = t[old_name]
+				t[old_name] = nil
+			end	
+		end
+		-- create new indicator
+		local setupFunc = Grid2.setupFunc[old_indicator.dbx.type]
+		local new_indicator = setupFunc(new_name, old_indicator.dbx)
+		-- rename sidekick database stuff
+		if old_sideKick then
+			db.statusMap[new_indicator.sideKick.name] = db.statusMap[old_sideKick.name]
+			db.statusMap[old_sideKick.name]  = nil
+		end
+		-- register statuses from database
+		Grid2Options:RegisterIndicatorStatuses(new_indicator)
+		Grid2Options:RegisterIndicatorStatuses(new_indicator.sideKick)
+		-- recreate indicators in frame units
+		Grid2Options:CreateIndicatorFrames(new_indicator)
+		Grid2Frame:UpdateIndicators()
+		-- refresh options
+		Grid2Options:DeleteIndicatorOptions(old_indicator)
+		Grid2Options:MakeIndicatorOptions(new_indicator)
+		Grid2Options:SelectGroup('indicators') 
 	end
 
-	local function DeleteIndicator(info, name)
-		Grid2Options:DeleteIndicatorConfirm( Grid2.indicators[name] )
+	local function RenameIndicator(info, name)
+		if Grid2Options:IndicatorIsInUse(name) then
+			Grid2Options:MessageDialog( L["This indicator cannot be renamed because is anchored to another indicator."] )
+		else
+			Grid2Options:ShowEditDialog( "Rename Indicator:", Grid2Options.LI[name] or L[name], function(text)
+				local len = strlen(text)
+				if len>2 or len==0 then
+					Grid2Options.LI[name] = nil -- remove status name from old faked rename table
+					if not NewIndicatorDisabled(text) then
+						RenameIndicatorReal(name, text)
+					end	
+				end
+			end)
+		end	
+	end
+
+	function Grid2Options:RenameIndicatorConfirm(indicator)
+		RenameIndicator(nil, indicator.name)
 	end
 
 	-- function ToggleTestMode()
-	local ToggleTestMode
 	do
+		local LCG = LibStub("LibCustomGlow-1.0")
 		local Test -- Test indicator
 		local TestIcons = {}
 		local TestAuras = {	tex = {}, cnt = {}, exp = {}, dur = {}, col = {} }
 		local Exclude = { bar = true, multibar = true, alpha = true }
-		ToggleTestMode = function()
+		local ExcludeHigh = { glowborder = true, text = true }
+		local COLOR ={1,1,0,1}
+		local InitTestMode, testIndicator, highIndicator
+		local function HighlightStop()
+			if highIndicator then
+				for parent in next, Grid2Frame.activatedFrames do
+					local frame = highIndicator:GetFrame(parent)
+					if frame then 
+						LCG.ButtonGlow_Stop(frame)
+						LCG.PixelGlow_Stop( frame, 'Grid2IndicatorHighlight' )
+					end
+				end
+				highIndicator = nil
+			end
+		end
+		local function HighlightIndicator(indicator)
+			if indicator and not indicator.suspended then
+				if ExcludeHigh[indicator.dbx.type] then testIndicator = indicator; return true end
+				local active 
+				for parent in next, Grid2Frame.activatedFrames do
+					local frame = indicator:GetFrame(parent)
+					if frame then 
+						if indicator.dbx.type == 'icon' then
+							LCG.ButtonGlow_Start(frame, COLOR, 0.12)
+						else
+							LCG.PixelGlow_Start(frame, COLOR, 8, .3, nil, 1, 0,0, false, 'Grid2IndicatorHighlight')
+						end
+					end
+					active = active or frame
+				end
+				if active then
+					testIndicator, highIndicator = indicator, indicator
+					C_Timer.After(.7, HighlightStop)
+					return true
+				end	
+			end	
+		end
+		local function RegisterIndicator(indicator)
+			if not Exclude[indicator.dbx.type] then
+				indicator:RegisterStatus(Test, 10000)
+			end
+		end
+		local function RegisterIndicators()
+			for _, indicator in Grid2:IterateIndicators() do
+				RegisterIndicator(indicator)
+			end
+		end	
+		local function UnregisterIndicators()
+			for indicator in pairs(Test.indicators) do
+				indicator:UnregisterStatus(Test)
+			end
+			testIndicator = nil
+		end
+		function InitTestMode()
+			local time, color = GetTime(), { r=1,g=1,b=1,a=0.6 }
 			for _, category in pairs(Grid2Options.categories) do
 				if category.icon then TestIcons[#TestIcons+1] = category.icon end
 			end
-			for _, params in pairs(Grid2Options.optionParams) do
-				if params.titleIcon then TestIcons[#TestIcons+1] = params.titleIcon end
-			end
-			local time, color = GetTime(), { r=1,g=1,b=1,a=0.6 }
 			for i=1,#TestIcons do
 				TestAuras.tex[i] = TestIcons[i]
 				TestAuras.cnt[i] = math.random(1,3)
@@ -215,33 +324,44 @@ do
 			-- create test status
 			Test = Grid2.statusPrototype:new("/@@@test@@@/",false)
 			function Test:IsActive()    return true end
-			function Test:GetText()     return "99" end
+			function Test:GetText()     return "99999" end
 			function Test:GetColor()    return math.random(0,1),math.random(0,1),math.random(0,1),1 end
 			function Test:GetPercent()	return math.random() end
+			function Test:GetDuration() return 60 end
+			function Test:GetExpirationTime() return GetTime() + 60 end
 			function Test:GetIcon()	    return TestIcons[ math.random(#TestIcons) ]	end
 			function Test:GetIcons(_,m) return math.min(m,#TestIcons), TestAuras.tex, TestAuras.cnt, TestAuras.exp, TestAuras.dur, TestAuras.col end
+			function Test:GetBorder()	return 0 end
 			function Test:GetTooltip()  return end
 			Test.dbx = TestIcons -- Asigned to TestIcons to avoid creating a new table
 			Grid2:RegisterStatus( Test, {"text","color", "percent", "icon"}, "test" )
-			ToggleTestMode = function()
-				local method, priority
-				if Test.enabled then
-					method, priority = 'UnregisterStatus', nil
-				else
-					method, priority = 'RegisterStatus', 1
-				end
-				local priority = not Test.enabled and 1 or nil
-				for _, indicator in Grid2:IterateIndicators() do
-					if not Exclude[indicator.dbx.type] then
-						indicator[method](indicator, Test, priority)
-					end
-				end
-				Grid2Frame:UpdateIndicators()
+			InitTestMode = Grid2.Dummy
+		end	
+		-- public test function
+		function Grid2Options:ToggleTestMode()
+			InitTestMode()
+			if Test.enabled then
+				UnregisterIndicators()
+			else
+				RegisterIndicators()
 			end
-			ToggleTestMode()
+			Grid2Frame:UpdateIndicators()			
+		end
+		function Grid2Options:ToggleIndicatorTestMode(indicator)
+			local enable = indicator~=testIndicator
+			InitTestMode()
+			HighlightStop()
+			UnregisterIndicators()
+			if enable then
+				RegisterIndicator(indicator)
+				if not HighlightIndicator(indicator) then
+					Grid2Options:MessageDialog(L["This indicator cannot be highlighted because is disabled for the current theme or layout."])
+				end
+			end
+			Grid2Frame:UpdateIndicators()
 		end
 	end
-
+	
 	--========================================================================================================================
 	-- Indicators management options
 	--========================================================================================================================
@@ -333,7 +453,7 @@ do
 		name = L["Test"],
 		width = "half",
 		desc = L["Toggle test mode for indicators"],
-		func = function() ToggleTestMode() end,
+		func = function() Grid2Options:ToggleTestMode() end,
 	}
 
 	function Grid2Options:MakeIndicatorsManagementOptions()
@@ -360,6 +480,7 @@ end
 
 --Check if the indicator is in use (and can not be safetly deleted).
 function Grid2Options:IndicatorIsInUse(indicator)
+	indicator = type(indicator)~='string' and indicator or Grid2.indicators[indicator]
 	return indicator==nil or indicator.parentName or indicator.childName
 end
 

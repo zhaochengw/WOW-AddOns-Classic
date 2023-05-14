@@ -1,7 +1,7 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: SafeQueue
 ## Notes: Fixes the Enter Battle button for classic battlegrounds
-## Version: v8.1
+## Version: v8.2
 ## Author: Jordon
 ## X-Curse-Project-ID: 29171
 ## X-Wago-ID: 0mKOq1Nx

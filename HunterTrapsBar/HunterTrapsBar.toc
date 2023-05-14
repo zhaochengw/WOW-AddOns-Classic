@@ -1,0 +1,10 @@
+## Interface: 20501
+## Title: HunterTrapsBar
+## Author: Xckbucl, Thanks to Floraline for the base source from aspect one
+## Notes: Add an hunter traps bar similar
+## OptionalDeps: 
+## Dependencies:
+## SavedVariables: 
+## SavedVariablesPerCharacter: HUNTERTRAPSBAR_OPTIONS, HUNTERTRAPSBAR_OPTIONS2
+HTBLib.xml
+HunterTrapsBar.xml

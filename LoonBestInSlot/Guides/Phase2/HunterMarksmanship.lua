@@ -91,6 +91,7 @@ LBIS:AddItem(spec, "39714", LBIS.L["Main Hand"], "Alt") --Webbed Death
 LBIS:AddItem(spec, "40386", LBIS.L["Main Hand"], "Alt") --Sinister Revenge
 
 LBIS:AddItem(spec, "45613", LBIS.L["Two Hand"], "BIS") --Dreambinder
+LBIS:AddItem(spec, "46033", LBIS.L["Two Hand"], "Alt") --Tortured Earth
 LBIS:AddItem(spec, "45498", LBIS.L["Two Hand"], "Alt") --Lotrafen, Spear of the Damned
 LBIS:AddItem(spec, "45233", LBIS.L["Two Hand"], "Alt") --Stormrune Edge
 LBIS:AddItem(spec, "45256", LBIS.L["Two Hand"], "Alt") --Twisted Visage

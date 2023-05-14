@@ -1,24 +1,14 @@
 local addonName, addonTable = ...
+---@class StatLogic
 local StatLogic = LibStub:GetLibrary(addonName)
 
-StatLogic.GenericStatMap = {}
+addonTable.RatingBase = {}
 
 --[[---------------------------------
 {	:GetNormalManaRegenFromSpi(spi, [class])
 -------------------------------------
 -- Description
 	Calculates the mana regen per 5 seconds while NOT casting from spirit for any class.
--- Args
-	spi
-			number - spirit
-	[class] - (defaults: PlayerClass)
-			string - english class name
-			number - class id
--- Returns
-	[mp5nc]
-		number - mana regen per 5 seconds when out of combat
-	[statid]
-		string - "MANA_REG_NOT_CASTING"
 -- Remarks
 	Player level does not effect mana regen per spirit.
 -- Examples
@@ -41,6 +31,11 @@ local NormalManaRegenPerSpi = {
 	["DRUID"] = 0.1125,
 }
 
+---@param spi integer
+---@param class? string Defaults to player class
+---@return number mp5nc Mana regen per 5 seconds when out of combat
+---@return string statid
+---@diagnostic disable-next-line:duplicate-set-field
 function StatLogic:GetNormalManaRegenFromSpi(spi, class)
 	-- argCheck for invalid input
 	self:argCheck(spi, 2, "number")
@@ -369,7 +364,7 @@ elseif addonTable.class == "HUNTER" then
 			--         Dodge and Parry chance increased by 25%.
 			{
 				["value"] = 25,
-				["buff"] = 31567,		-- ["Deterrence"],
+				["buff"] = 19263,		-- ["Deterrence"],
 			},
 		},
 		-- Hunter: Survivalist (Rank 5) - 3,8
@@ -811,7 +806,7 @@ elseif addonTable.class == "WARRIOR" then
 			--          When activated, increases your physical damage by 20% and makes you immune to Fear effects, but lowers your armor and all resistances by 20%.  Lasts 30 sec.
 			{
 				["value"] = 0.8,
-				["buff"] = 12292,		-- ["Death Wish"],
+				["buff"] = 12328,		-- ["Death Wish"],
 			},
 		},
 	}

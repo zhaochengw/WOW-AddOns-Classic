@@ -4,6 +4,9 @@ Extensively used by all my addons
 https://www.curseforge.com/members/mooreatv/projects
 but also meant to be reused in other addons, not just mine.
 
+v10.00.01 March 26th 2023
+- Localization debug off by default.
+
 v10.00.00 Oct 29th 2022
 - Added ShowConfigPanel() to deal with differences between Dragonflight and other versions
 

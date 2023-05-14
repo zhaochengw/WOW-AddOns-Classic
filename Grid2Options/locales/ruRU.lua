@@ -424,6 +424,7 @@ L["indicators management"] = "управление индикаторами"
 L["Create new indicator"] = "Создать новый индикатор"
 L["Delete Indicator"] = "Удалить индикатор"
 L["Rename Indicator"] = "Переименовать Индикатор"
+-- L["Highlight Indicator"] = ""
 L["Indicator Type"] = "тип индикатора"
 L["Icon"] = "иконка"
 L["Max Icons"] = "Максимально иконок"
@@ -436,6 +437,15 @@ L["Show Tooltip"] = "Показать подсказки"
 L["Enable Advanced Tooltips"] = "Включить расширенные подсказки"
 L["Display default unit tooltip when Out of Combat"] = "Отображать всплывающую подсказку для юнита только при выходе из боя"
 
+-- L["First Aura"] = ""
+-- L["Select the index of the first private aura to display."] = ""
+-- L["Last Aura"] = ""
+-- L["Select the index of the last private aura to display."] = ""
+-- L["Enable Cooldown"] = ""
+-- L["Display a cooldown animation."] = ""
+-- L["Enable Numbers"] = ""
+-- L["Display cooldown numbers."] = ""
+
 -- indicator types
 L["icon"] = "иконка"
 L["square"] = "квадрат"
@@ -445,6 +455,7 @@ L["icons"] = "иконки"
 L["multibar"] = "многозадачная полоса"
 L["portrait"] = "портрет"
 -- L["glowborder"] = ""
+-- L["privateauras"] = ""
 
 -- indicators
 L["corner-top-left"] = "в верхнем левом углу"
@@ -625,6 +636,7 @@ L["offline"] = "вышел из сети"
 L["raid-icon-player"] = "рейд-иконка игрока"
 L["raid-icon-target"] = "рейд-иконка цели"
 L["range"] = "расстояние"
+-- L["rangealt"] = ""
 L["ready-check"] = "проверка-готовности"
 L["role"] = "роль"
 L["dungeon-role"] = "роль подземелья"
@@ -641,7 +653,10 @@ L["pvp"] = "pvp"
 L["direction"] = "направление"
 L["resurrection"] = "воскрешение"
 L["self"] = "одиночный"
--- L["monk-stagger"] = ""
+L["boss-shields"] = "щит-босса"
+L["my-heals-incoming"] = "моё-входящие-исцеление"
+L["boss-debuffs"] = "дебаффы-босс"
+-- L["unit-index"] = ""
 
 L["Curse"] = "Проклятье"
 L["Poison"] = "Яд"
@@ -653,12 +668,6 @@ L["raid-debuffs2"] = "рейд-дебаффы2"
 L["raid-debuffs3"] = "рейд-дебаффы3"
 L["raid-debuffs4"] = "рейд-дебаффы4"
 L["raid-debuffs5"] = "рейд-дебаффы5"
-
-L["boss-shields"] = "щит-босса"
-L["my-heals-incoming"] = "моё-входящие-исцеление"
-L["boss-debuffs"] = "дебаффы-босс"
-
--- class specific buffs & debuffs statuses
 
 -- shaman
 L["EarthShield"] = "Щит земли"
@@ -698,6 +707,7 @@ L["PrayerOfHealing"] = "Молитва исцеления"
 L["EnvelopingMist"] = "Окутывающий туман"
 L["RenewingMist"] = "Заживляющий туман"
 L["LifeCocoon"] = "Исцеляющий кокон"
+-- L["monk-stagger"] = ""
 
 -- mage
 L["FocusMagic"] = "Магическая концентрация"
@@ -889,6 +899,11 @@ L["Hide Damagers"] = "Скрыть бойцов"
 
 -- combat status
 L["combat"] = "в бою"
+-- L["Active Out Of Combat"] = ""
+-- L["Enable this option to invert the status so it will become activated when the player is Out Of Combat."] = ""
+
+-- pvp status
+-- L["Hide inside Instances"] = ""
 
 -- summon status
 L["summon"] = "призыв"
@@ -898,6 +913,12 @@ L["Summon Accepted"] = "Призыв (Summon) принят"
 L["Player accepted the summon."] = "Игрок принял призыв(summon)."
 L["Summon Declined"] = "Призыв(Summon) отклонен"
 L["Player declined the summon."] = "Игрок отклонил призыв(summon)."
+
+-- unit-index status
+-- L["Enabled only for party units"] = ""
+-- L["Raid indexes will not be displayed."] = ""
+-- L["Enabled for player unit"] = ""
+-- L["Display a zero index for player unit while in party or raid."] = ""
 
 -- status descriptions
 L["highlights your target"] = "подсветка вашей цели"
@@ -1404,6 +1425,8 @@ L["You can include a descriptive prefix using separators \"@#>\""] = "Вы мо�
 -- L["Detach pets groups"] = ""
 -- L["Enable this option to detach the pets group, so pets group can be moved individually."] = ""
 -- L["Special units headers visibility."] = ""
+-- L["Display Player unit"] = ""
+-- L["Enable this option to display the player unit."] = ""
 -- L["Display Target unit"] = ""
 -- L["Enable this option to display the target unit."] = ""
 -- L["Display Focus unit"] = ""

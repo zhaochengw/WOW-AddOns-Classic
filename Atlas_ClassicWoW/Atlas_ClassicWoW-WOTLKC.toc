@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 #@non-debug@
 ## Title: Atlas |r|cFF0099FF[Classic WoW]|r
 ## Title-deDE: Atlas |r|cFF0099FF[Classic-WoW]|r
@@ -27,9 +27,9 @@
 # ## Notes: Classic WoW Dungeon Maps
 # ## Notes-zhTW: 艾澤拉斯副本地圖模組
 #@end-debug@
-## Version: v1.52.01
+## Version: v1.52.04
 ## Author: arith, Dynaletik, dubcat
-## X-Date: 2022-11-19T7:36:45Z
+## X-Date: 2023-03-28T13:16:40Z
 ## X-Credits: Dan Gilbert, Lothaer
 ## X-Email: atlas.addon at gmail dot com
 ## X-Website: http://www.atlasmod.com

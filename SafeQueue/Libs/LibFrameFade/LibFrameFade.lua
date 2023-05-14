@@ -1,4 +1,4 @@
-local LIBFRAMEFADE_VERSION = 4;
+local LIBFRAMEFADE_VERSION = 7;
 
 if LibFrameFade and (LibFrameFade.VERSION or 0) >= LIBFRAMEFADE_VERSION then
     return;
@@ -47,6 +47,16 @@ function LibFrameFade:OnLoad()
     -- unfortunately can't have hooks removed - to accomodate, the booleans
     -- for 'isUIFrameFadeHooked' and 'isUIFrameFadeRemoveFrameHooked' are
     -- kept around on the library table if we need to detect this one day.
+    --
+    -- For v7+ the library is disabled in Classic as the core issue was fixed
+    -- long ago. Removing the hooks should disarm everything.
+
+    if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then
+        self:SecureHook("UIFrameFade", nil);
+        self:SecureHook("UIFrameFadeRemoveFrame", nil);
+
+        return;
+    end
 
     self:SecureHook("UIFrameFade", self:GetOrCreateMethodClosure("ProcessGlobalFadeFrames"));
     self:SecureHook("UIFrameFadeRemoveFrame", self:GetOrCreateMethodClosure("StopFadingFrame"));
@@ -72,7 +82,7 @@ function LibFrameFade:OnFaderFinished(fader)
         local arg3 = fadeInfo.finishedArg3;
         local arg4 = fadeInfo.finishedArg4;
 
-        xpcall(fadeInfo.finishedFunc, CallErrorHandler, arg1, arg2, arg3, arg4);
+        securecallfunction(fadeInfo.finishedFunc, arg1, arg2, arg3, arg4);
     end
 end
 

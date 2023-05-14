@@ -2,8 +2,9 @@
 ## Title: |cffEEE4AESpeedy AutoLoot|r
 ## Notes: |cff58C6FALoot at ludicrous speed!|r|n|n|cffFFC700Slash command: /sal, /speedyautoloot|r
 ## Author: Yuyuli
-## Version: 2.2.8
+## Version: 2.2.11
 ## SavedVariables: SpeedyAutoLootDB
+## IconTexture: 4675637
 ## OptionalDeps: ElvUI, ElvUI_Config
 
 SpeedyAutoLoot.lua

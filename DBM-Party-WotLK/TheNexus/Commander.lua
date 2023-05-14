@@ -1,8 +1,11 @@
 local mod = DBM:NewMod("Commander", "DBM-Party-WotLK", 8)
 local L = mod:GetLocalizedStrings()
 
+if not mod:IsClassic() then
+	mod.statTypes = "normal,heroic,timewalker"
+end
 
-mod:SetRevision("20220724021612")
+mod:SetRevision("20230414085833")
 --mod:SetEncounterID(519)--FIXME in 7.1
 
 if UnitFactionGroup("player") == "Alliance" then

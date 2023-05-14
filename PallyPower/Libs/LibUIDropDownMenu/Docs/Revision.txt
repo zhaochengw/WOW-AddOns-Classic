@@ -1,7 +1,25 @@
-$Id: Revision.txt 113 2022-11-17 17:08:49Z arithmandar $
+$Id: Revision.txt 121 2023-03-20 14:41:01Z arithmandar $
 
 Revision History:
 =================
+
+v4.20.10000748520 (2023/03/20)
+------------------------------
+- Toc update to support WoW 10.0.7
+
+v4.19.10000047936 (2023/02/05)
+------------------------------
+- Toc update to support WoW 10.0.5 / 3.4.1
+
+v4.18.10000046801 (2022/11/29)
+------------------------------
+- Replace SetBackdrop with backdropInfo
+
+v4.17.10000046801 (2022/11/29)
+------------------------------
+- update backdrop template to DialogBorderDarkTemplate
+  - update BACKDROP_DIALOG_DARK.insets.bottom to 11
+- update menubackdrop template to TooltipBackdropTemplate
 
 v4.16.10000046689 (2022/11/18)
 ------------------------------

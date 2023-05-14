@@ -1,4 +1,4 @@
-﻿local addonName, addonTable = ...
+local addonName, addonTable = ...
 
 --[[
 Name: StatLogic-1.0
@@ -72,6 +72,7 @@ end
 --------------------
 -- Initialization --
 --------------------
+---@class StatLogic
 local StatLogic = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 
 function StatLogic:argCheck(argument, number, ...)
@@ -101,7 +102,7 @@ local tip, tipMiner
 
 tip = CreateFrame("GameTooltip", "StatLogicTooltip", nil, "GameTooltipTemplate")
 StatLogic.tip = tip
-tip:SetOwner(UIParent, "ANCHOR_NONE")
+tip:SetOwner(WorldFrame, "ANCHOR_NONE")
 for i = 1, 30 do
 	tip[i] = _G["StatLogicTooltipTextLeft"..i]
 	if not tip[i] then
@@ -113,7 +114,7 @@ end
 -- Create a custom tooltip for data mining
 tipMiner = CreateFrame("GameTooltip", "StatLogicMinerTooltip", nil, "GameTooltipTemplate")
 StatLogic.tipMiner = tipMiner
-tipMiner:SetOwner(UIParent, "ANCHOR_NONE")
+tipMiner:SetOwner(WorldFrame, "ANCHOR_NONE")
 for i = 1, 30 do
 	tipMiner[i] = _G["StatLogicMinerTooltipTextLeft"..i]
 	if not tipMiner[i] then
@@ -372,9 +373,31 @@ function StatLogic:GetStatNameFromID(stat)
 	return unpack(name)
 end
 
-if not CR_HIT then CR_HIT = -6 end;
-if not CR_CRIT then CR_CRIT = -9 end;
-if not CR_HASTE then CR_HASTE = -18 end;
+StatLogic.ExtraHasteClasses = {}
+
+do
+	local GenericStats = {
+		"CR_HIT",
+		"CR_CRIT",
+		"CR_HASTE",
+		"ALL_STATS",
+	}
+	
+	StatLogic.GenericStats = {}
+	for i,v in ipairs(GenericStats) do
+		StatLogic.GenericStats[v] = -i
+	end
+end
+
+StatLogic.GenericStatMap = {
+	[StatLogic.GenericStats.ALL_STATS] = {
+		SPELL_STAT1_NAME, -- Strength
+		SPELL_STAT2_NAME, -- Agility
+		SPELL_STAT3_NAME, -- Stamina
+		SPELL_STAT4_NAME, -- Intellect
+		SPELL_STAT5_NAME, -- Spirit
+	}
+}
 
 if not CR_WEAPON_SKILL then CR_WEAPON_SKILL = 1 end;
 if not CR_DEFENSE_SKILL then CR_DEFENSE_SKILL = 2 end;
@@ -403,9 +426,9 @@ if not CR_EXPERTISE then CR_EXPERTISE = 24 end;
 if not CR_ARMOR_PENETRATION then CR_ARMOR_PENETRATION = 25 end;
 
 local RatingNameToID = {
-	[CR_HIT] = "HIT_RATING",
-	[CR_CRIT] = "CRIT_RATING",
-	[CR_HASTE] = "HASTE_RATING",
+	[StatLogic.GenericStats.CR_HIT] = "HIT_RATING",
+	[StatLogic.GenericStats.CR_CRIT] = "CRIT_RATING",
+	[StatLogic.GenericStats.CR_HASTE] = "HASTE_RATING",
 	[CR_WEAPON_SKILL] = "WEAPON_RATING",
 	[CR_DEFENSE_SKILL] = "DEFENSE_RATING",
 	[CR_DODGE] = "DODGE_RATING",
@@ -431,9 +454,9 @@ local RatingNameToID = {
 	[CR_WEAPON_SKILL_RANGED] = "RANGED_WEAPON_RATING",
 	[CR_EXPERTISE] = "EXPERTISE_RATING",
 	[CR_ARMOR_PENETRATION] = "ARMOR_PENETRATION_RATING",
-	["HIT_RATING"] = CR_HIT,
-	["CRIT_RATING"] = CR_CRIT,
-	["HASTE_RATING"] = CR_HASTE,
+	["HIT_RATING"] = StatLogic.GenericStats.CR_HIT,
+	["CRIT_RATING"] = StatLogic.GenericStats.CR_CRIT,
+	["HASTE_RATING"] = StatLogic.GenericStats.CR_HASTE,
 	["DEFENSE_RATING"] = CR_DEFENSE_SKILL,
 	["DODGE_RATING"] = CR_DODGE,
 	["PARRY_RATING"] = CR_PARRY,
@@ -2253,10 +2276,10 @@ end
 local function ConvertGenericRatings(table)
 	for generic, ratings in pairs(StatLogic.GenericStatMap) do
 		local genericName = StatLogic:GetRatingIdOrName(generic)
-		if table[genericName] then
-			for rating in pairs(ratings) do
+		if genericName and table[genericName] then
+			for _, rating in ipairs(ratings) do
 				local ratingName = StatLogic:GetRatingIdOrName(rating)
-				table[ratingName] = table[genericName]
+				table[ratingName] = table[ratingName] + table[genericName]
 			end
 			table[genericName] = nil
 		end
@@ -2794,10 +2817,7 @@ local getSlotID = {
 }
 
 local function HasTitansGrip()
-	if addonTable.class == "WARRIOR" then
-		local _, _, _, _, r = StatLogic:GetOrderedTalentInfo(2, 27)
-		return r > 0
-	end
+	return addonTable.class == "WARRIOR" and IsPlayerSpell(46917)
 end
 
 function StatLogic:GetDiffID(item, ignoreEnchant, ignoreGem, red, yellow, blue, meta)

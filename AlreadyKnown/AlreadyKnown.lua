@@ -88,7 +88,6 @@ local function _debugTooltipData(tooltipData, header) -- Debug C_TooltipInfo stu
 		local orderTable, iterationString = {}, ""
 		depth = depth or 1
 
-		TooltipUtil.SurfaceArgs(debugTable)
 		for k, v in pairs(debugTable) do
 			orderTable[#orderTable + 1] = k
 		end
@@ -98,8 +97,10 @@ local function _debugTooltipData(tooltipData, header) -- Debug C_TooltipInfo stu
 			local k, v = orderTable[i], debugTable[orderTable[i]]
 			if type(v) == "table" then
 				local tableName = type(k) == "string" and k or "[" .. k .. "]"
-				iterationString = iterationString .. string.rep(" ", 4 * depth) .. tableName .. " = {\n" .. _tooltipTableDebugIterator(v, depth + 1) .. string.rep(" ", 4 * depth) .. "},\n"
-			else
+				if tableName ~= "args" and ((not db.exclude) or (db.exclude and tableName ~= "lines")) then
+					iterationString = iterationString .. string.rep(" ", 4 * depth) .. tableName .. " = {\n" .. _tooltipTableDebugIterator(v, depth + 1) .. string.rep(" ", 4 * depth) .. "},\n"
+				end
+			elseif type(v) ~= "function" then
 				iterationString = iterationString .. string.rep(" ", 4 * depth) .. k .. " = " .. tostring(v) .. ",\n"
 			end
 		end
@@ -113,7 +114,7 @@ local function _debugTooltipData(tooltipData, header) -- Debug C_TooltipInfo stu
 	end
 
 	debugOutput = debugOutput .. "tooltipData = {\n" .. _tooltipTableDebugIterator(tooltipData) .. "}\n"
-	debugOutput = debugOutput .. "-----\n"
+	debugOutput = debugOutput .. "-----"
 
 	return debugOutput
 end
@@ -266,11 +267,8 @@ local function _checkIfKnown(itemLink)
 	local midResult = false
 	if C_TooltipInfo then -- Retail in 10.0.2->, maybe comes to Wrath Classic later?
 		local tooltipData = C_TooltipInfo.GetHyperlink(itemLink)
-		TooltipUtil.SurfaceArgs(tooltipData)
 
 		for i, line in ipairs(tooltipData.lines) do
-			TooltipUtil.SurfaceArgs(line)
-
 			if line.leftText then
 				midResult = _checkTooltipLine(line.leftText, i, tooltipData.lines, itemId, itemLink)
 				if (midResult == true) then
@@ -415,7 +413,6 @@ local function _hookGBank() -- FrameXML/Blizzard_GuildBankUI/Blizzard_GuildBankU
 			local speciesId
 			if C_TooltipInfo then
 				local tooltipData = C_TooltipInfo.GetGuildBankItem(tab, i)
-				TooltipUtil.SurfaceArgs(tooltipData)
 
 				if tooltipData and tooltipData.battlePetSpeciesID then
 					speciesId = tooltipData.battlePetSpeciesID
@@ -592,6 +589,9 @@ SlashCmdList.ALREADYKNOWN = function(...)
 		db.debug = not db.debug
 		if db.debug then wipe(knownTable) end
 		Print("Debug: %s", (db.debug and "|cff00ff00true|r" or "|cffff0000false|r"))
+	elseif (...) == "exclude" then
+		db.exclude = not db.exclude
+		Print("Exclude: %s", (db.exclude and "|cff00ff00true|r" or "|cffff0000false|r"))
 	elseif (...) == "itemtest" then -- For getting debug data from people in the future
 		local _, itemLink = _G.GameTooltip:GetItem()
 		local regionTable = {}
@@ -619,7 +619,7 @@ SlashCmdList.ALREADYKNOWN = function(...)
 		end
 
 		if #regionTable > 0 then -- We have (some) data!
-			local line = format("ItemTest: %s %s / %s\nItem: %s - Regions: %d/%d - Known: %s\nItemLink: %s", ADDON_NAME, GetAddOnMetadata(ADDON_NAME, "Version"), (GetBuildInfo()), tostring(itemLink), #regionTable, #regions, tostring(_checkIfKnown(itemLink)), tostring(itemLink):gsub("|", "||"))
+			local line = format("ItemTest: %s %s / %s\nItem: %s - Regions: %d/%d - Known: %s\nItemLink: %s", ADDON_NAME, C_AddOns.GetAddOnMetadata(ADDON_NAME, "Version"), (GetBuildInfo()), tostring(itemLink), #regionTable, #regions, tostring(_checkIfKnown(itemLink)), tostring(itemLink):gsub("|", "||"))
 			for j = 1, #regionTable do
 				line = line .. "\n" .. regionTable[j]
 			end
@@ -639,9 +639,9 @@ SlashCmdList.ALREADYKNOWN = function(...)
 		Print("/alreadyknown ( green | blue | yellow | cyan | purple | gray | custom | monochrome )")
 	end
 
-	if (...) ~= "" and (...) ~= "custom" and (...) ~= "monochrome" and (...) ~= "debug" and (...) ~= "itemtest" then
+	if (...) ~= "" and (...) ~= "custom" and (...) ~= "monochrome" and (...) ~= "debug" and (...) ~= "itemtest" and (...) ~= "exclude" then
 		Print("|cff%s%s|r, Monochrome: %s", _RGBToHex(db.r*255, db.g*255, db.b*255), (...), (db.monochrome and "|cff00ff00true|r" or "|cffff0000false|r"))
-		if db.debug then Print("Debug: |cff00ff00true|r") end
+		if db.debug then Print("Debug: |cff00ff00true|r, Exclude: |cff00ff00%s|r", (db.exclude and "|cff00ff00true|r" or "|cffff0000false|r")) end
 	end
 
 	if ColorPickerFrame:IsShown() and (...) ~= "custom" then

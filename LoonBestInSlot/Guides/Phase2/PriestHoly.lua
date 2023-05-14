@@ -81,6 +81,7 @@ LBIS:AddItem(spec, "45886", LBIS.L["Main Hand"], "BIS") --Icecore Staff
 LBIS:AddItem(spec, "45612", LBIS.L["Main Hand"], "Alt") --Constellus
 LBIS:AddItem(spec, "46035", LBIS.L["Main Hand"], "Alt") --Aesuga, Hand of the Ardent Champion
 LBIS:AddItem(spec, "45147", LBIS.L["Main Hand"], "Alt") --Guiding Star
+LBIS:AddItem(spec, "45527", LBIS.L["Main Hand"], "Alt") --Soulscribe
 LBIS:AddItem(spec, "40395", LBIS.L["Main Hand"], "Alt") --Torch of Holy Fire
 
 LBIS:AddItem(spec, "45271", LBIS.L["Off Hand"], "BIS") --Ironmender

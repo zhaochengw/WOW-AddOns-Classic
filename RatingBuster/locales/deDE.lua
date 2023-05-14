@@ -7,6 +7,7 @@ Translated by:
 
 local L = LibStub("AceLocale-3.0"):NewLocale("RatingBuster", "deDE")
 if not L then return end
+local StatLogic = LibStub("StatLogic")
 ----
 -- This file is coded in UTF-8
 -- If you don't have a editor that can save in UTF-8, I recommend Ultraedit
@@ -316,6 +317,24 @@ L["Crit Chance <- Crit Rating Agility, Weapon Skill Rating"] = "kritische Treffe
 -- /rb sum stat haste
 L["Sum Haste"] = "Tempo zusammenrechnen"
 L["Haste <- Haste Rating"] = "Tempo <- Tempowertung"
+L["Sum Ranged Hit Chance"] = "Distanztrefferchance zusammenrechnen"
+L["Ranged Hit Chance <- Hit Rating, Weapon Skill Rating, Ranged Hit Rating"] = "Distanztrefferchance <- Trefferwertung, Waffenfertigkeitswertung, Distanztrefferwertung"
+-- /rb sum physical rangedhitrating
+L["Sum Ranged Hit Rating"] = "Distanztrefferwertung zusammenrechnen"
+L["Ranged Hit Rating Summary"] = "Distanztrefferwertungsübersicht"
+-- /rb sum physical rangedcrit
+L["Sum Ranged Crit Chance"] = "Kritische Distanztrefferchance zusammenrechnen"
+L["Ranged Crit Chance <- Crit Rating, Agility, Weapon Skill Rating, Ranged Crit Rating"] = "Kritische Distanztrefferchance <- kritische Trefferwertung, Beweglichkeit, Waffenfertigkeitswertung, kritische Distanztrefferwertung"
+-- /rb sum physical rangedcritrating
+L["Sum Ranged Crit Rating"] = "Kritische Distanztrefferwertung zusammenrechnen"
+L["Ranged Crit Rating Summary"] = "Kritische Distanztrefferwertungsübersicht"
+-- /rb sum physical rangedhaste
+L["Sum Ranged Haste"] = "Distanztempo zusammenrechnen"
+L["Ranged Haste <- Haste Rating, Ranged Haste Rating"] = "Distanztempo <- Tempowertung, Distanztempowertung"
+-- /rb sum physical rangedhasterating
+L["Sum Ranged Haste Rating"] = "Distanztempowertung zusammenrechnen"
+L["Ranged Haste Rating Summary"] = "Distanztempowertungsübersicht"
+
 -- /rb sum stat critspell
 L["Sum Spell Crit Chance"] = "kritische Zaubertrefferchance zusammenrechnen"
 L["Spell Crit Chance <- Spell Crit Rating Intellect"] = "kritische Zaubertrefferchance <- kritische Zaubertrefferwertung, Intelligenz"
@@ -587,21 +606,23 @@ L["statList"] = {
 
 	{pattern = "kritische zaubertrefferwertung", id = CR_CRIT_SPELL},
 	{pattern = "kritische distanztrefferwertung", id = CR_CRIT_RANGED},
-	{pattern = "kritische trefferwertung", id = CR_CRIT},
+	{pattern = "kritische trefferwertung", id = StatLogic.GenericStats.CR_CRIT},
 
 	{pattern = "zaubertrefferwertung", id = CR_HIT_SPELL},
 	{pattern = "trefferwertung", id = CR_HIT_RANGED},
-	{pattern = "trefferwertung", id = CR_HIT},
+	{pattern = "trefferwertung", id = StatLogic.GenericStats.CR_HIT},
 
 	{pattern = "abhärtungswertung", id = CR_RESILIENCE_CRIT_TAKEN}, -- resilience is implicitly a rating
 
 	{pattern = "zaubertempowertung", id = CR_HASTE_SPELL},
 	{pattern = "distanztempowertung", id = CR_HASTE_RANGED},
-	{pattern = "angriffstempowertung", id = CR_HASTE},
+	{pattern = "angriffstempowertung", id = StatLogic.GenericStats.CR_HASTE},
 	{pattern = "nahkampftempowertung", id = CR_HASTE_MELEE},
-	{pattern = "tempowertung", id = CR_HASTE}, -- [Drums of Battle]
+	{pattern = "tempowertung", id = StatLogic.GenericStats.CR_HASTE}, -- [Drums of Battle]
 
 	{pattern = "waffenkundewertung", id = CR_EXPERTISE},
+
+	{pattern = string.lower(SPELL_STATALL), id = StatLogic.GenericStats.ALL_STATS},
 
 	{pattern = "rüstungsdurchschlagwertung", id = CR_ARMOR_PENETRATION},
 	{pattern = "rüstungsdurchschlag", id = CR_ARMOR_PENETRATION},

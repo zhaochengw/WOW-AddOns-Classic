@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9) add-on for World of Warcraft UI
+    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["ruRU.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "ruRU");
 
 if not L then
-    T._LoadedFiles["ruRU.lua"] = "2.7.9";
+    T._LoadedFiles["ruRU.lua"] = "2.7.9.1";
     return;
 end;
 
@@ -301,6 +301,8 @@ L["OPT_HIDEMFS_GROUP"] = "Один/в группе"
 L["OPT_HIDEMFS_GROUP_DESC"] = "Скрывать микро-фреймы, когда вы не находитесь в рейде"
 L["OPT_HIDEMFS_NEVER"] = "Никогда не скрывать"
 L["OPT_HIDEMFS_NEVER_DESC"] = "Никогда не скрывать микро-фреймы автоматически."
+L["OPT_HIDEMFS_RAID"] = "в рейде"
+L["OPT_HIDEMFS_RAID_DESC"] = "Скрыть окно MUF, когда вы находитесь в рейде."
 L["OPT_HIDEMFS_SOLO"] = "Один"
 L["OPT_HIDEMFS_SOLO_DESC"] = "Скрывать микро-фреймы, когда вы не находитесь в группе или в рейде"
 L["OPT_HIDEMUFSHANDLE"] = "Скрыть поддержку микро-фреймов игроков."
@@ -460,4 +462,4 @@ L["UNSTABLERELEASE"] = "Нестабильный релиз"
 
 
 
-T._LoadedFiles["ruRU.lua"] = "2.7.9";
+T._LoadedFiles["ruRU.lua"] = "2.7.9.1";

@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100007
 #@non-debug@
 ## Title: Accountant Classic
 ## Title-deDE: Accountant Classic
@@ -34,11 +34,11 @@
 # ## Notes-zhTW: |cff00CC33追蹤每個角色的所有收入與支出狀況，並可顯示當日小計、當週小計、以及自有記錄起的總計。並可顯示所有角色的總金額。|r
 #@end-debug@
 ## Author: arith
-## Version: v2.12.24
+## Version: v2.12.25
 ## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibDBIcon-1.0, LibDialog-1.0, !LibUIDropDownMenu
 ## SavedVariables: Accountant_ClassicSaveData, Accountant_ClassicDB, Accountant_Classic_NewDB, Accountant_ClassicZoneDB
 ## X-Credits: Sabaki, Shadow, Rophy
-## X-Date: 2022-11-19T2:47:42Z
+## X-Date: 2023-03-20T15:14:52Z
 ## X-Donate: https://pledgie.com/campaigns/13746
 ## X-Website: http://mods.curse.com/addons/wow/accountant-classic
 ## X-License: GPLv2

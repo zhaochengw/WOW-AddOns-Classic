@@ -32,7 +32,7 @@ function AuctionatorBuyFrameMixinForShopping:Init()
   AuctionatorBuyFrameMixin.Init(self)
   Auctionator.EventBus:Register(self, {
     Auctionator.Buying.Events.ShowForShopping,
-    Auctionator.Shopping.Events.ListSearchStarted,
+    Auctionator.Shopping.Tab.Events.ListSearchStarted,
   })
 end
 
@@ -77,7 +77,7 @@ function AuctionatorBuyFrameMixinForShopping:ReceiveEvent(eventName, eventData, 
       self.CurrentPrices.gotCompleteResults = eventData.complete
       self.CurrentPrices:UpdateButtons()
     end
-  elseif eventName == Auctionator.Shopping.Events.ListSearchStarted then
+  elseif eventName == Auctionator.Shopping.Tab.Events.ListSearchStarted then
     self:Hide()
   end
 end
@@ -91,6 +91,7 @@ function AuctionatorBuyFrameMixinForSelling:Init()
   AuctionatorBuyFrameMixin.Init(self)
   Auctionator.EventBus:Register(self, {
     Auctionator.Selling.Events.RefreshBuying,
+    Auctionator.Selling.Events.RefreshHistoryOnly,
     Auctionator.Selling.Events.StartFakeBuyLoading,
     Auctionator.Selling.Events.StopFakeBuyLoading,
     Auctionator.Selling.Events.AuctionCreated,
@@ -124,6 +125,9 @@ function AuctionatorBuyFrameMixinForSelling:ReceiveEvent(eventName, eventData, .
 
     self.CurrentPrices.RefreshButton:Enable()
     self.HistoryButton:Enable()
+  elseif eventName == Auctionator.Selling.Events.RefreshHistoryOnly then
+    self.HistoryPrices.RealmHistoryDataProvider:SetItemLink(eventData.itemLink)
+    self.HistoryPrices.PostingHistoryDataProvider:SetItemLink(eventData.itemLink)
   elseif eventName == Auctionator.Selling.Events.StartFakeBuyLoading then
     -- Used so that it is clear something is loading, even if the search can't
     -- be sent yet.

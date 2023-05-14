@@ -11,6 +11,7 @@
 ## RequiredDeps: DBM-Core
 ## SavedVariables: DBMUlduar_AllSavedVars
 ## SavedVariablesPerCharacter: DBMUlduar_SavedStats
+## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: RAID
 ## X-DBM-Mod-Category: WOTLK
@@ -20,7 +21,7 @@
 ## X-DBM-Mod-Sort: 903
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-DBM-Mod-MinExpansion: 2
-## Version: 8e3d785
+## Version: b7103dd
 
 localization.en.lua
 localization.de.lua

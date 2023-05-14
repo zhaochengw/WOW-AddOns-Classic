@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9) add-on for World of Warcraft UI
+    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["esES.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "esES");
 
 if not L then
-    T._LoadedFiles["esES.lua"] = "2.7.9";
+    T._LoadedFiles["esES.lua"] = "2.7.9.1";
     return;
 end;
 
@@ -264,6 +264,7 @@ L["OPT_HIDEMFS_GROUP"] = "en solitario o en grupo"
 L["OPT_HIDEMFS_GROUP_DESC"] = "Oculta la ventana de MUF cuando no estés en una banda."
 L["OPT_HIDEMFS_NEVER"] = "Nunca ocultar automáticamente"
 L["OPT_HIDEMFS_NEVER_DESC"] = "Nunca oculta automáticamente la ventana de MUF."
+L["OPT_HIDEMFS_RAID"] = "en banda"
 L["OPT_HIDEMFS_SOLO"] = "en solitario"
 L["OPT_HIDEMFS_SOLO_DESC"] = "Oculta la ventana de MUF cuando no forme parte de ningún tipo de grupo."
 L["OPT_HIDEMUFSHANDLE"] = "Ocultar el handle de MUF"
@@ -413,4 +414,4 @@ L["UNSTABLERELEASE"] = "Versión de lanzamiento inestable"
 
 
 
-T._LoadedFiles["esES.lua"] = "2.7.9";
+T._LoadedFiles["esES.lua"] = "2.7.9.1";

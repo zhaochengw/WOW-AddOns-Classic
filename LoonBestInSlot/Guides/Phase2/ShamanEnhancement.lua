@@ -4,6 +4,7 @@ LBIS:AddItem(spec, "45610", LBIS.L["Head"], "BIS") --Boundless Gaze
 LBIS:AddItem(spec, "46212", LBIS.L["Head"], "Alt") --Conqueror's Worldbreaker Faceguard
 LBIS:AddItem(spec, "40543", LBIS.L["Head"], "Alt") --Blue Aspect Helm
 LBIS:AddItem(spec, "45412", LBIS.L["Head"], "Alt") --Valorous Worldbreaker Faceguard
+LBIS:AddItem(spec, "45329", LBIS.L["Head"], "Alt") --Circlet of True Sight
 
 LBIS:AddItem(spec, "46203", LBIS.L["Shoulder"], "BIS") --Conqueror's Worldbreaker Shoulderguards
 LBIS:AddItem(spec, "45415", LBIS.L["Shoulder"], "Alt") --Valorous Worldbreaker Shoulderguards
@@ -54,8 +55,9 @@ LBIS:AddItem(spec, "45263", LBIS.L["Trinket"], "Alt") --Wrathstone
 LBIS:AddItem(spec, "45522", LBIS.L["Trinket"], "Alt") --Blood of the Old God
 LBIS:AddItem(spec, "45931", LBIS.L["Trinket"], "Alt") --Mjolnir Runestone
 
+LBIS:AddItem(spec, "45620", LBIS.L["Main Hand"], "BIS") --Starshard Edge
 LBIS:AddItem(spec, "45132", LBIS.L["Main Hand"], "BIS") --Golden Saronite Dragon
-LBIS:AddItem(spec, "45612", LBIS.L["Main Hand"], "BIS") --Constellus
+LBIS:AddItem(spec, "45612", LBIS.L["Main Hand"], "Alt") --Constellus
 LBIS:AddItem(spec, "46035", LBIS.L["Main Hand"], "Alt") --Aesuga, Hand of the Ardent Champion
 LBIS:AddItem(spec, "45449", LBIS.L["Main Hand"], "Alt") --The Masticator
 LBIS:AddItem(spec, "42209", LBIS.L["Main Hand"], "Alt") --Furious Gladiator's Cleaver

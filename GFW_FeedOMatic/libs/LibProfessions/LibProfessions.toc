@@ -1,0 +1,22 @@
+## Interface-Retail: 90200
+## Interface-Classic: 11402
+## Interface-BCC: 20504
+
+## Title: Lib: Professions
+## Author: datagutten
+## Version: v0.11
+## Notes: Tools to work with profession data
+## X-Curse-Project-ID: 342783
+
+#@no-lib-strip@
+libs\LibStub\LibStub.lua
+libs\BM-utils\lib.xml
+#@end-no-lib-strip@
+
+data\ProfessionRanks-classic.lua
+data\ProfessionRanks-bcc.lua
+
+addon\common.lua
+addon\ProfessionApi.lua
+addon\CurrentProfession.lua
+addon\LibProfessions.lua

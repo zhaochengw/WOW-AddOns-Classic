@@ -183,27 +183,35 @@ function NWB:setRealmData()
 	else
 		NWB.usRealms = {
 			--["Arugal"] = true,
-			--["Benediction"] = true,
-			--["Earthfury"] = true,
-			--["Faerlina"] = true,
-			--["Fairbanks"] = true,
-			--["Herod"] = true,
-			--["Pagle"] = true,
-			--["Sulfuras"] = true,
-			--["Whitemane"] = true,
+			--RP era server, no linked realms, full and layered.
+			["Bloodsail Buccaneers"] = true,
+			--Main era cluster of linked realms, high pop and not layered yet but probably soon if it keeps growing?
+			--[[["ArcaniteReaper"] = true,
+			["Anathema"] = true,
+			["Thunderfury"] = true,
+			["Smolderweb"] = true,
+			["Fairbanks"] = true,
+			["Rattlegore"] = true,
+			["Kurinnaxx"] = true,
+			["Bigglesworth"] = true,
+			["Blaumeux"] = true,
+			["Whitemane"] = true,]]
 		}
 		
 		NWB.euRealms = {
-			--["Auberdine"] = true,
-			--["Ashbringer"] = true,
-			--["Firemaw"] = true,
-			--["Flamegor"] = true,
-			--["Gehennas"] = true,
-			--["Golemagg"] = true,
-			--["Mograine"] = true,
-			--["Sulfuron"] = true,
-			--["Venoxis"] = true,
-			--["Пламегор"] = true,
+			--RP era server, no linked realms, full and layered.
+			["Hydraxian Waterlords"] = true,
+			--Main era cluster of linked realms, full and layered.
+			["Dragonfang"] = true,
+			["Ashbringer"] = true,
+			["Firemaw"] = true,
+			["Earthshaker"] = true,
+			["Bloodfang"] = true,
+			["Golemagg"] = true,
+			["Mograine"] = true,
+			["Skullflame"] = true,
+			["Noggenfogger"] = true,
+			["Gandling"] = true,
 		}
 		
 		NWB.krRealms = {

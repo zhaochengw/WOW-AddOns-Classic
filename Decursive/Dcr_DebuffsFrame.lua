@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9) add-on for World of Warcraft UI
+    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
     but WITHOUT ANY WARRANTY.
 
 
-    This file was last updated on 2021-02-21T13:26:58Z
+    This file was last updated on 2023-04-02T15:27:03Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -1386,7 +1386,7 @@ do
     local fmod              = _G.math.fmod;
     local CooldownFrame_Set = _G.CooldownFrame_Set;
     local GetSpellCooldown  = _G.GetSpellCooldown;
-    local GetItemCooldown   = _G.GetItemCooldown;
+    local GetItemCooldown   = _G.C_Container and _G.C_Container.GetItemCooldown or _G.GetItemCooldown;
     local GetRaidTargetIndex= _G.GetRaidTargetIndex;
     local bor               = _G.bit.bor;
     local band              = _G.bit.band;
@@ -1484,6 +1484,7 @@ do
                     if SpellID > 0 then
                         CooldownFrame_Set (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]));
                     else
+                        --D:Debug("SetColor(): setting interface cooldown for ", -1 * SpellID, "GetItemCooldown:",  GetItemCooldown(-1 * SpellID));
                         CooldownFrame_Set (self.CooldownFrame, GetItemCooldown(-1 * SpellID));
                     end
                     self.UpdateCD = Time;
@@ -1865,6 +1866,6 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.9";
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.9.1";
 
 -- Heresy

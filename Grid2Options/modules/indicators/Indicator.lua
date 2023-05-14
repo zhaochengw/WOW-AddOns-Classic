@@ -34,7 +34,6 @@ do
 			local priority = GetIndicatorNewPriority(indicator)
 			Grid2:DbSetMap(indicator.name, status.name, priority)
 			indicator:RegisterStatus(status, priority)
-			Grid2Options:RefreshStatus(status)
 		else
 			Grid2:DbSetMap(indicator.name, status.name, nil)
 			indicator:UnregisterStatus(status)
@@ -69,7 +68,8 @@ do
 		opt[key     ].order = 500  -priority
 		opt[key..'U'].order = 500.1-priority
 		opt[key..'D'].order = 500.2-priority
-		opt[key..'S'].order = 500.3-priority
+		opt[key..'T'].order = 500.3-priority
+		opt[key..'S'].order = 500.4-priority
 	end
 
 	local function StatusSwapPriorities(info, map, indicator, index1, index2)
@@ -115,6 +115,14 @@ do
 		return map
 	end
 
+	local function StatusOpenOptions(status)
+		Grid2Options:SelectGroup('statuses')
+		C_Timer.After(0,function()
+			Grid2Options:SelectGroup('statuses', Grid2Options:GetStatusCategory(status), status.name)
+			C_Timer.After(0,function() Grid2Options:NotifyChange() end )
+		end)
+	end
+
 	-- Grid2Options:MakeIndicatorCurrentStatusOptions(indicator, options)
 	function Grid2Options:MakeIndicatorCurrentStatusOptions(indicator, options)
 		if indicator.statuses then
@@ -142,7 +150,7 @@ do
 					imageHeight= 14,
 					name= "",
 					desc = L["Move the status higher in priority"],
-					func = function (info) StatusShiftUp(info, map, indicator, status) end,
+					func = function(info) StatusShiftUp(info, map, indicator, status) end,
 					arg = arg,
 					hidden = hide,
 				}
@@ -155,14 +163,26 @@ do
 					imageHeight= 14,
 					name= "",
 					desc = L["Move the status lower in priority"],
-					func = function (info) StatusShiftDown(info, map, indicator, status) end,
+					func = function(info) StatusShiftDown(info, map, indicator, status) end,
 					arg = arg,
 					hidden = hide,
+				}
+				options[status.name .. "T"] = {
+					type = "execute",
+					order = 500.3 - map[status],
+					width = 0.15,
+					image = "Interface\\Addons\\Grid2Options\\media\\test",
+					imageWidth= 16,
+					imageHeight= 14,
+					name= "",
+					desc = L["Status Settings"],
+					func = function() StatusOpenOptions(status) end,
+					arg = arg,
 				}
 				options[status.name .."S"] = {
 					type = "description",
 					name = "",
-					order = 500.3 - map[status],
+					order = 500.4 - map[status],
 					hidden = hide,
 				}
 			end
@@ -226,20 +246,6 @@ do
 	local typeMorphValue  = {}
 	local typeMorphValues = { icon = L["icon"], square = L["square"], shape = L["shape"], text = L["text"] }
 
-	local function RegisterIndicatorStatusesFromDatabase(indicator)
-		if indicator then
-			local map= Grid2:DbGetValue("statusMap", indicator.name)
-			if map then
-				for statusKey, priority in pairs(map) do
-					local status = Grid2.statuses[statusKey]
-					if (status and tonumber(priority)) then
-						indicator:RegisterStatus(status, priority)
-					end
-				end
-			end
-		end
-	end
-
 	local function GetIndicatorTypeValues(info)
 		local typeKey = info.arg.dbx.type
 		if not typeMorphValues[typeKey] then
@@ -292,8 +298,8 @@ do
 			end
 		end
 		-- Register indicator statuses from database
-		RegisterIndicatorStatusesFromDatabase(newIndicator)
-		RegisterIndicatorStatusesFromDatabase(newIndicator.sideKick)
+		Grid2Options:RegisterIndicatorStatuses(newIndicator)
+		Grid2Options:RegisterIndicatorStatuses(newIndicator.sideKick)
 		-- Recreate indicators in frame units
 		Grid2Options:CreateIndicatorFrames(newIndicator)
 		-- Delete or Create associated text-color indicator in database
@@ -330,7 +336,7 @@ do
 	function Grid2Options:MakeIndicatorLevelOptions(indicator, options)
 		options.frameLevel = {
 			type = "select",
-			order = 1.99,
+			order = 1.92,
 			name = L["Frame Level"],
 			desc = L["Bars with higher numbers always show up on top of lower numbers."],
 			get = function ()
@@ -930,7 +936,7 @@ do
 				end
 				updateFunc(indicator)
 			end,
-			disabled = function() return indicator.parentName~=nil end,
+			disabled = function() return indicator.parentName~=nil or indicator.childName~=nil end,
 		}
 		options[key..'1'] = {
 			type = "select",
@@ -941,7 +947,7 @@ do
 				wipe(filter)[v] = true
 				updateFunc(indicator)
 			end,
-			disabled = function() return not filter or indicator.parentName~=nil end,
+			disabled = function() return not filter or indicator.parentName~=nil or indicator.childName~=nil end,
 			hidden   = function() return multi end,
 			values   = values,
 		}
@@ -955,7 +961,7 @@ do
 				updateFunc(indicator)
 			end,
 			hidden = function() return not multi end,
-			disabled = function() return not filter or indicator.parentName~=nil end,
+			disabled = function() return not filter or indicator.parentName~=nil or indicator.childName~=nil end,
 			values = values,
 		}
 		options[key.."3"] = {
@@ -1065,7 +1071,8 @@ do
 	end
 
 	function Grid2Options:MakeIndicatorLoadOptions(indicator, options)
-		SetFilterOptions( indicator, options, 10,
+		SetFilterThemeOptions( indicator, options, 10 )
+		SetFilterOptions( indicator, options, 20,
 			'playerClass',
 			self.PLAYER_CLASSES,
 			Grid2.playerClass,
@@ -1074,7 +1081,6 @@ do
 			false,
 			RefreshIndicator
 		)
-		SetFilterThemeOptions( indicator, options, 20 )
 		SetFilterOptions( indicator, options, 30,
 			'unitType',
 			self.HEADER_TYPES,

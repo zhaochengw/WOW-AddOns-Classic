@@ -1,5 +1,5 @@
 
-local _detalhes = 		_G._detalhes
+local _detalhes = 		_G.Details
 local _
 local addonName, Details222 = ...
 
@@ -121,11 +121,6 @@ end
 --local npchealingtaken_tooltip_background = {value = 100, color = {0.1960, 0.1960, 0.1960, 0.9097}, texture = [[Interface\AddOns\Details\images\bar_background2]]}
 
 --tooltip function
-
-
-local function RefreshNpcHealingTakenBar(tabela, barra, instancia)
-	atributo_damage:UpdateNpcHealingTaken(tabela, tabela.minha_barra, barra.colocacao, instancia)
-end
 
 local on_switch_NHT_show = function(instance) --npc healing taken
 	instance:TrocaTabela(instance, true, 1, 8)
@@ -951,6 +946,13 @@ function atributo_heal:RefreshBarra(thisLine, instancia, from_resize)
 
 	--icon
 	self:SetClassIcon (thisLine.icone_classe, instancia, class)
+	
+	if(thisLine.mouse_over) then
+		local classIcon = thisLine:GetClassIcon()
+		thisLine.iconHighlight:SetTexture(classIcon:GetTexture())
+		thisLine.iconHighlight:SetTexCoord(classIcon:GetTexCoord())
+		thisLine.iconHighlight:SetVertexColor(classIcon:GetVertexColor())
+	end
 	--texture color
 	self:SetBarColors(thisLine, instancia, actor_class_color_r, actor_class_color_g, actor_class_color_b)
 	--left text
@@ -1656,15 +1658,125 @@ end
 ---------- bifurca��o
 function atributo_heal:MontaInfo()
 	if (info.sub_atributo == 1 or info.sub_atributo == 2) then
-		return self:MontaInfoHealingDone()
+		self:MontaInfoHealingDone()
+
+		--[=[
+		local bNeedUpdateAgain = false
+
+		--sort by healing done
+		---@type df_headerframe
+		local spellsHeader = DetailsSpellBreakdownTab.GetSpellScrollFrame().Header
+		local totalHeader = spellsHeader:GetHeaderColumnByName("amount")
+		if (totalHeader and totalHeader:IsShown()) then
+			local columnSelected, order, key, name = spellsHeader:GetSelectedColumn()
+			if (name == "overheal") then
+				totalHeader:Click()
+				bNeedUpdateAgain = true
+			end
+		end
+
+		---@type df_headerframe
+		local targetsHeader = DetailsSpellBreakdownTab.GetTargetScrollFrame().Header
+		local totalHeader = targetsHeader:GetHeaderColumnByName("amount")
+		if (totalHeader and totalHeader:IsShown()) then
+			local columnSelected, order, key, name = targetsHeader:GetSelectedColumn()
+			if (name == "overheal") then
+				totalHeader:Click()
+				bNeedUpdateAgain = true
+			end
+		end
+
+		if (bNeedUpdateAgain) then
+			self:MontaInfoHealingDone()
+		end
+		--]=]
+
 	elseif (info.sub_atributo == 3) then
-		return self:MontaInfoOverHealing()
+		self:MontaInfoHealingDone()
+
+		--[=[
+		local bNeedUpdateAgain = false
+
+		--sort by overhealing
+		---@type df_headerframe
+		local spellsHeader = DetailsSpellBreakdownTab.GetSpellScrollFrame().Header
+		local overhealHeader = spellsHeader:GetHeaderColumnByName("overheal")
+		if (overhealHeader and overhealHeader:IsShown()) then
+			local columnSelected, order, key, name = spellsHeader:GetSelectedColumn()
+			if (name ~= "overheal") then
+				overhealHeader:Click()
+				bNeedUpdateAgain = true
+			end
+		end
+
+		---@type df_headerframe
+		local targetsHeader = DetailsSpellBreakdownTab.GetTargetScrollFrame().Header
+		local overhealHeader = targetsHeader:GetHeaderColumnByName("overheal")
+		if (overhealHeader and overhealHeader:IsShown()) then
+			local columnSelected, order, key, name = targetsHeader:GetSelectedColumn()
+			if (name ~= "overheal") then
+				overhealHeader:Click()
+				bNeedUpdateAgain = true
+			end
+		end
+
+		if (bNeedUpdateAgain) then
+			self:MontaInfoHealingDone()
+		end
+		--]=]
+
 	elseif (info.sub_atributo == 4) then
-		return self:MontaInfoHealTaken()
+		self:MontaInfoHealTaken()
 	end
 end
 
+local healingTakenHeadersAllowed = {icon = true, name = true, rank = true, amount = true, persecond = true, percent = true}
 function atributo_heal:MontaInfoHealTaken()
+	---@type actor
+	local actorObject = self
+	---@type instance
+	local instance = info.instancia
+	---@type combat
+	local combatObject = instance:GetCombat()
+	---@type string
+	local actorName = actorObject:Name()
+
+	---@type number
+	local healTakenTotal = actorObject.healing_taken
+	---@type table<string, boolean>
+	local healTakenFrom = actorObject.healing_from
+	---@type actorcontainer
+	local healContainer = combatObject:GetContainer(class_type)
+
+	local resultTable = {}
+
+	---@type string
+	for healerName in pairs(healTakenFrom) do
+		local sourceActorObject = healContainer:GetActor(healerName)
+		if (sourceActorObject) then
+			---@type table<string, number>
+			local targets = sourceActorObject:GetTargets()
+			---@type number|nil
+			local amountOfHeal = targets[actorName]
+			if (amountOfHeal) then
+				---@type texturetable
+				local iconTable = Details:GetActorIcon(sourceActorObject)
+
+				---@type {name: string, amount: number, icon: texturetable}
+				local healTakenTable = {name = healerName, total = amountOfHeal, icon = iconTable}
+
+				resultTable[#resultTable+1] = healTakenTable
+			end
+		end
+	end
+
+	resultTable.totalValue = healTakenTotal
+	resultTable.combatTime = combatObject:GetCombatTime()
+	resultTable.headersAllowed = healingTakenHeadersAllowed
+
+	Details222.BreakdownWindow.SendGenericData(resultTable, actorObject, combatObject, instance)
+
+	if true then return end
 
 	local healing_taken = self.healing_taken
 	local curandeiros = self.healing_from
@@ -1720,7 +1832,7 @@ function atributo_heal:MontaInfoHealTaken()
 
 end
 
-function atributo_heal:MontaInfoOverHealing()
+function atributo_heal:MontaInfoOverHealing() --this should be deprecated now
 --pegar as habilidade de dar sort no heal
 
 	local instancia = info.instancia
@@ -1861,8 +1973,197 @@ function atributo_heal:MontaInfoOverHealing()
 end
 
 function atributo_heal:MontaInfoHealingDone()
+	---@type actor
+	local actorObject = self
+	---@type instance
+	local instance = info.instancia
+	---@type combat
+	local combatObject = instance:GetCombat()
+	---@type string
+	local playerName = actorObject:Name()
 
-	--pegar as habilidade de dar sort no heal
+	---@type number
+	local actorTotal = actorObject.total
+	---@type table
+	local actorSpellsSorted = {}
+	---@type table<number, spelltable>
+	local actorSpells = actorObject:GetSpellList()
+
+	--get time
+	local actorCombatTime
+	if (Details.time_type == 1 or not actorObject.grupo) then
+		actorCombatTime = actorObject:Tempo()
+	elseif (Details.time_type == 2) then
+		actorCombatTime = info.instancia.showing:GetCombatTime()
+	end
+
+	--actor spells
+	---@type table<string, number>
+	local alreadyAdded = {}
+	for spellId, spellTable in pairs(actorSpells) do
+		---@cast spellId number
+		---@cast spellTable spelltable
+
+		spellTable.ChartData = nil
+
+		---@type string
+		local spellName = _GetSpellInfo(spellId)
+		if (spellName) then
+			---@type number in which index the spell with the same name was stored
+			local index = alreadyAdded[spellName]
+			if (index) then
+				---@type spelltableadv
+				local bkSpellData = actorSpellsSorted[index]
+
+				bkSpellData.spellTables[#bkSpellData.spellTables+1] = spellTable
+
+				---@type bknesteddata
+				local nestedData = {spellId = spellId, spellTable = spellTable, petName = "", value = 0}
+				bkSpellData.nestedData[#bkSpellData.nestedData+1] = nestedData
+				bkSpellData.bCanExpand = true
+			else
+				---@type spelltableadv
+				local bkSpellData = {
+					id = spellId,
+					spellschool = spellTable.spellschool,
+					bIsExpanded = Details222.BreakdownWindow.IsSpellExpanded(spellId),
+					bCanExpand = false,
+
+					spellTables = {spellTable},
+					nestedData = {{spellId = spellId, spellTable = spellTable, petName = "", value = 0}},
+				}
+				detailsFramework:Mixin(bkSpellData, Details.SpellTableMixin)
+
+				actorSpellsSorted[#actorSpellsSorted+1] = bkSpellData
+				alreadyAdded[spellName] = #actorSpellsSorted
+			end
+		end
+	end
+
+	--pets spells
+	local actorPets = actorObject:GetPets()
+	for _, petName in ipairs(actorPets) do
+		---@type actor
+		local petActor = combatObject(DETAILS_ATTRIBUTE_HEAL, petName)
+		if (petActor) then --PET
+			local spells = petActor:GetSpellList()
+			for spellId, spellTable in pairs(spells) do
+				---@cast spellId number
+				---@cast spellTable spelltable
+
+				spellTable.ChartData = nil
+				--PET
+				---@type string
+				local spellName = _GetSpellInfo(spellId)
+				if (spellName) then
+					---@type number in which index the spell with the same name was stored
+					local index = alreadyAdded[spellName]
+					if (index) then --PET
+						---@type spelltableadv
+						local bkSpellData = actorSpellsSorted[index]
+
+						bkSpellData.spellTables[#bkSpellData.spellTables+1] = spellTable
+
+						---@type bknesteddata
+						local nestedData = {spellId = spellId, spellTable = spellTable, petName = petName, value = 0}
+						bkSpellData.nestedData[#bkSpellData.nestedData+1] = nestedData
+						bkSpellData.bCanExpand = true
+					else --PET
+						---@type spelltableadv
+						local bkSpellData = {
+							id = spellId,
+							spellschool = spellTable.spellschool,
+							expanded = Details222.BreakdownWindow.IsSpellExpanded(spellId),
+							bCanExpand = false,
+
+							spellTables = {spellTable},
+							nestedData = {{spellId = spellId, spellTable = spellTable, petName = petName, value = 0}},
+						}
+						detailsFramework:Mixin(bkSpellData, Details.SpellTableMixin)
+
+						actorSpellsSorted[#actorSpellsSorted+1] = bkSpellData
+						alreadyAdded[spellName] = #actorSpellsSorted
+					end
+				end
+			end
+		end
+	end
+
+	for i = 1, #actorSpellsSorted do
+		---@type spelltableadv
+		local bkSpellData = actorSpellsSorted[i]
+		Details.SpellTableMixin.SumSpellTables(bkSpellData.spellTables, bkSpellData)
+		--Details:Destroy(bkSpellData, "spellTables")
+	end
+
+	--table.sort(actorSpellsSorted, Details.Sort2)
+	table.sort(actorSpellsSorted, function(t1, t2)
+		return t1.total > t2.total
+	end)
+
+	actorSpellsSorted.totalValue = actorTotal
+	actorSpellsSorted.combatTime = actorCombatTime
+
+	--cleanup
+	Details:Destroy(alreadyAdded)
+
+	--actorSpellsSorted has the spell infomation, need to pass to the summary tab
+	--send to the breakdown window
+	Details222.BreakdownWindow.SendSpellData(actorSpellsSorted, actorObject, combatObject, instance)
+
+	--targets
+
+	---an array of breakdowntargettable
+	---@type breakdowntargettable[]
+	local targetList = {}
+
+	--get the targets table: in the class heal, an actor has two targets table, one for normal healing and one for overheal
+	---@type targettable
+	local normalTargetsTable = self:GetTargets("targets")
+	---@type targettable
+	local overhealTargetsTable = self:GetTargets("targets_overheal")
+
+	local targetTotalValue = 0
+	local targetOverhealTotalValue = 0
+
+	--build the data required by the breakdown window
+	for targetName, amount in pairs(normalTargetsTable) do
+		if (amount > 0) then
+			local overhealAmount = overhealTargetsTable[targetName] or 0
+			---@type breakdowntargettable
+			local bkTargetData = {
+				name = targetName,
+				total = amount,
+				overheal = overhealAmount,
+			}
+			targetTotalValue = targetTotalValue + amount
+			targetOverhealTotalValue = targetOverhealTotalValue + (overhealAmount)
+			tinsert(targetList, bkTargetData)
+		end
+	end
+
+	for targetName, amount in pairs(overhealTargetsTable) do
+		if (amount > 0) then
+			if (not normalTargetsTable[targetName]) then
+				---@type breakdowntargettable
+				local bkTargetData = {
+					name = targetName,
+					total = 0,
+					overheal = amount,
+				}
+				targetOverhealTotalValue = targetOverhealTotalValue + (amount)
+				tinsert(targetList, bkTargetData)
+			end
+		end
+	end
+
+	targetList.totalValue = targetTotalValue
+	targetList.totalValueOverheal = targetOverhealTotalValue
+	targetList.combatTime = actorCombatTime
+
+	Details222.BreakdownWindow.SendTargetData(targetList, actorObject, combatObject, instance)
+
+	if 1 then return end
 
 	local instancia = info.instancia
 	local total = self.total
@@ -2216,7 +2517,7 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 	end
 
 	--icone direito superior
-	local _, _, icone = _GetSpellInfo(spellid)
+	local spellName, _, icone = _GetSpellInfo(spellid)
 	info.spell_icone:SetTexture(icone)
 
 	local total = self.total
@@ -2270,21 +2571,11 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 				hits_string = hits_string .. "  |cFFDDDD44(" .. _math_floor(buff_uptime / info.instancia.showing:GetCombatTime() * 100) .. "% uptime)|r"
 			end
 
-			local spell_cast = misc_actor.spell_cast and misc_actor.spell_cast [spellid]
-
-			if (not spell_cast and misc_actor.spell_cast) then
-				local spellname = GetSpellInfo(spellid)
-				for casted_spellid, amount in pairs(misc_actor.spell_cast) do
-					local casted_spellname = GetSpellInfo(casted_spellid)
-					if (casted_spellname == spellname) then
-						spell_cast = amount .. " (|cFFFFFF00?|r)"
-					end
-				end
+			local amountOfCasts = info.instancia.showing:GetSpellCastAmount(self:Name(), spellName)
+			if (not amountOfCasts) then
+				amountOfCasts = "(|cFFFFFF00?|r)"
 			end
-			if (not spell_cast) then
-				spell_cast = "(|cFFFFFF00?|r)"
-			end
-			cast_string = cast_string .. spell_cast
+			cast_string = cast_string .. amountOfCasts
 		end
 
 		gump:SetaDetalheInfoTexto( index, 100,
@@ -2299,7 +2590,7 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 	--NORMAL
 		local normal_hits = esta_magia.n_amt
 		if (normal_hits > 0) then
-			local normal_curado = esta_magia.n_curado
+			local normal_curado = esta_magia.n_total
 			local media_normal = normal_curado/normal_hits
 			media_normal = max(media_normal, 0.000001)
 
@@ -2330,11 +2621,11 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 
 	--CRITICO
 		if (esta_magia.c_amt > 0) then
-			local media_critico = esta_magia.c_curado/esta_magia.c_amt
-			local T = (meu_tempo*esta_magia.c_curado)/esta_magia.total
+			local media_critico = esta_magia.c_total/esta_magia.c_amt
+			local T = (meu_tempo*esta_magia.c_total)/esta_magia.total
 			local P = media/max(media_critico, 0.0001)*100
 			T = P*T/100
-			local crit_hps = esta_magia.c_curado/T
+			local crit_hps = esta_magia.c_total/T
 			if (not crit_hps) then
 				crit_hps = 0
 			end
@@ -2724,10 +3015,12 @@ end
 						end
 					end
 
+					habilidade_shadow.spellschool = habilidade.spellschool
+
 					--soma todos os demais valores
 					for key, value in pairs(habilidade) do
 						if (type(value) == "number") then
-							if (key ~= "id") then
+							if (key ~= "id" and key ~= "spellschool") then
 								if (not habilidade_shadow [key]) then
 									habilidade_shadow [key] = 0
 								end
@@ -2759,10 +3052,6 @@ end
 
 			return shadow
 		end
-
-function atributo_heal:ColetarLixo (lastevent)
-	return _detalhes:ColetarLixo (class_type, lastevent)
-end
 
 atributo_heal.__add = function(tabela1, tabela2)
 

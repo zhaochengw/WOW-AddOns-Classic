@@ -1,0 +1,38 @@
+## Interface: 30401
+## Version: 1.2.5
+## Title: <BiaoGe> |cff00BFFF金团表格|r
+## Notes: 插件命令：/biaoge 或 /gbg
+## Author: 苍穹之霜
+## SavedVariables: BiaoGe
+## SavedVariablesPerCharacter: BiaoGeA
+
+Media\Minimap\embeds.xml
+
+DataBase.lua
+
+Loot.lua
+function.lua
+
+FBUIfunction.lua
+HistoryUIfunction.lua
+ReceiveUIfunction.lua
+FBUI\ICC.lua
+FBUI\TOC.lua
+FBUI\ULD.lua
+FBUI\NAXX.lua
+
+History.lua
+Receive.lua
+Hope.lua
+Helper.lua
+
+BiaoGe.lua
+
+TongBao\ZhangDan.lua
+TongBao\LiuPai.lua
+TongBao\XiaoFei.lua
+TongBao\QianKuan.lua
+TongBao\WCL.lua
+TongBao\YongShi.lua
+
+Media\Minimap\minimap.lua

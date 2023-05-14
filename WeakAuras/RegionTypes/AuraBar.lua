@@ -297,10 +297,22 @@ local barPrototype = {
     -- Create statusbar illusion
     if (self.horizontal) then
       local xProgress = self:GetRealSize() * progress;
-      self.fgMask:SetWidth(xProgress > 0.0001 and (xProgress + 0.1) or 0.1);
+      local show = xProgress > 0.0001
+      self.fgMask:SetWidth(show and (xProgress + 0.1) or 0.1);
+      if show then
+        self.fg:Show()
+      else
+        self.fg:Hide()
+      end
     else
       local yProgress = select(2, self:GetRealSize()) * progress;
-      self.fgMask:SetHeight(yProgress > 0.0001 and (yProgress + 0.1) or 0.1);
+      local show = yProgress > 0.0001
+      self.fgMask:SetHeight(show and (yProgress + 0.1) or 0.1);
+      if show then
+        self.fg:Show()
+      else
+        self.fg:Hide()
+      end
     end
 
     local sparkHidden = self.spark.sparkHidden;
@@ -1061,7 +1073,7 @@ local function create(parent)
   end
 
   local bar = CreateFrame("Frame", nil, region);
-  Mixin(bar, SmoothStatusBarMixin);
+  Mixin(bar, Private.SmoothStatusBarMixin);
 
   -- Now create a bunch of textures
   local bg = region:CreateTexture(nil, "ARTWORK");

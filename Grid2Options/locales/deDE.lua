@@ -424,6 +424,7 @@ L["indicator"] = "Indikator"
 -- L["Create new indicator"] = ""
 -- L["Delete Indicator"] = ""
 -- L["Rename Indicator"] = ""
+-- L["Highlight Indicator"] = ""
 -- L["Indicator Type"] = ""
 -- L["Icon"] = ""
 -- L["Max Icons"] = ""
@@ -436,6 +437,15 @@ L["Show Tooltip"] = "Tooltip anzeigen"
 -- L["Enable Advanced Tooltips"] = ""
 -- L["Display default unit tooltip when Out of Combat"] = ""
 
+-- L["First Aura"] = ""
+-- L["Select the index of the first private aura to display."] = ""
+-- L["Last Aura"] = ""
+-- L["Select the index of the last private aura to display."] = ""
+-- L["Enable Cooldown"] = ""
+-- L["Display a cooldown animation."] = ""
+-- L["Enable Numbers"] = ""
+-- L["Display cooldown numbers."] = ""
+
 -- indicator types
 L["icon"] = "Symbol"
 L["square"] = "Quadrat"
@@ -444,6 +454,8 @@ L["bar"] = "Leiste"
 -- L["icons"] = ""
 -- L["multibar"] = ""
 -- L["portrait"] = ""
+-- L["glowborder"] = ""
+-- L["privateauras"] = ""
 
 -- indicators
 L["corner-top-left"] = "Ecke oben Links"
@@ -624,6 +636,7 @@ L["offline"] = "Offline"
 -- L["raid-icon-player"] = ""
 -- L["raid-icon-target"] = ""
 L["range"] = "Reichweite"
+-- L["rangealt"] = ""
 L["ready-check"] = "Bereitschafts Check"
 L["role"] = "Rolle"
 L["dungeon-role"] = "Dungeon-Rolle"
@@ -640,6 +653,10 @@ L["pvp"] = "PvP"
 L["direction"] = "Richtung"
 -- L["resurrection"] = ""
 -- L["self"] = ""
+-- L["boss-shields"] = ""
+-- L["my-heals-incoming"] = ""
+-- L["boss-debuffs"] = ""
+-- L["unit-index"] = ""
 
 L["Curse"] = "Fluch"
 L["Poison"] = "Gift"
@@ -647,16 +664,10 @@ L["Disease"] = "Krankheit"
 L["Magic"] = "Magie"
 
 L["raid-debuffs"] = "Schlachtzug-Schwächungszauber"
--- L["raid-debuffs2"] = ""
--- L["raid-debuffs3"] = ""
--- L["raid-debuffs4"] = ""
--- L["raid-debuffs5"] = ""
-
--- L["boss-shields"] = ""
--- L["my-heals-incoming"] = ""
--- L["boss-debuffs"] = ""
-
--- class specific buffs & debuffs statuses
+L["raid-debuffs2"] = "Schlachtzug-Schwächungszauber2"
+L["raid-debuffs3"] = "Schlachtzug-Schwächungszauber3"
+L["raid-debuffs4"] = "Schlachtzug-Schwächungszauber4"
+L["raid-debuffs5"] = "Schlachtzug-Schwächungszauber5"
 
 -- shaman
 L["EarthShield"] = "Erdschild"
@@ -696,6 +707,7 @@ L["SpiritOfRedemption"] = "Geist der Erlösung"
 -- L["EnvelopingMist"] = ""
 -- L["RenewingMist"] = ""
 -- L["LifeCocoon"] = ""
+-- L["monk-stagger"] = ""
 
 -- mage
 L["FocusMagic"] = "Magie fokussieren"
@@ -887,6 +899,11 @@ L["Resurrected"] = "Wiederbelebt"
 
 -- combat status
 -- L["combat"] = ""
+-- L["Active Out Of Combat"] = ""
+-- L["Enable this option to invert the status so it will become activated when the player is Out Of Combat."] = ""
+
+-- pvp status
+-- L["Hide inside Instances"] = ""
 
 -- summon status
 -- L["summon"] = ""
@@ -896,6 +913,12 @@ L["Resurrected"] = "Wiederbelebt"
 -- L["Player accepted the summon."] = ""
 -- L["Summon Declined"] = ""
 -- L["Player declined the summon."] = ""
+
+-- unit-index status
+-- L["Enabled only for party units"] = ""
+-- L["Raid indexes will not be displayed."] = ""
+-- L["Enabled for player unit"] = ""
+-- L["Display a zero index for player unit while in party or raid."] = ""
 
 -- status descriptions
 -- L["highlights your target"] = ""
@@ -1402,6 +1425,8 @@ L["\"%s\" has sent you a profile configuration. Do you want to activate received
 -- L["Detach pets groups"] = ""
 -- L["Enable this option to detach the pets group, so pets group can be moved individually."] = ""
 -- L["Special units headers visibility."] = ""
+-- L["Display Player unit"] = ""
+-- L["Enable this option to display the player unit."] = ""
 -- L["Display Target unit"] = ""
 -- L["Enable this option to display the target unit."] = ""
 -- L["Display Focus unit"] = ""

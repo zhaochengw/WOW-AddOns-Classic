@@ -1665,7 +1665,7 @@ function NWB:receivedData(dataReceived, sender, distribution, elapsed)
 							end
 							--This should have a check added later that the timestamp is newer, if they ever fix the npc from having random 17h timers...
 							if (data.wintergraspTime and data.wintergraspTime > NWB.data.wintergraspTime and v < GetServerTime() + 10800
-									and v > NWB.data[k] - 1800) then
+									and v > NWB.data[k] - 1800 and v > GetServerTime() - NWB.wgExpire) then
 								if (data.wintergraspTime > GetServerTime() - 21700
 										and data.wintergraspTime < GetServerTime() + 21700) then
 									if (data.wintergraspFaction) then
@@ -2977,12 +2977,16 @@ end
 function NWB:resetOldLockouts()
 	for realm, realmData in pairs(NWB.db.global) do
 		if (type(realmData) == "table" and realmData ~= "minimapIcon" and realmData ~= "data") then
-			if (realmData.myChars) then
-				for char, charData in pairs(realmData.myChars) do
-					if (charData.savedInstances) then
-						for k, v in pairs(charData.savedInstances) do
-							if (v.resetTime and v.resetTime < GetServerTime()) then
-								NWB.db.global[realm].myChars[char].savedInstances[k] = nil;
+			for faction, factionData in pairs(realmData) do
+				if (type(factionData) == "table") then
+					if (factionData.myChars) then
+						for char, charData in pairs(factionData.myChars) do
+							if (charData.savedInstances) then
+								for k, v in pairs(charData.savedInstances) do
+									if (v.resetTime and v.resetTime < GetServerTime()) then
+										NWB.db.global[realm][faction].myChars[char].savedInstances[k] = nil;
+									end
+								end
 							end
 						end
 					end
