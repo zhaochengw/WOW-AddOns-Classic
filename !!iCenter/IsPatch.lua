@@ -1,4 +1,8 @@
-﻿
+﻿------观察报错-------
+if not InspectTalentFrameSpentPoints 
+then InspectTalentFrameSpentPoints = CreateFrame("FRAME") end
+------观察报错-------
+
 local prefix = "%%d %%s ";
 if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     prefix = "%%d%%s";

@@ -493,7 +493,7 @@ PPA.EventHdlrs = {
       pixelPerfectAlignSaved = {}
     end
     pixelPerfectAlignSaved.addonVersion = PPA.manifestVersion
-    pixelPerfectAlignSaved.addonHash = "a7b53d5"
+    pixelPerfectAlignSaved.addonHash = "01aac80"
     PPA:deepmerge(PPA, nil, pixelPerfectAlignSaved)
     PPA:Debug(3, "Merged in saved variables.")
     PPA.savedVar = pixelPerfectAlignSaved -- by ref, for SetSaved,...
@@ -530,7 +530,7 @@ function PPA.Slash(arg) -- can't be a : because used directly as slash command
     local subText = L["Please submit on discord or on https://|cFF99E5FFbit.ly/ppabug|r or email"]
     PPA:PrintDefault(L["PixelPerfectAddon bug report open: "] .. subText)
     -- base molib will add version and date/timne
-    PPA:BugReport(subText, "a7b53d5\n\n" .. L["Bug report from slash command"])
+    PPA:BugReport(subText, "01aac80\n\n" .. L["Bug report from slash command"])
   elseif cmd == "t" then
     PPA:ToggleGrid()
   elseif cmd == "i" then
@@ -540,7 +540,7 @@ function PPA.Slash(arg) -- can't be a : because used directly as slash command
   elseif cmd == "v" then
     -- version
     PPA:PrintDefault("PixelPerfectAlign " .. PPA.manifestVersion ..
-                       " (a7b53d5) by MooreaTv (moorea@ymail.com)")
+                       " (01aac80) by MooreaTv (moorea@ymail.com)")
   elseif PPA:StartsWith(arg, "coord") then
     PPA:ToggleCoordinates()
   elseif cmd == "c" then
@@ -608,7 +608,7 @@ function PPA:CreateOptionsPanel()
   PPA.optionsPanel = p
   p:addText(L["PixelPerfectAlign options"], "GameFontNormalLarge"):Place()
   p:addText(L["These options let you control the behavior of PixelPerfectAlign"] .. " " .. PPA.manifestVersion ..
-              " a7b53d5"):Place()
+              " 01aac80"):Place()
 
   local lineLengthSlider = p:addSlider(L["Grid line length"], L["How many pixels for the lines/crosses drawn"], 1, 128,
                                        1):Place(8, 24)

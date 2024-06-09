@@ -26,7 +26,7 @@ Grid2Options:AddGeneralOptions( "General", "Themes", {
 			end
 		end,
 	},
-}, nil)
+})
 
 --==========================================================================
 -- Icons Zoom
@@ -51,6 +51,28 @@ Grid2Options:AddGeneralOptions( "General", "Icon Textures Zoom", {
 })
 
 --==========================================================================
+-- Raid Size calculation
+--==========================================================================
+
+Grid2Options:AddGeneralOptions( "General", "Raid Size", {
+	raidSizeType = {
+		type = "select",
+		name = L["Choose the Raid Size calculation method"],
+		desc = L["This setting is used to setup different layouts, frame sizes or themes depending of the raid size."],
+		width = "double",
+		order = 5,
+		get = function()
+			return Grid2.db.profile.raidSizeType or 0
+		end,
+		set = function(_,v)
+			Grid2.db.profile.raidSizeType = (v~=0) and v or nil
+			Grid2:GroupChanged()
+		end,
+		values = Grid2Options.raidSizeValues,
+	},
+})
+
+--==========================================================================
 -- Text formatting
 --==========================================================================
 
@@ -67,6 +89,7 @@ Grid2Options:AddGeneralOptions( "General", "Icon Textures Zoom", {
 		invertDurationStack      = false,
 		secondsElapsedFormat     = "%ds",
 		minutesElapsedFormat     = "%dm",
+		percentFormat            = "%.0f%%",
 	}
 	shortFormat = used when duration >= 1 sec
 	longFormat  = used when duration <  1 sec
@@ -75,14 +98,8 @@ Grid2Options:AddGeneralOptions( "General", "Icon Textures Zoom", {
 	User friendly format tokens:
 		"%d" = represents duration, becomes translated to/from: "%.0f" or "%.1f" (floating point number)
 		"%s" = represents stacks,   becomes translated to/from: "%d" (integer number)
+		"%p" = represents a percent value
 --]]
-
--- Update text indicators database
-local function UpdateTextIndicators()
-	for _, indicator in Grid2:IterateIndicators("text") do
-		indicator:UpdateDB()
-	end
-end
 
 -- Posible values for "Display tenths of a second" options
 local tenthsValues = { L["Never"], L["Always"] , L["When duration<1sec"] }
@@ -137,7 +154,7 @@ do
 			dbx["short"..formatType] = short
 			dbx["long" ..formatType] = long
 			if inverted ~= nil then	dbx.invertDurationStack = inverted end
-			UpdateTextIndicators()
+			Grid2Options:UpdateIndicators('text')
 		end
 	end
 end
@@ -190,7 +207,7 @@ Grid2Options:AddGeneralOptions( "General", "Text Formatting", {
 		set = function(_,v)
 			string.format(v, 1) -- sanity check, crash if v is not a correct format mask
 			Grid2.db.profile.formatting.secondsElapsedFormat  = v
-			UpdateTextIndicators()
+			Grid2Options:UpdateIndicators('text')
 		end,
 	},
 	minFormat = {
@@ -204,7 +221,25 @@ Grid2Options:AddGeneralOptions( "General", "Text Formatting", {
 		set = function(_,v)
 			string.format(v, 1) -- sanity check, crash if v is not a correct format mask
 			Grid2.db.profile.formatting.minutesElapsedFormat  = v
-			UpdateTextIndicators()
+			Grid2Options:UpdateIndicators('text')
+		end,
+	},
+	separator3 = { type = "description", name = "", order = 9 },
+	percentFormat = {
+		type = "input",
+		order = 10,
+		width = "double",
+		name = L["Percent Format"],
+		desc = L["Examples:\n%p\n%p percent"],
+		get = function()
+			return Grid2.db.profile.formatting.percentFormat:gsub("%%.0f","%%p"):gsub("%%%%","%%")
+		end,
+		set = function(_,v)
+			v= (v=='') and "%.0f%%" or v:gsub("%%p","$p"):gsub("%%","%%%%"):gsub("$p","%%.0f")
+			string.format(v, 1) -- sanity check, crash if v is not a correct format mask
+			Grid2.db.profile.formatting.percentFormat  = v
+			Grid2:GetStatusByName('health-current'):UpdateDB()
+			Grid2Options:UpdateIndicators('text')
 		end,
 	},
 })
@@ -230,7 +265,6 @@ if Grid2.isVanilla then
 		},
 	})
 end
-
 
 --==========================================================================
 -- Target on mouse down
@@ -267,96 +301,61 @@ if Grid2Layout.minimapIcon then -- checks if Grid2LDB addon was loaded
 			desc = L["Show Minimap Icon"],
 			width = "full",
 			order = 119,
-			get = function () return not Grid2Layout.db.shared.minimapIcon.hide end,
-			set = function (_, v)
-				Grid2Layout.db.shared.minimapIcon.hide = not v
-				if v then
-					Grid2Layout.minimapIcon:Show("Grid2")
-				else
-					Grid2Layout.minimapIcon:Hide("Grid2")
-				end
-			end,
+			get = function () return Grid2:SetMinimapIcon('query') end,
+			set = function (_, v) Grid2:SetMinimapIcon(v) end,
 		},
 	})
 end
-
 
 --==========================================================================
 -- Hide blizzard raid frames
 --==========================================================================
 
 do
-	local addons = { "Blizzard_CompactRaidFrames", "Blizzard_CUFProfiles" }
-	local function RaidAddonsEnabled(enabled)
-		local func = enabled and EnableAddOn or DisableAddOn
-		for _, v in pairs(addons) do
-			func(v)
+	local order = 0
+	local function Fix(k,v)
+		if k=='party' and GetCVar("useCompactPartyFrames") then
+			SetCVar("useCompactPartyFrames", v and '1' or '0') -- special case for parties in classic because PartyFrame does not exist
+		end
+		if not IsAddOnLoaded("Blizzard_CompactRaidFrames") then
+			EnableAddOn("Blizzard_CompactRaidFrames") -- reenabling CompactRaidFrames addon because in dragonflight it cannot be disabled
+			EnableAddOn("Blizzard_CUFProfiles")
 		end
 	end
-	if Grid2.isWoW90 then -- retail
-		local function Get(index) -- true=party&raid / 2=raid / 1=party
-			local v = Grid2.db.profile.hideBlizzardRaidFrames
-			return v==true or tonumber(v)==index
-		end
-		local function Set(index)
-			local v = Grid2.db.profile.hideBlizzardRaidFrames
-			v = bit.bxor( (v and tonumber(v)) or (v and 3) or 0, index ) -- true<=>3 / 2<=>2 / 1<=>1 / nil<=>0
-			Grid2.db.profile.hideBlizzardRaidFrames = (v==3) or (v>0 and v) or nil
-		end
-		local function MessageReload()
-			Grid2Options:ConfirmDialog(L['Changes will take effect on next UI reload. Do you want to reload the UI now ?'], function()	ReloadUI() end)
-		end
-		local function FixAddonNotLoaded() -- fix: reenabling CompactRaidFrames addon because in dragonflight it cannot be disabled.
-			RaidAddonsEnabled(true)
-			Grid2.db.profile.hideBlizzardRaidFrames = nil
-		end
-		Grid2Options:AddGeneralOptions( "General", "Blizzard Raid Frames", {
-			hideBlizzardRaidFrames = {
-				type = "toggle",
-				name = L["Hide Blizzard Raid Frames"],
-				desc = L["Hide Blizzard Raid Frames"],
-				width = "full",
-				order = 120,
-				get = function () return Get(2) or not IsAddOnLoaded(addons[1]) end,
-				set = function (_, v)
-					if IsAddOnLoaded(addons[1]) then
-						Set(2)
-					else
-						FixAddonNotLoaded()
-					end
-					MessageReload()
-				end,
-			},
-			hideBlizzardPartyFrames = {
-				type = "toggle",
-				name = L["Hide Blizzard Party Frames"],
-				desc = L["Hide Blizzard Party Frames"],
-				width = "full",
-				order = 121,
-				get = function () return Get(1) end,
-				set = function (_, v)
-					Set(1)
-					MessageReload()
-				end,
-			},
-		})
-	else -- classic
-		Grid2Options:AddGeneralOptions( "General", "Blizzard Raid Frames", {
-			hideBlizzardRaidFrames = {
-				type = "toggle",
-				name = L["Hide Blizzard Raid Frames"],
-				desc = L["Hide Blizzard Raid Frames"],
-				width = "full",
-				order = 120,
-				get = function () return not IsAddOnLoaded(addons[1]) end,
-				set = function (_, v)
-					RaidAddonsEnabled(not v)
-					ReloadUI()
-				end,
-				confirm = function() return "UI will be reloaded. Are your sure ?" end,
-			},
-		})
+	local function Reload()
+		Grid2Options:ConfirmDialog(L['Changes will take effect on next UI reload. Do you want to reload the UI now ?'], ReloadUI)
 	end
+	local function Get(key)
+		local v = Grid2.db.profile.hideBlizzard
+		return v and v[key]
+	end
+	local function Set(key)
+		local dbx = Grid2.db.profile
+		dbx.hideBlizzard = dbx.hideBlizzard or {}
+		dbx.hideBlizzard[key] = not dbx.hideBlizzard[key] or nil
+		if not next(dbx.hideBlizzard) then dbx.hideBlizzard = nil end
+	end
+	local function Create(key, text, disabled)
+		if disabled then return end
+		order = order + 1
+		return {
+			type = "toggle",
+			width = 0.43,
+			order = order,
+			name = L[text],
+			desc = L[text],
+			get = function () return Get(key) end,
+			set = function (_, v) Fix(key,v); Set(key,v); Reload(); end,
+		}
+	end
+	Grid2Options:AddGeneralOptions( "General", "Hide Blizzard Frames", {
+		raid   = Create( 'raid',   "Raid"    ),
+		party  = Create( 'party',  "Party"   ),
+		player = Create( 'player', "Player"  ),
+		target = Create( 'target', "Target"  ),
+		focus  = Create( 'focus',  "Focus",  _G.FocusFrame==nil),
+		pet    = Create( 'pet',    "Pet"     ),
+	})
 end
 
 --==========================================================================

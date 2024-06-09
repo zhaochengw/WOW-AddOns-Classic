@@ -54,16 +54,16 @@ function Auctionator.CraftingInfo.DoTradeSkillReagentsSearch()
   GetOutputName(function(outputName)
     local items = {}
     if outputName then
-      table.insert(items, outputName)
+      table.insert(items, {searchString = outputName, isExact = true})
     end
     local recipeIndex = GetTradeSkillSelectionIndex()
 
     for reagentIndex = 1, GetTradeSkillNumReagents(recipeIndex) do
-      local reagentName = GetTradeSkillReagentInfo(recipeIndex, reagentIndex)
-      table.insert(items, reagentName)
+      local reagentName, _, count = GetTradeSkillReagentInfo(recipeIndex, reagentIndex)
+      table.insert(items, {searchString = reagentName, quantity = count, isExact = true})
     end
 
-    Auctionator.API.v1.MultiSearchExact(AUCTIONATOR_L_REAGENT_SEARCH, items)
+    Auctionator.API.v1.MultiSearchAdvanced(AUCTIONATOR_L_REAGENT_SEARCH, items)
   end)
 end
 
@@ -130,8 +130,10 @@ local function GetEnchantProfit()
   if currentAH == nil then
     currentAH = 0
   end
+  local age = Auctionator.API.v1.GetAuctionAgeByItemID(AUCTIONATOR_L_REAGENT_SEARCH, data.itemID)
+  local exact = Auctionator.API.v1.IsAuctionDataExactByItemID(AUCTIONATOR_L_REAGENT_SEARCH, data.itemID)
 
-  return math.floor(currentAH * Auctionator.Constants.AfterAHCut - vellumCost - toCraft)
+  return math.floor(currentAH * Auctionator.Constants.AfterAHCut - vellumCost - toCraft), age, currentAH ~= 0, exact
 end
 
 local function GetAHProfit()
@@ -152,9 +154,11 @@ local function GetAHProfit()
   if currentAH == nil then
     currentAH = 0
   end
+  local age = Auctionator.API.v1.GetAuctionAgeByItemLink(AUCTIONATOR_L_REAGENT_SEARCH, recipeLink)
+  local exact = Auctionator.API.v1.IsAuctionDataExactByItemLink(AUCTIONATOR_L_REAGENT_SEARCH, recipeLink)
   local toCraft = GetSkillReagentsTotal()
 
-  return math.floor(currentAH * count * Auctionator.Constants.AfterAHCut - toCraft)
+  return math.floor(currentAH * count * Auctionator.Constants.AfterAHCut - toCraft), age, currentAH ~= 0, exact
 end
 
 local function CraftCostString()
@@ -187,13 +191,13 @@ function Auctionator.CraftingInfo.GetInfoText()
   end
 
   if Auctionator.Config.Get(Auctionator.Config.Options.CRAFTING_INFO_SHOW_PROFIT) then
-    local profit = GetAHProfit()
+    local profit, age, anyPrice, exact = GetAHProfit()
 
     if profit ~= nil then
       if lines > 0 then
         result = result .. "\n"
       end
-      result = result .. ProfitString(profit)
+      result = result .. ProfitString(profit) .. Auctionator.CraftingInfo.GetProfitWarning(profit, age, anyPrice, exact)
       lines = lines + 1
     end
   end

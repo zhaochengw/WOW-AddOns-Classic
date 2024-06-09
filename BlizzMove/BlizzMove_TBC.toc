@@ -5,14 +5,13 @@
 ## IconTexture: 982414
 ## X-WoWI-ID: 23875
 ## X-Curse-Project-ID: 17809
-## Version: v3.5.11
+## Version: v3.5.22
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
 ## SavedVariables: BlizzMoveDB
 
 # Libraries
 Libs\Libs.xml
-TaintLess.xml
 
 # Add-On
 BlizzMove.lua

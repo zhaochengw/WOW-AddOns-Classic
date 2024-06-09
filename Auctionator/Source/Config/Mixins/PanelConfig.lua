@@ -6,10 +6,35 @@ function AuctionatorPanelConfigMixin:SetupPanel()
   end
 
   self.okay = function()
-    self:Save()
+    if self.shownSettings then
+      self:Save()
+    end
   end
 
-  InterfaceOptions_AddCategory(self, "Auctionator")
+  self.shownSettings =  false
+
+  self.OnCommit = self.okay
+  self.OnDefault = function() end
+  self.OnRefresh = function() end
+
+  if Settings and SettingsPanel then
+    if self.parent == nil then
+      local category = Settings.RegisterCanvasLayoutCategory(self, self.name)
+      category.ID = self.name
+      Settings.RegisterAddOnCategory(category)
+    else
+      local category = Settings.GetCategory(self.parent)
+      local subcategory = Settings.RegisterCanvasLayoutSubcategory(category, self, self.name)
+      Settings.RegisterAddOnCategory(subcategory)
+    end
+  else
+    InterfaceOptions_AddCategory(self, "Auctionator")
+  end
+end
+
+function AuctionatorPanelConfigMixin:OnShow()
+  self:ShowSettings()
+  self.shownSettings = true
 end
 
 -- Derive

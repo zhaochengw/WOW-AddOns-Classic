@@ -9,8 +9,11 @@
 	<!-- Worn trinkets template -->
 	<CheckButton name = "TrinketMenuMainTrinketTemplate" inherits = "ActionButtonTemplate,SecureActionButtonTemplate" virtual = "true">
 		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+			</OnLoad>
 			<PostClick>
-				TrinketMenu.MainTrinket_OnClick(self)
+				TrinketMenu.MainTrinket_OnClick(self, button, down)
 			</PostClick>
 			<OnEnter>
 				if TrinketMenuOptions.MenuOnRight == "OFF" then
@@ -36,7 +39,7 @@
 				end
 			</OnLoad>
 			<PostClick>
-				TrinketMenu.MenuTrinket_OnClick(self)
+				TrinketMenu.MenuTrinket_OnClick(self, button, down)
 			</PostClick>
 			<OnEnter>
 				TrinketMenu.MenuTrinketTooltip(self)

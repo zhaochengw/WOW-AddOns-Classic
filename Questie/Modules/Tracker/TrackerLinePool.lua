@@ -7,8 +7,6 @@ local TrackerLinePool = QuestieLoader:CreateModule("TrackerLinePool")
 local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
 ---@type TrackerBaseFrame
 local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
----@type TrackerQuestFrame
-local TrackerQuestFrame = QuestieLoader:ImportModule("TrackerQuestFrame")
 ---@type TrackerUtils
 local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
 ---@type TrackerQuestTimers
@@ -28,9 +26,6 @@ local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
 local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestieDB
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
----@type QuestEventHandler
-local QuestEventHandler = QuestieLoader:ImportModule("QuestEventHandler")
-local _QuestEventHandler = QuestEventHandler.private
 
 ---@type l10n
 local l10n = QuestieLoader:ImportModule("l10n")
@@ -49,13 +44,13 @@ local lineMarginLeft = 10
 ---@param questFrame Frame
 function TrackerLinePool.Initialize(questFrame)
     local trackerQuestFrame = questFrame
-    local trackerFontSizeQuest = Questie.db.global.trackerFontSizeQuest
+    local trackerFontSizeQuest = Questie.db.profile.trackerFontSizeQuest
 
     -- create linePool for quests/achievements
     local nextFrame
     for i = 1, linePoolSize do
         local timeElapsed = 0
-        local line = CreateFrame("Button", nil, trackerQuestFrame.ScrollChildFrame)
+        local line = CreateFrame("Button", "linePool" .. i, trackerQuestFrame.ScrollChildFrame)
         line:SetWidth(1)
         line:SetHeight(1)
         line.label = line:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -119,7 +114,7 @@ function TrackerLinePool.Initialize(questFrame)
                 timeElapsed = timeElapsed + elapsed
 
                 if timeElapsed > 1 and self.trackTimedQuest and self.label.activeTimer then
-                    local timeRemainingString, timeRemaining = TrackerQuestTimers:GetRemainingTimeByQuestId(self.Quest.Id)
+                    local _, timeRemaining = TrackerQuestTimers:GetRemainingTimeByQuestId(self.Quest.Id)
 
                     if timeRemaining ~= nil then
                         if timeRemaining > 1 then
@@ -128,13 +123,6 @@ function TrackerLinePool.Initialize(questFrame)
 
                         if timeRemaining == 1 then
                             TrackerQuestTimers:UpdateTimerFrame()
-
-                            C_Timer.After(1, function()
-                                Questie:Debug(Questie.DEBUG_INFO, "TrackerLinePool: Quest Timer Expired!")
-
-                                -- Assume the timer ran out so we need to manually trigger a QuestLog Update
-                                _QuestEventHandler:UpdateAllQuests()
-                            end)
                         end
 
                         timeElapsed = 0
@@ -150,11 +138,11 @@ function TrackerLinePool.Initialize(questFrame)
 
         function line:SetVerticalPadding(amount)
             if self.mode == "zone" then
-                self:SetHeight(Questie.db.global.trackerFontSizeZone + amount)
+                self:SetHeight(Questie.db.profile.trackerFontSizeZone + amount)
             elseif self.mode == "quest" or "achieve" then
-                self:SetHeight(Questie.db.global.trackerFontSizeQuest + amount)
+                self:SetHeight(Questie.db.profile.trackerFontSizeQuest + amount)
             else
-                self:SetHeight(Questie.db.global.trackerFontSizeObjective + amount)
+                self:SetHeight(Questie.db.profile.trackerFontSizeObjective + amount)
             end
         end
 
@@ -175,19 +163,19 @@ function TrackerLinePool.Initialize(questFrame)
 
         line:SetScript("OnEnter", function(self)
             TrackerLinePool.OnHighlightEnter(self)
-            TrackerFadeTicker.OnEnter()
+            TrackerFadeTicker.Unfade()
         end)
 
         line:SetScript("OnLeave", function(self)
             TrackerLinePool.OnHighlightLeave(self)
-            TrackerFadeTicker.OnLeave()
+            TrackerFadeTicker.Fade()
         end)
 
         -- create objective complete criteria marks
-        local criteriaMark = CreateFrame("Button", nil, line)
+        local criteriaMark = CreateFrame("Button", "linePool.criteriaMark" .. i, line)
         criteriaMark.texture = criteriaMark:CreateTexture(nil, "OVERLAY", nil, 0)
-        criteriaMark.texture:SetWidth(Questie.db.global.trackerFontSizeObjective)
-        criteriaMark.texture:SetHeight(Questie.db.global.trackerFontSizeObjective)
+        criteriaMark.texture:SetWidth(Questie.db.profile.trackerFontSizeObjective)
+        criteriaMark.texture:SetHeight(Questie.db.profile.trackerFontSizeObjective)
         criteriaMark.texture:SetAllPoints(criteriaMark)
 
         criteriaMark:SetWidth(1)
@@ -201,14 +189,18 @@ function TrackerLinePool.Initialize(questFrame)
 
                 if criteria == true then
                     self.texture:SetTexture("Interface\\Addons\\Questie\\Icons\\Checkmark")
+                    ---------------------------------------------------------------------
+                    -- Just in case we decide to show the minus sign for incompletes
+                    ---------------------------------------------------------------------
                     --self.texture:SetAlpha(1)
                     --else
                     --self.texture:SetTexture("Interface\\Addons\\Questie\\Icons\\Minus")
                     --self.texture:SetAlpha(0.5)
+                    ---------------------------------------------------------------------
                 end
 
-                self:SetWidth(Questie.db.global.trackerFontSizeObjective)
-                self:SetHeight(Questie.db.global.trackerFontSizeObjective)
+                self:SetWidth(Questie.db.profile.trackerFontSizeObjective)
+                self:SetHeight(Questie.db.profile.trackerFontSizeObjective)
             end
         end
 
@@ -218,7 +210,7 @@ function TrackerLinePool.Initialize(questFrame)
         line.criteriaMark = criteriaMark
 
         -- create expanding zone headers for quests sorted by zones
-        local expandZone = CreateFrame("Button", nil, line)
+        local expandZone = CreateFrame("Button", "linePool.expandZone" .. i, line)
         expandZone:SetWidth(1)
         expandZone:SetHeight(1)
         expandZone:SetPoint("TOPLEFT", line, "TOPLEFT", 0, 0)
@@ -260,6 +252,7 @@ function TrackerLinePool.Initialize(questFrame)
                         C_Timer.After(0.1, function()
                             if Questie.db.char.minAllQuestsInZone[self.zoneId].isTrue then
                                 -- Places all QuestID's into the collapsedQuests table and keeps the Min/Max buttons in sync.
+                                Questie:Debug(Questie.DEBUG_DEVELOP, "[TrackerLinePool:minAllQuestsInZone] - Minimize")
                                 for questId, _ in pairs(Questie.db.char.minAllQuestsInZone[self.zoneId]) do
                                     if type(questId) == "number" then
                                         Questie.db.char.collapsedQuests[questId] = true
@@ -269,6 +262,7 @@ function TrackerLinePool.Initialize(questFrame)
                                 Questie.db.char.minAllQuestsInZone[self.zoneId].isTrue = nil
                             else
                                 -- Removes all QuestID's from the collapsedQuests table.
+                                Questie:Debug(Questie.DEBUG_DEVELOP, "[TrackerLinePool:minAllQuestsInZone] - Maximize")
                                 for questId, _ in pairs(Questie.db.char.minAllQuestsInZone[self.zoneId]) do
                                     if type(questId) == "number" then
                                         Questie.db.char.collapsedQuests[questId] = nil
@@ -286,8 +280,10 @@ function TrackerLinePool.Initialize(questFrame)
                 else
                     if self.mode == 1 then
                         self:SetMode(0)
+                        Questie:Debug(Questie.DEBUG_DEVELOP, "[TrackerLinePool:expandZone] - Minimize")
                     else
                         self:SetMode(1)
+                        Questie:Debug(Questie.DEBUG_DEVELOP, "[TrackerLinePool:expandZone] - Maximize")
                     end
 
                     if Questie.db.char.collapsedZones[self.zoneId] == true then
@@ -305,20 +301,97 @@ function TrackerLinePool.Initialize(questFrame)
 
         expandZone:SetScript("OnEnter", function(self)
             TrackerLinePool.OnHighlightEnter(self)
-            TrackerFadeTicker.OnEnter()
+            TrackerFadeTicker.Unfade()
         end)
 
         expandZone:SetScript("OnLeave", function(self)
             TrackerLinePool.OnHighlightLeave(self)
-            TrackerFadeTicker.OnLeave()
+            TrackerFadeTicker.Fade()
         end)
 
         expandZone:Hide()
 
         line.expandZone = expandZone
 
+        -- create play buttons for AI_VoiceOver
+        local playButton = CreateFrame("Button", "linePool.playButton" .. i, line)
+        playButton:SetWidth(20)
+        playButton:SetHeight(20)
+        playButton:SetHitRectInsets(2, 2, 2, 2)
+        playButton:SetPoint("RIGHT", line.label, "LEFT", -4, 0)
+        playButton:SetFrameLevel(0)
+        playButton:SetNormalTexture("Interface\\Addons\\Questie\\Icons\\QuestLogPlayButton")
+        playButton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight")
+
+        playButton.SetPlayButton = function(self, questId)
+            if questId ~= self.mode then
+                self.mode = questId
+
+                if questId and TrackerUtils:IsVoiceOverLoaded() then
+                    self:Show()
+                else
+                    self.mode = nil
+                    self:SetAlpha(0)
+                    self:Hide()
+                end
+            end
+        end
+
+        playButton:EnableMouse(true)
+        playButton:RegisterForClicks("LeftButtonUp")
+
+        playButton:SetScript("OnClick", function(self)
+            if self.mode ~= nil then
+                if TrackerUtils:IsVoiceOverLoaded() then
+                    local button = VoiceOver.QuestOverlayUI.questPlayButtons[self.mode]
+                    if button then
+                        if not VoiceOver.QuestOverlayUI.questPlayButtons[self.mode].soundData then
+                            local type, id = VoiceOver.DataModules:GetQuestLogQuestGiverTypeAndID(self.mode)
+                            local title = GetQuestLogTitle(GetQuestLogIndexByID(self.mode))
+                            VoiceOver.QuestOverlayUI.questPlayButtons[self.mode].soundData = {
+                                event = VoiceOver.Enums.SoundEvent.QuestAccept,
+                                questID = self.mode,
+                                name = id and VoiceOver.DataModules:GetObjectName(type, id) or "Unknown Name",
+                                title = title,
+                                unitGUID = id and VoiceOver.Enums.GUID:CanHaveID(type) and VoiceOver.Utils:MakeGUID(type, id) or nil
+                            }
+                        end
+
+                        local soundData = VoiceOver.QuestOverlayUI.questPlayButtons[self.mode].soundData
+                        local isPlaying = VoiceOver.SoundQueue:Contains(soundData)
+
+                        if not isPlaying then
+                            VoiceOver.SoundQueue:AddSoundToQueue(soundData)
+                            VoiceOver.QuestOverlayUI:UpdatePlayButtonTexture(self.mode)
+
+                            soundData.stopCallback = function()
+                                VoiceOver.QuestOverlayUI:UpdatePlayButtonTexture(self.mode)
+                                VoiceOver.QuestOverlayUI.questPlayButtons[self.mode].soundData = nil
+                            end
+                        else
+                            VoiceOver.SoundQueue:RemoveSoundFromQueue(soundData)
+                        end
+
+                        isPlaying = button.soundData and VoiceOver.SoundQueue:Contains(button.soundData)
+                        local texturePath = isPlaying and "Interface\\Addons\\Questie\\Icons\\QuestLogStopButton" or "Interface\\Addons\\Questie\\Icons\\QuestLogPlayButton"
+                        self:SetNormalTexture(texturePath)
+
+                        -- Move the VoiceOverFrame below the DurabilityFrame if it's present and not already moved
+                        if (Questie.db.profile.stickyDurabilityFrame and DurabilityFrame:IsVisible()) and select(5, VoiceOverFrame:GetPoint()) < -125 then
+                            QuestieTracker:UpdateVoiceOverFrame()
+                        end
+                    end
+                end
+            end
+        end)
+
+        playButton:SetAlpha(0)
+        playButton:Hide()
+
+        line.playButton = playButton
+
         -- create expanding buttons for quests with objectives
-        local expandQuest = CreateFrame("Button", nil, line)
+        local expandQuest = CreateFrame("Button", "linePool.expandQuest" .. i, line)
         expandQuest.texture = expandQuest:CreateTexture(nil, "OVERLAY", nil, 0)
         expandQuest.texture:SetWidth(trackerFontSizeQuest)
         expandQuest.texture:SetHeight(trackerFontSizeQuest)
@@ -337,8 +410,8 @@ function TrackerLinePool.Initialize(questFrame)
                 else
                     self.texture:SetTexture("Interface\\Buttons\\UI-PlusButton-Up")
                 end
-                self:SetWidth(Questie.db.global.trackerFontSizeQuest + 3)
-                self:SetHeight(Questie.db.global.trackerFontSizeQuest + 3)
+                self:SetWidth(Questie.db.profile.trackerFontSizeQuest + 3)
+                self:SetHeight(Questie.db.profile.trackerFontSizeQuest + 3)
             end
         end
 
@@ -349,8 +422,10 @@ function TrackerLinePool.Initialize(questFrame)
         expandQuest:SetScript("OnClick", function(self)
             if self.mode == 1 then
                 self:SetMode(0)
+                Questie:Debug(Questie.DEBUG_DEVELOP, "[TrackerLinePool:expandQuest] - Minimize")
             else
                 self:SetMode(1)
+                Questie:Debug(Questie.DEBUG_DEVELOP, "[TrackerLinePool:expandQuest] - Maximize")
             end
             if Questie.db.char.collapsedQuests[self.questId] then
                 Questie.db.char.collapsedQuests[self.questId] = nil
@@ -376,18 +451,16 @@ function TrackerLinePool.Initialize(questFrame)
             line:HookScript("OnUpdate", line.OnUpdate)
         end
 
-        if Questie.db.global.trackerFadeMinMaxButtons then
+        if Questie.db.profile.trackerFadeMinMaxButtons then
             expandQuest:SetAlpha(0)
         end
 
-        expandQuest:SetScript("OnEnter", function(self)
-            TrackerLinePool.OnHighlightEnter(self)
-            TrackerFadeTicker.OnEnter()
+        expandQuest:SetScript("OnEnter", function()
+            TrackerFadeTicker.Unfade()
         end)
 
-        expandQuest:SetScript("OnLeave", function(self)
-            TrackerLinePool.OnHighlightLeave(self)
-            TrackerFadeTicker.OnLeave()
+        expandQuest:SetScript("OnLeave", function()
+            TrackerFadeTicker.Fade()
         end)
 
         expandQuest:Hide()
@@ -407,14 +480,14 @@ function TrackerLinePool.Initialize(questFrame)
         btn.count = btn:CreateFontString(nil, "ARTWORK", "Game10Font_o1")
         btn:Hide()
 
-        if Questie.db.global.trackerFadeQuestItemButtons then
+        if Questie.db.profile.trackerFadeQuestItemButtons then
             btn:SetAlpha(0)
         end
 
         btn.SetItem = function(self, quest, buttonType, size)
             local validTexture
 
-            for bag = 0, 4 do
+            for bag = -2, 4 do
                 for slot = 1, QuestieCompat.GetContainerNumSlots(bag) do
                     local texture, _, _, _, _, _, _, _, _, itemId = QuestieCompat.GetContainerItemInfo(bag, slot)
                     -- These type of quest items can never be secondary buttons
@@ -424,7 +497,7 @@ function TrackerLinePool.Initialize(questFrame)
                         break
                     end
                     -- These type of quest items are technically secondary buttons but are assigned primary button slots
-                    if type(quest.requiredSourceItems) == "table" and #quest.requiredSourceItems == 1 then
+                    if (not quest.sourceItemId or quest.sourceItemId == 0) and type(quest.requiredSourceItems) == "table" and #quest.requiredSourceItems == 1 then
                         local questItemId = quest.requiredSourceItems[1]
                         if questItemId and questItemId ~= quest.sourceItemId and QuestieDB.QueryItemSingle(questItemId, "class") == 12 and questItemId == itemId then
                             validTexture = texture
@@ -509,7 +582,7 @@ function TrackerLinePool.Initialize(questFrame)
 
                 -- Charges Updates
                 self.count:Hide()
-                self.count:SetFont(LSM30:Fetch("font", Questie.db.global.trackerFontQuest), Questie.db.global.trackerFontSizeQuest, "OUTLINE")
+                self.count:SetFont(LSM30:Fetch("font", Questie.db.profile.trackerFontQuest), Questie.db.profile.trackerFontSizeQuest, "OUTLINE")
                 if self.charges > 1 then
                     self.count:SetText(self.charges)
                     self.count:Show()
@@ -537,10 +610,6 @@ function TrackerLinePool.Initialize(questFrame)
                 return
             end
 
-            local valid
-            local rangeTimer = self.rangeTimer
-            local charges = GetItemCount(self.itemId, nil, true)
-
             local start, duration, enabled = QuestieCompat.GetItemCooldown(self.itemId)
 
             if enabled == 1 and duration > 0 then
@@ -550,6 +619,7 @@ function TrackerLinePool.Initialize(questFrame)
                 cooldown:Hide()
             end
 
+            local charges = GetItemCount(self.itemId, nil, true)
             if (not charges or charges ~= self.charges) then
                 self.count:Hide()
                 self.charges = GetItemCount(self.itemId, nil, true)
@@ -558,7 +628,7 @@ function TrackerLinePool.Initialize(questFrame)
                     self.count:Show()
                 end
                 if self.charges == 0 then
-                    Questie:Debug(Questie.DEBUG_DEVELOP, "TrackerLinePool: Button.OnUpdate")
+                    Questie:Debug(Questie.DEBUG_DEVELOP, "[TrackerLinePool: Button.OnUpdate]")
                     QuestieCombatQueue:Queue(function()
                         C_Timer.After(0.2, function()
                             QuestieTracker:Update()
@@ -567,21 +637,23 @@ function TrackerLinePool.Initialize(questFrame)
                 end
             end
 
-            if UnitExists("target") then
+            -- IsItemInRange is restricted to only be used either on hostile targets or friendly ones while NOT in combat
+            if UnitExists("target") and (not UnitIsFriend("player", "target") or (not InCombatLockdown())) then
                 if not self.itemName then
                     self.itemName = GetItemInfo(self.itemId)
                 end
 
+                local rangeTimer = self.rangeTimer
                 if (rangeTimer) then
                     rangeTimer = rangeTimer - elapsed
 
                     if (rangeTimer <= 0) then
-                        valid = IsItemInRange(self.itemName, "target")
+                        local isInRange = IsItemInRange(self.itemName, "target")
 
-                        if valid == false then
+                        if isInRange == false then
                             self.range:SetVertexColor(1.0, 0.1, 0.1)
                             self.range:Show()
-                        elseif valid == true then
+                        elseif isInRange == true then
                             self.range:SetVertexColor(0.6, 0.6, 0.6)
                             self.range:Show()
                         end
@@ -607,13 +679,13 @@ function TrackerLinePool.Initialize(questFrame)
             GameTooltip:SetHyperlink("item:" .. tostring(self.itemId) .. ":0:0:0:0:0:0:0")
             GameTooltip:Show()
 
-            TrackerFadeTicker.OnEnter(self)
+            TrackerFadeTicker.Unfade(self)
         end
 
         btn.OnLeave = function(self)
             GameTooltip:Hide()
 
-            TrackerFadeTicker.OnLeave(self)
+            TrackerFadeTicker.Fade(self)
         end
 
         btn.FakeHide = function(self)
@@ -632,8 +704,13 @@ function TrackerLinePool.Initialize(questFrame)
 end
 
 function TrackerLinePool.ResetLinesForChange()
-    Questie:Debug(Questie.DEBUG_INFO, "TrackerLinePool: ResetLinesForChange")
-    if InCombatLockdown() or not Questie.db.char.trackerEnabled then
+    if TrackerBaseFrame.isSizing == true or TrackerBaseFrame.isMoving == true then
+        Questie:Debug(Questie.DEBUG_SPAM, "[TrackerLinePool:ResetLinesForChange]")
+    else
+        Questie:Debug(Questie.DEBUG_INFO, "[TrackerLinePool:ResetLinesForChange]")
+    end
+
+    if InCombatLockdown() or not Questie.db.profile.trackerEnabled then
         return
     end
 
@@ -642,12 +719,21 @@ function TrackerLinePool.ResetLinesForChange()
         line.trackTimedQuest = nil
         if line.expandQuest then
             line.expandQuest.mode = nil
+            line.expandQuest.questId = nil
         end
         if line.expandZone then
             line.expandZone.mode = nil
+            line.expandZone.zoneId = nil
         end
         if line.criteriaMark then
             line.criteriaMark.mode = nil
+            line.criteriaMark:SetCriteria(false)
+            line.criteriaMark:Hide()
+        end
+        if line.playButton then
+            line.playButton.mode = nil
+            line.playButton:SetAlpha(0)
+            line.playButton:Hide()
         end
     end
 
@@ -655,41 +741,44 @@ function TrackerLinePool.ResetLinesForChange()
 end
 
 function TrackerLinePool.ResetButtonsForChange()
-    Questie:Debug(Questie.DEBUG_INFO, "TrackerLinePool: ResetButtonsForChange")
+    if TrackerBaseFrame.isSizing == true or TrackerBaseFrame.isMoving == true then
+        Questie:Debug(Questie.DEBUG_SPAM, "[TrackerLinePool:ResetButtonsForChange]")
+    else
+        Questie:Debug(Questie.DEBUG_INFO, "[TrackerLinePool:ResetButtonsForChange]")
+    end
 
-    if InCombatLockdown() or not Questie.db.char.trackerEnabled then
+    if InCombatLockdown() or not Questie.db.profile.trackerEnabled then
         return
     end
 
     buttonIndex = 0
 end
 
----Updates all the line.label widths in the linePool for wrapped text only
----@param trackerLineWidth number
 function TrackerLinePool.UpdateWrappedLineWidths(trackerLineWidth)
-    local trackerFontSizeQuest = Questie.db.global.trackerFontSizeQuest
-    local trackerMarginLeft = 10
-    local trackerMarginRight = 20
-    local questMarginLeft = (trackerMarginLeft + trackerMarginRight + 4) - (18 - trackerFontSizeQuest)
+    local trackerFontSizeQuest = Questie.db.profile.trackerFontSizeQuest
+    local trackerMarginLeft = 14
+    local trackerMarginRight = 30
+    local questMarginLeft = (trackerMarginLeft + trackerMarginRight) - (18 - trackerFontSizeQuest)
     local objectiveMarginLeft = questMarginLeft + trackerFontSizeQuest
     local questItemButtonSize = 12 + trackerFontSizeQuest
 
+    -- Updates all the line.label widths in the linePool for wrapped text only
     for _, line in pairs(linePool) do
-        if Questie.db[Questie.db.global.questieTLoc].TrackerWidth == 0 then
+        if Questie.db.profile.TrackerWidth == 0 then
             if line.mode == "objective" then
-                if line.label:GetNumLines() > 1 and line:GetHeight() > Questie.db.global.trackerFontSizeObjective then
+                if line.label:GetNumLines() > 1 and line:GetHeight() > Questie.db.profile.trackerFontSizeObjective then
                     line.label:SetText(line.label:GetText())
 
                     if line.altButton then
                         line.label:SetWidth(trackerLineWidth - objectiveMarginLeft - questItemButtonSize)
-                        line:SetWidth(line.label:GetWidth() + objectiveMarginLeft + questItemButtonSize)
+                        line:SetWidth(trackerLineWidth + questItemButtonSize)
                     else
                         line.label:SetWidth(trackerLineWidth - objectiveMarginLeft)
-                        line:SetWidth(line.label:GetWidth() + objectiveMarginLeft)
+                        line:SetWidth(trackerLineWidth)
                     end
 
-                    line:SetHeight(line.label:GetStringHeight() + 2 + Questie.db.global.trackerQuestPadding)
-                    line.label:SetHeight(line:GetHeight())
+                    line:SetHeight(line.label:GetStringHeight() + 2 + Questie.db.profile.trackerQuestPadding)
+                    line.label:SetHeight(line:GetHeight() - 2 - Questie.db.profile.trackerQuestPadding)
                 end
             end
         end
@@ -758,7 +847,11 @@ function TrackerLinePool.GetLastLine()
 end
 
 function TrackerLinePool.HideUnusedLines()
-    Questie:Debug(Questie.DEBUG_INFO, "TrackerLinePool: HideUnusedLines")
+    if TrackerBaseFrame.isSizing == true or TrackerBaseFrame.isMoving == true then
+        Questie:Debug(Questie.DEBUG_SPAM, "[TrackerLinePool:HideUnusedLines]")
+    else
+        Questie:Debug(Questie.DEBUG_INFO, "[TrackerLinePool:HideUnusedLines]")
+    end
     local startUnusedLines = 0
 
     if Questie.db.char.isTrackerExpanded then
@@ -777,14 +870,21 @@ function TrackerLinePool.HideUnusedLines()
             line.altButton = nil
             line.trackTimedQuest = nil
             line.expandQuest.mode = nil
+            line.expandQuest.questId = nil
             line.expandZone.mode = nil
+            line.expandZone.zoneId = nil
             line.criteriaMark.mode = nil
+            line.playButton.mode = nil
         end
     end
 end
 
 function TrackerLinePool.HideUnusedButtons()
-    Questie:Debug(Questie.DEBUG_INFO, "TrackerLinePool: HideUnusedButtons")
+    if TrackerBaseFrame.isSizing == true or TrackerBaseFrame.isMoving == true then
+        Questie:Debug(Questie.DEBUG_SPAM, "[TrackerLinePool:HideUnusedButtons]")
+    else
+        Questie:Debug(Questie.DEBUG_INFO, "[TrackerLinePool:HideUnusedButtons]")
+    end
     local startUnusedButtons = 0
 
     if Questie.db.char.isTrackerExpanded then
@@ -812,9 +912,41 @@ function TrackerLinePool.GetHighestIndex()
 end
 
 ---@param alpha number
+function TrackerLinePool.SetAllPlayButtonAlpha(alpha)
+    if TrackerUtils:IsVoiceOverLoaded() then
+        local highestIndex = TrackerLinePool.GetHighestIndex()
+        for i = 1, highestIndex do
+            local line = linePool[i]
+            local questId = line.playButton.mode
+            local button = VoiceOver.QuestOverlayUI.questPlayButtons[questId]
+            local sound = VoiceOver.DataModules:PrepareSound({ event = 1, questID = questId })
+
+            if button then
+                local isPlaying = button.soundData and VoiceOver.SoundQueue:Contains(button.soundData)
+                local texturePath = isPlaying and "Interface\\Addons\\Questie\\Icons\\QuestLogStopButton" or "Interface\\Addons\\Questie\\Icons\\QuestLogPlayButton"
+
+                line.playButton:SetNormalTexture(texturePath)
+            end
+
+            if IsShiftKeyDown() then
+                if sound then
+                    line.playButton:SetAlpha(alpha)
+                else
+                    line.playButton:SetAlpha(0.33)
+                end
+
+                line.playButton:SetFrameLevel(200)
+            else
+                line.playButton:SetAlpha(alpha)
+                line.playButton:SetFrameLevel(0)
+            end
+        end
+    end
+end
+
+---@param alpha number
 function TrackerLinePool.SetAllExpandQuestAlpha(alpha)
     local highestIndex = TrackerLinePool.GetHighestIndex()
-
     for i = 1, highestIndex do
         linePool[i].expandQuest:SetAlpha(alpha)
     end
@@ -823,29 +955,32 @@ end
 ---@param alpha number
 function TrackerLinePool.SetAllItemButtonAlpha(alpha)
     local highestIndex = TrackerLinePool.GetHighestIndex()
-    local hasButton = false
+    -- TODO: I don't remember why I coded this hasButton variable. Going to leave it here for now.
+    --local hasButton = false
 
     for i = 1, highestIndex do
         local line = linePool[i]
 
         if line.button then
             line.button:SetAlpha(alpha)
-            if line.button:GetAlpha() < 0.07 then
-                hasButton = true
-            end
+            --if line.button:GetAlpha() < 0.07 then
+            --    hasButton = true
+            --end
         end
 
         if line.altButton then
             line.altButton:SetAlpha(alpha)
-            if line.altButton:GetAlpha() < 0.07 then
-                hasButton = true
-            end
+            --if line.altButton:GetAlpha() < 0.07 then
+            --    hasButton = true
+            --end
         end
     end
 
+    --[[
     if hasButton then
         QuestieTracker:Update()
     end
+    --]]
 end
 
 ---@param button string
@@ -859,14 +994,14 @@ TrackerLinePool.OnClickQuest = function(self, button)
         LibDropDown:CloseDropDownMenus()
     end
 
-    if TrackerUtils:IsBindTrue(Questie.db.global.trackerbindSetTomTom, button) then
+    if TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindSetTomTom, button) then
         local spawn, zone, name = QuestieMap:GetNearestQuestSpawn(self.Quest)
         if spawn then
             TrackerUtils:SetTomTomTarget(name, zone, spawn[1], spawn[2])
         end
-    elseif TrackerUtils:IsBindTrue(Questie.db.global.trackerbindUntrack, button) then
+    elseif TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindUntrack, button) then
         if (IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow()) then
-            if Questie.db.global.trackerShowQuestLevel then
+            if Questie.db.profile.trackerShowQuestLevel then
                 ChatEdit_InsertLink(QuestieLink:GetQuestLinkString(self.Quest.level, self.Quest.name, self.Quest.Id))
             else
                 ChatEdit_InsertLink("[" .. self.Quest.name .. " (" .. self.Quest.Id .. ")]")
@@ -878,7 +1013,7 @@ TrackerLinePool.OnClickQuest = function(self, button)
                 QuestLog_Update()
             end
         end
-    elseif TrackerUtils:IsBindTrue(Questie.db.global.trackerbindOpenQuestLog, button) then
+    elseif TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindOpenQuestLog, button) then
         TrackerUtils:ShowQuestLog(self.Quest)
     elseif button == "RightButton" then
         local menu = TrackerMenu:GetMenuForQuest(self.Quest)
@@ -897,7 +1032,7 @@ TrackerLinePool.OnClickAchieve = function(self, button)
         LibDropDown:CloseDropDownMenus()
     end
 
-    if TrackerUtils:IsBindTrue(Questie.db.global.trackerbindUntrack, button) then
+    if TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindUntrack, button) then
         if (IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow()) then
             ChatEdit_InsertLink(GetAchievementLink(self.Quest.Id))
         else
@@ -919,7 +1054,7 @@ TrackerLinePool.OnClickAchieve = function(self, button)
                 UIErrorsFrame:AddMessage(format(l10n("You can't untrack an objective of an achievement.")), 1.0, 0.1, 0.1, 1.0)
             end
         end
-    elseif TrackerUtils:IsBindTrue(Questie.db.global.trackerbindOpenQuestLog, button) then
+    elseif TrackerUtils:IsBindTrue(Questie.db.profile.trackerbindOpenQuestLog, button) then
         if (not AchievementFrame) then
             AchievementFrame_LoadUI()
         end
@@ -939,14 +1074,13 @@ TrackerLinePool.OnClickAchieve = function(self, button)
 end
 
 TrackerLinePool.OnHighlightEnter = function(self)
-    if (self.mode == "quest" or self:GetParent().mode == "quest") or self.mode == "achieve" or self.mode == "objective" or self.mode == "zone" or self:GetParent().mode == "zone" then
-        local highestIndex = TrackerLinePool.GetHighestIndex()
-        for i = 1, highestIndex do
-            local line = linePool[i]
-            line:SetAlpha(0.5)
-            if line.Quest == self.Quest or (self:GetParent().mode == "quest" and line.Quest == self:GetParent().Quest) or line.mode == "zone" then
-                line:SetAlpha(1)
-            end
+    local highestIndex = TrackerLinePool.GetHighestIndex()
+    for i = 1, highestIndex do
+        local line = linePool[i]
+        line:SetAlpha(0.5)
+
+        if (line.Quest ~= nil and line.Quest == self.Quest) or (line.expandZone ~= nil and self:GetParent().expandZone ~= nil and line.expandZone.zoneId == self:GetParent().expandZone.zoneId) then
+            line:SetAlpha(1)
         end
     end
 end
@@ -963,17 +1097,17 @@ TrackerLinePool.SetMode = function(self, mode)
     if mode ~= self.mode then
         self.mode = mode
         if mode == "zone" then
-            local trackerFontSizeZone = Questie.db.global.trackerFontSizeZone
-            self.label:SetFont(LSM30:Fetch("font", Questie.db.global.trackerFontZone), trackerFontSizeZone, Questie.db.global.trackerFontOutline)
+            local trackerFontSizeZone = Questie.db.profile.trackerFontSizeZone
+            self.label:SetFont(LSM30:Fetch("font", Questie.db.profile.trackerFontZone), trackerFontSizeZone, Questie.db.profile.trackerFontOutline)
             self.label:SetHeight(trackerFontSizeZone)
         elseif mode == "quest" or mode == "achieve" then
-            local trackerFontSizeQuest = Questie.db.global.trackerFontSizeQuest
-            self.label:SetFont(LSM30:Fetch("font", Questie.db.global.trackerFontQuest), trackerFontSizeQuest, Questie.db.global.trackerFontOutline)
+            local trackerFontSizeQuest = Questie.db.profile.trackerFontSizeQuest
+            self.label:SetFont(LSM30:Fetch("font", Questie.db.profile.trackerFontQuest), trackerFontSizeQuest, Questie.db.profile.trackerFontOutline)
             self.label:SetHeight(trackerFontSizeQuest)
             self.button = nil
         elseif mode == "objective" then
-            local trackerFontSizeObjective = Questie.db.global.trackerFontSizeObjective
-            self.label:SetFont(LSM30:Fetch("font", Questie.db.global.trackerFontObjective), trackerFontSizeObjective, Questie.db.global.trackerFontOutline)
+            local trackerFontSizeObjective = Questie.db.profile.trackerFontSizeObjective
+            self.label:SetFont(LSM30:Fetch("font", Questie.db.profile.trackerFontObjective), trackerFontSizeObjective, Questie.db.profile.trackerFontOutline)
             self.label:SetHeight(trackerFontSizeObjective)
         end
     end

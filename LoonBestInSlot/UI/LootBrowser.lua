@@ -45,7 +45,9 @@ function LBIS.BrowserWindow:RefreshItems()
 
     if LBISSettings.OpenTab == "ItemList" then
         PanelTemplates_SetTab(LBIS.BrowserWindow.Window.Container, 1);
-        LBIS.ItemList:UpdateItems();
+        --LBIS:MeasureCode("RefreshItems", function()
+            LBIS.ItemList:UpdateItems();
+        --end);
     elseif LBISSettings.OpenTab == "GemList" then
         PanelTemplates_SetTab(LBIS.BrowserWindow.Window.Container, 2);
         LBIS.GemList:UpdateItems();
@@ -62,27 +64,34 @@ function LBIS.BrowserWindow:RefreshItems()
 end
 
 local failedLoad = false;
-local deleted_windows = {};
+local window_cache = {};
+
+function LBIS:InitializeUI()    
+    for specId, spec in pairs(LBIS.ClassSpec) do
+        if strlen(spec.Spec) > 0 then
+            window_cache[spec.Class..": "..spec.Spec] = {};
+        end
+    end
+end
+
 function LBIS.BrowserWindow:CreateItemRow(specItem, specItemSource, frameName, point, rowFunc)
     local window = LBIS.BrowserWindow.Window;
     local spacing = 1;
     local reusing = false;
     
     local f = nil;
-    --TODO: MAKE THIS FASTER WHEN THERES TONS OF FRAMES !
-    -- attempting to reuse a previous child frame if it exists 
-    -- (which should include the previously created fontstring and button)
-    if(next(deleted_windows) ~= nil) then
-        for i=1, #deleted_windows do
-            if(frameName == deleted_windows[i]:GetName()) then
-                f = deleted_windows[i];
+    if(next(window_cache[LBISSettings.SelectedSpec]) ~= nil) then
+		for i=1, #window_cache[LBISSettings.SelectedSpec] do			
+            if(frameName == window_cache[LBISSettings.SelectedSpec][i]:GetName()) then
+                f = window_cache[LBISSettings.SelectedSpec][i];
                 reusing = true;
+				break;
             end
         end
     end
     
     if not reusing then        
-        f = CreateFrame("Frame", name, window.Container);
+        f = CreateFrame("Frame", frameName, window.Container);
 
         local rowHeight = rowFunc(f, specItem, specItemSource);
         
@@ -92,6 +101,8 @@ function LBIS.BrowserWindow:CreateItemRow(specItem, specItemSource, frameName, p
         l:SetStartPoint("BOTTOMLEFT",5, 0);
         l:SetEndPoint("BOTTOMRIGHT",-5, 0);
         f:SetSize(window.ScrollFrame:GetWidth(), rowHeight);
+
+        tinsert(window_cache[LBISSettings.SelectedSpec], f);
     end
 
     f:ClearAllPoints();
@@ -121,16 +132,10 @@ function LBIS.BrowserWindow:UpdateItemsForSpec(rowFunc)
         for i=1, self:GetNumChildren() do
         
             local child = select(i, self:GetChildren());
-            
-            -- Saving a reference to our previous child frame so that we can reuse it later
-            if(not tContains(deleted_windows, child)) then 
-                tinsert(deleted_windows, child);
-            end
-            
+                        
             child:Hide();
         end
     end
-
     clear_content(window.Container);
     
     LBIS.BrowserWindow.MaxHeight = 0;
@@ -143,7 +148,10 @@ function LBIS.BrowserWindow:UpdateItemsForSpec(rowFunc)
     
     failedLoad = false;
 
-    rowFunc(point);
+    --LBIS:MeasureCode("UpdateItemsForSpec", function ()
+        rowFunc(point);
+    --end);
+
 
     if failedLoad then
         LBIS:Error("Failed to load one or more items into browser. Type /reload to attempt to fix", "");
@@ -278,7 +286,7 @@ local function createDropDowns(window)
         ['name']='phase',
         ['parent']=window,
         ['title']='Phase:',
-        ['items']= { LBIS.L["All"], LBIS.L["PreRaid"], LBIS.L["Phase 1"], LBIS.L["Phase 2"], "BIS" }, --, LBIS.L["Phase 3"], LBIS.L["Phase 4"], LBIS.L["Phase 5"],
+        ['items']= { LBIS.L["All"], LBIS.L["PreRaid"], LBIS.L["Phase 1"], LBIS.L["Phase 2"], LBIS.L["Phase 3"], LBIS.L["Phase 4"], "BIS" },
         ['defaultVal']=LBISSettings.SelectedPhase,
         ['changeFunc']=function(dropdown_frame, dropdown_val)
             LBISSettings.SelectedPhase = dropdown_val;
@@ -320,11 +328,14 @@ local function createDropDowns(window)
         ['name']='zone',
         ['parent']=window,
         ['title']='Raid:',
-        ['items']= { LBIS.L["All"], LBIS.L["Naxxramas"], LBIS.L["The Eye of Eternity"], LBIS.L["The Obsidian Sanctum"], LBIS.L["Vault of Archavon (10)"], 
-            LBIS.L["Vault of Archavon (25)"], LBIS.L["Ulduar (10)"], LBIS.L["Ulduar (25)"]},
-            --LBIS.L["Trial of the Crusader (10)"], LBIS.L["Trial of the Crusader (25)"], LBIS.L["Onyxia's Lair (10)"], LBIS.L["Onyxia's Lair (25)"], 
-            --LBIS.L["Icecrown Citadel (10)"], LBIS.L["Icecrown Citadel (25)"],
-            --LBIS.L["The Ruby Sanctum (10)"], LBIS.L["The Ruby Sanctum (25)"]},
+        ['items']= { LBIS.L["All"], LBIS.L["Heroic"], LBIS.L["Naxxramas"], LBIS.L["The Eye of Eternity"], LBIS.L["The Obsidian Sanctum"], 
+            LBIS.L["Ulduar (10)"], LBIS.L["Ulduar (25)"],
+            LBIS.L["Vault of Archavon (10)"], LBIS.L["Vault of Archavon (25)"], 
+            LBIS.L["Trial of the Crusader (10)"], LBIS.L["Trial of the Crusader (25)"],
+            LBIS.L["Trial of the Grand Crusader (10)"], LBIS.L["Trial of the Grand Crusader (25)"],
+            LBIS.L["Onyxia (10)"], LBIS.L["Onyxia (25)"], 
+            LBIS.L["Icecrown Citadel (10)"], LBIS.L["Icecrown Citadel (25)"],
+            LBIS.L["The Ruby Sanctum (10)"], LBIS.L["The Ruby Sanctum (25)"]},
         ['defaultVal']= LBISSettings.SelectedZone,
         ['changeFunc']=function(dropdown_frame, dropdown_val)
             LBISSettings.SelectedZone = dropdown_val;

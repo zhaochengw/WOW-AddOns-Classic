@@ -8,6 +8,7 @@ LBISSettingsDefault =
 	SelectedZone = LBIS.L["All"], 
 	SelectedZoneNumber = LBIS.L["All"],
 	ShowCustom = false,
+	HideObsolete = false,
 	OpenTab = "ItemList",
 	minimap = {
 		hide = false,
@@ -50,9 +51,8 @@ LBISSettingsDefault =
 		[LBIS.L["PreRaid"]] = true,
 		[LBIS.L["Phase 1"]] = true,
 		[LBIS.L["Phase 2"]] = true,
-		--[LBIS.L["Phase 3"]] = true,
-		--[LBIS.L["Phase 4"]] = true,
-		--[LBIS.L["Phase 5"]] = true
+		[LBIS.L["Phase 3"]] = true,
+		[LBIS.L["Phase 4"]] = true,
 	}
 };
 
@@ -476,7 +476,7 @@ local lbis_options = {
 			width = 1.1,
 			order = 41,
 		},
-		 showPhase2 = {
+		showPhase2 = {
 		 	type = "toggle",
 		 	name = LBIS.L["Phase 2"],
 		 	desc = LBIS.L["Phase 2"],
@@ -484,41 +484,32 @@ local lbis_options = {
 		 	set = function(info, val) LBISSettings.PhaseTooltip[LBIS.L["Phase 2"]] = val end,
 		 	width = 1.1,
 		 	order = 42,
-		 },
-		-- showPhase3 = {
-		-- 	type = "toggle",
-		-- 	name = LBIS.L["Phase 3"],
-		-- 	desc = LBIS.L["Phase 3"],
-		-- 	get = function(info) return LBISSettings.PhaseTooltip[LBIS.L["Phase 3"]] end,
-		-- 	set = function(info, val) LBISSettings.PhaseTooltip[LBIS.L["Phase 3"]] = val end,
-		-- 	width = 1.1,
-		-- 	order = 43,
-		-- },
-		-- showPhase4 = {
-		-- 	type = "toggle",
-		-- 	name = LBIS.L["Phase 4"],
-		-- 	desc = LBIS.L["Phase 4"],
-		-- 	get = function(info) return LBISSettings.PhaseTooltip[LBIS.L["Phase 4"]] end,
-		-- 	set = function(info, val) LBISSettings.PhaseTooltip[LBIS.L["Phase 4"]] = val end,
-		-- 	width = 1.1,
-		-- 	order = 44,
-		-- },
-		-- showPhase5 = {
-		-- 	type = "toggle",
-		-- 	name = LBIS.L["Phase 5"],
-		-- 	desc = LBIS.L["Phase 5"],
-		-- 	get = function(info) return LBISSettings.PhaseTooltip[LBIS.L["Phase 5"]] end,
-		-- 	set = function(info, val) LBISSettings.PhaseTooltip[LBIS.L["Phase 5"]] = val end,
-		-- 	width = 1.1,
-		-- 	order = 45,
-		-- },
+		},
+		showPhase3 = {
+		 	type = "toggle",
+		 	name = LBIS.L["Phase 3"],
+		 	desc = LBIS.L["Phase 3"],
+		 	get = function(info) return LBISSettings.PhaseTooltip[LBIS.L["Phase 3"]] end,
+		 	set = function(info, val) LBISSettings.PhaseTooltip[LBIS.L["Phase 3"]] = val end,
+		 	width = 1.1,
+		 	order = 43,
+		},
+		showPhase4 = {
+			type = "toggle",
+			name = LBIS.L["Phase 4"],
+			desc = LBIS.L["Phase 4"],
+			get = function(info) return LBISSettings.PhaseTooltip[LBIS.L["Phase 4"]] end,
+			set = function(info, val) LBISSettings.PhaseTooltip[LBIS.L["Phase 4"]] = val end,
+			width = 1.1,
+			order = 44,
+		},
 		spacer2 = {
 			type = "header",
 			name = "",
 			width = "full",
 			order = 46,
 		},
-		show = {
+		showCustom = {
 			type = "toggle",
 			name = LBIS.L["Show Custom"],
 			desc = LBIS.L["Show Custom"],
@@ -526,6 +517,15 @@ local lbis_options = {
 			set = function(info, val) LBISSettings.ShowCustom = val end,
 			width = 1.1,
 			order = 47,
+		},
+		hideObsolete = {
+			type = "toggle",
+			name = LBIS.L["Hide Obsolete Items"],
+			desc = LBIS.L["Hide Obsolete Items"],
+			get = function(info) return LBISSettings.HideObsolete end,
+			set = function(info, val) LBISSettings.HideObsolete = val end,
+			width = 1.1,
+			order = 48,
 		},
 	}
 };

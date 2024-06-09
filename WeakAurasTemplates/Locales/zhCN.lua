@@ -7,6 +7,20 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras/Templates
+	--[[Translation missing --]]
+	L["(Dwarf)"] = "(Dwarf)"
+	--[[Translation missing --]]
+	L["(Dwarf/Human)"] = "(Dwarf/Human)"
+	--[[Translation missing --]]
+	L["(Human)"] = "(Human)"
+	--[[Translation missing --]]
+	L["(Night Elf)"] = "(Night Elf)"
+	--[[Translation missing --]]
+	L["(Troll)"] = "(Troll)"
+	--[[Translation missing --]]
+	L["(Undead)"] = "(Undead)"
+	L["< 4 stacks"] = "小于4层"
+	L["5 stacks"] = "5层"
 	L["Abilities"] = "技能"
 	L["Add Triggers"] = "添加触发器"
 	L["Always Active"] = "总是激活"
@@ -47,6 +61,8 @@ local L = WeakAuras.L
 	L["Create Auras"] = "创建光环"
 	L["debuff"] = "减益效果"
 	L["Debuffs"] = "减益"
+	--[[Translation missing --]]
+	L["dps buff"] = "dps buff"
 	L["General"] = "一般"
 	L["Health"] = "生命值"
 	L["Highlight while action is queued."] = "动作在队列中时高亮"
@@ -59,6 +75,8 @@ local L = WeakAuras.L
 	L["Highlight while spell is active."] = "当法术激活时高亮"
 	L["Hold CTRL to create multiple auras at once"] = "按住 CTRL 键来一次性创建多个光环"
 	L["Keeps existing triggers intact"] = "保持现存触发器完整"
+	--[[Translation missing --]]
+	L["Master Channeler Rune"] = "Master Channeler Rune"
 	L["Max 3"] = "最大 3"
 	L["Max 4"] = "最大 4"
 	L["Next"] = "下一个"
@@ -73,6 +91,8 @@ local L = WeakAuras.L
 	L["Pet alive"] = "宠物存活"
 	L["Pet Behavior"] = "宠物行为"
 	L["PvP Talents"] = "PvP 天赋"
+	--[[Translation missing --]]
+	L["regen buff"] = "regen buff"
 	L["Replace all existing triggers"] = "替换所有现存的触发器"
 	L["Replace Triggers"] = "替换触发器"
 	L["Resources"] = "资源"

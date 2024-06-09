@@ -190,8 +190,8 @@ local layoutOptions1 =  { positionheader = {
 
 do
 	local key, def
-	local defUPC = { player = 5, pet = 5, boss =  8 }
-	local specialHeaders = { boss = true, target = true, focus = true }
+	local defUPC = { player = 5, pet = 5, boss =  8, other = 5 }
+	local extraHeaders = { boss = true, target = true, targettarget = true, focus = true, focustarget = true, other = true }
 	local headerAnchorPoints = { [''] = L['Default'], CENTER = L["CENTER"], TOP = L["TOP"], BOTTOM = L["BOTTOM"], LEFT = L["LEFT"], RIGHT = L["RIGHT"], TOPLEFT = L["TOPLEFT"], TOPRIGHT = L["TOPRIGHT"], BOTTOMLEFT = L["BOTTOMLEFT"], BOTTOMRIGHT = L["BOTTOMRIGHT"] }
 	local groupAnchorPoints  = { [''] = L['Default'], TOPLEFT = L["TOPLEFT"], TOPRIGHT = L["TOPRIGHT"], BOTTOMLEFT = L["BOTTOMLEFT"], BOTTOMRIGHT = L["BOTTOMRIGHT"] }
 
@@ -218,7 +218,7 @@ do
 				GetHeaderPositionData(key)[2] = GetVirtualPosX(v, key)
 				Grid2Layout:RefreshLayout()
 			end,
-			hidden = function() return not (theme.layout.detachedHeaders or theme.layout.specialHeaders) end,
+			hidden = function() return not (theme.layout.detachedHeaders or theme.layout.specialHeaders) or key=='other' end,
 		},
 
 		posy = {
@@ -237,9 +237,9 @@ do
 				GetHeaderPositionData(key)[3] = GetVirtualPosY(v, key)
 				Grid2Layout:RefreshLayout()
 			end,
-			hidden = function() return not (theme.layout.detachedHeaders or theme.layout.specialHeaders) end,
+			hidden = function() return not (theme.layout.detachedHeaders or theme.layout.specialHeaders) or key=='other' end,
 		},
-
+		-----------------------------------------------------------------------
 		anchor = {
 			type = "select",
 			name = L['Layout Anchor'],
@@ -253,7 +253,7 @@ do
 				Grid2Layout:RefreshLayout()
 			end,
 			values = headerAnchorPoints,
-			hidden = function() return specialHeaders[key]==nil and ( key=='player' or theme.layout.detachedHeaders==nil ) end,
+			hidden = function() return extraHeaders[key]==nil and ( key=='player' or theme.layout.detachedHeaders==nil ) end,
 		},
 
 		groupAnchor = {
@@ -270,7 +270,7 @@ do
 			 end,
 			values= groupAnchorPoints,
 			disabled = function() return defUPC[key]==nil end,
-			hidden = function() return specialHeaders[key]==nil and ( key=='player' or theme.layout.detachedHeaders==nil ) end,
+			hidden = function() return extraHeaders[key]==nil and ( key=='player' or theme.layout.detachedHeaders==nil ) end,
 		},
 
 		groupOrientation = {
@@ -289,9 +289,9 @@ do
 			end,
 			values= { [''] = L['Default'], [true] = L['Horizontal'], [false] = L['Vertical'] },
 			disabled = function() return defUPC[key]==nil end,
-			hidden = function()	return specialHeaders[key]==nil and ( key=='player' or theme.layout.detachedHeaders==nil ) end,
+			hidden = function()	return extraHeaders[key]==nil and ( key=='player' or theme.layout.detachedHeaders==nil ) end,
 		},
-
+		-----------------------------------------------------------------------
 		frameWidth = {
 			type = "range",
 			order = 35,
@@ -351,7 +351,7 @@ do
 			end,
 			disabled = function() return not defUPC[key] end,
 		},
-
+		-----------------------------------------------------------------------
 		detachedPlayerHeaders = {
 			order = 50,
 			type = "toggle",
@@ -384,10 +384,27 @@ do
 			disabled = function() return theme.layout.detachedHeaders=='player' end,
 			hidden = function() return key~='pet' end,
 		},
-
-		hideEmptyUnits = {
+		-----------------------------------------------------------------------
+		lockFrameSize = {
 			order = 60,
 			type = "toggle",
+			width = 1.2,
+			name = L['Lock Frame Size'],
+			desc = L["Forbid dynamic changes in frame dimensions for this kind of header."],
+			get = function(info)
+				return GetTableValue( theme.frame.frameHeaderLocks, key, false)
+			end,
+			set = function(info,v)
+				SetTableValue(theme.frame, 'frameHeaderLocks', key, v or nil)
+				Grid2Layout:RefreshLayout()
+			end,
+			hidden = function() return not extraHeaders[key] end,
+		},
+
+		hideEmptyUnits = {
+			order = 70,
+			type = "toggle",
+			width = 1.2,
 			name = L['Hide Empty Units'],
 			desc = L["Hide frames of non-existant units."],
 			get = function(info)
@@ -397,7 +414,7 @@ do
 				theme.layout.specialHeaders[key] = not theme.layout.specialHeaders[key]
 				Grid2Layout:RefreshLayout()
 			end,
-			hidden = function() return not specialHeaders[key] end,
+			hidden = function() return not extraHeaders[key] or key=='other' end,
 		},
 
 	}
@@ -410,27 +427,41 @@ do
 		type = "group", order = 2, name = L['Pets'],
 		args = layoutAnchorOptions,
 	}
+	layoutOptions1.boss  = {
+		type = "group", order = 3, name = L['Bosses'],
+		args = layoutAnchorOptions,
+		disabled = function() return Grid2.isClassic or theme.layout.specialHeaders==nil or theme.layout.specialHeaders.boss==nil end
+	}
 	layoutOptions1.self  = {
-		type = "group", order = 3, name = L['Player'],
+		type = "group", order = 4, name = L['Player'],
 		args = layoutAnchorOptions,
 		disabled = function() return theme.layout.specialHeaders==nil or theme.layout.specialHeaders.self==nil end
 	}
 	layoutOptions1.target = {
-	    type = "group", order = 4, name = L['Target'],
+	    type = "group", order = 5, name = L['Target'],
 		args = layoutAnchorOptions,
 		disabled = function() return theme.layout.specialHeaders==nil or theme.layout.specialHeaders.target==nil end,
 	}
+	layoutOptions1.targettarget = {
+	    type = "group", order = 6, name = L['Target of Target'],
+		args = layoutAnchorOptions,
+		disabled = function() return theme.layout.specialHeaders==nil or theme.layout.specialHeaders.targettarget==nil end,
+	}
 	layoutOptions1.focus  = {
-		type = "group", order = 5, name = L['Focus'],
+		type = "group", order = 7, name = L['Focus'],
 		args = layoutAnchorOptions,
 		disabled = function() return Grid2.isVanilla or theme.layout.specialHeaders==nil or theme.layout.specialHeaders.focus==nil end
 	}
-	layoutOptions1.boss  = {
-		type = "group", order = 6, name = L['Bosses'],
+	layoutOptions1.focustarget  = {
+		type = "group", order = 8, name = L['Target of Focus'],
 		args = layoutAnchorOptions,
-		disabled = function() return Grid2.isClassic or theme.layout.specialHeaders==nil or theme.layout.specialHeaders.boss==nil end
+		disabled = function() return Grid2.isVanilla or theme.layout.specialHeaders==nil or theme.layout.specialHeaders.focustarget==nil end
 	}
-
+	layoutOptions1.other  = {
+		type = "group", order = 9, name = L['Others'],
+		args = layoutAnchorOptions,
+		disabled = function() return not (Grid2Layout.db.global.customLayouts and next(Grid2Layout.db.global.customLayouts)) end
+	}
 end
 
 --=========================================================================================================
@@ -581,6 +612,8 @@ local layoutOptions2 =  { displayheader = {
 		order = 210,
 		get = function() return theme.layout.FrameLock end,
 		set = function()
+
+
 			theme.layout.FrameLock = not theme.layout.FrameLock
 			Grid2Layout:UpdateFrame()
 		end,
@@ -629,7 +662,7 @@ local frameOptions2 = { headerback = {
 		set = function( info, r,g,b,a )
 			local c = theme.frame.frameContentColor
 			c.r, c.g, c.b, c.a = r, g, b, a
-			Grid2Frame:UpdateIndicators()
+			Grid2Options:UpdateIndicators()
 		 end,
 		hasAlpha = true,
 }, headerborder = {
@@ -678,7 +711,7 @@ local frameOptions2 = { headerback = {
 		set = function( info, r,g,b,a )
 			local c= theme.frame.frameColor
 			c.r, c.g, c.b, c.a = r, g, b, a
-			Grid2Options:LayoutFrames()			
+			Grid2Options:LayoutFrames()
 		 end,
 		hasAlpha = true,
 }, innerBorderDistance= {
@@ -704,7 +737,7 @@ local frameOptions2 = { headerback = {
 	get = function (info) return theme.frame.frameBorderTexture or "Grid2 Flat" end,
 	set = function (info, v)
 		theme.frame.frameBorderTexture = v
-		Grid2Options:LayoutFrames()		
+		Grid2Options:LayoutFrames()
 	end,
 	values = AceGUIWidgetLSMlists.border,
 
@@ -737,7 +770,7 @@ local frameOptions2 = { headerback = {
 		set = function( info, r,g,b,a )
 			local c = theme.frame.mouseoverColor
 			c.r, c.g, c.b, c.a = r, g, b, a
-			Grid2Options:LayoutFrames()			
+			Grid2Options:LayoutFrames()
 		 end,
 		hasAlpha = true,
 		hidden = function() return not theme.frame.mouseoverHighlight end,

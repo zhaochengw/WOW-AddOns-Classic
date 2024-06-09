@@ -43,7 +43,7 @@ local function Icon_Create(self, parent)
 		end
 		local CooldownText = f.CooldownText or f:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 		CooldownText:SetParent(TextFrame)
-		CooldownText:SetFont(self.textfont, self.dbx.fontSize, self.dbx.fontFlags or "OUTLINE" )
+		if self.fontSize>=1 then CooldownText:SetFont(self.textfont, self.fontSize, self.dbx.fontFlags or "OUTLINE" ) end
 		local c = self.dbx.stackColor
 		if c then CooldownText:SetTextColor(c.r, c.g, c.b, c.a) end
 		CooldownText:Hide()
@@ -78,12 +78,17 @@ local function Icon_OnUpdate(self, parent, unit, status)
 	Icon:SetAlpha(a or 1)
 
 	if not self.disableStack then
+		local CooldownText = Frame.CooldownText
 		local count = status:GetCount(unit)
 		if count>1 then
-			Frame.CooldownText:SetText(count)
-			Frame.CooldownText:Show()
+			if CooldownText.fontSize then -- This is a ugly fix for github issue #152
+				CooldownText:SetFont(self.textfont, CooldownText.fontSize, self.dbx.fontFlags or "OUTLINE" )
+				CooldownText.fontSize = nil
+			end
+			CooldownText:SetText( count )
+			CooldownText:Show()
 		else
-			Frame.CooldownText:Hide()
+			CooldownText:Hide()
 		end
 	end
 
@@ -125,15 +130,18 @@ local function Icon_Layout(self, parent)
 	end
 	f:SetSize(size,size)
 
-	if not self.disableStack then
-		if f.TextFrame then	f.TextFrame:SetFrameLevel(level+2) end
-		f.CooldownText:ClearAllPoints()
-		f.CooldownText:SetPoint(self.textPoint, self.textOffsetX, self.textOffsetY)
-	end
-
 	if f.Cooldown and self.disableIcon then
 		f.Cooldown:SetSwipeTexture(0)
 	end
+
+	if not self.disableStack then
+		if f.TextFrame then	f.TextFrame:SetFrameLevel(level+2) end
+		local CooldownText = f.CooldownText
+		CooldownText:ClearAllPoints()
+		CooldownText:SetPoint(self.textPoint, self.textOffsetX, self.textOffsetY)
+		if self.fontSize<1 then CooldownText.fontSize = self.fontSize*size end	-- we cannot set font here, see github issue #152
+	end
+
 end
 
 local function Icon_Disable(self, parent)
@@ -165,13 +173,13 @@ local function Icon_UpdateDB(self)
 	self.textPoint = (jV=='MIDDLE' and jH) or (jH=='CENTER' and jV) or jV..jH
 	self.textOffsetX = dbx.fontOffsetX or 0
 	self.textOffsetY = dbx.fontOffsetY or 0
+	self.fontSize    = dbx.fontSize
 	self.textfont    = Grid2:MediaFetch("font", dbx.font or theme.font) or STANDARD_TEXT_FONT
 	-- ignore icon and use a solid square texture
 	self.disableIcon  = dbx.disableIcon
 	-- backdrop
 	self.backdrop = Grid2:GetBackdropTable("Interface\\Addons\\Grid2\\media\\white16x16", self.borderSize or 1)
 end
-
 
 local function CreateIcon(indicatorKey, dbx)
 	local indicator = Grid2.indicatorPrototype:new(indicatorKey)

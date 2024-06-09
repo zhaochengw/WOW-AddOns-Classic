@@ -1,10 +1,10 @@
-## Interface: 30401
+## Interface: 30403
 ## Title: UnitFramesPlus Options
 ## Title-zhCN: 系统头像增强 设置
 ## Title-zhTW: |cff4DD2FF[頭像]|r 暴雪頭像 (增強功能)-設定選項
 ## Notes-zhTW: UnitFramesPlus Options |n|n暴雪頭像增強插件的設定選項。|n|n|cffffd200使用方法: |r從Esc>介面>插件>頭像-增強，進行設定。
 ## X-Category-zhTW: 介面
-## Version: 1.36.6-Wrath
+## Version: 3.4.2-Wrath
 ## Author: Isler
 ## LoadOnDemand: 1
 ## RequiredDeps: UnitFramesPlus

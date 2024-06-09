@@ -56,6 +56,8 @@ FishingTranslations["enUS"] = {
     POINT = "point",
     POINTS = "points",
 
+    DISTANCE = "Distance",
+
     RAW = "Raw",
     FISH = "Fish",
     RANDOM = "Random",
@@ -289,6 +291,10 @@ FishingTranslations["enUS"] = {
     CONFIG_MINIMAPBUTTON_INFO  = "Display a #NAME# icon on the minimap.",
     CONFIG_MINIMAPMOVE_ONOFF   = "Draggable",
     CONFIG_MINIMAPMOVE_INFO    = "If enabled, the minimap icon can be moved by dragging.",
+
+    CONFIG_WALKDISTANCE_INFO   = "How far to walk before disabling fishing, in yards",
+    CONFIG_RAFTDISTANCE_INFO   = "How far to move on a raft before disabling fishing, in yards",
+    CONFIG_IDLETIMER_INFO      = "How long without casting before disabling fishing, in seconds",
 
     HIDEINWATCHER = "Display this fish in the watcher",
     CHECKSKILLWINDOW = "Check the Tradeskill window for Fishing (enable the 'Setup Skills' option).",

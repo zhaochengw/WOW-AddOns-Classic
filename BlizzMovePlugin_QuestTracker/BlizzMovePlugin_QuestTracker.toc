@@ -1,10 +1,10 @@
-## Interface: 100100
+## Interface: 100205
 ## Title: BlizzMove Plugin - QuestTracker
 ## Notes: Allows you to move the QuestTracker with BlizzMove
 ## Author: Numy
 ## IconTexture: Interface\Addons\BlizzMovePlugin_QuestTracker\media\icon
 ## RequiredDeps: BlizzMove
-## Version: v1.1.7
+## Version: v1.1.16
 ## X-Curse-Project-ID: 475676
 ## X-Wago-ID: 25NRw163
 

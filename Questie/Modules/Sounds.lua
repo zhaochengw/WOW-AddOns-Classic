@@ -3,9 +3,26 @@ local Sounds = QuestieLoader:CreateModule("Sounds")
 
 local soundTable
 local shouldPlayObjectiveSound = false
+local shouldPlayObjectiveProgress = false
+
+function Sounds.PlayObjectiveProgress()
+    if (not Questie.db.profile.soundOnObjectiveProgress) then
+        return
+    end
+
+    if (not shouldPlayObjectiveProgress) then
+        shouldPlayObjectiveProgress = true
+        C_Timer.After(0.5, function ()
+            if shouldPlayObjectiveProgress then
+                PlaySoundFile(Sounds.GetSelectedSoundFile(Questie.db.profile.objectiveProgressSoundChoiceName), "Master")
+                shouldPlayObjectiveProgress = false
+            end
+        end)
+    end
+end
 
 function Sounds.PlayObjectiveComplete()
-    if (not Questie.db.char.soundOnObjectiveComplete) then
+    if (not Questie.db.profile.soundOnObjectiveComplete) then
         return
     end
 
@@ -13,7 +30,7 @@ function Sounds.PlayObjectiveComplete()
         shouldPlayObjectiveSound = true
         C_Timer.After(0.5, function ()
             if shouldPlayObjectiveSound then
-                PlaySoundFile(Sounds.GetSelectedSoundFile(Questie.db.char.objectiveCompleteSoundChoiceName), "Master")
+                PlaySoundFile(Sounds.GetSelectedSoundFile(Questie.db.profile.objectiveCompleteSoundChoiceName), "Master")
                 shouldPlayObjectiveSound = false
             end
         end)
@@ -21,12 +38,13 @@ function Sounds.PlayObjectiveComplete()
 end
 
 function Sounds.PlayQuestComplete()
-    if (not Questie.db.char.soundOnQuestComplete) then
+    if (not Questie.db.profile.soundOnQuestComplete) then
         return
     end
 
     shouldPlayObjectiveSound = false
-    PlaySoundFile(Sounds.GetSelectedSoundFile(Questie.db.char.questCompleteSoundChoiceName), "Master")
+    shouldPlayObjectiveProgress = false
+    PlaySoundFile(Sounds.GetSelectedSoundFile(Questie.db.profile.questCompleteSoundChoiceName), "Master")
 end
 
 function Sounds.GetSelectedSoundFile(typeSelected)
@@ -35,6 +53,7 @@ end
 
 soundTable = {
     ["QuestDefault"]       = "Sound/Creature/Peon/PeonBuildingComplete1.ogg",
+    ["GameDefault"]        = "Sound/Interface/iquestcomplete.ogg",
     ["Troll Male"]         = "Sound/Character/Troll/TrollVocalMale/TrollMaleCongratulations01.ogg",
     ["Troll Female"]       = "Sound/Character/Troll/TrollVocalFemale/TrollFemaleCongratulations01.ogg",
     ["Tauren Male"]        = "Sound/Creature/Tauren/TaurenYes3.ogg",
@@ -69,4 +88,5 @@ soundTable = {
     ["War Drums"]          = "Sound/Event Sounds/Event_wardrum_ogre.ogg",
     ["Humm"]               = "Sound/Spells/SimonGame_Visual_GameStart.ogg",
     ["Short Circuit"]      = "Sound/Spells/SimonGame_Visual_BadPress.ogg",
+    ["ObjectiveProgress"]  = "Sound/Interface/AuctionWindowOpen.ogg",
 }

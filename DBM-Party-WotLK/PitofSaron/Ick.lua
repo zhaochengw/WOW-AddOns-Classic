@@ -5,7 +5,7 @@ if not mod:IsClassic() then
 	mod.statTypes = "normal,heroic,timewalker"
 end
 
-mod:SetRevision("20230414085833")
+mod:SetRevision("20231020041658")
 mod:SetCreatureID(36476)
 mod:SetEncounterID(2001)
 mod:SetUsedIcons(8)
@@ -35,7 +35,7 @@ local timerPursuitConfusion		= mod:NewBuffActiveTimer(12, 69029, nil, nil, nil, 
 local timerPoisonNova			= mod:NewCastTimer(5, 68989, nil, "Melee", 2, 2)
 
 mod:AddSetIconOption("SetIconOnPursuitTarget", 68987, true, false, {8})
-mod:GroupSpells(68987, 69029)
+--mod:GroupSpells(68987, 69029)
 
 local pursuit = DBM:GetSpellInfo(68987)
 local pursuitTable = {}

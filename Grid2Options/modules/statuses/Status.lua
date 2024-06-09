@@ -29,7 +29,7 @@ do
 
 	local PLAYER_CLASSES = Grid2Options.PLAYER_CLASSES
 
-	local HEADER_TYPES = { player = L['Players'], pet = L['Pets'], boss = L['Bosses'], target = L['Target'], focus = L['Focus'] }
+	local UNIT_TYPES = { player = L['Players'], pet = L['Pets'], boss = L['Bosses'], target = L['Target'], focus = L['Focus'], targettarget = L['Target of Target'], focustarget = L['Target of Focus'] }
 
 	local NOYES_TYPES = { L["No"], L['Yes'] }
 
@@ -84,10 +84,53 @@ do
 			end,
 			set = function(_,v)
 				dbx.load[key] = (v==2)
-				status:RefreshLoad()				
+				status:RefreshLoad()
 			end,
 			disabled = function() return not dbx.load or dbx.load.disabled or dbx.load[key]==nil end,
 			values = values,
+		}
+		options[key..'3'] = {
+			type = "description",
+			name = "",
+			order = order+3,
+		}
+	end
+
+	local function SetFilterDropdownOptions( status, options, order, key, defValue, name, desc, values, sorting )
+		local dbx = status.dbx
+		options[key..'1'] = {
+			type = "toggle",
+			name = name,
+			desc = desc,
+			order = order,
+			get = function(info) return dbx.load and dbx.load[key]~=nil end,
+			set = function(info, value)
+				if value then
+					dbx.load = dbx.load or {}
+					dbx.load[key] = defValue or next(values)
+				elseif dbx.load then
+					dbx.load[key] = nil
+					if not next(dbx.load) then dbx.load = nil end
+				end
+				status:RefreshLoad()
+			end,
+			disabled = function() return dbx.load and dbx.load.disabled end,
+		}
+		options[key..'2'] = {
+			type = "select",
+			name = name,
+			desc = desc,
+			order = order+1,
+			get = function()
+				return dbx.load and dbx.load[key]
+			end,
+			set = function(_,v)
+				dbx.load[key] = v
+				status:RefreshLoad()
+			end,
+			disabled = function() return not dbx.load or dbx.load.disabled or dbx.load[key]==nil end,
+			values = values,
+			sorting = sorting,
 		}
 		options[key..'3'] = {
 			type = "description",
@@ -142,7 +185,7 @@ do
 			get = function(info, value) return filter[value] end,
 			set = function(info, value)
 				filter[value] = (not filter[value]) or nil
-				status:RefreshLoad()				
+				status:RefreshLoad()
 			end,
 			hidden = function() return not multi end,
 			disabled = function() return dbx.load and dbx.load.disabled end,
@@ -275,7 +318,7 @@ do
 			SetFilterOptions( status, options, 20,
 				'playerClassSpec',
 				CLASSES_SPECS,
-				Grid2.playerClass..Grid2.GetSpecialization(),
+				Grid2.playerClass..(Grid2.GetSpecialization() or 0),
 				L["Player Class&Spec"],
 				L["Load the status only if your toon has the specified class and specialization."]
 			)
@@ -295,8 +338,26 @@ do
 			L["Load the status only if you are in the specified instance type."]
 		)
 		SetFilterZoneOptions(status, options, 55, 'instNameID')
+		if status.handlerType then
+			local spells, sorted = self:GetPlayerSpells()
+			SetFilterDropdownOptions( status, options, 60,
+				'cooldown',
+				nil,
+				L["Spell Ready"],
+				L["Load the status only if the specified player spell is not in cooldown."],
+				spells,
+				sorted
+			)
+		end
 		if status.handlerType or (optionParams and optionParams.unitFilter) then -- hackish to detect buff/debuff type statuses
-			SetFilterOptions( status, options, 60,
+			SetFilterBooleanOptions( status, options, 65,
+				'unitAlive',
+				true,
+				L["Unit Alive"],
+				L["Load the status only if the unit is alive/dead."],
+				NOYES_TYPES
+			)
+			SetFilterOptions( status, options, 70,
 				'unitReaction',
 				UNIT_REACTIONS,
 				'friendly',
@@ -304,7 +365,7 @@ do
 				L["Load the status only if the unit has the specified reaction towards the player."],
 				true, true
 			)
-			SetFilterOptions( status, options, 70,
+			SetFilterOptions( status, options, 75,
 				'unitClass',
 				PLAYER_CLASSES,
 				select(2,UnitClass('player')),
@@ -320,9 +381,9 @@ do
 				L["Load the status only if the unit has the specified role."],
 				true
 			)
-			SetFilterOptions( status, options, 90,
+			SetFilterOptions( status, options, 85,
 				'unitType',
-				HEADER_TYPES,
+				UNIT_TYPES,
 				'player',
 				L["Unit Type"],
 				L["Load the status only for the specified unit types."],
@@ -426,14 +487,14 @@ function Grid2Options:MakeStatusThresholdOptions(status, options, optionParams, 
 		desc = optionParams and optionParams.thresholdDesc or L["Threshold at which to activate the status."],
 		min = min or 0,
 		max = max or 1,
-		step = step or 0.01,
+		bigStep = step or 0.01,
 		isPercent = percent or nil,
 		get = function ()
 			return status.dbx.threshold
 		end,
 		set = function (_, v)
 			status.dbx.threshold = v
-			status:UpdateAllUnits()
+			status:Refresh()
 		end,
 	}
 end

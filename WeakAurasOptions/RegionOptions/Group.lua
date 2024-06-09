@@ -587,6 +587,17 @@ local function createOptions(id, data)
         OptionsPrivate.ResetMoverSizer();
       end
     },
+    alpha = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      width = WeakAuras.normalWidth,
+      name = L["Group Alpha"],
+      order = 46,
+      min = 0,
+      max = 1,
+      bigStep = 0.01,
+      isPercent = true
+    },
     endHeader = {
       type = "header",
       order = 100,
@@ -676,7 +687,7 @@ end
 local function modifyThumbnail(parent, frame, data)
   function frame:SetIcon()
     if data.groupIcon then
-      local success = WeakAuras.SetTextureOrAtlas(frame.icon, data.groupIcon)
+      local success = OptionsPrivate.Private.SetTextureOrAtlas(frame.icon, data.groupIcon)
       if success then
         if frame.defaultIcon then
           frame.defaultIcon:Hide()
@@ -706,5 +717,8 @@ local function createIcon()
 end
 
 -- Register new region type options with WeakAuras
-WeakAuras.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createThumbnail, modifyThumbnail,
-                                L["Controls the positioning and configuration of multiple displays at the same time"])
+OptionsPrivate.registerRegions = OptionsPrivate.registerRegions or {}
+table.insert(OptionsPrivate.registerRegions, function()
+  OptionsPrivate.Private.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createThumbnail, modifyThumbnail,
+                                              L["Controls the positioning and configuration of multiple displays at the same time"])
+end)

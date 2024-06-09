@@ -1,8 +1,5 @@
---[[ $Id: AceGUIWidget-DropDown.lua 1239 2020-09-20 10:22:02Z nevcairiel $ ]]--
+--[[ $Id: AceGUIWidget-DropDown.lua 1284 2022-09-25 09:15:30Z nevcairiel $ ]]--
 local AceGUI = LibStub("AceGUI-3.0")
-
--- Thirdparty
-local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 -- Lua APIs
 local min, max, floor = math.min, math.max, math.floor
@@ -13,10 +10,6 @@ local tsort = table.sort
 local PlaySound = PlaySound
 local UIParent, CreateFrame = UIParent, CreateFrame
 local _G = _G
-
--- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
--- List them here for Mikk's FindGlobals script
--- GLOBALS: CLOSE
 
 local function fixlevels(parent,...)
 	local i = 1
@@ -256,7 +249,7 @@ do
 
 	local function Constructor()
 		local count = AceGUI:GetNextWidgetNum(widgetType)
-		local frame = CreateFrame("Frame", "AceGUI30Pullout"..count, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+		local frame = CreateFrame("Frame", "AceGUI30Pullout"..count, UIParent, "BackdropTemplate")
 		local self = {}
 		self.count = count
 		self.type = widgetType
@@ -307,7 +300,7 @@ do
 		scrollFrame.obj = self
 		itemFrame.obj = self
 
-		local slider = CreateFrame("Slider", "AceGUI30PulloutScrollbar"..count, scrollFrame, BackdropTemplateMixin and "BackdropTemplate" or nil)
+		local slider = CreateFrame("Slider", "AceGUI30PulloutScrollbar"..count, scrollFrame, "BackdropTemplate")
 		slider:SetOrientation("VERTICAL")
 		slider:SetHitRectInsets(0, 0, -10, 0)
 		slider:SetBackdrop(sliderBackdrop)
@@ -354,7 +347,7 @@ end
 
 do
 	local widgetType = "Dropdown"
-	local widgetVersion = 35
+	local widgetVersion = 36
 
 	--[[ Static data ]]--
 
@@ -379,7 +372,6 @@ do
 
 	local function Dropdown_TogglePullout(this)
 		local self = this.obj
-		PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
 		if self.open then
 			self.open = nil
 			self.pullout:Close()
@@ -653,8 +645,8 @@ do
 	local function Constructor()
 		local count = AceGUI:GetNextWidgetNum(widgetType)
 		local frame = CreateFrame("Frame", nil, UIParent)
-		local dropdown = LibDD:Create_UIDropDownMenu("AceGUI30DropDown"..count, frame)
-		
+		local dropdown = CreateFrame("Frame", "AceGUI30DropDown"..count, frame, "UIDropDownMenuTemplate")
+
 		local self = {}
 		self.type = widgetType
 		self.frame = frame

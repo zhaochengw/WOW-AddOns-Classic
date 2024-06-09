@@ -25,8 +25,8 @@ local glowingStarfire = false;
 -- If we used the 'real' spell IDs instead of fake IDs, we would see weird transitions
 -- If spell IDs were identical, hiding the left or right SAO could also hide the other
 -- (the latter is a limitation, some would say a feature, of Blizzard's original code)
-local leftFakeSpellID  = 0xD001D001;
-local rightFakeSpellID = 0xD001D002;
+local leftFakeSpellID  = 0x0D00001D;
+local rightFakeSpellID = 0x0D00002D;
 
 local naturesGraceVariants; -- Lazy init in lazyCreateNaturesGraceVariants()
 
@@ -47,26 +47,40 @@ local function hasSolar(self)
     return self:FindPlayerAuraByID(solarSpellID) ~= nil;
 end
 
-local function updateOneSAO(self, position, spellID, texture)
+local function updateOneSAO(self, position, fakeSpellID, realSpellID, texture)
     if (texture == "") then
-        self:DeactivateOverlay(spellID);
+        self:DeactivateOverlay(fakeSpellID);
     else
-        self:ActivateOverlay(0, spellID, self.TexName[texture], position, 1, 255, 255, 255, true);
+        local endTime = SAO:GetSpellEndTime(realSpellID);
+        self:ActivateOverlay(0, fakeSpellID, self.TexName[texture], position, 1, 255, 255, 255, true, nil, endTime);
     end
 end
 
-local function updateLeftSAO(self, texture)
+local function updateLeftSAO(self, texture, realSpellID)
     if (leftTexture ~= texture) then
         leftTexture = texture;
-        updateOneSAO(self, "Left", leftFakeSpellID, texture);
+        updateOneSAO(self, "Left", leftFakeSpellID, realSpellID, texture);
     end
 end
 
-local function updateRightSAO(self, texture)
+local function updateRightSAO(self, texture, realSpellID)
     if (rightTexture ~= texture) then
         rightTexture = texture;
-        updateOneSAO(self, "Right (Flipped)", rightFakeSpellID, texture);
+        updateOneSAO(self, "Right (Flipped)", rightFakeSpellID, realSpellID, texture);
     end
+end
+
+local function updateOneSAOTimer(self, leftFakeSpellID, realSpellID)
+    local endTime = self:GetSpellEndTime(realSpellID);
+    self:RefreshOverlayTimer(leftFakeSpellID, endTime);
+end
+
+local function updateLeftSAOTimer(self, realSpellID)
+    updateOneSAOTimer(self, leftFakeSpellID, realSpellID);
+end
+
+local function updateRightSAOTimer(self, realSpellID)
+    updateOneSAOTimer(self, rightFakeSpellID, realSpellID);
 end
 
 local function updateSAOs(self)
@@ -84,20 +98,46 @@ local function updateSAOs(self)
 
     if (mustActivateLunar) then
         -- Lunar Eclipse
-        updateLeftSAO (self, lunarTexture); -- Left is always Lunar Eclipse
-        updateRightSAO(self, mayActivateOmen and omenTexture or ''); -- Right is either Omen or nothing
+        updateLeftSAO (self, lunarTexture, lunarSpellID); -- Left is always Lunar Eclipse
+        updateRightSAO(self, mayActivateOmen and omenTexture or '', mayActivateOmen and omenSpellID or nil); -- Right is either Omen or nothing
     elseif (mustActivateSolar) then
         -- Solar Eclipse
-        updateLeftSAO (self, mayActivateOmen and omenTexture or ''); -- Left is either Omen or nothing
-        updateRightSAO(self, solarTexture); -- Right is always Solar Eclipse
+        updateLeftSAO (self, mayActivateOmen and omenTexture or '', mayActivateOmen and omenSpellID or nil); -- Left is either Omen or nothing
+        updateRightSAO(self, solarTexture, solarSpellID); -- Right is always Solar Eclipse
     else
         -- No Eclipse: either both SAOs are Omen of Clarity, or both are nothing
         if (mayActivateOmen) then
-            updateLeftSAO (self, omenTexture);
-            updateRightSAO(self, omenTexture);
+            updateLeftSAO (self, omenTexture, omenSpellID);
+            updateRightSAO(self, omenTexture, omenSpellID);
         else
-            updateLeftSAO (self, '');
-            updateRightSAO(self, '');
+            updateLeftSAO (self, '', nil);
+            updateRightSAO(self, '', nil);
+        end
+    end
+end
+
+local function updateSAOTimers(self)
+    local omenOptions = self:GetOverlayOptions(omenSpellID);
+    local lunarOptions = self:GetOverlayOptions(lunarSpellID);
+    local solarOptions = self:GetOverlayOptions(solarSpellID);
+
+    local mayActivateOmen = clarityCache and (not omenOptions or type(omenOptions[0]) == "nil" or omenOptions[0]);
+    local mustActivateLunar = lunarCache and (not lunarOptions or type(lunarOptions[0]) == "nil" or lunarOptions[0]);
+    local mustActivateSolar = solarCache and (not solarOptions or type(solarOptions[0]) == "nil" or solarOptions[0]);
+
+    if (mustActivateLunar) then
+        -- Lunar Eclipse
+        updateLeftSAOTimer (self, lunarSpellID); -- Left is always Lunar Eclipse
+        updateRightSAOTimer(self, mayActivateOmen and omenSpellID or nil); -- Right is either Omen or nothing
+    elseif (mustActivateSolar) then
+        -- Solar Eclipse
+        updateLeftSAOTimer (self, mayActivateOmen and omenSpellID or nil); -- Left is either Omen or nothing
+        updateRightSAOTimer(self, solarSpellID); -- Right is always Solar Eclipse
+    else
+        -- No Eclipse: either both SAOs are Omen of Clarity, or both are nothing
+        if (mayActivateOmen) then
+            updateLeftSAOTimer (self, omenSpellID);
+            updateRightSAOTimer(self, omenSpellID);
         end
     end
 end
@@ -147,37 +187,45 @@ local function customCLEU(self, ...)
     local timestamp, event, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = CombatLogGetCurrentEventInfo() -- For all events
 
     -- Accept only certain events, and only when done by the player
-    if (event ~= "SPELL_AURA_APPLIED" and event ~= "SPELL_AURA_REMOVED") then return end
+    if (event ~= "SPELL_AURA_APPLIED" and event ~= "SPELL_AURA_REMOVED" and event ~= "SPELL_AURA_REFRESH") then return end
     if (sourceGUID ~= UnitGUID("player")) then return end
 
     local spellID, spellName, spellSchool = select(12, CombatLogGetCurrentEventInfo()) -- For SPELL_*
 
     if (event == "SPELL_AURA_APPLIED") then
-        if (spellID == omenSpellID) then
+        if self:IsSpellIdentical(spellID, spellName, omenSpellID) then
             clarityCache = true;
             updateSAOs(self);
-        elseif (spellID == lunarSpellID) then
+        elseif self:IsSpellIdentical(spellID, spellName, lunarSpellID) then
             lunarCache = true;
             updateSAOs(self);
             updateGABs(self);
-        elseif (spellID == solarSpellID) then
+        elseif self:IsSpellIdentical(spellID, spellName, solarSpellID) then
             solarCache = true;
             updateSAOs(self);
             updateGABs(self);
         end
         return;
     elseif (event == "SPELL_AURA_REMOVED") then
-        if (spellID == omenSpellID) then
+        if self:IsSpellIdentical(spellID, spellName, omenSpellID) then
             clarityCache = false;
             updateSAOs(self);
-        elseif (spellID == lunarSpellID) then
+        elseif self:IsSpellIdentical(spellID, spellName, lunarSpellID) then
             lunarCache = false;
             updateSAOs(self);
             updateGABs(self);
-        elseif (spellID == solarSpellID) then
+        elseif self:IsSpellIdentical(spellID, spellName, solarSpellID) then
             solarCache = false;
             updateSAOs(self);
             updateGABs(self);
+        end
+        return;
+    elseif (event == "SPELL_AURA_REFRESH") then
+        if self:IsSpellIdentical(spellID, spellName, omenSpellID)
+        or self:IsSpellIdentical(spellID, spellName, lunarSpellID)
+        or self:IsSpellIdentical(spellID, spellName, solarSpellID)
+        then
+            updateSAOTimers(self);
         end
         return;
     end
@@ -193,7 +241,7 @@ local function lazyCreateNaturesGraceVariants(self)
     local textureVariant1 = "serendipity";
     local textureVariant2 = "fury_of_stormrage";
 
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC or GetSpellInfo(spellID) then
+    if not SAO.IsEra() or GetSpellInfo(spellID) then
         self:MarkTexture(textureVariant1);
         self:MarkTexture(textureVariant2);
     end
@@ -208,7 +256,7 @@ local function registerClass(self)
     -- Track Eclipses with a custom CLEU function, so that eclipses can coexist with Omen of Clarity
     -- self:RegisterAura("eclipse_lunar", 0, lunarSpellID, "eclipse_moon", "Left", 1, 255, 255, 255, true);
     -- self:RegisterAura("eclipse_solar", 0, solarSpellID, "eclipse_sun", "Right (Flipped)", 1, 255, 255, 255, true);
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then -- Must exclude Eclipses for Classic Era, because there are no Eclipses, but the fake spell IDs would be accepted
+    if not self.IsEra() then -- Must exclude Eclipses for Classic Era, because there are no Eclipses, but the fake spell IDs would be accepted
         self:RegisterAura("eclipse_lunar", 0, lunarSpellID+1000000, "eclipse_moon", "Left", 1, 255, 255, 255, true); -- Fake spell ID, for option testing
         self:RegisterAura("eclipse_solar", 0, solarSpellID+1000000, "eclipse_sun", "Right (Flipped)", 1, 255, 255, 255, true); -- Fake spell ID, for option testing
     end
@@ -251,19 +299,24 @@ local function registerClass(self)
     self:RegisterAura("wrath_of_elune", 0, 46833, "shooting_stars", "Top", 1, 255, 255, 255, true, { starfire }); -- PvP season 5-6-7-8
     self:RegisterAura("elunes_wrath", 0, 64823, "shooting_stars", "Top", 1, 255, 255, 255, true, { starfire }); -- PvE tier 8
 
+    -- Fury of Stormrage (Season of Discovery)
+    if self.IsSoD() then
+        local furyOfStormrage = 414800;
+        self:RegisterAura("fury_of_stormrage", 0, furyOfStormrage, "fury_of_stormrage", "Top", 1, 255, 255, 255, true, { healingTouch });
+    end
+
+    -- Healing Trance / Soul Preserver
+    self:RegisterAuraSoulPreserver("soul_preserver_druid", 60512); -- 60512 = Druid buff
+
     -- Mark textures that aren't marked automatically
     local omenTextureFeral = "feral_omenofclarity";
     local omenTextureResto = "natures_grace";
     local lunarTexture = "eclipse_moon";
     local solarTexture = "eclipse_sun";
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC or GetSpellInfo(omenSpellID) then
-        self:MarkTexture(omenTextureFeral);
-        self:MarkTexture(omenTextureResto);
-    end
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC or GetSpellInfo(lunarSpellID) then
+    self:MarkTexture(omenTextureFeral);
+    self:MarkTexture(omenTextureResto);
+    if not self.IsEra() then
         self:MarkTexture(lunarTexture);
-    end
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC or GetSpellInfo(solarSpellID) then
         self:MarkTexture(solarTexture);
     end
 end
@@ -294,6 +347,9 @@ local function loadOptions(self)
     local wrathOfEluneTalent = wrathOfEluneBuff; -- Not really a talent
     local elunesWrathTalent = elunesWrathBuff; -- Not really a talent
 
+    local furyOfStormrageBuff = 414800;
+    local furyOfStormrageTalent = furyOfStormrageBuff; -- Not really a talent
+
     local predatoryStrikesTalent = 16972;
     local predatoryStrikesBuff = 69369;
 
@@ -308,14 +364,21 @@ local function loadOptions(self)
     self:AddOverlayOption(solarEclipseTalent, solarSpellID, 0, nil, nil, nil, solarSpellID+1000000); -- Spell ID not used by ActivateOverlay like typical overlays
     self:AddOverlayOption(wrathOfEluneTalent, wrathOfEluneBuff);
     self:AddOverlayOption(elunesWrathTalent, elunesWrathBuff);
+    if self.IsSoD() then
+        self:AddOverlayOption(furyOfStormrageTalent, furyOfStormrageBuff);
+    end
     self:AddOverlayOption(naturesGraceTalent, naturesGraceBuff, 0, nil, naturesGraceVariants);
     self:AddOverlayOption(predatoryStrikesTalent, predatoryStrikesBuff);
+    self:AddSoulPreserverOverlayOption(60512); -- 60512 = Druid buff
 
     self:AddGlowingOption(lunarEclipseTalent, starfire, starfire);
     self:AddGlowingOption(solarEclipseTalent, wrath, wrath);
     self:AddGlowingOption(wrathOfEluneTalent, wrathOfEluneBuff, starfire);
     self:AddGlowingOption(elunesWrathTalent, elunesWrathBuff, starfire);
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then -- Must exclude this option specifically for Classic Era, because the talent exists in Era but it has no proc
+    if self.IsSoD() then
+        self:AddGlowingOption(furyOfStormrageTalent, furyOfStormrageBuff, healingTouch);
+    end
+    if not self.IsEra() then -- Must exclude this option specifically for Classic Era, because the talent exists in Era but it has no proc
         self:AddGlowingOption(predatoryStrikesTalent, predatoryStrikesBuff, regrowth);
         self:AddGlowingOption(predatoryStrikesTalent, predatoryStrikesBuff, healingTouch);
         self:AddGlowingOption(predatoryStrikesTalent, predatoryStrikesBuff, nourish);

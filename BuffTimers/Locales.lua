@@ -24,7 +24,7 @@ if locale == "ruRU" then
     L["Add more colors to the timer"] = "Добавить больше цветов к таймеру"
     L["Text vertical position"] = "Вертикальное положение текста"
     L["Text font size"] = "Размер шрифта текста"
-    l["customize_text"] = "Настроить текст"
+    L["customize_text"] = "Настроить текст"
 end
 
 -- German translation by: ysjoelfir

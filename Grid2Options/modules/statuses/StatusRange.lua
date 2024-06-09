@@ -2,35 +2,45 @@ local L = Grid2Options.L
 
 local playerClass = Grid2.playerClass
 
+local GetRangeList
+do
+	local list
+	function GetRangeList(status)
+		list = {}
+		for range in pairs(status:GetRanges()) do
+			list[range] = tonumber(range) and string.format(L["%d yards"],tonumber(range)) or nil
+		end
+		list.heal = L['Heal Range']
+		list.spell = L['Spell Range']
+		GetRangeList = function() return list end
+		return list
+	end
+end
+
 local GetPlayerSpells
 do
+	local GetSpellInfo = GetSpellInfo
+	local IsPlayerSpell = IsPlayerSpell
+	local IsSpellInRange = IsSpellInRange
 	local customSpells = {}
-	function GetPlayerSpells()
+	local stringMask = string.format("%%s (%s)",L["%d yards"])
+	function GetPlayerSpells(status, hostile)
+		local rezSpellID = select(3, status:GetRanges())
 		wipe(customSpells)
 		for i=1,1000 do
 		   local type, spellID = GetSpellBookItemInfo(i,'spell')
 		   if not spellID then break end
 		   if type == 'SPELL' then
 			   local name, _, _, _, minRange, maxRange = GetSpellInfo(spellID)
-			   if maxRange>0 and maxRange<100 then
-					customSpells[spellID] = name
+			   if maxRange>0 and maxRange<100 and spellID~=rezSpellID and IsPlayerSpell(spellID) and (hostile or IsSpellInRange(name, 'player')==1)  then
+					customSpells[spellID] = string.format(stringMask, name, maxRange)
 			   end
 			end
 		end
+		if rezSpellID and friendly then
+			customSpells[rezSpellID] = string.format(stringMask, GetSpellInfo(rezSpellID), 40)
+		end
 		return customSpells
-	end
-end
-
-local GetRangeList
-do
-	local rangeList = {}
-	for range in pairs(Grid2:GetStatusByName('range'):GetRanges()) do
-		rangeList[range] = tonumber(range) and string.format(L["%d yards"],tonumber(range)) or nil
-	end
-	rangeList.heal = L['Heal Range']
-	function GetRangeList(status)
-		rangeList.spell = (status.name=='range') and L['Spell Range'] or nil
-		return rangeList
 	end
 end
 
@@ -96,17 +106,30 @@ local function MakeRangeOptions(self, status, options, optionParams)
 		order = 40,
 		name = L["Range"],
 		desc = L["Range in yards beyond which the status will be lost."],
-		get = function () 
-			return tonumber(rangeDB.range) or (rangeDB.range=='spell' and 'spell') or "heal" 
+		get = function ()
+			return tonumber(rangeDB.range) or (rangeDB.range=='spell' and 'spell') or "heal"
 		end,
-		set = function (_, v) 
+		set = function (_, v)
 			if v=='spell' and rangeDB.default then -- force storing range by class for spell option
 				rangeDB = ToggleByClass(status, true)
 			end
-			rangeDB.range = v			
-			status:UpdateDB() 
+			rangeDB.range = v
+			status:UpdateDB()
 		end,
 		values = function() return GetRangeList(status) end,
+	}
+	options.byClass = {
+		type = "toggle",
+		name = L["Range by class"],
+		desc = L["Check this option to setup different range configuration for each player class."],
+		order = 41,
+		get = function ()
+			return status.dbx.ranges and status.dbx.ranges[playerClass]
+		end,
+		set = function (_, v)
+			rangeDB = ToggleByClass(status, v)
+			status:UpdateDB()
+		end,
 	}
 	options.newline = {
 		order = 59,
@@ -116,37 +139,25 @@ local function MakeRangeOptions(self, status, options, optionParams)
 	options.friendlySpell = {
 		type = "select",
 		order = 60,
+		width = "double",
 		name = L["Spell for friendly units"],
 		desc = L["Spell to check the range of. The player must know the spell."],
-		get = function () return rangeDB.friendlySpellID;	end,	
+		get = function () return rangeDB.friendlySpellID;	end,
 		set = function (_, v) rangeDB.friendlySpellID = v; status:UpdateDB(); end,
-		values = GetPlayerSpells,
+		values = function() return GetPlayerSpells(status, false) end,
 		hidden = function() return rangeDB.range~='spell' end,
 	}
 	options.hostileSpell = {
 		type = "select",
 		order = 70,
+		width = "double",
 		name = L["Spell for hostile units"],
 		desc = L["Spell to check the range of. The player must know the spell."],
-		get = function () return rangeDB.hostileSpellID;	end,	
+		get = function () return rangeDB.hostileSpellID;	end,
 		set = function (_, v) rangeDB.hostileSpellID = v; status:UpdateDB(); end,
-		values = GetPlayerSpells,
+		values = function() return GetPlayerSpells(status, true) end,
 		hidden = function() return rangeDB.range~='spell' end,
 	}
-	options.byClass = {
-		type = "toggle",
-		name = L["Apply the range setting only to this player class"],
-		desc = L["Check this option to setup different range configuration for each player class."],
-		width = "full",
-		order = 100,
-		get = function () 
-			return status.dbx.ranges and status.dbx.ranges[playerClass]
-		end,
-		set = function (_, v)
-			rangeDB = ToggleByClass(status, v)
-			status:UpdateDB()
-		end,
-	}	
 end
 
 Grid2Options:RegisterStatusOptions("range", "target", MakeRangeOptions, { groupOrder = 201 } )

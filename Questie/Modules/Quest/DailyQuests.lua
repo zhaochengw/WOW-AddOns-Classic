@@ -20,7 +20,7 @@ local lastCheck
 ---@param message string
 ---@return nil
 function DailyQuests:FilterDailies(message, _, _)
-    if message and Questie.db.char.showRepeatableQuests and QuestiePlayer.GetPlayerLevel() == 70 then
+    if message and Questie.db.profile.showRepeatableQuests and QuestiePlayer.GetPlayerLevel() == 70 then
         -- If the REPUTABLE message is empty, i.e contains "::::::::::" we don't count it as a check.
         if (not lastCheck) and not string.find(message, "::::::::::") then
             lastCheck = GetTime();
@@ -134,12 +134,14 @@ end
 ---@param questId number
 ---@return boolean
 function DailyQuests:IsActiveDailyQuest(questId)
-    local hiddenQuests = Questie.db.char.hiddenDailies
-    return not (hiddenQuests.nhc[questId] or
-        hiddenQuests.hc[questId] or
-        hiddenQuests.cooking[questId] or
-        hiddenQuests.fishing[questId] or
-        hiddenQuests.pvp[questId]);
+    return true
+    -- TODO: This might be reusable when reworking this module
+    --local hiddenQuests = Questie.db.char.hiddenDailies
+    --return not (hiddenQuests.nhc[questId] or
+    --    hiddenQuests.hc[questId] or
+    --    hiddenQuests.cooking[questId] or
+    --    hiddenQuests.fishing[questId] or
+    --    hiddenQuests.pvp[questId]);
 end
 
 ---@param questId number

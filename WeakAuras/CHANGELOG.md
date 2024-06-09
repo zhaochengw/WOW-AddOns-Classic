@@ -1,26 +1,28 @@
-# [5.5.3](https://github.com/WeakAuras/WeakAuras2/tree/5.5.3) (2023-05-07)
+# [5.10.1](https://github.com/WeakAuras/WeakAuras2/tree/5.10.1) (2024-02-09)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/5.5.2...5.5.3)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/5.10.0...5.10.1)
 
 ## Highlights
 
- - Template updates for Shadow Priest
-- Bug fixes 
+ - Bug Fixes 
 
 ## Commits
 
-InfusOnWoW (6):
+Putro (1):
 
-- Templates Shadow Priest: Update for 10.1
-- Cast trigger: Disable various checks for non-casting trigger
-- Spell Cooldown Progress trigger: Add an option to follow overrides
-- Fix Cast trigger latency for some interactions
-- Fix issue with Smooth Progress, Min/Max clamps and overlays
-- Fix lua error in Reputatin trigger while outside world
+- Localize the title in AuraWarnings
 
-mrbuds (3):
+Stanzilla (3):
 
-- Fix Retail talent widget offsets
-- GetUnitFrame anchor callback: safeguard against nil index error
-- Fix weakauras loading on wotlk ptr
+- Add more types to Types
+- A few type and spelling fixes
+- Add workaround for actions/checkout#290
+
+dependabot[bot] (1):
+
+- Bump peter-evans/create-pull-request from 5 to 6
+
+emptyrivers (1):
+
+- move type checking code for WeakAurasArchive
 

@@ -1,0 +1,34 @@
+Interface Usage Changes | 2020 Oct 31
+-------------------------------------
+- Updated the TOC version to 90001 for the Shadowlands 9.0.1 pre-patch.
+- Frames that use backdrops are now created using the "BackdropTemplate".
+- Updated the AzDropDown library to Rev 14.
+
+Interface Usage Changes | 2018 Aug 12
+-------------------------------------
+- Updated the TOC version to 80000 for the Battle for Azeroth 8.0 pre-patch.
+- Added column headers, clicking them will sort items by the column clicked.
+- Added slash command "/iu interval <seconds>", which sets how often the polling is done.
+- Removed the "Include.xml" file, all required files are now referenced from the toc file.
+
+Interface Usage Changes | 2010 Nov 13
+-------------------------------------
+- Changed the TOC version to 40000 for the 4.0.1 pre Cataclysm patch.
+- If you're mousing over an entry, the tooltip now updates when polling data is updated.
+- EventCalls: Added a "raw count" value, which is the true number of dispatched events, while the other "total count" value is the total number of frames who received the event.
+
+Interface Usage Changes | 2010 Feb 27
+-------------------------------------
+- Changed the TOC version to 30300 for the 3.3 patch.
+
+Interface Usage Changes | 2009 May 24
+-------------------------------------
+- The FrameScript modules (OnUpdate/OnEvent) now has a new column showing how many times the script function was called.
+- Added three new polls, "Addon Spam by Prefix", "Addon Spam by Player" and "Addon Spam by Channel". They basically do the same, but having three, makes it easier to narrow down where the spam comes from.
+- No polling module is initialised by default anymore, you have to select one from the drop down list.
+- Modules: Default column alignment changed from "LEFT" to "RIGHT".
+- Modules: Column offsets are now based on the previous column's offset, instead of zero.
+
+Interface Usage Changes | 2009 May 21
+-------------------------------------
+- First release.

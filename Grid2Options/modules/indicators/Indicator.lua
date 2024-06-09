@@ -624,6 +624,34 @@ function Grid2Options:MakeIndicatorCooldownOptions(indicator, options)
 	}
 end
 
+-- Grid2Options:MakeIndicatorTooltipsOptions()
+function Grid2Options:MakeIndicatorTooltipsOptions(indicator, options)
+	self:MakeHeaderOptions( options, "Tooltip" )
+	options.tooltipEnabled = {
+		type = "toggle",
+		order = 155,
+		name = L["Display Tooltip"],
+		desc = L["Check this option to display a tooltip when the mouse is over the icon."],
+		get = function () return indicator.dbx.tooltipEnabled end,
+		set = function (_, v)
+			indicator.dbx.enableTooltips = nil -- remove old unused setting
+			indicator.dbx.tooltipAnchor = nil
+			indicator.dbx.tooltipEnabled = v or nil
+			indicator:DisableTooltips(); indicator:EnableTooltips()
+		end,
+	}
+	options.tooltipAnchor = {
+		type = "select",
+		name = L["Tooltip Anchor"],
+		desc = L["Sets where the Tooltip is anchored relative to the icon."],
+		order = 156,
+		get = function () return indicator.dbx.tooltipAnchor or 'ANCHOR_ABSENT' end,
+		set = function (_, v) indicator.dbx.tooltipAnchor = v ~= 'ANCHOR_ABSENT' and v or nil  end,
+		values = Grid2Options.tooltipAnchorValues,
+		hidden = function() return not indicator.dbx.tooltipEnabled end,
+	}
+end
+
 -- Grid2Options:MakeIndicatorHighlightEffectOptions()
 do
 	local LCG = LibStub("LibCustomGlow-1.0")
@@ -892,6 +920,22 @@ end
 
 -- Grid2Options:MakeIndicatorLoadOptions(indicator, options)
 do
+	local headerTypes
+
+	local function GetHeaderTypes()
+		if headerTypes==nil and Grid2Layout.customLayouts then
+			for _,layout in next,Grid2Layout.customLayouts do
+				for _,header in ipairs(layout) do
+					if header.headerName then
+						headerTypes = headerTypes or Grid2.CopyTable(Grid2Options.HEADER_TYPES)
+						headerTypes[header.headerName] = '/' .. header.headerName .. '/'
+					end
+				end
+			end
+		end
+		return headerTypes or Grid2Options.HEADER_TYPES
+	end
+
 	local function RefreshIndicator(indicator)
 		Grid2Options:UpdateIndicatorDB(indicator)
 		for _,f in next, Grid2Frame.registeredFrames do
@@ -1070,6 +1114,10 @@ do
 		end
 	end
 
+	function Grid2Options:RefreshHeaderTypes()
+		headerTypes = nil
+	end
+
 	function Grid2Options:MakeIndicatorLoadOptions(indicator, options)
 		SetFilterThemeOptions( indicator, options, 10 )
 		SetFilterOptions( indicator, options, 20,
@@ -1083,7 +1131,7 @@ do
 		)
 		SetFilterOptions( indicator, options, 30,
 			'unitType',
-			self.HEADER_TYPES,
+			GetHeaderTypes,
 			'player',
 			L["Unit Type"],
 			L["Load the indicator only for the specified unit types."],

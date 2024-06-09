@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(637, "DBM-Party-WotLK", 13, 284)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230414085833")
+mod:SetRevision("20240115231709")
 mod:SetCreatureID(35451)
 mod:SetEncounterID(2021)
 mod:SetUsedIcons(8)
-mod.noBossDeathKill = true--work around to handle a Boss to die, rebirth, die again, rebirth again and die to loot...
+mod:DisableBossDeathKill()--work around to handle a Boss to die, rebirth, die again, rebirth again and die to loot...
 
 mod:RegisterCombat("combat")
 mod:RegisterKill("yell", L.YellCombatEnd)
@@ -32,7 +32,7 @@ local timerExplode			= mod:NewCastTimer(4, 67729, nil, nil, nil, 2)
 
 mod:AddSetIconOption("SetIconOnMarkedTarget", 67823, false, false, {8})
 mod:AddBoolOption("AchievementCheck", false, "announce")
-mod:GroupSpells(67751, 67729)
+--mod:GroupSpells(67751, 67729)
 
 local warnedfailed = false
 

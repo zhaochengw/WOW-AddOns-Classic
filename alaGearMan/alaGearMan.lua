@@ -126,6 +126,7 @@ local NAME = "alaGearMan";
 local SECURE_QUICK_NAME_PREFIX = "alaGearMan_SecureQuick";
 local MACRO_NAME_PREFIX = "alaGearMan";
 local NUM_GEAR_BINDING = 9;
+local SUPPORT_ENGRAVING = C_Engraving ~= nil and C_Engraving.IsEngravingEnabled ~= nil and C_Engraving.IsEngravingEnabled() or false;
 --------------------------------------------------
 ----------------------------------------------------------------------------------------------------main
 local function _log_(...)
@@ -909,7 +910,11 @@ end
 function func.initUI()
 	ui.open = CreateFrame("BUTTON", nil, PaperDollFrame);
 	ui.open:SetSize(32, 32);
-	ui.open:SetPoint("TOPRIGHT", -40, -40);
+	if SUPPORT_ENGRAVING then
+		ui.open:SetPoint("TOPRIGHT", -70, -40);
+	else
+		ui.open:SetPoint("TOPRIGHT", -40, -40);
+	end
 	ui.open:SetNormalTexture(texture_open);
 	ui.open:SetPushedTexture(texture_open);
 	ui.open:GetPushedTexture():SetVertexColor(0.25, 0.25, 0.25, 1.0);
@@ -933,14 +938,64 @@ function func.initUI()
 		-- ui.gearWin:SetPoint("BOTTOMLEFT", PaperDollFrame, "BOTTOMRIGHT");
 		-- ui.gearWin:SetSize(240, 128);
 		ui.gearWin:SetHeight(win_SizeY);
-		ui.gearWin:SetPoint("TOPLEFT", ui.open, "TOPLEFT", 45, 0);
-		ui.gearWin:SetScript("OnShow", function()
-			ui.scroll:SetNumValue(#saved_sets + 1);
-			-- if var.gm_cur_set and saved_sets[var.gm_cur_set] then
-			-- 	func.pdf_show_mask(saved_sets[var.gm_cur_set]);
-			-- end
-			func.Sound_Show();
-		end);
+		if SUPPORT_ENGRAVING then
+			ui.gearWin.PlaceWhenEngravingFrameShow = function()
+				ui.gearWin:ClearAllPoints();
+				ui.gearWin:SetPoint("TOP", ui.open, "TOP", 0, 0);
+				ui.gearWin:SetPoint("LEFT", EngravingFrame, "RIGHT", 7, 0);
+			end
+			ui.gearWin.PlaceWhenEngravingFrameHide = function()
+				ui.gearWin:ClearAllPoints();
+				ui.gearWin:SetPoint("TOPLEFT", ui.open, "TOPLEFT", 75, 0);
+			end
+			ui.gearWin:SetPoint("TOPLEFT", ui.open, "TOPLEFT", 75, 0);
+			ui.gearWin:SetScript("OnShow", function()
+				ui.scroll:SetNumValue(#saved_sets + 1);
+				-- if var.gm_cur_set and saved_sets[var.gm_cur_set] then
+				-- 	func.pdf_show_mask(saved_sets[var.gm_cur_set]);
+				-- end
+				func.Sound_Show();
+				if EngravingFrame ~= nil and EngravingFrame:IsShown() then
+					ui.gearWin.PlaceWhenEngravingFrameShow();
+				else
+					ui.gearWin.PlaceWhenEngravingFrameHide();
+				end
+			end);
+			local function hookEngravingFrame()
+				EngravingFrame:HookScript("OnShow", function()
+					if ui.gearWin:IsShown() then
+						ui.gearWin.PlaceWhenEngravingFrameShow();
+					end
+				end);
+				EngravingFrame:HookScript("OnHide", function()
+					if ui.gearWin:IsShown() then
+						ui.gearWin.PlaceWhenEngravingFrameHide();
+					end
+				end);
+			end
+			if EngravingFrame ~= nil then
+				hookEngravingFrame();
+			else
+				local f = CreateFrame("FRAME");
+				f:SetScript("OnEvent", function(self, event, addon)
+					if addon:lower() == "blizzard_engravingui" then
+						f:UnregisterEvent("ADDON_LOADED");
+						f:SetScript("OnEvent", nil);
+						hookEngravingFrame();
+					end
+				end);
+				f:RegisterEvent("ADDON_LOADED");
+			end
+		else
+			ui.gearWin:SetPoint("TOPLEFT", ui.open, "TOPLEFT", 45, 0);
+			ui.gearWin:SetScript("OnShow", function()
+				ui.scroll:SetNumValue(#saved_sets + 1);
+				-- if var.gm_cur_set and saved_sets[var.gm_cur_set] then
+				-- 	func.pdf_show_mask(saved_sets[var.gm_cur_set]);
+				-- end
+				func.Sound_Show();
+			end);
+		end
 		ui.gearWin:SetScript("OnHide", function(self)
 			func.pdf_hide_mask();
 			var.gm_cur_set = nil;

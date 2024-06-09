@@ -7,6 +7,22 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras/Templates
+	--[[Translation missing --]]
+	L["(Dwarf)"] = "(Dwarf)"
+	--[[Translation missing --]]
+	L["(Dwarf/Human)"] = "(Dwarf/Human)"
+	--[[Translation missing --]]
+	L["(Human)"] = "(Human)"
+	--[[Translation missing --]]
+	L["(Night Elf)"] = "(Night Elf)"
+	--[[Translation missing --]]
+	L["(Troll)"] = "(Troll)"
+	--[[Translation missing --]]
+	L["(Undead)"] = "(Undead)"
+	--[[Translation missing --]]
+	L["< 4 stacks"] = "< 4 stacks"
+	--[[Translation missing --]]
+	L["5 stacks"] = "5 stacks"
 	L["Abilities"] = "능력"
 	L["Add Triggers"] = "활성 조건 추가"
 	L["Always Active"] = "항상 활성화"
@@ -48,6 +64,8 @@ local L = WeakAuras.L
 	L["Create Auras"] = "aura 생성"
 	L["debuff"] = "약화 효과"
 	L["Debuffs"] = "약화 효과"
+	--[[Translation missing --]]
+	L["dps buff"] = "dps buff"
 	L["General"] = "일반"
 	L["Health"] = "생명력"
 	--[[Translation missing --]]
@@ -61,6 +79,8 @@ local L = WeakAuras.L
 	L["Highlight while spell is active."] = "주문이 활성화 되어 있는 동안 강조"
 	L["Hold CTRL to create multiple auras at once"] = "한 번에 여러 효과를 만드려면 CTRL 키를 누르세요"
 	L["Keeps existing triggers intact"] = "활성 조건 그대로 유지"
+	--[[Translation missing --]]
+	L["Master Channeler Rune"] = "Master Channeler Rune"
 	--[[Translation missing --]]
 	L["Max 3"] = "Max 3"
 	--[[Translation missing --]]
@@ -78,6 +98,8 @@ local L = WeakAuras.L
 	L["Pet alive"] = "소환수 생존"
 	L["Pet Behavior"] = "소환수 행동"
 	L["PvP Talents"] = "명예 특성"
+	--[[Translation missing --]]
+	L["regen buff"] = "regen buff"
 	L["Replace all existing triggers"] = "모든 활성 조건 교체"
 	L["Replace Triggers"] = "활성 조건 교체"
 	L["Resources"] = "자원"

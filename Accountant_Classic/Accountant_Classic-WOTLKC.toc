@@ -1,7 +1,8 @@
-## Interface: 30401
+## Interface: 30403
 #@non-debug@
 ## Title: Accountant Classic
 ## Title-deDE: Accountant Classic
+## Title-esES: Título
 ## Title-frFR: Accountant Classic
 ## Title-koKR: |cFF00FF00[가계부]|rAccountant Classic 애드온
 ## Title-ptBR: Accountant Classic
@@ -10,6 +11,7 @@
 ## Title-zhTW: |cFF00FF00[資訊]|r個人會計
 ## Notes: A basic tool to track your monetary incomings and outgoings within WoW.
 ## Notes-deDE: Ein einfaches Hilfsprogramm, um deine Ein- und Ausgaben in WoW zu überwachen.
+## Notes-esES: Descripción
 ## Notes-frFR: Un outil basique utilisé pour traquer vos revenus et dépense dans le jeu
 ## Notes-koKR: |cff00CC33나만의 수입 지출을 쉽게 볼수있는 와우 가계부입니다.|r
 ## Notes-ptBR: Uma ferramenta básica para acompanhar suas finanças no WoW.
@@ -34,11 +36,11 @@
 # ## Notes-zhTW: |cff00CC33追蹤每個角色的所有收入與支出狀況，並可顯示當日小計、當週小計、以及自有記錄起的總計。並可顯示所有角色的總金額。|r
 #@end-debug@
 ## Author: arith
-## Version: v2.12.25
+## Version: v2.12.30
 ## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibDBIcon-1.0, LibDialog-1.0, !LibUIDropDownMenu
 ## SavedVariables: Accountant_ClassicSaveData, Accountant_ClassicDB, Accountant_Classic_NewDB, Accountant_ClassicZoneDB
 ## X-Credits: Sabaki, Shadow, Rophy
-## X-Date: 2023-03-20T15:14:52Z
+## X-Date: 2024-01-30T13:08:54Z
 ## X-Donate: https://pledgie.com/campaigns/13746
 ## X-Website: http://mods.curse.com/addons/wow/accountant-classic
 ## X-License: GPLv2

@@ -1,6 +1,7 @@
-DBM_COMMON_L = {}
+---@class DBMLocaleCommon
+local CL = {}
 
-local CL = DBM_COMMON_L
+DBM_COMMON_L = CL
 
 --General
 CL.NONE								= "None"
@@ -13,42 +14,53 @@ CL.INTERMISSION						= "Intermission"--No blizz global for this, and will probab
 CL.NO_DEBUFF						= "Not %s"--For use in places like info frame where you put "Not Spellname"
 CL.ALLY								= "Ally"--Such as "Move to Ally"
 CL.ALLIES							= "Allies"--Such as "Move to Allies"
+CL.TANK								= "Tank"--Such as "Move to Tank"
 CL.CLEAR							= "Clear"
 CL.SAFE								= "Safe"
 CL.NOTSAFE							= "Not Safe"
 CL.SEASONAL							= "Seasonal"--Used for option headers to label options that apply to seasonal mechanics (Such as season of mastery on classic era)
+CL.FULLENERGY						= "Full Energy"
 --Movements/Places
+CL.UP								= "Up"
+CL.DOWN								= "Down"
 CL.LEFT								= "Left"
 CL.RIGHT							= "Right"
+CL.CENTER							= "Center"
 CL.BOTH								= "Both"
 CL.BEHIND							= "Behind"
 CL.BACK								= "Back"--Back as in back of the room, not back as in body part
 CL.SIDE								= "Side"--Side as in move to the side
-CL.TOP								= "Top"--Top as in up top, not BDSM
-CL.BOTTOM							= "Bottom"--Bottom as in at the bottom, not BDSM
+CL.TOP								= "Top"
+CL.BOTTOM							= "Bottom"
 CL.MIDDLE							= "Middle"
 CL.FRONT							= "Front"
 CL.EAST								= "East"
 CL.WEST								= "West"
 CL.NORTH							= "North"
 CL.SOUTH							= "South"
-CL.SHIELD							= "Shield"
+CL.NORTHEAST						= "North-East"
+CL.SOUTHEAST						= "South-East"
+CL.SOUTHWEST						= "South-West"
+CL.NORTHWEST						= "North-West"
+CL.SHIELD							= "Shield"--Usually auto localized but kept around in case it needs to be used in a place that's not auto localized such as MoveTo or Use alert
 CL.PILLAR							= "Pillar"
 CL.SHELTER							= "Shelter"
 CL.EDGE								= "Room Edge"
 CL.FAR_AWAY							= "Far Away"
 CL.PIT								= "Pit"--Pit, as in hole in ground
+CL.TOTEM							= "Totem"
+CL.TOTEMS							= "Totems"
 --Mechanics
-CL.BOMB								= "Bomb"
-CL.BOMBS							= "Bombs"
-CL.ORB								= "Orb"
-CL.ORBS								= "Orbs"
+CL.BOMB								= "Bomb"--Usually auto localized but kept around in case it needs to be used in a place that's not auto localized such as MoveTo or Use alert
+CL.BOMBS							= "Bombs"--Usually auto localized but kept around in case it needs to be used in a place that's not auto localized such as MoveTo or Use alert
+CL.ORB								= "Orb"--Usually auto localized but kept around in case it needs to be used in a place that's not auto localized such as MoveTo or Use alert
+CL.ORBS								= "Orbs"--Doesn't have a direct auto localize so has to be manually localized, unlike non plural version
 CL.RING								= "Ring"
 CL.RINGS							= "Rings"
 CL.CHEST							= "Chest"--As in Treasure 'Chest'. Not Chest as in body part.
 CL.ADD								= "Add"--A fight Add as in "boss spawned extra adds"
 CL.ADDS								= "Adds"
-CL.ADDCOUNT							= "Add %s"--ie, Add 1, Add 2, Add 3
+CL.ADDCOUNT							= "Add %s"
 CL.BIG_ADD							= "Big Add"
 CL.BOSS								= "Boss"
 CL.ENEMIES							= "Enemies"
@@ -58,10 +70,33 @@ CL.BOSSTOGETHER						= "Bosses Together"
 CL.BOSSAPART						= "Bosses Apart"
 CL.MINDCONTROL						= "Mind Control"
 CL.TANKCOMBO						= "Tank Combo"
-CL.TANKCOMBOC						= "Tank Combo (%s)"
 CL.AOEDAMAGE						= "AOE Damage"
-CL.GROUPSOAK						= "Group Soak"
-CL.GROUPSOAKS						= "Group Soaks"
+CL.GROUPSOAK						= "Soak"
+CL.GROUPSOAKS						= "Soaks"
+CL.HEALABSORB						= "Heal Absorb"
+CL.HEALABSORBS						= "Heal Absorbs"
+CL.DODGES							= "Dodges"
+CL.POOL								= "Pool"
+CL.POOLS							= "Pools"
+CL.DEBUFFS							= "Debuffs"
+CL.DISPELS							= "Dispels"
+CL.PUSHBACK							= "Pushback"
+CL.FRONTAL							= "Frontal"
+CL.LASER							= "Laser"
+CL.LASERS							= "Lasers"
+CL.RIFT								= "Rift"--Often has auto localized alternatives, but still translated for BW aura matching when needed
+CL.RIFTS							= "Rifts"--Often has auto localized alternatives, but still translated for BW aura matching when needed
+CL.TRAPS							= "Traps"--Doesn't have a direct auto localize so has to be manually localized, unlike non plural version
+CL.ROOTS							= "Roots"
+CL.MARK								= "Mark"--As in short text for all the encounter mechanics that start or end in "Mark"
+CL.MARKS							= "Marks"--Plural of above
+CL.CURSE							= "Curse"
+CL.CURSES							= "Curses"
+CL.SWIRLS							= "Swirls"--Plural of Swirl
+--NOTE, many common locals are auto localized:
+--Bomb (37859), Bombs (167180), Scream (31295), Breath (17088), Beam (173303), Beams (207544), Charge (100), Knockback (28405), Portal (161722), Portals (109400)
+--Fixate (12021), Trap (181341), Meteor (28884), Shield (151702), Teleport (4801), Fear (5782), Roar (140459), Leap (47482), Orb (265315), Tornados (86189)
+--Pull (193997), Push (359132), Swirl (143413)
 
 --Journal Icons should not be copied to non english locals, do not include this section
 local EJIconPath = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1) and "EncounterJournal" or "AddOns\\DBM-Core\\textures"

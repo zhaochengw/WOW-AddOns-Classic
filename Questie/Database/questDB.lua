@@ -23,6 +23,7 @@ QuestieDB.questKeys = {
         --['itemObjective'] = 3, -- table {{item(int), text(string)},...}
         --['reputationObjective'] = 4, -- table: {faction(int), value(int)}
         --['killCreditObjective'] = 5, -- table: {{creature(int), ...}, baseCreatureID, baseCreatureText}
+        --['spellObjective'] = 6, -- table: {{spell(int), text(string)},...}
     ['sourceItemId'] = 11, -- int, item provided by quest starter
     ['preQuestGroup'] = 12, -- table: {quest(int)}
     ['preQuestSingle'] = 13, -- table: {quest(int)}
@@ -42,6 +43,7 @@ QuestieDB.questKeys = {
     ['extraObjectives'] = 27, -- table: {{spawnlist, iconFile, text, objectiveIndex (optional), {{dbReferenceType, id}, ...} (optional)},...}, a list of hidden special objectives for a quest. Similar to requiredSourceItems
     ['requiredSpell'] = 28, -- int: quest is only available if character has this spellID
     ['requiredSpecialization'] = 29, -- int: quest is only available if character meets the spec requirements. Use QuestieProfessions.specializationKeys for having a spec, or QuestieProfessions.professionKeys to indicate having the profession with no spec. See QuestieProfessions.lua for more info.
+    ['requiredMaxLevel'] = 30, -- int: quest is only available up to a certain level
 }
 
 QuestieDB.questKeysReversed = {}
@@ -79,13 +81,14 @@ QuestieDB.questCompilerTypes = {
     ['extraObjectives'] = "extraobjectives",
     ['requiredSpell'] = "s24",
     ['requiredSpecialization'] = "u24",
+    ['requiredMaxLevel'] = "u8",
 }
 
 QuestieDB.questCompilerOrder = { -- order easily skipable data first for efficiency
     --static size
     'requiredLevel', 'questLevel', 'requiredRaces', 'requiredClasses', 'sourceItemId', 'zoneOrSort', 'requiredSkill',
     'requiredMinRep', 'requiredMaxRep', 'nextQuestInChain', 'questFlags', 'specialFlags', 'parentQuest', 'requiredSpell',
-    'requiredSpecialization',
+    'requiredSpecialization', 'requiredMaxLevel',
 
     -- variable size
     'name', 'preQuestGroup', 'preQuestSingle', 'childQuests', 'inGroupWith', 'exclusiveTo', 'requiredSourceItems',
@@ -104,7 +107,18 @@ QuestieDB.questFlags = {
     UNUSED2 = 128,
     UNKNOWN = 256,
     HIDDEN_REWARDS = 512,
-    AUTO_REWARDED = 1024
+    AUTO_REWARDED = 1024,
+    DAILY = 4096,
+    WEEKLY = 32768,
+}
+
+QuestieDB.factionIDs = {
+    UNDERCITY = 68,
+    DARNASSUS = 69,
+    DARKMOON_FAIRE = 909,
+    EXODAR = 930,
+    THE_KALUAK = 1073,
+    KIRIN_TOR = 1090,
 }
 
 -- temporary, until we remove the old db funcitons

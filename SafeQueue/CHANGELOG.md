@@ -1,1 +1,1 @@
-- Update for latest patch
+- Update compatibility

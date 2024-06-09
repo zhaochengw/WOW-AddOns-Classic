@@ -11,19 +11,19 @@ local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
 local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
 
 local function _GetIconScaleForMonster()
-    return Questie.db.global.monsterScale or 1
+    return Questie.db.profile.monsterScale or 1
 end
 
 local function _GetIconScaleForObject()
-    return Questie.db.global.objectScale or 1
+    return Questie.db.profile.objectScale or 1
 end
 
 local function _GetIconScaleForEvent()
-    return Questie.db.global.eventScale or 1.35
+    return Questie.db.profile.eventScale or 1.35
 end
 
 local function _GetIconScaleForLoot()
-    return Questie.db.global.lootScale or 1
+    return Questie.db.profile.lootScale or 1
 end
 
 
@@ -53,7 +53,7 @@ end
 ---@class SpawnListEvent : SpawnListBase
 ---@field Id number The ID of the Event (Is this even used?)
 
-local killcredit, monster, object, event, item
+local killcredit, monster, object, event, item, spell
 
 ---@type table<"killcredit"|"monster"|"object"|"event"|"item", function>
 _QuestieQuest.objectiveSpawnListCallTable = {}
@@ -214,44 +214,51 @@ item = function(itemId, objective)
                 else
                     for id, sourceData in pairs(sourceList) do
                         if (not ret[id]) then
+                            local icon, GetIconScale
+                            if source.Type == "object" then
+                                icon = Questie.ICON_TYPE_OBJECT
+                                GetIconScale = _GetIconScaleForObject
+                            else
+                                icon = Questie.ICON_TYPE_LOOT
+                                GetIconScale = _GetIconScaleForLoot
+                            end
+
                             ret[id] = {
                                 Id = id,
                                 Name = sourceData.Name,
                                 Hostile = true,
                                 ItemId = item.Id,
                                 TooltipKey = sourceData.TooltipKey,
+                                Spawns = {},
+                                Waypoints = {},
+                                Icon = icon,
+                                GetIconScale = GetIconScale,
+                                IconScale = GetIconScale(),
                             }
-                            ret[id].Spawns = {}
-                            ret[id].Waypoints = {}
-                            if source.Type == "object" then
-                                ret[id].Icon = Questie.ICON_TYPE_OBJECT
-                                ret[id].GetIconScale = _GetIconScaleForObject
-                                ret[id].IconScale = _GetIconScaleForObject()
-                            else
-                                ret[id].Icon = (
-                                    (not QuestieDB.fakeTbcItemStartId) or itemId < QuestieDB.fakeTbcItemStartId) and
-                                    Questie.ICON_TYPE_LOOT or Questie.ICON_TYPE_EVENT
-                                ret[id].GetIconScale = _GetIconScaleForLoot
-                                ret[id].IconScale = _GetIconScaleForLoot()
-                            end
                         end
                         if sourceData.Spawns then
+                            local itemSpawns = ret[id].Spawns
                             for zone, spawns in pairs(sourceData.Spawns) do
-                                if (not ret[id].Spawns[zone]) then
-                                    ret[id].Spawns[zone] = {}
+                                if (not itemSpawns[zone]) then
+                                    itemSpawns[zone] = {}
                                 end
+
+                                local itemSpawnsInZone = itemSpawns[zone]
                                 for _, spawn in pairs(spawns) do
-                                    tinsert(ret[id].Spawns[zone], spawn)
+                                    itemSpawnsInZone[#itemSpawnsInZone+1] = spawn
                                 end
                             end
                         end
                         if sourceData.Waypoints then
+                            local itemWaypoints = ret[id].Waypoints
                             for zone, spawns in pairs(sourceData.Waypoints) do
-                                if (not ret[id].Waypoints[zone]) then
-                                    ret[id].Waypoints[zone] = {}
+                                if (not itemWaypoints[zone]) then
+                                    itemWaypoints[zone] = {}
                                 end
+
+                                local itemWaypointsInZone = itemWaypoints[zone]
                                 for _, spawn in pairs(spawns) do
-                                    tinsert(ret[id].Waypoints[zone], spawn)
+                                    itemWaypointsInZone[#itemWaypointsInZone+1] = spawn
                                 end
                             end
                         end
@@ -263,8 +270,28 @@ item = function(itemId, objective)
     return ret
 end
 
+---comment
+---@param spellId number
+---@param objective any
+---@return table<ItemId, SpawnListItem>?
+spell = function(spellId, objective, objectiveData)
+    if (not spellId) then
+        Questie:Error(
+            "Corrupted objective data handed to objectiveSpawnListCallTable['spell']:",
+            "'" .. objective.Description .. "' -",
+            "Please report this error on Discord or GitHub."
+        )
+        return nil
+    end
+
+    local itemSource = objectiveData.ItemSourceId
+
+    return item(itemSource, objective)
+end
+
 _QuestieQuest.objectiveSpawnListCallTable["killcredit"] = killcredit
 _QuestieQuest.objectiveSpawnListCallTable["monster"] = monster
 _QuestieQuest.objectiveSpawnListCallTable["object"] = object
 _QuestieQuest.objectiveSpawnListCallTable["event"] = event
 _QuestieQuest.objectiveSpawnListCallTable["item"] = item
+_QuestieQuest.objectiveSpawnListCallTable["spell"] = spell

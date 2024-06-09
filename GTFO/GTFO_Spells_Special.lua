@@ -287,7 +287,24 @@ GTFO.SpellID["236338"] = {
 
 GTFO.SpellID["244954"] = {
   --desc = "Wailing Wall (Death Metal Knight - Darkmoon Faire)";
+  alwaysAlert = true;
   sound = 3;
+};
+
+GTFO.SpellID["414842"] = {
+  --desc = "Pumpkin Breath (Headless Horseman - Dragonflight)";
+  sound = 3;
+};
+
+GTFO.SpellID["418132"] = {
+  --desc = "Insidious Cackle (Headless Horseman - Dragonflight)";
+  sound = 4;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["415329"] = {
+  --desc = "Hot Head (Headless Horseman - Dragonflight)";
+  sound = 1;
 };
 
 end

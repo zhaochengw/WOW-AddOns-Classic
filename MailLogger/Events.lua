@@ -509,6 +509,7 @@ function Frame:TRADE_SHOW()
 	end
 	-- 阻止小号交易相关功能
 	-- 屏蔽外会和团队之外的人交易
+	--[[
 	if Config.PreventTrade then
 		local RequestName, RequestGUID = (UnitName("npc")), UnitGUID("npc")
 		local TargetCanTradeMe = false
@@ -547,7 +548,7 @@ function Frame:TRADE_SHOW()
 		if not TargetCanTradeMe then
 			CloseTrade()
 		end
-	end
+	end]]
 	-- 开始记录合法交易
 	if Config.LogDays == 0 then
 		return

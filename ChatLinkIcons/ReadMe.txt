@@ -9,6 +9,31 @@ UnZip contents into the "Interface\AddOns" folder in your WoW instalation direct
 
 ===============================================================================
 Versions:
+v3.4 (2024-01-23)
+	-Converted race/class icons to use atlases to be more robust against Blizzard shuffling icons
+
+v3.3 (2023-12-14)
+	-Moved callback type processing from dispatcher to event module
+	-Removed now unused EventRegistry API calls for Classic Vanilla
+	-Removed now unused UICheckButtonTemplate .text fallback for Classic Vanilla
+
+v3.2 (2023-07-16)
+	-Dragon Flight 10.1.5 Support
+	-Added native support for Blizzard's canvas options layout to Classic
+	-Tweaked ScrollingMessageFrame display code to mitigate a Blizzard bug causing uninteractable links
+	-Fixed race icons being scrambled
+
+v3.1 (2023-05-26)
+	-Fixed Events_UnregisterEvent() calling the wrong API functions for Classic Vanilla
+
+v3.0 (2023-05-21)
+	-Rewrote addon core from scratch
+	-New modular design allows easier maintenance
+	-Rewrote hooks to modify ScrollingMessageFrame's display code rather than the message history
+	-Fixed texture duplication when popping messages out from a ChatFrame
+	-Enabled CombatLog parsing (may disable again if performance suffers)
+	-Added localization capability
+
 v2.17 (2023-01-18)
 	-Rewrote hooks to attach to ScrollingMessageFrame's intrinsic code
 	-Fixed WotLK Classic switching to using .Text for the UICheckButtonTemplate's button text
@@ -54,7 +79,7 @@ v2.7 (2021-04-05)
 
 v2.6 (2021-04-02)
 	-Classic Burning Crusade Support
-	-Added Draenei and Blood Elves race icons for Classic Burning Crusade
+	-Added Draenei and Blood Elf race icons for Classic Burning Crusade
 
 v2.5 (2021-03-27)
 	-Fixed BNplayer link parsing error

@@ -7,6 +7,7 @@ local RSGeneralDB = private.NewLib("RareScannerGeneralDB")
 
 -- RareScanner database libraries
 local RSNpcDB = private.ImportLib("RareScannerNpcDB")
+local RSContainerDB = private.ImportLib("RareScannerContainerDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 
 -- RareScanner libraries
@@ -112,6 +113,7 @@ function RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(entityID)
 			local artID = C_Map.GetMapArtID(mapID)
 			if (mapPosition) then
 				local x, y = mapPosition:GetXY()
+				RSLogger:PrintDebugMessage(string.format("UpdateAlreadyFoundEntityPlayerPosition[%s]. Nueva posicion por cercania.", entityID))
 				RSGeneralDB.UpdateAlreadyFoundEntity(entityID, mapID, x, y, artID)
 			end
 		end
@@ -121,7 +123,7 @@ end
 function RSGeneralDB.UpdateAlreadyFoundEntityTime(entityID)
 	if (entityID and private.dbglobal.rares_found[entityID]) then
 		private.dbglobal.rares_found[entityID].foundTime = time();
-		RSLogger:PrintDebugMessage(string.format("UpdateAlreadyFoundEntityTime[%s]. Nueva estampa de tiempo (%s)", entityID, RSGeneralDB.GetAlreadyFoundEntity(entityID).foundTime))
+		--RSLogger:PrintDebugMessage(string.format("UpdateAlreadyFoundEntityTime[%s]. Nueva estampa de tiempo (%s)", entityID, RSGeneralDB.GetAlreadyFoundEntity(entityID).foundTime))
 	end
 end
 
@@ -184,15 +186,21 @@ function RSGeneralDB.AddAlreadyFoundEntity(entityID, mapID, x, y, artID, atlasNa
 	return nil
 end
 
-
----============================================================================
--- Not discovored entities
------ Stores entities not found. This lists are used to display non discovered
------ entities in the map in a faster way
----============================================================================
-
-function RSGeneralDB.InitNotDiscoveredListsDB()
-
+function RSGeneralDB.GetBestMapForUnit(entityID, atlasName)
+	local mapID = C_Map.GetBestMapForUnit("player")
+	if (mapID) then
+		return mapID
+	end
+	
+	if (RSConstants.IsNpcAtlas(atlasName) and RSNpcDB.IsInternalNpcMonoZone(entityID)) then
+		local npcInfo = RSNpcDB.GetInternalNpcInfo(entityID)
+		return npcInfo.zoneID
+	elseif (RSConstants.IsNpcAtlas(atlasName) and RSContainerDB.IsInternalContainerMonoZone(entityID)) then
+		local containerInfo = RSContainerDB.GetInternalContainerInfo(entityID)
+		return containerInfo.zoneID
+	end
+	
+	return nil
 end
 
 ---============================================================================
@@ -478,24 +486,4 @@ end
 
 function RSGeneralDB.SetLastCleanDb()
 	private.dbchar.lastClean = time()
-end
-
----============================================================================
--- Search plugin integration
----============================================================================
-
-function RSGeneralDB.ClearWorldMapTextFilter()
-	private.dbchar.worldMapTextFilter = nil
-end
-
-function RSGeneralDB.GetWorldMapTextFilter()
-	return private.dbchar.worldMapTextFilter
-end
-
-function RSGeneralDB.SetWorldMapTextFilter(text)
-	if (text == '') then
-		RSGeneralDB.ClearWorldMapTextFilter()
-	else
-		private.dbchar.worldMapTextFilter = text
-	end
 end

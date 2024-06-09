@@ -1,0 +1,35 @@
+## Interface: 30403
+## Title:|cffffe00a<|r|cffff7d0aDBM Extra|r|cffffe00a>|r |cff69ccf0Spell Timers|r
+## Title-deDE:|cffffe00a<|r|cffff7d0aDBM Extra|r|cffffe00a>|r |cff69ccf0Spell Timers|r
+## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM Extra|r|cffffe00a>|r |cff69ccf0冷却助手|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM Extra|r|cffffe00a>|r |cff69ccf0冷卻助手|r
+## Title-koKR:|cffffe00a<|r|cffff7d0aDBM Extra|r|cffffe00a>|r |cff69ccf0스펠 타이머|r
+## Title-esES:|cffffe00a<|r|cffff7d0aDBM Extra|r|cffffe00a>|r |cff69ccf0Temporizadores de hechizos y facultades|r
+## Title-frFR:|cffffe00a<|r|cffff7d0aDBM Extra|r|cffffe00a>|r |cff69ccf0Spell Timers|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM Дополнение|r|cffffe00a>|r |cff69ccf0Таймеры заклинаний|r
+## Notes: Creates bars for Long term cooldowns or durations
+## Notes-ruRU: Дополнение, которое использует таймеры DBM для отображения времени восстановления заклинаний участников рейда
+## Notes-deDE: Erzeugt Balken für lange Abklingzeiten oder Aktivitätdauern von Zaubern und Fähigkeiten
+## Notes-koKR: 공격대 쿨다운 및 시전 바 생성 플러그인
+## Notes-esES: Muestra barras con los tiempos de reutilización y duraciones de los hechizos y facultades de tu grupo o banda.
+## LoadOnDemand: 0
+## RequiredDeps: DBM-Core
+## DefaultState: enabled
+## Author: Nitram and Tandanu and QartemisT
+## URL: http://www.deadlybossmods.com
+## SavedVariables: DBM_SpellTimers_Settings
+## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
+## X-Curse-Project-ID: 18712
+## Version: r153
+
+localization.en.lua
+localization.de.lua
+localization.cn.lua
+localization.tw.lua
+localization.kr.lua
+localization.es.lua
+localization.fr.lua
+localization.it.lua
+localization.ru.lua
+
+SpellTimers.lua

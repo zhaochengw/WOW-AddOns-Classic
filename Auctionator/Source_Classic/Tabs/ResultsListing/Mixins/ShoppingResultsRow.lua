@@ -13,11 +13,18 @@ function AuctionatorShoppingResultsRowMixin:OnClick(button, ...)
       :RegisterSource(self, "ShoppingResultsRowMixin")
       :Fire(self, Auctionator.Shopping.Tab.Events.ShowHistoricalPrices, self.rowData)
       :UnregisterSource(self)
+
+  elseif IsShiftKeyDown() then
+    Auctionator.EventBus
+      :RegisterSource(self, "ShoppingResultsRowMixin")
+      :Fire(self, Auctionator.Shopping.Tab.Events.UpdateSearchTerm, self.rowData.name)
+      :UnregisterSource(self)
   else
 
     Auctionator.EventBus
       :RegisterSource(self, "ShoppingResultsRowMixin")
       :Fire(self, Auctionator.Buying.Events.ShowForShopping, self.rowData)
+      :Fire(self, Auctionator.Shopping.Tab.Events.BuyScreenShown)
       :UnregisterSource(self)
   end
 end

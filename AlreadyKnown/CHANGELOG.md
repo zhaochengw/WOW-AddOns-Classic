@@ -1,7 +1,7 @@
 # Already Known?
 
-## [1.58](https://github.com/ahakola/AlreadyKnown/tree/1.58) (2023-05-03)
-[Full Changelog](https://github.com/ahakola/AlreadyKnown/compare/1.57...1.58) [Previous Releases](https://github.com/ahakola/AlreadyKnown/releases)
+## [1.65](https://github.com/ahakola/AlreadyKnown/tree/1.65) (2024-01-20)
+[Full Changelog](https://github.com/ahakola/AlreadyKnown/compare/1.64...1.65) [Previous Releases](https://github.com/ahakola/AlreadyKnown/releases)
 
-- 10.1 update  
-- TooltipUtil.SurfaceArgs removed in 10.1  
+- Fix ScrollBoxScroll on AH  
+    - This should fix CurseForge issue #18 / Github issue #10  

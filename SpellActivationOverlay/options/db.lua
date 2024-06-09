@@ -1,8 +1,46 @@
 local AddonName, SAO = ...
 
+-- Migrate from pre-091 to 091 or higher
+local function migrateTo091(db)
+
+    -- Warrior glowing buttons changed from boolean to string
+    local warriorSpells = {
+        7384, -- Overpower
+        6572, -- Revenge
+        5308, -- Execute
+    }
+    for _, spellID in ipairs(warriorSpells) do
+        if db.classes["WARRIOR"]["glow"][spellID][spellID] == true and SAO.defaults.classes["WARRIOR"]["glow"][spellID][spellID] then
+            db.classes["WARRIOR"]["glow"][spellID][spellID] = SAO.defaults.classes["WARRIOR"]["glow"][spellID][spellID];
+        end
+    end
+
+    -- Classic Era mages probably want Clearcasting by default, because it's the only proc available
+    if SAO.IsEra() then
+        db.classes["MAGE"]["alert"][12536][0] = SAO.defaults.classes["MAGE"]["alert"][12536][0];
+    end
+
+    print(WrapTextInColorCode("SAO: Migrated options from pre-0.9.1 to 0.9.1", "FFA2F3FF"));
+end
+
+-- Migrate from pre-091 to 091 or higher
+local function migrateTo112(db)
+
+    -- Rogue Riposte options changed from boolean to string
+    local riposte = 14251;
+    if db.classes["ROGUE"]["alert"][riposte][0] == true and SAO.defaults.classes["ROGUE"]["alert"][riposte][0] then
+        db.classes["ROGUE"]["alert"][riposte][0] = SAO.defaults.classes["ROGUE"]["alert"][riposte][0];
+    end
+    if db.classes["ROGUE"]["glow"][riposte][riposte] == true and SAO.defaults.classes["ROGUE"]["glow"][riposte][riposte] then
+        db.classes["ROGUE"]["glow"][riposte][riposte] = SAO.defaults.classes["ROGUE"]["glow"][riposte][riposte];
+    end
+
+    print(WrapTextInColorCode("SAO: Migrated options from pre-1.1.2 to 1.1.2", "FFA2F3FF"));
+end
+
 -- Load database and use default values if needed
 function SAO.LoadDB(self)
-    local currentversion = 083;
+    local currentversion = 112;
     local db = SpellActivationOverlayDB or {};
 
     if not db.alert then
@@ -21,6 +59,9 @@ function SAO.LoadDB(self)
     end
     if (type(db.alert.scale) == "nil") then
         db.alert.scale = 1;
+    end
+    if (type(db.alert.timer) == "nil") then
+        db.alert.timer = 1;
     end
 
     if not db.glow then
@@ -58,6 +99,14 @@ function SAO.LoadDB(self)
                 end
             end
         end
+    end
+
+    -- Migration from older versions
+    if not db.version or db.version < 091 then
+        migrateTo091(db);
+    end
+    if not db.version or db.version < 112 then
+        migrateTo112(db);
     end
 
     db.version = currentversion;

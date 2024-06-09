@@ -1,10 +1,19 @@
 local mod = DBM:NewMod(558, "DBM-Party-BC", 14, 257)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+if mod:IsRetail() then
+	mod.statTypes = "normal,heroic,timewalker"
+end
+
+mod:SetRevision("20231014053250")
+
 mod:SetCreatureID(17976)
 mod:SetEncounterID(1925)
-mod:SetModelID(18929)
+
+if not mod:IsRetail() then
+	mod:SetModelID(18929)
+end
+
 mod:RegisterCombat("combat")
 
 local warnReinforcementsNow		= mod:NewSpellAnnounce(34803, 1)
@@ -39,6 +48,12 @@ end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 34803 and self:AntiSpam(3, 1) then
+		self:SendSync("Adds")
+	end
+end
+
+function mod:OnSync(msg)
+	if msg == "Adds" then
 		timerReinforcements:Start(60 )
 		warnReinforcementsSoon:Schedule(55)
 		warnReinforcementsNow:Show()

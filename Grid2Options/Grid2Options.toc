@@ -1,11 +1,11 @@
-## Interface: 30401
+## Interface: 30403
 ## Title: Grid2 |cd0ff7d0aOptions|r
 ## Title-esES: Grid2 |cd0ff7d0aOpciones|r
 ## Notes: Configuration module for Grid2
 ## Notes-esES: Modulo de configuracion del Grid2
 ## LoadOnDemand: 1
 ## Dependencies: Grid2
-## Version: 2.3.1
+## Version: 2.8.0
 ## IconTexture: Interface/AddOns/Grid2/media/iconsmall.tga
 
 # Ace Libraries

@@ -1,15 +1,24 @@
 ---@class StatLogicLocale
+---@field PrefixExclude table
+---@field WholeTextLookup table
+---@field PreScanPatterns table
+---@field DeepScanSeparators table
+---@field DeepScanWordSeparators table
+---@field DualStatPatterns table
+---@field DeepScanPatterns table
+---@field StatIDLookup table
 local L = LibStub("AceLocale-3.0"):NewLocale("StatLogic", "enUS", true)
 if not L then return end
+local StatLogic = LibStub("StatLogic")
 
 L["tonumber"] = tonumber
 --[[
 -- Item Stat Scanning Procedure
--- Trim spaces using strtrim(text)
+-- Trim spaces using text:trim()
 -- Strip color codes
--- 1. Fast Exclude - Exclude obvious lines that do not need to be checked
---    Exclude a string by matching the whole string, these strings are indexed in L.Exclude.
---    Exclude a string by looking at the first X chars, these strings are indexed in L.Exclude.
+-- 1. Prefix Exclude - Exclude obvious lines that do not need to be checked
+--    Exclude a string by matching the whole string, these strings are indexed in L.PrefixExclude.
+--    Exclude a string by looking at the first X chars, these strings are indexed in L.PrefixExclude.
 --    Exclude lines starting with '"'. (Flavor text)
 --    Exclude lines that are not white and green and normal (normal for Frozen Wrath bonus)
 -- 2. Whole Text Lookup - Mainly used for enchants or stuff without numbers
@@ -30,150 +39,44 @@ L["tonumber"] = tonumber
 --    If no match then separae the string using L.DeepScanWordSeparators, then check again.
 --]]
 ------------------
--- Fast Exclude --
+-- Prefix Exclude --
 ------------------
--- By looking at the first ExcludeLen letters of a line we can exclude a lot of lines
-L["ExcludeLen"] = 5 -- using string.utf8len
-L["Exclude"] = {
-	[""] = true,
-	[" \n"] = true,
-	[ITEM_BIND_ON_EQUIP] = true, -- ITEM_BIND_ON_EQUIP = "Binds when equipped"; -- Item will be bound when equipped
-	[ITEM_BIND_ON_PICKUP] = true, -- ITEM_BIND_ON_PICKUP = "Binds when picked up"; -- Item wil be bound when picked up
-	[ITEM_BIND_ON_USE] = true, -- ITEM_BIND_ON_USE = "Binds when used"; -- Item will be bound when used
-	[ITEM_BIND_QUEST] = true, -- ITEM_BIND_QUEST = "Quest Item"; -- Item is a quest item (same logic as ON_PICKUP)
-	[ITEM_SOULBOUND] = true, -- ITEM_SOULBOUND = "Soulbound"; -- Item is Soulbound
-	[ITEM_STARTS_QUEST] = true, -- ITEM_STARTS_QUEST = "This Item Begins a Quest"; -- Item is a quest giver
-	[ITEM_CANT_BE_DESTROYED] = true, -- ITEM_CANT_BE_DESTROYED = "That item cannot be destroyed."; -- Attempted to destroy a NO_DESTROY item
-	[ITEM_CONJURED] = true, -- ITEM_CONJURED = "Conjured Item"; -- Item expires
-	[ITEM_DISENCHANT_NOT_DISENCHANTABLE] = true, -- ITEM_DISENCHANT_NOT_DISENCHANTABLE = "Cannot be disenchanted"; -- Items which cannot be disenchanted ever
-	["Disen"] = true, -- ITEM_DISENCHANT_ANY_SKILL = "Disenchantable"; -- Items that can be disenchanted at any skill level
-	-- ITEM_DISENCHANT_MIN_SKILL = "Disenchanting requires %s (%d)"; -- Minimum enchanting skill needed to disenchant
-	["Durat"] = true, -- ITEM_DURATION_DAYS = "Duration: %d days";
-	["<Made"] = true, -- ITEM_CREATED_BY = "|cff00ff00<Made by %s>|r"; -- %s is the creator of the item
-	["Coold"] = true, -- ITEM_COOLDOWN_TIME_DAYS = "Cooldown remaining: %d day";
-	["Uniqu"] = true, -- Unique (20) -- ITEM_UNIQUE = "Unique"; -- Item is unique -- ITEM_UNIQUE_MULTIPLE = "Unique (%d)"; -- Item is unique
-	["Requi"] = true, -- Requires Level xx -- ITEM_MIN_LEVEL = "Requires Level %d"; -- Required level to use the item
-	["\nRequ"] = true, -- Requires Level xx -- ITEM_MIN_SKILL = "Requires %s (%d)"; -- Required skill rank to use the item
-	["Class"] = true, -- Classes: xx -- ITEM_CLASSES_ALLOWED = "Classes: %s"; -- Lists the classes allowed to use this item
-	["Races"] = true, -- Races: xx (vendor mounts) -- ITEM_RACES_ALLOWED = "Races: %s"; -- Lists the races allowed to use this item
-	["Use: "] = true, -- Use: -- ITEM_SPELL_TRIGGER_ONUSE = "Use:";
-	["Chanc"] = true, -- Chance On Hit: -- ITEM_SPELL_TRIGGER_ONPROC = "Chance on hit:";
-	-- Set Bonuses
-	-- ITEM_SET_BONUS = "Set: %s";
-	-- ITEM_SET_BONUS_GRAY = "(%d) Set: %s";
-	-- ITEM_SET_NAME = "%s (%d/%d)"; -- Set name (2/5)
-	["Set: "] = true,
-	["(2) S"] = true,
-	["(3) S"] = true,
-	["(4) S"] = true,
-	["(5) S"] = true,
-	["(6) S"] = true,
-	["(7) S"] = true,
-	["(8) S"] = true,
-	-- Equip type
-	[GetItemClassInfo(Enum.ItemClass.Projectile)] = true, -- Ice Threaded Arrow ID:19316
-	[INVTYPE_AMMO] = true,
-	[INVTYPE_HEAD] = true,
-	[INVTYPE_NECK] = true,
-	[INVTYPE_SHOULDER] = true,
-	[INVTYPE_BODY] = true,
-	[INVTYPE_CHEST] = true,
-	[INVTYPE_ROBE] = true,
-	[INVTYPE_WAIST] = true,
-	[INVTYPE_LEGS] = true,
-	[INVTYPE_FEET] = true,
-	[INVTYPE_WRIST] = true,
-	[INVTYPE_HAND] = true,
-	[INVTYPE_FINGER] = true,
-	[INVTYPE_TRINKET] = true,
-	[INVTYPE_CLOAK] = true,
-	[INVTYPE_WEAPON] = true,
-	[INVTYPE_SHIELD] = true,
-	[INVTYPE_2HWEAPON] = true,
-	[INVTYPE_WEAPONMAINHAND] = true,
-	[INVTYPE_WEAPONOFFHAND] = true,
-	[INVTYPE_HOLDABLE] = true,
-	[INVTYPE_RANGED] = true,
-	[GetItemSubClassInfo(Enum.ItemClass.Weapon, Enum.ItemWeaponSubclass.Thrown)] = true,
-	[INVTYPE_RELIC] = true,
-	[INVTYPE_TABARD] = true,
-	[INVTYPE_BAG] = true,
-}
---[[DEBUG stuff, no need to translate
-textTable = {
-"Spell Damage +6 and Spell Hit Rating +5",
-"+3 Stamina, +4 Critical Strike Rating",
-"+26 Healing Spells & 2% Reduced Threat",
-"+3 Stamina/+4 Critical Strike Rating",
-"Socket Bonus: 2 mana per 5 sec.",
-"Equip: Increases damage and healing done by magical spells and effects by up to 150.",
-"Equip: Increases the spell critical strike rating of all party members within 30 yards by 28.",
-"Equip: Increases damage and healing done by magical spells and effects of all party members within 30 yards by up to 33.",
-"Equip: Increases healing done by magical spells and effects of all party members within 30 yards by up to 62.",
-"Equip: Increases your spell damage by up to 120 and your healing by up to 300.",
-"Equip: Restores 11 mana per 5 seconds to all party members within 30 yards.",
-"Equip: Increases healing done by spells and effects by up to 300.",
-"Equip: Increases attack power by 420 in Cat, Bear, Dire Bear, and Moonkin forms only.",
-"+10 Defense Rating/+10 Stamina/+15 Block Value", -- ZG Enchant
-"+26 Attack Power and +14 Critical Strike Rating", -- Swift Windfire Diamond ID:28556
-"+26 Healing Spells & 2% Reduced Threat", -- Bracing Earthstorm Diamond ID:25897
-"+6 Spell Damage, +5 Spell Crit Rating", -- Potent Ornate Topaz ID: 28123
-----
-"Critical Rating +6 and Dodge Rating +5", -- Assassin's Fire Opal ID:30565
-"Healing +11 and 2 mana per 5 sec.", -- Royal Tanzanite ID: 30603
-}
---]]
+-- By looking at the first PrefixExcludeLength letters of a line we can exclude a lot of lines
+L["PrefixExcludeLength"] = 5 -- using string.utf8len
+L["PrefixExclude"] = {}
 -----------------------
 -- Whole Text Lookup --
 -----------------------
 -- Mainly used for enchants that doesn't have numbers in the text
--- http://wow.allakhazam.com/db/enchant.html?slot=0&locale=enUS
 L["WholeTextLookup"] = {
-	[EMPTY_SOCKET_RED] = {["EMPTY_SOCKET_RED"] = 1}, -- EMPTY_SOCKET_RED = "Red Socket";
-	[EMPTY_SOCKET_YELLOW] = {["EMPTY_SOCKET_YELLOW"] = 1}, -- EMPTY_SOCKET_YELLOW = "Yellow Socket";
-	[EMPTY_SOCKET_BLUE] = {["EMPTY_SOCKET_BLUE"] = 1}, -- EMPTY_SOCKET_BLUE = "Blue Socket";
-	[EMPTY_SOCKET_META] = {["EMPTY_SOCKET_META"] = 1}, -- EMPTY_SOCKET_META = "Meta Socket";
+	["Minor Wizard Oil"] = {[StatLogic.Stats.SpellDamage] = 8, [StatLogic.Stats.HealingPower] = 8}, -- ID: 20744
+	["Lesser Wizard Oil"] = {[StatLogic.Stats.SpellDamage] = 16, [StatLogic.Stats.HealingPower] = 16}, -- ID: 20746
+	["Wizard Oil"] = {[StatLogic.Stats.SpellDamage] = 24, [StatLogic.Stats.HealingPower] = 24}, -- ID: 20750
+	["Brilliant Wizard Oil"] = {[StatLogic.Stats.SpellDamage] = 36, [StatLogic.Stats.HealingPower] = 36, [StatLogic.Stats.SpellCritRating] = 14}, -- ID: 20749
+	["Superior Wizard Oil"] = {[StatLogic.Stats.SpellDamage] = 42, [StatLogic.Stats.HealingPower] = 42}, -- ID: 22522
 
-	["Minor Wizard Oil"] = {["SPELL_DMG"] = 8, ["HEAL"] = 8}, -- ID: 20744
-	["Lesser Wizard Oil"] = {["SPELL_DMG"] = 16, ["HEAL"] = 16}, -- ID: 20746
-	["Wizard Oil"] = {["SPELL_DMG"] = 24, ["HEAL"] = 24}, -- ID: 20750
-	["Brilliant Wizard Oil"] = {["SPELL_DMG"] = 36, ["HEAL"] = 36, ["SPELL_CRIT_RATING"] = 14}, -- ID: 20749
-	["Superior Wizard Oil"] = {["SPELL_DMG"] = 42, ["HEAL"] = 42}, -- ID: 22522
-	["Blessed Wizard Oil"] = {["SPELL_DMG_UNDEAD"] = 60}, -- ID: 23123
+	["Minor Mana Oil"] = {[StatLogic.Stats.ManaRegen] = 4}, -- ID: 20745
+	["Lesser Mana Oil"] = {[StatLogic.Stats.ManaRegen] = 8}, -- ID: 20747
+	["Brilliant Mana Oil"] = {[StatLogic.Stats.ManaRegen] = 12, [StatLogic.Stats.HealingPower] = 25}, -- ID: 20748
+	["Superior Mana Oil"] = {[StatLogic.Stats.ManaRegen] = 14}, -- ID: 22521
 
-	["Minor Mana Oil"] = {["MANA_REG"] = 4}, -- ID: 20745
-	["Lesser Mana Oil"] = {["MANA_REG"] = 8}, -- ID: 20747
-	["Brilliant Mana Oil"] = {["MANA_REG"] = 12, ["HEAL"] = 25}, -- ID: 20748
-	["Superior Mana Oil"] = {["MANA_REG"] = 14}, -- ID: 22521
+	["Savagery"] = {[StatLogic.Stats.AttackPower] = 70}, --
+	["Vitality"] = {[StatLogic.Stats.ManaRegen] = 4, [StatLogic.Stats.HealthRegen] = 4}, -- Enchant Boots - Vitality spell: 27948
+	["Soulfrost"] = {[StatLogic.Stats.ShadowDamage] = 54, [StatLogic.Stats.FrostDamage] = 54},
+	["+54 Shadow and Frost Spell Power"] = {[StatLogic.Stats.ShadowDamage] = 54, [StatLogic.Stats.FrostDamage] = 54},
+	["Sunfire"] = {[StatLogic.Stats.ArcaneDamage] = 50, [StatLogic.Stats.FireDamage] = 50},
+	["+50 Arcane and Fire Spell Power"] = {[StatLogic.Stats.ArcaneDamage] = 50, [StatLogic.Stats.FireDamage] = 50},
 
-	["Eternium Line"] = {["FISHING"] = 5}, --
-	["Savagery"] = {["AP"] = 70}, --
-	["Vitality"] = {["MANA_REG"] = 4, ["HEALTH_REG"] = 4}, -- Enchant Boots - Vitality http://wow.allakhazam.com/db/spell.html?wspell=27948
-	["Soulfrost"] = {["SHADOW_SPELL_DMG"] = 54, ["FROST_SPELL_DMG"] = 54},
-	["+54 Shadow and Frost Spell Power"] = {["SHADOW_SPELL_DMG"] = 54, ["FROST_SPELL_DMG"] = 54},
-	["Sunfire"] = {["ARCANE_SPELL_DMG"] = 50, ["FIRE_SPELL_DMG"] = 50},
-	["+50 Arcane and Fire Spell Power"] = {["ARCANE_SPELL_DMG"] = 50, ["FIRE_SPELL_DMG"] = 50},
+	["Run speed increased slightly"] = false, --
+	["Minor Speed Increase"] = false, -- Enchant Boots - Minor Speed "Minor Speed Increase" spell: 13890
+	["Minor Speed"] = false, -- Enchant Boots - Cat's Swiftness "Minor Speed and +6 Agility" spell: 34007
+	["Surefooted"] = {[StatLogic.Stats.MeleeHitRating] = 10}, -- Enchant Boots - Surefooted "Surefooted" spell: 27954
 
-	["Mithril Spurs"] = {["MOUNT_SPEED"] = 4}, -- Mithril Spurs
-	["Minor Mount Speed Increase"] = {["MOUNT_SPEED"] = 2}, -- Enchant Gloves - Riding Skill
-	["Equip: Run speed increased slightly."] = {["RUN_SPEED"] = 8}, -- [Highlander's Plate Greaves] ID: 20048
-	["Run speed increased slightly"] = {["RUN_SPEED"] = 8}, --
-	["Minor Speed Increase"] = {["RUN_SPEED"] = 8}, -- Enchant Boots - Minor Speed "Minor Speed Increase" http://wow.allakhazam.com/db/spell.html?wspell=13890
-	["Minor Speed"] = {["RUN_SPEED"] = 8}, -- Enchant Boots - Cat's Swiftness "Minor Speed and +6 Agility" http://wow.allakhazam.com/db/spell.html?wspell=34007
-	["Surefooted"] = {["MELEE_HIT_RATING"] = 10}, -- Enchant Boots - Surefooted "Surefooted" http://wow.allakhazam.com/db/spell.html?wspell=27954
-
-	["Subtlety"] = {["THREAT_MOD"] = -2}, -- Enchant Cloak - Subtlety
-	["2% Reduced Threat"] = {["THREAT_MOD"] = -2}, -- StatLogic:GetSum("item:23344:2832")
 	["Equip: Allows underwater breathing."] = false, -- [Band of Icy Depths] ID: 21526
 	["Allows underwater breathing"] = false, --
 	["Equip: Immune to Disarm."] = false, -- [Stronghold Gauntlets] ID: 12639
 	["Immune to Disarm"] = false, --
 	["Crusader"] = false, -- Enchant Crusader
-	["Lifestealing"] = false, -- Enchant Crusader
-	["Equip: Inflicts the will of the Ashbringer upon the wielder."] = false, -- Corrupted Ashbringer
-	["Equip: Your melee and ranged attacks have a chance to call on the power of the Arcane if you're exalted with the Scryers, or the Light if you're exalted with the Aldor."] = false,
-	["Equip: Your spells have a chance to call on the power of the Arcane if you're exalted with the Scryers, or the Light if you're exalted with the Aldor."] = false,
-	["Equip: Your heals have a chance to call on the power of the Arcane if you're exalted with the Scryers, or the Light if you're exalted with the Aldor."] = false,
 }
 ----------------------------
 -- Single Plus Stat Check --
@@ -188,27 +91,23 @@ L["SinglePlusStatCheck"] = "^([%+%-]%d+) (.-)%.?$"
 -----------------------------
 -- Single Equip Stat Check --
 -----------------------------
--- stat1, value, stat2 = strfind
--- stat = stat1..stat2
 -- "^Equip: (.-) by u?p? ?t?o? ?(%d+) ?(.-)%.?$"
-L["SingleEquipStatCheck"] = "^Equip: (.-) by u?p? ?t?o? ?(%d+) ?(.-)%.?$"
+L["SingleEquipStatCheck"] = "^" .. ITEM_SPELL_TRIGGER_ONEQUIP .. " (.-) by u?p? ?t?o? ?(%d+) ?(.-)%.?$"
 -------------
 -- PreScan --
 -------------
 -- Special cases that need to be dealt with before deep scan
 L["PreScanPatterns"] = {
-	--["^Equip: Increases attack power by (%d+) in Cat"] = "FERAL_AP",
-	--["^Equip: Increases attack power by (%d+) when fighting Undead"] = "AP_UNDEAD", -- Seal of the Dawn ID:13029
-	["^(%d+) Block$"] = "BLOCK_VALUE",
-	["^(%d+) Armor$"] = "ARMOR",
-	["Reinforced %(%+(%d+) Armor%)"] = "ARMOR_BONUS",
-	["Mana Regen (%d+) per 5 sec%.$"] = "MANA_REG",
+	--["^Equip: Increases attack power by (%d+) in Cat"] = StatLogic.Stats.FeralAttackPower,
+	["^(%d+) Block$"] = StatLogic.Stats.BlockValue,
+	["^(%d+) Armor$"] = StatLogic.Stats.Armor,
+	["Reinforced %(%+(%d+) Armor%)"] = StatLogic.Stats.BonusArmor,
+	["Mana Regen (%d+) per 5 sec%.$"] = StatLogic.Stats.ManaRegen,
 	-- Exclude
 	["^(%d+) Slot"] = false, -- Set Name (0/9)
 	["^[%a '%-]+%((%d+)/%d+%)$"] = false, -- Set Name (0/9)
-	["|cff808080"] = false, -- Gray text "  |cff808080Requires at least 2 Yellow gems|r\n  |cff808080Requires at least 1 Red gem|r"
 	-- Procs
-	--["[Cc]hance"] = false, -- [Mark of Defiance] ID:27924 -- [Staff of the Qiraji Prophets] ID:21128 -- Commented out because it was blocking [Insightful Earthstorm Diamond] 
+	--["[Cc]hance"] = false, -- [Mark of Defiance] ID:27924 -- [Staff of the Qiraji Prophets] ID:21128 -- Commented out because it was blocking [Insightful Earthstorm Diamond]
 	["[Ss]ometimes"] = false, -- [Darkmoon Card: Heroism] ID:19287
 	["[Ww]hen struck in combat"] = false, -- [Essence of the Pure Flame] ID: 18815
 }
@@ -229,11 +128,11 @@ L["DeepScanSeparators"] = {
 L["DeepScanWordSeparators"] = {
 	" and ", -- "Critical Rating +6 and Dodge Rating +5": Assassin's Fire Opal ID:30565
 }
-L["DualStatPatterns"] = { 
+L["DualStatPatterns"] = {
 	-- all lower case
-	["^%+(%d+) healing and %+(%d+) spell damage$"] = {{"HEAL",}, {"SPELL_DMG",},},
-	["^%+(%d+) healing %+(%d+) spell damage$"] = {{"HEAL",}, {"SPELL_DMG",},},
-	["^increases healing done by up to (%d+) and damage done by up to (%d+) for all magical spells and effects$"] = {{"HEAL",}, {"SPELL_DMG",},},
+	["^%+(%d+) healing and %+(%d+) spell damage$"] = {{StatLogic.Stats.HealingPower,}, {StatLogic.Stats.SpellDamage,},},
+	["^%+(%d+) healing %+(%d+) spell damage$"] = {{StatLogic.Stats.HealingPower,}, {StatLogic.Stats.SpellDamage,},},
+	["^increases healing done by up to (%d+) and damage done by up to (%d+) for all magical spells and effects$"] = {{StatLogic.Stats.HealingPower,}, {StatLogic.Stats.SpellDamage,},},
 }
 L["DeepScanPatterns"] = {
 	"^(.-) by u?p? ?t?o? ?(%d+) ?(.-)$", -- "xxx by up to 22 xxx" (scan first)
@@ -244,230 +143,192 @@ L["DeepScanPatterns"] = {
 -- Stat Lookup Table --
 -----------------------
 L["StatIDLookup"] = {
-	["Your attacks ignoreof your opponent's armor"] = {"IGNORE_ARMOR"}, -- StatLogic:GetSum("item:33733")
-	["% Threat"] = {"THREAT_MOD"}, -- StatLogic:GetSum("item:23344:2613")
-	["Increases your effective stealth level"] = {"STEALTH_LEVEL"}, -- [Nightscape Boots] ID: 8197
-	["Weapon Damage"] = {"MELEE_DMG"}, -- Enchant
-	["Increases mount speed%"] = {"MOUNT_SPEED"}, -- [Highlander's Plate Greaves] ID: 20048
+	["Your attacks ignoreof your opponent's armor"] = {StatLogic.Stats.IgnoreArmor}, -- StatLogic:GetSum("item:33733")
+	["Weapon Damage"] = {StatLogic.Stats.AverageWeaponDamage}, -- Enchant
 
-	["All Stats"] = {"STR", "AGI", "STA", "INT", "SPI",},
-	["Strength"] = {"STR",},
-	["Agility"] = {"AGI",},
-	["Stamina"] = {"STA",},
-	["Intellect"] = {"INT",},
-	["Spirit"] = {"SPI",},
+	["All Stats"] = {StatLogic.Stats.AllStats,},
+	["Strength"] = {StatLogic.Stats.Strength,},
+	["Agility"] = {StatLogic.Stats.Agility,},
+	["Stamina"] = {StatLogic.Stats.Stamina,},
+	["Intellect"] = {StatLogic.Stats.Intellect,},
+	["Spirit"] = {StatLogic.Stats.Spirit,},
 
-	["Arcane Resistance"] = {"ARCANE_RES",},
-	["Fire Resistance"] = {"FIRE_RES",},
-	["Nature Resistance"] = {"NATURE_RES",},
-	["Frost Resistance"] = {"FROST_RES",},
-	["Shadow Resistance"] = {"SHADOW_RES",},
-	["Arcane Resist"] = {"ARCANE_RES",}, -- Arcane Armor Kit +8 Arcane Resist
-	["Fire Resist"] = {"FIRE_RES",}, -- Flame Armor Kit +8 Fire Resist
-	["Nature Resist"] = {"NATURE_RES",}, -- Frost Armor Kit +8 Frost Resist
-	["Frost Resist"] = {"FROST_RES",}, -- Nature Armor Kit +8 Nature Resist
-	["Shadow Resist"] = {"SHADOW_RES",}, -- Shadow Armor Kit +8 Shadow Resist
-	["Shadow resistance"] = {"SHADOW_RES",}, -- Demons Blood ID: 10779
-	["All Resistances"] = {"ARCANE_RES", "FIRE_RES", "FROST_RES", "NATURE_RES", "SHADOW_RES",},
-	["Resist All"] = {"ARCANE_RES", "FIRE_RES", "FROST_RES", "NATURE_RES", "SHADOW_RES",},
+	["Arcane Resistance"] = {StatLogic.Stats.ArcaneResistance,},
+	["Fire Resistance"] = {StatLogic.Stats.FireResistance,},
+	["Nature Resistance"] = {StatLogic.Stats.NatureResistance,},
+	["Frost Resistance"] = {StatLogic.Stats.FrostResistance,},
+	["Shadow Resistance"] = {StatLogic.Stats.ShadowResistance,},
+	["Arcane Resist"] = {StatLogic.Stats.ArcaneResistance,}, -- Arcane Armor Kit +8 Arcane Resist
+	["Fire Resist"] = {StatLogic.Stats.FireResistance,}, -- Flame Armor Kit +8 Fire Resist
+	["Nature Resist"] = {StatLogic.Stats.NatureResistance,}, -- Frost Armor Kit +8 Frost Resist
+	["Frost Resist"] = {StatLogic.Stats.FrostResistance,}, -- Nature Armor Kit +8 Nature Resist
+	["Shadow Resist"] = {StatLogic.Stats.ShadowResistance,}, -- Shadow Armor Kit +8 Shadow Resist
+	["All Resistances"] = {StatLogic.Stats.ArcaneResistance, StatLogic.Stats.FireResistance, StatLogic.Stats.FrostResistance, StatLogic.Stats.NatureResistance, StatLogic.Stats.ShadowResistance,},
+	["Resist All"] = {StatLogic.Stats.ArcaneResistance, StatLogic.Stats.FireResistance, StatLogic.Stats.FrostResistance, StatLogic.Stats.NatureResistance, StatLogic.Stats.ShadowResistance,},
 
-	["Fishing"] = {"FISHING",}, -- Fishing enchant ID:846
-	["Fishing Skill"] = {"FISHING",}, -- Fishing lure
-	["Increased Fishing"] = {"FISHING",}, -- Equip: Increased Fishing +20.
-	["Mining"] = {"MINING",}, -- Mining enchant ID:844
-	["Herbalism"] = {"HERBALISM",}, -- Heabalism enchant ID:845
-	["Skinning"] = {"SKINNING",}, -- Skinning enchant ID:865
+	["Fishing"] = false, -- Fishing enchant ID:846
+	["Fishing Skill"] = false, -- Fishing lure
+	["Increased Fishing"] = false, -- Equip: Increased Fishing +20.
+	["Mining"] = false, -- Mining enchant ID:844
+	["Herbalism"] = false, -- Heabalism enchant ID:845
+	["Skinning"] = false, -- Skinning enchant ID:865
 
-	["Armor"] = {"ARMOR_BONUS",},
-	["Defense"] = {"DEFENSE",},
-	["Increased Defense"] = {"DEFENSE",},
-	["Block"] = {"BLOCK_VALUE",}, -- +22 Block Value
-	["Block Value"] = {"BLOCK_VALUE",}, -- +22 Block Value
-	["Shield Block Value"] = {"BLOCK_VALUE",}, -- +10% Shield Block Value [Eternal Earthstorm Diamond] http://www.wowhead.com/?item=35501
-	["Increases the block value of your shield"] = {"BLOCK_VALUE",},
+	["Armor"] = {StatLogic.Stats.BonusArmor,},
+	["reinforced armor %s"] = {StatLogic.Stats.BonusArmor}, -- enchant: 15
+	["Defense"] = {StatLogic.Stats.Defense,},
+	["increased defense %s"] = {StatLogic.Stats.Defense,}, -- spell: 13387
+	["Block"] = {StatLogic.Stats.BlockValue,}, -- +22 Block Value
+	["Block Value"] = {StatLogic.Stats.BlockValue,}, -- +22 Block Value
+	["Shield Block Value"] = {StatLogic.Stats.BlockValue,}, -- +10% Shield Block Value [Eternal Earthstorm Diamond] http://www.wowhead.com/?item=35501
+	["Increases the block value of your shield"] = {StatLogic.Stats.BlockValue,},
 
-	["Health"] = {"HEALTH",},
-	["HP"] = {"HEALTH",},
-	["Mana"] = {"MANA",},
+	["Health"] = {StatLogic.Stats.Health,},
+	["HP"] = {StatLogic.Stats.Health,},
+	["Mana"] = {StatLogic.Stats.Mana,},
 
-	["Attack Power"] = {"AP",},
-	["Increases attack power"] = {"AP",},
-	["Attack Power when fighting Undead"] = {"AP_UNDEAD",},
-	-- [Wristwraps of Undead Slaying] ID:23093
-	["Increases attack powerwhen fighting Undead"] = {"AP_UNDEAD",}, -- [Seal of the Dawn] ID:13209
-	["Increases attack powerwhen fighting Undead.  It also allows the acquisition of Scourgestones on behalf of the Argent Dawn"] = {"AP_UNDEAD",}, -- [Seal of the Dawn] ID:13209
-	["Increases attack powerwhen fighting Demons"] = {"AP_DEMON",},
-	["Increases attack powerwhen fighting Undead and Demons"] = {"AP_UNDEAD", "AP_DEMON",}, -- [Mark of the Champion] ID:23206
-	["Attack Power in Cat, Bear, and Dire Bear forms only"] = {"FERAL_AP",},
-	["Increases attack powerin Cat"] = {"FERAL_AP",},
-	["Ranged Attack Power"] = {"RANGED_AP",},
-	["Increases ranged attack power"] = {"RANGED_AP",}, -- [High Warlord's Crossbow] ID: 18837
+	["Attack Power"] = {StatLogic.Stats.AttackPower,},
+	["Increases attack power"] = {StatLogic.Stats.AttackPower,},
+	["Increases attack powerin Cat"] = {StatLogic.Stats.FeralAttackPower,},
+	["%s attack power in cat, bear, and dire bear forms only"] = {StatLogic.Stats.FeralAttackPower}, --spell: 24697
+	["Ranged Attack Power"] = {StatLogic.Stats.RangedAttackPower,},
+	["Increases ranged attack power"] = {StatLogic.Stats.RangedAttackPower,}, -- [High Warlord's Crossbow] ID: 18837
 
-	["Health Regen"] = {"MANA_REG",},
-	["Health per"] = {"HEALTH_REG",},
-	["health per"] = {"HEALTH_REG",}, -- Frostwolf Insignia Rank 6 ID:17909
-	["Health every"] = {"MANA_REG",},
-	["health every"] = {"HEALTH_REG",}, -- [Resurgence Rod] ID:17743
-	["your normal health regeneration"] = {"HEALTH_REG",}, -- Demons Blood ID: 10779
-	["Restoreshealth per 5 sec"] = {"HEALTH_REG",}, -- [Onyxia Blood Talisman] ID: 18406
-	["Restoreshealth every 5 sec"] = {"HEALTH_REG",}, -- [Resurgence Rod] ID:17743
-	["Mana Regen"] = {"MANA_REG",}, -- Prophetic Aura +4 Mana Regen/+10 Stamina/+24 Healing Spells http://wow.allakhazam.com/db/spell.html?wspell=24167
-	["Mana per"] = {"MANA_REG",},
-	["mana per"] = {"MANA_REG",}, -- Resurgence Rod ID:17743 Most common
-	["Mana every"] = {"MANA_REG",},
-	["mana every"] = {"MANA_REG",},
-	["Mana every 5 seconds"] = {"MANA_REG",}, -- [Royal Nightseye] ID: 24057
-	["Mana every 5 Sec"] = {"MANA_REG",}, --
-	["mana every 5 sec"] = {"MANA_REG",}, -- Enchant Chest - Restore Mana Prime "+6 mana every 5 sec." http://wow.allakhazam.com/db/spell.html?wspell=33991
-	["Mana per 5 Seconds"] = {"MANA_REG",}, -- [Royal Shadow Draenite] ID: 23109
-	["Mana Per 5 sec"] = {"MANA_REG",}, -- [Royal Shadow Draenite] ID: 23109
-	["Mana per 5 sec"] = {"MANA_REG",}, -- [Cyclone Shoulderpads] ID: 29031
-	["mana per 5 sec"] = {"MANA_REG",}, -- [Royal Tanzanite] ID: 30603
-	["Restoresmana per 5 sec"] = {"MANA_REG",}, -- [Resurgence Rod] ID:17743
-	["Mana restored per 5 seconds"] = {"MANA_REG",}, -- Magister's Armor Kit +3 Mana restored per 5 seconds http://wow.allakhazam.com/db/spell.html?wspell=32399
-	["Mana Regenper 5 sec"] = {"MANA_REG",}, -- Enchant Bracer - Mana Regeneration "Mana Regen 4 per 5 sec." http://wow.allakhazam.com/db/spell.html?wspell=23801
-	["Mana per 5 Sec"] = {"MANA_REG",}, -- Enchant Bracer - Restore Mana Prime "6 Mana per 5 Sec." http://wow.allakhazam.com/db/spell.html?wspell=27913
+	["Health Regen"] = {StatLogic.Stats.ManaRegen,},
+	["health per"] = {StatLogic.Stats.HealthRegen,}, -- Frostwolf Insignia Rank 6 ID:17909
+	["health every"] = {StatLogic.Stats.HealthRegen,}, -- [Resurgence Rod] ID:17743
+	["your normal health regeneration"] = {StatLogic.Stats.HealthRegen,}, -- Demons Blood ID: 10779
+	["Restoreshealth per 5 sec"] = {StatLogic.Stats.HealthRegen,}, -- [Onyxia Blood Talisman] ID: 18406
+	["Restoreshealth every 5 sec"] = {StatLogic.Stats.HealthRegen,}, -- [Resurgence Rod] ID:17743
+	["Mana Regen"] = {StatLogic.Stats.ManaRegen,}, -- Prophetic Aura +4 Mana Regen/+10 Stamina/+24 Healing Spells spell: 24167
+	["mana per"] = {StatLogic.Stats.ManaRegen,}, -- Resurgence Rod ID:17743 Most common
+	["mana every"] = {StatLogic.Stats.ManaRegen,},
+	["Mana every 5 seconds"] = {StatLogic.Stats.ManaRegen,}, -- [Royal Nightseye] ID: 24057
+	["mana every 5 sec"] = {StatLogic.Stats.ManaRegen,}, -- Enchant Chest - Restore Mana Prime "+6 mana every 5 sec." spell: 33991
+	["Mana per 5 Seconds"] = {StatLogic.Stats.ManaRegen,}, -- [Royal Shadow Draenite] ID: 23109
+	["mana per 5 sec"] = {StatLogic.Stats.ManaRegen,}, -- [Royal Tanzanite] ID: 30603
+	["Restoresmana per 5 sec"] = {StatLogic.Stats.ManaRegen,}, -- [Resurgence Rod] ID:17743
+	["Mana restored per 5 seconds"] = {StatLogic.Stats.ManaRegen,}, -- Magister's Armor Kit +3 Mana restored per 5 seconds spell: 32399
+	["Mana Regenper 5 sec"] = {StatLogic.Stats.ManaRegen,}, -- Enchant Bracer - Mana Regeneration "Mana Regen 4 per 5 sec." spell: 23801
 
-	["Spell Penetration"] = {"SPELLPEN",}, -- Enchant Cloak - Spell Penetration "+20 Spell Penetration" http://wow.allakhazam.com/db/spell.html?wspell=34003
-	["Increases your spell penetration"] = {"SPELLPEN",},
+	["Spell Penetration"] = {StatLogic.Stats.SpellPenetration,}, -- Enchant Cloak - Spell Penetration "+20 Spell Penetration" spell: 34003
+	["Increases your spell penetration"] = {StatLogic.Stats.SpellPenetration,},
+	["decreases the magical resistances of your spell targets by %s"] = {StatLogic.Stats.SpellPenetration}, -- spell: 25975
 
-	["Healing and Spell Damage"] = {"SPELL_DMG", "HEAL",}, -- Arcanum of Focus +8 Healing and Spell Damage http://wow.allakhazam.com/db/spell.html?wspell=22844
-	["Damage and Healing Spells"] = {"SPELL_DMG", "HEAL",},
-	["Spell Damage and Healing"] = {"SPELL_DMG", "HEAL",},
-	["Spell Damage"] = {"SPELL_DMG", "HEAL",},
-	["Increases damage and healing done by magical spells and effects"] = {"SPELL_DMG", "HEAL"},
-	["Increases damage and healing done by magical spells and effects of all party members within 30 yards"] = {"SPELL_DMG", "HEAL"}, -- Atiesh
-	["Spell Damage and Healing"] = {"SPELL_DMG", "HEAL",}, --StatLogic:GetSum("item:22630")
-	["Damage"] = {"SPELL_DMG",},
-	["Increases your spell damage"] = {"SPELL_DMG",}, -- Atiesh ID:22630, 22631, 22632, 22589
-	["Spell Power"] = {"SPELL_DMG", "HEAL",},
-	["Increases spell power"] = {"SPELL_DMG", "HEAL",}, -- WotLK
-	["Holy Damage"] = {"HOLY_SPELL_DMG",},
-	["Arcane Damage"] = {"ARCANE_SPELL_DMG",},
-	["Fire Damage"] = {"FIRE_SPELL_DMG",},
-	["Nature Damage"] = {"NATURE_SPELL_DMG",},
-	["Frost Damage"] = {"FROST_SPELL_DMG",},
-	["Shadow Damage"] = {"SHADOW_SPELL_DMG",},
-	["Holy Spell Damage"] = {"HOLY_SPELL_DMG",},
-	["Arcane Spell Damage"] = {"ARCANE_SPELL_DMG",},
-	["Fire Spell Damage"] = {"FIRE_SPELL_DMG",},
-	["Nature Spell Damage"] = {"NATURE_SPELL_DMG",},
-	["Frost Spell Damage"] = {"FROST_SPELL_DMG",}, -- Acrobatic Staff of Frozen Wrath ID:3185:0:0:0:0:0:1957
-	["Shadow Spell Damage"] = {"SHADOW_SPELL_DMG",},
-	["Increases damage done by Shadow spells and effects"] = {"SHADOW_SPELL_DMG",}, -- Frozen Shadoweave Vest ID:21871
-	["Increases damage done by Frost spells and effects"] = {"FROST_SPELL_DMG",}, -- Frozen Shadoweave Vest ID:21871
-	["Increases damage done by Holy spells and effects"] = {"HOLY_SPELL_DMG",},
-	["Increases damage done by Arcane spells and effects"] = {"ARCANE_SPELL_DMG",},
-	["Increases damage done by Fire spells and effects"] = {"FIRE_SPELL_DMG",},
-	["Increases damage done by Nature spells and effects"] = {"NATURE_SPELL_DMG",},
-	["Increases the damage done by Holy spells and effects"] = {"HOLY_SPELL_DMG",}, -- Drape of the Righteous ID:30642
-	["Increases the damage done by Arcane spells and effects"] = {"ARCANE_SPELL_DMG",}, -- Added just in case
-	["Increases the damage done by Fire spells and effects"] = {"FIRE_SPELL_DMG",}, -- Added just in case
-	["Increases the damage done by Frost spells and effects"] = {"FROST_SPELL_DMG",}, -- Added just in case
-	["Increases the damage done by Nature spells and effects"] = {"NATURE_SPELL_DMG",}, -- Added just in case
-	["Increases the damage done by Shadow spells and effects"] = {"SHADOW_SPELL_DMG",}, -- Added just in case
+	["Healing and Spell Damage"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower,}, -- Arcanum of Focus +8 Healing and Spell Damage spell: 22844
+	["Damage and Healing Spells"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower,},
+	["Spell Damage and Healing"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower,}, --StatLogic:GetSum("item:22630")
+	["Spell Damage"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower,},
+	["increases damage and healing done by magical spells and effects by up to %s"] = {{StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower}}, -- spell: 14799
+	["Increases damage and healing done by magical spells and effects of all party members within 30 yards"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower}, -- Atiesh
+	["Damage"] = {StatLogic.Stats.SpellDamage,},
+	["Increases your spell damage"] = {StatLogic.Stats.SpellDamage,}, -- Atiesh ID:22630, 22631, 22632, 22589
+	["Spell Power"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower,},
+	["Increases spell power"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower,}, -- WotLK
+	["Holy Damage"] = {StatLogic.Stats.HolyDamage,},
+	["Arcane Damage"] = {StatLogic.Stats.ArcaneDamage,},
+	["Fire Damage"] = {StatLogic.Stats.FireDamage,},
+	["Nature Damage"] = {StatLogic.Stats.NatureDamage,},
+	["Frost Damage"] = {StatLogic.Stats.FrostDamage,},
+	["Shadow Damage"] = {StatLogic.Stats.ShadowDamage,},
+	["Holy Spell Damage"] = {StatLogic.Stats.HolyDamage,},
+	["Arcane Spell Damage"] = {StatLogic.Stats.ArcaneDamage,},
+	["Fire Spell Damage"] = {StatLogic.Stats.FireDamage,},
+	["Nature Spell Damage"] = {StatLogic.Stats.NatureDamage,},
+	["Frost Spell Damage"] = {StatLogic.Stats.FrostDamage,}, -- Acrobatic Staff of Frozen Wrath ID:3185:0:0:0:0:0:1957
+	["Shadow Spell Damage"] = {StatLogic.Stats.ShadowDamage,},
+	["Increases damage done by Shadow spells and effects"] = {StatLogic.Stats.ShadowDamage,}, -- Frozen Shadoweave Vest ID:21871
+	["Increases damage done by Frost spells and effects"] = {StatLogic.Stats.FrostDamage,}, -- Frozen Shadoweave Vest ID:21871
+	["Increases damage done by Holy spells and effects"] = {StatLogic.Stats.HolyDamage,},
+	["Increases damage done by Arcane spells and effects"] = {StatLogic.Stats.ArcaneDamage,},
+	["Increases damage done by Fire spells and effects"] = {StatLogic.Stats.FireDamage,},
+	["Increases damage done by Nature spells and effects"] = {StatLogic.Stats.NatureDamage,},
+	["Increases the damage done by Holy spells and effects"] = {StatLogic.Stats.HolyDamage,}, -- Drape of the Righteous ID:30642
+	["Increases the damage done by Arcane spells and effects"] = {StatLogic.Stats.ArcaneDamage,}, -- Added just in case
+	["Increases the damage done by Fire spells and effects"] = {StatLogic.Stats.FireDamage,}, -- Added just in case
+	["Increases the damage done by Frost spells and effects"] = {StatLogic.Stats.FrostDamage,}, -- Added just in case
+	["Increases the damage done by Nature spells and effects"] = {StatLogic.Stats.NatureDamage,}, -- Added just in case
+	["Increases the damage done by Shadow spells and effects"] = {StatLogic.Stats.ShadowDamage,}, -- Added just in case
 
-	["Increases damage done to Undead by magical spells and effects"] = {"SPELL_DMG_UNDEAD"}, -- [Robe of Undead Cleansing] ID:23085
-	["Increases damage done to Undead by magical spells and effects.  It also allows the acquisition of Scourgestones on behalf of the Argent Dawn"] = {"SPELL_DMG_UNDEAD"}, -- [Rune of the Dawn] ID:19812
-	["Increases damage done to Undead and Demons by magical spells and effects"] = {"SPELL_DMG_UNDEAD", "SPELL_DMG_DEMON"}, -- [Mark of the Champion] ID:23207
+	["Healing Spells"] = {StatLogic.Stats.HealingPower,}, -- Enchant Gloves - Major Healing "+35 Healing Spells" spell: 33999
+	["Increases Healing"] = {StatLogic.Stats.HealingPower,},
+	["Healing"] = {StatLogic.Stats.HealingPower,}, -- StatLogic:GetSum("item:23344:206")
+	["Damage Spells"] = {StatLogic.Stats.SpellDamage,}, -- 2.3.0 StatLogic:GetSum("item:23344:2343")
+	["Increases healing done"] = {StatLogic.Stats.HealingPower,}, -- 2.3.0
+	["damage donefor all magical spells"] = {StatLogic.Stats.SpellDamage,}, -- 2.3.0
+	["increases healing done by spells and effects by up to %s"] = {StatLogic.Stats.HealingPower,}, -- spell: 18032
+	["Increases healing done by magical spells and effects of all party members within 30 yards"] = {StatLogic.Stats.HealingPower,}, -- Atiesh
+	["your healing"] = {StatLogic.Stats.HealingPower,}, -- Atiesh
 
-	["Healing Spells"] = {"HEAL",}, -- Enchant Gloves - Major Healing "+35 Healing Spells" http://wow.allakhazam.com/db/spell.html?wspell=33999
-	["Increases Healing"] = {"HEAL",},
-	["Healing"] = {"HEAL",}, -- StatLogic:GetSum("item:23344:206")
-	["healing Spells"] = {"HEAL",},
-	["Damage Spells"] = {"SPELL_DMG",}, -- 2.3.0 StatLogic:GetSum("item:23344:2343")
-	["Healing Spells"] = {"HEAL",}, -- [Royal Nightseye] ID: 24057
-	["Increases healing done"] = {"HEAL",}, -- 2.3.0
-	["damage donefor all magical spells"] = {"SPELL_DMG",}, -- 2.3.0
-	["Increases healing done by spells and effects"] = {"HEAL",},
-	["Increases healing done by magical spells and effects of all party members within 30 yards"] = {"HEAL",}, -- Atiesh
-	["your healing"] = {"HEAL",}, -- Atiesh
+	["damage per second"] = {StatLogic.Stats.WeaponDPS,},
+	["Addsdamage per second"] = {StatLogic.Stats.WeaponDPS,}, -- [Thorium Shells] ID: 15977
 
-	["damage per second"] = {"DPS",},
-	["Addsdamage per second"] = {"DPS",}, -- [Thorium Shells] ID: 15977
+	["Defense Rating"] = {StatLogic.Stats.DefenseRating,},
+	["Increases defense rating"] = {StatLogic.Stats.DefenseRating,},
+	["Dodge Rating"] = {StatLogic.Stats.DodgeRating,},
+	["Increases your dodge rating"] = {StatLogic.Stats.DodgeRating,},
+	["increases your chance to dodge an attack by %s%"] = {StatLogic.Stats.Dodge,}, -- spell: 13669
+	["Parry Rating"] = {StatLogic.Stats.ParryRating,},
+	["Increases your parry rating"] = {StatLogic.Stats.ParryRating,},
+	["increases your chance to parry an attack by %s%"] = {StatLogic.Stats.Parry,}, -- spell: 13665
+	["Shield Block Rating"] = {StatLogic.Stats.BlockRating,}, -- Enchant Shield - Lesser Block +10 Shield Block Rating spell: 13689
+	["Block Rating"] = {StatLogic.Stats.BlockRating,},
+	["Increases your block rating"] = {StatLogic.Stats.BlockRating,},
+	["Increases your shield block rating"] = {StatLogic.Stats.BlockRating,},
+	["increases your chance to block attacks with a shield by %s%"] = {StatLogic.Stats.BlockChance,}, -- spell: 13675
 
-	["Defense Rating"] = {"DEFENSE_RATING",},
-	["Increases defense rating"] = {"DEFENSE_RATING",},
-	["Dodge Rating"] = {"DODGE_RATING",},
-	["Increases your dodge rating"] = {"DODGE_RATING",},
-	["Increases your chance to dodge an attack%"] = {"DODGE",},
-	["Parry Rating"] = {"PARRY_RATING",},
-	["Increases your parry rating"] = {"PARRY_RATING",},
-	["Increases your chance to parry an attack%"] = {"PARRY",},
-	["Shield Block Rating"] = {"BLOCK_RATING",}, -- Enchant Shield - Lesser Block +10 Shield Block Rating http://wow.allakhazam.com/db/spell.html?wspell=13689
-	["Block Rating"] = {"BLOCK_RATING",},
-	["Increases your block rating"] = {"BLOCK_RATING",},
-	["Increases your shield block rating"] = {"BLOCK_RATING",},
-	["Increases your chance to block attacks with a shield%"] = {"BLOCK_CHANCE",},
+	["improves your chance to hit by %s%"] = {StatLogic.Stats.MeleeHit, StatLogic.Stats.RangedHit}, -- spell: 15464
+	["improves your chance to hit with spells and with melee and ranged attacks by %s%"] = {{StatLogic.Stats.MeleeHit, StatLogic.Stats.RangedHit, StatLogic.Stats.SpellHit}}, -- spell: 432639
+	["Hit Rating"] = {StatLogic.Stats.HitRating,},
+	["Improves hit rating"] = {StatLogic.Stats.HitRating,}, -- ITEM_MOD_HIT_RATING
+	["Increases your hit rating"] = {StatLogic.Stats.HitRating,},
+	["Improves melee hit rating"] = {StatLogic.Stats.HitRating,}, -- ITEM_MOD_HIT_MELEE_RATING
+	["Spell Hit"] = {StatLogic.Stats.SpellHitRating,}, -- Presence of Sight +18 Healing and Spell Damage/+8 Spell Hit spell: 24164
+	["improves your chance to hit with spells by %s%"] = {StatLogic.Stats.SpellHit}, -- spell: 23727
+	["Spell Hit Rating"] = {StatLogic.Stats.SpellHitRating,},
+	["Improves spell hit rating"] = {StatLogic.Stats.SpellHitRating,}, -- ITEM_MOD_HIT_SPELL_RATING
+	["Increases your spell hit rating"] = {StatLogic.Stats.SpellHitRating,},
+	["Ranged Hit Rating"] = {StatLogic.Stats.RangedHitRating,},
+	["Improves ranged hit rating"] = {StatLogic.Stats.RangedHitRating,}, -- ITEM_MOD_HIT_RANGED_RATING
+	["Increases your ranged hit rating"] = {StatLogic.Stats.RangedHitRating,},
 
-	["Improves your chance to hit%"] = {"MELEE_HIT", "RANGED_HIT"},
-	["Hit Rating"] = {"HIT_RATING",},
-	["Improves hit rating"] = {"HIT_RATING",}, -- ITEM_MOD_HIT_RATING
-	["Increases your hit rating"] = {"HIT_RATING",},
-	["Improves melee hit rating"] = {"HIT_RATING",}, -- ITEM_MOD_HIT_MELEE_RATING
-	["Spell Hit"] = {"SPELL_HIT_RATING",}, -- Presence of Sight +18 Healing and Spell Damage/+8 Spell Hit http://wow.allakhazam.com/db/spell.html?wspell=24164
-	["Improves your chance to hit with spells%"] = {"SPELL_HIT"},
-	["Spell Hit Rating"] = {"SPELL_HIT_RATING",},
-	["Improves spell hit rating"] = {"SPELL_HIT_RATING",}, -- ITEM_MOD_HIT_SPELL_RATING
-	["Increases your spell hit rating"] = {"SPELL_HIT_RATING",},
-	["Ranged Hit Rating"] = {"RANGED_HIT_RATING",},
-	["Improves ranged hit rating"] = {"RANGED_HIT_RATING",}, -- ITEM_MOD_HIT_RANGED_RATING
-	["Increases your ranged hit rating"] = {"RANGED_HIT_RATING",},
+	["improves your chance to get a critical strike by %s%"] = {{StatLogic.Stats.MeleeCrit, StatLogic.Stats.RangedCrit}},
+	["improves your chance to get a critical strike with melee and ranged attacks and with spells by %s%"] = {{StatLogic.Stats.MeleeCrit, StatLogic.Stats.RangedCrit, StatLogic.Stats.SpellCrit}}, -- spell: 436239
+	["Crit Rating"] = {StatLogic.Stats.CritRating,},
+	["Critical Rating"] = {StatLogic.Stats.CritRating,},
+	["Critical Strike Rating"] = {StatLogic.Stats.CritRating,},
+	["Increases your critical hit rating"] = {StatLogic.Stats.CritRating,},
+	["Increases your critical strike rating"] = {StatLogic.Stats.CritRating,},
+	["Improves critical strike rating"] = {StatLogic.Stats.CritRating,},
+	["Improves melee critical strike rating"] = {StatLogic.Stats.MeleeCritRating,}, -- [Cloak of Darkness] ID:33122
+	["improves your chance to get a critical strike with spells by %s%"] = {StatLogic.Stats.SpellCrit}, -- spell: 18382
+	["Spell Critical Strike Rating"] = {StatLogic.Stats.SpellCritRating,},
+	["Spell Critical Rating"] = {StatLogic.Stats.SpellCritRating,},
+	["Spell Crit Rating"] = {StatLogic.Stats.SpellCritRating,},
+	["Spell Critical"] = {StatLogic.Stats.SpellCritRating,},
+	["Increases your spell critical strike rating"] = {StatLogic.Stats.SpellCritRating,},
+	["Increases the spell critical strike rating of all party members within 30 yards"] = {StatLogic.Stats.SpellCritRating,},
+	["Improves spell critical strike rating"] = {StatLogic.Stats.SpellCritRating,},
+	["Increases your ranged critical strike rating"] = {StatLogic.Stats.RangedCritRating,}, -- Fletcher's Gloves ID:7348
+	["ranged critical strike"] = {StatLogic.Stats.RangedCritRating,},
 
-	["Improves your chance to get a critical strike by%"] = {"MELEE_CRIT", "RANGED_CRIT"},
-	["Crit Rating"] = {"CRIT_RATING",},
-	["Critical Rating"] = {"CRIT_RATING",},
-	["Critical Strike Rating"] = {"CRIT_RATING",},
-	["Increases your critical hit rating"] = {"CRIT_RATING",},
-	["Increases your critical strike rating"] = {"CRIT_RATING",},
-	["Improves critical strike rating"] = {"CRIT_RATING",},
-	["Improves melee critical strike rating"] = {"MELEE_CRIT_RATING",}, -- [Cloak of Darkness] ID:33122
-	["Improves your chance to get a critical strike with spells%"] = {"SPELL_CRIT"},
-	["Spell Critical Strike Rating"] = {"SPELL_CRIT_RATING",},
-	["Spell Critical strike rating"] = {"SPELL_CRIT_RATING",},
-	["Spell Critical Rating"] = {"SPELL_CRIT_RATING",},
-	["Spell Crit Rating"] = {"SPELL_CRIT_RATING",},
-	["Spell Critical"] = {"SPELL_CRIT_RATING",},
-	["Increases your spell critical strike rating"] = {"SPELL_CRIT_RATING",},
-	["Increases the spell critical strike rating of all party members within 30 yards"] = {"SPELL_CRIT_RATING",},
-	["Improves spell critical strike rating"] = {"SPELL_CRIT_RATING",},
-	["Increases your ranged critical strike rating"] = {"RANGED_CRIT_RATING",}, -- Fletcher's Gloves ID:7348
-	["ranged critical strike"] = {"RANGED_CRIT_RATING",},
+	["Resilience"] = {StatLogic.Stats.ResilienceRating,},
+	["Resilience Rating"] = {StatLogic.Stats.ResilienceRating,}, -- Enchant Chest - Major Resilience "+15 Resilience Rating" spell: 33992
+	["Improves your resilience rating"] = {StatLogic.Stats.ResilienceRating,},
 
-	["Resilience"] = {"RESILIENCE_RATING",},
-	["Resilience Rating"] = {"RESILIENCE_RATING",}, -- Enchant Chest - Major Resilience "+15 Resilience Rating" http://wow.allakhazam.com/db/spell.html?wspell=33992
-	["Improves your resilience rating"] = {"RESILIENCE_RATING",},
+	["Haste Rating"] = {StatLogic.Stats.HasteRating},
+	["Ranged Haste Rating"] = {StatLogic.Stats.RangedHasteRating},
+	["Improves haste rating"] = {StatLogic.Stats.HasteRating},
+	["Spell Haste Rating"] = {StatLogic.Stats.SpellHasteRating},
+	["Improves melee haste rating"] = {StatLogic.Stats.MeleeHasteRating},
+	["Improves spell haste rating"] = {StatLogic.Stats.SpellHasteRating},
+	["Improves ranged haste rating"] = {StatLogic.Stats.RangedHasteRating},
 
-	["Haste Rating"] = {"HASTE_RATING"},
-	["Ranged Haste Rating"] = {"RANGED_HASTE_RATING"},
-	["Improves haste rating"] = {"HASTE_RATING"},
-	["Spell Haste Rating"] = {"SPELL_HASTE_RATING"},
-	["Improves melee haste rating"] = {"MELEE_HASTE_RATING"},
-	["Improves spell haste rating"] = {"SPELL_HASTE_RATING"},
-	["Improves ranged haste rating"] = {"RANGED_HASTE_RATING"},
-
-	["Increases dagger skill rating"] = {"DAGGER_WEAPON_RATING"},
-	["Increases sword skill rating"] = {"SWORD_WEAPON_RATING"}, -- [Warblade of the Hakkari] ID:19865
-	["Increases Two-Handed Swords skill rating"] = {"2H_SWORD_WEAPON_RATING"},
-	["Increases axe skill rating"] = {"AXE_WEAPON_RATING"},
-	["Two-Handed Axe Skill Rating"] = {"2H_AXE_WEAPON_RATING"}, -- [Ethereum Nexus-Reaver] ID:30722
-	["Increases two-handed axes skill rating"] = {"2H_AXE_WEAPON_RATING"},
-	["Increases mace skill rating"] = {"MACE_WEAPON_RATING"},
-	["Increases two-handed maces skill rating"] = {"2H_MACE_WEAPON_RATING"},
-	["Increases gun skill rating"] = {"GUN_WEAPON_RATING"},
-	["Increases Crossbow skill rating"] = {"CROSSBOW_WEAPON_RATING"},
-	["Increases Bow skill rating"] = {"BOW_WEAPON_RATING"},
-	["Increases feral combat skill rating"] = {"FERAL_WEAPON_RATING"},
-	["Increases fist weapons skill rating"] = {"FIST_WEAPON_RATING"}, -- Demonblood Eviscerator
-	["Increases unarmed skill rating"] = {"FIST_WEAPON_RATING"}, -- Demonblood Eviscerator ID:27533
-	["Increases staff skill rating"] = {"STAFF_WEAPON_RATING"}, -- Leggings of the Fang ID:10410
-
-	["expertise rating"] = {"EXPERTISE_RATING"}, -- gems
-	["Increases your expertise rating"] = {"EXPERTISE_RATING"},
-	["armor penetration rating"] = {"ARMOR_PENETRATION_RATING"}, -- gems
-	["Increases armor penetration rating"] = {"ARMOR_PENETRATION_RATING"},
-	["Increases your armor penetration rating"] = {"ARMOR_PENETRATION_RATING"}, -- Anarchy ID:39420
-	["increases your armor penetration"] = {"ARMOR_PENETRATION_RATING"}, -- Ring of Foul Mojo ID:43178
+	["expertise rating"] = {StatLogic.Stats.ExpertiseRating}, -- gems
+	["Increases your expertise rating"] = {StatLogic.Stats.ExpertiseRating},
+	["armor penetration rating"] = {StatLogic.Stats.ArmorPenetrationRating}, -- gems
+	["Increases armor penetration rating"] = {StatLogic.Stats.ArmorPenetrationRating},
+	["Increases your armor penetration rating"] = {StatLogic.Stats.ArmorPenetrationRating}, -- Anarchy ID:39420
+	["increases your armor penetration"] = {StatLogic.Stats.ArmorPenetrationRating}, -- Ring of Foul Mojo ID:43178
 
 	-- Exclude
 	["sec"] = false,
@@ -477,200 +338,3 @@ L["StatIDLookup"] = {
 	["Slot Ammo Pouch"] = false,
 	["Increases ranged attack speed"] = false, -- AV quiver
 }
-
----@class StatLogicDisplayLocale
-local D = LibStub("AceLocale-3.0"):NewLocale("StatLogicD", "enUS", true)
-----------------
--- Stat Names --
-----------------
--- Please localize these strings too, global strings were used in the enUS locale just to have minimum
--- localization effect when a locale is not available for that language, you don't have to use global
--- strings in your localization.
---[StatID] = {FullName, ShortName}
----------------------------------------------------------------------------
--- Tier1 Stats - Stats parsed directly off items
-D["EMPTY_SOCKET_RED"] = {EMPTY_SOCKET_RED, EMPTY_SOCKET_RED} -- EMPTY_SOCKET_RED = "Red Socket";
-D["EMPTY_SOCKET_YELLOW"] = {EMPTY_SOCKET_YELLOW, EMPTY_SOCKET_YELLOW} -- EMPTY_SOCKET_YELLOW = "Yellow Socket";
-D["EMPTY_SOCKET_BLUE"] = {EMPTY_SOCKET_BLUE, EMPTY_SOCKET_BLUE} -- EMPTY_SOCKET_BLUE = "Blue Socket";
-D["EMPTY_SOCKET_META"] = {EMPTY_SOCKET_META, EMPTY_SOCKET_META} -- EMPTY_SOCKET_META = "Meta Socket";
-
-D["IGNORE_ARMOR"] = {"Ignore Armor", "Ignore Armor"}
-D["THREAT_MOD"] = {"Threat(%)", "Threat(%)"}
-D["STEALTH_LEVEL"] = {"Stealth Level", "Stealth"}
-D["MELEE_DMG"] = {"Melee Weapon "..DAMAGE, "Wpn Dmg"} -- DAMAGE = "Damage"
-D["MOUNT_SPEED"] = {"Mount Speed(%)", "Mount Spd(%)"}
-D["RUN_SPEED"] = {"Run Speed(%)", "Run Spd(%)"}
-
-D["STR"] = {SPELL_STAT1_NAME, "Str"}
-D["AGI"] = {SPELL_STAT2_NAME, "Agi"}
-D["STA"] = {SPELL_STAT3_NAME, "Sta"}
-D["INT"] = {SPELL_STAT4_NAME, "Int"}
-D["SPI"] = {SPELL_STAT5_NAME, "Spi"}
-D["ARMOR"] = {ARMOR, ARMOR}
-D["ARMOR_BONUS"] = {ARMOR.." from bonus", ARMOR.."(Bonus)"}
-
-D["FIRE_RES"] = {RESISTANCE2_NAME, "FR"}
-D["NATURE_RES"] = {RESISTANCE3_NAME, "NR"}
-D["FROST_RES"] = {RESISTANCE4_NAME, "FrR"}
-D["SHADOW_RES"] = {RESISTANCE5_NAME, "SR"}
-D["ARCANE_RES"] = {RESISTANCE6_NAME, "AR"}
-
-D["FISHING"] = {"Fishing", "Fishing"}
-D["MINING"] = {"Mining", "Mining"}
-D["HERBALISM"] = {"Herbalism", "Herbalism"}
-D["SKINNING"] = {"Skinning", "Skinning"}
-
-D["BLOCK_VALUE"] = {"Block Value", "Block Value"}
-
-D["AP"] = {ATTACK_POWER_TOOLTIP, "AP"}
-D["RANGED_AP"] = {RANGED_ATTACK_POWER, "RAP"}
-D["FERAL_AP"] = {"Feral "..ATTACK_POWER_TOOLTIP, "Feral AP"}
-D["AP_UNDEAD"] = {ATTACK_POWER_TOOLTIP.." (Undead)", "AP(Undead)"}
-D["AP_DEMON"] = {ATTACK_POWER_TOOLTIP.." (Demon)", "AP(Demon)"}
-
-D["HEAL"] = {"Healing", "Heal"}
-
-D["SPELL_DMG"] = {PLAYERSTAT_SPELL_COMBAT.." "..DAMAGE, PLAYERSTAT_SPELL_COMBAT.." Dmg"}
-D["SPELL_DMG_UNDEAD"] = {PLAYERSTAT_SPELL_COMBAT.." "..DAMAGE.." (Undead)", PLAYERSTAT_SPELL_COMBAT.." Dmg".."(Undead)"}
-D["SPELL_DMG_DEMON"] = {PLAYERSTAT_SPELL_COMBAT.." "..DAMAGE.." (Demon)", PLAYERSTAT_SPELL_COMBAT.." Dmg".."(Demon)"}
-D["HOLY_SPELL_DMG"] = {SPELL_SCHOOL1_CAP.." "..DAMAGE, SPELL_SCHOOL1_CAP.." Dmg"}
-D["FIRE_SPELL_DMG"] = {SPELL_SCHOOL2_CAP.." "..DAMAGE, SPELL_SCHOOL2_CAP.." Dmg"}
-D["NATURE_SPELL_DMG"] = {SPELL_SCHOOL3_CAP.." "..DAMAGE, SPELL_SCHOOL3_CAP.." Dmg"}
-D["FROST_SPELL_DMG"] = {SPELL_SCHOOL4_CAP.." "..DAMAGE, SPELL_SCHOOL4_CAP.." Dmg"}
-D["SHADOW_SPELL_DMG"] = {SPELL_SCHOOL5_CAP.." "..DAMAGE, SPELL_SCHOOL5_CAP.." Dmg"}
-D["ARCANE_SPELL_DMG"] = {SPELL_SCHOOL6_CAP.." "..DAMAGE, SPELL_SCHOOL6_CAP.." Dmg"}
-
-D["SPELLPEN"] = {PLAYERSTAT_SPELL_COMBAT.." "..SPELL_PENETRATION, SPELL_PENETRATION}
-
-D["HEALTH"] = {HEALTH, HP}
-D["MANA"] = {MANA, MP}
-D["HEALTH_REG"] = {HEALTH.." Regen", "HP5"}
-D["MANA_REG"] = {MANA.." Regen", "MP5"}
-
-D["AVERAGE_DAMAGE"] = {"Average Damage", "Avg Dmg"}
-D["DPS"] = {"Damage Per Second", "DPS"}
-
-D["DEFENSE_RATING"] = {COMBAT_RATING_NAME2, COMBAT_RATING_NAME2} -- COMBAT_RATING_NAME2 = "Defense Rating"
-D["DODGE_RATING"] = {COMBAT_RATING_NAME3, COMBAT_RATING_NAME3} -- COMBAT_RATING_NAME3 = "Dodge Rating"
-D["PARRY_RATING"] = {COMBAT_RATING_NAME4, COMBAT_RATING_NAME4} -- COMBAT_RATING_NAME4 = "Parry Rating"
-D["BLOCK_RATING"] = {COMBAT_RATING_NAME5, COMBAT_RATING_NAME5} -- COMBAT_RATING_NAME5 = "Block Rating"
-D["MELEE_HIT_RATING"] = {COMBAT_RATING_NAME6, COMBAT_RATING_NAME6} -- COMBAT_RATING_NAME6 = "Hit Rating"
-D["RANGED_HIT_RATING"] = {PLAYERSTAT_RANGED_COMBAT.." "..COMBAT_RATING_NAME6, PLAYERSTAT_RANGED_COMBAT.." "..COMBAT_RATING_NAME6} -- PLAYERSTAT_RANGED_COMBAT = "Ranged"
-D["SPELL_HIT_RATING"] = {PLAYERSTAT_SPELL_COMBAT.." "..COMBAT_RATING_NAME6, PLAYERSTAT_SPELL_COMBAT.." "..COMBAT_RATING_NAME6} -- PLAYERSTAT_SPELL_COMBAT = "Spell"
-D["MELEE_CRIT_RATING"] = {COMBAT_RATING_NAME9, COMBAT_RATING_NAME9} -- COMBAT_RATING_NAME9 = "Crit Rating"
-D["RANGED_CRIT_RATING"] = {PLAYERSTAT_RANGED_COMBAT.." "..COMBAT_RATING_NAME9, PLAYERSTAT_RANGED_COMBAT.." "..COMBAT_RATING_NAME9}
-D["SPELL_CRIT_RATING"] = {PLAYERSTAT_SPELL_COMBAT.." "..COMBAT_RATING_NAME9, PLAYERSTAT_SPELL_COMBAT.." "..COMBAT_RATING_NAME9}
-D["RESILIENCE_RATING"] = {COMBAT_RATING_NAME15, COMBAT_RATING_NAME15} -- COMBAT_RATING_NAME15 = "Resilience"
-D["MELEE_HASTE_RATING"] = {"Haste "..RATING, "Haste "..RATING} --
-D["RANGED_HASTE_RATING"] = {PLAYERSTAT_RANGED_COMBAT.." Haste "..RATING, PLAYERSTAT_RANGED_COMBAT.." Haste "..RATING}
-D["SPELL_HASTE_RATING"] = {PLAYERSTAT_SPELL_COMBAT.." Haste "..RATING, PLAYERSTAT_SPELL_COMBAT.." Haste "..RATING}
-D["DAGGER_WEAPON_RATING"] = {"Dagger "..SKILL.." "..RATING, "Dagger "..RATING} -- SKILL = "Skill"
-D["SWORD_WEAPON_RATING"] = {"Sword "..SKILL.." "..RATING, "Sword "..RATING}
-D["2H_SWORD_WEAPON_RATING"] = {"Two-Handed Sword "..SKILL.." "..RATING, "2H Sword "..RATING}
-D["AXE_WEAPON_RATING"] = {"Axe "..SKILL.." "..RATING, "Axe "..RATING}
-D["2H_AXE_WEAPON_RATING"] = {"Two-Handed Axe "..SKILL.." "..RATING, "2H Axe "..RATING}
-D["MACE_WEAPON_RATING"] = {"Mace "..SKILL.." "..RATING, "Mace "..RATING}
-D["2H_MACE_WEAPON_RATING"] = {"Two-Handed Mace "..SKILL.." "..RATING, "2H Mace "..RATING}
-D["GUN_WEAPON_RATING"] = {"Gun "..SKILL.." "..RATING, "Gun "..RATING}
-D["CROSSBOW_WEAPON_RATING"] = {"Crossbow "..SKILL.." "..RATING, "Crossbow "..RATING}
-D["BOW_WEAPON_RATING"] = {"Bow "..SKILL.." "..RATING, "Bow "..RATING}
-D["FERAL_WEAPON_RATING"] = {"Feral "..SKILL.." "..RATING, "Feral "..RATING}
-D["FIST_WEAPON_RATING"] = {"Unarmed "..SKILL.." "..RATING, "Unarmed "..RATING}
-D["STAFF_WEAPON_RATING"] = {"Staff "..SKILL.." "..RATING, "Staff "..RATING} -- Leggings of the Fang ID:10410
-D["EXPERTISE_RATING"] = {"Expertise".." "..RATING, "Expertise".." "..RATING}
-D["ARMOR_PENETRATION_RATING"] = {ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT, "ArP".." "..RATING}
--- Tier2 Stats - Stats that only show up when broken down from a Tier1 stat
--- Str -> AP, Block Value
--- Agi -> AP, Crit, Dodge
--- Sta -> Health
--- Int -> Mana, Spell Crit
--- Spi -> mp5nc, hp5oc
--- Ratings -> Effect
-D["HEALTH_REG_OUT_OF_COMBAT"] = {HEALTH.." Regen (Out of combat)", "HP5(OC)"}
-D["MANA_REG_NOT_CASTING"] = {MANA.." Regen (Not casting)", "MP5(NC)"}
-D["MELEE_CRIT_DMG_REDUCTION"] = {"Crit Damage Reduction(%)", "Crit Dmg Reduc(%)"}
-D["RANGED_CRIT_DMG_REDUCTION"] = {PLAYERSTAT_RANGED_COMBAT.." Crit Damage Reduction(%)", PLAYERSTAT_RANGED_COMBAT.." Crit Dmg Reduc(%)"}
-D["SPELL_CRIT_DMG_REDUCTION"] = {PLAYERSTAT_SPELL_COMBAT.." Crit Damage Reduction(%)", PLAYERSTAT_SPELL_COMBAT.." Crit Dmg Reduc(%)"}
-D["DEFENSE"] = {DEFENSE, "Def"}
-D["DODGE"] = {DODGE.."(%)", DODGE.."(%)"}
-D["PARRY"] = {PARRY.."(%)", PARRY.."(%)"}
-D["BLOCK"] = {BLOCK.."(%)", BLOCK.."(%)"}
-D["AVOIDANCE"] = {"Avoidance(%)", "Avoidance(%)"}
-D["MELEE_HIT"] = {"Hit Chance(%)", "Hit(%)"}
-D["RANGED_HIT"] = {PLAYERSTAT_RANGED_COMBAT.." Hit Chance(%)", PLAYERSTAT_RANGED_COMBAT.." Hit(%)"}
-D["SPELL_HIT"] = {PLAYERSTAT_SPELL_COMBAT.." Hit Chance(%)", PLAYERSTAT_SPELL_COMBAT.." Hit(%)"}
-D["MELEE_HIT_AVOID"] = {"Hit Avoidance(%)", "Hit Avd(%)"}
-D["MELEE_CRIT"] = {MELEE_CRIT_CHANCE.."(%)", "Crit(%)"} -- MELEE_CRIT_CHANCE = "Crit Chance"
-D["RANGED_CRIT"] = {PLAYERSTAT_RANGED_COMBAT.." "..MELEE_CRIT_CHANCE.."(%)", PLAYERSTAT_RANGED_COMBAT.." Crit(%)"}
-D["SPELL_CRIT"] = {PLAYERSTAT_SPELL_COMBAT.." "..MELEE_CRIT_CHANCE.."(%)", PLAYERSTAT_SPELL_COMBAT.." Crit(%)"}
-D["MELEE_CRIT_AVOID"] = {"Crit Avoidance(%)", "Crit Avd(%)"}
-D["MELEE_HASTE"] = {"Haste(%)", "Haste(%)"} --
-D["RANGED_HASTE"] = {PLAYERSTAT_RANGED_COMBAT.." Haste(%)", PLAYERSTAT_RANGED_COMBAT.." Haste(%)"}
-D["SPELL_HASTE"] = {PLAYERSTAT_SPELL_COMBAT.." Haste(%)", PLAYERSTAT_SPELL_COMBAT.." Haste(%)"}
-D["DAGGER_WEAPON"] = {"Dagger "..SKILL, "Dagger"} -- SKILL = "Skill"
-D["SWORD_WEAPON"] = {"Sword "..SKILL, "Sword"}
-D["2H_SWORD_WEAPON"] = {"Two-Handed Sword "..SKILL, "2H Sword"}
-D["AXE_WEAPON"] = {"Axe "..SKILL, "Axe"}
-D["2H_AXE_WEAPON"] = {"Two-Handed Axe "..SKILL, "2H Axe"}
-D["MACE_WEAPON"] = {"Mace "..SKILL, "Mace"}
-D["2H_MACE_WEAPON"] = {"Two-Handed Mace "..SKILL, "2H Mace"}
-D["GUN_WEAPON"] = {"Gun "..SKILL, "Gun"}
-D["CROSSBOW_WEAPON"] = {"Crossbow "..SKILL, "Crossbow"}
-D["BOW_WEAPON"] = {"Bow "..SKILL, "Bow"}
-D["FERAL_WEAPON"] = {"Feral "..SKILL, "Feral"}
-D["FIST_WEAPON"] = {"Unarmed "..SKILL, "Unarmed"}
-D["STAFF_WEAPON"] = {"Staff "..SKILL, "Staff"} -- Leggings of the Fang ID:10410
-D["EXPERTISE"] = {"Expertise", "Expertise"}
-D["ARMOR_PENETRATION"] = {"Armor Penetration(%)", "ArP(%)"}
--- Tier3 Stats - Stats that only show up when broken down from a Tier2 stat
--- Defense -> Crit Avoidance, Hit Avoidance, Dodge, Parry, Block
--- Weapon Skill -> Crit, Hit, Dodge Neglect, Parry Neglect, Block Neglect
--- Expertise -> Dodge Neglect, Parry Neglect
-D["DODGE_NEGLECT"] = {DODGE.." Neglect(%)", DODGE.." Neglect(%)"}
-D["PARRY_NEGLECT"] = {PARRY.." Neglect(%)", PARRY.." Neglect(%)"}
-D["BLOCK_NEGLECT"] = {BLOCK.." Neglect(%)", BLOCK.." Neglect(%)"}
--- Talents
-D["MELEE_CRIT_DMG"] = {"Crit Damage(%)", "Crit Dmg(%)"}
-D["RANGED_CRIT_DMG"] = {PLAYERSTAT_RANGED_COMBAT.." Crit Damage(%)", PLAYERSTAT_RANGED_COMBAT.." Crit Dmg(%)"}
-D["SPELL_CRIT_DMG"] = {PLAYERSTAT_SPELL_COMBAT.." Crit Damage(%)", PLAYERSTAT_SPELL_COMBAT.." Crit Dmg(%)"}
--- Spell Stats
--- These values can be prefixed with a @ and spell name, using reverse translation to english from Babble-Spell-2.2
--- Ex: "Heroic Strike@RAGE_COST" for Heroic Strike rage cost
--- Ex: "Heroic Strike@THREAT" for Heroic Strike threat value
--- Use strsplit("@", text) to seperate the spell name and statid
-D["THREAT"] = {"Threat", "Threat"}
-D["CAST_TIME"] = {"Casting Time", "Cast Time"}
-D["MANA_COST"] = {"Mana Cost", "Mana Cost"}
-D["RAGE_COST"] = {"Rage Cost", "Rage Cost"}
-D["ENERGY_COST"] = {"Energy Cost", "Energy Cost"}
-D["COOLDOWN"] = {"Cooldown", "CD"}
--- Stats Mods
-D["MOD_STR"] = {"Mod "..SPELL_STAT1_NAME.."(%)", "Mod Str(%)"}
-D["MOD_AGI"] = {"Mod "..SPELL_STAT2_NAME.."(%)", "Mod Agi(%)"}
-D["MOD_STA"] = {"Mod "..SPELL_STAT3_NAME.."(%)", "Mod Sta(%)"}
-D["MOD_INT"] = {"Mod "..SPELL_STAT4_NAME.."(%)", "Mod Int(%)"}
-D["MOD_SPI"] = {"Mod "..SPELL_STAT5_NAME.."(%)", "Mod Spi(%)"}
-D["MOD_HEALTH"] = {"Mod "..HEALTH.."(%)", "Mod "..HP.."(%)"}
-D["MOD_MANA"] = {"Mod "..MANA.."(%)", "Mod "..MP.."(%)"}
-D["MOD_ARMOR"] = {"Mod "..ARMOR.."from Items".."(%)", "Mod "..ARMOR.."(Items)".."(%)"}
-D["MOD_BLOCK_VALUE"] = {"Mod Block Value".."(%)", "Mod Block Value".."(%)"}
-D["MOD_DMG"] = {"Mod Damage".."(%)", "Mod Dmg".."(%)"}
-D["MOD_DMG_TAKEN"] = {"Mod Damage Taken".."(%)", "Mod Dmg Taken".."(%)"}
-D["MOD_CRIT_DAMAGE"] = {"Mod Crit Damage".."(%)", "Mod Crit Dmg".."(%)"}
-D["MOD_CRIT_DAMAGE_TAKEN"] = {"Mod Crit Damage Taken".."(%)", "Mod Crit Dmg Taken".."(%)"}
-D["MOD_THREAT"] = {"Mod Threat".."(%)", "Mod Threat".."(%)"}
-D["MOD_AP"] = {"Mod "..ATTACK_POWER_TOOLTIP.."(%)", "Mod AP".."(%)"}
-D["MOD_RANGED_AP"] = {"Mod "..PLAYERSTAT_RANGED_COMBAT.." "..ATTACK_POWER_TOOLTIP.."(%)", "Mod RAP".."(%)"}
-D["MOD_SPELL_DMG"] = {"Mod "..PLAYERSTAT_SPELL_COMBAT.." "..DAMAGE.."(%)", "Mod "..PLAYERSTAT_SPELL_COMBAT.." Dmg".."(%)"}
-D["MOD_HEALING"] = {"Mod Healing".."(%)", "Mod Heal".."(%)"}
-D["MOD_CAST_TIME"] = {"Mod Casting Time".."(%)", "Mod Cast Time".."(%)"}
-D["MOD_MANA_COST"] = {"Mod Mana Cost".."(%)", "Mod Mana Cost".."(%)"}
-D["MOD_RAGE_COST"] = {"Mod Rage Cost".."(%)", "Mod Rage Cost".."(%)"}
-D["MOD_ENERGY_COST"] = {"Mod Energy Cost".."(%)", "Mod Energy Cost".."(%)"}
-D["MOD_COOLDOWN"] = {"Mod Cooldown".."(%)", "Mod CD".."(%)"}
--- Misc Stats
-D["WEAPON_RATING"] = {"Weapon "..SKILL.." "..RATING, "Weapon"..SKILL.." "..RATING}
-D["WEAPON_SKILL"] = {"Weapon "..SKILL, "Weapon"..SKILL}
-D["MAINHAND_WEAPON_RATING"] = {"Main Hand Weapon "..SKILL.." "..RATING, "MH Weapon"..SKILL.." "..RATING}
-D["OFFHAND_WEAPON_RATING"] = {"Off Hand Weapon "..SKILL.." "..RATING, "OH Weapon"..SKILL.." "..RATING}
-D["RANGED_WEAPON_RATING"] = {"Ranged Weapon "..SKILL.." "..RATING, "Ranged Weapon"..SKILL.." "..RATING}

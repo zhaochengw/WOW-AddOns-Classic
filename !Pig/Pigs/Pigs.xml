@@ -1,8 +1,0 @@
-<Ui>
-	<Script file="Fun.lua" />
-	<Script file="Data.lua" />
-	<Script file="Frame.lua" />
-	<Script file="Button.lua" />
-	<Script file="UIOLD.lua" />
-	<Script file="DownMenu.lua" />
-</Ui>

@@ -40,6 +40,12 @@ function AuctionatorAHScanFrameMixin:OnEvent(eventName, ...)
   end
 end
 
+function AuctionatorAHScanFrameMixin:ReceiveEvent(eventName, ...)
+  if eventName == Auctionator.AH.Events.ThrottleAbort then
+    self:AbortQuery()
+  end
+end
+
 function AuctionatorAHScanFrameMixin:StartQuery(query, startPage, endPage)
   if self.scanRunning then
     error("Scan already running")
@@ -106,8 +112,16 @@ end
 
 function AuctionatorAHScanFrameMixin:RegisterEvents()
   FrameUtil.RegisterFrameForEvents(self, SCAN_EVENTS)
+
+  Auctionator.EventBus:Register(self, {
+    Auctionator.AH.Events.ThrottleAbort
+  })
 end
 
 function AuctionatorAHScanFrameMixin:UnregisterEvents()
   FrameUtil.UnregisterFrameForEvents(self, SCAN_EVENTS)
+
+  Auctionator.EventBus:Unregister(self, {
+    Auctionator.AH.Events.ThrottleAbort
+  })
 end

@@ -40,10 +40,10 @@ local function InitResetNotificationsTimer()
 				-- If it is a vignetteID
 				if (RSUtils.Contains(notificationID, VIGNETTE_ID_SEPARATOR)) then
 					local _, _, _, _, _, entityID, _ = strsplit(VIGNETTE_ID_SEPARATOR, notificationID);
-					RSLogger:PrintDebugMessage(string.format("RemovedNotification[%s] at [%s]", entityID, RSTimeUtils.TimeStampToClock(currenTime)))
+					--RSLogger:PrintDebugMessage(string.format("RemovedNotification[%s] at [%s]", entityID, RSTimeUtils.TimeStampToClock(currenTime)))
 				-- If it is an entityID
 				else
-					RSLogger:PrintDebugMessage(string.format("RemovedNotification[%s] at [%s]", notificationID, RSTimeUtils.TimeStampToClock(currenTime)))
+					--RSLogger:PrintDebugMessage(string.format("RemovedNotification[%s] at [%s]", notificationID, RSTimeUtils.TimeStampToClock(currenTime)))
 				end
 			end
 		end
@@ -60,11 +60,7 @@ function RSNotificationTracker.AddNotification(vignetteID, isNavigating, entityI
 	InitResetNotificationsTimer()
 	
 	local currentTime = time()
-	
-	if (entityID) then
-		current_notifications[entityID] = currentTime
-		RSLogger:PrintDebugMessage(string.format("AddNotification[%s] at [%s]", entityID, RSTimeUtils.TimeStampToClock(currentTime)))
-	end
+	current_notifications[entityID] = currentTime
 end
 
 function RSNotificationTracker.IsAlreadyNotificated(vignetteID, isNavigating, entityID)	

@@ -1,4 +1,0 @@
-<Ui>
-	<Script file="Function.lua" />
-	<Script file="CombatCycle.lua" />
-</Ui>

@@ -1,11 +1,19 @@
 local mod	= DBM:NewMod(569, "DBM-Party-BC", 3, 259)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+if mod:IsRetail() then
+	mod.statTypes = "normal,heroic,timewalker"
+end
+
+mod:SetRevision("20231014053250")
 mod:SetCreatureID(16808)
 mod:SetEncounterID(1938)
-mod:SetModelID(19799)
-mod:SetModelOffset(-0.4, 0.1, -0.4)
+
+if not mod:IsRetail() then
+	mod:SetModelID(18237)
+	mod:SetModelOffset(-2, 0.8, -1)
+end
+
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -13,15 +21,15 @@ mod:RegisterEventsInCombat(
 )
 
 --134170 Some Random Orc Icon. Could not find red fel orc icon. Only green orcs or brown orcs. Brown closer to red than green is.
-local warnHeathenGuard			= mod:NewAnnounce("warnHeathen", 2, 134170)
-local warnReaverGuard			= mod:NewAnnounce("warnReaver", 2, 134170)
-local warnSharpShooterGuard		= mod:NewAnnounce("warnSharpShooter", 2, 134170)
+local warnHeathenGuard			= mod:NewAnnounce("warnHeathen", 2, 134170)--(-5927)
+local warnReaverGuard			= mod:NewAnnounce("warnReaver", 2, 134170)--(-5930)
+local warnSharpShooterGuard		= mod:NewAnnounce("warnSharpShooter", 2, 134170)--(-5934)
 
 local specWarnBladeDance		= mod:NewSpecialWarningSpell(30739, nil, nil, nil, 2, 2)
 
-local timerHeathenCD			= mod:NewTimer(21, "timerHeathen", 134170, nil, nil, 1)
-local timerReaverCD				= mod:NewTimer(21, "timerReaver", 134170, nil, nil, 1)
-local timerSharpShooterCD		= mod:NewTimer(21, "timerSharpShooter", 134170, nil, nil, 1)
+local timerHeathenCD			= mod:NewTimer(21, "timerHeathen", 134170, nil, nil, 1)--(-5927)
+local timerReaverCD				= mod:NewTimer(21, "timerReaver", 134170, nil, nil, 1)--(-5930)
+local timerSharpShooterCD		= mod:NewTimer(21, "timerSharpShooter", 134170, nil, nil, 1)--(-5934)
 local timerBladeDanceCD			= mod:NewCDTimer(35, 30739, nil, nil, nil, 2)
 
 mod.vb.addSet = 0
@@ -32,13 +40,13 @@ local function Adds(self)
 	self.vb.addType = self.vb.addType + 1
 	if self.vb.addType == 1 then--Heathen
 		warnHeathenGuard:Show(self.vb.addSet.."-"..self.vb.addType)
-		timerReaverCD:Start(nil, self.vb.addSet+1)
+		timerReaverCD:Start()
 	elseif self.vb.addType == 2 then--Reaver
 		warnReaverGuard:Show(self.vb.addSet.."-"..self.vb.addType)
-		timerSharpShooterCD:Start(nil, self.vb.addSet+1)
+		timerSharpShooterCD:Start()
 	elseif self.vb.addType == 3 then--SharpShooter
 		warnSharpShooterGuard:Show(self.vb.addSet.."-"..self.vb.addType)
-		timerHeathenCD:Start(nil, self.vb.addSet+1)
+		timerHeathenCD:Start()
 		self.vb.addType = 0
 	end
 	self:Schedule(21, Adds, self)
@@ -54,13 +62,13 @@ end
 
 --Change to no sync if blizz adds IEEU(boss1)
 function mod:UNIT_SPELLCAST_START(uId, _, spellId)
-   if spellId == 30738 then -- Blade Dance Targeting
+   if spellId == 30738 and self:AntiSpam(3, 1) then -- Blade Dance Targeting
 		self:SendSync("BladeDance")
 	end
 end
 
 function mod:OnSync(msg)
-	if msg == "BladeDance" and self:AntiSpam(3, 1) then
+	if msg == "BladeDance" then
 		specWarnBladeDance:Show()
 		timerBladeDanceCD:Start()
 		specWarnBladeDance:Play("aesoon")

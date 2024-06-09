@@ -1,0 +1,14 @@
+﻿## Interface: 30403
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Voicepack Rurutia|r
+## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cffff559a露露语音包|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cffff559a露露語音包|r
+## DefaultState: enabled
+## RequiredDeps: DBM-Core
+## Author:|cffff559a露露緹婭@Bilibili|r
+## Version: 1.0.1
+## Notes: |cff0099FF测试版，未完成，缺失语音先用部分桃桃的语音替换下。尚未正式发布。|r
+## X-DBM-Voice: 1
+## X-DBM-Voice-Name: Rurutia(露露·中文版)
+## X-DBM-Voice-ShortName: Rurutia
+## X-DBM-Voice-Version: 12
+## X-DBM-Voice-HasCount: 1

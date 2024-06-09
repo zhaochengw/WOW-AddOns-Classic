@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
+    Decursive (v 2.7.15) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2023-04-02T15:26:05Z
+    This file was last updated on 2023-11-15T04:00:56Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -74,7 +74,7 @@ local function RegisterDecursive_Once() -- {{{
     --@end-debug@]==]
 
     D.name = "Decursive";
-    D.version = "2.7.9.1";
+    D.version = "2.7.15";
     D.author = "John Wellesz";
 
     D.DcrFullyInitialized = false;
@@ -122,7 +122,8 @@ local function SetBasicConstants_Once() -- these are constants that may be used 
     DC.POISON       = 8;
     DC.DISEASE      = 16;
     DC.CHARMED      = 32;
-    DC.NOTYPE       = 64;
+    DC.BLEED        = 64;
+    DC.NOTYPE       = 128;
 
     DC.CLASS_DRUID       = 'DRUID';
     DC.CLASS_HUNTER      = 'HUNTER';
@@ -197,6 +198,7 @@ local function SetRuntimeConstants_Once () -- {{{
         [DC.POISON]     = "Poison",
         [DC.DISEASE]    = "Disease",
         [DC.CHARMED]    = "Charm",
+        [DC.BLEED]      = "Bleed",
     }
 
     DC.NameToTypes = D:tReverse(DC.TypeNames);
@@ -209,6 +211,7 @@ local function SetRuntimeConstants_Once () -- {{{
         [DC.POISON]     = "POISON",
         [DC.DISEASE]    = "DISEASE",
         [DC.CHARMED]    = "CHARM",
+        [DC.BLEED]      = "BLEED",
     }
     DC.LocalizableTypeNamesToTypes = D:tReverse(DC.TypeToLocalizableTypeNames);
 
@@ -324,10 +327,17 @@ local function SetRuntimeConstants_Once () -- {{{
 
             -- Shaman resto
             [DSI["PURIFY_SPIRIT"]] = { -- same name as CLEANSE_SPIRIT in ruRU XXX -- IsSpellKnown(DSI["PURIFY_SPIRIT"]) actually fails in all situaions...
-                -- BUG in MOP BETA and 5.2 (2012-07-08): /dump GetSpellBookItemInfo('Purify Spirit') == nil while /dump (GetSpellInfo('Cleanse Spirit')) == 'Purify Spirit'
-                Types = {DC.CURSE, DC.MAGIC},
+                Types = {DC.MAGIC},
                 Better = 4,
                 Pet = false,
+                -- detect improved purify spirit
+                EnhancedBy = 'talent',
+                EnhancedByCheck = function ()
+                    return (IsPlayerSpell(DSI["IMPROVED_PURIFY_SPIRIT"]));
+                end,
+                Enhancements = {
+                    Types = {DC.CURSE, DC.MAGIC}, -- see PURIFY_SPIRIT
+                }
             },
             -- Warlocks (Imp)
             [DSI["PET_SINGE_MAGIC"]] = {
@@ -393,6 +403,13 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
 
             },
+            -- SPELL_POISON_CLEANSING_TOTEM
+            [DSI["SPELL_POISON_CLEANSING_TOTEM"]] = {
+                Types = {DC.POISON},
+                Better = 1,
+                Pet = false,
+
+            },
             -- Druids (Restoration)
             [DSI["SPELL_NATURES_CURE"]] = {
                 Types = {DC.MAGIC, DC.POISON, DC.CURSE},
@@ -419,9 +436,16 @@ local function SetRuntimeConstants_Once () -- {{{
             },
             -- Priests (Discipline, Holy)
             [DSI["SPELL_PURIFY"]] = {
-                Types = {DC.MAGIC, DC.DISEASE},
+                Types = {DC.MAGIC},
                 Better = 1,
                 Pet = false,
+                EnhancedBy = 'talent',
+                EnhancedByCheck = function ()
+                    return (IsPlayerSpell(DSI["IMPROVED_PURIFY"]));
+                end,
+                Enhancements = {
+                    Types = {DC.MAGIC, DC.DISEASE},
+                }
             },
             [DSI["SPELL_PURIFY_DISEASE"]] = {
                 Types = {DC.DISEASE},
@@ -448,7 +472,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 }
             },
             [DSI["SPELL_CAUTERIZING_FLAME"]] = {
-                Types = {DC.POISON, DC.CURSE, DC.DISEASE},
+                Types = {DC.POISON, DC.CURSE, DC.DISEASE, DC.BLEED},
                 Better = 1,
                 Pet = false,
             },
@@ -520,9 +544,9 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
             },
             -- Priests (rank 1 is no longer detected once rank 2 is learned apprently)
-            [DC.WOTLK and DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] or false] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
+            [DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"]] = { -- WOW CLASSIC  https://www.wowhead.com/wotlk/spell=988/dispel-magic
                 Types = {DC.MAGIC, DC.ENEMYMAGIC},
-                Better = 0,
+                Better = 1,
                 Pet = false,
             },
             -- Paladin
@@ -636,12 +660,12 @@ local function InitVariables_Once() -- {{{
     -- A table UnitID=>IsDebuffed (boolean)
     D.UnitDebuffed = {};
 
-    D.Revision = "567d3cd"; -- not used here but some other add-on may request it from outside
-    D.date = "2023-04-02T21:35:33Z";
-    D.version = "2.7.9.1";
+    D.Revision = "55b2b4d"; -- not used here but some other add-on may request it from outside
+    D.date = "2024-01-21T21:46:01Z";
+    D.version = "2.7.15";
 
     if D.date ~= "@project".."-date-iso@" then
-        -- 1680471333 doesn't work
+        -- 1705873561 doesn't work
 
         --local example =  "2008-05-01T12:34:56Z";
 
@@ -707,7 +731,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
 
             if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
 
-                T._ShowNotice ("|cff00ff00Decursive version: 2.7.9.1|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
+                T._ShowNotice ("|cff00ff00Decursive version: 2.7.15|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
 
                 self.db.global.LastExpirationAlert = time();
             end
@@ -716,7 +740,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
         self.db.global.TocExpiredDetection = false;
     end
 
-    if (("2.7.9.1"):lower()):find("beta") or ("2.7.9.1"):find("RC") or ("2.7.9.1"):find("Candidate") or alpha then
+    if (("2.7.15"):lower()):find("beta") or ("2.7.15"):find("RC") or ("2.7.15"):find("Candidate") or alpha then
 
         D.RunningADevVersion = true;
 
@@ -729,7 +753,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
                 DC.DevVersionExpired = true;
                 -- Display the expiration notice only once evry 48 hours
                 if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
-                    T._ShowNotice ("|cff00ff00Decursive version: 2.7.9.1|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
+                    T._ShowNotice ("|cff00ff00Decursive version: 2.7.15|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
 
                     self.db.global.LastExpirationAlert = time();
                 end
@@ -740,16 +764,16 @@ function D:VersionWarnings(forceDisplay) -- {{{
         end
 
         -- display a warning if this is a developpment version (avoid insults from people who don't know what they're doing)
-        if self.db.global.NonRelease ~= "2.7.9.1" then
-            self.db.global.NonRelease = "2.7.9.1";
-            T._ShowNotice ("|cff00ff00Decursive version: 2.7.9.1|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
+        if self.db.global.NonRelease ~= "2.7.15" then
+            self.db.global.NonRelease = "2.7.15";
+            T._ShowNotice ("|cff00ff00Decursive version: 2.7.15|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
         end
     end
 
     --[==[@debug@
     fromCheckOut = true;
     if time() - self.db.global.LastUnpackagedAlert > 24 * 3600  then
-        T._ShowNotice ("|cff00ff00Decursive version: 2.7.9.1|r\n\n" .. "|cFFFFAA66" ..
+        T._ShowNotice ("|cff00ff00Decursive version: 2.7.15|r\n\n" .. "|cFFFFAA66" ..
         [[
         |cFFFF0000You're using an unpackaged version of Decursive.|r
         Decursive is not meant to be used this way.
@@ -787,7 +811,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
         if D.db.global.NewerVersionDetected > D.VersionTimeStamp and D.db.global.NewerVersionName ~= D.version then -- it's still newer than this one
             if time() - D.db.global.NewerVersionAlert > 3600 * 24 * 4 then -- it's been more than 4 days since the new version alert was shown
                 if not D.db.global.NewVersionsBugMeNot then -- the user did not disable new version alerts
-                    T._ShowNotice ("|cff55ff55Decursive version: 2.7.9.1|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
+                    T._ShowNotice ("|cff55ff55Decursive version: 2.7.15|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
                     D.db.global.NewerVersionAlert = time();
                 end
             end
@@ -1002,6 +1026,7 @@ function D:SetConfiguration() -- {{{
     D.Status.InternalPrioList = {};
     D.Status.InternalSkipList = {};
     D.Status.WaitingForSpellInfo = false;
+    D.Status.t_CheckBleedDebuffsActiveIDs = {};
 
     D.Stealthed_Units = {};
 
@@ -1012,6 +1037,17 @@ function D:SetConfiguration() -- {{{
 
     D.profile = D.db.profile; -- shortcut
     D.classprofile = D.db.class; -- shortcut
+    -- reset: /run  LibStub("AceAddon-3.0"):GetAddon("Decursive").db.class.CureOrder = {}
+    -- reset: /run  LibStub("AceAddon-3.0"):GetAddon("Decursive").db.class["CureOrder-"..(GetSpecialization or GetActiveTalentGroup)()][64] = nil
+
+    D:reset_t_CheckBleedDebuffsActiveIDs();
+
+
+    if D.db.locale.BleedEffectsKeywords:trim() ~= "" then
+        D.Status.P_BleedEffectsKeywords_noCase = D:makeNoCasePattern(D.db.locale.BleedEffectsKeywords);
+    else
+        D.Status.P_BleedEffectsKeywords_noCase = false;
+    end
 
     -- Upgrade layer for versions of Decursive prior to 2013-03-03
     for spell, spellData in pairs(D.classprofile.UserSpells) do
@@ -1421,6 +1457,7 @@ function D:Configure() --{{{
     CuringSpells[DC.POISON]     = false;
     CuringSpells[DC.DISEASE]    = false;
     CuringSpells[DC.CHARMED]    = false;
+    CuringSpells[DC.BLEED]      = false;
 
     local Type, _;
     local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
@@ -1614,8 +1651,10 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["PET_SEAR_MAGIC"]              =  115276, -- Warlock Fel imp
             ["SPELL_PURIFY"]                =  527,
             ["SPELL_PURIFY_DISEASE"]        =  213634,
+            ["IMPROVED_PURIFY"]             =  390632,
             ["SPELL_DISPELL_MAGIC"]         =  528,
             ["PURIFY_SPIRIT"]               =  77130, -- resto shaman
+            ["IMPROVED_PURIFY_SPIRIT"]      =  383016, -- resto shaman
             ["SPELL_NATURES_CURE"]          =  88423,
             ["SPELL_DETOX_1"]               =  115450, -- monk mistweaver
             ["SPELL_DETOX_2"]               =  218164, -- monk brewmaster and windwaker
@@ -1628,6 +1667,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['SPELL_EXPUNGE']               =  365585,
             ['SPELL_NATURALIZE']            =  360823,
             ['SPELL_CAUTERIZING_FLAME']     =  374251,
+            ['SPELL_POISON_CLEANSING_TOTEM']=  383013, -- shaman
         }; --- }}}
 
         T._C.EXPECTED_DUPLICATES = {
@@ -1662,6 +1702,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 ["PURIFY_SPIRIT"]	        = 77130,
                 ["SONICBURST"]	            = 39052,
                 ["SPELL_PURIFY_DISEASE"]    = 213634,
+                ["IMPROVED_PURIFY"]         = 390632,
                 ["Vampiric Touch"]	        = 34914,
                 ["CLEANSE_SPIRIT"]	        = 51886,
                 ["SPELL_NATURES_CURE"]	    = 88423,
@@ -1673,11 +1714,15 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 ['SPELL_EXPUNGE']           = 365585,
                 ['SPELL_NATURALIZE']        = 360823,
                 ['SPELL_CAUTERIZING_FLAME'] = 374251,
+                ["IMPROVED_PURIFY_SPIRIT"]  = 383016, -- resto shaman
+                ['SPELL_POISON_CLEANSING_TOTEM']= 383013, -- shaman
             } -- }}}
 
             local DSI_REMOVED_OR_CHANGED_IN_WOTLK = { -- {{{
                 ['SPELL_CURE_DISEASE_SHAMAN']            = 2870,
                 ['Shadowmeld']                           = 20580,
+                ["IMPROVED_PURIFY_SPIRIT"]               = 383016, -- resto shaman
+                ['SPELL_POISON_CLEANSING_TOTEM']         = 383013, -- shaman
             } -- }}}
 
 
@@ -1706,11 +1751,13 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             T._C.DSI["SONICBURST"]                = 8281;
             T._C.DSI["CRIPLES"]                   = 11443;
             T._C.DSI["Shadowmeld"]                = 20580;
+            T._C.DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] = 988;
             -- }}}
 
             T._C.EXPECTED_DUPLICATES = {
                 {"SPELL_CURE_DISEASE_PRIEST", "SPELL_CURE_DISEASE_SHAMAN"},
                 {"SPELL_CURE_POISON_SHAMAN", "SPELL_CURE_POISON_DRUID"},
+                {"SPELL_DISPELL_MAGIC", "SPELL_DISPELL_MAGIC_PRIEST_R2"},
             }
 
             if DC.WOTLK then
@@ -1725,7 +1772,6 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 T._C.DSI["TALENT_BODY_AND_SOUL"]          = 64127;
                 T._C.DSI["CLEANSE_SPIRIT"]                = 51886;
                 T._C.DSI["SPELL_HEX"]	                  = 51514;
-                T._C.DSI["SPELL_DISPELL_MAGIC_PRIEST_R2"] = 988;
 
                 T._C.EXPECTED_DUPLICATES = {
                     {"SPELL_REMOVE_CURSE_DRUID", "SPELL_REMOVE_CURSE_MAGE"},
@@ -1912,7 +1958,7 @@ end -- }}}
 
 
 
-T._LoadedFiles["DCR_init.lua"] = "2.7.9.1";
+T._LoadedFiles["DCR_init.lua"] = "2.7.15";
 
 -------------------------------------------------------------------------------
 
@@ -1921,42 +1967,42 @@ TEST to see what keyword substitutions are actually working....
 
 Simple replacements
 
-954
+943
     Turns into the current revision of the file in integer form. e.g. 1234
     Note: does not work for git
-1028
+1084
     Turns into the highest revision of the entire project in integer form. e.g. 1234
     Note: does not work for git
-dc836a8e6031996945e5c8c8dabed9f163d9dfbf
+1a347c6dca94e8f7cd0c5cd76df8f35cadea3072
     Turns into the hash of the file in hex form. e.g. 106c634df4b3dd4691bf24e148a23e9af35165ea
     Note: does not work for svn
-567d3cd6788953479a554d3379a1c56f5adcef15
+55b2b4d5a0ea38f012dd6ac6b42de8fe64b627b7
     Turns into the hash of the entire project in hex form. e.g. 106c634df4b3dd4691bf24e148a23e9af35165ea
     Note: does not work for svn
-dc836a8
+1a347c6
     Turns into the abbreviated hash of the file in hex form. e.g. 106c63 Note: does not work for svn
-567d3cd
+55b2b4d
     Turns into the abbreviated hash of the entire project in hex form. e.g. 106c63
     Note: does not work for svn
-Archarodim
+Meivyn
     Turns into the last author of the file. e.g. ckknight
 Archarodim
     Turns into the last author of the entire project. e.g. ckknight
-2023-04-02T15:26:05Z
+2023-11-15T04:00:56Z
     Turns into the last changed date (by UTC) of the file in ISO 8601. e.g. 2008-05-01T12:34:56Z
-2023-04-02T21:35:33Z
+2024-01-21T21:46:01Z
     Turns into the last changed date (by UTC) of the entire project in ISO 8601. e.g. 2008-05-01T12:34:56Z
-20230402152605
+20231115040056
     Turns into the last changed date (by UTC) of the file in a readable integer fashion. e.g. 20080501123456
-20230402213533
+20240121214601
     Turns into the last changed date (by UTC) of the entire project in a readable integer fashion. e.g. 2008050123456
-1680449165
+1700020856
     Turns into the last changed date (by UTC) of the file in POSIX timestamp. e.g. 1209663296
     Note: does not work for git
-1680471333
+1705873561
     Turns into the last changed date (by UTC) of the entire project in POSIX timestamp. e.g. 1209663296
     Note: does not work for git
-2.7.9.1
+2.7.15
     Turns into an approximate version of the project. The tag name if on a tag, otherwise it's up to the repo.
     :SVN returns something like "r1234"
     :Git returns something like "v0.1-873fc1"

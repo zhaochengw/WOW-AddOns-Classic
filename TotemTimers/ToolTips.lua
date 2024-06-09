@@ -177,7 +177,7 @@ function WeaponTimerTooltip:SetText()
     local spell2 = button:GetAttribute("spell2")
     if spell2 then
         local spellname = GetSpellInfo(spell2)
-        if spellname then GameTooltip:AddLine(format(L["Rightclick to cast %s"], GetSpellInfo(spell2)),r,g,b,1) end
+        if spellname then GameTooltip:AddLine(format(L["Rightclick to cast %s"], spellname),r,g,b,1) end
     end
     --[[s = self:GetAttribute("spell2")
     if s then GameTooltip:AddLine(format(L["Rightclick to cast %s"],s),r,g,b,1)
@@ -195,10 +195,11 @@ function WeaponBarTooltip:SetText()
     local button = self.button
 
     local spell = button:GetAttribute("*spell1")
+    if not spell then spell = button:GetAttribute("spell1") end
     local doublespell = button:GetAttribute("doublespell1")
 
     if not doublespell then
-        self:SetSpell(spell)
+        if spell then self:SetSpell(spell) end
 
         GameTooltip:AddLine(" ")
         GameTooltip:AddLine(L["Leftclick to cast spell"],r,g,b,1)

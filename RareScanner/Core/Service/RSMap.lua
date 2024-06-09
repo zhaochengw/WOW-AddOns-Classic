@@ -49,12 +49,12 @@ local function CreateGroups(POIs)
 	for _, POI in ipairs (POIs) do
 		local POIchecked = false;
 		
-		-- Skip POIs that are shown in the worldmap
-		if (not POI.worldmap) then
+		-- Skip POIs that are shown in the worldmap and POIs that shouldnt group up
+		if (not POI.worldmap and POI.grouping) then
 			for _, checkedPOI in ipairs (checkedPOIs) do
 				if (POI.entityID ~= checkedPOI.entityID and not checkedPOI.worldmap) then
 					local distance = RSUtils.Distance(POI, checkedPOI)
-					if (distance <= RSConstants.MINIMUM_DISTANCE_PINS_WORLD_MAP) then
+					if (distance >= 0 and distance <= RSConstants.MINIMUM_DISTANCE_PINS_WORLD_MAP) then
 						RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("NPC [%s]: Cerca de [%s], distancia [%s].", POI.entityID, checkedPOI.entityID, distance))
 						RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("NPC [%s]: Coordenadas [%s,%s].", POI.entityID, POI.x, POI.y))
 						RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("NPC [%s]: Coordenadas [%s,%s].", checkedPOI.entityID, checkedPOI.x, checkedPOI.y))
@@ -100,26 +100,21 @@ end
 
 local MapPOIs = {}
 
-local function GetMapNotDiscoveredPOIs(mapID, questTitles, onWorldMap, onMiniMap)
-	-- Skip if not showing 'not discovered' icons
-	if (not RSConfigDB.IsShowingNotDiscoveredMapIcons()) then
-		return
-	end
-
+local function GetMapNotDiscoveredPOIs(mapID, onWorldMap, onMiniMap)
 	-- Skip if not showing 'not discovered' icons in old expansions
 	if (not RSConfigDB.IsShowingOldNotDiscoveredMapIcons() and not RSMapDB.IsMapInCurrentExpansion(mapID)) then
 		return
 	end
 
 	-- Add icons
-	local notDiscoveredNpcPOIs = RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, questTitles, onWorldMap, onMiniMap)
-	if (notDiscoveredNpcPOIs) then
+	local notDiscoveredNpcPOIs = RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, onWorldMap, onMiniMap)
+	if (RSUtils.GetTableLength(notDiscoveredNpcPOIs) > 0) then
 		for _, POI in ipairs (notDiscoveredNpcPOIs) do
 			tinsert(MapPOIs,POI)
 		end
 	end
 	local notDiscoveredContainerPOIs = RSContainerPOI.GetMapNotDiscoveredContainerPOIs(mapID, onWorldMap, onMiniMap)
-	if (notDiscoveredContainerPOIs) then
+	if (RSUtils.GetTableLength(notDiscoveredContainerPOIs) > 0) then
 		for _, POI in ipairs (notDiscoveredContainerPOIs) do
 			tinsert(MapPOIs,POI)
 		end
@@ -131,7 +126,7 @@ function RSMap.GetMapPOIs(mapID, onWorldMap, onMiniMap)
 	MapPOIs = {}
 
 	-- Skip if zone filtered
-	if (RSConfigDB.IsZoneFiltered(mapID)) then
+	if (RSConfigDB.IsZoneFiltered(mapID) or RSConfigDB.IsZoneFilteredOnlyWorldmap(mapID)) then
 		return
 	end
 
@@ -152,7 +147,7 @@ function RSMap.GetMapPOIs(mapID, onWorldMap, onMiniMap)
 		-- Extract POI from already found NPC
 		local POI = nil
 		if (RSConstants.IsNpcAtlas(entityInfo.atlasName)) then
-			POI = RSNpcPOI.GetMapAlreadyFoundNpcPOI(entityID, entityInfo, mapID, questTitles, onWorldMap, onMiniMap)
+			POI = RSNpcPOI.GetMapAlreadyFoundNpcPOI(entityID, entityInfo, mapID, onWorldMap, onMiniMap)
 		elseif (RSConstants.IsContainerAtlas(entityInfo.atlasName)) then
 			POI = RSContainerPOI.GetMapAlreadyFoundContainerPOI(entityID, entityInfo, mapID, onWorldMap, onMiniMap)
 		end
@@ -167,17 +162,17 @@ function RSMap.GetMapPOIs(mapID, onWorldMap, onMiniMap)
 	if (RSUtils.GetTableLength(recentlySeenEntities) > 0) then
 		for entityID, entityInfo in pairs (recentlySeenEntities) do
 			if (type(entityInfo) == "table") then
-				for time, info in pairs (entityInfo) do
+				for xy, info in pairs (entityInfo) do
 					if (info.mapID == mapID) then
 						local entityInfo = {}
 						entityInfo.mapID = mapID
 						entityInfo.coordX = info.x
 						entityInfo.coordY = info.y
-						entityInfo.foundTime = time
+						entityInfo.foundTime = info.time
 					
 						local POI = nil
 						if (RSConstants.IsNpcAtlas(info.atlasName)) then
-							POI = RSNpcPOI.GetMapAlreadyFoundNpcPOI(entityID, entityInfo, mapID, questTitles, onWorldMap, onMiniMap)
+							POI = RSNpcPOI.GetMapAlreadyFoundNpcPOI(entityID, entityInfo, mapID, onWorldMap, onMiniMap)
 						elseif (RSConstants.IsContainerAtlas(info.atlasName)) then
 							POI = RSContainerPOI.GetMapAlreadyFoundContainerPOI(entityID, entityInfo, mapID, onWorldMap, onMiniMap)
 						end
@@ -203,7 +198,7 @@ function RSMap.GetMapPOIs(mapID, onWorldMap, onMiniMap)
 	end
 
 	-- Extract POIs not discovered
-	GetMapNotDiscoveredPOIs(mapID, questTitles, onWorldMap, onMiniMap)
+	GetMapNotDiscoveredPOIs(mapID, onWorldMap, onMiniMap)
 
 	-- Create groups if the pins go in the worldmap
 	if (onWorldMap) then
@@ -213,12 +208,12 @@ function RSMap.GetMapPOIs(mapID, onWorldMap, onMiniMap)
 	return MapPOIs
 end
 
-function RSMap.GetWorldMapPOI(objectGUID, vignetteType, mapID)
+function RSMap.GetWorldMapPOI(objectGUID, vignetteInfo, mapID)
 	if (not objectGUID or not mapID) then
 		return nil
 	end
 	
-	if (vignetteType == Enum.VignetteType.Treasure) then
+	if (RSConstants.IsContainerAtlas(vignetteInfo.atlasName)) then
 		local _, _, _, _, _, vignetteObjectID = strsplit("-", objectGUID)
 		local containerID = tonumber(vignetteObjectID)
 		local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
@@ -227,7 +222,7 @@ function RSMap.GetWorldMapPOI(objectGUID, vignetteType, mapID)
 		if (containerInfo or alreadyFoundInfo) then
 			return RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundInfo)
 		end
-	elseif (vignetteType == Enum.VignetteType.Normal or vignetteType == Enum.VignetteType.Torghast) then
+	elseif (RSConstants.IsNpcAtlas(vignetteInfo.atlasName)) then
 		local _, _, _, _, _, vignetteObjectID = strsplit("-", objectGUID)
 		local npcID = tonumber(vignetteObjectID)
 		local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
@@ -267,12 +262,9 @@ end
 
 local worldMapButton
 function RSMap.LoadWorldMapButton()
-	local rwm = LibStub('Krowi_WorldMapButtons-1.4')
-	worldMapButton = rwm:Add("RSWorldMapButtonTemplate", 'DROPDOWNTOGGLEBUTTON')
-	if (not RSConfigDB.IsShowingWorldmapButton()) then 
-		worldMapButton:Hide() 
-	else
-		worldMapButton:Show() 
+	if (RSConfigDB.IsShowingWorldmapButton()) then 
+		local rwm = LibStub('Krowi_WorldMapButtons-1.4')
+		worldMapButton = rwm:Add("RSWorldMapButtonTemplate", 'DROPDOWNTOGGLEBUTTON')
 	end
 end
 
@@ -283,5 +275,7 @@ function RSMap.ToggleWorldmapButton()
 		else 
 			worldMapButton:Hide() 
 		end 
+	else
+		RSMap.LoadWorldMapButton()
 	end
 end

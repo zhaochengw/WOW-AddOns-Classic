@@ -278,6 +278,151 @@ RDDB["Dragonflight"] = {
 		374724, -- molten-subduction
 		},
 	},
+	[1209] = {
+		{ id = 1209, name = "Dawn of the Infinite" },
+		["Chronikar"] = {
+		order = 1, ejid = 2521,
+		413105, --Eon Shatter
+		403486, --Eon Residue
+		403259, --Residue Blast
+		405970, --Eon Fragments
+		413013, --Chronoshear
+		413041, --Sheared Lifespan
+		401421, --Sand Stomp
+		401794, --Withering Sandpool
+		},
+		["Manifested Timeways"] = {
+		order = 2, ejid = 2528,
+		403910, --Decaying Time
+		403912, --Accelerating Time
+		404141, --Chrono-faded
+		405448, --Chronofade
+		405431, --Fragments of Time
+		414303, --Unwind
+		414307, --Radiant
+		},
+		["Blight of Galakrond"] = {
+		order = 3, ejid = 2535,
+		406886, --Corrosive Infusion
+		407406, --Corrosion
+		418346, --Corrupted Mind
+		407027, --Corrosive Expulsion
+		407159, --Blight Reclamation
+		407057, --Blight Seep
+		407978, --Necrotic Winds
+		413608, --Essence Connection
+		408029, --Necrofrost
+		408141, --Incinerating Blightbreath
+		413590, --Noxious Ejection
+		},
+		["Iridikron the Stonescaled"] = {
+		order = 4, ejid = 2537,
+		409261, --Extinction Blast
+		414330, --Timeline Protection
+		414353, --Exhausted
+		414496, --Timeline Acceleration
+		414535, --Stonecracker Barrage
+		414552, --Stonecrack
+		409456, --Earthsurge
+		409287, --Rending Earthspikes
+		414376, --Punctured Ground
+		409635, --Pulverizing Exhalation
+		409884, --Pulverizing Creations
+		416256, --Stonebolt
+		409692, --Patient Tactician
+		414184, --Cataclysmic Obliteration
+		414293, --Timeline Transcendence
+		414075, --Crushing Onslaught
+		},
+		["Tyr, the Infinite Keeper"] = {
+		order = 5, ejid = 2526,
+		404296, --Infinite Hand Technique
+		410240, --Titanic Blow
+		403724, --Consecrated Ground
+		401463, --Infinite Annihilation
+		400641, --Dividing Strike
+		408183, --Titanic Empowerment
+		400649, --Spark of Tyr
+		408768, --Siphon Oathstone
+		410249, --Radiant Barrier
+		404315, --Temporal Essence
+		406543, --Stolen Time
+		},
+		["Morchie"] = {
+		order = 6, ejid = 2536,
+		404916, --Sand Blast
+		403891, --More Problems!
+		404365, --Dragon's Breath
+		413208, --Sand Buffeted
+		405279, --Familiar Faces
+		401197, --Fixate
+		412768, --Anachronistic Decay
+		406481, --Time Traps
+		401667, --Time Stasis
+		406100, --Temporal Backlash
+		},
+		["Time-Lost Battlefield"] = {
+		order = 7, ejid = 2533,
+		407120, --Serrated Axe
+		406962, --Axe Throw
+		407122, --Rain of Fire
+		407121, --Immolate
+		410234, --Bladestorm
+		410254, --Decapitate
+		410497, --Mortal Wounds
+		419602, --Thirst for Battle
+		408227, --Shockwave
+		418046, --FOR THE HORDE!
+		410496, --War Cry
+		},
+		["Chrono-Lord Deios"] = {
+		order = 8, ejid = 2538,
+		416152, --Summon Infinite Keeper
+		416261, --Collapsing Time Rift
+		412027, --Chronal Burn
+		411763, --Infinite Blast
+		410911, --Time-Displaced Trooper
+		411023, --Time-Displacement
+		410904, --Infinity Orb
+		410908, --Infinity Nova
+		416139, --Temporal Breath
+		416264, --Infinite Corruption
+		417413, --Temporal Scar
+		},
+		["Trash"] = {
+		412044, -- Temposlice
+		411994, -- Chronomelt
+		415436, -- Tainted Sands
+		415554, -- Chronoburst
+		415437, -- Enervate
+		413547, -- Bloom
+		413529, -- Untwist
+		412810, -- Blight Spew
+		412285, -- Stonebolt
+		412505, -- Rending Cleave
+		413606, -- Corroding Volley
+		414922, -- Shrouding Sandstorm
+		412922, -- Binding Grasp
+		412131, -- Orb of Contemplation
+		413027, -- Titanic Bulwark
+		413618, -- Timeless Curse
+		419351, -- Bronze Exhalation
+		418092, -- Twisted Timeways
+		418200, -- Infinite Burn
+		413427, -- Time Beam
+		419511, -- Temporal Link
+		419517, -- Chronal Eruption
+		407125, -- Sundering Slam
+		407651, -- Sapper’s Perogative
+		407715, -- Kaboom!
+		407906, -- Earthquake
+		407123, -- Rain of Fire
+		411700, -- Slobbering Bite
+		411644, -- Soggy Bonk
+		412262, -- Staticky Punch
+		407313, -- Shrapnel
+		},
+	},
 	-- World Bosses
 	[102444] = {
 		{ id = 1205, name = "Dragon Isles", raid = true },
@@ -477,7 +622,153 @@ RDDB["Dragonflight"] = {
 		413106, --void-might
 		},
 	},
+	[1207] = {
+		{ id = 1207, name = "Amirdrassil, the Dream's Hope", raid = true },
+		["Gnarlroot"] = {
+		order = 1, ejid = 2564,
+		421971, --Controlled Burn
+		422023, --Shadow-Scorched Earth
+		422026, --Tortured Scream
+		421038, --Ember-Charred
+		426548, --Searing Bramble
+		421840, --Uprooted Agony
+		422053, --Shadow Spines*
+		425816, --Blazing Pollen*
+		425819, --Flaming Sap*
+		424352, --Dreadfire Barrage*
+		},
+		["Igira the Cruel"] = {
+		order = 2, ejid = 2554,
+		414340, --Drenched Blades
+		414770, --Blistering Torment
+		414367, --Gathering Torment
+		419462, --Flesh Mortification
+		423715, --Searing Sparks
+		416056, --Umbral Destruction
+		429277, --Brutalized
+		426017, --Vital Rupture
+		422776, --Marked for Torment*
+		415624, --Heart Stopper*
+		414425, --Blistering Spear*
+		},
+		["Volcoross"] = {
+		order = 3, ejid = 2557,
+		421082, --Hellboil
+		427201, --Coiling Eruption
+		423494, --Tidal Blaze
+		419054, --Molten Venom
+		421284, --Coiling Flames*
+		420934, --Flood of the Firelands*
+		421672, --Serpent's Fury*
+		},
+		["Council of Dreams"] = {
+		order = 4, ejid = 2555,
+		420856, --Poisonous Javelin
+		421292, --Constricting Thicket
+		426390, --Corrosive Pollen
+		421032, --Captivating Finale
+		418720, --Polymorph Bomb
+		427602, --Hungry
+		427010, --Satiated
+		420409, --Quack!
+		424269, --Slippery
+		421024, --Emerald Winds
+		423551, --Whimsical Gust
+		420671, --Noxious Blossom*
+		421020, --Agonizing Claws*
+		420937, --Relentless Barrage*
+		423522, --Unstable Venom*
+		},
+		["Larodar, Keeper of the Flame"] = {
+		order = 5, ejid = 2553,
+		425889, --Igniting Growth
+		425531, --Dream Fatigue
+		418522, --Blistering Splinters
+		426387, --Scorching Bramblethorn
+		419485, --Nature's Bulwark+
+		423719, --Nature's Fury
+		429032, --Everlasting Blaze
+		427306, --Encased in Ash
+		427343, --Fire Whirl
+		421594, --Smoldering Suffocation
+		428946, --Ashen Asphyxiation
+		421323, --Searing Ash
+		},
+		["Nymue, Weaver of the Cycle"] = {
+		order = 6, ejid = 2556,
+		429785, --Impending Loom
+		430563, --Ephemeral Flora
+		430485, --Reclamation
+		425357, --Surging Growth
+		420907, --Viridian Rain
+		423195, --Inflorescence+
+		428273, --Woven Resonance?
+		423369, --Barrier Blossom
+		421368, --Unravel
+		428479, --Lucid Vulnerability
+		423842, --Verdant Rend
+		418423, --Verdant Matrix*
+		420846, --Continuum*
+		428012, --Lucid Miasma*
+		},
+		["Smolderon"] = {
+		order = 7, ejid = 2563,
+		421656, --Cauterizing Wound
+		421643, --Emberscar's Mark
+		430325, --Inferno
+		421532, --Smoldering Ground
+		421858, --Ignited Essence
+		421455, --Overheated*
+		422577, --Searing Aftermath*
+		426018, --Seeking Inferno*
+		420950, --Blistering Heat*
+		425574, --Lingering Burn*
+		},
+		["Tindral Sageswift, Seer of the Flame"] = {
+		order = 8, ejid = 2565,
+		424495, --Mass Entanglement
+		424581, --Fiery Growth
+		424499, --Scorching Ground
+		424582, --Lingering Cinder
+		422000, --Searing Wrath
+		427297, --Flame Surge
+		425657, --Fallen Feather
+		429166, --Astral Heat
+		424579, --Suppressive Ember
+		430583, --Germinating Aura
+		424258, --Dream Essence+
+		429740, --Pulsing Heat+
+		421884, --Emerald Gale+
+		422509, --Empowered Feather+
+		426687, --Poisonous Mushroom*
+		421398, --Fire Beam*
+		424665, --Seed of Flame*
+		422325, --Flaming Tree*
+		},
+		["Fyrakk the Blazing"] = {
+		order = 9, ejid = 2519,
+		425483, --Incinerated
+		417807, --Aflame
+		417443, --Fyr'alath's Mark
+		429903, --Flamebound
+		429906, --Shadowbound
+		419123, --Flamefall
+		423601, --Seed of Amirdrassil+
+		423717, --Bloom+
+		430048, --Corrupted Seed
+		430045, --Corruption
+		426368, --Darkflame Cleave*
+		417455, --Dream Rend*
+		410223, --Shadowflame Breath*
+		429866, --Shadowflame Eruption*
+		422836, --Burning Scales*
+		428971, --Molten Eruption*
+		428400, --Exploding Core*
+		428968, --Shadow Cage*
+		422524, --Shadowflame Devastation*
+		430051, --Searing Screams*
+		422837, --Apocalypse Roar*
+		425492, --Infernal Maw*
+		},
+	},
 }
-
-
-

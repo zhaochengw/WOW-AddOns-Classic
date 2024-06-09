@@ -6,4 +6,6 @@
 	<Script file="ContainerLootTables.lua"/>
 	<Script file="AchievementTables.lua"/>
 	<Script file="LootQuestsTables.lua"/>
+	<Script file="Mounts.lua"/>
+	<Script file="Pets.lua"/>
 </Ui>

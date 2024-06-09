@@ -1,4 +1,5 @@
 local addonName, wt = ...
+local ignoreStore = LibStub:GetLibrary("FusionIgnoreStore-1.0")
 
 local AVAILABLE_KEY = "available"
 local MISSINGREQS_KEY = "missingReqs"
@@ -39,9 +40,6 @@ local function isAbilityKnown(spellId)
     end
 
     return wt.learnedPetAbilityMap[info.name][info.subText]
-end
-local function isIgnoredByCTP(spellId)
-    return wt.ctpDb ~= nil and wt.ctpDb[spellId]
 end
 
 local headers = {
@@ -129,6 +127,9 @@ local function rebuildData(playerLevel, isLevelUpEvent)
                 if (itemInfo ~= nil) then
                     local key = wt.learnedPetAbilityMap[tome.id] and
                                     KNOWN_PET_KEY or PET_KEY
+                    if ignoreStore:IsIgnored(tome.id) then
+                        key = IGNORED_KEY
+                    end
                     categories:Insert(key, itemInfo)
                 end
             end
@@ -143,7 +144,7 @@ local function rebuildData(playerLevel, isLevelUpEvent)
                 if (isAbilityKnown(spellInfo.id)) then
                     categoryKey = wt:IsPetAbility(spellInfo.id) and
                                       KNOWN_PET_KEY or KNOWN_KEY
-                elseif (isIgnoredByCTP(spellInfo.id)) then
+                elseif (ignoreStore:IsIgnored(spellInfo.id)) then
                     categoryKey = IGNORED_KEY
                 elseif (wt:IsPetAbility(spellInfo.id)) then
                     categoryKey = PET_KEY
@@ -177,6 +178,18 @@ local function rebuildData(playerLevel, isLevelUpEvent)
         if (a.name == b.name) then return a.level < b.level end
         return a.name < b.name
     end
+    if WT_ShowIgnoreNotice == true then
+        tinsert(wt.data, {
+            formattedName = wt.L.NEW_IGNORE_FEATURE,
+            isHeader = true,
+            cost = 0,
+            tooltip = wt.L.CLICK_TO_DISMISS,
+            click = function()
+                WT_ShowIgnoreNotice = false
+                wt:RebuildData()
+            end
+        })
+    end
     for _, category in ipairs(categories) do
         if (#category.spells > 0) then
             tinsert(wt.data, category)
@@ -192,6 +205,18 @@ local function rebuildData(playerLevel, isLevelUpEvent)
                     cost = 0,
                     tooltip = wt.L.CLICK_TO_OPEN,
                     click = function() CastSpellByID(5149) end
+                })
+            end
+            if (WT_ShowLearnedNotice == true and category.key == PET_KEY and wt.currentClass == "WARLOCK") then
+                tinsert(wt.data, {
+                    formattedName = wt.L.RIGHT_CLICK_LEARNED,
+                    isHeader = true,
+                    cost = 0,
+                    tooltip = wt.L.CLICK_TO_DISMISS,
+                    click = function()
+                        WT_ShowLearnedNotice = false
+                        wt:RebuildData()
+                    end
                 })
             end
             for _, s in ipairs(category.spells) do
@@ -255,16 +280,24 @@ for level, spellsByLevel in pairs(wt.SpellsByLevel) do
     end
 end
 
-if (HookCTPUpdate) then
-    wt.ctpDb = ClassTrainerPlusDBPC
-    HookCTPUpdate(function()
-        wt:RebuildData()
-    end)
-end
+ignoreStore:AddSubscription(function()
+    wt:RebuildData()
+end)
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:SetScript("OnEvent", function(self, event, ...)
     if (event == "ADDON_LOADED" and ... == addonName) then
+        if (WT_ShowLearnedNotice == nil) then
+            WT_ShowLearnedNotice = true
+        end
+        if (WT_ShowIgnoreNotice == nil) then
+            WT_ShowIgnoreNotice = true
+        end
+        if (WT_IgnoredSpells == nil) then
+            WT_IgnoredSpells = {}
+        end
+        ignoreStore:MigrateOrUse(WT_IgnoredSpells)
+        -- wt.ignoredSpells = WT_IgnoredSpells
         if (WT_LearnedPetAbilities == nil) then
             WT_LearnedPetAbilities = {}
             WT_NeedsToOpenBeastTraining = wt.currentClass == "HUNTER"

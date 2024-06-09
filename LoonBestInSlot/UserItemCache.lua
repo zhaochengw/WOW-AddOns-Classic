@@ -1,4 +1,5 @@
 LBIS.UserItems = {}
+LBIS.UserSlotCache = {}
 LBIS.UserItemCacheBuilt = false;
 
 local hasBagnon = Bagnon or Combuctor;
@@ -61,6 +62,7 @@ function LBIS:BuildItemCache()
         if itemLink then
             local itemId = LBIS:GetItemIdFromLink(itemLink);
             LBIS.UserItems[tonumber(itemId)] = "player";
+            LBIS.UserSlotCache[slotCode] = itemId;
         end
     end
 
@@ -71,4 +73,3 @@ function LBIS:BuildItemCache()
     end
 
 end
-

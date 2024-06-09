@@ -137,11 +137,6 @@ local function GridFrame_GetInitialSize(self)
 	return header.frameWidth, header.frameHeight
 end
 
-function GridFramePrototype:OnUnitStateChanged()
-	Grid2:RosterRefreshUnit(self.unit)
-	self:UpdateIndicators() -- TODO maybe do not update if not visible and unit does not exist
-end
-
 function GridFramePrototype:Layout()
 	local dbx = Grid2Frame.db.profile
 	local w,h = GridFrame_GetInitialSize(self)
@@ -174,7 +169,7 @@ function GridFramePrototype:Layout()
 		self:GetHighlightTexture():SetVertexColor(color.r, color.g, color.b, color.a)
 	elseif self:GetHighlightTexture() then
 		self:SetHighlightTexture('')
-		self:GetHighlightTexture():SetVertexColor(0,0,0,0) 
+		self:GetHighlightTexture():SetVertexColor(0,0,0,0)
 	end
 	-- self:GetHighlightTexture():SetVertexColor(0,0,0,0)
 	-- Adjust indicators position to the new size
@@ -228,6 +223,7 @@ Grid2Frame.defaultDB = {
 		mouseoverTexture = "Blizzard Quest Title Highlight",
 		frameWidths  = {},
 		frameHeights = {},
+		frameHeaderLocks = {},
 		frameHeaderWidths = {},
 		frameHeaderHeights = {},
 		-- default values for indicators
@@ -289,6 +285,7 @@ function Grid2Frame:UpgradeThemeDB()
 	local p = self.db.profile
 	p.frameWidths  = p.frameWidths  or {}
 	p.frameHeights = p.frameHeights or {}
+	p.frameHeaderLocks = p.frameHeaderLocks or {}
 	p.frameHeaderWidths = p.frameHeaderWidths or {}
 	p.frameHeaderHeights = p.frameHeaderHeights or {}
 end
@@ -364,7 +361,7 @@ do
 	end
 end
 
--- Alow other modules to hook unit frames OnEnter, OnExit events
+-- Allow other modules to hook unit frames OnEnter, OnExit events
 function Grid2Frame:SetEventHook( event, func, enabled )
 	eventHooks[event][func] = enabled or nil
 end

@@ -1,13 +1,33 @@
-## Interface: 100005
-## Title: ChatLinkIcons v2.17
-## Version: 2.17
+## Interface: 100205
+## IconTexture: Interface\Buttons\UI-LinkProfession-Up
+## Title: ChatLinkIcons v3.4
+## Version: 3.4
 ## Author: SDPhantom
 
-## OptionalDeps: Pawn
+## OptionalDeps: Pawn, WIM
 ## SavedVariables: ChatLinkIcons_Options
 
 ## Notes: Displays icons for links in chat.
 
-IconMaps.lua
+Localization.lua
+Callbacks.lua
+Events.lua
+PlayerCache.lua
 Options.lua
-Core.lua
+LinkConverter.lua
+
+LinkProcessors\Tools.lua
+LinkProcessors\Achievement.lua
+LinkProcessors\BattlePet.lua
+LinkProcessors\Calendar.lua
+LinkProcessors\Garrison.lua
+LinkProcessors\Item.lua
+LinkProcessors\Player.lua
+LinkProcessors\Spell.lua
+LinkProcessors\Tradeskill.lua
+LinkProcessors\Transmog.lua
+
+Integration\Tools.lua
+Integration\DefaultUI.lua
+Integration\Pawn.lua
+Integration\WIM.lua

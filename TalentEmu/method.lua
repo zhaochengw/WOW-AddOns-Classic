@@ -2404,6 +2404,32 @@ MT.BuildEnv('METHOD');
 					Frames[i].objects.EquipmentFrameButton:Show();
 					if Frames[i].EquipmentFrameContainer:IsShown() then
 						MT.UI.EquipmentContainerUpdate(Frames[i].EquipmentContainer, cache.EquData);
+						MT.UI.EngravingContainerUpdate(Frames[i].EquipmentContainer, cache.EngData);
+					end
+				end
+			end
+		end
+	end
+	function MT.CALLBACK.OnEngravingDataRecv(name, iscomm, ascomm)
+		local cache = VT.TQueryCache[name];
+		if cache ~= nil and VT.SET.show_equipment then
+			local Frames = VT.ImportTargetFrame[name] or MT.UI.FrameGetNameBinding(name);
+			if Frames ~= nil and Frames[1] ~= nil then
+				local popup = (iscomm or ascomm) and VT.SET.autoShowEquipmentFrame;
+				MT.Debug("EquipFrame", "CALLBACK-E", popup, iscomm, ascomm, VT.SET.autoShowEquipmentFrame);
+				if popup then
+					local T = VT.AutoShowEquipmentFrameOnComm[name];
+					if T ~= nil and MT.GetUnifiedTime() - T < 10 then
+						for i = 1, #Frames do
+							Frames[i].EquipmentFrameContainer:Show();
+						end
+					end
+					VT.AutoShowEquipmentFrameOnComm[name] = nil;
+				end
+				for i = 1, #Frames do
+					Frames[i].objects.EquipmentFrameButton:Show();
+					if Frames[i].EquipmentFrameContainer:IsShown() then
+						MT.UI.EngravingContainerUpdate(Frames[i].EquipmentContainer, cache.EngData);
 					end
 				end
 			end

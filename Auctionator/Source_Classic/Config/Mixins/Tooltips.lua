@@ -9,7 +9,7 @@ function AuctionatorConfigTooltipsFrameMixin:OnLoad()
   self:SetupPanel()
 end
 
-function AuctionatorConfigTooltipsFrameMixin:OnShow()
+function AuctionatorConfigTooltipsFrameMixin:ShowSettings()
   self.MailboxTooltips:SetChecked(Auctionator.Config.Get(Auctionator.Config.Options.MAILBOX_TOOLTIPS))
   self.VendorTooltips:SetChecked(Auctionator.Config.Get(Auctionator.Config.Options.VENDOR_TOOLTIPS))
   self.AuctionTooltips:SetChecked(Auctionator.Config.Get(Auctionator.Config.Options.AUCTION_TOOLTIPS))
@@ -17,6 +17,7 @@ function AuctionatorConfigTooltipsFrameMixin:OnShow()
   self.ProspectTooltips:SetChecked(Auctionator.Config.Get(Auctionator.Config.Options.PROSPECT_TOOLTIPS))
   self.MillTooltips:SetChecked(Auctionator.Config.Get(Auctionator.Config.Options.MILL_TOOLTIPS))
   self.ShiftStackTooltips:SetChecked(Auctionator.Config.Get(Auctionator.Config.Options.SHIFT_STACK_TOOLTIPS))
+  self.AuctionAgeTooltips:SetChecked(Auctionator.Config.Get(Auctionator.Config.Options.AUCTION_AGE_TOOLTIPS))
 end
 
 function AuctionatorConfigTooltipsFrameMixin:Save()
@@ -29,6 +30,7 @@ function AuctionatorConfigTooltipsFrameMixin:Save()
   Auctionator.Config.Set(Auctionator.Config.Options.PROSPECT_TOOLTIPS, self.ProspectTooltips:GetChecked())
   Auctionator.Config.Set(Auctionator.Config.Options.MILL_TOOLTIPS, self.MillTooltips:GetChecked())
   Auctionator.Config.Set(Auctionator.Config.Options.SHIFT_STACK_TOOLTIPS, self.ShiftStackTooltips:GetChecked())
+  Auctionator.Config.Set(Auctionator.Config.Options.AUCTION_AGE_TOOLTIPS, self.AuctionAgeTooltips:GetChecked())
 end
 
 function AuctionatorConfigTooltipsFrameMixin:Cancel()

@@ -33,6 +33,8 @@ AL["Childrens Week"] = "Semana de los Niños"
 AL["Crimson Templar"] = "Templario Carmesí"
 --[[Translation missing --]]
 --[[ AL["Day of the Dead"] = "Day of the Dead"--]] 
+--[[Translation missing --]]
+--[[ AL["Defiler's Scourgestone"] = "Defiler's Scourgestone"--]] 
 AL["Drops"] = "Despoja"
 AL["Dungeon Set %s"] = "Conjunto de mazmorra %s"
 AL["Dungeon Sets"] = "Conjuntos de mazmorra"
@@ -83,6 +85,10 @@ AL["Rare Fish"] = "Pescados raros"
 AL["Rare Fish Rewards"] = "Recompensas raras de pesca"
 AL["Scarlet Monastery - Graveyard"] = "Monasterio Escarlata - Cementerio"
 AL["Scourge Invasion"] = "Invasión de la Plaga"
+--[[Translation missing --]]
+--[[ AL["Sidereal Essence"] = "Sidereal Essence"--]] 
+--[[Translation missing --]]
+--[[ AL["Sidereal Essence: 1 for 1"] = "Sidereal Essence: 1 for 1"--]] 
 AL["Silithus Abyssal"] = "Abisal Silithus"
 AL["Smokywood Pastures"] = "Pastos de Bosquehumeante"
 AL["Smokywood Pastures Special Gift"] = "Obsequio especial de Pastos de Bosquehumeante"

@@ -1,0 +1,27 @@
+## Interface: 100105
+## Version: v1.8.4
+## Title: LargerMacroIconSelection
+## Author: Xinhuan, Ketho
+## Notes: Shows you a much bigger icon selection frame
+## SavedVariables: LargerMacroIconSelectionDB
+## IconTexture: interface\icons\spell_nature_polymorph
+## OptionalDeps: Ace3
+## X-Embeds: LibAdvancedIconSelector-1.0
+## X-Curse-Project-ID: 14254
+## X-WoWI-ID: 11189
+## X-Wago-ID: q96dj1GO
+
+#@no-lib-strip@
+Libs\LibStub\LibStub.lua
+Libs\AceTimer-3.0\AceTimer-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+#@end-no-lib-strip@
+
+Libs\LibAdvancedIconSelector-1.0-LMIS\enUS.lua
+Libs\LibAdvancedIconSelector-1.0-LMIS\LibAdvancedIconSelector-1.0-LMIS.lua
+
+Locales.lua
+
+Mainline\IconDataProvider.lua
+Mainline\LargerMacroIconSelection.lua
+Mainline\SearchBox.lua

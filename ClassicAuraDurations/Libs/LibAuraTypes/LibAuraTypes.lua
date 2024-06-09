@@ -5,7 +5,7 @@ Description: Provides aura classification and priority
 --]================]
 
 
-local MAJOR, MINOR = "LibAuraTypes", 35
+local MAJOR, MINOR = "LibAuraTypes", 36
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -291,6 +291,34 @@ lib.data = {
     [323524] = CROWD_CONTROL_IMMUNITY, -- Ultimate Form, Anti cc Necrolord
 
     -- [324631] = DAMAGE_REDUCTION, -- Fleshcraft 30% DR (9.0.5)
+
+    [377362] = INTERRUPT_IMMUNITY, -- Precognition
+
+    -- EVOKER
+
+    [355689] = { ROOT, effect = E_ROOT }, -- Landslide
+    [357209] = { SLOW, effect = E_SLOW }, -- Permanent Chill (from Disintegrate)
+    [387344] = { HEAVY_SLOW, effect = E_SLOW }, -- Walloping Blow (talent)
+    [359816] = CROWD_CONTROL_IMMUNITY, -- Dream Flight
+    [357210] = CROWD_CONTROL_IMMUNITY, -- Deep Breath
+    [372245] = { STUN, effect = E_STUN }, -- Terror of the Skies (DB stun talent)
+    [357170] = DAMAGE_REDUCTION, -- Time Dilation
+    [374348] = DAMAGE_REDUCTION2, -- Renewing Blaze
+    [363916] = DAMAGE_REDUCTION2, -- Obsidian Scales
+    [370960] = REGEN, -- Emerald Communion
+
+    -- [370452] = DAMAGE_VULNERABILITY, -- Shattering Star
+    [390386] = DAMAGE_INCREASE2, -- Fury of the Aspects
+    -- [390435] = SPEED_BOOST, -- Zephyr
+    [358267] = { SPEED_BOOST, INTERRUPT_IMMUNITY }, -- Hover
+    [360806] = { CROWD_CONTROL, effect = E_DISORIENT }, -- Sleep Walk
+    -- pvp talents
+    [383005] = ATTENTION, -- Chrono Loop
+    [378441] = IMMUNITY, -- Time Stop
+    [378464] = CROWD_CONTROL_IMMUNITY, -- Nullifying Shroud
+
+
+
 
     -- DEATH KNIGHT
 
@@ -1329,6 +1357,7 @@ elseif isWrath then
     A( 64701, DAMAGE_INCREASE2) -- Elemental Mastery Buff
     A( 30823, DAMAGE_REDUCTION2) -- Shamanistic Rage 30% DR
     A( 16191, REGEN) -- Mana Tide
+    A( 64695 , { ROOT, effect = E_ROOT }) -- Earthgrab
 
     -- PALADIN
     A({ 1022, 5599, 10278 },  PHYSICAL_IMMUNITY) -- Blessing of Protection

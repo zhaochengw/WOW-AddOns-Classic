@@ -55,6 +55,7 @@ function RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alrea
 	local POI = {}
 	POI.entityID = containerID
 	POI.isContainer = true
+	POI.grouping = true
 	POI.name = RSContainerDB.GetContainerName(containerID) or AL["CONTAINER"]
 	POI.mapID = mapID
 	if (alreadyFoundInfo and alreadyFoundInfo.mapID == mapID) then
@@ -65,7 +66,8 @@ function RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alrea
 	end
 	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
 	POI.isDiscovered = POI.isOpened or alreadyFoundInfo ~= nil
-	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLinkByMap(containerID, mapID)
+	POI.achievementIDs = RSAchievementDB.GetNotCompletedAchievementIDsByMap(containerID, mapID, true)
+	
 	if (containerInfo) then
 		POI.worldmap = containerInfo.worldmap
 	end
@@ -75,14 +77,15 @@ function RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alrea
 		POI.Texture = RSConstants.BLUE_CONTAINER_TEXTURE
 	elseif (RSRecentlySeenTracker.IsRecentlySeen(containerID, POI.x, POI.y)) then
 		POI.Texture = RSConstants.PINK_CONTAINER_TEXTURE
-	elseif (not POI.isDiscovered and not POI.achievementLink) then
+	elseif (not POI.isDiscovered) then
 		POI.Texture = RSConstants.RED_CONTAINER_TEXTURE
-	elseif (not POI.isDiscovered and POI.achievementLink) then
-		POI.Texture = RSConstants.YELLOW_CONTAINER_TEXTURE
-	elseif (POI.achievementLink) then
-		POI.Texture = RSConstants.GREEN_CONTAINER_TEXTURE
 	else
 		POI.Texture = RSConstants.NORMAL_CONTAINER_TEXTURE
+	end
+	
+	-- Mini icons
+	if (RSUtils.GetTableLength(POI.achievementIDs) > 0) then
+		POI.iconAtlas = RSConstants.ACHIEVEMENT_ICON_ATLAS
 	end
 
 	return POI
@@ -90,15 +93,23 @@ end
 
 local function IsContainerPOIFiltered(containerID, mapID, zoneQuestID, onWorldMap, onMinimap)
 	local name = RSContainerDB.GetContainerName(containerID) or AL["CONTAINER"]
-	-- Skip if filtering by name in the world map search box
-	if (name and RSGeneralDB.GetWorldMapTextFilter() and not RSUtils.Contains(name, RSGeneralDB.GetWorldMapTextFilter())) then
-		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Filtrado por nombre [%s][%s].", containerID, name, RSGeneralDB.GetWorldMapTextFilter()))
-		return true
-	end
 
 	-- Skip if the entity is filtered
-	if (RSConfigDB.IsContainerFiltered(containerID) and not RSContainerDB.IsWorldMap(containerID) and (not RSConfigDB.IsContainerFilteredOnlyOnWorldMap() or (RSConfigDB.IsContainerFilteredOnlyOnWorldMap() and not RSGeneralDB.IsRecentlySeen(containerID)))) then
-		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Filtrado en opciones.", containerID))
+	if (RSConfigDB.IsContainerFiltered(containerID) or RSConfigDB.IsContainerFilteredOnlyWorldmap(containerID)) then
+		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Filtrado en opciones (filtro completo o mapa del mundo).", containerID))
+		return true
+	end
+	
+	-- Skip if achievement and is filtered
+	local isAchievement = RSUtils.GetTableLength(RSAchievementDB.GetNotCompletedAchievementIDsByMap(containerID, mapID, true)) > 0;
+	if (not RSConfigDB.IsShowingAchievementContainers() and isAchievement) then
+		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Filtrado contenedor con logro.", containerID))
+		return true
+	end
+	
+	-- Skip if other (trackeable and not prof) filtered
+	if (not RSConfigDB.IsShowingOtherContainers() and not isAchievement) then
+		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Filtrado otro contenedor.", containerID))
 		return true
 	end
 
@@ -124,6 +135,11 @@ end
 function RSContainerPOI.GetMapNotDiscoveredContainerPOIs(mapID, onWorldMap, onMinimap)
 	-- Skip if not showing container icons
 	if (not RSConfigDB.IsShowingContainers()) then
+		return
+	end
+	
+	-- Skip if not showing not discovered icons
+	if (not RSConfigDB.IsShowingNotDiscoveredContainers()) then
 		return
 	end
 

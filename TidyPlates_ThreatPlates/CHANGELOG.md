@@ -1,3 +1,4 @@
-# 11.1.19 (2023-05-03)
+# 11.1.37 (2024-01-28)
 
-* Updated TOC version and API for Patch 10.1 for WoW Mainline.
+* Fixed a Lua error with Auras widget that occurred in arenas when auras had no duration time [GH-497].
+* Updated TOC version for Patch 10.2.5 for WoW Mainline.

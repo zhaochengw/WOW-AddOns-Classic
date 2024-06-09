@@ -820,11 +820,7 @@ function OutfitDisplayItemButton_OnLoad(self)
 	self:RegisterForDrag("LeftButton");
 	self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 
-	if FL:IsVanilla() then
-		self:RegisterEvent("CURSOR_UPDATE");
-	else
-		self:RegisterEvent("CURSOR_CHANGED");
-	end
+	self:RegisterEvent("CURSOR_CHANGED");
 	self:SetFrameLevel(self:GetFrameLevel()+3);
 end
 

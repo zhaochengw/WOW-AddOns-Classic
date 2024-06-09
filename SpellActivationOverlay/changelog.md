@@ -1,13 +1,148 @@
 ## SpellActivationOverlay Changelog
 
-#### v0.9.0 (2022-05-01)
+#### v1.1.3 (2023-12-13)
+
+Effects based on stackable auras could sometimes not be triggered correctly:
+- Hunter's Cobra Strikes (Season of Discovery)
+- Hunter's Lock and Load (Wrath Classic)
+- Mage's Arcane Blast (Season of Discovery)
+- Mage's Fingers of Frost (Wrath Classic, Season of Discovery)
+- Priest's Serendipity (Wrath Classic, Season of Discovery)
+- Shaman's Maelstrom Weapon (Wrath Classic)
+- Shaman's Tidal Waves (Wrath Classic)
+- Warlock's Molten Core (Wrath Classic)
+- Warrior's Bloodsurge (Wrath Classic)
+- Warrior's Sudden Death (Wrath Classic)
+
+#### v1.1.2 (2023-12-12)
+
+- Seasonal effects are no longer displayed as options in non-Seasonal realms
+- Updated SAO: Rogue's Riposte can now trigger independently of cooldown
+- Updated GAB: Rogue's Riposte can now trigger independently of cooldown
+- Rogue's new options are independent; make sure to enable both, if needed
+- Rogue new options are disabled by default, similar to Warrior stance options
+- Mage's Arcane Blast should now trigger correctly (Season of Discovery only)
+- Season of Discovery action counters should now glow correctly
+
+The action counter fix includes the following spells and abilities:
+- Hunter's Flanking Strike
+- Shaman's Molten Blast
+- Warrior's Raging Blow
+- Warrior's Victory Rush (fixed for Season of Discovery only, Wrath was fine)
+
+#### v1.1.1 (2023-12-05)
+
+- New SAO: Mage's Arcane Blast
+- New GAB: Mage's Arcane Missiles, during Arcane Blast
+- New GAB: Mage's Arcane Explosion, during Arcane Blast
+- Updated SAO: Mage's Clearcasting is back to 150% size, to avoid overlap
+- Hunter's Flanking Strike Spell Alert is no longer always displayed upon login
+- Shaman's Molten Blast Spell Alert is no longer always displayed upon login
+
+#### v1.1.0-beta (2023-12-01)
+
+This release focuses on supporting runes introduced in Season of Discovery
+- New SAO: Druid's Fury of Stormrage
+- New SAO: Hunter's Flanking Strike
+- New SAO: Hunter's Cobra Strikes
+- New SAO: Mage's Fingers of Frost
+- New SAO: Priest's Serendipity
+- New SAO: Shaman's Molten Blast
+- New SAO: Warrior's Raging Blow
+- New GAB: Druid's Healing Touch, during Fury of Stormrage
+- New GAB: Hunter's Flanking Strike, when the action is usable
+- New GAB: Mage's Ice Lance, during Fingers of Frost
+- New GAB: Mage's Ice Lance, when the enemy target is Frozen
+- New GAB: Priest's Lesser Heal, during Serendipity
+- New GAB: Priest's Heal, during Serendipity
+- New GAB: Priest's Greater Heal, during Serendipity
+- New GAB: Priest's Prayer of Healing, during Serendipity
+- New GAB: Shaman's Molten Blast, when the action is usable
+- New GAB: Warrior's Raging Blow, when the action is usable
+- New GAB: Warrior's Victory Rush, when the action is usable
+
+Bug Fixes
+- In rare circumstances, glowing buttons would never glow
+- Reloading the UI would always fix the issue, until next log out
+
+#### v1.0.0 (2023-12-01)
+
+Spell Alerts have a shrinking effect to know when the alert is about to fade
+- This effect is enabled by default; enter /sao to enable or disable it
+- Feel free to report spell alerts that should have but do not have this effect
+- Please note, some effects never fade on purpose, such as Mage's Heating Up
+
+Bug Fixes
+- Mage's Deep Freeze debuff now counts as a Frozen effect (Wrath Classic only)
+- Mage's Heating Up lingered after 4 critical strikes without casting Pyroblast
+
+This release bumps TOC file for Season of Discovery patch (Classic Era)
+- Runes of Season of Discovery will be supported over time
+- To support them, we need technical information not always available day 1
+- Make sure to head over GitHub or Discord to help us, thank you :)
+
+#### v0.9.5 (2023-11-07)
+
+- Buttons should glow correctly when using AzeriteUI
+- New SAOs: Healing Trance / Soul Preserver, for all healing classes
+- New GAB: Hunter's Mongoose Bite (Classic Era only)
+- Warriors can hold 2 charges of Sudden Death thanks to tier 10 set bonus
+- Warriors can hold 2 charges of Bloodsurge thanks to tier 10 set bonus
+
+#### v0.9.4 (2023-11-01)
+
+- Bump in TOC file for Icecrown Citadel patch (Wrath Classic)
+- New SAO: Mage's Frozen when the target is under a Frozen effect
+- New GAB: Mage's Ice Lance button glows during Fingers of Frost
+- New GAB: Mage's Deep Freeze button glows during Fingers of Frost
+- New GAB: Mage's Ice Lance button glows when the target is Frozen
+- New GAB: Mage's Deep Freeze button glows when the target is Frozen
+
+List of spells that trigger the Frozen effect:
+- Mage's Frost Nova
+- Mage's Frostbite (Frost talent)
+- Mage's Shattered Barrier (Frost talent, Wrath Classic only)
+- Mage's Frost Elemental's Freeze spell (Wrath Classic only)
+- Hunter's Freezing Trap
+
+#### v0.9.3 (2023-09-02)
+
+- Bump in TOC file for Classic Hardcore patch (Classic Era)
+- Druid's Omen of Clarity was no longer working since Classic Era last patch
+- Warrior's Overpower button could glow for too long after the target dodged
+- Warrior's Overpower button glows during Taste for Blood
+- The 'baseline' Overpower can only be cast on the target who dodged
+- Taste for Blood, on the other hand, allows to cast Overpower on any target
+- Taste for Blood is available on Wrath Classic only
+
+The bug that happened to druids may also happen to other classes
+Please report bugs to the addon's Discord, GitHub or CurseForge
+
+#### v0.9.2 (2023-06-21)
+
+- Bump in TOC file for Trial of the Grand Crusader patch (Wrath Classic)
+- The options window is compatible with the new settings UI
+
+#### v0.9.1 (2023-05-28)
+
+- Mage's Clearcasting is now enabled by default on Classic Era
+- Mage's Clearcasting has been scaled to 100% (down from 150%) on Classic Era
+- New GAB: Warlock's Drain Soul when the enemy has low HP
+- The Drain Soul option is available for Wrath Classic only
+- Warrior's Overpower has an option to be detected in any stance
+- Warrior's Revenge has an option to be detected in any stance
+- Warrior's Execute has an option to be detected in any stance
+
+Please enter /sao to enable or disable these options
+
+#### v0.9.0 (2023-05-01)
 
 - Support for Classic Era, although many WotLK spells and talents are missing
 - Mage's Heating Up effect is now hidden when the talent is lost e.g., respec
 - Fixed an issue where paladin and warrior buttons would sometimes not glow
 - The addon should now use a bit less CPU than before
 
-#### v0.8.4 (2022-04-28)
+#### v0.8.4 (2023-04-28)
 
 - New SAO: Druid's Wrath of Elune (4p set bonus of PvP season 5-6-7-8)
 - New SAO: Druid's Elune's Wrath (4p set bonus of tier 8)
@@ -17,7 +152,7 @@
 
 Enter /sao to enable or disable these options
 
-#### v0.8.3 (2022-01-29)
+#### v0.8.3 (2023-01-29)
 
 - Glowing buttons work again with ProjectAzilroka, after Ulduar patch
 - Mage's Heating Up works again with ProjectAzilroka, after Ulduar patch
@@ -25,7 +160,7 @@ Enter /sao to enable or disable these options
 - These fixes also apply to addons embedding an outdated LibButtonGlow
 - If there is no fallback solution, glowing buttons are temporarily disabled
 
-#### v0.8.2 (2022-01-18)
+#### v0.8.2 (2023-01-18)
 
 - Bump in TOC file for Ulduar patch
 

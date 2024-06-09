@@ -1,5 +1,8 @@
 local L = DBM_CORE_L
 
+---@class DBM
+local DBM = DBM
+
 local returnKey = {
 	__index = function(_, k)
 		return k
@@ -17,6 +20,7 @@ local defaultCatLocalization = {
 		sound				= L.OPTION_CATEGORY_SOUNDS,
 		yell				= L.OPTION_CATEGORY_YELLS,
 		icon				= L.OPTION_CATEGORY_ICONS,
+		paura				= L.OPTION_CATEGORY_PAURAS,
 		nameplate			= L.OPTION_CATEGORY_NAMEPLATES,
 		misc				= MISCELLANEOUS
 	}, returnKey)
@@ -31,7 +35,6 @@ local defaultTimerLocalization = {
 
 local defaultAnnounceLocalization = {
 	__index = setmetatable({
-		warning_berserk = L.GENERIC_WARNING_BERSERK
 	}, returnKey)
 }
 
@@ -46,6 +49,13 @@ local defaultMiscLocalization = {
 	__index = {}
 }
 
+---@class ModLocalization
+---@field general table<string, string>
+---@field warnings table<string, string>
+---@field timers table<string, string>
+---@field options table<string, string>
+---@field cats table<string, string>
+---@field miscStrings table<string, string>
 local modLocalizationPrototype = {}
 
 function modLocalizationPrototype:SetGeneralLocalization(t)

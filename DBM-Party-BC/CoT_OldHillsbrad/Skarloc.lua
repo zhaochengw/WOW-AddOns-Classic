@@ -1,11 +1,15 @@
 local mod	= DBM:NewMod(539, "DBM-Party-BC", 11, 251)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+mod:SetRevision("20231014053250")
 mod:SetCreatureID(17862)
 mod:SetEncounterID(1907)
-mod:SetModelID(17387)
+
 mod:RegisterCombat("combat")
+
+if not mod:IsRetail() then
+	mod:SetModelID(17387)
+end
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 29427",
@@ -15,12 +19,12 @@ mod:RegisterEventsInCombat(
 	"SPELL_PERIODIC_MISSED 38385"
 )
 
-local warnHammer				= mod:NewTargetNoFilterAnnounce(13005, 2)
+local warnHammer                = mod:NewTargetNoFilterAnnounce(13005, 2)
 
 local specWarnHeal				= mod:NewSpecialWarningInterrupt(29427, "HasInterrupt", nil, nil, 1, 2)
 local specWarnConsecration		= mod:NewSpecialWarningMove(38385, nil, nil, nil, 1, 2)
 
-local timerHammer				= mod:NewTargetTimer(6, 13005, nil, nil, nil, 3)
+local timerHammer               = mod:NewTargetTimer(6, 13005, nil, nil, nil, 3)
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 29427 and self:CheckInterruptFilter(args.sourceGUID, false, true) then

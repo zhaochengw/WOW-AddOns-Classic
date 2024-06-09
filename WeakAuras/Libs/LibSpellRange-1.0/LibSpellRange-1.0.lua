@@ -10,7 +10,7 @@
 -- @name LibSpellRange-1.0.lua
 
 local major = "SpellRange-1.0"
-local minor = 17
+local minor = 18
 
 assert(LibStub, format("%s requires LibStub.", major))
 
@@ -113,9 +113,11 @@ local function UpdateBook(bookType)
 		local type, baseSpellID = GetSpellBookItemInfo(spellBookID, bookType)
 		
 		if type == "SPELL" or type == "PETACTION" then
-			local currentSpellName = GetSpellBookItemName(spellBookID, bookType)
-			local link = GetSpellLink(currentSpellName)
-			local currentSpellID = tonumber(link and link:gsub("|", "||"):match("spell:(%d+)"))
+			local currentSpellName, _, currentSpellID = GetSpellBookItemName(spellBookID, bookType)
+			if not currentSpellID then
+				local link = GetSpellLink(currentSpellName)
+				currentSpellID = tonumber(link and link:gsub("|", "||"):match("spell:(%d+)"))
+			end
 
 			-- For each entry we add to a table,
 			-- only add it if there isn't anything there already.

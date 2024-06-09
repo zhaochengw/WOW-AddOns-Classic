@@ -11,6 +11,9 @@ Edited: Foxylittlething, aNNiPAk, Yarko
 -Button Bar for openning chat messages of each type.
 
 Change Log:
+v 3.3-WotLK (Foxylittlething)
+- fixed 3.4.2 version compatibility
+- fixed russian localization
 v 3.21a-WotLK (Foxylittlething)
 - fixed chinese translation
 v 3.21-WotLK (Foxylittlething)

@@ -1,0 +1,12 @@
+﻿## Interface: 30401
+## Title: Colors
+## Version: 1.0.0
+## Notes: Colors.
+## Creator: Colors
+## Author: Colors
+## SavedVariables: Colors
+## SavedVariablesPerCharacter: Colors
+
+Colors.xml
+
+Colors.lua

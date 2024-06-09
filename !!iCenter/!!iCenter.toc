@@ -13,9 +13,9 @@
 ## SavedVariablesPerCharacter: MBB_Exclude, MBB_Options, FeatureFrameMinimapButton_OffsetX, FeatureFrameMinimapButton_OffsetY, aienable, aikeyword, aichannel, aitextleft, aitextright
 
 # Libs
-Libs\Ace3.xml
-Libs\embeds.xml
-Libs\Libs.xml
+#Libs\Ace3.xml
+#Libs\embeds.xml
+#Libs\Libs.xml
 
 # GConfirm.lua
 
@@ -27,7 +27,7 @@ Libs\Libs.xml
 
 FeatureFrame\FeatureFrame.xml
 
-AltClickToAddItem.lua
+#AltClickToAddItem.lua
 
 IsPatch.lua
 
@@ -38,11 +38,6 @@ Autoload.lua
 AutoInvite.lua
 
 ChannelFilters.lua
-
-MBB\localization-enGB.lua
-MBB\localization-zhCN.lua
-MBB\localization-zhTW.lua
-MBB\MBB.xml
 
 ACP\ACP.lua
 ACP\localization-enUS.lua

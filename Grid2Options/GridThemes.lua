@@ -112,14 +112,14 @@ do
 			'solo', 'arena',
 			'party', 'party@normal', 'party@heroic', 'party@mythic',
 			'raid', 'raid@pvp' ,'raid@lfr', 'raid@flex', 'raid@mythic',
-			'10', '15', '20', '25', '30', '40',
+			'5', '10', '15', '20', '25', '30', '35', '40',
 			'TANK', 'HEALER', 'DAMAGER', 'NONE',
 		}
 		local CONDITIONS_DESC = {
 			L['Solo'], L['Arena'],
 			L['Party'], L['Party (Normal)'], L['Party (Heroic)'], L['Party (Mythic)'],
 			L['Raid'], L['Raid (PvP)'], L['Raid (LFR)'], L['Raid (N&H)'], L['Raid (Mythic)'],
-			L['10 man'], L['15 man'], L['20 man'], L['25 man'], L['30 man'], L['40 man'],
+			L['5 man'], L['10 man'], L['15 man'], L['20 man'], L['25 man'], L['30 man'], L['35 man'], L['40 man'],
 			L['Tank (Role)'], L['Healer (Role)'], L['Damager (Role)'],	L['None (Role)'],
 		}
 		--
@@ -343,7 +343,7 @@ local function GetThemeName(info)
 	local index = info.arg or 0
 	local name = editedTheme.db.names[index] or (index==0 and L["Default"])
 	if index == Grid2.currentTheme then
-		return string.format( "%s|T%s:0|t", name, READY_CHECK_READY_TEXTURE )
+		return string.format( "%s|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t", name )
 	else
 		return name
 	end

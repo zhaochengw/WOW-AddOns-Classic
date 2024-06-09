@@ -46,6 +46,9 @@ function spellCache.Build()
           cache[name].spells = cache[name].spells .. "," .. id .. "=" .. icon
         end
         misses = 0
+        if WeakAuras.IsClassicEra() and id == 81748 then -- jump around big hole with classic SoD
+          id = 219002
+        end
       else
         misses = misses + 1
       end
@@ -172,7 +175,7 @@ function spellCache.Load(data)
     metaData.build = build;
     metaData.locale = locale;
     metaData.version = version;
-    metaData.spellCacheAchivements = true
+    metaData.spellCacheAchievements = true
     metaData.spellCacheStrings = true
     metaData.needsRebuild = true
     wipe(cache)

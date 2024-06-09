@@ -6,7 +6,8 @@ local Grid2Layout = Grid2:NewModule("Grid2Layout")
 
 local Grid2 = Grid2
 local GetSetupValue = Grid2.GetSetupValue
-local pairs, ipairs, next, strmatch, strsplit = pairs, ipairs, next, strmatch, strsplit
+local UnitExists = UnitExists
+local math, pairs, ipairs, next, strmatch, strsplit = math, pairs, ipairs, next, strmatch, strsplit
 
 --{{{ Frame config function for secure headers
 local function GridHeader_InitialConfigFunction(self, name)
@@ -17,6 +18,13 @@ end
 --{{{ Class for group headers
 
 local NUM_HEADERS = 0
+local SPECIAL_HEADERS = {
+	player       = 'Grid2InsecureGroupPlayerHeaderTemplate',
+	target       = 'Grid2InsecureGroupTargetHeaderTemplate',
+	focus        = 'Grid2InsecureGroupFocusHeaderTemplate' ,
+	targettarget = 'Grid2InsecureGroupTargetTargetHeaderTemplate',
+	focustarget  = 'Grid2InsecureGroupFocusTargetHeaderTemplate' ,
+}
 local FRAMES_TEMPLATE = "SecureUnitButtonTemplate"                        .. (BackdropTemplateMixin and ",BackdropTemplate" or "")
 local FRAMEC_TEMPLATE = "ClickCastUnitTemplate,SecureUnitButtonTemplate"  .. (BackdropTemplateMixin and ",BackdropTemplate" or "")
 local SECURE_INIT_TMP =  [[
@@ -57,10 +65,7 @@ local GridLayoutHeaderClass = {
 	end,
 	template = function(self, dbx, insecure)
 		if dbx.type=='custom' then
-			return  (dbx.unitsFilter=='player' and 'Grid2InsecureGroupPlayerHeaderTemplate' ) or
-				    (dbx.unitsFilter=='target' and 'Grid2InsecureGroupTargetHeaderTemplate' ) or
-				    (dbx.unitsFilter=='focus'  and 'Grid2InsecureGroupFocusHeaderTemplate'  ) or
-					'Grid2InsecureGroupCustomHeaderTemplate'
+			return SPECIAL_HEADERS[dbx.unitsFilter] or 'Grid2InsecureGroupCustomHeaderTemplate'
 		elseif insecure or (dbx.nameList and (dbx.roleFilter or dbx.groupFilter)) then
 			return dbx.type=='pet' and 'Grid2InsecureGroupPetHeaderTemplate' or 'Grid2InsecureGroupHeaderTemplate'
 		else
@@ -76,7 +81,7 @@ local HeaderAttributes = {
 	"useOwnerUnit", "filterOnPet", "unitsuffix", "sortMethod",
 	"toggleForVehicle", "showSolo", "showPlayer", "showParty", "showRaid",
 	-- extra attributes used only by Grid2 Special Group Header
-	"hideEmptyUnits", "unitsFilter", "detachHeader", "frameSpacing", "testMode"
+	"hideEmptyUnits", "unitsFilter", "detachHeader", "frameSpacing", "testMode", "headerName"
 }
 
 function GridLayoutHeaderClass.prototype:Reset()
@@ -280,12 +285,13 @@ function Grid2Layout:UpgradeThemeDB()
 end
 
 --{{{ Event handlers
-function Grid2Layout:Grid_GroupTypeChanged(_, groupType, instType, maxPlayers)
-	self:Debug("GroupTypeChanged", groupType, instType, maxPlayers)
+function Grid2Layout:Grid_GroupTypeChanged(_, groupType, instType, maxPlayers, maxGroup)
+	self:Debug("GroupTypeChanged", groupType, instType, maxPlayers, maxGroup)
 	if not Grid2:ReloadTheme() then
 		if not self:ReloadLayout() then
-			self:UpdateFramesSizeByRaidSize()
-			self:UpdateVisibility()
+			if not self:UpdateFramesSizeByRaidSize() then
+				self:UpdateVisibility()
+			end
 		end
 	end
 end
@@ -505,30 +511,38 @@ function Grid2Layout:UpdateHeaders()
 	end
 end
 
--- Used from Grid2Options
-function Grid2Layout:RefreshLayout()
+function Grid2Layout:RefreshLayout() -- Used from Grid2Options
 	self:ReloadLayout(true)
+end
+
+function Grid2Layout:SetGroupType(partyType, instType, maxPlayers, maxGroup)
+	self.partyType      = partyType
+	self.instType       = instType
+	self.instMaxPlayers = maxPlayers
+	self.instMaxGroup   = maxGroup
 end
 
 -- If player does not exist (this can happen just before a load screen when changing instances if layout load is delayed by RunSecure()
 -- due to combat restrictions) we cannot setup SecureGroupHeaders so we ignore the layout change, anyway the layour will be reloaded
 -- on PLAYER_ENTERING_WORLD event when the load screen finish. See Ticket #923.
 function Grid2Layout:ReloadLayout(force)
-	if not UnitExists('player') then self:Debug("ReloadLayout Ignored because player unit does not exist"); return end
-	local p = self.db.profile
-	local partyType, instType, maxPlayers = Grid2:GetGroupType()
-	local layoutName = self.testLayoutName or p.layouts[maxPlayers] or p.layouts[partyType.."@"..instType] or p.layouts[partyType]
-	if layoutName ~= self.layoutName or (self.layoutHasAuto and maxPlayers ~= self.instMaxPlayers) or force or self.forceReload then
-		self.forceReload = force
-		if not Grid2:RunSecure(3, self, "ReloadLayout") then
-			self.partyType      = partyType
-			self.instType       = instType
-			self.instMaxPlayers = maxPlayers
-			self.instMaxGroups  = math.ceil( maxPlayers/5 )
-			self:LoadLayout( layoutName )
-			self.forceReload    = nil
+	if UnitExists('player') then
+		local p = self.db.profile
+		local partyType, instType, maxPlayers, maxGroup = Grid2:GetGroupType()
+		local layoutName = self.testLayoutName or p.layouts[maxPlayers] or p.layouts[partyType.."@"..instType] or p.layouts[partyType]
+		if layoutName~=self.layoutName or (self.layoutHasAuto and (maxPlayers~=self.instMaxPlayers or maxGroup~=self.instMaxGroup)) or force or self.forceReload then
+			self.forceReload = force
+			if not Grid2:RunSecure(3, self, "ReloadLayout") then
+				self:SetGroupType(partyType, instType, maxPlayers, maxGroup)
+				self:LoadLayout(layoutName)
+				self.forceReload = nil
+			end
+			return true
+		else
+			self:SetGroupType(partyType, instType, maxPlayers, maxGroup)
 		end
-		return true
+	else
+		self:Debug("ReloadLayout Ignored because player unit does not exist")
 	end
 end
 
@@ -580,7 +594,7 @@ end
 function Grid2Layout:GenerateHeaders(defaults, setupIndex)
 	local testPlayers = Grid2.testMaxPlayers
 	self.layoutHasAuto = not (testPlayers or self.db.profile.displayAllGroups) or nil
-	local maxGroups = (testPlayers and math.ceil(testPlayers/5)) or (self.layoutHasAuto and self.instMaxGroups) or 8
+	local maxGroups = (testPlayers and math.ceil(testPlayers/5)) or (self.layoutHasAuto and self.instMaxGroup) or 8
 	local firstIndex = setupIndex==1 and 1
 	for i=1,maxGroups do
 		self:AddHeader(self.groupFilters[i], defaults, firstIndex or setupIndex*100+i)
@@ -605,6 +619,8 @@ do
 		{ 'self',   1, 'player' },
 		{ 'target', 1, 'target' },
 		{ 'focus',  1, 'focus'  },
+		{ 'targettarget', 1, 'targettarget' },
+		{ 'focustarget',  1, 'focustarget'  },
 		{ 'boss',   8, 'boss1,boss2,boss3,boss4,boss5,boss6,boss7,boss8' },
 	}
 	function Grid2Layout:AddSpecialHeaders()
@@ -626,17 +642,22 @@ do
 end
 
 -- Calculate and store effective values for some header properties
-function Grid2Layout:SetHeaderProperties(header, dbx, setupIndex, headerName)
-	local p = self.db.profile
-	header.dbx = dbx
-	header.headerType = dbx.type or 'player' -- player, pet, custom
-	header.headerName = headerName or header.headerType -- player, pet, self, target, focus, boss, custom
-	header.wasDetached = header.isDetached
-	header.isDetached = setupIndex>1 and (dbx.detachHeader or p.detachedHeaders=='player' or p.detachedHeaders==header.headerType) or nil
-	header.groupHorizontal = GetSetupValue( header.isDetached, p.groupHorizontals[header.headerName], p.horizontal )
-	header.groupAnchor = GetSetupValue( header.isDetached, p.groupAnchors[header.headerName], p.groupAnchor )
-	header.headerAnchor = GetSetupValue( header.isDetached, p.anchors[header.headerName], p.anchor )
-	header.headerPosKey = header.isDetached and self.layoutName..setupIndex or nil -- used as key to save positions when the layout has detached headers
+do
+	local BuiltInHeaders = { player = 'player', pet = 'pet', self = 'self', target = 'target', focus = 'focus', boss = 'boss', targettarget = 'targettarget', focustarget = 'focustarget' }
+
+	function Grid2Layout:SetHeaderProperties(header, dbx, setupIndex, headerName)
+		local p = self.db.profile
+		header.dbx = dbx
+		header.headerType = dbx.type or 'player' -- player, pet, custom
+		header.headerName = headerName or dbx.headerName or header.headerType -- player, pet, self, target, focus, boss, custom or user defined
+		header.headerClass = BuiltInHeaders[header.headerName] or 'other'
+		header.wasDetached = header.isDetached
+		header.isDetached = setupIndex>1 and (dbx.detachHeader or p.detachedHeaders=='player' or p.detachedHeaders==header.headerType) or nil
+		header.groupHorizontal = GetSetupValue( header.isDetached, p.groupHorizontals[header.headerClass], p.horizontal )
+		header.groupAnchor = GetSetupValue( header.isDetached, p.groupAnchors[header.headerClass], p.groupAnchor )
+		header.headerAnchor = GetSetupValue( header.isDetached, p.anchors[header.headerClass], p.anchor )
+		header.headerPosKey = header.isDetached and self.layoutName..setupIndex or nil -- used as key to save positions when the layout has detached headers
+	end
 end
 
 -- Apply defaults and some special cases for each header and apply workarounds to some blizzard bugs
@@ -650,7 +671,7 @@ function Grid2Layout:FixHeaderAttributes(header, index)
 	-- fix unitsPerColumn
 	local unitsPerColumn = header:GetAttribute("unitsPerColumn")
 	if not unitsPerColumn then
-		unitsPerColumn = p.unitsPerColumns[header.headerName] or 5
+		unitsPerColumn = p.unitsPerColumns[header.headerClass] or 5
 		header:SetAttribute("unitsPerColumn", unitsPerColumn)
 	end
 	-- fix anchors
@@ -667,7 +688,7 @@ function Grid2Layout:FixHeaderAttributes(header, index)
 	if groupFilter then
 		if groupFilter == "auto" then
 			self.layoutHasAuto = autoEnabled
-			groupFilter = self.groupsFilters[autoEnabled and self.instMaxGroups or 8] or "1"
+			groupFilter = self.groupsFilters[autoEnabled and self.instMaxGroup or 8] or "1"
 			header:SetAttribute("groupFilter", groupFilter)
 		end
 		if header:GetAttribute("strictFiltering") then
@@ -706,14 +727,15 @@ function Grid2Layout:ForceFramesCreation(header)
 end
 
 function Grid2Layout:GetFramesSizeForHeader(header)
-	local m  = Grid2.testMaxPlayers or Grid2.instMaxPlayers
+	local m  = Grid2.testMaxPlayers or self.instMaxPlayers
 	local p  = Grid2Frame.db.profile
 	local fw = p.frameWidths
 	local fh = p.frameHeights
 	local hw = p.frameHeaderWidths
 	local hh = p.frameHeaderHeights
-	local w  = (fw[m] or p.frameWidth)  * (hw[header.headerName] or 1)
-	local h  = (fh[m] or p.frameHeight) * (hh[header.headerName] or 1)
+	local nl = not p.frameHeaderLocks[header.headerClass]
+	local w = (nl and fw[m] or p.frameWidth)  * (hw[header.headerClass] or 1)
+	local h = (nl and fh[m] or p.frameHeight) * (hh[header.headerClass] or 1)
 	return w, h
 end
 
@@ -723,6 +745,7 @@ function Grid2Layout:UpdateDisplay()
 	self:UpdateColor()
 	self:UpdateVisibility()
 	self:UpdateFramesSize()
+	self:UpdateSize()
 end
 
 function Grid2Layout:UpdateFramesSizeForHeader(header)
@@ -744,7 +767,6 @@ function Grid2Layout:UpdateFramesSize()
 	if modified then
 		Grid2Frame:UpdateIndicators()
 		Grid2Layout:UpdateHeaders()
-		Grid2:RunThrottled(self, "UpdateSize", 0.01)
 	end
 	return modified
 end
@@ -752,7 +774,12 @@ end
 function Grid2Layout:UpdateFramesSizeByRaidSize()
 	local p = Grid2Frame.db.profile
 	if next(p.frameWidths) or next(p.frameHeights) then
-		self:UpdateFramesSize()
+		if not Grid2:RunSecure(6, self, "UpdateFramesSizeByRaidSize") then
+			self:UpdateFramesSize()
+			self:UpdateSize()
+			self:UpdateVisibility()
+		end
+		return true
 	end
 end
 
@@ -771,7 +798,7 @@ function Grid2Layout:UpdateSize()
 	local row = math.max( maxRow + p.Spacing*2, 1 )
 	if p.horizontal then col,row = row,col end
 	self.frame.frameBack:SetSize(col,row)
-	if not Grid2:RunSecure(6, self, "UpdateSize") then
+	if not Grid2:RunSecure(7, self, "UpdateSize") then
 		self.frame:SetSize(col,row)
 	end
 end
@@ -798,7 +825,7 @@ function Grid2Layout:UpdateColor()
 end
 
 function Grid2Layout:UpdateVisibility()
-	if not Grid2:RunSecure(7, self, "UpdateVisibility") then
+	if not Grid2:RunSecure(8, self, "UpdateVisibility") then
 		local fd, pt = self.db.profile.FrameDisplay, Grid2:GetGroupType()
 		self.frame:SetShown(
 			self.testLayoutName~=nil or (

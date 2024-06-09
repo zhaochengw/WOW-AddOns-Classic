@@ -12,7 +12,6 @@ f:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 			SoulSortOptions = {}
 			SoulSortOptions.MaxShards = 0
 			SoulSortOptions.AutoMax = false
-			SoulSortOptions.AutoSort = false
 			SoulSortOptions.ShowCounter = false
 			SoulSortOptions.ShowCounterPerBag = true
 			SoulSortOptions.SortReverse = false
@@ -23,8 +22,6 @@ f:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 			end
 		end
 		SS_InitSoulShardCounter()
-	elseif event == "PLAYER_REGEN_ENABLED" and SoulSortOptions.AutoSort == true and SS_IsClassicVersion() then
-		SS_SortShards()
 	elseif event == "BAG_UPDATE" then
 		SS_UpdateShardCount()
 	end

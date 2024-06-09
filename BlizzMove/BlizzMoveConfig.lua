@@ -2,7 +2,7 @@
 local _G = getfenv(0);
 local LibStub = _G.LibStub;
 local pairs = _G.pairs;
-local GetAddOnMetadata = _G.GetAddOnMetadata;
+local GetAddOnMetadata = _G.GetAddOnMetadata or _G.C_AddOns.GetAddOnMetadata;
 local ReloadUI = _G.ReloadUI;
 local string__match = _G.string.match;
 local StaticPopupDialogs = _G.StaticPopupDialogs;
@@ -10,15 +10,15 @@ local StaticPopup_Show = _G.StaticPopup_Show;
 local IsControlKeyDown = _G.IsControlKeyDown;
 
 local name = ... or "BlizzMove";
----@type BlizzMove
+---@class BlizzMove
 local BlizzMove = LibStub("AceAddon-3.0"):GetAddon(name);
 if not BlizzMove then return; end
 
 ---@type BlizzMoveAPI
 local BlizzMoveAPI = _G.BlizzMoveAPI;
 
----@class BlizzMoveConfig
 BlizzMove.Config = BlizzMove.Config or {};
+---@class BlizzMoveConfig
 local Config = BlizzMove.Config;
 
 Config.version = GetAddOnMetadata(name, "Version") or "unknown";

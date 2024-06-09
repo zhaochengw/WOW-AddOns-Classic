@@ -4,9 +4,6 @@ Description:
 item range and interact-distance based checks to determine the approximate
 range to your current target.  
 
-RangeDisplay is a front-end to LibRangeCheck-2.0, a library addon to
-calculate the range estimates. 
-
 Note: RangeDisplay can only check for some specific distances, thus determining
 a minimum and maximum range to the target. Some of these ranges are rather
 large, so the range update may be slow, as it takes time to cover a bigger

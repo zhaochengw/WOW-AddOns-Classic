@@ -1,4 +1,17 @@
 ## LibFrameFade
+
+### v11
+- TOC bump.
+
+### v10
+- TOC bump.
+
+### v9
+- TOC bump.
+
+### v8
+- TOC bump for patch 10.1.0.
+
 ### v7
 - Add proper upgrade logic for disabling the library in Classic clients if migrating from v4- to v7+ at runtime.
 

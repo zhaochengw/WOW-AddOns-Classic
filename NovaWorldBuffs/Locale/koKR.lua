@@ -27,6 +27,8 @@ L["Traces of Silithyst"] = "Traces of Silithyst";
 L["Slip'kik's Savvy"] = "슬립킥의 손재주";
 L["Fengus' Ferocity"] = "펜구스의 흉포";
 L["Mol'dar's Moxie"] = "몰다르의 투지";
+L["Boon of Blackfathom"] = "검은심연의 은혜";
+L["Ashenvale Rallying Cry"] = "잿빛 골짜기 재집결의 함성";
  
 ---=====---
 ---Horde---

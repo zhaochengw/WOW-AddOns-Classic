@@ -1,12 +1,16 @@
 local mod	= DBM:NewMod(528, "DBM-Party-BC", 1, 248)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+mod:SetRevision("20231014053250")
 mod:SetCreatureID(17308)
 mod:SetEncounterID(1891)
-mod:SetModelID(18237)
-mod:SetModelOffset(-2, 0.8, -1)
 mod:SetUsedIcons(8)
+
+if not mod:IsRetail() then
+	mod:SetModelID(18237)
+	mod:SetModelOffset(-2, 0.8, -1)
+end
+
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -14,7 +18,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_REMOVED 37566"
 )
 
-local warnBane      = mod:NewTargetNoFilterAnnounce(37566)
+local warnBane      = mod:NewTargetAnnounce(37566)
 
 local specwarnBane  = mod:NewSpecialWarningMoveAway(37566, nil, nil, nil, 1, 2)
 local yellBane		= mod:NewYell(37566)

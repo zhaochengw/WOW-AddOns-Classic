@@ -63,6 +63,7 @@ L["Contacts"] = true
 L["Cooking"] = true
 L["Copy From"] = true
 L["Copy this mail"] = true
+L["Default"] = true
 L["Default recipient:"] = true
 L["Delete"] = true
 L["Devices"] = true
@@ -218,6 +219,7 @@ L["Contacts"] = "Kontakte"
 L["Cooking"] = "Kochen"
 L["Copy From"] = "Kopieren von"
 L["Copy this mail"] = "Diese Nachricht kopieren"
+L["Default"] = "Standard"
 L["Default recipient:"] = "Standard-Empfänger:"
 L["Delete"] = "Löschen"
 L["Devices"] = "Geräte"
@@ -371,6 +373,7 @@ L["Contacts"] = "Contactos"
 L["Cooking"] = "Cocción"
 L["Copy From"] = "Copiar de"
 L["Copy this mail"] = "Copiar este correo"
+L["Default"] = "Predeterminado"
 L["Default recipient:"] = "Destinatario predeterminado:"
 L["Delete"] = "Borrar"
 L["Devices"] = "Dispositivos"
@@ -523,6 +526,7 @@ L["Contacts"] = "Contacts"
 L["Cooking"] = "Cuisine"
 L["Copy From"] = "Copier à partir de"
 L["Copy this mail"] = "Copier ce courrier"
+L["Default"] = "Faire défaut"
 L["Default recipient:"] = "Destinataire par défaut :"
 L["Delete"] = "Supprimer"
 L["Devices"] = "Dispositifs"
@@ -676,6 +680,7 @@ L["Contacts"] = "연락처"
 L["Cooking"] = "요리"
 L["Copy From"] = "복사해오기"
 L["Copy this mail"] = "이 편지 복사"
+L["Default"] = "기본값"
 L["Default recipient:"] = "기본 받는 사람:"
 L["Delete"] = "삭제"
 L["Devices"] = "장치"
@@ -829,6 +834,7 @@ L["Contacts"] = "Контакты"
 L["Cooking"] = "Кулинария"
 L["Copy From"] = "Копировать из"
 L["Copy this mail"] = "Скопировать письмо"
+L["Default"] = "По умолчанию"
 L["Default recipient:"] = "Получатель по умолчанию:"
 L["Delete"] = "Удалить"
 L["Devices"] = "Устройства"
@@ -907,7 +913,7 @@ L["TradeBlock"] = "Блокировать торговлю"
 L["Use Mr.Plow after opening"] = "Использовать Mr.Plow после открытия"
 L["Use Postal's auto-complete"] = "Автозавершение использования Postal."
 L["Verbose mode"] = "Детальный режим"
-L["Weapon Enchantment"] = "Заклинание оружия"
+L["Weapon Enchantment"] = "Зачарование оружия"
 L["Wire"] = "Оценка"
 
     return
@@ -931,12 +937,12 @@ L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by 
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
 |cFFFFCC00*|r Select will never delete any mail (mail without text is auto-deleted by the game when all attached items and gold are taken).
 |cFFFFCC00*|r Select will skip CoD mails and mails from Blizzard.
-|cFFFFCC00*|r Disable the Verbose option to stop the chat spam while opening mail.]=] ] = [=[|cFFFFCC00*|r 点击打开或者退信，被选中的邮件会被批量打开或退回。
-|cFFFFCC00*|r Shift+点击分别点击2封信的复选框，会将这2封信之前的所有新选中。
-|cFFFFCC00*|r Ctrl+点击一封信的复选框，可以将所有来自该发件人的信选中或者取消选中。
-|cFFFFCC00*|r 选中则不删除任何邮件（游戏默认当一封没有任何文字的信中的附件被取走之后自动删除该邮件）。
-|cFFFFCC00*|r 选中将跳过付款取信的邮件以及来自暴雪的邮件。
-|cFFFFCC00*|r 关闭消息模式，取信时聊天窗口将不再显示信息。]=]
+|cFFFFCC00*|r Disable the Verbose option to stop the chat spam while opening mail.]=] ] = [=[|cFFFFCC00*|r 選定的信件將批次開啟或通過點擊打開或返回來退還給發件人。
+|cFFFFCC00*|r 您可以Shift-點擊兩個複選框來選擇兩個複選框之間的所有信件。
+|cFFFFCC00*|r 您可以按Ctrl-點擊一個複選框來選定或取消選定一切來自該發件人的信件。
+|cFFFFCC00*|r 選擇 永遠不會刪除任何信件(當所有附在信件的物品和金錢被提取後，遊戲會自動刪除郵箱裡沒有文字的信件) 。
+|cFFFFCC00*|r 選擇 將跳過CoD信件和暴雪的信件。
+|cFFFFCC00*|r 關閉 訊息模式 選項來停止當開啟信件時在聊天框的洗頻。]=]
 L[ [=[|cFFFFCC00*|r Shift-Click to take item/money from mail.
 |cFFFFCC00*|r Ctrl-Click to return mail.
 |cFFFFCC00*|r Alt-Click to move an item from your inventory to the current outgoing mail (same as right click in default UI).]=] ] = [=[|cFFFFCC00*|r Shift+点击取走信中的金币或者物品。
@@ -946,11 +952,11 @@ L[ [=[|cFFFFCC00*|r Simple filters are available for various mail types.
 |cFFFFCC00*|r Shift-Click the Open All button to override the filters and take ALL mail.
 |cFFFFCC00*|r OpenAll will never delete any mail (mail without text is auto-deleted by the game when all attached items and gold are taken).
 |cFFFFCC00*|r OpenAll will skip CoD mails and mails from Blizzard.
-|cFFFFCC00*|r Disable the Verbose option to stop the chat spam while opening mail.]=] ] = [=[|cFFFFCC00*|r各种邮件类型都有简单的过滤条件可用。
-|cFFFFCC00*|rShift+点击“打开所有”按钮可以忽略这些过滤并收取所有邮件。
-|cFFFFCC00*|r打开所有功能将不会删除任何邮件（无内容邮件将在附件和金钱被收取后自动删除）。
-|cFFFFCC00*|r打开所有功能将会阻止付款取信邮件和暴雪发送的邮件。
-|cFFFFCC00*|r请关闭详细信息选项来取消打开邮件时的聊天窗口信息。]=]
+|cFFFFCC00*|r Disable the Verbose option to stop the chat spam while opening mail.]=] ] = [=[|cFFFFCC00*|r 簡單的篩選器可用於篩選各種信件類型。
+|cFFFFCC00*|r Shift-點擊 收取全部 按鈕將覆蓋所有的篩選器，並提取所有的信件。
+|cFFFFCC00*|r 收取全部 永遠不會刪除任何信件(當所有附在信件的物品和金錢被提取後，遊戲會自動刪除郵箱裡沒有文字的信件) 。
+|cFFFFCC00*|r 收取全部 將跳過付款取件信件和暴雪的信件。
+|cFFFFCC00*|r 關閉 訊息模式 選項來停止當開啟信件時在聊天框的洗頻。]=]
 L[ [=[|cFFFFCC00*|r This module will list your contacts, friends, guild mates, alts and track the last 10 people you mailed.
 |cFFFFCC00*|r It will also autocomplete all names in your BlackBook.]=] ] = [=[|cFFFFCC00*|r该模块将列出你所有的联系人、好友、公会成员、小号和你最近发送邮件的10个人。
 |cFFFFCC00*|r同时还将自动完成通讯簿中的所有名字。]=]
@@ -981,6 +987,7 @@ L["Contacts"] = "联系人"
 L["Cooking"] = "烹饪"
 L["Copy From"] = "从…复制"
 L["Copy this mail"] = "复制这封信"
+L["Default"] = "违约"
 L["Default recipient:"] = "默认收件人："
 L["Delete"] = "删除"
 L["Devices"] = "设备"
@@ -1083,12 +1090,12 @@ L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by 
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
 |cFFFFCC00*|r Select will never delete any mail (mail without text is auto-deleted by the game when all attached items and gold are taken).
 |cFFFFCC00*|r Select will skip CoD mails and mails from Blizzard.
-|cFFFFCC00*|r Disable the Verbose option to stop the chat spam while opening mail.]=] ] = [=[|cFFFFCC00*|r |cFFFFCC00*|r 選定的信件將批次開啟或通過點擊打開或返回來退還給發件人。
-|cFFFFCC00*|r 您可以Shift-點擊兩個複選框來選擇兩個複選框之間的所有信件。
-|cFFFFCC00*|r 您可以按Ctrl-點擊一個複選框來選定或取消選定一切來自該發件人的信件。
-|cFFFFCC00*|r 選擇 永遠不會刪除任何信件(當所有附在信件的物品和金錢被提取後，遊戲會自動刪除郵箱裡沒有文字的信件) 。
-|cFFFFCC00*|r 選擇 將跳過CoD信件和暴雪的信件。
-|cFFFFCC00*|r 關閉 訊息模式 選項來停止當開啟信件時在聊天框的洗頻。]=]
+|cFFFFCC00*|r Disable the Verbose option to stop the chat spam while opening mail.]=] ] = [=[|cFFFFCC00*|r 点击打开或者退信，被选中的邮件会被批量打开或退回。
+|cFFFFCC00*|r Shift+点击分别点击2封信的复选框，会将这2封信之前的所有新选中。
+|cFFFFCC00*|r Ctrl+点击一封信的复选框，可以将所有来自该发件人的信选中或者取消选中。
+|cFFFFCC00*|r 选中则不删除任何邮件（游戏默认当一封没有任何文字的信中的附件被取走之后自动删除该邮件）。
+|cFFFFCC00*|r 选中将跳过付款取信的邮件以及来自暴雪的邮件。
+|cFFFFCC00*|r 关闭消息模式，取信时聊天窗口将不再显示信息。]=]
 L[ [=[|cFFFFCC00*|r Shift-Click to take item/money from mail.
 |cFFFFCC00*|r Ctrl-Click to return mail.
 |cFFFFCC00*|r Alt-Click to move an item from your inventory to the current outgoing mail (same as right click in default UI).]=] ] = [=[|cFFFFCC00*|r Shift-點擊將從郵件拿取物品/金錢。
@@ -1099,11 +1106,11 @@ L[ [=[|cFFFFCC00*|r Simple filters are available for various mail types.
 |cFFFFCC00*|r Shift-Click the Open All button to override the filters and take ALL mail.
 |cFFFFCC00*|r OpenAll will never delete any mail (mail without text is auto-deleted by the game when all attached items and gold are taken).
 |cFFFFCC00*|r OpenAll will skip CoD mails and mails from Blizzard.
-|cFFFFCC00*|r Disable the Verbose option to stop the chat spam while opening mail.]=] ] = [=[|cFFFFCC00*|r 簡單的篩選器可用於篩選各種信件類型。
-|cFFFFCC00*|r Shift-點擊 收取全部 按鈕將覆蓋所有的篩選器，並提取所有的信件。
-|cFFFFCC00*|r 收取全部 永遠不會刪除任何信件(當所有附在信件的物品和金錢被提取後，遊戲會自動刪除郵箱裡沒有文字的信件) 。
-|cFFFFCC00*|r 收取全部 將跳過付款取件信件和暴雪的信件。
-|cFFFFCC00*|r 關閉 訊息模式 選項來停止當開啟信件時在聊天框的洗頻。]=]
+|cFFFFCC00*|r Disable the Verbose option to stop the chat spam while opening mail.]=] ] = [=[|cFFFFCC00*|r各种邮件类型都有简单的过滤条件可用。
+|cFFFFCC00*|rShift+点击“打开所有”按钮可以忽略这些过滤并收取所有邮件。
+|cFFFFCC00*|r打开所有功能将不会删除任何邮件（无内容邮件将在附件和金钱被收取后自动删除）。
+|cFFFFCC00*|r打开所有功能将会阻止付款取信邮件和暴雪发送的邮件。
+|cFFFFCC00*|r请关闭详细信息选项来取消打开邮件时的聊天窗口信息。]=]
 L[ [=[|cFFFFCC00*|r This module will list your contacts, friends, guild mates, alts and track the last 10 people you mailed.
 |cFFFFCC00*|r It will also autocomplete all names in your BlackBook.]=] ] = [=[|cFFFFCC00*|r 此模組將您的聯絡人名單，朋友，公會隊友，分身，並追踪過去您曾郵寄的10人。
 |cFFFFCC00*|r 它也將自動填寫已在您的黑名單內所有的名字。]=]
@@ -1134,6 +1141,7 @@ L["Contacts"] = "聯絡人"
 L["Cooking"] = "烹飪"
 L["Copy From"] = "複製自"
 L["Copy this mail"] = "複製這封信"
+L["Default"] = "全局設定"
 L["Default recipient:"] = "預設收件者："
 L["Delete"] = "刪除"
 L["Devices"] = "設備"
@@ -1181,11 +1189,11 @@ L["Open all Outbid on mail"] = "打開所有超過出價的信件"
 L["Open mail from the Postmaster"] = "從Postmaster開啟郵件"
 L["OpenAll"] = "收取全部"
 L["Opening Speed"] = "收取速度"
-L["Optional Reagents"] = "選擇性材料"
+L["Optional Reagents"] = "額外材料"
 L["Other"] = "其他"
 L["Other options"] = "其他選項"
 L["Part %d"] = "分組%d"
-L["Parts"] = "部分"
+L["Parts"] = "零件"
 L["Please post bugs or suggestions at the CurseForge forums thread at |cFF00FFFFhttp://www.curseforge.com/wow/addons/postal/issues|r. When posting bugs, indicate your locale and Postal's version number v%s."] = "回報 bug 和建議請到 CurseForge 網站相關頁面 |cFF00FFFFhttp://www.curseforge.com/wow/addons/postal/issues|r。回報 bug 時請註明你所使用的介面語言和 Postal 版本編號 v%s。"
 L["Prints the amount of money collected during a mail session."] = "顯示這次收取的金錢。"
 L["Processing Message"] = "正在處理訊息"
@@ -1225,12 +1233,10 @@ L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-Clique
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl-Click|r para retorná-lo ao remetente."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-Click|r para pegar o conteúdo."
 L[ [=[|cFFFFCC00*|r A default recipient name can be specified by right clicking on a button.
-|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = "|cFFCC00*|r Um nome de destinatário padrão pode ser especificado clicando com o botão com o botão. |cFFCC00*|r Quais sacos são usados por esse recurso podem ser definidos no menu principal."
+|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = "|cFFFFCC00*|r Um nome de destinatário padrão pode ser indicado ao clicar com o botão direito. |cFFFFCC00*|r As bolsas utilizadas por este recurso podem ser definidas no menu principal."
 L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
 |cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
-|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r O recurso não é suportado para e-mails enviados com dinheiro anexado ou enviado COD.
-|cFFFFCC00*|r O recurso não é suportado para e-mails enviados com itens empilháveis anexados.
-|cFFFFCC00*|r O botão para a frente será desativado nesses casos.]=]
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = "|cFFFFCC00*|r Essa funcionalidade não é suportada para correios enviados com dinheiro anexado ou enviados com pagamento contra entrega. |cFFFFCC00*|r Essa funcionalidade não é suportada para correios enviados com itens empilháveis anexados. |cFFFFCC00*|r O botão de encaminhamento será desativado nestes casos."
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
 |cFFFFCC00*|r You can Shift-Click 2 checkboxes to mass select every mail between the 2 checkboxes.
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
@@ -1252,11 +1258,12 @@ L[ [=[|cFFFFCC00*|r Simple filters are available for various mail types.
 |cFFFFCC00*|r Shift-Click the Open All button to override the filters and take ALL mail.
 |cFFFFCC00*|r OpenAll will never delete any mail (mail without text is auto-deleted by the game when all attached items and gold are taken).
 |cFFFFCC00*|r OpenAll will skip CoD mails and mails from Blizzard.
-|cFFFFCC00*|r Disable the Verbose option to stop the chat spam while opening mail.]=] ] = [=[|cFFFFCC00*|r Filtros simples estão disponíveis para vários tipos de cartas.
-|cFFFFCC00*|r Shift-Clique no botão Abrir Tudo para ignorar os filtros e pegar TODAS as cartas.
-|cFFFFCC00*|r AbrirTudo nunca irá excluir nenhuma carta (cartas sem texto são auto-excluídas pelo jogo quando todos os anexos e moedas são obtidos).
-|cFFFFCC00*|r AbrirTudo irá pular cartas a cobrar e cartas da Blizzard.
-|cFFFFCC00*|r Desative a opção Verbal para parar o spam no chat enquanto estiver abrindo cartas.]=]
+|cFFFFCC00*|r Disable the Verbose option to stop the chat spam while opening mail.]=] ] = [=[|cFFFFCC00*|r Filtros simples estão disponíveis para vários tipos de e-mail.
+|cFFFFCC00*|r Clique com a tecla Shift pressionada no botão Abrir Tudo para substituir os filtros e receber TODOS os e-mails.
+|cFFFFCC00*|r O e-mail sem texto é excluído automaticamente pelo jogo quando todos os itens anexados e ouro são levados.
+|cFFFFCC00*|r O OpenAll agora excluirá o e-mail de ordem de criação se foi um resultado bem-sucedido e todos os itens forem retirados.
+|cFFFFCC00*|r OpenAll ignorará e-mails CoD e e-mails da Blizzard.
+|cFFFFCC00*|r Desative a opção Verbose para parar o spam do bate-papo ao abrir o e-mail.]=]
 L[ [=[|cFFFFCC00*|r This module will list your contacts, friends, guild mates, alts and track the last 10 people you mailed.
 |cFFFFCC00*|r It will also autocomplete all names in your BlackBook.]=] ] = [=[|cFFFFCC00*|r Esse módulo irá listar seus contatos, amigos, companheiros de guilda, alts e registrar as ultimas 10 pessoas que você mandou cartas.
 |cFFFFCC00*|r Também irá auto-completar todos os nomes no seu LivroNegro.]=]
@@ -1268,10 +1275,10 @@ L["Adds a contact list next to the To: field."] = "Adiciona uma lista de contato
 L["AH-related mail"] = "Carta relacionada à CL"
 L["All Alts"] = "Todos os alts"
 L["Allows you to copy the contents of a mail."] = "Permite a você copiar o conteúdo de uma carta."
-L["Allows you to forward the contents of a mail."] = "Permite que você encaminhe o conteúdo de um e-mail."
-L["Allows you to quickly attach different trade items types to a mail."] = "Permite anexar rapidamente diferentes tipos de itens de negociação a um e-mail."
+L["Allows you to forward the contents of a mail."] = "Permite que você encaminhe o conteúdo de um correio."
+L["Allows you to quickly attach different trade items types to a mail."] = "Permite anexar rapidamente diferentes tipos de itens de negociação a um correio."
 L["Alts"] = "Alts"
-L["Armor Enchantment"] = "Encantamento da Armadura"
+L["Armor Enchantment"] = "Encantamento de Armadura"
 L["Auto-Attach similar items on Control-Click"] = "Anexar itens semelhantes com Ctrl-Clique"
 L["Autofill last person mailed"] = "Auto-preencher última pessoa enviada"
 L["Auto-Send on Alt-Click"] = "Auto-enviar com Alt-Clique"
@@ -1281,26 +1288,27 @@ L["CarbonCopy"] = "CópiaCarbono"
 L["Chat Output"] = "Mensagens no Chat"
 L["Choose"] = "Escolher"
 L["Clear list"] = "Limpar lista"
-L["Cloth"] = "Pano"
+L["Cloth"] = "Tecido"
 L["Collected"] = "Coletado(s)"
 L["Contacts"] = "Contatos"
-L["Cooking"] = "Cozimento"
+L["Cooking"] = "Culinária"
 L["Copy From"] = "Copiar de"
 L["Copy this mail"] = "Copiar essa carta"
-L["Default recipient:"] = "Destinatário padrão:"
+L["Default"] = "Padrão"
+L["Default recipient:"] = "Destinatário padrão: "
 L["Delete"] = "Excluir"
 L["Devices"] = "Dispositivos"
 L["Disable Blizzard's auto-completion popup menu"] = "Desativar menu popup de auto-completar da Blizzard."
 L["DoNotWant"] = "NãoQuerer"
-L["Elemental"] = "Elementar"
+L["Elemental"] = "Elemental"
 L["Enable Alt-Click to send mail"] = "Ativar Alt-Clique para enviar carta"
-L["Enable for backpack"] = "Habilitar para mochila"
-L["Enable for bag four"] = "Habilitar para saco quatro"
-L["Enable for bag one"] = "Habilitar para saco um"
-L["Enable for bag three"] = "Habilitar para saco três"
-L["Enable for bag two"] = "Habilitar para saco dois"
-L["Enable for reagent bag"] = "Ativar para saco de reagente"
-L["Enchanting"] = "Encantadora"
+L["Enable for backpack"] = "Habilitar para a mochila"
+L["Enable for bag four"] = "Habilitar para a bolsa número quatro."
+L["Enable for bag one"] = "Habilitar para a bolsa número um."
+L["Enable for bag three"] = "Habilitar para a bolsa número três."
+L["Enable for bag two"] = "Habilitar para a bolsa número dois."
+L["Enable for reagent bag"] = "Habilitar para bolsa de reagentes"
+L["Enchanting"] = "Encantamento"
 L["Exclude randoms you interacted with"] = "Excluir aleatórios com quem você interagiu"
 L["Explosives"] = "Explosivos"
 L["Express"] = "Expresso"
@@ -1308,14 +1316,14 @@ L["Forward"] = "Encaminhar"
 L["Friends"] = "Amigos"
 L["Guild"] = "Guilda"
 L["Help"] = "Ajuda"
-L["Herb"] = "Erva"
+L["Herb"] = "Herborismo"
 L["In Progress"] = "Em Progresso"
-L["Inscription"] = "Inscrição"
-L["Jewelcrafting"] = "Joalheiro"
+L["Inscription"] = "Escrivania"
+L["Jewelcrafting"] = "Joalheria"
 L["Keep free space"] = "Manter espaço livre"
 L["Leather"] = "Couro"
 L["Materials"] = "Materiais"
-L["Metal & Stone"] = "Metal & Pedra"
+L["Metal & Stone"] = "Metal e Pedra"
 L["Mouse click short cuts for mail."] = "Atalhos de clique do mouse para cartas."
 L["Name auto-completion options"] = "Nomear opções de auto-completar"
 L["New Profile"] = "Novo Perfil"
@@ -1343,7 +1351,7 @@ L["Please post bugs or suggestions at the CurseForge forums thread at |cFF00FFFF
 L["Prints the amount of money collected during a mail session."] = "Mostra a quantidade de dinheiro coletado durante uma sessão de cartas."
 L["Processing Message"] = "Processando Mensagem"
 L["Profile"] = "Perfil"
-L["QuickAttach"] = "Conexãorápida"
+L["QuickAttach"] = "Anexar Rápido"
 L["Rake"] = "Resumo"
 L["Reagent"] = "Reagente"
 L["Recently Mailed"] = "Enviado Recentemente"
@@ -1365,7 +1373,7 @@ L["TradeBlock"] = "BloquearNegociações"
 L["Use Mr.Plow after opening"] = "Usar Mr.Plow depois de abrir"
 L["Use Postal's auto-complete"] = "Usar o auto-completar do Postal"
 L["Verbose mode"] = "Modo verbal"
-L["Weapon Enchantment"] = "Encantamento de Armas"
+L["Weapon Enchantment"] = "Encantamento de Arma"
 L["Wire"] = "Telegrama"
 
     return
@@ -1438,6 +1446,7 @@ L["Contacts"] = "Contatti"
 L["Cooking"] = "Cottura"
 L["Copy From"] = "Copia da"
 L["Copy this mail"] = "Copia questa lettera"
+L["Default"] = "Default"
 L["Default recipient:"] = "Destinatario predefinito:"
 L["Delete"] = "Cancella"
 L["Devices"] = "Dispositivi"

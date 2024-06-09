@@ -27,64 +27,82 @@ TotemTimers.ElementColors = {
 }
 
 
-local warnings = nil
-
-local PlayerName = UnitName("player")
-
-local zoning = false
 local updateAfterCombat = false
-
 local macroNeedsUpdate = false
+local lastSpellsChanged = 0
+
+local runes = {}
 
 local function TotemTimers_OnEvent(self, event, ...)
-	if event == "PLAYER_ENTERING_WORLD" then
+    if event == "PLAYER_ENTERING_WORLD" then
         TotemTimersFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		TotemTimers.SetupGlobals()
+        TotemTimers.SetupGlobals()
     elseif event == "PLAYER_REGEN_ENABLED" then
         --TotemTimers_ProcessQueue()
-		if updateAfterCombat then
-			TotemTimers.ChangedTalents()
-			updateAfterCombat = false
-		end
-		if macroNeedsUpdate then
-		    TotemTimers.UpdateMacro()
-		end
-    --elseif event == "PLAYER_ALIVE" then
+        if updateAfterCombat then
+            TotemTimers.ChangedTalents(true)
+            updateAfterCombat = false
+        end
+        if macroNeedsUpdate then
+            TotemTimers.UpdateMacro()
+        end
+        --elseif event == "PLAYER_ALIVE" then
         -- TotemTimers.ProcessSetting("EnhanceCDs")
         --TotemTimers.options.args.enhancecds.args["2"].name = select(2,GetSpecializationInfo(2)) or "Enhancement"
         --TotemTimers.options.args.enhancecds.args["1"].name = select(2,GetSpecializationInfo(1)) or "Elemental"
         --TotemTimers.options.args.enhancecds.args["3"].name = select(2,GetSpecializationInfo(3)) or "Restoration"
-    --[[elseif event == "CHARACTER_POINTS_CHANGED" then
-        local nr = select(1,...)
-        if nr > 1 then
-            TotemTimers.ChangedTalents()
-        elseif nr == -1 then
-            TotemTimers.GetTalents()
-        end]]
-	--[[ elseif event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "SPELLS_CHANGED" then
-		if InCombatLockdown() then
-			updateAfterCombat = true
-		else
-			TotemTimers.ChangedTalents()        
-		end --]]
-    elseif event == "SPELLS_CHANGED" or event == "CHARACTER_POINTS_CHANGED"
-            or event == "PLAYER_TALENT_UPDATE" then
+        --[[elseif event == "CHARACTER_POINTS_CHANGED" then
+            local nr = select(1,...)
+            if nr > 1 then
+                TotemTimers.ChangedTalents()
+            elseif nr == -1 then
+                TotemTimers.GetTalents()
+            end]]
+        --[[ elseif event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "SPELLS_CHANGED" then
+            if InCombatLockdown() then
+                updateAfterCombat = true
+            else
+                TotemTimers.ChangedTalents()
+            end --]]
+    elseif event == "SPELLS_CHANGED" or event == "CHARACTER_POINTS_CHANGED" or event == "PLAYER_TALENT_UPDATE"
+            or event == "LEARNED_SPELL_IN_TAB" or event == "RUNE_UPDATED" then
+
+        if event == "SPELLS_CHANGED" and WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+            local spellsChangedDiff = GetTime() - lastSpellsChanged
+            lastSpellsChanged = GetTime()
+            if spellsChangedDiff > 0.9 and spellsChangedDiff < 1.1 then
+                return
+            end
+        end
+
+        if event == "RUNE_UPDATED" then
+            local runesChanged = false
+            for slot = 1, 17 do
+                local rune = C_Engraving.GetRuneForEquipmentSlot(slot)
+                if rune then rune = rune.itemEnchantmentID end
+                if rune ~= runes[slot] then
+                    runesChanged = true
+                end
+                runes[slot] = rune
+            end
+            if not runesChanged then return end
+        end
+
         if InCombatLockdown() then
             updateAfterCombat = true
         else
-            TotemTimers.ChangedTalents()
+            TotemTimers.ChangedTalents(true)
         end
+
     elseif event == "UPDATE_BINDINGS" then
         ClearOverrideBindings(TotemTimersFrame)
         TotemTimers.InitializeBindings()
     elseif event == "PLAYER_LOGOUT" then
         TotemTimers.SaveFramePositions()
-	end
-
+    end
 end
 
 TotemTimersFrame:SetScript("OnEvent", TotemTimers_OnEvent)
-
 
 function TotemTimers.SetupGlobals()
 	if TotemTimers_IsSetUp then
@@ -119,6 +137,12 @@ function TotemTimers.SetupGlobals()
 		-- TotemTimers.CreateLongCooldowns()
         
         TotemTimers.ProcessAllSettings()
+        if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+            for slot = 1, 17 do
+                local rune = C_Engraving.GetRuneForEquipmentSlot(slot)
+                if rune then runes[slot] = rune.itemEnchantmentID end
+            end
+        end
         
 		TotemTimers.OrderTimers()
 		--TotemTimers_OrderTrackers()
@@ -137,16 +161,22 @@ function TotemTimers.SetupGlobals()
         TotemTimers.InitializeBindings()
         -- hooksecurefunc("SaveBindings", function() ClearOverrideBindings(TotemTimersFrame) TotemTimers.InitializeBindings() end)
             
-		
-        TotemTimersFrame:RegisterEvent("SPELLS_CHANGED")
-        TotemTimersFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-        TotemTimersFrame:RegisterEvent("ADDON_LOADED")
-        TotemTimersFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
-        TotemTimersFrame:RegisterEvent("PLAYER_LOGOUT")
-        TotemTimersFrame:RegisterEvent("UPDATE_BINDINGS")
-        -- TotemTimersFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-        if WOW_PROJECT_ID > WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
-            TotemTimersFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+		local events = {
+            "PLAYER_REGEN_ENABLED",
+            "PLAYER_LOGOUT",
+            "UPDATE_BINDINGS",
+            "LEARNED_SPELL_IN_TAB",
+            "CHARACTER_POINTS_CHANGED",
+            "PLAYER_TALENT_UPDATE",
+            "RUNE_UPDATED",
+            --"SPELLS_CHANGED",
+            --"PLAYER_SPECIALIZATION_CHANGED",
+        }
+        --if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+            table.insert(events, "SPELLS_CHANGED")
+        --end
+        for _, event in pairs(events) do
+            if C_EventUtils.IsEventValid(event) then TotemTimersFrame:RegisterEvent(event) end
         end
 
 		TotemTimers.InitMasque()
@@ -154,8 +184,6 @@ function TotemTimers.SetupGlobals()
         -- TotemTimers.RangeFrame:Show()
         TotemTimers.SetCastButtonSpells()
 
-        
-        TotemTimers_OnEvent("PLAYER_ALIVE") -- simulate PLAYER_ALIVE event in case the ui is reloaded
         XiTimers.invokeOOCFader()
         TotemTimersFrame:SetScript("OnUpdate", XiTimers.UpdateTimers)
 		TotemTimersFrame:EnableMouse(false)
@@ -172,27 +200,14 @@ function TotemTimers.SetupGlobals()
     --TotemTimersFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
-function TotemTimers_Slash(msg)
+function TotemTimers_Slash()
 	if InCombatLockdown() then
 		DEFAULT_CHAT_FRAME:AddMessage("Can't open TT options in combat.")
 		return
 	end
-	--[[if msg == "i" or msg == "inspect" then
-        InterfaceOptionsFrame_OpenToCategory(TotemTimers_GUI_Inspect.name)
-    else
-        InterfaceOptionsFrame_OpenToCategory(TotemTimers_LastGUIPane.name)
-    end]]
 
-    local lastGUIPanel = TotemTimers.LastGUIPanel
-
-    InterfaceOptionsFrame_OpenToCategory("TotemTimers")
-
-    if lastGUIPanel then
-        InterfaceOptionsFrame_OpenToCategory(lastGUIPanel)
-    else
-        InterfaceOptionsFrame_OpenToCategory(TotemTimers.TimersGUIPanel)
-        InterfaceOptionsFrame_OpenToCategory("TotemTimers")
-    end
+    InterfaceAddOnsList_Update()
+    InterfaceOptionsFrame_OpenToCategory(TotemTimers.LastGUIPanel)
 end
 
 

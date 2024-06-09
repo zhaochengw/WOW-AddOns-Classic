@@ -204,13 +204,13 @@ TrackerMenu.addLinkToChatOption = function(menu, quest)
             LibDropDown:CloseDropDownMenus()
 
             if (not ChatFrame1EditBox:IsVisible()) then
-                if Questie.db.global.trackerShowQuestLevel then
+                if Questie.db.profile.trackerShowQuestLevel then
                     ChatFrame_OpenChat(QuestieLink:GetQuestLinkString(quest.level, quest.name, quest.Id))
                 else
                     ChatFrame_OpenChat("[" .. quest.name .. " (" .. quest.Id .. ")]")
                 end
             else
-                if Questie.db.global.trackerShowQuestLevel then
+                if Questie.db.profile.trackerShowQuestLevel then
                     ChatEdit_InsertLink(QuestieLink:GetQuestLinkString(quest.level, quest.name, quest.Id))
                 else
                     ChatEdit_InsertLink("[" .. quest.name .. " (" .. quest.Id .. ")]")
@@ -296,12 +296,12 @@ TrackerMenu.addFocusUnfocusOption = function(menu, quest)
 end
 
 TrackerMenu.addLockUnlockOption = function(menu)
-    if Questie.db.global.trackerLocked then
+    if Questie.db.profile.trackerLocked then
         tinsert(menu, {
             text = l10n('Unlock Tracker'),
             func = function()
                 LibDropDown:CloseDropDownMenus()
-                Questie.db.global.trackerLocked = false
+                Questie.db.profile.trackerLocked = false
                 TrackerBaseFrame:Update()
             end
         })
@@ -310,16 +310,16 @@ TrackerMenu.addLockUnlockOption = function(menu)
             text = l10n('Lock Tracker'),
             func = function()
                 LibDropDown:CloseDropDownMenus()
-                Questie.db.global.trackerLocked = true
+                Questie.db.profile.trackerLocked = true
                 TrackerBaseFrame:Update()
             end
         })
     end
 end
 
--- Register the Wowhead Quest popup dialog
+-- Register the WoWHead Quest popup dialog
 StaticPopupDialogs["QUESTIE_WOWHEAD_URL"] = {
-    text = "Wowhead URL",
+    text = "WoWHead URL",
     button2 = CLOSE,
     hasEditBox = true,
     editBoxWidth = 280,
@@ -331,7 +331,7 @@ StaticPopupDialogs["QUESTIE_WOWHEAD_URL"] = {
     end,
     OnShow = function(self)
         local questID = self.text.text_arg1
-        local quest_wow = QuestieDB:GetQuest(questID)
+        local quest_wow = QuestieDB.GetQuest(questID)
         local name = quest_wow.name
 
         -- self.text:SetText(self.text:GetText() .. "\n\n|cffff7f00" .. name .. "|r")
@@ -347,7 +347,7 @@ StaticPopupDialogs["QUESTIE_WOWHEAD_URL"] = {
         local wowheadLink
         if Questie.IsWotlk then
             if langShort then
-                langShort = langShort:gsub("%.", "/") -- The Wotlk wowhead URL differs to the other Classic URLs
+                langShort = langShort:gsub("%.", "/") -- The Wotlk WoWHead URL differs to the other Classic URLs
             end
             wowheadLink = "https://" .. "wowhead.com/wotlk/" .. langShort .. "quest=" .. questID
         elseif Questie.IsTBC then
@@ -359,6 +359,15 @@ StaticPopupDialogs["QUESTIE_WOWHEAD_URL"] = {
         self.editBox:SetText(wowheadLink)
         self.editBox:SetFocus()
         self.editBox:HighlightText()
+
+        self.editBox:SetScript("OnKeyDown", function(_, key)
+            if key == "C" and IsControlKeyDown() then
+                C_Timer.After(0.1, function()
+                    self.editBox:GetParent():Hide()
+                    ActionStatus_DisplayMessage(l10n("Copied URL to clipboard"), true)
+                end)
+            end
+        end)
     end,
     whileDead = true,
     hideOnEscape = true
@@ -393,7 +402,7 @@ function TrackerMenu:GetMenuForQuest(quest)
         end
     end
 
-    local coloredQuestName = QuestieLib:GetColoredQuestName(quest.Id, Questie.db.global.enableTooltipsQuestLevel, true, true)
+    local coloredQuestName = QuestieLib:GetColoredQuestName(quest.Id, Questie.db.profile.enableTooltipsQuestLevel, true, true)
 
     tinsert(menu, { text = coloredQuestName, isTitle = true })
 
@@ -409,7 +418,7 @@ function TrackerMenu:GetMenuForQuest(quest)
     TrackerMenu.addAbandonedQuest(menu, quest)
 
     tinsert(menu, {
-        text = "|cFF39c0edWowhead URL|r",
+        text = "|cFF39c0edWoWHead URL|r",
         func = function()
             StaticPopup_Show("QUESTIE_WOWHEAD_URL", quest.Id)
         end
@@ -485,9 +494,9 @@ TrackerMenu.addUntrackAchieveOption = function(menu, achieve)
     })
 end
 
--- Register the Wowhead Achievement popup dialog
+-- Register the WoWHead Achievement popup dialog
 StaticPopupDialogs["QUESTIE_WOWHEAD_AURL"] = {
-    text = "Wowhead URL",
+    text = "WoWHead URL",
     button2 = CLOSE,
     hasEditBox = true,
     editBoxWidth = 280,
@@ -519,6 +528,15 @@ StaticPopupDialogs["QUESTIE_WOWHEAD_AURL"] = {
         self.editBox:SetText(wowheadLink)
         self.editBox:SetFocus()
         self.editBox:HighlightText()
+
+        self.editBox:SetScript("OnKeyDown", function(_, key)
+            if key == "C" and IsControlKeyDown() then
+                C_Timer.After(0.1, function()
+                    self.editBox:GetParent():Hide()
+                    ActionStatus_DisplayMessage(l10n("Copied URL to clipboard"), true)
+                end)
+            end
+        end)
     end,
     whileDead = true,
     hideOnEscape = true
@@ -539,7 +557,7 @@ function TrackerMenu:GetMenuForAchievement(achieve)
     end
 
     tinsert(menu, {
-        text = "|cFF39c0edWowhead URL|r",
+        text = "|cFF39c0edWoWHead URL|r",
         func = function()
             StaticPopup_Show("QUESTIE_WOWHEAD_AURL", achieve.Id)
         end

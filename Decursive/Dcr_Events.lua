@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
+    Decursive (v 2.7.15) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2020-12-09T00:26:42Z
+    This file was last updated on 2023-12-18T08:50:23Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -778,7 +778,10 @@ do -- Combat log event handling {{{1
 
                 if (auraTYPE_failTYPE == SPELL_FAILED_LINE_OF_SIGHT or auraTYPE_failTYPE == SPELL_FAILED_BAD_TARGETS) then
 
-                    if not self.profile.DoNot_Blacklist_Prio_List or not self:IsInPriorList(self.Status.Unit_Array_UnitToGUID[self.Status.ClickedMF.CurrUnit]) then
+                    if self.profile.CureBlacklist > 0 and (
+                        not self.profile.DoNot_Blacklist_Prio_List
+                        or not self:IsInPriorList(self.Status.Unit_Array_UnitToGUID[self.Status.ClickedMF.CurrUnit])
+                        ) then
                         self.Status.Blacklisted_Array[self.Status.ClickedMF.CurrUnit] = self.profile.CureBlacklist;
 
                         self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of blacklist frame|r");
@@ -1182,6 +1185,6 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_Events.lua"] = "2.7.9.1";
+T._LoadedFiles["Dcr_Events.lua"] = "2.7.15";
 
 -- The Great Below

@@ -342,8 +342,9 @@ MT.BuildEnv('INIT');
 	VT.__is_loggedin = IsLoggedIn();
 	VT.__is_inbattleground = UnitInBattleground('player');
 	VT.__player_map = GetBestMapForUnit('player');
-	VT.__support_gem = CT.TOCVERSION >= 20000;
-	VT.__support_glyph = CT.TOCVERSION >= 30000;
+	VT.__support_gem = VT.__emulib.CT.SUPPORT_GEM;
+	VT.__support_glyph = VT.__emulib.CT.SUPPORT_GLYPH;
+	VT.__support_engraving = VT.__emulib.CT.SUPPORT_ENGRAVING;
 
 	if CT.BNTAG == "\97\108\101\120\35\53\49\54\55\50\50" or CT.BNTAG == "ALEX#125620" or CT.BNTAG == "Sanjeev#1289" then
 		MT.Debug = MT.DebugDev;

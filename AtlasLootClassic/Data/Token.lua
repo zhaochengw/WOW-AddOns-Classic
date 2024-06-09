@@ -44,6 +44,12 @@ TOKEN_DATA.CLASSIC = {
 	-- [itemID] = { itemID or {itemID, count} }
 	-- optional: type=0 		-	select the desc from the TOKEN_TYPE_TEXT table
 	-- optional: itemID == 0 	-	creates a new line
+	
+	-- Season of Discovery - BFD
+	[211452] = { 211451, 211450, 211449, type = 3 }, -- Perfect Blackfathom Pearl
+	[211454] = { 16886, 16887, type = 3 }, --Strange Water Globe (Horde)
+	--[211818] = {type = 4 }, --Strange Water Globe (Alliance)
+	
 	-- Dire Maul books
 	[18401] = { 18348 },	-- Foror's Compendium of Dragon Slaying
 	[18362] = { 18469, type = "PRIEST" },	-- Holy Bologna: What the Light Won't Tell You
@@ -218,6 +224,9 @@ TOKEN_DATA.CLASSIC = {
 	[10441] = { 10657, 10658, type = 3 }, -- Glowing Shard
 	[6283] = { 6335, 4534, type = 3 }, -- The Book of Ur
 	[16782] = { 16886, 16887, type = 3 }, -- Strange Water Globe
+	[211454] = { 16886, 16887, type = 3 }, -- Strange Water Globe
+	[209693] = { 211451, 211450, 211449, type = 3 }, -- Perfect Blackfathom Pearl
+	[211452] = { 211451, 211450, 211449, type = 3 }, -- Perfect Blackfathom Pearl
 	[9326] = { 9588, type = 3 }, -- Grime-Encrusted Ring
 	[17008] = { 17043, 17042, 17039, type = 3 }, -- Small Scroll
 	[10454] = { 10455, type = 3 }, -- Essence of Eranikus
@@ -614,6 +623,21 @@ if AtlasLoot:GameVersion_GE(AtlasLoot.WRATH_VERSION_NUM) then
 			type = 9
 		},
 
+		["Tier7TitanRuneTokens"] = {
+			40616, 40617, 40618, 0,
+			40622, 40623, 40624, 0,
+			40619, 40620, 40621, 0,
+			type = 9
+		},
+		["Tier8TitanRuneTokens"] = {
+			45647, 45648, 45649, 0,
+			45635, 45636, 45637, 0,
+			45659, 45660, 45661, 0,
+			45650, 45651, 45652, 0,
+			45644, 45645, 45646, 0,
+			type = 9
+		},
+
 		--- ## Ulduar
 		[45038] = { { 45038, 30 }, 45039, 45896, 0, 46017 }, -- Fragment of Val'anyr
 		[45039] = 45038, -- Shattered Fragments of Val'anyr
@@ -963,7 +987,7 @@ if AtlasLoot:GameVersion_GE(AtlasLoot.WRATH_VERSION_NUM) then
 
 
 		--- Misc
-		[44951] = { { 41119, "24-40" }, type = 11 }
+		[44951] = { { 41119, "24-40" }, type = 11 },
 	}
 end
 
@@ -1031,8 +1055,8 @@ function Token.GetClassItemsForToken(tokenItemID, className)
 end
 
 -- TOKEN_TYPE_ADD_ITEM_DESCRIPTION
---[==[@debug@
+--@debug@
 function Token.GetFullTokenTable()
 	return TOKEN
 end
---@end-debug@]==]
+--@end-debug@

@@ -1,7 +1,9 @@
 local mod	= DBM:NewMod("PT", "DBM-Party-BC", 12)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+mod.noStatistics = true
+
+mod:SetRevision("20231014053250")
 
 mod:RegisterEvents(
 	"UPDATE_UI_WIDGET",
@@ -11,11 +13,11 @@ mod:RegisterEvents(
 mod.noStatistics = true
 
 -- Portals
-local warnWavePortalSoon	= mod:NewAnnounce("WarnWavePortalSoon", 2, 33404)
-local warnWavePortal		= mod:NewAnnounce("WarnWavePortal", 3, 33404)
+local warnWavePortalSoon	= mod:NewAnnounce("WarnWavePortalSoon", 2, 57687)
+local warnWavePortal		= mod:NewAnnounce("WarnWavePortal", 3, 57687)
 local warnBossPortal		= mod:NewAnnounce("WarnBossPortal", 4, 33341)
 
-local timerNextPortal		= mod:NewTimer(120, "TimerNextPortal", 33404, nil, nil, 6)
+local timerNextPortal		= mod:NewTimer(120, "TimerNextPortal", 57687, nil, nil, 6)
 
 mod:AddBoolOption("ShowAllPortalTimers", false, "timer")
 
@@ -24,14 +26,19 @@ local lastPortal = 0
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 17879 or cid == 17880 then
-		timerNextPortal:Start(122, lastPortal + 1)
-		warnWavePortalSoon:Schedule(112)
+		if self:IsRetail() then
+			timerNextPortal:Start(30, lastPortal + 1)
+			warnWavePortalSoon:Schedule(20)
+		else
+			timerNextPortal:Start(122, lastPortal + 1)
+			warnWavePortalSoon:Schedule(112)
+		end
 	end
 end
 
 function mod:UPDATE_UI_WIDGET(table)
 	local id = table.widgetID
-	if id ~= (WOW_PROJECT_ID ~= (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5) and 527 or 3120) then
+	if id ~= (self:IsRetail() and 527 or 3120) then--TODO, confirm wrath classic still using custom ID from TBC classic of 3120
 		return
 	end
 	local widgetInfo = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(id)
@@ -49,9 +56,9 @@ function mod:UPDATE_UI_WIDGET(table)
 			warnBossPortal:Show()
 		else
 			warnWavePortal:Show(currentPortal)
-			if self.Options.ShowAllPortalTimers then
-				timerNextPortal:Start(122, currentPortal + 1)
-				warnWavePortalSoon:Schedule(112)
+			if self.Options.ShowAllPortalTimers and not self:IsRetail() then
+				timerNextPortal:Start(122, currentPortal + 1)--requires complete overhaul I haven't patience to do on retail
+				warnWavePortalSoon:Schedule(112)--because portals spawn faster and faster each time with newer tech added in later years/TW versions
 			end
 		end
 		lastPortal = currentPortal
@@ -66,7 +73,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	end
 end
 
-function mod:OnSync(msg)
+function mod:OnSync(msg, arg)
 	if msg == "Wipe" then
 		warnWavePortalSoon:Cancel()
 		timerNextPortal:Cancel()

@@ -2,6 +2,8 @@ if select(2, UnitClass("player")) ~= "SHAMAN" then
     return
 end
 
+local _, TotemTimers = ...
+
 local L = LibStub("AceLocale-3.0"):GetLocale("TotemTimers_GUI", true)
 
 local ElementValues = {
@@ -60,7 +62,7 @@ TotemTimers.options.args.timers = {
         h1 = {
             order = 10,
             type = "header",
-            name = "",
+            name = L['Positioning'],
         },
         timer1 = {
             order = 11,
@@ -553,11 +555,17 @@ for i = 1, 4 do
 end
 
 if LE_EXPANSION_LEVEL_CURRENT > LE_EXPANSION_BURNING_CRUSADE then
+    TotemTimers.options.args.timers.args.h0 = {
+        order = 5,
+        type = "header",
+        name = L["Multicast"],
+    }
+
     TotemTimers.options.args.timers.args.multispell = {
-        order = 3,
+        order = 6,
         type = "toggle",
-        name = L["Multicast Button"],
-        desc = L["Enables button for Call of Elements etc."],
+        name = L["Multicast"],
+        desc = L["Enables button and functionality for Call of Elements etc."],
         set = function(info, val)
             print("TotemTimers: You might need to relog for the default totem bar to show/hide correctly")
             TotemTimers.ActiveProfile.MultiCast = val
@@ -567,6 +575,22 @@ if LE_EXPANSION_LEVEL_CURRENT > LE_EXPANSION_BURNING_CRUSADE then
             return TotemTimers.ActiveProfile.MultiCast
         end,
     }
+
+    TotemTimers.options.args.timers.args.hidemultispell = {
+        order = 7,
+        type = "toggle",
+        name = L["Hide Multicast Button"],
+        desc = L["Hides multicast button for switching sets. Totems are still assigned to Call of Elements if Multicast option is enabled"],
+        set = function(info, val)
+            TotemTimers.ActiveProfile.HideMultiCast = val
+            TotemTimers.ProcessSetting("MultiCast")
+        end,
+        get = function(info)
+            return TotemTimers.ActiveProfile.HideMultiCast
+        end,
+    }
+
+
 end
 
 local ACD = LibStub("AceConfigDialog-3.0")
@@ -581,4 +605,3 @@ frame:HookScript("OnShow", function(self)
     TotemTimers.LastGUIPanel = self
 end)
 frame:RegisterEvent("PLAYER_REGEN_DISABLED")
-TotemTimers.TimersGUIPanel = frame

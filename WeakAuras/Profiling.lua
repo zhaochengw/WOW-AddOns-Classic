@@ -316,15 +316,28 @@ local function PrintOneProfile(popup, name, map, total)
   if map.count ~= 0 then
     popup:AddText(name .. "  ERROR: count is not zero:" .. " " .. map.count)
   end
+
   local percent = ""
   if total then
-    percent = ", " .. string.format("%.2f", 100 * map.elapsed / total) .. "%"
+    percent = (", %.2f%%"):format(100 * map.elapsed / total)
   end
+
   local spikeInfo = ""
   if map.spike then
-    spikeInfo = string.format("(%.2fms)", map.spike)
+    local r, g, b
+    if map.spike < 2 then
+      r, g, b = WeakAuras.GetHSVTransition(map.spike / 2, 0, 1, 0, 1, 1, 1, 0, 1)
+    elseif map.spike < 2.5 then
+      r, g, b = WeakAuras.GetHSVTransition((map.spike - 2) * 2, 1, 1, 0, 1, 1, 0.65, 0, 1)
+    elseif map.spike < 3 then
+      r, g, b = WeakAuras.GetHSVTransition((map.spike - 2.5) * 2, 1, 0.65, 0, 1, 1, 0, 0, 1)
+    else
+      r, g, b = 1, 0, 0
+    end
+    spikeInfo = ("|cff%02x%02x%02x(%.2fms)|r"):format(r * 255, g * 255, b * 255, map.spike)
   end
-  popup:AddText(string.format("%s |cff999999%.2fms%s %s|r", name, map.elapsed, percent, spikeInfo))
+
+  popup:AddText(("%s |cff999999%.2fms%s %s|r"):format(name, map.elapsed, percent, spikeInfo))
 end
 
 local function SortProfileMap(map)
@@ -334,6 +347,9 @@ local function SortProfileMap(map)
   end
 
   sort(result, function(a, b)
+    if map[a].spike and map[b].spike then
+      return map[a].spike > map[b].spike
+    end
     return map[a].elapsed > map[b].elapsed
   end)
 
@@ -346,6 +362,24 @@ local function TotalProfileTime(map)
     total = total + v.elapsed
   end
   return total
+end
+
+local function unitEventToMultiUnit(event)
+  local count
+  event, count = event:gsub("nameplate%d+$", "nameplate")
+  if count == 1 then return event end
+  event, count = event:gsub("boss%d$", "boss")
+  if count == 1 then return event end
+  event, count = event:gsub("arena%d$", "arena")
+  if count == 1 then return event end
+  event, count = event:gsub("raid%d+$", "group")
+  if count == 1 then return event end
+  event, count = event:gsub("raidpet%d+$", "group")
+  if count == 1 then return event end
+  event, count = event:gsub("party%d$", "party")
+  if count == 1 then return event end
+  event, count = event:gsub("partypet%d$", "party")
+  return event
 end
 
 function WeakAuras.PrintProfile()
@@ -394,9 +428,25 @@ function WeakAuras.PrintProfile()
   popup:AddText("")
   popup:AddText("|cff9900ffSystems:|r")
 
-  for i, k in ipairs(SortProfileMap(profileData.systems)) do
+  -- make a new table for system data with multiUnits grouped
+  local systemRegrouped = {}
+  for k, v in pairs(profileData.systems) do
+    local event = unitEventToMultiUnit(k)
+    if systemRegrouped[event] == nil then
+      systemRegrouped[event] = CopyTable(v)
+    else
+      if v.elapsed then
+        systemRegrouped[event].elapsed = (systemRegrouped[event].elapsed or 0) + v.elapsed
+      end
+      if v.spike then
+        systemRegrouped[event].spike = (systemRegrouped[event].spike or 0) + v.spike
+      end
+    end
+  end
+
+  for i, k in ipairs(SortProfileMap(systemRegrouped)) do
     if (k ~= "time" and k ~= "wa") then
-      PrintOneProfile(popup, k, profileData.systems[k], profileData.systems.wa.elapsed)
+      PrintOneProfile(popup, k, systemRegrouped[k], profileData.systems.wa.elapsed)
     end
   end
 

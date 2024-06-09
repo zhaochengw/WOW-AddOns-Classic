@@ -160,7 +160,7 @@ local function ConstructTexturePicker(frame)
       filter = filter:lower()
     end
     for texturePath, textureName in pairs(group.textures[uniquevalue]) do
-      if filter == nil or filter == "" or textureName:lower():match(filter) then
+      if filter == nil or filter == "" or textureName:lower():find(filter, 1, true) then
         tinsert(group.selectedGroupSorted, {texturePath, textureName})
       end
     end
@@ -188,7 +188,8 @@ local function ConstructTexturePicker(frame)
   end
 
   local input = CreateFrame("EditBox", nil, group.frame, "SearchBoxTemplate");
-  input:SetScript("OnTextChanged", function(...)
+  input:SetScript("OnTextChanged", function(self, ...)
+    SearchBoxTemplate_OnTextChanged(self)
     local status = dropdown.status or dropdown.localstatus
     texturePickerGroupSelected(nil, nil, status.selected, input:GetText())
   end);
@@ -233,7 +234,7 @@ local function ConstructTexturePicker(frame)
         pickedwidget = widget;
       end
     end
-    local width, height
+    local width, height, flipbookInfo
     if(pickedwidget) then
       pickedwidget:Pick();
       if not pickedwidget.texture.IsStopMotion then
@@ -241,6 +242,12 @@ local function ConstructTexturePicker(frame)
         if atlasInfo then
           width = atlasInfo.width
           height = atlasInfo.height
+        end
+      else
+        flipbookInfo = OptionsPrivate.GetFlipbookTileSize(pickedwidget.texture.path)
+        if flipbookInfo then
+          width = flipbookInfo.tileWidth
+          height = flipbookInfo.tileHeight
         end
       end
     end

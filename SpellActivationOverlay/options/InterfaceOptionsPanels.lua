@@ -40,17 +40,34 @@ function SpellActivationOverlayOptionsPanel_Init(self)
         SAO:ApplySpellAlertGeometry();
     end
 
+    local timerSlider = SpellActivationOverlayOptionsPanelSpellAlertTimerSlider;
+    timerSlider.Text:SetText("Spell Alert Progressive Timer");
+    _G[timerSlider:GetName().."Low"]:SetText(DISABLE);
+    _G[timerSlider:GetName().."High"]:SetText(ENABLE);
+    timerSlider:SetMinMaxValues(0, 1);
+    timerSlider:SetValueStep(1);
+    timerSlider.initialValue = SpellActivationOverlayDB.alert.timer;
+    timerSlider:SetValue(timerSlider.initialValue);
+    timerSlider.ApplyValueToEngine = function(self, value)
+        SpellActivationOverlayDB.alert.timer = value;
+        SAO:ApplySpellAlertTimer();
+    end
+
     local testButton = SpellActivationOverlayOptionsPanelSpellAlertTestButton;
     testButton:SetText("Toggle Test");
     testButton.fakeSpellID = 42;
     testButton.isTesting = false;
-    local testTextureLeftRight = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and "echo_of_the_elements" or "imp_empowerment";
-    local testTextureTop = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and "fury_of_stormrage" or "brain_freeze";
+    local testTextureLeftRight = SAO.IsEra() and "echo_of_the_elements" or "imp_empowerment";
+    local testTextureTop = SAO.IsEra() and "fury_of_stormrage" or "brain_freeze";
     testButton.StartTest = function(self)
         if (not self.isTesting) then
             self.isTesting = true;
-            SAO:ActivateOverlay(0, self.fakeSpellID, SAO.TexName[testTextureLeftRight], "Left + Right (Flipped)", 1, 255, 255, 255, false);
-            SAO:ActivateOverlay(0, self.fakeSpellID, SAO.TexName[testTextureTop], "Top", 1, 255, 255, 255, false);
+            SAO:ActivateOverlay(0, self.fakeSpellID, SAO.TexName[testTextureLeftRight], "Left + Right (Flipped)", 1, 255, 255, 255, false, nil, GetTime()+5);
+            SAO:ActivateOverlay(0, self.fakeSpellID, SAO.TexName[testTextureTop], "Top", 1, 255, 255, 255, false, nil, GetTime()+5);
+            self.testTimerTicker = C_Timer.NewTicker(4.9, -- Ticker must be slightly shorter than overlay duration, to refresh it before losing it
+            function()
+                SAO:RefreshOverlayTimer(self.fakeSpellID, GetTime()+5);
+            end);
             -- Hack the frame to force full opacity even when out of combat
             SpellActivationOverlayFrame_SetForceAlpha1(true);
         end
@@ -58,6 +75,7 @@ function SpellActivationOverlayOptionsPanel_Init(self)
     testButton.StopTest = function(self)
         if (self.isTesting) then
             self.isTesting = false;
+            self.testTimerTicker:Cancel();
             SAO:DeactivateOverlay(self.fakeSpellID);
             -- Undo hack
             SpellActivationOverlayFrame_SetForceAlpha1(false);
@@ -67,6 +85,10 @@ function SpellActivationOverlayOptionsPanel_Init(self)
     -- Manually mark textures used for testing
     SAO:MarkTexture(testTextureLeftRight);
     SAO:MarkTexture(testTextureTop);
+
+    local debugButton = SpellActivationOverlayOptionsPanelSpellAlertDebugButton;
+    debugButton.Text:SetText("Write Debug to Chatbox");
+    debugButton:SetChecked(SpellActivationOverlayDB.debug == true);
 
     local glowingButtonCheckbox = SpellActivationOverlayOptionsPanelGlowingButtons;
     glowingButtonCheckbox.Text:SetText("Glowing Buttons");
@@ -102,6 +124,9 @@ local function okayFunc(self)
     local offsetSlider = SpellActivationOverlayOptionsPanelSpellAlertOffsetSlider;
     offsetSlider.initialValue = offsetSlider:GetValue();
 
+    local timerSlider = SpellActivationOverlayOptionsPanelSpellAlertTimerSlider;
+    timerSlider.initialValue = timerSlider:GetValue();
+
     local glowingButtonCheckbox = SpellActivationOverlayOptionsPanelGlowingButtons;
     glowingButtonCheckbox.initialValue = glowingButtonCheckbox:GetChecked();
 
@@ -116,6 +141,7 @@ local function cancelFunc(self)
     local opacitySlider = SpellActivationOverlayOptionsPanelSpellAlertOpacitySlider;
     local scaleSlider = SpellActivationOverlayOptionsPanelSpellAlertScaleSlider;
     local offsetSlider = SpellActivationOverlayOptionsPanelSpellAlertOffsetSlider;
+    local timerSlider = SpellActivationOverlayOptionsPanelSpellAlertTimerSlider;
     local glowingButtonCheckbox = SpellActivationOverlayOptionsPanelGlowingButtons;
     local classOptions = SpellActivationOverlayOptionsPanel.classOptions;
 
@@ -123,6 +149,7 @@ local function cancelFunc(self)
         opacitySlider.initialValue,
         scaleSlider.initialValue,
         offsetSlider.initialValue,
+        timerSlider.initialValue,
         glowingButtonCheckbox.initialValue,
         classOptions.initialValue
     );
@@ -135,12 +162,13 @@ local function defaultFunc(self)
         1, -- opacity
         1, -- scale
         0, -- offset
+        1, -- timer
         true, -- glow
         defaultClassOptions -- class options
     );
 end
 
-local function applyAllFunc(self, opacityValue, scaleValue, offsetValue, isGlowEnabled, classOptions)
+local function applyAllFunc(self, opacityValue, scaleValue, offsetValue, timerValue, isGlowEnabled, classOptions)
     local opacitySlider = SpellActivationOverlayOptionsPanelSpellAlertOpacitySlider;
     opacitySlider:SetValue(opacityValue);
     if (SpellActivationOverlayDB.alert.opacity ~= opacityValue) then
@@ -169,6 +197,13 @@ local function applyAllFunc(self, opacityValue, scaleValue, offsetValue, isGlowE
         SAO:ApplySpellAlertGeometry();
     end
 
+    local timerSlider = SpellActivationOverlayOptionsPanelSpellAlertTimerSlider;
+    timerSlider:SetValue(timerValue);
+    if (SpellActivationOverlayDB.alert.timer ~= timerValue) then
+        SpellActivationOverlayDB.alert.timer = timerValue;
+        SAO:ApplySpellAlertTimer();
+    end
+
     local testButton = SpellActivationOverlayOptionsPanelSpellAlertTestButton;
     -- Enable/disable the test button with alert.enabled, which was set/reset a few lines above, alongside opacity
     testButton:SetEnabled(SpellActivationOverlayDB.alert.enabled);
@@ -187,6 +222,43 @@ local function applyAllFunc(self, opacityValue, scaleValue, offsetValue, isGlowE
         end
         for _, checkbox in ipairs(SpellActivationOverlayOptionsPanel.additionalCheckboxes.glow or {}) do
             checkbox:ApplyValue();
+        end
+    end
+end
+
+local InterfaceOptions_AddCategory = InterfaceOptions_AddCategory
+local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
+
+if Settings and Settings.RegisterCanvasLayoutCategory then
+    --[[ Deprecated. 
+    See Blizzard_ImplementationReadme.lua for recommended setup.
+    ]]
+    InterfaceOptions_AddCategory = function(frame, addOn, position)
+        -- cancel is no longer a default option. May add menu extension for this.
+        frame.OnCommit = frame.okay;
+        frame.OnDefault = frame.default;
+        frame.OnRefresh = frame.refresh;
+
+        if frame.parent then
+            local category = Settings.GetCategory(frame.parent);
+            local subcategory, layout = Settings.RegisterCanvasLayoutSubcategory(category, frame, frame.name, frame.name);
+            subcategory.ID = frame.name;
+            return subcategory, category;
+        else
+            local category, layout = Settings.RegisterCanvasLayoutCategory(frame, frame.name, frame.name);
+            category.ID = frame.name;
+            Settings.RegisterAddOnCategory(category);
+            return category;
+        end
+    end
+
+    -- Deprecated. Use Settings.OpenToCategory().
+    InterfaceOptionsFrame_OpenToCategory = function(categoryIDOrFrame)
+        if type(categoryIDOrFrame) == "table" then
+            local categoryID = categoryIDOrFrame.name;
+            return Settings.OpenToCategory(categoryID);
+        else
+            return Settings.OpenToCategory(categoryIDOrFrame);
         end
     end
 end

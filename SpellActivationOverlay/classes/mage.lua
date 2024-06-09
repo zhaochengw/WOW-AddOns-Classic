@@ -2,7 +2,11 @@ local AddonName, SAO = ...
 
 -- Optimize frequent calls
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+local GetSpellInfo = GetSpellInfo
 local GetTalentInfo = GetTalentInfo
+local UnitCanAttack = UnitCanAttack
+local UnitExists = UnitExists
+local UnitHealth = UnitHealth
 
 local clearcastingVariants; -- Lazy init in lazyCreateClearcastingVariants()
 
@@ -80,7 +84,7 @@ local function deactivateHeatingUp(self, spellID)
     self:DeactivateOverlay(spellID);
 end
 
-local function customCLEU(self, ...)
+local function hotStreakCLEU(self, ...)
     local timestamp, event, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = CombatLogGetCurrentEventInfo() -- For all events
 
     -- Special case: if player dies, we assumed the "Heating Up" virtual buff was lost
@@ -99,7 +103,10 @@ local function customCLEU(self, ...)
     --end
 
     -- Accept only certain events, and only when done by the player
-    if (event ~= "SPELL_DAMAGE" and event ~= "SPELL_AURA_APPLIED" and event ~= "SPELL_AURA_REMOVED") then return end
+    if (event ~= "SPELL_DAMAGE"
+    and event ~= "SPELL_AURA_APPLIED"
+    and event ~= "SPELL_AURA_REFRESH"
+    and event ~= "SPELL_AURA_REMOVED") then return end
     if (sourceGUID ~= UnitGUID("player")) then return end
 
     local spellID, spellName, spellSchool = select(12, CombatLogGetCurrentEventInfo()) -- For SPELL_*
@@ -109,6 +116,12 @@ local function customCLEU(self, ...)
     if (event == "SPELL_AURA_APPLIED") then
         if (spellID == hotStreakSpellID) then
             deactivateHeatingUp(self, heatingUpSpellID);
+            HotStreakHandler.state = 'hot_streak';
+        end
+        return;
+    elseif (event == "SPELL_AURA_REFRESH") then
+        if (spellID == hotStreakSpellID) then
+            deactivateHeatingUp(self, hotStreakHeatingUpSpellID);
             HotStreakHandler.state = 'hot_streak';
         end
         return;
@@ -193,12 +206,249 @@ local function recheckTalents(self)
     end
 end
 
+
+-- Detect if the target is Frozen
+local FrozenHandler = {
+    -- Constants
+    frostbite = { 12494 },
+    frost_nova = { 122, 865, 6131, 10230, 27088, 42917 },
+    freezing_trap = { 3355, 14308, 14309 }, -- from hunters
+    freeze = { 33395 }, -- from Frost Elemental
+    shattered_barrier = { 55080 },
+    ice_lance = { 30455, 42913, 42914 },
+    ice_lance_sod = { 400640 }, -- Season of Discovery
+    deep_freeze = { 44572 }, -- Deep Freeze is both a debuff for 'Frozen' Spell Alert and its own Glowing Button
+
+    freezeID = 5276, -- Not really a 'Frozen' spell ID, but the name should help players identify the intent
+    freezeTalent = 5276,
+    fakeSpellID = 5276+1000000, -- For option testing
+
+    saoTexture = "frozen_fingers",
+    saoScaleFactor = (SAO.IsEra() or SAO.IsTBC()) and 1 or 0.75, -- Scaling down on Wrath because of conflict
+
+    -- Constants that will be initialized at init()
+    allSpellIDs = {},
+    allSpellNames = {},
+
+    -- Variables
+    initialized = false,
+
+    freezable = false,
+    frozen = false,
+
+    saoActive = nil,
+    gabIceLinceActive = nil,
+    gabDeepFreezeActive = nil,
+
+    -- Methods
+    init = function(self)
+        self:addSpellIDCandidates(self.frostbite);
+        self:addSpellIDCandidates(self.frost_nova);
+        self:addSpellIDCandidates(self.freezing_trap);
+        self:addSpellIDCandidates(self.freeze);
+        self:addSpellIDCandidates(self.shattered_barrier);
+        self:addSpellIDCandidates(self.deep_freeze);
+
+        self.freezable = self:isTargetFreezable();
+        if (self.freezable and self:isTargetFrozen()) then
+            self.frozen = true;
+            self:activate();
+        end
+
+        self.initialized = true;
+    end,
+
+    addSpellIDCandidates = function(self, ids)
+        for _, id in pairs(ids) do
+            local name = GetSpellInfo(id);
+            if name then
+                self.allSpellIDs[id] = true;
+                self.allSpellNames[name] = true;
+            end
+        end
+    end,
+
+    cleu = function(self)
+        local _, event, _, _, _, _, _, destGUID = CombatLogGetCurrentEventInfo()
+
+        -- Event must relate to the player's target
+        if (not destGUID) or (destGUID ~= UnitGUID("target")) then return end
+
+        -- Event must be about spell auras
+        if (event:sub(0,11) ~= "SPELL_AURA_") then return end
+
+        if not self:isTargetFreezable() then
+            self.freezable = false;
+            self:setFrozen(false);
+            return;
+        end
+
+        local spellID, spellName = select(12, CombatLogGetCurrentEventInfo());
+
+        if (self.allSpellIDs[spellID]) then
+            -- The current event info is related to a spell that can trigger the Frozen effect
+            if (event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_REFRESH") then
+                self.freezable = true;
+                self:setFrozen(true);
+            elseif (event == "SPELL_AURA_REMOVED") then
+                self.freezable = true;
+                self:setFrozen(self:isTargetFrozen()); -- Must call isTargetFrozen() in case another spell is freezing
+            end
+        elseif (spellID == 0 and spellName and self.allSpellNames[spellName]) then
+            -- Special case for Classic Era: check spell name instead of spell ID (regression since HC patch)
+            self.freezable = true;
+            self:setFrozen(self:isTargetFrozen()); -- Must call isTargetFrozen() to make sure spell *ID* is correct
+        end
+    end,
+
+    isTargetFreezable = function(self)
+        return UnitExists("target") and UnitCanAttack("player", "target") and UnitHealth("target") ~= 0;
+    end,
+
+    isTargetFrozen = function(self)
+        -- Test debuffs on target with following code
+        -- /run for i=1,40 do a,_,_,_,_,_,_,_,_,b=UnitDebuff("target",i) if a then print(i,a,b) end end
+        for i = 1,200 do -- 200 is a security to prevent infinite loops
+            local name, _, _, _, _, _, _, _, _, id = UnitDebuff("target", i);
+            if not name then
+                return false;
+            end
+            if self.allSpellIDs[id] then
+                return true;
+            end
+        end
+    end,
+
+    longestFrozenTime = function(self)
+        local longestTime, durationOfLongestTime = 0, 0;
+        for i = 1,200 do -- 200 is a security to prevent infinite loops
+            local name, _, _, _, duration, expirationTime, _, _, _, id = UnitDebuff("target", i);
+            if not name then
+                break;
+            end
+            if self.allSpellIDs[id] and expirationTime > longestTime then
+                longestTime = expirationTime;
+                durationOfLongestTime = duration;
+            end
+        end
+        local startTime, endTime = longestTime-durationOfLongestTime, longestTime;
+        return startTime, endTime;
+    end,
+
+    getEndTime = function(self)
+        if not SAO.Frame.useTimer then
+            return; -- Return nil if there is no timer effect, to save CPU
+        end
+
+        local startTime, endTime = self:longestFrozenTime();
+        return { startTime = startTime, endTime = endTime }
+    end,
+
+    retarget = function(self, ...)
+        if (self.freezable ~= self:isTargetFreezable()) then
+            self.freezable = not self.freezable;
+        end
+        self:setFrozen(self.freezable and self:isTargetFrozen());
+    end,
+
+    checkTargetHealth = function(self)
+        if (self.freezable ~= self:isTargetFreezable()) then
+            self.freezable = not self.freezable;
+            -- Check isTargetFrozen() only when 'freezable' changes, to avoid unnecessary computations
+            self:setFrozen(self.freezable and self:isTargetFrozen());
+        end
+    end,
+
+    setFrozen = function(self, frozen)
+        if frozen and not self.frozen then
+            self.frozen = true;
+            self:activate();
+        elseif not frozen and self.frozen then
+            self.frozen = false;
+            self:deactivate();
+        elseif frozen and self.frozen then
+            self:reactivate();
+        end
+    end,
+
+    activate = function(self)
+        -- SAO
+        local saoOption = SAO:GetOverlayOptions(self.freezeID);
+        local hasSAO = not saoOption or type(saoOption[0]) == "nil" or saoOption[0];
+        if (hasSAO) then
+            local endTime = self:getEndTime();
+            SAO:ActivateOverlay(0, self.freezeID, SAO.TexName[self.saoTexture], "Top (CW)", self.saoScaleFactor, 255, 255, 255, false, nil, endTime);
+        end
+
+        -- GABs
+        local gabOption = SAO:GetGlowingOptions(self.freezeID);
+        local iceLance = self.ice_lance[1];
+        local hasIceLanceGAB = not gabOption or type(gabOption[iceLance]) == "nil" or gabOption[iceLance];
+        if (hasIceLanceGAB) then
+            SAO:AddGlow(iceLance, self.ice_lance); -- First arg is option ID, second arg is spell ID list
+        end
+        local iceLanceSoD = self.ice_lance_sod[1];
+        local hasIceLanceSoDGAB = not gabOption or type(gabOption[iceLanceSoD]) == "nil" or gabOption[iceLanceSoD];
+        if (hasIceLanceSoDGAB) then
+            SAO:AddGlow(iceLanceSoD, self.ice_lance_sod); -- First arg is option ID, second arg is spell ID list
+        end
+        local deepFreeze = self.deep_freeze[1];
+        local hasDeepFreezeGAB = not gabOption or type(gabOption[deepFreeze]) == "nil" or gabOption[deepFreeze];
+        if (hasDeepFreezeGAB) then
+            SAO:AddGlow(deepFreeze, self.deep_freeze); -- First arg is option ID, second arg is spell ID list
+        end
+    end,
+
+    deactivate = function(self)
+        -- SAO
+        SAO:DeactivateOverlay(self.freezeID);
+
+        -- GAB
+        SAO:RemoveGlow(self.ice_lance[1]);
+        SAO:RemoveGlow(self.ice_lance_sod[1]);
+        SAO:RemoveGlow(self.deep_freeze[1]);
+    end,
+
+    reactivate = function(self)
+        -- SAO
+        local saoOption = SAO:GetOverlayOptions(self.freezeID);
+        local hasSAO = not saoOption or type(saoOption[0]) == "nil" or saoOption[0];
+        if (hasSAO) then
+            local endTime = self:getEndTime();
+            SAO:RefreshOverlayTimer(self.freezeID, endTime);
+        end
+    end,
+}
+
 local function customLogin(self, ...)
     -- Must initialize class on PLAYER_LOGIN instead of registerClass
     -- Because we need the talent tree, which is not always available right off the bat
     local hotStreakSpellName = GetSpellInfo(hotStreakSpellID);
     if (hotStreakSpellName) then
         HotStreakHandler:init(hotStreakSpellName);
+    end
+
+    if (not FrozenHandler.initialized) then
+        FrozenHandler:init();
+    end
+end
+
+local function customCLEU(self, ...)
+    hotStreakCLEU(self, ...);
+    if FrozenHandler.initialized then
+        FrozenHandler:cleu();
+    end
+end
+
+local function retarget(self, ...)
+    if FrozenHandler.initialized then
+        FrozenHandler:retarget(...);
+    end
+end
+
+local function unitHealth(self, unitID)
+    if FrozenHandler.initialized and unitID == "target" then
+        FrozenHandler:checkTargetHealth();
     end
 end
 
@@ -212,10 +462,8 @@ local function lazyCreateClearcastingVariants(self)
     local textureVariant1 = "genericarc_05";
     local textureVariant2 = "genericarc_02";
 
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC or GetSpellInfo(spellID) then
-        self:MarkTexture(textureVariant1);
-        self:MarkTexture(textureVariant2);
-    end
+    self:MarkTexture(textureVariant1);
+    self:MarkTexture(textureVariant2);
 
     local weakText = PET_BATTLE_COMBAT_LOG_DAMAGE_WEAK:gsub("[ ()]","");
     local strongText = PET_BATTLE_COMBAT_LOG_DAMAGE_STRONG:gsub("[ ()]","");
@@ -239,8 +487,16 @@ local function registerClass(self)
     -- Please look at HotStreakHandler and customCLEU for more information
 
     -- Frost Procs
-    self:RegisterAura("fingers_of_frost_1", 1, 74396, "frozen_fingers", "Left", 1, 255, 255, 255, true);
-    self:RegisterAura("fingers_of_frost_2", 2, 74396, "frozen_fingers", "Left + Right (Flipped)", 1, 255, 255, 255, true);
+    if self.IsWrath() then
+        local iceLanceAndDeepFreeze = { (GetSpellInfo(FrozenHandler.ice_lance[1])), (GetSpellInfo(FrozenHandler.deep_freeze[1])) };
+        self:RegisterAura("fingers_of_frost_1", 1, 74396, "frozen_fingers", "Left", 1, 255, 255, 255, true, iceLanceAndDeepFreeze);
+        self:RegisterAura("fingers_of_frost_2", 2, 74396, "frozen_fingers", "Left + Right (Flipped)", 1, 255, 255, 255, true, iceLanceAndDeepFreeze);
+    elseif self.IsSoD() then
+        local iceLanceSoD = { (GetSpellInfo(FrozenHandler.ice_lance_sod[1])) };
+        self:RegisterAura("fingers_of_frost_1_sod", 1, 400670, "frozen_fingers", "Left", 1, 255, 255, 255, true, iceLanceSoD);
+        self:RegisterAura("fingers_of_frost_2_sod", 2, 400670, "frozen_fingers", "Left + Right (Flipped)", 1, 255, 255, 255, true, iceLanceSoD);
+    end
+    self:RegisterAura("freeze", 0, FrozenHandler.fakeSpellID, FrozenHandler.saoTexture, "Top (CW)", FrozenHandler.saoScaleFactor, 255, 255, 255, false);
     self:RegisterAura("brain_freeze", 0, 57761, "brain_freeze", "Top", 1, 255, 255, 255, true, { (GetSpellInfo(133)), (GetSpellInfo(44614)) });
 
     -- Arcane Procs
@@ -248,6 +504,21 @@ local function registerClass(self)
 
     lazyCreateClearcastingVariants(self);
     self:RegisterAura("clearcasting", 0, 12536, clearcastingVariants.textureFunc, "Left + Right (Flipped)", 1.5, 192, 192, 192, false);
+
+    if self.IsSoD() then
+        local arcaneBlastSoDBuff = 400573;
+        local arcaneMissiles = 5143;
+        local arcaneExplosion = 1449;
+        -- local arcaneHealingSpellTBD = ...; -- @todo add healing spell that resets stacks, which might exist, according to the in-game tooltip
+        local resettingSpells = { (GetSpellInfo(arcaneMissiles)), (GetSpellInfo(arcaneExplosion)) };
+        for nbStacks=1,4 do
+            local scale = nbStacks == 4 and 1.2 or 0.6; -- 60%, 60%, 60%, 120%
+            local pulse = nbStacks == 4;
+            local glowIDs = nbStacks == 4 and resettingSpells or nil;
+            local texture = ({ "arcane_missiles_1", "arcane_missiles_2", "arcane_missiles_3", "arcane_missiles" })[nbStacks];
+            self:RegisterAura("serendipity_sod", nbStacks, arcaneBlastSoDBuff, texture, "Left + Right (Flipped)", scale, 255, 255, 255, pulse, glowIDs);
+        end
+    end
 end
 
 local function loadOptions(self)
@@ -274,13 +545,21 @@ local function loadOptions(self)
 
     local fingersOfFrostBuff = 74396;
     local fingersOfFrostTalent = 44543;
+    local fingersOfFrostSoDBuff = 400670;
+    local fingersOfFrostSoDTalent = fingersOfFrostSoDBuff; -- Not really a talent
+
+    local arcaneBlastSoDBuff = 400573;
 
     local arcaneMissiles = 5143;
+    local arcaneExplosion = 1449;
     local pyroblast = 11366;
     local flamestrike = 2120;
     local fireBlast = 2136;
     local fireball = 133;
     local frostfireBolt = 44614;
+    local iceLance = FrozenHandler.ice_lance[1];
+    local iceLanceSoD = FrozenHandler.ice_lance_sod[1];
+    local deepFreeze = FrozenHandler.deep_freeze[1];
 
     local heatingUpDetails;
     local locale = GetLocale();
@@ -311,28 +590,53 @@ local function loadOptions(self)
     -- local hotStreakHeatingUpDetails = string.format("%s+%s", heatingUpDetails, hotStreakDetails);
     local hotStreakHeatingUpDetails = string.format("%s %s", STATUS_TEXT_BOTH, ACTION_SPELL_AURA_APPLIED_DOSE);
 
+    local oneToThreeStacks = string.format(CALENDAR_TOOLTIP_DATE_RANGE, "1", string.format(STACKS, 3));
+    local fourStacks = string.format(STACKS, 4);
+
     -- Clearcasting variants
     lazyCreateClearcastingVariants(self);
 
     self:AddOverlayOption(clearcastingTalent, clearcastingBuff, 0, nil, clearcastingVariants);
     self:AddOverlayOption(missileBarrageTalent, missileBarrageBuff);
+    if self.IsSoD() then
+        self:AddOverlayOption(arcaneBlastSoDBuff, arcaneBlastSoDBuff, 0, oneToThreeStacks, nil, 3); -- setup any stacks, test with 3 stacks
+        self:AddOverlayOption(arcaneBlastSoDBuff, arcaneBlastSoDBuff, 4); -- setup 4 stacks
+    end
     self:AddOverlayOption(hotStreakTalent, heatingUpBuff, 0, heatingUpDetails);
     self:AddOverlayOption(hotStreakTalent, hotStreakBuff, 0, hotStreakDetails);
     self:AddOverlayOption(hotStreakTalent, hotStreakHeatingUpBuff, 0, hotStreakHeatingUpDetails);
     self:AddOverlayOption(firestarterTalent, firestarterBuff);
     self:AddOverlayOption(impactTalent, impactBuff);
-    self:AddOverlayOption(fingersOfFrostTalent, fingersOfFrostBuff, 0, nil, nil, 2); -- setup any stacks, test with 2 stacks
+    if self.IsWrath() then
+        self:AddOverlayOption(fingersOfFrostTalent, fingersOfFrostBuff, 0, nil, nil, 2); -- setup any stacks, test with 2 stacks
+    elseif self.IsSoD() then
+        self:AddOverlayOption(fingersOfFrostSoDTalent, fingersOfFrostSoDBuff, 0, nil, nil, 2); -- setup any stacks, test with 2 stacks
+    end
+    self:AddOverlayOption(FrozenHandler.freezeTalent, FrozenHandler.freezeID, 0, nil, nil, nil, FrozenHandler.fakeSpellID);
     self:AddOverlayOption(brainFreezeTalent, brainFreezeBuff);
 
     self:AddGlowingOption(missileBarrageTalent, missileBarrageBuff, arcaneMissiles);
+    if self.IsSoD() then
+        self:AddGlowingOption(arcaneBlastSoDBuff, arcaneBlastSoDBuff, arcaneMissiles, fourStacks);
+        self:AddGlowingOption(arcaneBlastSoDBuff, arcaneBlastSoDBuff, arcaneExplosion, fourStacks);
+    end
     self:AddGlowingOption(hotStreakTalent, hotStreakBuff, pyroblast);
     self:AddGlowingOption(firestarterTalent, firestarterBuff, flamestrike);
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then -- Must exclude this option specifically for Classic Era, because the talent exists in Era but the proc is passive
+    if not self.IsEra() then -- Must exclude this option specifically for Classic Era, because the talent exists in Era but the proc is passive
         self:AddGlowingOption(impactTalent, impactBuff, fireBlast);
     end
     self:AddGlowingOption(brainFreezeTalent, brainFreezeBuff, fireball);
     self:AddGlowingOption(brainFreezeTalent, brainFreezeBuff, frostfireBolt);
-    -- self:AddGlowingOption(fingersOfFrostTalent, fingersOfFrostBuff, ...); -- Maybe add spell options for Fingers of Frost
+    if self.IsWrath() then
+        self:AddGlowingOption(fingersOfFrostTalent, fingersOfFrostBuff, iceLance);
+        self:AddGlowingOption(fingersOfFrostTalent, fingersOfFrostBuff, deepFreeze);
+        -- self:AddGlowingOption(fingersOfFrostTalent, fingersOfFrostBuff, ...); -- Maybe add more spell options for Fingers of Frost
+        self:AddGlowingOption(FrozenHandler.freezeTalent, FrozenHandler.freezeID, iceLance);
+        self:AddGlowingOption(FrozenHandler.freezeTalent, FrozenHandler.freezeID, deepFreeze);
+    elseif self.IsSoD() then
+        self:AddGlowingOption(fingersOfFrostSoDTalent, fingersOfFrostSoDBuff, iceLanceSoD);
+        self:AddGlowingOption(FrozenHandler.freezeTalent, FrozenHandler.freezeID, iceLanceSoD);
+    end
 end
 
 SAO.Class["MAGE"] = {
@@ -341,5 +645,7 @@ SAO.Class["MAGE"] = {
     ["COMBAT_LOG_EVENT_UNFILTERED"] = customCLEU,
     ["PLAYER_LOGIN"] = customLogin,
     ["CHARACTER_POINTS_CHANGED"] = recheckTalents,
-    ["PLAYER_TALENT_UPDATE"] = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC and recheckTalents or nil, -- This event was introduced in Wrath, and causes errors before
+    ["PLAYER_TARGET_CHANGED"] = retarget,
+    ["UNIT_HEALTH"] = unitHealth,
+    [SAO.IsWrath() and "PLAYER_TALENT_UPDATE" or "CHARACTER_POINTS_CHANGED"] = recheckTalents, -- Event changed in Wrath
 }

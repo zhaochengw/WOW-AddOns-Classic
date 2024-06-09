@@ -1,10 +1,19 @@
 local mod = DBM:NewMod(549, "DBM-Party-BC", 15, 254)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+if mod:IsRetail() then
+	mod.statTypes = "normal,heroic,timewalker"
+end
+
+mod:SetRevision("20231014053250")
+
 mod:SetCreatureID(20885)
 mod:SetEncounterID(1913)
-mod:SetModelID(19888)
+
+if not mod:IsRetail() then
+	mod:SetModelID(19888)
+end
+
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -14,12 +23,12 @@ mod:RegisterEventsInCombat(
 )
 
 --LOG THIS, needs whirlwind CD timer
-local warnGift			= mod:NewTargetNoFilterAnnounce(39009, 3, nil, "Healer", 2)
+local warnGift			= mod:NewTargetNoFilterAnnounce(39009, 3)
 
 local specwarnWhirlwind	= mod:NewSpecialWarningRun(36175, "Melee", nil, nil, 4, 6)
 local specwarnHeal		= mod:NewSpecialWarningInterrupt(39013, "HasInterrupt", nil, 2, 1, 2)
 
-local timerGift			= mod:NewTargetTimer(10, 39009, nil, "Healer", 4, 5, nil, DBM_COMMON_L.HEALER_ICON)
+local timerGift			= mod:NewTargetTimer(10, 39009, nil, nil, 3, 5, nil, DBM_COMMON_L.HEALER_ICON)
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(39013, 36144) and self:CheckInterruptFilter(args.sourceGUID, false, true) then
@@ -27,7 +36,7 @@ function mod:SPELL_CAST_START(args)
 		specwarnHeal:Play("kickcast")
 	elseif args:IsSpellID(36175, 36142) then
 		specwarnWhirlwind:Show()
-		specwarnWhirlwind:Play("whirlwind")
+		specwarnWhirlwind:Play("whirlwind")--Probably get this sound file renamed to "whirlwind" in 7.0
 	end
 end
 

@@ -13,7 +13,7 @@ if l10n.Locale ~= nil and l10n.Locale ~= "" then return;end
 
 BINDING_NAME_ALARAIDTOOL_NEWWINDOW = "Create an emulator";
 BINDING_NAME_ALARAIDTOOL_QUERY = "Inspect target";
-BINDING_HEADER_ALATALENTEMU_HEADER = "<|cff00ff00alaTalentEmu|r>";
+BINDING_HEADER_ALATALENTEMU_HEADER = "<|cff00ff00TalentEmu|r>";
 
 l10n.Locale = "enUS";
 
@@ -24,7 +24,7 @@ l10n.Search = "Search";
 l10n.Hide = "Hide";
 l10n.CurTreePointsLabel = "Points";
 l10n.CurPointsTotal = "Total";
-l10n.CurPointsRemaining = "Pts";
+l10n.CurPointsRemaining = "Idle";
 l10n.CurPointsUsed = "Used";
 l10n.CurPointsReqLevel = "Lv";
 l10n.message = "*CHAT";
@@ -132,8 +132,8 @@ l10n.DATA = {
 	[261] = "Elemental",
 	[263] = "Enhancement",
 	[262] = "Restoration",
-	[302] = "Curses",
-	[303] = "Summoning",
+	[302] = "Affliction",
+	[303] = "Demonology",
 	[301] = "Destruction",
 	[161] = "Arms",
 	[164] = "Fury",

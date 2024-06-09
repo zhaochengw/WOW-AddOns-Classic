@@ -1,6 +1,6 @@
-## Interface: 100007
+## Interface: 100200
 ## Title: TrainAll
-## Version: 10.0.7
+## Version: 10.2.0
 ## Notes: Adds a Train All button to the Profession trainer UI
 ## Author: Andols
 

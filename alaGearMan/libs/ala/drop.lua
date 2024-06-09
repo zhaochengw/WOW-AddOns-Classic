@@ -157,13 +157,13 @@ local uireimp = __ala_meta__.uireimp;
 		Menu:SetScript("OnHide", MenuOnHide);
 		if isRetail or isWLK then
 			Menu:RegisterEvent("GLOBAL_MOUSE_UP");
-		elseif isBCC then
+		else--if isBCC then
 			Menu:RegisterEvent("PLAYER_STARTED_LOOKING");
 			-- Menu:RegisterEvent("PLAYER_STOPPED_LOOKING");
 			Menu:RegisterEvent("PLAYER_STARTED_TURNING");
 			-- Menu:RegisterEvent("PLAYER_STOPPED_TURNING");
-		else
-			Menu:RegisterEvent("CURSOR_UPDATE");
+		-- else
+		-- 	Menu:RegisterEvent("CURSOR_UPDATE");
 		end
 		Menu.Buttons = {  };
 

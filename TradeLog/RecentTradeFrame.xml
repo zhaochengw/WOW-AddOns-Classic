@@ -58,17 +58,6 @@
 
 	<Frame name="RecentTradeFrame" parent="TradeFrame" hidden="false">
 		<TitleRegion setAllPoints="true"/>
-		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize>
-				<AbsValue val="16"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="16"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="5" right="5" top="5" bottom="5"/>
-			</BackgroundInsets>
-		</Backdrop>
 		<Size>
 			<AbsDimension x="180" y="451"/>
 		</Size>
@@ -182,7 +171,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				self:RegisterEvent("TRADE_SHOW")
+				RecentTradeFrame_OnLoad(self)
 			</OnLoad>
 			<OnEvent>
 				<!--RecentTradeFrame_UpdateList(GetUnitName("NPC", true):gsub(" %- ", "-"))-->

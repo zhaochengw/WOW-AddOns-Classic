@@ -1,10 +1,18 @@
 local mod	= DBM:NewMod(552, "DBM-Party-BC", 12, 255)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+if mod:IsRetail() then
+	mod.statTypes = "normal,heroic,timewalker"
+end
+
+mod:SetRevision("20231014053250")
 mod:SetCreatureID(17879)
 mod:SetEncounterID(1920)
-mod:SetModelID(20513)
+
+if not mod:IsRetail() then
+	mod:SetModelID(20513)
+end
+
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -23,7 +31,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 31467 then
+	if args.spellId == 31467 and self:CheckDispelFilter("magic") then
 		specwarnTimeLapse:Show(args.destName)
 		specwarnTimeLapse:Play("dispelnow")
 	end

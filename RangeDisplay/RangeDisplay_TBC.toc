@@ -1,13 +1,13 @@
 ## Interface: 20504
 ## Title: RangeDisplay
 ## Author: mitch0
-## Version: v5.0.5
+## Version: v6.0.2
 ## Notes: Estimated range display. Type /rangedisplay for config
 ## Notes-ruRU: Дисплей с указанием расстояния до цели. Введите /rangedisplay для справки
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: true
 ## SavedVariables: RangeDisplayDB3
-## OptionalDeps: LibStub, CallbackHandler-1.0, LibRangeCheck-2.0, Ace3, LibSharedMedia-3.0, LibDualSpec-1.0
+## OptionalDeps: LibStub, CallbackHandler-1.0, LibRangeCheck-3.0, Ace3, LibSharedMedia-3.0, LibDualSpec-1.0
 ## X-Category: Combat
 ## X-License: Public Domain
 ## X-RelSite-WoWI: 7297
@@ -18,7 +18,7 @@
 #@no-lib-strip@
 libs\LibStub-1.0\LibStub.lua
 libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
-libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua
+libs\LibRangeCheck-3.0\LibRangeCheck-3.0.lua
 libs\Ace3\AceAddon-3.0\AceAddon-3.0.xml
 libs\Ace3\AceEvent-3.0\AceEvent-3.0.xml
 libs\Ace3\AceDB-3.0\AceDB-3.0.xml

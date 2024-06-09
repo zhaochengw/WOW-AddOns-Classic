@@ -3,23 +3,28 @@ local L = mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic"
 
-mod:SetRevision("20230218211048")
+mod:SetRevision("20231014053250")
+
 mod:SetCreatureID(23035)
 mod:SetEncounterID(1904)
-mod:SetModelID(21492)
-mod:SetModelScale(0.5)
-mod:SetModelOffset(0, 1, 3)
+
+if not mod:IsRetail() then
+	mod:SetModelID(21492)
+	mod:SetModelScale(0.5)
+	mod:SetModelOffset(0, 1, 3)
+end
+
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 40184",
 	"SPELL_AURA_APPLIED 40321 40184 40303",
 	"SPELL_AURA_REMOVED 40303",
-	"UNIT_HEALTH" ,
+	"UNIT_HEALTH boss1" ,
 	"CHAT_MSG_MONSTER_EMOTE"
 )
 
-local warnBirds             = mod:NewAnnounce("warnBrood", 2, 32038)
+local warnBirds             = mod:NewAnnounce("warnBrood", 2, 32038)--(-5253)
 local warnStoned            = mod:NewAnnounce("warnStoned", 1, 32810, false)
 local warnCyclone           = mod:NewTargetAnnounce(40321, 2)
 local warnSpellBomb         = mod:NewTargetAnnounce(40303, 2)

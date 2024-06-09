@@ -22,6 +22,8 @@ L["|cffeda55fMiddle-Click|r to toggle the minimap icon on or off."] = "|cffeda55
 L["|cffeda55fRight-Click|r to toggle performance profiling window."] = "|cffeda55f우-클릭|r 으로 성능 프로파일링 창을 켜고 끕니다."
 L["|cffeda55fShift-Click|r to pause addon execution."] = "|cffeda55f쉬프트-클릭|r 으로 애드온 실행을 일시 중지합니다."
 L["|cFFFF0000Not|r Item Bonus Id Equipped"] = "|cFFFF0000착용하지 않은|r 아이템 보너스 ID"
+--[[Translation missing --]]
+L["|cFFFF0000Not|r Item Equipped"] = "|cFFFF0000Not|r Item Equipped"
 L["|cFFFF0000Not|r Player Name/Realm"] = "플레이어 이름/서버 |cFFFF0000불일치|r"
 --[[Translation missing --]]
 L["|cFFFF0000Not|r Spell Known"] = "|cFFFF0000Not|r Spell Known"
@@ -83,6 +85,18 @@ L["Action Button Glow"] = "동작 버튼 반짝임"
 L["Action Usable"] = "사용 가능"
 L["Actions"] = "동작"
 L["Active"] = "활성화"
+--[[Translation missing --]]
+L[ [=[Active boss mod addon: |cFFffcc00BigWigs|r
+
+Note: This trigger will use BigWigs or DBM, in that order if both are installed.]=] ] = [=[Active boss mod addon: |cFFffcc00BigWigs|r
+
+Note: This trigger will use BigWigs or DBM, in that order if both are installed.]=]
+--[[Translation missing --]]
+L[ [=[Active boss mod addon: |cFFffcc00DBM|r
+
+Note: This trigger will use BigWigs or DBM, in that order if both are installed.]=] ] = [=[Active boss mod addon: |cFFffcc00DBM|r
+
+Note: This trigger will use BigWigs or DBM, in that order if both are installed.]=]
 L["Add"] = "추가"
 L["Add Missing Auras"] = "없어진 효과 추가"
 L["Additional Trigger Replacements"] = "추가 활성 조건 교체"
@@ -94,7 +108,7 @@ L["Aggro"] = "어그로"
 L["Agility"] = "민첩성"
 L["Ahn'Qiraj"] = "안퀴라즈"
 --[[Translation missing --]]
-L["Alchemy Cast Bar"] = "Alchemy Cast Bar"
+L["Aku'mai"] = "Aku'mai"
 L["Alert Type"] = "경보 유형"
 L["Algalon the Observer"] = "관찰자 알갈론"
 L["Alive"] = "생존"
@@ -114,6 +128,8 @@ L["Amount"] = "수량"
 --[[Translation missing --]]
 L["Anchoring"] = "Anchoring"
 L["And Talent"] = "및 특성"
+--[[Translation missing --]]
+L["Angle and Radius"] = "Angle and Radius"
 L["Animations"] = "애니메이션"
 L["Anticlockwise"] = "반시계 방향"
 L["Anub'arak"] = "아눕아락"
@@ -185,7 +201,10 @@ L["Back and Forth"] = "왕복"
 L["Background"] = "배경"
 L["Background Color"] = "배경 색상"
 L["Baltharus the Warborn"] = "전쟁의 아들 발타루스"
-L["Bar Color"] = "바 색상"
+--[[Translation missing --]]
+L["Bar Color/Gradient Start"] = "Bar Color/Gradient Start"
+--[[Translation missing --]]
+L["Baron Aquanis"] = "Baron Aquanis"
 L["Baron Geddon"] = "남작 게돈"
 L["Battle for Azeroth"] = "격전의 아제로스"
 L["Battle.net Whisper"] = "Battle.net 귓속말"
@@ -202,8 +221,7 @@ L["BigWigs Stage"] = "BigWigs 단계"
 L["BigWigs Timer"] = "BigWigs 타이머"
 L["Black Wing Lair"] = "검은날개 둥지"
 --[[Translation missing --]]
-L["Blacksmithing Cast Bar"] = "Blacksmithing Cast Bar"
-L["Blizzard (2h | 3m | 10s | 2.4)"] = "블리자드 (2시간 | 3분 | 10초 | 2.4)"
+L["Blackfathom Deeps"] = "Blackfathom Deeps"
 L["Blizzard Combat Text"] = "블리자드 전투 문자"
 L["Blizzard Cooldown Reduction"] = "블리자드 재사용 대기시간 감소"
 L["Block"] = "방어함"
@@ -222,6 +240,14 @@ L["Blood-Queen Lana'thel"] = "피의 여왕 라나텔"
 L["Border"] = "테두리"
 L["Boss"] = "우두머리"
 L["Boss Emote"] = "우두머리 감정 표현"
+--[[Translation missing --]]
+L["Boss Mod Announce"] = "Boss Mod Announce"
+--[[Translation missing --]]
+L["Boss Mod Stage"] = "Boss Mod Stage"
+--[[Translation missing --]]
+L["Boss Mod Stage (Event)"] = "Boss Mod Stage (Event)"
+--[[Translation missing --]]
+L["Boss Mod Timer"] = "Boss Mod Timer"
 L["Boss Whisper"] = "우두머리 귓속말"
 L["Bottom"] = "하단"
 L["Bottom Left"] = "좌측 하단"
@@ -245,6 +271,12 @@ https://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames]=] ] = [=[Cannot c
 https://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames]=]
 --[[Translation missing --]]
 L["Can't schedule timer with %i, due to a World of Warcraft bug with high computer uptime. (Uptime: %i). Please restart your computer."] = "Can't schedule timer with %i, due to a World of Warcraft bug with high computer uptime. (Uptime: %i). Please restart your computer."
+--[[Translation missing --]]
+L["Capped"] = "Capped"
+--[[Translation missing --]]
+L["Capped at Season Max"] = "Capped at Season Max"
+--[[Translation missing --]]
+L["Capped at Weekly Max"] = "Capped at Weekly Max"
 L["Cast"] = "시전"
 L["Cast Bar"] = "시전바"
 L["Cast Failed"] = "시전 실패"
@@ -255,6 +287,8 @@ L["Caster"] = "시전자"
 L["Caster Name"] = "시전자 이름"
 L["Caster Realm"] = "시전자 서버"
 L["Caster Unit"] = "시전 유닛"
+--[[Translation missing --]]
+L["Casters Name/Realm"] = "Casters Name/Realm"
 L["Caster's Target"] = "시전자의 대상"
 L["Cataclysm"] = "대격변"
 L["Ceil"] = "천장"
@@ -357,14 +391,20 @@ L["Crowd Controlled"] = "군중 제어됨"
 L["Crushing"] = "강타"
 L["C'thun"] = "쑨"
 --[[Translation missing --]]
+L["Currency"] = "Currency"
+--[[Translation missing --]]
+L["Current Combo Point charged"] = "Current Combo Point charged"
+--[[Translation missing --]]
 L["Current Essence"] = "Current Essence"
 L["Current Experience"] = "현재 경험치"
+--[[Translation missing --]]
+L["Current Instance"] = "Current Instance"
 L["Current Movement Speed (%)"] = "현재 이동 속도 (%)"
 L["Current Stage"] = "현재 단계"
-L[ [=[Current Zone Group
-]=] ] = "현재 지역 그룹"
-L[ [=[Current Zone
-]=] ] = "현재 지역"
+--[[Translation missing --]]
+L["Current Zone"] = "Current Zone"
+--[[Translation missing --]]
+L["Current Zone Group"] = "Current Zone Group"
 L["Curse"] = "저주"
 L["Custom"] = "사용자 정의"
 L["Custom Action"] = "사용자 정의 동작"
@@ -427,6 +467,8 @@ L["Difficulty"] = "Difficulty"
 L["Disable Spell Known Check"] = "Disable Spell Known Check"
 --[[Translation missing --]]
 L["Disabled Spell Known Check"] = "Disabled Spell Known Check"
+--[[Translation missing --]]
+L["Discovered"] = "Discovered"
 L["Disease"] = "질병"
 L["Dispel"] = "무효화"
 L["Dispel Failed"] = "무효화 실패"
@@ -455,6 +497,8 @@ L["Dungeon (Timewalking)"] = "던전 (시간여행)"
 L["Dungeons"] = "던전"
 L["Durability Damage"] = "내구도 손상"
 L["Durability Damage All"] = "모든 내구도 손상"
+--[[Translation missing --]]
+L["Duration"] = "Duration"
 --[[Translation missing --]]
 L["Duration Function"] = "Duration Function"
 --[[Translation missing --]]
@@ -505,11 +549,11 @@ L["Enchant Name or ID"] = "마법부여 이름 또는 ID"
 L["Enchant Removed"] = "마법부여 사라짐"
 --[[Translation missing --]]
 L["Enchanted"] = "Enchanted"
---[[Translation missing --]]
-L["Enchanting Cast Bar"] = "Enchanting Cast Bar"
 L["Encounter ID(s)"] = "교전 ID(s)"
 L["Energize"] = "마력 얻음"
 L["Enrage"] = "격노"
+--[[Translation missing --]]
+L["Enter a name or a spellId"] = "Enter a name or a spellId"
 --[[Translation missing --]]
 L["Enter static or relative values with %"] = "Enter static or relative values with %"
 L["Entering"] = "시작"
@@ -519,6 +563,8 @@ L["Entering/Leaving Encounter"] = "Entering/Leaving Encounter"
 L["Entry Order"] = "항목 순서"
 L["Environment Type"] = "환경 종류"
 L["Environmental"] = "환경"
+--[[Translation missing --]]
+L["Equipment"] = "Equipment"
 L["Equipment Set"] = "장비 구성"
 L["Equipment Set Equipped"] = "장비 구성 착용"
 L["Equipment Slot"] = "장비 칸"
@@ -558,12 +604,16 @@ L["Every Frame"] = "매 프레임"
 L["Every Frame (High CPU usage)"] = "매 프레임 (CPU 사용량 높음)"
 --[[Translation missing --]]
 L["Evoker Essence"] = "Evoker Essence"
+--[[Translation missing --]]
+L["Exact Spell ID(s)"] = "Exact Spell ID(s)"
 L["Experience (%)"] = "경험치 (%)"
 L["Expertise Bonus"] = "숙련 보너스"
 L["Expertise Rating"] = "숙련도"
 L["Extend Outside"] = "외부 확장"
 L["Extra Amount"] = "추가 수치"
 L["Extra Attacks"] = "추가 공격"
+--[[Translation missing --]]
+L["Extra Spell Id"] = "Extra Spell Id"
 L["Extra Spell Name"] = "추가 주문 이름"
 L["Faction"] = "진영"
 L["Faction Champions"] = "진영 용사"
@@ -614,6 +664,8 @@ L["Forward"] = "Forward"
 --[[Translation missing --]]
 L["Forward, Reverse Loop"] = "Forward, Reverse Loop"
 --[[Translation missing --]]
+L["Fourth Value of Tooltip Text"] = "Fourth Value of Tooltip Text"
+--[[Translation missing --]]
 L["Frame Selector"] = "Frame Selector"
 L["Frequency"] = "빈도"
 L["Freya"] = "프레이야"
@@ -636,9 +688,17 @@ L["Gahz'ranka"] = "가즈란카"
 L["Gained"] = "획득"
 L["Garr"] = "가르"
 L["Gehennas"] = "게헨나스"
+--[[Translation missing --]]
+L["Gelihast"] = "Gelihast"
+--[[Translation missing --]]
+L["General"] = "General"
 L["General Rajaxx"] = "장군 라작스"
 L["General Vezax"] = "장군 베작스"
 L["General Zarithrian"] = "장군 자리스리안"
+--[[Translation missing --]]
+L["GetNameAndIcon Function (fallback state)"] = "GetNameAndIcon Function (fallback state)"
+--[[Translation missing --]]
+L["Ghamoo-ra"] = "Ghamoo-ra"
 L["Glancing"] = "빗맞음"
 L["Global Cooldown"] = "전역 재사용 대기시간"
 L["Glow"] = "반짝임"
@@ -648,9 +708,9 @@ L["Golemagg the Incinerator"] = "초열의 골레마그"
 L["Gothik the Harvester"] = "영혼의 착취자 고딕"
 L["Gradient"] = "색상 전환"
 --[[Translation missing --]]
-L["Gradient Color"] = "Gradient Color"
---[[Translation missing --]]
 L["Gradient Enabled"] = "Gradient Enabled"
+--[[Translation missing --]]
+L["Gradient End"] = "Gradient End"
 --[[Translation missing --]]
 L["Gradient Orientation"] = "Gradient Orientation"
 L["Gradient Pulse"] = "색상 전환(깜빡임)"
@@ -660,23 +720,9 @@ L["Grobbulus"] = "그라불루스"
 L["Group"] = "그룹"
 L["Group Arrangement"] = "그룹 편성"
 --[[Translation missing --]]
-L["Group Finder Eye"] = "Group Finder Eye"
---[[Translation missing --]]
-L["Group Finder Eye Initial"] = "Group Finder Eye Initial"
---[[Translation missing --]]
-L["Group Finder Found"] = "Group Finder Found"
---[[Translation missing --]]
-L["Group Finder Found Initial"] = "Group Finder Found Initial"
---[[Translation missing --]]
-L["Group Finder Mouse Over"] = "Group Finder Mouse Over"
---[[Translation missing --]]
-L["Group Finder Poke"] = "Group Finder Poke"
---[[Translation missing --]]
-L["Group Finder Poke End"] = "Group Finder Poke End"
---[[Translation missing --]]
-L["Group Finder Poke Initial"] = "Group Finder Poke Initial"
---[[Translation missing --]]
 L["Group Leader/Assist"] = "Group Leader/Assist"
+--[[Translation missing --]]
+L["Group Size"] = "Group Size"
 L["Group Type"] = "그룹 유형"
 L["Grow"] = "성장"
 L["GTFO Alert"] = "GTFO 경보"
@@ -731,6 +777,8 @@ L["Icon Function"] = "Icon Function"
 L["Icon Function (fallback state)"] = "Icon Function (fallback state)"
 --[[Translation missing --]]
 L["Id"] = "Id"
+--[[Translation missing --]]
+L["ID"] = "ID"
 L["If you require additional assistance, please open a ticket on GitHub or visit our Discord at https://discord.gg/weakauras!"] = "추가 지원이 필요한 경우, GitHub에서 티켓을 열거나 Discord( https://discord.gg/weakauras )를 방문해 주세요!"
 L["Ignis the Furnace Master"] = "용광로 군주 이그니스"
 L["Ignore Dead"] = "죽음 무시"
@@ -747,7 +795,11 @@ L["In Group"] = "그룹 중"
 L["In Party"] = "파티 중"
 L["In Pet Battle"] = "애완동물 대전 중"
 L["In Raid"] = "공격대 중"
+--[[Translation missing --]]
+L["In Range"] = "In Range"
 L["In Vehicle"] = "차량 탑승 중"
+--[[Translation missing --]]
+L["In War Mode"] = "In War Mode"
 L["Include Bank"] = "은행 포함"
 L["Include Charges"] = "충전량 포함"
 L["Include Death Runes"] = "죽음의 룬 포함"
@@ -758,11 +810,15 @@ L["Increase Precision Below"] = "Increase Precision Below"
 L["Increases by one per stage or intermission."] = "단계 또는 사잇단계당 1씩 증가합니다."
 L["Information"] = "정보"
 L["Inherited"] = "상속"
+--[[Translation missing --]]
+L["Instace Id"] = "Instace Id"
 L["Instakill"] = "죽임"
 --[[Translation missing --]]
 L["Install the addons BugSack and BugGrabber for detailed error logs."] = "Install the addons BugSack and BugGrabber for detailed error logs."
 L["Instance"] = "인스턴스"
 L["Instance Difficulty"] = "인스턴스 난이도"
+--[[Translation missing --]]
+L["Instance Id"] = "Instance Id"
 L["Instance Size Type"] = "인스턴스 크기 유형"
 L["Instance Type"] = "인스턴스 유형"
 L["Instructor Razuvious"] = "훈련교관 라주비어스"
@@ -777,10 +833,14 @@ L["Inverse"] = "반대로"
 L["Inverse Pet Behavior"] = "역행 소환수 행동"
 L["Is Away from Keyboard"] = "자리비움"
 --[[Translation missing --]]
+L["Is Current Specialization"] = "Is Current Specialization"
+--[[Translation missing --]]
 L["Is Death Rune"] = "Is Death Rune"
 L["Is Exactly"] = "정확할 때"
 L["Is Moving"] = "이동 중일 때"
 L["Is Off Hand"] = "보조장비일 때"
+--[[Translation missing --]]
+L["Is Paused"] = "Is Paused"
 L["is useable"] = "사용 가능할 때"
 L["Island Expedition (Heroic)"] = "군도 탐험 (영웅)"
 L["Island Expedition (Mythic)"] = "군도 탐험 (신화)"
@@ -800,8 +860,6 @@ L["Item Slot"] = "아이템 칸"
 L["Item Slot String"] = "아이템 칸 문자열"
 L["Item Type"] = "아이템 유형"
 L["Item Type Equipped"] = "착용한 아이템 유형"
---[[Translation missing --]]
-L["Jewelcrafting Cast Bar"] = "Jewelcrafting Cast Bar"
 L["Jin'do the Hexxer"] = "주술사 진도"
 L["Journal Stage"] = "도감 단계"
 L["Keep Inside"] = "내부에 보관"
@@ -810,14 +868,14 @@ L["Kologarn"] = "콜로간"
 L["Koralon the Flame Watcher"] = "화염 감시자 코랄론"
 L["Kurinnaxx"] = "쿠린낙스"
 L["Lady Deathwhisper"] = "여교주 데스위스퍼"
+--[[Translation missing --]]
+L["Lady Sarevess"] = "Lady Sarevess"
 L["Large"] = "큰"
 --[[Translation missing --]]
 L["Latency"] = "Latency"
 --[[Translation missing --]]
 L["Leader"] = "Leader"
 L["Least remaining time"] = "최소 남은 시간"
---[[Translation missing --]]
-L["Leatherworking Cast Bar"] = "Leatherworking Cast Bar"
 L["Leaving"] = "종료"
 L["Leech"] = "마력 흡수"
 L["Leech (%)"] = "생기흡수 (%)"
@@ -831,8 +889,6 @@ L["Left, then Up"] = "왼쪽으로, 위로"
 L["Legacy Looking for Raid"] = "낭만 공격대 찾기"
 L["Legacy RGB Gradient"] = "과거의 RGB 그라디언트"
 L["Legacy RGB Gradient Pulse"] = "과거의 RGB 그라디언트 맥박"
---[[Translation missing --]]
-L["Legacy Spellname"] = "Legacy Spellname"
 L["Legion"] = "군단"
 L["Length"] = "길이"
 L["Level"] = "레벨"
@@ -841,10 +897,22 @@ L["Limited"] = "Limited"
 L["Lines & Particles"] = "라인 & 입자"
 L["Load Conditions"] = "조건 불러오기"
 L["Loatheb"] = "로데브"
+--[[Translation missing --]]
+L["Location"] = "Location"
 L["Looking for Raid"] = "공격대 찾기"
 L["Loop"] = "반복"
+--[[Translation missing --]]
+L["Loot"] = "Loot"
+--[[Translation missing --]]
+L["Loot Specialization"] = "Loot Specialization"
+--[[Translation missing --]]
+L["Loot Specialization Id"] = "Loot Specialization Id"
+--[[Translation missing --]]
+L["Loot Specialization Name"] = "Loot Specialization Name"
 L["Lord Jaraxxus"] = "군주 자락서스"
 L["Lord Marrowgar"] = "군주 매로우가르"
+--[[Translation missing --]]
+L["Lorgus Jett"] = "Lorgus Jett"
 L["Lost"] = "손실"
 L["Low Damage"] = "낮은 피해"
 L["Lower Than Tank"] = "탱커보다 낮을 때"
@@ -877,6 +945,8 @@ L["Max Charges"] = "최대 충전량"
 L["Max Health"] = "Max Health"
 --[[Translation missing --]]
 L["Max Power"] = "Max Power"
+--[[Translation missing --]]
+L["Max Quantity"] = "Max Quantity"
 L["Maximum"] = "최대"
 L["Maximum Estimate"] = "최대 예상치"
 --[[Translation missing --]]
@@ -928,6 +998,8 @@ L["Name Function"] = "Name Function"
 --[[Translation missing --]]
 L["Name Function (fallback state)"] = "Name Function (fallback state)"
 L["Name of Caster's Target"] = "시전자 대상의 이름"
+--[[Translation missing --]]
+L["Name(s)"] = "Name(s)"
 L["Name/Realm of Caster's Target"] = "시전자 대상의 이름/서버"
 L["Nameplate"] = "이름표"
 L["Nameplate Type"] = "이름표 유형"
@@ -941,6 +1013,12 @@ L["Neutral"] = "중립"
 L["Never"] = "절대 안 함"
 L["Next Combat"] = "다음 전투"
 L["Next Encounter"] = "다음 교전"
+--[[Translation missing --]]
+L[ [=[No active boss mod addon detected.
+
+Note: This trigger will use BigWigs or DBM, in that order if both are installed.]=] ] = [=[No active boss mod addon detected.
+
+Note: This trigger will use BigWigs or DBM, in that order if both are installed.]=]
 --[[Translation missing --]]
 L["No Extend"] = "No Extend"
 L["No Instance"] = "인스턴스가 아닐 때"
@@ -970,6 +1048,30 @@ L["Npc ID"] = "NPC ID"
 L["Number"] = "횟수"
 L["Number Affected"] = "영향 받은 횟수"
 L["Object"] = "객체"
+--[[Translation missing --]]
+L[ [=[Occurrence of the event
+Can be a range of values
+Can have multiple values separated by a comma or a space
+
+Examples:
+2nd 5th and 6th events: 2, 5, 6
+2nd to 6th: 2-6
+every 2 events: /2
+every 3 events starting from 2nd: 2/3
+every 3 events starting from 2nd and ending at 11th: 2-11/3
+
+Works only if Boss Mod addon show counter]=] ] = [=[Occurrence of the event
+Can be a range of values
+Can have multiple values separated by a comma or a space
+
+Examples:
+2nd 5th and 6th events: 2, 5, 6
+2nd to 6th: 2-6
+every 2 events: /2
+every 3 events starting from 2nd: 2/3
+every 3 events starting from 2nd and ending at 11th: 2-11/3
+
+Works only if Boss Mod addon show counter]=]
 --[[Translation missing --]]
 L[ [=[Occurrence of the event, reset when aura is unloaded
 Can be a range of values
@@ -1087,10 +1189,10 @@ L["Player Effective Level"] = "플레이어 실제 레벨"
 L["Player Experience"] = "플레이어 경험치"
 L["Player Faction"] = "플레이어 진영"
 L["Player Level"] = "플레이어 레벨"
+--[[Translation missing --]]
+L["Player Location ID(s)"] = "Player Location ID(s)"
 L["Player Name/Realm"] = "플레이어 이름/서버"
 L["Player Race"] = "플레이어 종족"
---[[Translation missing --]]
-L["Player Rest"] = "Player Rest"
 L["Player(s) Affected"] = "영향 받은 플레이어"
 L["Player(s) Not Affected"] = "영향 받지 않은 플레이어"
 L["Player/Unit Info"] = "플레이어/유닛 정보"
@@ -1106,6 +1208,8 @@ L["Precision"] = "정밀도"
 L["Preset"] = "프리셋"
 L["Princess Huhuran"] = "공주 후후란"
 L["Print Profiling Results"] = "프로파일링 결과 출력"
+--[[Translation missing --]]
+L["Proc Glow"] = "Proc Glow"
 L["Professor Putricide"] = "교수 퓨트리사이드"
 L["Profiling already started."] = "프로파일링이 이미 시작되었습니다."
 L["Profiling automatically started."] = "프로파일링이 자동으로 시작되었습니다."
@@ -1122,6 +1226,12 @@ L["PvP Flagged"] = "PvP 활성"
 L["PvP Talent %i"] = "PvP 특성 %i"
 L["PvP Talent selected"] = "선택된 명예 특성"
 L["PvP Talent Selected"] = "선택된 명예 특성"
+--[[Translation missing --]]
+L["Quality Id"] = "Quality Id"
+--[[Translation missing --]]
+L["Quantity"] = "Quantity"
+--[[Translation missing --]]
+L["Quantity earned this week"] = "Quantity earned this week"
 --[[Translation missing --]]
 L["Queued Action"] = "Queued Action"
 L["Radius"] = "반경"
@@ -1332,6 +1442,8 @@ L["Spark"] = "섬광"
 L["Spec Position"] = "Spec Position"
 L["Spec Role"] = "전문화 역할"
 L["Specialization"] = "전문화"
+--[[Translation missing --]]
+L["Specific Currency"] = "Specific Currency"
 L["Specific Type"] = "특정 유형"
 L["Specific Unit"] = "특정 유닛"
 L["Spell"] = "주문"
@@ -1351,6 +1463,8 @@ L["Spell Name"] = "주문 이름"
 L["Spell Peneration Percent"] = "Spell Peneration Percent"
 L["Spell School"] = "주문 갈래"
 L["Spell Usable"] = "주문 사용 가능"
+--[[Translation missing --]]
+L["Spellname"] = "Spellname"
 L["Spin"] = "회전"
 L["Spiral"] = "소용돌이"
 L["Spiral In And Out"] = "회전 소용돌이"
@@ -1375,6 +1489,8 @@ L["Stance/Form/Aura"] = "태세/변신/효과"
 --[[Translation missing --]]
 L["Standing"] = "Standing"
 L["Star Shake"] = "별모양 흔들림"
+--[[Translation missing --]]
+L["Start Animation"] = "Start Animation"
 L["Start Now"] = "지금 시작"
 L["Status"] = "상태"
 --[[Translation missing --]]
@@ -1397,7 +1513,8 @@ L["Supports multiple entries, separated by commas"] = "쉼표로 구분된 여�
 L[ [=[Supports multiple entries, separated by commas
 ]=] ] = "쉼표로 구분된 여러 항목을 지원합니다"
 L["Supports multiple entries, separated by commas. Escape ',' with \\"] = "쉼표로 구분된 여러 항목을 지원합니다. \\로 ',' 이스케이프"
-L["Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277."] = "쉼표로 구분된 여러 항목을 지원합니다. 그룹 지역 ID(s)에는 'g' 접두사(예 g277)가 있어야 합니다."
+--[[Translation missing --]]
+L["Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277. Supports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. Supports Instance IDs prefixed with 'i'."] = "Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277. Supports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. Supports Instance IDs prefixed with 'i'."
 L["Swing"] = "자동 공격"
 L["Swing Timer"] = "자동 공격 타이머"
 --[[Translation missing --]]
@@ -1405,8 +1522,6 @@ L["Swipe"] = "Swipe"
 L["System"] = "시스템"
 --[[Translation missing --]]
 L["Tab "] = "Tab "
---[[Translation missing --]]
-L["Tailoring Cast Bar"] = "Tailoring Cast Bar"
 L["Talent"] = "특성"
 L["Talent |cFFFF0000Not|r Known"] = "|cFFFF0000배우지 않은|r 특성"
 L["Talent |cFFFF0000Not|r Selected"] = "|cFFFF0000선택하지 않은|r 특성"
@@ -1422,6 +1537,8 @@ L["Targeted"] = "Targeted"
 L["Tenebron"] = "테네브론"
 L["Text"] = "문자"
 --[[Translation missing --]]
+L["Text To Speech"] = "Text To Speech"
+--[[Translation missing --]]
 L["Text-to-speech"] = "Text-to-speech"
 --[[Translation missing --]]
 L["Texture Function"] = "Texture Function"
@@ -1434,6 +1551,8 @@ L["The aura has overwritten the global '%s', this might affect other auras."] = 
 L["The effective level differs from the level in e.g. Time Walking dungeons."] = "실제 레벨은 예를 들어 시간여행 던전의 레벨과는 다릅니다."
 L["The Eye of Eternity"] = "영원의 눈"
 L["The Four Horsemen"] = "4기사단"
+--[[Translation missing --]]
+L["The 'ID' value can be found in the BigWigs options of a specific spell"] = "The 'ID' value can be found in the BigWigs options of a specific spell"
 L["The Lich King"] = "리치 왕"
 L["The Obsidian Sanctum"] = "흑요석 성소"
 L["The Prophet Skeram"] = "예언자 스케람"
@@ -1451,6 +1570,10 @@ L["This aura has caused a Lua error."] = "이 효과는 Lua 오류를 일으켰�
 L["This aura is saving %s KB of data"] = "This aura is saving %s KB of data"
 L["This aura plays a sound via a condition."] = "이 효과는 조건을 통해 소리를 재생합니다."
 L["This aura plays a sound via an action."] = "이 효과는 동작을 통해 소리를 재생합니다."
+--[[Translation missing --]]
+L["This aura plays a Text To Speech via a condition."] = "This aura plays a Text To Speech via a condition."
+--[[Translation missing --]]
+L["This aura plays a Text To Speech via an action."] = "This aura plays a Text To Speech via an action."
 L["Thorim"] = "토림"
 L["Threat Percent"] = "위협 수준 백분율"
 L["Threat Situation"] = "위협 수준 상황"
@@ -1469,6 +1592,8 @@ L["Tooltip"] = "툴팁"
 L["Tooltip Value 1"] = "툴팁 값 1"
 L["Tooltip Value 2"] = "툴팁 값 2"
 L["Tooltip Value 3"] = "툴팁 값 3"
+--[[Translation missing --]]
+L["Tooltip Value 4"] = "Tooltip Value 4"
 L["Top"] = "위"
 L["Top Left"] = "왼쪽 위"
 L["Top Right"] = "오른쪽 위"
@@ -1477,6 +1602,8 @@ L["Toravon the Ice Watcher"] = "얼음 감시자 토라본"
 L["Torghast"] = "토르가스트"
 L["Total"] = "전체"
 L["Total Duration"] = "총 지속시간"
+--[[Translation missing --]]
+L["Total Earned in this Season"] = "Total Earned in this Season"
 --[[Translation missing --]]
 L["Total Essence"] = "Total Essence"
 L["Total Experience"] = "전체 경험치"
@@ -1500,6 +1627,8 @@ L["Tracking Charge CDs"] = "Tracking Charge CDs"
 --[[Translation missing --]]
 L["Tracking Only Cooldown"] = "Tracking Only Cooldown"
 L["Transmission error"] = "전송 오류"
+--[[Translation missing --]]
+L["Treat charged combo point as 7 combo points"] = "Treat charged combo point as 7 combo points"
 L["Trial of the Crusader"] = "십자군의 시험장"
 L["Trigger"] = "활성 조건"
 L["Trigger %i"] = "활성 조건 %i"
@@ -1513,6 +1642,8 @@ L["Trivial (Low Level)"] = "Trivial (Low Level)"
 L["True"] = "참"
 --[[Translation missing --]]
 L["Trying to repair broken conditions in %s likely caused by a WeakAuras bug."] = "Trying to repair broken conditions in %s likely caused by a WeakAuras bug."
+--[[Translation missing --]]
+L["Twilight Lord Kelris"] = "Twilight Lord Kelris"
 L["Twin Emperors"] = "쌍둥이 제왕"
 L["Type"] = "유형"
 L["Ulduar"] = "울두아르"
@@ -1532,6 +1663,10 @@ L["Unit is Unit"] = "유닛 = 유닛"
 L["Unit Name"] = "유닛 이름"
 L["Unit Name/Realm"] = "유닛 이름/서버"
 L["Units Affected"] = "영향 받은 유닛"
+--[[Translation missing --]]
+L["Units of affected Players in a table format"] = "Units of affected Players in a table format"
+--[[Translation missing --]]
+L["Units of unaffected Players in a table format"] = "Units of unaffected Players in a table format"
 L["unknown location"] = "알 수 없는 위치"
 L["Unlimited"] = "무제한"
 --[[Translation missing --]]
@@ -1550,6 +1685,8 @@ L["Use Custom Color"] = "사용자 정의 색상 사용"
 L["Use Legacy floor rounding"] = "Use Legacy floor rounding"
 --[[Translation missing --]]
 L["Use Watched Faction"] = "Use Watched Faction"
+--[[Translation missing --]]
+L["Uses UnitInRange() to check if in range. Matches default raid frames out of range behavior, which is between 25 to 40 yards depending on your class and spec."] = "Uses UnitInRange() to check if in range. Matches default raid frames out of range behavior, which is between 25 to 40 yards depending on your class and spec."
 L["Using WeakAuras.clones is deprecated. Use WeakAuras.GetRegion(id, cloneId) instead."] = "WeakAuras.clones는 더 이상 사용되지 않습니다. 대신 WeakAuras.GetRegion(id, cloneId)를 사용하세요."
 L["Using WeakAuras.regions is deprecated. Use WeakAuras.GetRegion(id) instead."] = "WeakAuras.regions는 더 이상 사용되지 않습니다. 대신 WeakAuras.GetRegion(id)를 사용하세요."
 L["Vaelastrasz the Corrupt"] = "타락한 밸라스트라즈"
@@ -1567,7 +1704,6 @@ L["Vesperon"] = "베스페론"
 L["Viscidus"] = "비시디우스"
 L["Visibility"] = "표시"
 L["Visions of N'Zoth"] = "느조스의 환영"
-L["War Mode Active"] = "전쟁 모드 활성화"
 L["Warfront (Heroic)"] = "격전지 (영웅)"
 L["Warfront (Normal)"] = "격전지 (일반)"
 L["Warlords of Draenor"] = "드레노어의 전쟁군주"
@@ -1579,10 +1715,18 @@ L["Warning: Full Scan auras checking for both name and spell id can't be convert
 L["Warning: Name info is now available via %affected, %unaffected. Number of affected group members via %unitCount. Some options behave differently now. This is not automatically adjusted."] = "경고: %affected, %unaffected 를 통해 이름 정보를 사용할 수 있습니다. 영향을 받은 구성원의 수는 %unitCount 로 통합니다. 일부 옵션은 다르게 동작합니다. 이것은 자동으로 조정되지 않습니다."
 L["Warning: Tooltip values are now available via %tooltip1, %tooltip2, %tooltip3 instead of %s. This is not automatically adjusted."] = "경고: 툴팁 값은 이제 %s 대신 %tooltip1, %tooltip2, %tooltip3으로 사용할 수 있습니다. 이것은 자동으로 조정되지 않습니다."
 L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"] = "WeakAuras 내장 (63:42 | 3:07 | 10 | 2.4)"
+--[[Translation missing --]]
 L[ [=[WeakAuras has detected that it has been downgraded.
 Your saved auras may no longer work properly.
 Would you like to run the |cffff0000EXPERIMENTAL|r repair tool? This will overwrite any changes you have made since the last database upgrade.
-Last upgrade: %s]=] ] = "WeakAuras가 다운그레이드 되었음을 감지했습니다. 저장된 효과가 더 이상 제대로 작동하지 않을 수 있습니다. |cffff0000실험용|r 복구 도구를 실행할까요? 이는 마지막 DB 업그레이드 이후에 수행한 모든 변경 사항을 덮어씁니다. 마지막 업그레이드: %s"
+Last upgrade: %s
+
+|cffff0000You should BACKUP your WTF folder BEFORE pressing this button.|r]=] ] = [=[WeakAuras has detected that it has been downgraded.
+Your saved auras may no longer work properly.
+Would you like to run the |cffff0000EXPERIMENTAL|r repair tool? This will overwrite any changes you have made since the last database upgrade.
+Last upgrade: %s
+
+|cffff0000You should BACKUP your WTF folder BEFORE pressing this button.|r]=]
 L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."] = "로그인 과정 중 WeakAuras에 문제가 발생했습니다. 이 문제를 https://github.com/WeakAuras/Weakauras2/issues/new 에 보고해주세요."
 L["WeakAuras Profiling"] = "WeakAuras 프로파일링"
 L["WeakAuras Profiling Report"] = "WeakAuras 프로파일링 보고서"
@@ -1610,7 +1754,6 @@ L["Your scheduled automatic profile has been cancelled."] = "예약된 자동 �
 L["Your threat as a percentage of the tank's current threat."] = "방어 전담의 현재 위협 수준에 대한 당신의 위협 수준의 백분율입니다."
 L["Your threat on the mob as a percentage of the amount required to pull aggro. Will pull aggro at 100."] = "몹의 어그로를 획득하는 데 필요한 위협 수준에 대한 당신의 위협 수준입니다. 100일 때 어그로를 획득합니다."
 L["Your total threat on the mob."] = "몬스터가 가진 당신의 총 위협 수준입니다."
-L["Zone ID(s)"] = "지역 ID(s)"
 L["Zone Name"] = "지역 이름"
 L["Zoom"] = "확대"
 L["Zoom Animation"] = "확대 애니메이션"

@@ -398,8 +398,19 @@ GTFO.SpellID["52117"] = {
 GTFO.SpellID["234422"] = {
   --desc = "Aura of Decay (Inquisitor Variss)";
   applicationOnly = true;
-	minimumStacks = 3;
-  sound = 2;
+  soundFunction = function() 
+	local stacks = GTFO_DebuffStackCount("player", 234422);
+	if (stacks >= 5) then
+		return 1;
+	else
+		return 2;
+	end
+  end;
+};
+
+GTFO.SpellID["240782"] = {
+  --desc = "Nether Storm (Highlord Kruul)";
+  sound = 1;
 };
 
 GTFO.SpellID["199349"] = {

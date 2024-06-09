@@ -693,15 +693,15 @@ end
 
 local function SetFontFlags(settings, flag, val)
   if flag == "Thick" then
-    local outline = (val and "THICKOUTLINE") or (GetFontFlags(settings, "Outline") and "OUTLINE") or "NONE"
+    local outline = (val and "THICKOUTLINE") or (GetFontFlags(settings, "Outline") and "OUTLINE") or ""
     local mono = (GetFontFlags(settings, "Mono") and ", MONOCHROME") or ""
     return outline .. mono
   elseif flag == "Outline" then
-    local outline = (val and "OUTLINE") or (GetFontFlags(settings, "Thick") and "THICKOUTLINE") or "NONE"
+    local outline = (val and "OUTLINE") or (GetFontFlags(settings, "Thick") and "THICKOUTLINE") or ""
     local mono = (GetFontFlags(settings, "Mono") and ", MONOCHROME") or ""
     return outline .. mono
   else -- flag = "Mono"
-    local outline = (GetFontFlags(settings, "Thick") and "THICKOUTLINE") or (GetFontFlags(settings, "Outline") and "OUTLINE") or "NONE"
+    local outline = (GetFontFlags(settings, "Thick") and "THICKOUTLINE") or (GetFontFlags(settings, "Outline") and "OUTLINE") or ""
     local mono = (val and ", MONOCHROME") or ""
     return outline .. mono
   end
@@ -6983,7 +6983,7 @@ local function CreateSpecRolesClassic()
   -- Create a list of specs for the player's class
   local result = {
     Automatic_Spec_Detection = {
-      name = L["Determine your role (tank/dps/healing) automatically based on current stance (Warrior) or form (Druid)."],
+      name = L["Determine your role (tank/dps/healing) automatically based on current stance, form, aura, presence, or rune."],
       type = "toggle",
       width = "full",
       order = 1,

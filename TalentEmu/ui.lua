@@ -9,6 +9,7 @@ local VT = __private.VT;
 local DT = __private.DT;
 
 --		upvalue
+	local pcall = pcall;
 	local type = type;
 	local next = next;
 	local select = select;
@@ -102,6 +103,7 @@ local DT = __private.DT;
 			R = { 10,  6,  7,  8, 11, 12, 13, 14, },
 			B = { 16, 17, 18,  0, },
 		},
+		EngravingNodeSize = 16;
 
 		GlyphFrameSize = 200,
 		MajorGlyphNodeSize = 64,
@@ -236,6 +238,9 @@ local DT = __private.DT;
 			[18] = [[Interface\Paperdoll\UI-PaperDoll-Slot-Ranged]],
 			[19] = [[Interface\Paperdoll\UI-PaperDoll-Slot-Tabard]],
 		},
+		ENGRAVING_HIGHLIGHT = [[Interface\Buttons\ActionbarFlyoutButton-FlyoutMidLeft]],
+		ENGRAVING_HIGHLIGHT_COORD = { 8 / 32, 24 / 32, 8 / 64, 24 / 64, },
+		ENGRAVING_UNK = CT.TEXTUREUNK,
 	};
 
 -->
@@ -1402,6 +1407,9 @@ MT.BuildEnv('UI');
 			TooltipFrame:SetScript("OnUpdate", nil);
 			local Tooltip1 = TooltipFrame.Tooltip1;
 			if Tooltip1:IsShown() then
+				if TooltipFrame.WoWeuCN_TooltipsSetSpellTooltip ~= nil then
+					TooltipFrame.WoWeuCN_TooltipsSetSpellTooltip(Tooltip1, Tooltip1.SpellID);
+				end
 				--Tooltip1:Show();
 				TooltipFrame:SetWidth(Tooltip1:GetWidth());
 				TooltipFrame:SetHeight(TooltipFrame.Tooltip1LabelLeft:GetHeight() + Tooltip1:GetHeight() + TooltipFrame.Tooltip1FooterRight:GetHeight());
@@ -1420,6 +1428,10 @@ MT.BuildEnv('UI');
 			local Tooltip1 = TooltipFrame.Tooltip1;
 			local Tooltip2 = TooltipFrame.Tooltip2;
 			if Tooltip1:IsShown() or Tooltip2:IsShown() then
+				if TooltipFrame.WoWeuCN_TooltipsSetSpellTooltip ~= nil then
+					TooltipFrame.WoWeuCN_TooltipsSetSpellTooltip(Tooltip1, Tooltip1.SpellID);
+					TooltipFrame.WoWeuCN_TooltipsSetSpellTooltip(Tooltip2, Tooltip2.SpellID);
+				end
 				--Tooltip1:Show();
 				--Tooltip2:Show();
 				TooltipFrame:SetWidth(max(Tooltip1:GetWidth(), Tooltip2:GetWidth()));
@@ -1470,6 +1482,7 @@ MT.BuildEnv('UI');
 				Tooltip1:SetPoint("TOPLEFT", Tooltip1LabelLeft, "BOTTOMLEFT", 0, 6);
 				Tooltip1:SetSpellByID(spellTable[1]);
 				Tooltip1:SetAlpha(0.0);
+				Tooltip1.SpellID = spellTable[1];
 				Tooltip1FooterLeft:Show();
 				Tooltip1FooterRight:Show();
 				Tooltip1FooterRight:SetText(tostring(spellTable[1]));
@@ -1494,6 +1507,7 @@ MT.BuildEnv('UI');
 				Tooltip1:SetPoint("TOPLEFT", Tooltip1LabelLeft, "BOTTOMLEFT", 0, 6);
 				Tooltip1:SetSpellByID(spellTable[MaxRank]);
 				Tooltip1:SetAlpha(0.0);
+				Tooltip1.SpellID = spellTable[MaxRank];
 				Tooltip1FooterLeft:Show();
 				Tooltip1FooterRight:Show();
 				Tooltip1FooterRight:SetText(tostring(spellTable[MaxRank]));
@@ -1518,6 +1532,7 @@ MT.BuildEnv('UI');
 				Tooltip1:SetPoint("TOPLEFT", Tooltip1LabelLeft, "BOTTOMLEFT", 0, 6);
 				Tooltip1:SetSpellByID(spellTable[CurRank]);
 				Tooltip1:SetAlpha(0.0);
+				Tooltip1.SpellID = spellTable[CurRank];
 				Tooltip1FooterLeft:Show();
 				Tooltip1FooterRight:Show();
 				Tooltip1FooterRight:SetText(tostring(spellTable[CurRank]));
@@ -1549,6 +1564,7 @@ MT.BuildEnv('UI');
 				Tooltip2:SetPoint("TOPLEFT", Tooltip2LabelLeft, "BOTTOMLEFT", 0, 6);
 				Tooltip2:SetSpellByID(spellTable[CurRank + 1]);
 				Tooltip2:SetAlpha(0.0);
+				Tooltip2.SpellID = spellTable[CurRank + 1];
 				Tooltip2FooterLeft:Show();
 				Tooltip2FooterRight:Show();
 				Tooltip2FooterRight:SetText(tostring(spellTable[CurRank + 1]));
@@ -1729,6 +1745,21 @@ MT.BuildEnv('UI');
 			if recache then
 				EquipmentFrameDelayUpdateList[EquipmentContainer] = EquData;
 				MT._TimerStart(EquipmentFrameDelayUpdate, 0.5, 1);
+			end
+			MT.UI.EquipmentFrameContainerResize(EquipmentContainer.EquipmentFrameContainer);
+		end
+		function MT.UI.EngravingContainerUpdate(EquipmentContainer, EngData)
+			local EngravingNodes = EquipmentContainer.EngravingNodes;
+			for slot = 0, 19 do
+				local Node = EngravingNodes[slot];
+				local info = EngData[slot];
+				if info ~= nil and info[1] ~= nil then
+					Node:Show();
+					Node.id = info[1];
+					Node:SetNormalTexture(info[2] or select(3, GetSpellInfo(info[1])) or TTEXTURESET.ENGRAVING_UNK);
+				else
+					Node:Hide();
+				end
 			end
 			MT.UI.EquipmentFrameContainerResize(EquipmentContainer.EquipmentFrameContainer);
 		end
@@ -1914,6 +1945,25 @@ MT.BuildEnv('UI');
 
 			TooltipFrame.Tooltip2FooterLeft = Tooltip2FooterLeft;
 			TooltipFrame.Tooltip2FooterRight = Tooltip2FooterRight;
+
+			if _G.GetCurrentRegion() == 3 then	--	EU
+				local function OnEvent(self, event, addon)
+					--	SetSpellTooltip(self, id)
+					if addon:lower() == "woweucn_tooltips" and _G.SetSpellTooltip ~= nil and type(_G.SetSpellTooltip) == 'function' and pcall(_G.SetSpellTooltip, Tooltip1, 5) then
+						TooltipFrame.WoWeuCN_TooltipsSetSpellTooltip = _G.SetSpellTooltip;
+						Tooltip1:Hide();
+						TooltipFrame:UnregisterEvent("ADDON_LOADED");
+						return true;
+					else
+						return false;
+					end
+				end
+				if _G.IsAddOnLoaded("WoWeuCN_Tooltips") and OnEvent(TooltipFrame, "ADDON_LOADED", "WoWeuCN_Tooltips") then
+				else
+					TooltipFrame:RegisterEvent("ADDON_LOADED");
+					TooltipFrame:SetScript("OnEvent", OnEvent);
+				end
+			end
 
 			return TooltipFrame;
 		end
@@ -2213,7 +2263,7 @@ MT.BuildEnv('UI');
 		end
 	--	EquipmentContainer & GlyphContainer
 		local function EquipmentNode_OnEnter(Node)
-			if Node.link then
+			if Node.link ~= nil then
 				GameTooltip:SetOwner(Node, "ANCHOR_LEFT");
 				GameTooltip:SetHyperlink(Node.link);
 			end
@@ -2225,14 +2275,14 @@ MT.BuildEnv('UI');
 		end
 		local function EquipmentNode_OnClick(Node)
 			if IsShiftKeyDown() then
-				if Node.link then
+				if Node.link ~= nil then
 					local editBox = ChatEdit_ChooseBoxForSend();
 					editBox:Show();
 					editBox:SetFocus();
 					editBox:Insert(Node.link);
 				end
 			elseif IsControlKeyDown() then
-				if Node.link then
+				if Node.link ~= nil then
 					DressUpItemLink(Node.link);
 				end
 			end
@@ -2241,6 +2291,7 @@ MT.BuildEnv('UI');
 			local Frame = EquipmentFrameContainer.Frame;
 			if Frame.name ~= nil then
 				MT.UI.EquipmentContainerUpdate(Frame.EquipmentContainer, VT.TQueryCache[Frame.name].EquData);
+				MT.UI.EngravingContainerUpdate(Frame.EquipmentContainer, VT.TQueryCache[Frame.name].EngData);
 				if VT.__support_glyph then
 					MT.UI.GlyphContainerUpdate(Frame.GlyphContainer, VT.TQueryCache[Frame.name].GlyData);
 				end
@@ -2257,6 +2308,31 @@ MT.BuildEnv('UI');
 		end
 		local function GlyphNode_OnLeave(Node)
 			GameTooltip:Hide();
+		end
+		local function EngravingNode_OnEnter(Node)
+			if Node.id ~= nil then
+				GameTooltip:SetOwner(Node, "ANCHOR_LEFT");
+				GameTooltip:SetSpellByID(Node.id);
+			end
+		end
+		local function EngravingNode_OnLeave(Node, motion)
+			if GameTooltip:IsOwned(Node) then
+				GameTooltip:Hide();
+			end
+		end
+		local function EngravingNode_OnClick(Node)
+			-- if IsShiftKeyDown() then
+			-- 	if Node.link ~= nil then
+			-- 		local editBox = ChatEdit_ChooseBoxForSend();
+			-- 		editBox:Show();
+			-- 		editBox:SetFocus();
+			-- 		editBox:Insert(Node.link);
+			-- 	end
+			-- elseif IsControlKeyDown() then
+			-- 	if Node.link ~= nil then
+			-- 		DressUpItemLink(Node.link);
+			-- 	end
+			-- end
 		end
 		function MT.UI.CreateEquipmentFrame(Frame)
 			local EquipmentFrameContainer = CreateFrame('FRAME', nil, Frame);
@@ -2277,6 +2353,7 @@ MT.BuildEnv('UI');
 			end
 			EquipmentContainer:Show();
 			local EquipmentNodes = {  };
+			local EngravingNodes = {  };
 			for slot = 0, 19 do
 				local Node = CreateFrame('BUTTON', nil, EquipmentContainer);
 				Node:SetSize(TUISTYLE.EquipmentNodeSize, TUISTYLE.EquipmentNodeSize);
@@ -2319,6 +2396,23 @@ MT.BuildEnv('UI');
 				Node.EquipmentContainer = EquipmentContainer;
 				Node.slot = slot;
 				EquipmentNodes[slot] = Node;
+
+				local Engr = CreateFrame('BUTTON', nil, Node);
+				Engr:SetSize(TUISTYLE.EngravingNodeSize, TUISTYLE.EngravingNodeSize);
+				Engr:Hide();
+
+				Engr:EnableMouse(true);
+				Engr:SetScript("OnEnter", EngravingNode_OnEnter);
+				Engr:SetScript("OnLeave", EngravingNode_OnLeave);
+				Engr:SetScript("OnClick", EngravingNode_OnClick);
+
+				Engr:SetNormalTexture(TTEXTURESET.UNK);
+				Engr:SetHighlightTexture(TTEXTURESET.ENGRAVING_HIGHLIGHT);
+				Engr:GetHighlightTexture():SetTexCoord(TTEXTURESET.ENGRAVING_HIGHLIGHT_COORD[1], TTEXTURESET.ENGRAVING_HIGHLIGHT_COORD[2], TTEXTURESET.ENGRAVING_HIGHLIGHT_COORD[3], TTEXTURESET.ENGRAVING_HIGHLIGHT_COORD[4]);
+
+				Engr.EquipmentContainer = EquipmentContainer;
+				Engr.slot = slot;
+				EngravingNodes[slot] = Engr;
 			end
 			local L, R, B = TUISTYLE.EquipmentNodeLayout.L, TUISTYLE.EquipmentNodeLayout.R, TUISTYLE.EquipmentNodeLayout.B;
 			for index, slot in next, L do
@@ -2327,6 +2421,8 @@ MT.BuildEnv('UI');
 				Node.Name:SetPoint("TOPLEFT", Node, "TOPRIGHT", TUISTYLE.EquipmentNodeTextGap, 0);
 				Node.Ench:SetPoint("LEFT", Node, "RIGHT", TUISTYLE.EquipmentNodeTextGap, 0);
 				Node.Gem:SetPoint("BOTTOMLEFT", Node, "BOTTOMRIGHT", TUISTYLE.EquipmentNodeTextGap, 0);
+				local Engr = EngravingNodes[slot];
+				Engr:SetPoint("TOPLEFT", -2, 2);
 			end
 			for index, slot in next, R do
 				local Node = EquipmentNodes[slot];
@@ -2334,6 +2430,8 @@ MT.BuildEnv('UI');
 				Node.Name:SetPoint("BOTTOMRIGHT", Node, "BOTTOMLEFT", -TUISTYLE.EquipmentNodeTextGap, 0);
 				Node.Ench:SetPoint("RIGHT", Node, "LEFT", -TUISTYLE.EquipmentNodeTextGap, 0);
 				Node.Gem:SetPoint("TOPRIGHT", Node, "TOPLEFT", -TUISTYLE.EquipmentNodeTextGap, 0);
+				local Engr = EngravingNodes[slot];
+				Engr:SetPoint("TOPRIGHT", 2, 2);
 			end
 			for index, slot in next, B do
 				local Node = EquipmentNodes[slot];
@@ -2344,15 +2442,20 @@ MT.BuildEnv('UI');
 					Node.Name:SetPoint("TOPRIGHT", Node, "TOPLEFT", -TUISTYLE.EquipmentNodeTextGap, 0);
 					Node.Ench:SetPoint("RIGHT", Node, "LEFT", -TUISTYLE.EquipmentNodeTextGap, 0);
 					Node.Gem:SetPoint("BOTTOMRIGHT", Node, "BOTTOMLEFT", -TUISTYLE.EquipmentNodeTextGap, 0);
+					local Engr = EngravingNodes[slot];
+					Engr:SetPoint("TOPLEFT", -2, 2);
 				else
 					Node.Name:SetPoint("TOPLEFT", Node, "TOPRIGHT", TUISTYLE.EquipmentNodeTextGap, 0);
 					Node.Ench:SetPoint("LEFT", Node, "RIGHT", TUISTYLE.EquipmentNodeTextGap, 0);
 					Node.Gem:SetPoint("BOTTOMLEFT", Node, "BOTTOMRIGHT", TUISTYLE.EquipmentNodeTextGap, 0);
+					local Engr = EngravingNodes[slot];
+					Engr:SetPoint("TOPRIGHT", -2, 2);
 				end
 			end
 			EquipmentContainer.Frame = Frame;
 			EquipmentContainer.EquipmentFrameContainer = EquipmentFrameContainer;
 			EquipmentContainer.EquipmentNodes = EquipmentNodes;
+			EquipmentContainer.EngravingNodes = EngravingNodes;
 			EquipmentFrameContainer.EquipmentContainer = EquipmentContainer;
 			--
 			local GlyphContainer = nil;

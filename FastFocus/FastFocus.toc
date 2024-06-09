@@ -1,0 +1,8 @@
+## Interface: 30400
+## Title: FastFocus
+## Title-zhCN: |r|cFF00FF00[通用]|r FastFocus |r|cFF0099FF[快速焦点]|r
+## Version: 1.0.0
+## Notes: Shift+左键快速设置焦点，代码来自NGA。|n简介：|cffee5885露露緹婭@Bilibili|r
+
+
+FastFocus.lua

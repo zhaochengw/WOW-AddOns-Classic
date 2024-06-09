@@ -1,6 +1,0 @@
-<Ui>
-	<Script file="Config.lua" />
-	<Script file="Rurutia.lua" />
-	<Script file="FastFocus.lua" />
-	<Script file="QuestsEnd.lua" />	
-</Ui>

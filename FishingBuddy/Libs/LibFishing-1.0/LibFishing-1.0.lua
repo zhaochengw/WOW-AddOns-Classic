@@ -10,7 +10,7 @@ Licensed under a Creative Commons "Attribution Non-Commercial Share Alike" Licen
 local _
 
 local MAJOR_VERSION = "LibFishing-1.0"
-local MINOR_VERSION = 101105
+local MINOR_VERSION = 101109
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 
@@ -2129,7 +2129,6 @@ function FishLib:SetOverrideBindingClick()
     if ( btn ) then
         local buttonkey = self:GetSAMouseKey();
         SetOverrideBindingClick(btn, true, buttonkey, SABUTTONNAME);
-        self.clear_bindings = true
     end
 end
 
@@ -2711,21 +2710,31 @@ local function LoadTranslation(source, lang, target, record)
     end
 end
 
+function FishLib:AddonVersion(addon)
+    local addonCount = GetNumAddOns();
+    for addonIndex = 1, addonCount do
+        local name, title, notes, loadable, reason, security = GetAddOnInfo(addonIndex);
+        if name == addon then
+            return C_AddOns.GetAddOnMetadata(addonIndex, "Version");
+        end
+    end
+end
+
 function FishLib:Translate(addon, source, target, forced)
     local locale = forced or GetLocale();
-    target.VERSION = GetAddOnMetadata(addon, "Version");
+    target.VERSION = self:AddonVersion(addon)
     LoadTranslation(source, locale, target);
     if ( locale ~= "enUS" ) then
         LoadTranslation(source, "enUS", target, forced);
     end
     LoadTranslation(source, "Inject", target);
-    visited = {}
     FixupStrings(target);
     FixupBindings(target);
     if (forced) then
         return missing;
     end
 end
+
 
 -- Pool types
 FishLib.SCHOOL_FISH = 0;

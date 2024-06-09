@@ -63,11 +63,13 @@ local defaults = {
 	global = {
 		BlackBook = {
 			alts = {},
+		EnableDefault = false,
 		},
 	},
 }
 local _G = getfenv(0)
 local t = {}
+Postal3DB = {}
 Postal.keepFreeOptions = {0, 1, 2, 3, 5, 10, 15, 20, 25, 30}
 
 Postal.WOWClassic = false
@@ -129,7 +131,17 @@ function Postal:OnInitialize()
 	if not self.version then self.version = GetAddOnMetadata("Postal", "Version") end
 
 	-- Initialize database
-	self.db = LibStub("AceDB-3.0"):New("Postal3DB", defaults)
+	local EnableDefault = false
+	if Postal3DB and Postal3DB.global then
+		EnableDefault = Postal3DB.global.EnableDefault and true or false
+	end
+--	if type(next(Postal3DB)) ~= "nil" then EnableDefault = Postal3DB.global.EnableDefault end
+	if EnableDefault == true then
+		self.db = LibStub("AceDB-3.0"):New("Postal3DB", defaults, true)
+	else
+		self.db = LibStub("AceDB-3.0"):New("Postal3DB", defaults)
+	end
+--	self.db = LibStub("AceDB-3.0"):New("Postal3DB", defaults)
 	self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileCopied", "OnProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileReset", "OnProfileChanged")
@@ -143,7 +155,7 @@ function Postal:OnInitialize()
 	end
 
 	-- Register events
-	if Postal.WOWClassic or Postal.WOWBCClassic then
+	if Postal.WOWBCClassic then
 		self:RegisterEvent("MAIL_CLOSED")
 	else
 		self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
@@ -251,6 +263,10 @@ end
 
 function Postal.SetChatOutput(dropdownbutton, arg1, arg2, checked)
 	Postal.db.profile.ChatOutput = arg1
+end
+
+function Postal.EnableDefault(dropdownbutton, arg1, arg2, checked)
+	Postal.db.global.EnableDefault = checked
 end
 
 function Postal.ProfileFunc(dropdownbutton, arg1, arg2, checked)
@@ -429,6 +445,14 @@ function Postal.Menu(self, level)
 			info.func = Postal.ProfileFunc
 			info.arg1 = "ResetProfile"
 			info.arg2 = nil
+			UIDropDownMenu_AddButton(info, level)
+
+			info.keepShownOnClick = 1
+			info.isNotRadio = 1
+			info.notCheckable = nil
+			info.text = L["Default"]
+			info.func = Postal.EnableDefault
+			info.checked = Postal.db.global.EnableDefault
 			UIDropDownMenu_AddButton(info, level)
 
 		elseif type(UIDROPDOWNMENU_MENU_VALUE) == "table" and UIDROPDOWNMENU_MENU_VALUE.ModuleMenu then

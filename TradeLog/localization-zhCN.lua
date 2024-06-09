@@ -36,7 +36,6 @@ TBT_SPELL_TABLE = {
 		{ name="制造治疗石", level=24, item="治疗石" },
 		{ name="制造强效治疗石", level=36, item="强效治疗石" },
 		{ name="制造特效治疗石", level=48, item="特效治疗石" },
-		{ name="制造治疗石", level=60, item="极效治疗石" },
 	}
 }
 -- =============== just localizate the above, the addon will function ok ========================= 
@@ -74,15 +73,6 @@ TRADE_LOG_MONEY_NAME = {
 }
 
 CANCEL_REASON_TEXT = {
-	self = "你取消了交易",
-	other = "对方取消了交易",
-	toofar = "双方距离过远",
-	selfrunaway = "你超出了距离",
-	selfhideui = "你隐藏了界面,交易窗口关闭",
-	unknown = "未知原因",
-}
-
-CANCEL_REASON_TEXT_ANNOUNCE = {
 	self = "我取消了交易",
 	other = "对方取消了交易",
 	toofar = "双方距离过远",
@@ -111,34 +101,20 @@ TRADE_LOG_CHANNELS = {
 TRADE_LOG_ANNOUNCE = "通告";
 TRADE_LOG_ANNOUNCE_TIP = "选中就会将交易信息发送到指定的频道"
 
--- ===================== Part for TradeList ==================
-TRADE_LIST_CLEAR_HISTORY = "清除记录"
-TRADE_LIST_SCALE = "详情窗口缩放"
-TRADE_LIST_FILTER = "仅列出成功交易"
-
-TRADE_LIST_HEADER_WHEN = "交易时间"
-TRADE_LIST_HEADER_WHO = "交易对象"
-TRADE_LIST_HEADER_WHERE = "交易地点"
-TRADE_LIST_HEADER_SEND = "交出"
-TRADE_LIST_HEADER_RECEIVE = "获得"
-TRADE_LIST_HEADER_RESULT = "结果"
-
-TRADE_LIST_RESULT_TEXT_SHORT = { 
+TRADE_LOG_RESULT_TEXT_SHORT = { 
 	cancelled = "取消", 
 	complete = "成功", 
 	error = "失败", 
 }
 
-TRADE_LIST_RESULT_TEXT = { 
+TRADE_LOG_RESULT_TEXT = { 
 	cancelled = "交易取消", 
 	complete = "交易成功", 
 	error = "交易失败", 
 }
 
-TRADE_LIST_MONTH_SUFFIX = "月"
-TRADE_LIST_DAY_SUFFIX = "日"
-
-TRADE_LIST_COMPLETE_TOOLTIP = "点击鼠标左键查看交易的详细信息";
+TRADE_LOG_MONTH_SUFFIX = "月"
+TRADE_LOG_DAY_SUFFIX = "日"
 
 TRADE_LOG_COMPLETE_TOOLTIP = "点击鼠标左键查看交易的详细信息";
 
@@ -150,7 +126,7 @@ RECENT_TRADE_TITLE = "近期与此人的交易"
 TRADE_LIST_CLEAR_HISTORY = "清除记录"
 TRADE_LIST_SCALE = "详情窗口缩放"
 TRADE_LIST_FILTER = "仅列出成功交易"
-
+TRADE_LIST_DESCENDING = "降序"
 TRADE_LIST_HEADER_WHEN = "交易时间"
 TRADE_LIST_HEADER_WHO = "交易对象"
 TRADE_LIST_HEADER_WHERE = "交易地点"
@@ -160,7 +136,6 @@ TRADE_LIST_HEADER_RESULT = "结果"
 
 TRADE_LIST_CLEAR_CONFIRM = "今天以外的记录都将被清除!";
 
-TBT_MINIMAP_TOOLTIP1 = "交易助手"
-TBT_MINIMAP_TOOLTIP2 = "点击显示交易详情面板"
-
+TRADE_LIST_TITLE = "交易记录"
+TRADE_LIST_DESC = "可以查看最近所有的交易记录，包括失败的原因。"
 end

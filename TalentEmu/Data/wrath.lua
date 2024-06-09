@@ -65,8 +65,8 @@ DT.ClassSpec = {
 		262,	--Restoration,恢复
 	},
 	WARLOCK = {
-		302,	--Curses,痛苦
-		303,	--Summoning,恶魔学识
+		302,	--Affliction,痛苦
+		303,	--Demonology,恶魔学识
 		301,	--Destruction,毁灭
 	},
 	WARRIOR = {

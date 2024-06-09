@@ -74,12 +74,18 @@ local function Bar_Layout(self, parent)
 	Bar:Show()
 end
 
+-- normal setvalue function
 local function Bar_SetValue(self, parent, value)
 	parent[self.name]:SetValue(value)
 end
 
+-- workaround to fix a bug in statusbar (https://github.com/Stanzilla/WoWUIBugs/issues/498)
+local function Bar_SetValueBg(self, parent, value)
+	parent[self.name]:SetValue(value==0 and 0.00001 or value)
+end
+
 local function Bar_SetValueParent(self, parent, value)
-	parent[self.name]:SetValue(value)
+	parent[self.name]:SetValue(value==0 and 0.00001 or value) -- workaround to statusbar bug
 	local barChild = parent[self.childName]
 	local childValue = barChild.realValue or 0
 	if childValue>0 then
@@ -204,7 +210,7 @@ local function Bar_Disable(self, parent)
 	bar:Hide()
 	bar:SetParent(nil)
 	bar:ClearAllPoints()
-	tdestroy(bar)	
+	tdestroy(bar)
 end
 
 local function Bar_Destroy(self, parent, bar)
@@ -243,9 +249,12 @@ local function Bar_UpdateDB(self)
 		self.reverseFill    = barParent.reverseFill
 		self.orientation    = barParent.orientation
 	else
-		self.SetValue = Bar_SetValue
+		self.SetValue = dbx.backColor and Bar_SetValueBg or Bar_SetValue
 		self.CanCreate = self.prototype.CanCreate
 		self.parentName = nil
+		if self.childName then -- fix changing orientation on themes, CF issue #1227
+			Grid2.indicators[self.childName].orientation = self.orientation
+		end
 	end
 end
 

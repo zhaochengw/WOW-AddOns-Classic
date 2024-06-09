@@ -324,24 +324,6 @@ function DBMExtraGlobal:rebuildSpecTable()
 	--			["RemoveMagic"] = true,--Singe Magic (Imp)
 				["CasterDps"] = true,
 			},
-			--[266] = {	--Demonology Warlock
-			--	["Dps"] = true,
-			--	["Ranged"] = true,
-			--	["RangedDps"] = true,
-			--	["ManaUser"] = true,
-			--	["SpellCaster"] = true,
-	--		--	["RemoveMagic"] = true,--Singe Magic (Imp)
-			--	["CasterDps"] = true,
-			--},
-			--[267] = {	--Destruction Warlock
-			--	["Dps"] = true,
-			--	["Ranged"] = true,
-			--	["RangedDps"] = true,
-			--	["ManaUser"] = true,
-			--	["SpellCaster"] = true,
-	--		--	["RemoveMagic"] = true,--Singe Magic (Imp)
-			--	["CasterDps"] = true,
-			--},
 			[1454] = {	--Initial Warlock (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
 				["Dps"] = true,
 				["Ranged"] = true,
@@ -356,7 +338,7 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["Physical"] = true,
 				["RemovePoison"] = true,
 				["RemoveDisease"] = true,
-				["HasInterrupt"] = true,
+				["HasInterrupt"] = IsSpellKnown(116705),
 			},
 			[269] = {	--Windwalker Monk
 				["Dps"] = true,
@@ -365,7 +347,7 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["Physical"] = true,
 				["RemovePoison"] = true,
 				["RemoveDisease"] = true,
-				["HasInterrupt"] = true,
+				["HasInterrupt"] = IsSpellKnown(116705),
 			},
 			[270] = {	--Mistweaver Monk
 				["Healer"] = true,
@@ -377,6 +359,7 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["RemovePoison"] = true,
 				["RemoveDisease"] = true,
 				["RemoveMagic"] = true,
+				["HasInterrupt"] = IsSpellKnown(116705),
 			},
 			[1450] = {	--Initial Monk (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
 				["Tank"] = true,
@@ -417,6 +400,7 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["RangedDps"] = true,
 				["ManaUser"] = true,
 				["SpellCaster"] = true,
+				["HasInterrupt"] = IsSpellKnown(351338),--Quell
 				["RemovePoison"] = IsSpellKnown(365585),--Expunge. Must be specced
 				["RemoveCurse"] = IsSpellKnown(374251),--Cauterizing Flame
 				["RemoveDisease"] = IsSpellKnown(374251),--Cauterizing Flame
@@ -429,6 +413,7 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["SpellCaster"] = true,
 				["RemoveMagic"] = true,
 				["RemovePoison"] = true,--Auto known
+				["HasInterrupt"] = IsSpellKnown(351338),--Quell
 				["RemoveCurse"] = IsSpellKnown(374251),--Cauterizing Flame
 				["RemoveDisease"] = IsSpellKnown(374251),--Cauterizing Flame
 				["RemoveEnrage"] = IsSpellKnown(374346),--Overawe
@@ -452,6 +437,7 @@ function DBMExtraGlobal:rebuildSpecTable()
 		specRoleTable[261] = specRoleTable[259]--Subtlety Rogue same as Assassination
 		specRoleTable[266] = specRoleTable[265]--Demonology Warlock same as Affliction
 		specRoleTable[267] = specRoleTable[265]--Destruction Warlock same as Affliction
+		specRoleTable[1473] = specRoleTable[1467]--Just map augmentation to devastation for now
 	else
 		local IsSpellKnown = IsSpellKnown
 
@@ -466,7 +452,7 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["HasInterrupt"] = true,
 				["HasImmunity"] = true,
 				["RemoveCurse"] = true,
-				["MagicDispeller"] = IsSpellKnown(30449),--Spellsteal in TBC
+				["MagicDispeller"] = IsSpellKnown(30449),--Spellsteal in TBC+
 			},
 			["PALADIN1"] = {	--Holy Paladin
 				["Healer"] = true,

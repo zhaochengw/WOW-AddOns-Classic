@@ -762,6 +762,8 @@ NWB.companionCreatures = {
 	[31716] = "Sky-Captain Cryoflight",
 	[31708] = "Deathguard Barth",
 	[196534] = "Hoplet", --6 month sub.
+	[213605] = "Arfus", --Completing all gamma dungeons.
+	[211025] = "Lil' Wrathion", --Cata preorder pet.
 }
 
 if (NWB.isWrath) then

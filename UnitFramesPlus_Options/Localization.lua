@@ -100,7 +100,7 @@
     UFP_OP_InfoText = "UnitFramesPlus(|cFFFFFF99UFP|R)是一款以系统头像为基础的界面增强插件。";
     UFP_OP_InfoText2 = "请点击左侧列表中的选项进行详细设置。";
     UFP_OP_InfoText3 = "欢迎发送邮件到|cFFFFFF99isler@live.com|R提出您的意见和建议。";
-    UFP_OP_InfoText4 = "冷却计时需要搭配 ClassicAuraDurations 插件一起使用。";
+    -- UFP_OP_InfoText4 = "冷却计时需要搭配 ClassicAuraDurations 插件一起使用。";
     -- UFP_OP_InfoText5 = "内置敌对目标精确生命值显示基于 LibClassicMobHealth-1.0。";
     -- UFP_OP_InfoText6 = "内置敌对目标仇恨高亮/百分比显示基于 LibThreatClassic2。";
     UFP_OP_Reset = "恢复默认设置";
@@ -214,7 +214,7 @@ elseif GetLocale() == "zhTW" then
     UFP_OP_InfoText = "UnitFramesPlus (|cFFFFFF99UFP|R) 是一款以遊戲內建頭像為基礎的介面增強插件。";
     UFP_OP_InfoText2 = "請點擊左側選單中的選項進行詳細設定。";
     UFP_OP_InfoText3 = "歡迎發送郵件到 |cFFFFFF99isler@live.com|R 提出您的意見和建議。";
-    UFP_OP_InfoText4 = "光環倒數時間需要搭配 ClassicAuraDurations 插件一起使用。";
+    -- UFP_OP_InfoText4 = "光環倒數時間需要搭配 ClassicAuraDurations 插件一起使用。";
     -- UFP_OP_InfoText5 = "敵方實際血量使用 RealMobHealth。";
 	-- UFP_OP_InfoText6 = "內建的敵對目標仇恨顯著標示/百分比顯示使用 LibThreatClassic2。";
     UFP_OP_Reset = "恢復成預設值";

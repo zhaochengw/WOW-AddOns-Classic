@@ -29,7 +29,48 @@ local DT = __private.DT;
 	local GetPlayerInfoByGUID = GetPlayerInfoByGUID;
 	local GetMerchantItemID = GetMerchantItemID;
 	local GetBuybackItemLink = GetBuybackItemLink;
-	local GetContainerItemInfo = GetContainerItemInfo or C_Container.GetContainerItemInfo;
+	local _GetContainerItemInfo_Simple;
+	do	--	Disturbed by some backward compatible code
+		local _GetContainerItemInfo;
+		local _GetContainerItemInfo_Simple_C1 = function(bag, slot)
+			-- print('**************Call C1');
+			local texture, count, locked, quality, readable, lootable, link, isFiltered, hasNoValue, itemID = _GetContainerItemInfo(bag, slot);
+			return itemID, link, count;
+		end;
+		local _GetContainerItemInfo_Simple_C2 = function(bag, slot)
+			-- print('**************Call C2');
+			local info = _GetContainerItemInfo(bag, slot);
+			if info ~= nil then
+				-- return info.iconFileID, info.stackCount, info.isLocked, info.quality, info.isReadable, info.hasLoot, info.hyperlink, info.isFiltered, info.hasNoValue, info.itemID, info.isBound
+				return info.itemID, info.hyperlink, info.stackCount;
+			end
+			return nil;
+		end;
+
+		if C_Container ~= nil and C_Container.GetContainerItemInfo ~= nil then
+			_GetContainerItemInfo = C_Container.GetContainerItemInfo;
+			_GetContainerItemInfo_Simple = _GetContainerItemInfo_Simple_C2;
+		elseif GetContainerItemInfo then
+			_GetContainerItemInfo = GetContainerItemInfo;
+			_GetContainerItemInfo_Simple = function(bag, slot)
+				local v1, count, locked, quality, readable, lootable, link, isFiltered, hasNoValue, itemID = _GetContainerItemInfo(bag, slot);
+				if v1 == nil then
+					-- print('**************Pending');
+					return nil;
+				elseif type(v1) == 'table' then
+					-- print('**************Turn V2');
+					_GetContainerItemInfo_Simple = _GetContainerItemInfo_Simple_C2;
+					return v1.itemID, v1.hyperlink, v1.stackCount;
+				else
+					-- print('**************Turn V1');
+					_GetContainerItemInfo_Simple = _GetContainerItemInfo_Simple_C1;
+					return itemID, link, count;
+				end
+			end;
+		else
+			_GetContainerItemInfo_Simple = function() end;
+		end
+	end
 	local GetAuctionItemInfo = GetAuctionItemInfo;
 	local GetAuctionSellItemInfo = GetAuctionSellItemInfo;
 	local LootSlotHasItem, GetLootSlotType, GetLootSlotLink = LootSlotHasItem, GetLootSlotType, GetLootSlotLink;
@@ -572,9 +613,13 @@ local function LF_TooltipSetBagItem(Tooltip, bag, slot)
 	-- if iid ~= nil then
 	-- 	LF_TooltipSetItemByID(Tooltip, iid);
 	-- end
-	local info = GetContainerItemInfo(bag, slot);
-	if info ~= nil and info.itemID ~= nil then
-		LF_TooltipSetItemByID(Tooltip, info.itemID);
+	-- local info = GetContainerItemInfo(bag, slot);
+	-- if info ~= nil and info.itemID ~= nil then
+	-- 	LF_TooltipSetItemByID(Tooltip, info.itemID);
+	-- end
+	local iid = _GetContainerItemInfo_Simple(bag, slot);
+	if iid ~= nil then
+		LF_TooltipSetItemByID(Tooltip, iid);
 	end
 end
 local function LF_TooltipSetAuctionItem(Tooltip, type, index)

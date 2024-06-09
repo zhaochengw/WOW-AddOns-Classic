@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
+    Decursive (v 2.7.15) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2023-04-02T15:26:05Z
+    This file was last updated on 2024-01-21T21:14:55Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -76,9 +76,13 @@ local GetNumPartyMembers= _G.GetNumSubgroupMembers;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
 local GetSpellInfo      = _G.GetSpellInfo;
+local GetSpellDescription = _G.GetSpellDescription;
 local GetSpecialization = _G.GetSpecialization or (GetActiveTalentGroup or function () return nil; end);
 local GetAddOnMetadata  = _G.C_AddOns and _G.C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata;
 local _;
+local tonumber          = _G.tonumber;
+local TN                = function(string) return tonumber(string) or nil; end;
+local C_Spell           = C_Spell;
 -- Default values for the option
 
 
@@ -89,7 +93,7 @@ function D:GetDefaultsSettings()
     return {
         -- default settings {{{
         class = {
-            -- Curring order (1 is the most important, 6 the lesser...)
+            -- Curring order (1 is the most important, 7 the lesser...)
             CureOrder = {
                 [DC.MAGIC]      = 1,
                 [DC.CURSE]      = 2,
@@ -97,6 +101,7 @@ function D:GetDefaultsSettings()
                 [DC.DISEASE]    = 4,
                 [DC.ENEMYMAGIC] = 5,
                 [DC.CHARMED]    = 6,
+                [DC.BLEED]      = 7,
             },
 
             UserSpells = {
@@ -111,7 +116,9 @@ function D:GetDefaultsSettings()
                 },
             },
         },
-
+        locale = {
+            BleedEffectsKeywords = D:GetDefaultBleedEffectsKeywords(),
+        },
         global = {
             SRTLerrors = {
                 ["total"] = 0
@@ -154,6 +161,23 @@ function D:GetDefaultsSettings()
                 "*%s3",       -- the last two entries are always target and focus
                 "ctrl-%s3",
             },
+            BleedAutoDetection = true,
+            t_BleedEffectsIDCheck = {
+                [396007] = true, -- Vicious Peck
+                [396093] = true, -- Savage Leap
+                [193092] = true, -- Bloodletting Sweep
+                [375937] = true, -- Rending Strike
+                [376997] = true, -- Savage Peck
+                [381683] = true, -- Swift Stab
+                [388911] = true, -- Severing Slash
+                [371005] = true, -- arcane but dispellable with cauterizing flame
+                [384134] = true, -- Pierce
+                [394628] = true, -- Peck
+                [372860] = true, -- Searing Wounds
+                [393444] = true, -- Gushing Wound
+                [413131] = true, -- Whirling Dagger
+                [413136] = true, -- Whirling Dagger
+            }
         },
 
         profile = {
@@ -311,6 +335,7 @@ function D:GetDefaultsSettings()
                 [4]                 =   { 1   , 0   , 1    ,  1     }, -- purple
                 [5]                 =   { 1   , 1   , 1    ,  1     }, -- white for undefined
                 [6]                 =   { 1   , 1   , 1    ,  1     }, -- white for undefined
+                [7]                 =   { 1   , 1   , 1    ,  1     }, -- white for undefined
                 [DC.NORMAL]         =   {  .0 ,  .3 ,  .1  ,   .9   }, -- dark green
                 [DC.BLACKLISTED]    =   { 0   , 0   , 0    ,  1     }, -- black
                 [DC.ABSENT]         =   {  .4 ,  .4 ,  .4  ,   .9   }, -- transparent grey
@@ -327,6 +352,7 @@ function D:GetDefaultsSettings()
                 [DC.POISON]     = "FF22DD22",
                 [DC.DISEASE]    = "FF995533",
                 [DC.CHARMED]    = "FFFF0000",
+                [DC.BLEED]      = "FFC0B0B0",
                 [DC.NOTYPE]     = "FFAAAAAA",
             },
 
@@ -732,7 +758,7 @@ local function GetStaticOptions ()
                         type = 'range',
                         name = L["BLACK_LENGTH"],
                         desc = L["OPT_BLACKLENTGH_DESC"],
-                        min = 1,
+                        min = 0,
                         max = 20,
                         step = 0.1,
                         order = 40,
@@ -1099,7 +1125,7 @@ local function GetStaticOptions ()
             MicroFrameOpt = {
                 -- {{{
                 type = "group",
-                childGroups = "tab",
+                --childGroups = "tab",
                 name = D:ColorText(L["OPT_MFSETTINGS"], "FFBBCC33"),
                 desc = L["OPT_MFSETTINGS_DESC"],
                 disabled = function () return not D:IsEnabled(); end,
@@ -1113,6 +1139,7 @@ local function GetStaticOptions ()
                     },
                     displayOpts = {
                         type = "group",
+                        inline = true,
                         name = L["OPT_DISPLAYOPTIONS"],
                         desc = L["OPT_MFSETTINGS_DESC"],
                         handler = {
@@ -1258,6 +1285,7 @@ local function GetStaticOptions ()
 
                     AdvDispOptions = {
                         type = "group",
+                        inline = true,
                         name = L["OPT_ADVDISP"],
                         desc = L["OPT_ADVDISP_DESC"],
                         order = 2,
@@ -1388,7 +1416,7 @@ local function GetStaticOptions ()
                         type = "group",
                         name = L["OPT_MUFSCOLORS"],
                         desc = L["OPT_MUFSCOLORS_DESC"],
-                        order = 4,
+                        order = 3,
                         disabled = function() return D.Status.Combat or not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1;end,
                         hidden = function () return not D:IsEnabled(); end,
                         args = {
@@ -1408,7 +1436,7 @@ local function GetStaticOptions ()
                     PerfOptions = {
                         type = "group",
                         name = L["OPT_MFPERFOPT"],
-                        order = 5,
+                        order = 3,
                         disabled = function () return not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
                         args = {
                             -- {{{
@@ -1556,13 +1584,117 @@ local function GetStaticOptions ()
                                 disabled = function() return not D.Status.CuringSpells[DC.CHARMED] or D.Status.Combat end,
                                 order = 146
                             },
+                            CureBleed = {
+                                type = "toggle",
+                                name = "  "..L["BLEED"],
+                                desc = L["OPT_BLEEDCHECK_DESC"],
+                                get = function() return D:GetCureTypeStatus(DC.BLEED) end,
+                                set = function()
+                                    D:SetCureOrder (DC.BLEED);
+                                end,
+                                disabled = function() return not D.Status.CuringSpells[DC.BLEED] or D.Status.Combat end,
+                                order = 147
+                            },
 
                         },
                     },
+                    BleedEffects = {
+                        type = 'group',
+                        name = L["OPT_BLEED_EFFECT_HOLDER"],
+                        desc = L["OPT_BLEED_EFFECT_HOLDER_DESC"],
+                        order = 175,
+                        --inline = true,
+                        childGroups = 'tab',
+                        args = {
+                            enableDetection = {
+                                type = 'toggle',
+                                width = 'full',
+                                name = L["OPT_ENABLE_BLEED_EFFECTS_DETECTION"],
+                                desc = L["OPT_ENABLE_BLEED_EFFECTS_DETECTION_DESC"],
+                                get = function() return D.db.global.BleedAutoDetection; end,
+                                set = function(info, v) D.db.global.BleedAutoDetection = v end,
+                                disabled = function () return not D.Status.CuringSpells[DC.BLEED] end,
+                                order = 0,
+                            },
+                            bleedkeywords = {
+                                type = 'input',
+                                multiline = true,
+                                name = L["OPT_BLEED_EFFECT_IDENTIFIERS"],
+                                desc = L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"],
+                                width = 1.5,
+                                get = function(info)
+                                    return D.db.locale.BleedEffectsKeywords and D.db.locale.BleedEffectsKeywords or "";
+                                end,
+                                set = function(info, v)
+                                    local oldValue = D.db.locale.BleedEffectsKeywords;
+                                    local value = v:trim() ~= "" and v:trim() or false;
 
+                                    -- remove empty lines and trim each line
+                                    local cleanedValue = value and value:gsub("[\n\r]%s*[\n\r]", "\n"):gsub("[\n\r]%s+", "\n"):gsub("%s+[\n\r]", "\n") or false;
 
+                                    D.db.locale.BleedEffectsKeywords = cleanedValue and cleanedValue or D.defaults.locale.BleedEffectsKeywords;
 
-                }
+                                    local newValueOrDefault = D.db.locale.BleedEffectsKeywords;
+
+                                    if newValueOrDefault:trim() ~= "" then
+                                        if oldValue ~= newValueOrDefault then
+                                            D.Status.P_BleedEffectsKeywords_noCase = D:makeNoCasePattern(newValueOrDefault);
+                                            -- if the identifier changes we need to reset the active table
+                                            -- so that new stuff can be found if previously ignored
+                                            D:reset_t_CheckBleedDebuffsActiveIDs();
+                                        end
+                                    else
+                                        D.Status.P_BleedEffectsKeywords_noCase = false;
+                                    end
+                                end,
+                                validate = function(info, v)
+                                    -- test for pattern match exceptions
+                                    -- Note that Lua does not validate patterns before using them so they may crash depending
+                                    -- on the string being search so we search the provided input text to increase our changes
+                                    -- of getting a match but there is no guarantee, there are protections embeded in hasDescBleedEffectkeyword
+                                    local _, errorMessage = D:hasDescBleedEffectkeyword(v, D:makeNoCasePattern(v), true);
+                                    if not errorMessage then
+                                        return true;
+                                    else
+                                        local cleanedError = errorMessage:gsub("^[^:]+:%d+:%s*", "");
+                                        T._ShowNotice(cleanedError);
+                                        return cleanedError
+                                    end
+                                end,
+                                disabled = function() return not D.db.global.BleedAutoDetection or not D.Status.CuringSpells[DC.BLEED]; end,
+
+                                order = 10,
+                            },
+                            sep1 = {
+                                type = 'header',
+                                name = "",
+                                order = 11,
+                            },
+                            addBleedEffect = {
+                                type = 'input',
+                                name = L["OPT_ADD_BLEED_EFFECT_ID"],
+                                desc = L["OPT_ADD_BLEED_EFFECT_ID_DESC"],
+                                set = function(info, v)
+                                    D.db.global.t_BleedEffectsIDCheck[TN(v)] = true;
+                                    D.Status.t_CheckBleedDebuffsActiveIDs[TN(v)] = true;
+                                end,
+                                validate = function(info, v)
+                                    return TN(v) ~= nil and C_Spell.DoesSpellExist(TN(v)) and 0 or D:ColorPrint(1, 0, 0, L["OPT_BLEED_EFFECT_BAD_SPELLID"]);
+                                end,
+                                disabled = function () return not D.Status.CuringSpells[DC.BLEED] end,
+                                order = 20,
+                            },
+                            knownBleedingEffects = {
+                                type = 'group',
+                                width = 'full',
+                                name = L["OPT_KNOWN_BLEED_EFFECTS"],
+                                order = 40,
+                                args = {},
+
+                            },
+                        },
+                    },
+                },
             }, -- }}}
 
             CustomSpells = {
@@ -1769,7 +1901,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
-                                    "2.7.9.1", "John Wellesz", ("2023-04-02T21:35:33Z"):sub(1,10),
+                                    "2.7.15", "John Wellesz", ("2024-01-21T21:46:01Z"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
@@ -1821,9 +1953,10 @@ local function GetOptions()
         [DC.POISON]         = options.args.CureOptions.args.CureOrder.args.CurePoison,
         [DC.DISEASE]        = options.args.CureOptions.args.CureOrder.args.CureDisease,
         [DC.CHARMED]        = options.args.CureOptions.args.CureOrder.args.CureCharmed,
+        [DC.BLEED]          = options.args.CureOptions.args.CureOrder.args.CureBleed,
     }
 
-    -- Add the green number infront of the checkboxes
+    -- Add the number infront of the checkboxes
     for Type, CheckBox in pairs(CureCheckBoxes) do
         D:SetCureCheckBoxNum(Type, CheckBox);
     end
@@ -1838,6 +1971,8 @@ local function GetOptions()
     options.args.MicroFrameOpt.args.MUFsMouseButtons.args = D:CreateModifierOptionMenu();
     -- create curring spells addition submenus
     D:CreateAddedSpellsOptionMenu(options.args.CustomSpells.args.CustomSpellsHolder.args);
+    -- create bleeding debuffs addition submenus
+    D:CreateBleedingDebuffsOptionMenu(options.args.CureOptions.args.BleedEffects.args.knownBleedingEffects.args);
 
     -- Create profile options
     options.args.general.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(D.db);
@@ -1889,8 +2024,7 @@ end
 
 
 function D:GetCureTypeStatus (Type)
-    local cureOrder = self:GetCureOrderTable();
-    return cureOrder[Type] and cureOrder[Type] > 0;
+    return self:GetCureOrderTable()[Type];
 end
 
 local TypesToUName = {
@@ -1900,13 +2034,16 @@ local TypesToUName = {
     [DC.POISON]         = "POISON",
     [DC.DISEASE]        = "DISEASE",
     [DC.CHARMED]        = "CHARM",
+    [DC.BLEED]          = "BLEED",
 }
 
 local CureCheckBoxes = false;
 function D:SetCureCheckBoxNum (Type, checkBox)
-    -- add the number in green before the name if we have a spell available and if we checked the box
-    if (D:GetCureTypeStatus(Type)) then
-        checkBox.name = D:ColorText(D:GetCureOrderTable()[Type], "FF00FF00") .. " " .. L[TypesToUName[Type]];
+    local cureOrders = self:GetCureOrderTable();
+    -- add the priority in front of the name
+    if (cureOrders[Type]) then
+        local cureOrder = abs(cureOrders[Type])
+        checkBox.name = D:ColorText(cureOrder, cureOrders[Type] > 0 and "FF00FF00" or "FF3030F0") .. " " .. L[TypesToUName[Type]];
     else
         checkBox.name = "  " .. L[TypesToUName[Type]];
     end
@@ -1919,7 +2056,7 @@ function D:GetCureOrderTable ()
 
     if not activeSpec or activeSpec == 5 then
         --[==[@debug@
-        D:Debug("No active spec, returning general cure order table");
+        --D:Debug("No active spec, returning general cure order table:", D:tAsString(generalCureOrder));
         --@end-debug@]==]
         return generalCureOrder;
     else
@@ -1928,11 +2065,11 @@ function D:GetCureOrderTable ()
         if not D.classprofile[specCureOrder] then
             D:Debug("Creating specific cureorder table ", specCureOrder, " for spec:", activeSpec);
             D.classprofile[specCureOrder] = {};
-            self:tcopy(D.classprofile[specCureOrder], generalCureOrder)
+            self:tcopy(D.classprofile[specCureOrder], generalCureOrder);
         end
 
         --[==[@debug@
-        D:Debug("returning specific cure order table ", specCureOrder, " for spec:", activeSpec);
+        --D:Debug("returning specific cure order table ", specCureOrder, " for spec:", activeSpec, "table:", D:tAsString(D.classprofile[specCureOrder]));
         --@end-debug@]==]
         return D.classprofile[specCureOrder];
     end
@@ -1950,6 +2087,7 @@ function D:CheckCureOrder ()
         [DC.POISON]         = 4,
         [DC.DISEASE]        = 5,
         [DC.CHARMED]        = 6,
+        [DC.BLEED]          = 7,
     };
     local AuthorizedValues = {
         [false] = true; -- LOL Yes, it's TRUE tnat FALSE is an authorized value xD
@@ -1966,6 +2104,8 @@ function D:CheckCureOrder ()
         [-15]   = DC.DISEASE,
         [6]     = DC.CHARMED,
         [-16]   = DC.CHARMED,
+        [7]     = DC.BLEED,
+        [-17]   = DC.BLEED,
     };
     local GivenValues = {};
 
@@ -1973,8 +2113,8 @@ function D:CheckCureOrder ()
     local cureOrder = self:GetCureOrderTable();
     -- add missing entries...
     for key, value in pairs(AuthorizedKeys) do
-        if not cureOrder[key] then
-            cureOrder[key] = false;
+        if nil == cureOrder[key] then
+            cureOrder[key] = D.defaults.class.CureOrder[key];
         end
     end
 
@@ -2028,6 +2168,9 @@ function D:SetCureOrder (ToChange)
             tmpTable[abs(CureOrder[Type])] = Type; -- CureOrder[Type] can have a <0 value if the spell was lost
             FoundSpell = FoundSpell + 1;
         elseif (CureOrder[Type]) then -- if we don't have a spell for this type
+            --[==[@debug@
+            D:Debug("SetCureOrder(): Adding lost spell", CureOrder[Type], Type)
+            --@end-debug@]==]
             LostSpells[abs(CureOrder[Type])] = Type;  -- save the position
         end
     end
@@ -2040,22 +2183,42 @@ function D:SetCureOrder (ToChange)
    -- can be readded later using their former priorities
    local AvailableSpot = (FoundSpell + 10 + 1) * -1; -- we add 10 so that they'll be re-added after any not-lost spell...
 
+
+   -- if the user requested this change, then we update the saved data else we
+   -- leave it as it is so that it can go back to the previous state if the old
+   -- conditions are met again
+   local newCureOrder = {}
+   if (ToChange) then
+       newCureOrder = CureOrder
+   else
+        D:tcopy(newCureOrder, CureOrder)
+   end
+
    -- D:PrintLiteral(LostSpells);
    for FormerPrio, Type in ipairs(LostSpells) do
-       CureOrder[Type] = AvailableSpot
+       newCureOrder[Type] = AvailableSpot
+        --[==[@debug@
+        D:Debug("SetCureOrder(): old lost spell prio:", CureOrder[Type], Type)
+        --@end-debug@]==]
        AvailableSpot = AvailableSpot - 1;
    end
 
     -- we sort the tables
     tmpTable = D:tSortUsingKeys(tmpTable);
 
-    -- apply the new priority to the types we can handle, leave their negative value to the others
+    -- apply the new priority to the types we can handle, leave their negative
+    -- value to the other
     for Num, Type in ipairs (tmpTable) do
-        CureOrder[Type] = Num;
+        newCureOrder[Type] = Num;
     end
 
+    --[==[@debug@
+    D:Debug("SetCureOrder(): updated cure order table:", D:tAsString(newCureOrder), ToChange and "(saved)" or "(unsaved)" );
+    --@end-debug@]==]
+
+
     -- create / update the ReversedCureOrder table (prio => type, ..., )
-    D.Status.ReversedCureOrder = D:tReverse(CureOrder);
+    D.Status.ReversedCureOrder = D:tReverse(newCureOrder);
 
     -- Create spell priority table
     D.Status.CuringSpellsPrio = {};
@@ -2068,7 +2231,7 @@ function D:SetCureOrder (ToChange)
     local DebuffType;
     -- set the priority for each spell, Micro frames will use this to determine which button to map
     local affected = 1;
-    for i=1,6 do
+    for i=1,7 do
         DebuffType = ReversedCureOrder[i]; -- there is no gap between indexes
         if (DebuffType and not CuringSpellsPrio[ CuringSpells[DebuffType] ] ) then
             CuringSpellsPrio[ CuringSpells[DebuffType] ] = affected;
@@ -2565,7 +2728,7 @@ do
 
         L_MF_colors = D.profile.MF_colors;
 
-        if (type(ColorReason) == "number" and ColorReason <= 6) then
+        if (type(ColorReason) == "number" and ColorReason <= 7) then
 
             name = D:ColorText(  ("%s (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(ColorReason), DC.MouseButtonsReadable[D.db.global.MouseButtons[ColorReason] ])  , D:NumToHexColor(L_MF_colors[ColorReason]));
             desc = (L["COLORALERT"]):format(DC.MouseButtonsReadable[D.db.global.MouseButtons[ColorReason] ]);
@@ -2632,7 +2795,7 @@ do
 
     local GetOrder = function (info)
         local ColorReason = retrieveColorReason(info);
-        return 100 + (type(ColorReason) == "number" and ColorReason or 2048);
+        return 100 + (type(ColorReason) == "number" and ColorReason * 2 or 4096);
     end
 
     local function GetColor (info)
@@ -2665,7 +2828,7 @@ do
 
     function D:CreateDropDownMUFcolorsMenu(MUFsColors_args)
         L_MF_colors = D.profile.MF_colors;
-
+        -- /dump  LibStub("AceAddon-3.0"):GetAddon("Decursive").db.profile.MF_colors
         for ColorReason, Color in pairs(L_MF_colors) do
 
             if not L_MF_colors[ColorReason][4] then
@@ -2673,7 +2836,7 @@ do
             end
 
             -- add a separator for the different color typs when necessary.
-            if (type(ColorReason) == "number" and (ColorReason - 2) == 6) or (type(ColorReason) == "string" and ColorReason == "COLORCHRONOS") then
+            if (type(ColorReason) == "number" and ColorReason == DC.NORMAL) or (type(ColorReason) == "string" and ColorReason == "COLORCHRONOS") then
                 MUFsColors_args["S" .. ColorReason] = {
                     type = "header",
                     name = "",
@@ -2690,7 +2853,7 @@ do
 end
 do
     local infoPrefix = "cAffliction_";
-    local orderStart = 2048 + 200;
+    local orderStart = 4096 + 200;
 
     local function retrieveAffTypeFromInfo(info)
         return tonumber((info[#info]):sub(#infoPrefix + 1));
@@ -2844,7 +3007,7 @@ do
             -- }}}
         };
 
-        for i = 1, 6 do
+        for i = 1, 7 do
             key_Combos_Select["KeyCombo" .. i] = OptionPrototype;
         end
 
@@ -2861,9 +3024,7 @@ end
 do
 
     local t_insert      = _G.table.insert;
-    local tonumber      = _G.tonumber;
     local IsSpellKnown  = nil; -- use D:isSpellReady instead
-    local TN            = function(string) return tonumber(string) or nil; end;
 
     local order = 160;
 
@@ -3180,6 +3341,233 @@ do
     end
 end
 
+do
+    local t_BleedEffectsIDCheck = {};
+    local t_DefaultBleedEffectsIDCheck = {};
+    local t_CheckBleedDebuffsActiveIDs = {};
+    local noCasekeywordPatterns = "";
+
+    local tw_spell_desc_cache = setmetatable({}, {
+        __index = function(table, spellID)
+            --D:Debug("metatable __index called with ", spellID);
+            local desc = C_Spell.DoesSpellExist(spellID) and GetSpellDescription(spellID) or L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"]:format(spellID);
+
+            if desc ~= "" then
+                table[spellID] = desc;
+            elseif not C_Spell.IsSpellDataCached(spellID) then
+                C_Spell.RequestLoadSpellData(spellID);
+                desc =  L["OPT_SPELL_DESCRIPTION_LOADING"];
+
+                D:Debug("delayed Bleed Effect option panel refresh scheduled because of spellID: ", spellID);
+                D:ScheduleDelayedCall("refreshBleedEffectList", function () LibStub("AceConfigRegistry-3.0"):NotifyChange(D.name) end, 2);
+
+            else
+                desc = L["OPT_SPELL_DESCRIPTION_UNAVAILABLE"];
+                table[spellID] = desc;
+            end
+            --D:Debug("metatable __index called with ", spellID, "desc:", desc);
+            return desc;
+        end;
+    });
+
+    local tw_spell_name_cache = setmetatable({}, {
+        __index = function(table, spellID)
+            local spellName = C_Spell.DoesSpellExist(spellID) and D.GetSpellOrItemInfo(spellID) or false;
+            table[spellID] = spellName;
+            return spellName;
+        end
+    });
+    local order = 0;
+
+    function D:hasDescBleedEffectkeyword(desc, test_pattern, testAll)
+        local P_BleedEffectsKeywords_noCase = test_pattern and test_pattern or D.Status.P_BleedEffectsKeywords_noCase;
+
+        local hasMatch = false;
+
+        local success, errorMessage = pcall(function()
+            for pattern in P_BleedEffectsKeywords_noCase:gmatch("[^\n\r]+") do
+                if desc:find(pattern) then
+                    hasMatch = true;
+                    if not testAll then
+                        break;
+                    end
+                end
+            end
+        end);
+
+        return hasMatch, errorMessage;
+    end
+
+    local function higlightkeywords(desc, test_pattern)
+        local highlightedDesc = desc;
+
+        if D.Status.P_BleedEffectsKeywords_noCase ~= false then
+            for pattern in D.Status.P_BleedEffectsKeywords_noCase:gmatch("[^\n\r]+") do
+                pcall(function()
+                    highlightedDesc =
+                    highlightedDesc:gsub(pattern, function (identifier) return ("|cFFFF0077%s|r"):format(identifier) end);
+                end)
+            end
+        end
+
+        return highlightedDesc;
+    end
+
+    local function GetBleedEffectColoredName(spellID) -- {{{
+        local descHasID = D:hasDescBleedEffectkeyword(tw_spell_desc_cache[spellID]);
+        local name = tw_spell_name_cache[spellID];
+        local color = 'FFFFFFFF';
+
+        if name then
+            if not t_BleedEffectsIDCheck[spellID] then
+                color = 'FFAA0000';
+            else
+                color = 'FF00D000';
+            end
+        else
+            color = 'FFA0A0A0';
+        end
+
+        return D:ColorText(name and ((not descHasID and "|cFFFF0000?|r " or "") .. name) or L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"]:format(spellID), color);
+    end -- }}}
+
+    local bleedEffectEntry = { -- {{{
+        type = 'group',
+        name = function(info) return GetBleedEffectColoredName(TN(info[#info])) end,
+        desc = function () return false; end,
+        order = function() return order; end,
+        args = {
+            header = {
+                type = 'header',
+                name = function (info)
+                    return L["OPT_BLEED_EFFECT_DESCRIPTION"]:format(info[#info - 1]);
+                end,
+                order = 0,
+            },
+            desc = {
+                type = 'description',
+                name = function (info)
+                    return higlightkeywords(tw_spell_desc_cache[TN(info[#info - 1])])
+                end,
+                order = 10,
+            },
+            isBleedEffect = {
+                type = 'toggle',
+                name = L["OPT_IS_BLEED_EFFECT"],
+                desc = L["OPT_IS_BLEED_EFFECT_DESC"],
+                set = function(info, v)
+                    t_BleedEffectsIDCheck[TN(info[#info - 1])] = v;
+                    t_CheckBleedDebuffsActiveIDs[TN(info[#info - 1])] = v;
+
+                    return t_BleedEffectsIDCheck[TN(info[#info - 1])];
+                end,
+                get = function(info)
+                    return t_BleedEffectsIDCheck[TN(info[#info - 1])];
+                end,
+                order = 20,
+            },
+            remove = {
+                type = 'execute',
+                name = L["OPT_DELETE_A_CUSTOM_SPELL"],
+                set = function(info, v)
+                    return t_BleedEffectsIDCheck[TN(info[#info - 1])]
+                end,
+                confirm = true,
+                func = function (info)
+                    local toRemove = TN(info[#info - 1]);
+                    t_BleedEffectsIDCheck[toRemove] = t_DefaultBleedEffectsIDCheck[toRemove] and -1 or nil;
+                    D:Debug('XXXX',t_BleedEffectsIDCheck[toRemove]  );
+                    t_CheckBleedDebuffsActiveIDs[toRemove] = nil;
+                end,
+                order = 30,
+            },
+
+
+        },
+    }; -- }}}
+
+    function D:CreateBleedingDebuffsOptionMenu(where)
+        t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
+        t_DefaultBleedEffectsIDCheck = D.defaults.global.t_BleedEffectsIDCheck;
+        t_CheckBleedDebuffsActiveIDs = D.Status.t_CheckBleedDebuffsActiveIDs;
+        noCasekeywordPatterns = D.Status.P_BleedEffectsKeywords_noCase
+
+        for spellID, enabled in pairs(t_BleedEffectsIDCheck) do
+            if enabled ~= -1 then
+                where[tostring(spellID)] = bleedEffectEntry;
+            end
+        end
+
+        where["resetListToDefaults"] = {
+            type = 'execute',
+            name = "|cFFFF0000" .. L["OPT_RESET_DEFAULT_BLEED_EFFECTS"] .. "|r",
+            desc = L["OPT_RESET_DEFAULT_BLEED_EFFECTS_DESC"],
+            func = function()
+                D.Status.t_CheckBleedDebuffsActiveIDs = {};
+                table.wipe(D.db.global.t_BleedEffectsIDCheck);
+
+                D:readdDefaultsBleedEffects();
+            end,
+            confirm = true,
+            disabled = function () return not D.Status.CuringSpells[DC.BLEED] end,
+            order = -1,
+        };
+        where["readdDefaults"] = {
+            type = 'execute',
+            confirm = true,
+            name = L["OPT_READD_DEFAULT_BLEED_EFFECTS"],
+            desc = L["OPT_READD_DEFAULT_BLEED_EFFECTS_DESC"],
+            func = function()
+                D:readdDefaultsBleedEffects();
+            end,
+            disabled = function () return not D.Status.CuringSpells[DC.BLEED] end,
+            order = 0,
+        };
+    end
+
+    function D:reset_t_CheckBleedDebuffsActiveIDs()
+        D.Status.t_CheckBleedDebuffsActiveIDs = {};
+        for spellID, isBleed in pairs(D.db.global.t_BleedEffectsIDCheck) do
+            if isBleed ~= -1 then
+                D.Status.t_CheckBleedDebuffsActiveIDs[spellID] = isBleed;
+            end
+        end
+    end
+
+    function D:GetDefaultBleedEffectsKeywords()
+        local keywords;
+
+        -- ENCOUNTER_JOURNAL_SECTION_FLAG13 is equal to Bleed but it appears that
+        -- many "bleeding" effect do not contain this term but rather 'Physical' so we use both.
+        if _G.STRING_SCHOOL_PHYSICAL then
+            local cleanedSchoolPhysical = (_G.STRING_SCHOOL_PHYSICAL:gsub("%A", ""))
+
+            keywords = cleanedSchoolPhysical ~= "" and cleanedSchoolPhysical or _G.STRING_SCHOOL_PHYSICAL;
+
+            if _G.ENCOUNTER_JOURNAL_SECTION_FLAG13 then
+                local cleanedEJSF13 = (_G.ENCOUNTER_JOURNAL_SECTION_FLAG13:gsub("%A", ""))
+
+                keywords = keywords .. "\n" .. (cleanedEJSF13 ~= "" and cleanedEJSF13 or _G.ENCOUNTER_JOURNAL_SECTION_FLAG13);
+            else
+                keywords = keywords .. "\n" .. L["BLEED"]
+            end
+        end
+
+        return keywords:trim();
+    end
+
+    function D:readdDefaultsBleedEffects()
+        local defaults = D.defaults.global.t_BleedEffectsIDCheck;
+        local t_BleedEffectsIDCheck = D.db.global.t_BleedEffectsIDCheck;
+        local t_CheckBleedDebuffsActiveIDs = D.Status.t_CheckBleedDebuffsActiveIDs;
+
+        for spellID, isBleed in pairs(defaults) do
+            t_BleedEffectsIDCheck[spellID] = isBleed;
+            t_CheckBleedDebuffsActiveIDs[spellID] = isBleed;
+        end
+    end
+end
+
 -- to test on 2.3 : /script D:PrintLiteral(GetBindingAction(D.db.global.MacroBind));
 -- to test on 2.3 : /script D:PrintLiteral(GetBindingKey(D.CONF.MACROCOMMAND));
 local SaveBindings = _G.SaveBindings or _G.AttemptToSaveBindings; -- was renamed for WOW Classic, it might happen too on retail...
@@ -3313,6 +3701,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
-T._LoadedFiles["Dcr_opt.lua"] = "2.7.9.1";
+T._LoadedFiles["Dcr_opt.lua"] = "2.7.15";
 
 -- Closer

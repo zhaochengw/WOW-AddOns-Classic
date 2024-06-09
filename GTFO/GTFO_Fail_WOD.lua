@@ -406,6 +406,11 @@ GTFO.SpellID["160963"] = {
   sound = 3;
 };
 
+GTFO.SpellID["161289"] = {
+  --desc = "Falling Off the Grimrail";
+  sound = 3;
+};
+
 -- **************
 -- * Iron Docks *
 -- **************

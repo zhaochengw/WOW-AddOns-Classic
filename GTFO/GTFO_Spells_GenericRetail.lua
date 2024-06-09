@@ -21,8 +21,8 @@ Sample:
 		alwaysAlert = true;
 		applicationOnly = true;
 		ignoreApplication = true;
-		minimumStacks = 1;
-		maximumStacks = 5;
+		minimumStacks = 1; -- Alerts won't go off EQUAL TO or LESS THAN this number
+		maximumStacks = 5; -- Alerts won't go off EQUAL TO or GREATER THAN this number
 		specificMobs = { 123, 234, 345 };
 		test = true;
 		vehicle = true;
@@ -82,6 +82,11 @@ GTFO.SpellID["35951"] = {
 GTFO.SpellID["81297"] = {
 	--desc = "Consecration (PvP)";
 	trivialPercent = 0;
+	sound = 2;
+};
+
+GTFO.SpellID["204242"] = {
+	--desc = "Consecration (PvP)";
 	sound = 2;
 };
 

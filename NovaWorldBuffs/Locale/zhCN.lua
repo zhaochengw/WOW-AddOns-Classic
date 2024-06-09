@@ -27,6 +27,8 @@ L["Traces of Silithyst"] = "Traces of Silithyst";
 L["Slip'kik's Savvy"] = "斯里基克的机智";
 L["Fengus' Ferocity"] = "芬古斯的狂暴";
 L["Mol'dar's Moxie"] = "摩尔达的勇气";
+L["Boon of Blackfathom"] = "黑暗深渊的祝福";
+L["Ashenvale Rallying Cry"] = "灰谷集结呐喊";
 
 ---=====---
 ---Horde---

@@ -1,7 +1,7 @@
-## Interface: 30401
+## Interface: 30403
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
-## Version: 5.5.3
+## Version: 5.10.1
 ## X-Flavor: Wrath
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
@@ -17,10 +17,13 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
-## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-2.0, LibDBIcon-1.0, LibClassicDurations, LibClassicCasterino, LibGetFrame-1.0, !LibUIDropDownMenu, !!AddonLocale
+## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-3.0, LibDBIcon-1.0, LibGetFrame-1.0, !LibUIDropDownMenu, !!AddonLocale, BigWigs, DBM-Core
 
 # External code + initialization
 embeds.xml
+
+# TaintLess
+Libs\TaintLess\TaintLess.xml
 
 Init.lua
 locales.xml
@@ -28,6 +31,7 @@ ArchiveTypes\Repository.lua
 DefaultOptions.lua
 
 # Core files
+Atlas_Wrath.lua
 Types_Wrath.lua
 Types.lua
 Prototypes.lua
@@ -43,6 +47,7 @@ AnchorToWeakAuras.lua
 # Trigger systems
 BuffTrigger2.lua
 GenericTrigger.lua
+BossMods.lua
 
 # Helper Systems
 AuraWarnings.lua

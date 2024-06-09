@@ -24,12 +24,23 @@ Grid2Options:RegisterStatusOptions("self", "target", nil, {
 	titleIcon = "Interface\\Icons\\Inv_wand_12",
 })
 
-Grid2Options:RegisterStatusOptions("phased", "misc", nil, {
-	titleIcon = "Interface\\TARGETINGFRAME\\UI-PhasingIcon",
-	titleIconCoords = { 0.15625, 0.84375, 0.15625, 0.84375 },
-})
-
-Grid2Options:RegisterStatusOptions("resurrection", "combat", nil, {
+Grid2Options:RegisterStatusOptions("resurrection", "combat", function(self, status, options, optionParams)
+	self:MakeStatusColorOptions(status, options, optionParams)
+	self:MakeSpacerOptions(options, 40)
+	options.color2.hidden = function() return status.dbx.onlyReviving end
+	options.onlyReviving = {
+		type = "toggle",
+		name = L["Enabled only while the resurrection spell is being cast"],
+		desc = L["Check this option to clear the status after the resurrection spell cast ends."],
+		width = "full",
+		order = 50,
+		get = function () return status.dbx.onlyReviving end,
+		set = function (_, v)
+			status.dbx.onlyReviving = v or nil
+			status:Refresh()
+		end,
+	}
+end, {
 	color1 = L["Casting resurrection"],
 	colorDesc1 = L["A resurrection spell is being casted on the unit"],
 	color2 = L["Resurrected"],
@@ -56,6 +67,26 @@ Grid2Options:RegisterStatusOptions("monk-stagger", "combat", nil, {
 	color3 = L["Low stagger"],
 	width = "full",
 	titleIcon = "463281",
+})
+
+Grid2Options:RegisterStatusOptions("phased", "misc", function(self, status, options, optionParams)
+	self:MakeStatusColorOptions(status, options, optionParams)
+	self:MakeSpacerOptions(options, 30)
+	options.inInstance = {
+		type = "toggle",
+		name = L["Disabled in instances"],
+		desc = L["Disable this status inside instances."],
+		width = "full",
+		order = 35,
+		get = function () return not status.dbx.enabledInstances end,
+		set = function (_, v)
+			status.dbx.enabledInstances = not v or nil
+			status:Refresh()
+		end,
+	}
+end, {
+	titleIcon = "Interface\\TARGETINGFRAME\\UI-PhasingIcon",
+	titleIconCoords = { 0.15625, 0.84375, 0.15625, 0.84375 },
 })
 
 Grid2Options:RegisterStatusOptions("vehicle", "misc", function(self, status, options, optionParams)

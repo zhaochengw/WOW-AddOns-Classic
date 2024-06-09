@@ -1,10 +1,18 @@
 local mod = DBM:NewMod(533, "DBM-Party-BC", 16, 249)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+if mod:IsRetail() then
+	mod.statTypes = "normal,heroic,timewalker"
+end
+
+mod:SetRevision("20231014053250")
 mod:SetCreatureID(24664)
 mod:SetEncounterID(1894)
-mod:SetModelID(22906)
+
+if not mod:IsRetail() then
+	mod:SetModelID(22906)
+end
+
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -33,7 +41,7 @@ mod.vb.interruptable = false
 function mod:OnCombatStart(delay)
 	self.vb.interruptable = false
 	self:SetStage(1)
-	if self:IsHeroic() then
+	if not self:IsDifficulty("normal5") then
         timerShockBarrior:Start(-delay)
     end
 end
@@ -47,7 +55,7 @@ function mod:SPELL_CAST_START(args)
 		WarnGravityLapse:Show()
 		timerGravityLapse:Start()
 		timerGravityLapseCD:Schedule(35)--Show after current lapse has ended
-		if self.vb.phase < 2 then
+		if self:GetStage(1) then
 			self:SetStage(2)
 			timerShockBarrior:Stop()
 			timerPhoenix:Stop()
@@ -79,16 +87,25 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
-	if spellId == 47109 and self.vb.phase < 2 then--Power Feedback
+--TODO, switch to these events if blizzard enables boss1
+--	"<231.31 20:53:15> [UNIT_SPELLCAST_SUCCEEDED] Kael'thas Sunstrider(Omegal) [[target:Clear Flight::0:44232]]", -- [530]
+--	"<231.31 20:53:15> [UNIT_SPELLCAST_SUCCEEDED] Kael'thas Sunstrider(Omegal) [[target:Power Feedback::0:47109]]", -- [531]
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+	if spellId == 47109 and self:GetStage(1) then--Power Feedback
+		self:SendSync("Stage2")
+	end
+end
+
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.KaelP2 and self:GetStage(1) then
 		self:SetStage(2)
 		timerShockBarrior:Stop()
 		timerPhoenix:Stop()
 	end
 end
 
-function mod:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L.KaelP2 and self.vb.phase < 2 then
+function mod:OnSync(msg)
+	if msg == "Stage2" and self:GetStage(1) then
 		self:SetStage(2)
 		timerShockBarrior:Stop()
 		timerPhoenix:Stop()

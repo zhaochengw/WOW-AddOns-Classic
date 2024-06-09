@@ -1,8 +1,8 @@
-## Interface: 11401
+## Interface: 11403
 ## Title: ClassicAuraDurations
 ## Author: d87
 ## SavedVariables: ClassicAuraDurationsDB
-## Version: 3.0
+## Version: 3.4.0
 
 ## X-WoWI-ID: 25006
 ## X-Curse-Project-ID: 323806

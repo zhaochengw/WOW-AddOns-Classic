@@ -200,7 +200,10 @@ do
 			end
 			return modules
 		end,
-		disabled = function() return RDO.auto_enabled end
+		disabled = function() return RDO.auto_enabled end, 
+		confirm = function(info, key) 
+			return RDO.db.profile.enabledModules[key] and L["All custom settings and spells for the selected module will be removed.\nAre you sure you want to disable this module ?"] or nil
+		end,		
 	}
 end
 
@@ -226,4 +229,27 @@ if not Grid2.isClassic then
 			[17] = PLAYER_DIFFICULTY3  -- LFR
 		},
 	}
+end
+
+-- auto open current instance debuffs when configuration window is opened
+
+options.syncInstance = {
+	type = "toggle",
+	order = 210,
+	width = 1.5,
+	name = L["Auto open debuffs for current instance"],
+	desc = L["Auto open debuffs for current instance"],
+	get = function(info)
+		return RDO.db.profile.syncInstance
+	end,
+	set = function(info, v)
+		RDO.syncInstance = v or nil
+		RDO.db.profile.syncInstance = v or nil
+	end,
+}
+
+local prev_OnChatCommand = Grid2Options.OnChatCommand
+function Grid2Options:OnChatCommand()
+	RDO.syncInstance = RDO.db.profile.syncInstance 
+	prev_OnChatCommand(self)
 end

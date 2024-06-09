@@ -25,13 +25,14 @@ RSConstants.LOOT_ITEM_ID = nil
 ---============================================================================
 
 RSConstants.CURRENT_DB_VERSION = 2
-RSConstants.CURRENT_LOOT_DB_VERSION = 3
+RSConstants.CURRENT_LOOT_DB_VERSION = 7
 
 ---============================================================================
 -- Current maps (newer)
 ---============================================================================
 
 RSConstants.CURRENT_MAP_ID = 113 --Northrend
+RSConstants.CURRENT_SUBMAP_ID = 115 --Dragon Cementery
 
 ---============================================================================
 -- Special events
@@ -45,10 +46,12 @@ RSConstants.EVENTS = {
 -- Timers
 ---============================================================================
 
-RSConstants.CHECK_RESET_RECENTLY_SEEN_TMER = 5 --5 seconds
+RSConstants.CHECK_RESET_RECENTLY_SEEN_TIMER = 5 --5 seconds
 RSConstants.RECENTLY_SEEN_RESET_TIMER = 120 --2 minutes
-RSConstants.FIND_BETTER_COORDINATES_WITH_RANGE_TIMER = 1; -- 1 seconds
+RSConstants.RECENTLY_SEEN_PING_ANIMATION_TIMER = 5 --5 seconds
 RSConstants.CHECK_RESET_NOTIFICATIONS_TIMER = 10 --10 seconds
+RSConstants.CHECK_TARGETS_TIMER = 2 --2 seconds
+RSConstants.BUTTON_TIMER = 1 --1 seconds
 
 ---============================================================================
 -- Collections enumerators
@@ -59,6 +62,28 @@ RSConstants.ITEM_SOURCE = {
 	CONTAINER = 2
 }
 
+RSConstants.ITEM_TYPE = {
+	TOY = 1,
+	PET = 2,
+	MOUNT = 3
+}
+
+---============================================================================
+-- Types of entity filters
+---============================================================================
+
+RSConstants.ENTITY_FILTER_ALL = 1
+RSConstants.ENTITY_FILTER_WORLDMAP = 2
+RSConstants.ENTITY_FILTER_ALERTS = 3
+
+---============================================================================
+-- Events when adding animations to the world map
+---============================================================================
+
+RSConstants.MAP_ANIMATIONS_ON_FOUND = 1
+RSConstants.MAP_ANIMATIONS_ON_CLICK = 2
+RSConstants.MAP_ANIMATIONS_ON_BOTH = 3
+
 ---============================================================================
 -- Addons default settings
 ---============================================================================
@@ -66,55 +91,54 @@ RSConstants.ITEM_SOURCE = {
 RSConstants.PROFILE_DEFAULTS = {
 	profile = {
 		general = {
+			rescanTimer = 5,
 			scanRares = true,
 			scanContainers = true,
 			scanInstances = false,
 			scanOnTaxi = true,
-			filteredRares = {},
-			filteredContainers = {},
-			filteredZones = {},
-			enableTomtomSupport = false,
-			autoTomtomWaypoints = false,
+			scanTargetUnit = false,
 			showMaker = true,
 			marker = 8,
-			rescanTimer = 5
+			enableTomtomSupport = false,
+			autoTomtomWaypoints = false,
+			filteredRares = {},
+			filteredContainers = {},
+			filteredZones = {}
 		},
 		sound = {
 			soundDisabled = false,
-			soundPlayed = "Horn",
 			soundObjectDisabled = false,
-			soundObjectPlayed = "PVP Horde",
-			soundVolume = 4,
 			soundChannel = "Master",
+			soundVolume = 4,
+			soundPlayed = "Horn",
+			soundObjectPlayed = "PVP Horde",
 			soundCustomFolder = "RareScannerSounds"
 		},
 		display = {
 			displayButton = true,
 			displayMiniature = true,
 			displayButtonContainers = true,
-			scale = 0.8,
 			autoHideButton = 0,
+			scale = 0.8,
+			lockPosition = false,
 			displayRaidWarning = true,
 			displayChatMessage = true,
+			displayTimestampChatMessage = true,
 			enableNavigation = true,
 			navigationLockEntity = false,
-			lockPosition = false,
 			minimapButton = {
 				hide = false
 			},
 			worldmapButton = true
 		},
 		rareFilters = {
-			filtersToggled = true,
-			filterOnlyMap = false
+			defaultNpcFilterType = RSConstants.ENTITY_FILTER_ALL
 		},
 		containerFilters = {
-			filtersToggled = true,
-			filterOnlyMap = false
+			defaultContainerFilterType = RSConstants.ENTITY_FILTER_ALL
 		},
 		zoneFilters = {
-			filtersToggled = true,
-			filterOnlyMap = false
+			defaultZoneFilterType = RSConstants.ENTITY_FILTER_ALL
 		},
 		collections = {
 			filteredOnlyOnWorldMap = false,
@@ -123,17 +147,21 @@ RSConstants.PROFILE_DEFAULTS = {
 			searchingPets = true,
 			searchingMounts = true,
 			searchingToys = true,
-			searchingAppearances = true,
 			showFiltered = true,
-			showDead = true,
-			showWithoutCollectibles = false
+			showWithoutCollectibles = false,
+			lockingMap = false
 		},
 		map = {
 			displayNpcIcons = true,
+			displayNotDiscoveredNpcIcons = true,
+			displayCustomGroupNpcIcons = {},
+			displayAchievementRaresNpcIcons = true,
+			displayOtherRaresNpcIcons = true,
 			displayContainerIcons = true,
+			displayNotDiscoveredContainerIcons = true,
+			displayAchievementContainerIcons = true,
+			displayOtherContainerIcons = true,
 			disableLastSeenFilter = false,
-			displayFriendlyNpcIcons = false,
-			displayNotDiscoveredMapIcons = true,
 			displayOldNotDiscoveredMapIcons = true,
 			maxSeenTime = 0,
 			maxSeenTimeContainer = 0,
@@ -160,6 +188,10 @@ RSConstants.PROFILE_DEFAULTS = {
 			overlayColour8 = { 0.18, 1, 0.42 },
 			overlayColour9 = { 1, 0.04, 0.4 },
 			overlayColour10 = { 0.4, 0.007, 1 },
+			animationNpcs = true,
+			animationNpcsType = RSConstants.MAP_ANIMATIONS_ON_BOTH,
+			animationContainers = true,
+			animationContainersType = RSConstants.MAP_ANIMATIONS_ON_CLICK
 		},
 		loot = {
 			filteredLootCategories = {},
@@ -168,10 +200,14 @@ RSConstants.PROFILE_DEFAULTS = {
 			displayLootOnMap = true,
 			lootTooltipPosition = "ANCHOR_LEFT",
 			lootMinQuality = 0,
-			filterNotEquipableItems = false,
 			filterItemsCompletedQuest = true,
+			filterNotEquipableItems = false,
 			filterNotMatchingClass = false,
 			filterNotMatchingFaction = true,
+			filterByExplorerResults = false,
+			showingMissingMounts = true,
+			showingMissingPets = true,
+			showingMissingToys = true,
 			numItems = 10,
 			numItemsPerRow = 10,
 			tooltipsCommands = true
@@ -210,6 +246,7 @@ RSConstants.CMD_TOGGLE_RARES_ALERTS = "tra"
 RSConstants.CMD_TOGGLE_TREASURES = "tt"
 RSConstants.CMD_TOGGLE_TREASURES_ALERTS = "tta"
 RSConstants.CMD_TOMTOM_WAYPOINT = "waypoint"
+RSConstants.CMD_RECENTLY_SEEN = "rseen"
 
 ---============================================================================
 -- AtlasNames
@@ -227,6 +264,12 @@ RSConstants.ALL_ZONES = "all"
 RSConstants.UNKNOWN_ZONE_ID = 0
 
 ---============================================================================
+-- Custom NPCs
+---============================================================================
+
+RSConstants.DEFAULT_GROUP = 0
+
+---============================================================================
 -- Textures
 ---============================================================================
 
@@ -235,14 +278,11 @@ RSConstants.GROUP_TOP_TEXTURE_FILE = "GroupT"
 RSConstants.GROUP_RIGHT_TEXTURE_FILE = "GroupR"
 RSConstants.GROUP_LEFT_TEXTURE_FILE = "GroupL"
 RSConstants.NORMAL_NPC_TEXTURE_FILE = "OriginalSkull"
-RSConstants.GREEN_NPC_TEXTURE_FILE = "GreenSkullDark"
-RSConstants.YELLOW_NPC_TEXTURE_FILE = "YellowSkullDark"
 RSConstants.RED_NPC_TEXTURE_FILE = "RedSkullDark"
 RSConstants.PINK_NPC_TEXTURE_FILE = "PinkSkullDark"
+RSConstants.PURPLE_NPC_TEXTURE_FILE = "CustomSkull"
 RSConstants.LIGHT_BLUE_NPC_TEXTURE_FILE = "BlueSkullLight"
 RSConstants.NORMAL_CONTAINER_TEXTURE_FILE = "OriginalChest"
-RSConstants.GREEN_CONTAINER_TEXTURE_FILE = "GreenChest"
-RSConstants.YELLOW_CONTAINER_TEXTURE_FILE = "YellowChest"
 RSConstants.RED_CONTAINER_TEXTURE_FILE = "RedChest"
 RSConstants.PINK_CONTAINER_TEXTURE_FILE = "PinkChest"
 RSConstants.OVERLAY_SPOT_TEXTURE_FILE = "Overlay"
@@ -259,19 +299,12 @@ RSConstants.GUIDE_STEP6_FILE = "Number6"
 RSConstants.GUIDE_STEP7_FILE = "Number7"
 RSConstants.GUIDE_STEP8_FILE = "Number8"
 RSConstants.GUIDE_STEP9_FILE = "Number9"
+RSConstants.ACHIEVEMENT_ICON_ATLAS = "StoryHeader-CheevoIcon"
 
 RSConstants.NORMAL_NPC_TEXTURE = string.format(RSConstants.TEXTURE_PATH, RSConstants.NORMAL_NPC_TEXTURE_FILE);
 RSConstants.GROUP_NORMAL_NPC_T_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.NORMAL_NPC_TEXTURE_FILE, RSConstants.GROUP_TOP_TEXTURE_FILE));
 RSConstants.GROUP_NORMAL_NPC_L_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.NORMAL_NPC_TEXTURE_FILE, RSConstants.GROUP_LEFT_TEXTURE_FILE));
 RSConstants.GROUP_NORMAL_NPC_R_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.NORMAL_NPC_TEXTURE_FILE, RSConstants.GROUP_RIGHT_TEXTURE_FILE));
-RSConstants.GREEN_NPC_TEXTURE = string.format(RSConstants.TEXTURE_PATH, RSConstants.GREEN_NPC_TEXTURE_FILE);
-RSConstants.GROUP_GREEN_NPC_T_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.GREEN_NPC_TEXTURE_FILE, RSConstants.GROUP_TOP_TEXTURE_FILE));
-RSConstants.GROUP_GREEN_NPC_L_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.GREEN_NPC_TEXTURE_FILE, RSConstants.GROUP_LEFT_TEXTURE_FILE));
-RSConstants.GROUP_GREEN_NPC_R_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.GREEN_NPC_TEXTURE_FILE, RSConstants.GROUP_RIGHT_TEXTURE_FILE));
-RSConstants.YELLOW_NPC_TEXTURE = string.format(RSConstants.TEXTURE_PATH, RSConstants.YELLOW_NPC_TEXTURE_FILE);
-RSConstants.GROUP_YELLOW_NPC_T_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.YELLOW_NPC_TEXTURE_FILE, RSConstants.GROUP_TOP_TEXTURE_FILE));
-RSConstants.GROUP_YELLOW_NPC_L_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.YELLOW_NPC_TEXTURE_FILE, RSConstants.GROUP_LEFT_TEXTURE_FILE));
-RSConstants.GROUP_YELLOW_NPC_R_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.YELLOW_NPC_TEXTURE_FILE, RSConstants.GROUP_RIGHT_TEXTURE_FILE));
 RSConstants.RED_NPC_TEXTURE = string.format(RSConstants.TEXTURE_PATH, RSConstants.RED_NPC_TEXTURE_FILE);
 RSConstants.GROUP_RED_NPC_T_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.RED_NPC_TEXTURE_FILE, RSConstants.GROUP_TOP_TEXTURE_FILE));
 RSConstants.GROUP_RED_NPC_L_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.RED_NPC_TEXTURE_FILE, RSConstants.GROUP_LEFT_TEXTURE_FILE));
@@ -284,18 +317,14 @@ RSConstants.LIGHT_BLUE_NPC_TEXTURE = string.format(RSConstants.TEXTURE_PATH, RSC
 RSConstants.GROUP_LIGHT_BLUE_NPC_T_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.LIGHT_BLUE_NPC_TEXTURE_FILE, RSConstants.GROUP_TOP_TEXTURE_FILE));
 RSConstants.GROUP_LIGHT_BLUE_NPC_L_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.LIGHT_BLUE_NPC_TEXTURE_FILE, RSConstants.GROUP_LEFT_TEXTURE_FILE));
 RSConstants.GROUP_LIGHT_BLUE_NPC_R_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.LIGHT_BLUE_NPC_TEXTURE_FILE, RSConstants.GROUP_RIGHT_TEXTURE_FILE));
+RSConstants.PURPLE_NPC_TEXTURE = string.format(RSConstants.TEXTURE_PATH, RSConstants.PURPLE_NPC_TEXTURE_FILE);
+RSConstants.GROUP_PURPLE_NPC_T_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.PURPLE_NPC_TEXTURE_FILE, RSConstants.GROUP_TOP_TEXTURE_FILE));
+RSConstants.GROUP_PURPLE_NPC_L_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.PURPLE_NPC_TEXTURE_FILE, RSConstants.GROUP_LEFT_TEXTURE_FILE));
+RSConstants.GROUP_PURPLE_NPC_R_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.PURPLE_NPC_TEXTURE_FILE, RSConstants.GROUP_RIGHT_TEXTURE_FILE));
 RSConstants.NORMAL_CONTAINER_TEXTURE = string.format(RSConstants.TEXTURE_PATH, RSConstants.NORMAL_CONTAINER_TEXTURE_FILE);
 RSConstants.GROUP_NORMAL_CONTAINER_T_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.NORMAL_CONTAINER_TEXTURE_FILE, RSConstants.GROUP_TOP_TEXTURE_FILE));
 RSConstants.GROUP_NORMAL_CONTAINER_L_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.NORMAL_CONTAINER_TEXTURE_FILE, RSConstants.GROUP_LEFT_TEXTURE_FILE));
 RSConstants.GROUP_NORMAL_CONTAINER_R_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.NORMAL_CONTAINER_TEXTURE_FILE, RSConstants.GROUP_RIGHT_TEXTURE_FILE));
-RSConstants.GREEN_CONTAINER_TEXTURE = string.format(RSConstants.TEXTURE_PATH, RSConstants.GREEN_CONTAINER_TEXTURE_FILE);
-RSConstants.GROUP_GREEN_CONTAINER_T_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.GREEN_CONTAINER_TEXTURE_FILE, RSConstants.GROUP_TOP_TEXTURE_FILE));
-RSConstants.GROUP_GREEN_CONTAINER_L_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.GREEN_CONTAINER_TEXTURE_FILE, RSConstants.GROUP_LEFT_TEXTURE_FILE));
-RSConstants.GROUP_GREEN_CONTAINER_R_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.GREEN_CONTAINER_TEXTURE_FILE, RSConstants.GROUP_RIGHT_TEXTURE_FILE));
-RSConstants.YELLOW_CONTAINER_TEXTURE = string.format(RSConstants.TEXTURE_PATH, RSConstants.YELLOW_CONTAINER_TEXTURE_FILE);
-RSConstants.GROUP_YELLOW_CONTAINER_T_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.YELLOW_CONTAINER_TEXTURE_FILE, RSConstants.GROUP_TOP_TEXTURE_FILE));
-RSConstants.GROUP_YELLOW_CONTAINER_L_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.YELLOW_CONTAINER_TEXTURE_FILE, RSConstants.GROUP_LEFT_TEXTURE_FILE));
-RSConstants.GROUP_YELLOW_CONTAINER_R_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.YELLOW_CONTAINER_TEXTURE_FILE, RSConstants.GROUP_RIGHT_TEXTURE_FILE));
 RSConstants.RED_CONTAINER_TEXTURE = string.format(RSConstants.TEXTURE_PATH, RSConstants.RED_CONTAINER_TEXTURE_FILE);
 RSConstants.GROUP_RED_CONTAINER_T_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.RED_CONTAINER_TEXTURE_FILE, RSConstants.GROUP_TOP_TEXTURE_FILE));
 RSConstants.GROUP_RED_CONTAINER_L_TEXTURE = string.format(RSConstants.TEXTURE_PATH, string.format("%s%s", RSConstants.RED_CONTAINER_TEXTURE_FILE, RSConstants.GROUP_LEFT_TEXTURE_FILE));
@@ -337,12 +366,32 @@ RSConstants.STEP6 = "6"
 RSConstants.STEP7 = "7"
 
 ---============================================================================
+-- Dialogs
+---============================================================================
+
+RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS = "RARESCANNER_APPLY_COLLECTIONS_LOOT_FILTERS"
+RSConstants.EXPLORER_FILTERING_DIALOG = "RARESCANNER_EXPLORER_FILTERING_DIALOG"
+RSConstants.EXPLORER_SCAN_NOT_DONE = "RARESCANNER_EXPLORER_SCAN_NOT_DONE"
+RSConstants.TARGET_UNIT_WARNING = "RARESCANNER_TARGET_UNIT_WARNING"
+
+---============================================================================
+-- Explorer filters
+---============================================================================
+
+RSConstants.EXPLORER_FILTER_DROP_MOUNTS = 1
+RSConstants.EXPLORER_FILTER_DROP_PETS = 2
+RSConstants.EXPLORER_FILTER_DROP_TOYS = 3
+RSConstants.EXPLORER_FILTER_PART_ACHIEVEMENT = 4
+RSConstants.EXPLORER_FILTER_FILTERED = 5
+RSConstants.EXPLORER_FILTER_WITHOUT_COLLECTIBLES = 6
+
+---============================================================================
 -- Others
 ---============================================================================
 
 RSConstants.RAID_WARNING_SHOWING_TIME = 3
-RSConstants.MINIMUM_DISTANCE_PINS_WORLD_MAP = 0.015
-RSConstants.TOOLTIP_MAX_WIDTH = 250
+RSConstants.MINIMUM_DISTANCE_PINS_WORLD_MAP = 0.005
+RSConstants.TOOLTIP_MAX_WIDTH = 300
 
 ---============================================================================
 -- Auxiliar functions

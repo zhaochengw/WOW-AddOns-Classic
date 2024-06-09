@@ -29,9 +29,10 @@ local function Icon_OnFrameUpdate(f)
 	for _, status in ipairs(self.statuses) do
 		if status:IsActive(unit) then
 			if status.GetIcons then
-				local k, textures, counts, expirations, durations, colors = status:GetIcons(unit,max)
+				local k, textures, counts, expirations, durations, colors, slots = status:GetIcons(unit,max)
 				for j=1,k do
 					local aura = auras[i]
+					aura.status, aura.slotID = status, slots[j]
 					if showIcons then
 						aura.icon:SetTexture(textures[j])
 						if useStatus then
@@ -56,6 +57,7 @@ local function Icon_OnFrameUpdate(f)
 				max = max - k
 			else
 				local aura = auras[i]
+				aura.status, aura.slotID = status, nil
 				if showIcons then
 					aura.icon:SetTexture(status:GetIcon(unit))
 					aura.icon:SetTexCoord(status:GetTexCoord(unit))
@@ -84,7 +86,10 @@ local function Icon_OnFrameUpdate(f)
 		end
 	end
 	for j=i,f.visibleCount do
-		auras[j]:Hide()
+		local aura = auras[j]
+		aura.status = nil
+		aura.slotID = nil
+		aura:Hide()
 	end
 	f.visibleCount = i-1
 	f:SetShown(i>1)
@@ -117,6 +122,7 @@ local function Icon_Layout(self, parent)
 	local vx,vy = self.vx,self.vy
 	local borderSize = self.borderSize
 	local iconSize = self.iconSize>1 and self.iconSize or self.iconSize * parent:GetHeight()
+	local fontSize = self.fontSize<1 and self.fontSize*iconSize or self.fontSize
 	local size = iconSize + self.iconSpacing
 	local tc1,tc2,tc3,tc4 = Grid2.statusPrototype.GetTexCoord()
 	local frameName
@@ -151,7 +157,7 @@ local function Icon_Layout(self, parent)
 			local c = self.colorStack
 			frame.text = frame.text or frame:CreateFontString(nil, "OVERLAY")
 			frame.text:SetFontObject(GameFontHighlightSmall)
-			frame.text:SetFont(self.font, self.fontSize, self.fontFlags )
+			frame.text:SetFont(self.font, fontSize, self.fontFlags )
 			frame.text:SetTextColor(c.r, c.g, c.b, c.a)
 			frame.text:ClearAllPoints()
 			frame.text:SetPoint(self.fontPoint, self.fontOffsetX, self.fontOffsetY)
@@ -240,6 +246,17 @@ local function Icon_UpdateDB(self)
 	self.backdrop = self.borderSize>0 and Grid2:GetBackdropTable("Interface\\Addons\\Grid2\\media\\white16x16", self.borderSize) or nil
 end
 
+local function Icon_GetMouseOverStatus(self, unit, parent, frame)
+	frame = frame or parent[self.name]
+	local auras = frame.auras
+	for i=1,frame.visibleCount do
+		local aura = auras[i]
+		if aura:IsMouseOver() then
+			return aura.status, true, aura.slotID, aura
+		end
+	end
+end
+
 Grid2.setupFunc["icons"] = function(indicatorKey, dbx)
 	local indicator = Grid2.indicatorPrototype:new(indicatorKey)
 	indicator.dbx       = dbx
@@ -248,6 +265,7 @@ Grid2.setupFunc["icons"] = function(indicatorKey, dbx)
 	indicator.Disable   = Icon_Disable
 	indicator.UpdateDB  = Icon_UpdateDB
 	indicator.UpdateO   = Icon_Update -- special case used by multibar and icons indicator
+	indicator.GetMouseOverStatus = Icon_GetMouseOverStatus
 	EnableDelayedUpdates()
 	Grid2:RegisterIndicator(indicator, { "icon", "icons" })
 	return indicator

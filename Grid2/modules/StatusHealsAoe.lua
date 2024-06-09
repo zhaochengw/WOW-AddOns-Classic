@@ -17,6 +17,11 @@ local spells = {}
 local icons = {}
 local statuses_enabled = {}
 
+local HEAL_EVENTS = {
+	SPELL_HEAL = true,
+	SPELL_PERIODIC_HEAL = true,
+}
+
 local function TimerEvent()
 	local count = 0
 	local time  = GetTime()
@@ -33,7 +38,7 @@ local function TimerEvent()
 		if next(time_cache) then
 			count = count + 1
 		end
-	end	
+	end
 	if count == 0 then
 		timer = Grid2:CancelTimer(timer)
 	end
@@ -43,11 +48,10 @@ local function CombatLogEventReal(...)
 	local spellName = select(13,...)
 	local statuses = spells[spellName]
 	if statuses then
-		local subEvent = select(2,...)
-		if subEvent=="SPELL_HEAL" or subEvent=="SPELL_PERIODIC_HEAL" then
-			for status in pairs(statuses) do
+		for status in pairs(statuses) do
+			if status.events[ select(2,...) ] then
 				local mine = status.mine
-				if mine == nil or status.mine == (select(4,...)==playerGUID) then
+				if mine == nil or mine == (select(4,...)==playerGUID) then
 					local unit = roster_units[ select(8,...) ]
 					if unit then
 						local prev = status.heal_cache[unit]
@@ -56,11 +60,11 @@ local function CombatLogEventReal(...)
 						if prev~=spellName then
 							status:UpdateIndicators(unit)
 							timer = timer or Grid2:CreateTimer(TimerEvent, timerDelay)
-						end	
+						end
 					end
 				end
-			end	
-		end	
+			end
+		end
 	end
 end
 
@@ -77,14 +81,14 @@ local function OnEnable(self)
 		for _,spell in next, self.dbx.spellList do
 			local name,_,icon = GetSpellInfo(spell)
 			if name then
-				if not spells[name] then 
-					spells[name] = {} 
+				if not spells[name] then
+					spells[name] = {}
 				end
 				spells[name][self] = true
 				icons[name] = icon
 			end
 		end
-	end	
+	end
 end
 
 local function OnDisable(self)
@@ -101,7 +105,7 @@ local function OnDisable(self)
 	end
 	if not next(statuses_enabled) then
 		AOEM:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	end	
+	end
 end
 
 local function IsActive(self, unit)
@@ -115,7 +119,7 @@ end
 
 local function GetIcon(self, unit)
 	local spell = self.heal_cache[unit]
-	if spell then return icons[ spell ] end	
+	if spell then return icons[ spell ] end
 end
 
 local function GetText(self, unit)
@@ -126,11 +130,12 @@ local function UpdateDB(self)
 	if self.enabled then self:OnDisable() end
 	self.activeTime = self.dbx.activeTime or 2
 	self.mine = self.dbx.mine -- mine => true (only mine spells) / false (not mine spells) / nil (any spell)
+	self.events = self.dbx.events or HEAL_EVENTS
 	timerDelay = math.max(0.1, math.min(timerDelay, self.activeTime / 4) )
 	if self.enabled then self:OnEnable() end
 end
 
-Grid2.setupFunc["aoe-heals"] = function(baseKey, dbx)
+local function Create(baseKey, dbx)
 	playerGUID = UnitGUID("player")
 	local status = Grid2.statusPrototype:new(baseKey)
 	status.heal_cache = {}
@@ -146,3 +151,5 @@ Grid2.setupFunc["aoe-heals"] = function(baseKey, dbx)
 	return status
 end
 
+Grid2.setupFunc["aoe-heals"] = Create
+Grid2.setupFunc["inc-spells"] = Create

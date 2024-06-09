@@ -9,7 +9,7 @@ function QuestieQuestBlacklist:Load()
         [7462] = true, -- Duplicate of 7877. See #1583
         [5663] = true, -- Touch of Weakness of Dark Cleric Beryl - Fixing #730
         [5658] = true, -- Touch of Weakness of Father Lankester -- See #1603
-        [2358] = true, -- Horns of Nez'ra is not in the game at this point. See #921
+        [2358] = QuestieCorrections.CLASSIC_AND_TBC, -- See #921
         [787] = true, -- The New Horde is not in the game. See #830
         [6606] = true, -- Quest is not in the game. See #1338
         [6072] = true, -- Ayanna Everstride doesn't start "Hunter's Path" (this quest is most likely simply not in the game) #700
@@ -17,7 +17,7 @@ function QuestieQuestBlacklist:Load()
         [615] = true, -- Duplicate of 8553. See #2215
         [618] = true, -- Duplicate of 8554
         [934] = true, -- Duplicate of 7383. See #2386
-        [960] = true, -- Duplicate of 961
+        --[960] = true, -- Duplicate of 961 -- different quests, not duplicate
         [9378] = true, -- Naxxramas quest which doesn't seem to be in the game
         [1318] = true, -- Duplicate of 7703 and not in the game
         [7704] = QuestieCorrections.CLASSIC_ONLY, -- Not implemented in Era, added in Wrath
@@ -27,12 +27,12 @@ function QuestieQuestBlacklist:Load()
         [4603] = true, -- Duplicate of 2953
         [4604] = true, -- Duplicate of 2953
         [8856] = true, -- Duplicate of 8497
-        [64143] = true, -- Duplicate of 9735
         [13053] = true, -- Removed
         [11402] = true, -- GM Island quest
         [11189] = true, -- Removed
         [13417] = true, -- Duplicate of 12973
         [936] = QuestieCorrections.CLASSIC_ONLY,
+        [535] = QuestieCorrections.WOTLK_ONLY, -- Valik
         [2000] = true, -- Not in the game - #4487
         -- Welcome! quests (Collectors Edition)
         [5805] = true,
@@ -479,7 +479,9 @@ function QuestieQuestBlacklist:Load()
         [11863] = true,
         [11882] = true,
         [11886] = true,
+        [11891] = true,
         [11915] = true,
+        [11917] = true,
         [11921] = true,
         [11922] = true,
         [11923] = true,
@@ -488,6 +490,10 @@ function QuestieQuestBlacklist:Load()
         [11926] = true,
         [11933] = true,
         [11935] = true,
+        [11947] = true,
+        [11948] = true,
+        [11952] = true,
+        [11953] = true,
         [11954] = true,
         [11955] = true,
         [11972] = true,
@@ -496,6 +502,7 @@ function QuestieQuestBlacklist:Load()
         [11966] = true,
         [11970] = true,
         [11971] = true,
+        [12012] = true,
         [12020] = true,
         [12192] = true,
         [11293] = true,
@@ -511,7 +518,6 @@ function QuestieQuestBlacklist:Load()
         [12135] = true,
         [12139] = true,
         [12191] = true,
-        [12194] = true,
         [12278] = true,
         [12155] = true,
         [12286] = true,
@@ -599,6 +605,8 @@ function QuestieQuestBlacklist:Load()
         --- Noblegarden
         [13479] = true,
         [13480] = true,
+        [13483] = true,
+        [13484] = true,
         [13502] = true,
         [13503] = true,
 
@@ -662,12 +670,36 @@ function QuestieQuestBlacklist:Load()
         [13548] = true,
 
         --- Pilgrim's Bounty
-        [13483] = true,
-        [13484] = true,
-        [14036] = true,
         [14022] = true,
+        [14036] = true,
+        [14023] = true,
+        [14024] = true,
+        [14028] = true,
+        [14030] = true,
+        [14033] = true,
+        [14035] = true,
+        [14037] = true,
+        [14040] = true,
+        [14041] = true,
+        [14043] = true,
+        [14044] = true,
+        [14047] = true,
+        [14048] = true,
+        [14051] = true,
+        [14053] = true,
+        [14054] = true,
+        [14055] = true,
+        [14058] = true,
+        [14059] = true,
+        [14060] = true,
+        [14061] = true,
+        [14062] = true,
+        [14064] = true,
+        [14065] = true,
 
         --- Brewfest
+        [12193] = true,
+        [12194] = true,
         [13931] = true,
         [13932] = true,
 
@@ -694,6 +726,9 @@ function QuestieQuestBlacklist:Load()
         [13031] = true,
         [13032] = true,
         [13033] = true,
+        [13065] = true,
+        [13066] = true,
+        [13067] = true,
 
 
         -- End of Wotlk event quests
@@ -983,7 +1018,6 @@ function QuestieQuestBlacklist:Load()
         [9599] = true, -- <UNUSED>
         [9750] = true, -- UNUSED Urgent Delivery
         [9767] = true, -- Know Your Enemy
-        [9955] = true, -- A Show of Good Faith
         [10090] = true, -- BETA The Legion's Plans
         [11027] = true, -- NOT IN GAME: Yous Have Da Darkrune? , "replaced" by 11060 (A Crystalforged Darkrune)
 
@@ -995,13 +1029,6 @@ function QuestieQuestBlacklist:Load()
         [9278] = true, -- Welcome!
         --[9681] = true, -- Replaced with [A Study in Power (64319)] changed in wotlk again. 64319+63866 only present in SWP patch
         --[9684] = true, -- Replaced with [Claiming the Light (63866)] changed in wotlk again. 64319+63866 only present in SWP patch
-        [9721] = true, -- Replaced with [A Summons from Lady Liadrin (64139)]
-        [9722] = true, -- Replaced with [The Master's Path (64140)]
-        [9723] = true, -- Replaced with [A Gesture of Commitment (64141)]
-        [9725] = true, -- Replaced with [A Demonstration of Loyalty (64142)]
-        [9735] = true, -- Replaced with [True Masters of the Light (64143)]
-        [9736] = true, -- Replaced with [True Masters of the Light (64144)]
-        [9737] = true, -- Replaced with [True Masters of the Light  (64145)]
         [9926] = true, -- FLAG Shadow Council/Warmaul Questline
         [10048] = true, -- A Handful of Magic Dust BETA
         [10049] = true, -- A Handful of Magic Dust BETA
@@ -1025,7 +1052,32 @@ function QuestieQuestBlacklist:Load()
         [64063] = true, -- Boosted character quest
         [64064] = true, -- Boosted character quest
         [64128] = true, -- Boosted character quest
+        [64139] = true, -- Horde pala mount quest chain
+        [64140] = true, -- Horde pala mount quest chain
+        [64141] = true, -- Horde pala mount quest chain
+        [64142] = true, -- Horde pala mount quest chain
+        [64143] = true, -- Horde pala mount quest chain
+        [64144] = true, -- Horde pala mount quest chain
+        [64145] = true, -- Horde pala mount quest chain
         [64217] = true, -- Boosted character quest
+        [64845] = QuestieCorrections.TBC_AND_WOTLK, -- Alliance War Effort
+        [70395] = true, -- First quest for boosted characters. Blocked to not show for others
+        [70396] = true, -- First quest for boosted characters. Blocked to not show for others
+        [70397] = true, -- Boosted character quest
+        [70398] = true, -- Boosted character quest
+        [70401] = true, -- Boosted character quest
+        [70411] = true, -- Boosted character quest
+        [70734] = true, -- Boosted character quest
+        [70735] = true, -- Boosted character quest
+        [70736] = true, -- Boosted character quest
+        [70737] = true, -- Boosted character quest
+        [70761] = true, -- Boosted character quest
+        [70762] = true, -- First quest for boosted characters. Blocked to not show for others
+        [70764] = true, -- Boosted character quest
+        [70765] = true, -- Boosted character quest
+        [70865] = true, -- Boosted character quest
+        [70869] = true, -- Boosted character quest
+        [70870] = true, -- Boosted character quest
 
 		-- Paladin class quests with SWP patch
         [64319] = true, -- removed in wotlk
@@ -1049,9 +1101,9 @@ function QuestieQuestBlacklist:Load()
         [3366] = true,
         [3381] = true,
         [5627] = true,
-        [5641] = true,
-        [5645] = true,
-        [5647] = true,
+        [5641] = QuestieCorrections.TBC_AND_WOTLK,
+        [5645] = QuestieCorrections.TBC_AND_WOTLK,
+        [5647] = QuestieCorrections.TBC_AND_WOTLK,
         [6131] = true,
         [6221] = true,
         [6241] = true,
@@ -1125,15 +1177,26 @@ function QuestieQuestBlacklist:Load()
         ----- Wotlk -------------- Wotlk quests --------------- Wotlk -----
         ----- Wotlk ------------- starting here -------------- Wotlk -----
 
-        [10884] = QuestieCorrections.WOTLK_ONLY, -- no longer exists in wotlk
-        [10885] = QuestieCorrections.WOTLK_ONLY, -- no longer exists in wotlk
+        [10985] = QuestieCorrections.WOTLK_ONLY, -- Got replaced by 13429
         [10888] = QuestieCorrections.WOTLK_ONLY, -- Got replaced by 13430
         [10901] = QuestieCorrections.WOTLK_ONLY, -- Got replaced by 13431
+        [10445] = QuestieCorrections.WOTLK_ONLY, -- Got replaced by 13432
+        [6144] = QuestieCorrections.WOTLK_ONLY, -- Got replaced by 14349
         [6821] = QuestieCorrections.WOTLK_ONLY, -- Not in the game
         [6822] = QuestieCorrections.WOTLK_ONLY, -- Not in the game
         [6823] = QuestieCorrections.WOTLK_ONLY, -- Not in the game
         [6824] = QuestieCorrections.WOTLK_ONLY, -- Not in the game
         [7486] = QuestieCorrections.WOTLK_ONLY, -- Not in the game
+        [5634] = QuestieCorrections.WOTLK_ONLY, -- removed in wotlk
+        [5635] = QuestieCorrections.WOTLK_ONLY, -- removed in wotlk
+        [5636] = QuestieCorrections.WOTLK_ONLY, -- removed in wotlk
+        [5637] = QuestieCorrections.WOTLK_ONLY, -- removed in wotlk
+        [5638] = QuestieCorrections.WOTLK_ONLY, -- removed in wotlk
+        [5639] = QuestieCorrections.WOTLK_ONLY, -- removed in wotlk
+        [5640] = QuestieCorrections.WOTLK_ONLY, -- removed in wotlk
+        [12881] = true, -- Not in the game
+        [14351] = true, -- Not in the game
+        [14353] = true, -- Not in the game
         [11621] = true, -- Not in the game
         [11179] = true, -- Not in the game
         [11622] = true, -- Not in the game
@@ -1160,23 +1223,14 @@ function QuestieQuestBlacklist:Load()
         [12911] = true, -- Not in the game
         [13150] = true, -- Not in the game
         [13317] = true, -- Not in the game
-        [14103] = true, -- Not in the game
+        --[14103] = true, -- Titanium Powder
         [14160] = true, -- Not in the game
         [13374] = true, -- Not in the game
         [13381] = true, -- Not in the game
         [13908] = true, -- Not in the game
-        [11585] = true, -- Duplicate of 11586
-        [13197] = true, -- Duplicate of 236 (Fueling the Demolishers (A))
-        [13179] = true, -- Duplicate of 13177 (No Mercy for the Merciless (A))
-        [13180] = true, -- Duplicate of 13178 (Slay them all! (H))
-        [13200] = true, -- Duplicate of 13191 (Fueling the Demolishers (H))
-        [13195] = true, -- Duplicate of 13156 (A Rare Herb (A))
-        [13196] = true, -- Duplicate of 13154 (Bones and Arrows (A))
-        [13199] = true, -- Duplicate of 13193 (Bones and Arrows (H))
-        [13201] = true, -- Duplicate of 13194 (Healing with Roses (H))
+        [11586] = true, -- Duplicate of 11585 (not entirely a duplicate but this is the easiest way to hide multiple quests)
         [11595] = true, -- Duplicate of 11596 and 11597 (not entirely a duplicate but this is the easiest way to hide multiple quests)
         [11597] = true, -- Duplicate of 11595 and 11596 (not entirely a duplicate but this is the easiest way to hide multiple quests)
-        [12932] = true, -- Duplicate of 12954 (not entirely a duplicate but this is the easiest way to hide multiple quests)
         [12021] = true, -- Duplicate of 12067 and 12085 (not entirely a duplicate but this is the easiest way to hide multiple quests)
         [12015] = true, -- Not in the game
         [12162] = true, -- Not in the game
@@ -1199,7 +1253,7 @@ function QuestieQuestBlacklist:Load()
         [14032] = true, -- Not in the game
         [13825] = true, -- EXISTS ingame, but can only be picked up if quest 6610 was completed PRIOR to wrath - impossible for us to discern eligibility, better to hide than misinform everyone
         [13826] = true, -- EXISTS ingame, but can only be picked up if quest 6607 was completed PRIOR to wrath - impossible for us to discern eligibility, better to hide than misinform everyone
-        [13843] = true, -- Questie NYI - only available if recipe 55252 is not known but quest 12889 is completed, we can't yet determine recipe knowledge
+        --[13843] = true, -- Questie NYI - only available if recipe 55252 is not known but quest 12889 is completed, we can't yet determine recipe knowledge - fixed
 
         [8367] = QuestieCorrections.WOTLK_ONLY, -- pvp marks removed in wotlk
         [8371] = QuestieCorrections.WOTLK_ONLY, -- pvp marks removed in wotlk
@@ -1224,7 +1278,6 @@ function QuestieQuestBlacklist:Load()
         [9337] = QuestieCorrections.WOTLK_ONLY,
         [9341] = QuestieCorrections.WOTLK_ONLY,
         [9343] = QuestieCorrections.WOTLK_ONLY,
-        [10445] = QuestieCorrections.WOTLK_ONLY, -- replaced by 13432 in wotlk
 
         -- Old Naxx quests (Naxx40 goes away in wotlk)
         [9120] = QuestieCorrections.WOTLK_ONLY, -- The Fall of Kel'Thuzad
@@ -1310,69 +1363,129 @@ function QuestieQuestBlacklist:Load()
         [13384] = true, -- 10man EoE keys become unavailable with P2
 
         --- Phase 3 Trial of the Crusader
-        [14151] = true, -- Cardinal Ruby (Alchemy)
-        [14199] = true, -- Proof of Demise: The Black Knight (Daily heroic)
-        [14016] = true, --* The Black Knight's Curse (https://www.wowhead.com/wotlk/quest=14016) (Retail Data)
-        [14017] = true, --* The Black Knight's Fate (https://www.wowhead.com/wotlk/quest=14017) (Retail Data)
-        [14142] = true, --* You've Really Done It This Time, Kul (https://www.wowhead.com/wotlk/quest=14142) (Retail Data)
-        [14096] = true, --* You've Really Done It This Time, Kul (https://www.wowhead.com/wotlk/quest=14096) (Retail Data)
-        [14074] = true, --* A Leg Up (https://www.wowhead.com/wotlk/quest=14074) (Retail Data)
-        [14143] = true, --* A Leg Up (https://www.wowhead.com/wotlk/quest=14143) (Retail Data)
-        [14136] = true, --* Rescue at Sea (https://www.wowhead.com/wotlk/quest=14136) (Retail Data)
-        [14152] = true, --* Rescue at Sea (https://www.wowhead.com/wotlk/quest=14152) (Retail Data)
-        [14077] = true, --* The Light's Mercy (https://www.wowhead.com/wotlk/quest=14077) (Retail Data)
-        [14144] = true, --* The Light's Mercy (https://www.wowhead.com/wotlk/quest=14144) (Retail Data)
-        [14080] = true, --* Stop The Aggressors (https://www.wowhead.com/wotlk/quest=14080) (Retail Data)
-        [14140] = true, --* Stop The Aggressors (https://www.wowhead.com/wotlk/quest=14140) (Retail Data)
+        --[14076] = true, -- Breakfast Of Champions
+        --[14090] = true, -- Gormok Wants His Snobolds
+        --[14112] = true, -- What Do You Feed a Yeti, Anyway?
+        --[14151] = true, -- Cardinal Ruby (Alchemy)
+        --[14199] = true, -- Proof of Demise: The Black Knight (Daily heroic)
+        --[14016] = true, --* The Black Knight's Curse (https://www.wowhead.com/wotlk/quest=14016) (Retail Data)
+        --[14017] = true, --* The Black Knight's Fate (https://www.wowhead.com/wotlk/quest=14017) (Retail Data)
+        --[14142] = true, --* You've Really Done It This Time, Kul (https://www.wowhead.com/wotlk/quest=14142) (Retail Data)
+        --[14096] = true, --* You've Really Done It This Time, Kul (https://www.wowhead.com/wotlk/quest=14096) (Retail Data)
+        --[14074] = true, --* A Leg Up (https://www.wowhead.com/wotlk/quest=14074) (Retail Data)
+        --[14143] = true, --* A Leg Up (https://www.wowhead.com/wotlk/quest=14143) (Retail Data)
+        --[14136] = true, --* Rescue at Sea (https://www.wowhead.com/wotlk/quest=14136) (Retail Data)
+        --[14152] = true, --* Rescue at Sea (https://www.wowhead.com/wotlk/quest=14152) (Retail Data)
+        --[14077] = true, --* The Light's Mercy (https://www.wowhead.com/wotlk/quest=14077) (Retail Data)
+        --[14144] = true, --* The Light's Mercy (https://www.wowhead.com/wotlk/quest=14144) (Retail Data)
+        --[14080] = true, --* Stop The Aggressors (https://www.wowhead.com/wotlk/quest=14080) (Retail Data)
+        --[14140] = true, --* Stop The Aggressors (https://www.wowhead.com/wotlk/quest=14140) (Retail Data)
 
         --- Phase 4 Icecrown Citadel
-        [24506] = true, -- Inside the Frozen Citadel (H)
-        [24510] = true, -- Inside the Frozen Citadel (A)
-        [26012] = true, -- Trouble at Wyrmrest
-        [26013] = true, -- Assault on the Sanctum
-        [24554] = true, -- The Battered Hilt (H)
-        [14443] = true, -- The Battered Hilt (A)
-        [24555] = true, -- What The Dragons Know (H)
-        [14444] = true, -- What The Dragons Know (A)
-        [24557] = true, -- The Silver Covenant's Scheme (H)
-        [14457] = true, -- The Sunreaver Plan (A)
-        [24556] = true, -- A Suitable Disguise (H)
-        [20438] = true, -- A Suitable Disguise (A)
-        [24451] = true, -- An Audience With The Arcanist (H)
-        [20439] = true, -- A Meeting With The Magister (A)
-        [24558] = true, -- Return To Myralion Sunblaze (H)
-        [24454] = true, -- Return To Caladis Brightspear (A)
-        [24559] = true, -- Reforging The Sword (H)
-        [24461] = true, -- Reforging The Sword (A)
-        [24560] = true, -- Tempering The Blade (H)
-        [24476] = true, -- Tempering The Blade (A)
-        [24561] = true, -- The Halls Of Reflection (H)
-        [24480] = true, -- The Halls Of Reflection (A)
-        [24562] = true, -- Journey To The Sunwell (H)
-        [24522] = true, -- Journey To The Sunwell (A)
-        [24563] = true, -- Thalorien Dawnseeker (H)
-        [24535] = true, -- Thalorien Dawnseeker (A)
-        [24564] = true, -- The Purification of Quel'Delar (H)
-        [24553] = true, -- The Purification of Quel'Delar (A)
-        [24594] = true, -- The Purification of Quel'Delar (H Belf)
-        [24595] = true, -- The Purification of Quel'Delar (A Druid/Priest/Shaman)
-        [24598] = true, -- The Purification of Quel'Delar (H ?)
-        [24801] = true, -- A Victory For The Sunreavers (H)
-        [24796] = true, -- A Victory For The Silver Covenant (A)
+        --[24827] = true, -- "Path of Courage"
+        --[24834] = true, -- "Path of Courage"
+        --[24835] = true, -- "Path of Courage"
+        --[24828] = true, -- "Path of Destruction"
+        --[24823] = true, -- "Path of Destruction"
+        --[24829] = true, -- "Path of Destruction"
+        --[25239] = true, -- "Path of Might"
+        --[25240] = true, -- "Path of Might"
+        --[25242] = true, -- "Path of Might"
+        --[24826] = true, -- "Path of Vengeance"
+        --[24832] = true, -- "Path of Vengeance"
+        --[24833] = true, -- "Path of Vengeance"
+        --[24825] = true, -- "Path of Wisdom"
+        --[24830] = true, -- "Path of Wisdom"
+        --[24831] = true, -- "Path of Wisdom"
+        --[24819] = true, -- "A Change of Heart"
+        --[24820] = true, -- "A Change of Heart"
+        --[24821] = true, -- "A Change of Heart"
+        --[24822] = true, -- "A Change of Heart"
+        --[24836] = true, -- "A Change of Heart"
+        --[24837] = true, -- "A Change of Heart"
+        --[24838] = true, -- "A Change of Heart"
+        --[24839] = true, -- "A Change of Heart"
+        --[24840] = true, -- "A Change of Heart"
+        --[24841] = true, -- "A Change of Heart"
+        --[24842] = true, -- "A Change of Heart"
+        --[24843] = true, -- "A Change of Heart"
+        --[24844] = true, -- "A Change of Heart"
+        --[24845] = true, -- "A Change of Heart"
+        --[24846] = true, -- "A Change of Heart"
+        --[24847] = true, -- "A Change of Heart"
+        --[25246] = true, -- "A Change of Heart"
+        --[25247] = true, -- "A Change of Heart"
+        --[25248] = true, -- "A Change of Heart"
+        --[25249] = true, -- "A Change of Heart"
+        --[24506] = true, -- Inside the Frozen Citadel (H)
+        --[24510] = true, -- Inside the Frozen Citadel (A)
+        --[24554] = true, -- The Battered Hilt (H)
+        --[14443] = true, -- The Battered Hilt (A)
+        --[24555] = true, -- What The Dragons Know (H)
+        --[14444] = true, -- What The Dragons Know (A)
+        --[24557] = true, -- The Silver Covenant's Scheme (H)
+        --[14457] = true, -- The Sunreaver Plan (A)
+        --[24556] = true, -- A Suitable Disguise (H)
+        --[20438] = true, -- A Suitable Disguise (A)
+        --[24451] = true, -- An Audience With The Arcanist (H)
+        --[20439] = true, -- A Meeting With The Magister (A)
+        --[24558] = true, -- Return To Myralion Sunblaze (H)
+        --[24454] = true, -- Return To Caladis Brightspear (A)
+        --[24559] = true, -- Reforging The Sword (H)
+        --[24461] = true, -- Reforging The Sword (A)
+        --[24560] = true, -- Tempering The Blade (H)
+        --[24476] = true, -- Tempering The Blade (A)
+        --[24561] = true, -- The Halls Of Reflection (H)
+        --[24480] = true, -- The Halls Of Reflection (A)
+        --[24562] = true, -- Journey To The Sunwell (H)
+        --[24522] = true, -- Journey To The Sunwell (A)
+        --[24563] = true, -- Thalorien Dawnseeker (H)
+        --[24535] = true, -- Thalorien Dawnseeker (A)
+        --[24564] = true, -- The Purification of Quel'Delar (H)
+        --[24553] = true, -- The Purification of Quel'Delar (A)
+        --[24594] = true, -- The Purification of Quel'Delar (H Belf)
+        --[24595] = true, -- The Purification of Quel'Delar (A Druid/Priest/Shaman)
+        --[24598] = true, -- The Purification of Quel'Delar (H ?)
+        --[24801] = true, -- A Victory For The Sunreavers (H)
+        --[24796] = true, -- A Victory For The Silver Covenant (A)
 
         -- new raid weekly quests
-        [24579] = true,
-        [24580] = true,
-        [24581] = true,
-        [24582] = true,
-        [24583] = true,
-        [24584] = true,
-        [24585] = true,
-        [24586] = true,
-        [24587] = true,
-        [24588] = true,
-        [24589] = true,
-        [24590] = true,
+        --[24579] = true,
+        --[24580] = true,
+        --[24581] = true,
+        --[24582] = true,
+        --[24583] = true,
+        --[24584] = true,
+        --[24585] = true,
+        --[24586] = true,
+        --[24587] = true,
+        --[24588] = true,
+        --[24589] = true,
+        --[24590] = true,
+
+        --- Phase 5 Ruby Sanctum
+        --[26012] = true, -- Trouble at Wyrmrest
+        --[26013] = true, -- Assault on the Sanctum
+
+        ----- SoD -------------- SoD quests --------------- SoD -----
+        [78611] = true, -- A Waylaid Shipment (no longer available in P2)
+        [79100] = true, -- A Waylaid Shipment (no longer available in P2)
+        [79482] = true, -- Stolen Winter Veil Treats
+        [79483] = true, -- Stolen Winter Veil Treats
+        [79484] = true, -- You're a Mean One...
+        [79485] = true, -- You're a Mean One...
+        [79486] = true, -- A Smokywood Pastures' Thank You!
+        [79487] = true, -- A Smokywood Pastures' Thank You!
+        [79492] = true, -- Metzen the Reindeer
+        [79495] = true, -- Metzen the Reindeer
+        [79588] = true, -- Small Furry Paws
+        [79589] = true, -- Torn Bear Pelts
+        [79590] = true, -- Heavy Grinding Stone
+        [79591] = true, -- Whirring Bronze Gizmo
+        [79592] = true, -- Carnival Jerkins
+        [79593] = true, -- Coarse Weightstone
+        [79594] = true, -- Copper Modulator
+        [79595] = true, -- Carnival Boots
 
         --- Automatic Overrides (for when Wowhead data is wrong)
         [13134] = false, -- Spill Their Blood
@@ -1397,6 +1510,16 @@ function QuestieQuestBlacklist:Load()
     if Questie.IsSoM then
         Questie:Debug(Questie.DEBUG_DEVELOP, "Blacklisting SoM quests...")
         local questsByPhase = QuestieQuestBlacklist:GetSoMQuestsToBlacklist()
+        for phase= 1, #questsByPhase do
+            for questId, _ in pairs(questsByPhase[phase]) do
+                questsToBlacklist[questId] = true
+            end
+        end
+    end
+
+    if Questie.IsSoD then
+        Questie:Debug(Questie.DEBUG_DEVELOP, "Blacklisting SoD quests...")
+        local questsByPhase = QuestieQuestBlacklist:GetSoDQuestsToBlacklist()
         for phase= 1, #questsByPhase do
             for questId, _ in pairs(questsByPhase[phase]) do
                 questsToBlacklist[questId] = true
@@ -1704,10 +1827,10 @@ function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
         [14150] = true, --* Blank [PH] (https://www.wowhead.com/wotlk/quest=14150) (Retail Data)
 
         -- Kalimdor -> Orgrimmar (1 -> 1637)
-        [24429] = true, --* A Most Puzzling Circumstance (https://www.wowhead.com/wotlk/quest=24429) (Retail Data)
+        --[24429] = true, --* A Most Puzzling Circumstance (https://www.wowhead.com/wotlk/quest=24429) (Retail Data)
 
         -- Kalimdor -> Darnassus (1 -> 1657)
-        [14409] = true, --* A Cautious Return (https://www.wowhead.com/wotlk/quest=14409) (Retail Data)
+        --[14409] = true, --* A Cautious Return (https://www.wowhead.com/wotlk/quest=14409) (Retail Data)
 
         --  ->  (0 -> 0)
         [12103] = true, --* Before the Storm (https://www.wowhead.com/wotlk/quest=12103) (Retail Data)
@@ -1854,7 +1977,7 @@ function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
 --         [13812] = true, --* Threat From Above (https://www.wowhead.com/wotlk/quest=13812) (Retail Data)
 --         [13813] = true, --* Taking Battle To The Enemy (https://www.wowhead.com/wotlk/quest=13813) (Retail Data)
 --         [13814] = true, --* Among the Champions (https://www.wowhead.com/wotlk/quest=13814) (Retail Data)
---         [13820] = true, --* The Blastbolt Brothers (https://www.wowhead.com/wotlk/quest=13820) (Retail Data)
+           [13820] = true, --* The Blastbolt Brothers (https://www.wowhead.com/wotlk/quest=13820) (Retail Data)
 --         [13828] = true, --* Mastery Of Melee (https://www.wowhead.com/wotlk/quest=13828) (Retail Data)
 --         [13829] = true, --* Mastery Of Melee (https://www.wowhead.com/wotlk/quest=13829) (Retail Data)
 --         [13835] = true, --* Mastery Of The Shield-Breaker (https://www.wowhead.com/wotlk/quest=13835) (Retail Data)
@@ -1876,45 +1999,46 @@ function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
 --         [13864] = true, --* Battle Before The Citadel (https://www.wowhead.com/wotlk/quest=13864) (Retail Data)
 --         [14016] = true, --* The Black Knight's Curse (https://www.wowhead.com/wotlk/quest=14016) (Retail Data)
 --         [14017] = true, --* The Black Knight's Fate (https://www.wowhead.com/wotlk/quest=14017) (Retail Data)
---         [14076] = true, --* Breakfast Of Champions (https://www.wowhead.com/wotlk/quest=14076) (Retail Data)
---         [14090] = true, --* Gormok Wants His Snobolds (https://www.wowhead.com/wotlk/quest=14090) (Retail Data)
---         [14092] = true, --* Breakfast Of Champions (https://www.wowhead.com/wotlk/quest=14092) (Retail Data)
+--        [14076] = true, --* Breakfast Of Champions (https://www.wowhead.com/wotlk/quest=14076) (Retail Data)
+--        [14090] = true, --* Gormok Wants His Snobolds (https://www.wowhead.com/wotlk/quest=14090) (Retail Data)
+--        [14092] = true, --* Breakfast Of Champions (https://www.wowhead.com/wotlk/quest=14092) (Retail Data)
 --         [14095] = true, --* Identifying the Remains (https://www.wowhead.com/wotlk/quest=14095) (Retail Data)
-        [14101] = true, --* Drottinn Hrothgar (https://www.wowhead.com/wotlk/quest=14101) (Retail Data)
-        [14102] = true, --* Mistcaller Yngvar (https://www.wowhead.com/wotlk/quest=14102) (Retail Data)
-        [14104] = true, --* Ornolf The Scarred (https://www.wowhead.com/wotlk/quest=14104) (Retail Data)
-        [14105] = true, --* Deathspeaker Kharos (https://www.wowhead.com/wotlk/quest=14105) (Retail Data)
-        [14107] = true, --* The Fate Of The Fallen (https://www.wowhead.com/wotlk/quest=14107) (Retail Data)
+--         [14101] = true, --* Drottinn Hrothgar (https://www.wowhead.com/wotlk/quest=14101) (Retail Data)
+--         [14102] = true, --* Mistcaller Yngvar (https://www.wowhead.com/wotlk/quest=14102) (Retail Data)
+--         [14104] = true, --* Ornolf The Scarred (https://www.wowhead.com/wotlk/quest=14104) (Retail Data)
+--         [14105] = true, --* Deathspeaker Kharos (https://www.wowhead.com/wotlk/quest=14105) (Retail Data)
+--         [14107] = true, --* The Fate Of The Fallen (https://www.wowhead.com/wotlk/quest=14107) (Retail Data)
 --         [14141] = true, --* Gormok Wants His Snobolds (https://www.wowhead.com/wotlk/quest=14141) (Retail Data)
 --         [14145] = true, --* What Do You Feed a Yeti, Anyway? (https://www.wowhead.com/wotlk/quest=14145) (Retail Data)
 --         [14200] = true, --* Kickoff Mail Marker (https://www.wowhead.com/wotlk/quest=14200) (Retail Data)
 --         [24442] = true, --* Battle Plans Of The Kvaldir (https://www.wowhead.com/wotlk/quest=24442) (Retail Data)
 
         -- Northrend -> Icecrown (10 -> 210)
-        [14444] = true, --* What The Dragons Know (https://www.wowhead.com/wotlk/quest=14444) (Retail Data)
-        [20438] = true, --* A Suitable Disguise (https://www.wowhead.com/wotlk/quest=20438) (Retail Data)
-        [20439] = true, --* A Meeting With The Magister (https://www.wowhead.com/wotlk/quest=20439) (Retail Data)
-        [24451] = true, --* An Audience With The Arcanist (https://www.wowhead.com/wotlk/quest=24451) (Retail Data)
-        [24454] = true, --* Return To Caladis Brightspear (https://www.wowhead.com/wotlk/quest=24454) (Retail Data)
-        [24476] = true, --* Tempering The Blade (https://www.wowhead.com/wotlk/quest=24476) (Retail Data)
-        [24555] = true, --* What The Dragons Know (https://www.wowhead.com/wotlk/quest=24555) (Retail Data)
-        [24556] = true, --* A Suitable Disguise (https://www.wowhead.com/wotlk/quest=24556) (Retail Data)
-        [24558] = true, --* Return To Myralion Sunblaze (https://www.wowhead.com/wotlk/quest=24558) (Retail Data)
-        [24560] = true, --* Tempering The Blade (https://www.wowhead.com/wotlk/quest=24560) (Retail Data)
-        [24795] = true, --* A Victory For The Silver Covenant (https://www.wowhead.com/wotlk/quest=24795) (Retail Data)
-        [24796] = true, --* A Victory For The Silver Covenant (https://www.wowhead.com/wotlk/quest=24796) (Retail Data)
-        [24798] = true, --* A Victory For The Sunreavers (https://www.wowhead.com/wotlk/quest=24798) (Retail Data)
-        [24799] = true, --* A Victory For The Sunreavers (https://www.wowhead.com/wotlk/quest=24799) (Retail Data)
-        [24800] = true, --* A Victory For The Sunreavers (https://www.wowhead.com/wotlk/quest=24800) (Retail Data)
-        [24801] = true, --* A Victory For The Sunreavers (https://www.wowhead.com/wotlk/quest=24801) (Retail Data)
+--      [14444] = true, --* What The Dragons Know (https://www.wowhead.com/wotlk/quest=14444) (Retail Data)
+--      [20438] = true, --* A Suitable Disguise (https://www.wowhead.com/wotlk/quest=20438) (Retail Data)
+--      [20439] = true, --* A Meeting With The Magister (https://www.wowhead.com/wotlk/quest=20439) (Retail Data)
+--      [24451] = true, --* An Audience With The Arcanist (https://www.wowhead.com/wotlk/quest=24451) (Retail Data)
+--      [24454] = true, --* Return To Caladis Brightspear (https://www.wowhead.com/wotlk/quest=24454) (Retail Data)
+--      [24476] = true, --* Tempering The Blade (https://www.wowhead.com/wotlk/quest=24476) (Retail Data)
+--      [24555] = true, --* What The Dragons Know (https://www.wowhead.com/wotlk/quest=24555) (Retail Data)
+--      [24556] = true, --* A Suitable Disguise (https://www.wowhead.com/wotlk/quest=24556) (Retail Data)
+--      [24558] = true, --* Return To Myralion Sunblaze (https://www.wowhead.com/wotlk/quest=24558) (Retail Data)
+--      [24560] = true, --* Tempering The Blade (https://www.wowhead.com/wotlk/quest=24560) (Retail Data)
+--      [24795] = true, --* A Victory For The Silver Covenant (https://www.wowhead.com/wotlk/quest=24795) (Retail Data)
+--      [24796] = true, --* A Victory For The Silver Covenant (https://www.wowhead.com/wotlk/quest=24796) (Retail Data)
+--      [24798] = true, --* A Victory For The Sunreavers (https://www.wowhead.com/wotlk/quest=24798) (Retail Data)
+--      [24799] = true, --* A Victory For The Sunreavers (https://www.wowhead.com/wotlk/quest=24799) (Retail Data)
+--      [24800] = true, --* A Victory For The Sunreavers (https://www.wowhead.com/wotlk/quest=24800) (Retail Data)
+--      [24801] = true, --* A Victory For The Sunreavers (https://www.wowhead.com/wotlk/quest=24801) (Retail Data)
         [24808] = true, --* Tank Ring Flag (https://www.wowhead.com/wotlk/quest=24808) (Retail Data)
         [24809] = true, --* Healer Ring Flag (https://www.wowhead.com/wotlk/quest=24809) (Retail Data)
         [24810] = true, --* Melee Ring Flag (https://www.wowhead.com/wotlk/quest=24810) (Retail Data)
         [24811] = true, --* Caster Ring Flag (https://www.wowhead.com/wotlk/quest=24811) (Retail Data)
+        [25238] = true, --* Strength Ring Flag (https://www.wowhead.com/wotlk/quest=25238) (Retail Data)
 
         -- Northrend -> Dalaran (10 -> 4395)
-        [14457] = true, --* The Sunreaver Plan (https://www.wowhead.com/wotlk/quest=14457) (Retail Data)
-        [24557] = true, --* The Silver Covenant's Scheme (https://www.wowhead.com/wotlk/quest=24557) (Retail Data)
+--      [14457] = true, --* The Sunreaver Plan (https://www.wowhead.com/wotlk/quest=14457) (Retail Data)
+--      [24557] = true, --* The Silver Covenant's Scheme (https://www.wowhead.com/wotlk/quest=24557) (Retail Data)
 
         -- Northrend -> Sholazar Basin (10 -> 3711)
         [12764] = true, --* The Secret to Kungaloosh (https://www.wowhead.com/wotlk/quest=12764) (Retail Data)
@@ -2011,18 +2135,20 @@ function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
         [11116] = true, --* Trial of the Naaru: (QUEST FLAG) (https://www.wowhead.com/wotlk/quest=11116)
 
         -- Eastern Kingdoms -> Isle Of Queldanas (0 -> 4080)
+        [11517] = true, --* Report to Nasuun (https://www.wowhead.com/wotlk/quest=11517) (Retail Data)
+        [11534] = true, --* Report to Nasuun (https://www.wowhead.com/wotlk/quest=11534) (Retail Data)
         [11552] = true, --* Rohendor, the Second Gate (https://www.wowhead.com/wotlk/quest=11552) (Retail Data)
         [11553] = true, --* Archonisus, the Final Gate (https://www.wowhead.com/wotlk/quest=11553) (Retail Data)
-        [24522] = true, --* Journey To The Sunwell (https://www.wowhead.com/wotlk/quest=24522) (Retail Data)
-        [24535] = true, --* Thalorien Dawnseeker (https://www.wowhead.com/wotlk/quest=24535) (Retail Data)
-        [24562] = true, --* Journey To The Sunwell (https://www.wowhead.com/wotlk/quest=24562) (Retail Data)
-        [24563] = true, --* Thalorien Dawnseeker (https://www.wowhead.com/wotlk/quest=24563) (Retail Data)
+--      [24522] = true, --* Journey To The Sunwell (https://www.wowhead.com/wotlk/quest=24522) (Retail Data)
+--      [24535] = true, --* Thalorien Dawnseeker (https://www.wowhead.com/wotlk/quest=24535) (Retail Data)
+--      [24562] = true, --* Journey To The Sunwell (https://www.wowhead.com/wotlk/quest=24562) (Retail Data)
+--      [24563] = true, --* Thalorien Dawnseeker (https://www.wowhead.com/wotlk/quest=24563) (Retail Data)
 
         -- Eastern Kingdoms -> Eastern Plaguelands (0 -> 139)
         [9378] = true, --* DND FLAG The Dread Citadel - Naxxramas (https://www.wowhead.com/wotlk/quest=9378) (Retail Data)
 
         -- Eastern Kingdoms -> Stormwind City (0 -> 1519)
-        [24428] = true, --* A Most Puzzling Circumstance (https://www.wowhead.com/wotlk/quest=24428) (Retail Data)
+        --[24428] = true, --* A Most Puzzling Circumstance (https://www.wowhead.com/wotlk/quest=24428) (Retail Data)
 
         -- World Events -> Childrens Week (9 -> -1002)
         [13929] = true, --* The Biggest Tree Ever! (https://www.wowhead.com/wotlk/quest=13929) (Retail Data)
@@ -2044,6 +2170,8 @@ function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
         -- World Events -> Brewfest (9 -> -370)
         [11486] = true, --* The Best of Brews (https://www.wowhead.com/wotlk/quest=11486) (Retail Data)
         [11487] = true, --* The Best of Brews (https://www.wowhead.com/wotlk/quest=11487) (Retail Data)
+        [12491] = true, --* Direbrew's Dire Brew (https://www.wowhead.com/wotlk/quest=12491) (Retail Data)
+        [12492] = true, --* Direbrew's Dire Brew (https://www.wowhead.com/wotlk/quest=12492) (Retail Data)
 
         -- World Events -> Love Is In The Air (9 -> -1004)
         [24576] = true, --* A Friendly Chat... (https://www.wowhead.com/wotlk/quest=24576) (Retail Data)
@@ -2058,23 +2186,23 @@ function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
 
         --! 3.3.2
         -- Raids -> Icecrown Citadel (3 -> 4812)
-        [24869] = true, --* Deprogramming (https://www.wowhead.com/wotlk/quest=24869)
-        [24870] = true, --* Securing the Ramparts (https://www.wowhead.com/wotlk/quest=24870)
-        [24871] = true, --* Securing the Ramparts (https://www.wowhead.com/wotlk/quest=24871)
-        [24873] = true, --* Residue Rendezvous (https://www.wowhead.com/wotlk/quest=24873)
-        [24874] = true, --* Blood Quickening (https://www.wowhead.com/wotlk/quest=24874)
-        [24875] = true, --* Deprogramming (https://www.wowhead.com/wotlk/quest=24875)
-        [24876] = true, --* Securing the Ramparts (https://www.wowhead.com/wotlk/quest=24876)
-        [24877] = true, --* Securing the Ramparts (https://www.wowhead.com/wotlk/quest=24877)
-        [24878] = true, --* Residue Rendezvous (https://www.wowhead.com/wotlk/quest=24878)
-        [24879] = true, --* Blood Quickening (https://www.wowhead.com/wotlk/quest=24879)
+        --[24869] = true, --* Deprogramming (https://www.wowhead.com/wotlk/quest=24869)
+        --[24870] = true, --* Securing the Ramparts (https://www.wowhead.com/wotlk/quest=24870)
+        --[24871] = true, --* Securing the Ramparts (https://www.wowhead.com/wotlk/quest=24871)
+        --[24873] = true, --* Residue Rendezvous (https://www.wowhead.com/wotlk/quest=24873)
+        --[24874] = true, --* Blood Quickening (https://www.wowhead.com/wotlk/quest=24874)
+        --[24875] = true, --* Deprogramming (https://www.wowhead.com/wotlk/quest=24875)
+        --[24876] = true, --* Securing the Ramparts (https://www.wowhead.com/wotlk/quest=24876)
+        --[24877] = true, --* Securing the Ramparts (https://www.wowhead.com/wotlk/quest=24877)
+        --[24878] = true, --* Residue Rendezvous (https://www.wowhead.com/wotlk/quest=24878)
+        --[24879] = true, --* Blood Quickening (https://www.wowhead.com/wotlk/quest=24879)
 
         -- World Events -> Love Is In The Air (9 -> -1004)
         [24541] = true, --* Pilfering Perfume (https://www.wowhead.com/wotlk/quest=24541) (Retail Data)
         [24656] = true, --* Pilfering Perfume (https://www.wowhead.com/wotlk/quest=24656) (Retail Data)
 
         -- Northrend -> Tournament (10 -> -241)
---         [14112] = true, --* What Do You Feed a Yeti, Anyway? (https://www.wowhead.com/wotlk/quest=14112) (Retail Data)
+        --[14112] = true, --* What Do You Feed a Yeti, Anyway? (https://www.wowhead.com/wotlk/quest=14112) (Retail Data)
 
 
         --! 3.3.3
@@ -2106,12 +2234,9 @@ function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
         --  ->  (0 -> 0)
         [25293] = true, --* The Missing (https://www.wowhead.com/wotlk/quest=25293) (Retail Data)
 
-        -- Northrend -> Icecrown (10 -> 210)
-        [25238] = true, --* Strength Ring Flag (https://www.wowhead.com/wotlk/quest=25238) (Retail Data)
-
         -- Northrend -> Tournament (10 -> -241)
---         [13627] = true, --* Jack Me Some Lumber (https://www.wowhead.com/wotlk/quest=13627) (Retail Data)
---         [13681] = true, --* A Chip Off the Ulduar Block (https://www.wowhead.com/wotlk/quest=13681) (Retail Data)
+        [13627] = true, --* Jack Me Some Lumber (https://www.wowhead.com/wotlk/quest=13627) (Retail Data)
+        [13681] = true, --* A Chip Off the Ulduar Block (https://www.wowhead.com/wotlk/quest=13681) (Retail Data)
 --         [13682] = true, --* Threat From Above (https://www.wowhead.com/wotlk/quest=13682) (Retail Data)
 --         [13785] = true, --* The Edge Of Winter (https://www.wowhead.com/wotlk/quest=13785) (Retail Data)
 --         [13789] = true, --* Taking Battle To The Enemy (https://www.wowhead.com/wotlk/quest=13789) (Retail Data)
@@ -2121,7 +2246,7 @@ function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
 --         [13811] = true, --* Among the Champions (https://www.wowhead.com/wotlk/quest=13811) (Retail Data)
 --         [13861] = true, --* Battle Before The Citadel (https://www.wowhead.com/wotlk/quest=13861) (Retail Data)
 --         [13862] = true, --* Battle Before The Citadel (https://www.wowhead.com/wotlk/quest=13862) (Retail Data)
-        [14108] = true, --* Get Kraken! (https://www.wowhead.com/wotlk/quest=14108) (Retail Data)
+--         [14108] = true, --* Get Kraken! (https://www.wowhead.com/wotlk/quest=14108) (Retail Data)
 
         -- World Events -> Love Is In The Air (9 -> -1004)
         [24638] = true, --* Crushing the Crown (https://www.wowhead.com/wotlk/quest=24638) (Retail Data)
@@ -2141,20 +2266,75 @@ function QuestieQuestBlacklist.LoadAutoBlacklistWotlk()
         [24665] = true, --* Crushing the Crown (https://www.wowhead.com/wotlk/quest=24665) (Retail Data)
         [24666] = true, --* Crushing the Crown (https://www.wowhead.com/wotlk/quest=24666) (Retail Data)
 
+        -- Midsummer Festival
+        [13440] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13440) (Retail Data)
+        [13441] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13441) (Retail Data)
+        [13442] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13442) (Retail Data)
+        [13443] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13443) (Retail Data)
+        [13444] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13444) (Retail Data)
+        [13445] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13445) (Retail Data)
+        [13446] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13446) (Retail Data)
+        [13447] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13447) (Retail Data)
+        [13449] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13449) (Retail Data)
+        [13450] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13445) (Retail Data)
+        [13451] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13451) (Retail Data)
+        [13453] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13453) (Retail Data)
+        [13454] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13454) (Retail Data)
+        [13455] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13455) (Retail Data)
+        [13457] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13457) (Retail Data)
+        [13458] = true, --* Desecrate this Fire! (https://www.wowhead.com/wotlk/quest=13458) (Retail Data)
+        [13485] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13485) (Retail Data)
+        [13486] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13486) (Retail Data)
+        [13487] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13487) (Retail Data)
+        [13488] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13488) (Retail Data)
+        [13489] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13489) (Retail Data)
+        [13490] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13490) (Retail Data)
+        [13491] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13491) (Retail Data)
+        [13492] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13492) (Retail Data)
+        [13493] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13493) (Retail Data)
+        [13494] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13494) (Retail Data)
+        [13495] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13495) (Retail Data)
+        [13496] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13496) (Retail Data)
+        [13497] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13497) (Retail Data)
+        [13498] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13498) (Retail Data)
+        [13499] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13499) (Retail Data)
+        [13500] = true, --* Honor the Flame (https://www.wowhead.com/wotlk/quest=13500) (Retail Data)
+
 
         --! 3.4.0
         -- Northrend -> Grizzly Hills (10 -> 394)
-        [12432] = true, --* Riding the Red Rocket (https://www.wowhead.com/wotlk/quest=12432)
-        [12437] = true, --* Riding the Red Rocket (https://www.wowhead.com/wotlk/quest=12437)
+        --[12432] = true, --* Riding the Red Rocket (https://www.wowhead.com/wotlk/quest=12432)
+        --[12437] = true, --* Riding the Red Rocket (https://www.wowhead.com/wotlk/quest=12437)
 
         -- Dungeons -> The Slave Pens (2 -> 3717)
-        [13431] = true, --* The Cudgel of Kar'desh (https://www.wowhead.com/wotlk/quest=13431)
+        --[13431] = true, --* The Cudgel of Kar'desh (https://www.wowhead.com/wotlk/quest=13431) -- it is still available in wotlk P3
 
+        -- Darnassus WOTLK
+        [10520] = QuestieCorrections.WOTLK_ONLY, --*Assisting Arch Druid Staghelm (https://www.wowhead.com/wotlk/quest=10520) not present anymore in wotlk
 
         --! 8.0.1
         -- Raids -> Sunwell Plateau (3 -> 4075)
-        [24594] = true, --* The Purification of Quel'Delar (https://www.wowhead.com/wotlk/quest=24594) (Retail Data)
+        --[24594] = true, --* The Purification of Quel'Delar (https://www.wowhead.com/wotlk/quest=24594) (Retail Data)
 
+        -- 3.4.3
+        -- ICC
+        [13240] = true, --* Timear Foresees Centrifuge Constructs in your Future! (https://www.wowhead.com/wotlk/quest=13240) (Retail Data)
+        [13241] = true, --* Timear Foresees Ymirjar Berserkers in your Future! (https://www.wowhead.com/wotlk/quest=13241) (Retail Data)
+        [13243] = true, --* Timear Foresees Infinite Agents in your Future! (https://www.wowhead.com/wotlk/quest=13243) (Retail Data)
+        [13244] = true, --* Timear Foresees Titanium Vanguards in your Future! (https://www.wowhead.com/wotlk/quest=13244) (Retail Data)
+        [13245] = true, --* Proof of Demise: Ingvar the Plunderer (https://www.wowhead.com/wotlk/quest=13245) (Retail Data)
+        [13246] = true, --* Proof of Demise: Keristrasza (https://www.wowhead.com/wotlk/quest=13246) (Retail Data)
+        [13247] = true, --* Proof of Demise: Ley-Guardian Eregos (https://www.wowhead.com/wotlk/quest=13247) (Retail Data)
+        [13248] = true, --* Proof of Demise: King Ymiron (https://www.wowhead.com/wotlk/quest=13248) (Retail Data)
+        [13249] = true, --* Proof of Demise: The Prophet Tharon'ja (https://www.wowhead.com/wotlk/quest=13249) (Retail Data)
+        [13250] = true, --* Proof of Demise: Gal'darah (https://www.wowhead.com/wotlk/quest=13250) (Retail Data)
+        [13251] = true, --* Proof of Demise: Mal'Ganis (https://www.wowhead.com/wotlk/quest=13251) (Retail Data)
+        [13252] = true, --* Proof of Demise: Sjonnir The Ironshaper (https://www.wowhead.com/wotlk/quest=13252) (Retail Data)
+        [13253] = true, --* Proof of Demise: Loken (https://www.wowhead.com/wotlk/quest=13253) (Retail Data)
+        [13254] = true, --* Proof of Demise: Anub'arak (https://www.wowhead.com/wotlk/quest=13254) (Retail Data)
+        [13255] = true, --* Proof of Demise: Herald Volazj (https://www.wowhead.com/wotlk/quest=13255) (Retail Data)
+        [13256] = true, --* Proof of Demise: Cyanigosa (https://www.wowhead.com/wotlk/quest=13256) (Retail Data)
+        [14199] = true, --* Proof of Demise: The Black Knight (https://www.wowhead.com/wotlk/quest=14199) (Retail Data)
 
     }
 end

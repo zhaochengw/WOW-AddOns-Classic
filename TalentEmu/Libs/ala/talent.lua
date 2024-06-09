@@ -2,7 +2,7 @@
 	ALA@163UI
 --]]--
 
-local __version = 221018.0;
+local __version = 231231.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -51,6 +51,7 @@ end
 	local GetGlyphSocketInfo = GetGlyphSocketInfo;
 	local GetInventoryItemLink = GetInventoryItemLink;
 	local GetItemInfo = GetItemInfo;
+	local GetSpellInfo = GetSpellInfo;
 	local GetAddOnInfo, IsAddOnLoaded, GetAddOnEnableState = GetAddOnInfo, IsAddOnLoaded, GetAddOnEnableState;
 	local Ambiguate = Ambiguate;
 
@@ -115,6 +116,9 @@ end
 	--
 	local CLIENT_MAJOR = floor(__ala_meta__.TOC_VERSION / 10000);
 	local LIB_MAJOR = 2;
+	local SUPPORT_GEM = CLIENT_MAJOR >= 2;
+	local SUPPORT_GLYPH = CLIENT_MAJOR >= 3 and CLIENT_MAJOR <= 6 or false;
+	local SUPPORT_ENGRAVING = C_Engraving ~= nil and C_Engraving.IsEngravingEnabled ~= nil and C_Engraving.IsEngravingEnabled() or false;
 	--
 	local COMM_PREFIX_LIST = { "ATEADD", "ATECOM", "EMUADD", "EMUCOM", };
 	local COMM_PREFIX_HASH = {  };
@@ -126,6 +130,7 @@ end
 	local COMM_TALENT_PREFIX = "!T" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
 	local COMM_GLYPH_PREFIX = "!G" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
 	local COMM_EQUIPMENT_PREFIX = "!E" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
+	local COMM_ENGRAVING_PREFIX = "!N" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
 	local COMM_ADDON_PREFIX = "!A" .. __base64[CLIENT_MAJOR] .. __base64[LIB_MAJOR];
 	----------------
 	--	old version compatibility
@@ -158,6 +163,9 @@ end
 				--
 				CLIENT_MAJOR = CLIENT_MAJOR,
 				LIB_MAJOR = LIB_MAJOR,
+				SUPPORT_GEM = SUPPORT_GEM,
+				SUPPORT_GLYPH = SUPPORT_GLYPH,
+				SUPPORT_ENGRAVING = SUPPORT_ENGRAVING,
 				--
 				COMM_PREFIX = COMM_PREFIX,
 				COMM_PART_PREFIX = COMM_PART_PREFIX,
@@ -1041,12 +1049,14 @@ end
 		end
 	end
 	function __emulib.EncodePlayerGlyphDataV2()
-		return __emulib.EncodeGlyphDataV2(
-			GetNumTalentGroups(false, false),
-			GetActiveTalentGroup(false, false),
-			__emulib.GetGlyphData(nil, 1),
-			__emulib.GetGlyphData(nil, 2)
-		);
+		if SUPPORT_GLYPH then
+			return __emulib.EncodeGlyphDataV2(
+				GetNumTalentGroups(false, false),
+				GetActiveTalentGroup(false, false),
+				__emulib.GetGlyphData(nil, 1),
+				__emulib.GetGlyphData(nil, 2)
+			);
+		end
 	end
 -->		Addon Pack
 	--
@@ -1250,8 +1260,7 @@ end
 			local val = { strsplit("+", code) };
 			if val[2] ~= nil then
 				local start = __debase64[val[1]] - 2;
-				local num = #val;
-				for i = 2, num do
+				for i = 2, #val do
 					local item = DecodeItem(val[i]);
 					DataTable[start + i] = item;
 					if item ~= nil then
@@ -1364,6 +1373,49 @@ end
 		end
 		return COMM_EQUIPMENT_PREFIX .. msg;
 	end
+	function __emulib.DecodeEngravingDataV2(DataTable, code)
+		if strsub(code, 1, 2) ~= "!N" then
+			return false;
+		end
+		local CLIENT_MAJOR = __debase64[strsub(code, 3, 3)];
+		if CLIENT_MAJOR ~= CLIENT_MAJOR then
+			return nil, "WOW VERSION";
+		end
+		local val = { strsplit("+", strsub(code, 5)) };
+		for i = 1, #val do
+			local slot, id, icon = strsplit(":", val[i]);
+			slot = slot and __debase64[slot] or nil;
+			id = id and DecodeNumber(id) or nil;
+			icon = icon and DecodeNumber(icon) or nil;
+			if slot ~= nil and id ~= nil then
+				DataTable[slot] = { id, icon or select(3, GetSpellInfo(id)) or nil, };
+			end
+		end
+		return true, DataTable;
+	end
+	function __emulib.EncodePlayerEngravingDataV2()
+		if SUPPORT_ENGRAVING then
+			local msg = nil;
+			for slot = 0, 19 do
+				if C_Engraving.IsEquipmentSlotEngravable(slot) then
+					local info = C_Engraving.GetRuneForEquipmentSlot(slot);
+					if info ~= nil and info.learnedAbilitySpellIDs ~= nil and info.learnedAbilitySpellIDs[info.level] ~= nil then
+						if msg == nil then
+							msg = __base64[slot] .. ":" .. EncodeNumber(info.learnedAbilitySpellIDs[info.level]) .. ":" .. EncodeNumber(info.iconTexture);
+						else
+							msg = msg .. "+" .. __base64[slot] .. ":" .. EncodeNumber(info.learnedAbilitySpellIDs[info.level]) .. ":" .. EncodeNumber(info.iconTexture);
+						end
+					end
+				end
+			end
+			if msg ~= nil then
+				return COMM_ENGRAVING_PREFIX .. msg;
+			else
+				return COMM_ENGRAVING_PREFIX;
+			end
+		end
+		return nil;
+	end
 -->		Push
 	function __emulib.PushTalentsV1(code, channel, target)
 		return SendAddonMessage(COMM_PREFIX, COMM_PUSH_V1 .. code .. "#" .. SELFGUID .. "#V1", channel, target);
@@ -1424,9 +1476,9 @@ function __emulib.SendQueryRequest(shortname, realm, talent, glyph, equipment)
 	--[~=[
 	if talent or glyph or equipment then
 		if UnitInBattleground('player') and realm ~= SELFREALM then
-			SendAddonMessage(COMM_PREFIX, COMM_QUERY_PREFIX .. (talent and "T" or "") .. (glyph and "G" or "") .. (equipment and "E" or "") .. "#" .. shortname .. "-" .. realm, "INSTANCE_CHAT");
+			SendAddonMessage(COMM_PREFIX, COMM_QUERY_PREFIX .. (talent and "T" or "") .. ((glyph and CLIENT_MAJOR >= 3) and "G" or "") .. (equipment and "E" or "") .. "#" .. shortname .. "-" .. realm, "INSTANCE_CHAT");
 		else
-			SendAddonMessage(COMM_PREFIX, COMM_QUERY_PREFIX .. (talent and "T" or "") .. (glyph and "G" or "") .. (equipment and "E" or ""), "WHISPER", shortname .. "-" .. realm);
+			SendAddonMessage(COMM_PREFIX, COMM_QUERY_PREFIX .. (talent and "T" or "") .. ((glyph and CLIENT_MAJOR >= 3) and "G" or "") .. (equipment and "E" or ""), "WHISPER", shortname .. "-" .. realm);
 		end
 	end
 	--]=]
@@ -1668,7 +1720,7 @@ function __emulib.ProcV2Message(prefix, msg, channel, sender)
 					if prev == nil or now - prev > TALENT_REPLY_THROTTLED_INTERVAL then
 						_TThrottle[name] = now;
 						ReplyData[1] = __emulib.EncodePlayerTalentDataV2();
-						ReplyData[4] = __emulib.EncodeAddOnPackDataV2();
+						ReplyData[5] = __emulib.EncodeAddOnPackDataV2();
 					end
 				elseif v == "G" then
 					local prev = _GThrottle[name];
@@ -1681,13 +1733,14 @@ function __emulib.ProcV2Message(prefix, msg, channel, sender)
 					if prev == nil or now - prev > EQUIPMENT_REPLY_THROTTLED_INTERVAL then
 						_EThrottle[name] = now;
 						ReplyData[3] = __emulib.EncodePlayerEquipmentDataV2();
+						ReplyData[4] = __emulib.EncodePlayerEngravingDataV2();
 					end
 				elseif v == "A" then
 				else
 				end
 			end
 			local msg = "";
-			for index = 1, 4 do
+			for index = 1, 5 do
 				if ReplyData[index] ~= nil then
 					msg = msg .. ReplyData[index];
 				end
@@ -1706,6 +1759,13 @@ function __emulib.ProcV2Message(prefix, msg, channel, sender)
 		elseif v2_ctrl_code == "!E" then
 			for index = 1, __emulib._NumDistributors do
 				__emulib._CommDistributor[index].OnEquipment(prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeEquipmentDataV2, overheard);
+			end
+		elseif v2_ctrl_code == "!N" then
+			for index = 1, __emulib._NumDistributors do
+				local d = __emulib._CommDistributor[index];
+				if d.OnEngraving ~= nil then
+					d.OnEngraving(prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeEngravingDataV2, overheard);
+				end
 			end
 		elseif v2_ctrl_code == "!A" then
 			for index = 1, __emulib._NumDistributors do

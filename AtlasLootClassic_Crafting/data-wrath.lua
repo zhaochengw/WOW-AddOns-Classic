@@ -259,7 +259,7 @@ data["BlacksmithingWrath"] = {
 			[PLATE_DIFF] = {
 				{ 1, [ATLASLOOT_IT_ALLIANCE] = { 67091 }, [ATLASLOOT_IT_HORDE] = { 67130 } },	-- Breastplate of the White Knight
 				{ 2, [ATLASLOOT_IT_ALLIANCE] = { 67095 }, [ATLASLOOT_IT_HORDE] = { 67134 } },	-- Sunforged Breastplate
-				{ 3, [ATLASLOOT_IT_ALLIANCE] = { 67094 }, [ATLASLOOT_IT_HORDE] = { 67133 } },	-- Titanium Spikeguards
+				{ 3, [ATLASLOOT_IT_ALLIANCE] = { 67093 }, [ATLASLOOT_IT_HORDE] = { 67132} },	-- Titanium Razorplate
 				{ 4, 61008 },	-- Icebane Chestguard
 				{ 5, 55311 },	-- Savage Saronite Hauberk
 				{ 6, 55058 },	-- Brilliant Saronite Breastplate
@@ -422,9 +422,14 @@ data["EnchantingWrath"] = {
 				{ 8, 44582 },	-- Enchant Cloak - Minor Power
 				{ 9, 60609 },	-- Enchant Cloak - Speed
 
-				{ 16, 60609 },	-- Enchant Cloak - Speed
-				{ 17, 44582 },	-- Enchant Cloak - Spell Piercing
-				{ 18, 60663 },	-- Enchant Cloak - Major Agility
+				{ 20, 44596 },	-- Enchant Cloak - Superior Arcane Resistance
+				{ 19, 44556 },	-- Enchant Cloak - Superior Fire Resistance
+				{ 16, 44483 },	-- Enchant Cloak - Superior Frost Resistance
+				{ 17, 44494 },	-- Enchant Cloak - Superior Nature Resistance
+				{ 18, 44590 },	-- Enchant Cloak - Superior Shadow Resistance
+
+
+
 			}
 		},
 		{
@@ -1001,11 +1006,19 @@ data["LeatherworkingWrath"] = {
 				{ 6, 50966 },	-- Nerubian Leg Armor
 				{ 8, 50963 },	-- Heavy Borean Armor Kit
 
-				{ 10, 57683 },	-- Fur Lining - Attack Power
-				{ 11, 57691 },	-- Fur Lining - Spell Power
+				{ 10, 60584 },	-- Nerubian Leg Reinforcements
+				{ 11, 60583 },	-- Jormungar Leg Reinforcements
 
-				{ 25, 60584 },	-- Nerubian Leg Reinforcements
-				{ 26, 60583 },	-- Jormungar Leg Reinforcements
+				{ 16, 57691 },	-- Fur Lining - Spell Power
+				{ 17, 57690 },	-- Fur Lining - Stamina
+				{ 18, 57683 },	-- Fur Lining - Attack Power
+
+				{ 20, 57701 },	-- Fur Lining - Arcane Resist
+				{ 21, 57692 },	-- Fur Lining - Fire Resist
+				{ 22, 57694 },	-- Fur Lining - Frost Resist
+				{ 23, 57699 },	-- Fur Lining - Nature Resist
+				{ 24, 57696 },	-- Fur Lining - Shadow Resist
+
 			},
 		},
 		{
@@ -1021,6 +1034,8 @@ data["LeatherworkingWrath"] = {
 				{ 1, 50971 },	-- Mammoth Mining Bag
 				{ 2, 60643 },	-- Pack of Endless Pockets
 				{ 3, 50970 },	-- Trapper's Traveling Pack
+				{ 5, 60647 },	-- Nerubian Reinforced Quiver
+				{ 6, 60645 },	-- Dragonscale Ammo Pouch
 			},
 		},
 		{
@@ -1083,11 +1098,12 @@ data["JewelcraftingWrath"] = {
 				{ 1, 56500 },	-- Titanium Earthguard Chain
 				{ 2, 56499 },	-- Titanium Impact Choker
 				{ 3, 56501 },	-- Titanium Spellshock Necklace
-				{ 4, 73496 },	-- Alicite Pendant
 				{ 5, 64725 },	-- Emerald Choker
 				{ 6, 64726 },	-- Sky Sapphire Amulet
 				{ 7, 56196 },	-- Blood Sun Necklace
 				{ 8, 56195 },	-- Jade Dagger Pendant
+				{ 10, 58142 },	-- Crystal Chalcedony Amulet
+				{ 11, 58141 },	-- Crystal Citrine Necklace
 			}
 		},
 		{
@@ -1225,7 +1241,7 @@ data["JewelcraftingWrath"] = {
 			[NORMAL_DIFF] = {
 				{ 1, 66498 },	-- Sparkling Majestic Zircon
 				{ 2, 66497 },	-- Solid Majestic Zircon
-				{ 3, 66498 },	-- Lustrous Majestic Zircon
+				{ 3, 66500 },	-- Lustrous Majestic Zircon
 				{ 4, 66499 },	-- Stormy Majestic Zircon
 				{ 6, 53953 },	-- Sparkling Sky Sapphire
 				{ 7, 53952 },	-- Solid Sky Sapphire

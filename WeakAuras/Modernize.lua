@@ -1617,7 +1617,7 @@ function Private.Modernize(data)
         -- Full Rotate is enabled
         data.legacyZoomOut = true
       else
-        -- Discreete Rotation
+        -- Discrete Rotation
         data.rotation = data.discrete_rotation
       end
       data.discrete_rotation = nil
@@ -1674,5 +1674,322 @@ function Private.Modernize(data)
     end
   end
 
+  local function spellIdToTalent(specId, spellId)
+    local talents = Private.GetTalentData(specId)
+    for _, talent in ipairs(talents) do
+      if talent[2] == spellId then
+        return talent[1]
+      end
+    end
+  end
+
+  if data.internalVersion < 66 then
+    if WeakAuras.IsRetail() then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        if triggerData.trigger.type == "unit"
+          and triggerData.trigger.event == "Talent Known"
+          and triggerData.trigger.talent
+          and triggerData.trigger.talent.multi
+        then
+          local classId
+          for i = 1, GetNumClasses() do
+            if select(2, GetClassInfo(i)) == triggerData.trigger.class then
+              classId = i
+            end
+          end
+          if classId and triggerData.trigger.spec then
+            local specId = GetSpecializationInfoForClassID(classId, triggerData.trigger.spec)
+            if specId then
+              local newMulti = { }
+              for spellId, value in pairs(triggerData.trigger.talent.multi) do
+                local talentId = spellIdToTalent(specId, spellId)
+                if talentId then
+                  newMulti[talentId] = value
+                end
+              end
+              triggerData.trigger.talent.multi = newMulti
+            end
+          end
+        end
+      end
+      local specId = Private.checkForSingleLoadCondition(data.load, "class_and_spec")
+
+
+      if specId then
+        for _, property in ipairs({"talent", "talent2", "talent3"}) do
+          local use = "use_" .. property
+          if data.load[use] ~= nil and data.load[property] and data.load[property].multi then
+            local newMulti = { }
+            for spellId, value in pairs(data.load[property].multi) do
+              local talentId = spellIdToTalent(specId, spellId)
+              if talentId then
+                newMulti[talentId] = value
+              end
+            end
+            data.load[property].multi = newMulti
+          end
+
+        end
+      end
+    end
+  end
+
+  local function migrateToTable(tab, field)
+    local value = tab[field]
+    if value ~= nil and type(value) ~= "table" then
+      tab[field] = { value }
+    end
+  end
+
+  if data.internalVersion < 67 then
+    do
+      local trigger_migration = {
+        ["Cast"] = {
+          "stage",
+          "stage_operator",
+        },
+        ["Experience"] = {
+          "level",
+          "level_operator",
+          "currentXP",
+          "currentXP_operator",
+          "totalXP",
+          "totalXP_operator",
+          "percentXP",
+          "percentXP_operator",
+          "restedXP",
+          "restedXP_operator",
+          "percentrested",
+          "percentrested_operator",
+        },
+        ["Health"] = {
+          "health",
+          "health_operator",
+          "percenthealth",
+          "percenthealth_operator",
+          "deficit",
+          "deficit_operator",
+          "maxhealth",
+          "maxhealth_operator",
+          "absorb",
+          "absorb_operator",
+          "healabsorb",
+          "healabsorb_operator",
+          "healprediction",
+          "healprediction_operator",
+        },
+        ["Power"] = {
+          "power",
+          "power_operator",
+          "percentpower",
+          "percentpower_operator",
+          "deficit",
+          "deficit_operator",
+          "maxpower",
+          "maxpower_operator",
+        },
+        ["Character Stats"] = {
+          "mainstat",
+          "mainstat_operator",
+          "strength",
+          "strength_operator",
+          "agility",
+          "agility_operator",
+          "intellect",
+          "intellect_operator",
+          "spirit",
+          "spirit_operator",
+          "stamina",
+          "stamina_operator",
+          "criticalrating",
+          "criticalrating_operator",
+          "criticalpercent",
+          "criticalpercent_operator",
+          "hitrating",
+          "hitrating_operator",
+          "hitpercent",
+          "hitpercent_operator",
+          "hasterating",
+          "hasterating_operator",
+          "hastepercent",
+          "hastepercent_operator",
+          "meleehastepercent",
+          "meleehastepercent_operator",
+          "expertiserating",
+          "expertiserating_operator",
+          "expertisebonus",
+          "expertisebonus_operator",
+          "armorpenrating",
+          "armorpenrating_operator",
+          "armorpenpercent",
+          "armorpenpercent_operator",
+          "resiliencerating",
+          "resiliencerating_operator",
+          "resiliencepercent",
+          "resiliencepercent_operator",
+          "spellpenpercent",
+          "spellpenpercent_operator",
+          "masteryrating",
+          "masteryrating_operator",
+          "masterypercent",
+          "masterypercent_operator",
+          "versatilityrating",
+          "versatilityrating_operator",
+          "versatilitypercent",
+          "versatilitypercent_operator",
+          "attackpower",
+          "attackpower_operator",
+          "resistanceholy",
+          "resistanceholy_operator",
+          "resistancefire",
+          "resistancefire_operator",
+          "resistancenature",
+          "resistancenature_operator",
+          "resistancefrost",
+          "resistancefrost_operator",
+          "resistanceshadow",
+          "resistanceshadow_operator",
+          "resistancearcane",
+          "resistancearcane_operator",
+          "leechrating",
+          "leechrating_operator",
+          "leechpercent",
+          "leechpercent_operator",
+          "movespeedrating",
+          "movespeedrating_operator",
+          "movespeedpercent",
+          "movespeedpercent_operator",
+          "runspeedpercent",
+          "runspeedpercent_operator",
+          "avoidancerating",
+          "avoidancerating_operator",
+          "avoidancepercent",
+          "avoidancepercent_operator",
+          "defense",
+          "defense_operator",
+          "dodgerating",
+          "dodgerating_operator",
+          "dodgepercent",
+          "dodgepercent_operator",
+          "parryrating",
+          "parryrating_operator",
+          "parrypercent",
+          "parrypercent_operator",
+          "blockpercent",
+          "blockpercent_operator",
+          "blocktargetpercent",
+          "blocktargetpercent_operator",
+          "blockvalue",
+          "blockvalue_operator",
+          "staggerpercent",
+          "staggerpercent_operator",
+          "staggertargetpercent",
+          "staggertargetpercent_operator",
+          "armorrating",
+          "armorrating_operator",
+          "armorpercent",
+          "armorpercent_operator",
+          "armortargetpercent",
+          "armortargetpercent_operator",
+        },
+        ["Threat Situation"] = {
+          "threatpct",
+          "threatpct_operator",
+          "rawthreatpct",
+          "rawthreatpct_operator",
+          "threatvalue",
+          "threatvalue_operator",
+        },
+        ["Unit Characteristics"] = {
+          "level",
+          "level_operator",
+        },
+        ["Combat Log"] = {
+          "spellId",
+          "spellName",
+        },
+        ["Spell Cast Succeeded"] = {
+          "spellId"
+        }
+      }
+      for _, triggerData in ipairs(data.triggers) do
+        local t = triggerData.trigger
+        local fieldsToMigrate = trigger_migration[t.event]
+        if fieldsToMigrate then
+          for _, field in ipairs(fieldsToMigrate) do
+            migrateToTable(t, field)
+          end
+        end
+        -- cast trigger move data from 'spell' & 'spellId' to 'spellIds' & 'spellNames'
+        if t.event == "Cast" and t.type == "unit" then
+          if t.spellId then
+            if t.useExactSpellId then
+              t.use_spellIds = t.use_spellId
+              t.spellIds = t.spellIds or {}
+              tinsert(t.spellIds, t.spellId)
+            else
+              t.use_spellNames = t.use_spellId
+              t.spellNames = t.spellNames or {}
+              tinsert(t.spellNames, t.spellId)
+            end
+          end
+          if t.use_spell and t.spell then
+            t.use_spellNames = true
+            t.spellNames = t.spellNames or {}
+            tinsert(t.spellNames, t.spell)
+          end
+          t.use_spellId = nil
+          t.spellId = nil
+          t.use_spell = nil
+          t.spell = nil
+        end
+      end
+    end
+    do
+      local loadFields = {
+        "level", "effectiveLevel"
+      }
+
+      for _, field in ipairs(loadFields) do
+        migrateToTable(data.load, field)
+        migrateToTable(data.load, field .. "_operator")
+      end
+    end
+  end
+
+  if data.internalVersion < 68 then
+    if data.parent then
+      local parentData = WeakAuras.GetData(data.parent)
+      if parentData and parentData.regionType == "dynamicgroup" then
+        if data.anchorFrameParent == nil then
+          data.anchorFrameParent = false
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 69 then
+    migrateToTable(data.load, "itemequiped")
+  end
+
+  if data.internalVersion < 70 then
+    local trigger_migration = {
+      Power = {
+        "power",
+        "power_operator"
+      }
+    }
+    for _, triggerData in ipairs(data.triggers) do
+      local t = triggerData.trigger
+      local fieldsToMigrate = trigger_migration[t.event]
+      if fieldsToMigrate then
+        for _, field in ipairs(fieldsToMigrate) do
+          migrateToTable(t, field)
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
+

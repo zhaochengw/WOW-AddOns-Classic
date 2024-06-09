@@ -1,4 +1,4 @@
-## Interface: 30401
+## Interface: 30403
 ## Title: UnitFramesPlus
 ## Notes: Enhanced Unit Frames
 ## Title-zhCN: 系统头像增强
@@ -6,7 +6,7 @@
 ## Title-zhTW: |cff4DD2FF[頭像]|r 暴雪頭像 (增強功能)-主程式
 ## Notes-zhTW: UnitFramesPlus |n|n加強遊戲內建頭像的功能，提供更多自訂選項。特別強化隊友、寵物和目標的目標的功能。|n|n|cffffd200使用方法: |r點小地圖按鈕進行設定。|n|n要移動頭像，直接按住 Shift 拖曳移動，不用解鎖。|n|n可以搭配暴雪頭像 (美化調整) 插件一起使用，也可以單獨使用。
 ## X-Category-zhTW: 介面
-## Version: 1.36.7-Wrath
+## Version: 3.4.2-Wrath
 ## Author: Isler
 ## SavedVariables: UnitFramesPlusDB
 ## SavedVariablesPerCharacter: UnitFramesPlusVar

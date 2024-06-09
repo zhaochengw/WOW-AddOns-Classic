@@ -38,7 +38,9 @@ PALLYPOWER_DEFAULT_VALUES = {
 			HideTimerText = false,
 			LockBuffBars = false,
 			showPlayerButtons = true,
-			showClassButtons = true
+			showClassButtons = true,
+			offsetX = 0,
+			offsetY = 0
 		},
 		enabled = true,
 		layout = "Layout 2",
@@ -334,6 +336,7 @@ PallyPower.Spells = PallyPower.isWrath and {
 	[5] = GetSpellInfo(19977),	-- Blessing of Light
 	[6] = GetSpellInfo(20911),	-- Blessing of Sanctuary
 	[7] = GetSpellInfo(6940),	-- Blessing of Sacrifice
+	[8] = GetSpellInfo(425600), -- Horn or Lordaeron
 }
 
 PallyPower.GSpells = PallyPower.isWrath and {

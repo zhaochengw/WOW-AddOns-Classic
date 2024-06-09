@@ -8,6 +8,13 @@ local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
 
+local SocketTexture = {
+    ["EMPTY_SOCKET_RED"] = "Interface\\ItemSocketingFrame\\UI-EmptySocket-Red",
+    ["EMPTY_SOCKET_YELLOW"] = "Interface\\ItemSocketingFrame\\UI-EmptySocket-Yellow",
+    ["EMPTY_SOCKET_BLUE"] = "Interface\\ItemSocketingFrame\\UI-EmptySocket-Blue",
+    ["EMPTY_SOCKET_META"] = "Interface\\ItemSocketingFrame\\UI-EmptySocket-Meta",
+}
+
 local function GetGemColor(key)
     local color
     if (key == "EMPTY_SOCKET_YELLOW") then
@@ -16,8 +23,8 @@ local function GetGemColor(key)
         color = "Red"
     elseif (key == "EMPTY_SOCKET_BLUE") then
         color = "Blue"
-    elseif (key == "EMPTY_SOCKET_PRISMATIC") then
-        color = "Prismatic"
+    elseif (key == "EMPTY_SOCKET_META") then
+        color = "Meta"
     end
     return color
 end
@@ -27,9 +34,10 @@ function lib:GetItemGemInfo(ItemLink)
     local stats = GetItemStats(ItemLink)
     for key, num in pairs(stats) do
         if (string.find(key, "EMPTY_SOCKET_")) then
+		local socket = SocketTexture[key]
             for i = 1, num do
                 total = total + 1
-                table.insert(info, { name = _G[key] or EMPTY, link = nil, color = GetGemColor(key), })
+                table.insert(info, { name = _G[key] or EMPTY, link = nil, color = GetGemColor(key),texture = socket })
             end
         end
     end

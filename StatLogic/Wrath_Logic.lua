@@ -1,4 +1,4 @@
-local addonName, addonTable = ...
+local addonName, addon = ...
 ---@class StatLogic
 local StatLogic = LibStub:GetLibrary(addonName)
 
@@ -8,180 +8,243 @@ StatLogic.ExtraHasteClasses["PALADIN"] = true
 StatLogic.ExtraHasteClasses["DEATHKNIGHT"] = true
 StatLogic.ExtraHasteClasses["SHAMAN"] = true
 StatLogic.ExtraHasteClasses["DRUID"] = true
-local extraHaste = StatLogic.ExtraHasteClasses[addonTable.class] and 1.3 or 1
+local extraHaste = StatLogic.ExtraHasteClasses[addon.class] and 1.3 or 1
 
 -- Level 60 rating base
-addonTable.RatingBase = {
-	[CR_WEAPON_SKILL] = 2.5,
-	[CR_DEFENSE_SKILL] = 1.5,
-	[CR_DODGE] = 13.8,
-	[CR_PARRY] = 13.8,
-	[CR_BLOCK] = 5,
-	[CR_HIT_MELEE] = 10,
-	[CR_HIT_RANGED] = 10,
-	[CR_HIT_SPELL] = 8,
-	[CR_CRIT_MELEE] = 14,
-	[CR_CRIT_RANGED] = 14,
-	[CR_CRIT_SPELL] = 14,
-	[CR_HIT_TAKEN_MELEE] = 10, -- hit avoidance
-	[CR_HIT_TAKEN_RANGED] = 10,
-	[CR_HIT_TAKEN_SPELL] = 8,
-	[CR_CRIT_TAKEN_MELEE] = 28.75, -- resilience
-	[CR_CRIT_TAKEN_RANGED] = 28.75,
-	[CR_CRIT_TAKEN_SPELL] = 28.75,
-	[CR_HASTE_MELEE] = 10 / extraHaste,
-	[CR_HASTE_RANGED] = 10,
-	[CR_HASTE_SPELL] = 10,
-	[CR_WEAPON_SKILL_MAINHAND] = 2.5,
-	[CR_WEAPON_SKILL_OFFHAND] = 2.5,
-	[CR_WEAPON_SKILL_RANGED] = 2.5,
-	[CR_EXPERTISE] = 2.5,
-	[CR_ARMOR_PENETRATION] = 4.69512176513672 / 1.1,
-}
-addonTable.SetCRMax()
-
-StatLogic.GenericStatMap[StatLogic.GenericStats.CR_HIT] = {
-	CR_HIT_MELEE,
-	CR_HIT_RANGED,
-	CR_HIT_SPELL,
-}
-StatLogic.GenericStatMap[StatLogic.GenericStats.CR_CRIT] = {
-	CR_CRIT_MELEE,
-	CR_CRIT_RANGED,
-	CR_CRIT_SPELL,
-}
-StatLogic.GenericStatMap[StatLogic.GenericStats.CR_HASTE] = {
-	CR_HASTE_MELEE,
-	CR_HASTE_RANGED,
-	CR_HASTE_SPELL,
+StatLogic.RatingBase = {
+	[StatLogic.Stats.DefenseRating] = 1.5,
+	[StatLogic.Stats.DodgeRating] = 13.8,
+	[StatLogic.Stats.ParryRating] = 13.8,
+	[StatLogic.Stats.BlockRating] = 5,
+	[StatLogic.Stats.MeleeHitRating] = 10,
+	[StatLogic.Stats.RangedHitRating] = 10,
+	[StatLogic.Stats.SpellHitRating] = 8,
+	[StatLogic.Stats.MeleeCritRating] = 14,
+	[StatLogic.Stats.RangedCritRating] = 14,
+	[StatLogic.Stats.SpellCritRating] = 14,
+	[StatLogic.Stats.ResilienceRating] = 28.75,
+	[StatLogic.Stats.MeleeHasteRating] = 10 / extraHaste,
+	[StatLogic.Stats.RangedHasteRating] = 10,
+	[StatLogic.Stats.SpellHasteRating] = 10,
+	[StatLogic.Stats.ExpertiseRating] = 2.5,
+	[StatLogic.Stats.ArmorPenetrationRating] = 4.69512176513672 / 1.1,
 }
 
---[[---------------------------------
-	:GetNormalManaRegenFromSpi(spi, [int], [level])
--------------------------------------
-Notes:
-	* Formula and BASE_REGEN values derived by Whitetooth (hotdogee [at] gmail [dot] com)
-	* Calculates the mana regen per 5 seconds from spirit when out of 5 second rule for given intellect and level.
-	* Player class is no longer a parameter
-	* ManaRegen(SPI, INT, LEVEL) = (0.001+SPI*BASE_REGEN[LEVEL]*(INT^0.5))*5
-Example:
-	local mp5o5sr = StatLogic:GetNormalManaRegenFromSpi(1) -- GetNormalManaRegenPerSpi
-	local mp5o5sr = StatLogic:GetNormalManaRegenFromSpi(10, 15)
-	local mp5o5sr = StatLogic:GetNormalManaRegenFromSpi(10, 15, 70)
------------------------------------]]
+StatLogic.GenericStatMap[StatLogic.Stats.HitRating] = {
+	StatLogic.Stats.MeleeHitRating,
+	StatLogic.Stats.RangedHitRating,
+	StatLogic.Stats.SpellHitRating,
+}
+StatLogic.GenericStatMap[StatLogic.Stats.CritRating] = {
+	StatLogic.Stats.MeleeCritRating,
+	StatLogic.Stats.RangedCritRating,
+	StatLogic.Stats.SpellCritRating,
+}
+StatLogic.GenericStatMap[StatLogic.Stats.HasteRating] = {
+	StatLogic.Stats.MeleeHasteRating,
+	StatLogic.Stats.RangedHasteRating,
+	StatLogic.Stats.SpellHasteRating,
+}
 
--- Numbers reverse engineered by Whitetooth (hotdogee [at] gmail [dot] com)
+-- Extracted from the client at GameTables/RegenMPPerSpt.txt via wow.tools.local
 local BaseManaRegenPerSpi = {
-	[1] =  0.020979,
-	[2] =  0.020515,
-	[3] =  0.020079,
-	[4] =  0.019516,
-	[5] =  0.018997,
-	[6] =  0.018646,
-	[7] =  0.018314,
-	[8] =  0.017997,
-	[9] =  0.017584,
-	[10] = 0.017197,
-	[11] = 0.016551,
-	[12] = 0.015729,
-	[13] = 0.015229,
-	[14] = 0.014580,
-	[15] = 0.014008,
-	[16] = 0.013650,
-	[17] = 0.013175,
-	[18] = 0.012832,
-	[19] = 0.012475,
-	[20] = 0.012073,
-	[21] = 0.011840,
-	[22] = 0.011494,
-	[23] = 0.011292,
-	[24] = 0.010990,
-	[25] = 0.010761,
-	[26] = 0.010546,
-	[27] = 0.010321,
-	[28] = 0.010151,
-	[29] = 0.009949,
-	[30] = 0.009740,
-	[31] = 0.009597,
-	[32] = 0.009425,
-	[33] = 0.009278,
-	[34] = 0.009123,
-	[35] = 0.008974,
-	[36] = 0.008847,
-	[37] = 0.008698,
-	[38] = 0.008581,
-	[39] = 0.008457,
-	[40] = 0.008338,
-	[41] = 0.008235,
-	[42] = 0.008113,
-	[43] = 0.008018,
-	[44] = 0.007906,
-	[45] = 0.007798,
-	[46] = 0.007713,
-	[47] = 0.007612,
-	[48] = 0.007524,
-	[49] = 0.007430,
-	[50] = 0.007340,
-	[51] = 0.007268,
-	[52] = 0.007184,
-	[53] = 0.007116,
-	[54] = 0.007029,
-	[55] = 0.006945,
-	[56] = 0.006884,
-	[57] = 0.006805,
-	[58] = 0.006747,
-	[59] = 0.006667,
-	[60] = 0.006600,
-	[61] = 0.006421,
-	[62] = 0.006314,
-	[63] = 0.006175,
-	[64] = 0.006072,
-	[65] = 0.005981,
-	[66] = 0.005885,
-	[67] = 0.005791,
-	[68] = 0.005732,
-	[69] = 0.005668,
-	[70] = 0.005596,
-	[71] = 0.005316,
-	[72] = 0.005049,
-	[73] = 0.004796,
-	[74] = 0.004555,
-	[75] = 0.004327,
-	[76] = 0.004110,
-	[77] = 0.003903,
-	[78] = 0.003708,
-	[79] = 0.003522,
-	[80] = 0.003345,
+	0.062937, 0.056900, 0.051488, 0.046267, 0.041637, 0.037784, 0.034309, 0.031172, 0.028158, 0.025460,
+	0.022654, 0.019904, 0.017817, 0.015771, 0.014008, 0.013650, 0.013175, 0.012832, 0.012475, 0.012073,
+	0.011840, 0.011494, 0.011292, 0.010990, 0.010761, 0.010546, 0.010321, 0.010151, 0.009949, 0.009740,
+	0.009597, 0.009425, 0.009278, 0.009123, 0.008974, 0.008847, 0.008698, 0.008581, 0.008457, 0.008338,
+	0.008235, 0.008113, 0.008018, 0.007906, 0.007798, 0.007713, 0.007612, 0.007524, 0.007430, 0.007340,
+	0.007268, 0.007184, 0.007116, 0.007029, 0.006945, 0.006884, 0.006805, 0.006747, 0.006667, 0.006600,
+	0.006421, 0.006314, 0.006175, 0.006072, 0.005981, 0.005885, 0.005791, 0.005732, 0.005668, 0.005596,
+	0.005316, 0.005049, 0.004796, 0.004555, 0.004327, 0.004110, 0.003903, 0.003708, 0.003522, 0.003345,
 }
 
----@param spi integer
----@param int? string Defaults to player class
----@param level? integer Defaults to player level
----@return number mp5nc Mana regen per 5 seconds when out of combat
----@return string statid
----@diagnostic disable-next-line:duplicate-set-field
-function StatLogic:GetNormalManaRegenFromSpi(spi, int, level)
-	-- argCheck for invalid input
-	self:argCheck(spi, 2, "number")
-	self:argCheck(int, 3, "nil", "number")
-	self:argCheck(level, 4, "nil", "number")
+local NormalManaRegenPerSpi = function()
+	local level = UnitLevel("player")
+	local _, int = UnitStat("player", 4)
+	local _, spi = UnitStat("player", 5)
+	return (0.001 / spi + BaseManaRegenPerSpi[level] * (int ^ 0.5)) * 5
+end
 
-	-- if level is invalid input, default to player level
-	if type(level) ~= "number" or level < 1 or level > 80 then
-		level = UnitLevel("player")
-	end
+local NormalManaRegenPerInt = function()
+	local level = UnitLevel("player")
+	local _, int = UnitStat("player", 4)
+	local _, spi = UnitStat("player", 5)
+	-- Derivative of regen with respect to int
+	return (spi * BaseManaRegenPerSpi[level] / (2 * (int ^ 0.5))) * 5
+end
 
-	-- if int is invalid input, default to player int
-	if type(int) ~= "number" then
-		local _
-		_, int = UnitStat("player",4)
+-- Extracted from the client at GameTables/OCTRegenHP.txt via wow.tools.local
+local BaseHealthRegenPerSpi = {
+	["WARRIOR"] = {
+		0.394737, 0.462264, 0.474862, 0.515375, 0.521857, 0.533258, 0.520401, 0.509427, 0.500415, 0.462648,
+		0.488835, 0.486706, 0.449973, 0.450681, 0.454545, 0.454545, 0.454545, 0.500000, 0.500000, 0.500000,
+		0.500000, 0.500000, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556,
+		0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556,
+		0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000,
+		0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000,
+		0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000,
+		0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000,
+	},
+	["PALADIN"] = {
+		0.277778, 0.301476, 0.328751, 0.320368, 0.313114, 0.316622, 0.302168, 0.298629, 0.276091, 0.255254,
+		0.253470, 0.243353, 0.243736, 0.225340, 0.208333, 0.208333, 0.208333, 0.217391, 0.217391, 0.217391,
+		0.217391, 0.217391, 0.217391, 0.227273, 0.227273, 0.227273, 0.227273, 0.238095, 0.238095, 0.238095,
+		0.238095, 0.238095, 0.250000, 0.250000, 0.250000, 0.250000, 0.250000, 0.250000, 0.250000, 0.250000,
+		0.250000, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158,
+		0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158,
+		0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158,
+		0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158, 0.263158,
+	},
+	["HUNTER"] = {
+		0.267857, 0.288915, 0.312714, 0.311937, 0.313114, 0.297997, 0.302168, 0.279363, 0.266888, 0.255254,
+		0.235989, 0.218179, 0.208916, 0.193149, 0.178571, 0.178571, 0.178571, 0.178571, 0.178571, 0.178571,
+		0.178571, 0.178571, 0.178571, 0.178571, 0.178571, 0.185185, 0.185185, 0.185185, 0.185185, 0.185185,
+		0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308,
+		0.192308, 0.192308, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000,
+		0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000,
+		0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000,
+		0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000, 0.200000,
+	},
+	["ROGUE"] = {
+		0.365854, 0.420240, 0.442113, 0.455908, 0.476478, 0.460541, 0.468361, 0.455803, 0.421402, 0.411242,
+		0.402570, 0.372187, 0.365603, 0.338010, 0.312500, 0.333333, 0.333333, 0.333333, 0.333333, 0.333333,
+		0.333333, 0.333333, 0.333333, 0.333333, 0.333333, 0.333333, 0.333333, 0.333333, 0.333333, 0.333333,
+		0.333333, 0.333333, 0.333333, 0.333333, 0.333333, 0.333333, 0.333333, 0.333333, 0.333333, 0.333333,
+		0.333333, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143,
+		0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143,
+		0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143,
+		0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143, 0.357143,
+	},
+	["PRIEST"] = {
+		0.357143, 0.355588, 0.337402, 0.311937, 0.288395, 0.266629, 0.246506, 0.227901, 0.210701, 0.194799,
+		0.180097, 0.166505, 0.153938, 0.142320, 0.131579, 0.131579, 0.131579, 0.131579, 0.131579, 0.131579,
+		0.131579, 0.131579, 0.131579, 0.142857, 0.142857, 0.142857, 0.142857, 0.142857, 0.142857, 0.142857,
+		0.142857, 0.142857, 0.142857, 0.142857, 0.142857, 0.166667, 0.166667, 0.166667, 0.166667, 0.166667,
+		0.166667, 0.166667, 0.166667, 0.166667, 0.166667, 0.166667, 0.172414, 0.178571, 0.178571, 0.178571,
+		0.178571, 0.178571, 0.178571, 0.178571, 0.178571, 0.178571, 0.178571, 0.178571, 0.178571, 0.192308,
+		0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308,
+		0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308, 0.192308,
+	},
+	["DEATHKNIGHT"] = {
+		0.394737, 0.462264, 0.474862, 0.515375, 0.521857, 0.533258, 0.520401, 0.509427, 0.500415, 0.462648,
+		0.488835, 0.486706, 0.449973, 0.450681, 0.454545, 0.454545, 0.454545, 0.500000, 0.500000, 0.500000,
+		0.500000, 0.500000, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556,
+		0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.555556,
+		0.555556, 0.555556, 0.555556, 0.555556, 0.555556, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000,
+		0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000,
+		0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000,
+		0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000, 0.625000,
+	},
+	["SHAMAN"] = {
+		0.258621, 0.277358, 0.284917, 0.289113, 0.281000, 0.273835, 0.260201, 0.240563, 0.222407, 0.205621,
+		0.190103, 0.175755, 0.162490, 0.150227, 0.138889, 0.138889, 0.142857, 0.147059, 0.151515, 0.151515,
+		0.151515, 0.156250, 0.156250, 0.156250, 0.156250, 0.156250, 0.161290, 0.161290, 0.161290, 0.166667,
+		0.166667, 0.166667, 0.166667, 0.166667, 0.166667, 0.166667, 0.172414, 0.172414, 0.172414, 0.172414,
+		0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414,
+		0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414,
+		0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414,
+		0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414, 0.172414,
+	},
+	["MAGE"] = {
+		0.238095, 0.252144, 0.261659, 0.241911, 0.223653, 0.206773, 0.191168, 0.176740, 0.163401, 0.151069,
+		0.139667, 0.129126, 0.119381, 0.110371, 0.102041, 0.102041, 0.102041, 0.102041, 0.102041, 0.102041,
+		0.102041, 0.102041, 0.102041, 0.102041, 0.102041, 0.102041, 0.102041, 0.102041, 0.102041, 0.102041,
+		0.102041, 0.102041, 0.102041, 0.102041, 0.104167, 0.104167, 0.104167, 0.104167, 0.106383, 0.106383,
+		0.106383, 0.108696, 0.108696, 0.108696, 0.108696, 0.108696, 0.111111, 0.111111, 0.111111, 0.113636,
+		0.113636, 0.113636, 0.116279, 0.116279, 0.116279, 0.116279, 0.119048, 0.119048, 0.119048, 0.119048,
+		0.121951, 0.121951, 0.121951, 0.121951, 0.121951, 0.121951, 0.121951, 0.121951, 0.121951, 0.121951,
+		0.121951, 0.121951, 0.121951, 0.121951, 0.121951, 0.121951, 0.121951, 0.121951, 0.121951, 0.121951,
+	},
+	["WARLOCK"] = {
+		0.241935, 0.256813, 0.261659, 0.263414, 0.249068, 0.230270, 0.212891, 0.196824, 0.181969, 0.168236,
+		0.155538, 0.143800, 0.132947, 0.122913, 0.113636, 0.113636, 0.113636, 0.113636, 0.113636, 0.113636,
+		0.113636, 0.113636, 0.113636, 0.113636, 0.113636, 0.113636, 0.113636, 0.113636, 0.113636, 0.113636,
+		0.113636, 0.116279, 0.116279, 0.116279, 0.116279, 0.116279, 0.116279, 0.116279, 0.116279, 0.119048,
+		0.119048, 0.119048, 0.119048, 0.119048, 0.119048, 0.121951, 0.121951, 0.121951, 0.121951, 0.121951,
+		0.125000, 0.125000, 0.125000, 0.125000, 0.125000, 0.125000, 0.125000, 0.128205, 0.128205, 0.128205,
+		0.128205, 0.128205, 0.128205, 0.128205, 0.128205, 0.128205, 0.128205, 0.128205, 0.128205, 0.128205,
+		0.128205, 0.128205, 0.128205, 0.128205, 0.128205, 0.128205, 0.128205, 0.128205, 0.128205, 0.128205,
+	},
+	["DRUID"] = {
+		0.245902, 0.266691, 0.278723, 0.282229, 0.273975, 0.266629, 0.246506, 0.227901, 0.210701, 0.194799,
+		0.180097, 0.166505, 0.153938, 0.142320, 0.131579, 0.131579, 0.131579, 0.131579, 0.131579, 0.131579,
+		0.131579, 0.135135, 0.135135, 0.135135, 0.135135, 0.135135, 0.135135, 0.135135, 0.135135, 0.135135,
+		0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889,
+		0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889,
+		0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889,
+		0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889,
+		0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889, 0.138889,
+	},
+}
+
+-- Patch 3.3.0:
+-- Health and Mana Regeneration: These regeneration rates have been increased by up to 200% for low level characters.
+-- As a player's level increases, the regeneration rates gradually reduce, returning to normal rates at level 15.
+-- Extracted from the client at GameTables/RegenHPPerSpt.txt via wow.tools.local
+local HealthRegenPerSpi = {
+	["WARRIOR"] = {
+		1.50000, 1.38679, 1.28212, 1.18536, 1.09590, 1.01319, 0.93672, 0.86602, 0.80066, 0.74023,
+		0.68436, 0.63271, 0.58496, 0.54081, 0.50000,
+	},
+	["PALADIN"] = {
+		0.37500, 0.34669, 0.32053, 0.29634, 0.27397, 0.25329, 0.23418, 0.21650, 0.20016, 0.18505,
+		0.17109, 0.15818, 0.14624, 0.13520, 0.12500,
+	},
+	["HUNTER"] = {
+		0.37500, 0.34669, 0.32053, 0.29634, 0.27397, 0.25329, 0.23418, 0.21650, 0.20016, 0.18505,
+		0.17109, 0.15818, 0.14624, 0.13520, 0.12500,
+	},
+	["ROGUE"] = {
+		1.00000, 0.92452, 0.85475, 0.79024, 0.73060, 0.67546, 0.62448, 0.57735, 0.53377, 0.49349,
+		0.45624, 0.42181, 0.38997, 0.36054, 0.333333,
+	},
+	["PRIEST"] = {
+		0.12500, 0.11556, 0.10684, 0.09878, 0.09132, 0.08443, 0.07806, 0.07216, 0.06672, 0.06168,
+		0.05703, 0.05272, 0.04874, 0.04506, 0.041667,
+	},
+	["DEATHKNIGHT"] = {
+		1.50000, 1.38679, 1.28212, 1.18536, 1.09590, 1.01319, 0.93672, 0.86602, 0.80066, 0.74023,
+		0.68436, 0.63271, 0.58496, 0.54081, 0.50000,
+	},
+	["SHAMAN"] = {
+		0.21428, 0.19811, 0.18316, 0.16933, 0.15655, 0.14474, 0.13381, 0.12371, 0.11438, 0.10574,
+		0.09776, 0.09038, 0.08356, 0.07726, 0.071429,
+	},
+	["MAGE"] = {
+		0.12500, 0.11556, 0.10684, 0.09878, 0.09132, 0.08443, 0.07806, 0.07216, 0.06672, 0.06168,
+		0.05703, 0.05272, 0.04874, 0.04506, 0.041667,
+	},
+	["WARLOCK"] = {
+		0.13636, 0.12607, 0.11655, 0.10776, 0.09962, 0.09210, 0.08515, 0.07873, 0.07278, 0.06729,
+		0.06221, 0.05752, 0.05317, 0.04916, 0.045455,
+	},
+	["DRUID"] = {
+		0.18750, 0.17334, 0.16026, 0.14817, 0.13698, 0.12664, 0.11709, 0.10825, 0.10008, 0.09253,
+		0.08554, 0.07909, 0.07312, 0.06760, 0.06250,
+	},
+}
+
+-- See patch note above; the values are the same for all levels 15 and up
+for _, v in pairs(HealthRegenPerSpi) do
+	setmetatable(v, {
+		__index = function()
+			return v[#v]
+		end
+	})
+end
+
+local function NormalHealthRegenPerSpi()
+	local level = UnitLevel("player")
+	local _, spi = UnitStat("player", 5)
+	local data = HealthRegenPerSpi
+	if spi < 50 then
+		data = BaseHealthRegenPerSpi
 	end
-	-- Calculate
-	return (0.001 + spi * BaseManaRegenPerSpi[level] * (int ^ 0.5)) * 5, "MANA_REG_NOT_CASTING"
+	return data[addon.class][level] * 5
 end
 
 -- Numbers reverse engineered by Whitetooth (hotdogee [at] gmail [dot] com)
-addonTable.CritPerAgi = {
+addon.CritPerAgi = {
 	["WARRIOR"] = {
 		0.2587, 0.2264, 0.2264, 0.2264, 0.2264, 0.2012, 0.2012, 0.2012, 0.2012, 0.2012,
 		0.1811, 0.1811, 0.1646, 0.1646, 0.1509, 0.1509, 0.1509, 0.1393, 0.1393, 0.1293,
@@ -284,15 +347,9 @@ addonTable.CritPerAgi = {
 	},
 }
 
-local zero = setmetatable({}, {
-	__index = function()
-		return 0
-	end
-})
-
 -- Numbers reverse engineered by Whitetooth (hotdogee [at] gmail [dot] com)
-addonTable.SpellCritPerInt = {
-	["WARRIOR"] = zero,
+addon.SpellCritPerInt = {
+	["WARRIOR"] = addon.zero,
 	["PALADIN"] = {
 		0.0832, 0.0793, 0.0793, 0.0757, 0.0757, 0.0724, 0.0694, 0.0694, 0.0666, 0.0666,
 		0.0640, 0.0616, 0.0594, 0.0574, 0.0537, 0.0537, 0.0520, 0.0490, 0.0490, 0.0462,
@@ -313,7 +370,7 @@ addonTable.SpellCritPerInt = {
 		0.0157, 0.0154, 0.0150, 0.0144, 0.0141, 0.0137, 0.0133, 0.0130, 0.0128, 0.0125,
 		0.0116, 0.0108, 0.0101, 0.0093, 0.0087, 0.0081, 0.0075, 0.0070, 0.0065, 0.0060,
 	},
-	["ROGUE"] = zero,
+	["ROGUE"] = addon.zero,
 	["PRIEST"] = {
 		0.1710, 0.1636, 0.1568, 0.1505, 0.1394, 0.1344, 0.1297, 0.1254, 0.1214, 0.1140,
 		0.1045, 0.0941, 0.0875, 0.0784, 0.0724, 0.0684, 0.0627, 0.0597, 0.0562, 0.0523,
@@ -324,7 +381,7 @@ addonTable.SpellCritPerInt = {
 		0.0148, 0.0145, 0.0143, 0.0139, 0.0137, 0.0134, 0.0132, 0.0130, 0.0127, 0.0125,
 		0.0116, 0.0108, 0.0101, 0.0093, 0.0087, 0.0081, 0.0075, 0.0070, 0.0065, 0.0060,
 	},
-	["DEATHKNIGHT"] = zero,
+	["DEATHKNIGHT"] = addon.zero,
 	["SHAMAN"] = {
 		0.1333, 0.1272, 0.1217, 0.1217, 0.1166, 0.1120, 0.1077, 0.1037, 0.1000, 0.1000,
 		0.0933, 0.0875, 0.0800, 0.0756, 0.0700, 0.0666, 0.0636, 0.0596, 0.0571, 0.0538,
@@ -367,71 +424,40 @@ addonTable.SpellCritPerInt = {
 	},
 }
 
-addonTable.APPerStr = {
-	["WARRIOR"] = 2,
-	["PALADIN"] = 2,
-	["HUNTER"] = 1,
-	["ROGUE"] = 1,
-	["PRIEST"] = 1,
-	["DEATHKNIGHT"] = 2,
-	["SHAMAN"] = 1,
-	["MAGE"] = 1,
-	["WARLOCK"] = 1,
-	["DRUID"] = 2,
+addon.DodgePerAgi = {
+	["WARRIOR"] = {
+		[80] = 0.0118,
+	},
+	["PALADIN"] = {
+		[80] = 0.0167,
+	},
+	["HUNTER"] = {
+		[80] = 0.0116,
+	},
+	["ROGUE"] = {
+		[80] = 0.0209,
+	},
+	["PRIEST"] = {
+		[80] = 0.0167,
+	},
+	["DEATHKNIGHT"] = {
+		[80] = 0.0118,
+	},
+	["SHAMAN"] = {
+		[80] = 0.0167,
+	},
+	["MAGE"] = {
+		[80] = 0.017,
+	},
+	["WARLOCK"] = {
+		[80] = 0.0167,
+	},
+	["DRUID"] = {
+		[80] = 0.0209,
+	},
 }
 
-addonTable.APPerAgi = {
-	["WARRIOR"] = 0,
-	["PALADIN"] = 0,
-	["HUNTER"] = 1,
-	["ROGUE"] = 1,
-	["PRIEST"] = 0,
-	["DEATHKNIGHT"] = 0,
-	["SHAMAN"] = 1,
-	["MAGE"] = 0,
-	["WARLOCK"] = 0,
-	["DRUID"] = 0,
-}
-
-addonTable.RAPPerAgi = {
-	["WARRIOR"] = 1,
-	["PALADIN"] = 0,
-	["HUNTER"] = 1,
-	["ROGUE"] = 1,
-	["PRIEST"] = 0,
-	["DEATHKNIGHT"] = 0,
-	["SHAMAN"] = 0,
-	["MAGE"] = 0,
-	["WARLOCK"] = 0,
-	["DRUID"] = 0,
-}
-
-addonTable.BaseDodge = {
-	["WARRIOR"] =     3.6640,
-	["PALADIN"] =     3.4943,
-	["HUNTER"] =     -4.0873,
-	["ROGUE"] =       2.0957,
-	["PRIEST"] =      3.4178,
-	["DEATHKNIGHT"] = 3.6640,
-	["SHAMAN"] =      2.1080,
-	["MAGE"] =        3.6587,
-	["WARLOCK"] =     2.4211,
-	["DRUID"] =       5.6097,
-}
-
-addonTable.StatModValidators.glyph = {
-	validate = function(case)
-		return IsPlayerSpell(case.glyph)
-	end,
-	events = {
-		["GLYPH_ADDED"] = true,
-		["GLYPH_REMOVED"] = true,
-	}
-}
-addonTable.StatModCacheInvalidators["PLAYER_TALENT_UPDATE"] = addonTable.StatModCacheInvalidators["CHARACTER_POINTS_CHANGED"]
-addonTable.RegisterValidatorEvents()
-
-addonTable.bonusArmorItemEquipLoc = {
+addon.bonusArmorItemEquipLoc = {
 	["INVTYPE_WEAPON"] = true,
 	["INVTYPE_2HWEAPON"] = true,
 	["INVTYPE_WEAPONMAINHAND"] = true,
@@ -445,167 +471,227 @@ addonTable.bonusArmorItemEquipLoc = {
 	["INVTYPE_TRINKET"] = true,
 }
 
--- Generated from https://github.com/wowsims/wotlk/blob/master/assets/item_data/all_item_tooltips.csv
-addonTable.baseArmorTable = {
+-- Generated using scripts/GenerateBaseArmor/GenerateBaseArmor.mjs
+addon.baseArmorTable = {
 	[Enum.ItemQuality.Epic] = {
-		[BACKSLOT] = {
-			[Enum.ItemArmorSubclass.Cloth] = {
-				[264] = 177,
-				[232] = 159,
-				[213] = 154,
-				[200] = 150,
-				[128] = 108,
-				[115] = 97,
-				[110] = 93,
-				[105] = 89,
-				[83] = 72,
-				[77] = 67,
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[46] = 2063,
+				[65] = 2836,
+				[90] = 3854,
 			},
 		},
 		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[62] = 455,
+				[63] = 461,
+				[74] = 537,
+			},
 			[Enum.ItemArmorSubclass.Cloth] = {
-				[159] = 266,
-				[146] = 244,
-				[136] = 228,
-				[88] = 151,
+				[74] = 129,
 				[85] = 147,
+				[88] = 151,
+				[136] = 228,
+				[146] = 244,
+				[159] = 266,
 			},
 			[Enum.ItemArmorSubclass.Leather] = {
-				[159] = 499,
-				[146] = 459,
-				[136] = 428,
-				[123] = 389,
-				[105] = 333,
-				[83] = 276,
+				[65] = 225,
+				[69] = 237,
+				[74] = 251,
 				[75] = 254,
+				[83] = 276,
+				[105] = 333,
+				[123] = 389,
+				[136] = 428,
+				[146] = 459,
+				[159] = 499,
 			},
 			[Enum.ItemArmorSubclass.Plate] = {
-				[277] = 2756,
-				[264] = 2641,
+				[65] = 842,
+				[74] = 954,
 				[251] = 2526,
+				[264] = 2641,
+				[277] = 2756,
 			},
 		},
 		[FEETSLOT] = {
 			[Enum.ItemArmorSubclass.Cloth] = {
-				[159] = 183,
-				[146] = 168,
+				[71] = 85,
 				[78] = 93,
+				[146] = 168,
+				[159] = 183,
 			},
 			[Enum.ItemArmorSubclass.Leather] = {
-				[159] = 343,
-				[146] = 315,
-				[136] = 294,
-				[123] = 267,
-				[83] = 190,
+				[71] = 167,
 				[77] = 178,
+				[83] = 190,
+				[123] = 267,
+				[136] = 294,
+				[146] = 315,
+				[159] = 343,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 355,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[70] = 621,
+				[71] = 630,
+				[73] = 647,
 			},
 		},
 		[HANDSSLOT] = {
 			[Enum.ItemArmorSubclass.Cloth] = {
-				[159] = 166,
-				[146] = 153,
+				[71] = 78,
 				[136] = 143,
+				[146] = 153,
+				[159] = 166,
 			},
 			[Enum.ItemArmorSubclass.Leather] = {
-				[159] = 312,
-				[146] = 287,
-				[136] = 268,
-				[123] = 243,
-				[105] = 208,
-				[81] = 169,
+				[71] = 152,
 				[78] = 164,
+				[81] = 169,
+				[105] = 208,
+				[123] = 243,
+				[136] = 268,
+				[146] = 287,
+				[159] = 312,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 323,
 			},
 			[Enum.ItemArmorSubclass.Plate] = {
-				[277] = 1723,
-				[264] = 1650,
+				[71] = 573,
 				[251] = 1579,
+				[264] = 1650,
+				[277] = 1723,
 			},
 		},
 		[HEADSLOT] = {
 			[Enum.ItemArmorSubclass.Cloth] = {
-				[159] = 216,
-				[146] = 199,
-				[136] = 185,
+				[74] = 105,
 				[81] = 114,
+				[136] = 185,
+				[146] = 199,
+				[159] = 216,
 			},
 			[Enum.ItemArmorSubclass.Leather] = {
-				[159] = 405,
-				[146] = 373,
-				[136] = 348,
-				[123] = 316,
-				[105] = 271,
+				[74] = 204,
 				[75] = 206,
+				[105] = 271,
+				[123] = 316,
+				[136] = 348,
+				[146] = 373,
+				[159] = 405,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[74] = 436,
 			},
 			[Enum.ItemArmorSubclass.Plate] = {
+				[66] = 695,
+				[74] = 775,
 				[105] = 1080,
 			},
 		},
 		[LEGSSLOT] = {
 			[Enum.ItemArmorSubclass.Cloth] = {
-				[159] = 232,
-				[146] = 214,
-				[136] = 200,
+				[65] = 100,
+				[71] = 109,
 				[81] = 123,
+				[136] = 200,
+				[146] = 214,
+				[159] = 232,
 			},
 			[Enum.ItemArmorSubclass.Leather] = {
-				[159] = 436,
-				[146] = 401,
-				[136] = 375,
-				[123] = 340,
+				[65] = 197,
+				[71] = 212,
 				[105] = 292,
+				[123] = 340,
+				[136] = 375,
+				[146] = 401,
+				[159] = 436,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 452,
 			},
 			[Enum.ItemArmorSubclass.Plate] = {
+				[60] = 683,
+				[61] = 694,
+				[71] = 802,
+				[232] = 2107,
 				[264] = 2310,
-				[226] = 2054,
-			},
-		},
-		[SECONDARYHANDSLOT] = {
-			[Enum.ItemArmorSubclass.Shield] = {
-				[90] = 3854,
 			},
 		},
 		[SHOULDERSLOT] = {
 			[Enum.ItemArmorSubclass.Cloth] = {
-				[159] = 199,
-				[146] = 183,
-				[136] = 171,
+				[65] = 86,
+				[74] = 97,
 				[78] = 102,
+				[136] = 171,
+				[146] = 183,
+				[159] = 199,
 			},
 			[Enum.ItemArmorSubclass.Leather] = {
-				[159] = 374,
-				[146] = 344,
-				[136] = 321,
-				[123] = 291,
+				[65] = 169,
+				[74] = 188,
 				[105] = 250,
+				[123] = 291,
+				[136] = 321,
+				[146] = 344,
+				[159] = 374,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 387,
+				[74] = 403,
 			},
 		},
 		[WRISTSLOT] = {
-			[Enum.ItemArmorSubclass.Cloth] = {
-				[154] = 113,
-				[141] = 103,
+			[Enum.ItemArmorSubclass.Plate] = {
+				[59] = 336,
+				[251] = 1105,
+				[264] = 1155,
 			},
 			[Enum.ItemArmorSubclass.Leather] = {
-				[154] = 211,
-				[141] = 194,
-				[126] = 174,
+				[61] = 93,
 				[113] = 157,
+				[126] = 174,
+				[141] = 194,
+				[154] = 211,
 			},
-			[Enum.ItemArmorSubclass.Plate] = {
-				[264] = 1155,
-				[251] = 1105,
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[141] = 103,
+				[154] = 113,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[72] = 63,
+				[73] = 64,
+				[77] = 67,
+				[83] = 72,
+				[105] = 89,
+				[110] = 93,
+				[115] = 97,
+				[128] = 108,
+				[200] = 150,
+				[213] = 154,
+				[232] = 159,
+				[264] = 177,
 			},
 		},
 		[WAISTSLOT] = {
-			[Enum.ItemArmorSubclass.Cloth] = {
-				[159] = 149,
-				[146] = 138,
-			},
 			[Enum.ItemArmorSubclass.Leather] = {
-				[159] = 280,
-				[146] = 258,
-				[136] = 241,
-				[123] = 219,
+				[61] = 120,
+				[66] = 128,
 				[76] = 144,
+				[123] = 219,
+				[136] = 241,
+				[146] = 258,
+				[159] = 280,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[146] = 138,
+				[159] = 149,
 			},
 			[Enum.ItemArmorSubclass.Plate] = {
 				[264] = 1485,
@@ -613,59 +699,270 @@ addonTable.baseArmorTable = {
 		},
 	},
 	[Enum.ItemQuality.Rare] = {
-		[BACKSLOT] = {
-			[Enum.ItemArmorSubclass.Cloth] = {
-				[187] = 140,
-				[167] = 127,
-				[115] = 78,
-				[112] = 76,
-			},
-		},
 		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[25] = 201,
+				[30] = 218,
+				[36] = 238,
+				[62] = 365,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[59] = 617,
+				[62] = 647,
+				[63] = 657,
+				[65] = 676,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[63] = 89,
+				[68] = 96,
+			},
 			[Enum.ItemArmorSubclass.Leather] = {
+				[68] = 188,
 				[115] = 292,
 			},
 		},
-		[HANDSSLOT] = {
-			[Enum.ItemArmorSubclass.Leather] = {
-				[115] = 183,
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[20] = 471,
+				[30] = 661,
+				[52] = 1803,
+				[59] = 2026,
+			},
+		},
+		[WAISTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[36] = 134,
 			},
 			[Enum.ItemArmorSubclass.Plate] = {
-				[114] = 722,
+				[55] = 324,
+				[63] = 369,
+				[71] = 414,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[33] = 61,
+				[43] = 73,
+				[53] = 86,
+				[60] = 95,
+				[63] = 99,
+				[100] = 144,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[33] = 28,
+				[43] = 35,
+				[53] = 43,
+				[61] = 49,
+				[63] = 50,
+				[109] = 83,
+				[115] = 88,
 			},
 		},
 		[HEADSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[43] = 341,
+				[53] = 453,
+				[60] = 509,
+				[63] = 534,
+				[115] = 946,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[63] = 73,
+				[71] = 81,
+			},
 			[Enum.ItemArmorSubclass.Leather] = {
+				[71] = 158,
+				[100] = 208,
 				[115] = 237,
 			},
+		},
+		[WRISTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[42] = 115,
+				[62] = 160,
+			},
 			[Enum.ItemArmorSubclass.Plate] = {
-				[115] = 946,
+				[50] = 231,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[61] = 38,
 			},
 		},
 		[LEGSSLOT] = {
-			[Enum.ItemArmorSubclass.Leather] = {
-				[115] = 256,
+			[Enum.ItemArmorSubclass.Mail] = {
+				[37] = 211,
 			},
 			[Enum.ItemArmorSubclass.Plate] = {
-				[166] = 1650,
+				[52] = 479,
+				[57] = 522,
+				[62] = 566,
+				[65] = 592,
 				[114] = 1010,
+				[166] = 1650,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[52] = 132,
+				[68] = 165,
+				[71] = 170,
+				[100] = 224,
+				[115] = 256,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[62] = 77,
+				[68] = 84,
 			},
 		},
 		[SHOULDERSLOT] = {
 			[Enum.ItemArmorSubclass.Leather] = {
+				[52] = 113,
+				[68] = 141,
+				[71] = 146,
 				[115] = 219,
 			},
-		},
-		[WAISTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[59] = 463,
+				[61] = 478,
+			},
 			[Enum.ItemArmorSubclass.Cloth] = {
-				[115] = 88,
+				[61] = 65,
+				[71] = 75,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[35] = 26,
+				[50] = 36,
+				[52] = 37,
+				[56] = 40,
+				[62] = 44,
+				[63] = 45,
+				[71] = 50,
+				[91] = 63,
+				[112] = 76,
+				[115] = 78,
+				[167] = 127,
+				[187] = 140,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[61] = 107,
+				[65] = 113,
+				[66] = 115,
+				[71] = 122,
+				[115] = 183,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[61] = 398,
+				[114] = 722,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[62] = 228,
+				[63] = 231,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[61] = 54,
+				[66] = 58,
+			},
+		},
+		[FEETSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[63] = 452,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[41] = 177,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[33] = 74,
+				[43] = 89,
+				[53] = 105,
+				[63] = 121,
+				[66] = 126,
+				[71] = 134,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[33] = 34,
+				[43] = 43,
+				[53] = 52,
+				[61] = 60,
+				[63] = 61,
+				[66] = 64,
 			},
 		},
 	},
 	[Enum.ItemQuality.Good] = {
+		[WRISTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[33] = 91,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[61] = 253,
+			},
+		},
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[41] = 1051,
+			},
+		},
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[16] = 151,
+				[20] = 168,
+				[40] = 231,
+				[56] = 303,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[46] = 446,
+				[60] = 570,
+				[62] = 588,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[57] = 148,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[28] = 120,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[45] = 273,
+			},
+		},
+		[LEGSSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[45] = 382,
+				[62] = 515,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[54] = 124,
+			},
+		},
+		[FEETSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[47] = 312,
+				[60] = 392,
+			},
+		},
 		[HEADSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[47] = 369,
+				[61] = 471,
+			},
 			[Enum.ItemArmorSubclass.Cloth] = {
 				[114] = 114,
+			},
+		},
+		[SHOULDERSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[58] = 414,
+				[60] = 427,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[61] = 117,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[60] = 39,
+				[108] = 67,
 			},
 		},
 		[WAISTSLOT] = {
@@ -674,17 +971,77 @@ addonTable.baseArmorTable = {
 			},
 		},
 	},
-}
-
-local BuffGroup = {
-	MOD_PHYS_DMG_TAKEN = 1,
-	MOD_AP = 2,
-	MOD_STATS = 3,
+	[Enum.ItemQuality.Standard] = {
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[1] = 10,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[1] = 10,
+			},
+		},
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[60] = 541,
+			},
+		},
+	},
 }
 
 StatLogic.StatModTable = {}
-if addonTable.class == "DRUID" then
+if addon.class == "DRUID" then
 	StatLogic.StatModTable["DRUID"] = {
+		["ADD_AP_MOD_FERAL_AP"] = {
+			-- Cat Form
+			{
+				["value"] = 1,
+				["aura"] = 768,
+				["group"] = addon.BuffGroup.Feral,
+			},
+			-- Bear Form
+			{
+				["value"] = 1,
+				["aura"] = 5487,
+				["group"] = addon.BuffGroup.Feral,
+			},
+			-- Dire Bear Form
+			{
+				["value"] = 1,
+				["aura"] = 9634,
+				["group"] = addon.BuffGroup.Feral,
+			},
+			-- Moonkin Form
+			{
+				["value"] = 1,
+				["aura"] = 24858,
+				["group"] = addon.BuffGroup.Feral,
+			},
+		},
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 2,
+			},
+		},
+		["ADD_AP_MOD_AGI"] = {
+			-- Druid: Cat Form - Buff
+			{
+				["value"] = 1,
+				["aura"] = 768,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
 		-- Druid: Improved Moonkin Form (Rank 3) - 1,19
 		--        Your Moonkin Aura also causes affected targets to gain 1%/2%/3% haste and you to gain 10/20/30% of your spirit as additional spell damage.
 		["ADD_SPELL_DMG_MOD_SPI"] = {
@@ -694,7 +1051,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["buff"] = 24858, -- ["Moonkin Form"],
+				["aura"] = 24858, -- ["Moonkin Form"],
 			},
 		},
 		-- Druid: Improved Tree of Life (Rank 3) - 3,24
@@ -706,7 +1063,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.05, 0.10, 0.15,
 				},
-				["buff"] = 33891, -- ["Tree of Life"],
+				["aura"] = 33891, -- ["Tree of Life"],
 			},
 		},
 		-- Druid: Lunar Guidance (Rank 3) - 1,12
@@ -768,273 +1125,55 @@ if addonTable.class == "DRUID" then
 				},
 			},
 		},
-		-- Druid: Feral Swiftness (Rank 2) - 2,6
-		--        Increases your movement speed by 15%/30% while outdoors in Cat Form and increases your chance to dodge while in Cat Form, Bear Form and Dire Bear Form by 2%/4%.
-		-- Druid: Natural Reaction (Rank 3) - 2,16
-		--        Increases your dodge while in Bear Form or Dire Bear Form by 2%/4%/6%, and you regenerate 3 rage every time you dodge while in Bear Form or Dire Bear Form.
 		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 5.6097,
+			},
+			-- Talent: Feral Swiftness (Cat Form)
 			{
 				["tab"] = 2,
 				["num"] = 6,
 				["rank"] = {
 					2, 4,
 				},
-				["buff"] = 32357,		-- ["Bear Form"],
+				["aura"] = 32356,
 			},
+			-- Talent: Feral Swiftness (Bear Form)
 			{
 				["tab"] = 2,
 				["num"] = 6,
 				["rank"] = {
 					2, 4,
 				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
+				["aura"] = 32357,
 			},
+			-- Feral Swiftness (Dire Bear Form)
 			{
 				["tab"] = 2,
 				["num"] = 6,
 				["rank"] = {
 					2, 4,
 				},
-				["buff"] = 32356,		-- ["Cat Form"],
+				["aura"] = 9634,
 			},
+			-- Talent: Natural Reaction (Bear Form)
 			{
 				["tab"] = 2,
 				["num"] = 16,
 				["rank"] = {
 					2, 4, 6,
 				},
-				["buff"] = 32357,		-- ["Bear Form"],
+				["aura"] = 32357,
 			},
+			-- Talent: Natural Reaction (Dire Bear Form)
 			{
 				["tab"] = 2,
 				["num"] = 16,
 				["rank"] = {
 					2, 4, 6,
 				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
-			},
-		},
-		-- Druid: Survival of the Fittest (Rank 3) - 2,18
-		--        Increases all attributes by 2%/4%/6% and reduces the chance you'll be critically hit by melee attacks by 2%/4%/6%.
-		["ADD_CRIT_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["tab"] = 2,
-				["num"] = 18,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
-			},
-		},
-		-- Druid: Barkskin - Buff
-		--        All damage taken is reduced by 20%.
-		-- Druid: Improved Barkskin (Rank 2) - 3,25
-		--        Increases the damage reduction granted by your Barkskin spell by 5/10%
-		-- Druid: Natural Perfection (Rank 3) - 3,19
-		--        Your critical strike chance with all spells is increased by 3% and critical strikes against you
-		--        give you the Natural Perfection effect reducing all damage taken by 2/3/4%.  Stacks up to 3 times.  Lasts 8 sec.
-		-- Druid: Protector of the Pack (Rank 5) - 2,22
-		--        Increases your attack power in Bear Form and Dire Bear Form by 2%/4%/6%, and for each friendly player
-		--        in your party when you enter Bear Form or Dire Bear Form, damage you take is reduced while in Bear Form and Dire Bear Form by 1%/2%/3%.
-		-- Druid: Balance of Power (Rank 2) - 1,17
-		--        Increases your chance to hit with all spells by 2%/4% and reduces the damage taken by all spells by 3%/6%.
-		["MOD_DMG_TAKEN"] = {
-			-- Barkskin
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.2,
-				["buff"] = 22812,		-- ["Barkskin"],
-			},
-			-- Improved Barkskin
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 25,
-				["rank"] = {
-					-0.05, -0.1,
-				},
-				["buff"] = 22812,		-- ["Barkskin"],
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 19,
-				["rank"] = {
-					-0.02, -0.03, -0.04,
-				},
-				["buff"] = 45283,		-- ["Natural Perfection"],
-				["buffStack"] = 3, -- max number of stacks
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 22,
-				["rank"] = {
-					-0.01, -0.02, -0.03,
-				},
-				["buff"] = 32357,		-- ["Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 1",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 22,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
-				["buff"] = 32357,		-- ["Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 2",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 22,
-				["rank"] = {
-					-0.03, -0.06, -0.09,
-				},
-				["buff"] = 32357,		-- ["Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 3",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 22,
-				["rank"] = {
-					-0.04, -0.08, -0.12,
-				},
-				["buff"] = 32357,		-- ["Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 4",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 22,
-				["rank"] = {
-					-0.01, -0.02, -0.03,
-				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 1",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 22,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 2",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 22,
-				["rank"] = {
-					-0.03, -0.06, -0.09,
-				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 3",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 22,
-				["rank"] = {
-					-0.04, -0.08, -0.12,
-				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
-				["condition"] = "GetNumPartyMembers() == 4",
-			},
-			--Balance of Power
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 17,
-				["rank"] = {
-					-0.03, -0.06,
-				},
+				["aura"] = 9634,
 			},
 		},
 		-- Druid: Thick Hide (Rank 3) - 2,5
@@ -1062,15 +1201,15 @@ if addonTable.class == "DRUID" then
 			},
 			{
 				["value"] = 1.8,
-				["buff"] = 32357,		-- ["Bear Form"],
+				["aura"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["value"] = 3.7,
-				["buff"] = 9634,		-- ["Dire Bear Form"],
+				["aura"] = 9634,		-- ["Dire Bear Form"],
 			},
 			{
 				["value"] = 3.7,
-				["buff"] = 24858,		-- ["Moonkin Form"],
+				["aura"] = 24858,		-- ["Moonkin Form"],
 			},
 			{
 				["tab"] = 3,
@@ -1078,7 +1217,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.67, 1.33, 2,
 				},
-				["buff"] = 33891,		-- ["Tree of Life"],
+				["aura"] = 33891,		-- ["Tree of Life"],
 			},
 			{
 				["tab"] = 2,
@@ -1086,7 +1225,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.11, 0.22, 0.33,
 				},
-				["buff"] = 32357,		-- ["Bear Form"],
+				["aura"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["tab"] = 2,
@@ -1094,35 +1233,20 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.11, 0.22, 0.33,
 				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
+				["aura"] = 9634,		-- ["Dire Bear Form"],
 			},
 		},
-		--if class == "DRUID" and select(5, GetTalentInfo(2, 10)) > 0 and weaponItemEquipLoc[select(9, GetItemInfo(link))] then
 		-- Druid: Predatory Strikes (Rank 3) - 2,10
-		--				Increases your melee attack power in Cat, Bear and Dire Bear Forms by
-		--				7,14,20% of any attack power on your equipped weapon.
-		["ADD_AP_MOD_FAP"] = {
-			{
-				["value"] = 1,
-				["buff"] = 32356,		-- ["Cat Form"],
-			},
-			{
-				["value"] = 1,
-				["buff"] = 32357,		-- ["Bear Form"],
-			},
-			{
-				["value"] = 1,
-				["buff"] = 9634,		-- ["Dire Bear Form"],
-			},
-		},
-		["MOD_FAP"] = {
+		--   Increases your melee attack power in Cat, Bear and Dire Bear Forms by
+		--   7,14,20% of any attack power on your equipped weapon.
+		["MOD_FERAL_AP"] = {
 			{
 				["tab"] = 2,
 				["num"] = 10,
 				["rank"] = {
 					0.07, 0.14, 0.20,
 				},
-				["buff"] = 32356,		-- ["Cat Form"],
+				["aura"] = 32356,		-- ["Cat Form"],
 			},
 			{
 				["tab"] = 2,
@@ -1130,7 +1254,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.07, 0.14, 0.20,
 				},
-				["buff"] = 32357,		-- ["Bear Form"],
+				["aura"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["tab"] = 2,
@@ -1138,7 +1262,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.07, 0.14, 0.20,
 				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
+				["aura"] = 9634,		-- ["Dire Bear Form"],
 			},
 		},
 		-- Druid: Survival Instincts - Buff
@@ -1148,7 +1272,7 @@ if addonTable.class == "DRUID" then
 		["MOD_HEALTH"] = {
 			{
 				["value"] = 0.3,
-				["buff"] = 50322,		-- ["Survival Instincts"],
+				["aura"] = 50322,		-- ["Survival Instincts"],
 			},
 		},
 		-- Druid: Improved Mark of the Wild (Rank 2) - 3,1
@@ -1180,7 +1304,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = 32357,		-- ["Bear Form"],
+				["aura"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["tab"] = 2,
@@ -1188,7 +1312,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
+				["aura"] = 9634,		-- ["Dire Bear Form"],
 			},
 			-- Survival of the Fittest: 2%/4%/6% all stats
 			{
@@ -1201,12 +1325,12 @@ if addonTable.class == "DRUID" then
 			-- Bear Form / Dire Bear Form: +25% stamina
 			{
 				["value"] = 0.25,
-				["buff"] = 32357,		-- ["Bear Form"],
+				["aura"] = 32357,		-- ["Bear Form"],
 			},
 			-- Bear Form / Dire Bear Form: +25% stamina
 			{
 				["value"] = 0.25,
-				["buff"] = 9634,		-- ["Dire Bear Form"],
+				["aura"] = 9634,		-- ["Dire Bear Form"],
 			},
 		},
 		-- Druid: Improved Mark of the Wild (Rank 2) - 3,1
@@ -1245,7 +1369,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = 32356,		-- ["Cat Form"],
+				["aura"] = 32356,		-- ["Cat Form"],
 			},
 			{
 				["tab"] = 2,
@@ -1253,7 +1377,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
-				["buff"] = 32357,		-- ["Bear Form"],
+				["aura"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["tab"] = 2,
@@ -1261,7 +1385,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
+				["aura"] = 9634,		-- ["Dire Bear Form"],
 			},
 		},
 		-- Druid: Improved Mark of the Wild (Rank 2) - 3,1
@@ -1324,7 +1448,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = 24858,		-- ["Moonkin Form"],
+				["aura"] = 24858,		-- ["Moonkin Form"],
 			},
 		},
 		-- Druid: Improved Mark of the Wild (Rank 2) - 3,1
@@ -1358,11 +1482,18 @@ if addonTable.class == "DRUID" then
 			},
 		},
 	}
-elseif addonTable.class == "DEATHKNIGHT" then
+elseif addon.class == "DEATHKNIGHT" then
 	StatLogic.StatModTable["DEATHKNIGHT"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 2,
+			},
+		},
 		-- Death Knight: Forceful Deflection - Passive
 		--               Increases your Parry Rating by 25% of your total Strength.
 		["ADD_PARRY_RATING_MOD_STR"] = {
+			-- Base
 			{
 				["value"] = 0.25,
 			},
@@ -1379,210 +1510,17 @@ elseif addonTable.class == "DEATHKNIGHT" then
 				},
 			},
 		},
-		-- Death Knight: Blade Barrier - Buff - 1,3
-		--               Whenever your Blood Runes are on cooldown, you gain the Blade Barrier effect, which decreases damage taken by 1/2/3/4/5% for the next 10 sec.
-		-- Death Knight: Icebound Fortitude - Buff
-		--               Damage taken reduced by 30%+def*0.15.
-		-- Death Knight: Glyph of Icebound Fortitude - Major Glyph
-		--               Your Icebound Fortitude now always grants at least 30% damage reduction, regardless of your defense skill.
-		-- Death Knight: Bone Shield - Buff
-		--               Damage reduced by 20%.
-		-- Death Knight: Anti-Magic Shell - Buff
-		--               Spell damage reduced by 75%.
-		-- Death Knight: Frost Presence - Buff
-		--               Increasing Stamina by 6%, armor contribution from cloth, leather, mail and plate items by 60%, and reducing damage taken by 8%.
-		-- Death Knight: Will of the Necropolis (Rank 3) - 1,24
-		--               Damage that would take you below 35% health or taken while you are at 35% health is reduced by 5%/10%/15%
-		-- Death Knight: Magic Suppression (Rank 3) - 3,17
-		--               You take 2%/4%/6% less damage from all magic.
-		--        3.2.0: 3,18
-		-- Enchant: Rune of Spellshattering - EnchantID: 3367
-		--          Deflects 4% of all spell damage to 2h weapon
-		-- Enchant: Rune of Spellbreaking - EnchantID: 3595
-		--          Deflects 2% of all spell damage to 1h weapon
-		-- Death Knight: Improved Frost Presence (Rank 2) - 2,21
-		--               While in Blood Presence or Unholy Presence, you retain 3/6% stamina from Frost Presence,
-		--               and damage done to you is decreased by an additional 1/2% in Frost Presence.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 3,
-				["rank"] = {
-					-0.01, -0.02, -0.03, -0.04, -0.05,
-				},
-				["buff"] = 55226,		-- ["Blade Barrier"],
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.30,
-				["buff"] = 48792,		-- ["Icebound Fortitude"],
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.10,
-				["buff"] = 48792,		-- ["Icebound Fortitude"],
-				["glyph"] = 58625, -- Glyph of Icebound Fortitude
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.20,
-				["buff"] = 49222,		-- ["Bone Shield"],
-			},
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.75,
-				["buff"] = 48707,		-- ["Anti-Magic Shell"],
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.08,
-				["stance"] = "Interface\\Icons\\Spell_Deathknight_FrostPresence",
-			},
-			--Will of the Necropolis (Rank 3) - 1,24
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 24,
-				["rank"] = {
-					-0.05, -0.1, -0.15,
-				},
-				["condition"] = "((UnitHealth('player') / UnitHealthMax('player')) < 0.35)",
-			},
-			--Magic Suppression (Rank 3) - 3,18
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 18,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
-			},
-			-- Rune of Spellshattering
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.04,
-				["slot"] = INVSLOT_MAINHAND,
-				["enchant"] = 3367,
-			},
-			-- Rune of Spellbreaking
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.02,
-				["slot"] = INVSLOT_MAINHAND,
-				["enchant"] = 3595,
-			},
-			-- Rune of Spellbreaking
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.02,
-				["slot"] = INVSLOT_OFFHAND,
-				["enchant"] = 3595,
-			},
-			-- Improved Frost Presence
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 21,
-				["rank"] = {
-					-0.01, -0.02,
-				},
-				["stance"] = "Interface\\Icons\\Spell_Deathknight_FrostPresence",
-			},
-		},
-		-- Death Knight: Anticipation (Rank 5) - 3,3
-		--               Increases your Dodge chance by 1%/2%/3%/4%/5%.
 		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 3.6640,
+			},
+			-- Talent: Anticipation
 			{
 				["tab"] = 3,
 				["num"] = 3,
 				["rank"] = {
 					1, 2, 3, 4, 5,
-				},
-			},
-		},
-		-- Death Knight: Frigid Dreadplate (Rank 3) - 2,13
-		--               Reduces the chance melee attacks will hit you by 1%/2%/3%.
-		["ADD_HIT_TAKEN"] = {
-			{
-				["tab"] = 2,
-				["num"] = 13,
-				["rank"] = {
-					-0.01, -0.02, -0.03,
 				},
 			},
 		},
@@ -1604,11 +1542,11 @@ elseif addonTable.class == "DEATHKNIGHT" then
 			},
 			{
 				["value"] = 0.25,
-				["buff"] = 51271,		-- ["Unbreakable Armor"],
+				["aura"] = 51271,		-- ["Unbreakable Armor"],
 			},
 			{
 				["value"] = 0.2,
-				["buff"] = 51271,		-- ["Unbreakable Armor"],
+				["aura"] = 51271,		-- ["Unbreakable Armor"],
 				["glyph"] = 58635,		-- ["Glyph of Unbreakable Armor"],
 			},
 			{
@@ -1616,17 +1554,8 @@ elseif addonTable.class == "DEATHKNIGHT" then
 				["stance"] = "Interface\\Icons\\Spell_Deathknight_FrostPresence",
 			},
 		},
-		-- Death Knight: Veteran of the Third War (Rank 3) - 1,14
-		--               Increases your total Strength by 2%/4%/6% and your total Stamina by 1%/2%/3%.
-		-- Enchant: Rune of the Stoneskin Gargoyle - EnchantID: 3847
-		--          +25 Defense and +2% Stamina to 2h weapon
-		-- Death Knight: Frost Presence - Buff
-		--               Increasing Stamina by 8%, armor contribution from cloth, leather, mail
-		--               and plate items by 60%, and reducing damage taken by 5%.
-		-- Death Knight: Improved Frost Presence (Rank 2) - 2,21
-		--               While in Blood Presence or Unholy Presence, you retain 4/8% stamina from Frost Presence,
-		--               and damage done to you is decreased by an additional 1/2% in Frost Presence.
 		["MOD_STA"] = {
+			-- Talent: Veteran of the Third War
 			{
 				["tab"] = 1,
 				["num"] = 14,
@@ -1634,15 +1563,30 @@ elseif addonTable.class == "DEATHKNIGHT" then
 					0.01, 0.02, 0.03,
 				},
 			},
+			-- Enchant: Rune of the Stoneskin Gargoyle
 			{
 				["value"] = 0.02,
 				["slot"] = INVSLOT_MAINHAND,
 				["enchant"] = 3847,
 			},
+			-- Enchant: Rune of the Nerubian Carapace (Mainhand)
+			{
+				["value"] = 0.01,
+				["slot"] = INVSLOT_MAINHAND,
+				["enchant"] = 3883,
+			},
+			-- Enchant: Rune of the Nerubian Carapace (Offhand)
+			{
+				["value"] = 0.01,
+				["slot"] = INVSLOT_OFFHAND,
+				["enchant"] = 3883,
+			},
+			-- Stance: Frost Presence
 			{
 				["value"] = 0.08,
 				["stance"] = "Interface\\Icons\\Spell_Deathknight_FrostPresence",
 			},
+			-- Talent: Improved Frost Presence (Blood Presence)
 			{
 				["tab"] = 2,
 				["num"] = 21,
@@ -1651,6 +1595,7 @@ elseif addonTable.class == "DEATHKNIGHT" then
 				},
 				["stance"] = "Interface\\Icons\\Spell_Deathknight_BloodPresence",
 			},
+			-- Talent: Improved Frost Presence (Unholy Presence)
 			{
 				["tab"] = 2,
 				["num"] = 21,
@@ -1680,7 +1625,7 @@ elseif addonTable.class == "DEATHKNIGHT" then
 			},
 			{
 				["value"] = 0.2,
-				["buff"] = 51271,		-- ["Unbreakable Armor"],
+				["aura"] = 51271,		-- ["Unbreakable Armor"],
 			},
 			{
 				["tab"] = 3,
@@ -1706,8 +1651,59 @@ elseif addonTable.class == "DEATHKNIGHT" then
 			},
 		},
 	}
-elseif addonTable.class == "HUNTER" then
+elseif addon.class == "HUNTER" then
 	StatLogic.StatModTable["HUNTER"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_AP_MOD_AGI"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+			-- Hunter: Expose Weakness (Rank 3) - 3,19
+			--   Expose Weakness increases your attack power by 25% of your Agility.
+			{
+				["tab"] = 3,
+				["num"] = 19,
+				["value"] = 0.25,
+				["aura"] = 34501,
+			}
+		},
+		["ADD_RANGED_AP_MOD_AGI"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+			-- Hunter: Expose Weakness (Rank 3) - 3,19
+			--   Expose Weakness increases your attack power by 25% of your Agility.
+			{
+				["tab"] = 3,
+				["num"] = 19,
+				["value"] = 0.25,
+				["aura"] = 34501,
+			}
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
+		["ADD_MANA_REG_MOD_MANA"] = {
+			-- Buff: Aspect of the Viper
+			{
+				["aura"] = 34074,
+				["value"] = 0.04 * 5/3,
+			},
+		},
 		-- Hunter: Hunter vs. Wild (Rank 3) - 3,14
 		--         Increases you and your pet's attack power and ranged attack power equal to 10%/20%/30% of your total Stamina.
 		["ADD_AP_MOD_STA"] = {
@@ -1730,15 +1726,12 @@ elseif addonTable.class == "HUNTER" then
 				},
 			},
 		},
-		-- Hunter: Catlike Reflexes (Rank 3) - 1,19
-		--         Increases your chance to dodge by 1%/2%/3% and your pet's chance to dodge by an additional 3%/6%/9%.
-		-- Hunter: Aspect of the Monkey - Buff
-		--         The hunter takes on the aspects of a monkey, increasing chance to dodge by 18%. Only one Aspect can be active at a time.
-		-- Hunter: Improved Aspect of the Monkey (Rank 3) - 1,4
-		--         Increases the Dodge bonus of your Aspect of the Monkey and Aspect of the Dragonhawk by 2%/4%/6%.
-		-- Hunter: Aspect of the Dragonhawk (Rank 2) - Buff
-		--         The hunter takes on the aspects of a dragonhawk, increasing ranged attack power by 300 and chance to dodge by 18%.
 		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = -4.0873,
+			},
+			-- Talent: Catlike Reflexes
 			{
 				["tab"] = 1,
 				["num"] = 19,
@@ -1746,64 +1739,33 @@ elseif addonTable.class == "HUNTER" then
 					1, 2, 3,
 				},
 			},
+			-- Buff: Aspect of the Monkey
 			{
 				["value"] = 18,
-				["buff"] = 13163,		-- ["Aspect of the Monkey"],
+				["aura"] = 13163,
 			},
+			-- Talent: Improved Aspect of the Monkey (Aspect of the Monkey)
 			{
 				["tab"] = 1,
 				["num"] = 4,
 				["rank"] = {
 					2, 4, 6,
 				},
-				["buff"] = 13163,		-- ["Aspect of the Monkey"],
+				["aura"] = 13163,
 			},
+			-- Buff: Aspect of the Dragonhawk
 			{
 				["value"] = 18,
-				["buff"] = 61846,		-- ["Aspect of the Dragonhawk"],
+				["aura"] = 61846,
 			},
+			-- Talent: Improved Aspect of the Monkey (Aspect of the Dragonhawk)
 			{
 				["tab"] = 1,
 				["num"] = 4,
 				["rank"] = {
 					2, 4, 6,
 				},
-				["buff"] = 61846,		-- ["Aspect of the Dragonhawk"],
-			},
-		},
-		-- Hunter: Survival Instincts (Rank 2) - 3,7
-		--         Reduces all damage taken by 2%/4% and increases the critical strike chance of your Arcane Shot, Steady Shot, and Explosive Shot by 2%/4%.
-		-- Hunter: Aspect Mastery - 1,8
-		--         Aspect of the Monkey - Reduces the damage done to you while active by 5%.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 7,
-				["rank"] = {
-					-0.02, -0.04,
-				},
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 8,
-				["value"] = -0.05,
-				["buff"] = 13163,		-- ["Aspect of the Monkey"],
+				["aura"] = 61846,
 			},
 		},
 		-- Hunter: Thick Hide (Rank 3) - 1,5
@@ -1880,34 +1842,56 @@ elseif addonTable.class == "HUNTER" then
 			},
 		},
 	}
-elseif addonTable.class == "MAGE" then
+elseif addon.class == "MAGE" then
 	StatLogic.StatModTable["MAGE"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 3.6587,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
 		["ADD_SPELL_CRIT_RATING_MOD_SPI"] = {
 			-- Mage: Molten Armor (Rank 3) - Buff
 			--       increases your critical strike rating by 35% of your spirit
 			{
 				["value"] = 0.35,
-				["buff"] = 30482, -- ["Molten Armor"],
+				["aura"] = 30482, -- ["Molten Armor"],
 			},
 			-- Mage: Glyph of Molten Armor - Major Glyph
 			--       Your Molten Armor grants an additional 20% of your spirit as critical strike rating.
 			{
 				["value"] = 0.2,
-				["buff"] = 30482, -- ["Molten Armor"],
+				["aura"] = 30482, -- ["Molten Armor"],
 				["glyph"] = 56382, -- Glyph of Molten Armor,
 			},
 			-- Mage: Khadgar's Regalia(843), Sunstrider's Regalia(844) 2pc - Item Set
 			--       converts an additional 15% of your spirit into critical strike rating when Molten Armor is active.
 			{
 				["value"] = 0.15,
-				["buff"] = 30482, -- ["Molten Armor"],
+				["aura"] = 30482, -- ["Molten Armor"],
 				-- Khadgar's Regalia
 				["set"] = 843,
 				["pieces"] = 2,
 			},
 			{
 				["value"] = 0.15,
-				["buff"] = 30482, -- ["Molten Armor"],
+				["aura"] = 30482, -- ["Molten Armor"],
 				-- Sunstrider's Regalia
 				["set"] = 844,
 				["pieces"] = 2,
@@ -1915,7 +1899,7 @@ elseif addonTable.class == "MAGE" then
 		},
 		-- Mage: Arcane Fortitude - 1,4
 		--       Increases your armor by an amount equal to 50%/100%/150% of your Intellect.
-		["ADD_ARMOR_MOD_INT"] = {
+		["ADD_BONUS_ARMOR_MOD_INT"] = {
 			{
 				["tab"] = 1,
 				["num"] = 4,
@@ -1945,25 +1929,25 @@ elseif addonTable.class == "MAGE" then
 			},
 			{
 				["value"] = 0.5,
-				["buff"] = 6117, -- ["Mage Armor"],
+				["aura"] = 6117, -- ["Mage Armor"],
 			},
 			{
 				["value"] = 0.1,
-				["buff"] = 6117, -- ["Mage Armor"],
+				["aura"] = 6117, -- ["Mage Armor"],
 				-- Khadgar's Regalia
 				["set"] = 843,
 				["pieces"] = 2,
 			},
 			{
 				["value"] = 0.1,
-				["buff"] = 6117, -- ["Mage Armor"],
+				["aura"] = 6117, -- ["Mage Armor"],
 				-- Sunstrider's Regalia
 				["set"] = 844,
 				["pieces"] = 2,
 			},
 			{
 				["value"] = 0.2,
-				["buff"] = 6117, -- ["Mage Armor"],
+				["aura"] = 6117, -- ["Mage Armor"],
 				["glyph"] = 56383, -- Glyph of Mage Armor,
 			},
 			{
@@ -1994,92 +1978,6 @@ elseif addonTable.class == "MAGE" then
 				},
 			},
 		},
-		-- Mage: Arctic Winds (Rank 5) - 3,20
-		--       Reduces the chance melee and ranged attacks will hit you by 1%/2%/3%/4%/5%.
-		-- 3.0.1: 3,21
-		-- Mage: Improved Blink (Rank 2) - Buff - 1,13
-		--       Chance to be hit by all attacks and spells reduced by 13%/25%.
-		-- 3.0.1: 1,15: Chance to be hit by all attacks and spells reduced by 15%/30%.
-		["ADD_HIT_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["tab"] = 3,
-				["num"] = 21,
-				["rank"] = {
-					-0.01, -0.02, -0.03, -0.04, -0.05,
-				},
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 15,
-				["rank"] = {
-					-0.15, -0.30,
-				},
-				["buff"] = 46989,		-- ["Improved Blink"],
-			},
-		},
-		-- Mage: Prismatic Cloak (Rank 3) - 1,16
-		--       Reduces all damage taken by 2%/4%.
-		-- 3.0.1: 1,18: Reduces all damage taken by 2%/4%/6%.
-		-- Mage: Playing with Fire (Rank 3) - 2,13
-		--       Increases all spell damage caused by 1%/2%/3%(doesn't effect char tab stat) and all spell damage taken by 1%/2%/3%.
-		-- 3.0.1: 2,14
-		-- Mage: Frozen Core (Rank 3) - 3,14
-		--       Reduces the damage taken by Frost and Fire effects by 2%/4%/6%.
-		-- 3.0.1: 3,16
-		-- 8962: Reduces the damage taken from all spells by 2%/4%/6%.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 18,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
-			},
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 14,
-				["rank"] = {
-					-0.01, -0.02, -0.03,
-				},
-			},
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 16,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
-			},
-		},
 		-- Mage: Arcane Mind (Rank 5) - 1,15
 		--       Increases your total Intellect by 3%/6%/9%/12%/15%.
 		-- 3.0.1: 1,17
@@ -2104,8 +2002,30 @@ elseif addonTable.class == "MAGE" then
 			},
 		},
 	}
-elseif addonTable.class == "PALADIN" then
+elseif addon.class == "PALADIN" then
 	StatLogic.StatModTable["PALADIN"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 2,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
+		["ADD_BLOCK_VALUE_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = BLOCK_PER_STRENGTH,
+			},
+		},
 		-- Paladin: Sheath of Light (Rank 3) - 3,24
 		--          Increases your spell power by an amount equal to 10%/20%/30% of your attack power
 		--   3.1.0: 3,24
@@ -2169,141 +2089,18 @@ elseif addonTable.class == "PALADIN" then
 				},
 			},
 		},
-		-- Paladin: Anticipation (Rank 5) - 2,5
-		--          Increases your chance to dodge by 1%/2%/3%/4%/5%.
 		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 3.4943,
+			},
+			-- Talent: Anticipation
 			{
 				["tab"] = 2,
 				["num"] = 5,
 				["rank"] = {
 					1, 2, 3, 4, 5,
 				},
-			},
-		},
-		-- Paladin: Divine Purpose (Rank 2) - 3,16
-		--          Reduces your chance to be hit by spells and ranged attacks by 2%/4% and
-		--          gives your Hand of Freedom spell a 50%/100% chance to remove any Stun effects on the target.
-		["ADD_HIT_TAKEN"] = {
-			{
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 16,
-				["rank"] = {
-					-0.02, -0.04,
-				},
-			},
-		},
-		-- Paladin: Blessed Life (Rank 3) - 1,19
-		--          All attacks against you have a 4%/7%/10% chance to cause half damage.
-		-- Paladin: Ardent Defender (Rank 3) - 2,18
-		--          When you have less than 35% health, all damage taken is reduced by 7/13/20%.
-		-- Paladin: Improved Righteous Fury (Rank 3) - 2,7
-		--          While Righteous Fury is active, all damage taken is reduced by 2%/4%/6%.
-		-- Paladin: Guarded by the Light (Rank 2) - 2,23
-		--          Reduces spell damage taken by 3%/6% and reduces the mana cost of your Holy Shield, Avenger's Shield and Shield of Righteousness spells by 15%/30%.
-		-- Paladin: Shield of the Templar (Rank 3) - 2,24
-		--          Reduces all damage taken by 1/2/3%
-		-- Paladin: Glyph of Divine Plea - Major Glyph
-		--          While Divine Plea is active, you take 3% reduced damage from all sources.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 19,
-				["rank"] = {
-					-0.02, -0.035, -0.05,
-				},
-			},
-			-- Ardent Defender
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 18,
-				["rank"] = {
-					-0.07, -0.13, -0.2,
-				},
-				["condition"] = "((UnitHealth('player') / UnitHealthMax('player')) < 0.35)",
-			},
-			-- Improved Righteous Fury
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 7,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
-				["buff"] = 25781,		-- ["Righteous Fury"],
-			},
-			-- Guarded by the Light
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 23,
-				["rank"] = {
-					-0.03, -0.06,
-				},
-			},
-			-- Shield of the Templar
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 24,
-				["rank"] = {
-					-0.01, -0.02, -0.03,
-				},
-			},
-			-- Glyph of Divine Plea
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.03,
-				["buff"] = 54428,		-- ["Divine Plea"],
-				["glyph"] = 63223, -- Glyph of Shield Wall,
 			},
 		},
 		-- Paladin: Toughness (Rank 5) - 2,8
@@ -2373,8 +2170,42 @@ elseif addonTable.class == "PALADIN" then
 			},
 		},
 	}
-elseif addonTable.class == "PRIEST" then
+elseif addon.class == "PRIEST" then
 	StatLogic.StatModTable["PRIEST"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 3.4178,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
+		["MOD_NORMAL_MANA_REG"] = {
+			-- Priest: Holy Concentration (Rank 3) - 2,17
+			--   Your mana regeneration from spirit is increased by 16/32/50%
+			{
+				["tab"] = 2,
+				["num"] = 17,
+				["aura"] = 34754,
+				["rank"] = {
+					0.16, 0.32, 0.50,
+				},
+			},
+		},
 		-- Priest: Meditation (Rank 3) - 1,7
 		--         Allows 17/33/50% of your Mana regeneration to continue while casting.
 		["ADD_MANA_REG_MOD_NORMAL_MANA_REG"] = {
@@ -2390,7 +2221,7 @@ elseif addonTable.class == "PRIEST" then
 			{
 				["tab"] = 3,
 				["num"] = 1,
-				["buff"] = 15271,
+				["aura"] = 15271,
 				["value"] = 0.83,
 			},
 			-- Priest: Improved Spirit Tap (Rank 2) - 3,2
@@ -2398,10 +2229,19 @@ elseif addonTable.class == "PRIEST" then
 			{
 				["tab"] = 3,
 				["num"] = 2,
-				["buff"] = 59000,
+				["aura"] = 59000,
 				["rank"] = {
 					0.17, 0.33,
 				},
+			},
+		},
+		["ADD_MANA_REG_MOD_MANA"] = {
+			-- Talent: Dispersion
+			{
+				["tab"] = 3,
+				["num"] = 27,
+				["value"] = 0.30,
+				["aura"] = 47585,
 			},
 		},
 		["ADD_SPELL_DMG_MOD_SPI"] = {
@@ -2428,7 +2268,7 @@ elseif addonTable.class == "PRIEST" then
 			--	your spell power by 30% of your Spirit for 10 sec.
 			{
 				["glyph"] = 55689,
-				["buff"] = 61792,
+				["aura"] = 61792,
 				["value"] = 0.30,
 			},
 		},
@@ -2450,37 +2290,6 @@ elseif addonTable.class == "PRIEST" then
 				["rank"] = {
 					0.04, 0.08, 0.12, 0.16, 0.2,
 				},
-			},
-		},
-		-- Priest: Spell Warding (Rank 5) - 2,4
-		--         Reduces all spell damage taken by 2%/4%/6%/8%/10%.
-		-- Priest: Dispersion - Buff
-		--         Reduces all damage by 90%
-		["MOD_DMG_TAKEN"] = {
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 4,
-				["rank"] = {
-					-0.02, -0.04, -0.06, -0.08, -0.1,
-				},
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.9,
-				["buff"] = 47585,		-- ["Dispersion"],
 			},
 		},
 		-- Priest: Enlightenment (Rank 5) - 1,17
@@ -2537,7 +2346,7 @@ elseif addonTable.class == "PRIEST" then
 			{
 				["tab"] = 3,
 				["num"] = 1,
-				["buff"] = 15271,
+				["aura"] = 15271,
 				["value"] = 1.00,
 			},
 			-- Priest: Improved Spirit Tap (Rank 2) - 3,2
@@ -2547,15 +2356,33 @@ elseif addonTable.class == "PRIEST" then
 			{
 				["tab"] = 3,
 				["num"] = 2,
-				["buff"] = 59000,
+				["aura"] = 59000,
 				["rank"] = {
 					0.05, 0.10,
 				},
 			},
 		},
 	}
-elseif addonTable.class == "ROGUE" then
+elseif addon.class == "ROGUE" then
 	StatLogic.StatModTable["ROGUE"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_AP_MOD_AGI"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_RANGED_AP_MOD_AGI"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
 		-- Rogue: Deadliness (Rank 5) - 3,18
 		--        Increases your attack power by 2%/4%/6%/8%/10%.
 		-- Rogue: Savage Combat (Rank 2) - 2,26
@@ -2576,13 +2403,12 @@ elseif addonTable.class == "ROGUE" then
 				},
 			},
 		},
-		-- Rogue: Lightning Reflexes (Rank 5) - 2,12
-		--        Increases your Dodge chance by 2/4/6% and gives you 4/7/10% melee haste.
-		-- Rogue: Evasion (Rank 1/2) - Buff
-		--        Dodge chance increased by 50%/50% and chance ranged attacks hit you reduced by 0%/25%.
-		-- Rogue: Ghostly Strike - Buff
-		--        Dodge chance increased by 15%.
 		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 2.0957,
+			},
+			-- Talent: Lightning Reflexes
 			{
 				["tab"] = 2,
 				["num"] = 12,
@@ -2590,84 +2416,15 @@ elseif addonTable.class == "ROGUE" then
 					2, 4, 6,
 				},
 			},
+			-- Buff: Evasion
 			{
 				["value"] = 50,
-				["buff"] = 26669,		-- ["Evasion"],
+				["aura"] = 26669,
 			},
+			-- Buff: Ghostly Strike
 			{
 				["value"] = 15,
-				["buff"] = 31022,		-- ["Ghostly Strike"],
-			},
-		},
-		-- Rogue: Sleight of Hand (Rank 2) - 3,4
-		--        Reduces the chance you are critically hit by melee and ranged attacks by 1%/2% and increases the threat reduction of your Feint ability by 10%/20%.
-		["ADD_CRIT_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["tab"] = 3,
-				["num"] = 4,
-				["rank"] = {
-					-0.01, -0.02,
-				},
-			},
-		},
-		-- Rogue: Heightened Senses (Rank 2) - 3,13
-		--        Increases your Stealth detection and reduces the chance you are hit by spells and ranged attacks by 2%/4%.
-		-- Rogue: Cloak of Shadows - buff
-		--        Instantly removes all existing harmful spell effects and increases your chance to resist all spells by 90% for 5 sec. Does not remove effects that prevent you from using Cloak of Shadows.
-		-- Rogue: Evasion (Rank 1/2) - Buff
-		--        Dodge chance increased by 50%/50% and chance ranged attacks hit you reduced by 0%/25%.
-		["ADD_HIT_TAKEN"] = {
-			{
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 13,
-				["rank"] = {
-					-0.02, -0.04,
-				},
-			},
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.9,
-				["buff"] = 39666,		-- ["Cloak of Shadows"],
-			},
-			{
-				["RANGED"] = true,
-				["rank"] = {
-					0, -0.25,
-				},
-				["buff"] = 26669,		-- ["Evasion"],
-			},
-		},
-		-- Rogue: Deadened Nerves (Rank 3) - 1,20
-		--        Reduces all damage taken by 2%/4%/6%.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 20,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
+				["aura"] = 31022,
 			},
 		},
 		-- Rogue: Sinister Calling (Rank 5) - 3,22
@@ -2693,8 +2450,36 @@ elseif addonTable.class == "ROGUE" then
 			},
 		},
 	}
-elseif addonTable.class == "SHAMAN" then
+elseif addon.class == "SHAMAN" then
 	StatLogic.StatModTable["SHAMAN"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_AP_MOD_AGI"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
+		["ADD_BLOCK_VALUE_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = BLOCK_PER_STRENGTH,
+			},
+		},
 		-- Shaman: Mental Dexterity (Rank 3) - 2,15
 		--         Increases your Attack Power by 33%/66%/100% of your Intellect.
 		["ADD_AP_MOD_INT"] = {
@@ -2752,62 +2537,18 @@ elseif addonTable.class == "SHAMAN" then
 				},
 			},
 		},
-		-- Shaman: Anticipation (Rank 5) - 2,10
-		--         Increases your chance to dodge by an additional 1%/2%/3%
 		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 2.1080,
+			},
+			-- Talent: Anticipation
 			{
 				["tab"] = 2,
 				["num"] = 10,
 				["rank"] = {
 					1, 2, 3,
 				},
-			},
-		},
-		-- Shaman: Elemental Warding (Rank 3) - 1,4
-		--         Now reduces all damage taken by 2/4/6%.
-		-- Shaman: Shamanistic Rage - Buff
-		--         Reduces all damage taken by 30% and gives your successful melee attacks a chance to regenerate mana equal to 15% of your attack power. Lasts 30 sec.
-		-- Shaman: Astral Shift - Buff
-		--         When stunned, feared or silenced you shift into the Astral Plane reducing all damage taken by 30% for the duration of the stun, fear or silence effect.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 4,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.3,
-				["buff"] = 30823,		-- ["Shamanistic Rage"],
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.3,
-				["buff"] = 51479,		-- ["Astral Shift"],
 			},
 		},
 		-- Shaman: Toughness (Rank 5) - 2,12
@@ -2833,31 +2574,28 @@ elseif addonTable.class == "SHAMAN" then
 			},
 		},
 	}
-elseif addonTable.class == "WARLOCK" then
+elseif addon.class == "WARLOCK" then
 	StatLogic.StatModTable["WARLOCK"] = {
-		["ADD_CRIT_TAKEN"] = {
-			-- Warlock: Metamorphosis - Buff
-			--          This form increases your armor by 600%, damage by 20%, reduces the chance you'll be critically hit by melee attacks by 6% and reduces the duration of stun and snare effects by 50%.
+		["ADD_AP_MOD_STR"] = {
+			-- Base
 			{
-				["MELEE"] = true,
-				["value"] = -0.06,
-				["buff"] = 47241,		-- ["Metamorphosis"],
+				["value"] = 1,
 			},
-			-- Warlock: Demonic Resilience (Rank 3) - 2,18
-			--          Reduces the chance you'll be critically hit by melee and spells by 1%/2%/3% and reduces all damage your summoned demon takes by 15%.
+		},
+		["ADD_DODGE"] = {
+			-- Base
 			{
-				["MELEE"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 18,
-				["rank"] = {
-					-0.01, -0.02, -0.03,
-				},
+				["value"] = 2.4211,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
 			},
 		},
 		-- Warlock: Metamorphosis - Buff
@@ -2865,7 +2603,7 @@ elseif addonTable.class == "WARLOCK" then
 		["MOD_ARMOR"] = {
 			{
 				["value"] = 6,
-				["buff"] = 47241,		-- ["Metamorphosis"],
+				["aura"] = 47241,		-- ["Metamorphosis"],
 			},
 		},
 		-- Warlock: Demonic Pact - 2,26
@@ -2877,7 +2615,7 @@ elseif addonTable.class == "WARLOCK" then
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = 47240,		-- ["Demonic Pact"],
+				["aura"] = 47240,		-- ["Demonic Pact"],
 			},
 		},
 		-- Warlock: Demonic Pact - 2,26
@@ -2889,7 +2627,7 @@ elseif addonTable.class == "WARLOCK" then
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = 47240,		-- ["Demonic Pact"],
+				["aura"] = 47240,		-- ["Demonic Pact"],
 			},
 		},
 		-- Warlock: Fel Armor (Rank 4) - Buff
@@ -2902,7 +2640,7 @@ elseif addonTable.class == "WARLOCK" then
 		["ADD_SPELL_DMG_MOD_SPI"] = {
 			{
 				["value"] = 0.3,
-				["buff"] = 28176, -- ["Fel Armor"],
+				["aura"] = 28176, -- ["Fel Armor"],
 			},
 			{
 				["tab"] = 2,
@@ -2910,12 +2648,12 @@ elseif addonTable.class == "WARLOCK" then
 				["rank"] = {
 					0.03, 0.06, 0.09,
 				},
-				["buff"] = 28176, -- ["Fel Armor"],
+				["aura"] = 28176, -- ["Fel Armor"],
 			},
 			{
 				["value"] = 0.2,
 				["glyph"] = 63320,
-				["buff"] = 63321, -- ["Life Tap"],
+				["aura"] = 63321, -- ["Life Tap"],
 			},
 		},
 		-- Warlock: Fel Armor (Rank 4) - Buff
@@ -2927,57 +2665,36 @@ elseif addonTable.class == "WARLOCK" then
 			{
 				["value"] = 0.2,
 				["glyph"] = 63320,
-				["buff"] = 63321, -- ["Life Tap"],
+				["aura"] = 63321, -- ["Life Tap"],
 			},
 		},
-		-- 3.3.0 Imp stam total 233: pet base 118, player base 90, pet sta from player sta 0.75, pet kings 1.1, fel vitality 1.15
-		-- /dump floor((118+floor(90*0.75))*1.1)*1.05 = 233.45 match
-		-- /dump (118+floor(90*0.75))*1.1*1.05 = 224.025 wrong
-		-- Warlock: Fel Vitality (Rank 3) - 2,7
-		--          Increases the Stamina and Intellect of your Imp, Voidwalker, Succubus, Felhunter and Felguard by 15% and increases your maximum health and mana by 1%/2%/3%.
 		["ADD_PET_STA_MOD_STA"] = {
 			-- Base
 			{
-				["value"] = 0.75-1,
-				["condition"] = "UnitExists('pet')",
+				["value"] = 0.75,
+				["pet"] = true,
 			},
-			-- Blessings on pet: floor() * 1.1
+		},
+		["MOD_PET_STA"] = {
+			-- 3.3.0 Imp stam total 233: pet base 118, player base 90, pet sta from player sta 0.75, pet kings 1.1, fel vitality 1.15
+			-- /dump floor((118+floor(90*0.75))*1.1)*1.05 = 233.45 match
+			-- /dump (118+floor(90*0.75))*1.1*1.05 = 224.025 wrong
 			--{
 			--	["value"] = 0.1, -- BoK, BoSanc
 			--	["condition"] = "UnitBuff('pet', GetSpellInfo(20217)) or UnitBuff('pet', GetSpellInfo(25898)) or UnitBuff('pet', GetSpellInfo(20911)) or UnitBuff('pet', GetSpellInfo(25899))",
 			--},
-			-- Fel Vitality: floor() * 1.15
+			-- Warlock: Fel Vitality (Rank 3) - 2,7
+			--          Increases the Stamina and Intellect of your Imp, Voidwalker, Succubus, Felhunter and Felguard by 15% and increases your maximum health and mana by 1%/2%/3%.
 			{
 				["tab"] = 2,
 				["num"] = 7,
 				["rank"] = {
 					0.05, 0.1, 0.15,
 				},
-				["condition"] = "UnitExists('pet')",
+				["pet"] = true,
 			},
 		},
-		["ADD_PET_INT_MOD_INT"] = {
-			-- Base
-			{
-				["value"] = 0.3-1,
-				["condition"] = "UnitExists('pet')",
-			},
-			-- Blessings on pet
-			--{
-			--	["value"] = 0.1,
-			--	["condition"] = "UnitBuff('pet', GetSpellInfo(20217)) or UnitBuff('pet', GetSpellInfo(25898)) or UnitBuff('pet', GetSpellInfo(20911)) or UnitBuff('pet', GetSpellInfo(25899))",
-			--},
-			-- Fel Vitality
-			{
-				["tab"] = 2,
-				["num"] = 7,
-				["rank"] = {
-					0.05, 0.1, 0.15,
-				},
-				["condition"] = "UnitExists('pet')",
-			},
-		},
-		-- Warlock: Demonic Knowledge (Rank 3) - 2,20 - UnitExists("pet") - WARLOCK_PET_BONUS["PET_BONUS_STAM"] = 0.3; its actually 0.75
+		-- Warlock: Demonic Knowledge (Rank 3) - 2,20
 		--          Increases your spell damage by an amount equal to 4/8/12% of the total of your active demon's Stamina plus Intellect.
 		["ADD_SPELL_DMG_MOD_PET_STA"] = {
 			{
@@ -2986,10 +2703,34 @@ elseif addonTable.class == "WARLOCK" then
 				["rank"] = {
 					0.04, 0.08, 0.12,
 				},
-				["condition"] = "UnitExists('pet')",
+				["pet"] = true,
 			},
 		},
-		-- Warlock: Demonic Knowledge (Rank 3) - 2,20 - UnitExists("pet") - WARLOCK_PET_BONUS["PET_BONUS_INT"] = 0.3;
+		["ADD_PET_INT_MOD_INT"] = {
+			-- Base
+			{
+				["value"] = 0.3,
+				["pet"] = true,
+			},
+		},
+		["MOD_PET_INT"] = {
+			-- Blessings on pet
+			--{
+			--	["value"] = 0.1,
+			--	["condition"] = "UnitBuff('pet', GetSpellInfo(20217)) or UnitBuff('pet', GetSpellInfo(25898)) or UnitBuff('pet', GetSpellInfo(20911)) or UnitBuff('pet', GetSpellInfo(25899))",
+			--},
+			-- Warlock: Fel Vitality (Rank 3) - 2,7
+			--          Increases the Stamina and Intellect of your Imp, Voidwalker, Succubus, Felhunter and Felguard by 15% and increases your maximum health and mana by 1%/2%/3%.
+			{
+				["tab"] = 2,
+				["num"] = 7,
+				["rank"] = {
+					0.05, 0.1, 0.15,
+				},
+				["pet"] = true,
+			},
+		},
+		-- Warlock: Demonic Knowledge (Rank 3) - 2,20
 		--          Increases your spell damage by an amount equal to 4/8/12% of the total of your active demon's Stamina plus Intellect.
 		["ADD_SPELL_DMG_MOD_PET_INT"] = {
 			{
@@ -2998,70 +2739,7 @@ elseif addonTable.class == "WARLOCK" then
 				["rank"] = {
 					0.04, 0.08, 0.12,
 				},
-				["condition"] = "UnitExists('pet')",
-			},
-		},
-		-- Warlock: Master Demonologist (Rank 5) - 2,16
-		--          Voidwalker - Reduces physical damage taken by 2%/4%/6%/8%/10%.
-		--          Felhunter - Reduces all spell damage taken by 2%/4%/6%/8%/10%.
-		--          Felguard - Increases all damage done by 5%, and reduces all damage taken by 1%/2%/3%/4%/5%.
-		-- Warlock: Soul Link (Rank 1) - Buff
-		--          When active, 15% of all damage taken by the caster is taken by your Imp, Voidwalker, Succubus, Felhunter, Felguard, or enslaved demon instead.  That damage cannot be prevented. Lasts as long as the demon is active and controlled.
-		["MOD_DMG_TAKEN"] = {
-			-- Voidwalker
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["tab"] = 2,
-				["num"] = 16,
-				["rank"] = {
-					-0.02, -0.04, -0.06, -0.08, -0.1,
-				},
-				["condition"] = "IsUsableSpell('"..(GetSpellInfo(27490) or "").."')" -- ["Torment"]
-			},
-			-- Felhunter
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 16,
-				["rank"] = {
-					-0.02, -0.04, -0.06, -0.08, -0.1,
-				},
-				["condition"] = "IsUsableSpell('"..(GetSpellInfo(27496) or "").."')" -- ["Devour Magic"]
-			},
-			-- Felguard
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 16,
-				["rank"] = {
-					-0.01, -0.02, -0.03, -0.04, -0.05,
-				},
-				["condition"] = "IsUsableSpell('"..(GetSpellInfo(47993) or "").."')" -- ["Anguish"]
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.15,
-				["buff"] = 25228,		-- ["Soul Link"],
+				["pet"] = true,
 			},
 		},
 		-- Warlock: Fel Vitality (Rank 3) - 2,7
@@ -3098,23 +2776,24 @@ elseif addonTable.class == "WARLOCK" then
 			},
 		},
 	}
-elseif addonTable.class == "WARRIOR" then
+elseif addon.class == "WARRIOR" then
 	StatLogic.StatModTable["WARRIOR"] = {
-		-- Warrior: Improved Spell Reflection (Rank 2) - 3,10
-		--          Reduces the chance you'll be hit by spells by 2%/4%
-		["ADD_HIT_TAKEN"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
 			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 10,
-				["rank"] = {
-					-0.02, -0.04,
-				},
+				["value"] = 2,
+			},
+		},
+		["ADD_RANGED_AP_MOD_AGI"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_BLOCK_VALUE_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = BLOCK_PER_STRENGTH,
 			},
 		},
 		-- Warrior: Armored to the Teeth (Rank 3) - 2,1
@@ -3128,9 +2807,12 @@ elseif addonTable.class == "WARRIOR" then
 				},
 			},
 		},
-		-- Warrior: Anticipation (Rank 5) - 3,5
-		--          Increases your Dodge chance by 1%/2%/3%/4%/5%.
 		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 3.6640,
+			},
+			-- Talent: Anticipation
 			{
 				["tab"] = 3,
 				["num"] = 5,
@@ -3139,115 +2821,12 @@ elseif addonTable.class == "WARRIOR" then
 				},
 			},
 		},
-		-- Warrior: Shield Wall - Buff
-		--          All damage taken reduced by 60%.
-		-- Warrior: Glyph of Shield Wall - Major Glyph
-		--          Reduces the cooldown on Shield Wall by 2 min, but Shield Wall now only reduces damage taken by 40%.
-		-- Warrior: Defensive Stance - stance
-		--          A defensive combat stance. Decreases damage taken by 10% and damage caused by 10%. Increases threat generated.
-		-- Warrior: Berserker Stance - stance
-		--          An aggressive stance. Critical hit chance is increased by 3% and all damage taken is increased by 5%.
-		-- Warrior: Death Wish - Buff
-		--          When activated, increases your physical damage by 20% and makes you immune to Fear effects, but increases all damage taken by 5%. Lasts 30 sec.
-		-- Warrior: Recklessness - Buff
-		--          The warrior will cause critical hits with most attacks and will be immune to Fear effects for the next 15 sec, but all damage taken is increased by 20%.
-		-- Warrior: Improved Defensive Stance (Rank 2) - 3,17
-		--          While in Defensive Stance all spell damage is reduced by 3%/6%.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.6,
-				["buff"] = 41196,		-- ["Shield Wall"],
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = 0.2,
-				["buff"] = 41196,		-- ["Shield Wall"],
-				["glyph"] = 63329, -- Glyph of Shield Wall,
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.1,
-				["stance"] = "Interface\\Icons\\Ability_Warrior_DefensiveStance",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = 0.05,
-				["stance"] = "Interface\\Icons\\Ability_Racial_Avatar",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = 0.05,
-				["buff"] = 12292,		-- ["Death Wish"],
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = 0.2,
-				["buff"] = 13847,		-- ["Recklessness"],
-			},
-			-- Improved Defensive Stance
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 17,
-				["rank"] = {
-					-0.03, -0.06,
-				},
-			},
-		},
 		-- Warrior: Last Stand - Buff
 		--          When activated, this ability temporarily grants you 30% of your maximum health for 20 sec.
 		["MOD_HEALTH"] = {
 			{
 				["value"] = 0.3,
-				["buff"] = 12975,		-- ["Last Stand"],
+				["aura"] = 12975,		-- ["Last Stand"],
 			},
 		},
 		-- Warrior: Toughness (Rank 5) - 3,9
@@ -3325,20 +2904,7 @@ elseif addonTable.class == "WARRIOR" then
 	}
 end
 
-if addonTable.playerRace == "NightElf" then
-	StatLogic.StatModTable["NightElf"] = {
-		["ADD_HIT_TAKEN"] = {
-			-- Night Elf : Quickness - Racial
-			--             Reduces the chance that melee and ranged attackers will hit you by 2%.
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["value"] = -0.02,
-				["race"] = "NightElf",
-			},
-		}
-	}
-elseif addonTable.playerRace == "Gnome" then
+if addon.playerRace == "Gnome" then
 	StatLogic.StatModTable["Gnome"] = {
 		["MOD_INT"] = {
 			-- Gnome: Expansive Mind - Racial
@@ -3349,9 +2915,9 @@ elseif addonTable.playerRace == "Gnome" then
 			},
 		}
 	}
-elseif addonTable.playerRace == "Human" then
+elseif addon.playerRace == "Human" then
 	StatLogic.StatModTable["Human"] = {
-		["MOD_SPIRIT"] = {
+		["MOD_SPI"] = {
 			-- Human: The Human Spirit - Racial
 			--        Increase Spirit by 3%.
 			{
@@ -3360,15 +2926,53 @@ elseif addonTable.playerRace == "Human" then
 			},
 		}
 	}
+elseif addon.playerRace == "Troll" then
+	StatLogic.StatModTable["Troll"] = {
+		["MOD_NORMAL_HEALTH_REG"] = {
+			-- Troll: Regeneration - Racial
+			--   Health regeneration rate increased by 10%.
+			{
+				["value"] = 0.1,
+			},
+		},
+		["ADD_HEALTH_REG_MOD_NORMAL_HEALTH_REG"] = {
+			-- Troll: Regeneration - Racial
+			--   10% of total Health regeneration may continue during combat.
+			{
+				["value"] = 0.1,
+				["spellid"] = 20555,
+			},
+		},
+	}
 end
 
 StatLogic.StatModTable["ALL"] = {
+	["ADD_HEALTH_MOD_STA"] = {
+		{
+			["value"] = 10,
+		},
+	},
+	["ADD_MANA_MOD_INT"] = {
+		{
+			["value"] = 15,
+		},
+	},
+	["ADD_NORMAL_HEALTH_REG_MOD_SPI"] = {
+		{
+			["regen"] = NormalHealthRegenPerSpi,
+		},
+	},
+	["ADD_BONUS_ARMOR_MOD_AGI"] = {
+		{
+			["value"] = ARMOR_PER_AGILITY,
+		},
+	},
 	-- ICC: Chill of the Throne
 	--      Chance to dodge reduced by 20%.
 	["ADD_DODGE"] = {
 		{
 			["value"] = -20,
-			["buff"] = 69127,		-- ["Chill of the Throne"],
+			["aura"] = 69127,		-- ["Chill of the Throne"],
 		},
 	},
 	-- Replenishment - Buff
@@ -3384,128 +2988,7 @@ StatLogic.StatModTable["ALL"] = {
 	["ADD_MANA_REG_MOD_MANA"] = {
 		{
 			["value"] = 0.01,
-			["buff"] = 57669,		-- ["Replenishment"],
-		},
-	},
-	-- Priest: Pain Suppression - Buff
-	--         Instantly reduces a friendly target's threat by 5%, reduces all damage taken by 40% and increases resistance to Dispel mechanics by 65% for 8 sec.
-	-- Priest: Grace - Buff
-	--         Reduces damage taken by 1%.
-	-- Warrior: Vigilance - Buff
-	--          Damage taken reduced by 3% and 10% of all threat transferred to warrior.
-	-- Paladin: Blessing of Sanctuary - Buff
-	--          Damage taken reduced by up to 3%, strength and stamina increased by 10%.
-	-- MetaGem: Effulgent Skyflare Diamond - 41377
-	--          +32 Stamina and Reduce Spell Damage Taken by 2%
-	-- Paladin: Lay on Hands (Rank 1/2) - Buff
-	--          Physical damage taken reduced by 10/20%.
-	-- Priest: Inspiration (Rank 1/2/3) - Buff
-	--         Reduces physical damage taken by 3/7/10%.
-	-- Shaman: Ancestral Fortitude (Rank 1/2/3) - Buff
-	--         Reduces physical damage taken by 3/7/10%.
-	["MOD_DMG_TAKEN"] = {
-		-- Pain Suppression
-		{
-			["MELEE"] = true,
-			["RANGED"] = true,
-			["HOLY"] = true,
-			["FIRE"] = true,
-			["NATURE"] = true,
-			["FROST"] = true,
-			["SHADOW"] = true,
-			["ARCANE"] = true,
-			["value"] = -0.4,
-			["buff"] = 33206,		-- ["Pain Suppression"],
-		},
-		-- Grace
-		{
-			["MELEE"] = true,
-			["RANGED"] = true,
-			["HOLY"] = true,
-			["FIRE"] = true,
-			["NATURE"] = true,
-			["FROST"] = true,
-			["SHADOW"] = true,
-			["ARCANE"] = true,
-			["value"] = -0.01,
-			["buff"] = 47930,		-- ["Grace"],
-		},
-		-- Vigilance
-		{
-			["MELEE"] = true,
-			["RANGED"] = true,
-			["HOLY"] = true,
-			["FIRE"] = true,
-			["NATURE"] = true,
-			["FROST"] = true,
-			["SHADOW"] = true,
-			["ARCANE"] = true,
-			["value"] = -0.03,
-			["buff"] = 50720,		-- ["Vigilance"],
-		},
-		-- Blessing of Sanctuary
-		{
-			["MELEE"] = true,
-			["RANGED"] = true,
-			["HOLY"] = true,
-			["FIRE"] = true,
-			["NATURE"] = true,
-			["FROST"] = true,
-			["SHADOW"] = true,
-			["ARCANE"] = true,
-			["value"] = -0.03,
-			["buff"] = 20911,		-- ["Blessing of Sanctuary"],
-		},
-		-- Greater Blessing of Sanctuary
-		{
-			["MELEE"] = true,
-			["RANGED"] = true,
-			["HOLY"] = true,
-			["FIRE"] = true,
-			["NATURE"] = true,
-			["FROST"] = true,
-			["SHADOW"] = true,
-			["ARCANE"] = true,
-			["value"] = -0.03,
-			["buff"] = 25899,		-- ["Greater Blessing of Sanctuary"],
-		},
-		-- Effulgent Skyflare Diamond
-		{
-			["HOLY"] = true,
-			["FIRE"] = true,
-			["NATURE"] = true,
-			["FROST"] = true,
-			["SHADOW"] = true,
-			["ARCANE"] = true,
-			["value"] = -0.02,
-			["meta"] = 41377,
-		},
-		-- Lay on Hands
-		{
-			["MELEE"] = true,
-			["RANGED"] = true,
-			["rank"] = {
-				-0.1, -0.2,
-			},
-			["buff"] = 20236,		-- ["Lay on Hands"],
-		},
-		{
-			["MELEE"] = true,
-			["RANGED"] = true,
-			["rank"] = {
-				-0.03, -0.07, -0.1,
-			},
-			["buff"] = 15363,		-- ["Inspiration"],
-			["group"] = BuffGroup.MOD_PHYS_DMG_TAKEN,
-		},
-		{
-			["MELEE"] = true,
-			["RANGED"] = true,
-			["rank"] = {
-				-0.03, -0.07, -0.1,
-			},
-			["buff"] = 16237,		-- ["Ancestral Fortitude"],
-			["group"] = BuffGroup.MOD_PHYS_DMG_TAKEN,
+			["aura"] = 57669,		-- ["Replenishment"],
 		},
 	},
 	-- MetaGem: Eternal Earthsiege Diamond - 41396
@@ -3522,45 +3005,39 @@ StatLogic.StatModTable["ALL"] = {
 			["meta"] = 35501,
 		},
 	},
-	-- Paladin: Lay on Hands (Rank 1/2) - Buff
-	--          Physical damage taken reduced by 10%/20%.
-	-- Priest: Inspiration (Rank 1/2/3) - Buff
-	--         Reduces physical damage taken by 3/7/10%.
-	-- Shaman: Ancestral Fortitude (Rank 1/2/3) - Buff
-	--         Reduces physical damage taken by 3/7/10%.
-	-- MetaGem: Austere Earthsiege Diamond - 41380
-	--          +32 Stamina and 2% Increased Armor Value from Items
 	["MOD_ARMOR"] = {
+		-- MetaGem: Austere Earthsiege Diamond - 41380
+		--          +32 Stamina and 2% Increased Armor Value from Items
 		{
 			["value"] = 0.02,
 			["meta"] = 41380,
 		},
 	},
-	-- Hunter: Trueshot Aura - Buff
-	--         Attack power increased by 10%.
-	-- Death Knight: Abomination's Might - Buff
-	--               Attack power increased by 5/10%.
-	-- Shaman: Unleashed Rage - Buff
-	--         Melee attack power increased by 4/7/10%.
 	["MOD_AP"] = {
+		-- Hunter: Trueshot Aura - Buff
+		--         Attack power increased by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 19506,		-- ["Trueshot Aura"],
-			["group"] = BuffGroup.MOD_AP,
+			["aura"] = 19506,
+			["group"] = addon.BuffGroup.AttackPower,
 		},
+		-- Death Knight: Abomination's Might - Buff
+		--               Attack power increased by 5/10%.
 		{
 			["rank"] = {
 				0.05, 0.1,
 			},
-			["buff"] = 53138,		-- ["Abomination's Might"],
-			["group"] = BuffGroup.MOD_AP,
+			["aura"] = 53138,
+			["group"] = addon.BuffGroup.AttackPower,
 		},
+		-- Shaman: Unleashed Rage - Buff
+		--         Melee attack power increased by 4/7/10%.
 		{
 			["rank"] = {
 				0.04, 0.07, 0.1,
 			},
-			["buff"] = 30809,		-- ["Unleashed Rage"],
-			["group"] = BuffGroup.MOD_AP,
+			["aura"] = 30809,
+			["group"] = addon.BuffGroup.AttackPower,
 		},
 	},
 	-- MetaGem: Beaming Earthsiege Diamond - 41389
@@ -3571,149 +3048,207 @@ StatLogic.StatModTable["ALL"] = {
 			["meta"] = 41389,
 		},
 	},
-	-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
-	--          Increases stats by 10%.
-	-- Paladin: Blessing of Sanctuary, Greater Blessing of Sanctuary - Buff
-	--          Damage taken reduced by up to 3%, strength and stamina increased by 10%. Does not stack with Blessing of Kings.
-	-- Leatherworking: Blessing of Forgotten Kings - Buff
-	--                 Increases stats by 8%.
 	["MOD_STR"] = {
+		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
+		--          Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 20217,		-- ["Blessing of Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 20217,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 		{
 			["value"] = 0.1,
-			["buff"] = 25898,		-- ["Greater Blessing of Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 25898,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 		-- Blessing of Sanctuary
 		{
 			["value"] = 0.1,
-			["buff"] = 20911,		-- ["Blessing of Sanctuary"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 20911,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 		-- Greater Blessing of Sanctuary
 		{
 			["value"] = 0.1,
-			["buff"] = 25899,		-- ["Greater Blessing of Sanctuary"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 25899,
+			["group"] = addon.BuffGroup.AllStats,
 		},
+		-- Leatherworking: Blessing of Forgotten Kings - Buff
+		--                 Increases stats by 8%.
 		{
 			["value"] = 0.08,
-			["buff"] = 69378,		-- ["Blessing of Forgotten Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 69378,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 	},
-	-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
-	--          Increases stats by 10%.
-	-- Leatherworking: Blessing of Forgotten Kings - Buff
-	--                 Increases stats by 8%.
 	["MOD_AGI"] = {
+		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
+		--          Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 20217,		-- ["Blessing of Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 20217,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 		{
 			["value"] = 0.1,
-			["buff"] = 25898,		-- ["Greater Blessing of Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 25898,
+			["group"] = addon.BuffGroup.AllStats,
 		},
+		-- Leatherworking: Blessing of Forgotten Kings - Buff
+		--                 Increases stats by 8%.
 		{
 			["value"] = 0.08,
-			["buff"] = 69378,		-- ["Blessing of Forgotten Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 69378,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 	},
-	-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
-	--          Increases stats by 10%.
-	-- Paladin: Blessing of Sanctuary, Greater Blessing of Sanctuary - Buff
-	--          Damage taken reduced by up to 3%, strength and stamina increased by 10%. Does not stack with Blessing of Kings.
-	-- Leatherworking: Blessing of Forgotten Kings - Buff
-	--                 Increases stats by 8%.
 	["MOD_STA"] = {
+		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
+		--          Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 20217,		-- ["Blessing of Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 20217,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 		{
 			["value"] = 0.1,
-			["buff"] = 25898,		-- ["Greater Blessing of Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 25898,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 		-- Blessing of Sanctuary
 		{
 			["value"] = 0.1,
-			["buff"] = 20911,		-- ["Blessing of Sanctuary"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 20911,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 		-- Greater Blessing of Sanctuary
 		{
 			["value"] = 0.1,
-			["buff"] = 25899,		-- ["Greater Blessing of Sanctuary"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 25899,
+			["group"] = addon.BuffGroup.AllStats,
 		},
+		-- Leatherworking: Blessing of Forgotten Kings - Buff
+		--                 Increases stats by 8%.
 		{
 			["value"] = 0.08,
-			["buff"] = 69378,		-- ["Blessing of Forgotten Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 69378,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 	},
-	-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
-	--          Increases stats by 10%.
-	-- Leatherworking: Blessing of Forgotten Kings - Buff
-	--                 Increases stats by 8%.
-	-- MetaGem: Ember Skyfire Diamond - 35503
-	--          +14 Spell Power and +2% Intellect
-	-- MetaGem: Ember Skyflare Diamond - 41333
-	--          +25 Spell Power and +2% Intellect
 	["MOD_INT"] = {
+		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
+		--          Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 20217,		-- ["Blessing of Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 20217,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 		{
 			["value"] = 0.1,
-			["buff"] = 25898,		-- ["Greater Blessing of Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 25898,
+			["group"] = addon.BuffGroup.AllStats,
 		},
+		-- Leatherworking: Blessing of Forgotten Kings - Buff
+		--                 Increases stats by 8%.
 		{
 			["value"] = 0.08,
-			["buff"] = 69378,		-- ["Blessing of Forgotten Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 69378,
+			["group"] = addon.BuffGroup.AllStats,
 		},
+		-- MetaGem: Ember Skyfire Diamond - 35503
+		--          +14 Spell Power and +2% Intellect
 		{
 			["value"] = 0.02,
 			["meta"] = 35503,
 		},
+		-- MetaGem: Ember Skyflare Diamond - 41333
+		--          +25 Spell Power and +2% Intellect
 		{
 			["value"] = 0.02,
 			["meta"] = 41333,
 		},
 	},
-	-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
-	--          Increases stats by 10%.
-	-- Leatherworking: Blessing of Forgotten Kings - Buff
-	--                 Increases stats by 8%.
 	["MOD_SPI"] = {
+		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
+		--          Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 20217,		-- ["Blessing of Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 20217,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 		{
 			["value"] = 0.1,
-			["buff"] = 25898,		-- ["Greater Blessing of Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 25898,
+			["group"] = addon.BuffGroup.AllStats,
 		},
+		-- Leatherworking: Blessing of Forgotten Kings - Buff
+		--                 Increases stats by 8%.
 		{
 			["value"] = 0.08,
-			["buff"] = 69378,		-- ["Blessing of Forgotten Kings"],
-			["group"] = BuffGroup.MOD_STATS,
+			["aura"] = 69378,
+			["group"] = addon.BuffGroup.AllStats,
+		},
+	},
+	["ADD_DODGE_REDUCTION_MOD_EXPERTISE"] = {
+		-- Base
+		{
+			["value"] = 0.25,
+		}
+	},
+	["ADD_PARRY_REDUCTION_MOD_EXPERTISE"] = {
+		-- Base
+		{
+			["value"] = 0.25,
+		}
+	},
+	["ADD_BLOCK_CHANCE_MOD_DEFENSE"] = {
+		-- Passive: Block
+		{
+			["known"] = 107,
+			["value"] = DODGE_PARRY_BLOCK_PERCENT_PER_DEFENSE,
+		}
+	},
+	["ADD_CRIT_AVOIDANCE_MOD_DEFENSE"] = {
+		-- Base
+		{
+			["value"] = DODGE_PARRY_BLOCK_PERCENT_PER_DEFENSE,
+		}
+	},
+	["ADD_DODGE_MOD_DEFENSE"] = {
+		-- Base
+		{
+			["value"] = DODGE_PARRY_BLOCK_PERCENT_PER_DEFENSE,
+		}
+	},
+	["ADD_MISS_MOD_DEFENSE"] = {
+		-- Base
+		{
+			["value"] = DODGE_PARRY_BLOCK_PERCENT_PER_DEFENSE,
+		}
+	},
+	["ADD_PARRY_MOD_DEFENSE"] = {
+		-- Passive: Parry
+		{
+			["known"] = 3127,
+			["value"] = DODGE_PARRY_BLOCK_PERCENT_PER_DEFENSE,
+		}
+	},
+	["ADD_CRIT_AVOIDANCE_MOD_RESILIENCE"] = {
+		-- Base
+		{
+			["value"] = 1,
+		},
+	},
+	["ADD_CRIT_DAMAGE_REDUCTION_MOD_RESILIENCE"] = {
+		-- Base
+		{
+			["value"] = -RESILIENCE_CRIT_CHANCE_TO_DAMAGE_REDUCTION_MULTIPLIER,
+		},
+	},
+	["ADD_PVP_DAMAGE_REDUCTION_MOD_RESILIENCE"] = {
+		-- Base
+		{
+			["value"] = -RESILIENCE_CRIT_CHANCE_TO_CONSTANT_DAMAGE_REDUCTION_MULTIPLIER,
 		},
 	},
 }
@@ -3795,65 +3330,11 @@ local C_m = setmetatable({}, {
 
 function StatLogic:GetMissedChanceBeforeDR()
 	local baseDefense, additionalDefense = UnitDefense("player")
-	local defenseFromDefenseRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), CR_DEFENSE_SKILL))
+	local defenseFromDefenseRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), StatLogic.Stats.DefenseRating))
 	local modMissed = defenseFromDefenseRating * 0.04
 	local drFreeMissed = 5 + (baseDefense + additionalDefense - defenseFromDefenseRating) * 0.04
 	return modMissed, drFreeMissed
 end
-
---[[---------------------------------
-	:GetDodgePerAgi()
--------------------------------------
-Arguments:
-	None
-Returns:
-	; dodge : number - Dodge percentage per agility
-	; statid : string - "DODGE"
-Notes:
-	* Formula by Whitetooth (hotdogee [at] gmail [dot] com)
-	* Calculates the dodge percentage per agility for your current class and level.
-	* Only works for your currect class and current level, does not support class and level args.
-	* Calculations got a bit more complicated with the introduction of the avoidance DR in WotLK, these are the values we know or can be calculated easily:
-	** D'=Total Dodge% after DR
-	** D_r=Dodge from Defense and Dodge Rating before DR
-	** D_b=Dodge unaffected by DR (BaseDodge + Dodge from talent/buffs + Lower then normal defense correction)
-	** A=Total Agility
-	** A_b=Base Agility (This is what you have with no gear on)
-	** A_g=Total Agility - Base Agility
-	** Let d be the Dodge/Agi value we are going to calculate.
-
-	#  1     1     k
-	# --- = --- + ---
-	#  x'    c     x
-
-	# x'=D'-D_b-A_b*d
-	# x=A_g*d+D_r
-
-	# 1/(D'-D_b-A_b*d)=1/C_d+k/(A_g*d+D_r)=(A_g*d+D_r+C_d*k)/(C_d*A_g*d+C_d*D_r)
-
-	# C_d*A_g*d+C_d*D_r=[(D'-D_b)-A_b*d]*[Ag*d+(D_r+C_d*k)]
-
-	# After rearranging the terms, we get an equation of type a*d^2+b*d+c where
-	# a=-A_g*A_b
-	# b=A_g(D'-D_b)-A_b(D_r+C_d*k)-C_dA_g
-	# c=(D'-D_b)(D_r+C_d*k)-C_d*D_r
-	** Dodge/Agi=(-b-(b^2-4ac)^0.5)/(2a)
-Example:
-	local dodge, statid = StatLogic:GetDodgePerAgi()
------------------------------------]]
-
-local DodgePerAgiStatic = {
-	["WARRIOR"] = 0.0118,
-	["PALADIN"] = 0.0167,
-	["HUNTER"] = 0.0116,
-	["ROGUE"] = 0.0209,
-	["PRIEST"] = 0.0167,
-	["DEATHKNIGHT"] = 0.0118,
-	["SHAMAN"] = 0.0167,
-	["MAGE"] = 0.017,
-	["WARLOCK"] = 0.0167,
-	["DRUID"] = 0.0209,
-}
 
 local ModAgiClasses = {
 	["DRUID"] = true,
@@ -3861,28 +3342,68 @@ local ModAgiClasses = {
 	["ROGUE"] = true,
 }
 
+--[[
+Formula by Whitetooth (hotdogee [at] gmail [dot] com)
+Calculates the dodge percentage per agility for your current class and level.
+Only works for your currect class and current level, does not support class and level args.
+Calculations got a bit more complicated with the introduction of the avoidance DR in WotLK, these are the values we know or can be calculated easily:
+* D'=Total Dodge% after DR
+* D_r=Dodge from Defense and Dodge Rating before DR
+* D_b=Dodge unaffected by DR (BaseDodge + Dodge from talent/buffs + Lower then normal defense correction)
+* A=Total Agility
+* A_b=Base Agility (This is what you have with no gear on)
+* A_g=Total Agility - Base Agility
+* Let d be the Dodge/Agi value we are going to calculate.
+
+```
+ 1     1     k
+--- = --- + ---
+ x'    c     x
+
+x'=D'-D_b-A_b*d
+x=A_g*d+D_r
+
+1/(D'-D_b-A_b*d)=1/C_d+k/(A_g*d+D_r)=(A_g*d+D_r+C_d*k)/(C_d*A_g*d+C_d*D_r)
+
+C_d*A_g*d+C_d*D_r=[(D'-D_b)-A_b*d]*[Ag*d+(D_r+C_d*k)]
+```
+After rearranging the terms, we get an equation of type `a*d^2+b*d+c` where
+```
+a=-A_g*A_b
+b=A_g(D'-D_b)-A_b(D_r+C_d*k)-C_dA_g
+c=(D'-D_b)(D_r+C_d*k)-C_d*D_r
+Dodge/Agi=(-b-(b^2-4ac)^0.5)/(2a)
+```
+]]
+---@return number dodge Dodge percentage per agility
 function StatLogic:GetDodgePerAgi()
 	local level = UnitLevel("player")
-	local class = addonTable.class
-	if level == 80 and DodgePerAgiStatic[class] then
-		return DodgePerAgiStatic[class], "DODGE"
+	local class = addon.class
+	if addon.DodgePerAgi[class][level] then
+		return addon.DodgePerAgi[class][level]
 	end
 	-- Collect data
 	local D_dr = GetDodgeChance()
-	local dodgeFromDodgeRating = self:GetEffectFromRating(GetCombatRating(CR_DODGE), CR_DODGE, level)
+	if D_dr == 0 then
+		return 0
+	end
+	local dodgeFromDodgeRating = self:GetEffectFromRating(GetCombatRating(CR_DODGE), StatLogic.Stats.DodgeRating, level)
 	local baseDefense, modDefense = UnitDefense("player")
 	local dodgeFromModDefense = modDefense * 0.04
 	local D_r = dodgeFromDodgeRating + dodgeFromModDefense
-	local D_b = addonTable.BaseDodge[class] + self:GetStatMod("ADD_DODGE") + (baseDefense - level * 5) * 0.04
+	local D_b = self:GetStatMod("ADD_DODGE") + (baseDefense - level * 5) * 0.04
 	local stat, effectiveStat, posBuff, negBuff = UnitStat("player", 2) -- 2 = Agility
-	-- Talents that modify AGI will not add to posBuff, so we need to calculate baseAgi
-	-- But Kings added AGi will add to posBuff, so we need to check for Kings
 	local modAgi = 1
 	if ModAgiClasses[class] then
 		modAgi = self:GetStatMod("MOD_AGI")
-		-- (Greater) Blessing of Kings
-		if StatLogic.AuraInfo[20217] or StatLogic.AuraInfo[25898] then
-			modAgi = modAgi - 0.1
+		-- Talents that modify Agi will not add to posBuff, so we need to calculate baseAgi
+		-- But Agi from Kings etc. will add to posBuff, so we subtract those if present
+		for _, case in ipairs(StatLogic.StatModTable["ALL"]["MOD_AGI"]) do
+			if case.group == addon.BuffGroup.AllStats then
+				if StatLogic:GetAuraInfo(case.aura) then
+					modAgi = modAgi - case.value
+				end
+			end
 		end
 	end
 	local A = effectiveStat
@@ -3899,201 +3420,139 @@ function StatLogic:GetDodgePerAgi()
 	if a == 0 then
 		dodgePerAgi = -c / b
 	end
-	--return dodgePerAgi
-	return floor(dodgePerAgi*10000+0.5)/10000, "DODGE"
+
+	return dodgePerAgi
 end
 
---[[---------------------------------
-	:GetDodgeChanceBeforeDR()
--------------------------------------
-Notes:
-	* Calculates your current Dodge% before diminishing returns.
-	* Dodge% = modDodge + drFreeDodge
-	* drFreeDodge includes:
-	** Base dodge
-	** Dodge from base agility
-	** Dodge modifier from base defense
-	** Dodge modifers from talents or spells
-	* modDodge includes
-	** Dodge from dodge rating
-	** Dodge from additional defense
-	** Dodge from additional dodge
-Arguments:
-	None
-Returns:
-	; modDodge : number - The part that is affected by diminishing returns.
-	; drFreeDodge : number - The part that isn't affected by diminishing returns.
-Example:
-	local modDodge, drFreeDodge = StatLogic:GetDodgeChanceBeforeDR()
------------------------------------]]
+--[[
+Calculates your current Dodge% before diminishing returns.
+Dodge% = modDodge + drFreeDodge
+
+drFreeDodge includes:
+* Base dodge
+* Dodge from base agility
+* Dodge modifier from base defense
+* Dodge modifers from talents or spells
+
+modDodge includes
+* Dodge from dodge rating
+* Dodge from additional defense
+* Dodge from additional dodge
+]]
+---@return number modDodge The part that is affected by diminishing returns.
+---@return number drFreeDodge The part that isn't affected by diminishing returns.
 function StatLogic:GetDodgeChanceBeforeDR()
-	-- drFreeDodge
 	local stat, effectiveStat, posBuff, negBuff = UnitStat("player", 2) -- 2 = Agility
 	local baseAgi = stat - posBuff - negBuff
 	local dodgePerAgi = self:GetDodgePerAgi()
-	--[[
-	local drFreeDodge = BaseDodge[class] + dodgePerAgi * baseAgi
-		+ self:GetStatMod("ADD_DODGE") + (baseDefense - UnitLevel("player") * 5) * 0.04
-	--]]
-	-- modDodge
-	local dodgeFromDodgeRating = self:GetEffectFromRating(GetCombatRating(CR_DODGE), CR_DODGE, UnitLevel("player"))
-	local dodgeFromDefenceRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), CR_DEFENSE_SKILL)) * 0.04
+	local dodgeFromDodgeRating = self:GetEffectFromRating(GetCombatRating(CR_DODGE), StatLogic.Stats.DodgeRating, UnitLevel("player"))
+	local dodgeFromDefenceRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), StatLogic.Stats.DefenseRating)) * 0.04
 	local dodgeFromAdditionalAgi = dodgePerAgi * (effectiveStat - baseAgi)
 	local modDodge = dodgeFromDodgeRating + dodgeFromDefenceRating + dodgeFromAdditionalAgi
 
-	local drFreeDodge = GetDodgeChance() - self:GetAvoidanceAfterDR("DODGE", modDodge, addonTable.class)
+	local drFreeDodge = GetDodgeChance() - self:GetAvoidanceAfterDR(StatLogic.Stats.Dodge, modDodge)
 
 	return modDodge, drFreeDodge
 end
 
---[[---------------------------------
-	:GetParryChanceBeforeDR()
--------------------------------------
-Notes:
-	* Calculates your current Parry% before diminishing returns.
-	* Parry% = modParry + drFreeParry
-	* drFreeParry includes:
-	** Base parry
-	** Parry from base agility
-	** Parry modifier from base defense
-	** Parry modifers from talents or spells
-	* modParry includes
-	** Parry from parry rating
-	** Parry from additional defense
-	** Parry from additional parry
-Arguments:
-	None
-Returns:
-	; modParry : number - The part that is affected by diminishing returns.
-	; drFreeParry : number - The part that isn't affected by diminishing returns.
-Example:
-	local modParry, drFreeParry = StatLogic:GetParryChanceBeforeDR()
------------------------------------]]
+--[[
+Calculates your current Parry% before diminishing returns.
+Parry% = modParry + drFreeParry
+
+drFreeParry includes:
+* Base parry
+* Parry from base agility
+* Parry modifier from base defense
+* Parry modifers from talents or spells
+
+modParry includes
+* Parry from parry rating
+* Parry from additional defense
+* Parry from additional parry
+]]
+---@return number modParry The part that is affected by diminishing returns.
+---@return number drFreeParry The part that isn't affected by diminishing returns.
 function StatLogic:GetParryChanceBeforeDR()
 	-- Defense is floored
-	local parryFromParryRating = self:GetEffectFromRating(GetCombatRating(CR_PARRY), CR_PARRY)
-	local parryFromDefenceRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), CR_DEFENSE_SKILL)) * 0.04
+	local parryFromParryRating = self:GetEffectFromRating(GetCombatRating(CR_PARRY), StatLogic.Stats.ParryRating)
+	local parryFromDefenceRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), StatLogic.Stats.DefenseRating)) * 0.04
 	local modParry = parryFromParryRating + parryFromDefenceRating
 
 	-- drFreeParry
-	local drFreeParry = GetParryChance() - self:GetAvoidanceAfterDR("PARRY", modParry, addonTable.class)
+	local drFreeParry = GetParryChance() - self:GetAvoidanceAfterDR(StatLogic.Stats.Parry, modParry)
 
 	return modParry, drFreeParry
 end
 
---[[---------------------------------
-	:GetAvoidanceAfterDR(avoidanceType, avoidanceBeforeDR[, class])
--------------------------------------
-Notes:
-	* Avoidance DR formula and k, C_p, C_d constants derived by Whitetooth (hotdogee [at] gmail [dot] com)
-	* avoidanceBeforeDR is the part that is affected by diminishing returns.
-	* See :GetClassIdOrName(class) for valid class values.
-	* Calculates the avoidance after diminishing returns, this includes:
-	*# Dodge from Dodge Rating, Defense, Agility.
-	*# Parry from Parry Rating, Defense.
-	*# Chance to be missed from Defense.
-	* The DR formula: 1/x' = 1/c+k/x
-	** x' is the diminished stat before converting to IEEE754.
-	** x is the stat before diminishing returns.
-	** c is the cap of the stat, and changes with class.
-	** k is is a value that changes with class.
-	* Formula details:
-	*# DR for Dodge, Parry, Missed are calculated separately.
-	*# Base avoidances are not affected by DR, (ex: Dodge from base Agility)
-	*# Death Knight's Parry from base Strength is affected by DR, base for parry is 5%.
-	*# Direct avoidance gains from talents and spells(ex: Evasion) are not affected by DR.
-	*# Indirect avoidance gains from talents and spells(ex: +Agility from Kings) are affected by DR
-	*# c and k values depend on class but does not change with level.
-	:{| class="wikitable"
-	! !!k!!C_p!!1/C_p!!C_d!!1/C_d
-	|-
-	|Warrior||0.9560||47.003525||0.021275||88.129021||0.011347
-	|-
-	|Paladin||0.9560||47.003525||0.021275||88.129021||0.011347
-	|-
-	|Hunter||0.9880||145.560408||0.006870||145.560408||0.006870
-	|-
-	|Rogue||0.9880||145.560408||0.006870||145.560408||0.006870
-	|-
-	|Priest||0.9530||0||0||150.375940||0.006650
-	|-
-	|Deathknight||0.9560||47.003525||0.021275||88.129021||0.011347
-	|-
-	|Shaman||0.9880||145.560408||0.006870||145.560408||0.006870
-	|-
-	|Mage||0.9530||0||0||150.375940||0.006650
-	|-
-	|Warlock||0.9530||0||0||150.375940||0.006650
-	|-
-	|Druid||0.9720||0||0||116.890707||0.008555
-	|}
-Arguments:
-	string - "DODGE", "PARRY", "MELEE_HIT_AVOID"(NYI)
-	number - amount of avoidance before diminishing returns in percentages.
-	[optional] string or number - ClassID or "ClassName". Default: PlayerClass<br>See :GetClassIdOrName(class) for valid class values.
-Returns:
-	; avoidanceAfterDR : number - avoidance after diminishing returns in percentages.
-Example:
-	local modParry, drFreeParry = StatLogic:GetParryChanceBeforeDR()
-	local modParryAfterDR = StatLogic:GetAvoidanceAfterDR("PARRY", modParry)
-	local parry = modParryAfterDR + drFreeParry
+--[[
+Avoidance DR formula and k, C_p, C_d constants derived by Whitetooth (hotdogee [at] gmail [dot] com)
+avoidanceBeforeDR is the part that is affected by diminishing returns.
+See :GetClassIdOrName(class) for valid class values.
 
-	local modParryAfterDR = StatLogic:GetAvoidanceAfterDR("PARRY", modParry, "WARRIOR")
-	local parry = modParryAfterDR + drFreeParry
------------------------------------]]
-function StatLogic:GetAvoidanceAfterDR(avoidanceType, avoidanceBeforeDR, class)
+Calculates the avoidance after diminishing returns, this includes:
+* Dodge from Dodge Rating, Defense, Agility.
+* Parry from Parry Rating, Defense.
+* Chance to be missed from Defense.
+
+The DR formula: 1/x' = 1/c+k/x
+* x' is the diminished stat before converting to IEEE754.
+* x is the stat before diminishing returns.
+* c is the cap of the stat, and changes with class.
+* k is is a value that changes with class.
+
+Formula details:
+* DR for Dodge, Parry, Missed are calculated separately.
+* Base avoidances are not affected by DR, (ex: Dodge from base Agility)
+* Death Knight's Parry from base Strength is affected by DR, base for parry is 5%.
+* Direct avoidance gains from talents and spells(ex: Evasion) are not affected by DR.
+* Indirect avoidance gains from talents and spells(ex: +Agility from Kings) are affected by DR
+* c and k values depend on class but does not change with level.
+]]
+---@param stat `StatLogic.Stats.Dodge`|`StatLogic.Stats.Parry`|`StatLogic.Stats.Miss`
+---@param avoidanceBeforeDR number Amount of avoidance before diminishing returns in percentages.
+---@return number avoidanceAfterDR Avoidance after diminishing returns in percentages.
+function StatLogic:GetAvoidanceAfterDR(stat, avoidanceBeforeDR)
 	-- argCheck for invalid input
-	self:argCheck(avoidanceType, 2, "string")
+	self:argCheck(stat, 2, "table")
 	self:argCheck(avoidanceBeforeDR, 3, "number")
-	self:argCheck(class, 4, "nil", "string", "number")
-	class = self:ValidateClass(class)
 
 	local C = C_d
-	if avoidanceType == "PARRY" then
+	if stat == StatLogic.Stats.Parry then
 		C = C_p
-	elseif avoidanceType == "MELEE_HIT_AVOID" then
+	elseif stat == StatLogic.Stats.Miss then
 		C = C_m
 	end
 
 	if avoidanceBeforeDR > 0 then
+		local class = addon.class
 		return 1 / (1 / C[class] + K[class] / avoidanceBeforeDR)
 	else
 		return 0
 	end
 end
 
---[[---------------------------------
-	:GetAvoidanceGainAfterDR(avoidanceType, gainBeforeDR)
--------------------------------------
-Notes:
-	* Calculates the avoidance gain after diminishing returns with player's current stats.
-Arguments:
-	string - "DODGE", "PARRY", "MELEE_HIT_AVOID"(NYI)
-	number - Avoidance gain before diminishing returns in percentages.
-Returns:
-	; gainAfterDR : number - Avoidance gain after diminishing returns in percentages.
-Example:
-	-- How much dodge will I gain with +30 Agi after DR?
-	local gainAfterDR = StatLogic:GetAvoidanceGainAfterDR("DODGE", 30*StatLogic:GetDodgePerAgi())
-	-- How much dodge will I gain with +20 Parry Rating after DR?
-	local gainAfterDR = StatLogic:GetAvoidanceGainAfterDR("PARRY", StatLogic:GetEffectFromRating(20, CR_PARRY))
------------------------------------]]
-function StatLogic:GetAvoidanceGainAfterDR(avoidanceType, gainBeforeDR)
+-- Calculates the avoidance gain after diminishing returns with player's current stats.
+---@param stat `StatLogic.Stats.Dodge`|`StatLogic.Stats.Parry`|`StatLogic.Stats.Miss`
+---@param gainBeforeDR number Avoidance gain before diminishing returns in percentages.
+---@return number gainAfterDR Avoidance gain after diminishing returns in percentages.
+function StatLogic:GetAvoidanceGainAfterDR(stat, gainBeforeDR)
 	-- argCheck for invalid input
 	self:argCheck(gainBeforeDR, 2, "number")
 
-	if avoidanceType == "PARRY" then
+	if stat == StatLogic.Stats.Parry then
 		local modAvoidance, drFreeAvoidance = self:GetParryChanceBeforeDR()
-		local newAvoidanceChance = self:GetAvoidanceAfterDR(avoidanceType, modAvoidance + gainBeforeDR) + drFreeAvoidance
+		local newAvoidanceChance = self:GetAvoidanceAfterDR(stat, modAvoidance + gainBeforeDR) + drFreeAvoidance
 		if newAvoidanceChance < 0 then newAvoidanceChance = 0 end
 		return newAvoidanceChance - GetParryChance()
-	elseif avoidanceType == "DODGE" then
+	elseif stat == StatLogic.Stats.Dodge then
 		local modAvoidance, drFreeAvoidance = self:GetDodgeChanceBeforeDR()
-		local newAvoidanceChance = self:GetAvoidanceAfterDR(avoidanceType, modAvoidance + gainBeforeDR) + drFreeAvoidance
+		local newAvoidanceChance = self:GetAvoidanceAfterDR(stat, modAvoidance + gainBeforeDR) + drFreeAvoidance
 		if newAvoidanceChance < 0 then newAvoidanceChance = 0 end -- because GetDodgeChance() is 0 when negative
 		return newAvoidanceChance - GetDodgeChance()
-	elseif avoidanceType == "MELEE_HIT_AVOID" then
+	elseif stat == StatLogic.Stats.Miss then
 		local modAvoidance = self:GetMissedChanceBeforeDR()
-		return self:GetAvoidanceAfterDR(avoidanceType, modAvoidance + gainBeforeDR) - self:GetAvoidanceAfterDR(avoidanceType, modAvoidance)
+		return self:GetAvoidanceAfterDR(stat, modAvoidance + gainBeforeDR) - self:GetAvoidanceAfterDR(stat, modAvoidance)
+	else
+		return gainBeforeDR
 	end
 end

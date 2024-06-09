@@ -27,4 +27,14 @@ GTFO.FFSpellID["395278"] = {
   ignoreSelfInflicted = true;
 };
 
+--- **********************************
+--- * Aberrus, the Shadowed Crucible *
+--- **********************************
+
+GTFO.FFSpellID["405457"] = {
+  --desc = "Disintegrate (Rionthus)";
+  sound = 4;
+  ignoreSelfInflicted = true;
+};
+
 end

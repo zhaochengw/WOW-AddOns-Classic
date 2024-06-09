@@ -103,11 +103,6 @@ local desc = CreateFont("GameFontHighlight", nil, nil, nil, "TOPLEFT", title, "B
 
 local optMaxShards = CreateSlider("optMaxShards", "Max Soul Shards", "0 = Infinite", 0, 100, 300, 16, "TOPLEFT", title, "BOTTOMLEFT", 10, -70)
 local optAutoMax = CreateCheckbox("optAutoMax", "Automatic", 32, 32, "LEFT", lastItem, "RIGHT", 20, 0)
-if SS_IsClassicVersion() then
-	local optAutoSort = CreateCheckbox("optAutoSort", "Automatically sort Soul Shards after combat", 32, 32, "TOPLEFT", optMaxShards, "BOTTOMLEFT", 0, -30)
-else
-	local optAutoSort = CreateCheckbox("optAutoSort", "Automatically sort Soul Shards after combat (not supported in TBC/WOTLK, use \"/ss sort\")", 32, 32, "TOPLEFT", optMaxShards, "BOTTOMLEFT", 0, -30)
-end
 local optCounter = CreateCheckbox("optCounter", "Show Total Soul Shard count on Bag Bar", 32, 32, "TOPLEFT", lastItem, "BOTTOMLEFT", 0, 0)
 local optCounterPerBag = CreateCheckbox("optCounterPerBag", "Show Soul Shard count for non-Soul Bags", 32, 32, "TOPLEFT", lastItem, "BOTTOMLEFT", 0, 0)
 local optSortReverse = CreateCheckbox("optSortReverse", "Fill bags from bottom to top", 32, 32, "TOPLEFT", lastItem, "BOTTOMLEFT", 0, 0)
@@ -140,12 +135,6 @@ optAutoMax:SetScript("OnClick", function(self,event,arg1)
 	end
 end)
 
-if SS_IsClassicVersion() then
-	optAutoSort:SetScript("OnClick", function(self,event,arg1) 
-		SoulSortOptions.AutoSort = optAutoMax:GetChecked()
-	end)
-end
-
 optCounter:SetScript("OnClick", function(self,event,arg1)
 	SoulSortOptions.ShowCounter = optCounter:GetChecked()
 	SS_UpdateCounterVisibilty()
@@ -167,13 +156,6 @@ end)
 function Options.refresh()
 	optMaxShards:SetValue(SoulSortOptions.MaxShards)
 	optAutoMax:SetChecked(SoulSortOptions.AutoMax)
-	if SS_IsClassicVersion() then
-		optAutoSort:SetChecked(SoulSortOptions.AutoSort)
-	else
-		optAutoSort:SetChecked(false)
-		optAutoSort:Disable()
-		optAutoSort:SetAlpha(0.7)
-	end
 	optCounter:SetChecked(SoulSortOptions.ShowCounter)
 	optCounterPerBag:SetChecked(SoulSortOptions.ShowCounterPerBag)
 	optSortReverse:SetChecked(SoulSortOptions.SortReverse)
@@ -193,9 +175,6 @@ function Options.okay()
 	SS_SetMaxShards(optMaxShards:GetValue())
 	--SoulSortOptions.MaxShards = optMaxShards:GetValue()
 	SoulSortOptions.AutoMax = optAutoMax:GetChecked()
-	if SS_IsClassicVersion() then
-		SoulSortOptions.AutoSort = optAutoSort:GetChecked()
-	end
 	SoulSortOptions.ShowCounter = optCounter:GetChecked()
 	SoulSortOptions.SortReverse = optSortReverse:GetChecked()
 	SoulSortOptions.ShowSortInfo = optShowSortInfo:GetChecked()

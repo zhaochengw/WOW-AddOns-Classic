@@ -20,6 +20,7 @@ local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 local RSNpcDB = private.ImportLib("RareScannerNpcDB")
 local RSContainerDB = private.ImportLib("RareScannerContainerDB")
+local RSEventDB = private.ImportLib("RareScannerEventDB")
 local RSGuideDB = private.ImportLib("RareScannerGuideDB")
 
 -- RareScanner services
@@ -38,6 +39,9 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 ---============================================================================
 
 local MINIMAP_BUTTON_NAME = "RareScannerMinimapIcon"
+local ENTITY_FRAME_LEVEL = 1002
+local OVERLAY_FRAME_LEVEL = 1003
+local GUIDE_FRAME_LEVEL = 1004
 
 function RSMinimap.LoadMinimapButton()
 	local RareScannerMinimapLDB = LibStub("LibDataBroker-1.1"):NewDataObject("RareScannerLDB", {
@@ -46,13 +50,15 @@ function RSMinimap.LoadMinimapButton()
 		label = "RareScanner",
 		icon = RSConstants.NORMAL_NPC_TEXTURE,
 		OnClick = function(self, button) 
-			if (button == "RightButton") then
-				InterfaceOptionsFrame_OpenToCategory("RareScanner")
-				InterfaceOptionsFrame_OpenToCategory("RareScanner")
+			if (button == "LeftButton") then
+				RSExplorerFrame:Show()
+			elseif (button == "RightButton") then
+				Settings.OpenToCategory("RareScanner")
 			end
 		end,
 		OnTooltipShow = function(tooltip)
 			tooltip:SetText("RareScanner")
+			tooltip:AddLine(AL["MINIMAP_ICON_TOOLTIP1"], 1, 1, 1)
 			tooltip:AddLine(AL["MINIMAP_ICON_TOOLTIP2"], 1, 1, 1)
 		end
 	})
@@ -146,6 +152,8 @@ function RSMinimap.RefreshAllData(forzed)
 		if (not POI.worldmap) then
 			pin.Texture:SetTexture(POI.Texture)
 			pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
+			pin:SetFrameLevel(ENTITY_FRAME_LEVEL)
+			pin.IconTexture:SetAtlas(POI.iconAtlas)
 			HBD_Pins:AddMinimapIconMap(RSMinimap, pin, POI.mapID, RSUtils.FixCoord(POI.x), RSUtils.FixCoord(POI.y), false, false)
 		end
 	end
@@ -161,12 +169,43 @@ function RSMinimap.RefreshAllData(forzed)
 	end
 end
 
-function RSMinimap.HideIcon(entityID)
+function RSMinimap.RefreshEntityState(entityID)
 	if (pinFramesPool) then
 		for pin in pinFramesPool:EnumerateActive() do
 			local POI = pin.POI
 			if (POI.entityID == entityID) then
 				HBD_Pins:RemoveMinimapIcon(RSMinimap, pin)
+				
+				if (POI.isNpc) then
+					POI = RSNpcPOI.GetNpcPOI(entityID, POI.mapID, RSNpcDB.GetInternalNpcInfo(entityID), alreadyFoundInfo)
+				elseif (POI.isContainer) then
+					POI = RSContainerPOI.GetContainerPOI(entityID, POI.mapID, RSContainerDB.GetInternalContainerInfo(entityID), alreadyFoundInfo)
+				end
+				
+				RSLogger:PrintDebugMessage(string.format("RSMinimap.RefreshEntityState[ADDED][%s,x=%s,y=%s]", entityID, POI.x, POI.y))
+				pin.Texture:SetTexture(POI.Texture)
+				pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
+				pin.IconTexture:SetAtlas(POI.iconAtlas)
+				pin:SetFrameLevel(ENTITY_FRAME_LEVEL)
+				HBD_Pins:AddMinimapIconMap(RSMinimap, pin, POI.mapID, RSUtils.FixCoord(POI.x), RSUtils.FixCoord(POI.y), false, false)
+			end
+		end
+	end
+end
+
+function RSMinimap.HideIcon(entityID, x, y)
+	if (pinFramesPool) then
+		for pin in pinFramesPool:EnumerateActive() do
+			local POI = pin.POI
+			if (x ~= nil and y ~= nil) then
+				if (POI.entityID == entityID and tostring(POI.x) == x and tostring(POI.y) == y) then
+					HBD_Pins:RemoveMinimapIcon(RSMinimap, pin)
+					pinFramesPool:Release(pin)
+					break
+				end
+			elseif (POI.entityID == entityID) then
+				HBD_Pins:RemoveMinimapIcon(RSMinimap, pin)
+				pinFramesPool:Release(pin)
 				break
 			end
 		end
@@ -231,6 +270,8 @@ function RSMinimap.AddOverlay(entityID)
 			
 			pin.Texture:SetTexture(RSConstants.OVERLAY_SPOT_TEXTURE)
 			pin.Texture:SetVertexColor(r, g, b, 0.7)
+			pin.IconTexture:SetAtlas(pin.POI.iconAtlas)
+			pin:SetFrameLevel(OVERLAY_FRAME_LEVEL)
 			HBD_Pins:AddMinimapIconMap(RSMinimap, pin, mapID, RSUtils.FixCoord(x), RSUtils.FixCoord(y), false, false)
 		end
 	end
@@ -283,8 +324,13 @@ function RSMinimap.AddGuide(entityID)
 				local POI = RSGuidePOI.GetGuidePOI(entityID, pinType, info)
 				local pin = guideFramesPool:Acquire()
 				pin.POI = POI
+				if (pin.POI.tooltip and pin.POI.tooltip.comment) then
+					pin.POI.name = pin.POI.tooltip.comment
+				end
 				pin.Texture:SetTexture(POI.texture)
 				pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
+				pin.IconTexture:SetAtlas(POI.iconAtlas)
+				pin:SetFrameLevel(GUIDE_FRAME_LEVEL)
 				HBD_Pins:AddMinimapIconMap(RSMinimap, pin, mapID, POI.x, POI.y, false, false)
 			end
 		end

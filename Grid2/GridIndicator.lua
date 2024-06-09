@@ -111,7 +111,7 @@ function indicator:RegisterStatus(status, priority)
 		self:SortStatuses()
 		self:UpdateHighlight(status)
 	end
-	status:RegisterIndicator( self, priority, Grid2.suspendedIndicators[self.name] )	
+	status:RegisterIndicator( self, priority, Grid2.suspendedIndicators[self.name] )
 end
 
 function indicator:UnregisterStatus(status, suspend)
@@ -119,7 +119,7 @@ function indicator:UnregisterStatus(status, suspend)
 		self.priorities[status] = nil
 		tremove(self.statuses, self:GetStatusIndex(status))
 		self:SortStatuses()
-	end	
+	end
 	status:UnregisterIndicator(self, suspend)
 end
 
@@ -142,7 +142,7 @@ function indicator:SetStatusPriority(status, priority)
 			self:SortStatuses()
 		end
 		status.priorities[self] = priority
-	end	
+	end
 end
 
 function indicator:GetStatusPriority(status)
@@ -179,6 +179,7 @@ function Grid2:WakeUpIndicator(indicator)
 	if indicator.OnWakeUp then
 		indicator:OnWakeUp()
 	end
+	indicator:EnableTooltips()
 end
 
 function Grid2:SuspendIndicator(indicator)
@@ -198,6 +199,7 @@ function Grid2:SuspendIndicator(indicator)
 	if indicator.OnSuspend then
 		indicator:OnSuspend()
 	end
+	indicator:DisableTooltips()
 end
 
 function Grid2:RegisterIndicator(indicator, types)
@@ -215,6 +217,7 @@ function Grid2:RegisterIndicator(indicator, types)
 	end
 	indicator:UpdateDB()
 	indicator:UpdateFilter()
+	indicator:EnableTooltips()
 end
 
 function Grid2:UnregisterIndicator(indicator)
@@ -235,6 +238,7 @@ function Grid2:UnregisterIndicator(indicator)
 		Grid2:UnregisterIndicator(indicator.sideKick)
 		indicator.sideKick = nil
 	end
+	indicator:DisableTooltips()
 end
 
 function Grid2:GetIndicatorByName(name)

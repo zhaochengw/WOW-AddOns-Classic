@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
+    Decursive (v 2.7.15) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2023-01-10T12:00:52Z
+    This file was last updated on 2023-09-02T00:32:20Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -407,6 +407,9 @@ do
     local UnitIsCharmed     = _G.UnitIsCharmed;
     local UnitCanAttack     = _G.UnitCanAttack;
     local GetTime           = _G.GetTime;
+    local GetSpellDescription  = _G.GetSpellDescription;
+    local IsSpellDataCached    = _G.C_Spell.IsSpellDataCached
+    local RequestLoadSpellData = _G.C_Spell.RequestLoadSpellData
 
     local UnTrustedUnitIDs = {
         ['mouseover'] = true,
@@ -445,7 +448,26 @@ do
     local DcrC = T._C; -- for faster access
 
 
+    local function checkSpellIDForBleed()
+        -- it appears that sometime SpellID can be nil...
+        if not SpellID or D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] ~= nil
+            or not D.db.global.BleedAutoDetection then
+            return
+        end
 
+        if not IsSpellDataCached(SpellID) then
+            RequestLoadSpellData(SpellID);
+
+        elseif D.Status.P_BleedEffectsKeywords_noCase ~= false then
+            if D:hasDescBleedEffectkeyword(GetSpellDescription(SpellID)) then
+                D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] = true;
+                D.db.global.t_BleedEffectsIDCheck[SpellID] = true;
+            else
+                D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] = false;
+            end
+
+        end
+    end
 
     -- This is the core debuff scanning function of Decursive
     -- This function does more than just reporting Debuffs. it also detects charmed units
@@ -493,9 +515,17 @@ do
             end
 
 
-            -- test for a type (Magic Curse Disease or Poison)
+            -- test for a type
             if TypeName and TypeName ~= "" then
                 Type = DC.NameToTypes[TypeName];
+            elseif self.Status.CuringSpells[DC.BLEED] then
+                checkSpellIDForBleed();
+                if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] then
+                    Type = DC.NameToTypes["Bleed"]
+                    TypeName = DC.TypeNames[DC.BLEED];
+                else
+                    Type = false;
+                end
             else
                 Type = false;
             end
@@ -572,9 +602,6 @@ do
     local _;
     local CureOrder;
     local sorting = function (a, b)
-
-        CureOrder = D:GetCureOrderTable();
-
         return CureOrder[a.Type] * 10000 - a.Applications < CureOrder[b.Type] * 10000 - b.Applications;
     end
 
@@ -618,6 +645,8 @@ do
             return DC.EMPTY_TABLE, false;
         end
 
+        CureOrder = D:GetCureOrderTable();
+
         if not ManagedDebuffUnitCache[Unit] then
             ManagedDebuffUnitCache[Unit] = {};
         end
@@ -636,7 +665,7 @@ do
 
             continue_ = true;
 
-            -- test if we have to ignore this debuf  {{{ --
+            -- test if we have to ignore this debuff  {{{ --
 
             if UnitFilteringTest(Unit, self.Status.UnitFilteringTypes[Debuff.Type]) then
                 continue_ = false; -- == skip this debuff
@@ -683,16 +712,8 @@ do
                 -- If we are still here it means that this Debuff is something not to be ignored...
 
 
-                -- We have a match for this type and we decided (checked) to
-                -- cure it NOTE: self:GetCureOrderTable()[DEBUFF_TYPE] is set
-                -- to FALSE when the type is unchecked and to < 0 when there is
-                -- no spell available for the type or when the spell is gone
-                -- (it happens for warlocks or when using the same profile with
-                -- several characters)
-                --if (self:GetCureOrderTable()[Debuff.Type] and self:GetCureOrderTable()[Debuff.Type] > 0) then
-                if self:GetCureTypeStatus(Debuff.Type) then
-
-
+                -- We have an active curing spell for that type and we want to use it
+                if Spells[Debuff.Type] and CureOrder[Debuff.Type] then
                     -- self:Debug("we can cure it");
 
                     -- if we do have a spell to cure
@@ -702,7 +723,7 @@ do
 
                         ManagedDebuffs[#ManagedDebuffs + 1] = Debuff;
 
-                        -- the live-list only reports the first debuf found and set JustOne to true
+                        -- the live-list only reports the first debuff found and set JustOne to true
                         if JustOne then
                             break;
                         end
@@ -877,6 +898,6 @@ end
 
 
 
-T._LoadedFiles["Decursive.lua"] = "2.7.9.1";
+T._LoadedFiles["Decursive.lua"] = "2.7.15";
 
 -- Sin

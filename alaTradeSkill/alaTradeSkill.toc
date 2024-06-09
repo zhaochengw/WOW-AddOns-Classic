@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30402
 ## Title: ala's Trade Skill
 ## Title-zhCN: ala's Trade Skill
 ## Title-zhTW: ala's Trade Skill
@@ -12,7 +12,7 @@
 ## Author: |cff00ff00ALA|r @ |cffff0000163UI|r
 ## Author-zhCN: |cff00ff00ALA|r @ |cffff0000网易有爱|r
 ## Author-zhTW: |cff00ff00ALA|r @ |cffff0000网易有爱|r
-## Version: 304r.230203
+## Version: 304r.230528
 
 load.xml
 

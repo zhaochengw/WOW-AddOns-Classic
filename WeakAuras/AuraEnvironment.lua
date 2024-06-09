@@ -5,12 +5,6 @@ local AddonName, Private = ...
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
-local LCD
-if WeakAuras.IsClassicEra() then
-  LCD = LibStub("LibClassicDurations")
-  LCD:RegisterFrame("WeakAuras")
-end
-
 local LibSerialize = LibStub("LibSerialize")
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
 
@@ -26,23 +20,6 @@ local WA_GetUnitAura = function(unit, spell, filter)
     if spell == spellId or spell == name then
       return UnitAura(unit, i, filter)
     end
-  end
-end
-
-if WeakAuras.IsClassicEra() then
-  local WA_GetUnitAuraBase = WA_GetUnitAura
-  WA_GetUnitAura = function(unit, spell, filter)
-    local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId,
-          canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = WA_GetUnitAuraBase(unit, spell, filter)
-    if spellId then
-      local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, source, name)
-      if duration == 0 and durationNew then
-          duration = durationNew
-          expirationTime = expirationTimeNew
-      end
-    end
-    return name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId,
-           canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
   end
 end
 
@@ -176,7 +153,14 @@ local blockedFunctions = {
   GuildUninvite = true,
   securecall = true,
   DeleteCursorItem = true,
-  ChatEdit_SendText = true
+  ChatEdit_SendText = true,
+  ChatEdit_ActivateChat = true,
+  ChatEdit_ParseText = true,
+  ChatEdit_OnEnterPressed = true,
+  GetButtonMetatable = true,
+  GetEditBoxMetatable = true,
+  GetFontStringMetatable = true,
+  GetFrameMetatable = true,
 }
 
 local blockedTables = {
@@ -184,6 +168,7 @@ local blockedTables = {
   SendMailMailButton = true,
   SendMailMoneyGold = true,
   MailFrameTab2 = true,
+  DEFAULT_CHAT_FRAME = true,
   ChatFrame1 = true,
   WeakAurasSaved = true,
   WeakAurasOptions = true,
@@ -292,7 +277,6 @@ end
 
 function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
   local data = id and WeakAuras.GetData(id)
-  local region = id and Private.EnsureRegion(id, cloneId)
   if not data then
     -- Pop the last aura_env from the stack, and update current_aura_env appropriately.
     tremove(aura_env_stack)
@@ -305,6 +289,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
   else
     -- Existing config is initialized to a high enough value
     if environment_initialized[id] == 2 or (onlyConfig and environment_initialized[id] == 1) then
+      local region = WeakAuras.GetRegion(id, cloneId)
       -- Point the current environment to the correct table
       current_uid = data.uid
       current_aura_env = aura_environments[id]
@@ -325,7 +310,6 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
       current_aura_env.states = states
-      current_aura_env.region = region
       tinsert(aura_env_stack, {current_aura_env, data.uid})
 
       if not data.controlledChildren then
@@ -333,6 +317,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       end
     else
       -- Either this aura environment has not yet been initialized, or it was reset via an edit in WeakaurasOptions
+      local region = id and Private.EnsureRegion(id, cloneId)
       environment_initialized[id] = 2
       aura_environments[id] = aura_environments[id] or {}
       getDataCallCounts[id] = getDataCallCounts[id] or 0
@@ -464,7 +449,6 @@ local FakeWeakAurasMixin = {
   },
   blockedTables = {
     ModelPaths = true,
-    regionPrototype = true,
     RealTimeProfilingWindow = true,
     -- Note these shouldn't exist in the WeakAuras namespace, but moving them takes a bit of effort,
     -- so for now just block them and clean them up later
@@ -492,7 +476,16 @@ local FakeWeakAurasMixin = {
     clones = MakeDeprecated(Private.clones, "clones",
                 L["Using WeakAuras.clones is deprecated. Use WeakAuras.GetRegion(id, cloneId) instead."]),
     regions = MakeDeprecated(Private.regions, "regions",
-                L["Using WeakAuras.regions is deprecated. Use WeakAuras.GetRegion(id) instead."])
+                L["Using WeakAuras.regions is deprecated. Use WeakAuras.GetRegion(id) instead."]),
+    GetAllDBMTimers = function() return Private.ExecEnv.BossMods.DBM:GetAllTimers() end,
+    GetDBMTimerById = function(...) return Private.ExecEnv.BossMods.DBM:GetTimerById(...) end,
+    GetDBMTimer = function(...) return Private.ExecEnv.BossMods.DBM:GetTimer(...) end,
+    GetBigWigsTimerById = function(...) return Private.ExecEnv.BossMods.BigWigs:GetTimerById(...) end,
+    GetAllBigWigsTimers = function() return Private.ExecEnv.BossMods.BigWigs:GetAllTimers() end,
+    GetBigWigsStage = function(...) return Private.ExecEnv.BossMods.BigWigs:GetStage(...) end,
+    RegisterBigWigsTimer = function() Private.ExecEnv.BossMods.BigWigs:RegisterTimer() end,
+    RegisterDBMCallback = function() Private.ExecEnv.BossMods.DBM:RegisterTimer() end,
+    GetBossStage = function() return Private.ExecEnv.BossMods.Generic:GetStage() end
   },
   blocked = blocked,
   setBlocked = function()

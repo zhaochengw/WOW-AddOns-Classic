@@ -630,7 +630,7 @@ function OptionsPrivate.GetAnimationOptions(data)
         softMax = 360,
         bigStep = 3,
         hidden = function()
-          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Rotate)
+          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).SetAnimRotation)
         end
       },
       main_use_color = {
@@ -879,7 +879,7 @@ function OptionsPrivate.GetAnimationOptions(data)
         softMax = 360,
         bigStep = 3,
         hidden = function()
-          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Rotate)
+          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).SetAnimRotation)
         end
       },
       finish_use_color = {

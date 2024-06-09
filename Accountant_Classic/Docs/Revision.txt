@@ -1,10 +1,30 @@
-﻿$Id: Revision.txt 405 2023-03-20 15:14:52Z arithmandar $
+﻿$Id: Revision.txt 415 2024-01-30 13:08:54Z arithmandar $
 Known Issue(s):
 ===============
 - Some incomes were categorized into Unknown instead of corresponding group.
 
 Revision History:
 =================
+
+* v2.12.30 (Jan. 30, 2024)
+==========================
+- Library update: LibUIDropDownMenu
+
+* v2.12.29 (Jan. 23, 2024)
+==========================
+- Library update: LibUIDropDownMenu
+
+* v2.12.28 (Jan. 22, 2024)
+==========================
+- Library update: LibUIDropDownMenu
+
+* v2.12.27 (Jan. 21, 2024)
+==========================
+- Toc update to support WoW 10.2.5 / 3.4.3 / 1.15.0
+
+* v2.12.26 (Jul. 29, 2023)
+==========================
+- Toc update to support WoW 10.1.5 / 3.4.2
 
 * v2.12.25 (Mar. 20, 2023)
 ==========================

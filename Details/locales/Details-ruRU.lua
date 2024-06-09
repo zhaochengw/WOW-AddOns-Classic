@@ -844,6 +844,30 @@ L["STRING_OPTIONS_MINIMAP_ANCHOR"] = "Мини-карта"
 L["STRING_OPTIONS_MINIMAP_DESC"] = "Отобразить или скрыть значок у мини-карты."
 L["STRING_OPTIONS_MISCTITLE"] = "Прочие настройки"
 L["STRING_OPTIONS_MISCTITLE2"] = "Этот элемент управляется, несколькими вариантами."
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "New Combat on Boss Pull"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "If a boss is pulled while in combat, this option closes the current combat encounter and initiates a new one for the boss."
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Overall Segment DPS Calculation"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Make Overall Segment"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "After the run is completed, this option creates a new segment containing all combat data from the run."
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "Merge Trash"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Panels"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Show End of M+ Panel"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Time in Combat"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "The overall segment for the Mythic+ run will use 'totalDamage / totalCombatTime' to calculate DPS."
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = "Dungeon Run Time"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = "The overall segment for the Mythic+ run will calculate DPS using 'totalDamage / runTime'."
 L["STRING_OPTIONS_NICKNAME"] = "Псевдоним"
 L["STRING_OPTIONS_NICKNAME_DESC"] = [=[Задайте Ваш псевдоним.
 Псевдонимы отправляются участникам гильдии с Details!, используется вместо имени персонажа.]=]
@@ -1340,12 +1364,7 @@ L["STRING_OPTIONS_WINDOW_SCALE_DESC"] = [=[Отрегулируйте масшт
 
 |cFFFFFF00Текущий|r: %s]=]
 L["STRING_OPTIONS_WINDOW_SKIN_COLOR"] = "Цвет оболочки"
---[[Translation missing --]]
-L["STRING_OPTIONS_WINDOW_SKIN_COLOR_DESC"] = [=[Modifies the color of the skin applied into this window.
-
-|cFFFFFF00Important|r: the alpha chosen here is overwritten with |cFFFFFF00Auto Transparency|r values when enabled.
-
-|cFFFFFF00Important|r: selecting the skin color overwrites any color customization applied to statusbar.]=]
+L["STRING_OPTIONS_WINDOW_SKIN_COLOR_DESC"] = "Изменяет цвет скина, применяемого к этому окнe. |cFFFFFF00Важно|r: выбранный здесь альфа-канал перезаписывается значениями |cFFFFFF00Автоматическая прозрачность|r при включении. |cFFFFFF00Важно|r: выбор цвета скина перезаписывает любые настройки цвета, примененные к строке состояния.."
 L["STRING_OPTIONS_WINDOW_TITLE"] = "Общие настройки окна"
 L["STRING_OPTIONS_WINDOW_TITLE_DESC"] = "Эти параметры управляют внешним видом выбранного окна."
 L["STRING_OPTIONS_WINDOWSPEED"] = "Интервал обновления"

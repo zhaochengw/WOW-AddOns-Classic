@@ -23,6 +23,11 @@ elseif (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC) then
 elseif (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 	NWB.isRetail = true;
 end
+if (NWB.isClassic and C_Engraving and C_Engraving.IsEngravingEnabled()) then
+	NWB.isSOD = true;
+	--local sodPhases = {[25]=1,[40]=2,[50]=3,[60]=4};
+	--NWB.sodPhase = sodPhases[(GetEffectivePlayerMaxLevel())];
+end
 --Temporary until actual launch.
 --if (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC) then
 	--This basically meant prepatch, some things were still enabled.
@@ -53,6 +58,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("NovaWorldBuffs");
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1");
 NWB.LDBIcon = LibStub("LibDBIcon-1.0");
 local version = GetAddOnMetadata("NovaWorldBuffs", "Version") or 9999;
+NWB.version = tonumber(version);
 NWB.latestRemoteVersion = version;
 NWB.prefixColor = "|cFFFF6900";
 local terokOffset = 2.7507;
@@ -97,6 +103,7 @@ function NWB:OnInitialize()
 	self:createShatDailyMarkers();
 	self:getDmfData();
 	self:createDmfMarkers();
+	self:loadAshenvale();
 	self:doResetTimerData();
 	self:resetSongFlowers();
 	self:resetLayerData();
@@ -119,6 +126,7 @@ function NWB:OnInitialize()
 		self:createTerokkarMarkers();
 		self:populateDailyData();
 	end
+	self:checkNewVersion();
 end
 
 --Set font used in fontstrings on frames.
@@ -237,7 +245,7 @@ function NWB:printBuffTimers(isLogon)
 			NWB:print("|HNWBCustomLink:timers|h" .. msg .. "|h", nil, "[DMF]");
 		end
 	end
-	if (NWB.isDmfUp and NWB.data.myChars[UnitName("player")].buffs) then
+	if ((NWB.isDmfUp or NWB.isSOD) and NWB.data.myChars[UnitName("player")].buffs) then
 		local dmfCooldown, noMsgs = NWB:getDmfCooldown();
 		if (dmfCooldown > 0 and not noMsgs) then
 			if ((not isLogon and NWB.db.global.showDmfBuffWb) or NWB.db.global.logonDmfBuffCooldown) then
@@ -760,7 +768,7 @@ function NWB:ticker()
 	if (NWB.data.myChars[UnitName("player")].dmfCooldown) then
 		NWB.data.myChars[UnitName("player")].dmfCooldown = NWB.data.myChars[UnitName("player")].dmfCooldown - 1;
 		if (lastDmfTick >= 1 and NWB.data.myChars[UnitName("player")].dmfCooldown <= 0) then
-			if (NWB.isDmfUp) then
+			if (NWB.isDmfUp or NWB.isSOD) then
 				NWB:print(L["dmfBuffReset"]);
 			end
 			lastDmfTick = -99999;
@@ -1066,6 +1074,20 @@ function NWB:sendGuildMsg(msg, type, zoneName, prefix, minVersion)
 	end
 end
 
+function NWB:inMyGuild(who)
+	if (who) then
+		for i = 1, GetNumGuildMembers() do
+			local name = GetGuildRosterInfo(i);
+			if (name) then
+				local nameOnly, realm = strsplit("-", who, 2);
+				if (who == name or who == nameOnly) then
+					return true;
+				end
+			end
+		end
+	end
+end
+
 function NWB:logonCheckGuildMasterSetting()
 	C_Timer.After(10, function()
 		NWB.checkedGuildNote = true;
@@ -1321,6 +1343,10 @@ function NWB:monsterYell(...)
 		else
 			NWB.data.hellfireRep = GetServerTime();
 		end
+	--elseif ((name == L["Dawnwatcher Selgorm"] or name == L["Bashana Runetotem"]) and string.match(msg, L["the dread beast Aku'mai has been slain"])) then
+		--SoD Darnassus npc.
+		--print("darn yell", GetServerTime())
+		--This turned out to be only 6 seconds warning, probably not worth adding the yell to guild chat?
 	end
 end
 
@@ -1585,9 +1611,10 @@ local buffLag, dl1, dl2 = 15;
 local lastZanBuffGained = 0;
 local lastDmfBuffGained = 0;
 local lastHeraldAlert = 0;
-local speedtest = 0;
+--local speedtest = 0;
 local waitingCombatEnd, hideSummonPopup;
 local lastRendHandIn, lastOnyHandIn, lastNefHandIn, lastZanHandIn = 0, 0, 0, 0;
+NWB.lastBlackfathomBoon = 0;
 local unitDamageFrame = CreateFrame("Frame");
 function NWB:combatLogEventUnfiltered(...)
 	local timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, 
@@ -1885,7 +1912,7 @@ function NWB:combatLogEventUnfiltered(...)
 			if (expirationTime >= 7199) then
 				NWB:trackNewBuff(spellName, "dmf", npcID);
 				lastDmfBuffGained = GetServerTime();
-				NWB:debug(GetTime() - speedtest);
+				--NWB:debug(GetTime() - speedtest);
 				if (NWB.db.global.dmfGotBuffSummon) then
 					if (not InCombatLockdown() and C_SummonInfo.GetSummonConfirmTimeLeft() > 0) then
 						hideSummonPopup = true;
@@ -2027,6 +2054,22 @@ function NWB:combatLogEventUnfiltered(...)
 			local expirationTime = NWB:getBuffDuration(spellName, 0);
 			if (expirationTime >= 7199) then
 				NWB:trackNewBuff(spellName, "swiftZanza");
+			end
+		--New SoD buffs, now that they allow spellIDs in classic this needs to all be changed to a hash table instead of this mess of elseif's in the future.
+		elseif (destName == UnitName("player") and spellName == L["Boon of Blackfathom"]) then
+			local expirationTime = NWB:getBuffDuration(spellName, 0);
+			if (expirationTime >= 7199) then
+				NWB:trackNewBuff(spellName, "boonOfBlackfathom");
+				if (GetServerTime() - NWB.lastBlackfathomBoon > 120) then
+					NWB.lastBlackfathomBoon = GetServerTime();
+					NWB:playSound("soundsBlackfathomBoon", "bob");
+					NWB:print(L["blackfathomBoomBuffDropped"]);
+				end
+			end
+		elseif (destName == UnitName("player") and spellName == L["Ashenvale Rallying Cry"]) then
+			local expirationTime = NWB:getBuffDuration(spellName, 0);
+			if (expirationTime >= 7199) then
+				NWB:trackNewBuff(spellName, "ashenvaleRallyingCry");
 			end
 		elseif (destName == UnitName("player") and spellName == L["Stealth"]) then
 			--Vanish is hidden from combat log even to ourself, use stealth instead as it fires when we vanish.
@@ -2756,7 +2799,7 @@ function NWB:printDmfPercent()
 end
 
 --Track our current buff durations across all chars.
-local gotPlayedData;
+local gotPlayedData, reregisterPlayedEvent;
 local chronoRestoreUsed = 0;
 function NWB:trackNewBuff(spellName, type, npcID)
 	if (not NWB.data.myChars[UnitName("player")].buffs[spellName]) then
@@ -2795,7 +2838,10 @@ function NWB:trackNewBuff(spellName, type, npcID)
 		NWB.currentTrackBuff = NWB.data.myChars[UnitName("player")].buffs[spellName];
 		--Hide the msg from chat.
 		if (not gotPlayedData) then
-			DEFAULT_CHAT_FRAME:UnregisterEvent("TIME_PLAYED_MSG");
+			if (DEFAULT_CHAT_FRAME:IsEventRegistered("TIME_PLAYED_MSG")) then
+				reregisterPlayedEvent = true;
+				DEFAULT_CHAT_FRAME:UnregisterEvent("TIME_PLAYED_MSG");
+			end
 			gotPlayedData = true;
 			RequestTimePlayed();
 		end
@@ -2804,7 +2850,7 @@ function NWB:trackNewBuff(spellName, type, npcID)
 		NWB:print(string.format(L["dmfBuffDropped"], spellName));
 		NWB:addDmfCooldown();
 	end
-	NWB:debug("Tracking new buff", type, spellName);
+	--NWB:debug(GetServerTime(), "Tracking new buff", type, spellName);
 	NWB:recalcBuffListFrame();
 end
 
@@ -2887,6 +2933,9 @@ local spellTypes = {
 	[40586] = "unstableFlaskPhysician",
 	[40575] = "unstableFlaskSoldier",
 	[40587] = "unstableFlaskSoldier",
+	--SoD.
+	[430947] = "boonOfBlackfathom",
+	[430352] = "ashenvaleRallyingCry",
 }; 
 		
 local buffTable = {
@@ -3098,6 +3147,17 @@ local buffTable = {
 		fullName = "Unstable Flask of the Soldier",
 		maxDuration = 7200,
 	},
+	--SoD.
+	["boonOfBlackfathom"] = {
+		icon = "|TInterface\\Icons\\achievement_boss_bazil_akumai:12:12:0:0|t",
+		fullName = "Boon of Blackfathom",
+		maxDuration = 7200,
+	},
+	["ashenvaleRallyingCry"] = {
+		icon = "|TInterface\\Icons\\spell_misc_warsongfocus:12:12:0:0|t",
+		fullName = "Ashenvale Rallying Cry",
+		maxDuration = 7200,
+	},
 };
 
 local dmfBuffTable = {
@@ -3192,7 +3252,7 @@ function NWB:dmfChronoCheck()
 		for k, v in pairs(NWB.data.myChars[UnitName("player")].storedBuffs) do
 			if (v.type == "dmf") then
 				NWB:addDmfCooldown();
-				if (NWB.isDmfUp) then
+				if (NWB.isDmfUp or NWB.isSOD) then
 					NWB:print("You have chronoboon released a Darkmoon Faire buff, a new 4 hour cooldown has started.");
 				end
 				return;
@@ -3325,14 +3385,15 @@ function NWB:storeBuffs()
 						or k == L["Sayge's Dark Fortune of Intelligence"] or k == L["Sayge's Dark Fortune of Spirit"]
 						or k == L["Sayge's Dark Fortune of Stamina"] or k == L["Sayge's Dark Fortune of Strength"]
 						or k == L["Sayge's Dark Fortune of Armor"] or k == L["Sayge's Dark Fortune of Resistance"]
-						or k == L["Sayge's Dark Fortune of Damage"]) then
+						or k == L["Sayge's Dark Fortune of Damage"] or k == L["Boon of Blackfathom"]) then
 					tempStoredBuffs[k] = {};
 					for kk, vv in pairs(v) do
 						tempStoredBuffs[k][kk] = vv;
 					end
 				elseif (v.npcID and (v.npcID == 14392 or v.npcID == 14394
 						or v.npcID == 14720 or v.npcID == 14721 or v.npcID == 4949 or v.npcID == 10719 or v.npcID == 14875
-						or v.npcID == 15076 or v.npcID == 14326 or v.npcID == 14321 or v.npcID == 14323)) then
+						or v.npcID == 15076 or v.npcID == 14326 or v.npcID == 14321 or v.npcID == 14323
+						or v.npcID == 9087 or v.npcID == 4783)) then
 					tempStoredBuffs[k] = {};
 					for kk, vv in pairs(v) do
 						tempStoredBuffs[k][kk] = vv;
@@ -3451,7 +3512,9 @@ function NWB:timePlayedMsg(...)
 	end
 	--Reregister the chat frame event after we're done.
 	--C_Timer.After(5, function()
-		DEFAULT_CHAT_FRAME:RegisterEvent("TIME_PLAYED_MSG");
+		if (reregisterPlayedEvent) then
+			DEFAULT_CHAT_FRAME:RegisterEvent("TIME_PLAYED_MSG");
+		end
 	--end)
 	NWB:syncBuffsWithCurrentDuration();
 	NWB:recalcBuffTimers();
@@ -3469,6 +3532,10 @@ function NWB:setLayered()
 	end
 	--Blanket enable season of mastery realms for now.
 	if (C_Seasons and C_Seasons.HasActiveSeason()) then
+		NWB.isLayered = true;
+	end
+	--Blanket enable hardcore realms for now.
+	if (C_GameRules and C_GameRules.IsHardcoreActive()) then
 		NWB.isLayered = true;
 	end
 end
@@ -3833,7 +3900,10 @@ f:SetScript("OnEvent", function(self, event, ...)
 				--Only request played data at logon if we didn't get it already for some reason.
 				if (not gotPlayedData) then
 					gotPlayedData = true;
-					DEFAULT_CHAT_FRAME:UnregisterEvent("TIME_PLAYED_MSG");
+					if (DEFAULT_CHAT_FRAME:IsEventRegistered("TIME_PLAYED_MSG")) then
+						reregisterPlayedEvent = true;
+						DEFAULT_CHAT_FRAME:UnregisterEvent("TIME_PLAYED_MSG");
+					end
 					RequestTimePlayed();
 				end
 			end)
@@ -3908,6 +3978,10 @@ f:SetScript("OnEvent", function(self, event, ...)
 		if (who == UnitName("player")) then
 			--Register ourself to other addon users when joining a guild.
 			NWB:requestData("GUILD", nil, "ALERT");
+		end
+		--Request roster update when guild member goes online or offline, this seems to be delayed, see if this helps?
+		if (string.match(text, string.gsub(ERR_FRIEND_ONLINE_SS, "|H.+|h", "(.+)")) or string.match(text, string.gsub(ERR_FRIEND_OFFLINE_S, "%%s", "(.+)"))) then
+			GuildRoster();
 		end
 	elseif (event == "CHAT_MSG_ADDON") then
 		local commPrefix, string, distribution, sender = ...;
@@ -4932,6 +5006,11 @@ function SlashCmdList.NWBCMD(msg, editBox)
 		end
 		return;
 	end
+	if (msg == "ashenvale") then
+		WorldMapFrame:Show();
+		WorldMapFrame:SetMapID(1440);
+		return;
+	end
 	if (msg == "options" or msg == "option" or msg == "config" or msg == "menu") then
 		NWB:openConfig();
 	elseif (msg ~= nil and msg ~= "") then
@@ -5119,8 +5198,9 @@ function NWB:updateMinimapButton(tooltip, frame)
 				end
 			end]]
 			tooltip:AddLine("|cff00ff00[Layer " .. count .. "]|r  |cFF989898(zone " .. k .. ") " .. wintergraspTexture .. buffTextures .. "|r");
-			if (NWB.isClassic or (not NWB.db.global.hideMinimapBuffTimers
-					and not (NWB.db.global.disableBuffTimersMaxBuffLevel and UnitLevel("player") > 64))) then
+			if ((NWB.isClassic or (not NWB.db.global.hideMinimapBuffTimers
+					and not (NWB.db.global.disableBuffTimersMaxBuffLevel and UnitLevel("player") > 64)))
+					and not (NWB.isSOD and UnitLevel("player") < NWB.db.global.disableOnlyNefRendBelowMaxLevelNum)) then
 				if (NWB.faction == "Horde" or NWB.db.global.allianceEnableRend) then
 					if (v.rendTimer > (GetServerTime() - NWB.db.global.rendRespawnTime)) then
 						msg = msg .. L["rend"] .. ": " .. NWB:getTimeString(NWB.db.global.rendRespawnTime - (GetServerTime() - v.rendTimer), true) .. ".";
@@ -5677,7 +5757,8 @@ function NWB:updateMinimapButton(tooltip, frame)
 				tooltip:AddLine(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cff00ff00N|r|cFF9CD6DE)|r "
 						.. name .. " (" .. questData.abbrev .. ")");
 			end
-		else
+		elseif (NWB.isTBC) then
+			--Disabled this in wrath phase 4, there are no different dung dailies anyway just the same type every day.
 			tooltip:AddLine(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cff00ff00N|r|cFF9CD6DE)|r Unknown.");
 		end
 		if (NWB.data.tbcHD and NWB.data.tbcHDT and GetServerTime() - NWB.data.tbcHDT < 86400) then
@@ -5687,7 +5768,8 @@ function NWB:updateMinimapButton(tooltip, frame)
 				tooltip:AddLine(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cFFFF2222H|r|cFF9CD6DE)|r "
 						.. name .. " (" .. questData.abbrev .. ")");
 			end
-		else
+		elseif (NWB.isTBC) then
+			--Disabled this in wrath phase 4, there are no different dung dailies anyway just the same type every day.
 			tooltip:AddLine(NWB.chatColor .."|cFFFF6900Daily|r |cFF9CD6DE(|r|cFFFF2222H|r|cFF9CD6DE)|r Unknown.");
 		end
 		local texture = "|TInterface\\TargetingFrame\\UI-PVP-Horde:12:12:-1:0:64:64:7:36:1:36|t";
@@ -5756,6 +5838,9 @@ function NWB:updateMinimapButton(tooltip, frame)
 			tooltip.NWBSeparator3:SetPoint("TOP", _G[tooltip:GetName() .. "TextLeft" .. tooltip:NumLines()], "CENTER");
 			tooltip.NWBSeparator3:Show();
 		end
+	end
+	if (NWB.isSOD) then
+		NWB:addAshenvaleMinimapString(tooltip);
 	end
 	tooltip:AddLine("|cFF9CD6DELeft-Click|r Timers");
 	tooltip:AddLine("|cFF9CD6DERight-Click|r Buffs");
@@ -6501,6 +6586,7 @@ function NWB:updateFelwoodWorldmapMarker(type)
 					frame:SetWidth(42);
 					frame:SetHeight(24);
 					hasTimer = count;
+					frame.hasTimer = true;
 			  	elseif (time > 0) then
 					--If timer is less than 25 minutes old then return time left.
 			    	local minutes = string.format("%02.f", math.floor(time / 60));
@@ -6513,6 +6599,7 @@ function NWB:updateFelwoodWorldmapMarker(type)
 					frame:SetWidth(42);
 					frame:SetHeight(24);
 					hasTimer = count;
+					frame.hasTimer = true;
 			  	else
 			  		--tooltipText = tooltipText .. "\n" .. L["noTimer"] .. " (Layer " .. count .. ")";
 			  		tooltipText = L["noTimer"] .. " (Layer " .. count .. ")\n" .. tooltipText
@@ -6520,19 +6607,38 @@ function NWB:updateFelwoodWorldmapMarker(type)
 					frame.fs:SetText(L["noTimer"]);
 					frame:SetWidth(54);
 					frame:SetHeight(22);
+					frame.hasTimer = false;
 				end
 			end
 		end
 		if (hasTimer) then
 			--Show all frames if any have an active timer.
-			for i = 1, count do
+			--[[for i = 1, count do
 				if (i == 1) then
 					_G[type .. "NWB"]["timerFrame"]:Show();
 				elseif (_G[type .. "NWB"]["timerFrame" .. i]) then
 					_G[type .. "NWB"]["timerFrame" .. i]:SetPoint("CENTER", 0, i * 18.5);
 					_G[type .. "NWB"]["timerFrame" .. i]:Show();
 				end
+			end]]
+			
+			--Now we only show layers that have a timer instead.
+			local offset = 0;
+			for i = 1, count do
+				if (i == 1) then
+					if (_G[type .. "NWB"]["timerFrame"].hasTimer) then
+						offset = offset + 18.5;
+						_G[type .. "NWB"]["timerFrame"]:Show();
+					end
+				elseif (_G[type .. "NWB"]["timerFrame" .. i]) then
+					if (_G[type .. "NWB"]["timerFrame" .. i].hasTimer) then
+						offset = offset + 18.5;
+						_G[type .. "NWB"]["timerFrame" .. i]:SetPoint("CENTER", 0, offset);
+						_G[type .. "NWB"]["timerFrame" .. i]:Show();
+					end
+				end
 			end
+			
 			--_G[type .. "NWB"].tooltip.fs:SetText("|CffDEDE42" .. _G[type .. "NWB"].name .. "|r\n" .. _G[type .. "NWB"].subZone .. tooltipText);
 			_G[type .. "NWB"].tooltip.fs:SetText("|CffDEDE42" .. _G[type .. "NWB"].name .. "|r\n" .. _G[type .. "NWB"].subZone .. "\n" .. tooltipText);
 		else
@@ -7297,9 +7403,9 @@ function NWB:createWorldbuffMarkersTable()
 			};
 		else
 			NWB.worldBuffMapMarkerTypes = {
-				["rend"] = {x = 60.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]},
-				["ony"] = {x = 68, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]},
-				["nef"] = {x = 76.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]},
+				["rend"] = {x = 60.0, y = 85.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]},
+				["ony"] = {x = 68, y = 85.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]},
+				["nef"] = {x = 76.0, y = 85.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]},
 				--["zanCity"] = {x = 84.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\ability_creature_poison_05", name = L["Zandalar"]},
 				--["zanStv"] = {x = 11.0, y = 20.5, mapID = 1434, icon = "Interface\\Icons\\ability_creature_poison_05", name = L["Zandalar"]},
 			};
@@ -7307,17 +7413,17 @@ function NWB:createWorldbuffMarkersTable()
 	else
 		if (NWB.faction == "Alliance") then
 			NWB.worldBuffMapMarkerTypes = {
-				["rend"] = {x = 74.0, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]},
-				["ony"] = {x = 79.5, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]},
-				["nef"] = {x = 85.0, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]},
+				["rend"] = {x = 78.0, y = 77.0, mapID = 1453, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]},
+				["ony"] = {x = 83.0, y = 77.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]},
+				["nef"] = {x = 88.0, y = 77.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]},
 				--["zanCity"] = {x = 90.5, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\ability_creature_poison_05", name = L["Zandalar"]},
 				--["zanStv"] = {x = 11.0, y = 20.5, mapID = 1434, icon = "Interface\\Icons\\ability_creature_poison_05", name = L["Zandalar"]},
 			};
 		else
 			NWB.worldBuffMapMarkerTypes = {
-				["rend"] = {x = 59.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]},
-				["ony"] = {x = 64.5, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]},
-				["nef"] = {x = 70.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]},
+				["rend"] = {x = 63.0, y = 87.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]},
+				["ony"] = {x = 68, y = 87.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]},
+				["nef"] = {x = 73.0, y = 87.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]},
 				--["zanCity"] = {x = 75.5, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\ability_creature_poison_05", name = L["Zandalar"]},
 				--["zanStv"] = {x = 11.0, y = 20.5, mapID = 1434, icon = "Interface\\Icons\\ability_creature_poison_05", name = L["Zandalar"]},
 			};
@@ -7325,6 +7431,9 @@ function NWB:createWorldbuffMarkersTable()
 	end
 	if (WorldMapFrame) then
 		hooksecurefunc(WorldMapFrame, "OnMapChanged", function()
+			NWB:refreshWorldbuffMarkers();
+		end)
+		hooksecurefunc(WorldMapFrame, "OnFrameSizeChanged", function()
 			NWB:refreshWorldbuffMarkers();
 		end)
 	end
@@ -7362,7 +7471,7 @@ function NWB:createWorldbuffMarker(type, data, layer, count)
 			obj.texture = bg;
 			obj:SetSize(23, 23);
 			--Worldmap tooltip.
-			obj.tooltip = CreateFrame("Frame", type .. layer .. "WorldMapTooltip", WorldMapFrame, "TooltipBorderedFrameTemplate");
+			obj.tooltip = CreateFrame("Frame", type .. layer .. "WorldMapTooltip", obj, "TooltipBorderedFrameTemplate");
 			obj.tooltip:SetPoint("CENTER", obj, "CENTER", 0, -46);
 			--obj.tooltip:SetPoint("CENTER", obj, "CENTER", 0, -26);
 			obj.tooltip:SetFrameStrata("TOOLTIP");
@@ -7382,7 +7491,7 @@ function NWB:createWorldbuffMarker(type, data, layer, count)
 			end)
 			obj.tooltip:Hide();
 			--Timer frame that sits above the icon when an active timer is found.
-			obj.timerFrame = CreateFrame("Frame", type .. layer .. "WorldMapTimerFrame", WorldMapFrame, "TooltipBorderedFrameTemplate");
+			obj.timerFrame = CreateFrame("Frame", type .. layer .. "WorldMapTimerFrame", obj, "TooltipBorderedFrameTemplate");
 			obj.timerFrame:SetPoint("CENTER", obj, "CENTER",  0, 21);
 			obj.timerFrame:SetFrameStrata("FULLSCREEN");
 			obj.timerFrame:SetFrameLevel(9);
@@ -7458,7 +7567,7 @@ function NWB:createWorldbuffMarker(type, data, layer, count)
 		obj.texture = bg;
 		obj:SetSize(23, 23);
 		--Worldmap tooltip.
-		obj.tooltip = CreateFrame("Frame", type.. "WorldMapTooltip", WorldMapFrame, "TooltipBorderedFrameTemplate");
+		obj.tooltip = CreateFrame("Frame", type.. "WorldMapTooltip", obj, "TooltipBorderedFrameTemplate");
 		obj.tooltip:SetPoint("CENTER", obj, "CENTER", 0, -46);
 		obj.tooltip:SetFrameStrata("TOOLTIP");
 		obj.tooltip:SetFrameLevel(9999);
@@ -7477,7 +7586,7 @@ function NWB:createWorldbuffMarker(type, data, layer, count)
 		end)
 		obj.tooltip:Hide();
 		--Timer frame that sits above the icon when an active timer is found.
-		obj.timerFrame = CreateFrame("Frame", type.. "WorldMapTimerFrame", WorldMapFrame, "TooltipBorderedFrameTemplate");
+		obj.timerFrame = CreateFrame("Frame", type.. "WorldMapTimerFrame", obj, "TooltipBorderedFrameTemplate");
 		obj.timerFrame:SetPoint("CENTER", obj, "CENTER",  0, 21);
 		obj.timerFrame:SetFrameStrata("FULLSCREEN");
 		obj.timerFrame:SetFrameLevel(9);
@@ -7536,6 +7645,63 @@ function NWB:createWorldbuffMarker(type, data, layer, count)
 	end
 end
 
+--Update scale when maz is resized, and depending on what zone we're viewing.
+function NWB:updateWorldbuffMarkersScale()
+	local scale = 0.8;
+	local mapModInstalled;
+	if (IsAddOnLoaded("Leatrix_Maps")) then
+		--Only needed with Leatrix Maps so far since it resizes the full map.
+		--ElvUI seems to use the blizzard large and small map.
+		mapModInstalled = true;
+	end
+	if (WorldMapFrame) then
+		if (not mapModInstalled) then
+			--This is usually nil if a map mod is installed?
+			local mapID = WorldMapFrame:GetMapID();
+			if (mapID == 1413) then
+				scale = 0.7;
+			end
+			if (not WorldMapFrame.isMaximized) then
+				scale = scale / 1.5;
+			end
+		end
+		--Still do the 0.8 to all markers even if there's a map mod installed.
+		for k, v in pairs(mapMarkers) do
+			_G[k]:SetScale(scale);
+		end
+		for k, v in pairs(NWB.extraMapMarkers) do
+			--Extra markers defined in NWBData.lua are 20% bigger.
+			_G[k]:SetScale(scale + (scale * 0.2));
+		end
+		--Update Felwood markers.
+		for k, v in pairs(NWB.songFlowers) do
+			_G[k .. "NWB"]:SetScale(scale);
+			_G[k .. "NWB"].tooltip:SetScale(scale);
+			_G[k .. "NWB"].timerFrame:SetScale(scale);
+		end
+	 	for k, v in pairs(NWB.tubers) do
+			_G[k .. "NWB"]:SetScale(scale);
+			_G[k .. "NWB"].tooltip:SetScale(scale);
+			_G[k .. "NWB"].timerFrame:SetScale(scale);
+		end
+	 	for k, v in pairs(NWB.dragons) do
+			_G[k .. "NWB"]:SetScale(scale);
+			_G[k .. "NWB"].tooltip:SetScale(scale);
+			_G[k .. "NWB"].timerFrame:SetScale(scale);
+		end
+		--DMF.
+		if (_G["NWBDMF"]) then
+			_G["NWBDMF"]:SetScale(scale);
+			_G["NWBDMF"].tooltip:SetScale(scale);
+			_G["NWBDMF"].timerFrame:SetScale(scale);
+		end
+		if (_G["NWBDMFContinent"]) then
+			_G["NWBDMFContinent"]:SetScale(scale);
+			_G["NWBDMFContinent"].tooltip:SetScale(scale);
+		end
+	end
+end
+
 function NWB:refreshWorldbuffMarkers()
 	local mapID = 0;
 	local hideFS;
@@ -7547,19 +7713,19 @@ function NWB:refreshWorldbuffMarkers()
 			--For alliance we'll add timers to the barrens and org if they have rend option enabled.
 			--Easy way to do this is just alter the map pin table above.
 			if (mapID == 1413 and NWB.db.global.allianceEnableRend) then --The Barrens.
-				NWB.worldBuffMapMarkerTypes.rend = {x = 71.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
-				NWB.worldBuffMapMarkerTypes.ony = {x = 79.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
-				NWB.worldBuffMapMarkerTypes.nef = {x = 87.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+				NWB.worldBuffMapMarkerTypes.rend = {x = 77.5, y = 81.0, mapID = 1413, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+				NWB.worldBuffMapMarkerTypes.ony = {x = 82.5, y = 81.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+				NWB.worldBuffMapMarkerTypes.nef = {x = 87.5, y = 81.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
 				hideFS = true;
 			elseif (mapID == 1454 and NWB.db.global.allianceEnableRend) then --Orgrimmar.
 				if (LOCALE_koKR or LOCALE_zhCN or LOCALE_zhTW) then
-					NWB.worldBuffMapMarkerTypes.rend = {x = 60.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
-					NWB.worldBuffMapMarkerTypes.ony = {x = 68, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
-					NWB.worldBuffMapMarkerTypes.nef = {x = 76.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+					NWB.worldBuffMapMarkerTypes.rend = {x = 60.0, y = 85.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+					NWB.worldBuffMapMarkerTypes.ony = {x = 68, y = 85.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+					NWB.worldBuffMapMarkerTypes.nef = {x = 76.0, y = 85.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
 				else
-					NWB.worldBuffMapMarkerTypes.rend = {x = 59.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
-					NWB.worldBuffMapMarkerTypes.ony = {x = 64.5, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
-					NWB.worldBuffMapMarkerTypes.nef = {x = 70.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+					NWB.worldBuffMapMarkerTypes.rend = {x = 77.0, y = 80.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+					NWB.worldBuffMapMarkerTypes.ony = {x = 82.0, y = 80.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+					NWB.worldBuffMapMarkerTypes.nef = {x = 87.0, y = 80.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
 				end
 				hideFS = true;
 			else
@@ -7569,27 +7735,27 @@ function NWB:refreshWorldbuffMarkers()
 					NWB.worldBuffMapMarkerTypes.ony = {x = 79.5, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
 					NWB.worldBuffMapMarkerTypes.nef = {x = 87.5, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
 				else
-					NWB.worldBuffMapMarkerTypes.rend = {x = 74.0, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
-					NWB.worldBuffMapMarkerTypes.ony = {x = 79.5, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
-					NWB.worldBuffMapMarkerTypes.nef = {x = 85.0, y = 73.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+					NWB.worldBuffMapMarkerTypes.rend = {x = 78.0, y = 77.0, mapID = 1453, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+					NWB.worldBuffMapMarkerTypes.ony = {x = 83.0, y = 77.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+					NWB.worldBuffMapMarkerTypes.nef = {x = 88.0, y = 77.0, mapID = 1453, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
 				end
 			end
 		else
 			if (mapID == 1413) then --The Barrens.
-				NWB.worldBuffMapMarkerTypes.rend = {x = 71.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
-				NWB.worldBuffMapMarkerTypes.ony = {x = 79.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
-				NWB.worldBuffMapMarkerTypes.nef = {x = 87.5, y = 73.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+				NWB.worldBuffMapMarkerTypes.rend = {x = 77.5, y = 85.0, mapID = 1413, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+				NWB.worldBuffMapMarkerTypes.ony = {x = 82.5, y = 85.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+				NWB.worldBuffMapMarkerTypes.nef = {x = 87.5, y = 85.0, mapID = 1413, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
 				hideFS = true;
 			else
 				--Default, matches the table a few functions above.
 				if (LOCALE_koKR or LOCALE_zhCN or LOCALE_zhTW) then
-					NWB.worldBuffMapMarkerTypes.rend = {x = 60.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
-					NWB.worldBuffMapMarkerTypes.ony = {x = 68, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
-					NWB.worldBuffMapMarkerTypes.nef = {x = 76.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+					NWB.worldBuffMapMarkerTypes.rend = {x = 60.0, y = 85.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+					NWB.worldBuffMapMarkerTypes.ony = {x = 68, y = 85.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+					NWB.worldBuffMapMarkerTypes.nef = {x = 76.0, y = 85.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
 				else
-					NWB.worldBuffMapMarkerTypes.rend = {x = 59.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
-					NWB.worldBuffMapMarkerTypes.ony = {x = 64.5, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
-					NWB.worldBuffMapMarkerTypes.nef = {x = 70.0, y = 79.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
+					NWB.worldBuffMapMarkerTypes.rend = {x = 63.0, y = 87.0, mapID = 1454, icon = "Interface\\Icons\\spell_arcane_teleportorgrimmar", name = L["rend"]};
+					NWB.worldBuffMapMarkerTypes.ony = {x = 68.0, y = 87.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_01", name = L["onyxia"]};
+					NWB.worldBuffMapMarkerTypes.nef = {x = 73.0, y = 87.0, mapID = 1454, icon = "Interface\\Icons\\inv_misc_head_dragon_black", name = L["nefarian"]};
 				end
 			end
 		end
@@ -7617,7 +7783,8 @@ function NWB:refreshWorldbuffMarkers()
 			for k, v in pairs(NWB.worldBuffMapMarkerTypes) do
 				--Change position to bottom corner of map so they can be stacked on top of each other for layered realms.
 				NWB.dragonLibPins:RemoveWorldMapIcon(k .. layer .. "NWBWorldMap", _G[k .. "NWBWorldMap"]);
-				if (NWB.db.global.showWorldMapMarkers and _G[k .. layer .. "NWBWorldMap"]) then
+				if (NWB.db.global.showWorldMapMarkers and _G[k .. layer .. "NWBWorldMap"]
+					and not (NWB.isSOD and UnitLevel("player") < NWB.db.global.disableOnlyNefRendBelowMaxLevelNum)) then
 					if (NWB.faction == "Horde") then
 						if (mapID == 1413) then
 							--If barrens the org coord offset is too far right so only rend shows.
@@ -7663,13 +7830,14 @@ function NWB:refreshWorldbuffMarkers()
 					_G[k .. layer .. "NWBWorldMap"].fs:Show();
 				end
 			end
-			offset = offset - 10;
+			offset = offset - 8;
 		end
 		--This will add layer icons and remove default non-layer icons when we go from having no timer info to got new layers timer info.
 		if (not foundLayers) then
 			for k, v in pairs(NWB.worldBuffMapMarkerTypes) do
 				NWB.dragonLibPins:RemoveWorldMapIcon(k .. "NWBWorldMap", _G[k .. "NWBWorldMap"]);
-				if (NWB.db.global.showWorldMapMarkers and _G[k .. "NWBWorldMap"]) then
+				if (NWB.db.global.showWorldMapMarkers and _G[k .. "NWBWorldMap"]
+						and not (NWB.isSOD and UnitLevel("player") < NWB.db.global.disableOnlyNefRendBelowMaxLevelNum)) then
 					if (NWB.faction == "Horde") then
 						if (mapID == 1413) then
 							NWB.dragonLibPins:AddWorldMapIconMap(k .. "NWBWorldMap", _G[k .. "NWBWorldMap"], v.mapID,
@@ -7707,7 +7875,8 @@ function NWB:refreshWorldbuffMarkers()
 	else
 		for k, v in pairs(NWB.worldBuffMapMarkerTypes) do
 			NWB.dragonLibPins:RemoveWorldMapIcon(k .. "NWBWorldMap", _G[k .. "NWBWorldMap"]);
-			if (NWB.db.global.showWorldMapMarkers and _G[k .. "NWBWorldMap"]) then
+			if (NWB.db.global.showWorldMapMarkers and _G[k .. "NWBWorldMap"]
+					and not (NWB.isSOD and UnitLevel("player") < NWB.db.global.disableOnlyNefRendBelowMaxLevelNum)) then
 				if (NWB.faction == "Horde") then
 					NWB.dragonLibPins:AddWorldMapIconMap(k .. "NWBWorldMap", _G[k .. "NWBWorldMap"], v.mapID,
 							(v.x  + 22) / 100, (v.y + 9) / 100, HBD_PINS_WORLDMAP_SHOW_PARENT);
@@ -7733,6 +7902,7 @@ function NWB:refreshWorldbuffMarkers()
 			end
 		end
 	end
+	NWB:updateWorldbuffMarkersScale();
 end
 
 ---=============---
@@ -8258,7 +8428,7 @@ function NWB:updateDmfMarkers(type)
     	tooltipText = tooltipText .. NWB:getTimeFormat(timestamp, true);
     	local dmfFound;
     	local buffText = "";
-    	if (NWB.isDmfUp) then
+    	if (NWB.isDmfUp or NWB.isSOD) then
     		local dmfCooldown, noMsgs = NWB:getDmfCooldown();
 			if (dmfCooldown > 0 and not noMsgs) then
 				buffText = "\n" .. string.format(L["dmfBuffCooldownMsg"],  NWB:getTimeString(dmfCooldown, true));
@@ -8387,6 +8557,10 @@ end
 local d = NWB.realm;
 function NWB:refreshDmfMarkers()
 	if (not NWB.dmfZone) then
+		return;
+	end
+	if (NWB.isSOD) then
+		--Hide dmf markers in sod until we work out the new rotation, is it just every 2nd week?
 		return;
 	end
 	local x, y, mapID, worldX, worldY, worldMapID;
@@ -8808,12 +8982,12 @@ function NWB:recalcBuffListFrame()
 	framesUsed = {};
 	usedLineFrameCount = 0;
 	offset = 40; --Start offset, per line offset.
-	if (NWB.isDmfUp) then
+	if (NWB.isDmfUp or NWB.isSOD) then
 		offset = 57;
 		local dmfCooldown, noMsgs = NWB:getDmfCooldown();
 		if (dmfCooldown > 0 and not noMsgs) then
 			NWBbuffListFrame.fs3:SetText(string.format(L["dmfBuffCooldownMsg2"],  NWB:getTimeString(dmfCooldown, true)));
-	    else
+	    elseif (NWB.isDmfUp) then
 	    	NWBbuffListFrame.fs3:SetText(L["dmfBuffReady"]);
 	    end
 	end
@@ -8822,7 +8996,7 @@ function NWB:recalcBuffListFrame()
 	local maxWidth = 0;
 	local printRealm;
 	for k, v in NWB:pairsByKeys(NWB.db.global) do --Iterate realms.
-		if (type(v) == "table" and k ~= "minimapIcon") then --The only tables in db.global are realm names.
+		if (type(v) == "table" and k ~= "minimapIcon" and k ~= "versions") then --The only tables in db.global are realm names.
 			local realm = k;
 			for k, v in NWB:pairsByKeys(v) do --Iterate factions.
 				local faction = k;
@@ -9423,7 +9597,7 @@ end
 function NWB:resetBuffData()
 	for k, v in NWB:pairsByKeys(NWB.db.global) do --Iterate realms.
 		local msg = "";
-		if (type(v) == "table" and k ~= "minimapIcon") then --The only tables in db.global are realm names.
+		if (type(v) == "table" and k ~= "minimapIcon" and k ~= "versions") then --The only tables in db.global are realm names.
 			local realm = k;
 			for k, v in NWB:pairsByKeys(v) do --Iterate factions.
 				local f = k;
@@ -9452,7 +9626,7 @@ function NWB:removeCharsBelowLevel()
 	local count = 0;
 	for realm, v in NWB:pairsByKeys(NWB.db.global) do --Iterate realms.
 		local msg = "";
-		if (type(v) == "table" and realm ~= "minimapIcon") then --The only tables in db.global are realm names.
+		if (type(v) == "table" and realm ~= "minimapIcon" and realm ~= "versions") then --The only tables in db.global are realm names.
 			for k, v in NWB:pairsByKeys(v) do --Iterate factions.
 				local f = k;
 				if (v.myChars) then
@@ -9493,7 +9667,7 @@ function NWB:removeSingleChar(name)
 	local found;
 	for realm, v in NWB:pairsByKeys(NWB.db.global) do --Iterate realms.
 		local msg = "";
-		if (type(v) == "table" and realm ~= "minimapIcon") then --The only tables in db.global are realm names.
+		if (type(v) == "table" and realm ~= "minimapIcon" and realm ~= "versions") then --The only tables in db.global are realm names.
 			for k, v in NWB:pairsByKeys(v) do --Iterate factions.
 				local f = k;
 				if (v.myChars) then
@@ -12199,7 +12373,7 @@ MinimapLayerFrame.tooltip:SetFrameLevel(9);
 MinimapLayerFrame.tooltip.fs = MinimapLayerFrame.tooltip:CreateFontString("NWBVersionDragTooltipFS", "ARTWORK");
 MinimapLayerFrame.tooltip.fs:SetPoint("CENTER", 0, 0.5);
 MinimapLayerFrame.tooltip.fs:SetFont(NWB.regionFont, 10);
-MinimapLayerFrame.tooltip.fs:SetText("Target a NPC to\nupdate your layer");
+MinimapLayerFrame.tooltip.fs:SetText("Hold Shift to drag");
 MinimapLayerFrame.tooltip:SetWidth(MinimapLayerFrame.tooltip.fs:GetStringWidth() + 10);
 MinimapLayerFrame.tooltip:SetHeight(MinimapLayerFrame.tooltip.fs:GetStringHeight() + 10);
 MinimapLayerFrame:SetScript("OnEnter", function(self)
@@ -12555,6 +12729,42 @@ f:RegisterEvent("GOSSIP_SHOW");
 f:SetScript('OnEvent', function(self, event, ...)
 	if (event == "GOSSIP_SHOW") then
 		local g1, type1, g2, type2, g3, type3, g4, type4, g5, type5, g6, type6, g7, type7, g8, type8 = GetGossipOptions();
+		--Fix for for when it was moved to C_GossipInfo and changed to a table instead of strings, but still backwards compatible.
+		if (g1 and type(g1) == "table") then
+			--If there are no gossip options we still get an empty table so set g1 to nil;
+			if (not next(g1)) then
+				g1 = nil;
+			else
+				--Sort by orderIndex so the options line up correctly.
+				table.sort(g1, function(a, b) return a.orderIndex < b.orderIndex end);
+				--Convert locals to original gossip strings given by GetGossipOptions().
+				--g1 must be done last since it holds the table data in the new format.
+				if (g1[2] and g1[2].name) then
+					g2 = g1[2].name;
+				end
+				if (g1[3] and g1[3].name) then
+					g3 = g1[3].name;
+				end
+				if (g1[4] and g1[4].name) then
+					g4 = g1[4].name;
+				end
+				if (g1[5] and g1[5].name) then
+					g5 = g1[5].name;
+				end
+				if (g1[6] and g1[6].name) then
+					g6 = g1[6].name;
+				end
+				if (g1[7] and g1[7].name) then
+					g7 = g1[7].name;
+				end
+				if (g1[8] and g1[8].name) then
+					g8 = g1[8].name;
+				end
+				if (g1[1] and g1[1].name) then
+					g1 = g1[1].name;
+				end
+			end
+		end
 		local npcGUID = UnitGUID("npc");
 		local npcID;
 		if (npcGUID) then
@@ -12585,6 +12795,7 @@ f:SetScript('OnEvent', function(self, event, ...)
 				if (g1 and not g2) then
 					--Pages with only 1 option.
 					SelectGossipOption(1);
+					return;
 				end
 				if (buffType == "Damage") then
 					NWB:fastDmfDamageBuff();
@@ -12798,7 +13009,7 @@ function NWB:fastDmfDamageBuff()
 	if ((GetServerTime() - fastBuffRunning) < (count * delay)) then
 		return;
 	end
-	speedtest = GetTime();
+	--speedtest = GetTime();
 	SelectGossipOption(1);
 	fastBuffRunning = GetServerTime();
 	for i = 1, count do
@@ -12824,7 +13035,21 @@ f:SetScript("OnEvent", function(self, event, ...)
 	elseif (event == "TAXIMAP_CLOSED") then
 		isTaxiMapOpened = nil;
 	elseif (event == "GOSSIP_SHOW") then
-		local g1, type1, g2, type2, g3, type3, g4, type4, g5, type5, g6, type6, g7, type7, g8, type8 = GetGossipOptions();
+		local g1 = GetGossipOptions();
+		--Fix for for when it was moved to C_GossipInfo and changed to a table instead of strings, but still backwards compatible.
+		if (g1 and type(g1) == "table") then
+			--If there are no gossip options we still get an empty table so set g1 to nil;
+			if (not next(g1)) then
+				g1 = nil;
+			else
+				--Sort by orderIndex so the options line up correctly.
+				table.sort(g1, function(a, b) return a.orderIndex < b.orderIndex end);
+				--Convert locals to original gossip strings given by GetGossipOptions().
+				if (g1[1] and g1[1].name) then
+					g1 = g1[1].name;
+				end
+			end
+		end
 		local npcGUID = UnitGUID("npc");
 		local npcID;
 		if (npcGUID) then
@@ -12840,16 +13065,31 @@ f:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-function NWB:buffDroppedTaxiNode(type, skipCheck)
+function NWB:buffDroppedTaxiNode(buffType, skipCheck)
 	local _, _, zone = NWB.dragonLib:GetPlayerZonePosition();
-	if (type == "zg") then
+	if (buffType == "zg") then
+		local g1 = GetGossipOptions();
+		--Fix for for when it was moved to C_GossipInfo and changed to a table instead of strings, but still backwards compatible.
+		if (g1 and type(g1) == "table") then
+			--If there are no gossip options we still get an empty table so set g1 to nil;
+			if (not next(g1)) then
+				g1 = nil;
+			else
+				--Sort by orderIndex so the options line up correctly.
+				table.sort(g1, function(a, b) return a.orderIndex < b.orderIndex end);
+				--Convert locals to original gossip strings given by GetGossipOptions().
+				if (g1[1] and g1[1].name) then
+					g1 = g1[1].name;
+				end
+			end
+		end
 		local npcGUID = UnitGUID("npc");
 		local npcID;
 		if (npcGUID) then
 			_, _, _, _, _, npcID = strsplit("-", npcGUID);
 		end
 		--If we have npc chat open but didn't click to get to the fp map then do it.
-		if ((npcID == "2858" or npcID == "2859") and GetGossipOptions()) then
+		if ((npcID == "2858" or npcID == "2859") and g1) then
 			SelectGossipOption(1);
 		end
 		if (NWB.db.global.takeTaxiZG and (isTaxiMapOpened or skipCheck) and zone == 1434) then

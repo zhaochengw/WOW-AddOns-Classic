@@ -37,23 +37,15 @@
             </OnLeave>
         </Scripts>
     </Button>
-    <Button name="BigDebuffsUnitFrameTemplate" parent="UIParent" hidden="true" dontSavePosition="true" virtual="true">
+    <Frame name="BigDebuffsUnitFrameTemplate" parent="UIParent" hidden="true" dontSavePosition="true" virtual="true">
         <Size>
             <AbsDimension x="36" y="36"/>
         </Size>
         <Anchors>
             <Anchor point="CENTER"/>
         </Anchors>
-        <NormalTexture name="$parentNormalTexture" parentKey="NormalTexture">
-            <Anchors>
-                <Anchor point="TOPLEFT" x="-15" y="15"/>
-                <Anchor point="BOTTOMRIGHT" x="15" y="-15"/>
-            </Anchors>
-        </NormalTexture>
-        <HighlightTexture/>
-        <PushedTexture/>
         <Layers>
-            <Layer level="BACKGROUND">
+            <Layer level="BACKGROUND" textureSubLevel="7">
                 <Texture name="$parentIcon" parentKey="icon"/>
             </Layer>
             <Layer level="ARTWORK" textureSubLevel="2">
@@ -79,32 +71,10 @@
                         </Anchor>
                     </Anchors>
                 </FontString>
-				 <Texture parentKey="flash" hidden="false" alpha="0" alphaMode="ADD" atlas="bags-glow-flash" useAtlasSize="true">
-                    <Anchors>
-                        <Anchor point="CENTER"/>
-                    </Anchors>
-                </Texture>
-                <Texture parentKey="NewItemTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-blue" useAtlasSize="true">
-                    <Anchors>
-                        <Anchor point="CENTER"/>
-                    </Anchors>
-                </Texture>
-            </Layer>
-            <Layer level="BACKGROUND" textureSubLevel="-1">
-                <Texture parentKey="TargetTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-purple" useAtlasSize="true">
-                    <Anchors>
-                        <Anchor point="CENTER"/>
-                    </Anchors>
-                </Texture>
-                <Texture parentKey="FocusTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-white" useAtlasSize="true">
-                    <Anchors>
-                        <Anchor point="CENTER"/>
-                    </Anchors>
-                </Texture>
             </Layer>
         </Layers>
         <Frames>
-            <Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="true" drawBling="false" drawEdge="false" hidden="true">
+            <Cooldown frameLevel="1" name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="true" drawBling="false" drawEdge="false" hidden="true">
                 <Size x="36" y="36"/>
                 <Anchors>
                     <Anchor point="CENTER" x="0" y="-1"/>
@@ -134,5 +104,5 @@
                 end
             </OnUpdate>
         </Scripts>
-    </Button>
+    </Frame>
 </Ui>

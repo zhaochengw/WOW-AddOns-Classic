@@ -142,8 +142,9 @@ itemSlots["INVTYPE_QUIVER"] = LBIS.L["Quiver"];
 itemSlots["INVTYPE_RELIC"] = LBIS.L["Ranged/Relic"];
 function LBIS:GetItemInfo(itemId, returnFunc)
 
-    if not itemId or itemId <= 0 then
+    if itemId == nil or not itemId or itemId <= 0 then
         returnFunc({ Name = nil, Link = nil, Quality = nil, Type = nil, SubType = nil, Texture = nil, Class = nil, Slot = nil });
+        return;
     end
 
     local cachedItem = LBISServerSettings.ItemCache[itemId];
@@ -382,7 +383,11 @@ function LBIS:Debug(startString, object)
 end
 
 function LBIS:Error(startString, object)
-    print("LoonBestInSlot ERROR:"..startString..stringify(object));
+    if object == nil then
+        print("LoonBestInSlot ERROR:"..startString);
+    else
+        print("LoonBestInSlot ERROR:"..startString..stringify(object));
+    end
 end
 
 function LBIS:GetItemIdFromLink(itemLink)
@@ -405,4 +410,14 @@ function LBIS:DeepCopy(src, dst)
 		end
 	end
 	return dst
+end
+
+function LBIS:MeasureCode(codeName, func)
+
+    --local startTime = time();
+
+    func();
+
+    --print(codeName.." took "..time() - startTime);
+
 end

@@ -1,0 +1,11 @@
+## Interface: 30402
+## Version: v1.8.4
+## Title: LargerMacroIconSelectionData
+## Author: Xinhuan, Ketho
+## Notes: Load on Demand Icon FileData
+## LoadOnDemand: 1
+## IconTexture: interface\icons\spell_nature_polymorph
+
+FileDataRetail.lua
+FileDataWrath.lua
+FileDataVanilla.lua

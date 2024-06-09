@@ -27,13 +27,13 @@ L["STRING_ASCENDING"] = "Croissant"
 L["STRING_ATACH_DESC"] = "La fenêtre #%d fait un groupe avec la fenêtre #%d."
 L["STRING_ATTRIBUTE_CUSTOM"] = "Personnalisé"
 L["STRING_ATTRIBUTE_DAMAGE"] = "Dégâts"
-L["STRING_ATTRIBUTE_DAMAGE_BYSPELL"] = "Dégâts reçus du sort"
+L["STRING_ATTRIBUTE_DAMAGE_BYSPELL"] = "Dégâts subis par le sort"
 L["STRING_ATTRIBUTE_DAMAGE_DEBUFFS"] = "Auras & Zones de Vide"
-L["STRING_ATTRIBUTE_DAMAGE_DEBUFFS_REPORT"] = "Dégâts et Uptime des débuffs"
+L["STRING_ATTRIBUTE_DAMAGE_DEBUFFS_REPORT"] = "Dégâts de l'effet de débuff et temps de disponibilité"
 L["STRING_ATTRIBUTE_DAMAGE_DONE"] = "Dégâts infligés"
 L["STRING_ATTRIBUTE_DAMAGE_DPS"] = "DPS"
 L["STRING_ATTRIBUTE_DAMAGE_ENEMIES"] = "Dégâts subis par l'ennemi"
-L["STRING_ATTRIBUTE_DAMAGE_ENEMIES_DONE"] = "Dégâts de l'ennemi"
+L["STRING_ATTRIBUTE_DAMAGE_ENEMIES_DONE"] = "Dégâts causés par l'ennemi"
 L["STRING_ATTRIBUTE_DAMAGE_FRAGS"] = "Éliminations"
 L["STRING_ATTRIBUTE_DAMAGE_FRIENDLYFIRE"] = "Dégâts aux alliés"
 L["STRING_ATTRIBUTE_DAMAGE_TAKEN"] = "Dégâts subis"
@@ -50,7 +50,7 @@ L["STRING_ATTRIBUTE_HEAL_DONE"] = "Soins prodigués"
 L["STRING_ATTRIBUTE_HEAL_ENEMY"] = "Soins reçus (Ennemi)"
 L["STRING_ATTRIBUTE_HEAL_HPS"] = "HPS"
 L["STRING_ATTRIBUTE_HEAL_OVERHEAL"] = "Excès de soin"
-L["STRING_ATTRIBUTE_HEAL_PREVENT"] = "Dégâts empêchés"
+L["STRING_ATTRIBUTE_HEAL_PREVENT"] = "Dégâts évités"
 L["STRING_ATTRIBUTE_HEAL_TAKEN"] = "Soins reçus"
 L["STRING_ATTRIBUTE_MISC"] = "Divers"
 L["STRING_ATTRIBUTE_MISC_BUFF_UPTIME"] = "Uptime des buffs"
@@ -692,6 +692,30 @@ L["STRING_OPTIONS_MINIMAP_ANCHOR"] = "Mini-carte :"
 L["STRING_OPTIONS_MINIMAP_DESC"] = "Afficher ou masquer l'icône de la mini-carte."
 L["STRING_OPTIONS_MISCTITLE"] = "Réglages divers"
 L["STRING_OPTIONS_MISCTITLE2"] = "Ceux-ci contrôlent plusieurs options."
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "New Combat on Boss Pull"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "If a boss is pulled while in combat, this option closes the current combat encounter and initiates a new one for the boss."
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Overall Segment DPS Calculation"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Make Overall Segment"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "After the run is completed, this option creates a new segment containing all combat data from the run."
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "Merge Trash"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Panels"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Show End of M+ Panel"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Time in Combat"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "The overall segment for the Mythic+ run will use 'totalDamage / totalCombatTime' to calculate DPS."
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = "Dungeon Run Time"
+--[[Translation missing --]]
+L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = "The overall segment for the Mythic+ run will calculate DPS using 'totalDamage / runTime'."
 L["STRING_OPTIONS_NICKNAME"] = "Surnom"
 L["STRING_OPTIONS_NICKNAME_DESC"] = "Définissez un surnom pour vous. Les surnoms sont envoyés aux membres de la guilde et Details! l'utilise à la place du nom de votre personnage."
 L["STRING_OPTIONS_OPEN_ROWTEXT_EDITOR"] = "Row Text Editor"
@@ -706,8 +730,10 @@ L["STRING_OPTIONS_OVERALL_DUNGEONCLEAN"] = "Trashmobs de donjon"
 L["STRING_OPTIONS_OVERALL_DUNGEONCLEAN_DESC"] = "Les segments avec des trashmobs de donjons sont ajoutés aux données globales."
 L["STRING_OPTIONS_OVERALL_LOGOFF"] = "Effacer à la déconnexion"
 L["STRING_OPTIONS_OVERALL_LOGOFF_DESC"] = "Quand activé, les données globales sont automatiquement effacées lorsque vous vous déconnectez du personnage."
-L["STRING_OPTIONS_OVERALL_MYTHICPLUS"] = "Effacer au démarrage d'une Mythique+"
-L["STRING_OPTIONS_OVERALL_MYTHICPLUS_DESC"] = "Quand activé, les données globales sont automatiquement effacées lorsqu'une Mythique+ commence."
+L["STRING_OPTIONS_OVERALL_MYTHICPLUS"] = "Effacer au démarrage d'une clé Mythique +"
+L["STRING_OPTIONS_OVERALL_MYTHICPLUS_DESC"] = [=[Quand activé, les données globales sont automatiquement effacées lorsqu'une Mythique+ commence.
+
+Lorsque cette option est activée, les données globales sont automatiquement effacées au début d'une nouvelle clé Mythique +.]=]
 L["STRING_OPTIONS_OVERALL_NEWBOSS"] = "Effacer sur un nouveau boss"
 L["STRING_OPTIONS_OVERALL_NEWBOSS_DESC"] = "Quand activé, les données globales sont automatiquement effacées lors d'un nouveau combat face à un boss de raid différent."
 L["STRING_OPTIONS_OVERALL_RAIDBOSS"] = "Boss de raid"
@@ -729,7 +755,7 @@ L["STRING_OPTIONS_PERFORMANCE_DUNGEON"] = "Donjon"
 L["STRING_OPTIONS_PERFORMANCE_ENABLE_DESC"] = "Quand activé, ces paramètres sont appliqués lorsque votre instance correspond au type d'instance sélectionné."
 L["STRING_OPTIONS_PERFORMANCE_ERASEWORLD"] = "Auto-effacer segments de combats ext."
 L["STRING_OPTIONS_PERFORMANCE_ERASEWORLD_DESC"] = "Effacement automatique des segments lors des combats en extérieur."
-L["STRING_OPTIONS_PERFORMANCE_MYTHIC"] = "Raid Mythique"
+L["STRING_OPTIONS_PERFORMANCE_MYTHIC"] = "Mythique"
 L["STRING_OPTIONS_PERFORMANCE_PROFILE_LOAD"] = "Profil de performances modifié :"
 L["STRING_OPTIONS_PERFORMANCE_RAID15"] = "Raid 10-15"
 L["STRING_OPTIONS_PERFORMANCE_RAID30"] = "Raid 16-30"

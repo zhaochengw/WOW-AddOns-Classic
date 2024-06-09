@@ -136,6 +136,7 @@ do
 			visibleInstance, RDO.db.profile.lastSelectedInstance = instance, instance
 			LoadBosses()
 			LoadEnabledDebuffs()
+			return true
 		end
 	end
 end
@@ -148,7 +149,8 @@ local function FormatBossName(  ejid, order, bossName, isCustom)
 	return string.format( mask, ICON_SKULL, prefix, name ), name
 end
 
-local ICON_CHECKED, ICON_UNCHECKED = READY_CHECK_READY_TEXTURE, READY_CHECK_NOT_READY_TEXTURE
+local ICON_CHECKED, ICON_UNCHECKED = "Interface\\RaidFrame\\ReadyCheck-Ready", "Interface\\RaidFrame\\ReadyCheck-NotReady"
+
 local function FormatDebuffName(spellId, isCustom)
 	local mask, icon, suffix
 	local status = debuffsStatuses[spellId]
@@ -268,6 +270,25 @@ local function MakeRaidDebuffsOptions(forceReloadData)
 	RDO.OPTIONS_ADVANCED.instance.handler.ejid = first_ejid
 end
 
+local function DisplayCurrentInstance()
+	if RDO.syncInstance and IsInInstance() then
+		RDO.syncInstance = nil
+		local ej_id, map_id = GSRD:GetCurrentZone()
+		if ej_id==0 then ej_id=-1 end -- discard possible invalid instance ej_id (0=Azeroth worldmap returned by EJ_GetInstanceForMap())
+		for mod in next, RDO.db.profile.enabledModules do
+			for key,data in next, RDDB[mod] do
+				local id = data[1] and data[1].id 
+				if ej_id==id or map_id==id or ej_id==key or map_id==key then
+					RDO.db.profile.lastSelectedModule = mod
+					RDO.db.profile.lastSelectedInstance = key
+					if LoadModuleInstance() then MakeRaidDebuffsOptions() end
+					return
+				end
+			end
+		end
+	end
+end
+	
 function RDO:RefreshAdvancedOptions()
 	MakeRaidDebuffsOptions(true)
 end
@@ -369,6 +390,16 @@ end
 --============================================================
 do
 	local options = RDO.OPTIONS_ADVANCED
+
+	options.__tracker = {
+		type = "description",
+		order = 0,
+		name = "",
+		hidden = function()
+			DisplayCurrentInstance()
+			return true
+		end
+	}
 
 	do
 		local list = {}

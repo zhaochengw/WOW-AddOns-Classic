@@ -13,7 +13,7 @@ Originally written by Whitetooth (https://github.com/hotdogee)
 ## Installation:
 Available for download at:
 
-[WoWInterface](https://www.wowinterface.com/downloads/info26235-RatingBusterClassic.html#info) | [Wago Addons](https://addons.wago.io/addons/ratingbuster) | [WowUp](https://wowup.io/addons/54151) | [GitHub Releases](https://github.com/raethkcj/RatingBuster/releases/latest)
+[CurseForge](https://www.curseforge.com/wow/addons/ratingbuster-classic) | [WoWInterface](https://www.wowinterface.com/downloads/info26235-RatingBusterClassic.html#info) | [Wago Addons](https://addons.wago.io/addons/ratingbuster) | [WowUp](https://wowup.io/addons/54151) | [GitHub Releases](https://github.com/raethkcj/RatingBuster/releases/latest)
 
 ## Features
 
@@ -69,11 +69,8 @@ will work with all bag mods too!
 Type `/rb` or `/ratingbuster` to open the options menu GUI, or add a slash command:
 
 - `help` - Show help message
-- `enableStatMods` - Enable support for Stat Mods
 - `showItemID` - Show the ItemID in tooltips
 - `showItemLevel` - Show the ItemLevel in tooltips
-- `useRequiredLevel` - Calculate using the required level if you are below the required level
-- `customLevel` - Set the level used in calculations (0 = your level)
 - `rating` - Options for Rating display
 	- `showRatings` - Show Rating conversions in tooltips
 	- `detailedConversionText` - Show detailed text for Resilience and Expertise conversions

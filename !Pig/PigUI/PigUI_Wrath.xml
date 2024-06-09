@@ -1,4 +1,0 @@
-<Ui>
-	<Script file="ActionBar_Vanilla.lua" />
-	<Script file="ChatFrame.lua" />
-</Ui>

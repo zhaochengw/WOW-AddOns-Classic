@@ -253,7 +253,7 @@ L:SetGeneralLocalization{
 L = DBM:GetModLocalization("AuctTombsTrash")
 
 L:SetGeneralLocalization{
-	name 		= "Trash"
+	name 		= "Mana-Tombs Trash"
 }
 
 -------------------

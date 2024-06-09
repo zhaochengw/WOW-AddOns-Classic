@@ -1,0 +1,16 @@
+lightweight tag cf4c7e530cfda0606d56c1a972a220b4ac760250 v1.2.1
+Author:	GitHub <noreply@github.com>
+Date:	Wed Jun 21 18:49:42 2023 -0500
+
+commit 84a002a7c74bb52b296ef781460937b541f7f78a
+Author: Tyler Pentecost <tyler8806@gmail.com>
+Date:   Wed Jun 21 23:43:07 2023 +0000
+
+    I bumped the TOC version number up for 3.4.2
+
+commit 84a002a7c74bb52b296ef781460937b541f7f78a
+Author: Tyler Pentecost <tyler8806@gmail.com>
+Date:   Wed Jun 21 23:43:07 2023 +0000
+
+    I bumped the TOC version number up for 3.4.2
+

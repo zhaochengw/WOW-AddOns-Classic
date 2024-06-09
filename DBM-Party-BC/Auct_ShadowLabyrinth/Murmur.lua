@@ -1,13 +1,17 @@
 local mod = DBM:NewMod(547, "DBM-Party-BC", 10, 253)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+mod:SetRevision("20231014053250")
 mod:SetCreatureID(18708)
 mod:SetEncounterID(1910)
-mod:SetModelID(18839)
-mod:SetModelScale(0.05)
-mod:SetModelOffset(10, -2, 0)
 mod:SetUsedIcons(8)
+
+if not mod:IsRetail() then
+	mod:SetModelID(18839)
+	mod:SetModelScale(0.05)
+	mod:SetModelOffset(10, -2, 0)
+end
+
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -38,7 +42,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 33711 then
 		timerTouch:Start(args.destName)
 		if self.Options.SetIconOnTouchTarget then
-			self:SetIcon(args.destName, 8, 14)
+			self:SetIcon(args.destName, 8)
 		end
 		if args:IsPlayer() then
             specWarnTouch:Show()

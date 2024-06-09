@@ -11,8 +11,8 @@ local GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
   = GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
 
 local AceGUI = LibStub("AceGUI-3.0")
-local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local WeakAuras = WeakAuras
@@ -96,6 +96,9 @@ function OptionsPrivate.CreateFrame()
   local odb = OptionsPrivate.savedVars.odb
 
   frame = CreateFrame("Frame", "WeakAurasOptions", UIParent, "PortraitFrameTemplate")
+  local color = CreateColorFromHexString("ff1f1e21") -- PANEL_BACKGROUND_COLOR
+  local r, g, b = color:GetRGB()
+  frame.Bg:SetColorTexture(r, g, b, 0.8)
 
   function OptionsPrivate.SetTitle(title)
     local text = "WeakAuras " .. WeakAuras.versionString
@@ -226,6 +229,7 @@ function OptionsPrivate.CreateFrame()
   frame.bottomRightResizer = CreateFrameSizer(frame, commitWindowChanges, "BOTTOMRIGHT")
 
   frame.UpdateFrameVisible = function(self)
+    self.tipPopup:Hide()
     if self.minimized then
       WeakAurasOptionsTitleText:Hide()
       self.buttonsContainer.frame:Hide()
@@ -246,6 +250,7 @@ function OptionsPrivate.CreateFrame()
       self.toolbarContainer:Hide()
       self.filterInput:Hide();
       self.tipFrame:Hide()
+      self:HideTip()
       self.bottomRightResizer:Hide()
     else
       WeakAurasOptionsTitleText:Show()
@@ -254,15 +259,11 @@ function OptionsPrivate.CreateFrame()
         OptionsPrivate.SetTitle()
         self.buttonsContainer.frame:Show()
         self.container.frame:Show()
-        if self.tipFrameIsVisible then
-          self.tipFrame:Show()
-        else
-          self.tipFrame:Hide()
-        end
+        self:ShowTip()
       else
         self.buttonsContainer.frame:Hide()
         self.container.frame:Hide()
-        self.tipFrame:Hide()
+        self:HideTip()
       end
 
       if self.window == "texture" then
@@ -389,6 +390,7 @@ function OptionsPrivate.CreateFrame()
   tipPopup:SetBackdropColor(0, 0, 0, 0.8)
   --tipPopup:SetHeight(100)
   tipPopup:Hide()
+  frame.tipPopup = tipPopup
 
   local tipPopupTitle = tipPopup:CreateFontString(nil, "BACKGROUND", "GameFontNormalLarge")
   tipPopupTitle:SetPoint("TOPLEFT", tipPopup, "TOPLEFT", 10, -10)
@@ -483,14 +485,12 @@ function OptionsPrivate.CreateFrame()
   end
 
   frame.ShowTip = function(self)
-    self.tipFrameIsVisible = true
     self.tipFrame:Show()
     self.buttonsContainer.frame:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 17, 30)
     self.container.frame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -17, 28)
   end
 
   frame.HideTip = function(self)
-    self.tipFrameIsVisible = false
     self.tipFrame:Hide()
     self.buttonsContainer.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 17, 12)
     self.container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 10)
@@ -727,7 +727,7 @@ function OptionsPrivate.CreateFrame()
 
   -- Loaded section
   local loadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
-  loadedButton:SetText(L["Loaded"])
+  loadedButton:SetText(L["Loaded/Standby"])
   loadedButton:Disable()
   loadedButton:EnableExpand()
   if odb.loadedCollapse then
@@ -747,16 +747,17 @@ function OptionsPrivate.CreateFrame()
   loadedButton:SetCollapseDescription(L["Collapse all loaded displays"])
   loadedButton:SetViewClick(function()
     local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
+
     if loadedButton.view.visibility == 2 then
-      for id, child in pairs(displayButtons) do
-        if OptionsPrivate.Private.loaded[id] ~= nil then
+      for _, child in ipairs(loadedButton.childButtons) do
+        if child:IsLoaded() then
           child:PriorityHide(2)
         end
       end
       loadedButton:PriorityHide(2)
     else
-      for id, child in pairs(displayButtons) do
-        if OptionsPrivate.Private.loaded[id] ~= nil then
+      for _, child in ipairs(loadedButton.childButtons) do
+        if child:IsLoaded() then
           child:PriorityShow(2)
         end
       end
@@ -766,14 +767,12 @@ function OptionsPrivate.CreateFrame()
   end)
   loadedButton.RecheckVisibility = function(self)
     local none, all = true, true
-    for id, child in pairs(displayButtons) do
-      if OptionsPrivate.Private.loaded[id] ~= nil then
-        if child:GetVisibility() ~= 2 then
-          all = false
-        end
-        if child:GetVisibility() ~= 0 then
-          none = false
-        end
+    for _, child in ipairs(loadedButton.childButtons) do
+      if child:GetVisibility() ~= 2 then
+        all = false
+      end
+      if child:GetVisibility() ~= 0 then
+        none = false
       end
     end
     local newVisibility
@@ -790,6 +789,7 @@ function OptionsPrivate.CreateFrame()
     end
   end
   loadedButton:SetViewDescription(L["Toggle the visibility of all loaded displays"])
+  loadedButton.childButtons = {}
   frame.loadedButton = loadedButton
 
   -- Not Loaded section
@@ -815,17 +815,13 @@ function OptionsPrivate.CreateFrame()
   unloadedButton:SetViewClick(function()
     local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
     if unloadedButton.view.visibility == 2 then
-      for id, child in pairs(displayButtons) do
-        if OptionsPrivate.Private.loaded[id] == nil then
-          child:PriorityHide(2)
-        end
+      for _, child in ipairs(unloadedButton.childButtons) do
+        child:PriorityHide(2)
       end
       unloadedButton:PriorityHide(2)
     else
-      for id, child in pairs(displayButtons) do
-        if OptionsPrivate.Private.loaded[id] == nil then
-          child:PriorityShow(2)
-        end
+      for _, child in ipairs(unloadedButton.childButtons) do
+        child:PriorityShow(2)
       end
       unloadedButton:PriorityShow(2)
     end
@@ -833,14 +829,12 @@ function OptionsPrivate.CreateFrame()
   end)
   unloadedButton.RecheckVisibility = function(self)
     local none, all = true, true
-    for id, child in pairs(displayButtons) do
-      if OptionsPrivate.Private.loaded[id] == nil then
-        if child:GetVisibility() ~= 2 then
-          all = false
-        end
-        if child:GetVisibility() ~= 0 then
-          none = false
-        end
+    for _, child in ipairs(unloadedButton.childButtons) do
+      if child:GetVisibility() ~= 2 then
+        all = false
+      end
+      if child:GetVisibility() ~= 0 then
+        none = false
       end
     end
     local newVisibility
@@ -857,6 +851,7 @@ function OptionsPrivate.CreateFrame()
     end
   end
   unloadedButton:SetViewDescription(L["Toggle the visibility of all non-loaded displays"])
+  unloadedButton.childButtons = {}
   frame.unloadedButton = unloadedButton
 
 
@@ -919,7 +914,7 @@ function OptionsPrivate.CreateFrame()
 
     local optionTable = self:EnsureOptions(data, self.selectedTab)
     if optionTable then
-      AceConfig:RegisterOptionsTable("WeakAuras", optionTable)
+      AceConfigRegistry:RegisterOptionsTable("WeakAuras", optionTable, true)
     end
   end
 
@@ -1275,7 +1270,7 @@ function OptionsPrivate.CreateFrame()
       end
     end
 
-    if self.pickedDisplay == id then
+    if self.pickedDisplay == id and (self.pickedDisplay == tab or tab == nil) then
       return
     end
 

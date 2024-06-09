@@ -45,7 +45,8 @@ if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 	GTFO.IgnoreSpellCategory["IcyGround"] = {
 		-- 10.0 Sennarth
 		spellID = 372055,
-		desc = "Icy Ground (Sennarth - Dragonflight)"
+		desc = "Icy Ground (Sennarth - Dragonflight)",
+		tooltip = "Icy Ground (Sennarth - Dragonflight)"
 	}
 end
 
@@ -125,5 +126,26 @@ GTFO.IgnoreScan["382541"] = true; -- Surge
 GTFO.IgnoreScan["391282"] = true; -- Crackling Energy
 GTFO.IgnoreScan["387333"] = true; -- Storm Surge
 GTFO.IgnoreScan["396328"] = true; -- Quaking Pillar
---GTFO.IgnoreScan["375873"] = true; -- Wildfire
-
+GTFO.IgnoreScan["381931"] = true; -- Mana Spring
+GTFO.IgnoreScan["361029"] = true; -- Time Dilation
+GTFO.IgnoreScan["363143"] = true; -- Light Dilation
+GTFO.IgnoreScan["408370"] = true; -- Infernal Heart 
+GTFO.IgnoreScan["411913"] = true; -- Shadowflame Exhaust
+GTFO.IgnoreScan["402617"] = true; -- Blazing Heat
+GTFO.IgnoreScan["401809"] = true; -- Corrupting Shadow
+GTFO.IgnoreScan["405394"] = true; -- Shadowflame Contamination
+GTFO.IgnoreScan["407329"] = true; -- Shatter
+GTFO.IgnoreScan["413546"] = true; -- Igniting Roar
+GTFO.IgnoreScan["403978"] = true; -- Blast Wave
+GTFO.IgnoreScan["405618"] = true; -- Ignara's Fury
+GTFO.IgnoreScan["403057"] = true; -- Surrender to Corruption
+GTFO.IgnoreScan["407048"] = true; -- Surrender to Corruption
+GTFO.IgnoreScan["264689"] = true; -- Fatigue
+GTFO.IgnoreScan["402053"] = true; -- Seared
+GTFO.IgnoreScan["403319"] = true; -- Echoing Howl
+GTFO.IgnoreScan["404550"] = true; -- Mana Spring
+GTFO.IgnoreScan["382912"] = true; -- Well Honed Instincts
+GTFO.IgnoreScan["403912"] = true; -- Accelerating Time
+GTFO.IgnoreScan["405671"] = true; -- Accelerating Time
+GTFO.IgnoreScan["403910"] = true; -- Decaying Time
+GTFO.IgnoreScan["405672"] = true; -- Decaying Time

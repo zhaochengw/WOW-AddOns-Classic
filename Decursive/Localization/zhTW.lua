@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
+    Decursive (v 2.7.15) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["zhTW.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "zhTW");
 
 if not L then
-    T._LoadedFiles["zhTW.lua"] = "2.7.9.1";
+    T._LoadedFiles["zhTW.lua"] = "2.7.15";
     return;
 end;
 
@@ -106,6 +106,7 @@ L["BINDING_NAME_DCRSKLIST"] = "顯示忽略名單至聊天視窗"
 L["BINDING_NAME_DCRSKSHOW"] = "開/關忽略名單"
 L["BLACK_LENGTH"] = "停留在排除名單的時間: "
 L["BLACKLISTED"] = "在排除名單"
+L["BLEED"] = "流血"
 L["CHARM"] = "魅惑"
 L["CLASS_HUNTER"] = "獵人"
 L["CLEAR_PRIO"] = "C"
@@ -202,6 +203,8 @@ L["OPT_ABOLISHCHECK_DESC"] = "檢查玩家身上是否有淨化法術在運作�
 L["OPT_ABOUT"] = "關於"
 L["OPT_ADD_A_CUSTOM_SPELL"] = "添加一個自訂法術"
 L["OPT_ADD_A_CUSTOM_SPELL_DESC"] = "點擊這裡並 Shift+點擊技能書上的一個法術。也可以直接寫法術名稱或數字 ID。"
+L["OPT_ADD_BLEED_EFFECT_ID"] = "新增流血效果"
+L["OPT_ADD_BLEED_EFFECT_ID_DESC"] = "輸入法術 ID 來直接新增流血效果 (可在 wowhead.com 找到法術 ID)。"
 L["OPT_ADDDEBUFF"] = "添加一負面效果到清單中"
 L["OPT_ADDDEBUFF_DESC"] = "將一個新的負面效果新增到清單中。"
 L["OPT_ADDDEBUFF_USAGE"] = "<Debuff name>"
@@ -218,7 +221,24 @@ L["OPT_AMOUNT_AFFLIC_DESC"] = "設定即時清單最多顯示幾人。"
 L["OPT_ANCHOR_DESC"] = "顯示自訂視窗的文字定位點。"
 L["OPT_AUTOHIDEMFS"] = "隱藏 MUFs："
 L["OPT_AUTOHIDEMFS_DESC"] = "選擇何時自動隱藏 MUF 視窗"
-L["OPT_BLACKLENTGH_DESC"] = "設定一個人停留在排除名單中的時間。"
+L["OPT_BLACKLENTGH_DESC"] = "設定一個人停留在排除名單中的時間。設為 0 會完全停用排除名單。"
+L["OPT_BLEED_EFFECT_BAD_SPELLID"] = "法術 ID 錯誤。只能輸入數字，並且和  wowhead.com 找到的法術 ID 相同。"
+L["OPT_BLEED_EFFECT_DESCRIPTION"] = "說明 (法術 ID: |cFF00C000%s|r)"
+L["OPT_BLEED_EFFECT_HOLDER"] = "流血效果管理"
+L["OPT_BLEED_EFFECT_HOLDER_DESC"] = "管理流血效果的偵測方式"
+L["OPT_BLEED_EFFECT_IDENTIFIERS"] = "流血效果說明關鍵字:"
+L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"] = [=[每個關鍵字都必須符合造成目標流血的減益效果的|cFFFF0000說明|r，並且能夠用來辨識為此效果。
+
+每行一個關鍵字。
+
+清空欄位會重置為預設關鍵字。
+
+你會需要依據所使用的語言來手動調整這些關鍵字。
+可以參考下方列出預先設定好的流血效果清單，說明中至少要包含一個關鍵字。(符合的關鍵字在下方的每個效果說明中會顯著標示出來)。
+
+(也可以使用 Lua pattern，每行一個 pattern)]=]
+L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"] = "未知的法術 (%s)"
+L["OPT_BLEEDCHECK_DESC"] = "勾選時，將無法看到和驅散流血效果。"
 L["OPT_BORDERTRANSP"] = "邊框透明度"
 L["OPT_BORDERTRANSP_DESC"] = "設定邊框的透明度。"
 L["OPT_CENTERTEXT"] = "中央計數器:"
@@ -313,6 +333,8 @@ L["OPT_DISEASECHECK_DESC"] = "選取後你可以看見並治療生病的玩家�
 L["OPT_DISPLAYOPTIONS"] = "顯示設定"
 L["OPT_DONOTBLPRIO_DESC"] = "設定到優先清單的玩家不會被移入排除清單中。"
 L["OPT_ENABLE_A_CUSTOM_SPELL"] = "啟用"
+L["OPT_ENABLE_BLEED_EFFECTS_DETECTION"] = "發現流血效果"
+L["OPT_ENABLE_BLEED_EFFECTS_DETECTION_DESC"] = "啟用當新的流血效果說明含有在 '流血效果關鍵字' 欄位中所出現的關鍵字時，一鍵驅散會發現新的流血效果。"
 L["OPT_ENABLE_LIVELIST"] = "啟用直播列表"
 L["OPT_ENABLE_LIVELIST_DESC"] = [=[顯示信息列表受影響玩家。
 
@@ -329,6 +351,8 @@ L["OPT_HIDEMFS_GROUP"] = "單獨或小隊"
 L["OPT_HIDEMFS_GROUP_DESC"] = "當不在團隊中的時隱藏 MUF 視窗。"
 L["OPT_HIDEMFS_NEVER"] = "從不自動隱藏"
 L["OPT_HIDEMFS_NEVER_DESC"] = "從不自動隱藏 MUF 視窗。"
+L["OPT_HIDEMFS_RAID"] = "團隊"
+L["OPT_HIDEMFS_RAID_DESC"] = "在團隊中時隱藏迷你單位格子。"
 L["OPT_HIDEMFS_SOLO"] = "單獨"
 L["OPT_HIDEMFS_SOLO_DESC"] = "當不在團隊中或隊伍中的時隱藏 MUF 視窗。"
 L["OPT_HIDEMUFSHANDLE"] = "隱藏 MUF 表頭"
@@ -339,7 +363,11 @@ L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"] = "法術已在列表中！"
 L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"] = "Decursive 已經包含此法術。Shift+點擊此法術或輸入它的 ID 添加一個特殊等級。"
 L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "法術 ID 不可用！"
 L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "不能在技能書中找到法術！"
+L["OPT_IS_BLEED_EFFECT"] = "是流血效果"
+L["OPT_IS_BLEED_EFFECT_DESC"] = [=[勾選此選項讓一鍵驅散將此效果視為 '流血' 類型。
+誤認時也可取消勾選...]=]
 L["OPT_ISNOTVALID_SPELLID"] = "不是有效的法術 ID"
+L["OPT_KNOWN_BLEED_EFFECTS"] = "已知的流血效果"
 L["OPT_LIVELIST"] = "即時清單"
 L["OPT_LIVELIST_DESC"] = [=[These are the settings concerning the list of afflicted units displayed beneath the "Decursive" bar.
 
@@ -404,6 +432,8 @@ L["OPT_PRINT_CUSTOM_DESC"] = "顯示到自訂的聊天視窗。"
 L["OPT_PRINT_ERRORS_DESC"] = "顯示錯誤訊息。"
 L["OPT_PROFILERESET"] = "重置設定檔..."
 L["OPT_RANDOMORDER_DESC"] = "隨機顯示與淨化玩家(不推薦使用)。"
+L["OPT_READD_DEFAULT_BLEED_EFFECTS"] = "重新加入預設值"
+L["OPT_READD_DEFAULT_BLEED_EFFECTS_DESC"] = "重新將一鍵驅散預設的流血效果加入倒清單中。"
 L["OPT_READDDEFAULTSD"] = "回復預設負面效果"
 L["OPT_READDDEFAULTSD_DESC1"] = [=[添加被移除的預設負面效果
 你的設定不會被改變。]=]
@@ -413,6 +443,8 @@ L["OPT_REMOVESKDEBCONF"] = [=[你確定要把
  從負面效果忽略清單中移除？]=]
 L["OPT_REMOVETHISDEBUFF"] = "移除此負面效果"
 L["OPT_REMOVETHISDEBUFF_DESC"] = "將 '%s' 從忽略清單移除。"
+L["OPT_RESET_DEFAULT_BLEED_EFFECTS"] = "清空清單"
+L["OPT_RESET_DEFAULT_BLEED_EFFECTS_DESC"] = "清空清單並且恢復成預設值，所有已加入和偵測到的減益效果都會被清除!!"
 L["OPT_RESETDEBUFF"] = "重置此負面效果"
 L["OPT_RESETDTDCRDEFAULT"] = "重置 '%s' 為 Decursive 預設值。"
 L["OPT_RESETMUFMOUSEBUTTONS"] = "重置"
@@ -503,4 +535,4 @@ L["UNSTABLERELEASE"] = "不穩定釋出版"
 
 
 
-T._LoadedFiles["zhTW.lua"] = "2.7.9.1";
+T._LoadedFiles["zhTW.lua"] = "2.7.15";

@@ -1,5 +1,4 @@
 local _
-if(GetLocale() == "enUS" or true) then
 
 -- ===================== Part for TradeFrameEnchanced ==================
 TBT_SPELL_RANK_PATTERN = "Rank (%d)";
@@ -31,12 +30,12 @@ TBT_SPELL_TABLE = {
 	},
 
 	stone = {
-		{ name="Create Healthstone", level=0,  item="Minor Healthstone" },
-		{ name="Create Healthstone", level=12, item="Lesser Healthstone" },
-		{ name="Create Healthstone", level=24, item="Healthstone" },
-		{ name="Create Healthstone", level=36, item="Greater Healthstone" },
-		{ name="Create Healthstone", level=48, item="Major Healthstone" },
-		{ name="Create Healthstone", level=60, item="Master Healthstone" },
+		{ name="Create Healthstone", rank=1, level=0,  item="Minor Healthstone" },
+		{ name="Create Healthstone", rank=2, level=12, item="Lesser Healthstone" },
+		{ name="Create Healthstone", rank=3, level=24, item="Healthstone" },
+		{ name="Create Healthstone", rank=4, level=36, item="Greater Healthstone" },
+		{ name="Create Healthstone", rank=5, level=48, item="Major Healthstone" },
+		{ name="Create Healthstone", rank=6, level=60, item="Master Healthstone" },
 	}
 }
 -- =============== just localizate the above, the addon will function ok ========================= 
@@ -74,17 +73,8 @@ TRADE_LOG_MONEY_NAME = {
 }
 
 CANCEL_REASON_TEXT = {
-	self = "you cancelled",
-	other = "recipient cancelled",
-	toofar = "too faraway",
-	selfrunaway = "you moved away",
-	selfhideui = "you hid ui",
-	unknown = "unknown reason",
-}
-
-CANCEL_REASON_TEXT_ANNOUNCE = {
 	self = "I cancelled it",
-	other = "(s)he cancelled it",
+	other = "target cancelled it",
 	toofar = "we are too faraway",
 	selfrunaway = "I moved away",
 	selfhideui = "I hid ui",
@@ -111,34 +101,20 @@ TRADE_LOG_CHANNELS = {
 TRADE_LOG_ANNOUNCE = "NOTIFY";
 TRADE_LOG_ANNOUNCE_TIP = "Check this to automatically announce after trading."
 
--- ===================== Part for TradeList ==================
-TRADE_LIST_CLEAR_HISTORY = "CLEAR"
-TRADE_LIST_SCALE = "Detail Scale"
-TRADE_LIST_FILTER = "Completed Only"
-
-TRADE_LIST_HEADER_WHEN = "Time"
-TRADE_LIST_HEADER_WHO = "Recipent"
-TRADE_LIST_HEADER_WHERE = "Location"
-TRADE_LIST_HEADER_SEND = "Lost"
-TRADE_LIST_HEADER_RECEIVE = "Got"
-TRADE_LIST_HEADER_RESULT = "Result"
-
-TRADE_LIST_RESULT_TEXT_SHORT = { 
+TRADE_LOG_RESULT_TEXT_SHORT = { 
 	cancelled = "cancel", 
 	complete = "ok", 
 	error = "failed", 
 }
 
-TRADE_LIST_RESULT_TEXT = {
+TRADE_LOG_RESULT_TEXT = {
 	cancelled = "Trade Cancelled", 
 	complete = "Trade Completed", 
 	error = "Trade Failed", 
 }
 
-TRADE_LIST_MONTH_SUFFIX = "-"
-TRADE_LIST_DAY_SUFFIX = ""
-
-TRADE_LIST_COMPLETE_TOOLTIP = "Click to show detail";
+TRADE_LOG_MONTH_SUFFIX = "-"
+TRADE_LOG_DAY_SUFFIX = ""
 
 TRADE_LOG_COMPLETE_TOOLTIP = "Click to show detail";
 
@@ -150,7 +126,7 @@ RECENT_TRADE_TITLE = "Recent Trade"
 TRADE_LIST_CLEAR_HISTORY = "CLEAR"
 TRADE_LIST_SCALE = "Detail Scale"
 TRADE_LIST_FILTER = "Completed Only"
-
+TRADE_LIST_DESCENDING = "DESC"
 TRADE_LIST_HEADER_WHEN = "Time"
 TRADE_LIST_HEADER_WHO = "Recipent"
 TRADE_LIST_HEADER_WHERE = "Location"
@@ -160,7 +136,5 @@ TRADE_LIST_HEADER_RESULT = "Result"
 
 TRADE_LIST_CLEAR_CONFIRM = "Records before today will be totally cleared!";
 
-TBT_MINIMAP_TOOLTIP1 = "TradeLog"
-TBT_MINIMAP_TOOLTIP2 ="Click to Show Trade Log Panel"
-
-end
+TRADE_LIST_TITLE = "TradeLog"
+TRADE_LIST_DESC = "Show recent trade logs, or the reasons of failed trades."

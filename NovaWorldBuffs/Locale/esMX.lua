@@ -28,6 +28,8 @@ L["Traces of Silithyst"] = "Traces of Silithyst";
 L["Slip'kik's Savvy"] = "Sentido común de Slip'kik";
 L["Fengus' Ferocity"] = "Ferocidad de Fengus";
 L["Mol'dar's Moxie"] = "Asertividad Mol'dar";
+L["Boon of Blackfathom"] = "Bendición Brazanegra";
+L["Ashenvale Rallying Cry"] = "Berrido de convocación de Vallefresno";
 
 ---=====---
 ---Horde---

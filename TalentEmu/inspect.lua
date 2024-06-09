@@ -52,7 +52,7 @@ MT.BuildEnv('INSPECT');
 				if code ~= nil then
 					local cache = VT.TQueryCache[name];
 					if cache == nil then
-						cache = { TalData = {  }, EquData = {  }, GlyData = {  }, PakData = {  }, };
+						cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
 						VT.TQueryCache[name] = cache;
 					end
 					cache.class = class;

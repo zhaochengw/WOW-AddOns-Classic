@@ -9,6 +9,18 @@ local type = type
 local pairs = pairs
 local tonumber = tonumber
 local tremove = table.remove
+local GetAuraDataByIndex = C_UnitAuras and C_UnitAuras.GetAuraDataByIndex
+
+-- Dummy function
+Grid2.Dummy = function() end
+
+-- Grid2.UnitAuraLite, missing aura custom values in retail (16,17,18)
+Grid2.UnitAuraLite = GetAuraDataByIndex==nil and UnitAura or function(unit, index, filter)
+	local a = GetAuraDataByIndex(unit, index, filter)
+	if a then
+		return a.name, a.icon, a.applications, a.dispelName, a.duration, a.expirationTime, a.sourceUnit, nil, nil, a.spellId, a.canApplyAura, a.isBossAura
+	end
+end
 
 -- Fetch LibSharedMedia resources
 function Grid2:MediaFetch(mediatype, key, def)
@@ -217,7 +229,8 @@ end
 -- Grid2:RunSecure(priority, object, method, arg)
 -- Queue some methods to be executed when out of combat, if we are not in combat do nothing.
 -- Methods with lower priority value override the execution of methods with higher priority value.
--- Methods executed (in order of priority): ReloadProfile(1), ReloadTheme(2), ReloadLayout(3), ReloadFilter(4), FixRoster(5), UpdateSize(6), UpdateVisibility(7)
+-- Methods executed (in order of priority):
+-- ReloadProfile(1), ReloadTheme(2), ReloadLayout(3), ReloadFilter(4), FixRoster(5), UpdateFramesSizeByRaidSize(6), UpdateSize(7), UpdateVisibility(8)
 do
 	local sec_priority, sec_object, sec_method, sec_arg
 	function Grid2:PLAYER_REGEN_ENABLED()
@@ -384,7 +397,6 @@ function Grid2:EnableProfilesPerSpec(enabled)
 	end
 end
 
-
 -- Set a profile for the specified specIndex or the general profile if specIndex==nil
 function Grid2:SetProfileForSpec(profileName, specIndex)
 	if self.db.profiles[profileName] then
@@ -399,10 +411,10 @@ end
 
 -- MinimapIcon visibility: value = true | false | nil => toggle
 function Grid2:SetMinimapIcon(value)
-	local minimapIcon = Grid2Layout.db.shared.minimapIcon
+	local minimapIcon = Grid2.db.global.minimapIcon or Grid2Layout.db.shared.minimapIcon
 	if value == nil then
 		minimapIcon.hide = not minimapIcon.hide
-	else
+	elseif value ~= 'query' then
 		minimapIcon.hide = not value
 	end
 	if minimapIcon.hide then
@@ -410,10 +422,10 @@ function Grid2:SetMinimapIcon(value)
 	else
 		Grid2Layout.minimapIcon:Show("Grid2")
 	end
+	return not minimapIcon.hide
 end
 
-
--- Hide blizzard raid & party frames
+-- Hide blizzard frames
 do
 	local hiddenFrame
 
@@ -425,7 +437,7 @@ do
 		if f then f:UnregisterAllEvents() end
 	end
 
-	local function hideFrame(frame)
+	local function hideFrame(frame,dontsave)
 		if frame then
 			UnregisterUnitWatch(frame)
 			frame:Hide()
@@ -436,22 +448,24 @@ do
 			unregister(frame.manabar)
 			unregister(frame.powerBarAlt)
 			unregister(frame.spellbar)
+			if dontsave then
+				frame:SetDontSavePosition(true)
+			end
 		end
 	end
 
-	-- party frames
+	-- party frames, only for retail
 	local function HidePartyFrames()
+		if not PartyFrame then return end
 		hiddenFrame = hiddenFrame or CreateFrame('Frame')
 		hiddenFrame:Hide()
-		if PartyFrame then
-			hideFrame(PartyFrame)
-			for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
-				hideFrame(frame)
-				hideFrame(frame.HealthBar)
-				hideFrame(frame.ManaBar)
-			end
-			PartyFrame.PartyMemberFramePool:ReleaseAll()
+		hideFrame(PartyFrame)
+		for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
+			hideFrame(frame)
+			hideFrame(frame.HealthBar)
+			hideFrame(frame.ManaBar)
 		end
+		PartyFrame.PartyMemberFramePool:ReleaseAll()
 		hideFrame(CompactPartyFrame)
 		UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE") -- used by compact party frame
 	end
@@ -479,18 +493,33 @@ do
 		HideFrames()
 	end
 
-	-- Only for dragonflight, for classic compactRaidFrames addon is disabled from options
 	function Grid2:UpdateBlizzardFrames()
-		if self.isWoW90 then
-			local v = self.db.profile.hideBlizzardRaidFrames
-			if v==true or v==2 then
+		local hide = self.db.profile.hideBlizzard
+		if hide then
+			if hide.raid then
 				HideRaidFrames()
 			end
-			if v==true or v==1 then
+			if hide.party then
 				HidePartyFrames()
+			end
+			if hide.pet then
+				hideFrame(PetFrame, true)
+			end
+			if hide.focus then
+				hideFrame(FocusFrame, true)
+				hideFrame(FocusFrameToT)
+			end
+			if hide.target then
+				hideFrame(TargetFrame,true)
+				hideFrame(TargetFrameToT)
+				hideFrame(ComboFrame)
+			end
+			if hide.player then
+				hideFrame(PlayerFrame, true)
+				hideFrame(PlayerFrameAlternateManaBar)
+				hideFrame(AlternatePowerBar)
 			end
 		end
 		self.UpdateBlizzardFrames = nil
 	end
 end
-

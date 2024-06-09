@@ -2,7 +2,7 @@
   <Frame
     name="AuctionatorConfigSellingFrameTemplate"
     mixin="AuctionatorConfigSellingFrameMixin"
-    parent="InterfaceOptionsFrame"
+    hidden="true"
     virtual="true">
 
     <Scripts>
@@ -18,6 +18,28 @@
           <KeyValue key="subTitleText" value="AUCTIONATOR_L_CONFIG_SELLING_TEXT" type="global"/>
         </KeyValues>
       </Frame>
+
+      <EventFrame parentKey="ScrollBar" inherits="WowTrimScrollBar">
+        <Anchors>
+          <Anchor point="TOPRIGHT" relativeKey="$parent.TitleArea" relativePoint="BOTTOMRIGHT"/>
+          <Anchor point="BOTTOMRIGHT"/>
+        </Anchors>
+      </EventFrame>
+
+      <Frame inherits="WowScrollBox" parentKey="ScrollBox">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.TitleArea" relativePoint="BOTTOMLEFT"/>
+          <Anchor point="BOTTOMRIGHT" relativeKey="$parent.ScrollBar" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+        <Frames>
+          <Frame parentKey="Content" inherits="ResizeLayoutFrame">
+            <KeyValues>
+              <KeyValue key="scrollable" value="true" type="boolean" />
+            </KeyValues>
+            <Anchors>
+              <Anchor point="TOP"/>
+            </Anchors>
+            <Frames>
       <Frame inherits="AuctionatorConfigurationCheckbox" parentKey="AuctionChatLog">
         <KeyValues>
           <KeyValue key="labelText" value="AUCTIONATOR_L_CONFIG_CHAT_LOG" type="global" />
@@ -25,7 +47,7 @@
           <KeyValue key="tooltipText" value="AUCTIONATOR_L_CONFIG_CHAT_LOG_TOOLTIP_TEXT" type="global"/>
         </KeyValues>
         <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.TitleArea" relativePoint="BOTTOMLEFT" />
+          <Anchor point="TOPLEFT"/>
         </Anchors>
       </Frame>
       <Frame inherits="AuctionatorConfigurationCheckbox" parentKey="ShowBidPrice">
@@ -104,7 +126,7 @@
           <KeyValue key="tooltipText" value="AUCTIONATOR_L_CONFIG_SELLING_ICON_SIZE_TOOLTIP_TEXT" type="global"/>
         </KeyValues>
         <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BagCollapsed" relativePoint="BOTTOMLEFT" y="-15"/>
+          <Anchor point="TOPLEFT" relativeKey="$parent.BagCollapsed" relativePoint="BOTTOMLEFT" y="-5"/>
         </Anchors>
       </Frame>
       <Frame inherits="AuctionatorConfigurationCheckbox" parentKey="AutoSelectNext">
@@ -127,6 +149,16 @@
           <Anchor point="TOPLEFT" relativeKey="$parent.AutoSelectNext" relativePoint="BOTTOMLEFT" />
         </Anchors>
       </Frame>
+      <Frame inherits="AuctionatorConfigurationCheckbox" parentKey="ReselectItem">
+        <KeyValues>
+          <KeyValue key="labelText" value="AUCTIONATOR_L_CONFIG_SELLING_RESELECT_ITEM" type="global" />
+          <KeyValue key="tooltipTitleText" value="AUCTIONATOR_L_CONFIG_SELLING_RESELECT_ITEM_TOOLTIP_HEADER" type="global" />
+          <KeyValue key="tooltipText" value="AUCTIONATOR_L_CONFIG_SELLING_RESELECT_ITEM_TOOLTIP_TEXT" type="global"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.AutoSelectStackRemainder" relativePoint="BOTTOMLEFT" />
+        </Anchors>
+      </Frame>
       <Frame inherits="AuctionatorConfigurationCheckbox" parentKey="MissingFavourites">
         <KeyValues>
           <KeyValue key="labelText" value="AUCTIONATOR_L_CONFIG_SELLING_MISSING_FAVOURITES" type="global" />
@@ -134,20 +166,67 @@
           <KeyValue key="tooltipText" value="AUCTIONATOR_L_CONFIG_SELLING_MISSING_FAVOURITES_TOOLTIP_TEXT" type="global"/>
         </KeyValues>
         <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.AutoSelectStackRemainder" relativePoint="BOTTOMLEFT" />
+          <Anchor point="TOPLEFT" relativeKey="$parent.ReselectItem" relativePoint="BOTTOMLEFT" />
+        </Anchors>
+      </Frame>
+      <Frame inherits="AuctionatorConfigurationCheckbox" parentKey="PossessedFavouritesFirst">
+        <KeyValues>
+          <KeyValue key="labelText" value="AUCTIONATOR_L_CONFIG_SELLING_POSSESSED_FAVOURITES_FIRST" type="global" />
+          <KeyValue key="tooltipTitleText" value="AUCTIONATOR_L_CONFIG_SELLING_POSSESSED_FAVOURITES_FIRST_TOOLTIP_HEADER" type="global" />
+          <KeyValue key="tooltipText" value="AUCTIONATOR_L_CONFIG_SELLING_POSSESSED_FAVOURITES_FIRST_TOOLTIP_TEXT" type="global"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.MissingFavourites" relativePoint="BOTTOMLEFT" />
         </Anchors>
       </Frame>
 
-      <Button inherits="UIPanelDynamicResizeButtonTemplate" text="AUCTIONATOR_L_UNHIDE_ALL_HIDDEN_ITEMS" parentKey="UnhideAll">
+      <Button inherits="UIPanelDynamicResizeButtonTemplate" text="AUCTIONATOR_L_SET_BAG_ITEM_SELECTION_COLOR" parentKey="SetSelectionColor">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.MissingFavourites" relativePoint="BOTTOMLEFT" x="23"/>
+          <Anchor point="TOPLEFT" relativeKey="$parent.PossessedFavouritesFirst" relativePoint="BOTTOMLEFT" x="53"/>
         </Anchors>
         <Scripts>
           <OnClick>
-            self:GetParent():UnhideAllClicked()
+            self:GetParent():GetParent():GetParent():GetParent():SetSelectionColorClicked()
+          </OnClick>
+        </Scripts>
+        <Layers>
+          <Layer>
+            <Texture parentKey="Color">
+              <Size x="22" y="22"/>
+              <Anchors>
+                <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="-5"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
+      </Button>
+
+      <Button inherits="UIPanelDynamicResizeButtonTemplate" text="AUCTIONATOR_L_RESET_COLOR" parentKey="ResetSelectionColor">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.SetSelectionColor" relativePoint="TOPRIGHT" x="10"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            self:GetParent():GetParent():GetParent():GetParent():ResetSelectionColorClicked()
           </OnClick>
         </Scripts>
       </Button>
+
+      <Button inherits="UIPanelDynamicResizeButtonTemplate" text="AUCTIONATOR_L_UNHIDE_ALL_HIDDEN_ITEMS" parentKey="UnhideAll">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.SetSelectionColor" relativePoint="BOTTOMLEFT" x="-37" y="-10"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            self:GetParent():GetParent():GetParent():GetParent():UnhideAllClicked()
+          </OnClick>
+        </Scripts>
+      </Button>
+            </Frames>
+          </Frame>
+        </Frames>
+      </Frame>
+
     </Frames>
   </Frame>
 </Ui>

@@ -1016,6 +1016,7 @@ typeControlAdders = {
         end
       end,
       dialogControl = OptionsPrivate.Private.author_option_media_controls[option.mediaType],
+      itemControl = OptionsPrivate.Private.author_option_media_itemControls[option.mediaType],
       order = order(),
       get = get(option, "default"),
       set = function(_, value)
@@ -1252,10 +1253,21 @@ typeControlAdders = {
       name = WeakAuras.newFeatureString .. name(option, "noMerge", L["Prevent Merging"]),
       desc = desc(option, "noMerge", L["If checked, then this group will not merge with other group when selecting multiple auras."]),
       order = order(),
-      width = WeakAuras.doubleWidth,
+      width = option.groupType =="simple" and WeakAuras.doubleWidth or WeakAuras.normalWidth,
       get = get(option, "noMerge"),
       set = set(data, option, "noMerge"),
     }
+    if option.groupType ~="simple" then
+      args[prefix .. "sortAlphabetically"] = {
+        type = "toggle",
+        name = WeakAuras.newFeatureString .. name(option, "sortAlphabetically", L["Sort"]),
+        desc = desc(option, "sortAlphabetically", L["If checked, then the combo box in the User settings will be sorted."]),
+        order = order(),
+        width = WeakAuras.normalWidth,
+        get = get(option, "sortAlphabetically"),
+        set = set(data, option, "sortAlphabetically"),
+      }
+    end
     if option.groupType ~="simple" then
       args[prefix .. "limitType"] = {
         type = "select",
@@ -2120,6 +2132,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
             end
             WeakAuras.ClearAndUpdateOptions(data.id, true)
           end,
+          sorting = option.sortAlphabetically and OptionsPrivate.Private.SortOrderForValues(values) or nil
         }
         args[prefix .. "resetEntry"] = {
           type = "execute",
@@ -2346,11 +2359,20 @@ local function addUserModeOption(options, args, data, order, prefix, i)
     elseif optionType == "media" then
       userOption.type = "select"
       userOption.dialogControl = OptionsPrivate.Private.author_option_media_controls[option.mediaType]
+      userOption.itemControl = OptionsPrivate.Private.author_option_media_itemControls[option.mediaType]
       userOption.values = function()
         if option.mediaType == "sound" then
           return OptionsPrivate.Private.sound_file_types
         else
           return AceGUIWidgetLSMlists[option.mediaType]
+        end
+      end
+
+      userOption.sorting = function()
+        if option.mediaType == "sound" then
+          return OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.sound_file_types)
+        else
+          return nil
         end
       end
 

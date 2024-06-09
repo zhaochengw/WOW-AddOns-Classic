@@ -321,6 +321,7 @@ local CROWD_CONTROL_SPELLS_RETAIL = {
   [233582] = PC_SNARE,        -- Entrenched in Flame
   [5484] = LOC_FEAR,          -- Howl of Terror
   [22703] = LOC_STUN,         -- Infernal Awakening
+  [89766] = LOC_STUN,         -- Axe Toss
 
   ---------------------------------------------------------------------------------------------------
   -- Warrior
@@ -1163,16 +1164,17 @@ end
 if Addon.IS_CLASSIC or Addon.IS_TBC_CLASSIC or Addon.IS_WRATH_CLASSIC then
   AuraFrameOnEnter = function(self)
     AuraTooltip:SetOwner(self, "ANCHOR_LEFT")
-    AuraTooltip:SetUnitAura(self:GetParent():GetParent().unit.unitid, self.AuraData.auraInstanceID, self:GetParent().Filter)
+    AuraTooltip:SetUnitAura(self:GetParent():GetParent().unit.unitid, self.AuraData.auraInstanceID, self.AuraData.effect)
   end
 else  
   AuraFrameOnEnter = function(self)
     AuraTooltip:SetOwner(self, "ANCHOR_LEFT")
 
-    if self:GetParent().Filter == "HELPFUL" then
-      AuraTooltip:SetUnitBuffByAuraInstanceID(self:GetParent():GetParent().unit.unitid, self.AuraData.auraInstanceID, self:GetParent().Filter)
+    -- I really think that SetUnit...ByAuraInstanceID does not the filter parameter, but still ...
+    if self.AuraData.effect == "HELPFUL" then
+      AuraTooltip:SetUnitBuffByAuraInstanceID(self:GetParent():GetParent().unit.unitid, self.AuraData.auraInstanceID, self.AuraData.effect)
     else
-      AuraTooltip:SetUnitDebuffByAuraInstanceID(self:GetParent():GetParent().unit.unitid, self.AuraData.auraInstanceID, self:GetParent().Filter)
+      AuraTooltip:SetUnitDebuffByAuraInstanceID(self:GetParent():GetParent().unit.unitid, self.AuraData.auraInstanceID, self.AuraData.effect)
     end
 
     -- Would show more information, but mainly about the spell, not the aura
@@ -1506,6 +1508,8 @@ else
           aura.isStealable, aura.nameplateShowPersonal, aura.spellId, aura.canApplyAura, aura.isBossAura, _, aura.nameplateShowAll =
           UnitAuraBySlot(unitid, slots[i])
       
+          aura.duration = aura.duration or 0
+
           local unit_aura_info = GetAuraDataBySlot(unitid, slots[i])   
           if unit_aura_info then
             aura.auraInstanceID = unit_aura_info.auraInstanceID

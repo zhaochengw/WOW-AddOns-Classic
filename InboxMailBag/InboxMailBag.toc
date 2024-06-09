@@ -1,0 +1,27 @@
+## Interface: 11302
+## Title: Inbox Mailbag
+## Version: v2.4
+## Author: Jeremy Parsons
+## Notes: Turns your inbox into another searchable bag
+## SavedVariables: MAILBAGDB
+## OptionalDeps: Ace3
+## X-Curse-Packaged-Version: v2.4
+## X-Curse-Project-Name: Inbox Mailbag
+## X-Curse-Project-ID: inbox-mailbag
+## X-Curse-Repository-ID: wow/inbox-mailbag/mainline
+
+#@no-lib-strip@
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+#@end-no-lib-strip@
+
+Localization\enUS.lua
+Localization\zhCN.lua
+Localization\zhTW.lua
+Localization\deDE.lua
+
+InboxMailBag.xml

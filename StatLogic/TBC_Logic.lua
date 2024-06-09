@@ -1,166 +1,67 @@
-local addonName, addonTable = ...
+local addonName, addon = ...
 ---@class StatLogic
 local StatLogic = LibStub:GetLibrary(addonName)
 
 -- Level 60 rating base
-addonTable.RatingBase = {
-	[CR_WEAPON_SKILL] = 2.5,
-	[CR_DEFENSE_SKILL] = 1.5,
-	[CR_DODGE] = 12,
-	[CR_PARRY] = 15,
-	[CR_BLOCK] = 5,
-	[CR_HIT_MELEE] = 10,
-	[CR_HIT_RANGED] = 10,
-	[CR_HIT_SPELL] = 8,
-	[CR_CRIT_MELEE] = 14,
-	[CR_CRIT_RANGED] = 14,
-	[CR_CRIT_SPELL] = 14,
-	[CR_HIT_TAKEN_MELEE] = 10, -- hit avoidance
-	[CR_HIT_TAKEN_RANGED] = 10,
-	[CR_HIT_TAKEN_SPELL] = 8,
-	[CR_CRIT_TAKEN_MELEE] = 25, -- resilience
-	[CR_CRIT_TAKEN_RANGED] = 25,
-	[CR_CRIT_TAKEN_SPELL] = 25,
-	[CR_HASTE_MELEE] = 10,
-	[CR_HASTE_RANGED] = 10,
-	[CR_HASTE_SPELL] = 10,
-	[CR_WEAPON_SKILL_MAINHAND] = 2.5,
-	[CR_WEAPON_SKILL_OFFHAND] = 2.5,
-	[CR_WEAPON_SKILL_RANGED] = 2.5,
-	[CR_EXPERTISE] = 2.5,
-}
-addonTable.SetCRMax()
-
-StatLogic.GenericStatMap[StatLogic.GenericStats.CR_HIT] = {
-	CR_HIT_MELEE,
-	CR_HIT_RANGED,
-}
-StatLogic.GenericStatMap[StatLogic.GenericStats.CR_CRIT] = {
-	CR_CRIT_MELEE,
-	CR_CRIT_RANGED,
-}
-StatLogic.GenericStatMap[StatLogic.GenericStats.CR_HASTE] = {
-	CR_HASTE_MELEE,
-	CR_HASTE_RANGED,
+StatLogic.RatingBase = {
+	[StatLogic.Stats.DefenseRating] = 1.5,
+	[StatLogic.Stats.DodgeRating] = 12,
+	[StatLogic.Stats.ParryRating] = 15,
+	[StatLogic.Stats.BlockRating] = 5,
+	[StatLogic.Stats.MeleeHitRating] = 10,
+	[StatLogic.Stats.RangedHitRating] = 10,
+	[StatLogic.Stats.SpellHitRating] = 8,
+	[StatLogic.Stats.MeleeCritRating] = 14,
+	[StatLogic.Stats.RangedCritRating] = 14,
+	[StatLogic.Stats.SpellCritRating] = 14,
+	[StatLogic.Stats.ResilienceRating] = 25,
+	[StatLogic.Stats.MeleeHasteRating] = 10,
+	[StatLogic.Stats.RangedHasteRating] = 10,
+	[StatLogic.Stats.SpellHasteRating] = 10,
+	[StatLogic.Stats.ExpertiseRating] = 2.5,
 }
 
---[[---------------------------------
-{	:GetNormalManaRegenFromSpi(spi, [int], [level])
--------------------------------------
--- Description
-	Calculates the mana regen per 5 seconds while NOT casting from spirit.
--- Remarks
-	Player class is no longer a parameter
-	ManaRegen(SPI, INT, LEVEL) = (0.001+SPI*BASE_REGEN[LEVEL]*(INT^0.5))*5
--- Examples
-	StatLogic:GetNormalManaRegenFromSpi(1) -- GetNormalManaRegenPerSpi
-	StatLogic:GetNormalManaRegenFromSpi(10, 15)
-	StatLogic:GetNormalManaRegenFromSpi(10, 15, 70)
+StatLogic.GenericStatMap[StatLogic.Stats.HitRating] = {
+	StatLogic.Stats.MeleeHitRating,
+	StatLogic.Stats.RangedHitRating,
 }
------------------------------------]]
+StatLogic.GenericStatMap[StatLogic.Stats.CritRating] = {
+	StatLogic.Stats.MeleeCritRating,
+	StatLogic.Stats.RangedCritRating,
+}
+StatLogic.GenericStatMap[StatLogic.Stats.HasteRating] = {
+	StatLogic.Stats.MeleeHasteRating,
+	StatLogic.Stats.RangedHasteRating,
+}
 
 -- Numbers reverse engineered by Whitetooth@Cenarius(US) (hotdogee [at] gmail [dot] com)
 local BaseManaRegenPerSpi = {
-	[1] = 0.034965,
-	[2] = 0.034191,
-	[3] = 0.033465,
-	[4] = 0.032526,
-	[5] = 0.031661,
-	[6] = 0.031076,
-	[7] = 0.030523,
-	[8] = 0.029994,
-	[9] = 0.029307,
-	[10] = 0.028661,
-	[11] = 0.027584,
-	[12] = 0.026215,
-	[13] = 0.025381,
-	[14] = 0.0243,
-	[15] = 0.023345,
-	[16] = 0.022748,
-	[17] = 0.021958,
-	[18] = 0.021386,
-	[19] = 0.02079,
-	[20] = 0.020121,
-	[21] = 0.019733,
-	[22] = 0.019155,
-	[23] = 0.018819,
-	[24] = 0.018316,
-	[25] = 0.017936,
-	[26] = 0.017576,
-	[27] = 0.017201,
-	[28] = 0.016919,
-	[29] = 0.016581,
-	[30] = 0.016233,
-	[31] = 0.015994,
-	[32] = 0.015707,
-	[33] = 0.015464,
-	[34] = 0.015204,
-	[35] = 0.014956,
-	[36] = 0.014744,
-	[37] = 0.014495,
-	[38] = 0.014302,
-	[39] = 0.014094,
-	[40] = 0.013895,
-	[41] = 0.013724,
-	[42] = 0.013522,
-	[43] = 0.013363,
-	[44] = 0.013175,
-	[45] = 0.012996,
-	[46] = 0.012853,
-	[47] = 0.012687,
-	[48] = 0.012539,
-	[49] = 0.012384,
-	[50] = 0.012233,
-	[51] = 0.012113,
-	[52] = 0.011973,
-	[53] = 0.011859,
-	[54] = 0.011714,
-	[55] = 0.011575,
-	[56] = 0.011473,
-	[57] = 0.011342,
-	[58] = 0.011245,
-	[59] = 0.01111,
-	[60] = 0.010999,
-	[61] = 0.0107,
-	[62] = 0.010522,
-	[63] = 0.01029,
-	[64] = 0.010119,
-	[65] = 0.009968,
-	[66] = 0.009808,
-	[67] = 0.009651,
-	[68] = 0.009553,
-	[69] = 0.009445,
-	[70] = 0.009327,
+	0.034965, 0.034191, 0.033465, 0.032526, 0.031661, 0.031076, 0.030523, 0.029994, 0.029307, 0.028661,
+	0.027584, 0.026215, 0.025381, 0.024300, 0.023345, 0.022748, 0.021958, 0.021386, 0.020790, 0.020121,
+	0.019733, 0.019155, 0.018819, 0.018316, 0.017936, 0.017576, 0.017201, 0.016919, 0.016581, 0.016233,
+	0.015994, 0.015707, 0.015464, 0.015204, 0.014956, 0.014744, 0.014495, 0.014302, 0.014094, 0.013895,
+	0.013724, 0.013522, 0.013363, 0.013175, 0.012996, 0.012853, 0.012687, 0.012539, 0.012384, 0.012233,
+	0.012113, 0.011973, 0.011859, 0.011714, 0.011575, 0.011473, 0.011342, 0.011245, 0.011110, 0.010999,
+	0.010700, 0.010522, 0.010290, 0.010119, 0.009968, 0.009808, 0.009651, 0.009553, 0.009445, 0.009327,
 }
 
----@param spi integer
----@param int? string Defaults to player class
----@param level? integer Defaults to player level
----@return number mp5nc Mana regen per 5 seconds when out of combat
----@return string statid
----@diagnostic disable-next-line:duplicate-set-field
-function StatLogic:GetNormalManaRegenFromSpi(spi, int, level)
-	-- argCheck for invalid input
-	self:argCheck(spi, 2, "number")
-	self:argCheck(int, 3, "nil", "number")
-	self:argCheck(level, 4, "nil", "number")
+local NormalManaRegenPerSpi = function()
+	local level = UnitLevel("player")
+	local _, int = UnitStat("player", 4)
+	local _, spi = UnitStat("player", 5)
+	return (0.001 / spi + BaseManaRegenPerSpi[level] * (int ^ 0.5)) * 5
+end
 
-	-- if level is invalid input, default to player level
-	if type(level) ~= "number" or level < 1 or level > 70 then
-		level = UnitLevel("player")
-	end
-
-	-- if int is invalid input, default to player int
-	if type(int) ~= "number" then
-		local _
-		_, int = UnitStat("player",4)
-	end
-	-- Calculate
-	return (0.001 + spi * BaseManaRegenPerSpi[level] * (int ^ 0.5)) * 5, "MANA_REG_NOT_CASTING"
+local NormalManaRegenPerInt = function()
+	local level = UnitLevel("player")
+	local _, int = UnitStat("player", 4)
+	local _, spi = UnitStat("player", 5)
+	-- Derivative of regen with respect to int
+	return (spi * BaseManaRegenPerSpi[level] / (2 * (int ^ 0.5))) * 5
 end
 
 -- Numbers reverse engineered by Whitetooth@Cenarius(US) (hotdogee [at] gmail [dot] com)
-addonTable.CritPerAgi = {
+addon.CritPerAgi = {
 	["WARRIOR"] = {
 		0.2500, 0.2381, 0.2381, 0.2273, 0.2174, 0.2083, 0.2083, 0.2000, 0.1923, 0.1923,
 		0.1852, 0.1786, 0.1667, 0.1613, 0.1563, 0.1515, 0.1471, 0.1389, 0.1351, 0.1282,
@@ -244,15 +145,9 @@ addonTable.CritPerAgi = {
 	},
 }
 
-local zero = setmetatable({}, {
-	__index = function()
-		return 0
-	end
-})
-
 -- Numbers reverse engineered by Whitetooth (hotdogee [at] gmail [dot] com)
-addonTable.SpellCritPerInt = {
-	["WARRIOR"] = zero,
+addon.SpellCritPerInt = {
+	["WARRIOR"] = addon.zero,
 	["PALADIN"] = {
 		0.0832, 0.0793, 0.0793, 0.0757, 0.0757, 0.0724, 0.0694, 0.0694, 0.0666, 0.0666,
 		0.0640, 0.0616, 0.0594, 0.0574, 0.0537, 0.0537, 0.0520, 0.0490, 0.0490, 0.0462,
@@ -271,7 +166,7 @@ addonTable.SpellCritPerInt = {
 		0.0194, 0.0192, 0.0186, 0.0184, 0.0179, 0.0177, 0.0175, 0.0170, 0.0168, 0.0164,
 		0.0157, 0.0154, 0.0150, 0.0144, 0.0141, 0.0137, 0.0133, 0.0130, 0.0128, 0.0125,
 	},
-	["ROGUE"] = zero,
+	["ROGUE"] = addon.zero,
 	["PRIEST"] = {
 		0.1710, 0.1636, 0.1568, 0.1505, 0.1394, 0.1344, 0.1297, 0.1254, 0.1214, 0.1140,
 		0.1045, 0.0941, 0.0875, 0.0784, 0.0724, 0.0684, 0.0627, 0.0597, 0.0562, 0.0523,
@@ -319,59 +214,67 @@ addonTable.SpellCritPerInt = {
 	},
 }
 
-addonTable.APPerStr = {
-	["WARRIOR"] = 2,
-	["PALADIN"] = 2,
-	["HUNTER"] = 1,
-	["ROGUE"] = 1,
-	["PRIEST"] = 1,
-	["SHAMAN"] = 2,
-	["MAGE"] = 1,
-	["WARLOCK"] = 1,
-	["DRUID"] = 2,
-}
-
-addonTable.APPerAgi = {
-	["WARRIOR"] = 0,
-	["PALADIN"] = 0,
-	["HUNTER"] = 1,
-	["ROGUE"] = 1,
-	["PRIEST"] = 0,
-	["SHAMAN"] = 0,
-	["MAGE"] = 0,
-	["WARLOCK"] = 0,
-	["DRUID"] = 0,
-}
-
-addonTable.RAPPerAgi = {
-	["WARRIOR"] = 1,
-	["PALADIN"] = 0,
-	["HUNTER"] = 1,
-	["ROGUE"] = 1,
-	["PRIEST"] = 0,
-	["SHAMAN"] = 0,
-	["MAGE"] = 0,
-	["WARLOCK"] = 0,
-	["DRUID"] = 0,
-}
-
-addonTable.BaseDodge = {
-	["WARRIOR"] = 0.7580,
-	["PALADIN"] = 0.6520,
-	["HUNTER"] = -5.4500,
-	["ROGUE"] = -0.5900,
-	["PRIEST"] = 3.1830,
-	["SHAMAN"] = 1.6750,
-	["MAGE"] = 3.4575,
-	["WARLOCK"] = 2.0350,
-	["DRUID"] = -1.8720,
-}
-
-addonTable.RegisterValidatorEvents()
+-- TODO Gather data if TBC comes back
+addon.DodgePerAgi = {}
 
 StatLogic.StatModTable = {}
-if addonTable.class == "DRUID" then
+if addon.class == "DRUID" then
 	StatLogic.StatModTable["DRUID"] = {
+		["ADD_AP_MOD_FERAL_AP"] = {
+			-- Cat Form
+			{
+				["value"] = 1,
+				["aura"] = 768,
+				["group"] = addon.BuffGroup.Feral,
+			},
+			-- Bear Form
+			{
+				["value"] = 1,
+				["aura"] = 5487,
+				["group"] = addon.BuffGroup.Feral,
+			},
+			-- Dire Bear Form
+			{
+				["value"] = 1,
+				["aura"] = 9634,
+				["group"] = addon.BuffGroup.Feral,
+			},
+			-- Moonkin Form
+			{
+				["value"] = 1,
+				["aura"] = 24858,
+				["group"] = addon.BuffGroup.Feral,
+			},
+		},
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 2,
+			},
+		},
+		["ADD_AP_MOD_AGI"] = {
+			-- Druid: Cat Form - Buff
+			{
+				["value"] = 1,
+				["aura"] = 768,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
+		["ADD_NORMAL_HEALTH_REG_MOD_SPI"] = {
+			-- Base
+			{
+				["value"] = 0.0625 * 5,
+			},
+		},
 		-- Druid: Lunar Guidance (Rank 3) - 1,12
 		--        Increases your spell damage and healing by 8%/16%/25% of your total Intellect.
 		["ADD_SPELL_DMG_MOD_INT"] = {
@@ -428,74 +331,37 @@ if addonTable.class == "DRUID" then
 				},
 			},
 		},
-		-- Druid: Feral Swiftness (Rank 2) - 2,6
-		--        Increases your movement speed by 15%/30% while outdoors in Cat Form and increases your chance to dodge while in Cat Form, Bear Form and Dire Bear Form by 2%/4%.
 		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = -1.8720,
+			},
+			-- Talent: Feral Swiftness (Cat Form)
 			{
 				["tab"] = 2,
 				["num"] = 6,
 				["rank"] = {
 					2, 4,
 				},
-				["buff"] = 32357,		-- ["Bear Form"],
+				["aura"] = 32356,
 			},
+			-- Talent: Feral Swiftness (Bear Form)
 			{
 				["tab"] = 2,
 				["num"] = 6,
 				["rank"] = {
 					2, 4,
 				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
+				["aura"] = 32357,
 			},
+			-- Talent: Feral Swiftness (Dire Bear Form)
 			{
 				["tab"] = 2,
 				["num"] = 6,
 				["rank"] = {
 					2, 4,
 				},
-				["buff"] = 32356,		-- ["Cat Form"],
-			},
-		},
-		-- Druid: Survival of the Fittest (Rank 3) - 2,16
-		--        Increases all attributes by 1%/2%/3% and reduces the chance you'll be critically hit by melee attacks by 1%/2%/3%.
-		["ADD_CRIT_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["tab"] = 2,
-				["num"] = 16,
-				["rank"] = {
-					-0.01, -0.02, -0.03,
-				},
-			},
-		},
-		-- Druid: Natural Perfection (Rank 3) - 3,18
-		--        Your critical strike chance with all spells is increased by 3% and melee and ranged critical strikes against you cause 4%/7%/10% less damage.
-		["MOD_CRIT_DAMAGE_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["tab"] = 3,
-				["num"] = 18,
-				["rank"] = {
-					-0.04, -0.07, -0.1,
-				},
-			},
-		},
-		-- Druid: Balance of Power (Rank 2) - 1,16
-		--        Increases your chance to hit with all spells and reduces the chance you'll be hit by spells by 2%/4%.
-		["ADD_HIT_TAKEN"] = {
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 16,
-				["rank"] = {
-					-0.02, -0.04,
-				},
+				["aura"] = 9634,
 			},
 		},
 		-- Druid: Thick Hide (Rank 3) - 2,5
@@ -515,16 +381,16 @@ if addonTable.class == "DRUID" then
 				},
 			},
 			{
-				["value"] = 2.8,
-				["buff"] = 32357,		-- ["Bear Form"],
+				["value"] = 1.8,
+				["aura"] = 32357,		-- ["Bear Form"],
 			},
 			{
-				["value"] = 5,
-				["buff"] = 9634,		-- ["Dire Bear Form"],
+				["value"] = 4,
+				["aura"] = 9634,		-- ["Dire Bear Form"],
 			},
 			{
-				["value"] = 5,
-				["buff"] = 24858,		-- ["Moonkin Form"],
+				["value"] = 4,
+				["aura"] = 24858,		-- ["Moonkin Form"],
 			},
 		},
 		-- Druid: Heart of the Wild (Rank 5) - 2,15
@@ -543,7 +409,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.04, 0.08, 0.12, 0.16, 0.2,
 				},
-				["buff"] = 32357,		-- ["Bear Form"],
+				["aura"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["tab"] = 2,
@@ -551,7 +417,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.04, 0.08, 0.12, 0.16, 0.2,
 				},
-				["buff"] = 9634,		-- ["Dire Bear Form"],
+				["aura"] = 9634,		-- ["Dire Bear Form"],
 			},
 			-- Survival of the Fittest: +1%/2%/3% all stats
 			{
@@ -564,12 +430,12 @@ if addonTable.class == "DRUID" then
 			-- Bear Form / Dire Bear Form: +25% stamina
 			{
 				["value"] = 0.25,
-				["buff"] = 32357,		-- ["Bear Form"],
+				["aura"] = 32357,		-- ["Bear Form"],
 			},
 			-- Bear Form / Dire Bear Form: +25% stamina
 			{
 				["value"] = 0.25,
-				["buff"] = 9634,		-- ["Dire Bear Form"],
+				["aura"] = 9634,		-- ["Dire Bear Form"],
 			},
 		},
 		-- Druid: Survival of the Fittest (Rank 3) - 2,16
@@ -593,7 +459,7 @@ if addonTable.class == "DRUID" then
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = 32356,		-- ["Cat Form"],
+				["aura"] = 32356,		-- ["Cat Form"],
 			},
 		},
 		-- Druid: Survival of the Fittest (Rank 3) - 2,16
@@ -648,8 +514,42 @@ if addonTable.class == "DRUID" then
 			},
 		},
 	}
-elseif addonTable.class == "HUNTER" then
+elseif addon.class == "HUNTER" then
 	StatLogic.StatModTable["HUNTER"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_AP_MOD_AGI"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_RANGED_AP_MOD_AGI"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
+		["ADD_NORMAL_HEALTH_REG_MOD_SPI"] = {
+			-- Base
+			{
+				["value"] = 0.125 * 5,
+			},
+		},
 		-- Hunter: Aspect of the Viper - Buff
 		--         The hunter takes on the aspects of a viper, regenerating mana equal to 25% of his Intellect every 5 sec.
 		-- TODO: Gronnstalker's Armor, (2) Set: Increases the mana you gain from your Aspect of the Viper by an additional 5% of your Intellect.
@@ -664,7 +564,7 @@ elseif addonTable.class == "HUNTER" then
 		["ADD_MANA_REG_MOD_INT"] = {
 			{
 				["value"] = 0.25,
-				["buff"] = 34074,			-- ["Aspect of the Viper"],
+				["aura"] = 34074,			-- ["Aspect of the Viper"],
 			},
 		},
 		-- Hunter: Careful Aim (Rank 3) - 2,16
@@ -709,15 +609,12 @@ elseif addonTable.class == "HUNTER" then
 				}
 			},
 		},
-		-- Hunter: Catlike Reflexes (Rank 3) - 1,19
-		--         Increases your chance to dodge by 1%/2%/3% and your pet's chance to dodge by an additional 3%/6%/9%.
-		-- Hunter: Aspect of the Monkey - Buff
-		--         The hunter takes on the aspects of a monkey, increasing chance to dodge by 8%. Only one Aspect can be active at a time.
-		-- Hunter: Improved Aspect of the Monkey (Rank 3) - 1,4
-		--         Increases the Dodge bonus of your Aspect of the Monkey by 2%/4%/6%.
-		-- Hunter: Deterrence - Buff
-		--         Dodge and Parry chance increased by 25%.
 		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = -5.4500,
+			},
+			-- Talent: Catlike Reflexes
 			{
 				["tab"] = 1,
 				["num"] = 19,
@@ -725,41 +622,24 @@ elseif addonTable.class == "HUNTER" then
 					1, 2, 3,
 				},
 			},
+			-- Buff: Aspect of the Monkey
 			{
 				["value"] = 8,
-				["buff"] = 13163,		-- ["Aspect of the Monkey"],
+				["aura"] = 13163,
 			},
+			-- Talent: Improved Aspect of the Monkey
 			{
 				["tab"] = 1,
 				["num"] = 4,
 				["rank"] = {
 					2, 4, 6,
 				},
-				["buff"] = 13163,		-- ["Aspect of the Monkey"],
+				["aura"] = 13163,
 			},
+			-- Buff: Deterrence
 			{
 				["value"] = 25,
-				["buff"] = 31567,		-- ["Deterrence"],
-			},
-		},
-		-- Hunter: Survival Instincts (Rank 2) - 1,14
-		--         Reduces all damage taken by 2%/4%.
-
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 14,
-				["rank"] = {
-					-0.02, -0.04,
-				},
+				["aura"] = 31567,
 			},
 		},
 		-- Hunter: Thick Hide (Rank 3) - 1,5
@@ -825,12 +705,40 @@ elseif addonTable.class == "HUNTER" then
 			},
 		},
 	}
-elseif addonTable.class == "MAGE" then
+elseif addon.class == "MAGE" then
 	StatLogic.StatModTable["MAGE"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 3.4575,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
+		["ADD_NORMAL_HEALTH_REG_MOD_SPI"] = {
+			-- Base
+			{
+				["value"] = 0.041667 * 5,
+			},
+		},
 		-- Mage: Arcane Fortitude - 1,9
 		--       Increases your armor by an amount equal to 50% of your Intellect.
 		-- 2.4.0 Increases your armor by an amount equal to 100% of your Intellect.
-		["ADD_ARMOR_MOD_INT"] = {
+		["ADD_BONUS_ARMOR_MOD_INT"] = {
 			{
 				["tab"] = 1,
 				["num"] = 9,
@@ -851,7 +759,7 @@ elseif addonTable.class == "MAGE" then
 			},
 			{
 				["value"] = 0.3,
-				["buff"] = 6117,		-- ["Mage Armor"],
+				["aura"] = 6117,		-- ["Mage Armor"],
 			},
 		},
 		-- Mage: Mind Mastery (Rank 5) - 1,22
@@ -862,64 +770,6 @@ elseif addonTable.class == "MAGE" then
 				["num"] = 22,
 				["rank"] = {
 					0.05, 0.1, 0.15, 0.2, 0.25,
-				},
-			},
-		},
-		-- Mage: Arctic Winds (Rank 5) - 3,20
-		--       Reduces the chance melee and ranged attacks will hit you by 1%/2%/3%/4%/5%.
-		["ADD_HIT_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["tab"] = 3,
-				["num"] = 20,
-				["rank"] = {
-					-0.01, -0.02, -0.03, -0.04, -0.05,
-				},
-			},
-		},
-		-- Mage: Prismatic Cloak (Rank 2) - 1,16
-		--       Reduces all damage taken by 2%/4%.
-		-- Mage: Playing with Fire (Rank 3) - 2,13
-		--       Increases all spell damage caused by 1%/2%/3% and all spell damage taken by 1%/2%/3%.
-		-- Mage: Frozen Core (Rank 3) - 3,14
-		--       Reduces the damage taken by Frost and Fire effects by 2%/4%/6%.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 16,
-				["rank"] = {
-					-0.02, -0.04,
-				},
-			},
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 13,
-				["rank"] = {
-					-0.01, -0.02, -0.03,
-				},
-			},
-			{
-				["FIRE"] = true,
-				["FROST"] = true,
-				["tab"] = 3,
-				["num"] = 14,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
 				},
 			},
 		},
@@ -935,23 +785,40 @@ elseif addonTable.class == "MAGE" then
 			},
 		},
 	}
-elseif addonTable.class == "PALADIN" then
+elseif addon.class == "PALADIN" then
 	StatLogic.StatModTable["PALADIN"] = {
-		-- Paladin: Pursuit of Justice (Rank 2) - 3,9
-		--          Reduces the chance you'll be hit by spells by 1%/2%/3% and increases movement and mounted movement speed by 5%/10%/15%. This does not stack with other movement speed increasing effects.
-		["ADD_HIT_TAKEN"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
 			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 9,
-				["rank"] = {
-					-0.05, -0.1, -0.15,
-				},
+				["value"] = 2,
+			},
+		},
+		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 0.6520,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
+		["ADD_NORMAL_HEALTH_REG_MOD_SPI"] = {
+			-- Base
+			{
+				["value"] = 0.125 * 5,
+			},
+		},
+		["ADD_BLOCK_VALUE_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = BLOCK_PER_STRENGTH,
 			},
 		},
 		-- Paladin: Holy Guidance (Rank 5) - 1,19
@@ -974,89 +841,6 @@ elseif addonTable.class == "PALADIN" then
 				["rank"] = {
 					0.07, 0.14, 0.21, 0.28, 0.35,
 				},
-			},
-		},
-		-- Paladin: Divine Purpose (Rank 3) - 3,20
-		--          Melee and ranged critical strikes against you cause 4%/7%/10% less damage.
-		["MOD_CRIT_DAMAGE_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["tab"] = 3,
-				["num"] = 20,
-				["rank"] = {
-					-0.04, -0.07, -0.1,
-				},
-			},
-		},
-		-- Paladin: Blessed Life (Rank 3) - 1,18
-		--          All attacks against you have a 4%/7%/10% chance to cause half damage.
-		-- Paladin: Ardent Defender (Rank 5) - 2,19
-		--          When you have less than 20% health, all damage taken is reduced by 6%/12%/18%/24%/30%.
-		-- Paladin: Spell Warding (Rank 2) - 2,13
-		--          All spell damage taken is reduced by 2%/4%.
-		-- Paladin: Improved Righteous Fury (Rank 3) - 2,7
-		--          While Righteous Fury is active, all damage taken is reduced by 2%/4%/6% and increases the amount of threat generated by your Righteous Fury spell by 16%/33%/50%.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 1,
-				["num"] = 18,
-				["rank"] = {
-					-0.02, -0.035, -0.05,
-				},
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 19,
-				["rank"] = {
-					-0.06, -0.12, -0.18, -0.24, -0.3,
-				},
-				["condition"] = "(UnitHealth('player') / UnitHealthMax('player')) < 0.35",
-			},
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 13,
-				["rank"] = {
-					-0.02, -0.04,
-				},
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 7,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
-				["buff"] = 25781,		-- ["Righteous Fury"],
 			},
 		},
 		-- Paladin: Toughness (Rank 5) - 2,5
@@ -1124,8 +908,36 @@ elseif addonTable.class == "PALADIN" then
 			},
 		},
 	}
-elseif addonTable.class == "PRIEST" then
+elseif addon.class == "PRIEST" then
 	StatLogic.StatModTable["PRIEST"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 3.1830,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
+		["ADD_NORMAL_HEALTH_REG_MOD_SPI"] = {
+			-- Base
+			{
+				["value"] = 0.041667 * 5,
+			},
+		},
 		-- Priest: Meditation (Rank 3) - 1,9
 		--         Allows 10/20/30% of your Mana regeneration to continue while casting.
 		["ADD_MANA_REG_MOD_NORMAL_MANA_REG"] = {
@@ -1155,7 +967,7 @@ elseif addonTable.class == "PRIEST" then
 				["rank"] = {
 					0.05, 0.1,
 				},
-				["buff"] = 39234,		-- ["Divine Spirit"],
+				["aura"] = 39234,		-- ["Divine Spirit"],
 			},
 			{
 				["tab"] = 1,
@@ -1163,7 +975,7 @@ elseif addonTable.class == "PRIEST" then
 				["rank"] = {
 					0.05, 0.1,
 				},
-				["buff"] = 32999,		-- ["Prayer of Spirit"],
+				["aura"] = 32999,		-- ["Prayer of Spirit"],
 			},
 		},
 		-- Priest: Spiritual Guidance (Rank 5) - 2,14
@@ -1184,7 +996,7 @@ elseif addonTable.class == "PRIEST" then
 				["rank"] = {
 					0.05, 0.1,
 				},
-				["buff"] = 39234,		-- ["Divine Spirit"],
+				["aura"] = 39234,		-- ["Divine Spirit"],
 			},
 			{
 				["tab"] = 1,
@@ -1192,72 +1004,7 @@ elseif addonTable.class == "PRIEST" then
 				["rank"] = {
 					0.05, 0.1,
 				},
-				["buff"] = 32999,		-- ["Prayer of Spirit"],
-			},
-		},
-		-- Priest: OLD: Elune's Grace (Rank 6) - Buff, NE priest only
-		--         OLD: Ranged damage taken reduced by 167 and chance to dodge increased by 10%.
-		-- 2.3.0 Elune's Grace (Night Elf) effect changed to reduce chance to be hit by melee and ranged attacks by 20% for 15 seconds. There is now only 1 rank of the spell.
-		-- Priest: Elune's Grace (Rank 1) - Buff, NE priest only
-		--         Reduces the chance you'll be hit by melee and ranged attacks by 20% for 15 sec.
-		["ADD_HIT_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["value"] = 20,
-				["buff"] = 2651,		-- ["Elune's Grace"],
-			},
-		},
-		-- Priest: Shadow Resilience (Rank 2) - 3,16
-		--         Reduces the chance you'll be critically hit by all spells by 2%/4%.
-		["MOD_CRIT_DAMAGE_TAKEN"] = {
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 16,
-				["rank"] = {
-					-0.02, -0.04,
-				},
-			},
-		},
-		-- Priest: Spell Warding (Rank 5) - 2,4
-		--         Reduces all spell damage taken by 2%/4%/6%/8%/10%.
-		-- Priest: OLD: Pain Suppression - Buff
-		--         OLD: Reduces all damage taken by 60% for 8 sec.
-		-- 2.1.0 "Pain Suppression" now reduces damage taken by 65% and increases resistance to Dispel mechanics by 65% for the duration.
-		-- 2.3.0 Pain Suppression (Discipline Talent) is now usable on friendly targets, instantly reduces the target's threat by 5%, reduces damage taken by 40% and its cooldown has been reduced to 2 minutes.
-		-- Priest: 2.3.0: Pain Suppression - Buff
-		--         2.3.0: Instantly reduces a friendly target's threat by 5%, reduces all damage taken by 40% and increases resistance to Dispel mechanics by 65% for 8 sec.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 4,
-				["rank"] = {
-					-0.02, -0.04, -0.06, -0.08, -0.1,
-				},
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.4,
-				["buff"] = 33206,		-- ["Pain Suppression"],
+				["aura"] = 32999,		-- ["Prayer of Spirit"],
 			},
 		},
 		-- Priest: Mental Strength (Rank 5) - 1,13
@@ -1314,8 +1061,32 @@ elseif addonTable.class == "PRIEST" then
 			},
 		},
 	}
-elseif addonTable.class == "ROGUE" then
+elseif addon.class == "ROGUE" then
 	StatLogic.StatModTable["ROGUE"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_AP_MOD_AGI"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_RANGED_AP_MOD_AGI"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_NORMAL_HEALTH_REG_MOD_SPI"] = {
+			-- Base
+			{
+				["value"] = 0.333333 * 5,
+			},
+		},
 		-- Rogue: Deadliness (Rank 5) - 3,17
 		--        Increases your attack power by 2%/4%/6%/8%/10%.
 		["MOD_AP"] = {
@@ -1327,13 +1098,12 @@ elseif addonTable.class == "ROGUE" then
 				},
 			},
 		},
-		-- Rogue: Lightning Reflexes (Rank 5) - 2,3
-		--        Increases your Dodge chance by 1%/2%/3%/4%/5%.
-		-- Rogue: Evasion (Rank 1/2) - Buff
-		--        Dodge chance increased by 50%/50% and chance ranged attacks hit you reduced by 0%/25%.
-		-- Rogue: Ghostly Strike - Buff
-		--        Dodge chance increased by 15%.
 		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = -0.5900,
+			},
+			-- Talent: Lightning Reflexes
 			{
 				["tab"] = 2,
 				["num"] = 3,
@@ -1341,78 +1111,15 @@ elseif addonTable.class == "ROGUE" then
 					1, 2, 3, 4, 5,
 				},
 			},
+			-- Buff: Evasion
 			{
 				["value"] = 50,
-				["buff"] = 26669,		-- ["Evasion"],
+				["aura"] = 5277,
 			},
+			-- Buff: Ghostly Strike
 			{
 				["value"] = 15,
-				["buff"] = 31022,		-- ["Ghostly Strike"],
-			},
-		},
-		-- Rogue: Sleight of Hand (Rank 2) - 3,3
-		--        Reduces the chance you are critically hit by melee and ranged attacks by 2% and increases the threat reduction of your Feint ability by 20%.
-		["ADD_CRIT_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["tab"] = 3,
-				["num"] = 3,
-				["rank"] = {
-					-0.02, -0.04,
-				},
-			},
-		},
-		-- Rogue: Heightened Senses (Rank 2) - 3,12
-		--        Increases your Stealth detection and reduces the chance you are hit by spells and ranged attacks by 2%/4%.
-		-- Rogue: Cloak of Shadows - buff
-		--        Instantly removes all existing harmful spell effects and increases your chance to resist all spells by 90% for 5 sec. Does not remove effects that prevent you from using Cloak of Shadows.
-		-- Rogue: Evasion (Rank 1/2) - Buff
-		--        Dodge chance increased by 50%/50% and chance ranged attacks hit you reduced by 0%/25%.
-		["ADD_HIT_TAKEN"] = {
-			{
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 12,
-				["rank"] = {
-					-0.02, -0.04,
-				},
-			},
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.9,
-				["buff"] = 39666,		-- ["Cloak of Shadows"],
-			},
-			{
-				["RANGED"] = true,
-				["rank"] = {
-					0, -0.25,
-				},
-				["buff"] = 26669,		-- ["Evasion"],
-			},
-		},
-		-- Rogue: Deadened Nerves (Rank 5) - 1,19
-		--        Decreases all physical damage taken by 1%/2%/3%/4%/5%
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["tab"] = 1,
-				["num"] = 19,
-				["rank"] = {
-					-0.01, -0.02, -0.03, -0.04, -0.05,
-				},
+				["aura"] = 14278,
 			},
 		},
 		-- Rogue: Vitality (Rank 2) - 2,20
@@ -1447,34 +1154,34 @@ elseif addonTable.class == "ROGUE" then
 			},
 		},
 	}
-elseif addonTable.class == "SHAMAN" then
+elseif addon.class == "SHAMAN" then
 	StatLogic.StatModTable["SHAMAN"] = {
-		["MOD_DMG_TAKEN"] = {
-			-- Shaman: Shamanistic Rage - Buff
-			--         Reduces all damage taken by 30% and gives your successful melee attacks a chance to regenerate mana equal to 15% of your attack power. Lasts 30 sec.
+		["ADD_AP_MOD_STR"] = {
+			-- Base
 			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.3,
-				["buff"] = 30823,		-- ["Shamanistic Rage"],
+				["value"] = 2,
 			},
-			-- Shaman: Elemental Warding (Rank 3) - 1,4
-			--         Reduces damage taken from Fire, Frost and Nature effects by 4%/7%/10%.
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
 			{
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["tab"] = 1,
-				["num"] = 14,
-				["rank"] = {
-					-0.04, -0.07, -0.1,
-				},
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
+		["ADD_NORMAL_HEALTH_REG_MOD_SPI"] = {
+			-- Base
+			{
+				["value"] = 0.071429 * 5,
+			},
+		},
+		["ADD_BLOCK_VALUE_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = BLOCK_PER_STRENGTH,
 			},
 		},
 		-- Shaman: Mental Quickness (Rank 3) - 2,15
@@ -1532,27 +1239,17 @@ elseif addonTable.class == "SHAMAN" then
 				},
 			},
 		},
-		-- Shaman: Anticipation (Rank 5) - 2,9
-		--         Increases your chance to dodge by an additional 1%/2%/3%/4%/5%.
 		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 1.6750,
+			},
+			-- Talent: Anticipation
 			{
 				["tab"] = 2,
 				["num"] = 9,
 				["rank"] = {
 					1, 2, 3, 4, 5,
-				},
-			},
-		},
-		-- Shaman: Elemental Shields (Rank 3) - 1,18
-		--         Reduces the chance you will be critically hit by melee and ranged attacks by 2%/4%/6%.
-		["ADD_CRIT_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["tab"] = 1,
-				["num"] = 18,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
 				},
 			},
 		},
@@ -1590,80 +1287,106 @@ elseif addonTable.class == "SHAMAN" then
 			},
 		},
 	}
-elseif addonTable.class == "WARLOCK" then
+elseif addon.class == "WARLOCK" then
 	StatLogic.StatModTable["WARLOCK"] = {
-		-- Warlock: Demonic Knowledge (Rank 3) - 2,20 - UnitExists("pet")
-		--          Increases your spell damage by an amount equal to 5%/10%/15% of the total of your active demon's Stamina plus Intellect.
-		-- WARLOCK_PET_BONUS["PET_BONUS_INT"] = 0.3;
-		-- 2.4.0 It will now increase your spell damage by an amount equal to 4/8/12%, down from 5/10/15%.
-		["ADD_SPELL_DMG_MOD_INT"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 2.0350,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["ADD_NORMAL_MANA_REG_MOD_INT"] = {
+			{
+				["regen"] = NormalManaRegenPerInt,
+			},
+		},
+		["ADD_NORMAL_HEALTH_REG_MOD_SPI"] = {
+			-- Base
+			{
+				["value"] = 0.045455 * 5,
+			},
+		},
+		["ADD_PET_STA_MOD_STA"] = {
+			-- Base
+			{
+				["value"] = 0.75,
+				["pet"] = true,
+			},
+		},
+		["MOD_PET_STA"] = {
+			-- Blessing of Kings
+			--{
+			--	["value"] = 0.1,
+			--	["condition"] = "UnitBuff('pet', GetSpellInfo(20217)) or UnitBuff('pet', GetSpellInfo(25898))",
+			--},
+			-- Warlock: Fel Stamina (Rank 3) - 2,9
+			--          Increases the Stamina of your Imp, Voidwalker, Succubus, and Felhunter and Felguard by 5%/10%/15% and increases your maximum health and mana by 1%/2%/3%.
+			{
+				["tab"] = 2,
+				["num"] = 9,
+				["rank"] = {
+					0.05, 0.1, 0.15,
+				},
+				["pet"] = true,
+			},
+		},
+		-- Warlock: Demonic Knowledge (Rank 3) - 2,20
+		--          Increases your spell damage by an amount equal to 4/8/12% of the total of your active demon's Stamina plus Intellect.
+		["ADD_SPELL_DMG_MOD_PET_STA"] = {
 			{
 				["tab"] = 2,
 				["num"] = 20,
 				["rank"] = {
-					0.012, 0.024, 0.036,
+					0.04, 0.08, 0.12,
 				},
-				["condition"] = "UnitExists('pet')",
+				["pet"] = true,
 			},
 		},
-		-- Warlock: Demonic Knowledge (Rank 3) - 2,20 - UnitExists("pet")
-		--          Increases your spell damage by an amount equal to 5%/10%/15% of the total of your active demon's Stamina plus Intellect.
-		-- WARLOCK_PET_BONUS["PET_BONUS_STAM"] = 0.3;
-		-- 2.4.0 It will now increase your spell damage by an amount equal to 4/8/12%, down from 5/10/15%.
-		["ADD_SPELL_DMG_MOD_STA"] = {
+		["ADD_PET_INT_MOD_INT"] = {
+			-- Base
+			{
+				["value"] = 0.3,
+				["pet"] = true,
+			},
+		},
+		["MOD_PET_INT"] = {
+			-- Blessing of Kings
+			--{
+			--	["value"] = 0.1,
+			--	["condition"] = "UnitBuff('pet', GetSpellInfo(20217)) or UnitBuff('pet', GetSpellInfo(25898))",
+			--},
+			-- Warlock: Fel Intellect (Rank 3) - 2,6
+			--          Increases the Stamina and Intellect of your Imp, Voidwalker, Succubus, Felhunter and Felguard by 15% and increases your maximum health and mana by 1%/2%/3%.
+			{
+				["tab"] = 2,
+				["num"] = 6,
+				["rank"] = {
+					0.05, 0.1, 0.15,
+				},
+				["pet"] = true,
+			},
+		},
+		-- Warlock: Demonic Knowledge (Rank 3) - 2,20
+		--          Increases your spell damage by an amount equal to 4/8/12% of the total of your active demon's Stamina plus Intellect.
+		["ADD_SPELL_DMG_MOD_PET_INT"] = {
 			{
 				["tab"] = 2,
 				["num"] = 20,
 				["rank"] = {
-					0.012, 0.024, 0.036,
+					0.04, 0.08, 0.12,
 				},
-				["condition"] = "UnitExists('pet')",
-			},
-		},
-		-- Warlock: Demonic Resilience (Rank 3) - 2,18
-		--          Reduces the chance you'll be critically hit by melee and spells by 1%/2%/3% and reduces all damage your summoned demon takes by 15%.
-		["ADD_CRIT_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 18,
-				["rank"] = {
-					-0.01, -0.02, -0.03,
-				},
-			},
-		},
-		-- Warlock: Master Demonologist (Rank 5) - 2,17
-		--          Voidwalker - Reduces physical damage taken by 2%/4%/6%/8%/10%.
-		-- Warlock: Soul Link (Rank 1) - 2,19
-		--          When active, 20% of all damage taken by the caster is taken by your Imp, Voidwalker, Succubus, Felhunter or Felguard demon instead. In addition, both the demon and master will inflict 5% more damage. Lasts as long as the demon is active.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["tab"] = 2,
-				["num"] = 17,
-				["rank"] = {
-					-0.02, -0.04, -0.06, -0.08, -0.1,
-				},
-				["condition"] = "IsUsableSpell('"..(GetSpellInfo(11775)).."')" --"UnitCreatureFamily('pet') == '"..L["Voidwalker"].."'",	-- ["Torment"]
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.2,
-				["buff"] = 25228,		-- ["Soul Link"],
+				["pet"] = true,
 			},
 		},
 		-- Warlock: Fel Stamina (Rank 3) - 2,9
@@ -1711,8 +1434,38 @@ elseif addonTable.class == "WARLOCK" then
 			},
 		},
 	}
-elseif addonTable.class == "WARRIOR" then
+elseif addon.class == "WARRIOR" then
 	StatLogic.StatModTable["WARRIOR"] = {
+		["ADD_AP_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = 2,
+			},
+		},
+		["ADD_RANGED_AP_MOD_AGI"] = {
+			-- Base
+			{
+				["value"] = 1,
+			},
+		},
+		["ADD_DODGE"] = {
+			-- Base
+			{
+				["value"] = 0.7580,
+			},
+		},
+		["ADD_NORMAL_HEALTH_REG_MOD_SPI"] = {
+			-- Base
+			{
+				["value"] = 0.5 * 5,
+			},
+		},
+		["ADD_BLOCK_VALUE_MOD_STR"] = {
+			-- Base
+			{
+				["value"] = BLOCK_PER_STRENGTH,
+			},
+		},
 		-- Warrior: Improved Berserker Stance (Rank 5) - 2,20 - Stance
 		--          Increases attack power by 2%/4%/6%/8%/10% while in Berserker Stance.
 		["MOD_AP"] = {
@@ -1723,93 +1476,6 @@ elseif addonTable.class == "WARRIOR" then
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
 				["stance"] = "Interface\\Icons\\Ability_Racial_Avatar",
-			},
-		},
-		-- Warrior: Shield Wall - Buff
-		--          Reduces the Physical and magical damage taken by the caster by 75% for 10 sec.
-		-- Warrior: Defensive Stance - stance
-		--          A defensive combat stance. Decreases damage taken by 10% and damage caused by 10%. Increases threat generated.
-		-- Warrior: Berserker Stance - stance
-		--          An aggressive stance. Critical hit chance is increased by 3% and all damage taken is increased by 10%.
-		-- Warrior: Death Wish - Buff
-		--          When activated, increases your physical damage by 20% and makes you immune to Fear effects, but increases all damage taken by 5%. Lasts 30 sec.
-		-- Warrior: Recklessness - Buff
-		--          The warrior will cause critical hits with most attacks and will be immune to Fear effects for the next 15 sec, but all damage taken is increased by 20%.
-		-- Warrior: Improved Defensive Stance (Rank 3) - 3,18
-		--          Reduces all spell damage taken while in Defensive Stance by 2%/4%/6%.
-		["MOD_DMG_TAKEN"] = {
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.75,
-				["buff"] = 41196,		-- ["Shield Wall"],
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = -0.1,
-				["stance"] = "Interface\\Icons\\Ability_Warrior_DefensiveStance",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = 0.1,
-				["stance"] = "Interface\\Icons\\Ability_Racial_Avatar",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = 0.05,
-				["buff"] = 12292,		-- ["Death Wish"],
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["value"] = 0.2,
-				["buff"] = 13847,		-- ["Recklessness"],
-			},
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 18,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
 			},
 		},
 		-- Warrior: Toughness (Rank 5) - 3,5
@@ -1856,10 +1522,19 @@ elseif addonTable.class == "WARRIOR" then
 				},
 			},
 		},
+		["MOD_HEALTH"] = {
+			-- Buff: Last Stand
+			{
+				["tab"] = 3,
+				["num"] = 6,
+				["value"] = 0.30,
+				["aura"] = 12976,
+			},
+		},
 	}
 end
 
-if addonTable.playerRace == "NightElf" then
+if addon.playerRace == "NightElf" then
 	StatLogic.StatModTable["NightElf"] = {
 		-- Night Elf : Quickness - Racial
 		--             Dodge chance increased by 1%.
@@ -1869,7 +1544,7 @@ if addonTable.playerRace == "NightElf" then
 			},
 		},
 	}
-elseif addonTable.playerRace == "Tauren" then
+elseif addon.playerRace == "Tauren" then
 	StatLogic.StatModTable["Tauren"] = {
 		-- Tauren: Endurance - Racial
 		--         Total Health increased by 5%.
@@ -1879,7 +1554,7 @@ elseif addonTable.playerRace == "Tauren" then
 			},
 		},
 	}
-elseif addonTable.playerRace == "Gnome" then
+elseif addon.playerRace == "Gnome" then
 	StatLogic.StatModTable["Gnome"] = {
 		-- Gnome: Expansive Mind - Racial
 		--        Increase Intelligence by 5%.
@@ -1889,119 +1564,156 @@ elseif addonTable.playerRace == "Gnome" then
 			},
 		},
 	}
-elseif addonTable.playerRace == "Human" then
+elseif addon.playerRace == "Human" then
 	StatLogic.StatModTable["Human"] = {
 		-- Human: The Human Spirit - Racial
 		--        Increase Spirit by 10%.
-		["MOD_SPIRIT"] = {
+		["MOD_SPI"] = {
 			{
 				["value"] = 0.1,
+			},
+		},
+	}
+elseif addon.playerRace == "Troll" then
+	StatLogic.StatModTable["Troll"] = {
+		["MOD_NORMAL_HEALTH_REG"] = {
+			-- Troll: Regeneration - Racial
+			--   Health regeneration rate increased by 10%.
+			{
+				["value"] = 0.1,
+			},
+		},
+		["ADD_HEALTH_REG_MOD_NORMAL_HEALTH_REG"] = {
+			-- Troll: Regeneration - Racial
+			--   10% of total Health regeneration may continue during combat.
+			{
+				["value"] = 0.1,
+				["spellid"] = 20555,
 			},
 		},
 	}
 end
 
 StatLogic.StatModTable["ALL"] = {
-	-- Paladin: Lay on Hands (Rank 1/2) - Buff
-	--          Armor increased by 15%/30%.
-	-- Priest: Inspiration (Rank 1/2/3) - Buff
-	--         Increases armor by 8%/16%/25%.
-	-- Shaman: Ancestral Fortitude (Rank 1/2/3) - Buff
-	--         Increases your armor value by 8%/16%/25%.
+	["ADD_HEALTH_MOD_STA"] = {
+		{
+			["value"] = 10,
+		},
+	},
+	["ADD_MANA_MOD_INT"] = {
+		{
+			["value"] = 15,
+		},
+	},
+	["ADD_BONUS_ARMOR_MOD_AGI"] = {
+		{
+			["value"] = ARMOR_PER_AGILITY,
+		},
+	},
 	["MOD_ARMOR"] = {
+		-- Paladin: Lay on Hands (Rank 1/2) - Buff
+		--          Armor increased by 15%/30%.
 		{
 			["rank"] = {
 				0.15, 0.30,
 			},
-			["buff"] = 27154,		-- ["Lay on Hands"],
+			["aura"] = 27154,
 		},
+		-- Priest: Inspiration (Rank 1/2/3) - Buff
+		--         Increases armor by 8%/16%/25%.
 		{
 			["rank"] = {
 				0.08, 0.16, 0.25,
 			},
-			["buff"] = 15363,		-- ["Inspiration"],
+			["aura"] = 15363,
+			["group"] = addon.BuffGroup.Armor,
 		},
+		-- Shaman: Ancestral Fortitude (Rank 1/2/3) - Buff
+		--         Increases your armor value by 8%/16%/25%.
 		{
 			["rank"] = {
 				0.08, 0.16, 0.25,
 			},
-			["buff"] = 16237,		-- ["Ancestral Fortitude"],
+			["aura"] = 16237,
+			["group"] = addon.BuffGroup.Armor,
 		},
 	},
-	-- Blessing of Kings - Buff
-	-- Increases stats by 10%.
-	-- Greater Blessing of Kings - Buff
-	-- Increases stats by 10%.
 	["MOD_STR"] = {
+		-- Blessing of Kings - Buff
+		-- Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 20217,		-- ["Blessing of Kings"],
+			["aura"] = 20217,
+			["group"] = addon.BuffGroup.AllStats,
 		},
+		-- Greater Blessing of Kings - Buff
+		-- Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 25898,		-- ["Greater Blessing of Kings"],
+			["aura"] = 25898,
+			["group"] = addon.BuffGroup.AllStats,
 		},
 	},
-	-- Blessing of Kings - Buff
-	-- Increases stats by 10%.
-	-- Greater Blessing of Kings - Buff
-	-- Increases stats by 10%.
 	["MOD_AGI"] = {
+		-- Blessing of Kings - Buff
+		-- Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 20217,		-- ["Blessing of Kings"],
+			["aura"] = 20217,
 		},
+		-- Greater Blessing of Kings - Buff
+		-- Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 25898,		-- ["Greater Blessing of Kings"],
+			["aura"] = 25898,
 		},
 	},
-	-- Blessing of Kings - Buff
-	-- Increases stats by 10%.
-	-- Greater Blessing of Kings - Buff
-	-- Increases stats by 10%.
 	["MOD_STA"] = {
+		-- Blessing of Kings - Buff
+		-- Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 20217,		-- ["Blessing of Kings"],
+			["aura"] = 20217,
 		},
+		-- Greater Blessing of Kings - Buff
+		-- Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 25898,		-- ["Greater Blessing of Kings"],
+			["aura"] = 25898,
 		},
 	},
-	-- Blessing of Kings - Buff
-	-- Increases stats by 10%.
-	-- Greater Blessing of Kings - Buff
-	-- Increases stats by 10%.
-	-- Ember Skyfire Diamond
-	-- 2% Intellect
 	["MOD_INT"] = {
+		-- Blessing of Kings - Buff
+		-- Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 20217,		-- ["Blessing of Kings"],
+			["aura"] = 20217,
 		},
+		-- Greater Blessing of Kings - Buff
+		-- Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 25898,		-- ["Greater Blessing of Kings"],
+			["aura"] = 25898,
 		},
+		-- Ember Skyfire Diamond
+		-- 2% Intellect
 		{
 			["meta"] = 35503,
 			["value"] = 0.02,
 		},
 	},
-	-- Blessing of Kings - Buff
-	-- Increases stats by 10%.
-	-- Greater Blessing of Kings - Buff
-	-- Increases stats by 10%.
 	["MOD_SPI"] = {
+		-- Blessing of Kings - Buff
+		-- Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 20217,		-- ["Blessing of Kings"],
+			["aura"] = 20217,
 		},
+		-- Greater Blessing of Kings - Buff
+		-- Increases stats by 10%.
 		{
 			["value"] = 0.1,
-			["buff"] = 25898,		-- ["Greater Blessing of Kings"],
+			["aura"] = 25898,
 		},
 	},
 	-- Whitemend Wisdom
@@ -2029,6 +1741,62 @@ StatLogic.StatModTable["ALL"] = {
 			["set"] = 554,
 			["pieces"] = 3,
 			["value"] = 0.05,
+		},
+	},
+	["ADD_DODGE_REDUCTION_MOD_EXPERTISE"] = {
+		-- Base
+		{
+			["value"] = 0.25,
+		}
+	},
+	["ADD_PARRY_REDUCTION_MOD_EXPERTISE"] = {
+		-- Base
+		{
+			["value"] = 0.25,
+		}
+	},
+	["ADD_BLOCK_CHANCE_MOD_DEFENSE"] = {
+		-- Passive: Block
+		{
+			["known"] = 107,
+			["value"] = DODGE_PARRY_BLOCK_PERCENT_PER_DEFENSE,
+		}
+	},
+	["ADD_CRIT_AVOIDANCE_MOD_DEFENSE"] = {
+		-- Base
+		{
+			["value"] = DODGE_PARRY_BLOCK_PERCENT_PER_DEFENSE,
+		}
+	},
+	["ADD_DODGE_MOD_DEFENSE"] = {
+		-- Base
+		{
+			["value"] = DODGE_PARRY_BLOCK_PERCENT_PER_DEFENSE,
+		}
+	},
+	["ADD_MISS_MOD_DEFENSE"] = {
+		-- Base
+		{
+			["value"] = DODGE_PARRY_BLOCK_PERCENT_PER_DEFENSE,
+		}
+	},
+	["ADD_PARRY_MOD_DEFENSE"] = {
+		-- Passive: Parry
+		{
+			["known"] = 3127,
+			["value"] = DODGE_PARRY_BLOCK_PERCENT_PER_DEFENSE,
+		}
+	},
+	["ADD_CRIT_AVOIDANCE_MOD_RESILIENCE"] = {
+		-- Base
+		{
+			["value"] = 1,
+		},
+	},
+	["ADD_CRIT_DAMAGE_REDUCTION_MOD_RESILIENCE"] = {
+		-- Base
+		{
+			["value"] = -2,
 		},
 	},
 }

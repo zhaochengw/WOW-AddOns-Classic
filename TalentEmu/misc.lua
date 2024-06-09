@@ -172,8 +172,10 @@ MT.BuildEnv('MISC');
 		end
 	end
 	local function _StorePlayerData()
-		if CT.BUILD == "WRATH" then
+		if VT.__support_glyph then
 			VT.VAR[CT.SELFGUID] = VT.__emulib.EncodePlayerTalentDataV2() .. VT.__emulib.EncodePlayerGlyphDataV2() .. VT.__emulib.EncodePlayerEquipmentDataV2();
+		elseif VT.__support_engraving then
+			VT.VAR[CT.SELFGUID] = VT.__emulib.EncodePlayerTalentDataV2() .. VT.__emulib.EncodePlayerEquipmentDataV2() .. VT.__emulib.EncodePlayerEngravingDataV2();
 		else
 			VT.VAR[CT.SELFGUID] = VT.__emulib.EncodePlayerTalentDataV2() .. VT.__emulib.EncodePlayerEquipmentDataV2();
 		end
@@ -226,10 +228,13 @@ MT.BuildEnv('MISC');
 		Driver:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
 		Driver:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", 'player');
 		-- Driver:RegisterEvent("PLAYER_LOGOUT");
-		if CT.BUILD == "WRATH" then
+		if VT.__support_glyph then
 			Driver:RegisterEvent("GLYPH_ADDED");
 			Driver:RegisterEvent("GLYPH_REMOVED");
 			Driver:RegisterEvent("GLYPH_UPDATED");
+		end
+		if VT.__support_engraving then
+			Driver:RegisterEvent("RUNE_UPDATED");
 		end
 		Driver:SetScript("OnEvent", function(Driver, event)
 			MT._TimerStart(_StorePlayerData, 0.1, 1);

@@ -13,7 +13,7 @@ if GetLocale() ~= "zhCN" then return;end
 
 BINDING_NAME_ALARAIDTOOL_NEWWINDOW = "新建模拟器";
 BINDING_NAME_ALARAIDTOOL_QUERY = "查看目标天赋";
-BINDING_HEADER_ALATALENTEMU_HEADER = "<|cff00ff00alaTalentEmu|r>天赋模拟器";
+BINDING_HEADER_ALATALENTEMU_HEADER = "<|cff00ff00TalentEmu|r>天赋模拟器";
 
 l10n.Locale = "zhCN";
 
@@ -57,7 +57,7 @@ l10n.SaveButton = "|cff00ff00左键|r保存天赋设置\n|cff00ff00右键|r加�
 l10n.SendButton = "|cff00ff00左键|r发送天赋到聊天\n|cff00ff00右键|r查看最近聊天中的天赋";
 l10n.EquipmentFrameButton = "打开装备查看";
 
-l10n.TalentFrameCallButton = "打开ala天赋模拟器";
+l10n.TalentFrameCallButton = "打开天赋模拟器";
 l10n.TalentFrameCallButtonString = "模拟器";
 l10n.CurRank = "当前等级";
 l10n.NextRank = "下一等级";

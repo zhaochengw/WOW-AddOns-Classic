@@ -31,8 +31,8 @@ local function GetTooltipNameScanner()
 	tinsert(tooltipNames, tip)
 	return tip
 end
-
-function RSTooltipScanners.ScanNpcName(npcID)
+	
+function RSTooltipScanners.ScanNpcName(npcID, callback, secondTry)
 	local tip = GetTooltipNameScanner()
 	tip:SetOwner(UIParent, 'ANCHOR_NONE')
 	tip.npcID = npcID or 0
@@ -42,11 +42,22 @@ function RSTooltipScanners.ScanNpcName(npcID)
 		if (name) then
 			--Cannot use RSNpcDB.SetNpcName(self.npcID, name), cyclic import!
 			private.dbglobal.rare_names[GetLocale()][npcID] = name
+			if (callback) then
+				callback(name)
+			end
 		end
 		self:SetScript('OnTooltipSetUnit', nil)
 		self.npcID = nil
 	end)
 	tip:SetHyperlink('unit:Creature-0-0-0-0-' .. npcID .. '-0')
+	
+	if (not private.dbglobal.rare_names[GetLocale()][npcID] and not secondTry) then
+		C_Timer.After(1, function()
+			RSTooltipScanners.ScanNpcName(npcID, callback, true)
+		end)
+	elseif (callback) then
+		callback()
+	end
 end
 
 ---============================================================================

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: Locales.xml 4 2017-04-27 11:37:54Z arith $
+-->
+<Ui xmlns="http://www.blizzard.com/wow/ui/"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+	<Script file="enUS.lua"/>
+	<Script file="zhCN.lua"/>
+	<Script file="zhTW.lua"/>
+</Ui>

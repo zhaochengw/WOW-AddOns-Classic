@@ -61,6 +61,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
         end
     end
 
+    -- https://www.wowace.com/projects/ace3/pages/ace-config-3-0-options-tables
     return {
         name = format("%s %s", L.CASTBAR, localizedUnit),
         order = order,
@@ -103,6 +104,10 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             if unitID == "player" then
                                 if value == false then
                                     return ReloadUI()
+                                end
+                                if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+                                    print("ClassicCastbars: Do a /reload if player castbar doesn't work properly on first time enabling.") -- luacheck: ignore
+                                    PlayerCastingBarFrame:SetLook("CLASSIC")
                                 end
                                 ClassicCastbars:SkinPlayerCastbar()
                             end
@@ -175,12 +180,20 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                         hidden = unitID == "player",
                     },
+                    showInterruptSchool = {
+                        order = 9,
+                        name = L.SHOW_INTERRUPT_SCHOOL,
+                        width = "full",
+                        type = "toggle",
+                        hidden = unitID == "player" or not isClassicEra,
+                        disabled = ModuleIsDisabled,
+                    },
                     posX = {
                         -- Position slider X for nameplate castbars only
-                        -- TODO: is there a better way to do this after nameplate GetPoint() changes?
-                        order = 9,
-                        name = "Position X",
-                        desc = "Position X",
+                        -- TODO: is there a better way to do this after nameplate GetPoint() being protected?
+                        order = 10,
+                        name = "Position X (Left/Right)",
+                        desc = "Set castbar position by coords. Blizzard nerfed drag-to-move functionality for nameplates in patch 8.2.",
                         width = 2,
                         type = "range",
                         min = -999,
@@ -199,9 +212,9 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     posY = {
                         -- Position slider Y for nameplate castbars only
                         -- TODO: is there a better way to do this after nameplate GetPoint() changes?
-                        order = 10,
-                        name = "Position Y",
-                        desc = "Position Y",
+                        order = 11,
+                        name = "Position Y (Up/Down)",
+                        desc = "Set castbar position by coords. Blizzard nerfed drag-to-move functionality for nameplates in patch 8.2.",
                         width = 2,
                         type = "range",
                         min = -999,
@@ -260,20 +273,20 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         name = L.BORDER_PADDING_HEIGHT,
                         width = 2,
                         type = "range",
-                        min = 0.01,
+                        min = 0.001,
                         max = 5.0,
-                        step = 0.01,
-                        bigStep = 0.01,
+                        step = 0.001,
+                        bigStep = 0.001,
                     },
                     borderPaddingWidth = {
                         order = 4,
                         name = L.BORDER_PADDING_WIDTH,
                         width = 2,
                         type = "range",
-                        min = 0.01,
+                        min = 0.001,
                         max = 5.0,
-                        step = 0.01,
-                        bigStep = 0.01,
+                        step = 0.001,
+                        bigStep = 0.001,
                     },
                 },
             },
@@ -619,12 +632,13 @@ local function GetOptionsTable()
             target = CreateUnitTabGroup("target", L.TARGET, 1),
             nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
             party = CreateUnitTabGroup("party", L.PARTY, 3),
-            player = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and CreateUnitTabGroup("player", L.PLAYER, 4) or nil,
-            focus = CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5),
+            player = CreateUnitTabGroup("player", L.PLAYER, 4),
+            focus = not isClassicEra and CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5) or nil,
             arena = not isClassicEra and CreateUnitTabGroup("arena", _G.ARENA or "Arena", 6) or nil,
 
+            -- Reset Button
             resetAllSettings = {
-                order = 6,
+                order = 7,
                 name = L.RESET_ALL,
                 type = "execute",
                 confirm = function()
@@ -633,11 +647,8 @@ local function GetOptionsTable()
                 func = function()
                     local shouldReloadUI = ClassicCastbars.db.player.enabled
                     -- Reset savedvariables to default
-                    local oldUninterruptibleData = CopyTable(ClassicCastbars.db.npcCastUninterruptibleCache)
                     ClassicCastbarsCharDB = {}
                     ClassicCastbarsDB = CopyTable(ClassicCastbars.defaultConfig)
-                    ClassicCastbarsDB.npcCastUninterruptibleCache = oldUninterruptibleData -- no reason to reset this data
-                    ClassicCastbars.npcCastUninterruptibleCache = ClassicCastbarsDB.npcCastUninterruptibleCache -- update pointer
                     ClassicCastbars.db = ClassicCastbarsDB -- update pointer
 
                     ClassicCastbars_TestMode:OnOptionChanged("target")
@@ -653,10 +664,10 @@ local function GetOptionsTable()
                 end,
             },
 
-            -- Character specific savedvariables
+            -- Character specific savedvariables Checkbox
             usePerCharacterSettings = {
-                order = 7,
-                width = 2,
+                order = 8,
+                width = 1.3,
                 type = "toggle",
                 name = L.PER_CHARACTER,
                 desc = L.PER_CHARACTER_TOOLTIP,

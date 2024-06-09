@@ -63,7 +63,7 @@ function Grid2Options:Initialize()
 	self:EnableLoadOnDemand(true) -- (not Grid2.db.global.LoadOnDemandDisabled)
 	self:MakeOptions()
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("Grid2", self.options, true)
-	LibStub("AceConfigDialog-3.0"):SetDefaultSize("Grid2", 735, 558)
+	LibStub("AceConfigDialog-3.0"):SetDefaultSize("Grid2", 735, 585)
 	self.Initialize = nil
 end
 
@@ -83,6 +83,13 @@ function Grid2Options:OnChatCommand()
 		dialog:Close("Grid2")
 	else
 		dialog:Open("Grid2")
+	end
+end
+
+function Grid2Options:RefreshOptions()
+	local dialog = LibStub("AceConfigDialog-3.0")
+	if dialog.OpenFrames["Grid2"] then
+		LibStub("AceConfigRegistry-3.0"):NotifyChange("Grid2")
 	end
 end
 

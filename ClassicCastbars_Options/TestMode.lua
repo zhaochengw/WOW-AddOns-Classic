@@ -11,6 +11,9 @@ local dummySpellData = {
     isChanneled = false,
 }
 
+local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local CastingBarFrame = isRetail and _G.PlayerCastingBarFrame or _G.CastingBarFrame
+
 -- Credits to stako & zork for this
 -- https://www.wowinterface.com/forums/showthread.php?t=41819
 local function CalcScreenGetPoint(frame)
@@ -31,19 +34,11 @@ end
 local function OnDragStop(self)
     self:StopMovingOrSizing()
 
-    local unit = self.unitID
-    if strfind(unit, "nameplate") then
-        unit = "nameplate" -- make it match our DB key
-    elseif strfind(unit, "arena") then
-        unit = "arena"
-    elseif strfind(unit, "party") then
-        unit = "party"
-    end
-
     -- Frame loses relativity to parent and is instead relative to UIParent after
     -- dragging so we can't just use self:GetPoint() here
+    local unit = ClassicCastbars:GetUnitType(self.unitID)
     local x, y = CalcScreenGetPoint(self)
-    ClassicCastbars.db[unit].position = { "CENTER", x, y }  -- has to be center for CalcScreenGetPoint to work
+    ClassicCastbars.db[unit].position = { "CENTER", x, y } -- Has to be center for CalcScreenGetPoint to work
     ClassicCastbars.db[unit].autoPosition = false
 
     -- Reanchor from UIParent back to parent frame
@@ -53,7 +48,7 @@ local function OnDragStop(self)
 end
 
 function TestMode:ToggleArenaContainer(showFlag)
-    if EditModeManagerFrame and EditModeManagerFrame.AccountSettings then -- Dragonflight
+    if EditModeManagerFrame and EditModeManagerFrame.AccountSettings then -- Dragonflight UI
         EditModeManagerFrame.AccountSettings:SetArenaFramesShown(showFlag)
         EditModeManagerFrame.AccountSettings:RefreshArenaFrames()
     elseif ArenaEnemyFrames then
@@ -62,16 +57,12 @@ function TestMode:ToggleArenaContainer(showFlag)
 end
 
 function TestMode:TogglePartyContainer(showFlag)
-    if EditModeManagerFrame then
+    if EditModeManagerFrame and EditModeManagerFrame.AccountSettings then -- Dragonflight UI
         if showFlag then
             ShowUIPanel(EditModeManagerFrame)
         else
             HideUIPanel(EditModeManagerFrame)
         end
-
-        --EditModeManagerFrame.AccountSettings:SetPartyFramesShown(showFlag)
-        --EditModeManagerFrame.AccountSettings:SetRaidFramesShown(showFlag)
-        --EditModeManagerFrame.AccountSettings:RefreshPartyFrames()
     end
 end
 
@@ -129,13 +120,15 @@ end
 function TestMode:SetCastbarMovable(unitID, parent)
     local parentFrame = parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
     if not parentFrame then
-        if unitID == "target" or unitID == "nameplate-testmode" or unitID == "focus" then
+        if unitID == "target" or unitID == "focus" then
             print(format("|cFFFF0000[ClassicCastbars] %s|r", _G.ERR_GENERIC_NO_TARGET)) -- luacheck: ignore
+        elseif unitID == "nameplate-testmode" then
+            print(format("|cFFFF0000[ClassicCastbars] %s|r", L.NO_NAMEPLATE_VISIBLE)) -- luacheck: ignore
         end
         return false
     end
 
-    local castbar = unitID == "player" and _G.CastingBarFrame or ClassicCastbars:GetCastbarFrame(unitID)
+    local castbar = unitID == "player" and CastingBarFrame or ClassicCastbars:GetCastbarFrame(unitID)
     if unitID ~= "nameplate-testmode" then -- Blizzard broke drag functionality for frames that are anchored to restricted frames in TBC :(
         castbar:SetMovable(true)
         castbar:SetClampedToScreen(true)
@@ -180,15 +173,18 @@ function TestMode:SetCastbarMovable(unitID, parent)
         castbar.Icon:SetTexture(dummySpellData.icon)
         castbar.Flash:SetAlpha(0)
         castbar.casting = nil
-		castbar.channeling = nil
-		castbar.holdTime = 0
+        castbar.channeling = nil
+        castbar.holdTime = 0
         castbar.fadeOut = nil
         castbar.flash = nil
+        castbar.playCastFX = false
 
         if IsModifierKeyDown() or (IsMetaKeyDown and IsMetaKeyDown()) then
-            castbar:SetStatusBarColor(castbar.nonInterruptibleColor:GetRGB())
+            --castbar:SetStatusBarColor(castbar.nonInterruptibleColor:GetRGB())
+            castbar:SetStatusBarColor(unpack(ClassicCastbars.db.player.statusColorUninterruptible))
         else
-            castbar:SetStatusBarColor(castbar.startCastColor:GetRGB())
+            --castbar:SetStatusBarColor(castbar.startCastColor:GetRGB())
+            castbar:SetStatusBarColor(unpack(ClassicCastbars.db.player.statusColor))
         end
 
         castbar:SetAlpha(1)
@@ -201,7 +197,7 @@ function TestMode:SetCastbarMovable(unitID, parent)
 end
 
 function TestMode:SetCastbarImmovable(unitID)
-    local castbar = unitID == "player" and _G.CastingBarFrame or ClassicCastbars:GetCastbarFrame(unitID)
+    local castbar = unitID == "player" and CastingBarFrame or ClassicCastbars:GetCastbarFrame(unitID)
     castbar:Hide()
     if castbar.tooltip then
         castbar.tooltip:Hide()
@@ -209,15 +205,17 @@ function TestMode:SetCastbarImmovable(unitID)
 
     castbar.unitID = nil
     castbar.parent = nil
-    castbar.isTesting = nil
+    castbar.isTesting = false
     castbar.holdTime = 0
     castbar:EnableMouse(false)
 
     if unitID == "party-testmode" then
         local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)
-        if parentFrame and not UnitExists("party1") then
+        if parentFrame then
             TestMode:TogglePartyContainer(false)
-            parentFrame:Hide()
+            if not UnitExists("party1") then
+                parentFrame:Hide()
+            end
         end
     elseif unitID == "arena-testmode" then
         local parentFrame = castbar.parent or ClassicCastbars.AnchorManager:GetAnchor(unitID)

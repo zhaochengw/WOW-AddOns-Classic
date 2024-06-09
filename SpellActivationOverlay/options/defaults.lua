@@ -48,6 +48,12 @@ SAO.defaults = {
                 [69369] = { -- Predatory Strikes
                     [0] = true,
                 },
+                [60512] = { -- Healing Trance / Soul Preserver
+                    [0] = false,
+                },
+                [414800]= { -- Fury of Stormrage (Season of Discovery)
+                    [0] = true,
+                },
             },
             glow = {
                 [2912] = { -- Starfire
@@ -72,6 +78,9 @@ SAO.defaults = {
                     [33786] = true,  -- Cyclone
                     [2637]  = false, -- Hibernate
                 },
+                [414800]= { -- Fury of Stormrage (Season of Discovery)
+                    [5185] = true, -- Healing Touch
+                },
             }
         },
         ["HUNTER"] = {
@@ -80,6 +89,12 @@ SAO.defaults = {
                     [0] = true,
                 },
                 [56453] = { -- Lock and Load
+                    [0] = true, -- any stacks
+                },
+                [415320]= { -- Flanking Strike (Season of Discovery)
+                    [0] = true,
+                },
+                [425714]= { -- Cobra Strikes (Season of Discovery)
                     [0] = true, -- any stacks
                 },
             },
@@ -99,6 +114,12 @@ SAO.defaults = {
                     [3044]  = true, --  Arcane Shot
                     [53301] = true, --  Explosive Shot
                 },
+                [1495] = { -- Mongoose Bite
+                    [1495]  = true, -- Mongoose Bite
+                },
+                [415320]= { -- Flanking Strike (Season of Discovery)
+                    [415320]= true, -- Flanking Strike (Season of Discovery)
+                },
             }
         },
         ["MAGE"] = {
@@ -108,6 +129,10 @@ SAO.defaults = {
                 },
                 [44401] = { -- Missile Barrage
                     [0] = true,
+                },
+                [400573]= { -- Arcane Blast (Season of Discovery)
+                    [4] = true, -- 4 stacks
+                    [0] = true, -- any stacks but 4
                 },
                 [48107] = { -- Heating Up (not an actual buff)
                     [0] = true,
@@ -124,16 +149,26 @@ SAO.defaults = {
                 [74396] = { -- Fingers of Frost
                     [0] = true, -- any stacks
                 },
+                [400670]= { -- Fingers of Frost (Season of Discovery)
+                    [0] = true, -- any stacks
+                },
                 [57761] = { -- Brain Freeze
                     [0] = true,
                 },
                 [96215] = { -- Hot Streak + Heating Up (not an actual buff)
                     [0] = false,
                 },
+                [5276] = { -- Representative of spells triggering Frozen effect
+                    [0] = false,
+                }
             },
             glow = {
                 [44401] = { -- Missile Barrage
                     [5143] = true, -- Arcane Missiles
+                },
+                [400573]= { -- Arcane Blast 4/4 (Season of Discovery)
+                    [5143] = true,  -- Arcane Missiles
+                    [1449] = false, -- Arcane Explosion
                 },
                 [48108] = { -- Hot Streak
                     [11366] = true, -- Pyroblast
@@ -148,6 +183,18 @@ SAO.defaults = {
                     [133]   = true, -- Fireball
                     [44614] = true, -- Frostfire Bolt
                 },
+                [74396] = { -- Fingers of Frost
+                    [30455] = true, -- Ice Lance
+                    [44572] = true, -- Deep Freeze
+                },
+                [400670]= { -- Fingers of Frost (Season of Discovery)
+                    [400640]= true, -- Ice Lance (Season of Discovery)
+                },
+                [5276] = { -- Representative of spells triggering Frozen effect
+                    [30455] = true, -- Ice Lance
+                    [44572] = true, -- Deep Freeze
+                    [400640]= true, -- Ice Lance (Season of Discovery)
+                },
             },
         },
         ["PALADIN"] = {
@@ -157,6 +204,9 @@ SAO.defaults = {
                 },
                 [59578] = { -- The Art of War (2/2)
                     [0] = true,
+                },
+                [60513] = { -- Healing Trance / Soul Preserver
+                    [0] = false,
                 },
             },
             glow = {
@@ -182,6 +232,13 @@ SAO.defaults = {
                     [3] = true,  -- 3 stacks
                     [0] = false, -- any stacks but 3
                 },
+                [60514] = { -- Healing Trance / Soul Preserver
+                    [0] = false,
+                },
+                [413247]= { -- Serendipity (Season of Discovery)
+                    [3] = true,  -- 3 stacks
+                    [0] = false, -- any stacks but 3
+                },
             },
             glow = {
                 [33151] = { -- Surge of Light
@@ -192,24 +249,30 @@ SAO.defaults = {
                     [2060] = true, -- Greater Heal
                     [596]  = true, -- Prayer of Healing
                 },
+                [413247]= { -- Serendipity 3/3 (Season of Discovery)
+                    [2050] = true, -- Lesser Heal
+                    [2054] = true, -- Heal
+                    [2060] = true, -- Greater Heal
+                    [596]  = true, -- Prayer of Healing
+                },
             },
         },
         ["ROGUE"] = {
             alert = {
                 [14251] = { -- Riposte
-                    [0] = true,
+                    [0] = "cd:off",
                 },
             },
             glow = {
                 [14251] = { -- Riposte
-                    [14251] = true, -- Riposte
+                    [14251] = "cd:off", -- Riposte
                 },
             },
         },
         ["SHAMAN"] = {
             alert = {
                 [16246] = {  -- Elemental Focus
-                    [0] = true, -- any stacks
+                    [0] = true,
                 },
                 [53817] = { -- Maelstorm Weapon
                     [5] = true, -- 5 stacks
@@ -217,6 +280,12 @@ SAO.defaults = {
                 },
                 [53390] = { -- Tidal Waves
                     [0] = false, -- any stacks
+                },
+                [60515] = { -- Healing Trance / Soul Preserver
+                    [0] = false,
+                },
+                [425339]= { -- Molten Blast (Season of Discovery)
+                    [0] = true,
                 },
             },
             glow = {
@@ -231,6 +300,9 @@ SAO.defaults = {
                 [53390] = { -- Tidal Waves
                     [8004] = false, -- lesser Healing Wave
                     [331]  = false, -- Healing Wave
+                },
+                [425339]= { -- Molten Blast (Season of Discovery)
+                    [425339] = true, -- Molten Blast (Season of Discovery)
                 },
             },
         },
@@ -267,32 +339,44 @@ SAO.defaults = {
                 [63167] = { -- Decimation
                     [6353] = true, -- Soul Fire
                 },
+                [1120] = { -- Drain Soul
+                    [1120] = "spec:1", -- Drain Soul
+                },
             },
         },
         ["WARRIOR"] = {
             alert = {
                 [52437] = { -- Sudden Death
-                    [0] = true,
+                    [0] = true, -- any stacks (up to 2 stacks with tier 10)
                 },
                 [46916] = { -- Bloodsurge
-                    [0] = true,
+                    [0] = true, -- any stacks (up to 2 stacks with tier 10)
                 },
                 [50227] = { -- Sword and Board
+                    [0] = true,
+                },
+                [402911]= { -- Raging Blow (Season of Discovery)
                     [0] = true,
                 },
             },
             glow = {
                 [7384] = { -- Overpower
-                    [7384] = true, -- Overpower
+                    [7384] = "stance:1", -- Overpower
                 },
                 [6572] = { -- Revenge
-                    [6572] = true, -- Revenge
+                    [6572] = "stance:2", -- Revenge
+                },
+                [5308] = { -- Execute
+                    [5308] = "stance:1/3", -- Execute
                 },
                 [34428] = { -- Victory Rush
                     [34428] = true, -- Victory Rush
                 },
-                [5308] = { -- Execute
-                    [5308] = true, -- Execute
+                [402927]= { -- Victory Rush (Season of Discovery)
+                    [402927]= true, -- Victory Rush (Season of Discovery)
+                },
+                [402911]= { -- Raging Blow (Season of Discovery)
+                    [402911]= true, -- Raging Blow (Season of Discovery)
                 },
                 [52437] = { -- Sudden Death
                     [5308] = true, -- Execute
@@ -307,3 +391,8 @@ SAO.defaults = {
         },
     }
 }
+
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+    -- Options that have different default values for Classic Era
+    SAO.defaults.classes["MAGE"]["alert"][12536][0] = "genericarc_05";
+end

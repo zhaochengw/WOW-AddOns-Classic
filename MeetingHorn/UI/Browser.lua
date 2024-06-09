@@ -102,7 +102,7 @@ function Browser:Constructor()
             end
         end
 
-        button:SetText(search)
+        button:SetText(mysplit(search)[1])
         button:SetWidth(button:GetTextWidth())
         button:SetScript('OnClick', QuickButtonOnClick)
         button:Show()
@@ -140,7 +140,7 @@ function Browser:Constructor()
     SetupQuickButton('ICC')
     SetupQuickButton('OS')
     SetupQuickButton('EOE')
-    SetupQuickButton('宝库')
+    SetupQuickButton('宝库 寶庫 亞夏')
     SetupQuickButton('黑龙')
     SetupQuickButton('红玉')
     -- @end-lkc@
@@ -183,7 +183,7 @@ function Browser:Constructor()
         button.Leader:SetText(item:GetLeader())
         button.Comment:SetText(item:GetComment())
         button.Mode:SetText(item:GetMode())
-        --button.Leader:SetTextColor(GetClassColor(item:GetLeaderClass()))
+        button.Leader:SetTextColor(GetClassColorObj(item:GetLeaderClass()):GetRGBA())
         --[=[@classic@
         button.Comment:SetWidth(item:IsActivity() and 290 or 360)
         --@end-classic@]=]
@@ -440,11 +440,40 @@ function Browser:Search()
         activityId = activityFilter
     end
 
-    local result = ns.LFG:Search(path, activityId, modeId, search)
+	local result={}
+	local keys = mysplit(search)
+	if(#keys ~= 0) then
+		for i = #keys, 1 , -1 do
+			local tmp = ns.LFG:Search(path, activityId, modeId, keys[i])
+			for j = #tmp, 1, -1 do
+				table.insert(result,tmp[j])
+			end
+		end
+	else
+		result = ns.LFG:Search(path, activityId, modeId, search)
+	end
+	
+--  local result = ns.LFG:Search(path, activityId, modeId, search)
     self.ActivityList:SetItemList(result)
     self:Sort()
     self.ActivityList:Refresh()
     self.Empty.Text:SetShown(#result == 0)
+end
+
+function mysplit (inputstr, sep)
+	local t = {}
+	if inputstr and inputstr:trim() == '' then
+        return t
+    end
+	
+	if sep == nil then
+			sep = "%s"
+	end
+	
+	for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+			table.insert(t, str)
+	end
+	return t
 end
 
 function Browser:MEETINGHORN_ACTIVITY_ADDED()

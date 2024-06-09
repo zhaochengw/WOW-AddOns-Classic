@@ -99,17 +99,27 @@ L["HIGH"] = true
 L["Layout Disposition"] = true
 L["Layout Look&Feel"] = true
 L["Frames Look&Feel"] = true
+L["Main Window Position"] =  true
 L["Default Settings"] = true
 L["Groups Orientation"] = true
 L['Header Types'] = true
-L["Players"] = true
-L["Pets"] = true
 L["Units per Column"] = true
 L["Hide Empty Units"] = true
 L["Hide frames of non-existant units."] = true
+L["Lock Frame Size"] = true
+L["Forbid dynamic changes in frame dimensions for this kind of header."] = true
 L["Adjust the width percent of each unit's frame."] = true
 L["Adjust the height percent of each unit's frame."] = true
 L["Adjust the default units per column for this group type."] = true
+
+L["Players"] = true
+L["Pets"] = true
+L["Player"] = true
+L["Target"] = true
+L["Target of Target"] = true
+L["Focus"] = true
+L["Target of Focus"] = true
+L["Others"] = true
 
 -- minimap icon
 L["Minimap Icon"] = true
@@ -130,6 +140,8 @@ L["Blink"] = true
 L["Flash"] = true
 L["Blink Frequency"] = true
 L["Adjust the frequency of the Blink effect."] = true
+L["Highlight Effect"] = true
+L["Zoom In"] = true
 
 -- text formatting
 L["Text Formatting"] = true
@@ -269,6 +281,11 @@ L["List"] = true
 L["Are you sure you want to remove this header?"] = true
 L["Are you sure you want to delete the selected layout?"] = true
 L["Layout Editor"] = true
+L["Copy Layout"] = true
+L["Type the name of the new Layout:"] = true
+L["Copy the selected layout into a new layout."] = true
+L["Detach Header"] = true
+L["Header Type"] = true
 
 --{{{ Miscelaneous
 L["New"] = true
@@ -348,6 +365,9 @@ L["Always use the status color for the border"] = true
 
 L["Frame Texture"] = true
 L["Adjust the frame texture."] = true
+L["Blend Mode"] = true
+L["Select how to mix the texture with the background."] = true
+L["Additive"] = true
 
 L["Show stack"] = true
 L["Show the number of stacks."] = true
@@ -389,6 +409,12 @@ L["Select where to anchor the bar and optional you can reverse the grow directio
 L["Previous Bar"] = true
 L["Topmost Bar"] = true
 L["Previous Bar & Reverse"] = true
+L["Glow Line"] = true
+L["Line"] = true
+L["Line Thickness"] = true
+L["Set the thickness of the glow line."] = true
+L["Line Position"] = true
+L["Fine adjust the position of the line relative to the previous bar."] = true
 
 L["Border Size"] = true
 L["Adjust the border of each unit's frame."] = true
@@ -407,6 +433,16 @@ L["Never"] = true
 L["Always"] = true
 L["In Combat"] = true
 L["Out of Combat"] = true
+L["Tooltip"] = true
+L["Display Tooltip"] = true
+L["Check this option to display a tooltip when the mouse is over the icon."] = true
+L["Show Tooltip"] = true
+L["Enable Advanced Tooltips"] = true
+L["Display default unit tooltip when Out of Combat"] = true
+L["Icon Tooltips"] = true
+L["Unit Tooltips"] = true
+L["Sets where the Tooltip is anchored relative to the icon."] = true
+L["Check this option to display a tooltip when the mouse is over this indicator."] = true
 
 L["Select statuses to display with the indicator"] = true
 L["Available Statuses"] = true
@@ -433,9 +469,6 @@ L["Icon Size"] = true
 L["Icon Spacing"] = true
 L["Direction"] = true
 L["Select the direction of the main bar."] = true
-L["Show Tooltip"] = true
-L["Enable Advanced Tooltips"] = true
-L["Display default unit tooltip when Out of Combat"] = true
 
 L["First Aura"] = true
 L["Select the index of the first private aura to display."] = true
@@ -482,6 +515,10 @@ L["TOPLEFT"] = true
 L["TOPRIGHT"] = true
 L["BOTTOMLEFT"] = true
 L["BOTTOMRIGHT"] = true
+L["LEFTTOP"] = true
+L["LEFTBOTTOM"] = true
+L["RIGHTTOP"] = true
+L["RIGHTBOTTOM"] = true
 
 L["location"] = true
 
@@ -500,8 +537,12 @@ L["-color"] = ":color"
 L["-mine"] = ":mine"
 L["-not-mine"] = ":not mine"
 L["buff-"] = "buff: "
+L["buffs-"] = "buffs: "
 L["debuff-"] = "debuff: "
+L["debuffs-"] = "debuffs: "
 L["color-"] = "color: "
+L["aoe-"] = "aoe: "
+L["spells-"] = "spells: "
 
 L["Status"] = true
 L["status"] = true
@@ -527,6 +568,12 @@ L["Threshold"] = true
 L["Thresholds"] = true
 L["Threshold at which to activate the status."] = true
 
+L["Stacks"] = true
+L["Activation"] = true
+L["Highlight"] = true
+L["Combine Stacks"] = true
+L["Multiple instances of the same debuff will be treated as multiple stacks of the same debuff."] = true
+
 L["available statuses"] = true
 
 -- buff & debuff statuses management
@@ -540,11 +587,12 @@ L["Combat"] = true
 L["Targeting&Distances"] = true
 L["Raid&Party Roles"] = true
 L["Miscellaneous"] = true
-
 L["Show if mine"] = true
 L["Show if not mine"] = true
 L["Show if missing"] = true
 L["Display status only if the buff is not active."] = true
+L["Hide on pets"] = true
+L["Never display this status on pets."] = true
 L["Display status only if the buff was cast by you."] = true
 L["Display status only if the buff was not cast by you."] = true
 L["Color count"]= true
@@ -556,6 +604,8 @@ L["Track by SpellId"] = true
 L["Track by spellId instead of aura name"] = true
 L["Assigned to"] = true
 L["Coloring based on"] = true
+L["Single Color"] = true
+L["Debuff Type"] = true
 L["Number of stacks"] = true
 L["Remaining time"] = true
 L["Elapsed time"] = true
@@ -600,8 +650,12 @@ L["Non Boss Debuffs"] = true
 L["Boss Debuffs"] = true
 L["Short Duration"] = true
 L["Long Duration"] = true
+L["Temporary Debuffs"] = true
+L["Permanent Debuffs"] = true
 L["Non Self Casted"] = true
 L["Self Casted"] = true
+L["Relevant Debuffs"] = true
+L["Non-Relevant Debuffs"] = true
 L["Whitelist"] = true
 L["Blacklist"] = true
 L["Use debuff Type color"] = true
@@ -792,6 +846,11 @@ L["Update rate"] = true
 L["Rate at which the status gets updated"] = true
 L["Out of range alpha"] = true
 L["Out of range"] = true
+L["Alpha value when units are way out of range."] = true
+L["Heal Range"] = true
+L["Spell Range"] = true
+L["Range by class"] = true
+L["Check this option to setup different range configuration for each player class."] = true
 
 -- ready-check status
 L["Delay"] = true
@@ -854,6 +913,9 @@ L["Visible Units"] = true
 L["Display status for units less than 100 yards away"] = true
 L["Dead Units"] = true
 L["Display status only for dead units"] = true
+L["Show only selected sticky units"] = true
+L["Show only when all conditions are met"] = true
+L["Show always for selected sticky units"] = true
 
 -- resurrection
 L["Casting resurrection"] = true
@@ -864,7 +926,6 @@ L["A resurrection spell has been casted on the unit"] = true
 -- power
 L["Mana"] = true
 L["Rage"] = true
-L["Focus"] = true
 L["Energy"] = true
 L["Runic Power"] = true
 
@@ -904,7 +965,7 @@ L["Active Out Of Combat"] = true
 L["Enable this option to invert the status so it will become activated when the player is Out Of Combat."] = true
 
 -- pvp status
-L["Hide inside Instances"] = true 
+L["Hide inside Instances"] = true
 
 -- summon status
 L["summon"] = true
@@ -930,12 +991,9 @@ L["display remaining amount of heal absorb shields"] = true
 L["display remaining amount of damage absorption shields"] = true
 L["display remaining amount of damage absorb shields"] = true
 L["Sticky Units"] = true
-L["Target"] = true
 L["Tanks"] = true
-L["Show only selected sticky units"] = true
 
 -- aoe heals
-L["aoe-"] = true
 L["neighbors"] = true
 L["highlighter"] = true
 L["OutgoingHeals"] = true
@@ -1095,11 +1153,13 @@ L["There are conditions referencing this theme. Are you sure you want to delete 
 L["Are you sure you want to delete the selected theme?"] = true
 L["Delete this condition"] = true
 L["Raid (N&H)"] = true
+L["5 man"] = true
 L["10 man"] = true
 L["15 man"] = true
 L["20 man"] = true
 L["25 man"] = true
 L["30 man"] = true
+L["35 man"] = true
 L["40 man"] = true
 L["Shape"] = true
 L["Effect"] = true
@@ -1267,6 +1327,8 @@ L["Display debuffs not casted by Bosses"] = true
 L["Display debuffs direct casted by Bosses"] = true
 L["Display debuffs with duration below 5 minutes."] = true
 L["Display debuffs with duration above 5 minutes."] = true
+L["Display debuffs with a duration."] = true
+L["Display debuffs with no duration."] = true
 L["Display non self debuffs"] = true
 L["Display self debuffs"] = true
 L["Display only debuffs defined in a user defined list."] = true
@@ -1328,9 +1390,12 @@ L["Unit Tag"] = true
 L["Nothing"] = true
 L["Transliterate cyrillic letters"] = true
 L["Convert cyrillic letters to latin alphabet."] = true
+L["Display Pet's Owner"] = true
+L["Display the pet's owner name instead of the pet name."]  = true
+L["Display Vehicle's Owner"] = true
+L["Display the vehicle's owner name instead of the vehicle name."] = true
+L["Use Owner/Vehicle Class Color"] = true
 L["N/A"] = true
-L["Alpha value when units are way out of range."] = true
-L["Heal Range"] = true
 L["Use alternate icons"] = true
 L["display damage absorb shields above max hp"] = true
 L["Hide in Pet Battles"] = true
@@ -1351,7 +1416,7 @@ L["A Layout defines which unit frames will be displayed and the way in which the
 L["Select zero to use default Frame Width"] = true
 L["Select zero to use default Frame Height"] = true
 L["Are you sure?"] = true
-L["A Layout defines which unit frames will be displayed and the way in which they are arranged. Here you can set different layouts for each instance size."] = true
+L["A Layout defines which unit frames will be displayed and the way in which they are arranged. Here you can set different layouts for each raid size."] = true
 L["Add instance size"] = true
 L["Bar"] = true
 L["Back"] = true
@@ -1360,6 +1425,15 @@ L["Horizontal Tiles"] = true
 L["Vertical Tiles"] = true
 L["Repeat"] = true
 L["Mirror"] = true
+L["Percent Format"] = true
+L["Examples:\n%p\n%p percent"] = true
+L["Raid Size"] = true
+L["Choose the Raid Size calculation method"] = true
+L["This setting is used to setup different layouts, frame sizes or themes depending of the raid size."] = true
+L["Maximum capacity of the instance"] = true
+L["Maximum non-empty raid group"] = true
+L["Number of non-empty raid groups"] = true
+L["Number of players in raid"] = true
 
 -- RaidDebuffsOptions
 L["[Custom Debuffs]"] = true
@@ -1389,6 +1463,9 @@ L["Typeless"] = true
 L["phased"] = true
 L["color"] = true
 
+L["Disabled in instances"] = true
+L["Disable this status inside instances."] = true
+
 L["Enable harmful spells Allowlist"] = true
 L["Display only the spells specified in a user defined list."] = true
 
@@ -1406,6 +1483,8 @@ L["Load the status only if you are in the specified instance type."] = true
 L["Load the status only if you are in the specified group type."] = true
 L["Instance Name/ID"] = true
 L["Supports multiple names or IDs separated by commas or newlines.\n\nCurrent Instance:\n%s(%d)"] = true
+L["Spell Ready"] = true
+L["Load the status only if the specified player spell is not in cooldown."] = true
 L["Unit Reaction"] = true
 L["Load the status only if the unit has the specified reaction towards the player."] = true
 L["Unit Class"] = true
@@ -1417,6 +1496,8 @@ L["Load the status only for the specified unit types."] = true
 L["Load the indicator only for the specified unit types."] = true
 L["Active Theme"] = true
 L["Load the indicator only for the specified themes."] = true
+L["Unit Alive"] = true
+L["Load the status only if the unit is alive/dead."] = true
 
 L["Select layouts for different Raid types."] = true
 L["Use Blizzard Unit Frames"] = true
@@ -1434,6 +1515,10 @@ L["Display Focus unit"] = true
 L["Enable this option to display the focus unit."] = true
 L["Display Bosses units"] = true
 L["Enable this option to display the bosses unit."] = true
+L["Display Target of Target unit"] = true
+L["Enable this option to display the target of target unit."] = true
+L["Display Target of Focus unit"] = true
+L["Enable this option to display the target of focus unit."] = true
 L["Units Per Column"] =  true
 L["Bosses units to display per column."] = true
 L['Hide Empty'] = true
@@ -1445,3 +1530,6 @@ L["Party (Mythic)"] = true
 
 L["Click Targeting"] = true
 L["Trigger targeting on the down portion of the mouse click"] = true
+
+L["Show when all buffs are active"] = true
+L["Display the status only when all buffs are active."] = true

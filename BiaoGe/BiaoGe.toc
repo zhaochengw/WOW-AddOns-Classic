@@ -1,38 +1,9 @@
-## Interface: 30401
-## Version: 1.2.5
+## Interface: 30403
 ## Title: <BiaoGe> |cff00BFFF金团表格|r
-## Notes: 插件命令：/biaoge 或 /gbg
+## Notes: 插件命令：/BiaoGe 或 /GBG
 ## Author: 苍穹之霜
 ## SavedVariables: BiaoGe
-## SavedVariablesPerCharacter: BiaoGeA
+## SavedVariablesPerCharacter: BiaoGeA 
+# BiaoGeA的数据现在全部合并到BiaoGe里，不再分开每个角色保存了，统一保存在账号文件夹
 
-Media\Minimap\embeds.xml
-
-DataBase.lua
-
-Loot.lua
-function.lua
-
-FBUIfunction.lua
-HistoryUIfunction.lua
-ReceiveUIfunction.lua
-FBUI\ICC.lua
-FBUI\TOC.lua
-FBUI\ULD.lua
-FBUI\NAXX.lua
-
-History.lua
-Receive.lua
-Hope.lua
-Helper.lua
-
-BiaoGe.lua
-
-TongBao\ZhangDan.lua
-TongBao\LiuPai.lua
-TongBao\XiaoFei.lua
-TongBao\QianKuan.lua
-TongBao\WCL.lua
-TongBao\YongShi.lua
-
-Media\Minimap\minimap.lua
+BiaoGe.xml

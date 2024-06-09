@@ -8,8 +8,7 @@ L["[|cffffd200Enable|r/|cffffd200Disable|r] The Auto Buff Button or [|cffffd200E
 L["[|cffffd200Enable|r/|cffffd200Disable|r] The Drag Handle Button."] = "[|cffffd200Activar|r / |cffffd200Desactivar|r] El botón de arrastre de la manija."
 L["[|cffffd200Enable|r/|cffffd200Disable|r] The Player(s) or Class Buttons."] = "[|cffffd200Enable|r / |cffffd200Disable|r] El jugador (s) o los botones de clase."
 L["[|cffffd200Enable|r/|cffffd200Disable|r] The Seal Button, Enable/Disable Righteous Fury or select the Seal you want to track."] = "[|cffffd200Enable|r / |cffffd200Disable|r] El botón Sello, Activar / Desactivar Furia recta o selecciona el Sello que deseas rastrear."
---[[Translation missing --]]
-L["[Enable/Disable] Class Buttons"] = "[Enable/Disable] Class Buttons"
+L["[Enable/Disable] Class Buttons"] = "[Habilitar/Deshabilitar] Botones de clase"
 L["[Enable/Disable] PallyPower"] = "[Activar / Desactivar] PallyPower"
 L["[Enable/Disable] PallyPower in Party"] = "[Activar / Desactivar] PallyPower en grupo"
 L["[Enable/Disable] PallyPower while Solo"] = "[Activar / Desactivar] PallyPower mientras está Solo"

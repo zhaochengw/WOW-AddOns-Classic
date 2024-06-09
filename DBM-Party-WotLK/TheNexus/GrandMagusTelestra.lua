@@ -5,7 +5,7 @@ if not mod:IsClassic() then
 	mod.statTypes = "normal,heroic,timewalker"
 end
 
-mod:SetRevision("20230414085833")
+mod:SetRevision("20230708234551")
 mod:SetCreatureID(26731)
 mod:SetEncounterID(2010)
 
@@ -20,8 +20,8 @@ if mod:IsClassic() then
 	warningSplitSoon	= mod:NewSoonAnnounce(19570, 2)
 	warningSplitNow		= mod:NewSpellAnnounce(19570, 3)
 else
-	warningSplitSoon	= mod:NewSoonAnnounce("ej7395", 2)
-	warningSplitNow		= mod:NewSpellAnnounce("ej7395", 3)
+	warningSplitSoon	= mod:NewSoonAnnounce(-7395, 2)
+	warningSplitNow		= mod:NewSpellAnnounce(-7395, 3)
 end
 
 mod.vb.warnedSplit1		= false

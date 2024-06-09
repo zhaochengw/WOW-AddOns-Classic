@@ -1,5 +1,11 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-  <Frame name="AuctionatorConfigSellingAllItemsFrameTemplate" mixin="AuctionatorConfigSellingAllItemsFrameMixin" parent="InterfaceOptionsFrame" hidden="true" virtual="true">
+  <Frame
+    name="AuctionatorConfigSellingAllItemsFrameTemplate"
+    mixin="AuctionatorConfigSellingAllItemsFrameMixin"
+    hidden="true"
+    virtual="true"
+    >
+
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnShow method="OnShow"/>
@@ -171,6 +177,15 @@
         </KeyValues>
         <Anchors>
           <Anchor point="TOPLEFT" relativeKey="$parent.StartingPricePercentageHeading" relativePoint="BOTTOMLEFT" y="-15"/>
+        </Anchors>
+      </Frame>
+
+      <Frame inherits="AuctionatorConfigurationCheckbox" parentKey="IgnoreItemLevel">
+        <KeyValues>
+          <KeyValue key="labelText" value="AUCTIONATOR_L_CONFIG_SELLING_IGNORE_ITEM_LEVEL" type="global" />
+        </KeyValues>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.StartingPricePercentage" relativePoint="BOTTOMLEFT" />
         </Anchors>
       </Frame>
     </Frames>

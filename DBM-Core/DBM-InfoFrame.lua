@@ -1,17 +1,21 @@
+---@class DBM
+local DBM = DBM
+
 ---------------
 --  Globals  --
 ---------------
-DBM.InfoFrame = {}
+---@class DBMInfoFrame
+local infoFrame = {}
+DBM.InfoFrame = infoFrame
 
 -------------------
 -- Local Globals --
 -------------------
 local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 
-local DDM = _G["LibStub"]:GetLibrary("LibDropDownMenu")
+local DDM = LibStub:GetLibrary("LibDropDownMenu")
 local UIDropDownMenu_AddButton, UIDropDownMenu_Initialize, ToggleDropDownMenu = DDM.UIDropDownMenu_AddButton, DDM.UIDropDownMenu_Initialize, DDM.ToggleDropDownMenu
 
-local DBM = DBM
 local L = DBM_CORE_L
 local UnitClass, GetTime, GetPartyAssignment, UnitGroupRolesAssigned, GetRaidTargetIndex, UnitExists, UnitGetTotalAbsorbs, UnitName, UnitHealth, UnitPower, UnitPowerMax, UnitIsDeadOrGhost, UnitThreatSituation, UnitPosition, UnitIsUnit = UnitClass, GetTime, GetPartyAssignment, UnitGroupRolesAssigned, GetRaidTargetIndex, UnitExists, UnitGetTotalAbsorbs, UnitName, UnitHealth, UnitPower, UnitPowerMax, UnitIsDeadOrGhost, UnitThreatSituation, UnitPosition, UnitIsUnit
 local error, tostring, type, pairs, ipairs, select, tonumber, tsort, twipe, mfloor, mmax, mmin, mrandom, schar, ssplit = error, tostring, type, pairs, ipairs, select, tonumber, table.sort, table.wipe, math.floor, math.max, math.min, math.random, string.char, string.split
@@ -35,12 +39,12 @@ end
 --------------
 --  Locals  --
 --------------
-local infoFrame = DBM.InfoFrame
 local frame, initializeDropdown, currentMapId, currentEvent, createFrame
 local maxLines, modLines, maxCols, modCols, prevLines = 5, 5, 1, 1, 0
 local sortMethod = 1--1 Default, 2 SortAsc, 3 GroupId
 local lines, sortedLines, icons, value = {}, {}, {}, {}
 local playerName = UnitName("player")
+---@cast playerName string
 
 ---------------------
 --  Dropdown Menu  --
@@ -232,6 +236,7 @@ end
 --  Create the frame  --
 ------------------------
 function createFrame()
+	---@class DBMInfoFrameFrame: Frame, BackdropTemplate
 	frame = CreateFrame("Frame", "DBMInfoFrame", UIParent, "BackdropTemplate")
 	frame:Hide()
 	frame:SetFrameStrata("DIALOG")
@@ -267,8 +272,12 @@ function createFrame()
 	end)
 	frame:SetScript("OnMouseDown", function(_, button)
 		if button == "RightButton" then
+			-- no clue what is going on with DDM here
+			---@diagnostic disable-next-line: param-type-mismatch
 			local dropdownFrame = DDM.Create_DropDownMenu("Frame", "DBMInfoFrameDropdown", frame)
+			---@diagnostic disable-next-line: param-type-mismatch
 			UIDropDownMenu_Initialize(dropdownFrame, initializeDropdown)
+			---@diagnostic disable-next-line: param-type-mismatch
 			ToggleDropDownMenu(1, nil, dropdownFrame, "cursor", 5, -10)
 		end
 	end)
@@ -412,9 +421,6 @@ local function updateEnemyPower()
 	local specificUnit = value[3]
 	if powerType then -- Only do power type defined
 		if specificUnit then
-			if not isRetail then
-				specificUnit = UnitExists(specificUnit) or DBM:GetUnitIdFromGUID(specificUnit)--unitID already passed or GUID we convert into unitID
-			end
 			if UnitExists(specificUnit) then
 				local currentPower, maxPower = UnitPower(specificUnit, powerType), UnitPowerMax(specificUnit, powerType)
 				if maxPower and maxPower > 0 then
@@ -438,9 +444,6 @@ local function updateEnemyPower()
 		end
 	else -- Check primary power type and alternate power types together. This should only be used if BOTH power types exist on same boss
 		if specificUnit then
-			if not isRetail then
-				specificUnit = UnitExists(specificUnit) or DBM:GetUnitIdFromGUID(specificUnit)--unitID already passed or GUID we convert into unitID
-			end
 			if UnitExists(specificUnit) then
 				-- Primary Power
 				local currentPower, maxPower = UnitPower(specificUnit), UnitPowerMax(specificUnit)
@@ -488,7 +491,6 @@ local function updateEnemyAbsorb()
 	local totalAbsorb = value[2]
 	local specificUnit = value[3]
 	if specificUnit then
-		specificUnit = UnitExists(specificUnit) or DBM:GetUnitIdFromGUID(specificUnit)--unitID already passed or GUID we convert into unitID
 		if UnitExists(specificUnit) then
 			local absorbAmount
 			if spellInput then -- Get specific spell absorb
@@ -544,7 +546,7 @@ local function updateMultiEnemyAbsorb()
 		local uId = "boss" .. i
 		if UnitExists(uId) then
 			local targetGUID = UnitGUID(uId)
-			if guidTable[targetGUID] and not guidTracked[targetGUID] then
+			if targetGUID and guidTable[targetGUID] and not guidTracked[targetGUID] then
 				guidTracked[targetGUID] = true
 				local absorbAmount
 				if spellInput then -- Get specific spell absorb
@@ -568,7 +570,7 @@ local function updateMultiEnemyAbsorb()
 		end
 		local uId = unitId .. "target"
 		local targetGUID = UnitGUID(unitId)
-		if guidTable[targetGUID] and not guidTracked[targetGUID] then
+		if targetGUID and guidTable[targetGUID] and not guidTracked[targetGUID] then
 			guidTracked[targetGUID] = true
 			local absorbAmount
 			if spellInput then -- Get specific spell absorb
@@ -656,7 +658,7 @@ local function updatePlayerBuffs()
 	local spellName = value[1]
 	local tankIgnored = value[2]
 	for uId in DBM:GetGroupMembers() do
-		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, 1)) then
+		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, true)) then
 		else
 			if not DBM:UnitBuff(uId, spellName) and not UnitIsDeadOrGhost(uId) then
 				lines[DBM:GetUnitFullName(uId)] = ""
@@ -673,7 +675,7 @@ local function updateGoodPlayerDebuffs()
 	local spellInput = value[1]
 	local tankIgnored = value[2]
 	for uId in DBM:GetGroupMembers() do
-		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, 1)) then
+		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, true)) then
 		else
 			if not DBM:UnitDebuff(uId, spellInput) and not UnitIsDeadOrGhost(uId) then
 				lines[DBM:GetUnitFullName(uId)] = ""
@@ -691,7 +693,7 @@ local function updateBadPlayerDebuffs()
 	local spellInput = value[1]
 	local tankIgnored = value[2]
 	for uId in DBM:GetGroupMembers() do
-		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, 1)) then
+		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, true)) then
 		else
 			if DBM:UnitDebuff(uId, spellInput) and not UnitIsDeadOrGhost(uId) then
 				lines[DBM:GetUnitFullName(uId)] = ""
@@ -747,7 +749,7 @@ local function updateReverseBadPlayerDebuffs()
 	local spellInput = value[1]
 	local tankIgnored = value[2]
 	for uId in DBM:GetGroupMembers() do
-		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, 1)) then
+		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, true)) then
 		else
 			if not DBM:UnitDebuff(uId, spellInput) and not UnitIsDeadOrGhost(uId) and not DBM:UnitBuff(uId, 27827) then--27827 Spirit of Redemption. This particular info frame wants to ignore this
 				lines[DBM:GetUnitFullName(uId)] = ""
@@ -762,9 +764,9 @@ local function updatePlayerBuffStacks()
 	twipe(lines)
 	local spellInput = value[1]
 	for uId in DBM:GetGroupMembers() do
-		local spellName, _, count = DBM:UnitBuff(uId, spellInput)
-		if spellName and count then
-			lines[DBM:GetUnitFullName(uId)] = count
+		local spellName, _, count, _, _, _, _, _, _, _, _, _, _, _, _, count2 = DBM:UnitBuff(uId, spellInput)
+		if spellName and (count or count2) then
+			lines[DBM:GetUnitFullName(uId)] = count2 or count
 		end
 	end
 	updateIcons()
@@ -789,7 +791,7 @@ local function updatePlayerAggro()
 	local aggroType = value[1]
 	local tankIgnored = value[2]
 	for uId in DBM:GetGroupMembers() do
-		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, 1)) then
+		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, true)) then
 		else
 			local currentThreat = UnitThreatSituation(uId) or 0
 			if currentThreat >= aggroType then
@@ -975,7 +977,7 @@ local function onUpdate(frame, table)
 		if friendlyEvents[currentEvent] then
 			local unitId = DBM:GetRaidUnitId(DBM:GetUnitFullName(extraName or leftText)) or "player"--Prevent nil logical error
 			if unitId then
-				local _, _, _, mapId = UnitPosition(unitId)
+				local mapId = select(-1, UnitPosition(unitId))--In instances in 10.2.5, blizzard truncates UnitPosition to scrub x and y args, meaning it only has 2 returns, not 4, so can't select 4 anymore, have to -1 so it auto chooses last arg be it a 2 or a 4
 				if mapId == currentMapId then
 					local _, class = UnitClass(unitId)
 					if class then
@@ -1102,7 +1104,7 @@ function infoFrame:Show(modMaxLines, event, ...)
 		return
 	end
 	prevLines = 0
-	currentMapId = select(4, UnitPosition("player"))
+	currentMapId = select(-1, UnitPosition("player"))
 	modLines = modMaxLines
 	if DBM.Options.InfoFrameLines and DBM.Options.InfoFrameLines ~= 0 then
 		maxLines = DBM.Options.InfoFrameLines

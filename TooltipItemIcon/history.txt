@@ -1,5 +1,30 @@
 Version history:
 
+1.90
+- Update TOC for 10.2.5
+
+1.89
+- Update TOC for 1.15.0
+- Handle TooltipDataProcessor Macro tooltips for Spells and Items
+
+1.881 beta
+- Test updates for Macro changes in Retail
+
+1.88
+- TOC for 10.2.0 & 3.4.3
+
+1.87
+- TOC for 10.1.7
+
+1.86
+- TOC for 1.14.4
+
+1.85
+- TOC for 10.1.5
+
+1.84
+- TOC for 3.4.2
+
 1.83
 - Use C_AddOns.GetAddOnMetadata if it exists, in place of GetAddOnMetadata
 - TOC for 10.1.0

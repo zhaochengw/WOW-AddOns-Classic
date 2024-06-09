@@ -1,3 +1,16 @@
+* 5.0.3
+    - Update interface version for Wrath and Classic Era
+    - Fix 'Way of the Earth' rune in Season of Discovery
+
+* 5.0.2
+    - Support the release of ClassTrainerPlus with the new ignore feature
+
+* 5.0.1
+    - Include some Wrath changes that were not pushed to the main repository branch
+
+* 5.0.0
+    - Right-click to ignore spells
+
 * 4.0.5
     - Fix more Druid spells
     - Fix Priest's Hymn of Hope spell

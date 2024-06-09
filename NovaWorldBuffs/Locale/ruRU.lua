@@ -28,6 +28,8 @@ L["Traces of Silithyst"] = "Traces of Silithyst";
 L["Slip'kik's Savvy"] = "Смекалка Слип'кика";
 L["Fengus' Ferocity"] = "Свирепость Фенгуса";
 L["Mol'dar's Moxie"] = "Дерзость Мол'дара";
+L["Boon of Blackfathom"] = "Дар Непроглядной Пучины";
+L["Ashenvale Rallying Cry"] = "Ободряющий клич Ясеневого леса";
 
 ---=====---
 ---Horde---

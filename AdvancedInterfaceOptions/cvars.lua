@@ -1022,21 +1022,17 @@ local CategoryNames = { -- not sure how meaningful these really are (/Blizzard_C
 }
 
 --[[
-	C_Console.GetAllCommands() returns a list of tables in this format:
+	ConsoleGetAllCommands() returns a list of tables in this format:
 		category: number from 0 to 9 representing a category above
 		command: cvar name
 		commandType: 0 seems to represent a cvar, 1 is a script command (like quit)
 		help: cvar description text
 --]]
 
-function addon:CVarExists(cvar)
-	return not not select(2, pcall(function() return GetCVarInfo(cvar) end))
-end
-
 -- Returns filtered list of CVars
 function addon:GetCVars()
 	local cvars = {}
-	for _, info in ipairs(C_Console.GetAllCommands()) do
+	for _, info in ipairs(addon:GetAllCommands()) do
 		if info.commandType == 0 -- cvar, rather than script
 		  and info.category ~= 0 -- ignore debug category
 		  and not strfind(info.command:lower(), 'debug') -- a number of commands with "debug" in their name are inexplicibly not in the "debug" category

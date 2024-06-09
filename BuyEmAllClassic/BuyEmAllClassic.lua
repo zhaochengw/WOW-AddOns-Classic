@@ -101,47 +101,50 @@ function BuyEmAll:MerchantFrame_OnHide(...)
     return self.OrigMerchantFrame_OnHide(...);
 end
 
-function BuyEmAll:CogsFreeBagSpace(itemID)
-    local freeSpace = 0;
-    local itemSubType = GetItemFamily(itemID);
-    local stackSize = select(8, GetItemInfo(itemID));
+--function BuyEmAll:CogsFreeBagSpace(itemID)
+    --local freeSpace = 0;
+    --local itemSubType = GetItemFamily(itemID);
+    --local stackSize = select(8, GetItemInfo(itemID));
 
-    for theBag = 0, 4 do
-        local doBag = true;
+    --for theBag = 0, 4 do
+        --local doBag = true;
 
-        if (theBag > 0) then -- 0 is always the backpack.
-        local bagLink = GetInventoryItemLink("player", C_Container.ContainerIDToInventoryID(theBag)); -- Bag #1 is in inventory slot 20.
-        if (bagLink) then
-            local bagSubType = GetItemFamily(bagLink);
-            if (bagSubType == itemSubType) then
-                doBag = true;
-            elseif (bagSubType == 0) then
-                doBag = true;
-            elseif (bit.band(itemSubType, bagSubType) == bagSubType) then
-                doBag = true;
-            else doBag = false;
-            end
-        else
-            doBag = false;
-        end
-        end
+        --if (theBag > 0) then -- 0 is always the backpack.
+        --local bagLink = GetInventoryItemLink("player", 19 + theBag); -- Bag #1 is in inventory slot 20.
+        --if (bagLink) then
+            --local bagSubType = GetItemFamily(bagLink);
+            --if (bagSubType == itemSubType) then
+                --doBag = true;
+            --elseif (bagSubType == 0) then
+                --doBag = true;
+            --elseif (bit.band(itemSubType, bagSubType) == bagSubType) then
+                --doBag = true;
+            --else doBag = false;
+            --end
+        --else
+            --doBag = false;
+        --end
+        --end
 
-        if (doBag) then
-            local numSlot = C_Container.GetContainerNumSlots(theBag);
-            for theSlot = 1, numSlot do
-                local itemLink = C_Container.GetContainerItemLink(theBag, theSlot);
-                if not (itemLink) then
-                    freeSpace = freeSpace + stackSize;
-                elseif (strfind(itemLink, "item:" .. itemID .. ":")) then
-                    local itemCount = C_Container.GetContainerItemInfo(theBag, theSlot);
-                    freeSpace = freeSpace + stackSize - itemCount.stackCount;
-
-                end
-            end
-        end
-    end
-    return freeSpace, stackSize;
-end
+        --if (doBag) then
+            --local numSlot = C_Container.GetContainerNumSlots(theBag);
+            --for theSlot = 1, numSlot do
+                --local itemLink = C_Container.GetContainerItemLink(theBag, theSlot);
+                --if not (itemLink) then
+                    --freeSpace = freeSpace + stackSize;
+                --elseif (strfind(itemLink, "item:" .. itemID .. ":")) then
+                    --local _, itemCount = C_Container.GetContainerItemInfo(theBag, theSlot);
+                    --if (not itemCount) then
+                        --freeSpace = freeSpace + stackSize
+                    --else
+                        --freeSpace = freeSpace + stackSize - itemCount;
+                    --end
+                --end
+            --end
+        --end
+    --end
+    --return freeSpace, stackSize;
+--end
 
 
 -- Hooks left-clicks on merchant item buttons.
@@ -163,8 +166,8 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
         self.AltCurrencyMode = false;
         self.AtVendor = true; -- Currently at the vendor, for later purchase interruption.
 
-        local name, texture, price, quantity, numAvailable =
-        GetMerchantItemInfo(self.itemIndex);
+        local name, texture, price, quantity, numAvailable = GetMerchantItemInfo(self.itemIndex);
+        local maxStack = GetMerchantItemMaxStack(self.itemIndex);
         self.itemName = name;
         self.price = price;
         self.preset = quantity;
@@ -196,11 +199,33 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
         
         
         if (strmatch(self.itemLink, "item")) then -- Check if purchase is an item and setup the needed variables.
-            self.itemID = tonumber(strmatch(self.itemLink, "item:(%d+):"));
-            local bagMax, stack = self:CogsFreeBagSpace(self.itemID);
-            self.stack = stack;
+            local _,itemID = strsplit(":", self.itemLink);
+            itemID = tonumber(itemID);
+            self.itemID = itemID;
+            self.stack = maxStack;
+            local bagMax = 0; -- max items we could purchase which would fit in bag
+            for bag = 0, 4 do
+                local numSlots = C_Container.GetContainerNumSlots(bag);
+                for slot = 1,numSlots do
+                    local Location = ItemLocation:CreateFromBagAndSlot(bag, slot);
+                    if (Location and C_Item.DoesItemExist(Location)) then
+                        -- there's an item in this bag
+                        local bagItemID = C_Item.GetItemID(Location);
+                        if (bagItemID== itemID) then 
+                            -- same item as one we're purchasing, adjust bagMax
+                            local itemInfo = C_Container.GetContainerItemInfo(bag,slot);
+                            bagMax = bagMax + maxStack - itemInfo.stackCount;
+                        else
+                            -- some other item in this slot, unusable
+                        end
+                    else
+                        --open slot could fit a whole stack
+                        bagMax = bagMax + maxStack;
+                    end
+                end
+            end
             self.fit = bagMax;
-            self.partialFit = self.fit % stack;
+            self.partialFit = self.fit % self.stack;
         elseif (strmatch(self.itemLink, "currency")) then -- Same for if the purchase is a currency.
             self.stack = self.preset;
             if (select(6, GetCurrencyInfo(self.itemLink)) == 0) then
@@ -379,10 +404,6 @@ end
 function BuyEmAll:DoPurchase(amount)
     BuyEmAllFrame:Hide();
     local numLoops, purchAmount, leftover;
-	
-	if (200 <= self.stack) then
-		self.stack = 200;
-	end
 
     if (amount <= self.stack) then
         purchAmount = amount;
@@ -408,6 +429,7 @@ function BuyEmAll:DoPurchase(amount)
         frameLeftover = leftover;
     end
     frameItemIndex = self.itemIndex;
+
     PurchaseLoopFrame:SetScript("OnUpdate", BuyEmAll.onUpdate);
 end
 

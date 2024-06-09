@@ -1,31 +1,26 @@
 # RatingBuster
 
-## [1.7.8](https://github.com/raethkcj/RatingBuster/tree/1.7.8) (2023-03-26)
-[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/1.7.7...1.7.8) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
+## [1.15.0](https://github.com/raethkcj/RatingBuster/tree/1.15.0) (2024-02-04)
+[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/1.14.1...1.15.0) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
 
-- Fix vanilla Deterrence id  
-- Fix vanilla death wish id  
-- Fix vanilla nil on arp check  
-- Fix ranged summary calculations  
-- Don't clobber existing stats with generic ones  
-- Fix ranged stat patterns  
-- Update default ranged settings  
-- Fix ranged summaries double dipping  
-- Organize physical summary options  
-- Add Ranged Summary options  
-- Enable ranged stat breakdowns  
-- Fix enUS crit scope breakdown  
-- Add 3.3.5 Ranged Stat Summary Locales  
-- Set scanning tooltip owners to WorldFrame  
-- Fix GenericStat conversion in summaries  
-- Use Blizzard's tContains  
-- Add All Stats breakdown  
-- Annotate classes  
-- Annotate mana regen  
-- Annotate StatLogic as Class  
-- Pass arguments for bonus armor  
-- Fix Titan's Grip error  
-- Refactor GenericStats  
-- Add frFR spellpower string (Fixes #144)  
-- Update bug\_report.yml  
-- Update bug\_report.yml  
+- Add more versions of Dispersion, Aspect of the Viper, Last Stand, and Rallying Cry  
+- Improve display of AlwaysBuffed tooltips  
+- Merge rune validator into known  
+- Improve hiding of SoD data outside of SoD  
+- Add vanilla agi/int conversions  
+- Add StatModValue from tooltip scanning for Dance of the Wicked  
+- Add vanilla crit/dodge set bonuses  
+- Bump toc  
+- Check nil on spell names  
+- Add SoD P2 world buff and set bonuses  
+- Add SoD P2 Runes  
+- Fix Wrath/Cata DodgePerAgi on non-max-level agi classes  
+- Scan relics in all flavors due to SoD adding stat relics  
+- Be quieter about missed substitution lookups  
+- Fix single-value to multiple-stat substitution lookups  
+- Add vanilla agi/int conversions  
+- Add version to SoD addon comms  
+- Use substitution lookup for more vanilla stats  
+- Strip trailing period and lower GlobalPatterns  
+- Use substitution lookup for vanilla enchants  
+- Fix diminishing returns in Defense breakdowns  

@@ -1,12 +1,16 @@
 local mod = DBM:NewMod(546, "DBM-Party-BC", 10, 253)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+mod:SetRevision("20231014053250")
+
 mod:SetCreatureID(18732)
 mod:SetEncounterID(1911)
-mod:SetModelID(18535)
-mod:SetModelScale(0.7)
 mod:RegisterCombat("combat")
+
+if not mod:IsRetail() then
+	mod:SetModelID(18535)
+	mod:SetModelScale(0.7)
+end
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 33563"

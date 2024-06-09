@@ -1,5 +1,0 @@
-<Ui>
-	<Script file="QuickButton.lua" />
-	<Script file="QuickFollow_Vanilla.lua" />
-	<Script file="QuickEquip_Vanilla.lua" />
-</Ui>

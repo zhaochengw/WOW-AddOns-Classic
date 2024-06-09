@@ -1,7 +1,7 @@
-## Interface: 100100
+## Interface: 100205
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
-## Version: 5.5.3
+## Version: 5.10.1
 ## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
 ## X-Flavor: Mainline
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
@@ -18,10 +18,13 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
-## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-2.0, LibDBIcon-1.0, LibClassicDurations, LibClassicCasterino, LibGetFrame-1.0, LibSpecialization, !LibUIDropDownMenu, !!AddonLocale
+## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-3.0, LibDBIcon-1.0, LibGetFrame-1.0, LibSpecialization, !LibUIDropDownMenu, !!AddonLocale, BigWigs, DBM-Core
 
 # External code + initialization
 embeds.xml
+
+# TaintLess
+Libs\TaintLess\TaintLess.xml
 
 # Client flavor specific libs
 Libs\LibSpecialization\LibSpecialization.lua
@@ -32,6 +35,7 @@ ArchiveTypes\Repository.lua
 DefaultOptions.lua
 
 # Core files
+Atlas_Retail.lua
 Types_Retail.lua
 Types.lua
 Prototypes.lua
@@ -48,6 +52,7 @@ AnchorToWeakAuras.lua
 LibSpecializationWrapper.lua
 BuffTrigger2.lua
 GenericTrigger.lua
+BossMods.lua
 
 # Helper Systems
 AuraWarnings.lua

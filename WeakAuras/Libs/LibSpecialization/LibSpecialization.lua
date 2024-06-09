@@ -1,11 +1,14 @@
 --@curseforge-project-slug: libspecialization@
 if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then return end
 
-local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 4)
+local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 7)
 if not LS then return end -- No upgrade needed
 
+LS.callbackMap = LS.callbackMap or {}
+LS.frame = LS.frame or CreateFrame("Frame")
+
 -- Positions of roles
-LS.positionTable = LS.positionTable or {
+local positionTable = {
 	-- Death Knight
 	[250] = "MELEE", -- Blood (Tank)
 	[251] = "MELEE", -- Frost (DPS)
@@ -21,6 +24,7 @@ LS.positionTable = LS.positionTable or {
 	-- Evoker
 	[1467] = "RANGED", -- Devastation (DPS)
 	[1468] = "RANGED", -- Preservation (Heal)
+	[1473] = "RANGED", -- Augmentation (DPS)
 	-- Hunter
 	[253] = "RANGED", -- Beast Mastery
 	[254] = "RANGED", -- Marksmanship
@@ -59,7 +63,7 @@ LS.positionTable = LS.positionTable or {
 	[73] = "MELEE", -- Protection (Tank)
 }
 -- Player roles
-LS.roleTable = LS.roleTable or {
+local roleTable = {
 	-- Death Knight
 	[250] = "TANK", -- Blood (Tank)
 	[251] = "DAMAGER", -- Frost (DPS)
@@ -75,6 +79,7 @@ LS.roleTable = LS.roleTable or {
 	-- Evoker
 	[1467] = "DAMAGER", -- Devastation (DPS)
 	[1468] = "HEALER", -- Preservation (Heal)
+	[1473] = "DAMAGER", -- Augmentation (DPS)
 	-- Hunter
 	[253] = "DAMAGER", -- Beast Mastery
 	[254] = "DAMAGER", -- Marksmanship
@@ -112,14 +117,7 @@ LS.roleTable = LS.roleTable or {
 	[72] = "DAMAGER", -- Fury (DPS)
 	[73] = "TANK", -- Protection (Tank)
 }
-LS.callbackMap = LS.callbackMap or {}
-LS.frame = LS.frame or CreateFrame("Frame")
-
-local callbackMap = LS.callbackMap
-local positionTable = LS.positionTable
-local roleTable = LS.roleTable
-local frame = LS.frame
-
+-- Starter specs
 local starterSpecs = {
 	[1444] = true, -- Shaman
 	[1446] = true, -- Warrior
@@ -136,9 +134,13 @@ local starterSpecs = {
 	[1465] = true, -- Evoker
 }
 
-local next, type, error, tonumber, format = next, type, error, tonumber, string.format
-local Ambiguate, geterrorhandler, GetTime, IsInGroup = Ambiguate, geterrorhandler, GetTime, IsInGroup
+local callbackMap = LS.callbackMap
+local frame = LS.frame
+
+local next, type, error, tonumber, format, strsplit = next, type, error, tonumber, string.format, string.split
+local Ambiguate, GetTime, IsInGroup = Ambiguate, GetTime, IsInGroup
 local GetSpecialization, GetSpecializationInfo = GetSpecialization, GetSpecializationInfo
+local C_ClassTalents_GetActiveConfigID, C_Traits_GenerateImportString = C_ClassTalents.GetActiveConfigID, C_Traits.GenerateImportString
 local SendAddonMessage, CTimerAfter = C_ChatInfo.SendAddonMessage, C_Timer.After
 local pName = UnitName("player")
 
@@ -192,33 +194,46 @@ do
 					return
 				end
 
-				local specId = tonumber(msg)
-				local role, position = roleTable[specId], positionTable[specId]
-				if role and position then
-					for _,func in next, callbackMap do
-						func(specId, role, position, Ambiguate(sender, "none"), channel)
+				if msg:find(",", nil, true) then
+					local spec, talentString = strsplit(",", msg)
+					local specId = tonumber(spec)
+					local role, position = roleTable[specId], positionTable[specId]
+					if role and position then
+						for _,func in next, callbackMap do
+							func(specId, role, position, Ambiguate(sender, "none"), #talentString > 1 and talentString)
+						end
+					end
+				else
+					local specId = tonumber(msg)
+					local role, position = roleTable[specId], positionTable[specId]
+					if role and position then
+						for _,func in next, callbackMap do
+							func(specId, role, position, Ambiguate(sender, "none"))
+						end
 					end
 				end
 			end
 		elseif event == "GROUP_FORMED" then -- Join new group
 			LS:RequestSpecialization()
-		elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then -- Talent change fires twice
-			local t = GetTime()
-			if t - talentChangeThrottle > 2 then
-				talentChangeThrottle = t
-				local specId, role, position = LS:MySpecialization()
-				if specId then
-					currentSpecId = specId -- Update this just in case a timer is queued
-					if IsInGroup() then
-						if IsInGroup(2) then -- Instance group
-							SendAddonMessage("LibSpec", format("%d", specId), "INSTANCE_CHAT")
-						end
-						if IsInGroup(1) then -- Normal group
-							SendAddonMessage("LibSpec", format("%d", specId), "RAID")
-						end
-					else
-						for _,func in next, callbackMap do
-							func(specId, role, position, pName, channel) -- This allows us to show our own spec info when not grouped
+		elseif event == "ACTIVE_COMBAT_CONFIG_CHANGED" or event == "TRAIT_CONFIG_UPDATED" then
+			if prefix == C_ClassTalents_GetActiveConfigID() then
+				local t = GetTime()
+				if t - talentChangeThrottle > 2 then -- Safety throttle
+					talentChangeThrottle = t
+					local specId, role, position, talentString = LS:MySpecialization()
+					if specId then
+						currentSpecId = specId -- Update this just in case a timer is queued
+						if IsInGroup() then
+							if IsInGroup(2) then -- Instance group
+								SendAddonMessage("LibSpec", format("%d", specId), "INSTANCE_CHAT")
+							end
+							if IsInGroup(1) then -- Normal group
+								SendAddonMessage("LibSpec", format("%d", specId), "RAID")
+							end
+						else
+							for _,func in next, callbackMap do
+								func(specId, role, position, pName, talentString) -- This allows us to show our own spec info when not grouped
+							end
 						end
 					end
 				end
@@ -229,7 +244,8 @@ do
 	end)
 	frame:RegisterEvent("CHAT_MSG_ADDON")
 	frame:RegisterEvent("GROUP_FORMED")
-	frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+	frame:RegisterEvent("ACTIVE_COMBAT_CONFIG_CHANGED")
+	frame:RegisterEvent("TRAIT_CONFIG_UPDATED")
 	frame:RegisterEvent("PLAYER_LOGIN")
 end
 
@@ -242,9 +258,14 @@ function LS:MySpecialization()
 		if specId and role then
 			local position = positionTable[specId]
 			if position then
+				local activeConfigID = C_ClassTalents_GetActiveConfigID()
+				if activeConfigID then
+					local talentString = C_Traits_GenerateImportString(activeConfigID)
+					return specId, role, position, talentString
+				end
 				return specId, role, position
 			elseif not starterSpecs[specId] then
-				geterrorhandler()(format("LibSpecialization: Unknown specId %q", specId))
+				error(format("LibSpecialization: Unknown specId %q", specId))
 			end
 		end
 	end
@@ -254,10 +275,10 @@ do
 	local prev = 0
 	local timer = false
 	function LS:RequestSpecialization()
-		local specId, role, position = LS:MySpecialization()
+		local specId, role, position, talentString = LS:MySpecialization()
 		if specId then
 			for _,func in next, callbackMap do
-				func(specId, role, position, pName) -- This allows us to show our own spec info when not grouped
+				func(specId, role, position, pName, talentString) -- This allows us to show our own spec info when not grouped
 			end
 		end
 

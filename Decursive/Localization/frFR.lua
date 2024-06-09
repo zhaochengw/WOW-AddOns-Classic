@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
+    Decursive (v 2.7.15) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["frFR.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "frFR");
 
 if not L then
-    T._LoadedFiles["frFR.lua"] = "2.7.9.1";
+    T._LoadedFiles["frFR.lua"] = "2.7.15";
     return;
 end
 
@@ -107,6 +107,7 @@ L["BINDING_NAME_DCRSKLIST"] = "Afficher la liste des exceptions"
 L["BINDING_NAME_DCRSKSHOW"] = "Afficher ou Cacher la liste des exceptions"
 L["BLACK_LENGTH"] = "Délais (Secs) sur la *blacklist* : "
 L["BLACKLISTED"] = "Sur liste noire"
+L["BLEED"] = "Saignement"
 L["CHARM"] = "Possession"
 L["CLASS_HUNTER"] = "Chasseur"
 L["CLEAR_PRIO"] = "E"
@@ -203,6 +204,8 @@ L["OPT_ABOLISHCHECK_DESC"] = "Définit si les unités avec un sort 'Abolir' acti
 L["OPT_ABOUT"] = "À propos"
 L["OPT_ADD_A_CUSTOM_SPELL"] = "Ajouter un sort / objet personnalisé"
 L["OPT_ADD_A_CUSTOM_SPELL_DESC"] = "Glissez-déposez un sort ou un objet utilisable ici. Vous pouvez aussi directement taper son nom, son identifiant numérique ou utiliser MAJ+Clique."
+L["OPT_ADD_BLEED_EFFECT_ID"] = "Ajouter un effet de saignement"
+L["OPT_ADD_BLEED_EFFECT_ID_DESC"] = "Ajouter directement un effet de saignement en utilisant le SpellID (tel qu'on les trouve sur wowhead.com)"
 L["OPT_ADDDEBUFF"] = "Ajouter une affection"
 L["OPT_ADDDEBUFF_DESC"] = "Ajoute une nouvelle affection à cette liste"
 L["OPT_ADDDEBUFF_USAGE"] = "<Spell ID de l'affection> (Vous pouvez trouver cet ID dans les URLs du site WoWHead.com)"
@@ -219,7 +222,25 @@ L["OPT_AMOUNT_AFFLIC_DESC"] = "Définit le nombre max d'affectés affichés dans
 L["OPT_ANCHOR_DESC"] = "Montre l'ancre de la fenêtre de discussion spéciale"
 L["OPT_AUTOHIDEMFS"] = "Masquer les MUFs quand :"
 L["OPT_AUTOHIDEMFS_DESC"] = "Choisissez quand la fenêtre des micro-portraits doit être masquée automatiquement."
-L["OPT_BLACKLENTGH_DESC"] = "Définit combien de temps quelqu'un reste sur liste noire"
+L["OPT_BLACKLENTGH_DESC"] = [=[Définit combien de temps quelqu'un reste sur liste noire.
+Mettre à 0 pour désactiver la liste noire complètement.]=]
+L["OPT_BLEED_EFFECT_BAD_SPELLID"] = "Mauvais Spell ID, seulement utiliser un nombre tel qu'on trouve sur wowhead.com"
+L["OPT_BLEED_EFFECT_DESCRIPTION"] = "Description (Spell ID: |cFF00C000%s|r)"
+L["OPT_BLEED_EFFECT_HOLDER"] = "Gestion des effets de saignement"
+L["OPT_BLEED_EFFECT_HOLDER_DESC"] = "Gérer la détection des effets de saignement"
+L["OPT_BLEED_EFFECT_IDENTIFIERS"] = "Mots-clefs des descriptions des effets de saignement:"
+L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"] = [=[Chaque mot clef devrait correspondre à un terme présent dans les |cFFFF0000descriptions|c des afflictions causant des saignements et pouvant être utilisé pour identifier de tels effets.
+
+Un mot clef par ligne.
+
+Entrez une chaîne vide pour remettre les mots clefs par défaut.
+
+Selon votre langue, il est possible que vous deviez ajuster ces mot clefs manuellement.
+Utiliser la liste des effets de saignement préconfigurée ci-dessous pour vous guider afin que leur description contiennent au moins l'un de ces mot clefs. (les mots clefs trouvés sont en surbrillance)
+
+(Des pattern Lua peuvent être utilisés, chaque ligne étant un pattern distinct)]=]
+L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"] = "Sort inconnu (%s)"
+L["OPT_BLEEDCHECK_DESC"] = "Si coché vous pourrez détecter et guérir les effets de saignement"
 L["OPT_BORDERTRANSP"] = "Transparence de la bordure"
 L["OPT_BORDERTRANSP_DESC"] = "Règle la transparence de la bordure"
 L["OPT_CENTERTEXT"] = "Compteur central :"
@@ -312,6 +333,8 @@ L["OPT_DISEASECHECK_DESC"] = "Si cochée, vous pourrez voir et guérir les unit�
 L["OPT_DISPLAYOPTIONS"] = "Options d'affichage"
 L["OPT_DONOTBLPRIO_DESC"] = "Les unités prioritaires ne seront pas blacklistées"
 L["OPT_ENABLE_A_CUSTOM_SPELL"] = "Activer"
+L["OPT_ENABLE_BLEED_EFFECTS_DETECTION"] = "Découverte des effets de saignement"
+L["OPT_ENABLE_BLEED_EFFECTS_DETECTION_DESC"] = "Permet à Decursive de découvrir de nouveaux effets de saignement lorsque leur description contient la chaîne de caractère indiquée dans le champs 'Identifiant des effets de saignement'."
 L["OPT_ENABLE_LIVELIST"] = "Activer la liste des affligés"
 L["OPT_ENABLE_LIVELIST_DESC"] = [=[Affiche une liste des gens affligés.
 
@@ -340,7 +363,11 @@ L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"] = "Le sort est déjà dans la liste 
 L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"] = "Decursive gère déjà ce sort. MAJ-cliquez sur le sort ou tapez son ID pour ajouter un rang spécial."
 L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "ID de sort invalide !"
 L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "Ce sort ne se trouve pas dans votre grimoire !"
+L["OPT_IS_BLEED_EFFECT"] = "Est un effet de saignement"
+L["OPT_IS_BLEED_EFFECT_DESC"] = [=[Cocher pour dire à Decursive de considérer cet effet comme étant du type 'saignement'.
+Peut être décoché pour les faux-positifs...]=]
 L["OPT_ISNOTVALID_SPELLID"] = "n'est pas un Spell ID valide"
+L["OPT_KNOWN_BLEED_EFFECTS"] = "Effets de saignement connus"
 L["OPT_LIVELIST"] = "Liste des affligés"
 L["OPT_LIVELIST_DESC"] = [=[Ce sont les options concernant la liste des affligés affichée en dessous de la barre "Decursive".
 
@@ -407,6 +434,8 @@ L["OPT_PRINT_CUSTOM_DESC"] = "Les messages de Decursive seront affichés dans un
 L["OPT_PRINT_ERRORS_DESC"] = "Les erreurs seront affichées"
 L["OPT_PROFILERESET"] = "Remise à zéro du profil..."
 L["OPT_RANDOMORDER_DESC"] = "Les unités seront affichées et guéries au hasard (non recommandé)"
+L["OPT_READD_DEFAULT_BLEED_EFFECTS"] = "Ré-ajouter ceux d'origine"
+L["OPT_READD_DEFAULT_BLEED_EFFECTS_DESC"] = "Réajoute les effets de saignement par défaut de Decursive à la liste"
 L["OPT_READDDEFAULTSD"] = "Ré-ajouter les affections par défaut"
 L["OPT_READDDEFAULTSD_DESC1"] = [=[Ajoute les affections de Decursive manquant à cette liste
 Votre configuration ne sera pas changée]=]
@@ -416,6 +445,8 @@ L["OPT_REMOVESKDEBCONF"] = [=[Êtes-vous sûr de vouloir enlever
 de la liste des exceptions ?]=]
 L["OPT_REMOVETHISDEBUFF"] = "Enlever cette affection"
 L["OPT_REMOVETHISDEBUFF_DESC"] = "Supprime '%s' de la liste d'exception"
+L["OPT_RESET_DEFAULT_BLEED_EFFECTS"] = "Effacer la liste"
+L["OPT_RESET_DEFAULT_BLEED_EFFECTS_DESC"] = "Efface la liste et remet les valeurs par défaut, tous les effets ajoutés manuellement ainsi que ceux détectés automatiquement seront perdus !!"
 L["OPT_RESETDEBUFF"] = "Remettre à zéro cette affection"
 L["OPT_RESETDTDCRDEFAULT"] = "Met '%s' aux valeurs par défaut de Decursive"
 L["OPT_RESETMUFMOUSEBUTTONS"] = "Réinitialiser"
@@ -508,4 +539,4 @@ L["UNSTABLERELEASE"] = "Version instable"
 
 
 
-T._LoadedFiles["frFR.lua"] = "2.7.9.1";
+T._LoadedFiles["frFR.lua"] = "2.7.15";

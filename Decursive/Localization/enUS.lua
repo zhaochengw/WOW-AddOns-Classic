@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.9.1) add-on for World of Warcraft UI
+    Decursive (v 2.7.15) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY.
 
-    This file was last updated on 2023-01-25T09:34:53Z
+    This file was last updated on 2023-12-18T08:50:23Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -104,8 +104,9 @@ L["BINDING_NAME_DCRSKADD"] = "Add target to skip list"
 L["BINDING_NAME_DCRSKCLEAR"] = "Clear the skip list"
 L["BINDING_NAME_DCRSKLIST"] = "Print the skip list"
 L["BINDING_NAME_DCRSKSHOW"] = "Show or hide the skip list"
-L["BLACK_LENGTH"] = "Seconds on the blacklist : "
+L["BLACK_LENGTH"] = "Seconds on the blacklist:"
 L["BLACKLISTED"] = "Black-listed"
+L["BLEED"] = "Bleed"
 L["CHARM"] = "Charm"
 L["CLASS_HUNTER"] = "Hunter"
 L["CLEAR_PRIO"] = "C"
@@ -205,6 +206,8 @@ L["OPT_ABOLISHCHECK_DESC"] = "select whether units with an active 'Abolish' spel
 L["OPT_ABOUT"] = "About"
 L["OPT_ADD_A_CUSTOM_SPELL"] = "Add a custom spell / item"
 L["OPT_ADD_A_CUSTOM_SPELL_DESC"] = "Drag and drop a spell or usable item here. You can also directly write its name, its numeric ID or use shift-click."
+L["OPT_ADD_BLEED_EFFECT_ID"] = "Add a bleed effect"
+L["OPT_ADD_BLEED_EFFECT_ID_DESC"] = "Directly add a bleed effect by its Spell ID (as found on wowhead.com)"
 L["OPT_ADDDEBUFF"] = "Add a custom affliction"
 L["OPT_ADDDEBUFF_DESC"] = "Adds a new affliction to this list"
 L["OPT_ADDDEBUFF_USAGE"] = "<Affliction spell ID> (you can find spell IDs in WoWHead.com URLs)"
@@ -221,7 +224,26 @@ L["OPT_AMOUNT_AFFLIC_DESC"] = "Defines the max number of cursed to display in th
 L["OPT_ANCHOR_DESC"] = "Shows the anchor of the custom message frame"
 L["OPT_AUTOHIDEMFS"] = "Hide MUFs when:"
 L["OPT_AUTOHIDEMFS_DESC"] = "Choose when to automatically hide the MUFs' window."
-L["OPT_BLACKLENTGH_DESC"] = "Defines how long someone stays on the blacklist"
+L["OPT_BLACKLENTGH_DESC"] = [=[Defines how long someone stays on the blacklist
+Set to 0 to disable the blacklist completely.]=]
+L["OPT_BLEED_EFFECT_BAD_SPELLID"] = "Bad spell ID, only input numeric Spell IDs as found on wowhead.com"
+L["OPT_BLEED_EFFECT_DESCRIPTION"] = "Description (Spell ID: |cFF00C000%s|r)"
+L["OPT_BLEED_EFFECT_HOLDER"] = "Bleed effects management"
+L["OPT_BLEED_EFFECT_HOLDER_DESC"] = "Manage bleed effects detection"
+L["OPT_BLEED_EFFECT_IDENTIFIERS"] = "Bleed effects descriptions keywords:"
+L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"] = [=[Each keyword should match a term found in the |cFFFF0000description|r of the debuff causing the target to bleed and that can be used to identify such effects.
+
+One keyword per line.
+
+Clear the field to reset to the default keywords.
+
+Depending on your locale, you may need to adjust those keywords manually.
+Use the pre-configured Bleed effects list below as a guide so that their descriptions contain at least one keyword (matching keywords are highlighted in the descriptions of each effect below).
+
+(Lua patterns can be used, each line being a pattern)
+]=]
+L["OPT_BLEED_EFFECT_UNKNOWN_SPELL"] = "Unknown spell (%s)"
+L["OPT_BLEEDCHECK_DESC"] = "If checked you'll be able to see and cure bleeding effects"
 L["OPT_BORDERTRANSP"] = "Border transparency"
 L["OPT_BORDERTRANSP_DESC"] = "Set the transparency of the border"
 L["OPT_CENTERTEXT"] = "Center counter:"
@@ -315,6 +337,8 @@ L["OPT_DISEASECHECK_DESC"] = "If checked you'll be able to see and cure diseased
 L["OPT_DISPLAYOPTIONS"] = "Display options"
 L["OPT_DONOTBLPRIO_DESC"] = "Prioritized units won't be blacklisted"
 L["OPT_ENABLE_A_CUSTOM_SPELL"] = "Enable"
+L["OPT_ENABLE_BLEED_EFFECTS_DETECTION"] = "Bleed Effects discovery"
+L["OPT_ENABLE_BLEED_EFFECTS_DETECTION_DESC"] = "Enable Decursive to discover new bleed effects when their description contains the keywords indicated in the 'Bleed effects keywords' field"
 L["OPT_ENABLE_LIVELIST"] = "Enable the live-list"
 L["OPT_ENABLE_LIVELIST_DESC"] = [=[Displays an informative list of afflicted people.
 
@@ -343,7 +367,11 @@ L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"] = "Spell already listed!"
 L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"] = "Decursive already manage this spell. Shift-click the spell or type its ID to add a special rank."
 L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "Invalid spell ID!"
 L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "Spell not found in your spell book!"
+L["OPT_IS_BLEED_EFFECT"] = "Is a bleed effect"
+L["OPT_IS_BLEED_EFFECT_DESC"] = [=[Check to tell Decursive to consider this effect to be of the 'Bleed' type.
+Can be unchecked for false positives...]=]
 L["OPT_ISNOTVALID_SPELLID"] = "is not a valid Spell ID"
+L["OPT_KNOWN_BLEED_EFFECTS"] = "Known bleed effects"
 L["OPT_LIVELIST"] = "Live list"
 L["OPT_LIVELIST_DESC"] = [=[These are the settings concerning the list of afflicted units displayed beneath the "Decursive" bar.
 
@@ -408,6 +436,8 @@ L["OPT_PRINT_CUSTOM_DESC"] = "Decursive's messages will be printed in a custom c
 L["OPT_PRINT_ERRORS_DESC"] = "Errors will be displayed"
 L["OPT_PROFILERESET"] = "Profile reset..."
 L["OPT_RANDOMORDER_DESC"] = "Units will be displayed and cured randomly (not recommended)"
+L["OPT_READD_DEFAULT_BLEED_EFFECTS"] = "Re-add defaults"
+L["OPT_READD_DEFAULT_BLEED_EFFECTS_DESC"] = "Re-add Decursive's default bleed effects to the list"
 L["OPT_READDDEFAULTSD"] = "Re-add default afflictions"
 L["OPT_READDDEFAULTSD_DESC1"] = [=[Add missing Decursive's default afflictions to this list
 Your settings won't be changed]=]
@@ -417,6 +447,8 @@ L["OPT_REMOVESKDEBCONF"] = [=[Are you sure you want to remove
 from Decursive's affliction skip list?]=]
 L["OPT_REMOVETHISDEBUFF"] = "Remove this affliction"
 L["OPT_REMOVETHISDEBUFF_DESC"] = "Removes '%s' from the skip list"
+L["OPT_RESET_DEFAULT_BLEED_EFFECTS"] = "Clear list"
+L["OPT_RESET_DEFAULT_BLEED_EFFECTS_DESC"] = "Clear the list and reset to default values, all added and detected debuffs will be lost!!"
 L["OPT_RESETDEBUFF"] = "Reset this affliction"
 L["OPT_RESETDTDCRDEFAULT"] = "Resets '%s' to Decursive default"
 L["OPT_RESETMUFMOUSEBUTTONS"] = "Reset"
@@ -510,4 +542,4 @@ L["UNSTABLERELEASE"] = "Unstable release"
 
 
 
-T._LoadedFiles["enUS.lua"] = "2.7.9.1";
+T._LoadedFiles["enUS.lua"] = "2.7.15";

@@ -1,0 +1,12 @@
+## Interface: 20501
+## Title: HandyNotes: DungeonLocations (Classic)
+## Version: 1.07a
+## Notes: Shows locations of dungeon and raid entrances
+## Author: Cali
+## X-Curse-Project-ID: 323067
+## X-WoWI-ID: 25298
+## RequiredDeps: HandyNotes
+## SavedVariables: HandyNotes_DungeonLocationsClassicDB
+
+locales\bcc\Locales.xml
+bcc.lua

@@ -132,7 +132,7 @@ local MakeFrameSizesOptions
 do
 	local layout
 	local new_sizes = {}
-	local size_values = {1,5,10,15,20,25,30,40}
+	local size_values = {1,5,10,15,20,25,30,35,40}
 
 	local options_item = {
 		layoutName = {
@@ -226,10 +226,10 @@ do
 	}
 
 	local options = {
-		title = {
+		tit = {
 			order = 0,
 			type = "description",
-			name = L["A Layout defines which unit frames will be displayed and the way in which they are arranged. Here you can set different layouts for each instance size."],
+			name = L["A Layout defines which unit frames will be displayed and the way in which they are arranged. Here you can set different layouts for each raid size."],
 			hidden = function()
 				-- To detect if edited theme has changed
 				if theme.layout ~= layout then
@@ -238,14 +238,29 @@ do
 				end
 			end,
 		},
+		typ = {
+			type = 'select',
+			order = 0.1,
+			width = 1.5,
+			name = L["Choose the Raid Size calculation method"],
+			desc = L["Choose the Raid Size calculation method"],
+			get = function()
+				return Grid2.db.profile.raidSizeType or 0
+			end,
+			set = function(_,v)
+				Grid2.db.profile.raidSizeType = (v~=0) and v or nil
+				Grid2:GroupChanged()
+			end,
+			values = Grid2Options.raidSizeValues,
+		},
 		add ={
-			type   = 'select',
-			order  = 500,
+			type = 'select',
+			order = 0.2,
 			width = "half",
-			name   = L["Add"],
-			desc   = L["Add instance size"],
-			get    = function() end,
-			set    = function(_,v)
+			name = L["Add Raid Size"],
+			desc = L["Add Raid size"],
+			get = function() end,
+			set = function(_,v)
 				new_sizes[ size_values[v] ] = true
 			end,
 			values = size_values,
@@ -262,7 +277,7 @@ do
 			type  = "group",
 			inline = true,
 			order = m,
-			name  = m>1 and string.format(L["%d man instances"],m) or L["Solo"],
+			name  = m>1 and string.format(L["%d man raid size"],m) or L["Solo"],
 			handler = { m },
 			args = options_item,
 			hidden = IsHidden,
@@ -410,8 +425,22 @@ local generalOptions = {
 		end,
 	},
 
-	displayFocus = {
+	displayTargetTarget = {
 		order = 110,
+		type = "toggle",
+		name = "|cffffd200".. L["Display Target of Target unit"] .."|r",
+		desc = L["Enable this option to display the target of target unit."],
+		width = "full",
+		get = function(info)
+			return theme.layout.specialHeaders and theme.layout.specialHeaders.targettarget~=nil
+		end,
+		set = function(info,v)
+			SetupSpecialHeader('targettarget', v)
+		end,
+	},
+
+	displayFocus = {
+		order = 115,
 		type = "toggle",
 		name = "|cffffd200".. L["Display Focus unit"] .."|r",
 		desc = L["Enable this option to display the focus unit."],
@@ -425,8 +454,23 @@ local generalOptions = {
 		hidden = function() return Grid2.isVanilla end,
 	},
 
-	displayBosses = {
+	displayFocusTarget = {
 		order = 120,
+		type = "toggle",
+		name = "|cffffd200".. L["Display Target of Focus unit"] .."|r",
+		desc = L["Enable this option to display the target of focus unit."],
+		width = "full",
+		get = function(info)
+			return theme.layout.specialHeaders and theme.layout.specialHeaders.focustarget~=nil
+		end,
+		set = function(info,v)
+			SetupSpecialHeader('focustarget', v)
+		end,
+		hidden = function() return Grid2.isVanilla end,
+	},
+
+	displayBosses = {
+		order = 125,
 		type = "toggle",
 		name = "|cffffd200".. L["Display Bosses units"] .."|r",
 		desc = L["Enable this option to display bosses units."],

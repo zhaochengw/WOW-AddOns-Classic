@@ -1,17 +1,22 @@
 -- Roster management
 local Grid2 = Grid2
+local L = LibStub:GetLibrary("AceLocale-3.0"):GetLocale("Grid2")
 
 -- Local variables to speed up things
-local ipairs, pairs, next = ipairs, pairs, next
+local ipairs, pairs, next, select = ipairs, pairs, next, select
 local UNKNOWNOBJECT = UNKNOWNOBJECT
 local IsInRaid = IsInRaid
 local UnitName = UnitName
 local UnitGUID = UnitGUID
 local UnitExists = UnitExists
+local UnitIsDead = UnitIsDead
+local UnitIsGhost = UnitIsGhost
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local GetRaidRosterInfo = GetRaidRosterInfo
 local GetNumGroupMembers = GetNumGroupMembers
+local UnitGroupRolesAssigned = UnitGroupRolesAssigned
 local isClassic = Grid2.isClassic
 local isVanilla = Grid2.isVanilla
-local isWrath   = Grid2.isWrath
 
 -- helper tables to check units types/categories
 local party_indexes   = {} -- player=>0, party1=>1, ..
@@ -21,8 +26,9 @@ local owner_of_unit   = {} -- partypet1=>party1, raidpet3=>raid3, arenapet1=>are
 local grouped_units   = {} -- party1=>1, raid1=>1 ; units in party or raid
 local grouped_players = {} -- party1=>1, raid1=>1 ; only party/raid player/owner units
 local grouped_pets    = {} -- partypet1=>1, raidpet2=>1 ; only party/raid pet units
-local roster_types    = { target = 'target', focus = 'focus' }
+local roster_types    = { target = 'target', focus = 'focus', targettarget = 'targettarget', focustarget = 'focustarget' }
 local roster_my_units = { player = true, pet = true, vehicle = true }
+local faked_units     = { targettarget = true, focustarget = true, boss6 = true, boss7 = true, boss8 = true } -- eventless units
 -- roster tables / storing only existing units
 local roster_names    = {} -- raid1=>name, ..
 local roster_realms   = {} -- raid1=>realm,..
@@ -30,6 +36,25 @@ local roster_guids    = {} -- raid1=>guid,..
 local roster_players  = {} -- raid1=>guid ;only non pet units in group/raid
 local roster_pets     = {} -- raidpet1=>guid ;only pet units in group/raid
 local roster_units    = {} -- guid=>raid1, ..
+local roster_faked    = {} -- eventless units
+-- roster dead tracking
+local roster_deads = {}
+local textDeath = L["DEAD"]
+local textGhost = L["GHOST"]
+
+-- provide alternative missing api functions for classic
+Grid2.GetSpecialization = GetSpecialization or GetActiveTalentGroup or function()
+	return 0
+end
+
+Grid2.GetNumSpecializations = GetNumSpecializations or function()
+	return 2
+end
+
+Grid2.UnitGroupRolesAssigned = (not Grid2.isVanilla) and UnitGroupRolesAssigned or function(unit)
+	local index = raid_indexes[unit]
+	return ((index and select(10,GetRaidRosterInfo(index))=='MAINTANK') and 'TANK') or UnitGroupRolesAssigned(unit) or 'NONE'
+end
 
 -- populate unit tables
 do
@@ -89,6 +114,7 @@ do
 			modified = true
 		end
 		if modified then
+			roster_deads[unit] = Grid2:UnitIsDeadOrGhost(unit)
 			Grid2:SendMessage("Grid_UnitUpdated", unit)
 			return true
 		end
@@ -108,6 +134,8 @@ do
 			roster_units[guid] = unit
 			roster_pets[unit] = guid
 		end
+		roster_faked[unit] = faked_units[unit]
+		roster_deads[unit] = Grid2:UnitIsDeadOrGhost(unit)
 		Grid2:SendMessage("Grid_UnitUpdated", unit, true)
 	end
 
@@ -124,51 +152,60 @@ do
 		if unit == roster_units[guid] then
 			roster_units[guid] = nil
 		end
+		roster_faked[unit] = nil
+		roster_deads[unit] = nil
 		Grid2:SendMessage("Grid_UnitLeft", unit)
 	end
 
-	function Grid2:UNIT_NAME_UPDATE(_, unit)
+	local function RefreshUnit(unit)
+		if UnitExists(unit) then
+			if roster_guids[unit] then
+				return UpdateUnit(unit)
+			else
+				AddUnit(unit)
+				return true
+			end
+		elseif roster_guids[unit] then
+			DelUnit(unit)
+			return true
+		end
+	end
+
+	function Grid2:RosterRegisterUnit(unit) -- Called from Grid2Frame:OnAttributeChanged() to maintain roster up to date.
+		if UnitExists(unit) and not roster_guids[unit] then
+			AddUnit(unit)
+		end
+	end
+
+	function Grid2:RosterUnregisterUnit(unit) -- Called from Grid2Frame:OnAttributeChanged() to maintain roster up to date.
+		if roster_guids[unit] then
+			DelUnit(unit)
+		end
+	end
+
+	function Grid2:UNIT_NAME_UPDATE(_, unit) -- event registered in GridCore.lua because this module does not have a init function
 		if roster_guids[unit] then
 			UpdateUnit(unit)
 			self:UpdateFramesOfUnit(unit)
 		end
 	end
 
-	function Grid2:UNIT_PET(_, owner)
+	function Grid2:UNIT_PET(_, owner) -- event registered in GridCore.lua because this module does not have a init function
 		local unit = pet_of_unit[owner]
 		if roster_guids[unit] then
-			self:RosterRefreshUnit(unit)
+			RefreshUnit(unit)
 			self:UpdateFramesOfUnit(unit)
 		end
 	end
-	-- Called from Grid2Frame:OnUnitStateChanged() to maintain roster up to date, this callback is only fired by Special headers.
-	function Grid2:RosterRefreshUnit(unit)
-		if UnitExists(unit) then
-			if roster_guids[unit] then
-				UpdateUnit(unit)
-			else
-				AddUnit(unit)
-			end
-		elseif roster_guids[unit] then
-			DelUnit(unit)
-		end
-	end
-	-- Called from Grid2Frame:OnAttributeChanged() to maintain roster up to date.
-	function Grid2:RosterRegisterUnit(unit)
-		if UnitExists(unit) and not roster_guids[unit] then
-			AddUnit(unit)
-		end
-	end
-	-- Called from Grid2Frame:OnAttributeChanged() to maintain roster up to date.
-	function Grid2:RosterUnregisterUnit(unit)
-		if roster_guids[unit] then
-			DelUnit(unit)
-		end
-	end
-	-- Workaround for blizzard bug (see ticket #628)
-	function Grid2:RosterHasUnknowns()
+
+	function Grid2:RosterHasUnknowns() -- Workaround for blizzard bug (see ticket #628)
 		return roster_unknowns
 	end
+
+	-- functions to manage non-grouped and eventless units from custom headers (see GridGroupHeaders.lua)
+	-- target, focus, targettarget, focustarget, bosssX, arenaX, ...
+	Grid2InsecureGroupCustomHeader_RegisterUpdate(Grid2, "Grid_FakedUnitsUpdate", RefreshUnit, roster_faked)
+
 	-- We delay roster updates to the next frame Update, to ensure all GROUP_ROSTER_UPDATE group headers events were already
 	-- processed, in this way roster is up to date: non-existant units already removed from roster when UpdateRoster() is executed.
 	-- As side effect we avoid a lot of unecessary roster updates, because blizzard fires a lot of GROUP_ROSTER_UPDATE events.
@@ -191,6 +228,9 @@ do
 			end
 		end
 		self:SendMessage("Grid_RosterUpdate", roster_unknowns)
+		if isVanilla then
+			self:SendMessage("Grid_PlayerRolesAssigned")
+		end
 	end
 end
 
@@ -223,9 +263,59 @@ do
 	}
 	-- Local variables
 	local updateCount = 0
+	local groupsUsed = {}
+	-- Calculate raid size (raid size is adjusted to be multiple of 5)
+	local raidSizeFuncs = {
+		[1] = function() -- max non-empty group in raid
+			local m = 1
+			for i = 1, 40 do
+				local n, _, g = GetRaidRosterInfo(i)
+				if n and g>m then m = g end
+			end
+			return m*5, m
+		end,
+		[2] = function() -- count non-empty groups in raid
+			local r, m = 0, 1
+			wipe(groupsUsed)
+			for i = 1, 40 do
+				local n, _, g = GetRaidRosterInfo(i)
+				if n and groupsUsed[g]==nil then
+					groupsUsed[g] = true
+					if g>m then m = g end
+					r = r + 1
+				end
+			end
+			return r*5, m
+		end,
+		[3] = function() -- count players in raid
+			local r, m = 0, 1
+			for i = 1, 40 do
+				local n, _, g = GetRaidRosterInfo(i)
+				if n then
+					if g>m then m = g end
+					r = r + 1
+				end
+			end
+			return math.ceil(r/5)*5, m
+		end,
+	}
+	local function GetRaidMaxPlayers(maxPlayers, maxGroup)
+		if IsInRaid() then
+			local typ = Grid2.db.profile.raidSizeType
+			if typ then
+				local raidSize, raidGroup = raidSizeFuncs[typ]()
+				if Grid2Layout.db.profile.displayAllGroups then
+					return raidSize, raidGroup
+				else
+					return math.min(raidSize, maxPlayers), math.min(raidGroup, maxGroup)
+				end
+			end
+		end
+		return maxPlayers, maxGroup
+	end
 	-- Used by another modules
 	function Grid2:GetGroupType()
-		return self.groupType or "solo", self.instType or "other", self.instMaxPlayers or 1
+		return self.groupType or "solo", self.instType or "other", self.instMaxPlayers or 1, self.instMaxGroup or 1
 	end
 	-- Workaround to fix maxPlayers in pvp when UI is reloaded (retry every .5 seconds for 2-3 seconds), see ticket #641
 	function Grid2:FixGroupMaxPlayers(newInstType)
@@ -303,16 +393,24 @@ do
 		elseif maxPlayers>40 then -- In Wrath Wintergrasp GetInstanceInfo() may return more than 40 players.
 			maxPlayers = 40
 		end
-		if self.groupType ~= newGroupType or self.instType ~= newInstType or self.instMaxPlayers ~= maxPlayers then
-			self:Debug("GroupChanged", event, instName, instMapID, self.groupType, self.instType, self.instMaxPlayers, "=>", newGroupType, newInstType, maxPlayers)
-			self.groupType, self.instType, self.instMaxPlayers = newGroupType, newInstType, maxPlayers
-			self:SendMessage("Grid_GroupTypeChanged", newGroupType, newInstType, maxPlayers)
+		local instMaxPlayers, instMaxGroup = GetRaidMaxPlayers( maxPlayers, math.ceil(maxPlayers/5) )
+		if self.groupType ~= newGroupType or self.instType ~= newInstType or self.instMaxPlayers ~= instMaxPlayers or self.instMaxGroup ~= instMaxGroup then
+			self:Debug("GroupChanged", event, instName, instMapID, self.groupType, self.instType, self.instMaxPlayers, self.instMaxGroup, "=>", newGroupType, newInstType, instMaxPlayers, instMaxGroup)
+			self.groupType      = newGroupType
+			self.instType       = newInstType
+			self.instMaxPlayers = instMaxPlayers
+			self.instMaxGroup   = instMaxGroup
+			self:SendMessage("Grid_GroupTypeChanged", newGroupType, newInstType, instMaxPlayers, instMaxGroup)
 		end
 		self:QueueUpdateRoster()
 	end
 end
 
 --{{ Public variables and methods used by some statuses
+function Grid2:UnitIsDeadOrGhost(unit)
+	return UnitIsDeadOrGhost(unit) and (UnitIsGhost(unit) and textGhost or textDeath) or false
+end
+
 function Grid2:GetUnitOfGUID(guid) -- only party/raid units
 	return roster_units[guid]
 end
@@ -367,6 +465,9 @@ Grid2.pet_of_unit     = pet_of_unit
 Grid2.roster_my_units = roster_my_units
 Grid2.roster_types    = roster_types
 Grid2.grouped_units   = grouped_units
+Grid2.grouped_players = grouped_players
 Grid2.raid_indexes    = raid_indexes
 Grid2.party_indexes   = party_indexes
+Grid2.roster_deads    = roster_deads
+Grid2.roster_faked    = roster_faked
 --}}

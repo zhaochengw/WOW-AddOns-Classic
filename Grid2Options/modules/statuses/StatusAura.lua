@@ -1,13 +1,16 @@
 local L = Grid2Options.L
 
-local ColorCountValues = {1,2,3,4,5,6,7,8,9}
-local ColorizeByValues1= { L["Number of stacks"] , L["Remaining time"], L["Elapsed time"] }
-local ColorizeByValues2= { L["Number of stacks"] , L["Remaining time"], L["Elapsed time"], L["Value"] }
 local MonitorizeValues = { [0]= L["NONE"], [1] = L["Value1"], [2] = L["Value2"], [3] = L["Value3"] }
+local DurationValues = { [1] = L['Automatic'], [2] = L['Custom'] }
 local TextValues1 = { [1] = L['Value Tracked'], [2] = L['Aura Name'], [3] = L['Custom Text'] }
 local TextValues2 = { [2] = L['Aura Name'], [3] = L['Custom Text'] }
+local ColorCountValues = {1,2,3,4,5,6,7,8,9}
+local ColorizeByValues1= { [1] = L["Single Color"], [5] = L["Number of stacks"], [6] = L["Remaining time"], [7] = L["Elapsed time"] }
+local ColorizeByValues2= { [1] = L["Single Color"], [5] = L["Number of stacks"], [6] = L["Remaining time"], [7] = L["Elapsed time"], [8] = L["Value"] }
+local ColorizeByValues3= { [1] = L["Single Color"], [5] = L["Number of stacks"], [6] = L["Remaining time"], [7] = L["Elapsed time"], [2] = L["Debuff Type"] }
 
-local function StatusAuraGenerateColors(status, newCount)
+--{{ colors for aura statuses
+local function StatusAuraUpdateColors(status, newCount)
 	local oldCount = status.dbx.colorCount or 1
 	for i=oldCount+1,newCount do
 		status.dbx["color"..i] = { r=1, g=1, b=1, a=1 }
@@ -18,11 +21,11 @@ local function StatusAuraGenerateColors(status, newCount)
 	status.dbx.colorCount = newCount>1 and newCount or nil
 end
 
-local function StatusAuraGenerateColorThreshold(status)
-	if status.dbx.colorCount then
-		local newCount   = status.dbx.colorCount - 1
+local function StatusAuraUpdateColorsThreshold(status, create)
+	if status.dbx.colorCount and create then
+		local newCount = status.dbx.colorCount - 1
 		local thresholds = status.dbx.colorThreshold or {}
-		local oldCount   = #thresholds
+		local oldCount = #thresholds
 		for i=oldCount+1,newCount do
 			thresholds[i] = 0
 		end
@@ -33,31 +36,124 @@ local function StatusAuraGenerateColorThreshold(status)
 		status.dbx.blinkThreshold = nil
 	else
 		status.dbx.colorThreshold = nil
+		status.dbx.colorThresholdValue = nil
+		status.dbx.colorThresholdElapsed = nil
 	end
 end
 
-function Grid2Options:MakeStatusAuraEnableStacksOptions(status, options, optionParams)
-	if not status.dbx.missing then
-		self:MakeHeaderOptions(options, "Stacks")
-		options.enableStacks = {
-			type = "range",
-			order = 5,
-			name = L["Activation Stacks"],
-			desc = L["Select the minimum number of aura stacks to activate the status."],
-			min = 1, softMax = 30, step = 1,
-			get = function ()
-				return status.dbx.enableStacks or 1
-			end,
-			set = function (_, v)
-				status.dbx.enableStacks = v~=1 and v or nil
-				status:Refresh()				
-			end,
-		}
+function Grid2Options:MakeStatusAuraColorsSelectionOptions(status, options, optionParams)
+	self:MakeHeaderOptions(options, "Colors")
+	self:MakeStatusColorOptions(status, options, optionParams)
+	if status.dbx.missing then return end
+	options.colorizeBy = {
+		type = "select",
+		order = 10.1,
+		width ="normal",
+		name = L["Coloring based on"],
+		desc = L["Coloring based on"],
+		get = function()
+			return	(status.dbx.debuffTypeColorize    and 2) or -- debuff type
+					(status.dbx.colorThresholdValue   and 8) or -- aura value
+					(status.dbx.colorThresholdElapsed and 7) or -- elapsed time
+					(status.dbx.colorThreshold        and 6) or -- remaining time
+					(status.dbx.colorCount            and 5) or -- number of stacks
+					1                                           -- single color
+		end,
+		set = function( _, v)
+			status.dbx.debuffTypeColorize = (v==2) or nil
+			status.dbx.colorThresholdValue = (v==8) or nil
+			status.dbx.colorThresholdElapsed = (v==7) or nil
+			StatusAuraUpdateColors(status, v>=5 and (status.dbx.colorCount or 2) or 1)
+			StatusAuraUpdateColorsThreshold(status, v>5)
+			status:UpdateDB()
+			self:MakeStatusOptions(status)
+		end,
+		values = (status.dbx.type=='debuffs' and ColorizeByValues3) or (status.dbx.valueIndex and ColorizeByValues2) or ColorizeByValues1,
+	}
+	if not status.dbx.colorCount then return end
+	options.colorCount = {
+		type = "select",
+		order = 10.2,
+		name = L["Color count"],
+		desc = L["Select how many colors the status must provide."],
+		get = function() return status.dbx.colorCount or 1 end,
+		set = function(_,v)
+			StatusAuraUpdateColors(status, v)
+			StatusAuraUpdateColorsThreshold(status, status.dbx.colorThreshold~=nil)
+			status:UpdateDB()
+			self:MakeStatusOptions(status)
+		end,
+		values = ColorCountValues,
+	}
+	options.colorsSep = {  type = "description", order = 10.3, name = '' }
+end
+
+function Grid2Options:MakeStatusAuraColorsThresholdOptions(status, options, optionParams)
+	local thresholds = status.dbx.colorThreshold
+	if thresholds then
+		self:MakeHeaderOptions(options, "Thresholds")
+		local colorKey = L["Color"]
+		local maxValue = status.dbx.colorThresholdValue and 200000 or 30
+		local step     = status.dbx.colorThresholdValue and 50 or 0.1
+		for i=1,#thresholds do
+			options[ "colorThreshold" .. i ] = {
+				type = "range",
+				order = 50+i,
+				name = colorKey .. (i+1),
+				desc = L["Threshold to activate Color"] .. (i+1),
+				min = 0,
+				max = maxValue * 10,
+				softMin = 0,
+				softMax = maxValue,
+				step = step,
+				bigStep = step*10,
+				get = function () return status.dbx.colorThreshold[i] end,
+				set = function (_, v)
+					local min,max
+					if status.dbx.colorThresholdElapsed then
+						min = status.dbx.colorThreshold[i-1] or 0
+						max = status.dbx.colorThreshold[i+1] or maxValue
+					else
+						min = status.dbx.colorThreshold[i+1] or 0
+						max = status.dbx.colorThreshold[i-1] or maxValue
+					end
+					if v>=min and v<=max then
+						status.dbx.colorThreshold[i] = v
+						status:UpdateDB()
+					end
+				end,
+			}
+		end
 	end
+end
+
+function Grid2Options:MakeStatusAuraColorsOptions(status, options, optionParams)
+	self:MakeStatusAuraColorsSelectionOptions(status, options, optionParams)
+	self:MakeStatusAuraColorsThresholdOptions(status, options, optionParams)
+end
+--}}
+
+function Grid2Options:MakeStatusAuraEnableStacksOptions(status, options, optionParams)
+	self:MakeHeaderOptions(options, "Activation")
+	if status.dbx.missing then return end
+	options.enableStacks = {
+		type = "range",
+		order = 5,
+		name = L["Activation Stacks"],
+		desc = L["Select the minimum number of aura stacks to activate the status."],
+		min = 1, softMax = 30, step = 1,
+		get = function ()
+			return status.dbx.enableStacks or 1
+		end,
+		set = function (_, v)
+			status.dbx.enableStacks = v~=1 and v or nil
+			status:Refresh()
+		end,
+	}
 end
 
 function Grid2Options:MakeStatusAuraMissingOptions(status, options, optionParams)
-	options.threshold = {
+	options.showMissing = {
 		type = "toggle",
 		name = L["Show if missing"],
 		desc = L["Display status only if the buff is not active."],
@@ -65,21 +161,73 @@ function Grid2Options:MakeStatusAuraMissingOptions(status, options, optionParams
 		get = function () return status.dbx.missing end,
 		set = function (_, v)
 			status.dbx.missing = v or nil
+			status.dbx.missingPets = nil
+			status.dbx.strictFilter = nil
 			if v then
-				StatusAuraGenerateColors(status,1)
+				StatusAuraUpdateColors(status,1)
 				status.dbx.colorThreshold = nil
 				status.dbx.valueIndex = nil
 				status.dbx.enableStacks = nil
 			end
-			status:Refresh()			
+			status:Refresh()
 			self:MakeStatusOptions(status)
 		end,
 	}
+	options.missingPets = {
+		type = "toggle",
+		name = L["Hide on pets"],
+		desc = L["Never display this status on pets."],
+		order = 9,
+		get = function () return not status.dbx.missingPets end,
+		set = function (_, v)
+			status.dbx.missingPets = not v or nil
+			status:Refresh()
+		end,
+		hidden = function() return not status.dbx.missing end,
+	}
+end
+
+-- Grid2Options:MakeStatusAuraMaxDurationOptions()
+function Grid2Options:MakeStatusAuraMaxDurationOptions(status, options, optionParams)
+	if not status.dbx.missing then
+		self:MakeHeaderOptions(options, "Duration")
+		options.MaxDurationSelect = {
+			type = "select",
+			order = 106,
+			width ="normal",
+			name = L["Max Duration"],
+			desc = L["Max Duration"],
+			get = function() return	status.dbx.maxDuration and 2 or 1 end,
+			set = function( _, v)
+				status.dbx.maxDuration = v==2 and 12 or nil
+				status:Refresh()
+			end,
+			values = DurationValues,
+		}
+		options.maxDurationValue = {
+			type = "input",
+			order = 107,
+			name = L["Type Max Duration"],
+			desc = L["Type the maximum duration for the aura in seconds."],
+			width = "normal",
+			get = function () return tostring(status.dbx.maxDuration) end,
+			set = function (_, v)
+				status.dbx.maxDuration = tonumber(v) or 12
+				status:Refresh()
+			end,
+			hidden = function() return status.dbx.maxDuration==nil end,
+		}
+	end
 end
 
 -- Grid2Options:MakeStatusBlinkThresholdOptions()
 do
 	local VALUES = { L["Never"], L["Always"], L["Threshold"] }
+	local function RefreshIndicatorsHighlight(status)
+		for indicator in next, status.indicators do
+			indicator:UpdateHighlight()
+		end
+	end
 	function Grid2Options:MakeStatusBlinkThresholdOptions(status, options, optionParams)
 		if not status.dbx.colorThreshold then
 			self:MakeHeaderOptions(options, "Highlights")
@@ -93,7 +241,8 @@ do
 				end,
 				set = function(_,v)
 					status.dbx.blinkThreshold = (v==3 and 1) or (v==2 and 0) or nil
-					status:Refresh()					
+					RefreshIndicatorsHighlight(status)
+					status:Refresh()
 					self:MakeStatusOptions(status)
 				end,
 				values = VALUES,
@@ -112,7 +261,7 @@ do
 				end,
 				set = function (_, v)
 					status.dbx.blinkThreshold = v
-					status:Refresh()					
+					status:Refresh()
 				end,
 				hidden = function() return (status.dbx.blinkThreshold or 0)<=0 end,
 			}
@@ -155,120 +304,19 @@ function Grid2Options:MakeStatusAuraUseSpellIdOptions(status, options, optionPar
 end
 
 function Grid2Options:MakeStatusAuraCombineStacksOptions(status, options, optionParams)
+	self:MakeHeaderOptions(options, "Combine")
 	options.combineStacks = {
 		type = "toggle",
 		name = L["Combine Stacks"],
 		width = "normal",
-		desc = string.format( "%s ", L["Multiple instances of the same debuff will be treated as multiple stacks of the same debuff"] ),
-		order = 9,
+		desc = L["Multiple instances of the same debuff will be treated as multiple stacks of the same debuff."],
+		order = 89.95,
 		get = function () return status.dbx.combineStacks end,
 		set = function (_, v)
 			status.dbx.combineStacks = v or nil
 			status:UpdateDB()
 		end,
 	}
-end
-
-function Grid2Options:MakeStatusAuraCommonOptions(status, options, optionParams)
-	self:MakeHeaderOptions(options, "Colors")
-	if not status.dbx.missing then
-		options.colorCount = {
-			type = "select",
-			order = 10.1,
-			name = L["Color count"],
-			desc = L["Select how many colors the status must provide."],
-			get = function() return status.dbx.colorCount or 1 end,
-			set = function(_,v)
-				status.dbx.debuffTypeColorize = nil
-				StatusAuraGenerateColors(status, v)
-				if status.dbx.colorThreshold then
-					StatusAuraGenerateColorThreshold(status)
-				end
-				status:UpdateDB()
-				self:MakeStatusOptions(status)
-			end,
-			values = ColorCountValues,
-		}
-		if status.dbx.colorCount then
-			options.colorizeBy = {
-				type = "select",
-				order = 10.2,
-				width ="normal",
-				name = L["Coloring based on"],
-				desc = L["Coloring based on"],
-				get = function()
-					if status.dbx.colorThreshold then
-						return  (status.dbx.colorThresholdValue and 4)   or
-								(status.dbx.colorThresholdElapsed and 3) or 2
-					else
-						return 1
-					end
-				end,
-				set = function( _, v)
-						status.dbx.colorThreshold = nil
-						status.dbx.colorThresholdElapsed = (v==3) and true or nil
-						status.dbx.colorThresholdValue   = (v==4) and true or nil
-						if v ~= 1 then StatusAuraGenerateColorThreshold(status) end
-						status:UpdateDB()
-						self:MakeStatusOptions(status)
-				end,
-				values = status.dbx.valueIndex and ColorizeByValues2 or ColorizeByValues1,
-			}
-			options.colorsSep = {  type = "description", order = 10.3, name = '' }
-		elseif status.dbx.type == "debuffs" then
-			options.debuffTypeColor = {
-				type = "toggle",
-				name = L["Use debuff Type color"],
-				desc = L["Use the debuff Type color first. The specified color will be applied only if the debuff has no type."],
-				order = 19,
-				get = function () return status.dbx.debuffTypeColorize end,
-				set = function (_, v)
-					status.dbx.debuffTypeColorize = v or nil
-					status:UpdateDB()
-					status:UpdateAllUnits()
-				end,
-			}
-		end
-	end
-end
-
-function Grid2Options:MakeStatusAuraColorThresholdOptions(status, options, optionParams)
-	local thresholds = status.dbx.colorThreshold
-	if thresholds then
-		self:MakeHeaderOptions(options, "Thresholds")
-		local colorKey = L["Color"]
-		local maxValue = status.dbx.colorThresholdValue and 200000 or 30
-		local step     = status.dbx.colorThresholdValue and 50 or 0.1
-		for i=1,#thresholds do
-			options[ "colorThreshold" .. i ] = {
-				type = "range",
-				order = 50+i,
-				name = colorKey .. (i+1),
-				desc = L["Threshold to activate Color"] .. (i+1),
-				min = 0,
-				max = maxValue * 10,
-				softMin = 0,
-				softMax = maxValue,
-				step = step,
-				bigStep = step*10,
-				get = function () return status.dbx.colorThreshold[i] end,
-				set = function (_, v)
-					local min,max
-					if status.dbx.colorThresholdElapsed then
-						min = status.dbx.colorThreshold[i-1] or 0
-						max = status.dbx.colorThreshold[i+1] or maxValue
-					else
-						min = status.dbx.colorThreshold[i+1] or 0
-						max = status.dbx.colorThreshold[i-1] or maxValue
-					end
-					if v>=min and v<=max then
-						status.dbx.colorThreshold[i] = v
-						status:UpdateDB()
-					end
-				end,
-			}
-		end
-	end
 end
 
 function Grid2Options:MakeStatusAuraValueOptions(status, options, optionParams)
@@ -391,14 +439,77 @@ function Grid2Options:MakeStatusDebuffTypeFilterOptions(status, options, optionP
 	}
 end
 
+function Grid2Options:MakeStatusAuraListOptions(status, options, optionParams)
+	options.auraListAdd = {
+		type = "input", dialogControl = (status.dbx.type=='buffs') and "EditBoxGrid2Buffs" or "EditBoxGrid2Debuffs",
+		order = 500,
+		width = 1.75,
+		name = L["Name or SpellId"],
+		desc = L["Type a name or spell identifier to add to the list below."],
+		get = function() end,
+		set = function(info, value)
+			local _, spell = string.match(value, "^(.-[@#>])(.*)$")
+			spell = strtrim(spell or value)
+			if #spell>0 then
+				table.insert(status.dbx.auras, tonumber(spell) or spell)
+				status:Refresh()
+			end
+		end,
+	}
+	options.auraListUseSpellId = {
+		type = "toggle",
+		width = 0.75,
+		name = L["Track by SpellId"],
+		desc = L["If available use the spell identifier instead of the spell name to detect the auras."],
+		order = 510,
+		get = function() return status.dbx.useSpellId end,
+		set = function(_,v)
+			status.dbx.useSpellId = v or nil
+			status:Refresh()
+		end,
+	}
+	options.auraList = {
+		type = "input", dialogControl = "Grid2ExpandedEditBox",
+		order = 520,
+		width = "full",
+		name = "",
+		multiline = 16,
+		get = function()
+			local auras = {}
+			for _,aura in pairs(status.dbx.auras) do
+				auras[#auras+1] = type(aura)~='number' and aura or string.format("%s <%d>", GetSpellInfo(aura) or UNKNOWN or L["Unknown"], aura)
+			end
+			return table.concat( auras, "\n" )
+		end,
+		set = function(_, v)
+			wipe(status.dbx.auras)
+			local auras = { strsplit("\n,", strtrim(v)) }
+			for _,name in pairs(auras) do
+				local prefix, links = string.match(name,"^(.-)(|c.*)")
+				local aura = strtrim(prefix or name)
+				if #aura>0 then
+					table.insert( status.dbx.auras, tonumber(aura) or tonumber(strmatch(aura,'^.+<(%d+)')) or aura )
+				end
+				if links then -- check for spell links
+					for aura in string.gmatch(links, "Hspell:(%d+):") do
+						table.insert( status.dbx.auras, tonumber(aura) or aura )
+					end
+				end
+			end
+			status:Refresh()
+		end,
+		hidden = function() return status.dbx.auras==nil end
+	}
+	return options
+end
+
 -- {{ Register
 Grid2Options:RegisterStatusOptions("buff", "buff", function(self, status, options, optionParams)
 	self:MakeStatusAuraUseSpellIdOptions(status, options, optionParams)
-	self:MakeStatusAuraCommonOptions(status, options, optionParams)
-	self:MakeStatusAuraEnableStacksOptions(status, options, optionParams)
+	self:MakeStatusAuraColorsOptions(status, options, optionParams)
 	self:MakeStatusAuraMissingOptions(status, options, optionParams)
-	self:MakeStatusColorOptions(status, options, optionParams)
-	self:MakeStatusAuraColorThresholdOptions(status, options, optionParams)
+	self:MakeStatusAuraEnableStacksOptions(status, options, optionParams)
+	self:MakeStatusAuraMaxDurationOptions(status, options, optionParams)
 	self:MakeStatusBlinkThresholdOptions(status, options, optionParams)
 	self:MakeStatusAuraValueOptions(status, options, optionParams)
 	self:MakeStatusAuraTextOptions(status, options, optionParams)
@@ -409,10 +520,9 @@ end,{
 Grid2Options:RegisterStatusOptions("debuff", "debuff", function(self, status, options, optionParams)
 	self:MakeStatusAuraUseSpellIdOptions(status, options, optionParams)
 	self:MakeStatusAuraEnableStacksOptions(status, options, optionParams)
-	self:MakeStatusAuraCommonOptions(status, options, optionParams)
+	self:MakeStatusAuraColorsOptions(status, options, optionParams)
 	self:MakeStatusAuraCombineStacksOptions(status, options, optionParams)
-	self:MakeStatusColorOptions(status, options, optionParams)
-	self:MakeStatusAuraColorThresholdOptions(status, options, optionParams)
+	self:MakeStatusAuraMaxDurationOptions(status, options, optionParams)
 	self:MakeStatusBlinkThresholdOptions(status, options, optionParams)
 	self:MakeStatusAuraValueOptions(status, options, optionParams)
 	self:MakeStatusAuraTextOptions(status, options, optionParams)
@@ -424,7 +534,7 @@ Grid2Options:RegisterStatusOptions("debuffType", "debuff", function(self, status
 	self:MakeStatusDebuffTypeColorsOptions(status, options, optionParams)
 	self:MakeStatusDebuffTypeFilterOptions(status, options, optionParams)
 end,{
-	groupOrder = function(status) return status.name=='debuff-Typeless' and 15 or 10; end
+	groupOrder = function(status) return (status.name=='debuff-Typeless' and 12) or (status.name=='debuff-Boss' and 10) or 11; end
 } )
 
 -- }}

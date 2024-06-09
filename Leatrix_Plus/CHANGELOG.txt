@@ -1,3 +1,160 @@
+3.0.178 - 7th February 2024
+- For 'Enhance minimap' ('Interface'), updated tooltip positioning logic.  Added Wowhead Looter button.
+- For 'Recent chat window' ('Chat'), scroll speed is now based on font size.
+- Added flight times.
+
+3.0.177 - 3rd February 2024
+- The 'Enhance minimap' ('Interface') option is now able to display custom buttons correctly if Leatrix Plus is aware of them.
+- For 'Automate quests' ('Automation'), quests from Valadar Starsong and Fariel Starsong (Moonglade) will no longer be automated.
+- Added flight times.
+
+3.0.176 - 1st February 2024
+- Updated translations.
+
+3.0.175 - 31st January 2024
+- Added flight times.
+
+3.0.174 - 24th January 2024
+- Fixed ScrollFrameTemplate editbox widths.
+- Added flight times.
+
+3.0.173 - 17th January 2024
+- For 'Enhance minimap' ('Interface'), the minimum minimap scale is now 50% (was 100%).
+- For 'Hide chat buttons' ('Chat'), fixed an issue which caused a black border around chat tabs.
+- Updated ScrollFrameTemplate.
+- Added flight times.
+- Repackage following CurseForge backend issues.
+
+3.0.172 - 10th January 2024
+- Added a new command '/ltp quest wipe' which will clear the quest log.
+- Added flight times.
+
+3.0.171 - 3rd January 2024
+- Updated 'Automate gossip' ('Automation') for soft targeting.
+- For 'Enhance quest log', fixed a situational issue with quest prefix translations.
+- For the minimap button, holding CTRL and SHIFT will now toggle windowed mode.  Holding CTRL and ALT will toggle the Zygor addon (if installed).
+- Fixed an issue with the Zygor addon toggle.
+- Added flight times.
+
+3.0.170 - 27th December 2023
+- Updated 'Automate quests' ('Automation') for soft targeting.
+- Added flight times.
+
+3.0.169 - 20th December 2023
+- Added flight times.
+
+3.0.168 - 11th December 2023
+- For 'Enhance minimap' ('Interface'), fixed an issue which caused some minimap addon buttons to not be placed correctly.
+- Added flight times.
+
+3.0.167 - 6th December 2023
+- For 'Enhance minimap' ('Interface'), fixed an issue with 'Combine addon buttons' and the BtWQuests minimap button (if installed).
+- Added flight times.
+
+3.0.166 - 29th November 2023
+- For 'Enhance minimap' ('Interface'), fixed an issue which caused a button to be created for SexyMap (if installed).
+- Added flight times.
+
+3.0.165 - 22nd November 2023
+- Added flight times.
+
+3.0.164 - 15th November 2023
+- Code updates.
+- Added flight times.
+
+3.0.163 - 8th November 2023
+- For 'Enhance tooltip' ('Interface'), the scale slider now applies to the game settings panel tooltips.
+- Added flight times.
+
+3.0.162 - 1st November 2023
+- For 'Enhance tooltip' ('Interface'), the scale slider now applies to LibDBIcon (most addons with a minimap button use this) and Dungeon Finder eye icon tooltips.
+- General code updates.
+- Added flight times.
+
+3.0.161 - 25th October 2023
+- Added flight times.
+
+3.0.158 - 18th October 2023
+- For 'Enhance minimap' ('Interface'), fixed an issue with the consolidated buffs frame layering.
+- For 'Automate quests' ('Automation'), fixed an issue which caused a Lua error to be shown when interacting with a quest giver using an interaction key (soft targeting).  The error is a game bug and not caused by Leatrix Plus.
+- Added flight times.
+
+3.0.155 - 11th October 2023
+- Fixed a Lua error issue with 'Recent chat window' ('Chat').
+
+3.0.154 - 11th October 2023
+- Updated for game version 3.4.3.
+- Added flight times.
+
+3.0.152 - 4th October 2023
+- Added flight times.
+
+3.0.151 - 27th September 2023
+- Added flight times.
+
+3.0.150 - 20th September 2023
+- Added flight times.
+
+3.0.149 - 14th September 2023
+- Fixed an issue with 'Enhance minimap' ('Interface') which caused the area under the minimap to be unclickable if you have moved the minimap.
+- Added flight times.
+
+3.0.148 - 5th September 2023
+- Added flight times.
+
+3.0.147 - 30th August 2023
+- Added flight times.
+
+3.0.146 - 23rd August 2023
+- Added flight times.
+
+3.0.144 - 8th August 2023
+- Added flight times.
+
+3.0.143 - 2nd August 2023
+- Added flight times.
+
+3.0.142 - 26th July 2023
+- For 'Sell junk automatically' ('Automation'), increased the exclusion list limit to 2000 characters (was 600).
+- Added flight times.
+
+3.0.141 - 18th July 2023
+- Added flight times.
+
+3.0.140 - 12th July 2023
+- The 'Resize mail text', 'Resize quest text' and 'Resize book text' options ('Text') now have a maximum font size of 30 (reduced from 36).
+- Fixed an issue with 'Block shared quests' ('Social') which caused a few quests to be incorrectly declined.
+- Added flight times.
+
+3.0.139 - 5th July 2023
+- Added flight times.
+
+3.0.138 - 28th June 2023
+- Updated LibDBIcon.
+- Added flight times.
+
+3.0.137 - 24th June 2023
+- Updated for game version 3.4.2.
+- The 'Disable bag automation' option ('System') no longer applies to mailboxes.
+- Added flight times.
+
+3.0.136 - 19th June 2023
+- Added flight times. 
+
+3.0.135 - 11th June 2023
+- The /ltp slash command has returned.  /run leaplus() has been removed.
+- PTR (3.4.2) - Fixed an issue with 'Recent chat window' which caused a Lua error when the window is shown.
+
+3.0.134 - 3rd June 2023
+- Added flight times.
+
+3.0.133 - 27th May 2023
+- For 'Sell junk automatically' ('Automation'), Leatrix Plus will stop attempting to sell items if your character is at the gold cap.
+- Added flight times.
+
+3.0.132 - 20th May 2023
+- Added flight times.
+
 3.0.131 - 10th May 2023
 - Added flight times.
 

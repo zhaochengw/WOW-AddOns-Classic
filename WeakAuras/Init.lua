@@ -12,6 +12,8 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @class state
 --- @field id auraId
 --- @field cloneId string?
+--- @field show boolean?
+--- @field changed boolean?
 
 --- @alias non_transmissable_field table<string, non_transmissable_field|boolean>
 
@@ -31,10 +33,14 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field AddToWatchedTriggerDelay fun(id: auraId, triggerNum: number)
 --- @field anchor_frame_types table<anchorFrameTypes, string>
 --- @field anchor_frame_types_group table<anchorFrameTypes, string>
+--- @field anim_function_strings table<string, string>
+--- @field anim_presets table<string, table>
 --- @field AuraWarnings AuraWarnings
 --- @field AuraEnvironmentWrappedSystem AuraEnvironmentWrappedSystem
 --- @field callbacks callbacks
+--- @field category_event_prototype table<string, table<string, string>>
 --- @field CanHaveTooltip fun(data: auraData): boolean
+--- @field CheckTalentsForLoad fun(event: string)
 --- @field ContainsCustomPlaceHolder fun(input: string): boolean
 --- @field ContainsAnyPlaceHolders fun(input: string): boolean
 --- @field ContainsPlaceHolders fun(input: string, placeholders: string, checkDoublePercent?: boolean): boolean
@@ -42,10 +48,16 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field clones table<auraId, table<string, table>>
 --- @field customActionsFunctions table<auraId, table<string, function?>>
 --- @field DebugLog debugLog
+--- @field dynamic_texts table<string, table>
+--- @field EndEvent fun(state: state): boolean?
 --- @field EnsureRegion fun(id: auraId, cloneId: string?): Frame
 --- @field ExecEnv table
+--- @field event_prototypes table<string, prototypeData>
+--- @field event_categories table<string, {name: string, default: string }>
+--- @field FindUnusedId fun(prefix: string?): string
 --- @field FixGroupChildrenOrderForGroup fun(data: auraData)
 --- @field frames table<string, table>
+--- @field function_strings table<string, string>
 --- @field GetDataByUID fun(uid: uid): auraData
 --- @field GetErrorHandlerId fun(id: auraId, context: string): function
 --- @field GetErrorHandlerUid fun(uid: uid, context: string): function
@@ -54,20 +66,26 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field inverse_point_types table<string, string>
 --- @field IsCLEUSubevent fun(subevent: string): boolean
 --- @field IsDragonriding fun(): boolean
+--- @field IsGroupType fun(data: auraData): boolean
 --- @field item_slot_types string[]
 --- @field LibSpecWrapper LibSpecWrapper
 --- @field linked table<auraId, number>
+--- @field loaded table<auraId, boolean>
 --- @field LoadFunction fun(input: string): function
 --- @field LoadOptions fun(msg: string?): boolean
+--- @field maxTimerDuration number
 --- @field multiUnitUnits multiUnitUnits
 --- @field non_transmissable_fields table<string, non_transmissable_field>
 --- @field non_transmissable_fields_v2000 table<string, non_transmissable_field>
 --- @field orientation_types table<string, string>
 --- @field orientation_with_circle_types table<string, string>
---- @field point_types table<string, string>
+--- @field ParseNumber fun (numString: string|number): number?, string?
 --- @field PreShowModels fun()
+--- @field PrintHelp fun()
 --- @field QuotedString fun(input: string): string
+--- @field regionOptions table<string, table>
 --- @field regions table<auraId, table>
+--- @field regionTypes table<string, table>
 --- @field reset_ranged_swing_spells table<number, boolean>
 --- @field reset_swing_spells table<number, boolean>
 --- @field noreset_swing_spells table<number, boolean>
@@ -80,7 +98,10 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field StartProfileSystem fun(system: string)
 --- @field StopProfileAura fun(id: auraId)
 --- @field StopProfileSystem fun(system: string)
+--- @field subRegionOptions table<string, table>
+--- @field subRegionTypes table<string, table>
 --- @field tick_placement_modes table<string, string>
+--- @field tinySecondFormat fun(value: string|number): string?
 --- @field TraverseAll fun(data: auraData): traverseFunction, auraData
 --- @field TraverseAllChildren fun(data: auraData): traverseFunction, auraData
 --- @field TraverseGroups fun(data: auraData): traverseFunction, auraData
@@ -88,11 +109,16 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field TraverseLeafsOrAura fun(data: auraData): traverseFunction, auraData
 --- @field TraverseParents fun(data: auraData): traverseFunction, auraData
 --- @field TraverseSubGroups fun(data: auraData): traverseFunction, auraData
+--- @field triggerTypes table<string, table>
+--- @field triggerTypesOptions table<string, any>
 --- @field UIDtoID fun(uid: uid): auraId
 --- @field UnitEventList table<string, boolean>
 --- @field UnitPlayerControlledFixed fun(unit: string): boolean
 --- @field UpdatedTriggerState fun(id: auraId)
+--- @field validate fun(input: table, default:table)
 --- @field watched_trigger_events table<auraId, table<integer, table<integer, boolean>>>
+--- @field RegisterRegionType fun(regionType: string, createFunction: function, modifyFunction: function, defaults: table, properties: table|function|nil, validate: function?))
+
 
 --- @alias triggerTypes
 --- | "aura"
@@ -110,13 +136,48 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 
 --- @class triggerData
 --- @field buffShowOn string
+--- @field debuffType string
+--- @field essence number?
 --- @field event string|nil
---- @field itemTypeName table|nil
 --- @field instance_size table|nil
+--- @field itemName string?
+--- @field itemSetName string?
+--- @field itemTypeName table|nil
+--- @field range number?l
+--- @field realSpellName string?
+--- @field rune number?
+--- @field spellName string?
+--- @field subeventPrefix string?
+--- @field subeventSuffix string?
 --- @field type triggerTypes
+--- @field unit string?
 --- @field use_showOn boolean|nil
 --- @field use_alwaystrue boolean|nil
 
+---@class prototypeDataArgs
+---@field name string
+---@field required boolean?
+---@field display string
+---@field type "unit"|nil
+---@field init "string"|nil
+---@field values any
+---@field desc string?
+---@field store boolean?
+---@field test string?
+
+
+---@class prototypeData
+---@field durationFunc (fun(trigger: triggerData): number, number, boolean?)|nil
+---@field init (fun(trigger: triggerData):string?)|nil
+---@field useModRate boolean?
+---@field timedrequired boolean?
+---@field GetNameAndIcon (fun(trigger: triggerData): string?, string?)|nil
+---@field iconFunc (fun(trigger: triggerData): string?)|nil
+---@field nameFunc (fun(trigger: triggerData): string?)|nil
+---@field events (fun(tigger: triggerData): table)|nil
+---@field internal_events (fun(tigger: triggerData): table)|nil
+---@field name string
+---@field statesParamater "unit"|"one"|"all"|nil
 
 --- @class triggerUntriggerData
 --- @field trigger triggerData
@@ -263,11 +324,6 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field SerializeEx fun(self: LibSerialize,options: table, input: any)
 --- @field Deserialize fun(self: LibSerialize, input: string): table
 
---- @class LibClassicDurations
---- @field RegisterFrame fun(self: LibClassicDurations, frame: string)
---- @field Register fun(self: LibClassicDurations, frame: string)
---- @field GetAuraDurationByUnit fun(self: LibClassicDurations, unit: string, spellId: number, source: string?, name: string?)
-
 --- @class LibDeflate
 --- @field CompressDeflate fun(self: LibDeflate, input: string, options: table): string
 --- @field EncodeForPrint fun(self: LibDeflate, input: string): string)
@@ -299,8 +355,8 @@ WeakAuras.normalWidth = 1.3
 WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "5.5.3"
-local buildTime = "20230509132305"
+local versionString = "5.10.1"
+local buildTime = "20240209095301"
 
 local flavorFromToc = GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
@@ -312,7 +368,7 @@ local flavorFromTocToNumber = {
 local flavor = flavorFromTocToNumber[flavorFromToc]
 
 --[==[@debug@
-if versionStringFromToc == "5.5.3" then
+if versionStringFromToc == "5.10.1" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
 end
@@ -379,11 +435,6 @@ do
     "LibSerialize",
     "LibUIDropDownMenu-4.0"
   }
-  if WeakAuras.IsClassicEra() then
-    tinsert(LibStubLibs, "LibClassicSpellActionCount-1.0")
-    tinsert(LibStubLibs, "LibClassicCasterino")
-    tinsert(LibStubLibs, "LibClassicDurations")
-  end
   if WeakAuras.IsRetail() then
     tinsert(LibStubLibs, "LibSpecialization")
     AddonCompartmentFrame:RegisterAddon({
@@ -412,6 +463,9 @@ do
         GameTooltip:AddLine(WeakAuras.L["|cffeda55fLeft-Click|r to toggle showing the main window."], 1, 1, 1, true)
         GameTooltip:Show()
         WeakAuras.GenerateTooltip(true)
+      end,
+      funcOnLeave = function()
+        GameTooltip:Hide()
       end,
     })
   end
@@ -445,11 +499,12 @@ end
 
 -- These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
 --- @type fun(regionType: string, createFunction: function, modifyFunction: function, defaults: table, properties: table|function|nil, validate: function?))
-function WeakAuras.RegisterRegionType(_, _, _ ,_)
+function Private.RegisterRegionType(_, _, _ ,_)
 end
 
---- @type fun(regionType: string, createOptions: function, icon: string|function, displayName: string, createThumbnail: function?, modifyThumbnail: function?, description: string?, templates: table?, getAnchors: function?)
-function WeakAuras.RegisterRegionOptions(_, _ , _ ,_ )
+--- @class Private
+--- @field RegisterRegionOptions fun(regionType: string, createOptions: function, icon: string|function, displayName: string, createThumbnail: function?, modifyThumbnail: function?, description: string?, templates: table?, getAnchors: function?)
+function Private.RegisterRegionOptions(_, _ , _ ,_ )
 end
 
 function Private.StartProfileSystem(_)
@@ -464,9 +519,13 @@ end
 function Private.StopProfileAura(_)
 end
 
+--- @class Private
+--- @field StartProfileUID fun()
 function Private.StartProfileUID()
 end
 
+--- @class Private
+--- @field StopProfileUID fun()
 function Private.StopProfileUID()
 end
 

@@ -15,14 +15,12 @@ local Death = Grid2.statusPrototype:new("death", true)
 
 local Grid2 = Grid2
 local next = next
+local select = select
 local tostring = tostring
 local fmt = string.format
-local select = select
 local GetTime = GetTime
 local UnitExists = UnitExists
 local UnitHealth = UnitHealth
-local UnitIsDead = UnitIsDead
-local UnitIsGhost = UnitIsGhost
 local UnitIsFriend = UnitIsFriend
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitIsFeignDeath = UnitIsFeignDeath
@@ -30,6 +28,7 @@ local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
 local UnitHealthMax = UnitHealthMax
 local C_Timer_After = C_Timer.After
 local unit_is_valid = Grid2.roster_guids
+local dead_cache = Grid2.roster_deads
 
 -- Caches
 local heals_enabled = false
@@ -53,16 +52,41 @@ local overheals_minimum = 1
 
 local healthdeficit_enabled = false
 
--- Health statuses update function
+local fmtPercent = "%.0f%%"
+
 local statuses = {}
 
-local function UpdateIndicators(unit)
-	if unit_is_valid[unit] then
-		for status in next, statuses do
-			status:UpdateIndicators(unit)
+-- Health&Death tracking
+local UpdateIndicators, UpdateDead
+do
+	local dead_fixes, prev_fixes = {}, {}
+	local function FixDead() -- fix bug (see ticket #907)
+		dead_fixes, prev_fixes = prev_fixes, dead_fixes
+		wipe(dead_fixes)
+		for unit in next, prev_fixes do
+			UpdateIndicators(unit)
 		end
-		if overheals_enabled then
-			OverHeals:UpdateIndicators(unit)
+	end
+	function UpdateDead(unit)
+		local h, d = UnitHealth(unit), false
+		if h<=1 then
+			d = Grid2:UnitIsDeadOrGhost(unit)
+			if not d and h<=0 and not dead_fixes[unit] then -- fix bug (see ticket #907)
+				if not next(dead_fixes) then C_Timer_After(0.25, FixDead) end
+				dead_fixes[unit] = true
+			end
+		end
+		if d ~= dead_cache[unit] then
+			dead_cache[unit] = d
+			Grid2:SendMessage("Grid_UnitDeadUpdated", unit, d)
+		end
+	end
+	function UpdateIndicators(unit)
+		if unit_is_valid[unit] then
+			UpdateDead(unit)
+			for status in next, statuses do
+				status:UpdateIndicators(unit)
+			end
 		end
 	end
 end
@@ -94,6 +118,13 @@ do
 		end
 	end
 end
+
+-- Faked eventless units health update: targettarget,focustarget,boss6,boss7,boss8,... github issue #44
+Grid2.RegisterMessage(statuses, "Grid_FakedUnitsUpdate", function(_,units)
+	for unit in next, units do
+		UpdateIndicators(unit)
+	end
+end)
 
 -- Quick/Instant Health management
 local EnableQuickHealth, DisableQuickHealth
@@ -166,67 +197,17 @@ do
 	end
 end
 
--- Fix for blizzard boss6,boss7,boss8 eventless units bug, github issue #44
-local EnableBrokenBossesFix, DisableBrokenBossesFix
-do
-	local timer, registererd
-	local rosterUnits = {}
-	local brokenUnits = { boss6 = true, boss7 = true, boss8 = true }
-
-	local function Health_UpdateEvent()
-		for unit in next,rosterUnits do
-			UpdateIndicators(unit)
-		end
-	end
-
-	local function Health_UnitUpdated(_, unit)
-		if brokenUnits[unit] and not rosterUnits[unit] then
-			rosterUnits[unit] = true
-			if not timer then
-				timer = Grid2:CreateTimer( Health_UpdateEvent, 0.5 )
-			end
-		end
-	end
-
-	local function Health_UnitLeft(_, unit)
-		if rosterUnits[unit] then
-			rosterUnits[unit] = nil
-			if not next(rosterUnits) then
-				timer = Grid2:CancelTimer(timer)
-			end
-		end
-	end
-
-	function EnableBrokenBossesFix()
-		if not registered then
-			Grid2.RegisterMessage( brokenUnits, "Grid_UnitLeft",  Health_UnitLeft )
-			Grid2.RegisterMessage( brokenUnits, "Grid_UnitUpdated", Health_UnitUpdated )
-			registered = true
-		end
-	end
-
-	function DisableBrokenBossesFix()
-		if registered then
-			Grid2.UnregisterMessage( brokenUnits, "Grid_UnitLeft",  Health_UnitLeft )
-			Grid2.UnregisterMessage( brokenUnits, "Grid_UnitUpdated", Health_UnitUpdated )
-			registered = false
-		end
-	end
-end
-
 local function Health_RegisterEvents()
 	RegisterEvent("UNIT_HEALTH", UpdateIndicators )
 	RegisterEvent("UNIT_MAXHEALTH", UpdateIndicators )
 	RegisterEvent("UNIT_HEALTH_FREQUENT", UpdateIndicators )
 	RegisterEvent("UNIT_CONNECTION", UpdateIndicators )
 	EnableQuickHealth()
-	EnableBrokenBossesFix()
 end
 
 local function Health_UnregisterEvents()
 	UnregisterEvent( "UNIT_HEALTH", "UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_CONNECTION" )
 	DisableQuickHealth()
-	DisableBrokenBossesFix()
 end
 
 local function Health_UpdateStatuses()
@@ -249,17 +230,15 @@ end
 -- health-current status
 HealthCurrent.IsActive  = Grid2.statusLibrary.IsActive
 
-local HealthCurrent_GetPercent
-
 local function HealthCurrent_ShieldUpdate(unit)
 	if unit_is_valid[unit] then
 		HealthCurrent:UpdateIndicators(unit)
 	end
-end	
+end
 
 local function HealthCurrent_GetPercentTextShield(self, unit)
 	local m = UnitHealthMax(unit)
-	return fmt( "%.0f%%",  m == 0 and 0 or (UnitHealth(unit)+UnitGetTotalAbsorbs(unit))*100/m )
+	return fmt( fmtPercent,  m == 0 and 0 or (UnitHealth(unit)+UnitGetTotalAbsorbs(unit))*100/m )
 end
 
 function HealthCurrent:OnEnable()
@@ -273,10 +252,10 @@ function HealthCurrent:OnDisable()
 	Health_Disable(self)
 	if self.addShield then
 		UnregisterEvent( "UNIT_ABSORB_AMOUNT_CHANGED" )
-	end	
+	end
 end
 
-function HealthCurrent_GetPercent(self,unit)
+local function HealthCurrent_GetPercentSTD(self,unit)
 	local m = UnitHealthMax(unit)
 	return m == 0 and 0 or UnitHealth(unit) / m
 end
@@ -314,14 +293,14 @@ function HealthCurrent:GetColor(unit)
 end
 
 function HealthCurrent:UpdateDB()
+	fmtPercent = Grid2.db.profile.formatting.percentFormat
 	self.addShield = Grid2.isWoW90 and self.dbx.addPercentShield or nil
 	self.GetText = self.dbx.displayRawNumbers and self.GetText2 or self.GetText1
-	self.GetPercent = self.dbx.deadAsFullHealth and HealthCurrent_GetPercentDFH or HealthCurrent_GetPercent
-	self.GetPercentText= self.addShield and HealthCurrent_GetPercentTextShield or nil
+	self.GetPercent = self.dbx.deadAsFullHealth and HealthCurrent_GetPercentDFH or HealthCurrent_GetPercentSTD
+	self.GetPercentText = self.addShield and HealthCurrent_GetPercentTextShield or nil
 	self.color1 = Grid2:MakeColor(self.dbx.color1)
 	self.color2 = Grid2:MakeColor(self.dbx.color2)
 	self.color3 = Grid2:MakeColor(self.dbx.color3)
-	HealthCurrent_GetPercent = self.GetPercent
 	Health_UpdateStatuses()
 end
 
@@ -338,19 +317,26 @@ Grid2:DbSetStatusDefaultValue( "health-current", {type = "health-current", color
 HealthLow.OnEnable  = Health_Enable
 HealthLow.OnDisable = Health_Disable
 HealthLow.GetColor  = Grid2.statusLibrary.GetColor
+HealthLow.GetPercent = Grid2.statusLibrary.GetPercent
 
 local healthlow_threshold
 
+-- percent health threshold
 function HealthLow:IsActive1(unit)
-	return UnitExists(unit) and HealthCurrent_GetPercent(self, unit) < healthlow_threshold
-end
-
-function HealthLow:IsActive2(unit)
-	return UnitExists(unit) and UnitHealth(unit) < healthlow_threshold
+	local m = UnitHealthMax(unit)
+	if m~=0 then -- unit exists
+		return UnitHealth(unit)/m < healthlow_threshold
+	end
 end
 
 function HealthLow:IsInactive1(unit)
-	return not UnitExists(unit) or HealthCurrent_GetPercent(self, unit) >= healthlow_threshold
+	local m = UnitHealthMax(unit)
+	return m==0 or (UnitHealth(unit)/m) >= healthlow_threshold
+end
+
+-- absolute health threshold
+function HealthLow:IsActive2(unit)
+	return UnitExists(unit) and UnitHealth(unit) < healthlow_threshold
 end
 
 function HealthLow:IsInactive2(unit)
@@ -359,7 +345,7 @@ end
 
 function HealthLow:UpdateDB()
 	healthlow_threshold = self.dbx.threshold
-	self.IsActive = self.dbx.invert and  
+	self.IsActive = self.dbx.invert and
 					(healthlow_threshold<=1 and self.IsInactive1 or self.IsInactive2) or
 					(healthlow_threshold<=1 and self.IsActive1 or self.IsActive2)
 end
@@ -406,7 +392,7 @@ function FeignDeath:GetText(unit)
 	return feignText
 end
 
-function Death:GetPercent(unit)
+function FeignDeath:GetPercent(unit)
 	return self.dbx.color1.a, feignText
 end
 
@@ -470,7 +456,7 @@ function HealthDeficit:GetTextEnemy(unit) -- special case, we display health cur
 		return self:GetTextFriend(unit)
 	else
 		local m = UnitHealthMax(unit)
-		return fmt( "%d%%", m == 0 and 0 or UnitHealth(unit) * 100 / m )
+		return fmt( fmtPercent, m == 0 and 0 or UnitHealth(unit) * 100 / m )
 	end
 end
 HealthDeficit.GetText = HealthDeficit.GetText1
@@ -486,7 +472,7 @@ end
 HealthDeficit.GetPercent = HealthDeficit.GetPercent1
 
 function HealthDeficit:GetPercentText(unit)
-	return fmt( "%.0f%%", -self:GetPercent(unit)*100 )
+	return fmt( fmtPercent, -self:GetPercent(unit)*100 )
 end
 
 function HealthDeficit:UpdateDB()
@@ -513,73 +499,18 @@ Grid2.setupFunc["health-deficit"] = CreateHealthDeficit
 Grid2:DbSetStatusDefaultValue( "health-deficit", {type = "health-deficit", color1 = {r=1,g=1,b=1,a=1}, threshold = 0.05})
 
 -- death status
-local textDeath = L["DEAD"]
-local textGhost = L["GHOST"]
-local dead_cache = {}
-local units_to_fix = {}
-
 Death.GetColor = Grid2.statusLibrary.GetColor
 
-local function DeathUpdateUnit(_, unit, noUpdate)
-	if unit_is_valid[unit] then
-		local new = UnitIsDeadOrGhost(unit) and (UnitIsGhost(unit) and textGhost or textDeath) or false
-		if (not new) and UnitHealth(unit)<=0 and not units_to_fix[unit] then
-			Death:FixDeathBug(unit) -- see ticket #907
-		end
-		if new ~= dead_cache[unit] then
-			dead_cache[unit] = new
-			if not noUpdate then
-				if new then
-					if heals_cache[unit]~=0 then
-						heals_cache[unit] = 0
-						Heals:UpdateIndicators(unit)
-					end
-					if HealthCurrent.enabled then
-						HealthCurrent:UpdateIndicators(unit)
-					end
-				end
-				Death:UpdateIndicators(unit)
-			end
-		end
-	end
-end
-
-local function DeathTimerEvent()
-	local updateFunc = HealthCurrent.enabled and HealthCurrent.dbx.deadAsFullHealth and HealthCurrent.UpdateIndicators
-	for unit in next, units_to_fix do
-		DeathUpdateUnit(nil, unit)
-		if updateFunc then updateFunc(HealthCurrent,unit) end
-	end
-	wipe(units_to_fix)
-end
-
-function Death:FixDeathBug(unit)
-	if not next(units_to_fix) then
-		C_Timer_After(0.05, DeathTimerEvent)
-	end
-	units_to_fix[unit] = true
-	Grid2:Debug("Fixing possible death bug (ticket #907) for unit:", unit)
-end
-
-function Death:Grid_UnitUpdated(_, unit)
-	DeathUpdateUnit(_, unit, true)
-end
-
-function Death:Grid_UnitLeft(_, unit)
-	dead_cache[unit] = nil
+function Death:Grid_UnitDeadUpdated(_, unit)
+	self:UpdateIndicators(unit)
 end
 
 function Death:OnEnable()
-	self:RegisterEvent( "UNIT_HEALTH", DeathUpdateUnit )
-	self:RegisterMessage("Grid_UnitUpdated")
-	self:RegisterMessage("Grid_UnitLeft")
+	self:RegisterMessage("Grid_UnitDeadUpdated")
 end
 
 function Death:OnDisable()
-	self:UnregisterEvent( "UNIT_HEALTH" )
-	self:UnregisterMessage("Grid_UnitUpdated")
-	self:UnregisterMessage("Grid_UnitLeft")
-	wipe(dead_cache)
+	self:UnregisterMessage("Grid_UnitDeadUpdated")
 end
 
 function Death:IsActive(unit)
@@ -727,7 +658,7 @@ HealsUpdateEvent = function(unit)
 				myheals_cache[unit] = heal
 				if myheals_enabled then
 					MyHeals:UpdateIndicators(unit)
-				end	
+				end
 			end
 		end
 		if heals_enabled or overheals_enabled then

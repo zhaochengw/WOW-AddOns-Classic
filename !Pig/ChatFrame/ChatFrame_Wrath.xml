@@ -1,8 +1,0 @@
-<Ui>
-	<Script file="QuickBut_Jiuwei.lua" />
-	<Script file="QuickBut_Roll.lua" />
-	<Script file="QuickBut_Jilu.lua" />
-	<Script file="QuickBut_Keyword.lua" />
-	<Script file="QuickBut.lua" />
-	<Script file="ChatSet.lua" />
-</Ui>

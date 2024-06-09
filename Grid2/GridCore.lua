@@ -4,20 +4,14 @@ Created by Grid2 original authors, modified by Michael
 
 Grid2 = LibStub("AceAddon-3.0"):NewAddon("Grid2", "AceEvent-3.0", "AceConsole-3.0")
 
-Grid2.Dummy = function() end
-Grid2.GetSpecialization = GetSpecialization or GetActiveTalentGroup or Grid2.Dummy
-Grid2.GetNumSpecializations = GetNumSpecializations or function() return 2 end
-Grid2.UnitGroupRolesAssigned = UnitGroupRolesAssigned or function() return 'NONE' end
-
 local type = type
 local next = next
 local ipairs = ipairs
 local tostring = tostring
 local fmt = string.format
-local GetSpecialization = Grid2.GetSpecialization
-local UnitGroupRolesAssigned = Grid2.UnitGroupRolesAssigned
 
 -- build/version tracking
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
 local versionToc = GetAddOnMetadata("Grid2","Version")
 local versionCli = select(4,GetBuildInfo())
 Grid2.versionCli = versionCli
@@ -45,6 +39,7 @@ end
 Grid2.groupType      = "solo"
 Grid2.instType       = "other"
 Grid2.instMaxPlayers = 1
+Grid2.instMaxGroup   = 1
 
 -- player class cache
 Grid2.playerClass = select(2, UnitClass("player"))
@@ -152,9 +147,7 @@ function Grid2:OnEnable()
 	self:RegisterEvent("PLAYER_REGEN_ENABLED")
 	self:RegisterEvent("UNIT_NAME_UPDATE")
 	self:RegisterEvent("UNIT_PET")
-	if self.UpdatePlayerDispelTypes then
-		self:RegisterEvent("SPELLS_CHANGED", "UpdatePlayerDispelTypes")
-	end
+	self:RegisterEvent("SPELLS_CHANGED")
 	if self.versionCli>=30000 then -- wotlk or superior
 		self:RegisterEvent("PLAYER_ROLES_ASSIGNED")
 	end
@@ -169,7 +162,7 @@ function Grid2:OnEnable()
 	self.db.RegisterCallback(self, "OnProfileCopied", "ProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileReset", "ProfileChanged")
 
-	self.playerClassSpec = self.playerClass .. (GetSpecialization() or 0)
+	self.playerClassSpec = self.playerClass .. (self.GetSpecialization() or 0)
 
 	self:LoadConfig()
 
@@ -202,7 +195,7 @@ end
 function Grid2:ReloadProfile()
 	local db = Grid2.profiles.char
 	if db.enabled then
-		local pro = db[GetSpecialization() or 0] or db
+		local pro = db[self.GetSpecialization() or 0] or db
 		if type(pro)=="string" and pro~=Grid2.db:GetCurrentProfile() then
 			if not self:RunSecure(1, self, "ReloadProfile") then
 				Grid2.db:SetProfile(pro)
@@ -212,9 +205,10 @@ function Grid2:ReloadProfile()
 	end
 end
 
+-- Themes
 function Grid2:PLAYER_SPECIALIZATION_CHANGED(event,unit)
 	if event == 'ACTIVE_TALENT_GROUP_CHANGED' or unit == 'player' then
-		self.playerClassSpec = self.playerClass .. (GetSpecialization() or 0)
+		self.playerClassSpec = self.playerClass .. (self.GetSpecialization() or 0)
 		if not Grid2:ReloadProfile() then
 			Grid2:ReloadTheme()
 			self:SendMessage("Grid_PlayerSpecChanged") -- Send message only if profile has not changed
@@ -227,7 +221,6 @@ function Grid2:PLAYER_ROLES_ASSIGNED()
 	self:ReloadTheme()
 end
 
--- Themes
 function Grid2:GetCurrentTheme()
 	local index  = self.currentTheme or 0
 	local themes = self.db.profile.themes
@@ -243,8 +236,8 @@ function Grid2:CheckTheme()
 	local themes  = self.db.profile.themes
 	local enabled = themes.enabled
 	local theme   = enabled.default or 0
-	local spec    = GetSpecialization() or 0
-	local role    = UnitGroupRolesAssigned('player') or 0
+	local spec    = self.GetSpecialization() or 0
+	local role    = self.UnitGroupRolesAssigned('player') or 0
 	local groupType, instType, maxPlayers = self:GetGroupType()
 	local kM   = tostring(maxPlayers)
 	local kC   = fmt("%s@0",     self.playerClass)
@@ -285,17 +278,27 @@ function Grid2:ReloadTheme(force)
 	end
 end
 
+-- Player spells tracking
+function Grid2:SPELLS_CHANGED()
+	if self.UpdatePlayerDispelTypes then
+		self:UpdatePlayerDispelTypes()
+	end
+	if self.UpdatePlayerRangeSpells then
+		self:UpdatePlayerRangeSpells()
+	end
+end
+
 -- Compartment icon
 function Grid2:InitializeCompartment()
-	if AddonCompartmentFrame and AddonCompartmentFrame.RegisterAddon then 
+	if AddonCompartmentFrame and AddonCompartmentFrame.RegisterAddon then
 		AddonCompartmentFrame:RegisterAddon({
 			text = "Grid2",
 			icon = "Interface\\AddOns\\Grid2\\media\\iconsmall.tga",
-			func = function() Grid2:OpenGrid2Options(); end,	
+			func = function() Grid2:OpenGrid2Options(); end,
 			registerForAnyClick = true,
 			notCheckable = true,
 		})
-	end 
+	end
 	self.InitializeCompartment = nil
 end
 
@@ -322,7 +325,7 @@ end
 
 function Grid2:OpenGrid2Options()
 	if not IsAddOnLoaded("Grid2Options") then
-		if InCombatLockdown() then
+		if InCombatLockdown() and not self.isDevelop then
 			self:Print("Grid2Options cannot be loaded in combat.")
 			return
 		end

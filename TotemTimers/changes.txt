@@ -1,3 +1,21 @@
+3.2.8
+    - Added Dual Wield for Weapon Timer in SOD
+3.2.7
+    - Added Earth Shield for SoD
+3.2.6
+    - Added Water Shield for SoD
+3.2.5
+    - Fixed weapon tracker spells not showing and tooltip error in SoD
+3.2.4
+    - Revert SoD fix for WOTLK
+3.2.3
+    - Fixed wonky menus when Rockbiter and Way of Earth are both active
+3.2.2
+    - TOC update for SoD and ICC
+3.2.1
+    - Small fix for lua error on load
+3.2
+    - Added option to hide Multicast button while still being able to select totems for Call of Elements
 3.1.15
     - Fixed combat cooldown buff timer transparency
 3.1.14

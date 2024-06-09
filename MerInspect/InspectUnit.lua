@@ -8,7 +8,6 @@ local locale = GetLocale()
 local LibEvent = LibStub:GetLibrary("LibEvent.7000")
 local LibItemInfo = LibStub:GetLibrary("LibItemInfo.1000")
 local LibItemStats = LibStub:GetLibrary("LibItemStats.1000")
-local LibGearScore = LibStub:GetLibrary("LibGearScore.1000")
 
 --裝備清單
 local slots = {
@@ -46,7 +45,7 @@ local function GetInspectItemListFrame(parent)
         }
         local height = 424
         frame:SetSize(160, height)
-        --frame:SetFrameLevel(0)
+        frame:SetFrameLevel(0)
         frame:SetPoint("TOPLEFT", parent, "TOPRIGHT", 0, 0)
         frame:SetBackdrop(frame.backdrop)
         frame:SetBackdropColor(0, 0, 0, 0.8)
@@ -58,10 +57,10 @@ local function GetInspectItemListFrame(parent)
         frame.title:SetPoint("TOPLEFT", frame, "TOPLEFT", 66, -18)
         frame.level = frame:CreateFontString(nil, "ARTWORK", itemfont)
         frame.level:SetPoint("TOPLEFT", frame, "TOPLEFT", 66, -42)
-        frame.level:SetFont(frame.level:GetFont(), 12, "THINOUTLINE")
-        
+        frame.level:SetFont(frame.level:GetFont(), 14, "THINOUTLINE")
+
         local itemframe
-        local fontsize = locale:sub(1,2) == "zh" and 12 or 9
+        local fontsize = locale:sub(1,2) == "zh" and 14 or 9
         local backdrop = {
             bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
             edgeFile = "Interface\\Buttons\\WHITE8X8",
@@ -96,7 +95,7 @@ local function GetInspectItemListFrame(parent)
             itemframe.levelString:SetPoint("LEFT", itemframe.label, "RIGHT", 4, 0)
             itemframe.levelString:SetJustifyH("RIGHT")
             itemframe.itemString = itemframe:CreateFontString(nil, "ARTWORK", itemfont)
-            itemframe.itemString:SetFont(itemframe.itemString:GetFont(), 13, "NONE")
+            itemframe.itemString:SetFont(itemframe.itemString:GetFont(), 14, "NONE")
             itemframe.itemString:SetHeight(16)
             itemframe.itemString:SetPoint("LEFT", itemframe.levelString, "RIGHT", 2, 0)
             itemframe:SetScript("OnEnter", function(self)
@@ -122,7 +121,7 @@ local function GetInspectItemListFrame(parent)
             frame["item"..i] = itemframe
             LibEvent:trigger("INSPECT_ITEMFRAME_CREATED", itemframe)
         end
-        
+
         frame.closeButton = CreateFrame("Button", nil, frame)
         frame.closeButton:SetSize(12, 12)
         frame.closeButton:SetScale(0.85)
@@ -145,7 +144,7 @@ end
 local ItemLevelPattern = (ITEM_LEVEL_ABBR or "ItemLevel") .. " %.1f"
 
 --顯示面板
-function ShowInspectItemListFrame(unit, parent, ilevel, maxLevel, gearscore, gscolor)
+function ShowInspectItemListFrame(unit, parent, ilevel, maxLevel)
     if (not parent:IsShown()) then return end
     local frame = GetInspectItemListFrame(parent)
     local class = select(2, UnitClass(unit))
@@ -157,7 +156,7 @@ function ShowInspectItemListFrame(unit, parent, ilevel, maxLevel, gearscore, gsc
     SetPortraitTexture(frame.portrait.Portrait, unit)
     frame.title:SetText(UnitName(unit))
     frame.title:SetTextColor(color.r, color.g, color.b)
-    frame.level:SetText(format(ItemLevelPattern, ilevel)..(gscolor and ", GS "..gscolor:WrapTextInColorCode(gearscore) or ""))
+    frame.level:SetText(format(ItemLevelPattern, ilevel))
     frame.level:SetTextColor(1, 0.82, 0)
     local _, name, level, link, quality
     local itemframe, mframe, oframe, itemwidth
@@ -196,6 +195,8 @@ function ShowInspectItemListFrame(unit, parent, ilevel, maxLevel, gearscore, gsc
         LibEvent:trigger("INSPECT_ITEMFRAME_UPDATED", itemframe)
     end
     frame:SetWidth(width + 36)
+    GearManagerDialog:SetFrameLevel(9) --nga:提高装备管理弹窗弹窗层级.
+    --frame:SetFrameLevel(0)
     frame:Show()
 
     LibEvent:trigger("INSPECT_FRAME_SHOWN", frame, parent, ilevel)
@@ -213,11 +214,11 @@ LibEvent:attachEvent("UNIT_INVENTORY_CHANGED", function(self, unit)
     end
 end)
 
---@see InspectCore.lua 
+--@see InspectCore.lua
 LibEvent:attachTrigger("UNIT_INSPECT_READY, UNIT_REINSPECT_READY", function(self, data)
     if (MerInspectDB and not MerInspectDB.ShowInspectItemSheet) then return end
     if (InspectFrame and InspectFrame.unit and UnitGUID(InspectFrame.unit) == data.guid) then
-        local frame = ShowInspectItemListFrame(InspectFrame.unit, InspectFrame, data.ilevel, data.maxLevel, data.gearscore, data.gscolor)
+        local frame = ShowInspectItemListFrame(InspectFrame.unit, InspectFrame, data.ilevel, data.maxLevel)
         LibEvent:trigger("INSPECT_FRAME_COMPARE", frame)
     end
 end)
@@ -313,12 +314,7 @@ mask:SetTexture("Interface\\Tooltips\\UI-Tooltip-Background")
 mask:SetPoint("TOPLEFT", PlayerStatsFrame, "TOPLEFT", 3, -2)
 mask:SetPoint("BOTTOMRIGHT", PlayerStatsFrame, "BOTTOMRIGHT", -3, 2)
 mask:SetBlendMode("ADD")
-if mask.SetGradientAlpha then
-    mask:SetGradientAlpha("VERTICAL", 0.1, 0.2, 0.3, 0.8, 0.1, 0.2, 0.1, 0.8)
-else
-    local minColor, maxColor = CreateColor(0.1, 0.2, 0.3, 0.8), CreateColor(0.1, 0.2, 0.1, 0.8)
-    mask:SetGradient("VERTICAL", minColor, maxColor)
-end
+mask:SetGradient("VERTICAL", CreateColor(0.1, 0.2, 0.3, 0.8), CreateColor(0.1, 0.2, 0.1, 0.8))
 
 LibEvent:attachTrigger("TogglePlayerStatsFrame", function(self, frame, bool, forceShown)
     if (bool == false) then
@@ -343,10 +339,7 @@ end)
 PaperDollFrame:HookScript("OnShow", function(self)
     if (MerInspectDB and MerInspectDB.ShowCharacterItemSheet) then
         local ilevel, _, maxLevel = LibItemInfo:GetUnitItemLevel("player")
-        local _, gsdata = LibGearScore:GetScore("player")
-        local gearscore = gsdata and gsdata.GearScore or nil
-        local gscolor = gsdata and gsdata.Color or nil
-        ShowInspectItemListFrame("player", self, ilevel, maxLevel, gearscore, gscolor)
+        ShowInspectItemListFrame("player", self, ilevel, maxLevel)
     end
     LibEvent:trigger("TogglePlayerStatsFrame", self, true)
 end)
@@ -358,11 +351,7 @@ end)
 LibEvent:attachEvent("PLAYER_EQUIPMENT_CHANGED", function(self)
     if (CharacterFrame:IsShown() and PaperDollFrame:IsShown() and MerInspectDB and MerInspectDB.ShowCharacterItemSheet) then
         local ilevel, _, maxLevel = LibItemInfo:GetUnitItemLevel("player")
-        local _, gsdata = LibGearScore:GetScore("player")
-        local gearscore = gsdata and gsdata.GearScore or nil
-        local gscolor = gsdata and gsdata.Color or nil
-
-        ShowInspectItemListFrame("player", PaperDollFrame, ilevel, maxLevel, gearscore, gscolor)
+        ShowInspectItemListFrame("player", PaperDollFrame, ilevel, maxLevel)
     end
     if (CharacterFrame:IsShown() and PaperDollFrame:IsShown()) then
         LibEvent:trigger("TogglePlayerStatsFrame", PaperDollFrame, false)

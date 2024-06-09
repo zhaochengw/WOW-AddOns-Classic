@@ -185,8 +185,8 @@ function NWB:setRealmData()
 			--["Arugal"] = true,
 			--RP era server, no linked realms, full and layered.
 			["Bloodsail Buccaneers"] = true,
-			--Main era cluster of linked realms, high pop and not layered yet but probably soon if it keeps growing?
-			--[[["ArcaniteReaper"] = true,
+			--Main west era cluster of linked realms, full and layered.
+			["Arcanite Reaper"] = true,
 			["Anathema"] = true,
 			["Thunderfury"] = true,
 			["Smolderweb"] = true,
@@ -195,7 +195,13 @@ function NWB:setRealmData()
 			["Kurinnaxx"] = true,
 			["Bigglesworth"] = true,
 			["Blaumeux"] = true,
-			["Whitemane"] = true,]]
+			["Whitemane"] = true,
+			--Main east era cluster of linked realms, full and layered.
+			["Ashkandi"] = true,
+			["Mankrik"] = true,
+			["Pagle"] = true,
+			["Westfall"] = true,
+			["Windseeker"] = true,
 		}
 		
 		NWB.euRealms = {

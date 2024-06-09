@@ -10,7 +10,6 @@ local Sounds = QuestieLoader:ImportModule("Sounds")
 
 local stringByte = string.byte
 local GetQuestLogTitle, C_QuestLog_GetQuestObjectives = GetQuestLogTitle, C_QuestLog.GetQuestObjectives
-local type = type
 
 -- 3 * (Max possible number of quests in game quest log)
 -- This is a safe value, even smaller would be enough. Too large won't effect performance
@@ -55,7 +54,7 @@ local cache = {
 
 ---@class QuestLogCacheObjectiveData
 ---@field text string "Objective Text"
----@field type "monster"|"object"|"item"|"reputation"|"killcredit"|"event"
+---@field type "monster"|"object"|"item"|"reputation"|"killcredit"|"event"|"spell"
 ---@field finished boolean
 ---@field numFulfilled number
 ---@field numRequired number
@@ -90,14 +89,8 @@ local function GetNewObjectives(questId, oldObjectives)
         local newObj = objectives[objIndex]
         -- Check if objective.text is in game's cache
         if (newObj.text) and (stringByte(newObj.text, 1) ~= 32) then
-            -- luacheck:ignore 542
-            if objIndex == 2 and newObjectives[1].raw_text == newObj.text then
-                -- Nothing to do in this case.
-                -- This is a work around for Blizzard adding the exact same objective a second time.
-                -- Examples in the past were the Children's Week quests 910, 911,1800
-
             -- Check if objective has changed
-            elseif oldObj and oldObj.raw_numFulfilled == newObj.numFulfilled and oldObj.raw_text == newObj.text and oldObj.raw_finished == newObj.finished and oldObj.numRequired == newObj.numRequired and oldObj.type == newObj.type then
+            if oldObj and oldObj.raw_numFulfilled == newObj.numFulfilled and oldObj.raw_text == newObj.text and oldObj.raw_finished == newObj.finished and oldObj.numRequired == newObj.numRequired and oldObj.type == newObj.type then
                 -- Not changed
                 newObjectives[objIndex] = oldObj
             else
@@ -110,6 +103,10 @@ local function GetNewObjectives(questId, oldObjectives)
 
                 if oldObj and newObj and oldObj.numRequired ~= oldObj.numFulfilled and newObj.numRequired == newObj.numFulfilled then
                     Sounds.PlayObjectiveComplete()
+                end
+
+                if oldObj and newObj and oldObj.numRequired ~= oldObj.numFulfilled and newObj.numRequired ~= newObj.numFulfilled then
+                    Sounds.PlayObjectiveProgress()
                 end
 
                 newObjectives[objIndex] = {
@@ -171,48 +168,42 @@ function QuestLogCache.CheckForChanges(questIdsToCheck)
                 local newObjectives, changedObjIds = GetNewObjectives(questId, cachedObjectives)
 
                 if newObjectives then
-                    if cachedQuest and (#cachedObjectives ~= #newObjectives) then
-                        Questie:Error("Please report on Github or Discord! Number of the objectives of the quest changed. questId, oldNum, newNum", questId, #cachedObjectives, #newObjectives)
-                        -- Number of the objectives changed?! Shouldn't be possible.
-                        -- For now go as nothing in the quest changed.
-                        cacheMiss = true
-                    else
-                        if (not cachedQuest) or (cachedQuest.title ~= title) or (cachedQuest.questTag ~= questTag) or (cachedQuest.isComplete ~= isComplete) then
-                            -- Mark all objectives changed to force update those too.
-                            -- changedObjIds is nil from GetObjectives() for quests not having objectives. This is easiest place to change it to {}.
+                    if (not cachedQuest) or (#cachedObjectives == #newObjectives and #cachedObjectives > 0 and
+                        (cachedQuest.title ~= title or cachedQuest.questTag ~= questTag or cachedQuest.isComplete ~= isComplete)) then
+                        -- Mark all objectives changed to force update those too.
 
-                            changedObjIds = {}
+                        -- changedObjIds is nil from GetObjectives() for quests not having objectives. This is easiest place to change it to {}.
+                        changedObjIds = {}
+                        for i=1, #newObjectives do
+                            changedObjIds[i] = i
+                        end
+
+                        if isComplete == 1 then
+                            -- Set all objectives finished if whole quest isComplete.
+                            -- Because of: Game API returns "event" type objectives as unfinished while whole quest isComplete.
+
+                            local o
                             for i=1, #newObjectives do
-                                changedObjIds[i] = i
-                            end
-
-                            if isComplete == 1 then
-                                -- Set all objectives finished if whole quest isComplete.
-                                -- Because of: Game API returns "event" type objectives as unfinished while whole quest isComplete.
-
-                                local o
-                                for i=1, #newObjectives do
-                                    o = newObjectives[i]
-                                    o.finished = true
-                                    o.numFulfilled = o.numRequired
-                                end
+                                o = newObjectives[i]
+                                o.finished = true
+                                o.numFulfilled = o.numRequired
                             end
                         end
+                    end
 
-                        if cachedQuest and (not cachedQuest.isComplete) and isComplete then
-                            Sounds.PlayQuestComplete()
-                        end
+                    if cachedQuest and (not cachedQuest.isComplete) and isComplete == 1 then
+                        Sounds.PlayQuestComplete()
+                    end
 
-                        if changedObjIds then
-                            -- Save to cache
-                            cache[questId] = {
-                                title = title,
-                                questTag = questTag,
-                                isComplete = isComplete,
-                                objectives = newObjectives,
-                            }
-                            changes[questId] = changedObjIds
-                        end
+                    if changedObjIds then
+                        -- Save to cache
+                        cache[questId] = {
+                            title = title,
+                            questTag = questTag,
+                            isComplete = isComplete,
+                            objectives = newObjectives,
+                        }
+                        changes[questId] = changedObjIds
                     end
                 else
                     cacheMiss = true
@@ -239,7 +230,8 @@ function QuestLogCache.CheckForChanges(questIdsToCheck)
     if questIdsToCheck then
         for questId in pairs(questIdsToCheck) do
             if (not questIdsChecked[questId]) then
-                Questie:Error("Please report on Github or Discord. QuestId doesn't exist in Game's quest log:", questId)
+                -- TODO: This actually happens and need to be fixed
+                Questie:Warning("Please report on Github or Discord. QuestId doesn't exist in Game's quest log:", questId)
             end
         end
     end

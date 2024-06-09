@@ -16,7 +16,7 @@ local wipe, strsplit = wipe, strsplit
 local WorldFrame, UIParent, INTERRUPTED = WorldFrame, UIParent, INTERRUPTED
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local UnitName, UnitIsUnit, UnitReaction, UnitExists = UnitName, UnitIsUnit, UnitReaction, UnitExists
-local UnitIsPlayer = UnitIsPlayer
+local UnitIsPlayer, UnitIsDead = UnitIsPlayer, UnitIsDead
 local UnitClass = UnitClass
 local UnitEffectiveLevel = UnitEffectiveLevel
 local GetCreatureDifficultyColor = GetCreatureDifficultyColor
@@ -76,7 +76,7 @@ if Addon.IS_CLASSIC then
     return text, text, texture, startTime, endTime, false, nil, false, spellID
   end
 
-  -- Not available in BC Classic, introduced in patch 9.0.1
+  -- Not available in Classic, introduced in patch 9.0.1
   UnitNameplateShowsWidgetsOnly = function() return false end
 elseif Addon.IS_TBC_CLASSIC then
   GetNameForNameplate = function(plate) return plate:GetName() end
@@ -134,6 +134,8 @@ local RaidIconCoordinate = {
   ["SQUARE"] = { x = .25, y = 0.25},
   ["CROSS"] = { x = .5, y = 0.25},
   ["SKULL"] = { x = .75, y = 0.25},
+  ["GREEN_FLAG"] = { x = 0.5, y = 0.75 },
+  ["MURLOC"] = { x = 0.75, y = 0.75 },
 }
 
 local CASTBAR_INTERRUPT_HOLD_TIME = Addon.CASTBAR_INTERRUPT_HOLD_TIME
@@ -176,7 +178,6 @@ local activetheme = Addon.Theme
 local function IsPlateShown(plate) return plate and plate:IsShown() end
 
 -- Queueing
-local function SetUpdateMe(plate) plate.UpdateMe = true end
 local function SetUpdateAll() UpdateAll = true end
 
 -- Style
@@ -222,7 +223,8 @@ local function SetNameplateVisibility(plate, unitid)
   -- ! Interactive objects do also have nameplates. We should not mess with the visibility the of these objects.
   if not UnitExists(unitid) then return end
 
-  local unit_reaction = UnitReaction(unitid, "player") or 0
+  -- We cannot use unit.reaction here as it is not guaranteed that it's update whenever this function is called (see UNIT_FACTION).
+  local unit_reaction = UnitReaction("player", unitid) or 0
   if unit_reaction > 4 then
     if SettingsShowFriendlyBlizzardNameplates then
       plate.UnitFrame:Show()
@@ -254,22 +256,17 @@ Addon.SetNameplateVisibility = SetNameplateVisibility
 do
   -- OnUpdate; This function is run frequently, on every clock cycle
 	function OnUpdate(self, e)
-		-- Poll Loop
-    local plate, curChildren
-
-    for plate in pairs(PlatesVisible) do
+    for plate, _ in pairs(PlatesVisible) do
 			local UpdateMe = UpdateAll or plate.UpdateMe
-			local UpdateHealth = plate.UpdateHealth
 
 			-- Check for an Update Request
-			if UpdateMe or UpdateHealth then
+			if UpdateMe then
 				if not UpdateMe then
 					OnHealthUpdate(plate)
         else
           OnUpdateNameplate(plate)
 				end
 				plate.UpdateMe = false
-				plate.UpdateHealth = false
       end
 
 		-- This would be useful for alpha fades
@@ -358,7 +355,7 @@ do
     visual.level = healthbar:CreateFontString(nil, "ARTWORK")
 		visual.level:SetFont("Fonts\\FRIZQT__.TTF", 11)
 
-		-- Cast Bar Frame - Highest Frame
+    		-- Cast Bar Frame - Highest Frame
 		visual.spellicon = castbar:CreateTexture(nil, "OVERLAY", nil, 7)
 		visual.spelltext = castbar:CreateFontString(nil, "ARTWORK")
 		visual.spelltext:SetFont("Fonts\\FRIZQT__.TTF", 11)
@@ -503,8 +500,8 @@ do
 
 		--Addon:UpdateUnitIdentity(plate.TPFrame, unitid)
     Addon:UpdateUnitContext(unit, unitid)
-		ProcessUnitChanges()
-		OnUpdateCastMidway(plate, unitid)
+    ProcessUnitChanges()
+    OnUpdateCastMidway(plate, unitid)
 	end
 
 	-- OnHealthUpdate
@@ -537,7 +534,15 @@ end
 ---------------------------------------------------------------------------------------------------------------------
 --  Unit Updates: Updates Unit Data, Requests indicator updates
 ---------------------------------------------------------------------------------------------------------------------
-local RaidIconList = { "STAR", "CIRCLE", "DIAMOND", "TRIANGLE", "MOON", "SQUARE", "CROSS", "SKULL" }
+local RaidIconList = { 
+  "STAR", "CIRCLE", "DIAMOND", "TRIANGLE", "MOON", "SQUARE", "CROSS", "SKULL", 
+  [15] = "GREEN_FLAG",
+  [16] = "MURLOC", 
+}
+
+local function ShouldShowMentorIcon(target_marker)
+  return target_marker == "MURLOC" or target_marker == "GREEN_FLAG"
+end
 
 local MAP_UNIT_REACTION = {
   [1] = "HOSTILE",
@@ -645,10 +650,10 @@ function Addon:UpdateUnitCondition(unit, unitid)
   unit.isInCombat = _G.UnitAffectingCombat(unitid)
 
   local raidIconIndex = GetRaidTargetIndex(unitid)
-
+  
   if raidIconIndex then
     unit.raidIcon = RaidIconList[raidIconIndex]
-    unit.isMarked = true
+    unit.isMarked = not ShouldShowMentorIcon(unit.raidIcon)
   else
     unit.isMarked = false
   end
@@ -804,9 +809,11 @@ do
     --      ThreatPlates.DEBUG("UpdateIndicator_RaidIcon: RaidIconCoordinate:", RaidIconCoordinate[unit.raidIcon])
     --    end
 
-    if unit.isMarked and style.raidicon.show then
+    if (unit.isMarked and style.raidicon.show) or ShouldShowMentorIcon(unit.raidIcon) then
       local iconCoord = RaidIconCoordinate[unit.raidIcon]
       if iconCoord then
+        -- ! Maybe use SetRaidTargetIconTexture(icon, index) - then we don't need SetTexCoord anymore
+        -- SetRaidTargetIconTexture(visual.raidicon, GetRaidTargetIndex(unit.unitid));
         visual.raidicon:Show()
         visual.raidicon:SetTexCoord(iconCoord.x, iconCoord.x + 0.25, iconCoord.y,  iconCoord.y + 0.25)
       else
@@ -1030,8 +1037,8 @@ local function FrameOnShow(UnitFrame)
     return
   end
 
+  -- Don't show ThreatPlates for widget-only nameplates (since Shadowlands)
   if UnitNameplateShowsWidgetsOnly(unitid) then
-    -- Don't show ThreatPlates for widget-only nameplates (since Shadowlands)
     return
   end
 
@@ -1104,6 +1111,17 @@ local function NamePlateDriverFrame_AcquireUnitFrame(_, plate)
   end
 end
 
+local function ARENA_OPPONENT_UPDATE(event, unitid, update_reason)
+  -- Event is only registered in solo shuffles, so no need to check here for that
+  if update_reason == "seen" then
+    local plate = PlatesByUnit[unitid]
+    if plate then
+      plate.UpdateMe = true
+      --Addon:ForceUpdateOnNameplate(plate)
+    end
+  end
+end
+
 function CoreEvents:PLAYER_LOGIN()
   -- Fix for Blizzard default plates being shown at random times
   -- Works for Mainline and Wrath Classic
@@ -1114,6 +1132,16 @@ end
 
 function CoreEvents:PLAYER_ENTERING_WORLD()
   TidyPlatesCore:SetScript("OnUpdate", OnUpdate)
+
+  -- ARENA_OPPONENT_UPDATE is also fired in BGs, at least in Classic, so it's only enabled when solo shuffles
+  -- are available (as it's currently only needed for these kind of arenas)
+  if Addon.IsSoloShuffle() then
+    CoreEvents.ARENA_OPPONENT_UPDATE = ARENA_OPPONENT_UPDATE
+    TidyPlatesCore:RegisterEvent("ARENA_OPPONENT_UPDATE")
+  else
+    TidyPlatesCore:UnregisterEvent("ARENA_OPPONENT_UPDATE")
+    CoreEvents.ARENA_OPPONENT_UPDATE = nil
+  end
 end
 
 function CoreEvents:NAME_PLATE_CREATED(plate)
@@ -1177,7 +1205,7 @@ function CoreEvents:NAME_PLATE_UNIT_REMOVED(unitid)
   frame.stylename = nil
 
   -- Remove anything from the function queue
-  frame.UpdateMe = false
+  plate.UpdateMe = false
 end
 
 function CoreEvents:UNIT_NAME_UPDATE(unitid)
@@ -1309,6 +1337,11 @@ local function UNIT_HEALTH(event, unitid)
     if tp_frame.Active or (tp_frame:IsShown() and (visual.healthbar:IsShown() or visual.customtext:IsShown())) then
       OnHealthUpdate(plate)
       Addon.UpdateExtensions(plate.TPFrame, unitid, plate.TPFrame.stylename)
+    end
+
+    -- If the unit is dead, update the style (and switch to headline view)
+    if UnitIsDead(unitid) then
+      plate.UpdateMe = true
     end
   end
 
@@ -1550,29 +1583,45 @@ function CoreEvents:UNIT_FACTION(unitid)
   if unitid == "target" then
     return
   elseif unitid == "player" then
+    -- We first need to if TP is active or not on a nameplate. As this does - currently - not use unit.reaction, but 
+    -- directly queries UnitReaction, we can do that before SetUpdateAll (which would call UpdateUnitCondition which 
+    -- updates unit.reaction)
+    -- Not sure if it would make sense to move this to SetUpdateAll
+    for plate, plate_unitid in pairs(PlatesVisible) do
+      SetNameplateVisibility(plate, plate_unitid)
+    end
     SetUpdateAll() -- Update all plates
   else
-    -- Update just the unitid's plate
+    -- It seems that (at least) in solo shuffles, the UNIT_FACTION event is fired in between the events
+    -- NAME_PLATE_UNIT_REMOVE and NAME_PLATE_UNIT_ADDED. As SetNameplateVisibility sets the TPFrame Active, this results 
+    -- in Lua errors, so basically we cannot use it here to check if the plate is active.
     local plate = GetNamePlateForUnit(unitid)
-    if plate and plate.TPFrame.Active then
+    if plate and PlatesVisible[plate] then
+      -- If Blizzard-style nameplates are used, we also need to check if TP plates are disabled/enabled now
+      -- This also needs to be done no matter if the plate is Active or not as units with
+      -- mindcontrolled
       UpdateReferences(plate)
       Addon:UpdateUnitCondition(unit, unitid)
-      -- If Blizzard-style nameplates are used, we also need to check if TP plates are disabled/enabled now
       SetNameplateVisibility(plate, unitid)
-      ProcessUnitChanges()
+      if plate.TPFrame.Active then
+        ProcessUnitChanges()
+      end
     end
   end
 end
 
--- Only registered for player unit
+-- Only registered for player unit-
 local TANK_AURA_SPELL_IDs = {
   [20468] = true, [20469] = true, [20470] = true, [25780] = true, -- Paladin Righteous Fury
-  [48263] = true -- Deathknight Frost Presence
+  [48263] = true,   -- Deathknight Frost Presence
+  [407627] = true,  -- Paladin Righteous Fury (Season of Discovery)
+  [408680] = true,  -- Shaman Way of Earth (Season of Discovery)
+  [403789] = true,  -- Warlock Metamorphosis (Season of Discovery)
+  [400014] = true,  -- Rogue Just a Flesh Wound (Season of Discovery)
 }
 local function UNIT_AURA(event, unitid)
-  local _, name, spellId
   for i = 1, 40 do
-    name , _, _, _, _, _, _, _, _, spellId = _G.UnitBuff("player", i, "PLAYER")
+    local name , _, _, _, _, _, _, _, _, spellId = _G.UnitBuff("player", i, "PLAYER")
     if not name then
       break
     elseif TANK_AURA_SPELL_IDs[spellId] then
@@ -1650,7 +1699,15 @@ CoreEvents.UNIT_TARGET = UNIT_TARGET
 
 -- Do this after events are registered, otherwise UNIT_AURA would be registered as a general event, not only as
 -- an unit event.
-if ((Addon.IS_CLASSIC or Addon.IS_TBC_CLASSIC or Addon.IS_WRATH_CLASSIC) and Addon.PlayerClass == "PALADIN") or (Addon.IS_WRATH_CLASSIC and Addon.PlayerClass == "DEATHKNIGHT") then
+local ENABLE_UNIT_AURA_FOR_CLASS = {
+  PALADIN = Addon.IS_CLASSIC or Addon.IS_TBC_CLASSIC or Addon.IS_WRATH_CLASSIC,
+  DEATHKNIGHT = Addon.IS_WRATH_CLASSIC,
+  -- For Season of Discovery
+  SHAMAN = Addon.IS_CLASSIC_SOD,
+  WARLOCK = Addon.IS_CLASSIC_SOD,
+  ROGUE = Addon.IS_CLASSIC_SOD,
+}
+if ENABLE_UNIT_AURA_FOR_CLASS[Addon.PlayerClass] then
   CoreEvents.UNIT_AURA = UNIT_AURA
   TidyPlatesCore:RegisterUnitEvent("UNIT_AURA", "player")
   -- UNIT_AURA does not seem to be fired after login (even when buffs are active)
@@ -1740,8 +1797,8 @@ do
   -- "spelltext",
 
 	local anchorgroup = {
-		"name",  "spelltext", "customtext", "level", "spellicon", "raidicon", "skullicon"
-    -- "threatborder", "castborder", "castnostop", "eliteicon", "target"
+		"name",  "spelltext", "customtext", "level", "spellicon", "skullicon"
+    -- "threatborder", "castborder", "castnostop", "eliteicon", "target", "raidicon" 
   }
 
 	local texturegroup = {
@@ -1809,13 +1866,11 @@ do
     visual.threatborder:SetShown(style.threatborder.show)
 
     -- Raid Icon Texture
-		if style.raidicon and style.raidicon.texture then
-			visual.raidicon:SetTexture(style.raidicon.texture)
-    end
+    SetAnchorGroupObject(visual.raidicon, style.raidicon, extended)
+    SetTextureGroupObject(visual.raidicon, style.raidicon)
+    --visual.raidicon:SetTexture(style.raidicon.texture)
     -- TOODO: does not really work with ForceUpdate() as isMarked is not set there (no call to UpdateUnitCondition)
-    if not unit.isMarked then
-      visual.raidicon:Hide()
-    end
+    visual.raidicon:SetShown((unit.isMarked and style.raidicon.show) or ShouldShowMentorIcon(unit.raidIcon))
 
     db = Addon.db.profile.settings.castbar
 

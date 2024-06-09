@@ -668,7 +668,7 @@ do
 			return
 		end
 		local targetname = UnitName("target")	-- Get its name
-		local targetID = tonumber(string.sub(UnitGUID("target"), -12, -7), 16)	-- Get the NPC ID
+		local _, _, _, _, _, targetID, _ = strsplit("-", UnitGUID("target"))	-- Get the NPC ID
 
 		if not IsTradeskillTrainer() then		-- Are we at a trade skill trainer?
 			if not autoscan then
@@ -1136,7 +1136,7 @@ do
 			return
 		end
 		local targetname = UnitName("target")		-- Get its name
-		local targetID = tonumber(string.sub(UnitGUID("target"), -12, -7), 16)		-- Get the NPC ID
+		local _, _, _, _, _, targetID, _ = strsplit("-", UnitGUID("target"))		-- Get the NPC ID
 		local added = false
 
 		table.wipe(output)

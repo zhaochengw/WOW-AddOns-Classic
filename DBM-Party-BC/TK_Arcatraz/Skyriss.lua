@@ -1,11 +1,20 @@
 local mod = DBM:NewMod(551, "DBM-Party-BC", 15, 254)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+if mod:IsRetail() then
+	mod.statTypes = "normal,heroic,timewalker"
+end
+
+mod:SetRevision("20231014053250")
+
 mod:SetCreatureID(20912)
 mod:SetEncounterID(1914)
-mod:SetModelID(19943)
-mod:SetModelScale(0.4)
+
+if not mod:IsRetail() then
+	mod:SetModelID(19943)
+	mod:SetModelScale(0.4)
+end
+
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -62,7 +71,7 @@ do
 		if not self.vb.warnedSplit1 and self:GetUnitCreatureId(uId) == 20912 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.70 then
 			self.vb.warnedSplit1 = true
 			warnSplitSoon:Show()
-		elseif not self.vb.warnedSplit2 and self:IsHeroic() and self:GetUnitCreatureId(uId) == 20912 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.37 then
+		elseif not self.vb.warnedSplit2 and self:IsHard() and self:GetUnitCreatureId(uId) == 20912 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.37 then
 			self.vb.warnedSplit2 = true
 			warnSplitSoon:Show()
 		end

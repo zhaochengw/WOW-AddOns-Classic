@@ -16,18 +16,24 @@ local RSMinimap = private.ImportLib("RareScannerMinimap")
 
 RSGuideMixin = CreateFromMixins(MapCanvasPinMixin);
 
+RSGuideMixin.SetPassThroughButtons = function() end
+
 function RSGuideMixin:OnLoad()
 	self:SetScalingLimits(1, 0.75, 1.0);
 end
 
 function RSGuideMixin:OnAcquired(POI)
-	self:UseFrameLevelType("PIN_FRAME_LEVEL_DIG_SITE", self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate"));
+	self:UseFrameLevelType("PIN_FRAME_LEVEL_AREA_POI", self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate"));
 
 	-- Set attributes
 	self.POI = POI
 	self.Texture:SetTexture(POI.texture)
 	self.Texture:SetScale(RSConfigDB.GetIconsWorldMapScale())
 	self:SetPosition(POI.x, POI.y);
+	
+	if (self.SetPassThroughButtons) then
+		self:SetPassThroughButtons("MiddleButton");
+	end
 end
 
 function RSGuideMixin:OnMouseEnter()

@@ -4,10 +4,9 @@ This mod is distributed under Version 2 of the GPL.  A copy of the GPL is includ
 
 [Changelog history](https://github.com/Hoizame/AtlasLootClassic/blob/master/AtlasLootClassic/Documentation/Release_Notes.md)
 
-## v3.1.2 (Apr. 05, 2023)
+## v3.0.2 (Sep, 12, 2022)
 
-- fix lua errors
-- update translations
-- Add missing PvP items
-- Update ClassFilter
-- Update loottables
+- add Wrath Scourge Invasion into collections
+- add Scourge Bosses pr #231
+- add missing S4 backs and trinkets #232
+- fix lua error with russian clients

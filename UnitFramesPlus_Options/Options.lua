@@ -11,7 +11,7 @@ end
 
 --设置面板
 UnitFramesPlus_OptionsFrame = CreateFrame("Frame", "UnitFramesPlus_OptionsFrame", UIParent);
-UnitFramesPlus_OptionsFrame.name = "UnitFramesPlus";
+UnitFramesPlus_OptionsFrame.name = UFP_OP_Name;
 InterfaceOptions_AddCategory(UnitFramesPlus_OptionsFrame);
 UnitFramesPlus_OptionsFrame:SetScript("OnShow", function()
     UnitFramesPlus_OptionPanel_OnShow();
@@ -243,12 +243,13 @@ do
     infotext3:SetTextColor(1, 1, 1);
     infotext3:SetText(UFP_OP_InfoText3);
 
-    local infotext4 = UnitFramesPlus_OptionsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal");
+--[[ 移除不再需要的說明文字
+	local infotext4 = UnitFramesPlus_OptionsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     infotext4:ClearAllPoints();
     infotext4:SetPoint("TOPLEFT", infotext3, "TOPLEFT", 0, -40);
     infotext4:SetTextColor(1, 1, 1);
     infotext4:SetText(UFP_OP_InfoText4);
---[[ 移除不再需要的說明文字
+
     local infotext5 = UnitFramesPlus_OptionsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormal");
     infotext5:ClearAllPoints();
     infotext5:SetPoint("TOPLEFT", infotext4, "TOPLEFT", 0, -40);
@@ -269,7 +270,7 @@ do
         infotext7:SetText("感谢支持：wow.isler.me");
     end
 	
-	UnitFramesPlus_OptionsFrame.name = UFP_OP_Name;
+	-- UnitFramesPlus_OptionsFrame.name = UFP_OP_Name;
 
     --全局设置菜单
     local UnitFramesPlus_Global_Options = CreateFrame("Frame", "UnitFramesPlus_Global_Options", UIParent);
@@ -4430,7 +4431,6 @@ end
     end
     UnitFramesPlus_OptionsFrame_FocusTargetShiftDrag:SetChecked(UnitFramesPlusDB["focustarget"]["movable"]==1);
     if UnitFramesPlusDB["focustarget"]["show"] ~= 1 then
-        BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_FocusTargetTarget);
         BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_FocusTargetDebuff);
         BlizzardOptionsPanel_Slider_Disable(UnitFramesPlus_OptionsFrame_FocusTargetScaleSlider);
         BlizzardOptionsPanel_CheckButton_Disable(UnitFramesPlus_OptionsFrame_FocusTargetHPPct);

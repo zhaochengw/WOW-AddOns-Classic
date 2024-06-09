@@ -4,11 +4,11 @@
     for Classic/TBC/WOTLK
 
     Requires: LibStub, CallbackHandler-1.0, LibDetours-1.0
-    Version: 14 (2023-02-26)
+    Version: 17 (2023-07-24)
 
 --]]
 
-local LCI_VERSION = 14
+local LCI_VERSION = 17
 
 local clientVersionString = GetBuildInfo()
 local clientBuildMajor = string.byte(clientVersionString, 1)
@@ -56,6 +56,7 @@ local C_PREFIX = "LCIV1"
 local GUIDIsPlayer = C_PlayerInfo.GUIDIsPlayer
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local NewTicker = C_Timer.NewTicker
+local GetNamePlates = C_NamePlate.GetNamePlates
 
 local isWotlk = clientBuildMajor == 51
 local isTBC = clientBuildMajor == 50
@@ -220,7 +221,7 @@ end
 -- TODO: talent IDs
 -- TODO: localization
 if (isWotlk) then
-if (oldminor < 13) then
+if (oldminor < 16) then
   lib.glyphs_table = nil
   lib.glyph_r_tbl = nil
 end
@@ -263,7 +264,8 @@ lib.glyphs_table = lib.glyphs_table or {
       [4] = 58098,  -- Glyph of Thunder Clap
       [5] = 58099,  -- Glyph of Mocking Blow
       [6] = 58104,  -- Glyph of Enduring Victory
-      [7] = 68164   -- Glyph of Command
+      [7] = 68164,  -- Glyph of Command
+      [8] = 414812  -- Glyph of Shattering Throw
     },
   },
   ["PALADIN"] = {
@@ -621,7 +623,8 @@ lib.glyphs_table = lib.glyphs_table or {
       [28] = 63057, -- Glyph of Barkskin
       [29] = 65243, -- Glyph of Survival Instincts
       [30] = 67598, -- Glyph of Claw
-      [31] = 71013  -- Glyph of Rapid Rejuvenation
+      [31] = 71013, -- Glyph of Rapid Rejuvenation
+      [32] = 413895 -- Glyph of Omen of Clarity
     },
     [2] = {
       [1] = 57855,  -- Glyph of the Wild
@@ -3743,8 +3746,8 @@ function lib:GetTalentRanksTable(unitorguid)
         local talents = {[1] = {[1] = {}, [2] = {}, [3] = {}}, [2] = {[1] = {}, [2] = {}, [3] = {}}}
         for x = 1, (isWotlk and 2 or 1) do
             for i = 1, 3 do  -- GetNumTalentTabs
-                for j = 1, GetNumTalents(i, true, false) do
-                    talents[x][i][j] = select(5, GetTalentInfo(i, j, true, false, x))
+                for j = 1, GetNumTalents(i, false, false) do
+                    talents[x][i][j] = select(5, GetTalentInfo(i, j, false, false, x))
                 end
             end
         end
@@ -3809,7 +3812,7 @@ function lib:PlayerGUIDToUnitToken(guid)
         return "mouseover"
     end
     if (GetCVar("nameplateShowFriends") == "1" or GetCVar("nameplateShowEnemies") == "1") then
-        local nameplatesArray = C_NamePlate.GetNamePlates()
+        local nameplatesArray = GetNamePlates()
         for i, nameplate in ipairs(nameplatesArray) do
             if (UnitGUID(nameplate.namePlateUnitToken) == guid) then
                 return nameplate.namePlateUnitToken

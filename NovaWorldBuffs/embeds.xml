@@ -19,9 +19,220 @@
   <Include file="Lib\LibSerialize-1.0.0\LibSerialize.lua"/>
   <Include file="Lib\LibCandyBar-3.0\lib.xml"/>
   <Include file="Lib\LibDurability\LibDurability.xml"/>
+  
+  <!--Replicating the old scrollbar template before it was changed somewhere about phase 2 wrath patch I think?
+  	It was changed to use a new "WowClassicScrollBar" template in the OnLoad handler.
+  	The new scrollbar never looked right with my frames so I've changed it here back to the old one.
+  	Template names are renamed with a NWB_ infront so it doesn't clash, only a couple minor changes below were required from original Blizzard code.
+  	Changes are marked with a -Nova anotation.
+  	-->
+  	
+	<Texture name="NWB_UIPanelScrollBarButton" virtual="true">
+		<TexCoords left="0.20" right="0.80" top="0.25" bottom="0.75"/>
+	</Texture>
+	<Button name="NWB_UIPanelScrollUpButtonTemplate" virtual="true">
+		<Size x="18" y="16"/>
+		<NormalTexture parentKey="Normal" inherits="NWB_UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Up"/>
+		<PushedTexture parentKey="Pushed" inherits="NWB_UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Down"/>
+		<DisabledTexture parentKey="Disabled" inherits="NWB_UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Disabled"/>
+		<HighlightTexture parentKey="Highlight" inherits="NWB_UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollUpButton-Highlight" alphaMode="ADD"/>
+	</Button>
+	<Button name="NWB_UIPanelScrollDownButtonTemplate" virtual="true">
+		<Size x="18" y="16"/>
+		<NormalTexture parentKey="Normal" inherits="NWB_UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Up"/>
+		<PushedTexture parentKey="Pushed" inherits="NWB_UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Down"/>
+		<DisabledTexture parentKey="Disabled" inherits="NWB_UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Disabled"/>
+		<HighlightTexture parentKey="Highlight" inherits="NWB_UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-ScrollDownButton-Highlight" alphaMode="ADD"/>
+	</Button>
+	<Slider name="NWB_UIPanelScrollBarTemplate" virtual="true">
+		<Size x="16" y="0"/>
+		<Frames>
+			<Button name="$parentScrollUpButton" parentKey="ScrollUpButton" inherits="NWB_UIPanelScrollUpButtonTemplate">
+				<Anchors>
+					<Anchor point="BOTTOM" relativePoint="TOP"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="UIPanelScrollBarScrollUpButton_OnClick"/>
+				</Scripts>
+			</Button>
+			<Button name="$parentScrollDownButton" parentKey="ScrollDownButton" inherits="NWB_UIPanelScrollDownButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM"/>
+				</Anchors>
+				<Scripts>
+					<OnClick function="UIPanelScrollBarScrollDownButton_OnClick"/>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnValueChanged function="UIPanelScrollBar_OnValueChanged"/>
+		</Scripts>
+		<ThumbTexture name="$parentThumbTexture" parentKey="ThumbTexture" inherits="NWB_UIPanelScrollBarButton" file="Interface\Buttons\UI-ScrollBar-Knob">
+			<Size x="18" y="24"/>
+			<TexCoords left="0.20" right="0.80" top="0.125" bottom="0.875"/>
+		</ThumbTexture>
+	</Slider>
+
+	<ScrollFrame name="NWB_UIPanelScrollFrameCodeTemplate" virtual="true">
+		<Scripts>
+			<OnLoad function="UIPanelScrollFrame_OnLoad"/>
+			<OnScrollRangeChanged function="ScrollFrame_OnScrollRangeChanged"/>
+			<OnVerticalScroll function="ScrollFrame_OnVerticalScroll"/>
+			<OnMouseWheel function="ScrollFrameTemplate_OnMouseWheel"/>
+		</Scripts>
+	</ScrollFrame>
+	<ScrollFrame name="NWB_UIPanelScrollFrameTemplate" virtual="true" inherits="NWB_UIPanelScrollFrameCodeTemplate">
+		<Frames>
+			<Slider name="$parentScrollBar" inherits="NWB_UIPanelScrollBarTemplate" parentKey="ScrollBar">
+				<Anchors>
+					<!--Move the scrollbar left a bit to inside the frame -Nova-->
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-12" y="-14"/>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-12" y="14"/>
+				</Anchors>
+			</Slider>
+		</Frames>
+	</ScrollFrame>
+	<ScrollFrame name="NWB_InputScrollFrameTemplate" inherits="NWB_UIPanelScrollFrameTemplate" virtual="true">
+		<KeyValues>
+			<KeyValue key="maxLetters" value="0" type="number"/>
+			<!-- None of these values are needed now that we use our own OnLoad handler.
+			<KeyValue key="noScrollBar" value="true" type="boolean"/>
+			-->
+			<!--
+			<KeyValue key="scrollBarHideable" value="true" type="boolean"/>
+			<KeyValue key="hideIfUnscrollable" value="true" type="boolean"/>
+			<KeyValue key="scrollBarHideIfUnscrollable" value="true" type="boolean"/>
+			<KeyValue key="scrollBarHideTrackIfThumbExceedsTrack" value="true" type="boolean"/>
+			-->
+			<!--
+			<KeyValue key="maxLetters" value="127" type="number"/>
+			<KeyValue key="instructions" value="INSTRUCTION_TEXT" type="global"/>
+			<KeyValue key="hideCharCount" value="false" type="boolean"/>
+			-->
+		</KeyValues>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="TopLeftTex" file="Interface\Common\Common-Input-Border-TL">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-5" y="5"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="TopRightTex" file="Interface\Common\Common-Input-Border-TR">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="5" y="5"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="TopTex" file="Interface\Common\Common-Input-Border-T">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.TopLeftTex" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.TopRightTex" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BottomLeftTex" file="Interface\Common\Common-Input-Border-BL">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="-5" y="-5"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BottomRightTex" file="Interface\Common\Common-Input-Border-BR">
+					<Size x="8" y="8"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="5" y="-5"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="BottomTex" file="Interface\Common\Common-Input-Border-B">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.BottomLeftTex" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightTex" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="LeftTex" file="Interface\Common\Common-Input-Border-L">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.TopLeftTex" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomLeftTex" relativePoint="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="RightTex" file="Interface\Common\Common-Input-Border-R">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.TopRightTex" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightTex" relativePoint="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="MiddleTex" file="Interface\Common\Common-Input-Border-M">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.LeftTex" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.RightTex" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString inherits="GameFontDisableLarge" parentKey="CharCount">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-6" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<!--<OnLoad function="InputScrollFrame_OnLoad"/>-->
+			<!--<This OnLoad function InputScrollFrame_OnLoad() was copied from a sep 2022 version of the UI source before they changed the scroll bar.
+			Basically it's the same as live but with the hideable stuff readded. -Nova-->
+			<OnLoad>
+				local scrollBar = self.ScrollBar;
+				scrollBar:ClearAllPoints();
+				scrollBar:SetPoint("TOPLEFT", self, "TOPRIGHT", -13, -11);
+				scrollBar:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", -13, 9);
+				-- reposition the up and down buttons
+				self.ScrollBar.ScrollDownButton:SetPoint("TOP", scrollBar, "BOTTOM", 0, 4);
+				self.ScrollBar.ScrollUpButton:SetPoint("BOTTOM", scrollBar, "TOP", 0, -4);
+				-- make the scroll bar hideable and force it to start off hidden so positioning calculations can be done
+				-- as soon as it needs to be shown
+				self.scrollBarHideable = 1;
+				scrollBar:Hide();
+				self.EditBox:SetWidth(self:GetWidth() - 18);
+				self.EditBox:SetMaxLetters(self.maxLetters);
+				self.EditBox.Instructions:SetText(self.instructions);
+				self.EditBox.Instructions:SetWidth(self:GetWidth());
+				self.CharCount:SetShown(not self.hideCharCount);
+			</OnLoad>
+			<OnMouseDown function="InputScrollFrame_OnMouseDown"/>
+		</Scripts>
+		<ScrollChild>
+			<EditBox parentKey="EditBox" multiLine="true" countInvisibleLetters="true" autoFocus="false">
+				<Size x="1" y="1"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<FontString parentKey="Instructions" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+							</Anchors>
+							<Color r="0.35" g="0.35" b="0.35"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnTabPressed function="InputScrollFrame_OnTabPressed"/>
+					<OnTextChanged function="InputScrollFrame_OnTextChanged"/>
+					<OnCursorChanged function="ScrollingEdit_OnCursorChanged"/>
+					<OnUpdate function="InputScrollFrame_OnUpdate"/>
+					<OnEscapePressed function="InputScrollFrame_OnEscapePressed"/>
+				</Scripts>
+				<FontString inherits="GameFontHighlightSmall"/>
+			</EditBox>
+		</ScrollChild>
+	</ScrollFrame>
+	
+  <!--Old fix for when maxLetters were made a requirement, no longer needed since NWB_InputScrollFrameTemplate is defined above now.-->
+  <!--
   <ScrollFrame name="NWB_InputScrollFrameTemplate" inherits="InputScrollFrameTemplate" virtual="true">
 	<KeyValues>
       <KeyValue key="maxLetters" value="0" type="number"/>
     </KeyValues>
   </ScrollFrame>
+  -->
 </Ui>

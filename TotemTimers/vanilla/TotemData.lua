@@ -48,6 +48,13 @@ TotemTimers.SpellIDs = {
     FlameShock = 8050,
     StormStrike = 17364,
 
+    -- SoD
+    LavaLash = 408507,
+    MoltenBlast = 425339,
+    WaterShield = 408510,
+    EarthShield = 408514,
+    DualWield = 674,
+
     --EnamoredWaterSpirit = 24854 -- Water Totem trinket
     --[[ WaterShield = 52127,
     EarthShield = 974,
@@ -105,6 +112,12 @@ TotemTimers.SpellIDs = {
 }
 
 local SpellIDs = TotemTimers.SpellIDs
+
+TotemTimers.SpellIDsForceNames = {
+    [SpellIDs.WaterShield] = true,
+    [SpellIDs.EarthShield] = true,
+}
+
 
 TotemData = {
 	[TotemTimers.SpellIDs.Tremor] = {
@@ -305,8 +318,12 @@ TotemTimers.TotemWeaponEnchants = {
 
 TotemTimers.ShieldButtons = {
     SpellIDs.LightningShield,
+    SpellIDs.WaterShield,
+    SpellIDs.EarthShield,
 }
 
 TotemTimers.ShieldSpells = {
     SpellIDs.LightningShield,
+    SpellIDs.WaterShield,
+    SpellIDs.EarthShield,
 }

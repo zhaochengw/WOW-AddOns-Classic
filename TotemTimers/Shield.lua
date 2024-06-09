@@ -31,13 +31,11 @@ function TotemTimers.CreateShieldTracker()
     shield.button:SetAttribute("*unit*", "player")
     shield.button:RegisterForClicks("AnyDown")
 
-    if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-        shield.button:SetAttribute("*spell1", SpellIDs.LightningShield)
-    else
-        for k,v in pairs(TotemTimers.ShieldButtons) do
-            shield.button:SetAttribute("*spell"..k, v)
-        end
+
+    for k,v in pairs(TotemTimers.ShieldButtons) do
+        shield.button:SetAttribute("*spell"..k, v)
     end
+
 
     shield.button:SetScript("OnDragStop", function(self)
         XiTimers.StopMoving(self)
@@ -46,9 +44,9 @@ function TotemTimers.CreateShieldTracker()
     TotemTimers.ShieldTracker = shield
 
     -- need empty earthshield timer in vanilla for compatibility
-    if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+    --[[if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
         XiTimers:new(1)
-    end
+    end]]
 end
 
 table.insert(TotemTimers.Modules, TotemTimers.CreateShieldTracker)

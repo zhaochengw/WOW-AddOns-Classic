@@ -1,4 +1,5 @@
 local _, wt = ...
+local ignoreStore = LibStub:GetLibrary("FusionIgnoreStore-1.0")
 
 local BOOKTYPE_SPELL = BOOKTYPE_SPELL
 
@@ -17,7 +18,6 @@ local TAB_TEXTURE_FILEID = GetFileIDFromPath(
 local tooltip = CreateFrame("GameTooltip", "WhatsTrainingTooltip", UIParent,
                             "GameTooltipTemplate")
 local function setTooltip(spellInfo)
-    tooltip:ClearLines()
     if (spellInfo.isItem) then
         tooltip:SetItemByID(spellInfo.id)
     elseif (spellInfo.id) then
@@ -44,6 +44,8 @@ local function setTooltip(spellInfo)
     tooltip:Show()
 end
 
+local menuFrame = CreateFrame("Frame", "WTRightClickFrame", UIParent,
+                              "UIDropDownMenuTemplate")
 local function setRowSpell(row, spell)
     if (spell == nil) then
         row.currentSpell = nil
@@ -74,13 +76,13 @@ local function setRowSpell(row, spell)
         row:SetID(spell.id)
         rowSpell.icon:SetTexture(spell.icon)
     end
-    if (spell.click) then
+    if spell.click then
         row:SetScript("OnClick", spell.click)
     elseif (not spell.isHeader) then
         row:SetScript("OnClick", function(_, button)
             if (not wt.ClickHook) then return end
             if (button == "RightButton") then
-                wt.ClickHook(spell.id, function()
+                wt.ClickHook(spell, function()
                     wt:RebuildData()
                 end)
             end
@@ -128,6 +130,22 @@ function wt.CreateFrame()
     right:SetPoint("TOPRIGHT", mainFrame)
     mainFrame:Hide()
 
+    -- Fix for Season of Discovery's Shaman 'Way of the Earth' rune
+    -- When this rune is engraved, it constantly causes a `SPELLS_CHANGED` event
+    -- That event will keep switching the tab back to the first non-general tab when fired
+    local deferredPriorTabSelection = SpellBookFrame.selectedSkillLine
+    SpellBookFrame:HookScript("OnEvent", function(self, event)
+        if event == "SPELLS_CHANGED"
+            and deferredPriorTabSelection == SKILL_LINE_TAB 
+            and SpellBookFrame.selectedSkillLine ~= SKILL_LINE_TAB 
+        then
+            SpellBookFrame.selectedSkillLine = SKILL_LINE_TAB
+            if SpellBookFrame:IsVisible() then
+                SpellBookFrame_Update()
+            end
+        end
+    end)
+
     local skillLineTab = _G["SpellBookSkillLineTab" .. SKILL_LINE_TAB]
     hooksecurefunc("SpellBookFrame_UpdateSkillLineTabs", function()
         skillLineTab:SetNormalTexture(TAB_TEXTURE_FILEID)
@@ -147,6 +165,9 @@ function wt.CreateFrame()
         elseif (SpellBookFrame.selectedSkillLine == SKILL_LINE_TAB) then
             mainFrame:Show()
         end
+        C_Timer.After(0, function()
+            deferredPriorTabSelection = SpellBookFrame.selectedSkillLine
+        end)
     end)
 
     local scrollBar = CreateFrame("ScrollFrame", "$parentScrollBar", mainFrame,
@@ -240,15 +261,54 @@ function wt.CreateFrame()
     wt.MainFrame = mainFrame
 end
 
-if (wt.currentClass ~= "WARLOCK") then return end
 
-local menuFrame = CreateFrame("Frame", "WTWarlockTomeLearnedFrame", UIParent,
-                              "UIDropDownMenuTemplate")
-wt.ClickHook = function(tomeId, afterClick)
-    if (not wt.TomeIds[tomeId]) then return end
+wt.ClickHook = function(spell, afterClick)
+    local tomeId = spell.id
+    if (not wt.TomeIds or not wt.TomeIds[tomeId]) then
+        PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
+        local isIgnored = ignoreStore:IsIgnored(spell.id)
+        local menuTitle = spell.formattedFullName
+        local menu = {
+            {text = menuTitle, isTitle = true, classicChecks = true},
+            {
+                text = wt.L.IGNORED_TT,
+                checked = isIgnored,
+                func = function()
+                    PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
+                    ignoreStore:Flip(spell.id)
+                    afterClick()
+                end,
+                isNotRadio = true
+                -- classicChecks = true
+            }
+        }
+
+        local allRanks = wt:AllRanks(spell.id)
+
+        if allRanks and #allRanks > 1 then
+            local allIgnored = true
+            for _, id in ipairs(allRanks) do
+                allIgnored = allIgnored and ignoreStore:IsIgnored(id)
+            end
+            tinsert(menu, {
+                text = wt.L.IGNORE_ALL_TT,
+                checked = allIgnored,
+                func = function()
+                    PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
+                    ignoreStore:UpdateMany(allRanks, not allIgnored)
+                    afterClick()
+                end,
+                isNotRadio = true,
+            })
+        end
+
+        EasyMenu(menu, menuFrame, "cursor", 10, 35, "MENU")
+        return
+    end
 
     local checked = wt.learnedPetAbilityMap[tomeId]
     PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
+    local isIgnored = ignoreStore:IsIgnored(spell.id)
     local menu = {
         {text = wt.L.TOME_HEADER, isTitle = true, classicChecks = true},
         {
@@ -260,6 +320,18 @@ wt.ClickHook = function(tomeId, afterClick)
                 afterClick()
             end,
             isNotRadio = true
+        },
+        {text = spell.name, isTitle = true, classicChecks = true},
+        {
+            text = wt.L.IGNORED_TT,
+            checked = isIgnored,
+            func = function()
+                PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
+                ignoreStore:Flip(spell.id)
+                afterClick()
+            end,
+            isNotRadio = true
+            -- classicChecks = true
         }
     }
     EasyMenu(menu, menuFrame, "cursor", 10, 35, "MENU")

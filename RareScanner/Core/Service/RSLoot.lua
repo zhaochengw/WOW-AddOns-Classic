@@ -8,6 +8,7 @@ local RSLoot = private.NewLib("RareScannerLoot")
 -- RareScanner database libraries
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 local RSLootDB = private.ImportLib("RareScannerLootDB")
+local RSCollectionsDB = private.ImportLib("RareScannerCollectionsDB")
 
 -- RareScanner general libraries
 local RSLogger = private.ImportLib("RareScannerLogger")
@@ -16,25 +17,70 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 local RSTooltipScanners = private.ImportLib("RareScannerTooltipScanners")
 
 ---============================================================================
--- Filters to apply to the loot displayed under the main button and the worldmap
+-- Class proficiencies and general functions to check if a class can wear an specific item
 ---============================================================================
 
-local function IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)
-	local _, _, classIndex = UnitClass("player");
-	local isEquipable = false
-	for categoryID, subcategories in pairs(private.CLASS_PROFICIENCIES[classIndex]) do
-		if (categoryID == itemClassID and RSUtils.Contains(subcategories, itemSubClassID)) then
-			isEquipable = true
-			break
-		end
-	end
-	-- check if cloth and not cloak
-	if (not isEquipable and itemClassID == Enum.ItemClass.Armor and itemSubClassID == Enum.ItemArmorSubclass.Cloth and itemEquipLoc == "INVTYPE_CLOAK") then --check if its cloth and not cloak
-		return true
-	end
+private.CLASS_PROFICIENCIES = {
+	[1] = { --Warrior
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Bows, Enum.ItemWeaponSubclass.Polearm, Enum.ItemWeaponSubclass.Guns, Enum.ItemWeaponSubclass.Unarmed, Enum.ItemWeaponSubclass.Bearclaw, Enum.ItemWeaponSubclass.Catclaw, Enum.ItemWeaponSubclass.Crossbow, Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Fishingpole, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Sword2H, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Axe2H, Enum.ItemWeaponSubclass.Axe1H, Enum.ItemWeaponSubclass.Mace2H, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Generic },
+		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Plate, Enum.ItemArmorSubclass.Shield, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Relic }
+	};
+	[2] = { --Paladin
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Polearm, Enum.ItemWeaponSubclass.Fishingpole, Enum.ItemWeaponSubclass.Sword2H, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Axe2H, Enum.ItemWeaponSubclass.Axe1H, Enum.ItemWeaponSubclass.Mace2H, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Generic },
+		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Plate, Enum.ItemArmorSubclass.Shield, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Relic }
+	};
+	[3] = { --Hunter
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Bows, Enum.ItemWeaponSubclass.Polearm, Enum.ItemWeaponSubclass.Guns, Enum.ItemWeaponSubclass.Unarmed, Enum.ItemWeaponSubclass.Bearclaw, Enum.ItemWeaponSubclass.Catclaw, Enum.ItemWeaponSubclass.Crossbow, Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Fishingpole, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Sword2H, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Axe2H, Enum.ItemWeaponSubclass.Axe1H, Enum.ItemWeaponSubclass.Generic },
+		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Mail, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Relic }
+	};
+	[4] = { --Rogue
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Bows, Enum.ItemWeaponSubclass.Guns, Enum.ItemWeaponSubclass.Unarmed, Enum.ItemWeaponSubclass.Bearclaw, Enum.ItemWeaponSubclass.Catclaw, Enum.ItemWeaponSubclass.Crossbow, Enum.ItemWeaponSubclass.Fishingpole, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Axe1H, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Generic },
+		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Leather, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Relic }
+	};
+	[5] = { --Priest
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Fishingpole, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Wand },
+		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Cloth, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Relic }
+	};
+	[6] = { --DeathKnight
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Polearm, Enum.ItemWeaponSubclass.Fishingpole, Enum.ItemWeaponSubclass.Sword2H, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Axe2H, Enum.ItemWeaponSubclass.Axe1H, Enum.ItemWeaponSubclass.Mace2H, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Generic },
+		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Plate, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Relic }
+	};
+	[7] = { --Shaman
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Unarmed, Enum.ItemWeaponSubclass.Bearclaw, Enum.ItemWeaponSubclass.Catclaw, Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Fishingpole, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Axe2H, Enum.ItemWeaponSubclass.Axe1H, Enum.ItemWeaponSubclass.Mace2H, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Generic },
+		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Mail, Enum.ItemArmorSubclass.Shield, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Relic }
+	};
+	[8] = { --Mage
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Fishingpole, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Wand },
+		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Cloth, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Relic }
+	};
+	[9] = { --Warlock
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Fishingpole, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Wand },
+		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Cloth, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Relic }
+	};
+	[11] = { --Druid
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Polearm, Enum.ItemWeaponSubclass.Unarmed, Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Fishingpole, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Bearclaw, Enum.ItemWeaponSubclass.Catclaw, Enum.ItemWeaponSubclass.Mace2H, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Generic },
+		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Leather, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Relic }
+	};
+}
 
-	return isEquipable
+local function IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)
+	-- It cloack can always wear a cloack
+	if (itemEquipLoc == "INVTYPE_CLOAK") then
+		return true;
+	end
+	
+	-- Otherwise check proficiency
+	local _, _, classIndex = UnitClass("player")
+	if (RSUtils.Contains(private.CLASS_PROFICIENCIES[classIndex][itemClassID], itemSubClassID)) then
+		return true;
+	else
+		return false;
+	end
 end
+
+---============================================================================
+-- Filters to apply to the loot displayed under the main button and the worldmap
+---============================================================================
 
 local function IsToy(itemLink, itemID)
 	if (RSLootDB.IsToy(itemID)) then
@@ -59,21 +105,25 @@ local function IsFilteredByCategory(itemLink, itemID, itemClassID, itemSubClassI
 	return false
 end
 
-function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClassID, itemSubClassID)
+local function IsCollectionFiltered(type, entityID, itemID)
+	local items = RSCollectionsDB.GetEntityCollectionsLoot(entityID, type)
+	if (RSUtils.Contains(items, itemID)) then
+		return false
+	end
+	
+	RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por estar ya conseguido o estar filtrado en el explorador", itemID))
+	return true
+end
+
+function RSLoot.IsFiltered(entityID, itemID, itemLink, itemRarity, itemEquipLoc, itemClassID, itemSubClassID)
 	-- Quality filter
 	if (itemRarity < tonumber(RSConfigDB.GetLootFilterMinQuality())) then
 		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por su calidad.", itemID))
 		return true
 	end
-
-	-- Category filter
-	if (IsFilteredByCategory(itemLink, itemID, itemClassID, itemSubClassID)) then
-		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por su categoria.", itemID))
-		return true
-	end
 	
 	-- Individual filter
-	if (RSConfigDB.IsItemFiltered(itemID)) then
+	if (RSConfigDB.GetItemFiltered(itemID)) then
 		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado individualmente.", itemID))
 		return true
 	end
@@ -123,6 +173,17 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por facción.", itemID))
 			return true;
 		end
+	end
+	
+	-- Filter by explorer results
+	if (RSConfigDB.IsFilteringByExplorerResults() and RSUtils.GetTableLength(RSCollectionsDB.GetAllEntitiesCollectionsLoot()) > 0) then
+		return IsCollectionFiltered(RSConstants.ITEM_SOURCE.NPC, entityID, itemID) and IsCollectionFiltered(RSConstants.ITEM_SOURCE.CONTAINER, entityID, itemID)
+	end
+
+	-- Category filter
+	if (not RSConfigDB.IsFilteringByExplorerResults() and IsFilteredByCategory(itemLink, itemID, itemClassID, itemSubClassID)) then
+		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por su categoria.", itemID))
+		return true
 	end
 	
 	return false

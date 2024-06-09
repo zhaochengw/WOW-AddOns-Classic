@@ -158,18 +158,22 @@ local needSlot = {1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18};
 19 = 战袍
 ]]
 
+local WhiteEquipColourLevel = 150;
+local GreenEquipColourLevel = 220;
+local BlueEquipColourLevel = 230;
+local VioletEquipColourLevel = 240;
 
 --为了好看 所以进行了颜色优化
 --更新到WLK P2 奥杜尔
 local function GetEquipAverageLevelColour(level)
     
-    if level < 150 then --白
+    if level < WhiteEquipColourLevel then --白
         return whiteColour;
-    elseif level < 220 then --绿
+    elseif level < GreenEquipColourLevel then --绿
         return greenColour;
-    elseif level < 230 then -- 蓝
+    elseif level < BlueEquipColourLevel then -- 蓝
         return blueColour;
-    elseif level < 240 then -- 紫
+    elseif level < VioletEquipColourLevel then -- 紫
         return violetColour;
     else
         return orangeColour; -- 橙
@@ -528,8 +532,6 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("CHAT_MSG_WHISPER");
 --frame:RegisterEvent("CHAT_MSG_CHANNEL");
 frame:SetScript("OnEvent",CHAT_MSG);
-
-
 
 
 local function CHAT_MSG_SendSelfInfo(self,event,...)
@@ -1086,6 +1088,23 @@ function Main:ClearNotifyInfo()
 end
 
 
+function Main:ChangeWhiteEquipColourLevel(set)
+    WhiteEquipColourLevel = set;
+end
+
+function Main:ChangeGreenEquipColourLevel(set)
+    GreenEquipColourLevel = set;
+end
+
+function Main:ChangeBlueEquipColourLevel(set)
+    BlueEquipColourLevel = set;
+end
+
+function Main:ChangeVioletEquipColourLevel(set)
+    VioletEquipColourLevel = set;
+end
+
+
 function Main:Init()
 
     GS = __private.GS;
@@ -1113,6 +1132,11 @@ function Main:Init()
 
     joinGroupNotify = cfg.JoinGroupNotify
     leaderNotify = cfg.LeaderNotify
+
+    WhiteEquipColourLevel = cfg.WhiteEquipColourLevel;
+    GreenEquipColourLevel = cfg.GreenEquipColourLevel;
+    BlueEquipColourLevel = cfg.BlueEquipColourLevel;
+    VioletEquipColourLevel = cfg.VioletEquipColourLevel;
 
     self:InitSendSelfInfoEvent(cfg);
 

@@ -5,11 +5,11 @@ if not mod:IsClassic() then
 	mod.statTypes = "normal,heroic,timewalker"
 end
 
-mod:SetRevision("20230414085833")
+mod:SetRevision("20240115231709")
 mod:SetCreatureID(23954)--23980 is no longer used like it was in wrath. Kept just to keep first death from ending fight early
 mod:SetMainBossID(23954)
 mod:SetEncounterID(2025)
-mod.noBossDeathKill = true--Ignore death, since he dies twice
+mod:DisableBossDeathKill()
 
 mod:RegisterCombat("combat")
 mod:RegisterKill("yell", L.YellCombatEnd)--Yell seems removed on retail, but maybe it'll return in classic WoTLK. Although I doubt it. Classic viscidous removedd explode emote on retail AND classic
@@ -72,7 +72,7 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 23954 then--Only trigger kill for unit_died if he dies in phase 2 with at least one player alive, otherwise it's an auto wipe.
-		if DBM:NumRealAlivePlayers() > 0 and self.vb.phase == 2 then
+		if DBM:NumRealAlivePlayers() > 0 and self:GetStage(2) then
 			DBM:EndCombat(self)
 		end
 	end

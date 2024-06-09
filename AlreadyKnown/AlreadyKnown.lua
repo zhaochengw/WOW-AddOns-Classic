@@ -241,28 +241,6 @@ local function _checkIfKnown(itemLink)
 		end
 		return false -- Battlepet is uncollected... or something went wrong
 	end
-	if isWrathClassic then -- Wrath Classic doesn't show "Already Known" text for Companion Pets in Vendors etc.
-		if classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.CompanionPet then
-			local numCompanions = GetNumCompanions("CRITTER")
-			for i = 1, numCompanions do
-				local creatureId, creatureName, creatureSpellId, icon, issummoned, mountType = GetCompanionInfo("CRITTER", i)
-				if db.debug then Print("C: (%d/%d) Id: %d -> %s - CId: %d (%s), SId: %d (%s), TId: %d (%s)", i, numCompanions, itemId, creatureName, creatureId, tostring(itemId == creatureId), creatureSpellId, tostring(itemId == creatureSpellId), icon, tostring(itemIcon == icon)) end
-				--[[
-					Pet's name and the item's name might not match
-						[Yellow Moth Egg] vs [Yellow Moth]
-					Same icon can be used for multiple different pets and items
-						[Blue Moth Egg], [White Moth Egg], [Yellow Moth Egg] and [Yellow Moth] all use textureId 236193
-					Pet's creatureId doesn't have link to itemId or itemLink
-						[Yellow Moth Egg] itemId 29903 vs [Yellow Moth] creatureId 21008
-					Pet's creatureSpellId doesn't have anything useful from GetSpellInfo
-						[Yellow Moth] creatureSpellId 35910
-				]]--
-				--Bandaid solution that is less than ideal:
-				--DevTools_Dump({ strmatch((GetItemInfo(itemId)), creatureName) })
-				return (itemIcon == icon and strmatch((GetItemInfo(itemId)), creatureName))
-			end
-		end
-	end
 
 	local midResult = false
 	if C_TooltipInfo then -- Retail in 10.0.2->, maybe comes to Wrath Classic later?
@@ -462,7 +440,8 @@ f:SetScript("OnEvent", function(self, event, ...)
 		local addOnName = ...
 		if addOnName == "Blizzard_AuctionHouseUI" then -- New AH
 			hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, "RefreshScrollFrame", _hookNewAH)
-			hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, "OnScrollBoxRangeChanged", _hookNewAH) -- "RefreshScrollFrame" didn't update when scrolling AH up and down, adding this fixes that
+			-- "OnScrollBoxRangeChanged" was changed to "OnScrollBoxScroll" in 10.2.5?
+			hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, "OnScrollBoxScroll", _hookNewAH) -- "RefreshScrollFrame" didn't update when scrolling AH up and down, adding this fixes that
 			--hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, "UpdateRefreshFrame", function(...) DevTools_Dump({ ... }) end)
 			alreadyHookedAddOns["Blizzard_AuctionHouseUI"] = true
 

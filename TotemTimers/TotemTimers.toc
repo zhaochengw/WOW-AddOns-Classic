@@ -1,7 +1,7 @@
-## Interface: 30401
+## Interface: 30403
 ## Title: TotemTimers
 ## Author:  Xianghar
-## Version: 3.1.15
+## Version: 3.2.8
 ## SavedVariables: TotemTimers_GlobalSettings, TotemTimers_Profiles
 ## OptionalDeps: Masque
 ## LoadManagers: AddonLoader

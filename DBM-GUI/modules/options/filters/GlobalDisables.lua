@@ -1,5 +1,7 @@
 local L = DBM_GUI_L
 
+--Centralized space to disable any feature from any other panel. Many options are duplicated here, but that's fine
+--It's a one stop shop for disabling any DBM core feature
 local spamPanel = DBM_GUI.Cat_Filters:CreateNewPanel(L.Panel_SpamFilter, "option")
 
 local spamSpecAnnounceFeat = spamPanel:CreateArea(L.Area_SpamFilter_SpecFeatures)
@@ -8,18 +10,26 @@ spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnText, true, nil, "Do
 spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnFlash, true, nil, "DontShowSpecialWarningFlash")
 spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnVibrate, true, nil, "DontDoSpecialWarningVibrate")
 spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnSound, true, nil, "DontPlaySpecialWarningSound")
+spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoPrivateAuraSound, true, nil, "DontPlayPrivateAuraSound")
 
 local spamTimers = spamPanel:CreateArea(L.Area_SpamFilter_Timers)
-spamTimers:CreateCheckButton(L.SpamBlockNoShowTimers, true, nil, "DontShowBossTimers")
+spamTimers:CreateCheckButton(L.SpamBlockNoShowBossTimers, true, nil, "DontShowBossTimers")
+spamTimers:CreateCheckButton(L.SpamBlockNoShowTrashTimers, true, nil, "DontShowTrashTimers")
+spamTimers:CreateCheckButton(L.SpamBlockNoShowEventTimers, true, nil, "DontShowEventTimers")
 spamTimers:CreateCheckButton(L.SpamBlockNoShowUTimers, true, nil, "DontShowUserTimers")
 spamTimers:CreateCheckButton(L.SpamBlockNoCountdowns, true, nil, "DontPlayCountdowns")
+
+local spamNameplates = spamPanel:CreateArea(L.Area_SpamFilter_Nameplates)
+spamNameplates:CreateCheckButton(L.SpamBlockNoNameplate, true, nil, "DontShowNameplateIcons")
+spamNameplates:CreateCheckButton(L.SpamBlockNoNameplateCD, true, nil, "DontShowNameplateIconsCD")
+spamNameplates:CreateCheckButton(L.SpamBlockNoBossGUIDs, true, nil, "DontSendBossGUIDs")
 
 local spamMisc = spamPanel:CreateArea(L.Area_SpamFilter_Misc)
 spamMisc:CreateCheckButton(L.SpamBlockNoSetIcon, true, nil, "DontSetIcons")
 spamMisc:CreateCheckButton(L.SpamBlockNoRangeFrame, true, nil, "DontShowRangeFrame")
 spamMisc:CreateCheckButton(L.SpamBlockNoInfoFrame, true, nil, "DontShowInfoFrame")
 spamMisc:CreateCheckButton(L.SpamBlockNoHudMap, true, nil, "DontShowHudMap2")
-spamMisc:CreateCheckButton(L.SpamBlockNoNameplate, true, nil, "DontShowNameplateIcons")
+
 spamMisc:CreateCheckButton(L.SpamBlockNoYells, true, nil, "DontSendYells")
 spamMisc:CreateCheckButton(L.SpamBlockNoNoteSync, true, nil, "BlockNoteShare")
 spamMisc:CreateCheckButton(L.SpamBlockAutoGossip, true, nil, "DontAutoGossip")

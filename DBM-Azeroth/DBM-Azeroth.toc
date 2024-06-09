@@ -1,12 +1,12 @@
-## Interface: 30401
+## Interface: 30403
 ## X-Min-Interface: 20501
 ## X-Min-Interface-Wrath: 30400
-## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Azeroth (Classic)|r
-## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Azeroth (Classic)|r
-## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Azeroth (Clásico)|r
-## Title-esMX:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Azeroth (Clásico)|r
-## Title-frFR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Azeroth (Classique)|r
-## Title-ptBR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Azeroth (Clássico)|r
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Vanilla)|r
+## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Vanilla)|r
+## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Clásico)|r
+## Title-esMX:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Clásico)|r
+## Title-frFR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Classique)|r
+## Title-ptBR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Clássico)|r
 ## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Азерот (классический)|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0아제로스 (클래식)|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0艾澤拉斯 (經典)|r
@@ -16,11 +16,11 @@
 ## SavedVariables: DBMAzeroth_AllSavedVars
 ## SavedVariablesPerCharacter: DBMAzeroth_SavedStats
 ## X-DBM-Mod: 1
-## X-DBM-Mod-Type: RAID
+## X-DBM-Mod-Type: WORLDBOSS
 ## X-DBM-Mod-Category: Classic
 ## X-DBM-Mod-World-Boss: 1
 ## X-DBM-StatTypes: normal
-## X-DBM-Mod-Name: Azeroth (Classic)
+## X-DBM-Mod-Name: Azeroth (Vanilla)
 ## X-DBM-Mod-Name-deDE: Azeroth (Classic)
 ## X-DBM-Mod-Name-esES: Azeroth (Clásico)
 ## X-DBM-Mod-Name-esMX: Azeroth (Clásico)

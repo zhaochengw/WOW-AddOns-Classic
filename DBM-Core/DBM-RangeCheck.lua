@@ -1,12 +1,15 @@
----------------
---  Globals  --
----------------
-DBM.RangeCheck = {}
+---@class DBM
+local DBM = DBM
+
+---@class DBMRangeCheck
+local rangeCheck = {}
+DBM.RangeCheck = rangeCheck
 
 --------------
 --  Locals  --
 --------------
 local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
+local isWrath = WOW_PROJECT_ID == (WOW_PROJECT_WRATH_CLASSIC or 11)
 local isClassic = WOW_PROJECT_ID == (WOW_PROJECT_CLASSIC or 2)
 
 local DDM = _G["LibStub"]:GetLibrary("LibDropDownMenu")
@@ -20,7 +23,7 @@ local function UnitPhaseReasonHack(uId)
 end
 
 local L = DBM_CORE_L
-local rangeCheck = DBM.RangeCheck
+---@class DBMRangeCheckFrame: Frame
 local mainFrame = CreateFrame("Frame")
 local textFrame, radarFrame, updateIcon, updateRangeFrame, initializeDropdown
 local RAID_CLASS_COLORS = _G["CUSTOM_CLASS_COLORS"] or RAID_CLASS_COLORS -- For Phanx' Class Colors
@@ -29,8 +32,6 @@ local RAID_CLASS_COLORS = _G["CUSTOM_CLASS_COLORS"] or RAID_CLASS_COLORS -- For 
 local function setCompatibleRestrictedRange(range)
 	if range <= 4 and isRetail then
 		return 4
-	elseif range <= 6 and not isClassic then
-		return 6
 	elseif range <= 8 then
 		return 8
 	elseif range <= 10 then
@@ -45,43 +46,42 @@ local function setCompatibleRestrictedRange(range)
 		return 23
 	elseif range <= 28 then
 		return 28
-	elseif range <= 30 and isRetail then
-		return 30
 	elseif range <= 33 then
 		return 33
-	elseif range <= 43 and not isClassic then
+	elseif range <= 43 then
 		return 43
 	elseif range <= 48 and not isClassic then
 		return 48
-	elseif range <= 53 and isRetail then
-		return 53
 	elseif range <= 60 and not isClassic then
 		return 60
 	elseif range <= 80 and not isClassic then
 		return 80
 	elseif range <= 100 and not isClassic then
 		return 100
+	else--Mod passed a range that exceeds max range known apis can cover, we really don't have a way to measure this anymore so we return highest range we can measure based on game client
+		return isClassic and 43 or 100
 	end
 end
 
-local itsBCAgain
-
+-----------------------
+--  Check functions  --
+-----------------------
+local getDistanceBetween, getDistanceBetweenAll
+local itsBCAgain--Needs to be called outside of below scope, itsDFBaby does not
 do
+	local UnitPosition, UnitExists, UnitIsUnit, UnitIsDeadOrGhost, UnitIsConnected = UnitPosition, UnitExists, UnitIsUnit, UnitIsDeadOrGhost, UnitIsConnected
+
 	local CheckInteractDistance, IsItemInRange, UnitInRange = CheckInteractDistance, IsItemInRange, UnitInRange
 	-- All ranges are tested and compared against UnitDistanceSquared.
 	-- Example: Worgsaw has a tooltip of 6 but doesn't factor in hitboxes/etc. It doesn't return false until UnitDistanceSquared of 8.
 	local itemRanges = {
 		[8] = 8149, -- Voodoo Charm
-		[13] = isClassic and 17626 or 32321, -- Sparrowhawk Net / Frostwolf Muzzle
+		[13] = 17626, -- Sparrowhawk Net
 		[18] = 6450, -- Silk Bandage
 		[23] = 21519, -- Mistletoe
 		[28] = 13289,--Egan's Blaster
 		[33] = 1180, -- Scroll of Stamina
 	}
-	if isRetail then
-		itemRanges[4] = 90175 -- Gin-Ji Knife Set (MoP)
-		itemRanges[53] = 116139 -- Haunting Memento (WoD)
-	end
 	if not isClassic then -- Exists in Wrath/BCC but not vanilla/era
 		itemRanges[6] = 16114 -- Foremans Blackjack (TBC)
 		itemRanges[43] = 34471 -- Vial of the Sunwell (UnitInRange api alternate if item checks break)
@@ -95,8 +95,14 @@ do
 		[10] = 3, -- CheckInteractDistance (Duel)
 		[11] = 2, -- CheckInteractDistance (Trade)
 	}
-	if isRetail then
-		apiRanges[30] = 1 -- CheckInteractDistance (Inspect), Classic: Inspect range is 10
+
+	local function itsDFBaby(uId)
+		local inRange, checkedRange = UnitInRange(uId)
+		if inRange and checkedRange then--Range checked and api was successful
+			return 43
+		else
+			return 1000
+		end
 	end
 
 	function itsBCAgain(uId, checkrange)
@@ -120,16 +126,61 @@ do
 			elseif IsItemInRange(6450, uId) then return 18
 			elseif IsItemInRange(21519, uId) then return 23
 			elseif IsItemInRange(13289, uId) then return 28
-			elseif isRetail and CheckInteractDistance(uId, 1) then return 30
 			elseif IsItemInRange(1180, uId) then return 33
-			elseif not isClassic and UnitInRange(uId) then return 43
+			elseif UnitInRange and UnitInRange(uId) then return 43
 			elseif not isClassic and IsItemInRange(32698, uId) then return 48
-			elseif isRetail and IsItemInRange(116139, uId) then return 53
 			elseif not isClassic and IsItemInRange(32825, uId) then return 60
 			elseif not isClassic and IsItemInRange(35278, uId) then return 80
 			elseif not isClassic and IsItemInRange(41058, uId) then return 100
 			else return 1000 end -- Just so it has a numeric value, even if it's unknown to protect from nil errors
 		end
+	end
+
+	--Retail is limited to just returning true or false for being within 43 (40+hitbox) of target while in instances (outdoors retail can still use UnitDistanceSquared)
+	function getDistanceBetweenAll(checkrange)
+		local restrictionsActive = not isWrath and DBM:HasMapRestrictions()
+		checkrange = restrictionsActive and 43 or checkrange
+		for uId in DBM:GetGroupMembers() do
+			if UnitExists(uId) and not UnitIsUnit(uId, "player") and not UnitIsDeadOrGhost(uId) and UnitIsConnected(uId) and UnitPhaseReasonHack(uId) then
+				local range = DBM:HasMapRestrictions() and (not isWrath and itsDFBaby(uId) or itsBCAgain(uId, checkrange)) or UnitDistanceSquared(uId) * 0.5
+				if checkrange < (range + 0.5) then
+					return true
+				end
+			end
+		end
+		return false
+	end
+
+	function getDistanceBetween(uId, x, y)
+		local restrictionsActive = DBM:HasMapRestrictions()
+		if not x then -- If only one arg then 2nd arg is always assumed to be player
+			return restrictionsActive and (not isWrath and itsDFBaby(uId) or itsBCAgain(uId)) or UnitDistanceSquared(uId) ^ 0.5
+		end
+		if type(x) == "string" and UnitExists(x) then -- arguments: uId, uId2
+			-- First attempt to avoid UnitPosition if any of args is player UnitDistanceSquared should work
+			if UnitIsUnit("player", uId) then
+				return restrictionsActive and (not isWrath and itsDFBaby(x) or itsBCAgain(x)) or UnitDistanceSquared(x) ^ 0.5
+			elseif UnitIsUnit("player", x) then
+				return restrictionsActive and (not isWrath and itsDFBaby(uId) or itsBCAgain(uId)) or UnitDistanceSquared(uId) ^ 0.5
+			else -- Neither unit is player, no way to avoid UnitPosition
+				if restrictionsActive then -- Cannot compare two units that don't involve player with restrictions, just fail quietly
+					return 1000
+				end
+				local uId2 = x
+				x, y = UnitPosition(uId2)
+				if not x then
+					print("getDistanceBetween failed for: " .. uId .. " (" .. tostring(UnitExists(uId)) .. ") and " .. uId2 .. " (" .. tostring(UnitExists(uId2)) .. ")")
+					return
+				end
+			end
+		end
+		if restrictionsActive then -- Cannot check distance between player and a location (not another unit, again, fail quietly)
+			return 1000
+		end
+		local startX, startY = UnitPosition(uId)
+		local dX = startX - x
+		local dY = startY - y
+		return (dX * dX + dY * dY) ^ 0.5
 	end
 end
 
@@ -220,15 +271,6 @@ do
 			UIDropDownMenu_AddButton(info, 1)
 		elseif level == 2 then
 			if menu == "range" then
-				if isRetail then
-					info = {}
-					info.text = L.RANGECHECK_SETRANGE_TO:format(4)
-					info.func = setRange
-					info.arg1 = 4
-					info.checked = (mainFrame.range == 4)
-					UIDropDownMenu_AddButton(info, 2)
-				end
-
 				if not isClassic then
 					info = {}
 					info.text = L.RANGECHECK_SETRANGE_TO:format(6)
@@ -272,15 +314,6 @@ do
 				info.arg1 = 23
 				info.checked = (mainFrame.range == 23)
 				UIDropDownMenu_AddButton(info, 2)
-
-				if isRetail then
-					info = {}
-					info.text = L.RANGECHECK_SETRANGE_TO:format(30)
-					info.func = setRange
-					info.arg1 = 30
-					info.checked = (mainFrame.range == 30)
-					UIDropDownMenu_AddButton(info, 2)
-				end
 
 				info = {}
 				info.text = L.RANGECHECK_SETRANGE_TO:format(33)
@@ -441,6 +474,7 @@ end
 --  Create the frame  --
 ------------------------
 local function createTextFrame()
+	---@class DBMRangeCheckFrame: Frame, BackdropTemplate
 	textFrame = CreateFrame("Frame", "DBMRangeCheck", UIParent, "BackdropTemplate")
 	textFrame:SetFrameStrata("DIALOG")
 	textFrame.backdropInfo = {
@@ -471,11 +505,14 @@ local function createTextFrame()
 	textFrame:SetScript("OnMouseDown", function(_, button)
 		if button == "RightButton" then
 			local dropdownFrame = CreateFrame("Frame", "DBMRangeCheckDropdown", UIParent)
+			---@diagnostic disable-next-line: param-type-mismatch
 			UIDropDownMenu_Initialize(dropdownFrame, initializeDropdown)
+			---@diagnostic disable-next-line: param-type-mismatch
 			ToggleDropDownMenu(1, nil, dropdownFrame, "cursor", 5, -10)
 		end
 	end)
 
+	---@class DBMRangeCheckTitleFrame: FontString
 	local text = textFrame:CreateFontString(nil, "OVERLAY", "GameTooltipText")
 	text:SetSize(128, 15)
 	text:SetPoint("BOTTOMLEFT", textFrame, "TOPLEFT")
@@ -512,6 +549,7 @@ local function createTextFrame()
 end
 
 local function createRadarFrame()
+	---@class DBMRangeCheckRadarFrame: Frame
 	radarFrame = CreateFrame("Frame", "DBMRangeCheckRadar", UIParent)
 	radarFrame:SetFrameStrata("DIALOG")
 	radarFrame:SetPoint(DBM.Options.RangeFrameRadarPoint, UIParent, DBM.Options.RangeFrameRadarPoint, DBM.Options.RangeFrameRadarX, DBM.Options.RangeFrameRadarY)
@@ -536,7 +574,9 @@ local function createRadarFrame()
 	radarFrame:SetScript("OnMouseDown", function(_, button)
 		if button == "RightButton" then
 			local dropdownFrame = CreateFrame("Frame", "DBMRangeCheckDropdown", UIParent)
+			---@diagnostic disable-next-line: param-type-mismatch
 			UIDropDownMenu_Initialize(dropdownFrame, initializeDropdown)
+			---@diagnostic disable-next-line: param-type-mismatch
 			ToggleDropDownMenu(1, nil, dropdownFrame, "cursor", 5, -10)
 		end
 	end)
@@ -623,7 +663,7 @@ do
 	end
 
 	function updateIcon()
-		local numPlayers = GetNumGroupMembers()
+		local numPlayers = GetNumGroupMembers() or 0
 		activeDots = max(numPlayers, activeDots)
 		for i = 1, activeDots do
 			local dot = radarFrame.dots[i]
@@ -818,60 +858,6 @@ mainFrame:SetScript("OnEvent", function(self, event)
 	end
 end)
 
------------------------
---  Check functions  --
------------------------
-local getDistanceBetween, getDistanceBetweenAll
-
-do
-	local UnitPosition, UnitExists, UnitIsUnit, UnitIsDeadOrGhost, UnitIsConnected = UnitPosition, UnitExists, UnitIsUnit, UnitIsDeadOrGhost, UnitIsConnected
-
-	function getDistanceBetweenAll(checkrange)
-		local range
-		for uId in DBM:GetGroupMembers() do
-			if UnitExists(uId) and not UnitIsUnit(uId, "player") and not UnitIsDeadOrGhost(uId) and UnitIsConnected(uId) and UnitPhaseReasonHack(uId) then
-				range = DBM:HasMapRestrictions() and itsBCAgain(uId, checkrange) or UnitDistanceSquared(uId) * 0.5
-				if checkrange < (range + 0.5) then
-					return true
-				end
-			end
-		end
-		return false
-	end
-
-	function getDistanceBetween(uId, x, y)
-		local restrictionsActive = DBM:HasMapRestrictions()
-		if not x then -- If only one arg then 2nd arg is always assumed to be player
-			return restrictionsActive and itsBCAgain(uId) or UnitDistanceSquared(uId) ^ 0.5
-		end
-		if type(x) == "string" and UnitExists(x) then -- arguments: uId, uId2
-			-- First attempt to avoid UnitPosition if any of args is player UnitDistanceSquared should work
-			if UnitIsUnit("player", uId) then
-				return restrictionsActive and itsBCAgain(x) or UnitDistanceSquared(x) ^ 0.5
-			elseif UnitIsUnit("player", x) then
-				return restrictionsActive and itsBCAgain(uId) or UnitDistanceSquared(uId) ^ 0.5
-			else -- Neither unit is player, no way to avoid UnitPosition
-				if restrictionsActive then -- Cannot compare two units that don't involve player with restrictions, just fail quietly
-					return 1000
-				end
-				local uId2 = x
-				x, y = UnitPosition(uId2)
-				if not x then
-					print("getDistanceBetween failed for: " .. uId .. " (" .. tostring(UnitExists(uId)) .. ") and " .. uId2 .. " (" .. tostring(UnitExists(uId2)) .. ")")
-					return
-				end
-			end
-		end
-		if restrictionsActive then -- Cannot check distance between player and a location (not another unit, again, fail quietly)
-			return 1000
-		end
-		local startX, startY = UnitPosition(uId)
-		local dX = startX - x
-		local dY = startY - y
-		return (dX * dX + dY * dY) ^ 0.5
-	end
-end
-
 ---------------
 --  Methods  --
 ---------------
@@ -879,6 +865,10 @@ local restoreRange, restoreFilter, restoreThreshold, restoreReverse
 
 function rangeCheck:Show(range, filter, forceshow, redCircleNumPlayers, reverse, hideTime, onlySummary)
 	if (DBM:GetNumRealGroupMembers() < 2 or DBM.Options.DontShowRangeFrame or DBM.Options.SpamSpecInformationalOnly) and not forceshow then
+		return
+	end
+	local restrictionsActive = DBM:HasMapRestrictions()
+	if not isWrath and restrictionsActive then--Don't popup on retail or classic era at all if in an instance (it now only works in wrath)
 		return
 	end
 	if type(range) == "function" then -- The first argument is optional
@@ -892,11 +882,10 @@ function rangeCheck:Show(range, filter, forceshow, redCircleNumPlayers, reverse,
 	if not radarFrame then
 		createRadarFrame()
 	end
-	local restrictionsActive = DBM:HasMapRestrictions()
+	if restrictionsActive then
+		range = setCompatibleRestrictedRange(range)
+	end
 	if (DBM.Options.RangeFrameFrames == "text" or DBM.Options.RangeFrameFrames == "both" or restrictionsActive) and not textFrame:IsShown() then
-		if restrictionsActive then
-			range = setCompatibleRestrictedRange(range)
-		end
 		textFrame:Show()
 	end
 	-- TODO, add check for restricted area here so we can prevent radar frame loading.
@@ -924,7 +913,7 @@ function rangeCheck:Show(range, filter, forceshow, redCircleNumPlayers, reverse,
 end
 
 function rangeCheck:Hide(force)
-	if restoreRange and not force then -- Restore range frame to way it was when boss mod is done with it
+	if restoreRange and not force and isWrath then -- Restore range frame to way it was when boss mod is done with it
 		rangeCheck:Show(restoreRange, restoreFilter, true, restoreThreshold, restoreReverse)
 	else
 		restoreRange, restoreFilter, restoreThreshold, restoreReverse = nil, nil, nil, nil
@@ -952,6 +941,9 @@ end
 
 function rangeCheck:UpdateRestrictions(force)
 	mainFrame.restrictions = force or DBM:HasMapRestrictions()
+	if mainFrame.restrictions and not isWrath then
+		rangeCheck:Hide(true)
+	end
 end
 
 function rangeCheck:SetHideTime(hideTime)
@@ -970,12 +962,12 @@ function rangeCheck:GetDistanceAll(checkrange)
 end
 
 do
-	local function UpdateRangeFrame(r, reverse)
+	local function UpdateLocalRangeFrame(r, reverse)
 		if rangeCheck:IsShown() then
 			rangeCheck:Hide(true)
 		else
 			if DBM:HasMapRestrictions() then
-				DBM:AddMsg(L.NO_RANGE)
+				DBM:AddMsg(L.TEXT_ONLY_RANGE)
 			end
 			rangeCheck:Show((r and r < 201) and r or 10 , nil, true, nil, reverse)
 		end
@@ -985,9 +977,17 @@ do
 	SLASH_DBMRRANGE1 = "/rrange"
 	SLASH_DBMRRANGE2 = "/rdistance"
 	SlashCmdList["DBMRANGE"] = function(msg)
-		UpdateRangeFrame(tonumber(msg), false)
+		if not isWrath and DBM:HasMapRestrictions() then
+			DBM:AddMsg(L.NO_RANGE)
+		else
+			UpdateLocalRangeFrame(tonumber(msg))
+		end
 	end
 	SlashCmdList["DBMRRANGE"] = function(msg)
-		UpdateRangeFrame(tonumber(msg), true)
+		if not isWrath and DBM:HasMapRestrictions() then
+			DBM:AddMsg(L.NO_RANGE)
+		else
+			UpdateLocalRangeFrame(tonumber(msg), true)
+		end
 	end
 end

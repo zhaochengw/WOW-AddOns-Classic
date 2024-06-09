@@ -3,48 +3,58 @@
     name="AuctionatorSellingBagFrame"
     virtual="true"
     parentKey="BagListing"
-    mixin="AuctionatorSellingBagFrameMixin"
+    mixin="AuctionatorBagUseMixin"
   >
     <Scripts>
       <OnLoad method="OnLoad" />
+      <OnShow method="OnShow" />
+      <OnHide method="OnHide" />
     </Scripts>
 
     <Frames>
-      <Frame parentKey="ItemIconDropDown" inherits="AuctionatorItemIconDropDownTemplate" hidden="true"/>
-
-      <Frame inherits="WowScrollBox" parentKey="ScrollBox">
+      <Frame inherits="AuctionatorGroupsViewTemplate">
+        <KeyValues>
+          <KeyValue key="itemTemplate" value="AuctionatorGroupsViewItemTemplate" type="string" />
+          <KeyValue key="groupTemplate" value="AuctionatorSellingViewGroupTemplate" type="string" />
+          <KeyValue key="clickEventName" value="BagUse.BagItemClicked" type="string" />
+          <KeyValue key="hideHiddenItems" value="true" type="boolean" />
+          <KeyValue key="applyVisibility" value="true" type="boolean" />
+        </KeyValues>
         <Anchors>
-            <Anchor point="TOPLEFT"/>
-            <Anchor point="BOTTOMRIGHT"/>
+          <Anchor point="TOPLEFT"/>
+          <Anchor point="BOTTOMRIGHT"/>
         </Anchors>
-        <Frames>
-          <Frame parentKey="ItemListingFrame" inherits="ResizeLayoutFrame">
-            <KeyValues>
-              <KeyValue key="scrollable" value="true" type="boolean" />
-            </KeyValues>
-            <Anchors>
-              <Anchor point="TOP"/>
-            </Anchors>
-            <Frames>
-              <Frame parentKey="Favourites" inherits="AuctionatorBagClassListing">
-                <KeyValues>
-                  <KeyValue key="title" value="AUCTIONATOR_L_FAVOURITES" type="global" />
-                </KeyValues>
-                <Anchors>
-                  <Anchor point="TOPLEFT" />
-                  <Anchor point="RIGHT" />
-                </Anchors>
-              </Frame>
-            </Frames>
-          </Frame>
-        </Frames>
       </Frame>
-      <EventFrame parentKey="ScrollBar" inherits="WowTrimScrollBar">
+
+      <Button parentKey="CustomiseButton" inherits="UIPanelButtonTemplate">
+        <Size x="32" y="25"/>
+        <Layers>
+          <Layer level="ARTWORK">
+            <Texture file="Interface\AddOns\Auctionator\Images\Pen_Icon">
+              <Size x="13" y="13"/>
+              <Anchors>
+                <Anchor point="CENTER"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleCustomiseMode()
+          </OnClick>
+          <OnEnter>
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText(AUCTIONATOR_L_CUSTOMISE_BAG_GROUPS)
+            GameTooltip:Show()
+          </OnEnter>
+          <OnLeave>
+            GameTooltip:Hide()
+          </OnLeave>
+        </Scripts>
         <Anchors>
-          <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="2"/>
-          <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="2"/>
+            <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="5"/>
         </Anchors>
-      </EventFrame>
+      </Button>
     </Frames>
   </Frame>
 </Ui>

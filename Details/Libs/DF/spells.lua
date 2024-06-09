@@ -243,6 +243,7 @@ DF.CooldownsBySpec = {
 			[231895] = 1, --Crusade (talent)
 			[205191] = 2, --Eye for an Eye (talent)
 			[184662] = 2, --Shield of Vengeance
+			[403876] = 2, --Divine Protection
 			[642] = 2, --Divine Shield
 			[1022] = 3, --Blessing of Protection
 			[6940] = 3, --Blessing of Sacrifice
@@ -957,6 +958,7 @@ DF.CrowdControlSpells = {
 	[15487] = "PRIEST", --Silence
 	
 	[2094] = "ROGUE", --Blind
+	[427773] = "ROGUE", --Blind (AoE)
 	[1833] = "ROGUE", --Cheap Shot
 	[408] = "ROGUE", --Kidney Shot
 	[1766] = "ROGUE", --Kick
@@ -969,6 +971,7 @@ DF.CrowdControlSpells = {
 	[105421] = "PALADIN", --Blinding Light (talent)
 	[31935] = "PALADIN", --Avengers Shield
 	[217824] = "PALADIN", --Shield of Virtue
+	[10326] = "PALADIN", --Turn Evil
 	
 	[221562] = "DEATHKNIGHT", --Asphyxiate
 	[108194] = "DEATHKNIGHT", --Asphyxiate (talent)
@@ -1002,6 +1005,7 @@ DF.CrowdControlSpells = {
 	[24394] = "HUNTER", --Intimidation
 	[117405] = "HUNTER", --Binding Shot (trigger)
 	[117526] = "HUNTER", --Binding Shot (triggered)
+	[1513] = "HUNTER", --Scare Beast
 	
 	[119381] = "MONK", --Leg Sweep
 	[115078] = "MONK", --Paralysis
@@ -1034,6 +1038,7 @@ DF.CrowdControlSpells = {
 	[331866] = "COVENANT|VENTHYR", --Agent of Chaos (Nadia soulbind)
 	
 	[372245] = "EVOKER", --Terror of the Skies
+	[360806] = "EVOKER", --Sleep Walk
 }
 
 -- additionals for classic

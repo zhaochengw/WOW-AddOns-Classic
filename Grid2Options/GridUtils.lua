@@ -113,6 +113,27 @@ do
 	Grid2Options.FONT_FLAGS_DEFAULT       = FONT_FLAGS_DEFAULT
 end
 
+-- gametooltip anchors
+Grid2Options.tooltipAnchorValues = {
+	ANCHOR_ABSENT = L["Default"],
+	ANCHOR_TOP = L["TOP"],
+	ANCHOR_LEFT = L["LEFTTOP"],
+	ANCHOR_RIGHT = L["RIGHTTOP"],
+	ANCHOR_BOTTOM = L["BOTTOM"],
+	ANCHOR_BOTTOMLEFT = L["LEFTBOTTOM"],
+	ANCHOR_BOTTOMRIGHT = L["RIGHTBOTTOM"],
+	ANCHOR_TOPLEFT = L["TOPRIGHT"],
+	ANCHOR_TOPRIGHT = L["TOPLEFT"],
+}
+
+-- raid size values calculations
+Grid2Options.raidSizeValues = {
+	[0] = L["Maximum capacity of the instance"],
+	[1] = L["Maximum non-empty raid group"],
+	[2] = L["Number of non-empty raid groups"],
+	[3] = L["Number of players in raid"],
+}
+
 -- safe get value from table, returns def value if array table does not exist
 function Grid2Options.GetTableValueSafe(t, k, def)
 	if t then
@@ -197,6 +218,27 @@ do
 	end
 end
 
+-- player known spells
+do
+	local spells, sorted
+	function Grid2Options:GetPlayerSpells()
+		if not spells then
+			spells = {}
+			for i=1,1000 do
+			   local type, spellID = GetSpellBookItemInfo(i,'spell')
+			   if not spellID then break end
+			   if type == 'SPELL' then
+				   spells[spellID] = GetSpellInfo(spellID)
+				end
+			end
+			sorted = {}
+			for k in next, spells do sorted[#sorted+1] = k end
+			sort(sorted, function(a, b) return spells[a] < spells[b] end)
+		end
+		return spells, sorted
+	end
+end
+
 -- specialization helper functions
 do
 	Grid2Options.GetSpecializationInfo = GetSpecializationInfo or function(index)
@@ -247,17 +289,19 @@ do
 		Display    = { type = "header", order = 80,  name = L["Display"]    },
 		StackText  = { type = "header", order = 90,  name = L["Stack Text"] },
 		Cooldown   = { type = "header", order = 125, name = L["Cooldown"]	},
-		ZoomIn     = { type = "header", order = 150, name = L["Zoom In"]	},
+		Tooltip    = { type = "header", order = 150, name = L["Tooltip"]	},
 		Highlight  = { type = "header", order = 200, name = L["Highlight"]	},
 		-- statuses headers
-		Stacks	      = { type = "header", order = 4.9, name = L["Stacks"]      },
-		Colors	      = { type = "header", order = 10,  name = L["Colors"]      },
-		Thresholds    = { type = "header", order = 50,  name = L["Thresholds"], },
+		Activation    = { type = "header", order = 4.5, name = L["Activation"] },
+		Colors	      = { type = "header", order = 10,  name = L["Colors"] },
+		Thresholds    = { type = "header", order = 50,  name = L["Thresholds"] },
+		Combine       = { type = "header", order = 89.9,name = L["Stacks"] },
 		Value         = { type = "header", order = 90,  name = L["Value"] },
 		Text          = { type = "header", order = 95,  name = L["Text"] },
-		Misc          = { type = "header", order = 100, name = L["Misc"]        },
+		Misc          = { type = "header", order = 100, name = L["Misc"] },
+		Duration      = { type = "header", order = 105, name = L["Duration"] },
 		Highlights    = { type = "header", order = 110, name = L["Highlight"], },
-		Auras	      = { type = "header", order = 150, name = L["Auras"]       },
+		Auras	      = { type = "header", order = 150, name = L["Auras"] },
 		DebuffFilter  = { type = "header", order = 175, name = L["Filtered debuffs"] },
 		AurasExpanded = { type = "header", order = 300, name = L["Display"] },
 	}
@@ -298,15 +342,16 @@ end
 do
 	local fmt = string.format
 	local HexDigits = "0123456789ABCDEF"
-	local prefixes = { "color-", "buff-", "debuff-", "buffs-", "debuffs-", "aoe-" }
+	local prefixes = { "color-", "buff-", "debuff-", "buffs-", "debuffs-", "aoe-", "spells-" }
 	local suffixes = { "-not-mine", "-mine" }
 	local prefixes_colors = {
-		["buff-"]   = "|cFF00ff00%s|r",
-		["debuff-"] = "|cFFff0000%s|r",
+		["buff-"]    = "|cFF00ff00%s|r",
+		["debuff-"]  = "|cFFff0000%s|r",
 		["buffs-"]   = "|cFF00ffa0%s|r",
 		["debuffs-"] = "|cFFff00a0%s|r",
-		["aoe-"]    = "|cFF0080ff%s|r",
-		["color-"]  = "|cFFffff00%s|r",
+		["aoe-"]     = "|cFF0080ff%s|r",
+		["spells-"]   = "|cFFff7070%s|r",
+		["color-"]   = "|cFFffff00%s|r",
 	}
 	local function byteToHex(byte)
 		local L = byte % 16 + 1
@@ -339,9 +384,12 @@ do
 		local name = status.name
 		local prefix, body, suffix = SplitStatusName(name)
 		if RemovePrefix then
-			prefix = ""
-		end
-		if prefix=="color-" then
+			prefix = ''
+			body = L[body]
+		elseif prefix=='' and strfind(status.dbx.type, 'color$') then
+			prefix = 'color-'
+			body = L[body]
+		elseif prefix=="color-" then
 			body = "|cFF" .. rgbToHex(status.dbx.color1) .. L[body] .. "|r"
 		else
 			body = L[body]
@@ -385,7 +433,7 @@ function Grid2Options:IsCompatiblePair(indicator, status)
 				end
 			end
 		end
-	end	
+	end
 end
 
 -- Grid2Options:GetAvailableStatusValues()
@@ -393,7 +441,7 @@ function Grid2Options:GetAvailableStatusValues(indicator, statusAvailable, statu
 	statusAvailable = statusAvailable or {}
 	wipe(statusAvailable)
 	for statusKey, status in Grid2:IterateStatuses() do
-		if self:IsCompatiblePair(indicator, status) and not status.priorities[indicator] and not indicator.priorities[status] then 
+		if self:IsCompatiblePair(indicator, status) and not status.priorities[indicator] and not indicator.priorities[status] then
 			statusAvailable[statusKey] = self.LocalizeStatus(status)
 		end
 	end
@@ -582,7 +630,7 @@ for class, translation in pairs(LOCALIZED_CLASS_NAMES_MALE) do
 		Grid2Options.PLAYER_CLASSES[class] = string.format("|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:%f:%f:%f:%f:0|t%s",coord[1]*256,coord[2]*256,coord[3]*256,coord[4]*256,translation)
 	end
 end
-Grid2Options.HEADER_TYPES = { player = L['Players'], pet = L['Pets'], boss = L['Bosses'], target = L['Target'], focus = L['Focus'], self = L['Player'] }
+Grid2Options.HEADER_TYPES = { player = L['Players'], pet = L['Pets'], boss = L['Bosses'], target = L['Target'], focus = L['Focus'], self = L['Player'], targettarget = L['Target of Target'], focustarget = L['Target of Focus'] }
 
 -- Grid2Options:ConfirmDialog(), Grid2Options:ShowEditDialog()
 do

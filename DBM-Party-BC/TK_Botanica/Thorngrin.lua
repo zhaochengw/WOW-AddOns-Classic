@@ -1,10 +1,18 @@
 local mod = DBM:NewMod(560, "DBM-Party-BC", 14, 257)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+if mod:IsRetail() then
+	mod.statTypes = "normal,heroic,timewalker"
+end
+
+mod:SetRevision("20231014053250")
 mod:SetCreatureID(17978)
 mod:SetEncounterID(1928)
-mod:SetModelID(14416)
+
+if not mod:IsRetail() then
+	mod:SetModelID(14416)
+end
+
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -53,7 +61,6 @@ end
 
 do
 	local player = UnitGUID("player")
-
 	function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
 		if spellId == 34660 and destGUID == player and self:AntiSpam(4, 1) then--Hellfire
 			specWarnGTFO:Show(spellName)

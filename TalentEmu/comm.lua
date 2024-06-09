@@ -164,7 +164,7 @@ MT.BuildEnv('COMM');
 				local Tick = MT.GetUnifiedTime();
 				local cache = VT.TQueryCache[name];
 				if cache == nil then
-					cache = { TalData = {  }, EquData = {  }, GlyData = {  }, PakData = {  }, };
+					cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
 					VT.TQueryCache[name] = cache;
 				end
 				cache.class = class;
@@ -201,7 +201,7 @@ MT.BuildEnv('COMM');
 			local Tick = MT.GetUnifiedTime();
 			local cache = VT.TQueryCache[name];
 			if cache == nil then
-				cache = { TalData = {  }, EquData = {  }, GlyData = {  }, PakData = {  }, };
+				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
 				VT.TQueryCache[name] = cache;
 			end
 			local GlyData = cache.GlyData;
@@ -218,7 +218,7 @@ MT.BuildEnv('COMM');
 			-- #(%d)#(item:[%-0-9:]+)#(%d)#(item:[%-0-9:]+)#(%d)#(item:[%-0-9:]+)#(%d)#(item:[%-0-9:]+)
 			local cache = VT.TQueryCache[name];
 			if cache == nil then
-				cache = { TalData = {  }, EquData = {  }, GlyData = {  }, PakData = {  }, };
+				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
 				VT.TQueryCache[name] = cache;
 			end
 			local EquData = cache.EquData;
@@ -230,10 +230,26 @@ MT.BuildEnv('COMM');
 				end
 			end
 		end,
+		OnEngraving = function(prefix, name, code, version, Decoder, overheard)
+			local cache = VT.TQueryCache[name];
+			if cache == nil then
+				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
+				VT.TQueryCache[name] = cache;
+			else
+				cache.EngData = {  };
+			end
+			local EngData = cache.EngData;
+			if Decoder(EngData, code) then
+				if not overheard then
+					MT._TriggerCallback("CALLBACK_DATA_RECV", name);
+					MT._TriggerCallback("CALLBACK_ENGRAVING_DATA_RECV", name, true);
+				end
+			end
+		end,
 		OnAddOn = function(prefix, name, code, version, Decoder, overheard)
 			local cache = VT.TQueryCache[name];
 			if cache == nil then
-				cache = { TalData = {  }, EquData = {  }, GlyData = {  }, PakData = {  }, };
+				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
 				VT.TQueryCache[name] = cache;
 			end
 			local PakData = cache.PakData;
@@ -413,6 +429,7 @@ MT.BuildEnv('COMM');
 			MT._RegisterCallback("CALLBACK_GLYPH_DATA_RECV", MT.CALLBACK.OnGlyphDataRecv);
 		end
 		MT._RegisterCallback("CALLBACK_INVENTORY_DATA_RECV", MT.CALLBACK.OnInventoryDataRecv);
+		MT._RegisterCallback("CALLBACK_ENGRAVING_DATA_RECV", MT.CALLBACK.OnEngravingDataRecv);
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", ChatFilter_CHAT_MSG_SYSTEM);
 		-- hooksecurefunc("SendChatMessage", function(_msg, _type, _lang, _target)
 		-- 	if _type == "WHISPER" then

@@ -1,0 +1,43 @@
+# GetInfoLink
+# Copyright 2023-persent Char11e (cytseng404@mail.com)
+# All rights reserved.
+#
+# This file is part of GetInfoLink.
+#
+# GetInfoLink is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# GetInfoLink is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GetInfoLink.  If not, see <http://www.gnu.org/licenses/>.
+
+## Interface: 100200
+
+## Title: GetInfoLink
+## Notes: Query all kinds of information and generate links in the chat window. |n|n|cffffd200How to use: |rClick the small map button to use. |nInput the ID of the thing you are looking for in the corresponding query box and use Enter to send it, and the result will be displayed in the chat window. |nYou can use the left mouse button to drag the query box.
+## Title-zhTW: |cffFF9900[進階]|r 資訊連結查詢
+## Notes-zhTW: GetInfoLink |n|n查詢各式訊息並生成連結於聊天視窗中。|n|n|cffffd200使用方法: |r點選小地圖按鈕使用。|n在相對應的查詢框內輸入想找的東西ID並使用Enter送出，結果會顯示在聊天視窗中。|n可使用左鍵拖曳查詢框。
+## Title-zhCN: |cffFF9900[进阶]|r 资讯连结查询
+## Notes-zhCN: GetInfoLink |n|n查询各式讯息并生成连结于聊天视窗中。 |n|n|cffffd200使用方法: |r点选小地图按钮使用。 |n在相对应的查询框内输入想找的东西ID并使用Enter送出，结果会显示在聊天视窗中。 |n可使用左键拖曳查询框。
+## Author: Char11e
+## Version: v0.0.2
+## DefaultState: disabled
+
+Localization\Localization.lua
+Localization\enUS.lua
+Localization\zhCN.lua
+Localization\zhTW.lua
+
+LibDBIcon-1.0\embeds.xml
+
+core.lua
+item.lua
+achievement.lua
+spell.lua
+quest.lua

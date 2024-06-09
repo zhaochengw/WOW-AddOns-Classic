@@ -1,0 +1,12 @@
+## Interface: 30403
+## Title: SoulSort
+## Notes: Easy Soul Shard Management
+## Author: Anilusion
+## Version: 1.4
+## SavedVariablesPerCharacter: SoulSortOptions
+## OptionalDeps: LibDataBroker-1.1
+
+libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+
+SoulSort.lua
+SoulSort_Options.lua

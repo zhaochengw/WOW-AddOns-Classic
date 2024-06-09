@@ -1,127 +1,50 @@
 -- frFR localization by Tixu
+---@class StatLogicLocale
 local L = LibStub("AceLocale-3.0"):NewLocale("StatLogic", "frFR")
 if not L then return end
+local StatLogic = LibStub("StatLogic")
 
 L["tonumber"] = function(s)
 	local n = tonumber(s)
 	if n then
 		return n
 	else
-		return tonumber((gsub(s, ",", "%.")))
+		return tonumber((s:gsub(",", "%.")))
 	end
 end
 ------------------
--- Fast Exclude --
+-- Prefix Exclude --
 ------------------
--- By looking at the first ExcludeLen letters of a line we can exclude a lot of lines
-L["ExcludeLen"] = 5 -- using string.utf8len
-L["Exclude"] = {
-	[""] = true,
-	[" \n"] = true,
-	[ITEM_BIND_ON_EQUIP] = true, -- ITEM_BIND_ON_EQUIP = "Binds when equipped"; -- Item will be bound when equipped
-	[ITEM_BIND_ON_PICKUP] = true, -- ITEM_BIND_ON_PICKUP = "Binds when picked up"; -- Item wil be bound when picked up
-	[ITEM_BIND_ON_USE] = true, -- ITEM_BIND_ON_USE = "Binds when used"; -- Item will be bound when used
-	[ITEM_BIND_QUEST] = true, -- ITEM_BIND_QUEST = "Quest Item"; -- Item is a quest item (same logic as ON_PICKUP)
-	[ITEM_SOULBOUND] = true, -- ITEM_SOULBOUND = "Soulbound"; -- Item is Soulbound
-	[ITEM_STARTS_QUEST] = true, -- ITEM_STARTS_QUEST = "This Item Begins a Quest"; -- Item is a quest giver
-	[ITEM_CANT_BE_DESTROYED] = true, -- ITEM_CANT_BE_DESTROYED = "That item cannot be destroyed."; -- Attempted to destroy a NO_DESTROY item
-	[ITEM_CONJURED] = true, -- ITEM_CONJURED = "Conjured Item"; -- Item expires
-	[ITEM_DISENCHANT_NOT_DISENCHANTABLE] = true, -- ITEM_DISENCHANT_NOT_DISENCHANTABLE = "Cannot be disenchanted"; -- Items which cannot be disenchanted ever
-	["Désen"] = true, -- ITEM_DISENCHANT_ANY_SKILL = "Disenchantable"; -- Items that can be disenchanted at any skill level
-	-- ITEM_DISENCHANT_MIN_SKILL = "Disenchanting requires %s (%d)"; -- Minimum enchanting skill needed to disenchant
-	["Durée"] = true, -- ITEM_DURATION_DAYS = "Duration: %d days";
-	["<Arti"] = true, -- ITEM_CREATED_BY = "|cff00ff00<Made by %s>|r"; -- %s is the creator of the item
-	["Tps"] = true, -- ITEM_COOLDOWN_TIME_DAYS = "Cooldown remaining: %d day";
-	["Uniqu"] = true, -- Unique (20) -- ITEM_UNIQUE = "Unique"; -- Item is unique -- ITEM_UNIQUE_MULTIPLE = "Unique (%d)"; -- Item is unique
-	["Nivea"] = true, -- Requires Level xx -- ITEM_MIN_LEVEL = "Requires Level %d"; -- Required level to use the item
-	["\nNive"] = true, -- Requires Level xx -- ITEM_MIN_SKILL = "Requires %s (%d)"; -- Required skill rank to use the item
-	["Class"] = true, -- Classes: xx -- ITEM_CLASSES_ALLOWED = "Classes: %s"; -- Lists the classes allowed to use this item
-	["Races"] = true, -- Races: xx (vendor mounts) -- ITEM_RACES_ALLOWED = "Races: %s"; -- Lists the races allowed to use this item
-	["Utili"] = true, -- Use: -- ITEM_SPELL_TRIGGER_ONUSE = "Use:";
-	["Chanc"] = true, -- Chance On Hit: -- ITEM_SPELL_TRIGGER_ONPROC = "Chance on hit:";
-	-- Set Bonuses
-	-- ITEM_SET_BONUS = "Set: %s";
-	-- ITEM_SET_BONUS_GRAY = "(%d) Set: %s";
-	-- ITEM_SET_NAME = "%s (%d/%d)"; -- Set name (2/5)
-	["Ensem"] = true,--ensemble
-	["(2) E"] = true,
-	["(3) E"] = true,
-	["(4) E"] = true,
-	["(5) E"] = true,
-	["(6) E"] = true,
-	["(7) E"] = true,
-	["(8) E"] = true,
-	-- Equip type
-	[GetItemClassInfo(Enum.ItemClass.Projectile)] = true, -- Ice Threaded Arrow ID:19316
-	[INVTYPE_AMMO] = true,
-	[INVTYPE_HEAD] = true,
-	[INVTYPE_NECK] = true,
-	[INVTYPE_SHOULDER] = true,
-	[INVTYPE_BODY] = true,
-	[INVTYPE_CHEST] = true,
-	[INVTYPE_ROBE] = true,
-	[INVTYPE_WAIST] = true,
-	[INVTYPE_LEGS] = true,
-	[INVTYPE_FEET] = true,
-	[INVTYPE_WRIST] = true,
-	[INVTYPE_HAND] = true,
-	[INVTYPE_FINGER] = true,
-	[INVTYPE_TRINKET] = true,
-	[INVTYPE_CLOAK] = true,
-	[INVTYPE_WEAPON] = true,
-	[INVTYPE_SHIELD] = true,
-	[INVTYPE_2HWEAPON] = true,
-	[INVTYPE_WEAPONMAINHAND] = true,
-	[INVTYPE_WEAPONOFFHAND] = true,
-	[INVTYPE_HOLDABLE] = true,
-	[INVTYPE_RANGED] = true,
-	[GetItemSubClassInfo(Enum.ItemClass.Weapon, Enum.ItemWeaponSubclass.Thrown)] = true,
-	[INVTYPE_RELIC] = true,
-	[INVTYPE_TABARD] = true,
-	[INVTYPE_BAG] = true,
-}
-
+-- By looking at the first PrefixExcludeLength letters of a line we can exclude a lot of lines
+L["PrefixExcludeLength"] = 5 -- using string.utf8len
+L["PrefixExclude"] = {}
 -----------------------
 -- Whole Text Lookup --
 -----------------------
 -- Mainly used for enchants that doesn't have numbers in the text
-
 L["WholeTextLookup"] = {
-	[EMPTY_SOCKET_RED] = {["EMPTY_SOCKET_RED"] = 1}, -- EMPTY_SOCKET_RED = "Red Socket";
-	[EMPTY_SOCKET_YELLOW] = {["EMPTY_SOCKET_YELLOW"] = 1}, -- EMPTY_SOCKET_YELLOW = "Yellow Socket";
-	[EMPTY_SOCKET_BLUE] = {["EMPTY_SOCKET_BLUE"] = 1}, -- EMPTY_SOCKET_BLUE = "Blue Socket";
-	[EMPTY_SOCKET_META] = {["EMPTY_SOCKET_META"] = 1}, -- EMPTY_SOCKET_META = "Meta Socket";
+	["Huile de sorcier mineure"] = {[StatLogic.Stats.SpellDamage] = 8, [StatLogic.Stats.HealingPower] = 8}, -- ID: 20744
+	["Huile de sorcier inférieure"] = {[StatLogic.Stats.SpellDamage] = 16, [StatLogic.Stats.HealingPower] = 16}, -- ID: 20746
+	["Huile de sorcier"] = {[StatLogic.Stats.SpellDamage] = 24, [StatLogic.Stats.HealingPower] = 24}, -- ID: 20750
+	["Huile de sorcier brillante"] = {[StatLogic.Stats.SpellDamage] = 36, [StatLogic.Stats.HealingPower] = 36, [StatLogic.Stats.SpellCritRating] = 14}, -- ID: 20749
+	["Huile de sorcier excellente"] = {[StatLogic.Stats.SpellDamage] = 42, [StatLogic.Stats.HealingPower] = 42}, -- ID: 22522
 
-	["Huile de sorcier mineure"] = {["SPELL_DMG"] = 8, ["HEAL"] = 8}, -- ID: 20744
-	["Huile de sorcier inférieure"] = {["SPELL_DMG"] = 16, ["HEAL"] = 16}, -- ID: 20746
-	["Huile de sorcier"] = {["SPELL_DMG"] = 24, ["HEAL"] = 24}, -- ID: 20750
-	["Huile de sorcier brillante"] = {["SPELL_DMG"] = 36, ["HEAL"] = 36, ["SPELL_CRIT_RATING"] = 14}, -- ID: 20749
-	["Huile de sorcier excellente"] = {["SPELL_DMG"] = 42, ["HEAL"] = 42}, -- ID: 22522
-	["Huile de sorcier bénite"] = {["SPELL_DMG_UNDEAD"] = 60}, -- ID: 23123
+	["Huile de mana mineure"] = {[StatLogic.Stats.ManaRegen] = 4}, -- ID: 20745
+	["Huile de mana inférieure"] = {[StatLogic.Stats.ManaRegen] = 8}, -- ID: 20747
+	["Huile de mana brillante"] = {[StatLogic.Stats.ManaRegen] = 12, [StatLogic.Stats.HealingPower] = 25}, -- ID: 20748
+	["Huile de mana excellente"] = {[StatLogic.Stats.ManaRegen] = 14}, -- ID: 22521
 
-	["Huile de mana mineure"] = {["MANA_REG"] = 4}, -- ID: 20745
-	["Huile de mana inférieure"] = {["MANA_REG"] = 8}, -- ID: 20747
-	["Huile de mana brillante"] = {["MANA_REG"] = 12, ["HEAL"] = 25}, -- ID: 20748
-	["Huile de mana excellente"] = {["MANA_REG"] = 14}, -- ID: 22521
+	["Sauvagerie"] = {[StatLogic.Stats.AttackPower] = 70}, -- ID: 27971
+	["Vitalité"] = {[StatLogic.Stats.ManaRegen] = 4, [StatLogic.Stats.HealthRegen] = 4}, -- ID: 46492
+	["Âme de givre"] = {[StatLogic.Stats.ShadowDamage] = 54, [StatLogic.Stats.FrostDamage] = 54}, -- ID: 27982
+	["Feu solaire"] = {[StatLogic.Stats.ArcaneDamage] = 50, [StatLogic.Stats.FireDamage] = 50}, -- ID: 27981
 
-	["Ligne en éternium"] = {["FISHING"] = 5}, -- Ligne de pêche en éternium -- ID: 24302
-	["Ligne en vrai-argent"] = {["FISHING"] = 3}, --Ligne de pêche en vrai-argent -- ID: 45697
-	["Sauvagerie"] = {["AP"] = 70}, -- ID: 27971
-	["Vitalité"] = {["MANA_REG"] = 4, ["HEALTH_REG"] = 4}, -- ID: 46492
-	["Âme de givre"] = {["SHADOW_SPELL_DMG"] = 54, ["FROST_SPELL_DMG"] = 54}, -- ID: 27982
-	["Feu solaire"] = {["ARCANE_SPELL_DMG"] = 50, ["FIRE_SPELL_DMG"] = 50}, -- ID: 27981
+	["Équipé\194\160: La vitesse de course augmente légèrement."] = false, -- [Grèves des Hautes-terres en plaques] -- ID: 20048
+	["La vitesse de course augmente légèrement"] = false,
+	["Augmentation mineure de vitesse"] = false, -- Ench. de bottes (Vitesse mineure) ID: 13890
+	["Vitesse mineure"] = false, -- Ench. de bottes (Rapidité du félin) "Vitesse mineure et +6 à l'Agilité" -- ID: 34007 -- & Ench. de bottes (Vitesse du sanglier) "Vitesse mineure et +9 à l'Endurance" -- ID: 34008
+	["Pied sûr"] = {[StatLogic.Stats.MeleeHitRating] = 10}, -- Ench. de bottes (Pied sûr) -- ID: 27954
 
-	["Eperons en mithril"] = {["MOUNT_SPEED"] = 4}, -- ID: 9783 -- description pre-TBC
-	["Augmentation mineure de la vitesse de la monture"] = {["MOUNT_SPEED"] = 2}, -- Ench. de gants (Equitation) -- ID: 13947 -- description pre-TBC
-	["Équipé\194\160: La vitesse de course augmente légèrement."] = {["RUN_SPEED"] = 8}, -- [Grèves des Hautes-terres en plaques] -- ID: 20048
-	["La vitesse de course augmente légèrement"] = {["RUN_SPEED"] = 8},
-	["Augmentation mineure de vitesse"] = {["RUN_SPEED"] = 8}, -- Ench. de bottes (Vitesse mineure) ID: 13890
-	["Vitesse mineure"] = {["RUN_SPEED"] = 8}, -- Ench. de bottes (Rapidité du félin) "Vitesse mineure et +6 à l'Agilité" -- ID: 34007 -- & Ench. de bottes (Vitesse du sanglier) "Vitesse mineure et +9 à l'Endurance" -- ID: 34008
-	["légère augmentation de la vitesse de course"] = {["RUN_SPEED"] = 8}, -- [Diamant brûlétoile de rapidité] -- ID: 28557
-	["Pied sûr"] = {["MELEE_HIT_RATING"] = 10}, -- Ench. de bottes (Pied sûr) -- ID: 27954
-
-	["Discrétion"] = {["THREAT_MOD"] = -2}, -- Ench. de cape (Discrétion) -- ID: 25084
-	["2% de réduction de la menace"] = {["THREAT_MOD"] = -2}, -- [Diamant tonneterre tonifiant] -- ID: 25897
 	["Équipé\194\160: Permet de respirer sous l'eau."] = false, -- [Bague des profondeurs glacées] -- ID: 21526 -- & [Hydrocanne] -- ID: 9452
 	["Permet de respirer sous l'eau"] = false, --
 	["Équipé\194\160: Immunisé au désarmement."] = false, -- [Gantelets de la forteresse] -- ID: 12639 -- version pre-TBC
@@ -150,29 +73,26 @@ L["SinglePlusStatCheck"] = "^([%+%-]%d+) (.-)%.?$"
 -----------------------------
 -- Single Equip Stat Check --
 -----------------------------
--- stat1, value, stat2 = strfind
--- stat = stat1..stat2
 -- "^Equip: (.-) by u?p? ?t?o? ?(%d+) ?(.-)%.?$"
-L["SingleEquipStatCheck"] = "^Équipé\194\160: Augmente (.-) ?de (%d+) ?a?u? ?m?a?x?i?m?u?m? ?(.-)%.?$"
+-- \194\160 is a UTF-8 non-breaking space
+L["SingleEquipStatCheck"] = "^" .. ITEM_SPELL_TRIGGER_ONEQUIP .. " Augmente (.-) ?de (%d+)\194?\160? ?a?u? ?m?a?x?i?m?u?m? ?(.-)%.?$"
 -------------
 -- PreScan --
 -------------
 -- Special cases that need to be dealt with before deep scan
 L["PreScanPatterns"] = {
-	--["^Equip: Increases attack power by (%d+) in Cat"] = "FERAL_AP",
-	--["^Equip: Increases attack power by (%d+) when fighting Undead"] = "AP_UNDEAD", -- Seal of the Dawn ID:13029
-	["Bloquer.- (%d+)"] = "BLOCK_VALUE",
-	["Armure.- (%d+)"] = "ARMOR",
-	["Renforcé %(%+(%d+) Armure%)"] = "ARMOR_BONUS",
-	["^Équipé\194\160: Rend (%d+) points de vie toutes les 5 seco?n?d?e?s?%.?$"]= "HEAL_REG",
-	["^Équipé\194\160: Rend (%d+) points de mana toutes les 5 seco?n?d?e?s?%.?$"]= "MANA_REG",
-	--["Lunette %(%+(%d+) points? de dégâts?%)"] = "RANGED_AP",
+	--["^Equip: Increases attack power by (%d+) in Cat"] = StatLogic.Stats.FeralAttackPower,
+	["Bloquer.- (%d+)"] = StatLogic.Stats.BlockValue,
+	["Armure.- (%d+)"] = StatLogic.Stats.Armor,
+	["Renforcé %(%+(%d+) Armure%)"] = StatLogic.Stats.BonusArmor,
+	["^Équipé\194\160: Rend (%d+) points de vie toutes les 5 seco?n?d?e?s?%.?$"]= StatLogic.Stats.HealthRegen,
+	["^Équipé\194\160: Rend (%d+) points de mana toutes les 5 seco?n?d?e?s?%.?$"]= StatLogic.Stats.ManaRegen,
+	--["Lunette %(%+(%d+) points? de dégâts?%)"] = StatLogic.Stats.RangedAttackPower,
 	-- Exclude
 	["^(%d+) Slot"] = false, -- Set Name (0/9)
 	["^[%a '%-]+%((%d+)/%d+%)$"] = false, -- Set Name (0/9) -- anciennement : ["^.- %(%d+/%d+%)$"] = false, -- Set Name (0/9)
-	["|cff808080"] = false, -- Gray text "  |cff808080Requires at least 2 Yellow gems|r\n  |cff808080Requires at least 1 Red gem|r"
 	-- Procs
-	--["[Cc]hance"] = false, -- [Marque de défiance] ID:27924 -- [Bâton des prophètes qiraji] ID:21128 -- Commented out because it was blocking [Insightful Earthstorm Diamond] 
+	--["[Cc]hance"] = false, -- [Marque de défiance] ID:27924 -- [Bâton des prophètes qiraji] ID:21128 -- Commented out because it was blocking [Insightful Earthstorm Diamond]
 	["[Rr]end parfois"] = false, -- [Carte de Sombrelune : Héroïsme] ID:19287
 	["[Ll]orsque vous êtes touché en combat"] = false, -- [Essence of the Pure Flame] ID: 18815
 	--["[Cc]onfère une chance"] = false, -- [Marque de défiance] ID:27924
@@ -209,9 +129,9 @@ L["DeepScanWordSeparators"] = {
 }
 L["DualStatPatterns"] = {
 	-- all lower case
-	["les soins %+(%d+) et les dégâts %+ (%d+)$"] = {{"HEAL"}, {"SPELL_DMG"},},
-	["les soins %+(%d+) les dégâts %+ (%d+)"] = {{"HEAL"}, {"SPELL_DMG"},},
-	["soins prodigués d'un maximum de (%d+) et les dégâts d'un maximum de (%d+)"] = {{"HEAL"}, {"SPELL_DMG"},},
+	["les soins %+(%d+) et les dégâts %+ (%d+)$"] = {{StatLogic.Stats.HealingPower}, {StatLogic.Stats.SpellDamage},},
+	["les soins %+(%d+) les dégâts %+ (%d+)"] = {{StatLogic.Stats.HealingPower}, {StatLogic.Stats.SpellDamage},},
+	["soins prodigués d'un maximum de (%d+) et les dégâts d'un maximum de (%d+)"] = {{StatLogic.Stats.HealingPower}, {StatLogic.Stats.SpellDamage},},
 }
 L["DeepScanPatterns"] = {
 	"^(.-) de ?(%d+) ?a?u? ?m?a?x?i?m?u?m? ?(.-)$", -- "xxx by up to 22 xxx" (scan first)
@@ -224,241 +144,217 @@ L["DeepScanPatterns"] = {
 -- Stat Lookup Table --
 -----------------------
 L["StatIDLookup"] = {
-	["Vos attaques ignorentpoints de l'armure de votre adversaire"] = {"IGNORE_ARMOR"}, -- StatLogic:GetSum("item:33733")
-	["% à la menace"] = {"THREAT_MOD"}, -- StatLogic:GetSum("item:23344:2613")
-	["votre niveau de camouflage actuel"] = {"STEALTH_LEVEL"},
-	["aux dégâts de l'arme"] = {"MELEE_DMG"},
-	["à la vitesse de la monture"] = {"MOUNT_SPEED"},
+	["Vos attaques ignorentpoints de l'armure de votre adversaire"] = {StatLogic.Stats.IgnoreArmor}, -- StatLogic:GetSum("item:33733")
+	["aux dégâts de l'arme"] = {StatLogic.Stats.AverageWeaponDamage},
 
 	--dégats melee
-	["aux dégâts des armes"] = {"MELEE_DMG"},
-	["aux dégâts en mêlée"] = {"MELEE_DMG"},
-	["dégâts de l'arme"] = {"MELEE_DMG"},
+	["aux dégâts des armes"] = {StatLogic.Stats.AverageWeaponDamage},
+	["aux dégâts en mêlée"] = {StatLogic.Stats.AverageWeaponDamage},
+	["dégâts de l'arme"] = {StatLogic.Stats.AverageWeaponDamage},
 
-	["à toutes les caractéristiques"] = {"STR", "AGI", "STA", "INT", "SPI"},
-	["Force"] = {"STR"},
-	["Agilité"] = {"AGI"},
-	["Endurance"] = {"STA"},
-	["en endurance"] = {"STA"},
-	["Intelligence"] = {"INT"},
-	["Esprit"] = {"SPI"},
+	["à toutes les caractéristiques"] = {StatLogic.Stats.AllStats,},
+	["Force"] = {StatLogic.Stats.Strength},
+	["à la Force"] = {StatLogic.Stats.Strength},
+	["Agilité"] = {StatLogic.Stats.Agility},
+	["à l'Agilité"] = {StatLogic.Stats.Agility},
+	["Endurance"] = {StatLogic.Stats.Stamina},
+	["en endurance"] = {StatLogic.Stats.Stamina},
+	["à l'Endurance"] = {StatLogic.Stats.Stamina},
+	["Intelligence"] = {StatLogic.Stats.Intellect},
+	["à l'Intelligence"] = {StatLogic.Stats.Intellect},
+	["Esprit"] = {StatLogic.Stats.Spirit},
+	["à l'Esprit"] = {StatLogic.Stats.Spirit},
 
-	["à la résistance Arcanes"] = {"ARCANE_RES"},
-	["à la résistance aux Arcanes"] = {"ARCANE_RES"},
+	["à la résistance Arcanes"] = {StatLogic.Stats.ArcaneResistance},
+	["à la résistance aux Arcanes"] = {StatLogic.Stats.ArcaneResistance},
 
-	["à la résistance Feu"] = {"FIRE_RES"},
-	["à la résistance au Feu"] = {"FIRE_RES"},
+	["à la résistance Feu"] = {StatLogic.Stats.FireResistance},
+	["à la résistance au Feu"] = {StatLogic.Stats.FireResistance},
 
-	["à la résistance Givre"] = {"FROST_RES"},	
-	["à la résistance au Givre"] = {"FROST_RES"},
+	["à la résistance Givre"] = {StatLogic.Stats.FrostResistance},
+	["à la résistance au Givre"] = {StatLogic.Stats.FrostResistance},
 
-	["à la résistance Nature"] = {"NATURE_RES"},
-	["à la résistance à la Nature"] = {"NATURE_RES"},
+	["à la résistance Nature"] = {StatLogic.Stats.NatureResistance},
+	["à la résistance à la Nature"] = {StatLogic.Stats.NatureResistance},
 
-	["à la résistance Ombre"] = {"SHADOW_RES"},
-	["à la résistance à l'Ombre"] = {"SHADOW_RES"},
+	["à la résistance Ombre"] = {StatLogic.Stats.ShadowResistance},
+	["à la résistance à l'Ombre"] = {StatLogic.Stats.ShadowResistance},
 
-	["à toutes les résistances"] = {"ARCANE_RES", "FIRE_RES", "FROST_RES", "NATURE_RES", "SHADOW_RES"},
+	["à toutes les résistances"] = {StatLogic.Stats.ArcaneResistance, StatLogic.Stats.FireResistance, StatLogic.Stats.FrostResistance, StatLogic.Stats.NatureResistance, StatLogic.Stats.ShadowResistance},
 
-	["Pêche"] = {"FISHING"}, -- Ench. de gants (Pêche) ID:13620
-	["Appât de pêche"] = {"FISHING"}, -- Appats
-	["Équipé\194\160: Pêche augmentée"] = {"FISHING"}, -- Effet canne à pêche
-	["Minage"] = {"MINING"},
-	["Herboristerie"] = {"HERBALISM"}, -- Ench. de gants (Herboristerie) ID:13617
-	["Dépeçage"] = {"SKINNING"}, -- Ench. de gants (Dépeçage) ID:13698
+	["Pêche"] = false, -- Ench. de gants (Pêche) ID:13620
+	["Appât de pêche"] = false, -- Appats
+	["Équipé\194\160: Pêche augmentée"] = false, -- Effet canne à pêche
+	["Minage"] = false,
+	["Herboristerie"] = false, -- Ench. de gants (Herboristerie) ID:13617
+	["Dépeçage"] = false, -- Ench. de gants (Dépeçage) ID:13698
 
-	["Armure"] = {"ARMOR_BONUS"},
-	["Défense"] = {"DEFENSE"},
-	--["Increased Defense"] = {"DEFENSE"},	
-	["Valeur de blocage"] = {"BLOCK_VALUE"},
-	["à la valeur de blocage"] = {"BLOCK_VALUE"},
-	["à la valeur de blocage au bouclier"] = {"BLOCK_VALUE"}, -- "+10% à la valeur de blocage au bouclier" [Diamant tonneterre éternel] ID: 35501
-	["la valeur de blocage de votre bouclier"] = {"BLOCK_VALUE"},
+	["Armure"] = {StatLogic.Stats.BonusArmor},
+	["Défense"] = {StatLogic.Stats.Defense},
+	--["Increased Defense"] = {StatLogic.Stats.Defense},
+	["Valeur de blocage"] = {StatLogic.Stats.BlockValue},
+	["à la valeur de blocage"] = {StatLogic.Stats.BlockValue},
+	["à la valeur de blocage au bouclier"] = {StatLogic.Stats.BlockValue}, -- "+10% à la valeur de blocage au bouclier" [Diamant tonneterre éternel] ID: 35501
+	["la valeur de blocage de votre bouclier"] = {StatLogic.Stats.BlockValue},
 
-	["Points de vie"] = {"HEALTH"},
-	["aux points de vie"] = {"HEALTH"},
-	["Points de mana"] = {"MANA"},
+	["Points de vie"] = {StatLogic.Stats.Health},
+	["aux points de vie"] = {StatLogic.Stats.Health},
+	["Points de mana"] = {StatLogic.Stats.Mana},
 
-	["puissance d'attaque"] = {"AP"},
-	["la puissance d'attaque"] = {"AP"},
-	["à la puissance d'attaque"] = {"AP"},
-	["la puissance d'attaque lorsque vous combattez les morts-vivants"] = {"AP_UNDEAD"}, -- [Bandelettes de tueur de mort-vivant] ID:23093
-	["la puissance d'attaque lorsque vous combattez des morts-vivants"] = {"AP_UNDEAD"}, -- [Sceau de l'Aube] ID:13209
-	["la puissance d'attaque lorsque vous combattez des morts-vivants. Permet aussi l'acquisition de Pierres du Fléau pour l'Aube d'argent."] = {"AP_UNDEAD"}, -- [Sceau de l'Aube] ID:13209
-	["la puissance d'attaque lorsque vous combattez les démons"] = {"AP_DEMON"},
-	["la puissance d'attaque lorsque vous combattez des morts-vivants et des démons"] = {"AP_UNDEAD", "AP_DEMON"}, -- [Marque du champion] ID:23206
-	["à la puissance d'attaque pour les formes de félin"] = {"FERAL_AP"}, -- version pre-TBC
-	["la puissance d'attaque pour les formes de félin"] = {"FERAL_AP"}, -- version TBC+
-	["à la puissance des attaques à distance."] = {"RANGED_AP"}, -- [Arbalète de grand seigneur de guerre] ID: 18837 -- version pre-TBC
-	["la puissance des attaques à distance"] = {"RANGED_AP"}, -- [Arbalète de grand seigneur de guerre] ID: 18837 -- version TBC+
+	["puissance d'attaque"] = {StatLogic.Stats.AttackPower},
+	["la puissance d'attaque"] = {StatLogic.Stats.AttackPower},
+	["à la puissance d'attaque"] = {StatLogic.Stats.AttackPower},
+	["à la puissance d'attaque pour les formes de félin"] = {StatLogic.Stats.FeralAttackPower}, -- version pre-TBC
+	["la puissance d'attaque pour les formes de félin"] = {StatLogic.Stats.FeralAttackPower}, -- version TBC+
+	["à la puissance des attaques à distance."] = {StatLogic.Stats.RangedAttackPower}, -- [Arbalète de grand seigneur de guerre] ID: 18837 -- version pre-TBC
+	["la puissance des attaques à distance"] = {StatLogic.Stats.RangedAttackPower}, -- [Arbalète de grand seigneur de guerre] ID: 18837 -- version TBC+
 
-	["points de mana toutes les 5 secondes"] = {"MANA_REG"},
-	["point de mana toutes les 5 secondes"] = {"MANA_REG"},
-	["points de mana toutes les 5 sec"] = {"MANA_REG"},
-	["point de mana toutes les 5 sec"] = {"MANA_REG"},
-	["points de mana rendus toutes les 5 secondes"] = {"MANA_REG"}, -- [Renfort d'armure de magistère] ID: 32399
-	["mana toutes les 5 secondes"] = {"MANA_REG"},
-	["régén. de mana"] = {"MANA_REG"},
-	
-	["points de vie toutes les 5 secondes"] = {"HEALTH_REG"},
-	["point de vie toutes les 5 secondes"] = {"HEALTH_REG"},
-	["points de vie toutes les 5 sec"] = {"HEALTH_REG"},
-	["point de vie toutes les 5 sec"] = {"HEALTH_REG"},
-	["votre régénération des points de vie normale"] = {"HEALTH_REG"}, -- [Sang de démon] ID: 10779
+	["points de mana toutes les 5 secondes"] = {StatLogic.Stats.ManaRegen},
+	["point de mana toutes les 5 secondes"] = {StatLogic.Stats.ManaRegen},
+	["points de mana toutes les 5 sec"] = {StatLogic.Stats.ManaRegen},
+	["point de mana toutes les 5 sec"] = {StatLogic.Stats.ManaRegen},
+	["points de mana rendus toutes les 5 secondes"] = {StatLogic.Stats.ManaRegen}, -- [Renfort d'armure de magistère] ID: 32399
+	["mana toutes les 5 secondes"] = {StatLogic.Stats.ManaRegen},
+	["régén. de mana"] = {StatLogic.Stats.ManaRegen},
 
-	["à la pénétration des sorts"] = {"SPELLPEN"}, -- Ench. de cape (Pénétration des sorts) "+20 à la pénétration des sorts" ID: 34003
-	["la pénétration de vos sorts"] = {"SPELLPEN"},
+	["points de vie toutes les 5 secondes"] = {StatLogic.Stats.HealthRegen},
+	["point de vie toutes les 5 secondes"] = {StatLogic.Stats.HealthRegen},
+	["points de vie toutes les 5 sec"] = {StatLogic.Stats.HealthRegen},
+	["point de vie toutes les 5 sec"] = {StatLogic.Stats.HealthRegen},
+	["votre régénération des points de vie normale"] = {StatLogic.Stats.HealthRegen}, -- [Sang de démon] ID: 10779
 
-	["aux soins et aux dégâts des sorts"] = {"SPELL_DMG", "HEAL"}, -- Arcanum de focalisation "+8 aux soins et aux dégâts des sorts" ID: 22844
-	["aux soins et dégâts des sorts"] = {"SPELL_DMG", "HEAL"}, -- Etreinte vigilante du vaudouisan "+13 aux soins et dégâts des sorts/+15 Intelligence" ID: 24163
-	["aux dégâts des sorts et aux soins"] = {"SPELL_DMG", "HEAL"},
-	["aux dégâts des sorts"] = {"SPELL_DMG"},
-	["aux sorts de soins"] = {"HEAL"},
-	["aux soins"] = {"HEAL"},
-	["à la puissance des sorts"] = {"SPELL_DMG", "HEAL",},
-	["la puissance des sorts"] = {"SPELL_DMG", "HEAL",},
-	["augmente la puissance des sorts"] = {"SPELL_DMG", "HEAL",},
-	["les dégâts et les soins produits par les sorts et effets magiques"] = {"SPELL_DMG", "HEAL"},
-	["les soins prodigués par les sorts et effets d’un maximum"] = {"HEAL"},
-	["les soins prodigués par les sorts et effets"] = {"HEAL"},
-	["dégâts des sorts"] = {"SPELL_DMG"},
-	["soins"] = {"HEAL"},
+	["à la pénétration des sorts"] = {StatLogic.Stats.SpellPenetration}, -- Ench. de cape (Pénétration des sorts) "+20 à la pénétration des sorts" ID: 34003
+	["la pénétration de vos sorts"] = {StatLogic.Stats.SpellPenetration},
 
-	["les dégâts infligés par les sorts et effets du Sacré"]={"HOLY_SPELL_DMG"},
-	["aux dégâts des sorts du Sacré"]={"HOLY_SPELL_DMG"},
-	["aux dégâts du Sacré"]={"HOLY_SPELL_DMG"},
+	["aux soins et aux dégâts des sorts"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower}, -- Arcanum de focalisation "+8 aux soins et aux dégâts des sorts" ID: 22844
+	["aux soins et dégâts des sorts"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower}, -- Etreinte vigilante du vaudouisan "+13 aux soins et dégâts des sorts/+15 Intelligence" ID: 24163
+	["aux dégâts des sorts et aux soins"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower},
+	["aux dégâts des sorts"] = {StatLogic.Stats.SpellDamage},
+	["aux sorts de soins"] = {StatLogic.Stats.HealingPower},
+	["aux soins"] = {StatLogic.Stats.HealingPower},
+	["à la puissance des sorts"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower,},
+	["la puissance des sorts"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower,},
+	["augmente la puissance des sorts"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower,},
+	["les dégâts et les soins produits par les sorts et effets magiques"] = {StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower},
+	["les soins prodigués par les sorts et effets d’un maximum"] = {StatLogic.Stats.HealingPower},
+	["les soins prodigués par les sorts et effets"] = {StatLogic.Stats.HealingPower},
+	["dégâts des sorts"] = {StatLogic.Stats.SpellDamage},
+	["soins"] = {StatLogic.Stats.HealingPower},
 
-	["les dégâts infligés par les sorts et effets des Arcanes"]={"ARCANE_SPELL_DMG"},
-	["aux dégâts des sorts d'Arcanes"]={"ARCANE_SPELL_DMG"},
-	["aux dégâts d'Arcanes"]={"ARCANE_SPELL_DMG"},
+	["les dégâts infligés par les sorts et effets du Sacré"]={StatLogic.Stats.HolyDamage},
+	["aux dégâts des sorts du Sacré"]={StatLogic.Stats.HolyDamage},
+	["aux dégâts du Sacré"]={StatLogic.Stats.HolyDamage},
 
-	["les dégâts infligés par les sorts et effets de Feu"]={"FIRE_SPELL_DMG"},
-	["aux dégâts des sorts de Feu"]={"FIRE_SPELL_DMG"},
-	["aux dégâts de Feu"]={"FIRE_SPELL_DMG"},
+	["les dégâts infligés par les sorts et effets des Arcanes"]={StatLogic.Stats.ArcaneDamage},
+	["aux dégâts des sorts d'Arcanes"]={StatLogic.Stats.ArcaneDamage},
+	["aux dégâts d'Arcanes"]={StatLogic.Stats.ArcaneDamage},
 
-	["les dégâts infligés par les sorts et effets de Givre"]={"FROST_SPELL_DMG"},
-	["aux dégâts des sorts de Givre"]={"FROST_SPELL_DMG"},
-	["aux dégâts de Givre"]={"FROST_SPELL_DMG"},
+	["les dégâts infligés par les sorts et effets de Feu"]={StatLogic.Stats.FireDamage},
+	["aux dégâts des sorts de Feu"]={StatLogic.Stats.FireDamage},
+	["aux dégâts de Feu"]={StatLogic.Stats.FireDamage},
 
-	["les dégâts infligés par les sorts et effets de Nature"]={"NATURE_SPELL_DMG"},
-	["aux dégâts des sorts de Nature"]={"NATURE_SPELL_DMG"},
-	["aux dégâts de Nature"]={"NATURE_SPELL_DMG"},
+	["les dégâts infligés par les sorts et effets de Givre"]={StatLogic.Stats.FrostDamage},
+	["aux dégâts des sorts de Givre"]={StatLogic.Stats.FrostDamage},
+	["aux dégâts de Givre"]={StatLogic.Stats.FrostDamage},
 
-	["les dégâts infligés par les sorts et effets d'Ombre"]={"SHADOW_SPELL_DMG"},
-	["aux dégâts des sorts d'Ombre"]={"SHADOW_SPELL_DMG"},
-	["aux dégâts d'Ombre"]={"SHADOW_SPELL_DMG"},
+	["les dégâts infligés par les sorts et effets de Nature"]={StatLogic.Stats.NatureDamage},
+	["aux dégâts des sorts de Nature"]={StatLogic.Stats.NatureDamage},
+	["aux dégâts de Nature"]={StatLogic.Stats.NatureDamage},
 
-	["Augmente les dégâts infligés aux morts-vivants par les sorts et effets magiques"] = {"SPELL_DMG_UNDEAD"}, -- [Robe de purification des morts-vivants] ID:23085
-	["Augmente les dégâts infligés aux morts-vivants par les sorts et effets magiques. Permet aussi l'acquisition de Pierres du Fléau pour le compte de l'Aube d'argent"] = {"SPELL_DMG_UNDEAD"}, -- [Rune de l'Aube] ID:19812
-	["Augmente les dégâts infligés aux morts-vivants et aux démons par les sorts et effets magiques"] = {"SPELL_DMG_UNDEAD", "SPELL_DMG_DEMON"}, -- [Marque du champion] ID:23207
+	["les dégâts infligés par les sorts et effets d'Ombre"]={StatLogic.Stats.ShadowDamage},
+	["aux dégâts des sorts d'Ombre"]={StatLogic.Stats.ShadowDamage},
+	["aux dégâts d'Ombre"]={StatLogic.Stats.ShadowDamage},
 
 	--ToDo
-	--["Increases healing done by magical spells and effects of all party members within 30 yards"] = {"HEAL"}, -- Atiesh
-	--["your healing"] = {"HEAL"}, -- Atiesh
+	--["Increases healing done by magical spells and effects of all party members within 30 yards"] = {StatLogic.Stats.HealingPower}, -- Atiesh
+	--["your healing"] = {StatLogic.Stats.HealingPower}, -- Atiesh
 
-	["dégâts par seconde"] = {"DPS"},
-	["Ajoutedégâts par seconde"] = {"DPS"}, -- [Obus en thorium] ID: 15997
+	["dégâts par seconde"] = {StatLogic.Stats.WeaponDPS},
+	["Ajoutedégâts par seconde"] = {StatLogic.Stats.WeaponDPS}, -- [Obus en thorium] ID: 15997
 
-	["score de défense"] = {"DEFENSE_RATING"},
-	["au score de défense"] = {"DEFENSE_RATING"},
-	["le score de défense"] = {"DEFENSE_RATING"},
-	["votre score de défense"] = {"DEFENSE_RATING"},
+	["score de défense"] = {StatLogic.Stats.DefenseRating},
+	["au score de défense"] = {StatLogic.Stats.DefenseRating},
+	["le score de défense"] = {StatLogic.Stats.DefenseRating},
+	["votre score de défense"] = {StatLogic.Stats.DefenseRating},
 
-	["score d'esquive"] = {"DODGE_RATING"},
-	["le score d'esquive"] = {"DODGE_RATING"},
-	["au score d'esquive"] = {"DODGE_RATING"},
-	["votre score d'esquive"] = {"DODGE_RATING"},
-	["score d’esquive"] = {"DODGE_RATING"},
-	["le score d’esquive"] = {"DODGE_RATING"},
-	["au score d’esquive"] = {"DODGE_RATING"},
-	["votre score d’esquive"] = {"DODGE_RATING"},
+	["score d'esquive"] = {StatLogic.Stats.DodgeRating},
+	["le score d'esquive"] = {StatLogic.Stats.DodgeRating},
+	["au score d'esquive"] = {StatLogic.Stats.DodgeRating},
+	["votre score d'esquive"] = {StatLogic.Stats.DodgeRating},
+	["score d’esquive"] = {StatLogic.Stats.DodgeRating},
+	["le score d’esquive"] = {StatLogic.Stats.DodgeRating},
+	["au score d’esquive"] = {StatLogic.Stats.DodgeRating},
+	["votre score d’esquive"] = {StatLogic.Stats.DodgeRating},
 
-	["score de parade"] = {"PARRY_RATING"},
-	["au score de parade"] = {"PARRY_RATING"},
-	["le score de parade"] = {"PARRY_RATING"},
-	["votre score de parade"] = {"PARRY_RATING"},
+	["score de parade"] = {StatLogic.Stats.ParryRating},
+	["au score de parade"] = {StatLogic.Stats.ParryRating},
+	["le score de parade"] = {StatLogic.Stats.ParryRating},
+	["votre score de parade"] = {StatLogic.Stats.ParryRating},
 
-	["score de blocage"] = {"BLOCK_RATING"},
-	["le score de blocage"] = {"BLOCK_RATING"},
-	["votre score de blocage"] = {"BLOCK_RATING"},
-	["au score de blocage"] = {"BLOCK_RATING"}, -- Ench. de bouclier (Blocage inférieur) "+10 au score de blocage" -- ID: 13689
+	["score de blocage"] = {StatLogic.Stats.BlockRating},
+	["le score de blocage"] = {StatLogic.Stats.BlockRating},
+	["votre score de blocage"] = {StatLogic.Stats.BlockRating},
+	["au score de blocage"] = {StatLogic.Stats.BlockRating}, -- Ench. de bouclier (Blocage inférieur) "+10 au score de blocage" -- ID: 13689
 
-	["score de toucher"] = {"HIT_RATING"},
-	["le score de toucher"] = {"HIT_RATING"},
-	["votre score de toucher"] = {"HIT_RATING"},
-	["au score de toucher"] = {"HIT_RATING"},
+	["vos chances de toucher%"] = {StatLogic.Stats.MeleeHit, StatLogic.Stats.RangedHit},
+	["les chances de toucher avec les sorts et les attaques en mêlée et à distance%"] = {StatLogic.Stats.MeleeHit, StatLogic.Stats.RangedHit, StatLogic.Stats.SpellHit},
+	["score de toucher"] = {StatLogic.Stats.HitRating},
+	["le score de toucher"] = {StatLogic.Stats.HitRating},
+	["votre score de toucher"] = {StatLogic.Stats.HitRating},
+	["au score de toucher"] = {StatLogic.Stats.HitRating},
 
-	["score de coup critique"] = {"CRIT_RATING"},
-	["score de critique"] = {"CRIT_RATING"},
-	["au score de coup critique"] = {"CRIT_RATING"},
-	["au score de critique"] = {"CRIT_RATING"},
-	["le score de coup critique"] = {"CRIT_RATING"},
-	["votre score de coup critique"] = {"CRIT_RATING"},
-	["le score de coup critique en mêlée"] = {"MELEE_CRIT_RATING"}, -- [Cape des ténèbres] "Augmente de 24 le score de coup critique en mêlée." ID: 33122
+	["score de coup critique"] = {StatLogic.Stats.CritRating},
+	["score de critique"] = {StatLogic.Stats.CritRating},
+	["au score de coup critique"] = {StatLogic.Stats.CritRating},
+	["au score de critique"] = {StatLogic.Stats.CritRating},
+	["le score de coup critique"] = {StatLogic.Stats.CritRating},
+	["votre score de coup critique"] = {StatLogic.Stats.CritRating},
+	["le score de coup critique en mêlée"] = {StatLogic.Stats.MeleeCritRating}, -- [Cape des ténèbres] "Augmente de 24 le score de coup critique en mêlée." ID: 33122
 
-	["score de résilience"] = {"RESILIENCE_RATING"},
-	["le score de résilience"] = {"RESILIENCE_RATING"},
-	["au score de résilience"] = {"RESILIENCE_RATING"},
-	["votre score de résilience"] = {"RESILIENCE_RATING"},
-	["à la résilience"] = {"RESILIENCE_RATING"},
+	["score de résilience"] = {StatLogic.Stats.ResilienceRating},
+	["le score de résilience"] = {StatLogic.Stats.ResilienceRating},
+	["au score de résilience"] = {StatLogic.Stats.ResilienceRating},
+	["votre score de résilience"] = {StatLogic.Stats.ResilienceRating},
+	["à la résilience"] = {StatLogic.Stats.ResilienceRating},
 
-	["le score de toucher des sorts"] = {"SPELL_HIT_RATING"},
-	["score de toucher des sorts"] = {"SPELL_HIT_RATING"},
-	["au score de toucher des sorts"] = {"SPELL_HIT_RATING"},
-	["votre score de toucher des sorts"] = {"SPELL_HIT_RATING"},
+	["le score de toucher des sorts"] = {StatLogic.Stats.SpellHitRating},
+	["score de toucher des sorts"] = {StatLogic.Stats.SpellHitRating},
+	["au score de toucher des sorts"] = {StatLogic.Stats.SpellHitRating},
+	["votre score de toucher des sorts"] = {StatLogic.Stats.SpellHitRating},
 
-	["le score de coup critique des sorts"] = {"SPELL_CRIT_RATING"},
-	["score de coup critique des sorts"] = {"SPELL_CRIT_RATING"},
-	["score de critique des sorts"] = {"SPELL_CRIT_RATING"},
-	["au score de coup critique des sorts"] = {"SPELL_CRIT_RATING"},
-	["au score de critique des sorts"] = {"SPELL_CRIT_RATING"},
-	["votre score de coup critique des sorts"] = {"SPELL_CRIT_RATING"},
-	["au score de coup critique de sorts"] = {"SPELL_CRIT_RATING"},
-	["aux score de coup critique des sorts"] = {"SPELL_CRIT_RATING"},--blizzard! faute d'orthographe!!
+	["le score de coup critique des sorts"] = {StatLogic.Stats.SpellCritRating},
+	["score de coup critique des sorts"] = {StatLogic.Stats.SpellCritRating},
+	["score de critique des sorts"] = {StatLogic.Stats.SpellCritRating},
+	["au score de coup critique des sorts"] = {StatLogic.Stats.SpellCritRating},
+	["au score de critique des sorts"] = {StatLogic.Stats.SpellCritRating},
+	["votre score de coup critique des sorts"] = {StatLogic.Stats.SpellCritRating},
+	["au score de coup critique de sorts"] = {StatLogic.Stats.SpellCritRating},
+	["aux score de coup critique des sorts"] = {StatLogic.Stats.SpellCritRating},--blizzard! faute d'orthographe!!
 
 	--ToDo
-	--["Ranged Hit Rating"] = {"RANGED_HIT_RATING"},
-	--["Improves ranged hit rating"] = {"RANGED_HIT_RATING"}, -- ITEM_MOD_HIT_RANGED_RATING
-	--["Increases your ranged hit rating"] = {"RANGED_HIT_RATING"},
-	["votre score de coup critique à distance"] = {"RANGED_CRIT_RATING"}, -- [Gants de fléchier] ID:7348
+	--["Ranged Hit Rating"] = {StatLogic.Stats.RangedHitRating},
+	--["Improves ranged hit rating"] = {StatLogic.Stats.RangedHitRating}, -- ITEM_MOD_HIT_RANGED_RATING
+	--["Increases your ranged hit rating"] = {StatLogic.Stats.RangedHitRating},
+	["votre score de coup critique à distance"] = {StatLogic.Stats.RangedCritRating}, -- [Gants de fléchier] ID:7348
 
-	["le score de hâte"] = {"HASTE_RATING"},
-	["score de hâte"] = {"HASTE_RATING"},
-	["au score de hâte"] = {"HASTE_RATING"},
+	["le score de hâte"] = {StatLogic.Stats.HasteRating},
+	["score de hâte"] = {StatLogic.Stats.HasteRating},
+	["au score de hâte"] = {StatLogic.Stats.HasteRating},
 
-	["le score de hâte des sorts"] = {"SPELL_HASTE_RATING"},
-	["score de hâte des sorts"] = {"SPELL_HASTE_RATING"},
-	["au score de hâte des sorts"] = {"SPELL_HASTE_RATING"},
+	["le score de hâte des sorts"] = {StatLogic.Stats.SpellHasteRating},
+	["score de hâte des sorts"] = {StatLogic.Stats.SpellHasteRating},
+	["au score de hâte des sorts"] = {StatLogic.Stats.SpellHasteRating},
 
-	["le score de hâte à distance"] = {"RANGED_HASTE_RATING"},
-	["score de hâte à distance"] = {"RANGED_HASTE_RATING"},
-	["au score de hâte à distance"] = {"RANGED_HASTE_RATING"},
+	["le score de hâte à distance"] = {StatLogic.Stats.RangedHasteRating},
+	["score de hâte à distance"] = {StatLogic.Stats.RangedHasteRating},
+	["au score de hâte à distance"] = {StatLogic.Stats.RangedHasteRating},
 
-	["le score de la compétence dagues"] = {"DAGGER_WEAPON_RATING"},
-	["score de la compétence dagues"] = {"DAGGER_WEAPON_RATING"},
-	["le score de la compétence epées"] = {"SWORD_WEAPON_RATING"},
-	["score de la compétence epées"] = {"SWORD_WEAPON_RATING"},
-	["le score de la compétence epées à deux mains"] = {"2H_SWORD_WEAPON_RATING"},
-	["score de la compétence epées à deux mains"] = {"2H_SWORD_WEAPON_RATING"},
-	["le score de la compétence masses"]= {"MACE_WEAPON_RATING"},
-	["score de la compétence masses"]= {"MACE_WEAPON_RATING"},
-	["le score de la compétence masses à deux mains"]= {"2H_MACE_WEAPON_RATING"},
-	["score de la compétence masses à deux mains"]= {"2H_MACE_WEAPON_RATING"},
-	["le score de la compétence haches"] = {"AXE_WEAPON_RATING"},
-	["score de la compétence haches"] = {"AXE_WEAPON_RATING"},
-	["le score de la compétence haches à deux mains"] = {"2H_AXE_WEAPON_RATING"},
-	["score de la compétence haches à deux mains"] = {"2H_AXE_WEAPON_RATING"},
-
-	["le score de la compétence armes de pugilat"] = {"FIST_WEAPON_RATING"},
-	["le score de compétence combat farouche"] = {"FERAL_WEAPON_RATING"},
-	["le score de la compétence mains nues"] = {"FIST_WEAPON_RATING"},
-
-	["le score d’expertise"] = {"EXPERTISE_RATING"},
-	["score d’expertise"] = {"EXPERTISE_RATING"},
-	["score de pénétration d'armure"] = {"ARMOR_PENETRATION_RATING"},
-	["le score de pénétration d'armure"] = {"ARMOR_PENETRATION_RATING"},
-	["votre score de pénétration d'armure"] = {"ARMOR_PENETRATION_RATING"},
-	["la pénétration d'armure"] = {"ARMOR_PENETRATION_RATING"},
+	["le score d’expertise"] = {StatLogic.Stats.ExpertiseRating},
+	["score d’expertise"] = {StatLogic.Stats.ExpertiseRating},
+	["score de pénétration d'armure"] = {StatLogic.Stats.ArmorPenetrationRating},
+	["le score de pénétration d'armure"] = {StatLogic.Stats.ArmorPenetrationRating},
+	["votre score de pénétration d'armure"] = {StatLogic.Stats.ArmorPenetrationRating},
+	["la pénétration d'armure"] = {StatLogic.Stats.ArmorPenetrationRating},
 
 	--ToDo
 	-- Exclude
@@ -469,199 +365,3 @@ L["StatIDLookup"] = {
 	--["Slot Ammo Pouch"] = false,
 	--["Augmente la vitesse des attaques à distance"] = false, -- AV quiver
 }
-
-local D = LibStub("AceLocale-3.0"):NewLocale("StatLogicD", "frFR")
-----------------
--- Stat Names --
-----------------
--- Please localize these strings too, global strings were used in the enUS locale just to have minimum
--- localization effect when a locale is not available for that language, you don't have to use global
--- strings in your localization.
---[StatID] = {FullName, ShortName}
----------------------------------------------------------------------------
--- Tier1 Stats - Stats parsed directly off items
-D["EMPTY_SOCKET_RED"] = {"Châsse rouge", "Châsse rouge"}
-D["EMPTY_SOCKET_YELLOW"] = {"Châsse jaune", "Châsse jaune"}
-D["EMPTY_SOCKET_BLUE"] = {"Châsse bleue", "Châsse bleue"}
-D["EMPTY_SOCKET_META"] = {"Méta-châsse", "Méta-châsse"}
-
-D["IGNORE_ARMOR"] = {"Armure ignorée", "Armure ignorée"}
-D["THREAT_MOD"] = {"Menace (%)", "Menace (%)"}
-D["STEALTH_LEVEL"] = {"Niveau de camouflage", "Camouflage"}
-D["MELEE_DMG"] = {"Dégâts de l'arme", "Dégâts Arme"}
-D["MOUNT_SPEED"] = {"Vitesse de monte (%)", "Vit. de monte (%)"}
-D["RUN_SPEED"] = {"Vitesse (%)","Vit. (%)"}
-
-D["STR"] = {"Force", "For"}
-D["AGI"] = {"Agilité", "Agi"}
-D["STA"] = {"Endurance", "End"}
-D["INT"] = {"Intelligence", "Int"}
-D["SPI"] = {"Esprit", "Esp"}
-D["ARMOR"] = {"Armure", "Armure"}
-D["ARMOR_BONUS"] = {"Armure bonus", "Armure bonus"}
-
-D["FIRE_RES"] = {"Résistance au Feu", "RF"}
-D["NATURE_RES"] = {"Résistance à la Nature", "RN"}
-D["FROST_RES"] = {"Résistance au Givre", "RG"}
-D["SHADOW_RES"] = {"Résistance à l'Ombre", "RO"}
-D["ARCANE_RES"] = {"Résistance aux Arcanes", "RA"}
-
-D["FISHING"] = {"Pêche", "Pêche"}
-D["MINING"] = {"Minage", "Minage"}
-D["HERBALISM"] = {"Herboristerie", "Herboristerie"}
-D["SKINNING"] = {"Dépeçage", "Dépeçage"}
-
-D["BLOCK_VALUE"] = {"Valeur de blocage", "Valeur de blocage"}
-
-D["AP"] = {"Puissance d'attaque", "PA"}
-D["RANGED_AP"] = {"Puissance d'attaque à distance", "PA Dist."}
-D["FERAL_AP"] = {"Puissance d'attaque Farouche", "PA Farouche"}
-D["AP_UNDEAD"] = {"Puissance d'attaque (Mort-vivant)", "PA (Mort-vivant)"}
-D["AP_DEMON"] = {"Puissance d'attaque (Démon)", "PA (Démon)"}
-
-D["HEAL"] = {"Puissance des soins", "Soins"}
-
-D["SPELL_DMG"] = {"Dégâts des sorts", "Dégâts"}
-D["SPELL_DMG_UNDEAD"] = {"Dégâts des sorts (Mort-vivant)", "Dégâts (Mort-vivant)"}
-D["SPELL_DMG_DEMON"] = {"Dégâts des sorts (Démon)", "Dégâts (Démon)"}
-D["HOLY_SPELL_DMG"] = {"Dégâts des sorts du Sacré", "Dégâts Sacré"}
-D["FIRE_SPELL_DMG"] = {"Dégâts des sorts de Feu", "Dégâts Feu"}
-D["NATURE_SPELL_DMG"] = {"Dégâts des sorts de Nature", "Dégâts Nature"}
-D["FROST_SPELL_DMG"] = {"Dégâts des sorts de Givre", "Dégâts Givre"}
-D["SHADOW_SPELL_DMG"] = {"Dégâts des sorts d'Ombre", "Dégâts Ombre"}
-D["ARCANE_SPELL_DMG"] = {"Dégâts des sorts des Arcanes", "Dégâts Arcanes"}
-
-D["SPELLPEN"] = {"Pénétration des sorts", "Pénétration"}
-
-D["HEALTH"] = {"Points de vie", "PV"}
-D["MANA"] = {"Points de mana", "Mana"}
-D["HEALTH_REG"] = {"Régén. vie (combat)", "Régén. vie (combat)"}
-D["MANA_REG"] = {"Régén. mana (incantation)", "Régén. mana (incantation)"}
-
-D["AVERAGE_DAMAGE"] = {"Average Damage", "Avg Dmg"}
-D["DPS"] = {"Dégâts par seconde", "DPS"}
-
-D["DEFENSE_RATING"] = {"Score de défense", "Défense"}
-D["DODGE_RATING"] = {"Score d'esquive", "Esquive"}
-D["PARRY_RATING"] = {"Score de parade", "Parade"}
-D["BLOCK_RATING"] = {"Score de blocage", "Blocage"}
-D["MELEE_HIT_RATING"] = {"Score de toucher", "Score de toucher"}
-D["RANGED_HIT_RATING"] = {"Score de toucher à distance", "Score de toucher à distance"}
-D["SPELL_HIT_RATING"] = {"Score de toucher des sorts", "Score de toucher des sorts"}
-D["MELEE_CRIT_RATING"] = {"Score de coup critique", "Score de coup critique"}
-D["RANGED_CRIT_RATING"] = {"Score de coup critique à distance", "Score de coup critique à distance"}
-D["SPELL_CRIT_RATING"] = {"Score de coup critique des sorts", "Score de coup critique des sorts"}
-D["RESILIENCE_RATING"] = {"Score de résilience", "Résilience"}
-D["MELEE_HASTE_RATING"] = {"Score de hâte", "Hâte"}
-D["RANGED_HASTE_RATING"] = {"Score de hâte à distance", "Score de hâte à distance"}
-D["SPELL_HASTE_RATING"] = {"Score de hâte des sorts","Score de hâte des sorts"}
-D["DAGGER_WEAPON_RATING"] = {"Compétence en Dagues", "Dagues"}
-D["SWORD_WEAPON_RATING"] = {"Compétence en Epées à une main", "Epées à une main"}
-D["2H_SWORD_WEAPON_RATING"] = {"Compétence en Epées à deux mains", "Epées à deux mains"}
-D["AXE_WEAPON_RATING"] = {"Compétence en Haches à une main", "Haches à une main"}
-D["2H_AXE_WEAPON_RATING"] = {"Compétence en Haches à deux mains", "Haches à deux mains"}
-D["MACE_WEAPON_RATING"] = {"Compétence en Masses à une main", "Masses à une main"}
-D["2H_MACE_WEAPON_RATING"] = {"Compétence en Masses à deux mains", "Masses à deux mains"}
-D["GUN_WEAPON_RATING"] = {"Compétence en Armes à feu", "Armes à feu"}
-D["CROSSBOW_WEAPON_RATING"] = {"Compétence en Arbalètes", "Arbalètes"}
-D["BOW_WEAPON_RATING"] = {"Compétence en Arcs", "Arcs"}
-D["FERAL_WEAPON_RATING"] = {"Compétence en Combat farouche", "Combat farouche"}
-D["FIST_WEAPON_RATING"] = {"Compétence en Armes de pugilat", "Armes de pugilat"}
-D["STAFF_WEAPON_RATING"] = {"Compétence en Bâtons", "Bâtons"} -- [Jambières du Croc] ID:10410
-D["EXPERTISE_RATING"] = {"Score d'Expertise", "Score d'Expertise"}
-D["ARMOR_PENETRATION_RATING"] = {"Pénétration d'armure".." "..RATING, "ArP".." "..RATING}
--- Tier2 Stats - Stats that only show up when broken down from a Tier1 stat
--- Str -> AP, Block Value
--- Agi -> AP, Crit, Dodge
--- Sta -> Health
--- Int -> Mana, Spell Crit
--- Spi -> mp5nc, hp5oc
--- Ratings -> Effect
-D["HEALTH_REG_OUT_OF_COMBAT"] = {"Régén. vie (hors combat)", "Régén. vie (hors combat)"}
-D["MANA_REG_NOT_CASTING"] = {"Régén. mana (hors incantation)", "Régén. mana (hors incantation)"}
-D["MELEE_CRIT_DMG_REDUCTION"] = {"Diminution des dégâts des coups critiques en mêlée (%)", "Dim. dégâts crit. (mêlée)(%)"}
-D["RANGED_CRIT_DMG_REDUCTION"] = {"Diminution des dégâts des coups critiques à distance (%)", "Dim. dégâts crit. (dist.)(%)"}
-D["SPELL_CRIT_DMG_REDUCTION"] = {"Diminution des dégâts des coups critiques des sorts (%)", "Dim. dégâts crit. (sorts)(%)"}
-D["DEFENSE"] = {"Défense", "Défense"}
-D["DODGE"] = {"Esquive (%)", "Esquive (%)"}
-D["PARRY"] = {"Parade (%)", "Parade (%)"}
-D["BLOCK"] = {"Blocage (%)", "Blocage (%)"}
-D["AVOIDANCE"] = {"Évitement (%)", "Évitement (%)"}
-D["MELEE_HIT"] = {"Toucher (%)", "Toucher(%)"}
-D["RANGED_HIT"] = {"Toucher à distance (%)", " Toucher (dist.)(%)"}
-D["SPELL_HIT"] = {"Toucher des sorts (%)", "Toucher (sorts)(%)"}
-D["MELEE_HIT_AVOID"] = {"Score d'évitement des coups en mêlée (%)", "Évi. des coups (mêlée)(%)"}
-D["MELEE_CRIT"] = {"Critiques (%)", "Crit.(%)"}
-D["RANGED_CRIT"] = {"Critiques à distance (%)", "Crit. (dist.)(%)"}
-D["SPELL_CRIT"] = {"Critiques des sorts (%)", "Crit. (sorts)(%)"}
-D["MELEE_CRIT_AVOID"] = {"Évitement des critiques en mêlée", "Évi. des crit. (mêlée)(%)"}
-D["MELEE_HASTE"] = {"Hâte (%)", "Hâte(%)"} --
-D["RANGED_HASTE"] = {"Hâte à distance (%)", "Hâte (dist.)(%)"}
-D["SPELL_HASTE"] = {"Hâte des sorts (%)", " Hâte (sorts)(%)"}
-D["DAGGER_WEAPON"] = {"Compétence en Dagues", "Dagues"}
-D["SWORD_WEAPON"] = {"Compétence en Epées à une main", "Epées à une main"}
-D["2H_SWORD_WEAPON"] = {"Compétence en Epées à deux mains", "Epées à deux mains"}
-D["AXE_WEAPON"] = {"Compétence en Haches à une main", "Haches à une main"}
-D["2H_AXE_WEAPON"] = {"Compétence en Haches à deux mains", "Haches à deux mains"}
-D["MACE_WEAPON"] = {"Compétence en Masses à une main", "Masses à une main"}
-D["2H_MACE_WEAPON"] = {"Compétence en Masses à deux mains", "Masses à deux mains"}
-D["GUN_WEAPON"] = {"Compétence en Armes à feu", "Armes à feu"}
-D["CROSSBOW_WEAPON"] = {"Compétence en Arbalètes", "Arbalètes"}
-D["BOW_WEAPON"] = {"Compétence en Arcs", "Arcs"}
-D["FERAL_WEAPON"] = {"Compétence en Combat farouche", "Combat farouche"}
-D["FIST_WEAPON"] = {"Compétence en Armes de pugilat", "Armes de pugilat"}
-D["STAFF_WEAPON"] = {"Compétence en Bâtons", "Bâtons"} -- [Jambières du Croc] ID:10410
-D["EXPERTISE"] = {"Expertise", "Expertise"}
-D["ARMOR_PENETRATION"] = {"Pénétration d'armure(%)", "PenAr(%)"}
--- Tier3 Stats - Stats that only show up when broken down from a Tier2 stat
--- Defense -> Crit Avoidance, Hit Avoidance, Dodge, Parry, Block
--- Weapon Skill -> Crit, Hit, Dodge Neglect, Parry Neglect, Block Neglect
--- Expertise -> Dodge Neglect, Parry Neglect
-D["DODGE_NEGLECT"] = {"Diminution d'Esquive (%)", "Diminution d'Esquive (%)"}
-D["PARRY_NEGLECT"] = {"Diminution de Parade (%)", "Diminution de Parade (%)"}
-D["BLOCK_NEGLECT"] = {"Diminution de Blocage (%)", "Diminution de Blocage (%)"}
--- Talents
-D["MELEE_CRIT_DMG"] = {"Dégâts des critiques en mêlée(%)", "Dégâts crit. (mêlée)(%)"}
-D["RANGED_CRIT_DMG"] = {"Dégâts des critiques à distance(%)", "Dégâts crit. (distance)(%)"}
-D["SPELL_CRIT_DMG"] = {"Dégâts des critiques des sorts(%)", "Dégâts crit. (sorts)(%)"}
--- Spell Stats
--- These values can be prefixed with a @ and spell name, using reverse translation to english from Babble-Spell-2.2
--- Ex: "Heroic Strike@RAGE_COST" for Heroic Strike rage cost
--- Ex: "Heroic Strike@THREAT" for Heroic Strike threat value
--- Use strsplit("@", text) to seperate the spell name and statid
-D["THREAT"] = {"Menace", "Menace"}
-D["CAST_TIME"] = {"Temps d'incantation", "Temps d'incantation"}
-D["MANA_COST"] = {"Coût en mana", "Coût Mana"}
-D["RAGE_COST"] = {"Coût en rage", "Coût Rage"}
-D["ENERGY_COST"] = {"Coût en énergie", "Coût Énergie"}
-D["COOLDOWN"] = {"Temps de recharge", "CD"}
--- Stats Mods
-D["MOD_STR"] = {"Mod Force (%)", "Mod For (%)"}
-D["MOD_AGI"] = {"Mod Agilité (%)", "Mod Agi (%)"}
-D["MOD_STA"] = {"Mod Endurance (%)", "Mod End (%)"}
-D["MOD_INT"] = {"Mod Intelligence (%)", "Mod Int (%)"}
-D["MOD_SPI"] = {"Mod Esprit (%)", "Mod Esp (%)"}
-D["MOD_HEALTH"] = {"Mod Points de vie (%)", "Mod PV (%)"}
-D["MOD_MANA"] = {"Mod Points de mana (%)", "Mod PM (%)"}
-D["MOD_ARMOR"] = {"Mod Armure des objets (%)", "Mod Armure (objets)(%)"}
-D["MOD_BLOCK_VALUE"] = {"Mod Valeur de blocage (%)", "Mod Valeur de blocage (%)"}
-D["MOD_DMG"] = {"Mod Damage (%)", "Mod Dmg (%)"}
-D["MOD_DMG_TAKEN"] = {"Mod Dégâts subis (%)", "Mod Dégâts subis (%)"}
-D["MOD_CRIT_DAMAGE"] = {"Mod Dégâts critiques (%)", "Mod Dégâts crit. (%)"}
-D["MOD_CRIT_DAMAGE_TAKEN"] = {"Mod Dégâts critiques subis (%)", "Mod Dégâts crit. subis (%)"}
-D["MOD_THREAT"] = {"Mod Menace (%)", "Mod Menace (%)"}
-D["MOD_AP"] = {"Mod Puissance d'attaque (%)", "Mod PA (%)"}
-D["MOD_RANGED_AP"] = {"Mod Puissance d'attaque à distance (%)", "Mod PA (dist.) (%)"}
-D["MOD_SPELL_DMG"] = {"Mod Dégâts des sorts (%)", "Mod Dégâts des sorts (%)"}
-D["MOD_HEALING"] = {"Mod Soins (%)", "Mod Soins (%)"}
-D["MOD_CAST_TIME"] = {"Mod Temps d'incantation (%)", "Mod Temps d'incantation (%)"}
-D["MOD_MANA_COST"] = {"Mod Coût en mana (%)", "Mod Coût Mana (%)"}
-D["MOD_RAGE_COST"] = {"Mod Coût en rage (%)", "Mod Coût Rage (%)"}
-D["MOD_ENERGY_COST"] = {"Mod Coût en énergie (%)", "Mod Coût Énergie (%)"}
-D["MOD_COOLDOWN"] = {"Mod Temps de recharge (%)", "Mod CD (%)"}
--- Misc Stats
-D["WEAPON_RATING"] = {"Compétence d'arme", "Comp. d'arme"}
-D["WEAPON_SKILL"] = {"Compétence d'arme", "Comp. d'arme"}
-D["MAINHAND_WEAPON_RATING"] = {"Compétence d'arme en main droite", "Comp. d'arme main droite"}
-D["OFFHAND_WEAPON_RATING"] = {"Compétence d'arme en main gauche", "Comp. d'arme main gauche"}
-D["RANGED_WEAPON_RATING"] = {"Compétence d'arme à distance", "Comp. d'arme à distance"}

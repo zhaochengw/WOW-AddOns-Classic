@@ -28,6 +28,8 @@ L["Traces of Silithyst"] = "Traces of Silithyst";
 L["Slip'kik's Savvy"] = "Jugeote de Slip'kik";
 L["Fengus' Ferocity"] = "Férocité de Fengus";
 L["Mol'dar's Moxie"] = "Détermination de Mol'dar";
+L["Boon of Blackfathom"] = "Bienfait de Brassenoire";
+L["Ashenvale Rallying Cry"] = "Cri de ralliement d’Ashenvale";
 
 ---=====---
 ---Horde---

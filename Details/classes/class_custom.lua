@@ -263,7 +263,7 @@
 
 		--check if is a spell target custom
 		if (custom_object:IsSpellTarget()) then
-			table.wipe(classCustom._TargetActorsProcessed)
+			Details:Destroy(classCustom._TargetActorsProcessed)
 			classCustom._TargetActorsProcessedAmt = 0
 			classCustom._TargetActorsProcessedTotal = 0
 			classCustom._TargetActorsProcessedTop = 0
@@ -363,19 +363,19 @@
 
 	function classCustom:Refresh (instance, instance_container, combat, force, total, top, custom_object)
 		local whichRowLine = 1
-		local barras_container = instance.barras
-		local percentage_type = instance.row_info.percent_type
+		local barContainer = instance.barras
+		local percentageType = instance.row_info.percent_type
 
-		local combat_time = combat:GetCombatTime()
+		local combatElapsedTime = combat:GetCombatTime()
 		UsingCustomLeftText = instance.row_info.textL_enable_custom_text
 		UsingCustomRightText = instance.row_info.textR_enable_custom_text
 
 		--total bar
-		local use_total_bar = false
+		local bUseTotalbar = false
 		if (instance.total_bar.enabled) then
-			use_total_bar = true
+			bUseTotalbar = true
 			if (instance.total_bar.only_in_group and (not IsInGroup() and not IsInRaid())) then
-				use_total_bar = false
+				bUseTotalbar = false
 			end
 		end
 
@@ -388,7 +388,7 @@
 
 		if (instance.bars_sort_direction == 1) then --top to bottom
 
-			if (use_total_bar and instance.barraS[1] == 1) then
+			if (bUseTotalbar and instance.barraS[1] == 1) then
 
 				whichRowLine = 2
 				local iter_last = instance.barraS[2]
@@ -396,10 +396,10 @@
 					iter_last = iter_last - 1
 				end
 
-				local row1 = barras_container [1]
+				local row1 = barContainer [1]
 				row1.minha_tabela = nil
 				row1.lineText1:SetText(Loc ["STRING_TOTAL"])
-				row1.lineText4:SetText(_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combat_time) .. ")")
+				row1.lineText4:SetText(_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combatElapsedTime) .. ")")
 
 				row1:SetValue(100)
 				local r, g, b = unpack(instance.total_bar.color)
@@ -411,20 +411,20 @@
 				Details.FadeHandler.Fader(row1, "out")
 
 				for i = instance.barraS[1], iter_last, 1 do
-					instance_container._ActorTable[i]:UpdateBar (barras_container, whichRowLine, percentage_type, i, total, top, instance, force, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
+					instance_container._ActorTable[i]:UpdateBar (barContainer, whichRowLine, percentageType, i, total, top, instance, force, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
 					whichRowLine = whichRowLine+1
 				end
 
 			else
 				for i = instance.barraS[1], instance.barraS[2], 1 do
-					instance_container._ActorTable[i]:UpdateBar (barras_container, whichRowLine, percentage_type, i, total, top, instance, force, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
+					instance_container._ActorTable[i]:UpdateBar (barContainer, whichRowLine, percentageType, i, total, top, instance, force, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
 					whichRowLine = whichRowLine+1
 				end
 			end
 
 		elseif (instance.bars_sort_direction == 2) then --bottom to top
 
-			if (use_total_bar and instance.barraS[1] == 1) then
+			if (bUseTotalbar and instance.barraS[1] == 1) then
 
 				whichRowLine = 2
 				local iter_last = instance.barraS[2]
@@ -432,10 +432,10 @@
 					iter_last = iter_last - 1
 				end
 
-				local row1 = barras_container [1]
+				local row1 = barContainer [1]
 				row1.minha_tabela = nil
 				row1.lineText1:SetText(Loc ["STRING_TOTAL"])
-				row1.lineText4:SetText(_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combat_time) .. ")")
+				row1.lineText4:SetText(_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combatElapsedTime) .. ")")
 
 				row1:SetValue(100)
 				local r, g, b = unpack(instance.total_bar.color)
@@ -447,13 +447,13 @@
 				Details.FadeHandler.Fader(row1, "out")
 
 				for i = iter_last, instance.barraS[1], -1 do --vai atualizar s� o range que esta sendo mostrado
-					instance_container._ActorTable[i]:UpdateBar (barras_container, whichRowLine, percentage_type, i, total, top, instance, force, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
+					instance_container._ActorTable[i]:UpdateBar (barContainer, whichRowLine, percentageType, i, total, top, instance, force, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
 					whichRowLine = whichRowLine+1
 				end
 
 			else
 				for i = instance.barraS[2], instance.barraS[1], -1 do --vai atualizar s� o range que esta sendo mostrado
-					instance_container._ActorTable[i]:UpdateBar (barras_container, whichRowLine, percentage_type, i, total, top, instance, force, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
+					instance_container._ActorTable[i]:UpdateBar (barContainer, whichRowLine, percentageType, i, total, top, instance, force, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
 					whichRowLine = whichRowLine+1
 				end
 			end
@@ -467,6 +467,8 @@
 				end
 			end
 		end
+
+		instance:AutoAlignInLineFontStrings()
 
 	end
 
@@ -531,14 +533,14 @@
 					row.lineText2:SetText("")
 				end
 			else
-				local formated_value = SelectedToKFunction (_, self.value)
-				local rightText = formated_value .. bars_brackets[1] .. percent .. bars_brackets[2]
+				local formatedValue = SelectedToKFunction(_, self.value)
+				local rightText = formatedValue .. bars_brackets[1] .. percent .. bars_brackets[2]
 
 				if (UsingCustomRightText) then
-					row.lineText4:SetText(stringReplace (instance.row_info.textR_custom_text, formated_value, "", percent, self, combat, instance, rightText))
+					row.lineText4:SetText(stringReplace(instance.row_info.textR_custom_text, formatedValue, "", percent, self, combat, instance, rightText))
 				else
 					if (instance.use_multi_fontstrings) then
-						instance:SetInLineTexts(row, "", formated_value, percent)
+						instance:SetInLineTexts(row, "", formatedValue, percent)
 					else
 						row.lineText4:SetText(rightText)
 						row.lineText3:SetText("")
@@ -552,22 +554,22 @@
 		-- update tooltip function --
 
 		if (self.id) then
-			local school = _detalhes.spell_school_cache [self.nome]
+			local school = _detalhes.spell_school_cache[self.nome]
 			if (school) then
-				local school_color = _detalhes.school_colors [school]
-				if (not school_color) then
-					school_color = _detalhes.school_colors ["unknown"]
+				local schoolColor = Details.spells_school[school]
+				if (not schoolColor) then
+					schoolColor = Details.spells_school[1]
 				end
-				actor_class_color_r, actor_class_color_g, actor_class_color_b = unpack(school_color)
+				actor_class_color_r, actor_class_color_g, actor_class_color_b = unpack(schoolColor.decimals)
 			else
-				local color = _detalhes.school_colors ["unknown"]
-				actor_class_color_r, actor_class_color_g, actor_class_color_b = unpack(color)
+				local schoolColor = Details.spells_school[1]
+				actor_class_color_r, actor_class_color_g, actor_class_color_b = unpack(schoolColor.decimals)
 			end
 		else
 			actor_class_color_r, actor_class_color_g, actor_class_color_b = self:GetBarColor()
 		end
 
-		self:RefreshBarra2 (row, instance, previous_table, is_forced, row_value, index, row_container)
+		self:RefreshBarra2(row, instance, previous_table, is_forced, row_value, index, row_container)
 
 	end
 
@@ -644,16 +646,16 @@
 
 		if (from_resize) then
 			if (self.id) then
-				local school = _detalhes.spell_school_cache [self.nome]
+				local school = _detalhes.spell_school_cache[self.nome]
 				if (school) then
-					local school_color = _detalhes.school_colors [school]
-					if (not school_color) then
-						school_color = _detalhes.school_colors ["unknown"]
+					local schoolColor = Details.spells_school[school]
+					if (not schoolColor) then
+						schoolColor = Details.spells_school[1]
 					end
-					actor_class_color_r, actor_class_color_g, actor_class_color_b = unpack(school_color)
+					actor_class_color_r, actor_class_color_g, actor_class_color_b = unpack(schoolColor.decimals)
 				else
-					local color = _detalhes.school_colors ["unknown"]
-					actor_class_color_r, actor_class_color_g, actor_class_color_b = unpack(color)
+					local schoolColor = Details.spells_school[1]
+					actor_class_color_r, actor_class_color_g, actor_class_color_b = unpack(schoolColor.decimals)
 				end
 			else
 				actor_class_color_r, actor_class_color_g, actor_class_color_b = self:GetBarColor()
@@ -736,8 +738,8 @@
 	end
 
 	function classCustom:WipeCustomActorContainer()
-		table.wipe(self._ActorTable)
-		table.wipe(self._NameIndexTable)
+		Details:Destroy(self._ActorTable)
+		Details:Destroy(self._NameIndexTable)
 	end
 
 	function classCustom:GetValue (actor)
@@ -841,6 +843,8 @@
 				is_custom = true,
 				color = actor.color,
 			}, classCustom.mt)
+
+			newActor.customColor = actor.customColor
 
 			newActor.name_complement = name_complement
 			newActor.displayName = actor.displayName or (_detalhes:GetOnlyName(newActor.nome) .. (name_complement or ""))
@@ -1071,7 +1075,7 @@
 	end
 
 	function _detalhes:ResetCustomFunctionsCache()
-		table.wipe(_detalhes.custom_function_cache)
+		Details:Destroy(_detalhes.custom_function_cache)
 	end
 
 	function _detalhes.refresh:r_atributo_custom()
@@ -1378,7 +1382,7 @@
 			desc = Loc ["STRING_CUSTOM_ACTIVITY_DPS_DESC"],
 			source = false,
 			target = false,
-			script_version = 3,
+			script_version = 4,
 			total_script = [[
 				local value, top, total, combat, instance = ...
 				local minutos, segundos = math.floor(value/60), math.floor(value%60)
@@ -1389,26 +1393,24 @@
 				return string.format("%.1f", value/top*100)
 			]],
 			script = [[
-				--init:
-				local combat, instance_container, instance = ...
+				local combatObject, instanceContainer, instanceObject = ...
 				local total, amount = 0, 0
 
-				--get the misc actor container
-				local damage_container = combat:GetActorList ( DETAILS_ATTRIBUTE_DAMAGE )
+				--get the damager actors
+				local listOfDamageActors = combatObject:GetActorList(DETAILS_ATTRIBUTE_DAMAGE)
 
-				--do the loop:
-				for _, player in ipairs( damage_container ) do
-					if (player.grupo) then
-						local activity = player:Tempo()
+				for _, actorObject in ipairs(listOfDamageActors) do
+					if (actorObject:IsGroupPlayer()) then
+						local activity = actorObject:Tempo()
 						total = total + activity
 						amount = amount + 1
 						--add amount to the player
-						instance_container:AddValue (player, activity)
+						instanceContainer:AddValue(actorObject, activity)
 					end
 				end
 
 				--return:
-				return total, combat:GetCombatTime(), amount
+				return total, combatObject:GetCombatTime(), amount
 			]],
 			tooltip = [[
 
@@ -1442,7 +1444,7 @@
 			desc = Loc ["STRING_CUSTOM_ACTIVITY_HPS_DESC"],
 			source = false,
 			target = false,
-			script_version = 2,
+			script_version = 3,
 			total_script = [[
 				local value, top, total, combat, instance = ...
 				local minutos, segundos = math.floor(value/60), math.floor(value%60)
@@ -1453,26 +1455,24 @@
 				return string.format("%.1f", value/top*100)
 			]],
 			script = [[
-				--init:
-				local combat, instance_container, instance = ...
-				local total, top, amount = 0, 0, 0
+				local combatObject, instanceContainer, instanceObject = ...
+				local total, amount = 0, 0
 
-				--get the misc actor container
-				local damage_container = combat:GetActorList ( DETAILS_ATTRIBUTE_HEAL )
+				--get the healing actors
+				local listOfHealingActors = combatObject:GetActorList(DETAILS_ATTRIBUTE_HEAL)
 
-				--do the loop:
-				for _, player in ipairs( damage_container ) do
-					if (player.grupo) then
-						local activity = player:Tempo()
+				for _, actorObject in ipairs(listOfHealingActors) do
+					if (actorObject:IsGroupPlayer()) then
+						local activity = actorObject:Tempo()
 						total = total + activity
 						amount = amount + 1
 						--add amount to the player
-						instance_container:AddValue (player, activity)
+						instanceContainer:AddValue (actorObject, activity)
 					end
 				end
 
 				--return:
-				return total, combat:GetCombatTime(), amount
+				return total, combatObject:GetCombatTime(), amount
 			]],
 			tooltip = [[
 

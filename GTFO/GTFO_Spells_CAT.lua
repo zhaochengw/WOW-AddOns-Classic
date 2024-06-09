@@ -220,6 +220,11 @@ GTFO.SpellID["92773"] = {
 	sound = 2;
 };
 
+GTFO.SpellID["88963"] = {
+  --desc = "Lightning Lash (Minister of Air, Vortex Pinnacle)";
+  sound = 1;
+};
+
 GTFO.SpellID["87660"] = {
 	--desc = "Burning Gaze (Titanic Guardian, Uldum)";
 	sound = 1;

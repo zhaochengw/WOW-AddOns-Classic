@@ -84,6 +84,7 @@ SenderInfo.options = {
 			set = "SetSeekTeamOpenToggle",
 		},
 
+
 		LeaderOpenHelper = {
 			type = "toggle",
 			name = L["队长时打开助手标题"],
@@ -102,7 +103,6 @@ SenderInfo.options = {
 			func = "ExecuteOpenHelper",
 		},
 		
-
 
 		TeamHelperViewWidth = {
 			type = "range",
@@ -142,6 +142,7 @@ SenderInfo.options = {
 			func = "ExecuteResetHelperViewPos",
 		},
 
+
 		JoinGroupNotify = {
 			type = "toggle",
 			name = L["加入通知标题"],
@@ -158,6 +159,15 @@ SenderInfo.options = {
 			order = 22,
 			get = "GetLeaderNotifyToggle",
 			set = "SetLeaderNotifyToggle",
+		},
+
+		CombatLessen = {
+			type = "toggle",
+			name = L["战斗中自动缩小标题"],
+			desc = L["战斗中自动缩小描述"],
+			order = 23,
+			get = "GetCombatLessenToggle",
+			set = "SetCombatLessenToggle",
 		},
 
 
@@ -431,6 +441,74 @@ SenderInfo.options = {
 			order = 76,
 		},
 
+
+		EquipColourTitle = {
+			type = "description",
+            name = string.format(" |cfffff000%s|r  ",L["装等着色等级标题"]),
+			fontSize = "medium",
+			order = 80,
+		},
+
+		WhiteEquipColourLevel = {
+			type = "range",
+			name = L["白色"],
+			desc = L["装等着色等级设置描述"],
+			order = 81,
+			get = "GetWhiteEquipColourLevel",
+			set = "SetWhiteEquipColourLevel",
+			min = 0,
+			max = 1000,
+			softMin = 0,
+			softMax = 1000,
+			step = 5,
+			width = 1,
+		},
+
+		GreenEquipColourLevel = {
+			type = "range",
+			name = L["绿色"],
+			desc = L["装等着色等级设置描述"],
+			order = 82,
+			get = "GetGreenEquipColourLevel",
+			set = "SetGreenEquipColourLevel",
+			min = 0,
+			max = 1000,
+			softMin = 0,
+			softMax = 1000,
+			step = 5,
+			width = 1,
+		},
+
+		BlueEquipColourLevel = {
+			type = "range",
+			name = L["蓝色"],
+			desc = L["装等着色等级设置描述"],
+			order = 83,
+			get = "GetBlueEquipColourLevel",
+			set = "SetBlueEquipColourLevel",
+			min = 0,
+			max = 1000,
+			softMin = 0,
+			softMax = 1000,
+			step = 5,
+			width = 1,
+		},
+
+		VioletEquipColourLevel = {
+			type = "range",
+			name = L["紫色"],
+			desc = L["装等着色等级设置描述"],
+			order = 84,
+			get = "GetVioletEquipColourLevel",
+			set = "SetVioletEquipColourLevel",
+			min = 0,
+			max = 1000,
+			softMin = 0,
+			softMax = 1000,
+			step = 5,
+			width = 1,
+		},
+
 	},
 };
 
@@ -455,12 +533,17 @@ SenderInfo.optionDefaults = {
 		SendSelfInfoInput = "1",
 		OpenTeamHelper = true,
 		TeamHelperViewWidth = 1000,
-		AutoOpenHelperTime = 0,
+		AutoOpenHelperTime = 10,
 		JoinGroupNotify = true,
 		LeaderNotify = false,
 		SeekTeamOpen = true,
 		LeaderOpenHelper = true,
 
+		CombatLessen = true,
+		WhiteEquipColourLevel = 150,
+		GreenEquipColourLevel = 220,
+		BlueEquipColourLevel = 230,
+		VioletEquipColourLevel = 240,
 		ReplyMsg1 = "满了",
 		ReplyMsg2 = "需要其他职业",
 		ReplyMsg3 = "需要其他职责",
@@ -633,6 +716,22 @@ function SenderInfo:GetShowEquipLevelToggle(info)
 end
 
 --------- ShowEquipLevel ------------
+
+
+--------- GetCombatLessenToggle ------------
+
+
+function SenderInfo:SetCombatLessenToggle(info, value)
+	self.db.global.CombatLessen = value;
+	__private.InviteTeamView:ChangeCombatLessen(value);
+end
+
+function SenderInfo:GetCombatLessenToggle(info)
+	return self.db.global.CombatLessen;
+end
+
+--------- GetCombatLessenToggle ------------
+
 
 
 --------- InfoShowToSystem ------------
@@ -920,6 +1019,52 @@ end
 
 
 --------- ReplyMsg ------------
+
+
+--------- EquipColourLevel ------------
+
+
+function SenderInfo:SetWhiteEquipColourLevel(info, value)
+	self.db.global.WhiteEquipColourLevel = value;
+	Main:ChangeWhiteEquipColourLevel(value);
+end
+
+function SenderInfo:GetWhiteEquipColourLevel(info)
+	return self.db.global.WhiteEquipColourLevel;
+end
+
+
+function SenderInfo:SetGreenEquipColourLevel(info, value)
+	self.db.global.GreenEquipColourLevel = value;
+	Main:ChangeGreenEquipColourLevel(value);
+end
+
+function SenderInfo:GetGreenEquipColourLevel(info)
+	return self.db.global.GreenEquipColourLevel;
+end
+
+
+function SenderInfo:SetBlueEquipColourLevel(info, value)
+	self.db.global.BlueEquipColourLevel = value;
+	Main:ChangeBlueEquipColourLevel(value);
+end
+
+function SenderInfo:GetBlueEquipColourLevel(info)
+	return self.db.global.BlueEquipColourLevel;
+end
+
+
+function SenderInfo:SetVioletEquipColourLevel(info, value)
+	self.db.global.VioletEquipColourLevel = value;
+	Main:ChangeVioletEquipColourLevel(value);
+end
+
+function SenderInfo:GetVioletEquipColourLevel(info)
+	return self.db.global.VioletEquipColourLevel;
+end
+
+--------- EquipColourLevel ------------
+
 
 function SenderInfo:ExecuteOpenHelper(info)
 	__private.InviteTeamView:SwichViewHelper();

@@ -1,11 +1,15 @@
 local mod	= DBM:NewMod(574, "DBM-Party-BC", 6, 261)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20230218211048")
+mod:SetRevision("20231014053250")
 mod:SetCreatureID(17796)
 mod:SetEncounterID(1943)
-mod:SetModelID(18638)
-mod:SetModelOffset(-10, 0, 1)
+
+if not mod:IsRetail() then
+	mod:SetModelID(18638)
+	mod:SetModelOffset(-10, 0, 1)
+end
+
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
@@ -16,14 +20,14 @@ mod:RegisterEventsInCombat(
 
 local WarnNet			= mod:NewTargetAnnounce(35107, 2)
 
-local specWarnSummon	= mod:NewSpecialWarning("warnSummon", "-Healer", nil, nil, 1, 2)
+local specWarnSummon	= mod:NewSpecialWarning("warnSummon", "-Healer", nil, nil, 1, 2)--(-5999)
 
 local timerNet			= mod:NewTargetTimer(6, 35107, nil, nil, nil, 3)
 
 local enrageTimer		= mod:NewBerserkTimer(300)
 
 function mod:OnCombatStart(delay)
-	if self:IsHeroic() then
+	if not self:IsDifficulty("normal5") then
         enrageTimer:Start(-delay)
     end
 end

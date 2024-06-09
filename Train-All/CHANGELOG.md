@@ -1,6 +1,6 @@
 # TrainAll
 
-## [10.0.7](https://github.com/Andols0/Train-All/tree/10.0.7) (2023-04-08)
-[Full Changelog](https://github.com/Andols0/Train-All/compare/10.0.0...10.0.7) [Previous Releases](https://github.com/Andols0/Train-All/releases)
+## [10.2.0](https://github.com/Andols0/Train-All/tree/10.2.0) (2023-11-15)
+[Full Changelog](https://github.com/Andols0/Train-All/compare/10.0.7...10.2.0) [Previous Releases](https://github.com/Andols0/Train-All/releases)
 
-- TOC Bump  
+- Toc Bump  

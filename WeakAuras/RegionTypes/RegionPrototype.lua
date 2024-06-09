@@ -6,21 +6,21 @@ local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 local GetAtlasInfo = C_Texture and C_Texture.GetAtlasInfo or GetAtlasInfo
 
-WeakAuras.regionPrototype = {};
+Private.regionPrototype = {};
 
 -- Alpha
-function WeakAuras.regionPrototype.AddAlphaToDefault(default)
+function Private.regionPrototype.AddAlphaToDefault(default)
   default.alpha = 1.0;
 end
 
 -- Adjusted Duration
 
-function WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default)
+function Private.regionPrototype.AddAdjustedDurationToDefault(default)
   default.useAdjustededMax = false;
   default.useAdjustededMin = false;
 end
 
-function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, order)
+function Private.regionPrototype.AddAdjustedDurationOptions(options, data, order)
   options.useAdjustededMin = {
     type = "toggle",
     width = WeakAuras.normalWidth,
@@ -102,7 +102,7 @@ function Private.GetAnchorsForData(parentData, type)
 end
 
 -- Sound / Chat Message / Custom Code
-function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
+function Private.regionPrototype.AddProperties(properties, defaultsForRegion)
   properties["sound"] = {
     display = L["Sound"],
     action = "SoundPlay",
@@ -185,26 +185,42 @@ local function SoundPlayHelper(self)
   end
 
   if (options.sound == " custom") then
-    if (options.sound_path) then
-      local ok, _, handle = pcall(PlaySoundFile, options.sound_path, options.sound_channel or "Master");
-      if ok then
-        self.soundHandle = handle;
-      end
+    local ok, _, handle = pcall(PlaySoundFile, options.sound_path, options.sound_channel or "Master")
+    if ok then
+      self.soundHandle = handle
     end
   elseif (options.sound == " KitID") then
-    if (options.sound_kit_id) then
-      local ok, _, handle = pcall(PlaySound,options.sound_kit_id, options.sound_channel or "Master");
-      if ok then
-        self.soundHandle = handle;
-      end
+    local ok, _, handle = pcall(PlaySound,options.sound_kit_id, options.sound_channel or "Master")
+    if ok then
+      self.soundHandle = handle
     end
   else
-    local ok, _, handle = pcall(PlaySoundFile, options.sound, options.sound_channel or "Master");
+    local ok, _, handle = pcall(PlaySoundFile, options.sound, options.sound_channel or "Master")
     if ok then
-      self.soundHandle = handle;
+      self.soundHandle = handle
     end
   end
   Private.StopProfileSystem("sound");
+end
+
+local function hasSound(options)
+  if options.sound_type == "Stop" then
+    return true
+  end
+  if (options.sound == " custom") then
+    if (options.sound_path and options.sound_path ~= "") then
+      return true
+    end
+  elseif (options.sound == " KitID") then
+    if (options.sound_kit_id and options.sound_kit_id ~= "") then
+      return true
+    end
+  else
+    if options.sound and options.sound ~= "" then
+      return true
+    end
+  end
+  return false
 end
 
 local function SoundPlay(self, options)
@@ -212,6 +228,11 @@ local function SoundPlay(self, options)
     return
   end
   Private.StartProfileSystem("sound");
+  if not hasSound(options) then
+    Private.StopProfileSystem("sound")
+    return
+  end
+
   self:SoundStop();
   self:SoundRepeatStop();
 
@@ -422,9 +443,9 @@ local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoi
   end
 end
 
-WeakAuras.regionPrototype.AnchorSubRegion = AnchorSubRegion
+Private.regionPrototype.AnchorSubRegion = AnchorSubRegion
 
-function WeakAuras.regionPrototype.create(region)
+function Private.regionPrototype.create(region)
   local defaultsForRegion = Private.regionTypes[region.regionType] and Private.regionTypes[region.regionType].default;
   region.SoundPlay = SoundPlay;
   region.SoundStop = SoundStop;
@@ -471,7 +492,7 @@ end
 
 -- SetDurationInfo
 
-function WeakAuras.regionPrototype.modify(parent, region, data)
+function Private.regionPrototype.modify(parent, region, data)
   region.state = nil
   region.states = nil
   region.subRegionEvents:ClearSubscribers()
@@ -558,7 +579,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   end, true)
 end
 
-function WeakAuras.regionPrototype.modifyFinish(parent, region, data)
+function Private.regionPrototype.modifyFinish(parent, region, data)
   -- Sync subRegions
   if region.subRegions then
     for index, subRegion in pairs(region.subRegions) do
@@ -645,7 +666,7 @@ local function TimerTickForSetDuration(self)
   self:SetTime(max - adjustMin, self.expirationTime - adjustMin, self.inverse);
 end
 
-function WeakAuras.regionPrototype.AddSetDurationInfo(region)
+function Private.regionPrototype.AddSetDurationInfo(region)
   if (region.SetValue and region.SetTime) then
     region.generatedSetDurationInfo = true;
 
@@ -675,7 +696,7 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
 end
 
 -- Expand/Collapse function
-function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parentRegionType)
+function Private.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parentRegionType)
   local uid = data.uid
   local id = data.id
   local inDynamicGroup = parentRegionType == "dynamicgroup";
@@ -909,7 +930,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
   end
 end
 
-function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
+function Private.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
   texture.IsAtlas = type(path) == "string" and GetAtlasInfo(path) ~= nil
   if texture.IsAtlas then
     return texture:SetAtlas(path);

@@ -20,6 +20,7 @@
 	<Include file="Data\RSAchievementDB.lua"/>
 	<Include file="Data\RSLootDB.lua"/>
 	<Include file="Data\RSGuideDB.lua"/>
+	<Include file="Data\RSCollectionsDB.lua"/>
 	
 	<!-- Services -->
 	<Include file="Service\RSRecentlySeenTracker.lua"/>
@@ -42,6 +43,9 @@
 	<Include file="Service\RSCommandLine.lua"/>
 	<Include file="Service\RSAudioAlerts.lua"/>
 	<Include file="Service\RSEventHandler.lua"/>
+	<Include file="Service\RSButtonHandler.lua"/>
+	<Include file="Service\RSTargetUnitTracker.lua"/>
+	<Include file="Service\RSCustomNpcs.lua"/>
 	
 	<!-- Tooltips -->
 	<Include file="Plugins\MapPlugin\Tooltips\RSNotes.lua"/>
@@ -49,4 +53,7 @@
 	
 	<!-- Providers -->
 	<Include file="Providers\RareScannerMapProvider.lua"/>
+	
+	<!-- Static popups -->
+	<Include file="Libs\RSStaticPopups.lua"/>
 </Ui>

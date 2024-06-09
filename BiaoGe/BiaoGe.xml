@@ -1,0 +1,52 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="Locales\zhCN.lua"/>
+    <Script file="Locales\zhTW.lua"/>
+
+    <Include file="Libs\embeds.xml"/>
+
+    <Script file="Core\DB\function.lua"/>
+    <Script file="Core\DB\DB.lua"/>
+    <Script file="Core\DB\DB_FilterClassItem.lua"/>
+    <Script file="Core\DB\DB_BossName.lua"/>
+    <Script file="Core\DB\DB_Loot.lua"/>
+    <Script file="Core\DB\DB_Loot_Vanilla_Sod.lua"/>
+    <Script file="Core\DB\DB_Loot_Vanilla_60.lua"/>
+    <Script file="Core\DB\DB_CommerceAuthority_Vanilla.lua"/>
+
+    <Script file="Core\function1.lua"/>
+    <Script file="Core\function2.lua"/>
+
+    <Include file="Core\FBUI\FBUI.xml"/>
+
+    <Script file="Core\Module\History.lua"/>
+    <Script file="Core\Module\Receive.lua"/>
+    <Script file="Core\Module\DuiZhang.lua"/>
+    <Script file="Core\Module\RoleOverview.lua"/>
+    <Script file="Core\Module\FilterClassItem.lua"/>
+
+    <Script file="Core\TongBao\ZhangDan.lua"/>
+    <Script file="Core\TongBao\LiuPai.lua"/>
+    <Script file="Core\TongBao\XiaoFei.lua"/>
+    <Script file="Core\TongBao\QianKuan.lua"/>
+    <Script file="Core\TongBao\WCL.lua"/>
+    <Script file="Core\TongBao\YongShi.lua"/>
+
+    <Script file="Core\BiaoGe.lua"/>
+
+    <Script file="Core\Module\ItemLib.lua"/>
+    <Script file="Core\Module\Loot.lua"/>
+    <Script file="Core\Module\Trade.lua"/>
+    <Script file="Core\Module\AuctionMSG.lua"/>
+    <Script file="Core\Module\YY.lua"/>
+    <Script file="Core\Module\Report.lua"/>
+    <Script file="Core\Module\MeetingHorn.lua"/>
+    <Script file="Core\Module\AuctionWA.lua"/>
+    <Script file="Core\Module\Auction.lua"/>
+    <Script file="Core\Module\CommerceAuthority_Vanilla.lua"/>
+
+    <Script file="Core\Boss\Boss.lua"/>
+    <Script file="Core\Boss\ICC.lua"/>
+
+    <Script file="Core\Module\minimap.lua"/>
+    <Script file="Core\Options.lua"/>
+</Ui>

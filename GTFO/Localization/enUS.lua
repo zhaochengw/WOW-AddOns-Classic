@@ -106,4 +106,13 @@ GTFOLocal =
 	-- 5.0
 	UI_CustomSounds_Set = "Custom sound for |cFFFFFFFF%s|r alert set.",
 	UI_CustomSounds_Removed = "Custom sound for |cFFFFFFFF%s|r alert is now set to default.",
+	-- 5.3
+	Help_IgnoreSpell = "Add/remove spells to your custom ignore list (Advanced)";
+	UI_NotSupported_Classic = "This feature is not supported in WoW Classic.";
+	UI_IgnoreSpell_Help = "To add/remove a spell to your custom ignore list, type: |cFFFFFFFF/GTFO Ignore 12345|r where |cFF44FFFF12345|r is the spell ID # you wish to ignore.";
+	UI_IgnoreSpell_None = "You are currently not ignoring any spells.";
+	UI_IgnoreSpell_List = "You are currently ignoring the following spells:";
+	UI_IgnoreSpell_InvalidSpellId = "The spell ID |cFF44FFFF%s|r is invalid.";
+	UI_IgnoreSpell_Add = "You are now ignoring Spell #%s: %s";
+	UI_IgnoreSpell_Remove = "You are no longer ignoring Spell #%s: %s";
 }

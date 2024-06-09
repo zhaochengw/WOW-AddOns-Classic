@@ -1,13 +1,13 @@
-## Interface: 30401
+## Interface: 30403
 
 ## Title: Leatrix Maps
 ## Notes: Enhancements for your maps.
 
-## Version: 3.0.131
+## Version: 3.0.178
 ## Author: Leatrix
 ## SavedVariables: LeaMapsDB
 
-## OptionalDeps: Leatrix_enUS
+## OptionalDeps: Leatrix_enUS, ElvUI, Demodal, Carbonite
 
 ## X-Curse-Project-ID: 463868
 

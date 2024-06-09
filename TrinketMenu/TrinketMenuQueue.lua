@@ -462,7 +462,7 @@ function TrinketMenu.SetQueue(which, ...)
 			end
 		else
 			for i = 2, (select("#", ...)) do
-				inv, bag, slot = TrinketMenu.FindItem((select(i, ...)), 1) -- include inventory
+				inv, bag, slot = TrinketMenu.FindItem((select(i, ...)), true) -- include inventory
 				if inv then
 					table.insert(TrinketMenuQueue.Sort[which], TrinketMenu.GetID(inv))
 				elseif bag then

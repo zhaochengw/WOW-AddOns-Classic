@@ -1,10 +1,10 @@
-lightweight tag e9b3aa5664e02a6d5b5a3cd95ce0eda08c5415a8 3.4.1.5
+lightweight tag 05b04f4ea5cfe7a49818264528ec53bf58cd5a28 3.4.3.0
 Author:	LANCESTRE <lancetre@intenebris.org>
-Date:	Fri Feb 17 14:40:40 2023 +0100
+Date:	Tue Jan 2 11:17:10 2024 +0100
 
-commit e9b3aa5664e02a6d5b5a3cd95ce0eda08c5415a8
+commit 05b04f4ea5cfe7a49818264528ec53bf58cd5a28
 Author: LANCESTRE <lancetre@intenebris.org>
-Date:   Fri Feb 17 14:40:40 2023 +0100
+Date:   Tue Jan 2 11:17:10 2024 +0100
 
-    Update SwitcherTracking.lua
+    Update SwitcherTracking.toc
 

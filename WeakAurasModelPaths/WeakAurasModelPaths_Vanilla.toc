@@ -1,7 +1,7 @@
-## Interface: 11403
+## Interface: 11501
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
-## Version: 5.5.3
+## Version: 5.10.1
 ## Notes: Model paths for WeakAuras
 ## Notes-esES: Las rutas de archivos de modelos en 3D para WeakAuras
 ## Notes-deDE: 3D-Model Pfade für WeakAuras

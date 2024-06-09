@@ -1,0 +1,28 @@
+## Interface: 30402
+## Title: LoseControl WotLK
+## Author: millanzarreta, Kouri
+## Version: 3.03
+## IconTexture: Interface\Addons\LoseControl\micon
+## Notes: Displays the duration of CC effects on your character and other units
+## Notes-deDE: Zeigt die Dauer von CC-Effekten auf Ihrem Charakter und andere Einheiten an
+## Notes-esES: Exhibe la duración de los efectos del CC sobre su personaje y otras unidades
+## Notes-esMX: Exhibe la duración de los efectos del CC sobre su personaje y otras unidades
+## Notes-frFR: Montre la durée des effets de CC sur votre caractère et les autres unités
+## Notes-koKR: 당신의 특성에 대한 CC 효력의 내구를 표시한다
+## Notes-ptBR: Exibe a duração dos efeitos do CC sobre o seu personagem e outras unidades
+## Notes-ruRU: Показывает продолжительность влияний CC на вашем характере и других юнитах
+## Notes-zhCN: 显示被控制的剩余时间
+## Notes-zhTW: 顯示被控制的剩餘時間
+## X-eMail: kouri@kouri.org
+## X-Website: http://www.curse.com/addons/wow/losecontrol
+## X-Website2: http://www.wowinterface.com/downloads/info11642-LoseControl.html
+## X-Category: Buffs
+## OptionalDeps: LibStub, Masque, PitBull4
+## SavedVariablesPerCharacter: LoseControlDB
+
+#@no-lib-strip@
+Libs\LibStub\LibStub.lua
+#@end-no-lib-strip@
+
+localization.lua
+LoseControl.lua

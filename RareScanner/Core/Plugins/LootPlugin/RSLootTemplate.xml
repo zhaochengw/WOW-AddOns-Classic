@@ -31,8 +31,6 @@
 			<OnEnter method="OnEnter"/>
 			<OnLeave method="OnLeave"/>
 			<OnMouseDown method="OnMouseDown"/>
-			<OnKeyUp method="OnKeyUp"/>
-			<OnKeyDown method="OnKeyDown"/>
 		</Scripts>
 	</Frame>
   

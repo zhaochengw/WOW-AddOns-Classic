@@ -4,7 +4,22 @@ local detailsFramework = _G.DetailsFramework
 local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0", true)
 local addonName, Details222 = ...
 
+local bitBand = bit.band
+
+local CONST_OBJECT_TYPE_PLAYER = 0x00000400
+local CONST_OBJECT_TYPE_NEUTRAL_OR_ENEMY = 0x00000060
+
+local actorSpellContainers = {
+	"debuff", "buff", "spell", "cooldowns", "crowdcontrol", "dispel"
+}
+
 Details222.Mixins.ActorMixin = {
+	---return a table containing the spellContainers names: 'debuff', 'buff', 'spell', 'cooldowns', 'crowdcontrol'
+	---@return string[]
+	GetSpellContainerNames = function()
+		return actorSpellContainers
+	end,
+
 	---return a spellContainer from an actor
 	---@param actor actor
 	---@param containerType string
@@ -21,6 +36,30 @@ Details222.Mixins.ActorMixin = {
 
 		elseif (containerType == "cooldowns") then
 			return actor.cooldowns_defensive_spells
+
+		elseif (containerType == "crowdcontrol") then
+			---@cast actor actorutility
+			return actor.cc_done_spells
+
+		elseif (containerType == "dispel") then
+			---@cast actor actorutility
+			return actor.dispell_spells
+
+		elseif (containerType == "dispelwhat") then
+			---@cast actor actorutility
+			return actor.dispell_oque
+
+		elseif (containerType == "interrupt") then
+			---@cast actor actorutility
+			return actor.interrupt_spells
+
+		elseif (containerType == "interruptwhat") then
+			---@cast actor actorutility
+			return actor.interrompeu_oque --is intended to be in portuguese
+
+		elseif (containerType == "interrupttargets") then
+			---@cast actor actorutility
+			return actor.interrupt_targets
 		end
 	end,
 
@@ -127,6 +166,45 @@ Details222.Mixins.ActorMixin = {
 		return result
 	end,
 
+	---return true if the actor is controlled by a player
+	---@param actorObject actor
+	---@return boolean
+	IsPlayer = function(actorObject)
+		if (actorObject.flag_original) then
+			if (bitBand(actorObject.flag_original, CONST_OBJECT_TYPE_PLAYER) ~= 0) then
+				return true
+			end
+		end
+		return false
+	end,
 
+	---return true if the actor is a pet or guardian
+	---@param actorObject actor
+	---@return boolean
+	IsPetOrGuardian = function(actorObject)
+		return actorObject.owner and true or false
+	end,
 
+	---return true if the actor is or was in the player group
+	---@param actorObject table
+	---@return boolean
+	IsGroupPlayer = function(actorObject)
+		return actorObject.grupo and true or false
+	end,
+
+	---return true if the actor is an enemy of neutral npc
+	---@param actorObject actor
+	---@return boolean
+	IsNeutralOrEnemy = function(actorObject)
+		if (actorObject.flag_original) then
+			if (bitBand(actorObject.flag_original, CONST_OBJECT_TYPE_NEUTRAL_OR_ENEMY) ~= 0) then
+				local npcId = Details:GetNpcIdFromGuid(actorObject.serial)
+				if (Details.IgnoredEnemyNpcsTable[npcId]) then
+					return false
+				end
+				return true
+			end
+		end
+		return false
+	end,
 }

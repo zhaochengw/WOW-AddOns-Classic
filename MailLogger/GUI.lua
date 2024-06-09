@@ -96,7 +96,7 @@ function Output:Initialize()
         rm:SetWidth(50)
         rm:SetHeight(23)
         rm:SetPoint("BOTTOMLEFT", 170, 10)
-        rm:SetText(L["Recevied"])
+        rm:SetText(L["Received"])
         rm:SetScript("OnClick", function(self) Addon:PrintTradeLog("RMAIL", nil) end)
 	end
     do -- 角色筛选下拉菜单

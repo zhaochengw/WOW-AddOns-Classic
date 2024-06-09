@@ -1,12 +1,16 @@
-## Interface: 30400
+## Interface: 30403
 ## Title: What's Training?
-## Version: 4.0.5
+## Version: 5.0.3
 ## Author: Sveng
 ## Notes: Shows you what spells are available at your class trainer
-## SavedVariablesPerCharacter: WT_LearnedPetAbilities, WT_NeedsToOpenBeastTraining
+## SavedVariables: WT_ShowIgnoreNotice, WT_ShowLearnedNotice
+## SavedVariablesPerCharacter: WT_LearnedPetAbilities, WT_NeedsToOpenBeastTraining, WT_IgnoredSpells
 ## OptionalDeps: ClassTrainerPlus
 ## X-Curse-Project-ID: 324944
 ## X-WoWI-ID: 25031
+
+libs\LibStub.lua
+libs\FusionIgnoreStore\IgnoreStore.lua
 
 Utils.lua
 Cache.lua

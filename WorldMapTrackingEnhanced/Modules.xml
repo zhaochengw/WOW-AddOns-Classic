@@ -1,0 +1,13 @@
+<!-- $Id: Modules.xml 107 2020-03-08 10:43:45Z arith $ -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+<Script file="Modules\HandyNotes.lua"/>
+<Script file="Modules\GatherMate2.lua"/>
+<Script file="Modules\PetTracker.lua"/>
+<Script file="Modules\RareScanner.lua"/>
+<Script file="Modules\Atlas.lua"/>
+<Script file="Modules\AtlasLoot.lua"/>
+<!--
+<Script file="Modules\WorldQuestTracker.lua"/>
+-->
+</Ui>

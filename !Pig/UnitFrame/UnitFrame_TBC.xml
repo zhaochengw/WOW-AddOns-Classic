@@ -1,5 +1,0 @@
-<Ui>
-	<Script file="PlayerFrame_Vanilla.lua" />
-	<Script file="TargetFrame.lua" />
-	<Script file="PartyMemberFrame_Vanilla.lua" />
-</Ui>

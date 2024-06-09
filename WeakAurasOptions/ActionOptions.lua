@@ -12,15 +12,8 @@ local hiddenAll = OptionsPrivate.commonOptions.CreateHiddenAll("action")
 local getAll = OptionsPrivate.commonOptions.CreateGetAll("action")
 local setAll = OptionsPrivate.commonOptions.CreateSetAll("action", getAll)
 
-local RestrictedChannelCheck
-if WeakAuras.IsClassicEra() then
-  RestrictedChannelCheck = function()
-    return false
-  end
-else
-  RestrictedChannelCheck = function(data)
-    return data.message_type == "SAY" or data.message_type == "YELL" or data.message_type == "SMARTRAID"
-  end
+local RestrictedChannelCheck = function(data)
+  return data.message_type == "SAY" or data.message_type == "YELL" or data.message_type == "SMARTRAID"
 end
 
 --- @type number? the time at which the last sound was played, so that we don't play
@@ -178,7 +171,7 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Voice"],
         order = 3.2,
         disabled = function() return not data.actions.start.do_message end,
-        hidden = function() return (WeakAuras.IsClassicEra()) or data.actions.start.message_type ~= "TTS" end,
+        hidden = function() return data.actions.start.message_type ~= "TTS" end,
         values = OptionsPrivate.Private.tts_voices,
         desc = L["Available Voices are system specific"]
       },
@@ -229,6 +222,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Sound"],
         order = 8.4,
+        itemControl = "WeakAurasMediaSound",
         values = OptionsPrivate.Private.sound_types,
         sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.sound_types),
         disabled = function() return not data.actions.start.do_sound end,
@@ -367,6 +361,40 @@ function OptionsPrivate.GetActionOptions(data)
         end,
         disabled = function() return not data.actions.start.use_glow_color end,
       },
+      start_glow_startAnim = {
+        type = "toggle",
+        width = WeakAuras.normalWidth,
+        name = L["Start Animation"],
+        order = 10.801,
+        get = function()
+          return data.actions.start.glow_startAnim and true or false
+        end,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+          or data.actions.start.glow_frame_type == nil
+          or data.actions.start.glow_type ~= "Proc"
+        end,
+      },
+      start_glow_duration = {
+        type = "range",
+        control = "WeakAurasSpinBox",
+        width = WeakAuras.normalWidth,
+        name = L["Duration"],
+        order = 10.802,
+        softMin = 0.01,
+        softMax = 3,
+        step = 0.05,
+        get = function()
+          return data.actions.start.glow_duration or 1
+        end,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+          or data.actions.start.glow_frame_type == nil
+          or data.actions.start.glow_type ~= "Proc"
+        end,
+      },
       start_glow_lines = {
         type = "range",
         control = "WeakAurasSpinBox",
@@ -384,6 +412,7 @@ function OptionsPrivate.GetActionOptions(data)
           or data.actions.start.glow_action ~= "show"
           or not data.actions.start.glow_type
           or data.actions.start.glow_type == "buttonOverlay"
+          or data.actions.start.glow_type == "Proc"
           or data.actions.start.glow_frame_type == nil
         end,
       },
@@ -404,6 +433,7 @@ function OptionsPrivate.GetActionOptions(data)
           or data.actions.start.glow_action ~= "show"
           or not data.actions.start.glow_type
           or data.actions.start.glow_type == "buttonOverlay"
+          or data.actions.start.glow_type == "Proc"
           or data.actions.start.glow_frame_type == nil
         end,
       },
@@ -598,7 +628,7 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Voice"],
         order = 23.2,
         disabled = function() return not data.actions.finish.do_message end,
-        hidden = function() return (WeakAuras.IsClassicEra()) or data.actions.finish.message_type ~= "TTS" end,
+        hidden = function() return data.actions.finish.message_type ~= "TTS" end,
         values = OptionsPrivate.Private.tts_voices,
         desc = L["Available Voices are system specific"]
       },
@@ -624,6 +654,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Sound"],
         order = 28.1,
+        itemControl = "WeakAurasMediaSound",
         values = OptionsPrivate.Private.sound_types,
         sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.sound_types),
         disabled = function() return not data.actions.finish.do_sound end,
@@ -768,6 +799,40 @@ function OptionsPrivate.GetActionOptions(data)
         end,
         disabled = function() return not data.actions.finish.use_glow_color end,
       },
+      finish_glow_startAnim = {
+        type = "toggle",
+        width = WeakAuras.normalWidth,
+        name = L["Start Animation"],
+        order = 10.801,
+        get = function()
+          return data.actions.finish.glow_startAnim and true or false
+        end,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+          or data.actions.finish.glow_frame_type == nil
+          or data.actions.finish.glow_type ~= "Proc"
+        end,
+      },
+      finish_glow_duration = {
+        type = "range",
+        control = "WeakAurasSpinBox",
+        width = WeakAuras.normalWidth,
+        name = L["Duration"],
+        order = 10.802,
+        softMin = 0.01,
+        softMax = 3,
+        step = 0.05,
+        get = function()
+          return data.actions.finish.glow_duration or 1
+        end,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+          or data.actions.finish.glow_frame_type == nil
+          or data.actions.finish.glow_type ~= "Proc"
+        end,
+      },
       finish_glow_lines = {
         type = "range",
         control = "WeakAurasSpinBox",
@@ -785,6 +850,7 @@ function OptionsPrivate.GetActionOptions(data)
           or data.actions.finish.glow_action ~= "show"
           or not data.actions.finish.glow_type
           or data.actions.finish.glow_type == "buttonOverlay"
+          or data.actions.start.glow_type == "Proc"
           or data.actions.finish.glow_frame_type == nil
         end,
       },
@@ -805,6 +871,7 @@ function OptionsPrivate.GetActionOptions(data)
           or data.actions.finish.glow_action ~= "show"
           or not data.actions.finish.glow_type
           or data.actions.finish.glow_type == "buttonOverlay"
+          or data.actions.start.glow_type == "Proc"
           or data.actions.finish.glow_frame_type == nil
         end,
       },

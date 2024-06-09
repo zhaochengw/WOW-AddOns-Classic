@@ -3,20 +3,23 @@ local Grid2 = Grid2
 local Grid2Frame = Grid2Frame
 local next = next
 local pairs = pairs
+local rawget = rawget
 local UnitClass = UnitClass
 local UnitExists = UnitExists
 local UnitIsFriend = UnitIsFriend
+local GetSpellCooldown = GetSpellCooldown
 local UnitGroupRolesAssigned = Grid2.UnitGroupRolesAssigned
 local roster_types = Grid2.roster_types
+local roster_deads = Grid2.roster_deads
 local empty = {}
 
 -------------------------------------------------------------------------
 -- Register/Unregister filtered statuses
 -------------------------------------------------------------------------
 
-local statuses = { combat = {}, playerClassSpec = {}, groupInstType = {}, instNameID = {}, unitFilter = {}, unitRole = {} }
+local statuses = { combat = {}, playerClassSpec = {}, groupInstType = {}, instNameID = {}, unitFilter = {}, unitRole = {}, unitAlive = {}, cooldown = {} }
 
-local function RegisterFilter(status, filterType, message, func, enabled)
+local function RegisterMsgFilter(status, filterType, message, func, enabled)
 	local registered = statuses[filterType]
 	if not enabled ~= not registered[status] then
 		if enabled then
@@ -25,6 +28,19 @@ local function RegisterFilter(status, filterType, message, func, enabled)
 		else
 			registered[status] = nil
 			if not next(registered) then Grid2.UnregisterMessage(statuses, message) end
+		end
+	end
+end
+
+local function RegisterEventFilter(status, filterType, event, func, enabled)
+	local registered = statuses[filterType]
+	if not enabled ~= not registered[status] then
+		if enabled then
+			if not next(registered) then Grid2:RegisterEvent(event, func) end
+			registered[status] = enabled
+		else
+			registered[status] = nil
+			if not next(registered) then Grid2:UnregisterEvent(event) end
 		end
 	end
 end
@@ -104,18 +120,18 @@ do
 		RefreshStatuses('instNameID')
 	end
 
-	-- public 
+	-- public
 	function FilterG_Register(self, load)
-		RegisterFilter( self, "instNameID",      "Grid_ZoneChangedNewArea", ZoneChangedEvent, load and load.instNameID and load )
-		RegisterFilter( self, "playerClassSpec", "Grid_PlayerSpecChanged",  PlayerSpecEvent,  load and load.playerClassSpec and load )
-		RegisterFilter( self, "groupInstType",   "Grid_GroupTypeChanged",   GroupTypeEvent,   load and (load.groupType or load.instType) and load )
+		RegisterMsgFilter( self, "instNameID",      "Grid_ZoneChangedNewArea", ZoneChangedEvent, load and load.instNameID and load )
+		RegisterMsgFilter( self, "playerClassSpec", "Grid_PlayerSpecChanged",  PlayerSpecEvent,  load and load.playerClassSpec and load )
+		RegisterMsgFilter( self, "groupInstType",   "Grid_GroupTypeChanged",   GroupTypeEvent,   load and (load.groupType or load.instType) and load )
 		return SuspendStatus(self, load)
 	end
 
 	function FilterG_Unregister(self)
-		RegisterFilter( self, "instNameID",      "Grid_ZoneChangedNewArea" )
-		RegisterFilter( self, "playerClassSpec", "Grid_PlayerSpecChanged" )
-		RegisterFilter( self, "groupInstType",   "Grid_GroupTypeChanged" )
+		RegisterMsgFilter( self, "instNameID",      "Grid_ZoneChangedNewArea" )
+		RegisterMsgFilter( self, "playerClassSpec", "Grid_PlayerSpecChanged" )
+		RegisterMsgFilter( self, "groupInstType",   "Grid_GroupTypeChanged" )
 	end
 
 	function FilterG_Refresh(self, load)
@@ -129,11 +145,27 @@ end
 
 -------------------------------------------------------------------------
 -- Unit filters: type/class/role/reaction
--- self.filtered[unit] check inside status:IsActive() method is necessary 
+-- self.filtered[unit] check inside status:IsActive() method is necessary
 -------------------------------------------------------------------------
 
 local FilterU_Register, FilterU_Unregister, FilterU_Enable, FilterU_Disable, FilterU_Refresh
 do
+	local function IsSpellInCooldown(spellID)
+		local start, duration = GetSpellCooldown(spellID)
+		if start~=0 then
+			local gcdStart, gcdDuration = GetSpellCooldown(61304)
+			return start ~= gcdStart or duration ~= gcdDuration
+		end
+		return false
+	end
+
+	local cooldowns_mt = { __index = function(t,spellID)
+		local r = IsSpellInCooldown(spellID)
+		t[spellID] = r
+		return r
+	end }
+	setmetatable(cooldowns_mt, cooldowns_mt)
+
 	local filter_mt = {	__index = function(t,u)
 		if UnitExists(u) then
 			local load, r = t.source
@@ -154,6 +186,16 @@ do
 							r = not UnitIsFriend('player',u)
 							if load.unitReaction.hostile then r = not r end
 						end
+						if not r then
+							if load.unitAlive~=nil then
+								r = not roster_deads[u] == not load.unitAlive
+							end
+							if not r then
+								if load.cooldown then
+									r = cooldowns_mt[load.cooldown]
+								end
+							end
+						end
 					end
 				end
 			end
@@ -168,18 +210,40 @@ do
 		for status, filtered in next, statuses.unitFilter do
 			filtered[unit] = nil
 		end
-	end	
-	
-	local function RefreshRoleFilter() 
+	end
+
+	local function RefreshAliveFilter(_, unit)
+		for status, filtered in next, statuses.unitAlive do
+			filtered[unit] = nil
+			status:UpdateIndicators(unit)
+		end
+	end
+
+	local function RefreshRoleFilter()
 		for status, filtered in next, statuses.unitRole do
 			wipe(filtered).source = status.dbx.load
 			status:UpdateAllUnits()
 		end
 	end
 
+	local function RefreshCooldownFilter()
+		for status, filtered in next, statuses.cooldown do
+			local load = status.dbx.load
+			local spellID = load.cooldown
+			local cool = IsSpellInCooldown(spellID)
+			if cool ~= rawget( cooldowns_mt, spellID ) then
+				cooldowns_mt[spellID] = cool
+				wipe(filtered).source = load
+				for unit in next, status.idx do
+					status:UpdateIndicators(unit)
+				end
+			end
+		end
+	end
+
 	-- public
 	function FilterU_Register(self, load)
-		if load.unitType or load.unitReaction or load.unitClass or load.unitRole then
+		if load.unitType or load.unitReaction or load.unitClass or load.unitRole or load.cooldown or load.unitAlive~=nil then
 			self.filtered = setmetatable({source = load}, filter_mt)
 		else
 			self.filtered = nil
@@ -193,16 +257,20 @@ do
 	function FilterU_Enable(self, load)
 		local filtered = self.filtered
 		if filtered then
-			RegisterFilter( self, "unitFilter", "Grid_UnitUpdated",         ClearUnitFilters,  filtered )
-			RegisterFilter( self, "unitRole",   "Grid_PlayerRolesAssigned", RefreshRoleFilter, load.unitRole and filtered )
+			RegisterMsgFilter( self, "unitFilter", "Grid_UnitUpdated", ClearUnitFilters,  filtered )
+			RegisterMsgFilter( self, "unitAlive", "Grid_UnitDeadUpdated", RefreshAliveFilter,  load.unitAlive~=nil and filtered )
+			RegisterMsgFilter( self, "unitRole", "Grid_PlayerRolesAssigned", RefreshRoleFilter, load.unitRole and filtered )
+			RegisterEventFilter( self, "cooldown", "SPELL_UPDATE_USABLE", RefreshCooldownFilter, load.cooldown and filtered )
 		end
 	end
 
 	function FilterU_Disable(self, load)
 		local filtered = self.filtered
 		if filtered then
-			RegisterFilter( self, "unitFilter", "Grid_UnitUpdated" )
-			RegisterFilter( self, "unitRole",   "Grid_PlayerRolesAssigned" )
+			RegisterMsgFilter( self, "unitFilter", "Grid_UnitUpdated" )
+			RegisterMsgFilter( self, "unitAlive", "Grid_UnitDeadUpdated" )
+			RegisterMsgFilter( self, "unitRole", "Grid_PlayerRolesAssigned" )
+			RegisterEventFilter( self, "cooldown", "SPELL_UPDATE_USABLE" )
 			wipe(filtered).source = load
 		end
 	end
@@ -211,12 +279,12 @@ do
 		FilterU_Disable(self, load)
 		FilterU_Register(self, load or empty)
 		self:UpdateDB()
-		if self.enabled then 
+		if self.enabled then
 			FilterU_Enable(self, load or empty)
 			self:UpdateAllUnits()
 		end
 	end
-	
+
 end
 
 -------------------------------------------------------------------------
@@ -228,7 +296,7 @@ do
 	local statuses = statuses.combat
 	local IsNotActive = Grid2.Dummy
 	local frame, inCombat
-	
+
 	local function CombatEvent(_,event)
 		inCombat = (event=='PLAYER_REGEN_DISABLED')
 		for status, load in next,statuses do
@@ -242,7 +310,7 @@ do
 			end
 		end
 	end
-	
+
 	-- public
 	function FilterC_Enable(status, load)
 		if load.combat~=nil then
@@ -262,7 +330,7 @@ do
 			end
 		end
 	end
-	
+
 	function FilterC_Disable(status)
 		if statuses[status] then
 			statuses[status] = nil
@@ -277,16 +345,16 @@ do
 			end
 		end
 	end
-	
+
 	function FilterC_Refresh(status, load)
 		FilterC_Disable(status, load)
 		status:UpdateDB()
 		if status.enabled and load then
-			FilterC_Enable(status, load) 
+			FilterC_Enable(status, load)
 			status:UpdateAllUnits()
 		end
 	end
-	
+
 end
 
 -----------------------------------------------------------------------
@@ -300,7 +368,7 @@ function status:RegisterLoad() -- called from Grid2:RegisterStatus() in GridStat
 	if load then
 		FilterG_Register(self, load)
 		FilterU_Register(self, load)
-	end	
+	end
 end
 
 function status:UnregisterLoad() -- called from Grid2:UnregisterStatus() in GridStatus.lua
@@ -308,7 +376,7 @@ function status:UnregisterLoad() -- called from Grid2:UnregisterStatus() in Grid
 	if load then
 		FilterG_Unregister(self, load)
 		FilterU_Unregister(self, load)
-	end	
+	end
 	self.suspended = nil
 end
 
@@ -333,4 +401,4 @@ function status:RefreshLoad() -- used by Grid2Options
 	FilterG_Refresh(self, load)
 	FilterU_Refresh(self, load)
 	FilterC_Refresh(self, load)
-end	
+end

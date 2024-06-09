@@ -13,6 +13,12 @@ function AuctionatorCancellingFrameMixin:OnLoad()
   self.SearchFilter:HookScript("OnTextChanged", function()
     self.DataProvider:NoQueryRefresh()
   end)
+
+  self:SetScript("OnUpdate", self.OnUpdate)
+end
+
+function AuctionatorCancellingFrameMixin:OnUpdate()
+  GetOwnerAuctionItems(0)
 end
 
 local ConfirmBidPricePopup = "AuctionatorConfirmBidPricePopupDialog"
@@ -30,6 +36,21 @@ StaticPopupDialogs[ConfirmBidPricePopup] = {
   exclusive = 1,
   hideOnEscape = 1
 }
+
+function AuctionatorCancellingFrameMixin:IsAuctionShown(auctionInfo)
+  local searchString = self.SearchFilter:GetText()
+  if searchString ~= "" then
+    local exact = searchString:match("^\"(.*)\"$")
+    local name = string.lower(Auctionator.Utilities.GetNameFromLink(auctionInfo.itemLink))
+    if exact then
+      return name == exact
+    else
+      return string.find(name, string.lower(searchString), 1, true)
+    end
+  else
+    return true
+  end
+end
 
 function AuctionatorCancellingFrameMixin:ReceiveEvent(eventName, ...)
   if eventName == Auctionator.Cancelling.Events.RequestCancel then

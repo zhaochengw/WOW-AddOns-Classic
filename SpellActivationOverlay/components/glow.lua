@@ -36,12 +36,14 @@ function SAO.RegisterGlowIDs(self, glowIDs)
     for _, glowID in ipairs(glowIDs or {}) do
         if (type(glowID) == "number") then
             self.RegisteredGlowSpellIDs[glowID] = true;
+            self:AwakeButtonsBySpellID(glowID);
         elseif (type(glowID) == "string") then
             if (not SAO.RegisteredGlowSpellNames[glowID]) then
                 SAO.RegisteredGlowSpellNames[glowID] = true;
                 local glowSpellIDs = self:GetSpellIDsByName(glowID);
                 for _, glowSpellID in ipairs(glowSpellIDs) do
                     self.RegisteredGlowSpellIDs[glowSpellID] = true;
+                    self:AwakeButtonsBySpellID(glowSpellID);
                 end
             end
         end
@@ -112,9 +114,11 @@ function SAO.UpdateActionButton(self, button, forceRefresh)
 
     if (not wasGlowing and mustGlow) then
         if (not SpellActivationOverlayDB or not SpellActivationOverlayDB.glow or SpellActivationOverlayDB.glow.enabled) then
+            SAO:Debug("glow - Enabling Glow for button "..tostring(newGlowID).." due to action button update");
             button:EnableGlow();
         end
     elseif (wasGlowing and not mustGlow) then
+        SAO:Debug("glow - Disabling Glow for button "..tostring(newGlowID).." due to action button update");
         button:DisableGlow();
     end
 end
@@ -177,6 +181,7 @@ function SAO.AddGlowNumber(self, spellID, glowID)
         self.GlowingSpells[glowID] = { [spellID] = true };
         for _, frame in pairs(actionButtons or {}) do
             if (not SpellActivationOverlayDB or not SpellActivationOverlayDB.glow or SpellActivationOverlayDB.glow.enabled) then
+                SAO:Debug("glow - Enabling Glow for button "..tostring(frame.GetGlowID and frame:GetGlowID()).." due to direct activation");
                 frame:EnableGlow();
             end
         end
@@ -254,6 +259,7 @@ function SAO.RemoveGlow(self, spellID)
             self.GlowingSpells[glowSpellID] = nil;
             local actionButtons = self.ActionButtons[glowSpellID];
             for _, frame in pairs(actionButtons or {}) do
+                SAO:Debug("glow - Disabling Glow for button "..tostring(frame.GetGlowID and frame:GetGlowID()).." due to direct deactivation");
                 frame:DisableGlow();
             end
         end
@@ -288,6 +294,7 @@ binder:SetScript("OnEvent", function()
 
     local LAB = LibStub("LibActionButton-1.0", true);
     local LAB_ElvUI = LibStub("LibActionButton-1.0-ElvUI", true);
+    local LAB_GE = LibStub("LibActionButton-1.0-GE", true);
     local LBG, LBGversion = LibStub("LibButtonGlow-1.0", true);
     local LCG = LibStub("LibCustomGlow-1.0", true);
 
@@ -322,6 +329,10 @@ binder:SetScript("OnEvent", function()
         buttonUpdateFunc(LCG, event, self);
     end
 
+    local LAB_GEButtonUpdateFunc = function(event, self)
+        buttonUpdateFunc(LAB_GE, event, self);
+    end
+
     -- Support for LibActionButton used by e.g., Bartender
     if (LAB and LBG and LBGversion >= 8) then -- Prioritize LibButtonGlow, if available
         LAB:RegisterCallback("OnButtonUpdate", LBGButtonUpdateFunc);
@@ -351,7 +362,7 @@ binder:SetScript("OnEvent", function()
             if (type(azilMajor) == 'number' and type(azilMinor) == 'number') then
                 hasAzilroka186OrLower = azilMajor < 1 or azilMajor == 1 and azilMinor <= 86
             end
-        end 
+        end
         if (hasElvUI13OrHigher and not hasAzilroka186OrLower) then
             if (LBG and LBGversion >= 8) then
                 LAB_ElvUI:RegisterCallback("OnButtonUpdate", LBGButtonUpdateFunc);
@@ -369,6 +380,11 @@ binder:SetScript("OnEvent", function()
                 warnOutdatedLBG();
             end
         end
+    end
+
+    -- Support for AzeriteUI5's LibActionButton
+    if (LAB_GE) then
+        LAB_GE:RegisterCallback("OnButtonUpdate", LAB_GEButtonUpdateFunc)
     end
 
     binder:UnregisterEvent("PLAYER_LOGIN");

@@ -34,6 +34,15 @@ local function registerClass(self)
     self:RegisterAura("tidal_waves_1", 1, 53390, "high_tide", "Left (CCW)", 0.8, 255, 255, 255, true, tidalSpells);
     self:RegisterAura("tidal_waves_2", 2, 53390, "high_tide", "Left (CCW)", 0.8, 255, 255, 255, true, tidalSpells);
     self:RegisterAura("tidal_waves_2", 2, 53390, "high_tide", "Right (CW)", 0.8, 255, 255, 255, true); -- no need to re-glow tidalSpells for right texture
+
+    -- Healing Trance / Soul Preserver
+    self:RegisterAuraSoulPreserver("soul_preserver_shaman", 60515); -- 60515 = Shaman buff
+
+    if self.IsSoD() then
+        local moltenBlast = 425339;
+        self:RegisterAura("molten_blast", 0, moltenBlast, "impact", "Top", 0.8, 255, 255, 255, true, { moltenBlast });
+        self:RegisterCounter("molten_blast");
+    end
 end
 
 local function loadOptions(self)
@@ -53,6 +62,8 @@ local function loadOptions(self)
     local tidalWavesBuff = 53390;
     local tidalWavesTalent = 51562;
 
+    local moltenBlast = 425339;
+
     local oneToFourStacks = string.format(CALENDAR_TOOLTIP_DATE_RANGE, "1", string.format(STACKS, 4));
     local fiveStacks = string.format(STACKS, 5);
 
@@ -60,6 +71,10 @@ local function loadOptions(self)
     self:AddOverlayOption(maelstromWeaponTalent, maelstromWeaponBuff, 0, oneToFourStacks, nil, 4); -- setup any stacks, test with 4 stacks
     self:AddOverlayOption(maelstromWeaponTalent, maelstromWeaponBuff, 5); -- setup 5 stacks
     self:AddOverlayOption(tidalWavesTalent, tidalWavesBuff, 0, nil, nil, 2); -- setup any stacks, test with 2 stacks
+    if self.IsSoD() then
+        self:AddOverlayOption(moltenBlast, moltenBlast);
+    end
+    self:AddSoulPreserverOverlayOption(60515); -- 60515 = Shaman buff
 
     self:AddGlowingOption(maelstromWeaponTalent, maelstromWeaponBuff, lightningBolt, fiveStacks);
     self:AddGlowingOption(maelstromWeaponTalent, maelstromWeaponBuff, chainLightning, fiveStacks);
@@ -69,6 +84,9 @@ local function loadOptions(self)
     self:AddGlowingOption(maelstromWeaponTalent, maelstromWeaponBuff, hex, fiveStacks);
     self:AddGlowingOption(tidalWavesTalent, tidalWavesBuff, lesserHealingWave);
     self:AddGlowingOption(tidalWavesTalent, tidalWavesBuff, healingWave);
+    if self.IsSoD() then
+        self:AddGlowingOption(nil, moltenBlast, moltenBlast);
+    end
 end
 
 SAO.Class["SHAMAN"] = {

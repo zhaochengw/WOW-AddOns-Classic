@@ -5,12 +5,16 @@ Translated by:
 - kcgcom, fenlis (jungseop.park@gmail.com)
 ]]
 
+local _, addon = ...
+
+---@type RatingBusterLocale
 local L = LibStub("AceLocale-3.0"):NewLocale("RatingBuster", "koKR")
 if not L then return end
+addon.S = {}
+local S = addon.S
 local StatLogic = LibStub("StatLogic")
 ----
 -- This file is coded in UTF-8
--- If you don't have a editor that can save in UTF-8, I recommend Ultraedit
 ----
 -- To translate AceLocale strings, replace true with the translation string
 -- Before: ["Show Item ID"] = true,
@@ -43,20 +47,21 @@ L["Set the level used in calculations (0 = your level)"] = "계산에 적용할 
 -- /rb color
 L["Change text color"] = "글자 색상 변경"
 L["Changes the color of added text"] = "추가된 글자의 색상을 변경합니다."
-L["Change number color"] = true
+L["Change number color"] = "Change number color"
 -- /rb rating
 L["Rating"] = "평점"
 L["Options for Rating display"] = "평점 표시에 대한 설정입니다."
 -- /rb rating show
 L["Show Rating conversions"] = "평점 변화 표시"
 L["Show Rating conversions in tooltips"] = "툴팁에 평점 변화를 표시합니다."
+L["Enable integration with Blizzard Reforging UI"] = "Enable integration with Blizzard Reforging UI"
 -- TODO
 -- /rb rating spell
-L["Show Spell Hit/Haste"] = true
-L["Show Spell Hit/Haste from Hit/Haste Rating"] = true
+L["Show Spell Hit/Haste"] = "주문 적중/가속 표시"
+L["Show Spell Hit/Haste from Hit/Haste Rating"] = "주문의 적중/가속을 표시합니다."
 -- /rb rating physical
-L["Show Physical Hit/Haste"] = true
-L["Show Physical Hit/Haste from Hit/Haste Rating"] = true
+L["Show Physical Hit/Haste"] = "물리 적중/가속 표시"
+L["Show Physical Hit/Haste from Hit/Haste Rating"] = "물리 적중/가속을 표시합니다."
 -- /rb rating detail
 L["Show detailed conversions text"] = "세부적인 평점 변화 표시"
 L["Show detailed text for Resilience and Expertise conversions"] = "탄력도와 숙련의 세부적인 평점 변화 표시를 사용합니다."
@@ -65,33 +70,10 @@ L["Defense breakdown"] = "방어 숙련 세분화"
 L["Convert Defense into Crit Avoidance Hit Avoidance, Dodge, Parry and Block"] = "치명타 공격 회피, 공격 회피, 회피, 무기 막기, 방패 막기 등으로 방어 숙련을 세분화합니다."
 -- /rb rating wpn
 L["Weapon Skill breakdown"] = "무기 숙련 세분화"
-L["Convert Weapon Skill into Crit Hit, Dodge Neglect, Parry Neglect and Block Neglect"] = "치명타, 공격, 회피 무시, 무기 막기 무시, 방패 막기 무시 등으로 무기 숙련를 세분화합니다."
+L["Convert Weapon Skill into Crit Hit, Dodge Reduction, Parry Reduction and Block Reduction"] = "치명타, 공격, 회피 무시, 무기 막기 무시, 방패 막기 무시 등으로 무기 숙련를 세분화합니다."
 -- /rb rating exp -- 2.3.0
 L["Expertise breakdown"] = "숙련 세분화"
-L["Convert Expertise into Dodge Neglect and Parry Neglect"] = "회피 무시와 무기막기 무시 등으로 숙련을 세분화 합니다."
-L["from"] = true
-L["HEALING"] = STAT_SPELLHEALING
-L["AP"] = ATTACK_POWER_TOOLTIP
-L["RANGED_AP"] = RANGED_ATTACK_POWER
-L["ARMOR"] = ARMOR
-L["SPELL_DMG"] = STAT_SPELLDAMAGE
-L["SPELL_CRIT"] = PLAYERSTAT_SPELL_COMBAT .. " " .. SPELL_CRIT_CHANCE
-L["STR"] = SPELL_STAT1_NAME
-L["AGI"] = SPELL_STAT2_NAME
-L["STA"] = SPELL_STAT3_NAME
-L["INT"] = SPELL_STAT4_NAME
-L["SPI"] = SPELL_STAT5_NAME
-L["PARRY"] = PARRY
-L["MANA_REG"] = "마나 재생"
-L["NORMAL_MANA_REG"] = SPELL_STAT4_NAME .. " & " .. SPELL_STAT5_NAME -- Intellect & Spirit
-L["PET_STA"] = PET .. SPELL_STAT3_NAME -- Pet Stamina
-L["PET_INT"] = PET .. SPELL_STAT4_NAME -- Pet Intellect
-L.statModOptionName = function(show, add)
-	return string.format("%s %s ", add, show)
-end
-L.statModOptionDesc = function(show, add, from, mod)
-	return string.format("%s %s %s %s ", mod, from, add, show)
-end
+L["Convert Expertise into Dodge Reduction and Parry Reduction"] = "회피 무시와 무기막기 무시 등으로 숙련을 세분화 합니다."
 
 -- /rb stat
 --["Stat Breakdown"] = "능력치",
@@ -99,109 +81,12 @@ L["Changes the display of base stats"] = "기본 능력치 표시방법을 변�
 -- /rb stat show
 L["Show base stat conversions"] = "기본 능력치 변화 표시"
 L["Show base stat conversions in tooltips"] = "툴팁에 기본 능력치의 변화를 표시합니다."
--- /rb stat str
-L["Strength"] = "힘"
-L["Changes the display of Strength"] = "힘에 대한 표시방법을 변경합니다."
--- /rb stat str ap
-L["Show Attack Power"] = "전투력 표시"
-L["Show Attack Power from Strength"] = "힘에 의한 전투력을 표시합니다."
--- /rb stat str block
-L["Show Block Value"] = "피해 방어량 표시"
-L["Show Block Value from Strength"] = "힘에 의한 피해 방어량을 표시합니다."
--- /rb stat str dmg
-L["Show Spell Damage"] = "주문 공격력 표시"
---["Show Spell Damage from Strength"] = "지능에 의한 주문 공격력을 표시합니다.",
--- /rb stat str heal
-L["Show Healing"] = "치유량 표시"
---["Show Healing from Strength"] = "지능에 의한 치유량을 표시합니다.",
-
--- /rb stat agi
-L["Agility"] = "민첩성"
-L["Changes the display of Agility"] = "민첩성 표시방법을 변경합니다."
--- /rb stat agi crit
-L["Show Crit"] = "치명타 표시"
-L["Show Crit chance from Agility"] = "민첩성에 의한 치명타 표시"
--- /rb stat agi dodge
-L["Show Dodge"] = "회피 표시"
-L["Show Dodge chance from Agility"] = "민첩에 의한 회피율을 표시합니다."
--- /rb stat agi ap
-L["Show Attack Power"] = "전투력 표시"
-L["Show Attack Power from Agility"] = "민첩에 의한 전투력을 표시합니다."
--- /rb stat agi rap
-L["Show Ranged Attack Power"] = "원거리 전투력 표시"
-L["Show Ranged Attack Power from Agility"] = "민첩에 의한 원거리 전투력을 표시합니다."
--- /rb stat agi armor
-L["Show Armor"] = "방어도 표시"
-L["Show Armor from Agility"] = "민첩에 의한 방어도를 표시합니다."
--- /rb stat agi heal
-L["Show Healing"] = "치유량 표시"
---["Show Healing from Agility"] = "힘에 의한 치유량을 표시합니다.",
-
--- /rb stat sta
-L["Stamina"] = "체력"
-L["Changes the display of Stamina"] = "체력의 표시방법을 변경합니다."
--- /rb stat sta hp
-L["Show Health"] = "생명력 표시"
-L["Show Health from Stamina"] = "체력에 의한 생명력을 표시합니다."
--- /rb stat sta dmg
-L["Show Spell Damage"] = "주문 공격력 표시"
-L["Show Spell Damage from Stamina"] = "체력에 의한 주문 공격력을 표시합니다."
-
--- /rb stat int
-L["Intellect"] = "지능"
-L["Changes the display of Intellect"] = "지능 표시방법을 변경합니다."
--- /rb stat int spellcrit
-L["Show Spell Crit"] = "주문 극대화 표시"
-L["Show Spell Crit chance from Intellect"] = "지능에 의한 주문 극대화율 표시"
--- /rb stat int mp
-L["Show Mana"] = "마나 표시"
-L["Show Mana from Intellect"] = "지능에 의한 마나량을 표시합니다."
--- /rb stat int dmg
-L["Show Spell Damage"] = "주문 공격력 표시"
-L["Show Spell Damage from Intellect"] = "지능에 의한 주문 공격력을 표시합니다."
--- /rb stat int heal
-L["Show Healing"] = "치유량 표시"
-L["Show Healing from Intellect"] = "지능에 의한 치유량을 표시합니다."
--- /rb stat int mp5
-L["Show Mana Regen"] = "마나 재생 표시"
-L["Show Mana Regen while casting from Intellect"] = "지능에 의해 시전 시 마나 재생량을 표시합니다."
--- /rb stat int mp5nc
-L["Show Mana Regen while NOT casting"] = "평상시 마나 재생 표시"
-L["Show Mana Regen while NOT casting from Intellect"] = "지능에 의한 평상시 마나 재생량을 표시합니다."
--- /rb stat int rap
-L["Show Ranged Attack Power"] = "원거리 전투력 표시"
-L["Show Ranged Attack Power from Intellect"] = "지능에 의한 원거리 전투력을 표시합니다."
--- /rb stat int armor
-L["Show Armor"] = "방어도 표시"
-L["Show Armor from Intellect"] = "지능에 의한 방어도를 표시합니다."
-
--- /rb stat spi
-L["Spirit"] = "정신력"
-L["Changes the display of Spirit"] = "정신력의 표시방법을 변경합니다."
--- /rb stat spi mp5
-L["Show Mana Regen"] = "마나 재생 표시"
-L["Show Mana Regen while casting from Spirit"] = "정신력에 의해 시전 시 마나 재생량을 표시합니다."
--- /rb stat spi mp5nc
-L["Show Mana Regen while NOT casting"] = "평상시 마나 재생 표시"
-L["Show Mana Regen while NOT casting from Spirit"] = "정신력에 의한 평상시 마나 재생량을 표시합니다."
--- /rb stat spi hp5
-L["Show Health Regen"] = "생명력 재생 표시"
-L["Show Health Regen from Spirit"] = "정신력에 의한 생명력 재생량을 표시합니다."
--- /rb stat spi dmg
-L["Show Spell Damage"] = "주문 공격력 표시"
-L["Show Spell Damage from Spirit"] = "정신력에 의한 주문 공격력을 표시합니다."
--- /rb stat spi heal
-L["Show Healing"] = "치유량 표시"
-L["Show Healing from Spirit"] = "정신력에 의한 치유량을 표시합니다."
-
-L["Armor"] = "Armor"
-L["Changes the display of Armor"] = "Changes the display of Armor"
-L["Attack Power"] = "Attack Power"
-L["Changes the display of Attack Power"] = "Changes the display of Attack Power"
+L["Changes the display of %s"] = "%s 표시방법을 변경합니다."
 
 -- /rb sum
 L["Stat Summary"] = "능력치 요약"
 L["Options for stat summary"] = "능력치 요약에 대한 설정입니다."
+L["Sum %s"] = "%s"
 -- /rb sum show
 L["Show stat summary"] = "능력치 요약 표시"
 L["Show stat summary in tooltips"] = "툴팁에 능력치 요약을 표시합니다."
@@ -209,7 +94,7 @@ L["Show stat summary in tooltips"] = "툴팁에 능력치 요약을 표시합니
 L["Ignore settings"] = "제외 설정"
 L["Ignore stuff when calculating the stat summary"] = "능력치 요약 계산에 포함되지 않습니다."
 -- /rb sum ignore unused
-L["Ignore unused items types"] = "쓸모없는 아이템 제외"
+L["Ignore unused item types"] = "쓸모없는 아이템 제외"
 L["Show stat summary only for highest level armor type and items you can use with uncommon quality and up"] = "Show stat summary only for highest level armor type and items you can use with uncommon quality and up"
 -- /rb sum ignore equipped
 L["Ignore equipped items"] = "착용 아이템 제외"
@@ -220,6 +105,8 @@ L["Ignore enchants on items when calculating the stat summary"] = "능력치 요
 -- /rb sum ignore gem
 L["Ignore gems"] = "보석 제외"
 L["Ignore gems on items when calculating the stat summary"] = "능력치 요약 계산에 아이템의 보석을 포함하지 않습니다."
+L["Ignore extra sockets"] = "Ignore extra sockets"
+L["Ignore sockets from professions or consumable items when calculating the stat summary"] = "Ignore sockets from professions or consumable items when calculating the stat summary"
 -- /rb sum diffstyle
 L["Display style for diff value"] = "차이값 표시 형식"
 L["Display diff values in the main tooltip or only in compare tooltips"] = "주요 툴팁 이나 비교 툴팁에만 차이값을 표시합니다."
@@ -268,227 +155,90 @@ L["Choose spell damage and healing stats for summary"] = "주문 공격려과 �
 L["Stat - Tank"] = "능력치 - 탱크"
 L["Choose tank stats for summary"] = "탱크 능력치를 선택합니다."
 -- /rb sum stat hp
-L["Sum Health"] = "생명력"
 L["Health <- Health Stamina"] = "생명력 <- 생명력, 체력"
 -- /rb sum stat mp
-L["Sum Mana"] = "마나"
 L["Mana <- Mana Intellect"] = "마나 < 마나, 지능"
 -- /rb sum stat ap
-L["Sum Attack Power"] = "전투력"
 L["Attack Power <- Attack Power Strength, Agility"] = "전투력 <- 전투력, 힘, 민첩성"
 -- /rb sum stat rap
-L["Sum Ranged Attack Power"] = "원거리 전투력"
 L["Ranged Attack Power <- Ranged Attack Power Intellect, Attack Power, Strength, Agility"] = "원거리 전투력 <- 원거리 전투력, 지능, 전투력, 힘, 민첩성"
 -- /rb sum stat dmg
-L["Sum Spell Damage"] = "주문 공격력"
 L["Spell Damage <- Spell Damage Intellect, Spirit, Stamina"] = "주문 공격력 <- 주문 공격력, 지능, 정신력, 체력"
 -- /rb sum stat dmgholy
-L["Sum Holy Spell Damage"] = "신성 주문 공격력"
 L["Holy Spell Damage <- Holy Spell Damage Spell Damage, Intellect, Spirit"] = "신성 주문 공격력 <- 신성 주문 공격력, 주문 공격력, 지능, 정신력"
 -- /rb sum stat dmgarcane
-L["Sum Arcane Spell Damage"] = "비전 주문 공격력"
 L["Arcane Spell Damage <- Arcane Spell Damage Spell Damage, Intellect"] = "비전 주문 공격력 <- 비전 주문 공격력, 주문 공격력, 지능"
 -- /rb sum stat dmgfire
-L["Sum Fire Spell Damage"] = "화염 주문 공격력"
 L["Fire Spell Damage <- Fire Spell Damage Spell Damage, Intellect, Stamina"] = "화염 주문 공격력 <- 화염 주문 공격력, 주문 공격력, 지능, 체력"
 -- /rb sum stat dmgnature
-L["Sum Nature Spell Damage"] = "자연 주문 공격력"
 L["Nature Spell Damage <- Nature Spell Damage Spell Damage, Intellect"] = "자연 주문 공격력 <- 자연 주문 공격력, 주문 공격력, 지능"
 -- /rb sum stat dmgfrost
-L["Sum Frost Spell Damage"] = "냉기 주문 공격력"
 L["Frost Spell Damage <- Frost Spell Damage Spell Damage, Intellect"] = "냉기 주문 공격력 <- 냉기 주문 공격력, 주문 공격력, 지능"
 -- /rb sum stat dmgshadow
-L["Sum Shadow Spell Damage"] = "암흑 주문 공격력"
 L["Shadow Spell Damage <- Shadow Spell Damage Spell Damage, Intellect, Spirit, Stamina"] = "암흑 주문 공격력 <- 암흑 주문 공격력, 주문 공격력, 지능, 정신력, 체력"
 -- /rb sum stat heal
-L["Sum Healing"] = "치유량"
 L["Healing <- Healing Intellect, Spirit, Agility, Strength"] = "치유량 <- 치유량, 지능, 정신력, 민첩, 힘"
 -- /rb sum stat hit
-L["Sum Hit Chance"] = "적중률"
 L["Hit Chance <- Hit Rating Weapon Skill Rating"] = "적중률 <- 적중도, 무기 숙력도"
 -- /rb sum stat crit
-L["Sum Crit Chance"] = "치명타율"
 L["Crit Chance <- Crit Rating Agility, Weapon Skill Rating"] = "치명타율 <- 치명타 적중도, 민첩성, 무기 숙련도"
 -- /rb sum stat haste
-L["Sum Haste"] = "공격 가속"
 L["Haste <- Haste Rating"] = "공격 가속 <- 공격 가속도"
-L["Sum Ranged Hit Chance"] = "원거리 적중률 합계"
 L["Ranged Hit Chance <- Hit Rating, Weapon Skill Rating, Ranged Hit Rating"] = "원거리 적중률 <- 적중도, 무기 숙련도, 원거리 적중도"
--- /rb sum physical rangedhitrating
-L["Sum Ranged Hit Rating"] = "원거리 적중도 합계"
-L["Ranged Hit Rating Summary"] = "원거리 적중도 요약"
 -- /rb sum physical rangedcrit
-L["Sum Ranged Crit Chance"] = "원거리 치명타율 합계"
 L["Ranged Crit Chance <- Crit Rating, Agility, Weapon Skill Rating, Ranged Crit Rating"] = "원거리 치명타율 <- 치명타 적중도, 민첩성, 무기 숙련도, 치명타 적중도"
--- /rb sum physical rangedcritrating
-L["Sum Ranged Crit Rating"] = "원거리 치명타 적중도 합계"
-L["Ranged Crit Rating Summary"] = "원거리 치명타 적중도 요약"
 -- /rb sum physical rangedhaste
-L["Sum Ranged Haste"] = "원거리 공격 가속율 합계"
 L["Ranged Haste <- Haste Rating, Ranged Haste Rating"] = "원거리 공격 가속율 <- 공격 가속도, 원거리 가속율"
--- /rb sum physical rangedhasterating
-L["Sum Ranged Haste Rating"] = "원거리 공격 가속도 합계"
-L["Ranged Haste Rating Summary"] = "원거리 공격 가속도 요약"
 
 -- /rb sum stat critspell
-L["Sum Spell Crit Chance"] = "주문 극대화율"
 L["Spell Crit Chance <- Spell Crit Rating Intellect"] = "주문 극대화율 <- 주문 극대화 적중도, 지능"
 -- /rb sum stat hitspell
-L["Sum Spell Hit Chance"] = "주문 적중율"
 L["Spell Hit Chance <- Spell Hit Rating"] = "주문 적중율 <- 주문 적중도"
 -- /rb sum stat hastespell
-L["Sum Spell Haste"] = "주문 가속"
 L["Spell Haste <- Spell Haste Rating"] = "주문 가속 <- 주문 가속도"
 -- /rb sum stat mp5
-L["Sum Mana Regen"] = "마나 재생"
 L["Mana Regen <- Mana Regen Spirit"] = "마나 재생 <- 마나 재생, 정신력"
 -- /rb sum stat mp5nc
-L["Sum Mana Regen while not casting"] = "미시전 시 마나 재생"
 L["Mana Regen while not casting <- Spirit"] = "미시전 시 마나 재생 <- 정신력"
 -- /rb sum stat hp5
-L["Sum Health Regen"] = "생명력 재생"
 L["Health Regen <- Health Regen"] = "생명력 재생 <- 생명력 재생"
 -- /rb sum stat hp5oc
-L["Sum Health Regen when out of combat"] = "비전투중 생명력 재생"
 L["Health Regen when out of combat <- Spirit"] = "비전투중 생명력 재생 <- 정신력"
 -- /rb sum stat armor
-L["Sum Armor"] = "방어도"
 L["Armor <- Armor from items Armor from bonuses, Agility, Intellect"] = "방어도 <- 아이템의 방어도, 효과의 방어도, 민첩성, 지능"
 -- /rb sum stat blockvalue
-L["Sum Block Value"] = "피해 방어량"
 L["Block Value <- Block Value Strength"] = "피해 방어량 <- 피해 방어량, 힘"
 -- /rb sum stat dodge
-L["Sum Dodge Chance"] = "회피율"
 L["Dodge Chance <- Dodge Rating Agility, Defense Rating"] = "회피율 <- 회피 숙련도, 민첩성, 방어 숙련도"
 -- /rb sum stat parry
-L["Sum Parry Chance"] = "무기 막기 확률"
 L["Parry Chance <- Parry Rating Defense Rating"] = "무기 막기 확률 <- 무기 막기 숙련도, 방어 숙련도"
 -- /rb sum stat block
-L["Sum Block Chance"] = "방패 막기 확률"
 L["Block Chance <- Block Rating Defense Rating"] = "방패 막기 확률 <- 방패 막기 숙련도, 방어 숙련도"
 -- /rb sum stat avoidhit
-L["Sum Hit Avoidance"] = "공격 회피"
 L["Hit Avoidance <- Defense Rating"] = "공격 회피 <- 방어 숙련도"
 -- /rb sum stat avoidcrit
-L["Sum Crit Avoidance"] = "치명타 공격 회피"
 L["Crit Avoidance <- Defense Rating Resilience"] = "치명타 공격 회피 <- 방어 숙련도, 탄력도"
--- /rb sum stat neglectdodge
-L["Sum Dodge Neglect"] = "회피 무시"
-L["Dodge Neglect <- Expertise Weapon Skill Rating"] = "회피 무시 <- 숙련도, 무기 숙련도" -- 2.3.0
--- /rb sum stat neglectparry
-L["Sum Parry Neglect"] = "무기 막기 무시"
-L["Parry Neglect <- Expertise Weapon Skill Rating"] = "무기 막기 무시 <- 숙련도, 무기 숙련도" -- 2.3.0
--- /rb sum stat neglectblock
-L["Sum Block Neglect"] = "방패 막기 무시"
-L["Block Neglect <- Weapon Skill Rating"] = "방패 막기 무시 <- 무기 숙련도"
--- /rb sum stat resarcane
-L["Sum Arcane Resistance"] = "비전 저항력"
-L["Arcane Resistance Summary"] = "비전 저항력 요약"
--- /rb sum stat resfire
-L["Sum Fire Resistance"] = "화염 저항력"
-L["Fire Resistance Summary"] = "화염 저항력 요약"
--- /rb sum stat resnature
-L["Sum Nature Resistance"] = "자연 저항력"
-L["Nature Resistance Summary"] = "자연 저항력 요약"
--- /rb sum stat resfrost
-L["Sum Frost Resistance"] = "냉기 저항력"
-L["Frost Resistance Summary"] = "냉기 저항력 요약"
--- /rb sum stat resshadow
-L["Sum Shadow Resistance"] = "암흑 저항력"
-L["Shadow Resistance Summary"] = "암흑 저항력 요약"
-L["Sum Weapon Average Damage"] = true
-L["Weapon Average Damage Summary"] = true
-L["Sum Weapon DPS"] = true
-L["Weapon DPS Summary"] = true
--- /rb sum stat pen
-L["Sum Penetration"] = "관통력"
-L["Spell Penetration Summary"] = "주문 관통력 요약"
--- /rb sum stat ignorearmor
-L["Sum Ignore Armor"] = "방어도 무시"
-L["Ignore Armor Summary"] = "방어도 무시 요약"
-L["Sum Armor Penetration"] = "방어도 관통력 합계"
-L["Armor Penetration Summary"] = "방어도 관통력 요약"
-L["Sum Armor Penetration Rating"] = "방어도 관통도 합계"
-L["Armor Penetration Rating Summary"] = "방어도 관통도 요약"
--- /rb sum statcomp str
-L["Sum Strength"] = "힘"
-L["Strength Summary"] = "힘 요약"
--- /rb sum statcomp agi
-L["Sum Agility"] = "민첩성"
-L["Agility Summary"] = "민첩성 요약"
--- /rb sum statcomp sta
-L["Sum Stamina"] = "체력"
-L["Stamina Summary"] = "체력 요약"
--- /rb sum statcomp int
-L["Sum Intellect"] = "지능"
-L["Intellect Summary"] = "지능 요약"
--- /rb sum statcomp spi
-L["Sum Spirit"] = "정신력"
-L["Spirit Summary"] = "정신력 요약"
--- /rb sum statcomp hitrating
-L["Sum Hit Rating"] = "적중도"
-L["Hit Rating Summary"] = "적중도 요약"
--- /rb sum statcomp critrating
-L["Sum Crit Rating"] = "치명타율"
-L["Crit Rating Summary"] = "치명타율 요약"
--- /rb sum statcomp hasterating
-L["Sum Haste Rating"] = "공격 가속도"
-L["Haste Rating Summary"] = "공격 가속도 요약"
--- /rb sum statcomp hitspellrating
-L["Sum Spell Hit Rating"] = "주문 적중도"
-L["Spell Hit Rating Summary"] = "주문 적중도 요약"
--- /rb sum statcomp critspellrating
-L["Sum Spell Crit Rating"] = "주문 극대화율"
-L["Spell Crit Rating Summary"] = "주문 극대화율 요약"
--- /rb sum statcomp hastespellrating
-L["Sum Spell Haste Rating"] = "주문 가속도"
-L["Spell Haste Rating Summary"] = "주문 가속도 요약"
--- /rb sum statcomp dodgerating
-L["Sum Dodge Rating"] = "회피율"
-L["Dodge Rating Summary"] = "회피율 요약"
--- /rb sum statcomp parryrating
-L["Sum Parry Rating"] = "무기 막기율"
-L["Parry Rating Summary"] = "무기 막기율 요약"
--- /rb sum statcomp blockrating
-L["Sum Block Rating"] = "방어율"
-L["Block Rating Summary"] = "방어율 요약"
--- /rb sum statcomp res
-L["Sum Resilience"] = "탄력도"
-L["Resilience Summary"] = "탄력도 요약"
+-- /rb sum stat Reductiondodge
+L["Dodge Reduction <- Expertise Weapon Skill Rating"] = "회피 무시 <- 숙련도, 무기 숙련도" -- 2.3.0
+-- /rb sum stat Reductionparry
+L["Parry Reduction <- Expertise Weapon Skill Rating"] = "무기 막기 무시 <- 숙련도, 무기 숙련도" -- 2.3.0
+
 -- /rb sum statcomp def
-L["Sum Defense"] = "방어 숙련"
 L["Defense <- Defense Rating"] = "방어 숙련 <- 방어 숙련도"
 -- /rb sum statcomp wpn
-L["Sum Weapon Skill"] = "무기 숙련"
 L["Weapon Skill <- Weapon Skill Rating"] = "무기 숙련 <- 무기 숙련도"
 -- /rb sum statcomp exp -- 2.3.0
-L["Sum Expertise"] = "숙련"
 L["Expertise <- Expertise Rating"] = "숙련 <- 숙련도"
--- /rb sum statcomp tp
-L["Sum TankPoints"] = "탱킹점수"
-L["TankPoints <- Health Total Reduction"] = "탱커점수 <- 체력, 총 감소량"
--- /rb sum statcomp tr
-L["Sum Total Reduction"] = "총 감소량"
-L["Total Reduction <- Armor Dodge, Parry, Block, Block Value, Defense, Resilience, MobMiss, MobCrit, MobCrush, DamageTakenMods"] = "총 감소량 <- 방어도, 회피, 무기 막기, 방어, 피해 방어량, 방어, 탄력도, 몹회피, 몹치명타, 몹강타, 적용전 데미지"
 -- /rb sum statcomp avoid
-L["Sum Avoidance"] = "회피량"
 L["Avoidance <- Dodge Parry, MobMiss, Block(Optional)"] = "회피량 <- 회피, 무기 막기, 몹빗맞힘, 방어(선택적)"
 
 -- /rb sum gem
 L["Gems"] = "보석"
 L["Auto fill empty gem slots"] = "빈 보석 슬롯을 자동으로 채웁니다."
--- /rb sum gem red
-L["Red Socket"] = EMPTY_SOCKET_RED
 L["ItemID or Link of the gem you would like to auto fill"] = "당신이 좋아하는 보석의 아이템ID & 링크로 자동으로 채웁니다."
 L["<ItemID|Link>"] = "<아이템ID|링크>"
 L["%s is now set to %s"] = "현재 %s에 %s 설정"
 L["Queried server for Gem: %s. Try again in 5 secs."] = "서버에서 알수없는 보석: %s. 5초뒤 다시하세요."
--- /rb sum gem yellow
-L["Yellow Socket"] = EMPTY_SOCKET_YELLOW
--- /rb sum gem blue
-L["Blue Socket"] = EMPTY_SOCKET_BLUE
--- /rb sum gem meta
-L["Meta Socket"] = EMPTY_SOCKET_META
 
 -----------------------
 -- Item Level and ID --
@@ -499,9 +249,12 @@ L["ItemID: "] = "아이템ID: "
 -------------------
 -- Always Buffed --
 -------------------
-L["Enables RatingBuster to calculate selected buff effects even if you don't really have them"] = true
-L["$class Self Buffs"] = true -- $class will be replaced with localized player class
-L["Raid Buffs"] = true
+L["Enables RatingBuster to calculate selected buff effects even if you don't really have them"] = "Enables RatingBuster to calculate selected buff effects even if you don't really have them"
+L["$class Self Buffs"] = "$class Self Buffs" -- $class will be replaced with localized player class
+L["Raid Buffs"] = "Raid Buffs"
+L["Stat Multiplier"] = "Stat Multiplier"
+L["Attack Power Multiplier"] = "Attack Power Multiplier"
+L["Reduced Physical Damage Taken"] = "Reduced Physical Damage Taken"
 
 -----------------------
 -- Matching Patterns --
@@ -541,9 +294,9 @@ L["Raid Buffs"] = true
 --
 -- IMPORTANT: there may not exist a one-to-one correspondence, meaning you can't just translate this file,
 -- but will need to go in game and find out what needs to be put in here.
--- For example, in english I found 3 different strings that maps to CR_CRIT_MELEE: "critical strike", "critical hit" and "crit".
--- You will need to find out every string that represents CR_CRIT_MELEE, and so on.
--- In other languages there may be 5 different strings that should all map to CR_CRIT_MELEE.
+-- For example, in english I found 3 different strings that maps to StatLogic.Stats.MeleeCritRating: "critical strike", "critical hit" and "crit".
+-- You will need to find out every string that represents StatLogic.Stats.MeleeCritRating, and so on.
+-- In other languages there may be 5 different strings that should all map to StatLogic.Stats.MeleeCritRating.
 -- so please check in game that you have all strings, and not translate directly off this table.
 --
 -- Tip1: When doing localizations, I recommend you set debugging to true in RatingBuster.lua
@@ -558,29 +311,13 @@ L["numberPatterns"] = {
 	--		{pattern = "add.-(%d+)", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
 	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat",}, -- [發光的暗影卓奈石] +6法術傷害及5耐力
 }
+-- Exclusions are used to ignore instances of separators that should not get separated
+L["exclusions"] = {
+}
 L["separators"] = {
 	"/", " and ", ",", "%. ", " for ", "&", ":", "\n"
 }
---[[ Rating ID
-CR_WEAPON_SKILL = 1;
-CR_DEFENSE_SKILL = 2;
-CR_DODGE = 3;
-CR_PARRY = 4;
-CR_BLOCK = 5;
-CR_HIT_MELEE = 6;
-CR_HIT_RANGED = 7;
-CR_HIT_SPELL = 8;
-CR_CRIT_MELEE = 9;
-CR_CRIT_RANGED = 10;
-CR_CRIT_SPELL = 11;
-CR_RESILIENCE_CRIT_TAKEN = 15;
-CR_RESILIENCE_PLAYER_DAMAGE_TAKEN = 16;
-CR_HASTE_MELEE = 18;
-CR_HASTE_RANGED = 19;
-CR_HASTE_SPELL = 20;
-CR_EXPERTISE = 24;
-CR_ARMOR_PENETRATION = 25;
---
+--[[
 SPELL_STAT1_NAME = "힘"
 SPELL_STAT2_NAME = "민첩성"
 SPELL_STAT3_NAME = "체력"
@@ -588,74 +325,178 @@ SPELL_STAT4_NAME = "지능"
 SPELL_STAT5_NAME = "정신력"
 --]]
 L["statList"] = {
-	{pattern = string.lower(SPELL_STAT1_NAME), id = SPELL_STAT1_NAME}, -- Strength
-	{pattern = string.lower(SPELL_STAT2_NAME), id = SPELL_STAT2_NAME}, -- Agility
-	{pattern = string.lower(SPELL_STAT3_NAME), id = SPELL_STAT3_NAME}, -- Stamina
-	{pattern = string.lower(SPELL_STAT4_NAME), id = SPELL_STAT4_NAME}, -- Intellect
-	{pattern = string.lower(SPELL_STAT5_NAME), id = SPELL_STAT5_NAME}, -- Spirit
-	{pattern = "방어 숙련도", id = CR_DEFENSE_SKILL},
-	{pattern = "회피 숙련도", id = CR_DODGE},
-	{pattern = "방패 막기 숙련도", id = CR_BLOCK}, -- block enchant: "+10 Shield Block Rating"
-	{pattern = "무기 막기 숙련도", id = CR_PARRY},
+	{SPELL_STAT1_NAME:lower(), StatLogic.Stats.Strength}, -- Strength
+	{SPELL_STAT2_NAME:lower(), StatLogic.Stats.Agility}, -- Agility
+	{SPELL_STAT3_NAME:lower(), StatLogic.Stats.Stamina}, -- Stamina
+	{SPELL_STAT4_NAME:lower(), StatLogic.Stats.Intellect}, -- Intellect
+	{SPELL_STAT5_NAME:lower(), StatLogic.Stats.Spirit}, -- Spirit
+	{"방어 숙련도", StatLogic.Stats.DefenseRating},
+	{DEFENSE:lower(), StatLogic.Stats.Defense},
+	{"회피 숙련도", StatLogic.Stats.DodgeRating},
+	{"방패 막기 숙련도", StatLogic.Stats.BlockRating}, -- block enchant: "+10 Shield Block Rating"
+	{"무기 막기 숙련도", StatLogic.Stats.ParryRating},
 
-	{pattern = "주문 극대화 적중도", id = CR_CRIT_SPELL},
-	{pattern = "주문의 극대화 적중도", id = CR_CRIT_SPELL},
-	{pattern = "원거리 치명타 적중도", id = CR_CRIT_RANGED},
-	{pattern = "치명타 적중도", id = StatLogic.GenericStats.CR_CRIT},
-	{pattern = "근접 치명타 적중도", id = CR_CRIT_MELEE},
+	{"주문 극대화 적중도", StatLogic.Stats.SpellCritRating},
+	{"주문의 극대화 적중도", StatLogic.Stats.SpellCritRating},
+	{"원거리 치명타 적중도", StatLogic.Stats.RangedCritRating},
+	{"치명타 적중도", StatLogic.Stats.CritRating},
+	{"근접 치명타 적중도", StatLogic.Stats.MeleeCritRating},
 
-	--		{pattern = "주문의 적중도", id = CR_HIT_SPELL},
-	{pattern = "주문 적중도", id = CR_HIT_SPELL},
-	{pattern = "원거리 적중도", id = CR_HIT_RANGED},
-	{pattern = "적중도", id = StatLogic.GenericStats.CR_HIT},
+	--		{"주문의 적중도", StatLogic.Stats.SpellHitRating},
+	{"주문 적중도", StatLogic.Stats.SpellHitRating},
+	{"원거리 적중도", StatLogic.Stats.RangedHitRating},
+	{"적중도", StatLogic.Stats.HitRating},
 
-	{pattern = "탄력도", id = CR_RESILIENCE_CRIT_TAKEN}, -- resilience is implicitly a rating
+	{"탄력도", StatLogic.Stats.ResilienceRating}, -- resilience is implicitly a rating
 
-	{pattern = "주문 시전 가속도", id = CR_HASTE_SPELL},
-	{pattern = "원거리 공격 가속도", id = CR_HASTE_RANGED},
-	{pattern = "공격 가속도", id = StatLogic.GenericStats.CR_HASTE},
-	{pattern = "가속도", id = StatLogic.GenericStats.CR_HASTE}, -- [Drums of Battle]
+	{"주문 시전 가속도", StatLogic.Stats.SpellHasteRating},
+	{"원거리 공격 가속도", StatLogic.Stats.RangedHasteRating},
+	{"공격 가속도", StatLogic.Stats.HasteRating},
+	{"가속도", StatLogic.Stats.HasteRating}, -- [Drums of Battle]
 
-	{pattern = "숙련도", id = CR_EXPERTISE},
+	{"숙련도", StatLogic.Stats.ExpertiseRating},
 
-	{pattern = string.lower(SPELL_STATALL), id = StatLogic.GenericStats.ALL_STATS},
+	{SPELL_STATALL:lower(), StatLogic.Stats.AllStats},
 
-	{pattern = "방어구 관통력", id = CR_ARMOR_PENETRATION},	--armor penetration rating
-	{pattern = string.lower(ARMOR), id = ARMOR},
-	{pattern = "전투력이", id = ATTACK_POWER},
+	{"방어구 관통력", StatLogic.Stats.ArmorPenetrationRating},	--armor penetration rating
+	{"특화", StatLogic.Stats.MasteryRating},
+	{ARMOR:lower(), StatLogic.Stats.Armor},
+	{"전투력이", StatLogic.Stats.AttackPower},
 }
 -------------------------
 -- Added info patterns --
 -------------------------
--- $value will be replaced with the number
--- EX: "$value% Crit" -> "+1.34% Crit"
--- EX: "Crit $value%" -> "Crit +1.34%"
-L["$value% Crit"] = "치명타 $value%"
-L["$value% Spell Crit"] = "극대화 $value%"
-L["$value% Dodge"] = "회피 $value%"
-L["$value HP"] = "생명력 $value"
-L["$value MP"] = "마나 $value"
-L["$value AP"] = "전투력 $value"
-L["$value RAP"] = "원거리 전투력 $value"
-L["$value Spell Dmg"] = "공격력 $value"
-L["$value Heal"] = "치유량 $value"
-L["$value Armor"] = "방어도 $value"
-L["$value Block"] = "방어 $value"
-L["$value MP5"] = "$value MP5"
-L["$value MP5(NC)"] = "$value MP5(NC)"
-L["$value HP5"] = "$value HP5"
-L["$value to be Dodged/Parried"] = "이후 회피 감소/무기막기 감소 $value"
-L["$value to be Crit"] = "이후 치명타 $value"
-L["$value Crit Dmg Taken"] = "가질 치명타 데미지 $value"
-L["$value DOT Dmg Taken"] = "가질 DOT 데미지 $value"
-L["$value Dmg Taken"] = true
-L["$value% Parry"] = "무막 $value%"
+-- Controls the order of values and stats in stat breakdowns
+-- "%s %s"     -> "+1.34% Crit"
+-- "%2$s $1$s" -> "Crit +1.34%"
+L["StatBreakdownOrder"] = "%s %s"
+L["Show %s"] = "%s "..SHOW
 -- for hit rating showing both physical and spell conversions
 -- (+1.21%, S+0.98%)
 -- (+1.21%, +0.98% S)
-L["$value Spell"] = "주문 $value"
+L["Spell"] = "주문"
 
-------------------
--- Stat Summary --
-------------------
-L["Stat Summary"] = "능력치 요약"
+-- Basic Attributes
+L[StatLogic.Stats.Strength] = "힘"
+L[StatLogic.Stats.Agility] = "민첩성"
+L[StatLogic.Stats.Stamina] = "체력"
+L[StatLogic.Stats.Intellect] = "지능"
+L[StatLogic.Stats.Spirit] = "정신력"
+L[StatLogic.Stats.Mastery] = STAT_MASTERY
+L[StatLogic.Stats.MasteryEffect] = SPELL_LASTING_EFFECT:format(STAT_MASTERY)
+L[StatLogic.Stats.MasteryRating] = STAT_MASTERY.." "..RATING
+
+-- Resources
+L[StatLogic.Stats.Health] = "생명력"
+S[StatLogic.Stats.Health] = "생명력"
+L[StatLogic.Stats.Mana] = "마나"
+S[StatLogic.Stats.Mana] = "마나"
+L[StatLogic.Stats.ManaRegen] = "마나 회복량"
+S[StatLogic.Stats.ManaRegen] = "MP5"
+L[StatLogic.Stats.ManaRegenNotCasting] = "마나 회복량 (시전하지)"
+S[StatLogic.Stats.ManaRegenNotCasting] = "MP5(NC)"
+L[StatLogic.Stats.ManaRegenOutOfCombat] = "마나 회복량 (비전투)"
+if addon.tocversion > 40000 then
+	L[StatLogic.Stats.ManaRegenNotCasting] =  L[StatLogic.Stats.ManaRegenOutOfCombat]
+end
+L[StatLogic.Stats.HealthRegen] = "생명력 재생"
+S[StatLogic.Stats.HealthRegen] = "HP5"
+L[StatLogic.Stats.HealthRegenOutOfCombat] = "생명력 재생 (비전투)"
+S[StatLogic.Stats.HealthRegenOutOfCombat] = "HP5(NC)"
+
+-- Physical Stats
+L[StatLogic.Stats.AttackPower] = "전투력"
+S[StatLogic.Stats.AttackPower] = "전투력"
+L[StatLogic.Stats.FeralAttackPower] = "야생 전투력"
+L[StatLogic.Stats.IgnoreArmor] = "방어도 무시"
+L[StatLogic.Stats.ArmorPenetration] = "방어도 관통력 합계"
+L[StatLogic.Stats.ArmorPenetrationRating] = "방어도 관통도 합계"
+
+-- Weapon Stats
+L[StatLogic.Stats.AverageWeaponDamage] = "근접 무기 "..DAMAGE -- DAMAGE = "Damage"
+L[StatLogic.Stats.WeaponDPS] = "초당 공격력"
+
+-- Melee Stats
+L[StatLogic.Stats.MeleeHit] = "적중률"
+L[StatLogic.Stats.MeleeHitRating] = "적중도"
+L[StatLogic.Stats.MeleeCrit] = "치명타율"
+S[StatLogic.Stats.MeleeCrit] = "치명타"
+L[StatLogic.Stats.MeleeCritRating] = "치명타율"
+L[StatLogic.Stats.MeleeHaste] = "공격 가속"
+L[StatLogic.Stats.MeleeHasteRating] = "공격 가속도"
+
+L[StatLogic.Stats.WeaponSkill] = "무기 숙련"
+L[StatLogic.Stats.Expertise] = "숙련"
+L[StatLogic.Stats.ExpertiseRating] = "숙련 ".." "..RATING
+L[StatLogic.Stats.DodgeReduction] = "회피 무시"
+S[StatLogic.Stats.DodgeReduction] = "이후 회피 감소 감소"
+L[StatLogic.Stats.ParryReduction] = PARRY.." 무시"
+S[StatLogic.Stats.ParryReduction] = "이후 무기막기 감소"
+
+-- Ranged Stats
+L[StatLogic.Stats.RangedAttackPower] = "원거리 전투력"
+S[StatLogic.Stats.RangedAttackPower] = "원거리 전투력"
+L[StatLogic.Stats.RangedHit] = "원거리 적중률 합계"
+L[StatLogic.Stats.RangedHitRating] = "원거리 적중도 합계"
+L[StatLogic.Stats.RangedCrit] = "원거리 치명타율 합계"
+L[StatLogic.Stats.RangedCritRating] = "원거리 치명타 적중도 합계"
+L[StatLogic.Stats.RangedHaste] = "원거리 공격 가속율 합계"
+L[StatLogic.Stats.RangedHasteRating] = "원거리 공격 가속도 합계"
+
+-- Spell Stats
+L[StatLogic.Stats.SpellPower] = STAT_SPELLPOWER
+L[StatLogic.Stats.SpellDamage] = "주문 공격력"
+S[StatLogic.Stats.SpellDamage] = "공격력"
+L[StatLogic.Stats.HealingPower] = "치유량"
+S[StatLogic.Stats.HealingPower] = "치유량"
+L[StatLogic.Stats.SpellPenetration] = "관통력"
+
+L[StatLogic.Stats.HolyDamage] = "신성 주문 공격력"
+L[StatLogic.Stats.FireDamage] = "화염 주문 공격력"
+L[StatLogic.Stats.NatureDamage] = "자연 주문 공격력"
+L[StatLogic.Stats.FrostDamage] = "냉기 주문 공격력"
+L[StatLogic.Stats.ShadowDamage] = "암흑 주문 공격력"
+L[StatLogic.Stats.ArcaneDamage] = "비전 주문 공격력"
+
+L[StatLogic.Stats.SpellHit] = "주문 적중율"
+S[StatLogic.Stats.SpellHit] = "주문 적중"
+L[StatLogic.Stats.SpellHitRating] = "주문 적중도"
+L[StatLogic.Stats.SpellCrit] = "주문 극대화율"
+S[StatLogic.Stats.SpellCrit] = "극대화"
+L[StatLogic.Stats.SpellCritRating] = "주문 극대화율"
+L[StatLogic.Stats.SpellHaste] = "주문 가속"
+L[StatLogic.Stats.SpellHasteRating] = "주문 가속도"
+
+-- Tank Stats
+L[StatLogic.Stats.Armor] = "방어도"
+S[StatLogic.Stats.Armor] = "방어도"
+
+L[StatLogic.Stats.Avoidance] = "회피량"
+L[StatLogic.Stats.Dodge] = "회피율"
+S[StatLogic.Stats.Dodge] = "회피"
+L[StatLogic.Stats.DodgeRating] = "회피율"
+L[StatLogic.Stats.Parry] = "무기 막기 확률"
+S[StatLogic.Stats.Parry] = "무막"
+L[StatLogic.Stats.ParryRating] = "무기 막기율"
+L[StatLogic.Stats.BlockChance] = "방패 막기 확률"
+L[StatLogic.Stats.BlockRating] = "방어율"
+L[StatLogic.Stats.BlockValue] = "피해 방어량"
+S[StatLogic.Stats.BlockValue] = "방어"
+L[StatLogic.Stats.Miss] = "공격 회피"
+
+L[StatLogic.Stats.Defense] = "방어 숙련"
+L[StatLogic.Stats.DefenseRating] = COMBAT_RATING_NAME2.." "..RATING COMBAT_RATING_NAME2 = "Defense Rating"
+L[StatLogic.Stats.CritAvoidance] = "치명타 공격 회피"
+S[StatLogic.Stats.CritAvoidance] = "이후 치명타"
+
+L[StatLogic.Stats.Resilience] = COMBAT_RATING_NAME15
+L[StatLogic.Stats.ResilienceRating] = "탄력도"
+L[StatLogic.Stats.CritDamageReduction] = "치명타 피해 감소"
+S[StatLogic.Stats.CritDamageReduction] = "가질 치명타 데미지"
+L[StatLogic.Stats.PvPDamageReduction] = "PvP Damage Taken"
+
+L[StatLogic.Stats.FireResistance] = "화염 저항력"
+L[StatLogic.Stats.NatureResistance] = "자연 저항력"
+L[StatLogic.Stats.FrostResistance] = "냉기 저항력"
+L[StatLogic.Stats.ShadowResistance] = "암흑 저항력"
+L[StatLogic.Stats.ArcaneResistance] = "비전 저항력"

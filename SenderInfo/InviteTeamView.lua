@@ -31,6 +31,9 @@ local seekTeamOpen = true; --寻求组队开着的时候才会统计小助手
 
 local seekState = false; --当前寻求组队状态
 local leaderOpenHelper = true; --是队长时 自动打开小助手
+local CombatLessen = false; --开启战斗中缩小功能
+local IsCombat = false; --是否战斗中
+local CombatEndViewRecover = false; --如果因为战斗中自动缩小的界面 那么战斗结束自动打开界面
 
 local replyMsg1 = ""; --快捷回复
 local replyMsg2 = ""; --快捷回复
@@ -573,6 +576,16 @@ function InviteTeamView:Add(name,info)
     
         AddItem(item,name);   
     end
+
+    if CombatLessen and IsCombat then
+        --print("战斗中 所以自动缩小")
+        panel2:Hide();
+        lastLessenTime = GetTime() + 9999999; --防止触发倒计时自动又打开 不可能战斗时间超过这个吧
+        lessen:SetText("SenderInfo 消息:" .. #allItem);
+        panelLessen = true;
+        CombatEndViewRecover = true;
+    end
+
 end
 
 --成功加入队伍时 会被调用 移除
@@ -637,6 +650,9 @@ function InviteTeamView:ChangeReplyMsg6(value)
 end
 
 
+function InviteTeamView:ChangeCombatLessen(value)
+    CombatLessen = value;
+end
 
 
 
@@ -659,7 +675,8 @@ function InviteTeamView:Init()
     replyMsg4 = __private.View.Cfg.ReplyMsg4;
     replyMsg5 = __private.View.Cfg.ReplyMsg5;
     replyMsg6 = __private.View.Cfg.ReplyMsg6;
-
+    CombatLessen = __private.View.Cfg.CombatLessen;
+    
 end
 
 
@@ -687,4 +704,25 @@ end
 local frame4 = CreateFrame("Frame")
 frame4:RegisterEvent("LFG_LIST_ACTIVE_ENTRY_UPDATE")
 frame4:SetScript("OnEvent",LFG_LIST_ACTIVE_ENTRY_UPDATE)
+
+
+local combatFrame = CreateFrame("Frame")
+combatFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+combatFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+combatFrame:SetScript("OnEvent", function(self, event, ...)
+    if event == "PLAYER_REGEN_DISABLED" then
+        --print("You have entered combat.")
+        IsCombat = true;
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        --print("You have exited combat.")
+        IsCombat = false;
+        if CombatLessen and CombatEndViewRecover then
+            lastLessenTime = GetTime();
+            panel2:Show();
+            lessen:SetText("SenderInfo 缩小"); 
+            CombatEndViewRecover = false;
+        end
+    end
+end)
+
 

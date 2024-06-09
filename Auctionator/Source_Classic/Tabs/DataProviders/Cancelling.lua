@@ -63,6 +63,23 @@ local CANCELLING_TABLE_LAYOUT = {
     cellParameters = { "undercut" },
     width = 90,
   },
+  {
+    headerTemplate = "AuctionatorStringColumnHeaderTemplate",
+    headerText = AUCTIONATOR_L_UNDERCUT_PRICE,
+    headerParameters = { "undercutPrice" },
+    cellTemplate = "AuctionatorPriceCellTemplate",
+    cellParameters = { "undercutPrice" },
+    width = 150,
+    defaultHide = true,
+  },
+  {
+    headerTemplate = "AuctionatorStringColumnHeaderTemplate",
+    headerText = AUCTIONATOR_L_ITEMS_AHEAD,
+    headerParameters = { "itemsAhead" },
+    cellTemplate = "AuctionatorStringCellTemplate",
+    cellParameters = { "itemsAheadPretty" },
+    width = 90,
+  },
 }
 
 local DATA_EVENTS = {
@@ -112,6 +129,8 @@ local COMPARATORS = {
   quantity = Auctionator.Utilities.NumberComparator,
   timeLeft = Auctionator.Utilities.NumberComparator,
   undercut = Auctionator.Utilities.StringComparator,
+  undercutPrice = Auctionator.Utilities.NumberComparator,
+  itemsAhead = Auctionator.Utilities.NumberComparator,
 }
 
 function AuctionatorCancellingDataProviderMixin:Sort(fieldName, sortDirection)
@@ -137,7 +156,8 @@ function AuctionatorCancellingDataProviderMixin:ReceiveEvent(eventName, eventDat
     self:NoQueryRefresh()
 
   elseif eventName == Auctionator.Cancelling.Events.UndercutStatus then
-    self.undercutCutoff[eventData] = ...
+    local positions, maxItemsAhead, minPrice = ...
+    self.undercutCutoff[eventData] = { positions = positions, maxItemsAhead = maxItemsAhead, minPrice = minPrice }
 
     self:NoQueryRefresh()
   elseif eventName == Auctionator.AH.Events.ThrottleUpdate then
@@ -157,13 +177,7 @@ end
 
 
 function AuctionatorCancellingDataProviderMixin:FilterAuction(auctionInfo)
-  local searchString = self:GetParent().SearchFilter:GetText()
-  if searchString ~= "" then
-    local name = Auctionator.Utilities.GetNameFromLink(auctionInfo.itemLink)
-    return string.find(string.lower(name), string.lower(searchString), 1, true)
-  else
-    return true
-  end
+  return self:GetParent():IsAuctionShown(auctionInfo)
 end
 
 local function ToUniqueKey(entry)
@@ -202,6 +216,15 @@ local function GroupAuctions(allAuctions)
   return results
 end
 
+local function GetItemsAhead(unitPrice, positions, maxItemsAhead)
+  for _, p in ipairs(positions) do
+    if p.unitPrice == unitPrice then
+      return p.itemsAhead, FormatLargeNumber(p.itemsAhead)
+    end
+  end
+  return maxItemsAhead, FormatLargeNumber(maxItemsAhead) .. "+"
+end
+
 function AuctionatorCancellingDataProviderMixin:PopulateAuctions()
   self:Reset()
   local allAuctions = GroupAuctions(Auctionator.AH.DumpAuctions("owner"))
@@ -218,13 +241,23 @@ function AuctionatorCancellingDataProviderMixin:PopulateAuctions()
 
         local cleanLink = Auctionator.Search.GetCleanItemLink(auction.itemLink)
         local undercutStatus
+        local undercutPrice
+        local itemsAhead, itemsAheadPretty
         if auction.bidAmount ~= 0 then
           undercutStatus = AUCTIONATOR_L_UNDERCUT_BID
         elseif self.undercutCutoff[cleanLink] == nil then
           undercutStatus = AUCTIONATOR_L_UNDERCUT_UNKNOWN
-        elseif self.undercutCutoff[cleanLink] < auction.unitPrice then
-          undercutStatus = AUCTIONATOR_L_UNDERCUT_YES
+        elseif auction.unitPrice > self.undercutCutoff[cleanLink].minPrice then
+          undercutPrice = self.undercutCutoff[cleanLink].minPrice
+          itemsAhead, itemsAheadPretty = GetItemsAhead(auction.unitPrice, self.undercutCutoff[cleanLink].positions, self.undercutCutoff[cleanLink].maxItemsAhead)
+          if itemsAhead > Auctionator.Config.Get(Auctionator.Config.Options.UNDERCUT_ITEMS_AHEAD) then
+            undercutStatus = AUCTIONATOR_L_UNDERCUT_YES
+          else
+            undercutStatus = AUCTIONATOR_L_UNDERCUT_NO
+          end
         else
+          itemsAhead = 0
+          itemsAheadPretty = tostring(itemsAhead)
           undercutStatus = AUCTIONATOR_L_UNDERCUT_NO
         end
         table.insert(results, {
@@ -240,6 +273,9 @@ function AuctionatorCancellingDataProviderMixin:PopulateAuctions()
           timeLeft = auction.timeLeft,
           timeLeftPretty = Auctionator.Utilities.FormatTimeLeftBand(auction.timeLeft),
           undercut = undercutStatus,
+          undercutPrice = undercutPrice,
+          itemsAhead = itemsAhead,
+          itemsAheadPretty = itemsAheadPretty,
         })
         Auctionator.Utilities.SetStacksText(results[#results])
       end

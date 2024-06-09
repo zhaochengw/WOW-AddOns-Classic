@@ -1,0 +1,3 @@
+This addon wasn't created modular at the start so most features are in 1 large file.
+At some point I'll seperate the code in to modules but until then any major new features add I'll start adding here.
+So this isn't really a modules folder but rather a new features folder until then...

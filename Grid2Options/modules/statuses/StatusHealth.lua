@@ -45,7 +45,7 @@ if Grid2.isClassic then
 			get = function () return not status.dbx.displayRawNumbers end,
 			set = function (_, v)
 				status.dbx.displayRawNumbers = not v or nil
-				status:Refresh()				
+				status:Refresh()
 			end,
 		}
 		if Grid2.versionCli<40000 then
@@ -125,7 +125,7 @@ Grid2Options:RegisterStatusOptions("health-current", "health", function(self, st
 				status.dbx.addPercentShield = v or nil
 				status:Refresh()
 			end,
-		}	
+		}
 	end
 	options.deadAsFullHealth = {
 		type = "toggle",
@@ -189,7 +189,7 @@ Grid2Options:RegisterStatusOptions("heals-incoming", "health", function(self, st
 		end,
 		set = function (_, v)
 			status.dbx.flags = tonumber(v) or nil
-			status:Refresh()			
+			status:Refresh()
 		end,
 	}
 	options.multiplier = {
@@ -204,7 +204,7 @@ Grid2Options:RegisterStatusOptions("heals-incoming", "health", function(self, st
 		get = function () return status.dbx.multiplier	end,
 		set = function (_, v)
 			status.dbx.multiplier = tonumber(v) or 1
-			status:Refresh()			
+			status:Refresh()
 		end,
 	}
 end, {
@@ -224,7 +224,7 @@ Grid2Options:RegisterStatusOptions("my-heals-incoming", "health", function(self,
 		end,
 		set = function (_, v)
 			status.dbx.flags = tonumber(v) or nil
-			status:Refresh()			
+			status:Refresh()
 		end,
 	}
 	options.multiplier = {
@@ -239,7 +239,7 @@ Grid2Options:RegisterStatusOptions("my-heals-incoming", "health", function(self,
 		get = function () return status.dbx.multiplier	end,
 		set = function (_, v)
 			status.dbx.multiplier = tonumber(v) or 1
-			status:Refresh()			
+			status:Refresh()
 		end,
 	}
 	if Grid2.isClassic then
@@ -263,7 +263,7 @@ Grid2Options:RegisterStatusOptions("overhealing", "health", function(self, statu
 		set = function (_, v)
 			v = tonumber(v) or 0
 			status.dbx.minimum = v>0 and v or nil
-			status:Refresh()			
+			status:Refresh()
 		end,
 	}
 	if Grid2.isClassic then
@@ -277,7 +277,7 @@ Grid2Options:RegisterStatusOptions("overhealing", "health", function(self, statu
 			get = function () return not status.dbx.displayRawNumbers end,
 			set = function (_, v)
 				status.dbx.displayRawNumbers = not v or nil
-				status:Refresh()				
+				status:Refresh()
 			end,
 		}
 	end
@@ -286,11 +286,14 @@ end, {
 	titleIcon = Grid2.isClassic and "Interface\\Icons\\Spell_Holy_Heal" or "Interface\\Icons\\Spell_Holy_DivineProvidence"
 })
 
-
 Grid2Options:RegisterStatusOptions("health-low", "health", function(self, status, options, optionParams)
 	local per,min,max,step = true
-	if status.dbx.threshold>10 then
-		min,max,step,per = 1000, 250000, 500, nil
+	if status.dbx.threshold>=5 then
+		if Grid2.isClassic then
+			min,max,step,per = 10, 50000, 100, nil
+		else
+			min,max,step,per = 1000, 250000, 500, nil
+		end
 	end
 	self:MakeStatusColorOptions(status, options, optionParams)
 	self:MakeStatusThresholdOptions(status, options, optionParams, min, max, step, per)
@@ -303,7 +306,7 @@ Grid2Options:RegisterStatusOptions("health-low", "health", function(self, status
 		get = function () return status.dbx.threshold<10 end,
 		set = function (_, v)
 			status.dbx.threshold = v and 0.4 or 10000
-			status:Refresh()			
+			status:Refresh()
 			self:MakeStatusOptions(status)
 		end,
 	}
@@ -316,7 +319,7 @@ Grid2Options:RegisterStatusOptions("health-low", "health", function(self, status
 		get = function () return status.dbx.invert end,
 		set = function (_, v)
 			status.dbx.invert = v or nil
-			status:Refresh()			
+			status:Refresh()
 		end,
 	}
 end, {
@@ -335,7 +338,7 @@ Grid2Options:RegisterStatusOptions("health-deficit", "health", function(self, st
 		get = function () return status.dbx.addIncomingHeals end,
 		set = function (_, v)
 			status.dbx.addIncomingHeals = v or nil
-			status:Refresh()			
+			status:Refresh()
 		end,
 	}
 	if Grid2.isClassic then
@@ -349,7 +352,7 @@ Grid2Options:RegisterStatusOptions("health-deficit", "health", function(self, st
 			get = function () return not status.dbx.displayRawNumbers end,
 			set = function (_, v)
 				status.dbx.displayRawNumbers = not v or nil
-				status:Refresh()				
+				status:Refresh()
 			end,
 		}
 	end
@@ -363,7 +366,7 @@ Grid2Options:RegisterStatusOptions("health-deficit", "health", function(self, st
 		get = function () return status.dbx.displayPercentEnemies end,
 		set = function (_, v)
 			status.dbx.displayPercentEnemies = v or nil
-			status:Refresh()			
+			status:Refresh()
 		end,
 	}
 end, {

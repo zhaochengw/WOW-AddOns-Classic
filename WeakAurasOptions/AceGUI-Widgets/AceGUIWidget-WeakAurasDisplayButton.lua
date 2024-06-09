@@ -275,6 +275,8 @@ local function ensure(t, k, v)
   return t and k and v and t[k] == v
 end
 
+local statusIconPool = CreateFramePool("Button")
+
 --[[     Actions     ]]--
 
 local Actions = {
@@ -306,19 +308,17 @@ local Actions = {
           WeakAuras.UpdateGroupOrders(group.data)
           WeakAuras.ClearAndUpdateOptions(group.data.id)
           WeakAuras.ClearAndUpdateOptions(source.data.id)
-          WeakAuras.FillOptions()
           group.callbacks.UpdateExpandButton();
+          group:UpdateParentWarning()
           group:ReloadTooltip()
         else
           WeakAuras.Add(source.data)
           WeakAuras.ClearAndUpdateOptions(source.data.id)
-          WeakAuras.FillOptions()
         end
       else
         -- move source into the top-level list
         WeakAuras.Add(source.data)
         WeakAuras.ClearAndUpdateOptions(source.data.id)
-        WeakAuras.FillOptions()
       end
     else
       error("Calling 'Group' with invalid source. Reload your UI to fix the display list.")
@@ -340,6 +340,7 @@ local Actions = {
         WeakAuras.ClearAndUpdateOptions(parent.id);
         local group = OptionsPrivate.GetDisplayButton(parent.id)
         group.callbacks.UpdateExpandButton();
+        group:UpdateParentWarning()
         group:ReloadTooltip()
       else
         error("Display thinks it is a member of a group which does not control it")
@@ -349,6 +350,7 @@ local Actions = {
     end
   end
 }
+
 
 local function GetAction(target, area)
   if target and area then
@@ -560,6 +562,7 @@ local methods = {
       WeakAuras.Add(self.data);
       OptionsPrivate.Private.AddParents(self.data)
       self.callbacks.UpdateExpandButton();
+      self:UpdateParentWarning();
       OptionsPrivate.StopGrouping();
       OptionsPrivate.ClearOptions(self.data.id);
       WeakAuras.FillOptions();
@@ -635,10 +638,12 @@ local methods = {
 
         local button = OptionsPrivate.GetDisplayButton(newGroup.id)
         button.callbacks.UpdateExpandButton()
+        button:UpdateParentWarning()
 
         for old, new in pairs(mapping) do
           local button = OptionsPrivate.GetDisplayButton(new.id)
           button.callbacks.UpdateExpandButton()
+          button:UpdateParentWarning()
         end
 
         OptionsPrivate.SortDisplayButtons(nil, true)
@@ -783,6 +788,7 @@ local methods = {
       if not(newid == oldid) then
         WeakAuras.Rename(self.data, newid);
       end
+      self:UpdateParentWarning()
     end
 
     function self.callbacks.OnDragStart()
@@ -917,12 +923,10 @@ local methods = {
       func = function() LibDD:CloseDropDownMenus() end
     });
     if(self.data.controlledChildren) then
-      self.loaded:Hide();
       self.expand:Show();
       self.callbacks.UpdateExpandButton();
       self:SetOnExpandCollapse(function() OptionsPrivate.SortDisplayButtons(nil, true) end);
     else
-      self.loaded:Show();
       self.expand:Hide();
     end
     self.group:Show();
@@ -1100,10 +1104,11 @@ local methods = {
     end
     WeakAuras.ClearAndUpdateOptions(self.data.id);
     WeakAuras.UpdateGroupOrders(parentData);
+    local parentButton = OptionsPrivate.GetDisplayButton(parentData.id)
     if(#parentData.controlledChildren == 0) then
-      local parentButton = OptionsPrivate.GetDisplayButton(parentData.id)
       parentButton:DisableExpand()
     end
+    parentButton:UpdateParentWarning()
 
     for child in OptionsPrivate.Private.TraverseAllChildren(self.data) do
       local button = OptionsPrivate.GetDisplayButton(child.id)
@@ -1135,7 +1140,7 @@ local methods = {
     self.frame:SetScript("OnClick", nil)
     self.view:Hide()
     self.expand:Hide()
-    self.loaded:Hide()
+    self.statusIcons:Hide()
     Hide_Tooltip()
     if picked then
       self.frame:EnableKeyboard(true)
@@ -1227,10 +1232,9 @@ local methods = {
     self.frame:SetScript("OnClick", self.callbacks.OnClickNormal)
     self.frame:EnableKeyboard(false); -- disables self.callbacks.OnKeyDown
     self.view:Show()
+    self.statusIcons:Show()
     if self.data.controlledChildren then
       self.expand:Show()
-    else
-      self.loaded:Show()
     end
     self:Enable()
 
@@ -1352,12 +1356,18 @@ local methods = {
     return not OptionsPrivate.IsCollapsed(self.data.id, "displayButton", "", true)
   end,
   ["DisableExpand"] = function(self)
+    if self.expand.disabled then
+      return
+    end
     self.expand:Disable();
     self.expand.disabled = true;
     self.expand.expanded = false;
     self.expand:SetNormalTexture("Interface\\BUTTONS\\UI-PlusButton-Disabled.blp");
   end,
   ["EnableExpand"] = function(self)
+    if not self.expand.disabled then
+      return
+    end
     self.expand.disabled = false;
     if(self:GetExpanded()) then
       self:Expand();
@@ -1365,27 +1375,95 @@ local methods = {
       self:Collapse();
     end
   end,
-  ["UpdateWarning"] = function(self)
-    local icon, title, warningText = OptionsPrivate.Private.AuraWarnings.FormatWarnings(self.data.uid)
-    if warningText then
-      self.warning:Show()
-      if C_Texture.GetAtlasInfo(icon) then
-        self.warning:SetNormalAtlas(icon)
-      else
-        self.warning:SetNormalTexture(icon)
+  ["UpdateStatusIcon"] = function(self, key, prio, icon, title, tooltip, onClick, color)
+    local iconButton
+    for _, button in ipairs(self.statusIcons.buttons) do
+      if button.key == key then
+        iconButton = button
+        break
       end
-      self.warning:SetScript("OnEnter", function()
+    end
+    if not iconButton then
+      iconButton = statusIconPool:Acquire()
+      tinsert(self.statusIcons.buttons, iconButton)
+      iconButton:SetParent(self.statusIcons)
+      iconButton.key = key
+      iconButton:SetSize(16, 16)
+    end
+    iconButton.prio = prio
+    if C_Texture.GetAtlasInfo(icon) then
+      iconButton:SetNormalAtlas(icon)
+    else
+      iconButton:SetNormalTexture(icon)
+    end
+    if title then
+      iconButton:SetScript("OnEnter", function()
         Show_Tooltip(
           self.frame,
           title,
-          warningText
+          tooltip
         )
       end)
-      self.warning:SetScript("OnClick", function()
-        WeakAuras.PickDisplay(self.data.id, "information")
-      end)
+      iconButton:SetScript("OnLeave", Hide_Tooltip)
     else
-      self.warning:Hide()
+      iconButton:SetScript("OnEnter", nil)
+    end
+    if color then
+      iconButton:GetNormalTexture():SetVertexColor(unpack(color))
+    else
+      iconButton:GetNormalTexture():SetVertexColor(1, 1, 1, 1)
+    end
+    iconButton:SetScript("OnClick", onClick)
+    iconButton:Show()
+  end,
+  ["ClearStatusIcon"] = function(self, key)
+    for index, button in ipairs(self.statusIcons.buttons) do
+      if button.key == key then
+        statusIconPool:Release(button)
+        table.remove(self.statusIcons.buttons, index)
+        return
+      end
+    end
+  end,
+  ["SortStatusIcons"] = function(self)
+    table.sort(self.statusIcons.buttons, function(a, b)
+      return a.prio < b.prio
+    end)
+    local lastAnchor = self.statusIcons
+    if self:IsGroup() then
+      self.statusIcons:SetWidth(17)
+    else
+      self.statusIcons:SetWidth(1)
+    end
+    for _, button in ipairs(self.statusIcons.buttons) do
+      button:ClearAllPoints()
+      button:SetPoint("BOTTOMLEFT", lastAnchor, "BOTTOMRIGHT", 4, 0)
+      lastAnchor = button
+    end
+  end,
+  ["UpdateWarning"] = function(self)
+    local warnings = OptionsPrivate.Private.AuraWarnings.GetAllWarnings(self.data.uid)
+    local warningTypes = {"info", "sound", "tts", "warning", "error"}
+    for _, key in ipairs(warningTypes) do
+      self:ClearStatusIcon(key)
+    end
+    if warnings then
+      for severity, warning in pairs(warnings) do
+        local onClick = function()
+          WeakAuras.PickDisplay(warning.auraId, warning.tab)
+        end
+        self:UpdateStatusIcon(severity, warning.prio, warning.icon, warning.title, warning.message, onClick)
+      end
+    end
+    self:SortStatusIcons()
+  end,
+  ["UpdateParentWarning"] = function(self)
+    self:UpdateWarning()
+    for parent in OptionsPrivate.Private.TraverseParents(self.data) do
+      local parentButton = OptionsPrivate.GetDisplayButton(parent.id)
+      if parentButton then
+        parentButton:UpdateWarning()
+      end
     end
   end,
   ["SetGroupOrder"] = function(self, order, max)
@@ -1414,15 +1492,22 @@ local methods = {
   ["GetGroupOrder"] = function(self)
     return self.frame.dgrouporder;
   end,
-  ["DisableLoaded"] = function(self)
-    self.loaded.title = L["Not Loaded"];
-    self.loaded.desc = L["This display is not currently loaded"];
-    self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Disabled.blp");
+  ["ClearLoaded"] = function(self)
+    self:ClearStatusIcon("load")
+    self:SortStatusIcons()
   end,
-  ["EnableLoaded"] = function(self)
-    self.loaded.title = L["Loaded"];
-    self.loaded.desc = L["This display is currently loaded"];
-    self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Up.blp");
+  ["SetLoaded"] = function(self, prio, color, title, description)
+    self:UpdateStatusIcon("load", prio, "Interface\\AddOns\\WeakAuras\\Media\\Textures\\loaded", title, description, nil, color)
+    self:SortStatusIcons()
+  end,
+  ["IsLoaded"] = function(self)
+    return OptionsPrivate.Private.loaded[self.data.id] == true
+  end,
+  ["IsStandby"] = function(self)
+    return OptionsPrivate.Private.loaded[self.data.id] == false
+  end,
+  ["IsUnloaded"] = function(self)
+    return OptionsPrivate.Private.loaded[self.data.id] == nil
   end,
   ["Pick"] = function(self)
     self.frame:LockHighlight();
@@ -1542,8 +1627,10 @@ local methods = {
     self.view:Disable();
     self.group:Disable();
     self.ungroup:Disable();
-    self.loaded:Disable();
     self.expand:Disable();
+    for _, button in ipairs(self.statusIcons.buttons) do
+      button:Disable();
+    end
     self:UpdateUpDownButtons()
   end,
   ["Enable"] = function(self)
@@ -1552,7 +1639,9 @@ local methods = {
     self.view:Enable();
     self.group:Enable();
     self.ungroup:Enable();
-    self.loaded:Enable();
+    for _, button in ipairs(self.statusIcons.buttons) do
+      button:Enable();
+    end
     self:UpdateUpDownButtons()
     if not(self.expand.disabled) then
       self.expand:Enable();
@@ -1576,6 +1665,10 @@ local methods = {
     --self.frame:EnableMouse(false);
     self.frame:ClearAllPoints();
     self.frame:Hide();
+    for _, button in ipairs(self.statusIcons.buttons) do
+      statusIconPool:Release(button)
+    end
+    wipe(self.statusIcons.buttons)
     self.frame = nil;
     self.data = nil;
   end,
@@ -1721,20 +1814,6 @@ local function Constructor()
 
   view.visibility = 0;
 
-  local loaded = CreateFrame("Button", nil, button);
-  button.loaded = loaded;
-  loaded:SetWidth(16);
-  loaded:SetHeight(16);
-  loaded:SetPoint("BOTTOM", button, "BOTTOM");
-  loaded:SetPoint("LEFT", icon, "RIGHT", 0, 0);
-  loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Up.blp");
-  loaded:SetDisabledTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Disabled.blp");
-  --loaded:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
-  loaded.title = L["Loaded"];
-  loaded.desc = L["This display is currently loaded"];
-  loaded:SetScript("OnEnter", function() Show_Tooltip(button, loaded.title, loaded.desc) end);
-  loaded:SetScript("OnLeave", Hide_Tooltip);
-
   local renamebox = CreateFrame("EditBox", nil, button, "InputBoxTemplate");
   renamebox:SetHeight(14);
   renamebox:SetPoint("TOP", button, "TOP");
@@ -1844,13 +1923,12 @@ local function Constructor()
   expand:SetScript("OnEnter", function() Show_Tooltip(button, expand.title, expand.desc) end);
   expand:SetScript("OnLeave", Hide_Tooltip);
 
-  local warning = CreateFrame("Button", nil, button);
-  button.warning = warning
-  warning:SetWidth(16)
-  warning:SetHeight(16)
-  warning:SetPoint("RIGHT", button, "RIGHT", -60, 0)
-  warning:SetScript("OnLeave", Hide_Tooltip)
-  warning:Hide()
+  local statusIcons = CreateFrame("Frame", nil, button);
+  button.statusIcons = statusIcons
+  statusIcons:SetPoint("BOTTOM", button, "BOTTOM", 0, 1);
+  statusIcons:SetPoint("LEFT", icon, "RIGHT");
+  statusIcons:SetSize(1,1)
+  statusIcons.buttons = {}
 
   local widget = {
     frame = button,
@@ -1862,10 +1940,9 @@ local function Constructor()
     ungroup = ungroup,
     upgroup = upgroup,
     downgroup = downgroup,
-    loaded = loaded,
     background = background,
     expand = expand,
-    warning = warning,
+    statusIcons = statusIcons,
     type = Type,
     offset = offset
   }

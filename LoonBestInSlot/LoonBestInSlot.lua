@@ -12,7 +12,7 @@ LBIS.EnchantsBySpecAndId = {};
 LBIS.SpellCache = {};
 
 LBIS.AllItemsCached = false;
-LBIS.CurrentPhase = 2;
+LBIS.CurrentPhase = 4;
 
 LBIS.EventFrame = CreateFrame("FRAME",addonName.."Events")
 
@@ -38,6 +38,7 @@ function LBIS:Startup()
 	LBIS:CreateSettings();
 	LBIS:RegisterMiniMap();
     LBIS:PreCacheItems();
+	LBIS:InitializeUI();
 end
 
 function LBIS:RegisterEvent(...)
@@ -90,6 +91,7 @@ function LBIS:RegisterSpec(class, spec, phase)
     return classSpec
 end
 
+local addOrder = 0;
 function LBIS:AddItem(bisEntry, id, slot, bis)
 
 	if strlen(id) <= 0 then
@@ -102,7 +104,7 @@ function LBIS:AddItem(bisEntry, id, slot, bis)
 		return;
 	end	
 	
-		if not LBIS.ItemsByIdAndSpec[itemId] then
+	if not LBIS.ItemsByIdAndSpec[itemId] then
 		LBIS.ItemsByIdAndSpec[itemId] = {}
 	end
 	
@@ -120,7 +122,7 @@ function LBIS:AddItem(bisEntry, id, slot, bis)
 
 	if searchedItem == nil then
 
-		searchedItem = { Id = itemId, Bis = bis, Phase = bisEntry.Phase, Slot = slot }
+		searchedItem = { Id = itemId, Bis = bis, Phase = bisEntry.Phase, Slot = slot, SortOrder = addOrder }
 		
 		if not LBIS.ItemsBySpecAndId[bisEntry.Id] then
 			LBIS.ItemsBySpecAndId[bisEntry.Id] = {}
@@ -130,6 +132,8 @@ function LBIS:AddItem(bisEntry, id, slot, bis)
 		if bisEntry.Phase > searchedItem.Phase then
 			searchedItem.Bis = bis;
 		end
+
+		searchedItem.SortOrder = addOrder;
 
 		local firstNumber, lastNumber = LBIS:GetPhaseNumbers(searchedItem.Phase);
 
@@ -155,6 +159,7 @@ function LBIS:AddItem(bisEntry, id, slot, bis)
 		end			
 		LBIS.ItemsByIdAndSpec[tonumber(itemSource.SourceNumber)][bisEntry.Id] = searchedItem
 	end	
+	addOrder = addOrder + 1;
 end
 
 function LBIS:AddGem(bisEntry, id, quality, isMeta)

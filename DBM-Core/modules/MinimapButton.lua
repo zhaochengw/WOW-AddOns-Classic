@@ -1,14 +1,17 @@
 local _, private = ...
 
-local L = DBM_CORE_L
+---@class DBM
+local DBM = DBM
 
-local LibStub = _G["LibStub"]
+local L = DBM_CORE_L
 
 if not LibStub or not LibStub("LibDataBroker-1.1", true) or not LibStub("LibDBIcon-1.0") then
 	function DBM:ToggleMinimapButton() end -- NOOP
+	function DBM:ToggleCompartmentButton() end -- NOOP
 	return
 end
 
+---@diagnostic disable-next-line:missing-fields
 local dataBroker = LibStub and LibStub("LibDataBroker-1.1"):NewDataObject("DBM", {
 	type	= "launcher",
 	label	= "DBM",
@@ -30,6 +33,7 @@ if dataBroker then
 	end
 
 	function dataBroker.OnTooltipShow(GameTooltip)
+		---@cast GameTooltip GameTooltip
 		GameTooltip:SetText(L.MINIMAP_TOOLTIP_HEADER, 1, 1, 1)
 		GameTooltip:AddLine(("%s (%s)"):format(DBM.DisplayVersion, DBM:ShowRealDate(DBM.Revision)), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
 		GameTooltip:AddLine(" ")
@@ -48,6 +52,15 @@ do
 			LibDBIcon:Hide("DBM")
 		else
 			LibDBIcon:Show("DBM")
+		end
+	end
+
+	function DBM:ToggleCompartmentButton()
+		DBM_MinimapIcon.showInCompartment = not DBM_MinimapIcon.showInCompartment
+		if DBM_MinimapIcon.showInCompartment then
+			LibDBIcon:AddButtonToCompartment("DBM")
+		else
+			LibDBIcon:RemoveButtonFromCompartment("DBM")
 		end
 	end
 end

@@ -374,21 +374,24 @@ function openRaidLib.GearManager.GetPlayerGemsAndEnchantInfo()
                 end
 
             --gems
-                local itemStatsTable = {}
+                --local itemStatsTable = {}
                 --fill the table above with information about the item
-                GetItemStats(itemLink, itemStatsTable)
+                --GetItemStats(itemLink, itemStatsTable) --deprecated in 10.2.5
+                local itemStatsTable = C_Item.GetItemStats(itemLink)
 
                 --check if the item has a socket
-                if (itemStatsTable.EMPTY_SOCKET_PRISMATIC) then
-                    --check if the socket is empty
-                    for i = 1, itemStatsTable.EMPTY_SOCKET_PRISMATIC do
-                        local gemId = tonumber(gemsIds[i])
-                        if (not gemId or gemId == 0) then
-                            slotsWithoutGems[#slotsWithoutGems+1] = equipmentSlotId
+                if (itemStatsTable) then
+                    if (itemStatsTable.EMPTY_SOCKET_PRISMATIC) then
+                        --check if the socket is empty
+                        for i = 1, itemStatsTable.EMPTY_SOCKET_PRISMATIC do
+                            local gemId = tonumber(gemsIds[i])
+                            if (not gemId or gemId == 0) then
+                                slotsWithoutGems[#slotsWithoutGems+1] = equipmentSlotId
 
-                        --check if the gem is not a valid gem (deprecated gem)
-                        elseif (gemId < 180000) then
-                            slotsWithoutGems[#slotsWithoutGems+1] = equipmentSlotId
+                            --check if the gem is not a valid gem (deprecated gem)
+                            elseif (gemId < 180000) then
+                                slotsWithoutGems[#slotsWithoutGems+1] = equipmentSlotId
+                            end
                         end
                     end
                 end
@@ -404,7 +407,7 @@ function openRaidLib.GearManager.BuildPlayerEquipmentList()
     for equipmentSlotId = 1, 17 do
         local itemLink = GetInventoryItemLink("player", equipmentSlotId)
         if (itemLink) then
-            local itemStatsTable = {}
+            --local itemStatsTable = {}
             local itemID, enchantID, gemID1, gemID2, gemID3, gemID4, suffixID, uniqueID, linkLevel, specializationID, modifiersMask, itemContext = select(2, strsplit(":", itemLink))
             itemID = tonumber(itemID)
 
@@ -415,7 +418,8 @@ function openRaidLib.GearManager.BuildPlayerEquipmentList()
                 openRaidLib.__errors[#openRaidLib.__errors+1] = "Fail to get Item Level: " .. (itemID or "invalid itemID") .. " " .. (itemLink and itemLink:gsub("|H", "") or "invalid itemLink")
             end
 
-            GetItemStats(itemLink, itemStatsTable)
+            local itemStatsTable = C_Item.GetItemStats(itemLink)
+            --GetItemStats(itemLink, itemStatsTable)
             local gemSlotsAvailable = itemStatsTable and itemStatsTable.EMPTY_SOCKET_PRISMATIC or 0
 
             local noPrefixItemLink = itemLink : gsub("^|c%x%x%x%x%x%x%x%x|Hitem", "")
@@ -569,12 +573,22 @@ local getSpellListAsHashTableFromSpellBook = function()
                 spellId = C_SpellBook.GetOverrideSpell(spellId)
                 local spellName = GetSpellInfo(spellId)
                 local bIsPassive = IsPassiveSpell(spellId, "player")
+
                 if LIB_OPEN_RAID_MULTI_OVERRIDE_SPELLS[spellId] then
                     for _, overrideSpellId in pairs(LIB_OPEN_RAID_MULTI_OVERRIDE_SPELLS[spellId]) do
                         completeListOfSpells[overrideSpellId] = true
                     end
                 elseif (spellName and not bIsPassive) then
                     completeListOfSpells[spellId] = true
+
+                else
+                    if (not spellName) then
+                        --print("no spellname")
+                        --print(GetSpellInfo(spellId))
+                    elseif (bIsPassive) then
+                        --print("is passive")
+                        --print(GetSpellInfo(spellId))
+                    end
                 end
             end
         end
@@ -647,7 +661,7 @@ function openRaidLib.CooldownManager.GetPlayerCooldownList()
         --get the player specId
         local specId = openRaidLib.GetPlayerSpecId()
         if (specId) then
-            --get the cooldowns for the specialization
+            --get the cooldowns for the specializationid
             local playerCooldowns = LIB_OPEN_RAID_PLAYERCOOLDOWNS
             if (not playerCooldowns) then
                 openRaidLib.DiagnosticError("CooldownManager|GetPlayerCooldownList|LIB_OPEN_RAID_PLAYERCOOLDOWNS is nil")
@@ -701,9 +715,10 @@ local bIsNewUnitAuraAvailable = C_UnitAuras and C_UnitAuras.GetAuraDataBySlot an
 
 local auraSpellID
 local auraDurationTime
+local auraUnitId
 
 local handleBuffAura = function(aura)
-    local auraInfo = C_UnitAuras.GetAuraDataByAuraInstanceID("player", aura.auraInstanceID)
+    local auraInfo = C_UnitAuras.GetAuraDataByAuraInstanceID(auraUnitId, aura.auraInstanceID)
     if (auraInfo) then
         local spellId = auraInfo.spellId
         if (auraSpellID == spellId) then
@@ -714,7 +729,7 @@ local handleBuffAura = function(aura)
     end
 end
 
-local getAuraDuration = function(spellId)
+local getAuraDuration = function(spellId, unitId)
     --some auras does not have the same spellId of the cast as the spell for its aura duration
     --in these cases, it's necessary to declare the buff spellId which tells the duration of the effect by adding 'durationSpellId = spellId' within the cooldown data
     if (not LIB_OPEN_RAID_PLAYERCOOLDOWNS[spellId]) then
@@ -726,12 +741,12 @@ local getAuraDuration = function(spellId)
     --spellId = customBuffDuration or spellId --can't replace the spellId by customBuffDurationSpellId has it wount be found in LIB_OPEN_RAID_PLAYERCOOLDOWNS
 
     if (bIsNewUnitAuraAvailable) then
-        local bBatchCount = false
         local bUsePackedAura = true
         auraSpellID = customBuffDuration or spellId
         auraDurationTime = 0 --reset duration
+        auraUnitId = unitId or "player"
 
-        AuraUtil.ForEachAura("player", "HELPFUL", bBatchCount, handleBuffAura, bUsePackedAura) --check auras to find a buff for the spellId
+        AuraUtil.ForEachAura(auraUnitId, "HELPFUL", nil, handleBuffAura, bUsePackedAura) --check auras to find a buff for the spellId
 
         if (auraDurationTime == 0) then --if the buff wasn't found, attempt to get the duration from the file
             return LIB_OPEN_RAID_PLAYERCOOLDOWNS[spellId].duration or 0
@@ -744,9 +759,10 @@ end
 
 ---get the duration of a buff placed by a spell
 ---@param spellId number
+---@param unitId string?
 ---@return number duration
-function openRaidLib.CooldownManager.GetSpellBuffDuration(spellId)
-    return getAuraDuration(spellId)
+function openRaidLib.CooldownManager.GetSpellBuffDuration(spellId, unitId)
+    return getAuraDuration(spellId, unitId)
 end
 
 ---check if a player cooldown is ready or if is in cooldown
@@ -790,50 +806,52 @@ do
     --make new namespace
     openRaidLib.AuraTracker = {}
 
-    function openRaidLib.AuraTracker.ScanCallback(aura)
-        local unitId = openRaidLib.AuraTracker.CurrentUnitId
-        local thisUnitAuras = openRaidLib.AuraTracker.CurrentAuras[unitId]
-
-        local auraInfo = C_UnitAuras.GetAuraDataByAuraInstanceID(unitId, aura.auraInstanceID)
-        if (auraInfo) then
-            local spellId = auraInfo.spellId
-            if (spellId) then
-                thisUnitAuras[spellId] = true
-                openRaidLib.AuraTracker.AurasFoundOnScan[spellId] = true
+    do if (false) then --do not load this section as it isn't in use
+        function openRaidLib.AuraTracker.ScanCallback(auraInfo)
+            if (auraInfo) then
+                local spellId = auraInfo.spellId
+                if (spellId) then
+                    local unitId = openRaidLib.AuraTracker.CurrentUnitId
+                    local thisUnitAuras = openRaidLib.AuraTracker.CurrentAuras[unitId]
+                    thisUnitAuras[spellId] = true
+                    openRaidLib.AuraTracker.AurasFoundOnScan[spellId] = true
+                end
             end
         end
-    end
 
-	function openRaidLib.AuraTracker.ScanUnitAuras(unitId)
-		local batchCount = nil
-		local usePackedAura = true
-        openRaidLib.AuraTracker.CurrentUnitId = unitId
+        function openRaidLib.AuraTracker.ScanUnitAuras(unitId)
+            local maxCount = nil
+            local bUsePackedAura = true
+            openRaidLib.AuraTracker.CurrentUnitId = unitId
 
-        openRaidLib.AuraTracker.AurasFoundOnScan = {}
-		AuraUtil.ForEachAura(unitId, "HELPFUL", batchCount, openRaidLib.AuraTracker.ScanCallback, usePackedAura)
+            openRaidLib.AuraTracker.AurasFoundOnScan = {}
 
-        local thisUnitAuras = openRaidLib.AuraTracker.CurrentAuras[unitId]
-        for spellId in pairs(thisUnitAuras) do
-            if (not openRaidLib.AuraTracker.AurasFoundOnScan[spellId]) then
-                --aura removed
-                openRaidLib.internalCallback.TriggerEvent("unitAuraRemoved", unitId, spellId)
+            --code of 'ForEachAura' has been updated to use the latest API available
+            AuraUtil.ForEachAura(unitId, "HELPFUL", maxCount, openRaidLib.AuraTracker.ScanCallback, bUsePackedAura)
+
+            local thisUnitAuras = openRaidLib.AuraTracker.CurrentAuras[unitId]
+            for spellId in pairs(thisUnitAuras) do
+                if (not openRaidLib.AuraTracker.AurasFoundOnScan[spellId]) then
+                    --aura removed
+                    openRaidLib.internalCallback.TriggerEvent("unitAuraRemoved", unitId, spellId)
+                end
             end
         end
-	end
 
-    --run when the open raid lib loads
-    function openRaidLib.AuraTracker.StartScanUnitAuras(unitId)
-        openRaidLib.AuraTracker.CurrentAuras = {
-            [unitId] = {}
-        }
+        --run when the open raid lib loads
+        function openRaidLib.AuraTracker.StartScanUnitAuras(unitId) --this function isn't getting called (was called from Entering World event)
+            openRaidLib.AuraTracker.CurrentAuras = {
+                [unitId] = {} --storing using the unitId as key, won't work for any other unit other than the "player"
+            }
 
-        local auraFrameEvent = CreateFrame("frame")
-        auraFrameEvent:RegisterUnitEvent("UNIT_AURA", unitId)
+            local auraFrameEvent = CreateFrame("frame")
+            auraFrameEvent:RegisterUnitEvent("UNIT_AURA", unitId)
 
-        auraFrameEvent:SetScript("OnEvent", function()
-            openRaidLib.AuraTracker.ScanUnitAuras(unitId)
-        end)
-    end
+            auraFrameEvent:SetScript("OnEvent", function()
+                openRaidLib.AuraTracker.ScanUnitAuras(unitId)
+            end)
+        end
+    end end
 
     --test case:
     local debugModule = {}
@@ -842,7 +860,50 @@ do
         --print("aura removed:", unitId, spellId, spellName)
     end
     openRaidLib.internalCallback.RegisterCallback("unitAuraRemoved", debugModule.AuraRemoved)
+end
 
+
+do
+	local getUnitName = function(unitId)
+		local unitName, realmName = UnitName(unitId)
+		if (unitName) then
+			if (realmName and realmName ~= "") then
+				unitName = unitName .. "-" .. realmName
+			end
+			return unitName
+		end
+	end
+
+    local predicateFunc = function(spellIdToFind, casterName, _, name, icon, applications, dispelName, duration, expirationTime, sourceUnitId, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossAura, isFromPlayerOrPlayerPet, nameplateShowAll, timeMod, applications)
+		if (spellIdToFind == spellId and UnitExists(sourceUnitId)) then
+			if (casterName == getUnitName(sourceUnitId)) then
+				return true
+			end
+		end
+	end
+
+    ---find the duration of a debuff by passing the spellId and the caster name
+    ---@param unitId unit
+    ---@param spellId spellid
+    ---@param casterName actorname
+    ---@return auraduration|nil auraDuration
+    ---@return number|nil expirationTime
+    function openRaidLib.AuraTracker.FindBuffDuration(unitId, casterName, spellId)
+        local name, texture, count, buffType, duration, expirationTime = AuraUtil.FindAura(predicateFunc, unitId, "HELPFUL", spellId, casterName)
+        if (name) then
+            return duration, expirationTime
+        end
+    end
+
+    ---find the duration of a buff placed by a unit
+    ---@param targetString string
+    ---@param casterString string
+    ---@param spellId number
+    function openRaidLib.AuraTracker.FindBuffDurationByUnitName(targetString, casterString, spellId)
+        local targetName = Ambiguate(targetString, "none")
+        local casterName = Ambiguate(casterString, "none")
+        return openRaidLib.AuraTracker.FindBuffDuration(targetName, casterName, spellId)
+    end
 end
 
 
@@ -915,5 +976,6 @@ openRaidLib.specAttribute = {
     ["EVOKER"] = {
         [1467] = 1, --Devastation
         [1468] = 1, --Preservation
+        [1473] = 1, --Augmentation
     },
 }

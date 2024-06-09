@@ -77,7 +77,7 @@ local function TuskarrPlan()
     end
 
     if (FBI.StartedFishing and not FL:HasBuff(TuskarrItem.spell)) then
-        local s,_,_ = GetItemCooldown(TuskarrItem.id);
+        local s,_,_ = C_Container.GetItemCooldown(TuskarrItem.id);
         if (s == 0) then
             if not PLANS:HaveEntry(TuskarrItem.id) then
                 PLANS:AddEntry(TuskarrItem.id, TuskarrItem[CurLoc])
@@ -95,7 +95,7 @@ local function TrawlerPlan()
 
     if PLANS:CanUseFishingItem(TRAWLER_ID, TrawlerTotem) then
         if (FBI.StartedFishing) then
-            local start, duration, enable = GetItemCooldown(TRAWLER_ID);
+            local start, duration, enable = C_Container.GetItemCooldown(TRAWLER_ID);
             local et = (start + duration) - GetTime();
             if (et <= 0) then
                 local _, itemid =  C_ToyBox.GetToyInfo(TRAWLER_ID);

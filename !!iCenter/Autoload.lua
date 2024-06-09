@@ -26,21 +26,9 @@ local function LoadAddons()
 	]]
 
 	if (class == "HUNTER") then
-		local _, _, _, _, loadable = GetAddOnInfo("TrackingEye");
-		if (loadable == "DEMAND_LOADED") and (not IsAddOnLoaded("TrackingEye")) then
-			LoadAddOn("TrackingEye");
-		end
 		local _, _, _, _, loadable = GetAddOnInfo("GFW_FeedOMatic");
 		if (loadable == "DEMAND_LOADED") and (not IsAddOnLoaded("GFW_FeedOMatic")) then
 			LoadAddOn("GFW_FeedOMatic");
-		end
-		local _, _, _, _, loadable = GetAddOnInfo("YaHT");
-		if (loadable == "DEMAND_LOADED") and (not IsAddOnLoaded("YaHT")) then
-			LoadAddOn("YaHT");
-		end
-		local _, _, _, _, loadable = GetAddOnInfo("TranqRotate");
-		if (loadable == "DEMAND_LOADED") and (not IsAddOnLoaded("TranqRotate")) then
-			LoadAddOn("TranqRotate");
 		end
 	end
 
@@ -59,10 +47,6 @@ local function LoadAddons()
 	end
 
 	if (class == "DRUID") then
-		-- local _, _, _, _, loadable = GetAddOnInfo("ComboPoints");
-		-- if loadable and (not IsAddOnLoaded("ComboPoints")) then
-		-- 	LoadAddOn("ComboPoints");
-		-- end
 		local _, _, _, _, loadable = GetAddOnInfo("Decursive");
 		if (loadable == "DEMAND_LOADED") and (not IsAddOnLoaded("Decursive")) then
 			LoadAddOn("Decursive");
@@ -96,10 +80,6 @@ local function LoadAddons()
 	end
 
 	if (class == "ROGUE") then
-		-- local _, _, _, _, loadable = GetAddOnInfo("ComboPoints");
-		-- if (loadable == "DEMAND_LOADED") and (not IsAddOnLoaded("ComboPoints")) then
-		-- 	LoadAddOn("ComboPoints");
-		-- end
 		local _, _, _, _, loadable = GetAddOnInfo("PicoPoisons");
 		if (loadable == "DEMAND_LOADED") and (not IsAddOnLoaded("PicoPoisons")) then
 			LoadAddOn("PicoPoisons");

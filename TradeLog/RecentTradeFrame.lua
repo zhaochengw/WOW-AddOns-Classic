@@ -92,3 +92,18 @@ function RecentTradeFrame_UpdateList(name)
 	end
 
 end
+
+function RecentTradeFrame_OnLoad(self)
+	Mixin(self, BackdropTemplateMixin)
+	self:OnBackdropLoaded()
+	self:HookScript("OnSizeChanged", self.OnBackdropSizeChanged)
+	self:SetBackdrop({
+		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", 
+		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+		tile = true,
+		edgeSize = 16,
+		tileSize = 16,
+		insets = {left = 5, right = 5, top = 5, bottom = 5}
+	})
+	self:RegisterEvent("TRADE_SHOW")
+end

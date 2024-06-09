@@ -842,11 +842,13 @@ end
 
 function tipPrototype:SetCellMarginH(size)
     if #self.lines > 0 then
-        error("Unable to set horizontal margin while the tooltip has lines.", 2)
+       -- error("Unable to set horizontal margin while the tooltip has lines.", 2)
+       return
     end
 
     if not size or type(size) ~= "number" or size < 0 then
-        error("Margin size must be a positive number or zero.", 2)
+        --error("Margin size must be a positive number or zero.", 2)
+        return
     end
 
     self.cell_margin_h = size
@@ -1375,14 +1377,9 @@ local scripts = {
     OnReceiveDrag = function(frame, ...)
         frame:_OnReceiveDrag_func(frame._OnReceiveDrag_arg, ...)
     end,
-	-- SUPPORT FOR KEYBOARD EVENTS
-	OnKeyUp = function(frame, ...)
-		frame:SetPropagateKeyboardInput(true)
-		frame:_OnKeyUp_func(frame._OnKeyUp_arg, ...)
-	end,
-	OnKeyDown = function(frame, ...)
-		frame:SetPropagateKeyboardInput(true)
-		frame:_OnKeyDown_func(frame._OnKeyDown_arg, ...)
+	-- SUPPORT FOR MORE EVENTS
+	OnEvent = function(frame, ...)
+		frame:_OnEvent_func(frame._OnEvent_arg, ...)
 	end,
 }
 
@@ -1402,14 +1399,13 @@ function SetFrameScript(frame, script, func, arg)
         end
     end
 	
-	-- SUPPORT FOR KEYBOARD EVENTS
-	if script == "OnKeyUp" or script == "OnKeyDown" then
+	-- SUPPORT FOR MORE EVENTS
+	if script == "OnEvent" then
 		if func then
+			frame:RegisterEvent("MODIFIER_STATE_CHANGED")
 			frame:SetScript(script, scripts[script])
-			frame:EnableKeyboard(true)
 		else
 			frame:SetScript(script, nil)
-			frame:EnableKeyboard(false)
 		end
 	end
 
@@ -1448,15 +1444,11 @@ function ClearFrameScripts(frame)
         frame:SetScript("OnMouseUp", nil)
         frame._OnMouseUp_func = nil
         frame._OnMouseUp_arg = nil
-	elseif frame._OnKeyUp_func or frame._OnKeyDown_func then
-		frame:EnableKeyboard(false)
-		frame:SetScript("OnKeyUp", nil)
-		frame._OnKeyUp_func = nil
-		frame._OnKeyUp_arg = nil
-		
-		frame:SetScript("OnKeyDown", nil)
-		frame._OnKeyDown_func = nil
-		frame._OnKeyDown_arg = nil
+	elseif frame._OnEvent_func then
+		frame:SetScript("OnEvent", nil)
+		frame._OnEvent_func = nil
+		frame._OnEvent_arg = nil
+		frame:UnregisterEvent("MODIFIER_STATE_CHANGED")
 	end
 end
 
