@@ -102,6 +102,8 @@ L["Ignore stuff when calculating the stat summary"] = true
 -- /rb sum ignore unused
 L["Ignore unused item types"] = true
 L["Show stat summary only for highest level armor type and items you can use with uncommon quality and up"] = true
+L["Ignore non-primary stat"] = true
+L["Show stat summary only for items with your specialization's primary stat"] = true
 -- /rb sum ignore equipped
 L["Ignore equipped items"] = true
 L["Hide stat summary for equipped items"] = true
@@ -313,14 +315,9 @@ L["Reduced Physical Damage Taken"] = true
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
 L["numberPatterns"] = {
 	{pattern = " by (%d+)%f[^%d%%]", addInfo = "AfterNumber",},
-	{pattern = "([%+%-]%d+)%f[^%d%%]", addInfo = "AfterStat",},
-	{pattern = "grant.-(%d+)", addInfo = "AfterNumber",}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
-	{pattern = "add.-(%d+)[^%%]?$", addInfo = "AfterNumber",}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
-	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID: 24261
-	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
-	{pattern = "(%d+)([^%d%%|]+)", addInfo = "AfterStat",}, -- [發光的暗影卓奈石] +6法術傷害及5耐力
-	{pattern = "chest, legs, hands or feet by (%d+)"},
+	{pattern = "([%+%-]?%d+)%f[^%d%%]", addInfo = "AfterStat",},
 }
+
 -- Exclusions are used to ignore instances of separators that should not get separated
 L["exclusions"] = {
 	["head, chest, shoulders, legs,"] = "head chest shoulders legs", -- Borean Armor Kit
@@ -385,6 +382,8 @@ L["statList"] = {
 	{"health", false}, -- Scroll of Enchant Chest - Health (prevents matching Armor)
 
 	{"armor penetration", StatLogic.Stats.ArmorPenetrationRating},
+	{"elemental mastery", false}, -- Frost Witch's Regalia
+	{"mastery rating", StatLogic.Stats.MasteryRating},
 	{"mastery", StatLogic.Stats.MasteryRating},
 	{ARMOR:lower(), StatLogic.Stats.Armor},
 }
@@ -418,12 +417,16 @@ L[StatLogic.Stats.Mana] = MANA
 S[StatLogic.Stats.Mana] = "MP"
 L[StatLogic.Stats.ManaRegen] = "Mana Regen"
 S[StatLogic.Stats.ManaRegen] = "MP5"
-L[StatLogic.Stats.ManaRegenNotCasting] = "Mana Regen (Not Casting)"
-S[StatLogic.Stats.ManaRegenNotCasting] = "MP5(NC)"
-L[StatLogic.Stats.ManaRegenOutOfCombat] = "Mana Regen (Out of Combat)"
-if addon.tocversion > 40000 then
-	L[StatLogic.Stats.ManaRegenNotCasting] =  L[StatLogic.Stats.ManaRegenOutOfCombat]
+
+local ManaRegenOutOfCombat = "Mana Regen (Out of Combat)"
+L[StatLogic.Stats.ManaRegenOutOfCombat] = ManaRegenOutOfCombat
+if addon.tocversion < 40000 then
+	L[StatLogic.Stats.ManaRegenNotCasting] = "Mana Regen (Not Casting)"
+else
+	L[StatLogic.Stats.ManaRegenNotCasting] = ManaRegenOutOfCombat
 end
+S[StatLogic.Stats.ManaRegenNotCasting] = "MP5(NC)"
+
 L[StatLogic.Stats.HealthRegen] = "Health Regen"
 S[StatLogic.Stats.HealthRegen] = "HP5"
 L[StatLogic.Stats.HealthRegenOutOfCombat] = "Health Regen (Out of Combat)"

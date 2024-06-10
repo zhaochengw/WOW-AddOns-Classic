@@ -110,7 +110,7 @@ local OverpowerHandler = {
 
     This stops if:
     - the player loses the Taste for Blood effect
-    
+
     The player may lose the effect because Overpower was cast,
     or because the effect faded after its full duration
 
@@ -123,12 +123,12 @@ local OPTFBHandler = {
 
     -- Variables
 
-    buffID = 60503,
+    buffID = nil,
     hasBuff = nil,
 
     -- Methods
 
-    init = function(self, id, name)
+    init = function(self, id, name, buffID)
         SAO.GlowInterface:bind(self);
         self:initVars(id, name, 2, nil, {
             -- Must be the same variant values as OverpowerHandler
@@ -140,6 +140,7 @@ local OPTFBHandler = {
             return option == "stance:1/2/3" or GetShapeshiftForm() == 1
         end);
 
+        self.buffID = buffID;
         self.hasBuff = SAO:FindPlayerAuraByID(self.buffID);
         if self.hasBuff then
             self:glow();
@@ -308,8 +309,17 @@ local function customLogin(self, ...)
     local overpower = 7384;
     local overpowerName = GetSpellInfo(overpower);
     if (overpowerName) then
+        -- Overpower is used for OverpowerHandler, detecting when the target dodges
         OverpowerHandler:init(overpower, overpowerName);
-        OPTFBHandler:init(overpower, overpowerName);
+
+        -- Overpower is also used for OPTFBHandler, looking for Taste for Blood buff
+        if self.IsSoD() then
+            local tasteForBloodBuff = 426969;
+            OPTFBHandler:init(overpower, overpowerName, tasteForBloodBuff);
+        elseif self.IsWrath() or self.IsCata() then
+            local tasteForBloodBuffSoD = 60503;
+            OPTFBHandler:init(overpower, overpowerName, tasteForBloodBuffSoD);
+        end
     end
 
     local revenge = 6572;
@@ -362,14 +372,26 @@ local function registerClass(self)
     local victoryRush = 34428;
     local slam = 1464;
     local shieldSlam = 23922;
+    local colossusSmash = 86346;
     local victoryRushSoD = 402927;
     local ragingBlowSoD = 402911;
+    local bloodSurgeSoD = 413399;
 
-    for stacks = 1, 2 do -- Bloodsurge and Sudden Death may have several charges, due to T10 4pc
-        self:RegisterAura("bloodsurge_"..stacks, stacks, 46916, "blood_surge", "Top", 1, 255, 255, 255, true, { (GetSpellInfo(slam)) });
-        self:RegisterAura("sudden_death_"..stacks, stacks, 52437, "sudden_death", "Left + Right (Flipped)", 1, 255, 255, 255, true, { (GetSpellInfo(execute)) });
+    if self.IsSoD() then
+        self:RegisterAura("bloodsurge", 0, bloodSurgeSoD, "blood_surge", "Top", 1, 255, 255, 255, true, { (GetSpellInfo(slam)) });
+        self:RegisterAura("sword_and_board", 0, 426979, "sword_and_board", "Left + Right (Flipped)", 1, 255, 255, 255, true, { (GetSpellInfo(shieldSlam)) });
+    elseif self.IsWrath() then
+        for stacks = 1, 2 do -- Bloodsurge and Sudden Death may have several charges, due to T10 4pc
+            self:RegisterAura("bloodsurge_"..stacks, stacks, 46916, "blood_surge", "Top", 1, 255, 255, 255, true, { (GetSpellInfo(slam)) });
+            self:RegisterAura("sudden_death_"..stacks, stacks, 52437, "sudden_death", "Left + Right (Flipped)", 1, 255, 255, 255, true, { (GetSpellInfo(execute)) });
+        end
+        self:RegisterAura("sword_and_board", 0, 50227, "sword_and_board", "Left + Right (Flipped)", 1, 255, 255, 255, true, { (GetSpellInfo(shieldSlam)) });
+    elseif self.IsCata() then
+--        self:RegisterAura("bloodsurge", 0, 46916, "blood_surge", "Top (CW)", 1, 255, 255, 255, true, { (GetSpellInfo(slam)) }); -- Clockwise because texture is different
+        self:RegisterAura("bloodsurge", 0, 46916, "blood_surge", "Left + Right (Flipped)", 1, 255, 255, 255, true, { (GetSpellInfo(slam)) });
+        self:RegisterAura("sudden_death", 0, 52437, "sudden_death", "Left + Right (Flipped)", 1, 255, 255, 255, true, { (GetSpellInfo(colossusSmash)) });
+        self:RegisterAura("sword_and_board", 0, 50227, "sword_and_board", "Left + Right (Flipped)", 1, 255, 255, 255, true, { (GetSpellInfo(shieldSlam)) });
     end
-    self:RegisterAura("sword_and_board", 0, 50227, "sword_and_board", "Left + Right (Flipped)", 1, 255, 255, 255, true, { (GetSpellInfo(shieldSlam)) });
 
     -- Overpower
     self:RegisterAura("overpower", 0, overpower, nil, "", 0, 0, 0, 0, false, { (GetSpellInfo(overpower)) });
@@ -405,27 +427,36 @@ local function loadOptions(self)
     local victoryRush = 34428;
     local slam = 1464;
     local shieldSlam = 23922;
+    local colossusSmash = 86346;
 
     local bloodsurgeBuff = 46916;
     local bloodsurgeTalent = 46913;
+    local bloodSurgeBuffSoD = 413399;
+    local bloodSurgeTalentSoD = 413380;
 
     local suddenDeathBuff = 52437;
     local suddenDeathTalent = 29723;
 
     local swordAndBoardBuff = 50227;
     local swordAndBoardTalent = 46951;
-
-    local tasteforBloodBuff = 60503;
-    local tasteforBloodTalent = 56636;
+    local swordAndBoardBuffSoD = 426979;
+    local swordAndBoardTalentSoD = 426978;
 
     local victoryRushSoD = 402927;
     local ragingBlowSoD = 402911;
 
-    self:AddOverlayOption(suddenDeathTalent, suddenDeathBuff);
-    self:AddOverlayOption(bloodsurgeTalent, bloodsurgeBuff);
-    self:AddOverlayOption(swordAndBoardTalent, swordAndBoardBuff);
     if self.IsSoD() then
+        self:AddOverlayOption(bloodSurgeTalentSoD, bloodSurgeBuffSoD);
+        self:AddOverlayOption(swordAndBoardTalentSoD, swordAndBoardBuffSoD);
         self:AddOverlayOption(ragingBlowSoD, ragingBlowSoD);
+    elseif self.IsWrath() then
+        self:AddOverlayOption(bloodsurgeTalent, bloodsurgeBuff, 0, nil, nil, 1); -- setup any stacks, test with 1 stack
+        self:AddOverlayOption(suddenDeathTalent, suddenDeathBuff, 0, nil, nil, 1); -- setup any stacks, test with 1 stack
+        self:AddOverlayOption(swordAndBoardTalent, swordAndBoardBuff);
+    elseif self.IsCata() then
+        self:AddOverlayOption(bloodsurgeTalent, bloodsurgeBuff, 0, self:RecentlyUpdated()); -- Updated 2024-04-30
+        self:AddOverlayOption(suddenDeathTalent, suddenDeathBuff);
+        self:AddOverlayOption(swordAndBoardTalent, swordAndBoardBuff);
     end
 
     if OverpowerHandler.initialized then
@@ -437,14 +468,22 @@ local function loadOptions(self)
     if ExecuteHandler.initialized then
         self:AddGlowingOption(nil, ExecuteHandler.optionID, ExecuteHandler.spellID, nil, nil, ExecuteHandler.variants);
     end
-    self:AddGlowingOption(nil, victoryRush, victoryRush);
     if self.IsSoD() then
         self:AddGlowingOption(nil, victoryRushSoD, victoryRushSoD);
         self:AddGlowingOption(nil, ragingBlowSoD, ragingBlowSoD);
+        self:AddGlowingOption(bloodSurgeTalentSoD, bloodSurgeBuffSoD, slam);
+        self:AddGlowingOption(swordAndBoardTalentSoD, swordAndBoardBuffSoD, shieldSlam);
+    elseif self.IsWrath() then
+        self:AddGlowingOption(nil, victoryRush, victoryRush);
+        self:AddGlowingOption(bloodsurgeTalent, bloodsurgeBuff, slam);
+        self:AddGlowingOption(suddenDeathTalent, suddenDeathBuff, execute);
+        self:AddGlowingOption(swordAndBoardTalent, swordAndBoardBuff, shieldSlam);
+    elseif self.IsCata() then
+        self:AddGlowingOption(nil, victoryRush, victoryRush);
+        self:AddGlowingOption(bloodsurgeTalent, bloodsurgeBuff, slam);
+        self:AddGlowingOption(suddenDeathTalent, suddenDeathBuff, colossusSmash);
+        self:AddGlowingOption(swordAndBoardTalent, swordAndBoardBuff, shieldSlam);
     end
-    self:AddGlowingOption(suddenDeathTalent, suddenDeathBuff, execute);
-    self:AddGlowingOption(bloodsurgeTalent, bloodsurgeBuff, slam);
-    self:AddGlowingOption(swordAndBoardTalent, swordAndBoardBuff, shieldSlam);
 end
 
 SAO.Class["WARRIOR"] = {

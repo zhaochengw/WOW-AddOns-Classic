@@ -1,8 +1,8 @@
-## Interface: 100105
+## Interface: 11502, 100207, 40400
 ## LoadOnDemand: 1
 ## Title: Lib: DualSpec-1.0
-## Version: v1.22.2
-## X-Date: 2023-08-03T04:43:46Z
+## Version: v1.22.5
+## X-Date: 2024-05-08T06:28:08Z
 ## Notes: Adds spec switching support to individual AceDB-3.0 databases.
 ## Author: Adirelle, Nebula
 ## OptionalDeps: Ace3

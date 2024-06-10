@@ -278,7 +278,6 @@ function BG.WCLUI(lastbt)
             end
             text = updatetime
             SendChatMessage(text, "RAID")
-            SendChatMessage(L["——感谢使用金团表格——"], "RAID")
             PlaySoundFile(BG.sound2, "Master")
         end
     end)

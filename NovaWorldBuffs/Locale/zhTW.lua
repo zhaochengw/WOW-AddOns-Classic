@@ -32,6 +32,8 @@ L["Fengus' Ferocity"] = "芬古斯的狂暴";
 L["Mol'dar's Moxie"] = "摩爾達的勇氣";
 L["Boon of Blackfathom"] = "黑澗深淵的恩賜";
 L["Ashenvale Rallying Cry"] = "梣谷振奮咆哮";
+L["Spark of Inspiration"] = "鼓舞火花"; --Phase 2 SoD world buff.
+L["Fervor of the Temple Explorer"] = "神廟探險者狂熱";
 
 ---=====---
 ---Horde---
@@ -623,13 +625,13 @@ L["timerWindowWidthTitle"] = "計時器視窗寬度";
 L["timerWindowWidthDesc"] = "計時器的視窗寬度。";
 
 L["timerWindowHeightTitle"] = "計時器視窗高度";
-L["timerWindowHeghtDesc"] = "計時器的視窗高度。";
+L["timerWindowHeightDesc"] = "計時器的視窗高度。";
 
 L["buffWindowWidthTitle"] = "增益視窗寬度";
 L["buffWindowWidthDesc"] = "增益視窗的寬度。";
 
 L["buffWindowHeightTitle"] = "增益視窗高度";
-L["buffWindowHeghtDesc"] = "增益視窗的高度。";
+L["buffWindowHeightDesc"] = "增益視窗的高度。";
 
 L["dmfSettingsListTitle"] = "按月馬增益清單";
 L["dmfSettingsListDesc"] = "點擊這個顯示你的暗月增益設定哪個種類。";
@@ -858,3 +860,5 @@ L["ashenvaleOverlayScaleDesc"] = "設定梣谷提示的大小。";
 
 L["ashenvaleOverlayText"] = "|cFFFFFF00-在你的介面上永遠顯示梣谷資源提示-";
 L["layersNoteText"] = "|cFFFF6900關於 SoD 中的鏡像說明:|r |cFF9CD6DENWB 最多只能追蹤 10 個鏡像，這是為了讓資料大小不會太大，而能很容易地在玩家之間分享。在目前人口眾多的 SoD 伺服器上，鏡像超過了 10 個，因此如果它沒有顯示你所在的鏡像，那是因為你不是在 10 個已記錄的鏡像之一。一旦推出時的高峰期過去，數量可能會減少至低於 10 個，但在那之前它可能不可靠，對此我們感到抱歉。|r";
+
+L["Temple of Atal'Hakkar"] = "阿塔哈卡神廟";

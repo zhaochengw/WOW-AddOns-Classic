@@ -7,6 +7,8 @@
 local ns = select(2, ...)
 
 local tonumber = tonumber
+local tinssert = table.insert
+local tconcat = table.concat
 
 ---@class Talent: Object
 local Talent = ns.Addon:NewClass('Talent')
@@ -31,6 +33,7 @@ function Talent:ParseTalentV2(data)
         for j = 1, self.data[i].numTalents do
             local point = tonumber(data[i]:sub(j, j)) or 0
             self.talents[i][j] = point
+
             pointsSpent = pointsSpent + point
         end
 
@@ -48,9 +51,43 @@ function Talent:ParseTalentV1(data)
         local pointsSpent = 0
         for j = 1, self.data[i].numTalents do
             local point = tonumber(data:sub(index, index)) or 0
+            if point > self.data[i].talents[j].maxRank then
+                return self:ParseTalentV1NoOrder(data)
+            end
+            if point > 0 and pointsSpent < (self.data[i].talents[j].row - 1) * 5 then
+                return self:ParseTalentV1NoOrder(data)
+            end
+
             self.talents[i][j] = point
             pointsSpent = pointsSpent + point
             index = index + 1
+        end
+
+        self.talents[i].pointsSpent = pointsSpent
+    end
+end
+
+function Talent:ParseTalentV1NoOrder(data)
+    data = data:gsub('[^%d]+', '')
+
+    for i = 1, self:GetNumTalentTabs() do
+        self.talents[i] = {}
+
+        local pointsSpent = 0
+        for j = 1, self.data[i].numTalents do
+            local index = self.data[i].talents[j].index
+            local point = tonumber(data:sub(index, index)) or 0
+            if point > self.data[i].talents[j].maxRank then
+                self.talents = nil
+                return
+            end
+            if point > 0 and pointsSpent < (self.data[i].talents[j].row - 1) * 5 then
+                self.talents = nil
+                return
+            end
+            self.talents[i][j] = point
+            pointsSpent = pointsSpent + point
+
         end
 
         self.talents[i].pointsSpent = pointsSpent
@@ -69,7 +106,7 @@ end
 function Talent:GetTabInfo(tab)
     local tabData = self.data[tab]
     if tabData then
-        return tabData.name, tabData.bg, self.talents[tab].pointsSpent, tabData.icon
+        return tabData.name, tabData.bg, self.talents[tab] and self.talents[tab].pointsSpent, tabData.icon
     end
 end
 
@@ -112,4 +149,16 @@ function Talent:GetTalentRankSpell(tab, index, rank)
         end
         return talent.ranks[rank]
     end
+end
+
+function Talent:ToString()
+    if not self.talents then
+        return
+    end
+
+    local tabs = {}
+    for _, v in ipairs(self.talents) do
+        tinssert(tabs, tconcat(v, ''))
+    end
+    return tconcat(tabs):gsub('0+$', '')
 end

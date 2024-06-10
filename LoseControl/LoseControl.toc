@@ -1,7 +1,7 @@
-## Interface: 30402
-## Title: LoseControl WotLK
+## Interface: 30403
+## Title: |TInterface\Addons\LoseControl\micon:16:16|t LoseControl WotLK
 ## Author: millanzarreta, Kouri
-## Version: 3.03
+## Version: 3.04
 ## IconTexture: Interface\Addons\LoseControl\micon
 ## Notes: Displays the duration of CC effects on your character and other units
 ## Notes-deDE: Zeigt die Dauer von CC-Effekten auf Ihrem Charakter und andere Einheiten an

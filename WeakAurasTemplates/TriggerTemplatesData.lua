@@ -1,8 +1,9 @@
 local AddonName, TemplatePrivate = ...
+---@class WeakAuras
 local WeakAuras = WeakAuras
 if not WeakAuras.IsRetail() then return end
 local L = WeakAuras.L
-local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
+local GetSpellInfo, tinsert, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetSpellDescription, C_Timer, Spell
 
 -- The templates tables are created on demand
 local templates =
@@ -3308,7 +3309,7 @@ templates.class.WARLOCK = {
         { spell = 134477, type = "ability", unit = "pet", buff = true, debuff = true }, -- Threatening Presence
         { spell = 196277, type = "ability", charges = true, requiresTarget = true, usable = true, talent = 91520 }, -- Implosion
         { spell = 234153, type = "ability", requiresTarget = true }, -- Drain Life
-        { spell = 264057, type = "ability", requiresTarget = true, talent = 91537 }, -- Soul Strike
+        { spell = 264057, type = "ability", requiresTarget = true, talent = 91538 }, -- Soul Strike
         { spell = 264119, type = "ability", totem = true, talent = 91538 }, -- Summon Vilefiend
         { spell = 264130, type = "ability", talent = 91521 }, -- Power Siphon
         { spell = 264178, type = "ability", overlayGlow = true, requiresTarget = true, talent = 91544 }, -- Demonbolt
@@ -5326,7 +5327,7 @@ local function handleItem(item)
   if (item.spell) then
     local name, icon, _;
     if (item.type == "item") then
-      name, _, _, _, _, _, _, _, _, icon = GetItemInfo(item.spell);
+      name, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Item"] .. " " .. tostring(item.spell);
         waitingForItemInfo = true;
@@ -5349,7 +5350,7 @@ local function handleItem(item)
       item.title = item.titlePrefix .. item.title;
     end
     if (item.titleItemPrefix) then
-      local prefix = GetItemInfo(item.titleItemPrefix);
+      local prefix = C_Item.GetItemInfo(item.titleItemPrefix);
       if (prefix) then
         item.title = prefix .. "-" .. item.title;
       else

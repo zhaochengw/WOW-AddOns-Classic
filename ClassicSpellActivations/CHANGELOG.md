@@ -1,6 +1,7 @@
 # ClassicSpellActivations
 
-## [3.0.20](https://github.com/rgd87/ClassicSpellActivations/tree/3.0.20) (2024-01-08)
-[Full Changelog](https://github.com/rgd87/ClassicSpellActivations/compare/3.0.19...3.0.20) [Previous Releases](https://github.com/rgd87/ClassicSpellActivations/releases)
+## [3.0.25](https://github.com/rgd87/ClassicSpellActivations/tree/3.0.25) (2024-04-08)
+[Full Changelog](https://github.com/rgd87/ClassicSpellActivations/compare/3.0.24...3.0.25) [Previous Releases](https://github.com/rgd87/ClassicSpellActivations/releases)
 
-- Added Fury of Stormrage proc for SoD  
+- Added Surge Of Light  
+- Added Taste For Blood and Brain Freeze for SoD  

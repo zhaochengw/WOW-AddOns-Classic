@@ -86,8 +86,7 @@ local classTypeUtility = Details.atributos.misc
 		end
 	end
 
-	--restore actor containers indexes e metatables
-	function Details:RestoreMetatables() --called from Details222.LoadSavedVariables.CombatSegments()
+	function Details:RestoreMetatables() --called from Details222.LoadSavedVariables.CombatSegments() --restore actor containers indexes e metatables
 		--pet table
 		setmetatable(Details.tabela_pets, Details.container_pets)
 
@@ -133,12 +132,14 @@ local classTypeUtility = Details.atributos.misc
 					end
 
 					--overall data startTime
-					if (overallCombatObject.data_inicio == 0) then
-						overallCombatObject.data_inicio = thisCombatObject.data_inicio or 0
+					if (overallCombatObject:GetDate() == 0) then
+						overallCombatObject:SetDate(thisCombatObject:GetDate() or 0)
 					end
 
 					--overall data finished time
-					overallCombatObject.data_fim = thisCombatObject.data_fim or overallCombatObject.data_fim
+					local thisCombatDateStart, thisCombaDateEnd = thisCombatObject:GetDate()
+					local overallDateStart, overallDateEnd = overallCombatObject:GetDate()
+					overallCombatObject:SetDate(nil, thisCombaDateEnd or overallDateEnd)
 
 					--overall data enemy name
 					if (not Details.tabela_overall.overall_enemy_name) then
@@ -151,7 +152,7 @@ local classTypeUtility = Details.atributos.misc
 
 					--overall data segments added
 					local dateStart, dateEnd = thisCombatObject:GetDate()
-					table.insert(overallCombatObject.segments_added, {name = thisCombatObject:GetCombatName(true), elapsed = thisCombatObject:GetCombatTime(), clock = dateStart})
+					table.insert(overallCombatObject.segments_added, {name = thisCombatObject:GetCombatName(false, true), elapsed = thisCombatObject:GetCombatTime(), clock = dateStart})
 				end
 
 				--ghost container (container for custom displays, this is not a real container)
@@ -744,7 +745,7 @@ local classTypeUtility = Details.atributos.misc
 		local amountCleaned = 0
 
 		--do not collect things in a mythic+ dungeon segment
-		if (combatObject.is_mythic_dungeon_trash or combatObject.is_mythic_dungeon_run_id or combatObject.is_mythic_dungeon_segment) then
+		if (combatObject.is_mythic_dungeon_run_id or combatObject.is_mythic_dungeon_segment) then
 			return amountCleaned
 		end
 

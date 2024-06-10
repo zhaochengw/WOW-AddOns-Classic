@@ -748,24 +748,48 @@ function Details:GetNumLinesShown() --alis of _detalhes:GetNumRows()
 	return self.rows_fit_in_window
 end
 
---@attributeId: DETAILS_ATTRIBUTE_DAMAGE, DETAILS_ATTRIBUTE_HEAL
-function Details:GetTop5Actors(attributeId)
+---comment
+---@param displayId number
+---@return actor
+---@return actor
+---@return actor
+---@return actor
+---@return actor
+function Details:GetTop5Actors(displayId)
 	local combatObject = self.showing
-	if (combatObject) then
-		local container = combatObject:GetContainer(attributeId)
-		if (container) then
-            local actorTable = container._ActorTable
-			return actorTable[1], actorTable[2], actorTable[3], actorTable[4], actorTable[5]
-		end
-	end
+	local container = combatObject:GetContainer(displayId)
+	local actorTable = container._ActorTable
+	return actorTable[1], actorTable[2], actorTable[3], actorTable[4], actorTable[5]
+end
+
+---get the combat object which the instance is showing, get the display and subDisplay, then refresh the window in report mode and get the rankIndex actor
+---@param self instance
+---@param displayId attributeid
+---@param subDisplayId attributeid
+---@param rankIndex number
+---@return actor
+function Details:GetActorBySubDisplayAndRank(displayId, subDisplayId, rankIndex)
+	local classObject = Details:GetDisplayClassByDisplayId(displayId)
+	local combatObject = self:GetCombat()
+	local bIsForceRefresh = false
+	local bIsExport = true
+	local totalDone, subDisplayName, firstPlaceTotal, actorAmount = classObject:RefreshWindow(self, combatObject, bIsForceRefresh, bIsExport)
+
+	local actorContainer = combatObject:GetContainer(displayId)
+	local actorTable = actorContainer:GetActorTable()
+
+	return actorTable[rankIndex]
 end
 
 --@attributeId: DETAILS_ATTRIBUTE_DAMAGE, DETAILS_ATTRIBUTE_HEAL
 --@rankIndex: the rank id of the actor shown in the window
-function Details:GetActorByRank(attributeId, rankIndex)
-	local combatObject = self.showing
+---@param self instance
+---@param displayId attributeid
+---@param rankIndex number
+function Details:GetActorByRank(displayId, rankIndex)
+	local combatObject = self:GetCombat()
 	if (combatObject) then
-		local container = combatObject:GetContainer(attributeId)
+		local container = combatObject:GetContainer(displayId)
 		if (container) then
 			return container._ActorTable[rankIndex]
 		end
@@ -1015,6 +1039,13 @@ end
 				end
 			end
 		end
+	end
+
+	---reopen all closed windows that does not have the option "Ignore Mass Toogle" enabled
+	---@param ... unknown
+	---@return nil
+	function Details:ReopenAllWindows(...)
+		return Details:ReabrirTodasInstancias(...)
 	end
 
 	-- reabre todas as instancias
@@ -1382,7 +1413,7 @@ function Details:BaseFrameSnap()
 		if (instancia_alvo) then
 			if (instancia_alvo.ativa and instancia_alvo.baseframe) then
 				if (lado == 1) then --a esquerda
-					instancia_alvo.baseframe:SetPoint("TOPRIGHT", my_baseframe, "TOPLEFT")
+					instancia_alvo.baseframe:SetPoint("TOPRIGHT", my_baseframe, "TOPLEFT", -Details.grouping_horizontal_gap, 0)
 
 				elseif (lado == 2) then --em baixo
 					local statusbar_y_mod = 0
@@ -1392,7 +1423,7 @@ function Details:BaseFrameSnap()
 					instancia_alvo.baseframe:SetPoint("TOPLEFT", my_baseframe, "BOTTOMLEFT", 0, -34 + statusbar_y_mod)
 
 				elseif (lado == 3) then --a direita
-					instancia_alvo.baseframe:SetPoint("BOTTOMLEFT", my_baseframe, "BOTTOMRIGHT")
+					instancia_alvo.baseframe:SetPoint("BOTTOMLEFT", my_baseframe, "BOTTOMRIGHT", Details.grouping_horizontal_gap, 0)
 
 				elseif (lado == 4) then --em cima
 					local statusbar_y_mod = 0
@@ -1435,7 +1466,7 @@ function Details:BaseFrameSnap()
 					if (instancia_alvo.ativa and instancia_alvo.baseframe) then
 
 						if (lado_reverso == 1) then --a esquerda
-							instancia_alvo.baseframe:SetPoint("BOTTOMLEFT", instancia.baseframe, "BOTTOMRIGHT")
+							instancia_alvo.baseframe:SetPoint("BOTTOMLEFT", instancia.baseframe, "BOTTOMRIGHT", Details.grouping_horizontal_gap, 0)
 
 						elseif (lado_reverso == 2) then --em baixo
 
@@ -1447,7 +1478,7 @@ function Details:BaseFrameSnap()
 							instancia_alvo.baseframe:SetPoint("BOTTOMLEFT", instancia.baseframe, "TOPLEFT", 0, 34 + statusbar_y_mod) -- + (statusbar_y_mod*-1)
 
 						elseif (lado_reverso == 3) then --a direita
-							instancia_alvo.baseframe:SetPoint("TOPRIGHT", instancia.baseframe, "TOPLEFT")
+							instancia_alvo.baseframe:SetPoint("TOPRIGHT", instancia.baseframe, "TOPLEFT", -Details.grouping_horizontal_gap, 0)
 
 						elseif (lado_reverso == 4) then --em cima
 
@@ -1474,7 +1505,7 @@ function Details:BaseFrameSnap()
 
 					if (instancia_alvo.ativa and instancia_alvo.baseframe) then
 						if (lado == 1) then --a esquerda
-							instancia_alvo.baseframe:SetPoint("TOPRIGHT", instancia.baseframe, "TOPLEFT")
+							instancia_alvo.baseframe:SetPoint("TOPRIGHT", instancia.baseframe, "TOPLEFT", -Details.grouping_horizontal_gap, 0)
 
 						elseif (lado == 2) then --em baixo
 							local statusbar_y_mod = 0
@@ -1484,7 +1515,7 @@ function Details:BaseFrameSnap()
 							instancia_alvo.baseframe:SetPoint("TOPLEFT", instancia.baseframe, "BOTTOMLEFT", 0, -34 + statusbar_y_mod)
 
 						elseif (lado == 3) then --a direita
-							instancia_alvo.baseframe:SetPoint("BOTTOMLEFT", instancia.baseframe, "BOTTOMRIGHT")
+							instancia_alvo.baseframe:SetPoint("BOTTOMLEFT", instancia.baseframe, "BOTTOMRIGHT", Details.grouping_horizontal_gap, 0)
 
 						elseif (lado == 4) then --em cima
 
@@ -1516,9 +1547,9 @@ function Details:agrupar_janelas(lados)
 
 			if (lado == 3) then --direita
 				--mover frame
-				instancia.baseframe:SetPoint("TOPRIGHT", esta_instancia.baseframe, "TOPLEFT")
-				instancia.baseframe:SetPoint("RIGHT", esta_instancia.baseframe, "LEFT")
-				instancia.baseframe:SetPoint("BOTTOMRIGHT", esta_instancia.baseframe, "BOTTOMLEFT")
+				instancia.baseframe:SetPoint("TOPRIGHT", esta_instancia.baseframe, "TOPLEFT", -Details.grouping_horizontal_gap, 0)
+				instancia.baseframe:SetPoint("RIGHT", esta_instancia.baseframe, "LEFT", -Details.grouping_horizontal_gap, 0)
+				instancia.baseframe:SetPoint("BOTTOMRIGHT", esta_instancia.baseframe, "BOTTOMLEFT", -Details.grouping_horizontal_gap, 0)
 
 				local _, height = esta_instancia:GetSize()
 				instancia:SetSize(nil, height)
@@ -1549,9 +1580,9 @@ function Details:agrupar_janelas(lados)
 			elseif (lado == 1) then --esquerda
 				--mover frame
 
-				instancia.baseframe:SetPoint("TOPLEFT", esta_instancia.baseframe, "TOPRIGHT")
-				instancia.baseframe:SetPoint("LEFT", esta_instancia.baseframe, "RIGHT")
-				instancia.baseframe:SetPoint("BOTTOMLEFT", esta_instancia.baseframe, "BOTTOMRIGHT")
+				instancia.baseframe:SetPoint("TOPLEFT", esta_instancia.baseframe, "TOPRIGHT", Details.grouping_horizontal_gap, 0)
+				instancia.baseframe:SetPoint("LEFT", esta_instancia.baseframe, "RIGHT", Details.grouping_horizontal_gap, 0)
+				instancia.baseframe:SetPoint("BOTTOMLEFT", esta_instancia.baseframe, "BOTTOMRIGHT", Details.grouping_horizontal_gap, 0)
 
 				local _, height = esta_instancia:GetSize()
 				instancia:SetSize(nil, height)
@@ -3156,6 +3187,19 @@ function Details:ChangeIcon(icon)
 		skin = Details.skins [Details.default_skin_to_use]
 	end
 
+	local titleBarIconSize
+
+	local iconSizeFromInstance = self.attribute_icon_size
+	if (iconSizeFromInstance and iconSizeFromInstance ~= 0) then
+		titleBarIconSize = iconSizeFromInstance
+
+	elseif (skin.attribute_icon_size) then
+		titleBarIconSize = skin.attribute_icon_size
+
+	else
+		titleBarIconSize = 16
+	end
+
 	if (not self.hide_icon) then
 		if (skin.icon_on_top) then
 			self.baseframe.cabecalho.atributo_icon:SetParent(self.floatingframe)
@@ -3170,8 +3214,7 @@ function Details:ChangeIcon(icon)
 		self.baseframe.cabecalho.atributo_icon:SetTexCoord(5/64, 60/64, 3/64, 62/64)
 
 		local icon_size = skin.icon_plugins_size
-		self.baseframe.cabecalho.atributo_icon:SetWidth(icon_size[1])
-		self.baseframe.cabecalho.atributo_icon:SetHeight(icon_size[2])
+		self.baseframe.cabecalho.atributo_icon:SetSize(titleBarIconSize, titleBarIconSize)
 		local icon_anchor = skin.icon_anchor_plugins
 
 		self.baseframe.cabecalho.atributo_icon:ClearAllPoints()
@@ -3190,8 +3233,7 @@ function Details:ChangeIcon(icon)
 				self.baseframe.cabecalho.atributo_icon:SetTexCoord(5/64, 60/64, 3/64, 62/64)
 
 				local icon_size = skin.icon_plugins_size
-				self.baseframe.cabecalho.atributo_icon:SetWidth(icon_size[1])
-				self.baseframe.cabecalho.atributo_icon:SetHeight(icon_size[2])
+				self.baseframe.cabecalho.atributo_icon:SetSize(titleBarIconSize, titleBarIconSize)
 				local icon_anchor = skin.icon_anchor_plugins
 
 				self.baseframe.cabecalho.atributo_icon:ClearAllPoints()
@@ -3209,7 +3251,7 @@ function Details:ChangeIcon(icon)
 
 			local p = 0.125 --32/256
 			self.baseframe.cabecalho.atributo_icon:SetTexCoord(p * (self.sub_atributo-1), p * (self.sub_atributo), 0, 1)
-			self.baseframe.cabecalho.atributo_icon:SetSize(16, 16)
+			self.baseframe.cabecalho.atributo_icon:SetSize(titleBarIconSize, titleBarIconSize)
 
 			self.baseframe.cabecalho.atributo_icon:ClearAllPoints()
 			if (self.menu_attribute_string) then
@@ -3221,13 +3263,8 @@ function Details:ChangeIcon(icon)
 				self.baseframe.cabecalho.atributo_icon:ClearAllPoints()
 				self.baseframe.cabecalho.atributo_icon:SetPoint("topleft", self.baseframe.cabecalho.ball_point, "topleft", skin.attribute_icon_anchor[1], skin.attribute_icon_anchor[2])
 			end
-
-			if (skin.attribute_icon_size) then
-				self.baseframe.cabecalho.atributo_icon:SetSize(unpack(skin.attribute_icon_size))
-			end
-
-
 		end
+
 	elseif (self.modo == modo_raid) then --raid
 		--icon is set by the plugin
 	end
@@ -3409,7 +3446,7 @@ function Details:monta_relatorio (este_relatorio, custom)
 		--shrink
 		local report_lines = {}
 		for i = 1, Details.report_lines+1, 1 do  --#este_relatorio -- o +1 � pq ele conta o cabe�alho como uma linha
-			report_lines [#report_lines+1] = este_relatorio[i]
+			report_lines [#report_lines+1] = este_relatorio[i] --este_relatorio is a nil value | bug report tells custom is true
 		end
 
 		return self:envia_relatorio (report_lines, true)
@@ -3796,15 +3833,20 @@ function Details:envia_relatorio (linhas, custom)
 	if (combatObject) then
 		local combatTime = combatObject:GetCombatTime()
 		segmentTime = Details.gump:IntegerToTimer(combatTime or 0)
+	else
+		combatObject = self:GetCombat()
+		local combatTime = combatObject:GetCombatTime()
+		segmentTime = Details.gump:IntegerToTimer(combatTime or 0)
 	end
 
 	--effective ou active time
-	if (Details.time_type == 2 or Details.use_realtimedps) then
-		linhas[1] = linhas[1] .. " [" .. segmentTime .. " EF]"
-	else
-		linhas[1] = linhas[1] .. " [" .. segmentTime .. " AC]"
+	if (not custom) then
+		if (Details.time_type == 2 or Details.use_realtimedps) then
+			linhas[1] = linhas[1] .. " [" .. segmentTime .. " EF]"
+		else
+			linhas[1] = linhas[1] .. " [" .. segmentTime .. " AC]"
+		end
 	end
-
 
 	local editbox = Details.janela_report.editbox
 	if (editbox.focus) then --n�o precionou enter antes de clicar no okey

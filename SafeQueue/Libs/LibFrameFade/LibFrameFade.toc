@@ -1,11 +1,11 @@
-## Interface: 100200
+## Interface: 100205
 ## Interface-TBC: 20504
-## Interface-Vanilla: 11404
+## Interface-Vanilla: 11500
 ## Interface-Wrath: 30403
 ## Title: Lib: Frame Fade
 ## Notes: Library that attempts to resolve issues with UIFrameFade taint.
 ## Author: Daniel "Meorawr" Yates <me@meorawr.io>
-## Version: v11
+## Version: v12
 ## IconAtlas: minortalents-icon-book
 
 ## X-Category: Libraries

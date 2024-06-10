@@ -1,8 +1,8 @@
-## Interface: 11500
+## Interface: 11502
 ## Title: SoulSort
 ## Notes: Easy Soul Shard Management
 ## Author: Anilusion
-## Version: 1.4
+## Version: 1.5
 ## SavedVariablesPerCharacter: SoulSortOptions
 ## OptionalDeps: LibDataBroker-1.1
 

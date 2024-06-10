@@ -1,0 +1,17 @@
+## Interface: 40400
+## Title: ClassicCastbars
+## Notes: Adds customizable castbars to various unitframes.
+## IconTexture: Interface\Icons\spell_holy_heal02
+## SavedVariables: ClassicCastbarsDB
+## SavedVariablesPerCharacter: ClassicCastbarsCharDB
+## Version: v1.7.10
+## X-Curse-Project-ID: 322865
+## X-Wago-ID: vEGPdkG1
+
+Core/ClassicSpellData.lua
+Core/PoolManager.lua
+Core/AnchorManager.lua
+Core/SavedVariables.lua
+Core/LoadOptionsOnDemand.lua
+ClassicCastbars.lua
+Core/Frames.lua

@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod("SolakarFlamewreath", "DBM-Party-Vanilla", 4)
+local mod	= DBM:NewMod("SolakarFlamewreath", "DBM-Party-Vanilla", DBM:IsCata() and 18 or 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231012014002")
+mod:SetRevision("20240315080105")
 mod:SetCreatureID(10264)
 
 mod:RegisterCombat("combat")

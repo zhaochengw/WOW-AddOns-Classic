@@ -325,6 +325,9 @@ function QuestieNPCFixes:Load()
             [npcKeys.zoneID] = zoneIDs.ARATHI_HIGHLANDS,
             [npcKeys.spawns] = {[zoneIDs.ARATHI_HIGHLANDS] = {{36.16,57.91}}},
         },
+        [2779] = {
+            [npcKeys.spawns] = {[zoneIDs.ARATHI_HIGHLANDS] = {{19.8,88.8},{20.2,82.4},{20.6,83.4},{20.8,84},{21.2,84.6},{21.2,89.2},{21.2,89.6},{21.6,82.8},{21.6,86},{21.6,89},{21.8,83.6},{21.8,84.8},{22.4,89.6},{22.8,84.4},{23,84.8},{23,86.2},{23,88},{23.2,82.2},{23.2,83.2},{23.4,89},{23.6,83.8},{23.6,89.4},{23.6,89.8},{24,88.4}}},
+        },
         [2783] = {
             [npcKeys.spawns] = {[zoneIDs.ARATHI_HIGHLANDS] = {{29.62,62.97},{29.47,64.14}}},
         },
@@ -621,6 +624,9 @@ function QuestieNPCFixes:Load()
             [npcKeys.zoneID] = zoneIDs.RAZORFEN_KRAUL,
             [npcKeys.spawns] = {[zoneIDs.RAZORFEN_KRAUL] = {{-1,-1}}},
         },
+        [4643] = {
+            [npcKeys.waypoints] = {},
+        },
         [4660] = {
             [npcKeys.zoneID] = zoneIDs.DESOLACE,
             [npcKeys.spawns] = {[zoneIDs.DESOLACE] = {{39.65,61.37}}},
@@ -734,14 +740,6 @@ function QuestieNPCFixes:Load()
         [5763] = {
             [npcKeys.zoneID] = zoneIDs.WAILING_CAVERNS,
             [npcKeys.spawns] = {[zoneIDs.WAILING_CAVERNS] = {{-1,-1}}},
-        },
-        [5767] = {
-            [npcKeys.spawns] = {[zoneIDs.THE_BARRENS]={{45.99,35.66}}},
-            [npcKeys.zoneID] = zoneIDs.THE_BARRENS,
-        },
-        [5768] = {
-            [npcKeys.spawns] = {[zoneIDs.THE_BARRENS]={{46.01,35.74}}},
-            [npcKeys.zoneID] = zoneIDs.THE_BARRENS,
         },
         [5797] = {
             [npcKeys.spawns] = {[zoneIDs.THE_BARRENS]={{46,70}}},
@@ -2453,8 +2451,8 @@ function QuestieNPCFixes:Load()
             },
         },
         [16031] = {
-            [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
-            [npcKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{48.31,21.93},{31.14,15.84}}},
+            [npcKeys.zoneID] = zoneIDs.STRATHOLME,
+            [npcKeys.spawns] = {[zoneIDs.STRATHOLME] = {{-1,-1}}},
         },
         [16042] = {
             [npcKeys.spawns] = {[zoneIDs.UPPER_BLACKROCK_SPIRE] = {{-1,-1}}},

@@ -1,9 +1,9 @@
-## Interface: 100200
+## Interface: 100205
 ## Title: Method Raid Tools
 ## Author: ykiigor
 ## Notes: Method Raid Tools
 ## SavedVariables: VMRT
-## Version: 4810
+## Version: 4840
 ## AddonCompartmentFunc: MRT_MinimapClickFunction
 ## IconTexture: Interface\AddOns\MRT\media\MiniMap.tga
 core.lua
@@ -23,6 +23,7 @@ Note.lua
 ExCD2.lua
 Inspect.lua
 VisNote.lua
+Reminder.lua
 BossWatcher.lua
 InspectViewer.lua
 RaidCheck.lua
@@ -30,6 +31,8 @@ InviteTool.lua
 RaidGroups.lua
 MarksBar.lua
 Marks.lua
+MarksSimple.lua
+Interrupts.lua
 BattleRes.lua
 Timers.lua
 RaidAttendance.lua

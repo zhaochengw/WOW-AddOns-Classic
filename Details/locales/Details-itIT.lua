@@ -1237,6 +1237,8 @@ L["STRING_REPORT_SINGLE_BUFFUPTIME"] = "buff durato per"
 L["STRING_REPORT_SINGLE_COOLDOWN"] = "cooldowns usati da"
 L["STRING_REPORT_SINGLE_DEATH"] = "Morte di"
 L["STRING_REPORT_SINGLE_DEBUFFUPTIME"] = "debuff durato per"
+--[[Translation missing --]]
+L["STRING_REPORT_TEXT"] = "Report"
 L["STRING_REPORT_TOOLTIP"] = "Condividi Risultati"
 L["STRING_REPORTFRAME_COPY"] = "Copia & Incolla"
 L["STRING_REPORTFRAME_CURRENT"] = "Corrente"

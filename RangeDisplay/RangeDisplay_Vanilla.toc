@@ -1,7 +1,7 @@
-## Interface: 11404
+## Interface: 11501
 ## Title: RangeDisplay
 ## Author: mitch0
-## Version: v6.0.2
+## Version: v6.1.0
 ## Notes: Estimated range display. Type /rangedisplay for config
 ## Notes-ruRU: Дисплей с указанием расстояния до цели. Введите /rangedisplay для справки
 ## LoadManagers: AddonLoader
@@ -25,7 +25,6 @@ libs\Ace3\AceDB-3.0\AceDB-3.0.xml
 libs\Ace3\AceLocale-3.0\AceLocale-3.0.xml
 libs\LibSharedMedia-3.0\lib.xml
 libs\LibDualSpec-1.0\LibDualSpec-1.0.lua
-libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 #@end-no-lib-strip@
 libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 

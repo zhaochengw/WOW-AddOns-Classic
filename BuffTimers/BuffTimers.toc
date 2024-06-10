@@ -2,8 +2,8 @@
 ## IconTexture: Interface\AddOns\BuffTimers\Media\icon
 ## Title: BuffTimers
 ## Author: mdhippie
-## Notes: v1.11.10 -- Buff time options
-## Version: v1.11.10
+## Notes: v1.11.13 -- Buff time options
+## Version: v1.11.13
 ## DefaultState: enabled
 ## SavedVariables: BuffTimersOptions
 

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.15) add-on for World of Warcraft UI
+    Decursive (v 2.7.17) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2023-12-18T09:41:51Z
+    This file was last updated on 2024-03-21T03:38:23Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -627,7 +627,7 @@ end
 function D:isSpellReady(spellID, isPetAbility)
 
     -- in wow classic flavors, the 'display all ranks' option in the spell book UI changes the output of the IsSpellKnown() function...
-    if DC.WOWC and (isPetAbility or not IsSpellKnown(spellID, isPetAbility)) then
+    if DC.WOWC and (isPetAbility or not IsSpellKnownOrOverridesKnown(spellID, isPetAbility)) then
         -- Former ranks of known pet spell abilities are lost in WoW classic
         -- so we need to get back to the corresponding current spell id using
         -- the name of the spell.
@@ -656,7 +656,7 @@ function D:isSpellReady(spellID, isPetAbility)
         end
     end
 
-    return spellID and IsSpellKnown(spellID, isPetAbility); -- returns false if not all known spell checkbox is checked... how stupid.
+    return spellID and IsSpellKnownOrOverridesKnown(spellID, isPetAbility); -- returns false if not all known spell checkbox is checked... how stupid.
 end
 
 function D:GetItemFromLink(link)
@@ -1039,4 +1039,4 @@ do
         return nocase:trim();
     end
 end
-T._LoadedFiles["Dcr_utils.lua"] = "2.7.15";
+T._LoadedFiles["Dcr_utils.lua"] = "2.7.17";

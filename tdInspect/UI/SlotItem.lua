@@ -37,6 +37,10 @@ function SlotItem:Constructor()
     self.IconBorder:SetPoint('CENTER')
     self.IconBorder:SetSize(67, 67)
 
+    self.LevelText = self:CreateFontString(nil, 'OVERLAY', 'TextStatusBarText')
+    self.LevelText:SetPoint('BOTTOMLEFT', 1, 0)
+    self.LevelText:Hide()
+
     self.UpdateTooltip = self.OnEnter
 
     self:SetScript('OnClick', self.OnClick)
@@ -65,13 +69,32 @@ function SlotItem:Update()
         end
 
         if quality and quality > 1 then
-            self:UpdateBorder(GetItemQualityColor(quality))
+            local r, g, b = GetItemQualityColor(quality)
+            local level = select(4, GetItemInfo(item))
+            self:UpdateBorder(r, g, b)
+            self:UpdateItemLevel(level, r, g, b)
         else
             self:UpdateBorder()
+            self:UpdateItemLevel()
         end
+
+        --[=[@build<2@
+        local rune = Inspect:GetItemRune(self:GetID())
+        if rune then
+            local icon = rune.icon or select(3, GetSpellInfo(rune.spellId))
+            self.subicon:SetTexture(icon)
+            self.subicon:Show()
+        else
+            self.subicon:Hide()
+        end
+        --@end-build<2@]=]
     else
         SetItemButtonTexture(self, self:GetEmptyIcon())
         self:UpdateBorder()
+        self:UpdateItemLevel()
+        --[=[@build<2@
+        self.subicon:Hide()
+        --@end-build<2@]=]
     end
 
     self.hasItem = item
@@ -83,6 +106,16 @@ function SlotItem:UpdateBorder(r, g, b)
         self.IconBorder:Show()
     else
         self.IconBorder:Hide()
+    end
+end
+
+function SlotItem:UpdateItemLevel(level, r, g, b)
+    if level and level > 0 then
+        self.LevelText:SetText(level)
+        self.LevelText:SetTextColor(r, g, b, 1)
+        self.LevelText:Show()
+    else
+        self.LevelText:Hide()
     end
 end
 
@@ -102,7 +135,7 @@ function SlotItem:OnEnter()
     local item = Inspect:GetItemLink(self:GetID())
     if item then
         GameTooltip:SetHyperlink(item)
-        ns.FixInspectItemTooltip(GameTooltip)
+        ns.FixInspectItemTooltip(GameTooltip, self:GetID(), item)
     else
         GameTooltip:SetText(_G[strupper(strsub(self:GetName(), 8))])
     end

@@ -12,21 +12,21 @@ GetInfoFrame:Hide();
 
 -- Create GetInfoFrame title tags
 local GetInfoFrameLabel = GetInfoFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge");
-GetInfoFrameLabel:SetPoint("TOPLEFT", GetInfoFrame, "TOPLEFT", 13, 10);
-GetInfoFrameLabel:SetPoint("TOPRIGHT", GetInfoFrame, "TOPRIGHT", -13, 10);
+GetInfoFrameLabel:SetPoint("TOPLEFT", GetInfoFrame, "TOPLEFT", 0, -8);
+GetInfoFrameLabel:SetPoint("TOPRIGHT", GetInfoFrame, "TOPRIGHT", 0, -8);
 GetInfoFrameLabel:SetText(L['main_label_text']);
 GetInfoFrameLabel:SetJustifyH("CENTER");
 
 -- Create GetInfoFrame title background texture
-local GetInfoFrameLabelBg = GetInfoFrame:CreateTexture(nil, "BACKGROUND");
-GetInfoFrameLabelBg:SetTexture(136548) --"Interface\\PaperDollInfoFrame\\UI-Character-CharacterTab-L1"
-GetInfoFrameLabelBg:SetPoint("TOPLEFT", GetInfoFrameLabel, "TOPLEFT", -6, 6);
-GetInfoFrameLabelBg:SetPoint("BOTTOMRIGHT", GetInfoFrameLabel, "BOTTOMRIGHT", 6, -6);
-GetInfoFrameLabelBg:SetTexCoord(0.255, 1, 0.29, 1)
+-- local GetInfoFrameLabelBg = GetInfoFrame:CreateTexture(nil, "BACKGROUND");
+-- GetInfoFrameLabelBg:SetTexture(136548) --"Interface\\PaperDollInfoFrame\\UI-Character-CharacterTab-L1"
+-- GetInfoFrameLabelBg:SetPoint("TOPLEFT", GetInfoFrameLabel, "TOPLEFT", -6, 20);
+-- GetInfoFrameLabelBg:SetPoint("BOTTOMRIGHT", GetInfoFrameLabel, "BOTTOMRIGHT", 20, -6);
+-- GetInfoFrameLabelBg:SetTexCoord(0.255, 1, 0.29, 1)
 
 -- Create GetInfoFrame close button
-local CloseButton = CreateFrame("Button", "GetInfoFrameCloseButton", GetInfoFrame, "UIPanelCloseButton");
-CloseButton:SetPoint("TOPRIGHT", GetInfoFrame, "TOPRIGHT", -5, 18);
+ local CloseButton = CreateFrame("Button", "GetInfoFrameCloseButton", GetInfoFrame, "UIPanelCloseButton");
+ CloseButton:SetPoint("TOPRIGHT", GetInfoFrame, "TOPRIGHT", 0, 0);
 
 -- Set the click event of the GetInfoFrame close button
 CloseButton:SetScript("OnClick", function()
@@ -36,8 +36,8 @@ end)
 -- Create GetInfoFrame background
 local GetInfoFramebg = GetInfoFrame:CreateTexture(nil, "BACKGROUND")
 GetInfoFramebg:SetTexture(136548) --"Interface\\PaperDollInfoFrame\\UI-Character-CharacterTab-L1"
-GetInfoFramebg:SetPoint("TOPLEFT", 8, -12)
-GetInfoFramebg:SetPoint("BOTTOMRIGHT", -6, 8)
+GetInfoFramebg:SetPoint("TOPLEFT", 0, 0)
+GetInfoFramebg:SetPoint("BOTTOMRIGHT", 0, 0)
 GetInfoFramebg:SetTexCoord(0.255, 1, 0.29, 1)
 
 -- Set the drag of Get Info Frame

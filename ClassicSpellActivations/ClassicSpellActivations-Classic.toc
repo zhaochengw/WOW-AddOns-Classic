@@ -1,4 +1,4 @@
-## Interface: 11401
+## Interface: 11502
 ## Title: ClassicSpellActivations
 ## Notes: Shows you the shiny
 ## Author: d87

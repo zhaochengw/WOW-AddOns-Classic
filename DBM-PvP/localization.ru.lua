@@ -38,8 +38,9 @@ L:SetMiscLocalization({
 	ArenaStart30		= "Тридцать секунд до начала боя на Арене!",
 	ArenaStart15		= "Пятнадцать секунд до начала боя на Арене!",
 	ArenaInvite			= "Приглашение на Арену",
-	BasesToWin			= "Базы для победы: %d",
+	BasesToWin			= "Базы, необходимые для победы: %d",
 	WinBarText			= "%s выигрывает",
+	BasesToWinHeader	= "DBM-PvP",
 	ExprFlagPickUp		= "(.+) несет флаг (%w+)!",
 	ExprFlagCaptured	= "(.+) захватывает флаг (%w+)!",
 	ExprFlagReturn		= "(.+) возвращает на базу флаг (%w+)!",
@@ -182,13 +183,22 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("m1440")
 
 L:SetOptionLocalization({
-	EstimatedStartTimer = "Показывать таймер примерного времени начала события",
+	EstimatedStartTimer = "Показывать таймер времени начала события",
 	HealthFrame         = "Показывать инфофрейм со здоровьем босса. Это работает за счет синхронизации здоровья в Вашем рейде и через чат 'криков' с другими рейдами. Это означает, что данная функция работает только в том случае, если есть хотя бы несколько рейдов, распределенных по боссам с установленным DBM-PvP."
 })
 
+L:SetTimerLocalization({
+	EstimatedStart = "Начало события"
+})
+
+-----------------
+--  Blood Moon --
+-----------------
+L = DBM:GetModLocalization("m1434")
+
 L:SetMiscLocalization({
-	TimerEstimate   = "Начало события",
-	TimerSoon       = "Событие скоро начнется!",
-	ErrorSuddenDrop = "Обнаружено внезапное падение прогресса события, оценка пересчитывается, таймер обновится через 2-3 минуты.",
-	InfoMsgPrefix   = "DBM-PvP" -- По умолчанию для :AddMsg — это имя мода, которое просто 'Ясеневый лес', что не похоже на сообщение от DBM.
+	ParseTimeFromWidget = "(%d+)",
+	ResTimerSelf = "Показывать таймер воскрешения для Вас.",
+	ResTimerParty = "Показывать таймер воскрешения для членов Вашей группы.",
+	ResTimerPartyClassColors = "Использовать цвета классов для таймеров воскрешения членов группы."
 })

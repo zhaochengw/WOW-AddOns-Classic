@@ -32,6 +32,18 @@ local player = UnitName("player")
 BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
 
+    local function UpdateGuildFrame(frame)
+        if IsInRaid(1) then
+            frame:SetWidth(1)
+            frame:Hide()
+        elseif IsInGuild() then
+            local numTotal, numOnline, numOnlineAndMobile = GetNumGuildMembers()
+            frame.text:SetFormattedText(frame.title2, (Size(frame.table) .. "/" .. numOnline))
+            frame:SetWidth(frame.text:GetWidth() + 10)
+            frame:Show()
+        end
+    end
+
     local function UpdateAddonFrame(frame)
         if IsInRaid(1) then
             frame.text:SetFormattedText(frame.title2, (Size(frame.table) .. "/" .. GetNumGroupMembers()))
@@ -42,14 +54,56 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             frame:Hide()
         end
     end
-
-    local function Addon_OnEnter(self)
+    local function Guild_OnEnter(self)
         GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
         GameTooltip:ClearLines()
-        local c1, c2, c3 = RGB(BG.g1)
-        GameTooltip:AddLine(self.title, c1, c2, c3)
+        GameTooltip:AddLine(self.title, 0, 1, 0)
+        GameTooltip:AddLine(" ")
+        local ii = 0
+        for i = 1, GetNumGuildMembers() do
+            local name, rankName, rankIndex, level, classDisplayName, zone,
+            publicNote, officerNote, isOnline, status, class, achievementPoints,
+            achievementRank, isMobile, canSoR, repStanding, guid = GetGuildRosterInfo(i)
+            name = strsplit("-", name)
+            if isOnline then
+                if ii > 40 then
+                    GameTooltip:AddLine("......")
+                    break
+                end
+                ii = ii + 1
+                local line = 2
+                local Ver = L["无"]
+                for _name, ver in pairs(self.table) do
+                    if name == _name then
+                        Ver = ver
+                        break
+                    end
+                end
+
+                local r, g, b = GetClassColor(class)
+                GameTooltip:AddDoubleLine(name, Ver, r, g, b, 1, 1, 1)
+                if Ver == L["无"] then
+                    local alpha = 0.3
+                    if _G["GameTooltipTextLeft" .. (ii + line)] then
+                        _G["GameTooltipTextLeft" .. (ii + line)]:SetAlpha(alpha)
+                    end
+                    if _G["GameTooltipTextRight" .. (ii + line)] then
+                        _G["GameTooltipTextRight" .. (ii + line)]:SetAlpha(alpha)
+                    end
+                end
+            end
+        end
+        GameTooltip:Show()
+    end
+
+    local function Addon_OnEnter(self)
+        local line = 2
+        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(self.title, 0, 1, 0)
         if self.IsAuciton then
             GameTooltip:AddLine(L["需全团安装拍卖WA，没安装的人将会看不到拍卖窗口"], 0.5, 0.5, 0.5, true)
+            line = line + 1
         end
         GameTooltip:AddLine(" ")
         local raid = BG.PaiXuRaidRosterInfo()
@@ -60,10 +114,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     Ver = ver
                     break
                 end
-            end
-            local notVerTex = ""
-            if Ver == L["无"] then
-                notVerTex = AddTexture("interface/raidframe/readycheck-notready")
             end
 
             local role = ""
@@ -77,7 +127,16 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 role = role .. AddTexture("interface/groupframe/ui-group-masterlooter", y)
             end
             local c1, c2, c3 = GetClassRGB(v.name)
-            GameTooltip:AddDoubleLine(notVerTex .. v.name .. role, Ver, c1, c2, c3, 1, 1, 1)
+            GameTooltip:AddDoubleLine(v.name .. role, Ver, c1, c2, c3, 1, 1, 1)
+            if Ver == L["无"] then
+                local alpha = 0.3
+                if _G["GameTooltipTextLeft" .. (i + line)] then
+                    _G["GameTooltipTextLeft" .. (i + line)]:SetAlpha(alpha)
+                end
+                if _G["GameTooltipTextRight" .. (i + line)] then
+                    _G["GameTooltipTextRight" .. (i + line)]:SetAlpha(alpha)
+                end
+            end
         end
         GameTooltip:Show()
     end
@@ -417,93 +476,45 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
 
         -- ALT点击背包生效
-        do
-            local function NDuiOnClick(self)
-                if not IsAltKeyDown() then return end
-                local link = C_Container.GetContainerItemLink(self.bagId, self.slotId)
-                BG.StartAuction(link, self)
-            end
-
-            local function EUIOnClick(self)
-                if not IsAltKeyDown() then return end
-                local link = C_Container.GetContainerItemLink(self.BagID, self.SlotID)
-                BG.StartAuction(link, self)
-            end
-
-            local function BigFootOnClick(self)
-                if not IsAltKeyDown() then return end
-                local link = C_Container.GetContainerItemLink(self:GetParent():GetID(), self:GetID())
-                BG.StartAuction(link, self)
-            end
-
-            local function OnClick(self)
-                if not IsAltKeyDown() then return end
-                local link = C_Container.GetContainerItemLink(self:GetParent():GetID(), self:GetID())
-                BG.StartAuction(link, self)
-            end
-
-            BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload)
-                if not (isLogin or isReload) then return end
-                if _G["NDui_BackpackSlot1"] then
-                    --NDUI背包
-                    local i = 1
-                    while _G["NDui_BackpackSlot" .. i] do
-                        _G["NDui_BackpackSlot" .. i]:HookScript("OnClick", NDuiOnClick)
-                        i = i + 1
-                    end
-                elseif _G["ElvUI_ContainerFrameBag-1Slot1"] then
-                    --EUI背包
-                    local b = -1
-                    local i = 1
-                    while _G["ElvUI_ContainerFrameBag" .. b .. "Slot" .. i] do
-                        while _G["ElvUI_ContainerFrameBag" .. b .. "Slot" .. i] do
-                            _G["ElvUI_ContainerFrameBag" .. b .. "Slot" .. i]:HookScript("OnClick", EUIOnClick)
-                            i = i + 1
-                        end
-                        b = b + 1
-                        i = 1
-                    end
-                elseif _G["CombuctorFrame1"] then
-                    --大脚背包
-                    local yes
-                    _G["CombuctorFrame1"]:HookScript("OnShow", function()
-                        if not yes then
-                            local i = 1
-                            while _G["CombuctorItem" .. i] do
-                                _G["CombuctorItem" .. i]:HookScript("OnClick", BigFootOnClick)
-                                i = i + 1
-                            end
-                            yes = true
-                        end
-                    end)
-                else
-                    -- 原生背包
-                    local b = 1
-                    local i = 1
-                    while _G["ContainerFrame" .. b .. "Item" .. i] do
-                        while _G["ContainerFrame" .. b .. "Item" .. i] do
-                            _G["ContainerFrame" .. b .. "Item" .. i]:HookScript("OnClick", OnClick)
-                            i = i + 1
-                        end
-                        b = b + 1
-                        i = 1
-                    end
-                end
-            end)
-        end
+        hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", function(self, button)
+            if not IsAltKeyDown() then return end
+            local link = C_Container.GetContainerItemLink(self:GetParent():GetID(), self:GetID())
+            -- pt(link)
+            BG.StartAuction(link, self)
+        end)
     end
-    ------------------团员插件版本------------------
+    ------------------插件版本------------------
     do
+        BG.guildBiaoGeVersion = {}
+        BG.guildClass = {}
         BG.raidBiaoGeVersion = {}
         BG.raidAuctionVersion = {}
+
+        -- 会员插件
+        local guild = CreateFrame("Frame", nil, BG.MainFrame)
+        do
+            guild:SetSize(1, 20)
+            guild:SetPoint("LEFT", BG.ButtonAd, "RIGHT", 0, 0)
+            guild:Hide()
+            guild.title = L["BiaoGe版本"] .. "(" .. GUILD .. ")"
+            guild.title2 = GUILD .. L["插件：%s"]
+            guild.table = BG.guildBiaoGeVersion
+            guild:SetScript("OnEnter", Guild_OnEnter)
+            BG.GameTooltip_Hide(guild)
+            guild.text = guild:CreateFontString()
+            guild.text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+            guild.text:SetPoint("LEFT")
+            guild.text:SetTextColor(RGB(BG.g1))
+            BG.ButtonGuildVer = guild
+        end
 
         -- 团员插件
         local addon = CreateFrame("Frame", nil, BG.MainFrame)
         do
             addon:SetSize(1, 20)
-            addon:SetPoint("LEFT", BG.ButtonOnLineCount, "RIGHT", 0, 0)
+            addon:SetPoint("LEFT", BG.ButtonGuildVer, "RIGHT", 0, 0)
             addon:Hide()
-            addon.title = L["BiaoGe版本"]
+            addon.title = L["BiaoGe版本"] .. "(" .. RAID .. ")"
             addon.title2 = L["插件：%s"]
             addon.table = BG.raidBiaoGeVersion
             addon:SetScript("OnEnter", Addon_OnEnter)
@@ -536,18 +547,36 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         local f = CreateFrame("Frame")
         f:RegisterEvent("GROUP_ROSTER_UPDATE")
+        f:RegisterEvent("GUILD_ROSTER_UPDATE")
         f:RegisterEvent("CHAT_MSG_SYSTEM")
         f:RegisterEvent("CHAT_MSG_ADDON")
         f:RegisterEvent("PLAYER_ENTERING_WORLD")
         f:SetScript("OnEvent", function(self, even, ...)
             if even == "GROUP_ROSTER_UPDATE" then
-                C_Timer.After(1, function()
+                BG.After(1, function()
                     if IsInRaid(1) then
                         C_ChatInfo.SendAddonMessage("BiaoGe", "MyVer-" .. BG.ver, "RAID")
                     else
                         UpdateAddonFrame(addon)
                         UpdateAddonFrame(auction)
                     end
+                    UpdateGuildFrame(guild)
+                end)
+            elseif even == "GUILD_ROSTER_UPDATE" then
+                BG.After(1, function()
+                    for i = 1, GetNumGuildMembers() do
+                        local name, rankName, rankIndex, level, classDisplayName, zone,
+                        publicNote, officerNote, isOnline, status, class, achievementPoints,
+                        achievementRank, isMobile, canSoR, repStanding, guid = GetGuildRosterInfo(i)
+                        name = strsplit("-", name)
+                        if not isOnline then
+                            BG.guildBiaoGeVersion[name] = nil
+                            BG.guildClass[name] = nil
+                        else
+                            BG.guildClass[name] = class
+                        end
+                    end
+                    UpdateGuildFrame(guild)
                 end)
             elseif even == "CHAT_MSG_SYSTEM" then -- 如果团队里有人退出，就删掉
                 local text = ...
@@ -563,7 +592,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             elseif even == "CHAT_MSG_ADDON" then
                 local prefix, msg, distType, sender = ...
                 local sendername = strsplit("-", sender)
-                if prefix == "BiaoGe" and distType == "RAID" then
+                if prefix == "BiaoGe" and distType == "GUILD" then
+                    if strfind(msg, "MyVer") then
+                        local _, version = strsplit("-", msg)
+                        BG.guildBiaoGeVersion[sendername] = version
+                        UpdateGuildFrame(guild)
+                    end
+                elseif prefix == "BiaoGe" and distType == "RAID" then
                     if msg == "VersionCheck" then
                         C_ChatInfo.SendAddonMessage("BiaoGe", "MyVer-" .. BG.ver, "RAID")
                     elseif strfind(msg, "MyVer") then
@@ -657,83 +692,16 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
 
         local bt = CreateFrame("Button", nil, BG.MainFrame)
-        bt:SetPoint("LEFT", BG.ButtonMove, "RIGHT", 15, 0)
+        bt:SetPoint("LEFT", BG.ButtonGuoQi, "RIGHT", 15, 0)
         bt:SetNormalFontObject(BG.FontGreen15)
         bt:SetDisabledFontObject(BG.FontDis15)
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["拍卖WA字符串"])
         bt:SetSize(bt:GetFontString():GetWidth(), 30)
+        BG.SetTextHighlightTexture(bt)
         bt:SetScript("OnClick", OnClick)
         bt:SetScript("OnEnter", OnEnter)
         BG.GameTooltip_Hide(bt)
         BG.ButtonAucitonWA = bt
     end
 end)
-
--- 拍卖倒数
---[[         local f = CreateFrame("Frame")
-            local PaiMai
-
-            local function Channel(leader, assistant, looter, optionchannel)
-                if leader then
-                    return optionchannel
-                elseif assistant and looter then
-                    return optionchannel
-                elseif looter then
-                    return "RAID"
-                end
-            end
-
-            function BG.StartCountDown(link)
-                if not link then return end
-                if BiaoGe.options["countDown"] ~= 1 then return end
-                local leader
-                local assistant
-                local looter
-                local player = UnitName("player")
-                if BG.raidRosterInfo and type(BG.raidRosterInfo) == "table" then
-                    for index, v in ipairs(BG.raidRosterInfo) do
-                        if v.rank == 2 and v.name == player then
-                            leader = true
-                        elseif v.rank == 1 and v.name == player then
-                            assistant = true
-                        end
-                        if v.isML and v.name == player then
-                            looter = true
-                        end
-                    end
-                end
-                if not leader and not looter then return end
-
-                local channel = Channel(leader, assistant, looter, BiaoGe.options["countDownSendChannel"])
-                if PaiMai then
-                    local text = L["{rt7}倒数暂停{rt7}"]
-                    SendChatMessage(text, channel)
-                    PaiMai = nil
-                    f:SetScript("OnUpdate", nil)
-                    return
-                end
-
-                local Maxtime = BiaoGe.options["countDownDuration"]
-                local text = link .. L[" {rt1}拍卖倒数{rt1}"]
-                -- local text = link .. L[" {rt1}拍卖倒数"] .. Maxtime .. L["秒{rt1}"]
-                SendChatMessage(text, channel)
-                PaiMai = true
-
-                local timeElapsed = 0
-                local lasttime = Maxtime + 1
-                f:SetScript("OnUpdate", function(self, elapsed)
-                    timeElapsed = timeElapsed + elapsed
-                    if timeElapsed >= 1 then
-                        lasttime = lasttime - format("%d", timeElapsed)
-                        if lasttime <= 0 then
-                            PaiMai = nil
-                            f:SetScript("OnUpdate", nil)
-                            return
-                        end
-                        local text = "> " .. lasttime .. " <"
-                        SendChatMessage(text, channel)
-                        timeElapsed = 0
-                    end
-                end)
-            end ]]

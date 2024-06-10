@@ -49,9 +49,10 @@ local function ClassQuest(classID)
 end
 ADDONSELF.ClassQuest = ClassQuest
 
-
+-- 版本号
+local ver = select(4, GetBuildInfo())
 local function IsVanilla()
-    if select(4, GetBuildInfo()) <= 20000 then
+    if ver < 20000 then
         return true
     end
 end
@@ -71,16 +72,40 @@ local function IsVanilla_60()
 end
 ADDONSELF.IsVanilla_60 = IsVanilla_60
 
+local function IsWLK()
+    if ver >= 30000 and ver < 40000 then
+        return true
+    end
+end
+ADDONSELF.IsWLK = IsWLK
+
+local function IsCTM()
+    if ver >= 40000 and ver < 50000 then
+        return true
+    end
+end
+ADDONSELF.IsCTM = IsCTM
+
+function BG.Is11501()
+    if ver == 11501 then return true end
+end
+
+function BG.IsWLKFB(FB)
+    local FB = FB or BG.FB1
+    if (FB == "NAXX" and not BG.IsVanilla()) or FB == "ULD" or FB == "TOC" or FB == "ICC" then
+        return true
+    end
+end
+
+-- 阵营
 local function IsAlliance()
     return UnitFactionGroup("player") == "Alliance"
+    -- return UnitFactionGroup("player") == "Horde"
 end
 ADDONSELF.IsAlliance = IsAlliance
 
 local function IsHorde()
     return UnitFactionGroup("player") == "Horde"
+    -- return UnitFactionGroup("player") == "Alliance"
 end
 ADDONSELF.IsHorde = IsHorde
-
-function BG.Is11501()
-    if select(4, GetBuildInfo()) == 11501 then return true end
-end

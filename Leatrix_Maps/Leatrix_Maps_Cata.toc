@@ -1,0 +1,19 @@
+## Interface: 40400
+
+## Title: Leatrix Maps
+## Notes: Enhancements for your maps.
+
+## Version: 3.0.191
+## Author: Leatrix
+## SavedVariables: LeaMapsDB
+
+## OptionalDeps: Leatrix_enUS, ElvUI, Demodal, Carbonite
+
+## X-Curse-Project-ID: 463868
+
+Leatrix_Maps_Library.lua
+Leatrix_Maps_Locale.lua
+Leatrix_Maps.xml
+Leatrix_Maps_Icons_Cata.lua
+Leatrix_Maps_Reveal_Cata.lua
+Leatrix_Maps.lua

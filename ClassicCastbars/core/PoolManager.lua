@@ -8,17 +8,15 @@ local function ResetterFunc(pool, frame)
     frame:SetParent(nil)
     frame:ClearAllPoints()
     frame.isTesting = false
+    frame.isActiveCast = false
 
     if frame.animationGroup and frame.animationGroup:IsPlaying() then
         frame.animationGroup:Stop()
     end
-
-    if frame._data then
-        frame._data = nil
-    end
 end
 
--- TODO: with Retails changes to SmallCastingBarFrameTemplate we should look into creating our own template soon, this'd also help cleanup Frames.lua a lot.
+-- Note: don't add any major code reworks here, this codebase will soon be replaced with the player-castbar-v2 branch
+
 local framePool = CreateFramePool("Statusbar", UIParent, "SmallCastingBarFrameTemplate", ResetterFunc)
 local framesCreated = 0
 local framesActive = 0

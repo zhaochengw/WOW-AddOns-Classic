@@ -157,6 +157,7 @@ L["When duration<1sec"] = "当持续时间小于1秒"
 L["Blizzard Raid Frames"] = "暴雪团队框架"
 L["Hide Blizzard Raid Frames"] = "隐藏暴雪团队框架"
 -- L["Hide Blizzard Party Frames"] = ""
+-- L["Hide Blizzard Frames"] = ""
 
 -- debugging & maintenance
 L["debugging"] = "除错"
@@ -820,6 +821,7 @@ L["Instant"] = "立刻"
 L["Update frequency"] = "更新的频率"
 L["Select the health update frequency."] = "选择生命值更新频率"
 -- L["Add shields to health percent"] = ""
+-- L["Add shields to health amount"] = ""
 
 -- health-low status
 L["Use Health Percent"] = "使用生命值的百分比"
@@ -859,6 +861,8 @@ L["Not Ready color"] = "未准备就绪的颜色"
 L["Color for Not Ready."] = "未准备就绪颜色"
 L["AFK color"] = "暂离的颜色"
 L["Color for AFK."] = "暂离颜色"
+-- L["Hide on Combat Start"] = ""
+-- L["Hide ready check status if combat starts."] = ""
 
 -- heals-incoming status
 L["Include player heals"] = "包括玩家治疗"
@@ -1362,6 +1366,8 @@ L["You can include a descriptive prefix using separators \"@#>\""] = "你可以�
 -- L["Heal Types"] = ""
 -- L["Shorten Heal Numbers"] = ""
 -- L["Shorten Health Numbers"] = ""
+-- L["Shorten Thousand Numbers"] = ""
+-- L["Shorten Above Million Numbers"] = ""
 -- L["Include heals casted by me, if unchecked only other players heals are displayed."] = ""
 -- L["Apply this multiplier value to incoming heals."] = ""
 -- L["Incoming overheals below the specified value will not be shown."] = ""
@@ -1462,6 +1468,8 @@ L["You can include a descriptive prefix using separators \"@#>\""] = "你可以�
 --
 -- L["Disabled in instances"] = ""
 -- L["Disable this status inside instances."] = ""
+-- L["Display other groups"] = ""
+-- L["Enable the status if the player is in another LFG or PvP instance."] = ""
 --
 -- L["Enable harmful spells Allowlist"] = ""
 -- L["Display only the spells specified in a user defined list."] = ""

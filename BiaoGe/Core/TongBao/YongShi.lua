@@ -8,6 +8,7 @@ local NN = ADDONSELF.NN
 local RN = ADDONSELF.RN
 local TongBao = ADDONSELF.TongBao
 local FrameHide = ADDONSELF.FrameHide
+local RGB = ADDONSELF.RGB
 
 local Maxb = ADDONSELF.Maxb
 local Maxi = ADDONSELF.Maxi
@@ -27,25 +28,26 @@ function BG.YongShiUI(lastbt)
     bt:SetScript("OnEnter", function(self)
         if BG.Backing then return end
         local FB = BG.FB1
-        local text = "|cffffffff" .. L["< 通报击杀用时 >"] .. RN
+        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(L["———通报击杀用时———"])
+        local yes
         for b = 1, Maxb[FB] do
             local time = BiaoGe[FB]["boss" .. b]["time"]
             if time then
-                local s, e = strfind(time, "：")
-                if s then
-                    time = strsub(time, e + 1, strlen(time))
-                end
                 local bossname2 = BG.Boss[FB]["boss" .. b].name2
                 local bosscolor = BG.Boss[FB]["boss" .. b].color
-                text = text .. b .. "、" .. "|cff" .. bosscolor .. bossname2 .. "：" .. time .. RN
+                GameTooltip:AddLine(b .. ". " .. bossname2 .. " " .. time, unpack({ RGB(bosscolor) }))
+                yes = true
             end
             if BG.Frame[FB]["boss" .. b]["time"] then
                 BG.Frame[FB]["boss" .. b]["time"]:SetAlpha(0.8)
             end
         end
-        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
-        GameTooltip:ClearLines()
-        GameTooltip:SetText(text)
+        if not yes then
+            GameTooltip:AddLine(L["没有记录"])
+        end
+        GameTooltip:Show()
     end)
     bt:SetScript("OnLeave", function(self)
         local FB = BG.FB1
@@ -67,20 +69,19 @@ function BG.YongShiUI(lastbt)
                 bt:SetEnabled(true)
             end)
             local FB = BG.FB1
-            local text = L["———通报击杀用时———"]
-            SendChatMessage(text, "RAID")
+            SendChatMessage(L["———通报击杀用时———"], "RAID")
+            local yes
             for b = 1, Maxb[FB] do
                 local time = BiaoGe[FB]["boss" .. b]["time"]
                 if time then
-                    local s, e = strfind(time, "：")
-                    if s then
-                        time = string.gsub(strsub(time, e + 1, strlen(time)), "|r", "")
-                    end
-                    text = b .. "、" .. BG.Boss[FB]["boss" .. b]["name2"] .. "：" .. time
-                    SendChatMessage(text, "RAID")
+                    local bossname2 = BG.Boss[FB]["boss" .. b].name2
+                    SendChatMessage(b .. ". " .. bossname2 .. " " .. time, "RAID")
+                    yes = true
                 end
             end
-            SendChatMessage(L["——感谢使用金团表格——"], "RAID")
+            if not yes then
+                SendChatMessage(L["没有记录"], "RAID")
+            end
             PlaySoundFile(BG.sound2, "Master")
         end
     end)
@@ -99,7 +100,8 @@ function BG.YongShiUI(lastbt)
                 local time = GetTime() - timestart
                 local m, s = math.modf(time / 60)
                 s = string.format("%02d", s * 60)
-                time = m .. L["分"] .. s .. L["秒"]
+                time = m .. ":" .. s
+                timestart = nil
 
                 local numb
                 if BG.Loot.encounterID[BG.FB2] then
@@ -112,12 +114,8 @@ function BG.YongShiUI(lastbt)
                 end
                 if not numb then return end
 
-                local bosscolor = BG.Boss[BG.FB2]["boss" .. numb].color
-                local text = "|cff" .. bosscolor .. L["击杀用时："] .. time .. RR
-                BG.Frame[BG.FB2]["boss" .. numb]["time"]:SetText(text)
-                BiaoGe[BG.FB2]["boss" .. numb]["time"] = text
-
-                timestart = nil
+                BG.Frame[BG.FB2]["boss" .. numb]["time"]:SetText(L["击杀用时"] .. " " .. time)
+                BiaoGe[BG.FB2]["boss" .. numb]["time"] = time
             end
         end
     end)

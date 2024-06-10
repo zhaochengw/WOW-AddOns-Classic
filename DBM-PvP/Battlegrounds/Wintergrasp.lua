@@ -1,9 +1,6 @@
-if WOW_PROJECT_ID ~= (WOW_PROJECT_MAINLINE or 1) then -- Added in BfA
-	return
-end
-local mod	= DBM:NewMod("z2118", "DBM-PvP")
+local mod	= DBM:NewMod("z2118", "DBM-PvP") -- Added in Wrath
 
-mod:SetRevision("20240203195924")
+mod:SetRevision("20240505221847")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 
 mod:RegisterEvents(

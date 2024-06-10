@@ -100,7 +100,7 @@ Addon.ANCHOR_POINT_TEXT = {
 }
 
 ThreatPlates.AlignH = {LEFT = L["Left"], CENTER = L["Center"], RIGHT = L["Right"]}
-ThreatPlates.AlignV = {BOTTOM = L["Bottom"], CENTER = L["Center"], TOP = L["Top"]}
+ThreatPlates.AlignV = {BOTTOM = L["Bottom"], MIDDLE = L["Middle"], TOP = L["Top"]}
 
 ThreatPlates.AUTOMATION = {
   NONE = "No Automation",
@@ -143,6 +143,22 @@ Addon.MODE_FOR_STYLE = {
   unique = "HealthbarMode",
   NameOnly = "NameMode",
   ["NameOnly-Unique"] = "NameMode",
+  -- ! Although most elements are not shown in empty style, some configuration updates do not work
+  -- ! when there are not settings for the currently active style
+  etotem = "HealthbarMode",
+  empty = "HealthbarMode",
+}
+
+Addon.IGNORED_STYLES = {
+  etotem = true,
+  empty = true,
+}
+
+Addon.IGNORED_STYLES_WITH_NAMEMODE = {
+  NameOnly = true,
+  ["NameOnly-Unique"] = true,
+  etotem = true,
+  empty = true,
 }
 
 ----------------------------------------------------------------------------------------------------
@@ -302,6 +318,35 @@ ThreatPlates.NAME_ABBREVIATION = {
     --{ SpellID = 160161, ID = "S4", GroupColor = "ffb31f"}, 	  -- Earthquake Totem
   }
 
+  local TOTEM_DATA_CATA_CLASSIC = {
+    -- Earth Totems
+    { SpellID = 8075,   ID = "E1", GroupColor = "8B4513", Icon ="spell_nature_earthbindtotem", },	            -- Strength of Earth Totem
+    { SpellID = 8071,   ID = "E2", GroupColor = "8B4513", Icon ="spell_nature_stoneskintotem" },	            -- Stoneskin Totem
+    { SpellID = 5730,   ID = "E3", GroupColor = "8B4513", Icon ="spell_nature_stoneclawtotem" },	            -- Stoneclaw Totem
+    { SpellID = 2484,   ID = "E4", GroupColor = "8B4513", Icon ="spell_nature_strengthofearthtotem02" },      -- Earthbind Totem
+    { SpellID = 8143,    ID = "E5", GroupColor = "8B4513", Icon ="spell_nature_tremortotem" },	              -- Tremor Totem
+    { SpellID = 2062,    ID = "E6", GroupColor = "8B4513", Icon ="spell_nature_earthelemental_totem" },	      -- Earth Elemental Totem
+
+    -- Fire Totems
+    { SpellID = 3599, ID = "F1", GroupColor = "ff8f8f", Icon ="spell_fire_searingtotem", }, 	                -- Searing Totem
+    { SpellID = 8190, ID = "F4", GroupColor = "ff8f8f", Icon ="spell_fire_selfdestruct" }, 	                  -- Magma Totem
+    { SpellID = 8227, ID = "F5", GroupColor = "ff8f8f", Icon ="spell_nature_guardianward" }, 	                -- Flametongue Totem
+    { SpellID = 2894, ID = "F6", GroupColor = "ff8f8f", Icon ="spell_fire_elemental_totem" }, 	              -- Fire Elemental Totem
+
+    -- Air Totems
+    { SpellID = 8512,  ID = "A4", GroupColor = "ffb31f", Icon ="spell_nature_windfury" },	                 	  -- Windfury Totem
+    { SpellID = 8177,   ID = "A5", GroupColor = "ffb31f", Icon ="spell_nature_groundingtotem" },          		-- Grounding Totem    
+    { SpellID = 3738,  ID = "A8", GroupColor = "ffb31f", Icon ="spell_nature_slowingtotem" },		              -- Wrath of Air Totem
+    { SpellID = 98008,  ID = "A9", GroupColor = "4c9900", Icon = "spell_shaman_spiritlink" },	      	        -- Spirit Link Totem
+
+    -- Water Totems
+    { SpellID = 5394,  ID = "W1", GroupColor = "b8d1ff", Icon ="inv_spear_04" },	            	              -- Healing Stream Totem
+    { SpellID = 5675,  ID = "W2", GroupColor = "b8d1ff", Icon ="spell_nature_manaregentotem" },               -- Mana Spring Totem
+    { SpellID = 8184,  ID = "W3", GroupColor = "b8d1ff", Icon ="spell_fireresistancetotem_01" },	            -- Elemental Resistance Totem
+    { SpellID = 16190,  ID = "W4", GroupColor = "b8d1ff", Icon ="spell_frost_summonwaterelemental" },		      -- Mana Tide Totem
+    { SpellID = 87718,  ID = "W6", GroupColor = "b8d1ff", Icon ="spell_nature_brilliance" },	                -- Totem of Tranquil Mind
+  }
+
 local TOTEM_DATA_WRATH_CLASSIC = {
   -- Earth Totems
   { SpellID = 8075,   ID = "E1", GroupColor = "8B4513", Ranks = 8, Icon ="spell_nature_earthbindtotem", },	 -- Strength of Earth Totem
@@ -409,8 +454,12 @@ local TOTEM_DATA_CLASSIC = {
   { SpellID = 8166,   ID = "W6", GroupColor = "b8d1ff", },        		  -- Poison Cleansing Totem
 }
 
-Addon.Data.Totems = (Addon.IS_CLASSIC and TOTEM_DATA_CLASSIC) or (Addon.IS_TBC_CLASSIC and TOTEM_DATA_BC_CLASSIC) or
-                    (Addon.IS_WRATH_CLASSIC and TOTEM_DATA_WRATH_CLASSIC) or TOTEM_DATA_RETAIL
+Addon.Data.Totems = 
+  (Addon.IS_CLASSIC and TOTEM_DATA_CLASSIC) or 
+  (Addon.IS_TBC_CLASSIC and TOTEM_DATA_BC_CLASSIC) or
+  (Addon.IS_WRATH_CLASSIC and TOTEM_DATA_WRATH_CLASSIC) or 
+  (Addon.IS_CATA_CLASSIC and TOTEM_DATA_CATA_CLASSIC) or 
+  TOTEM_DATA_RETAIL
 local TOTEM_RANKS_CLASSIC = { " II", " III", " IV", " V", " VI", " VII", " VIII", " IX", " X" }
 
 function Addon:InitializeTotemInformation()
@@ -429,7 +478,7 @@ function Addon:InitializeTotemInformation()
       Addon.TOTEMS[name] = totem_data.ID
 
       -- Add totem ranks for WoW Classic
-      if Addon.IS_CLASSIC or Addon.IS_TBC_CLASSIC or Addon.IS_WRATH_CLASSIC then
+      if Addon.ExpansionIsAtLeast(LE_EXPANSION_CATACLYSM) then
         for rank = 1, (totem_data.Ranks or 1) - 1  do
           Addon.TOTEMS[name .. TOTEM_RANKS_CLASSIC[rank]] = totem_data.ID
         end
@@ -529,7 +578,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
         x = 0,
         y = 4,
         align = "CENTER",
-        vertical = "CENTER",
+        vertical = "MIDDLE",
       },
       customtext = {
         size = 8,
@@ -540,7 +589,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
         x = 0,
         y = -6,
         align = "CENTER",
-        vertical = "CENTER",
+        vertical = "MIDDLE",
       },
       useAlpha = false,
       -- blizzFading = true, -- removed in 8.5.1
@@ -555,9 +604,9 @@ ThreatPlates.DEFAULT_SETTINGS = {
       ForceFriendlyInCombat = "NONE",
       --
       EnemyTextColorMode = "CLASS",
-      EnemyTextColor = RGB(0, 255, 0),
+      EnemyTextColor = RGB(0, 255, 0, 1),
       FriendlyTextColorMode = "CLASS",
-      FriendlyTextColor = RGB(0, 255, 0),
+      FriendlyTextColor = RGB(0, 255, 0, 1),
       UseRaidMarkColoring = false,
       SubtextColorUseHeadline = false,
       SubtextColorUseSpecific = true,
@@ -574,15 +623,17 @@ ThreatPlates.DEFAULT_SETTINGS = {
       --				showFriendlyUnits = false,
       FriendlyPlayer = { Show = true, UseHeadlineView = false },
       FriendlyNPC = { Show = "nameplateShowFriendlyNPCs", UseHeadlineView = false },
-      FriendlyTotem = { Show = "nameplateShowFriendlyTotems", UseHeadlineView = false },
-      FriendlyGuardian = { Show = "nameplateShowFriendlyGuardians", UseHeadlineView = false },
+      FriendlyMinion = { Show = "nameplateShowFriendlyMinions",  },
       FriendlyPet = { Show = "nameplateShowFriendlyPets", UseHeadlineView = false },
+      FriendlyGuardian = { Show = "nameplateShowFriendlyGuardians", UseHeadlineView = false },
+      FriendlyTotem = { Show = "nameplateShowFriendlyTotems", UseHeadlineView = false },
       FriendlyMinus = { Show = true, UseHeadlineView = false },
       EnemyPlayer = { Show = true, UseHeadlineView = false },
       EnemyNPC = { Show = true, UseHeadlineView = false },
-      EnemyTotem = { Show = "nameplateShowEnemyTotems", UseHeadlineView = false },
-      EnemyGuardian = { Show = "nameplateShowEnemyGuardians", UseHeadlineView = false },
+      EnemyMinion = { Show = "nameplateShowEnemyMinions", },
       EnemyPet = { Show = "nameplateShowEnemyPets", UseHeadlineView = false },
+      EnemyGuardian = { Show = "nameplateShowEnemyGuardians", UseHeadlineView = false },
+      EnemyTotem = { Show = "nameplateShowEnemyTotems", UseHeadlineView = false },
       EnemyMinus = { Show = "nameplateShowEnemyMinus", UseHeadlineView = false },
       NeutralNPC = { Show = true, UseHeadlineView = false },
       --        NeutralGuardian = { Show = true, UseHeadlineView = false },
@@ -674,11 +725,11 @@ ThreatPlates.DEFAULT_SETTINGS = {
       ShowNumber = true,
       HideName = false,
       colors = {
-        [1] = RGB_P(1, 0, 0, 1),
-        [2] = RGB_P(1, 1, 0, 1),
-        [3] = RGB_P(0, 1, 0, 1),
-        [4] = RGB_P(0, 1, 1, 1),
-        [5] = RGB_P(0, 0, 1, 1),
+        [1] = RGB(255,   0,   0, 1),
+        [2] = RGB(255,   0,   0, 1),
+        [3] = RGB(255,   0,   0, 1),
+        [4] = RGB(255,   0,   0, 1),
+        [5] = RGB(255,   0,   0, 1),
       },
       numColors = {
         [1] = RGB_P(1, 1, 1, 1),
@@ -687,6 +738,25 @@ ThreatPlates.DEFAULT_SETTINGS = {
         [4] = RGB_P(1, 1, 1, 1),
         [5] = RGB_P(1, 1, 1, 1),
       },
+      Allies = {
+        ShowOrb = true,
+        ShowNumber = true,
+        HideName = false,
+        OrbColors = {
+          [1] = RGB(  0, 255,   0, 1),
+          [2] = RGB(  0, 255,   0, 1),
+          [3] = RGB(  0, 255,   0, 1),
+          [4] = RGB(  0, 255,   0, 1),
+          [5] = RGB(  0, 255,   0, 1),
+        },
+        NumberColors = {
+          [1] = RGB_P(1, 1, 1, 1),
+          [2] = RGB_P(1, 1, 1, 1),
+          [3] = RGB_P(1, 1, 1, 1),
+          [4] = RGB_P(1, 1, 1, 1),
+          [5] = RGB_P(1, 1, 1, 1),
+        },
+      },      
       NumberText = {
         Anchor = "CENTER",
         InsideAnchor = true,
@@ -698,7 +768,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
           flags = "OUTLINE",
           Shadow = true,
           HorizontalAlignment = "CENTER",
-          VerticalAlignment = "CENTER",
+          VerticalAlignment = "MIDDLE",
         },
       },
     },
@@ -776,6 +846,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
           HorizontalOffset = 0,
           VerticalOffset = 2,
         },
+        -- Also update debuff settings for square/wide in AURA_STYLE Options.lua
         ModeIcon = {
           Style = "square",
           IconWidth = 16.5,
@@ -799,7 +870,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "RIGHT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             }
           },
           StackCount = {
@@ -815,7 +886,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "RIGHT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             }
           },
         },
@@ -845,7 +916,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "LEFT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             },
           },
           Duration = {
@@ -861,7 +932,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "RIGHT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             },
           },
           StackCount = {
@@ -877,7 +948,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "CENTER",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             },
           },
         },
@@ -940,7 +1011,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "RIGHT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             }
           },
           StackCount = {
@@ -956,7 +1027,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "RIGHT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             }
           },
         },
@@ -986,7 +1057,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "LEFT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             },
           },
           Duration = {
@@ -1002,7 +1073,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "RIGHT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             },
           },
           StackCount = {
@@ -1018,7 +1089,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "CENTER",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             },
           },
         },
@@ -1051,6 +1122,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
           HorizontalOffset = 10,
           VerticalOffset = 0,
         },
+        -- Also update debuff settings for square/wide in AURA_STYLE Options.lua
         ModeIcon = {
           Style = "square",
           IconWidth = 32,
@@ -1074,7 +1146,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "THICKOUTLINE",
               Shadow = true,
               HorizontalAlignment = "RIGHT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             }
           },
           StackCount = {
@@ -1090,7 +1162,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "RIGHT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             }
           },
         },
@@ -1120,7 +1192,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "LEFT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             },
           },
           Duration = {
@@ -1136,7 +1208,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "RIGHT",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             },
           },
           StackCount = {
@@ -1152,7 +1224,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
               flags = "OUTLINE",
               Shadow = true,
               HorizontalAlignment = "CENTER",
-              VerticalAlignment = "CENTER",
+              VerticalAlignment = "MIDDLE",
             },
           },
         },
@@ -1192,6 +1264,34 @@ ThreatPlates.DEFAULT_SETTINGS = {
       Size = 32,
       HorizontalOffset = 8,
       VerticalOffset = 0,
+      SoftTarget = {
+        HighlightForEnemy = true,
+        TargetStyleForEnemy = true,
+        HighlightColorForEnemy = RGB(255,0,0, 1),
+        HighlightForFriend = true,
+        TargetStyleForFriend = true,
+        HighlightColorForFriend = RGB(0,255,0, 1),
+        HighlightForInteract = true,
+        TargetStyleForInteract = true,
+        HighlightColorForInteract = RGB(255, 128, 0, 1),
+        Icon = {
+          SoftTargetIconTarget = false,
+          Size = 22,
+          -- Positioning
+          HealthbarMode = {
+            Anchor = "TOP",
+            InsideAnchor = false,
+            HorizontalOffset = 0,
+            VerticalOffset = -14,
+          },
+          NameMode = {
+            Anchor = "TOP",
+            InsideAnchor = false,
+            HorizontalOffset = 0,
+            VerticalOffset = 8,
+          },
+        },
+        },
     },
     FocusWidget = {
       ON = true,
@@ -1233,7 +1333,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
           flags = "",
           Shadow = true,
           HorizontalAlignment = "RIGHT",
-          VerticalAlignment = "CENTER",
+          VerticalAlignment = "MIDDLE",
         }
       },
     },
@@ -1259,7 +1359,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
       y_hv = -20,
       Specialization = "DRUID",
       ColorBySpec = {
-        DEATHKNIGHT = Addon.IS_WRATH_CLASSIC and {
+        DEATHKNIGHT = Addon.ExpansionIsClassicAndAtLeast(LE_EXPANSION_WRATH_OF_THE_LICH_KING) and {
           [1] = RGB(255, 0, 0),
           [2] = RGB(255, 0, 0),
           [3] = RGB(0, 255, 255),
@@ -1503,7 +1603,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
           flags = "",
           Shadow = true,
           HorizontalAlignment = "LEFT",
-          VerticalAlignment = "CENTER",
+          VerticalAlignment = "MIDDLE",
         }
       },
       ExperienceText = {
@@ -1520,7 +1620,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
           flags = "",
           Shadow = true,
           HorizontalAlignment = "RIGHT",
-          VerticalAlignment = "CENTER",
+          VerticalAlignment = "MIDDLE",
         }
       },
     },
@@ -1555,6 +1655,13 @@ ThreatPlates.DEFAULT_SETTINGS = {
           ShadowVerticalOffset = -1,
         },
       },
+      Widgets ={
+        Scale = 1,
+        Anchor = "BOTTOM",
+        InsideAnchor = false,
+        HorizontalOffset = 0,
+        VerticalOffset = -6,
+      }
     },
     totemSettings = GetDefaultTotemSettings(),
     uniqueSettings = {
@@ -1702,7 +1809,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
             flags = "",
             Shadow = true,
             HorizontalAlignment = "LEFT",
-            VerticalAlignment = "CENTER",
+            VerticalAlignment = "MIDDLE",
           }
         },
       },
@@ -1744,7 +1851,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
           VerticalOffset = 0,
           Font = {
             HorizontalAlignment = "RIGHT",
-            VerticalAlignment = "CENTER",
+            VerticalAlignment = "MIDDLE",
           },
         },
         FrameOrder = "HealthbarOverCastbar",
@@ -1780,14 +1887,14 @@ ThreatPlates.DEFAULT_SETTINGS = {
         x = 0,
         y = 13,
         align = "CENTER",
-        vertical = "CENTER",
+        vertical = "MIDDLE",
         ShowTitle = false,
         ShowRealm = false,
         --
         EnemyTextColorMode = "CUSTOM",
-        EnemyTextColor = RGB(255, 255, 255),
+        EnemyTextColor = RGB(255, 255, 255, 1),
         FriendlyTextColorMode = "CUSTOM",
-        FriendlyTextColor = RGB(255, 255, 255),
+        FriendlyTextColor = RGB(255, 255, 255, 1),
         UseRaidMarkColoring = false,
         AbbreviationForEnemyUnits = "FULL",
         AbbreviationForFriendlyUnits = "FULL",
@@ -1800,7 +1907,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
         x = 44, -- old default: 50,
         y = 0,
         align = "RIGHT",
-        vertical = "CENTER", -- old default: "TOP",
+        vertical = "MIDDLE", -- old default: "TOP",
         shadow = true,
         flags = "",
         show = true,
@@ -1822,7 +1929,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
         x = 0,
         y = 0, -- old default: 1,
         align = "CENTER",
-        vertical = "CENTER",
+        vertical = "MIDDLE",
         shadow = true,
         flags = "",
         --
@@ -1844,7 +1951,7 @@ ThreatPlates.DEFAULT_SETTINGS = {
         -- x_hv = 0,    -- Removed in 9.2.0
         -- y_hv = -20,  -- Removed in 9.2.0 -- old default: -13
         align = "LEFT",
-        vertical = "CENTER",
+        vertical = "MIDDLE",
         shadow = true,
         flags = "",
         show = true,

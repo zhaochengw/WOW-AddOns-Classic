@@ -1,3 +1,24 @@
+﻿3.0.191 - 19th April 2024
+- Cataclysm Classic Beta: Added Razorfen Kraul icon.
+- Fixed 'Show zone levels'.
+
+3.0.190 - 19th April 2024
+- Cataclysm Classic Beta: You can now enable 'Show points of interest' to see dungeons, raids and flight points.
+- Cataclysm Classic Beta: Added 'The Maelstrom' map dropdown menu.
+- Cataclysm Classic Beta: Fixed Blasted Lands, The Cape of Stranglethorn and Kezan reveal data.
+- Cataclysm Classic Beta: The 'Show zone levels' and 'Show zone crossings' options are currently unavailable.
+
+3.0.189 - 16th April 2024
+- Updated for Cataclysm Classic Beta.
+- Cataclysm Classic Beta: Updated map reveal data for Cataclysm Classic.
+- Cataclysm Classic Beta: The 'Show points of interest' option is currently unavailable.
+
+3.0.188 - 10th April 2024
+- The addon will no longer show 'Wrong version installed' when run on Cataclysm Classic.
+
+3.0.179 - 14th February 2024
+- Updated Hillsbrad Foothills to Arathi Highlands zone crossing.
+
 3.0.162 - 1st November 2023
 - For 'Use default map', the map title will be shown if you are not using 'Show zone menus'.
 

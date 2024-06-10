@@ -257,8 +257,8 @@ if GameTooltip.SetItemKey then
       local hyperlink = info.hyperlink
       -- Necessary as for recipes the crafted item is returned info.hyperlink,
       -- so we check we actually got the recipe item
-      if GetItemInfoInstant(info.hyperlink) ~= itemID then
-        hyperlink = select(2, GetItemInfo(itemID))
+      if C_Item.GetItemInfoInstant(info.hyperlink) ~= itemID then
+        hyperlink = select(2, C_Item.GetItemInfo(itemID))
       end
       Auctionator.Tooltip.ShowTipWithPricing(tip, hyperlink, 1)
     end
@@ -271,7 +271,7 @@ TooltipHandlers["SetItemByID"] = function (tip, itemID)
     return
   end
 
-  local itemLink = select(2, GetItemInfo(itemID))
+  local itemLink = select(2, C_Item.GetItemInfo(itemID))
 
   Auctionator.Tooltip.ShowTipWithPricing(tip, itemLink, 1)
 end
@@ -283,9 +283,12 @@ end
 
 -- Magic to update the tooltip with the prices when it is cleared and still
 -- retain stack size information
-if TooltipDataProcessor then
+if TooltipDataProcessor and C_TooltipInfo then
+  local function ValidateTooltip(tooltip)
+    return tooltip == GameTooltip or tooltip == GameTooltipTooltip or tooltip == ItemRefTooltip or tooltip == GarrisonShipyardMapMissionTooltipTooltip or (not tooltip:IsForbidden() and (tooltip:GetName() or ""):match("^NotGameTooltip"))
+  end
   TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
-    if tooltip == GameTooltip or tooltip == ItemRefTooltip then
+    if ValidateTooltip(tooltip) then
       local info = tooltip.info or tooltip.processingInfo
       if not info or not info.getterName or info.excludeLines then
         return

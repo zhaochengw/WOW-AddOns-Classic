@@ -452,7 +452,6 @@ L.Area_PullTimer					= "開怪、休息、戰鬥和自定義計時器過濾器�
 L.DontShowPTNoID					= "阻擋與你不同區域ID送出的開怪倒數計時條(永遠不會阻擋在沒有區域ID的情況下發送的Bigwigs計時器)"
 L.DontShowPT						= "不要顯示開怪/休息倒數計時條"
 L.DontShowPTText					= "不要顯示開怪/休息計時提示文字"
-L.DontShowPTCountdownText			= "不要顯示開怪計時倒數文字"
 L.DontPlayPTCountdown				= "完全不要播放開怪/休息/開戰/自訂計時器倒數音效"
 L.PT_Threshold						= "不要播放高於%d秒以上的休息/開戰/自訂倒數計時器音效"
 
@@ -578,7 +577,12 @@ L.NPAuraSize				= "光環像素大小 (平方): %d"
 L.NPIcon_BarOffSetX 		= "圖示水平偏移：%d"
 L.NPIcon_BarOffSetY 		= "圖示垂直偏移：%d"
 L.NPIcon_GrowthDirection 	= "圖示增長方向"
+L.NPIcon_Spacing		 	= "圖示間距: %d"
+L.NPIcon_MaxTextLen		 	= "最大文字長度: %d"
+L.NPIconAnchorPoint		 	= "圖示定位點"
 L.NPDemo					= "測試 (靠近名條)"
+L.FontTypeTimer				= "選擇計時器字體"
+L.FontTypeText				= "選擇文字字體"
 
 -- Misc
 L.Area_General				= "一般"

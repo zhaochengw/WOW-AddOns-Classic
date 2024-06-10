@@ -1,19 +1,22 @@
-DBM_CORE_L = {}
+---@class DBMLocale
+local L = {}
 
-local L = DBM_CORE_L
+DBM_CORE_L = L
 
 L.DEADLY_BOSS_MODS						= "Deadly Boss Mods" -- NO TRANSLATE
 L.DBM									= "DBM" -- NO TRANSLATE
 
 local dateTable = date("*t")
 if dateTable.day and dateTable.month and dateTable.day == 1 and dateTable.month == 4 then
-	L.DEADLY_BOSS_MODS					= "Bigwigs"
-	L.DBM								= "BW"
+	L.DEADLY_BOSS_MODS					= "Harmless Minion Mods"
+	L.DBM								= "HMM"
 end
 
 L.HOW_TO_USE_MOD						= "Welcome to " .. L.DBM .. ". Type /dbm help for a list of supported commands. To access options type /dbm in your chat to begin configuration. Load specific zones manually to configure any boss specific settings to your liking as well. " .. L.DBM .. " will setup defaults for your spec, but you may want to fine tune these."
 L.SILENT_REMINDER						= "Reminder: " .. L.DBM .. " is still in silent mode."
-L.NEWS_UPDATE							= "|h|c11ff1111News|r|h: This update is basically a re-release of 9.1.9 to clear a false malware detection on the hash of the previous file release. Read more about it |Hgarrmission:DBM:news|h|cff3588ff[here]|r|h"
+L.NEWS_UPDATE							= "|h|c11ff1111News|r|h: DBM has been updated with changes to mod structure so classic and mainline can now use unified (same) modules. This means that Vanilla (including SoD), TBC, Wrath, and Cata raid modules now need to be downloaded separately using same packages as retail. Read more about it |Hgarrmission:DBM:news|h|cff3588ff[click here]|r|h"
+L.NEWS_UPDATE_REPEAT					= "|h|c11ff1111News|r|h: DBM has been updated with changes to mod structure so classic and mainline can now use unified (same) modules. This means that Vanilla (including SoD), TBC, Wrath, and Cata raid modules now need to be downloaded separately using same packages as retail. You are currently in a raid that has a missing module. This message will keep showing (and you'll have no functional alerts for this zone) until you've installed missing raid module."
+
 
 L.COPY_URL_DIALOG_NEWS					= "To read latest news, visit link below"
 
@@ -33,8 +36,8 @@ L.COPY_URL_DIALOG						= "Copy URL"
 L.COPY_WA_DIALOG						= "Copy WA Key"
 
 --Post Patch 7.1
-L.TEXT_ONLY_RANGE						= "Range frame is limited to text only due to API restrictions in this area."
-L.NO_RANGE								= "Range frame can not be used due to API restrictions in this area."
+L.TEXT_ONLY_RANGE						= "Range frame is limited to text only due to Blizzard disabling some functionality in this area."
+L.NO_RANGE								= "Range frame can not be used due to Blizzard disabling that functionality in this area."
 L.NO_ARROW								= "Arrow can not be used in instances"
 L.NO_HUD								= "HUDMap can not be used in instances"
 
@@ -46,7 +49,8 @@ L.LOOT_SPEC_REMINDER					= "Your current spec is %s. Your current loot choice is
 
 L.BIGWIGS_ICON_CONFLICT					= L.DBM .. " has detected that you have raid icons turned on in both BigWigs and " .. L.DBM .. ". Please disable icons in one of them to avoid conflicts"
 
-L.MOD_AVAILABLE							= "%s is available for this zone. You can download it on Curse, Wago, WoWI, or from the GitHub Releases page."
+L.MOD_AVAILABLE							= "%s is available for this zone but not installed. You can download it on Curse, Wago, WoWI, or from the GitHub Releases page."
+L.MOD_MISSING							= "No Raid Module"
 
 L.COMBAT_STARTED						= "%s engaged. Good luck and have fun! :)"
 L.COMBAT_STARTED_IN_PROGRESS			= "Engaged an in progress fight against %s. Good luck and have fun! :)"
@@ -187,6 +191,7 @@ L.BIG_WIGS								= "BigWigs" -- OPTIONAL
 L.WEAKAURA_KEY							= " (|cff308530WA Key:|r %s)"
 
 L.UPDATEREMINDER_HEADER					= "Your version of " .. L.DEADLY_BOSS_MODS.. " is out-of-date.\n Version %s (%s) is available for download through Curse, Wago, WoWI, or from GitHub Releases page"
+L.UPDATEREMINDER_HEADER_SUBMODULE		= "Your %s module is out-of-date.\n Version %s is available for download through Curse, Wago, WoWI, or from GitHub Releases page"
 L.UPDATEREMINDER_FOOTER					= "Press " .. (IsMacClient() and "Cmd-C" or "Ctrl-C")  ..  " to copy the download link to your clipboard."
 L.UPDATEREMINDER_FOOTER_GENERIC			= "Press " .. (IsMacClient() and "Cmd-C" or "Ctrl-C")  ..  " to copy to your clipboard."
 L.UPDATEREMINDER_DISABLE				= "WARNING: Due to your " .. L.DEADLY_BOSS_MODS.. " being out of date and incompatible with newer versions of DBM, it has been force disabled and cannot be used until updated. This is to ensure incompatible mods do not cause poor play experience for yourself or fellow group members."
@@ -239,10 +244,11 @@ L.RANGERADAR_IN_RANGE_TEXT				= "%d in range (%0.1fy)"--Multi
 L.RANGECHECK_IN_RANGE_TEXT				= "%d in range"--Text based doesn't need (%dyd), especially since it's not very accurate to the specific yard anyways
 L.RANGERADAR_IN_RANGE_TEXTONE			= "%s (%0.1fy)"--One target
 
+L.INFOFRAME_TITLE						= "DBM Info Frame"
 L.INFOFRAME_SHOW_SELF					= "Always show your power"		-- Always show your own power value even if you are below the threshold
 L.INFOFRAME_SETLINES					= "Set max lines"
 L.INFOFRAME_SETCOLS						= "Set max columns"
-L.INFOFRAME_LINESDEFAULT				= "Set by mod"
+L.INFOFRAME_LINESDEFAULT				= "Auto Set by boss modules"
 L.INFOFRAME_LINES_TO					= "%d lines"
 L.INFOFRAME_COLS_TO						= "%d columns"
 L.INFOFRAME_POWER						= "Power"
@@ -283,7 +289,8 @@ L.TIMER_USAGE							= {
 }
 
 L.ERROR_NO_PERMISSION					= "You don't have the required permission to do this."
-L.TIME_TOO_SHORT						= "Pull timer must be longer than 3 seconds."
+L.PULL_TIME_TOO_SHORT					= "Pull timer must be longer than 3 seconds."
+L.PULL_TIME_TOO_LONG					= "Pull timer cannot be longer than 60 seconds. Consider using a /break timer instead."
 
 L.BREAK_USAGE							= "Break timer cannot be longer than 60 minutes. Make sure you're inputting time in minutes and not seconds."
 L.BREAK_START							= "Break starting now -- you have %s! (Sent by %s)"
@@ -310,6 +317,7 @@ L.AUTO_ANNOUNCE_TEXTS = {
 	targetsource						= ">%%s< cast %s on >%%s<",
 	targetcount							= "%s (%%s) on >%%s<",
 	spell								= "%s", -- OPTIONAL
+	spellsource							= ">%%s< cast %s",
 	incoming							= "%s incoming debuff",
 	incomingcount						= "%s incoming debuff (%%s)",
 	ends 								= "%s ended",
@@ -337,6 +345,7 @@ L.AUTO_ANNOUNCE_OPTIONS = {
 	targetsource						= "Announce $spell:%s targets (with source)",
 	targetcount							= "Announce $spell:%s targets (with count)",
 	spell								= "Announce when $spell:%s has been cast",
+	spellsource							= "Announce when $spell:%s has been cast (with source)",
 	incoming							= "Announce when $spell:%s has incoming debuffs",
 	incomingcount						= "Announce (with count) when $spell:%s has incoming debuffs",
 	ends								= "Announce when $spell:%s has ended",
@@ -471,11 +480,13 @@ L.AUTO_TIMER_TEXTS = {
 	cdcount								= "%s (%%s)",--Now same as next, as the ~ was moved to timer number -- OPTIONAL
 	cdsource							= "%s: >%%s<",--Now same as next, as the ~ was moved to timer number -- OPTIONAL
 	cdspecial							= "Special",--Now same as next, as the ~ was moved to timer number
+	cdcombo								= "%%1$s + %%2$s",--Now same as next, as the ~ was moved to timer number -- OPTIONAL
 
 	next								= "%s", -- OPTIONAL
 	nextcount							= "%s (%%s)", -- OPTIONAL
 	nextsource							= "%s: >%%s<", -- OPTIONAL
 	nextspecial							= "Special",
+	nextcombo							= "%%1$s + %%2$s",--Now same as next, as the ~ was moved to timer number -- OPTIONAL
 
 	achievement							= "%s", -- OPTIONAL
 	stage								= "Stage",
@@ -511,12 +522,14 @@ L.AUTO_TIMER_OPTIONS = {
 	cdnpcount							= "Show nameplate only timer (with count) for $spell:%s cooldown",
 	cdsource							= "Show timer (with source) for $spell:%s cooldown",--Maybe better wording?
 	cdspecial							= "Show timer for special ability cooldown",
+	cdcombo								= "Show timer for ability combo cooldown",--Used for combining 2 abilities into a single timer
 	next								= "Show timer for next $spell:%s",
 	nextcount							= "Show timer for next $spell:%s",
 	nextnp								= "Show nameplate only timer for next $spell:%s",
 	nextnpcount							= "Show nameplate only timer (with count) for next $spell:%s",
 	nextsource							= "Show timer (with source) for next $spell:%s",--Maybe better wording?
 	nextspecial							= "Show timer for next special ability",
+	nextcombo							= "Show timer for next ability combo",--Used for combining 2 abilities into a single timer
 	achievement							= "Show timer for %s",
 	stage								= "Show timer for next stage",
 	stagecount							= "Show timer (with count) for next stage",

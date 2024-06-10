@@ -8,7 +8,10 @@
     <Script file="Core\DB\DB.lua"/>
     <Script file="Core\DB\DB_FilterClassItem.lua"/>
     <Script file="Core\DB\DB_BossName.lua"/>
-    <Script file="Core\DB\DB_Loot.lua"/>
+    <Script file="Core\DB\DB_EncounterID.lua"/>
+    <Script file="Core\DB\DB_Loot_BlackWhiteList.lua"/>
+    <Script file="Core\DB\DB_Loot_CTM.lua"/>
+    <Script file="Core\DB\DB_Loot_WLK.lua"/>
     <Script file="Core\DB\DB_Loot_Vanilla_Sod.lua"/>
     <Script file="Core\DB\DB_Loot_Vanilla_60.lua"/>
     <Script file="Core\DB\DB_CommerceAuthority_Vanilla.lua"/>
@@ -40,6 +43,7 @@
     <Script file="Core\Module\YY.lua"/>
     <Script file="Core\Module\Report.lua"/>
     <Script file="Core\Module\MeetingHorn.lua"/>
+    <Script file="Core\Module\ad.lua"/>
     <Script file="Core\Module\AuctionWA.lua"/>
     <Script file="Core\Module\Auction.lua"/>
     <Script file="Core\Module\CommerceAuthority_Vanilla.lua"/>

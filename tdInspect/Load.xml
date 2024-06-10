@@ -1,5 +1,4 @@
-<Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
     <Include file="Libs\Libs.xml"/>
     <Include file="Localization\Localization.xml"/>
     <Script file="Api.lua"/>
@@ -11,6 +10,7 @@
     
     <Script file="Data\ItemSet.WLK.lua"/>
     <Script file="Data\Glyph.lua"/>
+    <Script file="Data\GlyphData.lua"/>
 
     <Script file="Core\Encoder.lua"/>
     <Script file="Core\Inspect.lua"/>
@@ -21,6 +21,7 @@
 
     <Script file="Tooltip\FixItemSet.lua"/>
     <Script file="Tooltip\FixMetaGem.lua"/>
+    <Script file="Tooltip\FixRune.lua"/>
 
     <Script file="UI\BaseItem.lua"/>
     <Script file="UI\SlotItem.lua"/>

@@ -1,9 +1,6 @@
-if WOW_PROJECT_ID ~= (WOW_PROJECT_MAINLINE or 1) then -- Added in Cata
-	return
-end
-local mod	= DBM:NewMod("z726", "DBM-PvP")
+local mod	= DBM:NewMod("z726", "DBM-PvP") -- Added in Cata
 
-mod:SetRevision("20240203195924")
+mod:SetRevision("20240515181211")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"LOADING_SCREEN_DISABLED",
@@ -18,7 +15,8 @@ do
 		local zoneID = DBM:GetCurrentArea()
 		if not bgzone and zoneID == 726 then
 			bgzone = true
-			DBM:GetModByName("PvPGeneral"):SubscribeFlags()
+			local pvpGeneral = DBM:GetModByName("PvPGeneral")
+			pvpGeneral:SubscribeFlags()
 		elseif bgzone and zoneID ~= 726 then
 			bgzone = false
 		end

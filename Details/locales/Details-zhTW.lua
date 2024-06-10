@@ -842,30 +842,18 @@ L["STRING_OPTIONS_MINIMAP_ANCHOR"] = "小地圖:"
 L["STRING_OPTIONS_MINIMAP_DESC"] = "顯示或隱藏小地圖按鈕。"
 L["STRING_OPTIONS_MISCTITLE"] = "其他設定"
 L["STRING_OPTIONS_MISCTITLE2"] = "這些控制幾個選項。"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "New Combat on Boss Pull"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "If a boss is pulled while in combat, this option closes the current combat encounter and initiates a new one for the boss."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Overall Segment DPS Calculation"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Make Overall Segment"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "After the run is completed, this option creates a new segment containing all combat data from the run."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "Merge Trash"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Panels"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Show End of M+ Panel"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Time in Combat"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "The overall segment for the Mythic+ run will use 'totalDamage / totalCombatTime' to calculate DPS."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = "Dungeon Run Time"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = "The overall segment for the Mythic+ run will calculate DPS using 'totalDamage / runTime'."
+L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "開王開始新的戰鬥"
+L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "如果正在戰鬥中時拉到首領了，會結束原本的戰鬥，然後開始新的首領戰鬥記錄。"
+L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "整場戰鬥記錄 DPS 計算"
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "產生整場戰鬥記錄"
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "通關後，此選項會建立新的戰鬥記錄，包含這次通關的戰鬥資料。"
+L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "合併清理小怪"
+L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "面板"
+L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "顯示 M+ 結束面板"
+L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "戰鬥時間"
+L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "M+ 通關的整場戰鬥記錄使用 '總共輸出傷害 / 總共戰鬥時間' 來計算 DPS。"
+L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = "地城通關時間"
+L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = "M+ 通關的整場戰鬥記錄使用 '總共輸出傷害 / 通關時間' 來計算 DPS。"
 L["STRING_OPTIONS_NICKNAME"] = "暱稱"
 L["STRING_OPTIONS_NICKNAME_DESC"] = [=[幫你自己設定暱稱。
 
@@ -1476,6 +1464,7 @@ L["STRING_REPORT_SINGLE_BUFFUPTIME"] = "對於增益覆蓋時間"
 L["STRING_REPORT_SINGLE_COOLDOWN"] = "冷卻 - "
 L["STRING_REPORT_SINGLE_DEATH"] = "死亡 - "
 L["STRING_REPORT_SINGLE_DEBUFFUPTIME"] = "減益覆蓋時間 - "
+L["STRING_REPORT_TEXT"] = "報告"
 L["STRING_REPORT_TOOLTIP"] = "報告結果"
 L["STRING_REPORTFRAME_COPY"] = "複製 & 貼上"
 L["STRING_REPORTFRAME_CURRENT"] = "目前"

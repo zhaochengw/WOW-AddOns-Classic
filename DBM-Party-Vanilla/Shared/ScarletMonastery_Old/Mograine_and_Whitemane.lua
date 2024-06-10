@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod("Mograine_and_Whitemane", "DBM-Party-Vanilla", DBM:IsRetail() and 17 or 12)
+local mod	= DBM:NewMod("Mograine_and_Whitemane", "DBM-Party-Vanilla", DBM:IsPostCata() and 17 or 12)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231026183117")
+mod:SetRevision("20240316010232")
 mod:SetCreatureID(3977, 3976, 99999)--Whitemane, Mograine
 mod:SetEncounterID(450)
 mod:SetZone(189)

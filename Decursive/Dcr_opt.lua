@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.15) add-on for World of Warcraft UI
+    Decursive (v 2.7.17) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2024-01-21T21:14:55Z
+    This file was last updated on 2024-02-19T03:51:57Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -177,7 +177,22 @@ function D:GetDefaultsSettings()
                 [393444] = true, -- Gushing Wound
                 [413131] = true, -- Whirling Dagger
                 [413136] = true, -- Whirling Dagger
-            }
+            },
+            -- The time between each MUF update
+            DebuffsFrameRefreshRate = 0.10,
+
+            -- The number of MUFs updated every DebuffsFrameRefreshRate
+            DebuffsFramePerUPdate = 10,
+
+            MFScanEverybodyTimer = 1,
+            MFScanEverybodyReport = false,
+            --[=[@alpha@
+            MFScanEverybodyReport = true,
+            --@end-alpha@]=]
+
+            delayedDebuffOccurences = 0,
+            delayedUnDebuffOccurences = 0,
+
         },
 
         profile = {
@@ -221,12 +236,6 @@ function D:GetDefaultsSettings()
             DebuffsFrameYSpacing = 3,
 
             DebuffsFrameStickToRight = false,
-
-            -- The time between each MUF update
-            DebuffsFrameRefreshRate = 0.10,
-
-            -- The number of MUFs updated every DebuffsFrameRefreshRate
-            DebuffsFramePerUPdate = 10,
 
             DebuffsFrameShowHelp = true,
 
@@ -482,7 +491,22 @@ local OptionsPostSetActions = { -- {{{
     ["DebuffsFrameMaxCount"] = function(v) D.MicroUnitF.MaxUnit = v; D.MicroUnitF:Delayed_MFsDisplay_Update(); end, -- just the number of MUFs is changed MFsDisplay_Update() is enough
     ["DebuffsFramePerline"] = function(v)  D.MicroUnitF:ResetAllPositions (); end,
     ["DebuffsFrameElemScale"] = function(v) D.MicroUnitF:SetScale(D.profile.DebuffsFrameElemScale); end,
-    ["DebuffsFrameRefreshRate"] = function(v) D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D); D:Debug("MUFs refresh rate changed:", D.profile.DebuffsFrameRefreshRate, v); end,
+    ["DebuffsFrameRefreshRate"] = function(v) D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.db.global.DebuffsFrameRefreshRate, D); D:Debug("MUFs refresh rate changed:", D.db.global.DebuffsFrameRefreshRate, v); end,
+    ["MFScanEverybodyTimer"] = function(v)
+        if v > 0 then
+            D:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, D.db.global.MFScanEverybodyTimer, D);
+            D:Debug("MUFs scan every body timer changed:", D.db.global.MFScanEverybodyTimer, v);
+        else
+            D:CancelDelayedCall("Dcr_ScanEverybody")
+            D:Debug("MUFs scan every body canceled", D.db.global.MFScanEverybodyTimer, v);
+        end
+    end,
+    ["MFScanEverybodyReport"] = function(v)
+        if D.db.global.MFScanEverybodyTimer > 0 then
+            D:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, D.db.global.MFScanEverybodyTimer, D);
+        end
+        D:Debug("MUFs scan every body reporting changed:", D.db.global.MFScanEverybodyReport, v);
+    end,
 
     ["Scan_Pets"] = function(v) D:GroupChanged ("opt CURE_PETS"); end,
     ["DisableMacroCreation"] = function(v) if v then D:SetMacroKey (nil); D:Debug("SetMacroKey (nil)"); end end,
@@ -1463,6 +1487,21 @@ local function GetStaticOptions ()
                                 step = 1,
                                 order = 2700,
                             },
+                            MFScanEverybodyTimer = {
+                                type = 'range',
+                                name = L["OPT_PERIODICRESCAN"],
+                                desc = L["OPT_PERIODICRESCAN_DESC"],
+                                min = 0, -- 0 will disable it
+                                max = 60,
+                                step = 1,
+                                order = 2800,
+                            },
+                            MFScanEverybodyReport = {
+                                type = "toggle",
+                                name = L["OPT_PERIODICRESCAN_REPORT"],
+                                desc = L["OPT_PERIODICRESCAN_REPORT_DESC"],
+                                order = 2900,
+                            },
                         },
                     }, -- }}}
                 },
@@ -1901,7 +1940,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
-                                    "2.7.15", "John Wellesz", ("2024-01-21T21:46:01Z"):sub(1,10),
+                                    "2.7.17", "John Wellesz", ("2024-03-21T03:38:23Z"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
@@ -2246,6 +2285,11 @@ function D:SetCureOrder (ToChange)
 
     D:Debug("Spell changed");
     D.Status.SpellsChanged = GetTime();
+    D.Status.delayedDebuffReportDisabled = true;
+    if self.db.global.MFScanEverybodyTimer == 0 or self.db.global.MFScanEverybodyTimer > 1 then
+        D:Debug("ScanEveryBody delayed call scheduled by SetCureOrder")
+        D:ScheduleDelayedCall("scanEverybodyAfterSpellChanged", D.ScanEveryBody, 1, D)
+    end
 
     -- If no spell is selected or none is available set Decursive icon to off
     if FoundSpell ~= 0 then
@@ -2283,8 +2327,12 @@ function D:ShowHideDebuffsFrame ()
             D:Debug("ShowHideDebuffsFrame(): sound re-enabled");
         end
     else
-        D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.profile.DebuffsFrameRefreshRate, D);
-        self:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, 1, D);
+        D:ScheduleRepeatedCall("Dcr_MUFupdate", D.DebuffsFrame_Update, D.db.global.DebuffsFrameRefreshRate, D);
+
+        if D.db.global.MFScanEverybodyTimer > 0 then
+            self:ScheduleRepeatedCall("Dcr_ScanEverybody", D.ScanEveryBody, D.db.global.MFScanEverybodyTimer, D);
+        end
+
         D.MicroUnitF:Force_FullUpdate();
     end
 
@@ -3701,6 +3749,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
-T._LoadedFiles["Dcr_opt.lua"] = "2.7.15";
+T._LoadedFiles["Dcr_opt.lua"] = "2.7.17";
 
 -- Closer

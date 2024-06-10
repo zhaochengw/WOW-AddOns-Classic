@@ -839,30 +839,18 @@ L["STRING_OPTIONS_MINIMAP_ANCHOR"] = "Minimapa:"
 L["STRING_OPTIONS_MINIMAP_DESC"] = "Mostra ou esconde o ícone no mini mapa."
 L["STRING_OPTIONS_MISCTITLE"] = "Configurações Diversas"
 L["STRING_OPTIONS_MISCTITLE2"] = "Essa opção controla várias opções."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "New Combat on Boss Pull"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "If a boss is pulled while in combat, this option closes the current combat encounter and initiates a new one for the boss."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Overall Segment DPS Calculation"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Make Overall Segment"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "After the run is completed, this option creates a new segment containing all combat data from the run."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "Merge Trash"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Panels"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Show End of M+ Panel"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Time in Combat"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "The overall segment for the Mythic+ run will use 'totalDamage / totalCombatTime' to calculate DPS."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = "Dungeon Run Time"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = "The overall segment for the Mythic+ run will calculate DPS using 'totalDamage / runTime'."
+L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "Novo combate ao puxar o chefe"
+L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "Se um chefe for puxado enquanto estiver em combate, esta opção encerra o encontro de combate atual e inicia um novo para o chefe."
+L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Cálculo de DPS do segmento geral"
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Criar segmento geral"
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "Após a corrida ser concluída, esta opção cria um novo segmento contendo todos os dados de combate da corrida."
+L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "Unir lixo"
+L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Painéis"
+L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Mostrar final do painel de M+"
+L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Tempo em combate"
+L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "O segmento geral para a corrida de Mítico+ usará 'danoTotal / tempoTotalEmCombate' para calcular o DPS."
+L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = "Tempo da corrida na masmorra"
+L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = "O segmento geral para a corrida de Mítico+ calculará o DPS usando 'danoTotal / tempoDaCorrida'."
 L["STRING_OPTIONS_NICKNAME"] = "Apelido"
 L["STRING_OPTIONS_NICKNAME_DESC"] = "Digite o seu apelido neste campo. O apelido escolhido será enviado aos membros da sua guilda e o Details! ira substituir o nome do personagem pelo apelido."
 L["STRING_OPTIONS_OPEN_ROWTEXT_EDITOR"] = "Editor de Texto das Barras"
@@ -1469,6 +1457,7 @@ L["STRING_REPORT_SINGLE_BUFFUPTIME"] = "duração dos buffs de"
 L["STRING_REPORT_SINGLE_COOLDOWN"] = "cooldowns usados por"
 L["STRING_REPORT_SINGLE_DEATH"] = "detalhes da morte de"
 L["STRING_REPORT_SINGLE_DEBUFFUPTIME"] = "duração dos debuffs de"
+L["STRING_REPORT_TEXT"] = "Relatório"
 L["STRING_REPORT_TOOLTIP"] = "Reportar Resultados"
 L["STRING_REPORTFRAME_COPY"] = "Copiar e Colar"
 L["STRING_REPORTFRAME_CURRENT"] = "Mostrando"

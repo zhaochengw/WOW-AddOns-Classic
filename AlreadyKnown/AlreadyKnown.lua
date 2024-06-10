@@ -67,11 +67,102 @@ local containerItems = { -- These items are containers containing items we might
 		128318 -- Touch of the Void
 	}
 }
+local spellbookItems = { -- Pair [ItemId] to matching [spellId]
+
+	-- Warlock
+		-- Imp
+			-- Firebolt 1-7
+				-- nil = 3110,
+				[16302] = 7799,
+				[16316] = 7800,
+				[16317] = 7801,
+				[16318] = 7802,
+				[16319] = 11762,
+				[16320] = 1176,
+			-- Blood Pact 1-5
+				[16321] = 6307,
+				[16322] = 7804,
+				[16323] = 7805,
+				[16324] = 11766,
+				[16325] = 1176,
+			-- Fire Shield 1-5
+				[16326] = 2947,
+				[16327] = 8316,
+				[16328] = 8317,
+				[16329] = 11700,
+				[16330] = 11701,
+			-- Phase Shift
+				[16331] = 4511,
+		-- Voidwalker
+			-- Torment 1-6
+				--nil = 3716,
+				[16346] = 7809,
+				[16347] = 7810,
+				[16348] = 7811,
+				[16349] = 11774,
+				[16350] = 11775,
+			-- Sacrifice 1-6
+				[16351] = 7812,
+				[16352] = 19438,
+				[16353] = 19440,
+				[16354] = 19441,
+				[16355] = 19442,
+				[16356] = 1944,
+			-- Consume Shadows 1-6
+				[16357] = 17767,
+				[16358] = 17850,
+				[16359] = 17851,
+				[16360] = 17852,
+				[16361] = 17853,
+				[16362] = 17854,
+			-- Suffering 1-4
+				[16363] = 17735,
+				[16364] = 17750,
+				[16365] = 17751,
+				[16366] = 17752,
+		-- Succubus
+			-- Lash of Pain 1-6
+				--nil = 7814,
+				[16368] = 7815,
+				[16371] = 7816,
+				[16372] = 11778,
+				[16373] = 11779,
+				[16374] = 11780,
+			-- Soothing Kiss 1-4
+				[16375] = 6360,
+				[16376] = 7813,
+				[16377] = 11784,
+				[16378] = 11785,
+			-- Seduction
+				[16379] = 6358,
+			-- Lesser Invisibility
+				[16380] = 7870,
+		-- Felhunter
+			-- Devour Magic 1-4
+				--nil = 19505,
+				[16381] = 19731,
+				[16382] = 19734,
+				[16383] = 19736,
+			-- Tainted Blood 1-4
+				[16384] = 19478,
+				[16385] = 19655,
+				[16386] = 19656,
+				[16387] = 19660,
+			-- Spell Lock 1-2
+				[16388] = 19244,
+				[16389] = 19647,
+			-- Paranoia
+				[16390] = 19480
+
+}
+
 
 local isRetail = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE)
 local isClassic = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC)
 local isBCClassic = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
 local isWrathClassic = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC)
+local isCataClassic = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CATACLYSM_CLASSIC)
+local isAnyClassic = (isClassic or isBCClassic or isWrathClassic or isCataClassic)
 
 local function Print(text, ...)
 	if text then
@@ -143,7 +234,7 @@ local function _checkTooltipLine(text, i, tooltipTable, itemId, itemLink)
 		--knownTable[itemLink] = true -- Mark as known for later use
 		--return true -- Item is known and collected
 
-		if isClassic or isBCClassic or isWrathClassic then -- Fix for (BC)Classic, hope this covers all the cases.
+		if isAnyClassic then -- Fix for (BC)Classic, hope this covers all the cases.
 			knownTable[itemLink] = true -- Mark as known for later use
 			return true -- Item is known and collected
 		elseif lines - i <= 3 then -- Mounts have Riding skill and Reputation requirements under Already Known -line
@@ -229,6 +320,19 @@ local function _checkIfKnown(itemLink)
 			end
 			if db.debug then Print("%d (%d/%d) - ContainerItem", itemId, knownCount, totalCount) end
 			return (knownCount == totalCount)
+		elseif isAnyClassic and spellbookItems[itemId] then -- Check Warlock Grimoires
+			local numSpells, petToken = HasPetSpells()
+			if numSpells and petToken == "DEMON" then
+				for i = 1, numSpells do
+					local spellName, spellSubName, spellId = GetSpellBookItemName(i, BOOKTYPE_PET)
+					if spellbookItems[itemId] == spellId then
+						if db.debug then Print("%d (%s/%s/%d) - SpellBookItem", itemId, spellName, spellSubName, spellId) end
+						knownTable[itemLink] = true -- Mark as known for later use
+						return true -- This spellbookItem item is already known
+					end
+				end
+			end
+
 		end
 	end
 
@@ -277,12 +381,15 @@ local function _checkIfKnown(itemLink)
 end
 
 local function _hookNewAH(self) -- Most of this found from FrameXML/Blizzard_AuctionHouseUI/Blizzard_AuctionHouseItemList.lua
-	if isClassic or isBCClassic or isWrathClassic then return end -- Only for Retail 8.3 and newer
+	if isAnyClassic then return end -- Only for Retail 8.3 and newer
 
 	-- Derived from https://www.townlong-yak.com/framexml/10.0.0/Blizzard_AuctionHouseUI/Blizzard_AuctionHouseItemList.lua#322
-	self.ScrollBox:ForEachFrame(function(button)
+	--self.ScrollBox:ForEachFrame(function(button)
+	local children = { self.ScrollTarget:GetChildren() }
+	for i = 1, #children do
+		local button = children[i]
 		--Print(">", button.rowData.itemKey.itemID, button.cells[2].Text:GetText())
-		if button.rowData.itemKey.itemID then
+		if button and button.rowData and button.rowData.itemKey.itemID then
 			local itemLink
 			if button.rowData.itemKey.itemID == 82800 then -- BattlePet
 				itemLink = format("|Hbattlepet:%d::::::|h[Dummy]|h", button.rowData.itemKey.battlePetSpeciesID)
@@ -308,11 +415,12 @@ local function _hookNewAH(self) -- Most of this found from FrameXML/Blizzard_Auc
 				button.cells[2].Icon:SetDesaturated(false)
 			end
 		end
-	end)
+	--end)
+	end
 end
 
 local function _hookAH() -- Most of this found from FrameXML/Blizzard_AuctionUI/Blizzard_AuctionUI.lua
-	if not (isClassic or isBCClassic or isWrathClassic) then return end -- Retail 8.3 changed the AH, this old one is still used for (BC)Classic
+	if not isAnyClassic then return end -- Retail 8.3 changed the AH, this old one is still used for (BC)Classic
 
 	-- https://www.townlong-yak.com/framexml/8.2.5/Blizzard_AuctionUI/Blizzard_AuctionUI.lua#763
 	local offset = FauxScrollFrame_GetOffset(BrowseScrollFrame)
@@ -439,9 +547,8 @@ f:SetScript("OnEvent", function(self, event, ...)
 	if event == "ADDON_LOADED" and alreadyHookedAddOns[(...)] == false then
 		local addOnName = ...
 		if addOnName == "Blizzard_AuctionHouseUI" then -- New AH
-			hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, "RefreshScrollFrame", _hookNewAH)
-			-- "OnScrollBoxRangeChanged" was changed to "OnScrollBoxScroll" in 10.2.5?
-			hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, "OnScrollBoxScroll", _hookNewAH) -- "RefreshScrollFrame" didn't update when scrolling AH up and down, adding this fixes that
+			--hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, "OnViewDataChanged", function(...) Print(">OnViewDataChanged") end)
+			hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, "Update", _hookNewAH)
 			--hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, "UpdateRefreshFrame", function(...) DevTools_Dump({ ... }) end)
 			alreadyHookedAddOns["Blizzard_AuctionHouseUI"] = true
 
@@ -467,7 +574,7 @@ f:SetScript("OnEvent", function(self, event, ...)
 			end
 			db = AlreadyKnownSettings
 
-			if isClassic or isBCClassic or isWrathClassic then -- These weren't/aren't in the Classic
+			if isAnyClassic then -- These weren't/aren't in the Classic
 				alreadyHookedAddOns["Blizzard_AuctionHouseUI"] = nil
 				if isClassic then -- GuildBank should be in BCClassic (at least in the end of TBC it was)
 					alreadyHookedAddOns["Blizzard_GuildBankUI"] = nil

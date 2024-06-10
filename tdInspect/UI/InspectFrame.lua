@@ -52,10 +52,10 @@ function InspectFrame:Constructor()
     self.Name = InspectNameText
     self.PaperDoll = ns.UI.PaperDoll:Bind(InspectPaperDollFrame)
     self.TalentFrame = ns.UI.InspectTalent:Bind(self:CreateTabFrame())
-    --[=[@classic@
+    --[=[@build<2@
     talentTab = self:AddTab(TALENT, self.TalentFrame)
-    --@end-classic@]=]
-    -- @non-classic@
+    --@end-build<2@]=]
+    -- @build>2@
     talentTab = tIndexOf(INSPECTFRAME_SUBFRAMES, 'InspectTalentFrame')
     InspectTalentFrame:Hide()
     InspectTalentFrame.Show = function()
@@ -67,22 +67,24 @@ function InspectFrame:Constructor()
     InspectTalentFrame.SetShown = function(_, shown)
         self.TalentFrame:SetShown(shown)
     end
-    -- @end-non-classic@
+    -- @end-build>2@
     -- @build>3@
     self.GlyphFrame = ns.UI.GlyphFrame:Bind(self:CreateTabFrame())
     glyphTab = self:AddTab(GLYPHS, self.GlyphFrame)
     -- @end-build>3@
 
     self.tabDepends = {
-        [tIndexOf(INSPECTFRAME_SUBFRAMES, 'InspectPVPFrame')] = function()
+        [tIndexOf(INSPECTFRAME_SUBFRAMES, 'InspectPVPFrame') or tIndexOf(INSPECTFRAME_SUBFRAMES, 'InspectHonorFrame')] = function()
             return Inspect.unit and CheckInteractDistance(Inspect.unit, 1) and CanInspect(Inspect.unit)
         end,
         [talentTab] = function()
             return Inspect:GetUnitClass() and Inspect:GetNumTalentGroups() > 0 and Inspect:GetUnitTalent()
         end,
+        -- @build>3@
         [glyphTab] = function()
             return Inspect:GetNumTalentGroups() > 0 and Inspect:GetUnitGlyph()
         end,
+        -- @end-build>3@
     }
 
     self.groupTabs = {}
@@ -153,7 +155,9 @@ function InspectFrame:SetTalentGroup(id)
     end
 
     self.TalentFrame:SetTalentGroup(id)
+    -- @build>3@
     self.GlyphFrame:SetTalentGroup(id)
+    -- @end-build>3@
 end
 
 function InspectFrame:AddTalentGroupTab(id)

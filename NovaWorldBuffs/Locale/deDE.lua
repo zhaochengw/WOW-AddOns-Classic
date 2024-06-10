@@ -30,6 +30,8 @@ L["Fengus' Ferocity"] = "Fengus' Wildheit";
 L["Mol'dar's Moxie"] = "Mol'Dars Mut";
 L["Boon of Blackfathom"] = "Segen von Blackfathom";
 L["Ashenvale Rallying Cry"] = "Anspornender Schrei von Ashenvale";
+L["Spark of Inspiration"] = "Funke der wahnsinnigen Inspiration"; --Phase 2 SoD world buff.
+L["Fervor of the Temple Explorer"] = "Eifer des Tempelforschers";
 
 ---=====---
 ---Horde---
@@ -654,3 +656,5 @@ L["ammunition"] = "Ammo";
 L["attunements"] = "Attunements";
 L["currentRaidLockouts"] = "Current Raid Lockouts";
 L["none"] = "None.";
+
+L["Temple of Atal'Hakkar"] = "Tempel von Atal'Hakkar";

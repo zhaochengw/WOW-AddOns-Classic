@@ -45,64 +45,44 @@ function Plugin:ADDON_LOADED(addonName)
             print(name .. ' is not compatible with the current version of BlizzMove, please update.')
             return;
         end
-        if(ObjectiveTrackerFrame) then
+        local frameName;
+        if (ObjectiveTrackerFrame) then
+            frameName = 'ObjectiveTrackerFrame';
             self.MoveHandleFrame = self:CreateMoveHandleAtPoint(
-                    ObjectiveTrackerFrame,
-                    'CENTER',
-                    'TOPRIGHT',
-                    0,
-                    -12
+                ObjectiveTrackerFrame,
+                'CENTER',
+                'TOPRIGHT',
+                0,
+                -12
             );
-        elseif(QuestWatchFrame) then
+        elseif (QuestWatchFrame) then
+            frameName = 'QuestWatchFrame';
             self.MoveHandleFrame = self:CreateMoveHandleAtPoint(
-                    QuestWatchFrame,
-                    'CENTER',
-                    'TOPRIGHT',
-                    -10,
-                    0
+                QuestWatchFrame,
+                'CENTER',
+                'TOPRIGHT',
+                -10,
+                0
             );
-        elseif(WatchFrame) then
+        elseif (WatchFrame) then
+            frameName = 'WatchFrame';
             self.MoveHandleFrame = self:CreateMoveHandleAtPoint(
-                    WatchFrame,
-                    'CENTER',
-                    'TOPRIGHT',
-                    -10,
-                    0
+                WatchFrame,
+                'CENTER',
+                'TOPRIGHT',
+                -10,
+                0
             );
             WatchFrame:SetHeight(WatchFrame:GetHeight());
         end
 
         local frameTable = {
             [name] = {
-                ["ObjectiveTrackerFrame"] = {
-                    MinVersion = 40000, -- added when?
+                [frameName] = {
                     IgnoreMouse = true,
                     SubFrames = {
                         ['BlizzMovePlugin-QuestTrackerButton'] = {
                             FrameReference = self.MoveHandleFrame,
-                            MinVersion = 40000, -- added when?
-                        },
-                    },
-                },
-                ["QuestWatchFrame"] = {
-                    MaxVersion = 30000,
-                    IgnoreMouse = true,
-                    SubFrames = {
-                        ['BlizzMovePlugin-QuestTrackerButton'] = {
-                            FrameReference = self.MoveHandleFrame,
-                            MaxVersion = 30000,
-                        },
-                    },
-                },
-                ["WatchFrame"] = {
-                    MinVersion = 30000,
-                    MaxVersion = 40000,
-                    IgnoreMouse = true,
-                    SubFrames = {
-                        ['BlizzMovePlugin-QuestTrackerButton'] = {
-                            FrameReference = self.MoveHandleFrame,
-                            MinVersion = 30000,
-                            MaxVersion = 40000,
                         },
                     },
                 },

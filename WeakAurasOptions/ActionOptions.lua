@@ -1,5 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
-local AddonName, OptionsPrivate = ...
+---@type string
+local AddonName = ...
+---@class OptionsPrivate
+local OptionsPrivate = select(2, ...)
 
 local L = WeakAuras.L
 
@@ -278,11 +281,7 @@ function OptionsPrivate.GetActionOptions(data)
         end,
         name = L["Glow Frame Type"],
         order = 10.3,
-        values = {
-          UNITFRAME = L["Unit Frame"],
-          NAMEPLATE = L["Nameplate"],
-          FRAMESELECTOR = L["Frame Selector"]
-        },
+        values = OptionsPrivate.Private.glow_frame_types,
         hidden = function()
           return not data.actions.start.do_glow
           or data.actions.start.glow_action == nil
@@ -690,6 +689,31 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Stop Sound"],
         order = 29.1,
       },
+      finish_do_sound_fade = {
+        type = "toggle",
+        width = WeakAuras.normalWidth,
+        name = L["Fadeout Sound"],
+        order = 29.2,
+        disabled = function() return not data.actions.finish.stop_sound end,
+      },
+      finish_stop_sound_fade = {
+        type = "range",
+        control = "WeakAurasSpinBox",
+        width = WeakAuras.normalWidth,
+        name = L["Fadeout Time (seconds)"],
+        order = 29.3,
+        hidden = function() return not data.actions.finish.do_sound_fade end,
+        disabled = function() return not data.actions.finish.stop_sound end,
+        min = 0,
+        softMax = 10,
+        bigStep = 1,
+      },
+      finish_stop_sound_fade_space = {
+        type = "description",
+        width = WeakAuras.doubleWidth,
+        order = 29.4,
+        name = "",
+      },
       finish_do_glow = {
         type = "toggle",
         width = WeakAuras.normalWidth,
@@ -716,11 +740,7 @@ function OptionsPrivate.GetActionOptions(data)
         end,
         name = L["Glow Frame Type"],
         order = 30.3,
-        values = {
-          UNITFRAME = L["Unit Frame"],
-          NAMEPLATE = L["Nameplate"],
-          FRAMESELECTOR = L["Frame Selector"]
-        },
+        values = OptionsPrivate.Private.glow_frame_types,
         hidden = function()
           return not data.actions.finish.do_glow
           or data.actions.finish.glow_action == nil

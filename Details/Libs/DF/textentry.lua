@@ -438,7 +438,8 @@ detailsFramework.TextEntryCounter = detailsFramework.TextEntryCounter or 1
 
 	local OnTabPressed = function(textentry)
 		local capsule = textentry.MyObject
-		local kill = capsule:RunHooksForWidget("OnTabPressed", textentry, byUser, capsule)
+		local bByUser = false
+		local kill = capsule:RunHooksForWidget("OnTabPressed", textentry, bByUser, capsule)
 		if (kill) then
 			return
 		end
@@ -460,7 +461,7 @@ detailsFramework.TextEntryCounter = detailsFramework.TextEntryCounter or 1
 		end
 
 		self:SetJustifyH("left")
-		self:SetJustifyV("center")
+        self:SetJustifyV("middle")
 		self:SetTextInsets(18, 14, 0, 0)
 
 		local magnifyingGlassTexture = self:CreateTexture(nil, "OVERLAY")
@@ -579,6 +580,7 @@ end
 ---@param labelTemplate table?
 ---@return df_textentry
 function detailsFramework:CreateTextEntry(parent, textChangedCallback, width, height, member, name, labelText, textentryTemplate, labelTemplate)
+---@diagnostic disable-next-line: return-type-mismatch
 	return detailsFramework:NewTextEntry(parent, parent, name, member, width, height, textChangedCallback, nil, nil, nil, labelText, textentryTemplate, labelTemplate)
 end
 
@@ -596,7 +598,7 @@ function detailsFramework:NewTextEntry(parent, container, name, member, width, h
 	end
 
 	if (name:find("$parent")) then
-		local parentName = detailsFramework.GetParentName(parent)
+		local parentName = detailsFramework:GetParentName(parent)
 		name = name:gsub("$parent", parentName)
 	end
 
@@ -721,6 +723,61 @@ function detailsFramework:NewTextEntry(parent, container, name, member, width, h
 
 	return newTextEntryObject, withLabel
 end
+
+---@class df_searchbox : df_textentry
+---@field ClearSearchButton button
+---@field MagnifyingGlassTexture texture
+---@field SearchFontString fontstring
+---@field BottomLineTexture texture
+---@field PressEnter fun(self:df_searchbox)
+---@field ClearFocus fun(self:df_searchbox)
+
+---create a search box with no backdrop, a magnifying glass icon and a clear search button
+---@param parent frame
+---@param callback any
+---@return df_searchbox
+function detailsFramework:CreateSearchBox(parent, callback)
+    local onSearchPressEnterCallback = function(_, _, text, self)
+        callback(self)
+    end
+
+    local searchBox = detailsFramework:CreateTextEntry(parent, onSearchPressEnterCallback, 220, 26)
+	---@cast searchBox df_searchbox
+
+    searchBox:SetAsSearchBox()
+    searchBox:SetTextInsets(25, 5, 0, 0)
+    searchBox:SetBackdrop(nil)
+    searchBox:SetHook("OnTextChanged", callback)
+
+    local file, size, flags = searchBox:GetFont()
+    searchBox:SetFont(file, 12, flags)
+    searchBox.ClearSearchButton:SetAlpha(0)
+
+    searchBox.BottomLineTexture = searchBox:CreateTexture(nil, "border")
+    searchBox.BottomLineTexture:SetPoint("bottomleft", searchBox.widget, "bottomleft", -15, 0)
+    searchBox.BottomLineTexture:SetPoint("bottomright", searchBox.widget, "bottomright", 0, 0)
+	local bUseAtlasSize = false
+    searchBox.BottomLineTexture:SetAtlas("common-slider-track")
+    searchBox.BottomLineTexture:SetHeight(8)
+
+	--create the button to clear the search box
+	searchBox.ClearSearchButton = CreateFrame("button", nil, searchBox.widget, "UIPanelCloseButton")
+	searchBox.ClearSearchButton:SetPoint("right", searchBox.widget, "right", -3, 0)
+	searchBox.ClearSearchButton:SetSize(10, 10)
+	searchBox.ClearSearchButton:SetAlpha(0.3)
+	searchBox.ClearSearchButton:GetNormalTexture():SetAtlas("common-search-clearbutton")
+	searchBox.ClearSearchButton:GetHighlightTexture():SetAtlas("common-search-clearbutton")
+	searchBox.ClearSearchButton:GetPushedTexture():SetAtlas("common-search-clearbutton")
+
+	searchBox.ClearSearchButton:SetScript("OnClick", function()
+		searchBox:SetText("")
+		searchBox:PressEnter()
+		searchBox:ClearFocus()
+	end)
+
+    return searchBox
+end
+
 
 function detailsFramework:NewSpellEntry(parent, func, width, height, param1, param2, member, name)
 	local editbox = detailsFramework:NewTextEntry(parent, parent, name, member, width, height, func, param1, param2)
@@ -1020,7 +1077,7 @@ end
 function detailsFramework:NewSpecialLuaEditorEntry(parent, width, height, member, name, nointent, showLineNumbers, bNoName)
 	if (not bNoName) then
 		if (name and name:find("$parent")) then
-			local parentName = detailsFramework.GetParentName(parent)
+			local parentName = detailsFramework:GetParentName(parent)
 			name = name:gsub("$parent", parentName)
 		end
 	else

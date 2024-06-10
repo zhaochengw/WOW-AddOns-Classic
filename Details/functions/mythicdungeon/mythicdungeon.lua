@@ -18,6 +18,7 @@ Details.MythicPlus = {
     RunID = 0,
 }
 
+local mythicDungeonFrames = Details222.MythicPlus.Frames
 local mythicDungeonCharts = Details:CreateEventListener()
 Details222.MythicPlus.Charts.Listener = mythicDungeonCharts
 
@@ -60,6 +61,7 @@ function DetailsMythicPlusFrame.BossDefeated(this_is_end_end, encounterID, encou
     Details:UpdateState_CurrentMythicDungeonRun(true, Details.MythicPlus.SegmentID, Details.MythicPlus.PreviousBossKilledAt)
 end
 
+--this function is called 2 seconds after the event COMBAT_MYTHICDUNGEON_END
 function DetailsMythicPlusFrame.MythicDungeonFinished(fromZoneLeft)
     if (DetailsMythicPlusFrame.IsDoingMythicDungeon) then
         if (DetailsMythicPlusFrame.DevelopmentDebug) then
@@ -106,6 +108,10 @@ function DetailsMythicPlusFrame.MythicDungeonFinished(fromZoneLeft)
         end
 
         Details.MythicPlus.IsRestoredState = nil
+
+		--the run is valid, schedule to open the chart window
+		Details.mythic_plus.delay_to_show_graphic = 1
+		C_Timer.After(Details.mythic_plus.delay_to_show_graphic, mythicDungeonFrames.ShowEndOfMythicPlusPanel)
 
         --shutdown parser for a few seconds to avoid opening new segments after the run ends
         if (not fromZoneLeft) then
@@ -199,6 +205,7 @@ DetailsMythicPlusFrame.EventListener:RegisterEvent("COMBAT_PLAYER_ENTER")
 DetailsMythicPlusFrame.EventListener:RegisterEvent("COMBAT_PLAYER_LEAVE")
 DetailsMythicPlusFrame.EventListener:RegisterEvent("COMBAT_MYTHICDUNGEON_START")
 DetailsMythicPlusFrame.EventListener:RegisterEvent("COMBAT_MYTHICDUNGEON_END")
+DetailsMythicPlusFrame.EventListener:RegisterEvent("COMBAT_MYTHICPLUS_OVERALL_READY")
 
 function DetailsMythicPlusFrame.EventListener.OnDetailsEvent(contextObject, event, ...)
     --these events triggers within Details control functions, they run exactly after details! creates or close a segment
@@ -220,17 +227,30 @@ function DetailsMythicPlusFrame.EventListener.OnDetailsEvent(contextObject, even
                     local zoneName = combatObject.is_boss.zone
                     local mythicLevel = C_ChallengeMode.GetActiveKeystoneInfo()
 
+                    local currentCombat = Details:GetCurrentCombat()
+
                     --just in case the combat get tagged as boss fight
-                    Details.tabela_vigente.is_boss = nil
+                    combatObject.is_boss = nil
 
                     --tag the combat as mythic dungeon trash
                     local zoneName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID, instanceGroupSize = GetInstanceInfo()
-                    Details.tabela_vigente.is_mythic_dungeon_trash = {
-                        ZoneName = zoneName,
-                        MapID = instanceMapID,
+
+                    ---@type mythicdungeoninfo
+                    local mythicPlusInfo = {
+                        ZoneName = Details.MythicPlus.DungeonName or zoneName,
+                        MapID = Details.MythicPlus.DungeonID or instanceMapID,
                         Level = Details.MythicPlus.Level,
                         EJID = Details.MythicPlus.ejID,
+                        RunID = Details.mythic_dungeon_id,
+                        StartedAt = time() - currentCombat:GetCombatTime(),
+                        EndedAt = time(),
+                        SegmentID = Details.MythicPlus.SegmentID, --segment number within the dungeon
+                        OverallSegment = false,
+                        SegmentType = DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSSWIPE,
+                        SegmentName = (encounterName or Loc["STRING_UNKNOW"]) .. " (" .. string.lower(_G["BOSS"]) .. ")"
                     }
+
+                    combatObject.is_mythic_dungeon = mythicPlusInfo
 
                     Details222.MythicPlus.LogStep("COMBAT_PLAYER_LEAVE | wiped on boss | key level: | " .. mythicLevel .. " | " .. (encounterName or "") .. " " .. zoneName)
                 else
@@ -309,6 +329,29 @@ function DetailsMythicPlusFrame.EventListener.OnDetailsEvent(contextObject, even
         --delay to wait the encounter_end trigger first
         --assuming here the party cleaned the mobs kill objective before going to kill the last boss
         C_Timer.After(2, DetailsMythicPlusFrame.MythicDungeonFinished)
+
+    elseif (event == "COMBAT_MYTHICPLUS_OVERALL_READY") then
+        DetailsMythicPlusFrame.SaveMythicPlusStats(...)
+    end
+end
+
+local playerLeftDungeonZoneTimer_Callback = function()
+    if (DetailsMythicPlusFrame.IsDoingMythicDungeon) then
+        local _, _, difficulty, _, _, _, _, currentZoneID = GetInstanceInfo()
+        if (currentZoneID ~= Details.MythicPlus.DungeonID) then
+            Details222.MythicPlus.LogStep("ZONE_CHANGED_NEW_AREA | player has left the dungeon and Details! finished the dungeon because of that.")
+
+            --send mythic dungeon end event
+            Details:SendEvent("COMBAT_MYTHICDUNGEON_END") --on leave dungeon
+
+            --finish the segment
+            DetailsMythicPlusFrame.BossDefeated(true)
+
+            --finish the mythic run
+            DetailsMythicPlusFrame.MythicDungeonFinished(true)
+
+            DetailsMythicPlusFrame.ZoneLeftTimer = nil
+        end
     end
 end
 
@@ -335,17 +378,93 @@ DetailsMythicPlusFrame:SetScript("OnEvent", function(_, event, ...)
                     print("Zone changed and the zone is different than the dungeon")
                 end
 
-                Details222.MythicPlus.LogStep("ZONE_CHANGED_NEW_AREA | player has left the dungeon and Details! finished the dungeon because of that.")
+                --player left the dungeon zone, start a timer to check if the player will return to the dungeon
+                if (DetailsMythicPlusFrame.DevelopmentDebug) then
+                    print("Details!", "ZONE_CHANGED_NEW_AREA | player left the dungeon zone, return to dungeon timer started.")
+                end
 
-                --send mythic dungeon end event
-                Details:SendEvent("COMBAT_MYTHICDUNGEON_END")
+                --check if the timer already exists, if does, ignore this event
+                if (DetailsMythicPlusFrame.ZoneLeftTimer and not DetailsMythicPlusFrame.ZoneLeftTimer:IsCancelled()) then
+                    return
+                end
 
-                --finish the segment
-                DetailsMythicPlusFrame.BossDefeated(true)
-
-                --finish the mythic run
-                DetailsMythicPlusFrame.MythicDungeonFinished(true)
+                DetailsMythicPlusFrame.ZoneLeftTimer = C_Timer.NewTimer(40, playerLeftDungeonZoneTimer_Callback)
             end
         end
     end
 end)
+
+---@param combatObject combat
+function DetailsMythicPlusFrame.SaveMythicPlusStats(combatObject)
+    local mapChallengeModeID, mythicLevel, time, onTime, keystoneUpgradeLevels, practiceRun, oldOverallDungeonScore, newOverallDungeonScore, IsMapRecord, IsAffixRecord, PrimaryAffix, isEligibleForScore, members = C_ChallengeMode.GetCompletionInfo()
+    if (mapChallengeModeID) then
+        local statName = "mythicdungeoncompletedDF2"
+
+        ---@type table<challengemapid, table>
+        local mythicDungeonRuns = Details222.PlayerStats:GetStat(statName)
+        if (not mythicDungeonRuns) then
+            mythicDungeonRuns = mythicDungeonRuns or {}
+        end
+
+        --mythicDungeonRuns [mapChallengeModeID] [mythicLevel]
+
+        ---@class mythicplusrunstats
+        ---@field onTime boolean
+        ---@field deaths number
+        ---@field date number
+        ---@field affix number
+        ---@field runTime milliseconds
+        ---@field combatTime number
+
+        ---@class mythicplusstats
+        ---@field completed number
+        ---@field totalTime number
+        ---@field minTime number
+        ---@field history mythicplusrunstats[]
+
+        ---@type table<keylevel, mythicplusstats>
+        local statsForDungeon = mythicDungeonRuns[mapChallengeModeID]
+        if (not statsForDungeon) then
+            statsForDungeon = {}
+            mythicDungeonRuns[mapChallengeModeID] = statsForDungeon
+        end
+
+        ---@type mythicplusstats
+        local statsForLevel = statsForDungeon[mythicLevel]
+        if (not statsForLevel) then
+            ---@type mythicplusstats
+            statsForLevel = {
+                completed = 0,
+                totalTime = 0,
+                minTime = 0,
+                history = {},
+            }
+            statsForDungeon[mythicLevel] = statsForLevel
+        end
+
+        statsForLevel.completed = (statsForLevel.completed or 0) + 1
+        statsForLevel.totalTime = (statsForLevel.totalTime or 0) + time
+        if (not statsForLevel.minTime or time < statsForLevel.minTime) then
+            statsForLevel.minTime = time
+        end
+
+        statsForLevel.history = statsForLevel.history or {}
+
+        local amountDeaths = C_ChallengeMode.GetDeathCount() or 0
+
+        ---@type mythicplusrunstats
+        local runStats = {
+            date = _G.time(),
+            runTime = math.floor(time/1000),
+            onTime = onTime,
+            deaths = amountDeaths,
+            affix = PrimaryAffix,
+            combatTime = combatObject:GetCombatTime(),
+        }
+
+        table.insert(statsForLevel.history, runStats)
+
+        Details222.PlayerStats:SetStat("mythicdungeoncompletedDF2", mythicDungeonRuns)
+    end
+end
+

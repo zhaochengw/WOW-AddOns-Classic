@@ -1,7 +1,7 @@
-## Interface: 11501
+## Interface: 11502
 ## Title: TotemTimers
 ## Author:  Xianghar
-## Version: 3.2.8
+## Version: 4.0.3
 ## SavedVariables: TotemTimers_GlobalSettings, TotemTimers_Profiles
 ## OptionalDeps: Masque
 ## LoadManagers: AddonLoader
@@ -49,6 +49,11 @@ Shield.lua
 EarthShield.lua
 Weapon.lua
 vanilla\Weapon.lua
+EnhanceCDs.lua
+vanilla\PowerSurge.lua
+LongCooldowns.lua
+vanilla\SpiritAlpha.lua
+
 Warnings.lua
 Masque.lua
 GUI\localization.lua
@@ -65,6 +70,7 @@ GUI\localization.esmx.lua
 GUI\General.lua
 GUI\Timers.lua
 GUI\Trackers.lua
+GUI\EnhanceCDs.lua
 GUI\Messages.lua
 GUI\Totems.lua
 GUI\Sets.lua

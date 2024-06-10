@@ -89,6 +89,9 @@ local function CreateTimers(ctime,cname)
 		dbmPlayerPrefix = ""
 	end
 	if cname == L.timerattack then
+		if SlashCmdList.BIGWIGSPULL then
+			SlashCmdList.BIGWIGSPULL(ctime)
+		end
 		SendAddonMessage("BigWigs", "P^Pull^"..ctime, chat_type,playerName)
 		local _,_,_,_,_,_,_,mapID = GetInstanceInfo()
 		SendAddonMessage(dbmPrefix, ("%s1\tPT\t%d\t%d"):format(dbmPlayerPrefix, ctime,mapID or 0), chat_type,playerName)
@@ -96,9 +99,15 @@ local function CreateTimers(ctime,cname)
 			C_PartyInfo.DoCountdown(ctime)
 		end
 	elseif cname == L.timerafk then
+		if SlashCmdList.BIGWIGSBREAK then
+			SlashCmdList.BIGWIGSBREAK(tostring(tonumber(ctime)/60))
+		end
 		SendAddonMessage("BigWigs", "P^Break^"..ctime, chat_type,playerName)
 		SendAddonMessage(dbmPrefix, ("%s1\tBT\t%d"):format(dbmPlayerPrefix, ctime), chat_type,playerName)
 	else
+		if SlashCmdList.BIGWIGSLOCALBAR then
+			SlashCmdList.BIGWIGSLOCALBAR(ctime.." "..cname)
+		end
 		SendAddonMessage("BigWigs", "P^CBar^"..ctime.." "..cname, chat_type,playerName)
 		SendAddonMessage(dbmPrefix, ("%s1\tU\t%d\t%s"):format(dbmPlayerPrefix, ctime, cname), chat_type,playerName)
 		if not ExRT.isClassic and VMRT.Timers.BlizzTimer then

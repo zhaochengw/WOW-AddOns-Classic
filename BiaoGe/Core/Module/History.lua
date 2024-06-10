@@ -84,6 +84,7 @@ function BG.HistoryUI()
         bt:SetNormalFontObject(BG.FontGreen15)
         bt:SetDisabledFontObject(BG.FontDis15)
         bt:SetHighlightFontObject(BG.FontWhite15)
+        BG.SetTextHighlightTexture(bt)
         BG.History.HistoryButton = bt
         BG.UpdateHistoryButton()
         -- 单击触发
@@ -138,11 +139,7 @@ function BG.HistoryUI()
                         end
                     end
                 end
-                if BG.Frame[FB]["boss" .. b]["time"] then
-                    if BG.Frame[FB]["boss" .. b]["time"]:GetText() ~= "" then
-                        BiaoGe.History[FB][DT]["boss" .. b]["time"] = BG.Frame[FB]["boss" .. b]["time"]:GetText()
-                    end
-                end
+                BiaoGe.History[FB][DT]["boss" .. b]["time"] = BiaoGe[FB]["boss" .. b]["time"]
             end
             local d = { DT, format(L["%s%s %s人 工资:%s"], DTcn, BG.GetFBinfo(FB, "localName"),
                 BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 4]:GetText(),
@@ -159,13 +156,16 @@ function BG.HistoryUI()
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["保存表格"])
         bt:SetSize(bt:GetFontString():GetWidth(), 30)
+        BG.SetTextHighlightTexture(bt)
         BG.History.SaveButton = bt
 
         bt:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_NONE")
             GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
             GameTooltip:ClearLines()
-            GameTooltip:SetText(L["把当前表格保存至历史表格"])
+            GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
+            GameTooltip:AddLine(L["把当前表格保存至历史表格。"], 1, 0.82, 0, true)
+            GameTooltip:Show()
         end)
         bt:SetScript("OnLeave", function(self)
             GameTooltip:Hide()
@@ -191,18 +191,36 @@ function BG.HistoryUI()
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["分享表格"])
         bt:SetSize(bt:GetFontString():GetWidth(), 30)
+        BG.SetTextHighlightTexture(bt)
         BG.History.SendButton = bt
 
         bt:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_NONE")
             GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
             GameTooltip:ClearLines()
-            GameTooltip:SetText(L["把当前表格发给别人，类似发WA那样"])
+            GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
+            GameTooltip:AddLine(L["把当前表格发给别人，类似发WA那样。"], 1, 0.82, 0, true)
+            GameTooltip:Show()
         end)
         bt:SetScript("OnLeave", function(self)
             GameTooltip:Hide()
         end)
+
+        local updateFrame = CreateFrame("Frame")
+        updateFrame.timeElapsed = 0
+        BG.canSendBiaoGe = false
         bt:SetScript("OnClick", function(self)
+            BG.canSendBiaoGe = true
+            updateFrame.timeElapsed = 0
+            updateFrame:SetScript("OnUpdate", function(self, elapsed)
+                updateFrame.timeElapsed = updateFrame.timeElapsed + elapsed
+                if updateFrame.timeElapsed >= 300 then
+                    BG.canSendBiaoGe = false
+                    updateFrame.timeElapsed = 0
+                    updateFrame:SetScript("OnUpdate", nil)
+                end
+            end)
+
             FrameHide(2)
 
             local text = ""
@@ -272,18 +290,27 @@ function BG.HistoryUI()
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["导出表格"])
         bt:SetSize(bt:GetFontString():GetWidth(), 30)
+        BG.SetTextHighlightTexture(bt)
         BG.History.DaoChuButton = bt
 
         bt:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_NONE")
             GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
             GameTooltip:ClearLines()
-            GameTooltip:SetText(L["把表格导出为文本"])
+            GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
+            GameTooltip:AddLine(L["把表格导出为文本。"], 1, 0.82, 0, true)
+            GameTooltip:Show()
         end)
         bt:SetScript("OnLeave", function(self)
             GameTooltip:Hide()
         end)
         bt:SetScript("OnClick", function(self)
+            if BG.frameWenBen.frame:IsVisible() then
+                BG.frameWenBen.frame:Hide()
+                return
+            else
+                BG.frameWenBen.frame:Show()
+            end
             local FB = BG.FB1
             local Frame
             local text
@@ -292,7 +319,6 @@ function BG.HistoryUI()
             elseif BG["HistoryFrame" .. FB]:IsVisible() then
                 Frame = BG.HistoryFrame
             end
-            BG.frameWenBen.frame:Show()
             BG.frameWenBen.edit:SetText("")
             for b = 1, Maxb[FB] + 2 do
                 local bossname2 = BG.Boss[FB]["boss" .. b].name2
@@ -365,13 +391,19 @@ function BG.HistoryUI()
                             end
                         end
                         if BG.Frame[FB]["boss" .. b]["time"] then
-                            BG.Frame[FB]["boss" .. b]["time"]:SetText(BiaoGe.History[FB][DT]["boss" .. b]["time"] or "")
+                            if BiaoGe.History[FB][DT]["boss" .. b]["time"] then
+                                BG.Frame[FB]["boss" .. b]["time"]:SetText(L["击杀用时"] .. " " .. BiaoGe.History[FB][DT]["boss" .. b]["time"])
+                            else
+                                BG.Frame[FB]["boss" .. b]["time"]:SetText("")
+                            end
                             BiaoGe[FB]["boss" .. b]["time"] = BiaoGe.History[FB][DT]["boss" .. b]["time"]
                         end
                     end
                 end
             end
-            BG.FBMainFrame:Show()
+            if BiaoGe.lastFrame == "FB" then
+                BG.FBMainFrame:Show()
+            end
         end
 
         local bt = CreateFrame("Button", nil, BG.HistoryMainFrame)
@@ -381,13 +413,16 @@ function BG.HistoryUI()
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["应用表格"])
         bt:SetSize(bt:GetFontString():GetWidth(), 30)
+        BG.SetTextHighlightTexture(bt)
         BG.History.YongButton = bt
 
         bt:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_NONE")
             GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
             GameTooltip:ClearLines()
-            GameTooltip:SetText(L["把该历史表格复制粘贴到当前表格，这样你可以编辑内容"])
+            GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
+            GameTooltip:AddLine(L["把该历史表格复制粘贴到当前表格，这样你可以编辑内容。"], 1, 0.82, 0, true)
+            GameTooltip:Show()
         end)
         bt:SetScript("OnLeave", function(self)
             GameTooltip:Hide()
@@ -427,6 +462,7 @@ function BG.HistoryUI()
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["返回表格"])
         bt:SetSize(bt:GetFontString():GetWidth(), 30)
+        BG.SetTextHighlightTexture(bt)
         BG.History.EscButton = bt
 
         bt:SetScript("OnClick", function(self)
@@ -499,7 +535,7 @@ function BG.HistoryUI()
                 for i, v in ipairs(BiaoGe.HistoryList[FB]) do
                     if i ~= BG.History.GaiMingNum then
                         if v[2] == text then
-                            SendSystemMessage(BG.BG() .. " " .. BG.STC_r1(L["不能使用该名字，因为跟其他历史表格重名！"]))
+                            SendSystemMessage(BG.BG .. BG.STC_r1(L["不能使用该名字，因为跟其他历史表格重名！"]))
                             return
                         end
                     end
@@ -687,7 +723,11 @@ do
                                 end
                             end
                             if BG.HistoryFrame[FB]["boss" .. b]["time"] then
-                                BG.HistoryFrame[FB]["boss" .. b]["time"]:SetText(BiaoGe.History[FB][DT]["boss" .. b]["time"] or "")
+                                if BiaoGe.History[FB][DT]["boss" .. b]["time"] then
+                                    BG.HistoryFrame[FB]["boss" .. b]["time"]:SetText(L["击杀用时"] .. " " .. BiaoGe.History[FB][DT]["boss" .. b]["time"])
+                                else
+                                    BG.HistoryFrame[FB]["boss" .. b]["time"]:SetText("")
+                                end
                             end
                         end
                     end

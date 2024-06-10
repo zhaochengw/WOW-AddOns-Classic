@@ -5,7 +5,7 @@
 GTFO Fail List - Mists of Pandaria
 ]]--
 
-if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
+if (GTFO.RetailMode) then
 
 -- ***************
 -- * Scholomance *

@@ -1,5 +1,49 @@
+4.0.3
+    - Fix weapon tracker loading default spell on login
+    - Fix default totems loading on login in SOD
+4.0.2
+    - Fixed TT not hiding in some vehicles
+    - Added Greater Healing Wave to Maelstrom proc
+    - Fix totem buttons not showing for low lvl chars
+    - Fix blizzard totem bar not hiding for low lvl chars
+    - Fix weapon tracker not showing for low lvl chars
+    - Show Primal Strike in combat cooldowns instead of Stormstrike for low lvl chars
+4.0.1
+    - Bugfix for reodering combat cooldowns and Fire Nova
+4.0.0
+    - Added spell changes for Cataclysm Classic
+3.2.17
+    - Fixed red flash animation of expiring weapon tracker
+    - When dual wielding the weapon tracker shows the lowest timer of both hands on the button
+3.2.16
+    - Added Riptide to healing combat cooldowns
+    - Added option to change the point of time when the weapon tracker warning starts
+    - Added option for pulse animation on weapon tracker warning
+3.2.15
+    - Added option to toggle Power Surge
+3.2.14
+    - Fixed overlay glow for spells affected by Maelstrom Weapon
+3.2.13
+    - Fixed Earth Shock cooldown for Way of Earth
+3.2.12
+    - Fixed max durations for weapon tracker
+    - Fixed stop pulse animations on long cooldowns triggering too often
+    - Added texture for Power Surge proc to git
+3.2.11
+    - Added combat cooldowns for SOD
+    - Added Maelstrom Weapon and Power Surge to SOD
+    - Added overlay glows for action buttons for Maelstrom and Power Surge
+    - Added longer cooldowns like Shamanistic Rage and Ancestral Guidance to SOD
+    - Added Spirit of the Alpha tracker
+    - Fixed Fire Nova in SOD
+    - Added overlay glow for missing weapon enchants as Enhancement
+    - Fixed Masque for weapon tracker
+3.2.10
+    - Added Decoy Totem
+3.2.9
+    - Added WF/RB as option for leftclick on weapon timer in SoD
 3.2.8
-    - Added Dual Wield for Weapon Timer in SOD
+    - Added Dual Wield for weapon timer in SOD
 3.2.7
     - Added Earth Shield for SoD
 3.2.6

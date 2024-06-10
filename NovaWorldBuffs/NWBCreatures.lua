@@ -4,6 +4,7 @@
 
 local addonName, addon = ...;
 local NWB = addon.a;
+local L = LibStub("AceLocale-3.0"):GetLocale("NovaWorldBuffs");
 --A list of Orgrimmar NPC's from wowhead.
 --Commented out NPC's that may appear in other zones also (usually pulled to org).
 NWB.orgrimmarCreatures = {
@@ -732,6 +733,8 @@ NWB.companionCreatures = {
 	[15368] = "Tonk Mine",
 	[11859] = "Doomguard",
 	[14337] = "Field Repair Bot 74A",
+	[32638] = "Hakmud of Argus",
+	[32639] = "Gnimo",
 	--Wrath.
 	[29561] = "Scrapbot",
 	[33404] = "Wind-Up Train Wrecker",
@@ -764,24 +767,95 @@ NWB.companionCreatures = {
 	[196534] = "Hoplet", --6 month sub.
 	[213605] = "Arfus", --Completing all gamma dungeons.
 	[211025] = "Lil' Wrathion", --Cata preorder pet.
+	
+	--Cata.
+	[55367] = "Darkmoon Zeppelin",
+	[50468] = "Landro's Lil' XT",
+	[51632] = "Tiny Flamefly",
+	[52226] = "Panther Cub",
+	[53661] = "Crimson Lasher",
+	[54539] = "Alliance Balloon",
+	[53232] = "Voodoo Figurine",
+	[43800] = "Personal World Destroyer",
+	[48242] = "Armadillo Pup",
+	[53225] = "Pterrordax Hatchling",
+	[53623] = "Cenarion Hatchling",
+	[54027] = "Lil' Tarecgosa",
+	[42177] = "Blue Mini Jouster",
+	[47944] = "Dark Phoenix Hatchling",
+	[55356] = "Darkmoon Tonk",
+	[56266] = "Fetish Shaman",
+	[43916] = "De-Weaponized Mechanical Companion",
+	[45340] = "Fossilized Hatchling",
+	[48609] = "Clockwork Gnome",
+	[51090] = "Singing Sunflower",
+	[51122] = "Deathy",
+	[52894] = "Lashtail Hatchling",
+	[54374] = "Brilliant Kaliri",
+	[54730] = "Gregarious Grell",
+	[45128] = "Crawling Claw",
+	[45247] = "Pebble",
+	[51600] = "Lil' Ragnaros",
+	[53048] = "Legs",
+	[54541] = "Horde Balloon",
+	[56031] = "Darkmoon Cub",
+	[46896] = "Lil' Deathwing",
+	[48107] = "Rustberg Gull",
+	[50586] = "Mr. Grubbs",
+	[51635] = "Scooter the Snail",
+	[53884] = "Feline Familiar",
+	[54128] = "Creepy Crate",
+	[54227] = "Nuts",
+	[54487] = "Darkmoon Turtle",
+	[55187] = "Darkmoon Balloon",
+	[55215] = "Lumpy",
+	[55386] = "Sea Pony",
+	[55571] = "Lunar Lantern",
+	[55574] = "Festival Lantern",
+	[56082] = "Green Balloon",
+	[56083] = "Yellow Balloon",
+	[59020] = "Eye of the Legion",
+	[34278] = "Withers",
+	[42183] = "Gold Mini Jouster",
+	[46898] = "Enchanted Lantern",
+	[48641] = "Fox Kit",
+	[48982] = "Tiny Shale Spider",
+	[49586] = "Guild Page",
+	[49588] = "Guild Page",
+	[49587] = "Guild Herald",
+	[49590] = "Guild Herald",
+	[50545] = "Magic Lamp",
+	[50722] = "Elementium Geode",
+	[51601] = "Moonkin Hatchling",
+	[51649] = "Moonkin Hatchling",
+	[52343] = "Landro's Lichling",
+	[52344] = "Nightsaber Cub",
+	[52831] = "Winterspring Cub",
+	[53283] = "Guardian Cub",
+	[53658] = "Hyjal Bear Cub",
+	[54383] = "Purple Puffer",
+	[54438] = "Murkablo",
+	[54491] = "Darkmoon Monkey",
+	[58163] = "Soul of the Aspects",
+	[54745] = "Sand Scarab",
 }
 
 if (NWB.isWrath) then
 	NWB.map = 125;
-	NWB.mapName = "Dalaran";
+	NWB.mapName = L["Dalaran"];
 	for k, v in pairs(NWB.dalaranCreatures) do
 		NWB.npcs[k] = v;
 	end
 else
 	if (NWB.faction == "Horde") then
 		NWB.map = 1454;
-		NWB.mapName = "Orgrimmar";
+		NWB.mapName = L["Orgrimmar"];
 		for k, v in pairs(NWB.orgrimmarCreatures) do
 			NWB.npcs[k] = v;
 		end
 	else
 		NWB.map = 1453;
-		NWB.mapName = "Stormwind";
+		NWB.mapName = L["Stormwind"];
 		for k, v in pairs(NWB.stormwindCreatures) do
 			NWB.npcs[k] = v;
 		end

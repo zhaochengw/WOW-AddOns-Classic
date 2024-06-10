@@ -2,7 +2,7 @@ local AddonName, SAO = ...
 
 -- Optimize frequent calls
 local GetSpellInfo = GetSpellInfo
-local IsPlayerSpell = IsPlayerSpell
+local IsSpellKnownOrOverridesKnown = IsSpellKnownOrOverridesKnown
 
 -- List of spell IDs sharing the same name
 -- key = spell name, value = list of spell IDs
@@ -93,6 +93,9 @@ end
 -- Spell ID tester that falls back on spell name testing if spell ID is zero
 -- This function helps when the game client fails to give a spell ID
 -- Ideally, this function should be pointless, but Classic Era has some issues
+-- @param spellID spell ID from CLEU
+-- @param spellName spell name from CLEU
+-- @param referenceID spell ID of the spell we want to compare with CLEU
 function SAO.IsSpellIdentical(self, spellID, spellName, referenceID)
     if spellID ~= 0 then
         return spellID == referenceID
@@ -102,13 +105,8 @@ function SAO.IsSpellIdentical(self, spellID, spellName, referenceID)
 end
 
 -- Test if the player is capable of casting a specific spell
--- For most game projects, it checks the IsPlayerSpell function
--- For Season of Discovery, it adds a specific check related to runes
 function SAO.IsSpellLearned(self, spellID)
-    if IsPlayerSpell(spellID) then
-        return true;
-    end
-    if spellID >= 400000 and self.IsSoD() and self:IsRuneSpellLearned(spellID) then
+    if IsSpellKnownOrOverridesKnown(spellID) then
         return true;
     end
     return false;
@@ -142,4 +140,24 @@ function SAO.GetSpellEndTime(self, spellID, suggestedEndTime)
     elseif type(expirationTime) == 'number' then
         return expirationTime;
     end
+end
+
+-- Determine if the spell belongs is made up for internal purposes
+function SAO.IsFakeSpell(self, spellID)
+    if spellID >= 1000000 then
+        -- Spell IDs over 1M are impossible for now
+        return true
+    end
+
+    if (self.IsEra() or self.IsTBC() or self.IsWrath() or self.IsCata()) and spellID == 48107 then
+        -- Mage's Heating Up does not exist in Era/TBC/Wrath/Cata
+        return true
+    end
+
+    if spellID == 96215 then
+        -- Hot Streak + Heating Up is made up
+        return true
+    end
+
+    return false
 end

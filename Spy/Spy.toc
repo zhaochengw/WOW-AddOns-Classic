@@ -1,26 +1,28 @@
 ﻿## Interface: 30403
 ## Title: Spy
-## Version: 3.1.7
+## Version: 3.1.8
 ## Notes: Detects and alerts you to the presence of nearby enemy players.
 ## Notes-deDE: Detektiert und warnt Sie vor, in der Nähe befindlichen, Gegnern.
-## Notes-esES: Detects and alerts you to the presence of nearby enemy players.
-## Notes-esMX: Detects and alerts you to the presence of nearby enemy players.
+## Notes-esES: Detecta y te alerta sobre la presencia de jugadores enemigos cercanos.
+## Notes-esMX: Detecta y te alerta sobre la presencia de jugadores enemigos cercanos.
 ## Notes-frFR: Détecte et vous avertit de la présence de joueurs ennemis à proximité.
 ## Notes-itIT: Detects and alerts you to the presence of nearby enemy players.
 ## Notes-koKR: 근처에 있는 적 플레이어를 탐지하고 경고합니다.
 ## Notes-ptBR: Detecta e alerta você da presença de jogadores inimigos.
-## Notes-ruRU: Detects and alerts you to the presence of nearby enemy players.
+## Notes-ruRU: Обнаруживает и предупреждает вас о присутствии ближайших вражеских игроков.
 ## Notes-zhCN: 检测并提醒您附近有敌方玩家。
 ## Notes-zhTW: 偵測並警告你附近有敵方玩家出沒。
 ## Creator: Immolation
 ## Author: Slipjack
-## X-Credits-ptBR: Localization: Kasth
+## X-Credits-ptBR: Localization: Kasth, Cruzluz
 ## X-Credits-zhTW: Localization: Jaspy10
 ## X-Credits-deDE: Localization: Jana
 ## X-Credits-deCN: Localization: Kidd8250
 ## X-Credits-koKR: Localization: Ringdove
-## X-Credits-frFR: Localization: FishtrBone and others
+## X-Credits-frFR: Localization: FishtrBone, Cruzluz and others
 ## X-Credits-ruRU: Localization: TeHbZShadow
+## X-Credits-esMX: Localization: Cruzluz
+## X-Credits-esES: Localization: Cruzluz
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, 
 ## SavedVariables: SpyDB
 ## SavedVariablesPerCharacter: SpyPerCharDB

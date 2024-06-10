@@ -377,7 +377,7 @@ local function AddNewCustomNpc(npcID, group)
 					end
 					
 					-- Check if contains proper characters
-					if (not string.match(value, "[0-9,%-]")) then
+					if (string.match(value, "[^0-9,%-]")) then
 						return string.format(AL["CUSTOM_NPC_VALIDATION_CHAR"], "0123456789-,")
 					end
 					
@@ -418,7 +418,7 @@ local function AddNewCustomNpc(npcID, group)
 					end
 					
 					-- Check if number
-					if (value and tonumber(value) == nil) then
+					if (value and tonumber(value) == nil or RSUtils.Contains(value,"%.")) then
 						return AL["CUSTOM_NPC_VALIDATION_NUMBER"]
 					end
 					
@@ -460,7 +460,7 @@ local function AddNewCustomNpc(npcID, group)
 					end
 				
 					-- Check if contains proper characters
-					if (not string.match(value, "[0-9,]")) then
+					if (string.match(value, "[^0-9,]")) then
 						return string.format(AL["CUSTOM_NPC_VALIDATION_CHAR"], "0123456789,")
 					end
 					

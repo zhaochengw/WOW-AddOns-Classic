@@ -5,14 +5,18 @@ TestMode.isTesting = {}
 local dummySpellData = {
     spellName = GetSpellInfo(118),
     icon = GetSpellTexture(118),
-    maxValue = 10.0,
-    timeStart = GetTime(),
-    endTime = GetTime() + 10.0,
+    spellID = 118,
+    maxValue = 10,
+    value = 5,
     isChanneled = false,
+    isActiveCast = true,
+    castID = nil,
 }
 
 local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local CastingBarFrame = isRetail and _G.PlayerCastingBarFrame or _G.CastingBarFrame
+
+-- Note: don't add any major code reworks here, this codebase will soon be replaced with the player-castbar-v2 branch
 
 -- Credits to stako & zork for this
 -- https://www.wowinterface.com/forums/showthread.php?t=41819
@@ -81,8 +85,12 @@ function TestMode:OnOptionChanged(unitID)
 
     -- Immediately update castbar display after changing an option
     local castbar = ClassicCastbars.activeFrames[unitID]
-    if castbar and castbar.isTesting then
-        castbar._data = CopyTable(dummySpellData)
+    if castbar and castbar:IsVisible() then
+        if castbar.isTesting then
+            for key, value in pairs(dummySpellData) do
+                castbar[key] = value
+            end
+        end
         ClassicCastbars:DisplayCastbar(castbar, unitID)
     end
 end
@@ -129,7 +137,7 @@ function TestMode:SetCastbarMovable(unitID, parent)
     end
 
     local castbar = unitID == "player" and CastingBarFrame or ClassicCastbars:GetCastbarFrame(unitID)
-    if unitID ~= "nameplate-testmode" then -- Blizzard broke drag functionality for frames that are anchored to restricted frames in TBC :(
+    if unitID ~= "nameplate-testmode" then -- Blizzard broke drag functionality for frames that are anchored to restricted frames :(
         castbar:SetMovable(true)
         castbar:SetClampedToScreen(true)
         castbar:EnableMouse(true)
@@ -144,21 +152,25 @@ function TestMode:SetCastbarMovable(unitID, parent)
         castbar:SetScript("OnMouseUp", OnDragStop)
     end
 
-    castbar._data = CopyTable(dummySpellData) -- Set test data for :DisplayCastbar()
+    -- Set test data for :DisplayCastbar()
+    for key, value in pairs(dummySpellData) do
+        castbar[key] = value
+    end
     castbar.parent = parentFrame
     castbar.unitID = unitID
     castbar.isTesting = true
 
-    local maxValue = castbar._data.maxValue
-    castbar:SetMinMaxValues(1, maxValue)
-    castbar:SetValue(maxValue / 2)
-    castbar.Timer:SetFormattedText("%.1f", maxValue / 2)
-    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", (((maxValue / 2) / maxValue) * castbar:GetWidth()) - 6, 0)
+    castbar:SetMinMaxValues(0, castbar.maxValue)
+    castbar:SetValue(castbar.value)
+    castbar.Timer:SetFormattedText("%.1f", castbar.isChanneled and castbar.value or not castbar.isChanneled and castbar.maxValue - castbar.value)
+
+    local sparkPosition = (castbar.value / castbar.maxValue) * (castbar.currWidth or castbar:GetWidth())
+    castbar.Spark:SetPoint("CENTER", castbar, "LEFT", sparkPosition, castbar.BorderShield:IsShown() and 3 or 0)
 
     if IsModifierKeyDown() or (IsMetaKeyDown and IsMetaKeyDown()) then
-        castbar._data.isUninterruptible = true
+        castbar.isUninterruptible = true
     else
-        castbar._data.isUninterruptible = false
+        castbar.isUninterruptible = false
     end
 
     if unitID == "party-testmode" or unitID == "arena-testmode" then
@@ -203,6 +215,7 @@ function TestMode:SetCastbarImmovable(unitID)
         castbar.tooltip:Hide()
     end
 
+    castbar.isActiveCast = false
     castbar.unitID = nil
     castbar.parent = nil
     castbar.isTesting = false

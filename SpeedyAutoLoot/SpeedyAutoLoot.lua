@@ -16,8 +16,11 @@ local internal = {
 };
 
 -- Compat
-local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots
 local LOOT_SLOT_ITEM = LOOT_SLOT_ITEM or Enum.LootSlotType.Item
+local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots
+local GetItemInfo = GetItemInfo or C_Item.GetItemInfo
+local GetItemFamily = GetItemFamily or C_Item.GetItemFamily
+local GetItemCount = GetItemCount or C_Item.GetItemCount
 
 function AutoLoot:ProcessLootItem(itemLink, itemQuantity)
   local itemStackSize, _, _, _, itemClassID, _, _, _, _, isCraftingReagent = select(8, GetItemInfo(itemLink));

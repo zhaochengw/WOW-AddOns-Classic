@@ -2703,6 +2703,23 @@ function module.options:Load()
 	--- Sync & data funcs ------
 	----------------------------
 
+	local function ConvertMapIDToString(n)
+		local res={} 
+		repeat 
+			table.insert(res,1,n%253) 
+			n=floor(n/253) 
+		until n==0 
+		for i=2,#res do 
+			res[i]=res[i]+1 
+		end 
+
+		local r = ""
+		for i=1,#res do 
+			r = r .. string.char(res[i])
+		end
+		return r
+	end
+
 	function self:GenerateString(live)
 		self:SaveData()
 
@@ -2731,7 +2748,7 @@ function module.options:Load()
 		byte: map number
 		]]
 
-		local str = live and "" or (string.char(254)..string.char(1)..string.char(DATA_VERSION)..string.char(#curr_data[1])..curr_data[1]..string.char(#(curr_data.name or "")+1)..(curr_data.name or "")..string.char(254)..string.char(2)..string.char(curr_map))
+		local str = live and "" or (string.char(254)..string.char(1)..string.char(DATA_VERSION)..string.char(#curr_data[1])..curr_data[1]..string.char(#(curr_data.name or "")+1)..(curr_data.name or "")..string.char(254)..string.char(2)..ConvertMapIDToString(curr_map))
 		local prevGroup,prevX,prevY,prevDiffX,prevDiffY
 
 		local function UpdateHeader(i)
@@ -3141,17 +3158,9 @@ function module.options:Load()
 	self.liveButton = ELib:Button(self,L.VisualNoteLiveSession):Size(90,20):Point("TOPLEFT",710,-55):OnClick(function(self)
 		if not isLiveSession then
 			module.options:GenerateString()
-			if ExRT.is10 or ExRT.isLK1 then
-				self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.26,0.09,1), CreateColor(0.20,0.41,0.25,1))
-			else
-				self.Texture:SetGradientAlpha("VERTICAL",0.05,0.26,0.09,1, 0.20,0.41,0.25,1)
-			end
+			self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.26,0.09,1), CreateColor(0.20,0.41,0.25,1))
 		else
-			if ExRT.is10 or ExRT.isLK1 then
-				self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
-			else
-				self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
-			end
+			self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
 		end
 		isLiveSession = not isLiveSession
 	end)

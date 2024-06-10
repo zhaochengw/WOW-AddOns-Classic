@@ -97,6 +97,7 @@ TotemTimers.DefaultProfile = {
         WeaponBarDirection = "auto",
         WeaponMenuOnRightclick = false,
         LastWeaponEnchant = TotemTimers.SpellIDs.RockbiterWeapon,
+        WeaponGlow = true,
         EarthShieldTracker = true,
         EarthShieldLeftButton = "recast", 
         EarthShieldRightButton = "target",
@@ -113,6 +114,8 @@ TotemTimers.DefaultProfile = {
         Tracker_Clickthrough = false,
         ShieldChargesOnly = true,
         EarthShieldOnSelf = false,
+        WeaponExpirationWarning = 30,
+        WeaponWarningStopPulse = false,
 
         
     --Warnings
@@ -169,7 +172,16 @@ TotemTimers.DefaultProfile = {
                 b = 0,
                 a = 1,
                 sound = "",
-                text = "Maelstrom Notifier",            
+                text = "Maelstrom",
+                enabled = true,
+            },
+            PowerSurge = {
+                r = 1,
+                g = 0,
+                b = 0,
+                a = 1,
+                sound = "",
+                text = "Power Surge",
                 enabled = true,
             },
             Weapon = {
@@ -309,6 +321,10 @@ TotemTimers.DefaultProfile = {
         MaelstromStopPulse = false,
         MaelstromNumberOnly = false,
         EnhanceCDsTotemTwisting = true,
+        OverlayGlow = true,
+        PowerSurge = true,
+        PowerSurgeOverlay = true,
+        EnhanceCDsOneRow = false,
 
 
         WindfuryDownrank = false,
@@ -500,6 +516,10 @@ function TotemTimers.UpdateProfiles()
 		for k,v in pairs(TotemData) do
 			if not totems[k] then table.insert(profile.TotemOrder[v.element], k) end
 		end
+
+        for k,v in pairs(TotemTimers.DefaultProfile.Warnings) do
+            if not profile.Warnings[k] then profile.Warnings[k] = copy(v) end
+        end
 
 		
 		for i = 1,3 do

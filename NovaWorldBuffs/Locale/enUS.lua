@@ -130,10 +130,6 @@ L["nefarianFirstYellMsg"] = "Nefarian will drop in 15 seconds.";
 L["rendBuffDropped"] = "Warchief's Blessing (Rend) has dropped.";
 L["onyxiaBuffDropped"] = "Rallying Cry of the Dragonslayer (Onyxia) has dropped.";
 L["nefarianBuffDropped"] = "Rallying Cry of the Dragonslayer (Nefarian) has dropped.";
-L["onyxiaNpcKilledHorde"] = "Overlord Runthak has just been killed (Onyxia buff NPC).";
-L["onyxiaNpcKilledAlliance"] = "Major Mattingly has just been killed (Onyxia buff NPC).";
-L["nefarianNpcKilledHorde"] = "High Overlord Saurfang has just been killed (Nefarian buff NPC).";
-L["nefarianNpcKilledAlliance"] = "Field Marshal Afrasiabi has just been killed (Nefarian buff NPC).";
 L["newSongflowerReceived"] = "New songflower timer received"; --New songflower timer received
 L["songflowerPicked"] = "Songflower picked at %s, next spawn in 25mins."; -- Guild msg when songflower picked.
 L["North Felpaw Village"] = "North Felpaw Village"; --Felwood map subzones (flower1).
@@ -207,7 +203,7 @@ L["Reset Data"] = "Reset Data"; --A button to Reset buffs window data.
 
 ---New translations to do---
 L["layerFrameMsgOne"] = "Old layers will still show for a few hours after server restarts."; --Msg at bottom of layer timers frame.
-L["layerFrameMsgTwo"] = "Layers will disappear from here 6 hours after having no timers."; --Msg at bottom of layer timers frame.
+L["layerFrameMsgTwo"] = "Layers will disappear from here 6 hours after not existing."; --Msg at bottom of layer timers frame.
 L["You are currently on"] = "You are currently on"; --You are currently on [Layer 2]
 
 
@@ -627,13 +623,13 @@ L["timerWindowWidthTitle"] = "Timer Window Width";
 L["timerWindowWidthDesc"] = "How wide should the timer window be.";
 
 L["timerWindowHeightTitle"] = "Timer Window Height";
-L["timerWindowHeghtDesc"] = "How high should the timer window be.";
+L["timerWindowHeightDesc"] = "How high should the timer window be.";
 
 L["buffWindowWidthTitle"] = "Buff Window Width";
 L["buffWindowWidthDesc"] = "How wide should the buff window be.";
 
 L["buffWindowHeightTitle"] = "Buff Window Height";
-L["buffWindowHeghtDesc"] = "How high should the buff window be.";
+L["buffWindowHeightDesc"] = "How high should the buff window be.";
 
 L["dmfSettingsListTitle"] = "DMF Buffs List";
 L["dmfSettingsListDesc"] = "Click this to show a list of your alts DMF buff type settings.";
@@ -866,22 +862,149 @@ L["disableOnlyNefRendBelowMaxLevelDesc"] = "Disable Ony/Nef/Rend Showing on the 
 L["disableOnlyNefRendBelowMaxLevelNumTitle"] = "Ony/Nef/Rend Min Level";
 L["disableOnlyNefRendBelowMaxLevelNumDesc"] = "Below which level should we hide Ony/Nef/Rend icons from the city map and minimap button tooltip?";
 
-L["soundsBlackfathomBoonTitle"] = "Blackfathom Boom Sound";
-L["soundsBlackfathomBoonDesc"] = "Play a sound when Blackfathom Boon buff is gained?";
+L["soundsBlackfathomBoonTitle"] = "SoD Buffs Sound";
+L["soundsBlackfathomBoonDesc"] = "Play a sound when a SoD buff is gained?";
 
-L["soundsAshenvaleStartsSoonTitle"] = "Ashenvale Soon Sound";
-L["soundsAshenvaleStartsSoonDesc"] = "Play a sound when Ashenvale is about to start?";
+L["soundsAshenvaleStartsSoonTitle"] = "Event Soon Sound";
+L["soundsAshenvaleStartsSoonDesc"] = "Play a sound when a SoD event is about to start?";
 
 L["blackfathomBoomBuffDropped"] = "Blackfathom Boon buff has dropped.";
 
-L["showAshenvaleOverlayTitle"] = "Ashenvale Overlay";
-L["showAshenvaleOverlayDesc"] = "Show a movable Ashenvale resource overlay on your UI permanently?";
+L["showAshenvaleOverlayTitle"] = "Timers Overlay";
+L["showAshenvaleOverlayDesc"] = "Show a movable timers overlay on your UI permanently?";
 
 L["lockAshenvaleOverlayTitle"] = "Lock Overlay";
-L["lockAshenvaleOverlayDesc"] = "Lock the Ashenvale overlay so it ignores your mouseover.";
+L["lockAshenvaleOverlayDesc"] = "Lock the timers overlay so it ignores your mouseover.";
 
-L["ashenvaleOverlayScaleTitle"] = "Ashenvale Overlay Scale";
-L["ashenvaleOverlayScaleDesc"] = "Set the size of the Ashenvale Overlay.";
+L["ashenvaleOverlayScaleTitle"] = "Timers Overlay Scale";
+L["ashenvaleOverlayScaleDesc"] = "Set the size of the Timers Overlay.";
 
-L["ashenvaleOverlayText"] = "|cFFFFFF00-Overlay to show Ashenvale Resources on your UI always-";
+L["ashenvaleOverlayText"] = "|cFFFFFF00-Overlay to show timers on your UI always-";
 L["layersNoteText"] = "|cFFFF6900Note about Layers on SoD:|r |cFF9CD6DENWB is capped at tracking 10 layers max, this is so it's data size doesn't get too big to share amongst players easily. On most SoD realms with huge population right now there's more than 10 layers so if it is not showing what layer you're on then the reason is because you're not on one of the 10 recorded layers. It will likely go back down below 10 once launch hype fades a bit but until then it may be unreliable, sorry about that.|r";
+
+L["Mouseover char names for extra info"] = "Mouseover char names for extra info";
+L["Show Stats"] = "Show Stats"; --Can't be any longer than this.
+L["Event Running"] = "Event Running";
+
+L["Left-Click"] = "Left-Click";
+L["Right-Click"] = "Right-Click";
+L["Shift Left-Click"] = "Shift Left-Click";
+L["Shift Right-Click"] = "Shift Right-Click";
+L["Control Left-Click"] = "Ctrl Left-Click";
+
+--Try keep these roughly the same length or shorter.
+L["Guild Layers"] = "Guild Layers";
+L["Timers"] = "Timers";
+L["Buffs"] = "Buffs";
+L["Felwood Map"] = "Felwood Map";
+L["Config"] = "Config";
+L["Resources"] = "Resources"; --Progreso?
+L["Layer"] = "Layer";
+L["Layer Map"] = "Layer Map";
+L["Rend Log"] = "Rend Log";
+L["Timer Log"] = "Timer Log";
+L["Copy/Paste"] = "Copy/Paste";
+L["Ashenvale PvP Event Resources"] = "Ashenvale PvP Event Resources";
+L["All other alts using default"] = "All other alts using default";
+L["Chronoboon CD"] = "Chronoboon CD"; --Chronoboon cooldown.
+L["All"] = "All"; --This has to be small to fit.
+L["Old Data"] = "Old Data";
+L["Ashenvale data is old"] = "Ashenvale data is old";
+L["Ashenvale"] = "Ashenvale";
+L["Ashenvale Towers"] = "Ashenvale Towers";
+L["Warning"] = "Warning";
+L["Refresh"] = "Refresh";
+L["PvP enabled"] = "PvP enabled";
+L["Hold Shift to drag"] = "Hold Shift to drag";
+L["Hold to drag"] = "Hold to drag";
+
+L["Can't find current layer or no timers active for this layer."] = "Can't find current layer or no timers active for this layer.";
+L["No guild members online sharing layer data found."] = "No guild members online sharing layer data found.";
+
+L["ashenvaleOverlayFontTitle"] = "Overlay Font";
+L["ashenvaleOverlayFontDesc"] = "Which font to use for overlay displays.";
+
+L["minimapLayerFontTitle"] = "Minimap Layer Font";
+L["minimapLayerFontDesc"] = "Which font to use for the minimap layer text.";
+
+L["minimapLayerFontSizeTitle"] = "Minimap Layer Font Size";
+L["minimapLayerFontSizeDesc"] = "Which font size to use for the minimap layer text.";
+
+L["zone"] = "zone";
+L["zones mapped"] = "zones mapped";
+L["Layer Mapping for"] = "Layer Mapping for";
+L["formatForDiscord"] = "Format the text to paste in discord? (Adds colors etc)";
+L["Copy Frame"] = "Copy Frame";
+L["Show how many times you got each buff."] = "Show how many times you got each buff.";
+L["Show all alts that have buff stats? (stats must be enabled)."] = "Show all alts that have buff stats? (stats must be enabled).";
+L["No timer logs found."] = "No timer logs found.";
+L["Merge Layers"] = "Merge Layers";
+L["mergeLayersTooltip"] = "If multiple layers have the same timer this will merge them into [All Layers] instead of showing them separately.";
+L["Ready"] = "Ready";
+L["Chronoboon"] = "Chronoboon";
+L["Local Time"] = "Local Time";
+L["Server Time"] = "Server Time";
+L["12 hour"] = "12 hour";
+L["24 hour"] = "24 hour";
+L["Alliance"] = "Alliance";
+L["Horde"] = "Horde";
+L["No Layer"] = "No Layer";
+L["No data yet."] = "No data yet.";
+L["Ashenvale Resources"] = "Ashenvale Resources";
+L["No character specific buffs set yet."] = "No character specific buffs set yet.";
+L["All characters are using default"] = "All characters are using default";
+L["Orgrimmar"] = "Orgrimmar";
+L["Stormwind"] = "Stormwind";
+L["Dalaran"] = "Dalaran";
+L["left"] = "left";
+L["remaining"] = "remaining";
+
+L["Online"] = "Online";
+L["Offline"] = "Offline";
+L["Rested"] = "Rested";
+L["Not Rested"] = "Not Rested";
+L["No zones mapped for this layer yet."] = "No zones mapped for this layer yet.";
+L["Cooldown"] = "Cooldown";
+L["dmfLogonBuffResetMsg"] = "These chars were offline 8+ hours in a rested area and DMF buff cooldown has reset";
+L["dmfOfflineStatusTooltip"] = "DMF Cooldown 8+ Hours Offline In Rested Area Status";
+L["chronoboonReleased"] = "You have chronoboon released a Darkmoon Faire buff, a new 4 hour cooldown has started.";
+
+L["Stranglethorn"] = "Stranglethorn"; --One word shorter version of Strangethorn Vale to fit better.
+L["ashenvaleEventRunning"] = "Ashenvale is running: %s";
+L["ashenvaleEventStartsIn"] = "Ashenvale starts in %s";
+L["ashenvaleStartSoon"] = "Ashenvale event starts in %s"; --Guild chat msg.
+L["stranglethornEventRunning"] = "Stranglethorn is running: %s";
+L["stranglethornEventStartsIn"] = "Stranglethorn starts in %s";
+L["stranglethornStartSoon"] = "Stranglethorn event starts in %s"; --Guild chat msg.
+L["Spark of Inspiration"] = "Spark of Inspiration"; --Phase 2 SoD world buff.
+L["specificBuffDropped"] = "%s buff has dropped.";
+L["3 day raid reset"] = "3 day raid reset";
+L["Darkmoon Faire is up"] = "Darkmoon Faire is up";
+L["dmfAbbreviation"] = "DMF";
+L["Ashenvale PvP Event"] = "Ashenvale PvP Event";
+L["Stranglethorn PvP Event"] = "Stranglethorn PvP Event";
+
+L["overlayShowArtTitle"] = "Overlay Artwork";
+L["overlayShowArtDesc"] = "Show overlay artwork?";
+
+L["overlayShowAshenvaleTitle"] = "Overlay Ashenvale";
+L["overlayShowAshenvaleDesc"] = "Show overlay Ashenvale timer?";
+
+L["overlayShowStranglethornTitle"] = "Overlay Stranglethorn";
+L["overlayShowStranglethornDesc"] = "Show overlay stranglethorn timer?";
+
+L["sodMiddleScreenWarningTitle"] = "Middle Screen Warning";
+L["sodMiddleScreenWarningDesc"] = "Show a 15/30 mins warning in the middle of the screen for SoD events like STV etc.";
+
+L["stvBossMarkerTooltip"] = "NWB Boss Marker (Experimental)";
+L["Boss"] = "Boss"; --Abbreviate if too long, this text sits below a map marker.
+L["stvBossSpotted"] = "Loa boss spotted! Check map for location.";
+L["Total coins this event"] = "Total coins this event"; --Keep it short, it prints to chat when you hand in coins.
+L["Last seen"] = "Last seen";
+L["World Events"] = "World Events";
+L["layersNoGuild"] = "You have no guild, this command shows guild members only.";
+
+L["Fervor of the Temple Explorer"] = "Fervor of the Temple Explorer";
+L["No guild"] = "No guild";
+
+L["Temple of Atal'Hakkar"] = "Temple of Atal'Hakkar"; --Not necessarily the dungeon name, need to match what Zandalarian Emissary shouts calls it for sunken temple buff in SoD.

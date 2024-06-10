@@ -3,7 +3,7 @@
 ## Notes: Pixel Perfect Alignment Grid and Measuring Tape using MoLib (|cFF99E5FF/ppa|r)
 ## Notes: Wrath of the Lich King Classic Edition
 ## Author: MooreaTV moorea@ymail.com
-## Version: v1.14.06
+## Version: v1.14.07
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: pixelPerfectAlignSaved

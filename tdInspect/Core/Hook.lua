@@ -18,10 +18,6 @@ local BUTTON_HEIGHT = UIDROPDOWNMENU_BUTTON_HEIGHT
 
 local FriendsDropDown = FriendsDropDown
 
---[=[@build<3@
-UnitPopupButtons.INSPECT.dist = nil
---@end-build<3@]=]
-
 local function GetDropdownUnit()
     local menu = UIDROPDOWNMENU_INIT_MENU
     if not menu or not (menu == FriendsDropDown or menu == PVPDropDown) then

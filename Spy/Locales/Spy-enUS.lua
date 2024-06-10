@@ -44,7 +44,7 @@ If enabled, this button will be located on the enemy players target frame. Click
 L["GeneralSettings"] = "General Settings"
 L["GeneralSettingsDescription"] = [[
 Options for when Spy is Enabled or Disabled.
-]] 
+]]
 L["EnableSpy"] = "Enable Spy"
 L["EnableSpyDescription"] = "Enables or disables Spy."
 L["EnabledInBattlegrounds"] = "Enable Spy in battlegrounds"

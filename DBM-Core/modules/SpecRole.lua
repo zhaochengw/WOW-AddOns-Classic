@@ -1,37 +1,43 @@
-local _, private = ...
+---@class DBMCoreNamespace
+local private = select(2, ...)
 DBMExtraGlobal = {}
 
-local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
+---@alias SpecFlag
+---|"Tank"
+---|"Dps"
+---|"Healer"
+---|"Melee" ANY melee, including tanks or healers that are 100% excempt from healer/ranged mechanics (like mistweaver monks)
+---|"MeleeDps"
+---|"Physical"
+---|"Ranged" ANY ranged, healer and DPS included
+---|"RangedDps" Only ranged DPS
+---|"ManaUser" Affected by things like mana drains, or mana detonation, etc
+---|"SpellCaster" Has channeled casts, can be interrupted/spell locked by roars, etc, include healers. Use CasterDps if dealing with reflect
+---|"CasterDps" Ranged DPS that uses spells, relevant for spell reflect type abilities that only reflect spells but not ranged physical such as hunters
+---|"RaidCooldown"
+---|"RemovePoison" From ally
+---|"RemoveDisease" From ally
+---|"RemoveCurse" From ally
+---|"RemoveMagic" From ally
+---|"RemoveEnrage" Can remove enemy enrage. returned in 8.x+!
+---|"MagicDispeller" From ENEMY, not debuffs on players. use "Healer" or "RemoveMagic" for ally magic dispels. ALL healers can do that on retail, and warlock Imps
+---|"ImmunityDispeller" Priest mass dispel or Warrior Shattering Throw (shadowlands)
+---|"HasInterrupt" Has an interrupt that is 24 seconds or less CD that is BASELINE (not a talent)
+---|"HasImmunity" Has an immunity that can prevent or remove a spell effect (not just one that reduces damage like turtle or dispursion)
 
---[[local specFlags ={
-	["Tank"] = true,
-	["Dps"] = true,
-	["Healer"] = true,
-	["Melee"] = true,--ANY melee, including tanks or healers that are 100% excempt from healer/ranged mechanics (like mistweaver monks)
-	["MeleeDps"] = true,
-	["Physical"] = true,
-	["Ranged"] = true,--ANY ranged, healer and dps included
-	["RangedDps"] = true,--Only ranged dps
-	["ManaUser"] = true,--Affected by things like mana drains, or mana detonation, etc
-	["SpellCaster"] = true,--Has channeled casts, can be interrupted/spell locked by roars, etc, include healers. Use CasterDps if dealing with reflect
-	["CasterDps"] = true,--Ranged dps that uses spells, relevant for spell reflect type abilities that only reflect spells but not ranged physical such as hunters
-	["RaidCooldown"] = true,
-	["RemovePoison"] = true,--from ally
-	["RemoveDisease"] = true,--from ally
-	["RemoveCurse"] = true,--from ally
-	["RemoveMagic"] = true,--from ally
-	["RemoveEnrage"] = true,--Can remove enemy enrage. returned in 8.x+!
-	["MagicDispeller"] = true,--from ENEMY, not debuffs on players. use "Healer" or "RemoveMagic" for ally magic dispels. ALL healers can do that on retail, and warlock Imps
-	["ImmunityDispeller"] = true,--Priest mass dispel or Warrior Shattering Throw (shadowlands)
-	["HasInterrupt"] = true,--Has an interrupt that is 24 seconds or less CD that is BASELINE (not a talent)
-	["HasImmunity"] = true,--Has an immunity that can prevent or remove a spell effect (not just one that reduces damage like turtle or dispursion)
-}]]
+-- Format: SpecFlag or SpecFlag|SpecFlag|...
+---@alias SpecFlags SpecFlag|string
 
+---@type table<string|number, table<SpecFlag, boolean>>
 local specRoleTable
+-- Caution: the keys used below are not validated by LuaLS at the moment due to https://github.com/LuaLS/lua-language-server/issues/2610
+
+--Upvalued because it's called frequently each time rebuildSpecTable is called
+local IsSpellKnown = IsSpellKnown
 
 function DBMExtraGlobal:rebuildSpecTable()
 	-- Retail
-	if isRetail then
+	if private.isRetail then
 		specRoleTable = {
 			[62] = {	--Arcane Mage
 				["Dps"] = true,
@@ -438,9 +444,221 @@ function DBMExtraGlobal:rebuildSpecTable()
 		specRoleTable[266] = specRoleTable[265]--Demonology Warlock same as Affliction
 		specRoleTable[267] = specRoleTable[265]--Destruction Warlock same as Affliction
 		specRoleTable[1473] = specRoleTable[1467]--Just map augmentation to devastation for now
-	else
-		local IsSpellKnown = IsSpellKnown
-
+	elseif private.isCata then--Cata and later needs custom section since it also now supports specIDs which we want to use instead of Era compat code, for libspec compatability
+		specRoleTable = {
+			[799] = {	--Arcane Mage
+				["Dps"] = true,
+				["Ranged"] = true,
+				["RangedDps"] = true,
+				["ManaUser"] = true,
+				["SpellCaster"] = true,
+				["CasterDps"] = true,
+				["HasInterrupt"] = true,
+				["HasImmunity"] = true,
+				["RemoveCurse"] = true,
+				["MagicDispeller"] = IsSpellKnown(30449),--Spellsteal in TBC+
+			},
+			[831] = {	--Holy Paladin
+				["Healer"] = true,
+				["Melee"] = true,--They melee when oom?
+				["Ranged"] = true,
+				["CasterDps"] = true,--Judgements, exorcism, etc
+				["ManaUser"] = true,
+				["SpellCaster"] = true,
+				["RaidCooldown"] = true,--Devotion Aura
+				["RemovePoison"] = true,
+				["RemoveDisease"] = true,
+				["RemoveMagic"] = true,
+				["HasImmunity"] = true,
+			},
+			[839] = {	--Protection Paladin
+				["Tank"] = true,
+				["Melee"] = true,
+				["ManaUser"] = true,
+				["Physical"] = true,
+				["CasterDps"] = true,--Judgements, exorcism, etc
+				["RemovePoison"] = true,
+				["RemoveDisease"] = true,
+				["RemoveMagic"] = true,
+				["HasImmunity"] = true,
+			},
+			[855] = {	--Retribution Paladin
+				["Tank"] = private.isClassic and true or false,
+				["Dps"] = true,
+				["Melee"] = true,
+				["MeleeDps"] = true,
+				["CasterDps"] = true,--Judgements, exorcism, etc
+				["ManaUser"] = true,
+				["Physical"] = true,
+				["RemovePoison"] = true,
+				["RemoveDisease"] = true,
+				["RemoveMagic"] = true,
+				["HasImmunity"] = true,
+			},
+			[746] = {	--Arms Warrior
+				["Dps"] = true,
+				["Tank"] = false,
+				["Melee"] = true,
+				["MeleeDps"] = true,
+				["Physical"] = true,
+				["HasInterrupt"] = true,
+			},
+			[845] = {	--Protection Warrior
+				["Tank"] = true,
+				["Melee"] = true,
+				["Physical"] = true,
+				["HasInterrupt"] = true,
+				["MagicDispeller"] = (IsSpellKnown(23922) or IsSpellKnown(23923) or IsSpellKnown(23924) or IsSpellKnown(23925) or IsSpellKnown(25258) or IsSpellKnown(30356)),--Shield Slam
+			},
+			[752] = {	--Balance Druid
+				["Healer"] = false,
+				["Dps"] = true,
+				["Ranged"] = true,
+				["RangedDps"] = true,
+				["ManaUser"] = true,
+				["SpellCaster"] = true,
+				["CasterDps"] = true,
+				["RemoveCurse"] = true,
+			},
+			[750] = { --Feral Druid
+				["Healer"] = false,
+				["Dps"] = true,
+				["Tank"] = IsPlayerSpell(23922) and true or false,--Only sets true if Nuturing Instinct is learned for non vanilla
+				["Melee"] = true,
+				["MeleeDps"] = true,
+				["Physical"] = true,
+				["RemoveCurse"] = true,
+			},
+			[748] = { -- Restoration Druid
+				["Healer"] = true,
+				["Ranged"] = true,
+				["ManaUser"] = true,
+				["SpellCaster"] = true,
+				["RaidCooldown"] = true,--Tranquility
+				["RemoveCurse"] = true,
+			},
+			[811] = {	--Beastmaster Hunter
+				["Dps"] = true,
+				["Ranged"] = true,
+				["RangedDps"] = true,
+				["Physical"] = true,
+				["RemoveEnrage"] = true,
+				["ManaUser"] = true,
+			},
+			[807] = {	--Markmanship Hunter Hunter
+				["Dps"] = true,
+				["Ranged"] = true,
+				["RangedDps"] = true,
+				["Physical"] = true,
+				["RemoveEnrage"] = true,
+				["ManaUser"] = true,
+			},
+			[809] = {	--Survival Hunter
+				["Dps"] = true,
+				["Ranged"] = true,
+				["RangedDps"] = true,
+				["Physical"] = true,
+				["RemoveEnrage"] = true,
+				["ManaUser"] = true,
+			},
+			[760] = {	--Discipline Priest
+				["Healer"] = true,
+				["Ranged"] = true,
+				["ManaUser"] = true,
+				["SpellCaster"] = true,
+				["CasterDps"] = true,--Iffy. Technically yes, but this can't be used to determine eligable target for dps only debuffs
+				["RaidCooldown"] = true,--Power Word: Barrier(Discipline) / Divine Hymn (Holy)
+				["MagicDispeller"] = true,
+				["RemoveMagic"] = true,
+			},
+			[795] = {	--Shadow Priest
+				["Dps"] = true,
+				["Ranged"] = true,
+				["RangedDps"] = true,
+				["ManaUser"] = true,
+				["SpellCaster"] = true,
+				["CasterDps"] = true,
+				["MagicDispeller"] = true,
+				["RemoveMagic"] = true,
+			},
+			[182] = { --Assassination Rogue
+				["Dps"] = true,
+				["Melee"] = true,
+				["MeleeDps"] = true,
+				["Physical"] = true,
+				["HasInterrupt"] = true,
+			},
+			[261] = {	--Elemental Shaman
+				["Dps"] = true,
+				["Ranged"] = true,
+				["RangedDps"] = true,
+				["ManaUser"] = true,
+				["SpellCaster"] = true,
+				["CasterDps"] = true,
+				["HasInterrupt"] = true,
+				["MagicDispeller"] = true,
+			},
+			[263] = {	--Enhancement Shaman
+				["Dps"] = true,
+				["Melee"] = true,
+				["MeleeDps"] = true,
+				--["CasterDps"] = true,??
+				["ManaUser"] = true,
+				["SpellCaster"] = true,
+				["Physical"] = true,
+				["HasInterrupt"] = true,
+				["MagicDispeller"] = true,
+			},
+			[262] = {	--Restoration Shaman
+				["Healer"] = true,
+				["Ranged"] = true,
+				["ManaUser"] = true,
+				["SpellCaster"] = true,
+				["HasInterrupt"] = true,
+				["MagicDispeller"] = true,
+			},
+			[871] = { --Affliction Warlock
+				["Dps"] = true,
+				["Ranged"] = true,
+				["RangedDps"] = true,
+				["ManaUser"] = true,
+				["SpellCaster"] = true,
+				["CasterDps"] = true,
+			},
+			[398] = {--Blood DK
+				["Tank"] = true,
+				["Melee"] = true,
+				["Dps"] = false,
+				["MeleeDps"] = true,
+				["Physical"] = true,
+				["HasInterrupt"] = true,
+			},
+			[399] = {--Frost DK
+				["Tank"] = false,
+				["Melee"] = true,
+				["Dps"] = true,
+				["MeleeDps"] = true,
+				["Physical"] = true,
+				["HasInterrupt"] = true,
+			},
+			[400] = {--Unholy DK
+				["Tank"] = false,
+				["Melee"] = true,
+				["Dps"] = true,
+				["MeleeDps"] = true,
+				["Physical"] = true,
+				["HasInterrupt"] = true,
+			},
+		}
+		specRoleTable[823] = specRoleTable[799]--Frost Mage same as arcane
+		specRoleTable[851] = specRoleTable[799]--Fire Mage same as arcane
+		specRoleTable[815] = specRoleTable[746]--Fury Warrior same as Arms
+		specRoleTable[813] = specRoleTable[760]--Holy Priest same as disc
+		specRoleTable[181] = specRoleTable[182]--Combat Rogue same as Assassination
+		specRoleTable[183] = specRoleTable[182]--Subtlety Rogue same as Assassination
+		specRoleTable[867] = specRoleTable[871]--Demonology Warlock same as Affliction
+		specRoleTable[865] = specRoleTable[871]--Destruction Warlock same as Affliction
+	else--Vanilla and Wrath
 		specRoleTable = {
 			["MAGE1"] = {	--Arcane Mage
 				["Dps"] = true,
@@ -479,7 +697,7 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["HasImmunity"] = true,
 			},
 			["PALADIN3"] = {	--Retribution Paladin
-				["Tank"] = true,
+				["Tank"] = private.isClassic and true or false,
 				["Dps"] = true,
 				["Melee"] = true,
 				["MeleeDps"] = true,
@@ -493,7 +711,7 @@ function DBMExtraGlobal:rebuildSpecTable()
 			},
 			["WARRIOR1"] = {	--Arms Warrior
 				["Dps"] = true,
-				["Tank"] = true,
+				["Tank"] = private.isClassic and true or false,
 				["Melee"] = true,
 				["MeleeDps"] = true,
 				["Physical"] = true,
@@ -507,7 +725,7 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["MagicDispeller"] = (IsSpellKnown(23922) or IsSpellKnown(23923) or IsSpellKnown(23924) or IsSpellKnown(23925) or IsSpellKnown(25258) or IsSpellKnown(30356)),--Shield Slam
 			},
 			["DRUID1"] = {	--Balance Druid
-				["Healer"] = true,
+				["Healer"] = private.isClassic and true or false,
 				["Dps"] = true,
 				["Ranged"] = true,
 				["RangedDps"] = true,
@@ -517,9 +735,9 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["RemoveCurse"] = true,
 			},
 			["DRUID2"] = { --Feral Druid
-				["Healer"] = true,
+				["Healer"] = private.isClassic and true or false,
 				["Dps"] = true,
-				["Tank"] = true,
+				["Tank"] = IsPlayerSpell(23922) and true or private.isClassic and true or false,--Only sets true if Nuturing Instinct is learned for non vanilla
 				["Melee"] = true,
 				["MeleeDps"] = true,
 				["Physical"] = true,
@@ -576,7 +794,6 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["CasterDps"] = true,
 				["MagicDispeller"] = true,
 				["RemoveMagic"] = true,
-				["HasInterrupt"] = IsSpellKnown(15487),--Silence is a talent tree talent
 			},
 			["ROGUE1"] = { --Assassination Rogue
 				["Dps"] = true,
@@ -592,6 +809,8 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["ManaUser"] = true,
 				["SpellCaster"] = true,
 				["CasterDps"] = true,
+				["HasInterrupt"] = true,
+				["MagicDispeller"] = true,
 			},
 			["SHAMAN2"] = {	--Enhancement Shaman
 				["Dps"] = true,
@@ -601,12 +820,16 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["ManaUser"] = true,
 				["SpellCaster"] = true,
 				["Physical"] = true,
+				["HasInterrupt"] = true,
+				["MagicDispeller"] = true,
 			},
 			["SHAMAN3"] = {	--Restoration Shaman
 				["Healer"] = true,
 				["Ranged"] = true,
 				["ManaUser"] = true,
 				["SpellCaster"] = true,
+				["HasInterrupt"] = true,
+				["MagicDispeller"] = true,
 			},
 			["WARLOCK1"] = { --Affliction Warlock
 				["Dps"] = true,
@@ -616,7 +839,23 @@ function DBMExtraGlobal:rebuildSpecTable()
 				["SpellCaster"] = true,
 				["CasterDps"] = true,
 			},
-			["DEATHKNIGHT1"] = {--Just treat all DKs as all roles, they are hybrid as hell in wrath and any spec can be any role
+			["DEATHKNIGHT1"] = {--Just treat all DKs as all roles in wrath, they are hybrid as hell in wrath and any spec can be any role
+				["Tank"] = true,
+				["Melee"] = true,
+				["Dps"] = true,
+				["MeleeDps"] = true,
+				["Physical"] = true,
+				["HasInterrupt"] = true,
+			},
+			["DEATHKNIGHT2"] = {--Just treat all DKs as all roles in wrath, they are hybrid as hell in wrath and any spec can be any role
+				["Tank"] = true,
+				["Melee"] = true,
+				["Dps"] = true,
+				["MeleeDps"] = true,
+				["Physical"] = true,
+				["HasInterrupt"] = true,
+			},
+			["DEATHKNIGHT3"] = {--Just treat all DKs as all roles in wrath, they are hybrid as hell in wrath and any spec can be any role
 				["Tank"] = true,
 				["Melee"] = true,
 				["Dps"] = true,
@@ -633,8 +872,6 @@ function DBMExtraGlobal:rebuildSpecTable()
 		specRoleTable["ROGUE3"] = specRoleTable["ROGUE1"]--Subtlety Rogue same as Assassination
 		specRoleTable["WARLOCK2"] = specRoleTable["WARLOCK1"]--Demonology Warlock same as Affliction
 		specRoleTable["WARLOCK3"] = specRoleTable["WARLOCK1"]--Destruction Warlock same as Affliction
-		specRoleTable["DEATHKNIGHT2"] = specRoleTable["DEATHKNIGHT1"]
-		specRoleTable["DEATHKNIGHT3"] = specRoleTable["DEATHKNIGHT1"]
 	end
 	private.specRoleTable = specRoleTable
 end

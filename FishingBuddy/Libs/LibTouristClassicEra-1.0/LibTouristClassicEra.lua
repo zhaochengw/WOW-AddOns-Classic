@@ -8,8 +8,10 @@ Description: A library to provide information about zones and instances for WoW 
 License: MIT
 ]]
 
-if (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_CLASSIC) then
-       return
+if (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_CLASSIC) and
+        (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC) and
+        (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_CATACLYSM_CLASSIC) then
+    return
 end
 
 local MAJOR_VERSION = "LibTouristClassicEra"
@@ -234,6 +236,7 @@ local MapIdLookupTable = {
     [1461] = "Arathi Basin",
     [1463] = "Eastern Kingdoms",
     [1464] = "Kalimdor",
+	[2720] = "The Searing Basin",
 -- NOTE: The following are InstanceIDs, as Instances do not have a uiMapID in Classic
     [30] = "Alteric Valley",
     [33] = "Shadowfang Keep",

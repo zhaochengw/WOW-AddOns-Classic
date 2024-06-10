@@ -1,13 +1,16 @@
 ## Interface: 30402
 
 ## Title: Threat Plates
-## Version: 11.1.37
+## Version: 11.2.12
 ## Notes: Threat-reactive nameplates.
 ## Notes-deDE: Bedrohungsreaktive Namensplaketten.
 ## Notes-esES: Placas Identificativas de Amenaza
 ## Notes-esMX: Placas Identificativas de Amenaza
 ## Author: Suicidal Katt, Blacksalsify
 ## SavedVariables: ThreatPlatesDB
+
+## AddonCompartmentFunc: TidyPlatesThreat_OnAddonCompartmentClick
+## IconTexture: Interface\Addons\TidyPlates_ThreatPlates\Artwork\Logo.tga
 
 ## RequiredDeps:
 ## OptionalDeps: Ace3, AceGUI-3.0-SharedMediaWidgets, LibSharedMedia-3.0, LibCustomGlow-1.0, LibDeflate, LibDualSpec-1.0

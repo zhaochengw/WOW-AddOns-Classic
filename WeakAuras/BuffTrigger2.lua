@@ -28,14 +28,8 @@ Updates all buff triggers in data.
 # Helper functions mainly for the WeakAuras Options #
 #####################################################
 
-CanHaveDuration(data, triggernum)
-Returns whether the trigger can have a duration.
-
 GetOverlayInfo(data, triggernum)
 Returns a table containing all overlays. Currently there aren't any
-
-CanHaveClones(data, triggernum)
-Returns whether the trigger can have clones.
 
 CanHaveTooltip(data, triggernum)
 Returns the type of tooltip to show for the trigger.
@@ -50,8 +44,10 @@ GetTriggerConditions(data, triggernum)
 Returns the potential conditions for a trigger
 ]=]--
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe
@@ -60,6 +56,7 @@ local UnitAura = UnitAura
 
 local newAPI = WeakAuras.IsRetail()
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local timer = WeakAuras.timer
@@ -68,7 +65,7 @@ local triggerInfos = {}
 
 local watched_trigger_events = Private.watched_trigger_events
 
-local UnitGroupRolesAssigned = WeakAuras.IsWrathOrRetail() and UnitGroupRolesAssigned or function() return "DAMAGER" end
+local UnitGroupRolesAssigned = WeakAuras.IsWrathOrCataOrRetail() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
 -- Active scan functions used to quickly check which apply to a aura instance
 -- keyed on unit, debuffType, spellname, with a scan object value
@@ -665,6 +662,24 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
     end
   end
   return bestMatch, matchCount, stackCount, nextCheck
+end
+
+--- Deprecated in 10.1.5
+local GetTexCoordsForRole = function(role)
+  local textureHeight, textureWidth = 256, 256
+  local roleHeight, roleWidth = 67, 67
+
+  if ( role == "GUIDE" ) then
+    return GetTexCoordsByGrid(1, 1, textureWidth, textureHeight, roleWidth, roleHeight)
+  elseif ( role == "TANK" ) then
+    return GetTexCoordsByGrid(1, 2, textureWidth, textureHeight, roleWidth, roleHeight)
+  elseif ( role == "HEALER" ) then
+    return GetTexCoordsByGrid(2, 1, textureWidth, textureHeight, roleWidth, roleHeight)
+  elseif ( role == "DAMAGER" ) then
+    return GetTexCoordsByGrid(2, 2, textureWidth, textureHeight, roleWidth, roleHeight)
+  else
+    error("Unknown role: "..tostring(role))
+  end
 end
 
 local roleIcons = {
@@ -2287,7 +2302,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       -- With newApi we have TOOLTIP_DATA_UPDATE to update the tooltips
       if not newAPI then
         C_Timer.After(3, function()
-          for unit, matchtDataPerUnit in pairs(matchData) do
+          for unit, matchDataPerUnit in pairs(matchData) do
             EventHandler(frame, "UNIT_AURA", unit)
           end
         end)
@@ -2345,7 +2360,7 @@ Buff2Frame:RegisterEvent("UNIT_PET")
 Buff2Frame:RegisterEvent("RAID_TARGET_UPDATE")
 Buff2Frame:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
 Buff2Frame:RegisterEvent("PLAYER_SOFT_FRIEND_CHANGED")
-if WeakAuras.IsWrathOrRetail() then
+if WeakAuras.IsWrathOrCataOrRetail() then
   Buff2Frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
   Buff2Frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
   Buff2Frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
@@ -2383,7 +2398,7 @@ local PerUnitFrames = {
     -- We check whether we are already registered for the given pet mode,
     -- and unregister as needed by tracking the number of calls to Register with different
     -- petModes
-    -- All of the dancing is to not register for UNIT_IN_RANGE_UPDATE for pets unless explictly asked for
+    -- All of the dancing is to not register for UNIT_IN_RANGE_UPDATE for pets unless explicitly asked for
     local unitTypePetMode = GetOrCreateSubTable(self.unitTypePetMode, event, unitType)
     --- @type any
     local mode = false
@@ -3129,8 +3144,8 @@ function BuffTrigger.Add(data)
 
       local groupTrigger = trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
       local effectiveIgnoreSelf = (groupTrigger or trigger.unit == "nameplate") and trigger.ignoreSelf
-      local effectiveGroupRole = WeakAuras.IsWrathOrRetail() and (groupTrigger and trigger.useGroupRole and trigger.group_role) or nil
-      local effectiveRaidRole = WeakAuras.IsClassicEraOrWrath() and (groupTrigger and trigger.useRaidRole and trigger.raid_role) or nil
+      local effectiveGroupRole = WeakAuras.IsWrathOrCataOrRetail() and (groupTrigger and trigger.useGroupRole and trigger.group_role) or nil
+      local effectiveRaidRole = WeakAuras.IsClassicEraOrWrathOrCata() and (groupTrigger and trigger.useRaidRole and trigger.raid_role) or nil
       local effectiveClass = groupTrigger and trigger.useClass and trigger.class
       local effectiveSpecId = WeakAuras.IsRetail() and (groupTrigger and trigger.useActualSpec and trigger.actualSpec) or nil
       local effectiveArenaSpec = WeakAuras.IsRetail() and (trigger.unit == "arena" and trigger.useArenaSpec and trigger.arena_spec) or nil
@@ -3220,13 +3235,6 @@ function BuffTrigger.Add(data)
   PublishProblems(problems, data.uid)
 end
 
---- Returns whether the trigger can have a duration.
---- @param data table
---- @param triggernum number
-function BuffTrigger.CanHaveDuration(data, triggernum)
-  return "timed"
-end
-
 --- Returns a table containing the names of all overlays
 --- @param data table
 --- @param triggernum number
@@ -3238,7 +3246,7 @@ end
 --- @param data table
 --- @param triggernum number
 --- @return boolean
-function BuffTrigger.CanHaveClones(data, triggernum)
+local function CanHaveClones(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   if not IsSingleMissing(trigger) and trigger.showClones then
     return true
@@ -3343,49 +3351,147 @@ end
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
-  local ret =  "|cFFFF0000%".. triggernum .. ".spellId|r - " .. L["Spell ID"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClass|r - " .. L["Debuff Class"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".unitCaster|r - " .. L["Caster Unit"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".casterName|r - " .. L["Caster Name"] .. "\n"
+  local ret =  "|cFFFFCC00%".. triggernum .. ".spellId|r - " .. L["Spell ID"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".debuffClass|r - " .. L["Debuff Class"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitCaster|r - " .. L["Caster Unit"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".casterName|r - " .. L["Caster Name"] .. "\n"
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".unit|r - " .. L["Unit"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unit|r - " .. L["Unit"] .. "\n"
   end
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".unitName|r - " .. L["Unit Name"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".matchCount|r - " .. L["Match Count"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".matchCountPerUnit|r - " .. L["Match Count per Unit"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".unitCount|r - " .. L["Units Affected"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".totalStacks|r - " .. L["Total stacks over all matches"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitName|r - " .. L["Unit Name"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".matchCount|r - " .. L["Match Count"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".matchCountPerUnit|r - " .. L["Match Count per Unit"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitCount|r - " .. L["Units Affected"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".totalStacks|r - " .. L["Total stacks over all matches"] .. "\n"
 
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".maxUnitCount|r - " .. L["Total Units"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".maxUnitCount|r - " .. L["Total Units"] .. "\n"
   end
 
   if not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip|r - " .. L["Tooltip"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip1|r - " .. L["First Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip2|r - " .. L["Second Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip3|r - " .. L["Third Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip4|r - " .. L["Fourth Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip|r - " .. L["Tooltip"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip1|r - " .. L["First Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip2|r - " .. L["Second Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip3|r - " .. L["Third Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip4|r - " .. L["Fourth Value of Tooltip Text"] .. "\n"
+  end
+
+  if trigger.unit ~= "multi" then
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".stackGainTime|r - " .. L["Since Stack Gain"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".stackLostTime|r - " .. L["Since Stack Lost"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".initialTime|r - " .. L["Since Apply"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".refreshTime|r - " .. L["Since Apply/Refresh"] .. "\n"
   end
 
   if WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".role|r - " .. L["Assigned Role"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".roleIcon|r - " .. L["Assigned Role Icon"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".role|r - " .. L["Assigned Role"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".roleIcon|r - " .. L["Assigned Role Icon"] .. "\n"
   end
 
   if trigger.unit ~= "multi" and trigger.fetchRaidMark then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".raidMark|r - " .. L["Raid Mark"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".raidMark|r - " .. L["Raid Mark"] .. "\n"
   end
 
   if (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useAffected then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".affected|r - " .. L["Names of affected Players"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".unaffected|r - " .. L["Names of unaffected Players"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".affectedUnits|r - " .. L["Units of affected Players in a table format"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".unaffectedUnits|r - " .. L["Units of unaffected Players in a table format"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".affected|r - " .. L["Names of affected Players"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unaffected|r - " .. L["Names of unaffected Players"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".affectedUnits|r - " .. L["Units of affected Players in a table format"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unaffectedUnits|r - " .. L["Units of unaffected Players in a table format"] .. "\n"
   end
 
   return ret
+end
+
+function BuffTrigger.GetProgressSources(data, triggernum, values)
+  local trigger = data.triggers[triggernum].trigger
+  tinsert(values, {
+    trigger = triggernum,
+    property = "matchCount",
+    type = "number",
+    display = L["Match Count"]
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "matchCountPerUnit",
+    type = "number",
+    display =  L["Match Count per Unit"]
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "unitCount",
+    type = "number",
+    display = L["Units Affected"],
+    total = trigger.unit ~= "multi" and "maxUnitCount" or nil
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "stacks",
+    type = "number",
+    display = L["Stacks"]
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "totalStacks",
+    type = "number",
+    display = L["Total stacks over all matches"]
+  })
+
+  if not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip then
+    tinsert(values, {
+      trigger = triggernum,
+      property = "tooltip1",
+      type = "number",
+      display = L["Tooltip 1"]
+    })
+    tinsert(values, {
+      trigger = triggernum,
+      property = "tooltip2",
+      type = "number",
+      display = L["Tooltip 2"]
+    })
+    tinsert(values, {
+      trigger = triggernum,
+      property = "tooltip3",
+      type = "number",
+      display = L["Tooltip 3"]
+    })
+  end
+
+  tinsert(values, {
+    trigger = triggernum,
+    property = "expirationTime",
+    type = "timer",
+    display = L["Timed Progress"],
+    total = "duration",
+    modRate = "modRate",
+    paused = "paused",
+    remaining = "remaining"
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "stackGainTime",
+    type = "elapsedTimer",
+    display = L["Time since stack gain"],
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "stackLostTime",
+    type = "elapsedTimer",
+    display = L["Time since stack lost"],
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "initialTime",
+    type = "elapsedTimer",
+    display = L["Time since initial application"],
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "refreshTime",
+    type = "elapsedTimer",
+    display = L["Time since last refresh"],
+  })
 end
 
 function BuffTrigger.GetTriggerConditions(data, triggernum)
@@ -4287,7 +4393,7 @@ function BuffTrigger.CreateFakeStates(id, triggernum)
   state.progressType = "timed"
   state.stacks = 1
   allStates[""] = state
-  if BuffTrigger.CanHaveClones(data, triggernum) then
+  if CanHaveClones(data, triggernum) then
     for i = 1, 2 do
       local state = {}
       BuffTrigger.CreateFallbackState(data, triggernum, state)

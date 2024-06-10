@@ -150,10 +150,19 @@ function BG.FilterClassItemUI()
                         notCheckable = true,
                         func = function()
                             BG.FilterClassItemMainFrame:Show()
+                            BG.FilterClassItemMainFrame.AddFrame:Hide()
                             BG.FilterClassItemMainFrame.AddFrame:Show()
                             BG.FilterClassItemMainFrame.AddFrame.tilte:SetText(L["正在修改方案："] .. BiaoGe.FilterClassItemDB[RealmId][player][num].Name)
                             BG.FilterClassItemMainFrame.AddFrame.edit:SetText(BiaoGe.FilterClassItemDB[RealmId][player][num].Name)
                             BG.FilterClassItemMainFrame.AddFrame.xiugai = num
+
+                            for ii, icon in ipairs(BG.FilterClassItemMainFrame.AddFrame.icons) do
+                                if icon.iconpath == BiaoGe.FilterClassItemDB[RealmId][player][num].Icon then
+                                    icon.tex:Show()
+                                    BG.FilterClassItemMainFrame.AddFrame.icon = icon.iconpath
+                                end
+                            end
+
                             for k, v in pairs(BG.FilterClassItemMainFrame.Buttons) do
                                 if type(v) == "table" then
                                     v:SetAlpha(0.2)
@@ -319,7 +328,7 @@ function BG.FilterClassItemUI()
         l:SetThickness(1.5)
 
         local buttons = {}
-        local width = pailie and f:GetWidth() or 65
+        local width = pailie and f:GetWidth() or 80
         local btheight = 25
         for i, v in ipairs(table) do
             local bt = CreateFrame("CheckButton", nil, f, "ChatConfigCheckButtonTemplate")
@@ -339,8 +348,7 @@ function BG.FilterClassItemUI()
                 f:SetHeight(f:GetHeight() + btheight)
             end
             buttons[i] = bt
-            local text = v.value
-            text = text:gsub("%%c%%d ", "")
+            local text = v.name2 or v.value
             text = text:gsub("%%s", "xx")
             bt.Text:SetText(text)
             bt.Text:SetWidth(width)
@@ -401,7 +409,7 @@ function BG.FilterClassItemUI()
         })
         f:SetBackdropColor(0, 0, 0, 0.8)
         f:SetBackdropBorderColor(GetClassRGB(nil, "player", 1))
-        f:SetWidth(500)
+        f:SetWidth(560)
         f:SetHeight(400)
         f:SetFrameLevel(290)
         f:SetPoint("CENTER", 100, 0)
@@ -546,22 +554,23 @@ function BG.FilterClassItemUI()
         t:SetTextColor(RGB("FFD100"))
         t:SetText(L["图标："])
 
-        local icons = {}
+        f.icons = {}
         local height
-        local maxicon = 10
-        for i, v in ipairs(BG.FilterClassItemDB.NewIcon) do
+        local maxicon = 12
+        for i, iconpath in ipairs(BG.FilterClassItemDB.NewIcon) do
             local bt = CreateFrame("Button", nil, f)
             if i == 1 then
                 bt:SetPoint("TOPLEFT", t, "BOTTOMLEFT", 0, -10)
             elseif (i - 1) % maxicon ~= 0 then
-                bt:SetPoint("LEFT", icons[i - 1], "RIGHT", 10, 0)
+                bt:SetPoint("LEFT", f.icons[i - 1], "RIGHT", 10, 0)
             elseif (i - 1) % maxicon == 0 then
-                bt:SetPoint("TOPLEFT", icons[i - maxicon], "BOTTOMLEFT", 0, -10)
+                bt:SetPoint("TOPLEFT", f.icons[i - maxicon], "BOTTOMLEFT", 0, -10)
             end
             bt:SetSize(30, 30)
             bt.num = i
+            bt.iconpath = iconpath
             height = f:GetTop() - bt:GetBottom()
-            tinsert(icons, bt)
+            tinsert(f.icons, bt)
 
             local tex = bt:CreateTexture(nil, "BACKGROUND") -- 选中材质
             tex:SetSize(50, 50)
@@ -572,7 +581,7 @@ function BG.FilterClassItemUI()
 
             local icon = bt:CreateTexture(nil, "ARTWORK") -- 图标
             icon:SetAllPoints()
-            icon:SetTexture(v)
+            icon:SetTexture(iconpath)
 
             local hightex = bt:CreateTexture(nil, "HIGHLIGHT") -- 悬停材质
             hightex:SetSize(28, 28)
@@ -580,14 +589,14 @@ function BG.FilterClassItemUI()
             hightex:SetColorTexture(RGB("FFFFFF", 0.2))
 
             bt:SetScript("OnClick", function(self)
-                for ii, v in ipairs(icons) do
+                for ii, v in ipairs(f.icons) do
                     if ii ~= self.num then
                         v.tex:Hide()
                     else
                         v.tex:Show()
                     end
                 end
-                f.icon = v
+                f.icon = iconpath
             end)
         end
 
@@ -656,8 +665,8 @@ function BG.FilterClassItemUI()
             f.tilte:SetText(L["新建过滤方案"])
             edit:SetText(L["new"])
             f.icon = nil
-            for ii, v in ipairs(icons) do
-                v.tex:Hide()
+            for ii, icon in ipairs(f.icons) do
+                icon.tex:Hide()
             end
             for k, v in pairs(BG.FilterClassItemMainFrame.Buttons) do
                 if type(v) == "table" then
@@ -804,6 +813,7 @@ function BG.FilterClassItemUI()
                             end
                         end
                         BG.UpdateAllFilter()
+                        BG.UpdateAllItemLib()
                     end
                 }
                 tinsert(channelTypeMenu, a)
@@ -823,6 +833,7 @@ function BG.FilterClassItemUI()
                             BiaoGe.FilterClassItemDB[RealmId][player][num][type] = {}
                         end
                         BG.UpdateAllFilter()
+                        BG.UpdateAllItemLib()
                     end
                 }
                 tinsert(channelTypeMenu, a)

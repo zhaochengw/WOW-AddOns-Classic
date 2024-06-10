@@ -1,4 +1,5 @@
-local _, private = ...
+---@class DBMCoreNamespace
+local private = select(2, ...)
 
 local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 
@@ -7,6 +8,7 @@ local tinsert, twipe = table.insert, table.wipe
 ---------------
 -- Prototype --
 ---------------
+---@class DBMModule
 local modulePrototype = {}
 
 function modulePrototype:RegisterEvents(...)
@@ -89,11 +91,15 @@ end
 -------------
 local modules = {}
 
+---@generic T
+---@param name `T`
+---@return T
 function private:NewModule(name)
 	if modules[name] then
 		error("DBM:NewModule(): Module names must be unique", 2)
 	end
 	local frame = CreateFrame("Frame", "DBM" .. name)
+	---@class DBMModule
 	local obj = setmetatable({
 		frame = frame,
 		unitFrames = {},
@@ -115,6 +121,9 @@ function private:NewModule(name)
 	return obj
 end
 
+---@generic T
+---@param name `T`
+---@return T
 function private:GetModule(name)
 	return modules[name]
 end

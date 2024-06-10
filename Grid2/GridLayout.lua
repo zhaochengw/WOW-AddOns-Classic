@@ -272,6 +272,7 @@ end
 
 function Grid2Layout:RefreshTheme()
 	self:UpdateFrame()
+	self:ResetHeadersFramesSize()
 	self:ReloadLayout(true)
 end
 
@@ -748,6 +749,15 @@ function Grid2Layout:UpdateDisplay()
 	self:UpdateSize()
 end
 
+-- Needed when the active theme changes to force a frames Layout() to reactivate possible suspended indicators (github issue #215)
+function Grid2Layout:ResetHeadersFramesSize()
+	for _, headers in pairs(self.groups) do
+		for _, header in ipairs(headers) do
+			header.frameWidth, header.frameHeight = nil, nil
+		end
+	end
+end
+
 function Grid2Layout:UpdateFramesSizeForHeader(header)
 	local w, h = self:GetFramesSizeForHeader(header)
 	if w~=header.frameWidth or h~=header.frameHeight or self.forceReload then -- forceReload => theme or profile changed, we need to Layout frames because icon/text sizes could change
@@ -794,9 +804,11 @@ function Grid2Layout:UpdateSize()
 		curCol = curCol + col
 		remSize = (g.dbx.type=='custom' or (g[1] and g[1]:IsVisible())) and 0 or remSize + col
 	end
-	local col = math.max( curCol - remSize + p.Spacing*2 - p.Padding, 1 )
+	curCol = curCol - remSize
+	local col = math.max( curCol + p.Spacing*2 - p.Padding, 1 )
 	local row = math.max( maxRow + p.Spacing*2, 1 )
 	if p.horizontal then col,row = row,col end
+	self.frame.frameBack:SetShown(curCol>1 and maxRow>1)
 	self.frame.frameBack:SetSize(col,row)
 	if not Grid2:RunSecure(7, self, "UpdateSize") then
 		self.frame:SetSize(col,row)

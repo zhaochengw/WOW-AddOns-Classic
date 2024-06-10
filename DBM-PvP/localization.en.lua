@@ -32,15 +32,21 @@ L:SetOptionLocalization({
 
 L:SetMiscLocalization({
 	-- Supports "The battle begins in 2 minutes." and "The battle for Wintergrasp begins in 2 minutes." (Because.. wrath classic)
-	BgStart120          = "The battle(.*) begins in 2 minutes.",
-	BgStart60           = "The battle(.*) begins in 1 minute.",
-	BgStart30           = "The battle(.*) begins in 30 seconds.",
+	-- SoD: "The Battle for Arathi Basin will begin in 1 minute."
+	BgStart120          = "The [bB]attle.*begin.*in 2 minutes.",
+	BgStart60           = "The [bB]attle.*begin.*in 1 minute.",
+	BgStart30           = "The [bB]attle.*begin.*in 30 seconds.",
+	-- Classic Era: 2 minutes until the battle for Alterac Valley begins.
+	BgStart120era       = "2 minutes until the [bB]attle.*begins.",
+	BgStart60era        = "1 minute until the [bB]attle.*begins.",
+	BgStart30era        = "30 seconds until the [bB]attle.*begins.",
 	ArenaStart60		= "One minute until the Arena battle begins!",
 	ArenaStart30		= "Thirty seconds until the Arena battle begins!",
 	ArenaStart15		= "Fifteen seconds until the Arena battle begins!",
 	ArenaInvite			= "Arena invite",
-	BasesToWin			= "Bases to win: %d",
+	BasesToWin			= "Bases required to win: %d",
 	WinBarText			= "%s wins",
+	BasesToWinHeader	= "DBM-PvP",
 	-- TODO: Implement the flag carrying system
 	FlagReset			= "The flag has been reset!", -- Unused
 	FlagTaken			= "(.+) has taken the flag!", -- Unused
@@ -193,13 +199,22 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("m1440")
 
 L:SetOptionLocalization({
-	EstimatedStartTimer = "Show timer for estimated event start time",
+	EstimatedStartTimer = "Show timer for event start time",
 	HealthFrame         = "Show info frame with boss health, this works by syncing health across your raid and via yell chat to other raids. This means this only works if there are at least some raids distributed across bosses with DBM-PvP installed."
 })
 
+L:SetTimerLocalization({
+	EstimatedStart = "Event starts"
+})
+
+-----------------
+--  Blood Moon --
+-----------------
+L = DBM:GetModLocalization("m1434")
+
 L:SetMiscLocalization({
-	TimerEstimate   = "Event starts",
-	TimerSoon       = "Event starts soon!",
-	ErrorSuddenDrop = "Detected sudden drop in event progress, re-calculating estimate, timer will update in 2-3 minutes.",
-	InfoMsgPrefix   = "DBM-PvP", -- Default for :AddMsg is the mod name which is just "Ashenvale" which doesn't look like a message from DBM
+	ParseTimeFromWidget = "(%d+)",
+	ResTimerSelf = "Show resurrection timer for you.",
+	ResTimerParty = "Show resurrection timer for your party members.",
+	ResTimerPartyClassColors = "Use class colors for resurrection timers of party members.",
 })

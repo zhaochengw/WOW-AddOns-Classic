@@ -9,35 +9,35 @@ L["Spy Option"] = "Spy"
 L["Profiles"] = "Perfis"
 
 -- About
-L["About"] = "Info"
+L["About"] = "Informação"
 L["SpyDescription1"] = [[
 Spy é um addon que vai alerta-lo da presença de jogadores inimigos nas proximidades. Estas são algumas das principais características.
 
 ]]
 
 L["SpyDescription2"] = [[
-|cffffd000 Lista de Proximidades |cffffffff
+|cffffd000Lista de Proximidades|cffffffff
 A lista de Proximidades mostra qualquer inimigo detectado nas proximidades. Jogadores são removidos da lista se não forem mais detectados após um certo período de tempo.
 
-|cffffd000 Lista da Última Hora |cffffffff
+|cffffd000Lista de Última Hora|cffffffff
 Exibe todos os inimigos detectados em uma hora.
 
-|cffffd000 Lista de Ignorados |cffffffff
+|cffffd000Lista de Ignorados|cffffffff
 Jogadores que são adicionados à lista de Ignorados não serão reportados pelo Spy. Você pode adicionar ou remover jogadores dessa lista usando o menu de contexto ou segurando Ctrl enquanto clicando no botão.
 
-|cffffd000 Lista Negra |cffffffff
+|cffffd000Lista Negra|cffffffff
 Jogadores que são adicionados à Lista Negra são reportados pelo Spy através de um alarme sonoro.  Você pode adicionar ou remover jogadores dessa lista usando o menu de contexto ou segurando Shift enquanto clica no botão. O menu de contexto também permite que você justifique as razões que o levou a colocar determinada pessoa na Lista Negra. Se quiser colocar uma motivo especifico que não tenha na lista, em seguida, use "Digite seu próprio motivo..." em Outra lista.
 
 ]]
 
 L["SpyDescription3"] = [[
-|cffffd000 Statistics Window |cffffffff
-The Statistics Window contains a list of all enemy encounters which can be sorted by name, level, guild, wins, losses and the last time an enemy was detected. It also provides the ability to search for a specific enemy by name or guild and has filters to show only enemies that are marked as Kill on Sight, with a Win/Loss or entered Reasons. 
+|cffffd000Janela de Estatísticas|cffffffff
+A Janela de Estatísticas contém uma lista de todos os encontros com inimigos que podem ser classificados por nome, nível, guilda, vitórias, derrotas e o último momento em que um inimigo foi detectado. Também oferece a capacidade de procurar por um inimigo específico por nome ou guilda e possui filtros para mostrar apenas inimigos marcados como Alvo Prioritário, com uma razão de Vitória/Derrota ou razões inseridas.
 
-|cffffd000 Kill On Sight Button |cffffffff
-If enabled, this button will be located on the enemy players target frame. Clicking on this button will add/remove the enemy target to/from the Kill On Sight list. Right clicking on the button will allow you to enter Kill on Sight reasons.
+|cffffd000Botão de Alvo Prioritário|cffffffff
+Se ativado, este botão estará localizado no quadro de alvo dos jogadores inimigos. Clicar neste botão adicionará/removerá o alvo inimigo da lista de Alvo Prioritário. Clicar com o botão direito no botão permitirá que você insira razões de Alvo Prioritário.
 
-|cffffd000 Autor:|cffffffff Slipjack|cffffffff
+|cffffd000Autor:|cffffffff Slipjack|cffffffff
 ]]
 
 -- General Settings
@@ -102,14 +102,14 @@ L["ClampToScreen"] = "Limitar na Tela"
 L["ClampToScreenDescription"] = "Controla quando a janela do Spy pode ser arrastada para fora da tela."
 L["InvertSpy"] = "Inverter a janela de Spy"
 L["InvertSpyDescription"] = "Inverte a janela de Spy de cabeça para baixo."
-L["Reload"] = "Recarregar UI"
+L["Reload"] = "Recarregar IU"
 L["ReloadDescription"] = "Necessário ao alterar a janela do Spy."
 L["ResizeSpy"] = "Redimensionar janela do Spy automaticamente"
 L["ResizeSpyDescription"] = "Marque isso para que a janela do Spy seja redimensionada a medida que novos jogadores são adicionados ou removidos."
 L["ResizeSpyLimit"] = "Limite de lista"
 L["ResizeSpyLimitDescription"] = "Limite o número de jogadores inimigos mostrados na janela do Spy."
-L["DisplayTooltipNearSpyWindow"] = "Exibir dica de ferramenta perto da janela do Spy"
-L["DisplayTooltipNearSpyWindowDescription"] = "Defina isso para exibir dicas de ferramentas perto da janela do Spy."
+L["DisplayTooltipNearSpyWindow"] = "Mostrar dica de ferramenta perto da janela do Spy"
+L["DisplayTooltipNearSpyWindowDescription"] = "Defina isso para Mostrar dicas de ferramentas perto da janela do Spy."
 L["SelectTooltipAnchor"] = "Ponto de ancoragem da dica de ferramenta"
 L["SelectTooltipAnchorDescription"] = "Selecione o ponto de ancoragem para a dica de ferramenta se a opção acima tiver sido marcada."
 L["ANCHOR_CURSOR"] = "Cursor"
@@ -117,17 +117,17 @@ L["ANCHOR_TOP"] = "Acima"
 L["ANCHOR_BOTTOM"] = "Debaixo"
 L["ANCHOR_LEFT"] = "Esquerda"			
 L["ANCHOR_RIGHT"] = "Direita"
-L["TooltipDisplayWinLoss"] = "Mostar estastica de Vitória/Derrota nas dicas"
+L["TooltipDisplayWinLoss"] = "Mostar estatística de Vitória/Derrota nas dicas"
 L["TooltipDisplayWinLossDescription"] = "Marque isso para que seja mostrado na dicas do jogador, as estasticas de Vitória/Derrota daquele um jogador."
 L["TooltipDisplayKOSReason"] = "Mostrar motivos da Lista Negra nas dicas"
 L["TooltipDisplayKOSReasonDescription"] = "Marque isso para que seja mostrado na dicas do jogador os motivos da Lista Negra daquele jogador."
 L["TooltipDisplayLastSeen"] = "Mostrar detalhes da ultima vez visto nas dicas"
 L["TooltipDisplayLastSeenDescription"] = "Marque isso para que seja mostrado nas dicas de jogador o ultimo local e hora em que aquele jogador foi visto."
-L["DisplayListData"] = "Selecione os dados do inimigo para exibir"
+L["DisplayListData"] = "Selecione os dados do inimigo para Mostrar"
 L["Name"] = "Nome"
 L["Class"] = "Classe"
 L["Rank"] = "Posto"
-L["SelectFont"] = "Selekt e Font"
+L["SelectFont"] = "Selecione a fonte"
 L["SelectFontDescription"] = "Selecione um tipo de letra para a janela Spy."
 L["RowHeight"] = "Selecione a altura da linha"
 L["RowHeightDescription"] = "Selecione a altura da linha para a janela Spy."
@@ -173,11 +173,11 @@ L["WarnRaceNote"] = "Nota: Você deve atingir o inimigo, pelo menos uma vez para
 L["DisplayWarningsInErrorsFrame"] = "Mostrar alertas no campo de erros"
 L["DisplayWarningsInErrorsFrameDescription"] = "Marque isso para usar o campo de erros para mostrar alertas ao invés de usar os popups graficos."
 L["DisplayWarnings"] = "Selecione o local da mensagem de avisos"
-L["Default"] = "padrão"
+L["Default"] = "Padrão"
 L["ErrorFrame"] = "Quadro de erro"
-L["Moveable"] = "móvel"
+L["Moveable"] = "Móvel"
 L["EnableSound"] = "Ativar alertas sonoros"
-L["EnableSoundDescription"] = "marque isso para ativar alertas sonoros quando um inimigo for detectado. Os sons são diferentes para Lista Negra e inimigos que ficam invisiveis."
+L["EnableSoundDescription"] = "Marque isso para ativar alertas sonoros quando um inimigo for detectado. Os sons são diferentes para Lista Negra e inimigos que ficam invisiveis."
 L["OnlySoundKoS"] = "Somente alertas sonoros de áudio para a lista Negra"
 L["OnlySoundKoSDescription"] = "Defina esta opção para reproduzir apenas alertas de áudio quando forem detectados jogadores inimigos na lista Negra."
 L["StopAlertsOnTaxi"] = "Desativar alertas enquanto estiver em uma rota de vôo"
@@ -216,8 +216,8 @@ L["MinimapDetectionDescription"] = "Rolar o cursor sobre jogadores inimigos conh
 L["MinimapNote"] = "          Nota: Funciona apenas para jogadores que podem rastrear humanoides."
 L["MinimapDetails"] = "Mostrar detalhes de level/classe nas dicas"
 L["MinimapDetailsDescription"] = "Marque isso para atualizar as dicas do mapa para que o level e a classe sejam mostrados juntamente com o nome dos inimigos."
-L["DisplayOnMap"] = "Exibir ícones no mapa"
-L["DisplayOnMapDescription"] = "Exiba ícones de mapa para a localização de outros usuários do SPY em seu grupo, invasão e guilda quando detectar inimigos."
+L["DisplayOnMap"] = "Mostrar ícones no mapa"
+L["DisplayOnMapDescription"] = "Mostre ícones de mapa para a localização de outros usuários do SPY em seu grupo, invasão e guilda quando detectar inimigos."
 L["SwitchToZone"] = "Mudar para o mapa actual zona de detecção de inimigo"
 L["SwitchToZoneDescription"] = "Mude o mapa para o mapa da zona atual do jogador quando inimigos forem detectados."
 L["MapDisplayLimit"] = "Limitar icones mostrados no mapa para:"
@@ -249,8 +249,8 @@ L["NinetyDays"] = "90 dias"
 L["NinetyDaysDescription"] = "Limpa os dados de inimigos que não foram detectados a mais de 90 dis."
 L["PurgeKoS"] = "Purgar jogadores Lista Negra com base no tempo sem ser detectado."
 L["PurgeKoSDescription"] = "Defina esta opção para purgar os jogadores da Lista Negra que foram não detectados com base nas configurações de tempo para os jogadores não detectados."
-L["PurgeWinLossDate"] = "Eliminar dados win / perda com base no tempo sem ser detectado."
-L["PurgeWinLossDateDescription"] = "Defina esta opção para limpar os dados win / perda de seu inimigo encontros com base nas configurações de tempo para os jogadores não detectados."
+L["PurgeWinLossData"] = "Eliminar dados ganha / perda com base no tempo sem ser detectado."
+L["PurgeWinLossDataDescription"] = "Defina esta opção para limpar os dados ganha / perda de seu inimigo encontros com base nas configurações de tempo para os jogadores não detectados."
 L["ShareData"] = "Compartilhar dados com outros usuários do Spy"
 L["ShareDataDescription"] = "Marque isso para compartilhar os dados dos inimigos encontrados com outros usuários do Spy em seu grupo, raide e guilda."
 L["UseData"] = "Usar dados de outros usuários do Spy"
@@ -302,7 +302,7 @@ L["HonorKills"] = "Honra Mata"
 L["PvPDeaths"] = "Mortes JxJ"	
 
 -- Output Messages
-L["VersionCheck"] = "|cffc41e3a Atenção! A versão errada do Spy está instalada. Esta versão é para Wrath of the Lich King - Classic."
+L["VersionCheck"] = "|cffc41e3aAtenção! A versão errada do Spy está instalada. Esta versão é para Wrath of the Lich King - Classic."
 L["SpyEnabled"] = "|cff9933ffSpy addon ativado."
 L["SpyDisabled"] = "|cff9933ffSpy addon desativado. Digite |cffffffff/spy show|cff9933ff para ativar."
 L["UpgradeAvailable"] = "|cff9933ffA nova versão do Spy está disponivel. Baixe-o em:\n|cffffffffhttps://www.curseforge.com/wow/addons/spy-wotlk"
@@ -362,7 +362,7 @@ L["StatsWins"] = "|cff40ff00Vitórias: "
 L["StatsSeparator"] = "  "
 L["StatsLoses"] = "|cff0070ddDerrotas: "
 L["Located"] = "localizado:"
-L["Yards"] = "jardas"
+L["Yards"] = "metros"
 L["LocalDefenseChannelName"] = "DefesaLocal"
 
 Spy_KOSReasonListLength = 6

@@ -366,6 +366,9 @@ function SS_DeleteExcessShards()
 						DeletedList[DeletedListCount] = { bag=bag, slot=slot }
 						DeletedListCount = DeletedListCount + 1
 						deletedShards = deletedShards+1
+						if SS_IsClassicVersion() then 	-- Classic vanilla only supports deleting 1 item per hardware event
+							return deletedShards 		-- Thanks babe for letting me use your sub
+						end
 					else
 						ClearCursor()
 					end

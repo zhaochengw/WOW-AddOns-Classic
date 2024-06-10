@@ -218,7 +218,8 @@ headerOptions = {
 		order = 1,
 		width = "full",
 		name = L["Header Type"],
-		desc = L["You can customize the header type. The specified name can be used to filter indicators using the unit type condition."],
+		name = L["Header Type"],
+		-- desc = L["You can customize the header type. The specified name can be used to filter indicators using the unit type condition."],
 		get = function()
 			return (editedHeader.headerName or editedHeader.type or 'player'):gsub('^player$','players'):gsub('^pet$','pets')
 		end,
@@ -574,11 +575,11 @@ do
 		descs  = { L["Tank"], L["Healer"], L["Dps"], L["None"], L["MainTank"], L["MainAssist"] }
 		widths = { .4,       .4,           .3,        .5,           .3,          .3,     }
 	else
-		roles  = { "MAINTANK", "MAINASSIST", "NONE" }
-		sroles = "MAINASSIST,MAINTANK,NONE"
-		names  = { L["MainTank"], L["MainAssist"], L["None"] }
+		roles  = { "MAINTANK", "MAINASSIST", "DAMAGER", "NONE" }
+		sroles = "MAINASSIST,MAINTANK,DAMAGER,NONE"
+		names  = { L["MainTank"], L["MainAssist"], L["Dps"], L["None"] }
 		descs  = names
-		widths = { .75, .75, .75 }
+		widths = { .6, .6, .4, .4 }
 	end
 	headerOptions.roleheader = { type = "header", order = 40, name = L["Roles"], hidden = IsOptionHiddenNL }
 	for i,role in ipairs(roles) do

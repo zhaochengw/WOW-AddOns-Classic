@@ -1,4 +1,5 @@
-# 11.1.37 (2024-01-28)
+# 11.2.12 (2024-06-06)
 
-* Fixed a Lua error with Auras widget that occurred in arenas when auras had no duration time [GH-497].
-* Updated TOC version for Patch 10.2.5 for WoW Mainline.
+* Fixed a Lua error with Auras widget that occurred when switching icon styles because an invalid default value was used for vertical alignment of duration and stack text [Comment #7324, #7325].
+* Fixed a Lua error that could occur in rare cases when leveling up.
+* Updated integrated libraries (Ace3 Release-r1341, LibCustomGlow v1.0.3-11-g5bc2b61-alpha).

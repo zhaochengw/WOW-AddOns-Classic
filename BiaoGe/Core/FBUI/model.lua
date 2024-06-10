@@ -20,6 +20,7 @@ local FrameHide = ADDONSELF.FrameHide
 
 local pt = print
 
+BG.bossModels = {}
 local buttons = {}
 local CreateAllTestButton
 do
@@ -120,6 +121,7 @@ do
             edgeFile = "Interface/ChatFrame/ChatFrameBackground",
             edgeSize = 2,
         })
+        BG.lastModel = model
     end
 end
 
@@ -143,7 +145,7 @@ local function CreateBossModel(FB, bossnum, point_x, point_y, NPCID, scale, Port
     model:SetScript("OnShow", function(self)
         model:SetCreature(NPCID)
     end)
-    -- UpdateModel(model, NPCID)
+    tinsert(BG.bossModels, model)
     return model
 end
 function BG.CreateBossModel()
@@ -185,134 +187,71 @@ function BG.CreateBossModel()
         model:SetRoll(-0.1)
         -- CreateAllTestButton(model)
     elseif BG.IsVanilla_Sod() then
-        local model = CreateBossModel("BD", 7, 80, -10, 213334, 0.6)
-        model:SetPosition(0, 0, 0)
-        model:SetFacing(0)
-        model:SetPitch(0)
-        model:SetRoll(0)
-        local model = CreateBossModel("Gno", 6, 10, -50, 7800, 0.9)
+        local model = CreateBossModel("BD", 7, 80, -10, 213334, 0.5)
+        model:SetPosition(0, 0, 0) -- Z,X,Y
+        model:SetFacing(0)         -- 左右
+        model:SetPitch(0)          -- 上下
+        model:SetRoll(0)           -- 倾斜
+        -- CreateAllTestButton(model)
+        local model = CreateBossModel("Gno", 6, -20, -30, 7800, 0.8)
         model:SetPosition(-4, 0, 1)
         model:SetFacing(-0.4)
         model:SetPitch(0.15)
         model:SetRoll(0)
         -- CreateAllTestButton(model)
-    else
-        local FB = "ICC"
-        do
-            local model = CreateFrame("PlayerModel", nil, BG["Frame" .. FB])
-            model:SetWidth(250)
-            model:SetHeight(250)
-            model:SetPoint("TOP", BG.Frame[FB].boss12.zhuangbei1, "TOPLEFT", -35, 70)
-            model:SetFrameLevel(101)
-            model:SetAlpha(0.8)
-            model:SetHitRectInsets(70, 70, 60, 70)
+        local model = CreateBossModel("Temple", 8, 5, -65, 8443, 0.85)
+        model:SetPosition(-20, 0, 2)
+        model:SetFacing(-0.2)
+        model:SetPitch(0.15)
+        model:SetRoll(0)
+        -- CreateAllTestButton(model)
+    elseif BG.IsWLK() then
+        local model = CreateBossModel("ICC", 12, 0, -70, 31301, 0.5)
+        model:SetPosition(0, 0, 0) -- Z,X,Y
+        model:SetFacing(0)         -- 左右
+        model:SetPitch(0)          -- 上下
+        model:SetRoll(0)           -- 倾斜
+        -- CreateAllTestButton(model)
 
-            local unitID = 31301
-            model:SetCreature(unitID)
-            -- model:SetCreature(31301, 25337)
-            -- model:SetDisplayInfo(25337)
-            UpdateModel(model, unitID)
-        end
-        local FB = "TOC"
-        do
-            local model = CreateFrame("PlayerModel", nil, BG["Frame" .. FB])
-            model:SetWidth(200)
-            model:SetHeight(250)
-            model:SetPoint("TOP", BG.Frame[FB].boss5.zhuangbei1, "TOPLEFT", -15, 70)
-            model:SetFrameLevel(101)
-            model:SetAlpha(0.8)
-            model:SetHitRectInsets(50, 70, 60, 100)
-            model:SetPortraitZoom(-0.2)
+        local model = CreateBossModel("TOC", 5, 10, -20, 34564, 0.6)
+        model:SetPosition(-4, 0, 0)
+        model:SetFacing(0)
+        model:SetPitch(0)
+        model:SetRoll(0)
+        -- CreateAllTestButton(model)
 
-            local unitID = 34564
-            model:SetCreature(unitID)
-            UpdateModel(model, unitID)
+        local model = CreateBossModel("ULD", 14, 0, 0, 32871, 0.45)
+        model:SetPosition(0, 0, 0)
+        model:SetFacing(0)
+        model:SetPitch(0)
+        model:SetRoll(0)
+        -- CreateAllTestButton(model)
 
-            local time = GetTime()
-            local c = 1
-            local s = 1
-            local ss = { 16234, 16235, 16236, 16237, 16238 }
-            local clicktime
-            model:SetScript("OnMouseUp", function()
-                BG.MainFrame:GetScript("OnMouseUp")(BG.MainFrame)
-                if GetTime() - clicktime >= 0.2 then return end
-
-                if c == 1 then
-                    PlaySound(ss[s], "Master")
-                    if s == #ss then
-                        s = 1
-                    else
-                        s = s + 1
-                    end
-                    time = GetTime()
-                    c = 2
-                elseif GetTime() - time >= 4 then
-                    PlaySound(ss[s], "Master")
-                    if s == #ss then
-                        s = 1
-                    else
-                        s = s + 1
-                    end
-                    time = GetTime()
-                end
-            end)
-            model:SetScript("OnMouseDown", function()
-                BG.MainFrame:GetScript("OnMouseDown")(BG.MainFrame)
-                clicktime = GetTime()
-            end)
-        end
-        local FB = "ULD"
-        do
-            local model = CreateFrame("PlayerModel", nil, BG["Frame" .. FB])
-            model:SetWidth(300)
-            model:SetHeight(300)
-            model:SetPoint("TOP", BG.Frame[FB].boss14.zhuangbei1, "TOPLEFT", -35, 80)
-            model:SetFrameLevel(101)
-            model:SetAlpha(0.8)
-            model:SetHitRectInsets(70, 70, 60, 100)
-            model:SetPortraitZoom(-0.2)
-
-            local unitID = 32871
-            model:SetCreature(unitID)
-            UpdateModel(model, unitID)
-
-            local time = GetTime()
-            local c = 1
-            local s = 1
-            local ss = { 15386, 15390, 15398, 15399, 15400, 15401, 15402, 15403, 15404, 15405, 15406, 15407 }
-            local clicktime
-            model:SetScript("OnMouseUp", function()
-                BG.MainFrame:GetScript("OnMouseUp")(BG.MainFrame)
-                if GetTime() - clicktime >= 0.2 then return end
-
-                if c == 1 then
-                    PlaySound(ss[s], "Master")
-                    if s == #ss then
-                        s = 1
-                    else
-                        s = s + 1
-                    end
-                    time = GetTime()
-                    c = 2
-                elseif GetTime() - time >= 10 then
-                    PlaySound(ss[s], "Master")
-                    if s == #ss then
-                        s = 1
-                    else
-                        s = s + 1
-                    end
-                    time = GetTime()
-                end
-            end)
-            model:SetScript("OnMouseDown", function()
-                BG.MainFrame:GetScript("OnMouseDown")(BG.MainFrame)
-                clicktime = GetTime()
-            end)
-        end
-        local FB = "NAXX"
-        do
-
-        end
+        local model = CreateBossModel("NAXX", 15, 0, -170, 15990, 1.7)
+        model:SetPosition(-16, 0, 9.5)
+        model:SetFacing(-0)
+        model:SetPitch(0.3)
+        model:SetRoll(0)
+        -- CreateAllTestButton(model)
+    elseif BG.IsCTM() then
+        local model = CreateBossModel("BOT", 5, 50, 90, 45213, 0.8)
+        model:SetPosition(-2, 0, 0) -- Z,X,Y
+        model:SetFacing(-0.1)       -- 左右
+        model:SetPitch(0)           -- 上下
+        model:SetRoll(0)            -- 倾斜
+        -- CreateAllTestButton(model)
+        local model = CreateBossModel("BWD", 6, 70, -30, 41376, 0.8)
+        model:SetPosition(-8, 0, 0) -- Z,X,Y
+        model:SetFacing(-0.4)       -- 左右
+        model:SetPitch(0)           -- 上下
+        model:SetRoll(0)            -- 倾斜
+        -- CreateAllTestButton(model)
+        local model = CreateBossModel("TOF", 2, 0, -10, 46753, 0.75)
+        model:SetPosition(-20, 0, 0) -- Z,X,Y
+        model:SetFacing(0)           -- 左右
+        model:SetPitch(0)            -- 上下
+        model:SetRoll(0)             -- 倾斜
+        -- CreateAllTestButton(model)
     end
 end
 

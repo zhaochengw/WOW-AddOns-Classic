@@ -9,10 +9,8 @@ local AddonName, SAO = ...
 -- testStacks if defined, forces the number of stacks for the test function
 -- testAuraID optional spell ID used to test the aura in lieu of auraID
 function SAO.AddOverlayOption(self, talentID, auraID, count, talentSubText, variants, testStacks, testAuraID)
-    if self.IsEra() then -- @todo Maybe run the test below for all projects, not only Classic Era
-        if not GetSpellInfo(talentID) or not GetSpellInfo(auraID) then
-            return;
-        end
+    if not GetSpellInfo(talentID) or (not self:IsFakeSpell(auraID) and not GetSpellInfo(auraID)) then
+        return;
     end
 
     local className = self.CurrentClass.Intrinsics[1];
@@ -35,7 +33,7 @@ function SAO.AddOverlayOption(self, talentID, auraID, count, talentSubText, vari
         local spellName, _, spellIcon = GetSpellInfo(talentID);
         text = text.." |T"..spellIcon..":0|t "..spellName;
         if (count and count > 0) then
-            text = text .. " ("..string.format(STACKS, count)..")";
+            text = text .. " ("..SAO:NbStacks(count)..")";
         end
         if (talentSubText) then
             text = text.." ("..talentSubText..")";
@@ -55,13 +53,14 @@ function SAO.AddOverlayOption(self, talentID, auraID, count, talentSubText, vari
         local registeredSpellID;
         if testAuraID then
             registeredSpellID = testAuraID;
-        elseif self.IsEra() then
+        elseif self.IsEra() and not self:IsFakeSpell(auraID) then
             registeredSpellID = GetSpellInfo(auraID); -- Cannot track spell ID on Classic Era, but can track spell name
         else
             registeredSpellID = auraID;
         end
         local auras = self.RegisteredAurasBySpellID[registeredSpellID];
         if (not auras) then
+            SAO:Debug("preview", "Trying to preview overlay with spell ID "..tostring(registeredSpellID).." but it is not registered, or its registration failed");
             return
         end
 
@@ -71,6 +70,7 @@ function SAO.AddOverlayOption(self, talentID, auraID, count, talentSubText, vari
         if (start) then
             local stacks = testStacks or count or 0;
             if (not auras[stacks]) then
+                SAO:Debug("preview", "Trying to preview overlay with spell ID "..tostring(registeredSpellID).." with "..tostring(stacks).." stacks but there is no aura with this number of stacks");
                 return;
             end
 

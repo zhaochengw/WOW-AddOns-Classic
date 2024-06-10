@@ -5,7 +5,7 @@ if not mod:IsClassic() then
 	mod.statTypes = "normal,heroic,timewalker"
 end
 
-mod:SetRevision("20230311193122")
+mod:SetRevision("20240428124541")
 mod:SetCreatureID(28546)
 mod:SetEncounterID(1984)
 mod:SetUsedIcons(8)
@@ -27,7 +27,7 @@ local specWarnOverload		= mod:NewSpecialWarningMoveAway(52658, nil, nil, nil, 1,
 local timerOverload			= mod:NewTargetTimer(10, 52658, nil, nil, nil, 3)
 
 mod:AddRangeFrameOption(10, 52658)
-mod:AddSetIconOption("SetIconOnOverloadTarget", 52658, true, false, {8})
+mod:AddSetIconOption("SetIconOnOverloadTarget", 52658, true, 0, {8})
 
 local warnedDisperse = false
 

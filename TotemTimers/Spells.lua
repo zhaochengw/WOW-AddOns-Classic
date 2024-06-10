@@ -33,7 +33,7 @@ for _, spellID in pairs(SpellIDs) do
         SpellNames[spellID] = name
         SpellTextures[spellID] = texture
         TextureToSpellID[texture] = spellID
-        if (SpellIDsForceNames[spellID]) then
+        if (spellID > 400000 or SpellIDsForceNames[spellID]) then
             ForceSpellNames[name] = true
         end
     end
@@ -54,17 +54,22 @@ function TotemTimers.GetSpells()
     end
 end
 
+function TotemTimers.GetTalents()
+    wipe(TotemTimers.AvailableTalents)
+end
+
 if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
 
-    function TotemTimers.GetTalents()
+    TotemTimers.GetTalents = function()
         wipe(TotemTimers.AvailableTalents)
         TotemTimers.AvailableTalents.TotemicMastery = select(5, GetTalentInfo(3, 8)) * 10
         TotemTimers.AvailableTalents.DualWield = AvailableSpells[SpellIDs.DualWield]
+        TotemTimers.AvailableTalents.Maelstrom = AvailableSpells[SpellIDs.Maelstrom]
     end
 
 elseif LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_BURNING_CRUSADE then
 
-    function TotemTimers.GetTalents()
+    TotemTimers.GetTalents = function()
         wipe(TotemTimers.AvailableTalents)
         TotemTimers.AvailableTalents.TotemicMastery = select(5, GetTalentInfo(3, 8)) * 10
         TotemTimers.AvailableTalents.DualWield = select(5, GetTalentInfo(2, 18)) > 0
@@ -72,13 +77,20 @@ elseif LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_BURNING_CRUSADE then
 
 elseif LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_WRATH_OF_THE_LICH_KING then
 
-    function TotemTimers.GetTalents()
+    TotemTimers.GetTalents = function()
         wipe(TotemTimers.AvailableTalents)
         TotemTimers.AvailableTalents.TotemicMastery = 0
         TotemTimers.AvailableTalents.DualWield = select(5, GetTalentInfo(2, 17)) > 0
         TotemTimers.AvailableTalents.Maelstrom = select(5, GetTalentInfo(2,24)) > 0
     end
 
+elseif LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_CATACLYSM then
+    TotemTimers.GetTalents = function()
+        wipe(TotemTimers.AvailableTalents)
+        TotemTimers.AvailableTalents.TotemicMastery = 0
+        TotemTimers.AvailableTalents.DualWield = TotemTimers.Specialization == 2
+        TotemTimers.AvailableTalents.Maelstrom = select(5, GetTalentInfo(2,11)) > 0
+    end
 end
 
 function TotemTimers.GetBaseSpellID(spell)
@@ -86,7 +98,7 @@ function TotemTimers.GetBaseSpellID(spell)
     if not name then
         return spell
     end
-    return NameToSpellID[GetSpellInfo(spell)] or spell
+    return NameToSpellID[name] or spell
 end
 
 local function UpdateSpellRank(spell, useName)
@@ -106,7 +118,8 @@ if LE_EXPANSION_LEVEL_CURRENT < 2 then
                 return SpellIDs.Windfury
             end
         end
-        return (useName or ForceSpellNames[name]) and name or select(7, GetSpellInfo(name))
+        -- ... or spell is a workaround for SOD GetSpellInfo not working immediately on login
+        return (useName or ForceSpellNames[name]) and name or (select(7, GetSpellInfo(name)) or spell)
     end
 end
 
@@ -153,16 +166,31 @@ end
 TotemTimers.Specialization = 2
 
 -- get specialization, if no points are spent (e.g. talents reset) do not change specialization
-function TotemTimers.GetSpecialization()
-    local pointsSpent = 0
-    for i=1,3 do
-        local _,_,points = GetTalentTabInfo(i)
-        if points > pointsSpent then
-            pointsSpent = points
-            TotemTimers.Specialization = i
+
+if GetPrimaryTalentTree then
+    function TotemTimers.GetSpecialization()
+        local spec = GetPrimaryTalentTree()
+        if spec and spec > 0 then
+            TotemTimers.Specialization = spec
+        elseif not TotemTimers.Specialization then
+            TotemTimers.Specialization = 2
         end
+        TotemTimers.AddDebug("Spec: "..TotemTimers.Specialization)
     end
-    TotemTimers.AddDebug("Spec: "..TotemTimers.Specialization)
+else
+
+    function TotemTimers.GetSpecialization()
+        local pointsSpent = 0
+        for i=1,3 do
+            local _,_,points = GetTalentTabInfo(i)
+            if points > pointsSpent then
+                pointsSpent = points
+                TotemTimers.Specialization = i
+            end
+        end
+        TotemTimers.AddDebug("Spec: "..TotemTimers.Specialization)
+    end
+
 end
 
 function TotemTimers.ChangedTalents()

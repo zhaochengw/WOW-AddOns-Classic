@@ -29,6 +29,8 @@ L["Fengus' Ferocity"] = "芬古斯的狂暴";
 L["Mol'dar's Moxie"] = "摩尔达的勇气";
 L["Boon of Blackfathom"] = "黑暗深渊的祝福";
 L["Ashenvale Rallying Cry"] = "灰谷集结呐喊";
+L["Spark of Inspiration"] = "癫狂灵感火花"; --Phase 2 SoD world buff.
+L["Fervor of the Temple Explorer"] = "神庙探索者的热忱";
 
 ---=====---
 ---Horde---
@@ -627,13 +629,13 @@ L["timerWindowWidthTitle"] = "计时器窗口宽度";
 L["timerWindowWidthDesc"] = "设置计时器窗口的宽度.";
 
 L["timerWindowHeightTitle"] = "计时器窗口高度";
-L["timerWindowHeghtDesc"] = "设置计时器窗口的高度.";
+L["timerWindowHeightDesc"] = "设置计时器窗口的高度.";
 
 L["buffWindowWidthTitle"] = "Buff窗口宽度";
 L["buffWindowWidthDesc"] = "设置Buff窗口的宽度.";
 
 L["buffWindowHeightTitle"] = "Buff窗口高度";
-L["buffWindowHeghtDesc"] = "设置Buff窗口的都高度.";
+L["buffWindowHeightDesc"] = "设置Buff窗口的都高度.";
 
 L["dmfSettingsListTitle"] = "暗夜马戏团Buff列表";
 L["dmfSettingsListDesc"] = "点击显示你的小号所设置的暗夜马戏团Buff类型列表.";
@@ -695,3 +697,5 @@ L["ammunition"] = "Ammo";
 L["attunements"] = "Attunements";
 L["currentRaidLockouts"] = "Current Raid Lockouts";
 L["none"] = "None.";
+
+L["Temple of Atal'Hakkar"] = "阿塔哈卡神庙";

@@ -45,15 +45,13 @@ local BaseManaRegenPerSpi = {
 	0.010700, 0.010522, 0.010290, 0.010119, 0.009968, 0.009808, 0.009651, 0.009553, 0.009445, 0.009327,
 }
 
-local NormalManaRegenPerSpi = function()
-	local level = UnitLevel("player")
+local NormalManaRegenPerSpi = function(level)
 	local _, int = UnitStat("player", 4)
 	local _, spi = UnitStat("player", 5)
 	return (0.001 / spi + BaseManaRegenPerSpi[level] * (int ^ 0.5)) * 5
 end
 
-local NormalManaRegenPerInt = function()
-	local level = UnitLevel("player")
+local NormalManaRegenPerInt = function(level)
 	local _, int = UnitStat("player", 4)
 	local _, spi = UnitStat("player", 5)
 	-- Derivative of regen with respect to int
@@ -1534,7 +1532,9 @@ elseif addon.class == "WARRIOR" then
 	}
 end
 
-if addon.playerRace == "NightElf" then
+if addon.playerRace == "Dwarf" then
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Guns] = {StatLogic.Stats.RangedCrit, 1}
+elseif addon.playerRace == "NightElf" then
 	StatLogic.StatModTable["NightElf"] = {
 		-- Night Elf : Quickness - Racial
 		--             Dodge chance increased by 1%.
@@ -1574,6 +1574,13 @@ elseif addon.playerRace == "Human" then
 			},
 		},
 	}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace1H] = {StatLogic.Stats.Expertise, 5}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace2H] = {StatLogic.Stats.Expertise, 5}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Sword1H] = {StatLogic.Stats.Expertise, 5}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Sword2H] = {StatLogic.Stats.Expertise, 5}
+elseif addon.playerRace == "Orc" then
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Axe1H] = {StatLogic.Stats.Expertise, 5}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Axe2H] = {StatLogic.Stats.Expertise, 5}
 elseif addon.playerRace == "Troll" then
 	StatLogic.StatModTable["Troll"] = {
 		["MOD_NORMAL_HEALTH_REG"] = {
@@ -1592,6 +1599,8 @@ elseif addon.playerRace == "Troll" then
 			},
 		},
 	}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Bows] = {StatLogic.Stats.RangedCrit, 1}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Thrown] = {StatLogic.Stats.RangedCrit, 1}
 end
 
 StatLogic.StatModTable["ALL"] = {

@@ -260,7 +260,6 @@ L.DontShowPTNoID			= "Blockiere Pull-Timer, die nicht aus deiner derzeitigen Zon
 L.DontShowPT				= "Zeige keinen Timerbalken für Pull-/Pausen-Timer"
 L.DontShowPTText			= "Zeige keine Mitteilungen für Pull-/Pausen-Timer im Chatfenster"
 L.DontPlayPTCountdown		= "Spiele keinen akustischen Countdown für Pull-, Pausen-, und benutzerdefinierte Timer"
-L.DontShowPTCountdownText	= "Zeige keinen optischen Countdown für Pull-Timer"
 L.PT_Threshold				= "Zeige keinen opt. Countd. für Pausen-/Nutzer-Timer über: %d"
 
 -- Panel: Blizzard Features
@@ -355,6 +354,7 @@ L.FontHeight	= 16
 L.OTabRaids="Schlachtzug"
 L.OTabDungeons="Gruppe/Solo"
 L.OTabAbout="Über DBM"
+L.OTabPlugins = "Sonstige"--Scenarios, PVP, Delves (11.x), Solo/Challenge content (torghast, mage tower, etc)
 L.TabCategory_AFFIXES="Affixe"
 L.Import="Importieren"
 L.Area_BasicSetup="Tipos für die Initiale DBM Konfiguration"
@@ -387,7 +387,7 @@ L.oRA3AnnounceConsumables="Melde oRA3 Verbrauchsgüter Check bei Kampfbeginn"
 L.Area_ImportExportProfile="Import/Export von Profilen"
 L.ImportExportInfo="Importieren überschreibt das aktuelle Profil. Nutzung auf eigene Gefahr."
 L.ButtonImportProfile="Importiere Profil"
-L.ButtonExportProfile="EXportiere Profil"
+L.ButtonExportProfile="Exportiere Profil"
 L.ImportErrorOn="Benutzerdefinierte Töne für Einstellung %s fehlen"
 L.ImportVoiceMissing="Fehlendes Sprachpaket: %s"
 L.TabCategory_Alerts="Warnungen"

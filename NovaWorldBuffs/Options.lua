@@ -124,8 +124,8 @@ NWB.options = {
 			name = L["timeStampFormatTitle"],
 			desc = L["timeStampFormatDesc"],
 			values = {
-				[12] = "12 hour",
-				[24] = "24 hour",
+				[12] = L["12 hour"],
+				[24] = L["24 hour"],
 			},
 			sorting = {
 				[1] = 12,
@@ -140,8 +140,8 @@ NWB.options = {
 			name = L["timeStampZoneTitle"],
 			desc = L["timeStampZoneDesc"],
 			values = {
-				["local"] = "Local Time",
-				["server"] = "Server Time",
+				["local"] = L["Local Time"],
+				["server"] = L["Server Time"],
 			},
 			sorting = {
 				[1] = "local",
@@ -280,11 +280,49 @@ NWB.options = {
 			set = "setShowNaxxMinimapMarkers",
 		},
 		--Shat world markers TBC order = 133.
+		minimapLayerFont = {
+			type = "select",
+			name = L["minimapLayerFontTitle"],
+			desc = L["minimapLayerFontDesc"],
+			values = NWB.LSM:HashTable("font"),
+			dialogControl = "LSM30_Font",
+			order = 134,
+			get = "getMinimapLayerFont",
+			set = "setMinimapLayerFont",
+		},
+		minimapLayerFontSize = {
+			type = "range",
+			name = L["minimapLayerFontSizeTitle"],
+			desc = L["minimapLayerFontSizeDesc"],
+			order = 135,
+			get = "getMinimapLayerFontSize",
+			set = "setMinimapLayerFontSize",
+			min = 6,
+			max = 20,
+			softMin = 6,
+			softMax = 20,
+			step = 1,
+			width = 1.5,
+		},
+		--This needs further work since changing the scale messes up the position.
+		--[[minimapLayerScale = {
+			type = "range",
+			name = L["minimapLayerScaleTitle"],
+			desc = L["minimapLayerScaleDesc"],
+			order = 136,
+			get = "getMinimapLayerScale",
+			set = "setMinimapLayerScale",
+			min = 0.3,
+			max = 2,
+			softMin = 0.3,
+			softMax = 2,
+			step = 0.1,
+		},]]
 		bigWigsSupport = {
 			type = "toggle",
 			name = L["bigWigsSupportTitle"],
 			desc = L["bigWigsSupportDesc"],
-			order = 134,
+			order = 137,
 			get = "getBigWigsSupport",
 			set = "setBigWigsSupport",
 		},
@@ -1577,9 +1615,18 @@ function NWB:loadSpecificOptions()
 			values = function()
 				return NWB:getSounds("ashenvaleStartSoon");
 			end,
-			order = 26,
+			order = 25,
 			get = "getSoundsAshenvaleStartsSoon",
 			set = "setSoundsAshenvaleStartsSoon",
+		};
+		NWB.options.args["sodMiddleScreenWarning"] = {
+			type = "toggle",
+			name = L["sodMiddleScreenWarningTitle"],
+			desc = L["sodMiddleScreenWarningDesc"],
+			order = 26,
+			get = "getSodMiddleScreenWarning",
+			set = "setSodMiddleScreenWarning",
+			width = 1.2,
 		};
 		NWB.options.args["ashenvaleOverlayText"] = {
 			type = "description",
@@ -1589,7 +1636,7 @@ function NWB:loadSpecificOptions()
 		};
 		NWB.options.args["showAshenvaleOverlay"] = {
 			type = "toggle",
-			name = L["showAshenvaleOverlayTitle"],
+			name = "|cFF00FF00" .. L["showAshenvaleOverlayTitle"],
 			desc = L["showAshenvaleOverlayDesc"],
 			order = 28,
 			get = "getShowAshenvaleOverlay",
@@ -1617,11 +1664,45 @@ function NWB:loadSpecificOptions()
 			step = 0.1,
 			width = 1.2,
 		};
+		NWB.options.args["overlayShowArt"] = {
+			type = "toggle",
+			name = L["overlayShowArtTitle"],
+			desc = L["overlayShowArtDesc"],
+			order = 31,
+			get = "getOverlayShowArt",
+			set = "setOverlayShowArt",
+		};
+		NWB.options.args["overlayShowAshenvale"] = {
+			type = "toggle",
+			name = L["overlayShowAshenvaleTitle"],
+			desc = L["overlayShowAshenvaleDesc"],
+			order = 32,
+			get = "getOverlayShowAshenvale",
+			set = "setOverlayShowAshenvale",
+		};
+		NWB.options.args["overlayShowStranglethorn"] = {
+			type = "toggle",
+			name = L["overlayShowStranglethornTitle"],
+			desc = L["overlayShowStranglethornDesc"],
+			order = 33,
+			get = "getOverlayShowStranglethorn",
+			set = "setOverlayShowStranglethorn",
+		};
+		NWB.options.args["ashenvaleOverlayFont"] = {
+			type = "select",
+			name = L["ashenvaleOverlayFontTitle"],
+			desc = L["ashenvaleOverlayFontDesc"],
+			values = NWB.LSM:HashTable("font"),
+			dialogControl = "LSM30_Font",
+			order = 34,
+			get = "getAshenvaleOverlayFont",
+			set = "setAshenvaleOverlayFont",
+		};
 		NWB.options.args["layersNoteText"] = {
 			type = "description",
 			name = "|cFF9CD6DE" .. L["layersNoteText"],
 			fontSize = "medium",
-			order = 31,
+			order = 35,
 		};
 	end
 end
@@ -1761,9 +1842,9 @@ NWB.optionDefaults = {
 		copyFormatDiscord = false,
 		trimDataBelowLevel = 1,
 		showUnbuffedAlts = false,
-		timerWindowWidth = 450,
-		timerWindowHeight = 300,
-		buffWindowWidth = 475,
+		timerWindowWidth = 525,
+		timerWindowHeight = 400,
+		buffWindowWidth = 550,
 		buffWindowHeight = 400,
 		ignoreKillData = false,
 		noOverwrite = false,
@@ -1803,7 +1884,9 @@ NWB.optionDefaults = {
 		showShatWorldmapMarkersTerok = true,
 		hideMinimapBuffTimers = false,
 		disableBuffTimersMaxBuffLevel = true,
-		
+		minimapLayerFont = "NWB Default",
+		minimapLayerFontSize = 10,
+		minimapLayerScale = 1,
 		
 		--TBC options
 		disableSoundsAboveMaxBuffLevel = true,
@@ -1828,6 +1911,12 @@ NWB.optionDefaults = {
 		showAshenvaleOverlay = false,
 		lockAshenvaleOverlay = false,
 		ashenvaleOverlayScale = 1,
+		ashenvaleOverlayFont = "NWB Default",
+		overlayShowArt = true,
+		overlayShowAshenvale = true,
+		overlayShowStranglethorn = true,
+		showStvBoss = false,
+		sodMiddleScreenWarning = false,
 	},
 };
 
@@ -2098,20 +2187,13 @@ local function loadNewVersionFrame()
 		frame:Hide();
 		newVersionFrame = frame;
 	end
-	linesVersion = 2.64;
+	linesVersion = 2.74;
 	local lines = {
-		"|cFFFF6900Version 2.64|r",
-		"-Disabled DMF map markers in SoD until we know for sure what the new rotation is, better to have no markers than have wrong markers (if you hve solid info on what time/day it starts/ends in your region please let me know).",
-		"-Enabled tracking of DMF buff cooldown in SoD even if the fair isn't up you will see it in buffs window if it's on cooldown, and get a msg in chat when the cooldown is reset.",
-		"-Fixed an issue with the new Ashenvale overlay not saving position for some people (you may need to set it's position again).",
-		"Fixed Boon of Blackfathom not showing up when chronobooned in the /buffs window (won't show until you boon it again after this update).",
-		"",
-		"|cFFFF6900Version 2.63 (Last Version)|r",
-		"-Added overlay you can enable in /nwb config (or shift right-click minimap button) to always show Ashenvale resources on your UI, dragable anywhere you want like a widget.",
-		"-Added sound when you get Blackfathom Boon buff so you can be tabbed out waiting for drop with background sounds on.",
-		"-Added sound when Ashenvale is close to starting (can be disabled in options).",
-		"-Added SoD option to hide Ony/nef/Rend timers below a certain level (default 60), hides them from city map and minimap button tooltip.",
-		"-Ashenvale perentages will now display even if data is older than 5 mins (up to 30mins), but will be displayed in orange with a warning msg that the data is old.",
+		" ",
+		"Fixed Gnomeregan msg/sound playing when it drops on a lvl 50 char that can't get it.",
+		"Fix for new Sunken Temple buff being announced to guild chat as 50 seconds until drop, Blizzard has reused the same NPC and same yell msg in Booty Bay as the level 60 ZG buff from original classic and it's triggering the wrong buff drop msg.",
+		"The new Sunken Temple buff only has a 6 second warning yell all other SoD buffs so a drop msg isn't worth.",
+		"|cFF00FF00Please note:|r |cFF9CD6DEYour guild members need to update to properly stop getting the zandalar drop guild msg.|r",
 	};
 	local text = "";
 	--Seperator lines couldn't be used because the wow client won't render 1 pixel frames if they are in certain posotions.
@@ -2124,11 +2206,11 @@ local function loadNewVersionFrame()
 	text = text .. separatorText .. "\n";
 	if (lines) then
 		for k, v in ipairs(lines) do
-			--if (k % 2 == 0) then
-			--	text = text .. "|cFFFFFFFF" .. v .. "|r\n";
-			--else
+			if (k % 2 == 0) then
+				text = text .. "|cFFFFFFFF" .. v .. "|r\n";
+			else
 				text = text .. "|cFF9CD6DE" .. v .. "|r\n";
-			--end
+			end
 			--text = text .. separatorText .. "\n";
 			newVersionFrame.scrollChild.fs3:SetText(text);
 		end
@@ -2145,7 +2227,10 @@ function NWB:checkNewVersion()
 	if (NWB.version and NWB.version ~= 9999) then
 		if (not NWB.db.global.versions[NWB.version]) then
 			if (NWB.isSOD) then
-				loadNewVersionFrame();
+				--Only show this update notes on US realms where they need a DST timer fix.
+				--if (GetCurrentRegion() == 1 and not string.match(NWB.realm, "(AU)")) then
+					loadNewVersionFrame();
+				--end
 			end
 			--Wipe old data.
 			NWB.db.global.versions = {};
@@ -3421,7 +3506,7 @@ NWBDMFListDragFrame.tooltip:SetAlpha(.8);
 NWBDMFListDragFrame.tooltip.fs = NWBDMFListDragFrame.tooltip:CreateFontString("NWBDMFListDragTooltipFS", "ARTWORK");
 NWBDMFListDragFrame.tooltip.fs:SetPoint("CENTER", 0, 0.5);
 NWBDMFListDragFrame.tooltip.fs:SetFont(NWB.regionFont, 12);
-NWBDMFListDragFrame.tooltip.fs:SetText("Hold to drag");
+NWBDMFListDragFrame.tooltip.fs:SetText(L["Hold to drag"]);
 NWBDMFListDragFrame.tooltip:SetWidth(NWBDMFListDragFrame.tooltip.fs:GetStringWidth() + 16);
 NWBDMFListDragFrame.tooltip:SetHeight(NWBDMFListDragFrame.tooltip.fs:GetStringHeight() + 10);
 NWBDMFListDragFrame:SetScript("OnEnter", function(self)
@@ -3511,8 +3596,8 @@ function NWB:recalcDMFListFrame()
 	NWBDMFListFrame.fs:SetText(NWB.prefixColor .. L["autoDmfBuffCharsText"]);
 	NWBDMFListFrame.EditBox:SetText("\n\n");
 	if (not next(NWB.data.dmfBuffSettings)) then
-		NWBDMFListFrame.EditBox:Insert("|cffDEDE42No character specific buffs set yet.\n\n");
-		NWBDMFListFrame.EditBox:Insert("|cffDEDE42All characters are using default |cFF9CD6DE" .. buffs[NWB.db.global.autoDmfBuffType] .. "|cffDEDE42.\n");
+		NWBDMFListFrame.EditBox:Insert("|cffDEDE42" .. L["No character specific buffs set yet."] .. "\n\n");
+		NWBDMFListFrame.EditBox:Insert("|cffDEDE42" .. L["All characters are using default"] .. " |cFF9CD6DE" .. buffs[NWB.db.global.autoDmfBuffType] .. "|cffDEDE42.\n");
 	else
 		local text = "";
 		if (NWB.data.dmfBuffSettings and next(NWB.data.dmfBuffSettings)) then
@@ -3523,11 +3608,11 @@ function NWB:recalcDMFListFrame()
 				end
 				text = text .. "|c" .. classColorHex .. k .. " |cFFFFFFFF->|cFF9CD6DE " .. buffs[v] .. "\n";
 			end
-			text = text .. "\n|cffDEDE42All other alts using default |cFF9CD6DE" .. buffs[NWB.db.global.autoDmfBuffType] .. "|cffDEDE42.";
+			text = text .. "\n|cffDEDE42" .. L["All other alts using default"] .. ": |cFF9CD6DE" .. buffs[NWB.db.global.autoDmfBuffType] .. "|cffDEDE42.";
 			NWBDMFListFrame.EditBox:Insert(text);
 		else
-			NWBDMFListFrame.EditBox:Insert("|cffDEDE42No character specific buffs set yet.\n\n");
-			NWBDMFListFrame.EditBox:Insert("|cffDEDE42All characters are using default |cFF9CD6DE" .. buffs[NWB.db.global.autoDmfBuffType] .. "|cffDEDE42.\n");
+			NWBDMFListFrame.EditBox:Insert("|cffDEDE42" .. L["No character specific buffs set yet."] .. "\n\n");
+			NWBDMFListFrame.EditBox:Insert("|cffDEDE42" .. L["All characters are using default"] .. " |cFF9CD6DE" .. buffs[NWB.db.global.autoDmfBuffType] .. "|cffDEDE42.\n");
 		end
 	end
 end
@@ -4018,9 +4103,18 @@ function NWB:getSoundsAshenvaleStartsSoon(info)
 	return self.db.global.soundsAshenvaleStartsSoon;
 end
 
+function NWB:setSodMiddleScreenWarning(info, value)
+	self.db.global.sodMiddleScreenWarning = value;
+	NWB:setOverlayState();
+end
+
+function NWB:getSodMiddleScreenWarning(info)
+	return self.db.global.sodMiddleScreenWarning;
+end
+
 function NWB:setShowAshenvaleOverlay(info, value)
 	self.db.global.showAshenvaleOverlay = value;
-	NWB:setAshenvaleOverlayState();
+	NWB:setOverlayState();
 end
 
 function NWB:getShowAshenvaleOverlay(info)
@@ -4029,7 +4123,7 @@ end
 
 function NWB:setLockAshenvaleOverlay(info, value)
 	self.db.global.lockAshenvaleOverlay = value;
-	NWB:setAshenvaleOverlayState();
+	NWB:setOverlayState();
 end
 
 function NWB:getLockAshenvaleOverlay(info)
@@ -4038,9 +4132,74 @@ end
 
 function NWB:setAshenvaleOverlayScale(info, value)
 	self.db.global.ashenvaleOverlayScale = value;
-	NWB:setAshenvaleOverlayState();
+	NWB:refreshOverlay();
 end
 
 function NWB:getAshenvaleOverlayScale(info)
 	return self.db.global.ashenvaleOverlayScale;
+end
+
+--Ashenvale overlay font.
+function NWB:setAshenvaleOverlayFont(info, value)
+	self.db.global.ashenvaleOverlayFont = value;
+	NWB:refreshOverlay();
+end
+
+function NWB:getAshenvaleOverlayFont(info)
+	return self.db.global.ashenvaleOverlayFont;
+end
+
+function NWB:setOverlayShowArt(info, value)
+	self.db.global.overlayShowArt = value;
+	NWB:refreshOverlay();
+end
+
+function NWB:getOverlayShowArt(info)
+	return self.db.global.overlayShowArt;
+end
+
+function NWB:setOverlayShowAshenvale(info, value)
+	self.db.global.overlayShowAshenvale = value;
+	NWB:refreshOverlay();
+end
+
+function NWB:getOverlayShowAshenvale(info)
+	return self.db.global.overlayShowAshenvale;
+end
+
+function NWB:setOverlayShowStranglethorn(info, value)
+	self.db.global.overlayShowStranglethorn = value;
+	NWB:refreshOverlay();
+end
+
+function NWB:getOverlayShowStranglethorn(info)
+	return self.db.global.overlayShowStranglethorn;
+end
+
+--Minimap layer display font.
+function NWB:setMinimapLayerFont(info, value)
+	self.db.global.minimapLayerFont = value;
+	NWB:refreshMinimapLayerFrame();
+end
+
+function NWB:getMinimapLayerFont(info)
+	return self.db.global.minimapLayerFont;
+end
+
+function NWB:setMinimapLayerFontSize(info, value)
+	self.db.global.minimapLayerFontSize = value;
+	NWB:refreshMinimapLayerFrame();
+end
+
+function NWB:getMinimapLayerFontSize(info)
+	return self.db.global.minimapLayerFontSize;
+end
+
+function NWB:setMinimapLayerScale(info, value)
+	self.db.global.minimapLayerScale = value;
+	NWB:refreshMinimapLayerFrame();
+end
+
+function NWB:getMinimapLayerScale(info)
+	return self.db.global.minimapLayerScale;
 end

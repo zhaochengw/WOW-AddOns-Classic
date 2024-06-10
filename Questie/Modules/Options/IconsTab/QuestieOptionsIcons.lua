@@ -6,8 +6,6 @@ local QuestieOptionsDefaults = QuestieLoader:ImportModule("QuestieOptionsDefault
 local QuestieOptionsUtils = QuestieLoader:ImportModule("QuestieOptionsUtils");
 ---@type QuestieFramePool
 local QuestieFramePool = QuestieLoader:ImportModule("QuestieFramePool");
----@type QuestieCoords
-local QuestieCoords = QuestieLoader:ImportModule("QuestieCoords");
 ---@type QuestieMap
 local QuestieMap = QuestieLoader:ImportModule("QuestieMap");
 ---@type l10n
@@ -20,10 +18,6 @@ local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer");
 local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips");
 ---@type QuestieMenu
 local QuestieMenu = QuestieLoader:ImportModule("QuestieMenu");
----@type QuestieProfessions
-local QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
----@type SeasonOfDiscovery
-local SeasonOfDiscovery = QuestieLoader:ImportModule("SeasonOfDiscovery")
 
 QuestieOptions.tabs.icons = {...}
 local optionsDefaults = QuestieOptionsDefaults:Load()
@@ -274,13 +268,20 @@ function QuestieOptions.tabs.icons:Initialize()
                             QuestieQuest:SmoothReset()
                         end,
                     },
-                    showSoDRunes = {
-                        type = "toggle",
+                    sod_rune_options = {
+                        type = "header",
                         order = 2.091,
+                        width = "normal",
                         hidden = (not Questie.IsSoD),
                         name = function() return l10n('Season of Discovery Runes'); end,
+                    },
+                    showSoDRunes = {
+                        type = "toggle",
+                        order = 2.092,
+                        hidden = (not Questie.IsSoD),
+                        name = function() return l10n('Show Runes'); end,
                         desc = function() return l10n('When this is enabled, the locations of Season of Discovery Runes and Rune quests will be shown on the map/minimap.'); end,
-                        width = 1.595,
+                        width = "full",
                         disabled = function()
                             return (not Questie.db.profile.enabled);
                             end,
@@ -290,6 +291,33 @@ function QuestieOptions.tabs.icons:Initialize()
                             QuestieQuest:ToggleNotes(value)
                             QuestieQuest:SmoothReset()
                         end,
+                    },
+                    sodRuneSelection = {
+                        type = "group",
+                        order = 2.093,
+                        name = "",
+                        hidden = (not Questie.IsSoD),
+                        disabled = function() return not Questie.db.profile.showSoDRunes end,
+                        args = {
+                            phase1 = {
+                                type = "toggle",
+                                name = l10n("Phase 1"),
+                                get = function() return Questie.db.profile.showRunesOfPhase.phase1; end,
+                                set = function(info, value)
+                                    Questie.db.profile.showRunesOfPhase.phase1 = value
+                                    QuestieQuest:SmoothReset()
+                                end,
+                            },
+                            phase2 = {
+                                type = "toggle",
+                                name = l10n("Phase 2"),
+                                get = function() return Questie.db.profile.showRunesOfPhase.phase2; end,
+                                set = function(info, value)
+                                    Questie.db.profile.showRunesOfPhase.phase2 = value
+                                    QuestieQuest:SmoothReset()
+                                end,
+                            },
+                        },
                     },
                     townsfolk_options = {
                         type = "header",
@@ -1181,7 +1209,7 @@ function QuestieOptionsUtils.SetPfQuestIcons(info, value)
 end
 
 _GetIconThemes = function()
-    if Questie.IsWotlk then
+    if Questie.IsWotlk or Questie.IsCata then
         return {
             ['questie'] = "|T" .. Questie.icons["slay"] .. ":14|t Questie",
             ['blizzard'] = "|TInterface/buttons/adventureguidemicrobuttonalert.blp:20:20:0:0:32:32:2:28:2:28|t Blizzard",
@@ -1198,7 +1226,7 @@ _GetIconThemes = function()
 end
 
 _GetIconThemesSort = function()
-    if Questie.IsWotlk then
+    if Questie.IsWotlk or Questie.IsCata then
         return {
             "questie",
             "blizzard",

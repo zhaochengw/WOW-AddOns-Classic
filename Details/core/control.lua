@@ -63,6 +63,25 @@
 		end
 
 		local currentCombat = Details:GetCurrentCombat()
+		local playerActorObject = currentCombat:GetActor(DETAILS_ATTRIBUTE_DAMAGE, Details.playername)
+		if (playerActorObject) then
+			local targets = playerActorObject.targets
+
+			--make an array of targets {{targetName, amount}}
+			local targetsArray = {}
+			for targetName, amount in pairs(targets) do
+				table.insert(targetsArray, {targetName, amount})
+			end
+
+			--sort the array by amount
+			table.sort(targetsArray, Details.Sort2)
+
+			local targetName = targetsArray[1][1]
+
+			if (targetName) then
+				return targetName
+			end
+		end
 
 		for _, actor in ipairs(currentCombat[attributeDamage]._ActorTable) do
 			if (not actor.grupo and not actor.owner and not actor.nome:find("[*]") and bitBand(actor.flag_original, 0x00000060) ~= 0) then --0x20+0x40 neutral + enemy reaction
@@ -320,6 +339,7 @@
 		local combatCounter = Details:GetOrSetCombatId(1)
 
 		--create a new combat object and preplace the current one
+		---@type combat
 		local newCombatObject = Details.combate:NovaTabela(true, Details.tabela_overall, combatCounter, ...)
 		Details:SetCurrentCombat(newCombatObject)
 
@@ -329,7 +349,8 @@
 		--flag Details! as 'in combat'
 		Details.in_combat = true
 
-		newCombatObject:seta_data(Details._detalhes_props.DATA_TYPE_START) --seta na tabela do combate a data do inicio do combate -- setup time data
+		local bSetStartTime = true
+		newCombatObject:SetDateToNow(bSetStartTime)
 
 		--set the combat id on the combat object
 		newCombatObject.combat_id = combatCounter
@@ -525,16 +546,11 @@
 			end
 		end
 
-		Details:OnCombatPhaseChanged()
-
-		if (currentCombat.bossFunction) then
-			Details:CancelTimer(currentCombat.bossFunction)
-			currentCombat.bossFunction = nil
-		end
-
 		if (currentCombat.is_challenge or Details.debug) then
 			--Details222.AuraScan.Stop() --combat ended (m+ active)
 		end
+
+		Details:OnCombatPhaseChanged()
 
 		--stop combat ticker
 		Details:StopCombatTicker()
@@ -547,22 +563,21 @@
 			Details:CloseShields(currentCombat)
 		end
 
-		--salva hora, minuto, segundo do fim da luta
-		currentCombat:seta_data(Details._detalhes_props.DATA_TYPE_END)
-		currentCombat:seta_tempo_decorrido()
+		local bSetStartTime = false
+		local bSetEndTime = true
+		currentCombat:SetDateToNow(bSetStartTime, bSetEndTime)
+		currentCombat:SetEndTime(GetTime())
 
 		--drop last events table to garbage collector
 		currentCombat.player_last_events = {}
 
 		--flag instance type
-		local _, InstanceType = GetInstanceInfo()
-		currentCombat.instance_type = InstanceType
+		local zoneName, instanceType, DifficultyID, DifficultyName, _, _, _, zoneMapID = GetInstanceInfo()
+		currentCombat.instance_type = instanceType
 
 		if (not currentCombat.is_boss and bIsFromEncounterEnd and type(bIsFromEncounterEnd) == "table") then
 			local encounterID, encounterName, difficultyID, raidSize, endStatus = unpack(bIsFromEncounterEnd)
 			if (encounterID) then
-				local ZoneName, InstanceType, DifficultyID, DifficultyName, _, _, _, ZoneMapID = GetInstanceInfo()
-
 				local mapID = C_Map.GetBestMapForUnit("player")
 
 				if (not mapID) then
@@ -574,14 +589,14 @@
 					ejid = Details:GetInstanceEJID()
 				end
 
-				local _, boss_index = Details:GetBossEncounterDetailsFromEncounterId(ZoneMapID, encounterID)
+				local _, boss_index = Details:GetBossEncounterDetailsFromEncounterId(zoneMapID, encounterID)
 
 				currentCombat.is_boss = {
 					index = boss_index or 0,
 					name = encounterName,
 					encounter = encounterName,
-					zone = ZoneName,
-					mapid = ZoneMapID,
+					zone = zoneName,
+					mapid = zoneMapID,
 					diff = DifficultyID,
 					diff_string = DifficultyName,
 					ej_instance_id = ejid or 0,
@@ -596,6 +611,24 @@
 		if (mythicLevel and mythicLevel >= 2) then
 			currentCombat.is_mythic_dungeon_segment = true
 			currentCombat.is_mythic_dungeon_run_id = Details.mythic_dungeon_id
+
+			if (not currentCombat.is_mythic_dungeon) then
+				---@type mythicdungeoninfo
+				local mythicPlusInfo = {
+					ZoneName = Details.MythicPlus.DungeonName or zoneName,
+					MapID = Details.MythicPlus.DungeonID or zoneMapID,
+					Level = Details.MythicPlus.Level,
+					EJID = Details.MythicPlus.ejID,
+					RunID = Details.mythic_dungeon_id,
+					StartedAt = time() - currentCombat:GetCombatTime(),
+					EndedAt = time(),
+					SegmentID = Details.MythicPlus.SegmentID, --segment number within the dungeon
+					--default to trash
+					SegmentType = DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASH,
+					SegmentName = "Trash #" .. (Details.MythicPlus.SegmentID or 0), --localize-me
+				}
+				currentCombat.is_mythic_dungeon = mythicPlusInfo
+			end
 		end
 
 		--send item level after a combat if is in raid or party group
@@ -603,56 +636,39 @@
 
 		--if this segment isn't a boss fight
 		if (not currentCombat.is_boss) then
+			--is arena or battleground
 			if (currentCombat.is_pvp or currentCombat.is_arena) then
 				Details:FlagActorsOnPvPCombat()
 			end
 
+			--is arena
 			if (currentCombat.is_arena) then
 				currentCombat.enemy = "[" .. ARENA .. "] " ..  currentCombat.is_arena.name
 			end
 
-			local in_instance = IsInInstance() --garrison returns party as instance type.
-			if ((InstanceType == "party" or InstanceType == "raid") and in_instance) then
-				if (InstanceType == "party") then
-					if (currentCombat.is_mythic_dungeon_segment) then --setted just above
-						--is inside a mythic+ dungeon and this is not a boss segment, so tag it as a dungeon mythic+ trash segment
-						local zoneName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID, instanceGroupSize = GetInstanceInfo()
-						currentCombat.is_mythic_dungeon_trash = {
-							ZoneName = zoneName,
-							MapID = instanceMapID,
-							Level = Details.MythicPlus.Level,
-							EJID = Details.MythicPlus.ejID,
-						}
-						if (Details.debug) then
-							Details:Msg("segment tagged as mythic+ trash.")
-						end
-					else
-						--tag the combat as trash clean up
-						currentCombat.is_trash = true
-					end
-				else
+			--check if the player is in an instance
+			local bInInstance = IsInInstance() --garrison returns party as instance type.
+			if ((instanceType == "party" or instanceType == "raid") and bInInstance) then
+				--if is not boss and inside a instance of type party or raid: mark the combat as trash
+				if (not currentCombat.is_mythic_dungeon) then
 					currentCombat.is_trash = true
 				end
 			else
-				if (not in_instance) then
+				if (not bInInstance) then
 					if (Details.world_combat_is_trash) then
 						currentCombat.is_world_trash_combat = true
 					end
 				end
 			end
 
-			if (not currentCombat.enemy) then
-				local enemy = Details:FindEnemy()
-
-				if (enemy and Details.debug) then
-					--Details:Msg("(debug) enemy found", enemy)
-				end
-
-				currentCombat.enemy = enemy
+			if (not currentCombat.enemy or currentCombat.enemy == Details222.Unknown) then
+				local enemyName = currentCombat:FindEnemyName()
+				currentCombat.enemy = enemyName
 			end
 
-			Details:FlagActorsOnCommonFight() --fight_component
+			Details:FlagActorsOnCommonFight()
 		else
+			--combat is boss encounter
 			--calling here without checking for combat since the does not ran too long for scripts
 			Details:FlagActorsOnBossFight()
 
@@ -669,6 +685,11 @@
 					Details.schedule_store_boss_encounter = true
 				end
 
+				if (currentCombat.is_mythic_dungeon_segment) then
+					currentCombat.is_mythic_dungeon.SegmentType = DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSS
+					currentCombat.is_mythic_dungeon.SegmentName = (currentCombat.is_boss.name or Loc["STRING_UNKNOW"]) .. " (" .. string.lower(_G["BOSS"]) .. ")"
+				end
+
 				Details:SendEvent("COMBAT_BOSS_DEFEATED", nil, currentCombat)
 				Details:CheckFor_TrashSuppressionOnEncounterEnd()
 			else
@@ -681,6 +702,11 @@
 					end
 				else
 					Details.schedule_store_boss_encounter_wipe = true
+				end
+
+				if (currentCombat.is_mythic_dungeon_segment) then
+					currentCombat.is_mythic_dungeon.SegmentType = DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSSWIPE
+					currentCombat.is_mythic_dungeon.SegmentName = (currentCombat.is_boss.name or Loc["STRING_UNKNOW"]) .. " (" .. string.lower(_G["BOSS"]) .. ")"
 				end
 			end
 
@@ -746,6 +772,9 @@
 		if (not bShouldForceDiscard and (zoneType == "none" or tempo_do_combate >= Details.minimum_combat_time or not segmentsTable[1])) then
 			--combat accepted
 			Details.tabela_historico:AddCombat(currentCombat) --move a tabela atual para dentro do hist�rico
+
+			currentCombat:StoreTalents()
+
 			if (currentCombat.is_boss) then
 				if (IsInRaid()) then
 					local cleuID = currentCombat.is_boss.id
@@ -1307,12 +1336,13 @@
 	end
 
 	function Details:FlagActorsOnCommonFight()
-		local damage_container = Details.tabela_vigente [1]
-		local healing_container = Details.tabela_vigente [2]
-		local energy_container = Details.tabela_vigente [3]
-		local misc_container = Details.tabela_vigente [4]
+		local currentCombat = Details:GetCurrentCombat()
+		local damage_container = currentCombat[1]
+		local healing_container = currentCombat[2]
+		local energy_container = currentCombat[3]
+		local misc_container = currentCombat[4]
 
-		local mythicDungeonRun = Details.tabela_vigente.is_mythic_dungeon_segment
+		local mythicDungeonRun = currentCombat.is_mythic_dungeon_segment
 
 		for class_type, container in ipairs({damage_container, healing_container}) do
 
@@ -1473,24 +1503,24 @@
 		GameCooltip:AddStatusBar (100, 1, 0, 0, 0, 0.8)
 	end
 
-	function Details:AddTooltipBackgroundStatusbar (side, value, useSpark, statusBarColor)
+	function Details:AddTooltipBackgroundStatusbar(side, value, useSpark, statusBarColor)
 		Details.tooltip.background [4] = 0.8
 		Details.tooltip.icon_size.W = Details.tooltip.line_height
 		Details.tooltip.icon_size.H = Details.tooltip.line_height
 
 		--[[spark options
-		["SparkTexture"] = true,
-		["SparkHeightOffset"] = true,
-		["SparkWidthOffset"] = true,
-		["SparkHeight"] = true,
-		["SparkWidth"] = true,
-		["SparkAlpha"] = true,
-		["SparkColor"] = true,
-		["SparkPositionXOffset"] = true,
-		["SparkPositionYOffset"] = true,
+			["SparkTexture"] = true,
+			["SparkHeightOffset"] = true,
+			["SparkWidthOffset"] = true,
+			["SparkHeight"] = true,
+			["SparkWidth"] = true,
+			["SparkAlpha"] = true,
+			["SparkColor"] = true,
+			["SparkPositionXOffset"] = true,
+			["SparkPositionYOffset"] = true,
 		--]]
 
-		useSpark = true
+		useSpark = value ~= 100
 		--GameCooltip:SetOption("SparkHeightOffset", 6)
 		GameCooltip:SetOption("SparkTexture", [[Interface\Buttons\WHITE8X8]])
 		GameCooltip:SetOption("SparkWidth", 1)
@@ -1510,7 +1540,6 @@
 			end
 			local rBG, gBG, bBG, aBG = unpack(Details.tooltip.background)
 			GameCooltip:AddStatusBar (value, 1, r, g, b, a, useSpark, {value = 100, color = {rBG, gBG, bBG, aBG}, texture = [[Interface\AddOns\Details\images\bar_serenity]]})
-
 		else
 			GameCooltip:AddStatusBar (value, 2, unpack(Details.tooltip.bar_color))
 		end
@@ -1523,7 +1552,7 @@
 
 -- /run local a,b=Details.tooltip.header_statusbar,0.3;a[1]=b;a[2]=b;a[3]=b;a[4]=0.8;
 
-	function Details:AddTooltipSpellHeaderText (headerText, headerColor, amount, iconTexture, L, R, T, B, separator, iconSize)
+	function Details:AddTooltipSpellHeaderText(headerText, headerColor, amount, iconTexture, L, R, T, B, separator, iconSize)
 		if (separator and separator == true) then
 			GameCooltip:AddLine ("", "", nil, nil, 1, 1, 1, 1, 8)
 			return
@@ -1550,9 +1579,10 @@
 		local GameCooltip = GameCooltip
 
 		GameCooltip:Reset()
-		GameCooltip:SetType ("tooltip")
+		GameCooltip:SetType("tooltip")
 
-		GameCooltip:SetOption("StatusBarTexture", [[Interface\AddOns\Details\images\bar_background_dark_withline]])
+		--GameCooltip:SetOption("StatusBarTexture", [[Interface\AddOns\Details\images\bar_background_dark_withline]])
+		GameCooltip:SetOption("StatusBarTexture", [[Interface\AddOns\Details\images\bar_textures\bar_rounded.png]])
 
 		GameCooltip:SetOption("TextSize", Details.tooltip.fontsize)
 		GameCooltip:SetOption("TextFont",  Details.tooltip.fontface)
@@ -1560,14 +1590,14 @@
 		GameCooltip:SetOption("TextColorRight", Details.tooltip.fontcolor_right)
 		GameCooltip:SetOption("TextShadow", Details.tooltip.fontshadow and "OUTLINE")
 
-		GameCooltip:SetOption("LeftBorderSize", -5)
-		GameCooltip:SetOption("RightBorderSize", 5)
-		GameCooltip:SetOption("RightTextMargin", 0)
-		GameCooltip:SetOption("VerticalOffset", 9)
-		GameCooltip:SetOption("AlignAsBlizzTooltip", true)
-		GameCooltip:SetOption("AlignAsBlizzTooltipFrameHeightOffset", -8)
+		GameCooltip:SetOption("LeftBorderSize", -0) --offset between the left border and the left icon, default: 10 + offset
+		GameCooltip:SetOption("RightBorderSize", 0) --offset between the right border and the right icon, default: -10 + offset
+		GameCooltip:SetOption("VerticalOffset", 5) --amount of space to leave between the top border and the first line of the tooltip, default: 0
+		GameCooltip:SetOption("RightTextMargin", 0) --offset between the right text to the right icon, default: -3
+		GameCooltip:SetOption("AlignAsBlizzTooltip", false)
 		GameCooltip:SetOption("LineHeightSizeOffset", 4)
 		GameCooltip:SetOption("VerticalPadding", -4)
+		GameCooltip:SetOption("YSpacingMod", -6)
 
 		GameCooltip:SetBackdrop(1, Details.cooltip_preset2_backdrop, bgColor, borderColor)
 	end
@@ -1644,7 +1674,14 @@
 				end
 			end
 
+			Details:AddRoundedCornerToTooltip()
 			GameCooltip:ShowCooltip()
+		end
+	end
+
+	function Details:AddRoundedCornerToTooltip()
+		if (Details.tooltip.rounded_corner) then
+			GameCooltip:ShowRoundedCorner()
 		end
 	end
 
@@ -1748,6 +1785,12 @@
 		self:RefreshMainWindow(true)
 	end
 
+	function Details:RefreshAllMainWindowsTemp()
+		return Details:RefreshMainWindow(-1)
+	end
+
+	local nextBreakdownUpdateAt = 0
+
 	function Details:RefreshMainWindow(instanceObject, bForceRefresh) --getting deprecated soon
 		if (not instanceObject or type(instanceObject) == "boolean") then
 			bForceRefresh = instanceObject
@@ -1786,7 +1829,14 @@
 					local actorObject = Details:GetActorObjectFromBreakdownWindow()
 					if (actorObject) then
 						if (actorObject and not actorObject.__destroyed) then
-							return actorObject:MontaInfo() --MontaInfo a nil value
+							if (nextBreakdownUpdateAt < GetTime()) then
+								if (Details.in_combat) then
+									nextBreakdownUpdateAt = GetTime() + 0.5
+								else
+									nextBreakdownUpdateAt = GetTime() + 5
+								end
+								return actorObject:MontaInfo()
+							end
 						else
 							Details:Msg("Invalid actor object on breakdown window.")
 							if (actorObject.__destroyed) then
@@ -1817,12 +1867,14 @@
 		if (not panel) then
 			panel = CreateFrame("frame", "DetailsEraseDataConfirmation", UIParent, "BackdropTemplate")
 			panel:SetSize(400, 85)
-			panel:SetBackdrop({bgFile = [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 16,
-			edgeFile = [[Interface\AddOns\Details\images\border_2]], edgeSize = 12})
 			panel:SetPoint("center", UIParent)
-			panel:SetBackdropColor(0, 0, 0, 0.4)
 
-			DetailsFramework:ApplyStandardBackdrop(panel)
+			DetailsFramework:AddRoundedCornersToFrame(panel, Details.PlayerBreakdown.RoundedCornerPreset)
+
+			local LibWindow = LibStub("LibWindow-1.1")
+			LibWindow.RegisterConfig(panel, Details.ask_to_erase_frame)
+			LibWindow.MakeDraggable(panel)
+			LibWindow.RestorePosition(panel)
 
 			panel:SetScript("OnMouseDown", function(self, button)
 				if (button == "RightButton") then
@@ -1862,7 +1914,9 @@
 
 			elseif (Details.segments_auto_erase == 3) then
 				--erase
-				Details.tabela_historico:ResetAllCombatData()
+				C_Timer.After(2, function()
+					Details.tabela_historico:ResetAllCombatData()
+				end)
 			end
 		else
 			if (_tempo > Details.last_instance_time + 21600) then --6 hours

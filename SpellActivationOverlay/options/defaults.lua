@@ -2,12 +2,21 @@ local AddonName, SAO = ...
 
 SAO.defaults = {
     classes = {
-        ["DEATHKNIGHT"] = {
+        ["DEATHKNIGHT"] = { -- (Wrath+)
             alert = {
                 [59052] = { -- Rime
                     [0] = true,
                 },
                 [51124] = { -- Killing Machine
+                    [0] = true,
+                },
+                [81141] = { -- Crimson Scourge (Cataclysm)
+                    [0] = true,
+                },
+                [81340] = { -- Sudden Doom (Cataclysm)
+                    [0] = true,
+                },
+                [96171] = { -- Will of the Necropolis (Cataclysm)
                     [0] = true,
                 },
             },
@@ -17,11 +26,22 @@ SAO.defaults = {
                 },
                 [59052] = { -- Rime
                     [49184] = true, --  Howling Blast
+                    [45477] = true, --  Icy Touch (not for Wrath)
                 },
                 [51124] = { -- Killing Machine
-                    [45477] = true, -- Icy Touch
+                    [49020] = true, -- Obliterate (not for Wrath)
+                    [45477] = true, -- Icy Touch (not for Cata)
                     [49143] = true, -- Frost Strike
-                    [49184] = true, -- Howling Blast
+                    [49184] = true, -- Howling Blast (not for Cata)
+                },
+                [81141] = { -- Crimson Scourge (Cataclysm)
+                    [48721] = true, -- Blood Boil
+                },
+                [81340] = { -- Sudden Doom (Cataclysm)
+                    [47541] = true, -- Death Coil
+                },
+                [96171] = { -- Will of the Necropolis (Cataclysm)
+                    [48982] = true, -- Rune Tap
                 },
             }
         },
@@ -36,7 +56,16 @@ SAO.defaults = {
                 [48517] = { -- Eclipse (Solar)
                     [0] = true,
                 },
-                [16886] = { -- Nature's Grace
+                [408255] = { -- Eclipse (Lunar, Season of Discovery)
+                    [0] = true,
+                },
+                [408250] = { -- Eclipse (Solar, Season of Discovery)
+                    [0] = true,
+                },
+                [93400] = { -- Shooting Stars (Cataclysm)
+                    [0] = true,
+                },
+                [16886] = { -- Nature's Grace (Era - Wrath)
                     [0] = false,
                 },
                 [46833] = { -- Wrath of Elune
@@ -62,6 +91,9 @@ SAO.defaults = {
                 [5176] = { -- Wrath
                     [5176] = true, -- Wrath
                 },
+                [93400] = { -- Shooting Stars (Cataclysm)
+                    [78674] = true, -- Starsurge
+                },
                 [46833] = { -- Wrath of Elune
                     [2912] = true, -- Starfire
                 },
@@ -85,10 +117,13 @@ SAO.defaults = {
         },
         ["HUNTER"] = {
             alert = {
-                [53220] = { -- Improved Steady Shot
+                [53220] = { -- Improved Steady Shot (Wrath+)
                     [0] = true,
                 },
-                [56453] = { -- Lock and Load
+                [56453] = { -- Lock and Load (Wrath+)
+                    [0] = true, -- any stacks
+                },
+                [415414]= { -- Lock and Load (Season of Discovery)
                     [0] = true, -- any stacks
                 },
                 [415320]= { -- Flanking Strike (Season of Discovery)
@@ -99,27 +134,30 @@ SAO.defaults = {
                 },
             },
             glow = {
-                [53351] = { -- Kill Shot
+                [53351] = { -- Kill Shot (Wrath+)
                     [53351] = true, -- Kill Shot
                 },
                 [19306] = { -- Counterattack
                     [19306] = true, -- Counterattack
                 },
-                [53220] = { -- Improved Steady Shot
+                [53220] = { -- Improved Steady Shot (Wrath+)
                     [19434] = true, --  Aimed Shot
                     [3044]  = true, --  Arcane Shot
                     [53209] = true, --  Chimera Shot
                 },
-                [56453] = { -- Lock and Load
+                [56453] = { -- Lock and Load (Wrath+)
                     [3044]  = true, --  Arcane Shot
                     [53301] = true, --  Explosive Shot
                 },
-                [1495] = { -- Mongoose Bite
+                [1495] = { -- Mongoose Bite (Era, TBC)
                     [1495]  = true, -- Mongoose Bite
                 },
                 [415320]= { -- Flanking Strike (Season of Discovery)
                     [415320]= true, -- Flanking Strike (Season of Discovery)
                 },
+                -- [415401]= { -- Sniper Training (Season of Discovery)
+                --     [19434] = true, -- Aimed Shot
+                -- },
             }
         },
         ["MAGE"] = {
@@ -127,125 +165,191 @@ SAO.defaults = {
                 [12536] = { -- Arcane Concentration
                     [0] = false,
                 },
-                [44401] = { -- Missile Barrage
+                [79683] = { -- Arcane Missiles! (Cataclysm)
+                    [0] = true,
+                },
+                [44401] = { -- Missile Barrage (Wrath)
+                    [0] = true,
+                },
+                [400589] = { -- Missile Barrage (Season of Discovery)
                     [0] = true,
                 },
                 [400573]= { -- Arcane Blast (Season of Discovery)
                     [4] = true, -- 4 stacks
                     [0] = true, -- any stacks but 4
                 },
-                [48107] = { -- Heating Up (not an actual buff)
+                [57531] = { -- Arcane Potency (2/2) (Cataclysm)
+                    [0] = false,
+                },
+                [48107] = { -- Heating Up (not an actual buff) (Season of Discovery, Wrath+)
                     [0] = true,
                 },
-                [48108] = { -- Hot Streak
+                [48108] = { -- Hot Streak (Wrath+)
                     [0] = true,
                 },
-                [64343] = { -- Impact
+                [400625] = { -- Hot Streak (Season of Discovery)
                     [0] = true,
                 },
-                [54741] = { -- Firestarter
+                [64343] = { -- Impact (Wrath+)
                     [0] = true,
                 },
-                [74396] = { -- Fingers of Frost
+                [54741] = { -- Firestarter (Wrath)
+                    [0] = true,
+                },
+                [74396] = { -- Fingers of Frost (Wrath)
                     [0] = true, -- any stacks
+                },
+                [44544] = { -- Fingers of Frost (Cataclysm)
+                    [0] = nil,  -- any stacks, set to nil to simplify DB migration
                 },
                 [400670]= { -- Fingers of Frost (Season of Discovery)
                     [0] = true, -- any stacks
                 },
-                [57761] = { -- Brain Freeze
+                [57761] = { -- Brain Freeze (Wrath+)
                     [0] = true,
                 },
-                [96215] = { -- Hot Streak + Heating Up (not an actual buff)
+                [400730] = { -- Brain Freeze (Season of Discovery)
+                    [0] = true,
+                },
+                [96215] = { -- Hot Streak + Heating Up (not an actual buff) (Season of Discovery, Wrath)
                     [0] = false,
                 },
                 [5276] = { -- Representative of spells triggering Frozen effect
                     [0] = false,
-                }
+                },
             },
             glow = {
-                [44401] = { -- Missile Barrage
+                [79683] = { -- Arcane Missiles! (Cataclysm)
+                    [5143] = true, -- Arcane Missiles
+                },
+                [44401] = { -- Missile Barrage (Wrath)
+                    [5143] = true, -- Arcane Missiles
+                },
+                [400589] = { -- Missile Barrage (Season of Discovery)
                     [5143] = true, -- Arcane Missiles
                 },
                 [400573]= { -- Arcane Blast 4/4 (Season of Discovery)
                     [5143] = true,  -- Arcane Missiles
                     [1449] = false, -- Arcane Explosion
                 },
-                [48108] = { -- Hot Streak
+                [48108] = { -- Hot Streak (Wrath+)
+                    [11366] = true, -- Pyroblast
+                    [92315] = nil,  -- Pyroblast! (Cataclysm), set to nil to simplify DB migration
+                },
+                [400625] = { -- Hot Streak (Season of Discovery)
                     [11366] = true, -- Pyroblast
                 },
-                [64343] = { -- Impact
+                [64343] = { -- Impact (Wrath)
                     [2136] = true, -- Fire Blast
                 },
-                [54741] = { -- Firestarter
+                [54741] = { -- Firestarter (Wrath)
                     [2120] = true, -- Flamestrike
                 },
-                [57761] = { -- Brain Freeze
+                [57761] = { -- Brain Freeze (Wrath, Cataclysm)
                     [133]   = true, -- Fireball
-                    [44614] = true, -- Frostfire Bolt
+                    [44614] = true, -- Frostfire Bolt (Wrath+)
                 },
-                [74396] = { -- Fingers of Frost
-                    [30455] = true, -- Ice Lance
-                    [44572] = true, -- Deep Freeze
+                [400730] = { -- Brain Freeze (Season of Discovery)
+                    [133]   = true, -- Fireball
+                    [412532]= true, -- Spellfrost Bolt (Season of Discovery)
+                    [401502]= true, -- Frostfire Bolt (Season of Discovery)
+                },
+                [74396] = { -- Fingers of Frost (Wrath)
+                    [30455] = true, -- Ice Lance (TBC+)
+                    [44572] = true, -- Deep Freeze (Wrath+)
+                },
+                [44544] = { -- Fingers of Frost (Cataclysm)
+                    [30455] = nil,  -- Ice Lance (TBC+), set to nil to simplify DB migration
+                    [44572] = nil,  -- Deep Freeze (Wrath+), set to nil to simplify DB migration
                 },
                 [400670]= { -- Fingers of Frost (Season of Discovery)
                     [400640]= true, -- Ice Lance (Season of Discovery)
+                    [428739]= true, -- Deep Freeze (Season of Discovery)
                 },
                 [5276] = { -- Representative of spells triggering Frozen effect
-                    [30455] = true, -- Ice Lance
-                    [44572] = true, -- Deep Freeze
+                    [30455] = true, -- Ice Lance (TBC+)
+                    [44572] = true, -- Deep Freeze (Wrath+)
                     [400640]= true, -- Ice Lance (Season of Discovery)
+                    [428739]= true, -- Deep Freeze (Season of Discovery)
                 },
             },
         },
         ["PALADIN"] = {
             alert = {
-                [54149] = { -- Infusion of Light (2/2)
+                [54149] = { -- Infusion of Light (2/2) (Wrath+)
                     [0] = true,
                 },
-                [59578] = { -- The Art of War (2/2)
+                [59578] = { -- The Art of War (2/2) (Wrath+)
                     [0] = true,
                 },
-                [60513] = { -- Healing Trance / Soul Preserver
+                [60513] = { -- Healing Trance / Soul Preserver (Wrath)
                     [0] = false,
                 },
             },
             glow = {
+                [879] = { -- Exorcism
+                    [879] = false, -- Exorcism
+                },
+                [20473] = { -- Holy Shock
+                    [20473] = false, -- Holy Shock
+                },
                 [24275] = { -- Hammer of Wrath
                     [24275] = true, -- Hammer of Wrath
                 },
-                [54149] = { -- Infusion of Light (2/2)
+                [53385] = { -- Divine Storm (Wrath+)
+                    [53385] = true, -- Divine Storm (Wrath+)
+                },
+                [407778] = { -- Divine Storm (Season of Discovery)
+                    [407778]= true, -- Divine Storm (Season of Discovery)
+                },
+                [54149] = { -- Infusion of Light (2/2) (Wrath+)
                     [19750] = true, -- Flash of Light
                     [635]   = true, -- Holy Light
+                    [82326] = true, -- Divine Light (Cataclysm)
+                    [82327] = true, -- Holy Radiance (Cataclysm)
                 },
-                [59578] = { -- The Art of War (2/2)
+                [59578] = { -- The Art of War (2/2) (Wrath+)
                     [879]   = true, -- Exorcism
-                    [19750] = true, -- Flash of Light
+                    [19750] = true, -- Flash of Light (not for Cata)
                 },
             },
         },
         ["PRIEST"] = {
             alert = {
-                [33151] = {  -- Surge of Light
+                [33151] = {  -- Surge of Light (TBC - Wrath)
                     [0] = true,
                 },
-                [63734] = { -- Serendipity
+                [88688] = {  -- Surge of Light (Cataclysm)
+                    [0] = true,
+                },
+                [63734] = { -- Serendipity (Wrath)
                     [3] = true,  -- 3 stacks
                     [0] = false, -- any stacks but 3
                 },
-                [60514] = { -- Healing Trance / Soul Preserver
+                [60514] = { -- Healing Trance / Soul Preserver (Wrath)
                     [0] = false,
                 },
                 [413247]= { -- Serendipity (Season of Discovery)
                     [3] = true,  -- 3 stacks
                     [0] = false, -- any stacks but 3
                 },
+                [431666] = {  -- Surge of Light (Season of Discovery)
+                    [0] = true,
+                },
+                [431655] = {  -- Mind Spike (Season of Discovery)
+                    [3] = true,  -- 3 stacks
+                    [0] = false, -- any stacks but 3
+                },
             },
             glow = {
-                [33151] = { -- Surge of Light
+                [33151] = { -- Surge of Light (TBC - Wrath)
                     [585]  = true, -- Smite
+                    [2061] = true, -- Flash Heal (not for TBC)
+                },
+                [88688] = { -- Surge of Light (Cataclysm)
                     [2061] = true, -- Flash Heal
                 },
-                [63734] = { -- Serendipity 3/3
+                [63734] = { -- Serendipity 3/3 (Wrath)
                     [2060] = true, -- Greater Heal
                     [596]  = true, -- Prayer of Healing
                 },
@@ -255,6 +359,13 @@ SAO.defaults = {
                     [2060] = true, -- Greater Heal
                     [596]  = true, -- Prayer of Healing
                 },
+                [431666] = {  -- Surge of Light (Season of Discovery)
+                    [585]  = true, -- Smite
+                    [2061] = true, -- Flash Heal
+                },
+                [431655] = {  -- Mind Spike (Season of Discovery)
+                    [8092] = true, -- Mind Blast
+                }
             },
         },
         ["ROGUE"] = {
@@ -274,7 +385,14 @@ SAO.defaults = {
                 [16246] = {  -- Elemental Focus
                     [0] = true,
                 },
-                [53817] = { -- Maelstorm Weapon
+                [415105] = {  -- Power Surge (Season of Discovery)
+                    [0] = true,
+                },
+                [53817] = { -- Maelstrom Weapon
+                    [5] = true, -- 5 stacks
+                    [0] = true, -- any stacks but 5
+                },
+                [408505] = { -- Maelstrom Weapon (Season of Discovery)
                     [5] = true, -- 5 stacks
                     [0] = true, -- any stacks but 5
                 },
@@ -287,22 +405,50 @@ SAO.defaults = {
                 [425339]= { -- Molten Blast (Season of Discovery)
                     [0] = true,
                 },
+                [324]= { -- Rolling Thunder (Season of Discovery)
+                    [7] = false,
+                    [8] = false,
+                    [9] = true,
+                },
+                [432041] = { -- Tidal Waves (Season of Discovery)
+                    [0] = false, -- any stacks
+                },
             },
             glow = {
-                [53817] = { -- Maelstorm Weapon
+                [53817] = { -- Maelstrom Weapon
                     [403]   = false, -- Lightning Bolt
                     [421]   = false, -- Chain Lightning
-                    [8004]  = false, -- lesser Healing Wave
+                    [8004]  = false, -- Lesser Healing Wave
                     [331]   = false, -- Healing Wave
                     [1064]  = false, -- Chain Heal
                     [51514] = false, -- Hex
                 },
+                [408505] = { -- Maelstrom Weapon (Season of Discovery)
+                    [403]   = false, -- Lightning Bolt
+                    [421]   = false, -- Chain Lightning
+                    [8004]  = false, -- Lesser Healing Wave
+                    [331]   = false, -- Healing Wave
+                    [1064]  = false, -- Chain Heal
+                    [408490] = false, -- Lava Burst (Season of Discovery)
+                },
+                [415105] = {  -- Power Surge (Season of Discovery)
+                    [421]   = false, -- Chain Lightning
+                    [1064]  = false, -- Chain Heal
+                    [408490] = false, -- Lava Burst (Season of Discovery)
+                },
                 [53390] = { -- Tidal Waves
-                    [8004] = false, -- lesser Healing Wave
+                    [8004] = false, -- Lesser Healing Wave
                     [331]  = false, -- Healing Wave
                 },
                 [425339]= { -- Molten Blast (Season of Discovery)
                     [425339] = true, -- Molten Blast (Season of Discovery)
+                },
+                [432056]= { -- Rolling Thunder (Season of Discovery)
+                    [8042] = true, -- Rolling Thunder (Season of Discovery)
+                },
+                [432041] = { -- Tidal Waves (Season of Discovery)
+                    [8004] = false, -- Lesser Healing Wave
+                    [331]  = false, -- Healing Wave
                 },
             },
         },
@@ -346,13 +492,19 @@ SAO.defaults = {
         },
         ["WARRIOR"] = {
             alert = {
-                [52437] = { -- Sudden Death
+                [52437] = { -- Sudden Death (Wrath+)
                     [0] = true, -- any stacks (up to 2 stacks with tier 10)
                 },
-                [46916] = { -- Bloodsurge
+                [46916] = { -- Bloodsurge (Wrath+)
                     [0] = true, -- any stacks (up to 2 stacks with tier 10)
                 },
-                [50227] = { -- Sword and Board
+                [413399] = { -- Bloodsurge (Season of Discovery)
+                    [0] = true,
+                },
+                [50227] = { -- Sword and Board (Wrath+)
+                    [0] = true,
+                },
+                [426979] = { -- Sword and Board (Season of Discovery)
                     [0] = true,
                 },
                 [402911]= { -- Raging Blow (Season of Discovery)
@@ -369,7 +521,7 @@ SAO.defaults = {
                 [5308] = { -- Execute
                     [5308] = "stance:1/3", -- Execute
                 },
-                [34428] = { -- Victory Rush
+                [34428] = { -- Victory Rush (TBC+)
                     [34428] = true, -- Victory Rush
                 },
                 [402927]= { -- Victory Rush (Season of Discovery)
@@ -378,13 +530,20 @@ SAO.defaults = {
                 [402911]= { -- Raging Blow (Season of Discovery)
                     [402911]= true, -- Raging Blow (Season of Discovery)
                 },
-                [52437] = { -- Sudden Death
-                    [5308] = true, -- Execute
+                [52437] = { -- Sudden Death (Wrath+)
+                    [5308] = true, -- Execute (not for Cata)
+                    [86346]= true, -- Colossus Smash (Cataclysm)
                 },
-                [46916] = { -- Bloodsurge
+                [46916] = { -- Bloodsurge (Wrath+)
                     [1464] = true, -- Slam
                 },
-                [50227] = { -- Sword and Board
+                [413399] = { -- Bloodsurge (Season of Discovery)
+                    [1464] = true, -- Slam
+                },
+                [50227] = { -- Sword and Board (Wrath+)
+                    [23922] = true, -- Shield Slam
+                },
+                [426979] = { -- Sword and Board (Season of Discovery)
                     [23922] = true, -- Shield Slam
                 },
             },

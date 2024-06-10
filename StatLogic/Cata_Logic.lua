@@ -4,7 +4,6 @@ local StatLogic = LibStub:GetLibrary(addonName)
 
 -- Level 60 rating base
 StatLogic.RatingBase = {
-	[StatLogic.Stats.DefenseRating] = 1.5,
 	[StatLogic.Stats.DodgeRating] = 13.8,
 	[StatLogic.Stats.ParryRating] = 13.8,
 	[StatLogic.Stats.BlockRating] = 6.9,
@@ -40,27 +39,24 @@ StatLogic.GenericStatMap[StatLogic.Stats.HasteRating] = {
 
 -- Extracted from the client at GameTables/RegenMPPerSpt.txt via wow.tools.local
 local BaseManaRegenPerSpi = {
-	0.062937, 0.056900, 0.051488, 0.046267, 0.041637, 0.037784, 0.034309, 0.031172, 0.028158, 0.025460,
-	0.022654, 0.019904, 0.017817, 0.015771, 0.014008, 0.013650, 0.013175, 0.012832, 0.012475, 0.012073,
+	0.020979, 0.020515, 0.020079, 0.019516, 0.018997, 0.018646, 0.018314, 0.017997, 0.017584, 0.017197,
+	0.016551, 0.015729, 0.015229, 0.014580, 0.014008, 0.013650, 0.013175, 0.012832, 0.012475, 0.012073,
 	0.011840, 0.011494, 0.011292, 0.010990, 0.010761, 0.010546, 0.010321, 0.010151, 0.009949, 0.009740,
 	0.009597, 0.009425, 0.009278, 0.009123, 0.008974, 0.008847, 0.008698, 0.008581, 0.008457, 0.008338,
 	0.008235, 0.008113, 0.008018, 0.007906, 0.007798, 0.007713, 0.007612, 0.007524, 0.007430, 0.007340,
 	0.007268, 0.007184, 0.007116, 0.007029, 0.006945, 0.006884, 0.006805, 0.006747, 0.006667, 0.006600,
 	0.006421, 0.006314, 0.006175, 0.006072, 0.005981, 0.005885, 0.005791, 0.005732, 0.005668, 0.005596,
 	0.005316, 0.005049, 0.004796, 0.004555, 0.004327, 0.004110, 0.003903, 0.003708, 0.003522, 0.003345,
-	-- TODO: Are these really all the same? Check GameTables when public Cata build appears
 	0.003345, 0.003345, 0.003345, 0.003345, 0.003345,
 }
 
-local NormalManaRegenPerSpi = function()
-	local level = UnitLevel("player")
+local NormalManaRegenPerSpi = function(level)
 	local _, int = UnitStat("player", 4)
 	local _, spi = UnitStat("player", 5)
 	return (0.001 / spi + BaseManaRegenPerSpi[level] * (int ^ 0.5)) * 5
 end
 
-local NormalManaRegenPerInt = function()
-	local level = UnitLevel("player")
+local NormalManaRegenPerInt = function(level)
 	local _, int = UnitStat("player", 4)
 	local _, spi = UnitStat("player", 5)
 	-- Derivative of regen with respect to int
@@ -78,8 +74,7 @@ addon.CritPerAgi = {
 		0.05952380, 0.05882350, 0.05747130, 0.05617980, 0.05494510, 0.05434780, 0.05319150, 0.05208330, 0.05102040, 0.05000000,
 		0.04761900, 0.04545450, 0.04347830, 0.04166670, 0.04000000, 0.03846150, 0.03703700, 0.03571430, 0.03448280, 0.03333330,
 		0.03105590, 0.02873560, 0.02673800, 0.02487560, 0.02314810, 0.02145920, 0.01992030, 0.01851850, 0.01724140, 0.01602560,
-		0.01219510, 0.00929368, 0.00707214, 0.00538793, 0.00410509, 0.00192160, 0.00134916, 0.00094733, 0.00066525, 0.00046711,
-		0.00032802, 0.00023034, 0.00016174, 0.00011358, 0.00007976, 0.00005600, 0.00003933, 0.00002762, 0.00001939, 0.00001362,
+		0.01219510, 0.00929368, 0.00707214, 0.00538793, 0.00410509,
 	},
 	["PALADIN"] = {
 		0.21740000, 0.20704800, 0.20704800, 0.19763601, 0.19763601, 0.18904300, 0.18904300, 0.18116700, 0.18116700, 0.17392000,
@@ -90,8 +85,7 @@ addon.CritPerAgi = {
 		0.06038890, 0.05956160, 0.05797330, 0.05721050, 0.05574360, 0.05503800, 0.05435000, 0.05302440, 0.05238550, 0.05115290,
 		0.04940910, 0.04831110, 0.04726090, 0.04576840, 0.04482470, 0.04391920, 0.04262750, 0.04180770, 0.04101890, 0.04025930,
 		0.03716240, 0.03450790, 0.03220740, 0.02978080, 0.02769430, 0.02572780, 0.02389010, 0.02229740, 0.02070480, 0.01923890,
-		0.01463970, 0.01114870, 0.00849219, 0.00647024, 0.00492412, 0.00230663, 0.00161937, 0.00113733, 0.00079868, 0.00056081,
-		0.00039381, 0.00027652, 0.00019418, 0.00013635, 0.00009575, 0.00006723, 0.00004721, 0.00003315, 0.00002328, 0.00001635,
+		0.01463970, 0.01114870, 0.00849219, 0.00647024, 0.00492412,
 	},
 	["HUNTER"] = {
 		0.28400000, 0.28343401, 0.27107401, 0.25299001, 0.24300499, 0.23373601, 0.22510700, 0.21705499, 0.20513700, 0.19836400,
@@ -102,8 +96,7 @@ addon.CritPerAgi = {
 		0.03659920, 0.03578580, 0.03500600, 0.03413840, 0.03342470, 0.03284840, 0.03207870, 0.03144320, 0.03073430, 0.03014770,
 		0.02967120, 0.02903510, 0.02842440, 0.02791680, 0.02734930, 0.02695050, 0.02641880, 0.02590650, 0.02541250, 0.02499810,
 		0.02323340, 0.02159330, 0.02006910, 0.01865240, 0.01733570, 0.01611190, 0.01497460, 0.01391750, 0.01293510, 0.01202200,
-		0.00915552, 0.00697209, 0.00530727, 0.00404195, 0.00307831, 0.00144129, 0.00101208, 0.00071069, 0.01154730, 0.01136360,
-		0.01123600, 0.01106190, 0.01089320, 0.01075270, 0.01059320, 0.01046030, 0.01030930, 0.01016260, 0.01002000, 0.00988142,
+		0.00915552, 0.00697209, 0.00530727, 0.00404195, 0.00307831,
 	},
 	["ROGUE"] = {
 		0.44760900, 0.42895800, 0.41180002, 0.38129601, 0.36767900, 0.35500000, 0.33209701, 0.32171900, 0.31196999, 0.29414301,
@@ -114,8 +107,7 @@ addon.CritPerAgi = {
 		0.04307530, 0.04219260, 0.04118000, 0.04037250, 0.03944440, 0.03855810, 0.03784930, 0.03703240, 0.03637810, 0.03550000,
 		0.03343390, 0.03217750, 0.03063990, 0.02959690, 0.02861530, 0.02767470, 0.02680990, 0.02618690, 0.02560950, 0.02499880,
 		0.02323930, 0.02158280, 0.02006820, 0.01865040, 0.01733160, 0.01611110, 0.01496370, 0.01391220, 0.01293340, 0.01202690,
-		0.00915925, 0.00697493, 0.00530944, 0.00404360, 0.00307957, 0.00144188, 0.00101249, 0.00071098, 0.00049925, 0.00035058,
-		0.00024617, 0.00017286, 0.00012139, 0.00008524, 0.00005985, 0.00004203, 0.00002951, 0.00002072, 0.00001455, 0.00001022,
+		0.00915925, 0.00697493, 0.00530944, 0.00404360, 0.00307957,
 	},
 	["PRIEST"] = {
 		0.09117500, 0.09117500, 0.09117500, 0.08683330, 0.08683330, 0.08683330, 0.08683330, 0.08288640, 0.08288640, 0.08288640,
@@ -126,8 +118,7 @@ addon.CritPerAgi = {
 		0.05065280, 0.05065280, 0.04928380, 0.04928380, 0.04798680, 0.04798680, 0.04675640, 0.04675640, 0.04558750, 0.04558750,
 		0.04449120, 0.04458550, 0.04426580, 0.04344670, 0.04271900, 0.04207770, 0.04151880, 0.04133470, 0.04117830, 0.04014610,
 		0.03721430, 0.03440570, 0.03199120, 0.02989340, 0.02762880, 0.02568310, 0.02399340, 0.02223780, 0.02072160, 0.01919470,
-		0.01461810, 0.01113190, 0.00847380, 0.00645353, 0.00491496, 0.00230122, 0.00161592, 0.00113472, 0.03508770, 0.03448280,
-		0.03448280, 0.03389830, 0.03333330, 0.03278690, 0.03278690, 0.03225810, 0.03174600, 0.03125000, 0.03076920, 0.03076920,
+		0.01461810, 0.01113190, 0.00847380, 0.00645353, 0.00491496,
 	},
 	["DEATHKNIGHT"] = {
 		0.24999999, 0.23809499, 0.23809499, 0.22727300, 0.21739099, 0.20833299, 0.20833299, 0.20000001, 0.19230800, 0.19230800,
@@ -138,8 +129,7 @@ addon.CritPerAgi = {
 		0.05952380, 0.05882350, 0.05747130, 0.05617980, 0.05494510, 0.05434780, 0.05319150, 0.05208330, 0.05102040, 0.05000000,
 		0.04761900, 0.04545450, 0.04347830, 0.04166670, 0.04000000, 0.03846150, 0.03703700, 0.03571430, 0.03448280, 0.03333330,
 		0.03105590, 0.02873560, 0.02673800, 0.02487560, 0.02314810, 0.02145920, 0.01992030, 0.01851850, 0.01724140, 0.01602560,
-		0.01220460, 0.00929400, 0.00707475, 0.00538804, 0.00410348, 0.00192160, 0.00134916, 0.00094733, 0.00066525, 0.00046711,
-		0.00032802, 0.00023034, 0.00016174, 0.00011358, 0.00007976, 0.00005600, 0.00003933, 0.00002762, 0.00001939, 0.00001362,
+		0.01220460, 0.00929400, 0.00707475, 0.00538804, 0.00410348,
 	},
 	["SHAMAN"] = {
 		0.10390000, 0.10390000, 0.09895239, 0.09895239, 0.09445450, 0.09445450, 0.09445450, 0.09034780, 0.09034780, 0.08658330,
@@ -150,8 +140,7 @@ addon.CritPerAgi = {
 		0.03710710, 0.03645610, 0.03645610, 0.03582760, 0.03463330, 0.03406560, 0.03351610, 0.03351610, 0.03298410, 0.03196920,
 		0.03102490, 0.03040300, 0.02935380, 0.02848270, 0.02807010, 0.02734040, 0.02668210, 0.02608150, 0.02552060, 0.02499630,
 		0.02323170, 0.02159180, 0.02006760, 0.01865100, 0.01733440, 0.01611080, 0.01497350, 0.01391650, 0.01293410, 0.01202110,
-		0.00915486, 0.00697159, 0.00530689, 0.00404166, 0.00307809, 0.00144118, 0.00101200, 0.00071064, 0.03300000, 0.03235290,
-		0.03203880, 0.03142860, 0.03113210, 0.03084110, 0.03000000, 0.02972970, 0.02946430, 0.02894740, 0.02869570, 0.02820510,
+		0.00915486, 0.00697159, 0.00530689, 0.00404166, 0.00307809,
 	},
 	["MAGE"] = {
 		0.07730000, 0.07730000, 0.07730000, 0.07361900, 0.07361900, 0.07361900, 0.07361900, 0.07361900, 0.07361900, 0.07027270,
@@ -162,8 +151,7 @@ addon.CritPerAgi = {
 		0.04831250, 0.04831250, 0.04684850, 0.04684850, 0.04684850, 0.04547060, 0.04547060, 0.04547060, 0.04417140, 0.04417140,
 		0.04417140, 0.04417140, 0.04294440, 0.04294440, 0.04294440, 0.04178380, 0.04178380, 0.04178380, 0.04068420, 0.04068420,
 		0.03770730, 0.03513640, 0.03289360, 0.03031370, 0.02810910, 0.02620340, 0.02415630, 0.02273530, 0.02089190, 0.01956960,
-		0.01486540, 0.01136760, 0.00863687, 0.00657872, 0.00500324, 0.00234598, 0.00164819, 0.00115719, 0.00081240, 0.00057048,
-		0.00040052, 0.00028130, 0.00019752, 0.00013869, 0.00009739, 0.00006839, 0.00004802, 0.00003372, 0.00002368, 0.00001663,
+		0.01486540, 0.01136760, 0.00863687, 0.00657872, 0.00500324,
 	},
 	["WARLOCK"] = {
 		0.11890000, 0.11890000, 0.11323800, 0.11323800, 0.11323800, 0.10809100, 0.10809100, 0.10809100, 0.10339100, 0.10339100,
@@ -174,8 +162,7 @@ addon.CritPerAgi = {
 		0.05425950, 0.05346520, 0.05268400, 0.05191560, 0.05115970, 0.05041610, 0.04968460, 0.04896490, 0.04825680, 0.04756000,
 		0.04687440, 0.04619980, 0.04553590, 0.04488250, 0.04423950, 0.04360670, 0.04298380, 0.04237070, 0.04176730, 0.04117320,
 		0.03835480, 0.03549250, 0.03302780, 0.03088310, 0.02865060, 0.02642220, 0.02451550, 0.02286540, 0.02123210, 0.01981670,
-		0.01509170, 0.01149260, 0.00874836, 0.00666263, 0.00507420, 0.00237578, 0.00166828, 0.00117148, 0.03296700, 0.03225810,
-		0.03191490, 0.03157890, 0.03125000, 0.03092780, 0.03030300, 0.03000000, 0.02970300, 0.02912620, 0.02884620, 0.02830190,
+		0.01509170, 0.01149260, 0.00874836, 0.00666263, 0.00507420,
 	},
 	["DRUID"] = {
 		0.12622500, 0.12622500, 0.12021400, 0.12021400, 0.11475000, 0.11475000, 0.10976100, 0.10976100, 0.10518699, 0.09709620,
@@ -186,8 +173,7 @@ addon.CritPerAgi = {
 		0.03606430, 0.03555630, 0.03506250, 0.03506250, 0.03411490, 0.03366000, 0.03321710, 0.03278570, 0.03236540, 0.03078660,
 		0.02988460, 0.02950110, 0.02849640, 0.02791070, 0.02738060, 0.02690250, 0.02647340, 0.02577280, 0.02537310, 0.02499810,
 		0.02323340, 0.02159330, 0.02006910, 0.01865240, 0.01733570, 0.01611190, 0.01497460, 0.01391750, 0.01293510, 0.01202200,
-		0.00915552, 0.00697209, 0.00530727, 0.00404195, 0.00307831, 0.00144129, 0.00101208, 0.00071069, 0.03388430, 0.03333330,
-		0.03280000, 0.03253970, 0.03203130, 0.03178290, 0.03106060, 0.03082710, 0.03037040, 0.02992700, 0.02971010, 0.02907800,
+		0.00915552, 0.00697209, 0.00530727, 0.00404195, 0.00307831,
 	},
 }
 
@@ -282,30 +268,111 @@ addon.SpellCritPerInt = {
 	},
 }
 
+-- DodgePerAgi does not exist as a GameTable.
+-- Through observations of data gathered from the result of GetDodgePerAgi() through addon comms,
+-- each class except Hunter and Warlock has a constant conversion of CritPerAgi to DodgePerAgi for 1-80.
+-- These class constants are exactly 15% greater than WOTLK values, except rogue, which is slightly higher, at 2.06 instead of 2
+-- Hunter and Warlock don't use this constant conversion for 1-80, but are exactly 15% greater than their WOTLK DodgePerAgi values.
+-- DodgePerCrit = {
+--   ["HUNTER"]   = 1.11, -- Only at 80-85
+--   ["ROGUE"]    = 2.06,
+--   ["PRIEST"]   = 1.00,
+--   ["SHAMAN"]   = 1.60,
+--   ["MAGE"]     = 1.00,
+--   ["WARLOCK"]  = 0.97, -- Only at 80-85
+--   ["DRUID"]    = 2.00,
+-- }
+-- Levels 81-85 appear to use that constant *and* an additional class-independent scalar, roughly:
+-- DodgePerCritPerLevel = {
+--   [1-80] = 1,
+--   [81] = 0.9233,
+--   [82] = 0.8532,
+--   [83] = 0.7905,
+--   [84] = 0.7281,
+--   [85] = 0.6712,
+-- }
+-- DodgePerAgi = CritPerAgi[addon.class][level] * DodgePerCrit[addon.class] * DodgePerCritPerLevel[level]
+-- For simplicity, I'm precalculating these tables or directly using observed values.
 addon.DodgePerAgi = {
 	["WARRIOR"] = addon.zero,
 	["PALADIN"] = addon.zero,
 	["HUNTER"] = {
-		[85] = 0.0133266,
+		0.45430000, 0.43540000, 0.41800003, 0.38700000, 0.37320000, 0.36030003, 0.34830000, 0.33710001, 0.31670000, 0.30740000,
+		0.28406771, 0.24880002, 0.22720002, 0.20900002, 0.19000001, 0.18019999, 0.16850000, 0.15600001, 0.14720001, nil,
+		nil,        0.12440000, 0.11870000, 0.11277684, 0.10797947, 0.10375140, nil,        nil,        nil,        nil,
+		nil,        0.08160000, nil,        nil,        nil,        0.07160000, nil,        nil,        nil,        nil,
+		nil,        nil,        nil,        nil,        nil,        nil,        nil,        nil,        nil,        nil,
+		0.04807170, nil,        nil,        nil,        nil,        nil,        nil,        0.04134486, nil,        nil,
+		0.03710000, nil,        nil,        nil,        nil,        0.03080000, 0.02970000, nil,        nil,        0.02770000,
+		nil,        nil,        nil,        nil,        nil,        nil,        0.01662007, nil,        0.01430000, 0.01333760,
+		0.00932078, 0.00661464, 0.00460702, 0.00320337, 0.00230177,
 	},
 	["ROGUE"] = {
-		[85] = 0.0240537,
+		0.92207454, 0.88365348, 0.84830804, 0.78546978, 0.75741874, 0.73130000, 0.68411984, 0.66274114, 0.64265818, 0.60593460,
+		0.54378644, 0.49320316, 0.44182674, 0.40784086, 0.36565000, 0.34205888, 0.32132908, 0.29870000, 0.27904966, 0.26182394,
+		0.24660054, 0.23564134, 0.22323808, 0.21421940, 0.20197806, 0.19279725, 0.18603242, 0.17821596, 0.17102985, 0.16313614,
+		0.15826650, 0.15257328, 0.14727579, 0.14233364, 0.13682396, 0.13254802, 0.12931526, 0.12548943, 0.12188340, 0.11782046,
+		0.11463612, 0.11161945, 0.10875749, 0.10551093, 0.10245266, 0.10003628, 0.09773134, 0.09553023, 0.09342594, 0.09063114,
+		0.08873512, 0.08691676, 0.08483080, 0.08316735, 0.08125546, 0.07942969, 0.07796956, 0.07628674, 0.07493889, 0.07313000,
+		0.06887383, 0.06628565, 0.06311819, 0.06096961, 0.05894752, 0.05700988, 0.05522839, 0.05394501, 0.05275557, 0.05149753,
+		0.04787296, 0.04446057, 0.04134049, 0.03841982, 0.03570310, 0.03318887, 0.03082522, 0.02865913, 0.02664280, 0.02477541,
+		0.01728571, 0.01225043, 0.00858262, 0.00604260, 0.00430335,
 	},
 	["PRIEST"] = {
-		[85] = 0.0192366,
+		0.09117500, 0.09117500, 0.09117500, 0.08683330, 0.08683330, 0.08683330, 0.08683330, 0.08288640, 0.08288640, 0.08288640,
+		0.08288640, 0.07928260, 0.07928260, 0.07928260, 0.07928260, 0.07597920, 0.07597920, 0.07597920, 0.07294000, 0.07294000,
+		0.07294000, 0.07294000, 0.07013460, 0.07013460, 0.07013460, 0.06753700, 0.06753700, 0.06753700, 0.06512500, 0.06512500,
+		0.06512500, 0.06287930, 0.06287930, 0.06287930, 0.06078330, 0.06078330, 0.06078330, 0.05882260, 0.05882260, 0.05882260,
+		0.05698440, 0.05698440, 0.05525760, 0.05525760, 0.05525760, 0.05363240, 0.05363240, 0.05210000, 0.05210000, 0.05210000,
+		0.05065280, 0.05065280, 0.04928380, 0.04928380, 0.04798680, 0.04798680, 0.04675640, 0.04675640, 0.04558750, 0.04558750,
+		0.04449120, 0.04458550, 0.04426580, 0.04344670, 0.04271900, 0.04207770, 0.04151880, 0.04133470, 0.04117830, 0.04014610,
+		0.03721430, 0.03440570, 0.03199120, 0.02989340, 0.02762880, 0.02568310, 0.02399340, 0.02223780, 0.02072160, 0.01919470,
+		0.01350000, 0.00950000, 0.00670000, 0.00470000, 0.00330000,
 	},
 	["DEATHKNIGHT"] = addon.zero,
 	["SHAMAN"] = {
-		[85] = 0.0192366,
+		0.16624000, 0.16624000, 0.15832382, 0.15832382, 0.15112720, 0.15112720, 0.15112720, 0.14455648, 0.14455648, 0.13853328,
+		0.13853328, 0.13299200, 0.13299200, 0.12787696, 0.12314080, 0.11874288, 0.11874288, 0.11464832, 0.11464832, 0.10725168,
+		0.10725168, 0.10390000, 0.10390000, 0.10075152, 0.09778816, 0.09499424, 0.09499424, 0.09235552, 0.09235552, 0.08749472,
+		0.08749472, 0.08525136, 0.08312000, 0.08312000, 0.07916192, 0.07732096, 0.07732096, 0.07556368, 0.07556368, 0.07227824,
+		0.07074048, 0.07074048, 0.06926672, 0.06785312, 0.06649600, 0.06519216, 0.06393840, 0.06273200, 0.06273200, 0.06045088,
+		0.05937136, 0.05832976, 0.05832976, 0.05732416, 0.05541328, 0.05450496, 0.05362576, 0.05362576, 0.05277456, 0.05115072,
+		0.04963984, 0.04864480, 0.04696608, 0.04557232, 0.04491216, 0.04374464, 0.04269136, 0.04173040, 0.04083296, 0.03999408,
+		0.03717072, 0.03454688, 0.03210816, 0.02984160, 0.02773504, 0.02577728, 0.02395760, 0.02226640, 0.02069456, 0.01923376,
+		0.01350000, 0.00950000, 0.00670000, 0.00470000, 0.00330000,
 	},
 	["MAGE"] = {
-		[85] = 0.0195253,
+		0.07730000, 0.07730000, 0.07730000, 0.07361900, 0.07361900, 0.07361900, 0.07361900, 0.07361900, 0.07361900, 0.07027270,
+		0.07027270, 0.07027270, 0.07027270, 0.07027270, 0.06721740, 0.06721740, 0.06721740, 0.06721740, 0.06721740, 0.06441670,
+		0.06441670, 0.06441670, 0.06441670, 0.06184000, 0.06184000, 0.06184000, 0.06184000, 0.06184000, 0.05946150, 0.05946150,
+		0.05946150, 0.05946150, 0.05725930, 0.05725930, 0.05725930, 0.05521430, 0.05521430, 0.05521430, 0.05521430, 0.05331030,
+		0.05331030, 0.05331030, 0.05331030, 0.05153330, 0.05153330, 0.05153330, 0.04987100, 0.04987100, 0.04987100, 0.04831250,
+		0.04831250, 0.04831250, 0.04684850, 0.04684850, 0.04684850, 0.04547060, 0.04547060, 0.04547060, 0.04417140, 0.04417140,
+		0.04417140, 0.04417140, 0.04294440, 0.04294440, 0.04294440, 0.04178380, 0.04178380, 0.04178380, 0.04068420, 0.04068420,
+		0.03770730, 0.03513640, 0.03289360, 0.03031370, 0.02810910, 0.02620340, 0.02415630, 0.02273530, 0.02089190, 0.01956960,
+		0.01370859, 0.00960890, 0.00680845, 0.00471064, 0.00331163,
 	},
 	["WARLOCK"] = {
-		[85] = 0.0192366,
+		0.14830000, 0.14830000, 0.14120000, 0.14120003, 0.14120003, nil,        nil,        nil,        0.12890000, 0.12890000,
+		0.12349998, 0.12349999, 0.12349999, 0.11860001, 0.11400000, 0.10979999, 0.10979999, 0.10980000, 0.10589999, 0.10220001,
+		nil,        nil,        nil,        nil,        nil,        nil,        nil,        nil,        0.08720000, nil,
+		nil,        nil,        nil,        nil,        nil,        0.07410000, nil,        nil,        nil,        nil,
+		nil,        nil,        nil,        nil,        nil,        nil,        nil,        nil,        nil,        nil,
+		nil,        nil,        nil,        nil,        nil,        nil,        nil,        nil,        nil,        nil,
+		nil,        nil,        0.04650000, nil,        nil,        nil,        nil,        0.04200000, 0.04090000, 0.04000000,
+		0.03720000, 0.03460000, 0.03210000, 0.02980000, 0.02770000, 0.02580000, nil,        nil,        nil,        0.01920000,
+		0.01350000, 0.00950000, 0.00670000, 0.00470000, 0.00330000,
 	},
 	["DRUID"] = {
-		[85] = 0.0240458,
+		0.25245000, 0.25245000, 0.24042800, 0.24042800, 0.22950000, 0.22950000, 0.21952200, 0.21952200, 0.21037398, 0.19419240,
+		0.18700000, 0.18700000, 0.18032140, 0.18032140, 0.16830000, 0.16830000, 0.16287100, 0.15778120, 0.15778120, 0.14025000,
+		0.14025000, 0.13645940, 0.13286840, 0.13286840, 0.12622500, 0.12622500, 0.12314640, 0.12021420, 0.12021420, 0.10976080,
+		0.10742560, 0.10742560, 0.10518740, 0.10304080, 0.10098000, 0.09900000, 0.09709620, 0.09709620, 0.09526420, 0.08857900,
+		0.08705180, 0.08705180, 0.08557620, 0.08415000, 0.08143540, 0.08014280, 0.08014280, 0.07889060, 0.07767700, 0.07317400,
+		0.07212860, 0.07111260, 0.07012500, 0.07012500, 0.06822980, 0.06732000, 0.06643420, 0.06557140, 0.06473080, 0.06157320,
+		0.05976920, 0.05900220, 0.05699280, 0.05582140, 0.05476120, 0.05380500, 0.05294680, 0.05154560, 0.05074620, 0.04999620,
+		0.04646680, 0.04318660, 0.04013820, 0.03730480, 0.03467140, 0.03222380, 0.02994920, 0.02783500, 0.02587020, 0.02404400,
+		0.01692088, 0.01190979, 0.00830446, 0.00580155, 0.00410000,
 	},
 }
 
@@ -324,7 +391,508 @@ addon.bonusArmorInventoryTypes = {
 }
 
 -- Generated using scripts/GenerateBaseArmor/GenerateBaseArmor.mjs
--- TODO requires public Cata Classic build
+-- A few shields were zero so taken manually from ItemArmorShield.db2 instead
+addon.baseArmorTable = {
+	[Enum.ItemQuality.Epic] = {
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[46] = 1766,
+				[65] = 2186,
+				[90] = 2477,
+			},
+		},
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[62] = 506,
+				[63] = 510,
+				[74] = 549,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[74] = 246,
+				[85] = 284,
+				[88] = 301,
+				[136] = 524,
+				[146] = 571,
+				[159] = 638,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 325,
+				[69] = 337,
+				[74] = 353,
+				[75] = 357,
+				[83] = 384,
+				[90] = 438,
+				[105] = 581,
+				[123] = 662,
+				[136] = 722,
+				[146] = 790,
+				[159] = 887,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[65] = 767,
+				[74] = 804,
+				[251] = 2534,
+				[264] = 2642,
+				[277] = 2756,
+			},
+		},
+		[FEETSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[71] = 163,
+				[78] = 178,
+				[146] = 393,
+				[159] = 439,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[71] = 236,
+				[77] = 250,
+				[83] = 264,
+				[90] = 301,
+				[123] = 455,
+				[136] = 496,
+				[146] = 543,
+				[159] = 610,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 370,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[70] = 541,
+				[71] = 544,
+				[73] = 550,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[71] = 148,
+				[136] = 328,
+				[146] = 357,
+				[159] = 399,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[71] = 215,
+				[78] = 229,
+				[81] = 235,
+				[90] = 274,
+				[105] = 363,
+				[123] = 414,
+				[136] = 451,
+				[146] = 494,
+				[159] = 555,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 336,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[71] = 495,
+				[90] = 585,
+				[130] = 910,
+				[251] = 1584,
+				[264] = 1651,
+				[277] = 1723,
+			},
+		},
+		[HEADSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[74] = 200,
+				[81] = 217,
+				[136] = 426,
+				[146] = 464,
+				[159] = 518,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[74] = 287,
+				[75] = 290,
+				[90] = 356,
+				[105] = 472,
+				[123] = 538,
+				[136] = 587,
+				[146] = 642,
+				[159] = 721,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[74] = 446,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[66] = 626,
+				[74] = 653,
+				[105] = 1063,
+			},
+		},
+		[LEGSSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[65] = 192,
+				[71] = 207,
+				[81] = 234,
+				[136] = 459,
+				[146] = 500,
+				[159] = 558,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 284,
+				[71] = 301,
+				[90] = 383,
+				[105] = 508,
+				[123] = 580,
+				[136] = 632,
+				[146] = 691,
+				[159] = 777,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 471,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[60] = 653,
+				[61] = 657,
+				[71] = 693,
+				[232] = 2088,
+				[264] = 2311,
+			},
+		},
+		[SHOULDERSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[65] = 164,
+				[74] = 184,
+				[78] = 194,
+				[136] = 393,
+				[146] = 428,
+				[159] = 479,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 243,
+				[74] = 265,
+				[90] = 328,
+				[105] = 436,
+				[123] = 497,
+				[136] = 542,
+				[146] = 592,
+				[159] = 666,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 404,
+				[74] = 412,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[90] = 702,
+			},
+		},
+		[WRISTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[59] = 325,
+				[251] = 1109,
+				[264] = 1156,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[61] = 137,
+				[113] = 278,
+				[126] = 293,
+				[141] = 330,
+				[154] = 371,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[141] = 239,
+				[154] = 267,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[72] = 120,
+				[73] = 121,
+				[77] = 128,
+				[83] = 137,
+				[105] = 207,
+				[110] = 224,
+				[115] = 230,
+				[128] = 246,
+				[200] = 404,
+				[213] = 428,
+				[232] = 462,
+				[264] = 556,
+				[353] = 604,
+			},
+		},
+		[WAISTSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[61] = 176,
+				[66] = 184,
+				[76] = 202,
+				[123] = 373,
+				[136] = 406,
+				[146] = 444,
+				[159] = 499,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[90] = 526,
+				[264] = 1486,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[146] = 321,
+				[159] = 359,
+			},
+		},
+	},
+	[Enum.ItemQuality.Rare] = {
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[30] = 221,
+				[36] = 259,
+				[62] = 407,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[59] = 596,
+				[63] = 609,
+				[65] = 616,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[63] = 171,
+				[68] = 183,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[68] = 268,
+				[115] = 515,
+			},
+		},
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[21] = 700,
+				[30] = 945,
+				[59] = 1687,
+			},
+		},
+		[HEADSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[43] = 371,
+				[60] = 487,
+				[115] = 917,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[63] = 139,
+				[71] = 155,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[71] = 224,
+				[100] = 345,
+				[115] = 419,
+			},
+		},
+		[SHOULDERSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[55] = 175,
+				[68] = 201,
+				[71] = 207,
+				[115] = 386,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[61] = 125,
+				[71] = 143,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[35] = 51,
+				[45] = 64,
+				[50] = 70,
+				[52] = 73,
+				[62] = 85,
+				[63] = 86,
+				[71] = 95,
+				[91] = 128,
+				[112] = 182,
+				[115] = 185,
+				[167] = 312,
+				[187] = 364,
+			},
+		},
+		[WRISTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[50] = 229,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[62] = 178,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[61] = 73,
+			},
+		},
+		[FEETSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[41] = 200,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[33] = 101,
+				[43] = 128,
+				[53] = 155,
+				[63] = 176,
+				[66] = 181,
+				[71] = 190,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[33] = 66,
+				[43] = 84,
+				[53] = 101,
+				[61] = 115,
+				[63] = 118,
+				[66] = 123,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[56] = 399,
+			},
+		},
+		[LEGSSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[52] = 475,
+				[65] = 539,
+				[114] = 985,
+				[166] = 1697,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[52] = 194,
+				[68] = 235,
+				[71] = 241,
+				[100] = 371,
+				[115] = 451,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[62] = 148,
+				[68] = 160,
+			},
+		},
+		[WAISTSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[33] = 83,
+				[43] = 105,
+				[53] = 127,
+				[63] = 144,
+				[100] = 239,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[33] = 54,
+				[43] = 69,
+				[53] = 83,
+				[60] = 93,
+				[63] = 96,
+				[109] = 201,
+				[115] = 208,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[71] = 358,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 163,
+				[66] = 164,
+				[71] = 172,
+				[115] = 322,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[62] = 254,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[61] = 104,
+				[66] = 111,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[114] = 704,
+			},
+		},
+	},
+	[Enum.ItemQuality.Good] = {
+		[WRISTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[33] = 95,
+			},
+		},
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[41] = 1110,
+			},
+		},
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[16] = 120,
+				[20] = 143,
+				[40] = 259,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[46] = 441,
+				[62] = 551,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[57] = 219,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[28] = 118,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[45] = 270,
+			},
+		},
+		[LEGSSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[45] = 378,
+				[62] = 482,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[54] = 182,
+			},
+		},
+		[FEETSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[47] = 309,
+				[60] = 375,
+			},
+		},
+		[HEADSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[47] = 365,
+				[61] = 445,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[114] = 271,
+			},
+		},
+		[SHOULDERSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[60] = 409,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[61] = 171,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[60] = 75,
+				[108] = 160,
+			},
+		},
+		[WAISTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[174] = 934,
+			},
+		},
+	},
+	[Enum.ItemQuality.Standard] = {
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[1] = 57,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[1] = 12,
+			},
+		},
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[60] = 518,
+			},
+		},
+	},
+}
+
 
 StatLogic.StatModTable = {}
 if addon.class == "DRUID" then
@@ -332,24 +900,24 @@ if addon.class == "DRUID" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Total Eclipse
 			{
-				["known"] = 77492,
+				["mastery"] = 77492,
 				["value"] = 2,
 			},
 			-- Mastery: Razor Claws (Cat Form)
 			{
-				["known"] = 77493,
+				["mastery"] = 77493,
 				["value"] = 3.1,
 				["aura"] = 768,
 			},
 			-- Mastery: Savage Defender (Bear Form)
 			{
-				["known"] = 77494,
+				["mastery"] = 77494,
 				["value"] = 4,
 				["aura"] = 5487,
 			},
 			-- Mastery: Harmony
 			{
-				["known"] = 77495,
+				["mastery"] = 77495,
 				["value"] = 1.25,
 			},
 		},
@@ -593,17 +1161,17 @@ elseif addon.class == "DEATHKNIGHT" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Blood Shield
 			{
-				["known"] = 77513,
+				["mastery"] = 77513,
 				["value"] = 6.25,
 			},
 			-- Mastery: Frozen Heart
 			{
-				["known"] = 77514,
+				["mastery"] = 77514,
 				["value"] = 2,
 			},
 			-- Mastery: Dreadblade
 			{
-				["known"] = 77515,
+				["mastery"] = 77515,
 				["value"] = 2.5,
 			},
 		},
@@ -779,17 +1347,17 @@ elseif addon.class == "HUNTER" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Master of Beasts
 			{
-				["known"] = 76657,
+				["mastery"] = 76657,
 				["value"] = 1.67,
 			},
 			-- Mastery: Wild Quiver
 			{
-				["known"] = 76659,
+				["mastery"] = 76659,
 				["value"] = 2.1,
 			},
 			-- Mastery: Essence of the Viper
 			{
-				["known"] = 76658,
+				["mastery"] = 76658,
 				["value"] = 1,
 			},
 		},
@@ -872,17 +1440,17 @@ elseif addon.class == "MAGE" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Mana Adept
 			{
-				["known"] = 76547,
+				["mastery"] = 76547,
 				["value"] = 1.5,
 			},
 			-- Mastery: Flashburn
 			{
-				["known"] = 76595,
+				["mastery"] = 76595,
 				["value"] = 2.8,
 			},
 			-- Mastery: Frostburn
 			{
-				["known"] = 76613,
+				["mastery"] = 76613,
 				["value"] = 2.5,
 			},
 		},
@@ -976,24 +1544,24 @@ elseif addon.class == "PALADIN" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Illuminated Healing
 			{
-				["known"] = 76669,
+				["mastery"] = 76669,
 				["value"] = 1.5,
 			},
 			-- Mastery: Divine Bulwark
 			{
-				["known"] = 76671,
+				["mastery"] = 76671,
 				["value"] = 2.25,
 			},
 			-- Mastery: Hand of Light
 			{
-				["known"] = 76672,
+				["mastery"] = 76672,
 				["value"] = 2.1,
 			},
 		},
 		["ADD_BLOCK_CHANCE_MOD_MASTERY_EFFECT"] = {
 			-- Mastery: Divine Bulwark
 			{
-				["known"] = 76671,
+				["mastery"] = 76671,
 				["value"] = 1,
 			},
 		},
@@ -1160,17 +1728,17 @@ elseif addon.class == "PRIEST" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Shield Discipline
 			{
-				["known"] = 77484,
+				["mastery"] = 77484,
 				["value"] = 2.5,
 			},
 			-- Mastery: Echo of Light
 			{
-				["known"] = 77485,
+				["mastery"] = 77485,
 				["value"] = 1.25,
 			},
 			-- Mastery: Shadow Orb Power
 			{
-				["known"] = 77486,
+				["mastery"] = 77486,
 				["value"] = 1.45,
 			},
 		},
@@ -1286,17 +1854,17 @@ elseif addon.class == "ROGUE" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Potent Poisons
 			{
-				["known"] = 76803,
+				["mastery"] = 76803,
 				["value"] = 3.5,
 			},
 			-- Mastery: Main Gauche
 			{
-				["known"] = 76806,
+				["mastery"] = 76806,
 				["value"] = 2,
 			},
 			-- Mastery: Executioner
 			{
-				["known"] = 76808,
+				["mastery"] = 76808,
 				["value"] = 2.5,
 			},
 		},
@@ -1401,17 +1969,17 @@ elseif addon.class == "SHAMAN" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Elemental Overload
 			{
-				["known"] = 77222,
+				["mastery"] = 77222,
 				["value"] = 2,
 			},
 			-- Mastery: Enhanced Elements
 			{
-				["known"] = 77223,
+				["mastery"] = 77223,
 				["value"] = 2.5,
 			},
 			-- Mastery: Deep Healing
 			{
-				["known"] = 77226,
+				["mastery"] = 77226,
 				["value"] = 3,
 			},
 		},
@@ -1432,11 +2000,21 @@ elseif addon.class == "SHAMAN" then
 			{
 				["value"] = 1,
 			},
+			-- Passive: Mental Quickness
+			{
+				["value"] = -1,
+				["known"] = 30814,
+			},
 		},
 		["ADD_HEALING_MOD_INT"] = {
 			-- Base
 			{
 				["value"] = 1,
+			},
+			-- Passive: Mental Quickness
+			{
+				["value"] = -1,
+				["known"] = 30814,
 			},
 		},
 		["ADD_DODGE"] = {
@@ -1473,21 +2051,17 @@ elseif addon.class == "SHAMAN" then
 				["known"] = 95862,
 			},
 		},
-		-- Shaman: Mental Quickness - Passive: 30814
-		-- 4.0.1: Increases your spell power by an amount equal to 50% of your attack power
 		["ADD_SPELL_DMG_MOD_AP"] = {
-			-- Mental Quickness
+			-- Passive: Mental Quickness
 			{
-				["value"] = 0.5,
+				["value"] = 0.55,
 				["known"] = 30814,
 			},
 		},
-		-- Shaman: Mental Quickness - Passive: 30814
-		-- 4.0.1: Increases your spell power by an amount equal to 50% of your attack power
 		["ADD_HEALING_MOD_AP"] = {
-			-- Mental Quickness
+			-- Passive: Mental Quickness
 			{
-				["value"] = 0.5,
+				["value"] = 0.55,
 				["known"] = 30814,
 			},
 		},
@@ -1540,17 +2114,17 @@ elseif addon.class == "WARLOCK" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Potent Afflictions
 			{
-				["known"] = 77215,
+				["mastery"] = 77215,
 				["value"] = 1.63,
 			},
 			-- Mastery: Master Demonologist
 			{
-				["known"] = 77219,
+				["mastery"] = 77219,
 				["value"] = 2.3,
 			},
 			-- Mastery: Fiery Apocalypse
 			{
-				["known"] = 77220,
+				["mastery"] = 77220,
 				["value"] = 1.35,
 			},
 		},
@@ -1621,24 +2195,24 @@ elseif addon.class == "WARRIOR" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Strikes of Opportunity
 			{
-				["known"] = 76838,
+				["mastery"] = 76838,
 				["value"] = 2.2,
 			},
 			-- Mastery: Unshackled Fury
 			{
-				["known"] = 76856,
+				["mastery"] = 76856,
 				["value"] = 5.6,
 			},
 			-- Mastery: Critical Block
 			{
-				["known"] = 76857,
+				["mastery"] = 76857,
 				["value"] = 1.5,
 			},
 		},
 		["ADD_BLOCK_CHANCE_MOD_MASTERY_EFFECT"] = {
 			-- Mastery: Critical Block
 			{
-				["known"] = 76857,
+				["mastery"] = 76857,
 				["value"] = 1,
 			},
 		},
@@ -1723,7 +2297,11 @@ elseif addon.class == "WARRIOR" then
 	}
 end
 
-if addon.playerRace == "Gnome" then
+if addon.playerRace == "Dwarf" then
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace1H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace2H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Guns] = {StatLogic.Stats.RangedCrit, 1}
+elseif addon.playerRace == "Gnome" then
 	StatLogic.StatModTable["Gnome"] = {
 		["MOD_MANA"] = {
 			-- Gnome: Expansive Mind - Racial
@@ -1733,6 +2311,8 @@ if addon.playerRace == "Gnome" then
 			},
 		}
 	}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Dagger] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Sword1H] = {StatLogic.Stats.Expertise, 3}
 elseif addon.playerRace == "Human" then
 	StatLogic.StatModTable["Human"] = {
 		["MOD_SPI"] = {
@@ -1743,6 +2323,34 @@ elseif addon.playerRace == "Human" then
 			},
 		}
 	}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace1H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace2H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Sword1H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Sword2H] = {StatLogic.Stats.Expertise, 3}
+elseif addon.playerRace == "Orc" then
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Axe1H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Axe2H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Unarmed] = {StatLogic.Stats.Expertise, 3}
+elseif addon.playerRace == "Troll" then
+	StatLogic.StatModTable["Troll"] = {
+		["MOD_NORMAL_HEALTH_REG"] = {
+			-- Troll: Regeneration - Racial
+			--   Health regeneration rate increased by 10%.
+			{
+				["value"] = 0.1,
+			},
+		},
+		["ADD_HEALTH_REG_MOD_NORMAL_HEALTH_REG"] = {
+			-- Troll: Regeneration - Racial
+			--   10% of total Health regeneration may continue during combat.
+			{
+				["value"] = 0.1,
+				["spellid"] = 20555,
+			},
+		},
+	}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Bows] = {StatLogic.Stats.RangedCrit, 1}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Thrown] = {StatLogic.Stats.RangedCrit, 1}
 end
 
 StatLogic.StatModTable["ALL"] = {
@@ -1757,6 +2365,38 @@ StatLogic.StatModTable["ALL"] = {
 			}, {
 				__index = function()
 					return 10
+				end
+			})
+		},
+	},
+	["ADD_NORMAL_HEALTH_REG_MOD_HEALTH"] = {
+		{
+			-- Levels 1-19 are likely two piecewise linear sections,
+			-- with the intersection at roughly 15
+			["level"] = setmetatable({
+				0.6250,
+				0.5938,
+				0.5625,
+				0.5313,
+				0.5000,
+				0.4688,
+				0.4375,
+				0.4063,
+				0.3750,
+				0.3438,
+				0.3125,
+				0.2813,
+				0.2500,
+				0.2188,
+				0.1875,
+				0.1528,
+				0.1212,
+				0.0893,
+				0.0574,
+			}, {
+				-- Levels 20-85 are all 2.5% HP5 (1% HP2)
+				__index = function()
+					return 0.025
 				end
 			})
 		},
@@ -2150,7 +2790,7 @@ local C_m = {16, 16, 16, 16, 16, 16, 16, 16, 16, 16, }
 
 function StatLogic:GetMissedChanceBeforeDR()
 	local baseDefense, additionalDefense = UnitDefense("player")
-	local defenseFromDefenseRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), StatLogic.Stats.DefenseRating))
+	local defenseFromDefenseRating = floor(GetCombatRatingBonus(CR_DEFENSE_SKILL))
 	local modMissed = defenseFromDefenseRating * 0.04
 	local drFreeMissed = 5 + (baseDefense + additionalDefense - defenseFromDefenseRating) * 0.04
 	return modMissed, drFreeMissed
@@ -2195,26 +2835,17 @@ Dodge/Agi=(-b-(b^2-4ac)^0.5)/(2a)
 ]]
 ---@return number dodge Dodge percentage per agility
 function StatLogic:GetDodgePerAgi()
-	local level = UnitLevel("player")
-	local class = addon.class
-	if false and addon.DodgePerAgi[class][level] then
-		return addon.DodgePerAgi[class][level]
-	end
 	-- Collect data
 	local D_dr = GetDodgeChance()
 	if D_dr == 0 then
 		return 0
 	end
-	local dodgeFromDodgeRating = self:GetEffectFromRating(GetCombatRating(CR_DODGE), StatLogic.Stats.DodgeRating, level)
-	-- TODO: Use this if UnitDefense gets yeeted in Cata
-	-- local baseDefense, modDefense = level * 5, 0
-	local baseDefense, modDefense = UnitDefense("player")
-	local dodgeFromModDefense = modDefense * 0.04
-	local D_r = dodgeFromDodgeRating + dodgeFromModDefense
-	local D_b = self:GetStatMod("ADD_DODGE") + (baseDefense - level * 5) * 0.04
+	local dodgeFromDodgeRating = GetCombatRatingBonus(CR_DODGE)
+	local D_r = dodgeFromDodgeRating
+	local D_b = self:GetStatMod("ADD_DODGE")
 	local stat, effectiveStat, posBuff, negBuff = UnitStat("player", 2) -- 2 = Agility
 	local modAgi = 1
-	if ModAgiClasses[class] then
+	if ModAgiClasses[addon.class] then
 		modAgi = self:GetStatMod("MOD_AGI")
 		-- Talents that modify Agi will not add to posBuff, so we need to calculate baseAgi
 		-- But Agi from Kings etc. will add to posBuff, so we subtract those if present
@@ -2229,16 +2860,18 @@ function StatLogic:GetDodgePerAgi()
 	local A = effectiveStat
 	local A_b = ceil((stat - posBuff - negBuff) / modAgi)
 	local A_g = A - A_b
-	local C = C_d[class]
-	local k = K[class]
+	local C = C_d[addon.class]
+	local k = K[addon.class]
 	-- Solve a*x^2+b*x+c
 	local a = -A_g*A_b
 	local b = A_g*(D_dr-D_b)-A_b*(D_r+C*k)-C*A_g
 	local c = (D_dr-D_b)*(D_r+C*k)-C*D_r
-	--RatingBuster:Print(a, b, c, D_b, D_r, A_b, A_g, C, k)
-	local dodgePerAgi = (-b-(b^2-4*a*c)^0.5)/(2*a)
+
+	local dodgePerAgi
 	if a == 0 then
 		dodgePerAgi = -c / b
+	else
+		dodgePerAgi = (-b-(b^2-4*a*c)^0.5)/(2*a)
 	end
 
 	return dodgePerAgi
@@ -2265,8 +2898,8 @@ function StatLogic:GetDodgeChanceBeforeDR()
 	local stat, effectiveStat, posBuff, negBuff = UnitStat("player", 2) -- 2 = Agility
 	local baseAgi = stat - posBuff - negBuff
 	local dodgePerAgi = self:GetDodgePerAgi()
-	local dodgeFromDodgeRating = self:GetEffectFromRating(GetCombatRating(CR_DODGE), StatLogic.Stats.DodgeRating, UnitLevel("player"))
-	local dodgeFromDefenceRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), StatLogic.Stats.DefenseRating)) * 0.04
+	local dodgeFromDodgeRating = GetCombatRatingBonus(CR_DODGE)
+	local dodgeFromDefenceRating = floor(GetCombatRatingBonus(CR_DEFENSE_SKILL)) * 0.04
 	local dodgeFromAdditionalAgi = dodgePerAgi * (effectiveStat - baseAgi)
 	local modDodge = dodgeFromDodgeRating + dodgeFromDefenceRating + dodgeFromAdditionalAgi
 
@@ -2294,8 +2927,8 @@ modParry includes
 ---@return number drFreeParry The part that isn't affected by diminishing returns.
 function StatLogic:GetParryChanceBeforeDR()
 	-- Defense is floored
-	local parryFromParryRating = self:GetEffectFromRating(GetCombatRating(CR_PARRY), StatLogic.Stats.ParryRating)
-	local parryFromDefenceRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), StatLogic.Stats.DefenseRating)) * 0.04
+	local parryFromParryRating = GetCombatRatingBonus(CR_PARRY)
+	local parryFromDefenceRating = floor(GetCombatRatingBonus(CR_DEFENSE_SKILL)) * 0.04
 	local modParry = parryFromParryRating + parryFromDefenceRating
 
 	-- drFreeParry
@@ -2387,12 +3020,12 @@ function StatLogic:GetResilienceEffectGainAfterDR(resAfter, resBefore)
 	-- argCheck for invalid input
 	self:argCheck(resAfter, 2, "number")
 	self:argCheck(resBefore, 2, "nil", "number")
-	local resCurrent = GetCombatRating(CR_RESILIENCE_PLAYER_DAMAGE_TAKEN)
+	local resCurrent = GetCombatRating(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
 	local drBefore
 	if resBefore then
-		drBefore = self:GetResilienceEffectAfterDR(self:GetEffectFromRating(resCurrent + resBefore, CR_RESILIENCE_PLAYER_DAMAGE_TAKEN))
+		drBefore = self:GetResilienceEffectAfterDR(self:GetEffectFromRating(resCurrent + resBefore, StatLogic.Stats.ResilienceRating))
 	else
-		drBefore = GetCombatRatingBonus(CR_RESILIENCE_PLAYER_DAMAGE_TAKEN)
+		drBefore = GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
 	end
-	return self:GetResilienceEffectAfterDR(self:GetEffectFromRating(resCurrent + resAfter, CR_RESILIENCE_PLAYER_DAMAGE_TAKEN)) - drBefore
+	return self:GetResilienceEffectAfterDR(self:GetEffectFromRating(resCurrent + resAfter, StatLogic.Stats.ResilienceRating)) - drBefore
 end

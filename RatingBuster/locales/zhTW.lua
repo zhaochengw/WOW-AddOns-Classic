@@ -98,6 +98,8 @@ L["Ignore stuff when calculating the stat summary"] = "設定在統計總合時�
 -- /rb sum ignore unused
 L["Ignore unused item types"] = "忽略不可能使用的物品"
 L["Show stat summary only for highest level armor type and items you can use with uncommon quality and up"] = "只顯示在你會使用的物品上"
+L["Ignore non-primary stat"] = "Ignore non-primary stat"
+L["Show stat summary only for items with your specialization's primary stat"] = "Show stat summary only for items with your specialization's primary stat"
 -- /rb sum ignore equipped
 L["Ignore equipped items"] = "忽略已裝備的物品"
 L["Hide stat summary for equipped items"] = "隱藏已裝備的物品的統計總合"
@@ -393,12 +395,16 @@ L[StatLogic.Stats.Mana] = "法力"
 S[StatLogic.Stats.Mana] = "法力"
 L[StatLogic.Stats.ManaRegen] = "法力恢復"
 S[StatLogic.Stats.ManaRegen] = "施法回魔"
-L[StatLogic.Stats.ManaRegenNotCasting] = "法力恢復 (非施法)"
-S[StatLogic.Stats.ManaRegenNotCasting] = "一般回魔"
-L[StatLogic.Stats.ManaRegenOutOfCombat] = "法力恢復 (非戰鬥)"
-if addon.tocversion > 40000 then
-	L[StatLogic.Stats.ManaRegenNotCasting] =  L[StatLogic.Stats.ManaRegenOutOfCombat]
+
+local ManaRegenOutOfCombat = "法力恢復 (非戰鬥)"
+L[StatLogic.Stats.ManaRegenOutOfCombat] = ManaRegenOutOfCombat
+if addon.tocversion < 40000 then
+	L[StatLogic.Stats.ManaRegenNotCasting] = "法力恢復 (非施法)"
+else
+	L[StatLogic.Stats.ManaRegenNotCasting] = ManaRegenOutOfCombat
 end
+S[StatLogic.Stats.ManaRegenNotCasting] = "一般回魔"
+
 L[StatLogic.Stats.HealthRegen] = "生命恢复"
 S[StatLogic.Stats.HealthRegen] = "回血"
 L[StatLogic.Stats.HealthRegenOutOfCombat] = "生命恢复 (非戰鬥)"

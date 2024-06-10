@@ -1,8 +1,13 @@
-local _, private = ...
+---@class DBMCoreNamespace
+local private = select(2, ...)
 
 local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 
-local module = private:NewModule("DevTools")
+---@class DevToolsModule: DBMModule
+local module = private:NewModule("DevToolsModule")
+
+---@class DBM
+local DBM = private:GetPrototype("DBM")
 
 function module:OnModuleLoad()
 	self:OnDebugToggle()
@@ -16,13 +21,13 @@ do
 		local transcriptor = _G["Transcriptor"]
 		if DBM.Options.DebugLevel > 2 or (transcriptor and transcriptor:IsLogging()) then
 			local active = UnitExists(uId) and "true" or "false"
-			self:Debug("UNIT_TARGETABLE_CHANGED event fired for "..UnitName(uId)..". Active: "..active)
+			DBM:Debug("UNIT_TARGETABLE_CHANGED event fired for "..UnitName(uId)..". Active: "..active)
 		end
 	end
 
 	function module:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-		local spellName = DBM:GetSpellInfo(spellId)
-		self:Debug("UNIT_SPELLCAST_SUCCEEDED fired: "..UnitName(uId).."'s "..spellName.."("..spellId..")", 3)
+		local spellName = DBM:GetSpellName(spellId)
+		DBM:Debug("UNIT_SPELLCAST_SUCCEEDED fired: "..UnitName(uId).."'s "..spellName.."("..spellId..")", 3)
 	end
 
 	--Spammy events that core doesn't otherwise need are now dynamically registered/unregistered based on whether or not user is actually debugging
@@ -40,9 +45,9 @@ do
 		end
 	end
 
-	function module:Debug(text, level, useSound)
+	function DBM:Debug(text, level, useSound, alwaysFireEvent)
 		--But we still want to generate callbacks for level 1 and 2 events
-		if DBM.Options.DebugLevel == 3 or (level or 1) < 3 then--Cap debug level to 2 for trannscriptor unless user specifically specifies 3
+		if (DBM.Options and DBM.Options.DebugLevel == 3) or (level or 1) < 3 or alwaysFireEvent then--Cap debug level to 2 for transcriptor unless user specifically specifies 3
 			DBM:FireEvent("DBM_Debug", text, level)
 		end
 		if not DBM.Options or not DBM.Options.DebugMode then return end
@@ -58,9 +63,13 @@ do
 end
 
 do
-	--To speed up creating new mods.
 	local EJ_SetDifficulty, EJ_GetEncounterInfoByIndex = EJ_SetDifficulty, EJ_GetEncounterInfoByIndex
-	function module:FindDungeonMapIDs(low, peak, contains)
+	---Used to scan a range of instance IDs to find right one.
+	---<br>Returns GetRealZoneText for entire range
+	---@param low number?
+	---@param peak number?
+	---@param contains string?
+	function DBM:FindDungeonMapIDs(low, peak, contains)
 		local start = low or 1
 		local range = peak or 4000
 		DBM:AddMsg("-----------------")
@@ -74,7 +83,12 @@ do
 		end
 	end
 
-	function module:FindInstanceIDs(low, peak, contains)
+	---Used to scan a range of journal IDs to find right one.
+	---<br>Returns EJ_GetInstanceInfo for entire range
+	---@param low number?
+	---@param peak number?
+	---@param contains string?
+	function DBM:FindInstanceIDs(low, peak, contains)
 		local start = low or 1
 		local range = peak or 3000
 		DBM:AddMsg("-----------------")
@@ -88,7 +102,12 @@ do
 		end
 	end
 
-	function module:FindScenarioIDs(low, peak, contains)
+	---Used to scan a range of instance queue IDs to find right one.
+	---<br>Returns GetDungeonInfo for entire range
+	---@param low number?
+	---@param peak number?
+	---@param contains string?
+	function DBM:FindScenarioIDs(low, peak, contains)
 		local start = low or 1
 		local range = peak or 3000
 		DBM:AddMsg("-----------------")
@@ -105,7 +124,7 @@ do
 	--/run DBM:FindEncounterIDs(237, 1)--Classic Dungeons need diff 1 specified
 	--/run DBM:FindDungeonMapIDs(1, 500)--Find Classic Dungeon Map IDs
 	--/run DBM:FindInstanceIDs(1, 300)--Find Classic Dungeon Journal IDs
-	function module:FindEncounterIDs(instanceID, diff)
+	function DBM:FindEncounterIDs(instanceID, diff)
 		if not instanceID then
 			DBM:AddMsg("Error: Function requires instanceID be provided")
 		end

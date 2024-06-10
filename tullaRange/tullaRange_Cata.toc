@@ -1,0 +1,14 @@
+## Interface: 40400
+## Title: tullaRange
+## Author: Tuller
+## Notes: Out of range coloring based on RedRange
+## Notes-ruRU: Аддон, который позволяет полностью менять цвет кнопок действий
+## Version: 10.2.4
+## SavedVariables: TULLARANGE_COLORS
+## IconTexture: Interface/Icons/Inv_misc_punchcards_red
+## AddonCompartmentFunc: tullaRange_Launch
+attackFlash.lua
+actionState.lua
+updater.modern.lua
+updater.classic.lua
+tullaRange.lua

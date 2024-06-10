@@ -75,6 +75,7 @@ Postal.keepFreeOptions = {0, 1, 2, 3, 5, 10, 15, 20, 25, 30}
 Postal.WOWClassic = false
 Postal.WOWBCClassic = false
 Postal.WOWWotLKClassic = false
+Postal.WOWCataClassic = false
 Postal.WOWRetail = false
 
 -- Use a common frame and setup some common functions for the Postal dropdown menus
@@ -122,10 +123,12 @@ function Postal:OnInitialize()
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC then Postal.WOWClassic = true end
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then Postal.WOWBCClassic = true end
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC then Postal.WOWWotLKClassic = true end
+	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CATACLYSM_CLASSIC then Postal.WOWCataClassic = true end
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE then Postal.WOWRetail = true end
 --	if Postal.WOWClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Classic", 0.0, 0.69, 0.94) end
 --	if Postal.WOWBCClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW BC Classic", 0.0, 0.69, 0.94) end
 --	if Postal.WOWWotLKClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW WotLK Classic", 0.0, 0.69, 0.94) end
+--	if Postal.WOWCataClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Cataclysm Classic", 0.0, 0.69, 0.94) end
 --	if Postal.WOWRetail then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Retail", 0.0, 0.69, 0.94) end
 	-- Version number
 	if not self.version then self.version = GetAddOnMetadata("Postal", "Version") end
@@ -215,7 +218,7 @@ function Postal:MAIL_CLOSED()
 	for i = 1, GetInboxNumItems() do
 		if not select(9, GetInboxHeaderInfo(i)) then return end
 	end
-	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic or Postal.WOWCataClassic then
 		MiniMapMailFrame:Hide()
 	else
 		MiniMapMailFrameMixin:OnLeave()

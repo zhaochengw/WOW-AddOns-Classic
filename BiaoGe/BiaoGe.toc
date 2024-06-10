@@ -1,9 +1,8 @@
-## Interface: 30403
+## Interface: 40400
 ## Title: <BiaoGe> |cff00BFFF金团表格|r
 ## Notes: 插件命令：/BiaoGe 或 /GBG
 ## Author: 苍穹之霜
+## Version: 1.9.3
 ## SavedVariables: BiaoGe
-## SavedVariablesPerCharacter: BiaoGeA 
-# BiaoGeA的数据现在全部合并到BiaoGe里，不再分开每个角色保存了，统一保存在账号文件夹
 
 BiaoGe.xml

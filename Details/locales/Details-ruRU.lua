@@ -844,30 +844,18 @@ L["STRING_OPTIONS_MINIMAP_ANCHOR"] = "Мини-карта"
 L["STRING_OPTIONS_MINIMAP_DESC"] = "Отобразить или скрыть значок у мини-карты."
 L["STRING_OPTIONS_MISCTITLE"] = "Прочие настройки"
 L["STRING_OPTIONS_MISCTITLE2"] = "Этот элемент управляется, несколькими вариантами."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "New Combat on Boss Pull"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "If a boss is pulled while in combat, this option closes the current combat encounter and initiates a new one for the boss."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Overall Segment DPS Calculation"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Make Overall Segment"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "After the run is completed, this option creates a new segment containing all combat data from the run."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "Merge Trash"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Panels"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Show End of M+ Panel"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Time in Combat"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "The overall segment for the Mythic+ run will use 'totalDamage / totalCombatTime' to calculate DPS."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = "Dungeon Run Time"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = "The overall segment for the Mythic+ run will calculate DPS using 'totalDamage / runTime'."
+L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "Новый бой при пулле босса"
+L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "Если пулл босса начат во время боя, автоматически завершать текущий бой, и начинать новый для босса."
+L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Подсчет УВС по полному сегменту"
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Создать общий сегмент"
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "По завершении забега эта опция создает общий сегмент с данными по всем боям."
+L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "Слияние мусора"
+L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Панели"
+L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Показывать фрейм с подробностями о прохождении M+ подземелья"
+L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Время в бою"
+L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "УВС по всему М+ забегу вычисляется по формуле (общий урон)/(общее время боя)."
+L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = "Время прохождения подземелья"
+L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = "УВС по всему М+ забегу вычисляется по формуле (общий урон)/(общее время боя)."
 L["STRING_OPTIONS_NICKNAME"] = "Псевдоним"
 L["STRING_OPTIONS_NICKNAME_DESC"] = [=[Задайте Ваш псевдоним.
 Псевдонимы отправляются участникам гильдии с Details!, используется вместо имени персонажа.]=]
@@ -1483,6 +1471,7 @@ L["STRING_REPORT_SINGLE_BUFFUPTIME"] = "Время баффов для"
 L["STRING_REPORT_SINGLE_COOLDOWN"] = "использованы кулдауны от"
 L["STRING_REPORT_SINGLE_DEATH"] = "Смерть от"
 L["STRING_REPORT_SINGLE_DEBUFFUPTIME"] = "время дебаффов для"
+L["STRING_REPORT_TEXT"] = "Отчёт"
 L["STRING_REPORT_TOOLTIP"] = "Результат отчёта"
 L["STRING_REPORTFRAME_COPY"] = "Копировать и вставить"
 L["STRING_REPORTFRAME_CURRENT"] = "Текущий"

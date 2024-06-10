@@ -4,7 +4,7 @@ local L = addon.L
 
 -- Create an input box for the user to enter the quest ID
 local GetQuestLinkBox = CreateFrame("EditBox", "GetQuestLinkBox", GetInfoFrame, "InputBoxTemplate");
-GetQuestLinkBox:SetPoint("TOPLEFT", GetInfoFrame, "TOPLEFT", 135, -100);
+GetQuestLinkBox:SetPoint("TOPLEFT", GetInfoFrame, "TOPLEFT", 140, -120);
 GetQuestLinkBox:SetSize(100, 20);
 GetQuestLinkBox:SetAutoFocus(false);
 
@@ -17,12 +17,15 @@ GetQuestLinkLabel:SetText(L['quest_label_text']);
 GetQuestLinkBox:SetScript("OnEnterPressed", function(self)
     local questID = tonumber(self:GetText())
     if questID ~= nil then
-        local questLink = GetQuestLink(questID)
-        if questLink ~= nil and questLink ~= '' then
-            DEFAULT_CHAT_FRAME:AddMessage(L['search_result_done'] .. questLink)
+        local questName = C_QuestLog.GetTitleForQuestID(questID)
+        -- local questLink = GetQuestLink(questID)
+        if questName ~= nil and questName ~= '' then
+            -- DEFAULT_CHAT_FRAME:AddMessage(L['search_result_done'] .. questLink)
+            DEFAULT_CHAT_FRAME:AddMessage(L['search_result_done'] .. "\124cffffff00\124Hquest:" .. questID .. "\124h[" .. questName .. "]\124h\124r");
         else
             DEFAULT_CHAT_FRAME:AddMessage(L['search_result_fail'] .. L['invalid_text'])
         end
     end
-    self:SetText("")
+    self:SetText(""); -- Clear the text content in the input box
+    self:ClearFocus(); -- Clear focus
 end)

@@ -123,8 +123,7 @@ L["PP_REFRESH_TOOLTIP"] = [=[Actualiza todas las bendiciones
 tareas, talentos y
 Símbolo de reyes entre sí,
 Party y Raid Paladins.]=]
---[[Translation missing --]]
-L["Preset"] = "Preset"
+L["Preset"] = "Preestablecido"
 --[[Translation missing --]]
 L["PRESET_TOOLTIP"] = [=[|cffffffff[Left-Click]|r Load the last saved Preset.
 
@@ -188,8 +187,7 @@ L["Vertical Down | Left"] = "Vertical hacia abajo | Izquierda"
 L["Vertical Down | Right"] = "Vertical hacia abajo | Derecha"
 L["Vertical Up | Left"] = "Vertical arriba | izquierda"
 L["Vertical Up | Right"] = "Vertical Arriba | Derecha"
---[[Translation missing --]]
-L["Visibility Settings"] = "Visibility Settings"
+L["Visibility Settings"] = "Configuración de visibilidad"
 L["Wait for Players"] = "Esperar jugadores"
 L["What to buff with PallyPower"] = "Qué mejorar con PallyPower"
 --[[Translation missing --]]

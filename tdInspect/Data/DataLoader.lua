@@ -8,6 +8,9 @@ local ns = select(2, ...)
 
 ns.Talents = {}
 ns.ItemSets = {}
+ns.Glyphes = {}
+ns.SpellGlyphes = {}
+ns.GlyphSlots = {}
 
 local strsplittable = strsplittable or function(delimiter, str, pieces)
     return {strsplit(delimiter, str, pieces)}
@@ -42,9 +45,9 @@ function ns.TalentMake()
         tinsert(CURRENT, {tabId = tabId, numTalents = numTalents, bg = bg, icon = icon, talents = {}})
     end
 
-    local function CreateTalentInfo(row, column, maxRank, id)
+    local function CreateTalentInfo(index, row, column, maxRank, id)
         local tab = CURRENT[#CURRENT]
-        tinsert(tab.talents, {row = row, column = column, maxRank = maxRank, id = id})
+        tinsert(tab.talents, {row = row, column = column, maxRank = maxRank, id = id, index = index})
     end
 
     local function FillTalentRanks(ranks)
@@ -138,4 +141,24 @@ function ns.ItemSetMake()
         B = SetItemSetBouns,
         I = SetItemSetSlotItem,
     })
+end
+
+function ns.GlyphMake()
+    ns.GlyphMake = nil
+
+    local Data = function(glyphId, spellId, icon)
+        local d = {glyphId = glyphId, spellId = spellId, icon = icon}
+        if glyphId ~= 0 then
+            ns.Glyphes[glyphId] = d
+        end
+        if spellId ~= 0 then
+            ns.SpellGlyphes[spellId] = d
+        end
+    end
+
+    local function Slot(slot, id, level)
+        ns.GlyphSlots[slot] = {id = id, level = level}
+    end
+
+    setfenv(2, {D = Data, S = Slot})
 end

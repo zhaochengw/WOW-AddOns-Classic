@@ -1,7 +1,7 @@
 --@curseforge-project-slug: libspecialization@
 if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then return end
 
-local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 7)
+local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 8)
 if not LS then return end -- No upgrade needed
 
 LS.callbackMap = LS.callbackMap or {}
@@ -154,18 +154,18 @@ do
 		["PARTY"] = true,
 		["INSTANCE_CHAT"] = true,
 	}
-	local talentChangeThrottle, currentSpecId = 0, 0
+	local talentChangeThrottle, currentSpecId, currentTalentString = 0, 0, nil
 	local timerInstance, timerGroup = false, false
 	local function SendToInstance()
 		timerInstance = false
 		if IsInGroup(2) then
-			SendAddonMessage("LibSpec", format("%d", currentSpecId), "INSTANCE_CHAT")
+			SendAddonMessage("LibSpec", format("%d,%s", currentSpecId, currentTalentString), "INSTANCE_CHAT")
 		end
 	end
 	local function SendToGroup()
 		timerGroup = false
 		if IsInGroup(1) then
-			SendAddonMessage("LibSpec", format("%d", currentSpecId), "RAID") -- RAID auto downgrades to PARTY as needed
+			SendAddonMessage("LibSpec", format("%d,%s", currentSpecId, currentTalentString), "RAID") -- RAID auto downgrades to PARTY as needed
 		end
 	end
 	frame:SetScript("OnEvent", function(_, event, prefix, msg, channel, sender)
@@ -173,18 +173,20 @@ do
 			if prefix == "LibSpec" and approved[channel] then -- Only approved channels
 				if msg == "R" then
 					if channel == "INSTANCE_CHAT" then
-						local specId = LS:MySpecialization()
+						local specId, _, _, talentString = LS:MySpecialization()
 						if specId then
 							currentSpecId = specId
+							currentTalentString = talentString
 							if not timerInstance then
 								timerInstance = true
 								CTimerAfter(3, SendToInstance)
 							end
 						end
 					else -- RAID/PARTY
-						local specId = LS:MySpecialization()
+						local specId, _, _, talentString = LS:MySpecialization()
 						if specId then
 							currentSpecId = specId
+							currentTalentString = talentString
 							if not timerGroup then
 								timerGroup = true
 								CTimerAfter(3, SendToGroup)
@@ -225,10 +227,10 @@ do
 						currentSpecId = specId -- Update this just in case a timer is queued
 						if IsInGroup() then
 							if IsInGroup(2) then -- Instance group
-								SendAddonMessage("LibSpec", format("%d", specId), "INSTANCE_CHAT")
+								SendAddonMessage("LibSpec", format("%d,%s", specId, talentString), "INSTANCE_CHAT")
 							end
 							if IsInGroup(1) then -- Normal group
-								SendAddonMessage("LibSpec", format("%d", specId), "RAID")
+								SendAddonMessage("LibSpec", format("%d,%s", specId, talentString), "RAID")
 							end
 						else
 							for _,func in next, callbackMap do

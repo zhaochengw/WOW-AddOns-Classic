@@ -1,9 +1,9 @@
-## Interface: 100205
+## Interface: 100206
 ## Title: Pixel Perfect Align
 ## Notes: Pixel Perfect Alignment Grid and Measuring Tape using MoLib (|cFF99E5FF/ppa|r)
 ## Notes: Dragonflight edition
 ## Author: MooreaTV moorea@ymail.com
-## Version: v1.14.06
+## Version: v1.14.07
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: pixelPerfectAlignSaved

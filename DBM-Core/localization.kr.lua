@@ -5,13 +5,14 @@ local L = DBM_CORE_L
 
 local dateTable = date("*t")
 if dateTable.day and dateTable.month and dateTable.day == 1 and dateTable.month == 4 then
-	L.DEADLY_BOSS_MODS					= "Bigwigs"
-	L.DBM								= "BW"
+	L.DEADLY_BOSS_MODS					= "Harmless Minion Mods"
+	L.DBM								= "HMM"
 end
 
 L.HOW_TO_USE_MOD					= L.DBM .. "을 사용해 주셔서 감사합니다. 대화창에서 /dbm help를 입력하면 사용 가능한 명령어 목록을 볼 수 있습니다. 설정을 하시려면 /dbm을 입력하세요. 보스 알림 설정을 기호에 맞게 변경하려면 원하는 던전을 직접 선택해서 로딩을 클릭하세요. " .. L.DBM .. "이 당신의 현재 전문화에 맞는 기본값을 설정하지만 일부 옵션은 자신에게 맞게 조정해야 할 수도 있습니다."
 L.SILENT_REMINDER					= "알림: " .. L.DBM .. "이 아직 조용함 모드입니다."
-L.NEWS_UPDATE						= "|h|c11ff1111뉴스|r|h: 이 업데이트는 기본적으로 이전에 배포된 파일의 해쉬값이 악성코드로 잘못 감지되어 이를 피하기 위한 9.1.9의 재배포 버전입니다. 자세한 내용은 |Hgarrmission:DBM:news|h|cff3588ff[이곳]|r|h에서 읽을 수 있습니다"
+L.NEWS_UPDATE						= "|h|c11ff1111뉴스|r|h: DBM이 모듈 구조 변경이 적용된 업데이트를 했으며 클래식과 본섭은 이제부터 (동일한) 통합된 모듈을 사용합니다. 이는 오리지널 (디스커버리 포함), 불성, 리분, 대격변 공격대 모듈을 본섭과 동일하게 각각 다운로드 받아야 한다는 뜻입니다. 보다 자세한 정보를 보려면 |Hgarrmission:DBM:news|h|cff3588ff[이곳을 클릭]|r|h하세요"
+L.NEWS_UPDATE_REPEAT					= "|h|c11ff1111뉴스|r|h: DBM이 모듈 구조 변경이 적용된 업데이트를 했으며 클래식과 본섭은 이제부터 (동일한) 통합된 모듈을 사용합니다. 이는 오리지널 (디스커버리 포함), 불성, 리분, 대격변 공격대 모듈을 본섭과 동일하게 각각 다운로드 받아야 한다는 뜻입니다. 지금 모듈이 설치되지 않은 레이드 중입니다. 이 메시지는 누락된 공격대 모듈을 설치할 때까지 지속적으로 표시됩니다 (설치 전까진 이 지역에선 어떠한 경고도 받지 못할 것입니다)"
 
 L.COPY_URL_DIALOG_NEWS				= "최신 소식을 보려면 아래 링크를 방문하세요"
 
@@ -31,8 +32,8 @@ L.COPY_URL_DIALOG					= "URL 복사"
 L.COPY_WA_DIALOG						= "WA 키 복사"
 
 --Post Patch 7.1
-L.TEXT_ONLY_RANGE					= "이 지역에서는 API 제한으로 거리 창을 텍스트 방식으로만 사용할 수 있습니다."
-L.NO_RANGE					= "이 지역에선 API 제한으로 거리 창을 사용할 수 없습니다."
+L.TEXT_ONLY_RANGE					= "이 지역에서는 블리자드가 일부 기능을 막아서 거리 창을 텍스트 방식으로만 사용할 수 있습니다."
+L.NO_RANGE					= "이 지역에서는 블리자드가 일부 기능을 막아서 거리 창을 사용할 수 없습니다."
 L.NO_ARROW					= "화살표 기능을 인스턴스 던전에서 사용할 수 없습니다"
 L.NO_HUD						= "HUD 기능을 인스턴스 던전에서 사용할 수 없습니다"
 
@@ -44,7 +45,8 @@ L.LOOT_SPEC_REMINDER			= "현재 전문화는 %s입니다. 현재 지정한 전�
 
 L.BIGWIGS_ICON_CONFLICT		= L.DBM .. "이 BigWigs와" .. L.DBM .. " 모두 공격대 징표 기능을 사용하고 있음을 감지했습니다. 충돌을 방지하기 위해 공대장이 두 애드온중 하나의 징표 설정을 비활성화해야 합니다."
 
-L.MOD_AVAILABLE				= "이 지역에서 %s|1을;를; 사용할 수 있습니다. Curse, Wago, WoWI 또는 GitHub 릴리즈 페이지에서 다운로드 받으실 수 있습니다."
+L.MOD_AVAILABLE				= "이 지역에서 %s|1을;를; 사용할 수 있지만 설치가 되어있질 않습니다. Curse, Wago, WoWI 또는 GitHub 릴리즈 페이지에서 다운로드 받으실 수 있습니다."
+L.MOD_MISSING					= "레이드 모듈 없음"
 
 L.COMBAT_STARTED				= "%s 전투 시작. 행운을 빕니다! :)";
 L.COMBAT_STARTED_IN_PROGRESS	= "%s 전투 진행 도중 참가했습니다. 행운을 빕니다! :)"
@@ -163,7 +165,7 @@ L.WHISPER_COMBAT_END_KILL_STATS		= "%s님이 %s 전투에서 승리했습니다!
 L.WHISPER_COMBAT_END_WIPE_AT			= "%s님이 %s %s에서 전멸했습니다."
 L.WHISPER_COMBAT_END_WIPE_STATS_AT	= "%s님이 %s %s에서 전멸했습니다. 이 난이도에서 총 %d회 전멸했습니다."
 --Scenarios (no percents. words like "fighting" or "wipe" changed to better fit scenarios)
-L.AUTO_RESPOND_WHISPER_SCENARIO		= "%s님이 %s 시나리오를 진행중입니다. (%d/%d 생존)"
+L.AUTO_RESPOND_WHISPER_SCENARIO		= "%s님은 %s 시나리오를 진행중입니다. (%d/%d 생존)"
 L.WHISPER_SCENARIO_END_KILL			= "%s님이 %s 시나리오를 완료했습니다!"
 L.WHISPER_SCENARIO_END_KILL_STATS	= "%s님이 %s 시나리오를 완료했습니다! 이 난이도를 %d회 완료했습니다!"
 L.WHISPER_SCENARIO_END_WIPE			= "%s님이 %s 시나리오를 완료하지 못했습니다."
@@ -180,7 +182,8 @@ L.VOICE_DISABLED				= "현재 " .. L.DBM .. " 음성팩이 한 개 이상 설치
 L.VOICE_COUNT_MISSING		= "초읽기 음성중 %d초로 설정된 음성/초읽기 팩을 찾을 수 없습니다. 기본 설정으로 초기화 되었습니다: %s"
 L.WEAKAURA_KEY							= " (|cff308530WA 키:|r %s)"
 
-L.UPDATEREMINDER_HEADER			= "사용중인 " .. L.DEADLY_BOSS_MODS .. " 버전의 사용 기한이 지났습니다.\n Curse, Wago, WoWI, GitHub 릴리즈 페이지 등에서 %s (%s) 버전을 다운로드 할 수 있습니다."
+L.UPDATEREMINDER_HEADER			= "사용중인 " .. L.DEADLY_BOSS_MODS .. " 버전의 사용 기한이 지났습니다.\n%s (%s) 버전을 Curse, Wago, WoWI, GitHub 릴리즈 페이지를 통해 다운로드 할 수 있습니다"
+L.UPDATEREMINDER_HEADER_SUBMODULE		= "사용중인 %s 모듈의 사용 기한이 지났습니다.\n%s 버전을 Curse, Wago, WoWI, GitHub 릴리즈 페이지를 통해 다운로드 할 수 있습니다"
 L.UPDATEREMINDER_FOOTER			= (IsMacClient() and "Cmd-C" or "Ctrl-C").. "를 누르면 다운로드 링크를 클립보드로 복사합니다."
 L.UPDATEREMINDER_FOOTER_GENERIC	= (IsMacClient() and "Cmd-C" or "Ctrl-C").. "를 누르면 클립보드로 복사합니다."
 L.UPDATEREMINDER_DISABLE			= "경고: " .. L.DEADLY_BOSS_MODS .. "의 버전이 오래되어 새로운 "..L.DBM.." 버전과 호환되지 않아 강제로 비활성화되며 업데이트 전까진 사용할 수 없습니다. 이는 구버전 모드가 당신과 파티/공대원의 플레이에 악영향을 미치지 않게 하기 위함입니다."
@@ -231,10 +234,11 @@ L.RANGERADAR_IN_RANGE_TEXT	= "거리 내 %d명 (%0.1fm)"
 L.RANGECHECK_IN_RANGE_TEXT	= "거리 내 %d명"--Text based doesn't need (%dyd), especially since it's not very accurate to the specific yard anyways
 L.RANGERADAR_IN_RANGE_TEXTONE	= "%s (%0.1fm)"--One target
 
+L.INFOFRAME_TITLE			= "DBM 정보 창"
 L.INFOFRAME_SHOW_SELF		= "내 자원 항상 보기"		-- Always show your own power value even if you are below the threshold
 L.INFOFRAME_SETLINES			= "최대 줄 갯수 지정"
-	L.INFOFRAME_SETCOLS		= "최대 열 갯수 지정"
-L.INFOFRAME_LINESDEFAULT		= "모드 기본값"
+L.INFOFRAME_SETCOLS		= "최대 열 갯수 지정"
+L.INFOFRAME_LINESDEFAULT		= "보스 모듈이 자동 설정"
 L.INFOFRAME_LINES_TO			= "줄 %d개"
 L.INFOFRAME_COLS_TO			= "열 %d개"
 L.INFOFRAME_POWER			= "기력"
@@ -275,7 +279,8 @@ L.TIMER_USAGE	= {
 }
 
 L.ERROR_NO_PERMISSION				= "이 명령어를 실행하기 위한 권한을 가지고 있지 않습니다."
-L.TIME_TOO_SHORT					= "풀링 타이머는 3초 이상으로 설정해야 합니다."
+L.PULL_TIME_TOO_SHORT					= "풀링 타이머는 3초 이상으로 설정해야 합니다."
+L.PULL_TIME_TOO_LONG							= "풀링 타이머는 60초 이상 설정할 수 없습니다."
 
 L.BREAK_USAGE				= "쉬는 시간은 60분을 초과할 수 없습니다. 쉬는 시간은 초단위가 아니라 분단위로 입력해야 합니다."
 L.BREAK_START				= "쉬는 시간 시작 -- %s 받았습니다! (%s|1이;가; 전송)"
@@ -298,9 +303,9 @@ L.ACHIEVEMENT_TIMER_SPEED_KILL = "업적"--BATTLE_PET_SOURCE_6
 -- Auto-generated Warning Localizations
 L.AUTO_ANNOUNCE_TEXTS.you			= "당신에게 %s"
 L.AUTO_ANNOUNCE_TEXTS.target			= "%s: >%%s<"
-L.AUTO_ANNOUNCE_TEXTS.targetsource	= ">%%s<의 %s 시전: >%%s<"
+L.AUTO_ANNOUNCE_TEXTS.targetsource	= ">%%s< %s 시전: >%%s<"
 L.AUTO_ANNOUNCE_TEXTS.targetcount	= "%s (%%s): >%%s<"
---L.AUTO_ANNOUNCE_TEXTS.spell								= "%s"
+L.AUTO_ANNOUNCE_TEXTS.spellsource	= ">%%s< %s 시전"
 L.AUTO_ANNOUNCE_TEXTS.incoming		= "%s 디버프 걸림"
 L.AUTO_ANNOUNCE_TEXTS.incomingcount	= "%s 디버프 걸림 (%%s)"
 L.AUTO_ANNOUNCE_TEXTS.ends			= "%s 종료"
@@ -319,19 +324,20 @@ L.AUTO_ANNOUNCE_TEXTS.stack			= "%s: >%%s< (%%d)"
 L.AUTO_ANNOUNCE_TEXTS.moveto		= "%s - >%%s< 위치로 이동"
 
 local prewarnOption = "$spell:%s 사전 경고 보기"
-L.AUTO_ANNOUNCE_OPTIONS.you			= "당신이 $spell:%s 대상이 된 경우 알림 보기"
+L.AUTO_ANNOUNCE_OPTIONS.you			= "당신이 $spell:%s 대상이 된 경우 알림"
 L.AUTO_ANNOUNCE_OPTIONS.target		= "$spell:%s 대상 알림"
 L.AUTO_ANNOUNCE_OPTIONS.targetNF		= "$spell:%s 대상 알림 (전역 대상 필터 무시)"
 L.AUTO_ANNOUNCE_OPTIONS.targetsource	= "$spell:%s 대상 알림 (시전자 포함)"
 L.AUTO_ANNOUNCE_OPTIONS.targetcount	= "$spell:%s 대상 알림 (횟수 포함)"
-L.AUTO_ANNOUNCE_OPTIONS.spell		= "$spell:%s 시전 완료 알림 보기"
+L.AUTO_ANNOUNCE_OPTIONS.spell		= "$spell:%s 시전 완료 알림"
+L.AUTO_ANNOUNCE_OPTIONS.spellsource		= "$spell:%s 시전 완료 알림 (시전자 포함)"
 L.AUTO_ANNOUNCE_OPTIONS.incoming	= "$spell:%s 주문이 디버프를 걸 때 알림"
 L.AUTO_ANNOUNCE_OPTIONS.incomingcount	= "$spell:%s 주문이 디버프를 걸 때 알림 (횟수 포함)"
-L.AUTO_ANNOUNCE_OPTIONS.ends			= "$spell:%s 지속 시간 종료시 알림 보기"
-L.AUTO_ANNOUNCE_OPTIONS.endtarget	= "$spell:%s 지속 시간 종료시 알림 보기 (대상 포함)"
-L.AUTO_ANNOUNCE_OPTIONS.fades		= "$spell:%s|1이;가; 사라졌을 때 알림 보기"
-L.AUTO_ANNOUNCE_OPTIONS.addsleft		= "$spell:%s의 남은 수 알림 보기"
-L.AUTO_ANNOUNCE_OPTIONS.cast			= "$spell:%s 시전 시작 알림 보기"
+L.AUTO_ANNOUNCE_OPTIONS.ends			= "$spell:%s 지속 시간 종료시 알림"
+L.AUTO_ANNOUNCE_OPTIONS.endtarget	= "$spell:%s 지속 시간 종료시 알림 (대상 포함)"
+L.AUTO_ANNOUNCE_OPTIONS.fades		= "$spell:%s|1이;가; 사라졌을 때 알림"
+L.AUTO_ANNOUNCE_OPTIONS.addsleft		= "$spell:%s의 남은 수 알림"
+L.AUTO_ANNOUNCE_OPTIONS.cast			= "$spell:%s 시전 시작 알림"
 L.AUTO_ANNOUNCE_OPTIONS.soon		= prewarnOption
 L.AUTO_ANNOUNCE_OPTIONS.sooncount	= prewarnOption
 L.AUTO_ANNOUNCE_OPTIONS.countdown	= "$spell:%s의 초읽기 사전 경고 보기"
@@ -340,11 +346,10 @@ L.AUTO_ANNOUNCE_OPTIONS.bait		= "$spell:%s 사전 경고 보기 (위치 유도)"
 L.AUTO_ANNOUNCE_OPTIONS.stage		= "%s단계 알림"
 L.AUTO_ANNOUNCE_OPTIONS.stagechange	= "단계 전환 알림"
 L.AUTO_ANNOUNCE_OPTIONS.prestage		= "%s단계로 넘어가기 전 경고 보기"
-L.AUTO_ANNOUNCE_OPTIONS.count		= "$spell:%s 시전 완료 알림 보기 (횟수 포함)"
+L.AUTO_ANNOUNCE_OPTIONS.count		= "$spell:%s 시전 완료 알림 (횟수 포함)"
 L.AUTO_ANNOUNCE_OPTIONS.stack		= "$spell:%s 중첩 알림"
-L.AUTO_ANNOUNCE_OPTIONS.moveto		= "$spell:%s에 특정인 또는 특정 위치로 이동 알림 보기"
+L.AUTO_ANNOUNCE_OPTIONS.moveto		= "$spell:%s에 특정인 또는 특정 위치로 이동 알림"
 
---L.AUTO_SPEC_WARN_TEXTS.spell								= "%s!"
 L.AUTO_SPEC_WARN_TEXTS.ends		= "%s 종료!"
 L.AUTO_SPEC_WARN_TEXTS.fades		= "%s 사라짐!"
 L.AUTO_SPEC_WARN_TEXTS.soon		= "곧 %s"
@@ -381,7 +386,6 @@ L.AUTO_SPEC_WARN_TEXTS.runcount		= "%s - 도망치세요 (%%s)"
 L.AUTO_SPEC_WARN_TEXTS.cast		= "%s - 주문 시전 중지"
 L.AUTO_SPEC_WARN_TEXTS.lookaway		= "%%2$s에게 %1$s - 고개 돌리세요"
 L.AUTO_SPEC_WARN_TEXTS.reflect		= "%s: >%%s< - 공격 중지"
---L.AUTO_SPEC_WARN_TEXTS.count								= "%s! (%%s)"
 L.AUTO_SPEC_WARN_TEXTS.stack		= "당신에게 %s (%%d중첩)"
 L.AUTO_SPEC_WARN_TEXTS.switch		= "%s - 대상 바꾸세요"
 L.AUTO_SPEC_WARN_TEXTS.switchcount	= "%s - 대상 바꾸세요 (%%s)"
@@ -447,12 +451,12 @@ L.AUTO_TIMER_TEXTS.ai					= "%s AI 예상"
 L.AUTO_TIMER_TEXTS.cd					= "%s 쿨타임"
 L.AUTO_TIMER_TEXTS.cdcount				= "%s (%%s) 쿨타임"
 L.AUTO_TIMER_TEXTS.cdsource				= "%s 쿨타임: >%%s<"
-L.AUTO_TIMER_TEXTS.cdspecial			= "특수 능력"
+L.AUTO_TIMER_TEXTS.cdspecial			= "특수 스킬"
 
 L.AUTO_TIMER_TEXTS.next					= "다음 %s"
 L.AUTO_TIMER_TEXTS.nextcount			= "다음 %s (%%s)"
 L.AUTO_TIMER_TEXTS.nextsource			= "다음 %s: %%s"
-L.AUTO_TIMER_TEXTS.nextspecial			= "특수 능력"
+L.AUTO_TIMER_TEXTS.nextspecial			= "특수 스킬"
 
 L.AUTO_TIMER_TEXTS.stage				= "단계"
 L.AUTO_TIMER_TEXTS.stagecount			= "%%s단계"
@@ -478,13 +482,15 @@ L.AUTO_TIMER_OPTIONS.cdcount			= "$spell:%s 쿨타임 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.cdnp				= "$spell:%s 쿨타임 타이머를 이름표에만 표시"
 L.AUTO_TIMER_OPTIONS.cdnpcount			= "$spell:%s 쿨타임 타이머를 이름표에만 표시 (횟수 포함)"
 L.AUTO_TIMER_OPTIONS.cdsource			= "$spell:%s 쿨타임 타이머 바 보기 (시전자 이름 포함)"
-L.AUTO_TIMER_OPTIONS.cdspecial			= "특수 능력 쿨타임 타이머 바 보기"
+L.AUTO_TIMER_OPTIONS.cdspecial			= "특수 스킬 쿨타임 타이머 바 보기"
+L.AUTO_TIMER_OPTIONS.cdcombo				= "연계 스킬 쿨타임 타이머 바 보기"--Used for combining 2 abilities into a single timer
 L.AUTO_TIMER_OPTIONS.next				= "다음 $spell:%s 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.nextcount			= "다음 $spell:%s 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.nextnp				= "다음 $spell:%s 타이머를 이름표에만 표시"
 L.AUTO_TIMER_OPTIONS.nextnpcount		= "다음 $spell:%s 타이머를 이름표에만 표시 (횟수 포함)"
 L.AUTO_TIMER_OPTIONS.nextsource			= "다음 $spell:%s 타이머 바 보기 (시전자 이름 포함)"
-L.AUTO_TIMER_OPTIONS.nextspecial		= "다음 특수 능력 타이머 바 보기"
+L.AUTO_TIMER_OPTIONS.nextspecial		= "다음 특수 스킬 타이머 바 보기"
+L.AUTO_TIMER_OPTIONS.nextcombo			= "다음 연계 스킬 타이머 바 보기"--Used for combining 2 abilities into a single timer
 L.AUTO_TIMER_OPTIONS.achievement		= "%s 업적의 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.stage				= "다음 단계 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.stagecount			= "다음 단계 타이머 바 보기 (단계 번호 포함)"

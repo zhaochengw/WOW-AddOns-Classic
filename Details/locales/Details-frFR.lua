@@ -143,7 +143,7 @@ L["STRING_CUSTOM_NEW"] = "Gestion des Affichages personnalisés"
 L["STRING_CUSTOM_PASTE"] = "Coller ici :"
 L["STRING_CUSTOM_POT_DEFAULT"] = "Potions utilisées"
 L["STRING_CUSTOM_POT_DEFAULT_DESC"] = "Affiche les membres de votre groupe de raid ayant utilisé une potion lors de la rencontre."
-L["STRING_CUSTOM_REMOVE"] = "Retirer"
+L["STRING_CUSTOM_REMOVE"] = "Supprimer"
 L["STRING_CUSTOM_REPORT"] = "(personnalisé)"
 L["STRING_CUSTOM_SAVE"] = "Enregistrer modifs"
 L["STRING_CUSTOM_SAVED"] = "L'affichage a été sauvegardé."
@@ -462,7 +462,10 @@ L["STRING_OPTIONS_BARSTART_DESC"] = "Quand désactivé, la texture supérieure c
 L["STRING_OPTIONS_BARUR_ANCHOR"] = "Mises à jour rapides :"
 L["STRING_OPTIONS_BARUR_DESC"] = "Quand activé, les valeurs de DPS et HPS sont mises à jour un peu plus rapidement que d'habitude."
 L["STRING_OPTIONS_BG_ALL_ALLY"] = "Tout afficher"
-L["STRING_OPTIONS_BG_ALL_ALLY_DESC"] = "Quand activé, les joueurs ennemis sont également affichés lorsque la fenêtre est en mode Groupe. |cFFFFFF00Important|r : les modifications seront appliquées au prochain début de combat."
+L["STRING_OPTIONS_BG_ALL_ALLY_DESC"] = [=[Quand activé, les joueurs ennemis sont également affichés lorsque la fenêtre est en mode Groupe. |cFFFFFF00Important|r : les modifications seront appliquées au prochain début de combat.
+
+Lorsque cette option est activée, les joueurs ennemis sont également affichés lorsque la fenêtre est en mode Groupe.
+|cFFFFFF00Important|r : les changements sont appliqués après la prochaine entrée en combat.]=]
 L["STRING_OPTIONS_BG_ANCHOR"] = "Champ de bataille :"
 L["STRING_OPTIONS_BG_UNIQUE_SEGMENT"] = "Segment unique"
 L["STRING_OPTIONS_BG_UNIQUE_SEGMENT_DESC"] = "Un segment est créé au début du champ de bataille et dure jusqu'à sa fin."
@@ -694,22 +697,14 @@ L["STRING_OPTIONS_MISCTITLE"] = "Réglages divers"
 L["STRING_OPTIONS_MISCTITLE2"] = "Ceux-ci contrôlent plusieurs options."
 --[[Translation missing --]]
 L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "New Combat on Boss Pull"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "If a boss is pulled while in combat, this option closes the current combat encounter and initiates a new one for the boss."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Overall Segment DPS Calculation"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Make Overall Segment"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "After the run is completed, this option creates a new segment containing all combat data from the run."
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "Merge Trash"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Panels"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Show End of M+ Panel"
---[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Time in Combat"
+L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "Si un boss est lancé si on est en combat, cette option ferme le combat en cours et en lance un nouveau spécifiquement pour le boss."
+L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Calcul DPS global du segment"
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Créer un segment global"
+L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "Une fois tous les combats terminés, cette option crée un nouveau segment contenant toutes les données de combat de l'instance / raid / etc."
+L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "Fusionner les Trashs."
+L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Panneaux"
+L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Affiche le panneau  à la fin de la M+"
+L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Temps en combat"
 --[[Translation missing --]]
 L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "The overall segment for the Mythic+ run will use 'totalDamage / totalCombatTime' to calculate DPS."
 --[[Translation missing --]]
@@ -1214,6 +1209,7 @@ L["STRING_REPORT_SINGLE_BUFFUPTIME"] = "uptime du buff pour"
 L["STRING_REPORT_SINGLE_COOLDOWN"] = "cooldowns utilisés par"
 L["STRING_REPORT_SINGLE_DEATH"] = "Mort de"
 L["STRING_REPORT_SINGLE_DEBUFFUPTIME"] = "uptime du debuff pour"
+L["STRING_REPORT_TEXT"] = "Signaler"
 L["STRING_REPORT_TOOLTIP"] = "Envoyer les résultats"
 L["STRING_REPORTFRAME_COPY"] = "Copier & coller"
 L["STRING_REPORTFRAME_CURRENT"] = "Actuel"

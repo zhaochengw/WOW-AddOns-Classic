@@ -19,8 +19,10 @@ If target is installed data, or is a uid which points to installed data, then th
 
 ]]--
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
 -- Lua APIs
 local tinsert = table.insert
@@ -29,6 +31,7 @@ local pairs, type, unpack = pairs, type, unpack
 local error = error
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 
+---@class WeakAuras
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
@@ -148,6 +151,7 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
   local newMsg = "";
   local remaining = msg;
   local done;
+  local anyLinkFound = false
   repeat
     local start, finish, characterName, displayName = remaining:find("%[WeakAuras: ([^%s]+) %- (.*)%]");
     if(characterName and displayName) then
@@ -156,11 +160,13 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
       newMsg = newMsg..remaining:sub(1, start-1);
       newMsg = newMsg.."|Hgarrmission:weakauras|h|cFF8800FF["..characterName.." |r|cFF8800FF- "..displayName.."]|h|r";
       remaining = remaining:sub(finish + 1);
+      anyLinkFound = true
     else
+      newMsg = newMsg .. remaining
       done = true;
     end
   until(done)
-  if newMsg ~= "" then
+  if anyLinkFound then
     local trimmedPlayer = Ambiguate(player, "none")
     local guid = select(5, ...)
     if event == "CHAT_MSG_WHISPER" and not UnitInRaid(trimmedPlayer) and not UnitInParty(trimmedPlayer) and not (IsGuildMember and IsGuildMember(guid)) then
@@ -547,7 +553,8 @@ end
 
 local function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
   local chattype = "WHISPER"
-  if target and not UnitIsSameServer(target) then
+  -- WORKAROUND https://github.com/Stanzilla/WoWUIBugs/issues/535, and use RAID/PARTY comms for connected realms
+  if target and (UnitRealmRelationship(target) or 0) ~= 1 then
     if UnitInRaid(target) then
       chattype = "RAID"
       text = ("§§%s:%s"):format(target, text)

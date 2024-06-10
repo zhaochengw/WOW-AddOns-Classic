@@ -1,7 +1,7 @@
 --[[
 -------------------------------------------
 -- Addon: LoseControl WotLK
--- Version: 3.03
+-- Version: 3.04
 -- Authors: millanzarreta, Kouri
 -------------------------------------------
 
@@ -175,7 +175,6 @@ local interruptsIds = {
 	[43518]  = 2,		-- Kick
 	[44418]  = 2,		-- Massive Tremor
 	[44644]  = 6,		-- Arcane Nova
-	[45214]  = 8,		-- Ron's Test Spell #4
 	[45356]  = 5,		-- Kick
 	[46036]  = 6,		-- Arcane Nova
 	[46182]  = 2,		-- Snap Kick
@@ -306,7 +305,7 @@ local spellIds = {
 	[49802]  = "CC",				-- Maim (rank 2)
 	[19675]  = "Root",				-- Feral Charge Effect (Feral Charge talent)
 	[45334]  = "Root",				-- Feral Charge Effect (Feral Charge talent)
-	[50334]  = "ImmuneSpell",		-- Berserk (talent)
+	[50334]  = "ImmuneSpell",		-- Berserk (talent) (fear immune)
 	[17116]  = "Other",				-- Nature's Swiftness (talent)
 	[16689]  = "Other",				-- Nature's Grasp (rank 1)
 	[16810]  = "Other",				-- Nature's Grasp (rank 2)
@@ -366,8 +365,8 @@ local spellIds = {
 	[13810]  = "Snare",				-- Frost Trap Aura
 	[35101]  = "Snare",				-- Concussive Barrage (talent)
 	[19263]  = "Immune",			-- Deterrence (not immune, parry chance increased by 100% and grants a 100% chance to deflect spells)
-	[19574]  = "ImmuneSpell",		-- Bestial Wrath (talent) (not immuune to spells, only immune to some CC's)
-	[34471]  = "ImmuneSpell",		-- The Beast Within (talent) (not immuune to spells, only immune to some CC's)
+	[19574]  = "Immune",			-- Bestial Wrath (talent) (not immune to dmg, only to CC)
+	[34471]  = "Immune",			-- The Beast Within (talent) (not immune to dmg, only to CC)
 	[5384]   = "Other",				-- Feign Death
 	--[19434]  = "Other",				-- Aimed Shot (rank 1) (healing effects reduced by 50%)
 	--[20900]  = "Other",				-- Aimed Shot (rank 2) (healing effects reduced by 50%)
@@ -541,8 +540,11 @@ local spellIds = {
 	[20170]  = "CC",				-- Stun (Seal of Justice)
 	[10326]  = "CC",				-- Turn Evil
 	[20066]  = "CC",				-- Repentance (talent)
+	[64205]  = "Other",				-- Divine Sacrifice (talent) (30% of damage taken by party members redirected to paladin)
+	--[70940]  = "Other",				-- Divine Guardian (talent) (damage taken reduced by 10%/20%)
 	[63529]  = "Silence",			-- Silenced - Shield of the Templar (talent)
 	[1044]   = "Other",				-- Blessing of Freedom
+	[6940]   = "Other",				-- Blessing of Sacrifice (30% damage transfered to paladin)
 	[20216]  = "Other",				-- Divine Favor (talent)
 	[31821]  = "Other",				-- Aura Mastery (talent)
 	[31935]  = "Snare",				-- Avenger's Shield (rank 1) (talent)
@@ -724,8 +726,8 @@ local spellIds = {
 	[12292]  = "Other",				-- Death Wish (talent)
 	[12976]  = "Other",				-- Last Stand (talent)
 	[20230]  = "Other",				-- Retaliation
-	[18499]  = "Other",				-- Berserker Rage
-	[1719]   = "Other",				-- Recklessness
+	[18499]  = "ImmuneSpell",		-- Berserker Rage (not immune to spells, only immune to some CC)
+	[1719]   = "ImmuneSpell",		-- Recklessness (not immune to spells, only immune to some CC)
 	--[12294]  = "Other",				-- Mortal Strike (rank 1) (healing effects reduced by 50%)
 	--[21551]  = "Other",				-- Mortal Strike (rank 2) (healing effects reduced by 50%)
 	--[21552]  = "Other",				-- Mortal Strike (rank 3) (healing effects reduced by 50%)
@@ -1871,6 +1873,7 @@ local spellIds = {
 	[71760]  = "Root",				-- Searching the Auction House
 	[73395]  = "Root",				-- Elemental Credit
 	[75215]  = "Root",				-- Root
+	[71077]  = "Root",				-- Tail Smash
 	[50822]  = "Other",				-- Fervor
 	[54615]  = "Other",				-- Aimed Shot (healing effects reduced by 50%)
 	[54657]  = "Other",				-- Incorporeal (chance to dodge increased by 50%)
@@ -1949,6 +1952,9 @@ local spellIds = {
 	[50522]  = "Snare",				-- Gorloc Stomp
 	[69984]  = "Snare",				-- Frostfire Bolt
 	[414011] = "Snare",				-- Frost Trap
+	[73823]  = "Immune",			-- Harvest Souls (not immune, damage taken reduced by 99%)
+	[429056] = "Immune",			-- Harvest Souls (not immune, damage taken reduced by 99%)
+	[429063] = "Immune",			-- Harvest Souls (not immune, damage taken reduced by 99%)
 
 	-- PvE
 	--[123456] = "PvE",				-- This is just an example, not a real spell
@@ -2291,6 +2297,7 @@ local spellIds = {
 	[70547]  = "Snare",				-- Spirit Alarm
 	[70739]  = "Snare",				-- Geist Alarm
 	[70740]  = "Snare",				-- Geist Alarm
+	[428392] = "CC",				-- Frozen Throne Teleport
 	-- -- Lord Marrowgar
 	[69065]  = "CC",				-- Impaled
 	-- -- Lady Deathwhisper
@@ -7564,7 +7571,7 @@ function LoseControl:ADDON_LOADED(arg1)
 			_G.LoseControlDB.version = DBdefaults.version
 		end
 		LoseControlDB = _G.LoseControlDB
-		self.VERSION = "3.03"
+		self.VERSION = "3.04"
 		self.noCooldownCount = LoseControlDB.noCooldownCount
 		self.noBlizzardCooldownCount = LoseControlDB.noBlizzardCooldownCount
 		if (LoseControlDB.duplicatePlayerPortrait and LoseControlDB.frames.player.anchor == "Blizzard") then
@@ -8266,6 +8273,29 @@ function LoseControl:COMBAT_LOG_EVENT_UNFILTERED()
 				if (duration ~= nil) then
 					if (strfind(destGUID, "^Player-")) then
 						local durationOri = duration
+						local _, destClass = GetPlayerInfoByGUID(destGUID)
+						if (destClass == "PRIEST") then
+							local unitIdFromGUID
+							for _, v in pairs(LCframes) do
+								if (UnitGUID(v.unitId) == destGUID) then
+									unitIdFromGUID = v.unitId
+									break
+								end
+							end
+							if (unitIdFromGUID ~= nil) then
+								for i = 1, 120 do
+									local _, _, _, _, _, _, _, _, _, auxSpellId = UnitAura(unitIdFromGUID, i)
+									if not auxSpellId then break end
+									if auxSpellId == 27828 then	-- Focused Casting (rank 2 talent) (Priest) [Interrupted Mechanic Duration -20% (stacks)]
+										duration = duration * 0.8
+										break
+									elseif auxSpellId == 14743 then	-- Focused Casting (rank 1 talent) (Priest) [Interrupted Mechanic Duration -10% (stacks)]
+										duration = duration * 0.9
+										break
+									end
+								end
+							end
+						end
 						if (destGUID == playerGUID) then
 							local itemIdHead = GetInventoryItemID("player", 1)
 							local itemIdNeck = GetInventoryItemID("player", 2)
@@ -8273,10 +8303,16 @@ function LoseControl:COMBAT_LOG_EVENT_UNFILTERED()
 							local itemIdRing2 = GetInventoryItemID("player", 12)
 							-- spellId = 35126 [Interrupted Mechanic Duration -20% (Item) (doesn't stack)]
 							if (itemIdHead == 21517) or (itemIdNeck == 29347) or (itemIdNeck == 30008) then
-								duration = durationOri * 0.8
+								local duration2 = durationOri * 0.8
+								if (duration2 < duration) then
+									duration = duration2
+								end
 							-- spellId = 42184 [Interrupted Mechanic Duration -10% (Item) (doesn't stack)]
 							elseif (itemIdRing1 == 18345) or (itemIdRing2 == 18345) or (itemIdNeck == 16009) then
-								duration = durationOri * 0.9
+								local duration2 = durationOri * 0.9
+								if (duration2 < duration) then
+									duration = duration2
+								end
 							end
 							if playerClass == 7 then
 								local duration2 = duration
@@ -8425,11 +8461,17 @@ function LoseControl:UNIT_AURA(unitId, updatedAuras, typeUpdate) -- fired when a
 			-- exceptions
 			if (spellId == 605) or (spellId == 24020) then	-- Mind Control and Axe Flurry
 				spellId = 1
-			elseif (spellId == 19574 and (LoseControlDB.customSpellIds[19574] ~= nil) and (self.unitId == "pet" or (playerClass ~= 1 and playerClass ~= 2 and playerClass ~= 5 and playerClass ~= 9))) then	-- Bestial Wrath
+			elseif (spellId == 19574 and (LoseControlDB.customSpellIds[19574] ~= nil) and (reactionToPlayer == "friendly" or self.unitId == "pet")) then	-- Bestial Wrath (hunter) (immune to all CC)
 				newCategory = "Other"
-			elseif (spellId == 34471 and (LoseControlDB.customSpellIds[34471] ~= nil) and (self.unitId == "player" or (playerClass ~= 1 and playerClass ~= 2 and playerClass ~= 5 and playerClass ~= 9))) then	-- The Beast Within
+			elseif (spellId == 34471 and (LoseControlDB.customSpellIds[34471] ~= nil) and (reactionToPlayer == "friendly" or self.unitId == "player")) then	-- The Beast Within (hunter) (immune to all CC)
 				newCategory = "Other"
-			elseif (spellId == 50334 and (LoseControlDB.customSpellIds[50334] ~= nil) and (self.unitId == "player" or (playerClass ~= 1 and playerClass ~= 2 and playerClass ~= 5 and playerClass ~= 9))) then	-- Berserk
+			elseif (spellId == 46924 and (LoseControlDB.customSpellIds[46924] ~= nil) and (reactionToPlayer == "friendly" or self.unitId == "player")) then	-- Bladestorm (warrior) (immune to all CC)
+				newCategory = "Other"
+			elseif (spellId == 18499 and (LoseControlDB.customSpellIds[18499] ~= nil) and (reactionToPlayer == "friendly" or self.unitId == "player" or (playerClass ~= 1 and playerClass ~= 2 and playerClass ~= 4 and playerClass ~= 5 and playerClass ~= 9))) then	-- Berserker Rage (warrior) (immune to fear, sap and incapacitate)
+				newCategory = "Other"
+			elseif (spellId == 1719 and (LoseControlDB.customSpellIds[1719] ~= nil) and (reactionToPlayer == "friendly" or self.unitId == "player" or (playerClass ~= 1 and playerClass ~= 5 and playerClass ~= 9))) then	-- Recklessness (warrior) (immune to fear)
+				newCategory = "Other"
+			elseif (spellId == 50334 and (LoseControlDB.customSpellIds[50334] ~= nil) and (reactionToPlayer == "friendly" or self.unitId == "player" or (playerClass ~= 1 and playerClass ~= 5 and playerClass ~= 9))) then	-- Berserk (druid) (immune to fear)
 				newCategory = "Other"
 			end
 

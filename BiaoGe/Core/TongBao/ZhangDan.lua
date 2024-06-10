@@ -117,6 +117,39 @@ local function FaKuan(type, tx)
     return tx
 end
 
+local function ZhiChu(type, tx)
+    local FB = BG.FB1
+    local num = 1
+    local yes
+    local b = Maxb[FB] + 1
+    for i = 1, Maxi[FB] do
+        local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
+        local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
+        local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
+        if zhuangbei then
+            if tonumber(jine:GetText()) and tonumber(jine:GetText()) ~= 0 then
+                local text
+                if type then
+                    text = num .. ". " .. zhuangbei:GetText() .. " " .. (maijia:GetText()) .. " " ..
+                        jine:GetText()
+                else
+                    text = num .. ". " .. "|cff00FF00" .. zhuangbei:GetText() .. " " ..
+                        RGB_16(maijia:GetText(), unpack({ maijia:GetTextColor() })) .. " " ..
+                        jine:GetText() .. "|r"
+                end
+                table.insert(tx, text)
+                num = num + 1
+                yes = true
+            end
+        end
+    end
+    if not yes then
+        local text = L["没有支出"]
+        table.insert(tx, text)
+    end
+    return tx
+end
+
 local function CreateListTable(type, tx)
     local FB = BG.FB1
     local tx = tx or {}
@@ -231,14 +264,127 @@ local function CreateListTable(type, tx)
     tx = ZongLan(type, tx)
 
     if not type then
-        local text = BG.STC_dis(L["(长按ALT：仅通报总览)"])
-        table.insert(tx, text)
         local text = BG.STC_dis(L["(长按SHITF：仅通报罚款)"])
+        table.insert(tx, text)
+        local text = BG.STC_dis(L["(长按CTRL：仅通报支出)"])
+        table.insert(tx, text)
+        local text = BG.STC_dis(L["(长按ALT：仅通报总览)"])
         table.insert(tx, text)
     end
     return tx
 end
+local function OnEnter(self)
+    self.OnEnter = true
+    if BG.Backing then return end
+    local FB = BG.FB1
+    local tx = {}
 
+    if IsAltKeyDown() then
+        local type = nil
+        local text = L["———通报总览———"]
+        table.insert(tx, text)
+        -- 总览和工资
+        tx = ZongLan(type, tx)
+    elseif IsShiftKeyDown() then
+        local type = nil
+        local text = L["———通报罚款———"]
+        table.insert(tx, text)
+        -- 罚款
+        tx = FaKuan(type, tx)
+    elseif IsControlKeyDown() then
+        local type = nil
+        local text = L["———通报支出———"]
+        table.insert(tx, text)
+        -- 支出
+        tx = ZhiChu(type, tx)
+    else
+        local text = L["———通报账单———"]
+        table.insert(tx, text)
+        tx = CreateListTable(nil, tx)
+    end
+
+    GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0);
+    GameTooltip:ClearLines()
+    for i, v in ipairs(tx) do
+        GameTooltip:AddLine(v)
+    end
+    GameTooltip:Show()
+
+    local a = GameTooltip:GetHeight()
+    local b = UIParent:GetHeight()
+    if a and b then
+        a = tonumber(a)
+        b = tonumber(b)
+        if a >= b then
+            local scale = 1 - ((a - b) / b) * 0.5
+            local s = 0
+            if scale >= 0.9 then
+                s = 0.13
+            elseif scale >= 0.8 then
+                s = 0.15
+            elseif scale >= 0.7 then
+                s = 0.11
+            elseif scale >= 0.6 then
+                s = 0.08
+            elseif scale >= 0.55 then
+                s = 0.06
+            elseif scale >= 0.5 then
+                s = 0.05
+            end
+            scale = string.format("%.2f", scale) - s
+            if scale <= 0 then
+                scale = 0.4
+            end
+            GameTooltip:SetScale(scale)
+        end
+    end
+end
+local function OnClick(self)
+    local FB = BG.FB1
+    FrameHide(0)
+    if not IsInRaid(1) then
+        SendSystemMessage(L["不在团队，无法通报"])
+        PlaySound(BG.sound1, "Master")
+    else
+        self:SetEnabled(false) -- 点击后按钮变灰2秒
+        C_Timer.After(2, function()
+            self:SetEnabled(true)
+        end)
+
+        local tx = {}
+        if IsAltKeyDown() then
+            local type = true
+            local text = L["———通报总览———"]
+            table.insert(tx, text)
+            -- 总览和工资
+            tx = ZongLan(type, tx)
+        elseif IsShiftKeyDown() then
+            local type = true
+            local text = L["———通报罚款———"]
+            table.insert(tx, text)
+            -- 罚款
+            tx = FaKuan(type, tx)
+        elseif IsControlKeyDown() then
+            local type = true
+            local text = L["———通报支出———"]
+            table.insert(tx, text)
+            -- 支出
+            tx = ZhiChu(type, tx)
+        else
+            local text = L["———通报账单———"]
+            table.insert(tx, text)
+            tx = CreateListTable(true, tx)
+            local text = L["——感谢使用BiaoGe插件——"]
+            table.insert(tx, text)
+        end
+
+        for index, value in ipairs(tx) do
+            SendChatMessage(value, "RAID")
+        end
+
+        PlaySoundFile(BG.sound2, "Master")
+    end
+end
 
 function BG.ZhangDanUI(lastbt)
     local bt = CreateFrame("Button", nil, BG.FBMainFrame, "UIPanelButtonTemplate")
@@ -257,66 +403,7 @@ function BG.ZhangDanUI(lastbt)
     BG.ButtonZhangDan = bt
 
     -- 鼠标悬停提示账单
-    local function OnEnter(self)
-        self.OnEnter = true
-        if BG.Backing then return end
-        local FB = BG.FB1
-        local tx = {}
 
-        if IsAltKeyDown() then
-            local type = nil
-            local text = L["———通报总览———"]
-            table.insert(tx, text)
-            -- 总览和工资
-            tx = ZongLan(type, tx)
-        elseif IsShiftKeyDown() then
-            local type = nil
-            local text = L["———通报罚款———"]
-            table.insert(tx, text)
-            -- 罚款
-            tx = FaKuan(type, tx)
-        else
-            local text = L["———通报金团账单———"]
-            table.insert(tx, text)
-            tx = CreateListTable(nil, tx)
-        end
-
-        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0);
-        GameTooltip:ClearLines()
-        for i, v in ipairs(tx) do
-            GameTooltip:AddLine(v)
-        end
-        GameTooltip:Show()
-
-        local a = GameTooltip:GetHeight()
-        local b = UIParent:GetHeight()
-        if a and b then
-            a = tonumber(a)
-            b = tonumber(b)
-            if a >= b then
-                local scale = 1 - ((a - b) / b) * 0.5
-                local s = 0
-                if scale >= 0.9 then
-                    s = 0.13
-                elseif scale >= 0.8 then
-                    s = 0.15
-                elseif scale >= 0.7 then
-                    s = 0.11
-                elseif scale >= 0.6 then
-                    s = 0.08
-                elseif scale >= 0.55 then
-                    s = 0.06
-                elseif scale >= 0.5 then
-                    s = 0.05
-                end
-                scale = string.format("%.2f", scale) - s
-                if scale <= 0 then
-                    scale = 0.4
-                end
-                GameTooltip:SetScale(scale)
-            end
-        end
-    end
     bt:SetScript("OnEnter", OnEnter)
 
     bt:SetScript("OnLeave", function(self)
@@ -325,51 +412,15 @@ function BG.ZhangDanUI(lastbt)
         GameTooltip:SetScale(1)
     end)
     -- 点击通报账单
-    bt:SetScript("OnClick", function(self)
-        local FB = BG.FB1
-        FrameHide(0)
-        if not IsInRaid(1) then
-            SendSystemMessage(L["不在团队，无法通报"])
-            PlaySound(BG.sound1, "Master")
-        else
-            self:SetEnabled(false) -- 点击后按钮变灰2秒
-            C_Timer.After(2, function()
-                bt:SetEnabled(true)
-            end)
-
-            local tx = {}
-            if IsAltKeyDown() then
-                local type = true
-                local text = L["———通报总览———"]
-                table.insert(tx, text)
-                -- 总览和工资
-                tx = ZongLan(type, tx)
-            elseif IsShiftKeyDown() then
-                local type = true
-                local text = L["———通报罚款———"]
-                table.insert(tx, text)
-                -- 罚款
-                tx = FaKuan(type, tx)
-            else
-                local text = L["———通报金团账单———"]
-                table.insert(tx, text)
-                tx = CreateListTable(true, tx)
-                local text = L["——感谢使用金团表格——"]
-                table.insert(tx, text)
-            end
-
-            for index, value in ipairs(tx) do
-                SendChatMessage(value, "RAID")
-            end
-
-            PlaySoundFile(BG.sound2, "Master")
-        end
-    end)
+    bt:SetScript("OnClick", OnClick)
 
     local f = CreateFrame("Frame")
     f:RegisterEvent("MODIFIER_STATE_CHANGED")
     f:SetScript("OnEvent", function(self, event, enter)
-        if (enter == "LALT" or enter == "RALT" or enter == "LSHIFT" or enter == "RSHIFT") and bt.OnEnter then
+        if (enter == "LALT" or enter == "RALT"
+                or enter == "LSHIFT" or enter == "RSHIFT"
+                or enter == "LCTRL" or enter == "RCTRL")
+            and bt.OnEnter then
             OnEnter(bt)
         end
     end)

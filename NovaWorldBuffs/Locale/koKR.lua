@@ -29,6 +29,8 @@ L["Fengus' Ferocity"] = "펜구스의 흉포";
 L["Mol'dar's Moxie"] = "몰다르의 투지";
 L["Boon of Blackfathom"] = "검은심연의 은혜";
 L["Ashenvale Rallying Cry"] = "잿빛 골짜기 재집결의 함성";
+L["Spark of Inspiration"] = "광기 어린 영감의 불꽃"; --Phase 2 SoD world buff.
+L["Fervor of the Temple Explorer"] = "신전 기사단의 열정";
  
 ---=====---
 ---Horde---
@@ -827,3 +829,5 @@ L["terokkarChat10Desc"] = "10분 전 메시지를 표시합니다.";
 
 L["terokkarMiddle10Title"] = "테로카르 10분";
 L["terokkarMiddle10Desc"] = "10분 전 화면 중앙에 경보를 표시합니다.";
+
+L["Temple of Atal'Hakkar"] = "아탈학카르 신전";

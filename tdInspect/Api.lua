@@ -85,9 +85,8 @@ function ns.UnitName(unit)
     return ns.GetFullName(UnitFullName(unit))
 end
 
-function ns.FixInspectItemTooltip(tip)
-    local link = select(2, tip:GetItem())
-    local id = ns.ItemLinkToId(link)
+function ns.FixInspectItemTooltip(tip, slot, item)
+    local id = ns.ItemLinkToId(item)
     if not id then
         return
     end
@@ -95,9 +94,12 @@ function ns.FixInspectItemTooltip(tip)
     tip = LibStub('LibTooltipExtra-1.0'):New(tip)
 
     ns.FixItemSets(tip, id)
-    -- @non-classic@
-    ns.FixMetaGem(tip, link)
-    -- @end-non-classic@
+    --[[@build<2@
+    ns.FixRune(tip, slot, id)
+    --@end-build<2@]]
+    -- @build>2@
+    ns.FixMetaGem(tip, item)
+    -- @end-build>2@
 
     tip:Show()
 end
@@ -124,4 +126,27 @@ function ns.GetItemGems(link, out)
     --     end
     -- end
     -- return out
+end
+
+function ns.GetGlyphIdBySpellId(spellId)
+    local d = ns.SpellGlyphes[spellId]
+    return d and d.glyphId
+end
+
+function ns.GetGlyphIcon(glyphId)
+    local d = ns.Glyphes[glyphId]
+    return d and d.icon
+end
+
+function ns.GetGlyphInfo(glyphId)
+    local d = ns.Glyphes[glyphId]
+    if not d then
+        return
+    end
+    return nil, d.spellId, d.icon
+end
+
+function ns.ResolveTalent(class, data)
+    local talent = ns.Talent:New(class, data)
+    return talent:ToString()
 end

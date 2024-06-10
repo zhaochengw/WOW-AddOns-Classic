@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.15) add-on for World of Warcraft UI
+    Decursive (v 2.7.17) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY.
 
-    This file was last updated on 2023-12-18T08:50:23Z
+    This file was last updated on 2024-01-26T11:10:51Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -430,6 +430,13 @@ L["OPT_NOSTARTMESSAGES"] = "Disable welcome messages"
 L["OPT_NOSTARTMESSAGES_DESC"] = "Remove the two messages Decursive prints to the chat frame at every login."
 L["OPT_OPTIONS_DISABLED_WHILE_IN_COMBAT"] = "These options are disabled while you are in combat."
 L["OPT_PERFOPTIONWARNING"] = "WARNING: Do not change those values unless you know exactly what you are doing. These settings can have a great impact on the game performances. Most users should use the default values of 0.1 and 10."
+L["OPT_PERIODICRESCAN"] = "Debuff preiodic full scan"
+L["OPT_PERIODICRESCAN_DESC"] = [=[Set the delay for global unit periodic rescan for buffs and debuffs.
+Set to 0 to disable.
+
+Note that since WoW 10.2.5 this periodic rescan increases Decursive's memory usage.]=]
+L["OPT_PERIODICRESCAN_REPORT"] = "Periodic scan debug reporting"
+L["OPT_PERIODICRESCAN_REPORT_DESC"] = "Create a debug report if the periodic scan finds something that was not previously detected through events."
 L["OPT_PLAYSOUND_DESC"] = "Play a sound if someone get cursed"
 L["OPT_POISONCHECK_DESC"] = "If checked you'll be able to see and cure poisoned units"
 L["OPT_PRINT_CUSTOM_DESC"] = "Decursive's messages will be printed in a custom chat frame"
@@ -542,4 +549,4 @@ L["UNSTABLERELEASE"] = "Unstable release"
 
 
 
-T._LoadedFiles["enUS.lua"] = "2.7.15";
+T._LoadedFiles["enUS.lua"] = "2.7.17";

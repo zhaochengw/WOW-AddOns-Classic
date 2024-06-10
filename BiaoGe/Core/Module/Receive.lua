@@ -114,6 +114,8 @@ function BG.ReceiveUI()
         local f = CreateFrame("Frame")
         f:RegisterEvent("CHAT_MSG_ADDON")
         f:SetScript("OnEvent", function(self, even, ...)
+            if not BG.canSendBiaoGe then return end
+
             local prefix, msg, distType, sender = ...
             if prefix ~= "BiaoGe" then return end
             local sendername = strsplit("-", sender)

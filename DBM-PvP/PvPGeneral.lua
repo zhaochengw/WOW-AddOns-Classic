@@ -13,7 +13,7 @@ local playerFaction = GetPlayerFactionGroup("player")
 local DBM5Protocol = "1" -- DBM protocol version
 local DBM5Prefix = UnitName("player") .. "-" .. GetRealmName() .. "\t" .. DBM5Protocol .. "\t" -- Name-Realm\tProtocol version\t
 
-mod:SetRevision("20231215150010")
+mod:SetRevision("20240405150659")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"ZONE_CHANGED_NEW_AREA",
@@ -28,7 +28,7 @@ mod:RegisterEvents(
 mod:AddBoolOption("HideBossEmoteFrame", false)
 mod:AddBoolOption("AutoSpirit", false)
 mod:AddBoolOption("ShowRelativeGameTime", true)
---mod:AddBoolOption("ShowBasesToWin", false)
+mod:AddBoolOption("ShowBasesToWin", true)
 
 do
 	local IsInInstance, RepopMe, GetSelfResurrectOptions = IsInInstance, RepopMe, C_DeathInfo.GetSelfResurrectOptions
@@ -101,6 +101,7 @@ do
 			bgzone = false
 			self:UnregisterShortTermEvents()
 			self:Stop()
+			DBM.InfoFrame:Hide()
 			subscribedMapID = nil
 			if mod.Options.HideBossEmoteFrame then
 				DBM:HideBlizzardEvents(0, true)
@@ -260,6 +261,12 @@ do
 		DBM.InfoFrame:SetColumns(1)
 	end
 
+	function healthTracker:ShowInfoFrame()
+		if not DBM.InfoFrame:IsShown() then
+			DBM.InfoFrame:Show(9, "function", function() return self:updateInfoFrame() end, false, false)
+		end
+	end
+
 	local trackers = {} ---@type HealthTracker[]
 	--- Only a single health tracker can be active at a time.
 	function mod:NewHealthTracker(syncChannels, scanNameplates)
@@ -404,14 +411,15 @@ do
 	end
 
 	function mod:CHAT_MSG_BG_SYSTEM_NEUTRAL(msg)
-		if self.Options.TimerStart and msg == L.BgStart120 or msg:find(L.BgStart120) then
-			startTimer:Update(isClassic and 1.5 or 0, 120)
-		elseif self.Options.TimerStart and msg == L.BgStart60 or msg:find(L.BgStart60) or msg == L.ArenaStart60 or msg:find(L.ArenaStart60) then
-			startTimer:Update(isClassic and 61.5 or 60, 120)
-		elseif self.Options.TimerStart and msg == L.BgStart30 or msg:find(L.BgStart30) or msg == L.ArenaStart30 or msg:find(L.ArenaStart30) then
-			startTimer:Update(isClassic and 91.5 or 90, 120)
-		elseif self.Options.TimerStart and msg == L.ArenaStart15 or msg:find(L.ArenaStart15) then
-			startTimer:Update(isClassic and 106.5 or 105, 120)
+		-- in Classic era the chat msg is about 1.5 seconds early
+		if self.Options.TimerStart and (msg:find(L.BgStart120) or msg:find(L.BgStart120era)) then
+			startTimer:Update(0, 120)
+		elseif self.Options.TimerStart and (msg:find(L.BgStart60) or msg:find(L.BgStart60era) or msg == L.ArenaStart60 or msg:find(L.ArenaStart60)) then
+			startTimer:Update(isClassic and 58.5 or 60, 120)
+		elseif self.Options.TimerStart and (msg:find(L.BgStart30) or msg:find(L.BgStart30era) or msg == L.ArenaStart30 or msg:find(L.ArenaStart30)) then
+			startTimer:Update(isClassic and 88.5 or 90, 120)
+		elseif self.Options.TimerStart and (msg == L.ArenaStart15 or msg:find(L.ArenaStart15)) then
+			startTimer:Update(isClassic and 103.5 or 105, 120)
 		elseif not isClassic and (msg == L.Vulnerable1 or msg == L.Vulnerable2 or msg:find(L.Vulnerable1) or msg:find(L.Vulnerable2)) then
 			vulnerableTimer:Start()
 		end
@@ -447,6 +455,32 @@ do
 	end
 	]]--
 
+	local infoFrameState = {
+		allianceScore = 0,
+		hordeScore = 0,
+		maxScore = 0,
+		resPerSec = {},
+	}
+	local function updateInfoFrame()
+		local isAlly = playerFaction == "Alliance"
+		local ourScore = isAlly and infoFrameState.allianceScore or infoFrameState.hordeScore
+		local enemyScore = isAlly and infoFrameState.hordeScore or infoFrameState.allianceScore
+		for ourBases = 0, numObjectives do
+			local enemyBases = numObjectives - ourBases
+			local ourTime = mmin(infoFrameState.maxScore, (infoFrameState.maxScore - ourScore) / (infoFrameState.resPerSec[ourBases + 1] or 0))
+			local enemyTime = mmin(infoFrameState.maxScore, (infoFrameState.maxScore - enemyScore) / (infoFrameState.resPerSec[enemyBases + 1] or 0))
+			-- It would be very clever to also take current capping timers and time to cap into account here
+			-- But that'd be hard to test and not really necessary: it's pretty clear what this number means
+			-- even when it misses the very rare edge case that the time until you cap an extra base is relevant for the number
+			-- (it will just update to a higher number while you cap which is fine)
+			if enemyTime > ourTime then
+				local text = L.BasesToWin:format(ourBases)
+				return {[text] = ""}, {text}
+			end
+		end
+		return {}, {} -- shouldn't happen because you should always be able to win by capturing everything
+	end
+
 	function mod:UpdateWinTimer(maxScore, allianceScore, hordeScore, allianceBases, hordeBases)
 		local resPerSec = resourcesPerSec[numObjectives]
 		local gameTime = GetGametime()
@@ -467,45 +501,17 @@ do
 			winTimer:SetColor({r=0, g=0, b=1})
 			winTimer:UpdateIcon("132486") -- Interface\\Icons\\INV_BannerPVP_02.blp
 		end
-		--[[
-		CODE IS STILL TOO EXPERIMENTAL
-
-		local isAlliance = playerFaction == "Alliance"
-		if self.Options.ShowBasesToWin and (isAlliance and (allyTime > hordeTime) or (hordeTime > allyTime)) then
+		infoFrameState.allianceScore = allianceScore
+		infoFrameState.hordeScore = hordeScore
+		infoFrameState.maxScore = maxScore
+		infoFrameState.resPerSec = resPerSec
+		if self.Options.ShowBasesToWin then
 			if not DBM.InfoFrame:IsShown() then
-				DBM.InfoFrame:SetHeader("Bases to win")
-				DBM.InfoFrame:Show(42, "function", UpdateInfoFrame, false, false)
+				DBM.InfoFrame:SetHeader(L.BasesToWinHeader)
+				DBM.InfoFrame:Show(2, "function", updateInfoFrame, false, false)
 				DBM.InfoFrame:SetColumns(1)
 			end
-			-- X = us, Y = opposite faction
-			local lowerLimit, basesX, basesY, scoreX, scoreY, upperLimit = 1 -- lowerLimit is 1, everything else is nil
-			if isAlliance then
-				basesX, basesY, scoreX, scoreY, upperLimit = allianceBases, hordeBases, allianceScore, hordeScore, hordeTime
-			else
-				basesX, basesY, scoreX, scoreY, upperLimit = hordeBases, allianceBases, hordeScore, allianceScore, allyTime
-			end
-			for y = 1, numObjectives - basesX do
-				-- Opposite faction will either own their current basecount, or 5 - however many you own (aka whats left)
-				local _basesY = mmin(basesY, 5 - basesY)
-				for x = upperLimit, lowerLimit, -1 do
-					-- Calculate score x seconds in the future
-					local scoreX1, scoreY1 = resPerSec[basesX] * x + scoreX, resPerSec[basesY] * x + scoreY
-					-- Assume capping time
-					local scoreX2, scoreY2 = resPerSec[basesX] * 60 + scoreX1, resPerSec[_basesY] * 60 + scoreY1
-					-- Calculate time till max (with capping times)
-					local ttmX, ttmY = (maxScore - scoreX2) / resPerSec[basesX + y], (maxScore - scoreY2) / resPerSec[_basesY]
-					if ttmX < ttmY then
-						-- More bases will never have a "longer" time than less bases, efficiency for loops
-						lowerLimit = x
-						basesToWin[basesX + y] = ttmX
-						break
-					end
-				end
-			end
-		else
-			DBM.InfoFrame:Hide()
 		end
-		--]]
 	end
 
 	local ignoredAtlas = {
@@ -622,9 +628,9 @@ do
 						capTimer:Stop(infoName)
 						objectivesStore[infoName] = (atlasName and atlasName or infoTexture)
 						if not ignoredAtlas[subscribedMapID] and (isAllyCapping or isHordeCapping) then
-							local capTime = GetAreaPOITimeLeft and GetAreaPOITimeLeft(areaPOIID) and GetAreaPOITimeLeft(areaPOIID) * 60 or overrideTimers[subscribedMapID] or 60
+							local capTime = GetAreaPOITimeLeft and GetAreaPOITimeLeft(areaPOIID) and GetAreaPOITimeLeft(areaPOIID) * 60 or overrideTimers[subscribedMapID] or isRetail and 60 or 64
 							if capTime ~= 0 then
-								capTimer:Start(GetAreaPOITimeLeft and GetAreaPOITimeLeft(areaPOIID) and GetAreaPOITimeLeft(areaPOIID) * 60 or overrideTimers[subscribedMapID] or 60, infoName)
+								capTimer:Start(capTime, infoName)
 							end
 							if isAllyCapping then
 								capTimer:SetColor({r=0, g=0, b=1}, infoName)
@@ -658,7 +664,9 @@ do
 			end
 			if widgetID == 1671 or widgetID == 2074 then -- Standard battleground score predictor: 1671. Deepwind rework: 2074
 				local info = GetDoubleStatusBarWidgetVisualizationInfo(widgetID)
-				self:UpdateWinTimer(info.leftBarMax, info.leftBarValue, info.rightBarValue, allyBases, hordeBases)
+				if info then
+					self:UpdateWinTimer(info.leftBarMax, info.leftBarValue, info.rightBarValue, allyBases, hordeBases)
+				end
 			end
 			if widgetID == 1893 or widgetID == 1894 then -- Classic Arathi Basin
 				local totalScore = isWrath and 1600 or 2000
@@ -666,19 +674,65 @@ do
 			end
 		elseif widgetID == 1683 then -- Temple Of Kotmogu
 			local widgetInfo = GetDoubleStateIconRowVisualizationInfo(1683)
-			for _, v in pairs(widgetInfo.leftIcons) do
-				if v.iconState == 1 then
-					allyBases = allyBases + 1
+			if widgetInfo then
+				for _, v in pairs(widgetInfo.leftIcons) do
+					if v.iconState == 1 then
+						allyBases = allyBases + 1
+					end
 				end
-			end
-			for _, v in pairs(widgetInfo.rightIcons) do
-				if v.iconState == 1 then
-					hordeBases = hordeBases + 1
+				for _, v in pairs(widgetInfo.rightIcons) do
+					if v.iconState == 1 then
+						hordeBases = hordeBases + 1
+					end
 				end
 			end
 			local info = GetDoubleStatusBarWidgetVisualizationInfo(1689)
-			self:UpdateWinTimer(info.leftBarMax, info.leftBarValue, info.rightBarValue, allyBases, hordeBases)
+			if info then
+				self:UpdateWinTimer(info.leftBarMax, info.leftBarValue, info.rightBarValue, allyBases, hordeBases)
+			end
 		end
 	end
 	mod.UPDATE_UI_WIDGET = mod.AREA_POIS_UPDATED
 end
+
+-- Note on game time and server time.
+-- Contrary to popular opinion the event start time is not synced to GetGameTime(), it seems a bit random.
+-- Also, GetGameTime() is only available with minute granularity and the updates of minutes on game time as visible by the API does not seem to be synchronized to actual time.
+-- This GetGameTime() randomness seems to be just be a weird effect due to how the time between client and server are synchronized.
+-- The exact time at which the minute for GetGameTime updates changes between relogs, so there doesn't seem to be any meaning to the exact point in time when this happens.
+-- Earlier versions of this mod just used GetGameTime() and attempted to adjust for seconds from local but it was often off by a whole minute,
+-- this implementation is only off by at most 30 seconds, but usually at most 15 seconds (if your clock is synchronized)
+
+-- Get current time in server time zone
+function mod:GetServerTime()
+	-- C_DateAndTime.GetServerTimeLocal() returns a time zone that is neither the server's time nor my time?
+	-- GetGameTime() returns server time but is updated once per minute and the update interval is synchronized to actual server time, i.e., it will be off by up to a minute and the update time differs between relogs
+	-- Also there is GetLocalGameTime() which seems to be identical to GetGameTime()?
+	-- GetServerTime() looks like it returns local time, but good thing everyone has synchronized clocks nowadays, so this is fine to use
+	-- We just need to handle time zones, i.e., find the diff between what GetGameTime() says and what is local time
+	local gameHours, gameMinutes = GetGameTime()
+	-- The whole date logic could probably be avoided with some clever modular arithmetic, but whatever, we know the date
+	local gameDate = C_DateAndTime.GetTodaysDate() -- Yes, this is server date
+	local localSeconds = GetServerTime() -- Yes, that is local time
+	local gameSeconds = time({
+		year = gameDate.year,
+		month = gameDate.month,
+		day = gameDate.day,
+		hour = gameHours,
+		min = gameMinutes
+	})
+	local timeDiff = localSeconds - gameSeconds
+	-- Time zones can be in 15 minute increments, so round to that
+	return localSeconds - math.floor(timeDiff / (15 * 60) + 0.5) * 15 * 60
+end
+
+-- Time until world pvp events (Season of Discovery) that ocur every `interval` hours at an offset of `offet` hours
+---@return number
+function mod:GetTimeUntilWorldPvpEvent(offset, interval)
+	offset = offset or 0
+	interval = interval or 3
+	local time = date("*t", self:GetServerTime())
+	local hour = time.hour + time.min / 60 + time.sec / 60 / 60
+	return (interval - ((hour - offset) % interval)) * 60 * 60 + 30
+end
+

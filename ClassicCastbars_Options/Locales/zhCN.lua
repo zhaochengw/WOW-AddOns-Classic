@@ -59,7 +59,6 @@ L["REQUIRES_RESTART"] = "关闭施法条模组需要重载界面, 点击应用�
 L["RESET_ALL"] = "重置所有设置"
 L["SHOW_FOR_ENEMY"] = "显示敌方施法"
 L["SHOW_FOR_FRIENDLY"] = "显示友方施法"
-L["SHOW_INTERRUPT_SCHOOL"] = "显示打断技能"
 L["SHOW_SPARK"] = "显示施法条亮点效果"
 L["SHOW_TIMER"] = "显示计时器文字"
 L["SHOW_TIMER_TOOLTIP"] = "为当前的施法显示倒计时."

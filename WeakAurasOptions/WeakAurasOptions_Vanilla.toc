@@ -1,7 +1,7 @@
-## Interface: 11501
+## Interface: 11502
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
-## Version: 5.10.1
+## Version: 5.13.1
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras
@@ -98,3 +98,4 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasSpinBox.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasScrollArea.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasInputFocus.lua
 AceGUI-Widgets\AceGuiWidget-WeakAurasMediaSound.lua
+AceGUI-Widgets\WeakAurasStatusbarAtlasWidget.lua

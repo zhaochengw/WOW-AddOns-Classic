@@ -1,4 +1,4 @@
-## Interface: 11500
+## Interface: 11501
 ## Title: ChatLinkIcons v3.4
 ## Version: 3.4
 ## Author: SDPhantom

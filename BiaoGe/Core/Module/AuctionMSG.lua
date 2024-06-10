@@ -64,10 +64,13 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             if itemID then
                 GameTooltip:SetItemByID(itemID)
                 GameTooltip:Show()
+                BG.HilightBiaoGeSaveItems(link)
+                BG.HighlightBag(link)
             end
         end)
         f:SetScript("OnHyperlinkLeave", function(self, link, text, button)
             GameTooltip:Hide()
+            BG.Hide_AllHiLight()
         end)
         f:SetScript("OnHyperlinkClick", function(self, link, text, button)
             if (strsub(link, 1, 6) == "player") then
@@ -94,19 +97,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     if BG.IsLeader then -- 开始拍卖
                         BG.StartAuction(link)
                     else
-                        for b = 1, Maxb[BG.FB1], 1 do
-                            for i = 1, Maxi[BG.FB1], 1 do
-                                if BG.Frame[BG.FB1]["boss" .. b]["zhuangbei" .. i] then
-                                    if GetItemID(link) == GetItemID(BG.Frame[BG.FB1]["boss" .. b]["zhuangbei" .. i]:GetText()) then
-                                        BiaoGe[BG.FB1]["boss" .. b]["guanzhu" .. i] = true
-                                        BG.Frame[BG.FB1]["boss" .. b]["guanzhu" .. i]:Show()
-                                        BG.FrameLootMsg:AddMessage(BG.STC_g2(format(L["已成功关注装备：%s。团长拍卖此装备时会提醒"],
-                                            AddTexture(Texture) .. link)))
-                                        return
-                                    end
-                                end
-                            end
-                        end
+                        BG.AddGuanZhu(link)
                     end
                 end
             end

@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with GetInfoLink.  If not, see <http://www.gnu.org/licenses/>.
 
-## Interface: 100200
+## Interface: 100207
 
 ## Title: GetInfoLink
 ## Notes: Query all kinds of information and generate links in the chat window. |n|n|cffffd200How to use: |rClick the small map button to use. |nInput the ID of the thing you are looking for in the corresponding query box and use Enter to send it, and the result will be displayed in the chat window. |nYou can use the left mouse button to drag the query box.
@@ -26,7 +26,7 @@
 ## Title-zhCN: |cffFF9900[进阶]|r 资讯连结查询
 ## Notes-zhCN: GetInfoLink |n|n查询各式讯息并生成连结于聊天视窗中。 |n|n|cffffd200使用方法: |r点选小地图按钮使用。 |n在相对应的查询框内输入想找的东西ID并使用Enter送出，结果会显示在聊天视窗中。 |n可使用左键拖曳查询框。
 ## Author: Char11e
-## Version: v0.0.2
+## Version: v0.0.8
 ## DefaultState: disabled
 
 Localization\Localization.lua
@@ -34,7 +34,10 @@ Localization\enUS.lua
 Localization\zhCN.lua
 Localization\zhTW.lua
 
-LibDBIcon-1.0\embeds.xml
+LibDBIcon-1.0\LibStub\LibStub.lua
+LibDBIcon-1.0\CallbackHandler-1.0\CallbackHandler-1.0.lua
+LibDBIcon-1.0\LibDataBroker-1.1\LibDataBroker-1.1.lua
+LibDBIcon-1.0\LibDBIcon-1.0\LibDBIcon-1.0.lua
 
 core.lua
 item.lua

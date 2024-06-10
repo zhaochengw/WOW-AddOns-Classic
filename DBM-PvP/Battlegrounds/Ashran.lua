@@ -1,9 +1,7 @@
-if WOW_PROJECT_ID ~= (WOW_PROJECT_MAINLINE or 1) then -- Added in BfA
-	return
-end
-local mod	= DBM:NewMod("z1191", "DBM-PvP")
+local mod	= DBM:NewMod("z1191", "DBM-PvP") -- Added in WoD
 
-mod:SetRevision("20240203195924")
+
+mod:SetRevision("20240505221847")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"LOADING_SCREEN_DISABLED",
@@ -16,14 +14,12 @@ mod:AddBoolOption("AutoTurnIn")
 do
 	local bgzone = false
 
-	local function Init(self)
+	function mod:Init()
 		local zoneID = DBM:GetCurrentArea()
 		if not bgzone and zoneID == 1191 then
 			bgzone = true
 			self:RegisterShortTermEvents(
-				"GOSSIP_SHOW",
-				"QUEST_PROGRESS",
-				"QUEST_COMPLETE"
+				"GOSSIP_SHOW"
 			)
 			if not self.tracker then
 				local generalMod = DBM:GetModByName("PvPGeneral")
@@ -35,7 +31,7 @@ do
 			end
 		elseif bgzone and zoneID ~= 1191 then
 			bgzone = false
-			self:UnregisterShormTermEvents()
+			self:UnregisterShortTermEvents()
 			if self.tracker then
 				self.tracker:Cancel()
 				self.tracker = nil
@@ -44,7 +40,7 @@ do
 	end
 
 	function mod:LOADING_SCREEN_DISABLED()
-		self:Schedule(1, Init, self)
+		self:ScheduleMethod(1, "Init")
 	end
 	mod.ZONE_CHANGED_NEW_AREA	= mod.LOADING_SCREEN_DISABLED
 	mod.PLAYER_ENTERING_WORLD	= mod.LOADING_SCREEN_DISABLED

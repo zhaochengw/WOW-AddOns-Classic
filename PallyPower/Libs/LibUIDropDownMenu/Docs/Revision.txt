@@ -1,7 +1,30 @@
-$Id: Revision.txt 123 2023-07-29 01:42:12Z arithmandar $
+$Id: Revision.txt 135 2024-02-05 16:50:14Z arithmandar $
 
 Revision History:
 =================
+
+v4.26.10020553040 (2024/02/06)
+------------------------------
+- OpenColorPicker related feature's compatibility enhancement
+
+v4.25.10020553040 (2024/01/30)
+------------------------------
+- Enhanced frame or texture's creation to set the name as nil when parent frame name is also nil
+- Further error handling for NewFeature
+
+v4.24.10020553007 (2024/01/23)
+------------------------------
+- Fixed issue of version confliction when older version was loaded first and then newer version was to replace the library. 
+  What has been created won't have the "NewFeature" frame there.
+
+v4.23.10020553007 (2024/01/22)
+------------------------------
+- Fixed issue with the compatibility with WoW 3.4.3 / 1.15.0
+
+v4.22.10020553007 (2024/01/21)
+------------------------------
+- Toc update to support WoW 10.2.5 / 3.4.3 / 1.15.0
+- function sync with build 53007
 
 v4.21.10010550587 (2023/07/29)
 ------------------------------

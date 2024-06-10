@@ -2,8 +2,10 @@ if not WeakAuras.IsLibsOK() then
   return
 end
 
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 local L = WeakAuras.L
 
 -- Takes as input a table of display data and attempts to update it to be compatible with the current version
@@ -1985,6 +1987,48 @@ function Private.Modernize(data)
       if fieldsToMigrate then
         for _, field in ipairs(fieldsToMigrate) do
           migrateToTable(t, field)
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 71 then
+    if data.regionType == 'icon' or data.regionType == 'aurabar'
+       or data.regionType == 'progresstexture'
+       or data.regionType == 'stopmotion'
+    then
+      data.progressSource = {-1, ""}
+    else
+      data.progressSource = nil
+    end
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if subRegionData.type == "subtick" then
+          local tick_placement = subRegionData.tick_placement
+          subRegionData.tick_placements = {}
+          subRegionData.tick_placements[1] = tick_placement
+          subRegionData.progressSources = {{-2, ""}}
+          subRegionData.tick_placement = nil
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 72 then
+    if WeakAuras.IsClassic() then
+      if data.model_path and data.modelIsUnit then
+        data.model_fileId = data.model_path
+      end
+    end
+  end
+
+  if data.internalVersion < 73 then
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if type(change.property) == "string" then
+            change.property = string.gsub(change.property, "(sub.%d.tick_placement)(%d)", "%1s.%2")
+          end
         end
       end
     end

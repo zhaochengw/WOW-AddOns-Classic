@@ -772,12 +772,12 @@ GTFO.SpellID["72097"] = {
 
 GTFO.SpellID["71271"] = {
 	--desc = "Arctic Chill (ICC Frostwing Trash - 10)";
-	sound = 1;
+	sound = 2;
 };
 
 GTFO.SpellID["71829"] = {
 	--desc = "Arctic Chill (ICC Frostwing Trash - 25)";
-	sound = 1;
+	sound = 2;
 };
 
 GTFO.SpellID["71086"] = {

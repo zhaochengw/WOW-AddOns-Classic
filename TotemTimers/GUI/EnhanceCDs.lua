@@ -1,6 +1,5 @@
-if select(2, UnitClass("player")) ~= "SHAMAN" then
-    return
-end
+if select(2, UnitClass("player")) ~= "SHAMAN" then return end
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and C_Seasons.GetActiveSeason() ~= 2 then return end
 
 local _, TotemTimers = ...
 
@@ -27,6 +26,13 @@ local function changeOrder(spell, dir, role)
     end
     TotemTimers.OrderCDs(tostring(role))
     TotemTimers.ProcessSetting("EnhanceCDs")
+end
+
+local specializations = {}
+for i = 1, 3 do
+    local name, name2 = GetTalentTabInfo(i)
+    if type(name) == "number" then name = name2 end
+    specializations[i] = name
 end
 
 TotemTimers.options.args.enhancecds = {
@@ -110,6 +116,19 @@ TotemTimers.options.args.enhancecds = {
                     end,
                     get = function(info)
                         return TotemTimers.ActiveProfile.HideEnhanceCDsOOC
+                    end,
+                },
+                OneButtonRow = {
+                    order = 7,
+                    type = "toggle",
+                    name = L["One Button Row"],
+                    desc = L["Displays combat cooldowns on one button row instead of two"],
+                    set = function(info, val)
+                        TotemTimers.ActiveProfile.EnhanceCDsOneRow = val
+                        TotemTimers.LayoutEnhanceCDs()
+                    end,
+                    get = function(info)
+                        return TotemTimers.ActiveProfile.EnhanceCDsOneRow
                     end,
                 },
 
@@ -261,12 +280,12 @@ TotemTimers.options.args.enhancecds = {
                 },
 
                 lc = {
-                    order = 50,
+                    order = 70,
                     type = "header",
                     name = L["Long Cooldowns"],
                 },
                 lcenable = {
-                    order = 51,
+                    order = 71,
                     type = "toggle",
                     name = L["Enable"],
                     set = function(info, val)
@@ -278,7 +297,7 @@ TotemTimers.options.args.enhancecds = {
                     end
                 },
                 lcarrange = {
-                    order = 52,
+                    order = 72,
                     type = "select",
                     name = L["Arrangement"],
                     values = { vertical = L["vertical"], horizontal = L["horizontal"], },
@@ -291,12 +310,12 @@ TotemTimers.options.args.enhancecds = {
                     end,
                 },
                 lcnewline = {
-                    order = 53,
+                    order = 73,
                     type = "description",
                     name = "",
                 },
                 lcstoppulse = {
-                    order = 54,
+                    order = 74,
                     type = "toggle",
                     name = L["Stop Pulse Animation"],
                     desc = L["Stop Pulse Desc"],
@@ -309,7 +328,7 @@ TotemTimers.options.args.enhancecds = {
                     end,
                 },
                 lcstoppulsedemo = {
-                    order = 55,
+                    order = 75,
                     type = "execute",
                     name = L["Demo"],
                     func = function()
@@ -320,8 +339,10 @@ TotemTimers.options.args.enhancecds = {
                                 break
                             end
                         end
-                        timer.animation:SetTexture(timer.button.icons[1]:GetTexture())
-                        timer.animation:Play()
+                        if timer then
+                            timer.animation:SetTexture(timer.button.icons[1]:GetTexture())
+                            timer.animation:Play()
+                        end
                     end
                 },
 
@@ -330,28 +351,28 @@ TotemTimers.options.args.enhancecds = {
 
 
         ["2"] = {
-            order = 71,
+            order = 81,
             type = "group",
-            name = GetTalentTabInfo(2) or "Enhancement",
+            name = specializations[2] or "Enhancement",
             args = {
             },
         },
         ["1"] = {
-            order = 72,
+            order = 82,
             type = "group",
-            name = GetTalentTabInfo(1) or "Elemental",
+            name = specializations[1] or "Elemental",
             args = {
             },
         },
         ["3"] = {
-            order = 73,
+            order = 83,
             type = "group",
-            name = GetTalentTabInfo(3) or "Restoration",
+            name = specializations[3] or "Restoration",
             args = {
             },
         },
         ["4"] = {
-            order = 74,
+            order = 84,
             type = "group",
             name = L["Long Cooldowns"],
             args = {},
@@ -392,8 +413,23 @@ for spec = 1, 3 do
     }
 end
 
-if WOW_PROJECT_ID > WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
-    local MaelstromName = GetSpellInfo(53817)
+if WOW_PROJECT_ID > WOW_PROJECT_BURNING_CRUSADE_CLASSIC or C_Seasons.GetActiveSeason() == 2 then
+
+    TotemTimers.options.args.enhancecds.args.options.args.OverlayGlow = {
+        order = 9,
+        type = "toggle",
+        name = L["Overlay Glow"],
+        desc = L["Show an overlay glow for affected spells on your action bars for some procs like Maelstrom Weapon, supports default action bars and Bartender"],
+        set = function(info, val)
+            TotemTimers.ActiveProfile.OverlayGlow = val
+        end,
+        get = function(info)
+            return TotemTimers.ActiveProfile.OverlayGlow
+        end,
+    }
+
+
+    local MaelstromName = GetSpellInfo(SpellIDs.Maelstrom)
 
     TotemTimers.options.args.enhancecds.args.options.args.MaelstromHeader = {
         order = 40,
@@ -479,6 +515,29 @@ if WOW_PROJECT_ID > WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
             end
         }
     end
+end
+
+if C_Seasons.GetActiveSeason() == 2 then
+    local PowerSurgeName = GetSpellInfo(SpellIDs.PowerSurge)
+
+    TotemTimers.options.args.enhancecds.args.options.args.ps = {
+        order = 50,
+        type = "header",
+        name = PowerSurgeName,
+    }
+
+    TotemTimers.options.args.enhancecds.args.options.args.psenable = {
+        order = 51,
+        type = "toggle",
+        name = L["Enable"],
+        set = function(info, val)
+            TotemTimers.ActiveProfile.PowerSurge = val
+            TotemTimers.ProcessSetting("PowerSurge")
+        end,
+        get = function(info)
+            return TotemTimers.ActiveProfile.PowerSurge
+        end,
+    }
 end
 
 local ACD = LibStub("AceConfigDialog-3.0")

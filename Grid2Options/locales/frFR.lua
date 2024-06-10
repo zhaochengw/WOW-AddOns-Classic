@@ -156,6 +156,7 @@ L["Adjust the frequency of the Blink effect."] = "Ajuste la fréquence de cligno
 -- L["Blizzard Raid Frames"] = ""
 -- L["Hide Blizzard Raid Frames"] = ""
 -- L["Hide Blizzard Party Frames"] = ""
+-- L["Hide Blizzard Frames"] = ""
 
 -- debugging & maintenance
 L["debugging"] = "debugging"
@@ -819,6 +820,7 @@ L["Frequent Updates"] = "Mises à jour fréquentes"
 -- L["Update frequency"] = ""
 -- L["Select the health update frequency."] = ""
 -- L["Add shields to health percent"] = ""
+-- L["Add shields to health amount"] = ""
 
 -- health-low status
 -- L["Use Health Percent"] = ""
@@ -858,6 +860,8 @@ L["Not Ready color"] = "Couleur nok"
 L["Color for Not Ready."] = "Couleur pour non prêt"
 L["AFK color"] = "Couleur d'AFK"
 L["Color for AFK."] = "Couleur pour AFK"
+-- L["Hide on Combat Start"] = ""
+-- L["Hide ready check status if combat starts."] = ""
 
 -- heals-incoming status
 L["Include player heals"] = "Inclure les soins du joueur"
@@ -1362,6 +1366,8 @@ L["\"%s\" has sent you a profile configuration. Do you want to activate received
 -- L["Heal Types"] = ""
 -- L["Shorten Heal Numbers"] = ""
 -- L["Shorten Health Numbers"] = ""
+-- L["Shorten Thousand Numbers"] = ""
+-- L["Shorten Above Million Numbers"] = ""
 -- L["Include heals casted by me, if unchecked only other players heals are displayed."] = ""
 -- L["Apply this multiplier value to incoming heals."] = ""
 -- L["Incoming overheals below the specified value will not be shown."] = ""
@@ -1462,6 +1468,8 @@ L["\"%s\" has sent you a profile configuration. Do you want to activate received
 --
 -- L["Disabled in instances"] = ""
 -- L["Disable this status inside instances."] = ""
+-- L["Display other groups"] = ""
+-- L["Enable the status if the player is in another LFG or PvP instance."] = ""
 --
 -- L["Enable harmful spells Allowlist"] = ""
 -- L["Display only the spells specified in a user defined list."] = ""

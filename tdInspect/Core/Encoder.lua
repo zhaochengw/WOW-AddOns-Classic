@@ -6,6 +6,8 @@
 ---@class ns
 local ns = select(2, ...)
 
+local C_Engraving = C_Engraving
+
 local band, rshift, lshift = bit.band, bit.rshift, bit.lshift
 local tconcat, tinsert = table.concat, table.insert
 local strsub, strbyte, strchar, strrep = string.sub, string.byte, string.char, string.rep
@@ -24,12 +26,12 @@ local MAJOR_SEP = '!'
 local MINOR_SEP = LINK_SEP
 
 function Encoder:EncodeInteger(v)
-    local s = {}
-    local n
     v = tonumber(v)
     if not v then
         return
     end
+    local s = {}
+    local n
     if v < 0 then
         s[1] = NEG
         v = -v
@@ -43,7 +45,7 @@ function Encoder:EncodeInteger(v)
 end
 
 function Encoder:DecodeInteger(code)
-    if code == '' then
+    if not code or code == '' then
         return
     end
     local isNeg = strsub(code, 1, 1) == NEG
@@ -128,12 +130,14 @@ function Encoder:PackGlyph(group)
 end
 
 function Encoder:PackGlyphs()
+    -- @build>3@
     local data = {}
     for i = 1, GetNumTalentGroups() do
         data[i] = self:PackGlyph(i)
     end
     local r = tconcat(data, MAJOR_SEP)
     return r
+    -- @end-build>3@
 end
 
 function Encoder:UnpackGlyph(code)
@@ -150,6 +154,66 @@ function Encoder:UnpackGlyphs(code)
         data[i] = self:UnpackGlyph(v)
     end
     return data
+end
+
+function Encoder:PackRune(i, info)
+    local spellId = info.learnedAbilitySpellIDs[info.level]
+    local icon = info.iconTexture
+    if icon == select(3, GetSpellInfo(spellId)) then
+        icon = nil
+    end
+    return table.concat({
+        self:EncodeInteger(i), --
+        self:EncodeInteger(spellId), --
+        self:EncodeInteger(icon), --
+    }, MINOR_SEP)
+end
+
+function Encoder:PackRunes()
+    --[[@build<2@
+    if C_Engraving.IsEngravingEnabled() then
+        local data = {}
+        for i = 1, 18 do
+            local info = C_Engraving.IsEquipmentSlotEngravable(i) and C_Engraving.GetRuneForEquipmentSlot(i)
+            if info then
+                tinsert(data, self:PackRune(i, info))
+            end
+        end
+        return tconcat(data, MAJOR_SEP)
+    end
+    --@end-build<2@]]
+end
+
+function Encoder:UnpackRune(code)
+    if not code or #code == 0 then
+        return
+    end
+    local slot, spellId, icon = strsplit(MINOR_SEP, code)
+    if not slot then
+        return
+    end
+    return { --
+        slot = self:DecodeInteger(slot),
+        spellId = self:DecodeInteger(spellId),
+        icon = self:DecodeInteger(icon),
+    }
+end
+
+function Encoder:UnpackRunes(code)
+    --[[@build<2@
+    if not code then
+        return
+    end
+    local data = strsplittable(MAJOR_SEP, code)
+    local runes = {}
+    for _, v in ipairs(data) do
+        local info = self:UnpackRune(v)
+        if info then
+            runes[info.slot] = info
+        end
+    end
+    return runes
+    --@end-build<2@]]
 end
 
 local encodeTalent, decodeTalent
@@ -224,7 +288,6 @@ function Encoder:DecodeTalent(code)
     return (code:gsub('.', decodeTalent))
 end
 
--- @build>3@
 local function compare(a, b)
     if a.tab ~= b.tab then
         return a.tab < b.tab
@@ -234,7 +297,6 @@ local function compare(a, b)
     end
     return a.column < b.column
 end
--- @end-build>3@
 
 function Encoder:PackTalent(isInspect, group, noEncode)
     local data = {}
@@ -267,12 +329,7 @@ end
 
 function Encoder:PackTalents(isInspect)
     local data = {}
-    --[=[@build<3@
-    local numGroups = 1
-    --@end-build<3@]=]
-    -- @build>3@
-    local numGroups = GetNumTalentGroups(isInspect)
-    -- @end-build>3@
+    local numGroups = GetNumTalentGroups and GetNumTalentGroups(isInspect) or 1
     for i = 1, numGroups do
         data[i] = self:PackTalent(isInspect, i, isInspect)
     end

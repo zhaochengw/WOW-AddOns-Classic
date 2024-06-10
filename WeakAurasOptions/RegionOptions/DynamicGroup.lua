@@ -1,5 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
-local AddonName, OptionsPrivate = ...
+---@type string
+local AddonName = ...
+---@class OptionsPrivate
+local OptionsPrivate = select(2, ...)
 
 local L = WeakAuras.L
 
@@ -550,6 +553,20 @@ local function createOptions(id, data)
       max = 1,
       bigStep = 0.01,
       isPercent = true
+    },
+    sharedFrameLevel = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Flat Framelevels"],
+      desc = L["The group and all direct children will share the same base frame level."],
+      order = 30,
+      set = function(info, v)
+        data.sharedFrameLevel = v
+        WeakAuras.Add(data)
+        for parent in OptionsPrivate.Private.TraverseParents(data) do
+          WeakAuras.Add(parent)
+        end
+      end
     },
     endHeader = {
       type = "header",

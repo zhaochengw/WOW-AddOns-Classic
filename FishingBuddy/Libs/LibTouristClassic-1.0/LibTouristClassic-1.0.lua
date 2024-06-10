@@ -1,19 +1,20 @@
 --[[
 Name: LibTouristClassic-1.0
-Revision: $Rev: 253 $
-Author(s): Odica, Mishikal1; based on LibTourist-3.0
+Revision: $Rev: 255 $
+Author(s): Odica; based on LibTourist-3.0
 Documentation: https://www.wowace.com/projects/libtourist-1-0/pages/api-reference
 Git: https://repos.wowace.com/wow/libtourist-classic libtourist-classic
 Description: A library to provide information about zones and instances for WoW Classic
 License: MIT
 ]]
 
-if (_G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_WRATH_CLASSIC) then
+if (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC) or
+		(_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE) then
 	return
 end
 
 local MAJOR_VERSION = "LibTouristClassic-1.0"
-local MINOR_VERSION = 90000 + tonumber(("$Revision: 252 $"):match("(%d+)"))
+local MINOR_VERSION = 90000 + tonumber(("$Revision: 255 $"):match("(%d+)"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub") end
 local C_Map = C_Map
@@ -60,57 +61,69 @@ local Kalimdor = "Kalimdor"
 local Eastern_Kingdoms = "Eastern Kingdoms"
 local Outland = "Outland"
 local Northrend = "Northrend"
+local The_Maelstrom = "The Maelstrom"
 
 local X_Y_ZEPPELIN = "%s - %s Zeppelin"
 local X_Y_BOAT = "%s - %s Boat"
 local X_Y_PORTAL = "%s - %s Portal"
 local X_Y_TELEPORT = "%s - %s Teleport"
+local X_Y_FLIGHTPATH = "%s - %s Flight path" -- used for path connections between zones that can only be reached using the taxi service
+
 
 if GetLocale() == "zhCN" then
 	X_Y_ZEPPELIN = "%s - %s 飞艇"
 	X_Y_BOAT = "%s - %s 船"
 	X_Y_PORTAL = "%s - %s 传送门"
 	X_Y_TELEPORT = "%s - %s 传送门"
+	X_Y_FLIGHTPATH = "%s - %s 飞行路径"
 elseif GetLocale() == "zhTW" then
 	X_Y_ZEPPELIN = "%s - %s 飛艇"
 	X_Y_BOAT = "%s - %s 船"
 	X_Y_PORTAL = "%s - %s 傳送門"
 	X_Y_TELEPORT = "%s - %s 傳送門"
+	X_Y_FLIGHTPATH = "%s - %s 飛行路徑"
 elseif GetLocale() == "frFR" then
 	X_Y_ZEPPELIN = "Zeppelin %s - %s"
 	X_Y_BOAT = "Bateau %s - %s"
 	X_Y_PORTAL = "Portail %s - %s"
 	X_Y_TELEPORT = "Téléport %s - %s"
+	X_Y_FLIGHTPATH = "Trajectoire de vol %s - %s"
 elseif GetLocale() == "koKR" then
 	X_Y_ZEPPELIN = "%s - %s 비행선"
 	X_Y_BOAT = "%s - %s 배"
 	X_Y_PORTAL = "%s - %s 차원문"
 	X_Y_TELEPORT = "%s - %s 차원문"
+	X_Y_FLIGHTPATH = "%s - %s 비행 경로"
 elseif GetLocale() == "deDE" then
 	X_Y_ZEPPELIN = "%s - %s Zeppelin"
 	X_Y_BOAT = "%s - %s Schiff"
 	X_Y_PORTAL = "%s - %s Portal"
 	X_Y_TELEPORT = "%s - %s Teleport"
+	X_Y_FLIGHTPATH = "%s - %s Flugbahn"
 elseif GetLocale() == "esES" then
 	X_Y_ZEPPELIN = "%s - %s Zepelín"
 	X_Y_BOAT = "%s - %s Barco"
 	X_Y_PORTAL = "%s - %s Portal"
 	X_Y_TELEPORT = "%s - %s Teletransportador"
+	X_Y_FLIGHTPATH = "%s - %s Trayectoria de vuelo"
 elseif GetLocale() == "esMX" then
 	X_Y_ZEPPELIN = "%s - %s Zepelín"
 	X_Y_BOAT = "%s - %s Barco"
 	X_Y_PORTAL = "%s - %s Portal"
 	X_Y_TELEPORT = "%s - %s Teletransportador"
+	X_Y_FLIGHTPATH = "%s - %s Trayectoria de vuelo"
 elseif GetLocale() == "itIT" then
 	X_Y_ZEPPELIN = "%s - %s Zeppelin"
 	X_Y_BOAT = "%s - %s Barca"
 	X_Y_PORTAL = "%s - %s Portale"
-	X_Y_TELEPORT = "%s - %s Teletrasporto"	
+	X_Y_TELEPORT = "%s - %s Teletrasporto"
+	X_Y_FLIGHTPATH = "%s - %s Percorso di volo"
 elseif GetLocale() == "ptBR" then
 	X_Y_ZEPPELIN = "%s - %s Zepelim"
 	X_Y_BOAT = "%s - %s Barco"
 	X_Y_PORTAL = "%s - %s Portal"
 	X_Y_TELEPORT = "%s - %s Teleporte"
+	X_Y_FLIGHTPATH = "%s - %s Rota de Vôo"
 end
 
 local recZones = {}
@@ -152,7 +165,7 @@ local flightnodeDataGathered = false
 
 local GAME_LOCALE = GetLocale()
 local COSMIC_MAP_ID = 946
-
+local THE_MAELSTROM_MAP_ID = 948
 
 local flightNodeIgnoreList = {
 	[59] = "Dun Baldar, Alterac Valley",
@@ -250,7 +263,6 @@ local flightNodeIgnoreList = {
 	[405] = "Durotar - ET - CC Prologue Spy Frog End",
 	[438] = "Durotar - ET - CC Prologue Troll Taxi Bat Start",
 	[439] = "Durotar - ET - CC Prologue Troll Recruit End",
-
 }
 
 
@@ -260,6 +272,7 @@ local flightNodeIgnoreList = {
 
 -- UIMapIDs as used by C_Map.GetMapInfo
 local MapIdLookupTable = {
+	[86] = "Orgrimmar",
     [113] = "Northrend",
     [114] = "Borean Tundra",
     [115] = "Dragonblight",
@@ -320,6 +333,8 @@ local MapIdLookupTable = {
     [171] = "Trial of the Champion",
     [172] = "Trial of the Crusader",
     [173] = "Trial of the Crusader",
+	[174] = "The Lost Isles",
+    [179] = "Gilneas",
     [183] = "The Forge of Souls",
     [184] = "Pit of Saron",
     [185] = "Halls of Reflection",
@@ -331,13 +346,27 @@ local MapIdLookupTable = {
     [191] = "Icecrown Citadel",
     [192] = "Icecrown Citadel",
     [193] = "Icecrown Citadel",
+    [194] = "Kezan",
+    [198] = "Mount Hyjal",
+    [199] = "Southern Barrens",	
     [200] = "The Ruby Sanctum",
+    [201] = "Kelp'thar Forest",
+    [202] = "Gilneas City",
+    [203] = "Vashj'ir",
+    [204] = "Abyssal Depths",
+    [205] = "Shimmering Expanse",
+    [206] = "Twin Peaks",
+    [207] = "Deepholm",
+    [210] = "The Cape of Stranglethorn",	
     [213] = "Ragefire Chasm",
+    [217] = "Ruins of Gilneas",
+    [218] = "Ruins of Gilneas City",
     [219] = "Zul'Farrak",
     [220] = "The Temple of Atal'Hakkar",
     [221] = "Blackfathom Deeps",
     [222] = "Blackfathom Deeps",
     [223] = "Blackfathom Deeps",
+	[224] = "Stranglethorn Vale",
     [225] = "The Stockade",
     [226] = "Gnomeregan",
     [227] = "Gnomeregan",
@@ -354,11 +383,15 @@ local MapIdLookupTable = {
     [238] = "Dire Maul",
     [239] = "Dire Maul",
     [240] = "Dire Maul",
+	[241] = "Twilight Highlands",
     [242] = "Blackrock Depths",
     [243] = "Blackrock Depths",
+	[244] = "Tol Barad",
+    [245] = "Tol Barad Peninsula",
     [246] = "The Shattered Halls",
     [247] = "Ruins of Ahn'Qiraj",
     [248] = "Onyxia's Lair",
+	[249] = "Uldum",
     [250] = "Blackrock Spire",
     [251] = "Blackrock Spire",
     [252] = "Blackrock Spire",
@@ -384,15 +417,30 @@ local MapIdLookupTable = {
     [272] = "Mana-Tombs",
     [273] = "The Black Morass",
     [274] = "Old Hillsbrad Foothills",
+    [275] = "The Battle for Gilneas",
+    [276] = "The Maelstrom",
+    [277] = "Lost City of the Tol'vir",	
     [279] = "Wailing Caverns",
     [280] = "Maraudon",
     [281] = "Maraudon",
+    [282] = "Baradin Hold",
+    [283] = "Blackrock Caverns",
+    [284] = "Blackrock Caverns",
+    [285] = "Blackwing Descent",
+    [286] = "Blackwing Descent",
     [287] = "Blackwing Lair",
     [288] = "Blackwing Lair",
     [289] = "Blackwing Lair",
     [290] = "Blackwing Lair",
     [291] = "The Deadmines",
-    [292] = "The Deadmines",
+    [292] = "The Deadmines",	
+    [293] = "Grim Batol",
+    [294] = "The Bastion of Twilight",
+    [295] = "The Bastion of Twilight",
+    [296] = "The Bastion of Twilight",
+    [297] = "Halls of Origination",
+    [298] = "Halls of Origination",
+    [299] = "Halls of Origination",
     [300] = "Razorfen Downs",
     [301] = "Razorfen Kraul",
     [302] = "Scarlet Monastery",
@@ -415,7 +463,13 @@ local MapIdLookupTable = {
     [319] = "Ahn'Qiraj",
     [320] = "Ahn'Qiraj",
     [321] = "Ahn'Qiraj",
-    [329] = "Hyjal Summit",
+    [322] = "Throne of the Tides",
+    [323] = "Throne of the Tides",
+    [324] = "The Stonecore",
+    [325] = "The Vortex Pinnacle",
+    [327] = "Ahn'Qiraj: The Fallen Kingdom",
+    [328] = "Throne of the Four Winds",
+	[329] = "Hyjal Summit",
     [330] = "Gruul's Lair",
     [331] = "Magtheridon's Lair",
     [332] = "Serpentshrine Cavern",
@@ -424,9 +478,19 @@ local MapIdLookupTable = {
     [335] = "Sunwell Plateau",
     [336] = "Sunwell Plateau",
     [337] = "Zul'Gurub",
-    [339] = "Black Temple",
-    [347] = "Hellfire Ramparts",
-    [350] = "Karazhan",
+    [338] = "Molten Front",
+	[339] = "Black Temple",
+    [340] = "Black Temple",
+    [341] = "Black Temple",
+    [342] = "Black Temple",
+    [343] = "Black Temple",
+    [344] = "Black Temple",
+    [345] = "Black Temple",
+    [346] = "Black Temple",
+	[347] = "Hellfire Ramparts",
+    [348] = "Magisters' Terrace",
+    [349] = "Magisters' Terrace",
+	[350] = "Karazhan",
     [351] = "Karazhan",
     [352] = "Karazhan",
     [353] = "Karazhan",
@@ -443,8 +507,31 @@ local MapIdLookupTable = {
     [364] = "Karazhan",
     [365] = "Karazhan",
     [366] = "Karazhan",
-    [946] = "Cosmic",
+    [367] = "Firelands",
+    [368] = "Firelands",
+    [369] = "Firelands",
+    [370] = "The Nexus",
+    [397] = "Eye of the Storm",
+    [398] = "Well of Eternity",
+    [399] = "Hour of Twilight",
+    [400] = "Hour of Twilight",
+    [401] = "End Time",
+    [402] = "End Time",
+    [403] = "End Time",
+    [404] = "End Time",
+    [405] = "End Time",
+    [406] = "End Time",
+    [407] = "Darkmoon Island",
+    [409] = "Dragon Soul",
+    [410] = "Dragon Soul",
+    [411] = "Dragon Soul",
+    [412] = "Dragon Soul",
+    [413] = "Dragon Soul",
+    [414] = "Dragon Soul",
+    [415] = "Dragon Soul",
+	[946] = "Cosmic",
     [947] = "Azeroth",
+    [948] = "The Maelstrom",
     [987] = "Outland",
 	[988] = "Northrend",
     [1375] = "Halls of Stone",	
@@ -453,7 +540,7 @@ local MapIdLookupTable = {
     [1413] = "The Barrens",
     [1414] = "Kalimdor",
     [1415] = "Eastern Kingdoms",
-    [1416] = "Alterac Mountains",
+--  [1416] = "Alterac Mountains",
     [1417] = "Arathi Highlands",
     [1418] = "Badlands",
     [1419] = "Blasted Lands",
@@ -471,7 +558,7 @@ local MapIdLookupTable = {
     [1431] = "Duskwood",
     [1432] = "Loch Modan",
     [1433] = "Redridge Mountains",
-    [1434] = "Stranglethorn Vale",
+    [1434] = "Northern Stranglethorn",
     [1435] = "Swamp of Sorrows",
     [1436] = "Westfall",
     [1437] = "Wetlands",
@@ -521,6 +608,7 @@ local MapIdLookupTable = {
     [1956] = "Eye of the Storm",
     [1957] = "Isle of Quel'Danas",
     [2104] = "Wintergrasp",
+    [2340] = "Tol Barad",	
 }
 
 -- InstanceIDs as used by GetRealZoneText
@@ -640,26 +728,97 @@ local InstanceIdLookupTable = {
     [622] = "Transport: Orgrim's Hammer",
     [623] = "Transport: The Skybreaker",
     [624] = "Vault of Archavon",
+    [627] = "unused",
     [628] = "Isle of Conquest",
     [631] = "Icecrown Citadel",
     [632] = "The Forge of Souls",
+    [637] = "Abyssal Maw Exterior",
+    [638] = "Gilneas",
     [641] = "Transport: Alliance Airship BG",
     [642] = "Transport: HordeAirshipBG",
-    [647] = "Transport: Orgrimmar to Thunder Bluff",
-    [649] = "Trial of the Crusader",
+    [643] = "Throne of the Tides",
+    [644] = "Halls of Origination",
+    [645] = "Blackrock Caverns",
+    [646] = "Deepholm",
+	[647] = "Transport: Orgrimmar to Thunder Bluff",
+    [648] = "LostIsles",
+	[649] = "Trial of the Crusader",
     [650] = "Trial of the Champion",
-    [658] = "Pit of Saron",
-    [668] = "Halls of Reflection",
-    [672] = "Transport: The Skybreaker (Icecrown Citadel Raid)",
+    [651] = "ElevatorSpawnTest",
+    [654] = "Gilneas2",
+    [655] = "GilneasPhase1",
+    [656] = "GilneasPhase2",
+    [657] = "The Vortex Pinnacle",
+	[658] = "Pit of Saron",
+    [659] = "Lost Isles Volcano Eruption",
+    [660] = "Deephome Ceiling",
+    [661] = "Lost Isles Town in a Box",
+    [662] = "Transport: Alliance Vashj'ir Ship",
+	[668] = "Halls of Reflection",
+    [669] = "Blackwing Descent",
+    [670] = "Grim Batol",
+    [671] = "The Bastion of Twilight",
+	[672] = "Transport: The Skybreaker (Icecrown Citadel Raid)",
     [673] = "Transport: Orgrim's Hammer (Icecrown Citadel Raid)",
+    [674] = "Transport: Ship to Vashj'ir",
     [712] = "Transport: The Skybreaker (IC Dungeon)",
     [713] = "Transport: Orgrim's Hammer (IC Dungeon)",
-    [718] = "Trasnport: The Mighty Wind (Icecrown Citadel Raid)",
+    [718] = "Trasnport: The Mighty Wind (Icecrown Citadel Raid)",	
+    [719] = "Mount Hyjal Phase 1",
+    [720] = "Firelands",
+    [721] = "Firelands Terrain 2",
     [723] = "Stormwind",
     [724] = "The Ruby Sanctum",
+    [725] = "The Stonecore",
+    [726] = "Twin Peaks",
+    [727] = "STV Diamond Mine BG",
+    [730] = "Maelstrom Zone",
+    [731] = "Stonetalon Bomb",
+    [732] = "Tol Barad",
+    [734] = "Ahn'Qiraj Terrace",
+    [736] = "Twilight Highlands Dragonmaw Phase",
+    [738] = "Ship to Vashj'ir (Orgrimmar -> Vashj'ir)",
+    [739] = "Vashj'ir Sub - Horde",
+    [740] = "Vashj'ir Sub - Alliance",
+    [741] = "Twilight Highlands Horde Transport",
+    [742] = "Vashj'ir Sub - Horde - Circling Abyssal Maw",
+    [743] = "Vashj'ir Sub - Alliance circling Abyssal Maw",
+    [746] = "Uldum Phase Oasis",
+    [747] = "Transport: Deepholm Gunship",
+    [748] = "Transport: Onyxia/Nefarian Elevator",
+    [749] = "Transport: Gilneas Moving Gunship",
+    [750] = "Transport: Gilneas Static Gunship",
+    [751] = "Redridge - Orc Bomb",
+    [752] = "Redridge - Bridge Phase One",
+    [753] = "Redridge - Bridge Phase Two",
+    [754] = "Throne of the Four Winds",
+    [755] = "Lost City of the Tol'vir",
+    [757] = "Baradin Hold",
+    [759] = "Uldum Phased Entrance",
+    [760] = "Twilight Highlands Phased Entrance",
+    [761] = "The Battle for Gilneas",
+    [762] = "Twilight Highlands Zeppelin 1",
+    [763] = "Twilight Highlands Zeppelin 2",
+    [764] = "Uldum - Phase Wrecked Camp",
+    [765] = "Krazzworks Attack Zeppelin",
+    [766] = "Transport: Gilneas Moving Gunship 02",
+    [767] = "Transport: Gilneas Moving Gunship 03",
+    [859] = "Zul'Gurub",
+    [861] = "Molten Front",
+    [930] = "Scenario: Alcaz Island",
+    [938] = "End Time",
+    [939] = "Well of Eternity",
+    [940] = "Hour of Twilight",
+    [951] = "Nexus Legendary",
+    [967] = "Dragon Soul",
+    [968] = "Rated Eye of the Storm",
+    [974] = "Darkmoon Faire",
+    [977] = "Maelstrom Deathwing Fight",
+    [980] = "Tol'Vir Arena",
     [2118] = "Wintergrasp",
     [2565] = "Northrend (3.0 phase)",
     [2567] = "Northrend (3.1 phase)",	
+    [2755] = "Battle for Tol Barad",
 }
 
 
@@ -928,6 +1087,12 @@ local function CreateLocalizedZoneNameLookups()
 	end
 end
 
+local function AddDuplicatesToLocalizedLookup()
+	BZ[Tourist:GetUniqueEnglishZoneNameForLookup("The Maelstrom", THE_MAELSTROM_MAP_ID)] = Tourist:GetUniqueZoneNameForLookup("The Maelstrom", THE_MAELSTROM_MAP_ID)
+	BZR[Tourist:GetUniqueZoneNameForLookup("The Maelstrom", THE_MAELSTROM_MAP_ID)] = Tourist:GetUniqueEnglishZoneNameForLookup("The Maelstrom", THE_MAELSTROM_MAP_ID)
+end
+
+
 local function tablelength(T)
   local count = 0
   for _ in pairs(T) do count = count + 1 end
@@ -1183,8 +1348,15 @@ function Tourist:GetMapNameByIDAlt(uiMapID)
 
 	local mapInfo = C_Map.GetMapInfo(uiMapID)
 	if mapInfo then
-		local zoneName = C_Map.GetMapInfo(uiMapID).name
-	    return zoneName
+		local zoneName = mapInfo.name
+		local continentMapID = Tourist:GetContinentMapID(uiMapID)
+		--trace("ContinentMap ID for "..tostring(zoneName).." ("..tostring(uiMapID)..") is "..tostring(continentMapID))
+		if uiMapID == THE_MAELSTROM_MAP_ID then
+			-- Exception for The Maelstrom continent because GetUniqueZoneNameForLookup excpects the zone name and not the continent name
+			return zoneName
+		else
+			return Tourist:GetUniqueZoneNameForLookup(zoneName, continentMapID)
+		end
 	else
 		local instanceName = GetRealZoneText(uiMapID)
 		if instanceName then
@@ -1235,6 +1407,32 @@ function Tourist:GetContinentMapID(uiMapID)
 		end
 	end
 end
+
+
+-- Returns a unique localized zone name to be used to lookup data in LibTourist,
+-- based on a localized or English zone name
+function Tourist:GetUniqueZoneNameForLookup(zoneName, continentMapID)
+	if continentMapID == THE_MAELSTROM_MAP_ID then  -- The Maelstrom
+		if zoneName == BZ["The Maelstrom"] or zoneName == "The Maelstrom" then
+			zoneName = BZ["The Maelstrom"].." ("..ZONE..")"
+		end
+	end
+	return zoneName
+end
+
+-- Returns a unique English zone name to be used to lookup data in LibTourist,
+-- based on a localized or English zone name
+function Tourist:GetUniqueEnglishZoneNameForLookup(zoneName, continentMapID)
+	if continentMapID == THE_MAELSTROM_MAP_ID then  -- The Maelstrom
+		if zoneName == BZ["The Maelstrom"] or zoneName == "The Maelstrom" then
+			zoneName = "The Maelstrom (Zone)"
+		end
+	end
+	return zoneName
+end
+
+
+
 
 local function FormatLevelString(lo, hi)
 	if lo and hi then
@@ -1288,35 +1486,37 @@ function Tourist:GetLevel(zone)
 
 		-- Find the most suitable bracket
 		if playerLvl >= MAX_PLAYER_LEVEL then
-			return MAX_PLAYER_LEVEL, MAX_PLAYER_LEVEL, nil
+			return MAX_PLAYER_LEVEL, MAX_PLAYER_LEVEL
+		elseif playerLvl >= 80 then
+			return 80, 84
 		elseif playerLvl >= 75 then
 			return 75, 79
 		elseif playerLvl >= 70 then
 			return 70, 74
 		elseif playerLvl >= 65 then
-			return 65, 69, nil
+			return 65, 69
 		elseif playerLvl >= 60 then
-			return 60, 64, nil
+			return 60, 64
 		elseif playerLvl >= 55 then
-			return 55, 59, nil
+			return 55, 59
 		elseif playerLvl >= 50 then
-			return 50, 54, nil
+			return 50, 54
 		elseif playerLvl >= 45 then
-			return 45, 49, nil
+			return 45, 49
 		elseif playerLvl >= 40 then
-			return 40, 44, nil
+			return 40, 44
 		elseif playerLvl >= 35 then
-			return 35, 39, nil
+			return 35, 39
 		elseif playerLvl >= 30 then
-			return 30, 34, nil
+			return 30, 34
 		elseif playerLvl >= 25 then
-			return 25, 29, nil
+			return 25, 29
 		elseif playerLvl >= 20 then
-			return 20, 24, nil
+			return 20, 24
 		elseif playerLvl >= 15 then
-			return 15, 19, nil
+			return 15, 19
 		else
-			return 10, 14, nil
+			return 10, 14
 		end
 	else
 		return lows[zone], highs[zone]
@@ -1789,7 +1989,7 @@ local function initZonesInstances()
 	if not zonesInstances then
 		zonesInstances = {}
 		for zone, v in pairs(lows) do
-			if types[zone] ~= "Transport" and types[zone] ~= "Portal" and types[zone] ~= "Continent" then
+			if types[zone] ~= "Transport" and types[zone] ~= "Portal" and types[zone] ~= "Flightpath" and types[zone] ~= "Continent" then
 				zonesInstances[zone] = true
 			end
 		end
@@ -1994,6 +2194,22 @@ function Tourist:IterateNorthrend()
 	return northrendIter, nil, nil
 end
 
+local function theMaelstromIter(_, position)
+	local k = next(zonesInstances, position)
+	while k ~= nil and continents[k] ~= The_Maelstrom do
+		k = next(zonesInstances, k)
+	end
+	return k
+end
+function Tourist:IterateTheMaelstrom()
+	if initZonesInstances then
+		initZonesInstances()
+	end
+	return theMaelstromIter, nil, nil
+end
+
+
+
 function Tourist:IterateRecommendedZones()
 	return retNormal, recZones, nil
 end
@@ -2015,7 +2231,7 @@ end
 function Tourist:IsZone(zone)
 	zone = Tourist:GetMapNameByIDAlt(zone) or zone
 	local t = types[zone]
-	return t and t ~= "Instance" and t ~= "Battleground" and t ~= "Transport" and t ~= "Portal" and t ~= "Arena" and t ~= "Complex"
+	return t and t ~= "Instance" and t ~= "Battleground" and t ~= "Transport" and t ~= "Portal" and t ~= "Flightpath" and t ~= "Arena" and t ~= "Complex"
 end
 
 function Tourist:IsContinent(zone)
@@ -2037,13 +2253,13 @@ end
 function Tourist:IsZoneOrInstance(zone)
 	zone = Tourist:GetMapNameByIDAlt(zone) or zone
 	local t = types[zone]
-	return t and t ~= "Transport" and t ~= "Portal"
+	return t and t ~= "Transport" and t ~= "Portal" and t~= "Flightpath"
 end
 
 function Tourist:IsTransport(zone)
 	zone = Tourist:GetMapNameByIDAlt(zone) or zone
 	local t = types[zone]
-	return t == "Transport" or t == "Portal"
+	return t == "Transport" or t == "Portal" or t == "Flightpath"
 end
 
 function Tourist:IsComplex(zone)
@@ -2123,6 +2339,11 @@ function Tourist:IsInNorthrend(zone)
 	zone = Tourist:GetMapNameByIDAlt(zone) or zone
 	return continents[zone] == Northrend
 end
+
+function Tourist:IsInTheMaelstrom(zone)
+	return continents[zone] == The_Maelstrom
+end
+
 
 function Tourist:GetInstanceGroupSize(instance)
 	instance = Tourist:GetMapNameByIDAlt(instance) or instance
@@ -2205,22 +2426,30 @@ end
 setmetatable(cost, {
 	__index = function(self, vertex)
 		local price = 1
+		local allowInaccesible = false  -- allow inacessible content (due to player level) and hostile portals, flightpaths (for testing)
 
 		if lows[vertex] > playerLevel then
 			price = price * (1 + math.ceil((lows[vertex] - playerLevel) / 6))
 		end
 
 		if factions[vertex] == (isHorde and "Horde" or "Alliance") then
-			-- Friendly
+			-- Friendly: 50% off
 			price = price / 2
+			if types[vertex] == "Flightpath" then
+				-- Flightpaths are preferably only to be used when there is no other connection available
+				price = price * 10
+			end
 		elseif factions[vertex] == (isHorde and "Alliance" or "Horde") then
 			-- Hostile
-			if types[vertex] == "Portal" then
+			if types[vertex] == "Portal" or types[vertex] == "Flightpath" then
+				-- No go
 				price = inf
 			else 
 				if types[vertex] == "City" then
+					-- Very dangerous
 					price = price * 10
 				else
+					-- Less dangerous
 					price = price * 3
 				end
 			end
@@ -2232,7 +2461,19 @@ setmetatable(cost, {
 		end
 
 		if types[vertex] == "Transport" then
+			-- Not sure why transports should be more expensive than road connections (to be tuned?)
 			price = price * 2
+		end
+
+		-- Avoid using connections to inaccessible continents
+		if continents[vertex] == Outland and playerLevel < 58 then
+			if allowInaccesible then price = price * 1000 else price = inf end
+		end
+		if continents[vertex] == Northrend and playerLevel < 68 then
+			if allowInaccesible then price = price * 1000 else price = inf end
+		end
+		if continents[vertex] == The_Maelstrom and playerLevel < 78 then
+			if allowInaccesible then price = price * 1000 else price = inf end
 		end
 
 		self[vertex] = price
@@ -2420,6 +2661,7 @@ do
 
 	trace("Tourist: Initializing localized zone name lookups...")
 	CreateLocalizedZoneNameLookups()
+	AddDuplicatesToLocalizedLookup()
 
 	-- TRANSPORT DEFINITIONS ----------------------------------------------------------------
 
@@ -2427,8 +2669,8 @@ do
 
 	-- Boats -------------------------------------
 	-- Classic
-	transports["STRANGLETHORN_BARRENS_BOAT"] = string.format(X_Y_BOAT, BZ["Stranglethorn Vale"], BZ["The Barrens"])
-	transports["BARRENS_STRANGLETHORN_BOAT"] = string.format(X_Y_BOAT, BZ["The Barrens"], BZ["Stranglethorn Vale"])
+	transports["STRANGLETHORN_BARRENS_BOAT"] = string.format(X_Y_BOAT, BZ["The Cape of Stranglethorn"], BZ["The Barrens"])
+	transports["BARRENS_STRANGLETHORN_BOAT"] = string.format(X_Y_BOAT, BZ["The Barrens"], BZ["The Cape of Stranglethorn"])
 	
 	transports["WETLANDS_DUSTWALLOW_BOAT"] = string.format(X_Y_BOAT, BZ["Wetlands"], BZ["Dustwallow Marsh"])
 	transports["DUSTWALLOW_WETLANDS_BOAT"] = string.format(X_Y_BOAT, BZ["Dustwallow Marsh"], BZ["Wetlands"])
@@ -2462,18 +2704,18 @@ do
 	transports["ORGRIMMAR_TIRISFAL_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Orgrimmar"], BZ["Tirisfal Glades"])
 	transports["TIRISFAL_ORGRIMMAR_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Tirisfal Glades"], BZ["Orgrimmar"])
 	
-	transports["ORGRIMMAR_STRANGLETHORN_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Orgrimmar"], BZ["Stranglethorn Vale"])
-	transports["STRANGLETHORN_ORGRIMMAR_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Stranglethorn Vale"], BZ["Orgrimmar"])
+	transports["ORGRIMMAR_STRANGLETHORN_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Orgrimmar"], BZ["Northern Stranglethorn"])
+	transports["STRANGLETHORN_ORGRIMMAR_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Northern Stranglethorn"], BZ["Orgrimmar"])
 	
-	transports["TIRISFAL_STRANGLETHORN_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Tirisfal Glades"], BZ["Stranglethorn Vale"])
-	transports["STRANGLETHORN_TIRISFAL_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Stranglethorn Vale"], BZ["Tirisfal Glades"])
+	transports["TIRISFAL_STRANGLETHORN_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Tirisfal Glades"], BZ["Northern Stranglethorn"])
+	transports["STRANGLETHORN_TIRISFAL_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Northern Stranglethorn"], BZ["Tirisfal Glades"])
 
 	-- WotLK
 	transports["ORGRIMMAR_BOREANTUNDRA_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Orgrimmar"], BZ["Borean Tundra"])
 	transports["BOREANTUNDRA_ORGRIMMAR_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Borean Tundra"], BZ["Orgrimmar"])
 
-	transports["UNDERCITY_HOWLINGFJORD_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Undercity"], BZ["Howling Fjord"])
-	transports["HOWLINGFJORD_UNDERCITY_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Howling Fjord"], BZ["Undercity"])
+	transports["TIRISFAL_HOWLINGFJORD_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Tirisfal Glades"], BZ["Howling Fjord"])
+	transports["HOWLINGFJORD_TIRISFAL_ZEPPELIN"] = string.format(X_Y_ZEPPELIN, BZ["Howling Fjord"], BZ["Tirisfal Glades"])
 
 
 
@@ -2516,7 +2758,34 @@ do
 	
 	transports["DALARAN_STORMWIND_PORTAL"] = string.format(X_Y_PORTAL, BZ["Dalaran"], BZ["Stormwind City"])
 
+	-- Cataclysm
+	
+	transports["MOLTENFRONT_MOUNTHYJAL_PORTAL"] = string.format(X_Y_PORTAL, BZ["Molten Front"], BZ["Mount Hyjal"])
+	transports["MOUNTHYJAL_MOLTENFRONT_PORTAL"] = string.format(X_Y_PORTAL, BZ["Mount Hyjal"], BZ["Molten Front"])
+	transports["MOUNTHYJAL_ORGRIMMAR_PORTAL"] = string.format(X_Y_PORTAL, BZ["Mount Hyjal"], BZ["Orgrimmar"])
+	transports["MOUNTHYJAL_STORMWIND_PORTAL"] = string.format(X_Y_PORTAL, BZ["Mount Hyjal"], BZ["Stormwind City"])
+	transports["ORGRIMMAR_MOUNTHYJAL_PORTAL"] = string.format(X_Y_PORTAL, BZ["Orgrimmar"], BZ["Mount Hyjal"])
+	transports["STORMWIND_MOUNTHYJAL_PORTAL"] = string.format(X_Y_PORTAL, BZ["Stormwind City"], BZ["Mount Hyjal"])
 
+	transports["ORGRIMMAR_ULDUM_PORTAL"] = string.format(X_Y_PORTAL, BZ["Orgrimmar"], BZ["Uldum"])
+	transports["STORMWIND_ULDUM_PORTAL"] = string.format(X_Y_PORTAL, BZ["Stormwind City"], BZ["Uldum"])
+
+	transports["DEEPHOLM_ORGRIMMAR_PORTAL"] = string.format(X_Y_PORTAL, BZ["Deepholm"], BZ["Orgrimmar"])
+	transports["DEEPHOLM_STORMWIND_PORTAL"] = string.format(X_Y_PORTAL, BZ["Deepholm"], BZ["Stormwind City"])
+	transports["ORGRIMMAR_DEEPHOLM_PORTAL"] = string.format(X_Y_PORTAL, BZ["Orgrimmar"], BZ["Deepholm"])
+	transports["STORMWIND_DEEPHOLM_PORTAL"] = string.format(X_Y_PORTAL, BZ["Stormwind City"], BZ["Deepholm"])
+
+	transports["ORGRIMMAR_TOLBARAD_PORTAL"] = string.format(X_Y_PORTAL, BZ["Orgrimmar"], BZ["Tol Barad Peninsula"])
+	transports["STORMWIND_TOLBARAD_PORTAL"] = string.format(X_Y_PORTAL, BZ["Stormwind City"], BZ["Tol Barad Peninsula"])
+	transports["TOLBARAD_ORGRIMMAR_PORTAL"] = string.format(X_Y_PORTAL, BZ["Tol Barad Peninsula"], BZ["Orgrimmar"])
+	transports["TOLBARAD_STORMWIND_PORTAL"] = string.format(X_Y_PORTAL, BZ["Tol Barad Peninsula"], BZ["Stormwind City"])
+
+	transports["ORGRIMMAR_TWILIGHTHIGHLANDS_PORTAL"] = string.format(X_Y_PORTAL, BZ["Orgrimmar"], BZ["Twilight Highlands"])
+	transports["TWILIGHTHIGHLANDS_ORGRIMMAR_PORTAL"] = string.format(X_Y_PORTAL, BZ["Twilight Highlands"], BZ["Orgrimmar"])
+	transports["STORMWIND_TWILIGHTHIGHLANDS_PORTAL"] = string.format(X_Y_PORTAL, BZ["Stormwind City"], BZ["Twilight Highlands"])
+	transports["TWILIGHTHIGHLANDS_STORMWIND_PORTAL"] = string.format(X_Y_PORTAL, BZ["Twilight Highlands"], BZ["Stormwind City"])
+
+	
 
 	-- Teleports -------------------------------------
 	-- Classic
@@ -2532,7 +2801,22 @@ do
 	transports["CRYSTALSONG_DALARAN_TELEPORT"] = string.format(X_Y_TELEPORT, BZ["Crystalsong Forest"], BZ["Dalaran"])
 
 
+	-- Fight paths -------------------------------------
+	
+	-- WotLK: flight paths to Icecrown and Wintergrasp
+	transports["DALARAN_ICECROWN_FLIGHTPATH"] = string.format(X_Y_FLIGHTPATH, BZ["Dalaran"], BZ["Icecrown"])
+	transports["ICECROWN_DALARAN_FLIGHTPATH"] = string.format(X_Y_FLIGHTPATH, BZ["Icecrown"], BZ["Dalaran"])
+	transports["DALARAN_WINTERGRASP_FLIGHTPATH"] = string.format(X_Y_FLIGHTPATH, BZ["Dalaran"], BZ["Wintergrasp"])
+	transports["WINTERGRASP_DALARAN_FLIGHTPATH"] = string.format(X_Y_FLIGHTPATH, BZ["Wintergrasp"], BZ["Dalaran"])
 
+	
+	-- Cataclysm: flight paths to Vashj'ir
+	transports["IRONFORGE_KELPTHAR_FLIGHTPATH"] = string.format(X_Y_FLIGHTPATH, BZ["Ironforge"], BZ["Kelp'thar Forest"])
+	transports["KELPTHAR_IRONFORGE_FLIGHTPATH"] = string.format(X_Y_FLIGHTPATH, BZ["Kelp'thar Forest"], BZ["Ironforge"])
+	transports["UNDERCITY_KELPTHAR_FLIGHTPATH"] = string.format(X_Y_FLIGHTPATH, BZ["Undercity"], BZ["Kelp'thar Forest"])
+	transports["KELPTHAR_UNDERCITY_FLIGHTPATH"] = string.format(X_Y_FLIGHTPATH, BZ["Kelp'thar Forest"], BZ["Undercity"])
+	transports["SEARINGGORGE_KELPTHAR_FLIGHTPATH"] = string.format(X_Y_FLIGHTPATH, BZ["Searing Gorge"], BZ["Kelp'thar Forest"])
+	transports["KELPTHAR_SEARINGGORGE_FLIGHTPATH"] = string.format(X_Y_FLIGHTPATH, BZ["Kelp'thar Forest"], BZ["Searing Gorge"])	
 
 
 
@@ -2572,6 +2856,12 @@ do
 		continent = Northrend,
 	}
 
+	zones[BZ["The Maelstrom"]] = {
+		type = "Continent",
+		continent = The_Maelstrom,
+	}
+
+
 	-- TRANSPORTS ---------------------------------------------------------------
 
 	zones[transports["ORGRIMMAR_TIRISFAL_ZEPPELIN"]] = {
@@ -2593,7 +2883,7 @@ do
 
 	zones[transports["ORGRIMMAR_STRANGLETHORN_ZEPPELIN"]] = {
 		paths = {
-			[BZ["Stranglethorn Vale"]] = true,
+			[BZ["Northern Stranglethorn"]] = true,
 		},
 		faction = "Horde",
 		type = "Transport",
@@ -2610,7 +2900,7 @@ do
 
 	zones[transports["TIRISFAL_STRANGLETHORN_ZEPPELIN"]] = {
 		paths = {
-			[BZ["Stranglethorn Vale"]] = true,
+			[BZ["Northern Stranglethorn"]] = true,
 		},
 		faction = "Horde",
 		type = "Transport",
@@ -2635,7 +2925,7 @@ do
 
 	zones[transports["BARRENS_STRANGLETHORN_BOAT"]] = {
 		paths = {
-			[BZ["Stranglethorn Vale"]] = true,
+			[BZ["The Cape of Stranglethorn"]] = true,
 		},
 		type = "Transport",
 	}	
@@ -2678,7 +2968,7 @@ do
 		paths = {
 			[BZ["Undercity"]] = true,
 		},
---		faction = "Horde",  TODO: check
+		faction = "Horde",
 		type = "Portal",
 	}
 	
@@ -2686,7 +2976,7 @@ do
 		paths = {
 			[BZ["Silvermoon City"]] = true,
 		},
---		faction = "Horde",  TODO: check
+		faction = "Horde",
 		type = "Portal",
 	}	
 
@@ -2965,7 +3255,7 @@ do
 		type = "Transport",
 	}		
 	
-	zones[transports["UNDERCITY_HOWLINGFJORD_ZEPPELIN"]] = {
+	zones[transports["TIRISFAL_HOWLINGFJORD_ZEPPELIN"]] = {
 		paths = {
 			[BZ["Howling Fjord"]] = true,
 		},
@@ -2973,7 +3263,7 @@ do
 		type = "Transport",
 	}
 
-	zones[transports["HOWLINGFJORD_UNDERCITY_ZEPPELIN"]] = {
+	zones[transports["HOWLINGFJORD_TIRISFAL_ZEPPELIN"]] = {
 		paths = {
 			[BZ["Tirisfal Glades"]] = true,
 		},
@@ -3042,10 +3332,246 @@ do
 		type = "Transport",
 	}
 
+	zones[transports["DALARAN_ICECROWN_FLIGHTPATH"]] = {
+		paths = BZ["Icecrown"],
+		type = "Flightpath",
+	}
+
+	zones[transports["ICECROWN_DALARAN_FLIGHTPATH"]] = {
+		paths = BZ["Dalaran"],
+		type = "Flightpath",
+	}
+
+	zones[transports["DALARAN_WINTERGRASP_FLIGHTPATH"]] = {
+		paths = BZ["Wintergrasp"],
+		type = "Flightpath",
+	}
+	
+	zones[transports["WINTERGRASP_DALARAN_FLIGHTPATH"]] = {
+		paths = BZ["Dalaran"],
+		type = "Flightpath",
+	}	
 
 
+
+
+
+	-- Cataclysm
+	
+	zones[transports["STORMWIND_MOUNTHYJAL_PORTAL"]] = {
+		paths = {
+			[BZ["Mount Hyjal"]] = true,
+		},
+		faction = "Alliance",
+		type = "Portal",
+	}
+
+	zones[transports["MOUNTHYJAL_STORMWIND_PORTAL"]] = {
+		paths = {
+			[BZ["Stormwind City"]] = true,
+		},
+		faction = "Alliance",
+		type = "Portal",
+	}
+
+	zones[transports["ORGRIMMAR_MOUNTHYJAL_PORTAL"]] = {
+		paths = {
+			[BZ["Mount Hyjal"]] = true,
+		},
+		faction = "Horde",
+		type = "Portal",
+	}
+
+	zones[transports["MOUNTHYJAL_ORGRIMMAR_PORTAL"]] = {
+		paths = {
+			[BZ["Orgrimmar"]] = true,
+		},
+		faction = "Horde",
+		type = "Portal",
+	}	
+
+	zones[transports["MOUNTHYJAL_MOLTENFRONT_PORTAL"]] = {
+		paths = {
+			[BZ["Molten Front"]] = true,
+		},
+		type = "Portal",
+	}
+
+	zones[transports["MOLTENFRONT_MOUNTHYJAL_PORTAL"]] = {
+		paths = {
+			[BZ["Mount Hyjal"]] = true,
+		},
+		type = "Portal",
+	}
+	
+	
+	zones[transports["STORMWIND_ULDUM_PORTAL"]] = {
+		paths = {
+			[BZ["Uldum"]] = true,
+		},
+		faction = "Alliance",
+		type = "Portal",
+	}
+
+	zones[transports["ORGRIMMAR_ULDUM_PORTAL"]] = {
+		paths = {
+			[BZ["Uldum"]] = true,
+		},
+		faction = "Horde",
+		type = "Portal",
+	}
+
+	zones[transports["STORMWIND_DEEPHOLM_PORTAL"]] = {
+		paths = {
+			[BZ["Deepholm"]] = true,
+		},
+		faction = "Alliance",
+		type = "Portal",
+	}
+
+	zones[transports["DEEPHOLM_STORMWIND_PORTAL"]] = {
+		paths = {
+			[BZ["Stormwind City"]] = true,
+		},
+		faction = "Alliance",
+		type = "Portal",
+	}
+
+	zones[transports["ORGRIMMAR_DEEPHOLM_PORTAL"]] = {
+		paths = {
+			[BZ["Deepholm"]] = true,
+		},
+		faction = "Horde",
+		type = "Portal",
+	}
+
+	zones[transports["DEEPHOLM_ORGRIMMAR_PORTAL"]] = {
+		paths = {
+			[BZ["Orgrimmar"]] = true,
+		},
+		faction = "Horde",
+		type = "Portal",
+	}
+
+	zones[transports["TOLBARAD_STORMWIND_PORTAL"]] = {
+		paths = {
+			[BZ["Stormwind City"]] = true,
+		},
+		faction = "Alliance",
+		type = "Portal",
+	}	
+	
+	zones[transports["STORMWIND_TOLBARAD_PORTAL"]] = {
+		paths = {
+			[BZ["Tol Barad Peninsula"]] = true,
+		},
+		faction = "Alliance",
+		type = "Portal",
+	}
+
+	zones[transports["TOLBARAD_ORGRIMMAR_PORTAL"]] = {
+		paths = {
+			[BZ["Orgrimmar"]] = true,
+		},
+		faction = "Horde",
+		type = "Portal",
+	}
+
+	zones[transports["ORGRIMMAR_TOLBARAD_PORTAL"]] = {
+		paths = {
+			[BZ["Tol Barad Peninsula"]] = true,
+		},
+		faction = "Horde",
+		type = "Portal",
+	}
+	
+	zones[transports["STORMWIND_TWILIGHTHIGHLANDS_PORTAL"]] = {
+		paths = {
+			[BZ["Twilight Highlands"]] = true,
+		},
+		faction = "Alliance",
+		type = "Portal",
+	}
+
+	zones[transports["TWILIGHTHIGHLANDS_STORMWIND_PORTAL"]] = {
+		paths = {
+			[BZ["Stormwind City"]] = true,
+		},
+		faction = "Alliance",
+		type = "Portal",
+	}
+	
+	zones[transports["ORGRIMMAR_TWILIGHTHIGHLANDS_PORTAL"]] = {
+		paths = {
+			[BZ["Twilight Highlands"]] = true,
+		},
+		faction = "Horde",
+		type = "Portal",
+	}
+
+	zones[transports["TWILIGHTHIGHLANDS_ORGRIMMAR_PORTAL"]] = {
+		paths = {
+			[BZ["Orgrimmar"]] = true,
+		},
+		faction = "Horde",
+		type = "Portal",
+	}
+	
+	
+
+	zones[transports["IRONFORGE_KELPTHAR_FLIGHTPATH"]] = {
+		paths = {
+			[BZ["Kelp'thar Forest"]] = true,
+		},
+		faction = "Alliance",
+		type = "Flightpath",
+	}
+
+	zones[transports["KELPTHAR_IRONFORGE_FLIGHTPATH"]] = {
+		paths = {
+			[BZ["Ironforge"]] = true,
+		},
+		faction = "Alliance",
+		type = "Flightpath",
+	}		
+	
+
+	zones[transports["UNDERCITY_KELPTHAR_FLIGHTPATH"]] = {
+		paths = {
+			[BZ["Kelp'thar Forest"]] = true,
+		},
+		faction = "Horde",
+		type = "Flightpath",
+	}
+
+	zones[transports["KELPTHAR_UNDERCITY_FLIGHTPATH"]] = {
+		paths = {
+			[BZ["Undercity"]] = true,
+		},
+		faction = "Horde",
+		type = "Flightpath",
+	}
+
+	zones[transports["SEARINGGORGE_KELPTHAR_FLIGHTPATH"]] = {
+		paths = {
+			[BZ["Kelp'thar Forest"]] = true,
+		},
+		faction = "Horde",
+		type = "Flightpath",
+	}
+
+	zones[transports["KELPTHAR_SEARINGGORGE_FLIGHTPATH"]] = {
+		paths = {
+			[BZ["Searing Gorge"]] = true,
+		},
+		faction = "Horde",
+		type = "Flightpath",
+	}	
+	
 
 	-- ZONES, INSTANCES AND COMPLEXES ---------------------------------------------------------
+
+	-- ============== ZONES =======================================================================
 
 	-- Eastern Kingdoms cities and zones --
 
@@ -3059,6 +3585,10 @@ do
 			[transports["STORMWIND_SHATTRATH_PORTAL"]] = true,
 			[transports["STORMWIND_BOREANTUNDRA_BOAT"]] = true,
 			[transports["STORMWIND_DARKSHORE_BOAT"]] = true,
+			[transports["STORMWIND_MOUNTHYJAL_PORTAL"]] = true,
+			[transports["STORMWIND_ULDUM_PORTAL"]] = true,
+			[transports["STORMWIND_DEEPHOLM_PORTAL"]] = true,
+			[transports["STORMWIND_TOLBARAD_PORTAL"]] = true,
 		},
 		flightnodes = {
 			[2] = true,      -- Stormwind, Elwynn (A)
@@ -3077,7 +3607,7 @@ do
 			[BZ["Ruins of Lordaeron"]] = true,
 			[transports["UNDERCITY_SILVERMOON_TELEPORT"]] = true,
 			[transports["UNDERCITY_SHATTRATH_PORTAL"]] = true,
-			[transports["UNDERCITY_HOWLINGFJORD_ZEPPELIN"]] = true,
+			[transports["UNDERCITY_KELPTHAR_FLIGHTPATH"]] = true,
 		},
 		flightnodes = {
 			[11] = true,     -- Undercity, Tirisfal (H)
@@ -3093,7 +3623,8 @@ do
 		paths = {
 			[BZ["Dun Morogh"]] = true,
 			[BZ["Deeprun Tram"]] = true,
-			[transports["IRONFORGE_SHATTRATH_PORTAL"]] = true,			
+			[transports["IRONFORGE_SHATTRATH_PORTAL"]] = true,
+			[transports["IRONFORGE_KELPTHAR_FLIGHTPATH"]] = true,			
 		},
 		flightnodes = {
 			[6] = true,      -- Ironforge, Dun Morogh (A)
@@ -3116,6 +3647,8 @@ do
 		},
 		flightnodes = {
 			[6] = true,      -- Ironforge, Dun Morogh (A)
+			[619] = true,     -- Kharanos, Dun Morogh (A)
+			[620] = true,     -- Gol'Bolar Quarry, Dun Morogh (A)
 		},		
 		faction = "Alliance",
 		fishing_low = 1,
@@ -3134,6 +3667,8 @@ do
 		},
 		flightnodes = {
 			[2] = true,      -- Stormwind, Elwynn (A)
+			[582] = true,     -- Goldshire, Elwynn (A)
+			[589] = true,     -- Eastvale Logging Camp, Elwynn (A)
 		},		
 		faction = "Alliance",
 		fishing_low = 1,
@@ -3148,14 +3683,16 @@ do
 		paths = {
 			[BZ["Western Plaguelands"]] = true,
 			[BZ["Undercity"]] = true,
+			[BZ["Silverpine Forest"]] = true,
 			[BZ["Scarlet Monastery"]] = true,
 			[transports["TIRISFAL_ORGRIMMAR_ZEPPELIN"]] = true,
 			[transports["TIRISFAL_STRANGLETHORN_ZEPPELIN"]] = true,
-			[BZ["Silverpine Forest"]] = true,
+			[transports["TIRISFAL_HOWLINGFJORD_ZEPPELIN"]] = true,
 		},
 		flightnodes = {
 			[11] = true,     -- Undercity, Tirisfal (H)
-			[384] = true,     -- The Bulwark, Tirisfal (H)			
+			[384] = true,     -- The Bulwark, Tirisfal (H)
+			[460] = true,     -- Brill, Tirisfal Glades (H)			
 		},		
 		faction = "Horde",
 		fishing_low = 1,
@@ -3174,6 +3711,8 @@ do
 		},
 		flightnodes = {
 			[4] = true,      -- Sentinel Hill, Westfall (A)
+			[583] = true,     -- Moonbrook, Westfall (A)
+			[584] = true,     -- Furlbrow's Pumpkin Farm, Westfall (A)			
 		},
 		faction = "Alliance",
 		fishing_low = 1,
@@ -3192,6 +3731,7 @@ do
 		},
 		flightnodes = {
 			[8] = true,     -- Thelsamar, Loch Modan (A)
+			[555] = true,     -- Farstrider Lodge, Loch Modan (A)
 		},
 		faction = "Alliance",
 		fishing_low = 1,
@@ -3207,9 +3747,14 @@ do
 			[BZ["Tirisfal Glades"]] = true,
 			[BZ["Hillsbrad Foothills"]] = true,
 			[BZ["Shadowfang Keep"]] = true,
+			[BZ["Ruins of Gilneas"]] = true,
+			[BZ["Ruins of Gilneas City"]] = true,
 		},
         flightnodes = {
             [10] = true,     -- The Sepulcher, Silverpine Forest (H)
+			[645] = true,     -- Forsaken High Command, Silverpine Forest (H)
+			[654] = true,     -- The Forsaken Front, Silverpine Forest (H)
+			[681] = true,     -- Forsaken Rear Guard, Silverpine Forest (H)
         },
 		faction = "Horde",
 		fishing_low = 1,
@@ -3227,6 +3772,8 @@ do
 		},
 		flightnodes = {
 			[5] = true,      -- Lakeshire, Redridge (A)
+			[596] = true,     -- Shalewind Canyon, Redridge (A)
+			[615] = true,     -- Camp Everstill, Redridge (A)
 		},
 		faction = "Alliance",
 		fishing_low = 55,
@@ -3239,39 +3786,41 @@ do
 		continent = Eastern_Kingdoms,
 		paths = {
 			[BZ["Redridge Mountains"]] = true,
-			[BZ["Stranglethorn Vale"]] = true,
+			[BZ["Northern Stranglethorn"]] = true,
 			[BZ["Westfall"]] = true,
 			[BZ["Deadwind Pass"]] = true,
 			[BZ["Elwynn Forest"]] = true,
 		},
 		flightnodes = {
 			[12] = true,     -- Darkshire, Duskwood (A)
+			[622] = true,     -- Raven Hill, Duskwood (A)
 		},
 		faction = "Alliance",
 		fishing_low = 55,
 		fishing_high = 150,
 	}
 
-	zones[BZ["Alterac Mountains"]] = {
-		low = 30,
-		high = 40,
-		continent = Eastern_Kingdoms,
-		instances = BZ["Alterac Valley"],
-		paths = {
-            [BZ["Western Plaguelands"]] = true,
-			[BZ["Alterac Valley"]] = true,
-			[BZ["Hillsbrad Foothills"]] = true,
-		},
-		fishing_low = 130,
-		fishing_high = 225,
-	}
+	-- Cataclysm: removed
+	-- zones[BZ["Alterac Mountains"]] = {
+		-- low = 30,
+		-- high = 40,
+		-- continent = Eastern_Kingdoms,
+		-- instances = BZ["Alterac Valley"],
+		-- paths = {
+            -- [BZ["Western Plaguelands"]] = true,
+			-- [BZ["Alterac Valley"]] = true,
+			-- [BZ["Hillsbrad Foothills"]] = true,
+		-- },
+		-- fishing_low = 130,
+		-- fishing_high = 225,
+	-- }
 
 	zones[BZ["Hillsbrad Foothills"]] = {
 		low = 20,
 		high = 30,
 		continent = Eastern_Kingdoms,
 		paths = {
-            [BZ["Alterac Mountains"]] = true,
+--            [BZ["Alterac Mountains"]] = true,
 			[BZ["Alterac Valley"]] = true,
 			[BZ["The Hinterlands"]] = true,
 			[BZ["Arathi Highlands"]] = true,
@@ -3280,6 +3829,9 @@ do
 		flightnodes = {
 			[13] = true,    -- Tarren Mill, Hillsbrad (H)
 			[14] = true,    -- Southshore, Hillsbrad (A)
+			[667] = true,     -- Ruins of Southshore, Hillsbrad (H)
+			[668] = true,     -- Southpoint Gate, Hillsbrad (H)
+			[669] = true,     -- Eastpoint Tower, Hillsbrad (H)
 		},
 		fishing_low = 55,
 		fishing_high = 150,
@@ -3297,6 +3849,10 @@ do
 		},
 		flightnodes = {
 			[7] = true,      -- Menethil Harbor, Wetlands (A)
+			[551] = true,     -- Whelgar's Retreat, Wetlands (A)
+			[552] = true,     -- Greenwarden's Grove, Wetlands (A)
+			[553] = true,     -- Dun Modr, Wetlands (A)
+			[554] = true,     -- Slabchisel's Survey, Wetlands (A)
 		},
 		fishing_low = 55,
 		fishing_high = 150,
@@ -3315,14 +3871,16 @@ do
 		flightnodes = {
 			[16] = true,     -- Refuge Pointe, Arathi (A)
             [17] = true,     -- Hammerfall, Arathi (H)
+			[601] = true,     -- Galen's Fall, Arathi (H)
 		},
 		fishing_low = 130,
 		fishing_high = 225,
 	}
 
+	-- Cataclysm: split up into Nothern Stranglethorn and The Cape of Stranglethorn, but Stranglethorn Vale still exists as a map
 	zones[BZ["Stranglethorn Vale"]] = {
-		low = 30,
-		high = 45,
+		low = 25,
+		high = 60,
 		continent = Eastern_Kingdoms,
 		instances = BZ["Zul'Gurub"],
 		paths = {
@@ -3336,11 +3894,58 @@ do
 			[18] = true,     -- Booty Bay, Stranglethorn (H)
 			[19] = true,     -- Booty Bay, Stranglethorn (A)
 			[20] = true,     -- Grom'gol, Stranglethorn (H)
-			[195] = true,    -- Rebel Camp, Stranglethorn Vale (A)			
+			[195] = true,    -- Rebel Camp, Stranglethorn Vale (A)
+			[590] = true,     -- Fort Livingston, Stranglethorn (A)
+			[591] = true,     -- Explorers' League Digsite, Stranglethorn (A)
+			[592] = true,     -- Hardwrench Hideaway, Stranglethorn (H)
+			[593] = true,     -- Bambala, Stranglethorn (H)			
 		},
 		fishing_low = 130,
 		fishing_high = 225,
 	}
+
+	zones[BZ["Northern Stranglethorn"]] = {
+		low = 25,
+		high = 55,
+		continent = Eastern_Kingdoms,
+		instances = BZ["Zul'Gurub"],
+		paths = {
+			[BZ["The Cape of Stranglethorn"]] = true,
+			[BZ["Duskwood"]] = true,
+			[BZ["Zul'Gurub"]] = true,
+			[transports["STRANGLETHORN_ORGRIMMAR_ZEPPELIN"]] = true,
+			[transports["TIRISFAL_STRANGLETHORN_ZEPPELIN"]] = true,
+		},
+		flightnodes = {
+			[593] = true,    -- Bambala, Stranglethorn (H)
+			[590] = true,    -- Fort Livingston, Stranglethorn (A)
+			[195] = true,    -- Rebel Camp, Stranglethorn Vale (A)
+			[20] = true,     -- Grom'gol, Stranglethorn (H)
+		},
+		fishing_low = 130,
+		fishing_high = 225,
+	}
+
+	zones[BZ["The Cape of Stranglethorn"]] = {
+		low = 30,
+		high = 60,
+		continent = Eastern_Kingdoms,
+		paths = {
+			[transports["STRANGLETHORN_BARRENS_BOAT"]] = true,
+			[BZ["Northern Stranglethorn"]] = true,
+		},
+		flightnodes = {
+			[18] = true,     -- Booty Bay, Stranglethorn (H)
+			[19] = true,     -- Booty Bay, Stranglethorn (A)
+			[592] = true,    -- Hardwrench Hideaway, Stranglethorn (H)
+			[591] = true,    -- Explorers' League Digsite, Stranglethorn (A)
+		},
+		fishing_low = 130,
+		fishing_high = 225,
+	}
+
+
+
 
 	zones[BZ["The Hinterlands"]] = {
 		low = 40,
@@ -3353,6 +3958,8 @@ do
 		flightnodes = {
 			[43] = true,     -- Aerie Peak, The Hinterlands (A)
 			[76] = true,     -- Revantusk Village, The Hinterlands (H)
+			[617] = true,     -- Hiri'watha Research Station, The Hinterlands (H)
+			[618] = true,     -- Stormfeather Outpost, The Hinterlands (A)
 		},
 		fishing_low = 205,
 		fishing_high = 300,
@@ -3368,11 +3975,15 @@ do
 			[BZ["Eastern Plaguelands"]] = true,
 			[BZ["Tirisfal Glades"]] = true,
 			[BZ["Scholomance"]] = true,
-			[BZ["Alterac Mountains"]] = true,
+--			[BZ["Alterac Mountains"]] = true,
 		},
 		flightnodes = {
 			[66] = true,     -- Chillwind Camp, Western Plaguelands (A)
 			[383] = true,     -- Thondoril River, Western Plaguelands (N)
+			[649] = true,     -- Andorhal, Western Plaguelands (H)
+			[650] = true,     -- Andorhal, Western Plaguelands (A)
+			[651] = true,     -- The Menders' Stead, Western Plaguelands (N)
+			[672] = true,     -- Hearthglen, Western Plaguelands (N)
 		},
 		fishing_low = 205,
 		fishing_high = 300,
@@ -3399,6 +4010,7 @@ do
 			[84] = true,    -- Plaguewood Tower, Eastern Plaguelands (N)
 			[87] = true,    -- Crown Guard Tower, Eastern Plaguelands (N)
 			[315] = true,     -- Acherus: The Ebon Hold (N)
+			[630] = true,     -- Light's Shield Tower, Eastern Plaguelands (N)
 		},
 		type = "PvP Zone",
 		fishing_low = 330,
@@ -3417,6 +4029,10 @@ do
 		},
 		flightnodes = {
 			[21] = true,     -- Kargath, Badlands (H)
+			[632] = true,     -- Bloodwatcher Point, Badlands (H)
+			[633] = true,     -- Dustwind Dig, Badlands (A)
+			[634] = true,     -- Dragon's Mouth, Badlands (A)
+			[635] = true,     -- Fuselight, Badlands (N)			
 		},
 	}
 
@@ -3434,10 +4050,12 @@ do
 			[BZ["Blackrock Mountain"]] = true,
 			[BZ["Badlands"]] = true,
 			[BZ["Loch Modan"]] = not isHorde and true or nil,
+			[transports["SEARINGGORGE_KELPTHAR_FLIGHTPATH"]] = true,
 		},
 		flightnodes = {
 			[75] = true,     -- Thorium Point, Searing Gorge (H)
 			[74] = true,     -- Thorium Point, Searing Gorge (A)
+			[673] = true,     -- Iron Summit, Searing Gorge (N)
 		},
 		complexes = {
 			[BZ["Blackrock Mountain"]] = true,
@@ -3461,6 +4079,8 @@ do
 		flightnodes = {
 			[70] = true,     -- Flame Crest, Burning Steppes (H)
 			[71] = true,     -- Morgan's Vigil, Burning Steppes (A)
+			[675] = true,     -- Flamestar Post, Burning Steppes (N)
+			[676] = true,     -- Chiselgrip, Burning Steppes (N)
 		},
 		complexes = {
 			[BZ["Blackrock Mountain"]] = true,
@@ -3481,6 +4101,9 @@ do
 		},
 		flightnodes = {
 			[56] = true,     -- Stonard, Swamp of Sorrows (H)
+			[598] = true,     -- Marshtide Watch, Swamp of Sorrows (A)
+			[599] = true,     -- Bogpaddle, Swamp of Sorrows (N)
+			[600] = true,     -- The Harborage, Swamp of Sorrows (A)
 		},
 		fishing_low = 130,
 		fishing_high = 225,
@@ -3491,11 +4114,14 @@ do
 		high = 55,
 		continent = Eastern_Kingdoms,
 		paths = {
-			[transports["THE_DARK_PORTAL_BLASTED_LANDS"]] = true,	
+			[transports["THE_DARK_PORTAL_BLASTED_LANDS"]] = true,
 			[BZ["Swamp of Sorrows"]] = true,
 		},
 		flightnodes = {
 			[45] = true,     -- Nethergarde Keep, Blasted Lands (A)
+			[602] = true,     -- Surwich, Blasted Lands (A)
+			[603] = true,     -- Sunveil Excursion, Blasted Lands (H)
+			[604] = true,     -- Dreadmaul Hold, Blasted Lands (H)			
 		},
 	}
 
@@ -3528,6 +4154,10 @@ do
 			[transports["ORGRIMMAR_TIRISFAL_ZEPPELIN"]] = true,
 			[transports["ORGRIMMAR_SHATTRATH_PORTAL"]] = true,
 			[transports["ORGRIMMAR_BOREANTUNDRA_ZEPPELIN"]] = true,
+			[transports["ORGRIMMAR_MOUNTHYJAL_PORTAL"]] = true,
+			[transports["ORGRIMMAR_ULDUM_PORTAL"]] = true,
+			[transports["ORGRIMMAR_DEEPHOLM_PORTAL"]] = true,
+			[transports["ORGRIMMAR_TOLBARAD_PORTAL"]] = true,
 		},
 		flightnodes = {
 			[23] = true,     -- Orgrimmar, Durotar (H)
@@ -3575,6 +4205,8 @@ do
 		},
 		flightnodes = {
 			[23] = true,     -- Orgrimmar, Durotar (H)
+			[536] = true,     -- Sen'jin Village, Durotar (H)
+			[537] = true,     -- Razor Hill, Durotar (H)
 		},		
 		faction = "Horde",
 		fishing_low = 1,
@@ -3587,10 +4219,11 @@ do
 		continent = Kalimdor,
 		paths = {
 			[BZ["Thunder Bluff"]] = true,
-			[BZ["The Barrens"]] = true,
+			[BZ["Southern Barrens"]] = true,
 		},
 		flightnodes = {
 			[22] = true,     -- Thunder Bluff, Mulgore (H)
+			[402] = true,     -- Bloodhoof Village, Mulgore (H)
 		},		
 		faction = "Horde",
 		fishing_low = 1,
@@ -3607,6 +4240,8 @@ do
 		},
 		flightnodes = {
 			[27] = true,     -- Rut'theran Village, Teldrassil (A)
+			[456] = true,     -- Dolanaar, Teldrassil (A)
+			[457] = true,     -- Darnassus, Teldrassil (A)
 		},
 		faction = "Alliance",
 		fishing_low = 1,
@@ -3623,6 +4258,9 @@ do
 		flightnodes = {
 			[44] = true, -- Valormok, Azshara (H)
 			[64] = true, -- Talrendis Point, Azshara (A)
+			[613] = true,     -- Southern Rocketway, Azshara (H)
+			[614] = true,     -- Northern Rocketway, Azshara (H)
+			[683] = true,     -- Valormok, Azshara (H)
 		},
 		fishing_low = 205,
 		fishing_high = 300,
@@ -3640,6 +4278,7 @@ do
 		},
 		flightnodes = {
 			[26] = true,     -- Auberdine, Darkshore (A)
+			[339] = true,     -- Grove of the Ancients, Darkshore (A)
 		},
 		faction = "Alliance",
 		fishing_low = 1,
@@ -3653,31 +4292,25 @@ do
 		instances = {
 			[BZ["Wailing Caverns"]] = true,
 			[BZ["Warsong Gulch"]] = isHorde and true or nil,
-			[BZ["Razorfen Kraul"]] = true,
-			[BZ["Razorfen Downs"]] = true,
 		},
 		paths = {
+			[BZ["Southern Barrens"]] = true,
 			[BZ["Ashenvale"]] = true,
 			[BZ["Durotar"]] = true,
-			[BZ["Orgrimmar"]] = true,
-			[BZ["Thousand Needles"]] = true,
 			[BZ["Stonetalon Mountains"]] = true,
-			[BZ["Mulgore"]] = true,
 			[BZ["Wailing Caverns"]] = true,
 			[BZ["Warsong Gulch"]] = isHorde and true or nil,
-			[BZ["Razorfen Kraul"]] = true,
-			[BZ["Razorfen Downs"]] = true,
-			[BZ["Dustwallow Marsh"]] = true,
 			[transports["BARRENS_STRANGLETHORN_BOAT"]] = true,
 		},
 		flightnodes = {
 			[80] = true,    -- Ratchet, The Barrens (N)
 			[25] = true,    -- The Crossroads, The Barrens (H)
-			[77] = true,    -- Camp Taurajo, The Barrens (H)
+			[458] = true,     -- Nozzlepot's Outpost, The Barrens (H)
 		},
 		fishing_low = 1,
 		fishing_high = 75,
 	}
+
 
 	zones[BZ["Ashenvale"]] = {
 		low = 15,
@@ -3701,6 +4334,11 @@ do
 			[28] = true,     -- Astranaar, Ashenvale (A)
 			[58] = true,     -- Zoram'gar Outpost, Ashenvale (H)
 			[167] = true,    -- Forest Song, Ashenvale (A)
+			[338] = true,     -- Blackfathom Camp, Ashenvale (A)
+			[350] = true,     -- Hellscream's Watch, Ashenvale (H)
+			[351] = true,     -- Stardust Spire, Ashenvale (A)
+			[354] = true,     -- The Mor'Shan Ramparts, Ashenvale (H)
+			[356] = true,     -- Silverwind Refuge, Ashenvale (H)
 		},
 		fishing_low = 55,
 		fishing_high = 150,
@@ -3718,6 +4356,14 @@ do
 		flightnodes = {
 			[33] = true,     -- Stonetalon Peak, Stonetalon Mountains (A)
 			[29] = true,     -- Sun Rock Retreat, Stonetalon Mountains (H)
+		    [360] = true,     -- Cliffwalker Post, Stonetalon Mountains (H)
+			[361] = true,     -- Windshear Hold, Stonetalon Mountains (A)
+			[362] = true,     -- Krom'gar Fortress, Stonetalon Mountains (H)
+			[363] = true,     -- Malaka'jin, Stonetalon Mountains (H)
+			[364] = true,     -- Northwatch Expedition Base Camp, Stonetalon Mountains (A)
+			[365] = true,     -- Farwatcher's Glen, Stonetalon Mountains (A)
+			[540] = true,     -- The Sludgewerks, Stonetalon Mountains (H)
+			[541] = true,     -- Mirkfallon Post, Stonetalon Mountains (A)
 		},
 		fishing_low = 55,
 		fishing_high = 150,
@@ -3736,6 +4382,11 @@ do
 		flightnodes = {
 			[38] = true,     -- Shadowprey Village, Desolace (H)
 			[37] = true,     -- Nijel's Point, Desolace (A)
+		    [366] = true,     -- Furien's Post, Desolace (H)
+			[367] = true,     -- Thargad's Camp, Desolace (A)
+			[368] = true,     -- Karnum's Glade, Desolace (N)
+			[369] = true,     -- Thunk's Abode, Desolace (N)
+			[370] = true,     -- Ethel Rethor, Desolace (N)
 		},
 		fishing_low = 130,
 		fishing_high = 225,
@@ -3748,7 +4399,7 @@ do
 		instances = BZ["Onyxia's Lair"],
 		paths = {
 			[BZ["Onyxia's Lair"]] = true,
-			[BZ["The Barrens"]] = true,
+			[BZ["Southern Barrens"]] = true,
 			[transports["DUSTWALLOW_WETLANDS_BOAT"]] = true,
 		},
 		flightnodes = {
@@ -3778,6 +4429,10 @@ do
 			[41] = true,     -- Feathermoon, Feralas (A)
 			[42] = true,     -- Camp Mojache, Feralas (H)
 			[31] = true,     -- Thalanaar, Feralas (A)
+			[565] = true,     -- Dreamer's Rest, Feralas (A)
+			[567] = true,     -- Tower of Estulan, Feralas (A)
+			[568] = true,     -- Camp Ataya, Feralas (H)
+			[569] = true,     -- Stonemaul Hold, Feralas (H)
 		},
 		complexes = {
 			[BZ["Dire Maul"]] = true,
@@ -3792,11 +4447,12 @@ do
 		continent = Kalimdor,
 		paths = {
 			[BZ["Feralas"]] = true,
-			[BZ["The Barrens"]] = true,
+			[BZ["Southern Barrens"]] = true,
 			[BZ["Tanaris"]] = true,
 		},
 		flightnodes = {
 			[30] = true,     -- Freewind Post, Thousand Needles (H)
+			[513] = true,     -- Fizzle & Pozzik's Speedbarge, Thousand Needles (N)
 		},
 		fishing_low = 130,
 		fishing_high = 225,
@@ -3814,7 +4470,10 @@ do
 		flightnodes = {
 			[48] = true,     -- Bloodvenom Post, Felwood (H)
 			[65] = true,     -- Talonbranch Glade, Felwood (A)
-			[166] = true,    -- Emerald Sanctuary, Felwood (N)			
+			[166] = true,    -- Emerald Sanctuary, Felwood (N)
+			[594] = true,     -- Whisperwind Grove, Felwood (N)
+			[595] = true,     -- Wildheart Point, Felwood (N)
+			[597] = true,     -- Irontree Clearing, Felwood (H)
 		},
 		fishing_low = 205,
 		fishing_high = 300,
@@ -3836,10 +4495,14 @@ do
 			[BZ["Un'Goro Crater"]] = true,
 			[BZ["Zul'Farrak"]] = true,
 			[BZ["Caverns of Time"]] = true,
+			[BZ["Uldum"]] = true,
 		},
 		flightnodes = {
 			[39] = true,     -- Gadgetzan, Tanaris (A)
 			[40] = true,     -- Gadgetzan, Tanaris (H)
+			[531] = true,     -- Dawnrise Expedition, Tanaris (H)
+			[532] = true,     -- Gunstan's Dig, Tanaris (A)
+			[539] = true,     -- Bootlegger Outpost, Tanaris (N)
 		},
 		complexes = {
 			[BZ["Caverns of Time"]] = true,
@@ -3858,6 +4521,7 @@ do
 		},
 		flightnodes = {
 			[79] = true,     -- Marshal's Refuge, Un'Goro Crater (N)
+			[386] = true,     -- Mossy Pile, Un'Goro Crater (N)
 		},
 		fishing_low = 205,
 		fishing_high = 300,
@@ -3869,6 +4533,8 @@ do
 		continent = Kalimdor,
 		paths = {
 			[BZ["Felwood"]] = true,
+			[BZ["Moonglade"]] = true,
+			[BZ["Mount Hyjal"]] = true,
 		},
 		flightnodes = {
 			[53] = true,    -- Everlook, Winterspring (H)
@@ -3994,6 +4660,8 @@ do
 		},
 		flightnodes = {
 			[82] = true,    -- Silvermoon City (H)
+			[625] = true,     -- Fairbreeze Village, Eversong Woods (H)
+			[631] = true,     -- Falconwing Square, Eversong Woods (H)
 		},	
 		faction = "Horde",
 		fishing_low = 1,
@@ -4031,6 +4699,7 @@ do
 		},
 		flightnodes = {
 			[94] = true,    -- The Exodar (A)
+			[624] = true,     -- Azure Watch, Azuremyst Isle (A)
 		},
 		faction = "Alliance",
 		fishing_low = 1,
@@ -4280,6 +4949,8 @@ do
 			[transports["DALARAN_COT_PORTAL"]] = true,
 			[transports["DALARAN_STORMWIND_PORTAL"]] = true,
 			[transports["DALARAN_ORGRIMMAR_PORTAL"]] = true,
+			[transports["DALARAN_ICECROWN_FLIGHTPATH"]] = true,
+			[transports["DALARAN_WINTERGRASP_FLIGHTPATH"]] = true,
 		},
 		instances = {
 			[BZ["The Violet Hold"]] = true,
@@ -4341,7 +5012,7 @@ do
 		paths = {
 			[BZ["Grizzly Hills"]] = true,
 			[transports["HOWLINGFJORD_WETLANDS_BOAT"]] = true,
-			[transports["HOWLINGFJORD_UNDERCITY_ZEPPELIN"]] = true,
+			[transports["HOWLINGFJORD_TIRISFAL_ZEPPELIN"]] = true,
 			[transports["HOWLINGFJORD_DRAGONBLIGHT_BOAT"]] = true,
 			[BZ["Utgarde Keep"]] = true,
 			[BZ["Utgarde Pinnacle"]] = true,
@@ -4379,6 +5050,7 @@ do
 			[BZ["Ahn'kahet: The Old Kingdom"]] = true,
 			[BZ["Naxxramas"]] = true,
 			[BZ["The Obsidian Sanctum"]] = true,
+			[BZ["Strand of the Ancients"]] = true,
 		},
 		instances = {
 			[BZ["Azjol-Nerub"]] = true,
@@ -4520,6 +5192,8 @@ do
 			[BZ["Halls of Reflection"]] = true,
 			[BZ["Icecrown Citadel"]] = true,
 			[BZ["Hrothgar's Landing"]] = true,
+			[BZ["Isle of Conquest"]] = true,
+			[transports["ICECROWN_DALARAN_FLIGHTPATH"]] = true,
 		},
 		instances = {
 			[BZ["Trial of the Champion"]] = true,
@@ -4554,7 +5228,10 @@ do
 		low = 77,
 		high = 80,
 		continent = Northrend,
-		paths = BZ["Vault of Archavon"],
+		paths = {
+			[BZ["Vault of Archavon"]] = true,
+			[transports["WINTERGRASP_DALARAN_FLIGHTPATH"]] = true,
+		},
 		instances = BZ["Vault of Archavon"],
 		type = "PvP Zone",
 		flightnodes = {
@@ -4572,7 +5249,336 @@ do
 --	}
 
 
+	-- Cataclysm zones --------------------------
 
+	zones[BZ["Mount Hyjal"]] = {
+		low = 80,
+		high = 85,
+		continent = Kalimdor,
+		paths = {
+			[BZ["Winterspring"]] = true,
+			[transports["MOUNTHYJAL_ORGRIMMAR_PORTAL"]] = true,
+			[transports["MOUNTHYJAL_STORMWIND_PORTAL"]] = true,
+			[transports["MOUNTHYJAL_MOLTENFRONT_PORTAL"]] = true,
+			[BZ["Firelands"]] = true,
+		},
+		flightnodes = {
+			[558] = true,    -- Grove of Aessina, Hyjal (N)
+			[616] = true,    -- Gates of Sothann, Hyjal (N)
+			[781] = true,    -- Sanctuary of Malorne, Hyjal (N)
+			[559] = true,    -- Nordrassil, Hyjal (N)
+			[557] = true,    -- Shrine of Aviana, Hyjal (N)
+		},
+		instances = {
+			[BZ["Firelands"]] = true,
+		},
+		fishing_low = 450,
+		fishing_high = 575,
+	}
+
+	zones[BZ["Molten Front"]] = {
+		low = 85,
+		high = 85,
+		paths = {
+			[transports["MOLTENFRONT_MOUNTHYJAL_PORTAL"]] = true,
+		},
+		continent = Kalimdor,
+	}
+
+	zones[BZ["Uldum"]] = {
+		low = 83,
+		high = 85,
+		continent = Kalimdor,
+		paths = {
+			[BZ["Tanaris"]] = true,
+			[BZ["Halls of Origination"]] = true,
+			[BZ["Lost City of the Tol'vir"]] = true,
+			[BZ["The Vortex Pinnacle"]] = true,
+			[BZ["Throne of the Four Winds"]] = true,
+		},
+		instances = {
+			[BZ["Halls of Origination"]] = true,
+			[BZ["Lost City of the Tol'vir"]] = true,
+			[BZ["The Vortex Pinnacle"]] = true,
+			[BZ["Throne of the Four Winds"]] = true,
+		},
+		flightnodes = {
+			[653] = true,    -- Oasis of Vir'sar, Uldum (N)
+			[652] = true,    -- Ramkahen, Uldum (N)
+			[674] = true,    -- Schnottz's Landing, Uldum (N)
+		},
+		fishing_low = 575,  -- TODO: check
+		fishing_high = 650,
+	}
+
+
+	zones[BZ["Southern Barrens"]] = {
+		low = 25,
+		high = 60,
+		continent = Kalimdor,
+		instances = {
+			[BZ["Razorfen Kraul"]] = true,
+			[BZ["Razorfen Downs"]] = true,
+		},
+		paths = {
+			[BZ["The Barrens"]] = true,
+			[BZ["Thousand Needles"]] = true,
+			[BZ["Mulgore"]] = true,
+			[BZ["Dustwallow Marsh"]] = true,
+			[BZ["Razorfen Kraul"]] = true,
+			[BZ["Razorfen Downs"]] = true,
+		},
+		flightnodes = {
+			[388] = true,    -- Northwatch Hold, Southern Barrens (A)
+			[389] = true,    -- Fort Triumph, Southern Barrens (A)
+			[390] = true,    -- Hunter's Hill, Southern Barrens (H)
+			[77] = true,     -- Vendetta Point, Southern Barrens (H)
+			[387] = true,    -- Honor's Stand, Southern Barrens (A)
+			[391] = true,    -- Desolation Hold, Southern Barrens (H)
+		},
+		fishing_low = 130,
+		fishing_high = 225,
+	}
+
+
+	zones[BZ["Twilight Highlands"]] = {
+		low = 84,
+		high = 85,
+		continent = Eastern_Kingdoms,
+		instances = {
+			[BZ["Grim Batol"]] = true,
+			[BZ["The Bastion of Twilight"]] = true,
+			[BZ["Twin Peaks"]] = true,
+		},
+		paths = {
+			[BZ["Wetlands"]] = true,
+			[BZ["Grim Batol"]] = true,
+			[BZ["The Bastion of Twilight"]] = true,
+			[BZ["Twin Peaks"]] = true,
+			[transports["TWILIGHTHIGHLANDS_STORMWIND_PORTAL"]] = true,
+			[transports["TWILIGHTHIGHLANDS_ORGRIMMAR_PORTAL"]] = true,
+		},
+		flightnodes = {
+			[657] = true,    -- The Gullet, Twilight Highlands (H)
+			[659] = true,    -- Bloodgulch, Twilight Highlands (H)
+			[661] = true,    -- Dragonmaw Port, Twilight Highlands (H)
+			[663] = true,    -- Victor's Point, Twilight Highlands (A)
+			[665] = true,    -- Thundermar, Twilight Highlands (A)
+			[656] = true,    -- Crushblow, Twilight Highlands (H)
+			[658] = true,    -- Vermillion Redoubt, Twilight Highlands (N)
+			[660] = true,    -- The Krazzworks, Twilight Highlands (H)
+			[662] = true,    -- Highbank, Twilight Highlands (A)
+			[664] = true,    -- Firebeard's Patrol, Twilight Highlands (A)
+			[666] = true,    -- Kirthaven, Twilight Highlands (A)
+		},
+		fishing_low = 575,  -- TODO: check
+		fishing_high = 650,		
+	}	
+
+
+
+	zones[BZ["Tol Barad"]] = {
+		low = 84,
+		high = 85,
+		continent = Eastern_Kingdoms,
+		paths = {
+			[BZ["Tol Barad Peninsula"]] = true,
+		},
+		type = "PvP Zone",
+	}
+
+	zones[BZ["Tol Barad Peninsula"]] = {
+		low = 84,
+		high = 85,
+		continent = Eastern_Kingdoms,
+		paths = {
+			[BZ["Tol Barad"]] = true,
+			[transports["TOLBARAD_ORGRIMMAR_PORTAL"]] = true,
+			[transports["TOLBARAD_STORMWIND_PORTAL"]] = true,
+		},
+	}	
+
+
+	-- Worgen starting zone
+	zones[BZ["Gilneas"]] = {
+		low = 1,
+		high = 20,
+		continent = Eastern_Kingdoms,
+		paths = {},  -- phased instance
+		faction = "Alliance",
+	}	
+	
+	zones[BZ["Gilneas City"]] = {
+		low = 1,
+		high = 20,
+		continent = Eastern_Kingdoms,
+		paths = {},  -- phased instance
+		faction = "Alliance",
+	}
+
+	zones[BZ["Ruins of Gilneas"]] = {
+		continent = Eastern_Kingdoms,
+		paths = {
+			[BZ["Silverpine Forest"]] = true,
+			[BZ["Ruins of Gilneas City"]] = true,
+		},
+		flightnodes = {
+			[646] = true,    -- Forsaken Forward Command, Gilneas (H)
+		},
+	}
+
+	zones[BZ["Ruins of Gilneas City"]] = {
+		continent = Eastern_Kingdoms,
+		paths = {
+			[BZ["Silverpine Forest"]] = true,
+			[BZ["Ruins of Gilneas"]] = true,
+		},
+	}
+
+
+	-- Vashj'ir
+
+	zones[BZ["Vashj'ir"]] = {
+		low = 80,
+		high = 85,
+		continent = Eastern_Kingdoms,
+		paths = {
+			[transports["KELPTHAR_IRONFORGE_FLIGHTPATH"]] = true,
+			[transports["KELPTHAR_UNDERCITY_FLIGHTPATH"]] = true,
+			[transports["KELPTHAR_SEARINGGORGE_FLIGHTPATH"]] = true,
+		},
+		instances = {
+			[BZ["Throne of the Tides"]] = true,
+		},
+		flightnodes = {
+			[522] = true,    -- Silver Tide Hollow, Vashj'ir (N) S seahorse
+			[524] = true,    -- Darkbreak Cove, Vashj'ir (A) A seahorse
+			[526] = true,    -- Tenebrous Cavern, Vashj'ir (H) A seahorse
+			[605] = true,    -- Voldrin's Hold, Vashj'ir (A) S seahorse
+			[611] = true,    -- Voldrin's Hold, Vashj'ir (A) S
+			[606] = true,    -- Sandy Beach, Vashj'ir (A) S 
+			[607] = true,    -- Sandy Beach, Vashj'ir (A) S seahorse
+			[608] = true,    -- Sandy Beach, Vashj'ir (H) S 
+			[609] = true,    -- Sandy Beach, Vashj'ir (H) S seahorse
+			[610] = true,    -- Stygian Bounty, Vashj'ir (H) S 
+			[612] = true,    -- Stygian Bounty, Vashj'ir (H) S seahorse
+			[521] = true,    -- Smuggler's Scar, Vashj'ir (N) K seahorse
+			[523] = true,    -- Tranquil Wash, Vashj'ir (A) S seahorse
+			[525] = true,    -- Legion's Rest, Vashj'ir (H) S seahorse
+		},
+		fishing_low = 450,
+		fishing_high = 575,
+	}
+
+	zones[BZ["Kelp'thar Forest"]] = {
+		low = 80,
+		high = 85,
+		continent = Eastern_Kingdoms,
+		paths = {
+			[transports["KELPTHAR_IRONFORGE_FLIGHTPATH"]] = true,
+			[transports["KELPTHAR_UNDERCITY_FLIGHTPATH"]] = true,
+			[transports["KELPTHAR_SEARINGGORGE_FLIGHTPATH"]] = true,
+			[BZ["Shimmering Expanse"]] = true,
+		},
+		flightnodes = {
+			[521] = true,    -- Smuggler's Scar, Vashj'ir (N) seahorse
+		},
+		fishing_low = 450,
+		fishing_high = 575,
+	}
+
+	zones[BZ["Shimmering Expanse"]] = {
+		low = 80,
+		high = 85,
+		continent = Eastern_Kingdoms,
+		paths = {
+			[BZ["Kelp'thar Forest"]] = true,
+			[BZ["Abyssal Depths"]] = true,
+		},
+		flightnodes = {
+			[522] = true,    -- Silver Tide Hollow, Vashj'ir (N) seahorse
+			[605] = true,    -- Voldrin's Hold, Vashj'ir (A) seahorse
+			[611] = true,    -- Voldrin's Hold, Vashj'ir (A) 
+			[606] = true,    -- Sandy Beach, Vashj'ir (A)  
+			[607] = true,    -- Sandy Beach, Vashj'ir (A) seahorse
+			[608] = true,    -- Sandy Beach, Vashj'ir (H)  
+			[609] = true,    -- Sandy Beach, Vashj'ir (H) seahorse
+			[610] = true,    -- Stygian Bounty, Vashj'ir (H)  
+			[612] = true,    -- Stygian Bounty, Vashj'ir (H) seahorse
+			[523] = true,    -- Tranquil Wash, Vashj'ir (A) seahorse
+			[525] = true,    -- Legion's Rest, Vashj'ir (H) seahorse
+		},
+		fishing_low = 450,
+		fishing_high = 575,	
+	}
+
+	zones[BZ["Abyssal Depths"]] = {
+		low = 80,
+		high = 85,
+		continent = Eastern_Kingdoms,
+		instances = {
+			[BZ["Throne of the Tides"]] = true,
+		},
+		paths = {
+			[BZ["Shimmering Expanse"]] = true,
+			[BZ["Throne of the Tides"]] = true,
+		},
+		flightnodes = {
+			[524] = true,    -- Darkbreak Cove, Vashj'ir (A) seahorse
+			[526] = true,    -- Tenebrous Cavern, Vashj'ir (H) seahorse
+		},
+		fishing_low = 450,
+		fishing_high = 575,
+	}
+
+
+	-- The Maelstrom zones (Cataclysm) --
+
+	-- Goblin start zone 1
+	zones[BZ["The Lost Isles"]] = {
+		low = 1,
+		high = 20,
+		continent = The_Maelstrom,
+		faction = "Horde",
+	}	
+	
+	-- Goblin start zone 2
+	zones[BZ["Kezan"]] = {
+		low = 1,
+		high = 20,
+		continent = The_Maelstrom,
+		faction = "Horde",
+	}
+
+	zones[BZ["The Maelstrom"].." (zone)"] = {
+		continent = The_Maelstrom,
+		paths = {
+		},
+		faction = "Sanctuary",
+	}
+
+	zones[BZ["Deepholm"]] = {
+		low = 82,
+		high = 85,
+		continent = The_Maelstrom,
+		expansion = Cataclysm,
+		instances = {
+			[BZ["The Stonecore"]] = true,
+		},
+		paths = {
+			[BZ["The Stonecore"]] = true,
+			[transports["DEEPHOLM_ORGRIMMAR_PORTAL"]] = true,
+			[transports["DEEPHOLM_STORMWIND_PORTAL"]] = true,
+		},
+	}	
+
+
+
+
+
+
+
+	-- ============== DUNGEONS =======================================================================
 
 
 	-- Classic dungeons ------------------------
@@ -4589,8 +5595,8 @@ do
 	}
 
 	zones[BZ["The Deadmines"]] = {
-		low = 17,
-		high = 26,
+		low = 15,
+		high = 21,
 		continent = Eastern_Kingdoms,
 		paths = BZ["Westfall"],
 		groupSize = 5,
@@ -4602,8 +5608,8 @@ do
 	}
 
 	zones[BZ["Shadowfang Keep"]] = {
-		low = 22,
-		high = 30,
+		low = 16,
+		high = 26,
 		continent = Eastern_Kingdoms,
 		paths = BZ["Silverpine Forest"],
 		groupSize = 5,
@@ -4674,26 +5680,26 @@ do
 		low = 29,
 		high = 38,
 		continent = Kalimdor,
-		paths = BZ["The Barrens"],
+		paths = BZ["Southern Barrens"],
 		groupSize = 5,
 		type = "Instance",
-		entrancePortal = { BZ["The Barrens"], 40.8, 94.5 },
+		entrancePortal = { BZ["Southern Barrens"], 40.8, 94.5 },  -- TODO: check
 	}
 
 	zones[BZ["Razorfen Downs"]] = {
 		low = 37,
 		high = 46,
 		continent = Kalimdor,
-		paths = BZ["The Barrens"],
+		paths = BZ["Southern Barrens"],
 		groupSize = 5,
 		type = "Instance",
-		entrancePortal = { BZ["The Barrens"], 47.5, 23.7 },
+		entrancePortal = { BZ["Southern Barrens"], 47.5, 23.7 },  -- TODO check
 	}
 
 	-- consists of The Wicked Grotto, Foulspore Cavern and Earth Song Falls
 	zones[BZ["Maraudon"]] = {
-		low = 46,
-		high = 55,
+		low = 30,
+		high = 44,
 		continent = Kalimdor,
 		paths = BZ["Desolace"],
 		groupSize = 5,
@@ -4704,8 +5710,8 @@ do
 	}
 
 	zones[BZ["Uldaman"]] = {
-		low = 41,
-		high = 51,
+		low = 35,
+		high = 45,
 		continent = Eastern_Kingdoms,
 		paths = BZ["Badlands"],
 		groupSize = 5,
@@ -4715,8 +5721,8 @@ do
 
 	-- a.k.a. Warpwood Quarter
 	zones[BZ["Dire Maul - East"]] = {
-		low = 55,
-		high = 60,
+		low = 36,
+		high = 46,
 		continent = Kalimdor,
 		paths = BZ["Dire Maul"],
 		groupSize = 5,
@@ -4727,8 +5733,8 @@ do
 
 	-- a.k.a. Capital Gardens
 	zones[BZ["Dire Maul - West"]] = {
-		low = 55,
-		high = 60,
+		low = 39,
+		high = 49,
 		continent = Kalimdor,
 		paths = BZ["Dire Maul"],
 		groupSize = 5,
@@ -4739,8 +5745,8 @@ do
 
 	-- a.k.a. Gordok Commons
 	zones[BZ["Dire Maul - North"]] = {
-		low = 55,
-		high = 60,
+		low = 42,
+		high = 52,
 		continent = Kalimdor,
 		paths = BZ["Dire Maul"],
 		groupSize = 5,
@@ -4750,8 +5756,8 @@ do
 	}
 
 	zones[BZ["Scholomance"]] = {
-		low = 58,
-		high = 60,
+		low = 38,
+		high = 48,
 		continent = Eastern_Kingdoms,
 		paths = BZ["Western Plaguelands"],
 		groupSize = 5,
@@ -4763,8 +5769,8 @@ do
 
 	-- consists of Main Gate and Service Entrance
 	zones[BZ["Stratholme"]] = {
-		low = 58,
-		high = 60,
+		low = 42,
+		high = 56,
 		continent = Eastern_Kingdoms,
 		paths = BZ["Eastern Plaguelands"],
 		groupSize = 5,
@@ -4786,8 +5792,8 @@ do
 
 	-- consists of Detention Block and Upper City
 	zones[BZ["Blackrock Depths"]] = {
-		low = 52,
-		high = 60,
+		low = 47,
+		high = 61,
 		continent = Eastern_Kingdoms,
 		paths = {
 			[BZ["Molten Core"]] = true,
@@ -4814,7 +5820,7 @@ do
 
 	zones[BZ["Blackrock Spire"]] = {
 		low = 55,
-		high = 60,
+		high = 65,
 		continent = Eastern_Kingdoms,
 		paths = {
 			[BZ["Blackrock Mountain"]] = true,
@@ -4826,8 +5832,6 @@ do
 		entrancePortal = { BZ["Burning Steppes"], 29.7, 37.5 },
 	}
 
-
-	
 
 
 
@@ -5214,25 +6218,112 @@ do
 	}
 	
 	
+	-- Cataclysm dungeons
+	
+	zones[BZ["Lost City of the Tol'vir"]] = {
+		low = 85,
+		high = 85,
+		continent = Kalimdor,
+		paths = BZ["Uldum"],
+		groupSize = 5,
+		type = "Instance",
+		entrancePortal = { BZ["Uldum"], 60.53, 64.24 },
+	}
+
+	zones[BZ["Halls of Origination"]] = {
+		low = 85,
+		high = 85,
+		continent = Kalimdor,
+		paths = BZ["Uldum"],
+		groupSize = 5,
+		type = "Instance",
+		entrancePortal = { BZ["Uldum"], 69.09, 52.95 },
+	}
+
+	zones[BZ["The Vortex Pinnacle"]] = {
+		low = 82,
+		high = 84,
+		continent = Kalimdor,
+		paths = BZ["Uldum"],
+		groupSize = 5,
+		type = "Instance",
+		entrancePortal = { BZ["Uldum"], 76.79, 84.51 },
+	}
+
+	zones[BZ["Throne of the Four Winds"]] = {
+		low = 85,
+		high = 85,
+		continent = Kalimdor,
+		paths = BZ["Uldum"],
+		groupSize = 10,
+		altGroupSize = 25,
+		type = "Instance",
+		entrancePortal = { BZ["Uldum"], 38.26, 80.66 },
+	}
+	
+	zones[BZ["The Stonecore"]] = {
+		low = 80,
+		high = 85,
+		continent = The_Maelstrom,
+		paths = BZ["Deepholm"],
+		groupSize = 5,
+		type = "Instance",
+		entrancePortal = { BZ["Deepholm"], 47.70, 51.96 },
+	}	
+
+	-- Note: before Cataclysm, this was a lvl 60 20-man raid
+	zones[BZ["Zul'Gurub"]] = {
+		low = 85,
+		high = 85,
+		continent = Eastern_Kingdoms,
+		expansion = Cataclysm,
+		paths = BZ["Northern Stranglethorn"],
+		groupSize = 5,
+		type = "Instance",
+		entrancePortal = { BZ["Northern Stranglethorn"], 52.2, 17.1 },
+	}
+
+	zones[BZ["Throne of the Tides"]] = {
+		low = 80,
+		high = 82,
+		continent = Eastern_Kingdoms,
+		paths = BZ["Abyssal Depths"],
+		groupSize = 5,
+		type = "Instance",
+		entrancePortal = { BZ["Abyssal Depths"], 69.3, 25.2 },
+	}	
+
+	zones[BZ["Grim Batol"]] = {
+		low = 83,
+		high = 85,
+		continent = Eastern_Kingdoms,
+		paths = BZ["Twilight Highlands"],
+		groupSize = 5,
+		type = "Instance",
+		entrancePortal = { BZ["Twilight Highlands"], 19, 53.5 },
+	}	
 
 
 
 
+
+	-- ============== RAIDS =======================================================================
 
 
 	-- Classic Raids -----------------------------
 
-	zones[BZ["Zul'Gurub"]] = {
-		low = 60,
-		high = 60,
-		continent = Eastern_Kingdoms,
-		paths = BZ["Stranglethorn Vale"],
-		groupSize = 20,
-		type = "Instance",
-		fishing_low = 205,
-		fishing_high = 330,
-		entrancePortal = { BZ["Stranglethorn Vale"], 52.2, 17.1 },
-	}
+	-- Cataclysm: converted into a dungeon (see Cataclysm dungeons)
+	-- zones[BZ["Zul'Gurub"]] = {
+		-- low = 60,
+		-- high = 60,
+		-- continent = Eastern_Kingdoms,
+		-- paths = BZ["Stranglethorn Vale"],
+		-- groupSize = 20,
+		-- type = "Instance",
+		-- fishing_low = 205,
+		-- fishing_high = 330,
+		-- entrancePortal = { BZ["Stranglethorn Vale"], 52.2, 17.1 },
+	-- }
 
 	zones[BZ["Blackwing Lair"]] = {
 		low = 60,
@@ -5477,7 +6568,33 @@ do
 	}
 
 
+	-- Cataclysm raids
 
+	zones[BZ["Firelands"]] = {
+		low = 85,
+		high = 85,
+		continent = Kalimdor,
+		paths = BZ["Mount Hyjal"],
+		groupSize = 10,
+		altGroupSize = 25,
+		type = "Instance",
+		entrancePortal = { BZ["Mount Hyjal"], 47.3, 78.3 },
+	}
+
+	zones[BZ["The Bastion of Twilight"]] = {
+		low = 85,
+		high = 85,
+		continent = Eastern_Kingdoms,
+		expansion = Cataclysm,
+		paths = BZ["Twilight Highlands"],
+		groupSize = 10,
+		altGroupSize = 25,
+		type = "Instance",
+		entrancePortal = { BZ["Twilight Highlands"], 34.2, 77.7 },
+	}	
+
+
+	-- ============== BATTLEGROUNDS =======================================================================
 
 
 	-- Classic Battlegrounds --
@@ -5516,7 +6633,7 @@ do
 	
 	zones[BZ["Eye of the Storm"]] = {
 		low = 61,
-		high = 70,
+		high = MAX_PLAYER_LEVEL,
 		continent = Outland,
 		paths = BZ["Netherstorm"],
 		groupSize = 25,
@@ -5526,12 +6643,13 @@ do
 	
 	
 	
-	-- Wrath of the Lich King Battelgrounds
+	-- Wrath of the Lich King Battlegrounds
 	
 	zones[BZ["Strand of the Ancients"]] = {
 		low = 65,
-		high = 80,
+		high = MAX_PLAYER_LEVEL,
 		continent = Northrend,
+		paths = BZ["Dragonblight"],
 		groupSize = 15,
 		type = "Battleground",
 		texture = "StrandoftheAncients",
@@ -5539,8 +6657,9 @@ do
 	
 	zones[BZ["Isle of Conquest"]] = {
 		low = 75,
-		high = 80,
+		high = MAX_PLAYER_LEVEL,
 		continent = Northrend,
+		paths = BZ["Icecrown"],
 		groupSize = 40,
 		type = "Battleground",
 		texture = "IsleofConquest",
@@ -5548,7 +6667,31 @@ do
 	
 	
 	
+	-- Cataclysm Battlegrounds
 	
+	zones[BZ["The Battle for Gilneas"]] = {
+		low = 10,
+		high = MAX_PLAYER_LEVEL,
+		continent = Eastern_Kingdoms,
+		groupSize = 10,
+		type = "Battleground",
+		texture = "TheBattleforGilneas",
+	}	
+	
+	zones[BZ["Twin Peaks"]] = {
+		low = 10,
+		high = MAX_PLAYER_LEVEL,
+		continent = Eastern_Kingdoms,
+		expansion = Cataclysm,
+		paths = BZ["Twilight Highlands"],
+		groupSize = 10,
+		type = "Battleground",
+		texture = "TwinPeaks",  -- TODO: verify
+	}
+	
+
+
+	-- ============== ARENAS =======================================================================
 	
 	
 	-- The Burning Crusade Arenas --------------------------------------
@@ -5597,13 +6740,13 @@ do
 	
 	
 
-
+	-- ============== COMPLEXES =======================================================================
 
 	-- Classic Complexes ---------------------------------------------
 
 	zones[BZ["Dire Maul"]] = {
 		low = 36,
-		high = 60,
+		high = 52,
 		continent = Kalimdor,
 		instances = {
 			[BZ["Dire Maul - East"]] = true,
@@ -6376,7 +7519,7 @@ local herbs = {
 		itemID = 2453,
 		minLevel = 100,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1440] = true,		-- Ashenvale
 			[1439] = true,		-- Darkshore
@@ -6417,7 +7560,7 @@ local herbs = {
 		itemID = 3369,
 		minLevel = 120,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1443] = true,		-- Desolace
 			[1431] = true,		-- Duskwood
@@ -6431,7 +7574,7 @@ local herbs = {
 		itemID = 3356,
 		minLevel = 125,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1440] = true,		-- Ashenvale
 			[1418] = true,		-- Badlands
@@ -6452,7 +7595,7 @@ local herbs = {
 		itemID = 3357,
 		minLevel = 150,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1440] = true,		-- Ashenvale
 			[1443] = true,		-- Desolace
@@ -6470,7 +7613,7 @@ local herbs = {
 		itemID = 3818,
 		minLevel = 160,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1418] = true,		-- Badlands
 			[1445] = true,		-- Dustwallow Marsh
@@ -6484,7 +7627,7 @@ local herbs = {
 		itemID = 3821,
 		minLevel = 170,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1447] = true,		-- Azshara
 			[1418] = true,		-- Badlands
@@ -6500,7 +7643,7 @@ local herbs = {
 		itemID = 3358,
 		minLevel = 185,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1447] = true,		-- Azshara
 			[1418] = true,		-- Badlands
@@ -6516,7 +7659,7 @@ local herbs = {
 		itemID = 3819,
 		minLevel = 195,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 		},
 	},
 	[4625] = {
@@ -6944,48 +8087,48 @@ local herbs = {
 
 local herbsByZone = {
 	-- Alterac Mountains
-	[1416] = {
-		[2453] = {
-			name = LHerbs("Bruiseweed"),
-			itemID = 2453,
-			minLevel = 100,
-		},
-		[3369] = {
-			name = LHerbs("Grave Moss"),
-			itemID = 3369,
-			minLevel = 120,
-		},
-		[3356] = {
-			name = LHerbs("Kingsblood"),
-			itemID = 3356,
-			minLevel = 125,
-		},
-		[3357] = {
-			name = LHerbs("Liferoot"),
-			itemID = 3357,
-			minLevel = 150,
-		},
-		[3818] = {
-			name = LHerbs("Fadeleaf"),
-			itemID = 3818,
-			minLevel = 160,
-		},
-		[3821] = {
-			name = LHerbs("Goldthorn"),
-			itemID = 3821,
-			minLevel = 170,
-		},
-		[3358] = {
-			name = LHerbs("Khadgar's Whisker"),
-			itemID = 3358,
-			minLevel = 185,
-		},
-		[3819] = {
-			name = LHerbs("Wintersbite"),
-			itemID = 3819,
-			minLevel = 195,
-		},
-	},
+	-- [1416] = {
+		-- [2453] = {
+			-- name = LHerbs("Bruiseweed"),
+			-- itemID = 2453,
+			-- minLevel = 100,
+		-- },
+		-- [3369] = {
+			-- name = LHerbs("Grave Moss"),
+			-- itemID = 3369,
+			-- minLevel = 120,
+		-- },
+		-- [3356] = {
+			-- name = LHerbs("Kingsblood"),
+			-- itemID = 3356,
+			-- minLevel = 125,
+		-- },
+		-- [3357] = {
+			-- name = LHerbs("Liferoot"),
+			-- itemID = 3357,
+			-- minLevel = 150,
+		-- },
+		-- [3818] = {
+			-- name = LHerbs("Fadeleaf"),
+			-- itemID = 3818,
+			-- minLevel = 160,
+		-- },
+		-- [3821] = {
+			-- name = LHerbs("Goldthorn"),
+			-- itemID = 3821,
+			-- minLevel = 170,
+		-- },
+		-- [3358] = {
+			-- name = LHerbs("Khadgar's Whisker"),
+			-- itemID = 3358,
+			-- minLevel = 185,
+		-- },
+		-- [3819] = {
+			-- name = LHerbs("Wintersbite"),
+			-- itemID = 3819,
+			-- minLevel = 195,
+		-- },
+	-- },
 	-- Arathi Highlands
 	[1417] = {
 		[2453] = {
@@ -9462,7 +10605,7 @@ local miningNodes = {
 		oreItemID = 2771,
 		minLevel = 65,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1440] = true,		-- Ashenvale
 			[1439] = true,		-- Darkshore
@@ -9490,7 +10633,7 @@ local miningNodes = {
 		oreItemID = 2775,
 		minLevel = 75,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1418] = true,		-- Badlands
 			[1439] = true,		-- Darkshore
@@ -9528,7 +10671,7 @@ local miningNodes = {
 		oreItemID = 2772,
 		minLevel = 125,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1440] = true,		-- Ashenvale
 			[1418] = true,		-- Badlands
@@ -9554,7 +10697,7 @@ local miningNodes = {
 		oreItemID = 2776,
 		minLevel = 155,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1418] = true,		-- Badlands
 			[1419] = true,		-- Blasted Lands
@@ -9587,7 +10730,7 @@ local miningNodes = {
 		oreItemID = 3858,
 		minLevel = 175,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1417] = true,		-- Arathi Highlands
 			[1447] = true,		-- Azshara
 			[1418] = true,		-- Badlands
@@ -9630,7 +10773,7 @@ local miningNodes = {
 		oreItemID = 7911,
 		minLevel = 230,
 		zones = {
-			[1416] = true,		-- Alterac Mountains
+--			[1416] = true,		-- Alterac Mountains
 			[1418] = true,		-- Badlands
 			[1419] = true,		-- Blasted Lands
 			[1423] = true,		-- Eastern Plaguelands

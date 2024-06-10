@@ -12,7 +12,7 @@ local professionLocals = {
         ["zhCN"] = "急救",
         ["zhTW"] = "急救",
         ["esES"] = "Primeros auxilios",
-        ["frFR"] = "Secourisme",
+        ["frFR"] = "Premiers soins",
     },
     ["Blacksmithing"] = {
         ["ptBR"] = "Ferraria",
@@ -181,6 +181,18 @@ local professionLocals = {
         ["zhTW"] = "銘文學",
         ["esES"] = "Inscripción",
         ["frFR"] = "Calligraphie",
+    },
+    ["Archaeology"] = {
+        ["ptBR"] = "Arqueologia",
+        ["ruRU"] = "Археология",
+        ["deDE"] = "Archäologie",
+        ["koKR"] = "고고학",
+        ["esMX"] = "Arqueología",
+        ["enUS"] = true,
+        ["zhCN"] = "考古学",
+        ["zhTW"] = "考古學",
+        ["esES"] = "Arqueología",
+        ["frFR"] = "Archéologie",
     },
 }
 

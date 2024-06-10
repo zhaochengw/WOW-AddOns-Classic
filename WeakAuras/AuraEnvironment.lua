@@ -1,7 +1,10 @@
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
@@ -9,6 +12,18 @@ local LibSerialize = LibStub("LibSerialize")
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
 
 local UnitAura = UnitAura
+if UnitAura == nil then
+  --- Deprecated in 10.2.5
+  UnitAura = function(unitToken, index, filter)
+		local auraData = C_UnitAuras.GetAuraDataByIndex(unitToken, index, filter)
+		if not auraData then
+			return nil;
+		end
+
+		return AuraUtil.UnpackAuraData(auraData)
+	end
+end
+
 -- Unit Aura functions that return info about the first Aura matching the spellName or spellID given on the unit.
 local WA_GetUnitAura = function(unit, spell, filter)
   if filter and not filter:upper():find("FUL") then
@@ -338,7 +353,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
           local childData = WeakAuras.GetData(childID)
           if childData then
             if not environment_initialized[childID] then
-              Private.ActivateAuraEnvironment(childID)
+              Private.ActivateAuraEnvironment(childID, nil, nil, nil, true)
               Private.ActivateAuraEnvironment()
             end
             current_aura_env.child_envs[dataIndex] = aura_environments[childID]

@@ -4,7 +4,9 @@
 ## X-License: GPL v2
 
 libs\LibStub\LibStub.lua
-libs\AceLocale-3.0\AceLocale-3.0.xml
+libs\AceComm-3.0\AceComm-3.0.xml
+libs\LibSerialize\lib.xml
+libs\LibDeflate\lib.xml
 
 libs\UTF8\utf8data.lua
 libs\UTF8\utf8.lua

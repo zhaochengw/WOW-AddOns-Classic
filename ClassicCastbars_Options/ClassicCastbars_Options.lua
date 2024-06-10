@@ -10,7 +10,7 @@ local TEXT_POINTS = {
 }
 
 local TEXT_OUTLINES = { -- font flags
-    [""] = L.DEFAULT,
+    [""] = _G.DEFAULT,
     ["OUTLINE"] = "OUTLINE",
     ["THICK"] = "THICK",
     ["THICK,OUTLINE"] = "THICK OUTLINE",
@@ -32,9 +32,9 @@ local function GetLSMTable(lsmType)
     -- Add custom media to LSM options that'll be used only in our addon.
     -- These are the default borders/fonts etc for ClassicCastbars
     if lsmType == "border" then
-        tbl[L.DEFAULT] = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
+        tbl[_G.DEFAULT] = "Interface\\CastingBar\\UI-CastingBar-Border-Small"
     elseif lsmType == "font" then
-        tbl[L.DEFAULT] = _G.STANDARD_TEXT_FONT
+        tbl[_G.DEFAULT] = _G.STANDARD_TEXT_FONT
     end
 
     return tbl
@@ -98,15 +98,13 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         set = function(_, value)
                             ClassicCastbars.db[unitID].enabled = value
                             ClassicCastbars:ToggleUnitEvents(true)
-                            if ClassicCastbars.DisableBlizzardCastbar then -- is TBC+
-                                ClassicCastbars:DisableBlizzardCastbar()
-                            end
+                            ClassicCastbars:DisableBlizzardCastbar()
+
                             if unitID == "player" then
                                 if value == false then
                                     return ReloadUI()
                                 end
                                 if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
-                                    print("ClassicCastbars: Do a /reload if player castbar doesn't work properly on first time enabling.") -- luacheck: ignore
                                     PlayerCastingBarFrame:SetLook("CLASSIC")
                                 end
                                 ClassicCastbars:SkinPlayerCastbar()
@@ -117,6 +115,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 2,
                         width = "full",
                         name = L.SHOW_FOR_FRIENDLY,
+                        desc = "Note: does NOT work inside dungeons or raids due to Blizzard API limitations.",
                         type = "toggle",
                         disabled = ModuleIsDisabled,
                         hidden = unitID ~= "nameplate",
@@ -180,20 +179,11 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         disabled = ModuleIsDisabled,
                         hidden = unitID == "player",
                     },
-                    showInterruptSchool = {
-                        order = 9,
-                        name = L.SHOW_INTERRUPT_SCHOOL,
-                        width = "full",
-                        type = "toggle",
-                        hidden = unitID == "player" or not isClassicEra,
-                        disabled = ModuleIsDisabled,
-                    },
                     posX = {
                         -- Position slider X for nameplate castbars only
-                        -- TODO: is there a better way to do this after nameplate GetPoint() being protected?
                         order = 10,
-                        name = "Position X (Left/Right)",
-                        desc = "Set castbar position by coords. Blizzard nerfed drag-to-move functionality for nameplates in patch 8.2.",
+                        name = L.POS_X,
+                        desc = L.POSXY_TOOLTIP,
                         width = 2,
                         type = "range",
                         min = -999,
@@ -211,10 +201,9 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     posY = {
                         -- Position slider Y for nameplate castbars only
-                        -- TODO: is there a better way to do this after nameplate GetPoint() changes?
                         order = 11,
-                        name = "Position Y (Up/Down)",
-                        desc = "Set castbar position by coords. Blizzard nerfed drag-to-move functionality for nameplates in patch 8.2.",
+                        name = L.POS_Y,
+                        desc = L.POSXY_TOOLTIP,
                         width = 2,
                         type = "range",
                         min = -999,
@@ -249,7 +238,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     width = {
                         order = 1,
                         name = L.WIDTH,
-                        desc = L.WIDTH_TOOLTIP,
                         width = 2,
                         type = "range",
                         min = 1,
@@ -260,7 +248,6 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     height = {
                         order = 2,
                         name = L.HEIGHT,
-                        desc = L.HEIGHT_TOOLTIP,
                         width = 2,
                         type = "range",
                         min = 1,
@@ -326,7 +313,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     iconPositionX = {
                         order = 4,
-                        name = L.ICON_POS_X,
+                        name = L.POS_X,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
                         min = -2000,
@@ -335,7 +322,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     iconPositionY = {
                         order = 5,
-                        name = L.ICON_POS_Y,
+                        name = L.POS_Y,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
                         min = -2000,
@@ -464,7 +451,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     textPositionX = {
                         order = 4,
-                        name = L.TEXT_POS_X,
+                        name = L.POS_X,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
                         min = -2000,
@@ -473,7 +460,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                     },
                     textPositionY = {
                         order = 5,
-                        name = L.TEXT_POS_Y,
+                        name = L.POS_Y,
                         desc = L.POSXY_TOOLTIP,
                         type = "range",
                         min = -2000,
@@ -569,13 +556,25 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                             ClassicCastbars_TestMode:OnOptionChanged(unitID)
                         end,
                     },
-                    spacer3 = {
+                    edgeSizeLSM = {
                         order = 6,
+                        name = L.EDGE_SIZE_LSM,
+                        type = "range",
+                        width = "double",
+                        min = 3,
+                        max = 32,
+                        bigStep = 1,
+                        disabled = function()
+                            return ClassicCastbars.db[unitID].castBorder == "Interface\\CastingBar\\UI-CastingBar-Border-Small"
+                        end,
+                    },
+                    spacer3 = {
+                        order = 7,
                         type = "description",
                         name = "\n\n",
                     },
                     frameLevel = {
-                        order = 7,
+                        order = 8,
                         name = L.FRAME_LEVEL,
                         desc = L.FRAME_LEVEL_DESC,
                         type = "range",
@@ -584,7 +583,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         bigStep = 5,
                     },
                     frameStrata = {
-                        order = 8,
+                        order = 9,
                         name = L.FRAME_STRATA,
                         desc = L.FRAME_STRATA_DESC,
                         type = "select",
@@ -607,6 +606,7 @@ local function CreateUnitTabGroup(unitID, localizedUnit, order)
                         order = 1,
                         width = 1.4,
                         name = format("%s %s", L.TEST, localizedUnit),
+                        desc = string.match(L.BORDERSHIELD_TOOLTIP, "|cffffff00(.*)|r"),
                         type = "execute",
                         disabled = function() return not ClassicCastbars.db[unitID].enabled end,
                         func = function() ClassicCastbars_TestMode:ToggleCastbarMovable(unitID) end,
@@ -629,12 +629,12 @@ local function GetOptionsTable()
         name = "ClassicCastbars " .. GetAddOnMetadata("ClassicCastbars", "version"),
 
         args = {
-            target = CreateUnitTabGroup("target", L.TARGET, 1),
-            nameplate = CreateUnitTabGroup("nameplate", L.NAMEPLATE, 2),
-            party = CreateUnitTabGroup("party", L.PARTY, 3),
-            player = CreateUnitTabGroup("player", L.PLAYER, 4),
-            focus = not isClassicEra and CreateUnitTabGroup("focus", _G.FOCUS or "Focus", 5) or nil,
-            arena = not isClassicEra and CreateUnitTabGroup("arena", _G.ARENA or "Arena", 6) or nil,
+            target = CreateUnitTabGroup("target", _G.TARGET, 1),
+            nameplate = CreateUnitTabGroup("nameplate", _G.UNIT_NAMEPLATES, 2),
+            party = CreateUnitTabGroup("party", _G.PARTY, 3),
+            player = CreateUnitTabGroup("player", _G.PLAYER, 4),
+            focus = not isClassicEra and CreateUnitTabGroup("focus", _G.FOCUS, 5) or nil,
+            arena = not isClassicEra and CreateUnitTabGroup("arena", _G.ARENA, 6) or nil,
 
             -- Reset Button
             resetAllSettings = {
@@ -642,7 +642,7 @@ local function GetOptionsTable()
                 name = L.RESET_ALL,
                 type = "execute",
                 confirm = function()
-                    return ClassicCastbars.db.player.enabled and L.REQUIRES_RESTART or true
+                    return _G.CONFIRM_RESET_SETTINGS
                 end,
                 func = function()
                     local shouldReloadUI = ClassicCastbars.db.player.enabled
@@ -672,7 +672,7 @@ local function GetOptionsTable()
                 name = L.PER_CHARACTER,
                 desc = L.PER_CHARACTER_TOOLTIP,
                 confirm = true,
-                confirmText = L.REQUIRES_RESTART,
+                confirmText = _G.VIDEO_OPTIONS_NEED_CLIENTRESTART,
                 get = function()
                     return ClassicCastbarsCharDB and ClassicCastbarsCharDB.usePerCharacterSettings
                 end,

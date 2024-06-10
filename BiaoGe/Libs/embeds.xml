@@ -5,9 +5,10 @@
     <Script file="Libs\LibStub\LibStub.lua"/>
     <Script file="Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua"/>
     <Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
-    <Script file="Libs\LibUIDropDownMenu\LibUIDropDownMenu.lua"/>
+    <Script file="Libs\LibUIDropDownMenu.lua"/>
     <Script file="Libs\UTF8\utf8data.lua"/>
     <Script file="Libs\UTF8\utf8.lua"/>
+    <Script file="Libs\LibRecipes-3.0.lua"/>
 
     <!--@no-lib-strip@-->
     <Include file="Libs\LibDBIcon-1.0\lib.xml"/>

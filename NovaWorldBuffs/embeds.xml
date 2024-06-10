@@ -19,6 +19,7 @@
   <Include file="Lib\LibSerialize-1.0.0\LibSerialize.lua"/>
   <Include file="Lib\LibCandyBar-3.0\lib.xml"/>
   <Include file="Lib\LibDurability\LibDurability.xml"/>
+  <Include file="Lib\LibRealmInfo\LibRealmInfo.lua"/>
   
   <!--Replicating the old scrollbar template before it was changed somewhere about phase 2 wrath patch I think?
   	It was changed to use a new "WowClassicScrollBar" template in the OnLoad handler.

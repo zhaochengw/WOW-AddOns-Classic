@@ -1,0 +1,18 @@
+## Interface: 40400
+## LoadOnDemand: 1
+
+## Title: Lib: SharedMedia-3.0
+## Notes: Shared handling of media data (fonts, sounds, textures, ...) between addons.
+## Author: Elkano
+## Version: 3.0-151
+## X-Website: https://www.curseforge.com/wow/addons/libsharedmedia-3-0
+## X-Category: Library
+
+## X-Revision: 151
+## X-Date: 2024-05-05T01:20:21Z
+
+LibStub\LibStub.lua
+CallbackHandler-1.0\CallbackHandler-1.0.lua
+
+LibSharedMedia-3.0\lib.xml
+

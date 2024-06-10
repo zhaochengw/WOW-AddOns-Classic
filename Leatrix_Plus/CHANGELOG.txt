@@ -1,3 +1,54 @@
+﻿3.0.191 - 19th April 2004
+- In preparation for Cataclysm Classic, the 'Show flight times' option ('Interface') has been removed.  There are a lot more flight points in Cataclysm Classic and you will be flying on your own mounts a lot of the time.
+- Cataclysm Classic Beta: For 'Enhance dressup' ('Interface'), added new options to make the transmogrify window wider and to show a transmogrify model animation slider.  The zoom speed now affects the mount journal and the pet journal in addition to the character frame model.
+- Cataclysm Classic Beta: For 'Show ready timer' ('Interface'), the timer will now show for the dungeon ready frame as well as the PvP encounter ready frame.
+
+3.0.190 - 19th April 2004
+- Cataclysm Classic Beta: Fixed 'Hide chat tabs' ('Chat') Lua error with latest build.
+- Cataclysm Classic Beta: The 'Show flight times' option ('Interface') is not available in Cataclysm Classic.  You will no longer be prompted to submit flight times.  There are a lot more flight points in Cataclysm Classic and you will be flying on your own mounts a lot of the time.
+
+3.0.189 - 16th April 2004
+- Updated for Cataclysm Classic Beta.
+- Added a new setting called 'Keep audio synced' ('System').  If checked, when you change the audio output device in your operating system, the game audio output device will change automatically.  For this to work, the game audio output device will be set to system default.
+- Added flight times.
+- Cataclysm Classic: For 'Enhance dressup' ('Interface'), you can now set the character model zoom speed.
+- Cataclysm Classic: For 'Media', added Cataclysm movies ('Movies' and 'Various' > 'Cinematics').
+
+3.0.188 - 10th April 2004
+- The addon will no longer show 'Wrong version installed' when run on Cataclysm Classic.
+- Added flight times.
+
+3.0.187 - 3rd April 2024
+- Added flight times.
+
+3.0.186 - 27th March 2024
+- Added flight times.
+
+3.0.185 - 20th March 2024
+- Added flight times.
+
+3.0.184 - 13th March 2024
+- For 'Enhance minimap' ('Interface'), the 'Combine addon buttons' setting will now sort addon buttons alphabetically.
+- Added flight times.
+
+3.0.183 - 6th March 2024
+- Added flight times.
+
+3.0.182 - 28th February 2024
+- Added flight times.
+
+3.0.181 - 22nd February 2024
+- Fixed 'Enhance professions' ('Interface').
+
+3.0.180 - 21st February 2024
+- Updated ScrollFrameTemplate for Media.
+- Updated 'Enhance quest log' ('Interface') code.
+- Added flight times.
+
+3.0.179 - 14th February 2024
+- For 'Enhanced quest log' ('Interface'), fixed an issue with showing quest level suffixes for non-English locales.
+- Added flight times.
+
 3.0.178 - 7th February 2024
 - For 'Enhance minimap' ('Interface'), updated tooltip positioning logic.  Added Wowhead Looter button.
 - For 'Recent chat window' ('Chat'), scroll speed is now based on font size.

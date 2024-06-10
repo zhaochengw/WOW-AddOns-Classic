@@ -5,7 +5,7 @@
 GTFO Friendly Fire List - Dragonflight
 ]]--
 
-if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
+if (GTFO.RetailMode) then
 
 -- ****************
 -- * Dragon Isles *

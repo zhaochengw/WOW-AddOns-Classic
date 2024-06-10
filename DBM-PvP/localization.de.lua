@@ -11,27 +11,76 @@ L:SetGeneralLocalization({
 })
 
 L:SetTimerLocalization({
-	TimerInvite	= "%s"
-})
+	TimerCap		= "%s",
+	TimerFlag		= "Flaggenrespawn",
+	TimerInvite		= "%s",
+	TimerWin		= "Sieg in",
+	TimerStart		= "Start in",
+	TimerShadow		= "Schattensicht"})
 
 L:SetOptionLocalization({
-	ColorByClass		= "Einfärbung der Spielernamen nach Klasse in der Schlachtfeld-Punktetafel",
 	TimerInvite			= "Zeige Zeit für Schlachtfeld-Beitrittsmöglichkeit",
 	AutoSpirit			= "Automatisch Geist freilassen",
-	HideBossEmoteFrame	= "Verberge das Fenster \"RaidBossEmoteFrame\" und Garnisons-/Gildenerfolgsmeldungen während Schlachtfeldern"
+	ColorByClass		= "Einfärbung der Spielernamen nach Klasse in der Schlachtfeld-Punktetafel",
+	HideBossEmoteFrame	= "Verberge das Fenster \"RaidBossEmoteFrame\" und Garnisons-/Gildenerfolgsmeldungen während Schlachtfeldern",
+	ShowBasesToWin		= "Zeige Anzahl benötigter Basen zum Gewinnen",
+	TimerCap			= "Zeige Timer für Eroberungen",
+	TimerFlag			= "Zeige Timer für Flaggenrespawn",
+	TimerStart			= "Zeige Timer für Start des Matches",
+	TimerShadow			= "Zeige Timer für Schattensicht",
+	TimerWin			= "Zeige Timer zum Sieg",
+	ShowRelativeGameTime= "Sieg-Timer füllt sich relativ zur Startzeit des Schlachtfelds (Timer sieht immer fast fertig aus falls deaktiviert)"
 })
 
 L:SetMiscLocalization({
-	BgStart60			= "Die Schlacht beginnt in 1 Minute.",
-	BgStart30			= "Die Schlacht beginnt in 30 Sekunden. Macht Euch bereit!",
+	-- Old string: "Die Schlacht beginnt in 2 Minuten."
+	-- SoD arathi: "Die Schlacht um das Arathibecken wird in 2 Minuten beginnen."
+	BgStart120          = "Die Schlacht .* in 2 Minuten",
+	BgStart60			= "Die Schlacht .* in 1 Minute",
+	BgStart30			= "Die Schlacht .* in 30 Sekunden",
+	ArenaStart60		= "One minute until the Arena battle begins!",
+	ArenaStart30		= "Thirty seconds until the Arena battle begins!",
+	ArenaStart15		= "Fifteen seconds until the Arena battle begins!",
+	ArenaInvite			= "Arenaeinladungen",
+	BasesToWin			= "Basen benötigt zum Gewinnen: %d",
+	WinBarText			= "%s gewinnt",
+	-- TODO: Implement the flag carrying system
+	FlagReset			= "The flag has been reset!", -- Unused
+	FlagTaken			= "(.+) has taken the flag!", -- Unused
+	FlagCaptured		= "The .+ ha%w+ captured the flag!",
+	FlagDropped			= "The flag has been dropped!", -- Unused
+	--
 	ExprFlagPickUp		= "(.+) hat die Flagge der (%w+) aufgenommen!",
 	ExprFlagCaptured	= "(.+) hat die Flagge der (%w+) errungen!",
 	ExprFlagReturn		= "Die Flagge der (%w+) wurde von (.+) zu ihrem Stützpunkt zurückgebracht!",
 	Vulnerable1			= "Eure Angriffe verursachen nun schwerere Verletzungen bei Flaggenträgern!",
 	Vulnerable2			= "Eure Angriffe verursachen nun sehr schwere Verletzungen bei Flaggenträgern!",
+	-- Alterac/IsleOfConquest/Ashenvale bosses
 	InfoFrameHeader		= "[DBM] Boss HP",
 	HordeBoss			= "Horde-Boss",
 	AllianceBoss		= "Allianz-Boss",
+	Galvangar			= "Galvangar",
+	Balinda				= "Balinda",
+	Ivus				= "Ivus",
+	Lokholar			= "Lokholar",
+	RunestoneBoss		= "Runestone",
+	-- Note: no one ever seems to use the German words
+	GlaiveBoss			= "Glaive",
+	ResearchBoss		= "Research",
+	MoonwellBoss		= "Moonwell",
+	ShredderBoss		= "Shredder",
+	CatapultBoss		= "Catapult",
+	LumberBoss			= "Lumber",
+	BonfireBoss			= "Bonfire",
+	-- Ashran bosses
+	Tremblade			= "Grand Marshall Tremblade",
+	Volrath				= "High WArlord Volrath",
+	Fangraal			= "Fangraal",
+	Kronus				= "Kronus",
+	-- Health sync frame
+	Stale               = "(veraltet) ",
+
+
 })
 ----------------------
 --  Alterac Valley  --
@@ -39,7 +88,8 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("z30")
 
 L:SetOptionLocalization({
-	AutoTurnIn	= "Automatisches Abgeben der Quests im Alteractal"
+	AutoTurnIn	= "Automatisches Abgeben der Quests im Alteractal",
+	TimerBoss	= "Zeige Timer für verbleibende Zeit für Bosse"
 })
 
 ------------------------
@@ -112,13 +162,21 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("m1440")
 
 L:SetOptionLocalization({
-	EstimatedStartTimer = "Zeige Timer für geschätzte Startzeit des Events",
+	EstimatedStartTimer = "Zeige Timer für Startzeit des Events",
 	HealthFrame         = "Zeige Infoframe mit Lebenspunkten der Bosses. Das Infoframe wird über deinen Raid und den Yell Chat mit anderen Raids synchronisiert. Diese Option funktioniert nur zuverlässig wenn mindestens ein Raid in der Zone über mehrere Bosse verteilt ist und genug Spieler DBM-PvP installiert haben."
 })
 
+L:SetTimerLocalization({
+	EstimatedStart = "Event startet"
+})
+
+-----------------
+--  Blood Moon --
+-----------------
+L = DBM:GetModLocalization("m1434")
+
 L:SetMiscLocalization({
-	TimerEstimate   = "Event startet",
-	TimerSoon       = "Event startet gleich!",
-	ErrorSuddenDrop = "Fortschritt für das Event ist plötzlich stark abgefallen, der Timer wird neu berechnet, dies kann ca. 2 bis 3 Minuten dauern.",
-	InfoMsgPrefix   = "DBM-PvP",
+	ResTimerSelf = "Zeige Timer für Wiederbelebung.",
+	ResTimerParty = "Zeige Timer für Wiederbelebung von Partymitgliedern.",
+	ResTimerPartyClassColors = "Benutze Klassenfarben für Wiederbelebungstimer von Partymitgliedern.",
 })

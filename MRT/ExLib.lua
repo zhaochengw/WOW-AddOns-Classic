@@ -31,6 +31,7 @@ All functions:
 	:Left([relativeX])	-> [move text to left side], relativeX default 2
 	:TextSize(size)
 	:AddColorState(isBorderInsteadText) -> Add red/green colors for [false: text; true: borders]
+	:TextButton()		-> Set clickable text
 -> ELib:DebugBack(parent)
 -> ELib:DropDown(parent,width,lines,template)
 	:SetText(str)		-> [set text]
@@ -162,7 +163,7 @@ CheckButton	ExRTRadioButtonModernTemplate
 local GlobalAddonName, ExRT = ...
 local isExRT = GlobalAddonName == "MRT"
 
-local libVersion = 43
+local libVersion = 45
 
 if type(ELib)=='table' and type(ELib.V)=='number' and ELib.V > libVersion then return end
 
@@ -725,11 +726,7 @@ function Templates:ExRTButtonModernTemplate(parent,isSecure)
 
 	self.Texture = self:CreateTexture(nil,"BACKGROUND")
 	self.Texture:SetColorTexture(1,1,1,1)
-	if ExRT.is10 or ExRT.isLK1 then
-		self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
-	else
-		self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
-	end
+	self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
 	self.Texture:SetPoint("TOPLEFT")
 	self.Texture:SetPoint("BOTTOMRIGHT")
 
@@ -1530,11 +1527,7 @@ do
 		return self
 	end
 	local function Widget_Gradient(self,...)
-		if ExRT.is10 or ExRT.isLK1 then
-			self:SetGradient(...,CreateColor(select(2,...)), CreateColor(select(6,...)))
-		else
-			self:SetGradientAlpha(...)
-		end
+		self:SetGradient(...,CreateColor(select(2,...)), CreateColor(select(6,...)))
 		return self
 	end
 	local function Widget_Texture(self,texture,cG,cB,cA)
@@ -2156,11 +2149,7 @@ do
 
 		tip.gradientTexture = tip:CreateTexture()
 		tip.gradientTexture:SetColorTexture(1,1,1,1)
-		if ExRT.is10 or ExRT.isLK1 then
-			tip.gradientTexture:SetGradient("VERTICAL",CreateColor(0,0,0,0), CreateColor(.8,.8,.8,.2))
-		else
-			tip.gradientTexture:SetGradientAlpha("VERTICAL",0,0,0,0,.8,.8,.8,.2)
-		end
+		tip.gradientTexture:SetGradient("VERTICAL",CreateColor(0,0,0,0), CreateColor(.8,.8,.8,.2))
 		tip.gradientTexture:SetPoint("TOPLEFT",2.5,-2.5)
 		tip.gradientTexture:SetPoint("BOTTOMRIGHT",-2.5,2.5)
 
@@ -2730,6 +2719,14 @@ do
 		end
 		return self
 	end
+	local function Widget_AddRightText(self,text,size)
+		if self.rightText then
+			self.rightText:SetText(text)
+		else
+			self.rightText = ELib:Text(self,text,size or 11):Point("LEFT",self,"RIGHT",5,0):Left()
+		end
+		return self
+	end
 	local function Widget_AddLeftTop(self,text,size)
 		if self.leftText then
 			self.leftText:SetText(text)
@@ -2801,11 +2798,7 @@ do
 		local self = ELib:Template(template,parent) or CreateFrame("EditBox",nil,parent,template or (BackdropTemplateMixin and "BackdropTemplate"))
 		if not template then
 			local GameFontNormal_Font = GameFontNormal:GetFont()
-			if ExRT.is10 or ExRT.isLK1 then
-				self:SetFont(GameFontNormal_Font,12,"")
-			else
-				self:SetFont(GameFontNormal_Font,12)
-			end
+			self:SetFont(GameFontNormal_Font,12,"")
 			self:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8X8",edgeFile = DEFAULT_BORDER,edgeSize = 8,tileSize = 0,insets = {left = 2.5,right = 2.5,top = 2.5,bottom = 2.5}})
 			self:SetBackdropColor(0, 0, 0, 0.8) 
 			self:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
@@ -2828,6 +2821,7 @@ do
 			'InsideIcon',Widget_InsideIcon,
 			'AddSearchIcon',Widget_AddSearchIcon,
 			'LeftText',Widget_AddLeftText,
+			'RightText',Widget_AddRightText,
 			'TopText',Widget_AddLeftTop,
 			'BackgroundText',Widget_AddBackgroundText,
 			'ColorBorder',Widget_ColorBorder,
@@ -3102,11 +3096,7 @@ do
 		return self
 	end
 	local function Widget_SetVertical(self)
-		if ExRT.is10 or ExRT.isLK1 then
-			self.Texture:SetGradient("HORIZONTAL",CreateColor(0.20,0.21,0.25,1), CreateColor(0.05,0.06,0.09,1))
-		else
-			self.Texture:SetGradientAlpha("HORIZONTAL",0.20,0.21,0.25,1, 0.05,0.06,0.09,1)
-		end
+		self.Texture:SetGradient("HORIZONTAL",CreateColor(0.20,0.21,0.25,1), CreateColor(0.05,0.06,0.09,1))
 		self.TextObj = self:GetTextObj()
 		self.TextObj:SetPoint("CENTER",-5,0)
 		
@@ -3255,6 +3245,19 @@ do
 		return self
 	end
 
+	local function Widget_TextButtonClick(self)
+		self:GetParent():Click()
+	end
+	local function Widget_AddTextButton(self)
+		if self.textButton then
+			return self
+		end
+		self.textButton = CreateFrame("Button",nil,self)
+		self.textButton:SetAllPoints(self.text)
+		self.textButton:SetScript("OnClick",Widget_TextButtonClick)
+		return self
+	end
+
 	function ELib:Check(parent,text,state,template)
 		if template == 0 then
 			template = "UICheckButtonTemplate"
@@ -3274,6 +3277,7 @@ do
 		self.TextSize = Widget_TextSize
 		self.ColorState = Widget_ColorState
 		self.AddColorState = Widget_AddColorState
+		self.TextButton = Widget_AddTextButton
 
 		return self
 	end
@@ -3583,12 +3587,14 @@ do
 		end
 	end
 	local function ScrollListListMultitableEnter(self)
+		self:GetParent():SetHighlightLocked(true)
 		local mainFrame = self:GetParent().mainFrame
 		if mainFrame.HoverMultitableListValue then
 			mainFrame:HoverMultitableListValue(true,self.index,self)
 		end
 	end
 	local function ScrollListListMultitableLeave(self)
+		self:GetParent():SetHighlightLocked(false)
 		local mainFrame = self:GetParent().mainFrame
 		if mainFrame.HoverMultitableListValue then
 			mainFrame:HoverMultitableListValue(false,self.index,self)
@@ -4021,6 +4027,18 @@ do
 			parent:Hide()
 		end
 	end
+	local function PopupFrame_AddScrollFrame(self)
+		if self.C then
+			return self
+		end
+		self.C = ELib:ScrollFrame(self):Point("TOP",0,-20)
+		self._Size = self.Size
+		self.Size = function(self,w,h)
+			self.C:Size(w-10,h-25)
+			return self:_Size(w,h)
+		end
+		return self
+	end
 	function ELib:Popup(title,template)
 		if template == 0 then
 			template = "ExRTDialogTemplate"
@@ -4054,7 +4072,9 @@ do
 
 		self.Close:SetScript("OnClick",buttonClose_OnClick)
 
-		Mod(self)
+		Mod(self,
+			'AddScroll',PopupFrame_AddScrollFrame
+		)
 
 		return self
 	end
@@ -4611,7 +4631,7 @@ function ELib.ScrollDropDown.OnButtonEnter(self)
 	end
 	if self.tooltip then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip:AddLine(self.tooltip)
+		GameTooltip:AddLine(type(self.tooltip)=="function" and self.tooltip() or self.tooltip)
 		GameTooltip:Show()
 	end
 	ELib.ScrollDropDown:CloseSecondLevel(self.Level)
@@ -6221,11 +6241,7 @@ function ELib:DecorationLine(parent,isGradient,layer,layerCounter)
 
 	if isGradient then
 		self:SetColorTexture(1,1,1,1)
-		if ExRT.is10 or ExRT.isLK1 then
-			self:SetGradient("VERTICAL",CreateColor(.24,.25,.30,1), CreateColor(.27,.28,.33,1))
-		else
-			self:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)
-		end
+		self:SetGradient("VERTICAL",CreateColor(.24,.25,.30,1), CreateColor(.27,.28,.33,1))
 	else
 		self:SetColorTexture(.24,.25,.30,1)
 	end
@@ -6623,6 +6639,12 @@ do
 		parent:Update() 
 		self:UpdateButtons()
 	end
+	local function Widget_ResetScrollPos(self)
+		self.ScrollBar:SetValue(1)
+		self:Update()
+		self.ScrollBar:UpdateButtons()
+		return self
+	end
 	function ELib:ScrollButtonsList(parent)
 		local self = ELib:ScrollFrame(parent)
 
@@ -6632,6 +6654,7 @@ do
 		self.ScrollBar.slider:SetScript("OnValueChanged", Widget_ScrollOnChange)
 
 		self.Update = Widget_Update
+		self.ResetScroll = Widget_ResetScrollPos
 
 		self.stateExpand = {}
 

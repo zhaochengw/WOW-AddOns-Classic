@@ -1,8 +1,8 @@
---	13.11.2023
+--	07.03.2024
 
 local GlobalAddonName, MRT = ...
 
-MRT.V = 4810
+MRT.V = 4840
 MRT.T = "R"
 
 MRT.Slash = {}			--> функции вызова из коммандной строки
@@ -38,30 +38,20 @@ do
 end
 if MRT.clientVersion < 20000 then
 	MRT.isClassic = true
-	MRT.T = "Classic"
-	if MRT.clientVersion >= 11404 then
-		MRT.isLK1 = true
-	end	
+	MRT.T = "Classic"	
 elseif MRT.clientVersion < 30000 then
 	MRT.isClassic = true
 	MRT.isBC = true
 	MRT.T = "BC"
-	if MRT.clientVersion >= 20505 then
-		MRT.isLK1 = true
-	end
 elseif MRT.clientVersion < 40000 then
 	MRT.isClassic = true
 	MRT.isBC = true
 	MRT.isLK = true
 	MRT.T = "WotLK"
-	if MRT.clientVersion >= 30401 then
-		MRT.isLK1 = true
-	end
 elseif MRT.clientVersion < 50000 then
 	MRT.isClassic = true
 	MRT.isBC = true
 	MRT.isLK = true
-	MRT.isLK1 = true
 	MRT.isCata = true
 	MRT.T = "Cataclysm"
 elseif MRT.clientVersion >= 100000 then
@@ -907,6 +897,9 @@ function MRT.F.SendExMsg(prefix, msg, tochat, touser, addonPrefix)
 	else
 		local chat_type, playerName = MRT.F.chatType()
 		if chat_type == "WHISPER" and playerName == MRT.SDB.charName then
+			if type(specialOpt)=="table" and type(specialOpt.ondone)=="function" then
+				specialOpt.ondone()
+			end
 			specialOpt = nil
 			MRT.F.GetExMsg(MRT.SDB.charName, prefix, strsplit("\t", msg))
 			return

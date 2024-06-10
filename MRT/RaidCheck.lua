@@ -1,6 +1,7 @@
 local GlobalAddonName, ExRT = ...
 
 local IsEncounterInProgress, GetTime = IsEncounterInProgress, GetTime
+local IsAddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded
 
 local VMRT = nil
 
@@ -1373,6 +1374,37 @@ function module.options:Load()
 		VMRT.RaidCheck.ConsDisableForStarter = self:GetChecked()
 	end)
 
+	--[[
+	self.chkReadyCheckConsumablesFlaskClick = ELib:Check(self.tab.tabs[3],L.RaidCheckConsFlaskClick,VMRT.RaidCheck.ConsFlaskClick):Point("TOPLEFT",self.chkReadyCheckConsumablesDisableForRL,"BOTTOMLEFT",0,-15):OnClick(function(self) 
+		VMRT.RaidCheck.ConsFlaskClick = self:GetChecked()
+	end)
+
+	self.chkReadyCheckConsumablesFlaskName = ELib:Edit(self.tab.tabs[3]):Size(100,20):Point("TOPLEFT",self.chkReadyCheckConsumablesFlaskClick,"BOTTOMLEFT",200,-5):Text(VMRT.RaidCheck.ConsFlaskName or "191320"):OnChange(function(self)
+		VMRT.RaidCheck.ConsFlaskName = tonumber(self:GetText() or "") or self:GetText()
+		if VMRT.RaidCheck.ConsFlaskName == "" then
+			VMRT.RaidCheck.ConsFlaskName = nil
+		end
+		local icon, name
+		if VMRT.RaidCheck.ConsFlaskName then
+			icon = select(5, GetItemInfoInstant(VMRT.RaidCheck.ConsFlaskName))
+
+			name = GetItemInfo(VMRT.RaidCheck.ConsFlaskName)
+
+			if not name and type(VMRT.RaidCheck.ConsFlaskName) == "number" then
+				local item = Item:CreateFromItemID(VMRT.RaidCheck.ConsFlaskName)
+				
+				item:ContinueOnItemLoad(function()
+					local name = item:GetItemName() 
+					local icon = item:GetItemIcon()
+					self:RightText((icon and "|T"..icon..":0|t" or "")..(name or "???"))
+				end)
+			end
+		end
+		self:RightText((icon and "|T"..icon..":0|t" or "")..(name or "???"))
+	end):LeftText(L.RaidCheckConsFlaskName):Tooltip(L.RaidCheckConsFlaskNameTooltip)
+	]]
+
+
 	if ExRT.isClassic then
 		self.tab.tabs[3].button:Hide()
 		--self.tab.tabs[1].button:Hide()
@@ -1483,7 +1515,7 @@ do
 		--10,	--INVSLOT_HAND
 		--8,	--INVSLOT_FEET
 	}
-	if ExRT.is10 then
+	if not ExRT.isClassic then
 		wipe(KitSlots)
 	end
 	local L_EncName = "^"..L.RaidCheckReinforced
@@ -1547,7 +1579,7 @@ do
 		end
 
 		if not oilTypes then
-			oilTypes = ExRT.is10 and {
+			oilTypes = not ExRT.isClassic and {
 			} or {
 				{GetSpellInfo(320798),320798},
 				{GetSpellInfo(321389),321389},
@@ -2026,11 +2058,7 @@ function module.frame:Create()
 		line.classLeft:SetPoint("RIGHT",5,0)
 		line.classLeft:SetColorTexture(1,1,1,1)
 
-		if ExRT.is10 or ExRT.isLK1 then
-			line.classLeft:SetGradient("VERTICAL",CreateColor(.24,.25,.30,1), CreateColor(.27,.28,.33,1))
-		else
-			line.classLeft:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)
-		end
+		line.classLeft:SetGradient("VERTICAL",CreateColor(.24,.25,.30,1), CreateColor(.27,.28,.33,1))
 
 		line:SetScript("OnUpdate",RCW_LineOnUpdate)
 
@@ -2105,11 +2133,7 @@ do
 	line.back2:SetSize(WIDTH2,18)
 	line.back2:SetPoint("LEFT",line.back,"RIGHT")
 	line.back2:SetColorTexture(1,1,1)
-	if ExRT.is10 or ExRT.isLK1 then
-		line.back2:SetGradient("HORIZONTAL",CreateColor(cR1,cG1,cB1,1), CreateColor(cR1,cG1,cB1,0))
-	else
-		line.back2:SetGradientAlpha("HORIZONTAL",cR1,cG1,cB1,1,cR1,cG1,cB1,0)
-	end
+	line.back2:SetGradient("HORIZONTAL",CreateColor(cR1,cG1,cB1,1), CreateColor(cR1,cG1,cB1,0))
 
 	line.time = ELib:Text(module.frame.maximized,"40"):Point("TOPLEFT",line,5,-34):Font(ExRT.F.defFont,12):Color():Shadow()
 	line.time:Hide()
@@ -2148,11 +2172,7 @@ do
 
 		line.time:SetText("")
 		line.back:SetColorTexture(cR1,cG1,cB1)
-		if ExRT.is10 or ExRT.isLK1 then
-			line.back2:SetGradient("HORIZONTAL",CreateColor(cR1,cG1,cB1,1), CreateColor(cR1,cG1,cB1,0))
-		else
-			line.back2:SetGradientAlpha("HORIZONTAL",cR1,cG1,cB1,1,cR1,cG1,cB1,0)
-		end
+		line.back2:SetGradient("HORIZONTAL",CreateColor(cR1,cG1,cB1,1), CreateColor(cR1,cG1,cB1,0))
 		line.back:SetWidth(WIDTH - WIDTH2)
 
 		currR,currG,currB = cR1,cG1,cB1
@@ -2189,11 +2209,7 @@ do
 		local r,g,b = cfR - (cfR - ctR) * self:GetProgress(),cfG - (cfG - ctG) * self:GetProgress(),cfB - (cfB - ctB) * self:GetProgress()
 
 		line.back:SetColorTexture(r,g,b)
-		if ExRT.is10 or ExRT.isLK1 then
-			line.back2:SetGradient("HORIZONTAL",CreateColor(r,g,b,1), CreateColor(r,g,b,0))
-		else
-			line.back2:SetGradientAlpha("HORIZONTAL",r,g,b,1,r,g,b,0)
-		end
+		line.back2:SetGradient("HORIZONTAL",CreateColor(r,g,b,1), CreateColor(r,g,b,0))
 
 		currR,currG,currB = r,g,b
 	end)
@@ -2390,11 +2406,7 @@ function module.frame:UpdateRoster()
 			local classColor = classColorsTable[data.class]
 			local r,g,b = classColor and classColor.r or .7,classColor and classColor.g or .7,classColor and classColor.b or .7
 
-			if ExRT.is10 or ExRT.isLK1 then
-				line.classLeft:SetGradient("HORIZONTAL",CreateColor(r,g,b,.4), CreateColor(r,g,b,0))
-			else
-				line.classLeft:SetGradientAlpha("HORIZONTAL",r,g,b,.4,r,g,b,0)
-			end
+			line.classLeft:SetGradient("HORIZONTAL",CreateColor(r,g,b,.4), CreateColor(r,g,b,0))
 
 			line:Show()
 			line.mini:Show()
@@ -3237,10 +3249,12 @@ addonMsgFrame:RegisterEvent("CHAT_MSG_ADDON")
 
 
 if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
+	local IS_DF = true
+
 	local consumables_size = 44
 
-	local rune_item_id = ExRT.is10 and 201325 or 181468
-	local rune_texture = ExRT.is10 and 4644002 or 134078
+	local rune_item_id = IS_DF and 201325 or 181468
+	local rune_texture = IS_DF and 4644002 or 134078
 
 	local wenchants = {
 		[6190] = {ench=6190,item=171286,icon=463544},
@@ -3387,7 +3401,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 			button.texture:SetTexture(3528447)
 			module.consumables.buttons.kit = button
 		elseif i == 4 then
-			button.texture:SetTexture(ExRT.is10 and 4622275 or 463543)
+			button.texture:SetTexture(IS_DF and 4622275 or 463543)
 			module.consumables.buttons.oil = button
 		elseif i == 5 then
 			button.texture:SetTexture(rune_texture)
@@ -3441,7 +3455,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 				self.buttons.hs:Hide()
 				totalButtons = totalButtons - 1
 			end
-			if ExRT.is10 then
+			if IS_DF then
 				self.buttons.kit:Hide()
 				totalButtons = totalButtons - 1
 
@@ -3511,7 +3525,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 
 		local flaskCount = GetItemCount(171276,false,false)
 		local flaskCanCount = GetItemCount(171280,false,false)
-		if ExRT.is10 then
+		if IS_DF then
 			flaskCount = 0
 			flaskCanCount = 0
 		end
@@ -3544,7 +3558,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		end
 
 
-		if not ExRT.is10 then
+		if not IS_DF then
 			local kitCount = GetItemCount(172347,false,true)
 			local kitNow, kitMax, kitTimeLeft = module:KitCheck()
 			if kitNow > 0 then
@@ -3702,12 +3716,12 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		end
 
 		local runeCount = GetItemCount(rune_item_id,false,true)
-		local runeUnlim = ExRT.is10 and 0 or GetItemCount(190384,false,true)
+		local runeUnlim = IS_DF and GetItemCount(211495,false,true) or GetItemCount(190384,false,true)
 		if runeUnlim and runeUnlim > 0 then
 			self.buttons.rune.count:SetText("")
 			if not InCombatLockdown() then
-				self.buttons.rune.texture:SetTexture(4224736)
-				local itemName = GetItemInfo(190384)
+				self.buttons.rune.texture:SetTexture(IS_DF and 348535 or 4224736)
+				local itemName = GetItemInfo(IS_DF and 211495 or 190384)
 				if itemName then
 					self.buttons.rune.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
 					self.buttons.rune.click:Show()

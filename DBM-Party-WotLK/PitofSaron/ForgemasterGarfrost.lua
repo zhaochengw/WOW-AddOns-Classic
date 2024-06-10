@@ -5,7 +5,7 @@ if not mod:IsClassic() then
 	mod.statTypes = "normal,heroic,timewalker"
 end
 
-mod:SetRevision("20231117105343")
+mod:SetRevision("20240428124541")
 mod:SetCreatureID(36494)
 mod:SetEncounterID(1999)
 mod:SetUsedIcons(8)
@@ -33,7 +33,7 @@ local timerSaroniteRockCD		= mod:NewCDTimer(15.5, 68789, nil, nil, nil, 3)--15.5
 local timerDeepFreezeCD			= mod:NewCDTimer(19, 70381, nil, "Healer", 2, 5, nil, DBM_COMMON_L.HEALER_ICON)
 local timerDeepFreeze			= mod:NewTargetTimer(14, 70381, nil, false, 3, 5)
 
-mod:AddSetIconOption("SetIconOnSaroniteRockTarget", 68789, true, false, {8})
+mod:AddSetIconOption("SetIconOnSaroniteRockTarget", 68789, true, 0, {8})
 mod:AddBoolOption("AchievementCheck", false, "announce")
 
 mod.vb.warnedfailed = false

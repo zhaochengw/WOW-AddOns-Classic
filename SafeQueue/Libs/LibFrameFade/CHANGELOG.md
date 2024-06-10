@@ -1,5 +1,8 @@
 ## LibFrameFade
 
+### v12
+- TOC bump.
+
 ### v11
 - TOC bump.
 

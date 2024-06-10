@@ -1,7 +1,6 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --global name declaration
 --local _StartDebugTime = debugprofilestop() print(debugprofilestop() - _StartDebugTime)
---test if the packager will deploy to wago
 --https://github.com/LuaLS/lua-language-server/wiki/Annotations#documenting-types
 
 		_ = nil
@@ -18,12 +17,12 @@
 		local addonName, Details222 = ...
 		local version, build, date, tocversion = GetBuildInfo()
 
-		Details.build_counter = 12294
-		Details.alpha_build_counter = 12294 --if this is higher than the regular counter, use it instead
+		Details.build_counter = 12801
+		Details.alpha_build_counter = 12801 --if this is higher than the regular counter, use it instead
 		Details.dont_open_news = true
 		Details.game_version = version
 		Details.userversion = version .. " " .. Details.build_counter
-		Details.realversion = 155 --core version, this is used to check API version for scripts and plugins (see alias below)
+		Details.realversion = 156 --core version, this is used to check API version for scripts and plugins (see alias below)
 		Details.APIVersion = Details.realversion --core version
 		Details.version = Details.userversion .. " (core " .. Details.realversion .. ")" --simple stirng to show to players
 
@@ -65,11 +64,15 @@
 			return Details.gameVersionPrefix .. " " .. Details.build_counter .. " " .. alphaId .. " " .. Details.game_version .. ""
 		end
 
+		Details.DefaultTooltipIconSize = 20
+
 		--namespace for the player breakdown window
 		Details.PlayerBreakdown = {}
 		Details222.PlayerBreakdown = {
 			DamageSpellsCache = {}
 		}
+
+		Details222.Unknown = _G["UNKNOWN"]
 
 		--namespace color
 		Details222.ColorScheme = {
@@ -85,6 +88,26 @@
 			end
 		end
 
+		--cache of frames to call :SetColor() when the color scheme changes
+		Details222.RegisteredFramesToColor = {}
+
+		Details222.TrainingDummiesNpcId = {
+			[194649] = true, --valdraken
+			[189617] = true, --valdraken
+			[194644] = true, --valdraken
+			[198594] = true, --valdraken
+			[194643] = true, --valdraken
+			[189632] = true, --valdraken
+			[194648] = true, --valdraken
+			[194646] = true, --valdraken
+			[197834] = true, --valdraken
+			[31146] = true, --orgrimmar
+			[153285] = true, --orgrimmar
+			[114840] = true, --orgrimmar
+			[114832] = true, --stormwind
+			[153292] = true, --stormwind
+		}
+
 		--namespace for damage spells (spellTable)
 		Details222.DamageSpells = {}
 		--namespace for texture
@@ -95,6 +118,8 @@
 		Details222.AutoRunCode = {}
 		--options panel
 		Details222.OptionsPanel = {}
+		--store bar icons (left side of the damage bar)
+		Details222.BarIconSetList = {}
 		Details222.Instances = {}
 		Details222.Combat = {}
 		Details222.MythicPlus = {
@@ -156,11 +181,69 @@ do
 
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 
-	--change logs
-	--[=[
-	--]=]
-
 	local news = {
+		{"v10.2.7.12800.156", "June 06th, 2024"},
+		"Added transliteration for pet names in Cyrillic.",
+		"Fixed an error with extra power bars (alternate power) on cataclysm classic.",
+		"Fixed a rare error shown as 'combat already deleted' when trying to reset data.",
+		"Fixed an issue which was preventing to open the death recap window.",
+		"Fixed cataclysm classic attempting to calculate Evoker buffs.",
+		"Fixed battleground problems with cataclysm classic. (Flamanis)",
+		"Fixed an issue with player nicknames not showing properly when the player isn't inside a guild. (Flamanis)",
+
+		{"v10.2.7.12755.156", "May 19th, 2024"},
+		"Pet names on tooltips are now transliterate from Cyrillic.",
+		"Default segments amount are now 25 and save 15, users with different amount set won't have their settings changed.",
+		"Fixed an error when the user opens the death recap.",
+		"Merging the effects of All-Totem of the Mastr (Flamanis).",
+		"Added a season setting to stop right click for bookmark: '/run Details.no_bookmark = true' stop the right click for bookmark in combat or not.\n/run Details.no_bookmark_on_combat = true stop the right click for bookmark only in combat.\nYou need to run this command every time you log in or add it into the Auto Run Code.",
+		"A few changes has been done in an attempt to fix the loot squares not showing properly in the mythic+ end screen.",
+		"The options panel now cannot be dragged outside the screen, this will stop users with two monitors to acciently moving the window out of screen.",
+		"Tooltip bar colors are now fixed and won't lost its setting on reload.",
+		"The buff Rallied to Victory should now be shown in the player breakdown window Auras tab.",
+
+		{"v10.2.6.12699.156", "May 03th, 2024"},
+		"Framework and Backend upgrades.",
+		"Added Toc data for Cata classic.",
+		"Warrior Arms Whirlwind has been merged into one spell (WillowGryph).",
+		"Added an option to control the horizontal gap between two groupped windows (Elitesparkle).",
+		"Fixed an issue where looting two itens at the end of a mythic+ would result in the icon of one item and the tooltip of another.",
+		"Fixed the preview of the Wallpaper option where it was too high positioned reaching the title bar.",
+
+		{"v10.2.6.12650.156", "April 23th, 2024"},
+		"Framework and Backend upgrades.",
+		"Added prist's void tendrils to crowd control list.",
+		"Fixes for asian clients where the spell names were not showing properly when the spell name is too long.",
+		"Cataclysm Clasic and MOP Remix are now working.",
+
+		{"v10.2.6.12578.156", "March 25th, 2024"},
+		"Added phase and elapsed time for boss wipes on the segment selection menu.",
+		"Added an option to toggle between rounded and squared tooltips.",
+		"Fixed an issue with icons not showing on classic versions of the game.",
+		"Changed Augmentation tooltip color to darkgreen.",
+		"When leaving a m+ dungeon, Details! will wait for the player to re-enter the dungeon before finishing and creating the overall m+ segment.",
+		"Added a function for artists add custom icon sets for class or specs: Details:AddCustomIconSet(path, dropdownOptionName[[[[[, isSpecIcons], icon], texCoords], iconSize], iconColor]) (Flamanis).",
+
+		{"v10.2.5.12550.156", "March 13th, 2024"},
+		"Added a combat selection option into the breakdown window, providing convenience when browsing damage or healing data in that window.",
+		"Added a report button to the breakdown window, allowing you to report spell damage, targets, and phases directly from that window.",
+		"Added combat comparison (Compare tab), allowing you to compare yourself between different combats. This is especially useful for training dummies.",
+		"Added the option to show or hide the Augmentation Evoker extra bar.",
+		"Added bar texture option 'Skyline Compact' and alert sounds 'Details Truck' and 'Details Bass Drop'.",
+		"The menu for combat selection has received a visual update.",
+		"Breakdown options received text settings, these settings also change the text in the display selection (right click at window title bar).",
+		"Applied a visual patch for windows other than the main ones, making them with rounded corners.",
+
+		{"v10.2.5.12329.155", "February 18th, 2024"},
+		"Frame for 'Ask to Erase Data' can now be moved.",
+		"Small bug fixes and continued development on End of Mythic+ Panel.",
+
+		{"v10.2.5.12307.155", "February 13th, 2024"},
+		"Fixed the deaths display, where the windows wasn't usig custom text scripts.",
+		"Fixed an issue with custom displays, where it was unable to use class colors in their texts.",
+		"More development and bug fixes on the new Mythic+ Run Completion panel.",
+		"Framework Update.",
+
 		{"v10.2.5.12294.155", "February 08th, 2024"},
 		"General fixes applied to the Mythic+ Panel.",
 		"The Mythic+ section in the options panel can now be translated.",
@@ -390,137 +473,6 @@ do
 		"Added IconTexture directive to the TOC files.",
 		"Disabled time captures for spellTables, this should be done by a plugin.",
 		"Replacing table.wipe with Details:Destroy().",
-
-		{"v10.1.0.11022.151", "May 20th, 2023"},
-		"Breakdown pet options has changed to: 'Group Pets by Their Names' or 'Group Pets by Their Spells'.",
-		"Evoker empowered level now ocupies less space on the rectangle showing the damage by empower level.",
-		"Another Framework update.",
-		"Fixed an issue where some pet bars still showing the owner name.",
-		"Fixed an issue with the player selector on Breakdown window causing an error when selecting some players.",
-		"Fixed an issue caused by opening the breakdown window while seeing healing overall.",
-		"Fixed an issue with the min and max damage of a spell when viewing the 'merged' damage of two or more spells.",
-		"Fixed an issue with the Raid Check plugin throwing an error on Shuffle Arenas.",
-		"Fixed shields for Classic versions (Flamanis).",
-
-		{"v10.1.0.11011.151", "May 13th, 2023"},
-		"Added options: 'Group Player Spells With Same Name' and 'Group Pets By Spell' on the breakdown options.",
-		"Added combat log options for 'Calculate Shield Wasted Amount' and 'Calculate Energy Wasted Amount' under the options > Combat Log.",
-		"Framework and OpenRaid Updated.",
-		"Breakdown window won't go off screen anymore.",
-		"Breakdown now shows damage per phase if the segment has more than one phase.",
-		"Overhealing can now be seen within the Healing Done breakdown. This removes the necessity of having to go back and forward between healing done and overhealing.",
-		"Friendly Fire can now be seen in the breakdown window by clicking on the player bar (before the click on the player bar opened the report screen).",
-		"Healing Taken can also be seen on the breakdown window.",
-		"Some options from the Breakdown options got removed, most of them are now auto calculated by the system.",
-		"Fixed an issue where the Frags display was showinig death of friendly objects like Efflorescense.",
-		"Fixed an issue where item damage was showing 'Unknown Item' on cold logins.",
-		"Fixed defenses gauge (miss, dodge, parry) not showing in the spell details on the breakdown window.",
-
-		{"v10.1.0.10985.151", "May 4th, 2023"},
-		"The Breakdown Window has been completely rebuilt from the ground up and now includes support for several new features.",
-		"A significant portion of the back-end code has been revamped, resulting in improved performance and stability.",
-		"Combatlog now supports options, check them at the Combat Log section in the options panel.",
-		"Big plugin updates with improvements to Cast Log and new features for Advanced Death Log.",
-		"Added Real-time dps bar for arena streamers.",
-		"Flamanis:",
-		"Changed Pet Ownership detection to be hopefully more robust for future patches.",
-		"Added option to merge Atonement, Contrition, Ancient Teachings, and Awakened Faeline with their Crits, in the Combat Log section.",
-		"Added DemonHunter and Evoker Defensive cooldowns.",
-		"Readded option to have M+ Overall Segment only contain Bosses.",
-		"Fixed issue with swapping to/from Tiny Threat and other plugins using bookmarks.",
-		"Fixed position persistency for Statusbar elements.",
-		"Fixed alpha channel persistency for certain color options.",
-		"Fixed stack overflow related to changing option tabs or profiles too many times.",
-		"Fixed the highlight image of a bar icon not swapping to the new icon upon scrolling.",
-		"Fixed issues related to the new Left Text Offset position.",
-		"Fixed the wrong options being unusable with Aligned Text Columns enabled.",
-
-		{"v10.0.5.10661.147", "Mar 1st, 2023"},
-		"Major fixes and updates on the Event Tracker feature (for streamers).",
-		"When trying to import a profile with a name that already exists, it'll rename it and import (Flamanis).",
-		"Ignoring Fodder to the Flame npcs (Flamanis).",
-		"Mythic plus overall segments now have the list of player deaths.",
-
-		{"v10.0.2.10333.147", "Feb 08th, 2023"},
-		"Fixed load errors on Wrath.",
-		"Fixed enemy cast time in the death tooltip sometimes showing off time.",
-		"Allow negative offsets on Aligned Text Columns (Flamanis).",
-		"Fixed Shaman and Warrior spec detection (Flamanis).",
-		"More Demon hunter abilities added to be merged (Flamanis).",
-		"Added duck polymorph to Mage CCs (Flamanis).",
-		"Fixed offline player showing as party members in the /keys panel and players from other realms not caching (Flamanis).",
-		"Fixed an issue with some options not updating when the window is selected at the bottom right corner of the options panel (Flamanis).",
-		"Fixed some issues with the breakdown window for 'Damage Taken' (Flamanis).",
-		"Fixed an issue where sometimes the 'Always Show Me' wouldn't show if the total bar is enabled (Ricodyn).",
-
-		{"v10.0.2.10333.147", "Jan 04th, 2023"},
-		"Enemy Cast (non-interrupted) now is shown in the death log.",
-		"Damage Done by Blessing of Winter and Summer now counts torward the paladin.",
-		"Tooltips for Mythic Dungeon segments in the segments menu, now brings more information about the combat.",
-		"List of Potions updated (Jooooo)",
-		"Priest Spirit of Redemption now shows in the Death Log breakdown.",
-		"/keystone doesn't show the player realm anymore",
-		"When importing a profile, the confirmation box (asking a name for the new profile) got a check box to opt-out of importing Code.",
-		"Major fixes for Guild Sync and Statistics window: /details stats",
-		"Raid Check (plugin): Added M+ Score and fixed the flask usage.",
-		"Streamer (plugin): Fixed the plugin window hidding after login.",
-		"Fixed Evoker and several other cooldowns which wasn't showing in the cooldown usage display.",
-		"Fixed a small freeze that was happening when hovering over the segments menu.",
-		"Fixed some slash commands not working for deDE localization.",
-		"Fixed Rogue Akaari's Soul not getting detected properly during combat (Flamanis).",
-		"Fixed the sorting columns on /keystone panel which key stone level wasn't sorting correctly (Benjamin H.).",
-		"Fix for Fire Elemental on Wrath (Flamanis).",
-		"Fixed Evoker bug where empowered abilities wasn't showing in overall data (Flamanis).",
-		"Fixed an error when Details! attempted to use Ghost Frame in Wrath, but Ghost frame doesn't exists on that expansion (Flamanis).",
-		"Fixed spec detection for some specs on retail (Flamanis).",
-		"Fixed ToC for Compare2, how it also works on Wrath (Flamanis).",
-		"Fixed an issue with buff and debuff uptime sometimes not closing properly after the combat.",
-
-
-		{"v10.0.2.10333.147", "Nov 18th, 2022"},
-		"Added two checkboxes for Merge Pet and Player spell on the Breakdown window.",
-		"Added uptime for Hunter's Pet Frenzy Buff, it now show in the 'Auras' tab in the Breakdown Window.",
-		"/played is showing something new!",
-		"Options panel now closes by pressing Escape (Flamanis).",
-
-		{"v10.0.2.10277.146", "Nov 18th, 2022"},
-		"REMINDER: '/details coach' to get damage/healing/deaths in real time as the 21st person (coach) for the next raid tier in dragonflight.",
-		"New Compare tab: recreated from scratch, this new Compare has no player limitation, pets merged, bigger lines.",
-		"New <Plugin: Cast Log> show a time line of spells used by players in the group, Raid Leader: show all attack and defense cooldowns used by the raid (download it now on wago or curseforge).",
-		"Wago: Details! Standalone version is now hosted on addons.wago.io and WowUp.com.",
-		"",
-
-		"Added a little damage chart for your spells in the Player Breakdown Window.",
-		"Details! will count class play time, everyone using Details! from day 1 in Dragonflight should have an accurate play time in the class.",
-		"Visual updates on default skin.",
-		"All panels from options to plugins received visual updates.",
-		"Profiles won't export Auto Hide automations to stop issues with players not knowing why the window is hidding.",
-		"Details! should decrease the amount of chat spam errors and instead show them in the bug report window like al the other addons.",
-		"Player Details! Breakdown window: player selection now uses the same font as the regular window.",
-		"Death log tooltip revamp for more clarity to see the ability name and the damage done.",
-		"Dragonflight Trinkets damage will show the trinket name after the spell name.",
-		"'/details scroll' feature: spell name and spell id can now be copied, the frame got a scale bar.",
-		"Added option: 'Use Dynamic Overall Damage', if enabled swap to Dynamic Overall Damage when combat start while showing Overall Damage.",
-		"Fixed for most of the user having the problem of the encounter time not showing.",
-		"Fixed most of the issues with the melee spell name being called 'Word of Recall'.",
-		"Details! Damage Meter, Deatails! Framework, LibOpenRaid has been successfully updated to Dragonflight.",
-		"New class Evoker are now fully supported by Details!.",
-		"",
-		"Fixed an issue where warlocks was entering in combat from a debug doing damage (Flamanis).",
-		"Fixed 'Auto of Range' problem in Wrath of the Lich King (Flamanis).",
-		"Fixed a bug with custom displays when showing players outside the player group (Flamanis).",
-		"Fixed an issue where specs wheren't sent on Wrath (Flamanis).",
-		"Fixed Buff Uptime Tooltip where the buff had zero uptime (Flamanis)",
-		"Fixed shield damage preventing rare error when the absorption was zero (Flamanis).",
-		"Fixed chat embed system built in Details! from the Skins section (Flamanis).",
-		"Fixed an issue where damage in battlegrounds was not being sync with battleground score board in Wrath (Flamanis).",
-		"",
-		"New Slash Commands:",
-		"/playedclass: show how much time you have played this class on this expansion.",
-		"/dumpt <anything>: show the value of any table, global, spellId, etc.",
-		"/details auras: show a panel with your current auras, spell ids and spell payload.",
-		"/details perf: show performance issues when you get a warning about freezes due to UpdateAddOnMemoryUsage().",
-		"/details npcid: get the npc id of your target (a box is shown with the number ready to be copied).",
 	}
 
 	local newsString = "|cFFF1F1F1"
@@ -605,6 +557,10 @@ do
 			return "orange"
 		end
 
+		function Details:GetTextureAtlasTable()
+			return Details.TextureAtlas
+		end
+
 		--armazena as fun��es para inicializa��o dos dados - Metatable functions
 			_detalhes.refresh = {}
 		--armazena as fun��es para limpar e guardas os dados - Metatable functions
@@ -635,6 +591,7 @@ do
 		--armazena as skins dispon�veis para as janelas
 			_detalhes.skins = {}
 		--armazena os hooks das fun��es do parser
+			---@type table<detailshook, function[]>
 			_detalhes.hooks = {}
 		--informa��es sobre a luta do boss atual
 			_detalhes.encounter_end_table = {}
@@ -814,9 +771,10 @@ do
 
 		--plugin templates
 
-		_detalhes.gump:NewColor("DETAILS_PLUGIN_BUTTONTEXT_COLOR", 0.9999, 0.8196, 0, 1)
+		DetailsFramework:NewColor("DETAILS_PLUGIN_BUTTONTEXT_COLOR", 0.9999, 0.8196, 0, 1)
+		DetailsFramework:NewColor("DETAILS_HEADER_YELLOW", 227/255, 186/255, 4/255)
 
-		_detalhes.gump:InstallTemplate("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE",
+		DetailsFramework:InstallTemplate("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE",
 			{
 				backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 				backdropcolor = {0, 0, 0, .5},
@@ -824,7 +782,7 @@ do
 				onentercolor = {0.3, 0.3, 0.3, .5},
 			}
 		)
-		_detalhes.gump:InstallTemplate("button", "DETAILS_PLUGINPANEL_BUTTONSELECTED_TEMPLATE",
+		DetailsFramework:InstallTemplate("button", "DETAILS_PLUGINPANEL_BUTTONSELECTED_TEMPLATE",
 			{
 				backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 				backdropcolor = {0, 0, 0, .5},
@@ -833,7 +791,7 @@ do
 			}
 		)
 
-		_detalhes.gump:InstallTemplate("button", "DETAILS_PLUGIN_BUTTON_TEMPLATE",
+		DetailsFramework:InstallTemplate("button", "DETAILS_PLUGIN_BUTTON_TEMPLATE",
 			{
 				backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 				backdropcolor = {1, 1, 1, .5},
@@ -845,7 +803,7 @@ do
 				height = 20,
 			}
 		)
-		_detalhes.gump:InstallTemplate("button", "DETAILS_PLUGIN_BUTTONSELECTED_TEMPLATE",
+		DetailsFramework:InstallTemplate("button", "DETAILS_PLUGIN_BUTTONSELECTED_TEMPLATE",
 			{
 				backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
 				backdropcolor = {1, 1, 1, .5},
@@ -858,14 +816,14 @@ do
 			}
 		)
 
-		_detalhes.gump:InstallTemplate("button", "DETAILS_TAB_BUTTON_TEMPLATE",
+		DetailsFramework:InstallTemplate("button", "DETAILS_TAB_BUTTON_TEMPLATE",
 			{
 				width = 100,
 				height = 20,
 			},
 			"DETAILS_PLUGIN_BUTTON_TEMPLATE"
 		)
-		_detalhes.gump:InstallTemplate("button","DETAILS_TAB_BUTTONSELECTED_TEMPLATE",
+		DetailsFramework:InstallTemplate("button","DETAILS_TAB_BUTTONSELECTED_TEMPLATE",
 			{
 				width = 100,
 				height = 20,
@@ -873,57 +831,57 @@ do
 			"DETAILS_PLUGIN_BUTTONSELECTED_TEMPLATE"
 		)
 
-		_detalhes.PluginsGlobalNames = {}
-		_detalhes.PluginsLocalizedNames = {}
+		Details.PluginsGlobalNames = {}
+		Details.PluginsLocalizedNames = {}
 
 		--raid -------------------------------------------------------------------
 			--general function for raid mode plugins
-				_detalhes.RaidTables = {}
+				Details.RaidTables = {}
 			--menu for raid modes
-				_detalhes.RaidTables.Menu = {}
+				Details.RaidTables.Menu = {}
 			--plugin objects for raid mode
-				_detalhes.RaidTables.Plugins = {}
+				Details.RaidTables.Plugins = {}
 			--name to plugin object
-				_detalhes.RaidTables.NameTable = {}
+				Details.RaidTables.NameTable = {}
 			--using by
-				_detalhes.RaidTables.InstancesInUse = {}
-				_detalhes.RaidTables.PluginsInUse = {}
+				Details.RaidTables.InstancesInUse = {}
+				Details.RaidTables.PluginsInUse = {}
 
 		--solo -------------------------------------------------------------------
 			--general functions for solo mode plugins
-				_detalhes.SoloTables = {}
+				Details.SoloTables = {}
 			--maintain plugin menu
-				_detalhes.SoloTables.Menu = {}
+				Details.SoloTables.Menu = {}
 			--plugins objects for solo mode
-				_detalhes.SoloTables.Plugins = {}
+				Details.SoloTables.Plugins = {}
 			--name to plugin object
-				_detalhes.SoloTables.NameTable = {}
+				Details.SoloTables.NameTable = {}
 
 		--toolbar -------------------------------------------------------------------
 			--plugins container
-				_detalhes.ToolBar = {}
+				Details.ToolBar = {}
 			--current showing icons
-				_detalhes.ToolBar.Shown = {}
-				_detalhes.ToolBar.AllButtons = {}
+				Details.ToolBar.Shown = {}
+				Details.ToolBar.AllButtons = {}
 			--plugin objects
-				_detalhes.ToolBar.Plugins = {}
+				Details.ToolBar.Plugins = {}
 			--name to plugin object
-				_detalhes.ToolBar.NameTable = {}
-				_detalhes.ToolBar.Menu = {}
+				Details.ToolBar.NameTable = {}
+				Details.ToolBar.Menu = {}
 
 		--statusbar -------------------------------------------------------------------
 			--plugins container
-				_detalhes.StatusBar = {}
+				Details.StatusBar = {}
 			--maintain plugin menu
-				_detalhes.StatusBar.Menu = {}
+				Details.StatusBar.Menu = {}
 			--plugins object
-				_detalhes.StatusBar.Plugins = {}
+				Details.StatusBar.Plugins = {}
 			--name to plugin object
-				_detalhes.StatusBar.NameTable = {}
+				Details.StatusBar.NameTable = {}
 
 		--constants
 
-		if(DetailsFramework.IsWotLKWow()) then
+		if (DetailsFramework.IsWotLKWow()) then
 			--[[global]] DETAILS_HEALTH_POTION_ID = 33447 -- Runic Healing Potion
 			--[[global]] DETAILS_HEALTH_POTION2_ID = 41166 -- Runic Healing Injector
 			--[[global]] DETAILS_REJU_POTION_ID = 40087 -- Powerful Rejuvenation Potion
@@ -976,7 +934,7 @@ do
 		--[[global]] DETAILS_MODE_GROUP = 2
 		--[[global]] DETAILS_MODE_ALL = 3
 
-		_detalhes._detalhes_props = {
+		Details._detalhes_props = {
 			DATA_TYPE_START = 1,	--Something on start
 			DATA_TYPE_END = 2,	--Something on end
 
@@ -985,34 +943,34 @@ do
 			MODO_ALL = 3,		--Everything
 			MODO_RAID = 4,	--Raid
 		}
-		_detalhes.modos = {
+		Details.modos = {
 			alone = 1, --Solo
 			group = 2,	--Group
 			all = 3,	--Everything
 			raid = 4	--Raid
 		}
 
-		_detalhes.divisores = {
+		Details.divisores = {
 			abre = "(",	--open
 			fecha = ")",	--close
 			colocacao = ". " --dot
 		}
 
-		_detalhes.role_texcoord = {
+		Details.role_texcoord = {
 			DAMAGER = "72:130:69:127",
 			HEALER = "72:130:2:60",
 			TANK = "5:63:69:127",
 			NONE = "139:196:69:127",
 		}
 
-		_detalhes.role_texcoord_normalized = {
+		Details.role_texcoord_normalized = {
 			DAMAGER = {72/256, 130/256, 69/256, 127/256},
 			HEALER = {72/256, 130/256, 2/256, 60/256},
 			TANK = {5/256, 63/256, 69/256, 127/256},
 			NONE = {139/256, 196/256, 69/256, 127/256},
 		}
 
-		_detalhes.player_class = {
+		Details.player_class = {
 			["HUNTER"] = true,
 			["WARRIOR"] = true,
 			["PALADIN"] = true,
@@ -1026,7 +984,7 @@ do
 			["DEATHKNIGHT"] = true,
 			["DEMONHUNTER"] = true,
 		}
-		_detalhes.classstring_to_classid = {
+		Details.classstring_to_classid = {
 			["WARRIOR"] = 1,
 			["PALADIN"] = 2,
 			["HUNTER"] = 3,
@@ -1040,7 +998,7 @@ do
 			["DRUID"] = 11,
 			["DEMONHUNTER"] = 12,
 		}
-		_detalhes.classid_to_classstring = {
+		Details.classid_to_classstring = {
 			[1] = "WARRIOR",
 			[2] = "PALADIN",
 			[3] = "HUNTER",
@@ -1057,7 +1015,7 @@ do
 
 		local Loc = LibStub("AceLocale-3.0"):GetLocale ("Details")
 
-		_detalhes.segmentos = {
+		Details.segmentos = {
 			label = Loc ["STRING_SEGMENT"]..": ",
 			overall = Loc ["STRING_TOTAL"],
 			overall_standard = Loc ["STRING_OVERALL"],
@@ -1066,7 +1024,7 @@ do
 			past = Loc ["STRING_FIGHTNUMBER"]
 		}
 
-		_detalhes._detalhes_props["modo_nome"] = {
+		Details._detalhes_props["modo_nome"] = {
 				[_detalhes._detalhes_props["MODO_ALONE"]] = Loc ["STRING_MODE_SELF"],
 				[_detalhes._detalhes_props["MODO_GROUP"]] = Loc ["STRING_MODE_GROUP"],
 				[_detalhes._detalhes_props["MODO_ALL"]] = Loc ["STRING_MODE_ALL"],
@@ -1078,7 +1036,7 @@ do
 		--[[global]] DETAILS_MODE_GROUP = 2
 		--[[global]] DETAILS_MODE_ALL = 3
 
-		_detalhes.icones = {
+		Details.icones = {
 			--report window
 			report = {
 					up = "Interface\\FriendsFrame\\UI-Toast-FriendOnlineIcon",
@@ -1088,7 +1046,7 @@ do
 				}
 		}
 
-		_detalhes.missTypes = {"ABSORB", "BLOCK", "DEFLECT", "DODGE", "EVADE", "IMMUNE", "MISS", "PARRY", "REFLECT", "RESIST"} --do not localize-me
+		Details.missTypes = {"ABSORB", "BLOCK", "DEFLECT", "DODGE", "EVADE", "IMMUNE", "MISS", "PARRY", "REFLECT", "RESIST"} --do not localize-me
 
 
 	function Details.SendHighFive()
@@ -1193,9 +1151,11 @@ do
 		SharedMedia:Register("statusbar", "Details D'ictum (reverse)", [[Interface\AddOns\Details\images\bar4_reverse]])
 
 		--flat bars
+		SharedMedia:Register("statusbar", "Skyline", [[Interface\AddOns\Details\images\bar_skyline]])
+
 		SharedMedia:Register("statusbar", "Details Serenity", [[Interface\AddOns\Details\images\bar_serenity]])
 		SharedMedia:Register("statusbar", "BantoBar", [[Interface\AddOns\Details\images\BantoBar]])
-		SharedMedia:Register("statusbar", "Skyline", [[Interface\AddOns\Details\images\bar_skyline]])
+		SharedMedia:Register("statusbar", "Skyline Compact", [[Interface\AddOns\Details\images\bar_textures\bar_skyline_compact.png]])
 		SharedMedia:Register("statusbar", "WorldState Score", [[Interface\WorldStateFrame\WORLDSTATEFINALSCORE-HIGHLIGHT]])
 		SharedMedia:Register("statusbar", "DGround", [[Interface\AddOns\Details\images\bar_background]])
 		SharedMedia:Register("statusbar", "Details Flat", [[Interface\AddOns\Details\images\bar_background]])
@@ -1226,12 +1186,8 @@ do
 		SharedMedia:Register("sound", "Details Horn", [[Interface\Addons\Details\sounds\Details Horn.ogg]])
 
 		SharedMedia:Register("sound", "Details Warning", [[Interface\Addons\Details\sounds\Details Warning 100.ogg]])
-		--SharedMedia:Register("sound", "Details Warning (Volume 75%)", [[Interface\Addons\Details\sounds\Details Warning 75.ogg]])
-		--SharedMedia:Register("sound", "Details Warning Volume 50%", [[Interface\Addons\Details\sounds\Details Warning 50.ogg]])
-		--SharedMedia:Register("sound", "Details Warning Volume 25%", [[Interface\Addons\Details\sounds\Details Warning 25.ogg]])
-
-
-
+		SharedMedia:Register("sound", "Details Truck", [[Interface\Addons\Details\sounds\Details Truck.ogg]])
+		SharedMedia:Register("sound", "Details Bass Drop", [[Interface\Addons\Details\sounds\bassdrop2.mp3]])
 
 	--dump table contents over chat panel
 		function Details.VarDump(t)

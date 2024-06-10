@@ -462,7 +462,7 @@ function PallyPowerGrid_NormalBlessingMenu(btn, mouseBtn, pname, class)
 			for index, blessing in ipairs(PallyPower.Spells) do
 				if PallyPower:CanBuff(pally, index) then
 					local unitID = PallyPower:GetUnitIdByName(pname)
-					if PallyPower:CanBuffBlessing(index, 0, unitID) then
+					if PallyPower:CanBuffBlessing(index, 0, unitID, true) then
 						tinsert(pallyMenu, {
 							text = format("%s%s%s", pre, blessing, suf),
 							checked = function() if GetNormalBlessings(pally, class, pname) == tostring(index) then return true end end,
@@ -1155,7 +1155,7 @@ function PallyPower:CanBuff(name, test)
 	return true
 end
 
-function PallyPower:CanBuffBlessing(spellId, gspellId, unitId)
+function PallyPower:CanBuffBlessing(spellId, gspellId, unitId, config)
 	if unitId and spellId or gspellId then
 		local normSpell, greatSpell
 		if UnitLevel(unitId) >= 60 then
@@ -1177,7 +1177,7 @@ function PallyPower:CanBuffBlessing(spellId, gspellId, unitId)
 		end
 		if spellId > 0 then
 			for _, v in pairs(self.NormalBuffs[spellId]) do
-				if IsSpellKnown(v[2]) then
+				if IsSpellKnown(v[2]) or config then
 					if UnitLevel(unitId) >= v[1] then
 						local spellName = GetSpellInfo(v[2])
 						local spellRank = GetSpellSubtext(v[2])

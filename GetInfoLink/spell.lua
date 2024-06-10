@@ -4,7 +4,7 @@ local L = addon.L
 
 -- Create an input box for the user to enter the spell ID
 local GetSpellLinkBox = CreateFrame("EditBox", "GetSpellLinkBox", GetInfoFrame, "InputBoxTemplate");
-GetSpellLinkBox:SetPoint("TOPLEFT", GetInfoFrame, "TOPLEFT", 135, -40);
+GetSpellLinkBox:SetPoint("TOPLEFT", GetInfoFrame, "TOPLEFT", 140, -60);
 GetSpellLinkBox:SetSize(100, 20);
 GetSpellLinkBox:SetAutoFocus(false);
 
@@ -24,5 +24,6 @@ GetSpellLinkBox:SetScript("OnEnterPressed", function(self)
             DEFAULT_CHAT_FRAME:AddMessage(L['search_result_fail'] .. L['invalid_text'])
         end
     end
-    self:SetText("")
+    self:SetText(""); -- Clear the text content in the input box
+    self:ClearFocus(); -- Clear focus
 end)

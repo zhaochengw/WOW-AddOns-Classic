@@ -156,6 +156,7 @@ L["Adjust Grid scale."] = "Ajustar escala da Grade"
 -- L["Blizzard Raid Frames"] = ""
 -- L["Hide Blizzard Raid Frames"] = ""
 -- L["Hide Blizzard Party Frames"] = ""
+-- L["Hide Blizzard Frames"] = ""
 
 -- debugging & maintenance
 -- L["debugging"] = ""
@@ -819,6 +820,7 @@ L["%s Color"] = "%s"
 -- L["Update frequency"] = ""
 -- L["Select the health update frequency."] = ""
 -- L["Add shields to health percent"] = ""
+-- L["Add shields to health amount"] = ""
 
 -- health-low status
 -- L["Use Health Percent"] = ""
@@ -858,6 +860,8 @@ L["%s Color"] = "%s"
 -- L["Color for Not Ready."] = ""
 -- L["AFK color"] = ""
 -- L["Color for AFK."] = ""
+-- L["Hide on Combat Start"] = ""
+-- L["Hide ready check status if combat starts."] = ""
 
 -- heals-incoming status
 -- L["Include player heals"] = ""
@@ -1361,6 +1365,8 @@ L["A resurrection spell has been casted on the unit"] = "A magia reviver esta se
 -- L["Heal Types"] = ""
 -- L["Shorten Heal Numbers"] = ""
 -- L["Shorten Health Numbers"] = ""
+-- L["Shorten Thousand Numbers"] = ""
+-- L["Shorten Above Million Numbers"] = ""
 -- L["Include heals casted by me, if unchecked only other players heals are displayed."] = ""
 -- L["Apply this multiplier value to incoming heals."] = ""
 -- L["Incoming overheals below the specified value will not be shown."] = ""
@@ -1461,6 +1467,8 @@ L["A resurrection spell has been casted on the unit"] = "A magia reviver esta se
 --
 -- L["Disabled in instances"] = ""
 -- L["Disable this status inside instances."] = ""
+-- L["Display other groups"] = ""
+-- L["Enable the status if the player is in another LFG or PvP instance."] = ""
 --
 -- L["Enable harmful spells Allowlist"] = ""
 -- L["Display only the spells specified in a user defined list."] = ""

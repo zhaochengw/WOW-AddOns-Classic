@@ -508,7 +508,8 @@ function _detalhes:RefreshUpdater(suggested_interval)
 	if (specialserials[specialSerial]) then return end
 
 	--_detalhes.atualizador = _detalhes:ScheduleRepeatingTimer("RefreshMainWindow", updateInterval, -1)
-	_detalhes.atualizador = Details.Schedules.NewTicker(updateInterval, Details.RefreshMainWindow, Details, -1)
+	--_detalhes.atualizador = Details.Schedules.NewTicker(updateInterval, Details.RefreshMainWindow, Details, -1)
+	_detalhes.atualizador = C_Timer.NewTicker(updateInterval, Details.RefreshAllMainWindowsTemp)
 end
 
 ---set the amount of time between each update of all windows
@@ -714,21 +715,24 @@ end
 
 _detalhes.background_tasks_loop = _detalhes:ScheduleRepeatingTimer ("DoBackgroundTasks", 120)
 
-
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --storage stuff ~storage
+
+local CONST_ADDONNAME_DATASTORAGE = "Details_DataStorage"
 
 --global database
 _detalhes.storage = {}
 
 function _detalhes.storage:OpenRaidStorage()
 	--check if the storage is already loaded
-	if (not IsAddOnLoaded ("Details_DataStorage")) then
-		local loaded, reason = LoadAddOn ("Details_DataStorage")
+	if (not C_AddOns.IsAddOnLoaded(CONST_ADDONNAME_DATASTORAGE)) then
+		local loaded, reason = C_AddOns.LoadAddOn(CONST_ADDONNAME_DATASTORAGE)
 		if (not loaded) then
 			return
 		end
 	end
+
+	do return end
 
 	--get the storage table
 	local db = DetailsDataStorage
@@ -745,7 +749,7 @@ function _detalhes.storage:OpenRaidStorage()
 	return db
 end
 
-function _detalhes.storage:HaveDataForEncounter (diff, encounter_id, guild_name)
+function _detalhes.storage:HaveDataForEncounter(diff, encounter_id, guild_name)
 	local db = _detalhes.storage:OpenRaidStorage()
 
 	if (not db) then
@@ -753,7 +757,7 @@ function _detalhes.storage:HaveDataForEncounter (diff, encounter_id, guild_name)
 	end
 
 	if (guild_name and type(guild_name) == "boolean") then
-		guild_name = GetGuildInfo ("player")
+		guild_name = GetGuildInfo("player")
 	end
 
 	local table = db [diff]
@@ -1416,6 +1420,8 @@ local createStorageTables = function()
 end
 
 function _detalhes.ScheduleLoadStorage()
+	do return end
+
 	if (InCombatLockdown() or UnitAffectingCombat("player")) then
 		if (_detalhes.debug) then
 			print("|cFFFFFF00Details! storage scheduled to load (player in combat).")
@@ -1423,8 +1429,8 @@ function _detalhes.ScheduleLoadStorage()
 		_detalhes.schedule_storage_load = true
 		return
 	else
-		if (not IsAddOnLoaded("Details_DataStorage")) then
-			local loaded, reason = LoadAddOn("Details_DataStorage")
+		if (not C_AddOns.IsAddOnLoaded(CONST_ADDONNAME_DATASTORAGE)) then
+			local loaded, reason = C_AddOns.LoadAddOn(CONST_ADDONNAME_DATASTORAGE)
 			if (not loaded) then
 				if (_detalhes.debug) then
 					print("|cFFFFFF00Details! Storage|r: can't load storage, may be the addon is disabled.")
@@ -1436,7 +1442,7 @@ function _detalhes.ScheduleLoadStorage()
 		end
 	end
 
-	if (IsAddOnLoaded("Details_DataStorage")) then
+	if (C_AddOns.IsAddOnLoaded(CONST_ADDONNAME_DATASTORAGE)) then
 		_detalhes.schedule_storage_load = nil
 		_detalhes.StorageLoaded = true
 		if (_detalhes.debug) then
@@ -1454,11 +1460,14 @@ function _detalhes.GetStorage()
 	return DetailsDataStorage
 end
 
+--this function is used on the breakdown window to show ranking and on the main window when hovering over the spec icon
 function _detalhes.OpenStorage()
 	--if the player is in combat, this function return false, if failed to load by other reason it returns nil
 
+	do return end
+
 	--check if the storage is already loaded
-	if (not IsAddOnLoaded("Details_DataStorage")) then
+	if (not C_AddOns.IsAddOnLoaded(CONST_ADDONNAME_DATASTORAGE)) then
 		--can't open it during combat
 		if (InCombatLockdown() or UnitAffectingCombat("player")) then
 			if (_detalhes.debug) then
@@ -1467,7 +1476,7 @@ function _detalhes.OpenStorage()
 			return false
 		end
 
-		local loaded, reason = LoadAddOn("Details_DataStorage")
+		local loaded, reason = C_AddOns.LoadAddOn(CONST_ADDONNAME_DATASTORAGE)
 		if (not loaded) then
 			if (_detalhes.debug) then
 				print("|cFFFFFF00Details! Storage|r: can't load storage, may be the addon is disabled.")
@@ -1477,7 +1486,7 @@ function _detalhes.OpenStorage()
 
 		local db = createStorageTables()
 
-		if (db and IsAddOnLoaded("Details_DataStorage")) then
+		if (db and C_AddOns.IsAddOnLoaded(CONST_ADDONNAME_DATASTORAGE)) then
 			_detalhes.StorageLoaded = true
 		end
 
@@ -1489,10 +1498,13 @@ end
 
 Details.Database = {}
 
+--this function is called on storewipe and storeencounter
 function Details.Database.LoadDB()
+	do return end
+
 	--check if the storage is already loaded
-	if (not IsAddOnLoaded("Details_DataStorage")) then
-		local loaded, reason = LoadAddOn("Details_DataStorage")
+	if (not C_AddOns.IsAddOnLoaded(CONST_ADDONNAME_DATASTORAGE)) then
+		local loaded, reason = C_AddOns.LoadAddOn(CONST_ADDONNAME_DATASTORAGE)
 		if (not loaded) then
 			if (_detalhes.debug) then
 				print("|cFFFFFF00Details! Storage|r: can't save the encounter, couldn't load DataStorage, may be the addon is disabled.")
@@ -1891,7 +1903,7 @@ function _detalhes:IlvlFromNetwork (player, realm, core, serialNumber, itemLevel
 	end
 
 	--won't inspect this actor
-	_detalhes.trusted_characters [serialNumber] = true
+	_detalhes.trusted_characters[serialNumber] = true
 
 	if (type(serialNumber) ~= "string") then
 		return
@@ -1899,19 +1911,22 @@ function _detalhes:IlvlFromNetwork (player, realm, core, serialNumber, itemLevel
 
 	--store the item level
 	if (type(itemLevel) == "number") then
-		_detalhes.item_level_pool [serialNumber] = {name = player, ilvl = itemLevel, time = time()}
+		_detalhes.item_level_pool[serialNumber] = {name = player, ilvl = itemLevel, time = time()}
 	end
 
 	--store talents
 	if (type(talentsSelected) == "table") then
-		if (talentsSelected [1]) then
-			_detalhes.cached_talents [serialNumber] = talentsSelected
+		if (talentsSelected[1]) then
+			_detalhes.cached_talents[serialNumber] = talentsSelected
 		end
+
+	elseif (type(talentsSelected) == "string" and talentsSelected ~= "") then
+		_detalhes.cached_talents[serialNumber] = talentsSelected
 	end
 
 	--store the spec the player is playing
 	if (type(currentSpec) == "number") then
-		_detalhes.cached_specs [serialNumber] = currentSpec
+		_detalhes.cached_specs[serialNumber] = currentSpec
 	end
 end
 
@@ -2473,7 +2488,7 @@ Details.specToRole = {
 }
 
 --oldschool talent tree
-if (DetailsFramework.IsWotLKWow()) then
+if (DetailsFramework.IsWotLKWow() or DetailsFramework.IsCataWow()) then
 	local talentWatchClassic = CreateFrame("frame")
 	talentWatchClassic:RegisterEvent("CHARACTER_POINTS_CHANGED")
 	talentWatchClassic:RegisterEvent("SPELLS_CHANGED")
@@ -2511,7 +2526,12 @@ if (DetailsFramework.IsWotLKWow()) then
 		for i = 1, (MAX_TALENT_TABS or 3) do
 			if (i <= numTabs) then
 				--tab information
-				local name, iconTexture, pointsSpent, fileName = GetTalentTabInfo (i)
+				local id, name, description, iconTexture, pointsSpent, fileName
+				if DetailsFramework.IsCataWow() then
+					id, name, description, iconTexture, pointsSpent, fileName = GetTalentTabInfo(i)
+				else
+					name, iconTexture, pointsSpent, fileName = GetTalentTabInfo(i)
+				end
 				if (name) then
 					tinsert(pointsPerSpec, {name, pointsSpent, fileName})
 				end
@@ -3151,7 +3171,7 @@ hooksecurefunc("ChatFrame_DisplayTimePlayed", function()
 			local levelText = TIME_PLAYED_LEVEL and TIME_PLAYED_LEVEL:gsub("%%s", "") or ""
 			for fontString in ChatFrame1.fontStringPool:EnumerateActive() do
 				if (fontString:GetText() and fontString:GetText():find(levelText)) then
-					print(Details.GetPlayTimeOnClassString() .. " (/details playedclass)")
+					print(Details.GetPlayTimeOnClassString() .. " \ncommand: /details playedclass")
 					break
 				end
 			end

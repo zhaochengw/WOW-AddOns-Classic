@@ -1,4 +1,4 @@
-## Interface: 100205
+## Interface: 100206
 ## Title: OmniCC
 ## Notes: Cooldown count for everything
 ## Notes-koKR: 모든 것을 위한 쿨다운 카운트
@@ -6,8 +6,9 @@
 ## Notes-esES: Contador de tiempo de reutilización
 ## Notes-ptBR: Contagem de tempo de recarga
 ## Notes-frFR: Compte à rebours du temps de recharge
+## Notes-ruRU: Время восстановления абилок и т.п.
 ## Author: Tuller
-## Version: 10.2.4
+## Version: 10.2.6
 ## SavedVariables: OmniCCDB, OmniCC4Config
 ## IconTexture: Interface/Icons/spell_nature_timestop
 ## AddonCompartmentFunc: OmniCC_Launch

@@ -1,12 +1,28 @@
-local addonName = ...
+local addonName, addon = ...
+local StatLogic = LibStub(addonName)
+local locale = GetLocale()
 
-local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
-local StatLogic = LibStub("StatLogic")
+-- Metatable that forces keys to be UTF8-lowercase
+local lowerMT = {
+	__newindex = function(t, k, v)
+		if k then
+			rawset(t, k:utf8lower(), v)
+		end
+	end
+}
 
-L.WholeTextLookup[EMPTY_SOCKET_RED] = {["EMPTY_SOCKET_RED"] = 1}
-L.WholeTextLookup[EMPTY_SOCKET_YELLOW] = {["EMPTY_SOCKET_YELLOW"] = 1}
-L.WholeTextLookup[EMPTY_SOCKET_BLUE] = {["EMPTY_SOCKET_BLUE"] = 1}
-L.WholeTextLookup[EMPTY_SOCKET_META] = {["EMPTY_SOCKET_META"] = 1}
+-----------------------
+-- Whole Text Lookup --
+-----------------------
+-- Strings without numbers; mainly used for enchants or easy exclusions
+addon.WholeTextLookup = setmetatable({}, lowerMT)
+local W = addon.WholeTextLookup
+
+W[EMPTY_SOCKET_RED] = {["EMPTY_SOCKET_RED"] = 1}
+W[EMPTY_SOCKET_YELLOW] = {["EMPTY_SOCKET_YELLOW"] = 1}
+W[EMPTY_SOCKET_BLUE] = {["EMPTY_SOCKET_BLUE"] = 1}
+W[EMPTY_SOCKET_META] = {["EMPTY_SOCKET_META"] = 1}
+W[EMPTY_SOCKET_PRISMATIC] = {["EMPTY_SOCKET_PRISMATIC"] = 1}
 
 local exclusions = {
 	"",
@@ -24,7 +40,7 @@ local exclusions = {
 	ITEM_DISENCHANT_NOT_DISENCHANTABLE,
 	ITEM_REQ_HORDE,
 	ITEM_REQ_ALLIANCE,
-	GetItemClassInfo(Enum.ItemClass.Projectile),
+	C_Item.GetItemClassInfo(Enum.ItemClass.Projectile),
 	INVTYPE_AMMO,
 	INVTYPE_HEAD,
 	INVTYPE_NECK,
@@ -69,23 +85,81 @@ local exclusions = {
 	ITEM_QUALITY5_DESC,
 	ITEM_QUALITY6_DESC,
 	ITEM_QUALITY7_DESC,
-	GetItemSubClassInfo(Enum.ItemClass.Weapon, Enum.ItemWeaponSubclass.Thrown),
-	GetItemSubClassInfo(Enum.ItemClass.Miscellaneous, Enum.ItemMiscellaneousSubclass.Mount)
+	C_Item.GetItemSubClassInfo(Enum.ItemClass.Weapon, Enum.ItemWeaponSubclass.Thrown),
+	C_Item.GetItemSubClassInfo(Enum.ItemClass.Miscellaneous, Enum.ItemMiscellaneousSubclass.Mount)
 }
 
 for _, exclusion in pairs(exclusions) do
-	L.WholeTextLookup[exclusion] = false
+	W[exclusion] = false
 end
 
 for _, subclass in pairs(Enum.ItemArmorSubclass) do
-	local subclassName = GetItemSubClassInfo(Enum.ItemClass.Armor, subclass)
+	local subclassName = C_Item.GetItemSubClassInfo(Enum.ItemClass.Armor, subclass)
 	if subclassName then
-		L.WholeTextLookup[subclassName] = false
+		W[subclassName] = false
 	end
 end
 
 local function unescape(pattern)
-	return pattern:gsub("%%%d?%$?c", ""):gsub("%%%d?%$?[sd]", "%%s"):gsub("%.$", ""):utf8lower()
+	return pattern:gsub("%%%d?%$?c", ""):gsub("%%%d?%$?[sd]", "%%s"):gsub("%.$", "")
+end
+
+-------------------------
+-- Substitution Lookup --
+-------------------------
+addon.StatIDLookup = setmetatable({}, lowerMT)
+local L = addon.StatIDLookup
+
+local short = {
+	[HP] = {StatLogic.Stats.Health},
+	[MP] = {StatLogic.Stats.Mana},
+	[ITEM_MOD_AGILITY_SHORT] = {StatLogic.Stats.Agility},
+	[ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT] = {StatLogic.Stats.ArmorPenetrationRating},
+	[ITEM_MOD_ATTACK_POWER_SHORT] = {StatLogic.Stats.AttackPower},
+	[ITEM_MOD_BLOCK_RATING_SHORT] = {StatLogic.Stats.BlockRating},
+	[ITEM_MOD_BLOCK_VALUE_SHORT] = {StatLogic.Stats.BlockValue},
+	[ITEM_MOD_CRIT_MELEE_RATING_SHORT] = {StatLogic.Stats.MeleeCritRating},
+	[ITEM_MOD_CRIT_RANGED_RATING_SHORT] = {StatLogic.Stats.RangedCritRating},
+	[ITEM_MOD_CRIT_RATING_SHORT] = {StatLogic.Stats.CritRating},
+	[ITEM_MOD_CRIT_SPELL_RATING_SHORT] = {StatLogic.Stats.SpellCritRating},
+	[ITEM_MOD_DEFENSE_SKILL_RATING_SHORT] = {StatLogic.Stats.DefenseRating},
+	[ITEM_MOD_DODGE_RATING_SHORT] = {StatLogic.Stats.DodgeRating},
+	[ITEM_MOD_EXPERTISE_RATING_SHORT] = {StatLogic.Stats.ExpertiseRating},
+	[ITEM_MOD_EXTRA_ARMOR_SHORT] = {StatLogic.Stats.BonusArmor},
+	[ITEM_MOD_FERAL_ATTACK_POWER_SHORT] = {StatLogic.Stats.FeralAttackPower},
+	[ITEM_MOD_HASTE_RATING_SHORT] = {StatLogic.Stats.HasteRating},
+	[ITEM_MOD_HEALTH_REGEN_SHORT] = {StatLogic.Stats.HealthRegen},
+	[ITEM_MOD_HEALTH_REGENERATION_SHORT] = {StatLogic.Stats.HealthRegen},
+	[ITEM_MOD_HEALTH_SHORT] = {StatLogic.Stats.Health},
+	[ITEM_MOD_HIT_MELEE_RATING_SHORT] = {StatLogic.Stats.MeleeHitRating},
+	[ITEM_MOD_HIT_RANGED_RATING_SHORT] = {StatLogic.Stats.RangedHitRating},
+	[ITEM_MOD_HIT_RATING_SHORT] = {StatLogic.Stats.HitRating},
+	[ITEM_MOD_HIT_SPELL_RATING_SHORT] = {StatLogic.Stats.SpellHitRating},
+	[ITEM_MOD_INTELLECT_SHORT] = {StatLogic.Stats.Intellect},
+	[ITEM_MOD_MANA_REGENERATION_SHORT] = {StatLogic.Stats.ManaRegen},
+	[ITEM_MOD_MANA_SHORT] = {StatLogic.Stats.Mana},
+	[ITEM_MOD_MASTERY_RATING_SHORT] = {StatLogic.Stats.MasteryRating},
+	[ITEM_MOD_MELEE_ATTACK_POWER_SHORT] = {StatLogic.Stats.AttackPower},
+	[ITEM_MOD_PARRY_RATING_SHORT] = {StatLogic.Stats.ParryRating},
+	[ITEM_MOD_POWER_REGEN0_SHORT] = {StatLogic.Stats.ManaRegen},
+	[ITEM_MOD_RANGED_ATTACK_POWER_SHORT] = {StatLogic.Stats.RangedAttackPower},
+	[ITEM_MOD_RESILIENCE_RATING_SHORT] = {StatLogic.Stats.ResilienceRating},
+	[RESILIENCE] = {StatLogic.Stats.ResilienceRating},
+	[ITEM_MOD_SPELL_DAMAGE_DONE_SHORT] = {StatLogic.Stats.SpellDamage},
+	[ITEM_MOD_SPELL_HEALING_DONE_SHORT] = {StatLogic.Stats.HealingPower},
+	[ITEM_MOD_SPELL_PENETRATION_SHORT] = {StatLogic.Stats.SpellPenetration},
+	[ITEM_MOD_SPELL_POWER_SHORT] = {{StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower}},
+	[ITEM_MOD_SPIRIT_SHORT] = {StatLogic.Stats.Spirit},
+	[ITEM_MOD_STAMINA_SHORT] = {StatLogic.Stats.Stamina},
+	[ITEM_MOD_STRENGTH_SHORT] = {StatLogic.Stats.Strength},
+	[SPELL_STATALL] = {StatLogic.Stats.AllStats},
+	[STAT_ATTACK_POWER] = {StatLogic.Stats.AttackPower},
+	[COMBAT_RATING_NAME9] = {StatLogic.Stats.CritRating},
+}
+
+for pattern, stat in pairs(short) do
+	L["%s " .. pattern] = stat
+	L[pattern .. " %s"] = stat
 end
 
 local long = {
@@ -133,7 +207,7 @@ local long = {
 }
 
 for pattern, stats in pairs(long) do
-	L.StatIDLookup[unescape(pattern)] = stats
+	L[unescape(pattern)] = stats
 end
 
 local regen = {
@@ -148,55 +222,7 @@ for pattern, stats in pairs(regen) do
 	pattern = pattern:gsub("5", "%%s")
 	local i = stat > five and 1 or 2
 	table.insert(stats, i, false)
-	L.StatIDLookup[unescape(pattern)] = stats
-end
-
-local short = {
-	[ITEM_MOD_AGILITY_SHORT] = {StatLogic.Stats.Agility},
-	[ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT] = {StatLogic.Stats.ArmorPenetrationRating},
-	[ITEM_MOD_ATTACK_POWER_SHORT] = {StatLogic.Stats.AttackPower},
-	[ITEM_MOD_BLOCK_RATING_SHORT] = {StatLogic.Stats.BlockRating},
-	[ITEM_MOD_BLOCK_VALUE_SHORT] = {StatLogic.Stats.BlockValue},
-	[ITEM_MOD_CRIT_MELEE_RATING_SHORT] = {StatLogic.Stats.MeleeCritRating},
-	[ITEM_MOD_CRIT_RANGED_RATING_SHORT] = {StatLogic.Stats.RangedCritRating},
-	[ITEM_MOD_CRIT_RATING_SHORT] = {StatLogic.Stats.CritRating},
-	[ITEM_MOD_CRIT_SPELL_RATING_SHORT] = {StatLogic.Stats.SpellCritRating},
-	[ITEM_MOD_DEFENSE_SKILL_RATING_SHORT] = {StatLogic.Stats.DefenseRating},
-	[ITEM_MOD_DODGE_RATING_SHORT] = {StatLogic.Stats.DodgeRating},
-	[ITEM_MOD_EXPERTISE_RATING_SHORT] = {StatLogic.Stats.ExpertiseRating},
-	[ITEM_MOD_EXTRA_ARMOR_SHORT] = {StatLogic.Stats.BonusArmor},
-	[ITEM_MOD_FERAL_ATTACK_POWER_SHORT] = {StatLogic.Stats.FeralAttackPower},
-	[ITEM_MOD_HASTE_RATING_SHORT] = {StatLogic.Stats.HasteRating},
-	[ITEM_MOD_HEALTH_REGEN_SHORT] = {StatLogic.Stats.HealthRegen},
-	[ITEM_MOD_HEALTH_REGENERATION_SHORT] = {StatLogic.Stats.HealthRegen},
-	[ITEM_MOD_HEALTH_SHORT] = {StatLogic.Stats.Health},
-	[ITEM_MOD_HIT_MELEE_RATING_SHORT] = {StatLogic.Stats.MeleeHitRating},
-	[ITEM_MOD_HIT_RANGED_RATING_SHORT] = {StatLogic.Stats.RangedHitRating},
-	[ITEM_MOD_HIT_RATING_SHORT] = {StatLogic.Stats.HitRating},
-	[ITEM_MOD_HIT_SPELL_RATING_SHORT] = {StatLogic.Stats.SpellHitRating},
-	[ITEM_MOD_INTELLECT_SHORT] = {StatLogic.Stats.Intellect},
-	[ITEM_MOD_MANA_REGENERATION_SHORT] = {StatLogic.Stats.ManaRegen},
-	[ITEM_MOD_MANA_SHORT] = {StatLogic.Stats.Mana},
-	[ITEM_MOD_MASTERY_RATING_SHORT] = {StatLogic.Stats.MasteryRating},
-	[ITEM_MOD_MELEE_ATTACK_POWER_SHORT] = {StatLogic.Stats.AttackPower},
-	[ITEM_MOD_PARRY_RATING_SHORT] = {StatLogic.Stats.ParryRating},
-	[ITEM_MOD_POWER_REGEN0_SHORT] = {StatLogic.Stats.ManaRegen},
-	[ITEM_MOD_RANGED_ATTACK_POWER_SHORT] = {StatLogic.Stats.RangedAttackPower},
-	[ITEM_MOD_RESILIENCE_RATING_SHORT] = {StatLogic.Stats.ResilienceRating},
-	[ITEM_MOD_SPELL_DAMAGE_DONE_SHORT] = {StatLogic.Stats.SpellDamage},
-	[ITEM_MOD_SPELL_HEALING_DONE_SHORT] = {StatLogic.Stats.HealingPower},
-	[ITEM_MOD_SPELL_PENETRATION_SHORT] = {StatLogic.Stats.SpellPenetration},
-	[ITEM_MOD_SPELL_POWER_SHORT] = {{StatLogic.Stats.SpellDamage, StatLogic.Stats.HealingPower}},
-	[ITEM_MOD_SPIRIT_SHORT] = {StatLogic.Stats.Spirit},
-	[ITEM_MOD_STAMINA_SHORT] = {StatLogic.Stats.Stamina},
-	[ITEM_MOD_STRENGTH_SHORT] = {StatLogic.Stats.Strength},
-	[SPELL_STATALL] = {StatLogic.Stats.AllStats},
-	[STAT_ATTACK_POWER] = {StatLogic.Stats.AttackPower},
-}
-
-for pattern, stat in pairs(short) do
-	L.StatIDLookup["%s " .. pattern] = stat
-	L.StatIDLookup[pattern .. " %s"] = stat
+	L[unescape(pattern)] = stats
 end
 
 local resistances = {
@@ -210,13 +236,18 @@ local resistances = {
 if not MAX_SPELL_SCHOOLS then MAX_SPELL_SCHOOLS = 7 end
 for i = 2, MAX_SPELL_SCHOOLS do
 	local school = _G["DAMAGE_SCHOOL" .. i]
-	L.StatIDLookup[DAMAGE_TEMPLATE_WITH_SCHOOL:format("%s", "%s", school)] = {StatLogic.Stats.MinWeaponDamage, StatLogic.Stats.MaxWeaponDamage}
-	L.StatIDLookup[PLUS_DAMAGE_TEMPLATE_WITH_SCHOOL:format("%s", "%s", school)] = {StatLogic.Stats.MinWeaponDamage, StatLogic.Stats.MaxWeaponDamage}
+	L[DAMAGE_TEMPLATE_WITH_SCHOOL:format("%s", "%s", school)] = {StatLogic.Stats.MinWeaponDamage, StatLogic.Stats.MaxWeaponDamage}
+	L[PLUS_DAMAGE_TEMPLATE_WITH_SCHOOL:format("%s", "%s", school)] = {StatLogic.Stats.MinWeaponDamage, StatLogic.Stats.MaxWeaponDamage}
 	if resistances[i] then
-		L.StatIDLookup[unescape(ITEM_RESIST_SINGLE):format("%s", school)] = {resistances[i]}
+		L[unescape(ITEM_RESIST_SINGLE):format("%s", school)] = {resistances[i]}
 	end
 end
 
+--------------------
+-- Prefix Exclude --
+--------------------
+-- Exclude strings by 3-5 character prefixes
+-- Used to reduce noise while debugging missing patterns
 local prefixExclusions = {
 	SPEED,
 	ITEM_DISENCHANT_ANY_SKILL, -- "Disenchantable"
@@ -234,13 +265,29 @@ local prefixExclusions = {
 	ITEM_SET_BONUS, -- "Set: %s"
 }
 
-for _, exclusion in pairs(prefixExclusions) do
-	-- Set the string to exactly PrefixExcludeLength characters, right-padded.
-	local len = string.utf8len(exclusion)
-	if len > L.PrefixExcludeLength then
-		exclusion = string.utf8sub(exclusion, 1, L.PrefixExcludeLength)
-	elseif len < L.PrefixExcludeLength then
-		exclusion = exclusion .. (" "):rep(L.PrefixExcludeLength - len)
-	end
-	L.PrefixExclude[exclusion] = true
+addon.PrefixExclude = {}
+local excludeLen = 5
+if locale == "koKR" or locale == "zhCN" or locale == "zhTW" then
+	excludeLen = 3
 end
+addon.PrefixExcludeLength = excludeLen
+
+for _, exclusion in pairs(prefixExclusions) do
+	-- Set the string to exactly excludeLen characters, right-padded.
+	local len = string.utf8len(exclusion)
+	if len > excludeLen then
+		exclusion = string.utf8sub(exclusion, 1, excludeLen)
+	elseif len < excludeLen then
+		exclusion = exclusion .. (" "):rep(excludeLen - len)
+	end
+	addon.PrefixExclude[exclusion] = true
+end
+
+---------------------
+-- PreScan Exclude --
+---------------------
+-- Iterates all patterns, matching the whole string. Expensive so try not to use.
+-- Used to reduce noise while debugging missing patterns
+addon.PreScanPatterns = setmetatable({}, lowerMT)
+local itemSetNamePattern = ITEM_SET_NAME:gsub("%%%d?%$?s", ".+"):gsub("%%%d?%$?d", "%%d+"):gsub("[()]", "%%%1")
+addon.PreScanPatterns[itemSetNamePattern] = false

@@ -4,7 +4,7 @@ local L = addon.L
 
 -- Create an input box for the user to enter the achievement ID
 local GetAchievementLinkBox = CreateFrame("EditBox", "GetAchievementLinkBox", GetInfoFrame, "InputBoxTemplate");
-GetAchievementLinkBox:SetPoint("TOPLEFT", GetInfoFrame, "TOPLEFT", 20, -100);
+GetAchievementLinkBox:SetPoint("TOPLEFT", GetInfoFrame, "TOPLEFT", 15, -120);
 GetAchievementLinkBox:SetSize(100, 20);
 GetAchievementLinkBox:SetAutoFocus(false);
 
@@ -24,5 +24,6 @@ GetAchievementLinkBox:SetScript("OnEnterPressed", function(self)
             DEFAULT_CHAT_FRAME:AddMessage(L['search_result_fail'] .. L['invalid_text'])
         end
     end
-    self:SetText("")
+    self:SetText(""); -- Clear the text content in the input box
+    self:ClearFocus(); -- Clear focus
 end)

@@ -17,7 +17,8 @@ function AuctionatorGroupsViewItemMixin:SetItemInfo(info)
     else
       self.Icon:SetAlpha(1)
     end
-    local selectedColor = Auctionator.Config.Get(Auctionator.Config.Options.SELLING_BAG_SELECTION_COLOR)
+    local selectedColor = {r=0.977, g=0.592, b=0.086}
+
     self.IconSelectedHighlight:SetVertexColor(selectedColor.r, selectedColor.g, selectedColor.b)
     self.IconSelectedHighlight:SetShown(info.selected)
 
@@ -44,7 +45,17 @@ function AuctionatorGroupsViewItemMixin:SetItemInfo(info)
 end
 
 function AuctionatorGroupsViewItemMixin:OnEnter()
+  self:UpdateTooltip()
+end
+
+function AuctionatorGroupsViewItemMixin:UpdateTooltip()
   if self.itemInfo ~= nil then
+    if IsModifiedClick("DRESSUP") then
+      ShowInspectCursor();
+    else
+      ResetCursor()
+    end
+
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     if Auctionator.Utilities.IsPetLink(self.itemInfo.itemLink) then
       BattlePetToolTip_ShowLink(self.itemInfo.itemLink)
@@ -56,19 +67,18 @@ function AuctionatorGroupsViewItemMixin:OnEnter()
 end
 
 function AuctionatorGroupsViewItemMixin:OnLeave()
-  if self.itemInfo ~= nil then
-    if Auctionator.Utilities.IsPetLink(self.itemInfo.itemLink) then
-      BattlePetTooltip:Hide()
-    else
-      GameTooltip:Hide()
-    end
+  ResetCursor()
+  if BattlePetTooltip then
+    BattlePetTooltip:Hide()
   end
+  GameTooltip:Hide()
 end
 
 function AuctionatorGroupsViewItemMixin:OnClick(button)
   if self.itemInfo ~= nil then
     if IsModifiedClick("DRESSUP") then
-      DressUpLink(self.itemInfo.itemLink)
+      -- Retail vs Classic functions
+      (DressUpLink or DressUpItemLink)(self.itemInfo.itemLink)
 
     elseif IsModifiedClick("CHATLINK") then
       ChatEdit_InsertLink(self.itemInfo.itemLink)

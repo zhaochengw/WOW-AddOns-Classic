@@ -20,20 +20,17 @@ L["Flask of Chromatic Resistance"] = "Flacon de résistance chromatique";
 L["Supreme Power"] = "Pouvoir suprême";
 L["Distilled Wisdom"] = "Sagesse distillée";
 L["Chromatic Resistance"] = "Résistance chromatique";
-L["Sap"] = "Sap";
-L["Fire Festival Fortitude"] = "Fire Festival Fortitude";
-L["Fire Festival Fury"] = "Fire Festival Fury";
-L["Ribbon Dance"] = "Ribbon Dance";
-L["Traces of Silithyst"] = "Traces of Silithyst";
+L["Sap"] = "Assommer";
+L["Fire Festival Fortitude"] = "Robustesse de la fête du feu";
+L["Fire Festival Fury"] = "Fureur de la fête du feu";
+L["Ribbon Dance"] = "Danse des rubans";
+L["Traces of Silithyst"] = "Traces de silithyste";
 L["Slip'kik's Savvy"] = "Jugeote de Slip'kik";
 L["Fengus' Ferocity"] = "Férocité de Fengus";
 L["Mol'dar's Moxie"] = "Détermination de Mol'dar";
 L["Boon of Blackfathom"] = "Bienfait de Brassenoire";
 L["Ashenvale Rallying Cry"] = "Cri de ralliement d’Ashenvale";
-
----=====---
----Horde---
----=====---
+L["Spark of Inspiration"] = "Étincelle d’inspiration"; --Phase 2 SoD world buff.
 
 --Horde Orgrimmar Rend buff NPC.
 L["Thrall"] = "Thrall";
@@ -105,17 +102,17 @@ L["Sayge's Dark Fortune of Strength"] = "Sombre prédiction de Force de Sayge";
 L["Sayge's Dark Fortune of Armor"] = "Sombre prédiction d'Armure de Sayge";
 L["Sayge's Dark Fortune of Resistance"] = "Sombre prédiction de résistance de Sayge";
 L["Sayge's Dark Fortune of Damage"] = "Sombre prédiction de dégâts de Sayge";
-L["dmfBuffCooldownMsg"] = "Cooldown buff Sombrelune : %s";
-L["dmfBuffCooldownMsg2"] = "Cooldown buff Sombrelune : %s";
-L["dmfBuffCooldownMsg3"] = "Le CD du buff sombrelune se reinitialize pendant la maintenance du mercredi."; --/wb frame 2nd msg.
-L["dmfBuffReady"] = "Votre buff de la Foire de Sombrelune est reset";
+L["dmfBuffCooldownMsg"] = "Temps de recharge du buff Sombrelune : %s";
+L["dmfBuffCooldownMsg2"] = "Temps de recharge du buff Sombrelune : %s";
+L["dmfBuffCooldownMsg3"] = "Les temps de recharge du buff sombrelune se reinitialize pendant la maintenance du mercredi."; --/wb frame 2nd msg.
+L["dmfBuffReady"] = "Votre buff de la Foire de Sombrelune a été réinitialisé.";
 L["dmfBuffReset"] = "Votre buff Foire de Sombrelune est de nouveau disponible.";
-L["dmfBuffDropped"] = "Buff Foire de Sombrelune %s reçue. Pour suivre le cooldown de 5 heures tapez /dmf";
+L["dmfBuffDropped"] = "Buff Foire de Sombrelune %s reçue. Pour suivre les temps de recharge de 5 heures tapez /dmf";
 L["dmfSpawns"] = "La Foire de Sombrelune va apparaître dans %s (%s)";
 L["dmfEnds"] = "La Foire de Sombrelune est actuellement présente, elle finie dans %s (%s)";
 L["mulgore"] = "Mulgore";
 L["elwynnForest"] = "Forêt d'Elwynn";
-				
+
 ---==============---
 ---Output Strings---
 ---==============---
@@ -124,19 +121,19 @@ L["rend"] = "Rend"; --Rend Blackhand
 L["onyxia"] = "Onyxia"; --Onyxia
 L["nefarian"] = "Nefarian"; --Nefarian
 L["dmf"] = "Foire de Sombrelune"; --Darkmoon Faire
---L["noTimer"] = "Pas de timer"; --No timer (used only in map timer frames)
+--L["noTimer"] = "Pas de minuteur"; --No timer (used only in map timer frames)
 L["noTimer"] = "--"; --No timer (used only in map timer frames)
-L["noCurrentTimer"] = "Actuellement pas de timer"; --No current timer
-L["noActiveTimers"] = "Pas de timer actif";	--No active timers
+L["noCurrentTimer"] = "Actuellement pas de minuteur"; --No current timer
+L["noActiveTimers"] = "Pas de minuteur actif";	--No active timers
 L["newBuffCanBeDropped"] = "Un nouveau buff %s peut être activé";
-L["buffResetsIn"] = "%s resets dans %s";
+L["buffResetsIn"] = "%s va réinitialiser dans %s";
 L["rendFirstYellMsg"] = "Rend va être posé dans 6 secondes.";
 L["onyxiaFirstYellMsg"] = "Onyxia va être posé dans 14 secondes.";
 L["nefarianFirstYellMsg"] = "Nefarian va être posé dans 15 secondes.";
 L["rendBuffDropped"] = "Bénédiction du chef de guerre (Rend) a été posé.";
 L["onyxiaBuffDropped"] = "Cri de ralliement du tueur de dragon (Onyxia) a été posé.";
 L["nefarianBuffDropped"] = "Cri de ralliement du tueur de dragon (Nefarian) a été posé.";
-L["newSongflowerReceived"] = "Nouveau timer Songflower reçu"; --New songflower timer received
+L["newSongflowerReceived"] = "Nouveau minuteur Songflower reçu"; --New songflower timer received
 L["songflowerPicked"] = "Songflower prise à %s, prochain spawn dans 25mins."; -- Guild msg when songflower picked.
 L["North Felpaw Village"] = "Village Mort-Bois nord"; --Felwood map subzones (flower1).
 L["West Felpaw Village"] = "Village Mort-Bois ouest"; --Felwood map subzones (flower2).
@@ -160,13 +157,11 @@ L["secondShort"] = "s"; --Used in short timers like 1m30s (single letter only, u
 L["minuteShort"] = "m"; --Used in short timers like 1m30s (single letter only, usually the first letter of minutes).
 L["hourShort"] = "h"; --Used in short timers like 1h30m (single letter only, usually the first letter of hours).
 L["dayShort"] = "j"; --Used in short timers like 1d8h (single letter only, usually the first letter of days).
-L["startsIn"] = "Commence dans %s"; --"Starts in 1hour".
-L["endsIn"] = "Fini dans %s"; --"Ends in 1hour".
-L["versionOutOfDate"] = "Votre addon Nova World Buffs n'est plus à jour, mettez le à jour sur https://www.curseforge.com/wow/addons/nova-world-buffs ou via l'app twitch";
-L["Your Current World Buffs"] = "Vos World Buffs actuels";
+L["startsIn"] = "Commencera dans %s"; --"Starts in 1hour".
+L["endsIn"] = "Finira dans %s"; --"Ends in 1hour".
+L["versionOutOfDate"] = "Votre add-on Nova World Buffs n'est plus à jour, mettez le à jour sur https://www.curseforge.com/wow/addons/nova-world-buffs ou via l'app twitch";
+L["Your Current World Buffs"] = "Vos buffs mondiaux actuels";
 L["Options"] = "Options";
-
----New stuff---
 
 --Spirit of Zandalar buff NPC first yell string (part of his first yell msg before before buff).
 L["Begin the ritual"] = "Commencez le rituel"
@@ -174,6 +169,7 @@ L["The Blood God"] = "Le Dieu sanglant"; --First Booty bay yell from Zandalarian
 --Spirit of Zandalar buff NPC second yell string (part of his second yell msg before before buff).
 L["slayer of Hakkar"] = "vainqueur d’Hakkar";
 
+L["Spirit of Zandalar"] = "Esprit des Zandalar";
 L["Molthor"] = "Molthor";
 L["Zandalarian Emissary"] = "Emissaire zandalarien";
 L["Whipper Root Tuber"] = "Tubercule de navetille";
@@ -193,9 +189,16 @@ L["Jaedenar"] = "Jaedenar";
 L["North-West of Irontree Woods"] = "le nord du bois d'Arbrefer";
 L["South of Irontree Woods"] = "le sud du bois d'Arbrefer";
 
----New translations to do---
-L["layerFrameMsgOne"] = "Les anciens layers continueront d'apparaître pendant quelques heures apres un redémarrage serveur."; --Msg at bottom of layer timers frame.
-L["layerFrameMsgTwo"] = "Les layers disparaitront apres 8 heures d'inactivité."; --Msg at bottom of layer timers frame.
+L["worldMapBuffsMsg"] = "Tapez /buffs pour voir tous les\nbénéfices mondiaux actuels de vos personnages.";
+L["cityMapLayerMsgHorde"] = "Actuellement à %s\nVisez un PNJ\npour mettre à jour votre couche après un changement de zone.|r";
+L["cityMapLayerMsgAlliance"] = "Actuellement à %s\nVisez n'importe quel PNJ\npour mettre à jour votre couche après un changement de zone.|r";
+L["noLayerYetHorde"] = "Visez n'importe quel PNJ\npour trouver votre couche actuelle.";
+L["noLayerYetAlliance"] = "Visez n'importe quel PNJ\npour trouver votre couche actuelle.";
+L["Reset Data"] = "Réinitialiser"; --A button to Reset buffs window data.
+
+
+L["layerFrameMsgOne"] = "Les anciennes couches seront visibles quelques heures après le redémarrage du serveur."; --Msg at bottom of layer timers frame.
+L["layerFrameMsgTwo"] = "Les couches disparaitront apres 8 heures d'inactivité."; --Msg at bottom of layer timers frame.
 L["You are currently on"] = "Vous êtes sur le"; --You are currently on [Layer 2]
 
 
@@ -207,396 +210,521 @@ L["You are currently on"] = "Vous êtes sur le"; --You are currently on [Layer 2
 --Desc can be any length.
 
 ---Description at the top---
-L["mainTextDesc"] = "Type /wb to display timers to yourself.\nType /wb <channel> to display timers to the specified channel.\nScroll down for more options.";
+L["mainTextDesc"] = "Tapez /wb pour afficher les minuteries.\nTapez /wb <canal> pour afficher les minuteries du canal spécifié.\nFaites défiler vers le bas pour voir plus d'options.";
+
 
 ---Show Buffs Button
-L["showBuffsTitle"] = "Click To Show Your Current World Buffs";
-L["showBuffsDesc"] = "Show your current world buffs for all your characters, this can also be opened by typing /buffs or clicking on the [WorldBuffs] prefix in chat.";
+L["showBuffsTitle"] = "Buffs actuels";
+L["showBuffsDesc"] = "Affiche vos buffs mondiaux actuels pour tous vos personnages ; cela peut également être ouvert en tapant /buffs ou en cliquant sur le préfixe [WorldBuffs] dans la discussion.";
 
 ---General Options---
-L["generalHeaderDesc"] = "General Options";
+L["generalHeaderDesc"] = "Options générales";
 
-L["showWorldMapMarkersTitle"] = "City Map Timers";
-L["showWorldMapMarkersDesc"] = "Show timer icons on the Orgrimmar/Stormwind world map?";
+L["showWorldMapMarkersTitle"] = "Marqueurs de la cité";
+L["showWorldMapMarkersDesc"] = "Affiche des icônes de minuterie sur la carte du monde d'Orgrimmar/Stormwind ?";
 
-L["receiveGuildDataOnlyTitle"] = "Guild Data Only";
-L["receiveGuildDataOnlyDesc"] = "This will make it so you don't get timer data from anyone outside the guild. You should only enable this if you think someone is spoofing wrong timer data on purpose because it will lower the accuracy of your timers with less people to pull data from. It will make it especially hard to get songflower timers becaus they are so short. Every single person in the guild needs this enabled for it to even work.";
+L["receiveGuildDataOnlyTitle"] = "Données de guilde";
+L["receiveGuildDataOnlyDesc"] = "Cela vous empêchera de recevoir des données de minuterie de quiconque en dehors de la guilde. Activez ceci uniquement si vous pensez que quelqu'un falsifie délibérément des données de minuterie incorrectes, car cela réduira la précision de vos minuteries en ayant moins de personnes à partir desquelles extraire des données. Il sera particulièrement difficile d'obtenir des minuteries des fleurs-de-chant car elles sont très courtes. Chaque personne dans la guilde doit avoir ceci activé pour que cela fonctionne.";
 
-L["chatColorTitle"] = "Chat Msg Color";
-L["chatColorDesc"] = "What color should the timer msgs in chat be?";
+L["chatColorTitle"] = "Couleur du message de discussion";
+L["chatColorDesc"] = "De quelle couleur doit être le message de minuterie dans la discussion ?";
 
-L["middleColorTitle"] = "Middle Screen Color";
-L["middleColorDesc"] = "What color should the raid warning style msgs in the middle of the screen be?";
+L["middleColorTitle"] = "Couleur du milieu de l'écran";
+L["middleColorDesc"] = "De quelle couleur doit être le message de style d'alerte de raid au milieu de l'écran ?";
 
-L["resetColorsTitle"] = "Reset Colors";
-L["resetColorsDesc"] = "Reset colors back to default.";
+L["resetColorsTitle"] = "Réinitialiser les couleurs";
+L["resetColorsDesc"] = "Réinitialise les couleurs aux valeurs par défaut.";
 
-L["showTimeStampTitle"] = "Show Time Stamp";
-L["showTimeStampDesc"] = "Show a time stamp (1:23pm) beside the timer msg?";
+L["showTimeStampTitle"] = "Horodatage";
+L["showTimeStampDesc"] = "Affiche un horodatage (13:23) à côté du message de minuterie ?";
 
-L["timeStampFormatTitle"] = "Time Stamp Format";
-L["timeStampFormatDesc"] = "Set which timestamp format to use, 12 hour (1:23pm) or 24 hour (13:23).";
+L["timeStampFormatTitle"] = "Format d'horodatage";
+L["timeStampFormatDesc"] = "Définit le format d'horodatage à utiliser, 12 heures (1:23 p.m.) ou 24 heures (13:23).";
 
-L["timeStampZoneTitle"] = "Local Time / Server Time";
-L["timeStampZoneDesc"] = "Use local time or server time for timestamps?";
+L["timeStampZoneTitle"] = "Heure locale / Heure du royaume";
+L["timeStampZoneDesc"] = "Utilise l'heure locale ou l'heure du royaume pour les horodatages ?";
 
-L["colorizePrefixLinksTitle"] = "Colored Prefix Link";
-L["colorizePrefixLinksDesc"] = "Colorize the prefix [WorldBuffs] in all chat channels? This is the prefix in chat you can click to show all your characters current world buffs.";
+L["colorizePrefixLinksTitle"] = "Lien coloré";
+L["colorizePrefixLinksDesc"] = "Colore le préfixe [WorldBuffs] dans tous les canaux de discussion ? Ceci est le préfixe dans la discussion sur lequel vous pouvez cliquer pour afficher les buffs mondiaux actuels de tous vos personnages.";
 
-L["showAllAltsTitle"] = "Show All Alts";
-L["showAllAltsDesc"] = "Show all alts in the /buffs window even if they don't have an active buff?";
+L["showAllAltsTitle"] = "Afficher tous les alts";
+L["showAllAltsDesc"] = "Affiche tous les alts dans la fenêtre /buffs même s'ils n'ont pas un buff actif ?";
 
-L["minimapButtonTitle"] = "Show Minimap Button";
-L["minimapButtonDesc"] = "Show the NWB button the minimap?";
+L["minimapButtonTitle"] = "Bouton de la minicarte";
+L["minimapButtonDesc"] = "Affiche le bouton NWB sur la minicarte ?";
+
 
 ---Logon Messages---
-L["logonHeaderDesc"] = "Logon Messages";
+L["logonHeaderDesc"] = "Messages à la connexion";
 
-L["logonPrintTitle"] = "Logon Timers";
-L["logonPrintDesc"] = "Show timers in the chat window when you log on, you can disable all logon msgs with this setting.";
+L["logonPrintTitle"] = "Minuteries";
+L["logonPrintDesc"] = "Affiche les minuteries dans la fenêtre de discussion lorsque vous vous connectez ; vous pouvez désactiver tous les messages de connexion avec ce paramètre.";
 
 L["logonRendTitle"] = "Rend";
-L["logonRendDesc"] = "Show Rend timer in the chat window when you log on.";
+L["logonRendDesc"] = "Affiche la minuterie de Rend dans la fenêtre de discussion lorsque vous vous connectez.";
 
 L["logonOnyTitle"] = "Onyxia";
-L["logonOnyDesc"] = "Show Onyxia timer in the chat window when you log on.";
+L["logonOnyDesc"] = "Affiche la minuterie d'Onyxia dans la fenêtre de discussion lorsque vous vous connectez.";
 
 L["logonNefTitle"] = "Nefarian";
-L["logonNefDesc"] = "Show Nefarian timer in the chat window when you log on.";
+L["logonNefDesc"] = "Affiche la minuterie de Nefarian dans la fenêtre de discussion lorsque vous vous connectez.";
 
-L["logonDmfSpawnTitle"] = "DMF Spawn";
-L["logonDmfSpawnDesc"] = "Show Darkmoon Faire spawn time, this will only show when there is less than 6 hours left until spawn or despawn.";
+L["logonDmfSpawnTitle"] = "Apparition de la foire";
+L["logonDmfSpawnDesc"] = "Affiche le temps d'apparition de la Foire de Sombrelune ; cela ne s'affichera que lorsqu'il restera moins de 6 heures avant l'apparition ou la disparition.";
 
-L["logonDmfBuffCooldownTitle"] = "DMF Buff Coooldown";
-L["logonDmfBuffCooldownDesc"] = "Show Darkmoon Faire buff 4 hour cooldown, this will only show when you have an ative cooldown and when DMF is up.";
+L["logonDmfBuffCooldownTitle"] = "Recharge de la foire";
+L["logonDmfBuffCooldownDesc"] = "Affiche le temps de recharge de 4 heures de le buff de la Foire de Sombrelune, cela ne s'affichera que lorsque vous aurez un temps de recharge actif et lorsque la Foire de Sombrelune sera active.";
+
 
 ---Chat Window Timer Warnings---
-L["chatWarningHeaderDesc"] = "Chat Window Timer Warnings";
+L["chatWarningHeaderDesc"] = "Annonces de minuterie dans la fenêtre de discussion";
 
 L["chat30Title"] = "30 Minutes";
-L["chat30Desc"] = "Print a msg in chat when 30 minutes left.";
+L["chat30Desc"] = "Affiche un message dans la discussion lorsqu'il reste 30 minutes.";
 
 L["chat15Title"] = "15 Minutes";
-L["chat15Desc"] = "Print a msg in chat when 15 minutes left.";
+L["chat15Desc"] = "Affiche un message dans la discussion lorsqu'il reste 15 minutes.";
 
 L["chat10Title"] = "10 Minutes";
-L["chat10Desc"] = "Print a msg in chat when 10 minutes left.";
+L["chat10Desc"] = "Affiche un message dans la discussion lorsqu'il reste 10 minutes.";
 
 L["chat5Title"] = "5 Minutes";
-L["chat5Desc"] = "Print a msg in chat when 5 minutes left.";
+L["chat5Desc"] = "Affiche un message dans la discussion lorsqu'il reste 5 minutes.";
 
 L["chat1Title"] = "1 Minute";
-L["chat1Desc"] = "Print a msg in chat when 1 minute left.";
+L["chat1Desc"] = "Affiche un message dans la discussion lorsqu'il reste 1 minute.";
 
-L["chatResetTitle"] = "Buff Has Reset";
-L["chatResetDesc"] = "Print a msg in chat when a buff has reset and a new one can be dropped.";
+L["chatResetTitle"] = "Buff réinitialisé";
+L["chatResetDesc"] = "Affiche un message dans la discussion lorsqu'un buff est réinitialisé";
 
-L["chatZanTitle"] = "Zandalar Buff Warning";
-L["chatZanDesc"] = "Print a msg in chat 30 seconds before Zandalar buff will drop when the NPC starts yelling.";
+L["chatZanTitle"] = "Buff Zandalar";
+L["chatZanDesc"] = "Affiche un message dans la discussion 30 secondes avant le début du buff Zandalar lorsque le PNJ commence à crier.";
 
 ---Middle Of The Screen Timer Warnings---
-L["middleWarningHeaderDesc"] = "Middle Of The Screen Timer Warnings";
+L["middleWarningHeaderDesc"] = "Annonces de minuterie au milieu de l'écran";
 
 L["middle30Title"] = "30 Minutes";
-L["middle30Desc"] = "Show a raid warning style msg in the middle of the screen when 30 minutes left.";
+L["middle30Desc"] = "Affiche un message de style d'alerte de raid au milieu de l'écran lorsqu'il reste 30 minutes.";
 
 L["middle15Title"] = "15 Minutes";
-L["middle15Desc"] = "Show a raid warning style msg in the middle of the screen when 15 minutes left.";
+L["middle15Desc"] = "Affiche un message de style d'alerte de raid au milieu de l'écran lorsqu'il reste 15 minutes.";
 
 L["middle10Title"] = "10 Minutes";
-L["middle10Desc"] = "Show a raid warning style msg in the middle of the screen when 10 minutes left.";
+L["middle10Desc"] = "Affiche un message de style d'alerte de raid au milieu de l'écran lorsqu'il reste 10 minutes.";
 
 L["middle5Title"] = "5 Minutes";
-L["middle5Desc"] = "Show a raid warning style msg in the middle of the screen when 5 minutes left.";
+L["middle5Desc"] = "Affiche un message de style d'alerte de raid au milieu de l'écran lorsqu'il reste 5 minutes.";
 
 L["middle1Title"] = "1 Minute";
-L["middle1Desc"] = "Show a raid warning style msg in the middle of the screen when 1 minute left.";
+L["middle1Desc"] = "Affiche un message de style d'alerte de raid au milieu de l'écran lorsqu'il reste 1 minute.";
 
-L["middleResetTitle"] = "Buff Has Reset";
-L["middleResetDesc"] = "Show a raid warning style msg in the middle of the screen when a buff has reset and a new one can be dropped.";
+L["middleResetTitle"] = "Buff réinitialisé";
+L["middleResetDesc"] = "Affiche un message de style d'alerte de raid au milieu de l'écran lorsqu'un buff est réinitialisé";
 
-L["middleBuffWarningTitle"] = "Buff Drop Warning";
-L["middleBuffWarningDesc"] = "Show a raid warning style msg in the middle of the screen when someone hands in the head for any buff and the NPC yells a few seconds before the buff will drop.";
+L["middleBuffWarningTitle"] = "Annonce de buff";
+L["middleBuffWarningDesc"] = "Affiche un message de style d'alerte de raid au milieu de l'écran lorsque quelqu'un remet la tête et que le PNJ crie quelques secondes avant le début du buff.";
 
-L["middleHideCombatTitle"] = "Hide In Combat";
-L["middleHideCombatDesc"] = "Hide middle of the screen warnings in combat?";
+L["middleHideCombatTitle"] = "Cacher en combat";
+L["middleHideCombatDesc"] = "Cache les annonces au milieu de l'écran pendant le combat ?";
 
-L["middleHideRaidTitle"] = "Hide In Raid";
-L["middleHideRaidDesc"] = "Hide middle of the screen warnings in raid instances? (Doesn't hide in normal dungeons)";
+L["middleHideRaidTitle"] = "Cacher en raid";
+L["middleHideRaidDesc"] = "Cache les annonces au milieu de l'écran en raid ? (Ne se cache pas dans les donjons)";
+
 
 ---Guild Messages---
-L["guildWarningHeaderDesc"] = "Guild Messages";
+L["guildWarningHeaderDesc"] = "Messages de guilde";
 
 L["guild10Title"] = "10 Minutes";
-L["guild10Desc"] = "Send a message to guild chat when 10 minutes left.";
+L["guild10Desc"] = "Envoie un message dans le canal de la guilde lorsqu'il reste 10 minutes.";
 
 L["guild1Title"] = "1 Minute";
-L["guild1Desc"] = "Send a message to guild chat when 1 minute left.";
+L["guild1Desc"] = "Envoie un message dans le canal de la guilde lorsqu'il reste 1 minute.";
 
-L["guildNpcDialogueTitle"] = "NPC Dialogue Started";
-L["guildNpcDialogueDesc"] = "Send a message to guild when someone hands in a head and the NPC first yells and you still have time to relog if fast?";
+L["guildNpcDialogueTitle"] = "Dialogue avec PNJ";
+L["guildNpcDialogueDesc"] = "Envoie un message à la guilde lorsque quelqu'un remet une tête et que le PNJ crie d'abord et que vous avez encore le temps de vous reconnecter si vous êtes rapide.";
 
-L["guildBuffDroppedTitle"] = "New Buff Dropped";
-L["guildBuffDroppedDesc"] = "Send a message to guild when a new buff has been dropped? This msg is sent after the NPC is finished yelling and you get the actual buff a few seconds later. (6 seconds after first yell for rend, 14 seconds for ony, 15 seconds for nef)";
+L["guildBuffDroppedTitle"] = "Nouveau buff";
+L["guildBuffDroppedDesc"] = "Envoie un message à la guilde lorsque qu'un nouveau buff est commencé. Ce message est envoyé après que le PNJ ait fini de crier et que vous obtenez le buff réel quelques secondes plus tard. (6 secondes après le premier cri pour Rend, 14 secondes pour Onyxia, 15 secondes pour Nefarian)";
 
-L["guildZanDialogueTitle"] = "Zandalar Buff Warning";
-L["guildZanDialogueDesc"] = "Send a message to guild when Spirit of Zandalar buff is about to drop? (If you want no guild msgs at all for this buff then everyone in guild needs to disable this).";
+L["guildZanDialogueTitle"] = "Buff Zandalar";
+L["guildZanDialogueDesc"] = "Envoie un message à la guilde lorsque le buff Esprit de Zandalar est sur le point de commencer. (Si vous ne voulez aucun message de guilde pour ce buff, alors tous dans la guilde doivent le désactiver).";
 
-L["guildNpcKilledTitle"] = "NPC Was Killed";
-L["guildNpcKilledDesc"] = "Send a message to guild when one of the buff NPC's were killed in Orgrimmar or Stormwind? (mind control reset).";
+L["guildNpcKilledTitle"] = "PNJ tué";
+L["guildNpcKilledDesc"] = "Envoie un message à la guilde lorsque l'un des PNJ a été tué à Orgrimmar ou Stormwind? (réinitialisation de contrôle mental).";
 
-L["guildCommandTitle"] = "Guild Commands";
-L["guildCommandDesc"] = "Reply with timer info to !wb and !dmf commands in guild chat? You should probably leave this enabled to help your guild, if you really want to disable all guild msgs and leave only this command then untick everything else in the guild sectionand don't tick the Disable All Guild Msgs at the top.";
+L["guildCommandTitle"] = "Commandes";
+L["guildCommandDesc"] = "Répond-il avec des informations de minuterie aux commandes !wb et !dmf dans la discussion de guilde? Vous devriez probablement laisser cela activé pour aider votre guilde, si vous voulez vraiment désactiver tous les messages de guilde et laisser seulement cette commande, alors décochez tout le reste dans la section de la guilde et ne cochez pas Activer tous les messages de la guilde en haut.";
 
-L["disableAllGuildMsgsTitle"] = "Disable All Guild Msgs";
-L["disableAllGuildMsgsDesc"] = "Disable all guild messages including timers and when buffs drop? Note: You can disable all msgs one by one above and just leave certain things enabled to help out your guild if you rather.";
+L["disableAllGuildMsgsTitle"] = "Désactiver tout";
+L["disableAllGuildMsgsDesc"] = "Désactive tous les messages de guilde, y compris les minuteries et les notifications de drop de buff? Note: Vous pouvez désactiver tous les messages un par un ci-dessus et laisser simplement certaines choses activées pour aider votre guilde si vous préférez.";
+
 
 ---Songflowers---
-L["songflowersHeaderDesc"] = "Songflowers";
+L["songflowersHeaderDesc"] = "Fleurs-de-chant";
 
-L["guildSongflowerTitle"] = "Tell Guild When Picked";
-L["guildSongflowerDesc"] = "Tell your guild chat when you have picked a songflower with the time of next spawn?";
+L["guildSongflowerTitle"] = "Guilde";
+L["guildSongflowerDesc"] = "Informez votre discussion de guilde lorsque vous avez collecté une fleur-de-chant ?";
 
-L["mySongflowerOnlyTitle"] = "Only When I Pick";
-L["mySongflowerOnlyDesc"] = "Only record a new timer when I pick a songflower and not when others pick infront of me? This option is here just incase you have problems with false timers being set from other players. There's currently no way to tell if another players buff is new so a timer may trigger on rare occasions if the game loads the songflower buff on someone else when they logon infront of you beside a songflower.";
+L["mySongflowerOnlyTitle"] = "Collecter";
+L["mySongflowerOnlyDesc"] = "Enregistre un nouveau minuteur uniquement lorsque je collecte une fleur-de-chant et non lorsque d'autres en collectent devant moi ? Cette option est là au cas où vous auriez des problèmes avec de faux minuteurs définis par d'autres joueurs. Actuellement, il n'y a aucun moyen de savoir si le buff d'un autre joueur est nouveau, donc un minuteur peut être activé dans de rares occasions si le jeu charge le buff de la fleur-de-chant chez une autre personne lorsqu'elle se connecte devant vous près d'une fleur-de-chant.";
 
-L["syncFlowersAllTitle"] = "Sync Flowers With All";
-L["syncFlowersAllDesc"] = "Enable this to override the guild only data setting at the top of this config so you can share songflower data outside the guild but keep worldbuff data guild only still.";
+L["syncFlowersAllTitle"] = "Synchroniser";
+L["syncFlowersAllDesc"] = "Activez ceci pour remplacer la configuration de données de guilde unique en haut de cette configuration afin de pouvoir partager des données de fleur-de-chant en dehors de la guilde mais conserver uniquement les données de la guilde sur le buff mondial.";
 
-L["showNewFlowerTitle"] = "Show New SF Timers";
-L["showNewFlowerDesc"] = "This will show you in chat window when a new flower timer is found from another player not in your guild (guild msgs already show in guild chat when a flower is picked).";
+L["showNewFlowerTitle"] = "Nouvelles fleurs-de-chant";
+L["showNewFlowerDesc"] = "Cela vous montrera dans la fenêtre de discussion lorsqu'un nouveau minuteur de fleur-de-chant d'un autre joueur qui n'est pas dans votre guilde est trouvé (les messages de guilde sont déjà affichés dans la discussion de guilde lorsqu'une fleur est collectée).";
 
-L["showSongflowerWorldmapMarkersTitle"] = "Songflower Worldmap";
-L["showSongflowerWorldmapMarkersDesc"] = "Show songflower icons on the world map?";
+L["showSongflowerWorldmapMarkersTitle"] = "Fleur-de-chant sur la carte du monde";
+L["showSongflowerWorldmapMarkersDesc"] = "Affiche des icônes de fleur-de-chant sur la carte du monde ?";
 
-L["showSongflowerMinimapMarkersTitle"] = "Songflower Minimap";
-L["showSongflowerMinimapMarkersDesc"] = "Show songflower icons on the mini map?";
+L["showSongflowerMinimapMarkersTitle"] = "Fleur-de-chant sur la minicarte";
+L["showSongflowerMinimapMarkersDesc"] = "Affiche des icônes de fleur-de-chant sur la minicarte ?";
 
-L["showTuberWorldmapMarkersTitle"] = "Tuber Worldmap";
-L["showTuberWorldmapMarkersDesc"] = "Show Whipper Root Tuber icons on the world map?";
+L["showTuberWorldmapMarkersTitle"] = "Tubercule sur la carte du monde";
+L["showTuberWorldmapMarkersDesc"] = "Affiche des icônes de tubercule sur la carte du monde ?";
 
-L["showTuberMinimapMarkersTitle"] = "Tuber Minimap";
-L["showTuberMinimapMarkersDesc"] = "Show Whipper Root Tuber icons on the mini map?";
+L["showTuberMinimapMarkersTitle"] = "Tubercule sur la minicarte";
+L["showTuberMinimapMarkersDesc"] = "Affiche des icônes de tubercule sur la minicarte ?";
 
-L["showDragonWorldmapMarkersTitle"] = "Dragon Worldmap";
-L["showDragonWorldmapMarkersDesc"] = "Show Night Dragon's Breath icons on the world map?";
+L["showDragonWorldmapMarkersTitle"] = "Souffle de dragon sur la carte du monde";
+L["showDragonWorldmapMarkersDesc"] = "Affiche des icônes de souffle de dragon nocturne sur la carte du monde ?";
 
-L["showDragonMinimapMarkersTitle"] = "Dragon Minimap";
-L["showDragonMinimapMarkersDesc"] = "Show Night Dragon's Breath icons on the mini map?";
+L["showDragonMinimapMarkersTitle"] = "Souffle de dragon sur la minicarte";
+L["showDragonMinimapMarkersDesc"] = "Affiche des icônes de souffle de dragon nocturne sur la minicarte ?";
 
-L["showExpiredTimersTitle"] = "Show Expired Timers";
-L["showExpiredTimersDesc"] = "Show expired timers in Felwood? They will be shown in red text how long ago a timer expired, the default time is 5 minutes (people say songflowers stay cleansed for 5 minutes after spawn?).";
+L["showExpiredTimersTitle"] = "Expiré";
+L["showExpiredTimersDesc"] = "Affiche les minuteurs expirés à Gangrebois ? Ils seront affichés en texte rouge pour indiquer depuis combien de temps le minuteur a expiré, le délai par défaut est de 5 minutes (on dit que les fleurs-de-chant restent nettes pendant 5 minutes après leur apparition).";
 
-L["expiredTimersDurationTitle"] = "Expired Timers Duraton";
-L["expiredTimersDurationDesc"] = "How long should Felwood timers show for after expiring on the world map?";
+L["expiredTimersDurationTitle"] = "Durée";
+L["expiredTimersDurationDesc"] = "Combien de temps devraient durer les minuteurs de Gangrebois après leur expiration sur la carte du monde ?";
+
 
 ---Darkmoon Faire---
-L["dmfHeaderDesc"] = "Darkmoon Faire";
+L["dmfHeaderDesc"] = "Foire de Sombrelune";
 
-L["dmfTextDesc"] = "Your DMF damage buff cooldown will also show on the Darkmoon Faire map icon when you hover it, if you have a cooldown and DMF is currently up.";
+L["dmfTextDesc"] = "Le temps de recharge de le buff des dégâts de la Foire de Sombrelune sera également affiché sur l'icône de la carte de la Foire de Sombrelune lorsque vous survolerez celle-ci, si vous avez un temps de recharge et que la Foire est actuellement active.";
 
-L["showDmfWbTitle"] = "Show DMF with /wb";
-L["showDmfWbDesc"] = "Show DMF spawn timer together with /wb command?";
+L["showDmfWbTitle"] = "Afficher avec /wb";
+L["showDmfWbDesc"] = "Affiche le minuteur d'apparition de la Foire de Sombrelune avec la commande /wb ?";
 
-L["showDmfBuffWbTitle"] = "DMF Buff Cooldown /wb";
-L["showDmfBuffWbDesc"] = "Show your DMF buff cooldown timer together with /wb command? Only shows when you are on an active cooldown and DMF is currently up.";
+L["showDmfBuffWbTitle"] = "Recharge /wb";
+L["showDmfBuffWbDesc"] = "Affiche le minuteur de recharge de le buff de la Foire de Sombrelune avec la commande /wb ? Ne s'affiche que lorsque vous êtes en recharge active et que la Foire est actuellement active.";
 
-L["showDmfMapTitle"] = "Show Map Marker";
-L["showDmfMapDesc"] = "Show DMF map marker with spawn timer and buff cooldown info in Mulgore and Elwynn Forest world maps (whichever is next spawn). You can also type /dmf map to open the world map strait to this marker.";
+L["showDmfMapTitle"] = "Marqueur de carte";
+L["showDmfMapDesc"] = "Affiche le marqueur de carte de la Foire avec minuteur d'apparition et informations de recharge des buffs sur les cartes de Mulgore et de la forêt d'Elwynn (ce qui suit). Vous pouvez également écrire /dmf map pour ouvrir la carte vers ce marqueur.";
+
 
 ---Guild Chat Filter---
-L["guildChatFilterHeaderDesc"] = "Guild Chat Filter";
+L["guildChatFilterHeaderDesc"] = "Filtre de discussion de guilde";
 
-L["guildChatFilterTextDesc"] = "This will block any guild msgs from this addon you choose so you don't see them. It will stop you from seeing your own msgs and msgs from other addon users in guild chat.";
+L["guildChatFilterTextDesc"] = "Cela bloquera tout message de guilde provenant de cet add-on que vous choisissez de ne pas voir. Cela empêchera que vous voyiez vos propres messages et ceux d'autres utilisateurs de l'add-on dans la discussion de guilde.";
 
-L["filterYellsTitle"] = "Filter Buff Warning";
-L["filterYellsDesc"] = "Filter the msg when a buff is about to drop in a few seconds (Onyxia will drop in 14 seconds).";
+L["filterYellsTitle"] = "Annonce";
+L["filterYellsDesc"] = "Filtre le message lorsque qu'un buff est sur le point de disparaître dans quelques secondes (Onyxia va disparaître dans 14 secondes).";
 
-L["filterDropsTitle"] = "Filter Buff Dropped";
-L["filterDropsDesc"] = "Filter the msg when a buff has dropped (Rallying Cry of the Dragonslayer (Onyxia) has dropped).";
+L["filterDropsTitle"] = "Buff disparu";
+L["filterDropsDesc"] = "Filtre le message lorsqu'un buff a disparu (L'appel du tueur de dragons (Onyxia) a disparu).";
 
-L["filterTimersTitle"] = "Filter Timer Msgs";
-L["filterTimersDesc"] = "Filter timer msgs (Onyxia resets in 1 minute).";
+L["filterTimersTitle"] = "Minuteur";
+L["filterTimersDesc"] = "Filtre les messages du minuteur (Onyxia se réinitialise dans 1 minute).";
 
-L["filterCommandTitle"] = "Filter !wb command";
-L["filterCommandDesc"] = "Filter the !wb and !dmf in guild chat when typed by players.";
+L["filterCommandTitle"] = "Commande !wb";
+L["filterCommandDesc"] = "Filtre !wb et !dmf dans la discussion de guilde lorsque les joueurs les utilisent.";
 
-L["filterCommandResponseTitle"] = "Filter !wb reply";
-L["filterCommandResponseDesc"] = "Filter the reply msg with timers this addon does when !wb or !!dmf is used.";
+L["filterCommandResponseTitle"] = "Réponse !wb";
+L["filterCommandResponseDesc"] = "Filtre le message de réponse avec les minuteurs que cet add-on génère lors de l'utilisation de !wb ou !dmf.";
 
-L["filterSongflowersTitle"] = "Filter Songflowers";
-L["filterSongflowersDesc"] = "Filter the msg when a songflower is picked.";
+L["filterSongflowersTitle"] = "Fleur-de-chant";
+L["filterSongflowersDesc"] = "Filtre le message lorsque vous collectez une fleur-de-chant.";
 
-L["filterNpcKilledTitle"] = "Filter NPC Killed";
-L["filterNpcKilledDesc"] = "Filter the msg when a buff hand in NPC is killed in your city.";
+L["filterNpcKilledTitle"] = "PNJ tué";
+L["filterNpcKilledDesc"] = "Filtre le message lorsque vous remettez un objet à un PNJ dans votre ville.";
+
 
 ---Sounds---
-L["soundsHeaderDesc"] = "Sounds";
+L["soundsHeaderDesc"] = "Sons";
 
-L["soundsTextDesc"] = "Set sound to \"None\" to disable.";
+L["soundsTextDesc"] = "Définissez le son sur \"Aucun\" pour le désactiver.";
 
-L["disableAllSoundsTitle"] = "Disable All Sounds";
-L["disableAllSoundsDesc"] = "Disable all sounds from this addon.";
+L["disableAllSoundsTitle"] = "Désactiver tous les sons";
+L["disableAllSoundsDesc"] = "Désactive tous les sons de cet add-on.";
 
-L["extraSoundOptionsTitle"] = "Extra Sound Options";
-L["extraSoundOptionsDesc"] = "Enable this to display all the sounds from all your addons at once in the dropdown lists here.";
+L["extraSoundOptionsTitle"] = "Options supplémentaires de son";
+L["extraSoundOptionsDesc"] = "Activez ceci pour afficher tous les sons de tous vos add-ons en même temps dans les listes déroulantes ici.";
 
-L["soundOnlyInCityTitle"] = "Only In City";
-L["soundOnlyInCityDesc"] = "Only play buff sounds when you are in the main city where the buffs drop (Stranglethorn Vale included for Zandalar buff).";
+L["soundOnlyInCityTitle"] = "Seulement en ville";
+L["soundOnlyInCityDesc"] = "Ne joue que des sons de buff lorsque vous êtes dans la principale ville où les buffs tombent (Vendetta inclus pour le buff de Zandalar).";
 
-L["soundsDisableInInstancesTitle"] = "Disable In Instances";
-L["soundsDisableInInstancesDesc"] = "Disable sounds while in raids and instances.";
+L["soundsDisableInInstancesTitle"] = "Instances";
+L["soundsDisableInInstancesDesc"] = "Désactive les sons lorsque vous êtes dans des raids ou des instances.";
 
-L["soundsFirstYellTitle"] = "Buff Coming";
-L["soundsFirstYellDesc"] = "Sound to play when head is handed in and you have a few seconds before buff will drop (First NPC Yell).";
+L["soundsFirstYellTitle"] = "Buff entrant";
+L["soundsFirstYellDesc"] = "Joue un son lorsque la tête est livrée et que vous avez quelques secondes avant que le buff ne commence (premier cri du PNJ).";
 
-L["soundsOneMinuteTitle"] = "One Minute Warning";
-L["soundsOneMinuteDesc"] = "Sound to play for 1 minute left timer warning.";
+L["soundsOneMinuteTitle"] = "Annonce d'une minute";
+L["soundsOneMinuteDesc"] = "Joue un son lors de l'annonce de la minute restante dans le minuteur.";
 
-L["soundsRendDropTitle"] = "Rend Buff Gained";
-L["soundsRendDropDesc"] = "Sound to play for Rend buff drops and you get the buff.";
+L["soundsRendDropTitle"] = "Buff de Rend";
+L["soundsRendDropDesc"] = "Son à jouer pour Rend lorsque vous obtenez le buff.";
 
-L["soundsOnyDropTitle"] = "Ony Buff Gained";
-L["soundsOnyDropDesc"] = "Sound to play for Onyxia buff drops and you get the buff.";
+L["soundsOnyDropTitle"] = "Buff d'Onyxia";
+L["soundsOnyDropDesc"] = "Son à jouer pour Onyxia lorsque vous obtenez le buff.";
 
-L["soundsNefDropTitle"] = "Nef Buff Gained";
-L["soundsNefDropDesc"] = "Sound to play for Nefarian buff drops and you get the buff.";
+L["soundsNefDropTitle"] = "Buff de Nefarian";
+L["soundsNefDropDesc"] = "Son à jouer pour Nefarian lorsque vous obtenez le buff.";
 
-L["soundsZanDropTitle"] = "Zandalar Buff Gained";
-L["soundsZanDropDesc"] = "Sound to play for Zandalar buff drops and you get the buff.";
+L["soundsZanDropTitle"] = "Buff de Zandalar";
+L["soundsZanDropDesc"] = "Son à jouer pour Zandalar lorsque vous obtenez le buff.";
+
 
 ---Flash When Minimized---
-L["flashHeaderDesc"] = "Flash When Minimized";
+L["flashHeaderDesc"] = "Clignoter lorsqu'il est réduit";
 
-L["flashOneMinTitle"] = "Flash One Minute";
-L["flashOneMinDesc"] = "Flash the wow client when you have it minimized and 1 minute is left on timer?";
+L["flashOneMinTitle"] = "Une minute";
+L["flashOneMinDesc"] = "Fait clignoter le client WoW lorsque vous l'avez réduit et qu'il reste 1 minute dans le minuteur.";
 
-L["flashFirstYellTitle"] = "Flash NPC Yell";
-L["flashFirstYellDesc"] = "Flash the wow client when you have it minimized and the NPC's yells a few seconds before buff drops?";
+L["flashFirstYellTitle"] = "Cri du PNJ";
+L["flashFirstYellDesc"] = "Fait clignoter le client WoW lorsque vous l'avez réduit et que le PNJ crie quelques secondes avant que le buff ne tombe.";
 
-L["flashFirstYellZanTitle"] = "Flash Zandalar";
-L["flashFirstYellZanDesc"] = "Flash the wow client when you have it minimized and the Zandalar buff is about to go out?";
+L["flashFirstYellZanTitle"] = "Zandalar";
+L["flashFirstYellZanDesc"] = "Fait clignoter le client WoW lorsque vous l'avez réduit et que le buff de Zandalar est sur le point de tomber.";
+
 
 ---Faction/realm specific options---
 
-L["allianceEnableRendTitle"] = "Enable Alliance Rend";
-L["allianceEnableRendDesc"] = "Enable this to track rend as Alliance, for guilds that mind control to get rend buff. If you use this then everyone in the guild with the addon should enable it or guild chat msgs may not work properly (personal timer msgs will still work).";
+L["allianceEnableRendTitle"] = "Rend pour l'Alliance";
+L["allianceEnableRendDesc"] = "Activez ceci pour suivre Rend en tant qu'Alliance, afin que les guildes ayant le contrôle mental puissent bénéficier de Rend. Si vous utilisez cela, alors tout le monde dans la guilde avec l'add-on devrait l'activer ou les messages de discussion de guilde pourraient ne pas fonctionner correctement (les messages de minuterie personnelle continueront de fonctionner).";
 
-L["minimapLayerFrameTitle"] = "Show Minimap Layer";
-L["minimapLayerFrameDesc"] = "Show the little frame on the minimap with your current layer while in a capital city?";
+L["minimapLayerFrameTitle"] = "Couche sur la minicarte";
+L["minimapLayerFrameDesc"] = "Affiche le cadre sur la minicarte avec votre couche actuelle ?";
 
-L["minimapLayerFrameResetTitle"] = "Reset Minimap Layer";
-L["minimapLayerFrameResetDesc"] = "Reset minimap layer frame back to default position (hold shift to drag the minimap frame).";
+L["minimapLayerFrameResetTitle"] = "Réinitialiser la minicarte";
+L["minimapLayerFrameResetDesc"] = "Réinitialise le cadre de la couche de la minicarte à sa position par défaut (maintenez la touche Maj enfoncée pour déplacer le cadre de la minicarte).";
+
 
 ---Dispels---
-L["dispelsHeaderDesc"] = "Dispels";
+L["dispelsHeaderDesc"] = "Dissipations";
 
-L["dispelsMineTitle"] = "My Buffs";
-L["dispelsMineDesc"] = "Show in chat my buffs being dispelled? This shows who dispelled you and what buff.";
+L["dispelsMineTitle"] = "Mes buffs";
+L["dispelsMineDesc"] = "Affiche dans la discussion lorsque mes buffs sont dissipés ? Cela montre qui vous a dissipé et quel buff.";
 
-L["dispelsMineWBOnlyTitle"] = "My Worldbuffs Only";
-L["dispelsMineWBOnlyDesc"] = "Only show my worldbuffs being dispelled and not any other kind of buffs.";
+L["dispelsMineWBOnlyTitle"] = "Buff mondial";
+L["dispelsMineWBOnlyDesc"] = "Affiche uniquement que mes buffs mondiaux sont dissipés et aucun autre type de buff.";
 
-L["soundsDispelsMineTitle"] = "My Buffs Sound";
-L["soundsDispelsMineDesc"] = "Which sound to play for my buffs being dispelled.";
+L["soundsDispelsMineTitle"] = "Son";
+L["soundsDispelsMineDesc"] = "Quel son jouer lorsque mes buffs sont dissipés.";
 
-L["dispelsAllTitle"] = "Other Players Buffs";
-L["dispelsAllDesc"] = "Show in chat everyone's buffs being dispelled around me? This shows who dispelled anyone close to you and what buff.";
+L["dispelsAllTitle"] = "Buffs des autres";
+L["dispelsAllDesc"] = "Affiche dans la discussion les buffs de tous ceux qui sont dissipés autour de moi ? Cela montre qui a dissipé quelqu'un près de vous et quel buff.";
 
-L["dispelsAllWBOnlyTitle"] = "Others Worldbuffs Only";
-L["dispelsAllWBOnlyDesc"] = "Only show worldbuffs on everyone else being dispelled and not any other kind of buffs.";
+L["dispelsAllWBOnlyTitle"] = "Buff mondial des autres";
+L["dispelsAllWBOnlyDesc"] = "Affiche uniquement les buffs mondiaux lorsque tous les autres sont dissipés et aucun autre type de buff.";
 
-L["soundsDispelsAllTitle"] = "Others Players Buffs Sound";
-L["soundsDispelsAllDesc"] = "Which sound to play for other players buffs being dispelled.";
+L["soundsDispelsAllTitle"] = "Son pour les autres joueurs";
+L["soundsDispelsAllDesc"] = "Quel son jouer pour les buffs dissipés des autres joueurs.";
 
-L["middleHideBattlegroundsTitle"] = "Hide In Battlegrounds";
-L["middleHideBattlegroundsDesc"] = "Hide middle of the screen warnings in Battlegrounds?";
+L["middleHideBattlegroundsTitle"] = "Champs de bataille";
+L["middleHideBattlegroundsDesc"] = "Cache les annonces au milieu de l'écran dans les champs de bataille ?";
 
-L["soundsDisableInBattlegroundsTitle"] = "Disable In Battleground";
-L["soundsDisableInBattlegroundsDesc"] = "Disable sounds while in Battlegrounds.";
+L["soundsDisableInBattlegroundsTitle"] = "Champs de bataille";
+L["soundsDisableInBattlegroundsDesc"] = "Désactive les sons lorsque vous êtes dans les champs de bataille.";
 
-L["autoBuffsHeaderDesc"] = "Auto Get Buffs From NPCs";
 
-L["autoDmfBuffTitle"] = "Auto Get DMF Buff";
-L["autoDmfBuffDesc"] = "Do you want this addon to auto select a Darkmoon Faire buff for you when you speak to the Sayge NPC? Make sure you pick which buff you want also.";
+L["autoBuffsHeaderDesc"] = "Sélection automatique";
 
-L["autoDmfBuffTypeTitle"] = "Which DMF Buff";
-L["autoDmfBuffTypeDesc"] = "Which Darkmoon Faire buff do you want this addon to auto select for you when you speak to Sayge?";
+L["autoDmfBuffTitle"] = "Sélectionner le buff";
+L["autoDmfBuffDesc"] = "Voulez-vous que cet add-on sélectionne automatiquement un buff de la Foire de Sombrelune lorsque vous parlez au PNJ Sayge ? Assurez-vous également de choisir quel buff vous voulez.";
 
-L["autoDireMaulBuffTitle"] = "Dire Maul Buffs";
-L["autoDireMaulBuffDesc"] = "Do you want this addon to auto get buffs from the NPC's in Dire Maul when you talk to them? (Also auto gets King buff).";
+L["autoDmfBuffTypeTitle"] = "Quel buff";
+L["autoDmfBuffTypeDesc"] = "Quel buff de la Foire de Sombrelune voulez-vous que cet add-on sélectionne automatiquement lorsque vous parlez à Sayge ?";
 
-L["autoBwlPortalTitle"] = "Auto BWL Portal";
-L["autoBwlPortalDesc"] = "Do you want this addon to auto use the Blackwing Lair portal when you click the orb?";
+L["autoDireMaulBuffTitle"] = "Hache-tripes";
+L["autoDireMaulBuffDesc"] = "Voulez-vous que cet add-on obtienne automatiquement des buffs des PNJ dans Hache-tripes lorsque vous leur parlez ? (Il obtient également le buff du Roi).";
 
-L["showBuffStatsTitle"] = "Show Buff Stats";
-L["showBuffStatsDesc"] = "Show how many times you've gotten each world buff in the /buffs frame? Ony/Nef/Rend/Zand buffs have been recording since the buffs frame was put in, but the rest of the buffs only started recording now in version 1.65";
+L["autoBwlPortalTitle"] = "Portail de BWL";
+L["autoBwlPortalDesc"] = "Voulez-vous que cet add-on utilise automatiquement le portail du Repaire de l'Aile noire lorsque vous cliquez sur l'orbe ?";
 
-L["buffResetButtonTooltip"] = "Tout les buffs enregistrés seront effacés.\nLes statistiques ne seront pas affectées."; --Reset button tooltip for the /buffs frame.
-L["time"] = "(%s time)"; --Singular - This shows how many timers you got a buff. Example: (1 time)
-L["times"] = "(%s times)"; --Plural - This shows how many timers you got a buff. Example: (5 times)
+L["showBuffStatsTitle"] = "Statistiques";
+L["showBuffStatsDesc"] = "Affiche combien de fois vous avez obtenu chaque buff dans la fenêtre /buffs ? Les buffs d'Ony/Nef/Rend/Zand ont été enregistrés depuis l'installation de la fenêtre des buffs, mais le reste des buffs ont commencé à être enregistrés maintenant dans la version 1.65.";
+
+L["buffResetButtonTooltip"] = "Cela réinitialisera tous les buffs.\nLes données du comptage des buffs ne seront pas réinitialisées.";
+ --Reset button tooltip for the /buffs frame.
+L["time"] = "(%s fois)"; --Singular - This shows how many timers you got a buff. Example: (1 time)
+L["times"] = "(%s fois)"; --Plural - This shows how many timers you got a buff. Example: (5 times)
+L["flowerWarning"] = "Cantaflor a été cueilli dans un royaume avec des minuteries de Cantaflor en couches activées, mais vous n'avez pointé aucun PNJ depuis votre arrivée à Bosquet des Chants Éternels, donc aucune minuterie n'a pu être enregistrée.";
+
+L["mmColorTitle"] = "Couleur de la couche sur la minicarte";
+L["mmColorDesc"] = "Quelle couleur doit avoir le texte de la couche sur la minicarte ? (Couche 1)";
+
+L["layerHasBeenDisabled"] = "La couche %s a été désactivée. Cette couche est toujours dans la base de données mais sera ignorée jusqu'à ce qu'elle soit réactivée ou qu'elle soit à nouveau détectée comme valide.";
+L["layerHasBeenEnabled"] = "La couche %s a été activée. Elle est désormais incluse dans les calculs de couches et de minuteries.";
+L["layerDoesNotExist"] = "L'ID de la couche %s n'existe pas dans la base de données.";
+L["enableLayerButton"] = "Activer";
+L["disableLayerButton"] = "Désactiver";
+L["enableLayerButtonTooltip"] = "Cliquez pour réactiver cette couche. Elle sera réintégrée dans les minuteries et les calculs de couches.";
+L["disableLayerButtonTooltip"] = "Cliquez pour désactiver cette couche. L'add-on l'ignorera et la supprimera plus tard après un redémarrage du serveur.";
+
+L["minimapLayerHoverTitle"] = "Survol de la couche sur la minicarte";
+L["minimapLayerHoverDesc"] = "Affiche uniquement le cadre numérique de la couche sur la minicarte lorsque vous survolez la minicarte avec votre souris.";
 
 L["Blackrock Mountain"] = "Mont Blackrock";
 
-L["onyxiaNpcRespawnHorde"] = "Le PNJ Onyxia (Runthak) va réapparaître aléatoirement dans les deux prochaines minutes.";
-L["nefarianNpcRespawnHorde"] = "Le PNJ Nefarian (Saurfang) va réapparaître aléatoirement dans les deux prochaines minutes.";
-L["onyxiaNpcRespawnAlliance"] = "Le PNJ Onyxia (Mattingly) va réapparaître aléatoirement dans les deux prochaines minutes.";
-L["nefarianNpcRespawnAlliance"] = "Le PNJ Nefarian (Afrasiabi) va réapparaître aléatoirement dans les deux prochaines minutes.";
+L["soundsNpcKilledTitle"] = "PNJ tué";
+L["soundsNpcKilledDesc"] = "Son joué lorsqu'un PNJ donnant un buff est tué pour réinitialiser une minuterie.";
+
+L["autoDmfBuffCharsText"] = "Configuration des buffs pour chaque personnage :";
+
+L["middleNpcKilledTitle"] = "PNJ tué";
+L["middleNpcKilledDesc"] = "Affiche un message de style d'alerte de raid au milieu de l'écran lorsqu'un PNJ est tué pour réinitialiser le buff.";
+
+L["chatNpcKilledTitle"] = "PNJ tué";
+L["chatNpcKilledDesc"] = "Affiche un message dans la discussion lorsqu'un PNJ est tué pour réinitialiser le buff.";
+
+
+L["onyxiaNpcRespawnHorde"] = "Le PNJ d'Onyxia (Runthak) réapparaîtra à un moment aléatoire dans les 2 prochaines minutes.";
+L["nefarianNpcRespawnHorde"] = "Le PNJ de Nefarian (Colmillosauro) réapparaîtra à un moment aléatoire dans les 2 prochaines minutes.";
+L["onyxiaNpcRespawnAlliance"] = "Le PNJ d'Onyxia (Mattingly) réapparaîtra à un moment aléatoire dans les 2 prochaines minutes.";
+L["nefarianNpcRespawnAlliance"] = "Le PNJ de Nefarian (Afrasiabi) réapparaîtra à un moment aléatoire dans les 2 prochaines minutes.";
 
 L["onyxiaNpcKilledHordeWithTimer2"] = "Le PNJ d'Onyxia (Runthak) a été tué il y a %s, réapparition dans %s.";
 L["nefarianNpcKilledHordeWithTimer2"] = "Le PNJ de Nefarian (Saurfang) a été tué il y a %s, réapparition dans %s.";
 L["onyxiaNpcKilledAllianceWithTimer2"] = "Le PNJ d'Onyxia (Mattingly) a été tué il y a %s, réapparition dans %s.";
 L["nefarianNpcKilledAllianceWithTimer2"] = "Le PNJ de Nefarian (Afrasiabi) a été tué il y a %s, réapparition dans %s.";
 
-L["soundsNpcKilledTitle"] = "PNJ tué";
-L["soundsNpcKilledDesc"] = "Son à jouter lorsqu'un PNJ permettant un buff est tué afin de reinitialiser le timer.";
+L["flashNpcKilledTitle"] = "Clignoter";
+L["flashNpcKilledDesc"] = "Est-ce que le client WoW clignote lorsqu'un PNJ conférant un buff est tué ?";
 
-L["autoDmfBuffCharsText"] = "Configuration par personnage pour la foire de sombrelune:";
+L["trimDataHeaderDesc"] = "Nettoyer les données";
 
-L["middleNpcKilledTitle"] = "PNJ tué";
-L["middleNpcKilledDesc"] = "Afficher un message ressemblant à un avertissement raid au milieu de l'écran quand un NPC Ony ou Nefa est tué afin réinitialiser le timer.";
+L["trimDataBelowLevelTitle"] = "Niveau maximal à supprimer";
+L["trimDataBelowLevelDesc"] = "Sélectionnez le niveau maximal des personnages à supprimer de la base de données ; tous les personnages de ce niveau et inférieurs seront supprimés.";
 
-L["chatNpcKilledTitle"] = "PNJ tué";
-L["chatNpcKilledDesc"] = "Afficher un message dans la fenêtre de discussion lorsqu'un PNJ Ony ou Nefa est tué afin de réinitialiser le timer.";
+L["trimDataBelowLevelButtonTitle"] = "Supprimer les personnages";
+L["trimDataBelowLevelButtonDesc"] = "Cliquez sur ce bouton pour supprimer tous les personnages avec le niveau sélectionné et inférieur de cette base de données additionnelle. Note : Cela supprime définitivement les données de comptage des buffs.";
 
-L["flashNpcKilledTitle"] = "Flash PNJ tué";
-L["flashNpcKilledDesc"] = "Faire clignoter le client du jeu quand un PNJ buff est tué?";
+L["trimDataTextDesc"] = "Supprimer plusieurs personnages de la base de données des buffs :";
+L["trimDataText2Desc"] = "Supprimer un personnage de la base de données des buffs :";
 
-L["trimDataHeaderDesc"] = "Nettoyer";
+L["trimDataCharInputTitle"] = "Supprimer une entrée de personnage";
+L["trimDataCharInputDesc"] = "Saisissez ici un personnage à supprimer, formaté comme Nom-Royaume (en distinguant majuscules et minuscules). Note : Cela supprime définitivement les données de comptage des buffs.";
 
-L["flashNpcKilledTitle"] = "Flash NPC Killed";
-L["flashNpcKilledDesc"] = "Flash the wow client when a buff NPC is killed?";
+L["trimDataBelowLevelButtonConfirm"] = "Êtes-vous sûr de vouloir supprimer tous les personnages en dessous du niveau %s de la base de données ?";
+L["trimDataCharInputConfirm"] = "Êtes-vous sûr de vouloir supprimer ce personnage %s de la base de données ?";
 
-L["trimDataBelowLevelTitle"] = "Supprimer sous le niveau";
-L["trimDataBelowLevelDesc"] = "Selectionner le niveau auquel et sous lequel les personnages seront supprimé de la base de données.";
+L["trimDataMsg1"] = "Les enregistrements des buffs ont été réinitialisés.";
+L["trimDataMsg2"] = "Suppression de tous les personnages en dessous du niveau %s.";
+L["trimDataMsg3"] = "Supprimé : %s.";
+L["trimDataMsg4"] = "Terminé, aucun personnage trouvé.";
+L["trimDataMsg5"] = "Terminé, %s personnages ont été supprimés.";
+L["trimDataMsg6"] = "Entrez un nom de personnage valide à supprimer de la base de données.";
+L["trimDataMsg7"] = "Le nom de ce personnage %s ne comprend pas de royaume, entrez Nom-Royaume.";
+L["trimDataMsg8"] = "Erreur lors de la suppression de %s de la base de données, personnage non trouvé (le nom est sensible à la casse).";
+L["trimDataMsg9"] = "%s a été supprimé de la base de données.";
 
-L["trimDataBelowLevelButtonTitle"] = "Suppression des personnages";
-L["trimDataBelowLevelButtonDesc"] = "Cette action supprimera tout les personnages du niveau selectionné et inférieurs de la base de donnée de cet addon. Note: Cette action supprime les statistiques de buff définitivement.";
-
-L["trimDataTextDesc"] = "Supprimer des personnages de la basse de donnée:";
-L["trimDataText2Desc"] = "Supprimer un personnage de la base de donnée:";
-
-L["trimDataCharInputTitle"] = "Champ de suppression individuelle de personnage";
-L["trimDataCharInputDesc"] = "Saisir un nom de personnage à supprimer au formar Nom-Royaume (Sensible à la casse). Note: Cette action supprime les statistiques de buff définitivement.";
-
-L["trimDataBelowLevelButtonConfirm"] = "Êtes vous certains de vouloir supprimer tout les personnages dont le niveau est inférieur ou égal à %s de la base de données ?";
-L["trimDataCharInputConfirm"] = "Êtes vous certain de vouloir supprimer le personnage %s de la base de données ?";
-
-L["trimDataMsg1"] = "Les buffs des personnages ont été reinitialisés."
-L["trimDataMsg2"] = "Supprimer tout les personnages dont le niveau est inférieur ou égal à %s.";
-L["trimDataMsg3"] = "Effacé: %s.";
-L["trimDataMsg4"] = "Effectué, aucun personnage n'as été trouvé.";
-L["trimDataMsg5"] = "Effectué, personnage %s éffacé.";
-L["trimDataMsg6"] = "Merci de saisir un nom de personnage valide au format Nom-Royaume pour la suppression de ses données.";
-L["trimDataMsg7"] = "Le nom %s n'inclus pas le royaume, merci de saisir un personnage au format Nom-Royaume.";
-L["trimDataMsg8"] = "Erreur lors de la suppression du personnage %s, personnage non trouvé (Le nom est sensible à la casse).";
-L["trimDataMsg9"] = "%s à été éffacé de la base de données.";
-
-L["serverTime"] = "Heure du royaume";
+L["serverTime"] = "heure du royaume";
 L["serverTimeShort"] = "hr";
 
-L["showUnbuffedAltsTitle"] = "Afficher les rerolls sans buff";
-L["showUnbuffedAltsDesc"] = "Afficher les rerolls sans buff dans la fenêtre /buffs ? Cela vous permet de voir les rerolls non buffé si vous le souhaitez.";
+L["showUnbuffedAltsTitle"] = "Alts non buffés";
+L["showUnbuffedAltsDesc"] = "Affiche les alts non buffés dans la fenêtre des buffs ? Cela vous permet de voir quels personnages n'ont pas des buffs si vous le souhaitez.";
+
+L["timerWindowWidthTitle"] = "Largeur de la fenêtre de minuterie";
+L["timerWindowWidthDesc"] = "Quelle doit être la largeur de la fenêtre de minuterie ?";
+
+L["timerWindowHeightTitle"] = "Hauteur de la fenêtre de minuterie";
+L["timerWindowHeightDesc"] = "Quelle doit être la hauteur de la fenêtre de minuterie ?";
+
+L["buffWindowWidthTitle"] = "Largeur de la fenêtre des buffs";
+L["buffWindowWidthDesc"] = "Quelle doit être la largeur de la fenêtre des buffs ?";
+
+L["buffWindowHeightTitle"] = "Hauteur de la fenêtre des buffs";
+L["buffWindowHeightDesc"] = "Quelle doit être la hauteur de la fenêtre des buffs ?";
+
+L["dmfSettingsListTitle"] = "Liste des buffs";
+L["dmfSettingsListDesc"] = "Cliquez ici pour afficher une liste de vos paramètres de type des buffs de la Foire de Sombrelune pour vos alts.";
+
+L["ignoreKillDataTitle"] = "Ignorer les données de PNJ";
+L["ignoreKillDataDesc"] = "Ignore toutes les données de PNJ tués afin qu'elles ne soient pas enregistrées.";
+
+L["noOverwriteTitle"] = "Ne pas écraser";
+L["noOverwriteDesc"] = "Vous pouvez activer ceci pour que, si vous avez déjà une minuterie valide en cours d'exécution, vous ignorez toutes nouvelles données pour cette minuterie jusqu'à ce qu'elle se termine.";
+
+L["layerMsg1"] = "Vous êtes sur un royaume avec des couches.";
+L["layerMsg2"] = "Cliquez ici pour voir les minuteries actuelles.";
+L["layerMsg3"] = "Pointez un PNJ pour voir votre couche actuelle.";
+L["layerMsg4"] = "Pointez sur n'importe quel PNJ à %s pour voir votre couche actuelle."; --Target any NPC in Orgrimmar to see your current layer.
+
+--NOTE: Darkmoon Faire buff type is now a character specific setting, changing buff type will only change it for this character.
+L["note"] = "NOTE :";
+L["dmfConfigWarning"] = "Le type de buff de la Foire de Sombrelune est maintenant une configuration spécifique au personnage ; modifier le type de buff ne le changera que pour ce personnage.";
+
+---New---
+
+L["onyNpcMoving"] = "Le PNJ d'Onyxia a commencé à bouger !";
+L["nefNpcMoving"] = "Le PNJ de Nefarian a commencé à bouger !";
+
+L["buffHelpersHeaderDesc"] = "Aides aux buffs pour les serveurs JcJ";
+
+L["buffHelpersTextDesc"] = "Aides aux buffs pour les serveurs JcJ (activées si vous obtenez un buff et effectuez l'une de ces actions dans les secondes suivant l'obtention du buff ; vous pouvez ajuster les secondes ci-dessous).";
+L["buffHelpersTextDesc2"] = "\nBuff de Zandalar";
+L["buffHelpersTextDesc3"] = "Buff de la Foire de Sombrelune";
+L["buffHelpersTextDesc4"] = "Entrez une macro de champ de bataille (vous devez appuyer deux fois dessus pour que cela fonctionne, donc spammez simplement ; cela annulera la file d'attente si vous n'avez pas déjà de fenêtre contextuelle, alors faites attention de ne pas l'appuyer avant).\n|cFF9CD6DE/click DropDownList1Button2\n/click MiniMapBattlefieldFrame RightButton";
+
+L["takeTaxiZGTitle"] = "Vol automatique";
+L["takeTaxiZGDesc"] = "Prenez automatiquement un vol depuis le Port de Hurlevent dès qu'un buff tombe, vous pouvez parler au PNJ de vol après la chute ou l'avoir déjà ouvert quand il tombe, cela fonctionnera dans les deux sens. |cFF00C800(Vous pouvez obtenir le buff en fantôme, je vous suggère donc de rester en fantôme jusqu'à ce que le buff expire puis de cliquer et de parler au PNJ de vol pour voler automatiquement)";
+
+L["takeTaxiNodeTitle"] = "Destination";
+L["takeTaxiNodeDesc"] = "Si l'option de vol automatique est activée, où souhaitez-vous voler ?";
+			
+L["dmfVanishSummonTitle"] = "Invocation après Disparition";
+L["dmfVanishSummonDesc"] = "Voleurs : Acceptez-vous automatiquement l'invitation dès que vous vous évanouissez après avoir obtenu le buff de la Foire de Sombrelune ?";
+
+L["dmfFeignSummonTitle"] = "Invocation après Feindre la mort";
+L["dmfFeignSummonDesc"] = "Chasseurs : Acceptez-vous automatiquement l'invitation dès que vous feignez la mort après avoir obtenu le buff de la Foire de Sombrelune ?";
+			
+L["dmfCombatSummonTitle"] = "Invocation après Sortie de combat";
+L["dmfCombatSummonDesc"] = "Acceptez-vous automatiquement l'invitation dès que vous sortez du combat après avoir obtenu le buff de la Foire de Sombrelune ?";
+			
+L["dmfLeaveBGTitle"] = "Quitter automatiquement le champ de bataille";
+L["dmfLeaveBGDesc"] = "Quittez-vous automatiquement votre champ de bataille en entrant dans des zones après avoir obtenu le buff de la Foire de Sombrelune ?";
+
+L["dmfGotBuffSummonTitle"] = "Invocation avec la Foire";
+L["dmfGotBuffSummonDesc"] = "Acceptez-vous automatiquement toute invitation en attente lorsque vous obtenez le buff de la Foire de Sombrelune.";
+
+L["zgGotBuffSummonTitle"] = "Invocation avec ZG";
+L["zgGotBuffSummonDesc"] = "Acceptez-vous automatiquement toute invitation en attente lorsque vous obtenez le buff de Zandalar.";
+
+L["buffHelperDelayTitle"] = "Combien de secondes les aides sont-elles activées ?";
+L["buffHelperDelayDesc"] = "Pendant combien de secondes après avoir obtenu un buff ces aides devraient-elles fonctionner ? Cela vous permet de laisser les options activées et elles ne fonctionneront qu'immédiatement après avoir obtenu un buff.";
+
+L["showNaxxWorldmapMarkersTitle"] = "Carte de Naxxramas";
+L["showNaxxWorldmapMarkersDesc"] = "Affiche le marqueur de Naxxramas sur la carte du monde ?";
+
+L["showNaxxMinimapMarkersTitle"] = "Minicarte de Naxxramas";
+L["showNaxxMinimapMarkersDesc"] = "Affiche le marqueur de Naxxramas sur la minicarte ? Cela vous montrera également la direction de retour à Naxx lorsque vous êtes un fantôme et que vous mourez dans l'instance.";
+
+L["bigWigsSupportTitle"] = "Support de BigWigs";
+L["bigWigsSupportDesc"] = "Lance une barre de temporisation pour obtenir des buffs si BigWigs est installé ? Le même type de barre de temporisation que DBM.";
+
+L["soundsNpcWalkingTitle"] = "PNJ en marche";
+L["soundsNpcWalkingDesc"] = "Joue un son lorsque le PNJ d'un buff commence à marcher à Orgrimmar ?";
+
+L["buffHelpersTextDesc4"] = "Buff de Fleur-de-chant";
+L["songflowerGotBuffSummonTitle"] = "Invocation de Fleur-de-chant";
+L["songflowerGotBuffSummonDesc"] = "Acceptez-vous automatiquement toute invitation en attente lorsque vous obtenez un buff de fleur-de-chant.";
+
+L["buffHelpersTextDesc5"] = "Buff de Ony/Rend";
+L["cityGotBuffSummonTitle"] = "Invocation de Ony/Rend";
+L["cityGotBuffSummonDesc"] = "Acceptez-vous automatiquement toute invitation en attente lorsque vous obtenez un buff de Ony/Nef/Rend.";
+
+L["heraldFoundCrossroads"] = "Héraut trouvé ! Le buff de Rend à La Croisée va poser dans 20 secondes.";
+
+L["guildNpcWalkingTitle"] = "PNJ en marche";
+L["guildNpcWalkingDesc"] = "Envoie un message à la guilde et joue un son lorsque vous activez ou recevez une alerte de déplacement de PNJ ? (Ouvre la fenêtre de discussion avec les PNJ d'Ony/Nef à Orgrimmar et attendez que quelqu'un remette la tête pour activer cette alerte précoce).";
+
+L["buffHelpersTextDesc6"] = "Fenêtre d'aide de la Foire de Sombrelune";
+L["dmfFrameTitle"] = "Aide de la foire";
+L["dmfFrameDesc"] = "Une fenêtre qui apparaît lorsque vous approchez de Sayge à la Foire en tant que fantôme sur les serveurs JcJ pour aider avec les fonctions bloquées de Blizzard.";
+
 
 L["Sheen of Zanza"] = "Brillance de Zanza";
 L["Spirit of Zanza"] = "Esprit de Zanza";
@@ -605,38 +733,292 @@ L["Swiftness of Zanza"] = "Rapidité de Zanza";
 L["Mind Control"] = "Contrôle mental";
 L["Gnomish Mind Control Cap"] = "Coiffe de contrôle mental gnome";
 
-L["Flask of Fortification"] = "Flask of Fortification";
-L["Flask of Pure Death"] = "Flask of Pure Death";
-L["Flask of Relentless Assault"] = "Flask of Relentless Assault";
-L["Flask of Blinding Light"] = "Flask of Blinding Light";
-L["Flask of Mighty Restoration"] = "Flask of Mighty Restoration";
-L["Flask of Chromatic Wonder"] = "Flask of Chromatic Wonder";
-L["Fortification of Shattrath"] = "Fortification of Shattrath";
-L["Pure Death of Shattrath"] = "Pure Death of Shattrath";
-L["Relentless Assault of Shattrath"] = "Relentless Assault of Shattrath";
-L["Blinding Light of Shattrath"] = "Blinding Light of Shattrath";
-L["Mighty Restoration of Shattrath"] = "Mighty Restoration of Shattrath";
-L["Supreme Power of Shattrath"] = "Supreme Power of Shattrath";
-L["Unstable Flask of the Beast"] = "Unstable Flask of the Beast";
-L["Unstable Flask of the Sorcerer"] = "Unstable Flask of the Sorcerer";
-L["Unstable Flask of the Bandit"] = "Unstable Flask of the Bandit";
-L["Unstable Flask of the Elder"] = "Unstable Flask of the Elder";
-L["Unstable Flask of the Physician"] = "Unstable Flask of the Physician";
-L["Unstable Flask of the Soldier"] = "Unstable Flask of the Soldier";
 
-L["Chronoboon Displacer"] = "Chronoboon Displacer";
+L["tbcHeaderText"] = "Options de l'extension";
+L["tbcNoteText"] = "Note : Tous les messages du canal de guilde sont également désactivés sur les royaumes TBC.";
+
+L["disableSoundsAboveMaxBuffLevelTitle"] = "Désactiver les sons pour les niveaux supérieurs à 64+";
+L["disableSoundsAboveMaxBuffLevelDesc"] = "Désactive les sons liés aux buffs mondiaux pour les personnages de niveau 63 et plus sur les royaumes TBC ?";
+
+L["disableSoundsAllLevelsTitle"] = "Désactiver tous les sons pour tous les niveaux";
+L["disableSoundsAllLevelsDesc"] = "Désactive les sons liés aux buffs mondiaux pour tous les personnages sur les royaumes TBC ?";
+
+L["disableMiddleAboveMaxBuffLevelTitle"] = "Désactiver les messages au milieu de l'écran pour 64+";
+L["disableMiddleAboveMaxBuffLevelDesc"] = "Désactive les messages liés aux buffs mondiaux au milieu de l'écran pour les personnages de niveau 63 et plus sur les royaumes TBC ?";
+
+L["disableMiddleAllLevelsTitle"] = "Désactiver les messages au milieu de l'écran pour tous les niveaux";
+L["disableMiddleAllLevelsDesc"] = "Désactive les messages liés aux buffs mondiaux au milieu de l'écran pour tous les personnages sur les royaumes TBC ?";
+
+L["disableChatAboveMaxBuffLevelTitle"] = "Désactiver les messages du chat pour 64+";
+L["disableChatAboveMaxBuffLevelDesc"] = "Désactive les messages liés aux minuteries des buffs mondiaux dans la fenêtre de chat pour les personnages de niveau 63 et plus sur les royaumes TBC ?";
+
+L["disableChatAllLevelsTitle"] = "Désactiver les messages du chat pour tous les niveaux";
+L["disableChatAllLevelsDesc"] = "Désactive les messages liés aux minuteries des buffs mondiaux dans la fenêtre de chat pour tous les personnages sur les royaumes TBC ?";
+
+L["disableFlashAboveMaxBuffLevelTitle"] = "Désactiver le clignotement en mode réduit pour 64+";
+L["disableFlashAboveMaxBuffLevelDesc"] = "Désactive le clignotement du client WoW lorsqu'il est réduit pour les événements des buffs mondiaux pour les personnages de niveau 63 et plus sur les royaumes TBC ?";
+
+L["disableFlashAllLevelsTitle"] = "Désactiver le clignotement en mode réduit pour tous les niveaux";
+L["disableFlashAllLevelsDesc"] = "Désactive le clignotement du client WoW lorsqu'il est réduit pour les événements des buffs mondiaux pour tous les personnages sur les royaumes TBC ?";
+
+L["disableLogonAboveMaxBuffLevelTitle"] = "Désactiver les minuteries de connexion pour 64+";
+L["disableLogonAboveMaxBuffLevelDesc"] = "Désactive les minuteries dans la discussion lors de la connexion pour les personnages de niveau 63 et plus sur les royaumes TBC ?";
+
+L["disableLogonAllLevelsTitle"] = "Désactiver les minuteries de connexion pour tous les niveaux";
+L["disableLogonAllLevelsDesc"] = "Désactive les minuteries dans la discussion lors de la connexion pour tous les personnages sur les royaumes TBC ?";
+
+
+L["Flask of Fortification"] = "Flacon de fortifiant";
+L["Flask of Pure Death"] = "Flacon de pure mort";
+L["Flask of Relentless Assault"] = "Flacon d'attaque implacable";
+L["Flask of Blinding Light"] = "Flacon de lumière aveuglante";
+L["Flask of Mighty Restoration"] = "Flacon de puissante restauration";
+L["Flask of Chromatic Wonder"] = "Flacon de merveille chromatique";
+L["Fortification of Shattrath"] = "Fortifiant de Shattrath";
+L["Pure Death of Shattrath"] = "Pure mort de Shattrath";
+L["Relentless Assault of Shattrath"] = "Attaque implacable de Shattrath";
+L["Blinding Light of Shattrath"] = "Lumière aveuglante de Shattrath";
+L["Mighty Restoration of Shattrath"] = "Puissante restauration de Shattrath";
+L["Supreme Power of Shattrath"] = "Pouvoir suprême de Shattrath";
+L["Unstable Flask of the Beast"] = "Flacon instable de la bête";
+L["Unstable Flask of the Sorcerer"] = "Flacon instable du sorcier";
+L["Unstable Flask of the Bandit"] = "Flacon instable du bandit";
+L["Unstable Flask of the Elder"] = "Flacon instable de l'ancien";
+L["Unstable Flask of the Physician"] = "Flacon instable du médecin";
+L["Unstable Flask of the Soldier"] = "Flacon instable du soldat";
+
+L["Chronoboon Displacer"] = "Déplaceur de chronochance";
 
 L["Silithyst"] = "Silithyste";
 
-L["Gold"] = "Gold";
-L["level"] = "Level";
-L["realmGold"] = "Realm gold for";
+L["Gold"] = "Or";
+L["level"] = "Niveau";
+L["realmGold"] = "Or du royaume pour";
 L["total"] = "Total";
-L["guild"] = "Guild";
-L["bagSlots"] = "Bag slots";
-L["durability"] = "Durability";
-L["items"] = "Items";
-L["ammunition"] = "Ammo";
-L["attunements"] = "Attunements";
-L["currentRaidLockouts"] = "Current Raid Lockouts";
-L["none"] = "None.";
+L["guild"] = "Guilde";
+L["bagSlots"] = "Emplacements de sac";
+L["durability"] = "Durabilité";
+L["items"] = "Objets";
+L["ammunition"] = "Munitions";
+L["attunements"] = "Harmonisations";
+L["currentRaidLockouts"] = "Verrouillages de raid actuels";
+L["none"] = "Aucun.";
+
+L["dmfDamagePercent"] = "Ce nouveau bonus de la Foire de Sombrelune a %s%% de dégâts.";
+L["dmfDamagePercentTooltip"] = "NWB a détecté ceci comme %s dégâts.";
+
+L["guildLTitle"] = "Couches de guilde";
+L["guildLDesc"] = "Partagez-vous dans quelle couche vous êtes avec votre guilde ? Vous pouvez voir la liste des couches de votre guilde avec /wb guild";
+
+L["terokkarTimer"] = "Terokkar";
+L["terokkarWarning"] = "Les tours de la forêt de Terokkar seront réinitialisées dans %s";
+
+L["wintergraspTimer"] = "Joug-d'hiver";
+L["wintergraspWarning"] = "Joug-d'hiver débutera dans %s";
+
+
+L["Nazgrel"] = "Nazgrel";
+--L["Hellfire Citadel is ours"] = "Hellfire Citadel is ours";
+--L["The time for us to rise"] = "The time for us to rise";
+L["Force Commander Danath Trollbane"] = "Commandant de corps Danath Trollemort ";
+--L["The feast of corruption is no more"] = "The feast of corruption is no more";
+--L["Hear me brothers"] = "Hear me brothers";
+
+L["terokkarChat10Title"] = "Terokkar 10 Minutes";
+L["terokkarChat10Desc"] = "Affiche un message dans la discussion lorsqu'il reste 10 minutes aux tours spirituelles de Terokkar.";
+
+L["terokkarMiddle10Title"] = "Terokkar 10 Minutes";
+L["terokkarMiddle10Desc"] = "Affiche un message de style d'alerte de raid au milieu de l'écran lorsqu'il reste 10 minutes aux tours spirituelles de Terokkar.";
+
+L["showShatWorldmapMarkersTitle"] = "Marqueurs de Quotidiens sur la carte du monde";
+L["showShatWorldmapMarkersDesc"] = "Affiche les marqueurs des quotidiens de donjons sur la carte du monde de la ville capitale.";
+
+L["disableBuffTimersMaxBuffLevelTitle"] = "Désactiver les minuteurs des buffs du minicarte 64+";
+L["disableBuffTimersMaxBuffLevelDesc"] = "Cache les minuteurs des buffs mondiaux lorsque vous survolez l'icône de la mini-carte pour les personnages de niveau 64+. Vous ne verrez que les minuteurs et les quotidiens de la tour Terokkar, etc.";
+
+L["hideMinimapBuffTimersTitle"] = "Désactiver les minuteurs des buffs du minicarte pour tous les niveaux";
+L["hideMinimapBuffTimersDesc"] = "Cache les minuteurs des buffs mondiaux lorsque vous survolez l'icône de la mini-carte pour tous les personnages. Vous ne verrez que les minuteurs et les quotidiens de la tour Terokkar, etc.";
+
+L["guildTerok10Title"] = "Guilde Terokkar/Joug-d'hiver 10 Minutes";
+L["guildTerok10Desc"] = "Envoie un message dans la discussion de la guilde lorsqu'il reste 10 minutes aux tours de Terokkar s'il s'agit de TBC ou à la Conquête de l'hiver s'il s'agit de WoTLK.";
+
+L["showShatWorldmapMarkersTerokTitle"] = "Marqueurs de Tours/Joug-d'hiver";
+L["showShatWorldmapMarkersTerokDesc"] = "Affiche les marqueurs de la tour Terokkar ou du Joug-d'hiver sur la carte de la ville capitale.";
+
+L["Completed PvP dailies"] = "Quotidiens JcJ terminés";
+L["Hellfire Towers"] = "Tours des Flammes infernales";
+L["Terokkar Towers"] = "Tours de Terokkar";
+L["Nagrand Halaa"] = "Nagrand Halaa";
+
+L["wintergraspChat10Title"] = "Joug-d'hiver 10 Minutes";
+L["wintergraspChat10Desc"] = "Affiche un message dans la discussion lorsqu'il reste 10 minutes aux tours spirituelles du Joug-d'hiver.";
+
+L["wintergraspMiddle10Title"] = "Joug-d'hiver 10 Minutes";
+L["wintergraspMiddle10Desc"] = "Affiche un message de style d'alerte de raid au milieu de l'écran lorsqu'il reste 10 minutes aux tours spirituelles du Joug-d'hiver.";
+
+
+--L["ashenvaleHordeVictoryMsg"] = "¡La sacerdotisa de la luna de la Alianza ha sido asesinada!";
+--L["ashenvaleAllianceVictoryMsg"] = "¡El clarividente de la Horda ha sido asesinado!";
+
+--L["ashenvaleWarning"] = "Los preparativos d'Ashenvale están casi terminados. ¡La Batalla por Ashenvale comenzará pronto! (Alianza %s%%) (Horda %s%%)."; --Any localization of this string must match the same format with brackets etc.
+
+L["Boon of Blackfathom"] = "Bienfait de Brassenoire";
+L["Ashenvale Rallying Cry"] = "Cri de ralliement d’Ashenvale";
+
+L["sodHeaderText"] = "Options de la Saison de la découverte";
+
+L["disableOnlyNefRendBelowMaxLevelTitle"] = "Désactiver Ony/Nef/Rend";
+L["disableOnlyNefRendBelowMaxLevelDesc"] = "Cache Ony/Nef/Rend qui s'affiche sur la carte de la capitale et dans l'infobulle de l'icône de la minicarte en dessous d'un certain niveau ? (Fait en sorte que l'icône de la minicarte affiche uniquement les couches et non les minuteurs de buff)";
+
+L["disableOnlyNefRendBelowMaxLevelNumTitle"] = "Niveau minimum Ony/Nef/Rend";
+L["disableOnlyNefRendBelowMaxLevelNumDesc"] = "En dessous de quel niveau devrions-nous cacher les icônes Ony/Nef/Rend de la carte de la capitale et de l'infobulle du bouton de la minicarte ?";
+
+L["soundsBlackfathomBoonTitle"] = "Son des buffs";
+L["soundsBlackfathomBoonDesc"] = "Reproduit-il un son lorsqu'un buff de la saison de la découverte est obtenu ?";
+
+L["soundsAshenvaleStartsSoonTitle"] = "Son du début de l'événement";
+L["soundsAshenvaleStartsSoonDesc"] = "Reproduit-il un son lorsqu'un événement de la saison de la découverte est sur le point de commencer ?";
+
+L["blackfathomBoomBuffDropped"] = "Le buff de la Faveur de Profondeurs de Brassenoire est tombé.";
+
+L["showAshenvaleOverlayTitle"] = "Superposition";
+L["showAshenvaleOverlayDesc"] = "Affiche une superposition de minuteurs mobiles dans votre IU en permanence ?";
+
+L["lockAshenvaleOverlayTitle"] = "Verrouiller";
+L["lockAshenvaleOverlayDesc"] = "Verrouille la superposition de minuteurs pour ignorer le passage de la souris.";
+
+L["ashenvaleOverlayScaleTitle"] = "Échelle de la superposition";
+L["ashenvaleOverlayScaleDesc"] = "Définit la taille de la superposition de minuteurs.";
+
+L["ashenvaleOverlayText"] = "|cFFFFFF00-Superposition pour afficher toujours les minuteurs dans votre IU-";
+L["layersNoteText"] = "|cFFFF6900Note sur les couches:|r |cFF9CD6DENWB a une limite de suivi de 10 couches maximum, ceci est pour que la taille des données ne soit pas trop grande pour être facilement partagée entre les joueurs. Sur la plupart des royaumes de la Saison avec une grande population en ce moment, il y a plus de 10 couches, donc si vous ne voyez pas sur quelle couche vous êtes, c'est parce que vous n'êtes pas dans l'une des 10 couches enregistrées. Il est probable que cela redescende en dessous de 10 une fois que l'enthousiasme pour le lancement se sera un peu estompé, mais d'ici là, cela peut ne pas être fiable, désolé.|r";
+
+L["Mouseover char names for extra info"] = "Survolez les noms des personnages pour plus d'informations.";
+L["Show Stats"] = "Statistiques"; --Can't be any longer than this.
+L["Event Running"] = "Événement en cours";
+
+L["Left-Click"] = "Clic Gauche";
+L["Right-Click"] = "Clic Droit";
+L["Shift Left-Click"] = "Maj Clic Gauche";
+L["Shift Right-Click"] = "Maj Clic Droit";
+L["Control Left-Click"] = "Ctrl Clic Gauche";
+
+
+--Try keep these roughly the same length or shorter.
+L["Guild Layers"] = "Guilde";
+L["Timers"] = "Minuteries";
+L["Buffs"] = "Buffs";
+L["Felwood Map"] = "Carte de Gangrebois";
+L["Config"] = "Options";
+L["Resources"] = "Ressources";
+L["Layer"] = "Couche";
+L["Layer Map"] = "Carte des couches";
+L["Rend Log"] = "Journal de Rend";
+L["Timer Log"] = "Journal des minuteries";
+L["Copy/Paste"] = "Copier/Coller";
+L["Ashenvale PvP Event Resources"] = "Progrès d'Ashenvale";
+L["All other alts using default"] = "Tous les autres utilisant la configuration par défaut";
+L["Chronoboon CD"] = "Recharge Chronochance"; --Chronoboon cooldown.
+L["All"] = "Tout"; --This has to be small to fit.
+L["Old Data"] = "Anciennes données";
+L["Ashenvale data is old"] = "Les données d'Ashenvale sont obsolètes.";
+L["Ashenvale"] = "Ashenvale";
+L["Ashenvale Towers"] = "Tours d'Ashenvale";
+L["Warning"] = "Attention";
+L["Refresh"] = "Actualiser";
+L["PvP enabled"] = "JcJ activé";
+L["Hold Shift to drag"] = "Maintenez Maj pour déplacer";
+L["Hold to drag"] = "Maintenez pour déplacer";
+
+L["Can't find current layer or no timers active for this layer."] = "Impossible de trouver la couche actuelle ou aucun chronomètre actif pour cette couche.";
+L["No guild members online sharing layer data found."] = "Aucun membre de guilde en ligne ne partage de données de couche.";
+
+--New.
+
+L["ashenvaleOverlayFontTitle"] = "Police de la superposition";
+L["ashenvaleOverlayFontDesc"] = "Quelle police utiliser pour les superpositions d'écran.";
+
+L["minimapLayerFontTitle"] = "Police de la couche de la minicarte";
+L["minimapLayerFontDesc"] = "Quelle police utiliser pour le texte de la couche de la minicarte.";
+
+L["minimapLayerFontSizeTitle"] = "Taille du texte de la couche de la minicarte";
+L["minimapLayerFontSizeDesc"] = "Quelle taille de police utiliser pour le texte de la couche de la minicarte.";
+
+L["zone"] = "zone";
+L["zones mapped"] = "zones cartographiées";
+L["Layer Mapping for"] = "Cartographie des couches pour";
+L["formatForDiscord"] = "Formater le texte pour le coller dans Discord ? (Ajouter des couleurs, etc.)";
+L["Copy Frame"] = "Copier le cadre";
+L["Show how many times you got each buff."] = "Affiche combien de fois vous avez obtenu chaque buff.";
+L["Show all alts that have buff stats? (stats must be enabled)."] = "Affiche tous les personnages alternatifs qui ont des statistiques de buff ? (les stats doivent être activées).";
+L["No timer logs found."] = "Aucun journal de minuterie trouvé.";
+L["Merge Layers"] = "Fusionner les couches";
+L["mergeLayersTooltip"] = "Si plusieurs couches ont la même minuterie, ils seront fusionnés en [Tous les couches] au lieu d'être affichés séparément.";
+L["Ready"] = "Prêt";
+L["Chronoboon"] = "Chronochance";
+L["Local Time"] = "Heure locale";
+L["Server Time"] = "Heure du royaume";
+L["12 hour"] = "12 heures";
+L["24 hour"] = "24 heures";
+L["Alliance"] = "Alliance";
+L["Horde"] = "Horde";
+L["No Layer"] = "Pas de couche";
+L["No data yet."] = "Pas encore de données.";
+L["Ashenvale Resources"] = "Ressources d'Ashenvale";
+L["No character specific buffs set yet."] = "Aucun buff spécifique au personnage n'a encore été défini.";
+L["All characters are using default"] = "Tous les personnages utilisent les paramètres par défaut";
+L["Orgrimmar"] = "Orgrimmar";
+L["Stormwind"] = "Stormwind";
+L["Dalaran"] = "Dalaran";
+L["left"] = "restants";
+L["remaining"] = "restants";
+
+L["Online"] = "En ligne";
+L["Offline"] = "Hors ligne";
+L["Rested"] = "Reposé";
+L["Not Rested"] = "Non reposé";
+L["No zones mapped for this layer yet."] = "Aucune zone n'a encore été cartographiée pour ce couche.";
+L["Cooldown"] = "Temps de recharge";
+L["dmfLogonBuffResetMsg"] = "Ces personnages ont été déconnectés pendant plus de 8 heures dans une zone de repos et le temps de recharge du buff de la Foire de Sombrelune a été réinitialisé";
+L["dmfOfflineStatusTooltip"] = "Temps de recharge de la Foire de Sombrelune de plus de 8 heures hors ligne dans une zone de repos";
+L["chronoboonReleased"] = "Le Déplaceur de chronochance surchargé a restauré le buff de la Foire de Sombrelune. Un nouveau temps de recharge de 4 heures a commencé.";
+
+
+L["Stranglethorn"] = "Strangleronce"; -- Version plus courte d'une seule mot de Stranglethorn Vale pour mieux s'adapter.
+L["ashenvaleEventRunning"] = "La bataille d'Ashenvale est en cours : %s";
+L["ashenvaleEventStartsIn"] = "La bataille d'Ashenvale commencera dans %s";
+L["ashenvaleStartSoon"] = "La bataille d'Ashenvale commencera dans %s"; -- Message de discussion de guilde.
+L["stranglethornEventRunning"] = "La lune de sang est en cours : %s";
+L["stranglethornEventStartsIn"] = "La lune de sang commencera dans %s";
+L["stranglethornStartSoon"] = "La lune de sang commencera dans %s"; -- Message de discussion de guilde.
+L["Spark of Inspiration"] = "Étincelle d’inspiration"; -- Buff mondial de la phase 2 de SoD.
+L["specificBuffDropped"] = "Le buff %s a été posé.";
+L["3 day raid reset"] = "Réinitialisation du raid de 3 jours";
+L["Darkmoon Faire is up"] = "La Foire de Sombrelune est active";
+L["dmfAbbreviation"] = "Foire";
+L["Ashenvale PvP Event"] = "La bataille d'Ashenvale";
+L["Stranglethorn PvP Event"] = "La lune de sang";
+
+L["overlayShowArtTitle"] = "L'art en superposition";
+L["overlayShowArtDesc"] = "Affiche l'art en superposition ?";
+
+L["overlayShowAshenvaleTitle"] = "Ashenvale";
+L["overlayShowAshenvaleDesc"] = "Affiche le minutage d'Ashenvale en superposition ?";
+
+L["overlayShowStranglethornTitle"] = "Strangleronce";
+L["overlayShowStranglethornDesc"] = "Affiche le minutage de Strangleronce en superposition ?";
+
+L["sodMiddleScreenWarningTitle"] = "Avertissements au milieu de l'écran";
+L["sodMiddleScreenWarningDesc"] = "Affiche un avertissement de 15/30 minutes au milieu de l'écran pour les événements JcJ ?";
+
+L["stvBossMarkerTooltip"] = "Marqueur de boss NWB (expérimental)";
+L["Boss"] = "Boss"; -- Si trop long, abrégez, ce texte se trouve sous un marqueur de carte.
+L["stvBossSpotted"] = "Boss Loa repéré ! Regardez la carte pour l'emplacement.";
+L["Total coins this event"] = "Total de pièces dans cet événement"; -- Gardez-le court, il est imprimé dans le chat lorsque vous remettez les pièces.
+L["Last seen"] = "Dernière vue";
+L["layersNoGuild"] = "Vous n'avez pas de guilde, cette commande affiche uniquement les membres de la guilde.";
+
+L["Fervor of the Temple Explorer"] = "Ferveur de l’explorateur du temple";
+L["No guild"] = "Pas de guilde";
+
+L["Temple of Atal'Hakkar"] = "temple d’Atal’Hakkar";

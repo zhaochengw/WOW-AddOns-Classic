@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.15) add-on for World of Warcraft UI
+    Decursive (v 2.7.17) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
     but WITHOUT ANY WARRANTY.
 
 
-    This file was last updated on 2023-04-02T15:27:03Z
+    This file was last updated on 2024-02-12T02:39:55Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -384,7 +384,7 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
                 MF.ToPlace = true;
                 Updated = Updated + 1;
 
-                D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * (0.9 + Updated / D.profile.DebuffsFramePerUPdate), MF);
+                D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.db.global.DebuffsFrameRefreshRate * (0.9 + Updated / D.db.global.DebuffsFramePerUPdate), MF);
                 --D:Debug("|cFF88AA00Show schedule for MUF", Unit, "UnitShown:", self.UnitShown);
             end
         else
@@ -416,9 +416,9 @@ function MicroUnitF:MFsDisplay_Update () -- {{{
 
                 MF.Shown = false;
                 self.UnitShown = self.UnitShown - 1;
-                --D:Debug("|cFF88AA00Hiding %d (%s), scheduling update in %f|r", i, MF.CurrUnit, D.profile.DebuffsFrameRefreshRate * i);
+                --D:Debug("|cFF88AA00Hiding %d (%s), scheduling update in %f|r", i, MF.CurrUnit, D.db.global.DebuffsFrameRefreshRate * i);
                 Updated = Updated + 1;
-                D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.Update, D.profile.DebuffsFrameRefreshRate * (0.9 + Updated / D.profile.DebuffsFramePerUPdate), MF);
+                D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.Update, D.db.global.DebuffsFrameRefreshRate * (0.9 + Updated / D.db.global.DebuffsFramePerUPdate), MF);
                 MF.Frame:Hide();
             end
 
@@ -468,7 +468,7 @@ function MicroUnitF:Force_FullUpdate () -- {{{
 
         MF.InnerTexture:SetColorTexture(unpack(MF_colors[CHARMED_STATUS]));
 
-        D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.profile.DebuffsFrameRefreshRate * (0.9 + i / D.profile.DebuffsFramePerUPdate), MF);
+        D:ScheduleDelayedCall("Dcr_Update"..MF.CurrUnit, MF.UpdateWithCS, D.db.global.DebuffsFrameRefreshRate * (0.9 + i / D.db.global.DebuffsFramePerUPdate), MF);
         i = i + 1;
     end
 
@@ -697,7 +697,7 @@ end -- }}}
 -- }}}
 
 -- Update the MUF of a given unitid
-function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
+function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth, o_auraUpdateInfo)
     if not D.profile.ShowDebuffsFrame then
         return;
     end
@@ -719,7 +719,12 @@ function MicroUnitF:UpdateMUFUnit(Unitid, CheckStealth)
         -- but we don't miss any event XXX note this can be the cause of slowdown if 25 or 40 players got debuffed at the same instant, DebuffUpdateRequest is here to prevent that since 2008-02-17
         if (not D:DelayedCallExixts("Dcr_Update"..unit)) then
             D.DebuffUpdateRequest = D.DebuffUpdateRequest + 1;
-            D:ScheduleDelayedCall("Dcr_Update"..unit, CheckStealth and MF.UpdateWithCS or MF.Update, D.profile.DebuffsFrameRefreshRate * (0.9 + D.DebuffUpdateRequest / D.profile.DebuffsFramePerUPdate), MF);
+            D:ScheduleDelayedCall("Dcr_Update"..unit
+                , CheckStealth and MF.UpdateWithCS or MF.Update
+                , D.db.global.DebuffsFrameRefreshRate * (0.9 + D.DebuffUpdateRequest / D.db.global.DebuffsFramePerUPdate)
+                , MF --, o_auraUpdateInfo
+            );
+
             D:Debug("Update scheduled for, ", unit, MF.ID);
 
             return true; -- return value used to aknowledge that the function actually did something
@@ -1141,7 +1146,7 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
 end -- }}}
 
 
-function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
+function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth, o_auraUpdateInfo)
 
 
 
@@ -1175,7 +1180,7 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
     if (not SkipSetColor) then
         if (not SkipDebuffs) then
             -- get the manageable debuffs of this unit
-            MF:SetDebuffs();
+            MF:SetDebuffs(o_auraUpdateInfo);
             --D:Debug("Debuff set for ", MF.ID);
             if CheckStealth then
                 D.Stealthed_Units[MF.CurrUnit] = D:CheckUnitStealth(MF.CurrUnit); -- update stealth status
@@ -1192,8 +1197,8 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
 end
 
 
-function MicroUnitF.prototype:UpdateWithCS()
-    self:Update(false, false, true);
+function MicroUnitF.prototype:UpdateWithCS(o_auraUpdateInfo)
+    self:Update(false, false, true, o_auraUpdateInfo); -- o_auraUpdateInfo is not used for now
 end
 
 function MicroUnitF.prototype:UpdateSkippingSetBuf()
@@ -1340,7 +1345,7 @@ do
     end
 end -- }}}
 
-function MicroUnitF.prototype:SetDebuffs() -- {{{
+function MicroUnitF.prototype:SetDebuffs(o_auraUpdateInfo) -- {{{
 
     self.Debuffs, self.IsCharmed = D:UnitCurableDebuffs(self.CurrUnit);
 
@@ -1737,7 +1742,7 @@ do
 
 
         -- we don't check all the MUF at each call, only some of them (changed in the options)
-        for pass = 1, self.profile.DebuffsFramePerUPdate do
+        for pass = 1, self.db.global.DebuffsFramePerUPdate do
 
             -- When all frames have been updated, go back to the first
             if (MicroFrameUpdateIndex > UnitNum) then
@@ -1866,6 +1871,6 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.15";
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.17";
 
 -- Heresy

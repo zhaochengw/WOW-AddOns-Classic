@@ -122,6 +122,17 @@ function SlashCmdList.DETAILS (msg, editbox)
 
 		dumpt(returnTable)
 
+	elseif (command == "mythic+") then
+		local statName = "mythicdungeoncompletedDF2"
+		local mythicDungeonRuns = Details222.PlayerStats:GetStat(statName)
+
+		dumpt(mythicDungeonRuns)
+
+		for mapChallengeModeID, mapChallengeModeData in pairs(mythicDungeonRuns) do
+			local mapName = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+			print(mapName, mapChallengeModeData.level, mapChallengeModeData.completed, mapChallengeModeData.time)
+		end
+
 	elseif (command == "mergepetspells") then --deprecated
 		Details.merge_pet_abilities = not Details.merge_pet_abilities
 		Details:Msg("Merging pet spells:", Details.merge_pet_abilities or "false")
@@ -1286,26 +1297,11 @@ function SlashCmdList.DETAILS (msg, editbox)
 		newCombat.is_trash = false
 		Details:Msg("done merging, segments: " .. segmentsAdded .. ", total time: " .. DetailsFramework:IntegerToTimer(totalTime))
 
-		--[[ --mythic+ debug
-		--tag the segment as mythic overall segment
-		newCombat.is_mythic_dungeon = {
-			MapID = _detalhes.MythicPlus.Dungeon,
-			StartedAt = _detalhes.MythicPlus.StartedAt, --the start of the run
-			EndedAt = _detalhes.MythicPlus.EndedAt, --the end of the run
-			SegmentID = "overall", --segment number within the dungeon
-			--EncounterID = encounterID,
-			--EncounterName = encounterName,
-			RunID = _detalhes.MythicPlus.RunID,
-			OverallSegment = true,
-		}
-		--]]
-
 		--set some data
-		newCombat:SetStartTime (GetTime() - totalTime)
-		newCombat:SetEndTime (GetTime())
+		newCombat:SetStartTime(GetTime() - totalTime)
+		newCombat:SetEndTime(GetTime())
 
-		newCombat.data_inicio = startDate
-		newCombat.data_fim = endDate
+		newCombat:SetDate(startDate, endDate)
 
 		--immediatly finishes the segment just started
 		Details:SairDoCombate()
@@ -1489,14 +1485,6 @@ function SlashCmdList.DETAILS (msg, editbox)
 		print("always use profile:", Details.always_use_profile)
 		print("profile name:", Details.always_use_profile_name)
 		print("version:", Details.build_counter >= Details.alpha_build_counter and Details.build_counter or Details.alpha_build_counter)
-
-	elseif (msg == "record") then
-
-
-			Details.ScheduleLoadStorage()
-			Details.TellDamageRecord = C_Timer.NewTimer(0.6, Details.PrintEncounterRecord)
-			Details.TellDamageRecord.Boss = 2032
-			Details.TellDamageRecord.Diff = 16
 
 	elseif (msg == "recordtest") then
 

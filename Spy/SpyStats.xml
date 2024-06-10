@@ -164,31 +164,32 @@
         </Anchors>
         <Size x="150" y="15"></Size>
     </Button>
-    <Button name="SpyStatsPlayersWinsSortTemplate" inherits="SpyStatsSortButtonTemplate" text="Won" virtual="true">
+    <Button name="SpyStatsPlayersWinsSortTemplate" inherits="SpyStatsSortButtonTemplate" text="L_WON" virtual="true">
         <Anchors>
             <Anchor point="LEFT" relativeTo="SpyStatsPlayersGuildSort" relativePoint="RIGHT">
-                <Offset x="8" y="0" />
+                <Offset x="5" y="0" />
             </Anchor>
         </Anchors>
         <Size x="30" y="15"></Size>
-        <ButtonText justifyH="CENTER" />
+        <ButtonText justifyH="RIGHT" />
     </Button>
-    <Button name="SpyStatsPlayersLosesSortTemplate" inherits="SpyStatsSortButtonTemplate" text="Lost" virtual="true">
+    <Button name="SpyStatsPlayersLosesSortTemplate" inherits="SpyStatsSortButtonTemplate" text="L_LOST" virtual="true">
         <Anchors>
             <Anchor point="LEFT" relativeTo="SpyStatsPlayersWinsSort" relativePoint="RIGHT">
-                <Offset x="8" y="0" />
+                <Offset x="18" y="0" />
             </Anchor>
         </Anchors>
         <Size x="30" y="15"></Size>
-        <ButtonText justifyH="CENTER" />
+        <ButtonText justifyH="LEFT" />
     </Button>
-    <Button name="SpyStatsPlayersReasonSortTemplate" inherits="SpyStatsSortButtonTemplate" text="Reason" virtual="true">
+    <Button name="SpyStatsPlayersReasonSortTemplate" inherits="SpyStatsSortButtonTemplate" text="L_REASON" virtual="true">
 		<Anchors>
             <Anchor point="LEFT" relativeTo="SpyStatsPlayersLosesSort" relativePoint="RIGHT">
-                <Offset x="8" y="0" />
+                <Offset x="45" y="0" />
             </Anchor>
         </Anchors>
         <Size x="250" y="15"></Size>
+        <ButtonText justifyH="LEFT" />
     </Button>
     <Button name="SpyStatsZoneSortTemplate" inherits="SpyStatsSortButtonTemplate" text="ZONE" virtual="true">
         <Anchors>

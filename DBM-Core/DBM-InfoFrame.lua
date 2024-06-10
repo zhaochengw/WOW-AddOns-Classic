@@ -366,16 +366,16 @@ local function updateIcons()
 		local icon = GetRaidTargetIndex(uId)
 		local icon2 = GetRaidTargetIndex(uId .. "target")
 		if icon and icon <= 8 then
-			icons[DBM:GetUnitFullName(uId)] = ("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t"):format(icon)
+			icons[DBM:GetUnitFullName(uId)] = icon
 		end
 		if icon2 and icon2 <= 8 then
-			icons[DBM:GetUnitFullName(uId .. "target")] = ("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t"):format(icon2)
+			icons[DBM:GetUnitFullName(uId .. "target")] = icon2
 		end
 	end
 	for i = 1, 10 do
 		local icon = GetRaidTargetIndex("boss" .. i)
 		if icon then
-			icons[UnitName("boss" .. i)] = ("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t"):format(icon)
+			icons[UnitName("boss" .. i)] = icon
 		end
 	end
 end
@@ -390,6 +390,38 @@ local function updateHealth()
 	end
 	updateLines()
 	updateIcons()
+end
+
+local bossHealthSortedLines = {}
+local function updateBossHealth()
+	twipe(lines)
+	twipe(bossHealthSortedLines)
+	local bossHealth, localizedBossNames, bossIcons = DBM:GetCachedBossHealth()
+	for cId, name in pairs(value[1]) do
+		if type(name) ~= "string" then
+			name = localizedBossNames[cId] or ("Boss " .. cId)
+		end
+		lines[name] = bossHealth[cId] or math.huge
+		bossHealthSortedLines[#bossHealthSortedLines + 1] = name
+	end
+	tsort(bossHealthSortedLines, function(e1, e2)
+		return lines[e1] > lines[e2]
+	end)
+	for name, hp in pairs(lines) do
+		lines[name] = hp < math.huge and (math.ceil(hp) .. "%") or DBM_COMMON_L.UNKNOWN
+	end
+	updateLines(bossHealthSortedLines)
+	updateIcons()
+	-- updateIcons doesn't work 100% reliably for bosses in classic (no boss unit ids), so add cached data if updateIcons didn't find the boss.
+	-- Example: no one is targeting the sheep in the Mechanical Menagerie fight while it has reflect up, without the code below the icon would disappear in this case.
+	-- Also, this is necessary for bosses with customized names (e.g., Mechanical Menagerie)
+	for cId, icon in pairs(bossIcons) do
+		local renamedBoss = value[1][cId]
+		local bossName = type(renamedBoss) == "string" and renamedBoss or localizedBossNames[cId]
+		if bossName and not icons[bossName] then
+			icons[bossName] = icon
+		end
+	end
 end
 
 local function updatePlayerPower()
@@ -661,7 +693,10 @@ local function updatePlayerBuffs()
 		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, true)) then
 		else
 			if not DBM:UnitBuff(uId, spellName) and not UnitIsDeadOrGhost(uId) then
-				lines[DBM:GetUnitFullName(uId)] = ""
+				local unitName = DBM:GetUnitFullName(uId)
+				if unitName then
+					lines[unitName] = ""
+				end
 			end
 		end
 	end
@@ -678,7 +713,10 @@ local function updateGoodPlayerDebuffs()
 		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, true)) then
 		else
 			if not DBM:UnitDebuff(uId, spellInput) and not UnitIsDeadOrGhost(uId) then
-				lines[DBM:GetUnitFullName(uId)] = ""
+				local unitName = DBM:GetUnitFullName(uId)
+				if unitName then
+					lines[unitName] = ""
+				end
 			end
 		end
 	end
@@ -752,7 +790,10 @@ local function updateReverseBadPlayerDebuffs()
 		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, true)) then
 		else
 			if not DBM:UnitDebuff(uId, spellInput) and not UnitIsDeadOrGhost(uId) and not DBM:UnitBuff(uId, 27827) then--27827 Spirit of Redemption. This particular info frame wants to ignore this
-				lines[DBM:GetUnitFullName(uId)] = ""
+				local unitName = DBM:GetUnitFullName(uId)
+				if unitName then
+					lines[unitName] = ""
+				end
 			end
 		end
 	end
@@ -808,7 +849,10 @@ local function updatePlayerTargets()
 	local cId = value[1]
 	for uId, _ in DBM:GetGroupMembers() do
 		if DBM:GetUnitCreatureId(uId .. "target") ~= cId and (UnitGroupRolesAssigned(uId) == "DAMAGER" or UnitGroupRolesAssigned(uId) == "NONE") then
-			lines[DBM:GetUnitFullName(uId)] = ""
+			local unitName = DBM:GetUnitFullName(uId)
+			if unitName then
+				lines[unitName] = ""
+			end
 		end
 	end
 	updateLines()
@@ -906,6 +950,7 @@ end
 
 local events = {
 	["health"] = updateHealth,
+	["bosshealth"] = updateBossHealth,
 	["playerpower"] = updatePlayerPower,
 	["enemypower"] = updateEnemyPower,
 	["enemyabsorb"] = updateEnemyAbsorb,
@@ -968,12 +1013,13 @@ local function onUpdate(frame, table)
 			error("DBM InfoFrame: leftText cannot be nil, Notify DBM author. Infoframe force shutting down ", 2)
 			frame:Hide()
 			return
-		elseif leftText and type(leftText) ~= "string" then
+		elseif type(leftText) ~= "string" then
 			leftText = tostring(leftText)
 		end
 		local rightText = lines[leftText]
 		local extra, extraName = ssplit("*", leftText) -- Find just unit name, if extra info had to be added to make unique
-		local icon = icons[extraName or leftText] and icons[extraName or leftText] .. leftText
+		local icon = icons[extraName or leftText]
+		local textWithIcon = icon and ("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t%s"):format(icon, leftText)
 		if friendlyEvents[currentEvent] then
 			local unitId = DBM:GetRaidUnitId(DBM:GetUnitFullName(extraName or leftText)) or "player"--Prevent nil logical error
 			if unitId then
@@ -994,26 +1040,26 @@ local function onUpdate(frame, table)
 					linesShown = linesShown + 1
 					if unitId and UnitIsUnit(unitId, "player") then -- It's player.
 						if currentEvent == "health" or currentEvent == "playerpower" or currentEvent == "playerabsorb" or currentEvent == "playerbuff" or currentEvent == "playergooddebuff" or currentEvent == "playerbaddebuff" or currentEvent == "playerdebuffremaining" or currentEvent == "playerdebuffstacks" or currentEvent == "playerbuffremaining" or currentEvent == "playertargets" or currentEvent == "playeraggro" then--Red
-							infoFrame:SetLine(linesShown, icon or leftText, rightText, 255, 0, 0, 255, 255, 255)
+							infoFrame:SetLine(linesShown, textWithIcon or leftText, rightText, 255, 0, 0, 255, 255, 255)
 						else -- Green
-							infoFrame:SetLine(linesShown, icon or leftText, rightText, 0, 255, 0, 255, 255, 255)
+							infoFrame:SetLine(linesShown, textWithIcon or leftText, rightText, 0, 255, 0, 255, 255, 255)
 						end
 					else -- It's not player, do nothing special with it. Ordinary class colored text.
 						if currentEvent == "playerdebuffremaining" or currentEvent == "playerbuffremaining" then
 							local numberValue = tonumber(rightText)
 							if numberValue < 6 then
-								infoFrame:SetLine(linesShown, icon or leftText, rightText, color.r, color.g, color.b, 255, 0, 0)--Red
+								infoFrame:SetLine(linesShown, textWithIcon or leftText, rightText, color.r, color.g, color.b, 255, 0, 0)--Red
 							elseif numberValue < 11 then
-								infoFrame:SetLine(linesShown, icon or leftText, rightText, color.r, color.g, color.b, 255, 127.5, 0)--Orange
+								infoFrame:SetLine(linesShown, textWithIcon or leftText, rightText, color.r, color.g, color.b, 255, 127.5, 0)--Orange
 							else
 								if numberValue == 9000 then -- Out of range players
-									infoFrame:SetLine(linesShown, icon or leftText, SPELL_FAILED_OUT_OF_RANGE, color.r, color.g, color.b, 255, 0, 0)--Red
+									infoFrame:SetLine(linesShown, textWithIcon or leftText, SPELL_FAILED_OUT_OF_RANGE, color.r, color.g, color.b, 255, 0, 0)--Red
 								else
-									infoFrame:SetLine(linesShown, icon or leftText, rightText, color.r, color.g, color.b, 255, 255, 255)--White
+									infoFrame:SetLine(linesShown, textWithIcon or leftText, rightText, color.r, color.g, color.b, 255, 255, 255)--White
 								end
 							end
 						else
-							infoFrame:SetLine(linesShown, icon or leftText, rightText, color.r, color.g, color.b, 255, 255, 255)
+							infoFrame:SetLine(linesShown, textWithIcon or leftText, rightText, color.r, color.g, color.b, 255, 255, 255)
 						end
 					end
 				end
@@ -1048,7 +1094,7 @@ local function onUpdate(frame, table)
 				end
 			end
 			linesShown = linesShown + 1
-			infoFrame:SetLine(linesShown, icon or leftText, rightText, color.r, color.g, color.b, color2.r, color2.g, color2.b)
+			infoFrame:SetLine(linesShown, textWithIcon or leftText, rightText, color.r, color.g, color.b, color2.r, color2.g, color2.b)
 		end
 	end
 	local maxWidth1, maxWidth2, linesPerRow = {}, {}, 5
@@ -1137,12 +1183,28 @@ function infoFrame:Show(modMaxLines, event, ...)
 	elseif type(value[1]) == "number" and event ~= "health" and event ~= "function" and event ~= "table" and event ~= "playertargets" and event ~= "playeraggro" and event ~= "playerpower" and event ~= "enemypower" and event ~= "test" and event ~= "test2" then
 		-- Outside of "byspellid" functions, typical frames will still use spell NAME matching not spellID.
 		-- This just determines if we convert the spell input to a spell Name, if a spellId was provided for a non byspellid infoframe
-		value[1] = DBM:GetSpellInfo(value[1])
+		value[1] = DBM:GetSpellName(value[1])
+	elseif event == "bosshealth" then
+		if type(value[1]) ~= "table" then
+			error("DBM-InfoFrame: bosshealth frame expects a table of bossIds -> names or a mod as parameter, got " .. type(value[1]), 2)
+		end
+		if value[1].multiMobPullDetection or value[1].creatureId then -- Looks like a mod
+			-- Get default bosses from mod
+			local mod = value[1]
+			value[1] = {}
+			if mod.multiMobPullDetection then
+				for _, v in ipairs(mod.multiMobPullDetection) do
+					value[1][v] = true
+				end
+			elseif mod.creatureId then -- Boss health frame for a single target? Sure, let's support it anyways.
+				value[1][mod.creatureId] = true
+			end
+		end -- else: is not a mod, just use as is
 	end
 	currentEvent = event
 	if event == "playerbuff" or event == "playerbaddebuff" or event == "playergooddebuff" then
 		sortMethod = 3 -- Sort by group ID
-	elseif event == "health" or event == "playerdebuffremaining" then
+	elseif event == "health" or event == "playerdebuffremaining" or event == "bosshealth" then
 		sortMethod = 2 -- Sort lowest first
 	elseif (event == "playerdebuffstacks" or event == "table") and value[2] and type(value[2]) == "number" then
 		sortMethod = value[2]
@@ -1208,7 +1270,7 @@ function infoFrame:SetHeader(text)
 	if not frame then
 		createFrame()
 	end
-	frame.header:SetText(text or "DBM Info Frame")
+	frame.header:SetText(text or L.INFOFRAME_TITLE)
 end
 
 function infoFrame:ClearLines()

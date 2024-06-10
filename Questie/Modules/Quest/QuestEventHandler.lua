@@ -28,6 +28,10 @@ local IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
 local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestieTracker
 local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+---@type AutoCompleteFrame
+local AutoCompleteFrame = QuestieLoader:ImportModule("AutoCompleteFrame")
+---@type WatchFrameHook
+local WatchFrameHook = QuestieLoader:ImportModule("WatchFrameHook")
 ---@type l10n
 local l10n = QuestieLoader:ImportModule("l10n")
 
@@ -55,6 +59,7 @@ function QuestEventHandler:RegisterEvents()
     eventFrame:RegisterEvent("QUEST_REMOVED")
     eventFrame:RegisterEvent("QUEST_LOG_UPDATE")
     eventFrame:RegisterEvent("QUEST_WATCH_UPDATE")
+    eventFrame:RegisterEvent("QUEST_AUTOCOMPLETE")
     eventFrame:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
     eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
     eventFrame:RegisterEvent("NEW_RECIPE_LEARNED") -- Spell objectives; Runes in SoD count as recipes because "Engraving" is a profession?
@@ -176,11 +181,11 @@ end
 function _QuestEventHandler:InitQuestLog()
     -- Fill the QuestLogCache for first time
     local cacheMiss, changes = QuestLogCache.CheckForChanges(nil)
-    if cacheMiss then
+    -- if cacheMiss then
         -- TODO actually can happen in rare edge case if player accepts new quest during questie init. *cough*
         -- or if someone managed to overflow game cache already at this point.
-        Questie:Error("Did you accept a quest during InitQuestLog? Please report on Github or Discord. Game's quest log cache is not ok. This shouldn't happen. Questie may malfunction.")
-    end
+        --Questie:Error("Did you accept a quest during InitQuestLog? Please report on Github or Discord. Game's quest log cache is not ok. This shouldn't happen. Questie may malfunction.")
+    -- end
 
     for questId, _ in pairs(changes) do
         questLog[questId] = {
@@ -229,8 +234,9 @@ end
 ---@return boolean true @if the function was successful, false otherwise
 function _QuestEventHandler:HandleQuestAccepted(questId)
     -- We first check the quest objectives and retry in the next QLU event if they are not correct yet
-    local cacheMiss, changes = QuestLogCache.CheckForChanges({ [questId] = true }) -- if cacheMiss, no need to check changes as only 1 questId
+    local cacheMiss, changes = QuestLogCache.CheckForChanges({ [questId] = true })
     if cacheMiss then
+        -- if cacheMiss, no need to check changes as only 1 questId
         Questie:Debug(Questie.DEBUG_INFO, "Objectives are not cached yet")
         _QuestLogUpdateQueue:Insert(function()
             return _QuestEventHandler:HandleQuestAccepted(questId)
@@ -399,6 +405,18 @@ local _UnitQuestLogChangedCallback = function()
     return true
 end
 
+---Some Quests are not turned in at an NPC or object. QUEST_AUTOCOMPLETE is fired for these quests.
+---Good quest to test this: https://www.wowhead.com/quest=24502/necessary-roughness
+---@param questId number
+function _QuestEventHandler:QuestAutoComplete(questId)
+    Questie:Debug(Questie.DEBUG_DEVELOP, "[Quest Event] QUEST_AUTOCOMPLETE", questId)
+
+    if Questie.db.profile.trackerEnabled then
+        QuestieCombatQueue:Queue(WatchFrameHook.Hide)
+        AutoCompleteFrame.ShowAutoComplete(questId)
+    end
+end
+
 --- Fires when an objective changed in the quest log of the unitTarget. The required data is not available yet though
 ---@param unitTarget string
 function _QuestEventHandler:UnitQuestLogChanged(unitTarget)
@@ -536,10 +554,15 @@ function _QuestEventHandler:OnEvent(event, ...)
         _QuestEventHandler:QuestLogUpdate()
     elseif event == "QUEST_WATCH_UPDATE" then
         _QuestEventHandler:QuestWatchUpdate(...)
+    elseif event == "QUEST_AUTOCOMPLETE" then
+        _QuestEventHandler:QuestAutoComplete(...)
     elseif event == "UNIT_QUEST_LOG_CHANGED" and select(1, ...) == "player" then
         _QuestEventHandler:UnitQuestLogChanged(...)
     elseif event == "ZONE_CHANGED_NEW_AREA" then
         _QuestEventHandler:ZoneChangedNewArea()
+    elseif event == "NEW_RECIPE_LEARNED" then
+        Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] NEW_RECIPE_LEARNED (QuestEventHandler)")
+        doFullQuestLogScan = true -- If this event is related to a spell objective, a QUEST_LOG_UPDATE will be fired afterwards
     elseif event == "PLAYER_INTERACTION_MANAGER_FRAME_HIDE" then
         local eventType = select(1, ...)
         if eventType == 1 then

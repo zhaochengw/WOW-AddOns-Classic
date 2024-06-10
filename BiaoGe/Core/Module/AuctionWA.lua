@@ -155,10 +155,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         _G.BGA.FontGreen15:SetTextColor(0, 1, 0)
         _G.BGA.FontGreen15:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
 
-        local color = "While15" -- BGA.FontWhile15
-        _G.BGA.FontWhile15 = CreateFont("BGA.Font" .. color)
-        _G.BGA.FontWhile15:SetTextColor(1, 1, 1)
-        _G.BGA.FontWhile15:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        local color = "white15" -- BGA.Fontwhite15
+        _G.BGA.FontWhite15 = CreateFont("BGA.Font" .. color)
+        _G.BGA.FontWhite15:SetTextColor(1, 1, 1)
+        _G.BGA.FontWhite15:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
     end
 
     function aura_env.UpdateRaidRosterInfo()
@@ -622,7 +622,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             -- Pass
             local bt = CreateFrame("Button", nil, AuctionFrame)
             bt:SetNormalFontObject(_G.BGA.FontGreen15)
-            bt:SetHighlightFontObject(_G.BGA.FontWhile15)
+            bt:SetHighlightFontObject(_G.BGA.FontWhite15)
             bt:SetPoint("TOPRIGHT", -3, -3)
             bt:SetText(aura_env.L["隐藏"])
             bt:SetSize(bt:GetFontString():GetWidth(), 20)
@@ -648,7 +648,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             -- 取消拍卖
             local bt = CreateFrame("Button", nil, AuctionFrame)
             bt:SetNormalFontObject(_G.BGA.FontGreen15)
-            bt:SetHighlightFontObject(_G.BGA.FontWhile15)
+            bt:SetHighlightFontObject(_G.BGA.FontWhite15)
             bt:SetPoint("TOPLEFT", 3, -3)
             bt:SetText(aura_env.L["取消拍卖"])
             bt:SetSize(bt:GetFontString():GetWidth(), 20)

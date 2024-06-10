@@ -5,7 +5,7 @@
 GTFO Spell List - Battle for Azeroth
 ]]--
 
-if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
+if (GTFO.RetailMode) then
 
 --- ******************************
 --- * Battle for Azeroth (World) *
@@ -408,6 +408,23 @@ GTFO.SpellID["270685"] = {
   --desc = "Resonance (Azerite Shard)";
   sound = 1;
 };
+
+GTFO.SpellID["303800"] = {
+  --desc = "Oppressive Blast (HK-8 Aerial Oppression Unit)";
+  sound = 1;
+};
+
+GTFO.SpellID["313303"] = {
+  --desc = "Burned Bridge";
+  ignoreApplication = true;
+  sound = 2;
+};
+
+GTFO.SpellID["270012"] = {
+  --desc = "Defense Barrage";
+  sound = 1;
+};
+
 
 -- ***********************
 -- * Shrine of the Storm *
@@ -995,6 +1012,12 @@ GTFO.SpellID["287876"] = {
 -- ***********************
 -- * Operation: Mechagon *
 -- ***********************
+
+GTFO.SpellID["303313"] = {
+  --desc = "Exiting Mission Area";
+  applicationOnly = true;
+  sound = 1;
+};
 
 GTFO.SpellID["302384"] = {
   --desc = "Static Discharge (HK-8 Aerial Oppression Unit)";

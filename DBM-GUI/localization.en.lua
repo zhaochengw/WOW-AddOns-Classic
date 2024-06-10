@@ -19,6 +19,7 @@ L.OTabOptions						= "Core Options"
 L.OTabAbout							= "About"
 
 L.FOLLOWER							= "Follower"--i.e. the new dungeon type in 10.2.5. I haven't found a translated string yet
+L.STORY					    		= "Story"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet
 
 L.TabCategory_CURRENT_SEASON		= "Current Season"
 
@@ -114,13 +115,13 @@ L.RecordOnlyBosses					= "Do not record trash (Only records Bosses. Use '/dbm pu
 L.DoNotLogLFG						= "Do not record LFG or LFR (queued content)"
 --Auto Logging: Recorded Content types
 L.Area_AutoLoggingContent			= "Auto Logging Content"
-L.LogCurrentMythicRaids				= "Current level Mythic raids"--Retail Only
-L.LogCurrentRaids					= "Current level non Mythic raids (Heroic, Normal, and LFR if LFG/LFR filter is disabled)"
-L.LogTWRaids						= "Timewalking or Chromie Time raids"--Retail Only
+L.LogCurrentMythicRaids				= "Current level (or remix) Mythic raids"--Retail Only
+L.LogCurrentRaids					= "Current level (or remix) non Mythic raids (Heroic, Normal, and LFR if LFG/LFR filter is disabled)"
+L.LogTWRaids						= "Timewalking or Chromie Time raids (does NOT include remix)"--Retail Only
 L.LogTrivialRaids					= "Trivial (below character level) raids"
-L.LogCurrentMPlus					= "Current level M+ dungeons"--Retail Only
-L.LogCurrentMythicZero				= "Current level Mythic 0 dungeons"--Retail Only
-L.LogTWDungeons						= "Timewalking or Chromie Time dungeons"--Retail Only
+L.LogCurrentMPlus					= "Current level (or remix) M+ dungeons"--Retail Only
+L.LogCurrentMythicZero				= "Current level (or remix) Mythic 0 dungeons"--Retail Only
+L.LogTWDungeons						= "Timewalking or Chromie Time dungeons (does NOT include remix)"--Retail Only
 L.LogCurrentHeroic					= "Current level Heroic dungeons (Note: if you are doing heroic via queuing and want it logged, turn off LFG filter)"
 
 -- Panel: Extra Features
@@ -458,7 +459,6 @@ L.Area_PullTimer					= "Pull, Break, & Custom Timer Filter Options"
 L.DontShowPTNoID					= "Block DBM Pull Timers if not sent from same zone as you (will never block BigWigs timers that are sent with no zone ID)"
 L.DontShowPT						= "Do not show Pull/Break Timer bar"
 L.DontShowPTText					= "Do not show announce text for Pull/Break Timer"
-L.DontShowPTCountdownText			= "Do not show Pull countdown text"
 L.DontPlayPTCountdown				= "Do not play Pull/Break/Custom Timer countdown audio at all"
 L.PT_Threshold						= "Do not play Pull/Break/Custom Timer countdown audio above: %d"
 
@@ -478,7 +478,7 @@ L.Area_SpecFilter					= "Role Filter Options"
 L.FilterTankSpec					= "Filter announcements designated for Tank role when not tank spec. (Note: Disabling this is not recommended for most users as 'taunt' announcements are now all on by default.)"
 L.FilterDispels						= "Filter announcements for dispelable spells if your dispel is on cooldown"
 L.FilterCrowdControl				= "Filter announcements for crowd control based interrupts if your CC is on cooldown"
-L.FilterTrashWarnings				= "Filter all trash mob announcements in follower, normal, heroic, and trivial (outleveled) dungeons"
+L.FilterTrashWarnings				= "Filter all trash mob announcements in follower, normal, and trivial (outleveled) dungeons"
 
 L.Area_BInterruptFilter				= "Boss Interrupt Filter Options"
 L.FilterTargetFocus					= "Filter if caster is not current target/focus/softenemy"
@@ -585,7 +585,12 @@ L.NPAuraSize						= "Icon Pixel size (squared): %d"
 L.NPIcon_BarOffSetX 				= "Icon Offset X: %d"
 L.NPIcon_BarOffSetY 				= "Icon Offset Y: %d"
 L.NPIcon_GrowthDirection 			= "Icon Growth Direction"
+L.NPIcon_Spacing		 			= "Icon Spacing: %d"
+L.NPIcon_MaxTextLen		 			= "Max. Text Length: %d"
+L.NPIconAnchorPoint		 			= "Icon Anchor Point"
 L.NPDemo							= "Test (Be near nameplates)"
+L.FontTypeTimer						= "Select timer font"
+L.FontTypeText						= "Select text font"
 
 -- Misc
 L.Area_General						= "General"

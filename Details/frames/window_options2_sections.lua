@@ -1165,21 +1165,15 @@ do
         return texTable2
     end
 
-    local iconsize = {16, 16}
-    local icontexture = [[Interface\WorldStateFrame\ICONS-CLASSES]]
-    local iconcoords = {0.25, 0.50, 0, 0.25}
-    local list = {
-        {value = [[]], label = Loc ["STRING_OPTIONS_BAR_ICONFILE1"], onclick = OnSelectIconFile, icon = icontexture, texcoord = iconcoords, iconsize = iconsize, iconcolor = {1, 1, 1, .3}},
-        {value = [[Interface\AddOns\Details\images\classes_small]], label = Loc ["STRING_OPTIONS_BAR_ICONFILE2"], onclick = OnSelectIconFile, icon = icontexture, texcoord = iconcoords, iconsize = iconsize},
-        {value = [[Interface\AddOns\Details\images\spec_icons_normal]], label = "Specialization", onclick = OnSelectIconFileSpec, icon = [[Interface\AddOns\Details\images\icons]], texcoord = {2/512, 32/512, 480/512, 510/512}, iconsize = iconsize},
-        {value = [[Interface\AddOns\Details\images\spec_icons_normal_alpha]], label = "Specialization Alpha", onclick = OnSelectIconFileSpec, icon = [[Interface\AddOns\Details\images\icons]], texcoord = {2/512, 32/512, 480/512, 510/512}, iconsize = iconsize},
-        {value = [[Interface\AddOns\Details\images\classes_small_bw]], label = Loc ["STRING_OPTIONS_BAR_ICONFILE3"], onclick = OnSelectIconFile, icon = icontexture, texcoord = iconcoords, iconsize = iconsize},
-        {value = [[Interface\AddOns\Details\images\classes_small_alpha]], label = Loc ["STRING_OPTIONS_BAR_ICONFILE4"], onclick = OnSelectIconFile, icon = icontexture, texcoord = iconcoords, iconsize = iconsize},
-        {value = [[Interface\AddOns\Details\images\classes_small_alpha_bw]], label = Loc ["STRING_OPTIONS_BAR_ICONFILE6"], onclick = OnSelectIconFile, icon = icontexture, texcoord = iconcoords, iconsize = iconsize},
-        {value = [[Interface\AddOns\Details\images\classes]], label = Loc ["STRING_OPTIONS_BAR_ICONFILE5"], onclick = OnSelectIconFile, icon = icontexture, texcoord = iconcoords, iconsize = iconsize},
-    }
     local builtIconList = function()
-        return list
+		for k,v in ipairs(Details222.BarIconSetList) do
+            if v.isSpec then
+                v.onclick = OnSelectIconFileSpec
+            else
+                v.onclick = OnSelectIconFile
+            end
+        end
+        return Details222.BarIconSetList
     end
 
     local buildSection = function(sectionFrame)
@@ -2923,6 +2917,23 @@ do
             },            
             {type = "blank"},
 
+            {--grouped windows horizontal gap
+                type = "range",
+                get = function() return tonumber(Details.grouping_horizontal_gap) end,
+                set = function(self, fixedparam, value)
+                    Details.grouping_horizontal_gap = value
+                    currentInstance:BaseFrameSnap()
+                    afterUpdate()
+                end,
+                min = 0,
+                max = 20,
+                usedecimals = true,
+                step = 0.5,
+                name = Loc ["STRING_OPTIONS_GROUPING_HORIZONTAL_GAP"],
+                desc = Loc ["STRING_OPTIONS_GROUPING_HORIZONTAL_GAP_DESC"],
+                thumbscale = 2.2,
+            },
+
             {--disable grouping
                 type = "toggle",
                 get = function() return Details.disable_window_groups end,
@@ -2994,6 +3005,7 @@ do
             {type = "blank"},
 
             {--delete window
+                id = 'deleteWindow',
                 type = "select",
                 get = function() return 0 end,
                 values = function()
@@ -3006,8 +3018,8 @@ do
             {--delete window
                 type = "execute",
                 func = function(self)
-                    local profileDropdown = sectionFrame.widget_list_by_type.dropdown[3]
-                    local selectedWindow = profileDropdown:GetValue()
+                    local windowDropdown = self.MyObject.container:GetWidgetById('deleteWindow')
+                    local selectedWindow = windowDropdown and windowDropdown:GetValue()
 
                     if (selectedWindow) then
                         Details:DeleteInstance(selectedWindow)
@@ -3106,7 +3118,7 @@ do
         }
         sectionFrame.sectionOptions = sectionOptions
         sectionOptions.always_boxfirst = true
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize+20, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -4417,6 +4429,17 @@ do
                 desc = "Divisor Color",
             },
 
+            {--rounded corner
+                type = "toggle",
+                get = function() return Details.tooltip.rounded_corner end,
+                set = function(self, fixedparam, value)
+                    Details.tooltip.rounded_corner = value
+                    afterUpdate()
+                end,
+                name = "Show Rounded Border",
+                desc = "Show Rounded Border",
+            },
+
             {type = "blank"},
 
             {--show amount
@@ -4791,7 +4814,7 @@ do
             }
 
         --create preview
-            local previewX, previewY = 460, -60
+            local previewX, previewY = 460, startY-20
 
             local preview = sectionFrame:CreateTexture(nil, "overlay")
             preview:SetDrawLayer("artwork", 3)
@@ -7111,13 +7134,14 @@ do
 
             {--show evoker bar
                 type = "toggle",
-                get = function() return Details.combat_log.evoker_calc_damage end,
+                get = function() return Details.combat_log.calc_evoker_damage end,
                 set = function(self, fixedparam, value)
-                    Details.combat_log.evoker_calc_damage = value
+                    Details.combat_log.calc_evoker_damage = value
                     afterUpdate()
                     Details:ClearParserCache()
+                    currentInstance:InstanceReset()
                 end,
-                name = DF:AddClassIconToText("Predict Augmentation Damage", false, "EVOKER"),
+                name = DF:AddClassIconToText("Show Augmentation Extra Bar", false, "EVOKER"),
                 desc = "Calculate how much the Augmentation Evoker are buffing other players",
                 boxfirst = true,
             },

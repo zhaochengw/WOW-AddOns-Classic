@@ -18,6 +18,7 @@ L.OTabOptions					= "핵심 설정"
 L.OTabAbout						= "소개"
 
 L.FOLLOWER						= "추종자"--i.e. the new dungeon type in 10.2.5. I haven't found a translated string yet
+L.STORY					    		= "이야기"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet
 
 L.TabCategory_CURRENT_SEASON		= "현재 시즌"
 
@@ -114,13 +115,13 @@ L.RecordOnlyBosses			= "일반몹 기록 안함 (보스만 기록합니다. 보�
 L.DoNotLogLFG				= "던전 찾기와 공격대 찾기 기록 안함 (대기열 등록 콘텐트)"
 --Auto Logging: Recorded Content types
 L.Area_AutoLoggingContent	= "자동으로 기록할 콘텐트"
-L.LogCurrentMythicRaids		= "현재 확장팩 신화 레이드"--Retail Only
-L.LogCurrentRaids			= "현재 확장팩 비 신화 레이드 (영웅, 일반 그리고 던전 찾기와 공찾 기록 안함 옵션이 꺼져있을 경우엔 공찾까지)"
-L.LogTWRaids				= "시간여행 또는 크로미의 시간 레이드"--Retail Only
+L.LogCurrentMythicRaids		= "현재 확장팩 (또는 리믹스) 신화 레이드"--Retail Only
+L.LogCurrentRaids			= "현재 확장팩 (또는 리믹스) 비 신화 레이드 (영웅, 일반 그리고 던전 찾기와 공찾 기록 안함 옵션이 꺼져있을 경우엔 공찾까지)"
+L.LogTWRaids				= "시간여행 또는 크로미의 시간 레이드 (리믹스 제외)"--Retail Only
 L.LogTrivialRaids			= "구 레이드 (이전 확장팩)"
-L.LogCurrentMPlus			= "현재 확장팩 신화+ 던전"--Retail Only
-L.LogCurrentMythicZero		= "현재 확장팩 신화 0단 던전"--Retail Only
-L.LogTWDungeons				= "시간여행 또는 크로미의 시간 레이드"--Retail Only
+L.LogCurrentMPlus			= "현재 확장팩 (또는 리믹스) 신화+ 던전"--Retail Only
+L.LogCurrentMythicZero		= "현재 확장팩 (또는 리믹스) 신화 0단 던전"--Retail Only
+L.LogTWDungeons				= "시간여행 또는 크로미의 시간 던전 (리믹스 제외)"--Retail Only
 L.LogCurrentHeroic			= "현재 확장팩 영웅 던전 (알림: 던전 찾기를 통해 영던을 돌면서 로그를 기록하고 싶다면 던전 찾기 기록 안함 옵션을 끄세요)"
 
 -- Panel: Extra Features
@@ -453,7 +454,6 @@ L.Area_PullTimer			= "풀링, 휴식, 사용자 지정 바 관련 필터 설정"
 L.DontShowPTNoID			= "같은 지역에 없는 사용자가 보낸 DBM 풀링 타이머 차단 (지역 ID 없이 전송된 BigWigs 타이머는 차단하지 않습니다)"
 L.DontShowPT				= "풀링/휴식 타이머 표시 안함"
 L.DontShowPTText			= "풀링/휴식 알림 텍스트 표시 안함"
-L.DontShowPTCountdownText	= "풀링 초읽기 숫자 표시 안함"
 L.DontPlayPTCountdown		= "풀링/휴식/사용자 지정 초읽기 전구간 음성 재생 안함"
 L.PT_Threshold				= "풀링/휴식/사용자 지정 타이머 초읽기 음성 재생 안함: %d초 까지"
 
@@ -473,7 +473,7 @@ L.Area_SpecFilter			= "역할 관련 필터 설정"
 L.FilterTankSpec			= "방어 전담이 아닐땐 방어 전담용 알림 보지 않기 (참고: '도발' 알림은 현재 전부 기본값으로 켜짐 상태이기 때문에 대부분의 이용자는 설정을 끄지 않는 것을 권장합니다.)"
 L.FilterDispels				= "해제 주문이 쿨타임일땐 해제 알림 보지 않기"
 L.FilterCrowdControl			= "메즈기가 쿨타임일땐 메즈 기반 차단 알림 보지 않기"
-L.FilterTrashWarnings		= "추종자, 일반, 영웅, 이전 확장팩 던전에선 일반몹 알림 보지 않기"
+L.FilterTrashWarnings		= "추종자, 일반, 저레벨 던전에선 일반몹 알림 보지 않기"
 
 L.Area_BInterruptFilter				= "보스 차단 알림 필터 설정"
 L.FilterTargetFocus					= "현재 대상/주시 대상/액션 대상(적)이 아니면 알림 표시 안함"
@@ -509,7 +509,7 @@ L.Area_Cinematics					= "게임내 시네마틱 재생 차단"
 L.DuringFight						= "보스 전투중 컷신 재생 차단"--uses explicite IsEncounterInProgress check
 L.InstanceAnywhere					= "던전이나 공격대 인스턴스에서 비전투 컷신 재생 차단"
 L.NonInstanceAnywhere				= "위험: 야외 컷신 재생 차단 (권장하지 않음)"
-L.OnlyAfterSeen						= "한번 봤던 컷신만 재생 차단 (강력 권장, 한번은 스토리를 보는게 좋습니다)"
+L.OnlyAfterSeen						= "한번 봤던 컷신만 재생 차단 (컷신이 한번은 나오기 때문에 스토리를 이해하려면 이 설정을 강력히 추천합니다)"
 --Sound
 L.Area_Sound						= "게임내 소리 차단"
 L.DisableSFX					= "보스 전투중 효과 음량 비활성화"
@@ -580,7 +580,12 @@ L.NPAuraSize				= "아이콘 픽셀 크기 (정사각형): %d"
 L.NPIcon_BarOffSetX 				= "아이콘 위치 조정 X: %d"
 L.NPIcon_BarOffSetY 				= "아이콘 위치 조정 Y: %d"
 L.NPIcon_GrowthDirection 			= "아이콘 생성 방향"
-L.NPDemo							= "테스트 (이름표 근처에서 실행)"
+L.NPIcon_Spacing		 			= "아이콘 간격: %d"
+L.NPIcon_MaxTextLen		 			= "텍스트 최대 길이: %d"
+L.NPIconAnchorPoint		 			= "아이콘 기준점"
+L.NPDemo							= "테스트 (이름표 보이는데서만 작동)"
+L.FontTypeTimer						= "타이머 글꼴 선택"
+L.FontTypeText						= "텍스트 글꼴 선택"
 
 -- Misc
 L.Area_General				= "일반"

@@ -34,7 +34,7 @@ ELib:ShadowInside(Options)
 Options.bossButton:Hide()
 Options.backToInterface:SetScript("OnClick",function ()
 	MRT.Options.Frame:Hide()
-	if MRT.is10 or SettingsPanel then
+	if SettingsPanel then
 		SettingsPanel:Show()
 	else
 		InterfaceOptionsFrame:Show()
@@ -147,7 +147,7 @@ Options.modulesList:Update()
 
 MRT.Options.InBlizzardInterface = CreateFrame( "Frame", nil )
 MRT.Options.InBlizzardInterface.name = "Method Raid Tools"
-if MRT.is10 or SettingsPanel then
+if SettingsPanel then
 	local category = Settings.RegisterCanvasLayoutCategory(MRT.Options.InBlizzardInterface, "Method Raid Tools")
 	Settings.RegisterAddOnCategory(category)
 else
@@ -156,7 +156,7 @@ end
 MRT.Options.InBlizzardInterface:Hide()
 
 MRT.Options.InBlizzardInterface:SetScript("OnShow",function (self)
-	if MRT.is10 or SettingsPanel then
+	if SettingsPanel then
 		if SettingsPanel:IsShown() then
 			HideUIPanel(SettingsPanel)
 		end
@@ -170,7 +170,7 @@ MRT.Options.InBlizzardInterface:SetScript("OnShow",function (self)
 end)
 
 MRT.Options.InBlizzardInterface.button = ELib:Button(MRT.Options.InBlizzardInterface,"Method Raid Tools",0):Size(400,25):Point("TOP",0,-100):OnClick(function ()
-	if MRT.is10 or SettingsPanel then
+	if SettingsPanel then
 		if SettingsPanel:IsShown() then
 			HideUIPanel(SettingsPanel)
 		end
@@ -260,7 +260,7 @@ MiniMapIcon:SetScript("OnLeave", function(self)
 	self.anim:Stop()
 	self.iconMini:Hide()
 end)
-if MRT.is10 then
+if not MRT.isClassic then
 	MiniMapIcon.icon:SetSize(20,20)
 	MiniMapIcon.iconMini:SetSize(20,20)
 	MiniMapIcon.icon:SetPoint("CENTER",1,0)
@@ -469,6 +469,13 @@ function OptionsFrame:AddSnowStorm(maxSnowflake)
 	OptionsFrame.SnowStorm = sf
 	sf:SetPoint("TOPLEFT")
 	sf:SetPoint("BOTTOMRIGHT")
+
+	local resumeSnowFunc = function(self)
+		self:SetScript("OnUpdate",nil)
+		for i=1,self.snowlast do
+			self.snow[i].g:Play()
+		end
+	end
 	
 	sf.C = sf.C or CreateFrame("Frame", nil, sf) 
 	sf:SetScrollChild(sf.C)
@@ -534,6 +541,7 @@ function OptionsFrame:AddSnowStorm(maxSnowflake)
 		for i=maxSnowflake+1,#sf.snow do
 			local f = sf.snow[i]
 			f:Hide()
+			f.g:Pause()
 		end
 		sf.snowlast = 0
 		return
@@ -545,6 +553,11 @@ function OptionsFrame:AddSnowStorm(maxSnowflake)
 		f:Update()
 	end
 	local function AnimOnUpdate(self)
+		if not sf:IsVisible() then
+			sf:SetScript("OnUpdate",resumeSnowFunc)
+			self:GetParent():Pause()
+			return
+		end
 		local f = self.p
 		local p = self:GetProgress()
 		if p == 0 then
@@ -615,6 +628,7 @@ function OptionsFrame:AddSnowStorm(maxSnowflake)
 		
 			f:Update(true)
 		end
+		sf.snow[i].g:Play()
 		sf.snow[i]:Show()
 	end
 	sf.snowlast = maxSnowflake
@@ -629,6 +643,13 @@ function OptionsFrame:AddDeathStar(maxDeathStars,deathStarType)
 	sf.C = sf.C or CreateFrame("Frame", nil, sf) 
 	sf:SetScrollChild(sf.C)
 	sf.C:SetSize(Options:GetWidth(),Options:GetHeight())
+
+	local resumeSnowFunc = function(self)
+		self:SetScript("OnUpdate",nil)
+		for i=1,self.snowlast do
+			self.snow[i].g:Play()
+		end
+	end
 
 	maxDeathStars = maxDeathStars or 1
 
@@ -661,6 +682,7 @@ function OptionsFrame:AddDeathStar(maxDeathStars,deathStarType)
 		for i=maxDeathStars+1,#sf.snow do
 			local f = sf.snow[i]
 			f:Hide()
+			f.g:Pause()
 		end
 		sf.snowlast = 0
 		return
@@ -672,6 +694,11 @@ function OptionsFrame:AddDeathStar(maxDeathStars,deathStarType)
 		f:Update()
 	end
 	local function AnimOnUpdate(self)
+		if not sf:IsVisible() then
+			sf:SetScript("OnUpdate",resumeSnowFunc)
+			self:GetParent():Pause()
+			return
+		end
 		local f = self.p
 		local p = self:GetProgress()
 		if p == 0 then
@@ -783,6 +810,7 @@ function OptionsFrame:AddDeathStar(maxDeathStars,deathStarType)
 		
 			f:Update(true)
 		end
+		sf.snow[i].g:Play()
 		sf.snow[i]:Show()
 	end
 	sf.snowlast = maxDeathStars
@@ -863,6 +891,9 @@ OptionsFrame.dateChecks:SetScript("OnShow",function(self)
 			isChristmas = true
 		end
 		if (today.month == 12 and today.day >= 30) or (today.month == 1 and today.day <= 2) then
+			isSnowDay = true
+		end
+		if (today.month == 12 and today.day >= 24 and today.day <= 25) then
 			isSnowDay = true
 		end
 	elseif MRT.locale == "deDE" or MRT.locale == "enGB" or MRT.locale == "enUS" or MRT.locale == "esES" or MRT.locale == "esMX" or MRT.locale == "frFR" or MRT.locale == "itIT" or MRT.locale == "ptBR" or MRT.locale == "ptPT" then

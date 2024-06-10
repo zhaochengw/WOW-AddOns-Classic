@@ -271,6 +271,66 @@ TotemTimers.options.args.trackers = {
                                 return TotemTimers.ActiveProfile.WeaponBarDirection
                             end,
                         },
+                        overlayglow = {
+                            order = 6,
+                            type = "toggle",
+                            name = L["Glow when missing"],
+                            desc = L["Shows a glow when in combat and weapon buff is missing for Enhancement"],
+                            set = function(info, val)
+                                TotemTimers.ActiveProfile.WeaponGlow = val
+                            end,
+                            get = function(info)
+                                return TotemTimers.ActiveProfile.WeaponGlow
+                            end,
+                        },
+                        warningpoint = {
+                            order = 7,
+                            type = "range",
+                            name = L["Warning Glow at x seconds left"],
+                            min = 10,
+                            max =( C_AddOns.GetAddOnMetadata("TotemTimers", "Version") == "4.0.3") and 300 or 60,
+                            step = 5,
+                            set = function(info, val)
+                                TotemTimers.ActiveProfile.WeaponExpirationWarning = val
+                                TotemTimers.WeaponTracker.isAnimating = false
+                                for i = 1,2 do
+                                    TotemTimers.WeaponTracker.button.icons[i].animation:Stop()
+                                end
+                                TotemTimers.WeaponTracker.button.Flash.animation:Stop()
+                                TotemTimers.ProcessSetting("WeaponExpirationWarning")
+                            end,
+                            get = function(info)
+                                return TotemTimers.ActiveProfile.WeaponExpirationWarning
+                            end,
+                        },
+                        stoppulseheader = {
+                            order = 20,
+                            type = "header",
+                            name = "Stop Pulse",
+                        },
+                        stoppulse = {
+                            order = 21,
+                            type = "toggle",
+                            name = L["Pulse Animation warning"],
+                            desc = L["Show a big pulse animation when weapon buff is about to expire"],
+                            set = function(info, val)
+                                TotemTimers.ActiveProfile.WeaponWarningStopPulse = val
+                                TotemTimers.ProcessSetting("WeaponWarningStopPulse")
+                            end,
+                            get = function(info)
+                                return TotemTimers.ActiveProfile.WeaponWarningStopPulse
+                            end,
+                        },
+                        stoppulsedemo = {
+                            order = 22,
+                            type = "execute",
+                            name = L["Demo"],
+                            func = function()
+                                TotemTimers.WeaponTracker.animation:SetTexture(TotemTimers.WeaponTracker.button.icons[1]:GetTexture())
+                                TotemTimers.WeaponTracker.animation:Play()
+                            end
+                        },
+
                     },
                 },
             },

@@ -19,6 +19,10 @@ module.db.mapsToLog_5ppl = {
 	[643] = true,	-- Throne of the Tides
 }
 
+module.db.mapsSoD = {	--Season of Discovery, Classic
+	[48] = true,
+}
+
 function module.options:Load()
 	self:CreateTilte()
 
@@ -165,7 +169,7 @@ local function GetCurrentMapForLogging()
 			end
 		elseif mapID and module.db.mapsToLog[mapID] then
 			return true 
-		elseif ExRT.isClassic and zoneType == 'raid' then
+		elseif ExRT.isClassic and (zoneType == 'raid' or (C_Engraving and C_Engraving.IsEngravingEnabled() and module.db.mapsSoD[mapID]) or difficulty == 198) then
 			return true 
 		elseif zoneType == 'raid' and (tonumber(mapID) and mapID >= module.db.minRaidMapID) and ((difficulty == 16 and not VMRT.Logging.disableMythic) or (difficulty == 15 and not VMRT.Logging.disableHeroic) or (difficulty == 14 and not VMRT.Logging.disableNormal) or (difficulty ~= 14 and difficulty ~= 15 and difficulty ~= 16)) then
 			return true

@@ -176,7 +176,8 @@ local spellIdByName
 if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
     spellIdByName = {}
     for id, value in pairs(BigDebuffs.Spells) do
-        if not value.parent then spellIdByName[GetSpellInfo(id)] = id end
+        local spellName =  GetSpellInfo(id)
+        if spellName and (not value.parent) then spellIdByName[spellName] = id end
     end
 else
     defaults.profile.unitFrames.focus = {
@@ -336,6 +337,22 @@ else
             Curse = function() return IsUsableSpell(GetSpellInfo(374251)) end,
         },
     }
+    if WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC then
+        classDispel.DRUID = {
+            Magic = function() return IsPlayerSpell(88423) end,
+            Curse = true,
+            Poison = true,
+        }
+        classDispel.SHAMAN = {
+            Magic = function() return IsPlayerSpell(77130) end,
+            Curse = true,
+        }
+        classDispel.PALADIN = {
+            Magic = function() return IsPlayerSpell(53551) end,
+            Poison = true,
+            Disease = true,
+        }
+    end
     local _, class = UnitClass("player")
     BigDebuffs.dispelTypes = classDispel[class]
 end
@@ -380,6 +397,7 @@ local GetAnchor = {
                     end
                 end
             end
+            return
         end
 
         if unit and (unit:match("arena") or unit:match("arena")) then
@@ -527,17 +545,13 @@ local GetNameplateAnchor = {
         end
     end,
     ThreatPlates = function(frame)
-        local tp_frame = frame.TPFrame
-        if tp_frame then
-            local visual = tp_frame.visual
-            -- healthbar and name are always defined, so checks are not really needed here.
-            if visual.healthbar and visual.healthbar:IsShown() then
-                return visual.healthbar, tp_frame
-            elseif visual.name and visual.name:IsShown() then
-                return visual.name, tp_frame
-            else
-                return tp_frame, tp_frame
-            end
+        if frame.TPFrame.GetAnchor then
+            return frame.TPFrame:GetAnchor()
+        elseif frame.UnitFrame:IsShown() then
+            return frame.UnitFrame, frame.UnitFrame
+        else
+            -- Fallback solution if TP was not yet updated and GetAnchor is not available.
+            return frame.TPFrame, frame.TPFrame
         end
     end,
     TidyPlates = function(frame)
@@ -596,7 +610,7 @@ local nameplatesAnchors = {
     [6] = {
         used = function(frame)
             -- IsAddOnLoaded("TidyPlates_ThreatPlates") should be better
-            return TidyPlatesThreat ~= nil and frame.TPFrame:IsShown()
+            return TidyPlatesThreat ~= nil
         end,
         func = GetNameplateAnchor.ThreatPlates,
     },

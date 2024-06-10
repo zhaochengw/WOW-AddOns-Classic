@@ -1,7 +1,6 @@
 # RightClickSelfCast
 
-## [v4.8](https://github.com/Xruptor/RightClickSelfCast/tree/v4.8) (2023-09-18)
-[Full Changelog](https://github.com/Xruptor/RightClickSelfCast/compare/v4.7...v4.8) [Previous Releases](https://github.com/Xruptor/RightClickSelfCast/releases)
+## [v5.0](https://github.com/Xruptor/RightClickSelfCast/tree/v5.0) (2024-04-08)
+[Full Changelog](https://github.com/Xruptor/RightClickSelfCast/compare/v4.9...v5.0) [Previous Releases](https://github.com/Xruptor/RightClickSelfCast/releases)
 
-- TOC Update  
-    TOC Update  
+- Fix for WOWInterface.com and Cataclysm Classic support.  

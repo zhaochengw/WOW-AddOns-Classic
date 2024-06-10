@@ -56,7 +56,6 @@ local L = WeakAuras.L
 	L["%s %s, Lines: %d, Frequency: %0.2f, Length: %d, Thickness: %d"] = "%s %s, Lignes : %d, Fréquence : %0.2f, Longueur : %d, Épaisseur : %d"
 	L["%s %s, Particles: %d, Frequency: %0.2f, Scale: %0.2f"] = "%s %s, Particules : %d, Fréquence : %0.2f, Échelle : %0.2f"
 	L["%s %u. Overlay Function"] = "%s %u. Fonction de superposition"
-	--[[Translation missing --]]
 	L["%s (%s)"] = "%s (%s)"
 	L["%s Alpha: %d%%"] = "%s Opacité : %d%%"
 	L["%s Color"] = "%s Couleur"
@@ -178,8 +177,8 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Anchor"] = "Ancrage"
 	L["Anchor Point"] = "Point d'ancrage"
 	L["Anchored To"] = "Ancré à"
-	L["And "] = "Et"
 	L["and"] = "et"
+	L["And "] = "Et"
 	--[[Translation missing --]]
 	L["and %s"] = "and %s"
 	L["and aligned left"] = "et aligné à gauche"
@@ -230,7 +229,6 @@ Off Screen]=]
 	L["Aura: '%s'"] = "Aura: '%s'"
 	L["Author Options"] = "Options de l'Auteur"
 	L["Auto-Clone (Show All Matches)"] = "Clonage Automatique (Afficher tous les résultats)"
-	L["Auto-cloning enabled"] = "Auto-clonage activé"
 	L["Automatic"] = "Automatique"
 	L["Automatic length"] = "Longueur automatique"
 	--[[Translation missing --]]
@@ -277,6 +275,8 @@ Off Screen]=]
 	L["Can set to 0 if Rows * Height equal File Height"] = "Can set to 0 if Rows * Height equal File Height"
 	L["Cancel"] = "Annuler"
 	--[[Translation missing --]]
+	L["Case Insensitive"] = "Case Insensitive"
+	--[[Translation missing --]]
 	L["Cast by a Player Character"] = "Cast by a Player Character"
 	--[[Translation missing --]]
 	L["Categories to Update"] = "Categories to Update"
@@ -305,8 +305,8 @@ Off Screen]=]
 	L["Collapse all pending Import"] = "Collapse all pending Import"
 	--[[Translation missing --]]
 	L["Collapsible Group"] = "Collapsible Group"
-	L["color"] = "couleur"
 	L["Color"] = "Couleur"
+	L["color"] = "couleur"
 	L["Column Height"] = "Hauteur de colonne"
 	L["Column Space"] = "Espace de colonne"
 	L["Columns"] = "Colonnes"
@@ -473,6 +473,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
 	L["Enter Author Mode"] = "Entrer en mode auteur"
 	--[[Translation missing --]]
 	L["Enter in a value for the tick's placement."] = "Enter in a value for the tick's placement."
+	--[[Translation missing --]]
+	L["Enter static or relative values with %"] = "Enter static or relative values with %"
 	L["Enter User Mode"] = "Entrer en mode utilisateur"
 	L["Enter user mode."] = "Entrer en mode utilisateur"
 	--[[Translation missing --]]
@@ -509,9 +511,9 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED
 	L["Fade In"] = "Fondu entrant"
 	L["Fade Out"] = "Fondu sortant"
 	--[[Translation missing --]]
-	L["Fallback"] = "Fallback"
+	L["Fadeout Sound"] = "Fadeout Sound"
 	--[[Translation missing --]]
-	L["Fallback Icon"] = "Fallback Icon"
+	L["Fadeout Time (seconds)"] = "Fadeout Time (seconds)"
 	L["False"] = "Faux"
 	--[[Translation missing --]]
 	L["Fetch Affected/Unaffected Names and Units"] = "Fetch Affected/Unaffected Names and Units"
@@ -555,6 +557,8 @@ Can use \ to escape -.]=]
 	--[[Translation missing --]]
 	L["Finishing..."] = "Finishing..."
 	L["Fire Orb"] = "Orbe de feu"
+	--[[Translation missing --]]
+	L["Flat Framelevels"] = "Flat Framelevels"
 	L["Font"] = "Police"
 	L["Font Size"] = "Taille de Police"
 	L["Foreground"] = "Premier plan"
@@ -570,8 +574,6 @@ Can use \ to escape -.]=]
 	L["Frame Height"] = "Frame Height"
 	--[[Translation missing --]]
 	L["Frame Rate"] = "Frame Rate"
-	--[[Translation missing --]]
-	L["Frame Selector"] = "Frame Selector"
 	L["Frame Strata"] = "Strate du cadre"
 	--[[Translation missing --]]
 	L["Frame Width"] = "Frame Width"
@@ -750,6 +752,8 @@ Si cette case est cochée, ce séparateur inclura du texte. Sinon, ce sera juste
 	L["Length"] = "Longueur"
 	--[[Translation missing --]]
 	L["Length of |cFFFF0000%s|r"] = "Length of |cFFFF0000%s|r"
+	--[[Translation missing --]]
+	L["LibSharedMedia"] = "LibSharedMedia"
 	L["Limit"] = "Limite"
 	--[[Translation missing --]]
 	L["Line"] = "Line"
@@ -767,6 +771,12 @@ Si cette case est cochée, ce séparateur inclura du texte. Sinon, ce sera juste
 	L["Magnetically Align"] = "Alignement magnétique"
 	L["Main"] = "Principal"
 	--[[Translation missing --]]
+	L["Manual"] = "Manual"
+	--[[Translation missing --]]
+	L["Manual Icon"] = "Manual Icon"
+	--[[Translation missing --]]
+	L["Manual with %i/%i"] = "Manual with %i/%i"
+	--[[Translation missing --]]
 	L["Match Count"] = "Match Count"
 	--[[Translation missing --]]
 	L["Match Count per Unit"] = "Match Count per Unit"
@@ -774,13 +784,15 @@ Si cette case est cochée, ce séparateur inclura du texte. Sinon, ce sera juste
 	L["Max"] = "Max"
 	L["Max Length"] = "Longueur max"
 	--[[Translation missing --]]
+	L["Maximum"] = "Maximum"
+	--[[Translation missing --]]
 	L["Media Type"] = "Media Type"
 	L["Medium Icon"] = "Icône moyenne"
 	L["Message"] = "Message"
-	L["Message Prefix"] = "Préfixe du message"
-	L["Message Suffix"] = "Suffixe du message"
 	L["Message Type"] = "Type de message"
 	L["Min"] = "Min (minutes?)"
+	--[[Translation missing --]]
+	L["Minimum"] = "Minimum"
 	L["Mirror"] = "Miroir"
 	L["Model"] = "Modèle"
 	L["Model %s"] = "Modèle %s"
@@ -817,8 +829,6 @@ Seule une unique valeur peut être choisie]=]
 	L["Name Pattern Match"] = "Correspondance de modèle de nom"
 	L["Name(s)"] = "Nom(s)"
 	L["Name:"] = "Nom:"
-	--[[Translation missing --]]
-	L["Nameplate"] = "Nameplate"
 	L["Nameplates"] = "Barres de vie"
 	L["Negator"] = "Pas"
 	L["New Aura"] = "Nouvelle aura"
@@ -834,6 +844,8 @@ Seule une unique valeur peut être choisie]=]
 	L["Not Loaded"] = "Non chargé"
 	--[[Translation missing --]]
 	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "Note: Automated Messages to SAY and YELL are blocked outside of Instances."
+	--[[Translation missing --]]
+	L["Note: This progress source does not provide a total value/duration. A total value/duration must be set via \"Set Maximum Progress\""] = "Note: This progress source does not provide a total value/duration. A total value/duration must be set via \"Set Maximum Progress\""
 	--[[Translation missing --]]
 	L["Npc ID"] = "Npc ID"
 	L["Number of Entries"] = "Nombre d'entrées"
@@ -923,6 +935,10 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=]
 	L["Prevent Merging"] = "Prevent Merging"
 	L["Progress Bar"] = "Barre de progression"
 	L["Progress Bar Settings"] = "Paramètres de la barre de progression"
+	--[[Translation missing --]]
+	L["Progress Settings"] = "Progress Settings"
+	--[[Translation missing --]]
+	L["Progress Source"] = "Progress Source"
 	L["Progress Texture"] = "Texture de progression"
 	L["Progress Texture Settings"] = "Paramètres de la texture de progression"
 	L["Purple Rune"] = "Rune violette"
@@ -990,6 +1006,10 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=]
 	L["Send To"] = "Envoyer vers"
 	L["Separator Text"] = "Texte Séparateur"
 	L["Separator text"] = "texte séparateur"
+	--[[Translation missing --]]
+	L["Set Maximum Progress"] = "Set Maximum Progress"
+	--[[Translation missing --]]
+	L["Set Minimum Progress"] = "Set Minimum Progress"
 	L["Set Parent to Anchor"] = "Définir Parent à l'Ancrage"
 	L["Set Thumbnail Icon"] = "Définir la miniature"
 	--[[Translation missing --]]
@@ -1104,6 +1124,10 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=]
 	--[[Translation missing --]]
 	L["Sub Option %i"] = "Sub Option %i"
 	--[[Translation missing --]]
+	L["Subevent"] = "Subevent"
+	--[[Translation missing --]]
+	L["Subevent Suffix"] = "Subevent Suffix"
+	--[[Translation missing --]]
 	L["Supports multiple entries, separated by commas"] = "Supports multiple entries, separated by commas"
 	L["Swipe Overlay Settings"] = "Paramètres de la superposition des balayages"
 	--[[Translation missing --]]
@@ -1119,6 +1143,8 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=]
 	L["Texture Picker"] = "Texture Picker"
 	--[[Translation missing --]]
 	L["Texture Rotation"] = "Texture Rotation"
+	--[[Translation missing --]]
+	L["Texture Selection Mode"] = "Texture Selection Mode"
 	L["Texture Settings"] = "Paramètres de la texture"
 	L["Texture Wrap"] = "Enveloppe de texture"
 	--[[Translation missing --]]
@@ -1131,6 +1157,8 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=]
 	L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"] = "The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"
 	L["The duration of the animation in seconds."] = "La durée de l'animation en secondes."
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = "La durée de l'animation en secondes. L'animation de fin ne commence qu'après le moment où l'affichage est normalement caché."
+	--[[Translation missing --]]
+	L["The group and all direct children will share the same base frame level."] = "The group and all direct children will share the same base frame level."
 	L["The type of trigger"] = "Le type de déclencheur"
 	L["Then "] = "Alors"
 	L["Thickness"] = "Épaisseur"
@@ -1195,6 +1223,8 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	L["Top Left"] = "Haut gauche"
 	L["Top Right"] = "Haut droite"
 	--[[Translation missing --]]
+	L["Total"] = "Total"
+	--[[Translation missing --]]
 	L["Total Angle"] = "Total Angle"
 	--[[Translation missing --]]
 	L["Total Time"] = "Total Time"
@@ -1214,8 +1244,6 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	--[[Translation missing --]]
 	L["Unit %s is not a valid unit for RegisterUnitEvent"] = "Unit %s is not a valid unit for RegisterUnitEvent"
 	L["Unit Count"] = "Nombre d'unité"
-	--[[Translation missing --]]
-	L["Unit Frame"] = "Unit Frame"
 	L["Unit Frames"] = "Cadre d'unité"
 	--[[Translation missing --]]
 	L["Unknown property '%s' found in '%s'"] = "Unknown property '%s' found in '%s'"
@@ -1231,16 +1259,22 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	L["Use Display Info Id"] = "Utiliser les informations d'identifiant de l'affichage"
 	L["Use SetTransform"] = "Utiliser SetTransform"
 	L["Use Texture"] = "Utiliser une texture"
-	L["Used in Auras:"] = "Utilisé(e) dans les Auras:"
 	L["Used in auras:"] = "Utilisé dans les auras:"
+	L["Used in Auras:"] = "Utilisé(e) dans les Auras:"
 	--[[Translation missing --]]
 	L["Uses Texture Coordinates to rotate the texture."] = "Uses Texture Coordinates to rotate the texture."
 	--[[Translation missing --]]
 	L["Uses UnitInRange() to check if in range. Matches default raid frames out of range behavior, which is between 25 to 40 yards depending on your class and spec."] = "Uses UnitInRange() to check if in range. Matches default raid frames out of range behavior, which is between 25 to 40 yards depending on your class and spec."
 	--[[Translation missing --]]
 	L["Uses UnitIsVisible() to check if game client has loaded a object for this unit. This distance is around 100 yards. This is polled every second."] = "Uses UnitIsVisible() to check if game client has loaded a object for this unit. This distance is around 100 yards. This is polled every second."
+	--[[Translation missing --]]
+	L["Value"] = "Value"
 	L["Value %i"] = "Valeur %i"
 	L["Values are in normalized rgba format."] = "Les valeurs sont normalisées dans le format rvba"
+	--[[Translation missing --]]
+	L["Values/Remaining Time above this value are displayed as full progress."] = "Values/Remaining Time above this value are displayed as full progress."
+	--[[Translation missing --]]
+	L["Values/Remaining Time below this value are displayed as zero progress."] = "Values/Remaining Time below this value are displayed as zero progress."
 	L["Values:"] = "Valeurs:"
 	L["Version: "] = "Version: "
 	--[[Translation missing --]]
@@ -1264,14 +1298,14 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	L["X Offset"] = "Décalage X"
 	L["X Rotation"] = "Rotation X"
 	L["X Scale"] = "Echelle X"
-	L["X-Offset"] = "Décalage X"
 	L["x-Offset"] = "x-Décalage"
+	L["X-Offset"] = "Décalage X"
 	L["Y Offset"] = "Décalage Y"
 	L["Y Rotation"] = "Rotation Y"
 	L["Y Scale"] = "Echelle Y"
 	L["Yellow Rune"] = "Rune jaune"
-	L["Y-Offset"] = "Décalage Y"
 	L["y-Offset"] = "y-Décalage"
+	L["Y-Offset"] = "Décalage Y"
 	--[[Translation missing --]]
 	L["You already have this group/aura. Importing will create a duplicate."] = "You already have this group/aura. Importing will create a duplicate."
 	L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "Vous êtes sur le point de supprimer %d aura(s). |cFFFF0000Cela ne peut pas être annulé !|r Voulez-vous continuer ?"

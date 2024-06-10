@@ -59,11 +59,19 @@ local function SkinIcon(Region, Button, Skin, xScale, yScale)
 	SkinMask(Region, Button, Skin, xScale, yScale)
 end
 
+local group = nil
 
+function TotemTimers.SkinWeaponTracker()
+    local skinID = nil
+    if not group.db.Disabled then
+        skinID = group.db.SkinID
+    end
+    local skin = nil
+    if skinID then
+        skin = masque:GetSkin(skinID)
+    end
 
-function TotemTimers.SkinCallback(arg, SkinID)
-    if SkinID then
-        local skin = masque:GetSkin(SkinID)
+    if skinID then
         local buttons = {XiTimers.timers[8].button}
         local actionBarButtons = XiTimers.timers[8].actionBar.buttons
 
@@ -75,19 +83,20 @@ function TotemTimers.SkinCallback(arg, SkinID)
             SkinIcon(button.icons[2], button, skin.Icon, xScale, yScale)
         end
     end
-	if not SkinID or SkinID == "Default" then
-		for k,v in pairs(XiTimers.timers) do
-			--v.animation.button.normalTexture:Hide()
-			v:HideNormalTexture()
-		end
-		TotemTimers.ApplySkin(false)
-	else
-        TotemTimers.ApplySkin(SkinID ~= nil)
 
-		--for k,v in pairs(XiTimers.timers) do
-			--v.animation.button.normalTexture:Show()
-		--end
-	end
+    TotemTimers.ApplySkin(skin)
+end
+
+local function SkinHook(self)
+    if self.Addon == "TotemTimers" then
+        TotemTimers.SkinWeaponTracker()
+    end
+end
+
+local function DisableHook(self)
+    if self.Addon == "TotemTimers" then
+        TotemTimers.SkinWeaponTracker()
+    end
 end
 
 
@@ -95,7 +104,9 @@ function TotemTimers.InitMasque()
 	if not LibStub then return end
 	masque = LibStub("Masque", true)
 	if masque then
-		local group = masque:Group("TotemTimers", "Buttons")
+		group = masque:Group("TotemTimers", "Buttons")
+        hooksecurefunc(getmetatable(group).__index, "ReSkin", SkinHook)
+        hooksecurefunc(getmetatable(group).__index, "__Disable", DisableHook)
 		for k,v in pairs(XiTimers.timers) do
             group:AddButton(v.button)
             group:AddButton(v.animation.button)
@@ -109,7 +120,7 @@ function TotemTimers.InitMasque()
             end
         end
         if TotemTimers_MultiSpell then group:AddButton(TotemTimers_MultiSpell) end
-        group:SetCallback(TotemTimers.SkinCallback)
+        --group:RegisterCallback(TotemTimers.SkinCallback)
         --masque:Register("TotemTimers", TotemTimers.SkinCallback,nil)
         group:ReSkin()
 	end

@@ -156,6 +156,7 @@ L["When duration<1sec"] = "Когда  <1 сек"
 L["Blizzard Raid Frames"] = "Рамки рейда Blizzard "
 L["Hide Blizzard Raid Frames"] = "Скрыть профили рейда Blizzard"
 -- L["Hide Blizzard Party Frames"] = ""
+-- L["Hide Blizzard Frames"] = ""
 
 -- debugging & maintenance
 L["debugging"] = "Отладка"
@@ -819,6 +820,7 @@ L["Instant"] = "мгновенно"
 L["Update frequency"] = "Частота обновления"
 L["Select the health update frequency."] = "Выберите частоту обновления здоровья."
 -- L["Add shields to health percent"] = ""
+-- L["Add shields to health amount"] = ""
 
 -- health-low status
 L["Use Health Percent"] = "Использовать процент здоровья"
@@ -858,6 +860,8 @@ L["Not Ready color"] = "Цвет не готовности"
 L["Color for Not Ready."] = "Цвет обозначающий не готовность."
 L["AFK color"] = "Цвет AFK"
 L["Color for AFK."] = "Цвет для отсутствующих."
+-- L["Hide on Combat Start"] = ""
+-- L["Hide ready check status if combat starts."] = ""
 
 -- heals-incoming status
 L["Include player heals"] = "Включая исцеления игрока"
@@ -1361,6 +1365,8 @@ L["You can include a descriptive prefix using separators \"@#>\""] = "Вы мо�
 -- L["Heal Types"] = ""
 -- L["Shorten Heal Numbers"] = ""
 -- L["Shorten Health Numbers"] = ""
+-- L["Shorten Thousand Numbers"] = ""
+-- L["Shorten Above Million Numbers"] = ""
 -- L["Include heals casted by me, if unchecked only other players heals are displayed."] = ""
 -- L["Apply this multiplier value to incoming heals."] = ""
 -- L["Incoming overheals below the specified value will not be shown."] = ""
@@ -1461,6 +1467,8 @@ L["You can include a descriptive prefix using separators \"@#>\""] = "Вы мо�
 --
 -- L["Disabled in instances"] = ""
 -- L["Disable this status inside instances."] = ""
+-- L["Display other groups"] = ""
+-- L["Enable the status if the player is in another LFG or PvP instance."] = ""
 --
 -- L["Enable harmful spells Allowlist"] = ""
 -- L["Display only the spells specified in a user defined list."] = ""

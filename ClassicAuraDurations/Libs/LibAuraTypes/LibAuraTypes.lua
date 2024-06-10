@@ -5,7 +5,7 @@ Description: Provides aura classification and priority
 --]================]
 
 
-local MAJOR, MINOR = "LibAuraTypes", 36
+local MAJOR, MINOR = "LibAuraTypes", 37
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -848,6 +848,9 @@ A( 16166, DAMAGE_INCREASE2) -- Elemental Mastery
 
 -- PALADIN
 
+--SoD
+A(407804, DAMAGE_REDUCTION) -- Divine Sacrifice
+
 A({ 1022, 5599, 10278 },  PHYSICAL_IMMUNITY) -- Blessing of Protection
 A({ 498, 5573, 642, 1020 },  IMMUNITY) -- Divine Shield
 A({ 853, 5588, 5589, 10308 }, { STUN, effect = E_STUN }) -- Hammer of Justice
@@ -881,6 +884,10 @@ A( 19503,{ CROWD_CONTROL, effect = E_DISORIENT }) -- Scatter Shot
 A( 25999,{ ROOT, effect = E_ROOT }) -- Boar Charge
 
 -- DRUID
+-- SoD
+A( 417141, { FEAR_IMMUNITY, DAMAGE_INCREASE }) -- Berserk
+A( 408024 , DAMAGE_REDUCTION) -- Survival Instincts
+
 
 A( 22812 , DAMAGE_REDUCTION) -- Barkskin
 A( 19975,{ ROOT, effect = E_ROOT }) -- Nature's Grasp
@@ -901,6 +908,12 @@ A( 6795 , TAUNT) -- Growl
 A( 5209 , TAUNT) -- Challenging Roar
 
 -- MAGE
+
+-- SoD
+A(412532, { SLOW, effect = E_SLOW }) -- Spellfrost Bolt
+A(401502, { SLOW, effect = E_SLOW }) -- Frostfire Bolt
+A(425121, DAMAGE_INCREASE2) -- Icy Veins
+
 
 A( 18469, { SILENCE, effect = E_SILENCE }) -- Improved Counterspell
 A({ 118, 12824, 12825, 12826, 28270, 28271, 28272 }, { CROWD_CONTROL, effect = E_INCAP }) -- Polymorph
@@ -927,6 +940,12 @@ A({ 1463, 8494, 8495, 10191, 10192, 10193 },  DAMAGE_ABSORB) -- Mana Shield
 
 -- PRIEST
 
+-- SoD
+A( 425284, IMMUNITY) -- Spirit of the Redeemer
+A( 425294, DAMAGE_REDUCTION2) -- Dispersion
+A( 402004, DAMAGE_REDUCTION) -- Pain Suppression
+
+
 A( 15487, { SILENCE, effect = E_SILENCE }) -- Silence
 A( 10060,  DAMAGE_INCREASE) -- Power Infusion
 A({ 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 },  DAMAGE_ABSORB) -- Power Word: Shield
@@ -937,6 +956,10 @@ A( 15258 , TRASH) -- Shadow Vulnerability
 A({ 605, 10911, 10912 }, { CROWD_CONTROL, effect = E_PHASED }) -- Mind Control
 
 -- ROGUE
+
+-- SoD
+A(408699, { SLOW, effect = E_SLOW }) -- Waylay Rune
+
 
 A( 18425, { SILENCE, effect = E_SILENCE }) -- Improved Kick
 A( 13750 , DAMAGE_INCREASE) -- Adrenaline Rush
@@ -954,6 +977,10 @@ A( 14251 , DAMAGE_DECREASE) -- Riposte (Disarm)
 A( 14278 , DAMAGE_REDUCTION) -- Ghostly Strike
 
 -- WARRIOR
+
+-- SoD
+A( 402913 , DAMAGE_REDUCTION) -- Enraged Regeneration
+
 
 A( 355 , TAUNT) -- Taunt
 A( 1161 , TAUNT) -- Challenging Shout

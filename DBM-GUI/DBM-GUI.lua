@@ -508,12 +508,14 @@ function DBM_GUI:CreateBossModPanel(mod)
 					title, desc, icon = mod.groupOptions[spellID].title, L.CustomOptions, 136116
 				elseif tonumber(spellID) then
 					spellID = tonumber(spellID)
-					if spellID < 0 then
-						title, desc, _, icon = DBM:EJ_GetSectionInfo(-spellID)
-					else
-						local _title = DBM:GetSpellInfo(spellID)
-						if _title then
-							title, desc, icon = _title, tonumber(spellID), GetSpellTexture(spellID or 0)
+					if spellID then--Because LuaLS doesn't understand tonumber(spellID) as a nil check
+						if spellID < 0 then
+							title, desc, _, icon = DBM:EJ_GetSectionInfo(-spellID)
+						else
+							local _title = DBM:GetSpellName(spellID)
+							if _title then
+								title, desc, icon = _title, tonumber(spellID), DBM:GetSpellTexture(spellID or 0)
+							end
 						end
 					end
 				elseif spellID:find("^ej") then
@@ -685,6 +687,7 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 			local profileID = playerLevel > 9 and DBM_UseDualProfile and GetSpecializationGroup() or 0
 			for _, id in ipairs(DBM.ModLists[addon.modId]) do
 				_G[addon.modId:gsub("-", "") .. "_AllSavedVars"][playerName .. "-" .. realmName][id][profileID] = importTable[id]
+				---@diagnostic disable-next-line: inject-field
 				DBM:GetModByName(id).Options = importTable[id]
 			end
 			DBM:AddMsg("Profile imported.")
@@ -745,15 +748,15 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 	end
 
 	local ptext = panel:CreateText(L.BossModLoaded:format(subtab and addon.subTabs[subtab] or addon.name), nil, nil, nil, "CENTER")
-	ptext:SetPoint("TOPLEFT", panel.frame, "TOPLEFT", 10, modProfileArea and -245 or -10)
+	ptext:SetPoint("TOPLEFT", panel.frame, "TOPLEFT", 10, modProfileArea and -255 or -10)
 
 	local singleLine, doubleLine, noHeaderLine = 0, 0, 0
 	local area = panel:CreateArea()
 	area.frame.isStats = true
-	area.frame:SetPoint("TOPLEFT", 10, modProfileArea and -260 or -25)
+	area.frame:SetPoint("TOPLEFT", 10, modProfileArea and -270 or -25)
 
 	local statOrder = {
-		"lfr", "follower", "normal", "normal25", "heroic", "heroic25", "mythic", "challenge", "timewalker"
+		"follower", "story", "lfr", "normal", "normal25", "heroic", "heroic25", "mythic", "challenge", "timewalker"
 	}
 
 	for _, mod in ipairs(DBM.Mods) do
@@ -821,6 +824,7 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 
 			local statTypes = {
 				follower	= L.FOLLOWER,--no PLAYER_DIFFICULTY entry yet
+				story		= L.STORY,--no PLAYER_DIFFICULTY entry yet
 				lfr25		= PLAYER_DIFFICULTY3,
 				normal		= mod.addon.minExpansion < 5 and RAID_DIFFICULTY1 or PLAYER_DIFFICULTY1,
 				normal25	= RAID_DIFFICULTY2,
@@ -902,7 +906,14 @@ do
 		for _, challengeMap in ipairs(C_ChallengeMode.GetMapTable()) do
 			local challengeMode = challengeModeIds[challengeMap]
 			local id = challengeMode
-			local mapName = strsplit("-", GetRealZoneText(id):trim() or id)
+			--For handling zones like Warfront: Arathi - Alliance
+			local mapName = GetRealZoneText(id):trim() or id
+			for w in string.gmatch(mapName, " - ") do
+				if w:trim() ~= "" then
+					mapName = w
+					break
+				end
+			end
 			if not currentSeasons[mapName] then
 				local modId
 				for _, addon in ipairs(DBM.AddOns) do
@@ -939,10 +950,10 @@ do
 		end
 	end
 
-    local expansions = {"CLASSIC", "BC", "WOTLK", "CATA", "MOP", "WOD", "LEG", "BFA", "SHADOWLANDS", "DRAGONFLIGHT"}
+    local expansions = {"CLASSIC", "BC", "WOTLK", "CATA", "MOP", "WOD", "LEG", "BFA", "SHADOWLANDS", "DRAGONFLIGHT", "WARWITHIN"}
 
 	-- WotLK compat, search for "local C_AddOns" in DBM-Core.lua for more details
-	local IsAddOnLoaded = C_AddOns.IsAddOnLoaded or IsAddOnLoaded ---@diagnostic disable-line:deprecated
+	local IsAddOnLoaded = _G.C_AddOns.IsAddOnLoaded or IsAddOnLoaded ---@diagnostic disable-line:deprecated
 	function DBM_GUI:UpdateModList()
 		for _, addon in ipairs(DBM.AddOns) do
 			if not addon.panel then
@@ -988,7 +999,9 @@ do
 				end
 			end
 
-			for _, mod in ipairs(DBM.Mods) do
+			for _, v in ipairs(DBM.Mods) do
+				---@class DBMMod
+				local mod = v
 				if mod.modId == addon.modId then
 					if not mod.panel and (not addon.subTabs or (addon.subPanels and (addon.subPanels[mod.subTab] or mod.subTab == 0))) then
 						if addon.subTabs and addon.subPanels[mod.subTab] then

@@ -1,7 +1,10 @@
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
+---@class WeakAuras
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
@@ -26,6 +29,19 @@ function Private.InitializeEncounterAndZoneLists()
             { L["Aku'mai"], 2891 }
         }
       },
+      {
+        L["Sunken Temple"],
+        {
+          { L["Atal'alarion"], 2952 },
+          { L["Festering Rotslime"], 2953 },
+          { L["Atal'ai Defenders"], 2954 },
+          { L["Dreamscythe and Weaver"], 2955 },
+          { L["Jammal'an and Ogom"], 2957 },
+          { L["Morphaz and Hazzas"], 2958 },
+          { L["Shade of Eranikus"], 2959 },
+          { L["Avatar of Hakkar"], 2956 },
+        }
+      }
     }
   else
       raids = {

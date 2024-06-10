@@ -113,16 +113,58 @@ Grid2Options:RegisterStatusOptions("health-current", "health", function(self, st
 			end,
 		}
 	else
-		options.healthShield = {
+		options.thousandShorten = {
 			type = "toggle",
 			tristate = false,
 			width = "full",
 			order = 50,
+			name = L["Shorten Thousand Numbers"],
+			desc = L["Shorten Thousand Numbers"],
+			get = function ()
+				return not status.dbx.displayRawNumbersRetail or status.dbx.displayMillionShort
+			end,
+			set = function (_, v)
+				status.dbx.displayRawNumbersRetail = not v or nil
+				status.dbx.displayMillionShort = nil
+				status:Refresh()
+			end,
+		}
+		options.millionShorten = {
+			type = "toggle",
+			tristate = false,
+			width = "full",
+			order = 51,
+			name = L["Shorten Above Million Numbers"],
+			desc = L["Shorten Above Million Numbers"],
+			get = function () return status.dbx.displayMillionShort end,
+			set = function (_, v)
+				status.dbx.displayMillionShort = v or nil
+				status:Refresh()
+			end,
+		}
+		options.healthPercentShield = {
+			type = "toggle",
+			tristate = false,
+			width = "full",
+			order = 52,
 			name = L["Add shields to health percent"],
 			desc = L["Add shields to health percent"],
 			get = function () return status.dbx.addPercentShield end,
 			set = function (_, v)
 				status.dbx.addPercentShield = v or nil
+				status:Refresh()
+			end,
+		}
+		options.healthAmountShield = {
+			type = "toggle",
+			tristate = false,
+			width = "full",
+			order = 53,
+			name = L["Add shields to health amount"],
+			desc = L["Add shields to health amount"],
+			get = function () return status.dbx.addAmountShield end,
+			set = function (_, v)
+				status.dbx.addAmountShield = v or nil
 				status:Refresh()
 			end,
 		}

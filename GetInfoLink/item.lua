@@ -4,7 +4,7 @@ local L = addon.L
 
 -- Create an input box for the user to enter the item ID
 local GetItemLinkBox = CreateFrame("EditBox", "GetItemLinkBox", GetInfoFrame, "InputBoxTemplate");
-GetItemLinkBox:SetPoint("TOPLEFT", GetInfoFrame, "TOPLEFT", 20, -40);
+GetItemLinkBox:SetPoint("TOPLEFT", GetInfoFrame, "TOPLEFT", 15, -60);
 GetItemLinkBox:SetSize(100, 20);
 GetItemLinkBox:SetAutoFocus(false);
 
@@ -24,5 +24,6 @@ GetItemLinkBox:SetScript("OnEnterPressed", function(self)
             DEFAULT_CHAT_FRAME:AddMessage(L['search_result_fail'] .. L['invalid_text'])
         end
     end
-    self:SetText("")
+    self:SetText(""); -- Clear the text content in the input box
+    self:ClearFocus(); -- Clear focus
 end)

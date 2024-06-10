@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod("LordAlexeiBarov", "DBM-Party-Vanilla", DBM:IsRetail() and 16 or 13)
+local mod	= DBM:NewMod("LordAlexeiBarov", "DBM-Party-Vanilla", DBM:IsPostCata() and 16 or 13)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231026023356")
+mod:SetRevision("20240316010232")
 mod:SetCreatureID(10504)
 mod:SetEncounterID(mod:IsClassic() and 2807 or 461)
 mod:SetZone(289)

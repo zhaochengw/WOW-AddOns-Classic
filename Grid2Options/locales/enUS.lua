@@ -156,6 +156,7 @@ L["When duration<1sec"] = true
 L["Blizzard Raid Frames"] = true
 L["Hide Blizzard Raid Frames"] = true
 L["Hide Blizzard Party Frames"] = true
+L["Hide Blizzard Frames"] = true
 
 -- debugging & maintenance
 L["debugging"] = true
@@ -824,6 +825,7 @@ L["Instant"] = true
 L["Update frequency"] = true
 L["Select the health update frequency."] = true
 L["Add shields to health percent"] = true
+L["Add shields to health amount"] = true
 
 -- health-low status
 L["Use Health Percent"] = true
@@ -863,6 +865,8 @@ L["Not Ready color"] = true
 L["Color for Not Ready."] = true
 L["AFK color"] = true
 L["Color for AFK."] = true
+L["Hide on Combat Start"] = true
+L["Hide ready check status if combat starts."] = true
 
 -- heals-incoming status
 L["Include player heals"] = true
@@ -1365,6 +1369,8 @@ L["Show only heals that are going to land within the selected time period. Selec
 L["Heal Types"] = true
 L["Shorten Heal Numbers"] = true
 L["Shorten Health Numbers"] = true
+L["Shorten Thousand Numbers"] = true
+L["Shorten Above Million Numbers"] = true
 L["Include heals casted by me, if unchecked only other players heals are displayed."] = true
 L["Apply this multiplier value to incoming heals."] = true
 L["Incoming overheals below the specified value will not be shown."] = true
@@ -1465,6 +1471,8 @@ L["color"] = true
 
 L["Disabled in instances"] = true
 L["Disable this status inside instances."] = true
+L["Display other groups"] = true
+L["Enable the status if the player is in another LFG or PvP instance."] = true
 
 L["Enable harmful spells Allowlist"] = true
 L["Display only the spells specified in a user defined list."] = true

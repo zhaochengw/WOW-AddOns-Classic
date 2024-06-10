@@ -237,6 +237,9 @@ module.db.topEnchGems = IS_SL and {
 
 module.db.achievementsList = {
 	{	--A
+		L.S_ZoneT31,
+		19344,19345,19346,19347,19335,19336,19337,19338,19339,19340,19341,19342,19343,19350,19351,
+	},{	--A
 		L.S_ZoneT30,
 		18160,18163,18164,18165,18167,18151,18152,18153,18154,18155,18156,18157,18158,18159,
 	},{	--VotI
@@ -321,6 +324,8 @@ module.db.achievementsList = {
 }
 module.db.achievementsList_statistic = {
 	{	--A
+
+	},{	--A
 
 	},{	--VotI
 
@@ -639,8 +644,8 @@ function module.options:Load()
 		colorizeLowIlvl685 = 120
 	end
 	if IS_DF then
-		colorizeLowIlvl630 = 376
-		colorizeLowIlvl685 = 398
+		colorizeLowIlvl630 = 460
+		colorizeLowIlvl685 = 482
 	end
 
 	self.chkItemsTrackDropDown = ELib:DropDown(self,300,6):Point(50,0):Size(50)
@@ -1148,7 +1153,7 @@ function module.options:Load()
 								line.otherInfo:Show()
 							end
 						end
-					elseif module.db.page == 2 and ExRT.is10 then
+					elseif module.db.page == 2 and not ExRT.isClassic then
 
 					elseif module.db.page == 2 then
 						line.ilvl:SetText(ilvl_def)
@@ -1481,17 +1486,9 @@ function module.options:Load()
 
 					local cR,cG,cB = ExRT.F.classColorNum(class)
 					if name and UnitName(name) then
-						if ExRT.is10 or ExRT.isLK1 then
-							line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0.5), CreateColor(cR,cG,cB, 0))
-						else
-							line.back:SetGradientAlpha("HORIZONTAL", cR,cG,cB, 0.5, cR,cG,cB, 0)
-						end
+						line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0.5), CreateColor(cR,cG,cB, 0))
 					else
-						if ExRT.is10 or ExRT.isLK1 then
-							line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0), CreateColor(cR,cG,cB, 0.5))
-						else
-							line.back:SetGradientAlpha("HORIZONTAL", cR,cG,cB, 0, cR,cG,cB, 0.5)
-						end
+						line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0), CreateColor(cR,cG,cB, 0.5))
 					end
 				else
 					for j=-1,18 do
@@ -1521,11 +1518,7 @@ function module.options:Load()
 
 					line.apinfo:SetText("")
 
-					if ExRT.is10 or ExRT.isLK1 then
-						line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 0.5), CreateColor(0, 0, 0, 0))
-					else
-						line.back:SetGradientAlpha("HORIZONTAL", 0, 0, 0, 0.5, 0, 0, 0, 0)
-					end
+					line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 0.5), CreateColor(0, 0, 0, 0))
 
 					line.perksData = nil
 				end
@@ -1542,7 +1535,7 @@ function module.options:Load()
 				end
 			end
 		end
-		if module.db.page == 2 and ExRT.is10 then
+		if module.db.page == 2 and not ExRT.isClassic then
 			counter = 0
 		end
 		for i=(counter+1),module.db.perPage do
@@ -1554,9 +1547,9 @@ function module.options:Load()
 		end
 		module.options.RaidIlvl()
 
-		module.options.talentsScrollFrame:SetShown(module.db.page == 2 and ExRT.is10)
-		module.options.ScrollBar:SetShown(not (module.db.page == 2 and ExRT.is10))
-		if module.db.page == 2 and ExRT.is10 then
+		module.options.talentsScrollFrame:SetShown(module.db.page == 2 and not ExRT.isClassic)
+		module.options.ScrollBar:SetShown(not (module.db.page == 2 and not ExRT.isClassic))
+		if module.db.page == 2 and not ExRT.isClassic then
 			local newmax = (floor(#nowDB / 2)+1)*module.options.talentsScrollFrame.HEIGHT
 			if select(2,module.options.talentsScrollFrame.ScrollBar.slider:GetMinMaxValues()) ~= newmax then
 				local val = module.options.talentsScrollFrame.ScrollBar.slider:GetValue()
@@ -1608,17 +1601,9 @@ function module.options:Load()
 						local class = data.class
 						local cR,cG,cB = ExRT.F.classColorNum(class)
 						if name and UnitName(name) then
-							if ExRT.is10 or ExRT.isLK1 then
-								line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0.5), CreateColor(cR,cG,cB, 0))
-							else
-								line.back:SetGradientAlpha("HORIZONTAL", cR,cG,cB, 0.5, cR,cG,cB, 0)
-							end
+							line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0.5), CreateColor(cR,cG,cB, 0))
 						else
-							if ExRT.is10 or ExRT.isLK1 then
-								line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0), CreateColor(cR,cG,cB, 0.5))
-							else
-								line.back:SetGradientAlpha("HORIZONTAL", cR,cG,cB, 0, cR,cG,cB, 0.5)
-							end
+							line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0), CreateColor(cR,cG,cB, 0.5))
 						end
 
 						local classIconCoords = CLASS_ICON_TCOORDS[class]
@@ -1718,11 +1703,7 @@ function module.options:Load()
 							end
 						end
 					else
-						if ExRT.is10 or ExRT.isLK1 then
-							line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 0.5), CreateColor(0, 0, 0, 0))
-						else
-							line.back:SetGradientAlpha("HORIZONTAL", 0, 0, 0, 0.5, 0, 0, 0, 0)
-						end
+						line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 0.5), CreateColor(0, 0, 0, 0))
 					end
 					line:Show()
 				end
@@ -2062,11 +2043,7 @@ function module.options:Load()
 		line.back:SetPoint("TOPLEFT",0,0)
 		line.back:SetPoint("BOTTOMRIGHT",0,0)
 		line.back:SetColorTexture(1, 1, 1, 1)
-		if ExRT.is10 or ExRT.isLK1 then
-			line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 1), CreateColor(0, 0, 0, 0))
-		else
-			line.back:SetGradientAlpha("HORIZONTAL", 0, 0, 0, 1, 0, 0, 0, 0)
-		end
+		line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 1), CreateColor(0, 0, 0, 0))
 
 		line.refreshArtifact = ELib:Button(line,REFRESH):Point("LEFT",245,0):Size(100,20):OnClick(Lines_RefreshArtifactButton_OnClick)
 		line.refreshArtifact:Hide()
@@ -2179,11 +2156,7 @@ function module.options:Load()
 		line.back:SetPoint("TOPLEFT",0,0)
 		line.back:SetPoint("BOTTOMRIGHT",0,0)
 		line.back:SetColorTexture(1, 1, 1, 1)
-		if ExRT.is10 or ExRT.isLK1 then
-			line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 1), CreateColor(0, 0, 0, 0))
-		else
-			line.back:SetGradientAlpha("HORIZONTAL", 0, 0, 0, 1, 0, 0, 0, 0)
-		end
+		line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 1), CreateColor(0, 0, 0, 0))
 
 		line.talentsIcons = {}
 		line.GetTalentIcon = Line_GetTalentIcon

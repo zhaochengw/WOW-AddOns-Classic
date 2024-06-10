@@ -29,6 +29,9 @@ function TotemTimers.CreateWeaponTracker()
     weapon.button:RegisterForClicks("LeftButtonDown", "RightButtonDown", "MiddleButtonDown")
     weapon.timerBars[1]:SetMinMaxValues(0, 1800)
     weapon.flashall = true
+    weapon.warningPoint = 30
+    weapon.numButtonTimers = 2
+
     weapon.Activate = function(self)
         XiTimers.Activate(self)
         if not TotemTimers.ActiveProfile.WeaponTracker then
@@ -57,7 +60,9 @@ function TotemTimers.CreateWeaponTracker()
                 elseif ds2 == SpellNames[SpellIDs.FlametongueWeapon] then
                     TotemTimers.ActiveProfile.LastWeaponEnchant = 5
                 elseif ds2 == SpellNames[SpellIDs.FrostbrandWeapon] then
-                TotemTimers.ActiveProfile.LastWeaponEnchant = 6
+                    TotemTimers.ActiveProfile.LastWeaponEnchant = 6
+                elseif ds2 == SpellNames[SpellIDs.RockbiterWeapon] then
+                    TotemTimers.ActiveProfile.LastWeaponEnchant = 8
                 end
             end
         end
@@ -131,8 +136,8 @@ function TotemTimers.CreateWeaponTracker()
     weapon.events = { "PLAYER_EQUIPMENT_CHANGED" }
 
     weapon.button:SetScript("OnEvent", function(self, event, slot, ...)
-        if (slot == 16) then weapon.slotsChanged[1] = true
-        elseif (slot == 17) then weapon.slotsChanged[2] = true
+        if (slot == 16) then weapon.slotChanged[1] = true
+        elseif (slot == 17) then weapon.slotChanged[2] = true
         end
     end)
 
@@ -186,18 +191,24 @@ local WeaponEnchants = TotemTimers.WeaponEnchants
 local GetWeaponEnchantInfo = GetWeaponEnchantInfo
 local weaponTextures = {}
 
+local maxDurations ={}
+
 function TotemTimers.WeaponUpdate(self, elapsed)
     local enchant, expiration, _, mainID, offenchant, offExpiration, _, offID = GetWeaponEnchantInfo()
-    local enchants = { { enchant, expiration, mainID }, { offenchant, offExpiration, offID } }
+    local enchants = { { enchant, expiration and expiration/1000 or 0, mainID }, { offenchant, offExpiration and offExpiration/1000 or 0, offID } }
 
     local hands = weapon.numtimers or 1
+    local showGlow = false
     for hand = 1,hands do
         local checkEnchant = enchants[hand]
         if checkEnchant[1] then
-            if weapon.slotChanged[hand] or checkEnchant[2] / 1000 > self.timers[hand] then
+            if weapon.slotChanged[hand] or checkEnchant[2] > self.timers[hand] then
+                if not maxDurations[checkEnchant[3]] or maxDurations[checkEnchant[3]] < checkEnchant[2] then
+                    maxDurations[checkEnchant[3]] = checkEnchant[2]
+                end
                 weapon.slotChanged[hand] = false
                 local texture, spell
-                self:Start(hand, checkEnchant[2] / 1000, 1800)
+                self:Start(hand, checkEnchant[2], maxDurations[checkEnchant[3]])
                 if WeaponEnchants[checkEnchant[3]] then
                     texture = SpellTextures[WeaponEnchants[checkEnchant[3]]]
                     spell = SpellNames[WeaponEnchants[checkEnchant[3]]]
@@ -215,12 +226,22 @@ function TotemTimers.WeaponUpdate(self, elapsed)
             if checkEnchant[2] == 0 then
                 self:Stop(hand)
             else
-                self.timers[hand] = checkEnchant[2] / 1000
+                self.timers[hand] = checkEnchant[2]
             end
         elseif self.timers[hand] > 0 then
             self:Stop(hand)
         end
+        if InCombatLockdown() and self.timers[hand] < self.warningPoint then
+            showGlow = true
+        end
     end
+
+    if showGlow and TotemTimers.Specialization == 2 and TotemTimers.ActiveProfile.WeaponGlow then
+        ActionButton_ShowOverlayGlow(self.button)
+    else
+        ActionButton_HideOverlayGlow(self.button)
+    end
+
     XiTimers.Update(self, 0)
 end
 

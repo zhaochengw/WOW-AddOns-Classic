@@ -5,14 +5,13 @@ local L = DBM_CORE_L
 
 local dateTable = date("*t")
 if dateTable.day and dateTable.month and dateTable.day == 1 and dateTable.month == 4 then
-	--L.DEADLY_BOSS_MODS					= "Bigwigs"
-	--L.DBM								= "BW"
+	L.DEADLY_BOSS_MODS					= "Harmless Minion Mods"
+	L.DBM								= "HMM"
 end
 
-L.HOW_TO_USE_MOD					= "Willkommen bei "..L.DBM..". Tippe /dbm help für eine Liste unterstützter Kommandos. Für den Zugriff auf Einstellungen tippe /dbm in den Chat um die Konfiguration zu beginnen. Lade gewünschte Zonen manuell um jegliche Boss-spezifische Einstellungen nach deinen Wünschen zu konfigurieren. "..L.DBM.." setzt Standardeinstellungen für deine Spezialisierung, die du aber noch genauer anpassen kannst."
-L.SILENT_REMINDER					= "Erinnerung: "..L.DBM.." befindet sich noch im Lautlos-Modus."
---L.NEWS_UPDATE							= "|h|c11ff1111News|r|h: This update is basically a re-release of 9.1.9 to clear a false malware detection on the hash of the previous file release. Read more about it |Hgarrmission:DBM:news|h|cff3588ff[here]|r|h"
-
+L.HOW_TO_USE_MOD			= "Willkommen bei "..L.DBM..". Tippe /dbm help für eine Liste unterstützter Kommandos. Für den Zugriff auf Einstellungen tippe /dbm in den Chat um die Konfiguration zu beginnen. Lade gewünschte Zonen manuell um jegliche Boss-spezifische Einstellungen nach deinen Wünschen zu konfigurieren. "..L.DBM.." setzt Standardeinstellungen für deine Spezialisierung, die du aber noch genauer anpassen kannst."
+L.SILENT_REMINDER			= "Erinnerung: "..L.DBM.." befindet sich noch im Lautlos-Modus."
+L.NEWS_UPDATE				= "|h|c11ff1111News|r|h: This update changes mod structure around so classic and mainline now use unified (same) modules. This means that Vanilla, TBC, Wrath, and Cata modules are now installed separately using same packages as retail. Read more about it |Hgarrmission:DBM:news|h|cff3588ff[here]|r|h"--UPDATE ME
 L.COPY_URL_DIALOG_NEWS		= "Die aktuellsten Meldungen findest du immer unter dem unten stehenden Link"
 
 L.LOAD_MOD_ERROR			= "Fehler beim Laden der Boss Mods für %s: %s"
@@ -236,6 +235,7 @@ L.RANGERADAR_IN_RANGE_TEXT	= "%d in Reichweite (%0.1fm)"
 L.RANGECHECK_IN_RANGE_TEXT	= "%d in Reichweite"--Text based doesn't need (%dyd), especially since it's not very accurate to the specific yard anyways
 L.RANGERADAR_IN_RANGE_TEXTONE= "%s (%0.1fm)"
 
+--L.INFOFRAME_TITLE						= "DBM Info Frame"
 L.INFOFRAME_SHOW_SELF		= "Eigene Stärke immer anzeigen" -- Always show your own power value even if you are below the threshold
 L.INFOFRAME_SETLINES		= "Setze maximale Zeilenanzahl"
 L.INFOFRAME_SETCOLS			= "Setze maximale Spaltenanzahl"
@@ -280,7 +280,8 @@ L.TIMER_USAGE	= {
 }
 
 L.ERROR_NO_PERMISSION				= "Du hast nicht die benötigte Berechtigung für diesen Befehl!"
-L.TIME_TOO_SHORT						= "Pull-Timer muss länger als 3 Sekunden sein"
+L.PULL_TIME_TOO_SHORT						= "Pull-Timer muss länger als 3 Sekunden sein"
+L.PULL_TIME_TOO_LONG							= "Pull timer cannot be longer than 60 seconds"
 
 L.BREAK_USAGE				= "Ein Pause-Timer kann nicht länger als 60 Minuten sein. Beachte bitte, dass für Pausen-Timer die Zeit in Minuten (und nicht in Sekunden) anzugeben ist."
 L.BREAK_START				= "Pause startet jetzt -- du hast %s! (gesendet von: %s)"
@@ -497,12 +498,14 @@ L.AUTO_TIMER_OPTIONS.cdcount	= "Abklingzeit von $spell:%s anzeigen"
 --L.AUTO_TIMER_OPTIONS.cdnpcount= "Show nameplate only timer (with count) for $spell:%s cooldown"
 L.AUTO_TIMER_OPTIONS.cdsource	= "Abklingzeit von $spell:%s anzeigen (mit Quelle)"
 L.AUTO_TIMER_OPTIONS.cdspecial	= "Abklingzeit für Spezialfähigkeit anzeigen"
+--L.AUTO_TIMER_OPTIONS.cdcombo								= "Show timer for ability combo cooldown"--Used for combining 2 abilities into a single timer
 L.AUTO_TIMER_OPTIONS.next		= "Zeit bis nächstes $spell:%s anzeigen"
 L.AUTO_TIMER_OPTIONS.nextcount	= "Zeit bis nächstes $spell:%s anzeigen"
 --L.AUTO_TIMER_OPTIONS.nextnp	= "Show nameplate only timer for next $spell:%s"
 --L.AUTO_TIMER_OPTIONS.nextnpcount	= "Show nameplate only timer (with count) for next $spell:%s"
 L.AUTO_TIMER_OPTIONS.nextsource	= "Zeit bis nächstes $spell:%s anzeigen (mit Quelle)"
 L.AUTO_TIMER_OPTIONS.nextspecial	= "Zeige Zeit bis nächste Spezialfähigkeit"
+--L.AUTO_TIMER_OPTIONS.nextcombo							= "Show timer for next ability combo"--Used for combining 2 abilities into a single timer
 L.AUTO_TIMER_OPTIONS.achievement	= "Zeit für %s anzeigen"
 L.AUTO_TIMER_OPTIONS.stage		= "Zeige Zeit bis nächste Phase"
 --L.AUTO_TIMER_OPTIONS.stagecount							= "Show timer (with count) for next stage"

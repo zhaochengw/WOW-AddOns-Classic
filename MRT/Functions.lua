@@ -871,7 +871,7 @@ function ExRT.F.vpairs(t)
 end
 
 function ExRT.F:SafeCall(func, ...)
-	local res, arg1, arg2, arg3, arg4, arg5, arg6, arg7 = xpcall(func, nil, ...)
+	local res, arg1, arg2, arg3, arg4, arg5, arg6, arg7 = xpcall(func, geterrorhandler(), ...)
 	if res then
 		return arg1, arg2, arg3, arg4, arg5, arg6, arg7
 	end

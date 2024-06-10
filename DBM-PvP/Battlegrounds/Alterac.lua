@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("z30", "DBM-PvP")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240203195924")
+mod:SetRevision("20240414045728")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"LOADING_SCREEN_DISABLED",
@@ -14,7 +14,7 @@ mod:AddBoolOption("AutoTurnIn")
 do
 	local bgzone = false
 
-	local function Init(self)
+	function mod:Init()
 		local zoneID = DBM:GetCurrentArea()
 		if not bgzone and (zoneID == 30 or zoneID == 2197) then -- Regular AV (retail and classic), Korrak
 			bgzone = true
@@ -53,7 +53,7 @@ do
 	end
 
 	function mod:LOADING_SCREEN_DISABLED()
-		self:Schedule(1, Init, self)
+		self:ScheduleMethod(1, "Init")
 	end
 	mod.ZONE_CHANGED_NEW_AREA	= mod.LOADING_SCREEN_DISABLED
 	mod.PLAYER_ENTERING_WORLD	= mod.LOADING_SCREEN_DISABLED
@@ -62,7 +62,7 @@ end
 
 do
 	local ipairs, type = ipairs, type
-	local UnitGUID, GetItemCount, GetNumGossipActiveQuests, SelectGossipActiveQuest, SelectGossipAvailableQuest, IsQuestCompletable, CompleteQuest, GetQuestReward = UnitGUID, GetItemCount, C_GossipInfo and C_GossipInfo.GetNumActiveQuests or GetNumGossipActiveQuests, C_GossipInfo and C_GossipInfo.SelectActiveQuest or SelectGossipActiveQuest, C_GossipInfo and C_GossipInfo.SelectAvailableQuest or SelectGossipAvailableQuest, IsQuestCompletable, CompleteQuest, GetQuestReward
+	local UnitGUID, GetItemCount, GetNumGossipActiveQuests, SelectGossipActiveQuest, SelectGossipAvailableQuest, IsQuestCompletable, CompleteQuest, GetQuestReward = UnitGUID, GetItemCount, C_GossipInfo and C_GossipInfo.GetNumActiveQuests, C_GossipInfo and C_GossipInfo.SelectActiveQuest, C_GossipInfo and C_GossipInfo.SelectAvailableQuest, IsQuestCompletable, CompleteQuest, GetQuestReward
 
 	local quests = {
 		[13442] = { -- Archdruid Renferal [A]
@@ -103,7 +103,9 @@ do
 				end
 			end
 		elseif quest then
-			if GetItemCount(quest[1]) > quest[2] then
+			local questId = quest[1]
+			---@cast questId number
+			if GetItemCount(questId) > quest[2] then
 				SelectGossipAvailableQuest(1)
 			end
 		end

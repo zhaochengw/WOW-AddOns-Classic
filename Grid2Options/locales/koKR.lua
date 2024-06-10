@@ -156,6 +156,7 @@ L["When duration<1sec"] = "지속시간이<1초일때"
 L["Blizzard Raid Frames"] = "블리자드 공격대 창"
 L["Hide Blizzard Raid Frames"] = "블리자드 공격대 창 숨김"
 -- L["Hide Blizzard Party Frames"] = ""
+-- L["Hide Blizzard Frames"] = ""
 
 -- debugging & maintenance
 L["debugging"] = "디버깅"
@@ -819,6 +820,7 @@ L["Instant"] = "즉시"
 L["Update frequency"] = "업데이트 빈도"
 L["Select the health update frequency."] = "생명력 업데이트 빈도 선택"
 -- L["Add shields to health percent"] = ""
+-- L["Add shields to health amount"] = ""
 
 -- health-low status
 L["Use Health Percent"] = "생명력 비율(%) 사용"
@@ -858,6 +860,8 @@ L["Not Ready color"] = "준비 안됨 색상"
 L["Color for Not Ready."] = "전투 준비 미완료시 색상"
 L["AFK color"] = "자리비움 색상"
 L["Color for AFK."] = "자리비움 상태 색상"
+-- L["Hide on Combat Start"] = ""
+-- L["Hide ready check status if combat starts."] = ""
 
 -- heals-incoming status
 L["Include player heals"] = "플레이어 치유 포함"
@@ -1361,6 +1365,8 @@ L["Show only heals that are going to land within the selected time period. Selec
 L["Heal Types"] = "치유 유형"
 L["Shorten Heal Numbers"] = "치유 숫자 짧게"
 L["Shorten Health Numbers"] = "생명력 숫자 짧게"
+-- L["Shorten Thousand Numbers"] = ""
+-- L["Shorten Above Million Numbers"] = ""
 L["Include heals casted by me, if unchecked only other players heals are displayed."] = "내가 시전한 치유도 포함, 미체크시 다른 플레이어의 치유만 표시"
 L["Apply this multiplier value to incoming heals."] = "현재 배율을 받은 치유에 적용"
 L["Incoming overheals below the specified value will not be shown."] = "지정값 아래의 받는 초과 치유는 표시하지 않음"
@@ -1463,6 +1469,8 @@ L["color"] = "색상"
 
 -- L["Disabled in instances"] = ""
 -- L["Disable this status inside instances."] = ""
+-- L["Display other groups"] = ""
+-- L["Enable the status if the player is in another LFG or PvP instance."] = ""
 
 L["Enable harmful spells Allowlist"] = "위험 주문 허용 목록 사용"
 L["Display only the spells specified in a user defined list."] = "사용자 정의 목록의 주문만 표시"

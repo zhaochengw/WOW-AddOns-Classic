@@ -1,6 +1,6 @@
 local mod = DBM:NewMod(WOW_PROJECT_ID ~= (WOW_PROJECT_MAINLINE or 1) and "z529" or "z2107", "DBM-PvP")
 
-mod:SetRevision("20240203195924")
+mod:SetRevision("20240515181211")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"LOADING_SCREEN_DISABLED",
@@ -25,7 +25,8 @@ do
 			elseif zoneID == 2177 then
 				assaultID = 1383
 			end
-			DBM:GetModByName("PvPGeneral"):SubscribeAssault(assaultID, 5)
+			local pvpGeneral = DBM:GetModByName("PvPGeneral")
+			pvpGeneral:SubscribeAssault(assaultID, 5)
 		elseif bgzone and (zoneID ~= 529 and zoneID ~= 1681 and zoneID ~= 2107 and zoneID ~= 2177) then
 			bgzone = false
 		end

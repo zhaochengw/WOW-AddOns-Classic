@@ -60,9 +60,14 @@ function Details:GetEncounterInfo(id)
     end
 end
 
+---@param id instanceid|instancename|mapid
 ---@return details_instanceinfo?
 function Details:GetInstanceInfo(id)
-    ---@type details_encounterinfo
+    if (id == 463) then --fall
+        id = 1209
+    end
+
+    ---@type details_instanceinfo
     local instanceData = Details222.EJCache.CacheRaidData_ByInstanceId[id]
     if (instanceData) then
         return instanceData
@@ -77,21 +82,10 @@ function Details:GetInstanceInfo(id)
     if (instanceData) then
         return instanceData
     end
+end
 
-    instanceData = Details222.EJCache.CacheDungeonData_ByInstanceId[id]
-    if (instanceData) then
-        return instanceData
-    end
-
-    instanceData = Details222.EJCache.CacheDungeonData_ByInstanceName[id]
-    if (instanceData) then
-        return instanceData
-    end
-
-    instanceData = Details222.EJCache.CacheDungeonData_ByMapId[id]
-    if (instanceData) then
-        return instanceData
-    end
+function Details:DumpInstanceInfo()
+    dumpt(Details222.EJCache.CacheRaidData_ByInstanceId)
 end
 
 function Details:GetInstanceEJID(...)
@@ -108,9 +102,6 @@ function Details222.EJCache.CreateEncounterJournalDump()
     Details222.EJCache.CacheRaidData_ByInstanceId = {}
     Details222.EJCache.CacheRaidData_ByInstanceName = {} --this is localized name
     Details222.EJCache.CacheRaidData_ByMapId = {} --retrivied from GetInstanceInfo()
-    Details222.EJCache.CacheDungeonData_ByInstanceId = {}
-    Details222.EJCache.CacheDungeonData_ByInstanceName = {}
-    Details222.EJCache.CacheDungeonData_ByMapId = {}
     Details222.EJCache.CacheEncountersByEncounterName = {}
     Details222.EJCache.CacheEncountersBy_EncounterName = {}
     Details222.EJCache.CacheEncountersBy_EncounterId = {}
@@ -167,6 +158,10 @@ function Details222.EJCache.CreateEncounterJournalDump()
             --use current tier for dungeons, as the current tier shows the dungeons used for the current season of Mythic+
             local startIndex, endIndex
             if (bIsRaid) then
+
+                if (detailsFramework.IsCataWow()) then
+                    if currentTierId == 1 then break end --Cata has only one tier. Looking up tier 0 errors. ~CATA
+                end
                 EJ_SelectTier(currentTierId - 1) --print("tier selected:", currentTierId - 1, "raids") --debug
                 startIndex = raidTierStartIndex
                 endIndex = 20

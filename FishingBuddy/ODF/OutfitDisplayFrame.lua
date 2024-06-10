@@ -241,7 +241,7 @@ local function CheckSwitchWillFail(outfit)
 				end
 			else
 				if ( not slotempty ) then
-					local bagtype = GetItemFamily( check.item );
+					local bagtype = C_Item.GetItemFamily( check.item );
 					if ( FreespaceCheck(bagtype) == 0 ) then
 						nospace = true;
 					end

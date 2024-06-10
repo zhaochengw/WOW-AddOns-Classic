@@ -1471,6 +1471,8 @@ L["STRING_REPORT_SINGLE_BUFFUPTIME"] = "Stärkungszauberlaufzeit für"
 L["STRING_REPORT_SINGLE_COOLDOWN"] = "Cooldown benutzt von"
 L["STRING_REPORT_SINGLE_DEATH"] = "Tod von"
 L["STRING_REPORT_SINGLE_DEBUFFUPTIME"] = "Schwächungszauberlaufzeit für"
+--[[Translation missing --]]
+L["STRING_REPORT_TEXT"] = "Report"
 L["STRING_REPORT_TOOLTIP"] = "Ergebnisbericht"
 L["STRING_REPORTFRAME_COPY"] = "Kopieren & Einfügen"
 L["STRING_REPORTFRAME_CURRENT"] = "Momentan"

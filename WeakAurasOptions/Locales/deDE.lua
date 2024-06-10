@@ -293,7 +293,6 @@ Off Screen]=]
 	L["Author Options"] = "Author Options"
 	--[[Translation missing --]]
 	L["Auto-Clone (Show All Matches)"] = "Auto-Clone (Show All Matches)"
-	L["Auto-cloning enabled"] = "Auto-Klonen deaktiviert"
 	L["Automatic"] = "Automatisch"
 	--[[Translation missing --]]
 	L["Automatic length"] = "Automatic length"
@@ -347,6 +346,8 @@ Off Screen]=]
 	L["Can set to 0 if Rows * Height equal File Height"] = "Can set to 0 if Rows * Height equal File Height"
 	L["Cancel"] = "Abbrechen"
 	--[[Translation missing --]]
+	L["Case Insensitive"] = "Case Insensitive"
+	--[[Translation missing --]]
 	L["Cast by a Player Character"] = "Cast by a Player Character"
 	--[[Translation missing --]]
 	L["Categories to Update"] = "Categories to Update"
@@ -379,8 +380,8 @@ Off Screen]=]
 	L["Collapse all pending Import"] = "Collapse all pending Import"
 	--[[Translation missing --]]
 	L["Collapsible Group"] = "Collapsible Group"
-	L["color"] = "Farbe"
 	L["Color"] = "Farbe"
+	L["color"] = "Farbe"
 	L["Column Height"] = "Spaltenhöhe"
 	L["Column Space"] = "Spaltenabstand"
 	--[[Translation missing --]]
@@ -563,6 +564,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	--[[Translation missing --]]
 	L["Enter in a value for the tick's placement."] = "Enter in a value for the tick's placement."
 	--[[Translation missing --]]
+	L["Enter static or relative values with %"] = "Enter static or relative values with %"
+	--[[Translation missing --]]
 	L["Enter User Mode"] = "Enter User Mode"
 	--[[Translation missing --]]
 	L["Enter user mode."] = "Enter user mode."
@@ -597,9 +600,9 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Fade In"] = "Einblenden"
 	L["Fade Out"] = "Ausblenden"
 	--[[Translation missing --]]
-	L["Fallback"] = "Fallback"
+	L["Fadeout Sound"] = "Fadeout Sound"
 	--[[Translation missing --]]
-	L["Fallback Icon"] = "Fallback Icon"
+	L["Fadeout Time (seconds)"] = "Fadeout Time (seconds)"
 	L["False"] = "Falsch"
 	--[[Translation missing --]]
 	L["Fetch Affected/Unaffected Names and Units"] = "Fetch Affected/Unaffected Names and Units"
@@ -642,6 +645,8 @@ Can use \ to escape -.]=]
 	--[[Translation missing --]]
 	L["Finishing..."] = "Finishing..."
 	L["Fire Orb"] = "Feuerkugel"
+	--[[Translation missing --]]
+	L["Flat Framelevels"] = "Flat Framelevels"
 	L["Font"] = "Schriftart"
 	L["Font Size"] = "Schriftgröße"
 	L["Foreground"] = "Vordergrund"
@@ -660,8 +665,6 @@ Can use \ to escape -.]=]
 	L["Frame Height"] = "Frame Height"
 	--[[Translation missing --]]
 	L["Frame Rate"] = "Frame Rate"
-	--[[Translation missing --]]
-	L["Frame Selector"] = "Frame Selector"
 	L["Frame Strata"] = "Frame-Schicht"
 	--[[Translation missing --]]
 	L["Frame Width"] = "Frame Width"
@@ -872,6 +875,8 @@ Falls die Zahl als Dezimalzahl (z.B. 0.5), Bruch (z.B. 1/2) oder Prozentsatz (z.
 	L["Length"] = "Länge"
 	--[[Translation missing --]]
 	L["Length of |cFFFF0000%s|r"] = "Length of |cFFFF0000%s|r"
+	--[[Translation missing --]]
+	L["LibSharedMedia"] = "LibSharedMedia"
 	L["Limit"] = "Limit"
 	--[[Translation missing --]]
 	L["Line"] = "Line"
@@ -891,6 +896,12 @@ Falls die Zahl als Dezimalzahl (z.B. 0.5), Bruch (z.B. 1/2) oder Prozentsatz (z.
 	L["Magnetically Align"] = "Magnetically Align"
 	L["Main"] = "Hauptanimation"
 	--[[Translation missing --]]
+	L["Manual"] = "Manual"
+	--[[Translation missing --]]
+	L["Manual Icon"] = "Manual Icon"
+	--[[Translation missing --]]
+	L["Manual with %i/%i"] = "Manual with %i/%i"
+	--[[Translation missing --]]
 	L["Match Count"] = "Match Count"
 	--[[Translation missing --]]
 	L["Match Count per Unit"] = "Match Count per Unit"
@@ -900,14 +911,16 @@ Falls die Zahl als Dezimalzahl (z.B. 0.5), Bruch (z.B. 1/2) oder Prozentsatz (z.
 	--[[Translation missing --]]
 	L["Max Length"] = "Max Length"
 	--[[Translation missing --]]
+	L["Maximum"] = "Maximum"
+	--[[Translation missing --]]
 	L["Media Type"] = "Media Type"
 	L["Medium Icon"] = "Mittelgroßes Symbol"
 	L["Message"] = "Nachricht"
-	L["Message Prefix"] = "Nachrichtenprefix"
-	L["Message Suffix"] = "Nachrichtensuffix"
 	L["Message Type"] = "Nachrichtentyp"
 	--[[Translation missing --]]
 	L["Min"] = "Min"
+	--[[Translation missing --]]
+	L["Minimum"] = "Minimum"
 	L["Mirror"] = "Spiegeln"
 	L["Model"] = "Modell"
 	--[[Translation missing --]]
@@ -951,8 +964,6 @@ Nur ein Wert kann ausgewählt werden.]=]
 	--[[Translation missing --]]
 	L["Name:"] = "Name:"
 	--[[Translation missing --]]
-	L["Nameplate"] = "Nameplate"
-	--[[Translation missing --]]
 	L["Nameplates"] = "Nameplates"
 	L["Negator"] = "Nicht"
 	L["New Aura"] = "Neue Aura"
@@ -969,6 +980,8 @@ Nur ein Wert kann ausgewählt werden.]=]
 	L["Not Loaded"] = "Nicht geladen"
 	--[[Translation missing --]]
 	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "Note: Automated Messages to SAY and YELL are blocked outside of Instances."
+	--[[Translation missing --]]
+	L["Note: This progress source does not provide a total value/duration. A total value/duration must be set via \"Set Maximum Progress\""] = "Note: This progress source does not provide a total value/duration. A total value/duration must be set via \"Set Maximum Progress\""
 	--[[Translation missing --]]
 	L["Npc ID"] = "Npc ID"
 	--[[Translation missing --]]
@@ -1080,6 +1093,10 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=]
 	L["Progress Bar"] = "Fortschrittsbalken"
 	--[[Translation missing --]]
 	L["Progress Bar Settings"] = "Progress Bar Settings"
+	--[[Translation missing --]]
+	L["Progress Settings"] = "Progress Settings"
+	--[[Translation missing --]]
+	L["Progress Source"] = "Progress Source"
 	L["Progress Texture"] = "Fortschrittstextur"
 	--[[Translation missing --]]
 	L["Progress Texture Settings"] = "Progress Texture Settings"
@@ -1153,6 +1170,10 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=]
 	L["Separator Text"] = "Separator Text"
 	--[[Translation missing --]]
 	L["Separator text"] = "Separator text"
+	--[[Translation missing --]]
+	L["Set Maximum Progress"] = "Set Maximum Progress"
+	--[[Translation missing --]]
+	L["Set Minimum Progress"] = "Set Minimum Progress"
 	--[[Translation missing --]]
 	L["Set Parent to Anchor"] = "Set Parent to Anchor"
 	--[[Translation missing --]]
@@ -1278,6 +1299,10 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=]
 	--[[Translation missing --]]
 	L["Sub Option %i"] = "Sub Option %i"
 	--[[Translation missing --]]
+	L["Subevent"] = "Subevent"
+	--[[Translation missing --]]
+	L["Subevent Suffix"] = "Subevent Suffix"
+	--[[Translation missing --]]
 	L["Supports multiple entries, separated by commas"] = "Supports multiple entries, separated by commas"
 	--[[Translation missing --]]
 	L["Swipe Overlay Settings"] = "Swipe Overlay Settings"
@@ -1295,6 +1320,8 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=]
 	--[[Translation missing --]]
 	L["Texture Rotation"] = "Texture Rotation"
 	--[[Translation missing --]]
+	L["Texture Selection Mode"] = "Texture Selection Mode"
+	--[[Translation missing --]]
 	L["Texture Settings"] = "Texture Settings"
 	--[[Translation missing --]]
 	L["Texture Wrap"] = "Texture Wrap"
@@ -1308,6 +1335,8 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=]
 	L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"] = "The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"
 	L["The duration of the animation in seconds."] = "Die Dauer der Animation in Sekunden."
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = "Die Dauer der Animation in Sekunden. Die Endanimation erscheint erst zum Zeitpunkt des Ausblendens."
+	--[[Translation missing --]]
+	L["The group and all direct children will share the same base frame level."] = "The group and all direct children will share the same base frame level."
 	L["The type of trigger"] = "Auslösertyp"
 	L["Then "] = "Dann"
 	--[[Translation missing --]]
@@ -1379,6 +1408,8 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	L["Top Left"] = "Oben links"
 	L["Top Right"] = "Oben rechts"
 	--[[Translation missing --]]
+	L["Total"] = "Total"
+	--[[Translation missing --]]
 	L["Total Angle"] = "Total Angle"
 	--[[Translation missing --]]
 	L["Total Time"] = "Total Time"
@@ -1399,8 +1430,6 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	L["Unit %s is not a valid unit for RegisterUnitEvent"] = "Unit %s is not a valid unit for RegisterUnitEvent"
 	--[[Translation missing --]]
 	L["Unit Count"] = "Unit Count"
-	--[[Translation missing --]]
-	L["Unit Frame"] = "Unit Frame"
 	--[[Translation missing --]]
 	L["Unit Frames"] = "Unit Frames"
 	--[[Translation missing --]]
@@ -1433,9 +1462,15 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	--[[Translation missing --]]
 	L["Uses UnitIsVisible() to check if game client has loaded a object for this unit. This distance is around 100 yards. This is polled every second."] = "Uses UnitIsVisible() to check if game client has loaded a object for this unit. This distance is around 100 yards. This is polled every second."
 	--[[Translation missing --]]
+	L["Value"] = "Value"
+	--[[Translation missing --]]
 	L["Value %i"] = "Value %i"
 	--[[Translation missing --]]
 	L["Values are in normalized rgba format."] = "Values are in normalized rgba format."
+	--[[Translation missing --]]
+	L["Values/Remaining Time above this value are displayed as full progress."] = "Values/Remaining Time above this value are displayed as full progress."
+	--[[Translation missing --]]
+	L["Values/Remaining Time below this value are displayed as zero progress."] = "Values/Remaining Time below this value are displayed as zero progress."
 	L["Values:"] = "Werte:"
 	L["Version: "] = "Version:"
 	--[[Translation missing --]]
@@ -1459,9 +1494,9 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	L["X Offset"] = "X-Versatz"
 	L["X Rotation"] = "X-Rotation"
 	L["X Scale"] = "Skalierung (X)"
-	L["X-Offset"] = "X-Versatz"
 	--[[Translation missing --]]
 	L["x-Offset"] = "x-Offset"
+	L["X-Offset"] = "X-Versatz"
 	L["Y Offset"] = "Y-Versatz"
 	L["Y Rotation"] = "Y-Rotation"
 	L["Y Scale"] = "Skalierung (Y)"

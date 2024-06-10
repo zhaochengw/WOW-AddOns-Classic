@@ -35,7 +35,7 @@ function BaseItem:WaitItem(item)
     self:RegisterEvent('GET_ITEM_INFO_RECEIVED')
 end
 
---[=[@debug@
+--[[@debug@
 function BaseItem:Update()
 end
---@end-debug@]=]
+--@end-debug@]]

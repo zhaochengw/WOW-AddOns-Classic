@@ -1,9 +1,9 @@
-## Interface: 11404
+## Interface: 11501
 ## Title: Method Raid Tools
 ## Author: ykiigor
 ## Notes: Method Raid Tools
 ## SavedVariables: VMRT
-## Version: 4810
+## Version: 4840
 core.lua
 Functions.lua
 embeds.xml
@@ -21,6 +21,7 @@ Note.lua
 ExCD2.lua
 Inspect.lua
 VisNote.lua
+Reminder.lua
 BossWatcher.lua
 InspectViewer.lua
 RaidCheck.lua
@@ -28,6 +29,8 @@ InviteTool.lua
 RaidGroups.lua
 MarksBar.lua
 Marks.lua
+MarksSimple.lua
+Interrupts.lua
 BattleRes.lua
 Timers.lua
 RaidAttendance.lua

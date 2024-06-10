@@ -26,6 +26,7 @@ module.db.otherIconsList = {
 	{"{"..L.classLocalizate["MONK"] .."}",crop=":16:16:0:0:256:256:128:189:128:192","Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.5,0.73828125,0.5,0.75},
 	{"{"..L.classLocalizate["DRUID"] .."}",crop=":16:16:0:0:256:256:190:253:0:64","Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.7421875,0.98828125,0,0.25},
 	{"{"..L.classLocalizate["DEMONHUNTER"] .."}",crop=":16:16:0:0:256:256:190:253:128:192","Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES",0.7421875,0.98828125,0.5,0.75},
+	{"{"..L.classLocalizate["EVOKER"] .."}","interface/icons/classicon_evoker"},
 	{"{wow}","Interface\\FriendsFrame\\Battlenet-WoWicon"},
 	{"{d3}","Interface\\FriendsFrame\\Battlenet-D3icon"},
 	{"{sc2}","Interface\\FriendsFrame\\Battlenet-Sc2icon"},
@@ -45,12 +46,10 @@ module.db.otherIconsList = {
 }
 
 if MRT.isClassic then
+	tremove(module.db.otherIconsList,13)
 	tremove(module.db.otherIconsList,12)
 	tremove(module.db.otherIconsList,10)
 	if not MRT.isLK then tremove(module.db.otherIconsList,6) end
-end
-if MRT.is10 then
-	tinsert(module.db.otherIconsList,13,{"{"..L.classLocalizate["EVOKER"] .."}","interface/icons/classicon_evoker"})
 end
 
 module.db.iconsLocalizatedNames = {
@@ -1239,20 +1238,23 @@ function module.options:Load()
 	end)
 	self.NoteEditBox.EditBox:SetScript("OnKeyUp",function(self,key)
 		if IsFormattingOn_Saved and key == "LCTRL" then
-			local text = module.options.NoteEditBox.EditBox:GetText()
-			local h_start,h_end = module.options.NoteEditBox:GetTextHighlight()
-			local h_cursor = self:GetCursorPosition()
-			local c_start,c_end,c_cursor = 0,0,0
-			text:sub(1,h_start):gsub("||([cr])",function() c_start = c_start + 1 end)
-			text:sub(1,h_end):gsub("||([cr])",function() c_end = c_end + 1 end)
-			text:sub(1,h_cursor):gsub("||([cr])",function() c_cursor = c_cursor + 1 end)
-
-			IsFormattingOn = true
-			IsFormattingOn_Saved = nil
-			module.options.InsertFix = nil
-			module.options.NotesList:SetListValue(module.options.LastIndex or 1)
-			module.options.NoteEditBox.EditBox:HighlightText( h_start-c_start,h_end-c_end )
-			module.options.NoteEditBox.EditBox:SetCursorPosition( h_cursor-c_cursor )
+			MRT.F:AddCoroutine(function()
+				coroutine.yield("await")	--wait for redraw from wow engine to recognize all updated text.
+				local text = module.options.NoteEditBox.EditBox:GetText()
+				local h_start,h_end = module.options.NoteEditBox:GetTextHighlight()
+				local h_cursor = self:GetCursorPosition()
+				local c_start,c_end,c_cursor = 0,0,0
+				text:sub(1,h_start):gsub("||([cr])",function() c_start = c_start + 1 end)
+				text:sub(1,h_end):gsub("||([cr])",function() c_end = c_end + 1 end)
+				text:sub(1,h_cursor):gsub("||([cr])",function() c_cursor = c_cursor + 1 end)
+	
+				IsFormattingOn = true
+				IsFormattingOn_Saved = nil
+				module.options.InsertFix = nil
+				module.options.NotesList:SetListValue(module.options.LastIndex or 1)
+				module.options.NoteEditBox.EditBox:HighlightText( h_start-c_start,h_end-c_end )
+				module.options.NoteEditBox.EditBox:SetCursorPosition( h_cursor-c_cursor )
+			end)
 		end
 	end)
 
@@ -1304,19 +1306,11 @@ function module.options:Load()
 
 				local c = 0.05 * (self.t > 2 and (4-self.t) or self.t)
 
-				if MRT.is10 or MRT.isLK1 then
-					self.Texture:SetGradient("VERTICAL",CreateColor(0.0+c,0.06+c,0.0+c,1), CreateColor(0.05+c,0.21+c,0.05+c,1))
-				else
-					self.Texture:SetGradientAlpha("VERTICAL",0.0+c,0.06+c,0.0+c,1, 0.05+c,0.21+c,0.05+c,1)
-				end
+				self.Texture:SetGradient("VERTICAL",CreateColor(0.0+c,0.06+c,0.0+c,1), CreateColor(0.05+c,0.21+c,0.05+c,1))
 			end)
 		else
 			self:SetScript("OnUpdate",nil)
-			if MRT.is10 or MRT.isLK1 then
-				self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
-			else
-				self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
-			end
+			self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
 		end
 	end
 
@@ -1413,7 +1407,7 @@ function module.options:Load()
 		button.iconText = module.db.iconsLocalizatedNames[i]
 		button:SetScript("OnClick", AddTextToEditBox)
 	end
-	for i=1,(MRT.is10 and 13 or 12) do
+	for i=1,13 do
 		local button = CreateFrame("Button", nil,self.tab.tabs[1])
 		self.buttonicons[i] = button
 		button:SetSize(18,18)
@@ -1456,7 +1450,7 @@ function module.options:Load()
 		local GetSpellInfo = GetSpellInfo
 		local line = 1
 		local inLine = 0
-		for i=(MRT.is10 and 14 or 13),#module.db.otherIconsList-3 do
+		for i=14,#module.db.otherIconsList-3 do
 			local iconData = module.db.otherIconsList[i]
 			local icon = CreateOtherIcon(5+inLine*20,-2-(line-1)*20,iconData[2],iconData[1])
 			if iconData[3] then
@@ -1585,7 +1579,7 @@ function module.options:Load()
 	end
 	self.lastUpdate:Hide()
 
-	self.chkEnable = ELib:Check(self,L.Enable,VMRT.Note.enabled):Point(720,-17):Tooltip("/rt note|n/rt n"):Size(18,18):AddColorState():OnClick(function(self) 
+	self.chkEnable = ELib:Check(self,L.Enable,VMRT.Note.enabled):Point(720,-17):Tooltip("/rt note|n/rt n"):Size(18,18):AddColorState():TextButton():OnClick(function(self) 
 		if self:GetChecked() then
 			module:Enable()
 		else
@@ -2198,11 +2192,7 @@ function module:CreateNoteWindow(windowName,isCustomWindow)
 	frame:SetScript("OnDragStop", NoteWindow_OnDragStop)
 	frame:SetFrameStrata("HIGH")
 	frame:SetResizable(true)
-	if MRT.is10 or MRT.isLK1 then
-		frame:SetResizeBounds(30, 30, 2000, 2000)
-	else
-		frame:SetMinResize(30, 30)
-	end
+	frame:SetResizeBounds(30, 30, 2000, 2000)
 	frame:SetScript("OnSizeChanged", NoteWindow_OnSizeChanged)
 	frame:Hide() 
 	frame._Show = frame.Show
@@ -2451,7 +2441,7 @@ function module.frame:Save(blackNoteID)
 		end
 	end
 
-	if MRT.isClassic then
+	if MRT.isClassic and not MRT.isLK and false then
 		local MSG_LIMIT_COUNT = 10
 		local MSG_LIMIT_TIME = 6
 		if #arrtosand >= MSG_LIMIT_COUNT and module.options.buttonsend then

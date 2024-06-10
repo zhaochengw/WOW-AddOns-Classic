@@ -5,13 +5,15 @@ local L = DBM_CORE_L
 
 local dateTable = date("*t")
 if dateTable.day and dateTable.month and dateTable.day == 1 and dateTable.month == 4 then
-	--L.DEADLY_BOSS_MODS					= "Bigwigs"
-	--L.DBM								= "BW"
+	L.DEADLY_BOSS_MODS					= "Harmless Minion Mods"
+	L.DBM								= "HMM"
 end
 
 L.HOW_TO_USE_MOD				= "歡迎使用"..L.DBM.."。在聊天頻道輸入 /dbm 打開設定開始設定。你可以載入特定區域後為任何首領設定你喜歡的特別設置。"..L.DBM.."會在設定你的職業天賦的預設值，但有些選項可能需要調整。"
 L.SILENT_REMINDER				= "提醒："..L.DBM.."正處於無聲模式。"
-L.NEWS_UPDATE					= "|h|c11ff1111更新說明|r|h: 此更新基本上是重新發佈的9.1.9，以清除上一個文件發佈時的錯誤惡意軟件檢測驗證。讀取更多訊息在|Hgarrmission:DBM:news|h|cff3588ff[此處]|r|h"
+L.NEWS_UPDATE					= "|h|c11ff1111更新說明|r|h: DBM已更新並對模組結構做了更動，因此經典版和正式版現在使用統一的（相同）模組。這意味著經典版(包含探索賽季)、燃燒的遠征、巫妖王之怒以及浩劫與重生現在分別安裝並使用與正式版相同的插件包。 讀取更多訊息在|Hgarrmission:DBM:news|h|cff3588ff[此處]|r|h"
+L.NEWS_UPDATE_REPEAT			= "|h|c11ff1111更新說明|r|h: DBM已更新並對模組結構做了更動，因此經典版和正式版現在使用統一的（相同）模組。這意味著經典版(包含探索賽季)、燃燒的遠征、巫妖王之怒以及浩劫與重生現在分別安裝並使用與正式版相同的插件包。你目前正在缺少模組的團隊副本中。此訊息將持續顯示 (並且您將沒有此區域的功能警報) 直到你安裝了缺少的團隊副本模組為止。"
+
 
 L.COPY_URL_DIALOG_NEWS			= "要閱讀最新說明，請拜訪以下連結"
 
@@ -44,7 +46,8 @@ L.LOOT_SPEC_REMINDER			= "你目前的專精為:%s。而你目前的拾取選擇
 
 L.BIGWIGS_ICON_CONFLICT			= L.DBM.."偵測到你同時開啟BigWigs和"..L.DBM.."的團隊圖示。請關閉其中之一的團隊圖示功能以免產生衝突。"
 
-L.MOD_AVAILABLE					= "%s在此區域有模組可用。你可以在Curse、Wago、WoWI或從GitHub正式版頁面下載。"
+L.MOD_AVAILABLE					= "%s在此區域有模組可用但未安裝。你可以在Curse、Wago、WoWI或從GitHub正式版頁面下載。"
+L.MOD_MISSING					= "無團隊模組"
 
 L.COMBAT_STARTED				= "%s開戰。祝好運與盡興! :)"
 L.COMBAT_STARTED_IN_PROGRESS	= "與%s開戰已進行的戰鬥。祝好運與盡興! :)"
@@ -185,6 +188,7 @@ L.BIG_WIGS						= "BigWigs"
 L.WEAKAURA_KEY					= " (|cff308530WA鍵:|r %s)"
 
 L.UPDATEREMINDER_HEADER				= "你的Deadly Boss Mod已經過期。\n你可以在Curse網站或是WOWI網站以及GitHub專案網頁下載到新版本%s (%s)"
+L.UPDATEREMINDER_HEADER_SUBMODULE	= "你的 %s 模組已經過期。\n 你可以在Curse網站或是WOWI網站以及GitHub專案網頁下載到新版本 %s"
 L.UPDATEREMINDER_FOOTER				= "按下" .. (IsMacClient() and "Cmd-C" or "Ctrl-C")  ..  "：複製下載網址到剪貼簿。"
 L.UPDATEREMINDER_FOOTER_GENERIC		= "按下" .. (IsMacClient() and "Cmd-C" or "Ctrl-C")  ..  "：複製網址到剪貼簿。"
 L.UPDATEREMINDER_DISABLE			= "警告: 你的"..L.DBM.."版本已大幅度的過期並且無法與新版本相容，"..L.DBM.."已被強制關閉並且無法使用直到更新為止。這是為了確保舊而不相容的程式碼不會對你而團隊夥伴造成低落的遊戲體驗。"
@@ -237,10 +241,11 @@ L.RANGERADAR_IN_RANGE_TEXT		= "%d在範圍內(%0.1f碼)"--Multi
 L.RANGECHECK_IN_RANGE_TEXT		= "%d在範圍內"--Text based doesn't need (%dyd), especially since it's not very accurate to the specific yard anyways
 L.RANGERADAR_IN_RANGE_TEXTONE	= "%s (%0.1f碼)"--One target
 
+L.INFOFRAME_TITLE				= "DBM資訊框架"
 L.INFOFRAME_SHOW_SELF			= "總是顯示你的能量"
 L.INFOFRAME_SETLINES			= "設定最大行數"
 L.INFOFRAME_SETCOLS				= "設定最大行數"
-L.INFOFRAME_LINESDEFAULT		= "由插件設定"
+L.INFOFRAME_LINESDEFAULT		= "由首領模組自動設定"
 L.INFOFRAME_LINES_TO			= "%d 行"
 L.INFOFRAME_COLS_TO				= "%d 行"
 L.INFOFRAME_POWER				= "能量"
@@ -281,7 +286,8 @@ L.TIMER_USAGE	= {
 }
 
 L.ERROR_NO_PERMISSION		= "無權進行此操作。"
-L.TIME_TOO_SHORT			= "備戰計時器必須超過3秒。 "
+L.PULL_TIME_TOO_SHORT			= "備戰計時器必須超過3秒。 "
+L.PULL_TIME_TOO_LONG							= "Pull timer cannot be longer than 60 seconds"
 
 L.BREAK_USAGE					= "休息時間不可以長過60分鐘。請確定您輸入的時間是分鐘而不是秒。"
 L.BREAK_START					= "現在開始休息-你有%s分鐘! (由 %s 發送)"
@@ -497,12 +503,14 @@ L.AUTO_TIMER_OPTIONS.cdnp					= "計時條：只顯示名條的 $spell:%s 冷卻
 L.AUTO_TIMER_OPTIONS.cdnpcount				= "計時條：只顯示名條的 $spell:%s 冷卻時間(包含計數)"
 L.AUTO_TIMER_OPTIONS.cdsource				= "計時條：$spell:%s冷卻時間以及來源"
 L.AUTO_TIMER_OPTIONS.cdspecial				= "計時條：特殊技能冷卻"
+L.AUTO_TIMER_OPTIONS.cdcombo				= "計時條：技能組合冷卻"--Used for combining 2 abilities into a single timer
 L.AUTO_TIMER_OPTIONS.next					= "計時條：下一次$spell:%s"
 L.AUTO_TIMER_OPTIONS.nextcount				= "計時條：下一次$spell:%s"
 L.AUTO_TIMER_OPTIONS.nextnp					= "計時條：只顯示名條的下一次$spell:%s"
 L.AUTO_TIMER_OPTIONS.nextnpcount			= "計時條：只顯示名條的下一次$spell:%s(包含計數)"
 L.AUTO_TIMER_OPTIONS.nextsource				= "計時條：下一次$spell:%s以及來源"
 L.AUTO_TIMER_OPTIONS.nextspecial			= "計時條：下一次特殊技能"
+L.AUTO_TIMER_OPTIONS.nextcombo				= "計時條：下一次技能組合"--Used for combining 2 abilities into a single timer
 L.AUTO_TIMER_OPTIONS.achievement			= "計時條：成就%s"
 L.AUTO_TIMER_OPTIONS.stage					= "計時條：下一階段"
 L.AUTO_TIMER_OPTIONS.stagecount				= "計時條：下一階段(包含計數)"

@@ -184,12 +184,22 @@ SettingsFunctions = {
 
     WeaponTracker = function(value, Timers)
         Timers[8].ActiveWhileHidden = TotemTimers.ActiveProfile.ActivateHiddenTimers and not value
-        if (value or TotemTimers.ActiveProfile.ActivateHiddenTimers) and AvailableSpells[SpellIDs.RockbiterWeapon] then
+        if (value or TotemTimers.ActiveProfile.ActivateHiddenTimers) and
+                (AvailableSpells[SpellIDs.RockbiterWeapon] or AvailableSpells[SpellIDs.FlametongueWeapon] or AvailableSpells[SpellIDs.WindfuryWeapon])
+        then
             Timers[8]:Activate()
         else
             Timers[8]:Deactivate()
         end
         TotemTimers.OrderTrackers()
+    end,
+
+    WeaponExpirationWarning = function(value, Timers)
+        TotemTimers.WeaponTracker.warningPoint = value
+    end,
+
+    WeaponWarningStopPulse = function(value, Timers)
+        TotemTimers.WeaponTracker.StopPulseAtWarning = value
     end,
 
     LastWeaponEnchant = function(value, Timers)
@@ -199,9 +209,10 @@ SettingsFunctions = {
             value = select(7, GetSpellInfo(value))
         end
 
-        if value and value >= 5 and value <= 7 then
+        if value and value >= 5 and value <= 8 then
             local ds1 = value == 7 and SpellIDs.FlametongueWeapon or SpellIDs.WindfuryWeapon
             local ds2 = value == 6 and SpellIDs.FrostbrandWeapon or SpellIDs.FlametongueWeapon
+            if value == 8 then ds2 = SpellIDs.RockbiterWeapon end
 
             button:SetAttribute("type1", "macro")
             button:SetAttribute("doublespell1", SpellNames[ds1])
@@ -211,7 +222,13 @@ SettingsFunctions = {
             TotemTimers.UpdateRank(button)
         else
             if not GetSpellInfo(value) then
-                value = SpellIDs.RockbiterWeapon
+                if AvailableSpells[SpellIDs.RockbiterWeapon] then
+                    value = SpellIDs.RockbiterWeapon
+                elseif AvailableSpells[SpellIDs.FlametongueWeapon] then
+                    value = SpellIDs.FlametongueWeapon
+                else
+                    value = SpellIDs.RockbiterWeapon
+                end
             end
             button:SetAttribute("type1", "spell")
             button:SetAttribute("spell1", value)
@@ -313,12 +330,13 @@ SettingsFunctions = {
 
     Show = function(value, Timers)
         if value then
-            for i = 1, 4 do
-                if (Timers[i].nr == FIRE_TOTEM_SLOT and AvailableSpells[SpellIDs.Searing])
-                        or (Timers[i].nr == EARTH_TOTEM_SLOT and (AvailableSpells[SpellIDs.Stoneskin] or AvailableSpells[SpellIDs.Earthbind] or AvailableSpells[SpellIDs.StoneBulwark]))
-                        or (Timers[i].nr == WATER_TOTEM_SLOT and (AvailableSpells[SpellIDs.HealingStream] or AvailableSpells[SpellIDs.ManaSpring]))
-                        or (Timers[i].nr == AIR_TOTEM_SLOT and (AvailableSpells[SpellIDs.Grounding] or AvailableSpells[SpellIDs.NatureResistance] or AvailableSpells[SpellIDs.Windfury])) then
-                    Timers[i]:Activate()
+            local activeTotems = {}
+            for spell, data in pairs(TotemData) do
+                if TotemTimers.AvailableSpells[spell] then activeTotems[data.element] = true end
+            end
+            for e = 1,4 do
+                if activeTotems[Timers[e].nr] then
+                    Timers[e]:Activate()
                 end
             end
             --TotemTimersFrame:Show()
@@ -747,6 +765,24 @@ SettingsFunctions.ReverseBarBindings = SettingsFunctions.BarBindings
     end
 
 if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
+    SettingsFunctions.HideBlizzTimers = function(value)
+        if value then
+            TotemFrame:UnregisterEvent("PLAYER_TOTEM_UPDATE")
+            TotemFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+            TotemFrame:SetScript("OnShow", function()
+                TotemFrame:Hide()
+            end)
+            TotemFrame:Hide()
+        else
+            TotemFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")
+            TotemFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+            TotemFrame:Show()
+            TotemFrame:SetScript("OnShow", TotemFrameScript)
+        end
+    end
+end
+
+if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC or C_Seasons.GetActiveSeason() == 2 then
 
     SettingsFunctions.CooldownSpacing = function(value, Timers)
         for _, t in pairs({ TotemTimers.EnhanceCDs, TotemTimers.LongCooldowns }) do
@@ -865,12 +901,6 @@ if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
         end
     end
 
-    SettingsFunctions.LongCooldownsStopPulse = function(value, Timers)
-        for _, timer in pairs(TotemTimers.LongCooldowns) do
-            timer.StopPulse = value
-        end
-    end
-
     SettingsFunctions.EnhanceCDs_Clickthrough = function(value)
         for _, t in pairs({ TotemTimers.EnhanceCDs, TotemTimers.LongCooldowns }) do
             for _, timer in pairs(t) do
@@ -891,34 +921,13 @@ if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
         end
     end
 
-    SettingsFunctions.HideBlizzTimers = function(value)
-        if value then
-            TotemFrame:UnregisterEvent("PLAYER_TOTEM_UPDATE")
-            TotemFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
-            TotemFrame:SetScript("OnShow", function()
-                TotemFrame:Hide()
-            end)
-            TotemFrame:Hide()
-        else
-            TotemFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")
-            TotemFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-            TotemFrame:Show()
-            TotemFrame:SetScript("OnShow", TotemFrameScript)
-        end
-    end
-
-    SettingsFunctions.LongCooldowns = function(value, Timers)
-        TotemTimers.ActivateLongCooldowns(value)
-    end
-
-    SettingsFunctions.LongCooldownsArrange = function(value, Timers)
-        TotemTimers.LayoutLongCooldowns()
-    end
-
     if LE_EXPANSION_LEVEL_CURRENT > LE_EXPANSION_BURNING_CRUSADE then
         SettingsFunctions.MultiCast = function(value)
             TotemTimers.MultiSpellActivate()
         end
+    end
+
+    if LE_EXPANSION_LEVEL_CURRENT > LE_EXPANSION_BURNING_CRUSADE or C_Seasons.GetActiveSeason() == 2 then
 
         SettingsFunctions.MaelstromSize = function(value)
             TotemTimers.Maelstrom.size = value
@@ -942,4 +951,25 @@ if WOW_PROJECT_ID > WOW_PROJECT_CLASSIC then
         end
 
     end
+
+    SettingsFunctions.LongCooldownsStopPulse = function(value, Timers)
+        for _, timer in pairs(TotemTimers.LongCooldowns) do
+            timer.NoBuffStopPulse = value
+        end
+    end
+
+    SettingsFunctions.LongCooldowns = function(value, Timers)
+        TotemTimers.ActivateLongCooldowns(value)
+    end
+
+    SettingsFunctions.LongCooldownsArrange = function(value, Timers)
+        TotemTimers.LayoutLongCooldowns()
+    end
+
+    if C_Seasons.GetActiveSeason() == 2 then
+        SettingsFunctions.PowerSurge = function(value)
+            TotemTimers.EnablePowerSurge(value)
+        end
+    end
+
 end
