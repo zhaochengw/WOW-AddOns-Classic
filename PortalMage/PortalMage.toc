@@ -1,0 +1,13 @@
+## Interface: 30403
+## Title: Portal Mage
+## Title-koKR: 포탈 매직-Portal Mage
+## Notes: Bar with portals and teleports.
+## Notes-koKR: 포털과 텔레포트가 있는 바.
+## Author: Vampyr78
+## Version: 2.1.6-wotlk
+## SavedVariablesPerCharacter: portalMageData, portalMageSpells
+## OptionalDeps: Masque
+embeds.xml
+Locale\enUS.lua
+Locale\koKR.lua
+PortalMage.lua
