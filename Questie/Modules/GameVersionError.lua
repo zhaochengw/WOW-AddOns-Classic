@@ -12,7 +12,7 @@ local msg = {
     l10n("are not supported."),
 
     l10n("Questie only supports"),
-    l10n("WoW Classic (Era/Cataclysm)!"),
+    l10n("WoW Classic (Era/Wrath)!"),
 }
 
 StaticPopupDialogs["QUESTIE_VERSION_ERROR"] = {

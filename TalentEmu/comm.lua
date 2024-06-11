@@ -158,7 +158,7 @@ MT.BuildEnv('COMM');
 		OnTalent = function(prefix, name, code, version, Decoder, overheard)
 			local class, level, numGroup, activeGroup, data1, data2 = Decoder(code);
 			if class ~= nil then
-				if version == "V1" and CT.BUILD == "WRATH" then
+				if version == "V1" and CT.TOCVERSION >= 30000 then
 					class, level, numGroup, activeGroup, data1, data2 = MT.TalentConversion(class, level, numGroup, activeGroup, data1, data2);
 				end
 				local Tick = MT.GetUnifiedTime();
@@ -189,7 +189,7 @@ MT.BuildEnv('COMM');
 			end
 		end,
 		OnGlyph = function(prefix, name, code, version, Decoder, overheard)
-			if CT.BUILD ~= "WRATH" then
+			if CT.TOCVERSION < 30000 then
 				return;
 			end
 			local data1, data2 = Decoder(code);
@@ -438,7 +438,7 @@ MT.BuildEnv('COMM');
 		-- end);
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", ChatFilter_CHAT);
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", ChatFilter_CHAT);
-		ChatFrame_AddMessageEventFilter("CHAT_MSG_EMOTE", ChatFilter_CHAT);		
+		ChatFrame_AddMessageEventFilter("CHAT_MSG_EMOTE", ChatFilter_CHAT);
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", ChatFilter_CHAT);
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_OFFICER", ChatFilter_CHAT);
 		ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", ChatFilter_CHAT);

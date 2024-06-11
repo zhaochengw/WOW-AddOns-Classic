@@ -100,7 +100,7 @@ MT.BuildEnv('SETTING');
 		VT.DB = DB;
 		VT.SET = setmetatable(DB.set, { __index = CT.DefaultSetting, });
 		VT.VAR = DB.var;
-		if CT.BUILD == "WRATH" then
+		if CT.TOCVERSION >= 30000 then
 			DB.map = DB.map or {  };
 			DB.map[CT.BUILD] = DB.map[CT.BUILD] or {  };
 			VT.MAP = DB.map[CT.BUILD];

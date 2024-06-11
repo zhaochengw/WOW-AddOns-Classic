@@ -4,6 +4,7 @@
     <script file = "classic.lua" />
     <script file = "bcc.lua" />
     <script file = "wrath.lua" />
+    <script file = "cata.lua" />
 
 </Ui>
 

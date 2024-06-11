@@ -1994,18 +1994,6 @@ local tbcObjectiveLocales = {
         ["zhTW"] = false,
         ["zhCN"] = false,
     },
-    ["Fish for Baby Crocolisk"] = {
-        ["ptBR"] = false,
-        ["ruRU"] = false,
-        ["deDE"] = "Fische nach Krokiliskenbaby",
-        ["koKR"] = false,
-        ["esMX"] = false,
-        ["enUS"] = true,
-        ["frFR"] = false,
-        ["esES"] = false,
-        ["zhTW"] = false,
-        ["zhCN"] = false,
-    },
 }
 
 for k, v in pairs(tbcObjectiveLocales) do

@@ -55,7 +55,6 @@ function QuestieOptionsDefaults:Load()
             enableTooltipsQuestID = false,
             enableTooltipsQuestLevel = true,
             showQuestXpAtMaxLevel = true,
-            enableTooltipsNextInChain = true,
             enableMapIcons = true,
             enableMiniMapIcons = true,
             questieShutUp = false,
@@ -133,12 +132,6 @@ function QuestieOptionsDefaults:Load()
             showPvPQuests = true,
             showAQWarEffortQuests = false,
             showSoDRunes = false,
-            showRunesOfPhase = {
-                phase1 = false,
-                phase2 = false,
-                phase3 = false,
-                phase4 = false,
-            },
             showQuestsInNpcTooltip = true,
             trackerEnabled = true,
             ldbDisplayText = "Questie",
@@ -173,8 +166,6 @@ function QuestieOptionsDefaults:Load()
                 ["Reagents"] = false,
             },
 
-            hideStartupWarnings = false,
-
             -- Migration
             migrationVersion = 0,
             globalMigrationSteps = {},
@@ -183,10 +174,6 @@ function QuestieOptionsDefaults:Load()
             debugEnabledPrint = false,
             debugLevel = 0,
             skipValidation = false,
-
-            -- TBC Isle of Quel'Danas
-            isleOfQuelDanasPhase = 1,
-            isIsleOfQuelDanasPhaseReminderDisabled = false,
         },
         char = {
             complete = {},
@@ -202,6 +189,10 @@ function QuestieOptionsDefaults:Load()
             isTrackerExpanded = true,
         },
         global = {
+            -- TBC Isle of Quel'Danas
+            isleOfQuelDanasPhase = 1,
+            isIsleOfQuelDanasPhaseReminderDisabled = false,
+            --
             lastDailyRequestResetTime = 0,
             lastDailyRequestDate = "",
             questieLocale = 'enUS',

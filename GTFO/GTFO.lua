@@ -26,13 +26,12 @@ GTFO = {
 		SoundOverrides = { "", "", "", "" }; -- Override table for GTFO sounds
 		IgnoreSpellList = { };
 	};
-	Version = "5.9.1"; -- Version number (text format)
+	Version = "5.5.3"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 50901; -- Numeric version number for checking out-of-date clients (retail)
-	ClassicVersionNumber = 50900; -- Numeric version number for checking out-of-date clients (Vanilla classic)
+	RetailVersionNumber = 50503; -- Numeric version number for checking out-of-date clients (retail)
+	ClassicVersionNumber = 50503; -- Numeric version number for checking out-of-date clients (Vanilla classic)
 	BurningCrusadeVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (TBC classic)
 	WrathVersionNumber = 50503; -- Numeric version number for checking out-of-date clients (Wrath classic)
-	CataclysmVersionNumber = 50900; -- Numeric version number for checking out-of-date clients (Wrath classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
 	CanTank = nil; -- The active character is capable of tanking
@@ -79,7 +78,6 @@ GTFO = {
 	ClassicMode = nil; -- WoW Classic client detection
 	BurningCrusadeMode = nil; -- WoW TBC client detection
 	WrathMode = nil; -- WoW Wrath client detection
-	CataclysmMode = nil; -- WoW Cataclysm client detection
 	NewSettingsUIMode = nil; -- New WoW UI Settings system
 	SoundChannels = { 
 		{ Code = "Master", Name = _G.MASTER_VOLUME },
@@ -95,7 +93,7 @@ GTFOData = {};
 
 local buildNumber = select(4, GetBuildInfo());
 
-if (buildNumber >= 101000) then
+if (buildNumber >= 100100) then
 	GTFO.BetaMode = true;
 end
 if (buildNumber >= 100000) then
@@ -115,10 +113,6 @@ elseif (buildNumber <= 30000) then
 elseif (buildNumber <= 40000) then
 	GTFO.WrathMode = true;
 	GTFO.VersionNumber = GTFO.WrathVersionNumber;
-	GTFO.NewSettingsUIMode = true;
-elseif (buildNumber <= 50000) then
-	GTFO.CataclysmMode = true;
-	GTFO.VersionNumber = GTFO.CataclysmVersionNumber;
 	GTFO.NewSettingsUIMode = true;
 else
 	GTFO.RetailMode = true;
@@ -244,7 +238,7 @@ function GTFO_OnEvent(self, event, ...)
 		GTFO_AddEvent("RefreshOptions", .1, function() GTFO_RefreshOptions(); end);
 
 		-- Power Auras Integration
-		if (C_AddOns.IsAddOnLoaded("PowerAuras")) then
+		if (IsAddOnLoaded("PowerAuras")) then
 			local PowaAurasEnabled
 			if (PowaAuras_GlobalTrigger) then
 				PowaAurasEnabled = PowaAuras_GlobalTrigger()
@@ -266,7 +260,7 @@ function GTFO_OnEvent(self, event, ...)
 				GTFO_ChatPrint(GTFOLocal.Loading_PowerAurasOutOfDate);
 			end
 		end
-		if (C_AddOns.IsAddOnLoaded("WeakAuras")) then
+		if (IsAddOnLoaded("WeakAuras")) then
 			GTFO.WeakAuras = true;
 		else
 			GTFO_DisplayAura_WeakAuras = nil;
@@ -281,14 +275,14 @@ function GTFO_OnEvent(self, event, ...)
 		end
 		
 		-- Recount Integration
-		if (C_AddOns.IsAddOnLoaded("Recount")) then
+		if (IsAddOnLoaded("Recount")) then
 			GTFO.Recount = GTFO_Recount();
 			GTFO.DataLogging = true;
 		else
 			GTFO_Recount = nil;
 			GTFO_RecordRecount = nil;
 		end
-		if (C_AddOns.IsAddOnLoaded("Skada")) then
+		if (IsAddOnLoaded("Skada")) then
 			GTFO.Skada = GTFO_Skada();
 			GTFO.DataLogging = true;
 		else
@@ -499,12 +493,12 @@ function GTFO_OnEvent(self, event, ...)
 						
 			if (GTFO.Settings.ScanMode and not GTFO.IgnoreScan[SpellID]) then
 				if (vehicle) then
-					GTFO_ScanPrint("V: "..SpellType.." - "..SpellID.." - "..GTFO_GetSpellLink(SpellID).." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName), GTFO_SpellScan(SpellID, SpellSourceName));
+					GTFO_ScanPrint("V: "..SpellType.." - "..SpellID.." - "..GetSpellLink(SpellID).." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName), GTFO_SpellScan(SpellID, SpellSourceName));
 				elseif (SpellType~="SPELL_ENERGIZE" or (SpellType=="SPELL_ENERGIZE" and sourceGUID ~= UnitGUID("player"))) then
 					if (GTFO.ClassicMode) then
 						GTFO_ScanPrint(SpellType.." - "..SpellID.." - "..SpellName.." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName).." for "..tostring(misc4), GTFO_SpellScanName(SpellName, SpellSourceName, tostring(misc4)));
 					else
-						GTFO_ScanPrint(SpellType.." - "..SpellID.." - "..GTFO_GetSpellLink(SpellID).." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName).." for "..tostring(misc4), GTFO_SpellScan(SpellID, SpellSourceName, tostring(misc4)));
+						GTFO_ScanPrint(SpellType.." - "..SpellID.." - "..GetSpellLink(SpellID).." - "..SpellSourceName.." ("..GTFO_GetMobId(sourceGUID)..") >"..tostring(destName).." for "..tostring(misc4), GTFO_SpellScan(SpellID, SpellSourceName, tostring(misc4)));
 					end
 				end
 			end
@@ -926,14 +920,14 @@ function GTFO_Command_IgnoreSpell(iSpellId)
 		if (#GTFO.Settings.IgnoreSpellList > 0) then
 			GTFO_ChatPrint(GTFOLocal.UI_IgnoreSpell_List);
 			for i, IgnoredSpellId in pairs(GTFO.Settings.IgnoreSpellList) do
-				GTFO_ChatPrint("  "..IgnoredSpellId..": "..GTFO_GetSpellLink(IgnoredSpellId));
+				GTFO_ChatPrint("  "..IgnoredSpellId..": "..GetSpellLink(IgnoredSpellId));
 			end
 		else
 			GTFO_ChatPrint(GTFOLocal.UI_IgnoreSpell_None);
 		end
 		GTFO_ChatPrint(GTFOLocal.UI_IgnoreSpell_Help);
 	elseif (spellId > 0) then
-		local spellLink = GTFO_GetSpellLink(spellId);
+		local spellLink = GetSpellLink(spellId);
 		if (tContains(GTFO.Settings.IgnoreSpellList, spellId)) then
 			-- Remove spell ID
 			for i, IgnoredSpellId in pairs(GTFO.Settings.IgnoreSpellList) do
@@ -1160,207 +1154,8 @@ end
 
 -- Create Addon Menu options and interface
 function GTFO_RenderOptions()
-	if (GTFO.BetaMode) then
-		-- TODO: Rebuild configuration menus in new TWW format
-		-- TWW version (TWW)
-		local ConfigurationPanel = CreateFrame("FRAME","GTFO_MainFrame");
-		ConfigurationPanel.name = "GTFO";
-		local category, layout = Settings.RegisterCanvasLayoutCategory(ConfigurationPanel, ConfigurationPanel.name);
-		Settings.RegisterCategory(category);
-		GTFO.SettingsCategoryId = category:GetID();
-
-		local IntroMessageHeader = ConfigurationPanel:CreateFontString(nil, "ARTWORK","GameFontNormalLarge");
-		IntroMessageHeader:SetPoint("TOPLEFT", 10, -10);
-		IntroMessageHeader:SetText("GTFO "..GTFO.Version);
-
-		local EnabledButton = CreateFrame("CheckButton", "GTFO_EnabledButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
-		EnabledButton:SetPoint("TOPLEFT", 10, -35)
-		EnabledButton.tooltip = GTFOLocal.UI_EnabledDescription;
-		getglobal(EnabledButton:GetName().."Text"):SetText(GTFOLocal.UI_Enabled);
-		EnabledButton.optionKey = "Enabled";
-		EnabledButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
-
-		local HighSoundButton = CreateFrame("CheckButton", "GTFO_HighSoundButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
-		HighSoundButton:SetPoint("TOPLEFT", 10, -65)
-		HighSoundButton.tooltip = GTFOLocal.UI_HighDamageDescription;
-		getglobal(HighSoundButton:GetName().."Text"):SetText(GTFOLocal.UI_HighDamage);
-		HighSoundButton.optionKey = "HighSound";
-		HighSoundButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
-
-		local LowSoundButton = CreateFrame("CheckButton", "GTFO_LowSoundButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
-		LowSoundButton:SetPoint("TOPLEFT", 10, -95)
-		LowSoundButton.tooltip = GTFOLocal.UI_LowDamageDescription;
-		getglobal(LowSoundButton:GetName().."Text"):SetText(GTFOLocal.UI_LowDamage);
-		LowSoundButton.optionKey = "LowSound";
-		LowSoundButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
-
-		local FailSoundButton = CreateFrame("CheckButton", "GTFO_FailSoundButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
-		FailSoundButton:SetPoint("TOPLEFT", 10, -125)
-		FailSoundButton.tooltip = GTFOLocal.UI_FailDescription;
-		getglobal(FailSoundButton:GetName().."Text"):SetText(GTFOLocal.UI_Fail);
-		FailSoundButton.optionKey = "FailSound";
-		FailSoundButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
-
-		local FriendlyFireSoundButton = CreateFrame("CheckButton", "GTFO_FriendlyFireSoundButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
-		FriendlyFireSoundButton:SetPoint("TOPLEFT", 10, -155)
-		FriendlyFireSoundButton.tooltip = GTFOLocal.UI_FriendlyFireDescription;
-		getglobal(FriendlyFireSoundButton:GetName().."Text"):SetText(GTFOLocal.UI_FriendlyFire);
-		FriendlyFireSoundButton.optionKey = "FriendlyFireSound";
-		FriendlyFireSoundButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
-
-		local HighTestButton = CreateFrame("Button", "GTFO_HighTestButton", ConfigurationPanel, "UIPanelButtonTemplate");
-		HighTestButton:SetPoint("TOPLEFT", 300, -65);
-		HighTestButton.tooltip = GTFOLocal.UI_TestDescription;
-		HighTestButton:SetScript("OnClick",GTFO_Option_HighTest);
-		getglobal(HighTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
-
-		local LowTestButton = CreateFrame("Button", "GTFO_LowTestButton", ConfigurationPanel, "UIPanelButtonTemplate");
-		LowTestButton:SetPoint("TOPLEFT", 300, -95);
-		LowTestButton.tooltip = GTFOLocal.UI_TestDescription;
-		LowTestButton:SetScript("OnClick",GTFO_Option_LowTest);
-		getglobal(LowTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
-
-		local FailTestButton = CreateFrame("Button", "GTFO_FailTestButton", ConfigurationPanel, "UIPanelButtonTemplate");
-		FailTestButton:SetPoint("TOPLEFT", 300, -125);
-		FailTestButton.tooltip = GTFOLocal.UI_TestDescription;
-		FailTestButton:SetScript("OnClick",GTFO_Option_FailTest);
-		getglobal(FailTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
-
-		local FriendlyFireTestButton = CreateFrame("Button", "GTFO_FriendlyFireTestButton", ConfigurationPanel, "UIPanelButtonTemplate");
-		FriendlyFireTestButton:SetPoint("TOPLEFT", 300, -155);
-		FriendlyFireTestButton.tooltip = GTFOLocal.UI_TestDescription;
-		FriendlyFireTestButton:SetScript("OnClick",GTFO_Option_FriendlyFireTest);
-		getglobal(FriendlyFireTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
-
-		local HighResetButton = CreateFrame("Button", "GTFO_HighResetButton", ConfigurationPanel, "UIPanelButtonTemplate");
-		HighResetButton:SetPoint("TOPLEFT", 360, -65);
-		HighResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
-		HighResetButton:SetScript("OnClick",GTFO_Option_HighReset);
-		getglobal(HighResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
-
-		local LowResetButton = CreateFrame("Button", "GTFO_LowResetButton", ConfigurationPanel, "UIPanelButtonTemplate");
-		LowResetButton:SetPoint("TOPLEFT", 360, -95);
-		LowResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
-		LowResetButton:SetScript("OnClick",GTFO_Option_LowReset);
-		getglobal(LowResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
-
-		local FailResetButton = CreateFrame("Button", "GTFO_FailResetButton", ConfigurationPanel, "UIPanelButtonTemplate");
-		FailResetButton:SetPoint("TOPLEFT", 360, -125);
-		FailResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
-		FailResetButton:SetScript("OnClick",GTFO_Option_FailReset);
-		getglobal(FailResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
-
-		local FriendlyFireResetButton = CreateFrame("Button", "GTFO_FriendlyFireResetButton", ConfigurationPanel, "UIPanelButtonTemplate");
-		FriendlyFireResetButton:SetPoint("TOPLEFT", 360, -155);
-		FriendlyFireResetButton.tooltip = GTFOLocal.UI_ResetCustomSounds;
-		FriendlyFireResetButton:SetScript("OnClick",GTFO_Option_FriendlyFireReset);
-		getglobal(FriendlyFireResetButton:GetName().."Text"):SetText(GTFOLocal.UI_Reset);
-
-		local VolumeText = ConfigurationPanel:CreateFontString("GTFO_VolumeText","ARTWORK","GameFontNormal");
-		VolumeText:SetPoint("TOPLEFT", 170, -195);
-		VolumeText:SetText("");
-
-		local VolumeSlider = CreateFrame("Slider", "GTFO_VolumeSlider", ConfigurationPanel, "OptionsSliderTemplate");
-		VolumeSlider:SetPoint("TOPLEFT", 12, -195);
-		VolumeSlider.tooltip = GTFOLocal.UI_VolumeDescription;
-		VolumeSlider:SetScript("OnValueChanged",GTFO_Option_SetVolume);
-		getglobal(GTFO_VolumeSlider:GetName().."Text"):SetText(GTFOLocal.UI_Volume);
-		getglobal(GTFO_VolumeSlider:GetName().."High"):SetText(GTFOLocal.UI_VolumeMax);
-		getglobal(GTFO_VolumeSlider:GetName().."Low"):SetText(GTFOLocal.UI_VolumeMin);
-		VolumeSlider:SetMinMaxValues(1,5);
-		VolumeSlider:SetValueStep(1);
-		VolumeSlider:SetValue(GTFO.Settings.Volume);
-		GTFO_Option_SetVolumeText(GTFO.Settings.Volume);
-		
-		local UnmuteButton = CreateFrame("CheckButton", "GTFO_UnmuteButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
-		UnmuteButton:SetPoint("TOPLEFT", 10, -240)
-		UnmuteButton.tooltip = GTFOLocal.UI_UnmuteDescription.."\n\n("..GTFOLocal.UI_UnmuteDescription2..")";
-		getglobal(UnmuteButton:GetName().."Text"):SetText(GTFOLocal.UI_Unmute);
-		UnmuteButton.optionKey = "Unmute";
-		UnmuteButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
-
-		local TrivialButton = CreateFrame("CheckButton", "GTFO_TrivialButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
-		TrivialButton:SetPoint("TOPLEFT", 10, -270)
-		TrivialButton.tooltip = GTFOLocal.UI_TrivialDescription.."\n\n"..GTFOLocal.UI_TrivialDescription2;
-		getglobal(TrivialButton:GetName().."Text"):SetText(GTFOLocal.UI_Trivial);
-		TrivialButton.optionKey = "Trivial";
-		TrivialButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
-
-		local TrivialDamageText = ConfigurationPanel:CreateFontString("GTFO_TrivialDamageText","ARTWORK","GameFontNormal");
-		TrivialDamageText:SetPoint("TOPLEFT", 450, -270);
-		TrivialDamageText:SetText("");
-
-		local TrivialDamageSlider = CreateFrame("Slider", "GTFO_TrivialDamageSlider", ConfigurationPanel, "OptionsSliderTemplate");
-		TrivialDamageSlider:SetPoint("TOPLEFT", 300, -270);
-		TrivialDamageSlider.tooltip = GTFOLocal.UI_TrivialSlider;
-		TrivialDamageSlider:SetScript("OnValueChanged",GTFO_Option_SetTrivialDamage);
-		getglobal(GTFO_TrivialDamageSlider:GetName().."Text"):SetText(GTFOLocal.UI_TrivialSlider);
-		getglobal(GTFO_TrivialDamageSlider:GetName().."High"):SetText(" ");
-		getglobal(GTFO_TrivialDamageSlider:GetName().."Low"):SetText(" ");
-		TrivialDamageSlider:SetMinMaxValues(.5,10);
-		TrivialDamageSlider:SetValueStep(.5);
-		TrivialDamageSlider:SetValue(GTFO.Settings.TrivialDamagePercent);
-		GTFO_Option_SetTrivialDamageText(GTFO.Settings.TrivialDamagePercent);
-
-		local TestModeButton = CreateFrame("CheckButton", "GTFO_TestModeButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
-		TestModeButton:SetPoint("TOPLEFT", 10, -300)
-		TestModeButton.tooltip = GTFOLocal.UI_TestModeDescription.."\n\n"..string.format(GTFOLocal.UI_TestModeDescription2,"zensunim","gmail","com");
-		getglobal(TestModeButton:GetName().."Text"):SetText(GTFOLocal.UI_TestMode);
-		TestModeButton.optionKey = "TestMode";
-		TestModeButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
-
-		local ChannelText = ConfigurationPanel:CreateFontString("GTFO_ChannelText","ARTWORK","GameFontNormal");
-		ChannelText:SetPoint("TOPLEFT", 170, -350);
-		ChannelText:SetText("");
-
-		local ChannelIdSlider = CreateFrame("Slider", "GTFO_ChannelIdSlider", ConfigurationPanel, "OptionsSliderTemplate");
-		ChannelIdSlider:SetPoint("TOPLEFT", 12, -350);
-		ChannelIdSlider:SetScript("OnValueChanged",GTFO_Option_SetChannel);
-		ChannelIdSlider:SetMinMaxValues(1,5);
-		ChannelIdSlider:SetValueStep(1);
-		ChannelIdSlider:SetValue(GTFO_GetCurrentSoundChannelId(GTFO.Settings.SoundChannel));
-		getglobal(GTFO_ChannelIdSlider:GetName().."Text"):SetText(GTFOLocal.UI_SoundChannel);
-		getglobal(GTFO_ChannelIdSlider:GetName().."High"):SetText(" ");
-		getglobal(GTFO_ChannelIdSlider:GetName().."Low"):SetText(" ");
-		GTFO_Option_SetChannelIdText(GTFO_GetCurrentSoundChannelId(GTFO.Settings.SoundChannel));
-		
-		local VibrationButton = CreateFrame("CheckButton", "GTFO_VibrationButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
-		VibrationButton:SetPoint("TOPLEFT", 10, -380)
-		VibrationButton.tooltip = GTFOLocal.UI_VibrationDescription;
-		getglobal(VibrationButton:GetName().."Text"):SetText(GTFOLocal.UI_Vibration);
-		VibrationButton.optionKey = "Vibration";
-		VibrationButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
-
-		-- Special Alerts frame
-		local IgnoreOptionsPanel = CreateFrame("FRAME","GTFO_IgnoreOptionsFrame");
-		IgnoreOptionsPanel.name = GTFOLocal.UI_SpecialAlerts;
-		IgnoreOptionsPanel.parent = ConfigurationPanel.name;
-		local subcategory, layout = Settings.RegisterCanvasLayoutSubcategory(category, IgnoreOptionsPanel, IgnoreOptionsPanel.name);
-		Settings.RegisterCategory(subcategory);
-		GTFO.SettingsSpecialAlertsCategoryId = subcategory:GetID();
-
-		local IntroMessageHeader2 = IgnoreOptionsPanel:CreateFontString(nil, "ARTWORK","GameFontNormalLarge");
-		IntroMessageHeader2:SetPoint("TOPLEFT", 10, -10);
-		IntroMessageHeader2:SetText("GTFO "..GTFO.Version.." - "..GTFOLocal.UI_SpecialAlertsHeader);
-
-		local yCount = -20;
-		for key, option in pairs(GTFO.IgnoreSpellCategory) do
-			if (GTFO.IgnoreSpellCategory[key].spellID) then
-				yCount = yCount - 30;
-
-				local IgnoreAlertButton = CreateFrame("CheckButton", "GTFO_IgnoreAlertButton_"..key, IgnoreOptionsPanel, "ChatConfigCheckButtonTemplate");
-				IgnoreAlertButton:SetPoint("TOPLEFT", 10, yCount)
-				getglobal(IgnoreAlertButton:GetName().."Text"):SetText(GTFO.IgnoreSpellCategory[key].desc);
-				if (GTFO.IgnoreSpellCategory[key].tooltip) then
-					_G["GTFO_IgnoreAlertButton_"..key].tooltip = GTFO.IgnoreSpellCategory[key].tooltip;
-				end
-				IgnoreAlertButton.optionKey = "Ignore"..key;
-				IgnoreAlertButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
-			end
-		end
-
-		GTFOSpellTooltip:ClearLines();
-	elseif (GTFO.NewSettingsUIMode) then
+	if (GTFO.NewSettingsUIMode) then
+		-- TODO: Rebuild configuration menus in new Dragonflight format
 		-- Modern version (Dragonflight)
 		local ConfigurationPanel = CreateFrame("FRAME","GTFO_MainFrame");
 		ConfigurationPanel.name = "GTFO";
@@ -1818,14 +1613,14 @@ function GTFO_RefreshOptions()
 			local IgnoreAlertButton = _G["GTFO_IgnoreAlertButton_"..key];
 			if (IgnoreAlertButton) then
 				local spellID = GTFO.IgnoreSpellCategory[key].spellID;
-				local spellName = GTFO_GetSpellName(spellID);
+				local spellName = GetSpellInfo(spellID);
 				if (spellName) then
 					getglobal(IgnoreAlertButton:GetName().."Text"):SetText(spellName);
 				
 					GTFOSpellTooltip:SetOwner(_G["GTFOFrame"],"ANCHOR_NONE");
 					GTFOSpellTooltip:ClearLines();
 					if (not GTFO.ClassicMode) then
-						GTFOSpellTooltip:SetHyperlink(GTFO_GetSpellLink(spellID));
+						GTFOSpellTooltip:SetHyperlink(GetSpellLink(spellID));
 					end
 					local tooltipText = tostring(getglobal("GTFOSpellTooltipTextLeft1"):GetText());
 					if (GTFOSpellTooltip:NumLines()) then
@@ -2087,15 +1882,9 @@ function GTFO_SendUpdateRequest()
 end
 
 function GTFO_Command_Options()
-	if (GTFO.BetaMode) then
-		Settings.OpenToCategory(GTFO.SettingsCategoryId);
-		Settings.OpenToCategory(GTFO.SettingsCategoryId);
-		Settings.OpenToCategory(GTFO.SettingsCategoryId);
-	else
-		InterfaceOptionsFrame_OpenToCategory("GTFO");
-		InterfaceOptionsFrame_OpenToCategory("GTFO");
-		InterfaceOptionsFrame_OpenToCategory("GTFO");	
-	end
+	InterfaceOptionsFrame_OpenToCategory("GTFO");
+	InterfaceOptionsFrame_OpenToCategory("GTFO");
+	InterfaceOptionsFrame_OpenToCategory("GTFO");
 end
 
 function GTFO_Option_SetVolume()
@@ -2173,14 +1962,14 @@ function GTFO_CheckTankMode()
 				--GTFO_DebugPrint("Bear Form found - tank mode activated");
 				return true;
 			end
-		elseif ((not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode or GTFO.CataclysmMode)) and (GTFO.PlayerClass == "MONK" or GTFO.PlayerClass == "DEMONHUNTER" or GTFO.PlayerClass == "WARRIOR" or GTFO.PlayerClass == "DEATHKNIGHT" or GTFO.PlayerClass == "PALADIN")) then
+		elseif ((not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) and (GTFO.PlayerClass == "MONK" or GTFO.PlayerClass == "DEMONHUNTER" or GTFO.PlayerClass == "WARRIOR" or GTFO.PlayerClass == "DEATHKNIGHT" or GTFO.PlayerClass == "PALADIN")) then
 			-- Get the exact specialization role as defined by the class
 			local spec = GetSpecialization();
 			if (spec and GetSpecializationRole(spec) == "TANK") then
 				--GTFO_DebugPrint("Tank spec found - tank mode activated");
 				return true;
 			end
-		elseif ((GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode or GTFO.CataclysmMode) and (GTFO.PlayerClass == "WARRIOR" or GTFO.PlayerClass == "PALADIN" or GTFO.PlayerClass == "DEATHKNIGHT")) then
+		elseif ((GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode) and (GTFO.PlayerClass == "WARRIOR" or GTFO.PlayerClass == "PALADIN" or GTFO.PlayerClass == "DEATHKNIGHT")) then
 			GTFO.CanTank = true;
 		else
 			--GTFO_DebugPrint("Failed Tank Mode - This code shouldn't have ran");
@@ -2197,7 +1986,7 @@ function GTFO_CheckCasterMode()
 			return true;
 		end
 
-		if not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode or GTFO.CataclysmMode) then
+		if not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode) then
 			-- Get the exact specialization role as defined by the class
 			local spec = GetSpecialization();
 			if (spec) then
@@ -2234,7 +2023,7 @@ function GTFO_IsTank()
 	if (GTFO_CanTankCheck()) then
 		if (GTFO.PlayerClass == "PALADIN") then
 			-- Check for Righteous Fury (Classic)
-			if (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode or GTFO.CataclysmMode) then
+			if (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode) then
 				return GTFO_HasBuff("player", 25780);
 			end
 			
@@ -2247,7 +2036,7 @@ function GTFO_IsTank()
 			return GTFO_HasBuff("player", 5487);
 		elseif (GTFO.PlayerClass == "DEATHKNIGHT") then
 			-- Check for Frost Presence (Wrath Classic)
-			if (GTFO.WrathMode or GTFO.CataclysmMode) then
+			if (GTFO.WrathMode) then
 				return GTFO_HasBuff("player", 48263);
 			end
 			
@@ -2294,7 +2083,7 @@ function GTFO_RegisterTankEvents()
 end
 
 function GTFO_RegisterCasterEvents()
-	if not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode or GTFO.CataclysmMode) then
+	if not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode) then
 		GTFOFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 		GTFOFrame:RegisterEvent("PLAYER_TALENT_UPDATE");	
 	end
@@ -2469,11 +2258,15 @@ function GTFO_HasDebuff(target, iSpellID)
 end
 
 function GTFO_DebuffStackCount(target, iSpellID)
-	local spellName = GTFO_GetSpellName(tonumber(iSpellID));
+	local spellName = GetSpellInfo(tonumber(iSpellID));
 	if (spellName) then
-		local debuffIndex, debuff = GTFO_GetDebuffSpellIndex(target, iSpellID);
+		local debuffInfo;
+		local debuffIndex = GTFO_GetDebuffSpellIndex(target, iSpellID);
 		if (debuffIndex) then
-			return tonumber(debuff.applications);
+			debuffInfo = select(3, UnitDebuff(target, debuffIndex));
+		end
+		if (debuffInfo) then
+			return tonumber(debuffInfo);
 		end
 	end
 	return 0;
@@ -2482,10 +2275,10 @@ end
 function GTFO_GetBuffSpellIndex(target, iSpellID)
 	if (iSpellID) then
 		for i = 1, 40, 1 do
-			local buff = C_UnitAuras.GetAuraDataByIndex(target, i, "HELPFUL");
+			local buff = select(10, UnitBuff(target, i));
 			if (buff) then
-				if (tonumber(buff.spellId) == tonumber(iSpellID)) then
-					return i, buff;
+				if (tonumber(buff) == tonumber(iSpellID)) then
+					return i;
 				end
 			else
 				return nil;
@@ -2498,10 +2291,10 @@ end
 function GTFO_GetDebuffSpellIndex(target, iSpellID)
 	if (iSpellID) then
 		for i = 1, 40, 1 do
-			local debuff = C_UnitAuras.GetAuraDataByIndex(target, i, "HARMFUL");
+			local debuff = select(10, UnitDebuff(target, i));
 			if (debuff) then
-				if (tonumber(debuff.spellId) == tonumber(iSpellID)) then
-					return i, debuff;
+				if (tonumber(debuff) == tonumber(iSpellID)) then
+					return i;
 				end
 			else
 				return nil;
@@ -2512,18 +2305,18 @@ function GTFO_GetDebuffSpellIndex(target, iSpellID)
 end
 
 function GTFO_BuffTime(target, iSpellID)
-	local index, buff = GTFO_GetBuffSpellIndex(target, iSpellID);
-	if (index and buff.expirationTime > 0) then
-		return (tonumber(buff.expirationTime) - GetTime()) or 0;
+	local index = GTFO_GetBuffSpellIndex(target, iSpellID);
+	if (index) then
+		return tonumber(select(6, UnitBuff(target, index)) - GetTime()) or 0;
 	else
 		return 0;
 	end
 end
 
 function GTFO_DebuffTime(target, iSpellID)
-	local index, debuff = GTFO_GetDebuffSpellIndex(target, iSpellID);
-	if (index and debuff.expirationTime > 0) then
-		return (tonumber(debuff.expirationTime) - GetTime()) or 0;
+	local index = GTFO_GetDebuffSpellIndex(target, iSpellID);
+	if (index) then
+		return tonumber(select(6, UnitDebuff(target, index)) - GetTime()) or 0;
 	else
 		return 0;
 	end
@@ -2702,7 +2495,7 @@ function GTFO_RecordStats(alertID, spellID, SpellName, damage, sourceName, spell
 			if (GTFO.ClassicMode or (tonumber(spellID) or 0) <= 0) then
 				GTFO_AlertPrint(GTFO_GetAlertType(alertID).." Alert: "..tostring(spellType).." - "..tostring(spellID).." - "..tostring(spellName).." ("..tostring(sourceName or "")..") for "..tostring(damage));
 			else
-				GTFO_AlertPrint(GTFO_GetAlertType(alertID).." Alert: "..tostring(spellType).." - "..tostring(spellID).." - "..GTFO_GetSpellLink(spellID).." ("..tostring(sourceName or "")..") for "..tostring(damage));
+				GTFO_AlertPrint(GTFO_GetAlertType(alertID).." Alert: "..tostring(spellType).." - "..tostring(spellID).." - "..GetSpellLink(spellID).." ("..tostring(sourceName or "")..") for "..tostring(damage));
 			end
 		end
 		
@@ -2751,8 +2544,8 @@ function GTFO_SpellScan(spellId, spellOrigin, spellDamage)
 				TimeAdded = GetTime();
 				Times = 1;
 				SpellID = spellId;
-				SpellName = tostring(select(1, GTFO_GetSpellName(spellId)));
-				SpellDescription = GTFO_GetSpellDescription(spellId) or "";
+				SpellName = tostring(select(1, GetSpellInfo(spellId)));
+				SpellDescription = GetSpellDescription(spellId) or "";
 				SpellOrigin = tostring(spellOrigin);
 				IsDebuff = (spellDamage == "DEBUFF");
 				Damage = damage;
@@ -2808,7 +2601,7 @@ function GTFO_Command_Data()
 		dataOutput = dataOutput.."-- |cff00ff00"..tostring(data.SpellName).." (x"..data.Times;
 
 		if (data.SpellDescription == nil or data.SpellDescription == "") then
-			data.SpellDescription = GTFO_GetSpellDescription(data.SpellID) or "";
+			data.SpellDescription = GetSpellDescription(data.SpellID) or "";
 		end
 		
 		if (data.Damage > 0) then
@@ -2840,7 +2633,7 @@ end
 function GTFO_ScanSpells()
 	GTFO.SpellName = { };
 	for spellId, record in pairs(GTFO.SpellID) do
-		local spellName = GTFO_GetSpellName(spellId);
+		local spellName = GetSpellInfo(spellId);
 		if (spellName or "" ~= "") then
 			if (GTFO.SpellName[spellName] ~= nil) then
 			GTFO_ErrorPrint("Duplicate spell "..spellName.." from ID #"..tostring(spellId));
@@ -2860,31 +2653,4 @@ function GTFO_GetCurrentSoundChannelId(sSoundChannel)
 		end
 	end
 	return 1; -- Default
-end
-
-function GTFO_GetSpellName(spellId)
-	if (GTFO.BetaMode) then
-		local spell = C_Spell.GetSpellInfo(spellId);
-		if (spell) then
-			return spell.name;
-		end
-	else
-		return GetSpellInfo(spellId);
-	end
-end
-
-function GTFO_GetSpellLink(spellId)
-	if (GTFO.BetaMode) then
-		return C_Spell.GetSpellLink(spellId);
-	else
-		return GetSpellLink(spellId);
-	end
-end
-
-function GTFO_GetSpellDescription(spellId)
-	if (GTFO.BetaMode) then
-		return C_Spell.GetSpellDescription(spellId);
-	else
-		return GetSpellDescription(spellId);
-	end
 end

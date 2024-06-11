@@ -173,7 +173,7 @@ function Auctionator.Shopping.Lists.TSMImportFromString(importString)
       -- returns nil inside the callback mechanism
       elseif item:GetItemID() ~= nil then
         item:ContinueOnItemLoad(function()
-          items[index] = C_Item.GetItemInfo(id)
+          items[index] = GetItemInfo(id)
           if entry.itemType == "p" or items[index] == nil then
             items[index] = C_PetJournal.GetPetInfoBySpeciesID(id)
             if type(items[index]) ~= "string" then

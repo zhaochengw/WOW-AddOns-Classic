@@ -33,10 +33,10 @@ local supportedLocals = {
 function l10n:InitializeLocaleOverride()
     local overridingLocale = QUESTIE_LOCALES_OVERRIDE.locale
     supportedLocals[overridingLocale] = true
-    l10n.itemLookup[overridingLocale] = function() return QUESTIE_LOCALES_OVERRIDE.itemLookup end
-    l10n.questLookup[overridingLocale] = function() return QUESTIE_LOCALES_OVERRIDE.questLookup end
-    l10n.npcNameLookup[overridingLocale] = function() return QUESTIE_LOCALES_OVERRIDE.npcNameLookup end
-    l10n.objectLookup[overridingLocale] = function() return QUESTIE_LOCALES_OVERRIDE.objectLookup end
+    l10n.itemLookup[overridingLocale] = QUESTIE_LOCALES_OVERRIDE.itemLookup
+    l10n.questLookup[overridingLocale] = QUESTIE_LOCALES_OVERRIDE.questLookup
+    l10n.npcNameLookup[overridingLocale] = QUESTIE_LOCALES_OVERRIDE.npcNameLookup
+    l10n.objectLookup[overridingLocale] = QUESTIE_LOCALES_OVERRIDE.objectLookup
 
     for id, _ in pairs(l10n.translations) do
         if QUESTIE_LOCALES_OVERRIDE.translations[id] ~= nil then
@@ -48,13 +48,8 @@ function l10n:InitializeLocaleOverride()
 end
 
 function l10n:Initialize()
-    local itemLookup = l10n.itemLookup[locale] and l10n.itemLookup[locale]() or {}
-    local questLookup = l10n.questLookup[locale] and l10n.questLookup[locale]() or {}
-    local npcNameLookup = l10n.npcNameLookup[locale] and l10n.npcNameLookup[locale]() or {}
-    local objectLookup = l10n.objectLookup[locale] and l10n.objectLookup[locale]() or {}
-
     -- Load item locales
-    for id, name in pairs(itemLookup) do
+    for id, name in pairs(l10n.itemLookup[locale] or {}) do
         if QuestieDB.itemData[id] and name then
             QuestieDB.itemData[id][QuestieDB.itemKeys.name] = name
         end
@@ -62,7 +57,7 @@ function l10n:Initialize()
 
     -- data is {<questName>, {<questDescription>,...}, {<questObjective>,...}}
     -- Load quest locales
-    for id, data in pairs(questLookup) do
+    for id, data in pairs(l10n.questLookup[locale] or {}) do
         if QuestieDB.questData[id] then
             if data[1] then
                 QuestieDB.questData[id][QuestieDB.questKeys.name] = data[1]
@@ -80,7 +75,7 @@ function l10n:Initialize()
     end
 
     -- Load NPC locales
-    for id, data in pairs(npcNameLookup) do
+    for id, data in pairs(l10n.npcNameLookup[locale] or {}) do
         if QuestieDB.npcData[id] and data then
             if type(data) == "string" then
                 QuestieDB.npcData[id][QuestieDB.npcKeys.name] = data
@@ -92,7 +87,7 @@ function l10n:Initialize()
     end
 
     -- Load object locales
-    for id, name in pairs(objectLookup) do
+    for id, name in pairs(l10n.objectLookup[locale] or {}) do
         if QuestieDB.objectData[id] and name then
             QuestieDB.objectData[id][QuestieDB.objectKeys.name] = name
         end
@@ -186,5 +181,3 @@ end
 function l10n:GetUILocale()
     return locale
 end
-
-return l10n

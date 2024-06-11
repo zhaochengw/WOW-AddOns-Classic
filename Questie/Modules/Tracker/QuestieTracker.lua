@@ -17,13 +17,13 @@ local TrackerFadeTicker = QuestieLoader:ImportModule("TrackerFadeTicker")
 local TrackerQuestTimers = QuestieLoader:ImportModule("TrackerQuestTimers")
 ---@type TrackerUtils
 local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
----@type AutoCompleteFrame
-local AutoCompleteFrame = QuestieLoader:ImportModule("AutoCompleteFrame")
 -------------------------
 --Import Questie modules.
 -------------------------
 ---@type QuestieQuest
 local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
+---@type QuestieMap
+local QuestieMap = QuestieLoader:ImportModule("QuestieMap")
 ---@type QuestieTooltips
 local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips")
 ---@type QuestieLib
@@ -39,8 +39,6 @@ local _QuestEventHandler = QuestEventHandler.private
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
 ---@type l10n
 local l10n = QuestieLoader:ImportModule("l10n")
----@type QuestLogCache
-local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
 ---@type QuestieDebugOffer
 local QuestieDebugOffer = QuestieLoader:ImportModule("QuestieDebugOffer")
 
@@ -66,7 +64,7 @@ local questsWatched = GetNumQuestWatches()
 local trackedAchievements
 local trackedAchievementIds
 
-if Questie.IsWotlk or Questie.IsCata then
+if Questie.IsWotlk then
     trackedAchievements = { GetTrackedAchievements() }
     trackedAchievementIds = {}
 end
@@ -126,10 +124,6 @@ function QuestieTracker.Initialize()
     trackerBaseFrame = TrackerBaseFrame.Initialize()
     trackerHeaderFrame = TrackerHeaderFrame.Initialize(trackerBaseFrame)
     trackerQuestFrame = TrackerQuestFrame.Initialize(trackerBaseFrame, trackerHeaderFrame)
-
-    if Questie.IsCata then
-        AutoCompleteFrame.Initialize(trackerBaseFrame)
-    end
 
     -- Initialize tracker functions
     TrackerLinePool.Initialize(trackerQuestFrame)
@@ -225,7 +219,7 @@ function QuestieTracker.Initialize()
 
             -- The trackedAchievements variable is populated by GetTrackedAchievements(). If Questie
             -- is enabled, this will always return nil so we need to save it before we enable Questie.
-            if Questie.IsWotlk or Questie.IsCata then
+            if Questie.IsWotlk then
                 if #trackedAchievements > 0 then
                     local tempAchieves = trackedAchievements
 
@@ -462,7 +456,7 @@ function QuestieTracker:HasQuest()
     local hasQuest
 
     if (GetNumQuestWatches(true) == 0) then
-        if Questie.IsWotlk or Questie.IsCata then
+        if Questie.IsWotlk then
             if (GetNumTrackedAchievements(true) == 0) then
                 hasQuest = false
             else
@@ -475,7 +469,7 @@ function QuestieTracker:HasQuest()
         if not Questie.db.profile.trackerShowCompleteQuests then
             local completedQuests = 0
             -- Keep track of the number of completed quests
-            for _, quest in pairs(QuestiePlayer.currentQuestlog) do
+            for questId, quest in pairs(QuestiePlayer.currentQuestlog) do
                 if not quest then break end
                 if quest:IsComplete() == 1 then
                     completedQuests = completedQuests + 1
@@ -516,7 +510,7 @@ function QuestieTracker:Disable()
     Questie.db.char.TrackedQuests = {}
     Questie.db.char.AutoUntrackedQuests = {}
 
-    if Questie.IsWotlk or Questie.IsCata then
+    if Questie.IsWotlk then
         Questie.db.char.trackedAchievementIds = {}
         trackedAchievementIds = {}
     end
@@ -599,6 +593,7 @@ function QuestieTracker:Update()
     trackerLineWidth = 0
 
     -- Setup local QuestieTracker:Update vars
+    local trackerFontSizeZone = Questie.db.profile.trackerFontSizeZone
     local trackerFontSizeQuest = Questie.db.profile.trackerFontSizeQuest
     local questMarginLeft = (trackerMarginLeft + trackerMarginRight) - (18 - trackerFontSizeQuest)
     local objectiveMarginLeft = questMarginLeft + trackerFontSizeQuest
@@ -624,6 +619,7 @@ function QuestieTracker:Update()
             local quest = questDetails[questId].quest
             local complete = quest:IsComplete()
             local zoneName = questDetails[questId].zoneName
+            local remainingSeconds = TrackerQuestTimers:GetRemainingTime(quest, nil, true)
             local timedQuest = (quest.trackTimedQuest or quest.timedBlizzardQuest)
 
             if (complete ~= 1 or Questie.db.profile.trackerShowCompleteQuests or timedQuest)
@@ -1242,7 +1238,7 @@ function QuestieTracker:Update()
     -- Begin populating the tracker with achievements
     local _UpdateAchievements = function()
         -- Begin populating the tracker with achievements
-        if Questie.IsWotlk or Questie.IsCata then
+        if Questie.IsWotlk then
             -- Begin populating the tracker with tracked achievements - Note: We're limited to tracking only 10 Achievements at a time.
             -- For all intents and purposes at a code level we're going to treat each tracked Achievement the same way we treat and add Quests. This loop is
             -- necessary to keep separate from the above tracked Quests loop so we can place all tracked Achievements into it's own "Zone" called Achievements.
@@ -1288,12 +1284,10 @@ function QuestieTracker:Update()
                         -- Set Zone Title and Min/Max states
                         if Questie.db.char.collapsedZones[zoneName] then
                             line.expandZone:SetMode(0)
-                            local text = zoneName == "Achievements" and l10n("Achievements") or zoneName
-                            line.label:SetText("|cFFC0C0C0" .. text .. " +|r")
+                            line.label:SetText("|cFFC0C0C0" .. zoneName .. " +|r")
                         else
                             line.expandZone:SetMode(1)
-                            local text = zoneName == "Achievements" and l10n("Achievements") or zoneName
-                            line.label:SetText("|cFFC0C0C0" .. text .. ": " .. GetNumTrackedAchievements(true) .. "/10|r")
+                            line.label:SetText("|cFFC0C0C0" .. zoneName .. ": " .. GetNumTrackedAchievements(true) .. "/10|r")
                         end
 
                         -- Checks the minAllQuestsInZone[zone] table and if empty, zero out the table.
@@ -1631,7 +1625,7 @@ function QuestieTracker:Update()
     end
 
     -- Populate Achievements first then Quests
-    if Questie.db.profile.listAchievementsFirst and (Questie.IsWotlk or Questie.IsCata) then
+    if Questie.db.profile.listAchievementsFirst and Questie.IsWotlk then
         _UpdateAchievements()
         _UpdateQuests()
     else
@@ -1870,7 +1864,7 @@ function QuestieTracker:Unhook()
     end
 
     -- Achievement Hooks
-    if Questie.IsWotlk or Questie.IsCata then
+    if Questie.IsWotlk then
         if QuestieTracker.IsTrackedAchievement then
             IsTrackedAchievement = QuestieTracker.IsTrackedAchievement
             GetNumTrackedAchievements = QuestieTracker.GetNumTrackedAchievements
@@ -1902,7 +1896,7 @@ function QuestieTracker:HookBaseTracker()
         hooksecurefunc("RemoveQuestWatch", QuestieTracker.RemoveQuestWatch)
 
         -- Achievement secure hooks
-        if Questie.IsWotlk or Questie.IsCata then
+        if Questie.IsWotlk then
             hooksecurefunc("AddTrackedAchievement", function(achieveId) QuestieTracker:TrackAchieve(achieveId) end)
             hooksecurefunc("RemoveTrackedAchievement", QuestieTracker.RemoveTrackedAchievement)
         end
@@ -1936,12 +1930,13 @@ function QuestieTracker:HookBaseTracker()
 
     -- Intercept and return only what Questie is tracking
     GetNumQuestWatches = function(isQuestie)
+        local activeQuests = 0
         if isQuestie and Questie.db.profile.autoTrackQuests and Questie.db.char.AutoUntrackedQuests then
             local autoUnTrackedQuests = 0
             for _ in pairs(Questie.db.char.AutoUntrackedQuests) do
                 autoUnTrackedQuests = autoUnTrackedQuests + 1
             end
-            return QuestLogCache.GetQuestCount() - autoUnTrackedQuests
+            return select(2, GetNumQuestLogEntries()) - autoUnTrackedQuests
         elseif isQuestie and Questie.db.char.TrackedQuests then
             local autoTrackedQuests = 0
             for _ in pairs(Questie.db.char.TrackedQuests) do
@@ -1954,7 +1949,7 @@ function QuestieTracker:HookBaseTracker()
     end
 
     -- Achievement Hooks
-    if Questie.IsWotlk or Questie.IsCata then
+    if Questie.IsWotlk then
         if not QuestieTracker.IsTrackedAchievement then
             QuestieTracker.IsTrackedAchievement = IsTrackedAchievement
             QuestieTracker.GetNumTrackedAchievements = GetNumTrackedAchievements

@@ -3,19 +3,19 @@ local l10n = QuestieLoader:ImportModule("l10n")
 
 local socialOptionsLocales = {
     ["Social"] = {
-        ["ptBR"] = true,
+        ["ptBR"] = false,
         ["ruRU"] = "Социальное",
         ["deDE"] = "Soziales",
         ["koKR"] = false,
-        ["esMX"] = true,
+        ["esMX"] = "Social",
         ["enUS"] = true,
         ["zhCN"] = "通报",
         ["zhTW"] = "通報",
-        ["esES"] = true,
+        ["esES"] = "Social",
         ["frFR"] = true,
     },
     ["Social Options"] = {
-        ["ptBR"] = "Opções sociais",
+        ["ptBR"] = false,
         ["ruRU"] = "Социальные настройки",
         ["deDE"] = "Soziale Einstellungen", -- TODO: Improve translation
         ["koKR"] = false,
@@ -39,7 +39,7 @@ local socialOptionsLocales = {
         ["frFR"] = "Annonce de quête",
     },
     ["Announce quest updates to other players in your group"] = {
-        ["ptBR"] = "Anunciar atualizações de missão para outros jogadores do seu grupo",
+        ["ptBR"] = false,
         ["ruRU"] = "Включает оповещения об обновлениях заданий в чате группы",
         ["deDE"] = "Teilt Updates von Quests anderen Spielern in deiner Gruppe mit.",
         ["koKR"] = false,
@@ -51,7 +51,7 @@ local socialOptionsLocales = {
         ["frFR"] = "Annoncer l'avancée des quêtes aux autres membres de votre groupe.",
     },
     ["Channels to announce in"] = {
-        ["ptBR"] = "Canais para anunciar",
+        ["ptBR"] = false,
         ["ruRU"] = "Чаты для оповещений",
         ["deDE"] = "Kanäle in denen mitgeteilt wird",
         ["koKR"] = false,
@@ -64,7 +64,7 @@ local socialOptionsLocales = {
     },
     ["Questie ShutUp!"] = {
     -- TN: This was a stand-alone addon name, so you may want to leave it untranslated (change to true)
-        ["ptBR"] = true,
+        ["ptBR"] = false,
         ["ruRU"] = "Заткнись, Questie!",
         ["deDE"] = true,
         ["koKR"] = false,
@@ -76,7 +76,7 @@ local socialOptionsLocales = {
         ["frFR"] = true,
     },
     ["Remove all Questie chat messages coming from other players and disable sending your own."] = {
-        ["ptBR"] = "Remover todas as mensagens de chat do Questie enviadas por outros jogadores e desativar o envio das suas próprias",
+        ["ptBR"] = false,
         ["ruRU"] = "Скрывает в чатах все сообщения Questie от других игроков и отключает отправку ваших",
         ["deDE"] = "Alle Questie-Chatnachrichten anderer Spieler entfernen und das Senden der eigenen deaktivieren.",
         ["koKR"] = false,
@@ -88,7 +88,7 @@ local socialOptionsLocales = {
         ["frFR"] = "Retire vos messages Questie du chat ainsi que ceux des autres joueurs",
     },
     ["Both"] = {
-        ["ptBR"] = "Ambos",
+        ["ptBR"] = false,
         ["ruRU"] = "Группа и рейд",
         ["deDE"] = "Beide",
         ["koKR"] = false,
@@ -97,10 +97,10 @@ local socialOptionsLocales = {
         ["zhCN"] = "两者",
         ["zhTW"] = "兩者",
         ["esES"] = "Ambos",
-        ["frFR"] = "Les deux",
+        ["frFR"] = "les deux",
     },
     ["Types of updates to announce in chat"] = {
-        ["ptBR"] = "Tipos de atualizações para anunciar no bate-papo",
+        ["ptBR"] = false,
         ["ruRU"] = "Типы обновлений для оповещения в чатах",
         ["deDE"] = "Updatearten die im Chat mitgeteilt werden",
         ["koKR"] = false,
@@ -109,10 +109,10 @@ local socialOptionsLocales = {
         ["zhCN"] = "在聊天中宣布的更新的类型",
         ["zhTW"] = "要通報的進度類型",
         ["esES"] = "Tipos de actualizaciones para anunciar en el chat",
-        ["frFR"] = "Types de mises à jour à annoncer dans la discussion",
+        ["frFR"] = "Types de mises à jour à annoncer dans le chat",
     },
     ["Items starting a quest"] = {
-        ["ptBR"] = "Itens que començam uma missão",
+        ["ptBR"] = false,
         ["ruRU"] = "Предметы, начинающие задание",
         ["deDE"] = "Quests startende Gegenstände",
         ["koKR"] = false,
@@ -124,7 +124,7 @@ local socialOptionsLocales = {
         ["frFR"] = "Objets commençant une quête",
     },
     ["Announce looted items that start a quest to other players"] = {
-        ["ptBR"] = "Anunciar itens saqueados que começam uma missão para outros jogadores",
+        ["ptBR"] = false,
         ["ruRU"] = "Оповещение о предметах, начинающих задание",
         ["deDE"] = "Teilt das Aufheben von Gegenständen, die eine Quests beginnen, anderen Spielern mit.",
         ["koKR"] = false,
@@ -136,7 +136,7 @@ local socialOptionsLocales = {
         ["frFR"] = "Annonce le ramassage d’objets commençant une quête aux autres joueurs",
     },
     ["Quest accepted"] = {
-        ["ptBR"] = "Missão aceita",
+        ["ptBR"] = false,
         ["ruRU"] = "Задание принято",
         ["deDE"] = "Quest angenommen",
         ["koKR"] = false,
@@ -148,7 +148,7 @@ local socialOptionsLocales = {
         ["frFR"] = "Quête acceptée",
     },
     ["Announce quest acceptance to other players"] = {
-        ["ptBR"] = "Anunciar a aceitação da missão para outros jogadores",
+        ["ptBR"] = false,
         ["ruRU"] = "Оповещение о принятии задания",
         ["deDE"] = "Teilt die Annahme von Quests anderen Spielern mit.",
         ["koKR"] = false,
@@ -160,7 +160,7 @@ local socialOptionsLocales = {
         ["frFR"] = "Annoncer l'acceptation des quêtes aux autres joueurs",
     },
     ["Quest abandoned"] = {
-        ["ptBR"] = "Missão abandonada",
+        ["ptBR"] = false,
         ["ruRU"] = "Задание отменено",
         ["deDE"] = "Quest abgebrochen",
         ["koKR"] = false,
@@ -172,19 +172,19 @@ local socialOptionsLocales = {
         ["frFR"] = "Quête abandonnée",
     },
     ["Announce quest abortion to other players"] = {
-        ["ptBR"] = "Anunciar o abandono de missão para outros jogadores",
+        ["ptBR"] = false,
         ["ruRU"] = "Оповещение об отмене задания",
         ["deDE"] = "Teilt den Abbruch von Quests anderen Spielern mit.",
         ["koKR"] = false,
-        ["esMX"] = "Anunciar el abandono de misiones a otros jugadores.",
+        ["esMX"] = "Anunciar el aborto de misiones a otros jugadores.",
         ["enUS"] = true,
         ["zhCN"] = "向其他玩家通报放弃任务",
         ["zhTW"] = "放棄任務時向其他玩家通報",
-        ["esES"] = "Anunciar el abandono de misiones a otros jugadores.",
+        ["esES"] = "Anunciar el aborto de misiones a otros jugadores.",
         ["frFR"] = "Annoncer l'annulation des quêtes aux autres joueurs",
     },
     ["Objective completed"] = {
-        ["ptBR"] = "Objetivo concluído",
+        ["ptBR"] = false,
         ["ruRU"] = "Цель достигнута",
         ["deDE"] = "Questziel erfüllt",
         ["koKR"] = false,
@@ -196,7 +196,7 @@ local socialOptionsLocales = {
         ["frFR"] = "Objectif complété",
     },
     ["Announce completed objectives to other players"] = {
-        ["ptBR"] = "Anunciar objetivos concluídos para outros jogadores",
+        ["ptBR"] = false,
         ["ruRU"] = "Оповещение о достижении целей задания",
         ["deDE"] = "Teilt die Erfüllung von Questzielen anderen Spielern mit.",
         ["koKR"] = false,
@@ -208,7 +208,7 @@ local socialOptionsLocales = {
         ["frFR"] = "Annoncer les objectifs complétés aux autres joueurs",
     },
     ["Quest completed"] = {
-        ["ptBR"] = "Missão concluída",
+        ["ptBR"] = false,
         ["ruRU"] = "Задание выполнено",
         ["deDE"] = "Quest abgeschlossen",
         ["koKR"] = false,
@@ -220,7 +220,7 @@ local socialOptionsLocales = {
         ["frFR"] = "Quête complétée",
     },
     ["Announce quest completion to other players"] = {
-        ["ptBR"] = "Anunciar a conclusão da missão para outros jogadores",
+        ["ptBR"] = false,
         ["ruRU"] = "Оповещение о выполнении задания",
         ["deDE"] = "Teilt den Abschluß von Quests anderen Spielern mit.",
         ["koKR"] = false,
@@ -256,7 +256,7 @@ local socialOptionsLocales = {
         ["frFR"] = "La progression de vos quêtes sera régulièrement partagée avec les joueurs proches.",
     },
     ["Display announcements locally when outside of a group"] = {
-        ["ptBR"] = "Mostrar anúncios localmente quando estiver fora de um grupo",
+        ["ptBR"] = false,
         ["ruRU"] = "Оповещения вне группы",
         ["deDE"] = "Ankündigungen anzeigen, wenn du nicht in einer Gruppe bist",
         ["koKR"] = false,
@@ -265,10 +265,10 @@ local socialOptionsLocales = {
         ["zhCN"] = "没在队伍时通报给自己",
         ["zhTW"] = "沒有隊伍時通報給自己",
         ["esES"] = "Mostrar anuncios localmente cuando estés fuera de un grupo",
-        ["frFR"] = "Afficher les annonces localement lorsque vous n'êtes pas dans un groupe",
+        ["frFR"] = false,
     },
     ["Questie will print your progress messages to chat when not in a group. Other players will NOT be able to see this."] = {
-        ["ptBR"] = "O Questie imprimirá suas mensagens de progresso no chat quando você não estiver em um grupo. Outros jogadores NÃO serão capazes de ver isso.",
+        ["ptBR"] = false,
         ["ruRU"] = "Questie будет отображать в чате оповещения о прогрессе ваших заданий, когда вы вне группы. Другие игроки НЕ БУДУТ видеть эти оповещения",
         ["deDE"] = "Questie wird deine Fortschrittsnachrichten im Chat anzeigen, wenn du nicht in einer Gruppe bist. Andere Spieler werden dies NICHT sehen können.",
         ["koKR"] = false,
@@ -277,7 +277,7 @@ local socialOptionsLocales = {
         ["zhCN"] = "不在队伍时会用系统白色显示你的任务进度信息，其他玩家无法看到。",
         ["zhTW"] = "不在隊伍中時會用系統白字顯示你的任務進度訊息，其他玩家無法看到。",
         ["esES"] = "Questie imprimirá tus mensajes de progreso al chat cuando no estés en un grupo. Otros jugadores NO podrán ver esto.",
-        ["frFR"] = "Questie affichera vos messages de progression dans le chat lorsque vous n'êtes pas dans un groupe. Les autres joueurs NE pourront PAS voir cela.",
+        ["frFR"] = false,
     },
 }
 

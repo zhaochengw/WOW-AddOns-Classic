@@ -101,7 +101,7 @@ Auctionator.Groups.Constants.DefaultGroups = {
 
 for _, classID in ipairs(Auctionator.Groups.Constants.ValidItemClassIDs) do
   table.insert(Auctionator.Groups.Constants.DefaultGroups, {
-    name = C_Item.GetItemClassInfo(classID),
+    name = GetItemClassInfo(classID),
     type = Auctionator.Groups.Constants.GroupType.ClassID,
     classID = classID,
   })

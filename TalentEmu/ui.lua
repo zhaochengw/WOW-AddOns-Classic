@@ -28,6 +28,7 @@ local DT = __private.DT;
 	local CreateFrame = CreateFrame;
 	local GetMouseFocus = GetMouseFocus;
 	local GetCursorPosition = GetCursorPosition;
+	local SetPortraitToTexture = SetPortraitToTexture;
 	local _G = _G;
 	local DressUpItemLink = DressUpItemLink;
 	local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend;
@@ -68,6 +69,7 @@ local DT = __private.DT;
 		TreeFrameHeaderYSize = 0,
 		TreeFrameFooterYSize = 20,
 		TreeFrameSeqWidth = 1,
+		TreeFrameLabelBGTexCoord = { 0.05, 0.95, 0.05, 0.95, },
 		TreeNodeSize = 42,
 		TreeNodeXGap = 12,
 		TreeNodeYGap = 12,
@@ -91,8 +93,8 @@ local DT = __private.DT;
 		SpellListFrameYToBottom = 32,
 		SpellListNodeHeight = 24,
 
-		EquipmentFrameXSize = CT.BUILD == "CLASSIC" and 280 or 340,
-		EquipmentFrameXMaxSize = CT.BUILD == "CLASSIC" and 640 or 765,
+		EquipmentFrameXSize = CT.TOCVERSION < 20000 and 280 or 340,
+		EquipmentFrameXMaxSize = CT.TOCVERSION < 20000 and 640 or 765,
 		EquipmentNodeSize = 38,
 		EquipmentNodeGap = 6,
 		EquipmentNodeXToBorder = 8,
@@ -106,8 +108,9 @@ local DT = __private.DT;
 		EngravingNodeSize = 16;
 
 		GlyphFrameSize = 200,
-		MajorGlyphNodeSize = 64,
-		MinorGlyphNodeSize = 48,
+		PrimeGlyphNodeSize = 62,
+		MajorGlyphNodeSize = 48,
+		MinorGlyphNodeSize = 36,
 
 		ControlButtonSize = 18,
 		SideButtonSize = 28,
@@ -273,6 +276,8 @@ MT.BuildEnv('UI');
 																					TalentSeq				(num)
 													HSeq				(texture)
 													VSep				(texture)
+													TreeLabel			(fontstring)
+													TreeLabelBG			(texture)
 													TalentSet			(table)
 																					total
 																					CountByTier			(num table)
@@ -443,36 +448,46 @@ MT.BuildEnv('UI');
 					end
 					TreeFrame.BG:SetTexture(DT.SpecBG[SpecID]);
 					TreeFrame.TreeLabel:SetText(l10n.DATA[SpecID]);
+					-- TreeFrame.TreeLabelBG:SetTexture(SpecTexture);
+					SetPortraitToTexture(TreeFrame.TreeLabelBG, SpecTexture)
 					for TalentSeq = 1, #TreeTDB do
 						local TalentDef = TreeTDB[TalentSeq];
-						local Node = TreeNodes[TalentDef[10]];
-						Node.TalentSeq = TalentSeq;
-						Node:Show();
-						local _, _, texture = GetSpellInfo(TalentDef[8][1]);
-						if texture ~= nil then
-							Node:SetNormalTexture(texture);
-							Node:SetPushedTexture(texture);
-						elseif TalentDef[9] ~= nil then
-							Node:SetNormalTexture(TalentDef[9]);
-							Node:SetPushedTexture(TalentDef[9]);
-						else
-							Node:SetNormalTexture(TTEXTURESET.UNK);
-							Node:SetPushedTexture(TTEXTURESET.UNK);
-						end
-						Node.MaxVal:SetText(TalentDef[4]);
-						Node.CurVal:SetText("0");
+						if TalentDef[1] ~= nil then
+							local Node = TreeNodes[TalentDef[10]];
+							Node.TalentSeq = TalentSeq;
+							Node:Show();
+							local _, _, texture = GetSpellInfo(TalentDef[8][1]);
+							if texture ~= nil then
+								Node:SetNormalTexture(texture);
+								Node:SetPushedTexture(texture);
+								-- SetPortraitToTexture(Node:GetNormalTexture(), texture);
+								-- SetPortraitToTexture(Node:GetPushedTexture(), texture);
+							elseif TalentDef[9] ~= nil then
+								Node:SetNormalTexture(TalentDef[9]);
+								Node:SetPushedTexture(TalentDef[9]);
+								-- SetPortraitToTexture(Node:GetNormalTexture(), TalentDef[9]);
+								-- SetPortraitToTexture(Node:GetPushedTexture(), TalentDef[9]);
+							else
+								Node:SetNormalTexture(TTEXTURESET.UNK);
+								Node:SetPushedTexture(TTEXTURESET.UNK);
+								-- SetPortraitToTexture(Node:GetNormalTexture(), TTEXTURESET.UNK);
+								-- SetPortraitToTexture(Node:GetPushedTexture(), TTEXTURESET.UNK);
+							end
+							Node.MaxVal:SetText(TalentDef[4]);
+							Node.CurVal:SetText("0");
 
-						local DepTSeq = TalentDef[11];
-						if DepTSeq ~= nil then
-							local Arrow = MT.UI.DependArrowGet(TreeFrame);
-							MT.UI.DependArrowSet(Arrow, TalentDef[1] - TalentDef[5], TalentDef[2] - TalentDef[6], false, Node, TreeNodes[TreeTDB[DepTSeq][10]]);
-							local DepArrows = TreeFrame.NodeDependArrows[DepTSeq];
-							DepArrows[#DepArrows + 1] = Arrow;
-						end
+							local DepTSeq = TalentDef[11];
+							if DepTSeq ~= nil then
+								local Arrow = MT.UI.DependArrowGet(TreeFrame);
+								MT.UI.DependArrowSet(Arrow, TalentDef[1] - TalentDef[5], TalentDef[2] - TalentDef[6], false, Node, TreeNodes[TreeTDB[DepTSeq][10]]);
+								local DepArrows = TreeFrame.NodeDependArrows[DepTSeq];
+								DepArrows[#DepArrows + 1] = Arrow;
+							end
 
-						if TalentDef[1] == 0 then
-							if TalentDef[5] == nil then
-								MT.UI.TreeNodeActivate(Node);
+							if TalentDef[1] == 0 then
+								if TalentDef[5] == nil then
+									MT.UI.TreeNodeActivate(Node);
+								end
 							end
 						end
 					end
@@ -533,8 +548,62 @@ MT.BuildEnv('UI');
 				local TreeFrames = Frame.TreeFrames;
 				local len = #seldata;
 				local pos = 1;
-				local offset = 0;
+
+				local sum = { 0, 0, 0, };
 				for TreeIndex = 1, 3 do
+					if pos > len then
+						break;
+					end
+					local TreeFrame = TreeFrames[TreeIndex];
+					local TreeTDB = TreeFrame.TreeTDB;
+					for TalentSeq = 1, #TreeTDB do
+						if pos > len then
+							break;
+						end
+						local TalentDef = TreeTDB[TalentSeq];
+						if TalentDef[1] ~= nil then
+							local val = strsub(seldata, pos, pos);
+							val = tonumber(val);
+							sum[TreeIndex] = sum[TreeIndex] + val;
+						end
+						pos = pos + 1;
+					end
+				end
+				-- local primaryTreeIndex = nil;
+				local TreeSeq = nil;
+				local TreeOffset = nil;
+				local o1, o2 = #TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB;
+				if CT.TOCVERSION >= 40000 and (sum[1] > 0 or sum[2] > 0 or sum[3] > 0) then
+					if sum[1] >= sum[2] then
+						if sum[1] >= sum[3] then
+							-- primaryTreeIndex = 1;
+							TreeSeq = { 1, 2, 3, };
+							TreeOffset = { 0, o1, o1 + o2, };
+						else
+							-- primaryTreeIndex = 3
+							TreeSeq = { 3, 1, 2, };
+							TreeOffset = { o1 + o2, 0, o1, };
+						end
+					else
+						if sum[2] >= sum[3] then
+							-- primaryTreeIndex = 2;
+							TreeSeq = { 2, 1, 3, };
+							TreeOffset = { o1, 0, o1 + o2, };
+						else
+							-- primaryTreeIndex = 3;
+							TreeSeq = { 3, 1, 2, };
+							TreeOffset = { o1 + o2, 0, o1, };
+						end
+					end
+				else
+					TreeSeq = { 1, 2, 3, };
+					TreeOffset = { 0, o1, o1 + o2, };
+				end
+
+				for i = 1, 3 do
+					local TreeIndex = TreeSeq[i];
+					local offset = TreeOffset[i];
+					pos = offset + 1;
 					if pos > len then
 						break;
 					end
@@ -546,34 +615,35 @@ MT.BuildEnv('UI');
 						if pos > len then
 							break;
 						end
-						local val = strsub(seldata, pos, pos);
-						val = tonumber(val);
-						if val ~= 0 then
-							local TalentDef = TreeTDB[TalentSeq];
-							local DepTSeq = TalentDef[11];
-							if DepTSeq ~= nil and DepTSeq <= len then
-								local depval = strsub(seldata, offset + DepTSeq, offset + DepTSeq);
-								if depval ~= "0" then
-									depval = tonumber(depval);
-									local deppts = depval - TalentSet[DepTSeq];
-									if deppts > 0 then
-										MT.UI.TreeNodeChangePoint(TreeNodes[TreeTDB[DepTSeq][10]], deppts);
+						local TalentDef = TreeTDB[TalentSeq];
+						if TalentDef[1] ~= nil then
+							local val = strsub(seldata, pos, pos);
+							val = tonumber(val);
+							if val ~= 0 then
+								local DepTSeq = TalentDef[11];
+								if DepTSeq ~= nil and DepTSeq <= len then
+									local depval = strsub(seldata, offset + DepTSeq, offset + DepTSeq);
+									if depval ~= "0" then
+										depval = tonumber(depval);
+										local deppts = depval - TalentSet[DepTSeq];
+										if deppts > 0 then
+											MT.UI.TreeNodeChangePoint(TreeNodes[TreeTDB[DepTSeq][10]], deppts);
+										end
 									end
 								end
-							end
-							local pts = val - TalentSet[TalentSeq];
-							if pts > 0 then
-								local ret = MT.UI.TreeNodeChangePoint(TreeNodes[TalentDef[10]], pts);
-								if ret < 0 then
-									MT.Debug("MT.UI.FrameSetTalent", 4, ret, "tab", TreeIndex, "tier", TalentDef[1], "col", TalentDef[2], "maxPoints", TalentDef[4], "set", val, TalentDef, pos);
-								elseif ret > 0 then
-									MT.Debug("MT.UI.FrameSetTalent", 5, ret, "tab", TreeIndex, "tier", TalentDef[1], "col", TalentDef[2], "maxPoints", TalentDef[4], "set", val, TalentDef, pos);
+								local pts = val - TalentSet[TalentSeq];
+								if pts > 0 then
+									local ret = MT.UI.TreeNodeChangePoint(TreeNodes[TalentDef[10]], pts);
+									if ret < 0 then
+										MT.Debug("MT.UI.FrameSetTalent", 4, ret, "tab", TreeIndex, "tier", TalentDef[1], "col", TalentDef[2], "maxPoints", TalentDef[4], "set", val, TalentDef, pos);
+									elseif ret > 0 then
+										MT.Debug("MT.UI.FrameSetTalent", 5, ret, "tab", TreeIndex, "tier", TalentDef[1], "col", TalentDef[2], "maxPoints", TalentDef[4], "set", val, TalentDef, pos);
+									end
 								end
 							end
 						end
 						pos = pos + 1;
 					end
-					offset = pos;
 				end
 
 				if TalData.num > 1 then
@@ -637,7 +707,9 @@ MT.BuildEnv('UI');
 					for TalentSeq = 1, #TreeTDB do
 						if TalentSet[TalentSeq] == 0 then
 							local TalentDef = TreeTDB[TalentSeq];
-							MT.UI.TreeNodeSetTextColorUnavailable(TreeNodes[TalentDef[10]]);
+							if TalentDef[1] ~= nil then
+								MT.UI.TreeNodeSetTextColorUnavailable(TreeNodes[TalentDef[10]]);
+							end
 						end
 					end
 				end
@@ -648,7 +720,7 @@ MT.BuildEnv('UI');
 					local TreeTDB = TreeFrame.TreeTDB;
 					for TalentSeq = 1, #TreeTDB do
 						local TalentDef = TreeTDB[TalentSeq];
-						if TalentDef[1] == 0 then
+						if TalentDef[1] ~= nil and TalentDef[1] == 0 then
 							if TalentDef[5] == nil then
 								MT.UI.TreeNodeSetTextColorAvailable(TreeNodes[TalentDef[10]]);
 							end
@@ -699,7 +771,7 @@ MT.BuildEnv('UI');
 			local TalentSet = TreeFrame.TalentSet;
 			local TreeTDB = TreeFrame.TreeTDB;
 			local TalentSeq = Node.TalentSeq;
-			local TalentDef = TreeTDB[TalentSeq];
+			local TalentDef = TreeTDB[TalentSeq];	--	没必要验证，因为无效定义没有按钮
 
 			if (numPoints > 0 and TalentSet[TalentSeq] == TalentDef[4]) or (numPoints < 0 and TalentSet[TalentSeq] == 0) then	--	increased from max_rank OR decreased from min_rank
 				return 2;
@@ -759,6 +831,25 @@ MT.BuildEnv('UI');
 							numPointsLowerTier = numPointsLowerTier + TalentSet.CountByTier[i];
 						end
 					end
+					if CT.TOCVERSION >= 40000 then
+						if TalentSet.Total >= DT.PointsNeeded4SecondaryTree then
+							local secondary = false;
+							local TreeFrames = Frame.TreeFrames;
+							for TreeIndex = 1, 3 do
+								local TFrame = TreeFrames[TreeIndex];
+								if TFrame ~= TreeFrame and TFrame.TalentSet.Total > 0 then
+									secondary = true;
+									break;
+								end
+							end
+							if secondary and TalentSet.Total + numPoints < DT.PointsNeeded4SecondaryTree then
+								numPoints = DT.PointsNeeded4SecondaryTree - TalentSet.Total;
+								if numPoints == 0 then
+									return 3;
+								end
+							end
+						end
+					end
 				end
 
 				local ret = 0;
@@ -807,11 +898,62 @@ MT.BuildEnv('UI');
 					end
 				end
 
+				if CT.TOCVERSION >= 40000 then
+					if TalentSet.Total >= DT.PointsNeeded4SecondaryTree then
+						if numPoints < 0 and TalentSet.Total + numPoints < DT.PointsNeeded4SecondaryTree then
+							local TreeFrames = Frame.TreeFrames;
+							for TreeIndex = 1, 3 do
+								local TFrame = TreeFrames[TreeIndex];
+								if TFrame ~= TreeFrame then
+									MT.UI.TreeNodesDeactiveTier(TFrame.TreeNodes, 0);
+								end
+							end
+						end
+					elseif TalentSet.Total + numPoints >= DT.PointsNeeded4SecondaryTree then
+							local TreeFrames = Frame.TreeFrames;
+							for TreeIndex = 1, 3 do
+								local TFrame = TreeFrames[TreeIndex];
+								if TFrame ~= TreeFrame then
+									MT.UI.TreeNodesActivateTier(TFrame.TreeNodes, 0);
+								end
+							end
+					elseif TalentSet.Total > 0 then
+						if TalentSet.Total + numPoints <= 0 then
+							local TreeFrames = Frame.TreeFrames;
+							for TreeIndex = 1, 3 do
+								local TFrame = TreeFrames[TreeIndex];
+								if TFrame ~= TreeFrame then
+									MT.UI.TreeNodesActivateTier(TFrame.TreeNodes, 0);
+								end
+							end
+						end
+					elseif TalentSet.Total == 0 then
+						if numPoints > 0 then
+							local TreeFrames = Frame.TreeFrames;
+							local isPrimary = true;
+							for TreeIndex = 1, 3 do
+								local TFrame = TreeFrames[TreeIndex];
+								if TFrame ~= TreeFrame and TFrame.TalentSet.Total > 0 then
+									isPrimary = false;
+									break;
+								end
+							end
+							if isPrimary then
+							for TreeIndex = 1, 3 do
+								local TFrame = TreeFrames[TreeIndex];
+								if TFrame ~= TreeFrame then
+									MT.UI.TreeNodesDeactiveTier(TFrame.TreeNodes, 0);
+								end
+							end
+							end
+						end
+					end
+				end
 				--	CountByTier			index begin from 0
 				--	TopAvailableTier	begin from 0
 				--	TopCheckedTier		begin from 0
 				TalentSet.Total = TalentSet.Total + numPoints;
-				TreeFrame.CurTreePoints:SetText(TalentSet.Total);
+				TreeFrame.TreePoints:SetText(TalentSet.Total);
 				TalentSet.CountByTier[TalentDef[1]] = TalentSet.CountByTier[TalentDef[1]] + numPoints;
 
 				local TopAvailableTier = min(floor(TalentSet.Total / CT.NUM_POINTS_NEXT_TIER), DT.MAX_NUM_TIER - 1);
@@ -941,7 +1083,7 @@ MT.BuildEnv('UI');
 					end
 					DependArrows.used = 0;
 
-					TreeFrame.CurTreePoints:SetText("0");
+					TreeFrame.TreePoints:SetText("0");
 				end
 
 				MT.UI.FrameSetClass(Frame, nil);
@@ -968,8 +1110,9 @@ MT.BuildEnv('UI');
 				local TalentSet = TreeFrame.TalentSet;
 				local TreeNodes = TreeFrame.TreeNodes;
 				for TalentSeq = 1, #TreeTDB do
-					if TreeTDB[TalentSeq][4] ~= TalentSet[TalentSeq] then
-						MT.UI.TreeNodeSetTextColorUnavailable(TreeNodes[MT.GetTreeNodeIndex(TreeTDB[TalentSeq])]);
+					local TalentDef = TreeTDB[TalentSeq];
+					if TalentDef[1] ~= nil and TalentDef[4] ~= TalentSet[TalentSeq] then
+						MT.UI.TreeNodeSetTextColorUnavailable(TreeNodes[MT.GetTreeNodeIndex(TalentDef)]);
 					end
 				end
 			end
@@ -982,18 +1125,20 @@ MT.BuildEnv('UI');
 				local TalentSet = TreeFrame.TalentSet;
 				local TreeNodes = TreeFrame.TreeNodes;
 				for TalentSeq = 1, #TreeTDB do
-					if TreeTDB[TalentSeq][4] == TalentSet[TalentSeq] then
-						--	MT.UI.TreeNodeSetTextColorMaxRank(TreeNodes[MT.GetTreeNodeIndex(TreeTDB[TalentSeq])]);
-					elseif TalentSet[TalentSeq] > 0 or TreeTDB[TalentSeq][1] == 0 then
-						MT.UI.TreeNodeSetTextColorAvailable(TreeNodes[MT.GetTreeNodeIndex(TreeTDB[TalentSeq])]);
-					else
-						local TalentDef = TreeTDB[TalentSeq];
-						local numPointsLowerTier = 0;
-						for j = 0, TalentDef[1] - 1 do
-							numPointsLowerTier = numPointsLowerTier + TalentSet.CountByTier[j];
-						end
-						if numPointsLowerTier >= TalentDef[1] * CT.NUM_POINTS_NEXT_TIER then
-							MT.UI.TreeNodeActivate_RecheckReq(TreeNodes[MT.GetTreeNodeIndex(TreeTDB[TalentSeq])]);
+					local TalentDef = TreeTDB[TalentSeq];
+					if TalentDef[1] ~= nil then
+						if TalentDef[4] == TalentSet[TalentSeq] then
+							--	MT.UI.TreeNodeSetTextColorMaxRank(TreeNodes[MT.GetTreeNodeIndex(TalentDef)]);
+						elseif TalentSet[TalentSeq] > 0 or TalentDef[1] == 0 then
+							MT.UI.TreeNodeSetTextColorAvailable(TreeNodes[MT.GetTreeNodeIndex(TalentDef)]);
+						else
+							local numPointsLowerTier = 0;
+							for j = 0, TalentDef[1] - 1 do
+								numPointsLowerTier = numPointsLowerTier + TalentSet.CountByTier[j];
+							end
+							if numPointsLowerTier >= TalentDef[1] * CT.NUM_POINTS_NEXT_TIER then
+								MT.UI.TreeNodeActivate_RecheckReq(TreeNodes[MT.GetTreeNodeIndex(TalentDef)]);
+							end
 						end
 					end
 				end
@@ -1053,6 +1198,9 @@ MT.BuildEnv('UI');
 					TreeFrames[1].TreeLabel:Show();
 					TreeFrames[2].TreeLabel:Show();
 					TreeFrames[3].TreeLabel:Show();
+					TreeFrames[1].TreeLabelBG:Show();
+					TreeFrames[2].TreeLabelBG:Show();
+					TreeFrames[3].TreeLabelBG:Show();
 					Frame.TreeButtonsBar:Hide();
 					if Frame.SetResizeBounds ~= nil then
 						Frame:SetResizeBounds(TUISTYLE.FrameXSizeMin_Style1, TUISTYLE.FrameYSizeMin_Style1, 9999, 9999);
@@ -1079,6 +1227,9 @@ MT.BuildEnv('UI');
 					TreeFrames[1].TreeLabel:Hide();
 					TreeFrames[2].TreeLabel:Hide();
 					TreeFrames[3].TreeLabel:Hide();
+					TreeFrames[1].TreeLabelBG:Hide();
+					TreeFrames[2].TreeLabelBG:Hide();
+					TreeFrames[3].TreeLabelBG:Hide();
 					Frame.TreeButtonsBar:Show();
 					if Frame.SetResizeBounds ~= nil then
 						Frame:SetResizeBounds(TUISTYLE.FrameXSizeMin_Style2, TUISTYLE.FrameYSizeMin_Style2, 9999, 9999);
@@ -1131,6 +1282,10 @@ MT.BuildEnv('UI');
 			Node.active = true;
 			MT.UI.TreeNodeSetTextColorAvailable(Node);
 		end
+		function MT.UI.TreeNodeActivateMaxRank(Node)	--	Light Node when points increased from 0 instead of activated
+			Node.active = true;
+			MT.UI.TreeNodeSetTextColorMaxRank(Node);
+		end
 		function MT.UI.TreeNodeDeactive(Node)	--	Unlight Node certainly when deactived
 			Node.active = false;
 			MT.UI.TreeNodeSetTextColorUnavailable(Node);
@@ -1146,13 +1301,18 @@ MT.BuildEnv('UI');
 		end
 		function MT.UI.TreeNodeActivate_RecheckReq(Node)
 			local TalentSeq = Node.TalentSeq;
-			if TalentSeq then
+			if TalentSeq ~= nil then
 				local TreeFrame = Node.TreeFrame;
+				local TalentSet = TreeFrame.TalentSet;
 				local TreeTDB = TreeFrame.TreeTDB;
 				local TalentDef = TreeTDB[TalentSeq];
 				local DepTSeq = TalentDef[11];
 				if DepTSeq == nil or TreeFrame.TalentSet[DepTSeq] == TreeTDB[DepTSeq][4] then
-					MT.UI.TreeNodeActivate(Node);
+					if TalentSet[TalentSeq] >= TreeTDB[TalentSeq][4] then
+						MT.UI.TreeNodeActivateMaxRank(Node)
+					else
+						MT.UI.TreeNodeActivate(Node);
+					end
 				end
 			end
 		end
@@ -1776,30 +1936,37 @@ MT.BuildEnv('UI');
 			local GlyphNodes = GlyphContainer.GlyphNodes;
 			if GlyData ~= nil and GlyData[activeGroup] ~= nil then
 				local data = GlyData[activeGroup];
-				for index = 1, 6 do
+				for index = 1, #GlyphNodes do
 					local Node = GlyphNodes[index];
 					local info = data[index];
 					Node.info = info;
 					if info ~= nil then
 						Node.SpellID = info[3];
 						Node.Glyph:Show();
-						Node.Glyph:SetTexture(info[4]);
+						-- Node.Glyph:SetTexture(info[4]);
+						SetPortraitToTexture(Node.Glyph, info[4]);
 						local def = Node.def;
-						Node.Background:SetTexCoord(def[7], def[8], def[9], def[10]);
+						if CT.BUILD == "WRATH" then
+							Node.Background:SetTexCoord(def[7], def[8], def[9], def[10]);
+						end
 					else
 						Node.SpellID = nil;
 						Node.Glyph:Hide();
 						local d0 = Node.d0;
-						Node.Background:SetTexCoord(d0[7], d0[8], d0[9], d0[10]);
+						if CT.BUILD == "WRATH" then
+							Node.Background:SetTexCoord(d0[7], d0[8], d0[9], d0[10]);
+						end
 					end
 				end
 			else
-				for index = 1, 6 do
+				for index = 1, #GlyphNodes do
 					local Node = GlyphNodes[index];
 					Node.SpellID = nil;
 					Node.Glyph:Hide();
 					local d0 = Node.d0;
-					Node.Background:SetTexCoord(d0[7], d0[8], d0[9], d0[10]);
+					if CT.BUILD == "WRATH" then
+						Node.Background:SetTexCoord(d0[7], d0[8], d0[9], d0[10]);
+					end
 				end
 			end
 		end
@@ -2461,49 +2628,116 @@ MT.BuildEnv('UI');
 			local GlyphContainer = nil;
 			if VT.__support_glyph then
 				GlyphContainer = CreateFrame('FRAME', nil, EquipmentFrameContainer);
-				GlyphContainer:SetPoint("BOTTOM", EquipmentFrameContainer);
+				if CT.BUILD == "WRATH" then
+					GlyphContainer:SetPoint("BOTTOM", EquipmentFrameContainer);
+				else
+					GlyphContainer:SetPoint("TOP", EquipmentFrameContainer, "BOTTOM");
+				end
 				GlyphContainer:SetSize(TUISTYLE.GlyphFrameSize, TUISTYLE.GlyphFrameSize);
 				GlyphContainer:Show();
 				local GlyphNodes = {  };
-				--[[
+				--[[	wlk
 							1
 						3		5
 						6		4
 							2
 				--]]
-				local NodesDef = {
-					[0] = { 0,   0, 0.0, 0.00, 0.0, 1.0, 0.78125    , 0.91015625 , 0.69921875, 0.828125, },
-					[1] = { 1,   0, 1.0, 0.25, 0.0, 1.0, 0.0        , 0.12890625 , 0.87109375, 1.0, },
-					[2] = { 2, 180, 0.0, 0.25, 1.0, 1.0, 0.130859375, 0.259765625, 0.87109375, 1.0, },
-					[3] = { 2, 300, 0.0, 0.25, 1.0, 1.0, 0.392578125, 0.521484375, 0.87109375, 1.0, },
-					[4] = { 1, 120, 1.0, 0.25, 0.0, 1.0, 0.5234375  , 0.65234375 , 0.87109375, 1.0, },
-					[5] = { 2,  60, 0.0, 0.25, 1.0, 1.0, 0.26171875 , 0.390625   , 0.87109375, 1.0, },
-					[6] = { 1, 240, 1.0, 0.25, 0.0, 1.0, 0.654296875, 0.783203125, 0.87109375, 1.0, },
+				--[[	cata
+							7
+						4	2	1
+						  3   5
+						8	6	9
+						--
+						146 Major = 1
+						235	Minor = 2
+						789	PRIME = 3
+				--]]
+				local NodesDef, RingCoord, HighlightCoord;
+				if CT.BUILD == "WRATH" then
+					NodesDef = {
+						--	 type angle (         rgba        ) (                 coords                 )
+						[0] = { 0,   0, 0.00, 0.00, 0.00, 1.00, 0.78125    , 0.91015625 , 0.69921875, 0.828125, },
+						[1] = { 1,   0, 1.00, 0.25, 0.00, 1.00, 0.0        , 0.12890625 , 0.87109375, 1.0, },
+						[2] = { 2, 180, 0.00, 0.25, 1.00, 1.00, 0.130859375, 0.259765625, 0.87109375, 1.0, },
+						[3] = { 2, 300, 0.00, 0.25, 1.00, 1.00, 0.392578125, 0.521484375, 0.87109375, 1.0, },
+						[4] = { 1, 120, 1.00, 0.25, 0.00, 1.00, 0.5234375  , 0.65234375 , 0.87109375, 1.0, },
+						[5] = { 2,  60, 0.00, 0.25, 1.00, 1.00, 0.26171875 , 0.390625   , 0.87109375, 1.0, },
+						[6] = { 1, 240, 1.00, 0.25, 0.00, 1.00, 0.654296875, 0.783203125, 0.87109375, 1.0, },
+					};
+					RingCoord = {
+						[1] = { 0.787109375, 0.908203125, 0.033203125, 0.154296875, },
+						[2] = { 0.787109375, 0.908203125, 0.033203125, 0.154296875, },
+					};
+					HighlightCoord = {
+						[1] = { 0.765625, 0.927734375, 0.15625, 0.31640625, },
+						[2] = { 0.765625, 0.927734375, 0.15625, 0.31640625, },
+					};
+				else
+					NodesDef = {
+						[0] = { 0,   0, 1.00, 1.00, 1.00, 1.00, 0.0, 1.0, 0.0, 1.0, },
+						[1] = { 1,  60, 1.00, 1.00, 1.00, 1.00, 0.0, 1.0, 0.0, 1.0, },
+						[2] = { 2,   0, 1.00, 1.00, 1.00, 1.00, 0.0, 1.0, 0.0, 1.0, },
+						[3] = { 2, 240, 1.00, 1.00, 1.00, 1.00, 0.0, 1.0, 0.0, 1.0, },
+						[4] = { 1, 300, 1.00, 1.00, 1.00, 1.00, 0.0, 1.0, 0.0, 1.0, },
+						[5] = { 2, 120, 1.00, 1.00, 1.00, 1.00, 0.0, 1.0, 0.0, 1.0, },
+						[6] = { 1, 180, 1.00, 1.00, 1.00, 1.00, 0.0, 1.0, 0.0, 1.0, },
+						[7] = { 3,   0, 1.00, 1.00, 1.00, 1.00, 0.0, 1.0, 0.0, 1.0, },
+						[8] = { 3, 240, 1.00, 1.00, 1.00, 1.00, 0.0, 1.0, 0.0, 1.0, },
+						[9] = { 3, 120, 1.00, 1.00, 1.00, 1.00, 0.0, 1.0, 0.0, 1.0, },
+					};
+					RingCoord = {
+						[1] = { 0.85839844, 0.92285156, 0.00097656, 0.06542969, },
+						[2] = { 0.92480469, 0.98437500, 0.00097656, 0.06054688, },
+						[3] = { 0.85839844, 0.93847656, 0.22265625, 0.30273438, },
+					};
+					HighlightCoord = {
+						[1] = { 0.85839844, 0.93652344, 0.06738281, 0.14550781, },
+						[2] = { 0.85839844, 0.93164063, 0.14746094, 0.22070313, },
+						[3] = { 0.85839844, 0.95214844, 0.30468750, 0.39843750, },
+					};
+				end
+				local SIZELOOKUP = {
+					[1] = TUISTYLE.MajorGlyphNodeSize,
+					[2] = TUISTYLE.MinorGlyphNodeSize,
+					[3] = TUISTYLE.PrimeGlyphNodeSize,
 				};
-				for index = 1, 6 do
+				--local R = TUISTYLE.GlyphFrameSize * 0.5 - size * 0.5 - 2;
+				local RADIUSLOOKUP = {
+					[1] = TUISTYLE.MinorGlyphNodeSize * 0.5 + TUISTYLE.MajorGlyphNodeSize * 0.5,
+					[2] = TUISTYLE.MinorGlyphNodeSize * 0.5,
+					[3] = TUISTYLE.MinorGlyphNodeSize * 0.75 + TUISTYLE.PrimeGlyphNodeSize * 0.5,
+				};
+				for index = 1, #NodesDef do
 					local def = NodesDef[index];
-					local size = def[1] == 1 and TUISTYLE.MajorGlyphNodeSize or TUISTYLE.MinorGlyphNodeSize;
-					local R = TUISTYLE.GlyphFrameSize * 0.5 - size * 0.5 - 2;
+					local size = SIZELOOKUP[def[1]];
+					local R = RADIUSLOOKUP[def[1]];
 					local Node = CreateFrame('BUTTON', nil, GlyphContainer);
 					Node:SetSize(size, size);
 					Node:SetPoint("CENTER", GlyphContainer, "CENTER", R * sin360(def[2]), R * cos360(def[2]) + TUISTYLE.EquipmentNodeXToBorder);
 					Node:SetScript("OnEnter", GlyphNode_OnEnter);
 					Node:SetScript("OnLeave", GlyphNode_OnLeave);
-					local Setting = Node:CreateTexture(nil, "ARTWORK");
-					Setting:SetSize(size * 1.2, size * 1.2);
-					Setting:SetPoint("CENTER", 0, 0);
-					Setting:SetTexture([[Interface\Spellbook\UI-GlyphFrame]]);
-					Setting:SetTexCoord(0.765625, 0.927734375, 0.15625, 0.31640625);
-					local Background = Node:CreateTexture(nil, "BORDER");
-					Background:SetSize(size * 1.2, size * 1.2);
-					Background:SetPoint("CENTER", 0, 0);
-					Background:SetTexture([[Interface\Spellbook\UI-GlyphFrame]]);
-					Background:SetTexCoord(0.78125, 0.91015625, 0.69921875, 0.828125);
+					if CT.BUILD == "WRATH" then
+						local Setting = Node:CreateTexture(nil, "ARTWORK");
+						Setting:SetSize(size * 1.2, size * 1.2);
+						Setting:SetPoint("CENTER", 0, 0);
+						Setting:SetTexture([[Interface\Spellbook\UI-GlyphFrame]]);
+						Setting:SetTexCoord(0.765625, 0.927734375, 0.15625, 0.31640625);
+						local Background = Node:CreateTexture(nil, "BORDER");
+						Background:SetSize(size * 1.2, size * 1.2);
+						Background:SetPoint("CENTER", 0, 0);
+						Background:SetTexture([[Interface\Spellbook\UI-GlyphFrame]]);
+						Background:SetTexCoord(0.78125, 0.91015625, 0.69921875, 0.828125);
+					end
 					local Highlight = Node:CreateTexture(nil, "BORDER");
-					Highlight:SetSize(size * 1.2, size * 1.2);
+					if CT.BUILD == "WRATH" then
+						Highlight:SetSize(size * 1.2, size * 1.2);
+					else
+						Highlight:SetSize(size, size);
+					end
 					Highlight:SetPoint("CENTER", 0, 0);
 					Highlight:SetTexture([[Interface\Spellbook\UI-GlyphFrame]]);
-					Highlight:SetTexCoord(0.765625, 0.927734375, 0.15625, 0.31640625);
+					local hc = HighlightCoord[def[1]];
+					Highlight:SetTexCoord(hc[1], hc[2], hc[3], hc[4]);
 					Highlight:SetVertexColor(1.0, 1.0, 1.0, 0.25);
 					Highlight:SetBlendMode("ADD");
 					Highlight:Hide();
@@ -2519,12 +2753,15 @@ MT.BuildEnv('UI');
 					Ring:SetSize(size * 0.86, size * 0.86);
 					Ring:SetPoint("CENTER", 0, 1);
 					Ring:SetTexture([[Interface\Spellbook\UI-GlyphFrame]]);
-					Ring:SetTexCoord(0.787109375, 0.908203125, 0.033203125, 0.154296875);
-					local Shine = Node:CreateTexture(nil, "OVERLAY");
-					Shine:SetSize(size / 6, size / 6);
-					Shine:SetPoint("CENTER", -size / 8, size / 6);
-					Shine:SetTexture([[Interface\Spellbook\UI-GlyphFrame]]);
-					Shine:SetTexCoord(0.9609375, 1.0, 0.921875, 0.9609375);
+					local rc = RingCoord[def[1]];
+					Ring:SetTexCoord(rc[1], rc[2], rc[3], rc[4]);
+					if CT.BUILD == "WRATH" then
+						local Shine = Node:CreateTexture(nil, "OVERLAY");
+						Shine:SetSize(size / 6, size / 6);
+						Shine:SetPoint("CENTER", -size / 8, size / 6);
+						Shine:SetTexture([[Interface\Spellbook\UI-GlyphFrame]]);
+						Shine:SetTexCoord(0.9609375, 1.0, 0.921875, 0.9609375);
+					end
 					Node.Type = def[1];
 					Node.TypeText = def[1] == 1 and MAJOR_GLYPH or MINOR_GLYPH;
 					Node.ID = index;
@@ -2532,6 +2769,7 @@ MT.BuildEnv('UI');
 					Node.Background = Background;
 					Node.Highlight = Highlight;
 					Node.Glyph = Glyph;
+					Node.Ring = Ring;
 					Node.Shine = Shine;
 					Node.def = def;
 					Node.type = def[1];
@@ -2743,18 +2981,25 @@ MT.BuildEnv('UI');
 				TreeFrame.ResetButton = ResetButton;
 				ResetButton.TreeFrame = TreeFrame;
 
-				local CurTreePoints = TreeFrame:CreateFontString(nil, "ARTWORK");
-				CurTreePoints:SetFont(TUISTYLE.FrameFont, TUISTYLE.FrameFontSize, TUISTYLE.FrameFontOutline);
-				CurTreePoints:SetPoint("CENTER", ResetButton);
-				CurTreePoints:SetTextColor(0.0, 1.0, 0.0, 1.0);
-				CurTreePoints:SetText("0");
-				TreeFrame.CurTreePoints = CurTreePoints;
+				local TreePoints = TreeFrame:CreateFontString(nil, "ARTWORK");
+				TreePoints:SetFont(TUISTYLE.FrameFont, TUISTYLE.FrameFontSize, TUISTYLE.FrameFontOutline);
+				TreePoints:SetPoint("CENTER", ResetButton);
+				TreePoints:SetTextColor(0.0, 1.0, 0.0, 1.0);
+				TreePoints:SetText("0");
+				TreeFrame.TreePoints = TreePoints;
 
 				local TreeLabel = TreeFrame:CreateFontString(nil, "ARTWORK");
-				TreeLabel:SetFont(TUISTYLE.FrameFont, TUISTYLE.FrameFontSizeMid, TUISTYLE.FrameFontOutline);
+				TreeLabel:SetFont(TUISTYLE.FrameFont, TUISTYLE.FrameFontSizeMid, "OUTLINE");
 				TreeLabel:SetPoint("CENTER", TreeFrame, "BOTTOM", 0, TUISTYLE.TreeFrameFooterYSize * 0.5);
 				TreeLabel:SetTextColor(0.9, 0.9, 0.9, 1.0);
 				TreeFrame.TreeLabel = TreeLabel;
+				local TreeLabelBG = TreeFrame:CreateTexture(nil, "ARTWORK");
+				TreeLabelBG:SetSize(TUISTYLE.TreeFrameFooterYSize, TUISTYLE.TreeFrameFooterYSize);
+				-- TreeLabelBG:SetPoint("BOTTOMLEFT", TreeFrame, "BOTTOMLEFT", 0, 0);
+				-- TreeLabelBG:SetPoint("TOPRIGHT", TreeFrame, "BOTTOMRIGHT", 0, TUISTYLE.TreeFrameFooterYSize);
+				TreeLabelBG:SetPoint("RIGHT", TreeLabel, "LEFT", -4, 0);
+				TreeLabelBG:SetTexCoord(TUISTYLE.TreeFrameLabelBGTexCoord[1], TUISTYLE.TreeFrameLabelBGTexCoord[2], TUISTYLE.TreeFrameLabelBGTexCoord[3], TUISTYLE.TreeFrameLabelBGTexCoord[4]);
+				TreeFrame.TreeLabelBG = TreeLabelBG;
 
 				TreeFrame.Frame = Frame;
 				TreeFrame.id = TreeIndex;

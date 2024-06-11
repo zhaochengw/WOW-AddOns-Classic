@@ -18,9 +18,6 @@ function QuestieWotlkObjectFixes:Load()
                 [zoneIDs.TIRISFAL_GLADES]={{82.8,72.7},{83,71.4},{83,71.5}},
             },
         },
-        [179832] = {
-            [objectKeys.spawns] = {[zoneIDs.SEARING_GORGE] = {{45.86,29.68}}},
-        },
         [180669] = {
             [objectKeys.spawns] = {[zoneIDs.AZSHARA] = {{65.82,54.77}}},
         },
@@ -170,13 +167,6 @@ function QuestieWotlkObjectFixes:Load()
         [191349] = {
             [objectKeys.spawns] = {[zoneIDs.BAND_OF_ALIGNMENT]={{47.6,85.9}},[4228]={{-1,-1}}},
         },
-        [191577] = {
-            [objectKeys.name] = "Acherus Soul Prison",
-            [objectKeys.spawns] = {[zoneIDs.PLAGUELANDS_THE_SCARLET_ENCLAVE]={{48.09,29.6},{48.57,30.83},{48.86,30.91},{49.17,30.83},{49.43,30.56},{49.59,30.17},{49.65,29.73},{49.16,28.66},{48.87,28.58},{48.57,28.67},{48.31,28.94},{48.15,29.29}}},
-        },
-        [191746] = {
-            [objectKeys.spawns] = {[zoneIDs.PLAGUELANDS_THE_SCARLET_ENCLAVE]={{50.42,28.18},{47.32,31.31},{47.83,27.42}}},
-        },
         [191761] = {
             [objectKeys.spawns] = {[zoneIDs.STORM_PEAKS]={{37.54,46.9}}},
         },
@@ -221,12 +211,6 @@ function QuestieWotlkObjectFixes:Load()
         },
         [193051] = {
             [objectKeys.spawns] = {[zoneIDs.THE_GILDED_GATE] = {{-1,-1}},[zoneIDs.HADRONOXS_LAIR] = {{-1,-1}},[4277] = {{-1,-1}}},
-        },
-        [193052] = {
-            [objectKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS]={{84.55,50.45}}},
-        },
-        [193053] = {
-            [objectKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS]={{83.66,51.34}}},
         },
         [193057] = {
             [objectKeys.spawns] = {[zoneIDs.AHNKAHET_MAP] = {{12.29,50.82}},[4494] = {{-1,-1}}},
@@ -420,20 +404,6 @@ function QuestieWotlkObjectFixes:Load()
         [201959] = {
             [objectKeys.spawns] = {[zoneIDs.ICECROWN_CITADEL_UPPER_SPIRE]={{76.7,73.7}},[zoneIDs.ICECROWN_CITADEL]={{-1,-1}}},
             [objectKeys.zoneID] = zoneIDs.ICECROWN_CITADEL_UPPER_SPIRE,
-        },
-        [202080] = {
-            [objectKeys.name] = "Dart's Nest",
-            [objectKeys.spawns] = {[zoneIDs.DUSTWALLOW_MARSH]={{46.4,17.2},{46.6,17.2},{47.9,19},{48,14.5},{48.1,14.2},{49.1,17.3},{49.2,17.5}}},
-        },
-        [202081] = {
-            [objectKeys.spawns] = {[zoneIDs.THE_BARRENS]={{58.5,8.3},{59.5,8.6},{60.3,10.1},{60.7,13.4}}},
-        },
-        [202082] = {
-            [objectKeys.spawns] = {[zoneIDs.UN_GORO_CRATER]={{62,65.2},{62,73.2},{62,73.5},{63,63.2},{68.9,66.6},{69,61.3}}},
-        },
-        [202083] = {
-            [objectKeys.name] = "Razormaw Matriarch's Nest",
-            [objectKeys.spawns] = {[zoneIDs.WETLANDS]={{67.6,30.7},{69.1,31.6},{70,29.1},{71.1,30.9}}},
         },
         [202168] = {
             [objectKeys.spawns] = {[zoneIDs.PIT_OF_SARON]={{59.37,60.48},{45.33,58.72},{43.77,66.77},{55.92,65.86},{55.84,39.13},{56.22,64.93},{58.71,60.9},{55.55,43.2},{53.46,65.12},{47.55,61.06},{41.77,65.25},{52.89,64.84},{49.63,69.36},{61.14,59.63},{60.06,49.25},{55.16,65.87},{55.64,63.33},{62.08,59.4},{54.38,36.42},{60.94,49.22},{55.5,38.28},{55.82,41.31},{60.23,60.09},{54.38,65.36},{50.54,68.04},{58.8,48.69},{48.83,69.23},{61.78,49.56},{38.6,66.65},{37.5,69},{34,70.5},{33.8,68.9},{34.3,65.9},{33.5,63.7},{34.8,61.5},{36.7,61.1},{40.3,55.9},{41,58.1},{42.2,59.5},{42.8,60.5},{45.3,55.8},{43.8,56.7},{42.3,54.5}}},
@@ -798,35 +768,15 @@ function QuestieWotlkObjectFixes:Load()
             [objectKeys.spawns] = {[zoneIDs.CRYSTALSONG_FOREST]={{50.5,50.11},{46.44,50.86},{48.46,51.01},{49.09,47.62}}},
             [objectKeys.zoneID] = zoneIDs.CRYSTALSONG_FOREST,
         },
-        [400061] = {
-            [objectKeys.name] = "Spend 5 Talent Points",
-            [objectKeys.spawns] = {[zoneIDs.ACHERUS_THE_EBON_HOLD]={{80.29,48.02},{80.91,43.78},{83.74,44.58}}},
-            [objectKeys.zoneID] = zoneIDs.ACHERUS_THE_EBON_HOLD,
-        },
-        [400062] = {
-            [objectKeys.name] = "Open the Survival Kit",
-            [objectKeys.spawns] = {[zoneIDs.ACHERUS_THE_EBON_HOLD]={{80.29,48.02},{80.91,43.78},{83.74,44.58}}},
-            [objectKeys.zoneID] = zoneIDs.ACHERUS_THE_EBON_HOLD,
-        },
-        [400063] = {
-            [objectKeys.name] = "Equip a Weapon",
-            [objectKeys.spawns] = {[zoneIDs.ACHERUS_THE_EBON_HOLD]={{80.29,48.02},{80.91,43.78},{83.74,44.58}}},
-            [objectKeys.zoneID] = zoneIDs.ACHERUS_THE_EBON_HOLD,
-        },
-        [400064] = {
-            [objectKeys.name] = "Train a Spell at your class trainer",
-            [objectKeys.spawns] = {[zoneIDs.ACHERUS_THE_EBON_HOLD]={{80.29,48.02},{80.91,43.78},{83.74,44.58}}},
-            [objectKeys.zoneID] = zoneIDs.ACHERUS_THE_EBON_HOLD,
-        },
-        [400065] = {
-            [objectKeys.name] = "Scourge Enclosure",
-            [objectKeys.spawns] = {[zoneIDs.ZUL_DRAK]={{19.94,56.12}}},
-            [objectKeys.zoneID] = zoneIDs.ZUL_DRAK,
-        },
-        [400066] = {
+        [400058] = {
             [objectKeys.name] = "Drakuru's Brazier",
             [objectKeys.spawns] = {[zoneIDs.GRIZZLY_HILLS]={{71.74,26.2}}},
             [objectKeys.zoneID] = zoneIDs.GRIZZLY_HILLS,
+        },
+        [400059] = {
+            [objectKeys.name] = "Scourge Enclosure",
+            [objectKeys.spawns] = {[zoneIDs.ZUL_DRAK]={{19.94,56.12}}},
+            [objectKeys.zoneID] = zoneIDs.ZUL_DRAK,
         },
     }
 end

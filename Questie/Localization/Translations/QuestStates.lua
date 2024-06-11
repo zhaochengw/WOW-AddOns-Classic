@@ -3,7 +3,7 @@ local l10n = QuestieLoader:ImportModule("l10n")
 
 local questStateLocales = {
     ["Complete"] = {
-        ["ptBR"] = "Sucesso",
+        ["ptBR"] = "Concluída",
         ["ruRU"] = "Выполнено",
         ["deDE"] = "Abgeschlossen",
         ["koKR"] = "성공",
@@ -39,7 +39,7 @@ local questStateLocales = {
         ["frFR"] = "Disponible",
     },
     ["Active"] = {
-        ["ptBR"] = "Ativo",
+        ["ptBR"] = "Ativa",
         ["ruRU"] = "Активно",
         ["deDE"] = "Aktiv",
         ["koKR"] = "활성화",
@@ -76,13 +76,13 @@ local questStateLocales = {
     },
     ["PvP"] = {
         ["ptBR"] = "JxJ",
-        ["ruRU"] = true,
-        ["deDE"] = true,
+        ["ruRU"] = "PvP",
+        ["deDE"] = "PvP",
         ["koKR"] = "전쟁",
         ["esMX"] = "JcJ",
         ["enUS"] = true,
-        ["zhCN"] = true,
-        ["zhTW"] = true,
+        ["zhCN"] = "PvP",
+        ["zhTW"] = "PvP",
         ["esES"] = "JcJ",
         ["frFR"] = "JcJ",
     },

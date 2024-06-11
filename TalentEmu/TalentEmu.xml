@@ -25,7 +25,7 @@
     <script file = "dev.lua" />
 
     <include file = "Bindings.xml" />
-    
+
 
 </Ui>
 

@@ -45,10 +45,6 @@ local QuestgiverFrame = QuestieLoader:ImportModule("QuestgiverFrame")
 local QuestieDebugOffer = QuestieLoader:ImportModule("QuestieDebugOffer")
 ---@type AvailableQuests
 local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
----@type WatchFrameHook
-local WatchFrameHook = QuestieLoader:ImportModule("WatchFrameHook")
----@type AutoCompleteFrame
-local AutoCompleteFrame = QuestieLoader:ImportModule("AutoCompleteFrame")
 
 local questAcceptedMessage = string.gsub(ERR_QUEST_ACCEPTED_S, "(%%s)", "(.+)")
 local questCompletedMessage = string.gsub(ERR_QUEST_COMPLETE_S, "(%%s)", "(.+)")
@@ -87,18 +83,15 @@ function QuestieEventHandler:RegisterLateEvents()
         AvailableQuests.CalculateAndDrawAll()
     end)
 
+    -- TODO: This seems to fire constantly with the "Way of Earth" Shaman rune. Do we even need it?
+    --Questie:RegisterEvent("SPELLS_CHANGED", function() -- Ensures map icon eligibility updates for quests with RequireSpell
+    --    Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] SPELLS_CHANGED")
+    --    AvailableQuests.CalculateAndDrawAll()
+    --end)
+
     -- UI Quest Events
     Questie:RegisterEvent("UI_INFO_MESSAGE", _EventHandler.UiInfoMessage)
-    Questie:RegisterEvent("QUEST_FINISHED", function()
-        QuestieAuto.QUEST_FINISHED()
-        if Questie.IsCata then
-            -- There might be other quest events which need to finish first, so we wait a bit before checking.
-            -- This is easier, than actually figuring out which events are fired in which order for this logic.
-            C_Timer.After(0.5, function()
-                AutoCompleteFrame.CheckAutoCompleteQuests()
-            end)
-        end
-    end)
+    Questie:RegisterEvent("QUEST_FINISHED", QuestieAuto.QUEST_FINISHED)
     Questie:RegisterEvent("QUEST_ACCEPTED", QuestieAuto.QUEST_ACCEPTED)
     Questie:RegisterEvent("QUEST_DETAIL", function(...) -- When the quest is presented!
         QuestieAuto.QUEST_DETAIL(...)
@@ -121,7 +114,7 @@ function QuestieEventHandler:RegisterLateEvents()
     end)
 
     -- UI Achievement Events
-    if Questie.IsWotlk or Questie.IsCata and Questie.db.profile.trackerEnabled then
+    if Questie.IsWotlk then
         -- Earned Achievement update
         Questie:RegisterEvent("ACHIEVEMENT_EARNED", function(index, achieveId, alreadyEarned)
             Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] ACHIEVEMENT_EARNED")
@@ -154,17 +147,14 @@ function QuestieEventHandler:RegisterLateEvents()
             end)
         end)
 
-        -- This fires pretty often, multiple times for a single Achievement change and also for things most likely not related to Achievements at all.
-        -- We use a bucket to hinder this from spamming
-        Questie:RegisterBucketEvent("CRITERIA_UPDATE", 2, function()
+        --[[ TODO: This fires FAR too often. Until Blizzard figures out a way to allow us to trigger achievement updates this needs to remain disabled for now.
+        Questie:RegisterEvent("CRITERIA_UPDATE", function()
             Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] CRITERIA_UPDATE")
-
-            if Questie.db.char.trackedAchievementIds and next(Questie.db.char.trackedAchievementIds) then
-                QuestieCombatQueue:Queue(function()
-                    QuestieTracker:Update()
-                end)
-            end
+            QuestieCombatQueue:Queue(function()
+                QuestieTracker:Update()
+            end)
         end)
+        --]]
         -- Money based Achievement updates
         Questie:RegisterEvent("CHAT_MSG_MONEY", function()
             Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] CHAT_MSG_MONEY")
@@ -193,13 +183,6 @@ function QuestieEventHandler:RegisterLateEvents()
     -- Questie Debug Offer
     if Questie.IsSoD then
         Questie:RegisterEvent("LOOT_OPENED", QuestieDebugOffer.LootWindow)
-    end
-
-    if Questie.IsCata and Questie.db.profile.trackerEnabled then
-       -- This is fired pretty often when an auto complete quest frame is showing. We want the default one to be hidden though.
-        Questie:RegisterEvent("UPDATE_ALL_UI_WIDGETS", function()
-            QuestieCombatQueue:Queue(WatchFrameHook.Hide)
-        end)
     end
 
     -- Questie Comms Events
@@ -336,7 +319,7 @@ function _EventHandler:MapExplorationUpdated()
     end
 
     -- Exploratory based Achievement updates
-    if Questie.IsWotlk or Questie.IsCata then
+    if Questie.IsWotlk then
         QuestieCombatQueue:Queue(function()
             QuestieTracker:Update()
         end)
@@ -354,7 +337,6 @@ function _EventHandler:PlayerLevelUp(level)
     C_Timer.After(3, function()
         QuestiePlayer:SetPlayerLevel(level)
 
-        AvailableQuests.ResetLevelRequirementCache()
         AvailableQuests.CalculateAndDrawAll()
     end)
 
@@ -447,7 +429,7 @@ function _EventHandler:ChatMsgSkill()
     end
 
     -- Skill based Achievement updates
-    if Questie.IsWotlk or Questie.IsCata then
+    if Questie.IsWotlk then
         QuestieCombatQueue:Queue(function()
             QuestieTracker:Update()
         end)

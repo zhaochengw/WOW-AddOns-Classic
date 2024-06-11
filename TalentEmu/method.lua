@@ -21,6 +21,7 @@ local DT = __private.DT;
 	local UnitLevel = UnitLevel;
 	local GetSpellInfo = GetSpellInfo;
 	local GetTalentTabInfo, GetNumTalents, GetTalentInfo, LearnTalent = GetTalentTabInfo, GetNumTalents, GetTalentInfo, LearnTalent;
+	local GetPrimaryTalentTree, SetPrimaryTalentTree = GetPrimaryTalentTree, SetPrimaryTalentTree;
 	local GetItemInfoInstant = GetItemInfoInstant;
 	local GetItemInfo = GetItemInfo;
 	local CreateFrame = CreateFrame;
@@ -28,6 +29,7 @@ local DT = __private.DT;
 	local UIParent = UIParent;
 	local GameTooltip = GameTooltip;
 	local RAID_CLASS_COLORS = RAID_CLASS_COLORS;
+	local GetTreeNumPoints = CT.TOCVERSION < 40000 and function(index) return select(3, GetTalentTabInfo(index)) or 0 end or function(index) return select(5, GetTalentTabInfo(index)) or 0 end
 
 -->
 	local l10n = CT.l10n;
@@ -38,7 +40,7 @@ MT.BuildEnv('METHOD');
 -->		predef
 -->		METHOD
 	--
-	if CT.BUILD == "CLASSIC" then
+	if CT.TOCVERSION < 20000 then
 		local __ala_meta__ = _G.__ala_meta__;
 		_G.ALA_GetSpellLink = _G.ALA_GetSpellLink or function(id, name)
 			--|cff71d5ff|Hspell:id|h[name]|h|r
@@ -53,7 +55,7 @@ MT.BuildEnv('METHOD');
 				return nil;
 			end
 		end
-	elseif CT.BUILD == "BCC" or CT.BUILD == "WRATH" then
+	elseif CT.TOCVERSION < 50000 then
 		_G.ALA_GetSpellLink = _G.ALA_GetSpellLink or function(id, name)
 			--|cff71d5ff|Hspell:id|h[name]|h|r
 			name = name or GetSpellInfo(id);
@@ -1410,7 +1412,7 @@ MT.BuildEnv('METHOD');
 			[5966] = 268913,
 			[5970] = 271366,
 			[5971] = 271433,
-		-->	
+		-->
 			[983] = 44589,	--	44500
 			[1593] = 34002,
 			[684] = 33995,	--	35819
@@ -1619,11 +1621,18 @@ MT.BuildEnv('METHOD');
 			GameTooltip:Hide();
 		end
 	end
-	function MT.GetPointsReqLevel(numPoints)
-		return max(10, 9 + numPoints);
+	local Points2Level = {  };
+	for level = #DT.LevelAvailablePointsTable, 1, -1 do
+		Points2Level[DT.LevelAvailablePointsTable[level]] = level;
+	end
+	Points2Level[0] = 10;
+	function MT.GetPointsReqLevel(points)
+		-- return max(10, 9 + numPoints);
+		return Points2Level[points] or DT.MAX_LEVEL;
 	end
 	function MT.GetLevelAvailablePoints(level)
-		return max(0, level - 9);
+		-- return max(0, level - 9);
+		return DT.LevelAvailablePointsTable[level] or 0;
 	end
 	function MT.CountTreePoints(data, class)
 		local ClassTDB = DT.TalentDB[class];
@@ -1686,7 +1695,7 @@ MT.BuildEnv('METHOD');
 	end
 
 	function MT.TalentConversion(class, level, numGroup, activeGroup, data1, data2)
-		if CT.BUILD ~= "WRATH" then
+		if CT.TOCVERSION < 30000 then
 			return class, level, numGroup, activeGroup, data1, data2;
 		end
 		local ClassTDB = DT.TalentDB[class];
@@ -1733,7 +1742,7 @@ MT.BuildEnv('METHOD');
 	--	return		class, level, data
 	function MT.DecodeTalent(code)
 		local version, class, level, numGroup, activeGroup, data1, data2 = VT.__emulib.DecodeTalentData(code);
-		if version == "V1" and CT.BUILD == "WRATH" and class ~= nil then
+		if version == "V1" and CT.TOCVERSION >= 30000 and class ~= nil then
 			return MT.TalentConversion(class, level, numGroup, activeGroup, data1, data2);
 		else
 			return class, level, numGroup, activeGroup, data1, data2;
@@ -2077,20 +2086,48 @@ MT.BuildEnv('METHOD');
 		local ApplyingTalents = VT.ApplyingTalents;
 		local Frame = ApplyingTalents.Frame;
 		local TreeFrames = Frame.TreeFrames;
-		for TreeIndex = ApplyingTalents.TreeIndex, 3 do
-			ApplyingTalents.TreeIndex = TreeIndex;
-			local TreeFrame = TreeFrames[TreeIndex];
-			local TalentSet = TreeFrame.TalentSet;
-			local TreeTDB = TreeFrame.TreeTDB;
-			for TalentSeq = ApplyingTalents.TalentSeq, #TreeTDB do
-				ApplyingTalents.TalentSeq = TalentSeq;
-				if TryLearn(TreeIndex, TalentSeq, TalentSet, TreeTDB) then
-					local num = (select(3, GetTalentTabInfo(1)) or 0) + (select(3, GetTalentTabInfo(2)) or 0) + (select(3, GetTalentTabInfo(3)) or 0);
-					Frame.ApplyTalentsProgress:SetText(num .. "/" .. ApplyingTalents.Total);
-					return;
+		local PrimaryTreeIndex = ApplyingTalents.PrimaryTreeIndex;
+		if PrimaryTreeIndex ~= nil then
+			local curPrimary = GetPrimaryTalentTree(false, false);
+			if curPrimary == nil then
+				SetPrimaryTalentTree(PrimaryTreeIndex)
+				return;
+			elseif curPrimary ~= PrimaryTreeIndex then
+				MT._TimerHalt(ApplyTalentsTicker);
+				Frame.ApplyTalentsProgress:SetText(nil);
+				MT.UpdateApplyingTalentsStatus(nil);
+				return MT.Notice(l10n["CANNOT APPLY : ERROR CATA."], primaryTreeIndex, curPrimary);
+			else
+				local TreeFrame = TreeFrames[PrimaryTreeIndex];
+				local TalentSet = TreeFrame.TalentSet;
+				local TreeTDB = TreeFrame.TreeTDB;
+				for TalentSeq = ApplyingTalents.TalentSeq, #TreeTDB do
+					ApplyingTalents.TalentSeq = TalentSeq;
+					if TryLearn(PrimaryTreeIndex, TalentSeq, TalentSet, TreeTDB) then
+						local num = GetTreeNumPoints(1) + GetTreeNumPoints(2) + GetTreeNumPoints(3);
+						Frame.ApplyTalentsProgress:SetText(num .. "/" .. ApplyingTalents.Total);
+						return;
+					end
 				end
+				ApplyingTalents.TalentSeq = 1;
 			end
-			ApplyingTalents.TalentSeq = 1;
+		end
+		for TreeIndex = ApplyingTalents.TreeIndex, 3 do
+			if TreeIndex ~= PrimaryTreeIndex then
+				ApplyingTalents.TreeIndex = TreeIndex;
+				local TreeFrame = TreeFrames[TreeIndex];
+				local TalentSet = TreeFrame.TalentSet;
+				local TreeTDB = TreeFrame.TreeTDB;
+				for TalentSeq = ApplyingTalents.TalentSeq, #TreeTDB do
+					ApplyingTalents.TalentSeq = TalentSeq;
+					if TryLearn(TreeIndex, TalentSeq, TalentSet, TreeTDB) then
+						local num = GetTreeNumPoints(1) + GetTreeNumPoints(2) + GetTreeNumPoints(3);
+						Frame.ApplyTalentsProgress:SetText(num .. "/" .. ApplyingTalents.Total);
+						return;
+					end
+				end
+				ApplyingTalents.TalentSeq = 1;
+			end
 		end
 		--
 		MT._TimerHalt(ApplyTalentsTicker);
@@ -2115,6 +2152,32 @@ MT.BuildEnv('METHOD');
 			local TreeFrames = Frame.TreeFrames;
 			local confilicted = false;
 			local total = 0;
+			local primaryTreeIndex = nil;
+			if CT.TOCVERSION >= 40000 then
+				local v1, v2, v3 = TreeFrames[1].TalentSet.Total, TreeFrames[2].TalentSet.Total, TreeFrames[3].TalentSet.Total;
+				local usedTree = 0;
+				local usedAny = nil;
+				for TreeIndex = 1, 3 do
+					local v = TreeFrames[TreeIndex].TalentSet.Total;
+					if v >= DT.PointsNeeded4SecondaryTree then
+						primaryTreeIndex = TreeIndex;
+						break;
+					elseif v > 0 then
+						usedTree = usedTree + 1;
+						usedAny = TreeIndex;
+					end
+				end
+				if primaryTreeIndex ~= nil then
+					local curPrimary = GetPrimaryTalentTree(false, false);
+					if curPrimary ~= nil and primaryTreeIndex ~= curPrimary then
+						return MT.Notice(l10n["CANNOT APPLY : ERROR CATA."], usedTree, primaryTreeIndex, curPrimary);
+					end
+				elseif usedTree >= 2 then
+					return MT.Notice(l10n["CANNOT APPLY : ERROR CATA."], usedTree);
+				elseif usedTree == 1 then
+					primaryTreeIndex = usedAny;
+				end
+			end
 			for TreeIndex = 1, 3 do
 				local VM = VMap[TreeIndex];
 				local TreeFrame = TreeFrames[TreeIndex];
@@ -2135,7 +2198,7 @@ MT.BuildEnv('METHOD');
 						break;
 					end
 					local TalentDef = TreeTDB[TalentSeq];
-					if tier ~= TalentDef[1] + 1 or column ~= TalentDef[2] + 1 or maxRank ~= TalentDef[4] then
+					if TalentDef[1] ~= nil and (tier ~= TalentDef[1] + 1 or column ~= TalentDef[2] + 1 or maxRank ~= TalentDef[4]) then
 						confilicted = true;
 						break;
 					end
@@ -2153,6 +2216,7 @@ MT.BuildEnv('METHOD');
 				VT.ApplyingTalents.TreeIndex = 1;
 				VT.ApplyingTalents.TalentSeq = 1;
 				VT.ApplyingTalents.Total = total;
+				VT.ApplyingTalents.PrimaryTreeIndex = primaryTreeIndex;
 				MT._TimerStart(ApplyTalentsTicker, 0.1);
 			end
 		end

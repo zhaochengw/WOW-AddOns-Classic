@@ -135,7 +135,7 @@ local questsByZoneLocales = {
         ["frFR"] = "Quêtes répétables",
     },
     ["Missing Pre Quest"] = {
-        ["ptBR"] = "Faltando missão requisita",
+        ["ptBR"] = "Faltando missão de pré-requisito",
         ["ruRU"] = "Необходимо предзадание",
         ["deDE"] = "Prequest fehlt",
         ["koKR"] = "선행 퀘스트 미수행",
@@ -147,7 +147,7 @@ local questsByZoneLocales = {
         ["frFR"] = "Pré-quête manquante",
     },
     ["Unobtainable Quests"] = {
-        ["ptBR"] = "Missões inalcançáveis",
+        ["ptBR"] = "Missões impossíveis de se obter",
         ["ruRU"] = "Недоступные задания",
         ["deDE"] = "Nicht abschließbare Quests",
         ["koKR"] = "수행이 불가능한 퀘스트",
@@ -159,7 +159,7 @@ local questsByZoneLocales = {
         ["frFR"] = "Quêtes impossibles à obtenir",
     },
     ["Pre Quests"] = {
-        ["ptBR"] = "Missões requisitas",
+        ["ptBR"] = "Missões de pré-requisito",
         ["ruRU"] = "Предзадание:",
         ["deDE"] = "Pre-Quests",
         ["koKR"] = "선행 퀘스트",

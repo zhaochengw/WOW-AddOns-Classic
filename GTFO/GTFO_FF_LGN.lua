@@ -5,7 +5,7 @@
 GTFO Friendly Fire List - Legion
 ]]--
 
-if (GTFO.RetailMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 
 -- *********************
 -- * The Emerald Dream *

@@ -5,7 +5,7 @@
 GTFO Friendly Fire List - Battle for Azeroth
 ]]--
 
-if (GTFO.RetailMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 
 -- **********************
 -- * Battle for Azeroth *

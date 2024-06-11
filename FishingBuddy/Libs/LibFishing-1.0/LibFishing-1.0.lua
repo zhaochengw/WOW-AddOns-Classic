@@ -1984,9 +1984,9 @@ function FishLib:GetFrameInfo(framespec)
     return framespec, n;
 end
 
-local function ClickHandled(self, mouse_button, down)
+local function ClickHandled(self)
     if ( self.postclick ) then
-        self.postclick(mouse_button, down);
+        self.postclick();
     end
 end
 

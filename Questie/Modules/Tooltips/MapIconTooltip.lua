@@ -138,7 +138,7 @@ function MapIconTooltip:Show()
                     local orderedTooltips = {}
                     iconData.ObjectiveData:Update()
                     if iconData.Type == "event" then
-                        local tip = _MapIconTooltip:GetEventObjectiveTooltip(icon.data)
+                        local tip = _MapIconTooltip:GetEventObjectiveTooltip(icon)
 
                         -- We need to check for duplicates.
                         local add = true;
@@ -188,15 +188,12 @@ function MapIconTooltip:Show()
     Tooltip.manualOrder = manualOrder
     Tooltip.miniMapIcon = self.miniMapIcon
     Tooltip._Rebuild = function(self)
-        -- generate the tooltips
         local xpString = l10n('xp');
         local shift = IsShiftKeyDown()
         local haveGiver = false -- hack
         local firstLine = true;
         local playerIsHuman = QuestiePlayer:GetRaceId() == 1
         local playerIsHonoredWithShaTar = (not QuestieReputation:HasReputation(nil, { 935, 8999 }))
-
-        -- tooltips for quest icons on the map
         for npcOrObjectName, quests in pairs(self.npcAndObjectOrder) do -- this logic really needs to be improved
             haveGiver = true
             if shift and (not firstLine) then
@@ -214,7 +211,7 @@ function MapIconTooltip:Show()
             end
 
             for _, questData in pairs(quests) do
-                local reputationReward = QuestieReputation.GetReputationReward(questData.questId)
+                local reputationReward = QuestieDB.QueryQuestSingle(questData.questId, "reputationReward")
 
                 if questData.title ~= nil then
                     local quest = QuestieDB.GetQuest(questData.questId)
@@ -225,14 +222,14 @@ function MapIconTooltip:Show()
                             rewardString = QuestieLib:PrintDifficultyColor(quest.level, "(" .. FormatLargeNumber(xpReward) .. xpString .. ") ", QuestieDB.IsRepeatable(questData.questId), QuestieDB.IsActiveEventQuest(questData.questId), QuestieDB.IsPvPQuest(questData.questId))
                         end
 
-                        local moneyReward = QuestXP.GetQuestRewardMoney(questData.questId)
+                        local moneyReward = GetQuestLogRewardMoney(questData.questId)
                         if moneyReward > 0 then
                             rewardString = rewardString .. Questie:Colorize("(" .. GetCoinTextureString(moneyReward) .. ") ", "white")
                         end
                     end
                     rewardString = rewardString .. questData.type
 
-                    if (not shift) and next(reputationReward) then
+                    if (not shift) and reputationReward and next(reputationReward) then
                         self:AddDoubleLine(REPUTATION_ICON_TEXTURE .. " " .. questData.title, rewardString, 1, 1, 1, 1, 1, 0);
                     else
                         if shift then
@@ -260,61 +257,7 @@ function MapIconTooltip:Show()
                     end
                 end
 
-                if Questie.db.profile.enableTooltipsNextInChain then
-                    local nextQuestInChain = QuestieDB.QueryQuestSingle(questData.questId, "nextQuestInChain")
-                    if shift and nextQuestInChain > 0 then
-                        -- add quest chain info
-                        local nextQuest = QuestieDB.GetQuest(nextQuestInChain)
-                        local firstInChain = true;
-                        while nextQuest ~= nil do
-
-                            local nextQuestTitleString;
-                            local nextQuestXpRewardString = "";
-                            local nextQuestMoneyRewardString = "";
-                            local nextQuestIdString = "";
-                            local nextQuestTagString = "";
-                            if firstInChain then
-                                self:AddLine("  |TInterface\\Addons\\Questie\\Icons\\nextquest.blp:16|t " .. l10n("Next in chain:"), 0.86, 0.86, 0.86)
-                                firstInChain = false
-                            end
-
-                            if Questie.db.profile.enableTooltipsQuestLevel then
-                                nextQuestTitleString = string.format("%s", QuestieLib:GetLevelString(nextQuest.Id, nextQuest.level, true) .. nextQuest.name)
-                            else
-                                nextQuestTitleString = string.format("%s", nextQuest.name)
-                            end
-
-                            if Questie.db.profile.enableTooltipsQuestID then
-                                nextQuestIdString = string.format(" (%d)", nextQuest.Id)
-                            end
-
-                            local nextQuestXpReward = QuestXP:GetQuestLogRewardXP(nextQuest.Id, Questie.db.profile.showQuestXpAtMaxLevel)
-                            if nextQuestXpReward > 0 then
-                                nextQuestXpRewardString = string.format(" (%s%s)", FormatLargeNumber(nextQuestXpReward), xpString)
-                            end
-
-                            local nextQuestMoneyReward = QuestXP:GetQuestRewardMoney(nextQuest.Id);
-                            if nextQuestMoneyReward > 0 then
-                                nextQuestMoneyRewardString = Questie:Colorize(string.format(" (%s)", GetCoinTextureString(nextQuestMoneyReward)), "white")
-                            end
-
-                            if (QuestieDB.IsGroupQuest(nextQuest.Id) or QuestieDB.IsDungeonQuest(nextQuest.Id) or QuestieDB.IsRaidQuest(nextQuest.Id)) then
-                                local _, nextQuestTag = QuestieDB.GetQuestTagInfo(nextQuest.Id)
-                                nextQuestTagString = Questie:Colorize(string.format(" (%s)", nextQuestTag), "yellow")
-                            end
-
-                            local nextQuestString = string.format("      %s%s%s%s%s", nextQuestTitleString, nextQuestIdString, nextQuestXpRewardString, nextQuestMoneyRewardString, nextQuestTagString) -- we need an offset to align with description
-                            self:AddLine(QuestieLib:PrintDifficultyColor(nextQuest.level, nextQuestString, QuestieDB.IsRepeatable(nextQuest.Id), QuestieDB.IsActiveEventQuest(nextQuest.Id), QuestieDB.IsPvPQuest(nextQuest.Id)), 1, 1, 1)
-                            if nextQuest.nextQuestInChain > 0 then
-                                nextQuest = QuestieDB.GetQuest(nextQuest.nextQuestInChain)
-                            else
-                                break
-                            end
-                        end
-                    end
-                end
-
-                if shift and next(reputationReward) then
+                if shift and reputationReward and next(reputationReward) then
                     local rewardTable = {}
                     local factionId, factionName
                     local rewardValue
@@ -359,8 +302,6 @@ function MapIconTooltip:Show()
                 end
             end
         end
-
-        -- tooltips for objectives of active quests
         ---@param questId number
         for questId, textList in pairs(self.questOrder) do -- this logic really needs to be improved
             ---@type Quest
@@ -500,35 +441,28 @@ function _MapIconTooltip:IsMinimapInside()
     end
 end
 
---- Get the quest tag to display in the tooltip
----@param quest Quest
----@return string tag
-local function _GetQuestTag(quest)
-    if quest.Type == "complete" then
-        return "(" .. l10n("Complete") .. ")";
-    else
-        local questType, questTag = QuestieDB.GetQuestTagInfo(quest.Id)
-
-        if (QuestieEvent and QuestieEvent.activeQuests[quest.Id]) then
-            return "(" .. l10n("Event") .. ")";
-        elseif (questType == 41) then
-            return "(" .. l10n("PvP") .. ")";
-        elseif (QuestieDB.IsRepeatable(quest.Id)) then
-            return "(" .. l10n("Repeatable") .. ")";
-        elseif (questType == 81 or questType == 83 or questType == 62 or questType == 1) then
-            -- Dungeon or Legendary or Raid or Group(Elite)
-            return "(" .. questTag .. ")";
-        elseif (Questie.IsSoD and QuestieDB.IsSoDRuneQuest(quest.Id)) then
-            return "(" .. l10n("Rune") .. ")";
-        else
-            return "(" .. l10n("Available") .. ")";
-        end
-    end
-end
-
 function _MapIconTooltip:GetAvailableOrCompleteTooltip(icon)
     local tip = {};
-    tip.type = _GetQuestTag(icon.data)
+    if icon.data.Type == "complete" then
+        tip.type = "(" .. l10n("Complete") .. ")";
+    else
+        local questType, questTag = QuestieDB.GetQuestTagInfo(icon.data.Id)
+
+        if (QuestieEvent and QuestieEvent.activeQuests[icon.data.Id]) then
+            tip.type = "(" .. l10n("Event") .. ")";
+        elseif (questType == 41) then
+            tip.type = "(" .. l10n("PvP") .. ")";
+        elseif (QuestieDB.IsRepeatable(icon.data.Id)) then
+            tip.type = "(" .. l10n("Repeatable") .. ")";
+        elseif (questType == 81 or questType == 83 or questType == 62 or questType == 1) then
+            -- Dungeon or Legendary or Raid or Group(Elite)
+            tip.type = "(" .. questTag .. ")";
+        elseif (Questie.IsSoD and QuestieDB.IsSoDRuneQuest(icon.data.Id)) then
+            tip.type = "(" .. l10n("Rune") .. ")";
+        else
+            tip.type = "(" .. l10n("Available") .. ")";
+        end
+    end
     tip.title = QuestieLib:GetColoredQuestName(icon.data.Id, Questie.db.profile.enableTooltipsQuestLevel, false, true)
     tip.subData = icon.data.QuestData.Description
     tip.questId = icon.data.Id;
@@ -536,22 +470,14 @@ function _MapIconTooltip:GetAvailableOrCompleteTooltip(icon)
     return tip
 end
 
-function _MapIconTooltip:GetEventObjectiveTooltip(iconData)
-    if iconData.Name then
-        return {
-            [iconData.ObjectiveData.Index] = {
-                [iconData.ObjectiveData.Description] = {
-                    [iconData.Name] = true
-                }
-            }
-        }
-    else
-        return {
-            [iconData.ObjectiveData.Index] = {
-                [iconData.ObjectiveData.Description] = true
-            }
-        }
+function _MapIconTooltip:GetEventObjectiveTooltip(icon)
+    local tip = {
+        [icon.data.ObjectiveData.Description] = {},
+    }
+    if (icon.data.ObjectiveData.Index) then
+        tip[icon.data.ObjectiveData.Description][icon.data.ObjectiveData.Description] = true;
     end
+    return tip
 end
 
 function _MapIconTooltip:GetObjectiveTooltip(icon)

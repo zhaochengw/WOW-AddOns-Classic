@@ -5,7 +5,7 @@
 GTFO Spell List - Warlords of Draenor
 ]]--
 
-if (GTFO.RetailMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 
 -- ***********
 -- * Draenor *
@@ -658,11 +658,6 @@ GTFO.SpellID["166726"] = {
 
 GTFO.SpellID["169223"] = {
 	--desc = "Toxic Gas (Xeri'tac)";
-	sound = 1;
-};
-
-GTFO.SpellID["427513"] = {
-	--desc = "Noxious Discharge (Dulhu, M+)";
 	sound = 1;
 };
 

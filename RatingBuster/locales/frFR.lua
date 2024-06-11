@@ -114,8 +114,6 @@ L["Ignore stuff when calculating the stat summary"] = "Sélectionne les valeurs 
 -- /rb sum ignore unused
 L["Ignore unused item types"] = "Objets non utilisables"
 L["Show stat summary only for highest level armor type and items you can use with uncommon quality and up"] = "Ne pas afficher le résumé pour les objets que votre classe ne peut pas utiliser et pour les équipements de qualité inférieure à Inhabituelle."
-L["Ignore non-primary stat"] = "Ignore non-primary stat"
-L["Show stat summary only for items with your specialization's primary stat"] = "Show stat summary only for items with your specialization's primary stat"
 -- /rb sum ignore equipped
 L["Ignore equipped items"] = "Objets équipés"
 L["Hide stat summary for equipped items"] = "Ne pas afficher le résumé pour les objets équipés."
@@ -418,16 +416,12 @@ L[StatLogic.Stats.Mana] = "Points de mana"
 S[StatLogic.Stats.Mana] = "Mana"
 L[StatLogic.Stats.ManaRegen] = "Régén. mana (incantation)"
 S[StatLogic.Stats.ManaRegen] = "Mp5 (incantation)"
-
-local ManaRegenOutOfCombat = "Régén. mana (hors combat)"
-L[StatLogic.Stats.ManaRegenOutOfCombat] = ManaRegenOutOfCombat
-if addon.tocversion < 40000 then
-	L[StatLogic.Stats.ManaRegenNotCasting] = "Régén. mana (hors incantation)"
-else
-	L[StatLogic.Stats.ManaRegenNotCasting] = ManaRegenOutOfCombat
-end
+L[StatLogic.Stats.ManaRegenNotCasting] = "Régén. mana (hors incantation)"
 S[StatLogic.Stats.ManaRegenNotCasting] = "Mp5"
-
+L[StatLogic.Stats.ManaRegenOutOfCombat] = "Régén. mana (hors combat)"
+if addon.tocversion > 40000 then
+	L[StatLogic.Stats.ManaRegenNotCasting] =  L[StatLogic.Stats.ManaRegenOutOfCombat]
+end
 L[StatLogic.Stats.HealthRegen] = "Régén. vie (combat)"
 S[StatLogic.Stats.HealthRegen] = "HP5"
 L[StatLogic.Stats.HealthRegenOutOfCombat] = "Régén. vie (hors combat)"

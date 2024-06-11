@@ -24,7 +24,7 @@ end
 local function GetChargesText(itemLink)
   -- Using the tooltip set by item ID gets it to show the max charges
   -- (unlike when using an item link)
-  local itemID = C_Item.GetItemInfoInstant(itemLink)
+  local itemID = GetItemInfoInstant(itemLink)
   return Auctionator.Utilities.ScanTooltip(
     function(tip)
       tip:SetItemByID(itemID)

@@ -3,7 +3,7 @@ local l10n = QuestieLoader:ImportModule("l10n")
 
 local soundsOptionsLocales = {
     ["Sounds"] = {
-        ["ptBR"] = "Sons",
+        ["ptBR"] = false,
         ["ruRU"] = "Звуки",
         ["deDE"] = true,
         ["koKR"] = false,
@@ -15,7 +15,7 @@ local soundsOptionsLocales = {
         ["frFR"] = "Sons",
     },
     ["Play a short sound when completing a quest when it is ready to turn in."] = {
-        ["ptBR"] = "Reproduzir um som curto ao completar uma missão quando estiver pronta para entregar.",
+        ["ptBR"] = false,
         ["ruRU"] = "Воспроизводить короткий звук при выполнении задания, обозначая готовность его сдачи",
         ["deDE"] = "Spielt einen kurzen Ton, wenn eine Quest fertig ist und abgegeben werden kann.",
         ["koKR"] = false,
@@ -27,7 +27,7 @@ local soundsOptionsLocales = {
         ["frFR"] = "Jouer un court son lorsqu'une quête est complétée et prête à rendre.",
     },
     ["Quest objective completed"] = {
-        ["ptBR"] = "Objetivo da missão concluído",
+        ["ptBR"] = false,
         ["ruRU"] = "Цель задания выполнена",
         ["deDE"] = "Quest-Ziel abgeschlossen",
         ["koKR"] = false,
@@ -39,7 +39,7 @@ local soundsOptionsLocales = {
         ["frFR"] = "Objectif de quête complété",
     },
     ["Play a short sound when completing a quest objective."] = {
-        ["ptBR"] = "Reproduzir um som curto ao completar um objetivo da missão.",
+        ["ptBR"] = false,
         ["ruRU"] = "Воспроизводить короткий звук при выполнении цели задания",
         ["deDE"] = "Spielt einen kurzen Ton, wenn ein Quest-Ziel abgeschlossen ist.",
         ["koKR"] = false,
@@ -51,7 +51,7 @@ local soundsOptionsLocales = {
         ["frFR"] = "Jouer un court son lorsqu'un objectif de quête est complété.",
     },
     ["Quest Complete Sound Selection"] = {
-        ["ptBR"] = "Seleção de som de conclusão de missão",
+        ["ptBR"] = false,
         ["ruRU"] = "Выбор звука",
         ["deDE"] = "Quest abgeschlossen",
         ["koKR"] = false,
@@ -60,10 +60,10 @@ local soundsOptionsLocales = {
         ["zhCN"] = "选择任务完成音效",
         ["zhTW"] = "選擇任務完成音效",
         ["esES"] = "Selección de sonido al completar misión",
-        ["frFR"] = "Sélection du son de fin de quête",
+        ["frFR"] = false,
     },
     ["The sound you hear when a quest is completed"] = {
-        ["ptBR"] = "O som que você ouve quando uma missão é concluída.",
+        ["ptBR"] = false,
         ["ruRU"] = "Звук при выполнении задания",
         ["deDE"] = "Der Ton, der abgespielt wird, wenn eine Quest abgeschlossen ist.",
         ["koKR"] = false,
@@ -72,10 +72,10 @@ local soundsOptionsLocales = {
         ["zhCN"] = "任务完成时听到的音效。",
         ["zhTW"] = "任務完成時聽到的音效。",
         ["esES"] = "El sonido que escuchas cuando se completa una misión",
-        ["frFR"] = "Le son que vous entendez lorsque qu'une quête est terminée.",
+        ["frFR"] = false,
     },
     ["Objective Complete Sound Selection"] = {
-        ["ptBR"] = "Seleção de som de conclusão do objetivo",
+        ["ptBR"] = false,
         ["ruRU"] = "Выбор звука",
         ["deDE"] = "Ton für Quest-Ziel abgeschlossen",
         ["koKR"] = false,
@@ -84,10 +84,10 @@ local soundsOptionsLocales = {
         ["zhCN"] = "选择任务目标达成音效",
         ["zhTW"] = "選擇任務目標達成音效",
         ["esES"] = "Selección de sonido al completar objetivo",
-        ["frFR"] = "Sélection du son de réalisation d'objectif",
+        ["frFR"] = false,
     },
     ["The sound you hear when an objective is completed"] = {
-        ["ptBR"] = "O som que você ouve quando um objetivo é concluído.",
+        ["ptBR"] = false,
         ["ruRU"] = "Звук при выполнении цели задания",
         ["deDE"] = "Der Ton, der abgespielt wird, wenn ein Quest-Ziel abgeschlossen ist.",
         ["koKR"] = false,
@@ -96,10 +96,10 @@ local soundsOptionsLocales = {
         ["zhCN"] = "任务目标达成时听到的音效。",
         ["zhTW"] = "任務目標達成時聽到的音效。",
         ["esES"] = "El sonido que escuchas cuando se completa un objetivo",
-        ["frFR"] = "Le son que vous entendez lorsque qu'un objectif est accompli.",
+        ["frFR"] = false,
     },
     ["Quest objective progress"] = {
-        ["ptBR"] = "Progresso do objetivo da missão",
+        ["ptBR"] = false,
         ["ruRU"] = "Прогресс цели задания",
         ["deDE"] = "Ton für Quest-Ziel-Fortschritte",
         ["koKR"] = false,
@@ -108,10 +108,10 @@ local soundsOptionsLocales = {
         ["zhCN"] = "任务进度",
         ["zhTW"] = "任務目標進度",
         ["esES"] = "Progreso del objetivo de misión",
-        ["frFR"] = "Progression de l'objectif de quête",
+        ["frFR"] = false,
     },
     ["Play a short sound when making progress on a quest objective."] = {
-        ["ptBR"] = "Reproduzir um som curto ao fazer progresso em um objetivo da missão.",
+        ["ptBR"] = false,
         ["ruRU"] = "Воспроизводить короткий звук при прогрессе цели задания",
         ["deDE"] = "Spielt einen kurzen Ton, beim Fortschritt eines Quest-Ziels.",
         ["koKR"] = false,
@@ -120,10 +120,10 @@ local soundsOptionsLocales = {
         ["zhCN"] = "任务有进度时播放音效。",
         ["zhTW"] = "任務目標有進度時播放音效。",
         ["esES"] = "Reproduce un sonido corto cuando avanzas en un objetivo de misión.",
-        ["frFR"] = "Jouer un court son lorsqu'un progrès est réalisé sur un objectif de quête.",
+        ["frFR"] = false,
     },
     ["Objective Progress Sound Selection"] = {
-        ["ptBR"] = "Seleção de som de progresso do objetivo",
+        ["ptBR"] = false,
         ["ruRU"] = "Выбор звука",
         ["deDE"] = "Ton für Quest-Ziel Fortschritt",
         ["koKR"] = false,
@@ -132,10 +132,10 @@ local soundsOptionsLocales = {
         ["zhCN"] = "选择任务进度音效",
         ["zhTW"] = "選擇任務目標進度音效",
         ["esES"] = "Selección de sonido al avanzar en un objetivo",
-        ["frFR"] = "Sélection du son de progression de l'objectif",
+        ["frFR"] = false,
     },
     ["The sound you hear when you make progress on a quest objective"] = {
-        ["ptBR"] = "O som que você ouve quando faz progresso em um objetivo da missão",
+        ["ptBR"] = false,
         ["ruRU"] = "Звук при прогрессе цели задания",
         ["deDE"] = "Der Ton, der abgespielt wird, wenn du Fortschritt bei einem Quest-Ziel machst.",
         ["koKR"] = false,
@@ -144,7 +144,7 @@ local soundsOptionsLocales = {
         ["zhCN"] = "任务有进度时听到的音效。",
         ["zhTW"] = "任務目標有進度時聽到的音效。",
         ["esES"] = "El sonido que escuchas cuando avanzas en un objetivo de misión",
-        ["frFR"] = "Le son que vous entendez lorsque vous progressez sur un objectif de quête",
+        ["frFR"] = false,
     },
 }
 

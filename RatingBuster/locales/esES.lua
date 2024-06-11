@@ -97,8 +97,6 @@ L["Ignore stuff when calculating the stat summary"] = "Ignorar los datos cuando 
 -- /rb sum ignore unused
 L["Ignore unused item types"] = "Ignorar tipos de item no usados"
 L["Show stat summary only for highest level armor type and items you can use with uncommon quality and up"] = "Muestra el resumen de estad. solo para los items de mayor nivel de armadura que puedes usar con calidad poco comun en adelante"
-L["Ignore non-primary stat"] = "Ignore non-primary stat"
-L["Show stat summary only for items with your specialization's primary stat"] = "Show stat summary only for items with your specialization's primary stat"
 -- /rb sum ignore equipped
 L["Ignore equipped items"] = "Ignorar items equipados"
 L["Hide stat summary for equipped items"] = "Ocultar resumen estad. para los items equipados"
@@ -396,16 +394,12 @@ L[StatLogic.Stats.Mana] = "Mana"
 S[StatLogic.Stats.Mana] = "Mana"
 L[StatLogic.Stats.ManaRegen] = "Regen.Mana"
 S[StatLogic.Stats.ManaRegen] = "Mana/5sec"
-
-local ManaRegenOutOfCombat = "Regen.Mana (Out of Combat)"
-L[StatLogic.Stats.ManaRegenOutOfCombat] = ManaRegenOutOfCombat
-if addon.tocversion < 40000 then
-	L[StatLogic.Stats.ManaRegenNotCasting] = "Regen.Mana (No se lanza)"
-else
-	L[StatLogic.Stats.ManaRegenNotCasting] = ManaRegenOutOfCombat
-end
+L[StatLogic.Stats.ManaRegenNotCasting] = "Regen.Mana (No se lanza)"
 S[StatLogic.Stats.ManaRegenNotCasting] = "Mana/5sec(SL)"
-
+L[StatLogic.Stats.ManaRegenOutOfCombat] = "Regen.Mana (Out of Combat)"
+if addon.tocversion > 40000 then
+	L[StatLogic.Stats.ManaRegenNotCasting] =  L[StatLogic.Stats.ManaRegenOutOfCombat]
+end
 L[StatLogic.Stats.HealthRegen] = "Regen.Salud"
 S[StatLogic.Stats.HealthRegen] = "Vida/5sec"
 L[StatLogic.Stats.HealthRegenOutOfCombat] = "Regen.Salud (Out of Combat)"

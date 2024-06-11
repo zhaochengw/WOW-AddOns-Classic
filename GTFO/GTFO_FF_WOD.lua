@@ -5,7 +5,7 @@
 GTFO Friendly Fire List - Warlords of Draenor
 ]]--
 
-if (GTFO.RetailMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 
 -- *********************
 -- * Blackrock Foundry *

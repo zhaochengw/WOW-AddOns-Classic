@@ -5,7 +5,15 @@ local StatLogic = LibStub:GetLibrary(addonName)
 StatLogic.RatingBase = {}
 
 -- Extracted from the client at GameTables/OCTRegenMP.txt via wow.tools.local
-local OCTRegenMP = 0.25
+local OCTRegenMP = {
+	["PALADIN"] = 0.25,
+	["HUNTER"]  = 0.25,
+	["PRIEST"]  = 0.25,
+	["SHAMAN"]  = 0.25,
+	["MAGE"]    = 0.25,
+	["WARLOCK"] = 0.25,
+	["DRUID"]   = 0.25,
+}
 
 -- Extracted from the client at GameTables/RegenMPPerSpt.txt via wow.tools.local
 local RegenMPPerSpt = {
@@ -18,161 +26,175 @@ local RegenMPPerSpt = {
 	["DRUID"]   = 0.100,
 }
 
+-- Y-intercepts from commonly cited regen formulas
+local RegenMPBase = {
+	["PALADIN"] = 15.0,
+	["HUNTER"]  = 15.0,
+	["PRIEST"]  = 12.5,
+	["SHAMAN"]  = 17.0,
+	["MAGE"]    = 12.5,
+	["WARLOCK"] = 15.0,
+	["DRUID"]   = 15.0,
+}
+
 local NormalManaRegenPerSpi = function()
 	local _, spi = UnitStat("player", 5)
-	return 5 * (spi > 50 and RegenMPPerSpt[addon.class] or OCTRegenMP)
+	local low = OCTRegenMP[addon.class]
+	local high = RegenMPPerSpt[addon.class]
+	local base = RegenMPBase[addon.class]
+	return 5 * (spi > base / (low - high) and high or low)
 end
 
 -- CritPerAgi, SpellCritPerInt, and DodgePerAgi collected via addon comms from users like you <3
 addon.CritPerAgi = {
 	["WARRIOR"] = {
-		0.2500, 0.2381, 0.2381, 0.2273, 0.2174, 0.2083, 0.2083, 0.2000, 0.1923, 0.1923,
-		0.1852, 0.1786, 0.1667, 0.1613, 0.1563, 0.1515, 0.1471, 0.1389, 0.1351, 0.1282,
-		0.1282, 0.1250, 0.1190, 0.1163, 0.1111, 0.1087, 0.1064, 0.1020, 0.1000, 0.0962,
+		0.2500, 0.2381, 0.2381, 0.2273, 0.2174, 0.2083, 0.2083, nil,    nil,    nil,
+		0.1852, 0.1786, 0.1667, 0.1613, 0.1563, 0.1515, 0.1471, nil,    0.1351, 0.1282,
+		0.1282, nil,    nil,    0.1163, 0.1111, 0.1087, 0.1064, 0.1020, 0.1000, 0.0962,
 		0.0943, 0.0926, 0.0893, 0.0877, 0.0847, 0.0833, 0.0820, 0.0794, 0.0781, 0.0758,
-		0.0735, 0.0725, 0.0704, 0.0694, 0.0676, 0.0667, 0.0649, 0.0633, 0.0625, 0.0610,
 		[60] = 0.0500,
 	},
 	["PALADIN"] = {
-		0.2150, 0.2048, 0.2048, 0.1955, 0.1955, 0.1870, 0.1870, 0.1792, 0.1792, 0.1720,
-		0.1720, 0.1654, 0.1536, 0.1536, 0.1433, 0.1433, 0.1387, 0.1303, 0.1303, 0.1229,
-		0.1194, 0.1194, 0.1132, 0.1103, 0.1075, 0.1049, 0.1024, 0.1000, 0.0977, 0.0935,
+		0.2150, 0.2048, 0.2048, 0.1955, 0.1955, 0.1870, nil,    0.1792, nil,    nil,
+		nil,    nil,    nil,    nil,    nil,    nil,    nil,    0.1303, 0.1303, 0.1229,
+		nil,    nil,    0.1132, nil,    0.1075, 0.1049, 0.1024, 0.1000, 0.0977, 0.0935,
 		0.0915, 0.0915, 0.0878, 0.0860, 0.0827, 0.0811, 0.0811, 0.0782, 0.0768, 0.0741,
-		0.0729, 0.0729, 0.0705, 0.0694, 0.0672, 0.0662, 0.0652, 0.0632, 0.0623, 0.0606,
 		[60] = 0.0506,
 	},
 	["HUNTER"] = {
 		0.2174, 0.2083, 0.2000, 0.1852, 0.1786, 0.1724, 0.1667, 0.1613, 0.1515, 0.1471,
-		0.1351, 0.1190, 0.1087, 0.1000, 0.0909, 0.0862, 0.0806, 0.0746, 0.0704, 0.0658,
-		0.0633, 0.0595, 0.0568, 0.0538, 0.0515, 0.0495, 0.0472, 0.0455, 0.0435, 0.0417,
+		0.1351, 0.1190, 0.1087, 0.1000, 0.0909, 0.0862, 0.0806, 0.0746, nil,    0.0658,
+		0.0633, nil,    0.0568, nil,    0.0515, 0.0495, 0.0472, 0.0455, 0.0435, 0.0417,
 		0.0407, 0.0391, 0.0376, 0.0365, 0.0352, 0.0342, 0.0331, 0.0321, 0.0311, 0.0303,
-		0.0296, 0.0287, 0.0279, 0.0272, 0.0265, 0.0259, 0.0253, 0.0245, 0.0239, 0.0234,
 		[60] = 0.0189,
 	},
 	["ROGUE"] = {
-		0.4348, 0.4167, 0.4000, 0.3704, 0.3571, 0.3448, 0.3226, 0.3125, 0.3030, 0.2857,
-		0.2564, 0.2326, 0.2083, 0.1923, 0.1724, 0.1613, 0.1515, 0.1408, 0.1316, 0.1235,
-		0.1163, 0.1111, 0.1053, 0.1010, 0.0952, 0.0909, 0.0877, 0.0840, 0.0806, 0.0769,
+		0.4348, 0.4167, 0.4000, 0.3704, 0.3571, 0.3448, nil,    0.3125, 0.3030, 0.2857,
+		0.2564, 0.2326, 0.2083, nil,    0.1724, nil,    nil,    nil,    0.1316, 0.1235,
+		nil,    0.1111, 0.1053, 0.1010, 0.0952, 0.0909, 0.0877, 0.0840, 0.0806, 0.0769,
 		0.0746, 0.0719, 0.0694, 0.0671, 0.0645, 0.0625, 0.0610, 0.0592, 0.0575, 0.0556,
-		0.0541, 0.0526, 0.0513, 0.0498, 0.0483, 0.0472, 0.0461, 0.0450, 0.0441, 0.0427,
 		[60] = 0.0345,
 	},
 	["PRIEST"] = {
 		0.1000, 0.1000, 0.1000, 0.0952, 0.0952, 0.0952, 0.0952, 0.0909, 0.0909, 0.0909,
-		0.0909, 0.0870, 0.0870, 0.0870, 0.0870, 0.0833, 0.0833, 0.0833, 0.0800, 0.0800,
-		0.0800, 0.0800, 0.0769, 0.0769, 0.0769, 0.0741, 0.0741, 0.0741, 0.0714, 0.0714,
+		0.0909, 0.0870, 0.0870, 0.0870, nil,    0.0833, 0.0833, 0.0833, nil,    0.0800,
+		0.0800, 0.0800, nil,    0.0769, 0.0769, 0.0741, 0.0741, 0.0741, 0.0714, 0.0714,
 		0.0714, 0.0690, 0.0690, 0.0690, 0.0667, 0.0667, 0.0667, 0.0645, 0.0645, 0.0645,
-		0.0625, 0.0625, 0.0606, 0.0606, 0.0606, 0.0588, 0.0588, 0.0571, 0.0571, 0.0571,
 		[60] = 0.0500,
 	},
 	["SHAMAN"] = {
 		0.1650, 0.1650, 0.1571, 0.1571, 0.1500, 0.1500, 0.1500, 0.1435, 0.1435, 0.1375,
-		0.1375, 0.1320, 0.1320, 0.1269, 0.1222, 0.1179, 0.1179, 0.1138, 0.1138, 0.1065,
-		0.1065, 0.1031, 0.1031, 0.0100, 0.0971, 0.0943, 0.0943, 0.0917, 0.0917, 0.0868,
-		0.0868, 0.0846, 0.0825, 0.0825, 0.0786, 0.0767, 0.0767, 0.0750, 0.0750, 0.0717,
-		0.0702, 0.0702, 0.0688, 0.0673, 0.0660, 0.0647, 0.0635, 0.0623, 0.0623, 0.0600,
+		0.1375, 0.1320, 0.1320, 0.1269, 0.1222, 0.1179, nil,    nil,    nil,    nil,
+		[22] = 0.1031,
+		[23] = 0.1031,
+		[25] = 0.0971,
+		[28] = 0.0917,
+		[29] = 0.0917,
+		[30] = 0.0868,
+		[32] = 0.0846,
+		[37] = 0.0767,
+		[38] = 0.0750,
+		[40] = 0.0717,
 		[60] = 0.0508,
 	},
 	["MAGE"] = {
 		0.0900, 0.0900, 0.0900, 0.0857, 0.0857, 0.0857, 0.0857, 0.0857, 0.0857, 0.0818,
-		0.0818, 0.0818, 0.0818, 0.0818, 0.0783, 0.0783, 0.0783, 0.0783, 0.0783, 0.0750,
+		0.0818, 0.0818, 0.0818, nil,    nil,    nil,    nil,    0.0783, 0.0783, 0.0750,
 		0.0750, 0.0750, 0.0750, 0.0720, 0.0720, 0.0720, 0.0720, 0.0720, 0.0692, 0.0692,
 		0.0692, 0.0692, 0.0667, 0.0667, 0.0667, 0.0643, 0.0643, 0.0643, 0.0643, 0.0621,
-		0.0621, 0.0621, 0.0621, 0.0600, 0.0600, 0.0600, 0.0581, 0.0581, 0.0581, 0.0563,
 		[60] = 0.0514,
 	},
 	["WARLOCK"] = {
-		0.1500, 0.1500, 0.1429, 0.1429, 0.1429, 0.1364, 0.1364, 0.1364, 0.1304, 0.1304,
-		0.1250, 0.1250, 0.1250, 0.1200, 0.1154, 0.1111, 0.1111, 0.1111, 0.1071, 0.1034,
-		0.1000, 0.1000, 0.0968, 0.0968, 0.0909, 0.0909, 0.0909, 0.0882, 0.0882, 0.0833,
+		0.1500, nil,    0.1429, 0.1429, 0.1429, 0.1364, 0.1364, 0.1364, 0.1304, 0.1304,
+		0.1250, 0.1250, nil,    nil,    nil,    0.1111, 0.1111, nil,    0.1071, 0.1034,
+		0.1000, 0.1000, nil,    nil,    0.0909, 0.0909, 0.0909, 0.0882, 0.0882, 0.0833,
 		0.0833, 0.0811, 0.0811, 0.0789, 0.0769, 0.0750, 0.0732, 0.0732, 0.0714, 0.0698,
-		0.0682, 0.0682, 0.0667, 0.0667, 0.0638, 0.0625, 0.0625, 0.0612, 0.0600, 0.0588,
 		[60] = 0.0500,
 	},
 	["DRUID"] = {
-		0.2050, 0.2050, 0.1952, 0.1952, 0.1864, 0.1864, 0.1783, 0.1783, 0.1708, 0.1577,
-		0.1519, 0.1519, 0.1464, 0.1464, 0.1367, 0.1367, 0.1323, 0.1281, 0.1281, 0.1139,
-		0.1139, 0.1108, 0.1079, 0.1079, 0.1025, 0.1025, 0.1000, 0.0976, 0.0976, 0.0891,
+		0.2050, 0.2050, nil,    nil,    nil,    nil,    0.1783, 0.1783, 0.1708, 1577,
+		0.1519, 0.1519, 0.1464, 0.1464, 0.1367, 0.1367, 0.1323, 0.1281, nil,    nil,
+		nil,    0.1108, nil,    nil,    0.1025, 0.1025, 0.1000, 0.0976, 0.0976, 0.0891,
 		0.0872, 0.0872, 0.0854, 0.0837, 0.0820, 0.0804, 0.0788, 0.0788, 0.0774, 0.0719,
-		0.0707, 0.0707, 0.0695, 0.0683, 0.0661, 0.0651, 0.0651, 0.0641, 0.0631, 0.0594,
 		[60] = 0.0500,
 	},
 }
 
 -- In Vanilla, these are all equal to CritPerAgi, except Hunter/Rogue which are exactly double
-addon.DodgePerAgi = setmetatable({}, {
-	__index = function (t, class)
-		t[class] = setmetatable({}, {__index = function(classTable, level)
-			local dodgePerAgi = rawget(addon.CritPerAgi[class], level)
-			if dodgePerAgi then
-				if class == "HUNTER" or class == "ROGUE" then
-					dodgePerAgi = dodgePerAgi * 2
-				end
-				classTable[level] = dodgePerAgi
-				return dodgePerAgi
-			end
-		end })
-		return t[class]
-	end
+addon.DodgePerAgi = setmetatable({
+	["HUNTER"] = setmetatable({}, {
+		__index = function(_, level)
+			local critPerAgi = addon.CritPerAgi["HUNTER"][level]
+			return critPerAgi and critPerAgi * 2 or nil
+		end
+	}),
+	["ROGUE"] = setmetatable({}, {
+		__index = function(_, level)
+			local critPerAgi = addon.CritPerAgi["ROGUE"][level]
+			return critPerAgi and critPerAgi * 2 or nil
+		end
+	})
+}, {
+	__index = addon.CritPerAgi
 })
 
 addon.SpellCritPerInt = {
 	["WARRIOR"] = addon.zero,
 	["PALADIN"] = {
-		0.0750, 0.0714, 0.0714, 0.0682, 0.0682, 0.0652, 0.0625, 0.0625, 0.0600, 0.0600,
-		0.0577, 0.0556, 0.0536, 0.0517, 0.0484, 0.0484, 0.0469, 0.0441, 0.0441, 0.0417,
-		0.0405, 0.0395, 0.0385, 0.0375, 0.0357, 0.0349, 0.0349, 0.0333, 0.0326, 0.0313,
+		0.0750, 0.0714, 0.0714, 0.0682, 0.0682, 0.0652, nil,    0.0625, nil,    nil,
+		nil,    nil,    nil,    nil,    nil,    nil,    nil,    0.0441, 0.0441, 0.0417,
+		nil,    nil,    0.0385, nil,    0.0357, 0.0349, 0.0349, 0.0333, 0.0326, 0.0313,
 		0.0306, 0.0300, 0.0294, 0.0288, 0.0278, 0.0273, 0.0268, 0.0259, 0.0254, 0.0246,
-		0.0242, 0.0238, 0.0231, 0.0231, 0.0224, 0.0221, 0.0214, 0.0208, 0.0205, 0.0200,
 		[60] = 0.0167,
 	},
 	["HUNTER"] = {
 		0.0700, 0.0667, 0.0667, 0.0636, 0.0636, 0.0609, 0.0609, 0.0583, 0.0583, 0.0560,
-		0.0560, 0.0538, 0.0500, 0.0500, 0.0467, 0.0467, 0.0452, 0.0424, 0.0424, 0.0400,
-		0.0389, 0.0389, 0.0368, 0.0359, 0.0350, 0.0341, 0.0333, 0.0326, 0.0318, 0.0304,
+		0.0560, 0.0538, 0.0500, 0.0500, 0.0467, 0.0467, 0.0452, 0.0424, nil,    0.0400,
+		0.0389, 0.0389, 0.0368, nil,    0.0350, 0.0341, 0.0333, 0.0326, 0.0318, 0.0304,
 		0.0298, 0.0298, 0.0286, 0.0280, 0.0269, 0.0264, 0.0264, 0.0255, 0.0250, 0.0241,
-		0.0237, 0.0237, 0.0230, 0.0226, 0.0219, 0.0215, 0.0212, 0.0206, 0.0203, 0.0197,
 		[60] = 0.0165,
 	},
 	["ROGUE"] = addon.zero,
 	["PRIEST"] = {
 		0.1909, 0.1826, 0.1750, 0.1680, 0.1556, 0.1500, 0.1448, 0.1400, 0.1355, 0.1273,
-		0.1167, 0.1050, 0.0977, 0.0875, 0.0808, 0.0764, 0.0700, 0.0667, 0.0627, 0.0583,
-		0.0560, 0.0525, 0.0506, 0.0477, 0.0457, 0.0438, 0.0420, 0.0404, 0.0389, 0.0372,
-		0.0359, 0.0347, 0.0336, 0.0323, 0.0313, 0.0304, 0.0294, 0.0286, 0.0278, 0.0269,
-		0.0263, 0.0255, 0.0249, 0.0241, 0.0235, 0.0230, 0.0223, 0.0219, 0.0213, 0.0208,
+		0.1167, 0.1050, 0.0977, 0.0875, nil,    0.0764, 0.0700, 0.0667, nil,    0.0583,
+		0.0560, 0.0525, nil,    0.0477, 0.0457, 0.0438, 0.0420, 0.0404, 0.0389, 0.0372,
+		0.0359, 0.0347, 0.0336, 0.0323, 0.0313, 0.0304, 0.0294, 0.0286, nil,    0.0269,
 		[60] = 0.0168,
 	},
 	["SHAMAN"] = {
 		0.1286, 0.1227, 0.1174, 0.1174, 0.1125, 0.1080, 0.1038, 0.1000, 0.0964, 0.0964,
-		0.0900, 0.0844, 0.0771, 0.0730, 0.0675, 0.0643, 0.0614, 0.0574, 0.0551, 0.0519,
-		0.0500, 0.0482, 0.0458, 0.0443, 0.0422, 0.0409, 0.0397, 0.0380, 0.0370, 0.0355,
-		0.0342, 0.0333, 0.0321, 0.0314, 0.0303, 0.0293, 0.0287, 0.0278, 0.0273, 0.0262,
-		0.0257, 0.0252, 0.0245, 0.0239, 0.0233, 0.0227, 0.0223, 0.0218, 0.0213, 0.0208,
+		0.0900, 0.0844, 0.0771, 0.0730, 0.0675, 0.0643, nil,    nil,    nil,    nil,
+		[22] = 0.0482,
+		[23] = 0.0458,
+		[28] = 0.0380,
+		[29] = 0.0370,
+		[30] = 0.0355,
+		[32] = 0.0333,
+		[37] = 0.0287,
+		[38] = 0.0278,
+		[40] = 0.0262,
 		[60] = 0.0169,
 	},
 	["MAGE"] = {
 		0.1920, 0.1846, 0.1778, 0.1655, 0.1600, 0.1548, 0.1500, 0.1455, 0.1371, 0.1333,
-		0.1231, 0.1091, 0.1021, 0.0857, 0.0787, 0.0750, 0.0706, 0.0667, 0.0632, 0.0593,
+		0.1231, 0.1091, 0.1021, nil,    nil,    0.0750, nil,    0.0667, 0.0632, 0.0593,
 		0.0571, 0.0539, 0.0522, 0.0495, 0.0475, 0.0457, 0.0436, 0.0397, 0.0381, 0.0366,
 		0.0358, 0.0345, 0.0336, 0.0327, 0.0316, 0.0308, 0.0298, 0.0291, 0.0282, 0.0276,
-		0.0270, 0.0253, 0.0247, 0.0241, 0.0235, 0.0231, 0.0225, 0.0220, 0.0215, 0.0211,
 		[60] = 0.0168,
 	},
 	["WARLOCK"] = {
-		0.1500, 0.1435, 0.1375, 0.1320, 0.1269, 0.1222, 0.1179, 0.1138, 0.1100, 0.1065,
-		0.0971, 0.0892, 0.0825, 0.0767, 0.0717, 0.0688, 0.0635, 0.0600, 0.0569, 0.0541,
-		0.0516, 0.0493, 0.0471, 0.0446, 0.0429, 0.0418, 0.0398, 0.0384, 0.0367, 0.0355,
+		0.1500, nil,    0.1375, 0.1320, 0.1269, 0.1222, 0.1179, 0.1138, 0.1100, 0.1065,
+		0.0971, 0.0892, nil,    nil,    nil,    0.0688, 0.0635,    nil, 0.0569, 0.0541,
+		0.0516, 0.0493, nil,    nil,    0.0429, 0.0418, 0.0398, 0.0384, 0.0367, 0.0355,
 		0.0347, 0.0333, 0.0324, 0.0311, 0.0303, 0.0295, 0.0284, 0.0277, 0.0268, 0.0262,
-		0.0256, 0.0248, 0.0243, 0.0236, 0.0229, 0.0224, 0.0220, 0.0214, 0.0209, 0.0204,
 		[60] = 0.0165,
 	},
 	["DRUID"] = {
-		0.1455, 0.1391, 0.1333, 0.1280, 0.1231, 0.1185, 0.1143, 0.1143, 0.1103, 0.1000,
-		0.0941, 0.0865, 0.0821, 0.0762, 0.0696, 0.0667, 0.0627, 0.0604, 0.0571, 0.0525,
-		0.0508, 0.0485, 0.0471, 0.0444, 0.0427, 0.0416, 0.0400, 0.0390, 0.0372, 0.0352,
+		0.1455, 0.1391, nil,    nil,    nil,    nil,    0.1143, 0.1143, 0.1103, 0.1000,
+		0.0941, 0.0865, 0.0821, 0.0762, 0.0696, 0.0667, 0.0627, 0.0604, nil,    nil,
+		nil,    0.0485, nil,    nil,    0.0427, 0.0416, 0.0400, 0.0390, 0.0372, 0.0352,
 		0.0344, 0.0330, 0.0323, 0.0314, 0.0302, 0.0296, 0.0288, 0.0281, 0.0274, 0.0260,
-		0.0256, 0.0248, 0.0244, 0.0237, 0.0232, 0.0227, 0.0222, 0.0218, 0.0212, 0.0205,
 		[60] = 0.0167,
 	},
 }
@@ -453,12 +475,6 @@ elseif addon.class == "HUNTER" then
 				["value"] = 25,
 				["aura"] = 19263,
 			},
-			-- Rune: Catlike Reflexes
-			{
-				["known"] = 415428,
-				["rune"] = true,
-				["value"] = 20,
-			}
 		},
 		["ADD_MELEE_CRIT"] = {
 			-- Base
@@ -658,24 +674,7 @@ elseif addon.class == "MAGE" then
 				["aura"] = 430952,
 				["value"] = 1,
 			},
-			-- Rune: Molten Armor
-			{
-				["known"] = 428741,
-				["rune"] = true,
-				["value"] = 5,
-				["aura"] = 428741,
-			}
 		},
-		["MOD_SPI"] = {
-			-- Rune: Balefire Bolt
-			{
-				["known"] = 428878,
-				["rune"] = true,
-				["aura"] = 428878,
-				["stack"] = -0.10,
-				["max_stacks"] = 9,
-			}
-		}
 	}
 elseif addon.class == "PALADIN" then
 	StatLogic.StatModTable["PALADIN"] = {
@@ -1102,6 +1101,13 @@ elseif addon.class == "SHAMAN" then
 				["aura"] = 436365,
 				["value"] = 0.10,
 			},
+			-- Rune: Spirit of the Alpha (Loyal Beta)
+			{
+				["known"] = 408696,
+				["rune"] = true,
+				["value"] = 0.20,
+				["aura"] = 443320,
+			},
 		},
 		-- Shaman: Toughness (Rank 5) - 2,11
 		--         Increases your armor value from items by 2%/4%/6%/8%/10%.
@@ -1169,33 +1175,6 @@ elseif addon.class == "SHAMAN" then
 				["value"] = 0.3,
 				["aura"] = 408680
 			}
-		},
-		["ADD_AP_MOD_INT"] = {
-			-- Rune: Mental Dexterity
-			{
-				["known"] = 415140,
-				["rune"] = true,
-				["value"] = 1.00,
-				["aura"] = 415144,
-			},
-		},
-		["ADD_SPELL_DMG_MOD_AP"] = {
-			-- Rune: Mental Dexterity
-			{
-				["known"] = 415140,
-				["rune"] = true,
-				["value"] = 0.30,
-				["aura"] = 415144,
-			},
-		},
-		["ADD_HEALING_MOD_AP"] = {
-			-- Rune: Mental Dexterity
-			{
-				["known"] = 415140,
-				["rune"] = true,
-				["value"] = 0.30,
-				["aura"] = 415144,
-			},
 		},
 	}
 elseif addon.class == "WARLOCK" then
@@ -1361,15 +1340,6 @@ elseif addon.class == "WARLOCK" then
 				["pet"] = true,
 			},
 		},
-		["MOD_HEALTH"] = {
-			-- Rune: Vengeance
-			{
-				["known"] = 426195,
-				["rune"] = true,
-				["value"] = 0.30,
-				["aura"] = 426195,
-			},
-		},
 	}
 elseif addon.class == "WARRIOR" then
 	StatLogic.StatModTable["WARRIOR"] = {
@@ -1413,17 +1383,12 @@ elseif addon.class == "WARRIOR" then
 					0.02, 0.04, 0.06, 0.08, 0.10,
 				},
 			},
-			-- Buff: Death Wish
+			-- Warrior: Death Wish - Buff
+			--          When activated, increases your physical damage by 20% and makes you immune to Fear effects, but lowers your armor and all resistances by 20%.  Lasts 30 sec.
 			{
-				["value"] = -0.20,
-				["aura"] = 12328,
+				["value"] = 0.8,
+				["aura"] = 12328,		-- ["Death Wish"],
 			},
-			-- Rune: Gladiator Stance
-			{
-				["stance"] = "interface\\icons\\achievement_featsofstrength_gladiator_08",
-				["rune"] = true,
-				["value"] = -0.30,
-			}
 		},
 		["ADD_MELEE_CRIT"] = {
 			-- Base
@@ -1481,22 +1446,10 @@ elseif addon.class == "WARRIOR" then
 				["aura"] = 12976,
 			},
 		},
-		["MOD_AP"] = {
-			-- Rune: Rampage
-			{
-				["known"] = 426940,
-				["rune"] = true,
-				["aura"] = 426942,
-				["stack"] = 0.02,
-				["max_stacks"] = 5,
-			},
-		},
 	}
 end
 
-if addon.playerRace == "Dwarf" then
-	addon.WeaponRacials[Enum.ItemWeaponSubclass.Guns] = {StatLogic.Stats.WeaponSkill, 5}
-elseif addon.playerRace == "NightElf" then
+if addon.playerRace == "NightElf" then
 	StatLogic.StatModTable["NightElf"] = {
 		-- Night Elf : Quickness - Racial
 		--             Dodge chance increased by 1%.
@@ -1536,13 +1489,6 @@ elseif addon.playerRace == "Human" then
 			}
 		}
 	}
-	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace1H] = {StatLogic.Stats.WeaponSkill, 5}
-	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace2H] = {StatLogic.Stats.WeaponSkill, 5}
-	addon.WeaponRacials[Enum.ItemWeaponSubclass.Sword1H] = {StatLogic.Stats.WeaponSkill, 5}
-	addon.WeaponRacials[Enum.ItemWeaponSubclass.Sword2H] = {StatLogic.Stats.WeaponSkill, 5}
-elseif addon.playerRace == "Orc" then
-	addon.WeaponRacials[Enum.ItemWeaponSubclass.Axe1H] = {StatLogic.Stats.WeaponSkill, 5}
-	addon.WeaponRacials[Enum.ItemWeaponSubclass.Axe2H] = {StatLogic.Stats.WeaponSkill, 5}
 elseif addon.playerRace == "Troll" then
 	StatLogic.StatModTable["Troll"] = {
 		["MOD_NORMAL_HEALTH_REG"] = {
@@ -1561,8 +1507,6 @@ elseif addon.playerRace == "Troll" then
 			},
 		},
 	}
-	addon.WeaponRacials[Enum.ItemWeaponSubclass.Bows] = {StatLogic.Stats.WeaponSkill, 5}
-	addon.WeaponRacials[Enum.ItemWeaponSubclass.Thrown] = {StatLogic.Stats.WeaponSkill, 5}
 end
 
 StatLogic.StatModTable["ALL"] = {
@@ -1634,12 +1578,6 @@ StatLogic.StatModTable["ALL"] = {
 			["group"] = addon.BuffGroup.AllStats,
 			["rune"] = true,
 		},
-		-- Buff: Fervor of the Temple Explorer
-		{
-			["aura"] = 446695,
-			["rune"] = true,
-			["value"] = 0.08,
-		},
 	},
 	["MOD_AGI"] = {
 		-- Blessing of Kings - Buff
@@ -1663,12 +1601,6 @@ StatLogic.StatModTable["ALL"] = {
 			["aura"] = 409583,
 			["group"] = addon.BuffGroup.AllStats,
 			["rune"] = true,
-		},
-		-- Buff: Fervor of the Temple Explorer
-		{
-			["aura"] = 446695,
-			["rune"] = true,
-			["value"] = 0.08,
 		},
 	},
 	["MOD_STA"] = {
@@ -1694,12 +1626,6 @@ StatLogic.StatModTable["ALL"] = {
 			["group"] = addon.BuffGroup.AllStats,
 			["rune"] = true,
 		},
-		-- Buff: Fervor of the Temple Explorer
-		{
-			["aura"] = 446695,
-			["rune"] = true,
-			["value"] = 0.08,
-		},
 	},
 	["MOD_INT"] = {
 		-- Blessing of Kings - Buff
@@ -1724,12 +1650,6 @@ StatLogic.StatModTable["ALL"] = {
 			["group"] = addon.BuffGroup.AllStats,
 			["rune"] = true,
 		},
-		-- Buff: Fervor of the Temple Explorer
-		{
-			["aura"] = 446695,
-			["rune"] = true,
-			["value"] = 0.08,
-		},
 	},
 	["MOD_SPI"] = {
 		-- Blessing of Kings - Buff
@@ -1753,12 +1673,6 @@ StatLogic.StatModTable["ALL"] = {
 			["aura"] = 409583,
 			["group"] = addon.BuffGroup.AllStats,
 			["rune"] = true,
-		},
-		-- Buff: Fervor of the Temple Explorer
-		{
-			["aura"] = 446695,
-			["rune"] = true,
-			["value"] = 0.08,
 		},
 	},
 	["MOD_HEALTH"] = {
@@ -1799,12 +1713,6 @@ StatLogic.StatModTable["ALL"] = {
 		{
 			["aura"] = 430947,
 			["value"] = 2,
-		},
-		-- Buff: Fervor of the Temple Explorer
-		{
-			["aura"] = 446695,
-			["rune"] = true,
-			["value"] = 5,
 		},
 		-- Set: Blood Tiger Harness
 		{
@@ -1921,12 +1829,6 @@ StatLogic.StatModTable["ALL"] = {
 		{
 			["aura"] = 438536,
 			["value"] = 4,
-		},
-		-- Buff: Fervor of the Temple Explorer
-		{
-			["aura"] = 446695,
-			["rune"] = true,
-			["value"] = 5,
 		},
 	},
 	["ADD_DODGE"] = {

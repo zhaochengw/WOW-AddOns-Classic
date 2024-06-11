@@ -96,8 +96,6 @@ L["Ignore stuff when calculating the stat summary"] = "능력치 요약 계산�
 -- /rb sum ignore unused
 L["Ignore unused item types"] = "쓸모없는 아이템 제외"
 L["Show stat summary only for highest level armor type and items you can use with uncommon quality and up"] = "Show stat summary only for highest level armor type and items you can use with uncommon quality and up"
-L["Ignore non-primary stat"] = "Ignore non-primary stat"
-L["Show stat summary only for items with your specialization's primary stat"] = "Show stat summary only for items with your specialization's primary stat"
 -- /rb sum ignore equipped
 L["Ignore equipped items"] = "착용 아이템 제외"
 L["Hide stat summary for equipped items"] = "착용하고 있는 아이템에 대한 능력치 요약은 표시하지 않습니다."
@@ -395,16 +393,12 @@ L[StatLogic.Stats.Mana] = "마나"
 S[StatLogic.Stats.Mana] = "마나"
 L[StatLogic.Stats.ManaRegen] = "마나 회복량"
 S[StatLogic.Stats.ManaRegen] = "MP5"
-
-local ManaRegenOutOfCombat = "마나 회복량 (비전투)"
-L[StatLogic.Stats.ManaRegenOutOfCombat] = ManaRegenOutOfCombat
-if addon.tocversion < 40000 then
-	L[StatLogic.Stats.ManaRegenNotCasting] = "마나 회복량 (시전하지)"
-else
-	L[StatLogic.Stats.ManaRegenNotCasting] = ManaRegenOutOfCombat
-end
+L[StatLogic.Stats.ManaRegenNotCasting] = "마나 회복량 (시전하지)"
 S[StatLogic.Stats.ManaRegenNotCasting] = "MP5(NC)"
-
+L[StatLogic.Stats.ManaRegenOutOfCombat] = "마나 회복량 (비전투)"
+if addon.tocversion > 40000 then
+	L[StatLogic.Stats.ManaRegenNotCasting] =  L[StatLogic.Stats.ManaRegenOutOfCombat]
+end
 L[StatLogic.Stats.HealthRegen] = "생명력 재생"
 S[StatLogic.Stats.HealthRegen] = "HP5"
 L[StatLogic.Stats.HealthRegenOutOfCombat] = "생명력 재생 (비전투)"

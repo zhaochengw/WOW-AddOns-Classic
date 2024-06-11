@@ -5,7 +5,7 @@
 GTFO Friendly Fire List - Shadowlands
 ]]--
 
-if (GTFO.RetailMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 
 -- ***************
 -- * Shadowlands *

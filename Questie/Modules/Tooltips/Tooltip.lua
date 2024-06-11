@@ -32,12 +32,6 @@ local MAX_GROUP_MEMBER_COUNT = 6
 
 local _InitObjectiveTexts
 
---[[
-IMPORTANT!
-If you change the way the tooltip keys are structured and/or the return value of GetTooltip,
-we need to let the Plater addon devs know about it.
---]]
-
 ---@param questId number
 ---@param key string monster: m_, items: i_, objects: o_ + string name of the objective
 ---@param objective table
@@ -79,26 +73,42 @@ end
 ---@param questId number
 function QuestieTooltips:RemoveQuest(questId)
     if (not QuestieTooltips.lookupKeysByQuestId[questId]) then
-        -- Tooltip has already been removed
         return
     end
 
-    -- Remove tooltip related keys from quest table so that
-    -- it can be readded/registered by other quest functions.
-    local quest = QuestieDB.GetQuest(questId)
+    if QuestieTooltips.lookupKeysByQuestId[questId] then
+        -- Remove tooltip related keys from quest table so that
+        -- it can be readded/registered by other quest functions.
+        local quest = QuestieDB.GetQuest(questId)
 
-    if quest then
-        for _, objective in pairs(quest.Objectives) do
-            objective.AlreadySpawned = {}
-            objective.hasRegisteredTooltips = false
-            objective.registeredItemTooltips = false
-        end
+        if quest then
+            for _, objective in pairs(quest.Objectives) do
+                objective.AlreadySpawned = {}
 
-        for _, objective in pairs(quest.SpecialObjectives) do
-            objective.AlreadySpawned = {}
-            objective.hasRegisteredTooltips = false
-            objective.registeredItemTooltips = false
+                if objective.hasRegisteredTooltips then
+                    objective.hasRegisteredTooltips = false
+                end
+
+                if objective.registeredItemTooltips then
+                    objective.registeredItemTooltips = false
+                end
+            end
+
+            for _, objective in pairs(quest.SpecialObjectives) do
+                objective.AlreadySpawned = {}
+
+                if objective.hasRegisteredTooltips then
+                    objective.hasRegisteredTooltips = false
+                end
+
+                if objective.registeredItemTooltips then
+                    objective.registeredItemTooltips = false
+                end
+            end
         end
+    else
+        -- Tooltip has already been removed
+        return
     end
 
     Questie:Debug(Questie.DEBUG_DEVELOP, "[QuestieTooltips:RemoveQuest]", questId)
@@ -191,8 +201,8 @@ local function _FetchTooltipsForGroupMembers(key, tooltipData)
 end
 
 ---@param key string
-function QuestieTooltips.GetTooltip(key)
-    Questie:Debug(Questie.DEBUG_SPAM, "[QuestieTooltips.GetTooltip]", key)
+function QuestieTooltips:GetTooltip(key)
+    Questie:Debug(Questie.DEBUG_SPAM, "[QuestieTooltips:GetTooltip]", key)
     if (not key) then
         return nil
     end
@@ -240,7 +250,6 @@ function QuestieTooltips.GetTooltip(key)
                     }
                 end
                 if not QuestiePlayer.currentQuestlog[questId] then
-                    -- TODO: Is this still required?
                     QuestieTooltips.lookupByKey[key][k] = nil
                 else
                     tooltipData[questId].objectivesText = _InitObjectiveTexts(tooltipData[questId].objectivesText, objectiveIndex, playerName)
@@ -396,12 +405,10 @@ function QuestieTooltips:Initialize()
                     _QuestieTooltips:CountTooltip() < QuestieTooltips.lastGametooltipCount
                     or QuestieTooltips.lastGametooltipType ~= "object"
                 ) and (not self.ShownAsMapIcon) then -- We are hovering over a Questie map icon which adds it's own tooltip
-                _QuestieTooltips.AddObjectDataToTooltip(GameTooltipTextLeft1:GetText())
+                _QuestieTooltips:AddObjectDataToTooltip(GameTooltipTextLeft1:GetText())
                 QuestieTooltips.lastGametooltipCount = _QuestieTooltips:CountTooltip()
             end
             QuestieTooltips.lastGametooltip = GameTooltipTextLeft1:GetText()
         end
     end)
 end
-
-return QuestieTooltips

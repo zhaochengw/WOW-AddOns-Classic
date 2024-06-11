@@ -87,7 +87,7 @@ monster = function(npcId, objective)
 
     local name = QuestieDB.QueryNPCSingle(npcId, "name")
     if (not name) then
-        Questie:Error("Name missing for NPC:", npcId, "- Please report this error on Discord or GitHub.")
+        Questie:Debug(Questie.DEBUG_CRITICAL, "Name missing for NPC:", npcId)
         return nil
     end
 
@@ -109,7 +109,7 @@ monster = function(npcId, objective)
         Spawns = enableSpawns and spawns or {},
         Waypoints = enableWaypoints and QuestieDB.QueryNPCSingle(npcId, "waypoints") or {},
         Hostile = true,
-        Icon = objective.Icon or Questie.ICON_TYPE_SLAY,
+        Icon = Questie.ICON_TYPE_SLAY,
         GetIconScale = _GetIconScaleForMonster,
         IconScale = _GetIconScaleForMonster(),
         TooltipKey = "m_" .. npcId, -- todo: use ID based keys
@@ -136,7 +136,7 @@ object = function(objectId, objective)
 
     local name = QuestieDB.QueryObjectSingle(objectId, "name")
     if (not name) then
-        Questie:Error("Name missing for object:", objectId, "- Please report this error on Discord or GitHub.")
+        Questie:Debug(Questie.DEBUG_CRITICAL, "Name missing for object:", objectId)
         return nil
     end
 
@@ -152,7 +152,7 @@ object = function(objectId, objective)
         Id = objectId,
         Name = name,
         Spawns = spawns,
-        Icon = objective.Icon or Questie.ICON_TYPE_OBJECT,
+        Icon = Questie.ICON_TYPE_OBJECT,
         GetIconScale = _GetIconScaleForObject,
         IconScale = _GetIconScaleForObject(),
         TooltipKey = "o_" .. objectId,
@@ -216,10 +216,10 @@ item = function(itemId, objective)
                         if (not ret[id]) then
                             local icon, GetIconScale
                             if source.Type == "object" then
-                                icon = objective.Icon or Questie.ICON_TYPE_OBJECT
+                                icon = Questie.ICON_TYPE_OBJECT
                                 GetIconScale = _GetIconScaleForObject
                             else
-                                icon = objective.Icon or Questie.ICON_TYPE_LOOT
+                                icon = Questie.ICON_TYPE_LOOT
                                 GetIconScale = _GetIconScaleForLoot
                             end
 

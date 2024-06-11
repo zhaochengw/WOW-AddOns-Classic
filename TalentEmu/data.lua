@@ -31,22 +31,24 @@ MT.BuildEnv('DATA');
 			for SpecID, TreeTDB in next, ClassTDB do
 				for TalentSeq = 1, #TreeTDB do
 					local TalentDef = TreeTDB[TalentSeq];
-					TalentDef[10] = TalentDef[1] * DT.MAX_NUM_COL + TalentDef[2] + 1;
-					if TalentDef[5] ~= nil and TalentDef[6] ~= nil then
-						for Seq, Def in next, TreeTDB do
-							if Def[1] == TalentDef[5] and Def[2] == TalentDef[6] then
-								TalentDef[11] = Seq;
-								local depby = Def[12];
-								if depby ~= nil then
-									depby[#depby + 1] = TalentSeq;
-								else
-									Def[12] = { TalentSeq, };
+					if TalentDef[1] ~= nil then
+						TalentDef[10] = TalentDef[1] * DT.MAX_NUM_COL + TalentDef[2] + 1;
+						if TalentDef[5] ~= nil and TalentDef[6] ~= nil then
+							for Seq, Def in next, TreeTDB do
+								if Def[1] == TalentDef[5] and Def[2] == TalentDef[6] then
+									TalentDef[11] = Seq;
+									local depby = Def[12];
+									if depby ~= nil then
+										depby[#depby + 1] = TalentSeq;
+									else
+										Def[12] = { TalentSeq, };
+									end
+									break;
 								end
-								break;
 							end
-						end
-						if TalentDef[11] == nil then
-							MT.Debug("Data.OnInit.ProcDB", 1, "req of ", TalentDef[1], TalentDef[2], TalentDef[5], TalentDef[6], "missing");
+							if TalentDef[11] == nil then
+								MT.Debug("Data.OnInit.ProcDB", 1, "req of ", TalentDef[1], TalentDef[2], TalentDef[5], TalentDef[6], "missing");
+							end
 						end
 					end
 				end

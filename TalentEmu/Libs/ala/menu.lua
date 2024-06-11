@@ -5,30 +5,35 @@
 	ALAMENU = __menulib.ShowMenu
 	ALAMENU(parent, anchor, data, param, useMousePosition)
 	data
-			handler		(function)
-			param		(any)
+			handler		(function(Button, param1, param2))
+			param		(any)																	@param1
 			num			(number)
-			__onshowprepend	[optional]
-			__onshowappend	[optional]
-			__onhide		[optional]
-			__buttononshow	[optional]
-			__buttononhide	[optional]
-			__buttononenter	[optional]
-			__buttononleave	[optional]
+			__onshowprepend	(Menu, param1)[optional]
+			__onshowappend	(Menu, param1)[optional]
+			__onhide		(Menu, param1)[optional]
+			__buttononshow	(Button, param1, param2)[optional]
+			__buttononhide	(Button, param1, param2)[optional]
+			__buttononenter	(Button, param1, param2)[optional]
+			__buttononleave	(Button, param1, param2)[optional]
 			[]{
-										handler		(function)[optional]
-										param		(any)parameter
+										handler		(function(self, param1, param2))[optional]
+										param		(any)parameter								@param2
 										text		(string)
 										--info		(string)
 										show/hide
-										__onshow	[optional]
-										__onhide	[optional]
-										__onenter	[optional]
-										__onleave	[optional]
+										__onshow	(Button, param1, param2)[optional]
+										__onhide	(Button, param1, param2)[optional]
+										__onenter	(Button, param1, param2)[optional]
+										__onleave	(Button, param1, param2)[optional]
 			}
+	--
+	Button.__onshow(Button, param1, param2) = ele.__onshow or data.__buttononshow
+	Button.__onhide(Button, param1, param2) = ele.__onhide or data.__buttononhide
+	Button.__onenter(Button, param1, param2) = ele.__onenter or data. __buttononenter
+	Button.__onleave(Button, param1, param2) = ele.__onleave or data.__buttononleave
 ]=]
 
-local __version = 220824.0;
+local __version = 240601.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -67,13 +72,14 @@ local uireimp = __ala_meta__.uireimp;
 	local isRetail = __ala_meta__.BUILD == "RETAIL";
 	local isBCC = __ala_meta__.BUILD == "BCC";
 	local isWLK = __ala_meta__.BUILD == "WRATH";
+	local isCATA = __ala_meta__.BUILD == "CATA";
 
 	local MenuList = { total = 0, used = 0, prev = nil, };
 	local frameToMenu = setmetatable({  }, { __mode = 'k', });
 
 -->			Creator
 	local MenuOnEvent = nil;
-	if isRetail or isWLK then
+	if isRetail or isWLK or isCATA then
 		function MenuOnEvent(Menu, event)
 			if Menu.__flag == "show" then
 				Menu.__flag = nil;
@@ -157,7 +163,7 @@ local uireimp = __ala_meta__.uireimp;
 		Menu:SetScript("OnLeave", MenuOnLeave);
 		Menu:SetScript("OnShow", MenuOnShow);
 		Menu:SetScript("OnHide", MenuOnHide);
-		if isRetail or isWLK then
+		if isRetail or isWLK or isCATA then
 			Menu:RegisterEvent("GLOBAL_MOUSE_UP");
 		else--if isBCC then
 			Menu:RegisterEvent("PLAYER_STARTED_LOOKING");
@@ -329,6 +335,7 @@ local uireimp = __ala_meta__.uireimp;
 		if type(data) ~= "table" or data[1] == nil then
 			return;
 		end
+		param = param or data.param;
 		Menu = GetMenu(parent, anchor, useMousePosition, sideJustified);
 		Menu.meta = data;
 		Menu.handler = data.handler;
@@ -428,7 +435,7 @@ __menulib.ShowMenu = ShowMenu;
 
 function __menulib:Halt()
 	for index = 1, MenuList.total do
-		-- MenuOnEvent(MenuList[index], (isRetail or isWLK) and "GLOBAL_MOUSE_UP" or (isBCC and "PLAYER_STARTED_LOOKING" or "CURSOR_UPDATE"));
+		-- MenuOnEvent(MenuList[index], (isRetail or isWLK or isCATA) and "GLOBAL_MOUSE_UP" or (isBCC and "PLAYER_STARTED_LOOKING" or "CURSOR_UPDATE"));
 		MenuList[index]:Hide();
 		MenuList[index]:SetScript("OnUpdate", nil);
 		MenuList[index]:UnregisterAllEvents();

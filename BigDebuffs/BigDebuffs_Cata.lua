@@ -123,6 +123,8 @@ addon.Spells = {
     [26679] = { type = INTERRUPT, duration = 3 }, -- Deadly Throw
     [6552] = { type = INTERRUPT, duration = 4 }, -- Pummel
     [29443] = { type = INTERRUPT, duration = 10 }, -- Clutch of Foresight
+    [80965] = { type = INTERRUPT, duration = 4 }, -- Skull Bash (Cat)
+    [80964] = { type = INTERRUPT, duration = 4 }, -- Skull Bash (Bear)
 
     -- Death Knight
 
@@ -137,6 +139,7 @@ addon.Spells = {
     [49039] = { type = IMMUNITY_SPELL, },  -- Lichborne
     [49203] = { type = CROWD_CONTROL, }, -- Hungering Cold
     [50461] = { type = BUFF_DEFENSIVE, },  -- Anti-Magic Zone
+    [49016] = { type = BUFF_OFFENSIVE, },  -- Unholy Frenzy
 
     -- Priest
 
@@ -296,6 +299,7 @@ addon.Spells = {
     [33786] = { type = CROWD_CONTROL }, -- Cyclone
     [45334] = { type = ROOT }, -- Feral Charge Effect
     [17116] = { type = BUFF_DEFENSIVE }, -- Nature's Swiftness
+    [81261] = { type = CROWD_CONTROL, },  -- Solar Beam
 
     -- Mage
 
@@ -336,6 +340,7 @@ addon.Spells = {
     [12043] = { type = BUFF_OFFENSIVE }, -- Presence of Mind
     [33395] = { type = ROOT }, -- Freeze
     [12472] = { type = BUFF_OFFENSIVE }, -- Icy Veins
+    [87023] = { type = BUFF_OTHER, }, -- Cauterize
 
     -- Rogue
 

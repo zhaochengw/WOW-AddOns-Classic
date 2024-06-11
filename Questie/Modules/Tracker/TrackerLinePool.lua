@@ -110,7 +110,7 @@ function TrackerLinePool.Initialize(questFrame)
         end
 
         line.OnUpdate = function(self, elapsed)
-            if Questie.IsWotlk or Questie.IsCata then
+            if Questie.IsWotlk then
                 timeElapsed = timeElapsed + elapsed
 
                 if timeElapsed > 1 and self.trackTimedQuest and self.label.activeTimer then
@@ -447,7 +447,7 @@ function TrackerLinePool.Initialize(questFrame)
             end)
         end)
 
-        if Questie.IsWotlk or Questie.IsCata then
+        if Questie.IsWotlk then
             line:HookScript("OnUpdate", line.OnUpdate)
         end
 
@@ -637,7 +637,8 @@ function TrackerLinePool.Initialize(questFrame)
                 end
             end
 
-            if UnitExists("target") then
+            -- IsItemInRange is restricted to only be used either on hostile targets or friendly ones while NOT in combat
+            if UnitExists("target") and (not UnitIsFriend("player", "target") or (not InCombatLockdown())) then
                 if not self.itemName then
                     self.itemName = GetItemInfo(self.itemId)
                 end
@@ -646,8 +647,7 @@ function TrackerLinePool.Initialize(questFrame)
                 if (rangeTimer) then
                     rangeTimer = rangeTimer - elapsed
 
-                    -- IsItemInRange is restricted to only be used either on hostile targets or friendly ones while NOT in combat
-                    if (rangeTimer <= 0) and (not UnitIsFriend("player", "target") or (not InCombatLockdown())) then
+                    if (rangeTimer <= 0) then
                         local isInRange = IsItemInRange(self.itemName, "target")
 
                         if isInRange == false then

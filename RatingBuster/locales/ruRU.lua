@@ -97,8 +97,6 @@ L["Ignore stuff when calculating the stat summary"] = "Настройка игн
 -- /rb sum ignore unused
 L["Ignore unused item types"] = "Игнорирование неподходящих предметов"
 L["Show stat summary only for highest level armor type and items you can use with uncommon quality and up"] = "Скрыть итоги по статам для неподходящих предметов"
-L["Ignore non-primary stat"] = "Ignore non-primary stat"
-L["Show stat summary only for items with your specialization's primary stat"] = "Show stat summary only for items with your specialization's primary stat"
 -- /rb sum ignore equipped
 L["Ignore equipped items"] = "Не показывать для надетых вещей"
 L["Hide stat summary for equipped items"] = "Не показывать для надетых вещей"
@@ -494,16 +492,13 @@ L[StatLogic.Stats.Mana] = "Мана"
 S[StatLogic.Stats.Mana] = "к мане"
 L[StatLogic.Stats.ManaRegen] = "Восполнение маны"
 S[StatLogic.Stats.ManaRegen] = "маны раз в 5 сек."
-
-local ManaRegenOutOfCombat = "Восполнения маны (вне боя)"
-L[StatLogic.Stats.ManaRegenOutOfCombat] = ManaRegenOutOfCombat
-if addon.tocversion < 40000 then
-	L[StatLogic.Stats.ManaRegenNotCasting] = "Восполнения маны (пока не применяете заклинания)"
-else
-	L[StatLogic.Stats.ManaRegenNotCasting] = ManaRegenOutOfCombat
-end
+L[StatLogic.Stats.ManaRegenNotCasting] = "Восполнения маны (пока не применяете заклинания)"
 S[StatLogic.Stats.ManaRegenNotCasting] = "маны раз в 5 сек. (вне каста)"
-
+L[StatLogic.Stats.ManaRegenOutOfCombat] = "Восполнения маны (вне боя)"
+S[StatLogic.Stats.ManaRegenOutOfCombat] = "маны раз в 5 сек. (вне боя)"
+if addon.tocversion > 40000 then
+	L[StatLogic.Stats.ManaRegenNotCasting] =  L[StatLogic.Stats.ManaRegenOutOfCombat]
+end
 L[StatLogic.Stats.HealthRegen] = "Восстановление здоровья"
 S[StatLogic.Stats.HealthRegen] = "здоровья раз в 5 сек."
 L[StatLogic.Stats.HealthRegenOutOfCombat] = "Восполнение здаровья (вне боя)"

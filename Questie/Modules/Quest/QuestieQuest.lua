@@ -45,8 +45,6 @@ local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
 local ThreadLib = QuestieLoader:ImportModule("ThreadLib")
 ---@type AvailableQuests
 local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
----@type Phasing
-local Phasing = QuestieLoader:ImportModule("Phasing")
 
 --We should really try and squeeze out all the performance we can, especially in this.
 local tostring = tostring;
@@ -493,14 +491,12 @@ function QuestieQuest:CompleteQuest(questId)
     -- otherwise objectives for repeatable quests won't track correctly - #1433
     Questie.db.char.complete[questId] = (not QuestieDB.IsRepeatable(questId)) or QuestieDB.IsDailyQuest(questId) or QuestieDB.IsWeeklyQuest(questId);
 
-    if Questie.IsWotlk or Questie.IsCata then
-        if allianceChampionMarkerQuests[questId] then
-            Questie.db.char.complete[13700] = true -- Alliance Champion Marker
-            Questie.db.char.complete[13686] = nil -- Alliance Tournament Eligibility Marker
-        elseif hordeChampionMarkerQuests[questId] then
-            Questie.db.char.complete[13701] = true -- Horde Champion Marker
-            Questie.db.char.complete[13687] = nil -- Horde Tournament Eligibility Marker
-        end
+    if allianceChampionMarkerQuests[questId] then
+        Questie.db.char.complete[13700] = true -- Alliance Champion Marker
+        Questie.db.char.complete[13686] = nil -- Alliance Tournament Eligibility Marker
+    elseif hordeChampionMarkerQuests[questId] then
+        Questie.db.char.complete[13701] = true -- Horde Champion Marker
+        Questie.db.char.complete[13687] = nil -- Horde Tournament Eligibility Marker
     end
     QuestieMap:UnloadQuestFrames(questId)
 
@@ -743,7 +739,7 @@ local function _AddSourceItemObjective(quest)
             Questie:Debug(Questie.DEBUG_INFO, "[QuestieQuest:_AddSourceItemObjective] Adding Source Item Id for:", quest.sourceItemId)
 
             -- We fake an objective for the sourceItems because this allows us
-            -- to simply reuse "QuestieTooltips.GetTooltip".
+            -- to simply reuse "QuestieTooltips:GetTooltip".
             -- This should be all the data required for the tooltip
             local fakeObjective = {
                 Id = quest.Id,
@@ -810,7 +806,7 @@ local function _AddRequiredSourceItemObjective(quest)
                 Questie:Debug(Questie.DEBUG_INFO, "[QuestieQuest:_AddRequiredSourceItemObjective] Adding Source Item Id for:", requiredSourceItemId)
 
                 -- We fake an objective for the requiredSourceItem because this allows us
-                -- to simply reuse "QuestieTooltips.GetTooltip".
+                -- to simply reuse "QuestieTooltips:GetTooltip".
                 -- This should be all the data required for the tooltip
                 local fakeObjective = {
                     Id = quest.Id,
@@ -948,17 +944,17 @@ function QuestieQuest:AddFinisher(quest)
             Questie:Debug(Questie.DEBUG_CRITICAL, "[QuestieQuest] Quest has no finisher:", questId, quest.name)
         end
 
-        if finisher ~= nil then
+        if (finisher ~= nil and finisher.spawns ~= nil) then
             -- Certain race conditions can occur when the NPC/Objects are both the Quest Starter and Quest Finisher
             -- which can result in duplicate Quest Title tooltips appearing. DrawAvailableQuest() would have already
-            -- registered this NPC/Object so, the appropriate tooltip lines are already present. This checks and clears
+            -- registered this NPC/Object so, the appropiate tooltip lines are already present. This checks and clears
             -- any duplicate keys before registering the Quest Finisher.
 
-            -- Clear duplicate keys if they exist
+            -- Clear duplicate keys if they exsist
             if QuestieTooltips.lookupByKey[key] then
-                if QuestieTooltips.GetTooltip(key) ~= nil and #QuestieTooltips.GetTooltip(key) > 1 then
-                    for ttline = 1, #QuestieTooltips.GetTooltip(key) do
-                        for index, line in pairs(QuestieTooltips.GetTooltip(key)) do
+                if QuestieTooltips:GetTooltip(key) ~= nil and #QuestieTooltips:GetTooltip(key) > 1 then
+                    for ttline = 1, #QuestieTooltips:GetTooltip(key) do
+                        for index, line in pairs(QuestieTooltips:GetTooltip(key)) do
                             if (ttline == index) then
                                 Questie:Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] AddFinisher - Removing duplicate Quest Title!")
 
@@ -994,7 +990,7 @@ function QuestieQuest:AddFinisher(quest)
             local finisherIcons = {}
             local finisherLocs = {}
 
-            for finisherZone, spawns in pairs(finisher.spawns or {}) do
+            for finisherZone, spawns in pairs(finisher.spawns) do
                 if (finisherZone ~= nil and spawns ~= nil) then
                     for _, coords in ipairs(spawns) do
                         local data = {
@@ -1032,7 +1028,7 @@ function QuestieQuest:AddFinisher(quest)
                             local y = coords[2];
 
                             Questie:Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest] Adding world icon as finisher:", finisherZone, x, y)
-                            finisherIcons[finisherZone] = QuestieMap:DrawWorldIcon(data, finisherZone, x, y, coords[3])
+                            finisherIcons[finisherZone] = QuestieMap:DrawWorldIcon(data, finisherZone, x, y)
 
                             if not finisherLocs[finisherZone] then
                                 finisherLocs[finisherZone] = { x, y }
@@ -1112,7 +1108,7 @@ function QuestieQuest:PopulateObjective(quest, objectiveIndex, objective, blockI
         objective.Color = QuestieLib:ColorWheel()
     end
 
-    if objective.spawnList and next(objective.spawnList) then
+    if next(objective.spawnList) then
         local maxPerType = 300
 
         if Questie.db.profile.enableIconLimit and Questie.db.profile.iconLimit < maxPerType then
@@ -1238,7 +1234,7 @@ _DetermineIconsToDraw = function(quest, objective, objectiveIndex, objectiveCent
             for zone, spawns in pairs(spawnData.Spawns) do
                 local uiMapId = ZoneDB:GetUiMapIdByAreaId(zone)
                 for _, spawn in pairs(spawns) do
-                    if spawn[1] and spawn[2] and Phasing.IsSpawnVisible(spawn[3]) then
+                    if (spawn[1] and spawn[2]) then
                         local drawIcon = {
                             AlreadySpawnedId = id,
                             data = data,
@@ -1321,7 +1317,6 @@ _DrawObjectiveIcons = function(questId, iconsToDraw, objective, maxPerType)
                 centerX = secondDungeonLocation[2]
                 centerY = secondDungeonLocation[3]
 
-                -- Phase is already checked in _DetermineIconsToDraw
                 local iconMap, iconMini = QuestieMap:DrawWorldIcon(icon.data, icon.zone, centerX, centerY) -- clustering code takes care of duplicates as long as min-dist is more than 0
 
                 if iconMap and iconMini then
@@ -1339,7 +1334,6 @@ _DrawObjectiveIcons = function(questId, iconsToDraw, objective, maxPerType)
             centerY = firstDungeonLocation[3]
         end
 
-        -- Phase is already checked in _DetermineIconsToDraw
         local iconMap, iconMini = QuestieMap:DrawWorldIcon(icon.data, icon.zone, centerX, centerY) -- clustering code takes care of duplicates as long as min-dist is more than 0
 
         if iconMap and iconMini then
@@ -1370,10 +1364,10 @@ _GetIconsSortedByDistance = function(icons)
 
     -- use the keys to retrieve the values in the sorted order
     for distIndex = 1, #distances do
-        local iconsAtDistance = icons[distances[distIndex]]
+        local iconsAtDisntace = icons[distances[distIndex]]
 
-        for iconIndex = 1, #iconsAtDistance do
-            local icon = iconsAtDistance[iconIndex]
+        for iconIndex = 1, #iconsAtDisntace do
+            local icon = iconsAtDisntace[iconIndex]
 
             iconCount = iconCount + 1
             orderedList[iconCount] = icon
@@ -1390,7 +1384,6 @@ _DrawObjectiveWaypoints = function(objective, icon, iconPerZone)
                 local firstWaypoint = waypoints[1][1]
 
                 if (not iconPerZone[zone]) and icon and firstWaypoint[1] ~= -1 and firstWaypoint[2] ~= -1 then              -- spawn an icon in this zone for the mob
-                    -- Phase is already checked in _DetermineIconsToDraw
                     local iconMap, iconMini = QuestieMap:DrawWorldIcon(icon.data, zone, firstWaypoint[1], firstWaypoint[2]) -- clustering code takes care of duplicates as long as min-dist is more than 0
 
                     if iconMap and iconMini then
@@ -1478,8 +1471,7 @@ function QuestieQuest:PopulateQuestLogInfo(quest)
                         AlreadySpawned = {},
                         Update = _QuestieQuest.ObjectiveUpdate,
                         Coordinates = quest.ObjectiveData[objectiveIndex].Coordinates, -- Only for type "event"
-                        RequiredRepValue = quest.ObjectiveData[objectiveIndex].RequiredRepValue,
-                        Icon = quest.ObjectiveData[objectiveIndex].Icon
+                        RequiredRepValue = quest.ObjectiveData[objectiveIndex].RequiredRepValue
                     }
                 end
 
@@ -1578,5 +1570,3 @@ function QuestieQuest.DrawDailyQuest(questId)
         AvailableQuests.DrawAvailableQuest(quest)
     end
 end
-
-return QuestieQuest

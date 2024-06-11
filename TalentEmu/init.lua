@@ -96,7 +96,7 @@ local DT = {  }; __private.DT = DT;		--	data
 	CT.BNTAG = select(2, BNGetInfo());
 	CT.SELFREALM = GetRealmName();
 	CT.SELFGUID = UnitGUID('player');
-	CT.SELFLCLASS, CT.SELFCLASS = UnitClass('player');
+	CT.SELFLCLASS, CT.SELFCLASS, CT.SELFCLASSINDEX = UnitClass('player');
 	CT.SELFNAME = UnitName('player');
 	CT.SELFFULLNAME = CT.SELFNAME .. "-" .. CT.SELFREALM;
 	CT.SELFFACTION = UnitFactionGroup('player');
@@ -107,6 +107,10 @@ local DT = {  }; __private.DT = DT;		--	data
 		CT.BUILD = "BCC";
 	elseif CT.TOCVERSION < 40000 then
 		CT.BUILD = "WRATH";
+	elseif CT.TOCVERSION < 50000 then
+		CT.BUILD = "CATA"
+	elseif CT.TOCVERSION < 60000 then
+		CT.BUILD = "PANDARIA"
 	else
 	end
 	CT.ADDONVERSION = GetAddOnMetadata(__addon, "version");

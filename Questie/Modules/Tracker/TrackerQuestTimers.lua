@@ -1,8 +1,17 @@
 ---@class TrackerQuestTimers
 local TrackerQuestTimers = QuestieLoader:CreateModule("TrackerQuestTimers")
-
+-------------------------
+--Import QuestieTracker modules.
+-------------------------
 ---@type QuestieTracker
 local QuestieTracker = QuestieLoader:ImportModule("QuestieTracker")
+---@type TrackerLinePool
+local TrackerLinePool = QuestieLoader:ImportModule("TrackerLinePool")
+-------------------------
+--Import Questie modules.
+-------------------------
+---@type QuestieCombatQueue
+local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
 
 local LSM30 = LibStub("LibSharedMedia-3.0")
 
@@ -11,7 +20,7 @@ local blizzardTimerLocation = {}
 local timer
 
 -- Save the default location of the Blizzard QuestTimerFrame
-if (not Questie.IsWotlk) and (not Questie.IsCata) then
+if not Questie.IsWotlk then
     blizzardTimerLocation = { QuestTimerFrame:GetPoint() }
 end
 
@@ -32,7 +41,7 @@ function TrackerQuestTimers:Initialize()
     end)
 
     -- Pre-Classic WotLK
-    if (not Questie.IsWotlk) and (not Questie.IsCata) then
+    if not Questie.IsWotlk then
         local timeElapsed = 0
 
         WatchFrame:HookScript("OnUpdate", function(_, elapsed)
@@ -46,7 +55,7 @@ function TrackerQuestTimers:Initialize()
 end
 
 function TrackerQuestTimers:HideBlizzardTimer()
-    if Questie.IsWotlk or Questie.IsCata then
+    if Questie.IsWotlk then
         -- Classic WotLK
         WatchFrame:Hide()
     else
@@ -58,7 +67,7 @@ function TrackerQuestTimers:HideBlizzardTimer()
 end
 
 function TrackerQuestTimers:ShowBlizzardTimer()
-    if Questie.IsWotlk or Questie.IsCata then
+    if Questie.IsWotlk then
         -- Classic WotLK
         WatchFrame:Show()
     else

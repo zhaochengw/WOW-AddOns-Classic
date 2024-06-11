@@ -19,15 +19,14 @@ GTFO.IgnoreSpellCategory["Lava"] = {
 	override = true
 }
 
-if (GTFO.CataclysmMode or GTFO.RetailMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
+
 	GTFO.IgnoreSpellCategory["HagaraWateryEntrenchment"] = {
 		-- mobID = 55689; -- Hagara the Stormbinder
 		spellID = 110317,
 		desc = "Watery Entrenchment (Hagara - Cataclysm)"
 	}
-end
 
-if (GTFO.RetailMode) then
 	GTFO.IgnoreSpellCategory["GarroshDesecrated"] = {
 		-- Garrosh Hellscream
 		spellID = 144762,
@@ -150,29 +149,3 @@ GTFO.IgnoreScan["403912"] = true; -- Accelerating Time
 GTFO.IgnoreScan["405671"] = true; -- Accelerating Time
 GTFO.IgnoreScan["403910"] = true; -- Decaying Time
 GTFO.IgnoreScan["405672"] = true; -- Decaying Time
-GTFO.IgnoreScan["420715"] = true; -- Noxious Blossom
-GTFO.IgnoreScan["425357"] = true; -- Surging Growth
-GTFO.IgnoreScan["421368"] = true; -- Unravel
-GTFO.IgnoreScan["423195"] = true; -- Inflorescence
-GTFO.IgnoreScan["423670"] = true; -- Continuum
-GTFO.IgnoreScan["408469"] = true; -- Call to Suffering
-GTFO.IgnoreScan["421674"] = true; -- Burning Vertebrae
-GTFO.IgnoreScan["425479"] = true; -- Dream's Blessing
-GTFO.IgnoreScan["421407"] = true; -- Searing Ash
-GTFO.IgnoreScan["421315"] = true; -- Consuming Flame
-GTFO.IgnoreScan["417585"] = true; -- Combusting Presence
-GTFO.IgnoreScan["421671"] = true; -- Serpent's Fury
-GTFO.IgnoreScan["421674"] = true; -- Burning Vertebrae
-GTFO.IgnoreScan["428359"] = true; -- Blistering Heat
-GTFO.IgnoreScan["430324"] = true; -- Uprooted Agony
-GTFO.IgnoreScan["422026"] = true; -- Tortured Scream
-GTFO.IgnoreScan["421986"] = true; -- Tainted Bloom
-GTFO.IgnoreScan["430052"] = true; -- Searing Screams
-GTFO.IgnoreScan["423705"] = true; -- Burning Scales
-GTFO.IgnoreScan["418978"] = true; -- Burning Presence
-GTFO.IgnoreScan["420714"] = true; -- Noxious Blossom
-GTFO.IgnoreScan["425461"] = true; -- Tainted Heart
-GTFO.IgnoreScan["295625"] = true; -- Anger of the Bloodfin
-GTFO.IgnoreScan["422750"] = true; -- Shadowflame Rage
-GTFO.IgnoreScan["453445"] = true; -- Brilliance
-GTFO.IgnoreScan["441197"] = true; -- Righteous Frenzy

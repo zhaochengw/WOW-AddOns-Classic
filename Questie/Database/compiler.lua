@@ -11,8 +11,9 @@ local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 local l10n = QuestieLoader:ImportModule("l10n")
 
 
-local pcall, type = pcall, type
+local type = type
 local abs, min, floor = math.abs, math.min, math.floor
+local lshift = bit.lshift
 
 
 -- how fast to run operations (lower = slower but less lag)
@@ -42,7 +43,6 @@ local TICKS_PER_YIELD_DEBUG = TICKS_PER_YIELD * 3
 ---| "trigger"
 ---| "questgivers"
 ---| "objective"
----| "spellobjective"
 ---| "objectives"
 ---| "reflist"
 ---| "extraobjective
@@ -61,7 +61,6 @@ QuestieDBCompiler.supportedTypes = {
         ["trigger"] = true,
         ["questgivers"] = true,
         ["objective"] = true,
-        ["spellobjective"] = true,
         ["objectives"] = true,
         ["waypointlist"] = true,
         ["u8u16stringarray"] = true,
@@ -252,13 +251,10 @@ readers["spawnlist"] = function(stream)
         local list = {}
         for i = 1, spawnCount do
             local x, y = stream:ReadInt12Pair()
-            local phase = stream:ReadShort()
             if x == 0 and y == 0 then
                 list[i] = {-1, -1}
-            elseif phase == 0 then
-                list[i] = {x / 40.90, y / 40.90}
             else
-                list[i] = {x / 40.90, y / 40.90, phase}
+                list[i] = {x / 40.90, y / 40.90}
             end
         end
         spawnlist[zone] = list
@@ -287,17 +283,7 @@ readers["objective"] = function(stream)
 
     local ret = {}
     for i = 1, count do
-        ret[i] = {stream:ReadInt24(), stream:ReadTinyStringNil(), stream:ReadByte()}
-    end
-    return ret
-end
-readers["spellobjective"] = function(stream)
-    local count = stream:ReadByte()
-    if count == 0 then return nil end
-
-    local ret = {}
-    for i = 1, count do
-        ret[i] = {stream:ReadInt24(), stream:ReadTinyStringNil(), stream:ReadInt24()}
+        ret[i] = {stream:ReadInt24(), stream:ReadTinyStringNil()}
     end
     return ret
 end
@@ -312,21 +298,19 @@ readers["objectives"] = function(stream)
 
     local count = stream:ReadByte()
     if count == 0 then
-        ret[5] = nil
-    else
-        local killobjectives = {}
-        for i=1, count do
-            local creditCount = stream:ReadByte()
-            local creditList = {}
-            for j=1, creditCount do
-                creditList[j] = stream:ReadInt24()
-            end
-            killobjectives[i] = {creditList, stream:ReadInt24(), stream:ReadTinyStringNil()}
-        end
-        ret[5] = killobjectives
+        return ret
     end
 
-    ret[6] = readers["spellobjective"](stream)
+    local killobjectives = {}
+    for i=1, count do
+        local creditCount = stream:ReadByte()
+        local creditList = {}
+        for j=1, creditCount do
+            creditList[j] = stream:ReadInt24()
+        end
+        killobjectives[i] = {creditList, stream:ReadInt24(), stream:ReadTinyStringNil()}
+    end
+    ret[5] = killobjectives
 
     return ret
 end
@@ -556,7 +540,6 @@ QuestieDBCompiler.writers = {
                     else
                         stream:WriteInt12Pair(floor(spawn[1] * 40.90), floor(spawn[2] * 40.90))
                     end
-                    stream:WriteShort(spawn[3] or 0) -- spawn phase
                 end
             end
         else
@@ -592,20 +575,6 @@ QuestieDBCompiler.writers = {
             for _, pair in pairs(value) do
                 stream:WriteInt24(pair[1])
                 stream:WriteTinyString(pair[2] or "")
-                stream:WriteByte(pair[3] or 0)
-            end
-        else
-            stream:WriteByte(0)
-        end
-    end,
-    ["spellobjective"] = function(stream, value)
-        if value then
-            local count = 0 for _ in pairs(value) do count = count + 1 end
-            stream:WriteByte(count)
-            for _, data in pairs(value) do
-                stream:WriteInt24(data[1])
-                stream:WriteTinyString(data[2] or "")
-                stream:WriteInt24(data[3] or 0)
             end
         else
             stream:WriteByte(0)
@@ -624,8 +593,8 @@ QuestieDBCompiler.writers = {
                 for i=1, #killobjectives do -- iterate over all killobjectives
                     local killobjective = killobjectives[i]
                     local npcIds = killobjective[1]
-                    assert(type(npcIds) == "table", "killObjective's npcids is not a table.")
-                    assert(#npcIds > 0, "killObjective has 0 npcIDs.")
+                    assert(type(npcIds) == "table", "killobjective's npcids is not a table.")
+                    assert(#npcIds > 0, "killOojective has 0 npcIDs.")
                     stream:WriteByte(#npcIds) -- write count of creatureIDs
                     for j=1, #npcIds do
                         stream:WriteInt24(npcIds[j]) -- write creatureID
@@ -636,8 +605,6 @@ QuestieDBCompiler.writers = {
             else
                 stream:WriteByte(0)
             end
-
-            QuestieDBCompiler.writers["spellobjective"](stream, value[6])
         else
             --print("Missing objective table for " .. QuestieDBCompiler.currentEntry)
             stream:WriteByte(0)
@@ -645,7 +612,6 @@ QuestieDBCompiler.writers = {
             stream:WriteByte(0)
             stream:WriteInt24(0)
             stream:WriteInt24(0)
-            stream:WriteByte(0)
             stream:WriteByte(0)
         end
     end,
@@ -736,9 +702,7 @@ skippers["spawnlist"] = function(stream)
     local count = stream:ReadByte()
     for _ = 1, count do
         stream._pointer = stream._pointer + 2
-        -- Skip over the 5 bytes of each spawn
-        -- 3 bytes for the spawn-pair of 12-bit integers and 2 byte for the phase
-        stream._pointer = stream:ReadShort() * 5 + stream._pointer
+        stream._pointer = stream:ReadShort() * 3 + stream._pointer
     end
 end
 local spawnlistSkipper = skippers["spawnlist"]
@@ -757,19 +721,9 @@ skippers["objective"] = function(stream)
     for _=1,count do
         stream._pointer = stream._pointer + 3
         stream._pointer = stream:ReadByte() + stream._pointer
-        stream._pointer = stream._pointer + 1
-    end
-end
-skippers["spellobjective"] = function(stream)
-    local count = stream:ReadByte()
-    for _=1,count do
-        stream._pointer = stream._pointer + 3
-        stream._pointer = stream:ReadByte() + stream._pointer
-        stream._pointer = stream._pointer + 3
     end
 end
 local objectiveSkipper = skippers["objective"]
-local spellObjectiveSkipper = skippers["spellobjective"]
 local u24pairSkipper = skippers["u24pair"]
 skippers["objectives"] = function(stream)
     objectiveSkipper(stream)
@@ -783,7 +737,6 @@ skippers["objectives"] = function(stream)
             stream._pointer = stream:ReadByte() + stream._pointer
         end
     end
-    spellObjectiveSkipper(stream)
 end
 skippers["reflist"] = function(stream)
     stream._pointer = stream:ReadByte() * 4 + stream._pointer
@@ -945,6 +898,7 @@ function QuestieDBCompiler:CompileTableCoroutine(tbl, types, order, lookup, data
     local stream = Questie.db.profile.debugEnabled and QuestieStream:GetStream("raw_assert") or QuestieStream:GetStream("raw")
 
     -- Localize functions
+    local pcall, type = pcall, type
     local writers = QuestieDBCompiler.writers
     local supportedTypes = QuestieDBCompiler.supportedTypes
 
@@ -975,16 +929,17 @@ function QuestieDBCompiler:CompileTableCoroutine(tbl, types, order, lookup, data
                 local t = types[key]
 
                 if v and not supportedTypes[type(v)][t] then
-                    error("|cFFFF0000Invalid datatype!|r   " .. kind .. "s[" .. tostring(id) .. "]."..key..": \"" .. type(v) .. "\" is not compatible with type \"" .. t .."\"")
+                    Questie:Error("|cFFFF0000Invalid datatype!|r   " .. kind .. "s[" .. tostring(id) .. "]."..key..": \"" .. type(v) .. "\" is not compatible with type \"" .. t .."\"")
                     return
                 end
                 if not writers[t] then
-                    error("Invalid datatype: " .. key .. " " .. tostring(t))
+                    Questie:Error("Invalid datatype: " .. key .. " " .. tostring(t))
                 end
                 --print(key .. "s[" .. tostring(id) .. "]."..key..": \"" .. type(v) .. "\"")
                 local result, errorMessage = pcall(writers[t], stream, v)
                 if not result then
-                    error("There was an error when compiling data for "..kind.." " .. tostring(id) .. " \""..tostring(key).."\":")
+                    Questie:Error("There was an error when compiling data for "..kind.." " .. tostring(id) .. " \""..tostring(key).."\":")
+                    Questie:Error(errorMessage)
                     error(errorMessage)
                 end
             end
@@ -1156,7 +1111,7 @@ function QuestieDBCompiler:ValidateObjects()
 
     validator.stream:finished()
     Questie:Debug(Questie.DEBUG_INFO, "Finished objects validation without issues!")
-end
+    end
 
 
 function QuestieDBCompiler:ValidateItems()
@@ -1315,7 +1270,7 @@ function QuestieDBCompiler:ValidateQuests()
             local b = nonCompiledData[QuestieDB.questKeys[key]]
 
             --Special case for questLevel
-            if (Questie.IsTBC or Questie.IsWotlk or Questie.IsCata) and (key == "questLevel" or key == "requiredLevel") then
+            if (Questie.IsTBC or Questie.IsWotlk) and (key == "questLevel" or key == "requiredLevel") then
                 local questLevel, requiredLevel = getTbcLevel(compiledData[2], compiledData[1], playerLevel)
                 if (key == "questLevel") then
                     a = questLevel

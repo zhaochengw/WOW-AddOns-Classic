@@ -17,7 +17,7 @@ local townsfolkLocales = {
     ["Auctioneer"] = {
         ["ptBR"] = "Leiloeiro",
         ["ruRU"] = "Аукционер",
-        ["deDE"] = "Auktionator:in",
+        ["deDE"] = "Auktionator",
         ["koKR"] = "경매인",
         ["esMX"] = "Subastador",
         ["enUS"] = true,
@@ -51,9 +51,9 @@ local townsfolkLocales = {
         ["frFR"] = "Banquier",
     },
     ["Battlemaster"] = {
-        ["ptBR"] = "Mestre de Batalha",
+        ["ptBR"] = "Mestre de batalha",
         ["ruRU"] = "Военачальник",
-        ["deDE"] = "Kampfmeister:in",
+        ["deDE"] = "Kampfmeister",
         ["koKR"] = "전투모병관",
         ["esMX"] = "Maestro de batalla",
         ["enUS"] = true,
@@ -65,7 +65,7 @@ local townsfolkLocales = {
     ["Class Trainer"] = {
         ["ptBR"] = "Instrutor de classe",
         ["ruRU"] = "Учитель классовых навыков",
-        ["deDE"] = "Lehrer:in für eine Klasse",
+        ["deDE"] = "Lehrer für eine Klasse",
         ["koKR"] = "직업 상급자",
         ["esMX"] = "Instructor de clase",
         ["enUS"] = true,
@@ -87,9 +87,9 @@ local townsfolkLocales = {
         ["frFR"] = "Boissons",
     },
     ["Flight Master"] = {
-        ["ptBR"] = "Mestre de Voo",
+        ["ptBR"] = "Mestre de voo",
         ["ruRU"] = "Распорядитель полетов",
-        ["deDE"] = "Flugmeister:in",
+        ["deDE"] = "Flugmeister",
         ["koKR"] = "비행 조련사",
         ["esMX"] = "Maestro de vuelo",
         ["enUS"] = true,
@@ -113,7 +113,7 @@ local townsfolkLocales = {
     ["Innkeeper"] = {
         ["ptBR"] = "Estalajadeiro",
         ["ruRU"] = "Хозяин таверны",
-        ["deDE"] = "Gastwirt:in",
+        ["deDE"] = "Gastwirt",
         ["koKR"] = "여관주인",
         ["esMX"] = "Tabernero",
         ["enUS"] = true,
@@ -123,7 +123,7 @@ local townsfolkLocales = {
         ["frFR"] = "Aubergiste",
     },
     ["Mailbox"] = {
-        ["ptBR"] = "Caixa de Correio",
+        ["ptBR"] = "Caixa de correio",
         ["ruRU"] = "Почтовый ящик",
         ["deDE"] = "Briefkasten",
         ["koKR"] = "우체통",
@@ -135,7 +135,7 @@ local townsfolkLocales = {
         ["frFR"] = "Boîte aux lettres",
     },
     ["Profession Trainer"] = {
-        ["ptBR"] = "Instrutor de profissão",
+        ["ptBR"] = "Instrutores de profissão",
         ["ruRU"] = "Учитель профессий",
         ["deDE"] = "Berufsausbilder",
         ["koKR"] = "기술 전문가",
@@ -144,7 +144,7 @@ local townsfolkLocales = {
         ["zhCN"] = "专业训练师",
         ["zhTW"] = "專業技能訓練師",
         ["esES"] = "Instructor de profesión",
-        ["frFR"] = "Maître de profession",
+        ["frFR"] = "Maîtres de métier",
     },
     ["Reagents"] = {
         ["ptBR"] = "Reagentes",
@@ -183,9 +183,9 @@ local townsfolkLocales = {
         ["frFR"] = "Gardien des âmes",
     },
     ["Stable Master"] = {
-        ["ptBR"] = "Mestre de Estábulo",
+        ["ptBR"] = "Mestre de estábulo",
         ["ruRU"] = "Смотритель стойл",
-        ["deDE"] = "Stallmeister:in",
+        ["deDE"] = "Stallmeister",
         ["koKR"] = "야수 관리인",
         ["esMX"] = "Maestro de establos",
         ["enUS"] = true,
@@ -269,19 +269,19 @@ local townsfolkLocales = {
     ["Vendor"] = {
         ["ptBR"] = "Comerciante",
         ["ruRU"] = "Торговец",
-        ["deDE"] = "Verkäufer:in",
+        ["deDE"] = "Verkäufer",
         ["koKR"] = "상인",
         ["esMX"] = "Vendedor",
         ["enUS"] = true,
         ["zhCN"] = "商人",
         ["zhTW"] = "商人",
         ["esES"] = "Vendedor",
-        ["frFR"] = "Vendeur",
+        ["frFR"] = "Marchand",
     },
     ["Weapon Master"] = {
         ["ptBR"] = "Mestre de Armas",
         ["ruRU"] = "Эксперт по оружию",
-        ["deDE"] = "Waffenmeister:in",
+        ["deDE"] = "Waffenmeister",
         ["koKR"] = "무기 전문가",
         ["esMX"] = "Maestro de armas",
         ["enUS"] = true,
@@ -293,15 +293,17 @@ local townsfolkLocales = {
     ["Townsfolk"] = {
         ["ptBR"] = "Cidadãos",
         ["ruRU"] = "Городские",
-        ["deDE"] = "Stadtbewohner:in",
+        ["deDE"] = "Stadtbewohner",
         ["koKR"] = "마을 NPC",
         ["esMX"] = "Ciudadanos",
         ["enUS"] = true,
         ["zhCN"] = false,
         ["zhTW"] = "村民",
         ["esES"] = "Ciudadanos",
-        ["frFR"] = "Citadins",
+        ["frFR"] = "Citoyens",
     },
+
+
 }
 
 for k, v in pairs(townsfolkLocales) do

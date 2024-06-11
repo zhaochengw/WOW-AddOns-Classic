@@ -5,7 +5,7 @@
 GTFO Fail List - Legion
 ]]--
 
-if (GTFO.RetailMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 
 --- ********************
 --- * The Broken Isles *
@@ -442,12 +442,6 @@ GTFO.SpellID["238027"] = {
   sound = 3;
 };
 
-GTFO.SpellID["286002"] = {
-  --desc = "Explode (Bomb Bot)";
-  sound = 3;
-  vehicle = true;
-};
-
 -- *******************
 -- * Brawler's Guild *
 -- *******************
@@ -757,12 +751,6 @@ GTFO.SpellID["198916"] = {
   --desc = "Vile Burst (Vile Mushroom)";
   sound = 3;
 };
-
-GTFO.SpellID["198386"] = {
-  --desc = "Primal Rampage (Archdruid Glaidalis)";
-  sound = 3;
-};
-
 
 -- ******************
 -- * Eye of Azshara *
@@ -1162,12 +1150,6 @@ GTFO.SpellID["200256"] = {
 
 GTFO.SpellID["200261"] = {
   --desc = "Bonebreaking Strike (Soul-Torn Champion)";
-  sound = 3;
-};
-
-GTFO.SpellID["197974"] = {
-  --desc = "Bonecrushing Strike (Soul-Torn Vanguard)";
-  applicationOnly = true;
   sound = 3;
 };
 

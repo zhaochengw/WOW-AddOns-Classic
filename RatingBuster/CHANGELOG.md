@@ -1,14 +1,10 @@
 # RatingBuster
 
-## [1.16.8](https://github.com/raethkcj/RatingBuster/tree/1.16.8) (2024-06-06)
-[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/1.16.6...1.16.8) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
+## [1.15.4](https://github.com/raethkcj/RatingBuster/tree/1.15.4) (2024-02-27)
+[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/1.15.3...1.15.4) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
 
-- Add non-primary stat localizations  
-- Improve breakdown insertion points  
-- Update Cata DodgePerAgi  
-- Add Prismatic Socket substitutions  
-- Add primary stat ignore setting (Closes #180)  
-- Update deprecated GetItemInfo usages  
-- Fix ignore armor type setting  
-- Fix stat option generation  
-- Use stat mods for most rating conversions  
+- Add Loyal Beta spell ID  
+- Hotfixes for Two-Handed Mastery, Spirit of the Alpha, and Shamanistic Rage  
+- Force trailing\_table\_separator  
+- Add vanilla agi/int conversions  
+- Add short resilience and crit globalstrings  
