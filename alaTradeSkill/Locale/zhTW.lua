@@ -113,6 +113,7 @@ l10n["OK"] = "确定";
 l10n["Search"] = "搜索";
 l10n["OVERRIDE_OPEN"] = "打开搜索";
 l10n["OVERRIDE_CLOSE"] = "关闭搜索";
+l10n["SEND_REAGENTS"] = "发送材料";
 l10n["ADD_FAV"] = "添加收藏";
 l10n["SUB_FAV"] = "取消收藏";
 l10n["QUERY_WHO_CAN_CRAFT_IT"] = "谁会做它？";

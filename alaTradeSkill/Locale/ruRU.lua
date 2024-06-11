@@ -113,6 +113,7 @@ l10n["OK"] = "OK";
 l10n["Search"] = "Search";
 l10n["OVERRIDE_OPEN"] = "Open";
 l10n["OVERRIDE_CLOSE"] = "Close";
+l10n["SEND_REAGENTS"] = "Send Reagents";
 l10n["ADD_FAV"] = "Favorite";
 l10n["SUB_FAV"] = "Unfavorite";
 l10n["QUERY_WHO_CAN_CRAFT_IT"] = "Who can craft it ?";

@@ -34,7 +34,6 @@ local uireimp = __ala_meta__.uireimp;
 
 -->		autostyle
 	local __loggedin = IsLoggedIn();
-	__autostyle._F_coreDeserializer = _F_coreDeserializerInternal;
 	local addonenv = __autostyle.addonenv;
 	local objecttoreskin = __autostyle.objecttoreskin;
 	addonenv["NDUI"] = {

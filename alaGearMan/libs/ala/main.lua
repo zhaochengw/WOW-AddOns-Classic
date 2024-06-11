@@ -353,10 +353,10 @@ local function dev()
 		end
 	end
 	local FirstLib = true;
-	for _, TalentDef in inext, _LibList, 0 do
+	for _, v in inext, _LibList, 0 do
 		local val = _G;
-		for index = 2, #TalentDef do
-			val = val[TalentDef[index]];
+		for index = 2, #v do
+			val = val[v[index]];
 			if val == nil then
 				break;
 			end
@@ -366,7 +366,7 @@ local function dev()
 				FirstLib = false;
 				DisplayPanel:AddMiddleLine("****|cffff00ffLibList|r****");
 			end
-			DisplayPanel:AddDoubleLine(TalentDef[1], "#|cffff7f00" .. val .. "|r");
+			DisplayPanel:AddDoubleLine(v[1], "#|cffff7f00" .. val .. "|r");
 		end
 	end
 	DisplayPanel:Render();

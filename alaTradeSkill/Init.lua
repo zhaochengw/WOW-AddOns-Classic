@@ -98,9 +98,12 @@ local DT = {  }; __private.DT = DT;		--	data
 
 -->		constant
 	CT.CLIENTVERSION, CT.BUILDNUMBER, CT.BUILDDATE, CT.TOCVERSION = GetBuildInfo();
-	CT.ISCLASSIC = CT.TOCVERSION > 11300 and CT.TOCVERSION < 20000;
-	CT.ISBCC = CT.TOCVERSION > 20400 and CT.TOCVERSION < 30000;
-	CT.ISWLK = CT.TOCVERSION > 30300 and CT.TOCVERSION < 90000;
+	CT.ISCLASSIC = CT.TOCVERSION >= 11400 and CT.TOCVERSION < 20000;
+	CT.ISBCC = CT.TOCVERSION >= 20500 and CT.TOCVERSION < 30000;
+	CT.ISWLK = CT.TOCVERSION >= 30400 and CT.TOCVERSION < 40000;
+	CT.ISCATA = CT.TOCVERSION >= 40400 and CT.TOCVERSION < 90000;
+	CT.VGT2X = CT.ISBCC or CT.ISWLK or CT.ISCATA;
+	CT.VGT3X = CT.ISWLK or CT.ISCATA;
 	CT.ISRETAIL = CT.TOCVERSION >= 90000;
 	CT.LOCALE = GetLocale();
 	CT.BNTAG = select(2, BNGetInfo());
@@ -406,7 +409,7 @@ MT.BuildEnv('Init');
 				ChatEdit_InsertLink(MT.GetSkillLink(sid), __addon);
 			end
 		end
-	elseif CT.ISBCC or CT.ISWLK then
+	elseif CT.VGT2X then
 		function MT.GetSkillLink(sid)
 			local name = GetSpellInfo(sid);
 			if name then
@@ -528,7 +531,7 @@ MT.BuildEnv('Init');
 		else
 			callbacks[#callbacks + 1] = callback;
 		end
-		if VT.__is_loggedin and IsAddOnLoaded(addon) then
+		if VT.__is_loggedin and VT.__is_this_loaded and IsAddOnLoaded(addon) then
 			return MT.SafeCall(callback, addon);
 		end
 	end
@@ -562,6 +565,7 @@ MT.BuildEnv('Init');
 					local method = __afterinit[key];
 					xpcall(method, MT.ErrorHandler, VT.__is_loggedin);
 				end
+				VT.__is_this_loaded = true;
 				if VT.__is_loggedin then
 					return Driver:GetScript("OnEvent")(Driver, "PLAYER_LOGIN");
 				end
@@ -575,17 +579,19 @@ MT.BuildEnv('Init');
 				end
 			end
 		elseif event == "PLAYER_LOGIN" then
-			Driver:UnregisterEvent("PLAYER_LOGIN");
-			VT.__is_loggedin = true;
-			for index = 1, #__onlogin do
-				local key = __onlogin[index];
-				local method = __onlogin[key];
-				xpcall(method, MT.ErrorHandler, true);
-			end
-			for addon, callbacks in next, __onaddonloaded do
-				if IsAddOnLoaded(addon) then
-					for i = 1, #callbacks do
-						MT.SafeCall(callbacks[i], addon);
+			if VT.__is_this_loaded then
+				Driver:UnregisterEvent("PLAYER_LOGIN");
+				VT.__is_loggedin = true;
+				for index = 1, #__onlogin do
+					local key = __onlogin[index];
+					local method = __onlogin[key];
+					xpcall(method, MT.ErrorHandler, true);
+				end
+				for addon, callbacks in next, __onaddonloaded do
+					if IsAddOnLoaded(addon) then
+						for i = 1, #callbacks do
+							MT.SafeCall(callbacks[i], addon);
+						end
 					end
 				end
 			end
@@ -599,6 +605,7 @@ MT.BuildEnv('Init');
 	end);
 
 	VT.__is_loggedin = IsLoggedIn();
+	VT.__is_this_loaded = false;
 
 	if VT.__is_dev then
 		MT.Debug = MT.DebugDev;

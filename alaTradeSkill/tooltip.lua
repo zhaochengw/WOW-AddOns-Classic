@@ -1,5 +1,5 @@
 --[[--
-	by ALA @ 163UI
+	by ALA
 --]]--
 ----------------------------------------------------------------------------------------------------
 local __addon, __private = ...;
@@ -791,7 +791,7 @@ local function HookTooltip(Tooltip)
 	hooksecurefunc(Tooltip, "SetCraftItem", LF_TooltipSetCraftItem);
 	if CT.ISCLASSIC then
 		hooksecurefunc(Tooltip, "SetTrainerService", LF_TooltipGUISetItem);
-	elseif CT.ISBCC or CT.ISWLK then
+	elseif CT.VGT2X then
 		hooksecurefunc(Tooltip, "SetTrainerService", LF_TooltipGUISetSpell);
 		hooksecurefunc(Tooltip, "SetGuildBankItem", LF_TooltipSetGuildBankItem);
 		hooksecurefunc(Tooltip, "SetSocketGem", LF_TooltipGUISetItem);

@@ -1,8 +1,5 @@
 ﻿--[[--
-	by ALA @ 163UI
-	Please Keep WOW Addon open-source & Reduce barriers for others.
-	复用代码请在显著位置标注来源【ALA@网易有爱】
-	请勿加密、乱码、删除空格tab换行符、设置加载依赖
+	GearMan
 --]]--
 ----------------------------------------------------------------------------------------------------
 local _G = _G;
@@ -12,6 +9,7 @@ local autostyle = __ala_meta__.autostyle;
 
 local ADDON, NS = ...;
 local L = NS.L;
+local TOC = select(4, GetBuildInfo());
 
 do
 	if NS.__fenv == nil then
@@ -42,6 +40,7 @@ end
 	local select = select;
 	local date, time = date, time;
 	local C_Timer = C_Timer;
+	local ContainerIDToInventoryID = C_Container.ContainerIDToInventoryID
 	----------------------------------------------------------------------------------------------------
 	local _ = nil;
 	local GameTooltip = GameTooltip;
@@ -115,6 +114,9 @@ local slot2Name = {
 	[18] = "CharacterRangedSlot",
 	[19] = "CharacterTabardSlot",
 };
+if TOC >= 40000 then
+	slot2Name[0] = nil;
+end
 local name2Slot = {  };
 for slot, name in next, slot2Name do
 	name2Slot[name] = slot;
@@ -912,6 +914,8 @@ function func.initUI()
 	ui.open:SetSize(32, 32);
 	if SUPPORT_ENGRAVING then
 		ui.open:SetPoint("TOPRIGHT", -70, -40);
+	elseif TOC >= 40000 then
+		ui.open:SetPoint("TOPRIGHT", -10, -30);
 	else
 		ui.open:SetPoint("TOPRIGHT", -40, -40);
 	end
@@ -1962,7 +1966,7 @@ function func.takeoff(slot, not_take_off_dur0)
 		return;
 	end
 	for i = 0, 4 do
-		for j = 1, C_Container.GetContainerNumSlots(i) do
+		for j = 1, C_Container.GetContainerNumFreeSlots(i) do
 			local cache_index = i * 100 + j;
 			if not var.cache[cache_index] then
 				local link = C_Container.GetContainerItemLink(i, j);
@@ -1972,7 +1976,7 @@ function func.takeoff(slot, not_take_off_dur0)
 					if i == 0 then
 						PutItemInBackpack();
 					else
-						PutItemInBag(i + CONTAINER_BAG_OFFSET);
+						PutItemInBag(ContainerIDToInventoryID(i));
 					end
 					var.cache[cache_index] = true;
 					C_Timer.After(1.0, function() var.cache[cache_index] = nil; end);
@@ -2269,8 +2273,8 @@ function func.equip(set)
 				end
 			end
 		end
-		ShowHelm(set.helmet);
-		ShowCloak(set.cloak);
+		ShowHelm(set.helmet or false);
+		ShowCloak(set.cloak or false);
 		func.Sound_Equip();
 		NS.F_ScheduleDelayCall(func.refreshAppearance);
 	end
@@ -2327,7 +2331,7 @@ function func.helmet(index, show)
 		cur.helmet = show;
 		func.Sound_Order();
 		-- if select(2, func.check(index)) then
-		-- 	ShowHelm(show);
+		-- 	ShowHelm(show or false);
 		-- end
 	end
 end

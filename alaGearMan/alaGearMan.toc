@@ -1,7 +1,7 @@
 ## Interface: 30403
 ## Title: alaGearMan
-## Title-zhCN: |cff880303[网易有爱]|r 一键换装
-## Title-zhTW: |cff880303[网易有爱]|r 一键换装
+## Title-zhCN: ala一键换装
+## Title-zhTW: ala一鍵換裝
 ## SavedVariablesPerCharacter: 
 ## SavedVariables: alaGearManSV
 ## Notes: alaGearMan
@@ -9,14 +9,10 @@
 ## OptionalDependencies: 
 ## LoadOnDemand: 0
 ## DefaultState: enabled
-## Author: |cff00ff00ALA|r @ |cffff0000163UI|r
-## Author-zhCN: |cff00ff00ALA|r @ |cffff0000网易有爱|r
-## Author-zhTW: |cff00ff00ALA|r @ |cffff0000网易有爱|r
-## Version: 304r.240101
+## Author: |cff00ff00ALA|r
+## Author-zhCN: |cff00ff00ALA|r
+## Author-zhTW: |cff00ff00ALA|r
+## Version: 304r.240606
 
 alaGearMan.xml
 
-
-## Title-zhCN: |cff880303[有爱]|r ala 装备界面增强
-## X-Vendor: NetEase
-## X-163UI-Version: 20200521143713
