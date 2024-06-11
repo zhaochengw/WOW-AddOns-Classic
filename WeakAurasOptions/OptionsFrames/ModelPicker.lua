@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local rad = rad
@@ -12,7 +9,6 @@ local CreateFrame = CreateFrame
 
 local AceGUI = LibStub("AceGUI-3.0")
 
----@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
@@ -224,7 +220,7 @@ local function ConstructModelPicker(frame)
   group:AddChild(modelTree);
 
   local model = CreateFrame("PlayerModel", nil, group.content);
-  model.SetTransformFixed = OptionsPrivate.Private.ModelSetTransformFixed
+  model.SetTransformFixed = model.GetResizeBounds and OptionsPrivate.Private.ModelSetTransformFixed or model.SetTransform -- TODO change test to WeakAuras.IsWrathOrRetail() after 3.4.1 release
   model:SetAllPoints(modelTree.content);
   model:SetFrameStrata("FULLSCREEN");
   group.model = model;

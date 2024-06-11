@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 local createCenterLines = true --- Creates only the middle lines
 local showNormalLines = false -- Show all alignment lines all the time
@@ -17,7 +14,6 @@ local pairs = pairs
 -- WoW APIs
 local IsShiftKeyDown, CreateFrame =  IsShiftKeyDown, CreateFrame
 
----@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 

@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 
@@ -62,7 +59,7 @@ local function CorrectItemName(input)
   if(inputId) then
     return inputId;
   elseif(input) then
-    local _, link = C_Item.GetItemInfo(input);
+    local _, link = GetItemInfo(input);
     if(link) then
       local itemId = link:match("item:(%d+)");
       return tonumber(itemId);
@@ -253,7 +250,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           width = WeakAuras.normalWidth,
           name = arg.display,
           desc = function()
-            if arg.multiNoSingle or arg.desc then return arg.desc end
+            if arg.multiNoSingle then return arg.desc end
             local v = trigger["use_"..realname];
             if(v == true) then
               return L["Multiselect single tooltip"];
@@ -320,7 +317,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           order = order,
           hidden = hidden,
         }
-        order = order + 1;
         options["description_title_"..name] = {
           type = "description",
           width = WeakAuras.doubleWidth,
@@ -338,15 +334,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           hidden = hidden,
         }
         order = order + 1;
-      elseif (arg.type == "header") then
-        options["header_"..name] = {
-          type = "header",
-          width = WeakAuras.doubleWidth,
-          name = arg.display,
-          order = order,
-          hidden = hidden,
-        }
-        order = order + 1
       else
         options["use_"..name] = {
           type = "toggle",
@@ -669,7 +656,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                   local _, _, icon = GetSpellInfo(value);
                   return icon and tostring(icon) or "", 18, 18;
                 elseif(arg.type == "item") then
-                  local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(value);
+                  local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(value);
                   return icon and tostring(icon) or "", 18, 18;
                 end
               else
@@ -678,7 +665,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             end,
             disabled = function()
               local value = getValue(trigger, nil, realname, multiEntry, entryNumber)
-              return not ((arg.type == "aura" and value and spellCache.GetIcon(value)) or (arg.type == "spell" and value and GetSpellInfo(value)) or (arg.type == "item" and value and C_Item.GetItemIconByID(value or '')))
+              return not ((arg.type == "aura" and value and spellCache.GetIcon(value)) or (arg.type == "spell" and value and GetSpellInfo(value)) or (arg.type == "item" and value and GetItemIcon(value)))
             end
           };
           order = order + 1;
@@ -700,7 +687,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                       return tostring(value)
                     end
                   else
-                    local name = C_Item.GetItemInfo(value);
+                    local name = GetItemInfo(value);
                     if name then
                       return name;
                     end
@@ -710,6 +697,9 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                   return nil;
                 end
               elseif(arg.type == "spell") then
+                if arg.noValidation then
+                  return value
+                end
                 local useExactSpellId = (arg.showExactOption and getValue(trigger, nil, "use_exact_"..realname, multiEntry, entryNumber))
                 if value and value ~= "" then
                   local spellID = WeakAuras.SafeToNumber(value)
@@ -724,15 +714,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                     if spellName then
                       return ("%s (%s)"):format(spellID, spellName) .. "\0" .. value
                     end
-                  elseif not useExactSpellId and not arg.noValidation then
+                  elseif not useExactSpellId then
                     local spellName = GetSpellInfo(value)
                     if spellName then
                       return spellName
                     end
                   end
-                end
-                if arg.noValidation then
-                  return value and tostring(value)
                 end
                 if value == nil then
                   return nil

@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 local tinsert, tremove = table.insert, table.remove
 local select, pairs, type, unpack = select, pairs, type, unpack
@@ -983,9 +980,6 @@ local methods = {
         for index, childId in pairs(data.controlledChildren) do
           tinsert(namestable, indent .. childId);
           local childData = WeakAuras.GetData(childId)
-          if not childData then
-            return
-          end
           if (childData.controlledChildren) then
             addChildrenNames(childData, indent .. "  ")
           end
@@ -1009,6 +1003,9 @@ local methods = {
       end
     else
       OptionsPrivate.Private.GetTriggerDescription(data, -1, namestable)
+    end
+    if(OptionsPrivate.Private.CanHaveClones(data)) then
+      tinsert(namestable, {" ", "|cFF00FF00"..L["Auto-cloning enabled"]})
     end
 
     local hasDescription = data.desc and data.desc ~= "";
@@ -1049,13 +1046,13 @@ local methods = {
       Show_Long_Tooltip(self.frame, self.frame.description);
     end
   end,
-  ["StartGrouping"] = function(self, groupingData, selected, groupingGroup, childOfGrouping)
+  ["StartGrouping"] = function(self, groupingData, selected, groupingGroup, childOfGrouing)
     self.grouping = groupingData;
     self:UpdateIconsVisible()
     if(selected) then
       self.frame:SetScript("OnClick", self.callbacks.OnClickGroupingSelf);
       self:SetDescription(L["Cancel"], L["Do not group this display"]);
-    elseif (childOfGrouping) then
+    elseif (childOfGrouing) then
       self:Disable();
     else
       if(self.data.regionType == "dynamicgroup" and groupingGroup) then
@@ -1069,13 +1066,11 @@ local methods = {
     end
   end,
   ["StopGrouping"] = function(self)
-    if self.grouping then
-      self.grouping = nil
-      self:UpdateIconsVisible()
-      self:SetNormalTooltip()
-      self.frame:SetScript("OnClick", self.callbacks.OnClickNormal)
-      self:Enable()
-    end
+    self.grouping = nil;
+    self:UpdateIconsVisible()
+    self:SetNormalTooltip();
+    self.frame:SetScript("OnClick", self.callbacks.OnClickNormal);
+    self:Enable();
   end,
   ["Ungroup"] = function(self)
     if (WeakAuras.IsImporting()) then return end;
@@ -1767,7 +1762,6 @@ Constructor
 
 local function Constructor()
   local name = "WeakAurasDisplayButton"..AceGUI:GetNextWidgetNum(Type);
-  ---@class Button
   local button = CreateFrame("Button", name, UIParent, "OptionsListButtonTemplate");
   button:SetHeight(32);
   button:SetWidth(1000);
@@ -1807,7 +1801,6 @@ local function Constructor()
 
   button.description = {};
 
-  ---@class Button
   local view = CreateFrame("Button", nil, button);
   button.view = view;
   view:SetWidth(16);
@@ -1917,7 +1910,6 @@ local function Constructor()
   downgroup:SetScript("OnLeave", Hide_Tooltip);
   downgroup:Hide();
 
-  ---@class Button
   local expand = CreateFrame("Button", nil, button);
   button.expand = expand;
   expand.expanded = true;

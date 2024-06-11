@@ -1,7 +1,4 @@
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 if not WeakAuras.IsLibsOK() then
   return

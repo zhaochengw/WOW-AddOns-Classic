@@ -39,18 +39,16 @@ local methods = {
     if mode == "one" then
       self.firstDropdown.frame:Show()
       self.secondDropDown.frame:Hide()
-      self.firstDropdown.frame:ClearAllPoints()
-      self.firstDropdown.frame:SetPoint("TOPLEFT", self.frame)
-      self.firstDropdown.frame:SetPoint("TOPRIGHT", self.frame)
+      self.firstDropdown.frame:SetAllPoints(self.frame)
     else
       local halfWidth = self.frame:GetWidth() / 2
       self.firstDropdown.frame:Show()
       self.secondDropDown.frame:Show()
       self.firstDropdown.frame:ClearAllPoints()
       self.firstDropdown.frame:SetPoint("TOPLEFT", self.frame)
-      self.firstDropdown.frame:SetPoint("TOPRIGHT", self.frame, "TOPLEFT", halfWidth, 0)
+      self.firstDropdown.frame:SetPoint("BOTTOMRIGHT", self.frame, "BOTTOMLEFT", halfWidth, 0)
       self.secondDropDown.frame:SetPoint("TOPLEFT", self.frame, halfWidth, 0)
-      self.secondDropDown.frame:SetPoint("TOPRIGHT", self.frame, "TOPRIGHT")
+      self.secondDropDown.frame:SetPoint("BOTTOMRIGHT", self.frame, "BOTTOMRIGHT")
     end
   end,
   ["OnAcquire"] = function(widget)
@@ -156,11 +154,8 @@ local methods = {
     self.firstDropdown = nil
     self.secondDropDown = nil
   end,
-  ["SetLabel"] = function(self, v)
-    if v == "" then
-      v = " "
-    end
-    self.firstDropdown:SetLabel(v)
+  ["SetLabel"] = function(self, ...)
+    self.firstDropdown:SetLabel(...)
   end,
   ["SetValue"] = function(self, value)
     for displayName, treeValue in pairs(self.userdata.tree) do

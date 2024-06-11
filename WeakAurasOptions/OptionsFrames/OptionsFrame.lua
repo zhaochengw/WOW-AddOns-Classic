@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local tinsert, tremove, wipe = table.insert, table.remove, wipe
@@ -18,7 +15,6 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
----@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
@@ -116,7 +112,11 @@ function OptionsPrivate.CreateFrame()
   frame:EnableMouse(true)
   frame:SetMovable(true)
   frame:SetResizable(true)
-  frame:SetResizeBounds(minWidth, minHeight)
+  if frame.SetResizeBounds then
+    frame:SetResizeBounds(minWidth, minHeight)
+  else
+    frame:SetMinResize(minWidth, minHeight)
+  end
   frame:SetFrameStrata("DIALOG")
   -- Workaround classic issue
   WeakAurasOptionsPortrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])
@@ -349,7 +349,7 @@ function OptionsPrivate.CreateFrame()
 
 
   local minimizebutton = CreateFrame("Button", nil, frame, "MaximizeMinimizeButtonFrameTemplate")
-  minimizebutton:SetPoint("RIGHT", frame.CloseButton, "LEFT", WeakAuras.IsClassicEraOrWrathOrCata() and  10 or 0, 0)
+  minimizebutton:SetPoint("RIGHT", frame.CloseButton, "LEFT", WeakAuras.IsClassicEraOrWrath() and  10 or 0, 0)
   minimizebutton:SetOnMaximizedCallback(function()
     frame.minimized = false
     local right, top = frame:GetRight(), frame:GetTop()
@@ -1117,7 +1117,7 @@ function OptionsPrivate.CreateFrame()
     containerScroll:SetLayout("flow")
     border:AddChild(containerScroll)
 
-    if C_AddOns.GetAddOnEnableState("WeakAurasTemplates") ~= Enum.AddOnEnableState.None then
+    if GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0 then
       local simpleLabel = AceGUI:Create("Label")
       simpleLabel:SetFont(STANDARD_TEXT_FONT, 24, "OUTLINE")
       simpleLabel:SetColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
@@ -1352,10 +1352,8 @@ function OptionsPrivate.CreateFrame()
 
     for _, id in ipairs(batchSelection) do
       if not alreadySelected[id] then
-        if displayButtons[id].frame:IsVisible() then
-          displayButtons[id]:Pick()
-          tinsert(tempGroup.controlledChildren, id)
-        end
+        displayButtons[id]:Pick()
+        tinsert(tempGroup.controlledChildren, id)
       end
     end
     frame:ClearOptions(tempGroup.id)

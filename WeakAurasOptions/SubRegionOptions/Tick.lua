@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L;
 
@@ -26,53 +23,31 @@ local function createOptions(parentData, data, index, subIndex)
       order = 2,
       hasAlpha = true,
     },
-
+    tick_placement_mode = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Tick Mode"],
+      order = 3,
+      values = OptionsPrivate.Private.tick_placement_modes,
+    },
+    tick_placement = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = L["Tick Placement"],
+      order = 4,
+      validate = WeakAuras.ValidateNumeric,
+      desc = L["Enter in a value for the tick's placement."],
+    },
     tick_thickness = {
       type = "range",
       control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Thickness"],
-      order = 2.5,
+      order = 5,
       min = 0,
       softMax = 20,
       step = 1,
     },
-
-    tick_progress_source_space = {
-      type = "description",
-      name = "",
-      order = 3,
-      width = WeakAuras.normalWidth,
-    },
-
-    tick_placement_mode = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Tick Mode"],
-      order = 3.1,
-      values = OptionsPrivate.Private.tick_placement_modes,
-    },
-
-
-    tick_progress_source_space_2 = {
-      type = "description",
-      name = "",
-      order = 3.2,
-      width = WeakAuras.normalWidth,
-    },
-
-    tick_add = {
-      type = "execute",
-      name = L["Add"],
-      order = 5,
-      width = WeakAuras.normalWidth,
-      func = function()
-        tinsert(data.tick_placements, 0)
-        WeakAuras.Add(parentData)
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
-      end
-    },
-
     tick_extrasDescription = {
       type = "execute",
       control = "WeakAurasExpandSmall",
@@ -105,7 +80,7 @@ local function createOptions(parentData, data, index, subIndex)
         return description
       end,
       width = WeakAuras.doubleWidth,
-      order = 7,
+      order = 6,
       func = function(info, button)
         local collapsed = OptionsPrivate.IsCollapsed("subtext", "subtext", "tickextras" .. index, true)
         OptionsPrivate.SetCollapsed("subtext", "subtext", "tickextras" .. index, not collapsed)
@@ -124,7 +99,7 @@ local function createOptions(parentData, data, index, subIndex)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Automatic length"],
-      order = 8,
+      order = 7,
       desc = L["Matches the height setting of a horizontal bar or width for a vertical bar."],
       hidden = hiddentickextras,
     },
@@ -133,7 +108,7 @@ local function createOptions(parentData, data, index, subIndex)
       control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Length"],
-      order = 9,
+      order = 8,
       min = 0,
       softMax = 50,
       step = 1,
@@ -144,14 +119,14 @@ local function createOptions(parentData, data, index, subIndex)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Use Texture"],
-      order = 10,
+      order = 9,
       hidden = hiddentickextras,
     },
     tick_blend_mode = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Blend Mode"],
-      order = 11,
+      order = 10,
       values = OptionsPrivate.Private.blend_types,
       disabled = function() return not data.use_texture end,
       hidden = hiddentickextras,
@@ -159,7 +134,7 @@ local function createOptions(parentData, data, index, subIndex)
     tick_texture = {
       type = "input",
       name = L["Texture"],
-      order = 12,
+      order = 11,
       width = WeakAuras.doubleWidth - 0.15,
       disabled = function() return not data.use_texture end,
       hidden = hiddentickextras,
@@ -168,14 +143,11 @@ local function createOptions(parentData, data, index, subIndex)
       type = "execute",
       name = L["Choose"],
       width = 0.15,
-      order = 12.5,
+      order = 11.5,
       func = function()
-        local path = { "subRegions", index }
-        local paths = {}
-        for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
-          paths[child.id] = path
-        end
-        OptionsPrivate.OpenTexturePicker(parentData, paths, {
+        OptionsPrivate.OpenTexturePicker(parentData, {
+          "subRegions", index
+        }, {
           texture = "tick_texture",
           color = "tick_color",
           blendMode = "tick_blend_mode"
@@ -192,7 +164,7 @@ local function createOptions(parentData, data, index, subIndex)
       type = "toggle",
       width = WeakAuras.doubleWidth,
       name = L["Desaturate"],
-      order = 13,
+      order = 12,
       hidden = hiddentickextras,
     },
     tick_rotation = {
@@ -202,7 +174,6 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Rotation"],
       min = 0,
       max = 360,
-      step = 1,
       order = 14,
       hidden = hiddentickextras,
     },
@@ -222,7 +193,6 @@ local function createOptions(parentData, data, index, subIndex)
       order = 16,
       softMin = -200,
       softMax = 200,
-      step = 1,
       hidden = hiddentickextras,
     },
     tick_yOffset = {
@@ -233,7 +203,6 @@ local function createOptions(parentData, data, index, subIndex)
       order = 17,
       softMin = -200,
       softMax = 200,
-      step = 1,
       hidden = hiddentickextras,
     },
 
@@ -248,72 +217,6 @@ local function createOptions(parentData, data, index, subIndex)
       }
     }
   }
-
-  if data then
-    for i in ipairs(data.tick_placements) do
-      options["tick_progress_source" .. i] = {
-        type = "select",
-        width = WeakAuras.normalWidth,
-        name = L["Progress Source"],
-        order = 4 + i / 100,
-        control = "WeakAurasTwoColumnDropdown",
-        values = OptionsPrivate.Private.GetProgressSourcesForUi(parentData, true),
-        get = function(info)
-          return OptionsPrivate.Private.GetProgressValueConstant(data.progressSources[i] or {-2, ""})
-        end,
-        set = function(info, value)
-          if value then
-            data.progressSources = data.progressSources or {}
-            data.progressSources[i] = data.progressSources[i] or {}
-            -- Copy only trigger + property
-            data.progressSources[i][1] = value[1]
-            data.progressSources[i][2] = value[2]
-          else
-            data.progressSources[i] = nil
-          end
-          WeakAuras.Add(parentData)
-        end,
-        hidden = function()
-          return not(data.tick_placement_mode == "ValueOffset")
-        end
-      }
-
-      options["tick_placement" .. i] = {
-        type = "input",
-        width = WeakAuras.normalWidth - 0.15,
-        name = L["Tick Placement"],
-        order = 4 + i / 100 + 0.001,
-        validate = WeakAuras.ValidateNumeric,
-        desc = L["Enter in a value for the tick's placement."],
-        get = function(info)
-          return data.tick_placements[i] or ""
-        end,
-        set = function(info, value)
-          data.tick_placements[i] = value
-          WeakAuras.Add(parentData)
-        end
-      }
-
-      options["tick_placement_delete" .. i] = {
-        type = "execute",
-        width = 0.15,
-        name = L["Delete"],
-        order = 4 + i / 100 + 0.002,
-        func = function()
-          tremove(data.tick_placements, i)
-          WeakAuras.Add(parentData)
-          WeakAuras.ClearAndUpdateOptions(parentData.id)
-        end,
-        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
-        imageWidth = 24,
-        imageHeight = 24,
-        control = "WeakAurasIcon",
-        disabled = function()
-          return #data.tick_placements < 2
-        end
-      }
-    end
-  end
 
   OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "subtick")
 

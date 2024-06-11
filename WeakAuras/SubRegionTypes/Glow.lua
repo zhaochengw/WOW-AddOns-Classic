@@ -1,8 +1,6 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class Private
-local Private = select(2, ...)
+--- @type string, Private
+local AddonName, Private = ...
 
 local LCG = LibStub("LibCustomGlow-1.0")
 
@@ -255,7 +253,7 @@ local funcs = {
       if self.parentRegionType ~= "aurabar" then
         self.parent:AnchorSubRegion(self, "area", "region")
       end
-    else -- noop function in case of unsupported glow
+    else -- noop function in case of unsuported glow
       self.glowStart = function() end
       self.glowStop = function() end
     end

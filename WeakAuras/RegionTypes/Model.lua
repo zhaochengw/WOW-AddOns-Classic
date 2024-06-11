@@ -1,8 +1,6 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class Private
-local Private = select(2, ...)
+--- @type string, Private
+local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
@@ -86,7 +84,11 @@ local function create(parent)
   region.regionType = "model"
   region:SetMovable(true);
   region:SetResizable(true);
-  region:SetResizeBounds(1, 1)
+  if region.SetResizeBounds then
+    region:SetResizeBounds(1, 1)
+  else
+    region:SetMinResize(1, 1)
+  end
 
   -- Border region
   local border = CreateFrame("Frame", nil, region, "BackdropTemplate");
@@ -111,7 +113,7 @@ end
 
 local function CreateModel()
   local frame = CreateFrame("PlayerModel", nil, UIParent)
-  frame.SetTransformFixed = Private.ModelSetTransformFixed
+  frame.SetTransformFixed = frame.GetResizeBounds and Private.ModelSetTransformFixed or frame.SetTransform -- TODO change test to WeakAuras.IsWrathOrRetail() after 3.4.1 release
   return frame
 end
 
@@ -144,7 +146,12 @@ local function ConfigureModel(region, model, data)
   if data.modelIsUnit then
     model:RegisterEvent("UNIT_MODEL_CHANGED");
 
-    local unit = data.model_fileId
+    local unit
+    if WeakAuras.IsClassicEra() then
+      unit = data.model_path
+    else
+      unit = data.model_fileId
+    end
 
     if (unit == "target") then
       model:RegisterEvent("PLAYER_TARGET_CHANGED");
@@ -228,9 +235,9 @@ local function modify(parent, region, data)
       bgFile = SharedMedia:Fetch("background", data.borderBackdrop),
       insets = {
         left     = data.borderInset,
-        right    = data.borderInset,
-        top      = data.borderInset,
-        bottom   = data.borderInset,
+        right     = data.borderInset,
+        top     = data.borderInset,
+        bottom     = data.borderInset,
       },
     });
     border:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);

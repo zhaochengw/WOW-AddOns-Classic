@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local pairs, error, coroutine = pairs, error, coroutine
@@ -10,7 +7,6 @@ local pairs, error, coroutine = pairs, error, coroutine
 -- WoW APIs
 local GetSpellInfo, IsSpellKnown = GetSpellInfo, IsSpellKnown
 
----@class WeakAuras
 local WeakAuras = WeakAuras
 
 local spellCache = {}

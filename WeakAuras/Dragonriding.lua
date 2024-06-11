@@ -1,8 +1,6 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class Private
-local Private = select(2, ...)
+--- @type string, Private
+local AddonName, Private = ...
 
 local function HandleEvent(self, event, arg1)
   Private.callbacks:Fire("WA_DRAGONRIDING_UPDATE")

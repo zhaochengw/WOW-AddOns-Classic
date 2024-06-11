@@ -1,9 +1,7 @@
 if not WeakAuras.IsLibsOK() then return end
 if not WeakAuras.IsRetail() then return end
----@type string
-local AddonName = ...
----@class Private
-local Private = select(2, ...)
+--- @type string, Private
+local AddonName, Private = ...
 
 --- @class LibSpecialization
 --- @field Register fun(self: LibSpecialization, name: string, callback: function)

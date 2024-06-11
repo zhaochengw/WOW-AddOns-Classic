@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 local Type, Version = "WeakAurasTextureButton", 26
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)

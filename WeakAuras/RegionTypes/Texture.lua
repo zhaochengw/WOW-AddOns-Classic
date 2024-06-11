@@ -1,8 +1,6 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class Private
-local Private = select(2, ...)
+--- @type string, Private
+local AddonName, Private = ...
 
 local L = WeakAuras.L;
 
@@ -81,7 +79,11 @@ local function create(parent)
   region.regionType = "texture"
   region:SetMovable(true);
   region:SetResizable(true);
-  region:SetResizeBounds(1, 1)
+  if region.SetResizeBounds then
+    region:SetResizeBounds(1, 1)
+  else
+    region:SetMinResize(1, 1)
+  end
 
   local texture = region:CreateTexture();
   texture:SetSnapToPixelGrid(false)
@@ -187,7 +189,6 @@ local function modify(parent, region, data)
         DoTexCoord()
       end
     end
-    region:UpdateProgress()
   end
 
   function region:Color(r, g, b, a)

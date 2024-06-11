@@ -1,11 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
 
----@type string
-local AddonName = ...
----@class Private
-local Private = select(2, ...)
+--- @type string, Private
+local AddonName, Private = ...
 
----@class WeakAuras
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
@@ -26,28 +23,31 @@ local function WA_GetClassColor(classFilename)
   return "ffffffff"
 end
 
----@type table<string, string>
+---@class Private
+---@field glow_action_types table<string, string>
 Private.glow_action_types = {
   show = L["Show"],
   hide = L["Hide"]
 }
 
----@type table<string, string>
+---@class Private
+---@field glow_frame_types table<string, string>
 Private.glow_frame_types = {
   UNITFRAME = L["Unit Frame"],
   NAMEPLATE = L["Nameplate"],
-  FRAMESELECTOR = L["Frame Selector"],
-  PARENTFRAME = L["Parent Frame"]
+  FRAMESELECTOR = L["Frame Selector"]
 }
 
----@type table<dynamicGroupCircularTypes, string>
+---@class Private
+---@field circular_group_constant_factor_types table<dynamicGroupCircularTypes, string>
 Private.circular_group_constant_factor_types = {
   ANGLE = L["Angle and Radius"],
   RADIUS = L["Radius"],
   SPACING = L["Spacing"]
 }
 
----@type table<number, string>
+---@class Private
+---@field frame_strata_types table<number, string>
 Private.frame_strata_types = {
   [1] = L["Inherited"],
   [2] = "BACKGROUND",
@@ -60,25 +60,29 @@ Private.frame_strata_types = {
   [9] = "TOOLTIP"
 }
 
----@type table<string, string>
+---@class Private
+---@field hostility_types table<string, string>
 Private.hostility_types = {
   hostile = L["Hostile"],
   friendly = L["Friendly"]
 }
 
----@type table<string, string>
+---@class Private
+---@field character_types table<string, string>
 Private.character_types = {
   player = L["Player Character"],
   npc = L["Non-player Character"]
 }
 
----@type table<string, string>
+---@class Private
+---@field spec_position_types table<string, string>
 Private.spec_position_types = {
   RANGED = L["Ranged"],
   MELEE = L["Melee"]
 }
 
----@type table<string, string>
+---@class Private
+---@field group_sort_types table<string, string>
 Private.group_sort_types = {
   ascending = L["Ascending"],
   descending = L["Descending"],
@@ -87,33 +91,38 @@ Private.group_sort_types = {
   custom = L["Custom"]
 }
 
----@type table<string, string>
+---@class Private
+---@field group_hybrid_position_types table<string, string>
 Private.group_hybrid_position_types = {
   hybridFirst = L["Marked First"],
   hybridLast = L["Marked Last"]
 }
 
----@type table<string, string>
+---@class Private
+---@field group_hybrid_sort_types table<string, string>
 Private.group_hybrid_sort_types = {
   ascending = L["Ascending"],
   descending = L["Descending"]
 }
 
----@type table<number, string>
+---@class Private
+---@field time_format_types table<number, string>
 Private.time_format_types = {
   [0] = L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],
   [1] = L["Old Blizzard (2h | 3m | 10s | 2.4)"],
   [2] = L["Modern Blizzard (1h 3m | 3m 7s | 10s | 2.4)"],
 }
 
----@type table<number, string>
+---@class Private
+---@field time_precision_types table<number, string>
 Private.time_precision_types = {
   [1] = "12.3",
   [2] = "12.34",
   [3] = "12.345",
 }
 
----@type table<number, string>
+---@class Private
+---@field precision_types table<number, string>
 Private.precision_types = {
   [0] = "12",
   [1] = "12.3",
@@ -121,26 +130,30 @@ Private.precision_types = {
   [3] = "12.345",
 }
 
----@type table<string, string>
+---@class Private
+---@field big_number_types table<string, string>
 Private.big_number_types = {
   ["AbbreviateNumbers"] = L["AbbreviateNumbers (Blizzard)"],
   ["AbbreviateLargeNumbers"] = L["AbbreviateLargeNumbers (Blizzard)"]
 }
 
----@type table<string, string>
+---@class Private
+---@field round_types table<string, string>
 Private.round_types = {
   floor = L["Floor"],
   ceil = L["Ceil"],
   round = L["Round"]
 }
 
----@type table<string, string>
+---@class Private
+---@field unit_color_types table<string, string>
 Private.unit_color_types = {
   none = L["None"],
   class = L["Class"]
 }
 
----@type table<string, string>
+---@class Private
+---@field unit_realm_name_types table<string, string>
 Private.unit_realm_name_types = {
   never = L["Never"],
   star = L["* Suffix"],
@@ -267,21 +280,13 @@ local simpleFormatters = {
   },
 }
 
----@alias optionAdder fun(name: string, option: table)
----@alias optionGetter fun(name: string): any
----@alias formatter fun(input: any): string
-
----@class FormatType
----@field display string
----@field AddOptions fun(symbol: string, hidden: boolean, addOption: optionAdder, get: optionGetter)
----@field CreateFormatter fun(symbol: string, get: optionGetter, withoutColor: boolean, data: table): formatter?, boolean?
-
----@type table<string, FormatType>
+---@class Private
+---@field format_types table<string, {display: string, AddOptions: fun(symbol: string, hidden: boolean, addOption: fun(string, table), get: fun(string): any), CreateFormatter: fun(symbol: string, get: fun(string): any): fun(value: any, state: table): any}>
 Private.format_types = {
   none = {
     display = L["None"],
     AddOptions = function() end,
-    CreateFormatter = function() return nil end
+    CreateFormatter = function() end
   },
   string = {
     display = L["String"],
@@ -365,7 +370,7 @@ Private.format_types = {
         disabled = function() return get(symbol .. "_time_format", 0) ~= 0 end
       })
     end,
-    CreateFormatter = function(symbol, get, wihoutColor, data)
+    CreateFormatter = function(symbol, get)
       local format = get(symbol .. "_time_format", 0)
       local threshold = get(symbol .. "_time_dynamic_threshold", 60)
       local precision = get(symbol .. "_time_precision", 1)
@@ -380,98 +385,33 @@ Private.format_types = {
       end
       local mainFormater = simpleFormatters.time[format]
 
-      local modRateProperty = {}
-      local timePointProperty = {}
-
-      -- For the mod rate support, we need to know which state member is the modRate, as
-      -- different progressSources can have different modRates
-      -- Here, we only collect the names, so that the actual formatter can quickly lookup
-      -- the property
-      -- This is somewhat complicated by legacy behaviour (for %p, %t) and that %foo, can
-      -- be the foo of different triggers that might use different modRate properties
-      -- Similarly to distinguish between time formaters for durations and timepoints,
-      -- we maintain a lookup table for time points
-      -- Timepoint formatters need to run every frame, so we rturn true if we
-      -- are formatting a timepoint
-      local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
-      triggerNum = triggerNum and tonumber(triggerNum)
-      sym = sym or symbol
-
-      if triggerNum then
-        if sym == "p" or sym == "t" then
-          if modRate then
-            modRateProperty[triggerNum] = "modRate"
-          end
-        else
-          local progressSource = Private.GetProgressSourceFor(data, triggerNum, sym)
-          if progressSource then
-            if modRate and progressSource[5] then
-              modRateProperty[triggerNum] = progressSource[5]
-            end
-            if progressSource[2] == "timer" or progressSource[2] == "elapsedTimer" then
-              timePointProperty[triggerNum] = true
-            end
-          end
-        end
-      else
-        if symbol == "p" or symbol == "t" then
-          for i = 1, #data.triggers do
-            if modRate then
-              modRateProperty[i] = "modRate"
-            end
-          end
-        else
-          for i = 1, #data.triggers do
-            local progressSource = Private.GetProgressSourceFor(data, i, symbol)
-            if progressSource then
-              if modRate and progressSource[5] then
-                modRateProperty[i] = progressSource[5]
-              end
-              if progressSource[2] == "timer" or progressSource[2] == "elapsedTimer" then
-                timePointProperty[i] = true
-              end
-            end
-          end
-        end
-      end
-
       local formatter
       if threshold == 0 then
-        formatter = function(value, state, trigger)
+        formatter = function(value, state)
           if type(value) ~= 'number' or value == math.huge then
             return ""
           end
-
-          if timePointProperty[trigger] then
-            value = abs(GetTime() - value)
-          end
-
           if value <= 0 then
             return ""
           end
 
-          if modRate and trigger and modRateProperty[trigger] then
-            value = value / (state[modRateProperty[trigger]] or 1.0)
+          if modRate then
+            value = value / (state.modRate or 1.0)
           end
 
           return mainFormater(value)
         end
       else
         local formatString = "%." .. precision .. "f"
-        formatter = function(value, state, trigger)
+        formatter = function(value, state)
           if type(value) ~= 'number' or value == math.huge then
             return ""
           end
-
-          if timePointProperty[trigger] then
-            value = abs(GetTime() - value)
-          end
-
           if value <= 0 then
             return ""
           end
-          if modRate and trigger and modRateProperty[trigger] then
-            value = value / (state[modRateProperty[trigger]] or 1.0)
+          if modRate then
+            value = value / (state.modRate or 1.0)
           end
           if value < threshold then
             return string.format(formatString, value)
@@ -481,18 +421,20 @@ Private.format_types = {
         end
       end
 
+      local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+      sym = sym or symbol
       if sym == "p" or sym == "t" then
         -- Special case %p and %t. Since due to how the formatting
         -- work previously, the time formatter only formats %p and %t
         -- if the progress type is timed!
-        return function(value, state, trigger)
+        return function(value, state)
           if not state or state.progressType ~= "timed" then
             return value
           end
-          return formatter(value, state, trigger)
-        end, next(timePointProperty) ~= nil
+          return formatter(value, state)
+        end
       else
-        return formatter, next(timePointProperty) ~= nil
+        return formatter
       end
     end
   },
@@ -915,11 +857,13 @@ Private.format_types = {
   }
 }
 
----@type table<string, string>
+---@class Private
+---@field format_types_display table<string, string>
 Private.format_types_display = {}
 for k, v in pairs(Private.format_types) do Private.format_types_display[k] = v.display end
 
----@type table<string, string>
+---@class Private
+---@field sound_channel_types table<string, string>
 Private.sound_channel_types = {
   Master = L["Master"],
   SFX = ENABLE_SOUNDFX,
@@ -928,52 +872,60 @@ Private.sound_channel_types = {
   Dialog = ENABLE_DIALOG
 }
 
----@type table<string, string>
+---@class Private
+---@field sound_condition_types table<string, string>
 Private.sound_condition_types = {
   Play = L["Play"],
   Loop = L["Loop"],
   Stop = L["Stop"]
 }
 
----@type table<string, string>
+---@class Private
+---@field trigger_require_types table<string, string>
 Private.trigger_require_types = {
   any = L["Any Triggers"],
   all = L["All Triggers"],
   custom = L["Custom Function"]
 }
 
----@type table<string, string>
+---@class Private
+---@field trigger_require_types_one table<string, string>
 Private.trigger_require_types_one = {
   any = L["Trigger 1"],
   custom = L["Custom Function"]
 }
 
----@type table<string, number>
+---@class Private
+---@field trigger_modes table<string, number>
 Private.trigger_modes = {
   ["first_active"] = -10,
 }
 
----@type table<string, string>
+---@class Private
+---@field debuff_types table<string, string>
 Private.debuff_types = {
   HELPFUL = L["Buff"],
   HARMFUL = L["Debuff"],
   BOTH = L["Buff/Debuff"]
 }
 
----@type table<number, string>
+---@class Private
+---@field tooltip_count table<number, string>
 Private.tooltip_count = {
   [1] = L["First"],
   [2] = L["Second"],
   [3] = L["Third"]
 }
 
----@type table<string, string>
+---@class Private
+---@field aura_types table<string, string>
 Private.aura_types = {
   BUFF = L["Buff"],
   DEBUFF = L["Debuff"],
 }
 
----@type table<string, string>
+---@class Private
+---@field debuff_class_types table<string, string>
 Private.debuff_class_types = {
   magic = L["Magic"],
   curse = L["Curse"],
@@ -983,7 +935,8 @@ Private.debuff_class_types = {
   none = L["None"]
 }
 
----@type table<string, string>
+---@class Private
+---@field player_target_events table<string, string>
 Private.player_target_events = {
   PLAYER_TARGET_CHANGED = "target",
   PLAYER_FOCUS_CHANGED = "focus",
@@ -991,13 +944,15 @@ Private.player_target_events = {
   PLAYER_SOFT_FRIEND_CHANGED = "softfriend",
 }
 
----@type table<string, string>
+---@class Private
+---@field soft_target_cvars table<string, string>
 Private.soft_target_cvars = {
   softenemy = "SoftTargetEnemy",
   softfriend = "SoftTargetFriend"
 }
 
----@type table<string, string>
+---@class Private
+---@field target_unit_types table<string, string>
 local target_unit_types = {
   target = L["Target"],
   softenemy = L["Soft Enemy"],
@@ -1008,7 +963,8 @@ if not WeakAuras.IsClassicEra() then
   target_unit_types.focus = L["Focus"]
 end
 
----@type table<string, string>
+---@class Private
+---@field unit_types table<string, string>
 Private.unit_types = Mixin({
   player = L["Player"],
   group = L["Group"],
@@ -1017,7 +973,8 @@ Private.unit_types = Mixin({
   multi = L["Multi-target"]
 }, target_unit_types)
 
----@type table<string, string>
+---@class Private
+---@field unit_types_bufftrigger_2 table<string, string>
 Private.unit_types_bufftrigger_2 = Mixin({
   player = L["Player"],
   group = L["Smart Group"],
@@ -1031,14 +988,16 @@ Private.unit_types_bufftrigger_2 = Mixin({
   multi = L["Multi-target"]
 }, target_unit_types)
 
----@type table<string, string>
+---@class Private
+---@field actual_unit_types_with_specific table<string, string>
 Private.actual_unit_types_with_specific = Mixin({
   player = L["Player"],
   pet = L["Pet"],
   member = L["Specific Unit"]
 }, target_unit_types)
 
----@type table<string, string>
+---@class Private
+---@field actual_unit_types_cast table<string, string>
 Private.actual_unit_types_cast = Mixin({
   player = L["Player"],
   group = L["Smart Group"],
@@ -1051,10 +1010,12 @@ Private.actual_unit_types_cast = Mixin({
   member = L["Specific Unit"],
 }, target_unit_types)
 
----@type string
+---@class Private
+---@field actual_unit_types_cast_tooltip string
 Private.actual_unit_types_cast_tooltip = L["• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.\n• |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.\n|cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.\n• |cffffff00Party|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arena|r, and |cffffff00Nameplate|r can match multiple corresponding unitIDs.\n• |cffffff00Smart Group|r adjusts to your current group type, matching just the \"player\" when solo, \"party\" units (including \"player\") in a party or \"raid\" units in a raid.\n\n|cffffff00*|r Yellow Unit settings will create clones for each matching unit while this trigger is providing Dynamic Info to the Aura."]
 
----@type table<string, string>
+---@class Private
+---@field threat_unit_types table<string, string>
 Private.threat_unit_types = Mixin({
   nameplate = L["Nameplate"],
   boss = L["Boss"],
@@ -1062,13 +1023,15 @@ Private.threat_unit_types = Mixin({
   none = L["At Least One Enemy"]
 }, target_unit_types)
 
----@type table<string, string>
+---@class Private
+---@field unit_types_range_check table<string, string>
 Private.unit_types_range_check = Mixin({
   pet = L["Pet"],
   member = L["Specific Unit"]
 }, target_unit_types)
 
----@type table<number, string>
+---@class Private
+---@field unit_threat_situation_types table<number, string>
 Private.unit_threat_situation_types = {
   [-1] = L["Not On Threat Table"],
   [0] = "|cFFB0B0B0"..L["Lower Than Tank"].."|r",
@@ -1126,7 +1089,8 @@ do
   end
 end
 
----@type table<number, string>
+---@class Private
+---@field covenant_types table<number, string>
 if WeakAuras.IsRetail() then
   Private.covenant_types = {}
   Private.covenant_types[0] = L["None"]
@@ -1135,14 +1099,16 @@ if WeakAuras.IsRetail() then
   end
 end
 
----@type table<string, string>
+---@class Private
+---@field faction_group table<string, string>
 Private.faction_group = {
   Alliance = L["Alliance"],
   Horde = L["Horde"],
   Neutral = L["Neutral"]
 }
 
----@type table<number, string>
+---@class Private
+---@field form_types table<number, string>
 Private.form_types = {};
 local function update_forms()
   wipe(Private.form_types);
@@ -1163,13 +1129,15 @@ form_frame:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")
 form_frame:RegisterEvent("PLAYER_LOGIN")
 form_frame:SetScript("OnEvent", update_forms);
 
----@type table<string, string>
+---@class Private
+---@field blend_types table<string, string>
 Private.blend_types = {
   ADD = L["Glow"],
   BLEND = L["Opaque"]
 }
 
----@type table<string, string>
+---@class Private
+---@field texture_wrap_types table<string, string>
 Private.texture_wrap_types = {
   CLAMP = L["Clamp"],
   MIRROR = L["Mirror"],
@@ -1177,25 +1145,29 @@ Private.texture_wrap_types = {
   CLAMPTOBLACKADDITIVE = L["No Extend"]
 }
 
----@type table<string, string>
+---@class Private
+---@field slant_mode table<string, string>
 Private.slant_mode = {
   INSIDE = L["Keep Inside"],
   EXTEND = L["Extend Outside"]
 }
 
----@type table<string, string>
+---@class Private
+---@field text_check_types table<string, string>
 Private.text_check_types = {
   update = L["Every Frame"],
   event = L["Trigger Update"]
 }
 
----@type table<string, string>
+---@class Private
+---@field check_types table<string, string>
 Private.check_types = {
   update = L["Every Frame (High CPU usage)"],
   event = L["Event(s)"]
 }
 
----@type table<string, string>
+---@class Private
+---@field point_types table<string, string>
 Private.point_types = {
   BOTTOMLEFT = L["Bottom Left"],
   BOTTOM = L["Bottom"],
@@ -1208,7 +1180,8 @@ Private.point_types = {
   CENTER = L["Center"]
 }
 
----@type table<string, table>
+---@class Private
+---@field default_types_for_anchor table<string, table>
 Private.default_types_for_anchor = {}
 for k, v in pairs(Private.point_types) do
   Private.default_types_for_anchor[k] = {
@@ -1222,7 +1195,8 @@ Private.default_types_for_anchor["ALL"] = {
   type = "area"
 }
 
----@type table<string, string>
+---@class Private
+---@field aurabar_anchor_areas table<string, string>
 Private.aurabar_anchor_areas = {
   icon = L["Icon"],
   fg = L["Foreground"],
@@ -1267,7 +1241,8 @@ Private.spark_rotation_types = {
   MANUAL = L["Manual Rotation"]
 }
 
----@type table<string, string>
+---@class Private
+---@field spark_hide_types table<string, string>
 Private.spark_hide_types = {
   NEVER = L["Never"],
   FULL  = L["Full"],
@@ -1282,7 +1257,8 @@ Private.tick_placement_modes = {
   ValueOffset = L["Offset from progress"]
 }
 
----@type table<string, string>
+---@class Private
+---@field font_flags table<string, string>
 Private.font_flags = {
   None = L["None"],
   MONOCHROME = L["Monochrome"],
@@ -1292,25 +1268,29 @@ Private.font_flags = {
   ["MONOCHROME|THICKOUTLINE"] = L["Monochrome Thick Outline"]
 }
 
----@type table<string, string>
+---@class Private
+---@field text_automatic_width table<string, string>
 Private.text_automatic_width = {
   Auto = L["Automatic"],
   Fixed = L["Fixed"]
 }
 
----@type table<string, string>
+---@class Private
+---@field text_word_wrap table<string, string>
 Private.text_word_wrap = {
   WordWrap = L["Wrap"],
   Elide = L["Elide"]
 }
 
----@type table<string, string>
+---@class Private
+---@field include_pets_types table<string, string>
 Private.include_pets_types = {
   PlayersAndPets = L["Players and Pets"],
   PetsOnly = L["Pets only"]
 }
 
----@type table<string, string>
+---@class Private
+---@field subevent_prefix_types table<string, string>
 Private.subevent_prefix_types = {
   SWING = L["Swing"],
   RANGE = L["Range"],
@@ -1329,7 +1309,8 @@ Private.subevent_prefix_types = {
   ENCHANT_REMOVED = L["Enchant Removed"]
 }
 
----@type table<string, string>
+---@class Private
+---@field subevent_actual_prefix_types table<string, string>
 Private.subevent_actual_prefix_types = {
   SWING = L["Swing"],
   RANGE = L["Range"],
@@ -1339,7 +1320,8 @@ Private.subevent_actual_prefix_types = {
   ENVIRONMENTAL = L["Environmental"]
 }
 
----@type table<string, string>
+---@class Private
+---@field subevent_suffix_types table<string, string>
 Private.subevent_suffix_types = {
   _ABSORBED = L["Absorbed"],
   _DAMAGE = L["Damage"],
@@ -1375,7 +1357,8 @@ Private.subevent_suffix_types = {
   _RESURRECT = L["Resurrect"]
 }
 
----@type table<number, string>
+---@class Private
+---@field power_types table<number, string>
 Private.power_types = {
   [0] = POWER_TYPE_MANA,
   [1] = POWER_TYPE_RED_POWER,
@@ -1396,24 +1379,10 @@ Private.power_types = {
 if WeakAuras.IsRetail() then
   Private.power_types[99] = STAGGER
   Private.power_types[19] = POWER_TYPE_ESSENCE
-elseif WeakAuras.IsCataClassic() then
-  Private.power_types[8] = nil
-  Private.power_types[12] = nil
-  Private.power_types[13] = nil
-  Private.power_types[16] = nil
-  Private.power_types[17] = nil
-  Private.power_types[18] = nil
-  Private.power_types[26] = L["Eclipse"] -- couldn't find a localised global
-
----@type table<string, string>
-  Private.eclipse_direction_types = {
-    none = L["None"],
-    sun = L["Sun"],
-    moon = L["Moon"]
-  }
 end
 
----@type table<string, string>
+---@class Private
+---@field miss_types table<string, string>
 Private.miss_types = {
   ABSORB = L["Absorb"],
   BLOCK = L["Block"],
@@ -1427,7 +1396,8 @@ Private.miss_types = {
   RESIST = L["Resist"]
 }
 
----@type table<string, string>
+---@class Private
+---@field environmental_types table<string, string>
 Private.environmental_types = {
   Drowning = STRING_ENVIRONMENTAL_DAMAGE_DROWNING,
   Falling = STRING_ENVIRONMENTAL_DAMAGE_FALLING,
@@ -1437,7 +1407,8 @@ Private.environmental_types = {
   Slime = STRING_ENVIRONMENTAL_DAMAGE_SLIME
 }
 
----@type table<string, string>
+---@class Private
+---@field combatlog_flags_check_type table<string, string>
 Private.combatlog_flags_check_type = {
   Mine = L["Mine"],
   InGroup = L["In Group"],
@@ -1445,14 +1416,16 @@ Private.combatlog_flags_check_type = {
   NotInGroup = L["Not in Smart Group"]
 }
 
----@type table<string, string>
+---@class Private
+---@field combatlog_flags_check_reaction table<string, string>
 Private.combatlog_flags_check_reaction = {
   Hostile = L["Hostile"],
   Neutral = L["Neutral"],
   Friendly = L["Friendly"]
 }
 
----@type table<string, string>
+---@class Private
+---@field combatlog_flags_check_object_type table<string, string>
 Private.combatlog_flags_check_object_type = {
   Object = L["Object"],
   Guardian = L["Guardian"],
@@ -1461,7 +1434,8 @@ Private.combatlog_flags_check_object_type = {
   Player = L["Player"]
 }
 
----@type table<number, string>
+---@class Private
+---@field combatlog_spell_school_types table<number, string>
 Private.combatlog_spell_school_types = {
   [1] = STRING_SCHOOL_PHYSICAL,
   [2] = STRING_SCHOOL_HOLY,
@@ -1499,29 +1473,32 @@ Private.combatlog_spell_school_types = {
   [127] = STRING_SCHOOL_CHAOS,
 }
 
----@type table<number, string>
+---@class Private
+---@field combatlog_spell_school_types_for_ui table<number, string>
 Private.combatlog_spell_school_types_for_ui = {}
 for id, str in pairs(Private.combatlog_spell_school_types) do
   Private.combatlog_spell_school_types_for_ui[id] = ("%.3d - %s"):format(id, str)
 end
 
+---@class Private
+---@field GetCurrencyListSize fun(): number
+---@field GetCurrencyIDFromLink fun(currencyLink: string): number
+---@field ExpandCurrencyList fun(index: number, expand: boolean): any
+---@field GetCurrencyListInfo fun(index: number): table
 if WeakAuras.IsRetail() then
   Private.GetCurrencyListSize = C_CurrencyInfo.GetCurrencyListSize
   Private.GetCurrencyIDFromLink = C_CurrencyInfo.GetCurrencyIDFromLink
   Private.ExpandCurrencyList = C_CurrencyInfo.ExpandCurrencyList
   Private.GetCurrencyListInfo = C_CurrencyInfo.GetCurrencyListInfo
-elseif WeakAuras.IsWrathOrCata() then
+elseif WeakAuras.IsWrathClassic() then
   Private.GetCurrencyListSize = GetCurrencyListSize
-  ---@type fun(currencyLink: string): number?
   Private.GetCurrencyIDFromLink = function(currencyLink)
     local currencyID = string.match(currencyLink, "|Hcurrency:(%d+):")
-    return tonumber(currencyID)
+    return currencyID
   end
-  ---@type fun(index: number, expand: boolean)
   Private.ExpandCurrencyList = function(index, expand)
     ExpandCurrencyList(index, expand and 1 or 0)
   end
-  ---@type fun(index: number): CurrencyInfo
   Private.GetCurrencyListInfo = function(index)
     local name, isHeader, isExpanded, isUnused, isWatched, _, icon, _, hasWeeklyLimit, _, _, itemID = GetCurrencyListInfo(index)
     local currentAmount, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity
@@ -1552,15 +1529,16 @@ elseif WeakAuras.IsWrathOrCata() then
   end
 end
 
+---@class Private
+---@field discovered_currencies table<number, string>
+---@field discovered_currencies_sorted table<number, number>
+---@field discovered_currencies_headers table<string, boolean>
 local function InitializeCurrencies()
   if Private.discovered_currencies then
     return
   end
-  ---@type table<number, string>
   Private.discovered_currencies = {}
-  ---@type table<number, number>
   Private.discovered_currencies_sorted = {}
-  ---@type table<string, boolean>
   Private.discovered_currencies_headers = {}
   local expanded = {}
 
@@ -1599,34 +1577,38 @@ local function InitializeCurrencies()
   Private.discovered_currencies_sorted["member"] = -1;
 end
 
----@type function
+---@class Private
+---@field GetDiscoveredCurrencies function
 Private.GetDiscoveredCurrencies = function()
   InitializeCurrencies()
   return Private.discovered_currencies
 end
 
----@type function
+---@class Private
+---@field GetDiscoveredCurrenciesSorted function
 Private.GetDiscoveredCurrenciesSorted  = function()
   InitializeCurrencies()
   return Private.discovered_currencies_sorted
 end
 
----@type function
+---@class Private
+---@field GetDiscoveredCurrenciesHeaders function
 Private.GetDiscoveredCurrenciesHeaders  = function()
   InitializeCurrencies()
   return Private.discovered_currencies_headers
 end
 
+---@class Private
+---@field reputations table<number, string>
+---@field reputations_sorted table<number, number>
+---@field reputations_headers table<string, boolean>
 local function InitializeReputations()
   if Private.reputations then
     return
   end
 
-  ---@type table<number, string>
   Private.reputations = {}
-  ---@type table<number, number>
   Private.reputations_sorted = {}
-  ---@type table<string, boolean>
   Private.reputations_headers = {}
 
   local collapsed = {}
@@ -1660,25 +1642,29 @@ local function InitializeReputations()
   end
 end
 
----@type function
+---@class Private
+---@field GetReputations function
 Private.GetReputations = function()
   InitializeReputations()
   return Private.reputations
 end
 
----@type function
+---@class Private
+---@field GetReputationsSorted function
 Private.GetReputationsSorted  = function()
   InitializeReputations()
   return Private.reputations_sorted
 end
 
----@type function
+---@class Private
+---@field GetReputationsHeaders function
 Private.GetReputationsHeaders  = function()
   InitializeReputations()
   return Private.reputations_headers
 end
 
----@type table<number, string>
+---@class Private
+---@field combatlog_raid_mark_check_type table<number, string>
 Private.combatlog_raid_mark_check_type = {
   [0] = RAID_TARGET_NONE,
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:14|t " .. RAID_TARGET_1, -- Star
@@ -1692,7 +1678,8 @@ Private.combatlog_raid_mark_check_type = {
   L["Any"]
 }
 
----@type table<number, number>
+---@class Private
+---@field combatlog_raidFlags table<number, number>
 Private.combatlog_raidFlags = {
   [0] = 0,
   [1] = 1,
@@ -1705,7 +1692,8 @@ Private.combatlog_raidFlags = {
   [128] = 8,
 }
 
----@type table<number, string>
+---@class Private
+---@field raid_mark_check_type table<number, string>
 Private.raid_mark_check_type = CopyTable(Private.combatlog_raid_mark_check_type)
 Private.raid_mark_check_type[9] = nil
 
@@ -1725,7 +1713,8 @@ Private.orientation_with_circle_types = {
   ANTICLOCKWISE = L["Anticlockwise"]
 }
 
----@type table<string, string>
+---@class Private
+---@field gradient_orientations table<string, string>
 Private.gradient_orientations = {
   HORIZONTAL = L["Horizontal"],
   VERTICAL = L["Vertical"]
@@ -1751,28 +1740,31 @@ Private.spec_types_2 = {
 
 WeakAuras.spec_types_specific = {}
 
----@type table<number, string>
+---@class Private
+---@field spec_types_all table<number, string>
 Private.spec_types_all = {}
 local function update_specs()
-  local cataFix = WeakAuras.IsCataClassic() and -1 or 0 -- see https://github.com/Stanzilla/WoWUIBugs/issues/559
   for classFileName, classID in pairs(WeakAuras.class_ids) do
     WeakAuras.spec_types_specific[classFileName] = {}
-    local numSpecs = WeakAuras.IsCataClassic() and 3 or GetNumSpecializationsForClassID(classID)
-    for i = 1, numSpecs do
-      local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i + cataFix);
+    local numSpecs = GetNumSpecializationsForClassID(classID)
+    for i=1, numSpecs do
+      local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
-        local classColor = WA_GetClassColor(classFileName)
-        Private.spec_types_all[specId] = CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
-        .. "|T"..(icon or "error")..":0|t "..(WrapTextInColorCode(tabName, classColor) or "error");
+        if WeakAuras.IsRetail() then
+          local classColor = WA_GetClassColor(classFileName)
+          Private.spec_types_all[specId] = CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
+          .. "|T"..(icon or "error")..":0|t "..(WrapTextInColorCode(tabName, classColor) or "error");
+        end
       end
     end
   end
 end
 
----@type table<number, string>
+---@class Private
+---@field talent_types table<number, string>
 Private.talent_types = {}
-if WeakAuras.IsCataOrRetail() then
+if WeakAuras.IsRetail() then
   local spec_frame = CreateFrame("Frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
@@ -1785,7 +1777,8 @@ else
   end
 end
 
----@type table<number, string>
+---@class Private
+---@field pvp_talent_types table<number, string>
 Private.pvp_talent_types = {}
 if WeakAuras.IsRetail() then
   for i = 1,10 do
@@ -1793,7 +1786,8 @@ if WeakAuras.IsRetail() then
   end
 end
 
----@type table<number, string>
+---@class Private
+---@field talent_extra_option_types table<number, string>
 Private.talent_extra_option_types = {
     [0] = L["Talent Known"],
     [1] = L["Talent Selected"],
@@ -1802,14 +1796,16 @@ Private.talent_extra_option_types = {
 }
 
 -- GetTotemInfo() only works for the first 5 totems
----@type table<number, string>
+---@class Private
+---@field totem_types table<number, string>
 Private.totem_types = {};
 local totemString = L["Totem #%i"];
 for i = 1, 5 do
   Private.totem_types[i] = totemString:format(i);
 end
 
----@type table<string, string>
+---@class Private
+---@field loss_of_control_types table<string, string>
 Private.loss_of_control_types = {
   NONE = "NONE",
   CHARM = "CHARM",
@@ -1827,18 +1823,20 @@ Private.loss_of_control_types = {
   STUN_MECHANIC = "STUN_MECHANIC",
 }
 
----@type table<number, string>
+---@class Private
+---@field main_spell_schools table<number, string>
 Private.main_spell_schools = {
-  [1] = C_Spell.GetSchoolString(1),
-  [2] = C_Spell.GetSchoolString(2),
-  [4] = C_Spell.GetSchoolString(4),
-  [8] = C_Spell.GetSchoolString(8),
-  [16] = C_Spell.GetSchoolString(16),
-  [32] = C_Spell.GetSchoolString(32),
-  [64] = C_Spell.GetSchoolString(64),
+  [1] = GetSchoolString(1),
+  [2] = GetSchoolString(2),
+  [4] = GetSchoolString(4),
+  [8] = GetSchoolString(8),
+  [16] = GetSchoolString(16),
+  [32] = GetSchoolString(32),
+  [64] = GetSchoolString(64),
 }
 
----@type table<string, table<string, string>>
+---@class Private
+---@field texture_types table<string, table<string, string>>
 Private.texture_types = {
   ["Blizzard Alerts"] = {
     ["424570"] 	= "Spell Activation Overlay 0",
@@ -2234,7 +2232,7 @@ if WeakAuras.IsClassicEra() then -- Classic
       runes[tostring(v)] = nil
     end
   end
-elseif WeakAuras.IsWrathOrCata() then
+elseif WeakAuras.IsWrathClassic() then
   Private.texture_types["Blizzard Alerts"] = nil
   do
     local beams = Private.texture_types["Beams"]
@@ -2417,7 +2415,8 @@ Private.texture_types["PowerAuras Words"] = {
   ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt"
 }
 
----@type table<string, string>
+---@class Private
+---@field operator_types table<string, string>
 Private.operator_types = {
   ["=="] = "=",
   ["~="] = "!=",
@@ -2427,35 +2426,37 @@ Private.operator_types = {
   ["<="] = "<="
 }
 
----@type table<string, string>
+---@class Private
+---@field equality_operator_types table<string, string>
 Private.equality_operator_types = {
   ["=="] = "=",
   ["~="] = "!="
 }
 
----@type table<string, string>
+---@class Private
+---@field operator_types_without_equal table<string, string>
 Private.operator_types_without_equal = {
   [">="] = ">=",
   ["<="] = "<="
 }
 
----@type table<string, string>
+---@class Private
+---@field string_operator_types table<string, string>
 Private.string_operator_types = {
   ["=="] = L["Is Exactly"],
   ["find('%s')"] = L["Contains"],
   ["match('%s')"] = L["Matches (Pattern)"]
 }
 
----@type table<string, string>
+---@class Private
+---@field weapon_types table<string, string>
 Private.weapon_types = {
   ["main"] = MAINHANDSLOT,
   ["off"] = SECONDARYHANDSLOT
 }
-if WeakAuras.IsCataClassic() then
-  Private.weapon_types.ranged = RANGEDSLOT
-end
 
----@type table<string, string>
+---@class Private
+---@field swing_types table<string, string>
 Private.swing_types = {
   ["main"] = MAINHANDSLOT,
   ["off"] = SECONDARYHANDSLOT
@@ -2465,8 +2466,10 @@ if WeakAuras.IsClassicEraOrWrath() then
   Private.swing_types["ranged"] = RANGEDSLOT
 end
 
-if WeakAuras.IsWrathOrCata() then
-  ---@type string[]
+---@class Private
+---@field rune_specific_types table<number, string>
+---@field essence_specific_types table<number, string>
+if WeakAuras.IsWrathClassic() then
   Private.rune_specific_types = {
     [1] = L["Blood Rune #1"],
     [2] = L["Blood Rune #2"],
@@ -2476,7 +2479,6 @@ if WeakAuras.IsWrathOrCata() then
     [6] = L["Frost Rune #2"],
   }
 else
-  ---@type string[]
   Private.rune_specific_types = {
     [1] = L["Rune #1"],
     [2] = L["Rune #2"],
@@ -2485,7 +2487,6 @@ else
     [5] = L["Rune #5"],
     [6] = L["Rune #6"]
   }
-  ---@type string[]
   Private.essence_specific_types = {
     [1] = L["Essence #1"],
     [2] = L["Essence #2"],
@@ -2496,32 +2497,37 @@ else
   }
 end
 
----@type table<string, string>
+---@class Private
+---@field custom_trigger_types table<string, string>
 Private.custom_trigger_types = {
   ["event"] = L["Event"],
   ["status"] = L["Status"],
   ["stateupdate"] = L["Trigger State Updater (Advanced)"]
 }
 
----@type table<string, string>
+---@class Private
+---@field eventend_types table<string, string>
 Private.eventend_types = {
   ["timed"] = L["Timed"],
   ["custom"] = L["Custom"]
 }
 
----@type table<string, string>
+---@class Private
+---@field timedeventend_types table<string, string>
 Private.timedeventend_types = {
   ["timed"] = L["Timed"],
 }
 
----@type table<string, string>
+---@class Private
+---@field justify_types table<string, string>
 Private.justify_types = {
   ["LEFT"] = L["Left"],
   ["CENTER"] = L["Center"],
   ["RIGHT"] = L["Right"]
 }
 
----@type table<string, string>
+---@class Private
+---@field grow_types table<string, string>
 Private.grow_types = {
   ["LEFT"] = L["Left"],
   ["RIGHT"] = L["Right"],
@@ -2537,7 +2543,8 @@ Private.grow_types = {
 
 -- horizontal types: R (right), L (left)
 -- vertical types: U (up), D (down)
----@type table<dynamicGroupGridType, string>
+---@class Private
+---@field grid_types table<dynamicGroupGridType, string>
 Private.grid_types = {
   RU = L["Right, then Up"],
   UR = L["Up, then Right"],
@@ -2559,7 +2566,8 @@ Private.grid_types = {
   VH = L["Centered Vertical, then Centered Horizontal"]
 }
 
----@type table<dynamicGroupCenterType, string>
+---@class Private
+---@field centered_types_h table<dynamicGroupCenterType, string>
 Private.centered_types_h = {
   LR = L["Left to Right"],
   RL = L["Right to Left"],
@@ -2567,7 +2575,8 @@ Private.centered_types_h = {
   CRL = L["Center, then alternating right and left"]
 }
 
----@type table<dynamicGroupCenterType, string>
+---@class Private
+---@field centered_types_v table<dynamicGroupCenterType, string>
 Private.centered_types_v = {
   LR = L["Bottom to Top"],
   RL = L["Top to Bottom"],
@@ -2575,47 +2584,54 @@ Private.centered_types_v = {
   CRL = L["Center, then alternating top and bottom"]
 }
 
----@type table<string, string>
+---@class Private
+---@field text_rotate_types table<string, string>
 Private.text_rotate_types = {
   ["LEFT"] = L["Left"],
   ["NONE"] = L["None"],
   ["RIGHT"] = L["Right"]
 }
 
----@type table<string, string>
+---@class Private
+---@field align_types table<string, string>
 Private.align_types = {
   ["LEFT"] = L["Left"],
   ["CENTER"] = L["Center"],
   ["RIGHT"] = L["Right"]
 }
 
----@type table<string, string>
+---@class Private
+---@field rotated_align_types table<string, string>
 Private.rotated_align_types = {
   ["LEFT"] = L["Top"],
   ["CENTER"] = L["Center"],
   ["RIGHT"] = L["Bottom"]
 }
 
----@type table<string, string>
+---@class Private
+---@field icon_side_types table<string, string>
 Private.icon_side_types = {
   ["LEFT"] = L["Left"],
   ["RIGHT"] = L["Right"]
 }
 
----@type table<string, string>
+---@class Private
+---@field rotated_icon_side_types table<string, string>
 Private.rotated_icon_side_types = {
   ["LEFT"] = L["Top"],
   ["RIGHT"] = L["Bottom"]
 }
 
----@type table<string, string>
+---@class Private
+---@field anim_types table<string, string>
 Private.anim_types = {
   none = L["None"],
   preset = L["Preset"],
   custom = L["Custom"]
 }
 
----@type table<string, string>
+---@class Private
+---@field anim_ease_types table<string, string>
 Private.anim_ease_types = {
   none = L["None"],
   easeIn = L["Ease In"],
@@ -2623,7 +2639,8 @@ Private.anim_ease_types = {
   easeOutIn = L["Ease In and Out"]
 }
 
----@type table<string, function>
+---@class Private
+---@field anim_ease_functions table<string, function>
 Private.anim_ease_functions = {
   none = function(percent) return percent end,
   easeIn = function(percent, power)
@@ -2640,7 +2657,8 @@ Private.anim_ease_functions = {
   end
 }
 
----@type table<string, string>
+---@class Private
+---@field anim_translate_types table<string, string>
 Private.anim_translate_types = {
   straightTranslate = L["Normal"],
   circle = L["Circle"],
@@ -2652,7 +2670,8 @@ Private.anim_translate_types = {
   custom = L["Custom Function"]
 }
 
----@type table<string, string>
+---@class Private
+---@field anim_scale_types table<string, string>
 Private.anim_scale_types = {
   straightScale = L["Normal"],
   pulse = L["Pulse"],
@@ -2661,7 +2680,8 @@ Private.anim_scale_types = {
   custom = L["Custom Function"]
 }
 
----@type table<string, string>
+---@class Private
+---@field anim_alpha_types table<string, string>
 Private.anim_alpha_types = {
   straight = L["Normal"],
   alphaPulse = L["Pulse"],
@@ -2669,7 +2689,8 @@ Private.anim_alpha_types = {
   custom = L["Custom Function"]
 }
 
----@type table<string, string>
+---@class Private
+---@field anim_rotate_types table<string, string>
 Private.anim_rotate_types = {
   straight = L["Normal"],
   backandforth = L["Back and Forth"],
@@ -2677,7 +2698,8 @@ Private.anim_rotate_types = {
   custom = L["Custom Function"]
 }
 
----@type table<string, string>
+---@class Private
+---@field anim_color_types table<string, string>
 Private.anim_color_types = {
   straightColor = L["Legacy RGB Gradient"],
   straightHSV = L["Gradient"],
@@ -2686,7 +2708,8 @@ Private.anim_color_types = {
   custom = L["Custom Function"]
 }
 
----@type table<string, string>
+---@class Private
+---@field instance_types table<string, string>
 Private.instance_types = {
   none = L["No Instance"],
   scenario = L["Scenario"],
@@ -2708,10 +2731,11 @@ if WeakAuras.IsClassicEra() then
   Private.instance_types["ratedarena"] = nil
 end
 
----@type table
+---@class Private
+---@field instance_difficulty_types table
 Private.instance_difficulty_types = {}
 
-if not WeakAuras.IsClassicEra() then
+do
   -- Fill out instance_difficulty_types automatically.
   -- Unfortunately the names BLizzard gives are not entirely unique,
   -- so try hard to disambiguate them via the type, and if nothing works by
@@ -2787,7 +2811,8 @@ if not WeakAuras.IsClassicEra() then
   end
 end
 
----@type table<number, string>
+---@class Private
+---@field TocToExpansion table<number, string>
 Private.TocToExpansion = {
    [1] = L["Classic"],
    [2] = L["Burning Crusade"],
@@ -2801,14 +2826,16 @@ Private.TocToExpansion = {
   [10] = L["Dragonflight"]
 }
 
----@type table<string, string>
+---@class Private
+---@field group_types table<string, string>
 Private.group_types = {
   solo = L["Not in Group"],
   group = L["In Party"],
   raid = L["In Raid"]
 }
 
----@type table<string, string>
+---@class Private
+---@field difficulty_types table<string, string>
 if WeakAuras.IsRetail() then
   Private.difficulty_types = {
     none = L["None"],
@@ -2825,17 +2852,11 @@ elseif WeakAuras.IsWrathClassic() then
     normal = PLAYER_DIFFICULTY1,
     heroic = PLAYER_DIFFICULTY2,
   }
-elseif WeakAuras.IsCataClassic() then
-  Private.difficulty_types = {
-    none = L["None"],
-    lfr = PLAYER_DIFFICULTY3,
-    normal = PLAYER_DIFFICULTY1,
-    heroic = PLAYER_DIFFICULTY2,
-  }
 end
 
----@type table<string, string>
-if WeakAuras.IsClassicEraOrWrathOrCata() then
+---@class Private
+---@field raid_role_types table<string, string>
+if WeakAuras.IsClassicEraOrWrath() then
   Private.raid_role_types = {
     MAINTANK = "|TInterface\\GroupFrame\\UI-Group-maintankIcon:16:16|t "..MAINTANK,
     MAINASSIST = "|TInterface\\GroupFrame\\UI-Group-mainassistIcon:16:16|t "..MAINASSIST,
@@ -2843,8 +2864,9 @@ if WeakAuras.IsClassicEraOrWrathOrCata() then
   }
 end
 
----@type table<string, string>
-if WeakAuras.IsWrathOrCataOrRetail() then
+---@class Private
+---@field role_types table<string, string>
+if WeakAuras.IsWrathOrRetail() then
   Private.role_types = {
     TANK = INLINE_TANK_ICON.." "..TANK,
     DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
@@ -2852,14 +2874,16 @@ if WeakAuras.IsWrathOrCataOrRetail() then
   }
 end
 
----@type table<string, string>
+---@class Private
+---@field group_member_types table<string, string>
 Private.group_member_types = {
   LEADER = L["Leader"],
   ASSIST = L["Assist"],
   NONE = L["None"]
 }
 
----@type table<string, string>
+---@class Private
+---@field classification_types table<string, string>
 Private.classification_types = {
   worldboss = L["World Boss"],
   rareelite = L["Rare Elite"],
@@ -2870,7 +2894,8 @@ Private.classification_types = {
   minus = L["Minus (Small Nameplate)"]
 }
 
----@type table<string, string>
+---@class Private
+---@field anim_start_preset_types table<string, string>
 Private.anim_start_preset_types = {
   slidetop = L["Slide from Top"],
   slideleft = L["Slide from Left"],
@@ -2884,7 +2909,8 @@ Private.anim_start_preset_types = {
   starShakeDecay = L["Star Shake"],
 }
 
----@type table<string, string>
+---@class Private
+---@field anim_main_preset_types table<string, string>
 Private.anim_main_preset_types = {
   shake = L["Shake"],
   spin = L["Spin"],
@@ -2899,7 +2925,8 @@ Private.anim_main_preset_types = {
   bounce = L["Bounce"]
 }
 
----@type table<string, string>
+---@class Private
+---@field anim_finish_preset_types table<string, string>
 Private.anim_finish_preset_types = {
   slidetop = L["Slide to Top"],
   slideleft = L["Slide to Left"],
@@ -2913,7 +2940,8 @@ Private.anim_finish_preset_types = {
   starShakeDecay = L["Star Shake"],
 }
 
----@type table<string, string>
+---@class Private
+---@field chat_message_types table<string, string>
 Private.chat_message_types = {
   CHAT_MSG_INSTANCE_CHAT = L["Instance"],
   CHAT_MSG_BG_SYSTEM_NEUTRAL = L["BG-System Neutral"],
@@ -2941,7 +2969,8 @@ Private.chat_message_types = {
   CHAT_MSG_LOOT = L["Loot"],
 }
 
----@type table<string, string>
+---@class Private
+---@field send_chat_message_types table<string, string>
 Private.send_chat_message_types = {
   WHISPER = L["Whisper"],
   SAY = L["Say"],
@@ -2961,7 +2990,8 @@ Private.send_chat_message_types = {
 
 Private.send_chat_message_types.TTS = L["Text-to-speech"]
 
----@type table
+---@class Private
+---@field tts_voices table
 Private.tts_voices = {}
 
 local function updateTts()
@@ -2977,20 +3007,23 @@ local TtsUpdateFrame = CreateFrame("FRAME")
 TtsUpdateFrame:RegisterEvent("VOICE_CHAT_TTS_VOICES_UPDATE")
 TtsUpdateFrame:SetScript("OnEvent", updateTts)
 
----@type table<string, string>
+---@class Private
+---@field group_aura_name_info_types table<string, string>
 Private.group_aura_name_info_types = {
   aura = L["Aura Name"],
   players = L["Player(s) Affected"],
   nonplayers = L["Player(s) Not Affected"]
 }
 
----@type table<string, string>
+---@class Private
+---@field group_aura_stack_info_types table<string, string>
 Private.group_aura_stack_info_types = {
   count = L["Number Affected"],
   stack = L["Aura Stack"]
 }
 
----@type table<string, string>
+---@class Private
+---@field cast_types table<string, string>
 Private.cast_types = {
   cast = L["Cast"],
   channel = L["Channel (Spell)"]
@@ -3109,13 +3142,15 @@ LSM:Register("sound", "Wicked Female Laugh", PowerAurasSoundPath.."wlaugh.ogg")
 LSM:Register("sound", "Wolf Howl", PowerAurasSoundPath.."wolf5.ogg")
 LSM:Register("sound", "Yeehaw", PowerAurasSoundPath.."yeehaw.ogg")
 
----@type table<string, string>
+---@class Private
+---@field sound_types table<string, string>
 Private.sound_types = {
   [" custom"] = " " .. L["Custom"],
   [" KitID"] = " " .. L["Sound by Kit ID"]
 }
 
----@type table
+---@class Private
+---@field sound_file_types table
 Private.sound_file_types = {}
 
 for name, path in next, LSM:HashTable("sound") do
@@ -3145,48 +3180,28 @@ LSM:Register("font", "Fira Sans Medium", "Interface\\Addons\\WeakAuras\\Media\\F
 -- register plain white border
 LSM:Register("border", "Square Full White", [[Interface\AddOns\WeakAuras\Media\Textures\Square_FullWhite.tga]])
 
+--
 LSM:Register("statusbar", "Clean", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Clean]])
 LSM:Register("statusbar", "Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes]])
 LSM:Register("statusbar", "Thick Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thick]])
 LSM:Register("statusbar", "Thin Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thin]])
 LSM:Register("border", "Drop Shadow", [[Interface\AddOns\WeakAuras\Media\Textures\Border_DropShadow]])
 
-if PowerBarColor then
-  local function capitalizeFirstLetter(str)
-    -- Split the string into words separated by underscores
-    local words = {}
-    for word in string.gmatch(str, "[^_]+") do
-      table.insert(words, word)
-    end
-    -- Capitalize the first letter of each word
-    for i, word in ipairs(words) do
-      words[i] = word:sub(1, 1):upper() .. word:sub(2):lower()
-    end
-    return table.concat(words, " ")
-  end
-
-  for power, data in pairs(PowerBarColor) do
-    if type(power) == "string" and data.atlas then
-      local name = "Blizzard " .. capitalizeFirstLetter(power)
-      LSM:Register("statusbar_atlas", name, data.atlas)
-    elseif data.atlasElementName then
-      LSM:Register("statusbar_atlas", "Blizzard " .. data.atlasElementName, "UI-HUD-UnitFrame-Player-PortraitOff-Bar-" .. data.atlasElementName)
-    end
-  end
-end
-
----@type table<string, string>
+---@class Private
+---@field duration_types table<string, string>
 Private.duration_types = {
   seconds = L["Seconds"],
   relative = L["Relative"]
 }
 
----@type table<string, string>
+---@class Private
+---@field duration_types_no_choice table<string, string>
 Private.duration_types_no_choice = {
   seconds = L["Seconds"]
 }
 
----@type table<number, string>
+---@class Private
+---@field gtfo_types table<number, string>
 Private.gtfo_types = {
   [1] = L["High Damage"],
   [2] = L["Low Damage"],
@@ -3194,7 +3209,8 @@ Private.gtfo_types = {
   [4] = L["Friendly Fire"]
 }
 
----@type table<string, string>
+---@class Private
+---@field pet_behavior_types table<string, string>
 Private.pet_behavior_types = {
   passive = PET_MODE_PASSIVE,
   defensive = PET_MODE_DEFENSIVE,
@@ -3206,7 +3222,8 @@ if WeakAuras.IsClassicEraOrWrath() then
   Private.pet_behavior_types.assist = nil
 end
 
----@type table<number, string>
+---@class Private
+---@field pet_spec_types table<number, string>
 if WeakAuras.IsRetail() then
   Private.pet_spec_types = {
     [1] = select(2, GetSpecializationInfoByID(74)), -- Ferocity
@@ -3217,28 +3234,32 @@ else
   Private.pet_spec_types = {}
 end
 
----@type table<string, string>
+---@class Private
+---@field cooldown_progress_behavior_types table<string, string>
 Private.cooldown_progress_behavior_types = {
   showOnCooldown = L["On Cooldown"],
   showOnReady = L["Not on Cooldown"],
   showAlways = L["Always"]
 }
 
----@type table<string, string>
+---@class Private
+---@field cooldown_types table<string, string>
 Private.cooldown_types = {
   auto = L["Auto"],
   charges = L["Charges"],
   cooldown = L["Cooldown"]
 }
 
----@type table<string, string>
+---@class Private
+---@field bufftrigger_progress_behavior_types table<string, string>
 Private.bufftrigger_progress_behavior_types = {
   showOnActive = L["Buffed/Debuffed"],
   showOnMissing = L["Missing"],
   showAlways= L["Always"]
 }
 
----@type table<string, string>
+---@class Private
+---@field bufftrigger_2_progress_behavior_types table<string, string>
 Private.bufftrigger_2_progress_behavior_types = {
   showOnActive = L["Aura(s) Found"],
   showOnMissing = L["Aura(s) Missing"],
@@ -3246,13 +3267,15 @@ Private.bufftrigger_2_progress_behavior_types = {
   showOnMatches = L["Match Count"]
 }
 
----@type table<string, string>
+---@class Private
+---@field bufftrigger_2_preferred_match_types table<string, string>
 Private.bufftrigger_2_preferred_match_types = {
   showLowest = L["Least remaining time"],
   showHighest = L["Most remaining time"]
 }
 
----@type table<string, string>
+---@class Private
+---@field bufftrigger_2_per_unit_mode table<string, string>
 Private.bufftrigger_2_per_unit_mode = {
   affected = L["Affected"],
   unaffected = L["Unaffected"],
@@ -3288,44 +3311,51 @@ Private.item_slot_types = {
   [28] = FISHINGTOOLSLOT,
 }
 
----@type table<string, string>
+---@class Private
+---@field charges_change_type table<string, string>
 Private.charges_change_type = {
   GAINED = L["Gained"],
   LOST = L["Lost"],
   CHANGED = L["Changed"]
 }
 
----@type table<string, string>
+---@class Private
+---@field charges_change_condition_type table<string, string>
 Private.charges_change_condition_type = {
   GAINED = L["Gained"],
   LOST = L["Lost"]
 }
 
----@type table<string, string>
+---@class Private
+---@field combat_event_type table<string, string>
 Private.combat_event_type = {
   PLAYER_REGEN_ENABLED = L["Leaving"],
   PLAYER_REGEN_DISABLED = L["Entering"]
 }
 
----@type table<string, string>
+---@class Private
+---@field encounter_event_type table<string, string>
 Private.encounter_event_type = {
   ENCOUNTER_END = L["Leaving"],
   ENCOUNTER_START = L["Entering"]
 }
 
----@type table<number, string>
+---@class Private
+---@field bool_types table<number, string>
 Private.bool_types = {
   [0] = L["False"],
   [1] = L["True"]
 }
 
----@type table<string, string>
+---@class Private
+---@field absorb_modes table<string, string>
 Private.absorb_modes = {
   OVERLAY_FROM_START = L["Attach to Start"],
   OVERLAY_FROM_END = L["Attach to End"]
 }
 
----@type table
+---@class Private
+---@field mythic_plus_affixes table
 Private.mythic_plus_affixes = {}
 
 local mythic_plus_ignorelist = {
@@ -3342,7 +3372,8 @@ if WeakAuras.IsRetail() then
   end
 end
 
----@type table<number, table<string, any>>
+---@class Private
+---@field update_categories table<number, table<string, any>>
 Private.update_categories = {
   {
     name = "anchor",
@@ -3463,7 +3494,8 @@ Private.update_categories = {
 
 -- fields that are handled as special cases when importing
 -- mismatch of internal fields is not counted as a difference
----@type table<string, boolean>
+---@class Private
+---@field internal_fields table<string, boolean>
 Private.internal_fields = {
   uid = true,
   internalVersion = true,
@@ -3500,7 +3532,8 @@ Private.non_transmissable_fields_v2000 = {
   }
 }
 
----@type table<string, any>
+---@class Private
+---@field data_stub table<string, any>
 Private.data_stub = {
   -- note: this is the minimal data stub which prevents false positives in diff upon reimporting an aura.
   -- pending a refactor of other code which adds unnecessary fields, it is possible to shrink it
@@ -3564,7 +3597,8 @@ Private.data_stub = {
   information = {},
 }
 
----@type table<string, string>
+---@class Private
+---@field author_option_classes table<string, string>
 Private.author_option_classes = {
   toggle = "simple",
   input = "simple",
@@ -3580,7 +3614,8 @@ Private.author_option_classes = {
   group = "group"
 }
 
----@type table<string, string>
+---@class Private
+---@field author_option_types table<string, string>
 Private.author_option_types = {
   toggle = L["Toggle"],
   input = L["String"],
@@ -3596,7 +3631,8 @@ Private.author_option_types = {
   group = L["Option Group"],
 }
 
----@type table<string, table<string, any>>
+---@class Private
+---@field author_option_fields table<string, table<string, any>>
 Private.author_option_fields = {
   common = {
     type = true,
@@ -3670,7 +3706,8 @@ Private.author_option_fields = {
   }
 }
 
----@type table<string, string>
+---@class Private
+---@field shared_media_types table<string, string>
 Private.shared_media_types = {
   sound = L["Sound"],
   font = L["Font"],
@@ -3679,7 +3716,8 @@ Private.shared_media_types = {
   statusbar = L["Status Bar"]
 }
 
----@type table<string, string>
+---@class Private
+---@field author_option_media_defaults table<string, string>
 Private.author_option_media_defaults = {
   sound = "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\AirHorn.ogg",
   font = "Friz Quadrata TT",
@@ -3688,7 +3726,8 @@ Private.author_option_media_defaults = {
   statusbar = "Blizzard",
 }
 
----@type table<string, string>
+---@class Private
+---@field author_option_media_controls table<string, string>
 Private.author_option_media_controls = {
   statusbar = "LSM30_Statusbar",
   border = "LSM30_Border",
@@ -3696,40 +3735,46 @@ Private.author_option_media_controls = {
   font = "LSM30_Font"
 }
 
----@type table<string, string>
+---@class Private
+---@field author_option_media_itemControls table<string, string>
 Private.author_option_media_itemControls = {
   sound = "WeakAurasMediaSound"
 }
 
----@type table<number, string>
+---@class Private
+---@field array_entry_name_types table<number, string>
 Private.array_entry_name_types = {
   [-1] = L["Fixed Names"],
   [0] = L["Entry Order"],
   -- the rest is auto-populated with indices which are valid entry name sources
 }
 
--- option types which can be used to generate entry names on arrays
----@type table<string, boolean>
+---@class Private
+---@field name_source_option_types table<string, boolean>
 Private.name_source_option_types = {
+  -- option types which can be used to generate entry names on arrays
   input = true,
   number = true,
   range = true,
 }
 
----@type table<string, string>
+---@class Private
+---@field group_limit_types table<string, string>
 Private.group_limit_types = {
   none = L["Unlimited"],
   max = L["Limited"],
   fixed = L["Fixed Size"],
 }
 
----@type table<string, string>
+---@class Private
+---@field group_option_types table<string, string>
 Private.group_option_types = {
   simple = L["Simple"],
   array = L["Array"],
 }
 
----@type table<number, string>
+---@class Private
+---@field difficulty_info table<number, string>
 Private.difficulty_info = {
   [1] = {
     size = "party",
@@ -3839,15 +3884,17 @@ if WeakAuras.IsRetail() then
   end
 end
 
----@type table<string, string>
+---@class Private
+---@field font_sizes table<string, string>
 Private.font_sizes = {
   small = L["Small"],
   medium = L["Medium"],
   large = L["Large"],
 }
 
+---@class Private
+---@field baseUnitId table<string, boolean>
 -- unitIds registerable with RegisterUnitEvent
----@type table<string, boolean>
 Private.baseUnitId = {
   ["player"] = true,
   ["target"] = true,
@@ -3858,7 +3905,8 @@ Private.baseUnitId = {
   ["softfriend"] = true
 }
 
----@type table<string, boolean>
+---@class Private
+---@field multiUnitId table<string, boolean>
 Private.multiUnitId = {
   ["nameplate"] = true,
   ["boss"] = true,
@@ -3896,7 +3944,7 @@ for i = 1, 4 do
   Private.multiUnitUnits.party["partypet"..i] = true
 end
 
-if WeakAuras.IsWrathOrCataOrRetail() then
+if WeakAuras.IsWrathOrRetail() then
   for i = 1, 10 do
     Private.baseUnitId["boss"..i] = true
     Private.multiUnitUnits.boss["boss"..i] = true
@@ -3918,7 +3966,8 @@ for i = 1, 40 do
   Private.multiUnitUnits.raid["raidpet"..i] = true
 end
 
----@type table<number, string>
+---@class Private
+---@field dbm_types table<number, string>
 Private.dbm_types = {
   [1] = L["Add"],
   [2] = L["AOE"],
@@ -3929,7 +3978,8 @@ Private.dbm_types = {
   [7] = L["Important"]
 }
 
----@type table<string, string>
+---@class Private
+---@field weapon_enchant_types table<string, string>
 Private.weapon_enchant_types = {
   showOnActive = L["Enchant Found"],
   showOnMissing = L["Enchant Missing"],
@@ -4001,7 +4051,8 @@ Private.noreset_swing_spells = {
   --35474 Drums of Panic DO reset the swing timer, do not add
 }
 
----@type table<number, string>
+---@class Private
+---@field item_weapon_types table<number, string>
 Private.item_weapon_types = {}
 
 local skippedWeaponTypes = {}
@@ -4017,12 +4068,12 @@ end
 
 for i = 0, 20 do
   if not skippedWeaponTypes[i] then
-    Private.item_weapon_types[2 * 256 + i] = C_Item.GetItemSubClassInfo(2, i)
+    Private.item_weapon_types[2 * 256 + i] = GetItemSubClassInfo(2, i)
   end
 end
 
 -- Shields
-Private.item_weapon_types[4 * 256 + 6] = C_Item.GetItemSubClassInfo(4, 6)
+Private.item_weapon_types[4 * 256 + 6] = GetItemSubClassInfo(4, 6)
 WeakAuras.item_weapon_types = Private.item_weapon_types
 
 WeakAuras.StopMotion = {}
@@ -4652,11 +4703,9 @@ if WeakAuras.IsClassicEra() then
   end
 end
 
-if WeakAuras.IsWrathOrCata() then
-  if not WeakAuras.IsCataClassic() then
-    Private.item_slot_types[0] = AMMOSLOT
-    Private.item_slot_types[18] = RANGEDSLOT
-  end
+if WeakAuras.IsWrathClassic() then
+  Private.item_slot_types[0] = AMMOSLOT
+  Private.item_slot_types[18] = RANGEDSLOT
   for slot = 20, 28 do
     Private.item_slot_types[slot] = nil
   end

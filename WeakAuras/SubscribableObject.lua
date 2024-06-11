@@ -1,10 +1,7 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class Private
-local Private = select(2, ...)
+--- @type string, Private
+local AddonName, Private = ...
 
----@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
@@ -19,12 +16,7 @@ local L = WeakAuras.L
 --- @field SetOnSubscriptionStatusChanged fun(self: SubscribableObject, event: string, cb: fun())
 --- @field Notify fun(self: SubscribableObject, event: type, ...: any)
 --- @field HasSubscribers fun(self: SubscribableObject, event: string): boolean
-local SubscribableObject =
-{
-  events = {},
-  subscribers = {},
-  callbacks = {},
-
+local SubscribableObject = {
   --- @type fun(self: SubscribableObject)
   ClearSubscribers = function(self)
     self.events = {}
@@ -103,5 +95,12 @@ local SubscribableObject =
 }
 
 function Private.CreateSubscribableObject()
-  return CopyTable(SubscribableObject)
+  local system = {}
+  for f, func in pairs(SubscribableObject) do
+    system[f] = func
+    system.events = {}
+    system.subscribers = {}
+    system.callbacks = {}
+  end
+  return system
 end

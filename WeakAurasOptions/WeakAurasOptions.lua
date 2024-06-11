@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local tinsert, tremove, wipe = table.insert, table.remove, wipe
@@ -13,11 +10,10 @@ local _G = _G
 
 -- WoW APIs
 local InCombatLockdown = InCombatLockdown
-local CreateFrame = CreateFrame
+local CreateFrame, IsAddOnLoaded, LoadAddOn = CreateFrame, IsAddOnLoaded, LoadAddOn
 
 local AceGUI = LibStub("AceGUI-3.0")
 
----@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
@@ -571,7 +567,6 @@ local function OptionsFrame()
   end
 end
 
----@type fun(msg: string, Private: Private)
 function WeakAuras.ToggleOptions(msg, Private)
   if not Private then
     return
@@ -1624,7 +1619,6 @@ end
 function OptionsPrivate.DropIndicator()
   local indicator = frame.dropIndicator
   if not indicator then
-    ---@class Frame
     indicator = CreateFrame("Frame", "WeakAuras_DropIndicator")
     indicator:SetHeight(4)
     indicator:SetFrameStrata("FULLSCREEN")
@@ -1685,8 +1679,8 @@ function WeakAuras.UpdateThumbnail(data)
   button:UpdateThumbnail()
 end
 
-function OptionsPrivate.OpenTexturePicker(baseObject, paths, properties, textures, SetTextureFunc, adjustSize)
-  frame.texturePicker:Open(baseObject, paths, properties, textures, SetTextureFunc, adjustSize)
+function OptionsPrivate.OpenTexturePicker(baseObject, path, properties, textures, SetTextureFunc, adjustSize)
+  frame.texturePicker:Open(baseObject, path, properties, textures, SetTextureFunc, adjustSize)
 end
 
 function OptionsPrivate.OpenIconPicker(baseObject, paths, groupIcon)
@@ -1694,8 +1688,8 @@ function OptionsPrivate.OpenIconPicker(baseObject, paths, groupIcon)
 end
 
 function OptionsPrivate.OpenModelPicker(baseObject, path)
-  if not(C_AddOns.IsAddOnLoaded("WeakAurasModelPaths")) then
-    local loaded, reason = C_AddOns.LoadAddOn("WeakAurasModelPaths");
+  if not(IsAddOnLoaded("WeakAurasModelPaths")) then
+    local loaded, reason = LoadAddOn("WeakAurasModelPaths");
     if not(loaded) then
       reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
       WeakAuras.prettyPrint(string.format(L["ModelPaths could not be loaded, the addon is %s"], reason));
@@ -1711,8 +1705,8 @@ function OptionsPrivate.OpenCodeReview(data)
 end
 
 function OptionsPrivate.OpenTriggerTemplate(data, targetId)
-  if not(C_AddOns.IsAddOnLoaded("WeakAurasTemplates")) then
-    local loaded, reason = C_AddOns.LoadAddOn("WeakAurasTemplates");
+  if not(IsAddOnLoaded("WeakAurasTemplates")) then
+    local loaded, reason = LoadAddOn("WeakAurasTemplates");
     if not(loaded) then
       reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
       WeakAuras.prettyPrint(string.format(L["Templates could not be loaded, the addon is %s"], reason));

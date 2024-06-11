@@ -1,8 +1,6 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class Private
-local Private = select(2, ...)
+--- @type string, Private
+local AddonName, Private = ...
 
 -- Legendaries based on https://wow.tools/dbc/?dbc=runeforgelegendaryability
 -- mapping legendary id to bonus id

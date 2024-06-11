@@ -19,10 +19,8 @@ If target is installed data, or is a uid which points to installed data, then th
 
 ]]--
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class Private
-local Private = select(2, ...)
+--- @type string, Private
+local AddonName, Private = ...
 
 -- Lua APIs
 local tinsert = table.insert
@@ -31,7 +29,6 @@ local pairs, type, unpack = pairs, type, unpack
 local error = error
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 
----@class WeakAuras
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
@@ -553,8 +550,7 @@ end
 
 local function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
   local chattype = "WHISPER"
-  -- WORKAROUND https://github.com/Stanzilla/WoWUIBugs/issues/535, and use RAID/PARTY comms for connected realms
-  if target and (UnitRealmRelationship(target) or 0) ~= 1 then
+  if target and not UnitIsSameServer(target) then
     if UnitInRaid(target) then
       chattype = "RAID"
       text = ("§§%s:%s"):format(target, text)

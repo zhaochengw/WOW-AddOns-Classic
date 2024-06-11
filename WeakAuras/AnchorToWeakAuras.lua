@@ -1,7 +1,5 @@
----@type string
-local AddonName = ...
----@class Private
-local Private = select(2, ...)
+--- @type string, Private
+local AddonName, Private = ...
 
 --- @type table<auraId, auraId>
 local attachedToTarget = {}

@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 local GetAtlasInfo = C_Texture and C_Texture.GetAtlasInfo or GetAtlasInfo
@@ -27,12 +24,7 @@ local function createOptions(id, data)
       width = 0.15,
       order = 1.1,
       func = function()
-        local path = {}
-        local paths = {}
-        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
-          paths[child.id] = path
-        end
-        OptionsPrivate.OpenTexturePicker(data, paths, {
+        OptionsPrivate.OpenTexturePicker(data, {}, {
           texture = "texture",
           color = "color",
           mirror = "mirror",

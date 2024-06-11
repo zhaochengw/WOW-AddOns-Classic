@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 
@@ -375,7 +372,7 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
       end
     end
   }
-  if (C_AddOns.GetAddOnEnableState("WeakAurasTemplates") ~= Enum.AddOnEnableState.None) then
+  if (GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0) then
     options.__applyTemplate = function()
       -- If we have more than a single aura selected,
       -- we want to open the template view with the group/multi selection

@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local pairs, type, ipairs = pairs, type, ipairs
@@ -18,7 +15,6 @@ local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local IndentationLib = IndentationLib
 
----@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 

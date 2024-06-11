@@ -1,8 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class OptionsPrivate
-local OptionsPrivate = select(2, ...)
+local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 
@@ -147,6 +144,18 @@ function OptionsPrivate.GetAnimationOptions(data)
         values = function() return filterAnimPresetTypes(anim_start_preset_types, id) end,
         hidden = function() return data.animation.start.type ~= "preset" end
       },
+      start_duration_type_no_choice = {
+        type = "select",
+        width = WeakAuras.halfWidth,
+        name = L["Time in"],
+        order = 33,
+        values = duration_types_no_choice,
+        disabled = true,
+        hidden = function()
+          return data.animation.start.type ~= "custom" or OptionsPrivate.Private.CanHaveDuration(data)
+        end,
+        get = function() return "seconds" end
+      },
       start_duration_type = {
         type = "select",
         width = WeakAuras.halfWidth,
@@ -154,7 +163,7 @@ function OptionsPrivate.GetAnimationOptions(data)
         order = 33,
         values = duration_types,
         hidden = function()
-          return data.animation.start.type ~= "custom"
+          return data.animation.start.type ~= "custom" or not OptionsPrivate.Private.CanHaveDuration(data)
         end
       },
       start_duration = {
@@ -410,6 +419,18 @@ function OptionsPrivate.GetAnimationOptions(data)
         values = function() return filterAnimPresetTypes(anim_main_preset_types, id) end,
         hidden = function() return data.animation.main.type ~= "preset" end
       },
+      main_duration_type_no_choice = {
+        type = "select",
+        width = WeakAuras.halfWidth,
+        name = L["Time in"],
+        order = 53,
+        values = duration_types_no_choice,
+        disabled = true,
+        hidden = function()
+          return data.animation.main.type ~= "custom" or OptionsPrivate.Private.CanHaveDuration(data)
+        end,
+        get = function() return "seconds" end
+      },
       main_duration_type = {
         type = "select",
         width = WeakAuras.halfWidth,
@@ -417,7 +438,7 @@ function OptionsPrivate.GetAnimationOptions(data)
         order = 53,
         values = duration_types,
         hidden = function()
-          return data.animation.main.type ~= "custom"
+          return data.animation.main.type ~= "custom" or not OptionsPrivate.Private.CanHaveDuration(data)
         end
       },
       main_duration = {
