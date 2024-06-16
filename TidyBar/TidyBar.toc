@@ -1,0 +1,8 @@
+﻿## Interface: 30400
+## Author: Dmerc
+## Title: Tidy Bar
+## Notes: Slim-Fast for your Action Bar
+## Version: 1.4
+## SavedVariables: TidyBarOptions
+
+TidyBar.lua
