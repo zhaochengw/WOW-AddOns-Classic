@@ -29,7 +29,7 @@ end
 
 local function DefaultItemStatsFrame(frame, unit)
     if (not frame.statsFrame) then
-        local statsFrame = CreateFrame("Frame", nil, frame, "InsetFrameTemplate3")--BackdropTemplate
+        local statsFrame = CreateFrame("Frame", nil, frame, "InsetFrameTemplate3,BackdropTemplate")
         statsFrame:SetSize(180, 157)
         statsFrame:SetPoint("TOPLEFT", frame, "TOPRIGHT", 0, -1)
         for i = 1, 32 do

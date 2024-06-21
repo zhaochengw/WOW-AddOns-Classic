@@ -1,11 +1,11 @@
-## Interface: 30400
+## Interface: 30403
 ## Title: MerInspect
-## Version: 1.0.6
-## Notes: Inspect Assist
+## Version: 1.1.6
+## Notes: Inspect Assiest
 ## Notes-zhCN: 观察助手
 ## Notes-zhTW: 觀察助手
 ## Author: M(Mermaid)
-## X-Thanks: Mermaid, 独孤傲雪, xLoki
+## Thanks: Mermaid, 独孤傲雪, xLoki
 ## SavedVariables: MerInspectDB
 
 libs\lib.xml
@@ -20,3 +20,4 @@ InspectUnitGemAndEnchant.lua
 InspectUnitSpecialization.lua
 InspectUnitStats.lua
 InspectUnitStatsHonor.lua
+Misc.lua

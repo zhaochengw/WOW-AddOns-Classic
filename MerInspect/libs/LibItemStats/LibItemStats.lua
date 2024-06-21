@@ -69,16 +69,16 @@ local function SetPercentValue(stats, value, baseon, key)
 end
 
 --套装
-local function SetSuitValue(stats, value, colorStr)
+local function SetSuitValue(stats, name, value, colorStr)
     if (not stats.suit) then stats.suit = {} end
     local found = false
     for _, v in ipairs(stats.suit) do
-        if (v.value == value) then
+        if (v.name == name) then
             found = true
         end
     end
     if (not found) then
-        tinsert(stats.suit, { value = value, colorStr = colorStr })
+        tinsert(stats.suit, { name = name, value = value, colorStr = colorStr })
     end
 end
 
@@ -113,8 +113,12 @@ end
 local function GetStats(text, r, g, b, stats, link)
     local v, v1, v2, txt, txt1, txt2
     --套装名称
-    if strfind(text, "%(%d/%d%)") or strfind(text, "（%d/%d）") then
-        return SetSuitValue(stats, text, select(3, strfind(link or "","(|c%x+)|Hitem:.-|h|r")) or "|cffffffff")
+    local setName, setValue = strmatch(text,"(.-)（(%d/%d)）")
+    if not (setName and setValue) then
+        setName, setValue = strmatch(text,"(.-)%((%d/%d)%)")
+    end
+    if setName and setValue then
+        return SetSuitValue(stats, setName, setValue, select(3, strfind(link or "","(|c%x+)|Hitem:.-|h|r")) or "|cffffffff")
     end
     --灰色属性不统计
     if r < 0.6 and g < 0.6 and b < 0.6 then return end

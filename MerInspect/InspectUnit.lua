@@ -45,7 +45,7 @@ local function GetInspectItemListFrame(parent)
         }
         local height = 424
         frame:SetSize(160, height)
-        frame:SetFrameLevel(0)
+        --frame:SetFrameLevel(0)
         frame:SetPoint("TOPLEFT", parent, "TOPRIGHT", 0, 0)
         frame:SetBackdrop(frame.backdrop)
         frame:SetBackdropColor(0, 0, 0, 0.8)
@@ -57,10 +57,10 @@ local function GetInspectItemListFrame(parent)
         frame.title:SetPoint("TOPLEFT", frame, "TOPLEFT", 66, -18)
         frame.level = frame:CreateFontString(nil, "ARTWORK", itemfont)
         frame.level:SetPoint("TOPLEFT", frame, "TOPLEFT", 66, -42)
-        frame.level:SetFont(frame.level:GetFont(), 14, "THINOUTLINE")
-
+        frame.level:SetFont(frame.level:GetFont(), 12, "THINOUTLINE")
+        
         local itemframe
-        local fontsize = locale:sub(1,2) == "zh" and 14 or 9
+        local fontsize = locale:sub(1,2) == "zh" and 12 or 9
         local backdrop = {
             bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
             edgeFile = "Interface\\Buttons\\WHITE8X8",
@@ -95,7 +95,7 @@ local function GetInspectItemListFrame(parent)
             itemframe.levelString:SetPoint("LEFT", itemframe.label, "RIGHT", 4, 0)
             itemframe.levelString:SetJustifyH("RIGHT")
             itemframe.itemString = itemframe:CreateFontString(nil, "ARTWORK", itemfont)
-            itemframe.itemString:SetFont(itemframe.itemString:GetFont(), 14, "NONE")
+            itemframe.itemString:SetFont(itemframe.itemString:GetFont(), 13, "NONE")
             itemframe.itemString:SetHeight(16)
             itemframe.itemString:SetPoint("LEFT", itemframe.levelString, "RIGHT", 2, 0)
             itemframe:SetScript("OnEnter", function(self)
@@ -121,7 +121,7 @@ local function GetInspectItemListFrame(parent)
             frame["item"..i] = itemframe
             LibEvent:trigger("INSPECT_ITEMFRAME_CREATED", itemframe)
         end
-
+        
         frame.closeButton = CreateFrame("Button", nil, frame)
         frame.closeButton:SetSize(12, 12)
         frame.closeButton:SetScale(0.85)
@@ -195,8 +195,6 @@ function ShowInspectItemListFrame(unit, parent, ilevel, maxLevel)
         LibEvent:trigger("INSPECT_ITEMFRAME_UPDATED", itemframe)
     end
     frame:SetWidth(width + 36)
-    GearManagerDialog:SetFrameLevel(9) --nga:提高装备管理弹窗弹窗层级.
-    --frame:SetFrameLevel(0)
     frame:Show()
 
     LibEvent:trigger("INSPECT_FRAME_SHOWN", frame, parent, ilevel)
@@ -214,7 +212,7 @@ LibEvent:attachEvent("UNIT_INVENTORY_CHANGED", function(self, unit)
     end
 end)
 
---@see InspectCore.lua
+--@see InspectCore.lua 
 LibEvent:attachTrigger("UNIT_INSPECT_READY, UNIT_REINSPECT_READY", function(self, data)
     if (MerInspectDB and not MerInspectDB.ShowInspectItemSheet) then return end
     if (InspectFrame and InspectFrame.unit and UnitGUID(InspectFrame.unit) == data.guid) then
@@ -246,6 +244,10 @@ LibEvent:attachTrigger("INSPECT_FRAME_SHOWN", function(self, frame, parent, ilev
     local x, y, f = 0, 0, parent:GetName()
     if (f == "InspectFrame" or f == "PaperDollFrame") then
         x, y = 33, 14
+    end
+    -- SoD rune frame
+    if (f == "PaperDollFrame" and EngravingFrame and EngravingFrame:IsVisible()) then
+        x = -178
     end
     local backdrop = frame:GetBackdrop()
     if (MerInspectDB and MerInspectDB.ShowInspectAngularBorder) then

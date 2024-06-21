@@ -9,6 +9,10 @@ local VERSION = 1.0
 
 local addon, ns = ...
 
+ns.IsClassic = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC
+ns.IsWrath = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC
+ns.IsClassicSoD = ns.IsClassic and C_Engraving and C_Engraving.IsEngravingEnabled()
+
 local L = ns.L or {}
 
 setmetatable(L, { __index = function(_, k)
@@ -17,7 +21,7 @@ end})
 
 local DefaultDB = {
     version = VERSION,
-    ShowItemSlotString = true,              --物品部位文字
+    ShowItemSlotString = false,              --物品部位文字
     ShowItemBorder = true,                  --物品直角邊框
     ShowCharacterItemSheet = true,          --玩家自己裝備列表
     ShowCharacterItemStats = false,         --玩家自己屬性統計
