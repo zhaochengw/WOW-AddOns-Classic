@@ -70,7 +70,7 @@ Minimap.ZoomOut:Show()
 local function Init(self)
 	local defaults = {
 		profile = {
-			lock = false,
+			lock = true,
 			classcolor = false,
 			shape = "SQUARE",
 			clock = true,
@@ -84,7 +84,7 @@ local function Init(self)
 			addonCompartment = false,
 			autoZoom = true,
 			hideAddons = true,
-			position = {"CENTER", "CENTER", 0, 0},
+			position = {"TOPRIGHT", "TOPRIGHT", -10, -22}
 			borderSize = 5,
 			size = 200,
 			scale = 1,
