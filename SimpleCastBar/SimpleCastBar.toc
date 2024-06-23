@@ -1,7 +1,0 @@
-## Interface: 30401
-## Title: Simple Cast Bar
-## Notes: A simple cast bar
-## Author: djj 
-## Version: 1.0
-
-SimpleCastBar.lua
