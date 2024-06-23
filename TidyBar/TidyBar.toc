@@ -1,4 +1,4 @@
-﻿## Interface: 30400
+﻿## Interface: 30403
 ## Author: Dmerc
 ## Title: Tidy Bar
 ## Notes: Slim-Fast for your Action Bar
