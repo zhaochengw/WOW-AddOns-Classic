@@ -3,23 +3,6 @@ local addonName, addon = ...
 ---@class StatLogic
 local StatLogic = LibStub(addonName)
 
----------------
--- Libraries --
----------------
----@type StatLogicLocale
-local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
-
--- Add all lower case strings to ["StatIDLookup"]
-if type(L) == "table" and type(L["StatIDLookup"]) == "table" then
-	local temp = {}
-	for k, v in pairs(L["StatIDLookup"]) do
-		temp[k:utf8lower()] = v
-	end
-	for k, v in pairs(temp) do
-		L["StatIDLookup"][k] = v
-	end
-end
-
 function StatLogic:argCheck(argument, number, ...)
 	local arg = {...}
 	local validTypeString = table.concat(arg, ", ")
@@ -93,7 +76,6 @@ local _G = getfenv(0)
 local pairs = pairs
 local ipairs = ipairs
 local type = type
-local tonumber = L.tonumber
 local GetInventoryItemLink = GetInventoryItemLink
 local IsUsableSpell = IsUsableSpell
 local UnitLevel = UnitLevel
@@ -269,9 +251,30 @@ function StatLogic:ToggleDebugging()
 	wipe(cache)
 end
 
-local function log(...)
-	if DEBUG == true then
-		print(...)
+---@enum (key) log_level
+local log_level_colors = {
+	["Success"] = {GREEN_FONT_COLOR, DIM_GREEN_FONT_COLOR},
+	["Fail"] = {RED_FONT_COLOR, DULL_RED_FONT_COLOR},
+	["Exclude"] = {GRAY_FONT_COLOR, LIGHTGRAY_FONT_COLOR},
+}
+setmetatable(log_level_colors, {
+	__index = function()
+		return {ORANGE_FONT_COLOR, NORMAL_FONT_COLOR}
+	end
+})
+
+---@param output string|table
+---@param log_level? log_level
+---@param prefix? string
+local function log(output, log_level, prefix)
+	if DEBUG and output ~= "" then
+		local prefix_color, text_color = unpack(log_level_colors[log_level])
+		local text = type(output) == "table" and ("    " .. table.concat(output, ", ")) or output
+		if prefix then
+			print(prefix_color:WrapTextInColorCode("  " .. prefix), text_color:WrapTextInColorCode("\"" .. text .. "\""))
+		else
+			print(text_color:WrapTextInColorCode(text))
+		end
 	end
 end
 
@@ -286,14 +289,6 @@ end
 ----------------
 -- Stat Tools --
 ----------------
-local function StripGlobalStrings(text)
-	-- ITEM_SOCKET_BONUS = "Socket Bonus: %s"; -- Tooltip tag for socketed item matched socket bonuses
-	text = text:gsub("%%%%", "%%") -- "%%" -> "%"
-	text = text:gsub(" ?%%%d?%.?%d?%$?[cdsgf]", "") -- delete "%d", "%s", "%c", "%g", "%2$d", "%.2f" and a space in front of it if found
-	-- So StripGlobalStrings(ITEM_SOCKET_BONUS) = "Socket Bonus:"
-	return text
-end
-
 StatLogic.ExtraHasteClasses = {}
 
 StatLogic.GenericStatMap = {
@@ -347,7 +342,7 @@ StatLogic.StatModInfo = {
 	-- only add mods that would reasonably be active while leveling, which are primarily talents.
 	-- The crit conversions are also only necessary in Vanilla, while Dodge is necessary in every expansion.
 	-- Spell crit modifiers are only required if they mod school 1 (physical)
-	-- That means spells with EffectAura 57, and, separately, EffectAura 71 whose final digit of EffectMiscValue_0 is an odd number
+	-- That means spells with EffectAura 57 or 290, and, separately, EffectAura 71 or 552 whose final digit of EffectMiscValue_0 is an odd number
 	["ADD_MELEE_CRIT"] = {
 		initialValue = 0,
 		finalAdjust = 0,
@@ -693,6 +688,9 @@ do
 						if not mod.tab and mod.rank then -- not a talent, so the rank is the buff rank
 							aura.rank = #(mod.rank)
 						end
+						if mod.stack then
+							aura.stacks = mod.max_stacks
+						end
 						local name = GetSpellInfo(mod.aura)
 						if name then
 							always_buffed_aura_info[name] = aura
@@ -713,9 +711,12 @@ do
 			if needs_update then
 				local i = 1
 				repeat
-					local name, _, _, _, _, _, _, _, _, spellId = UnitBuff("player", i)
+					local name, _, stacks, _, _, _, _, _, _, spellId = UnitBuff("player", i)
 					if name then
-						aura_cache[name] = { spellId = spellId }
+						aura_cache[name] = {
+							spellId = spellId,
+							stacks = stacks,
+						}
 						if tooltip_auras[name] then
 							tip:SetUnitBuff("player", i)
 							local numString = tip.sides.left[2]:GetText():match("%d+")
@@ -727,9 +728,12 @@ do
 				until not name
 				i = 1
 				repeat
-					local name, _, _, _, _, _, _, _, _, spellId = UnitDebuff("player", i)
+					local name, _, stacks, _, _, _, _, _, _, spellId = UnitDebuff("player", i)
 					if name then
-						aura_cache[name] = { spellId = spellId }
+						aura_cache[name] = {
+							spellId = spellId,
+							stacks = stacks,
+						}
 					end
 					i = i+1
 				until not name
@@ -739,6 +743,9 @@ do
 		end
 	end
 end
+
+-- Maps weapon subclasses to stat, value tuples
+addon.WeaponRacials = {}
 
 -----------------------------
 -- StatModValidator Caches --
@@ -898,6 +905,18 @@ addon.StatModValidators = {
 	level = {
 		events = {
 			["PLAYER_LEVEL_UP"] = true,
+		},
+	},
+	mastery = {
+		validate = function(case)
+			local spec = GetPrimaryTalentTree()
+			if spec then
+				local mastery1, mastery2 = GetTalentTreeMasterySpells(spec)
+				return case.mastery == mastery1 or case.mastery == mastery2
+			end
+		end,
+		events = {
+			["PLAYER_TALENT_UPDATE"] = true,
 		},
 	},
 	meta = {
@@ -1130,6 +1149,9 @@ do
 			local aura = StatLogic:GetAuraInfo(GetSpellInfo(case.aura))
 			local rank = aura.rank or GetPlayerBuffRank(aura.spellId)
 			value = case.rank[rank]
+		elseif case.aura and case.stack then
+			local aura = StatLogic:GetAuraInfo(GetSpellInfo(case.aura))
+			value = case.stack * aura.stacks
 		elseif case.regen then
 			value = case.regen()
 		elseif case.value then
@@ -1551,45 +1573,14 @@ end
 do
 	local statTable, currentColor
 
-	local function AddStat(id, value, debugText)
+	local function AddStat(id, value, currentStats)
 		if id == StatLogic.Stats.Armor then
 			local base, bonus = StatLogic:GetArmorDistribution(statTable.link, value, currentColor)
 			value = base
-			local bonusID = StatLogic.Stats.BonusArmor
-			statTable[bonusID] = (statTable[bonusID] or 0) + bonus
-			debugText = debugText..", ".."|cffffff59"..tostring(bonusID).."="..tostring(bonus)
+			AddStat(StatLogic.Stats.BonusArmor, bonus, currentStats)
 		end
 		statTable[id] = (statTable[id] or 0) + tonumber(value)
-		return debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value)
-	end
-
-	local function ParseMatch(idTable, text, value, scanner)
-		local found = false
-		if idTable == false then
-			found = true
-			if text ~= "" then
-				log("|cffadadad  ".. scanner .. " Exclude: "..text)
-			end
-		elseif idTable then
-			found = true
-			local debugText = "|cffff5959  ".. scanner .. ": |cffffc259"..text
-			if value then
-				if #idTable > 0 then
-					for _, id in ipairs(idTable) do
-						debugText = AddStat(id, value, debugText)
-					end
-				else
-					debugText = AddStat(idTable, value, debugText)
-				end
-			else
-				-- WholeTextLookup
-				for id, presetValue in pairs(idTable) do
-					debugText = AddStat(id, presetValue, debugText)
-				end
-			end
-			log(debugText)
-		end
-		return found
+		table.insert(currentStats, tostring(id) .. "=" .. tostring(value))
 	end
 
 	-- Calculates the sum of all stats for a specified item.
@@ -1628,10 +1619,13 @@ do
 		statTable.numLines = numLines
 
 		if itemClass == Enum.ItemClass.Weapon then
-			statTable[StatLogic.Stats.WeaponSubclass] = itemSubclass
+			local racial = addon.WeaponRacials[itemSubclass]
+			if racial then
+				local stat, value = unpack(racial)
+				statTable[stat] = value
+			end
 		end
 
-		-- Start parsing
 		log(link)
 		for i = 2, tip:NumLines() do
 			for _, side in pairs(tip.sides) do
@@ -1640,36 +1634,51 @@ do
 				local found = not text or text == ""
 
 				if not found then
-					-- Trim spaces and limit to one line
-					text = text:trim()
-					text = text:gsub("\n.*", "")
 					-- Strip color codes
 					text = text:gsub("^|c%x%x%x%x%x%x%x%x", "")
 					text = text:gsub("|r$", "")
+				end
+				local rawText = text
+
+				-----------------------
+				-- Whole Text Lookup --
+				-----------------------
+				-- Strings without numbers; mainly used for enchants or easy exclusions
+				if not found then
+					-- Limit to one line
+					text = text:gsub("\n.*", "")
+					-- Strip leading "Equip: ", "Socket Bonus: ", trailing ".", and lowercase
+					text = text:gsub(ITEM_SPELL_TRIGGER_ONEQUIP, "")
+					text = text:gsub(ITEM_SOCKET_BONUS:format(""), "")
+					text = text:trim()
+					text = text:gsub("%.$", "")
+					text = text:utf8lower()
 
 					currentColor = CreateColor(fontString:GetTextColor())
 
-					-----------------------
-					-- Whole Text Lookup --
-					-----------------------
-					-- Mainly used for enchants or stuff without numbers:
-					local idTable = L.WholeTextLookup[text]
-					found = ParseMatch(idTable, text, false, "WholeText")
+					local idTable = addon.WholeTextLookup[text]
+					if idTable ~= nil then
+						found = true
+						if idTable then
+							log(rawText, "Success", "WholeText")
+							local currentStats = {}
+							for id, value in pairs(idTable) do
+								AddStat(id, value, currentStats)
+							end
+							log(currentStats)
+						else
+							log(rawText, "Exclude", "WholeText")
+						end
+					end
 				end
 
 				-------------------------
 				-- Substitution Lookup --
 				-------------------------
-				local statText
 				if not found then
-					-- Strip leading "Equip: ", "Socket Bonus: ", trailing "."
-					local sanitizedText = text:gsub(ITEM_SPELL_TRIGGER_ONEQUIP, "")
-					sanitizedText = sanitizedText:gsub("%.$", "")
-					sanitizedText = sanitizedText:gsub(StripGlobalStrings(ITEM_SOCKET_BONUS), "")
-					sanitizedText = sanitizedText:utf8lower()
+					-- Replace numbers with %s
 					local values = {}
-					local count
-					statText, count = sanitizedText:gsub("[+-]?[%d%.]+%f[%D]", function(match)
+					local statText, count = text:gsub("[+-]?[%d%.]+%f[%D]", function(match)
 						local value = tonumber(match)
 						if value then
 							values[#values + 1] = value
@@ -1678,277 +1687,68 @@ do
 					end)
 					if count > 0 then
 						statText = statText:trim()
-						local stats = L.StatIDLookup[statText]
+						-- Lookup exact sanitized string in StatIDLookup
+						local stats = addon.StatIDLookup[statText]
 						if stats then
+							found = true
+							log(rawText, "Success", "Substitution")
+							local currentStats = {}
 							for j, value in ipairs(values) do
-								found = ParseMatch(stats[j], text, value, "Substitution")
+								local idTable = stats[j]
+								if type(idTable) == "table" and #idTable > 0 then
+									for _, id in ipairs(idTable) do
+										if id then
+											AddStat(id, value, currentStats)
+										end
+									end
+								elseif idTable then
+									AddStat(idTable, value, currentStats)
+								end
 							end
+							log(currentStats)
 						end
 					else
-						found = ParseMatch(false, text, false, "Substitution")
+						-- Contained no numbers, so we can exclude it
+						found = true
+						log(rawText, "Exclude", "Substitution")
 					end
 				end
 
-				--------------------
-				-- Prefix Exclude --
-				--------------------
-				-- Exclude strings with prefixes that do not need to be checked,
-				if not found then
-					if L.PrefixExclude[text:utf8sub(1, L.PrefixExcludeLength)] or text:sub(1, 1) == '"' then
-						found = ParseMatch(false, text, nil, "Prefix")
-					end
-				end
-
-				-------------------
-				-- Color Exclude --
-				-------------------
-				-- Exclude lines that are not white, green, or "normal" (normal for Frozen Wrath etc.)
-				if not found then
-					local _, g, b = currentColor:GetRGB()
-					if g < 0.8 or (b < 0.99 and b > 0.1) then
-						found = ParseMatch(false, text, nil, "Color")
-					end
-				end
-
-				-- For debugging Substitution with /rb debug, for now we want to be quiet about Prefix/Color Excludes
-				if not found then
-					log("|cffff5959  Substitution Missed: |r|cnLIGHTBLUE_FONT_COLOR:" .. statText)
-				end
-
-				----------------------------
-				-- Single Plus Stat Check --
-				----------------------------
-				-- depending on locale, L.SinglePlusStatCheck may be
-				-- +19 Stamina = "^%+(%d+) ([%a ]+%a)$"
-				-- Stamina +19 = "^([%a ]+%a) %+(%d+)$"
-				-- +19 耐力 = "^%+(%d+) (.-)$"
-				if not found then
-					local _, _, value, statText = text:utf8lower():find(L.SinglePlusStatCheck)
-					if value then
-						if tonumber(statText) then
-							value, statText = statText, value
-						end
-						local idTable = L.StatIDLookup[statText]
-						found = ParseMatch(idTable, text, value, "SinglePlus")
-					end
-				end
-
-				-----------------------------
-				-- Single Equip Stat Check --
-				-----------------------------
-				-- depending on locale, L.SingleEquipStatCheck may be
-				-- "^Equip: (.-) by u?p? ?t?o? ?(%d+) ?(.-)%.$"
-				if not found then
-					local _, _, statText1, value, statText2 = text:find(L.SingleEquipStatCheck)
-					if value then
-						local statText = statText1..statText2
-						local idTable = L.StatIDLookup[statText:utf8lower()]
-						found = ParseMatch(idTable, text, value, "SingleEquip")
-					end
-				end
-
-				-- PreScan for special cases, that will fit wrongly into DeepScan
-				-- PreScan also has exclude patterns
-				if not found then
-					for pattern, id in pairs(L.PreScanPatterns) do
-						local value
-						found, _, value = text:find(pattern)
-						if found then
-							ParseMatch(id and not id[1] and {id} or id, text, value, "PreScan")
-							break
+				-- Reduce noise while debugging missing patterns
+				if DEBUG then
+					-- Exclude strings by 3-5 character prefixes
+					if not found then
+						if addon.PrefixExclude[rawText:utf8sub(1, addon.PrefixExcludeLength)] or rawText:sub(1, 1) == '"' then
+							found = true
+							log(rawText, "Exclude", "Prefix")
 						end
 					end
-				end
 
-				--------------
-				-- DeepScan --
-				--------------
-				--[[
-				-- Strip trailing "."
-				["."] = ".",
-				["DeepScanSeparators"] = {
-					"/", -- "+10 Defense Rating/+10 Stamina/+15 Block Value": ZG Enchant
-					" & ", -- "+26 Healing Spells & 2% Reduced Threat": Bracing Earthstorm Diamond ID:25897
-					", ", -- "+6 Spell Damage, +5 Spell Crit Rating": Potent Ornate Topaz ID: 28123
-					"%. ", -- "Equip: Increases attack power by 81 when fighting Undead. It also allows the acquisition of Scourgestones on behalf of the Argent Dawn.": Seal of the Dawn
-				},
-				["DeepScanWordSeparators"] = {
-					" and ", -- "Critical Rating +6 and Dodge Rating +5": Assassin's Fire Opal ID:30565
-				},
-				["DeepScanPatterns"] = {
-					"^(.-) by u?p? ?t?o? ?(%d+) ?(.-)$", -- "xxx by up to 22 xxx" (scan first)
-					"^(.-) ?%+(%d+) ?(.-)$", -- "xxx xxx +22" or "+22 xxx xxx" or "xxx +22 xxx" (scan 2ed)
-					"^(.-) ?([%d%.]+) ?(.-)$", -- 22.22 xxx xxx (scan last)
-				},
-				--]]
-				if not found then
-					-- Strip leading "Equip: ", "Socket Bonus: "
-					local sanitizedText = text:gsub(ITEM_SPELL_TRIGGER_ONEQUIP, "") -- ITEM_SPELL_TRIGGER_ONEQUIP = "Equip:";
-					sanitizedText = sanitizedText:gsub(StripGlobalStrings(ITEM_SOCKET_BONUS), "") -- ITEM_SOCKET_BONUS = "Socket Bonus: %s"; -- Tooltip tag for socketed item matched socket bonuses
-					-- Trim spaces
-					sanitizedText = sanitizedText:trim()
-					-- Strip trailing "."
-					if sanitizedText:utf8sub(-1) == L["."] then
-						sanitizedText = sanitizedText:utf8sub(1, -2)
-					end
-					-- Split the string into phrases between puncuation
-					-- Replace separators with @
-					for _, sep in ipairs(L.DeepScanSeparators) do
-						local repl = "@"
-						if type(sep) == "table" then
-							repl = sep.repl
-							sep = sep.pattern
-						end
-						if sanitizedText:find(sep) then
-							log(repl)
-							sanitizedText = sanitizedText:gsub(sep, repl)
+					-- Exclude lines that are not white, green, or "normal" (normal for Frozen Wrath etc.)
+					if not found then
+						local _, g, b = currentColor:GetRGB()
+						if g < 0.8 or (b < 0.99 and b > 0.1) then
+							found = true
+							log(rawText, "Exclude", "Color")
 						end
 					end
-					-- Split text using @
-					local phrases = strsplittable("@", sanitizedText)
-					for j, phrase in ipairs(phrases) do
-						-- Trim spaces
-						phrase = phrase:trim()
-						-- Strip trailing "."
-						if phrase:utf8sub(-1) == L["."] then
-							phrase = phrase:utf8sub(1, -2)
-						end
-						log("|cff008080".."S"..j..": ".."'"..phrase.."'")
-						-- Whole Text Lookup
-						local foundWholeText = false
-						local idTable = L.WholeTextLookup[phrase]
-						found = ParseMatch(idTable, phrase, false, "DeepScan WholeText")
-						foundWholeText = found
 
-						-- Scan DualStatPatterns
-						if not foundWholeText then
-							for pattern, dualStat in pairs(L.DualStatPatterns) do
-								local lowered = phrase:utf8lower()
-								local _, dEnd, value1, value2 = lowered:find(pattern)
-								value1 = value1 and tonumber(value1)
-								value2 = value2 and tonumber(value2)
-								if value1 and value2 then
-									foundWholeText = true
-									found = true
-									local debugText = "|cffff5959".."  DeepScan DualStat: ".."|cffffc259"..phrase
-									for _, id in ipairs(dualStat[1]) do
-										--log("  '"..value.."', '"..id.."'")
-										-- sum stat
-										statTable[id] = (statTable[id] or 0) + tonumber(value1)
-										debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value1)
-									end
-									for _, id in ipairs(dualStat[2]) do
-										--log("  '"..value.."', '"..id.."'")
-										-- sum stat
-										statTable[id] = (statTable[id] or 0) + tonumber(value2)
-										debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value2)
-									end
-									log(debugText)
-									if dEnd ~= #lowered then
-										foundWholeText = false
-										phrase = phrase:sub(dEnd + 1)
-									end
-									break
-								end
+					-- Iterates a few obvious patterns, matching the whole string
+					if not found then
+						for pattern in pairs(addon.PreScanPatterns) do
+							if rawText:find(pattern) then
+								found = true
+								log(rawText, "Exclude", "PreScan")
+								break
 							end
 						end
-						local foundDeepScan1 = false
-						if not foundWholeText then
-							local lowered = phrase:utf8lower()
-							-- Pattern scan
-							for _, pattern in ipairs(L.DeepScanPatterns) do -- try all patterns in order
-								local _, _, statText1, value, statText2 = lowered:find(pattern)
-								if value then
-									local statText = statText1..statText2
-									local idTable = L.StatIDLookup[statText]
-									found = ParseMatch(idTable, phrase, value, "DeepScan")
-									foundDeepScan1 = found
-									if found then
-										break
-									end
-								end
-							end
-						end
-						-- If still not found, use the word separators to split the phrase
-						if not foundWholeText and not foundDeepScan1 then
-							-- Replace separators with @
-							for _, sep in ipairs(L.DeepScanWordSeparators) do
-								if phrase:find(sep) then
-									phrase = phrase:gsub(sep, "@")
-								end
-							end
-							-- Split phrase using @
-							local words = strsplittable("@", phrase)
-							for k, word in ipairs(words) do
-								-- Trim spaces
-								word = word:trim()
-								-- Strip trailing "."
-								if word:utf8sub(-1) == L["."] then
-									word = word:utf8sub(1, -2)
-								end
-								log("|cff008080".."S"..k.."-"..k..": ".."'"..word.."'")
-								-- Whole Text Lookup
-								foundWholeText = false
-								local idTable = L.WholeTextLookup[word]
-								found = ParseMatch(idTable, word, false, "DeepScan2 WholeText")
-								foundWholeText = found
-
-								-- Scan DualStatPatterns
-								if not foundWholeText then
-									for pattern, dualStat in pairs(L.DualStatPatterns) do
-										local lowered = word:utf8lower()
-										local _, _, value1, value2 = lowered:find(pattern)
-										if value1 and value2 then
-											foundWholeText = true
-											found = true
-											local debugText = "|cffff5959".."  DeepScan2 DualStat: ".."|cffffc259"..word
-											for _, id in ipairs(dualStat[1]) do
-												--log("  '"..value.."', '"..id.."'")
-												-- sum stat
-												statTable[id] = (statTable[id] or 0) + tonumber(value1)
-												debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value1)
-											end
-											for _, id in ipairs(dualStat[2]) do
-												--log("  '"..value.."', '"..id.."'")
-												-- sum stat
-												statTable[id] = (statTable[id] or 0) + tonumber(value2)
-												debugText = debugText..", ".."|cffffff59"..tostring(id).."="..tostring(value2)
-											end
-											log(debugText)
-											break
-										end
-									end
-								end
-								local foundDeepScan2 = false
-								if not foundWholeText then
-									local lowered = word:utf8lower()
-									-- Pattern scan
-									for _, pattern in ipairs(L.DeepScanPatterns) do
-										local _, _, statText1, value, statText2 = lowered:find(pattern)
-										if value then
-											local statText = statText1..statText2
-											local idTable = L.StatIDLookup[statText]
-											found = ParseMatch(idTable, word, value, "DeepScan2")
-											foundDeepScan2 = found
-											if found then
-												break
-											else
-												-- pattern match but not found in L.StatIDLookup, keep looking
-												log("  DeepScan2 Lookup Fail: |cffffd4d4'"..statText.."'|r, pattern = |cff72ff59'"..pattern.."'")
-											end
-										end
-									end -- for
-								end
-								if not foundWholeText and not foundDeepScan2 then
-									log("  DeepScan2 Fail: |cffff0000'"..word.."'")
-								end
-							end
-						end -- if not foundWholeText and not foundDeepScan1 then
 					end
-				end
 
-				if not found then
-					log("  No Match: |cffff0000'"..text.."'")
+					-- If the string contains a number and was not excluded,
+					-- it might be a missing stat we want to add.
+					if not found then
+						log(rawText, "Fail", "Missed")
+					end
 				end
 			end
 		end
@@ -1994,7 +1794,8 @@ function StatLogic:GetArmorDistribution(item, value, color)
 			local itemEquipLocTable = qualityTable and qualityTable[_G[itemEquipLoc]]
 			local armorSubclassTable = itemEquipLocTable and itemEquipLocTable[armorSubclass]
 
-			armor = armorSubclassTable and armorSubclassTable[itemLevel] or armor
+			-- If found, subtract. Else, assume it's all bonus armor.
+			armor = armorSubclassTable and armorSubclassTable[itemLevel] or 0
 			bonus_armor = value - armor
 		end
 	end
@@ -2245,75 +2046,156 @@ function StatLogic:GetDiff(item, diff1, diff2, ignoreEnchant, ignoreGems, ignore
 end
 
 -- Telemetry for agi/int conversions, will delete at the send of SoD.
-if GetCurrentRegion() == 1 and GetLocale() == "enUS" then
-	local target
-	if GetNormalizedRealmName() == "CrusaderStrike" and UnitFactionGroup("player") == "Alliance" then
-		target = "Astraea"
-	elseif GetNormalizedRealmName() == "LoneWolf" and UnitFactionGroup("player") == "Horde" then
-		target = "Astraean"
-	end
+if GetCurrentRegion() == 1 or GetCurrentRegion() == 72 and GetLocale() == "enUS" then
+	local commsVersion = 1
+	local prefix = addonName .. commsVersion
+	local codec = LibStub("LibDeflate"):CreateCodec("\000", "\255", "")
 
-	if target then
-		-- Hide system message spam if offline
-		local enableFilter = false
-		ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", function(_, _, ...)
-			if enableFilter then
-				enableFilter = false
-				return true
-			else
-				return false, ...
+	local function InitializeComms()
+		local target
+		if GetNormalizedRealmName() == "CrusaderStrike" and UnitFactionGroup("player") == "Alliance" then
+			target = "Astraea"
+		elseif GetNormalizedRealmName() == "LoneWolf" and UnitFactionGroup("player") == "Horde" then
+			target = "Astraean"
+		elseif GetNormalizedRealmName() == "Whitemane" and UnitFactionGroup("player") == "Horde" and tocversion >= 30000 then
+			target = "Pinstripe"
+		elseif GetNormalizedRealmName() == "Whitemane" and UnitFactionGroup("player") == "Alliance" and tocversion >= 30000 then
+			target = "Astriea"
+		elseif GetNormalizedRealmName() == "ClassicEraPTR" and UnitFactionGroup("player") == "Horde" then
+			target = "Rbshaman"
+		end
+
+		if target then
+			-- Hide system message spam if offline
+			local filter = ERR_CHAT_PLAYER_NOT_FOUND_S:format(target)
+			local failure = false
+			ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", function(_, _, message, ...)
+				if message == filter then
+					failure = true
+					return true
+				else
+					return false, message, ...
+				end
+			end)
+
+			local sending = false
+			local function cleanUp(delay)
+				-- Wait to see if whispers failed to send
+				C_Timer.After(2, function()
+					if not failure then
+						for expansion in pairs(RatingBuster.conversion_data.global) do
+							RatingBuster.conversion_data.global[expansion] = nil
+						end
+					end
+					sending = false
+				end)
 			end
-		end)
 
-		-- Send
-		local send = CreateFrame("Frame")
-		send:RegisterEvent("SPELLS_CHANGED")
-		send:RegisterEvent("PLAYER_LEVEL_UP")
+			-- Send
+			local function SendStoredData()
+				if failure or sending or UnitName("player") == target then return end
+				sending = true
+				local data = RatingBuster.conversion_data.global
+				local serialized = LibStub("LibSerialize"):Serialize(data)
+				local encoded = codec:Encode(serialized)
+				LibStub("AceComm-3.0"):SendCommMessage(prefix, encoded, "WHISPER", target, "BULK", cleanUp, true)
+			end
 
-		send:SetScript("OnEvent", function()
-			local level = UnitLevel("player")
-			if not addon.CritPerAgi[addon.class][level] or not addon.SpellCritPerInt[addon.class][level] then
-				if StatLogic:TalentCacheExists() then
-					local data = {
-						addon.class,
-						level,
-						floor(StatLogic:GetCritPerAgi() * 10000 + 0.5) / 10000,
-						floor(StatLogic:GetSpellCritPerInt() * 10000 + 0.5) / 10000,
-						RatingBuster.version,
-					}
-					enableFilter = true
-					C_ChatInfo.SendAddonMessage(addonName, table.concat(data, ","), "WHISPER", target)
+			-- Store
+			local store = CreateFrame("Frame")
+			store:RegisterEvent("PLAYER_LEVEL_UP")
+
+			store:SetScript("OnEvent", function()
+				if StatLogic:TalentCacheExists() and RatingBuster.conversion_data then
+					local level = UnitLevel("player")
+					local expansion = RatingBuster.conversion_data.global[LE_EXPANSION_LEVEL_CURRENT]
+					local rounding = 10 ^ 4
+					if tocversion >= 40000 then
+						rounding = 10 ^ 8
+					end
+					if not addon.CritPerAgi[addon.class][level] then
+						local critPerAgi = floor(StatLogic:GetCritPerAgi() * rounding + 0.5) / rounding
+						expansion.CritPerAgi[addon.class][level] = critPerAgi
+					end
+					if not addon.DodgePerAgi[addon.class][level] then
+						local dodgePerAgi = floor(StatLogic:GetDodgePerAgi() * rounding + 0.5) / rounding
+						expansion.DodgePerAgi[addon.class][level] = dodgePerAgi
+					end
+					if not addon.SpellCritPerInt[addon.class][level] then
+						local spellCritPerInt = floor(StatLogic:GetSpellCritPerInt() * rounding + 0.5) / rounding
+						expansion.SpellCritPerInt[addon.class][level] = spellCritPerInt
+					end
+					SendStoredData()
 				else
 					C_Timer.After(2, function()
-						send:GetScript("OnEvent")("SPELLS_CHANGED")
+						store:GetScript("OnEvent")("PLAYER_LEVEL_UP")
 					end)
 				end
-			end
-		end)
+			end)
+			store:GetScript("OnEvent")("PLAYER_LEVEL_UP")
+		end
 	end
+
+	EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGIN", function(handle)
+		-- Annoying workaround for stats from ItemEffects
+		-- not existing the first time you see an item's tooltip
+		C_Timer.After(0, function()
+			for i = INVSLOT_FIRST_EQUIPPED, INVSLOT_LAST_EQUIPPED do
+				local link = GetInventoryItemLink("player", i)
+				if link then
+					StatLogic:GetSum(link)
+				end
+			end
+			C_Timer.After(0, InitializeComms)
+		end)
+
+		EventRegistry:UnregisterFrameEvent("PLAYER_LOGIN", handle)
+	end)
 
 	-- Receive
 	--[==[@debug@
-	C_ChatInfo.RegisterAddonMessagePrefix(addonName)
-	local receive = CreateFrame("Frame")
-	receive:RegisterEvent("CHAT_MSG_ADDON")
-	receive:SetScript("OnEvent", function(_, _, prefix, message)
-		if prefix == addonName then
-			local class, level, critPerAgi, spellCritPerInt, version = (","):split(message)
-			level, critPerAgi, spellCritPerInt = tonumber(level), tonumber(critPerAgi), tonumber(spellCritPerInt)
-			local pattern = "%s:\n[%d] = %.4f,"
-			local newCrit = not addon.CritPerAgi[class][level]
-			local newSpellCrit = not addon.SpellCritPerInt[class][level]
-			if newCrit or newSpellCrit then
-				print(LEGENDARY_ORANGE_COLOR:WrapTextInColorCode(addonName), version, class)
-			end
-			if newCrit then
-				print(pattern:format("CritPerAgi", level, critPerAgi))
-			end
-			if newSpellCrit then
-				print(pattern:format("SpellCritPerInt", level, spellCritPerInt))
+	local receive = {}
+	function receive:OnCommReceived(_, message)
+		local decoded = codec:Decode(message)
+		if not decoded then return end
+		local success, data = LibStub("LibSerialize"):Deserialize(decoded)
+		if not success then return end
+		local count = 0
+		for expansion, conversions in pairs(data) do
+			for conversion, classes in pairs(conversions) do
+				for class, levels in pairs(classes) do
+					for level, value in pairs(levels) do
+						local current = addon[conversion][class][level]
+						if expansion ~= LE_EXPANSION_LEVEL_CURRENT or not current then
+							local valid = true
+							for i = level - 1, 1, -1 do
+								local lesserValue = addon[conversion][class][i]
+								if lesserValue then
+									if value > lesserValue then
+										valid = false
+									end
+									break
+								end
+							end
+							if valid then
+								local old = RatingBuster.conversion_data.global[expansion][conversion][class][level]
+								if old and value ~= old then
+									print(("[%d][%s][%s][%d] from %.4f to %.4f"):format(expansion, conversion, class, level, old, value))
+								end
+								RatingBuster.conversion_data.global[expansion][conversion][class][level] = value
+								if not old then
+									count = count + 1
+								end
+							end
+						end
+					end
+				end
 			end
 		end
-	end)
+		if count > 0 then
+			print("StatLogic: Received", count, "new conversions!")
+		end
+	end
+	LibStub("AceComm-3.0").RegisterComm(receive, prefix)
 	--@end-debug@]==]
 end

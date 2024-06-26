@@ -4,7 +4,6 @@ local StatLogic = LibStub:GetLibrary(addonName)
 
 -- Level 60 rating base
 StatLogic.RatingBase = {
-	[StatLogic.Stats.DefenseRating] = 1.5,
 	[StatLogic.Stats.DodgeRating] = 13.8,
 	[StatLogic.Stats.ParryRating] = 13.8,
 	[StatLogic.Stats.BlockRating] = 6.9,
@@ -40,15 +39,14 @@ StatLogic.GenericStatMap[StatLogic.Stats.HasteRating] = {
 
 -- Extracted from the client at GameTables/RegenMPPerSpt.txt via wow.tools.local
 local BaseManaRegenPerSpi = {
-	0.062937, 0.056900, 0.051488, 0.046267, 0.041637, 0.037784, 0.034309, 0.031172, 0.028158, 0.025460,
-	0.022654, 0.019904, 0.017817, 0.015771, 0.014008, 0.013650, 0.013175, 0.012832, 0.012475, 0.012073,
+	0.020979, 0.020515, 0.020079, 0.019516, 0.018997, 0.018646, 0.018314, 0.017997, 0.017584, 0.017197,
+	0.016551, 0.015729, 0.015229, 0.014580, 0.014008, 0.013650, 0.013175, 0.012832, 0.012475, 0.012073,
 	0.011840, 0.011494, 0.011292, 0.010990, 0.010761, 0.010546, 0.010321, 0.010151, 0.009949, 0.009740,
 	0.009597, 0.009425, 0.009278, 0.009123, 0.008974, 0.008847, 0.008698, 0.008581, 0.008457, 0.008338,
 	0.008235, 0.008113, 0.008018, 0.007906, 0.007798, 0.007713, 0.007612, 0.007524, 0.007430, 0.007340,
 	0.007268, 0.007184, 0.007116, 0.007029, 0.006945, 0.006884, 0.006805, 0.006747, 0.006667, 0.006600,
 	0.006421, 0.006314, 0.006175, 0.006072, 0.005981, 0.005885, 0.005791, 0.005732, 0.005668, 0.005596,
 	0.005316, 0.005049, 0.004796, 0.004555, 0.004327, 0.004110, 0.003903, 0.003708, 0.003522, 0.003345,
-	-- TODO: Are these really all the same? Check GameTables when public Cata build appears
 	0.003345, 0.003345, 0.003345, 0.003345, 0.003345,
 }
 
@@ -324,7 +322,508 @@ addon.bonusArmorInventoryTypes = {
 }
 
 -- Generated using scripts/GenerateBaseArmor/GenerateBaseArmor.mjs
--- TODO requires public Cata Classic build
+-- A few shields were zero so taken manually from ItemArmorShield.db2 instead
+addon.baseArmorTable = {
+	[Enum.ItemQuality.Epic] = {
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[46] = 1766,
+				[65] = 2186,
+				[90] = 2477,
+			},
+		},
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[62] = 506,
+				[63] = 510,
+				[74] = 549,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[74] = 246,
+				[85] = 284,
+				[88] = 301,
+				[136] = 524,
+				[146] = 571,
+				[159] = 638,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 325,
+				[69] = 337,
+				[74] = 353,
+				[75] = 357,
+				[83] = 384,
+				[90] = 438,
+				[105] = 581,
+				[123] = 662,
+				[136] = 722,
+				[146] = 790,
+				[159] = 887,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[65] = 767,
+				[74] = 804,
+				[251] = 2534,
+				[264] = 2642,
+				[277] = 2756,
+			},
+		},
+		[FEETSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[71] = 163,
+				[78] = 178,
+				[146] = 393,
+				[159] = 439,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[71] = 236,
+				[77] = 250,
+				[83] = 264,
+				[90] = 301,
+				[123] = 455,
+				[136] = 496,
+				[146] = 543,
+				[159] = 610,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 370,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[70] = 541,
+				[71] = 544,
+				[73] = 550,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[71] = 148,
+				[136] = 328,
+				[146] = 357,
+				[159] = 399,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[71] = 215,
+				[78] = 229,
+				[81] = 235,
+				[90] = 274,
+				[105] = 363,
+				[123] = 414,
+				[136] = 451,
+				[146] = 494,
+				[159] = 555,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 336,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[71] = 495,
+				[90] = 585,
+				[130] = 910,
+				[251] = 1584,
+				[264] = 1651,
+				[277] = 1723,
+			},
+		},
+		[HEADSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[74] = 200,
+				[81] = 217,
+				[136] = 426,
+				[146] = 464,
+				[159] = 518,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[74] = 287,
+				[75] = 290,
+				[90] = 356,
+				[105] = 472,
+				[123] = 538,
+				[136] = 587,
+				[146] = 642,
+				[159] = 721,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[74] = 446,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[66] = 626,
+				[74] = 653,
+				[105] = 1063,
+			},
+		},
+		[LEGSSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[65] = 192,
+				[71] = 207,
+				[81] = 234,
+				[136] = 459,
+				[146] = 500,
+				[159] = 558,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 284,
+				[71] = 301,
+				[90] = 383,
+				[105] = 508,
+				[123] = 580,
+				[136] = 632,
+				[146] = 691,
+				[159] = 777,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 471,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[60] = 653,
+				[61] = 657,
+				[71] = 693,
+				[232] = 2088,
+				[264] = 2311,
+			},
+		},
+		[SHOULDERSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[65] = 164,
+				[74] = 184,
+				[78] = 194,
+				[136] = 393,
+				[146] = 428,
+				[159] = 479,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 243,
+				[74] = 265,
+				[90] = 328,
+				[105] = 436,
+				[123] = 497,
+				[136] = 542,
+				[146] = 592,
+				[159] = 666,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 404,
+				[74] = 412,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[90] = 702,
+			},
+		},
+		[WRISTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[59] = 325,
+				[251] = 1109,
+				[264] = 1156,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[61] = 137,
+				[113] = 278,
+				[126] = 293,
+				[141] = 330,
+				[154] = 371,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[141] = 239,
+				[154] = 267,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[72] = 120,
+				[73] = 121,
+				[77] = 128,
+				[83] = 137,
+				[105] = 207,
+				[110] = 224,
+				[115] = 230,
+				[128] = 246,
+				[200] = 404,
+				[213] = 428,
+				[232] = 462,
+				[264] = 556,
+				[353] = 604,
+			},
+		},
+		[WAISTSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[61] = 176,
+				[66] = 184,
+				[76] = 202,
+				[123] = 373,
+				[136] = 406,
+				[146] = 444,
+				[159] = 499,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[90] = 526,
+				[264] = 1486,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[146] = 321,
+				[159] = 359,
+			},
+		},
+	},
+	[Enum.ItemQuality.Rare] = {
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[30] = 221,
+				[36] = 259,
+				[62] = 407,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[59] = 596,
+				[63] = 609,
+				[65] = 616,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[63] = 171,
+				[68] = 183,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[68] = 268,
+				[115] = 515,
+			},
+		},
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[21] = 700,
+				[30] = 945,
+				[59] = 1687,
+			},
+		},
+		[HEADSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[43] = 371,
+				[60] = 487,
+				[115] = 917,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[63] = 139,
+				[71] = 155,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[71] = 224,
+				[100] = 345,
+				[115] = 419,
+			},
+		},
+		[SHOULDERSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[55] = 175,
+				[68] = 201,
+				[71] = 207,
+				[115] = 386,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[61] = 125,
+				[71] = 143,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[35] = 51,
+				[45] = 64,
+				[50] = 70,
+				[52] = 73,
+				[62] = 85,
+				[63] = 86,
+				[71] = 95,
+				[91] = 128,
+				[112] = 182,
+				[115] = 185,
+				[167] = 312,
+				[187] = 364,
+			},
+		},
+		[WRISTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[50] = 229,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[62] = 178,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[61] = 73,
+			},
+		},
+		[FEETSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[41] = 200,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[33] = 101,
+				[43] = 128,
+				[53] = 155,
+				[63] = 176,
+				[66] = 181,
+				[71] = 190,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[33] = 66,
+				[43] = 84,
+				[53] = 101,
+				[61] = 115,
+				[63] = 118,
+				[66] = 123,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[56] = 399,
+			},
+		},
+		[LEGSSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[52] = 475,
+				[65] = 539,
+				[114] = 985,
+				[166] = 1697,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[52] = 194,
+				[68] = 235,
+				[71] = 241,
+				[100] = 371,
+				[115] = 451,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[62] = 148,
+				[68] = 160,
+			},
+		},
+		[WAISTSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[33] = 83,
+				[43] = 105,
+				[53] = 127,
+				[63] = 144,
+				[100] = 239,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[33] = 54,
+				[43] = 69,
+				[53] = 83,
+				[60] = 93,
+				[63] = 96,
+				[109] = 201,
+				[115] = 208,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[71] = 358,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 163,
+				[66] = 164,
+				[71] = 172,
+				[115] = 322,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[62] = 254,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[61] = 104,
+				[66] = 111,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[114] = 704,
+			},
+		},
+	},
+	[Enum.ItemQuality.Good] = {
+		[WRISTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[33] = 95,
+			},
+		},
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[41] = 1110,
+			},
+		},
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[16] = 120,
+				[20] = 143,
+				[40] = 259,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[46] = 441,
+				[62] = 551,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[57] = 219,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[28] = 118,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[45] = 270,
+			},
+		},
+		[LEGSSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[45] = 378,
+				[62] = 482,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[54] = 182,
+			},
+		},
+		[FEETSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[47] = 309,
+				[60] = 375,
+			},
+		},
+		[HEADSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[47] = 365,
+				[61] = 445,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[114] = 271,
+			},
+		},
+		[SHOULDERSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[60] = 409,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[61] = 171,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[60] = 75,
+				[108] = 160,
+			},
+		},
+		[WAISTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[174] = 934,
+			},
+		},
+	},
+	[Enum.ItemQuality.Standard] = {
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[1] = 57,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[1] = 12,
+			},
+		},
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[60] = 518,
+			},
+		},
+	},
+}
+
 
 StatLogic.StatModTable = {}
 if addon.class == "DRUID" then
@@ -332,24 +831,24 @@ if addon.class == "DRUID" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Total Eclipse
 			{
-				["known"] = 77492,
+				["mastery"] = 77492,
 				["value"] = 2,
 			},
 			-- Mastery: Razor Claws (Cat Form)
 			{
-				["known"] = 77493,
+				["mastery"] = 77493,
 				["value"] = 3.1,
 				["aura"] = 768,
 			},
 			-- Mastery: Savage Defender (Bear Form)
 			{
-				["known"] = 77494,
+				["mastery"] = 77494,
 				["value"] = 4,
 				["aura"] = 5487,
 			},
 			-- Mastery: Harmony
 			{
-				["known"] = 77495,
+				["mastery"] = 77495,
 				["value"] = 1.25,
 			},
 		},
@@ -593,17 +1092,17 @@ elseif addon.class == "DEATHKNIGHT" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Blood Shield
 			{
-				["known"] = 77513,
+				["mastery"] = 77513,
 				["value"] = 6.25,
 			},
 			-- Mastery: Frozen Heart
 			{
-				["known"] = 77514,
+				["mastery"] = 77514,
 				["value"] = 2,
 			},
 			-- Mastery: Dreadblade
 			{
-				["known"] = 77515,
+				["mastery"] = 77515,
 				["value"] = 2.5,
 			},
 		},
@@ -779,17 +1278,17 @@ elseif addon.class == "HUNTER" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Master of Beasts
 			{
-				["known"] = 76657,
+				["mastery"] = 76657,
 				["value"] = 1.67,
 			},
 			-- Mastery: Wild Quiver
 			{
-				["known"] = 76659,
+				["mastery"] = 76659,
 				["value"] = 2.1,
 			},
 			-- Mastery: Essence of the Viper
 			{
-				["known"] = 76658,
+				["mastery"] = 76658,
 				["value"] = 1,
 			},
 		},
@@ -872,17 +1371,17 @@ elseif addon.class == "MAGE" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Mana Adept
 			{
-				["known"] = 76547,
+				["mastery"] = 76547,
 				["value"] = 1.5,
 			},
 			-- Mastery: Flashburn
 			{
-				["known"] = 76595,
+				["mastery"] = 76595,
 				["value"] = 2.8,
 			},
 			-- Mastery: Frostburn
 			{
-				["known"] = 76613,
+				["mastery"] = 76613,
 				["value"] = 2.5,
 			},
 		},
@@ -976,24 +1475,24 @@ elseif addon.class == "PALADIN" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Illuminated Healing
 			{
-				["known"] = 76669,
+				["mastery"] = 76669,
 				["value"] = 1.5,
 			},
 			-- Mastery: Divine Bulwark
 			{
-				["known"] = 76671,
+				["mastery"] = 76671,
 				["value"] = 2.25,
 			},
 			-- Mastery: Hand of Light
 			{
-				["known"] = 76672,
+				["mastery"] = 76672,
 				["value"] = 2.1,
 			},
 		},
 		["ADD_BLOCK_CHANCE_MOD_MASTERY_EFFECT"] = {
 			-- Mastery: Divine Bulwark
 			{
-				["known"] = 76671,
+				["mastery"] = 76671,
 				["value"] = 1,
 			},
 		},
@@ -1160,17 +1659,17 @@ elseif addon.class == "PRIEST" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Shield Discipline
 			{
-				["known"] = 77484,
+				["mastery"] = 77484,
 				["value"] = 2.5,
 			},
 			-- Mastery: Echo of Light
 			{
-				["known"] = 77485,
+				["mastery"] = 77485,
 				["value"] = 1.25,
 			},
 			-- Mastery: Shadow Orb Power
 			{
-				["known"] = 77486,
+				["mastery"] = 77486,
 				["value"] = 1.45,
 			},
 		},
@@ -1286,17 +1785,17 @@ elseif addon.class == "ROGUE" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Potent Poisons
 			{
-				["known"] = 76803,
+				["mastery"] = 76803,
 				["value"] = 3.5,
 			},
 			-- Mastery: Main Gauche
 			{
-				["known"] = 76806,
+				["mastery"] = 76806,
 				["value"] = 2,
 			},
 			-- Mastery: Executioner
 			{
-				["known"] = 76808,
+				["mastery"] = 76808,
 				["value"] = 2.5,
 			},
 		},
@@ -1401,17 +1900,17 @@ elseif addon.class == "SHAMAN" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Elemental Overload
 			{
-				["known"] = 77222,
+				["mastery"] = 77222,
 				["value"] = 2,
 			},
 			-- Mastery: Enhanced Elements
 			{
-				["known"] = 77223,
+				["mastery"] = 77223,
 				["value"] = 2.5,
 			},
 			-- Mastery: Deep Healing
 			{
-				["known"] = 77226,
+				["mastery"] = 77226,
 				["value"] = 3,
 			},
 		},
@@ -1432,11 +1931,21 @@ elseif addon.class == "SHAMAN" then
 			{
 				["value"] = 1,
 			},
+			-- Passive: Mental Quickness
+			{
+				["value"] = -1,
+				["known"] = 30814,
+			},
 		},
 		["ADD_HEALING_MOD_INT"] = {
 			-- Base
 			{
 				["value"] = 1,
+			},
+			-- Passive: Mental Quickness
+			{
+				["value"] = -1,
+				["known"] = 30814,
 			},
 		},
 		["ADD_DODGE"] = {
@@ -1473,21 +1982,17 @@ elseif addon.class == "SHAMAN" then
 				["known"] = 95862,
 			},
 		},
-		-- Shaman: Mental Quickness - Passive: 30814
-		-- 4.0.1: Increases your spell power by an amount equal to 50% of your attack power
 		["ADD_SPELL_DMG_MOD_AP"] = {
-			-- Mental Quickness
+			-- Passive: Mental Quickness
 			{
-				["value"] = 0.5,
+				["value"] = 0.55,
 				["known"] = 30814,
 			},
 		},
-		-- Shaman: Mental Quickness - Passive: 30814
-		-- 4.0.1: Increases your spell power by an amount equal to 50% of your attack power
 		["ADD_HEALING_MOD_AP"] = {
-			-- Mental Quickness
+			-- Passive: Mental Quickness
 			{
-				["value"] = 0.5,
+				["value"] = 0.55,
 				["known"] = 30814,
 			},
 		},
@@ -1540,17 +2045,17 @@ elseif addon.class == "WARLOCK" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Potent Afflictions
 			{
-				["known"] = 77215,
+				["mastery"] = 77215,
 				["value"] = 1.63,
 			},
 			-- Mastery: Master Demonologist
 			{
-				["known"] = 77219,
+				["mastery"] = 77219,
 				["value"] = 2.3,
 			},
 			-- Mastery: Fiery Apocalypse
 			{
-				["known"] = 77220,
+				["mastery"] = 77220,
 				["value"] = 1.35,
 			},
 		},
@@ -1621,24 +2126,24 @@ elseif addon.class == "WARRIOR" then
 		["ADD_MASTERY_EFFECT_MOD_MASTERY"] = {
 			-- Mastery: Strikes of Opportunity
 			{
-				["known"] = 76838,
+				["mastery"] = 76838,
 				["value"] = 2.2,
 			},
 			-- Mastery: Unshackled Fury
 			{
-				["known"] = 76856,
+				["mastery"] = 76856,
 				["value"] = 5.6,
 			},
 			-- Mastery: Critical Block
 			{
-				["known"] = 76857,
+				["mastery"] = 76857,
 				["value"] = 1.5,
 			},
 		},
 		["ADD_BLOCK_CHANCE_MOD_MASTERY_EFFECT"] = {
 			-- Mastery: Critical Block
 			{
-				["known"] = 76857,
+				["mastery"] = 76857,
 				["value"] = 1,
 			},
 		},
@@ -1723,7 +2228,11 @@ elseif addon.class == "WARRIOR" then
 	}
 end
 
-if addon.playerRace == "Gnome" then
+if addon.playerRace == "Dwarf" then
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace1H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace2H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Guns] = {StatLogic.Stats.RangedCrit, 1}
+elseif addon.playerRace == "Gnome" then
 	StatLogic.StatModTable["Gnome"] = {
 		["MOD_MANA"] = {
 			-- Gnome: Expansive Mind - Racial
@@ -1733,6 +2242,8 @@ if addon.playerRace == "Gnome" then
 			},
 		}
 	}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Dagger] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Sword1H] = {StatLogic.Stats.Expertise, 3}
 elseif addon.playerRace == "Human" then
 	StatLogic.StatModTable["Human"] = {
 		["MOD_SPI"] = {
@@ -1743,6 +2254,17 @@ elseif addon.playerRace == "Human" then
 			},
 		}
 	}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace1H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Mace2H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Sword1H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Sword2H] = {StatLogic.Stats.Expertise, 3}
+elseif addon.playerRace == "Orc" then
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Axe1H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Axe2H] = {StatLogic.Stats.Expertise, 3}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Unarmed] = {StatLogic.Stats.Expertise, 3}
+elseif addon.playerRace == "Troll" then
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Bows] = {StatLogic.Stats.RangedCrit, 1}
+	addon.WeaponRacials[Enum.ItemWeaponSubclass.Thrown] = {StatLogic.Stats.RangedCrit, 1}
 end
 
 StatLogic.StatModTable["ALL"] = {
@@ -2235,10 +2757,12 @@ function StatLogic:GetDodgePerAgi()
 	local a = -A_g*A_b
 	local b = A_g*(D_dr-D_b)-A_b*(D_r+C*k)-C*A_g
 	local c = (D_dr-D_b)*(D_r+C*k)-C*D_r
-	--RatingBuster:Print(a, b, c, D_b, D_r, A_b, A_g, C, k)
-	local dodgePerAgi = (-b-(b^2-4*a*c)^0.5)/(2*a)
+
+	local dodgePerAgi
 	if a == 0 then
 		dodgePerAgi = -c / b
+	else
+		dodgePerAgi = (-b-(b^2-4*a*c)^0.5)/(2*a)
 	end
 
 	return dodgePerAgi

@@ -1,10 +1,15 @@
 # RatingBuster
 
-## [1.15.4](https://github.com/raethkcj/RatingBuster/tree/1.15.4) (2024-02-27)
-[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/1.15.3...1.15.4) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
+## [1.16.3](https://github.com/raethkcj/RatingBuster/tree/1.16.3) (2024-04-05)
+[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/1.16.2...1.16.3) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
 
-- Add Loyal Beta spell ID  
-- Hotfixes for Two-Handed Mastery, Spirit of the Alpha, and Shamanistic Rage  
-- Force trailing\_table\_separator  
+- Remove SoD P3 crit set bonus  
+- Remove SoD Loyal Beta AP  
+- Exclude Frostwitch's Regalia from breakdowns  
+- Fix Cata Shaman Mental Quickness  
+- Fix mastery validator with no spec chosen  
+- Add descending conversion validation  
 - Add vanilla agi/int conversions  
-- Add short resilience and crit globalstrings  
+- Add vanilla agi/int conversions  
+- Add Mastery breakdown options  
+- Add separate StatModValidator for mastery  

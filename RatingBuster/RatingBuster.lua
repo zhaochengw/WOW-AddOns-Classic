@@ -25,7 +25,7 @@ local S = setmetatable(addon.S, { __index = L })
 RatingBuster = LibStub("AceAddon-3.0"):NewAddon("RatingBuster", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 RatingBuster.title = "Rating Buster"
 --@non-debug@
-RatingBuster.version = "1.15.4"
+RatingBuster.version = "1.16.3"
 --@end-non-debug@
 --[==[@debug@
 RatingBuster.version = "(development)"
@@ -320,11 +320,19 @@ local options = {
 					args = {},
 					hidden = true,
 				},
+				mastery = {
+					type = 'group',
+					name = L[StatLogic.Stats.MasteryRating],
+					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.MasteryRating]),
+					order = 9,
+					args = {},
+					hidden = true,
+				},
 				weaponskill = {
 					type = 'group',
 					name = L[StatLogic.Stats.WeaponSkill],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.WeaponSkill]),
-					order = 9,
+					order = 10,
 					hidden = true,
 					--[[
 					hidden = function()
@@ -344,7 +352,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.ExpertiseRating],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.ExpertiseRating]),
-					order = 9.5,
+					order = 11,
 					hidden = true,
 					args = {},
 				},
@@ -352,7 +360,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.Defense],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.Defense]),
-					order = 10,
+					order = 12,
 					hidden = true,
 					args = {},
 				},
@@ -360,7 +368,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.Armor],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.Armor]),
-					order = 11,
+					order = 13,
 					args = {},
 					hidden = true,
 				},
@@ -368,7 +376,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.ResilienceRating],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.ResilienceRating]),
-					order = 11,
+					order = 14,
 					args = {},
 					hidden = true,
 				},
@@ -1192,6 +1200,7 @@ local defaults = {
 		showCritAvoidanceFromResilience = false,
 		showCritDamageReductionFromResilience = false,
 		showPvpDamageReductionFromResilience = false,
+		showMasteryFromMasteryRating = false,
 		------------------
 		-- Stat Summary --
 		------------------
@@ -1459,6 +1468,7 @@ do
 		["BLOCK_VALUE"] = StatLogic.Stats.BlockValue,
 		["CRIT_DAMAGE_REDUCTION"] = StatLogic.Stats.CritDamageReduction,
 		["PVP_DAMAGE_REDUCTION"] = StatLogic.Stats.PvPDamageReduction,
+		["MASTERY_EFFECT"] = StatLogic.Stats.MasteryEffect,
 	},
 	{
 		__index = function(_, stat)
@@ -1703,6 +1713,16 @@ function RatingBuster:InitializeDatabase()
 		}
 	})
 	StatLogic:SetupAuraInfo(always_buffed.profile)
+	local conversion_data = RatingBuster.db:RegisterNamespace("ConversionData", {
+		global = {
+			[LE_EXPANSION_LEVEL_CURRENT] = {
+				['*'] = {
+					['*'] = {}
+				},
+			}
+		}
+	})
+	RatingBuster.conversion_data = conversion_data
 end
 
 SLASH_RATINGBUSTER1, SLASH_RATINGBUSTER2 = "/ratingbuster", "/rb"
@@ -1972,7 +1992,7 @@ function RatingBuster:ProcessText(text, link, color)
 						if #stats > 0 then
 							effect = effect .. " " .. table.concat(stats, ", ")
 						end
-						tinsert(info, effect)
+						tinsert(info, tostring(effect))
 					end
 					table.sort(info, function(a, b)
 						return #a < #b
@@ -2104,6 +2124,9 @@ do
 					infoTable[StatLogic.Stats.PvPDamageReduction] = infoTable[StatLogic.Stats.PvPDamageReduction] + pvpDmgReduction
 				end
 			elseif statID == StatLogic.Stats.MasteryRating then
+				if db.profile.showMasteryFromMasteryRating then
+					infoTable["Decimal"] = infoTable[StatLogic.Stats.Mastery] + effect
+				end
 				if db.profile.showMasteryEffectFromMastery then
 					effect = effect * GSM("ADD_MASTERY_EFFECT_MOD_MASTERY")
 					infoTable["Percent"] = infoTable[StatLogic.Stats.MasteryEffect] + effect
@@ -2656,7 +2679,6 @@ local summaryCalcData = {
 		func = function(sum)
 			return sum[StatLogic.Stats.MeleeHit]
 				+ StatLogic:GetEffectFromRating(sum[StatLogic.Stats.MeleeHitRating], StatLogic.Stats.MeleeHitRating, playerLevel)
-				+ sum[StatLogic.Stats.WeaponSkill] * 0.1
 		end,
 		ispercent = true,
 	},
@@ -2758,12 +2780,20 @@ local summaryCalcData = {
 			return sum[StatLogic.Stats.RangedHasteRating]
 		end,
 	},
+	{
+		option = "sumWeaponSkill",
+		name = StatLogic.Stats.WeaponSkill,
+		func = function(sum)
+			return sum[StatLogic.Stats.WeaponSkill]
+		end,
+	},
 	-- Expertise - EXPERTISE_RATING
 	{
 		option = "sumExpertise",
 		name = StatLogic.Stats.Expertise,
 		func = function(sum)
-			return StatLogic:GetEffectFromRating(sum[StatLogic.Stats.ExpertiseRating], StatLogic.Stats.ExpertiseRating, playerLevel)
+			return sum[StatLogic.Stats.Expertise]
+			  + StatLogic:GetEffectFromRating(sum[StatLogic.Stats.ExpertiseRating], StatLogic.Stats.ExpertiseRating, playerLevel)
 		end,
 	},
 	-- Expertise Rating - EXPERTISE_RATING
@@ -2779,7 +2809,7 @@ local summaryCalcData = {
 		option = "sumDodgeNeglect",
 		name = StatLogic.Stats.DodgeReduction,
 		func = function(sum)
-			local effect = StatLogic:GetEffectFromRating(sum[StatLogic.Stats.ExpertiseRating], StatLogic.Stats.ExpertiseRating, playerLevel)
+			local effect = summaryFunc[StatLogic.Stats.Expertise](sum)
 			if addon.tocversion < 30000 then
 				effect = floor(effect)
 			end
@@ -2792,7 +2822,7 @@ local summaryCalcData = {
 		option = "sumParryNeglect",
 		name = StatLogic.Stats.ParryReduction,
 		func = function(sum)
-			local effect = StatLogic:GetEffectFromRating(sum[StatLogic.Stats.ExpertiseRating], StatLogic.Stats.ExpertiseRating, playerLevel)
+			local effect = summaryFunc[StatLogic.Stats.Expertise](sum)
 			if addon.tocversion < 30000 then
 				effect = floor(effect)
 			end
