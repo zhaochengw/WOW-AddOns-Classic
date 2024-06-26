@@ -16,7 +16,7 @@ if locale == "zhCN" or locale == "zhTW" then
 end
 
 -- Default values
-local isLocked = false
+local isLocked = true
 
 -- Create a frame for dragging
 local draggableFrame = CreateFrame("Frame", "MovableCastBarFrame", UIParent)
