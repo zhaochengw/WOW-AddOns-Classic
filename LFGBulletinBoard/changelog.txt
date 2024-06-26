@@ -1,0 +1,258 @@
+--[[
+
+Group Bulletin Board 	
+
+3.20
+- Fixed the addon breaking for some people
+
+3.19
+- Hiding wotlk and tbc panels for SoD
+
+3.18
+- SoD P3
+
+3.17
+- Logic to reset turn on all filters after reseting them
+
+3.16
+- New travel category thanks to surgioclemente. Enables all summoning related things to be moved there
+- Some cleanup of wotlk, classic code
+- hopefully fixes SM bugs
+
+3.11
+- Added realm to character names in request list
+- Removed the display of the additional tabs that aren't supported by Classic Era based on version. Will still display in WotLK+
+    - I only play Classic Era so I'm not verifying the functionality of this on WotLK+ besides it's display
+- Updated some APIs to new client versions
+
+3.10 
+= Hopefully mixed new patch issues
+
+3.09
+- Fixed RU tags (courtesy of tierggg)
+- French localization (shout out to Isilorn for doing it)
+- Fixes 
+
+3.08 
+- Fix for entries rapidly swapping places - Thanks to mnejing for fixing this
+- Russian localization - Shout out to tierggg for doing this
+
+3.07 
+- Updated left click to whisper the person what role you are and for which dungeon you are applying - Thanks to mnejing for adding this
+
+3.06
+- Fix for Naxx
+- Transaltion for Chinese 
+
+3.05
+- Removed the clicking noise in background
+
+3.04
+- Added auto refresh for lfg tool
+- Semi fixed add-on exploding on custom
+- BB should be honoring users selected lfg tool category unless it's not set
+
+3.03
+- Added tab for LFG Tool requests 
+- Never use custom in lfg tool because it makes things blow up
+- Added support for the lfg tool tab
+- Fixed a bug and introduced new ones
+- Too tired to update this properly 
+
+3.02 
+- Some fixes for wotlk panel
+
+3.01
+- Added new panel for wotlk dungeons
+- Added wotlk dungeons
+- Improved performance
+- Some clean up of code
+
+2.63
+- Improved performance (fingers crossed). All thanks to dkcas11 who made the changes unless it doesn't work then blame him
+
+2.62
+- No really, I fixed the bug that broke the addon
+- More Chinesse localization
+- Seasonal Events
+
+2.61
+- Added option to adjust font size. 3 whole options, don't ask for more
+- Fixed the thing that made the addon not working for everyone except me 
+- LFG bar defaulted to being off (its ugly af)
+
+2.60 
+ - I cant remember what happened here. I was drunk
+
+2.59
+- Fixed interference with other addons
+- Make LFG bar optional (configured in setting)
+- Fixed "Whisper" Typo
+
+2.58 
+ - Added a text box to post LFG msg at a click of a button
+
+2.57 
+ - Added support for arena
+
+2.56
+ - Fixed localization channel bug
+
+2.55
+ - Filtering by normal dungeon
+ - Raid categorization
+ - Selecting normal only or heroic only filter will not cause raids to be filtered out
+ - Support for Chinese (zhTW Traditional Taiwan) done completely by pallthennonwow, so huge thanks or huge hate to him
+ - Removed post history as it's just clutter
+ 
+2.54
+ - Fixed addon crashing when custom localization is set
+ - Fixed localization not working
+ - Updated Russian localization (thanks to hungry)
+ - Updated French official channel (thanks to yannlugrin)
+ 
+2.53
+ - Fix for heroic not filtering properly when custom in search patterns is checked
+ 
+2.52
+ - Added HC to heroics
+ - Refactored to allow the option to configure heroic tags
+ - Support for french localization thanks to mrbuds
+
+2.51 
+ - Added support to filter by heroic only dungeons
+ - Supported to select color of heroic and normal dungeons
+ - Fixed a bug where custom tags were not working
+ - Fixed a bug that was causing classic dungeons in tbc to not display the proper level
+ - Fixed a few tags, such as black morass appearing under black temple
+ - Turns off classic dungeons by default in TBC
+ 
+2.50 
+ - More German localization
+ 
+2.49 
+ - Russian localization thanks to the great nourlie
+ - German locization thanks to amazing tamariske
+
+2.48
+- Semi fixed classic dungeon levels with TBC
+- Implemented Ctrl + Click to invite player (credit to: h0tw1r3)
+- Fixed bug with Shift + Click (credit to: h0tw1r3)
+
+2.47
+- Added a new feature to contain all lfg spam in a single chat tab. Can be accessed via /gbb chat clean/organize. 
+- It will create a new chat tab called "LFG", will subscribe player to spammy chat channels like "LookingForGroup" if they are not already subscribed.
+- The new chat tab will be subscribed to all channels the user has joined, this will ensure that GBB has a source of msg to parse through
+- Finally it will remove spammy lfg channels from the default tab. This allows the user to never have to see the lfg spam in chat and be notified via chat on new filtered requests or view requests in Bulletin Board
+
+- Fixed a bug with /gbb about opening up wrong tab
+- Created a seperate changelog file
+
+2.46
+- Actually fixed background being transparent on install
+
+2.45 
+- Fixed a bug causing issue opening main window due to SM and DM dungeons
+
+2.44
+- Add TBC support. 
+- Move vanilla dungeons in a seperate panel. 
+- Rename to "LFG Bulletin Board" from "Group Bulletin Board" 
+- Refactor code. 
+- Lua sucks
+
+2.43
+- Update to work for tbc pre-patch. Fix bug with background being transparent 
+
+2.42
+- toc-Update
+
+2.41
+- repair level-display in main window
+
+2.40
+- release
+
+2.33
+- Optional: Add more info to chat on /who and when somebody comes online
+
+2.32
+- optional: Add guild in player tooltip
+- optional: Combine sub-dungeons like Dire Maul
+- message-history in tooltip
+
+2.31
+- optional: Track Party/Members (only when in dungeon)
+- click on a name in the member-list to add a note!
+- Infos in Tooltip: Last seen (with note and dungeon)
+
+2.30
+- update russian by Arrogant_Dreamer 
+
+2.22 
+- Option: Notification on world/dungeons/raids/battleground
+
+2.21
+- Remove Announce/Announce-Box - doesn't work anymore
+
+2.20 	
+- TOC-UPDATETIMER
+
+2.13
+- option to change color of message, time and chat notification
+- "two line"-design is now selectable
+
+2.12
+- detection of minmap-shape
+- set stata to low - should now be behind dialogs
+- Optional: Short one-line chat notification
+- Support for Raid-Symbols {rt1}{cirlce}
+
+2.11
+- fix bug with english client
+- fix bug with guild messages
+
+2.10
+- update russian tags for dire maul (thanks to SD_Liberty)
+- Chat-Notifications - first line is now light grey
+- some code optimizations
+- new option: Scan Guild Channel (in Filter/Channel list)
+- Announce/Announce now work with closed window
+- Item-Links have now a tooltip
+- Adjust mousewheel-scroll-speed to one line
+
+2.07 Beta
+- Fix for russian language (db west)
+
+2.06 Beta
+- Guild Member are marked with a green dot
+- Fix russian /who detection
+
+2.05
+- repair "run"-Detection
+- repair slash commands
+
+2.04 
+- bugfix Hitbox with "ChatStyle"
+- option "Don't truncate message"
+- When two request have the same time, they are sorted by name.
+- updates disabled during combat!
+- Friends are marked with a Star
+
+2.03
+- option "Don't filter own request"
+
+2.02	
+- fix same bug again
+
+2.01
+- bugfix
+
+2.00	
+- Channel-Filter
+- repair priest-icon
+- option "Show a fixed number of requests"
+- option "Chat Style"
+- About-Panel
+		
+]]--
