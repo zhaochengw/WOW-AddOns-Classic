@@ -51,7 +51,7 @@ end
 ChatFrame_AddMessageEventFilter('CHAT_MSG_CHANNEL', chatFilter)
 
 function Addon:OnInitialize()
-    self.db = LibStub('AceDB-3.0'):New('MEETINGHORN_DB', { --
+    self.db = LibStub("AceDB-3.0"):New("MEETINGHORN_DB", { --
         profile = { --
             cache = { --
                 current = {},
