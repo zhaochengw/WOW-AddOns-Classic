@@ -2,7 +2,7 @@
 	ALA@163UI
 --]]--
 
-local __version = 240625.0;
+local __version = 240627-2.1;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -994,15 +994,25 @@ end
 				_log_("_GlyphDataSubDecoder V2", "activeGroup == nil", __debase64[strsub(code, 2, 2)], code);
 				return nil;
 			end
+			local ofs = 3;
+			local len1;
+			local code1;
+			local c4_1 = strsub(code, ofs + 1, ofs + 1);
+			if c4_1 == "+" then
+				len1 = __debase64[strsub(code, ofs, ofs)];
+				code1 = strsub(code, ofs + 1, ofs + len1);
+				ofs = ofs + 1 + len1;
+			else
+				len1 = __debase64[strsub(code, ofs, ofs)] + __debase64[c4_1] * 64;
+				code1 = strsub(code, ofs + 2, ofs + len1 + 1);
+				ofs = ofs + 2 + len1;
+			end
 			if numGroup < 2 then
-				local len1 = __debase64[strsub(code, 3, 3)] + __debase64[strsub(code, 4, 4)] * 64;
-				local code1 = strsub(code, 5, len1 + 4);
 				return __emulib.DecodeGlyphBlock(code1, len1);
 			else
-				local len1 = __debase64[strsub(code, 3, 3)] + __debase64[strsub(code, 4, 4)] * 64;
-				local code1 = strsub(code, 5, len1 + 4);
-				local len2 = __debase64[strsub(code, len1 + 5, len1 + 5)] + __debase64[strsub(code, len1 + 6, len1 + 6)] * 64;
-				local code2 = strsub(code, len1 + 7, len1 + len2 + 6);
+				local c4_2 = strsub(code, ofs + 1, ofs + 1);
+				local len2 = __debase64[strsub(code, ofs, ofs)] + (c4_2 == "+" and 0 or __debase64[c4_2] * 64);
+				local code2 = c4_2 == "+" and strsub(code, ofs + 1, ofs + len2) or strsub(code, ofs + 2, ofs + len2 + 1);
 				return __emulib.DecodeGlyphBlock(code1, len1), __emulib.DecodeGlyphBlock(code2, len2);
 			end
 		end,

@@ -1,10 +1,10 @@
-## Interface: 40400
-## Title: alaGearMan
-## Title-zhCN: ala一键换装
-## Title-zhTW: ala一鍵換裝
+## Interface: 20504
+## Title: Talent Emu Cata
+## Title-zhCN: ala天赋模拟器
+## Title-zhTW: ala天賦模擬器
 ## SavedVariablesPerCharacter: 
-## SavedVariables: alaGearManSV
-## Notes: alaGearMan
+## SavedVariables: TalentEmuSV
+## Notes: Talent Emu
 ## Dependencies: 
 ## OptionalDependencies: 
 ## LoadOnDemand: 0
@@ -12,7 +12,6 @@
 ## Author: |cff00ff00ALA|r
 ## Author-zhCN: |cff00ff00ALA|r
 ## Author-zhTW: |cff00ff00ALA|r
-## Version: 404r.240627-2
+## Version: 205r.240627-2
 
-alaGearMan.xml
-
+TalentEmu.xml
