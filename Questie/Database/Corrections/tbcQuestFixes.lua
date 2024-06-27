@@ -74,6 +74,9 @@ function QuestieTBCQuestFixes:Load()
         [403] = {
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
         },
+        [415] = {
+            [questKeys.startedBy] = {{1378,1872}},
+        },
         [455] = {
             [questKeys.triggerEnd] = {"Traverse Dun Algaz", {[zoneIDs.WETLANDS]={{53.49,70.36}}}},
         },
@@ -543,9 +546,6 @@ function QuestieTBCQuestFixes:Load()
         [8122] = {
             [questKeys.triggerEnd] = {"Hold Five Bases in Arathi Basin", {[zoneIDs.ARATHI_HIGHLANDS]={{73.2,30}}}},
         },
-        [8183] = {
-            [questKeys.startedBy] = {{15069},nil,{19802}},
-        },
         [8259] = {
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
         },
@@ -663,11 +663,12 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.preQuestSingle] = {},
         },
         [8488] = {
-            [questKeys.triggerEnd] = {"Protect Apprentice Mirveda", {[zoneIDs.EVERSONG_WOODS]={{54.3,71.02}}}},
+            [questKeys.objectives] = {{{15402,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [8490] = {
             [questKeys.preQuestSingle] = {},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Place the Infused Crystal and protect it from the Scourge for 1 minute"), 0, {{"object", 181164}}}},
+            [questKeys.objectives] = {{{16364,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [8548] = {
             [questKeys.specialFlags] = 1,
@@ -867,18 +868,21 @@ function QuestieTBCQuestFixes:Load()
         [8883] = {
             [questKeys.questLevel] = -1,
         },
-        [8888] = {
-            [questKeys.exclusiveTo] = {8889,8890,9394,},
+        [8887] = {
+            [questKeys.startedBy] = {{15668,15669,15670,15950},nil,{21776}},
         },
         [8894] = {
             [questKeys.preQuestSingle] = {},
+        },
+        [9066] = {
+            [questKeys.objectives] = {{{15945,nil,Questie.ICON_TYPE_INTERACT},{15941,nil,Questie.ICON_TYPE_INTERACT}}},
         },
         [9130] = {
             [questKeys.requiredMinRep] = {},
         },
         [9144] = {
             [questKeys.requiredLevel] = 10,
-            [questKeys.exclusiveTo] = {9147},
+            [questKeys.nextQuestInChain] = 9147,
         },
         [9147] = {
             [questKeys.preQuestSingle] = {},
@@ -955,7 +959,7 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.preQuestSingle] = {9280},
         },
         [9303] = {
-            [questKeys.objectives] = {{{16518,"Nestlewood Owlkin inoculated"}},nil,nil,nil},
+            [questKeys.objectives] = {{{16518,"Nestlewood Owlkin inoculated",Questie.ICON_TYPE_INTERACT}}},
         },
         [9355] = {
             [questKeys.preQuestSingle] = {10143,10483},
@@ -1291,6 +1295,7 @@ function QuestieTBCQuestFixes:Load()
         },
         [9798] = {
             [questKeys.startedBy] = {{16522},nil,{24414}},
+            [questKeys.preQuestSingle] = {9309},
         },
         [9802] = {
             [questKeys.requiredMaxRep] = {},
@@ -1494,6 +1499,7 @@ function QuestieTBCQuestFixes:Load()
         },
         [10021] = {
             [questKeys.preQuestSingle] = {10551},
+            [questKeys.requiredMinRep]= {932,0},
         },
         [10024] = {
             [questKeys.preQuestSingle] = {10211},
@@ -1791,7 +1797,15 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Obtain the Ara Access Crystal from Overseer Azarad. Use it at the Manaforge Ara console to shut it down"), 0, {{"object", 184312}}}},
         },
         [10325] = {
-            [questKeys.requiredMaxRep] = {},
+            [questKeys.requiredMaxRep] = {932,9000},
+            [questKeys.preQuestSingle] = {10551,10552},
+        },
+        [10326] = {
+            [questKeys.requiredMaxRep] = {932,9000},
+            [questKeys.preQuestSingle] = {10551,10552},
+        },
+        [10327] = {
+            [questKeys.requiredMaxRep] = {932,9000},
             [questKeys.preQuestSingle] = {10551,10552},
         },
         [10329] = {
@@ -1902,11 +1916,19 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_SLAY, l10n("Use Navuud's Concoction before attacking Void Wastes or Seeping Sludge"), 0, {{"monster", 20501}, {"monster", 20778}}}},
         },
         [10412] = {
-            [questKeys.requiredMaxRep] = {},
+            [questKeys.requiredMaxRep] = {934,9000},
             [questKeys.preQuestSingle] = {10551,10552},
         },
         [10413] = {
             [questKeys.startedBy] = {{20779},nil,nil},
+        },
+        [10414] = {
+            [questKeys.requiredMaxRep] = {934,9000},
+            [questKeys.preQuestSingle] = {10551,10552},
+        },
+        [10415] = {
+            [questKeys.requiredMaxRep] = {934,9000},
+            [questKeys.preQuestSingle] = {10551,10552},
         },
         [10422] = {
             [questKeys.requiredSourceItems] = {29742},
@@ -2069,6 +2091,9 @@ function QuestieTBCQuestFixes:Load()
         [10545] = {
             [questKeys.objectives] = {nil,nil,nil,nil,{{{19998,20334,20723,20726,20730,20731,20732,21296,21975,19995},19995,"Bladespire Ogres drunken"}}},
         },
+        [10554] = {
+            [questKeys.requiredMinRep]= {932,0},
+        },
         [10556] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use the Fistful of Feathers on the Lashh'an Spell Circle and get back to Daranelle"), 0, {{"object", 184826}, {"monster", 21469}}}},
         },
@@ -2174,12 +2199,28 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.requiredMaxRep] = {},
             [questKeys.preQuestSingle] = {10551,10552},
         },
+        [10654] = {
+            [questKeys.requiredMaxRep] = {},
+            [questKeys.preQuestSingle] = {10551,10552},
+        },
+        [10655] = {
+            [questKeys.requiredMaxRep] = {},
+            [questKeys.preQuestSingle] = {10551,10552},
+        },
         [10656] = {
             [questKeys.requiredMaxRep] = {},
             [questKeys.preQuestSingle] = {10551,10552},
         },
         [10657] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_SLAY, l10n("Use the Repolarized Magneto Sphere to absorb 25 lightning strikes from the Scalewing Serpents"), 0, {{"monster", 20749}}}},
+        },
+        [10658] = {
+            [questKeys.requiredMaxRep] = {},
+            [questKeys.preQuestSingle] = {10551,10552},
+        },
+        [10659] = {
+            [questKeys.requiredMaxRep] = {},
+            [questKeys.preQuestSingle] = {10551,10552},
         },
         [10668] = {
             [questKeys.preQuestSingle] = {10640,10689},
@@ -2246,8 +2287,9 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.sourceItemId] = 31121,
         },
         [10723] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use Sablemane's Trap at Gorgrom's Altar"), 0, {{"object", 185234}}},
-                                           {nil, Questie.ICON_TYPE_SLAY, l10n("Place the 3 Grisly Totems near Gorgrom's corpse"), 0, {{"monster", 21514}}},
+            [questKeys.extraObjectives] = {
+                {nil, Questie.ICON_TYPE_EVENT, l10n("Use Sablemane's Trap at Gorgrom's Altar"), 0, {{"object", 185234}}},
+                {nil, Questie.ICON_TYPE_SLAY, l10n("Place the 3 Grisly Totems near Gorgrom's corpse"), 0, {{"monster", 21514}}},
             },
         },
         [10742] = {
@@ -2324,12 +2366,29 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.requiredSourceItems] = {31536},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Retrieve five Camp Anger Keys and activate the five Legion obelisks. The obelisks have a short duration, so make sure they are all activated at the same time."), 0, {{"object", 185193},{"object", 185195},{"object", 185196},{"object", 185197},{"object", 185198}}}},
         },
+        [10822] = {
+            [questKeys.requiredMaxRep] = {},
+            [questKeys.preQuestSingle] = {10551,10552},
+        },
+        [10823] = {
+            [questKeys.requiredMaxRep] = {},
+            [questKeys.preQuestSingle] = {10551,10552},
+        },
         [10824] = {
             [questKeys.requiredMaxRep] = {},
-            [questKeys.preQuestSingle] = {10552},
+            [questKeys.preQuestSingle] = {10551,10552},
         },
         [10826] = {
-            [questKeys.preQuestSingle] = {10551},
+            [questKeys.requiredMaxRep] = {},
+            [questKeys.preQuestSingle] = {10551,10552},
+        },
+        [10827] = {
+            [questKeys.requiredMaxRep] = {},
+            [questKeys.preQuestSingle] = {10551,10552},
+        },
+        [10828] = {
+            [questKeys.requiredMaxRep] = {},
+            [questKeys.preQuestSingle] = {10551,10552},
         },
         [10830] = {
             [questKeys.requiredSourceItems] = {31517,31495,31518},
@@ -2405,9 +2464,11 @@ function QuestieTBCQuestFixes:Load()
         },
         [10891] = {
             [questKeys.requiredSpell] = -16663,
+            [questKeys.exclusiveTo] = {7652},
         },
         [10892] = {
             [questKeys.requiredSpell] = -16663,
+            [questKeys.exclusiveTo] = {7652},
         },
         [10896] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_SLAY, l10n("Kill Rotting Forest-Ragers and Infested Root-Walkers to spawn Wood Mites"), 0, {{"monster", 22307}, {"monster", 22095}}}},
@@ -2549,8 +2610,8 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.questLevel] = -1,
             [questKeys.zoneOrSort] = sortKeys.SPECIAL,
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
-            [questKeys.preQuestGroup] = {},
-            [questKeys.preQuestSingle] = {10968},
+            [questKeys.preQuestGroup] = {10962,10968},
+            [questKeys.preQuestSingle] = {},
         },
         [10967] = {
             [questKeys.questLevel] = -1,
@@ -2560,11 +2621,11 @@ function QuestieTBCQuestFixes:Load()
         },
         [10968] = {
             [questKeys.questLevel] = -1,
-            [questKeys.triggerEnd] = {"Dornaa taken to Farseer Nobundo", {[zoneIDs.THE_EXODAR]={{30.8,29.88}}}},
+            [questKeys.objectives] = {{{17204,"Dornaa taken to Farseer Nobundo",Questie.ICON_TYPE_EVENT}}},
             [questKeys.zoneOrSort] = sortKeys.SPECIAL,
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
-            [questKeys.preQuestGroup] = {10956,10962},
-            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {},
+            [questKeys.preQuestSingle] = {10956},
         },
         [10971] = {
             [questKeys.requiredSourceItems] = {29460},
@@ -3285,17 +3346,23 @@ function QuestieTBCQuestFixes:Load()
                 [zoneIDs.UNDERCITY]={{64.58,8.08}},
             }},
         },
+        [11665] = { -- Crocolisks in the City
+            [questKeys.extraObjectives] = {
+                {{[zoneIDs.ORGRIMMAR]={{70.4,28.3},{67.8,33.7},{64.8,26},{35.2,78.6},{37.6,81.7},{33.3,84.4},{36.3,86}}}, Questie.ICON_TYPE_NODE_FISH, l10n("Fish for Baby Crocolisk")},
+                {{[zoneIDs.STORMWIND_CITY]={{48.5,67.9},{45.7,60.5},{45.4,53.3},{35.7,45.6},{34.3,59},{51.8,47.1},{60.2,46.6},{65.2,53.7},{61.1,37},{65.6,32},{55.9,33.5},{50.9,23.8}}}, Questie.ICON_TYPE_NODE_FISH, l10n("Fish for Baby Crocolisk")},
+            },
+        },
         [11666] = {
-            [questKeys.extraObjectives] = {{{[zoneIDs.TEROKKAR_FOREST]={{51.9,34.7},{55.3,44.1},{60.2,53.9}}}, Questie.ICON_TYPE_EVENT, l10n("Fish here for Blackfin Darter")}},
+            [questKeys.extraObjectives] = {{{[zoneIDs.TEROKKAR_FOREST]={{51.9,34.7},{55.3,44.1},{60.2,53.9}}}, Questie.ICON_TYPE_NODE_FISH, l10n("Fish here for Blackfin Darter")}},
         },
         [11667] = {
-            [questKeys.extraObjectives] = {{{[zoneIDs.NAGRAND]={{62,35}}}, Questie.ICON_TYPE_EVENT, l10n("Fish here for World's Largest Mudfish")}},
+            [questKeys.extraObjectives] = {{{[zoneIDs.NAGRAND]={{62,35}}}, Questie.ICON_TYPE_NODE_FISH, l10n("Fish here for World's Largest Mudfish")}},
         },
         [11668] = {
-            [questKeys.extraObjectives] = {{{[zoneIDs.ZANGARMARSH]={{75.6,82.9}}}, Questie.ICON_TYPE_EVENT, l10n("Fish here for Bloated Barbed Gill Trout")}},
+            [questKeys.extraObjectives] = {{{[zoneIDs.ZANGARMARSH]={{75.6,82.9}}}, Questie.ICON_TYPE_NODE_FISH, l10n("Fish here for Bloated Barbed Gill Trout")}},
         },
         [11669] = {
-            [questKeys.extraObjectives] = {{{[zoneIDs.HELLFIRE_PENINSULA]={{39.4,43}},[zoneIDs.SHADOWMOON_VALLEY]={{24,32.5},{31.9,29.9},{40.1,60.1}}}, Questie.ICON_TYPE_EVENT, l10n("Fish here for Monstrous Felblood Snapper")}},
+            [questKeys.extraObjectives] = {{{[zoneIDs.HELLFIRE_PENINSULA]={{39.4,43}},[zoneIDs.SHADOWMOON_VALLEY]={{24,32.5},{31.9,29.9},{40.1,60.1}}}, Questie.ICON_TYPE_NODE_FISH, l10n("Fish here for Monstrous Felblood Snapper")}},
         },
         [11731] = {
             [questKeys.startedBy] = {{25975},nil,nil},
@@ -3884,6 +3951,7 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.finishedBy] = {{26221},nil},
             [questKeys.preQuestSingle] = {12012},
             [questKeys.specialFlags] = 0,
+            [questKeys.requiredMaxLevel] = 28,
         },
         [11922] = {
             [questKeys.startedBy] = {{26113},nil,nil},
@@ -3970,21 +4038,25 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.finishedBy] = {{26221},nil},
             [questKeys.preQuestSingle] = {12012},
             [questKeys.specialFlags] = 0,
+            [questKeys.requiredMaxLevel] = 38,
         },
         [11948] = {
             [questKeys.finishedBy] = {{26221},nil},
             [questKeys.preQuestSingle] = {12012},
             [questKeys.specialFlags] = 0,
+            [questKeys.requiredMaxLevel] = 48,
         },
         [11952] = {
             [questKeys.finishedBy] = {{26221},nil},
             [questKeys.preQuestSingle] = {12012},
             [questKeys.specialFlags] = 0,
+            [questKeys.requiredMaxLevel] = 55,
         },
         [11953] = {
             [questKeys.finishedBy] = {{26221},nil},
             [questKeys.preQuestSingle] = {12012},
             [questKeys.specialFlags] = 0,
+            [questKeys.requiredMaxLevel] = 63,
         },
         [11954] = {
             [questKeys.startedBy] = {{26221},nil,nil},
@@ -4879,6 +4951,7 @@ function QuestieTBCQuestFixes:Load()
                 [zoneIDs.ALTERAC_MOUNTAINS] = {{39.4,82.2}},
                 [zoneIDs.ARATHI_HIGHLANDS] = {{45.6,45.8}},
                 [zoneIDs.ASHENVALE] = {{61.8,83.8}},
+                [zoneIDs.THE_EXODAR]={{26.6,50.1}},
             }},
             [questKeys.zoneOrSort] = sortKeys.BATTLEGROUND,
             [questKeys.questFlags] = questFlags.RAID,

@@ -26,7 +26,7 @@ BG.History = {}
 function BG.UpdateHistoryButton()
     local bt = BG.History.HistoryButton
     bt:SetFormattedText(L["历史表格（%d个）"], #BiaoGe.HistoryList[BG.FB1])
-    bt:SetSize(bt:GetFontString():GetWidth(), 30)
+    bt:SetSize(bt:GetFontString():GetWidth(), 20)
 end
 
 function BG.HistoryUI()
@@ -54,17 +54,18 @@ function BG.HistoryUI()
             BG.History.GaiMingFrame:Hide()
         end)
 
-        local s = CreateFrame("ScrollFrame", nil, BG.History.List, "UIPanelScrollFrameTemplate") -- 滚动
-        s:SetWidth(BG.History.List:GetWidth() - 27)
-        s:SetHeight(BG.History.List:GetHeight() - 9)
-        s:SetPoint("TOPLEFT", BG.History.List, "TOPLEFT", 0, -5)
-        s.ScrollBar.scrollStep = BG.scrollStep
+        local scroll = CreateFrame("ScrollFrame", nil, BG.History.List, "UIPanelScrollFrameTemplate") -- 滚动
+        scroll:SetWidth(BG.History.List:GetWidth() - 27)
+        scroll:SetHeight(BG.History.List:GetHeight() - 9)
+        scroll:SetPoint("TOPLEFT", BG.History.List, "TOPLEFT", 0, -5)
+        scroll.ScrollBar.scrollStep = BG.scrollStep
+        BG.CreateSrollBarBackdrop(scroll.ScrollBar)
 
         local child = CreateFrame("Frame", nil, BG.History.List) -- 子框架
-        child:SetWidth(s:GetWidth())
-        child:SetHeight(s:GetHeight())
+        child:SetWidth(scroll:GetWidth())
+        child:SetHeight(scroll:GetHeight())
         BG.History.child = child
-        s:SetScrollChild(child)
+        scroll:SetScrollChild(child)
 
         local TitleText = BG["HistoryFrame" .. BG.FB1]:CreateFontString() -- 标题
         TitleText:SetPoint("TOP", BG.MainFrame, "TOP", 0, -4);
@@ -80,7 +81,7 @@ function BG.HistoryUI()
     ------------------历史表格按键------------------
     do
         local bt = CreateFrame("Button", nil, parent)
-        bt:SetPoint("TOPRIGHT", BG.MainFrame, "TOPRIGHT", -30, 4)
+        bt:SetPoint("TOPRIGHT", BG.MainFrame, "TOPRIGHT", -30, -1)
         bt:SetNormalFontObject(BG.FontGreen15)
         bt:SetDisabledFontObject(BG.FontDis15)
         bt:SetHighlightFontObject(BG.FontWhite15)
@@ -141,6 +142,9 @@ function BG.HistoryUI()
                 end
                 BiaoGe.History[FB][DT]["boss" .. b]["time"] = BiaoGe[FB]["boss" .. b]["time"]
             end
+            if #BiaoGe[FB].tradeTbl > 1 then
+                BiaoGe.History[FB][DT].tradeTbl = BiaoGe[FB].tradeTbl
+            end
             local d = { DT, format(L["%s%s %s人 工资:%s"], DTcn, BG.GetFBinfo(FB, "localName"),
                 BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 4]:GetText(),
                 BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 5]:GetText()) }
@@ -155,7 +159,7 @@ function BG.HistoryUI()
         bt:SetDisabledFontObject(BG.FontDis15)
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["保存表格"])
-        bt:SetSize(bt:GetFontString():GetWidth(), 30)
+        bt:SetSize(bt:GetFontString():GetWidth(), 20)
         BG.SetTextHighlightTexture(bt)
         BG.History.SaveButton = bt
 
@@ -190,7 +194,7 @@ function BG.HistoryUI()
         bt:SetDisabledFontObject(BG.FontDis15)
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["分享表格"])
-        bt:SetSize(bt:GetFontString():GetWidth(), 30)
+        bt:SetSize(bt:GetFontString():GetWidth(), 20)
         BG.SetTextHighlightTexture(bt)
         BG.History.SendButton = bt
 
@@ -274,13 +278,14 @@ function BG.HistoryUI()
         end)
         BG.frameWenBen.edit = edit
 
-        local s = CreateFrame("ScrollFrame", nil, BG.frameWenBen.frame, "UIPanelScrollFrameTemplate")
-        s:SetWidth(BG.frameWenBen.frame:GetWidth() - 27)
-        s:SetHeight(BG.frameWenBen.frame:GetHeight() - 29)
-        s:SetPoint("BOTTOMLEFT", BG.frameWenBen.frame, "BOTTOMLEFT", 0, 2)
-        s.ScrollBar.scrollStep = BG.scrollStep
-        s:SetScrollChild(edit)
-        BG.frameWenBen.scroll = s
+        local scroll = CreateFrame("ScrollFrame", nil, BG.frameWenBen.frame, "UIPanelScrollFrameTemplate")
+        scroll:SetWidth(BG.frameWenBen.frame:GetWidth() - 27)
+        scroll:SetHeight(BG.frameWenBen.frame:GetHeight() - 29)
+        scroll:SetPoint("BOTTOMLEFT", BG.frameWenBen.frame, "BOTTOMLEFT", 0, 2)
+        scroll.ScrollBar.scrollStep = BG.scrollStep
+        BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+        scroll:SetScrollChild(edit)
+        BG.frameWenBen.scroll = scroll
 
         -- 创建按键
         local bt = CreateFrame("Button", nil, parent)
@@ -289,7 +294,7 @@ function BG.HistoryUI()
         bt:SetDisabledFontObject(BG.FontDis15)
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["导出表格"])
-        bt:SetSize(bt:GetFontString():GetWidth(), 30)
+        bt:SetSize(bt:GetFontString():GetWidth(), 20)
         BG.SetTextHighlightTexture(bt)
         BG.History.DaoChuButton = bt
 
@@ -399,6 +404,8 @@ function BG.HistoryUI()
                             BiaoGe[FB]["boss" .. b]["time"] = BiaoGe.History[FB][DT]["boss" .. b]["time"]
                         end
                     end
+                    BiaoGe[FB].tradeTbl = BiaoGe.History[FB][DT].tradeTbl or {}
+                    break
                 end
             end
             if BiaoGe.lastFrame == "FB" then
@@ -412,7 +419,7 @@ function BG.HistoryUI()
         bt:SetDisabledFontObject(BG.FontDis15)
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["应用表格"])
-        bt:SetSize(bt:GetFontString():GetWidth(), 30)
+        bt:SetSize(bt:GetFontString():GetWidth(), 20)
         BG.SetTextHighlightTexture(bt)
         BG.History.YongButton = bt
 
@@ -461,7 +468,7 @@ function BG.HistoryUI()
         bt:SetDisabledFontObject(BG.FontDis15)
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["返回表格"])
-        bt:SetSize(bt:GetFontString():GetWidth(), 30)
+        bt:SetSize(bt:GetFontString():GetWidth(), 20)
         BG.SetTextHighlightTexture(bt)
         BG.History.EscButton = bt
 
@@ -706,7 +713,6 @@ do
                                         BG.HistoryFrame[FB]["boss" .. b]["maijia" .. i]:SetTextColor(unpack(BiaoGe.History[FB][DT]["boss" .. b]["color" .. i]))
                                     end
                                     BG.HistoryFrame[FB]["boss" .. b]["jine" .. i]:SetText(BiaoGe.History[FB][DT]["boss" .. b]["jine" .. i] or "")
-
 
                                     if BiaoGe.History[FB][DT]["boss" .. b]["guanzhu" .. i] then
                                         BG.HistoryFrame[FB]["boss" .. b]["guanzhu" .. i]:Show()

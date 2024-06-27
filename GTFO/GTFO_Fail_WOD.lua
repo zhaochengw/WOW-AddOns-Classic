@@ -530,9 +530,9 @@ GTFO.SpellID["174921"] = {
 	sound = 3;
 };
 
-GTFO.SpellID["169445"] = {
-	--desc = "Noxious Eruption (Twisted Abomination)";
-	sound = 3;
+GTFO.SpellID["177734"] = {
+  --desc = "Agitated Water (Enchanted Waters)";
+  sound = 3;
 };
 
 GTFO.SpellID["175997"] = {

@@ -2,7 +2,7 @@
 	ALA@163UI
 --]]--
 
-local __version = 240501.0;
+local __version = 240625.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -53,7 +53,14 @@ end
 	local GetInventoryItemLink = GetInventoryItemLink;
 	local GetItemInfo = GetItemInfo;
 	local GetSpellInfo = GetSpellInfo;
-	local GetAddOnInfo, IsAddOnLoaded, GetAddOnEnableState = GetAddOnInfo, IsAddOnLoaded, GetAddOnEnableState;
+	local GetAddOnInfo, IsAddOnLoaded, GetAddOnEnableState;
+	local C_AddOns = C_AddOns;
+	local _GetAddOnEnableState = _G.GetAddOnEnableState;
+	if C_AddOns ~= nil then
+		GetAddOnInfo, IsAddOnLoaded, GetAddOnEnableState = C_AddOns.GetAddOnInfo or _G.GetAddOnInfo, C_AddOns.IsAddOnLoaded or _G.IsAddOnLoaded, C_AddOns.GetAddOnEnableState or function(addon, name) return _GetAddOnEnableState(name, addon) end;
+	else
+		GetAddOnInfo, IsAddOnLoaded, GetAddOnEnableState = _G.GetAddOnInfo, _G.IsAddOnLoaded, function(addon, name) return _GetAddOnEnableState(name, addon) end;
+	end
 	local Ambiguate = Ambiguate;
 	local _GetGlyphSocketInfo = __ala_meta__.TOC_VERSION < 40000 and GetGlyphSocketInfo or function(index, group)
 		local Enabled, GlyphType, GlyphTooltipIndex, GlyphSpell, Icon = GetGlyphSocketInfo(index, group);
@@ -1185,7 +1192,7 @@ end
 				else
 					loaded = "~0";
 				end
-				local enabled = GetAddOnEnableState(nil, pack);
+				local enabled = GetAddOnEnableState(pack);
 				if enabled ~= nil and enabled > 0 then
 					enabled = "~1";
 				else
@@ -1203,7 +1210,7 @@ end
 			local pack = AddOnPackList[index];
 			if select(5, GetAddOnInfo(pack)) ~= "MISSING" then
 				local loaded, finished = IsAddOnLoaded(pack);
-				local enabled = GetAddOnEnableState(nil, pack);
+				local enabled = GetAddOnEnableState(pack);
 				msg = msg .. __base64[(loaded and 1 or 0) * 16 + (enabled and 1 or 0) * 32] .. __base64[index];
 			end
 		end

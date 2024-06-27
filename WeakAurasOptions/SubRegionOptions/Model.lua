@@ -1,5 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
-local AddonName, OptionsPrivate = ...
+---@type string
+local AddonName = ...
+---@class OptionsPrivate
+local OptionsPrivate = select(2, ...)
 
 local L = WeakAuras.L;
 
@@ -13,19 +16,11 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Show Model"],
       order = 9,
     },
-    model_fileId = {
-      type = "input",
-      width = WeakAuras.doubleWidth - 0.15,
-      name = L["Model"],
-      order =  10,
-      hidden = WeakAuras.IsClassicEra()
-    },
     model_path = {
       type = "input",
       width = WeakAuras.doubleWidth - 0.15,
       name = L["Model"],
       order =  10.5,
-      hidden = not WeakAuras.IsClassicEra()
     },
     chooseModel = {
       type = "execute",

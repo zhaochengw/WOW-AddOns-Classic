@@ -1,5 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
-local AddonName, OptionsPrivate = ...
+---@type string
+local AddonName = ...
+---@class OptionsPrivate
+local OptionsPrivate = select(2, ...)
 
 -- Lua APIs
 local tinsert, tremove, wipe = table.insert, table.remove, wipe
@@ -15,6 +18,7 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
@@ -112,11 +116,7 @@ function OptionsPrivate.CreateFrame()
   frame:EnableMouse(true)
   frame:SetMovable(true)
   frame:SetResizable(true)
-  if frame.SetResizeBounds then
-    frame:SetResizeBounds(minWidth, minHeight)
-  else
-    frame:SetMinResize(minWidth, minHeight)
-  end
+  frame:SetResizeBounds(minWidth, minHeight)
   frame:SetFrameStrata("DIALOG")
   -- Workaround classic issue
   WeakAurasOptionsPortrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])
@@ -349,7 +349,7 @@ function OptionsPrivate.CreateFrame()
 
 
   local minimizebutton = CreateFrame("Button", nil, frame, "MaximizeMinimizeButtonFrameTemplate")
-  minimizebutton:SetPoint("RIGHT", frame.CloseButton, "LEFT", WeakAuras.IsClassicEraOrWrath() and  10 or 0, 0)
+  minimizebutton:SetPoint("RIGHT", frame.CloseButton, "LEFT", WeakAuras.IsClassicEraOrWrathOrCata() and  10 or 0, 0)
   minimizebutton:SetOnMaximizedCallback(function()
     frame.minimized = false
     local right, top = frame:GetRight(), frame:GetTop()
@@ -1352,8 +1352,10 @@ function OptionsPrivate.CreateFrame()
 
     for _, id in ipairs(batchSelection) do
       if not alreadySelected[id] then
-        displayButtons[id]:Pick()
-        tinsert(tempGroup.controlledChildren, id)
+        if displayButtons[id].frame:IsVisible() then
+          displayButtons[id]:Pick()
+          tinsert(tempGroup.controlledChildren, id)
+        end
       end
     end
     frame:ClearOptions(tempGroup.id)

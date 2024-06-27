@@ -5,11 +5,11 @@ local wowToc = DBM:GetTOC()
 if (wowToc >= 100200) then
 	mod.statTypes = "normal,heroic,challenge,timewalker"
 	mod.upgradedMPlus = true
-else--TODO, refine for cata classic since no timewalker there
-	mod.statTypes = "normal,heroic,timewalker"
+else
+	mod.statTypes = "normal,heroic"
 end
 
-mod:SetRevision("20240123234128")
+mod:SetRevision("20240616044034")
 mod:SetCreatureID(40825, 40788)
 mod:SetMainBossID(40788)-- 40788 = Mindbender Ghur'sha
 mod:SetEncounterID(1046)
@@ -193,7 +193,7 @@ else
 			end
 		elseif args.spellId == 76616 then
 			if args.destName == L.name then
-				warnPhase2:Show(2)
+				warnPhase2:Show()
 			end
 		end
 	end

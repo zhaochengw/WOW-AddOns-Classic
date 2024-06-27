@@ -81873,16 +81873,275 @@ t[64878] = {
 	sellPrice = 93684,
 	reqLevel = 85,
 }
+t[44737] = {
+	name = L["Draenic Silk Robes"],
+	quality = 1,
+	icon = "inv_chest_cloth_26",
+	buyPrice = 500005,
+	sellPrice = 100001,
+	reqLevel = 0,
+}
+t[74822] = {
+	name = L["Sasparilla Sinker"],
+	quality = 1,
+	icon = "inv_drink_13",
+	buyPrice = 13750,
+	sellPrice = 687,
+	reqLevel = 85,
+}
+t[73260] = {
+	name = L["Salty Sea Dog"],
+	quality = 1,
+	icon = "inv_misc_food_164_fish_seadog",
+	buyPrice = 20000,
+	sellPrice = 1000,
+	reqLevel = 85,
+}
+t[72140] = {
+	name = L["Swift Forest Strider"],
+	quality = 4,
+	icon = "ability_hunter_pet_tallstrider",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 20,
+}
+t[73764] = {
+	name = L["Darkmoon Monkey"],
+	quality = 3,
+	icon = "ability_hunter_aspectofthemonkey",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 0,
+}
+t[73765] = {
+	name = L["Darkmoon Turtle"],
+	quality = 3,
+	icon = "inv_misc_fish_turtle_01",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 0,
+}
+t[73766] = {
+	name = L["Darkmoon Dancing Bear"],
+	quality = 4,
+	icon = "ability_hunter_pet_bear",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 20,
+}
+t[73903] = {
+	name = L["Darkmoon Tonk"],
+	quality = 3,
+	icon = "inv_gizmo_goblingtonkcontroller",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 0,
+}
+t[73905] = {
+	name = L["Darkmoon Zeppelin"],
+	quality = 3,
+	icon = "inv_gizmo_goblingtonkcontroller",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 0,
+}
+t[74981] = {
+	name = L["Darkmoon Cub"],
+	quality = 3,
+	icon = "ability_mount_jungletiger",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 0,
+}
+t[63125] = {
+	name = L["Reins of the Dark Phoenix"],
+	quality = 4,
+	icon = "inv_mount_darkphoenixa",
+	buyPrice = 30000000,
+	sellPrice = 7500000,
+	reqLevel = 70,
+}
+t[63352] = {
+	name = L["Shroud of Cooperation"],
+	quality = 2,
+	icon = "inv_guild_cloak_alliance_a",
+	buyPrice = 1500000,
+	sellPrice = 375000,
+	reqLevel = 35,
+}
+t[63353] = {
+	name = L["Shroud of Cooperation"],
+	quality = 2,
+	icon = "inv_guild_cloak_horde_a",
+	buyPrice = 1500000,
+	sellPrice = 375000,
+	reqLevel = 35,
+}
+t[64398] = {
+	name = L["Standard of Unity"],
+	quality = 3,
+	icon = "inv_guild_standard_alliance_b",
+	buyPrice = 2000000,
+	sellPrice = 562500,
+	reqLevel = 0,
+}
+t[64401] = {
+	name = L["Standard of Unity"],
+	quality = 3,
+	icon = "inv_guild_standard_horde_b",
+	buyPrice = 2000000,
+	sellPrice = 562500,
+	reqLevel = 0,
+}
+t[65435] = {
+	name = L["Recipe: Cauldron of Battle"],
+	quality = 1,
+	icon = "inv_scroll_04",
+	buyPrice = 1500000,
+	sellPrice = 0,
+	reqLevel = 0,
+	profession = L["Alchemy"],
+	teaches = L["Cauldron of Battle"],
+	learnedAt = 525,
+}
+t[62799] = {
+	name = L["Recipe: Broiled Dragon Feast"],
+	quality = 3,
+	icon = "inv_scroll_05",
+	buyPrice = 1500000,
+	sellPrice = 375000,
+	reqLevel = 0,
+	profession = L["Cooking"],
+	teaches = L["Broiled Dragon Feast"],
+	learnedAt = 500,
+}
+t[68660] = {
+	name = L["Mystic Cogwheel"],
+	quality = 3,
+	icon = "inv_misc_enggizmos_30",
+	buyPrice = 0,
+	sellPrice = 0,
+	reqLevel = 0,
+}
+t[64400] = {
+	name = L["Banner of Cooperation"],
+	quality = 2,
+	icon = "inv_guild_standard_horde_a",
+	buyPrice = 1500000,
+	sellPrice = 375000,
+	reqLevel = 0,
+}
+t[68766] = {
+	name = L["Arcanum of the Ramkahen"],
+	quality = 7,
+	icon = "spell_fire_masterofelements",
+	buyPrice = 1500000,
+	sellPrice = 375000,
+	reqLevel = 85,
+}
+t[68764] = {
+	name = L["Arcanum of the Earthen Ring"],
+	quality = 7,
+	icon = "spell_fire_masterofelements",
+	buyPrice = 1500000,
+	sellPrice = 375000,
+	reqLevel = 85,
+}
+t[63359] = {
+	name = L["Banner of Cooperation"],
+	quality = 2,
+	icon = "inv_guild_standard_alliance_a",
+	buyPrice = 1500000,
+	sellPrice = 375000,
+	reqLevel = 0,
+}
+t[65363] = {
+	name = L["Guild Herald"],
+	quality = 3,
+	icon = "achievement_guildperk_honorablemention_rank2",
+	buyPrice = 5000000,
+	sellPrice = 0,
+	reqLevel = 0,
+}
+t[11474] = {
+	name = L["Sprite Darter Egg"],
+	quality = 1,
+	icon = "inv_egg_02",
+	buyPrice = 5000,
+	sellPrice = 0,
+	reqLevel = 0,
+}
+t[65498] = {
+	name = L["Recipe: Big Cauldron of Battle"],
+	quality = 1,
+	icon = "inv_scroll_04",
+	buyPrice = 1500000,
+	sellPrice = 0,
+	reqLevel = 0,
+	profession = L["Alchemy"],
+	teaches = L["Big Cauldron of Battle"],
+	learnedAt = 525,
+}
+t[65360] = {
+	name = L["Cloak of Coordination"],
+	quality = 4,
+	icon = "inv_guild_cloak_alliance_c",
+	buyPrice = 5000000,
+	sellPrice = 1250000,
+	reqLevel = 35,
+}
+t[64399] = {
+	name = L["Battle Standard of Coordination"],
+	quality = 4,
+	icon = "inv_guild_standard_alliance_c",
+	buyPrice = 3000000,
+	sellPrice = 750000,
+	reqLevel = 0,
+}
+t[69862] = {
+	name = L["Medallion of the Horde"],
+	quality = 3,
+	icon = "inv_jewelry_trinketpvp_02",
+	buyPrice = 1,
+	sellPrice = 1,
+	reqLevel = 70,
+}
+t[37903] = {
+	name = L["Blackrock Lager"],
+	quality = 1,
+	icon = "inv_drink_10",
+	buyPrice = 150,
+	sellPrice = 6,
+	reqLevel = 1,
+}
+t[64402] = {
+	name = L["Battle Standard of Coordination"],
+	quality = 4,
+	icon = "inv_guild_standard_horde_c",
+	buyPrice = 3000000,
+	sellPrice = 750000,
+	reqLevel = 0,
+}
+t[65274] = {
+	name = L["Cloak of Coordination"],
+	quality = 4,
+	icon = "inv_guild_cloak_horde_c",
+	buyPrice = 5000000,
+	sellPrice = 1250000,
+	reqLevel = 35,
+}
+t[62287] = {
+	name = L["Guild Vault Voucher (8th Slot)"],
+	quality = 4,
+	icon = "inv_misc_note_02",
+	buyPrice = 200000000,
+	sellPrice = 0,
+	reqLevel = 0,
+}
 t[67538] = {
 	name = L["true"],
 	profession = L["Alchemy"],
 	teaches = L["Vial of the Sands"],
-	learnedAt = 525,
-}
-t[65498] = {
-	name = L["true"],
-	profession = L["Alchemy"],
-	teaches = L["Big Cauldron of Battle"],
 	learnedAt = 525,
 }
 t[2555] = {
@@ -81890,12 +82149,6 @@ t[2555] = {
 	profession = L["Alchemy"],
 	teaches = L["Swiftness Potion"],
 	learnedAt = 60,
-}
-t[65435] = {
-	name = L["true"],
-	profession = L["Alchemy"],
-	teaches = L["Cauldron of Battle"],
-	learnedAt = 525,
 }
 t[6211] = {
 	name = L["true"],
@@ -84080,12 +84333,6 @@ t[6661] = {
 	profession = L["Cooking"],
 	teaches = L["Savory Deviate Delight"],
 	learnedAt = 85,
-}
-t[62799] = {
-	name = L["true"],
-	profession = L["Cooking"],
-	teaches = L["Broiled Dragon Feast"],
-	learnedAt = 500,
 }
 t[39644] = {
 	name = L["true"],

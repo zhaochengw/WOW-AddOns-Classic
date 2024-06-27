@@ -661,6 +661,11 @@ GTFO.SpellID["169223"] = {
 	sound = 1;
 };
 
+GTFO.SpellID["427513"] = {
+	--desc = "Noxious Discharge (Dulhu, M+)";
+	sound = 1;
+};
+
 -- *************************
 -- * Upper Blackrock Spire *
 -- *************************

@@ -31,11 +31,23 @@ function SeasonOfDiscovery:LoadItems()
         [206170] = { -- Windfury Cone
             [itemKeys.objectDrops] = {403105},
         },
+        [206264] = { -- Rune of Inspiration
+            [itemKeys.npcDrops] = {204937},
+        },
         [206469] = { -- Prairie Flower
             [itemKeys.objectDrops] = {403718},
         },
+        [208085] = { -- Scarlet Lieutenant Signet Ring
+            [itemKeys.npcDrops] = {1662,1664,1665},
+        },
         [208609] = { -- Glade Flower
             [itemKeys.objectDrops] = {407247},
+        },
+        [208612] = { -- Severed Spider Head
+            [itemKeys.npcDrops] = {1998,1999,2000,2001},
+        },
+        [208689] = { -- Ferocious Idol
+            [itemKeys.npcDrops] = {98,117,500,1972,6788},
         },
         [208771] = { -- Rune of Blade Dance
             [itemKeys.objectDrops] = {407453,408718,414532},
@@ -57,7 +69,16 @@ function SeasonOfDiscovery:LoadItems()
             [itemKeys.objectDrops] = {410220},
         },
         [210055] = { -- Hillsbrad Human Bones
-            [itemKeys.npcDrops] = {2265,2266,2267,2268,2360},
+            [itemKeys.npcDrops] = {2265,2266,2267,2268,2360,2387},
+        },
+        [210195] = { -- Unbalanced Idol
+            [itemKeys.npcDrops] = {1769,1770,1779},
+        },
+        [210589] = { -- Echo of the Ancestors
+            [itemKeys.npcDrops] = {204937},
+        },
+        [210955] = { -- Scarlet Initiate's Uniform
+            [itemKeys.objectDrops] = {412147},
         },
         [211452] = { -- Horde Blackfathom Pearl
             [itemKeys.relatedQuests] = {78917},
@@ -70,6 +91,84 @@ function SeasonOfDiscovery:LoadItems()
         [211818] = { -- Alliance Strange Water Globe (required for but does not start Baron Aquanis)
             [itemKeys.relatedQuests] = {79099},
             [itemKeys.startQuest] = nil,
+        },
+        [212347] = { -- Illari's Key
+            [itemKeys.npcDrops] = {215655},
+        },
+        [213446] = { -- Tarnished Prayer Bead III
+            [itemKeys.npcDrops] = {2552,2553,2554,2555,2556,2557,2562,2564,2566,2569,2570,2572,2573,2574,2575,2586,2587,2588,2589,2590,2618,2619,4062},
+        },
+        [215376] = { -- Crusader's Mace
+            [itemKeys.npcDrops] = {4281,4283,4286,4287,4288,4289,4290,4291,4292,4293,4294,4295,4296,4297,4298,4299,4300,4301,4302,4303,4306,4540},
+        },
+        [216635] = { -- Spent Voidcore
+            [itemKeys.npcDrops] = {5335,5336,5337},
+        },
+        [216946] = { -- Glittering Dalaran Relic
+            [itemKeys.npcDrops] = {900000},
+        },
+        [216947] = { -- Whirring Dalaran Relic
+            [itemKeys.npcDrops] = {900001},
+        },
+        [216948] = { -- Odd Dalaran Relic
+            [itemKeys.npcDrops] = {900002},
+        },
+        [216949] = { -- Heavy Dalaran Relic
+            [itemKeys.npcDrops] = {900003},
+        },
+        [216950] = { -- Creepy Dalaran Relic
+            [itemKeys.npcDrops] = {900004},
+        },
+        [216951] = { -- Slippery Dalaran Relic
+            [itemKeys.npcDrops] = {900005},
+        },
+        [219759] = { -- Charla's Field Report
+            [itemKeys.npcDrops] = {221472},
+        },
+        [219770] = { -- Gemeron's Field Report
+            [itemKeys.npcDrops] = {221482},
+        },
+        [219771] = { -- Thandros' Field Report
+            [itemKeys.npcDrops] = {221484},
+        },
+        [219772] = { -- Fallia's Field Report
+            [itemKeys.npcDrops] = {221483},
+        },
+        [219776] = { -- Intelligence Report: Vul'gol Ogre Mound
+            [itemKeys.npcDrops] = {221222},
+        },
+        [219778] = { -- Intelligence Report: Rotting Orchard
+            [itemKeys.npcDrops] = {221221},
+        },
+        [219803] = { -- Intelligence Report: Yorgen Farmstead
+            [itemKeys.npcDrops] = {221220},
+        },
+        [219924] = { -- Intelligence Report: Forest Song
+            [itemKeys.npcDrops] = {221271},
+        },
+        [219925] = { -- Intelligence Report: Satyrnaar
+            [itemKeys.npcDrops] = {221272},
+        },
+        [219926] = { -- Intelligence Report: Warsong Lumber Camp
+            [itemKeys.npcDrops] = {221273},
+        },
+        [219928] = { -- Intelligence Report: Agol'watha
+            [itemKeys.npcDrops] = {221353},
+        },
+        [219937] = { -- Intelligence Report: Shaol'watha
+            [itemKeys.npcDrops] = {221352},
+        },
+        [219938] = { -- Intelligence Report: Skulk Rock
+            [itemKeys.npcDrops] = {221351},
+        },
+        [219957] = { -- Intelligence Report: Oneiros
+            [itemKeys.npcDrops] = {221401},
+        },
+        [219958] = { -- Intelligence Report: Twin Colossals
+            [itemKeys.npcDrops] = {221402},
+        },
+        [219959] = { -- Intelligence Report: Ruins of Ravenwind
+            [itemKeys.npcDrops] = {221404},
         },
     }
 end

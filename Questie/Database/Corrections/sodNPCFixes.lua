@@ -12,6 +12,11 @@ function SeasonOfDiscovery:LoadNPCs()
     local waypointPresets = QuestieDB.waypointPresets
 
     return {
+        [15076] = { -- Zandalarian Emissary
+            [npcKeys.spawns] = {
+                [zoneIDs.STRANGLETHORN_VALE] = {{27.2, 77.0},{39.5, 5.0}},
+            },
+        },
         [202060] = { -- Frozen Murloc
             [npcKeys.spawns] = {
                 [zoneIDs.ELWYNN_FOREST] = {{76.8, 51.4}},
@@ -19,7 +24,9 @@ function SeasonOfDiscovery:LoadNPCs()
             },
         },
         [202699] = { -- Baron Aquanis
-            [npcKeys.spawns] = { [zoneIDs.BLACKFATHOM_DEEPS] = { { -1, -1 } } },
+            [npcKeys.spawns] = {
+                [zoneIDs.BLACKFATHOM_DEEPS] = {{-1, -1}},
+            },
             [npcKeys.zoneID] = zoneIDs.BLACKFATHOM_DEEPS,
         },
         [203079] = { -- Wandering Swordsman
@@ -47,7 +54,9 @@ function SeasonOfDiscovery:LoadNPCs()
             },
         },
         [204068] = { -- Lady Sarevess
-            [npcKeys.spawns] = {[zoneIDs.BLACKFATHOM_DEEPS]={{-1,-1}}},
+            [npcKeys.spawns] = {
+                [zoneIDs.BLACKFATHOM_DEEPS] = {{-1, -1}},
+            },
             [npcKeys.zoneID] = zoneIDs.BLACKFATHOM_DEEPS,
         },
         [204070] = { -- Soboz
@@ -272,7 +281,7 @@ function SeasonOfDiscovery:LoadNPCs()
         },
         [210483] = { -- Aggressive Squashling
             [npcKeys.spawns] = {
-                [zoneIDs.WESTFALL] = {{51.2,22.3},{54,31.8},{44.6,35.2},{38.4,52.5},{62.5,61.1}}
+                [zoneIDs.WESTFALL] = {{51.2, 22.3},{54, 31.8},{44.6, 35.2},{38.4, 52.5},{62.5, 61.1}},
             },
         },
         [210533] = { -- Silverspur
@@ -282,7 +291,7 @@ function SeasonOfDiscovery:LoadNPCs()
         },
         [210537] = { -- Undying Laborer
             [npcKeys.spawns] = {
-                [zoneIDs.WESTFALL] = {{44.9,24},{31.5,45}},
+                [zoneIDs.WESTFALL] = {{44.9, 24},{31.5, 45}},
             },
         },
         [210549] = { -- Defias Scout
@@ -302,13 +311,13 @@ function SeasonOfDiscovery:LoadNPCs()
         },
         [211022] = { -- Owen Thadd
             [npcKeys.spawns] = {
-                [zoneIDs.UNDERCITY] = {{73.4,33}},
+                [zoneIDs.UNDERCITY] = {{73.4, 33}},
             },
             [npcKeys.friendlyToFaction] = "H",
         },
         [211033] = { -- Garion Wendell
             [npcKeys.spawns] = {
-                [zoneIDs.STORMWIND_CITY] = {{37.8,80.2}},
+                [zoneIDs.STORMWIND_CITY] = {{37.8, 80.2}},
             },
             [npcKeys.friendlyToFaction] = "A",
         },
@@ -324,7 +333,7 @@ function SeasonOfDiscovery:LoadNPCs()
         },
         [211951] = { -- Koartul
             [npcKeys.spawns] = {
-                [zoneIDs.HILLSBRAD_FOOTHILLS] = {{60.8,31.8}},
+                [zoneIDs.HILLSBRAD_FOOTHILLS] = {{60.8, 31.8}},
             },
         },
         [211965] = { -- Carrodin
@@ -342,7 +351,7 @@ function SeasonOfDiscovery:LoadNPCs()
         },
         [212694] = { -- Hirzek
             [npcKeys.spawns] = {
-                [zoneIDs.THE_BARRENS] = {{43.2,78.6}},
+                [zoneIDs.THE_BARRENS] = {{43.2, 78.6}},
             },
         },
         [212699] = { -- Silverwing Archer
@@ -407,7 +416,7 @@ function SeasonOfDiscovery:LoadNPCs()
         },
         [212809] = { -- Wailing Spirit
             [npcKeys.spawns] = {
-                [zoneIDs.SILVERPINE_FOREST] = {{59.6,71.4}},
+                [zoneIDs.SILVERPINE_FOREST] = {{59.6, 71.4}},
             },
         },
         [212837] = { -- Primordial Anomaly
@@ -427,43 +436,43 @@ function SeasonOfDiscovery:LoadNPCs()
         },
         [213077] = { -- Elaine Compton
             [npcKeys.spawns] = {
-                [zoneIDs.STORMWIND_CITY] = {{54.4,61.2}},
+                [zoneIDs.STORMWIND_CITY] = {{54.4, 61.2}},
             },
             [npcKeys.friendlyToFaction] = "A",
         },
         [214070] = { -- Jornah
             [npcKeys.spawns] = {
-                [zoneIDs.ORGRIMMAR] = {{51.4,63.8}},
+                [zoneIDs.ORGRIMMAR] = {{51.4, 63.8}},
             },
             [npcKeys.friendlyToFaction] = "H",
         },
         [214096] = { -- Dokimi
             [npcKeys.spawns] = {
-                [zoneIDs.THUNDER_BLUFF] = {{39.2,53.4}},
+                [zoneIDs.THUNDER_BLUFF] = {{39.2, 53.4}},
             },
             [npcKeys.friendlyToFaction] = "H",
         },
         [214098] = { -- Gishah
             [npcKeys.spawns] = {
-                [zoneIDs.UNDERCITY] = {{64,39.2}},
+                [zoneIDs.UNDERCITY] = {{64, 39.2}},
             },
             [npcKeys.friendlyToFaction] = "H",
         },
         [214099] = { -- Tamelyn Aldridge
             [npcKeys.spawns] = {
-                [zoneIDs.IRONFORGE] = {{24.4,67.6}},
+                [zoneIDs.IRONFORGE] = {{24.4, 67.6}},
             },
             [npcKeys.friendlyToFaction] = "A",
         },
         [214101] = { -- Marcy Baker
             [npcKeys.spawns] = {
-                [zoneIDs.DARNASSUS] = {{59.8,56.4}},
+                [zoneIDs.DARNASSUS] = {{59.8, 56.4}},
             },
             [npcKeys.friendlyToFaction] = "A",
         },
         [214456] = { -- Dro'zem the Blasphemous
             [npcKeys.spawns] = {
-                [zoneIDs.REDRIDGE_MOUNTAINS] = {{35.4,8.6},{64.2,45.8},{77.4,69.4}},
+                [zoneIDs.REDRIDGE_MOUNTAINS] = {{35.4, 8.6},{64.2, 45.8},{77.4, 69.4}},
             },
         },
         [214519] = { -- Incinerator Gar'im
@@ -471,22 +480,57 @@ function SeasonOfDiscovery:LoadNPCs()
                 [zoneIDs.REDRIDGE_MOUNTAINS] = {{77.6, 85.8}},
             },
         },
+        [215062] = { -- Supplicant
+            [npcKeys.spawns] = {
+                [zoneIDs.STORMWIND_CITY] = {{39.50,29.37}},
+            },
+        },
+        [215850] = { -- Raszel Ander
+            [npcKeys.friendlyToFaction] = "AH",
+        },
+        [216289] = { -- Orokai
+            [npcKeys.spawns] = {
+                [zoneIDs.MOONGLADE] = {{41.2, 43.6}},
+            },
+        },
         [216902] = { -- Wulmort Jinglepocket
             [npcKeys.spawns] = {
-                [zoneIDs.IRONFORGE] = {{33.7,67.23}},
+                [zoneIDs.IRONFORGE] = {{33.7, 67.23}},
             },
             [npcKeys.friendlyToFaction] = "AH",
         },
         [216915] = { -- Strange Snowman
             [npcKeys.spawns] = {
-                [zoneIDs.ALTERAC_MOUNTAINS]={{35.43,72.45}},
+                [zoneIDs.ALTERAC_MOUNTAINS]={{35.43, 72.45}},
             },
         },
         [216924] = { -- Kaymard Copperpinch
             [npcKeys.spawns] = {
-                [zoneIDs.ORGRIMMAR] = {{53.3,66.47}},
+                [zoneIDs.ORGRIMMAR] = {{53.3, 66.47}},
             },
             [npcKeys.friendlyToFaction] = "AH",
+        },
+        [217392] = {
+            [npcKeys.spawns] = {
+                [zoneIDs.DESOLACE]={{56.4, 21.8}},
+            },
+        },
+        [217669] = { -- Scorched Screeching Roguefeather
+            [npcKeys.spawns] = {
+                [zoneIDs.THOUSAND_NEEDLES] = {{26.4, 46.4}},
+            },
+        },
+        [217683] = {
+            [npcKeys.zoneID] = zoneIDs.THOUSAND_NEEDLES,
+            [npcKeys.spawns] = {
+                [zoneIDs.THOUSAND_NEEDLES] = {{39.4,42}},
+            },
+        },
+        [217703] = { -- Singed Highperch Consort
+            [npcKeys.friendlyToFaction] = "H",
+            [npcKeys.spawns] = {
+                [zoneIDs.THOUSAND_NEEDLES] = {{10.4, 40.2}},
+            },
         },
         [217706] = { -- Kazragore
             [npcKeys.friendlyToFaction] = "H",
@@ -496,6 +540,180 @@ function SeasonOfDiscovery:LoadNPCs()
         },
         [217707] = { -- Felore Moonray
             [npcKeys.friendlyToFaction] = "A",
+        },
+        [217711] = { -- Seared Needles Cougar
+            [npcKeys.spawns] = {
+                [zoneIDs.THOUSAND_NEEDLES] = {{23.4, 23.4}},
+            },
+        },
+        [217412] = { -- Amaryllis Webb
+            [npcKeys.spawns] = {
+                [zoneIDs.SWAMP_OF_SORROWS] = {{25.2, 54.6}},
+            },
+        },
+        [217588] = { -- Arbor Tarantula
+            [npcKeys.spawns] = {
+                [zoneIDs.STRANGLETHORN_VALE] = {{45.2, 19.6}},
+            },
+        },
+        [217589] = { -- Hay Weevil
+            [npcKeys.spawns] = {
+                [zoneIDs.ARATHI_HIGHLANDS] = {{30.8, 28.6},{54.2, 38.6},{61.2, 55.4}},
+            },
+        },
+        [217590] = { -- Flesh Picker
+            [npcKeys.spawns] = {
+                [zoneIDs.DESOLACE] = {{51.4, 59.8}},
+            },
+        },
+        [218115] = { -- Mai'zin
+            [npcKeys.spawns] = {
+                [zoneIDs.STRANGLETHORN_VALE] = {{31.2, 48.4}},
+            },
+        },
+        [218160]  = { -- Aeonas the Vindicated
+            [npcKeys.spawns] = {
+                [zoneIDs.STORMWIND_CITY] = {{37.4, 31.8}},
+            },
+        },
+        [218237] = { -- Wirdal Wondergear
+            [npcKeys.friendlyToFaction] = "AH",
+            [npcKeys.zoneID] = zoneIDs.FERALAS,
+            [npcKeys.spawns] = {
+                [zoneIDs.FERALAS] = {{84.2,43.8}},
+            },
+        },
+        [218931] = { -- Dark Rider Deadwind Pass
+            [npcKeys.zoneID] = zoneIDs.DEADWIND_PASS,
+            [npcKeys.spawns] = {
+                [zoneIDs.DEADWIND_PASS] = {{43,29}},
+            },
+        },
+        [221210] = { -- Kroll Mountainshade
+            [npcKeys.spawns] = {
+                [zoneIDs.DUSKWOOD] = {{66.11, 69.28}},
+            },
+        },
+        [221215] = { -- Alara Grovemender
+            [npcKeys.spawns] = {
+                [zoneIDs.DUSKWOOD] = {{49.15, 77.55}},
+            },
+        },
+        [221216] = { -- Elenora Marshwalker
+            [npcKeys.spawns] = {
+                [zoneIDs.DUSKWOOD] = {{32.39, 69.48}},
+            },
+        },
+        [221268] = { -- Doran Dreambough
+            [npcKeys.spawns] = {
+                [zoneIDs.ASHENVALE] = {{87.23, 43.56}},
+            },
+        },
+        [221269] = { -- Maseara Autumnmoon
+            [npcKeys.spawns] = {
+                [zoneIDs.ASHENVALE] = {{81.2, 50.5}},
+            },
+        },
+        [221270] = { -- Alyssian Windcaller
+            [npcKeys.spawns] = {
+                [zoneIDs.ASHENVALE] = {{92, 54.0}},
+            },
+        },
+        [221335] = { -- Elianar Shadowdrinker
+            [npcKeys.spawns] = {
+                [zoneIDs.THE_HINTERLANDS] = {{53.47, 39.05}},
+            },
+        },
+        [221336] = { -- Serlina Starbright
+            [npcKeys.spawns] = {
+                [zoneIDs.THE_HINTERLANDS] = {{71.11, 47.98}},
+            },
+        },
+        [221337] = { -- Veanna Cloudsleeper
+            [npcKeys.spawns] = {
+                [zoneIDs.THE_HINTERLANDS] = {{57.29, 42.80}},
+            },
+        },
+        [221395] = { -- Mellias Earthtender
+            [npcKeys.spawns] = {
+                [zoneIDs.FERALAS] = {{49.65, 15.35}},
+            },
+        },
+        [221398] = { -- Nerene Brooksinger
+            [npcKeys.spawns] = {
+                [zoneIDs.FERALAS] = {{46.00, 16.50}},
+            },
+        },
+        [221399] = { -- Jamniss Treemender
+            [npcKeys.spawns] = {
+                [zoneIDs.FERALAS] = {{40.62, 8.08}},
+            },
+        },
+        [221484] = { -- Scout Thandros
+            [npcKeys.spawns] = {
+                [zoneIDs.FERALAS] = {{51.06,10.54}},
+            },
+        },
+        [222188] = { -- Shadowy Figure
+            [npcKeys.spawns] = {
+                [zoneIDs.MOONGLADE] = {{52.12,40.89}},
+            },
+        },
+
+        -- fake NPCs
+        [900000] = {
+            [npcKeys.name] = "Dark Rider",
+            [npcKeys.minLevel] = 41,
+            [npcKeys.maxLevel] = 41,
+            [npcKeys.zoneID] = zoneIDs.DUSKWOOD,
+            [npcKeys.spawns] = {
+                [zoneIDs.DUSKWOOD] = {{23,47}},
+            },
+        },
+        [900001] = {
+            [npcKeys.name] = "Dark Rider",
+            [npcKeys.minLevel] = 41,
+            [npcKeys.maxLevel] = 41,
+            [npcKeys.zoneID] = zoneIDs.ARATHI_HIGHLANDS,
+            [npcKeys.spawns] = {
+                [zoneIDs.ARATHI_HIGHLANDS] = {{60,40}},
+            },
+        },
+        [900002] = {
+            [npcKeys.name] = "Dark Rider",
+            [npcKeys.minLevel] = 41,
+            [npcKeys.maxLevel] = 41,
+            [npcKeys.zoneID] = zoneIDs.SWAMP_OF_SORROWS,
+            [npcKeys.spawns] = {
+                [zoneIDs.SWAMP_OF_SORROWS] = {{69,28}},
+            },
+        },
+        [900003] = {
+            [npcKeys.name] = "Dark Rider",
+            [npcKeys.minLevel] = 41,
+            [npcKeys.maxLevel] = 41,
+            [npcKeys.zoneID] = zoneIDs.THE_BARRENS,
+            [npcKeys.spawns] = {
+                [zoneIDs.THE_BARRENS] = {{52,36}},
+            },
+        },
+        [900004] = {
+            [npcKeys.name] = "Dark Rider",
+            [npcKeys.minLevel] = 41,
+            [npcKeys.maxLevel] = 41,
+            [npcKeys.zoneID] = zoneIDs.DESOLACE,
+            [npcKeys.spawns] = {
+                [zoneIDs.DESOLACE] = {{65,25}},
+            },
+        },
+        [900005] = {
+            [npcKeys.name] = "Dark Rider",
+            [npcKeys.minLevel] = 41,
+            [npcKeys.maxLevel] = 41,
+            [npcKeys.zoneID] = zoneIDs.BADLANDS,
+            [npcKeys.spawns] = {
+                [zoneIDs.BADLANDS] = {{58,54}},
+            },
         },
     }
 end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2478, "DBM-Party-Dragonflight", 3, 1198)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240503080608")
+mod:SetRevision("20240616044034")
 mod:SetCreatureID(186339, 186338)
 mod:SetEncounterID(2581)
 mod:SetBossHPInfoToHighest()
@@ -28,7 +28,7 @@ mod:RegisterEventsInCombat(
 local timerRP									= mod:NewRPTimer(34.4)
 --Teera
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25552))
-local warnRepel									= mod:NewCastAnnounce(386547, 3, nil, nil, nil, nil, nil, 2)
+local warnRepel									= mod:NewCountAnnounce(386547, 3, nil, nil, nil, nil, nil, 2)
 local warnSpiritLeap							= mod:NewSpellAnnounce(385434, 3)
 
 local specWarnGaleArrow							= mod:NewSpecialWarningDodgeCount(382670, nil, nil, nil, 2, 2)

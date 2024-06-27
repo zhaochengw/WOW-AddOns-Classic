@@ -12,6 +12,7 @@ C_ChatInfo.RegisterAddonMessagePrefix("BiaoGeYY")                               
 
 BiaoGeTooltip = CreateFrame("GameTooltip", "BiaoGeTooltip", UIParent, "GameTooltipTemplate")   -- 用于装备过滤功能
 BiaoGeTooltip2 = CreateFrame("GameTooltip", "BiaoGeTooltip2", UIParent, "GameTooltipTemplate") -- 用于装备库
+BiaoGeTooltip2:SetClampedToScreen(false)
 BiaoGeTooltip3 = CreateFrame("GameTooltip", "BiaoGeTooltip3", UIParent, "GameTooltipTemplate") -- 用于装备过期提醒
 
 local l = GetLocale()
@@ -51,7 +52,6 @@ BG.IsHorde = ADDONSELF.IsHorde
 local realmID = GetRealmID()
 local player = UnitName("player")
 
-local vanillaAllFB = { "Temple", "Gno", "BD", "NAXX", "TAQ", "AQL", "ZUG", "BWL", "MC", }
 BG.FBtable = {}
 BG.FBtable2 = {}
 BG.FBIDtable = {}
@@ -85,33 +85,25 @@ do
         BG.FB1 = "MC"
         BG.fullLevel = 60
         BG.theEndBossID = { 617, 1084, 617, 793, 723, 717, 1114 } --MC OL BWL ZUG AQL TAQ NAXX
-        AddDB("MC", 409, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-        AddDB("BWL", 469, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-        AddDB("ZUG", 309, L["全阶段"], 20, 3, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-        AddDB("AQL", 509, L["全阶段"], 20, 3, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-        AddDB("TAQ", 531, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-        AddDB("NAXX", 533, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-
-        BG.FBIDtable[249] = "MC" -- 奥妮克希亚的巢穴
+        AddDB("MC", 409, L["全阶段"], 40, nil, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
+        AddDB("OL", 249, L["全阶段"], 40, nil, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
+        AddDB("BWL", 469, L["全阶段"], 40, nil, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
+        AddDB("ZUG", 309, L["全阶段"], 20, 3, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
+        AddDB("AQL", 509, L["全阶段"], 20, 3, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
+        AddDB("TAQ", 531, L["全阶段"], 40, nil, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
+        AddDB("NAXX", 533, L["全阶段"], 40, nil, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
     elseif BG.IsWLK() then
         BG.FB1 = "NAXX"
         BG.fullLevel = 80
-        BG.theEndBossID = { 1114, 757, 645, 856 }
-        AddDB("NAXX", 533, "P1", nil, nil, { "H25", "H10", "N25", "N10" })
+        BG.theEndBossID = { 1114, 757, 645, 856, }
+        AddDB("NAXX", 533, "P1", nil, nil, { "H25", "H10", "N25", "N10" }, { "NAXX", "OS", "EOE" })
+        AddDB("OS", 615, "P1", nil, nil, { "H25", "H10", "N25", "N10" }, { "NAXX", "OS", "EOE" })
+        AddDB("EOE", 616, "P1", nil, nil, { "H25", "H10", "N25", "N10" }, { "NAXX", "OS", "EOE" })
         AddDB("ULD", 603, "P2", nil, nil, { "H25", "H10", "N25", "N10" })
-        AddDB("TOC", 649, "P3", nil, nil, { "H25", "H10", "N25", "N10" })
-        AddDB("ICC", 631, "P4", nil, nil, { "H25", "H10", "N25", "N10" })
-
-        BG.FBIDtable = {
-            [533] = "NAXX", -- 纳克萨玛斯
-            [615] = "NAXX", -- 黑曜石圣殿
-            [616] = "NAXX", -- 永恒之眼
-            [603] = "ULD",  -- 奥杜尔
-            [649] = "TOC",  -- 十字军的试炼
-            [249] = "TOC",  -- 奥妮克希亚的巢穴
-            [631] = "ICC",  -- 冰冠堡垒
-            [724] = "ICC",  -- 红玉圣殿
-        }
+        AddDB("TOC", 649, "P3", nil, nil, { "H25", "H10", "N25", "N10" }, { "TOC", "OL" })
+        AddDB("OL", 249, "P3", nil, nil, { "H25", "H10", "N25", "N10" }, { "TOC", "OL" })
+        AddDB("ICC", 631, "P4", nil, nil, { "H25", "H10", "N25", "N10" }, { "ICC", "RS" })
+        AddDB("RS", 724, "P4", nil, nil, { "H25", "H10", "N25", "N10" }, { "ICC", "RS" })
     elseif BG.IsCTM() then
         BG.FB1 = "BOT"
         BG.fullLevel = 85
@@ -125,9 +117,10 @@ do
 
 
     BG.Maxi = 30
+    local mainFrameWidth = 1295
     local Width, Height, Maxt, Maxb, Maxi, BossNumtbl = {}, {}, {}, {}, {}, {}
     ADDONSELF.BossNumtbl = BossNumtbl
-    local function AddDB(FB, width, height, maxt, maxb, maxi, bossNumtbl)
+    local function AddDB(FB, width, height, maxt, maxb, bossNumtbl)
         Width[FB] = width
         Height[FB] = height
         Maxt[FB] = maxt
@@ -137,30 +130,35 @@ do
         BossNumtbl[FB] = bossNumtbl
     end
     if BG.IsVanilla_Sod() then
-        AddDB("BD", 1290, 835, 3, 9, 11, { 0, 5, 9 })
-        AddDB("Gno", 1290, 835, 3, 8, 11, { 0, 5, 8 })
-        AddDB("Temple", 1290, 885, 3, 10, 25, { 0, 6, 9, })
+        AddDB("BD", mainFrameWidth, 835, 3, 9, { 0, 5, 9 })
+        AddDB("Gno", mainFrameWidth, 835, 3, 8, { 0, 5, 8 })
+        AddDB("Temple", mainFrameWidth, 885, 3, 10, { 0, 6, 9, })
     elseif BG.IsVanilla_60() then
-        AddDB("MC", 1290, 875, 3, 13, 15, { 0, 8, 12 })
-        AddDB("BWL", 1290, 810, 3, 10, 15, { 0, 5, 9 })
-        AddDB("ZUG", 1290, 810, 3, 12, 15, { 0, 6, 11 })
-        AddDB("AQL", 1290, 810, 3, 8, 15, { 0, 5, 8 })
-        AddDB("TAQ", 1290, 810, 3, 11, 15, { 0, 6, 10 })
-        AddDB("NAXX", 1710, 810, 4, 17, 15, { 0, 6, 12, 16 })
+        AddDB("MC", mainFrameWidth, 875, 3, 12, { 0, 8, 12 })
+        AddDB("OL", mainFrameWidth, 810, 2, 3, { 0, 4 })
+        AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 })
+        AddDB("ZUG", mainFrameWidth, 810, 3, 12, { 0, 6, 11 })
+        AddDB("AQL", mainFrameWidth, 810, 3, 8, { 0, 5, 8 })
+        AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 })
+        AddDB("NAXX", 1715, 810, 4, 17, { 0, 6, 12, 16 })
     elseif BG.IsWLK() then
-        AddDB("ICC", 1290, 875, 3, 15, 16, { 0, 7, 13 })
-        AddDB("TOC", 1290, 835, 3, 9, 14, { 0, 5, 8 })
-        AddDB("ULD", 1290, 875, 3, 16, 8, { 0, 7, 13 })
-        AddDB("NAXX", 1710, 945, 4, 19, 11, { 0, 6, 12, 16 })
+        AddDB("RS", mainFrameWidth, 835, 2, 3, { 0, 4 })
+        AddDB("ICC", mainFrameWidth, 875, 3, 14, { 0, 7, 12 })
+        AddDB("OL", mainFrameWidth, 835, 2, 3, { 0, 4 })
+        AddDB("TOC", mainFrameWidth, 835, 3, 8, { 0, 5, 8 })
+        AddDB("ULD", mainFrameWidth, 875, 3, 16, { 0, 7, 13 })
+        AddDB("EOE", mainFrameWidth, 835, 2, 3, { 0, 4 })
+        AddDB("OS", mainFrameWidth, 835, 2, 3, { 0, 4 })
+        AddDB("NAXX", 1715, 945, 4, 17, { 0, 6, 12, 16 })
     elseif BG.IsCTM() then
-        AddDB("BOT", 1290, 800, 3, 7, 14, { 0, 4, 6 })
-        AddDB("BWD", 1290, 800, 3, 8, 14, { 0, 4, 7 })
-        AddDB("TOF", 1290, 800, 2, 4, 14, { 0, 3, 6 })
+        AddDB("BOT", mainFrameWidth, 800, 3, 7, { 0, 4, 6 })
+        AddDB("BWD", mainFrameWidth, 800, 3, 8, { 0, 4, 7 })
+        AddDB("TOF", mainFrameWidth, 800, 2, 4, { 0, 3, 6 })
 
-        AddDB("ICC", 1290, 875, 3, 15, 16, { 0, 7, 13 })
-        AddDB("TOC", 1290, 835, 3, 9, 14, { 0, 5, 8 })
-        AddDB("ULD", 1290, 875, 3, 16, 8, { 0, 7, 13 })
-        AddDB("NAXX", 1710, 945, 4, 19, 11, { 0, 6, 12, 16 })
+        AddDB("ICC", mainFrameWidth, 875, 3, 15, { 0, 7, 13 })
+        AddDB("TOC", mainFrameWidth, 835, 3, 9, { 0, 5, 8 })
+        AddDB("ULD", mainFrameWidth, 875, 3, 16, { 0, 7, 13 })
+        AddDB("NAXX", 1715, 945, 4, 19, { 0, 6, 12, 16 })
     end
     local HopeMaxi, HopeMaxb, HopeMaxn = nil, {}, {}
     if BG.IsVanilla() then
@@ -180,9 +178,13 @@ do
         HopeMaxn["BWD"] = 2
         HopeMaxn["TOF"] = 2
 
+        HopeMaxn["RS"] = 4
         HopeMaxn["ICC"] = 4
+        HopeMaxn["OL"] = 2
         HopeMaxn["TOC"] = 4
         HopeMaxn["ULD"] = 2
+        HopeMaxn["EOE"] = 2
+        HopeMaxn["OS"] = 2
         HopeMaxn["NAXX"] = 2
     end
     do
@@ -539,45 +541,6 @@ end
 
 -- 数据库（保存至本地）
 local function DataBase()
-    -- 数据库冲突检测（不用了）
-    --[[     do
-        if BiaoGe and type(BiaoGe) == "table" and BiaoGe.FB then
-            local isworry = true
-            if BG.IsVanilla() then
-                -- 只要跟经典旧世里任意副本相同，那配置文件就是正常的，所以isworry为false
-                for k, FB in pairs(vanillaAllFB) do
-                    if BiaoGe.FB == FB then
-                        isworry = false
-                        break
-                    end
-                end
-            else
-                -- 只要跟经典旧世里任意副本相同，那配置文件就是错误的，所以isworry为false
-                local yes
-                for k, FB in pairs(vanillaAllFB) do
-                    if BiaoGe.FB == FB then
-                        yes = true
-                        break
-                    end
-                end
-                if not yes then
-                    isworry = false
-                end
-            end
-
-            if isworry then
-                BiaoGe = nil
-                SendSystemMessage(BG.BG .. " " .. L["检测到配置文件错误，现已重置！"])
-                SendSystemMessage(BG.BG .. " " .. L["检测到配置文件错误，现已重置！"])
-                SendSystemMessage(BG.BG .. " " .. L["检测到配置文件错误，现已重置！"])
-                SendSystemMessage(BG.BG .. " " .. L["检测到配置文件错误，现已重置！"])
-                SendSystemMessage(BG.BG .. " " .. L["检测到配置文件错误，现已重置！"])
-                PlaySoundFile(BG["sound_errorAI"], "Master")
-                -- PlaySoundFile(BG["sound_error" .. BiaoGe.options.Sound], "Master")
-            end
-        end
-    end ]]
-
     -- 开始
     do
         if BiaoGe then
@@ -594,13 +557,16 @@ local function DataBase()
             BiaoGe.duizhang = {}
         end
 
-        for index, value in ipairs(BG.FBtable) do
-            if not BiaoGe[value] then
-                BiaoGe[value] = {}
+        for index, FB in ipairs(BG.FBtable) do
+            if not BiaoGe[FB] then
+                BiaoGe[FB] = {}
+            end
+            if not BiaoGe[FB].tradeTbl then
+                BiaoGe[FB].tradeTbl = {}
             end
             for b = 1, 22 do
-                if not BiaoGe[value]["boss" .. b] then
-                    BiaoGe[value]["boss" .. b] = {}
+                if not BiaoGe[FB]["boss" .. b] then
+                    BiaoGe[FB]["boss" .. b] = {}
                 end
             end
         end
@@ -608,18 +574,18 @@ local function DataBase()
         if not BiaoGe.HistoryList then
             BiaoGe.HistoryList = {}
         end
-        for index, value in ipairs(BG.FBtable) do
-            if not BiaoGe.HistoryList[value] then
-                BiaoGe.HistoryList[value] = {}
+        for index, FB in ipairs(BG.FBtable) do
+            if not BiaoGe.HistoryList[FB] then
+                BiaoGe.HistoryList[FB] = {}
             end
         end
 
         if not BiaoGe.History then
             BiaoGe.History = {}
         end
-        for index, value in ipairs(BG.FBtable) do
-            if not BiaoGe.History[value] then
-                BiaoGe.History[value] = {}
+        for index, FB in ipairs(BG.FBtable) do
+            if not BiaoGe.History[FB] then
+                BiaoGe.History[FB] = {}
             end
         end
 
@@ -627,9 +593,9 @@ local function DataBase()
             if not BiaoGe.BossFrame then
                 BiaoGe.BossFrame = {}
             end
-            for index, value in ipairs(BG.FBtable) do
-                if not BiaoGe.BossFrame[value] then
-                    BiaoGe.BossFrame[value] = {}
+            for index, FB in ipairs(BG.FBtable) do
+                if not BiaoGe.BossFrame[FB] then
+                    BiaoGe.BossFrame[FB] = {}
                 end
             end
         end

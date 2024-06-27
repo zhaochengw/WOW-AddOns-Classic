@@ -148,10 +148,10 @@ MT.BuildEnv("setting");
 		--
 		filter = {
 			-- realm = nil,
-			skill = nil,
-			type = nil,
-			subType = nil,
-			eqLoc = nil,
+			Skill = nil,
+			Type = nil,
+			SubType = nil,
+			EquipLoc = nil,
 		},
 		searchText = "",
 		--

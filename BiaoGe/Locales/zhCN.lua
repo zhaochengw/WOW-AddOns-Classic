@@ -4,7 +4,7 @@ local ver = select(4, GetBuildInfo())
 -- if ver > 20000 then
 --     ADDONSELF.ver = "v1.8.6"
 -- else
-ADDONSELF.ver = "v1.9.3"
+ADDONSELF.ver = "v1.9.5"
 -- end
 
 if (GetLocale() == "zhTW") then return end
@@ -31,7 +31,35 @@ do --简体说明书
     -- update = update .. [[]] .. "\n"
     -- update = update .. [[]] .. "\n\n"
 
-    update = update .. "|cff00FF00" .. "6月6更新v1.9.3" .. "|r\n"
+    update = update .. "|cff00FF00" .. "6月19日更新v1.9.5" .. "|r\n"
+    update = update .. [[-拍卖WA：更新为v1.2，现在物品分配者也可以开始拍卖装备了（需全团把该WA更新至v1.2）]] .. "\n"
+    update = update .. [[-对账：增加[账单聊天记录] ]] .. "\n"
+    update = update .. [[-对账：对账单现在显示该账单对应是哪个副本（需对方也使用最新版表格插件）]] .. "\n"
+    update = update .. [[-交易自动记账：现在也会记录"打包交易"详细，在表格用鼠标指向这些装备所在的金额框时会高亮。]] .. "\n"
+    update = update .. [[且金额的下拉框会有打包交易的详细显示。]] .. "\n"
+    update = update .. [[-清空表格/心愿按钮：增加二次确定]] .. "\n"
+    update = update .. [[-<WLK/60服>修复了拆分出来的新表格的自动记录装备功能失效的问题]] .. "\n"
+    update = update .. [[-<赛季服>修复了神庙表格里UI重叠的问题]] .. "\n\n"
+
+    update = update .. "|cff00FF00" .. "6月15日更新v1.9.4" .. "|r\n"
+    update = update .. [[-表格：罚款和支出栏改为滚动框，可容纳更多格子]] .. "\n"
+    update = update .. [[-在线人数：数据来源从"大脚世界频道"改为"寻求组队频道"。默认选项改为"不会自动获取数据"]] .. "\n"
+    update = update .. [[-<CTM>装备过滤：现在默认勾选正确的护甲类型（例如圣骑士会默认过滤布甲/皮甲/锁甲）]] .. "\n"
+    update = update .. [[-<WLK/60>由于与自动清空表格有冲突，现在把表格做了拆分，每个团本都会单独使用一个表格]] .. "\n"
+    update = update .. [[-<WLK>恢复[一键举报]相关功能（因为暴雪未禁用WLK端的相关API）]] .. "\n"
+    update = update .. [[-<WLK>装备库：删除获取途径显示的5人本选项。修复了获取途径显示的团本难度选项没有正确生效的问题]] .. "\n"
+    update = update .. [[-<WLK>角色总览：默认选项适配国服当前阶段]] .. "\n"
+    update = update .. [[-<60服>角色总览：增加奥妮克希亚的巢穴]] .. "\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
+
+    ADDONSELF.instructionsText = text
+end
+do --简体更新内容
+    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
+
+    update = update .. "|cff00FF00" .. "6月6日更新v1.9.3" .. "|r\n"
     update = update .. [[-<CTM>角色总览：增加征服点数（默认不勾选）]] .. "\n"
     update = update .. [[-<60服>表格：奥妮克希亚的格子增加至8个，奈法利安的格子增加至6个]] .. "\n\n"
 
@@ -48,14 +76,6 @@ do --简体说明书
     update = update .. [[-<CTM>装备库：增加荣誉点数、专业制造、世界掉落、暗月马戏团装备]] .. "\n"
     update = update .. [[-<CTM>装备过滤：增加词缀"韧性"]] .. "\n\n"
 
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
-
-    ADDONSELF.instructionsText = text
-end
-do --简体更新内容
-    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
-
     update = update .. "|cff00FF00" .. "5月21日更新v1.9.0b" .. "|r\n"
     update = update .. [[-<60/plus>修复了装备自动记录失效的问题]] .. "\n\n"
 
@@ -63,28 +83,6 @@ do --简体更新内容
     update = update .. [[-角色配置文件：增加删除某角色全部配置文件的按钮]] .. "\n"
     update = update .. [[-<CTM>更新CTM P1表格、装备库、角色总览等]] .. "\n"
     update = update .. [[-<WLK>装备库：套装和牌子装备现在显示更全面]] .. "\n\n"
-
-    update = update .. "|cff00FF00" .. "5月5日更新v1.8.7" .. "|r\n"
-    update = update .. [[-设置：增加角色配置文件管理（帮你解决在角色改名或转服时，该角色的某些数据（例如心愿清单）丢失的问题）]] .. "\n"
-    update = update .. [[-现在不会再提示"BOSS战开始，当前装备自动记录位置：XXX"等类似的消息]] .. "\n"
-    update = update .. [[-<CTM前夕>修复了由于CTM的Boss战ID变动导致的表格自动记录失效的问题]] .. "\n\n"
-
-    update = update .. "|cff00FF00" .. "5月2日更新v1.8.6" .. "|r\n"
-    update = update .. [[-<CTM前夕>角色总览：增加正义点数，删除寒冰纹章、凯旋纹章等]] .. "\n"
-    update = update .. [[-<CTM前夕>装备过滤：增加精通词缀，删除护甲穿透词缀]] .. "\n\n"
-
-    update = update .. "|cff00FF00" .. "5月1日更新v1.8.5" .. "|r\n"
-    update = update .. [[-通报账单：增加仅通报支出]] .. "\n"
-    update = update .. [[-修复了对账单的漏记装备处会错误地显示罚款内容的问题]] .. "\n\n"
-
-    update = update .. "|cff00FF00" .. "4月25日更新v1.8.4" .. "|r\n"
-    update = update .. [[-新增功能：装备过期提醒（当你是团长或物品分配者，且装备剩余可交易时间低于30分钟时，会有提醒）]] .. "\n\n"
-
-    update = update .. "|cff00FF00" .. "4月21日更新v1.8.3" .. "|r\n"
-    update = update .. [[-其他设置：增加[自动点击一键分配]（该选项默认关闭）]] .. "\n"
-    update = update .. [[-交易金额超上限提醒：提醒上限修改为99.9999万]] .. "\n"
-    update = update .. [[-增加显示公会成员插件版本]] .. "\n"
-    update = update .. [[-重做通报用时]] .. "\n\n"
 
     ADDONSELF.updateText = update
 end
@@ -99,6 +97,28 @@ ADDONSELF.L = L
 
 local L = {}
 do
+    L["更新记录："] = true
+    L["v1.2：现在物品分配者也可以开始拍卖装备了"] = true
+    L["装备总收入"] = true
+    L["，"] = true
+    L["："] = true
+    L["账单识别错误或超时！"] = true
+    L["点击：对账"] = true
+    L["账单聊天记录"] = true
+    L["确定清空表格？"] = true
+    L["确定清空心愿？"] = true
+    L["删除打包交易记录"] = true
+    L["删除后不再高亮绿色框。请放心，该按钮不会删除表格内容。"] = true
+    L["（剩余装备记录为打包交易）"] = true
+
+
+    L["读取中..."] = true
+    L["你未加入%s，无法获取在线人数。"] = true
+    L["其他选项"] = true
+    L["该副本没有团本攻略。目前只有ICC有团本攻略"] = true
+    L["<说明书>"] = true
+
+
     L["获取途径过滤"] = true
     L["团本"] = true
     L["5人本"] = true
@@ -146,7 +166,7 @@ do
 
     L["没有支出"] = true
     L["———通报支出———"] = true
-    L["(长按CTRL：仅通报支出)"] = true
+    L["长按CTRL：仅通报支出"] = true
     L["没有消费记录"] = true
 
 
@@ -619,8 +639,8 @@ do
     L["< 支 %s 出 >"] = true
     L["< 总 %s 览 >"] = true
     L["< 工 %s 资 >"] = true
-    L["(长按ALT：仅通报总览)"] = true
-    L["(长按SHITF：仅通报罚款)"] = true
+    L["长按ALT：仅通报总览"] = true
+    L["长按SHITF：仅通报罚款"] = true
     L["———通报总览———"] = true
     L["< 总 %s 览 >"] = true
     L["< 工 %s 资 >"] = true
@@ -1172,8 +1192,8 @@ do
     L["装等"] = true
     L["分钟"] = true
     L["时间"] = true
-    L["已清空表格< %s >，分钱人数已改为%s人"] = true
-    L["已清空表格< %s >"] = true
+    L["已清空表格< %s >，分钱人数已改为%s人。"] = true
+    L["已清空表格< %s >。"] = true
     L["已清空心愿< %s >"] = true
     L["确认清空表格< %s >？"] = true
     L["高亮该天赋的装备"] = true

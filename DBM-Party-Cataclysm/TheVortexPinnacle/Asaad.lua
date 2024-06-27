@@ -2,10 +2,14 @@ local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 local mod	= DBM:NewMod(116, "DBM-Party-Cataclysm", 8, 68)
 local L		= mod:GetLocalizedStrings()
 
-mod.statTypes = "normal,heroic,challenge,timewalker"
-mod.upgradedMPlus = true
+if not mod:IsCata() then
+	mod.statTypes = "normal,heroic,challenge,timewalker"
+	mod.upgradedMPlus = true
+else
+	mod.statTypes = "normal,heroic"
+end
 
-mod:SetRevision("20240601044955")
+mod:SetRevision("20240615053330")
 mod:SetCreatureID(43875)
 mod:SetEncounterID(1042)
 mod:SetHotfixNoticeRev(20230526000000)

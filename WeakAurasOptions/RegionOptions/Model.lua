@@ -1,5 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
-local AddonName, OptionsPrivate = ...
+---@type string
+local AddonName = ...
+---@class OptionsPrivate
+local OptionsPrivate = select(2, ...)
 
 local L = WeakAuras.L;
 
@@ -14,9 +17,19 @@ local function createOptions(id, data)
       order = 0.5,
       hidden = function() return data.modelDisplayInfo and WeakAuras.BuildInfo > 80100 end
     },
-    -- Option for modelIsDisplayInfo added below
-
-    -- Option for path/id added below
+    modelDisplayInfo = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Use Display Info Id"],
+      order = 0.6,
+      hidden = function() return data.modelIsUnit end
+    },
+    model_fileId = {
+      type = "input",
+      width = WeakAuras.doubleWidth - 0.15,
+      name = L["Model"],
+      order = 1
+    },
     chooseModel = {
       type = "execute",
       width = 0.15,
@@ -202,29 +215,6 @@ local function createOptions(id, data)
     },
   };
 
-  if not WeakAuras.IsClassic() then
-    options.modelDisplayInfo = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Use Display Info Id"],
-      order = 0.6,
-      hidden = function() return data.modelIsUnit end
-    }
-    options.model_fileId = {
-      type = "input",
-      width = WeakAuras.doubleWidth - 0.15,
-      name = L["Model"],
-      order = 1
-    }
-  else
-    options.model_path = {
-      type = "input",
-      width = WeakAuras.doubleWidth - 0.15,
-      name = L["Model"],
-      order = 1
-    }
-  end
-
   for k, v in pairs(OptionsPrivate.commonOptions.BorderOptions(id, data, nil, nil, 70)) do
     options[k] = v
   end
@@ -253,7 +243,7 @@ local function createThumbnail()
 
   local model = CreateFrame("PlayerModel", nil, borderframe);
   borderframe.model = model;
-  model.SetTransformFixed = model.GetResizeBounds and ModelSetTransformFixed or model.SetTransform -- TODO change test to WeakAuras.IsWrathOrRetail() after 3.4.1 release
+  model.SetTransformFixed = ModelSetTransformFixed
   model:SetFrameStrata("FULLSCREEN");
 
   return borderframe;
@@ -296,8 +286,7 @@ end
 
 local function createIcon()
   local data = {
-    model_path = "spells/arcanepower_state_chest.m2", -- arthas is not a thing on classic
-    model_fileId = "122968", -- Creature/Arthaslichking/arthaslichking.m2
+    model_fileId = WeakAuras.IsClassic() and "165589" or "122968", -- spells/arcanepower_state_chest.m2 & Creature/Arthaslichking/arthaslichking.m2
     modelIsUnit = false,
     model_x = 0,
     model_y = 0,

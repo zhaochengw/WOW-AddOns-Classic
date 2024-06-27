@@ -72,7 +72,7 @@ local function SumGZ()
 end
 BG.SumGZ = SumGZ
 
-local function HighlightBiaoGeSaveItems(itemID)
+local function HighlightBiaoGeSameItems(itemID, self)
     local tbl = {}
     local FB = BG.FB1
     for b = 1, Maxb[FB], 1 do
@@ -87,18 +87,26 @@ local function HighlightBiaoGeSaveItems(itemID)
         end
     end
     if #tbl > 1 then
+        local frame
         for i, v in ipairs(tbl) do
             local f = CreateFrame("Frame", nil, v.zb, "BackdropTemplate")
             f:SetBackdrop({
                 edgeFile = "Interface/ChatFrame/ChatFrameBackground",
                 edgeSize = 2,
             })
-            f:SetBackdropBorderColor(1, 0, 0, 1)
+            f:SetBackdropBorderColor(RGB("FF69B4", 0.5))
             f:SetPoint("TOPLEFT", v.zb, "TOPLEFT", -4, -2)
             f:SetPoint("BOTTOMRIGHT", v.jine, "BOTTOMRIGHT", -2, 0)
-            f:SetFrameLevel(112)
+            f:SetFrameLevel(114)
             tinsert(BG.LastBagItemFrame, f)
+
+            frame = f
         end
+        local t = frame:CreateFontString()
+        t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+        t:SetPoint("RIGHT", self, "RIGHT", -2, 0)
+        t:SetTextColor(RGB("FF69B4"))
+        t:SetText(#tbl)
     end
     tbl = nil
 end
@@ -149,44 +157,88 @@ local function OnEnterZhiChuPercent(self)
     end
 end
 
-------------------标题------------------
-function BG.FBBiaoTiUI(FB, t, b, bb, i, ii)
-    local fontsize = 15
-    if b == 1 and i == 1 then
-        local version = BG["Frame" .. FB]:CreateFontString()
-        if t == 1 then
-            version:SetPoint("TOPLEFT", BG.MainFrame, "TOPLEFT", 13, -60)
-        else
-            version:SetPoint("TOPLEFT", frameright, "TOPLEFT", 100, 0)
+function BG.GetGeZiTardeInfo(FB, b, i)
+    for ii, _ in ipairs(BiaoGe[FB].tradeTbl) do
+        for _, v in ipairs(BiaoGe[FB].tradeTbl[ii]) do
+            if b == v.b and i == v.i then
+                return BiaoGe[FB].tradeTbl[ii], ii
+            end
         end
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
-        version:SetTextColor(RGB(BG.y2))
-        version:SetText(L["  项目"])
-        preWidget = version
-
-        local version = BG["Frame" .. FB]:CreateFontString()
-        version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 70, 0)
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
-        version:SetTextColor(RGB(BG.y2))
-        version:SetText(L["装备"])
-        preWidget = version
-        p.preWidget0 = version
-
-        local version = BG["Frame" .. FB]:CreateFontString()
-        version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 155, 0)
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
-        version:SetTextColor(RGB(BG.y2))
-        version:SetText(L["买家"])
-        preWidget = version
-
-        local version = BG["Frame" .. FB]:CreateFontString()
-        version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 95, 0)
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
-        version:SetTextColor(RGB(BG.y2))
-        version:SetText(L["金额"])
-        preWidget = version
-        frameright = version
     end
+end
+
+local function ShowTardeHighLightItem(self)
+    local b = self.bossnum
+    local i = self.i
+    local FB = BG.FB1
+    local tradeInfo = BG.GetGeZiTardeInfo(FB, b, i)
+    if tradeInfo then
+        for _, v in ipairs(tradeInfo) do
+            for b = 1, Maxb[FB] do
+                for i = 1, Maxi[FB] do
+                    local zb = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
+                    local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
+                    if zb and b == v.b and i == v.i then
+                        local f = CreateFrame("Frame", nil, zb, "BackdropTemplate")
+                        f:SetBackdrop({
+                            edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+                            edgeSize = 2,
+                        })
+                        f:SetBackdropBorderColor(0, 1, 0, 0.5)
+                        f:SetPoint("TOPLEFT", zb, "TOPLEFT", -4, -2)
+                        f:SetPoint("BOTTOMRIGHT", jine, "BOTTOMRIGHT", -2, 0)
+                        f:SetFrameLevel(114)
+                        tinsert(BG.LastBagItemFrame, f)
+
+                        local t = f:CreateFontString()
+                        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                        t:SetPoint("LEFT", jine, "RIGHT", 2, 0)
+                        t:SetTextColor(0, 1, 0)
+                        t:SetText(L["打包交易"])
+                    end
+                end
+            end
+        end
+    end
+end
+
+------------------标题------------------
+function BG.FBBiaoTiUI(FB, t)
+    local fontsize = 15
+    local parent = BG["Frame" .. FB]
+    local version = parent:CreateFontString()
+    if t == 1 then
+        version:SetPoint("TOPLEFT", BG.MainFrame, "TOPLEFT", 13, -60)
+    else
+        version:SetPoint("TOPLEFT", frameright, "TOPLEFT", 100, 0)
+    end
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetTextColor(RGB(BG.y2))
+    version:SetText(L["  项目"])
+    preWidget = version
+
+    local version = parent:CreateFontString()
+    version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 70, 0)
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetTextColor(RGB(BG.y2))
+    version:SetText(L["装备"])
+    preWidget = version
+    p.preWidget0 = version
+
+    local version = parent:CreateFontString()
+    version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 155, 0)
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetTextColor(RGB(BG.y2))
+    version:SetText(L["买家"])
+    preWidget = version
+
+    local version = parent:CreateFontString()
+    version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 95, 0)
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetTextColor(RGB(BG.y2))
+    version:SetText(L["金额"])
+    preWidget = version
+    frameright = version
 end
 
 ------------------装备------------------
@@ -261,14 +313,17 @@ local function OnTextChanged(self)
         BG.UpdateZhiChuPercent(self, jine)
     end
 end
-function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii)
-    local bt = CreateFrame("EditBox", nil, BG["Frame" .. FB], "InputBoxTemplate")
+function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
+    local parent = scrollFrame or BG["Frame" .. FB]
+    local bt = CreateFrame("EditBox", nil, parent, "InputBoxTemplate")
     bt:SetSize(150, 20)
     bt:SetFrameLevel(110)
     if BG.zaxiang[FB] and BossNum(FB, b, t) == Maxb[FB] - 1 and i == BG.zaxiang[FB].i then
         bt:SetPoint("TOPLEFT", frameright, "TOPLEFT", 170, -18)
     else
-        if b > 1 and i == 1 then
+        if scrollFrame and i == 1 then
+            bt:SetPoint("TOPLEFT", scrollFrame, 5, 0)
+        elseif b > 1 and i == 1 then
             bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -20)
         else
             if BG.zaxiang[FB] and BossNum(FB, b, t) == Maxb[FB] and i == 1 then
@@ -311,6 +366,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii)
         if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["zhuangbei" .. i] then -- 右键清空格子
             self:SetEnabled(false)
             self:SetText("")
+            BG.Hide_AllHiLight()
             if BG.lastfocus then
                 BG.lastfocus:ClearFocus()
             end
@@ -348,7 +404,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii)
                 if BG.lastfocus then
                     BG.lastfocus:ClearFocus()
                 end
-                if BG.IsLeader then -- 开始拍卖
+                if BG.IsML then -- 开始拍卖
                     local link = self:GetText()
                     BG.StartAuction(link, self)
                 else -- 关注装备
@@ -389,7 +445,9 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii)
     -- 鼠标悬停在装备时
     bt:SetScript("OnEnter", function(self)
         self.isEnter = true
-        BG.FrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show()
+        if BossNum(FB, b, t) ~= Maxb[FB] + 2 or (BossNum(FB, b, t) == Maxb[FB] + 2 and i == 4) then
+            BG.FrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show()
+        end
         if not tonumber(self:GetText()) then
             local link = bt:GetText()
             local itemID = GetItemInfoInstant(link)
@@ -409,7 +467,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii)
                 BG.HistoryJine(unpack(h))
                 BG.HistoryMOD = h
 
-                HighlightBiaoGeSaveItems(itemID)
+                HighlightBiaoGeSameItems(itemID, self)
             end
         end
         OnEnterZhiChuPercent(self)
@@ -622,7 +680,9 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
     end)
     -- 悬停鼠标时
     bt:SetScript("OnEnter", function(self) -- 底色
-        BG.FrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show()
+        if BossNum(FB, b, t) ~= Maxb[FB] + 2 or (BossNum(FB, b, t) == Maxb[FB] + 2 and i == 4) then
+            BG.FrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show()
+        end
     end)
     bt:SetScript("OnLeave", function(self)
         BG.FrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Hide()
@@ -857,13 +917,17 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
     -- 悬停鼠标时
     bt:SetScript("OnEnter", function(self) -- 底色
         self.isEnter = true
-        BG.FrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show()
+        if BossNum(FB, b, t) ~= Maxb[FB] + 2 or (BossNum(FB, b, t) == Maxb[FB] + 2 and i == 4) then
+            BG.FrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show()
+        end
         OnEnterZhiChuPercent(self)
+        ShowTardeHighLightItem(self)
     end)
     bt:SetScript("OnLeave", function(self)
         self.isEnter = false
         BG.FrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Hide()
         GameTooltip:Hide()
+        BG.Hide_AllHiLight()
     end)
     -- 获得光标时
     bt:SetScript("OnEditFocusGained", function(self)
@@ -995,19 +1059,19 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
 end
 
 ------------------BOSS名字------------------
-function BG.FBBossNameUI(FB, t, b, bb, i, ii)
+function BG.FBBossNameUI(FB, t, b, bb, i, ii, frameName)
+    local version
     local fontsize = 14
     if FB == "ICC" and BossNum(FB, b, t) <= 13 then
         local f = CreateFrame("Frame", nil, BG["Frame" .. FB])
         f:SetPoint("TOP", BG.Frame[FB]["boss" .. BossNum(FB, b, t)].zhuangbei1, "TOPLEFT", -45, -2)
         f:SetSize(15, 40)
-        local version = f:CreateFontString()
+        version = f:CreateFontString()
         version:SetPoint("CENTER")
         version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
         version:SetTextColor(RGB(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].color))
         version:SetText(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].name)
         f:SetSize(version:GetStringWidth() - 5, version:GetStringHeight())
-        BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["name"] = version
         f:SetScript("OnMouseUp", function(self)
             if IsShiftKeyDown() then
                 local b = BossNum(FB, b, t)
@@ -1035,7 +1099,6 @@ function BG.FBBossNameUI(FB, t, b, bb, i, ii)
             GameTooltip:AddLine("|cff" .. BG.Boss[FB]["boss" .. BossNum(FB, b, t)].color .. BG.Boss[FB]["boss" .. BossNum(FB, b, t)].name2 .. RR)
             GameTooltip:AddLine(L["SHIFT+点击："], 1, 1, 1)
             GameTooltip:AddLine(L["查看该BOSS攻略"])
-            -- GameTooltip:SetText(L["查看该BOSS攻略"])
             GameTooltip:Show()
             version:SetTextColor(1, 1, 1)
         end)
@@ -1044,13 +1107,18 @@ function BG.FBBossNameUI(FB, t, b, bb, i, ii)
             version:SetTextColor(RGB(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].color))
         end)
     else
-        local version = BG["Frame" .. FB]:CreateFontString()
-        version:SetPoint("TOP", BG.Frame[FB]["boss" .. BossNum(FB, b, t)].zhuangbei1, "TOPLEFT", -45, -2)
+        version = BG["Frame" .. FB]:CreateFontString()
+        if frameName and BG[frameName .. FB]["scrollFrame" .. BossNum(FB, b, t)] then
+            version:SetPoint("TOP", BG[frameName .. FB]["scrollFrame" .. BossNum(FB, b, t)].owner, "TOPLEFT", -40, -2)
+        else
+            version:SetPoint("TOP", BG.Frame[FB]["boss" .. BossNum(FB, b, t)].zhuangbei1, "TOPLEFT", -45, -2)
+        end
         version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
         version:SetTextColor(RGB(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].color))
         version:SetText(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].name)
-        BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["name"] = version
     end
+    BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["name"] = version
+
     if BG.Frame[FB]["boss" .. BossNum(FB, b, t)] == BG.Frame[FB]["boss" .. Maxb[FB] + 2] then
         local version = BG["Frame" .. FB]:CreateFontString()
         version:SetPoint("BOTTOM", BG.Frame[FB]["boss" .. Maxb[FB] + 2].zhuangbei5, "BOTTOMLEFT", -45, 7)
@@ -1167,17 +1235,48 @@ function BG.FBZhiChuZongLanGongZiUI(FB)
         BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. i]:SetTextColor(RGB("00BFFF"))
     end
     -- 设置工资人数的鼠标提示
-    BG.Frame[FB]["boss" .. Maxb[FB] + 2]["zhuangbei4"]:SetScript("OnEnter", function(self)
+    local function OnEnter(self)
         GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
         GameTooltip:ClearLines()
         GameTooltip:SetText(L["人数可自行修改"])
-    end)
-    BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
-        GameTooltip:ClearLines()
-        GameTooltip:SetText(L["人数可自行修改"])
-    end)
-    BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:SetScript("OnLeave", function(self)
-        GameTooltip:Hide()
-    end)
+    end
+    BG.Frame[FB]["boss" .. Maxb[FB] + 2]["zhuangbei4"]:HookScript("OnEnter", OnEnter)
+    BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:HookScript("OnEnter", OnEnter)
+end
+
+function BG.CreateFBScrollFrame(frameName, FB, bossNum)
+    local t, b = BG.GetBossNumInfo(FB, bossNum)
+    local pointFrame, pointX, pointY
+    if b == 1 then
+        if BG.zaxiang[FB] and bossNum == Maxb[FB] then
+            pointFrame = BG[frameName][FB]["boss" .. bossNum - 1]["zhuangbei" .. BG.GetBossButtonCount(FB, bossNum - 1)]
+            pointX, pointY = -5, -20
+        else
+            pointFrame = p["preWidget" .. 0]
+            pointX, pointY = -5, -3
+        end
+    elseif BG[frameName .. FB]["scrollFrame" .. bossNum - 1] then
+        pointFrame = BG[frameName .. FB]["scrollFrame" .. bossNum - 1].owner
+        pointX, pointY = 0, -18
+    else
+        pointFrame = BG[frameName][FB]["boss" .. bossNum - 1]["zhuangbei" .. BG.GetBossButtonCount(FB, bossNum - 1)]
+        pointX, pointY = -5, -20
+    end
+
+    local parent = BG[frameName .. FB]
+    local scroll = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate") -- 滚动
+    scroll:SetWidth(350)
+    scroll:SetHeight(BG.GetBossButtonCount(FB, bossNum) * 23)
+    scroll:SetPoint("TOPLEFT", pointFrame, "BOTTOMLEFT", pointX, pointY)
+    -- scroll.ScrollBar.scrollStep = BG.scrollStep
+    BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+
+    local child = CreateFrame("Frame", nil, scroll) -- 子框架
+    child:SetSize(1, 1)
+    child.owner = scroll
+    scroll:SetScrollChild(child)
+    BG[frameName .. FB]["scrollFrame" .. bossNum] = child
+    if bossNum == Maxb[FB] + 2 then
+        scroll.ScrollBar:Hide()
+    end
 end

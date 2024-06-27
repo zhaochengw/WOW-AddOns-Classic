@@ -109,12 +109,13 @@ local function OptionsUI()
             BG["Frame" .. name] = f
             local frame = CreateFrame("Frame", nil, f)
             frame:SetSize(1, 1)
-            local s = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
-            s:SetPoint("TOPLEFT", SettingsPanel.Container, 15, -70)
-            s:SetPoint("BOTTOMRIGHT", SettingsPanel.Container, -35, 10)
-            s.ScrollBar.scrollStep = BG.scrollStep
-            s:SetScrollChild(frame)
-            frame.scroll = s
+            local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
+            scroll:SetPoint("TOPLEFT", SettingsPanel.Container, 15, -70)
+            scroll:SetPoint("BOTTOMRIGHT", SettingsPanel.Container, -35, 10)
+            scroll.ScrollBar.scrollStep = BG.scrollStep
+            BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+            scroll:SetScrollChild(frame)
+            frame.scroll = scroll
 
             return frame
         end
@@ -127,7 +128,7 @@ local function OptionsUI()
         others = CreateTab("Options_others", L["其他功能"])
         config = CreateTab("Options_config", L["角色配置文件"])
 
-        if BiaoGe.options.lastFrame then
+        if BiaoGe.options.lastFrame and BG[BiaoGe.options.lastFrame] then
             BG[BiaoGe.options.lastFrame]:Show()
             BG[BiaoGe.options.lastFrame]:GetParent():SetEnabled(false)
         else
@@ -1096,7 +1097,7 @@ local function OptionsUI()
             h = h + 30
             -- 清空表格时根据副本难度设置分钱人数
             do
-                local name = "autoQingKong"
+                local name = "QingKongPeople"
                 BG.options[name .. "reset"] = 1
                 if not BiaoGe.options[name] then
                     BiaoGe.options[name] = BG.options[name .. "reset"]
@@ -1122,15 +1123,15 @@ local function OptionsUI()
             -- 分钱人数
             do
                 local name = "MaxPlayers"
-                local f = CreateFrame("Frame", nil, BG.options.buttonautoQingKong)
+                local f = CreateFrame("Frame", nil, BG.options.buttonQingKongPeople)
                 BG.options["button" .. name] = f
-                local name = "autoQingKong"
+                local name = "QingKongPeople"
                 if BiaoGe.options[name] ~= 1 then
                     f:Hide()
                 end
 
                 local text = f:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-                text:SetPoint("TOPLEFT", BG.options.buttonautoQingKong, "BOTTOMRIGHT", 0, -5)
+                text:SetPoint("TOPLEFT", BG.options.buttonQingKongPeople, "BOTTOMRIGHT", 0, -5)
                 text:SetText(L["|cffFFFFFF10人团本分钱人数：|r"])
 
                 local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
@@ -1290,6 +1291,27 @@ local function OptionsUI()
         end
         h = h + 30
 
+        -- 自动获取在线人数
+        do
+            local name = "autoGetOnline"
+            BG.options[name .. "reset"] = 0
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            BG.Once("autoGetOnline", 240615, function()
+                BiaoGe.options[name] = 0
+            end)
+
+
+            local ontext = {
+                L["自动获取在线人数"],
+                L["打开表格界面时，自动获取当前阵营在线人数。如果你打开表格时出现掉线的情况，请关闭该功能。"],
+                -- " ",
+                -- L[""],
+            }
+            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["自动获取在线人数"] .. "*", biaoge, 15, height - h, ontext)
+            BG.options["button" .. name] = f
+        end
+        h = h + 30
+
         -- 支出百分比自动计算
         do
             local name = "zhichuPercent"
@@ -1315,22 +1337,6 @@ local function OptionsUI()
                     end
                 end
             end)
-        end
-        h = h + 30
-
-        -- 自动获取在线人数
-        do
-            local name = "autoGetOnline"
-            BG.options[name .. "reset"] = 1
-            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
-            local ontext = {
-                L["自动获取在线人数"],
-                L["打开表格界面时，自动获取当前阵营在线人数。如果你打开表格时出现掉线的情况，请关闭该功能。"],
-                -- " ",
-                -- L[""],
-            }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["自动获取在线人数"] .. "*", biaoge, 15, height - h, ontext)
-            BG.options["button" .. name] = f
         end
         h = h + 30
 
@@ -1843,7 +1849,7 @@ local function OptionsUI()
                 BG.options["button" .. name] = f
             end
             -- 一键指定灵魂烘炉
-            if BG.IsWLK() then
+            --[[             if BG.IsWLK() then
                 h = h + 30
                 do
                     local fbID = 632
@@ -1860,7 +1866,7 @@ local function OptionsUI()
                     local f = O.CreateCheckButton(name, format(L["一键指定%s"] .. "*", GetRealZoneText(fbID)), others, 15, height - h, ontext)
                     BG.options["button" .. name] = f
                 end
-            end
+            end ]]
             -- 一键自动分配
             h = h + 30
             do
@@ -1922,12 +1928,27 @@ local function OptionsUI()
                 if not BiaoGe.options[name] then
                     BiaoGe.options[name] = BG.options[name .. "reset"]
                 end
-                local ontext = {
-                    L["举报成功后自动隐藏感谢界面"],
-                    L["正常情况下，当你举报成功后，会显示一个感谢你的举报的界面。现在该感谢界面不会再显示。"],
-                }
-                local f = O.CreateCheckButton(name, L["举报成功后自动隐藏感谢界面"] .. "*", others, 15, height - h, ontext)
-                BG.options["button" .. name] = f
+                if BG.IsWLK() then
+                    local ontext = {
+                        L["一键举报"],
+                        L["在目标玩家/聊天频道玩家的右键菜单里增加一键举报脚本按钮。快捷命令：/BGReport。"],
+                        " ",
+                        L["在目标玩家/聊天频道玩家的右键菜单里增加一键举报RMT按钮。"],
+                        " ",
+                        L["在战场时，在目标玩家的右键菜单里增加一键举报挂机按钮。"],
+                        " ",
+                        L["在查询名单列表界面中增加全部举报按钮。"],
+                    }
+                    local f = O.CreateCheckButton(name, L["一键举报"] .. "*", others, 15, height - h, ontext)
+                    BG.options["button" .. name] = f
+                else
+                    local ontext = {
+                        L["举报成功后自动隐藏感谢界面"],
+                        L["正常情况下，当你举报成功后，会显示一个感谢你的举报的界面。现在该感谢界面不会再显示。"],
+                    }
+                    local f = O.CreateCheckButton(name, L["举报成功后自动隐藏感谢界面"] .. "*", others, 15, height - h, ontext)
+                    BG.options["button" .. name] = f
+                end
             end
             -- 查询名单搜索记录
             do

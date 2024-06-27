@@ -5,7 +5,7 @@ if mod:IsRetail() then
 	mod.statTypes = "normal,heroic,timewalker"
 end
 
-mod:SetRevision("20231014053250")
+mod:SetRevision("20240616044034")
 mod:SetCreatureID(17978)
 mod:SetEncounterID(1928)
 
@@ -21,7 +21,7 @@ mod:RegisterEventsInCombat(
 )
 
 local warnSacrifice		= mod:NewTargetNoFilterAnnounce(34661, 2)
-local warnEnrage		= mod:NewSpellAnnounce(34670, 2, nil, "Healer|Tank")
+local warnEnrage		= mod:NewTargetNoFilterAnnounce(34670, 2, nil, "Healer|Tank")
 
 local specWarnGTFO		= mod:NewSpecialWarningGTFO(34660, nil, nil, nil, 1, 8)
 

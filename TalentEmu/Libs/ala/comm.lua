@@ -461,7 +461,7 @@ local __serializer = __ala_meta__.__serializer;
 		end
 	end
 	local function CommSerializerd(v)
-		return gsub(gsub(__serializer._F_coreSerializer(v), ":", ":1"), "`", ":2");
+		return gsub(gsub(__serializer._F_Serializer(v), ":", ":1"), "`", ":2");
 	end
 	local function GetSerializerd(c, pos)
 		local top = #c;

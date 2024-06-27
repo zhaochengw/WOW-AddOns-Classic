@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2608, "DBM-Raids-WarWithin", 1, 1273)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240607200335")
+mod:SetRevision("20240615031857")
 mod:SetCreatureID(223779, 223781)--Anub'arash, Skeinspinner Takazj
 mod:SetEncounterID(2921)
 --mod:SetUsedIcons(1, 2, 3)
@@ -35,6 +35,7 @@ mod:RegisterEventsInCombat(
 --TODO, add https://www.wowhead.com/beta/spell=441775/void-blast if it's not spammed, similar boat to poison bolt
 --TODO, maybe Entropic should be a run away warning instead for melee?
 --TODO, lots of cleanup of boss mechanics that interrupt other boss mechanics with better clarity and voices
+--TODO, change option keys to match BW for weak aura compatability before live
 local anubarash, takazj = DBM:EJ_GetSectionInfo(29012), DBM:EJ_GetSectionInfo(29017)
 --General Stuff
 local specWarnMarkofParanoia					= mod:NewSpecialWarningYou(455849, nil, nil, nil, 1, 17, 4)
@@ -231,11 +232,11 @@ function mod:SPELL_CAST_START(args)
 		timerImpalingEruptionCD:Start()
 	elseif spellId == 438343 then
 		self.vb.rainCount = self.vb.rainCount + 1
-		warnVenomousRain:Show()
+		warnVenomousRain:Show(self.vb.rainCount)
 		timerVenomousRainCD:Start()
 	elseif spellId == 439838 then
 		self.vb.webBombCount = self.vb.webBombCount + 1
-		warnWebBomb:Show()
+		warnWebBomb:Show(self.vb.webBombCount)
 		timerWebBombCD:Start()
 	elseif spellId == 450045 then
 		self.vb.leapCount = self.vb.leapCount + 1

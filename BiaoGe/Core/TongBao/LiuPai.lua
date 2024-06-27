@@ -128,8 +128,12 @@ function BG.LiuPaiUI(lastbt)
             local tx = {}
             tx = CreateListTable(true, tx)
 
+            local t = 0
             for index, value in ipairs(tx) do
+                -- BG.After(t, function()
                 SendChatMessage(value, "RAID")
+                -- end)
+                -- t = t + BG.tongBaoSendCD
             end
 
             PlaySoundFile(BG.sound2, "Master")

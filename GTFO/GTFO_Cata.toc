@@ -1,0 +1,63 @@
+## Interface: 40400
+## Title: GTFO
+## Notes: GTFO, you're dying!
+## Author: Zensunim of Dragonblight
+## Version: 5.7.1
+## DefaultState: Enabled
+## SavedVariables: GTFOData
+## X-WoWI-ID: 17996 
+## X-Curse-Project-ID: 20697
+## X-Wago-ID: PANz0MK4
+## IconTexture: Interface\Icons\spell_fire_fire
+Localization\enUS.lua
+Localization\esES.lua
+Localization\esMX.lua
+Localization\deDE.lua
+Localization\ruRU.lua
+Localization\frFR.lua
+Localization\zhCN.lua
+Localization\zhTW.lua
+Localization\koKR.lua
+Localization\ptBR.lua
+Localization\Boss.lua
+GTFO_PowerAuras.lua
+GTFO_WeakAuras.lua
+GTFO_Recount.lua
+GTFO_Skada.lua
+GTFO.lua
+GTFO_Ignore.lua
+GTFO_Spells_GenericRetail.lua
+GTFO_Spells_GenericClassic.lua
+GTFO_Spells_Vanilla.lua
+GTFO_Spells_Classic.lua
+GTFO_Spells_BC.lua
+GTFO_Spells_LK.lua
+GTFO_Spells_CAT.lua
+GTFO_Spells_MP.lua
+GTFO_Spells_LGN.lua
+GTFO_Spells_BFA.lua
+GTFO_Spells_SL.lua
+GTFO_Spells_DF.lua
+GTFO_Spells_Special.lua
+GTFO_Fail_GenericRetail.lua
+GTFO_Fail_GenericClassic.lua
+GTFO_Fail_Vanilla.lua
+GTFO_Fail_Classic.lua
+GTFO_Fail_BC.lua
+GTFO_Fail_LK.lua
+GTFO_Fail_CAT.lua
+GTFO_Fail_MP.lua
+GTFO_Fail_LGN.lua
+GTFO_Fail_BFA.lua
+GTFO_Fail_SL.lua
+GTFO_Fail_DF.lua
+GTFO_FF_BC.lua
+GTFO_FF_LK.lua
+GTFO_FF_CAT.lua
+GTFO_FF_MP.lua
+GTFO_FF_LGN.lua
+GTFO_FF_BFA.lua
+GTFO_FF_SL.lua
+GTFO_FF_DF.lua
+GTFO_Mobs.lua
+GTFO.xml

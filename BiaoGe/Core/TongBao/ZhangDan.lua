@@ -17,6 +17,8 @@ local HopeMaxb = ADDONSELF.HopeMaxb
 local HopeMaxi = ADDONSELF.HopeMaxi
 
 local pt = print
+BG.tongBaoSendCD = 0
+-- BG.tongBaoSendCD = 0.05
 
 -- 总览和工资
 local function ZongLan(type, tx)
@@ -34,10 +36,10 @@ local function ZongLan(type, tx)
         if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
             local text
             if type then
-                text = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText() .. "：" ..
+                text = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText() .. L["："] ..
                     BG.Frame[FB]["boss" .. b]["jine" .. i]:GetText()
             else
-                text = "|cffEE82EE" .. BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText() .. "：" ..
+                text = "|cffEE82EE" .. BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText() .. L["："] ..
                     BG.Frame[FB]["boss" .. b]["jine" .. i]:GetText() .. RN
             end
             table.insert(tx, text)
@@ -54,20 +56,20 @@ local function ZongLan(type, tx)
 
     local text
     if type then
-        text = BG.Frame[FB]["boss" .. b]["zhuangbei4"]:GetText() .. "：" ..
+        text = BG.Frame[FB]["boss" .. b]["zhuangbei4"]:GetText() .. L["："] ..
             BG.Frame[FB]["boss" .. b]["jine4"]:GetText() .. L["人"]
     else
-        text = "|cff00BFFF" .. BG.Frame[FB]["boss" .. b]["zhuangbei4"]:GetText() .. "：" ..
+        text = "|cff00BFFF" .. BG.Frame[FB]["boss" .. b]["zhuangbei4"]:GetText() .. L["："] ..
             BG.Frame[FB]["boss" .. b]["jine4"]:GetText() .. L["人"] .. RN
     end
     table.insert(tx, text)
 
     local text
     if type then
-        text = BG.Frame[FB]["boss" .. b]["zhuangbei5"]:GetText() .. "：" ..
+        text = BG.Frame[FB]["boss" .. b]["zhuangbei5"]:GetText() .. L["："] ..
             BG.Frame[FB]["boss" .. b]["jine5"]:GetText()
     else
-        text = "|cff00BFFF" .. BG.Frame[FB]["boss" .. b]["zhuangbei5"]:GetText() .. "：" ..
+        text = "|cff00BFFF" .. BG.Frame[FB]["boss" .. b]["zhuangbei5"]:GetText() .. L["："] ..
             BG.Frame[FB]["boss" .. b]["jine5"]:GetText() .. RN
     end
     table.insert(tx, text)
@@ -262,15 +264,6 @@ local function CreateListTable(type, tx)
     end
     -- 总览和工资
     tx = ZongLan(type, tx)
-
-    if not type then
-        local text = BG.STC_dis(L["(长按SHITF：仅通报罚款)"])
-        table.insert(tx, text)
-        local text = BG.STC_dis(L["(长按CTRL：仅通报支出)"])
-        table.insert(tx, text)
-        local text = BG.STC_dis(L["(长按ALT：仅通报总览)"])
-        table.insert(tx, text)
-    end
     return tx
 end
 local function OnEnter(self)
@@ -300,6 +293,8 @@ local function OnEnter(self)
     else
         local text = L["———通报账单———"]
         table.insert(tx, text)
+        local text = format(BG.STC_b1(L["副本：%s"]), BG.FB1)
+        table.insert(tx, text)
         tx = CreateListTable(nil, tx)
     end
 
@@ -309,35 +304,17 @@ local function OnEnter(self)
         GameTooltip:AddLine(v)
     end
     GameTooltip:Show()
+    GameTooltip:SetClampedToScreen(false)
 
-    local a = GameTooltip:GetHeight()
-    local b = UIParent:GetHeight()
-    if a and b then
-        a = tonumber(a)
-        b = tonumber(b)
-        if a >= b then
-            local scale = 1 - ((a - b) / b) * 0.5
-            local s = 0
-            if scale >= 0.9 then
-                s = 0.13
-            elseif scale >= 0.8 then
-                s = 0.15
-            elseif scale >= 0.7 then
-                s = 0.11
-            elseif scale >= 0.6 then
-                s = 0.08
-            elseif scale >= 0.55 then
-                s = 0.06
-            elseif scale >= 0.5 then
-                s = 0.05
-            end
-            scale = string.format("%.2f", scale) - s
-            if scale <= 0 then
-                scale = 0.4
-            end
-            GameTooltip:SetScale(scale)
-        end
-    end
+
+    BiaoGeTooltip2:SetOwner(GameTooltip, "ANCHOR_NONE", 0, 0);
+    BiaoGeTooltip2:SetPoint("BOTTOMLEFT", GameTooltip, "BOTTOMRIGHT", 0, 0)
+    BiaoGeTooltip2:ClearLines()
+    BiaoGeTooltip2:AddLine(L["其他选项"])
+    BiaoGeTooltip2:AddLine(L["长按SHITF：仅通报罚款"], 0.5, 0.5, 0.5)
+    BiaoGeTooltip2:AddLine(L["长按CTRL：仅通报支出"], 0.5, 0.5, 0.5)
+    BiaoGeTooltip2:AddLine(L["长按ALT：仅通报总览"], 0.5, 0.5, 0.5)
+    BiaoGeTooltip2:Show()
 end
 local function OnClick(self)
     local FB = BG.FB1
@@ -373,13 +350,19 @@ local function OnClick(self)
         else
             local text = L["———通报账单———"]
             table.insert(tx, text)
+            local text = format(L["副本：%s"], BG.FB1)
+            table.insert(tx, text)
             tx = CreateListTable(true, tx)
             local text = L["——感谢使用BiaoGe插件——"]
             table.insert(tx, text)
         end
 
+        local t = 0
         for index, value in ipairs(tx) do
+            -- BG.After(t, function()
             SendChatMessage(value, "RAID")
+            -- end)
+            -- t = t + BG.tongBaoSendCD
         end
 
         PlaySoundFile(BG.sound2, "Master")
@@ -403,16 +386,29 @@ function BG.ZhangDanUI(lastbt)
     BG.ButtonZhangDan = bt
 
     -- 鼠标悬停提示账单
-
     bt:SetScript("OnEnter", OnEnter)
-
     bt:SetScript("OnLeave", function(self)
         self.OnEnter = false
         GameTooltip:Hide()
-        GameTooltip:SetScale(1)
+        GameTooltip:SetClampedToScreen(true)
+        BiaoGeTooltip2:Hide()
     end)
     -- 点击通报账单
     bt:SetScript("OnClick", OnClick)
+
+    --[[     -- 账单选择
+    local f = CreateFrame("Frame", nil, bt, "BackdropTemplate")
+    f:SetBackdrop({
+        bgFile = "Interface/ChatFrame/ChatFrameBackground",
+        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+        edgeSize = 16,
+        insets = { left = 3, right = 3, top = 3, bottom = 3 }
+    })
+    f:SetBackdropColor(0, 0, 0, 0.8)
+    f:SetSize(150, 150)
+    f:SetPoint("BOTTOMRIGHT", bt, "BOTTOMLEFT", 0, 0)
+    f:SetFrameLevel(118)
+    bt.chooseFrame = f ]]
 
     local f = CreateFrame("Frame")
     f:RegisterEvent("MODIFIER_STATE_CHANGED")

@@ -5,12 +5,14 @@ local QuestieWotlkNpcFixes = QuestieLoader:CreateModule("QuestieWotlkNpcFixes")
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
 ---@type ZoneDB
 local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
+---@type Phasing
+local Phasing = QuestieLoader:ImportModule("Phasing")
 
 function QuestieWotlkNpcFixes:Load()
     local npcKeys = QuestieDB.npcKeys
     local zoneIDs = ZoneDB.zoneIDs
-    local npcFlags = QuestieDB.npcFlags
     local waypointPresets = QuestieDB.waypointPresets
+    local phases = Phasing.phases
 
     return {
         [658] = {
@@ -122,6 +124,9 @@ function QuestieWotlkNpcFixes:Load()
                 [zoneIDs.WINTERGRASP]={{50.02,15.16}},
             },
             [npcKeys.waypoints] = {[zoneIDs.WINTERGRASP] = {{{50.64,13.08},{50.58,13.00},{50.51,12.93},{50.44,12.86},{50.37,12.79},{50.30,12.71},{50.23,12.64},{50.16,12.60},{50.07,12.59},{50.00,12.58},{49.97,12.58},{49.88,12.57},{49.80,12.59},{49.73,12.66},{49.67,12.74},{49.60,12.83},{49.54,12.91},{49.48,13.00},{49.42,13.09},{49.36,13.18},{49.32,13.29},{49.29,13.40},{49.25,13.52},{49.22,13.63},{49.20,13.76},{49.20,13.88},{49.19,14.01},{49.19,14.13},{49.21,14.26},{49.25,14.36},{49.30,14.46},{49.35,14.56},{49.40,14.67},{49.45,14.77},{49.51,14.86},{49.57,14.94},{49.64,15.01},{49.71,15.07},{49.79,15.13},{49.87,15.16},{49.95,15.17},{50.04,15.17},{50.12,15.17},{50.21,15.17},{50.28,15.13},{50.36,15.06},{50.42,14.99},{50.49,14.92},{50.57,14.85},{50.63,14.77},{50.67,14.66},{50.71,14.55},{50.75,14.44},{50.79,14.33},{50.82,14.21},{50.84,14.09},{50.84,13.96},{50.84,13.84},{50.84,13.71},{50.82,13.59},{50.78,13.48},{50.73,13.37},{50.70,13.29},{50.66,13.19},{50.62,13.08},{50.57,12.98},{50.50,12.91},{50.42,12.85},{50.35,12.78},{50.28,12.72},{50.21,12.66},{50.13,12.60},{50.05,12.58},{50.02,12.58},}}},
+        },
+        [15563] = {
+            [npcKeys.spawns] = {[zoneIDs.BLASTED_LANDS] = {{57.9,54.83}}},
         },
         [15564] = {
             [npcKeys.spawns] = {[zoneIDs.UNDERCITY] = {{66.66,38.19}}},
@@ -1061,6 +1066,12 @@ function QuestieWotlkNpcFixes:Load()
         [28389] = {
             [npcKeys.spawns] = {[zoneIDs.SHOLAZAR_BASIN]={{46.23,27.47},{48.85,27.4},{48.17,21.12},{47.81,22.72},{47.63,24.05},{47.67,22.57},{48.86,24.45},{49.71,28.79},{45.21,31.17},{47.62,27.79},{49.45,22.81},{44.8,28.62},{45.54,30.47}}},
         },
+        [28401] = { -- Har'koa
+            [npcKeys.spawns] = {[zoneIDs.ZUL_DRAK]={
+                {60.25,57.74,phases.HAR_KOA_AT_ZIM_TORGA},
+                {63.72,70.42,phases.HAR_KOA_AT_ALTAR},
+            }},
+        },
         [28402] = {
             [npcKeys.spawns] = {[zoneIDs.ZUL_DRAK]={{59,69.2},{59.8,68},{60.4,69.69},{60.95,66.35},{60.96,70.45},{61.96,64.81},{62.2,74},{62.4,69.4},{62.43,72.23},{62.67,69.67},{62.86,63.39},{63.39,74.79},{63.4,68.2},{63.6,76.6},{64.04,62.56},{65.04,63.98},{64.7,63.52},{65.2,69.2},{65.6,67.8},{66,74.2}}},
         },
@@ -1105,6 +1116,9 @@ function QuestieWotlkNpcFixes:Load()
         },
         [28734] = {
             [npcKeys.spawns] = {[zoneIDs.THE_GILDED_GATE]={{-1,-1}},[4277]={{-1,-1}}},
+        },
+        [28788] = {
+            [npcKeys.spawns] = {[zoneIDs.PLAGUELANDS_THE_SCARLET_ENCLAVE]={{52.61,34.38}}},
         },
         [28826] = {
             [npcKeys.spawns] = {[zoneIDs.THE_TERRESTRIAL_WATCHTOWER]={{-1,-1}},[zoneIDs.HALLS_OF_LIGHTNING]={{-1,-1}}},
@@ -1168,6 +1182,16 @@ function QuestieWotlkNpcFixes:Load()
         },
         [29173] = {
             [npcKeys.waypoints] = {},
+            [npcKeys.spawns] = {[zoneIDs.PLAGUELANDS_THE_SCARLET_ENCLAVE]={{39.06,39.16}}},
+        },
+        [29194] = {
+            [npcKeys.subName] = "Death Knight Trainer",
+        },
+        [29195] = {
+            [npcKeys.subName] = "Death Knight Trainer",
+        },
+        [29196] = {
+            [npcKeys.subName] = "Death Knight Trainer",
         },
         [29216] = {
             [npcKeys.spawns] = {[zoneIDs.THE_BROOD_PIT]={{63.2,48.1}},[4277]={{-1,-1}}},
@@ -1565,6 +1589,9 @@ function QuestieWotlkNpcFixes:Load()
         },
         [31054] = {
             [npcKeys.spawns] = {[zoneIDs.WINTERGRASP]={{72.66,31.67},{43.73,17.01}}},
+        },
+        [31101] = {
+            [npcKeys.spawns] = {[zoneIDs.WINTERGRASP]={{21.86,35.43},{51.74,21.17}}},
         },
         [31104] = {
             [npcKeys.spawns] = {[zoneIDs.AHNKAHET_MAP]={{81.37,61.1},{82.39,60.19}},[4494]={{-1,-1}}},
@@ -2421,15 +2448,133 @@ function QuestieWotlkNpcFixes:Load()
             [npcKeys.spawns] = {[zoneIDs.ICECROWN_CITADEL_UPPER_SPIRE]={{76.6,72.8}},[zoneIDs.ICECROWN_CITADEL]={{-1,-1}}},
             [npcKeys.zoneID] = zoneIDs.ICECROWN_CITADEL,
         },
+        [38606] = {
+            [npcKeys.spawns] = {[zoneIDs.ICECROWN_CITADEL]={{39,20.6},{-1,-1}}},
+            [npcKeys.zoneID] = zoneIDs.ICECROWN_CITADEL,
+        },
+        [38607] = {
+            [npcKeys.spawns] = {[zoneIDs.ICECROWN_CITADEL]={{39.2,20.6},{-1,-1}}},
+            [npcKeys.zoneID] = zoneIDs.ICECROWN_CITADEL,
+        },
+        [38608] = {
+            [npcKeys.spawns] = {[zoneIDs.ICECROWN_CITADEL]={{39,18.2},{-1,-1}}},
+            [npcKeys.zoneID] = zoneIDs.ICECROWN_CITADEL,
+        },
+        [38609] = {
+            [npcKeys.spawns] = {[zoneIDs.ICECROWN_CITADEL]={{38.1,19.9},{-1,-1}}},
+            [npcKeys.zoneID] = zoneIDs.ICECROWN_CITADEL,
+        },
         [38858] = {
             [npcKeys.spawns] = {[zoneIDs.ICECROWN_CITADEL]={{36,20.7},{-1,-1}}},
+            [npcKeys.zoneID] = zoneIDs.ICECROWN_CITADEL,
+        },
+        [39271] = {
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{25.87,47.15}}},
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+        },
+        [39368] = {
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{49.53,47.12}}},
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+        },
+        [39386] = {
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{50.09,47.74}}},
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+        },
+        [39396] = {
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{50.14,47.84}}},
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+        },
+        [39420] = {
+            [npcKeys.name] = "Gnomeregan Vent",
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{23.5,44.8},{23.2,43.4},{24.1,41.2},{23.9,38.8},{24.5,38},{25.6,34.9}}},
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
         },
         [39509] = {
             [npcKeys.spawns] = {[zoneIDs.ICECROWN_CITADEL]={{40.2,21.9},{-1,-1}}},
         },
+        [39654] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{64.5,74.1}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [39675] = {
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{50.18,48.36}}},
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+        },
+        [39678] = {
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{49.32,48.27}}},
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+        },
+        [39711] = {
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{50.63,48.17},{50.83,48.02}}},
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+        },
+        [39715] = {
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{50.21,48.65}}},
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+        },
+        [39716] = {
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{50.12,48.2}}},
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+        },
+        [39717] = {
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{50.42,47.63}}},
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+        },
         [39863] = {
             [npcKeys.spawns] = {[zoneIDs.THE_RUBY_SANCTUM]={{49.3,53.9},{-1,-1}}},
             [npcKeys.zoneID] = zoneIDs.THE_RUBY_SANCTUM,
+        },
+        [40176] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{55.2,76.4},{55.3,73.6},{55.6,72.6},{55.1,71.5},{54.2,71.9},{56.4,72.8},{56.3,71.2},{58.3,71.8}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40184] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{57.5,72.5}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40187] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{57.6,72.5}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40204] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{57.1,75.1}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40253] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{57.8,73}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40256] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{52.5,43.6},{52.1,44.3},{51.7,44.1},{51.3,44.3},{50.4,43.3},{50.6,42.2},{50.1,42.7},{51.1,40.5},{51.6,40.8},{51.9,39.7},{53.2,40.6},{53.5,41.5},{54.3,41.5},{54.2,43.7},{53.6,43}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40257] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{52.5,43.6},{52.1,44.3},{51.7,44.1},{51.3,44.3},{50.4,43.3},{50.6,42.2},{50.1,42.7},{51.1,40.5},{51.6,40.8},{51.9,39.7},{53.2,40.6},{53.5,41.5},{54.3,41.5},{54.2,43.7},{53.6,43}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40260] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{57.8,73}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40264] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{57.8,73}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40301] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{64.3,74.4},{61.1,78.4},{60.4,80.1},{59.9,82.8}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40352] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{57,74.2}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40391] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{57.4,72.7}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [40502] = {
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR]={{60.3,89.6}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
         },
         [40429] = {
             [npcKeys.spawns] = {[zoneIDs.THE_RUBY_SANCTUM]={{74.42,54.5},{-1,-1}}},
@@ -2499,8 +2644,6 @@ end
 
 function QuestieWotlkNpcFixes:LoadAutomatics()
     local npcKeys = QuestieDB.npcKeys
-    local zoneIDs = ZoneDB.zoneIDs
-    local npcFlags = QuestieDB.npcFlags
 
   --! This file is automatically generated from wowhead data by looking at mobs with no spawns, but drops questiems or are objectives of quests.
   return {

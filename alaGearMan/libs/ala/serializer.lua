@@ -291,7 +291,7 @@ local __ala_meta__ = _G.__ala_meta__;
 		end
 	end
 	--
-	local function _F_coreSerializerInternal(useDict, ...)
+	local function _F_SerializerInternal(useDict, ...)
 		local pos = 1;
 		for index = 1, select("#", ...) do
 			pos = _LF_coreSerializer(select(index, ...), _LT_SerializeTemp, pos, useDict);
@@ -305,7 +305,7 @@ local __ala_meta__ = _G.__ala_meta__;
 		end
 		return table_concat(_LT_SerializeTemp, "", 1, pos);
 	end
-	local function _F_coreDeserializerInternal(str)
+	local function _F_DeserializerInternal(str)
 		str = gsub(str, "[%c ]", "");
 		local iter = gmatch(str, "(~.)([^~]*)");
 		local rev = iter();
@@ -317,14 +317,14 @@ local __ala_meta__ = _G.__ala_meta__;
 			return false;
 		end
 	end
-	__serializer._F_coreSerializer = function(...)
-		return _F_coreSerializerInternal(false, ...);
+	__serializer._F_Serializer = function(...)
+		return _F_SerializerInternal(false, ...);
 	end
-	__serializer._F_coreSerializerNoDict = _F_coreSerializer;
-	__serializer._F_coreSerializerDict = function(...)
-		return _F_coreSerializerInternal(true, ...);
+	__serializer._F_SerializerNoDict = _F_Serializer;
+	__serializer._F_SerializerDict = function(...)
+		return _F_SerializerInternal(true, ...);
 	end
-	__serializer._F_coreDeserializer = _F_coreDeserializerInternal;
+	__serializer._F_Deserializer = _F_DeserializerInternal;
 -->
 
 function __serializer:Halt()

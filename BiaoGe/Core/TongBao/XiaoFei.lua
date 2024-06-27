@@ -113,10 +113,14 @@ function BG.XiaoFeiUI(lastbt)
             end)
 
             local tx = CreateListTable(true)
-            for index, value in ipairs(tx) do
-                SendChatMessage(value, "RAID")
-            end
 
+            local t = 0
+            for index, value in ipairs(tx) do
+                -- BG.After(t, function()
+                SendChatMessage(value, "RAID")
+                -- end)
+                -- t = t + BG.tongBaoSendCD
+            end
             PlaySoundFile(BG.sound2, "Master")
         end
     end)

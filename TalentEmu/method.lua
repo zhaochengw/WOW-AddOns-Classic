@@ -2094,7 +2094,7 @@ MT.BuildEnv('METHOD');
 				return;
 			elseif curPrimary ~= PrimaryTreeIndex then
 				MT._TimerHalt(ApplyTalentsTicker);
-				Frame.ApplyTalentsProgress:SetText(nil);
+				Frame.ApplyTalentsProgress:SetText("");
 				MT.UpdateApplyingTalentsStatus(nil);
 				return MT.Notice(l10n["CANNOT APPLY : ERROR CATA."], primaryTreeIndex, curPrimary);
 			else
@@ -2132,7 +2132,7 @@ MT.BuildEnv('METHOD');
 		--
 		MT._TimerHalt(ApplyTalentsTicker);
 		MT.Notice(l10n.ApplyTalentsFinished);
-		Frame.ApplyTalentsProgress:SetText(nil);
+		Frame.ApplyTalentsProgress:SetText("");
 		MT.UpdateApplyingTalentsStatus(nil);
 	end
 	function MT.ApplyTalents(Frame)

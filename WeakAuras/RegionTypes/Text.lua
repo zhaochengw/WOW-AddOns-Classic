@@ -1,6 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
@@ -55,10 +57,6 @@ local properties = {
 
 Private.regionPrototype.AddProperties(properties, default);
 
-local function GetProperties(data)
-  return properties;
-end
-
 local function create(parent)
   local region = CreateFrame("Frame", nil, parent);
   region.regionType = "text"
@@ -68,9 +66,6 @@ local function create(parent)
   region.text = text;
   text:SetWordWrap(true);
   text:SetNonSpaceWrap(true);
-
-  region.duration = 0;
-  region.expirationTime = math.huge;
 
   Private.regionPrototype.create(region);
 
@@ -185,7 +180,7 @@ local function modify(parent, region, data)
     containsCustomText = true
   end
 
-  local formatters
+  local formatters, everyFrameFormatters
   do
     local getter = function(key, default)
       local fullKey = "displayText_format_" .. key
@@ -217,7 +212,7 @@ local function modify(parent, region, data)
       end
     end
 
-    formatters = Private.CreateFormatters(texts, getter)
+    formatters, everyFrameFormatters = Private.CreateFormatters(texts, getter, false, data)
   end
 
   local customTextFunc = nil
@@ -249,12 +244,13 @@ local function modify(parent, region, data)
       Update = UpdateText or function() end
     end
 
-    local TimerTick
-    if Private.ContainsPlaceHolders(self.displayText, "p") then
-      TimerTick = UpdateText
+    local FrameTick
+    if Private.ContainsPlaceHolders(self.displayText, "p")
+      or Private.AnyEveryFrameFormatters(self.displayText, everyFrameFormatters)
+    then
+      FrameTick = UpdateText
     end
 
-    local FrameTick
     if customTextFunc and data.customTextUpdate == "update" then
       if Private.ContainsCustomPlaceHolder(self.displayText) then
         FrameTick = function()
@@ -266,7 +262,6 @@ local function modify(parent, region, data)
 
     self.Update = Update
     self.FrameTick = FrameTick
-    self.TimerTick = TimerTick
 
     if not UpdateText then
       local textStr = self.displayText
@@ -282,11 +277,6 @@ local function modify(parent, region, data)
       self.subRegionEvents:RemoveSubscriber("FrameTick", self)
     end
 
-    if self.TimerTick then
-      self.subRegionEvents:AddSubscriber("TimerTick", self, true)
-    else
-      self.subRegionEvents:RemoveSubscriber("TimerTick", self)
-    end
     if self.Update and self.state then
       self:Update()
     end
@@ -343,7 +333,7 @@ local function validate(data)
   Private.EnforceSubregionExists(data, "subbackground")
 end
 
-Private.RegisterRegionType("text", create, modify, default, GetProperties, validate);
+Private.RegisterRegionType("text", create, modify, default, properties, validate);
 
 -- Fallback region type
 

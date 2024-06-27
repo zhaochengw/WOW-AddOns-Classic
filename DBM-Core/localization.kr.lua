@@ -278,7 +278,8 @@ L.TIMER_USAGE	= {
 	"/dbm timer endloop: 반복 작동중인 모든 ltimer를 멈춥니다."
 }
 
-L.ERROR_NO_PERMISSION				= "이 명령어를 실행하기 위한 권한을 가지고 있지 않습니다."
+L.ERROR_NO_PERMISSION				= "풀링/휴식 타이머를 전송하기 위해 필요한 권한을 가지고 있지 않습니다."
+L.ERROR_NO_PERMISSION_COMBAT			= "보스 전투가 진행중인 동안에는 풀링/휴식 타이머를 전송할 수 없습니다"
 L.PULL_TIME_TOO_SHORT					= "풀링 타이머는 3초 이상으로 설정해야 합니다."
 L.PULL_TIME_TOO_LONG							= "풀링 타이머는 60초 이상 설정할 수 없습니다."
 
@@ -553,6 +554,10 @@ L.AUTO_INFO_FRAME_OPTION_TEXT3		= "$spell:%s|1을;를; 정보 창에 표시 (%%s
 L.AUTO_READY_CHECK_OPTION_TEXT		= "보스가 풀링되면 전투 준비 효과음 듣기 (보스를 대상으로 잡지 않아도 재생)"
 L.AUTO_SPEEDCLEAR_OPTION_TEXT		= "%s의 완료 신기록 타이머 표시"
 L.AUTO_PRIVATEAURA_OPTION_TEXT		= "이 전투에서 설정한 $spell:%s 비공개 오라에 DBM 효과음 경고를 재생합니다."
+
+L.AUTO_GOSSIP_BUFFS						= "NPC나 전문기술 버프 오브젝트 대화 자동 선택"
+L.AUTO_GOSSIP_PERFORM_ACTION			= "사물을 작동시키는 (순간이동 사용 같은) 선택지 자동 선택"
+L.AUTO_GOSSIP_START_ENCOUNTER			= "보스 전투 시작 대화 자동 선택"--This will never need to be plural, since it won't be in a trash mod like other two
 
 -- New special warnings
 L.MOVE_WARNING_BAR				= "알림 이동"

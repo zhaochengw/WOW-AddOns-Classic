@@ -8,12 +8,6 @@ local Maxi = ADDONSELF.Maxi
 local pt = print
 
 BG.Boss = {}
--- for key, FB in pairs(BG.FBtable) do
---     BG.Boss[FB] = {}
---     for b = 1, Maxb[FB] + 2 do
---         BG.Boss[FB]["boss" .. b] = {}
---     end
--- end
 
 local function AddDB(FB, boss)
     if not BG.Boss[FB] then BG.Boss[FB] = {} end
@@ -87,10 +81,16 @@ do
         { name = L["萨\n弗\n隆\n先\n驱\n者"], color = "FFFF00" },
         { name = L["埃\n克\n索\n图\n斯"], color = "FF6699" },
         { name = L["拉\n格\n纳\n罗\n斯"], color = "FF6699" },
-        { name = L["奥\n妮\n克\n希\n亚"], color = "CC6600" },
     }
     Addother(boss)
     AddDB("MC", boss)
+
+    local boss = {
+        { name = L["奥\n妮\n克\n希\n亚"], color = "CC6600" },
+    }
+    local FB = "OL"
+    Addother(boss)
+    AddDB(FB, boss)
 
 
     local boss = {
@@ -172,6 +172,13 @@ end
 -- WLK
 do
     local boss = {
+        { name = L["海\n里\n昂"], color = "993300" },
+    }
+    local FB = "RS"
+    Addother(boss)
+    AddDB(FB, boss)
+
+    local boss = {
         { name = L["玛\n洛\n加\n尔"], color = "D3D3D3" },
         { name = L["亡\n语\n者\n女\n士"], color = "D3D3D3" },
         { name = L["炮\n舰\n战"], color = "FFD700" },
@@ -184,9 +191,15 @@ do
         { name = L["踏\n梦\n者"], color = "90EE90" },
         { name = L["辛\n达\n苟\n萨"], color = "90EE90" },
         { name = L["巫\n妖\n王"], color = "00BFFF" },
-        { name = L["海\n里\n昂"], color = "993300" },
     }
     local FB = "ICC"
+    Addother(boss)
+    AddDB(FB, boss)
+
+    local boss = {
+        { name = L["奥\n妮\n克\n希\n亚"], color = "CC6600" },
+    }
+    local FB = "OL"
     Addother(boss)
     AddDB(FB, boss)
 
@@ -197,7 +210,6 @@ do
         { name = L["瓦\n克\n里\n双\n子"], color = "7B68EE" },
         { name = L["阿\n努\n巴\n拉\n克"], color = "00BFFF" },
         { name = L["嘉\n奖\n宝\n箱"], color = "FFFF00" },
-        { name = L["奥\n妮\n克\n希\n亚"], color = "CC6600" },
     }
     local FB = "TOC"
     Addother(boss)
@@ -223,6 +235,20 @@ do
     Addother(boss)
     AddDB(FB, boss)
 
+    local boss = {
+        { name = L["玛\n里\n苟\n斯"], color = "87CEFA", },
+    }
+    local FB = "EOE"
+    Addother(boss)
+    AddDB(FB, boss)
+
+    local boss = {
+        { name = L["萨\n塔\n里\n奥"], color = "CC6600", },
+    }
+    local FB = "OS"
+    Addother(boss)
+    AddDB(FB, boss)
+
     if not BG.IsVanilla() then
         local boss = {
             { name = L["阿\n努\n布\n雷\n坎"], color = "7B68EE", },
@@ -240,8 +266,6 @@ do
             { name = L["塔\n迪\n乌\n斯"], color = "FFD100", },
             { name = L["萨\n菲\n隆"], color = "90EE90", },
             { name = L["克\n尔\n苏\n加\n德"], color = "90EE90", },
-            { name = L["萨\n塔\n里\n奥"], color = "87CEFA", },
-            { name = L["玛\n里\n苟\n斯"], color = "87CEFA", },
         }
         local FB = "NAXX"
         Addother(boss)

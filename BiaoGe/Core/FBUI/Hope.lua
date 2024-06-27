@@ -1015,6 +1015,8 @@ function BG.HopeDaoChuUI()
                     s:SetPoint("TOPLEFT", 5, -4)
                     s:SetPoint("BOTTOMRIGHT", -27, 4)
                     s.ScrollBar.scrollStep = BG.scrollStep
+                    BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+
                     self.s = s
 
                     child = CreateFrame("EditBox", nil, s)
@@ -1125,6 +1127,8 @@ function BG.HopeDaoChuUI()
                     s:SetPoint("TOPLEFT", 5, -4)
                     s:SetPoint("BOTTOMRIGHT", -27, 4)
                     s.ScrollBar.scrollStep = BG.scrollStep
+                    BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+
                     self.s = s
 
                     child = CreateFrame("EditBox", nil, s)

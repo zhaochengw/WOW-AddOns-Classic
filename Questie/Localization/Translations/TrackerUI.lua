@@ -3,21 +3,21 @@ local l10n = QuestieLoader:ImportModule("l10n")
 
 local trackerUILocales = {
     ["Questie Tracker"] = {
-        ["ptBR"] = "Missões ativas",
+        ["ptBR"] = "Rastreador de Questie",
         ["ruRU"] = "Активные задания",
         ["deDE"] = "Aktive Quests",
         ["koKR"] = "활성 퀘스트",
-        ["esMX"] = "Misiones activas",
+        ["esMX"] = "Rastreador de Questie",
         ["enUS"] = true,
         ["zhCN"] = "当前任务",
         ["zhTW"] = "任務",
-        ["esES"] = "Misiones activas",
-        ["frFR"] = "Quêtes actives",
+        ["esES"] = "Rastreador de Questie",
+        ["frFR"] = "Suivi de Questie",
     },
     ---------------------------------------------------------
     -- Sizer
     ["Sizer Mode"] = {
-        ["ptBR"] = "Modo do Medidor",
+        ["ptBR"] = "Modo do medidor",
         ["ruRU"] = "Режим сайзера",
         ["deDE"] = "Sizer-Modus",
         ["koKR"] = "사이저 모드",
@@ -26,19 +26,19 @@ local trackerUILocales = {
         ["zhCN"] = "分级器模式",
         ["zhTW"] = "調整模式",
         ["esES"] = "Modo de calibrador",
-        ["frFR"] = "Mode Sizer",
+        ["frFR"] = "Mode du calibreur",
     },
     ["Resize Tracker"] = {
         ["ptBR"] = "Redimensionar rastreador",
         ["ruRU"] = "Изменить размера трекера",
         ["deDE"] = "Größe des Trackers ändern",
         ["koKR"] = "트래커 크기 조정",
-        ["esMX"] = "Cambiar el tamaño del rastreador",
+        ["esMX"] = "Redimensionar rastreador",
         ["enUS"] = true,
         ["zhCN"] = "调整跟踪器",
         ["zhTW"] = "調整任務清單大小",
-        ["esES"] = "Cambiar el tamaño del rastreador",
-        ["frFR"] = "Suivi de redimensionnement",
+        ["esES"] = "Redimensionar rastreador",
+        ["frFR"] = "Redimensionner le suivi",
     },
     ["Reset Sizer"] = {
         ["ptBR"] = "Redefinir dimensionador",
@@ -53,7 +53,7 @@ local trackerUILocales = {
         ["frFR"] = "Réinitialiser le calibreur",
     },
     ["NOTE"] = {
-        ["ptBR"] = "OBSERVAÇÃO",
+        ["ptBR"] = "NOTA",
         ["ruRU"] = "ПРИМЕЧАНИЕ",
         ["deDE"] = "NOTIZ",
         ["koKR"] = "메모",
@@ -74,7 +74,7 @@ local trackerUILocales = {
         ["zhCN"] = "在手動模式下忽略跟踪器高度比",
         ["zhTW"] = "手動模式下忽略任務清單的高度比例",
         ["esES"] = "La relación de altura del rastreador\nse ignora mientras está en modo manual",
-        ["frFR"] = "Le rapport de hauteur du\ntracker est ignoré en mode manuel",
+        ["frFR"] = "Le rapport de hauteur du suivi\nest ignoré en mode manuel",
     },
     ---------------------------------------------------------
     -- Questie Icon (Active Quest Header)
@@ -88,7 +88,7 @@ local trackerUILocales = {
         ["zhCN"] = "打开设置",
         ["zhTW"] = "設定選項",
         ["esES"] = "Mostrar opciones",
-        ["frFR"] = "Panneau de configuration",
+        ["frFR"] = "Afficher options",
     },
     -- "Toggle My Journey" is in MinimapIcon.lua
     ["Drag while Unlocked"] = {
@@ -116,7 +116,7 @@ local trackerUILocales = {
         ["frFR"] = "Glisser pendant le verrouillage",
     },
     ["Questie Tracker Integrations"] = {
-        ["ptBR"] = false,
+        ["ptBR"] = "Integrações do rastreador",
         ["ruRU"] = "Интеграции трекера",
         ["deDE"] = "Tracker-Integrationen",
         ["koKR"] = "통합 퀘스티 추적기",
@@ -125,48 +125,48 @@ local trackerUILocales = {
         ["zhCN"] = false,
         ["zhTW"] = "整合插件",
         ["esES"] = "Integraciones del rastreador",
-        ["frFR"] = false,
+        ["frFR"] = "Intégrations de suivi",
     },
     -- VoiceOver Integration
     ["VoiceOver"] = {
-        ["ptBR"] = false,
+        ["ptBR"] = true,
         ["ruRU"] = true,
         ["deDE"] = true,
-        ["koKR"] = false,
-        ["esMX"] = "Narración",
+        ["koKR"] = true,
+        ["esMX"] = true,
         ["enUS"] = true,
-        ["zhCN"] = false,
-        ["zhTW"] = "文字轉語音",
-        ["esES"] = "Narración",
-        ["frFR"] = false,
+        ["zhCN"] = true,
+        ["zhTW"] = true,
+        ["esES"] = true,
+        ["frFR"] = true,
     },
     ["Hold shift to see PlayButtons"] = {
-        ["ptBR"] = false,
+        ["ptBR"] = "Pressione Shift para ver os PlayButtons",
         ["ruRU"] = "Зажмите Shift, чтобы увидеть PlayButtons",
         ["deDE"] = "Halte Shift gedrückt, um Play-Buttons zu sehen",
         ["koKR"] = "플레이 버튼을 보기 위해서는 쉬프트 키를 누르고 계세요",
-        ["esMX"] = "Mantenga presionada la la techa shift para ver los PlayButtons",
+        ["esMX"] = "Manten presionada la tecla mayús para ver los PlayButtons",
         ["enUS"] = true,
         ["zhCN"] = false,
         ["zhTW"] = "按住 Shift 顯示播放按鈕",
-        ["esES"] = "Mantenga presionada la la techa shift para ver los PlayButtons",
-        ["frFR"] = false,
+        ["esES"] = "Manten presionada la tecla mayús para ver los PlayButtons",
+        ["frFR"] = "Maintenez la touche Maj enfoncée pour voir les PlayButtons",
     },
     -- TomTom Integration
     ["TomTom"] = {
-        ["ptBR"] = false,
+        ["ptBR"] = true,
         ["ruRU"] = true,
         ["deDE"] = true,
-        ["koKR"] = false,
+        ["koKR"] = true,
         ["esMX"] = true,
         ["enUS"] = true,
-        ["zhCN"] = false,
+        ["zhCN"] = true,
         ["zhTW"] = true,
         ["esES"] = true,
-        ["frFR"] = false,
+        ["frFR"] = true,
     },
     ["Ctrl + Left Click or Right Click a Quest Title"] = {
-        ["ptBR"] = false,
+        ["ptBR"] = "Ctrl + Clique esquerdo ou direito em um título de missão",
         ["ruRU"] = "Ctrl + ЛКМ или ПКМ на названии задания",
         ["deDE"] = "Strg + Links- oder Rechtsklick auf einen Quest-Titel",
         ["koKR"] = "퀘스트 제목 컨트롤 + 좌클릭 혹은 우클릭",
@@ -175,7 +175,7 @@ local trackerUILocales = {
         ["zhCN"] = false,
         ["zhTW"] = "Ctrl+左鍵或右鍵點擊任務標題",
         ["esES"] = "Ctrl + clic izquierdo o clic derecho en el título de una misión",
-        ["frFR"] = false,
+        ["frFR"] = "Ctrl + Clic gauche ou clic droit sur un titre de quête",
     },
     ---------------------------------------------------------
     -- Quest/Achievement Right Click Menu
@@ -213,7 +213,7 @@ local trackerUILocales = {
         ["zhCN"] = "停止关注",
         ["zhTW"] = "停止關注",
         ["esES"] = "Desenfocar",
-        ["frFR"] = "Ne plus prioriser cette quête",
+        ["frFR"] = "Ne plus prioriser",
     },
     -- "Set TomTom Target" is in the Tracker.lua inside the Translations/Options directory
     ["Minimize Quest"] = {
@@ -238,18 +238,18 @@ local trackerUILocales = {
         ["zhCN"] = "隐藏标记",
         ["zhTW"] = "隱藏圖示",
         ["esES"] = "Ocultar iconos",
-        ["frFR"] = "Masquer les icônes",
+        ["frFR"] = "Cacher les icônes",
     },
     ["Show Icons"] = {
         ["ptBR"] = "Mostrar ícones",
         ["ruRU"] = "Показать значки",
         ["deDE"] = "Icons anzeigen",
         ["koKR"] = "아이콘 표시",
-        ["esMX"] = "Mostrar íconos",
+        ["esMX"] = "Mostrar iconos",
         ["enUS"] = true,
         ["zhCN"] = "显示标记",
         ["zhTW"] = "顯示圖示",
-        ["esES"] = "Mostrar íconos",
+        ["esES"] = "Mostrar iconos",
         ["frFR"] = "Afficher les icônes",
     },
     ["Show on Map"] = {
@@ -351,7 +351,7 @@ local trackerUILocales = {
     -- This message appears on screen after the player holds CTRL + C
     -- (Keyboard shortcut for Copy) - WoWHead URL StaticPopUp.
     ["Copied URL to clipboard"] = {
-        ["ptBR"] = false,
+        ["ptBR"] = "URL copiada para a área de transferência",
         ["ruRU"] = "URL скопирован в буфер обмена",
         ["deDE"] = "URL in die Zwischenablage kopiert",
         ["koKR"] = "클립보드에 URL을 복사하였습니다",
@@ -360,7 +360,7 @@ local trackerUILocales = {
         ["zhCN"] = false,
         ["zhTW"] = "複製 URL",
         ["esES"] = "URL copiada al portapapeles",
-        ["frFR"] = false,
+        ["frFR"] = "URL copiée dans le presse-papiers",
     },
     -- "Lock Tracker" is in the Tracker.lua inside the Translations/Options directory
     ["Unlock Tracker"] = {

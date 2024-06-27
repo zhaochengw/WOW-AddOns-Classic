@@ -198,10 +198,10 @@ l10n["COOLDOWN_EXPIRED"] = "\124cff00ff00冷却结束\124r";
 --
 l10n["EXPLORER_TITLE"] = "ALA @ 网易有爱 \124cff00ff00wowui.w.163.com\124r";
 l10n.EXPLORER_SET = {
-	skill = "技能",
-	type = "物品类型",
-	subType = "子类型",
-	eqLoc = "装备部位",
+	Skill = "技能",
+	Type = "物品类型",
+	SubType = "子类型",
+	EquipLoc = "装备部位",
 };
 l10n.ITEM_TYPE_LIST = {
 	[LE_ITEM_CLASS_CONSUMABLE] = "消耗品",				--	0	Consumable

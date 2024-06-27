@@ -549,6 +549,10 @@ GTFO.SpellID["292148"] = {
   vehicle = true;
 };
 
+GTFO.SpellID["304810"] = {
+  --desc = "Arcane Spark (Malfunctioning Arcane Device)";
+  sound = 3;
+};
 
 -- ***********************
 -- * Shrine of the Storm *
@@ -793,6 +797,10 @@ GTFO.SpellID["288716"] = {
   sound = 3;
 };
 
+GTFO.SpellID["268234"] = {
+  --desc = "Bile Explosion (Bile Oozeling)";
+  sound = 3;
+};
 
 
 -- ************
@@ -1120,6 +1128,12 @@ GTFO.SpellID["277072"] = {
   applicationOnly = true;
   sound = 3;
 };
+
+GTFO.SpellID["250022"] = {
+  --desc = "Echoes of Shadra (Yazma)";
+  sound = 3;
+};
+
 
 -- ***************
 -- * King's Rest *

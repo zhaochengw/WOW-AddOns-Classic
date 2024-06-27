@@ -2,7 +2,7 @@ local mod	= DBM:NewMod("Kel'Thuzad", "DBM-Raids-WoTLK", 8)
 local L		= mod:GetLocalizedStrings()
 local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 
-mod:SetRevision("20240428104801")
+mod:SetRevision("20240616044352")
 mod:SetCreatureID(15990)
 mod:SetEncounterID(1114)
 --mod:SetModelID(15945)--Doesn't work at all, doesn't even render.
@@ -122,10 +122,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 				specWarnFissureYou:Play("targetyou")
 				yellFissure:Yell()
 			else
+				---@diagnostic disable-next-line: param-type-mismatch
 				warnFissure:Show(args.destName)
 				warnFissure:Play("watchstep")
 			end
 		else
+			---@diagnostic disable-next-line: param-type-mismatch
 			warnFissure:Show()
 			warnFissure:Play("watchstep")
 		end

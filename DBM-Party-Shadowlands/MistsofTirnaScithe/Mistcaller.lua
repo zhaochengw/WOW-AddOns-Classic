@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2402, "DBM-Party-Shadowlands", 3, 1184)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240428124541")
+mod:SetRevision("20240616044034")
 mod:SetCreatureID(164501)
 mod:SetEncounterID(2392)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -26,7 +26,7 @@ mod:RegisterEventsInCombat(
 --]]
 local warnGuessingGame				= mod:NewCastAnnounce(336499, 4)
 local warnGuessingGameOver			= mod:NewEndAnnounce(321873, 1)
-local warnFreezeTag					= mod:NewCastAnnounce(321873, 3)
+local warnFreezeTag					= mod:NewCountAnnounce(321873, 3)
 local warnFixate					= mod:NewTargetNoFilterAnnounce(321891, 2)
 local warnPattyCake					= mod:NewTargetNoFilterAnnounce(321828, 3)
 

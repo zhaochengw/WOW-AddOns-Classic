@@ -40,7 +40,6 @@ end
 	local select = select;
 	local date, time = date, time;
 	local C_Timer = C_Timer;
-	local ContainerIDToInventoryID = C_Container.ContainerIDToInventoryID
 	----------------------------------------------------------------------------------------------------
 	local _ = nil;
 	local GameTooltip = GameTooltip;
@@ -1969,19 +1968,19 @@ function func.takeoff(slot, not_take_off_dur0)
 		for j = 1, C_Container.GetContainerNumFreeSlots(i) do
 			local cache_index = i * 100 + j;
 			if not var.cache[cache_index] then
-				local link = C_Container.GetContainerItemLink(i, j);
-				if not link then
+				-- local link = C_Container.GetContainerItemLink(i, j);		--	what the hell? what was i doing?
+				-- if not link then
 					PickupInventoryItem(slot);
 					-- C_Container.PickupContainerItem(i, j);
 					if i == 0 then
 						PutItemInBackpack();
 					else
-						PutItemInBag(ContainerIDToInventoryID(i));
+						PutItemInBag(C_Container.ContainerIDToInventoryID(i));
 					end
 					var.cache[cache_index] = true;
 					C_Timer.After(1.0, function() var.cache[cache_index] = nil; end);
 					return;
-				end
+				-- end
 			end
 		end
 	end

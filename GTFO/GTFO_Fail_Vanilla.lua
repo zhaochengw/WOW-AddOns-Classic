@@ -226,4 +226,15 @@ GTFO.SpellID["151269"] = {
   sound = 3;
 };
 
+GTFO.SpellID["243411"] = {
+  --desc = "Tail Sweep (Emeriss)";
+  sound = 3;
+};
+
+GTFO.SpellID["248320"] = {
+  --desc = "Lethargy (Emeriss)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 end

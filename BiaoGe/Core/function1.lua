@@ -66,9 +66,20 @@ local function BossNum(FB, b, t)
     else
         bb = Maxb[FB] + 2 - tbl[t]
     end
-    return b + tbl[t], bb
+    return b + tbl[t], bb, t, b
 end
 ADDONSELF.BossNum = BossNum
+
+function BG.GetBossNumInfo(FB, bossNum)
+    local tbl = BossNumtbl[FB]
+    for i = 1, #tbl do
+        if (not tbl[i + 1]) or (tbl[i] < bossNum and tbl[i + 1] >= bossNum) then
+            local t = i
+            local b = bossNum - tbl[i]
+            return t, b
+        end
+    end
+end
 
 ------------------在文本里插入材质图标------------------
 local function AddTexture(Texture, y, coord)
@@ -481,8 +492,8 @@ function BG.SetTextHighlightTexture(bt)
     local tex = bt:CreateTexture()
     -- tex:SetPoint("CENTER")
     -- tex:SetSize(bt:GetWidth() + 15, bt:GetHeight() - 10)
-    tex:SetPoint("TOPLEFT", bt, "TOPLEFT", -8, -5)
-    tex:SetPoint("BOTTOMRIGHT", bt, "BOTTOMRIGHT", 8, 5)
+    tex:SetPoint("TOPLEFT", bt, "TOPLEFT", -8, 0)
+    tex:SetPoint("BOTTOMRIGHT", bt, "BOTTOMRIGHT", 8, 0)
     tex:SetTexture("Interface/PaperDollInfoFrame/UI-Character-Tab-Highlight")
     bt:SetHighlightTexture(tex)
 end
@@ -544,4 +555,8 @@ function BG.GetItemCount(_itemID)
         end
     end
     return GetItemCount(itemID, true)
+end
+
+function BG.SendSystemMessage(msg)
+    SendSystemMessage(BG.STC_b1("<BiaoGe>") .. " " .. msg)
 end

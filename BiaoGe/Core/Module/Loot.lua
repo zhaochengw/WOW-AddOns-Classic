@@ -124,9 +124,9 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
                     ChatEdit_InsertLink(text)
                 elseif IsAltKeyDown() then
-                    if BG.IsLeader then -- 开始拍卖
+                    if BG.IsML then -- 开始拍卖
                         BG.StartAuction(link)
-                    else                -- 关注装备
+                    else            -- 关注装备
                         BG.AddGuanZhu(link)
                     end
                 end

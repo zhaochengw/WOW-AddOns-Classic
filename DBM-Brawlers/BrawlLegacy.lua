@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlLegacy", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201102223314")
+mod:SetRevision("20240615122743")
 mod:SetModelID(48465)--Blind Hero
 
 mod:RegisterEvents(
@@ -194,7 +194,7 @@ function mod:SPELL_CAST_START(args)
 	elseif args.spellId == 134795 then
 		timerShriekCD:Start()
 		if brawlersMod:PlayerFighting() then
-			warnDisorientingShriek:Show(args.sourceName)
+			warnDisorientingShriek:Show()
 		else
 			warnDisorientingShriek:Show()
 			timerShriekCD:SetSTFade(true)

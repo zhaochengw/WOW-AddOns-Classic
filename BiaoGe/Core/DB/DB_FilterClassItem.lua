@@ -4,7 +4,7 @@ local L = ADDONSELF.L
 
 local pt = print
 
-local RealmId = GetRealmID()
+local RealmID = GetRealmID()
 local player = UnitName("player")
 local _, class = UnitClass("player")
 
@@ -30,20 +30,20 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     if not BiaoGe.FilterClassItemDB then
         BiaoGe.FilterClassItemDB = {}
     end
-    if not BiaoGe.FilterClassItemDB[RealmId] then
-        BiaoGe.FilterClassItemDB[RealmId] = {}
+    if not BiaoGe.FilterClassItemDB[RealmID] then
+        BiaoGe.FilterClassItemDB[RealmID] = {}
     end
-    if not BiaoGe.FilterClassItemDB[RealmId][player] then
-        BiaoGe.FilterClassItemDB[RealmId][player] = {}
+    if not BiaoGe.FilterClassItemDB[RealmID][player] then
+        BiaoGe.FilterClassItemDB[RealmID][player] = {}
     elseif BG.IsVanilla() then -- 赛季服重置数据
         if not BiaoGe.options.SearchHistory.dt231208 then
-            BiaoGe.FilterClassItemDB[RealmId][player] = {}
+            BiaoGe.FilterClassItemDB[RealmID][player] = {}
             BiaoGe.options.SearchHistory.dt231208 = true
         end
     end
     for i = 1, MaxFilter[class] do
-        if not BiaoGe.FilterClassItemDB[RealmId][player][i] then
-            BiaoGe.FilterClassItemDB[RealmId][player][i] = {}
+        if not BiaoGe.FilterClassItemDB[RealmID][player][i] then
+            BiaoGe.FilterClassItemDB[RealmID][player][i] = {}
         end
     end
 
@@ -84,9 +84,9 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     }
 
     for i = 1, MaxFilter[class] do
-        if not BiaoGe.FilterClassItemDB[RealmId][player][i].Icon then
-            BiaoGe.FilterClassItemDB[RealmId][player][i].Icon = BG.FilterClassItemDB.Icon[class .. i].icon
-            BiaoGe.FilterClassItemDB[RealmId][player][i].Name = BG.FilterClassItemDB.Icon[class .. i].name
+        if not BiaoGe.FilterClassItemDB[RealmID][player][i].Icon then
+            BiaoGe.FilterClassItemDB[RealmID][player][i].Icon = BG.FilterClassItemDB.Icon[class .. i].icon
+            BiaoGe.FilterClassItemDB[RealmID][player][i].Name = BG.FilterClassItemDB.Icon[class .. i].name
         end
     end
 
@@ -203,11 +203,11 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         }
 
         for i = 1, MaxFilter[class] do
-            if not BiaoGe.FilterClassItemDB[RealmId][player][i].ShuXing then
-                BiaoGe.FilterClassItemDB[RealmId][player][i].ShuXing = {}
+            if not BiaoGe.FilterClassItemDB[RealmID][player][i].ShuXing then
+                BiaoGe.FilterClassItemDB[RealmID][player][i].ShuXing = {}
 
                 for k, v in pairs(BG.FilterClassItem_Default.ShuXing[class .. i]) do
-                    BiaoGe.FilterClassItemDB[RealmId][player][i].ShuXing[v] = 1
+                    BiaoGe.FilterClassItemDB[RealmID][player][i].ShuXing[v] = 1
                 end
             end
         end
@@ -307,11 +307,11 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         }
 
         for i = 1, MaxFilter[class] do
-            if not BiaoGe.FilterClassItemDB[RealmId][player][i].ShuXing then
-                BiaoGe.FilterClassItemDB[RealmId][player][i].ShuXing = {}
+            if not BiaoGe.FilterClassItemDB[RealmID][player][i].ShuXing then
+                BiaoGe.FilterClassItemDB[RealmID][player][i].ShuXing = {}
 
                 for k, v in pairs(BG.FilterClassItem_Default.ShuXing[class .. i]) do
-                    BiaoGe.FilterClassItemDB[RealmId][player][i].ShuXing[v] = 1
+                    BiaoGe.FilterClassItemDB[RealmID][player][i].ShuXing[v] = 1
                 end
             end
         end
@@ -437,11 +437,11 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     end
 
     for i = 1, MaxFilter[class] do
-        if not BiaoGe.FilterClassItemDB[RealmId][player][i].Weapon then
-            BiaoGe.FilterClassItemDB[RealmId][player][i].Weapon = {}
+        if not BiaoGe.FilterClassItemDB[RealmID][player][i].Weapon then
+            BiaoGe.FilterClassItemDB[RealmID][player][i].Weapon = {}
 
             for k, v in pairs(BG.FilterClassItem_Default.Weapon[class .. i]) do
-                BiaoGe.FilterClassItemDB[RealmId][player][i].Weapon[v] = 1
+                BiaoGe.FilterClassItemDB[RealmID][player][i].Weapon[v] = 1
             end
         end
     end
@@ -498,6 +498,29 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             ["PRIEST" .. "1"]  = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"] }, -- MS
             ["PRIEST" .. "2"]  = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"] }, -- AM
         }
+    elseif BG.IsCTM() then
+        BG.FilterClassItem_Default.Armor = {
+            ["DEATHKNIGHT" .. "1"] = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["副手物品"] }, -- 血DK
+            ["DEATHKNIGHT" .. "2"] = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["副手物品"] }, -- DPS
+            ["WARRIOR" .. "1"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["圣契"], G["神像"], G["图腾"], G["魔印"], G["副手物品"] }, -- FZ
+            ["WARRIOR" .. "2"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["魔印"], G["副手物品"] }, -- DPS
+            ["PALADIN" .. "1"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["神像"], G["图腾"], G["魔印"] }, -- NQ
+            ["PALADIN" .. "2"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["神像"], G["图腾"], G["魔印"], G["副手物品"] }, -- FQ
+            ["PALADIN" .. "3"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["神像"], G["图腾"], G["魔印"], G["副手物品"] }, -- CJQ
+            ["HUNTER" .. "1"]      = { G["布甲"], G["皮甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["魔印"], G["副手物品"] }, -- LR
+            ["SHAMAN" .. "1"]      = { G["布甲"], G["皮甲"], G["板甲"], G["圣契"], G["神像"], G["魔印"] }, -- 元素
+            ["SHAMAN" .. "2"]      = { G["布甲"], G["皮甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["魔印"], G["副手物品"] }, -- ZQS
+            ["SHAMAN" .. "3"]      = { G["布甲"], G["皮甲"], G["板甲"], G["圣契"], G["神像"], G["魔印"] }, -- NS
+            ["DRUID" .. "1"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["图腾"], G["魔印"] }, -- 咕咕
+            ["DRUID" .. "2"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["图腾"], G["魔印"], G["副手物品"] }, -- 熊T
+            ["DRUID" .. "3"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["图腾"], G["魔印"], G["副手物品"] }, -- 猫D
+            ["DRUID" .. "4"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["图腾"], G["魔印"] }, -- ND
+            ["ROGUE" .. "1"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["魔印"], G["副手物品"] }, -- DZ
+            ["WARLOCK" .. "1"]     = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["魔印"] }, -- SS
+            ["MAGE" .. "1"]        = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["魔印"] }, -- FS
+            ["PRIEST" .. "1"]      = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["魔印"] }, -- MS
+            ["PRIEST" .. "2"]      = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["魔印"] }, -- AM
+        }
     else
         BG.FilterClassItem_Default.Armor = {
             ["DEATHKNIGHT" .. "1"] = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["副手物品"] }, -- 血DK
@@ -534,13 +557,36 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     end
 
     for i = 1, MaxFilter[class] do
-        if not BiaoGe.FilterClassItemDB[RealmId][player][i].Armor then
-            BiaoGe.FilterClassItemDB[RealmId][player][i].Armor = {}
+        if not BiaoGe.FilterClassItemDB[RealmID][player][i].Armor then
+            BiaoGe.FilterClassItemDB[RealmID][player][i].Armor = {}
 
             for k, v in pairs(BG.FilterClassItem_Default.Armor[class .. i]) do
-                BiaoGe.FilterClassItemDB[RealmId][player][i].Armor[v] = 1
+                BiaoGe.FilterClassItemDB[RealmID][player][i].Armor[v] = 1
             end
         end
+    end
+
+    if BG.IsCTM() then
+        local _, class = UnitClass("player")
+        BG.Once("FilterClassItem_Armor" .. RealmID .. player, 240615, function()
+            for i = 1, 5 do
+                if BiaoGe.FilterClassItemDB[RealmID][player][i] and BiaoGe.FilterClassItemDB[RealmID][player][i].Armor then
+                    if class == "DEATHKNIGHT" or class == "WARRIOR" or class == "PALADIN" then
+                        BiaoGe.FilterClassItemDB[RealmID][player][i].Armor[G["布甲"]] = 1
+                        BiaoGe.FilterClassItemDB[RealmID][player][i].Armor[G["皮甲"]] = 1
+                        BiaoGe.FilterClassItemDB[RealmID][player][i].Armor[G["锁甲"]] = 1
+                    elseif class == "HUNTER" or class == "SHAMAN" then
+                        BiaoGe.FilterClassItemDB[RealmID][player][i].Armor[G["布甲"]] = 1
+                        BiaoGe.FilterClassItemDB[RealmID][player][i].Armor[G["皮甲"]] = 1
+                        BiaoGe.FilterClassItemDB[RealmID][player][i].Armor[G["板甲"]] = 1
+                    elseif class == "DRUID" or class == "ROGUE" then
+                        BiaoGe.FilterClassItemDB[RealmID][player][i].Armor[G["布甲"]] = 1
+                        BiaoGe.FilterClassItemDB[RealmID][player][i].Armor[G["锁甲"]] = 1
+                        BiaoGe.FilterClassItemDB[RealmID][player][i].Armor[G["板甲"]] = 1
+                    end
+                end
+            end
+        end)
     end
 
     ------------------职业限定------------------
@@ -574,11 +620,11 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     }
 
     for i = 1, MaxFilter[class] do
-        if not BiaoGe.FilterClassItemDB[RealmId][player][i].Class then
-            BiaoGe.FilterClassItemDB[RealmId][player][i].Class = {}
+        if not BiaoGe.FilterClassItemDB[RealmID][player][i].Class then
+            BiaoGe.FilterClassItemDB[RealmID][player][i].Class = {}
 
             for k, v in pairs(BG.FilterClassItem_Default.Class[class .. i]) do
-                BiaoGe.FilterClassItemDB[RealmId][player][i].Class[v] = 1
+                BiaoGe.FilterClassItemDB[RealmID][player][i].Class[v] = 1
             end
         end
     end
@@ -621,11 +667,11 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     }
 
     for i = 1, MaxFilter[class] do
-        if not BiaoGe.FilterClassItemDB[RealmId][player][i][type] then
-            BiaoGe.FilterClassItemDB[RealmId][player][i][type] = {}
+        if not BiaoGe.FilterClassItemDB[RealmID][player][i][type] then
+            BiaoGe.FilterClassItemDB[RealmID][player][i][type] = {}
 
             for k, v in pairs(BG.FilterClassItem_Default[type][class .. i]) do
-                BiaoGe.FilterClassItemDB[RealmId][player][i][type][v] = 1
+                BiaoGe.FilterClassItemDB[RealmID][player][i][type][v] = 1
             end
         end
     end

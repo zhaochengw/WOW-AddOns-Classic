@@ -1,6 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
 local timer = WeakAuras.timer;
 local L = WeakAuras.L
@@ -290,6 +292,16 @@ Private.ExecEnv.BossMods.DBM = {
       if self.isGeneric then
         WeakAuras.ScanEvents("BossMod_TimerUpdate", timerId)
       end
+    elseif event == "DBM_TimerUpdateIcon" then
+      local timerId, icon = ...
+      local bar = self.bars[timerId]
+      if bar then
+        bar.icon = icon
+      end
+      WeakAuras.ScanEvents("DBM_TimerUpdateIcon", timerId)
+      if self.isGeneric then
+        WeakAuras.ScanEvents("BossMod_TimerUpdateIcon", timerId)
+      end
     elseif event == "DBM_SetStage" or event == "DBM_Pull" or event == "DBM_Wipe" or event == "DBM_Kill" then
       WeakAuras.ScanEvents("DBM_SetStage")
       if self.isGeneric then
@@ -314,6 +326,7 @@ Private.ExecEnv.BossMods.DBM = {
     self:RegisterCallback("DBM_TimerPause")
     self:RegisterCallback("DBM_TimerResume")
     self:RegisterCallback("DBM_TimerUpdate")
+    self:RegisterCallback("DBM_TimerUpdateIcon")
   end,
 
   RegisterMessage = function(self)
@@ -377,6 +390,7 @@ Private.event_prototypes["DBM Stage"] = {
   },
   automaticrequired = true,
   statesParameter = "one",
+  progressType = "none"
 }
 Private.category_event_prototype.addons["DBM Stage"] = L["DBM Stage"]
 
@@ -433,7 +447,8 @@ Private.event_prototypes["DBM Announce"] = {
       init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
     },
   },
-  timedrequired = true
+  timedrequired = true,
+  progressType = "timed"
 }
 Private.category_event_prototype.addons["DBM Announce"] = L["DBM Announce"]
 
@@ -441,11 +456,12 @@ Private.event_prototypes["DBM Timer"] = {
   type = "addons",
   events = {},
   internal_events = {
-    "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerUpdate", "DBM_TimerForce", "DBM_TimerResume", "DBM_TimerPause"
+    "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerUpdate", "DBM_TimerForce", "DBM_TimerResume", "DBM_TimerPause",
+    "DBM_TimerUpdateIcon"
   },
   force_events = "DBM_TimerForce",
   name = L["DBM Timer"],
-  canHaveDuration = "timed",
+  progressType = "timed",
   triggerFunction = function(trigger)
     Private.ExecEnv.BossMods.DBM:RegisterTimer()
     local ret = [=[
@@ -528,7 +544,7 @@ Private.event_prototypes["DBM Timer"] = {
               state.changed = true
               return true
             end
-          elseif event == "DBM_TimerUpdate" then
+          elseif event == "DBM_TimerUpdate" or event == "DBM_TimerUpdateIcon" then
             local changed
             for timerId, bar in pairs(Private.ExecEnv.BossMods.DBM:GetAllTimers()) do
               if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType) then
@@ -1008,6 +1024,7 @@ Private.event_prototypes["BigWigs Stage"] = {
   },
   automaticrequired = true,
   statesParameter = "one",
+  progressType = "none"
 }
 Private.category_event_prototype.addons["BigWigs Stage"] = L["BigWigs Stage"]
 
@@ -1073,7 +1090,8 @@ Private.event_prototypes["BigWigs Message"] = {
       init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
     },
   },
-  timedrequired = true
+  timedrequired = true,
+  progressType = "timed"
 }
 Private.category_event_prototype.addons["BigWigs Message"] = L["BigWigs Message"]
 
@@ -1085,7 +1103,7 @@ Private.event_prototypes["BigWigs Timer"] = {
   },
   force_events = "BigWigs_Timer_Force",
   name = L["BigWigs Timer"],
-  canHaveDuration = "timed",
+  progressType = "timed",
   triggerFunction = function(trigger)
     Private.ExecEnv.BossMods.BigWigs:RegisterTimer()
     local ret = [=[
@@ -1351,6 +1369,7 @@ Private.event_prototypes["Boss Mod Stage"] = {
   },
   automaticrequired = true,
   statesParameter = "one",
+  progressType = "none"
 }
 Private.category_event_prototype.addons["Boss Mod Stage"] = L["Boss Mod Stage"]
 
@@ -1383,7 +1402,7 @@ Private.event_prototypes["Boss Mod Stage (Event)"] = {
     },
   },
   statesParameter = "one",
-  canHaveDuration = "timed",
+  progressType = "timed",
   delayEvents = true,
   timedrequired = true
 }
@@ -1464,7 +1483,8 @@ Private.event_prototypes["Boss Mod Announce"] = {
       text = ActiveBossModText
     },
   },
-  timedrequired = true
+  timedrequired = true,
+  progressType = "timed"
 }
 Private.category_event_prototype.addons["Boss Mod Announce"] = L["Boss Mod Announce"]
 
@@ -1472,11 +1492,12 @@ Private.event_prototypes["Boss Mod Timer"] = {
   type = "addons",
   events = {},
   internal_events = {
-    "BossMod_TimerStart", "BossMod_TimerStop", "BossMod_TimerUpdate", "BossMod_TimerForce", "BossMod_TimerResume", "BossMod_TimerPause"
+    "BossMod_TimerStart", "BossMod_TimerStop", "BossMod_TimerUpdate", "BossMod_TimerForce", "BossMod_TimerResume",
+    "BossMod_TimerPause", "BossMod_TimerUpdateIcon"
   },
   force_events = "BossMod_TimerForce",
   name = L["Boss Mod Timer"],
-  canHaveDuration = "timed",
+  progressType = "timed",
   triggerFunction = function(trigger)
     Private.ExecEnv.BossMods.Generic:RegisterTimer()
     local ret = [=[
@@ -1560,7 +1581,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
               state.changed = true
               return true
             end
-          elseif event == "BossMod_TimerUpdate" then
+          elseif event == "BossMod_TimerUpdate" or event == "BossMod_TimerUpdateIcon" then
             local changed
             for timerId, bar in pairs(Private.ExecEnv.BossMods.Generic:GetAllTimers()) do
               if Private.ExecEnv.BossMods.Generic:TimerMatchesGeneric(timerId, triggerText, triggerTextOperator, triggerSpellId, counter) then

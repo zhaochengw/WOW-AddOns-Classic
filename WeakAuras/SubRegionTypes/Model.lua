@@ -1,6 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
 local L = WeakAuras.L;
 
@@ -53,12 +55,7 @@ local function PreShow(self)
   self:Show()
 
   -- Adjust model
-  local modelId
-  if WeakAuras.IsClassicEra() then
-    modelId = data.model_path
-  else
-    modelId = tonumber(data.model_fileId)
-  end
+  local modelId = tonumber(data.model_fileId)
   if modelId then
     pcall(self.SetModel, self, modelId)
   end
@@ -79,7 +76,7 @@ end
 local function CreateModel()
   local model =  CreateFrame("PlayerModel", nil, UIParent)
   model.PreShow = PreShow;
-  model.SetTransformFixed = model.GetResizeBounds and Private.ModelSetTransformFixed or model.SetTransform  -- TODO change test to WeakAuras.IsWrathOrRetail() after 3.4.1 release
+  model.SetTransformFixed = Private.ModelSetTransformFixed
   return model
 end
 
@@ -117,12 +114,7 @@ local function AcquireModel(region, data)
   model:Show()
 
   -- Adjust model
-  local modelId
-  if WeakAuras.IsClassicEra() then
-    modelId = data.model_path
-  else
-    modelId = tonumber(data.model_fileId)
-  end
+  local modelId = tonumber(data.model_fileId)
   if modelId then
     pcall(model.SetModel, model, modelId)
   end

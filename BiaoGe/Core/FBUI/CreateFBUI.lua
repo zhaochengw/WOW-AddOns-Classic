@@ -64,14 +64,18 @@ elseif BG.IsVanilla_60() then
         [3] = 3,
         [4] = 4,
         [5] = 3,
-        [6] = 3,
+        [6] = 4,
         [7] = 3,
         [8] = 4,
         [9] = 4,
         [10] = 5,
-        [11] = 8,
-        [12] = 11,
-        [13] = 15,
+        [11] = 12,
+        [12] = 12,
+    }
+    buttonCount.OL = {
+        [1] = 8,
+        [2] = 3,
+        [3] = 6,
     }
     buttonCount.BWL = {
         [1] = 5,
@@ -142,6 +146,11 @@ elseif BG.IsVanilla_60() then
         [17] = 12,
     }
 elseif BG.IsWLK() then
+    buttonCount.RS = {
+        [1] = 5,
+        [2] = 3,
+        [3] = 10,
+    }
     buttonCount.ICC = {
         [1] = 3,
         [2] = 3,
@@ -150,14 +159,18 @@ elseif BG.IsWLK() then
         [5] = 3,
         [6] = 3,
         [7] = 5,
-        [8] = 3,
+        [8] = 4,
         [9] = 5,
-        [10] = 3,
+        [10] = 4,
         [11] = 5,
-        [12] = 8,
-        [13] = 3,
-        [14] = 8,
-        [15] = 7,
+        [12] = 9,
+        [13] = 8,
+        [14] = 7,
+    }
+    buttonCount.OL = {
+        [1] = 8,
+        [2] = 3,
+        [3] = 7,
     }
     buttonCount.TOC = {
         [1] = 5,
@@ -166,9 +179,8 @@ elseif BG.IsWLK() then
         [4] = 5,
         [5] = 5,
         [6] = 7,
-        [7] = 8,
-        [8] = 12,
-        [9] = 14,
+        [7] = 5,
+        [8] = 14,
     }
     buttonCount.ULD = {
         [1] = 4,
@@ -188,6 +200,16 @@ elseif BG.IsWLK() then
         [15] = 6,
         [16] = 5,
     }
+    buttonCount.EOE = {
+        [1] = 5,
+        [2] = 3,
+        [3] = 10,
+    }
+    buttonCount.OS = {
+        [1] = 11,
+        [2] = 3,
+        [3] = 4,
+    }
     buttonCount.NAXX = {
         [1] = 5,
         [2] = 5,
@@ -204,10 +226,8 @@ elseif BG.IsWLK() then
         [13] = 5,
         [14] = 6,
         [15] = 6,
-        [16] = 11,
-        [17] = 5,
-        [18] = 6,
-        [19] = 3,
+        [16] = 13,
+        [17] = 15,
     }
 elseif BG.IsCTM() then
     buttonCount.BOT = {
@@ -305,22 +325,47 @@ elseif BG.IsCTM() then
     }
 end
 
+function BG.GetBossButtonCount(FB, bossNum)
+    return buttonCount[FB][bossNum]
+end
+
+local function GetMaxScrollGeZi(FB, bossNum)
+    if bossNum == Maxb[FB] + 2 then
+        return 5
+    else
+        return 20
+    end
+end
+
+local function GetFunctionName(frameName)
+    if frameName == "Frame" then
+        return "FB"
+    elseif frameName == "HistoryFrame" then
+        return "History"
+    elseif frameName == "ReceiveFrame" then
+        return "Receive"
+    end
+end
+
 function BG.CreateFBUI(FB)
     if not buttonCount[FB] then return end
     tinsert(buttonCount[FB], 8) -- 设置支出格子为x个
     tinsert(buttonCount[FB], 5) -- 设置总览工资格子为x个
+
+
+    -- 正常格子
     for t = 1, Maxt[FB] do
+        BG.FBBiaoTiUI(FB, t)
+        BG.HistoryBiaoTiUI(FB, t)
+        BG.ReceiveBiaoTiUI(FB, t)
+
         local _, bb = BossNum(FB, 0, t)
         for b = 1, bb do
-            if BossNum(FB, b, t) > Maxb[FB] + 2 then
+            if BossNum(FB, b, t) > Maxb[FB] - 1 then
                 break
             end
             local ii = buttonCount[FB][BossNum(FB, b, t)]
             for i = 1, ii do
-                BG.FBBiaoTiUI(FB, t, b, bb, i, ii)
-                BG.HistoryBiaoTiUI(FB, t, b, bb, i, ii)
-                BG.ReceiveBiaoTiUI(FB, t, b, bb, i, ii)
-
                 BG.FBZhuangBeiUI(FB, t, b, bb, i, ii)
                 BG.HistoryZhuangBeiUI(FB, t, b, bb, i, ii)
                 BG.ReceiveZhuangBeiUI(FB, t, b, bb, i, ii)
@@ -338,29 +383,6 @@ function BG.CreateFBUI(FB)
                 BG.ReceiveDiSeUI(FB, t, b, bb, i, ii)
             end
 
-            -- 对账
-            do
-                for i = 1, ii do
-                    BG.DuiZhangBiaoTiUI(FB, t, b, bb, i, ii)
-                    if BossNum(FB, b, t) <= Maxb[FB] then
-                        BG.DuiZhangZhuangBeiUI(FB, t, b, bb, i, ii)
-                        BG.DuiZhangMyJinEUI(FB, t, b, bb, i, ii)
-                        BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
-                        BG.DuiZhangDiSeUI(FB, t, b, bb, i, ii)
-                    end
-                end
-
-                if BossNum(FB, b, t) == Maxb[FB] + 1 then
-                    local ii = 2
-                    for i = 1, ii do
-                        BG.DuiZhangZhuangBeiUI(FB, t, b, bb, i, ii)
-                        BG.DuiZhangMyJinEUI(FB, t, b, bb, i, ii)
-                        BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
-                        BG.DuiZhangDiSeUI(FB, t, b, bb, i, ii)
-                    end
-                end
-                BG.DuiZhangBossNameUI(FB, t, b, bb, i, ii)
-            end
 
             BG.FBBossNameUI(FB, t, b, bb, i, ii)
             BG.HistoryBossNameUI(FB, t, b, bb, i, ii)
@@ -370,7 +392,56 @@ function BG.CreateFBUI(FB)
             BG.HistoryJiShaUI(FB, t, b, bb, i, ii)
             BG.ReceiveJiShaUI(FB, t, b, bb, i, ii)
         end
+
+        -- 对账
+        for b = 1, bb do
+            if BossNum(FB, b, t) > Maxb[FB] + 1 then
+                break
+            end
+
+            local ii = buttonCount[FB][BossNum(FB, b, t)]
+            for i = 1, ii do
+                BG.DuiZhangBiaoTiUI(FB, t, b, bb, i, ii)
+                if BossNum(FB, b, t) <= Maxb[FB] then
+                    BG.DuiZhangZhuangBeiUI(FB, t, b, bb, i, ii)
+                    BG.DuiZhangMyJinEUI(FB, t, b, bb, i, ii)
+                    BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
+                    BG.DuiZhangDiSeUI(FB, t, b, bb, i, ii)
+                end
+            end
+
+            if BossNum(FB, b, t) == Maxb[FB] + 1 then
+                local ii = 2
+                for i = 1, ii do
+                    BG.DuiZhangZhuangBeiUI(FB, t, b, bb, i, ii)
+                    BG.DuiZhangMyJinEUI(FB, t, b, bb, i, ii)
+                    BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
+                    BG.DuiZhangDiSeUI(FB, t, b, bb, i, ii)
+                end
+            end
+            BG.DuiZhangBossNameUI(FB, t, b, bb, i, ii)
+        end
     end
+
+    -- 滚动框
+    local frameTbl = { "Frame", "HistoryFrame", "ReceiveFrame" }
+    for i, frameName in ipairs(frameTbl) do
+        for bossNum = Maxb[FB], Maxb[FB] + 2 do
+            BG.CreateFBScrollFrame(frameName, FB, bossNum)
+
+            local t, b = BG.GetBossNumInfo(FB, bossNum)
+            local ii = GetMaxScrollGeZi(FB, bossNum)
+            for i = 1, ii do
+                BG[GetFunctionName(frameName) .. "ZhuangBeiUI"](FB, t, b, bb, i, ii, BG[frameName .. FB]["scrollFrame" .. bossNum])
+                BG[GetFunctionName(frameName) .. "MaiJiaUI"](FB, t, b, bb, i, ii)
+                BG[GetFunctionName(frameName) .. "JinEUI"](FB, t, b, bb, i, ii)
+                BG[GetFunctionName(frameName) .. "DiSeUI"](FB, t, b, bb, i, ii)
+            end
+            BG[GetFunctionName(frameName) .. "BossNameUI"](FB, t, b, bb, i, ii, frameName)
+        end
+    end
+
+
     BG.FBZhiChuZongLanGongZiUI(FB)
     BG.HistoryZhiChuZongLanGongZiUI(FB)
     BG.ReceiveZhiChuZongLanGongZiUI(FB)

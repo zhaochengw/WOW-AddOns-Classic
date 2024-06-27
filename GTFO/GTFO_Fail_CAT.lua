@@ -31,6 +31,48 @@ GTFO.SpellID["76170"] = {
 	applicationOnly = true;
 };
 
+GTFO.SpellID["426685"] = {
+	--desc = "Volatile Bolt (Naz'jar Ravager, Throne of the Tides, M+)";
+	sound = 3;
+};
+
+GTFO.SpellID["427769"] = {
+	--desc = "Geyser (Lady Naz'jar, Throne of the Tides, M+)";
+	sound = 3;
+};
+
+GTFO.SpellID["426681"] = {
+	--desc = "Electric Jaws (Electrified Behemoth, Throne of the Tides, M+)";
+	sound = 3;
+	applicationOnly = true;
+};
+
+GTFO.SpellID["76590"] = {
+	--desc = "Shadow Smash (Faceless Watcher, Throne of the Tides, M+)";
+	soundChallenge = 3;
+};
+
+GTFO.SpellID["426808"] = {
+	--desc = "Null Blast (Minion of Ghur'sha, Throne of the Tides, M+)";
+	sound = 3;
+};
+
+GTFO.SpellID["429057"] = {
+	--desc = "Earthfury (Erunak Stonespeaker, Throne of the Tides, M+)";
+	sound = 3;
+};
+
+GTFO.SpellID["429057"] = {
+	--desc = "Murk Spew (Ink of Ozumat, Throne of the Tides, M+)";
+	sound = 3;
+	tankSound = 0;
+};
+
+GTFO.SpellID["428809"] = {
+	--desc = "Gushing Ink (Ink of Ozumat, Throne of the Tides, M+)";
+	sound = 3;
+};
+
 GTFO.SpellID["80643"] = {
 	--desc = "Stalactite (Stonecore)";
 	sound = 3;

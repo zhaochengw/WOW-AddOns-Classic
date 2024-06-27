@@ -111,18 +111,40 @@ local TalentConfig = {
 	[201] = "戒律",
 	[202] = "神圣",
 	[203] = "暗影",
-	[182] = "刺杀",
-	[181] = "战斗",
-	[183] = "敏锐",
-	[261] = "元素",
-	[263] = "增强",
-	[262] = "恢复",
 	[302] = "痛苦",
 	[303] = "恶魔学识",
 	[301] = "毁灭",
 	[161] = "武器",
 	[164] = "狂怒",
 	[163] = "防护",
+
+    [752] = "平衡",
+    [750] = "野性战斗",
+    [748] = "恢复",
+    [811] = "野兽控制",
+    [807] = "射击",
+    [809] = "生存",
+    [799] = "奥术",
+    [851] = "火焰",
+    [823] = "冰霜",
+    [831] = "神圣",
+    [839] = "防护",
+    [855] = "惩戒",
+    [760] = "戒律",
+    [813] = "神圣",
+    [795] = "暗影",
+    [182] = "刺杀",
+    [181] = "战斗",
+    [183] = "敏锐",
+    [261] = "元素",
+    [263] = "增强",
+    [262] = "恢复",
+    [871] = "痛苦",
+    [867] = "恶魔学识",
+    [865] = "毁灭",
+    [746] = "武器",
+    [815] = "狂怒",
+    [845] = "防护",
 
 	H = "|cff00ff00治疗|r",
 	D = "|cffff0000输出|r",
@@ -340,15 +362,15 @@ local function GetTalent(name, code)
 
     if showDetailTalent then
         if showLevel then
-            talentStr = string.format(L["天赋字符串1全部"], name,level,TalentConfig[curTal],TalentConfig[class],strT);
+            talentStr = string.format(L["天赋字符串1全部"], name,level,TalentConfig[curTal] or "Null",TalentConfig[class] or "Null",strT);
         else
-            talentStr = string.format(L["天赋字符串2无级"], name,TalentConfig[curTal],TalentConfig[class],strT);
+            talentStr = string.format(L["天赋字符串2无级"], name,TalentConfig[curTal] or "Null",TalentConfig[class] or "Null",strT);
         end
     else
         if showLevel then
-            talentStr = string.format(L["天赋字符串3无点"], name,level,TalentConfig[curTal],TalentConfig[class]);
+            talentStr = string.format(L["天赋字符串3无点"], name,level,TalentConfig[curTal] or "Null",TalentConfig[class] or "Null");
         else
-            talentStr = string.format(L["天赋字符串4无级无点"], name,TalentConfig[curTal],TalentConfig[class]);
+            talentStr = string.format(L["天赋字符串4无级无点"], name,TalentConfig[curTal] or "Null",TalentConfig[class] or "Null");
         end
     end
 

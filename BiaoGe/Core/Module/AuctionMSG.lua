@@ -54,7 +54,8 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         f:SetSize(BG.FramePaiMaiMsg:GetWidth() - 15, BG.FramePaiMaiMsg:GetHeight() - 15) -- 大小
         f:SetPoint("CENTER", BG.FramePaiMaiMsg)                                          --设置显示位置
         f:SetMaxLines(1000)
-        f:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+        f:SetFontObject(GameFontNormalSmall2)
+        f:SetJustifyH("LEFT")
         f:SetHyperlinksEnabled(true)
         BG.FramePaiMaiMsg2 = f
         f:SetScript("OnHyperlinkEnter", function(self, link, text, button)
@@ -86,7 +87,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                             BG.maijiaButton:SetCursorPosition(0)
                         end
                     end
-                elseif button == "RightButton" then
                 end
             elseif (strsub(link, 1, 4) == "item") then
                 local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
@@ -94,11 +94,17 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
                     ChatEdit_InsertLink(text)
                 elseif IsAltKeyDown() then
-                    if BG.IsLeader then -- 开始拍卖
+                    if BG.IsML then -- 开始拍卖
                         BG.StartAuction(link)
                     else
                         BG.AddGuanZhu(link)
                     end
+                else
+                    ShowUIPanel(ItemRefTooltip)
+                    if (not ItemRefTooltip:IsShown()) then
+                        ItemRefTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE")
+                    end
+                    ItemRefTooltip:SetHyperlink(link)
                 end
             end
         end)
@@ -247,9 +253,9 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 local time = "|cff" .. "808080" .. "(" .. h .. ":" .. m .. ")|r"
                 local nameLink = "|Hplayer:" .. playerName .. ":" .. lineID .. ":RAID:" .. "|h[" .. SetClassCFF(playerName) .. "]|h"
                 if ML then
-                    msg = time .. " " .. "|cffFF4500" .. nameLink .. "：" .. text .. RN -- 物品分配者聊天
+                    msg = time .. " " .. "|cffFF4500" .. nameLink .. L["："] .. text .. RN -- 物品分配者聊天
                 else
-                    msg = time .. " " .. "|cffFF7F50" .. nameLink .. "：" .. text .. RN -- 团员聊天
+                    msg = time .. " " .. "|cffFF7F50" .. nameLink .. L["："] .. text .. RN -- 团员聊天
                 end
                 BG.FramePaiMaiMsg2:AddMessage(msg)
                 if not BG.FramePaiMaiMsg2:AtBottom() then

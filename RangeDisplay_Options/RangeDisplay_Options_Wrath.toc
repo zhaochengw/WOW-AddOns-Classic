@@ -1,7 +1,7 @@
 ## Interface: 30403
 ## Title: RangeDisplay Options
 ## Author: mitch0
-## Version: v6.1.0
+## Version: v6.1.2
 ## Notes: Configuration options for RangeDisplay
 ## OptionalDeps: AceGUI-3.0-SharedMediaWidgets
 ## Dependencies: RangeDisplay

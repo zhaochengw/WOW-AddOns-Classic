@@ -40,17 +40,19 @@ end
 -- 60
 if BG.IsVanilla() then
     BG.Loot.encounterID.MC = {
-        [663]  = 1,
-        [664]  = 2,
-        [665]  = 3,
-        [666]  = 4,
-        [667]  = 5,
-        [668]  = 6,
-        [669]  = 7,
-        [670]  = 8,
-        [671]  = 9,
-        [672]  = 10,
-        [1084] = 11,
+        [663] = 1,
+        [664] = 2,
+        [665] = 3,
+        [666] = 4,
+        [667] = 5,
+        [668] = 6,
+        [669] = 7,
+        [670] = 8,
+        [671] = 9,
+        [672] = 10,
+    }
+    BG.Loot.encounterID.OL = {
+        [1084] = 1,
     }
     BG.Loot.encounterID.BWL = {
         [610] = 1,
@@ -130,8 +132,12 @@ if BG.IsWLK() then
         [1120] = 13,
         [1119] = 14,
         [1114] = 15,
-        [742]  = 16,
-        [734]  = 17,
+    }
+    BG.Loot.encounterID.OS = {
+        [742] = 1,
+    }
+    BG.Loot.encounterID.EOE = {
+        [734] = 1,
     }
     BG.Loot.encounterID.ULD = {
         [744] = 1,
@@ -150,12 +156,14 @@ if BG.IsWLK() then
         [757] = 14,
     }
     BG.Loot.encounterID.TOC = {
-        [629]  = 1,
-        [633]  = 2,
-        [637]  = 3,
-        [641]  = 4,
-        [645]  = 5,
-        [1084] = 7,
+        [629] = 1,
+        [633] = 2,
+        [637] = 3,
+        [641] = 4,
+        [645] = 5,
+    }
+    BG.Loot.encounterID.OL = {
+        [1084] = 1,
     }
     BG.Loot.encounterID.ICC = {
         [845] = 1,
@@ -170,7 +178,9 @@ if BG.IsWLK() then
         [854] = 10,
         [855] = 11,
         [856] = 12,
-        [887] = 13,
+    }
+    BG.Loot.encounterID.RS = {
+        [887] = 1,
     }
 elseif BG.IsCTM() then
     BG.Loot.encounterID.NAXX = {

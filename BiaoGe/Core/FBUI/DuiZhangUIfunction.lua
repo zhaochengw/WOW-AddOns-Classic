@@ -170,8 +170,11 @@ function BG.DuiZhangZhuangBeiUI(FB, t, b, bb, i, ii)
     bt:SetScript("OnEnter", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Show()
         if not tonumber(self:GetText()) then
-            local itemLink = bt:GetText()
-            local itemID = select(1, GetItemInfoInstant(itemLink))
+            local link = bt:GetText()
+            local itemID = select(1, GetItemInfoInstant(link))
+            BG.Hide_AllHiLight()
+            BG.HighlightBag(link)
+            BG.HighlightItemGuoQi(link)
             if itemID then
                 if BG.ButtonIsInRight(self) then
                     GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2525, "DBM-Raids-Dragonflight", 2, 1208)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240426174649")
+mod:SetRevision("20240615122743")
 mod:SetCreatureID(201320)
 mod:SetEncounterID(2680)
 mod:SetUsedIcons(1)
@@ -271,7 +271,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 401419 then
 		self:SetStage(0)--I don't nessesarily agree with this, but needed for WA compatability.
-		warnSiphonEnergyRemoved:Show(args.destName)
+		warnSiphonEnergyRemoved:Show()
 		self.vb.slamCount = 0
 		self.vb.doomCount = 0
 		self.vb.blastCount = 0

@@ -21,23 +21,6 @@ local optionsDefaults = QuestieOptionsDefaults:Load()
 local _GetLanguages
 
 function QuestieOptions.tabs.advanced:Initialize()
-    -- This needs to be called inside of the Init process for l10n to be fully loaded
-    StaticPopupDialogs["QUESTIE_LANG_CHANGED_RELOAD"] = {
-        button1 = l10n('Reload UI'),
-        button2 = l10n('Cancel'),
-        OnAccept = function()
-            ReloadUI()
-        end,
-        text = l10n('The database needs to be updated to change language. Press reload to apply the new language'),
-        OnShow = function(self)
-            self:SetFrameStrata("TOOLTIP")
-        end,
-        timeout = 0,
-        whileDead = true,
-        hideOnEscape = true,
-        preferredIndex = 3
-    }
-
     return {
         name = function() return l10n('Advanced'); end,
         type = "group",
@@ -47,6 +30,17 @@ function QuestieOptions.tabs.advanced:Initialize()
                 type = "header",
                 order = 1,
                 name = function() return l10n('Advanced Settings'); end,
+            },
+            hideStartupWarnings = {
+                type = "toggle",
+                order = 1.05,
+                name = function() return l10n('Hide Startup Warnings'); end,
+                desc = function() return l10n("Disables the 'Welcome to Cataclysm Classic' message on startup."); end,
+                width = "full",
+                get = function() return Questie.db.profile.hideStartupWarnings; end,
+                set = function (_, value)
+                    Questie.db.profile.hideStartupWarnings = value
+                end
             },
             enableIconLimit = {
                 type = "toggle",
@@ -121,7 +115,7 @@ function QuestieOptions.tabs.advanced:Initialize()
                         style = 'dropdown',
                         name = function() return l10n("Isle of Quel'Danas Phase") end,
                         desc = function() return l10n("Select the phase fitting your realm progress on the Isle of Quel'Danas"); end,
-                        disabled = function() return (not Questie.IsWotlk) end,
+                        disabled = function() return (not Questie.IsWotlk) and (not Questie.IsCata) end,
                         get = function() return Questie.db.profile.isleOfQuelDanasPhase; end,
                         set = function(_, key)
                             Questie.db.profile.isleOfQuelDanasPhase = key
@@ -143,7 +137,7 @@ function QuestieOptions.tabs.advanced:Initialize()
                         order = 1.5,
                         name = function() return l10n('Disable Phase reminder'); end,
                         desc = function() return l10n("Enable or disable the reminder on login to set the Isle of Quel'Danas phase"); end,
-                        disabled = function() return (not Questie.IsWotlk) end,
+                        disabled = function() return (not Questie.IsWotlk) and (not Questie.IsCata) end,
                         width = 1,
                         get = function() return Questie.db.profile.isIsleOfQuelDanasPhaseReminderDisabled; end,
                         set = function(_, value)
@@ -173,7 +167,6 @@ function QuestieOptions.tabs.advanced:Initialize()
                     end
                 end,
                 set = function(_, lang)
-                    local previousLocale = Questie.db.global.questieLocale
                     if lang == 'auto' then
                         local clientLocale = GetLocale()
                         if QUESTIE_LOCALES_OVERRIDE ~= nil then
@@ -186,15 +179,6 @@ function QuestieOptions.tabs.advanced:Initialize()
                         l10n:SetUILocale(lang);
                         Questie.db.global.questieLocale = lang;
                         Questie.db.global.questieLocaleDiff = true;
-                    end
-
-                    if previousLocale ~= Questie.db.global.questieLocale then
-                        if Questie.IsSoD then
-                            Questie.db.global.sod.dbIsCompiled = nil -- recompile db with new lang if locale changed
-                        else
-                            Questie.db.global.dbIsCompiled = nil -- recompile db with new lang if locale changed
-                        end
-                        StaticPopup_Show("QUESTIE_LANG_CHANGED_RELOAD")
                     end
                 end,
             },

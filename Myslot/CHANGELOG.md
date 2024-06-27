@@ -1,6 +1,7 @@
 # Myslot
 
-## [v5.14.2](https://github.com/tg123/myslot/tree/v5.14.2) (2024-05-11)
-[Full Changelog](https://github.com/tg123/myslot/commits/v5.14.2) 
+## [v5.15.1](https://github.com/tg123/myslot/tree/v5.15.1) (2024-06-14)
+[Full Changelog](https://github.com/tg123/myslot/commits/v5.15.1) 
 
-- fix: Handle talent tree information for Classic and Cataclysm versions  
+- Merge pull request #50 from Justw8/master  
+    The War Within compatibility code  

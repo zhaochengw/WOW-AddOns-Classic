@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2567, "DBM-Party-WarWithin", 3, 1268)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240426175442")
+mod:SetRevision("20240609071744")
 mod:SetCreatureID(207205)
 mod:SetEncounterID(2861)
 --mod:SetHotfixNoticeRev(20220322000000)
@@ -50,9 +50,14 @@ function mod:OnCombatStart(delay)
 	self.vb.chaoticCount = 0
 	self.vb.gravityCount = 0
 	self.vb.crushCount = 0
-	timerChaoticCorruptionCD:Start(8.4, 1)
-	timerDarkGravityCD:Start(23, 1)
-	timerCrushRealityCD:Start(30.2, 1)
+	if self:IsFollower() then--Confirmed on "story", need to test regular "follower", if it differs, have to split the API
+		timerCrushRealityCD:Start(8.4, 1)
+		timerDarkGravityCD:Start(23, 1)--Still the same
+	else
+		timerChaoticCorruptionCD:Start(8.4, 1)
+		timerDarkGravityCD:Start(23, 1)--Still the same
+		timerCrushRealityCD:Start(30.3, 1)
+	end
 	if self.Options.InfoFrame and self:IsMythic() then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellName(424797))
 		DBM.InfoFrame:Show(5, "playerdebuffremaining", 424797)

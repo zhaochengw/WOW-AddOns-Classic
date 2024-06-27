@@ -1,7 +1,7 @@
-## Interface: 11501
+## Interface: 11502
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
-## Version: 5.11.3
+## Version: 5.12.9
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras

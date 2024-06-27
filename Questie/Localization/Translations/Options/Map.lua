@@ -27,7 +27,7 @@ local mapOptionsLocales = {
         ["frFR"] = "Options de la carte du monde",
     },
     ["Show Questie Map Button"] = {
-        ["ptBR"] = "Mostrar o botão no cartão Questie",
+        ["ptBR"] = "Mostrar o botão de Questie no mapa",
         ["ruRU"] = "Кнопка Questie",
         ["deDE"] = "Zeige Questie-Button an der Weltkarte",
         ["koKR"] = "Questie 지도 버튼 표시",
@@ -67,11 +67,11 @@ local mapOptionsLocales = {
         ["ruRU"] = "Показать/скрыть цветной ореол вокруг значков на карте мира",
         ["deDE"] = "Zeichnet eine leuchtende Textur hinter die Weltkarten-Icons. Farblich einzigartig für jede Quest.",
         ["koKR"] = "지도 아이콘에 반짝이는 효과를 표시합니다. 퀘스트마다 각각 다른 색상을 지닙니다.",
-        ["esMX"] = "Mostrar un aura destrás de los iconos de mapa con colores unicos para cada misión",
+        ["esMX"] = "Mostrar un aura detrás de los iconos de mapa con colores unicos para cada misión",
         ["enUS"] = true,
         ["zhCN"] = "替大地图标记显示一圈光晕，且不同任务有不同的颜色",
         ["zhTW"] = "在任務目標圖示的後面繪製發光材質，每個任務都可以有不同的顏色。",
-        ["esES"] = "Mostrar un aura destrás de los iconos de mapa con colores unicos para cada misión",
+        ["esES"] = "Mostrar un aura detrás de los iconos de mapa con colores unicos para cada misión",
         ["frFR"] = "Active un effet de surbrillance autour des icônes sur la carte, colorié différemment pour chaque quête.",
     },
     ["Unique Map Icon Colors"] = {
@@ -255,7 +255,7 @@ local mapOptionsLocales = {
         ["frFR"] = "Coordonnées",
     },
     ["Place the Player's coordinates and Cursor's coordinates on the Map's title."] = {
-        ["ptBR"] = "Coloque as coordenadas do jogador e as do cursor no título do cartão.",
+        ["ptBR"] = "Coloque as coordenadas do jogador e as do cursor no título do mapa.",
         ["ruRU"] = "Показать/скрыть координаты игрока и курсора в заголовке карты мира",
         ["deDE"] = "Koordinaten von Spieler- und Mauszeiger-Koordinaten an der Weltkarte.",
         ["koKR"] = "지도 제목 영역에 플레이어 및 커서의 좌표를 표시합니다.",

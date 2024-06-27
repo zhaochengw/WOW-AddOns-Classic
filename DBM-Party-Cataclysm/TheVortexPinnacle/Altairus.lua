@@ -1,10 +1,14 @@
 local mod	= DBM:NewMod(115, "DBM-Party-Cataclysm", 8, 68)
 local L		= mod:GetLocalizedStrings()
 
-mod.statTypes = "normal,heroic,challenge,timewalker"
-mod.upgradedMPlus = true
+if not mod:IsCata() then
+	mod.statTypes = "normal,heroic,challenge,timewalker"
+	mod.upgradedMPlus = true
+else
+	mod.statTypes = "normal,heroic"
+end
 
-mod:SetRevision("20240426175442")
+mod:SetRevision("20240615053330")
 mod:SetCreatureID(43873)
 mod:SetEncounterID(1041)
 mod:SetUsedIcons(8)

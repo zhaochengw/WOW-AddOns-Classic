@@ -13,7 +13,7 @@ if __ala_meta__.__fixminor ~= nil and __ala_meta__.__fixminor >= __version then
 end
 __ala_meta__.__fixminor = __version;
 
-if (not select(2, GetAddOnInfo("!!!163ui!!!")) or not IsAddOnLoaded("!!!163ui!!!")) and BackdropTemplateMixin ~= nil then
+if (not select(2, C_AddOns.GetAddOnInfo("!!!163ui!!!")) or not C_AddOns.IsAddOnLoaded("!!!163ui!!!")) and BackdropTemplateMixin ~= nil then
 	local _LT_AllFrameTypes = {
 		'FRAME',
 			-- 'BROWSER',

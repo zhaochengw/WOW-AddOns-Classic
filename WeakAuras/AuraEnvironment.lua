@@ -1,7 +1,10 @@
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
@@ -338,7 +341,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
           local childData = WeakAuras.GetData(childID)
           if childData then
             if not environment_initialized[childID] then
-              Private.ActivateAuraEnvironment(childID)
+              Private.ActivateAuraEnvironment(childID, nil, nil, nil, true)
               Private.ActivateAuraEnvironment()
             end
             current_aura_env.child_envs[dataIndex] = aura_environments[childID]

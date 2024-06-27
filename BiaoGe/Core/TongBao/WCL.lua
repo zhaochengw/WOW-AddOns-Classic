@@ -237,7 +237,7 @@ function BG.WCLUI(lastbt)
                 end
                 for i = 1, num do
                     if wclname5[i] and wclfenshu6[i] then
-                        text = text .. i .. "、" .. wclname5[i] .. "：" .. wclfenshu6[i] .. "\n"
+                        text = text .. i .. "、" .. wclname5[i] .. L["："] .. wclfenshu6[i] .. "\n"
                     end
                 end
                 text = text .. updatetime
@@ -270,10 +270,14 @@ function BG.WCLUI(lastbt)
             local text = ""
             local num = GetNumGroupMembers()
             SendChatMessage(L["———通报WCL分数———"], "RAID")
+            local t = 0
             for i = 1, num do
                 if wclname4[i] and wclfenshu4[i] and wclfenshu5[i] then
-                    text = WCLcolor(wclfenshu4[i]) .. i .. "、" .. wclname4[i] .. "：" .. wclfenshu5[i] .. "\n"
+                    -- BG.After(t, function()
+                    text = WCLcolor(wclfenshu4[i]) .. i .. "、" .. wclname4[i] .. L["："] .. wclfenshu5[i] .. "\n"
                     SendChatMessage(text, "RAID")
+                    -- end)
+                    -- t = t + BG.tongBaoSendCD
                 end
             end
             text = updatetime

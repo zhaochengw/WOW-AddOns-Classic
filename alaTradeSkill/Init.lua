@@ -191,7 +191,7 @@ MT.BuildEnv('Init');
 	function MT.DebugRelease(...)
 	end
 	function MT.Notice(...)
-		MT.Print(date('|cffff0000%H:%M:%S|r'), ...);
+		return MT.Print(date('|cffff0000%H:%M:%S|r'), ...);
 	end
 
 	MT.After = _G.C_Timer.After;

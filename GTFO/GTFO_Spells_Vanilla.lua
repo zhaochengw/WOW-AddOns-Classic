@@ -191,4 +191,9 @@ GTFO.SpellID["151268"] = {
   trivialLevel = 70;
 };
 
+GTFO.SpellID["243459"] = {
+  --desc = "Putrid Mushroom (Emeriss)";
+  sound = 1;
+};
+
 end

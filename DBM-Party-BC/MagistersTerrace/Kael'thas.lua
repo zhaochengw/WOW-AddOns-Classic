@@ -5,7 +5,7 @@ if mod:IsRetail() then
 	mod.statTypes = "normal,heroic,timewalker"
 end
 
-mod:SetRevision("20231014053250")
+mod:SetRevision("20240616044034")
 mod:SetCreatureID(24664)
 mod:SetEncounterID(1894)
 
@@ -24,7 +24,7 @@ mod:RegisterEventsInCombat(
 	"CHAT_MSG_MONSTER_YELL"
 )
 
-local WarnShockBarrior		= mod:NewSpellAnnounce(46165, 3)
+local WarnShockBarrior		= mod:NewTargetNoFilterAnnounce(46165, 3)
 local WarnGravityLapse		= mod:NewSpellAnnounce(44224, 2)
 
 local specwarnPyroblast		= mod:NewSpecialWarningInterrupt(36819, "HasInterrupt", nil, 2, 1, 2)

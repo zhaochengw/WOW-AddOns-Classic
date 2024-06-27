@@ -75,15 +75,15 @@ end
 ---@class DBM
 local DBM = private:GetPrototype("DBM")
 _G.DBM = DBM
-DBM.Revision = parseCurseDate("20240607202110")
+DBM.Revision = parseCurseDate("20240622203012")
 
-local fakeBWVersion, fakeBWHash = 330, "8c25119"--330.1
+local fakeBWVersion, fakeBWHash = 337, "848363e"--337.4
 local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
-DBM.DisplayVersion = "10.2.47"--Core version
+DBM.DisplayVersion = "10.2.49"--Core version
 DBM.classicSubVersion = 0
-DBM.ReleaseRevision = releaseDate(2024, 6, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+DBM.ReleaseRevision = releaseDate(2024, 6, 22) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 PForceDisable = 12--When this is incremented, trigger force disable regardless of major patch
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -1111,12 +1111,12 @@ do
 
 		function registerSpellId(event, spellId)
 			if type(spellId) == "string" then--Something is screwed up, like SPELL_AURA_APPLIED DOSE
-				DBM:Debug("DBM RegisterEvents Warning: " .. spellId .. " is not a number!")
+				DBM:Debug("|cffff0000DBM RegisterEvents Warning: " .. spellId .. " is not a number!|r")
 				return
 			end
 			local spellName = DBM:GetSpellName(spellId)
 			if spellId and not spellName then
-				DBM:Debug("DBM RegisterEvents Warning: " .. spellId .. " spell id does not exist!")
+				DBM:Debug("|cffff0000DBM RegisterEvents Warning: " .. spellId .. " id does not exist!|r")
 				return
 			end
 			if not registeredSpellIds[event] then
@@ -1135,7 +1135,7 @@ do
 			if not registeredSpellIds[event] then return end
 			local spellName = DBM:GetSpellName(spellId)
 			if spellId and not spellName then
-				DBM:Debug("DBM unregisterSpellId Warning: " .. spellId .. " spell id does not exist!")
+				DBM:Debug("|cffff0000DBM unregisterSpellId Warning: " .. spellId .. " id does not exist!|r")
 				return
 			end
 			--local regName = isClassic and spellName or spellId
@@ -1353,7 +1353,7 @@ do
 
 	---@param self DBMModOrDBM
 	function DBM:UnregisterShortTermEvents()
-		DBM:Debug("UnregisterShortTermEvents fired", 2)
+		DBM:Debug("UnregisterShortTermEvents fired", 3)
 		if self.shortTermRegisterEvents then
 			DBM:Debug("UnregisterShortTermEvents found registered shortTermRegisterEvents", 2)
 			for event, mods in pairs(registeredEvents) do
@@ -1863,6 +1863,11 @@ do
 				self:RegisterEvents(
 					"START_PLAYER_COUNTDOWN",
 					"CANCEL_PLAYER_COUNTDOWN"
+				)
+			end
+			if private.wowTOC >= 110000 then
+				self:RegisterEvents(
+					"PLAYER_MAP_CHANGED"
 				)
 			end
 			if not private.isClassic then -- Retail, WoTLKC, and BCC
@@ -3810,10 +3815,10 @@ do
 		end
 	end
 
-	---@param force boolean?
-	---@param cleanup boolean?
+	---@param force boolean? Only used when /dbm musicstart is used directly by user
+	---@param cleanup boolean? Runs on zone change/cinematic Start (first load delay) and combat end
 	function DBM:TransitionToDungeonBGM(force, cleanup)
-		if cleanup then--Runs on zone change/cinematic Start (first load delay) and combat end
+		if cleanup then
 			self:Unschedule(self.TransitionToDungeonBGM)
 			if self.Options.RestoreSettingCustomMusic then
 				SetCVar("Sound_EnableMusic", self.Options.RestoreSettingCustomMusic)
@@ -3864,15 +3869,16 @@ do
 		local _, instanceType, difficulty, _, _, _, _, mapID, instanceGroupSize = private.GetInstanceInfo()
 		difficulties:RefreshCache(true)
 		LastGroupSize = instanceGroupSize
-		self:Debug("Instance Check fired with mapID " .. mapID .. " and difficulty " .. difficulty, 2)
+		self:Debug("Instance Check fired with mapID " .. mapID .. " and difficulty " .. difficulty .. " and delay " .. (delay or 0), 2)
 		-- Difficulty index also checked because in challenge modes and M+, difficulty changes with no ID change
 		-- if ID changes we need to execute updated autologging and checkavailable mods checks
 		-- ID and difficulty hasn't changed, don't waste cpu doing anything else (example situation, porting into garrosh stage 4 is a loading screen)
 		if LastInstanceMapID == mapID and difficulties.difficultyIndex == difficulty then
 			self:TransitionToDungeonBGM()
-			self:Debug("No action taken because mapID and difficultyID hasn't changed since last check", 2)
+			self:Debug("|c00F2F200No action taken because mapID and difficultyID hasn't changed since last check |r", 2)
 			return
 		end
+		self:Debug("|c0069CCF0mapID or difficulty has changed, updating LastInstanceMapID |r", 2)
 		LastInstanceMapID = mapID
 		DBMScheduler:UpdateZone()--Also update zone in scheduler
 		fireEvent("DBM_UpdateZone", mapID)
@@ -3916,12 +3922,14 @@ do
 
 	--Faster and more accurate loading for instances, but useless outside of them
 	function DBM:LOADING_SCREEN_DISABLED(delayedCheck)
-		if private.isRetail then
+		--Extra stuff we want to clean up after loading screens only
+		if not private.isClassic and not private.isBCC then
 			DBT:CancelBar(L.LFG_INVITE)--Disable bar here since LFG_PROPOSAL_SUCCEEDED seems broken right now
 		end
 		fireEvent("DBM_TimerStop", "DBMLFGTimer")
 		timerRequestInProgress = false
-		self:Debug("LOADING_SCREEN_DISABLED fired")
+		--Regular load zone code beyond this point
+		self:Debug("LOADING_SCREEN_DISABLED fired", 2)
 		self:Unschedule(SecondaryLoadCheck)
 		--SecondaryLoadCheck(self)
 		--In instance tranfers with no loading screen, InstanceInfo can actually return nil for first few seconds
@@ -3944,9 +3952,9 @@ do
 		[2454] = true,--Zaralek Caverns
 		[2574] = true,--Dragon Isles
 		[2444] = true,--Dragon Isles
-		[2601] = true,--Khaz Algar (Underground)
-		[2774] = true,--Khaz Algar (Underground)
-		[2552] = true,--Khaz Algar (Surface)
+--		[2601] = true,--Khaz Algar (Underground)
+--		[2774] = true,--Khaz Algar (Underground)
+--		[2552] = true,--Khaz Algar (Surface)
 	}
 
 	-- Load based on MapIDs
@@ -3956,14 +3964,40 @@ do
 			self:LoadModsOnDemand("mapId", "m" .. mapID)
 		end
 		DBM:CheckAvailableModsByMap()
-		--if a special zone or delve, we need to force update LastInstanceMapID and run zone change functions without loading screen
-		if specialZoneIDs[LastInstanceMapID] or difficulties:InstanceType(LastInstanceMapID) == 4 then
+		--if a special zone, we need to force update LastInstanceMapID and run zone change functions without loading screen
+		--This hack and table can go away in TWW pre patch when we gain access to PLAYER_MAP_CHANGED
+		if private.wowTOC < 110000 and specialZoneIDs[LastInstanceMapID] then--or difficulties:InstanceType(LastInstanceMapID) == 4
 			DBM:Debug("Forcing LOADING_SCREEN_DISABLED", 2)
 			self:LOADING_SCREEN_DISABLED(true)
 		end
 	end
 
+	---Special event that fires when changing zones in TWW
+	---@param oldZone number if oldZone is -1, it means it's a loading screen
+	---@param newZone number
+	function DBM:PLAYER_MAP_CHANGED(oldZone, newZone)
+		self:Debug("PLAYER_MAP_CHANGED fired with oldZone " .. oldZone .. " and newZone " .. newZone, 2)
+		if oldZone == -1 then return end--Let legacy LOADING_SCREEN_DISABLED handle it for now. In future, PLAYER_MAP_CHANGED may replace LSD if classic gets it
+		if LastInstanceMapID ~= newZone then
+			self:Debug("Zone changed, firing secondary load check", 2)
+			--Different ID than cached, run secondary load checks
+			--Delay is still needed due to GetInstanceInfo not returning new information yet instantly on PLAYER_MAP_CHANGED
+			self:TransitionToDungeonBGM(false, true)
+			self:Unschedule(SecondaryLoadCheck)
+			self:Schedule(1, SecondaryLoadCheck, self, 1)
+			self:Schedule(5, SecondaryLoadCheck, self, 5)
+			if self:HasMapRestrictions() then
+				self.Arrow:Hide()
+				self.HudMap:Disable()
+				if (private.isRetail and self.RangeCheck:IsShown()) or self.RangeCheck:IsRadarShown() then
+					self.RangeCheck:Hide(true)
+				end
+			end
+		end
+	end
+
 	function DBM:CHALLENGE_MODE_RESET()
+		--TODO, if blizzard ever removes loading screen from challenge modes start, then we need to run additional stuff from SecondaryLoadCheck here
 		difficulties.difficultyIndex = 8
 		self:CheckAvailableMods()
 		if not self.Options.RecordOnlyBosses then
@@ -4824,12 +4858,10 @@ do
 	end
 
 	guildSyncHandlers["WBA"] = function(sender, protocol, bossName, faction, spellId, time) -- Classic only
-		DBM:Debug("WBA sync recieved")
 		if not protocol or protocol ~= 4 or private.isRetail then return end--Ignore old versions
 		if lastBossEngage[bossName .. faction] and (GetTime() - lastBossEngage[bossName .. faction] < 30) then return end--We recently got a sync about this buff on this realm, so do nothing.
 		lastBossEngage[bossName .. faction] = GetTime()
 		if DBM.Options.WorldBuffAlert and #inCombat == 0 then
-			DBM:Debug("WBA sync processing")
 			local factionText = faction == "Alliance" and FACTION_ALLIANCE or faction == "Horde" and FACTION_HORDE or CL.BOTH
 			local buffName, _, buffIcon = DBM:GetSpellInfo(tonumber(spellId) or 0)
 			DBM:AddMsg(L.WORLDBUFF_STARTED:format(buffName or CL.UNKNOWN, factionText, sender))
@@ -4868,12 +4900,10 @@ do
 	end
 
 	whisperSyncHandlers["WBA"] = function(sender, protocol, bossName, faction, spellId, time) -- Classic only
-		DBM:Debug("WBA sync recieved")
 		if not protocol or protocol ~= 4 or private.isRetail then return end--Ignore old versions
 		if lastBossEngage[bossName .. faction] and (GetTime() - lastBossEngage[bossName .. faction] < 30) then return end--We recently got a sync about this buff on this realm, so do nothing.
 		lastBossEngage[bossName .. faction] = GetTime()
 		if DBM.Options.WorldBuffAlert and #inCombat == 0 then
-			DBM:Debug("WBA sync processing")
 			local factionText = faction == "Alliance" and FACTION_ALLIANCE or faction == "Horde" and FACTION_HORDE or CL.BOTH
 			local buffName, _, buffIcon = DBM:GetSpellInfo(tonumber(spellId) or 0)
 			DBM:AddMsg(L.WORLDBUFF_STARTED:format(buffName or CL.UNKNOWN, factionText, sender))
@@ -5335,31 +5365,23 @@ do
 		if not private.isRetail and not IsInInstance() then
 			if msg:find(L.WORLD_BUFFS.hordeOny) then
 				SendWorldSync(self, 4, "WBA", "Onyxia\tHorde\t22888\t15\t4")
-				DBM:Debug("L.WORLD_BUFFS.hordeOny detected")
 			elseif msg:find(L.WORLD_BUFFS.allianceOny) then
 				SendWorldSync(self, 4, "WBA", "Onyxia\tAlliance\t22888\t15\t4")
-				DBM:Debug("L.WORLD_BUFFS.allianceOny detected")
 			elseif msg:find(L.WORLD_BUFFS.hordeNef) then
 				SendWorldSync(self, 4, "WBA", "Nefarian\tHorde\t22888\t16\t4")
-				DBM:Debug("L.WORLD_BUFFS.hordeNef detected")
 			elseif msg:find(L.WORLD_BUFFS.allianceNef) then
 				SendWorldSync(self, 4, "WBA", "Nefarian\tAlliance\t22888\t16\t4")
-				DBM:Debug("L.WORLD_BUFFS.allianceNef detected")
 			elseif msg:find(L.WORLD_BUFFS.rendHead) then
 				SendWorldSync(self, 4, "WBA", "rendBlackhand\tHorde\t16609\t7\t4")
-				DBM:Debug("L.WORLD_BUFFS.rendHead detected")
 			elseif msg:find(L.WORLD_BUFFS.zgHeartYojamba) then
 				-- zg buff transcripts https://gist.github.com/venuatu/18174f0e98759f83b9834574371b8d20
 				-- 28.58, 28.67, 27.77, 29.39, 28.67, 29.03, 28.12, 28.19, 29.61
 				SendWorldSync(self, 4, "WBA", "Zandalar\tBoth\t24425\t28\t4")
-				DBM:Debug("L.WORLD_BUFFS.zgHeartYojamba detected")
 			elseif msg:find(L.WORLD_BUFFS.zgHeartBooty) then
 				-- 48.7, 49.76, 50.64, 49.42, 49.8, 50.67, 50.94, 51.06
 				SendWorldSync(self, 4, "WBA", "Zandalar\tBoth\t24425\t49\t4")
-				DBM:Debug("L.WORLD_BUFFS.zgHeartBooty detected")
 			elseif msg:find(L.WORLD_BUFFS.blackfathomBoon) then
 				--SendWorldSync(self, 4, "WBA", "Blackfathom\tBoth\t430947\t6\t4")
-				DBM:Debug("L.WORLD_BUFFS.blackfathomBoon detected")
 			end
 		end
 		return onMonsterMessage(self, "yell", msg)
@@ -6784,7 +6806,7 @@ do
 			tinsert(sortMe, v)
 		end
 		tsort(sortMe, sort)
-		self:Debug("RequestTimers Running", 2)
+		self:Debug("RequestTimers Running", 3)
 		local selectedClient
 		local listNum = 0
 		for _, v in ipairs(sortMe) do
@@ -8348,6 +8370,34 @@ function bossModPrototype:AddInfoFrameOption(spellId, default, optionVersion, op
 		self.localization.options["InfoFrame" .. oVersion] = L.AUTO_INFO_FRAME_OPTION_TEXT2
 	end
 	self:SetOptionCategory("InfoFrame" .. oVersion, "misc")
+end
+
+
+---@meta
+---@alias gossipTypes
+---|"Action": Auto select gossip choice(s) to perform actions (such as using transports)
+---|"Encounter": Auto select gossip choice to start encounter
+---|"Buff": Auto select gossip choice(s) for npc or profession buffs
+---@param default SpecFlags|boolean?
+---@param gossipType gossipTypes|string
+function bossModPrototype:AddGossipOption(default, gossipType, optionVersion)
+	local oVersion = ""
+	if optionVersion then
+		oVersion = tostring(optionVersion)
+	end
+	self.DefaultOptions["AutoGossip" .. gossipType .. oVersion] = (default == nil) or default
+	if type(default) == "string" then
+		default = self:GetRoleFlagValue(default)
+	end
+	self.Options["AutoGossipAction" .. gossipType .. oVersion] = (default == nil) or default
+	if gossipType == "Action" then
+		self.localization.options["AutoGossip" .. gossipType .. oVersion] = L.AUTO_GOSSIP_PERFORM_ACTION
+	elseif gossipType == "Encounter" then
+		self.localization.options["AutoGossip" .. gossipType .. oVersion] = L.AUTO_GOSSIP_START_ENCOUNTER
+	else--Type 1 most common so the default fallback if left blank
+		self.localization.options["AutoGossip" .. gossipType .. oVersion] = L.AUTO_GOSSIP_BUFFS
+	end
+	self:SetOptionCategory("AutoGossip" .. gossipType .. oVersion, "misc")
 end
 
 ---@param default SpecFlags|boolean?

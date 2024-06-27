@@ -28,6 +28,8 @@ local FB = BG.FB1
 local MAXBUTTONS = 20
 local BUTTONHEIGHT = 22
 
+local isCache = {}
+
 local title_table = {
     { name = L["序号"], width = 35, color = "FFFFFF", JustifyH = "CENTER" },
     { name = L["等级"], width = 60, color = "FFFFFF", JustifyH = "CENTER" },
@@ -109,10 +111,36 @@ local function GetkExchangeItemInfo(itemID) -- 获取兑换物对应物品的ID�
         end
     end
 end
-
+local function CreateLoadingText()
+    local t = BG.ItemLibMainFrame.bg1:CreateFontString()
+    t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+    t:SetPoint("TOP", BG.ItemLibMainFrame.bg1, 0, -40)
+    t:SetText(L["读取中..."])
+    return t
+end
+local updateCDing
 local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重点
     local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID, bindType = GetItemInfo(itemID)
-    if not link then return end
+    if not link then
+        -- pt(GetTime(), itemID, link)
+        if BG.itemLibItemOldTbl then
+            wipe(BG.itemLibItemOldTbl)
+        end
+        if not updateCDing then
+            updateCDing = true
+            local t = CreateLoadingText()
+            BG.After(0.5, function()
+                t:Hide()
+                updateCDing = false
+                BG.UpdateAllItemLib()
+            end)
+        end
+        return
+    elseif updateCDing then
+        if BG.itemLibItemOldTbl then
+            wipe(BG.itemLibItemOldTbl)
+        end
+    end
     local yes
     for k, v in pairs(EquipLocs) do
         if EquipLoc == v then
@@ -268,6 +296,11 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
         local v = otherID
         local count = v.count
         local currencyID = v.currencyID
+        local phase = v.phase
+        local phaseText = ""
+        if phase then
+            phaseText = " |cff808080<" .. phase .. ">|r"
+        end
         local otherItemID1 = v.otherItemID1
         local otherItemID1Count = v.otherItemID1Count
         local otherText = ""
@@ -289,7 +322,7 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
         else
             count = ""
         end
-        local get = BG.STC_y1(AddTexture(tex) .. name .. " " .. "|cff" .. color .. count .. RR) .. AddPrice(itemID) .. otherText
+        local get = BG.STC_y1(AddTexture(tex) .. name .. " " .. "|cff" .. color .. count .. RR) .. AddPrice(itemID) .. otherText .. phaseText
 
         local a = {
             itemID = itemID,
@@ -491,7 +524,7 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
     end
     -- 团本 任务 套装 牌子 声望 专业 5人 世界掉落 世界boss PVP 赛季服货币/牌子
 end
-local function Mode(FB, count1, count2, tbl, EquipLocs, itemID, type, hard, ii, k)
+local function Mode(FB, count1, tbl, EquipLocs, itemID, type, hard, ii, k)
     if EquipLocs then
         local a = FilterItem(FB, itemID, EquipLocs, type, hard, ii, k)
         if a then
@@ -499,60 +532,66 @@ local function Mode(FB, count1, count2, tbl, EquipLocs, itemID, type, hard, ii, 
         end
     else
         count1 = count1 + 1
-        if GetItemInfo(itemID) then
-            count2 = count2 + 1
-            -- else
-            --     pt(itemID) -- 用于查看哪些装备ID是错误的
+        if not isCache[itemID] then
+            isCache[itemID] = true
+            local item = Item:CreateFromItemID(itemID)
+            item:ContinueOnItemLoad(function()
+                local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID, bindType = GetItemInfo(itemID)
+                -- pt(FB, count1, itemID, level)
+                GetItemInfo(itemID)
+                BG.Tooltip_SetItemByID(itemID) -- 提前设置一次物品鼠标提示信息，避免绿字属性获取不了
+            end)
         end
-
-        local item = Item:CreateFromItemID(itemID)
-        item:ContinueOnItemLoad(function()
-            BG.Tooltip_SetItemByID(itemID) -- 提前设置一次物品鼠标提示信息，避免绿字属性获取不了
-        end)
     end
-    return count1, count2, tbl
+    return count1, tbl
 end
-local function CheckItemCache(EquipLocs) -- 不传入参数时是检查所有物品是否缓存了，传入参数时是返回符合要求的物品table
+local function CheckItemCache(EquipLocs, checkFB) -- 不传入参数时是检查所有物品是否缓存了，传入参数时是返回符合要求的物品table
+    local onlyCheckCache
+    if not EquipLocs then
+        onlyCheckCache = true
+    end
     local tbl = {}
     local count1 = 0
-    local count2 = 0
     local hard, ii, k
-    for _, FB in pairs(BG.phaseFBtable[BG.FB1]) do
+    local checkFB = checkFB or BG.FB1
+    BG.itemLibItemOldTbl = tbl
+    for _, FB in pairs(BG.phaseFBtable[checkFB]) do
         -- 团本
-        for _, hard in ipairs(BG.difficultyTable[BG.FB1]) do
-            local yes = true
-            if EquipLocs then
+        for _, hard in ipairs(BG.difficultyTable[checkFB]) do
+            local trueRaidDifficulty = true
+            if not onlyCheckCache then
                 if BG.IsVanilla() then
                     if BiaoGe.ItemLib.fitlerGet.raid then
-                        yes = false
+                        trueRaidDifficulty = false
                     end
                 elseif BG.IsWLK() or BG.IsCTM() then
-                    if BiaoGe.ItemLib.fitlerGet.raidhero and hard == "H" then
-                        yes = false
+                    if BiaoGe.ItemLib.fitlerGet.raidhero and strfind(hard, "H") then
+                        trueRaidDifficulty = false
                     end
-                    if BiaoGe.ItemLib.fitlerGet.raidnormal and hard == "N" then
-                        yes = false
+                    if BiaoGe.ItemLib.fitlerGet.raidnormal and strfind(hard, "N") then
+                        trueRaidDifficulty = false
                     end
                     if BiaoGe.ItemLib.fitlerGet.raid25 and strfind(hard, "25") then
-                        yes = false
+                        trueRaidDifficulty = false
                     end
                     if BiaoGe.ItemLib.fitlerGet.raid10 and strfind(hard, "10") then
-                        yes = false
+                        trueRaidDifficulty = false
                     end
                 end
             end
 
-            if yes then
+            if onlyCheckCache or trueRaidDifficulty then
+                -- pt(hard)
                 if BG.Loot[FB][hard] then
                     local ii = 1
                     while BG.Loot[FB][hard]["boss" .. ii] do
                         for i, itemID in ipairs(BG.Loot[FB][hard]["boss" .. ii]) do
-                            count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "raid", hard, ii, k)
+                            count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "raid", hard, ii, k)
                         end
                         -- BOSS掉落后兑换的装备
                         if BG.Loot[FB][hard]["boss" .. ii .. "other"] then
                             for i, itemID in ipairs(BG.Loot[FB][hard]["boss" .. ii .. "other"]) do
-                                count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "raid", hard, ii, "other")
+                                count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "raid", hard, ii, "other")
                             end
                         end
                         ii = ii + 1
@@ -562,7 +601,7 @@ local function CheckItemCache(EquipLocs) -- 不传入参数时是检查所有物
                     if BG.Loot[FB][hard].Quest then
                         for name, _ in pairs(BG.Loot[FB][hard].Quest) do
                             for _, itemID in pairs(BG.Loot[FB][hard].Quest[name]) do
-                                count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "raid", hard, ii, name)
+                                count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "raid", hard, ii, name)
                             end
                         end
                     end
@@ -570,11 +609,11 @@ local function CheckItemCache(EquipLocs) -- 不传入参数时是检查所有物
             end
         end
         -- 5人本
-        if not EquipLocs or not BiaoGe.ItemLib.fitlerGet.fb5 then
+        if onlyCheckCache or not BiaoGe.ItemLib.fitlerGet.fb5 then
             for FB_5 in pairs(BG.Loot[FB].Team) do
                 for BossName, _ in pairs(BG.Loot[FB].Team[FB_5]) do
                     for _, itemID in pairs(BG.Loot[FB].Team[FB_5][BossName]) do
-                        count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "fb5", hard, ii, FB_5 .. ":" .. BossName)
+                        count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "fb5", hard, ii, FB_5 .. ":" .. BossName)
                     end
                 end
             end
@@ -582,68 +621,64 @@ local function CheckItemCache(EquipLocs) -- 不传入参数时是检查所有物
         -- 任务
         for k, v in pairs(BG.Loot[FB].Quest) do
             for i, itemID in ipairs(BG.Loot[FB].Quest[k].itemID) do
-                count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "quest", hard, ii, v)
+                count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "quest", hard, ii, v)
             end
         end
         -- 牌子装备
-        if not EquipLocs or not BiaoGe.ItemLib.fitlerGet.currency then
+        if onlyCheckCache or not BiaoGe.ItemLib.fitlerGet.currency then
             for itemID, v in pairs(BG.Loot[FB].Currency) do
-                count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "currency", hard, ii, v)
+                count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "currency", hard, ii, v)
             end
         end
         -- 赛季服货币/牌子
-        if not EquipLocs or not BiaoGe.ItemLib.fitlerGet.currency then
+        if onlyCheckCache or not BiaoGe.ItemLib.fitlerGet.currency then
             for i, v in pairs(BG.Loot[FB].Sod_Currency) do
                 for itemID, currency in pairs(BG.Loot[FB].Sod_Currency[i]) do
-                    count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "sod_currency", hard, ii, currency)
+                    count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "sod_currency", hard, ii, currency)
                 end
             end
         end
         -- 声望装备
-        if not EquipLocs or not BiaoGe.ItemLib.fitlerGet.faction then
+        if onlyCheckCache or not BiaoGe.ItemLib.fitlerGet.faction then
             for k, v in pairs(BG.Loot[FB].Faction) do
                 for i, itemID in ipairs(BG.Loot[FB].Faction[k]) do
-                    count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "faction", hard, ii, k)
+                    count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "faction", hard, ii, k)
                 end
             end
         end
         -- 专业制造
-        if not EquipLocs or not BiaoGe.ItemLib.fitlerGet.profession then
+        if onlyCheckCache or not BiaoGe.ItemLib.fitlerGet.profession then
             for k, v in pairs(BG.Loot[FB].Profession) do
                 for i, itemID in ipairs(BG.Loot[FB].Profession[k]) do
-                    count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "profession", hard, ii, k)
+                    count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "profession", hard, ii, k)
                 end
             end
         end
         -- 世界掉落
-        if not EquipLocs or not BiaoGe.ItemLib.fitlerGet.world then
+        if onlyCheckCache or not BiaoGe.ItemLib.fitlerGet.world then
             for i, itemID in ipairs(BG.Loot[FB].World) do
-                count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "world", hard, ii, k)
+                count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "world", hard, ii, k)
             end
         end
         -- 世界BOSS
-        if not EquipLocs or not BiaoGe.ItemLib.fitlerGet.worldboss then
+        if onlyCheckCache or not BiaoGe.ItemLib.fitlerGet.worldboss then
             for k, v in pairs(BG.Loot[FB].WorldBoss) do
                 for i, itemID in ipairs(BG.Loot[FB].WorldBoss[k]) do
-                    count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "worldboss", hard, ii, k)
+                    count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "worldboss", hard, ii, k)
                 end
             end
         end
         -- PVP
-        if not EquipLocs or not BiaoGe.ItemLib.fitlerGet.pvp then
+        if onlyCheckCache or not BiaoGe.ItemLib.fitlerGet.pvp then
             for k, v in pairs(BG.Loot[FB].Pvp) do
                 for i, itemID in ipairs(BG.Loot[FB].Pvp[k]) do
-                    count1, count2, tbl = Mode(FB, count1, count2, tbl, EquipLocs, itemID, "pvp", hard, ii, k)
+                    count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "pvp", hard, ii, k)
                 end
             end
         end
     end
 
-    if EquipLocs then
-        return tbl
-    else
-        return count1 == count2
-    end
+    return tbl
 end
 local function SortItemLibTable(tbl, isnewsorter)        -- 排序
     sort(tbl, function(a, b)
@@ -833,6 +868,8 @@ local function SortItemLibTable(tbl, isnewsorter)        -- 排序
 end
 local function GetItemLibTable(num, EquipLocs)
     local tbl = CheckItemCache(EquipLocs)
+    BG.itemLibItemOldTbl = tbl
+    -- pt(#tbl)
 
     -- 删除重复装备，合并获取途径
     local newtbl = {}
@@ -1129,7 +1166,7 @@ local function UpdateTiptext(num, itemtbale)
         BG.ItemLibMainFrame[num]["noItem"]:SetText(L["请在下方选择一个过滤方案"])
     end
     BG.ItemLibMainFrame[num]["noItem"]:Show()
-    if #itemtbale ~= 0 then
+    if updateCDing or #itemtbale ~= 0 then
         BG.ItemLibMainFrame[num]["noItem"]:Hide()
     end
 
@@ -1165,6 +1202,29 @@ function BG.UpdateAllItemLib(num)
     local num = num or 1
     local EquipLocs = BiaoGe["ItemLibInvType"][num]
     UpdateItemLib(num, EquipLocs)
+end
+
+function BG.CacheAndUpdateAllItemLib()
+    BG.itemLibCaches[BG.FB1] = true
+    CheckItemCache()
+
+    local num = 1
+    local count = BG.ItemLibMainFrame[num].buttoncount
+    if count then
+        for i = 1, count do
+            BG.ItemLibMainFrame[num]["button" .. i]:Hide()
+        end
+    end
+
+    local t = CreateLoadingText()
+
+    BG.After(0.5, function()
+        t:Hide()
+        BG.UpdateAllItemLib()
+        BG.UpdateItemLib_RightHope_All()
+        BG.UpdateItemLib_RightHope_IsHaved_All()
+        BG.UpdateItemLib_RightHope_IsLooted_All()
+    end)
 end
 
 BG.CheckItemCache = CheckItemCache
@@ -1534,15 +1594,16 @@ function BG.ItemLibUI()
         f:SetPoint("TOPLEFT", BG.MainFrame, 30, -80)
         BG.ItemLibMainFrame.bg1 = f
 
-        local s = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
-        s:SetPoint("TOPLEFT", 0, -35)
-        s:SetPoint("BOTTOMRIGHT", -30, 5)
-        s.ScrollBar.scrollStep = BUTTONHEIGHT * 4
+        local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
+        scroll:SetPoint("TOPLEFT", 0, -35)
+        scroll:SetPoint("BOTTOMRIGHT", -30, 5)
+        scroll.ScrollBar.scrollStep = BUTTONHEIGHT * 4
+        BG.CreateSrollBarBackdrop(scroll.ScrollBar)
 
-        local frame = CreateFrame("Frame", nil, s)
+        local frame = CreateFrame("Frame", nil, scroll)
         frame:SetSize(1, 1)
         BG.ItemLibMainFrame[num] = frame
-        s:SetScrollChild(frame)
+        scroll:SetScrollChild(frame)
 
         -- 鼠标提示定位
         local _f = CreateFrame("Frame", nil, f)
@@ -1632,7 +1693,7 @@ function BG.ItemLibUI()
             bt:SetScript("OnEnter", function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
                 GameTooltip:ClearLines()
-                GameTooltip:AddLine(L["获取途径过滤"], 1, 1, 1, true)
+                GameTooltip:AddLine(L["获取途径显示"], 1, 1, 1, true)
                 GameTooltip:Show()
             end)
             bt:SetScript("OnLeave", GameTooltip_Hide)
@@ -1663,7 +1724,7 @@ function BG.ItemLibUI()
                     { name = L["团本：10人"], name2 = "raid10", },
                     { name = L["团本：英雄难度"], name2 = "raidhero", },
                     { name = L["团本：普通难度"], name2 = "raidnormal", },
-                    { name = L["5人本"], name2 = "fb5", },
+                    -- { name = L["5人本"], name2 = "fb5", },
                     { name = L["牌子/货币"], name2 = "currency", },
                     { name = L["声望"], name2 = "faction", },
                     { name = L["专业"], name2 = "profession", },
@@ -2084,28 +2145,21 @@ end
 
 BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload)
     if not (isLogin or isReload) then return end
-    CheckItemCache() -- 向服务器申请缓存全部装备
 
-    local yes = true
+    BG.itemLibCaches = {}
+
     BG.ItemLibMainFrame:HookScript("OnShow", function(self)
-        if yes then
-            BG.UpdateAllItemLib()
-            yes = nil
-        end
-        -- 刷新心愿
-        if not yes then
+        if not BG.itemLibCaches[BG.FB1] then
+            BG.CacheAndUpdateAllItemLib()
+        else
+            if BG.lastItemLibFB ~= BG.FB1 then
+                BG.UpdateAllItemLib()
+            end
             BG.UpdateItemLib_LeftHope_All()
-        end
-        BG.UpdateItemLib_RightHope_All()
-
-        -- 更新已拥有装备
-        if not yes then
             BG.UpdateItemLib_LeftLib_IsHaved_All()
-        end
-
-        -- 更新已掉落
-        if not yes then
             BG.UpdateItemLib_LeftLib_IsLooted_All()
         end
+        BG.UpdateItemLib_RightHope_All()
+        BG.lastItemLibFB = BG.FB1
     end)
 end)

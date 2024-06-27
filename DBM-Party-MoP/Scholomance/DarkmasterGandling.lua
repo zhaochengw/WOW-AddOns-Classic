@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,challenge,timewalker"
 
-mod:SetRevision("20231226124128")
+mod:SetRevision("20240616044034")
 mod:SetCreatureID(59080)
 mod:SetEncounterID(1430)
 mod:SetZone(1007)
@@ -35,7 +35,7 @@ end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)--Just until there is a better way
 	if msg:find("spell:113395") then
-		warnLesson:Show(DBM:GetUnitFullName(target))
+		warnLesson:Show(DBM:GetUnitFullName(target) or target)
 		timerLessonCD:Start()
 	end
 end

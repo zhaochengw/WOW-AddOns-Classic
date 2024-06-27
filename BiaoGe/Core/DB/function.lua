@@ -92,7 +92,7 @@ end
 
 function BG.IsWLKFB(FB)
     local FB = FB or BG.FB1
-    if (FB == "NAXX" and not BG.IsVanilla()) or FB == "ULD" or FB == "TOC" or FB == "ICC" then
+    if (FB == "NAXX" and not BG.IsVanilla()) or FB == "OS" or FB == "EOE" or FB == "ULD" or FB == "TOC" or (FB == "OL" and not BG.IsVanilla()) or FB == "ICC" or FB == "RS" then
         return true
     end
 end

@@ -28,56 +28,57 @@ local touming1, touming2 = 0.1, 0.1
 ------------------标题------------------
 function BG.ReceiveBiaoTiUI(FB, t, b, bb, i, ii)
     local fontsize = 15
-    if b == 1 and i == 1 then
-        local version = BG["ReceiveFrame" .. FB]:CreateFontString()
-        if t == 1 then
-            version:SetPoint("TOPLEFT", BG.ReceiveMainFrame, "TOPLEFT", 13, -60)
-        else
-            version:SetPoint("TOPLEFT", frameright, "TOPLEFT", 100, 0)
-        end
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
-        version:SetTextColor(RGB(BG.y2))
-        version:SetText(L["  项目"])
-        version:Show()
-        preWidget = version
-
-        local version = BG["ReceiveFrame" .. FB]:CreateFontString()
-        version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 70, 0);
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
-        version:SetTextColor(RGB(BG.y2))
-        version:SetText(L["装备"])
-        version:Show()
-        preWidget = version
-        p.preWidget0 = version
-
-        local version = BG["ReceiveFrame" .. FB]:CreateFontString()
-        version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 155, 0);
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
-        version:SetTextColor(RGB(BG.y2))
-        version:SetText(L["买家"])
-        version:Show()
-        preWidget = version
-
-        local version = BG["ReceiveFrame" .. FB]:CreateFontString()
-        version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 95, 0);
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
-        version:SetTextColor(RGB(BG.y2))
-        version:SetText(L["金额"])
-        version:Show()
-        preWidget = version
-        frameright = version
+    local version = BG["ReceiveFrame" .. FB]:CreateFontString()
+    if t == 1 then
+        version:SetPoint("TOPLEFT", BG.ReceiveMainFrame, "TOPLEFT", 13, -60)
+    else
+        version:SetPoint("TOPLEFT", frameright, "TOPLEFT", 100, 0)
     end
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetTextColor(RGB(BG.y2))
+    version:SetText(L["  项目"])
+    version:Show()
+    preWidget = version
+
+    local version = BG["ReceiveFrame" .. FB]:CreateFontString()
+    version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 70, 0);
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetTextColor(RGB(BG.y2))
+    version:SetText(L["装备"])
+    version:Show()
+    preWidget = version
+    p.preWidget0 = version
+
+    local version = BG["ReceiveFrame" .. FB]:CreateFontString()
+    version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 155, 0);
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetTextColor(RGB(BG.y2))
+    version:SetText(L["买家"])
+    version:Show()
+    preWidget = version
+
+    local version = BG["ReceiveFrame" .. FB]:CreateFontString()
+    version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 95, 0);
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetTextColor(RGB(BG.y2))
+    version:SetText(L["金额"])
+    version:Show()
+    preWidget = version
+    frameright = version
 end
 
 ------------------装备------------------
-function BG.ReceiveZhuangBeiUI(FB, t, b, bb, i, ii)
-    local bt = CreateFrame("EditBox", nil, BG["ReceiveFrame" .. FB], "InputBoxTemplate");
+function BG.ReceiveZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
+    local parent = scrollFrame or BG["ReceiveFrame" .. FB]
+    local bt = CreateFrame("EditBox", nil, parent, "InputBoxTemplate");
     bt:SetSize(150, 20)
     bt:SetFrameLevel(110)
     if BG.zaxiang[FB] and BossNum(FB, b, t) == Maxb[FB] - 1 and i == BG.zaxiang[FB].i then
         bt:SetPoint("TOPLEFT", frameright, "TOPLEFT", 170, -18)
     else
-        if b > 1 and i == 1 then
+        if scrollFrame and i == 1 then
+            bt:SetPoint("TOPLEFT", scrollFrame, 5, 0)
+        elseif b > 1 and i == 1 then
             bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -20)
         else
             if BG.zaxiang[FB] and BossNum(FB, b, t) == Maxb[FB] and i == 1 then
@@ -159,7 +160,7 @@ end
 
 ------------------买家------------------
 function BG.ReceiveMaiJiaUI(FB, t, b, bb, i, ii)
-    local button = CreateFrame("EditBox", nil, BG["ReceiveFrame" .. FB], "InputBoxTemplate");
+    local button = CreateFrame("EditBox", nil, BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i], "InputBoxTemplate");
     button:SetSize(90, 20)
     button:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
     button:SetFrameLevel(110)
@@ -182,7 +183,7 @@ end
 
 ------------------金额------------------
 function BG.ReceiveJinEUI(FB, t, b, bb, i, ii)
-    local button = CreateFrame("EditBox", nil, BG["ReceiveFrame" .. FB], "InputBoxTemplate");
+    local button = CreateFrame("EditBox", nil, BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i], "InputBoxTemplate");
     button:SetSize(80, 20)
     button:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
     button:SetFrameLevel(110)
@@ -204,10 +205,14 @@ function BG.ReceiveJinEUI(FB, t, b, bb, i, ii)
 end
 
 ------------------BOSS名字------------------
-function BG.ReceiveBossNameUI(FB, t, b, bb, i, ii)
+function BG.ReceiveBossNameUI(FB, t, b, bb, i, ii, frameName)
     local fontsize = 14
-    local version = BG["ReceiveFrame" .. FB]:CreateFontString();
-    version:SetPoint("TOP", BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)].zhuangbei1, "TOPLEFT", -45, -2)
+    local version = BG["ReceiveFrame" .. FB]:CreateFontString()
+    if frameName and BG[frameName .. FB]["scrollFrame" .. BossNum(FB, b, t)] then
+        version:SetPoint("TOP", BG[frameName .. FB]["scrollFrame" .. BossNum(FB, b, t)].owner, "TOPLEFT", -40, -2)
+    else
+        version:SetPoint("TOP", BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)].zhuangbei1, "TOPLEFT", -45, -2)
+    end
     version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].color))
     version:SetText(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].name)
@@ -234,6 +239,7 @@ function BG.ReceiveJiShaUI(FB, t, b, bb, i, ii)
     end
     text:SetPoint("TOPLEFT", BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. num], "BOTTOMLEFT", -0, -3)
     text:SetFont(BIAOGE_TEXT_FONT, 10, "OUTLINE,THICK")
+    text:SetTextColor(RGB(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].color))
     text:SetAlpha(0.8)
     BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["time"] = text
 end
@@ -244,7 +250,7 @@ function BG.ReceiveDiSeUI(FB, t, b, bb, i, ii)
     local textrue = BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i]:CreateTexture()
     textrue:SetPoint("TOPLEFT", BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i], "TOPLEFT", -4, -2)
     textrue:SetPoint("BOTTOMRIGHT", BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i], "BOTTOMRIGHT", -2, 0)
-    textrue:SetColorTexture(red, greed, blue, touming1)
+    -- textrue:SetColorTexture(red, greed, blue, touming1)
     textrue:Hide()
     BG.ReceiveFrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i] = textrue
 end

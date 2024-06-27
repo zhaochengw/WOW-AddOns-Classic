@@ -45,10 +45,10 @@ function BG.RoleOverviewUI()
             }
         elseif BG.IsWLK() then
             BiaoGe.FBCDchoice = {
-                ["25ICC"] = 1,
-                ["10ICC"] = 1,
-                ["25RS"] = 1,
-                ["10RS"] = 1,
+                ["25ULD"] = 1,
+                ["10ULD"] = 1,
+                ["25NAXX"] = 1,
+                ["10NAXX"] = 1,
                 ["25VOA"] = 1,
                 ["10VOA"] = 1,
                 ["gamma"] = 1,
@@ -72,15 +72,15 @@ function BG.RoleOverviewUI()
             }
         elseif BG.IsWLK() then
             BiaoGe.MONEYchoice = {
-                [396] = 1,
-                [395] = 1,
+                -- [396] = 1,
+                -- [395] = 1,
                 [341] = 1,
                 [301] = 1,
                 [221] = 1,
                 [102] = 1,
                 [101] = 1,
-                [2711] = 1,
-                [2589] = 1,
+                -- [2711] = 1,
+                -- [2589] = 1,
                 ["money"] = 1,
             }
         elseif BG.IsCTM() then
@@ -106,6 +106,32 @@ function BG.RoleOverviewUI()
             BG.Once("MONEYchoice", 240408, function()
                 BiaoGe.MONEYchoice[221262] = 1
                 BiaoGe.MONEYchoice[221365] = 1
+            end)
+        elseif BG.IsWLK() then
+            BG.Once("FBCDandMONEYchoice", 240611, function()
+                BiaoGe.FBCDchoice = {
+                    ["25ULD"] = 1,
+                    ["10ULD"] = 1,
+                    ["25NAXX"] = 1,
+                    ["10NAXX"] = 1,
+                    ["25VOA"] = 1,
+                    ["10VOA"] = 1,
+                    ["gamma"] = 1,
+                    ["heroe"] = 1,
+                    ["week1"] = 1,
+                }
+                BiaoGe.MONEYchoice = {
+                    -- [396] = 1,
+                    -- [395] = 1,
+                    -- [341] = 1,
+                    -- [301] = 1,
+                    [221] = 1,
+                    [102] = 1,
+                    [101] = 1,
+                    -- [2711] = 1,
+                    -- [2589] = 1,
+                    ["money"] = 1,
+                }
             end)
         elseif BG.IsCTM() then
             BG.Once("FBCDchoice", 240519, function()
@@ -169,10 +195,10 @@ function BG.RoleOverviewUI()
     elseif BG.IsWLK() then
         BG.FBCDall_table = {
             --WLK
-            { name = "25ICC", color = "9370DB", fbId = 631, num = 25, type = "fb" },
-            { name = "10ICC", color = "9370DB", fbId = 631, num = 10, type = "fb" },
             { name = "25RS", color = "FF4500", fbId = 724, num = 25, type = "fb" },
             { name = "10RS", color = "FF4500", fbId = 724, num = 10, type = "fb" },
+            { name = "25ICC", color = "9370DB", fbId = 631, num = 25, type = "fb" },
+            { name = "10ICC", color = "9370DB", fbId = 631, num = 10, type = "fb" },
             { name = "25TOC", color = "FF69B4", fbId = 649, num = 25, type = "fb" },
             { name = "10TOC", color = "FF69B4", fbId = 649, num = 10, type = "fb" },
             { name = "25OL", color = "FFA500", fbId = 249, num = 25, type = "fb" },
@@ -233,10 +259,10 @@ function BG.RoleOverviewUI()
             { name = "BWD", color = "FF1493", fbId = 669, type = "fb" },
             { name = "TOF", color = "87CEFA", fbId = 754, type = "fb" },
             --WLK
-            { name = "25ICC", color = "9370DB", fbId = 631, num = 25, type = "fb" },
-            { name = "10ICC", color = "9370DB", fbId = 631, num = 10, type = "fb" },
             { name = "25RS", color = "FF4500", fbId = 724, num = 25, type = "fb" },
             { name = "10RS", color = "FF4500", fbId = 724, num = 10, type = "fb" },
+            { name = "25ICC", color = "9370DB", fbId = 631, num = 25, type = "fb" },
+            { name = "10ICC", color = "9370DB", fbId = 631, num = 10, type = "fb" },
             { name = "25TOC", color = "FF69B4", fbId = 649, num = 25, type = "fb" },
             { name = "10TOC", color = "FF69B4", fbId = 649, num = 10, type = "fb" },
             { name = "25OL", color = "FFA500", fbId = 249, num = 25, type = "fb" },
@@ -1078,7 +1104,7 @@ function BG.RoleOverviewUI()
         end
 
         ------------------一键排灵魂烘炉------------------
-        if BG.IsWLK() then
+        --[[         if BG.IsWLK() then
             local dungeonID = 2463 -- 伽马灵魂烘炉
             -- local dungeonID = 252 -- 英雄灵魂烘炉
             local fbID = 632
@@ -1160,7 +1186,7 @@ function BG.RoleOverviewUI()
             --     local dungeonID = parent.id;
             --     pt(dungeonID)
             -- end)
-        end
+        end ]]
     end
     ------------------日常任务------------------
     do

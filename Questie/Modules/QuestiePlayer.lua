@@ -56,7 +56,7 @@ end
 ---@return boolean isMaxLevel
 function QuestiePlayer.IsMaxLevel()
     local level = QuestiePlayer.GetPlayerLevel()
-    return (Questie.IsWotlk and level == 80) or (Questie.IsTBC and level == 70) or (Questie.IsClassic and level == 60)
+    return (Questie.IsCata and level == 85) or (Questie.IsWotlk and level == 80) or (Questie.IsTBC and level == 70) or (Questie.IsClassic and level == 60)
 end
 
 ---@return number
@@ -94,7 +94,12 @@ function QuestiePlayer.HasRequiredClass(requiredClasses)
 end
 
 function QuestiePlayer:GetCurrentZoneId()
-    return ZoneDB:GetAreaIdByUiMapId(C_Map.GetBestMapForUnit("player"))
+    local uiMapId = C_Map.GetBestMapForUnit("player")
+    if uiMapId then
+        return ZoneDB:GetAreaIdByUiMapId(uiMapId)
+    end
+
+    return ZoneDB.instanceIdToUiMapId[select(8, GetInstanceInfo())]
 end
 
 ---@return number
@@ -172,3 +177,5 @@ function QuestiePlayer:GetPartyMemberList()
     end
     return members
 end
+
+return QuestiePlayer

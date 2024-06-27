@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge"--No Follower dungeon
 
-mod:SetRevision("20240110230340")
+mod:SetRevision("20240616044034")
 mod:SetCreatureID(198995)
 mod:SetEncounterID(2666)
 --mod:SetUsedIcons(1, 2, 3)
@@ -73,6 +73,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnEonShatter:Show(self.vb.shatterSet.." - "..self.vb.shatterCount)
 			specWarnEonShatter:Play("watchstep")
 		else--Cast 2
+			---@diagnostic disable-next-line: param-type-mismatch
 			warnEonShatter:Show(self.vb.shatterSet.." - "..self.vb.shatterCount)
 			--if self.vb.shatterCount == 2 then
 			--	timerEonShatterCD:Start(42)

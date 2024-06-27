@@ -1,5 +1,8 @@
 local L = WeakAuras.L
-local AddonName, OptionsPrivate = ...
+---@type string
+local AddonName = ...
+---@class OptionsPrivate
+local OptionsPrivate = select(2, ...)
 
 local texture_types = WeakAuras.StopMotion.texture_types;
 local texture_data = WeakAuras.StopMotion.texture_data;
@@ -125,7 +128,12 @@ local function createOptions(id, data)
             name = L["Choose"],
             order = 2,
             func = function()
-                OptionsPrivate.OpenTexturePicker(data, {}, {
+                local path = {}
+                local paths = {}
+                for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+                  paths[child.id] = path
+                end
+                OptionsPrivate.OpenTexturePicker(data, paths, {
                   texture = "foregroundTexture",
                   color = "foregroundColor",
                   mirror = "mirror",
@@ -378,12 +386,17 @@ local function createOptions(id, data)
             name = L["Choose"],
             order = 20,
             func = function()
-                OptionsPrivate.OpenTexturePicker(data, {}, {
-                  texture = "backgroundTexture",
-                  color = "backgroundColor",
-                  mirror = "mirror",
-                  blendMode = "blendMode"
-                }, texture_types, setTextureFunc, true);
+              local path = {}
+              local paths = {}
+              for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+                paths[child.id] = path
+              end
+              OptionsPrivate.OpenTexturePicker(data, paths, {
+                texture = "backgroundTexture",
+                color = "backgroundColor",
+                mirror = "mirror",
+                blendMode = "blendMode"
+              }, texture_types, setTextureFunc, true);
             end,
             disabled = function() return data.sameTexture or data.hideBackground; end,
             hidden = function() return data.hideBackground end,
@@ -576,17 +589,11 @@ local function createOptions(id, data)
       }
     };
 
-    if OptionsPrivate.commonOptions then
-      return {
-        stopmotion = options,
-        position = OptionsPrivate.commonOptions.PositionOptions(id, data, 2),
-      };
-    else
-      return {
-        stopmotion = options,
-        position = WeakAuras.PositionOptions(id, data, 2),
-      };
-    end
+    return {
+      stopmotion = options,
+      progressOptions = OptionsPrivate.commonOptions.ProgressOptions(data),
+      position = OptionsPrivate.commonOptions.PositionOptions(id, data, 2),
+    }
 end
 
 local function createThumbnail()

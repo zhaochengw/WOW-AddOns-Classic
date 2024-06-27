@@ -1,5 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
-local AddonName, OptionsPrivate = ...
+---@type string
+local AddonName = ...
+---@class OptionsPrivate
+local OptionsPrivate = select(2, ...)
 
 local L = WeakAuras.L;
 
@@ -317,6 +320,12 @@ local function GetCustomTriggerOptions(data, triggernum)
     test = "function",
     events = "table",
     values = "table",
+    total = "string",
+    inverse = "string",
+    paused = "string",
+    remaining = "string",
+    modRate = "string",
+    useModRate = "boolean"
   }
 
   local function validateCustomVariables(variables)

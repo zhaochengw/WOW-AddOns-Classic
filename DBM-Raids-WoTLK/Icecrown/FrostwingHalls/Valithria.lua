@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20240512232312")
+mod:SetRevision("20240616044352")
 mod:SetCreatureID(36789)
 mod:SetEncounterID(not mod:IsPostCata() and 854 or 1098)
 mod:SetModelID(30318)
@@ -27,7 +27,7 @@ mod:RegisterEventsInCombat(
 local warnCorrosion			= mod:NewStackAnnounce(70751, 2, nil, false)
 local warnGutSpray			= mod:NewTargetAnnounce(70633, 3, nil, "Tank|Healer")
 local warnManaVoid			= mod:NewSpellAnnounce(71179, 2, nil, "ManaUser")
-local warnSupression		= mod:NewSpellAnnounce(70588, 3)
+local warnSupression		= mod:NewTargetAnnounce(70588, 3)
 local warnPortalSoon		= mod:NewSoonAnnounce(72483, 2)
 local warnPortal			= mod:NewSpellAnnounce(72483, 3)
 local warnPortalOpen		= mod:NewAnnounce("WarnPortalOpen", 4, 72483, nil, nil, nil, 72483)

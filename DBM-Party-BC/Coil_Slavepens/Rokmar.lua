@@ -5,7 +5,7 @@ if mod:IsRetail() then
 	mod.statTypes = "normal,heroic,timewalker"
 end
 
-mod:SetRevision("20231014053435")
+mod:SetRevision("20240616044034")
 mod:SetCreatureID(17991)
 mod:SetEncounterID(1941)
 
@@ -20,7 +20,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 31956 38801 34970"
 )
 
-local WarnFrenzy	= mod:NewSpellAnnounce(34970)
+local WarnFrenzy	= mod:NewTargetNoFilterAnnounce(34970)
 
 local specWarnWound	= mod:NewSpecialWarningTarget(38801, "Healer", nil, nil, 1, 7)
 

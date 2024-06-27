@@ -1003,6 +1003,7 @@ GTFO.SpellID["197521"] = {
 
 GTFO.SpellID["197821"] = {
   --desc = "Felblazed Ground (Illysanna Ravencrest)";
+  ignoreApplication = true;
   sound = 1;
 };
 

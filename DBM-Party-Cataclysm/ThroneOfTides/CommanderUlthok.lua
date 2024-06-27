@@ -6,11 +6,11 @@ if (wowToc >= 100200) then
 	mod.statTypes = "normal,heroic,challenge,timewalker"
 	mod.upgradedMPlus = true
 	mod.sendMainBossGUID = true
-else--TODO, refine for cata classic since no timewalker there
-	mod.statTypes = "normal,heroic,timewalker"
+else
+	mod.statTypes = "normal,heroic"
 end
 
-mod:SetRevision("20231202061953")
+mod:SetRevision("20240615053330")
 mod:SetCreatureID(40765)
 mod:SetEncounterID(1044)
 

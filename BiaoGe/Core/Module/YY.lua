@@ -294,13 +294,14 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             edit:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
             tinsert(Y.textcolor_table, edit)
             BG.YYMainFrame.new.edit = edit
-            local s = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
-            s:SetWidth(f:GetWidth() - 10)
-            s:SetHeight(f:GetHeight() - 10)
-            s:SetPoint("CENTER")
-            s.ScrollBar.scrollStep = BG.scrollStep
-            s:SetScrollChild(edit)
-            BG.YYMainFrame.new.scroll = s
+            local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
+            scroll:SetWidth(f:GetWidth() - 10)
+            scroll:SetHeight(f:GetHeight() - 10)
+            scroll:SetPoint("CENTER")
+            scroll.ScrollBar.scrollStep = BG.scrollStep
+            BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+            scroll:SetScrollChild(edit)
+            BG.YYMainFrame.new.scroll = scroll
 
             local rightt = f:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall2")
             rightt:SetPoint("BOTTOMRIGHT", -5, 5)
@@ -506,11 +507,12 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         local f = CreateFrame("Frame", nil, BG.YYMainFrame.my)
         f:SetSize(1, 1)
         BG.YYMainFrame.my.all = f
-        local s = CreateFrame("ScrollFrame", nil, BG.YYMainFrame.my, "UIPanelScrollFrameTemplate")
-        s:SetPoint("TOPLEFT", BG.YYMainFrame.my, 0, -height - 10 - 3)
-        s:SetPoint("BOTTOMRIGHT", BG.YYMainFrame.my, -27, 5)
-        s.ScrollBar.scrollStep = BG.scrollStep
-        s:SetScrollChild(f)
+        local scroll = CreateFrame("ScrollFrame", nil, BG.YYMainFrame.my, "UIPanelScrollFrameTemplate")
+        scroll:SetPoint("TOPLEFT", BG.YYMainFrame.my, 0, -height - 10 - 3)
+        scroll:SetPoint("BOTTOMRIGHT", BG.YYMainFrame.my, -27, 5)
+        scroll.ScrollBar.scrollStep = BG.scrollStep
+        BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+        scroll:SetScrollChild(f)
 
         function Y.Pingjia(text)
             local pingjia = text
@@ -1122,11 +1124,12 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             local f = CreateFrame("Frame", nil, BG.YYMainFrame.result)
             f:SetSize(1, 1)
             BG.YYMainFrame.result.all = f
-            local s = CreateFrame("ScrollFrame", nil, BG.YYMainFrame.result, "UIPanelScrollFrameTemplate")
-            s:SetPoint("TOPLEFT", BG.YYMainFrame.result, 0, -height - 10 - 3)
-            s:SetPoint("BOTTOMRIGHT", BG.YYMainFrame.result, -27, 5)
-            s.ScrollBar.scrollStep = BG.scrollStep
-            s:SetScrollChild(f)
+            local scroll = CreateFrame("ScrollFrame", nil, BG.YYMainFrame.result, "UIPanelScrollFrameTemplate")
+            scroll:SetPoint("TOPLEFT", BG.YYMainFrame.result, 0, -height - 10 - 3)
+            scroll:SetPoint("BOTTOMRIGHT", BG.YYMainFrame.result, -27, 5)
+            scroll.ScrollBar.scrollStep = BG.scrollStep
+            BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+            scroll:SetScrollChild(f)
 
             local function OnEnter(self)
                 BG.YYMainFrame.result.all.button[self.num].ds:Show()
@@ -1906,12 +1909,13 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 edit:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                 tinsert(BG.EndPJ.textcolor_table, edit)
                 BG.EndPJ.new.edit = edit
-                local s = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
-                s:SetWidth(f:GetWidth() - 10)
-                s:SetHeight(f:GetHeight() - 10)
-                s:SetPoint("CENTER")
-                s.ScrollBar.scrollStep = BG.scrollStep
-                s:SetScrollChild(edit)
+                local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
+                scroll:SetWidth(f:GetWidth() - 10)
+                scroll:SetHeight(f:GetHeight() - 10)
+                scroll:SetPoint("CENTER")
+                scroll.ScrollBar.scrollStep = BG.scrollStep
+                BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+                scroll:SetScrollChild(edit)
                 n = n + 2
 
                 local leftt = f:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall2")

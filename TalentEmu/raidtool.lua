@@ -300,7 +300,7 @@ MT.BuildEnv('RAIDTOOL');
 				if itemLevel1 then
 					Node.ItemLevel:SetText(format("%.1f", itemLevel1));
 				else
-					Node.ItemLevel:SetText(nil);
+					Node.ItemLevel:SetText("");
 				end
 				if refresh_again then
 					MT._TimerStart(Node.Frame.UpdateScrollList, 0.2, 1);
@@ -325,10 +325,10 @@ MT.BuildEnv('RAIDTOOL');
 						end
 					end
 				else
-					Node.ItemSummary:SetText(nil);
-					Node.EnchantSummary:SetText(nil);
+					Node.ItemSummary:SetText("");
+					Node.EnchantSummary:SetText("");
 					if VT.__support_gem then
-						Node.GemSummary:SetText(nil);
+						Node.GemSummary:SetText("");
 					end
 				end
 			else
@@ -338,18 +338,18 @@ MT.BuildEnv('RAIDTOOL');
 					SpecIcon:SetTexture(TTEXTURESET.UNK);
 					SpecIcon.Name:SetText("*");
 				end
-				Node.ItemLevel:SetText(nil);
-				Node.ItemSummary:SetText(nil);
-				Node.EnchantSummary:SetText(nil);
+				Node.ItemLevel:SetText("");
+				Node.ItemSummary:SetText("");
+				Node.EnchantSummary:SetText("");
 				if VT.__support_gem then
-					Node.GemSummary:SetText(nil);
+					Node.GemSummary:SetText("");
 				end
 			end
 			local BossModInfo = VT.ExternalAddOn["D4C"].list[name] or VT.ExternalAddOn["D4BC"].list[name] or VT.ExternalAddOn["BigWigs"].list[name];
 			if BossModInfo then
 				Node.BossModInfo:SetText(BossModInfo[1]);
 			else
-				Node.BossModInfo:SetText(nil);
+				Node.BossModInfo:SetText("");
 			end
 			Node:Show();
 			if GetMouseFocus() == Node then

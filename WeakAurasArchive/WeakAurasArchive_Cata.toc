@@ -1,0 +1,8 @@
+## Interface: 40400
+## Title: WeakAuras Archive
+## Author: The WeakAuras Team
+## Version: 5.12.9
+## LoadOnDemand: 1
+## SavedVariables: WeakAurasArchive
+## Dependencies: WeakAuras
+## AllowLoadGameType: cata

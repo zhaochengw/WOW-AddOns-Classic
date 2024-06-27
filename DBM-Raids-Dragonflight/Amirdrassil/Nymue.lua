@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2556, "DBM-Raids-Dragonflight", 1, 1207)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240512085548")
+mod:SetRevision("20240615122743")
 mod:SetCreatureID(206172)
 mod:SetEncounterID(2708)
 mod:SetUsedIcons(8, 7, 6)
@@ -37,7 +37,6 @@ local warnVerdantMatrix								= mod:NewCountAnnounce(420554, 2, nil, nil, DBM_C
 local warnInflorescence								= mod:NewYouAnnounce(423195, 1, nil, false, 2)--Can be spammy depending on player movements, off by default, most might track this with WA anyways
 local warnSurgingGrowth								= mod:NewCountAnnounce(429983, 2)
 local warnWeaversBurden								= mod:NewCountAnnounce(426519, 2, nil, nil, 167180)
-local warnWeaversBurdenTargets						= mod:NewTargetCountAnnounce(426519, 2, nil, nil, 167180, nil, nil, nil, true)
 local warnEphemeralFlora							= mod:NewCountAnnounce(430563, 3)
 local warnLucidVulnerability						= mod:NewCountAnnounce(428479, 4, nil, nil, DBM_CORE_L.AUTO_ANNOUNCE_OPTIONS.stack:format(428479))--Player
 
@@ -63,7 +62,7 @@ mod:AddPrivateAuraSoundOption(427722, true, 426519, 1)--Weaver's Burden
 --Stage Two: Creation Complete
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(28356))
 local warnFullBloom									= mod:NewCountAnnounce(426855, 2)
-local warnRadialFlourish							= mod:NewCountAnnounce(422721, 2, nil, false)
+local warnRadialFlourish							= mod:NewSpellAnnounce(422721, 2, nil, false)
 local warnWakingDecimation							= mod:NewCastAnnounce(428471, 4, 35)
 
 local specWarnLumberingSlam							= mod:NewSpecialWarningDodge(429108, nil, nil, nil, 2, 2)

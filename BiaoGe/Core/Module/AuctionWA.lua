@@ -6,7 +6,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
 
     local aura_env = aura_env or {}
-    aura_env.ver = "v1.1"
+    aura_env.ver = "v1.2"
 
     if not _G.BGA then
         _G.BGA = {}
@@ -44,7 +44,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
     if (GetLocale() == "zhTW") then
         aura_env.L["Alt+点击才能生效"] = "Alt+點擊才能生效"
-        aura_env.L["只有团长有权限取消拍卖"] = "只有團長有權限取消拍賣"
+        aura_env.L["只有团长或物品分配者有权限取消拍卖"] = "只有團長或物品分配者有權限取消拍賣"
         aura_env.L["根据你的出价动态改变增减幅度"] = "根據你的出價動態改變增減幅度"
         aura_env.L["长按可以快速调整价格"] = "長按可以快速調整價格"
         aura_env.L["在输入框使用滚轮也可快速调整价格"] = "在輸入框使用滾輪也可快速調整價格"
@@ -161,9 +161,28 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         _G.BGA.FontWhite15:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
     end
 
+    function aura_env.IsRaidLeader(player)
+        if not player then
+            player = UnitName("player")
+        end
+        if player == aura_env.raidLeader then
+            return true
+        end
+    end
+
+    function aura_env.IsML(player)
+        if not player then
+            player = UnitName("player")
+        end
+        if player == aura_env.raidLeader or player == aura_env.ML then
+            return true
+        end
+    end
+
     function aura_env.UpdateRaidRosterInfo()
         wipe(aura_env.raidRosterInfo)
         aura_env.raidLeader = nil
+        aura_env.ML = nil
         if IsInRaid(1) then
             for i = 1, GetNumGroupMembers() do
                 local name, rank, subgroup, level, class2, class, zone, online,
@@ -187,6 +206,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     table.insert(aura_env.raidRosterInfo, a)
                     if rank == 2 then
                         aura_env.raidLeader = name
+                    elseif isML then
+                        aura_env.ML = name
+                    end
+                    if rank == 2 or isML then
+                        aura_env.ML = name
                     end
                 end
             end
@@ -194,7 +218,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             C_ChatInfo.SendAddonMessage(aura_env.AddonChannel, "MyVer" .. "," .. aura_env.ver, "RAID")
         end
         for i, f in ipairs(_G.BGA.Frames) do
-            if not f.IsEnd and UnitName("player") == aura_env.raidLeader then
+            if not f.IsEnd and aura_env.IsML() then
                 f.cancel:Show()
             else
                 f.cancel:Hide()
@@ -239,7 +263,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         GameTooltip:ClearLines()
         GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
         GameTooltip:AddLine(aura_env.L["Alt+点击才能生效"], 1, 0.82, 0, true)
-        GameTooltip:AddLine(aura_env.L["只有团长有权限取消拍卖"], 0.5, 0.5, 0.5, true)
+        GameTooltip:AddLine(aura_env.L["只有团长或物品分配者有权限取消拍卖"], 0.5, 0.5, 0.5, true)
         GameTooltip:Show()
     end
 
@@ -347,14 +371,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         f.topMoney:SetText(aura_env.L["|cff00FF00买家：|r"] .. f.colorplayer)
                     end
 
-                    if UnitName("player") == aura_env.raidLeader then
+                    if aura_env.IsRaidLeader() then
                         SendChatMessage(format(aura_env.L["{rt6}拍卖成功{rt6} %s %s %s"], f.link, f.player, f.money), "RAID")
                     end
                 else
                     f.currentMoney:SetText(aura_env.L["|cffFF0000流拍：|r"] .. f.money)
                     f.topMoney:SetText("")
 
-                    if UnitName("player") == aura_env.raidLeader then
+                    if aura_env.IsRaidLeader() then
                         SendChatMessage(format(aura_env.L["{rt7}流拍{rt7} %s"], f.link), "RAID")
                     end
                 end
@@ -659,7 +683,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             bt:SetScript("OnLeave", GameTooltip_Hide)
             AuctionFrame.cancel = bt
 
-            if UnitName("player") == aura_env.raidLeader then
+            if aura_env.IsML() then
                 bt:Show()
             else
                 bt:Hide()
@@ -919,7 +943,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end
                     end
                 end
-            elseif arg1 == "StartAuction" and distType == "RAID" and sender == aura_env.raidLeader then
+            elseif arg1 == "StartAuction" and distType == "RAID" and aura_env.IsML(sender) then
                 local auctionID = tonumber(arg2)
                 local itemID = tonumber(arg3)
                 local money = tonumber(arg4)
@@ -928,7 +952,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 local mod = arg7
                 aura_env.CreateAuction(auctionID, itemID, money, duration, player, mod)
 
-                if UnitName("player") == aura_env.raidLeader then
+                if aura_env.IsRaidLeader() then
                     local tbl = {
                         normal = aura_env.L["正常模式"],
                         anonymous = aura_env.L["匿名模式"],
@@ -946,7 +970,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end)
                     end
                 end
-            elseif arg1 == "CancelAuction" and distType == "RAID" and sender == aura_env.raidLeader then
+            elseif arg1 == "CancelAuction" and distType == "RAID" and aura_env.IsML(sender) then
                 local auctionID = tonumber(arg2)
                 for i, f in ipairs(_G.BGA.Frames) do
                     if f.auctionID == auctionID and not f.IsEnd then
@@ -962,7 +986,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         f.myMoney:Hide()
                         f.cancel:Hide()
 
-                        if UnitName("player") == aura_env.raidLeader then
+                        if aura_env.IsRaidLeader() then
                             SendChatMessage(format(aura_env.L["{rt7}拍卖取消{rt7} %s"], f.link), "RAID")
                         end
 
