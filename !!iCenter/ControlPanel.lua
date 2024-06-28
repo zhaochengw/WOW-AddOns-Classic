@@ -1111,6 +1111,87 @@ if title ~= nil then
 	end
 end
 
+local _, title = GetAddOnInfo("MovableCastBar");
+if title ~= nil then
+	if GetLocale() == "zhCN" then
+		FF_NameMovableCastBar	= "可移动施法条";
+		FF_DescMovableCastBar	= "简单原生施法条";
+	elseif GetLocale() == "zhTW" then
+		FF_NameMovableCastBar	= "可移动施法条";
+		FF_DescMovableCastBar	= "简单原生施法条";
+	else
+		FF_NameMovableCastBar	= "MovableCastBar";
+		FF_DescMovableCastBar	= "Simple blizzard stylecastbar";
+	end
+	if ( EarthFeature_AddButton ) then
+		EarthFeature_AddButton(
+			{
+				id= "MovableCastBar";
+				tab= "ui";
+				name= FF_NameMovableCastBar;
+				subtext= "MovableCastBar";
+				tooltip = FF_DescMovableCastBar;
+				icon= "Interface\\Icons\\Spell_Fire_Flamebolt";
+				-- icon= "Interface\\Icons\\Spell_Nature_ElementalAbsorption";
+				callback= function(button)
+					if not IsAddOnLoaded("MovableCastBar") then
+						LoadAddOn("MovableCastBar");
+					end
+					InterfaceOptionsFrame_OpenToCategory("MovableCastBar");
+					InterfaceOptionsFrame_OpenToCategory("MovableCastBar");
+				end;
+				test = function()
+					if not IsAddOnLoaded("MovableCastBar") and not IsAddOnLoadOnDemand("MovableCastBar") then
+						return false;
+					else
+						return true;
+					end
+				end;
+			}
+		);
+	end
+end
+
+local _, title = GetAddOnInfo("PortalMage");
+if title ~= nil then
+	if GetLocale() == "zhCN" then
+		FF_NamePortalMage	= "法师传送门集合";
+		FF_DescPortalMage	= "法师传送门集合";
+	elseif GetLocale() == "zhTW" then
+		FF_NamePortalMage	= "法师传送门集合";
+		FF_DescPortalMage	= "法师传送门集合";
+	else
+		FF_NamePortalMage	= "PortalMage";
+		FF_DescPortalMage	= "Teleport button";
+	end
+	if ( EarthFeature_AddButton ) then
+		EarthFeature_AddButton(
+			{
+				id= "PortalMage";
+				tab= "ui";
+				name= FF_NamePortalMage;
+				subtext= "PortalMage";
+				tooltip = FF_DescPortalMage;
+				icon= "Interface/ICONS/Spell_Arcane_TeleportDalaran";
+				-- icon= "Interface\\Icons\\Spell_Nature_ElementalAbsorption";
+				callback= function(button)
+					if not IsAddOnLoaded("PortalMage") then
+						LoadAddOn("PortalMage");
+					end
+					LibStub("AceConfigDialog-3.0"):Open("PortalMage");
+				end;
+				test = function()
+					if not IsAddOnLoaded("PortalMage") and not IsAddOnLoadOnDemand("PortalMage") then
+						return false;
+					else
+						return true;
+					end
+				end;
+			}
+		);
+	end
+end
+
 local _, title = GetAddOnInfo("NeatPlates");
 if title ~= nil then
 	if GetLocale() == "zhCN" then
@@ -1261,6 +1342,45 @@ if title ~= nil then
 				end;
 				test = function()
 					if not IsAddOnLoaded("CritSound") and not IsAddOnLoadOnDemand("CritSound") then
+						return false;
+					else
+						return true;
+					end
+				end;
+			}
+		);
+	end
+end
+
+local _, title = GetAddOnInfo("AttackTimer");
+if title ~= nil then
+	if GetLocale() == "zhCN" then
+		FF_NameAttackTimer	= "武器攻击条";
+		FF_DescAttackTimer	= "显示平砍间隔";
+	elseif GetLocale() == "zhTW" then
+		FF_NameAttackTimer	= "武器攻击条";
+		FF_DescAttackTimer	= "显示平砍间隔";
+	else
+		FF_NameAttackTimer	= "AttackTimer";
+		FF_DescDCT	= "Weapon attack timer";
+	end
+	if ( EarthFeature_AddButton ) then
+		EarthFeature_AddButton(
+			{
+				id= "AttackTimer";
+				tab= "combat";
+				name= FF_NameAttackTimer;
+				subtext= "AttackTimer";
+				tooltip = FF_DescAttackTimer;
+				icon= "Interface\\Icons\\Ability_Gouge";
+				callback= function(button)
+					if not IsAddOnLoaded("AttackTimer") then
+						LoadAddOn("AttackTimer");
+					end
+					SlashCmdList["ATTACKTIMER"]("");
+				end;
+				test = function()
+					if not IsAddOnLoaded("AttackTimer") and not IsAddOnLoadOnDemand("AttackTimer") then
 						return false;
 					else
 						return true;
