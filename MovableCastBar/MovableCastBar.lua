@@ -17,8 +17,8 @@ end
 
 -- Default values
 local isLocked = true
-local MovableCastBarPosition = {"CENTER", UIParent, "CENTER", 0, 0}
 local bOriginal = true  -- Set to false for a new style
+local MovableCastBarPosition = {"BOTTOM", UIParent, "BOTTOM", 0, 200}
 
 -- Create a frame for dragging
 local draggableFrame = CreateFrame("Frame", "MovableCastBarFrame", UIParent)
@@ -99,6 +99,12 @@ end
 draggableFrame:RegisterEvent("PLAYER_LOGIN")
 draggableFrame:SetScript("OnEvent", function(self, event)
     if event == "PLAYER_LOGIN" then
+
+       -- 设置 draggableFrame 的位置
+        draggableFrame:ClearAllPoints()
+        draggableFrame:SetPoint(unpack(MovableCastBarPosition))
+
+        -- 延迟设置 CastingBarFrame 的位置
         DelayedAttachCastBarFrame()  -- Ensure CastBarFrame is attached after positioning with a delay
         if MovableCastBarLocked ~= nil then
             isLocked = MovableCastBarLocked
@@ -118,11 +124,14 @@ local function UpdateLockState()
     if isLocked then
         draggableFrame:EnableMouse(false)
         draggableFrame.bg:Hide()
+        draggableFrame:Hide()  -- 在勾选锁定时隐藏 draggableFrame
     else
         draggableFrame:EnableMouse(true)
         draggableFrame.bg:Show()
+        draggableFrame:Show()  -- 取消勾选锁定时显示 draggableFrame
     end
 end
+
 
 -- System Cast Bar Enhancement (from https://bbs.nga.cn/read.php?tid=14573258 by 简繁)
 local frame = CreateFrame("Frame")
@@ -316,6 +325,6 @@ local function SlashCmdHandler(msg, editBox)
     end
 end
 
--- Register the slash command
+-- 在注册斜杠命令时使用 SlashCmdList
 SLASH_MOVABLECASTBAR1 = "/castbar"
 SlashCmdList["MOVABLECASTBAR"] = SlashCmdHandler
