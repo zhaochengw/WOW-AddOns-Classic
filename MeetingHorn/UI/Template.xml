@@ -424,7 +424,7 @@
                 </Anchors>
                 <Scripts>
                     <OnLoad>
-                        self:SetAnimation(0, -1)
+                        self:SetAnimation(0, 0)
                         self:SetRotation(-0.61)
                     </OnLoad>
                 </Scripts>
