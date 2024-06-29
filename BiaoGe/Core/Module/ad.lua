@@ -32,7 +32,7 @@ local player = UnitName("player")
 BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
 
-    BG.ButtonAd = BG.ButtonOnLineCount
+    BG.ButtonAd = BG.ButtonOnLineCount or BG.ButtonToken
     if BG.ButtonAd then return end
 
     local adtitle = "飞越工会"
@@ -43,7 +43,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
     local f = CreateFrame("Button", nil, BG.MainFrame)
     f:SetSize(1, 20)
-    f:SetPoint("LEFT", BG.ButtonOnLineCount, "RIGHT", 0, 0)
+    f:SetPoint("LEFT", BG.ButtonOnLineCount or BG.ButtonToken, "RIGHT", 0, 0)
     f:SetNormalFontObject(BG.FontWhite13)
     f:SetText(BG.STC_y1(AddTexture(132351) .. L["招募"]))
     f:GetFontString():SetPoint("LEFT")

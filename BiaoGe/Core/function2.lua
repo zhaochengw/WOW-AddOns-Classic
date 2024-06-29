@@ -826,66 +826,79 @@ function BG.SetListmaijia(maijia, focus, guolv)
     local raid = BG.PaiXuRaidRosterInfo(guolv)
     for t = 1, 4 do
         for i = 1, 10 do
-            local button = CreateFrame("EditBox", nil, BG.FrameMaijiaList, "InputBoxTemplate")
-            button:SetSize(90, 20)
-            button:SetFrameLevel(125)
-            button:SetAutoFocus(false)
+            local bt = CreateFrame("EditBox", nil, BG.FrameMaijiaList, "InputBoxTemplate")
+            bt:SetSize(90, 20)
+            bt:SetFrameLevel(125)
+            bt:SetAutoFocus(false)
             if t >= 2 and i == 1 then
-                button:SetPoint("TOPLEFT", frameright, "TOPLEFT", 97, 0)
-                frameright = button
+                bt:SetPoint("TOPLEFT", frameright, "TOPLEFT", 97, 0)
+                frameright = bt
             end
             if t == 1 and i == 1 then
-                button:SetPoint("TOPLEFT", frameright, "TOPLEFT", 10, -5)
-                frameright = button
+                bt:SetPoint("TOPLEFT", frameright, "TOPLEFT", 10, -5)
+                frameright = bt
             end
             if i > 1 then
-                button:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -2)
+                bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -2)
             end
             if not guolv and not IsInRaid(1) and t == 1 and i == 1 then -- 单人时
-                button:SetText(UnitName("player"))
-                button:SetCursorPosition(0)
-                button:SetTextColor(GetClassRGB(UnitName("player")))
+                bt:SetText(UnitName("player"))
+                bt:SetCursorPosition(0)
+                bt:SetTextColor(GetClassRGB(UnitName("player")))
+                bt.hasName = true
+                for k, v in pairs(BG.playerClass) do
+                    bt[k] = select(v.select, v.func("player"))
+                end
             end
             local num = (t - 1) * 10 + i
-            if raid[num] then
-                if raid[num].name then
-                    if raid[num].role then
-                        button:SetText(AddTexture(raid[num].role) .. raid[num].name)
-                    elseif raid[num].combatRole == "HEALER" then
-                        button:SetText(AddTexture(raid[num].combatRole) .. raid[num].name)
-                    else
-                        button:SetText(raid[num].name)
-                    end
-                    button:SetCursorPosition(0)
-                    button:SetTextColor(GetClassRGB(GetText_T(raid[num].name)))
+            if raid[num] and raid[num].name then
+                if raid[num].role then
+                    bt:SetText(AddTexture(raid[num].role) .. raid[num].name)
+                elseif raid[num].combatRole == "HEALER" then
+                    bt:SetText(AddTexture(raid[num].combatRole) .. raid[num].name)
+                else
+                    bt:SetText(raid[num].name)
                 end
+                bt:SetCursorPosition(0)
+                bt:SetTextColor(GetClassRGB(GetText_T(raid[num].name)))
+                bt.hasName = true
+            else
+                bt:EnableMouse(false)
             end
-            framedown = button
+            framedown = bt
 
-            button.ds = button:CreateTexture()
-            button.ds:SetPoint("TOPLEFT", -4, -2)
-            button.ds:SetPoint("BOTTOMRIGHT", 0, 0)
-            button.ds:SetColorTexture(1, 1, 1, BG.onEnterAlpha)
-            button.ds:Hide()
+            if bt.hasName then
+                bt.ds = bt:CreateTexture()
+                bt.ds:SetPoint("TOPLEFT", -4, -2)
+                bt.ds:SetPoint("BOTTOMRIGHT", 0, 0)
+                bt.ds:SetColorTexture(1, 1, 1, BG.onEnterAlpha)
+                bt.ds:Hide()
 
-            button:SetScript("OnMouseDown", function(self, enter)
-                maijia:SetTextColor(button:GetTextColor())
-                maijia:SetText(GetText_T(button))
-                maijia:SetCursorPosition(0)
-                BG.FrameMaijiaList:Hide()
-                if focus == 0 then
-                    if BG.lastfocus then
-                        BG.lastfocus:ClearFocus()
+                bt:SetScript("OnMouseDown", function(self, enter)
+                    maijia:SetTextColor(bt:GetTextColor())
+                    maijia:SetText(GetText_T(self))
+                    maijia:SetCursorPosition(0)
+                    if raid[num] or self.class then
+                        for k, v in pairs(BG.playerClass) do
+                            BiaoGe[maijia.FB]["boss" .. maijia.bossnum][k .. maijia.i] =
+                                raid[num] and raid[num][k] or self[k]
+                        end
                     end
-                end
-            end)
-            button:SetScript("OnEnter", function(self)
-                self.ds:Show()
-            end)
-            button:SetScript("OnLeave", function(self)
-                GameTooltip:Hide()
-                self.ds:Hide()
-            end)
+                    BG.FrameMaijiaList:Hide()
+                    if focus == 0 then
+                        if BG.lastfocus then
+                            BG.lastfocus:ClearFocus()
+                        end
+                    end
+                end)
+                bt:SetScript("OnEnter", function(self)
+                    self.ds:Show()
+                end)
+                bt:SetScript("OnLeave", function(self)
+                    GameTooltip:Hide()
+                    self.ds:Hide()
+                end)
+            end
         end
     end
 end
@@ -944,18 +957,7 @@ function BG.SetListjine(jine, FB, b, i)
     edit:SetAutoFocus(false)
     BG.FrameQianKuanEdit = edit
     edit:SetScript("OnTextChanged", function(self)
-        local name = "autoAdd0"
-        if BiaoGe.options[name] == 1 then
-            local len = strlen(self:GetText())
-            local lingling
-            if len then
-                lingling = strsub(self:GetText(), len - 1, len)
-            end
-            if lingling ~= "00" and lingling ~= "0" and tonumber(self:GetText()) and self:HasFocus() then
-                self:Insert("00")
-                self:SetCursorPosition(1)
-            end
-        end
+        BG.UpdateTwo0(self)
         if self:GetText() ~= "" then
             BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = self:GetText()
             BG.Frame[FB]["boss" .. b]["qiankuan" .. i]:Show()
@@ -1011,15 +1013,13 @@ function BG.SetListjine(jine, FB, b, i)
             tinsert(buttons, f)
             f:SetScript("OnEnter", function(self)
                 self:SetBackdropColor(0.5, 0.5, 0.5, 0.5)
-
                 GameTooltip:SetOwner(f, "ANCHOR_RIGHT", 0, 0)
                 GameTooltip:ClearLines()
                 GameTooltip:SetItemByID(v.itemID)
                 GameTooltip:Show()
-
-                if BG.Frame[FB]["boss" .. v.b] then
-                    local zb = BG.Frame[FB]["boss" .. v.b]["zhuangbei" .. v.i]
-                    local jine = BG.Frame[FB]["boss" .. v.b]["jine" .. v.i]
+                if BG.Frame[v.FB]["boss" .. v.b] then
+                    local zb = BG.Frame[v.FB]["boss" .. v.b]["zhuangbei" .. v.i]
+                    local jine = BG.Frame[v.FB]["boss" .. v.b]["jine" .. v.i]
                     if zb then
                         local f = CreateFrame("Frame", nil, zb, "BackdropTemplate")
                         f:SetBackdrop({
@@ -1048,7 +1048,7 @@ function BG.SetListjine(jine, FB, b, i)
             local t = f:CreateFontString()
             t:SetPoint("LEFT", icon, "RIGHT", 0, 0)
             t:SetWidth(f:GetWidth() - icon:GetWidth())
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFontObject(GameFontNormal)
             t:SetText(v.link)
             t:SetJustifyH("LEFT")
             t:SetWordWrap(false)
@@ -1069,7 +1069,12 @@ function BG.SetListjine(jine, FB, b, i)
         bt:SetScript("OnLeave", GameTooltip_Hide)
         bt:SetScript("OnClick", function(self)
             BG.PlaySound(1)
-            tremove(BiaoGe[FB].tradeTbl, num)
+            for _, FB in ipairs(BG.FBtable) do
+                local tradeInfo, num = BG.GetGeZiTardeInfo(FB, b, i)
+                if num then
+                    tremove(BiaoGe[FB].tradeTbl, num)
+                end
+            end
             jine:ClearFocus()
             jine:SetFocus()
         end)
@@ -1139,7 +1144,9 @@ function BG.QingKong(_type, FB)
                 BiaoGe[FB]["boss" .. b]["jine" .. i] = nil
                 BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = nil
                 BiaoGe[FB]["boss" .. b]["guanzhu" .. i] = nil
-
+                for k, v in pairs(BG.playerClass) do
+                    BiaoGe[FB]["boss" .. b][k .. i] = nil
+                end
                 -- 对账
                 if BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i] then
                     BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]:SetText("")
@@ -1165,7 +1172,9 @@ function BG.QingKong(_type, FB)
             BiaoGe[FB]["boss" .. Maxb[FB] + 1]["maijia" .. i] = nil
             BiaoGe[FB]["boss" .. Maxb[FB] + 1]["jine" .. i] = nil
         end
-        wipe(BiaoGe[FB].tradeTbl)
+        BiaoGe[FB].tradeTbl = {}
+        BiaoGe[FB].lockoutID = nil
+        BG.UpdateLockoutIDText()
 
         local num -- 分钱人数
         if BG.IsVanilla() then
@@ -1242,15 +1251,18 @@ function BG.JiaoHuan(button, FB, b, i, t)
             btqiankuan = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i],
             btguanzhu = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i],
 
-            zhuangbei = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i]:GetText(),
-            maijia = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["maijia" .. i]:GetText(),
-            color = { BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["maijia" .. i]:GetTextColor() },
-            jine = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i]:GetText(),
+            zhuangbei = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i],
+            maijia = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["maijia" .. i],
+            jine = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i],
             qiankuan = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i],
             guanzhu = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i],
 
             tradeInfo = BG.GetGeZiTardeInfo(FB, BossNum(FB, b, t), i)
         }
+        for k, v in pairs(BG.playerClass) do
+            BG.copy1[k] = BiaoGe[FB]["boss" .. BossNum(FB, b, t)][k .. i]
+        end
+
         PlaySound(BG.sound1, "Master")
 
         local bt = CreateFrame("Button", nil, BG["Frame" .. FB], "UIPanelButtonTemplate")
@@ -1291,15 +1303,17 @@ function BG.JiaoHuan(button, FB, b, i, t)
             btqiankuan = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i],
             btguanzhu = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i],
 
-            zhuangbei = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i]:GetText(),
-            maijia = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["maijia" .. i]:GetText(),
-            color = { BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["maijia" .. i]:GetTextColor() },
-            jine = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i]:GetText(),
+            zhuangbei = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i],
+            maijia = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["maijia" .. i],
+            jine = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i],
             qiankuan = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i],
             guanzhu = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i],
 
             tradeInfo = BG.GetGeZiTardeInfo(FB, BossNum(FB, b, t), i)
         }
+        for k, v in pairs(BG.playerClass) do
+            BG.copy2[k] = BiaoGe[FB]["boss" .. BossNum(FB, b, t)][k .. i]
+        end
 
         if BG.copy1.fb == BG.copy2.fb then -- 是同一个副本
             -- 打包交易
@@ -1322,21 +1336,28 @@ function BG.JiaoHuan(button, FB, b, i, t)
                 end
             end
 
-            BG.copy1.btzhuangbei:SetText(BG.copy2.zhuangbei)
-            BG.copy1.btmaijia:SetText(BG.copy2.maijia)
-            BG.copy1.btmaijia:SetTextColor(BG.copy2.color[1], BG.copy2.color[2], BG.copy2.color[3])
-            BG.copy1.btjine:SetText(BG.copy2.jine)
+            BG.copy1.btzhuangbei:SetText(BG.copy2.zhuangbei or "")
+            BG.copy1.btmaijia:SetText(BG.copy2.maijia or "")
+            BG.copy1.btmaijia:SetTextColor(unpack(BG.copy2.color or { 1, 1, 1 }))
+            BG.copy1.btjine:SetText(BG.copy2.jine or "")
 
-            BG.copy2.btzhuangbei:SetText(BG.copy1.zhuangbei)
-            BG.copy2.btmaijia:SetText(BG.copy1.maijia)
-            BG.copy2.btmaijia:SetTextColor(BG.copy1.color[1], BG.copy1.color[2], BG.copy1.color[3])
-            BG.copy2.btjine:SetText(BG.copy1.jine)
+            BG.copy2.btzhuangbei:SetText(BG.copy1.zhuangbei or "")
+            BG.copy2.btmaijia:SetText(BG.copy1.maijia or "")
+            BG.copy2.btmaijia:SetTextColor(unpack(BG.copy1.color or { 1, 1, 1 }))
+            BG.copy2.btjine:SetText(BG.copy1.jine or "")
 
             local FB = BG.copy1.fb
             local b1, i1 = BG.copy1.b, BG.copy1.i
             local b2, i2 = BG.copy2.b, BG.copy2.i
 
-            BiaoGe[FB]["boss" .. b1]["guanzhu" .. i1], BiaoGe[FB]["boss" .. b2]["guanzhu" .. i2] = BiaoGe[FB]["boss" .. b2]["guanzhu" .. i2], BiaoGe[FB]["boss" .. b1]["guanzhu" .. i1]
+            for k, v in pairs(BG.playerClass) do
+                BiaoGe[FB]["boss" .. b1][k .. i1] = BG.copy2[k]
+                BiaoGe[FB]["boss" .. b2][k .. i2] = BG.copy1[k]
+            end
+
+            -- 关注
+            BiaoGe[FB]["boss" .. b1]["guanzhu" .. i1], BiaoGe[FB]["boss" .. b2]["guanzhu" .. i2] =
+                BiaoGe[FB]["boss" .. b2]["guanzhu" .. i2], BiaoGe[FB]["boss" .. b1]["guanzhu" .. i1]
             if BiaoGe[FB]["boss" .. b1]["guanzhu" .. i1] then
                 BG.Frame[FB]["boss" .. b1]["guanzhu" .. i1]:Show()
             else
@@ -1347,8 +1368,9 @@ function BG.JiaoHuan(button, FB, b, i, t)
             else
                 BG.Frame[FB]["boss" .. b2]["guanzhu" .. i2]:Hide()
             end
-
-            BiaoGe[FB]["boss" .. b1]["qiankuan" .. i1], BiaoGe[FB]["boss" .. b2]["qiankuan" .. i2] = BiaoGe[FB]["boss" .. b2]["qiankuan" .. i2], BiaoGe[FB]["boss" .. b1]["qiankuan" .. i1]
+            -- 欠款
+            BiaoGe[FB]["boss" .. b1]["qiankuan" .. i1], BiaoGe[FB]["boss" .. b2]["qiankuan" .. i2] =
+                BiaoGe[FB]["boss" .. b2]["qiankuan" .. i2], BiaoGe[FB]["boss" .. b1]["qiankuan" .. i1]
             if BiaoGe[FB]["boss" .. b1]["qiankuan" .. i1] then
                 BG.Frame[FB]["boss" .. b1]["qiankuan" .. i1]:Show()
             else
@@ -1776,5 +1798,29 @@ function BG.AddGuanZhu(link)
     if yes then
         BG.FrameLootMsg:AddMessage(BG.STC_g2(format(L["已成功关注装备：%s。团长拍卖此装备时会提醒"],
             AddTexture(Texture) .. link)))
+    end
+end
+
+function BG.UpdateTwo0(bt)
+    if BiaoGe.options["autoAdd0"] == 1 and bt:HasFocus() and not IsModifierKeyDown() then
+        local text = bt:GetText()
+        if tonumber(text) == 0 then
+            bt:SetText("")
+            return
+        end
+
+        if tonumber(text) then
+            local len = strlen(text)
+            local lastStr = text:sub(len, len)
+            local last2Str = text:sub(len - 1, len - 1)
+            local twoLing = text:sub(len - 1, len)
+            if lastStr == "0" and last2Str ~= "0" then
+                return
+            end
+            if twoLing ~= "00" and twoLing ~= "0" then
+                bt:Insert("00")
+                bt:SetCursorPosition(1)
+            end
+        end
     end
 end

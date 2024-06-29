@@ -28,6 +28,7 @@
     <Script file="Core\Module\FilterClassItem.lua"/>
 
     <Script file="Core\TongBao\ZhangDan.lua"/>
+    <Script file="Core\TongBao\ZhangDanSum.lua"/>
     <Script file="Core\TongBao\LiuPai.lua"/>
     <Script file="Core\TongBao\XiaoFei.lua"/>
     <Script file="Core\TongBao\QianKuan.lua"/>
@@ -47,6 +48,7 @@
     <Script file="Core\Module\AuctionWA.lua"/>
     <Script file="Core\Module\Auction.lua"/>
     <Script file="Core\Module\CommerceAuthority_Vanilla.lua"/>
+    <Script file="Core\Module\Newbee.lua"/>
 
     <Script file="Core\Boss\Boss.lua"/>
     <Script file="Core\Boss\ICC.lua"/>

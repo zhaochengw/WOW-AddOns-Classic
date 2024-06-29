@@ -1028,10 +1028,13 @@ local function OptionsUI()
             BG.options["button" .. name] = f
             f:HookScript("OnClick", function()
                 local name1 = "fastCountMsg"
+                local name2 = "fastCountPreview"
                 if f:GetChecked() then
                     BG.options["button" .. name1]:Show()
+                    BG.options["button" .. name2]:Show()
                 else
                     BG.options["button" .. name1]:Hide()
+                    BG.options["button" .. name2]:Hide()
                 end
             end)
         end
@@ -1046,6 +1049,23 @@ local function OptionsUI()
                 L["快速记账完成后会在屏幕中央通知本次记账结果。"],
             }
             local f = O.CreateCheckButton(name, L["记账通知"] .. "*", biaoge, 15, height - h, ontext)
+            BG.options["button" .. name] = f
+            local name = "fastCount"
+            if BiaoGe.options[name] ~= 1 then
+                f:Hide()
+            end
+        end
+        h = h + 30
+        -- 记账效果预览框
+        do
+            local name = "fastCountPreview"
+            BG.options[name .. "reset"] = 1
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            local ontext = {
+                L["记账效果预览框"],
+                L["快速记账的时候，可以预览这次的记账效果。"],
+            }
+            local f = O.CreateCheckButton(name, L["记账效果预览框*"], biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
             local name = "fastCount"
             if BiaoGe.options[name] ~= 1 then
@@ -1292,25 +1312,27 @@ local function OptionsUI()
         h = h + 30
 
         -- 自动获取在线人数
-        do
-            local name = "autoGetOnline"
-            BG.options[name .. "reset"] = 0
-            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
-            BG.Once("autoGetOnline", 240615, function()
-                BiaoGe.options[name] = 0
-            end)
+        if not BG.IsWLK() then
+            do
+                local name = "autoGetOnline"
+                BG.options[name .. "reset"] = 0
+                BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+                BG.Once("autoGetOnline", 240615, function()
+                    BiaoGe.options[name] = 0
+                end)
 
 
-            local ontext = {
-                L["自动获取在线人数"],
-                L["打开表格界面时，自动获取当前阵营在线人数。如果你打开表格时出现掉线的情况，请关闭该功能。"],
-                -- " ",
-                -- L[""],
-            }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["自动获取在线人数"] .. "*", biaoge, 15, height - h, ontext)
-            BG.options["button" .. name] = f
+                local ontext = {
+                    L["自动获取在线人数"],
+                    L["打开表格界面时，自动获取当前阵营在线人数。如果你打开表格时出现掉线的情况，请关闭该功能。"],
+                    -- " ",
+                    -- L[""],
+                }
+                local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["自动获取在线人数"] .. "*", biaoge, 15, height - h, ontext)
+                BG.options["button" .. name] = f
+            end
+            h = h + 30
         end
-        h = h + 30
 
         -- 支出百分比自动计算
         do

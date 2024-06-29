@@ -305,10 +305,10 @@ function BG.DuiZhangUI()
 
         local child = CreateFrame("EditBox", nil, f) -- 子框架
         child:SetFontObject(GameFontNormalSmall2)
-        child:SetWidth(f:GetWidth())
+        child:SetWidth(scroll:GetWidth())
         child:SetAutoFocus(false)
         child:EnableMouse(false)
-        child:SetTextInsets(0, 5, 0, 0)
+        child:SetTextInsets(0, 0, 0, 0)
         child:SetMultiLine(true)
         child:SetHyperlinksEnabled(true)
         child:SetTextColor(RGB("FF7F50"))
@@ -394,6 +394,7 @@ local function CreateZhangDanMsg(num)
 
         BG.DuiZhangMainFrame.msgFrame:SetText("")
         for i, msg in ipairs(zhangdan.msgTbl) do
+            msg = BG.GsubRaidTargetingIcons(msg)
             local text = timeText .. " " .. nameLink .. L["："] .. msg .. NN
             BG.DuiZhangMainFrame.msgFrame:Insert(text)
         end

@@ -19,12 +19,12 @@ local HopeMaxi = ADDONSELF.HopeMaxi
 local pt = print
 
 function BG.YongShiUI(lastbt)
-    local bt = CreateFrame("Button", nil, BG.FBMainFrame, "UIPanelButtonTemplate")
+    local bt = CreateFrame("Button", nil, BG.ButtonZhangDan, "UIPanelButtonTemplate")
     bt:SetSize(90, BG.ButtonZhangDan:GetHeight())
     bt:SetPoint("LEFT", lastbt, "RIGHT", 10, 0)
     bt:SetText(L["通报用时"])
-    bt:Show()
     BG.ButtonYongShi = bt
+    tinsert(BG.TongBaoButtons, bt)
     bt:SetScript("OnEnter", function(self)
         if BG.Backing then return end
         local FB = BG.FB1
@@ -48,6 +48,7 @@ function BG.YongShiUI(lastbt)
             GameTooltip:AddLine(L["没有记录"])
         end
         GameTooltip:Show()
+        GameTooltip:SetClampedToScreen(false)
     end)
     bt:SetScript("OnLeave", function(self)
         local FB = BG.FB1
@@ -57,6 +58,7 @@ function BG.YongShiUI(lastbt)
             end
         end
         GameTooltip:Hide()
+        GameTooltip:SetClampedToScreen(true)
     end)
     bt:SetScript("OnClick", function(self)
         FrameHide(0)

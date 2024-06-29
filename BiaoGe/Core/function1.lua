@@ -247,6 +247,12 @@ local function FrameHide(num)
     if BG.frameImportHope then
         BG.frameImportHope:Hide()
     end
+    if BG.FrameNewBee then
+        BG.FrameNewBee:Hide()
+    end
+    -- if BG.FrameZhangDanSum then
+    --     BG.FrameZhangDanSum:Hide()
+    -- end
 end
 ADDONSELF.FrameHide = FrameHide
 
@@ -469,6 +475,13 @@ function BG.SetRaidTargetingIcons(type, name)
     else
         return RaidTargetingIcons[name].tex
     end
+end
+
+function BG.GsubRaidTargetingIcons(text)
+    for k, v in pairs(RaidTargetingIcons) do
+        text = text:gsub("{rt" .. v.num .. "}", v.tex)
+    end
+    return text
 end
 
 ----------滚动到最末----------

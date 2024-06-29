@@ -31,33 +31,38 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("ADDON_LOADED")
 frame:SetScript("OnEvent", function(self, event, addonName)
     if addonName ~= AddonName then return end
+
+    BiaoGe.auctionMSGhistory = BiaoGe.auctionMSGhistory or {}
+
+    local maxLine = 1000
+
     -- UI
     do
-        BG.FramePaiMaiMsg = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
-        BG.FramePaiMaiMsg:SetBackdrop({
+        BG.FrameAuctionMSGbg = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
+        BG.FrameAuctionMSGbg:SetBackdrop({
             bgFile = "Interface/ChatFrame/ChatFrameBackground",
             edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
             edgeSize = 16,
             insets = { left = 3, right = 3, top = 3, bottom = 3 }
         })
-        BG.FramePaiMaiMsg:SetBackdropColor(0, 0, 0, 0.8)
-        BG.FramePaiMaiMsg:SetPoint("CENTER")
-        BG.FramePaiMaiMsg:SetSize(220, 230) -- 大小
-        BG.FramePaiMaiMsg:SetFrameLevel(120)
-        BG.FramePaiMaiMsg:EnableMouse(true)
-        BG.FramePaiMaiMsg:Hide()
+        BG.FrameAuctionMSGbg:SetBackdropColor(0, 0, 0, 0.8)
+        BG.FrameAuctionMSGbg:SetPoint("CENTER")
+        BG.FrameAuctionMSGbg:SetSize(220, 230) -- 大小
+        BG.FrameAuctionMSGbg:SetFrameLevel(120)
+        BG.FrameAuctionMSGbg:EnableMouse(true)
+        BG.FrameAuctionMSGbg:Hide()
 
-        local f = CreateFrame("ScrollingMessageFrame", nil, BG.FramePaiMaiMsg)
-        f:SetSpacing(1)                                                                  -- 行间隔
+        local f = CreateFrame("ScrollingMessageFrame", nil, BG.FrameAuctionMSGbg)
+        f:SetSpacing(1)                                                                        -- 行间隔
         f:SetFading(false)
-        f:SetJustifyH("LEFT")                                                            -- 对齐格式
-        f:SetSize(BG.FramePaiMaiMsg:GetWidth() - 15, BG.FramePaiMaiMsg:GetHeight() - 15) -- 大小
-        f:SetPoint("CENTER", BG.FramePaiMaiMsg)                                          --设置显示位置
-        f:SetMaxLines(1000)
+        f:SetJustifyH("LEFT")                                                                  -- 对齐格式
+        f:SetSize(BG.FrameAuctionMSGbg:GetWidth() - 15, BG.FrameAuctionMSGbg:GetHeight() - 15) -- 大小
+        f:SetPoint("CENTER", BG.FrameAuctionMSGbg)                                             --设置显示位置
+        f:SetMaxLines(maxLine)
         f:SetFontObject(GameFontNormalSmall2)
         f:SetJustifyH("LEFT")
         f:SetHyperlinksEnabled(true)
-        BG.FramePaiMaiMsg2 = f
+        BG.FrameAuctionMSG = f
         f:SetScript("OnHyperlinkEnter", function(self, link, text, button)
             GameTooltip:SetOwner(self, "ANCHOR_CURSOR", 0, 0)
             GameTooltip:ClearLines()
@@ -108,14 +113,17 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 end
             end
         end)
+        for i, msg in ipairs(BiaoGe.auctionMSGhistory) do
+            BG.FrameAuctionMSG:AddMessage(msg)
+        end
     end
 
     -- 滚动按钮
     local hilighttexture
     do
-        local bt = CreateFrame("Button", nil, BG.FramePaiMaiMsg2) -- 到底
+        local bt = CreateFrame("Button", nil, BG.FrameAuctionMSG) -- 到底
         bt:SetSize(30, 30)
-        bt:SetPoint("BOTTOMRIGHT", BG.FramePaiMaiMsg2, "BOTTOMLEFT", -2, -10)
+        bt:SetPoint("BOTTOMRIGHT", BG.FrameAuctionMSG, "BOTTOMLEFT", -2, -10)
         bt:SetNormalTexture("Interface/ChatFrame/UI-ChatIcon-ScrollEnd-Up")
         bt:SetPushedTexture("Interface/ChatFrame/UI-ChatIcon-ScrollEnd-Down")
         bt:SetDisabledTexture("Interface/ChatFrame/UI-ChatIcon-ScrollEnd-Disabled")
@@ -138,7 +146,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             hilighttexture:Hide()
         end)
 
-        local bt = CreateFrame("Button", nil, BG.FramePaiMaiMsg2) -- 下滚
+        local bt = CreateFrame("Button", nil, BG.FrameAuctionMSG) -- 下滚
         bt:SetSize(30, 30)
         bt:SetPoint("BOTTOM", chatbt, "TOP", 0, -8)
         bt:SetNormalTexture("Interface/ChatFrame/UI-ChatIcon-ScrollDown-Up")
@@ -149,11 +157,11 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         bt:SetScript("OnClick", function(self)
             self:GetParent():ScrollDown()
             self:GetParent():ScrollDown()
-            if BG.FramePaiMaiMsg2:AtBottom() then
+            if BG.FrameAuctionMSG:AtBottom() then
                 hilighttexture:Hide()
             end
         end)
-        local bt = CreateFrame("Button", nil, BG.FramePaiMaiMsg2) -- 上滚
+        local bt = CreateFrame("Button", nil, BG.FrameAuctionMSG) -- 上滚
         bt:SetSize(30, 30)
         bt:SetPoint("BOTTOM", chatbt, "TOP", 0, -8)
         bt:SetNormalTexture("Interface/ChatFrame/UI-ChatIcon-ScrollUp-Up")
@@ -166,7 +174,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             self:GetParent():ScrollUp()
         end)
         -- 提示
-        local bt = CreateFrame("Button", nil, BG.FramePaiMaiMsg2)
+        local bt = CreateFrame("Button", nil, BG.FrameAuctionMSG)
         bt:SetSize(25, 25)
         bt:SetPoint("BOTTOM", chatbt, "TOP", 0, -5)
         local tex = bt:CreateTexture()
@@ -191,7 +199,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end)
         BG.GameTooltip_Hide(bt)
 
-        BG.FramePaiMaiMsg2:SetScript("OnMouseWheel", function(self, delta, ...)
+        BG.FrameAuctionMSG:SetScript("OnMouseWheel", function(self, delta, ...)
             if delta == 1 then
                 if IsShiftKeyDown() then
                     self:ScrollToTop()
@@ -244,8 +252,9 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             L["时间"],
         }
 
-        local function AddMsg(text, playerName, lineID, ML)
+        local function AddMSG(text, playerName, lineID, ML)
             if string.find(text, "%d+") or string.find(text, "[pP]") or ML then
+                text = BG.GsubRaidTargetingIcons(text)
                 local msg
                 local h, m = GetGameTime()
                 h = string.format("%02d", h)
@@ -257,8 +266,17 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 else
                     msg = time .. " " .. "|cffFF7F50" .. nameLink .. L["："] .. text .. RN -- 团员聊天
                 end
-                BG.FramePaiMaiMsg2:AddMessage(msg)
-                if not BG.FramePaiMaiMsg2:AtBottom() then
+                BG.FrameAuctionMSG:AddMessage(msg)
+
+                for i, v in ipairs(BiaoGe.auctionMSGhistory) do
+                    if #BiaoGe.auctionMSGhistory <= maxLine then
+                        break
+                    end
+                    tremove(BiaoGe.auctionMSGhistory, 1)
+                end
+                tinsert(BiaoGe.auctionMSGhistory, msg)
+
+                if not BG.FrameAuctionMSG:AtBottom() then
                     hilighttexture:Show()
                 end
             end
@@ -284,7 +302,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     return
                 end
             end
-            AddMsg(msg, playerName, lineID, ML)
+            AddMSG(msg, playerName, lineID, ML)
         end)
     end
 end)

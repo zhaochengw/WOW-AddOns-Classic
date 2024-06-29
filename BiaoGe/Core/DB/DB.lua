@@ -14,6 +14,7 @@ BiaoGeTooltip = CreateFrame("GameTooltip", "BiaoGeTooltip", UIParent, "GameToolt
 BiaoGeTooltip2 = CreateFrame("GameTooltip", "BiaoGeTooltip2", UIParent, "GameTooltipTemplate") -- 用于装备库
 BiaoGeTooltip2:SetClampedToScreen(false)
 BiaoGeTooltip3 = CreateFrame("GameTooltip", "BiaoGeTooltip3", UIParent, "GameTooltipTemplate") -- 用于装备过期提醒
+BiaoGeTooltip4 = CreateFrame("GameTooltip", "BiaoGeTooltip4", UIParent, "GameTooltipTemplate") -- 用于通报多本账单
 
 local l = GetLocale()
 if (l == "koKR") then
@@ -134,7 +135,7 @@ do
         AddDB("Gno", mainFrameWidth, 835, 3, 8, { 0, 5, 8 })
         AddDB("Temple", mainFrameWidth, 885, 3, 10, { 0, 6, 9, })
     elseif BG.IsVanilla_60() then
-        AddDB("MC", mainFrameWidth, 875, 3, 12, { 0, 8, 12 })
+        AddDB("MC", mainFrameWidth, 810, 3, 12, { 0, 7, 11 })
         AddDB("OL", mainFrameWidth, 810, 2, 3, { 0, 4 })
         AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 })
         AddDB("ZUG", mainFrameWidth, 810, 3, 12, { 0, 6, 11 })
@@ -212,6 +213,32 @@ do
     BG.instructionsText = ADDONSELF.instructionsText
     BG.updateText = ADDONSELF.updateText
     BG.BG = "|cff00BFFF<BiaoGe>|r "
+
+    local function UnitRealm(unit)
+        local realm = select(2, UnitName(unit))
+        if not realm then
+            realm = GetRealmName()
+        end
+        return realm
+    end
+    local function UnitColor(unit)
+        local _, class = UnitClass(unit)
+        local r, g, b = 1, 1, 1
+        if class then
+            r, g, b = GetClassColor(class)
+        end
+        return { r, g, b }
+    end
+    BG.playerClass = {
+        class = { func = UnitClass, select = 2 },               -- 职业
+        guild = { func = GetGuildInfo, select = 1 },            -- 公会
+        level = { func = UnitLevel, select = 1 },               -- 等级
+        raceID = { func = UnitRace, select = 3 },               -- 种族ID
+        guid = { func = UnitGUID, select = 1 },                 -- GUID
+        factionGroup = { func = UnitFactionGroup, select = 1 }, -- 阵营
+        realm = { func = UnitRealm, select = 1 },               -- 服务器
+        color = { func = UnitColor, select = 1 },               -- 颜色
+    }
 
     ---------- 获取副本tbl某个value ----------
     function BG.GetFBinfo(FB, info)
@@ -661,6 +688,9 @@ local function DataBase()
             end
             BiaoGeA.Hope = nil
         end
+
+        -- 新手盒子
+        BiaoGe.newbee_report = BiaoGe.newbee_report or {}
 
         -- 记录服务器名称
         do

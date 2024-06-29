@@ -20,7 +20,7 @@ local HopeMaxi = ADDONSELF.HopeMaxi
 local pt = print
 
 ------------------函数：通报欠款-----------------
-local function CreateListTable(type, tx)
+local function CreateListTable(onClick, tbl1)
     local alltable = {}
     local maijiatable = {}
     local sumtable = {}
@@ -64,49 +64,50 @@ local function CreateListTable(type, tx)
     end)
 
     -- 开始
-    local tx = tx or {}
+    local tbl1 = tbl1 or {}
+    local tbl2 = {}
     local text = L["————通报欠款————"]
-    table.insert(tx, text)
+    table.insert(tbl1, text)
+    table.insert(tbl2, { text })
 
     if #alltable ~= 0 then
+        local tbl_boss = {}
         for i, v in ipairs(alltable) do
-            if type then
+            if onClick then
                 text = L["欠款："] .. v.zhuangbei .. " " .. v.maijia .. " " .. v.qiankuan
             else
                 text = L["欠款："] .. v.zhuangbei .. " " .. RGB_16(v.maijia, unpack(v.color)) .. " |cffFF0000" .. v.qiankuan .. RR
             end
-            table.insert(tx, text)
+            table.insert(tbl1, text)
+            table.insert(tbl_boss, text)
         end
-
-        -- local text = " "
-        -- table.insert(tx, text)
-
-        -- local text = format(L["%s 合计欠款 %s"], BG.SetRaidTargetingIcons(type, "chacha"), BG.SetRaidTargetingIcons(type, "chacha"))
-        -- table.insert(tx, text)
+        table.insert(tbl2, tbl_boss)
 
         for i, v in ipairs(sumtable) do
-            if type then
+            if onClick then
                 text = L["合计欠款："] .. v.maijia .. " " .. v.qiankuan
             else
                 text = L["合计欠款："] .. RGB_16(v.maijia, unpack(v.color)) .. " |cffFF0000" .. v.qiankuan .. RR
             end
-            table.insert(tx, text)
+            table.insert(tbl1, text)
+            table.insert(tbl2, { text })
         end
     else
         local text = L["没有欠款"]
-        table.insert(tx, text)
+        table.insert(tbl1, text)
+        table.insert(tbl2, { text })
     end
-    return tx
+    return tbl1, tbl2
 end
 
 
 function BG.QianKuanUI(lastbt)
-    local bt = CreateFrame("Button", nil, BG.FBMainFrame, "UIPanelButtonTemplate")
+    local bt = CreateFrame("Button", nil,BG.ButtonZhangDan, "UIPanelButtonTemplate")
     bt:SetSize(90, BG.ButtonZhangDan:GetHeight())
     bt:SetPoint("LEFT", lastbt, "RIGHT", 10, 0)
     bt:SetText(L["通报欠款"])
-    bt:Show()
     BG.ButtonQianKuan = bt
+    tinsert(BG.TongBaoButtons,bt)
 
     bt:SetScript("OnEnter", function(self)
         if BG.Backing then return end
@@ -118,9 +119,11 @@ function BG.QianKuanUI(lastbt)
             GameTooltip:AddLine(v)
         end
         GameTooltip:Show()
+        GameTooltip:SetClampedToScreen(false)
     end)
     bt:SetScript("OnLeave", function(self)
         GameTooltip:Hide()
+        GameTooltip:SetClampedToScreen(true)
     end)
     -- 单击触发
     bt:SetScript("OnClick", function(self)
@@ -134,15 +137,8 @@ function BG.QianKuanUI(lastbt)
                 bt:SetEnabled(true)
             end)
 
-            local tx = CreateListTable(true)
-
-            local t = 0
-            for index, value in ipairs(tx) do
-                -- BG.After(t, function()
-                SendChatMessage(value, "RAID")
-                -- end)
-                -- t = t + BG.tongBaoSendCD
-            end
+            local _, tbl = CreateListTable(true)
+            BG.SendMsgToRaid(tbl)
 
             PlaySoundFile(BG.sound2, "Master")
         end

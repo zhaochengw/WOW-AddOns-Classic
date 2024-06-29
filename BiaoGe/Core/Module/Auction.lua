@@ -568,12 +568,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         local name, rankName, rankIndex, level, classDisplayName, zone,
                         publicNote, officerNote, isOnline, status, class, achievementPoints,
                         achievementRank, isMobile, canSoR, repStanding, guid = GetGuildRosterInfo(i)
-                        name = strsplit("-", name)
-                        if not isOnline then
-                            BG.guildBiaoGeVersion[name] = nil
-                            BG.guildClass[name] = nil
-                        else
-                            BG.guildClass[name] = class
+                        if name then
+                            name = strsplit("-", name)
+                            if not isOnline then
+                                BG.guildBiaoGeVersion[name] = nil
+                                BG.guildClass[name] = nil
+                            else
+                                BG.guildClass[name] = class
+                            end
                         end
                     end
                     UpdateGuildFrame(guild)
@@ -700,11 +702,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
 
         local bt = CreateFrame("Button", nil, BG.MainFrame)
-        bt:SetPoint("LEFT", BG.ButtonGuoQi, "RIGHT", 15, 0)
+        bt:SetPoint("LEFT", BG.ButtonGuoQi, "RIGHT", BG.TopLeftButtonJianGe, 0)
         bt:SetNormalFontObject(BG.FontGreen15)
         bt:SetDisabledFontObject(BG.FontDis15)
         bt:SetHighlightFontObject(BG.FontWhite15)
-        bt:SetText(L["拍卖WA字符串"])
+        bt:SetText(L["拍卖WA"])
         bt:SetSize(bt:GetFontString():GetWidth(), 20)
         BG.SetTextHighlightTexture(bt)
         bt:SetScript("OnClick", OnClick)

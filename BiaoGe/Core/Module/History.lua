@@ -109,6 +109,7 @@ function BG.HistoryUI()
             local DT = tonumber(date("%y%m%d%H%M%S"))
             local DTcn = date(L["%m月%d日%H:%M:%S\n"])
             BiaoGe.History[FB][DT] = {}
+            BiaoGe.History[FB][DT].tradeTbl = {}
             for b = 1, Maxb[FB] + 2 do
                 BiaoGe.History[FB][DT]["boss" .. b] = {}
                 for i = 1, Maxi[FB] do
@@ -121,7 +122,9 @@ function BG.HistoryUI()
                         local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
                         if maijia:GetText() ~= "" then
                             BiaoGe.History[FB][DT]["boss" .. b]["maijia" .. i] = maijia:GetText()
-                            BiaoGe.History[FB][DT]["boss" .. b]["color" .. i] = { maijia:GetTextColor() }
+                            for k, v in pairs(BG.playerClass) do
+                                BiaoGe.History[FB][DT]["boss" .. b][k .. i] = BiaoGe[FB]["boss" .. b][k .. i]
+                            end
                         end
 
                         local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
@@ -142,9 +145,11 @@ function BG.HistoryUI()
                 end
                 BiaoGe.History[FB][DT]["boss" .. b]["time"] = BiaoGe[FB]["boss" .. b]["time"]
             end
-            if #BiaoGe[FB].tradeTbl > 1 then
-                BiaoGe.History[FB][DT].tradeTbl = BiaoGe[FB].tradeTbl
+            for i, v in ipairs(BiaoGe[FB].tradeTbl) do
+                BiaoGe.History[FB][DT].tradeTbl[i] = v
             end
+            BiaoGe.History[FB][DT].lockoutID = BiaoGe[FB].lockoutID
+
             local d = { DT, format(L["%s%s %s人 工资:%s"], DTcn, BG.GetFBinfo(FB, "localName"),
                 BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 4]:GetText(),
                 BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 5]:GetText()) }
@@ -164,8 +169,7 @@ function BG.HistoryUI()
         BG.History.SaveButton = bt
 
         bt:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_NONE")
-            GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
             GameTooltip:AddLine(L["把当前表格保存至历史表格。"], 1, 0.82, 0, true)
@@ -199,8 +203,7 @@ function BG.HistoryUI()
         BG.History.SendButton = bt
 
         bt:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_NONE")
-            GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
             GameTooltip:AddLine(L["把当前表格发给别人，类似发WA那样。"], 1, 0.82, 0, true)
@@ -299,8 +302,7 @@ function BG.HistoryUI()
         BG.History.DaoChuButton = bt
 
         bt:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_NONE")
-            GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
             GameTooltip:AddLine(L["把表格导出为文本。"], 1, 0.82, 0, true)
@@ -375,8 +377,10 @@ function BG.HistoryUI()
 
                                 BiaoGe[FB]["boss" .. b]["zhuangbei" .. i] = BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i]
                                 BiaoGe[FB]["boss" .. b]["maijia" .. i] = BiaoGe.History[FB][DT]["boss" .. b]["maijia" .. i]
-                                BiaoGe[FB]["boss" .. b]["color" .. i] = BiaoGe.History[FB][DT]["boss" .. b]["color" .. i]
                                 BiaoGe[FB]["boss" .. b]["jine" .. i] = BiaoGe.History[FB][DT]["boss" .. b]["jine" .. i]
+                                for k, v in pairs(BG.playerClass) do
+                                    BiaoGe[FB]["boss" .. b][k .. i] = BiaoGe.History[FB][DT]["boss" .. b][k .. i]
+                                end
 
                                 if BiaoGe.History[FB][DT]["boss" .. b]["guanzhu" .. i] then
                                     BiaoGe[FB]["boss" .. b]["guanzhu" .. i] = true
@@ -404,12 +408,19 @@ function BG.HistoryUI()
                             BiaoGe[FB]["boss" .. b]["time"] = BiaoGe.History[FB][DT]["boss" .. b]["time"]
                         end
                     end
-                    BiaoGe[FB].tradeTbl = BiaoGe.History[FB][DT].tradeTbl or {}
+                    BiaoGe[FB].tradeTbl = {}
+                    if type(BiaoGe.History[FB][DT].tradeTbl) == "table" then
+                        for i, v in ipairs(BiaoGe.History[FB][DT].tradeTbl) do
+                            BiaoGe[FB].tradeTbl[i] = v
+                        end
+                    end
+                    BiaoGe[FB].lockoutID = BiaoGe.History[FB][DT].lockoutID
                     break
                 end
             end
             if BiaoGe.lastFrame == "FB" then
                 BG.FBMainFrame:Show()
+                BG.UpdateLockoutIDText()
             end
         end
 
@@ -424,8 +435,7 @@ function BG.HistoryUI()
         BG.History.YongButton = bt
 
         bt:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_NONE")
-            GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
             GameTooltip:AddLine(L["把该历史表格复制粘贴到当前表格，这样你可以编辑内容。"], 1, 0.82, 0, true)
@@ -668,6 +678,8 @@ do
                             end
                         end
                         BG.History.Title:SetText(L["< 历史表格 > "])
+                        BG.TextLockoutID:SetText(L["团本锁定ID："] .. L["无"])
+                        BG.TextLockoutID:SetTextColor(0.5, 0.5, 0.5)
 
                         PlaySound(BG.sound1, "Master")
                         return
@@ -699,10 +711,10 @@ do
 
                 BG.History.chooseNum = i
 
+                local DT
                 for key, value in pairs(BiaoGe.History[FB]) do -- 显示历史表格具体数据
                     if tonumber(BiaoGe.HistoryList[FB][i][1]) == tonumber(key) then
-                        local DT = BiaoGe.HistoryList[FB][i][1]
-                        local FB = FB
+                        DT = BiaoGe.HistoryList[FB][i][1]
                         for b = 1, Maxb[FB] + 2 do
                             for i = 1, Maxi[FB] do
                                 if BG.HistoryFrame[FB]["boss" .. b]["zhuangbei" .. i] then
@@ -736,6 +748,7 @@ do
                                 end
                             end
                         end
+                        break
                     end
                 end
                 BG.HistoryMainFrame:Show()
@@ -743,6 +756,8 @@ do
                 BG.History.Title:SetParent(BG["HistoryFrame" .. FB])
                 BG.History.Title:SetText(L["< 历史表格 > "] .. " " .. i)
                 BG.History.XianShiNum = i
+
+                BG.UpdateLockoutIDText(DT)
             end)
         end
     end

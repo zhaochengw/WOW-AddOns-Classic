@@ -205,12 +205,13 @@ end
 
 
 function BG.WCLUI(lastbt)
-    local bt = CreateFrame("Button", nil, BG.FBMainFrame, "UIPanelButtonTemplate")
+    local bt = CreateFrame("Button", nil, BG.ButtonZhangDan, "UIPanelButtonTemplate")
     bt:SetSize(90, BG.ButtonZhangDan:GetHeight())
     bt:SetPoint("LEFT", lastbt, "RIGHT", 10, 0)
     bt:SetText(L["通报WCL"])
     BG.ButtonWCL = bt
-    if BG.IsVanilla() then bt:Hide() end
+    tinsert(BG.TongBaoButtons, bt)
+    bt:Hide()
 
     local groupchange = true
     local f = CreateFrame("Frame")
@@ -247,9 +248,11 @@ function BG.WCLUI(lastbt)
         GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
         GameTooltip:ClearLines()
         GameTooltip:SetText(text)
+        GameTooltip:SetClampedToScreen(false)
     end)
     bt:SetScript("OnLeave", function(self)
         GameTooltip:Hide()
+        GameTooltip:SetClampedToScreen(true)
     end)
     -- 点击通报WCL分数
     bt:SetScript("OnClick", function(self)

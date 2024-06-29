@@ -60,6 +60,7 @@ function BG.RoleOverviewUI()
                 ["BOT"] = 1,
                 ["BWD"] = 1,
                 ["TOF"] = 1,
+                ["BH"] = 1,
             }
         end
     end
@@ -144,6 +145,11 @@ function BG.RoleOverviewUI()
                     [396] = 1,
                     [395] = 1,
                     ["money"] = 1,
+                }
+            end)
+            BG.Once("FBCDchoice", 240619, function()
+                BiaoGe.FBCDchoice = {
+                    ["BH"] = 1,
                 }
             end)
         end
@@ -231,8 +237,8 @@ function BG.RoleOverviewUI()
             { name = "ZUG", color = "D3D3D3", fbId = 309, num = 20, type = "fb" },
             -- 日常
             { name = "week1", name2 = L["周常"], color = "FF8C00", questID = "week1", type = "quest" },
-            { name = "gamma", name2 = L["伽马"], color = "FF8C00", questID = 78752, type = "quest" },
-            { name = "heroe", name2 = L["英雄"], color = "FF8C00", questID = 78753, type = "quest" },
+            -- { name = "gamma", name2 = L["伽马"], color = "FF8C00", questID = 78752, type = "quest" },
+            -- { name = "heroe", name2 = L["英雄"], color = "FF8C00", questID = 78753, type = "quest" },
         }
 
         BG.MONEYall_table = {
@@ -258,6 +264,7 @@ function BG.RoleOverviewUI()
             { name = "BOT", color = "FFFF00", fbId = 671, type = "fb" },
             { name = "BWD", color = "FF1493", fbId = 669, type = "fb" },
             { name = "TOF", color = "87CEFA", fbId = 754, type = "fb" },
+            { name = "BH", color = "FF4500", fbId = 757, type = "fb" },
             --WLK
             { name = "25RS", color = "FF4500", fbId = 724, num = 25, type = "fb" },
             { name = "10RS", color = "FF4500", fbId = 724, num = 10, type = "fb" },
@@ -849,6 +856,57 @@ function BG.RoleOverviewUI()
             end
         end
 
+        -- 团本锁定ID
+        do
+            local t = BG.FBMainFrame:CreateFontString()
+            t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+            t:SetPoint("TOPLEFT", BG.MainFrame, 5, -30)
+            t:SetTextColor(1, 1, 0)
+            BG.TextLockoutID = t
+
+            function BG.UpdateLockoutIDText(DT)
+                local FB = BG.FB1
+                if BG.FBMainFrame:IsVisible() then
+                    BG.TextLockoutID:SetParent(BG.FBMainFrame)
+                    if BiaoGe[FB].lockoutID then
+                        BG.TextLockoutID:SetText(L["团本锁定ID："] .. BiaoGe[FB].lockoutID)
+                        BG.TextLockoutID:SetTextColor(1, 1, 0)
+                    else
+                        BG.TextLockoutID:SetText(L["团本锁定ID："] .. L["无"])
+                        BG.TextLockoutID:SetTextColor(0.5, 0.5, 0.5)
+                    end
+                elseif BG.HistoryMainFrame:IsVisible() then
+                    BG.TextLockoutID:SetParent(BG.HistoryMainFrame)
+                    if BiaoGe.History[FB][DT] and BiaoGe.History[FB][DT].lockoutID then
+                        BG.TextLockoutID:SetText(L["团本锁定ID："] .. BiaoGe.History[FB][DT].lockoutID)
+                        BG.TextLockoutID:SetTextColor(1, 1, 0)
+                    else
+                        BG.TextLockoutID:SetText(L["团本锁定ID："] .. L["无"])
+                        BG.TextLockoutID:SetTextColor(0.5, 0.5, 0.5)
+                    end
+                end
+            end
+
+            function BG.GetLockoutID()
+                for i = 1, GetNumSavedInstances() do
+                    local name, lockoutId, resettime, difficultyId, locked, extended, instanceIDMostSig, isRaid, maxPlayers, difficultyName, numEncounters, encounterProgress, extendDisabled, instanceId =
+                        GetSavedInstanceInfo(i)
+                    if locked and lockoutId then
+                        local FB
+                        for i, v in ipairs(BG.FBtable2) do
+                            if instanceId == v.ID then
+                                FB = v.FB
+                                break
+                            end
+                        end
+                        if FB then
+                            BiaoGe[FB].lockoutID = lockoutId
+                        end
+                    end
+                end
+            end
+        end
+
         local f = CreateFrame("Frame")
         f:RegisterEvent("PLAYER_ENTERING_WORLD")
         f:RegisterEvent("ENCOUNTER_END")
@@ -871,6 +929,7 @@ function BG.RoleOverviewUI()
                     if not BG.IsVanilla() then
                         BG.UpdateFBCD_5M()
                     end
+                    BG.GetLockoutID()
                 end)
             end
         end)

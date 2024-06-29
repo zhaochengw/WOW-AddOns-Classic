@@ -1772,7 +1772,6 @@ function BG.ItemLibUI()
             f:SetBackdropColor(0, 0, 0, 0.8)
             f:SetSize(180, #tbl * 25 + 40)
             f:SetPoint("TOPLEFT", BG.ItemLibMainFrame.bg1, "TOPRIGHT", 0, 1)
-
             f:EnableMouse(true)
             f:SetFrameLevel(110)
             f:Hide()

@@ -29,11 +29,11 @@ local frameright
 local red, greed, blue = 1, 1, 1
 
 ------------------结算工资------------------
-local function Sumjine()
-    local FB = BG.FB1
+function BG.GetTotalIncome(FB)
+    local FB = FB or BG.FB1
     local sum = 0
-    for b = 1, Maxb[FB], 1 do
-        for i = 1, Maxi[FB], 1 do
+    for b = 1, Maxb[FB] do
+        for i = 1, Maxi[FB]  do
             if BG.Frame[FB]["boss" .. b]["jine" .. i] then
                 sum = sum + (tonumber(BG.Frame[FB]["boss" .. b]["jine" .. i]:GetText()) or 0)
             end
@@ -41,8 +41,9 @@ local function Sumjine()
     end
     return sum
 end
-local function SumZC()
-    local FB = BG.FB1
+
+function BG.GetTotalExpenditure(FB)
+    local FB = FB or BG.FB1
     local sum = 0
     for i = 1, Maxi[FB], 1 do
         if BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i] then
@@ -51,26 +52,26 @@ local function SumZC()
     end
     return sum
 end
-local function SumJ()
-    local FB = BG.FB1
-    local n1 = tonumber(BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"]:GetText()) or 0
-    local n2 = tonumber(BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine2"]:GetText()) or 0
-    local jing = n1 - n2
-    return jing
+
+function BG.GetNetIncome(FB)
+    local FB = FB or BG.FB1
+    local totalIncome = tonumber(BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"]:GetText()) or 0
+    local expenditure = tonumber(BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine2"]:GetText()) or 0
+    return totalIncome - expenditure
 end
-local function SumGZ()
-    local FB = BG.FB1
-    local n1 = tonumber(BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine3"]:GetText()) or 0
-    local n2 = tonumber(BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:GetText()) or 0
-    local gz
+
+function BG.GetWages(FB)
+    local FB = FB or BG.FB1
+    local netIncome = tonumber(BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine3"]:GetText()) or 0
+    local num = tonumber(BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:GetText()) or 0
+    local wages
     if BiaoGe.options["moLing"] == 1 then
-        gz = math.modf(n1 / n2)
+        wages = math.modf(netIncome / num)
     else
-        gz = format("%.2f", n1 / n2)
+        wages = format("%.2f", netIncome / num)
     end
-    return gz
+    return wages
 end
-BG.SumGZ = SumGZ
 
 local function HighlightBiaoGeSameItems(itemID, self)
     local tbl = {}
@@ -160,7 +161,7 @@ end
 function BG.GetGeZiTardeInfo(FB, b, i)
     for ii, _ in ipairs(BiaoGe[FB].tradeTbl) do
         for _, v in ipairs(BiaoGe[FB].tradeTbl[ii]) do
-            if b == v.b and i == v.i then
+            if FB == v.FB and b == v.b and i == v.i then
                 return BiaoGe[FB].tradeTbl[ii], ii
             end
         end
@@ -178,7 +179,7 @@ local function ShowTardeHighLightItem(self)
                 for i = 1, Maxi[FB] do
                     local zb = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                     local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
-                    if zb and b == v.b and i == v.i then
+                    if zb and FB == v.FB and b == v.b and i == v.i then
                         local f = CreateFrame("Frame", nil, zb, "BackdropTemplate")
                         f:SetBackdrop({
                             edgeFile = "Interface/ChatFrame/ChatFrameBackground",
@@ -280,11 +281,6 @@ local function OnTextChanged(self)
         self.icon:SetTexture(nil)
     end
 
-    if self:GetText() == "" then
-        BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i] = nil
-        BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i]:Hide()
-    end
-
     local num = BiaoGe.FilterClassItemDB[RealmId][player].chooseID -- 隐藏
     if num ~= 0 then
         BG.UpdateFilter(self)
@@ -298,6 +294,8 @@ local function OnTextChanged(self)
         BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i] = self:GetText() -- 储存文本
     else
         BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i] = nil
+        BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i] = nil
+        BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i]:Hide()
     end
 
     -- 装绑图标
@@ -335,7 +333,6 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
     end
 
     bt:SetAutoFocus(false)
-    bt:Show()
     bt.FB = FB
     bt.bossnum = BossNum(FB, b, t)
     bt.t = t
@@ -620,7 +617,11 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
     bt:SetFrameLevel(110)
     -- button:SetMaxBytes(19) --限制字数
     bt:SetAutoFocus(false)
-    bt:Show()
+    bt.FB = FB
+    bt.bossnum = BossNum(FB, b, t)
+    bt.t = t
+    bt.b = b
+    bt.i = i
     local color = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["color" .. i]
     if color then
         if not (color[1] == 1 and color[2] == 1 and color[3] == 1) then
@@ -646,7 +647,9 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
             BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["color" .. i] = { self:GetTextColor() } -- 储存颜色
         else
             BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["maijia" .. i] = nil
-            BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["color" .. i] = nil
+            for k, v in pairs(BG.playerClass) do
+                BiaoGe[FB]["boss" .. BossNum(FB, b, t)][k .. i] = nil
+            end
             self:SetTextColor(1, 1, 1)
         end
     end)
@@ -695,18 +698,18 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
         BG.maijiaButton = self
         BG.SetListmaijia(self)
         BG.FrameDs[FB .. 2]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show() -- 底色
-        if BG.FramePaiMaiMsg then
-            BG.FramePaiMaiMsg:SetParent(BG.FrameMaijiaList)
-            BG.FramePaiMaiMsg:ClearAllPoints()
-            BG.FramePaiMaiMsg:SetPoint("TOPRIGHT", BG.FrameMaijiaList, "TOPLEFT", 0, 0)
-            BG.FramePaiMaiMsg:Show()
+        if BG.FrameAuctionMSGbg then
+            BG.FrameAuctionMSGbg:SetParent(BG.FrameMaijiaList)
+            BG.FrameAuctionMSGbg:ClearAllPoints()
+            BG.FrameAuctionMSGbg:SetPoint("TOPRIGHT", BG.FrameMaijiaList, "TOPLEFT", 0, 0)
+            BG.FrameAuctionMSGbg:Show()
             if BiaoGe.options["auctionChatHoldNew"] == 1 then
-                BG.FramePaiMaiMsg2:ScrollToBottom()
+                BG.FrameAuctionMSG:ScrollToBottom()
             end
             if BiaoGe.options["auctionChat"] == 1 then
-                BG.FramePaiMaiMsg:Show()
+                BG.FrameAuctionMSGbg:Show()
             else
-                BG.FramePaiMaiMsg:Hide()
+                BG.FrameAuctionMSGbg:Hide()
             end
         end
     end)
@@ -841,18 +844,7 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
     bt:SetScript("OnTextChanged", function(self)
         local bossnum = self.bossnum
 
-        local name = "autoAdd0"
-        if BiaoGe.options[name] == 1 and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. i] and not IsModifierKeyDown() then
-            local len = strlen(self:GetText())
-            local lingling
-            if len then
-                lingling = strsub(self:GetText(), len - 1, len)
-            end
-            if lingling ~= "00" and lingling ~= "0" and tonumber(self:GetText()) and self:HasFocus() then
-                self:Insert("00")
-                self:SetCursorPosition(1)
-            end
-        end
+        BG.UpdateTwo0(self)
 
         if bossnum ~= Maxb[FB] and bossnum ~= Maxb[FB] + 1 and bossnum ~= Maxb[FB] + 2 then
             BG.DuiZhangFrame[FB]["boss" .. BossNum(FB, b, t)]["myjine" .. i]:SetText(self:GetText())
@@ -863,10 +855,10 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
         else
             BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i] = nil
         end
-        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"]:SetText(Sumjine()) -- 计算总收入
-        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine2"]:SetText(SumZC())   -- 计算总支出
-        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine3"]:SetText(SumJ())    -- 计算净收入
-        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine5"]:SetText(SumGZ())   -- 计算人均工资
+        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"]:SetText(BG.GetTotalIncome()) -- 计算总收入
+        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine2"]:SetText(BG.GetTotalExpenditure())   -- 计算总支出
+        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine3"]:SetText(BG.GetNetIncome())    -- 计算净收入
+        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine5"]:SetText(BG.GetWages())   -- 计算人均工资
 
         BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"]:SetCursorPosition(0)
         BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine2"]:SetCursorPosition(0)
@@ -939,17 +931,17 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
         if self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i] and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. i] then
             BG.SetListjine(self, FB, BossNum(FB, b, t), i)
         end
-        if BG.FramePaiMaiMsg then
-            BG.FramePaiMaiMsg:SetParent(BG.FrameJineList)
-            BG.FramePaiMaiMsg:ClearAllPoints()
-            BG.FramePaiMaiMsg:SetPoint("TOPRIGHT", BG.FrameJineList, "TOPLEFT", 0, 0)
+        if BG.FrameAuctionMSGbg then
+            BG.FrameAuctionMSGbg:SetParent(BG.FrameJineList)
+            BG.FrameAuctionMSGbg:ClearAllPoints()
+            BG.FrameAuctionMSGbg:SetPoint("TOPRIGHT", BG.FrameJineList, "TOPLEFT", 0, 0)
             if BiaoGe.options["auctionChatHoldNew"] == 1 then
-                BG.FramePaiMaiMsg2:ScrollToBottom()
+                BG.FrameAuctionMSG:ScrollToBottom()
             end
             if BiaoGe.options["auctionChat"] == 1 then
-                BG.FramePaiMaiMsg:Show()
+                BG.FrameAuctionMSGbg:Show()
             else
-                BG.FramePaiMaiMsg:Hide()
+                BG.FrameAuctionMSGbg:Hide()
             end
         end
     end)
@@ -1183,13 +1175,13 @@ end
 function BG.FBZhiChuZongLanGongZiUI(FB)
     -- 初始化支出内容
     if not BiaoGe[FB]["boss" .. Maxb[FB] + 1]["zhuangbei1"] then
-        BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei1"]:SetText(L["坦克补贴"])
+        BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei1"]:SetText(L["T补贴"])
     end
     if not BiaoGe[FB]["boss" .. Maxb[FB] + 1]["zhuangbei2"] then
-        BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei2"]:SetText(L["治疗补贴"])
+        BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei2"]:SetText(L["N补贴"])
     end
     if not BiaoGe[FB]["boss" .. Maxb[FB] + 1]["zhuangbei3"] then
-        BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei3"]:SetText(L["输出补贴"])
+        BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei3"]:SetText(L["Dps补贴"])
     end
     if BG.IsWLK() then
         if not BiaoGe[FB]["boss" .. Maxb[FB] + 1]["zhuangbei4"] then
@@ -1242,6 +1234,16 @@ function BG.FBZhiChuZongLanGongZiUI(FB)
     end
     BG.Frame[FB]["boss" .. Maxb[FB] + 2]["zhuangbei4"]:HookScript("OnEnter", OnEnter)
     BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:HookScript("OnEnter", OnEnter)
+
+    -- 修复默认支出名称
+    for i = 1, Maxi[FB] do
+        local zb = BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i]
+        if zb then
+            zb:SetText(zb:GetText():gsub(L["坦克补贴"], L["T补贴"]))
+            zb:SetText(zb:GetText():gsub(L["治疗补贴"], L["N补贴"]))
+            zb:SetText(zb:GetText():gsub(L["输出补贴"], L["Dps补贴"]))
+        end
+    end
 end
 
 function BG.CreateFBScrollFrame(frameName, FB, bossNum)

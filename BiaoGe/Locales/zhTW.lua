@@ -5,7 +5,7 @@ if (GetLocale() ~= "zhTW") then return end
 local update = ""
 do --繁体说明书
     local text
-    text = "|cffFFFFFF< 我是說明書 >|r\n\n"
+    text = "|cffFFFFFF< 我是說明書 >（本插件支持CTM、WLK、探索賽季、60服）|r\n\n"
     text = text .. "|cffFFFFFF-打開命令：|r/BiaoGe或/GBG，或遊戲設置裡綁定按鍵。小地圖圖標：" .. "|TInterface\\AddOns\\BiaoGe\\Media\\icon\\icon:0|t" .. "\n"
     text = text .. "|cffFFFFFF-快捷操作：|r點空白處取消光標，右鍵輸入框清除內容\n"
     text = text .. "|cffFFFFFF-跳轉光標：|r按Tab、方向鍵跳轉光標，ALT/CTRL/SHIFT+方向鍵跳轉至下個BOSS\n"
@@ -20,6 +20,20 @@ do --繁体说明书
     text = text .. "|cffFFFFFF-更多功能介紹可在設置裡查看|r\n\n"
     text = text .. "-BUG反饋：郵箱buick_hbj@163.com，Q群322785325\n\n"
 
+    update = update .. "|cff00FF00" .. "6月29日更新v1.9.8" .. "|r\n"
+    update = update .. [[-新增：通報多本總覽賬單（按鈕在通報賬單旁邊）]] .. "\n"
+    update = update .. [[-修復了快速記賬、高亮打包交易裝備在涉及跨副本時出現的一些錯誤]] .. "\n\n"
+    
+    update = update .. "|cff00FF00" .. "6月27日更新v1.9.6" .. "|r\n"
+    update = update .. [[-通報賬單：優化通報次序（在國服發消息的次序是亂的，需要加點延遲）]] .. "\n"
+    update = update .. [[-表格：修改支出項的默認名稱（因為"坦克"和"tank"在國服發不出來）。不再自動記錄"埃霍恩的冰霜之鐮"]] .. "\n"
+    update = update .. [[-增加顯示團本鎖定ID]] .. "\n"
+    update = update .. [[-刪除通報WCL按鈕]] .. "\n"
+    update = update .. [[-<WLK>刪除[查看在線玩家]功能（因為國服把上限值鎖為501，導致該功能已經沒意義了）]] .. "\n"
+    update = update .. [[-<WLK>角色總覽：刪除伽馬日常、英雄日常]] .. "\n"
+    update = update .. [[-<CTM>角色總覽：增加巴拉丁監獄]] .. "\n"
+    update = update .. [[-<60服>MC表格佈局優化]] .. "\n\n"
+
     update = update .. "|cff00FF00" .. "6月19日更新v1.9.5" .. "|r\n"
     update = update .. [[-拍賣WA：更新為v1.2，現在物品分配者也可以開始拍賣裝備了（需全團把該WA更新至v1.2）]] .. "\n"
     update = update .. [[-對賬：增加[賬單聊天記錄] ]] .. "\n"
@@ -29,6 +43,14 @@ do --繁体说明书
     update = update .. [[-清空表格/心願按鈕：增加二次確定]] .. "\n"
     update = update .. [[-<WLK/60服>修復了拆分出來的新表格的自動記錄裝備功能失效的問題]] .. "\n"
     update = update .. [[-<賽季服>修復了神廟表格里UI重疊的問題]] .. "\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT顯示更多更新記錄|r"
+
+    ADDONSELF.instructionsText = text
+end
+do --繁体更新内容
+    local update = "|cff00BFFF< 主要更新記錄 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "6月15日更新v1.9.4" .. "|r\n"
     update = update .. [[-表格：罰款和支出欄改為滾動框，可容納更多格子]] .. "\n"
@@ -40,14 +62,6 @@ do --繁体说明书
     update = update .. [[-<WLK>角色總覽：默認選項適配國服當前階段]] .. "\n"
     update = update .. [[-<60服>角色總覽：增加奧妮克希亞的巢穴]] .. "\n\n"
 
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT顯示更多更新記錄|r"
-
-    ADDONSELF.instructionsText = text
-end
-do --繁体更新内容
-    local update = "|cff00BFFF< 主要更新記錄 >|r\n\n" .. update
-
     update = update .. "|cff00FF00" .. "6月6日更新v1.9.3" .. "|r\n"
     update = update .. [[-<CTM>角色總覽：增加征服點數（默認不勾選）]] .. "\n"
     update = update .. [[-<60服>表格：奧妮克希亞的格子增加至8個，奈法利安的格子增加至6個]] .. "\n\n"
@@ -55,23 +69,6 @@ do --繁体更新内容
     update = update .. "|cff00FF00" .. "6月1日更新v1.9.2" .. "|r\n"
     update = update .. [[-<CTM>表格/裝備庫：添加團本小怪掉落]] .. "\n"
     update = update .. [[-<CTM>裝備庫：添加征服點數裝備，更新榮譽點數裝備]] .. "\n\n"
-
-    update = update .. "|cff00FF00" .. "5月31日更新v1.9.1b" .. "|r\n"
-    update = update .. [[-修復了在裝備庫心願匯總的部位欄使用鼠標滾輪時出現的錯誤]] .. "\n"
-    update = update .. [[-<CTM>修復了對團本套裝記錄失效的問題]] .. "\n\n"
-
-    update = update .. "|cff00FF00" .. "5月24日更新v1.9.1" .. "|r\n"
-    update = update .. [[-裝備庫：增加[獲取途徑過濾] ]] .. "\n"
-    update = update .. [[-<CTM>裝備庫：增加榮譽點數、專業製造、世界掉落、闇月馬戲團裝備]] .. "\n"
-    update = update .. [[-<CTM>裝備過濾：增加詞綴"韌性"]] .. "\n\n"
-
-    update = update .. "|cff00FF00" .. "5月21日更新v1.9.0b" .. "|r\n"
-    update = update .. [[-<60/plus>修復了裝備自動記錄失效的問題]] .. "\n\n"
-
-    update = update .. "|cff00FF00" .. "5月20日更新v1.9.0" .. "|r\n"
-    update = update .. [[-角色配置文件：增加刪除某角色全部配置文件的按鈕]] .. "\n"
-    update = update .. [[-<CTM>更新CTM P1表格、裝備庫、角色總覽等]] .. "\n"
-    update = update .. [[-<WLK>裝備庫：套裝和牌子裝備現在顯示更全面]] .. "\n\n"
 
     ADDONSELF.updateText = update
 end
@@ -83,6 +80,24 @@ local L = setmetatable({}, {
 })
 
 do
+    L["|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金额：%s%s\n副本：%s\nBOSS：%s"] = "|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金額：%s%s\n副本：%s\nBOSS：%s"
+    L["< 交易记账成功 >|r\n装备：%s\n买家：%s\n金额：%s%d|rg%s\n副本：%s\nBOSS：%s%s|r"] = "< 交易记账成功 >|r\n装备：%s\n买家：%s\n金額：%s%d|rg%s\n副本：%s\nBOSS：%s%s"
+    L["——通报多本总览账单——"] = "——通報多本總覽賬單——"
+    L["通报多本总览账单"] = "通報多本總覽賬單"
+    L["|cffFFFFFF点击：|r显示选项面板。"] = "|cffFFFFFF點擊：|r顯示選項面板。"
+    L["请选择需要通报哪些总览账单？"] = "請選擇需要通報哪些總覽賬單？"
+    L["通报"] = "通報"
+    L["请选择一个账单。"] = "請選擇一個賬單。"
+
+
+    L["拍卖WA"] = "拍賣WA"
+    L["团本锁定ID："] = "團本鎖定ID："
+    L["T补贴"] = "T補貼"
+    L["N补贴"] = "N補貼"
+    L["Dps补贴"] = "Dps補貼"
+    L["快速记账的时候，可以预览这次的记账效果。"] = "快速記賬的時候，可以預覽這次的記賬效果。"
+
+
     L["更新记录："] = "更新記錄："
     L["v1.2：现在物品分配者也可以开始拍卖装备了"] = "v1.2：現在物品分配者也可以開始拍賣裝備了"
     L["装备总收入"] = "裝備總收入"
