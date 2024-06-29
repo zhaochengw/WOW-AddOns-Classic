@@ -1131,7 +1131,7 @@ if title ~= nil then
 				name= FF_NameMovableCastBar;
 				subtext= "MovableCastBar";
 				tooltip = FF_DescMovableCastBar;
-				icon= "Interface\\Icons\\Spell_Fire_Flamebolt";
+				icon= "Interface\\Icons\\Spell_Fire_BlueFlamebolt";
 				-- icon= "Interface\\Icons\\Spell_Nature_ElementalAbsorption";
 				callback= function(button)
 					if not IsAddOnLoaded("MovableCastBar") then
@@ -1182,6 +1182,47 @@ if title ~= nil then
 				end;
 				test = function()
 					if not IsAddOnLoaded("PortalMage") and not IsAddOnLoadOnDemand("PortalMage") then
+						return false;
+					else
+						return true;
+					end
+				end;
+			}
+		);
+	end
+end
+
+local _, title = GetAddOnInfo("TidyBar");
+if title ~= nil then
+	if GetLocale() == "zhCN" then
+		FF_NameTidyBar	= "Tidybar";
+		FF_DescTidyBar	= "简单原生动作条";
+	elseif GetLocale() == "zhTW" then
+		FF_NameTidyBar	= "Tidybar";
+		FF_DescTidyBar	= "简单原生动作条";
+	else
+		FF_NameTidyBar	= "TidyBar";
+		FF_DescTidyBar	= "Simple blizzard action bar";
+	end
+	if ( EarthFeature_AddButton ) then
+		EarthFeature_AddButton(
+			{
+				id= "TidyBar";
+				tab= "ui";
+				name= FF_NameTidyBar;
+				subtext= "TidyBar";
+				tooltip = FF_DescTidyBar;
+				icon= "Interface\\Icons\\Spell_Arcane_Rune";
+				-- icon= "Interface\\Icons\\Spell_Nature_ElementalAbsorption";
+				callback= function(button)
+					if not IsAddOnLoaded("TidyBar") then
+						LoadAddOn("TidyBar");
+					end
+					InterfaceOptionsFrame_OpenToCategory("TidyBar");
+					InterfaceOptionsFrame_OpenToCategory("TidyBar");
+				end;
+				test = function()
+					if not IsAddOnLoaded("TidyBar") and not IsAddOnLoadOnDemand("TidyBar") then
 						return false;
 					else
 						return true;
@@ -1372,7 +1413,7 @@ if title ~= nil then
 				name= FF_NameAttackTimer;
 				subtext= "AttackTimer";
 				tooltip = FF_DescAttackTimer;
-				icon= "Interface\\Icons\\Ability_Gouge";
+				icon= "Interface\\Icons\\Spell_Fire_EnchantWeapon";
 				callback= function(button)
 					if not IsAddOnLoaded("AttackTimer") then
 						LoadAddOn("AttackTimer");
