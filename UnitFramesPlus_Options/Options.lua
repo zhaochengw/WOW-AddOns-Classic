@@ -388,20 +388,41 @@ do
     end)
 
     --系统状态条显示
-    local UnitFramesPlus_OptionsFrame_SYSOnBar = CreateFrame("CheckButton", "UnitFramesPlus_OptionsFrame_SYSOnBar", UnitFramesPlus_Global_Options, "InterfaceOptionsCheckButtonTemplate");
-    UnitFramesPlus_OptionsFrame_SYSOnBar:ClearAllPoints();
-    UnitFramesPlus_OptionsFrame_SYSOnBar:SetPoint("TOPLEFT", UnitFramesPlus_OptionsFrame_MinimapButton, "TOPLEFT", 0, -30);
-    UnitFramesPlus_OptionsFrame_SYSOnBar:SetHitRectInsets(0, -100, 0, 0);
-    UnitFramesPlus_OptionsFrame_SYSOnBarText:SetText(UFP_OP_SYS_OnBar);
-    UnitFramesPlus_OptionsFrame_SYSOnBar:SetScript("OnClick", function(self)
-        if not InCombatLockdown() then
-            --InterfaceOptionsFrame_OpenToCategory(InterfaceOptionsStatusTextPanel);
-            InterfaceOptionsFrame:Hide();
-            GameMenuButtonUIOptions:Click();
-            InterfaceOptionsFrameCategoriesButton3:Click();
+    -- 创建复选框
+local UnitFramesPlus_OptionsFrame_SYSOnBar = CreateFrame("CheckButton", "UnitFramesPlus_OptionsFrame_SYSOnBar", UnitFramesPlus_Global_Options, "InterfaceOptionsCheckButtonTemplate")
+UnitFramesPlus_OptionsFrame_SYSOnBar:ClearAllPoints()
+UnitFramesPlus_OptionsFrame_SYSOnBar:SetPoint("TOPLEFT", UnitFramesPlus_OptionsFrame_MinimapButton, "TOPLEFT", 0, -30)
+UnitFramesPlus_OptionsFrame_SYSOnBar:SetHitRectInsets(0, -100, 0, 0)
+UnitFramesPlus_OptionsFrame_SYSOnBarText:SetText(UFP_OP_SYS_OnBar)
+
+-- 初始化复选框状态
+UnitFramesPlus_OptionsFrame_SYSOnBar:SetScript("OnShow", function(self)
+    local statusTextDisplay = GetCVar("statusTextDisplay")
+    if statusTextDisplay == "BOTH" then
+        self:SetChecked(true)
+    else
+        self:SetChecked(false)
+    end
+end)
+
+-- 点击事件处理函数
+UnitFramesPlus_OptionsFrame_SYSOnBar:SetScript("OnClick", function(self)
+    if not InCombatLockdown() then
+        -- 根据当前选中状态设置 CVAR
+        if self:GetChecked() then
+            SetCVar("statusTextDisplay", "BOTH")
+            SetCVar("statusText", "1")
+        else
+            SetCVar("statusTextDisplay", "NONE")
+            SetCVar("statusText", "0")
         end
-        self:SetChecked(false);
-    end)
+    else
+        print("无法在战斗中更改设置")
+    end
+end)
+
+-- 显示复选框
+UnitFramesPlus_OptionsFrame_SYSOnBar:Show()
 
     -- --系统状态条显示为万亿
     -- if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
