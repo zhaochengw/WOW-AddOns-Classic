@@ -1,4 +1,4 @@
-﻿--[[--
+--[[--
 	by ALA @ 163UI
 	Please Keep WOW Addon open-source & Reduce barriers for others.
 	复用代码请在显著位置标注来源【ALA@网易有爱】
