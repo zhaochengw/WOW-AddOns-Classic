@@ -1820,8 +1820,10 @@ function UnitFramesPlus_PartyStyleSet()
     local state = IsAddOnLoaded("Blizzard_CompactRaidFrames");
     if state == true then
         RaidOptionsFrame_UpdatePartyFrames();
-        CompactRaidFrameManager_UpdateContainerLockVisibility(CompactRaidFrameManager);
-        CompactRaidFrameManager_UpdateShown(CompactRaidFrameManager);
+        if CompactRaidFrameManager then
+            securecall(CompactRaidFrameManager_UpdateContainerLockVisibility, CompactRaidFrameManager);
+            securecall(CompactRaidFrameManager_UpdateShown, CompactRaidFrameManager);
+        end
     end
 end
 
