@@ -881,7 +881,6 @@ local default_profile = {
 		max_window_size = {width = 480, height = 450},
 		new_window_size = {width = 310, height = 158},
 		window_clamp = {-8, 0, 21, -14},
-		grouping_horizontal_gap = 0,
 		disable_window_groups = false,
 		disable_reset_button = false,
 		disable_lock_ungroup_buttons = false,
@@ -902,8 +901,8 @@ local default_profile = {
 		},
 
 	--segments
-		segments_amount = 25,
-		segments_amount_to_save = 15,
+		segments_amount = 40,
+		segments_amount_to_save = 40,
 		segments_panic_mode = false,
 		segments_auto_erase = 1,
 
@@ -2035,10 +2034,9 @@ function Details:ImportProfile (profileString, newProfileName, bImportAutoRunCod
 		mythicPlusSettings.mythicrun_chart_frame_minimized = {}
 		mythicPlusSettings.finished_run_frame = {}
 
-		--max segments allowed
-		Details.segments_amount = 25
-		--max segments to save between sections
-		Details.segments_amount_to_save = 15
+		--make the max amount of segments be 30
+		Details.segments_amount = 40
+		Details.segments_amount_to_save = 40
 
 		--transfer instance data to the new created profile
 		profileObject.instances = DetailsFramework.table.copy({}, profileData.instances)
@@ -2106,7 +2104,7 @@ function Details.ShowImportProfileConfirmation(message, callback)
 		checkboxLabel:SetJustifyH("left")
 		promptFrame.checkboxLabel = checkboxLabel
 
-		local buttonTrue = detailsFramework:CreateButton(promptFrame, nil, 60, 20, "Okay", nil, nil, nil, nil, nil, nil, options_dropdown_template)
+		local buttonTrue = detailsFramework:CreateButton(promptFrame, nil, 60, 20, "Okey", nil, nil, nil, nil, nil, nil, options_dropdown_template)
 		buttonTrue:SetPoint("bottomright", promptFrame, "bottomright", -10, 5)
 		promptFrame.button_true = buttonTrue
 
@@ -2147,3 +2145,6 @@ function Details.ShowImportProfileConfirmation(message, callback)
 	Details.profileConfirmationDialog.button_true.true_function = callback
 	Details.profileConfirmationDialog.textbox:SetFocus(true)
 end
+
+
+

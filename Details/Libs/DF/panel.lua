@@ -15,13 +15,6 @@ local floor = math.floor --lua local
 local loadstring = loadstring --lua local
 local CreateFrame = CreateFrame
 
--- TWW compatibility:
-local GetSpellInfo = GetSpellInfo or function(spellID) if not spellID then return nil end local si = C_Spell.GetSpellInfo(spellID) if si then return si.name, nil, si.iconID, si.castTime, si.minRange, si.maxRange, si.spellID, si.originalIconID end end
-local GetNumSpellTabs = GetNumSpellTabs or C_SpellBook.GetNumSpellBookSkillLines
-local GetSpellTabInfo = GetSpellTabInfo or function(tabLine) local skillLine = C_SpellBook.GetSpellBookSkillLineInfo(tabLine) if skillLine then return skillLine.name, skillLine.iconID, skillLine.itemIndexOffset, skillLine.numSpellBookItems, skillLine.isGuild, skillLine.offSpecID end end
-local SpellBookItemTypeMap = Enum.SpellBookItemType and {[Enum.SpellBookItemType.Spell] = "SPELL", [Enum.SpellBookItemType.None] = "NONE", [Enum.SpellBookItemType.Flyout] = "FLYOUT", [Enum.SpellBookItemType.FutureSpell] = "FUTURESPELL", [Enum.SpellBookItemType.PetAction] = "PETACTION" } or {}
-local GetSpellBookItemInfo = GetSpellBookItemInfo or function(...) local si = C_SpellBook.GetSpellBookItemInfo(...) if si then return SpellBookItemTypeMap[si.itemType] or "NONE", si.spellID end end
-
 local IS_WOW_PROJECT_MAINLINE = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local IS_WOW_PROJECT_NOT_MAINLINE = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
 local IS_WOW_PROJECT_CLASSIC_ERA = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
@@ -2453,7 +2446,7 @@ function detailsFramework:ShowPromptPanel(message, trueCallback, falseCallback, 
 	if (not DetailsFrameworkPromptSimple) then
 		local promptFrame = CreateFrame("frame", "DetailsFrameworkPromptSimple", UIParent, "BackdropTemplate")
 		promptFrame:SetSize(400, 80)
-		promptFrame:SetFrameStrata("FULLSCREEN")
+		promptFrame:SetFrameStrata("DIALOG")
 		promptFrame:SetPoint("center", UIParent, "center", 0, 300)
 		detailsFramework:ApplyStandardBackdrop(promptFrame)
 		table.insert(UISpecialFrames, "DetailsFrameworkPromptSimple")
@@ -2580,7 +2573,7 @@ function detailsFramework:ShowTextPromptPanel(message, callback)
 		textbox:SetPoint("topleft", promptFrame, "topleft", 10, -60)
 		promptFrame.EntryBox = textbox
 
-		local buttonTrue = detailsFramework:CreateButton(promptFrame, nil, 60, 20, "Okay", nil, nil, nil, nil, nil, nil, options_dropdown_template)
+		local buttonTrue = detailsFramework:CreateButton(promptFrame, nil, 60, 20, "Okey", nil, nil, nil, nil, nil, nil, options_dropdown_template)
 		buttonTrue:SetPoint("bottomright", promptFrame, "bottomright", -10, 5)
 		promptFrame.button_true = buttonTrue
 
@@ -4066,7 +4059,6 @@ local default_radiogroup_options = {
 ---@field _optionid number
 ---@field _set function
 ---@field _callback function
----@field _param any
 ---@field __width number
 ---@field __height number
 
@@ -4086,10 +4078,6 @@ local default_radiogroup_options = {
 ---@field ResetAllCheckboxes fun(self:df_checkboxgroup)
 ---@field RadioOnClick fun(checkbox:df_radiogroup_checkbox, fixedParam:any, value:boolean)
 ---@field RefreshCheckbox fun(self:df_checkboxgroup, checkbox:df_radiogroup_checkbox, optionTable:table, optionId:number)
-
-local radio_checkbox_onclick_extraspace = function(self)
-	self:GetParent():GetObject():OnSwitch() --as the parent of self is a Switch object from DetailsFramework, it need to run :GetObject() to get the capsule object
-end
 
 ---@type df_radiogroupmixin
 detailsFramework.RadioGroupCoreFunctions = {
@@ -4156,12 +4144,6 @@ detailsFramework.RadioGroupCoreFunctions = {
 		checkbox:SetTemplate(detailsFramework:GetTemplate("switch", "OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"))
 		checkbox:SetAsCheckBox()
 
-		local extraSpaceToClick = CreateFrame("button", "$parentExtraSpaceToClick", checkbox.widget)
-		extraSpaceToClick:SetPoint("topleft", checkbox.widget, "topright", 0, 0)
-		extraSpaceToClick:SetPoint("bottomleft", checkbox.widget, "bottomright", 0, 0)
-		extraSpaceToClick:SetScript("OnClick", radio_checkbox_onclick_extraspace)
-		checkbox.extraSpaceToClick = extraSpaceToClick
-
 		if (self.options.rounded_corner_preset) then
 			checkbox:SetBackdrop(nil)
 			detailsFramework:AddRoundedCornersToFrame(checkbox, self.options.rounded_corner_preset)
@@ -4207,7 +4189,7 @@ detailsFramework.RadioGroupCoreFunctions = {
 		end
 
 		if (radioGroup.options.on_click_option) then
-			detailsFramework:QuickDispatch(radioGroup.options.on_click_option, radioGroup, checkbox, checkbox._param, checkbox._optionid)
+			detailsFramework:QuickDispatch(radioGroup.options.on_click_option, radioGroup, checkbox, fixedParam, checkbox._optionid)
 		end
 	end,
 
@@ -4223,10 +4205,9 @@ detailsFramework.RadioGroupCoreFunctions = {
 		checkbox._callback = optionTable.callback
 		checkbox._set = self.options.is_radio and optionTable.callback or optionTable.set
 		checkbox._optionid = optionId
-		checkbox._param = optionTable.param or optionId
 		checkbox:SetFixedParameter(optionTable.param or optionId)
 
-		local bIsChecked = (type(optionTable.selected) == "boolean" and optionTable.selected) or (type(optionTable.get) == "function" and detailsFramework:Dispatch(optionTable.get)) or false
+		local bIsChecked = type(optionTable.get) == "function" and detailsFramework:Dispatch(optionTable.get) or false
 		checkbox:SetValue(bIsChecked)
 
 		checkbox.Label.text = optionTable.name
@@ -4234,19 +4215,11 @@ detailsFramework.RadioGroupCoreFunctions = {
 		checkbox.Label.textcolor = self.options.text_color
 		checkbox.Label.outline = self.options.text_outline
 
-		checkbox.Label:ClearAllPoints()
-
 		if (optionTable.texture) then
 			checkbox.Icon:SetTexture(optionTable.texture)
 			checkbox.Icon:SetSize(width, height)
 			checkbox.Icon:SetPoint("left", checkbox, "right", self.AnchorOptions.icon_offset_x, 0)
-
-			if (self.options.text_padding) then
-				checkbox.Label:SetPoint("left", checkbox.Icon, "right", self.options.text_padding, 0)
-			else
-				checkbox.Label:SetPoint("left", checkbox.Icon, "right", 2, 0)
-			end
-
+			checkbox.Label:SetPoint("left", checkbox.Icon, "right", 2, 0)
 			checkbox.tooltip = optionTable.tooltip
 
 			if (optionTable.texcoord) then
@@ -4271,11 +4244,7 @@ detailsFramework.RadioGroupCoreFunctions = {
 			end
 		else
 			checkbox.Icon:SetTexture("")
-			if (self.options.text_padding) then
-				checkbox.Label:SetPoint("left", checkbox, "right", self.options.text_padding, 0)
-			else
-				checkbox.Label:SetPoint("left", checkbox, "right", 2, 0)
-			end
+			checkbox.Label:SetPoint("left", checkbox, "right", 2, 0)
 		end
 
 		checkbox.__width = width + (checkbox.Icon:IsShown() and (checkbox.Icon:GetWidth() + 2)) + (checkbox.Label:GetStringWidth()) + 2
@@ -4283,10 +4252,6 @@ detailsFramework.RadioGroupCoreFunctions = {
 
 		checkbox.__height = height + (checkbox.Icon:IsShown() and (checkbox.Icon:GetHeight() + 2))
 		checkbox.widget.__height = checkbox.__height
-
-		if (optionTable.checkbox_template) then
-			checkbox:SetTemplate(optionTable.checkbox_template)
-		end
 	end,
 
 	Refresh = function(self)
@@ -4301,8 +4266,6 @@ detailsFramework.RadioGroupCoreFunctions = {
 			checkbox:Show()
 			self:RefreshCheckbox(checkbox, optionsTable, optionId)
 			totalWidth = totalWidth + checkbox.__width
-
-			checkbox.extraSpaceToClick:SetWidth(checkbox.__width)
 
 			if (checkbox:GetHeight() > maxHeight) then
 				maxHeight = checkbox:GetHeight()
@@ -4378,8 +4341,6 @@ detailsFramework.RadioGroupCoreFunctions = {
 ---@field backdrop table?
 ---@field backdrop_color table?
 ---@field backdrop_border_color table?
----@field checkbox_template string?
----@field on_click_option fun(self:df_checkboxgroup, checkbox:df_radiogroup_checkbox, param:any, optionId:number)
 
 --[=[
 	radionOptions: an index table with options for the radio group {name = "", set = func (self, param, value), param = value, get = func, texture = "", texcoord = {}}
@@ -4800,7 +4761,6 @@ function detailsFramework:CreateBorderFrame(parent, name)
 	local parentName = name or ("DetailsFrameworkBorderFrame" .. tostring(math.random(1, 100000000)))
 
 	local f = CreateFrame("frame", parentName, parent, "BackdropTemplate")
-	detailsFramework:Mixin(f, detailsFramework.FrameFunctions)
 	f:SetFrameLevel(f:GetFrameLevel()+1)
 	f:SetAllPoints()
 

@@ -125,14 +125,8 @@ do
 
 		if (itemIcon and itemName) then
 			--limit the amount of characters of the item name
-			if (GetLocale() == "zhCN" or GetLocale() == "zhTW" or GetLocale() == "koKR") then
-				if (#itemName > 56) then
-					itemName = string.sub(itemName, 1, 56)
-				end
-			else
-				if (#itemName > 20) then
-					itemName = string.sub(itemName, 1, 20)
-				end
+			if (#itemName > 20) then
+				itemName = string.sub(itemName, 1, 20)
 			end
 			result = "" .. CreateTextureMarkup(itemIcon, iconSize, iconSize, iconSize, iconSize, unpack(coords)) .. " " .. itemName .. ""
 		end
@@ -165,18 +159,6 @@ do
 		}
 
 	elseif (DetailsFramework.IsWotLKWow()) then
-		defaultSpellCustomization = {
-			[1] = {name = _G["MELEE"], icon = [[Interface\ICONS\INV_Sword_04]]},
-			[2] = {name = Loc ["STRING_AUTOSHOT"], icon = [[Interface\ICONS\INV_Weapon_Bow_07]]},
-			[3] = {name = Loc ["STRING_ENVIRONMENTAL_FALLING"], icon = [[Interface\ICONS\Spell_Magic_FeatherFall]]},
-			[4] = {name = Loc ["STRING_ENVIRONMENTAL_DROWNING"], icon = [[Interface\ICONS\Ability_Suffocate]]},
-			[5] = {name = Loc ["STRING_ENVIRONMENTAL_FATIGUE"], icon = [[Interface\ICONS\Spell_Arcane_MindMastery]]},
-			[6] = {name = Loc ["STRING_ENVIRONMENTAL_FIRE"], icon = [[Interface\ICONS\INV_SummerFest_FireSpirit]]},
-			[7] = {name = Loc ["STRING_ENVIRONMENTAL_LAVA"], icon = [[Interface\ICONS\Ability_Rhyolith_Volcano]]},
-			[8] = {name = Loc ["STRING_ENVIRONMENTAL_SLIME"], icon = [[Interface\ICONS\Ability_Creature_Poison_02]]},
-		}
-
-	elseif (DetailsFramework.IsCataWow()) then
 		defaultSpellCustomization = {
 			[1] = {name = _G["MELEE"], icon = [[Interface\ICONS\INV_Sword_04]]},
 			[2] = {name = Loc ["STRING_AUTOSHOT"], icon = [[Interface\ICONS\INV_Weapon_Bow_07]]},
@@ -267,10 +249,7 @@ do
 		customItemList[397376] = {itemId = 193748, isPassive = true} --trinket: Kyrakka's Searing Embers (damage)
 		customItemList[214985] = {itemId = 137486} --trinket: Windscar Whetstone
 		customItemList[384004] = {itemId = 193815} --trinket: Homeland Raid Horn
-		customItemList[377459] = {itemId = 194306} --trinket: All-Totem of the Master Fire Damage
-		customItemList[377461] = {itemId = 194306} --trinket: All-Totem of the Master Air Damage
-		customItemList[382133] = {itemId = 194306} --trinket: All-Totem of the Master Ice Damage
-		customItemList[377458] = {itemId = 194306} --trinket: All-Totem of the Master Earth Damage
+		customItemList[377459] = {itemId = 194306} --trinket: All-Totem of the Master
 		customItemList[408815] = {itemId = 202569} --weapon: Djaruun, Pillar of the Elder Flame
 		customItemList[407961] = {itemId = 203996, isPassive = true} --trinket: Igneous Flowstone
 		customItemList[408682] = {itemId = 202610} --trinket: Dragonfire Bomb Dispenser
@@ -292,8 +271,9 @@ do
 		customItemList[426647] = {itemId = 207168, isPassive = true, nameExtra = "(mast)", icon = [[Interface\AddOns\Details\images\spells\lil_dragon_left.jpg]]} --trinket: Pip's Emerald Friendship Badge pip
 		customItemList[426648] = {itemId = 207168, isPassive = true, nameExtra = "(*mast*)", icon = 5342919} --trinket: Pip's Emerald Friendship Badge pip
 
-		customItemList[426431] = {itemId = 210494, isPassive = true} --enchant: Incandescent Essence (ranged dps)
-		customItemList[426486] = {itemId = 210494, isPassive = true} --enchant: Incandescent Essence (ranged dps)
+		customItemList[426431] = {itemId = 210494, isPassive = true} --enchant: Incandescent Essence (aug evoker)
+		customItemList[426486] = {itemId = 210494, isPassive = true} --enchant: Incandescent Essence (aug evoker)
+		customItemList[424324] = {itemId = 207788, isPassive = true} --weapon: [[PH] Fyrakk Cantrip 1H Mace INT] - shadowflame corrupted?
 		customItemList[424965] = {itemId = 207784, isPassive = true} --weapon: Thorncaller Claw
 		customItemList[425181] = {itemId = 207784, isPassive = true, nameExtra = "(*aoe*)"} --weapon: Thorncaller Claw
 		customItemList[425127] = {itemId = 207783, isPassive = true} --weapon: Cruel Dreamcarver (heal)
@@ -335,8 +315,8 @@ do
 		customItemList[426898] = {itemId = 207167, onUse = true, castId = 423611, nameExtra = "*on use*", defaultName = GetSpellInfo(423611)} --trinket: Ashes of the Embersoul
 		customItemList[429271] = {itemId = 110009, onUse = true, castId = 429271, defaultName = GetSpellInfo(429271)} --trinket: Leaf of the Ancient Protectors
 		customItemList[429272] = {itemId = 110009, onUse = true, castId = 429271, nameExtra = "(*vers*)", defaultName = GetSpellInfo(429271)} --trinket: Leaf of the Ancient Protectors
-		customItemList[433522] = {itemId = 212684, isPassive = true} -- trinket: Umbrelskul's Fractured Heart dot
-		customItemList[433549] = {itemId = 212684, isPassive = true} -- trinket: Umbrelskul's Fractured Heart execute
+
+
 	end
 
 	if (LIB_OPEN_RAID_SPELL_CUSTOM_NAMES) then

@@ -28,7 +28,6 @@
 	local _GetSpellInfo = Details.getspellinfo
 	local isWOTLK = detailsFramework.IsWotLKWow()
 	local isERA = detailsFramework.IsClassicWow()
-	local isCATA = detailsFramework.IsCataWow()
 	local _tempo = time()
 	local _, Details222 = ...
 	_ = nil
@@ -206,7 +205,6 @@
 			[410089] = true, --prescience (evoker 10.1.5)
 			[10060] = true, --power infusion
 			[194384] = true, --atonement uptime
-			[378134] = true, --rallied to victory
 		}
 
 		Details.CreditBuffToTarget = buffs_on_target
@@ -355,10 +353,6 @@
 			[199667] = 199658, --warrior whirlwind
 			[199852] = 199658, --warrior whirlwind
 			[199851] = 199658, --warrior whirlwind
-			[199851] = 199658, --warrior whirlwind
-			[411547] = 199658, --arms warrior whirlwind
-			[385228] = 199658, --arms warrior whirlwind
-			[105771] = 126664, --warrior charge
 
 			[222031] = 199547, --deamonhunter ChaosStrike
 			[200685] = 199552, --deamonhunter Blade Dance
@@ -407,8 +401,6 @@
 			[417134] = 414532, --rage of Fyr'alath
 			[413584] = 414532,
 			[424094] = 414532,
-
-			[228649] = 100784, --monk blackout kick
 		}
 
 		--all totem
@@ -601,7 +593,7 @@
 		Details.SpecialSpellActorsName = {}
 
 		--add sanguine affix
-		if (not isWOTLK and not isCATA and not isERA) then
+		if (not isWOTLK) then
 			if (Details.SanguineHealActorName) then
 				Details.SpecialSpellActorsName[Details.SanguineHealActorName] = SPELLID_SANGUINE_HEAL
 			end
@@ -2258,7 +2250,7 @@
 			12/14 21:14:44.545  SPELL_SUMMON,Creature-0-4391-615-3107-15439-00001A8313,"Fire Elemental Totem",0x2112,0x0,Creature-0-4391-615-3107-15438-00001A8313,"Greater Fire Elemental",0x2112,0x0,32982,"Fire Elemental Totem",0x1
 			]]
 
-		if (isWOTLK or isCATA) then
+		if (isWOTLK) then
 			if (npcId == 15439) then
 				Details.tabela_pets:AddPet(petSerial:gsub("%-15439%-", "%-15438%-"), "Greater Fire Elemental", petFlags, sourceSerial, sourceName, sourceFlags)
 
@@ -2371,7 +2363,7 @@
 	end
 
 	function parser:heal_absorb(token, time, sourceSerial, sourceName, sourceFlags, targetSerial, targetName, targetFlags, targetFlags2, spellId, spellName, spellSchool, shieldOwnerSerial, shieldOwnerName, shieldOwnerFlags, shieldOwnerFlags2, shieldSpellId, shieldName, shieldType, amount)
-		if (isCATA or isWOTLK or isERA) then
+		if (isWOTLK or isERA) then
 			if (not amount) then
 				--melee
 				shieldOwnerSerial, shieldOwnerName, shieldOwnerFlags, shieldOwnerFlags2, shieldSpellId, shieldName, shieldType, amount = spellId, spellName, spellSchool, shieldOwnerSerial, shieldOwnerName, shieldOwnerFlags, shieldOwnerFlags2, shieldSpellId
@@ -2485,7 +2477,7 @@
 			effectiveHeal = effectiveHeal + amount - overHealing
 		end
 
-		if (isWOTLK or isCATA) then
+		if (isWOTLK) then
 			--earth shield
 			if (spellId == SPELLID_SHAMAN_EARTHSHIELD_HEAL) then
 				--get the information of who placed the buff into this actor
@@ -2932,7 +2924,7 @@
 				return parser:add_buff_uptime(token, time, sourceSerial, sourceName, sourceFlags, sourceSerial, sourceName, sourceFlags, 0x0, spellId, spellName, "BUFF_UPTIME_IN")
 			end
 
-			if (isWOTLK or isCATA) then
+			if (isWOTLK) then
 				if (SHAMAN_EARTHSHIELD_BUFF[spellId]) then
 					TBC_EarthShieldCache[targetName] = {sourceSerial, sourceName, sourceFlags}
 
@@ -3669,8 +3661,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		[SPELL_POWER_FURY] = {file = [[Interface\PLAYERFRAME\UI-PlayerFrame-Deathknight-Blood-On]], coords = {0, 1, 0, 1}},
 	}
 
-	local alternatePowerEnableFrame = CreateFrame("frame", "DetailsAlternatePowerEventHandler")
-	local alternatePowerMonitorFrame = CreateFrame("frame", "DetailsAlternatePowerMonitor")
+	local alternatePowerEnableFrame = CreateFrame("frame")
+	local alternatePowerMonitorFrame = CreateFrame("frame")
 	alternatePowerEnableFrame:RegisterEvent("UNIT_POWER_BAR_SHOW")
 	alternatePowerEnableFrame:RegisterEvent("ENCOUNTER_END")
 	alternatePowerEnableFrame.IsRunning = false
@@ -3691,12 +3683,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		if (powerType == "ALTERNATE") then
 			local actorName = Details:GetFullName(unitID)
 			if (actorName) then
-				--weird bug on cata as described below
-				if (not _current_combat.alternate_power) then
-					_current_combat.alternate_power = {}
-				end
-
-				local power = _current_combat.alternate_power[actorName] --cata: 120x Details/core/parser.lua:3694: attempt to index field 'alternate_power' (a nil value)
+				local power = _current_combat.alternate_power[actorName]
 				if (not power) then
 					power = _current_combat:CreateAlternatePowerTable(actorName)
 				end
@@ -6205,7 +6192,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		local _, _, _, toc = GetBuildInfo()
 		if (toc >= 100200) then
-			Details.playername = UnitName("player") .. "-" .. (GetRealmName():gsub("[%s-]", ''))
+			Details.playername = UnitName("player") .. "-" .. (GetRealmName():gsub("%s", ''))
 		else
 			Details.playername = UnitName("player")
 		end
@@ -7256,13 +7243,13 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		for i = 1, players do
 			local name, killingBlows, honorableKills, deaths, honorGained, faction, race, rank, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec
-			if (isCATA or isWOTLK or isERA) then
+			if (isWOTLK or isERA) then
 				name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec = GetBattlefieldScore(i)
 			else
 				name, killingBlows, honorableKills, deaths, honorGained, faction, race, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec = GetBattlefieldScore(i)
 			end
 
-			if (not isWOTLK and not isERA and not isCATA) then --Must be dragonflight
+			if (not isWOTLK and not isERA) then --Must be dragonflight
 				if (not name:match("%-")) then
 					name = name .. "-" .. realmName
 				end

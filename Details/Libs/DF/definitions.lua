@@ -137,10 +137,7 @@
 ---@field Math df_math
 ---@field FontOutlineFlags table<outline, boolean>
 ---@field table df_table_functions
----@field AnchorPoints string[] localized point names
----@field AnchorPointsByIndex string[] api point names
----@field AnchorPointsToInside table<anchorid, anchorid>
----@field InsidePointsToAnchor table<anchorid, anchorid>
+---@field AnchorPoints string[]
 ---@field alias_text_colors table<string, number[]>
 ---@field ClassFileNameToIndex table<string, number> engClass -> classIndex
 ---@field ClientLanguage string
@@ -177,8 +174,6 @@
 ---@field IsShadowlandsWow fun():boolean
 ---@field IsDragonflightWow fun():boolean
 ---@field IsWarWow fun():boolean
----@field IsTWWWow fun():boolean
----@field ExpansionHasAugEvoker fun():boolean
 ---@field LoadSpellCache fun(self:table, hashMap:table, indexTable:table, allSpellsSameName:table) : hashMap:table, indexTable:table, allSpellsSameName:table load all spells in the game and add them into the passed tables
 ---@field UnloadSpellCache fun(self:table) wipe the table contents filled with LoadSpellCache()
 ---@field GetCurrentClassName fun(self:table) : string return the name of the class the player is playing
@@ -228,7 +223,7 @@
 ---@field CreateTextureInfo fun(self:table, texture:atlasname|texturepath|textureid, width:number?, height:number?, left:number?, right:number?, top:number?, bottom:number?, imageWidthnumber?, imageHeightnumber?) : table deprecated, use: DetailsFramework:CreateAtlas()
 ---@field ApplyStandardBackdrop fun(self:table, frame:frame, bUseSolidColor:boolean?, alphaScale:number?)
 ---@field NewLabel fun(self:table, parent:frame, container:frame, name:string?, member:string?, text:string|table, font:string?, size:any?, color:any?, layer:drawlayer?) : df_label
----@field CreateLabel fun(self:table, parent:frame, text:any, size:any?, color:any?, font:string?, member:string?, name:string?, layer:drawlayer?) : df_label
+---@field CreateLabel fun(self:table, parent:frame, text:string, size:any?, color:any?, font:string?, member:string?, name:string?, layer:drawlayer?) : df_label
 ---@field CreateDropDown fun(self:table, parent:frame, func:function, default:any, width:number?, height:number?, member:string?, name:string?, template:table?) : df_dropdown
 ---@field CreateFontDropDown fun(self:table, parent:frame, func:function, default:any, width:number?, height:number?, member:string?, name:string?, template:table?) : df_dropdown
 ---@field CreateColorDropDown fun(self:table, parent:frame, func:function, default:any, width:number?, height:number?, member:string?, name:string?, template:table?) : df_dropdown
@@ -253,7 +248,7 @@
 ---@field CreateCheckboxGroup fun(self:table, parent:frame, radioOptions:df_radiooptions[], name:string?, options:table?, anchorOptions:table?) : df_checkboxgroup
 ---@field CreateRadioGroup fun(self:table, parent:frame, radioOptions:df_radiooptions[], name:string?, options:table?, anchorOptions:table?) : df_radiogroup
 ---@field CreateScrollBox fun(self:table, parent:frame, name:string, refreshFunc:function, data:table, width:number, height:number, lineAmount:number, lineHeight:number, createLineFunc:function?, autoAmount:boolean?, noScroll:boolean?, noBackdrop:boolean?) : df_scrollbox
----@field CreateAuraScrollBox fun(self:table, parent:frame, name:string?, data:table?, onRemoveCallback:function?, options:table?, onSetupAuraClick:function?) : df_aurascrollbox
+---@field CreateAuraScrollBox fun(self:table, parent:frame, name:string?, data:table?, onRemoveCallback:function?, options:table?) : df_aurascrollbox
 ---@field CreateGridScrollBox fun(self:table, parent:frame, name:string?, refreshFunc:function, data:table?, createColumnFrameFunc:function, options:table?) : df_gridscrollbox
 ---@field CreateCanvasScrollBox fun(self:table, parent:frame, child:frame?, name:string?, options:table?) : df_canvasscrollbox
 ---@field CreateTabContainer fun(self:table, parent:frame, title:string, frameName:string, tabList:df_tabinfotable[], optionsTable:table?, hookList:table?, languageInfo:table?) : df_tabcontainer
@@ -269,7 +264,7 @@
 ---@field RandomBool fun(self:table, odds: number?) : boolean return a random boolean
 ---@field CreateHighlightTexture fun(self:table, parent:frame, parentKey:string?, alpha:number?, name:string?) : texture
 ---@field CreateIconRowGeneric fun(self:table, parent:frame, name:string?, options:table?)
----@field CreateColorPickButton fun(self:table, parent:frame, name:string?, member:string?, callback:function, alpha:number?, buttonTemplate:table?) : df_colorpickbutton
+---@field CreateColorPickButton fun(self:table, parent:frame, name:string?, member:string?, callback:function, alpha:number?, buttonTemplate:table?) : df_button
 ---@field CreateSlider fun(self:table, parent:frame, width:number?, height:number?, minValue:number?, maxValue:number?, step:number?, defaultv:number?, isDecemal:boolean?, member:string?, name:string?, label:string?, sliderTemplate:string|table?, labelTemplate:string|table?) : df_slider, df_label?
 ---@field CreateFrameContainer fun(self:table, parent:frame, options:table?, frameName:string?) : df_framecontainer create a frame container, which is a frame that envelops another frame, and can be moved, resized, etc.
 ---@field CreateAnimation fun(self:table, animationGroup:animationgroup, animationType:animationtype, order:number, duration:number, arg1:any, arg2:any, arg3:any, arg4:any, arg5:any, arg6:any, arg7:any, arg8:any) : animation
@@ -301,7 +296,7 @@
 ---@field ParseTexture fun(self:table, texture:texturepath|textureid|atlasname|atlasinfo, width: number?, height: number?, leftTexCoord: number?, rightTexCoord: number?, topTexCoord: number?, bottomTexCoord: number?, vertexRed:number|string?, vertexGreenvertexRed:number?, vertexBluevertexRed:number?, vertexAlphavertexRed:number?) : any, number?, number?, number?, number?, number?, number?, number?, number?, number?, number?, number?, number?
 ---@field IsTexture fun(self:table, texture:any, bCheckTextureObject: boolean?) : boolean
 ---@field CreateAtlasString fun(self:table, atlas:atlasinfo|atlasname, textureHeight:number?, textureWidth:number?) : string
----@field SetMask fun(self:table, texture:texture, maskTexture:atlasname|texturepath|textureid|table|string) : nil
+---@field SetMask fun(self:table, texture:texture, maskTexture:atlasname|texturepath|textureid|table) : nil
 ---@field GetClientRegion fun(self:table) : string
 ---@field GetBestFontPathForLanguage fun(self:table, languageId:string) : string
 ---@field SetTemplate fun(self:table, frame:uiobject, template:string)
@@ -312,15 +307,12 @@
 ---@field GetParentKeyPath fun(self:table, object:uiobject) : string
 ---@field GetParentNamePath fun(self:table, object:uiobject) : string
 ---@field GetAsianNumberSymbols fun(self:table) : string, string, string return the abbreviation for 1,000 10,000 and 100,000,000
----@field GetBestFontForLanguage fun(self:table, languageId:string?, western:string?, cyrillic:string?, china:string?, korean:string?, taiwan:string?) : string
+---@field GetBestFontForLanguage fun(self:table, languageId:string?, western:string?, cyrillic:string?, china:string? korean:string?, taiwan:string?) : string
 ---@field CreateGlowOverlay fun(self:table, parent:frame, antsColor:any, glowColor:any) : frame
 ---@field CreateAnts fun(self:table, parent:frame, antTable:df_anttable, leftOffset:number?, rightOffset:number?, topOffset:number?, bottomOffset:number?) : frame
 ---@field CreateBorder fun(self:table, parent:frame, alpha1:number?, alpha2:number?, alpha3:number?) : frame
----@field CreateMenuWithGridScrollBox fun(self:table, parent:frame, name:string?, refreshMeFunc:function, refreshButtonFunc:function, clickFunc:function, onCreateButton:function, gridScrollBoxOptions:df_gridscrollbox_options) : df_gridscrollbox create a scrollbox with a grid layout to be used as a menu
----@field CreateSearchBox fun(self:table, parent:frame, callback:function) : df_searchbox
----@field ConvertAnchorPointToInside fun(self:table, anchorPoint:anchorid) : anchorid
 ---@field
-
+---@field
 
 
 

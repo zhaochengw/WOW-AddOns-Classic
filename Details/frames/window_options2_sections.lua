@@ -2917,23 +2917,6 @@ do
             },            
             {type = "blank"},
 
-            {--grouped windows horizontal gap
-                type = "range",
-                get = function() return tonumber(Details.grouping_horizontal_gap) end,
-                set = function(self, fixedparam, value)
-                    Details.grouping_horizontal_gap = value
-                    currentInstance:BaseFrameSnap()
-                    afterUpdate()
-                end,
-                min = 0,
-                max = 20,
-                usedecimals = true,
-                step = 0.5,
-                name = Loc ["STRING_OPTIONS_GROUPING_HORIZONTAL_GAP"],
-                desc = Loc ["STRING_OPTIONS_GROUPING_HORIZONTAL_GAP_DESC"],
-                thumbscale = 2.2,
-            },
-
             {--disable grouping
                 type = "toggle",
                 get = function() return Details.disable_window_groups end,
@@ -3005,7 +2988,6 @@ do
             {type = "blank"},
 
             {--delete window
-                id = 'deleteWindow',
                 type = "select",
                 get = function() return 0 end,
                 values = function()
@@ -3018,8 +3000,8 @@ do
             {--delete window
                 type = "execute",
                 func = function(self)
-                    local windowDropdown = self.MyObject.container:GetWidgetById('deleteWindow')
-                    local selectedWindow = windowDropdown and windowDropdown:GetValue()
+                    local profileDropdown = sectionFrame.widget_list_by_type.dropdown[3]
+                    local selectedWindow = profileDropdown:GetValue()
 
                     if (selectedWindow) then
                         Details:DeleteInstance(selectedWindow)
@@ -3118,7 +3100,7 @@ do
         }
         sectionFrame.sectionOptions = sectionOptions
         sectionOptions.always_boxfirst = true
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize+20, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -4814,7 +4796,7 @@ do
             }
 
         --create preview
-            local previewX, previewY = 460, startY-20
+            local previewX, previewY = 460, -60
 
             local preview = sectionFrame:CreateTexture(nil, "overlay")
             preview:SetDrawLayer("artwork", 3)

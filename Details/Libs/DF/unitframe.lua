@@ -14,13 +14,7 @@ local unpack = table.unpack or unpack --lua local
 local type = type --lua local
 local floor = math.floor --lua local
 local loadstring = loadstring --lua local
-local G_CreateFrame = _G.CreateFrame
-local CreateFrame = function (frameType , name, parent, template, id)
-	local frame = G_CreateFrame(frameType , name, parent, template, id)
-	detailsFramework:Mixin(frame, detailsFramework.FrameFunctions)
-	frame:SetClipsChildren(false)
-	return frame
-end
+local CreateFrame = CreateFrame
 
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
@@ -39,7 +33,6 @@ local UnitIsTapDenied = UnitIsTapDenied
 local max = math.max
 local min = math.min
 local abs = math.abs
-local GetSpellInfo = GetSpellInfo or function(spellID) if not spellID then return nil end local si = C_Spell.GetSpellInfo(spellID) if si then return si.name, nil, si.iconID, si.castTime, si.minRange, si.maxRange, si.spellID, si.originalIconID end end
 
 local IS_WOW_PROJECT_MAINLINE = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local IS_WOW_PROJECT_NOT_MAINLINE = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE

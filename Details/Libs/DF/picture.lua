@@ -346,7 +346,7 @@ detailsFramework:Mixin(ImageMetaFunctions, detailsFramework.ScriptHookMixin)
 					---@type df_gradienttable
 					local gradientTable = texture
 
-					if (detailsFramework.IsDragonflight() or detailsFramework.IsNonRetailWowWithRetailAPI() or detailsFramework.IsWarWow()) then
+					if (detailsFramework.IsDragonflight() or detailsFramework.IsNonRetailWowWithRetailAPI()) then
 						ImageObject.image:SetColorTexture(1, 1, 1, 1)
 						local fromColor = detailsFramework:FormatColor("tablemembers", gradientTable.fromColor)
 						local toColor = detailsFramework:FormatColor("tablemembers", gradientTable.toColor)
@@ -716,7 +716,7 @@ function detailsFramework:SetMask(texture, maskTexture)
 	if (not texture.MaskTexture) then
 		local parent = texture:GetParent()
 		local maskTextureObject = parent:CreateMaskTexture(nil, "artwork")
-		maskTextureObject:SetAllPoints(texture.widget or texture)
+		maskTextureObject:SetAllPoints(texture)
 		texture:AddMaskTexture(maskTextureObject)
 		texture.MaskTexture = maskTextureObject
 	end

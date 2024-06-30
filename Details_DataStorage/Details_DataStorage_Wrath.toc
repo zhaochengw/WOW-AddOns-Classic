@@ -5,6 +5,5 @@
 ## LoadOnDemand: 1
 ## Dependencies: Details
 ## SavedVariables: DetailsDataStorage
-## IconTexture: Interface\AddOns\Details\images\minimap
 
 Details_DataStorage.lua

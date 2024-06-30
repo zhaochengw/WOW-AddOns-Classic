@@ -2034,7 +2034,7 @@ function damageClass:RefreshWindow(instanceObject, combatObject, bForceUpdate, b
 											this_spell [2] = this_spell [2] + on_player
 											total = total + on_player
 										else
-											--error("error - no spell id for DTBS friendly fire " .. spellid)
+											error("error - no spell id for DTBS friendly fire " .. spellid)
 										end
 									end
 								end
@@ -3905,13 +3905,6 @@ function damageClass:ToolTip_DamageDone (instancia, numero, barra, keydown)
 				meu_tempo = instancia.showing:GetCombatTime()
 			end
 
-			if (not meu_tempo) then
-				meu_tempo = instancia.showing:GetCombatTime()
-				if (Details.time_type == 3) then --time type 3 is deprecated
-					Details.time_type = 2
-				end
-			end
-
 			--add actor spells
 			for _spellid, _skill in pairs(ActorSkillsContainer) do
 				ActorSkillsSortTable [#ActorSkillsSortTable+1] = {_spellid, _skill.total, _skill.total/meu_tempo}
@@ -3925,11 +3918,7 @@ function damageClass:ToolTip_DamageDone (instancia, numero, barra, keydown)
 				local petActor = instancia.showing[class_type]:PegarCombatente (nil, petName)
 				if (petActor) then
 					for _spellid, _skill in pairs(petActor:GetActorSpells()) do
-						local formattedPetName = petName:gsub((" <.*"), "")
-						if (instancia.row_info.textL_translit_text) then
-							formattedPetName = Translit:Transliterate(formattedPetName, "!")
-						end
-						ActorSkillsSortTable [#ActorSkillsSortTable+1] = {_spellid, _skill.total, _skill.total/meu_tempo, formattedPetName}
+						ActorSkillsSortTable [#ActorSkillsSortTable+1] = {_spellid, _skill.total, _skill.total/meu_tempo, petName:gsub((" <.*"), "")}
 					end
 				end
 			end
@@ -4160,11 +4149,6 @@ function damageClass:ToolTip_DamageDone (instancia, numero, barra, keydown)
 				local petDPS = damageTable[3]
 
 				petName = damageTable[1]:gsub(("%s%<.*"), "")
-
-				if (instance.row_info.textL_translit_text) then
-					petName = Translit:Transliterate(petName, "!")
-				end
-
 				if (instancia.sub_atributo == 1) then
 					GameCooltip:AddLine(petName, FormatTooltipNumber(_, petDamageDone) .. " (" .. math.floor(petDamageDone/self.total*100) .. "%)")
 				else

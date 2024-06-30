@@ -4,8 +4,6 @@ local debugmode = false --print debug lines
 local verbosemode = false --auto open the chart panel
 local addonName, Details222 = ...
 local mPlus = Details222.MythicPlusBreakdown
-
----@type detailsframework
 local detailsFramework = DetailsFramework
 local _
 
@@ -15,8 +13,6 @@ local UnitGroupRolesAssigned = UnitGroupRolesAssigned
 local UIParent = UIParent
 local PixelUtil = PixelUtil
 local C_Timer = C_Timer
-local GameTooltip = GameTooltip
-local SOUNDKIT = SOUNDKIT
 
 local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 
@@ -38,8 +34,6 @@ _G.MythicDungeonFrames = mythicDungeonFrames
 ---@field BackgroundBannerTextureScaleAnimation animationgroup
 ---@field BackgroundBannerFlashTextureColorAnimation animationgroup
 ---@field BounceFrameShake df_frameshake
----@field NextLootSquare number
----@field LootSquares details_lootsquare[]
 ---@field LevelUpFrame frame
 ---@field LevelUpTextFrame frame
 ---@field LevelFontString fontstring
@@ -61,176 +55,6 @@ _G.MythicDungeonFrames = mythicDungeonFrames
 ---@field Name fontstring
 ---@field AnimIn animationgroup
 ---@field AnimOut animationgroup
----@field ClearLootSquares fun(self:playerbanner)
----@field GetLootSquare fun(self:playerbanner):details_lootsquare
-
----@class details_lootsquare : frame
----@field LootIcon texture
----@field LootIconBorder texture
----@field LootItemLevel fontstring
----@field itemLink string
-
----@class details_loot_cache : table
----@field playerName string
----@field itemLink string
----@field effectiveILvl number
----@field itemQuality number
----@field itemID number
----@field time number
-
----@class lootframe : frame
----@field LootCache details_loot_cache[]
-
---frame to handle loot events
-local lootFrame = CreateFrame("frame", "DetailsEndOfMythicLootFrame", UIParent)
-lootFrame:RegisterEvent("BOSS_KILL")
-
-if (C_EventUtils.IsEventValid("ENCOUNTER_LOOT_RECEIVED")) then
-	lootFrame:RegisterEvent("ENCOUNTER_LOOT_RECEIVED")
-end
-
---register the loot players looted at the end of the mythic dungeon
-lootFrame.LootCache = {}
-
---currently being called after a updatPlayerBanner()
-function lootFrame.UpdateUnitLoot(unitBanner)
-	local unitId = unitBanner.unitId
-	local unitName = unitBanner.unitName
-
-	local timeNow = GetTime()
-	local lootCache = lootFrame.LootCache[unitName]
-
-	---@type details_loot_cache[]
-	local lootCandidates = {}
-
-	if (lootCache) then
-		local lootCacheSize = #lootCache
-		if (lootCacheSize > 0) then
-			local lootIndex = 1
-			for i = lootCacheSize, 1, -1 do
-				---@type details_loot_cache
-				local lootInfo = lootCache[i]
-				if (timeNow - lootInfo.time < 10) then
-					lootCandidates[lootIndex] = lootInfo
-					lootIndex = lootIndex + 1
-				end
-			end
-		end
-	end
-
-	for i = 1, #lootCandidates do
-		local lootInfo = lootCandidates[i]
-		local itemLink = lootInfo.itemLink
-		local effectiveILvl = lootInfo.effectiveILvl
-		local itemQuality = lootInfo.itemQuality
-		local itemID = lootInfo.itemID
-
-		local lootSquare = unitBanner:GetLootSquare()
-		lootSquare.itemLink = itemLink --will error if this the thrid lootSquare (creates only 2 per banner)
-
-		local rarityColor = --[[GLOBAL]]ITEM_QUALITY_COLORS[itemQuality]
-		lootSquare.LootIconBorder:SetVertexColor(rarityColor.r, rarityColor.g, rarityColor.b, 1)
-
-		lootSquare.LootIcon:SetTexture(GetItemIcon(itemID))
-		lootSquare.LootItemLevel:SetText(effectiveILvl or "0")
-
-		mythicDungeonFrames.ReadyFrame.StopTextDotAnimation()
-
-		lootSquare:Show()
-	end
-end
-
---debug data to test encounter loot received event:
---/run _G.DetailsEndOfMythicLootFrame:OnEvent("ENCOUNTER_LOOT_RECEIVED", 1, 207788, "|cffa335ee|Hitem:207788::::::::60:264::16:5:7208:6652:1501:5858:6646:1:28:1279:::|h[Shadowgrasp Totem]|h|r", 1, "Fera", "EVOKER")
-
-lootFrame:SetScript("OnEvent", function(self, event, ...)
-	if (event == "BOSS_KILL") then
-		local encounterID, name = ...;
-
-	elseif (event == "ENCOUNTER_LOOT_RECEIVED") then
-		local lootEncounterId, itemID, itemLink, quantity, unitName, className = ...
-
-		unitName = Ambiguate(unitName, "none")
-
-		local _, instanceType = GetInstanceInfo()
-		if (instanceType == "party" or CONST_DEBUG_MODE) then
-			local effectiveILvl, nop, baseItemLevel = GetDetailedItemLevelInfo(itemLink)
-
-			local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType,
-			itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType,
-			expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
-
-			if (Details.debug) then
-				Details222.DebugMsg("Loot Received:", unitName, itemLink, effectiveILvl, itemQuality, baseItemLevel, "itemType:", itemType, "itemSubType:", itemSubType, "itemEquipLoc:", itemEquipLoc)
-			end
-
-			if (effectiveILvl > 300 and baseItemLevel > 5) then --avoid showing loot that isn't items
-				lootFrame.LootCache[unitName] = lootFrame.LootCache[unitName] or {}
-				---@type details_loot_cache
-				local lootCacheTable = {
-					playerName = unitName,
-					itemLink = itemLink,
-					effectiveILvl = effectiveILvl,
-					itemQuality = itemQuality, --this is a number
-					itemID = itemID,
-					time = time()
-				}
-				table.insert(lootFrame.LootCache[unitName], lootCacheTable)
-
-				--check if the end of mythic plus frame is opened and call a function to update the loot frame of the player
-				if (mythicDungeonFrames.ReadyFrame and mythicDungeonFrames.ReadyFrame:IsVisible()) then
-					C_Timer.After(1.5, function()
-						local unitBanner = mythicDungeonFrames.ReadyFrame.unitCacheByName[unitName]
-						if (unitBanner) then
-							lootFrame.UpdateUnitLoot(unitBanner)
-						end
-					end)
-				end
-			end
-		end
-	end
-end)
-
-local createLootSquare = function(playerBanner, name, parent, lootIndex)
-	---@type details_lootsquare
-	local lootSquare = CreateFrame("frame", playerBanner:GetName() .. "LootSquare" .. lootIndex, parent)
-	lootSquare:SetSize(46, 46)
-	lootSquare:SetFrameLevel(parent:GetFrameLevel()+1)
-	lootSquare:Hide()
-
-	lootSquare:SetScript("OnEnter", function(self)
-		if (self.itemLink) then
-			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
-			GameTooltip:SetHyperlink(lootSquare.itemLink)
-			GameTooltip:Show()
-		end
-	end)
-
-	lootSquare:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-	end)
-
-	local lootIcon = lootSquare:CreateTexture("$parentLootIcon", "artwork")
-	lootIcon:SetSize(46, 46)
-	lootIcon:SetPoint("center", lootSquare, "center", 0, 0)
-	lootIcon:SetTexture([[Interface\ICONS\INV_Misc_QuestionMark]])
-	lootSquare.LootIcon = lootIcon
-
-	local lootIconBorder = lootSquare:CreateTexture("$parentLootSquareBorder", "overlay")
-	lootIconBorder:SetTexture([[Interface\COMMON\WhiteIconFrame]])
-	lootIconBorder:SetTexCoord(0, 1, 0, 1)
-	lootIconBorder:SetSize(46, 46)
-	lootIconBorder:SetPoint("center", lootIcon, "center", 0, 0)
-	lootSquare.LootIconBorder = lootIconBorder
-
-	local lootItemLevel = lootSquare:CreateFontString("$parentLootItemLevel", "overlay", "GameFontNormal")
-	lootItemLevel:SetPoint("top", lootSquare, "bottom", 0, -2)
-	lootItemLevel:SetTextColor(1, 1, 1)
-	detailsFramework:SetFontSize(lootItemLevel, 12)
-	lootSquare.LootItemLevel = lootItemLevel
-
-	return lootSquare
-end
 
 local createPlayerBanner = function(parent, name)
     local template = "ChallengeModeBannerPartyMemberTemplate"
@@ -251,7 +75,7 @@ local createPlayerBanner = function(parent, name)
     local playerNameFontString = playerBanner:CreateFontString("$parentPlayerNameText", "overlay", "GameFontNormal")
     playerNameFontString:SetTextColor(1, 1, 1)
     playerNameFontString:SetPoint("top", playerBanner, "bottom", -1, -7)
-    detailsFramework:SetFontSize(playerNameFontString, 12)
+    DetailsFramework:SetFontSize(playerNameFontString, 12)
 	playerBanner.PlayerNameFontString = playerNameFontString
 
 	local playerNameBackgroundTexture = playerBanner:CreateTexture("$parentPlayerNameBackgroundTexture", "overlay", nil, 6)
@@ -366,7 +190,7 @@ local createPlayerBanner = function(parent, name)
     local levelFontString = levelUpTextFrame:CreateFontString("$parentLVLText", "artwork", "GameFontNormal")
     levelFontString:SetTextColor(1, 1, 1)
     levelFontString:SetPoint("center", levelUpTextFrame, "center", 0, 0)
-    detailsFramework:SetFontSize(levelFontString, 20)
+    DetailsFramework:SetFontSize(levelFontString, 20)
 	levelFontString:SetText("")
 	playerBanner.LevelFontString = levelFontString
 
@@ -446,39 +270,43 @@ local createPlayerBanner = function(parent, name)
 	detailsFramework:CreateFlashAnimation(flashTexture)
 	--flashTexture:Flash(0.1, 0.5, 0.01)
 
-	playerBanner.LootSquares = {}
+	local lootSquare = CreateFrame("frame", name, parent)
+	lootSquare:SetSize(46, 46)
+	lootSquare:SetPoint("top", playerBanner, "bottom", 0, -90)
+	lootSquare:SetFrameLevel(parent:GetFrameLevel()+1)
+	playerBanner.LootSquare = lootSquare
+	lootSquare:Hide()
 
-	local lootSquareAmount = 2
-
-	for i = 1, lootSquareAmount do
-		local lootSquare = createLootSquare(playerBanner, name, parent, i)
-		if (i == 1) then
-			lootSquare:SetPoint("top", playerBanner, "bottom", 0, -90)
-		else
-			lootSquare:SetPoint("top", playerBanner.LootSquares[i-1], "bottom", 0, -2)
+	lootSquare:SetScript("OnEnter", function(self)
+		if (self.itemLink) then
+			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+			GameTooltip:SetHyperlink(lootSquare.itemLink)
+			GameTooltip:Show()
 		end
-		playerBanner.LootSquares[i] = lootSquare
-		playerBanner["lootSquare" .. i] = lootSquare
-	end
+	end)
 
-	function playerBanner:ClearLootSquares()
-		playerBanner.NextLootSquare = 1
+	lootSquare:SetScript("OnLeave", function(self)
+		GameTooltip:Hide()
+	end)
 
-		for _, lootSquare in ipairs(self.LootSquares) do
-			lootSquare:Hide()
-			lootSquare.itemLink = nil
-			lootSquare.LootIcon:SetTexture([[Interface\ICONS\INV_Misc_QuestionMark]])
-			lootSquare.LootItemLevel:SetText("")
-		end
-	end
+	local lootIcon = lootSquare:CreateTexture("$parentLootIcon", "artwork")
+	lootIcon:SetSize(46, 46)
+	lootIcon:SetPoint("center", lootSquare, "center", 0, 0)
+	lootIcon:SetTexture([[Interface\ICONS\INV_Misc_QuestionMark]])
+	lootSquare.LootIcon = lootIcon
 
-	function playerBanner:GetLootSquare()
-		local lootSquareIdx = playerBanner.NextLootSquare
-		playerBanner.NextLootSquare = lootSquareIdx + 1
-		local lootSquare = playerBanner.LootSquares[lootSquareIdx]
-		lootSquare:Show()
-		return lootSquare
-	end
+	local lootIconBorder = lootSquare:CreateTexture("$parentLootSquareBorder", "overlay")
+	lootIconBorder:SetTexture([[Interface\COMMON\WhiteIconFrame]])
+	lootIconBorder:SetTexCoord(0, 1, 0, 1)
+	lootIconBorder:SetSize(46, 46)
+	lootIconBorder:SetPoint("center", lootIcon, "center", 0, 0)
+	lootSquare.LootIconBorder = lootIconBorder
+
+	local lootItemLevel = lootSquare:CreateFontString("$parentLootItemLevel", "overlay", "GameFontNormal")
+	lootItemLevel:SetPoint("top", lootSquare, "bottom", 0, -2)
+	lootItemLevel:SetTextColor(1, 1, 1)
+	DetailsFramework:SetFontSize(lootItemLevel, 12)
+	lootSquare.LootItemLevel = lootItemLevel
 
 	return playerBanner
 end
@@ -498,7 +326,7 @@ local updatPlayerBanner = function(unitId, bannerIndex)
 
 		---@type playerbanner
 		local playerBanner = readyFrame.PlayerBanners[bannerIndex]
-		readyFrame.unitCacheByName[unitName] = playerBanner
+		readyFrame.playerCacheByName[unitName] = playerBanner
 		playerBanner.unitId = unitId
 		playerBanner.unitName = unitName
 		playerBanner:Show()
@@ -540,8 +368,6 @@ local updatPlayerBanner = function(unitId, bannerIndex)
 			playerBanner.DungeonTexture:SetTexture([[Interface\ICONS\INV_Misc_QuestionMark]])
 			playerBanner.LevelFontString:SetText("")
 		end
-
-		lootFrame.UpdateUnitLoot(playerBanner)
 		return true
 	end
 end
@@ -609,9 +435,6 @@ end
 if (CONST_DEBUG_MODE) then
 	C_Timer.After(3, function()
 		C_AddOns.LoadAddOn("Blizzard_ChallengesUI");
-		_G.DetailsEndOfMythicLootFrame:GetScript("OnEvent")(_G.DetailsEndOfMythicLootFrame, "ENCOUNTER_LOOT_RECEIVED", 1, 207788, "|cffa335ee|Hitem:207788::::::::60:264::16:5:7208:6652:1501:5858:6646:1:28:1279:::|h[Shadowgrasp Totem]|h|r", 1, UnitName("player"), select(2, UnitClass("player")))
-		_G.DetailsEndOfMythicLootFrame:GetScript("OnEvent")(_G.DetailsEndOfMythicLootFrame, "ENCOUNTER_LOOT_RECEIVED", 1, 207788, "|cffa335ee|Hitem:207788::::::::60:264::16:5:7208:6652:1501:5858:6646:1:28:1279:::|h[Shadowgrasp Totem]|h|r", 1, UnitName("player"), select(2, UnitClass("player")))
-
 		_G.MythicDungeonFrames.ShowEndOfMythicPlusPanel()
 	end)
 end
@@ -642,7 +465,7 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 		readyFrame:Hide()
 
 		---@type playerbanner[]
-		readyFrame.unitCacheByName = {}
+		readyFrame.playerCacheByName = {}
 
 		do
 			--register to libwindow
@@ -770,12 +593,12 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 		readyFrame.bottomFiligree:SetSize(66, 28)
 		readyFrame.bottomFiligree:SetPoint("bottom", readyFrame, "bottom", 0, -19)
 
-		local titleLabel = detailsFramework:CreateLabel(contentFrame, "Details! Mythic Run Completed!", 12, "yellow")
+		local titleLabel = DetailsFramework:CreateLabel(contentFrame, "Details! Mythic Run Completed!", 12, "yellow")
 		titleLabel:SetPoint("top", readyFrame, "top", 0, -7)
 		titleLabel.textcolor = textColor
 
 		---@type df_closebutton
-		local closeButton = detailsFramework:CreateCloseButton(contentFrame, "$parentCloseButton")
+		local closeButton = DetailsFramework:CreateCloseButton(contentFrame, "$parentCloseButton")
 		closeButton:SetPoint("topright", readyFrame, "topright", -2, -2)
 		closeButton:SetScale(1.4)
 		closeButton:SetAlpha(0.823)
@@ -784,15 +607,14 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 		end)
 
 		--warning footer
-		local warningFooter = detailsFramework:CreateLabel(contentFrame, "Under development", 9, "orange")
-		warningFooter:SetPoint("bottomright", readyFrame, "bottomright", -5, 5)
-		warningFooter:SetAlpha(0.5)
+		local warningFooter = DetailsFramework:CreateLabel(contentFrame, "Under development.", 9, "yellow")
+		warningFooter:SetPoint("bottom", readyFrame, "bottom", 0, 20)
 
 		--waiting for loot label
-		local waitingForLootLabel = detailsFramework:CreateLabel(contentFrame, "Waiting for loot", 12, "silver")
+		local waitingForLootLabel = DetailsFramework:CreateLabel(contentFrame, "Waiting for loot", 12, "silver")
 		waitingForLootLabel:SetPoint("bottom", readyFrame, "bottom", 0, 54)
 		waitingForLootLabel:Hide()
-		local waitingForLootDotsAnimationLabel = detailsFramework:CreateLabel(contentFrame, "...", 12, "silver")
+		local waitingForLootDotsAnimationLabel = DetailsFramework:CreateLabel(contentFrame, "...", 12, "silver")
 		waitingForLootDotsAnimationLabel:SetPoint("left", waitingForLootLabel, "right", 0, 0)
 		waitingForLootDotsAnimationLabel:Hide()
 
@@ -829,7 +651,7 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 
 		--make a text dot animation, which will show no dots at start and then "." then ".." then "..." and back to "" and so on
 		function readyFrame.StartTextDotAnimation()
-			--update the Waiting for Loot labels
+			--update the Waiting for Loot labels 
 			waitingForLootLabel:Show()
 			waitingForLootDotsAnimationLabel:Show()
 
@@ -882,7 +704,7 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 			mPlus.ShowSummary()
 		end
 		---@type df_button
-		readyFrame.ShowBreakdownButton = detailsFramework:CreateButton(contentFrame, showBreakdownFunc, 145, 30, "Show Breakdown")
+		readyFrame.ShowBreakdownButton = DetailsFramework:CreateButton(contentFrame, showBreakdownFunc, 145, 30, "Show Breakdown")
 		PixelUtil.SetPoint(readyFrame.ShowBreakdownButton, "topleft", readyFrame, "topleft", 31, -30)
 		PixelUtil.SetSize(readyFrame.ShowBreakdownButton, 145, 32)
 		readyFrame.ShowBreakdownButton:SetBackdrop(nil)
@@ -898,7 +720,7 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 			readyFrame:Hide()
 		end
 		---@type df_button
-		readyFrame.ShowChartButton = detailsFramework:CreateButton(contentFrame, showChartFunc, 145, 30, "Show Damage Graphic")
+		readyFrame.ShowChartButton = DetailsFramework:CreateButton(contentFrame, showChartFunc, 145, 30, "Show Damage Graphic")
 		PixelUtil.SetPoint(readyFrame.ShowChartButton, "left", readyFrame.ShowBreakdownButton, "right", 6, 0)
 		PixelUtil.SetSize(readyFrame.ShowChartButton, 145, 32)
 		readyFrame.ShowChartButton:SetBackdrop(nil)
@@ -911,24 +733,24 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 			Details.mythic_plus.show_damage_graphic = not value
 		end
 
-		local elapsedTimeLabel = detailsFramework:CreateLabel(contentFrame, "Run Time:", textSize, textColor)
+		local elapsedTimeLabel = DetailsFramework:CreateLabel(contentFrame, "Run Time:", textSize, textColor)
 		--elapsedTimeLabel:SetPoint("topleft", leftAnchor, "bottomleft", 0, -8)
 		elapsedTimeLabel:SetPoint("topleft", readyFrame, "topleft", 5, -70)
-		local elapsedTimeAmount = detailsFramework:CreateLabel(contentFrame, "00:00", textSize, textColor)
+		local elapsedTimeAmount = DetailsFramework:CreateLabel(contentFrame, "00:00", textSize, textColor)
 		elapsedTimeAmount:SetPoint("left", elapsedTimeLabel, "left", 130, 0)
 
-		local timeNotInCombatLabel = detailsFramework:CreateLabel(contentFrame, "Time not in combat:", textSize, "orangered")
+		local timeNotInCombatLabel = DetailsFramework:CreateLabel(contentFrame, "Time not in combat:", textSize, "orangered")
 		timeNotInCombatLabel:SetPoint("topleft", elapsedTimeLabel, "bottomleft", 0, -5)
-		local timeNotInCombatAmount = detailsFramework:CreateLabel(contentFrame, "00:00", textSize, "orangered")
+		local timeNotInCombatAmount = DetailsFramework:CreateLabel(contentFrame, "00:00", textSize, "orangered")
 		timeNotInCombatAmount:SetPoint("left", timeNotInCombatLabel, "left", 130, 0)
 
-		local youBeatTheTimerLabel = detailsFramework:CreateLabel(contentFrame, "", textSize, "white")
+		local youBeatTheTimerLabel = DetailsFramework:CreateLabel(contentFrame, "", textSize, "white")
 		youBeatTheTimerLabel:SetPoint("topleft", timeNotInCombatLabel, "bottomleft", 0, -5)
 
-		--local keystoneUpgradeLabel = detailsFramework:CreateLabel(readyFrame, "Keystone Upgrade:", textSize, "white")
+		--local keystoneUpgradeLabel = DetailsFramework:CreateLabel(readyFrame, "Keystone Upgrade:", textSize, "white")
 		--keystoneUpgradeLabel:SetPoint("topleft", youBeatTheTimerLabel, "bottomleft", 0, -5)
 
-		local rantingLabel = detailsFramework:CreateLabel(contentFrame, "", textSize, textColor)
+		local rantingLabel = DetailsFramework:CreateLabel(contentFrame, "", textSize, textColor)
 		--rantingLabel:SetPoint("topleft", keystoneUpgradeLabel, "bottomleft", 0, -5)
 		rantingLabel:SetPoint("topleft", youBeatTheTimerLabel, "bottomleft", 0, -5)
 
@@ -943,7 +765,62 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 			end
 		end
 
-		--here was the loot frame events ~loot
+		--frame to handle loot events
+		local lootFrame = CreateFrame("frame", "$parentLootFrame", readyFrame)
+		lootFrame:RegisterEvent("BOSS_KILL");
+		lootFrame:RegisterEvent("ENCOUNTER_LOOT_RECEIVED")
+
+		local bossKillEncounterId
+
+		lootFrame:SetScript("OnEvent", function(self, event, ...)
+			if (event == "BOSS_KILL") then
+				local encounterID, name = ...;
+				bossKillEncounterId = encounterID
+				--print("BOSS_KILL", GetTime(), bossKillEncounterId)
+
+			elseif (event == "ENCOUNTER_LOOT_RECEIVED") then
+				local lootEncounterId, itemID, itemLink, quantity, playerName, className = ...
+				--print("ENCOUNTER_LOOT_RECEIVED", GetTime(), lootEncounterId, bossKillEncounterId)
+
+				--print("no ambig:", playerName, "with ambig:", Ambiguate(playerName, "none")) --debug
+				playerName = Ambiguate(playerName, "none")
+				local unitBanner = readyFrame.playerCacheByName[playerName]
+
+				if (not unitBanner) then
+					--print("no unitBanner for player", playerName, "aborting.")
+					return
+				end
+
+				local _, instanceType = GetInstanceInfo()
+				--print("Is encounter the same:", lootEncounterId == bossKillEncounterId)
+				if (instanceType == "party") then -- or instanceType == "raid" --lootEncounterId == bossKillEncounterId and 
+					--print("all good showing loot for player", playerName)
+					local lootSquare = unitBanner.LootSquare
+					lootSquare.itemLink = itemLink
+
+					local effectiveILvl, nop, baseItemLevel = GetDetailedItemLevelInfo(itemLink)
+
+					local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType,
+					itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType,
+					expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
+
+					--print("equip loc:", itemEquipLoc)
+
+					if (effectiveILvl > 300 and baseItemLevel > 5) then --avoid showing loot that isn't items
+						local rarityColor = ITEM_QUALITY_COLORS[itemQuality]
+						lootSquare.LootIconBorder:SetVertexColor(rarityColor.r, rarityColor.g, rarityColor.b, 1)
+
+						lootSquare.LootIcon:SetTexture(GetItemIcon(itemID))
+						lootSquare.LootItemLevel:SetText(effectiveILvl or "0")
+
+						readyFrame.StopTextDotAnimation()
+
+						--print("loot info:", itemLink, effectiveILvl, itemQuality)
+						lootSquare:Show()
+					end
+				end
+			end
+		end)
 
 		--[=[
 		Details222.MythicPlus.MapID = mapID
@@ -965,14 +842,12 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 		Details222.MythicPlus.BackgroundTexture = backgroundTexture
 		--]=]
 
-		local notAgainSwitch, notAgainLabel = detailsFramework:CreateSwitch(contentFrame, on_switch_enable, not Details.mythic_plus.show_damage_graphic, _, _, _, _, _, _, _, _, _, Loc ["STRING_MINITUTORIAL_BOOKMARK4"], detailsFramework:GetTemplate("switch", "OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"), "GameFontHighlightLeft")
-		notAgainLabel.textcolor = "orange"
+		local notAgainSwitch, notAgainLabel = DetailsFramework:CreateSwitch(contentFrame, on_switch_enable, not Details.mythic_plus.show_damage_graphic, _, _, _, _, _, _, _, _, _, Loc ["STRING_MINITUTORIAL_BOOKMARK4"], DetailsFramework:GetTemplate("switch", "OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"), "GameFontHighlightLeft")
 		notAgainSwitch:ClearAllPoints()
 		notAgainLabel:SetPoint("left", notAgainSwitch, "right", 2, 0)
 		notAgainSwitch:SetPoint("bottomleft", readyFrame, "bottomleft", 5, 5)
 		notAgainSwitch:SetAsCheckBox()
 		notAgainSwitch:SetSize(12, 12)
-		notAgainSwitch:SetAlpha(0.5)
 		notAgainLabel.textsize = 9
 
 		readyFrame.TimeNotInCombatAmountLabel = timeNotInCombatAmount
@@ -997,7 +872,7 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 
 	--hide the lootSquare
 	for i = 1, #readyFrame.PlayerBanners do
-		readyFrame.PlayerBanners[i]:ClearLootSquares()
+		readyFrame.PlayerBanners[i].LootSquare:Hide()
 	end
 
 	for i = 1, #readyFrame.PlayerBanners do
@@ -1043,19 +918,19 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 
 	--update the run time and time not in combat
 	local elapsedTime = Details222.MythicPlus.time or 1507
-	readyFrame.ElapsedTimeAmountLabel.text = detailsFramework:IntegerToTimer(elapsedTime)
+	readyFrame.ElapsedTimeAmountLabel.text = DetailsFramework:IntegerToTimer(elapsedTime)
 
 	if (overallMythicDungeonCombat:GetCombatType() == DETAILS_SEGMENTTYPE_MYTHICDUNGEON_OVERALL) then
 		local combatTime = overallMythicDungeonCombat:GetCombatTime()
 		local notInCombat = elapsedTime - combatTime
-		readyFrame.TimeNotInCombatAmountLabel.text = detailsFramework:IntegerToTimer(notInCombat) .. " (" .. math.floor(notInCombat / elapsedTime * 100) .. "%)"
+		readyFrame.TimeNotInCombatAmountLabel.text = DetailsFramework:IntegerToTimer(notInCombat) .. " (" .. math.floor(notInCombat / elapsedTime * 100) .. "%)"
 	else
 		readyFrame.TimeNotInCombatAmountLabel.text = "Unknown for this run"
 	end
 
 	local mythicDungeonInfo = overallMythicDungeonCombat:GetMythicDungeonInfo()
 
-	if (not mythicDungeonInfo and not CONST_DEBUG_MODE) then
+	if (not mythicDungeonInfo) then
 		return
 	end
 
@@ -1068,7 +943,7 @@ function mythicDungeonFrames.ShowEndOfMythicPlusPanel()
 		readyFrame.DungeonBackdropTexture:SetTexture(overallMythicDungeonCombat.is_mythic_dungeon.DungeonTexture)
 	end
 
-	wipe(readyFrame.unitCacheByName)
+	wipe(readyFrame.playerCacheByName)
 
 	if (Details222.MythicPlus.OnTime) then
 		readyFrame.YouBeatTheTimerLabel:SetFormattedText(CHALLENGE_MODE_COMPLETE_BEAT_TIMER .. " | " .. CHALLENGE_MODE_COMPLETE_KEYSTONE_UPGRADED, Details222.MythicPlus.KeystoneUpgradeLevels) --"You beat the timer!"

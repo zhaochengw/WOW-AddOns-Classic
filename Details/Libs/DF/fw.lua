@@ -1,6 +1,6 @@
 
 
-local dversion = 539
+local dversion = 526
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary(major, minor)
 
@@ -27,17 +27,6 @@ local IS_WOW_PROJECT_NOT_MAINLINE = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
 
 local UnitPlayerControlled = UnitPlayerControlled
 local UnitIsTapDenied = UnitIsTapDenied
-
--- TWW compatibility:
-local GetSpellInfo = GetSpellInfo or function(spellID) if not spellID then return nil end local si = C_Spell.GetSpellInfo(spellID) if si then return si.name, nil, si.iconID, si.castTime, si.minRange, si.maxRange, si.spellID, si.originalIconID end end
-local GetSpellBookItemName = GetSpellBookItemName or C_SpellBook.GetSpellBookItemName
-local GetNumSpellTabs = GetNumSpellTabs or C_SpellBook.GetNumSpellBookSkillLines
-local GetSpellTabInfo = GetSpellTabInfo or function(tabLine) local skillLine = C_SpellBook.GetSpellBookSkillLineInfo(tabLine) if skillLine then return skillLine.name, skillLine.iconID, skillLine.itemIndexOffset, skillLine.numSpellBookItems, skillLine.isGuild, skillLine.offSpecID end end
-local SpellBookItemTypeMap = Enum.SpellBookItemType and {[Enum.SpellBookItemType.Spell] = "SPELL", [Enum.SpellBookItemType.None] = "NONE", [Enum.SpellBookItemType.Flyout] = "FLYOUT", [Enum.SpellBookItemType.FutureSpell] = "FUTURESPELL", [Enum.SpellBookItemType.PetAction] = "PETACTION" } or {}
-local GetSpellBookItemInfo = GetSpellBookItemInfo or function(...) local si = C_SpellBook.GetSpellBookItemInfo(...) if si then return SpellBookItemTypeMap[si.itemType] or "NONE", si.spellID end end
-local SPELLBOOK_BANK_PLAYER = Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Player or "player"
-local SPELLBOOK_BANK_PET = Enum.SpellBookSpellBank and Enum.SpellBookSpellBank.Pet or "pet"
-local IsPassiveSpell = IsPassiveSpell or C_Spell.IsSpellPassive
 
 SMALL_NUMBER = 0.000001
 ALPHA_BLEND_AMOUNT = 0.8400251
@@ -106,7 +95,7 @@ end
 ---return if the wow version the player is playing is a classic version of wow
 ---@return boolean
 function DF.IsTimewalkWoW()
-    if (buildInfo < 50000) then        return true    end
+    if (buildInfo < 40000) then        return true    end
 	return false
 end
 
@@ -187,9 +176,6 @@ function DF.IsWarWow()
 	return false
 end
 
-function DF.IsTWWWow()
-	return DF.IsWarWow()
-end
 
 ---return true if the player is playing in the WotLK version of wow with the retail api
 ---@return boolean
@@ -202,8 +188,13 @@ function DF.IsNonRetailWowWithRetailAPI()
 end
 DF.IsWotLKWowWithRetailAPI = DF.IsNonRetailWowWithRetailAPI -- this is still in use
 
-function DF.ExpansionHasAugEvoker()
-	return DF.IsDragonflightWow() or DF.IsWarWow()
+---return true if the version of wow the player is playing is the shadowlands
+function DF.IsShadowlandsWow()
+    local _, _, _, buildInfo = GetBuildInfo()
+    if (buildInfo < 100000 and buildInfo >= 90000) then
+        return true
+    end
+	return false
 end
 
 ---for classic wow, get the role using the texture from the talents frame
@@ -266,12 +257,7 @@ function DF:GetRoleByClassicTalentTree()
 	for i = 1, (MAX_TALENT_TABS or 3) do
 		if (i <= numTabs) then
 			--tab information
-			local id, name, description, iconTexture, pointsSpent, fileName
-			if DF.IsCataWow() then
-				id, name, description, iconTexture, pointsSpent, fileName = GetTalentTabInfo(i)
-			else
-				name, iconTexture, pointsSpent, fileName = GetTalentTabInfo(i)
-			end
+			local name, iconTexture, pointsSpent, fileName = GetTalentTabInfo(i)
 			if (name) then
 				table.insert(pointsPerSpec, {name, pointsSpent, fileName})
 			end
@@ -1362,10 +1348,6 @@ function DF:AddClassIconToText(text, playerName, englishClassName, useSpec, icon
 					spec = spec
 				end
 			end
-		else
-			if (type(useSpec) == "number") then
-				local specId, specName = GetSpecializationInfoByID(useSpec)
-			end
 		end
 	end
 
@@ -1390,33 +1372,6 @@ function DF:AddClassIconToText(text, playerName, englishClassName, useSpec, icon
 	end
 
 	return text
-end
-
-function DF:AddClassIconToString(text, engClass, size)
-	size = size or 16
-	local tcoords = CLASS_ICON_TCOORDS[engClass]
-	if (tcoords) then
-		local l, r, t, b = unpack(tcoords)
-		return "|TInterface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes:" .. size .. ":" .. size .. ":0:0:256:256:" .. (l * 256) .. ":" .. (r * 256) .. ":" .. (t * 256) .. ":" .. (b * 256) .. "|t " .. text
-	end
-end
-
-function DF:AddSpecIconToString(text, specId, size)
-	size = size or 16
-
-	if (not specId) then
-		--get the player specId
-		local specIndex = GetSpecialization()
-		specId = GetSpecializationInfo(specIndex)
-		if (not specId) then
-			return
-		end
-	end
-
-	local id, name, description, icon = GetSpecializationInfoByID(specId)
-	if (id) then
-		return "|T" .. icon .. ":" .. size .. ":" .. size .. ":0:0|t " .. text
-	end
 end
 
 ---create a table with information about a texture (deprecated, use: DetailsFramework:CreateAtlas())
@@ -1740,7 +1695,7 @@ function DF:GetSpellBookSpells()
             local tabEnd = offset + numSpells
 
             for j = offset, tabEnd - 1 do
-                local spellType, spellId = GetSpellBookItemInfo(j, SPELLBOOK_BANK_PLAYER)
+                local spellType, spellId = GetSpellBookItemInfo(j, "player")
 
                 if (spellId) then
                     if (spellType ~= "FLYOUT") then
@@ -1825,7 +1780,7 @@ function DF:GetAvailableSpells()
     offset = offset + 1
     local tabEnd = offset + numSpells
     for entryOffset = offset, tabEnd - 1 do
-        local spellType, spellId = GetSpellBookItemInfo(entryOffset, SPELLBOOK_BANK_PLAYER)
+        local spellType, spellId = GetSpellBookItemInfo(entryOffset, "player")
         local spellData = LIB_OPEN_RAID_COOLDOWNS_INFO[spellId]
         if (spellData) then
             local raceId = spellData.raceid
@@ -1834,7 +1789,7 @@ function DF:GetAvailableSpells()
                     if (raceId[playerRaceId]) then
                         spellId = C_SpellBook.GetOverrideSpell(spellId)
                         local spellName = GetSpellInfo(spellId)
-                        local bIsPassive = IsPassiveSpell(spellId, SPELLBOOK_BANK_PLAYER)
+                        local bIsPassive = IsPassiveSpell(spellId, "player")
                         if (spellName and not bIsPassive) then
                             completeListOfSpells[spellId] = true
                         end
@@ -1844,7 +1799,7 @@ function DF:GetAvailableSpells()
                     if (raceId == playerRaceId) then
                         spellId = C_SpellBook.GetOverrideSpell(spellId)
                         local spellName = GetSpellInfo(spellId)
-                        local bIsPassive = IsPassiveSpell(spellId, SPELLBOOK_BANK_PLAYER)
+                        local bIsPassive = IsPassiveSpell(spellId, "player")
                         if (spellName and not bIsPassive) then
                             completeListOfSpells[spellId] = true
                         end
@@ -1862,12 +1817,12 @@ function DF:GetAvailableSpells()
 		offset = offset + 1
 		local tabEnd = offset + numSpells
 		for entryOffset = offset, tabEnd - 1 do
-			local spellType, spellId = GetSpellBookItemInfo(entryOffset, SPELLBOOK_BANK_PLAYER)
+			local spellType, spellId = GetSpellBookItemInfo(entryOffset, "player")
 			if (spellId) then
 				if (spellType == "SPELL") then
 					spellId = C_SpellBook.GetOverrideSpell(spellId)
 					local spellName = GetSpellInfo(spellId)
-					local bIsPassive = IsPassiveSpell(spellId, SPELLBOOK_BANK_PLAYER)
+					local bIsPassive = IsPassiveSpell(spellId, "player")
 					if (spellName and not bIsPassive) then
 						completeListOfSpells[spellId] = bIsOffSpec == false
 					end
@@ -1907,10 +1862,10 @@ function DF:GetAvailableSpells()
     local numPetSpells = getNumPetSpells()
     if (numPetSpells) then
         for i = 1, numPetSpells do
-            local spellName, _, unmaskedSpellId = GetSpellBookItemName(i, SPELLBOOK_BANK_PET)
+            local spellName, _, unmaskedSpellId = GetSpellBookItemName(i, "pet")
             if (unmaskedSpellId) then
                 unmaskedSpellId = C_SpellBook.GetOverrideSpell(unmaskedSpellId)
-                local bIsPassive = IsPassiveSpell(unmaskedSpellId, SPELLBOOK_BANK_PET)
+                local bIsPassive = IsPassiveSpell(unmaskedSpellId, "pet")
                 if (spellName and not bIsPassive) then
                     completeListOfSpells[unmaskedSpellId] = true
                 end
@@ -2045,7 +2000,6 @@ end
 ---@field x number
 ---@field y number
 
-
 DF.AnchorPoints = {
 	"Top Left",
 	"Left",
@@ -2055,122 +2009,16 @@ DF.AnchorPoints = {
 	"Right",
 	"Top Right",
 	"Top",
-	"Center", --9
-	"Inside Left", --10
-	"Inside Right", --11
-	"Inside Top", --12
-	"Inside Bottom", --13
-	"Inside Top Left", --14
-	"Inside Bottom Left", --15
-	"Inside Bottom Right", --16
-	"Inside Top Right", --17
+	"Center",
+	"Inside Left",
+	"Inside Right",
+	"Inside Top",
+	"Inside Bottom",
+	"Inside Top Left",
+	"Inside Bottom Left",
+	"Inside Bottom Right",
+	"Inside Top Right",
 }
-
-DF.AnchorPointsByIndex = {
-	"topleft", --1
-	"left", --2
-	"bottomleft", --3
-	"bottom", --4
-	"bottomright", --5
-	"right", --6
-	"topright", --7
-	"top", --8
-	"center", --9
-}
-
-DF.AnchorPointsToInside = {
-	[9] = 9,
-	[8] = 12,
-	[7] = 17,
-	[6] = 11,
-	[5] = 16,
-	[4] = 13,
-	[3] = 15,
-	[2] = 10,
-	[1] = 14,
-}
-
-DF.InsidePointsToAnchor = {
-	[9] = 9,
-	[12] = 8,
-	[17] = 7,
-	[11] = 6,
-	[16] = 5,
-	[13] = 4,
-	[15] = 3,
-	[10] = 2,
-	[14] = 1,
-}
-
-function DF:ConvertAnchorPointToInside(anchorPoint)
-	return DF.AnchorPointsToInside[anchorPoint] or anchorPoint
-end
-
-local calcPointCoords = function(ninePointsWidget, ninePointsRef, anchorTable, coordIndex, newAnchorSide)
-	--get the location of the topleft corner relative to the bottomleft corner of the screen
-	---@type df_coordinate
-	local widgetPointCoords = ninePointsWidget[coordIndex]
-	--get the topleft coords of the reference widget
-	---@type df_coordinate
-	local refPointCoords = ninePointsRef[coordIndex]
-
-	--calculate the offset of the x and y axis
-	local x = refPointCoords.x - widgetPointCoords.x
-	local y = refPointCoords.y - widgetPointCoords.y
-	anchorTable.x = x
-	anchorTable.y = y
-	anchorTable.side = newAnchorSide
-
-	print("new anchor side", newAnchorSide, "x", x, "y", y)
-end
-
-function DF:ConvertAnchorOffsets(widget, referenceWidget, anchorTable, newAnchorSide)
-	if (anchorTable.side == newAnchorSide) then
-		return anchorTable
-	end
-
-	local ninePoints = DF.Math.GetNinePoints(widget)
-	local refNinePoints = DF.Math.GetNinePoints(referenceWidget)
-
-	--the numeration from 1 to 9 is the index within a ninePoints table
-
-	anchorTable.side = newAnchorSide
-
-	if (newAnchorSide == 14) then --inside topleft
-		anchorTable.x = ninePoints[1].x - refNinePoints[1].x
-		anchorTable.y = ninePoints[1].y - refNinePoints[1].y
-		--print("inside topleft", anchorTable.x, anchorTable.y)
-
-	elseif (newAnchorSide == 15) then --inside bottomleft
-		anchorTable.x = ninePoints[3].x - refNinePoints[3].x
-		anchorTable.y = ninePoints[3].y - refNinePoints[3].y
-
-	elseif (newAnchorSide == 16) then --inside bottomright
-		anchorTable.x = refNinePoints[5].x - ninePoints[5].x
-		anchorTable.y = refNinePoints[5].y - ninePoints[5].y
-
-	elseif (newAnchorSide == 17) then --inside topright
-		anchorTable.x = refNinePoints[7].x - ninePoints[7].x
-		anchorTable.y = refNinePoints[7].y - ninePoints[7].y
-
-	elseif (newAnchorSide == 10) then --inside left
-		calcPointCoords(ninePoints, refNinePoints, anchorTable, 2, newAnchorSide)
-
-	elseif (newAnchorSide == 11) then --inside right
-		calcPointCoords(ninePoints, refNinePoints, anchorTable, 6, newAnchorSide)
-
-	elseif (newAnchorSide == 12) then --inside top
-		calcPointCoords(ninePoints, refNinePoints, anchorTable, 8, newAnchorSide)
-
-	elseif (newAnchorSide == 13) then --inside bottom
-		calcPointCoords(ninePoints, refNinePoints, anchorTable, 4, newAnchorSide)
-
-	elseif (newAnchorSide == 9) then --center
-		calcPointCoords(ninePoints, refNinePoints, anchorTable, 9, newAnchorSide)
-	else
-		--print("not implemented")
-	end
-end
 
 local anchoringFunctions = {
 	function(frame, anchorTo, offSetX, offSetY) --1 TOP LEFT
@@ -2865,7 +2713,6 @@ end
 --DF.font_templates ["OPTIONS_FONT_TEMPLATE"] = {color = "yellow", size = 12, font = "Accidental Presidency"}
 DF.font_templates["ORANGE_FONT_TEMPLATE"] = {color = "orange", size = 10, font = DF:GetBestFontForLanguage()}
 DF.font_templates["OPTIONS_FONT_TEMPLATE"] = {color = "yellow", size = 9.6, font = DF:GetBestFontForLanguage()}
-DF.font_templates["SMALL_SILVER"] = {color = "silver", size = 9, font = DF:GetBestFontForLanguage()}
 
 --dropdowns
 DF.dropdown_templates = DF.dropdown_templates or {}
@@ -3335,7 +3182,7 @@ function DF:CreateAnimation(animationGroup, animationType, order, duration, arg1
 		anim:SetToAlpha(arg2)
 
 	elseif (animationType == "SCALE") then
-		if (DF.IsDragonflight() or DF.IsNonRetailWowWithRetailAPI() or DF.IsWarWow()) then
+		if (DF.IsDragonflight() or DF.IsNonRetailWowWithRetailAPI()) then
 			anim:SetScaleFrom(arg1, arg2)
 			anim:SetScaleTo(arg3, arg4)
 		else
@@ -4496,7 +4343,6 @@ function DF:GetClassSpecIds(engClass) --naming conventions
 	return DF:GetClassSpecIDs(engClass)
 end
 
---kinda deprecated
 local getDragonflightTalents = function()
 	if (not ClassTalentFrame) then
 		ClassTalentFrame_LoadUI()
@@ -4531,17 +4377,9 @@ local getDragonflightTalents = function()
 	return exportStream:GetExportString()
 end
 
-local getDragonflightTalentsEasy = function()
-	local activeConfigID = C_ClassTalents.GetActiveConfigID()
-	if (activeConfigID and activeConfigID > 0) then
-		return C_Traits.GenerateImportString(activeConfigID)
-	end
-	return ""
-end
-
 --/dump DetailsFramework:GetDragonlightTalentString()
 function DF:GetDragonlightTalentString()
-	local runOkay, errorText = pcall(getDragonflightTalentsEasy)
+	local runOkay, errorText = pcall(getDragonflightTalents)
 	if (not runOkay) then
 		DF:Msg("error 0x4517", errorText)
 		return ""

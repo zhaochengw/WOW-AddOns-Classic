@@ -1,6 +1,7 @@
 # Details! Damage Meter
 
-## [Details.20240607.12801.156](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.20240607.12801.156) (2024-06-07)
-[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20240607.12800.156...Details.20240607.12801.156) 
+## [Details.20240326.12579.156](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.20240326.12579.156) (2024-03-26)
+[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20240325.12578.156...Details.20240326.12579.156) 
 
-- Fixed an issue with Cataclysm classic not having the "ENCOUNTER\_LOOT\_RECEIVED" event.  
+- Version Up  
+- Fixed an issue  

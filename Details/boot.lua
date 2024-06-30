@@ -1,6 +1,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --global name declaration
 --local _StartDebugTime = debugprofilestop() print(debugprofilestop() - _StartDebugTime)
+--test if the packager will deploy to wago
 --https://github.com/LuaLS/lua-language-server/wiki/Annotations#documenting-types
 
 		_ = nil
@@ -17,8 +18,8 @@
 		local addonName, Details222 = ...
 		local version, build, date, tocversion = GetBuildInfo()
 
-		Details.build_counter = 12801
-		Details.alpha_build_counter = 12801 --if this is higher than the regular counter, use it instead
+		Details.build_counter = 12579
+		Details.alpha_build_counter = 12579 --if this is higher than the regular counter, use it instead
 		Details.dont_open_news = true
 		Details.game_version = version
 		Details.userversion = version .. " " .. Details.build_counter
@@ -182,40 +183,6 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 
 	local news = {
-		{"v10.2.7.12800.156", "June 06th, 2024"},
-		"Added transliteration for pet names in Cyrillic.",
-		"Fixed an error with extra power bars (alternate power) on cataclysm classic.",
-		"Fixed a rare error shown as 'combat already deleted' when trying to reset data.",
-		"Fixed an issue which was preventing to open the death recap window.",
-		"Fixed cataclysm classic attempting to calculate Evoker buffs.",
-		"Fixed battleground problems with cataclysm classic. (Flamanis)",
-		"Fixed an issue with player nicknames not showing properly when the player isn't inside a guild. (Flamanis)",
-
-		{"v10.2.7.12755.156", "May 19th, 2024"},
-		"Pet names on tooltips are now transliterate from Cyrillic.",
-		"Default segments amount are now 25 and save 15, users with different amount set won't have their settings changed.",
-		"Fixed an error when the user opens the death recap.",
-		"Merging the effects of All-Totem of the Mastr (Flamanis).",
-		"Added a season setting to stop right click for bookmark: '/run Details.no_bookmark = true' stop the right click for bookmark in combat or not.\n/run Details.no_bookmark_on_combat = true stop the right click for bookmark only in combat.\nYou need to run this command every time you log in or add it into the Auto Run Code.",
-		"A few changes has been done in an attempt to fix the loot squares not showing properly in the mythic+ end screen.",
-		"The options panel now cannot be dragged outside the screen, this will stop users with two monitors to acciently moving the window out of screen.",
-		"Tooltip bar colors are now fixed and won't lost its setting on reload.",
-		"The buff Rallied to Victory should now be shown in the player breakdown window Auras tab.",
-
-		{"v10.2.6.12699.156", "May 03th, 2024"},
-		"Framework and Backend upgrades.",
-		"Added Toc data for Cata classic.",
-		"Warrior Arms Whirlwind has been merged into one spell (WillowGryph).",
-		"Added an option to control the horizontal gap between two groupped windows (Elitesparkle).",
-		"Fixed an issue where looting two itens at the end of a mythic+ would result in the icon of one item and the tooltip of another.",
-		"Fixed the preview of the Wallpaper option where it was too high positioned reaching the title bar.",
-
-		{"v10.2.6.12650.156", "April 23th, 2024"},
-		"Framework and Backend upgrades.",
-		"Added prist's void tendrils to crowd control list.",
-		"Fixes for asian clients where the spell names were not showing properly when the spell name is too long.",
-		"Cataclysm Clasic and MOP Remix are now working.",
-
 		{"v10.2.6.12578.156", "March 25th, 2024"},
 		"Added phase and elapsed time for boss wipes on the segment selection menu.",
 		"Added an option to toggle between rounded and squared tooltips.",
@@ -473,6 +440,31 @@ do
 		"Added IconTexture directive to the TOC files.",
 		"Disabled time captures for spellTables, this should be done by a plugin.",
 		"Replacing table.wipe with Details:Destroy().",
+
+		{"v10.1.0.11022.151", "May 20th, 2023"},
+		"Breakdown pet options has changed to: 'Group Pets by Their Names' or 'Group Pets by Their Spells'.",
+		"Evoker empowered level now ocupies less space on the rectangle showing the damage by empower level.",
+		"Another Framework update.",
+		"Fixed an issue where some pet bars still showing the owner name.",
+		"Fixed an issue with the player selector on Breakdown window causing an error when selecting some players.",
+		"Fixed an issue caused by opening the breakdown window while seeing healing overall.",
+		"Fixed an issue with the min and max damage of a spell when viewing the 'merged' damage of two or more spells.",
+		"Fixed an issue with the Raid Check plugin throwing an error on Shuffle Arenas.",
+		"Fixed shields for Classic versions (Flamanis).",
+
+		{"v10.1.0.11011.151", "May 13th, 2023"},
+		"Added options: 'Group Player Spells With Same Name' and 'Group Pets By Spell' on the breakdown options.",
+		"Added combat log options for 'Calculate Shield Wasted Amount' and 'Calculate Energy Wasted Amount' under the options > Combat Log.",
+		"Framework and OpenRaid Updated.",
+		"Breakdown window won't go off screen anymore.",
+		"Breakdown now shows damage per phase if the segment has more than one phase.",
+		"Overhealing can now be seen within the Healing Done breakdown. This removes the necessity of having to go back and forward between healing done and overhealing.",
+		"Friendly Fire can now be seen in the breakdown window by clicking on the player bar (before the click on the player bar opened the report screen).",
+		"Healing Taken can also be seen on the breakdown window.",
+		"Some options from the Breakdown options got removed, most of them are now auto calculated by the system.",
+		"Fixed an issue where the Frags display was showinig death of friendly objects like Efflorescense.",
+		"Fixed an issue where item damage was showing 'Unknown Item' on cold logins.",
+		"Fixed defenses gauge (miss, dodge, parry) not showing in the spell details on the breakdown window.",
 	}
 
 	local newsString = "|cFFF1F1F1"

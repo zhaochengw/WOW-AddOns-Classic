@@ -517,7 +517,7 @@ end
 				return playerName
 			end
 
-			if (not UnitIsInMyGuild(playerName) and playerName ~= Details.playername) then
+			if (not UnitIsInMyGuild(playerName)) then
 				return playerName
 			end
 		else
@@ -538,10 +538,10 @@ end
 			if (bitBand(actorFlags, OBJECT_TYPE_PLAYER) ~= 0) then
 				if (not Details.ignore_nicktag) then
 					local actorNameAmbiguated = Ambiguate(actorName, "none")
-                    local nickname = Details:GetNickname(actorNameAmbiguated, false, true)
-                    if nickname then
-					    actorObject.displayName = checkValidNickname(nickname, actorName) --defaults to player name
-                    end
+					actorObject.displayName = checkValidNickname(Details:GetNickname(actorNameAmbiguated, false, true), actorName) --defaults to player name
+					if (Details.remove_realm_from_name) then
+						actorObject.displayName = actorObject.displayName:gsub(("%-.*"), "")
+					end
 				end
 
 				if (not actorObject.displayName) then

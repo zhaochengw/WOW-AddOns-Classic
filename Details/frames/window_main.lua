@@ -2094,8 +2094,6 @@ local iconFrame_OnEnter = function(self)
 
 			instance:BuildInstanceBarTooltip(self)
 
-			local bIsClassic = (DetailsFramework.IsClassicWow() or DetailsFramework.IsTBCWow() or DetailsFramework.IsWotLKWow() or DetailsFramework.IsCataWow())
-
 			local classIcon, classL, classR, classT, classB = Details:GetClassIcon(class)
 
 			local specId, specName, specDescription, specIcon, specRole, specClass = DetailsFramework.GetSpecializationInfoByID(spec or 0) --thanks pas06
@@ -2106,14 +2104,7 @@ local iconFrame_OnEnter = function(self)
 				end
 			end
 
-			if (instance.row_info.textL_translit_text) then
-				--translate cyrillic alphabet to western alphabet by Vardex (https://github.com/Vardex May 22, 2019)
-				local Translit = LibStub("LibTranslit-1.0")
-				GameCooltip:AddLine(Translit:Transliterate(name, "!"), specName)
-			else
-				GameCooltip:AddLine(name, specName)
-			end
-
+			GameCooltip:AddLine(name, specName)
 			if (class == "UNKNOW" or class == "UNGROUPPLAYER") then
 				GameCooltip:AddIcon([[Interface\AddOns\Details\images\classes_small_alpha]], 1, 1, iconSize, iconSize, 0, 0.25, 0.75, 1)
 			else
@@ -2130,9 +2121,9 @@ local iconFrame_OnEnter = function(self)
 			local talentString = ""
 
 			if (type(talents) == "table") then
-				if (talents and not bIsClassic) then
+				if (talents and not (DetailsFramework.IsClassicWow() or DetailsFramework.IsTBCWow() or DetailsFramework.IsWotLKWow())) then
 					for i = 1, #talents do
-						local talentID, talentName, texture, selected, available = GetTalentInfoByID(talents[i])
+						local talentID, talentName, texture, selected, available = GetTalentInfoByID(talents [i])
 						if (texture) then
 							talentString = talentString ..  " |T" .. texture .. ":" .. 24 .. ":" .. 24 ..":0:0:64:64:4:60:4:60|t"
 						end
@@ -2208,7 +2199,7 @@ local iconFrame_OnEnter = function(self)
 
 			local lineHeight = 21
 
-			if (RaiderIO and not bIsClassic) then
+			if (RaiderIO) then
 				local addedInfo = false
 
 				local playerName, playerRealm = actorName:match("(%w+)%-(%w+)")
@@ -3334,7 +3325,8 @@ do
 	tooltip_anchor:SetBackdropColor(0, 0, 0, 1)
 
 	tooltip_anchor:SetScript("OnEnter", function(self)
-		tooltip_anchor.glowAnimation:Stop()
+		tooltip_anchor.alert.animIn:Stop()
+		tooltip_anchor.alert.animOut:Play()
 		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
 		GameTooltip:ClearLines()
 		GameTooltip:AddLine(Loc["STRING_OPTIONS_TOOLTIPS_ANCHOR_TEXT_DESC"])
@@ -3376,14 +3368,16 @@ do
 			self:SetMovable(true)
 			self:SetFrameStrata("FULLSCREEN")
 			self.locked = false
-			tooltip_anchor.glowAnimation:Play()
+			tooltip_anchor.alert.animOut:Stop()
+			tooltip_anchor.alert.animIn:Play()
 		else
 			self:SetAlpha(0)
 			self:EnableMouse(false)
 			self:SetFrameStrata("MEDIUM")
 			self:SetMovable(false)
 			self.locked = true
-			tooltip_anchor.glowAnimation:Stop()
+			tooltip_anchor.alert.animIn:Stop()
+			tooltip_anchor.alert.animOut:Play()
 		end
 	end
 
@@ -3403,9 +3397,6 @@ do
 	tooltip_anchor.alert:Hide()
 	tooltip_anchor.alert:SetPoint("topleft", tooltip_anchor, "topleft", -60, 6)
 	tooltip_anchor.alert:SetPoint("bottomright", tooltip_anchor, "bottomright", 40, -6)
-
-	local glowAnimation = gump:CreateGlowOverlay(tooltip_anchor, "yellow", "white")
-	tooltip_anchor.glowAnimation = glowAnimation
 
 	local icon = tooltip_anchor:CreateTexture(nil, "overlay")
 	icon:SetTexture([[Interface\AddOns\Details\images\minimap]])

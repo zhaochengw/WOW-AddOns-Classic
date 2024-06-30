@@ -916,10 +916,7 @@ function segmentClass:ResetAllCombatData()
 		for i = #segmentsTable, 1, -1 do
 			---@type combat
 			local thisCombatObject = segmentsTable[i]
-			--check if the combat is already destroyed
-			if (not thisCombatObject.__destroyed) then
-				Details:DestroyCombat(thisCombatObject)
-			end
+			Details:DestroyCombat(thisCombatObject)
 		end
 
 		--the current combat when finished will be moved to the first index of "segmentsTable", need the check if the current combat was already destroyed

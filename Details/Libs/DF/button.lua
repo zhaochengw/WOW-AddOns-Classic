@@ -385,7 +385,6 @@ detailsFramework:Mixin(ButtonMetaFunctions, detailsFramework.ScriptHookMixin)
 
 	---add an icon to the left of the button text
 	---short method truncates the text: false = do nothing, nil = increate the button width, 1 = decrease the font size, 2 = truncate the text
-	---@param self table
 	---@param texture any
 	---@param width number|nil
 	---@param height number|nil
@@ -396,8 +395,7 @@ detailsFramework:Mixin(ButtonMetaFunctions, detailsFramework.ScriptHookMixin)
 	---@param leftPadding number|nil
 	---@param textHeight number|nil
 	---@param shortMethod any
-	---@param filterMode any
-	function ButtonMetaFunctions:SetIcon(texture, width, height, layout, texcoord, overlay, textDistance, leftPadding, textHeight, shortMethod, filterMode)
+	function ButtonMetaFunctions:SetIcon(texture, width, height, layout, texcoord, overlay, textDistance, leftPadding, textHeight, shortMethod)
 		if (not self.icon) then
 			self.icon = self:CreateTexture(nil, "artwork")
 			self.icon:SetSize(self.height * 0.8, self.height * 0.8)
@@ -426,10 +424,10 @@ detailsFramework:Mixin(ButtonMetaFunctions, detailsFramework.ScriptHookMixin)
 				local r, g, b, a = detailsFramework:ParseColors(texture)
 				self.icon:SetColorTexture(r, g, b, a)
 			else
-				self.icon:SetTexture(texture, nil, nil, filterMode)
+				self.icon:SetTexture(texture)
 			end
 		else
-			self.icon:SetTexture(texture, nil, nil, filterMode)
+			self.icon:SetTexture(texture)
 		end
 
 		self.icon:SetSize(width or self.height * 0.8, height or self.height * 0.8)
@@ -467,13 +465,6 @@ detailsFramework:Mixin(ButtonMetaFunctions, detailsFramework.ScriptHookMixin)
 			elseif (shortMethod == 2) then
 				detailsFramework:TruncateText(self.button.text, self:GetWidth() - self.icon:GetWidth() - 15)
 			end
-		end
-	end
-
-	---@param self df_button
-	function ButtonMetaFunctions:SetIconFilterMode(filterMode)
-		if (self.icon) then
-			self.icon:SetTexture(self.icon:GetTexture(), nil, nil, filterMode)
 		end
 	end
 
@@ -897,7 +888,6 @@ end
 	---@field SetTextColor fun(self: df_button, color: any) set the button text color
 	---@field SetText fun(self: df_button, text: string) set the button text
 	---@field SetClickFunction fun(self: df_button, func: function, param1: any, param2: any, clickType: "left"|"right"|nil)
-	---@field SetIconFilterMode fun(self: df_button, filterMode: any) set the filter mode for the icon, execute after SetIcon()
 
 	---create a Details Framework button
 	---@param parent frame
@@ -1107,7 +1097,7 @@ end
 	---@param callback function
 	---@param alpha number|nil
 	---@param buttonTemplate table|nil
-	---@return df_colorpickbutton
+	---@return table|nil
 	function detailsFramework:CreateColorPickButton(parent, name, member, callback, alpha, buttonTemplate)
 		return detailsFramework:NewColorPickButton(parent, name, member, callback, alpha, buttonTemplate)
 	end
