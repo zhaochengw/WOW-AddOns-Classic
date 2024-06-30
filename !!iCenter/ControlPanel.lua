@@ -1403,7 +1403,7 @@ if title ~= nil then
 		FF_DescAttackTimer	= "显示平砍间隔";
 	else
 		FF_NameAttackTimer	= "AttackTimer";
-		FF_DescDCT	= "Weapon attack timer";
+		FF_DescAttackTimer	= "Weapon attack timer";
 	end
 	if ( EarthFeature_AddButton ) then
 		EarthFeature_AddButton(
@@ -1471,6 +1471,7 @@ if title ~= nil then
 	end
 end
 
+
 local _, title = GetAddOnInfo("MikScrollingBattleText");
 if title ~= nil then
 	if GetLocale() == "zhCN" then
@@ -1497,6 +1498,45 @@ if title ~= nil then
 				end;
 				test = function()
 					if not IsAddOnLoaded("MSBTOptions") and not IsAddOnLoadOnDemand("MSBTOptions") then
+						return false;
+					else
+						return true;
+					end
+				end;
+			}
+		);
+	end
+end
+
+local _, title = GetAddOnInfo("SCT");
+if title ~= nil then
+	if GetLocale() == "zhCN" then
+		FF_NameSCT	= "战斗指示器";
+		FF_DescSCT	= "显示你战斗中受到的各种信息及法术预警";
+	elseif GetLocale() == "zhTW" then
+		FF_NameSCT	= "戰鬥指示器";
+		FF_DescSCT	= "顯示你戰鬥中受到的各種資訊及法術預警";
+	else
+		FF_NameSCT	= "SCT";
+		FF_DescSCT	= "Scrolling Combat Text";
+	end
+	if ( EarthFeature_AddButton ) then
+		EarthFeature_AddButton(
+			{
+				id= "SCT";
+				tab= "combat";
+				name= FF_NameSCT;
+				subtext= "ScrollingCombatText";
+				tooltip = FF_DescSCT;
+				icon= "Interface\\Icons\\Ability_Gouge";
+				callback= function(button)
+					if not IsAddOnLoaded("SCT") then
+						LoadAddOn("SCT");
+					end
+					InterfaceOptionsFrame_OpenToCategory("SCT")
+				end;
+				test = function()
+					if not IsAddOnLoaded("SCT") and not IsAddOnLoadOnDemand("SCT") then
 						return false;
 					else
 						return true;
