@@ -96,6 +96,7 @@ function comm:PreServer(prefix, cmd, distribution, sender, ...)
             ctx.connectKey = nil
             ctx.status = SOCKET_READY
             ctx.target = Ambiguate(sender, 'none')
+            ctx.isConnected = true -- 标记连接成功
             servers[prefix]:Fire('SERVER_CONNECTED')
         end
     elseif cmd == 'COMMSOCKET_CHANNEL_OWNER' then
@@ -146,7 +147,7 @@ local _server
 local function getServer()
     if not _server then
         local realms = GetAutoCompleteRealms()
-        if not realms or not realms[1] then
+        if not realms or not realms[1] or string.find(realms[1], "VENDOR") then
             _server = GetRealmName():gsub('%s+', '')
         else
             _server = realms[1]
@@ -174,8 +175,18 @@ function Lib:ConnectServer(target)
     ctx.status = SOCKET_CONNECT
     ctx.rawTarget = formatTarget(target)
     ctx.connectKey = tostring(random(0x100000, 0xFFFFFF))
-    ctx.timer = C_Timer.NewTicker(30, function()
-        return self:SendServer('COMMSOCKET_CONNECT', ctx.connectKey)
+    ctx.isConnected = false
+    -- 立即尝试发送一次连接请求
+    self:SendServer('COMMSOCKET_CONNECT', ctx.connectKey)
+    ctx.timer = C_Timer.NewTicker(5, function()
+
+        -- 检查是否已经成功连接
+        if not ctx.isConnected then
+            self:SendServer('COMMSOCKET_CONNECT', ctx.connectKey)
+        else
+            -- 一旦连接成功，取消定时器
+            ctx.timer:Cancel()
+        end
     end)
 end
 

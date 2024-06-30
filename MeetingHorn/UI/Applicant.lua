@@ -41,8 +41,9 @@ function Applicant:Constructor()
         button.Name:SetText(item:GetName())
         button.Class:SetText(item:GetClass())
         button.Race:SetText(item:GetRace())
-        button.Name:SetTextColor(GetClassColor(item:GetClassFileName()))
-        button.Class:SetTextColor(GetClassColor(item:GetClassFileName()))
+        local r, g, b = GetClassColor(item:GetClassFileName())
+        button.Name:SetTextColor(r, g, b)
+        button.Class:SetTextColor(r, g, b)
 
         local level = item:GetLevel()
         if level then

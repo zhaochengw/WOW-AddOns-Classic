@@ -101,7 +101,7 @@ function GoodLeader:Constructor(p)
 
     ns.ApplyImageButton(self.First.Header.ApplyLeaderBtn, {
         text = '申请星团长',
-        summary = '微信扫码 申请星团长',
+        summary = '大神扫码 了解星团长',
         texture = [[Interface/AddOns/MeetingHorn/Media/ApplyLeaderQR]],
         points = {'BOTTOMLEFT', self.First.Header.ApplyLeaderBtn, 'BOTTOMRIGHT', 5, -25},
     })

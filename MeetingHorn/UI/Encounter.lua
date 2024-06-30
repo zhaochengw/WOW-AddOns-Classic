@@ -83,6 +83,7 @@ function Encounter:Constructor()
         texture = 'Interface/AddOns/MeetingHorn/Media/LookFall',
         points = {'TOP', self.LookFall, 'BOTTOM', 0, -20},
     })
+    self.LookFall:Hide()
 end
 
 function Encounter:OnShow()

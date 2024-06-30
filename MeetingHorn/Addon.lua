@@ -51,7 +51,7 @@ end
 ChatFrame_AddMessageEventFilter('CHAT_MSG_CHANNEL', chatFilter)
 
 function Addon:OnInitialize()
-    self.db = LibStub("AceDB-3.0"):New("MEETINGHORN_DB", { --
+    self.db = LibStub('AceDB-3.0'):New('MEETINGHORN_DB', { --
         profile = { --
             cache = { --
                 current = {},
@@ -72,6 +72,12 @@ function Addon:OnInitialize()
             activity = { --
                 filters = {},
             },
+        },
+        realm = {
+            starRegiment = {
+                version = {},
+                regimentData = {}
+            }
         },
     })
 
@@ -113,11 +119,15 @@ function Addon:hookChat()
                             findIndex = findIndex + 1
                             local fullName = strsub(msg, findIndex, strfind(msg, ':', findIndex) - 1)
 
-                            local name, realm = strsplit('-', fullName)
-                            if not realm or realm == '' then
-                                fullName = fullName .. '-' .. GetRealmName()
+                            local dashIndex = string.find(fullName, '-')
+                            if dashIndex then
+                                fullName = string.sub(fullName, 1, dashIndex - 1)
                             end
-                            if ns.CERTIFICATION_MAP[fullName] then
+                            local currentLevel = self.db.realm.starRegiment.regimentData[fullName]
+                            if currentLevel then
+                                currentLevel = currentLevel.level
+                            end
+                            if currentLevel then
                                 local pname = name .. ']'
                                 v.message = string.gsub(msg, pname, [[|TInterface\AddOns\MeetingHorn\Media\certification_icon:48|t]] .. pname, 1)
                             end

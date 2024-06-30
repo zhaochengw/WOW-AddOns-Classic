@@ -1,5 +1,4 @@
-<Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
     <Button name="MeetingHornEncounterTabTemplate" parentArray="Tabs" motionScriptsWhileDisabled="true" virtual="true">
         <Size x="63" y="57"/>
         <NormalTexture file="Interface\EncounterJournal\UI-EncounterJournalTextures">

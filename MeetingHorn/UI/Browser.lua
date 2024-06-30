@@ -39,26 +39,14 @@ function Browser:Constructor()
     self.ActivityLabel:SetText(L['Activity'])
     self.ModeLabel:SetText(L['Activity Mode'])
     self.SearchLabel:SetText(SEARCH .. L['(Include channel message)'])
-    self.ProgressBar.Loading:SetText(L['Receiving active data, please wait patiently'])
-    self.ProgressBar:SetMinMaxValues(0, 1)
-    self.IconTip:SetText(L['图示'])
-    self.IconTip:SetNormalFontObject('GameFontHighlightSmall')
-    self.IconTip:SetHighlightFontObject('GameFontNormalSmall')
-    self.IconTip:SetScript('OnEnter', function()
-        GameTooltip:SetOwner(self.IconTip, 'ANCHOR_RIGHT')
-        GameTooltip:SetText(L['图示'])
-        GameTooltip:AddLine(format(
-                                [[|TInterface\AddOns\MeetingHorn\Media\certification_icon:16:46:0:0:64:64:0:64:19:41|t %s]],
-                                L['星团长（按开团次数获取，仅供参考）']), 1, 1, 1)
-        GameTooltip:Show()
-    end)
-    self.IconTip:SetScript('OnLeave', GameTooltip_Hide)
+    self.ProgressBar:Hide()
+
     ns.GUI:GetClass('Dropdown'):Bind(self.Activity)
     ns.GUI:GetClass('Dropdown'):Bind(self.Mode)
 
     ns.ApplyImageButton(self.ApplyLeaderBtn, {
         text = '申请星团长',
-        summary = '微信扫码 申请星团长',
+        summary = '大神扫码 了解星团长',
         texture = [[Interface/AddOns/MeetingHorn/Media/ApplyLeaderQR]],
         points = {'BOTTOMLEFT', self, 'BOTTOMRIGHT', 5, -25},
     })
@@ -68,6 +56,8 @@ function Browser:Constructor()
         texture = [[Interface/AddOns/MeetingHorn/Media/RechargeQR]],
         points = {'BOTTOMLEFT', self, 'BOTTOMRIGHT', 5, -25},
     })
+
+    self.RechargeBtn:Hide() -- 直充专区按键隐藏
 
     local function Search()
         return self:Search()
@@ -102,7 +92,7 @@ function Browser:Constructor()
             end
         end
 
-        button:SetText(mysplit(search)[1])
+        button:SetText(search)
         button:SetWidth(button:GetTextWidth())
         button:SetScript('OnClick', QuickButtonOnClick)
         button:Show()
@@ -119,7 +109,7 @@ function Browser:Constructor()
     SetupQuickButton(3456)
     --@end-classic@]=]
 
-    --[=[@bcc@
+    --[==[@bcc@
     SetupQuickButton(4075)
     SetupQuickButton(3959)
     SetupQuickButton(3805)
@@ -130,7 +120,7 @@ function Browser:Constructor()
     SetupQuickButton(3923)
     SetupQuickButton(3836)
     SetupQuickButton('5H')
-    --@end-bcc@]=]
+    --@end-bcc@]==]
 
     -- @lkc@
     SetupQuickButton('5H')
@@ -140,7 +130,7 @@ function Browser:Constructor()
     SetupQuickButton('ICC')
     SetupQuickButton('OS')
     SetupQuickButton('EOE')
-    SetupQuickButton('宝库 寶庫 亞夏')
+    SetupQuickButton('宝库')
     SetupQuickButton('黑龙')
     SetupQuickButton('红玉')
     -- @end-lkc@
@@ -183,7 +173,8 @@ function Browser:Constructor()
         button.Leader:SetText(item:GetLeader())
         button.Comment:SetText(item:GetComment())
         button.Mode:SetText(item:GetMode())
-        button.Leader:SetTextColor(GetClassColorObj(item:GetLeaderClass()):GetRGBA())
+        local r, g, b = GetClassColor(item:GetLeaderClass())
+        button.Leader:SetTextColor(r, g, b)
         --[=[@classic@
         button.Comment:SetWidth(item:IsActivity() and 290 or 360)
         --@end-classic@]=]
@@ -304,10 +295,6 @@ function Browser:Constructor()
     --     ns.Addon.MainPanel:SetTab(2)
     -- end)
 
-    self.progressTimer = ns.Timer:New(function()
-        self:UpdateProgress()
-    end)
-
     self:SetScript('OnShow', self.OnShow)
     self:SetScript('OnHide', self.OnHide)
     -- self:Show()
@@ -326,9 +313,7 @@ function Browser:OnShow()
     self:RegisterMessage('MEETINGHORN_ACTIVITY_UPDATE')
     self:RegisterMessage('MEETINGHORN_ACTIVITY_REMOVED')
     self:RegisterMessage('MEETINGHORN_ACTIVITY_FILTER_UPDATED', 'Search')
-    self:RegisterMessage('MEETINGHORN_CHANNEL_READY')
     self:Search()
-    self:UpdateProgress()
 end
 
 function Browser:OnHide()
@@ -337,23 +322,6 @@ function Browser:OnHide()
     if self.QRTooltip then
         self.QRTooltip:Hide()
     end
-end
-
-function Browser:UpdateProgress()
-    if not self.startTime or GetTime() - self.startTime > 50 then
-        self.ProgressBar:Hide()
-        self.progressTimer:Stop()
-    elseif self.ProgressBar:IsShown() then
-        self.ProgressBar:SetValue((GetTime() - self.startTime) / 50)
-    else
-        self.progressTimer:Start(1)
-        self.ProgressBar:Show()
-        self.ProgressBar:SetValue(0)
-    end
-
-    -- @lkc@
-    self.IconTip:SetShown(not self.ProgressBar:IsShown())
-    -- @end-lkc@
 end
 
 function Browser:OnClick(id)
@@ -440,40 +408,11 @@ function Browser:Search()
         activityId = activityFilter
     end
 
-	local result={}
-	local keys = mysplit(search)
-	if(#keys ~= 0) then
-		for i = #keys, 1 , -1 do
-			local tmp = ns.LFG:Search(path, activityId, modeId, keys[i])
-			for j = #tmp, 1, -1 do
-				table.insert(result,tmp[j])
-			end
-		end
-	else
-		result = ns.LFG:Search(path, activityId, modeId, search)
-	end
-	
---  local result = ns.LFG:Search(path, activityId, modeId, search)
+    local result = ns.LFG:Search(path, activityId, modeId, search)
     self.ActivityList:SetItemList(result)
     self:Sort()
     self.ActivityList:Refresh()
     self.Empty.Text:SetShown(#result == 0)
-end
-
-function mysplit (inputstr, sep)
-	local t = {}
-	if inputstr and inputstr:trim() == '' then
-        return t
-    end
-	
-	if sep == nil then
-			sep = "%s"
-	end
-	
-	for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-			table.insert(t, str)
-	end
-	return t
 end
 
 function Browser:MEETINGHORN_ACTIVITY_ADDED()
@@ -506,11 +445,6 @@ function Browser:MEETINGHORN_ACTIVITY_REMOVED(_, activity)
     self.ActivityList:Refresh()
 end
 
-function Browser:MEETINGHORN_CHANNEL_READY()
-    self.startTime = GetTime()
-    self:UpdateProgress()
-end
-
 function Browser:OpenActivityMenu(activity, button)
     if not activity:IsSelf() then
         ns.GUI:ToggleMenu(button, self:CreateActivityMenu(activity), 'cursor')
@@ -540,7 +474,6 @@ function Browser:CreateActivityMenu(activity)
             func = function()
                 local reportInfo = ReportInfo:CreateReportInfoFromType(Enum.ReportType.Chat)
                 local leader = activity:GetLeader()
-                print(leader)
                 ReportFrame:InitiateReport(reportInfo, leader, activity:GetLeaderPlayerLocation())
                 ns.GUI:CloseMenu()
             end,

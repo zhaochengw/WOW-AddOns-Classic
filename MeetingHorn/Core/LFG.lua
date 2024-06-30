@@ -66,7 +66,7 @@ function LFG:OnEnable()
     self.idleTimer:Start(5)
 
     self:RegisterEvent('CHAT_MSG_CHANNEL')
-    -- self:RegisterEvent('CHAT_MSG_WHISPER')
+    self:RegisterEvent('CHAT_MSG_WHISPER')
     self:RegisterEvent('CHAT_MSG_SYSTEM')
     self:RegisterEvent('GROUP_ROSTER_UPDATE')
     self:RegisterMessage('MEETINGHORN_SHOW')
@@ -82,6 +82,8 @@ function LFG:OnEnable()
     self:RegisterServer('SWORLDBUFF')
     --@end-classic@]]
     self:RegisterServer('SNOTICE')
+
+    self:RegisterServer('SUGL')
 
     self:RegisterChallenge('SGA', 'SGETACTIVITY')
     self:RegisterChallenge('SGP', 'SACTIVITYGROUPPROGRESS')
@@ -445,10 +447,11 @@ function LFG:SERVER_CONNECTED()
                     ns.GetAddonSource())
     self:SendMessage('MEETINGHORN_SERVER_CONNECTED')
 
-    --[[@debug@
+    --[=[@debug@
     print('Connected', ns.ADDON_VERSION, ns.GetPlayerItemLevel(), UnitGUID('player'), UnitLevel('player'),
           ns.GetAddonSource())
-    --@end-debug@]]
+    --@end-debug@]=]
+    SendServerCUGL()
 end
 
 function LFG:SNEWVERSION(_, version, url, changelog)
@@ -476,9 +479,9 @@ function LFG:RegisterChallenge(event, method)
 
     self:RegisterServer(event, function(event, err, ...)
         if err and err > 0 then
-            --[[@debug@
+            --[=[@debug@
             print(event, err)
-            --@end-debug@]]
+            --@end-debug@]=]
             local errString = ns.errorString(err)
             if errString then
                 ns.Message(format('|cffff0000%s。|r', errString))
@@ -529,9 +532,9 @@ function LFG:SGETACTIVITY(_, activities, progress, moreActivities)
     tinsert(self.challengeGroups, challengeGroup)
 
     if moreActivities then
-        --[[@debug@
+        --[=[@debug@
         dump('moreActivities', moreActivities)
-        --@end-debug@]]
+        --@end-debug@]=]
         for i, v in ipairs(moreActivities) do
             table.insert(self.challengeGroups, ns.ChallengeGroup:New(v))
         end
@@ -561,9 +564,9 @@ function LFG:RequestChallengeProgress(id)
 end
 
 function LFG:SACTIVITYPROGRESS(_, id, progresses)
-    --[[@debug@
+    --[=[@debug@
     dump(progresses)
-    --@end-debug@]]
+    --@end-debug@]=]
     if type(progresses) == 'table' then
         local item = self:GetChallenge(id)
         if item then
@@ -701,6 +704,7 @@ end
 function LFG:MEETINGHORN_SHOW()
     self:TouchCategory('Raid')
     self.leaveTimer:Stop()
+    ns.Addon.DataBroker:StopFlash()
 end
 
 function LFG:MEETINGHORN_HIDE()
@@ -906,3 +910,26 @@ end
 function LFG:ANNOUNCEMENT(eventName, ...)
     self:SendMessage('MEETINGHORN_ANNOUNCEMENT', ...)
 end
+
+function SendServerCUGL()
+    local version = '199701010000' -- 这里更新写默认版本号
+    if ns and ns.Addon and
+    ns.Addon.db and ns.Addon.db.realm and
+    ns.Addon.db.realm.starRegiment and ns.Addon.db.realm.starRegiment.regimentData and
+    ns.Addon.db.realm.starRegiment.regimentData.version then
+        version =  ns.Addon.db.realm.starRegiment.regimentData.version
+    end
+
+    ns.LFG:SendServer('CUGL', version)
+end
+
+function LFG:SUGL(_, version, data)
+    ns.Addon.db.realm.starRegiment.regimentData.version = version
+    for _, item in ipairs(data) do
+        for name, info in pairs(item) do
+            local currentLevel = info['l']
+            ns.Addon.db.realm.starRegiment.regimentData[name] = {level = currentLevel}
+        end
+    end
+end
+

@@ -1,5 +1,4 @@
-<Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
     <Button name="MeetingHornTabButtonTemplate" parentArray="Tabs" motionScriptsWhileDisabled="true" virtual="true">
         <Size x="10" y="32"/>
         <Layers>
@@ -312,7 +311,7 @@
         </Frames>
         <Layers>
             <Layer level="ARTWORK">
-                <FontString parentKey="Text" inherits="GameFontNormalSmall" wordwrap="true" text="微信扫码 查询团长">
+                <FontString parentKey="Text" inherits="GameFontNormalSmall" wordwrap="true" text="大神扫码 了解星团长">
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeKey="$parent.QRCode" relativePoint="BOTTOMLEFT" x="-5" y="-5"/>
                         <Anchor point="TOPRIGHT" relativeKey="$parent.QRCode" relativePoint="BOTTOMRIGHT" x="5" y="-5"/>
@@ -424,7 +423,7 @@
                 </Anchors>
                 <Scripts>
                     <OnLoad>
-                        self:SetAnimation(0, 0)
+                        self:SetAnimation(0, 1)
                         self:SetRotation(-0.61)
                     </OnLoad>
                 </Scripts>

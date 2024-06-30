@@ -115,7 +115,7 @@ ns.GOODLEADER_INSTANCES = {
     {projectId = 2, mapId = 1977, bossId = 793, image = 'zulgurub'}, --
     {projectId = 2, mapId = 3429, bossId = 723, image = 'ruinsofahnqiraj'}, --
     --@end-classic@]=]
-    --[=[@bcc@
+    --[==[@bcc@
     {projectId = 5, mapId = 3457, bossId = 661, image = 'Karazhan'}, -- 卡拉赞
     {projectId = 5, mapId = 3923, bossId = 650, image = 'GruulsLair'}, -- 格鲁尔的巢穴
     {projectId = 5, mapId = 3836, bossId = 651, image = 'MagtheridonsLair'}, -- 玛瑟里顿的巢穴
@@ -125,7 +125,7 @@ ns.GOODLEADER_INSTANCES = {
     {projectId = 5, mapId = 3959, bossId = 609, image = 'BlackTemple'}, -- 黑暗神庙
     {projectId = 5, mapId = 3805, bossId = 1189, image = 'ZulAman'}, -- 祖阿曼
     {projectId = 5, mapId = 4075, bossId = 729, image = 'SunwellPlateau'}, -- 太阳井
-    --@end-bcc@]=]
+    --@end-bcc@]==]
     -- @lkc@
     {projectId = 11, mapId = 3456, bossId = 1114, difficulties = {3, 4}, image = 'naxxramas'}, -- 纳克萨玛斯
     {projectId = 11, mapId = 4493, bossId = 742, difficulties = {3, 4}, image = 1396588}, -- 黑曜石圣殿
@@ -357,9 +357,9 @@ function ns.RandomCall(sec, func, ...)
         func(unpack(args))
     end)
 
-    --[=[@debug@
+    --[===[@debug@
     print('Random Call', delay, sec, func, ...)
-    --@end-debug@]=]
+    --@end-debug@]===]
 end
 
 local function SplitName(fullName)
@@ -371,8 +371,10 @@ local function SplitName(fullName)
 end
 
 function ns.MakeQRCode(leader)
-    local name, realm = SplitName(leader)
-    return format('https://tavern.blizzard.cn/miniprogram/goodLeader/detail?%s-%s-%s', realm, name, WOW_PROJECT_ID)
+    local name, _ = SplitName(leader)
+    local realm = GetRealmID()
+    local url = format('https://act.ds.163.com/1a8e6733be2b85c8/?meetinghorn_in=true&realmId=%s&charName=%s', realm, name)
+    return url
 end
 
 function ns.memorize(func)
@@ -449,8 +451,8 @@ function ns.OpenUrlDialog(url)
             editBoxWidth = 260,
             EditBoxOnTextChanged = function(editBox, url)
                 if editBox:GetText() ~= url then
-                    editBox:SetMaxBytes(nil)
-                    editBox:SetMaxLetters(nil)
+                    editBox:SetMaxBytes(0)
+                    editBox:SetMaxLetters(0)
                     editBox:SetText(url)
                     editBox:HighlightText()
                     editBox:SetCursorPosition(0)
@@ -518,8 +520,6 @@ do
 end
 
 function ns.DataMake(allowCrossRealm)
-    ns.CERTIFICATION_MAP = ns.CERTIFICATION_MAP or {}
-
     local function decode(v)
         return v:gsub('..', function(x)
             return string.char(tonumber(x, 16))
@@ -532,8 +532,6 @@ function ns.DataMake(allowCrossRealm)
         realm = decode(realm)
         if allowCrossRealm or realm == GetRealmName() then
             currentRealm = realm
-        else
-            currentRealm = nil
         end
         currentLevel = nil
     end
@@ -544,7 +542,7 @@ function ns.DataMake(allowCrossRealm)
         end
 
         name = decode(name)
-        ns.CERTIFICATION_MAP[format('%s-%s', name, currentRealm)] = currentLevel
+        ns.Addon.db.realm.starRegiment.regimentData[name] = {level = currentLevel}
     end
 
     local function Level(level)

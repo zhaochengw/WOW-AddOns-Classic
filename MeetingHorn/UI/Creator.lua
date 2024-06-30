@@ -57,6 +57,8 @@ function Creator:Constructor()
         return self:OnRecruitClick()
     end)
 
+    self.RecruitButton:Hide()
+
     self:RegisterMessage('MEETINGHORN_CURRENT_CREATED', 'Update')
     self:RegisterMessage('MEETINGHORN_CURRENT_CLOSED')
     self:RegisterEvent('GROUP_ROSTER_UPDATE', 'Update')

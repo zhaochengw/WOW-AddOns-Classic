@@ -52,6 +52,12 @@ function QuestPanel:OnShow()
     ns.Addon.MainPanel.Loading:Hide()
     ns.Addon.MainPanel.OutOfDate:Hide()
 
+    if not ns.QuestServies:IsActive() then
+        ns.Addon.MainPanel.OutOfDate.Text:SetText('当前没有活动')
+        ns.Addon.MainPanel.OutOfDate:Show()
+        return
+    end
+
     if not ns.QuestServies:IsConnected() then
         ns.Addon.MainPanel.Loading:Show()
         return
@@ -66,13 +72,6 @@ function QuestPanel:OnShow()
         ns.QuestServies:QueryQuestList()
         return
     end
-
-    if not ns.QuestServies:IsActive() then
-        ns.Addon.MainPanel.OutOfDate.Text:SetText('当前没有活动')
-        ns.Addon.MainPanel.OutOfDate:Show()
-        return
-    end
-
     if not ns.QuestServies.questGroup then
         ns.Addon.MainPanel.OutOfDate.Text('请更新至最新版本后参与活动')
         ns.Addon.MainPanel.OutOfDate:Show()

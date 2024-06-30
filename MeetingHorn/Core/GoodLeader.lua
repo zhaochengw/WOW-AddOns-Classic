@@ -93,7 +93,7 @@ end
 
 function GoodLeader:SGT(_, tags)
     --[=[@debug@
-    dump(tags)
+    --dump(tags)
     --@end-debug@]=]
     tags = tags and {strsplit(',', tags)} or nil
     if tags and #tags == 0 then

@@ -1,5 +1,4 @@
-<Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
     <Frame name="GoodLeaderRaidTemplate" inherits="TooltipBackdropTemplate" virtual="true">
         <Size x="180" y="90"/>
         <Layers>
@@ -199,7 +198,7 @@
                         </Frames>
                         <Layers>
                             <Layer level="ARTWORK">
-                                <FontString inherits="GameFontNormalSmall" text="微信扫码 查询团长">
+                                <FontString inherits="GameFontNormalSmall" text="大神扫码 了解星团长">
                                     <Anchors>
                                         <Anchor point="TOP" relativeKey="$parent.QRCode" relativePoint="BOTTOM" x="0" y="-5"/>
                                     </Anchors>
@@ -488,7 +487,7 @@
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
-                        <FontString inherits="GameFontNormalSmall" text="微信扫码 查询团长">
+                        <FontString inherits="GameFontNormalSmall" text="大神扫码 了解星团长">
                             <Anchors>
                                 <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" x="-5" y="0"/>
                             </Anchors>

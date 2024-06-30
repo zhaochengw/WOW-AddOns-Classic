@@ -16,7 +16,7 @@ function MainPanel:Constructor()
         {L['Create Activity'], self.Manage}, --
         {'星团长', self.GoodLeader}, --
         {L['Announcement'], self.Announcement}, --
-        {L['MissionGuidance'], self.MissionGuidance}, --
+        -- {L['MissionGuidance'], self.MissionGuidance}, --
         {L['Encounter'], self.Encounter}, --
         {L['Recent members'], self.Recent}, --
         --[=[@classic@
@@ -54,7 +54,7 @@ function MainPanel:Constructor()
     ns.UI.Challenge:Bind(self.Challenge)
     ns.UI.GoodLeaderFrame:Bind(self.GoodLeader)
     ns.UI.Announcement:Bind(self.Announcement)
-    ns.UI.MissionGuidance:Bind(self.MissionGuidance)
+    -- ns.UI.MissionGuidance:Bind(self.MissionGuidance)
     ns.UI.QuestPanel:Bind(self.Quest)
     self.Manage.Applicant:Hide()
 

@@ -59,7 +59,7 @@ function Options:Constructor()
                         SetBinding(key, nil)
                     end
                     SetBinding(key, BINDING_KEY)
-                    AttemptToSaveBindings(GetCurrentBindingSet())
+                    SaveBindings(GetCurrentBindingSet())
                 end,
                 confirm = function(info, key)
                     local action = GetBindingAction(key)

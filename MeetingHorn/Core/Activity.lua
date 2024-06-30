@@ -91,8 +91,10 @@ function Activity:Update(proto, leader, guid, channelName, lineId)
     end
 
     local leaderFullName = leader
-    if not strmatch(leaderFullName, '-') then
-        leaderFullName = leaderFullName .. '-' .. GetRealmName()
+
+    local dashIndex = string.find(leaderFullName, '-')
+    if dashIndex then
+        leaderFullName = string.sub(leaderFullName, 1, dashIndex - 1)
     end
 
     self.raidId = raidId
@@ -106,9 +108,13 @@ function Activity:Update(proto, leader, guid, channelName, lineId)
     self:SetMembers(members)
     self:SetLineId(lineId)
     self:UpdateTick()
-    self:SetCertificationLevel(ns.CERTIFICATION_MAP[leaderFullName])
-    self:SetOurAddonCreate((channelName == L['CHANNEL: Group'] or channelName == L['CHANNEL: Recruit']) and data.path ==
-                               'Raid')
+    local currentLevel = ns.Addon.db.realm.starRegiment.regimentData[leaderFullName]
+    if currentLevel then
+        currentLevel = currentLevel.level
+    end
+    self:SetCertificationLevel(currentLevel)
+    local numberValue = tonumber(currentLevel)
+    self:SetOurAddonCreate(numberValue ~= nil and numberValue >= 1 and numberValue <= 6)
     return true
 end
 
