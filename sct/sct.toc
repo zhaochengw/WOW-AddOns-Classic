@@ -1,0 +1,30 @@
+## Interface: 100206
+## Title: ScrollingCombatText
+## Notes: Adds Scrolling Combat Text above your character
+## Author: Grayhoof, Picpok, Frozn45
+## Version: 10.2_2
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## OptionalDeps: Ace3, LibSharedMedia-3.0
+## SavedVariables: SCT_CONFIG, SCT_EVENT_CONFIG
+## X-Category: Combat
+## X-Website: https://www.curseforge.com/wow/addons/sct-reborn
+## X-Curse-Project-ID: 501337
+
+embeds.xml
+
+sct.xml
+sct.lua
+locals\localization.lua
+locals\localization.ru.lua
+locals\localization.de.lua
+locals\localization.fr.lua
+locals\localization.es.lua
+locals\localization.kr.lua
+locals\localization.tw.lua
+locals\localization.cn.lua
+sct_animation.lua
+sct_unitpos.lua
+sct_events.lua
+sct_event_config.lua
+sct_legacy.lua

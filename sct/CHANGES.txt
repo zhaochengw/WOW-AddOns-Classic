@@ -1,0 +1,13 @@
+------------------------------------------------------------------------
+r48 | frozn45 | 2024-03-26 17:32:45 +0000 (Tue, 26 Mar 2024) | 1 line
+Changed paths:
+   M /trunk/sct/sct-Classic.toc
+   M /trunk/sct/sct-WOTLKC.toc
+   M /trunk/sct/sct.toc
+   M /trunk/sct_options/sct_options-Classic.toc
+   M /trunk/sct_options/sct_options-WOTLKC.toc
+   M /trunk/sct_options/sct_options.toc
+
+- bumped toc to 10.2.6
+------------------------------------------------------------------------
+

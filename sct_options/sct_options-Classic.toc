@@ -1,0 +1,24 @@
+## Interface: 11501
+## Title: SCT Options
+## Notes: Options menu for SCT (LoadOnDemand)
+## Author: Grayhoof, Picpok, Frozn45
+## Version: 10.2_2
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: sct
+## X-Category: Combat
+## X-Website: https://www.curseforge.com/wow/addons/sct-reborn
+## X-Curse-Project-ID: 501337
+
+locals\localization.lua
+locals\localization.de.lua
+locals\localization.fr.lua
+locals\localization.es.lua
+locals\localization.kr.lua
+locals\localization.tw.lua
+locals\localization.cn.lua
+locals\localization.ru.lua
+options_setup.lua
+configs.lua
+options.lua
+options.xml
