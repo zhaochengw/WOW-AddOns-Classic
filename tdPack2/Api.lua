@@ -21,7 +21,10 @@
 ---@field Stacking Stacking
 ---@field Sorting Sorting
 ---@field Search Search
+---@field Addon Addon
 local ns = select(2, ...)
+
+local C = LibStub('C_Everywhere')
 
 ---- LUA
 local select, type, assert, ipairs = select, type, assert, ipairs
@@ -29,16 +32,7 @@ local tostring, format, strrep = tostring, string.format, string.rep
 local tonumber, band = tonumber, bit.band
 
 ---- WOW
-local GetContainerItemInfo = function(bag, slot)
-    if C_Container and C_Container.GetContainerItemInfo then
-        local info = C_Container.GetContainerItemInfo(bag, slot)
-        if info then
-            return info.iconFileID, info.stackCount, info.isLocked, info.quality, info.isReadable, info.hasLoot, info.hyperlink, info.isFiltered, info.hasNoValue, info.itemID, info.isBound
-        end
-    else
-        return _G.GetContainerItemInfo(bag, slot)
-    end
-end
+local GetContainerItemInfo = C.Container.GetContainerItemInfo
 local GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID
 local GetContainerItemLink = GetContainerItemLink or C_Container.GetContainerItemLink
 local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots
@@ -168,16 +162,16 @@ function ns.GetItemFamily(itemId)
 end
 
 function ns.GetBagFamily(bag)
-    --[=[@build<2@
+    --[[@build<2@
     if bag == KEYRING_CONTAINER then
         return 9
     end
-    --@end-build<2@]=]
+    --@end-build<2@]]
     -- @build>2@
     if bag == KEYRING_CONTAINER then
         return 256
     end
-    --@end-build<2@]=]
+    -- @end-build>2@
 
     -- 3.4 GetContainerNumFreeSlots 接口有bug，专业包可能取到0
     if bag > 0 then
@@ -243,7 +237,8 @@ function ns.IsBagSlotFull(bag, slot)
 end
 
 function ns.GetBagSlotCount(bag, slot)
-    return (select(2, GetContainerItemInfo(bag, slot)))
+    local info = GetContainerItemInfo(bag, slot)
+    return info and info.stackCount
 end
 
 function ns.GetBagSlotFamily(bag, slot)
@@ -251,23 +246,26 @@ function ns.GetBagSlotFamily(bag, slot)
 end
 
 function ns.IsBagSlotLocked(bag, slot)
-    return (select(3, GetContainerItemInfo(bag, slot)))
+    local info = GetContainerItemInfo(bag, slot)
+    return info and info.isLocked
 end
 
 function ns.PickupBagSlot(bag, slot)
     return PickupContainerItem(bag, slot)
 end
 
---[=[@build<2@
+--[[@build<2@
 function ns.IsFamilyContains(bagFamily, itemFamily)
     return bagFamily == itemFamily
 end
---@end-build<2@]=]
+
+--@end-build<2@]]
 
 -- @build>2@
 function ns.IsFamilyContains(bagFamily, itemFamily)
     return band(bagFamily, itemFamily) > 0
 end
+
 -- @end-build>2@
 
 function ns.GetClickToken(button, control, shift, alt)

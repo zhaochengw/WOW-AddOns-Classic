@@ -2,11 +2,12 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 9/28/2019, 1:35:42 PM
+--
 ---@type ns
-local ns = select(2, ...)
+local ADDON, ns = ...
 local L = ns.L
 local UI = ns.UI
-local ItemInfoCache = ns.ItemInfoCache
+local Addon = ns.Addon
 
 ---- LUA
 local format = string.format
@@ -30,18 +31,12 @@ local DELETE, EDIT, CANCEL = DELETE, EDIT, CANCEL
 local RuleView = UI:NewClass('RuleView', UI.TreeView)
 LibStub('AceEvent-3.0'):Embed(RuleView)
 
-local DIALOG = {
-    button1 = ACCEPT,
-    button2 = CANCEL,
-    text = '%s',
-    OnAccept = function(_, data)
-        local self, parent, index = data[1], data[2], data[3]
-        tremove(parent, index)
-        self:OnListChanged()
+RuleView.__treeStatus = setmetatable({}, {
+    __index = function(t, k)
+        t[k] = UI.TreeStatus:New()
+        return t[k]
     end,
-}
-
-StaticPopupDialogs['TDPACK2_DELETE_RULES'] = DIALOG
+})
 
 function RuleView:Constructor()
     self:SetItemTemplate('tdPack2RuleItemTemplate')
@@ -55,15 +50,29 @@ function RuleView:Constructor()
     self:SetScript('OnHide', self.OnHide)
 end
 
+function RuleView:Free()
+    self.treeStatus = nil
+    self.ruleType = nil
+    self:Hide()
+end
+
 function RuleView:OnShow()
-    self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Refresh')
     self:RegisterEvent('CURSOR_CHANGED')
+    self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Refresh')
+    self:RegisterMessage('TDPACK_PROFILE_CHANGED', 'RefreshRules')
+    self:RegisterMessage('TDPACK_RULES_UPDATE')
     self:CURSOR_CHANGED()
 end
 
 function RuleView:OnHide()
     self:UnregisterAllEvents()
-    StaticPopup_Hide('TDPACK2_DELETE_RULES', self)
+    self:UnregisterAllMessages()
+end
+
+function RuleView:TDPACK_RULES_UPDATE(_, ruleType)
+    if ruleType == self.ruleType then
+        self:RefreshRules()
+    end
 end
 
 function RuleView:CURSOR_CHANGED()
@@ -210,16 +219,9 @@ function RuleView:ShowRuleMenu(button, item)
             text = DELETE,
             notCheckable = true,
             func = function()
-                UI.RuleEditor:Close()
-
-                local text
-                if hasChild then
-                    text = L['Are you sure |cffff191919DELETE|r rule and its |cffff1919SUBRULES|r?']
-                else
-                    text = L['Are you sure |cffff191919DELETE|r rule?']
+                if self.obj then
+                    self.obj:Fire('OnClick', {hasChild = hasChild, parent = button.parent, index = button.index})
                 end
-
-                StaticPopup_Show('TDPACK2_DELETE_RULES', text, nil, {self, button.parent, button.index})
             end,
         }, {
             text = EDIT,
@@ -233,14 +235,104 @@ function RuleView:ShowRuleMenu(button, item)
 end
 
 function RuleView:OpenEditor(item)
-    StaticPopup_Hide('TDPACK2_DELETE_RULES')
-
     UI.RuleEditor:Open(item, self:GetItemTree(), function()
-        self:Fire('OnListChanged')
+        self:OnListChanged()
     end)
 end
 
 function RuleView:OnListChanged()
-    StaticPopup_Hide('TDPACK2_DELETE_RULES', self)
-    self:Fire('OnListChanged')
+    Addon:SendMessage('TDPACK_RULES_UPDATE', self.ruleType)
 end
+
+function RuleView:SetRuleType(t)
+    local ruleType = ns.SORT_TYPE[t]
+    if ruleType then
+        self.ruleType = ruleType
+    else
+        error('Unknown sorting type: ' .. t)
+    end
+    self:RefreshRules()
+end
+
+function RuleView:RefreshRules()
+    self.treeStatus = self.__treeStatus[self.ruleType]
+    self:SetItemTree(Addon:GetRules(self.ruleType))
+    self:Refresh()
+end
+
+--- AceGUI
+
+local AceGUI = LibStub('AceGUI-3.0')
+local TYPE = ADDON .. 'RuleView'
+
+local methods = {
+    OnAcquire = function(self)
+        self:SetHeight(315)
+        self:SetFullWidth(true)
+    end,
+
+    OnRelease = function(self)
+        self.frame:Free()
+        if self.inject then
+            self.inject:Cancel()
+            self.inject = nil
+        end
+    end,
+
+    OnWidthSet = function(self, width)
+        self.frame.scrollChild:SetWidth(width - 18)
+    end,
+
+    OnHeightSet = function(self, height)
+        self.frame.scrollChild:SetHeight(height)
+    end,
+
+    SetText = function(self, t)
+        self.frame:SetRuleType(t)
+
+        self.inject = C_Timer.NewTimer(0, function()
+            self.inject = nil
+            self:UpdateOptions()
+        end)
+    end,
+
+    UpdateOptions = function(self)
+        local option = self:GetUserData('option')
+        if option then
+            if not option.confirm then
+                option.confirm = function(_, env)
+                    if env.hasChild then
+                        return L['Are you sure |cffff191919DELETE|r rule and its |cffff1919SUBRULES|r?']
+                    else
+                        return L['Are you sure |cffff191919DELETE|r rule?']
+                    end
+                end
+            end
+
+            if not option.func then
+                option.func = function(_, env)
+                    local parent, index = env.parent, env.index
+                    tremove(parent, index)
+                    self.frame:OnListChanged()
+                end
+            end
+        end
+        self.frame:Refresh()
+    end,
+}
+
+local function Constructor()
+    local frame = ns.UI.RuleView:Bind(CreateFrame('ScrollFrame', nil, UIParent, 'tdPack2ScrollFrameTemplate'))
+
+    local widget = { --
+        frame = frame,
+        type = TYPE,
+    }
+    for method, func in pairs(methods) do
+        widget[method] = func
+    end
+
+    return AceGUI:RegisterAsWidget(widget)
+end
+
+AceGUI:RegisterWidgetType(TYPE, Constructor, 1)

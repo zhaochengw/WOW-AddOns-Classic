@@ -13,9 +13,11 @@ local tonumber = tonumber
 local assert = assert
 local unpack = unpack
 
+local C = LibStub('C_Everywhere')
+
 ---- WOW
 local C_Timer = C_Timer
-local ContainerIDToInventoryID = ContainerIDToInventoryID or C_Container.ContainerIDToInventoryID
+local ContainerIDToInventoryID = C.Container.ContainerIDToInventoryID
 local GetScreenHeight = GetScreenHeight
 local GetScreenWidth = GetScreenWidth
 local PlaySound = PlaySound
@@ -40,6 +42,8 @@ local GLOBAL_SEARCH_OWNER = '$search'
 ---@class ns
 local ns = select(2, ...)
 
+ns.C = C
+
 ns.VERSION = tonumber((GetAddOnMetadata('tdBag2', 'Version'):gsub('(%d+)%.?', function(x)
     return format('%02d', tonumber(x))
 end))) or 0
@@ -57,9 +61,9 @@ ns.ITEM_SPACING = 2
 
 ns.SECONDS_OF_DAY = 24 * 60 * 60
 
---[=[@build<2@
+--[==[@build<2@
 ns.KEYRING_FAMILY = 9
---@end-build<2@]=]
+--@end-build<2@]==]
 -- @build>2@
 ns.KEYRING_FAMILY = 256
 -- @end-build>2@
@@ -67,7 +71,7 @@ ns.KEYRING_FAMILY = 256
 ns.LEFT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:228:283|t]]
 ns.RIGHT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385|t]]
 
---[=[@build<2@
+--[==[@build<2@
 ns.RACE_ICON_TCOORDS = {
     ['HUMAN_MALE'] = {0, 0.25, 0, 0.25},
     ['DWARF_MALE'] = {0.25, 0.5, 0, 0.25},
@@ -89,7 +93,7 @@ ns.RACE_ICON_TCOORDS = {
     ['TROLL_FEMALE'] = {0.5, 0.75, 0.75, 1.0},
     ['ORC_FEMALE'] = {0.75, 1.0, 0.75, 1.0},
 }
---@end-build<2@]=]
+--@end-build<2@]==]
 -- @build>2@
 ns.RACE_ICON_TCOORDS = {
     ['HUMAN_MALE'] = {0, 0.125, 0, 0.25},
@@ -162,7 +166,9 @@ local BAG_TOOLTIPS = {
     [BAG_ID.BANK] = L['Bank'],
     [BAG_ID.MAIL] = L['Mail'],
     [BAG_ID.EQUIP] = L['Equipped'],
+    -- @build>2@
     [BAG_ID.GUILDBANK] = L['Guild bank'],
+    -- @end-build>2@
     [BAG_ID.SEARCH] = L['Global search'],
 }
 
@@ -475,13 +481,13 @@ end
 
 familyColor(nil, 'colorNormal', L['Normal Color'], {r = 1, g = 1, b = 1})
 familyColor({1, 2}, 'colorQuiver', L['Quiver Color'], {r = 1, g = 0.87, b = 0.68})
---[=[@build<2@
+--[==[@build<2@
 familyColor({3, 4}, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
 familyColor(6, 'colorHerb', L['Herbalism Color'], {r = 0.5, g = 1, b = 0.5})
 familyColor(7, 'colorEnchant', L['Enchanting Color'], {r = 0.64, g = 0.83, b = 1})
 familyColor(9, 'colorKeyring', L['Keyring Color'], {r = 1, g = 0.67, b = 0.95})
---@end-build<2@]=]
--- @non-build>2@
+--@end-build<2@]==]
+-- @build>2@
 familyColor(4, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
 familyColor(8, 'colorLeather', L['Leatherworking Color'], {r = 0.98, g = 0.44, b = 0.44})
 familyColor(32, 'colorHerb', L['Herbalism Color'], {r = 0.5, g = 1, b = 0.5})

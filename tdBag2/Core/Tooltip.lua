@@ -9,9 +9,6 @@ local tinsert, tconcat = table.insert, table.concat
 local format = string.format
 local tonumber = tonumber
 
----- WOW
-local GetItemCount = GetItemCount
-
 ---- G
 local HEARTHSTONE_ITEM_ID = HEARTHSTONE_ITEM_ID
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
@@ -72,14 +69,17 @@ end
 
 function Tooltip:OnEnable()
     self:Update()
-
+    -- @build>2@
     self:RegisterMessage('GUILDBANK_OPENED', 'OnGuildBankUpdate')
     self:RegisterMessage('GUILDBANK_CLOSED', 'OnGuildBankUpdate')
+    -- @end-build>2@
 end
 
+-- @build>2@
 function Tooltip:OnGuildBankUpdate()
     self.Cacher:RemoveCache(ns.GetCurrentGuildOwner())
 end
+-- @end-build>2@
 
 function Tooltip:Update()
     if ns.Addon.db.profile.tipCount then

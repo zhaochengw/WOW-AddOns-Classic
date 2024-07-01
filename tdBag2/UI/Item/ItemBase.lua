@@ -14,12 +14,12 @@ local securecall = securecall
 
 ---- WOW
 local BankButtonIDToInvSlotID = BankButtonIDToInvSlotID
-local GetContainerItemQuestInfo = GetContainerItemQuestInfo or C_Container.GetContainerItemQuestInfo
 local CreateFrame = CreateFrame
 local CursorUpdate = CursorUpdate
 local GetItemInfo = GetItemInfo
 local GetItemFamily = GetItemFamily
 local ResetCursor = ResetCursor
+local GetContainerItemQuestInfo = C_Container and C_Container.GetContainerItemQuestInfo or GetContainerItemQuestInfo
 
 local ContainerFrameItemButton_OnEnter = ContainerFrameItemButton_OnEnter
 local SetItemButtonCount = SetItemButtonCount
@@ -143,6 +143,7 @@ end
 --[=[@debug@
 function ItemBase:OnHide()
 end
+
 --@end-debug@]=]
 
 function ItemBase:OnEnter()
@@ -270,7 +271,9 @@ function ItemBase:UpdateBorder()
     local sets = self.meta.sets
     local r, g, b = self:GetBorderColor()
 
-    self.IconBorder:SetVertexColor(r or 1, g or 1, b or 1, sets.glowAlpha)
+    if r then
+        self.IconBorder:SetVertexColor(r, g, b, sets.glowAlpha)
+    end
     self.IconBorder:SetShown(r)
     self.QuestBorder:SetShown(sets.iconQuestStarter and self:IsQuestStarter())
     self.JunkIcon:SetShown(sets.iconJunk and self:IsJunk())
@@ -379,18 +382,22 @@ function ItemBase:IsCached()
 end
 
 local IsQuestItem = ns.memorize(function(link)
-    return select(12, GetItemInfo(link)) == LE_ITEM_CLASS_QUESTITEM or Search:ForQuest(link) or false
+    return select(12, GetItemInfo(link)) == LE_ITEM_CLASS_QUESTITEM or Search:IsQuestItem(link) or false
 end)
 
---[=[@build<3@
+--[==[@build<3@
 function ItemBase:IsQuestItem()
-    return self.hasItem and IsQuestItem(self.info.link)
+    return self.hasItem and IsQuestItem(self.info.id)
 end
 
 function ItemBase:IsQuestStarter()
-    return self.hasItem and Search:TooltipPhrase(self.info.link, ITEM_STARTS_QUEST)
+    if self.hasItem then
+        local q, starter = Search:IsQuestItem(self.info.id)
+        return q and starter
+    end
 end
---@end-build<3@]=]
+
+--@end-build<3@]==]
 -- @build>3@
 function ItemBase:IsQuestItem()
     if not self.hasItem then
@@ -403,7 +410,7 @@ function ItemBase:IsQuestItem()
             return true
         end
     end
-    return IsQuestItem(self.info.link)
+    return IsQuestItem(self.info.id)
 end
 
 function ItemBase:IsQuestStarter()
@@ -416,10 +423,14 @@ function ItemBase:IsQuestStarter()
     local _, questId, isActive = GetContainerItemQuestInfo(self.bag, self.slot)
     return questId and not isActive
 end
+
 -- @end-build>3@
 
 function ItemBase:IsMatched()
     if self.meta:IsGlobalSearch() then
+        return true
+    end
+    if not self.hasItem then
         return true
     end
     local search = Addon:GetSearch()
@@ -437,9 +448,9 @@ function ItemBase:IsJunk()
 end
 
 function ItemBase:IsInEquipSet()
-    return Search:InSet(self.info.link)
+    return Search:BelongsToSet(self.info.link)
 end
 
 function ItemBase:IsUnusable()
-    return Unfit:IsItemUnusable(self.info.id)
+    return Search:IsUnusable(self.info.id)
 end

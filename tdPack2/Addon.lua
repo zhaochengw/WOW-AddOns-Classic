@@ -117,7 +117,7 @@ function Addon:UpgradeRules()
         if self.db.profile.version < 20000 then
             wipe(self.db.profile.rules)
             self:Print(L['Rules restore to default.'])
-        elseif self.db.profile.version < 20004 then
+        elseif self.db.profile.version < 20105 then
 
             if self.db.profile.rules.saving or self.db.profile.rules.sorting then
                 if not StaticPopupDialogs['TDPACK2_UPDATE_RULES'] then
@@ -161,10 +161,10 @@ end
 function Addon:ResetRules(sortType)
     if sortType == ns.SORT_TYPE.SORTING then
         ns.CopyFrom(wipe(self.db.profile.rules.sorting), ns.DEFAULT_SORTING_RULES)
-        self:SendMessage('TDPACK_SORTING_RULES_UPDATE')
+        self:SendMessage('TDPACK_RULES_UPDATE', sortType)
     elseif sortType == ns.SORT_TYPE.SAVING then
         ns.CopyFrom(wipe(self.db.profile.rules.saving), ns.DEFAULT_SAVING_RULES)
-        self:SendMessage('TDPACK_SAVING_RULES_UPDATE')
+        self:SendMessage('TDPACK_RULES_UPDATE', sortType)
     end
 end
 

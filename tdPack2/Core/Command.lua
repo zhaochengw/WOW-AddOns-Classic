@@ -62,7 +62,7 @@ function Addon:InitCommands()
         SAVE = self:Generate(EXTRA_COMMAND.SAVE),
 
         OPEN_RULE_OPTIONS = function()
-            ns.UI.RuleOption:Show()
+            self:OpenOption(true)
         end,
         OPEN_OPTIONS = function()
             self:OpenOption()

@@ -72,12 +72,7 @@ function Bag:OnShow()
     if self:IsCustomBag() then
         if not self.info.cached then
             self:RegisterEvent('BAG_LOCK_CHANGED')
-            --[=[@build<3@
-            self:RegisterEvent('CURSOR_UPDATE', 'UpdateCursor')
-            --@end-build<3@]=]
-            -- @build>3@
             self:RegisterEvent('CURSOR_CHANGED', 'UpdateCursor')
-            -- @end-build>3@
 
             if not self.info.owned and self:IsBankBag() then
                 self:RegisterEvent('PLAYERBANKBAGSLOTS_CHANGED', 'Update')

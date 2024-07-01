@@ -42,12 +42,12 @@ end
 
 local function Type(type, icon, children)
     local name = GetItemClassInfo(type)
-    return Rule(name, icon, 'type:' .. name, children)
+    return Rule(name, icon, 'class:' .. name, children)
 end
 
 local function SubType(type, subType, icon, children)
     local name = GetItemSubClassInfo(type, subType)
-    return Rule(name, icon, 'type:' .. name, children)
+    return Rule(name, icon, 'class:' .. name, children)
 end
 
 local function Weapon(subType, icon, children)
@@ -103,7 +103,7 @@ end
 
 local function TypeOrTag(type, subType, icon, children)
     local name = GetItemSubClassInfo(type, subType)
-    return Rule(name, icon, format('type:%s | tag:%s', name, name), children)
+    return Rule(name, icon, format('class:%s | tag:%s', name, name), children)
 end
 
 local CONSUMABLE = GetItemClassInfo(LE_ITEM_CLASS_CONSUMABLE) -- 消耗品
@@ -113,9 +113,9 @@ local TRADEGOODS = GetItemClassInfo(LE_ITEM_CLASS_TRADEGOODS) -- 商品
 local MOUNT = GetItemSubClassInfo(LE_ITEM_CLASS_MISCELLANEOUS, LE_ITEM_MISCELLANEOUS_MOUNT)
 
 ns.DEFAULT_SORTING_RULES = {
-    --[=[@build<2@
+    --[[@build<2@
     HEARTHSTONE_ITEM_ID, -- 炉石
-    --@end-build<2@]=]
+    --@end-build<2@]]
     -- @build>2@
     Group(L['Transporter'], 134414, {
         HEARTHSTONE_ITEM_ID, -- 炉石
@@ -143,10 +143,10 @@ ns.DEFAULT_SORTING_RULES = {
         18232, -- 修理机器人74A型
     }), --
     -- @end-build>2@
-    --[=[@build<2@
+    --[[@build<2@
     Tag('Mount', 132261), -- 坐骑
     Tag('Pet', 132598), -- 宠物
-    --@end-build<2@]=]
+    --@end-build<2@]]
     -- @build>2@
     TypeOrTag(LE_ITEM_CLASS_MISCELLANEOUS, LE_ITEM_MISCELLANEOUS_MOUNT, 132261), -- 坐骑
     TypeOrTag(LE_ITEM_CLASS_MISCELLANEOUS, LE_ITEM_MISCELLANEOUS_COMPANION_PET, 132598), -- 宠物
@@ -193,49 +193,53 @@ ns.DEFAULT_SORTING_RULES = {
         Weapon(LE_ITEM_WEAPON_FISHINGPOLE, 132932), -- 鱼竿
     }), --
     Rule(EQUIPSET_EQUIP, 132722, 'equip', {
-        Slot('INVTYPE_2HWEAPON', 135324), -- 双手
-        Slot('INVTYPE_WEAPONMAINHAND', 133045), -- 主手
-        Slot('INVTYPE_WEAPON', 135641), -- 单手
-        Slot('INVTYPE_SHIELD', 134955), -- 副手盾
-        Slot('INVTYPE_WEAPONOFFHAND', 134955), -- 副手
-        Slot('INVTYPE_HOLDABLE', 134333), -- 副手物品
-        Slot('INVTYPE_RANGED', 135498), -- 远程
-        Slot('INVTYPE_RANGEDRIGHT', 135468), -- 远程
-        Slot('INVTYPE_THROWN', 132394), -- 投掷武器
-        -- Weapon(LE_ITEM_WEAPON_GUNS, 135610), -- 枪
-        -- Weapon(LE_ITEM_WEAPON_CROSSBOW, 135533), -- 弩
-        -- Weapon(LE_ITEM_WEAPON_THROWN, 135427), -- 投掷武器
-        -- Weapon(LE_ITEM_WEAPON_WAND, 135473), -- 魔杖
-        Slot('INVTYPE_RELIC', 134915), -- 圣物
-        Slot('INVTYPE_HEAD', 133136), -- 头部
-        Slot('INVTYPE_NECK', 133294), -- 颈部
-        Slot('INVTYPE_SHOULDER', 135033), -- 肩部
-        Slot('INVTYPE_CLOAK', 133768), -- 背部
-        Slot('INVTYPE_CHEST', 132644), -- 胸部
-        Slot('INVTYPE_ROBE', 132644), -- 胸部
-        Slot('INVTYPE_WRIST', 132608), -- 手腕
-        Slot('INVTYPE_HAND', 132948), -- 手
-        Slot('INVTYPE_WAIST', 132511), -- 腰部
-        Slot('INVTYPE_LEGS', 134588), -- 腿部
-        Slot('INVTYPE_FEET', 132541), -- 脚
-        Slot('INVTYPE_FINGER', 133345), -- 手指
-        Slot('INVTYPE_TRINKET', 134010), -- 饰品
-        Slot('INVTYPE_BODY', 135022), -- 衬衣
-        Slot('INVTYPE_TABARD', 135026), -- 战袍
+        Rule('Set', 132722, 'bset'), --
+        Group('非套装', 132722, {
+
+            Slot('INVTYPE_2HWEAPON', 135324), -- 双手
+            Slot('INVTYPE_WEAPONMAINHAND', 133045), -- 主手
+            Slot('INVTYPE_WEAPON', 135641), -- 单手
+            Slot('INVTYPE_SHIELD', 134955), -- 副手盾
+            Slot('INVTYPE_WEAPONOFFHAND', 134955), -- 副手
+            Slot('INVTYPE_HOLDABLE', 134333), -- 副手物品
+            Slot('INVTYPE_RANGED', 135498), -- 远程
+            Slot('INVTYPE_RANGEDRIGHT', 135468), -- 远程
+            Slot('INVTYPE_THROWN', 132394), -- 投掷武器
+            -- Weapon(LE_ITEM_WEAPON_GUNS, 135610), -- 枪
+            -- Weapon(LE_ITEM_WEAPON_CROSSBOW, 135533), -- 弩
+            -- Weapon(LE_ITEM_WEAPON_THROWN, 135427), -- 投掷武器
+            -- Weapon(LE_ITEM_WEAPON_WAND, 135473), -- 魔杖
+            Slot('INVTYPE_RELIC', 134915), -- 圣物
+            Slot('INVTYPE_HEAD', 133136), -- 头部
+            Slot('INVTYPE_NECK', 133294), -- 颈部
+            Slot('INVTYPE_SHOULDER', 135033), -- 肩部
+            Slot('INVTYPE_CLOAK', 133768), -- 背部
+            Slot('INVTYPE_CHEST', 132644), -- 胸部
+            Slot('INVTYPE_ROBE', 132644), -- 胸部
+            Slot('INVTYPE_WRIST', 132608), -- 手腕
+            Slot('INVTYPE_HAND', 132948), -- 手
+            Slot('INVTYPE_WAIST', 132511), -- 腰部
+            Slot('INVTYPE_LEGS', 134588), -- 腿部
+            Slot('INVTYPE_FEET', 132541), -- 脚
+            Slot('INVTYPE_FINGER', 133345), -- 手指
+            Slot('INVTYPE_TRINKET', 134010), -- 饰品
+            Slot('INVTYPE_BODY', 135022), -- 衬衣
+            Slot('INVTYPE_TABARD', 135026), -- 战袍
+        }),
     }), -- 装备
     Type(LE_ITEM_CLASS_PROJECTILE, 132382), -- 弹药
     Type(LE_ITEM_CLASS_CONTAINER, 133652), -- 容器
     Type(LE_ITEM_CLASS_QUIVER, 134407), -- 箭袋
     Type(LE_ITEM_CLASS_RECIPE, 134939), -- 配方
-    Rule(CONSUMABLE, 134829, 'type:' .. CONSUMABLE .. ' & tip:!' .. QUEST .. ' & spell', {
-        --[=[@build<2@
+    Rule(CONSUMABLE, 134829, 'class:' .. CONSUMABLE .. ' & tip:!' .. QUEST .. ' & spell', {
+        --[[@build<2@
         TipLocale('CLASS', 132273), -- 职业
         Spell(746, 133685), -- 急救
         Spell(433, 133945), -- 进食
         Spell(430, 132794), -- 喝水
         Spell(439, 134830), -- 治疗药水
         Spell(438, 134851), -- 法力药水
-        --@end-build<2@]=]
+        --@end-build<2@]]
         -- @build>2@
         Consumable(7, 133692), -- 绷带
         Consumable(3, 134742), -- 合剂
@@ -269,7 +273,7 @@ ns.DEFAULT_SORTING_RULES = {
     }), -- 消耗品
     Type(LE_ITEM_CLASS_TRADEGOODS, 132905, {
         TipLocale('CLASS', 132273), -- 职业
-        --[=[@build<2@
+        --[[@build<2@
         Tag('Cloth', 132903), -- 布
         Tag('Leather', 134256), -- 皮
         Tag('Metal & Stone', 133217), -- 金属和矿石
@@ -277,7 +281,7 @@ ns.DEFAULT_SORTING_RULES = {
         Tag('Herb', 134215), -- 草药
         Tag('Elemental', 135819), -- 元素
         Tag('Enchanting', 132864), -- 附魔
-        --@end-build<2@]=]
+        --@end-build<2@]]
         -- @build>2@
         Trade(2, 133715), -- 爆炸物
         Trade(3, 134441), -- 装置
@@ -306,7 +310,7 @@ ns.DEFAULT_SORTING_RULES = {
         SubType(LE_ITEM_CLASS_GEM, 7, 134087), -- 简易
     }), -- 珠宝
     -- @end-build>2@
-    Rule(MISC, 134237, 'type:!' .. QUEST .. ' & tip:!' .. QUEST, {
+    Rule(MISC, 134237, 'class:!' .. QUEST .. ' & tip:!' .. QUEST, {
         -- @build>2@
         Misc(LE_ITEM_MISCELLANEOUS_REAGENT, 133587), -- 材料
         -- @end-build>2@
@@ -314,7 +318,7 @@ ns.DEFAULT_SORTING_RULES = {
         Type(LE_ITEM_CLASS_MISCELLANEOUS, 134400), -- 其它
         Type(LE_ITEM_CLASS_KEY, 134237), -- 钥匙
     }), --
-    Rule(QUEST, 133469, 'type:' .. QUEST .. ' | tip:' .. QUEST, {
+    Rule(QUEST, 133469, 'class:' .. QUEST .. ' | tip:' .. QUEST, {
         Tip(ITEM_STARTS_QUEST, 132836), -- 接任务
         Rule(nil, 133942, 'spell'), --
     }), -- 任务

@@ -3,19 +3,31 @@ local L = LibStub('AceLocale-3.0'):NewLocale(..., 'zhTW')
 if not L then return end
 
 L["Add advance rule"] = "添加高級規則"
+--[[Translation missing --]]
+--[[ L["Add extension filter to ItemSearch-1.3"] = ""--]] 
 L["Add extension filter to LibItemSearch-1.2"] = "將擴展的過濾器添加到LibItemSearch-1.2"
 --[[Translation missing --]]
 --[[ L["Add rule"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Advancee rules use ItemSearch-1.3"] = ""--]] 
 L["Advancee rules use LibItemSearch-1.2"] = "高級規則使用LibItemSearch-1.2"
 L["Already exists"] = "已經存在"
 L["Are you sure |cffff191919DELETE|r rule and its |cffff1919SUBRULES|r?"] = "確定|cffff1919刪除|r規則和它的|cffff1919子規則|r嗎？"
 L["Are you sure |cffff191919DELETE|r rule?"] = "你確定|cffff1919刪除|r規則嗎？"
+--[[Translation missing --]]
+--[[ L["Are you sure to |cffff1919RESET|r rules?"] = ""--]] 
 L["Are you sure to |cffff1919RESET|r saving rules?"] = "你確定|cffff1919重置|r保存規則？"
 L["Are you sure to |cffff1919RESET|r sorting rules?"] = "你確定|cffff1919重置|r排序規則？"
 L["Are you sure you want to restore the current Settings?"] = "你確定要重置當前設置嗎？"
+--[[Translation missing --]]
+--[[ L["Bag"] = ""--]] 
 L["Bag button features"] = "背包按鈕功能"
+--[[Translation missing --]]
+--[[ L["Bank"] = ""--]] 
 L["Bank and bag stacking together"] = "銀行和背包一起堆疊"
 L["Bank button features"] = "銀行按鈕功能"
+--[[Translation missing --]]
+--[[ L["Buttons"] = ""--]] 
 L["Character Specific Settings"] = "角色獨立設置"
 L["COMMENT_CLASS"] = "職業物品"
 L["COMMENT_MOUNT"] = "坐騎"
@@ -51,8 +63,12 @@ L["Player enter combat, pack cancel."] = "進入戰鬥，整理中止。"
 L["Player in combat"] = "正在戰鬥"
 L["Player is dead"] = "角色已死亡"
 L["Please drop the item, money or skills."] = true
+--[[Translation missing --]]
+--[[ L["Profile"] = ""--]] 
 L["Put in an item to add simple rule"] = "放下一個物品以添加簡單規則"
 L["Put where?"] = "放在哪？"
+--[[Translation missing --]]
+--[[ L["Reset rule"] = ""--]] 
 L["Reset saving rules"] = "重置保存規則"
 L["Reset sorting rules"] = "重置排序規則"
 L["Restore default Settings"] = "恢覆默認設置"
@@ -61,10 +77,16 @@ L["Right Click"] = "右鍵"
 L["Root"] = "根"
 L["Rule"] = "規則"
 --[[Translation missing --]]
+--[[ L["Rules"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["Rules restore to default."] = ""--]] 
 L["SAVE"] = "保存"
 L["Save to bank when default packing"] = "默認整理同時保存到銀行"
 L["Saving rules"] = "保存規則"
+--[[Translation missing --]]
+--[[ L["SAVING_DESC"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["SAVING_NAME"] = ""--]] 
 L["Select an icon (Optional)"] = "選擇一個圖標（可選）"
 L["Some slot is locked"] = "一些物品已鎖定"
 L["SORT"] = "默認整理"
@@ -77,6 +99,12 @@ L["SORT_BANK_ASC"] = "順序整理銀行"
 L["SORT_BANK_DESC"] = "逆序整理銀行"
 L["SORT_DESC"] = "逆序整理背包"
 L["Sorting rules"] = "排序規則"
+--[[Translation missing --]]
+--[[ L["SORTING_DESC"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["SORTING_NAME"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["tdPack2 is a bag sorting addon."] = ""--]] 
 L["Tools"] = "工具"
 --[[Translation missing --]]
 --[[ L["Transporter"] = ""--]] 

@@ -107,5 +107,5 @@ function FrameMeta:ToggleOption(key)
 end
 
 function FrameMeta:IsBagHidden(bag)
-    return self.character.hiddenBags[bag]
+    return self.character.hiddenBags and self.character.hiddenBags[bag]
 end

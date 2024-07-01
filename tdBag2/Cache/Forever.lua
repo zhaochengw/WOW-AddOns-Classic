@@ -3,6 +3,11 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/31/2019, 1:07:26 PM
 --
+---@class ns
+local ns = select(2, ...)
+
+local C = ns.C
+
 ---- LUA
 local select, pairs, ipairs = select, pairs, ipairs
 local tinsert = table.insert
@@ -14,21 +19,12 @@ local floor = math.floor
 local tDeleteItem = tDeleteItem
 
 ---- WOW
-local GetContainerItemInfo = function(bag, slot)
-    if C_Container and C_Container.GetContainerItemInfo then
-        local info = C_Container.GetContainerItemInfo(bag, slot)
-        if info then
-            return info.iconFileID, info.stackCount, info.isLocked, info.quality, info.isReadable, info.hasLoot, info.hyperlink, info.isFiltered, info.hasNoValue, info.itemID, info.isBound
-        end
-    else
-        return _G.GetContainerItemInfo(bag, slot)
-    end
-end
-local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots
-local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
-local GetContainerItemLink = GetContainerItemLink or C_Container.GetContainerItemLink
-local GetInventoryItemCount = GetInventoryItemCount
-local GetInventoryItemLink = GetInventoryItemLink
+local GetContainerItemInfo = C.Container.GetContainerItemInfo
+local GetContainerNumFreeSlots = C.Container.GetContainerNumFreeSlots
+local GetContainerNumSlots = C.Container.GetContainerNumSlots
+local GetInventoryItemCount = C.Container.GetInventoryItemCount
+local GetInventoryItemLink = C.Container.GetInventoryItemLink
+local GetContainerItemLink = C.Container.GetContainerItemLink
 local GetItemIcon = GetItemIcon
 local GetItemInfo = GetItemInfo
 local GetMoney = GetMoney
@@ -45,9 +41,6 @@ local GetInboxItem = GetInboxItem
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
 local INVSLOT_LAST_EQUIPPED = INVSLOT_LAST_EQUIPPED
 local ATTACHMENTS_MAX_RECEIVE = ATTACHMENTS_MAX_RECEIVE
-
----@class ns
-local ns = select(2, ...)
 
 local L = ns.L
 
@@ -173,8 +166,10 @@ function Forever:SetupEvents()
     self:RegisterEvent('MAIL_SHOW')
     self:RegisterEvent('MAIL_CLOSED')
     self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+    -- @build>2@
     self:RegisterEvent('GUILDBANKFRAME_CLOSED')
     self:RegisterEvent('GUILDBANKFRAME_OPENED')
+    -- @end-build>2@
 end
 
 function Forever:UpdateData()
@@ -208,6 +203,7 @@ function Forever:BANKFRAME_CLOSED()
     self:SendMessage('BANK_CLOSED')
 end
 
+-- @build>2@
 function Forever:GUILDBANKFRAME_OPENED()
     self.atGuildBank = true
     self.Cacher:RemoveCache(ns.REALM, ns.GetCurrentGuildOwner())
@@ -222,6 +218,7 @@ function Forever:GUILDBANKFRAME_CLOSED()
     end
     self:SendMessage('GUILDBANK_CLOSED')
 end
+-- @end-build>2@
 
 function Forever:MAIL_SHOW()
     self.atMail = true
@@ -282,7 +279,8 @@ function Forever:SaveBag(bag)
 
         for slot = 1, size do
             local link = GetContainerItemLink(bag, slot)
-            local _, count = GetContainerItemInfo(bag, slot)
+            local info = GetContainerItemInfo(bag, slot)
+            local count = info and info.stackCount or nil
             items[slot] = self:ParseItem(link, count)
         end
     end

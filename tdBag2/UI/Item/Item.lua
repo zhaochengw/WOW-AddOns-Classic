@@ -11,13 +11,7 @@ local format = string.format
 
 ---- WOW
 local CreateFrame = CreateFrame
-local GetItemQualityColor = GetItemQualityColor
 local IsBattlePayItem = IsBattlePayItem or C_Container.IsBattlePayItem
-if not IsBattlePayItem then
-    IsBattlePayItem = function(bag, slot)
-        return false
-    end
-end
 
 local IsNewItem = C_NewItems.IsNewItem
 local RemoveNewItem = C_NewItems.RemoveNewItem
@@ -99,9 +93,24 @@ function Item:Update()
     self:UpdateFocus()
     self:UpdateBorder()
     self:UpdateSlotColor()
+    --[=[@build<2@
+    self:UpdateRune()
+    --@end-build<2@]=]
     self:UpdateCooldown()
     self:UpdatePlugin()
 end
+
+--[=[@build<2@
+function Item:UpdateRune()
+    local texture = self:GetRuneTexture()
+    if texture then
+        self.subicon:SetTexture(texture)
+        self.subicon:Show()
+    else
+        self.subicon:Hide()
+    end
+end
+--@end-build<2@]=]
 
 function Item:UpdateBorder()
     local sets = self.meta.sets
@@ -181,5 +190,26 @@ function Item:IsNew()
 end
 
 function Item:IsPaid()
-    return IsBattlePayItem(self.bag, self.slot)
+    return IsBattlePayItem and IsBattlePayItem(self.bag, self.slot)
 end
+
+--[=[@build<2@
+function Item:GetRuneTexture()
+    if not C_Engraving then
+        return
+    end
+    if self:IsCached() then
+        return
+    end
+
+    -- blizzard bug
+    if not self.meta:IsContainer() or self.bag < 0 then
+        return
+    end
+
+    if C_Engraving.IsEngravingEnabled() and C_Engraving.IsInventorySlotEngravable(self.bag, self.slot) then
+        local info = C_Engraving.GetRuneForInventorySlot(self.bag, self.slot)
+        return info and info.iconTexture
+    end
+end
+--@end-build<2@]=]

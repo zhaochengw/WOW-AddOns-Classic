@@ -2,7 +2,6 @@
 -- @Author : DengSir (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/20/2018, 4:28:53 PM
-
 local ns = select(2, ...)
 local UI = ns.UI
 
@@ -66,7 +65,6 @@ local TreeView = UI:NewClass('TreeView', UI.ScrollFrame)
 LibStub('AceTimer-3.0'):Embed(TreeView)
 
 function TreeView:Constructor()
-    self.treeStatus = TreeStatus:New()
     self:SetCallback('OnItemCreated', self.OnItemCreated)
     self:SetCallback('OnItemDragStart', self.OnItemDragStart)
     self:SetCallback('OnItemDragStop', self.OnItemDragStop)
@@ -119,8 +117,14 @@ function TreeView:OnItemDragStart(button)
     self:StartSorting(button)
 end
 
-function TreeView:OnItemDragStop()
+local inStop = false
+function TreeView:OnItemDragStop(button)
+    if inStop then
+        return
+    end
+    inStop = true
     self:CommitSorting()
+    inStop = false
 end
 
 function TreeView:StartSorting(button)
@@ -182,6 +186,7 @@ function TreeView:CommitSorting()
         self:StopSorting()
         return
     end
+
     self:StopSorting()
 
     if self.OnListChanged then
@@ -284,6 +289,9 @@ function TreeView:UpdateInsert()
 end
 
 function TreeView:update()
+    if not self.treeStatus then
+        return
+    end
     local offset = self:GetOffset()
     local buttons = self.buttons
     local treeStatus = self.treeStatus

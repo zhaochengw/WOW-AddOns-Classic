@@ -210,6 +210,7 @@ function Addon:SetupOptionFrame()
 
     local options = {
         type = 'group',
+        name = format('tdBag2 - |cff00ff00%s|r', GetAddOnMetadata('tdBag2', 'Version')),
         get = function(item)
             return self.db.profile[item[#item]]
         end,
@@ -384,24 +385,21 @@ function Addon:SetupOptionFrame()
     }
 
     AceConfigRegistry:RegisterOptionsTable('tdBag2', options)
-    self.options = AceConfigDialog:AddToBlizOptions('tdBag2', 'tdBag2')
+    AceConfigDialog:AddToBlizOptions('tdBag2', 'tdBag2')
+    AceConfigDialog:SetDefaultSize('tdBag2', 700, 570)
 
     self:RefreshPluginOptions()
 end
 
-local function OpenToCategory(options)
-    InterfaceOptionsFrame_OpenToCategory(options)
-    InterfaceOptionsFrame_OpenToCategory(options)
-    OpenToCategory = InterfaceOptionsFrame_OpenToCategory
-end
-
 function Addon:OpenFrameOption(bagId)
+    AceConfigDialog:Open('tdBag2')
     if bagId then
-        OpenToCategory(self.options)
         AceConfigDialog:SelectGroup('tdBag2', bagId)
-    else
-        OpenToCategory(self.options)
     end
+    pcall(function ()
+        AceConfigDialog.OpenFrames.tdBag2:EnableResize(false)
+        AceConfigDialog.OpenFrames.tdBag2.frame:SetFrameStrata('DIALOG')
+    end)
 end
 
 function Addon:RefreshPluginOptions()

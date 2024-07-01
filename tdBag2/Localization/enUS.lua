@@ -124,7 +124,7 @@ L["Visiting the Mail Box"] = true
 L["Watch Frame"] = true
 
 
---[=[@debug@
+--[[@debug@
 -- @import@
 
 L.TITLE_BAG = '%s\'s Inventory'
@@ -265,4 +265,4 @@ L['Completed Trade'] = true
 L['Entering Combat'] = true
 
 -- @end-import@
---@end-debug@]=]
+--@end-debug@]]

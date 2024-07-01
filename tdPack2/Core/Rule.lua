@@ -25,9 +25,9 @@ function Rule:OnInitialize()
     self.nameOrder = Item.GetItemName
     self.typeOrder = Item.GetItemType
     self.subTypeOrder = Item.GetItemSubType
-    --[=[@build<2@
+    --[[@build<2@
     self.tagOrder = Item.GetItemTag
-    --@end-build<2@]=]
+    --@end-build<2@]]
     self.sortingCustomOrder = ns.CustomOrder:New()
     self.levelQualityOrder = function(item)
         local level = 9999 - item:GetItemLevel()
@@ -54,9 +54,9 @@ function Rule:OnInitialize()
                 self.setOrder(item), --
                 self.typeOrder(item), --
                 self.subTypeOrder(item), --
-                --[=[@build<2@
+                --[[@build<2@
                 self.tagOrder(item), --
-                --@end-build<2@]=]
+                --@end-build<2@]]
                 self.levelQualityOrder(item), --
                 self.nameOrder(item), --
             }, ',')
@@ -107,9 +107,16 @@ function Rule:OnInitialize()
         end,
     }
 
-    self:RegisterMessage('TDPACK_SORTING_RULES_UPDATE', 'RebuildSorting')
-    self:RegisterMessage('TDPACK_SAVING_RULES_UPDATE', 'RebuildSaving')
+    self:RegisterMessage('TDPACK_RULES_UPDATE')
     self:RegisterMessage('TDPACK_PROFILE_CHANGED', 'RebuildAll')
+end
+
+function Rule:TDPACK_RULES_UPDATE(_, ruleType)
+    if ruleType == ns.SORT_TYPE.SORTING then
+        self:RebuildSorting()
+    elseif ruleType == ns.SORT_TYPE.SAVING then
+        self:RebuildSaving()
+    end
 end
 
 function Rule:RebuildAll()

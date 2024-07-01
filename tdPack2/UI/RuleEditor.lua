@@ -82,6 +82,7 @@ function RuleEditor:OnSetup()
             icon:SetSize(ICON_SIZE, ICON_SIZE)
             icon:SetHighlightTexture([[Interface\Buttons\ButtonHilight-Square]])
             icon:SetCheckedTexture([[Interface\Buttons\CheckButtonHilight]])
+            icon:GetCheckedTexture():SetBlendMode('ADD')
             icon:SetScript('OnClick', OnClick)
             t[i] = icon
             return icon

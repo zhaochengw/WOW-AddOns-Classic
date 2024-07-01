@@ -32,11 +32,39 @@
     </Button>
     <ScrollFrame name="tdPack2ScrollFrameTemplate" inherits="HybridScrollFrameTemplate" virtual="true">
         <Frames>
-            <Slider parentKey="scrollBar" inherits="HybridScrollBarTemplate">
+            <Slider parentKey="scrollBar">
+                <Size x="22" y="0"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-14"/>
-                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="13"/>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-18" y="-14"/>
+                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-18" y="13"/>
                 </Anchors>
+                <Frames>
+                    <Button inherits="UIPanelScrollUpButtonTemplate">
+                        <Anchors>
+                            <Anchor point="TOP" x="0" y="15"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad function="HybridScrollFrameScrollUp_OnLoad"/>
+                            <OnClick function="HybridScrollFrameScrollButton_OnClick"/>
+                        </Scripts>
+                    </Button>
+                    <Button inherits="UIPanelScrollDownButtonTemplate">
+                        <Anchors>
+                            <Anchor point="BOTTOM" x="0" y="-15"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad function="HybridScrollFrameScrollDown_OnLoad"/>
+                            <OnClick function="HybridScrollFrameScrollButton_OnClick"/>
+                        </Scripts>
+                    </Button>
+                </Frames>
+                <Scripts>
+                    <OnValueChanged function="HybridScrollFrame_OnValueChanged"/>
+                </Scripts>
+                <ThumbTexture inherits="HybridScrollBarButton" file="Interface\Buttons\UI-ScrollBar-Knob" parentKey="thumbTexture">
+                    <Size x="18" y="24"/>
+                    <TexCoords left="0.20" right="0.80" top="0.125" bottom="0.875"/>
+                </ThumbTexture>
             </Slider>
         </Frames>
     </ScrollFrame>
@@ -124,22 +152,7 @@
         </HighlightTexture>
     </Button>
 
-    <Frame name="tdPack2RuleOptionTemplate" inherits="ButtonFrameTemplate" toplevel="true" enableMouse="true" movable="true" resizable="true" virtual="true">
-        <Frames>
-            <Button parentKey="Resize" inherits="PanelResizeButtonTemplate">
-                <Anchors>
-                    <Anchor point="BOTTOMRIGHT"/>
-                </Anchors>
-                <Scripts>
-                    <OnLoad>
-                        self:Init(self:GetParent(), 337, 423)
-                    </OnLoad>
-                </Scripts>
-            </Button>
-        </Frames>
-    </Frame>
-
-    <Frame name="tdPack2RuleEditorTemplate" frameStrata="DIALOG" enableMouse="true" inherits="BackdropTemplate" virtual="true">
+    <Frame name="tdPack2RuleEditorTemplate" frameStrata="DIALOG" enableMouse="true" toplevel="true" inherits="BackdropTemplate" virtual="true">
         <Size x="395" y="400"/>
         <Layers>
             <Layer level="ARTWORK">
