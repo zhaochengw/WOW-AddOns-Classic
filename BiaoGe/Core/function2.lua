@@ -1801,6 +1801,7 @@ function BG.AddGuanZhu(link)
     end
 end
 
+------------------金额自动加零------------------
 function BG.UpdateTwo0(bt)
     if BiaoGe.options["autoAdd0"] == 1 and bt:HasFocus() and not IsModifierKeyDown() then
         local text = bt:GetText()

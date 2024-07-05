@@ -80,32 +80,33 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         local function CancelGuanZhuAndHope(itemID)
             local _, link = GetItemInfo(itemID)
             local haveguanzhu, havehope
-            local FB = BG.FB1
-            for b = 1, Maxb[FB] do
-                for i = 1, Maxi[FB] do
-                    local bt = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
-                    if bt then
-                        local _itemID = GetItemID(bt:GetText())
-                        if _itemID == itemID then
-                            if BiaoGe[FB]["boss" .. b]["guanzhu" .. i] then
-                                BiaoGe[FB]["boss" .. b]["guanzhu" .. i] = nil
-                                BG.Frame[FB]["boss" .. b]["guanzhu" .. i]:Hide()
-                                haveguanzhu = true
+            for _, FB in pairs(BG.FBtable) do
+                for b = 1, Maxb[FB] do
+                    for i = 1, Maxi[FB] do
+                        local bt = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
+                        if bt then
+                            local _itemID = GetItemID(bt:GetText())
+                            if _itemID == itemID then
+                                if BiaoGe[FB]["boss" .. b]["guanzhu" .. i] then
+                                    BiaoGe[FB]["boss" .. b]["guanzhu" .. i] = nil
+                                    BG.Frame[FB]["boss" .. b]["guanzhu" .. i]:Hide()
+                                    haveguanzhu = true
+                                end
                             end
                         end
                     end
                 end
-            end
-            for n = 1, HopeMaxn[FB] do
-                for b = 1, HopeMaxb[FB] do
-                    for i = 1, HopeMaxi do
-                        local bt = BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]
-                        if bt then
-                            local _itemID = GetItemID(bt:GetText())
-                            if _itemID == itemID then
-                                bt:SetText("")
-                                BiaoGe.Hope[RealmId][player][FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] = nil
-                                havehope = true
+                for n = 1, HopeMaxn[FB] do
+                    for b = 1, HopeMaxb[FB] do
+                        for i = 1, HopeMaxi do
+                            local bt = BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]
+                            if bt then
+                                local _itemID = GetItemID(bt:GetText())
+                                if _itemID == itemID then
+                                    bt:SetText("")
+                                    BiaoGe.Hope[RealmId][player][FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] = nil
+                                    havehope = true
+                                end
                             end
                         end
                     end

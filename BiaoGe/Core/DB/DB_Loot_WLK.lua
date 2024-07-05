@@ -958,6 +958,18 @@ do
         AddCurrency(FB, 102, 40749, 40)
         AddCurrency(FB, 102, 40750, 40)
         AddCurrency(FB, 102, 40751, 40)
+
+        AddCurrency(FB, 102, 40322, 25)
+        AddCurrency(FB, 102, 40321, 25)
+        AddCurrency(FB, 102, 39728, 25)
+        AddCurrency(FB, 102, 40342, 25)
+        AddCurrency(FB, 102, 39757, 25)
+        AddCurrency(FB, 102, 40267, 25)
+        AddCurrency(FB, 102, 40207, 25)
+        AddCurrency(FB, 102, 40337, 25)
+        AddCurrency(FB, 102, 40191, 25)
+        AddCurrency(FB, 102, 40268, 25)
+
     end
     local FB = "ULD"
     -- 征服纹章

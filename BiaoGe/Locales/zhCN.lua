@@ -1,7 +1,10 @@
 local AddonName, ADDONSELF = ...
 
-ADDONSELF.ver = "v1.9.8"
+ADDONSELF.ver = "v1.9.9"
 -- ADDONSELF.ver = "v1.9.6 Alpha3"
+
+local c1 = "|cff" .. "ffff66"
+ADDONSELF.c1 = c1
 
 if (GetLocale() == "zhTW") then return end
 
@@ -9,7 +12,7 @@ local update = ""
 do --简体说明书
     local text
     text = "|cff00BFFF< 我是说明书 >（本插件支持CTM、WLK、探索赛季、60服）|r\n\n"
-    text = text .. "|cffFFFFFF-打开命令：|r/BiaoGe或/GBG，或游戏设置里绑定按键。小地图图标：" .. "|TInterface\\AddOns\\BiaoGe\\Media\\icon\\icon:0|t" .. "\n"
+    text = text .. "|cffFFFFFF-打开命令：|r/BiaoGe或/GBG，或游戏设置里绑定按键。小地图图标：" .. "|TInterface\\AddOns\\BiaoGe\\Media\\icon\\icon:0|t" .. "|r\n"
     text = text .. "|cffFFFFFF-快捷操作：|r点空白处取消光标，右键输入框清除内容\n"
     text = text .. "|cffFFFFFF-跳转光标：|r按Tab、方向键跳转光标，ALT/CTRL/SHIFT+方向键跳转至下个BOSS\n"
     text = text .. "|cffFFFFFF-添加装备：|r从装备下拉列表里选择；或者从背包把装备拖进表格\n"
@@ -24,48 +27,44 @@ do --简体说明书
     text = text .. "-BUG反馈：邮箱buick_hbj@163.com，Q群322785325\n\n"
 
     -- update = update .. "|cff00FF00" .. "" .. "|r\n"
-    -- update = update .. [[]] .. "\n"
-    -- update = update .. [[]] .. "\n\n"
+    -- update = update .. [[]] .. "|r\n"
+    -- update = update .. [[]] .. "|r\n\n"
 
     -- update = update .. "|cff00FF00" .. "6月25日更新v1.9.6 Alpha3" .. "|r\n"
-    -- update = update .. [[-上传账单：修复了玩家属性中没有服务器名称的问题。]] .. "\n\n"
+    -- update = update .. [[-上传账单：修复了玩家属性中没有服务器名称的问题。]] .. "|r\n\n"
 
     -- update = update .. "|cff00FF00" .. "6月24日更新v1.9.6 Alpha2" .. "|r\n"
-    -- update = update .. [[-上传账单：数据结构调整；增加团本锁定ID；增加上传者属性。]] .. "\n\n"
+    -- update = update .. [[-上传账单：数据结构调整；增加团本锁定ID；增加上传者属性。]] .. "|r\n\n"
 
     -- update = update .. "|cff00FF00" .. "6月21日更新v1.9.6 Alpha1" .. "|r\n"
-    -- update = update .. [[-新增：把账单上传到新手盒子]] .. "\n\n"
+    -- update = update .. [[-新增：把账单上传到新手盒子]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "7月2日更新v1.9.9" .. "|r\n"
+    update = update .. c1 .. [[-拍卖WA更新为v1.3：修复有部分玩家不显示拍卖界面的问题；当你是出价最高者时的高亮效果更加显眼]] .. "|r\n"
+    update = update .. [[-一键分配：背包类型的物品不会再被一键分配]] .. "|r\n"
+    update = update .. [[-金额自动加零：现在不会对分钱人数生效]] .. "|r\n"
+    update = update .. c1 .. [[-<WLK>一键举报：在战场里，右键点击世界地图上的玩家圆点时，增加一键全部举报的按钮]] .. "|r\n"
+    update = update .. [[-<WLK/CTM>装备库：修复了牌子装所需的货币数量不显示的问题]] .. "|r\n\n"
 
     update = update .. "|cff00FF00" .. "6月29日更新v1.9.8" .. "|r\n"
-    update = update .. [[-新增：通报多本总览账单（按钮在通报账单旁边）]] .. "\n"
-    update = update .. [[-修复了快速记账、高亮打包交易装备在涉及跨副本时出现的一些错误]] .. "\n\n"
+    update = update .. c1 .. [[-新增：通报多本总览账单（按钮在通报账单旁边）]] .. "|r\n"
+    update = update .. [[-修复了快速记账、高亮打包交易装备在涉及跨副本时出现的一些错误]] .. "|r\n\n"
 
     update = update .. "|cff00FF00" .. "6月28日更新v1.9.7" .. "|r\n"
-    update = update .. [[-拍卖聊天框：现在小退/重载后依然会显示之前的聊天记录]] .. "\n"
-    update = update .. [[-快速记账：增加记账效果预览框]] .. "\n"
-    update = update .. [[-修复了切换表格副本时和清空表格时，团本锁定ID没正确更新的问题]] .. "\n"
-    update = update .. [[-修复了金额自动加零的功能没有对快速记账框生效的问题]] .. "\n\n"
+    update = update .. [[-拍卖聊天框：现在小退/重载后依然会显示之前的聊天记录]] .. "|r\n"
+    update = update .. c1 .. [[-快速记账：增加记账效果预览框]] .. "|r\n"
+    update = update .. [[-修复了切换表格副本时和清空表格时，团本锁定ID没正确更新的问题]] .. "|r\n"
+    update = update .. [[-修复了金额自动加零的功能没有对快速记账框生效的问题]] .. "|r\n\n"
 
     update = update .. "|cff00FF00" .. "6月27日更新v1.9.6" .. "|r\n"
-    update = update .. [[-通报账单：优化通报次序（在国服发消息的次序是乱的，需要加点延迟）]] .. "\n"
-    update = update .. [[-表格：修改支出项的默认名称（因为"坦克"和"tank"在国服发不出来）。不再自动记录"埃霍恩的冰霜之镰"]] .. "\n"
-    update = update .. [[-增加显示团本锁定ID]] .. "\n"
-    update = update .. [[-删除通报WCL按钮]] .. "\n"
-    update = update .. [[-<WLK>删除[查看在线玩家]功能（因为国服把上限值锁为501，导致该功能已经没意义了）]] .. "\n"
-    update = update .. [[-<WLK>角色总览：删除伽马日常、英雄日常]] .. "\n"
-    update = update .. [[-<CTM>角色总览：增加巴拉丁监狱]] .. "\n"
-    update = update .. [[-<60服>MC表格布局优化]] .. "\n\n"
-
-    update = update .. "|cff00FF00" .. "6月19日更新v1.9.5" .. "|r\n"
-    update = update .. [[-拍卖WA：更新为v1.2，现在物品分配者也可以开始拍卖装备了（需全团把该WA更新至v1.2）]] .. "\n"
-    update = update .. [[-对账：增加[账单聊天记录] ]] .. "\n"
-    update = update .. [[-对账：对账单现在显示该账单对应是哪个副本（需对方也使用最新版表格插件）]] .. "\n"
-    update = update .. [[-交易自动记账：现在也会记录"打包交易"详细，在表格用鼠标指向这些装备所在的金额框时会高亮。]] .. "\n"
-    update = update .. [[且金额的下拉框会有打包交易的详细显示。]] .. "\n"
-    update = update .. [[-清空表格/心愿按钮：增加二次确定]] .. "\n"
-    update = update .. [[-<WLK/60服>修复了拆分出来的新表格的自动记录装备功能失效的问题]] .. "\n"
-    update = update .. [[-<赛季服>修复了神庙表格里UI重叠的问题]] .. "\n\n"
-
+    update = update .. [[-通报账单：优化通报次序（在国服发消息的次序是乱的，需要加点延迟）]] .. "|r\n"
+    update = update .. [[-表格：修改支出项的默认名称（因为"坦克"和"tank"在国服发不出来）。不再自动记录"埃霍恩的冰霜之镰"]] .. "|r\n"
+    update = update .. [[-增加显示团本锁定ID]] .. "|r\n"
+    update = update .. [[-删除通报WCL按钮]] .. "|r\n"
+    update = update .. [[-<WLK>删除[查看在线玩家]功能（因为国服把上限值锁为501，导致该功能已经没意义了）]] .. "|r\n"
+    update = update .. [[-<WLK>角色总览：删除伽马日常、英雄日常]] .. "|r\n"
+    update = update .. c1 .. [[-<CTM>角色总览：增加巴拉丁监狱]] .. "|r\n"
+    update = update .. [[-<60服>MC表格布局优化]] .. "|r\n\n"
 
     text = text .. update
     text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
@@ -76,22 +75,24 @@ do --简体更新内容
     local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "6月15日更新v1.9.4" .. "|r\n"
-    update = update .. [[-表格：罚款和支出栏改为滚动框，可容纳更多格子]] .. "\n"
-    update = update .. [[-在线人数：数据来源从"大脚世界频道"改为"寻求组队频道"。默认选项改为"不会自动获取数据"]] .. "\n"
-    update = update .. [[-<CTM>装备过滤：现在默认勾选正确的护甲类型（例如圣骑士会默认过滤布甲/皮甲/锁甲）]] .. "\n"
-    update = update .. [[-<WLK/60>由于与自动清空表格有冲突，现在把表格做了拆分，每个团本都会单独使用一个表格]] .. "\n"
-    update = update .. [[-<WLK>恢复[一键举报]相关功能（因为暴雪未禁用WLK端的相关API）]] .. "\n"
-    update = update .. [[-<WLK>装备库：删除获取途径显示的5人本选项。修复了获取途径显示的团本难度选项没有正确生效的问题]] .. "\n"
-    update = update .. [[-<WLK>角色总览：默认选项适配国服当前阶段]] .. "\n"
-    update = update .. [[-<60服>角色总览：增加奥妮克希亚的巢穴]] .. "\n\n"
+    update = update .. [[-表格：罚款和支出栏改为滚动框，可容纳更多格子]] .. "|r\n"
+    update = update .. [[-在线人数：数据来源从"大脚世界频道"改为"寻求组队频道"。默认选项改为"不会自动获取数据"]] .. "|r\n"
+    update = update .. [[-<CTM>装备过滤：现在默认勾选正确的护甲类型（例如圣骑士会默认过滤布甲/皮甲/锁甲）]] .. "|r\n"
+    update = update .. [[-<WLK/60>由于与自动清空表格有冲突，现在把表格做了拆分，每个团本都会单独使用一个表格]] .. "|r\n"
+    update = update .. [[-<WLK>恢复[一键举报]相关功能（因为暴雪未禁用WLK端的相关API）]] .. "|r\n"
+    update = update .. [[-<WLK>装备库：删除获取途径显示的5人本选项。修复了获取途径显示的团本难度选项没有正确生效的问题]] .. "|r\n"
+    update = update .. [[-<WLK>角色总览：默认选项适配国服当前阶段]] .. "|r\n"
+    update = update .. [[-<60服>角色总览：增加奥妮克希亚的巢穴]] .. "|r\n\n"
 
-    update = update .. "|cff00FF00" .. "6月6日更新v1.9.3" .. "|r\n"
-    update = update .. [[-<CTM>角色总览：增加征服点数（默认不勾选）]] .. "\n"
-    update = update .. [[-<60服>表格：奥妮克希亚的格子增加至8个，奈法利安的格子增加至6个]] .. "\n\n"
-
-    update = update .. "|cff00FF00" .. "6月1日更新v1.9.2" .. "|r\n"
-    update = update .. [[-<CTM>表格/装备库：添加团本小怪掉落]] .. "\n"
-    update = update .. [[-<CTM>装备库：添加征服点数装备，更新荣誉点数装备]] .. "\n\n"
+    update = update .. "|cff00FF00" .. "6月19日更新v1.9.5" .. "|r\n"
+    update = update .. [[-拍卖WA：更新为v1.2，现在物品分配者也可以开始拍卖装备了（需全团把该WA更新至v1.2）]] .. "|r\n"
+    update = update .. [[-对账：增加[账单聊天记录] ]] .. "|r\n"
+    update = update .. [[-对账：对账单现在显示该账单对应是哪个副本（需对方也使用最新版表格插件）]] .. "|r\n"
+    update = update .. [[-交易自动记账：现在也会记录"打包交易"详细，在表格用鼠标指向这些装备所在的金额框时会高亮。]] .. "|r\n"
+    update = update .. [[且金额的下拉框会有打包交易的详细显示。]] .. "|r\n"
+    update = update .. [[-清空表格/心愿按钮：增加二次确定]] .. "|r\n"
+    update = update .. [[-<WLK/60服>修复了拆分出来的新表格的自动记录装备功能失效的问题]] .. "|r\n"
+    update = update .. [[-<赛季服>修复了神庙表格里UI重叠的问题]] .. "|r\n\n"
 
     ADDONSELF.updateText = update
 end
@@ -106,6 +107,10 @@ ADDONSELF.L = L
 
 local L = {}
 do
+    L["一键全部举报挂机"] = true
+    L["一键全部举报脚本"] = true
+
+
     L["|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金额：%s%s\n副本：%s\nBOSS：%s"] = true
     L["< 交易记账成功 >|r\n装备：%s\n买家：%s\n金额：%s%d|rg%s\n副本：%s\nBOSS：%s%s|r"] = true
     L["——通报多本总览账单——"] = true

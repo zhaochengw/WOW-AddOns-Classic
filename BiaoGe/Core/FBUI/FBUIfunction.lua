@@ -33,7 +33,7 @@ function BG.GetTotalIncome(FB)
     local FB = FB or BG.FB1
     local sum = 0
     for b = 1, Maxb[FB] do
-        for i = 1, Maxi[FB]  do
+        for i = 1, Maxi[FB] do
             if BG.Frame[FB]["boss" .. b]["jine" .. i] then
                 sum = sum + (tonumber(BG.Frame[FB]["boss" .. b]["jine" .. i]:GetText()) or 0)
             end
@@ -844,7 +844,9 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
     bt:SetScript("OnTextChanged", function(self)
         local bossnum = self.bossnum
 
-        BG.UpdateTwo0(self)
+        if self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 4] then
+            BG.UpdateTwo0(self)
+        end
 
         if bossnum ~= Maxb[FB] and bossnum ~= Maxb[FB] + 1 and bossnum ~= Maxb[FB] + 2 then
             BG.DuiZhangFrame[FB]["boss" .. BossNum(FB, b, t)]["myjine" .. i]:SetText(self:GetText())
@@ -855,10 +857,10 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
         else
             BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i] = nil
         end
-        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"]:SetText(BG.GetTotalIncome()) -- 计算总收入
-        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine2"]:SetText(BG.GetTotalExpenditure())   -- 计算总支出
-        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine3"]:SetText(BG.GetNetIncome())    -- 计算净收入
-        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine5"]:SetText(BG.GetWages())   -- 计算人均工资
+        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"]:SetText(BG.GetTotalIncome())      -- 计算总收入
+        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine2"]:SetText(BG.GetTotalExpenditure()) -- 计算总支出
+        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine3"]:SetText(BG.GetNetIncome())        -- 计算净收入
+        BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine5"]:SetText(BG.GetWages())            -- 计算人均工资
 
         BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"]:SetCursorPosition(0)
         BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine2"]:SetCursorPosition(0)

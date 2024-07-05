@@ -1644,6 +1644,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         local f = CreateFrame("Frame")
         f:RegisterEvent("PLAYER_ENTERING_WORLD")
         f:SetScript("OnEvent", function(self, even, ...)
+            local isLogin, isReload = ...
+            if not (isLogin or isReload) then return end
             C_Timer.After(2, function()
                 C_WowTokenPublic.UpdateMarketPrice()
                 OnTokenMarketPriceUpdated()
@@ -1896,7 +1898,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                             if itemLink then
                                 local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
                                 _, typeID, _, bindType = GetItemInfo(itemLink)
-                                if bindType ~= 4 and (itemStackCount == 1 or bindType ~= 1) then
+                                if bindType ~= 4 and (itemStackCount == 1 or bindType ~= 1) and typeID ~= 1 then
                                     GiveMasterLoot(li, ci)
                                 end
                             end
@@ -1933,7 +1935,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         if itemLink then
                             local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
                             _, typeID, _, bindType = GetItemInfo(itemLink)
-                            if bindType ~= 4 and (itemStackCount == 1 or bindType ~= 1) then
+                            if bindType ~= 4 and (itemStackCount == 1 or bindType ~= 1) and typeID ~= 1 then
                                 tinsert(items, AddTexture(Texture, -3) .. link .. "|cffFFFFFF(" .. level .. ")|r")
                             end
                         end
@@ -3010,11 +3012,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             BG.ButtonGuoQi = bt
             bt:SetScript("OnClick", function(self)
                 if BG.itemGuoQiFrame:IsVisible() then
-                    BG.itemGuoQiFrame:Hide()
-                    BiaoGe.options.showGuoQiFrame = 0
+                BiaoGe.options.showGuoQiFrame = 0
+                BG.itemGuoQiFrame:Hide()
                 else
-                    BG.itemGuoQiFrame:Show()
                     BiaoGe.options.showGuoQiFrame = 1
+                    BG.itemGuoQiFrame:Show()
                 end
                 BG.PlaySound(1)
             end)
@@ -3029,7 +3031,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             bt:SetScript("OnLeave", GameTooltip_Hide)
         end
 
-
         local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
         do
             f:SetBackdrop({
@@ -3041,19 +3042,26 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f:SetBackdropBorderColor(0, 0, 0, 1)
             f:SetSize(200, (maxButton + 1) * 20 + 35)
             f:SetPoint("TOPLEFT", BG.MainFrame, "TOPRIGHT", 0, 0)
+            BG.itemGuoQiFrame = f
             if BiaoGe.options.showGuoQiFrame ~= 1 then
                 f:Hide()
             else
                 f:Show()
             end
+            f:SetScript("OnShow", function(self)
+                BG.UpdateItemGuoQiFrame()
+            end)
+
+            f.CloseButton = CreateFrame("Button", nil, f, "UIPanelCloseButton")
+            f.CloseButton:SetPoint("TOPRIGHT", f, "TOPRIGHT", 2, 2)
+            f.CloseButton:HookScript("OnClick", function(self)
+                BiaoGe.options.showGuoQiFrame = 0
+            end)
+
             local t = f:CreateFontString()
             t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOP", f, "TOP", 0, -5)
             t:SetText(L["装备过期剩余时间"])
-            BG.itemGuoQiFrame = f
-            f:SetScript("OnShow", function(self)
-                BG.UpdateItemGuoQiFrame()
-            end)
         end
 
         BG.itemGuoQiFrame.tbl = {}
@@ -3587,6 +3595,8 @@ do
     local f = CreateFrame("Frame")
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
     f:SetScript("OnEvent", function(self, even, ...)
+        local isLogin, isReload = ...
+        if not (isLogin or isReload) then return end
         C_Timer.After(1, function()
             BG.UpdateRaidRosterInfo()
         end)

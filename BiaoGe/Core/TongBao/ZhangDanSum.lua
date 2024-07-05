@@ -33,7 +33,7 @@ local function CreateListTable(onClick, tbl)
             local FBlocalName = BG.GetFBinfo(FB, "localName")
 
             local b = Maxb[FB] + 2
-            for i = 1, 3 do
+            for i = 1, 2 do
                 local zb = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                 local text
                 if onClick then
@@ -44,6 +44,7 @@ local function CreateListTable(onClick, tbl)
                 table.insert(tbl, { text })
                 db[i] = db[i] + (tonumber(funcTbl[i](FB)) or 0)
             end
+            db[3] = db[3] + (tonumber(funcTbl[3](FB)) or 0)
         end
     end
 

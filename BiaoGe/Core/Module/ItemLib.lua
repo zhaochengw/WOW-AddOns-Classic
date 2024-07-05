@@ -316,9 +316,11 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
         local name = C_CurrencyInfo.GetCurrencyInfo(currencyID).name
         local tex = C_CurrencyInfo.GetCurrencyInfo(currencyID).iconFileID
         local quantity = C_CurrencyInfo.GetCurrencyInfo(currencyID).quantity
-        local color = "FFFFFF"
-        if count and quantity < count then
-            color = "FF0000"
+        local color = "00FF00"
+        if count then
+            if quantity < count then
+                color = "FF0000"
+            end
         else
             count = ""
         end

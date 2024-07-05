@@ -1043,7 +1043,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end
                     end
                 end
-                local function UpdateButtons(mybuttontext, targetbuttontextTbl)
+                local function UpdateAddReportButtons(mybuttontext, targetbuttontextTbl, isPvPreport)
                     local dropdownName = 'DropDownList' .. 1
                     local dropdown = _G[dropdownName]
                     local myindex1, mybutton1 = FindDropdownItem(dropdown, mybuttontext)
@@ -1054,6 +1054,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                             break
                         end
                     end
+                    if isPvPreport then
+                        index = index - 1
+                        targetbutton = _G[dropdownName .. 'Button' .. index]
+                    end
+                    if not targetbutton then return end
                     local x, y = select(4, targetbutton:GetPoint())
                     y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
                     mybutton1:ClearAllPoints()
@@ -1136,7 +1141,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end
                     end
                     UIDropDownMenu_AddButton(info)
-                    UpdateButtons(mybuttontext, { REPORT_PLAYER, REPORT_FRIEND, IGNORE })
+                    UpdateAddReportButtons(mybuttontext, { REPORT_PLAYER, REPORT_FRIEND, IGNORE })
                 end
                 local function AddDeleteButton(fullname, playerLocation)
                     local name, realm = strsplit("-", fullname)
@@ -1174,7 +1179,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         print(BG.STC_y1(format(L["已删除<%s>的举报记录。"], color .. fullname .. RR)))
                     end
                     UIDropDownMenu_AddButton(info)
-                    UpdateButtons(mybuttontext, { REPORT_PLAYER, REPORT_FRIEND, IGNORE })
+                    UpdateAddReportButtons(mybuttontext, { REPORT_PLAYER, REPORT_FRIEND, IGNORE })
                 end
                 hooksecurefunc("UnitPopup_ShowMenu", function(dropdown, which, unit, _name, userData)
                     -- pt(which, unit, _name, userData, unit and UnitName(unit))
@@ -1234,6 +1239,72 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         AddReportButton("jiaoben", fullname, playerLocation)
                         AddReportButton("RMT", fullname, playerLocation)
                     end
+                end)
+
+                -- 战场
+                local function SetAllReport(playerTbl, chattype)
+                    local i = 1
+                    local updateFrame = CreateFrame("Frame")
+                    updateFrame:SetScript("OnUpdate", function(self, elapsed)
+                        if not rp.yes then
+                            if i <= #playerTbl then
+                                rp.yes = true
+                                rp.chattype = chattype
+                                SetReport(Enum.ReportType.InWorld, playerTbl[i].name, playerTbl[i].playerLocation)
+                                i = i + 1
+                            end
+                        end
+                        if i > #playerTbl then
+                            self:SetScript("OnUpdate", nil)
+                            self:Hide()
+                        end
+                    end)
+                end
+                DropDownList1:HookScript("OnShow", function(self)
+                    if (BiaoGe.options["report"] ~= 1) then return end
+                    if select(2, IsInInstance()) ~= "pvp" or DropDownList1Button1:GetText() ~= PVP_REPORT_AFK then return end
+                    local playerTbl = {}
+                    for i = 2, self.numButtons do
+                        local bt = _G["DropDownList1Button" .. i]
+                        if bt:GetText() == CANCEL then break end
+                        if bt.arg1 then
+                            local unit = UnitName(bt.arg1)
+                            if unit and UnitGUID(unit) then
+                                tinsert(playerTbl, {
+                                    name = GetUnitName(unit, true),
+                                    playerLocation = PlayerLocation:CreateFromGUID(UnitGUID(unit))
+                                })
+                            end
+                        end
+                    end
+
+                    local info = UIDropDownMenu_CreateInfo()
+                    local mybuttontext = L["一键全部举报脚本"]
+                    info.text = mybuttontext
+                    info.notCheckable = true
+                    info.tooltipTitle = L["自动帮你选择并填写举报内容"]
+                    info.tooltipText = format(L["选择举报理由：%s\n选择举报项目：%s\n填写举报细节：%s\n\n快捷命令：/BGReport\n\n|cff808080你可在插件设置-BiaoGe-其他功能里关闭这个功能。|r"],
+                        REPORTING_MAJOR_CATEGORY_CHEATING, REPORTING_MINOR_CATEGORY_HACKING, "自动脚本 自動腳本 Automatic Scripting")
+                    info.func = function()
+                        SetAllReport(playerTbl, "jiaoben")
+                    end
+                    UIDropDownMenu_AddButton(info)
+                    UpdateAddReportButtons(mybuttontext, { CANCEL }, true)
+
+                    local info = UIDropDownMenu_CreateInfo()
+                    local mybuttontext = L["一键全部举报挂机"]
+                    info.text = mybuttontext
+                    info.notCheckable = true
+                    info.tooltipTitle = L["自动帮你选择并填写举报内容"]
+                    info.tooltipText = format(L["选择举报理由：%s\n选择举报项目：%s\n填写举报细节：%s\n\n快捷命令：/BGReport\n\n|cff808080你可在插件设置-BiaoGe-其他功能里关闭这个功能。|r"],
+                        REPORTING_MAJOR_CATEGORY_CHEATING,
+                        REPORTING_MINOR_CATEGORY_HACKING .. " " .. REPORTING_MINOR_CATEGORY_BOTTING,
+                        "在战场挂机 在戰場掛機 BOTTING")
+                    info.func = function()
+                        SetAllReport(playerTbl, "guaji")
+                    end
+                    UIDropDownMenu_AddButton(info)
+                    UpdateAddReportButtons(mybuttontext, { CANCEL }, true)
                 end)
 
                 -- 集结号的举报按钮

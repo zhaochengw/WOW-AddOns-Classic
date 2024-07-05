@@ -49,6 +49,10 @@ function BG.RoleOverviewUI()
                 ["10ULD"] = 1,
                 ["25NAXX"] = 1,
                 ["10NAXX"] = 1,
+                ["25EOE"] = 1,
+                ["10EOE"] = 1,
+                ["25OS"] = 1,
+                ["10OS"] = 1,
                 ["25VOA"] = 1,
                 ["10VOA"] = 1,
                 ["gamma"] = 1,
@@ -110,47 +114,38 @@ function BG.RoleOverviewUI()
             end)
         elseif BG.IsWLK() then
             BG.Once("FBCDandMONEYchoice", 240611, function()
-                BiaoGe.FBCDchoice = {
-                    ["25ULD"] = 1,
-                    ["10ULD"] = 1,
-                    ["25NAXX"] = 1,
-                    ["10NAXX"] = 1,
-                    ["25VOA"] = 1,
-                    ["10VOA"] = 1,
-                    ["gamma"] = 1,
-                    ["heroe"] = 1,
-                    ["week1"] = 1,
-                }
-                BiaoGe.MONEYchoice = {
-                    -- [396] = 1,
-                    -- [395] = 1,
-                    -- [341] = 1,
-                    -- [301] = 1,
-                    [221] = 1,
-                    [102] = 1,
-                    [101] = 1,
-                    -- [2711] = 1,
-                    -- [2589] = 1,
-                    ["money"] = 1,
-                }
+                BiaoGe.FBCDchoice["25ULD"] = 1
+                BiaoGe.FBCDchoice["10ULD"] = 1
+                BiaoGe.FBCDchoice["25NAXX"] = 1
+                BiaoGe.FBCDchoice["10NAXX"] = 1
+                BiaoGe.FBCDchoice["25VOA"] = 1
+                BiaoGe.FBCDchoice["10VOA"] = 1
+                BiaoGe.FBCDchoice["gamma"] = 1
+                BiaoGe.FBCDchoice["heroe"] = 1
+                BiaoGe.FBCDchoice["week1"] = 1
+
+                BiaoGe.MONEYchoice[221] = 1
+                BiaoGe.MONEYchoice[102] = 1
+                BiaoGe.MONEYchoice[101] = 1
+                BiaoGe.MONEYchoice["money"] = 1
+            end)
+            BG.Once("FBCDandMONEYchoice", 240630, function()
+                BiaoGe.FBCDchoice["25EOE"] = 1
+                BiaoGe.FBCDchoice["10EOE"] = 1
+                BiaoGe.FBCDchoice["25OS"] = 1
+                BiaoGe.FBCDchoice["10OS"] = 1
             end)
         elseif BG.IsCTM() then
             BG.Once("FBCDchoice", 240519, function()
-                BiaoGe.FBCDchoice = {
-                    ["BOT"] = 1,
-                    ["BWD"] = 1,
-                    ["TOF"] = 1,
-                }
-                BiaoGe.MONEYchoice = {
-                    [396] = 1,
-                    [395] = 1,
-                    ["money"] = 1,
-                }
+                BiaoGe.FBCDchoice["BOT"] = 1
+                BiaoGe.FBCDchoice["BWD"] = 1
+                BiaoGe.FBCDchoice["TOF"] = 1
+                BiaoGe.MONEYchoice[396] = 1
+                BiaoGe.MONEYchoice[395] = 1
+                BiaoGe.MONEYchoice["money"] = 1
             end)
             BG.Once("FBCDchoice", 240619, function()
-                BiaoGe.FBCDchoice = {
-                    ["BH"] = 1,
-                }
+                BiaoGe.FBCDchoice["BH"] = 1
             end)
         end
     end
@@ -238,7 +233,7 @@ function BG.RoleOverviewUI()
             -- 日常
             { name = "week1", name2 = L["周常"], color = "FF8C00", questID = "week1", type = "quest" },
             -- { name = "gamma", name2 = L["伽马"], color = "FF8C00", questID = 78752, type = "quest" },
-            -- { name = "heroe", name2 = L["英雄"], color = "FF8C00", questID = 78753, type = "quest" },
+            -- { name = "heroe", name2 = L["英雄"], color = "FF8C00", questID = 84552, type = "quest" },
         }
 
         BG.MONEYall_table = {
@@ -1272,10 +1267,11 @@ function BG.RoleOverviewUI()
                 { questID = 82068, },   -- 梦魇
 
             }
-        elseif not BG.IsVanilla() then
+        elseif BG.IsWLK() then
             BG.dayQuests = {
                 { questID = 78752, }, -- 伽马
-                { questID = 78753, }, -- 英雄
+                -- { questID = 84552, }, -- 英雄（国服特供）
+                -- { questID = 78753, }, -- 英雄
             }
         end
 
