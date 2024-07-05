@@ -102,7 +102,7 @@ end
 function MySlot:GetMacroInfo(macroId)
     -- {macroId ,icon high 8, icon low 8 , namelen, ..., bodylen, ...}
 
-    local name, iconTexture, body, isLocal = GetMacroInfo(macroId)
+    local name, iconTexture, body  = GetMacroInfo(macroId)
 
     if not name then
         return nil
@@ -159,6 +159,28 @@ function MySlot:GetActionInfo(slotId)
 end
 
 -- }}}
+
+function MySlot:GetPetActionInfo(slotId)
+    local name, _, isToken, _, _, _, spellID = GetPetActionInfo(slotId)
+
+    local msg = _MySlot.Slot()
+    msg.id = slotId
+    msg.type = MYSLOT_SPELL
+
+    if isToken then
+        msg.strindex = name
+        msg.index = 0
+    elseif spellID then
+        msg.index = spellID
+    elseif not name then
+        msg.index = 0
+        msg.type = MYSLOT_EMPTY
+    else
+        return nil
+    end
+
+    return msg
+end
 
 -- {{{ GetBindingInfo
 -- {{{ Serialzie Key
@@ -269,8 +291,17 @@ function MySlot:Export(opt)
 
     msg.macro = {}
 
-    if not opt.ignoreMacro then
-        for i = 1, MAX_ACCOUNT_MACROS + MAX_CHARACTER_MACROS do
+    if not opt.ignoreMacros["ACCOUNT"] then
+        for i = 1, MAX_ACCOUNT_MACROS  do
+            local m = self:GetMacroInfo(i)
+            if m then
+                msg.macro[#msg.macro + 1] = m
+            end
+        end
+    end
+
+    if not opt.ignoreMacros["CHARACTOR"] then
+        for i = MAX_ACCOUNT_MACROS + 1, MAX_ACCOUNT_MACROS + MAX_CHARACTER_MACROS do
             local m = self:GetMacroInfo(i)
             if m then
                 msg.macro[#msg.macro + 1] = m
@@ -279,13 +310,14 @@ function MySlot:Export(opt)
     end
 
     msg.slot = {}
-    if not opt.ignoreAction then
-        for i = 1, MYSLOT_MAX_ACTIONBAR do
+    for i = 1, MYSLOT_MAX_ACTIONBAR do
+        if not opt.ignoreActionBars[math.ceil(i / 12)] then
             local m = self:GetActionInfo(i)
             if m then
                 msg.slot[#msg.slot + 1] = m
             end
         end
+
     end
 
     msg.bind = {}
@@ -294,6 +326,16 @@ function MySlot:Export(opt)
             local m = self:GetBindingInfo(i)
             if m then
                 msg.bind[#msg.bind + 1] = m
+            end
+        end
+    end
+
+    msg.petslot = {}
+    if not opt.ignorePetActionBar then
+        for i = 1, NUM_PET_ACTION_SLOTS, 1 do
+            local m = self:GetPetActionInfo(i)
+            if m then
+                msg.petslot[#msg.petslot + 1] = m
             end
         end
     end
@@ -396,8 +438,8 @@ local function UnifyCRLF(text)
     return strtrim(text)
 end
 
--- {{{ FindOrCreateMacro
-function MySlot:FindOrCreateMacro(macroInfo)
+-- Find macro by index/name/body
+function MySlot:FindMacro(macroInfo)
     if not macroInfo then
         return
     end
@@ -414,18 +456,31 @@ function MySlot:FindOrCreateMacro(macroInfo)
     end
     -- }}}
 
-    local id = macroInfo["oldid"]
+
     local name = macroInfo["name"]
-    local icon = macroInfo["icon"]
     local body = macroInfo["body"]
     body = UnifyCRLF(body)
 
+    -- Return index if found or nil
+    return localMacro[name .. "_" .. body] or localMacro[body]
+end
 
-    local localIndex = localMacro[name .. "_" .. body] or localMacro[body]
+-- {{{ FindOrCreateMacro
+function MySlot:FindOrCreateMacro(macroInfo)
+    if not macroInfo then
+        return
+    end
 
+    local localIndex = MySlot:FindMacro(macroInfo)
     if localIndex then
         return localIndex
     else
+        local id = macroInfo["oldid"]
+        local name = macroInfo["name"]
+        local icon = macroInfo["icon"]
+        local body = macroInfo["body"]
+        body = UnifyCRLF(body)
+
         local numglobal, numperchar = GetNumMacros()
         local perchar = id > MAX_ACCOUNT_MACROS and 2 or 1
 
@@ -455,15 +510,12 @@ function MySlot:FindOrCreateMacro(macroInfo)
         return nil
     end
 end
-
 -- }}}
 
 function MySlot:RecoverData(msg, opt)
     -- {{{ Cache Spells
     --cache spells
     local spells = {}
-
-
     for i = 1, GetNumSpellTabs() do
         local tab, tabTex, offset, numSpells, isGuild, offSpecID = GetSpellTabInfo(i);
         offSpecID = (offSpecID ~= 0)
@@ -498,7 +550,6 @@ function MySlot:RecoverData(msg, opt)
             end
         end
     end
-
     -- }}}
 
 
@@ -514,132 +565,157 @@ function MySlot:RecoverData(msg, opt)
     end
     -- }}}
 
+    local slotBucket = {}
 
     -- {{{ Macro
-    -- cache macro
     local macro = {}
-    if not opt.ignoreMacro then
-        if opt.clearMacro then
-            MySlot:Clear("MACRO")
+
+    for _, s in pairs(msg.slot or {}) do
+        local slotId = s.id
+        local slotType = _MySlot.Slot.SlotType[s.type]
+        local index = s.index
+
+        if slotType == MYSLOT_MACRO then
+            if macro[index] then
+                table.insert(macro[index], slotId)
+            else
+                macro[index] = {slotId}
+            end
+        end
+    end
+
+    for _, m in pairs(msg.macro or {}) do
+        local macroId = m.id
+        local icon = m.icon
+
+        local name = m.name
+        local body = m.body
+
+        local info = {
+            ["oldid"] = macroId,
+            ["name"] = name,
+            ["icon"] = icon,
+            ["body"] = body,
+        }
+
+        local newid = nil
+
+        if (not opt.actionOpt.ignoreMacros["ACCOUNT"] and macroId <= MAX_ACCOUNT_MACROS)
+        or (not opt.actionOpt.ignoreMacros["CHARACTOR"] and macroId > MAX_ACCOUNT_MACROS)
+        then
+            newid = self:FindOrCreateMacro(info)
         end
 
-        for _, m in pairs(msg.macro or {}) do
-            local macroId = m.id
-            local icon = m.icon
+        if not newid then
+            newid = self:FindMacro(info)
+        end
 
-            local name = m.name
-            local body = m.body
-
-            macro[macroId] = {
-                ["oldid"] = macroId,
-                ["name"] = name,
-                ["icon"] = icon,
-                ["body"] = body,
-            }
-
-            self:FindOrCreateMacro(macro[macroId])
+        if newid then
+            for _, slotId in pairs(macro[macroId] or {}) do
+                PickupMacro(newid)
+                PlaceAction(slotId)
+            end
+        else
+            MySlot:Print(L["Ignore unknown macro [id=%s]"]:format(macroId))
         end
     end
     -- }}} Macro
 
-    if (not opt.ignoreAction) then
-        if opt.clearAction then
-            MySlot:Clear("ACTION")
-        end
 
-        local slotBucket = {}
+    for _, s in pairs(msg.slot or {}) do
+        local slotId = s.id
+        local slotType = _MySlot.Slot.SlotType[s.type]
+        local index = s.index
+        local strindex = s.strindex
 
-        for _, s in pairs(msg.slot or {}) do
-            local slotId = s.id
-            local slotType = _MySlot.Slot.SlotType[s.type]
-            local index = s.index
-            local strindex = s.strindex
+        local curType, curIndex = GetActionInfo(slotId)
+        curType = MySlot.SLOT_TYPE[curType or MYSLOT_NOTFOUND]
+        slotBucket[slotId] = true
 
-            local curType, curIndex = GetActionInfo(slotId)
-            curType = MySlot.SLOT_TYPE[curType or MYSLOT_NOTFOUND]
-            slotBucket[slotId] = true
+        if not pcall(function()
 
-            if not pcall(function()
-                    if curIndex ~= index or curType ~= slotType or slotType == MYSLOT_MACRO then -- macro always test
-                        if slotType == MYSLOT_SPELL or slotType == MYSLOT_FLYOUT or slotType == MYSLOT_COMPANION then
-                            if slotType == MYSLOT_SPELL or slotType == MYSLOT_COMPANION then
-                                PickupSpell(index)
-                            end
+                if opt.actionOpt.ignoreActionBars[math.ceil(slotId / 12)] then
+                    return
+                end
 
-                            if not GetCursorInfo() then
-                                -- flyout and failover
+                if curIndex ~= index or curType ~= slotType or slotType == MYSLOT_MACRO then -- macro always test
+                    if slotType == MYSLOT_SPELL or slotType == MYSLOT_FLYOUT or slotType == MYSLOT_COMPANION then
+                        if slotType == MYSLOT_SPELL or slotType == MYSLOT_COMPANION then
+                            PickupSpell(index)
+                        end
 
-                                local spellName = GetSpellInfo(index) or "NOSUCHSPELL"
-                                local newId, spellType, pickType = unpack(spells[slotType .. "_" .. index] or
-                                    spells[slotType .. "_" .. spellName] or {})
+                        if not GetCursorInfo() then
+                            -- flyout and failover
 
-                                if newId then
-                                    if pickType == "spell" then
-                                        PickupSpellBookItem(newId, spellType)
-                                    elseif pickType == "companions" then
-                                        PickupCompanion(spellType, newId)
-                                    end
-                                else
-                                    MySlot:Print(L["Ignore unlearned skill [id=%s], %s"]:format(index,
-                                        GetSpellLink(index) or ""))
+                            local spellName = GetSpellInfo(index) or "NOSUCHSPELL"
+                            local newId, spellType, pickType = SafeUnpack(spells[slotType .. "_" .. index] or
+                                spells[slotType .. "_" .. spellName] or {})
+
+                            if newId then
+                                if pickType == "spell" then
+                                    PickupSpellBookItem(newId, spellType)
+                                elseif pickType == "companions" then
+                                    PickupCompanion(spellType, newId)
                                 end
-                            end
-                        elseif slotType == MYSLOT_ITEM then
-                            PickupItem(index)
-                        elseif slotType == MYSLOT_MACRO then
-                            local macroid = self:FindOrCreateMacro(macro[index])
-
-                            if curType ~= MYSLOT_MACRO or curIndex ~= index then
-                                PickupMacro(macroid)
-                            end
-                        elseif slotType == MYSLOT_SUMMONPET and strindex and strindex ~= curIndex then
-                            C_PetJournal.PickupPet(strindex, false)
-                            if not GetCursorInfo() then
-                                C_PetJournal.PickupPet(strindex, true)
-                            end
-                            if not GetCursorInfo() then
-                                MySlot:Print(L["Ignore unattained pet [id=%s]"]:format(strindex))
-                            end
-                        elseif slotType == MYSLOT_SUMMONMOUNT then
-                            index = mounts[index]
-                            if index then
-                                C_MountJournal.Pickup(index)
                             else
-                                C_MountJournal.Pickup(0)
-                                MySlot:Print(L["Use random mount instead of an unattained mount"])
+                                MySlot:Print(L["Ignore unlearned skill [id=%s], %s"]:format(index,
+                                    GetSpellLink(index) or ""))
                             end
-                        elseif slotType == MYSLOT_EMPTY then
-                            PickupAction(slotId)
-                        elseif slotType == MYSLOT_EQUIPMENTSET then
-                            C_EquipmentSet.PickupEquipmentSet(index)
                         end
+                    elseif slotType == MYSLOT_ITEM then
+                        PickupItem(index)
+                    -- elseif slotType == MYSLOT_MACRO then
+                    --     local macroid = macro[index]
 
-                        if GetCursorInfo() then
-                            PlaceAction(slotId)
+                    --     if not macroid then
+                    --         MySlot:Print(L["Ignore unknown macro [id=%s]"]:format(index))
+                    --     end
+
+                    --     if curType ~= MYSLOT_MACRO or curIndex ~= macroid then
+                    --         PickupMacro(macroid)
+                    --     end
+                    elseif slotType == MYSLOT_SUMMONPET and strindex and strindex ~= curIndex then
+                        C_PetJournal.PickupPet(strindex, false)
+                        if not GetCursorInfo() then
+                            C_PetJournal.PickupPet(strindex, true)
                         end
-                        ClearCursor()
+                        if not GetCursorInfo() then
+                            MySlot:Print(L["Ignore unattained pet [id=%s]"]:format(strindex))
+                        end
+                    elseif slotType == MYSLOT_SUMMONMOUNT then
+                        index = mounts[index]
+                        if index then
+                            C_MountJournal.Pickup(index)
+                        else
+                            C_MountJournal.Pickup(0)
+                            MySlot:Print(L["Use random mount instead of an unattained mount"])
+                        end
+                    elseif slotType == MYSLOT_EMPTY then
+                        PickupAction(slotId)
+                    elseif slotType == MYSLOT_EQUIPMENTSET then
+                        C_EquipmentSet.PickupEquipmentSet(index)
                     end
-                end) then
-                MySlot:Print(L
-                ["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"]
-                :format(slotId, slotType, index, MYSLOT_AUTHOR))
-            end
-        end
 
-        for i = 1, MYSLOT_MAX_ACTIONBAR do
-            if not slotBucket[i] then
-                if GetActionInfo(i) then
-                    PickupAction(i)
+                    if GetCursorInfo() then
+                        PlaceAction(slotId)
+                    end
                     ClearCursor()
                 end
+            end) then
+            MySlot:Print(L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"]:format(slotId, slotType, index, MYSLOT_AUTHOR))
+        end
+    end
+
+    for i = 1, MYSLOT_MAX_ACTIONBAR do
+        if not opt.actionOpt.ignoreActionBars[math.ceil(i / 12)] and not slotBucket[i] then
+            if GetActionInfo(i) then
+                PickupAction(i)
+                ClearCursor()
             end
         end
     end
 
-    if not opt.ignoreBinding then
-        if opt.clearBinding then
-            MySlot:Clear("BINDING")
-        end
+    if not opt.actionOpt.ignoreBinding then
 
         for _, b in pairs(msg.bind or {}) do
             local command = b.command
@@ -668,18 +744,56 @@ function MySlot:RecoverData(msg, opt)
         SaveBindings(GetCurrentBindingSet())
     end
 
+
+    if not opt.actionOpt.ignorePetActionBar then
+        local pettoken = {}
+        for i = 1, NUM_PET_ACTION_SLOTS, 1 do
+            local name, _, isToken = GetPetActionInfo(i);
+            if isToken then
+                pettoken[name] = i
+            end
+        end
+
+        for _, p in pairs(msg.petslot or {}) do
+            if p.strindex then
+                local slot = pettoken[p.strindex]
+                if slot then
+                    PickupPetAction(slot)
+                    PickupPetAction(p.id)
+                end
+            elseif p.index then
+                PickupPetSpell(p.index)
+                PickupPetAction(p.id)
+            elseif p.type == MYSLOT_EMPTY then
+                PickupPetAction(p.id)
+            end
+            ClearCursor()
+        end
+    end
+
+
     MySlot:Print(L["All slots were restored"])
 end
 
-function MySlot:Clear(what)
+function MySlot:Clear(what, opt)
     if what == "ACTION" then
         for i = 1, MYSLOT_MAX_ACTIONBAR do
-            PickupAction(i)
-            ClearCursor()
+            if opt[math.ceil(i / 12)] then
+                PickupAction(i)
+                ClearCursor()
+            end
         end
     elseif what == "MACRO" then
-        for i = MAX_ACCOUNT_MACROS + MAX_CHARACTER_MACROS, 1, -1 do
-            DeleteMacro(i)
+        if opt["ACCOUNT"] then
+            for i = MAX_ACCOUNT_MACROS, 1, -1   do
+                DeleteMacro(i)
+            end
+        end
+
+        if opt["CHARACTOR"] then
+            for i = MAX_ACCOUNT_MACROS + MAX_CHARACTER_MACROS,  MAX_ACCOUNT_MACROS + 1, -1 do
+                DeleteMacro(i)
+            end
         end
     elseif what == "BINDING" then
         for i = 1, GetNumBindings() do
