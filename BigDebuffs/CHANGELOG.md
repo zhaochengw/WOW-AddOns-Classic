@@ -1,6 +1,9 @@
 # BigDebuffs
 
-## [v21](https://github.com/jordonwow/bigdebuffs/tree/v21) (2024-06-17)
-[Full Changelog](https://github.com/jordonwow/bigdebuffs/compare/v20...v21) [Previous Releases](https://github.com/jordonwow/bigdebuffs/releases)
+## [v22](https://github.com/jordonwow/bigdebuffs/tree/v22) (2024-06-30)
+[Full Changelog](https://github.com/jordonwow/bigdebuffs/compare/v21...v22) [Previous Releases](https://github.com/jordonwow/bigdebuffs/releases)
 
-- Added Solar Beam interrupt effect (#745)  
+- Add Improved Kick  
+    Closes #746  
+- Add Kingsbane  
+    Closes #747  
