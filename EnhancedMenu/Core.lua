@@ -7,23 +7,27 @@ local L = EM.L
 
 local LRI = LibStub("LibRealmInfo")
 
-local EnhancedMenu_ItemOrder = {"GUILD_INVITE", "COPY_NAME", "SEND_WHO"}
+local EnhancedMenu_ItemOrder = {"SEND_WHO", "COPY_NAME", "GUILD_INVITE", "FRIEND_ADD"}
 local EnhancedMenu_Items = {
     ["ENHANCED_MENU"] = {
         text = L["ENHANCED_MENU"],
         isTitle = true,
         notCheckable = 1,
     },
-    ["GUILD_INVITE"] = {
-        text = L["GUILD_INVITE"],
+    ["SEND_WHO"] = {
+        text = L["SEND_WHO"],
         notCheckable = 1,
     },
     ["COPY_NAME"] = {
         text = L["COPY_NAME"],
         notCheckable = 1,
     },
-    ["SEND_WHO"] = {
-        text = L["SEND_WHO"],
+    ["GUILD_INVITE"] = {
+        text = L["GUILD_INVITE"],
+        notCheckable = 1,
+    },
+    ["FRIEND_ADD"] = {
+        text = L["FRIEND_ADD"],
         notCheckable = 1,
     },
 }
@@ -42,12 +46,8 @@ local EnhancedMenu_Which = {}
 ----------------------------------------------------------------------------
 -- which
 ----------------------------------------------------------------------------
-EnhancedMenu_Which["GUILD_INVITE"] = {
-    ["PLAYER"] = true,
+EnhancedMenu_Which["SEND_WHO"] = {
     ["FRIEND"] = true,
-    ["PARTY"] = true,
-    ["RAID_PLAYER"] = true,
-    ["BN_FRIEND"] = true,
 }
 
 EnhancedMenu_Which["COPY_NAME"] = {
@@ -62,8 +62,21 @@ EnhancedMenu_Which["COPY_NAME"] = {
     ["BN_FRIEND"] = true,
 }
 
-EnhancedMenu_Which["SEND_WHO"] = {
+EnhancedMenu_Which["GUILD_INVITE"] = {
+    ["PLAYER"] = true,
     ["FRIEND"] = true,
+    ["PARTY"] = true,
+    ["RAID_PLAYER"] = true,
+    ["BN_FRIEND"] = true,
+}
+
+EnhancedMenu_Which["FRIEND_ADD"] = {
+    ["TARGET"] = true,
+    ["PARTY"] = true,
+    ["PLAYER"] = true,
+    ["FRIEND"] = true,
+    ["RAID_PLAYER"] = true,
+    ["COMMUNITIES_GUILD_MEMBER"] = true,
 }
 
 ----------------------------------------------------------------------------
@@ -79,6 +92,10 @@ local function ToggleEnhancedMenu_SubMenu(funcName)
                 info.func = function(self) F:ConfirmGuildInvite(info.name, info.server) end
             elseif funcName == "COPY_NAME" then
                 info.func = function(self) F:ShowName(info.name, info.server) end
+            elseif funcName == "ARMORY_URL" then
+                info.func = function(self) F:ShowArmoryURL(info.name, info.server) end
+            elseif funcName == "RAIDER_IO" then
+                info.func = function(self) F:ShowRaiderIO(info.name, info.server) end
             end
             UIDropDownMenu_AddButton(info, level)
         end
@@ -86,12 +103,10 @@ local function ToggleEnhancedMenu_SubMenu(funcName)
     ToggleDropDownMenu(1, nil, submenu, "cursor", 0, 60)
 end
 
-EnhancedMenu_Func["GUILD_INVITE"] = function(name, server)
-    if name and server then
-        F:ConfirmGuildInvite(name, server)
-    else
-        ToggleEnhancedMenu_SubMenu("GUILD_INVITE")
-    end
+EnhancedMenu_Func["SEND_WHO"] = function(name, server)
+    -- local _, name, nameForAPI = LRI:GetRealmInfo(server)
+    C_FriendList.SetWhoToUi(false)
+    C_FriendList.SendWho("n-"..name)
 end
 
 EnhancedMenu_Func["COPY_NAME"] = function(name, server)
@@ -102,10 +117,32 @@ EnhancedMenu_Func["COPY_NAME"] = function(name, server)
     end
 end
 
-EnhancedMenu_Func["SEND_WHO"] = function(name, server)
-    -- local _, name, nameForAPI = LRI:GetRealmInfo(server)
-    C_FriendList.SetWhoToUi(false)
-    C_FriendList.SendWho("n-"..name)
+EnhancedMenu_Func["GUILD_INVITE"] = function(name, server)
+    if name and server then
+        F:ConfirmGuildInvite(name, server)
+    else
+        ToggleEnhancedMenu_SubMenu("GUILD_INVITE")
+    end
+end
+
+EnhancedMenu_Func["ARMORY_URL"] = function(name, server)
+    if name and server then
+        F:ShowArmoryURL(name, server)
+    else
+        ToggleEnhancedMenu_SubMenu("ARMORY_URL")
+    end
+end
+
+EnhancedMenu_Func["RAIDER_IO"] = function(name, server)
+    if name and server then
+        F:ShowRaiderIO(name, server)
+    else
+        ToggleEnhancedMenu_SubMenu("RAIDER_IO")
+    end
+end
+
+EnhancedMenu_Func["FRIEND_ADD"] = function(name, server)
+    C_FriendList.AddFriend(name)
 end
 
 ----------------------------------------------------------------------------
@@ -165,11 +202,11 @@ hooksecurefunc("FriendsFrame_ShowBNDropdown", function(name, connected, lineID, 
     if connected then
         local friendIndex = BNGetFriendIndex(bnetIDAccount)
         local numGameAccounts = C_BattleNet.GetFriendNumGameAccounts(friendIndex)
-       
+
         wipe(subInfos)
         for accountIndex = 1, numGameAccounts do
             local gameAccountInfo = C_BattleNet.GetFriendGameAccountInfo(friendIndex, accountIndex)
-            
+
             if gameAccountInfo["wowProjectID"] == 1 and gameAccountInfo["clientProgram"] == BNET_CLIENT_WOW then
                 local info = UIDropDownMenu_CreateInfo()
                 info.text = gameAccountInfo["characterName"].."-"..gameAccountInfo["realmName"]

@@ -19,6 +19,40 @@ local LRI = LibStub("LibRealmInfo")
 --     return converchar
 -- end
 
+function F:ShowArmoryURL(characterName, realmName)
+    local id, name, nameForAPI, rules, locale, battlegroup, region, timezone, connectedIDs, englishName, englishNameForAPI = LRI:GetRealmInfo(realmName)
+
+    region = strlower(region)
+
+    locale = strlower(strsub(locale, 1, 2).."-"..strsub(locale, 3, 4))
+    realmName = string.gsub(englishName, "'", "")
+    realmName = strlower(string.gsub(realmName, " ", "-"))
+
+    local armory = "https://worldofwarcraft.com/"..locale.."/character/"..region.."/"..realmName.."/"..characterName
+    
+    local editBox = ChatEdit_ChooseBoxForSend()
+    ChatEdit_ActivateChat(editBox)
+    editBox:SetText(armory)
+    editBox:SetCursorPosition(0)
+    editBox:HighlightText()
+end
+
+function F:ShowRaiderIO(characterName, realmName)
+    local id, name, nameForAPI, rules, locale, battlegroup, region, timezone, connectedIDs, englishName, englishNameForAPI = LRI:GetRealmInfo(realmName)
+
+    region = strlower(region)
+    realmName = string.gsub(englishName, "'", "")
+    realmName = strlower(string.gsub(realmName, " ", "-"))
+
+    local armory = "https://raider.io/characters/"..region.."/"..realmName.."/"..characterName
+    
+    local editBox = ChatEdit_ChooseBoxForSend()
+    ChatEdit_ActivateChat(editBox)
+    editBox:SetText(armory)
+    editBox:SetCursorPosition(0)
+    editBox:HighlightText()
+end
+
 function F:ShowName(characterName, realmName)
     local _, name, nameForAPI = LRI:GetRealmInfo(realmName)
     local fullName = characterName.."-"..nameForAPI

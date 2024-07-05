@@ -1,9 +1,10 @@
-## Interface: 30401
-## Title: EnhancedMenu
+## Interface: 30403
+## Title: EnhancedMenu-WLK
 ## Notes: Extends popup menus.
 ## Notes-zhCN: 右键菜单增强
-## Version: 2.0
+## Version: 2.4.7.5
 ## Author: fyhcslb
+## Degrade: Jason Dev
 
 Libs\LoadLibs.xml
 
