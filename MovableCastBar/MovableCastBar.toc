@@ -1,8 +1,0 @@
-## Interface: 30400
-## Title: Movable and Enhanced Cast Bar
-## Notes: A plugin to make the cast bar movable and enhance its appearance.
-## Author: YourName
-## Version: 1.0
-## SavedVariables: MovableCastBarPosition, MovableCastBarLocked
-
-MovableCastBar.lua
