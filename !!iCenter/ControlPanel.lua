@@ -1152,6 +1152,47 @@ if title ~= nil then
 	end
 end
 
+local _, title = GetAddOnInfo("eCastingBar");
+if title ~= nil then
+	if GetLocale() == "zhCN" then
+		FF_NameeCastingBar	= "可定制施法条";
+		FF_DesceCastingBar	= "可定制施法条";
+	elseif GetLocale() == "zhTW" then
+		FF_NameeCastingBar	= "可定制施法条";
+		FF_DesceCastingBar	= "可定制施法条";
+	else
+		FF_NameeCastingBar	= "eCastingBar";
+		FF_DesceCastingBar	= "A customizable replacement for the default castingbar";
+	end
+	if ( EarthFeature_AddButton ) then
+		EarthFeature_AddButton(
+			{
+				id= "eCastingBar";
+				tab= "ui";
+				name= FF_NameeCastingBar;
+				subtext= "eCastingBar";
+				tooltip = FF_DesceCastingBar;
+				icon= "Interface\\Icons\\Spell_Fire_BlueFlamebolt";
+				-- icon= "Interface\\Icons\\Spell_Nature_ElementalAbsorption";
+				callback= function(button)
+					if not IsAddOnLoaded("eCastingBar") then
+						LoadAddOn("eCastingBar");
+					end
+					ShowUIPanel(eCB_OptionFrame);
+				end;
+				test = function()
+					if not IsAddOnLoaded("eCastingBar") and not IsAddOnLoadOnDemand("eCastingBar") then
+						return false;
+					else
+						return true;
+					end
+				end;
+			}
+		);
+	end
+end
+
+
 local _, title = GetAddOnInfo("PortalMage");
 if title ~= nil then
 	if GetLocale() == "zhCN" then
