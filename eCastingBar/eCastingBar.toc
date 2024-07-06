@@ -1,0 +1,15 @@
+## Interface: 30403
+## Title: eCastingBar wlk
+## Version: 1.4.3
+## Author: shoestare
+## Notes: A customizable replacement for the default castingbar.
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: eCastingBar_Settings
+## SavedVariablesPerCharacter: eCastingBar_Saved
+## X-Curse-Project-ID: 325069
+Localization\localization.lua
+eCastingBar.xml
+eCastingMirrorBar.xml
+eOptions_Menu.xml
+eOptions.xml

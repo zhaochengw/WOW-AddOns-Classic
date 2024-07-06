@@ -1,0 +1,1956 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Script file="eOptions.lua"/>
+	<Script file="eCastingBarSettings.lua"/>
+
+	<Frame name="eCB_Option_PanelTemplate" virtual="true">
+    <Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="3" right="3" top="6" bottom="6" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="8" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="8" />
+			</EdgeSize>
+		</Backdrop>
+	</Frame>
+
+	<CheckButton name="eCastingBarCheckButtonTemplate" inherits="OptionsCheckButtonTemplate" virtual="true">
+		<Scripts>
+			<OnClick>
+				eCastingBar_CheckButton_OnClick(self)
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+			</OnClick>
+		</Scripts>
+	</CheckButton>
+
+	<Button name="eCastingBarButtonTemplate" virtual="true">
+	<KeyValues>
+		<KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+		<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+		<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+	</KeyValues>
+		<Size>
+			<AbsDimension x="25" y="25"/>
+		</Size>
+		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border">
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="RIGHT">
+							<Offset>
+								<AbsDimension x="5" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				_G[self:GetName().."Text"]:SetWidth(105);
+			</OnLoad>
+			<OnClick>
+				eCastingBar_ColorPicker_OnClick(self);
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+			</OnClick>
+		</Scripts>
+		<HighlightTexture file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD">
+		</HighlightTexture>
+	</Button>
+
+	<Slider name="eCastingBarSliderTemplate" inherits="OptionsSliderTemplate" virtual="true">
+		<Scripts>
+			<OnValueChanged>
+				eCastingBarSlider_OnValueChanged(self);
+			</OnValueChanged>
+			<OnEnter>
+				eCastingBarSlider_OnEnter(self);
+			</OnEnter>
+			<OnLeave>
+				eCastingBarSlider_OnLeave();
+			</OnLeave>
+		</Scripts>
+	</Slider>
+
+	<Frame name="eCB_OptionFrame" toplevel="true" movable="true" enableMouse="true" parent="UIParent" hidden="true" inherits="BackdropTemplate">
+	<KeyValues>
+		<KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+		<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+		<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+	</KeyValues>
+	<Size>
+      <AbsDimension x="437" y="563" />
+    </Size>
+    <Anchors>
+      <Anchor point="CENTER" relativeTo="UIParent">
+        <Offset>
+          <AbsDimension x="0" y="50" />
+        </Offset>
+      </Anchor>
+    </Anchors>
+    <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+      <BackgroundInsets>
+        <AbsInset left="11" right="12" top="12" bottom="11" />
+      </BackgroundInsets>
+      <TileSize>
+        <AbsValue val="32" />
+      </TileSize>
+      <EdgeSize>
+        <AbsValue val="32" />
+      </EdgeSize>
+    </Backdrop>
+	
+		<Scripts>
+			<OnLoad inherit="prepend">
+				self:RegisterEvent("PLAYER_ENTERING_WORLD");
+				eCastingBarOptions_OnLoad()
+				self:RegisterForDrag("LeftButton");
+			</OnLoad>
+			<OnEvent>
+				eCastingBarOptions_OnEvent(self, event, ...)
+			</OnEvent>
+			<OnShow>
+				eCastingBarConfig_OnShow()
+				PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE)
+			</OnShow>
+			<OnHide>
+				eCastingBar_DropMenu:Hide()
+			</OnHide>
+			<OnMouseDown>
+				eCastingBarGeneral_MouseDown( arg1, "eCB_OptionFrame" );
+			</OnMouseDown>
+			<OnMouseUp>
+				eCastingBarGeneral_MouseUp( arg1, "eCB_OptionFrame" );
+			</OnMouseUp>
+			<OnDragStart>
+				self:StartMoving();
+			</OnDragStart>
+			<OnDragStop>
+				self:StopMovingOrSizing();
+			</OnDragStop>
+		</Scripts>
+    <Layers>
+      <Layer>
+        <Texture file="Interface\DialogFrame\UI-DialogBox-Header">
+          <Size>
+            <AbsDimension x="180" y="32" />
+          </Size>
+          <Anchors>
+            <Anchor point="TOP">
+              <Offset>
+                <AbsDimension x="3.5" y="5" />
+              </Offset>
+            </Anchor>
+          </Anchors>
+          <TexCoords left="0.2" right="0.8" top="0" bottom="0.6" />
+        </Texture>
+				<Texture file="Interface\DialogFrame\UI-DialogBox-Corner">
+          <Size>
+            <AbsDimension x="32" y="32" />
+          </Size>
+          <Anchors>
+            <Anchor point="TOP">
+              <Offset>
+                <AbsDimension x="199" y="-5" />
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </Texture>
+        <FontString inherits="GameFontNormal" text="ECASTINGBAR_TITLE">
+          <Size>
+            <AbsDimension x="140" y="0" />
+          </Size>
+          <Anchors>
+            <Anchor point="TOP">
+              <Offset>
+                <AbsDimension x="3.85" y="-6" />
+              </Offset>
+            </Anchor>
+          </Anchors>
+          <FontHeight>
+            <AbsValue val="14" />
+          </FontHeight>
+					<Color r="1" g="1" b="1"/>
+        </FontString>
+      </Layer>
+    </Layers>
+
+		<Frames>
+			<Button name="eCB_Option_DefaultsButton" inherits="GameMenuButtonTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="eCB_OptionFrame" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="148" y="16"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						eCastingBar_Defaults()
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="eCB_Option_CloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="eCB_OptionFrame" relativePoint="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="-31" y="530"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						eCastingBar_CloseConfig()
+						PlaySound(SOUNDKIT.IG_MAINMENU_QUIT)
+					</OnClick>
+				</Scripts>
+			</Button>
+			
+      <!-- Option Tabs -->
+			<Button name="$parentCastingTab" inherits="TabButtonTemplate" text="CASTINGBAR_CASTING_TAB" alpha=".8">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="20" y="-25" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						eCB_OptionFrame_CastingTab_Click();
+						PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
+					</OnClick>
+					<OnLoad>
+						<!-- Size it properly -->
+						PanelTemplates_TabResize(self, eCB_Tab_Padding);
+						_G[self:GetName().."HighlightTexture"]:SetWidth(self:GetTextWidth()+10);
+					</OnLoad>
+				</Scripts>
+			</Button>
+			<Button name="$parentMirrorTab" inherits="TabButtonTemplate" text="CASTINGBAR_MIRROR_TAB" alpha=".8">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentCastingTab" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-3" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						eCB_OptionFrame_MirrorTab_Click();
+						PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
+					</OnClick>
+					<OnLoad>
+						<!-- Size it properly -->
+						PanelTemplates_TabResize(self, eCB_Tab_Padding);
+						_G[self:GetName().."HighlightTexture"]:SetWidth(self:GetTextWidth()+10);
+					</OnLoad>
+				</Scripts>
+			</Button>
+			<Button name="$parentProfileTab" inherits="TabButtonTemplate" text="CASTINGBAR_PROFILE_TAB" alpha=".8">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentMirrorTab" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-3" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						eCB_OptionFrame_ProfileTab_Click();
+						PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
+					</OnClick>
+					<OnLoad>
+						<!-- Size it properly -->
+						PanelTemplates_TabResize(self, eCB_Tab_Padding);
+						_G[self:GetName().."HighlightTexture"]:SetWidth(self:GetTextWidth()+10);
+					</OnLoad>
+				</Scripts>
+			</Button>
+			<!-- End Option Tabs -->
+			
+			<!-- Tabbed Frame -->
+			<Frame name="$parentTabbed" inherits="eCB_Option_PanelTemplate">
+				<Size>
+					<AbsDimension x="397.6" y="470"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentCastingTab" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="2" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Frames>
+          <!-- Player Bar Option Frame -->
+    			<Frame name="eCB_OptionFrameTabbedCasting" hidden="true">
+    				<Frames>
+    					<CheckButton name="eCastingBarEnabled" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCB_OptionFrameTabbed" relativePoint="TOPLEFT">
+    								<Offset>
+    									<AbsDimension x="20" y="-92"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "Enabled"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<CheckButton name="eCastingBarLocked" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCB_OptionFrameTabbed" relativePoint="TOPLEFT">
+    								<Offset>
+    									<AbsDimension x="200" y="-92"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "Locked"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<CheckButton name="eCastingBarHideBorder" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarEnabled" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "HideBorder"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<CheckButton name="eCastingBarShowTime" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarLocked" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "ShowTime"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<CheckButton name="eCastingBarShowTotalTime" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarShowTime" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "ShowTotalTime"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<CheckButton name="eCastingBarShowSpellName" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarHideBorder" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "ShowSpellName"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<CheckButton name="eCastingBarShowLatency" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarShowSpellName" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "ShowLatency"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+							<Button name="eCastingBarIconPosition" inherits="eCastingBarMenuControlTemplate BackdropTemplate">
+								<Size>
+									<AbsDimension x="70" y="24"/>
+								</Size>
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="eCastingBarShowTotalTime" relativePoint="BOTTOMLEFT">
+										<Offset>
+											<AbsDimension x="2" y="-2"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad inherit="prepend">
+										self:SetBackdropColor(0.0, 0.0, 0.0);
+										self.menu = CASTINGBAR_ICON_POSITION;
+										self.index = "IconPosition";
+									</OnLoad>
+								</Scripts>
+							</Button>
+							<CheckButton name="eCastingBarShowTicks" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarShowLatency" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "ShowTicks"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+							<CheckButton name="eCastingBarShowDelay" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarIconPosition" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "ShowDelay"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+        			<Slider name="eCastingBarFontSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarShowLatency" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="-50" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "FontSize"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>
+							<EditBox name="eCastingBarFontSizeEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarFontSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(4)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarFontSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+        			<Slider name="eCastingBarAlphaSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarShowTotalTime" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="-76" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "Alpha"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>
+							<EditBox name="eCastingBarAlphaEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarAlphaSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(4)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarAlphaSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+    					<Slider name="eCastingBarWidthSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarFontSlider" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="-20" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "Width"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>
+    					<EditBox name="eCastingBarWidthEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarWidthSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(4)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarWidthSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+    					<Slider name="eCastingBarHeightSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarWidthSlider" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="-20" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "Height"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>
+    					<EditBox name="eCastingBarHeightEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarHeightSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(2)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarHeightSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+    					<Slider name="eCastingBarLeftSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarWidthEditBox" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "Left"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>
+    					<EditBox name="eCastingBarLeftEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarLeftSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(4)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarLeftSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+    					<Slider name="eCastingBarBottomSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarLeftSlider" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="-20" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "Bottom"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>
+    					<EditBox name="eCastingBarBottomEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarBottomSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(4)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarBottomSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+
+    					<!-- Texture Select Menu -->
+    					<Frame name="eCastingBarExample" inherits="BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="340" y="30"/>
+    						</Size> 			
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCB_OptionFrameTabbed" relativePoint="TOPLEFT">
+    								<Offset>
+    									<AbsDimension x="30" y="-20"/>
+    								</Offset> 
+    							</Anchor>
+    						</Anchors>
+    						<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+    							<EdgeSize>
+    								<AbsValue val="16"/>
+    							</EdgeSize>
+    							<TileSize>
+    								<AbsValue val="16"/>
+    							</TileSize>
+    							<BackgroundInsets>
+    								<AbsInset left="5" right="5" top="5" bottom="5"/>
+    							</BackgroundInsets>
+    						</Backdrop>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_8_12_1111" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Frames>
+    							<StatusBar name="$parentStatusBar">
+    								<Size>
+    									<AbsDimension x="330" y="20"/>
+    								</Size>
+    								<Anchors>
+    									<Anchor point="CENTER">
+    										<Offset>
+    											<AbsDimension x="0" y="0"/>
+    										</Offset>
+    									</Anchor>
+    								</Anchors>
+    								<Layers>
+    									<Layer level="OVERLAY">
+    										<FontString name="$parentText" inherits="eCastingBarFont" text="Not Casting">
+    											<Size>
+    												<AbsDimension x="215" y="16"/>
+    											</Size>
+    											<Anchors>
+    												<Anchor point="CENTER" relativeTo="$parent" relativePoint="CENTER">
+    													<Offset>
+    														<AbsDimension x="0" y="1"/>
+    													</Offset>
+    												</Anchor>
+    											</Anchors>
+    										</FontString>
+    									</Layer>
+    								</Layers>
+    								<BarTexture name="$parentTexture" file="Interface\TargetingFrame\UI-StatusBar"/>
+    								<BarColor r="1.0" g="0.7" b="0.0"/>
+    							</StatusBar>
+    						</Frames>
+    						<Scripts>
+    						<OnLoad inherit="prepend">
+    							self:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b);
+    							self:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b,0);
+    						</OnLoad>
+    						</Scripts>
+    					</Frame>
+
+    					<Button name="eCastingBarSelectTexture" inherits="eCastingBarMenuControlTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="140" y="25"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarExample" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="-5"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self:SetBackdropColor(0.0, 0.0, 0.0, 1);
+    								self.menu = CASTINGBAR_TEXTURES_MENU;
+    								self.index = "SelectTexture";
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					
+    					<!-- CastingBar Color -->
+    					<Button name="btnSpellColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="eCastingBarHeightSlider">
+    								<Offset>
+    									<AbsDimension y="-30" x="5"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "SpellColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					
+    					<Button name="btnChannelColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="btnSpellColor">
+    								<Offset>
+    									<AbsDimension y="0" x="120"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "ChannelColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					
+    					<Button name="btnSuccessColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="btnSpellColor">
+    								<Offset>
+    									<AbsDimension y="-5" x="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "SuccessColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					
+    					<Button name="btnFailedColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="btnChannelColor">
+    								<Offset>
+    									<AbsDimension y="-5" x="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "FailedColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					
+    					<Button name="btnTimeColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="btnSuccessColor">
+    								<Offset>
+    									<AbsDimension y="-5" x="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "TimeColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					
+    					<Button name="btnLagColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="btnFailedColor">
+    								<Offset>
+    									<AbsDimension y="-5" x="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "LagColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+
+    					<Button name="btnFlashBorderColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="btnChannelColor">
+    								<Offset>
+    									<AbsDimension y="0" x="120"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "FlashBorderColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+
+							<Button name="btnDelayColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="btnFlashBorderColor">
+    								<Offset>
+    									<AbsDimension y="-5" x="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "DelayColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					
+    					<!-- CastingBar Color Select Button Text Frame -->
+    					<Frame name="lblSpellColor">
+    						<Size>
+    							<AbsDimension x="80" y="19" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnSpellColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    					<Frame name="lblChannelColor">
+    						<Size>
+    							<AbsDimension x="80" y="16" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnChannelColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    					<Frame name="lblSuccessColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnSuccessColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    					<Frame name="lblFailedColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnFailedColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    					<Frame name="lblTimeColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnTimeColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    					<Frame name="lblLagColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnLagColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+							<Frame name="lblDelayColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnDelayColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    					<Frame name="lblFlashBorderColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnFlashBorderColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+				    </Frames>
+			    </Frame>
+          <!-- Mirror Bar Option Frame -->
+    			<Frame name="eCB_OptionFrameTabbedMirror" hidden="true">
+    				<Frames>
+    					<CheckButton name="eCastingBarMirrorEnabled" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCB_OptionFrameTabbed" relativePoint="TOPLEFT">
+    								<Offset>
+    									<AbsDimension x="20" y="-92"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "MirrorEnabled"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<CheckButton name="eCastingBarMirrorLocked" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCB_OptionFrameTabbed" relativePoint="TOPLEFT">
+    								<Offset>
+    									<AbsDimension x="200" y="-92"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "MirrorLocked"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<CheckButton name="eCastingBarMirrorHideBorder" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorEnabled" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "MirrorHideBorder"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<CheckButton name="eCastingBarMirrorUseFlightTimer" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarHideBorder" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "MirrorUseFlightTimer"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<CheckButton name="eCastingBarMirrorShowTime" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorLocked" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self.index = "MirrorShowTime"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<CheckButton name="eCastingBarMirrorShowTimerLabel" inherits="eCastingBarCheckButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorShowTime" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    							  self.index = "MirrorShowTimerLabel"
+    							</OnLoad>
+    						</Scripts>
+    					</CheckButton>
+    					<Slider name="eCastingBarMirrorFontSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorUseFlightTimer" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="-27" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "MirrorFontSize"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>
+							<EditBox name="eCastingBarMirrorFontSizeEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorFontSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(4)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarMirrorFontSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+        			<Slider name="eCastingBarMirrorAlphaSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorShowTimerLabel" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="-26" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "MirrorAlpha"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>
+							<EditBox name="eCastingBarMirrorAlphaEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorAlphaSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(4)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarMirrorAlphaSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+    					<Slider name="eCastingBarMirrorWidthSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorFontSlider" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="-20" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "MirrorWidth"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>					
+    					<EditBox name="eCastingBarMirrorWidthEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorWidthSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(4)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarMirrorWidthSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+    					<Slider name="eCastingBarMirrorHeightSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorWidthSlider" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="-20" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "MirrorHeight"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>
+    					<EditBox name="eCastingBarMirrorHeightEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorHeightSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(2)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarMirrorHeightSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+    					
+    					<Slider name="eCastingBarMirrorLeftSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorWidthEditBox" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "MirrorLeft"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>					
+    					<EditBox name="eCastingBarMirrorLeftEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorLeftSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(4)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarMirrorLeftSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+    					<Slider name="eCastingBarMirrorBottomSlider" inherits="eCastingBarSliderTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="120" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorLeftSlider" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="0" y="-20" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.index = "MirrorBottom"
+    							</OnLoad>
+    						</Scripts>
+    					</Slider>					
+    					<EditBox name="eCastingBarMirrorBottomEditBox" autoFocus="false" inherits="InputBoxTemplate" bytes="64">
+    						<Size>
+    							<AbsDimension x="42" y="16"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorBottomSlider" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="10" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad>
+    								self:SetMaxLetters(4)
+    							</OnLoad>
+    							<OnEnterPressed>
+    								eCastingBarMirrorBottomSlider:SetValue(self:GetNumber())
+    							</OnEnterPressed>
+    						</Scripts>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+    					
+    					<!-- Texture Select Menu -->
+      				<Frame name="eCastingBarMirrorExample" inherits="BackdropTemplate">
+      					<Size>
+      						<AbsDimension x="340" y="30"/>
+      					</Size> 			
+      					<Anchors>
+      						<Anchor point="TOPLEFT" relativeTo="eCB_OptionFrameTabbed" relativePoint="TOPLEFT">
+      							<Offset>
+      								<AbsDimension x="30" y="-20"/>
+      							</Offset> 
+      						</Anchor>
+      					</Anchors>
+      					<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+      						<EdgeSize>
+      							<AbsValue val="16"/>
+      						</EdgeSize>
+      						<TileSize>
+      							<AbsValue val="16"/>
+      						</TileSize>
+      						<BackgroundInsets>
+      							<AbsInset left="5" right="5" top="5" bottom="5"/>
+      						</BackgroundInsets>
+      					</Backdrop>
+						<KeyValues>
+							<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_8_12_1111" type="global"/>
+							<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+							<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+						</KeyValues>
+      					<Frames>
+      						<StatusBar name="$parentStatusBar">
+      							<Size>
+      								<AbsDimension x="330" y="20"/>
+      							</Size>
+      							<Anchors>
+      								<Anchor point="CENTER">
+      									<Offset>
+      										<AbsDimension x="0" y="0"/>
+      									</Offset>
+      								</Anchor>
+      							</Anchors>
+      							<Layers>
+      								<Layer level="OVERLAY">
+      									<FontString name="$parentText" inherits="eCastingBarFont" text="Not Casting">
+      										<Size>
+      											<AbsDimension x="215" y="16"/>
+      										</Size>
+      										<Anchors>
+      											<Anchor point="CENTER" relativeTo="$parent" relativePoint="CENTER">
+      												<Offset>
+      													<AbsDimension x="0" y="1"/>
+      												</Offset>
+      											</Anchor>
+      										</Anchors>
+      									</FontString>
+      								</Layer>
+      							</Layers>
+      							<BarTexture name="$parentTexture" file="Interface\TargetingFrame\UI-StatusBar"/>
+      							<BarColor r="1.0" g="0.7" b="0.0"/>
+      						</StatusBar>
+      					</Frames>
+      					<Scripts>
+      					<OnLoad inherit="prepend">
+      						self:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b);
+      						self:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b,0);
+      					</OnLoad>
+      					</Scripts>
+      				</Frame>
+      				<Button name="eCastingBarMirrorSelectTexture" inherits="eCastingBarMenuControlTemplate BackdropTemplate">
+      					<Size>
+      						<AbsDimension x="140" y="25"/>
+      					</Size>
+      					<Anchors>
+      						<Anchor point="TOPLEFT" relativeTo="eCastingBarMirrorExample" relativePoint="BOTTOMLEFT">
+      							<Offset>
+      								<AbsDimension x="0" y="-5"/>
+      							</Offset>
+      						</Anchor>
+      					</Anchors>
+      					<Scripts>
+      						<OnLoad inherit="prepend">
+      							self:SetBackdropColor(0.0, 0.0, 0.0, 1);
+      							self.menu = CASTINGBAR_TEXTURES_MENU;
+      							self.index = "MirrorSelectTexture";
+      						</OnLoad>
+      					</Scripts>
+      				</Button>
+    					
+              <!-- MirrorBar Color -->
+    					<Button name="btnFeignDeathColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="eCastingBarMirrorHeightSlider">
+    								<Offset>
+    									<AbsDimension y="-30" x="5"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "FeignDeathColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    
+    					<Button name="btnExhaustionColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="btnFeignDeathColor">
+    								<Offset>
+    									<AbsDimension y="0" x="120"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "ExhaustionColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					<Button name="btnBreathColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="btnFeignDeathColor">
+    								<Offset>
+    									<AbsDimension y="-5" x="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "BreathColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					<Button name="btnFlightColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="btnExhaustionColor">
+    								<Offset>
+    									<AbsDimension y="-5" x="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "FlightColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					<Button name="btnMirrorFlashBorderColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="btnExhaustionColor">
+    								<Offset>
+    									<AbsDimension y="0" x="120"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "MirrorFlashBorderColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					<Button name="btnMirrorTimeColor" inherits="eCastingBarButtonTemplate BackdropTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="btnMirrorFlashBorderColor">
+    								<Offset>
+    									<AbsDimension y="-5" x="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer level="ARTWORK">
+    								<Texture name="$parentTexture">
+    									<Size>
+    										<AbsDimension y="18" x="18"/>
+    									</Size>
+    									<Anchors>
+    										<Anchor point="CENTER">
+    								</Anchor>
+    									</Anchors>
+    								</Texture>
+    							</Layer>
+    						</Layers>
+							<KeyValues>
+								<KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_12_12_4444" type="global"/>
+								<KeyValue key="backdropBorderColor" value="LEGENDARY_ORANGE_COLOR" type="global"/>
+								<KeyValue key="backdropBorderColorAlpha" value="1" type="number"/>
+							</KeyValues>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self.objindex = "MirrorTimeColor"
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					<!-- MirrorBar Color select Button Text Frame -->
+    					<Frame name="lblFeignDeathColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnFeignDeathColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    					<Frame name="lblExhaustionColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnExhaustionColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    					<Frame name="lblBreathColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnBreathColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    					<Frame name="lblMirrorTimeColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnMirrorTimeColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    					<Frame name="lblMirrorFlashBorderColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnMirrorFlashBorderColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    					<Frame name="lblFlightColor">
+    						<Size>
+    							<AbsDimension x="80" y="18" />
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="btnFlightColor">
+    								<Offset>
+    									<AbsDimension x="0" y="-5" />
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Layers>
+    							<Layer>
+    								<FontString name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT"/>
+    							</Layer>
+    						</Layers>
+    					</Frame>
+    				</Frames>
+    			</Frame>
+    			<!-- Profile Option Frame -->
+    			<Frame name="eCB_OptionFrameTabbedProfile" hidden="true">
+    				<Frames>
+    					<EditBox name="eCastingBarSaveNameEditBox" autoFocus="false" letters="20" ignoreArrows="true" inherits="InputBoxTemplate">
+    						<Size>
+    							<AbsDimension x="152" y="24"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCB_OptionFrameTabbed" relativePoint="TOPLEFT">
+    								<Offset>
+    									<AbsDimension x="30" y="-30"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<FontString inherits="ChatFontNormal"/>
+    					</EditBox>
+    					<Button name="eCastingBarSaveSettingsButton" inherits="GameMenuButtonTemplate">
+    						<Size>
+									<AbsDimension x="186" y="21"/>
+								</Size>
+								<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarSaveNameEditBox" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="6" y="-1.95"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnClick>
+    								eCastingBar_SaveSetting();
+										PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+    							</OnClick>
+    						</Scripts>
+    					</Button>
+    
+    					<Button name="eCastingBarSettings" inherits="eCastingBarMenuControlTemplate BackdropTemplate">
+    						<Size>
+    							<AbsDimension x="160" y="24"/>
+    						</Size>
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarSaveNameEditBox" relativePoint="BOTTOMLEFT">
+    								<Offset>
+    									<AbsDimension x="-7" y="-10"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnLoad inherit="prepend">
+    								self:SetBackdropColor(0.0, 0.0, 0.0);
+    								self.menu = "SavedSettings";
+    								self.index = "SavedSettings";
+    							</OnLoad>
+    						</Scripts>
+    					</Button>
+    					<Button name="eCastingBarLoadSettingsButton" inherits="OptionsButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarSettings" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="5" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnClick>
+    								eCastingBar_LoadSetting();
+										PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+    							</OnClick>
+    						</Scripts>
+    					</Button>
+    					<Button name="eCastingBarDeleteSettingsButton" inherits="OptionsButtonTemplate">
+    						<Anchors>
+    							<Anchor point="TOPLEFT" relativeTo="eCastingBarLoadSettingsButton" relativePoint="TOPRIGHT">
+    								<Offset>
+    									<AbsDimension x="5" y="0"/>
+    								</Offset>
+    							</Anchor>
+    						</Anchors>
+    						<Scripts>
+    							<OnClick>
+    								eCastingBar_DeleteSetting();
+										PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+    							</OnClick>
+    						</Scripts>
+    					</Button>
+    				</Frames>
+    			</Frame>
+        </Frames>
+      </Frame>
+      
+		</Frames>
+	</Frame>
+</Ui>
