@@ -1,0 +1,7 @@
+## Interface: 30403
+## Title: Libs
+## Title-zhCN:  |cffFF3300小I插件|r 通用库
+## X-Vendor: NetEase
+
+Ace3.xml
+Libs.xml

@@ -13,9 +13,8 @@
 ## SavedVariablesPerCharacter: MBB_Exclude, MBB_Options, FeatureFrameMinimapButton_OffsetX, FeatureFrameMinimapButton_OffsetY, aienable, aikeyword, aichannel, aitextleft, aitextright
 
 # Libs
-#Libs\Ace3.xml
-#Libs\embeds.xml
-#Libs\Libs.xml
+Libs\Ace3.xml
+Libs\Libs.xml
 
 # GConfirm.lua
 
