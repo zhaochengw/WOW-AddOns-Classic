@@ -49,8 +49,8 @@ local PartyMemberFrame_UpdateVoiceStatus = PartyMemberFrame_UpdateVoiceStatus;
 local PartyMemberFrame_UpdateReadyCheck = PartyMemberFrame_UpdateReadyCheck;
 local PartyMemberFrame_UpdateNotPresentIcon = PartyMemberFrame_UpdateNotPresentIcon;
 local PartyMemberFrame_ToPlayerArt = PartyMemberFrame_ToPlayerArt;
-local CompactRaidFrameManager_UpdateShown = CompactRaidFrameManager_UpdateShown;
-local CompactRaidFrameManager_UpdateContainerLockVisibility = CompactRaidFrameManager_UpdateContainerLockVisibility;
+--local CompactRaidFrameManager_UpdateShown = CompactRaidFrameManager_UpdateShown;
+--local CompactRaidFrameManager_UpdateContainerLockVisibility = CompactRaidFrameManager_UpdateContainerLockVisibility;
 local BlizzardOptionsPanel_CheckButton_Enable = BlizzardOptionsPanel_CheckButton_Enable;
 local BlizzardOptionsPanel_CheckButton_Disable = BlizzardOptionsPanel_CheckButton_Disable;
 local StaticPopup_Show = StaticPopup_Show;
@@ -1821,8 +1821,8 @@ function UnitFramesPlus_PartyStyleSet()
     if state == true then
         RaidOptionsFrame_UpdatePartyFrames();
         if CompactRaidFrameManager then
-            securecall(CompactRaidFrameManager_UpdateContainerLockVisibility, CompactRaidFrameManager);
-            securecall(CompactRaidFrameManager_UpdateShown, CompactRaidFrameManager);
+            --securecall(CompactRaidFrameManager_UpdateContainerLockVisibility, CompactRaidFrameManager);
+            --securecall(CompactRaidFrameManager_UpdateShown, CompactRaidFrameManager);
         end
     end
 end
