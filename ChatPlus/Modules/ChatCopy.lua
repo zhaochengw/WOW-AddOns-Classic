@@ -94,7 +94,13 @@ local function ShowChatbox(chtfrm)
     -- end
     -- editBox:Insert("Right-click to close.");
     editFrame:SetVerticalScroll(0);
-    C_Timer.After(0.1, function() editFrame.ScrollBar.ScrollDownButton:Click() end);
+    C_Timer.After(0.1, function() 
+        if editFrame.ScrollBar and editFrame.ScrollBar.ScrollDownButton then
+            editFrame.ScrollBar.ScrollDownButton:Click() 
+        else
+            print("ScrollDownButton is nil")
+        end
+    end);
     editFrame:Show();
     editBox:ClearFocus();
 end
