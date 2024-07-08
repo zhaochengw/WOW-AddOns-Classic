@@ -508,19 +508,21 @@ _SUMMON
 			dexSpell = spellName
 		end
 
-	elseif suffixes == "HEAL" then
-		amount, overDamage, critical = select(DEX_PREFIXES[prefixes],...);
-		dexText = amount
-		DEX_OverHeal = overDamage
-		if critical and prefixes == "SPELL" and spellId ~= 143924 then dexCrit = 1;end		--Modify Heal Spell Critical,排除汲取效果
-		--dexCrit = critical
-		if prefixes == "SWING" then
-			dexType = DEX_DAMAGE_TYPE_HEALTH
-		else
-			dexType = DEX_DAMAGE_TYPE_HEALTH
-			dexSpell = spellName
-		end
-
+elseif suffixes == "HEAL" then
+    amount, baseAmount, overDamage, critical = select(DEX_PREFIXES[prefixes],...);
+    dexText = amount
+    DEX_OverHeal = overDamage
+    if critical and prefixes == "SPELL" and spellId ~= 143924 then
+        dexCrit = 1
+    else
+        dexCrit = 0
+    end
+    if prefixes == "SWING" then
+        dexType = DEX_DAMAGE_TYPE_HEALTH
+    else
+        dexType = DEX_DAMAGE_TYPE_HEALTH
+        dexSpell = spellName
+    end
 
 	elseif suffixes == "INTERRUPT" then 
 		if DEX_Get("DEX_ShowInterrupt") == 1 then			-- Add Show Interupt Switch
